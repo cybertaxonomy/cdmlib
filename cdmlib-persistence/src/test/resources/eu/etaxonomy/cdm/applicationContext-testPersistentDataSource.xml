@@ -10,23 +10,12 @@
     http://www.springframework.org/schema/tx 
     http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
 
-    <!--  requires at least spring 2.5.4 --> 
-    <context:property-override location="classpath:eu/etaxonomy/cdm/persistence/override.properties"/>
- 
-
+    <!-- requires at least spring 2.5.4 -->
+    <context:property-override location="classpath:eu/etaxonomy/cdm/persistence/override.properties-testPersistentDataSource"/>
+    
+    <context:component-scan base-package="eu/etaxonomy/cdm"/>
+    
     <bean id="dataSource" class="org.unitils.database.UnitilsDataSourceFactoryBean"/>
- 
-    <!-- exclude persistent term initializer as we want to use the TestingTermInitializer instead -->   
-    <context:component-scan base-package="eu/etaxonomy/cdm">
-      <context:exclude-filter type="regex" expression="eu\.etaxonomy\.cdm\.database\.PersistentTermInitializer"/>
-    </context:component-scan>
-    
-    
-    <bean id="termInitializer" class="eu.etaxonomy.cdm.database.TestingTermInitializer">
-        <property name="termsDataSet" value="classpath:/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"/>
-        <property name="termsDtd" value="classpath:/eu/etaxonomy/cdm/persistence/dao/hibernate/dataset.dtd"/>
-    </bean>
-
      
     <bean id="hibernateProperties" 
         class="org.springframework.beans.factory.config.PropertiesFactoryBean">

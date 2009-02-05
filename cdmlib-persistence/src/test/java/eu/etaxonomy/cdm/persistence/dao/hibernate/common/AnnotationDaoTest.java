@@ -1,3 +1,12 @@
+/**
+* Copyright (C) 2007 EDIT
+* European Distributed Institute of Taxonomy 
+* http://www.e-taxonomy.eu
+* 
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
+
 package eu.etaxonomy.cdm.persistence.dao.hibernate.common;
 
 import static org.junit.Assert.assertEquals;
@@ -8,7 +17,6 @@ import java.util.List;
 import java.util.UUID;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
@@ -52,7 +60,6 @@ public class AnnotationDaoTest extends CdmIntegrationTest {
 	}
 	
 	@Test
-	@Ignore //TODO set to ignore because test result depends on java VM version at the moment
 	public void testCountAnnotationsWithStatus() {
 		Annotation annotatedObj = annotationDao.findByUuid(uuid);
 		MarkerType markerType = MarkerType.TO_BE_CHECKED();
@@ -64,7 +71,6 @@ public class AnnotationDaoTest extends CdmIntegrationTest {
 	}
 	
 	@Test
-	@Ignore //TODO set to ignore because test result depends on java VM version at the moment
 	public void testGetAnnotationsWithStatus() {
 		Annotation annotatedObj = annotationDao.findByUuid(uuid);
 		MarkerType markerType = MarkerType.TO_BE_CHECKED();

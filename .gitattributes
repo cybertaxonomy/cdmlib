@@ -1108,6 +1108,8 @@ cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/database/CdmDataSourceTest.jav
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/database/CdmPersistentDataSourceTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/database/DatabaseEnumTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/database/PersistentTermInitializerTest.java -text
+cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/database/TestingTermInitializer.java -text
+cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/database/TestingTermInitializerTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/database/types/ODBCDatabaseTypeTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/database/types/OracleDatabaseTypeTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/database/types/PostgreSQLDatabaseTypeTest.java -text
@@ -1163,8 +1165,11 @@ cdmlib-persistence/src/test/resources/eu.etaxonomy.cdm.model.taxon.TaxonBase_spe
 cdmlib-persistence/src/test/resources/eu.etaxonomy.cdm.model.taxon.TaxonBase_spelling/segments.gen -text
 cdmlib-persistence/src/test/resources/eu.etaxonomy.cdm.model.taxon.TaxonBase_spelling/segments_3 -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/applicationContext-test.xml -text
+cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/applicationContext-testPersistentDataSource.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/applicationContext.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/cdm.datasources.xml -text
+cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml -text
+cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/database/TermsDataSet.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/jdbc-datasource.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/FreeTextSearchIntegration.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/PUBLIC.xsd -text
@@ -1178,12 +1183,14 @@ cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/common/DefinedTermDaoImplTest.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/common/IdentifiableDaoBaseTest.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/common/UserDaoHibernateImplTest.xml -text
+cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/dataset.dtd -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/dataset.xsd -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/description/DescriptionDaoHibernateImplTest.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/media/MediaDaoImplTest.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/name/TaxonNameDaoHibernateImplTest.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/taxon/TaxonDaoHibernateImplTest.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/override.properties -text
+cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/override.properties-testPersistentDataSource -text
 cdmlib-persistence/src/test/resources/unitils.properties -text
 cdmlib-persistence/test.xml -text
 cdmlib-remote/LICENSE.TXT -text

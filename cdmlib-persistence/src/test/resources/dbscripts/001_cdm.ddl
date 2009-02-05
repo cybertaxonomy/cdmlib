@@ -1,606 +1,6671 @@
-create table Address (id integer not null, created timestamp, uuid varchar(255), updated timestamp, locality varchar(255), location_errorradius integer, location_latitude double, location_longitude double, pobox varchar(255), postcode varchar(255), region varchar(255), street varchar(255), createdby_id integer, updatedby_id integer, contact_id integer, country_id integer, location_referencesystem_id integer, primary key (id));
-create table Agent (DTYPE varchar(31) not null, id integer not null, created timestamp, uuid varchar(255), updated timestamp, lsid varchar(255), titleCache varchar(255), protectedtitlecache boolean not null, code varchar(255), name varchar(255), nomenclaturaltitle varchar(255), firstname varchar(255), lastname varchar(255), lifespan_end varchar(255), lifespan_start varchar(255), prefix varchar(255), suffix varchar(255), createdby_id integer, updatedby_id integer, contact_id integer, ispartof_id integer, primary key (id));
-create table Agent_Agent (Agent_id integer not null, teammembers_id integer not null);
-create table Agent_Annotation (Agent_id integer not null, annotations_id integer not null, primary key (Agent_id, annotations_id), unique (annotations_id));
-create table Agent_DefinedTermBase (Agent_id integer not null, types_id integer not null, primary key (Agent_id, types_id));
-create table Agent_Extension (Agent_id integer not null, extensions_id integer not null, primary key (Agent_id, extensions_id), unique (extensions_id));
-create table Agent_Marker (Agent_id integer not null, markers_id integer not null, primary key (Agent_id, markers_id), unique (markers_id));
-create table Agent_Media (Agent_id integer not null, media_id integer not null, primary key (Agent_id, media_id), unique (media_id));
-create table Agent_OriginalSource (Agent_id integer not null, sources_id integer not null, primary key (Agent_id, sources_id), unique (sources_id));
-create table Agent_Rights (Agent_id integer not null, rights_id integer not null, primary key (Agent_id, rights_id));
-create table Annotation (id integer not null, created timestamp, uuid varchar(255), updated timestamp, text varchar(4096), annotatedObj_type varchar(255), annotatedObj_id integer not null, linkbackurlstr varchar(255), createdby_id integer, updatedby_id integer, language_id integer, annotationtype_id integer, commentator_id integer, primary key (id));
-create table Annotation_Annotation (Annotation_id integer not null, annotations_id integer not null, primary key (Annotation_id, annotations_id), unique (annotations_id));
-create table Annotation_Marker (Annotation_id integer not null, markers_id integer not null, primary key (Annotation_id, markers_id), unique (markers_id));
-create table CDM_VIEW (id integer not null, created timestamp, uuid varchar(255), description varchar(255), name varchar(255), reference varbinary(255), createdby_id integer, primary key (id));
-create table CDM_VIEW_CDM_VIEW (CDM_VIEW_id integer not null, superviews_id integer not null, primary key (CDM_VIEW_id, superviews_id), unique (superviews_id));
-create table Collection (id integer not null, created timestamp, uuid varchar(255), updated timestamp, lsid varchar(255), titleCache varchar(255), protectedtitlecache boolean not null, code varchar(255), codestandard varchar(255), name varchar(255), townorlocation varchar(255), createdby_id integer, updatedby_id integer, institute_id integer, supercollection_id integer, primary key (id));
-create table Collection_Annotation (Collection_id integer not null, annotations_id integer not null, primary key (Collection_id, annotations_id), unique (annotations_id));
-create table Collection_Extension (Collection_id integer not null, extensions_id integer not null, primary key (Collection_id, extensions_id), unique (extensions_id));
-create table Collection_Marker (Collection_id integer not null, markers_id integer not null, primary key (Collection_id, markers_id), unique (markers_id));
-create table Collection_Media (Collection_id integer not null, media_id integer not null, primary key (Collection_id, media_id), unique (media_id));
-create table Collection_OriginalSource (Collection_id integer not null, sources_id integer not null, primary key (Collection_id, sources_id), unique (sources_id));
-create table Collection_Rights (Collection_id integer not null, rights_id integer not null, primary key (Collection_id, rights_id));
-create table Contact (id integer not null, created timestamp, uuid varchar(255), updated timestamp, email varchar(255), fax varchar(255), phone varchar(255), url varchar(255), createdby_id integer, updatedby_id integer, primary key (id));
-create table DefinedTermBase (DTYPE varchar(31) not null, id integer not null, created timestamp, uuid varchar(255), updated timestamp, uri varchar(255), orderindex integer, iso639_1 varchar(2), iso639_2 varchar(3), symmetric boolean, transitive boolean, defaultcolor varchar(255), supportscommontaxonname boolean, supportsdistribution boolean, supportsindividualassociation boolean, supportsquantitativedata boolean, supportstaxoninteraction boolean, supportstextdata boolean, pointapproximation_errorradius integer, pointapproximation_latitude double, pointapproximation_longitude double, validperiod_end varchar(255), validperiod_start varchar(255), iso3166_a2 varchar(2), createdby_id integer, updatedby_id integer, kindof_id integer, partof_id integer, vocabulary_id integer, level_id integer, pointapproximation_referencesystem_id integer, shape_id integer, type_id integer, primary key (id));
-create table DefinedTermBase_Continent (DefinedTermBase_id integer not null, continents_id integer not null, primary key (DefinedTermBase_id, continents_id));
-create table DefinedTermBase_Media (DefinedTermBase_id integer not null, media_id integer not null, primary key (DefinedTermBase_id, media_id), unique (media_id));
-create table DefinedTermBase_RecommendedModifierEnumeration (DefinedTermBase_id integer not null, recommendedmodifierenumeration_id integer not null, primary key (DefinedTermBase_id, recommendedmodifierenumeration_id), unique (recommendedmodifierenumeration_id));
-create table DefinedTermBase_Representation (DefinedTermBase_id integer not null, representations_id integer not null, primary key (DefinedTermBase_id, representations_id), unique (representations_id));
-create table DefinedTermBase_StatisticalMeasure (DefinedTermBase_id integer not null, recommendedstatisticalmeasures_id integer not null, primary key (DefinedTermBase_id, recommendedstatisticalmeasures_id));
-create table DefinedTermBase_SupportedCategoricalEnumeration (DefinedTermBase_id integer not null, supportedcategoricalenumerations_id integer not null, primary key (DefinedTermBase_id, supportedcategoricalenumerations_id), unique (supportedcategoricalenumerations_id));
-create table DefinedTermBase_WaterbodyOrCountry (DefinedTermBase_id integer not null, waterbodiesorcountries_id integer not null, primary key (DefinedTermBase_id, waterbodiesorcountries_id));
-create table DerivationEvent (id integer not null, created timestamp, uuid varchar(255), updated timestamp, description varchar(255), timeperiod_end varchar(255), timeperiod_start varchar(255), createdby_id integer, updatedby_id integer, actor_id integer, type_id integer, primary key (id));
-create table DerivationEvent_Annotation (DerivationEvent_id integer not null, annotations_id integer not null, primary key (DerivationEvent_id, annotations_id), unique (annotations_id));
-create table DerivationEvent_Marker (DerivationEvent_id integer not null, markers_id integer not null, primary key (DerivationEvent_id, markers_id), unique (markers_id));
-create table DescriptionBase (DTYPE varchar(31) not null, id integer not null, created timestamp, uuid varchar(255), updated timestamp, lsid varchar(255), titleCache varchar(255), protectedtitlecache boolean not null, createdby_id integer, updatedby_id integer, taxon_fk integer, taxonName_fk integer, primary key (id));
-create table DescriptionBase_Annotation (DescriptionBase_id integer not null, annotations_id integer not null, primary key (DescriptionBase_id, annotations_id), unique (annotations_id));
-create table DescriptionBase_Extension (DescriptionBase_id integer not null, extensions_id integer not null, primary key (DescriptionBase_id, extensions_id), unique (extensions_id));
-create table DescriptionBase_GeoScope (DescriptionBase_id integer not null, geoscopes_id integer not null, primary key (DescriptionBase_id, geoscopes_id), unique (geoscopes_id));
-create table DescriptionBase_Marker (DescriptionBase_id integer not null, markers_id integer not null, primary key (DescriptionBase_id, markers_id), unique (markers_id));
-create table DescriptionBase_OriginalSource (DescriptionBase_id integer not null, sources_id integer not null, primary key (DescriptionBase_id, sources_id), unique (sources_id));
-create table DescriptionBase_ReferenceBase (DescriptionBase_id integer not null, descriptionsources_id integer not null, primary key (DescriptionBase_id, descriptionsources_id));
-create table DescriptionBase_Rights (DescriptionBase_id integer not null, rights_id integer not null, primary key (DescriptionBase_id, rights_id));
-create table DescriptionBase_Scope (DescriptionBase_id integer not null, scopes_id integer not null, primary key (DescriptionBase_id, scopes_id), unique (scopes_id));
-create table DescriptionElementBase (DTYPE varchar(31) not null, id integer not null, created timestamp, uuid varchar(255), updated timestamp, citationmicroreference varchar(255), originalnamestring varchar(255), modifyingtext varbinary(255), orderrelevant boolean, name varchar(255), description varbinary(255), createdby_id integer, updatedby_id integer, citation_id integer, feature_id integer, indescription_id integer, language_id integer, area_id integer, status_id integer, associatedspecimenorobservation_id integer, unit_id integer, taxon2_id integer, format_id integer, primary key (id));
-create table DescriptionElementBase_Annotation (DescriptionElementBase_id integer not null, annotations_id integer not null, primary key (DescriptionElementBase_id, annotations_id), unique (annotations_id));
-create table DescriptionElementBase_LanguageString (DescriptionElementBase_id integer not null, multilanguagetext_id integer not null, primary key (DescriptionElementBase_id, multilanguagetext_id), unique (multilanguagetext_id));
-create table DescriptionElementBase_Marker (DescriptionElementBase_id integer not null, markers_id integer not null, primary key (DescriptionElementBase_id, markers_id), unique (markers_id));
-create table DescriptionElementBase_Media (DescriptionElementBase_id integer not null, media_id integer not null, primary key (DescriptionElementBase_id, media_id), unique (media_id));
-create table DescriptionElementBase_Modifier (DescriptionElementBase_id integer not null, modifiers_id integer not null, primary key (DescriptionElementBase_id, modifiers_id), unique (modifiers_id));
-create table DescriptionElementBase_StateData (DescriptionElementBase_id integer not null, states_id integer not null);
-create table DescriptionElementBase_StatisticalMeasurementValue (DescriptionElementBase_id integer not null, statisticalvalues_id integer not null, primary key (DescriptionElementBase_id, statisticalvalues_id), unique (statisticalvalues_id));
-create table DeterminationEvent (id integer not null, created timestamp, uuid varchar(255), updated timestamp, description varchar(255), timeperiod_end varchar(255), timeperiod_start varchar(255), preferredflag boolean not null, createdby_id integer, updatedby_id integer, actor_id integer, identifiedunit_id integer, modifier_id integer, taxon_id integer, primary key (id));
-create table DeterminationEvent_Annotation (DeterminationEvent_id integer not null, annotations_id integer not null, primary key (DeterminationEvent_id, annotations_id), unique (annotations_id));
-create table DeterminationEvent_Marker (DeterminationEvent_id integer not null, markers_id integer not null, primary key (DeterminationEvent_id, markers_id), unique (markers_id));
-create table DeterminationEvent_ReferenceBase (DeterminationEvent_id integer not null, references_id integer not null, primary key (DeterminationEvent_id, references_id));
-create table Extension (id integer not null, created timestamp, uuid varchar(255), updated timestamp, value varchar(255), createdby_id integer, updatedby_id integer, type_id integer, primary key (id));
-create table FeatureNode (id integer not null, created timestamp, uuid varchar(255), updated timestamp, createdby_id integer, updatedby_id integer, feature_id integer, parent_fk integer, primary key (id));
-create table FeatureTree (id integer not null, created timestamp, uuid varchar(255), updated timestamp, uri varchar(255), descriptionseparated boolean not null, createdby_id integer, updatedby_id integer, root_id integer, primary key (id));
-create table FeatureTree_Representation (FeatureTree_id integer not null, representations_id integer not null, primary key (FeatureTree_id, representations_id), unique (representations_id));
-create table GatheringEvent (id integer not null, created timestamp, uuid varchar(255), updated timestamp, description varchar(255), timeperiod_end varchar(255), timeperiod_start varchar(255), absoluteelevation integer, absoluteelevationerror integer, collectingmethod varchar(255), distancetoground integer, distancetowatersurface integer, exactlocation_errorradius integer, exactlocation_latitude double, exactlocation_longitude double, createdby_id integer, updatedby_id integer, actor_id integer, exactlocation_referencesystem_id integer, locality_id integer, primary key (id));
-create table GatheringEvent_Annotation (GatheringEvent_id integer not null, annotations_id integer not null, primary key (GatheringEvent_id, annotations_id), unique (annotations_id));
-create table GatheringEvent_DefinedTermBase (GatheringEvent_id integer not null, collectingareas_id integer not null, primary key (GatheringEvent_id, collectingareas_id));
-create table GatheringEvent_Marker (GatheringEvent_id integer not null, markers_id integer not null, primary key (GatheringEvent_id, markers_id), unique (markers_id));
-create table GenBankAccession (id integer not null, created timestamp, uuid varchar(255), updated timestamp, accessionnumber varchar(255), uri varchar(255), createdby_id integer, updatedby_id integer, primary key (id));
-create table GrantedAuthorityImpl (id integer not null, created timestamp, uuid varchar(255), authority varchar(255), createdby_id integer, primary key (id), unique (authority));
-create table HomotypicalGroup (id integer not null, created timestamp, uuid varchar(255), updated timestamp, createdby_id integer, updatedby_id integer, primary key (id));
-create table HomotypicalGroup_Annotation (HomotypicalGroup_id integer not null, annotations_id integer not null, primary key (HomotypicalGroup_id, annotations_id), unique (annotations_id));
-create table HomotypicalGroup_Marker (HomotypicalGroup_id integer not null, markers_id integer not null, primary key (HomotypicalGroup_id, markers_id), unique (markers_id));
-create table HybridRelationship (id integer not null, created timestamp, uuid varchar(255), updated timestamp, citationmicroreference varchar(255), originalnamestring varchar(255), doubtful boolean not null, ruleconsidered varchar(255), createdby_id integer, updatedby_id integer, citation_id integer, relatedfrom_id integer, relatedto_id integer, type_id integer, primary key (id));
-create table HybridRelationship_Annotation (HybridRelationship_id integer not null, annotations_id integer not null, primary key (HybridRelationship_id, annotations_id), unique (annotations_id));
-create table HybridRelationship_Marker (HybridRelationship_id integer not null, markers_id integer not null, primary key (HybridRelationship_id, markers_id), unique (markers_id));
-create table IdentificationKey_Taxon (identificationKey_fk integer not null, taxon_fk integer not null, primary key (identificationKey_fk, taxon_fk));
-create table InstitutionalMembership (id integer not null, created timestamp, uuid varchar(255), updated timestamp, department varchar(255), period_end varchar(255), period_start varchar(255), role varchar(255), createdby_id integer, updatedby_id integer, institute_id integer, person_id integer, primary key (id));
-create table LanguageString (id integer not null, created timestamp, uuid varchar(255), updated timestamp, text varchar(4096), createdby_id integer, updatedby_id integer, language_id integer, primary key (id));
-create table LanguageString_Annotation (LanguageString_id integer not null, annotations_id integer not null, primary key (LanguageString_id, annotations_id), unique (annotations_id));
-create table LanguageString_Marker (LanguageString_id integer not null, markers_id integer not null, primary key (LanguageString_id, markers_id), unique (markers_id));
-create table Locus (id integer not null, created timestamp, uuid varchar(255), updated timestamp, description varchar(255), name varchar(255), createdby_id integer, updatedby_id integer, primary key (id));
-create table Marker (id integer not null, created timestamp, uuid varchar(255), updated timestamp, flag boolean not null, markedObj_type varchar(255), markedObj_id integer not null, createdby_id integer, updatedby_id integer, markertype_id integer, primary key (id));
-create table Media (DTYPE varchar(31) not null, id integer not null, created timestamp, uuid varchar(255), updated timestamp, description varbinary(255), mediacreated date, title varbinary(255), citationmicroreference varchar(255), createdby_id integer, updatedby_id integer, artist_id integer, citation_id integer, primary key (id));
-create table MediaRepresentation (id integer not null, created timestamp, uuid varchar(255), updated timestamp, mimetype varchar(255), suffix varchar(255), createdby_id integer, updatedby_id integer, media_id integer, primary key (id));
-create table MediaRepresentationPart (DTYPE varchar(31) not null, id integer not null, created timestamp, uuid varchar(255), updated timestamp, size integer, uri varchar(255), duration integer, height integer, width integer, createdby_id integer, updatedby_id integer, representation_id integer not null, sortIndex integer, primary key (id));
-create table Media_Annotation (Media_id integer not null, annotations_id integer not null, primary key (Media_id, annotations_id), unique (annotations_id));
-create table Media_DefinedTermBase (Media_id integer not null, geoscopes_id integer not null, primary key (Media_id, geoscopes_id));
-create table Media_Marker (Media_id integer not null, markers_id integer not null, primary key (Media_id, markers_id), unique (markers_id));
-create table Media_Rights (Media_id integer not null, rights_id integer not null, primary key (Media_id, rights_id));
-create table Media_Sequence (Media_id integer not null, usedsequences_id integer not null, primary key (Media_id, usedsequences_id), unique (usedsequences_id));
-create table Media_TaxonBase (Media_id integer not null, coveredtaxa_id integer not null, primary key (Media_id, coveredtaxa_id), unique (coveredtaxa_id));
-create table NameRelationship (id integer not null, created timestamp, uuid varchar(255), updated timestamp, citationmicroreference varchar(255), originalnamestring varchar(255), doubtful boolean not null, ruleconsidered varchar(255), createdby_id integer, updatedby_id integer, citation_id integer, relatedfrom_id integer, relatedto_id integer, type_id integer, primary key (id));
-create table NameRelationship_Annotation (NameRelationship_id integer not null, annotations_id integer not null, primary key (NameRelationship_id, annotations_id), unique (annotations_id));
-create table NameRelationship_Marker (NameRelationship_id integer not null, markers_id integer not null, primary key (NameRelationship_id, markers_id), unique (markers_id));
-create table NomenclaturalStatus (id integer not null, created timestamp, uuid varchar(255), updated timestamp, citationmicroreference varchar(255), originalnamestring varchar(255), ruleconsidered varchar(255), createdby_id integer, updatedby_id integer, citation_id integer, type_id integer, primary key (id));
-create table NomenclaturalStatus_Annotation (NomenclaturalStatus_id integer not null, annotations_id integer not null, primary key (NomenclaturalStatus_id, annotations_id), unique (annotations_id));
-create table NomenclaturalStatus_Marker (NomenclaturalStatus_id integer not null, markers_id integer not null, primary key (NomenclaturalStatus_id, markers_id), unique (markers_id));
-create table OriginalSource (id integer not null, created timestamp, uuid varchar(255), updated timestamp, citationmicroreference varchar(255), originalnamestring varchar(255), idinsource varchar(255), idnamespace varchar(255), sourcedObj_type varchar(255), sourcedObj_id integer not null, createdby_id integer, updatedby_id integer, citation_id integer, primary key (id));
-create table OriginalSource_Annotation (OriginalSource_id integer not null, annotations_id integer not null, primary key (OriginalSource_id, annotations_id), unique (annotations_id));
-create table OriginalSource_Marker (OriginalSource_id integer not null, markers_id integer not null, primary key (OriginalSource_id, markers_id), unique (markers_id));
-create table PermissionGroup (id integer not null, created timestamp, uuid varchar(255), name varchar(255), createdby_id integer, primary key (id));
-create table PermissionGroup_GrantedAuthorityImpl (PermissionGroup_id integer not null, grantedauthorities_id integer not null, primary key (PermissionGroup_id, grantedauthorities_id));
-create table Person_Keyword (person_fk integer not null, keyword_fk integer not null, primary key (person_fk, keyword_fk));
-create table ReferenceBase (DTYPE varchar(31) not null, id integer not null, created timestamp, uuid varchar(255), updated timestamp, lsid varchar(255), titleCache varchar(255), protectedtitlecache boolean not null, hasproblem boolean not null, nomenclaturallyrelevant boolean not null, problemends integer not null, problemstarts integer not null, uri varchar(255), datepublished_end varchar(255), datepublished_start varchar(255), title varchar(255), pages varchar(255), series varchar(255), volume varchar(255), address varchar(255), annote varchar(255), booktitle varchar(255), chapter varchar(255), edition varchar(255), editor varchar(255), eprint varchar(255), howpublished varchar(255), institution varchar(255), journal varchar(255), month varchar(255), note varchar(255), number varchar(255), organization varchar(255), publisher varchar(255), reporttype varchar(255), school varchar(255), year varchar(255), placepublished varchar(255), seriespart varchar(255), isbn varchar(255), issn varchar(255), createdby_id integer, updatedby_id integer, authorteam_id integer, injournal_id integer, crossref_id integer, type_id integer, inseries_id integer, inbook_id integer, inproceedings_id integer, institution_id integer, school_id integer, primary key (id));
-create table ReferenceBase_Annotation (ReferenceBase_id integer not null, annotations_id integer not null, primary key (ReferenceBase_id, annotations_id), unique (annotations_id));
-create table ReferenceBase_Extension (ReferenceBase_id integer not null, extensions_id integer not null, primary key (ReferenceBase_id, extensions_id), unique (extensions_id));
-create table ReferenceBase_Marker (ReferenceBase_id integer not null, markers_id integer not null, primary key (ReferenceBase_id, markers_id), unique (markers_id));
-create table ReferenceBase_Media (ReferenceBase_id integer not null, media_id integer not null, primary key (ReferenceBase_id, media_id), unique (media_id));
-create table ReferenceBase_OriginalSource (ReferenceBase_id integer not null, sources_id integer not null, primary key (ReferenceBase_id, sources_id), unique (sources_id));
-create table ReferenceBase_Rights (ReferenceBase_id integer not null, rights_id integer not null, primary key (ReferenceBase_id, rights_id));
-create table RelationshipTermBase_inverseRepresentation (DefinedTermBase_id integer not null, inverserepresentations_id integer not null, primary key (DefinedTermBase_id, inverserepresentations_id), unique (inverserepresentations_id));
-create table Representation (id integer not null, created timestamp, uuid varchar(255), updated timestamp, text varchar(4096), abbreviatedlabel varchar(255), label varchar(255), createdby_id integer, updatedby_id integer, language_id integer, primary key (id));
-create table Representation_Annotation (Representation_id integer not null, annotations_id integer not null, primary key (Representation_id, annotations_id), unique (annotations_id));
-create table Representation_Marker (Representation_id integer not null, markers_id integer not null, primary key (Representation_id, markers_id), unique (markers_id));
-create table Rights (id integer not null, created timestamp, uuid varchar(255), updated timestamp, text varchar(4096), abbreviatedtext varchar(255), uri varchar(255), createdby_id integer, updatedby_id integer, language_id integer, agent_id integer, type_id integer, primary key (id));
-create table Rights_Annotation (Rights_id integer not null, annotations_id integer not null, primary key (Rights_id, annotations_id), unique (annotations_id));
-create table Rights_Marker (Rights_id integer not null, markers_id integer not null, primary key (Rights_id, markers_id), unique (markers_id));
-create table Sequence (id integer not null, created timestamp, uuid varchar(255), updated timestamp, lsid varchar(255), titleCache varchar(255), protectedtitlecache boolean not null, barcode boolean not null, citationmicroreference varchar(255), datesequenced date, length integer, sequence varchar(255), createdby_id integer, updatedby_id integer, locus_id integer, publishedin_id integer, primary key (id));
-create table Sequence_Annotation (Sequence_id integer not null, annotations_id integer not null, primary key (Sequence_id, annotations_id), unique (annotations_id));
-create table Sequence_Extension (Sequence_id integer not null, extensions_id integer not null, primary key (Sequence_id, extensions_id), unique (extensions_id));
-create table Sequence_GenBankAccession (Sequence_id integer not null, genbankaccession_id integer not null, primary key (Sequence_id, genbankaccession_id), unique (genbankaccession_id));
-create table Sequence_Marker (Sequence_id integer not null, markers_id integer not null, primary key (Sequence_id, markers_id), unique (markers_id));
-create table Sequence_Media (Sequence_id integer not null, chromatograms_id integer not null, primary key (Sequence_id, chromatograms_id), unique (chromatograms_id));
-create table Sequence_OriginalSource (Sequence_id integer not null, sources_id integer not null, primary key (Sequence_id, sources_id), unique (sources_id));
-create table Sequence_ReferenceBase (Sequence_id integer not null, citations_id integer not null, primary key (Sequence_id, citations_id), unique (citations_id));
-create table Sequence_Rights (Sequence_id integer not null, rights_id integer not null, primary key (Sequence_id, rights_id));
-create table SpecimenOrObservationBase (DTYPE varchar(31) not null, id integer not null, created timestamp, uuid varchar(255), updated timestamp, lsid varchar(255), titleCache varchar(255), protectedtitlecache boolean not null, definition varbinary(255), individualcount integer, accessionnumber varchar(255), catalognumber varchar(255), collectorsnumber varchar(255), fieldnotes varchar(255), fieldnumber varchar(255), createdby_id integer, updatedby_id integer, lifestage_id integer, sex_id integer, collection_id integer, derivationevent_id integer, storedunder_id integer, preservation_id integer, gatheringevent_id integer, primary key (id));
-create table SpecimenOrObservationBase_Annotation (SpecimenOrObservationBase_id integer not null, annotations_id integer not null, primary key (SpecimenOrObservationBase_id, annotations_id), unique (annotations_id));
-create table SpecimenOrObservationBase_DerivationEvent (originals_id integer not null, derivationevents_id integer not null, primary key (originals_id, derivationevents_id));
-create table SpecimenOrObservationBase_Extension (SpecimenOrObservationBase_id integer not null, extensions_id integer not null, primary key (SpecimenOrObservationBase_id, extensions_id), unique (extensions_id));
-create table SpecimenOrObservationBase_Marker (SpecimenOrObservationBase_id integer not null, markers_id integer not null, primary key (SpecimenOrObservationBase_id, markers_id), unique (markers_id));
-create table SpecimenOrObservationBase_Media (SpecimenOrObservationBase_id integer not null, media_id integer not null, primary key (SpecimenOrObservationBase_id, media_id), unique (media_id));
-create table SpecimenOrObservationBase_OriginalSource (SpecimenOrObservationBase_id integer not null, sources_id integer not null, primary key (SpecimenOrObservationBase_id, sources_id), unique (sources_id));
-create table SpecimenOrObservationBase_Rights (SpecimenOrObservationBase_id integer not null, rights_id integer not null, primary key (SpecimenOrObservationBase_id, rights_id));
-create table SpecimenOrObservationBase_Sequence (SpecimenOrObservationBase_id integer not null, sequences_id integer not null, primary key (SpecimenOrObservationBase_id, sequences_id), unique (sequences_id));
-create table StateData (id integer not null, created timestamp, uuid varchar(255), updated timestamp, modifyingtext varbinary(255), createdby_id integer, updatedby_id integer, state_id integer, primary key (id));
-create table StateData_DefinedTermBase (StateData_id integer not null, modifiers_id integer not null, primary key (StateData_id, modifiers_id), unique (modifiers_id));
-create table StatisticalMeasurementValue (id integer not null, created timestamp, uuid varchar(255), updated timestamp, value double not null, createdby_id integer, updatedby_id integer, type_id integer, primary key (id));
-create table StatisticalMeasurementValue_DefinedTermBase (StatisticalMeasurementValue_id integer not null, modifiers_id integer not null, primary key (StatisticalMeasurementValue_id, modifiers_id), unique (modifiers_id));
-create table SynonymRelationship (id integer not null, created timestamp, uuid varchar(255), updated timestamp, citationmicroreference varchar(255), originalnamestring varchar(255), doubtful boolean not null, partial boolean not null, proparte boolean not null, createdby_id integer, updatedby_id integer, citation_id integer, relatedfrom_id integer, relatedto_id integer, type_id integer, primary key (id));
-create table SynonymRelationship_Annotation (SynonymRelationship_id integer not null, annotations_id integer not null, primary key (SynonymRelationship_id, annotations_id), unique (annotations_id));
-create table SynonymRelationship_Marker (SynonymRelationship_id integer not null, markers_id integer not null, primary key (SynonymRelationship_id, markers_id), unique (markers_id));
-create table TaxonBase (DTYPE varchar(31) not null, id integer not null, created timestamp, uuid varchar(255), updated timestamp, lsid varchar(255), titleCache varchar(255), protectedtitlecache boolean not null, doubtful boolean not null, taxonomicchildrencount integer, createdby_id integer, updatedby_id integer, taxonName_fk integer, sec_id integer, taxonomicparentcache_id integer, primary key (id));
-create table TaxonBase_Annotation (TaxonBase_id integer not null, annotations_id integer not null, primary key (TaxonBase_id, annotations_id), unique (annotations_id));
-create table TaxonBase_Extension (TaxonBase_id integer not null, extensions_id integer not null, primary key (TaxonBase_id, extensions_id), unique (extensions_id));
-create table TaxonBase_Marker (TaxonBase_id integer not null, markers_id integer not null, primary key (TaxonBase_id, markers_id), unique (markers_id));
-create table TaxonBase_OriginalSource (TaxonBase_id integer not null, sources_id integer not null, primary key (TaxonBase_id, sources_id), unique (sources_id));
-create table TaxonBase_Rights (TaxonBase_id integer not null, rights_id integer not null, primary key (TaxonBase_id, rights_id));
-create table TaxonNameBase (DTYPE varchar(31) not null, id integer not null, created timestamp, uuid varchar(255), updated timestamp, lsid varchar(255), titleCache varchar(255), protectedtitlecache boolean not null, appendedphrase varchar(255), hasproblem boolean not null, nomenclaturalmicroreference varchar(255), fullTitleCache varchar(330), problemends integer not null, problemstarts integer not null, protectedfulltitlecache boolean not null, authorshipcache varchar(255), genusoruninomial varchar(255), infragenericepithet varchar(255), infraspecificepithet varchar(255), namecache varchar(255), protectedauthorshipcache boolean, protectednamecache boolean, specificepithet varchar(255), nameapprobation varchar(255), subgenusauthorship varchar(255), anamorphic boolean, binomhybrid boolean, hybridformula boolean, monomhybrid boolean, trinomhybrid boolean, cultivarname varchar(255), acronym varchar(255), breed varchar(255), originalpublicationyear integer, publicationyear integer, createdby_id integer, updatedby_id integer, homotypicalgroup_id integer, nomenclaturalreference_id integer, rank_id integer, basionymauthorteam_id integer, combinationauthorteam_id integer, exbasionymauthorteam_id integer, excombinationauthorteam_id integer, primary key (id));
-create table TaxonNameBase_Annotation (TaxonNameBase_id integer not null, annotations_id integer not null, primary key (TaxonNameBase_id, annotations_id), unique (annotations_id));
-create table TaxonNameBase_Extension (TaxonNameBase_id integer not null, extensions_id integer not null, primary key (TaxonNameBase_id, extensions_id), unique (extensions_id));
-create table TaxonNameBase_HybridRelationship (TaxonNameBase_id integer not null, hybridrelationships_id integer not null, primary key (TaxonNameBase_id, hybridrelationships_id), unique (hybridrelationships_id));
-create table TaxonNameBase_Marker (TaxonNameBase_id integer not null, markers_id integer not null, primary key (TaxonNameBase_id, markers_id), unique (markers_id));
-create table TaxonNameBase_NomenclaturalStatus (TaxonNameBase_id integer not null, status_id integer not null, primary key (TaxonNameBase_id, status_id), unique (status_id));
-create table TaxonNameBase_OriginalSource (TaxonNameBase_id integer not null, sources_id integer not null, primary key (TaxonNameBase_id, sources_id), unique (sources_id));
-create table TaxonNameBase_Rights (TaxonNameBase_id integer not null, rights_id integer not null, primary key (TaxonNameBase_id, rights_id));
-create table TaxonNameBase_TypeDesignationBase (TaxonNameBase_id integer not null, typedesignations_id integer not null, primary key (TaxonNameBase_id, typedesignations_id));
-create table TaxonRelationship (id integer not null, created timestamp, uuid varchar(255), updated timestamp, citationmicroreference varchar(255), originalnamestring varchar(255), doubtful boolean not null, createdby_id integer, updatedby_id integer, citation_id integer, relatedfrom_id integer, relatedto_id integer, type_id integer, primary key (id));
-create table TaxonRelationship_Annotation (TaxonRelationship_id integer not null, annotations_id integer not null, primary key (TaxonRelationship_id, annotations_id), unique (annotations_id));
-create table TaxonRelationship_Marker (TaxonRelationship_id integer not null, markers_id integer not null, primary key (TaxonRelationship_id, markers_id), unique (markers_id));
-create table TermVocabulary (DTYPE varchar(31) not null, id integer not null, created timestamp, uuid varchar(255), updated timestamp, uri varchar(255), termsourceuri varchar(255), createdby_id integer, updatedby_id integer, primary key (id));
-create table TermVocabulary_Representation (TermVocabulary_id integer not null, representations_id integer not null, primary key (TermVocabulary_id, representations_id), unique (representations_id));
-create table TypeDesignationBase (DTYPE varchar(31) not null, id integer not null, created timestamp, uuid varchar(255), updated timestamp, citationmicroreference varchar(255), originalnamestring varchar(255), notdesignated boolean not null, conservedtype boolean, lectotype boolean, rejectedtype boolean, createdby_id integer, updatedby_id integer, citation_id integer, homotypicalgroup_id integer, typename_id integer, typespecimen_id integer, typestatus_id integer, primary key (id));
-create table TypeDesignationBase_Annotation (TypeDesignationBase_id integer not null, annotations_id integer not null, primary key (TypeDesignationBase_id, annotations_id), unique (annotations_id));
-create table TypeDesignationBase_Marker (TypeDesignationBase_id integer not null, markers_id integer not null, primary key (TypeDesignationBase_id, markers_id), unique (markers_id));
-create table TypeDesignationBase_TaxonNameBase (TypeDesignationBase_id integer not null, typifiednames_id integer not null, primary key (TypeDesignationBase_id, typifiednames_id));
-create table User (id integer not null, created timestamp, uuid varchar(255), accountnonexpired boolean not null, accountnonlocked boolean not null, credentialsnonexpired boolean not null, emailaddress varchar(255), enabled boolean not null, password varchar(255), username varchar(255), createdby_id integer, primary key (id), unique (username));
-create table User_GrantedAuthorityImpl (User_id integer not null, grantedauthorities_id integer not null, primary key (User_id, grantedauthorities_id));
-create table User_PermissionGroup (members_id integer not null, groups_id integer not null, primary key (members_id, groups_id));
-alter table Address add constraint FK1ED033D4132A2FE8 foreign key (location_referencesystem_id) references DefinedTermBase;
-alter table Address add constraint FK1ED033D4EE7A4BF4 foreign key (contact_id) references Contact;
-alter table Address add constraint FK1ED033D4EF7921F6 foreign key (createdby_id) references Agent;
-alter table Address add constraint FK1ED033D42687715A foreign key (country_id) references DefinedTermBase;
-alter table Address add constraint FK1ED033D45BE3EC03 foreign key (updatedby_id) references Agent;
-create index agentTitleCacheIndex on Agent (titleCache);
-alter table Agent add constraint FK3C452E5EE7A4BF4 foreign key (contact_id) references Contact;
-alter table Agent add constraint FK3C452E5EF7921F6 foreign key (createdby_id) references Agent;
-alter table Agent add constraint FK3C452E5A830578 foreign key (ispartof_id) references Agent;
-alter table Agent add constraint FK3C452E55BE3EC03 foreign key (updatedby_id) references Agent;
-alter table Agent_Agent add constraint FKD792890B8CB642F8 foreign key (Agent_id) references Agent;
-alter table Agent_Agent add constraint FKD792890BE9E535F9 foreign key (teammembers_id) references Agent;
-alter table Agent_Annotation add constraint FKDD9D78E9C5F7EC54 foreign key (Agent_id) references Agent;
-alter table Agent_Annotation add constraint FKDD9D78E91E403E0B foreign key (annotations_id) references Annotation;
-alter table Agent_DefinedTermBase add constraint FK7029490CFE425B87 foreign key (Agent_id) references Agent;
-alter table Agent_DefinedTermBase add constraint FK7029490C9A161BED foreign key (types_id) references DefinedTermBase;
-alter table Agent_Extension add constraint FK8AC9EF45C5F7EC54 foreign key (Agent_id) references Agent;
-alter table Agent_Extension add constraint FK8AC9EF45927DE9DF foreign key (extensions_id) references Extension;
-alter table Agent_Marker add constraint FK2EEA0EF4C5F7EC54 foreign key (Agent_id) references Agent;
-alter table Agent_Marker add constraint FK2EEA0EF4777265A1 foreign key (markers_id) references Marker;
-alter table Agent_Media add constraint FKD83AB5EAC5F7EC54 foreign key (Agent_id) references Agent;
-alter table Agent_Media add constraint FKD83AB5EAC2C29593 foreign key (media_id) references Media;
-alter table Agent_OriginalSource add constraint FK774F9E06C5F7EC54 foreign key (Agent_id) references Agent;
-alter table Agent_OriginalSource add constraint FK774F9E063BAB2414 foreign key (sources_id) references OriginalSource;
-alter table Agent_Rights add constraint FK37DDFC91C5F7EC54 foreign key (Agent_id) references Agent;
-alter table Agent_Rights add constraint FK37DDFC91C13F7B21 foreign key (rights_id) references Rights;
-alter table Annotation add constraint FK1A21C74FDF299D00 foreign key (annotationtype_id) references DefinedTermBase;
-alter table Annotation add constraint FK1A21C74FEF7921F6 foreign key (createdby_id) references Agent;
-alter table Annotation add constraint FK1A21C74FE7692740 foreign key (commentator_id) references Agent;
-alter table Annotation add constraint FK1A21C74F5BE3EC03 foreign key (updatedby_id) references Agent;
-alter table Annotation add constraint FK1A21C74FE8D36B00 foreign key (language_id) references DefinedTermBase;
-alter table Annotation_Annotation add constraint FKC99DFE3F994CCE20 foreign key (Annotation_id) references Annotation;
-alter table Annotation_Annotation add constraint FKC99DFE3F1E403E0B foreign key (annotations_id) references Annotation;
-alter table Annotation_Marker add constraint FKB17EAF4A994CCE20 foreign key (Annotation_id) references Annotation;
-alter table Annotation_Marker add constraint FKB17EAF4A777265A1 foreign key (markers_id) references Marker;
-alter table CDM_VIEW add constraint FKC5DE8EF8EF7921F6 foreign key (createdby_id) references Agent;
-alter table CDM_VIEW_CDM_VIEW add constraint FK230A885F7208BB38 foreign key (superviews_id) references CDM_VIEW;
-alter table CDM_VIEW_CDM_VIEW add constraint FK230A885FC00D1213 foreign key (CDM_VIEW_id) references CDM_VIEW;
-create index collectionTitleCacheIndex on Collection (titleCache);
-alter table Collection add constraint FKF078ABECEB38EFF foreign key (supercollection_id) references Collection;
-alter table Collection add constraint FKF078ABEEF7921F6 foreign key (createdby_id) references Agent;
-alter table Collection add constraint FKF078ABE16B9CA77 foreign key (institute_id) references Agent;
-alter table Collection add constraint FKF078ABE5BE3EC03 foreign key (updatedby_id) references Agent;
-alter table Collection_Annotation add constraint FKEA970F70EB62BE9A foreign key (Collection_id) references Collection;
-alter table Collection_Annotation add constraint FKEA970F701E403E0B foreign key (annotations_id) references Annotation;
-alter table Collection_Extension add constraint FKF68FEBDE927DE9DF foreign key (extensions_id) references Extension;
-alter table Collection_Extension add constraint FKF68FEBDEEB62BE9A foreign key (Collection_id) references Collection;
-alter table Collection_Marker add constraint FKF0CA00FBEB62BE9A foreign key (Collection_id) references Collection;
-alter table Collection_Marker add constraint FKF0CA00FB777265A1 foreign key (markers_id) references Marker;
-alter table Collection_Media add constraint FK7320E703EB62BE9A foreign key (Collection_id) references Collection;
-alter table Collection_Media add constraint FK7320E703C2C29593 foreign key (media_id) references Media;
-alter table Collection_OriginalSource add constraint FKA8FC990DEB62BE9A foreign key (Collection_id) references Collection;
-alter table Collection_OriginalSource add constraint FKA8FC990D3BAB2414 foreign key (sources_id) references OriginalSource;
-alter table Collection_Rights add constraint FKF9BDEE98EB62BE9A foreign key (Collection_id) references Collection;
-alter table Collection_Rights add constraint FKF9BDEE98C13F7B21 foreign key (rights_id) references Rights;
-alter table Contact add constraint FK9BEFBC00EF7921F6 foreign key (createdby_id) references Agent;
-alter table Contact add constraint FK9BEFBC005BE3EC03 foreign key (updatedby_id) references Agent;
-alter table DefinedTermBase add constraint FK2E340A6636C6F6F6 foreign key (pointapproximation_referencesystem_id) references DefinedTermBase;
-alter table DefinedTermBase add constraint FK2E340A66EF7921F6 foreign key (createdby_id) references Agent;
-alter table DefinedTermBase add constraint FK2E340A6688206484 foreign key (type_id) references DefinedTermBase;
-alter table DefinedTermBase add constraint FK2E340A6647AF954C foreign key (vocabulary_id) references TermVocabulary;
-alter table DefinedTermBase add constraint FK2E340A663B0DA0EF foreign key (kindof_id) references DefinedTermBase;
-alter table DefinedTermBase add constraint FK2E340A6624AF3F70 foreign key (level_id) references DefinedTermBase;
-alter table DefinedTermBase add constraint FK2E340A665BE3EC03 foreign key (updatedby_id) references Agent;
-alter table DefinedTermBase add constraint FK2E340A66CC0240B6 foreign key (shape_id) references Media;
-alter table DefinedTermBase add constraint FK2E340A66D040DBF0 foreign key (partof_id) references DefinedTermBase;
-alter table DefinedTermBase_Continent add constraint FK45F60AFBE8CE10AA foreign key (DefinedTermBase_id) references DefinedTermBase;
-alter table DefinedTermBase_Continent add constraint FK45F60AFB3927C853 foreign key (continents_id) references DefinedTermBase;
-alter table DefinedTermBase_Media add constraint FK6FC908ABC0DB4934 foreign key (DefinedTermBase_id) references DefinedTermBase;
-alter table DefinedTermBase_Media add constraint FK6FC908ABC2C29593 foreign key (media_id) references Media;
-alter table DefinedTermBase_RecommendedModifierEnumeration add constraint FKA72FB5AED0BDAE9B foreign key (DefinedTermBase_id) references DefinedTermBase;
-alter table DefinedTermBase_RecommendedModifierEnumeration add constraint FKA72FB5AE5255EAFD foreign key (recommendedmodifierenumeration_id) references TermVocabulary;
-alter table DefinedTermBase_Representation add constraint FKAAC8AFE6C0DB4934 foreign key (DefinedTermBase_id) references DefinedTermBase;
-alter table DefinedTermBase_Representation add constraint FKAAC8AFE6B31C4747 foreign key (representations_id) references Representation;
-alter table DefinedTermBase_StatisticalMeasure add constraint FK6FF15DFCD0BDAE9B foreign key (DefinedTermBase_id) references DefinedTermBase;
-alter table DefinedTermBase_StatisticalMeasure add constraint FK6FF15DFCC9CD5B57 foreign key (recommendedstatisticalmeasures_id) references DefinedTermBase;
-alter table DefinedTermBase_SupportedCategoricalEnumeration add constraint FK2170B25CD0BDAE9B foreign key (DefinedTermBase_id) references DefinedTermBase;
-alter table DefinedTermBase_SupportedCategoricalEnumeration add constraint FK2170B25C5AF2C74 foreign key (supportedcategoricalenumerations_id) references TermVocabulary;
-alter table DefinedTermBase_WaterbodyOrCountry add constraint FKCAF4393CE5C0F9E foreign key (DefinedTermBase_id) references DefinedTermBase;
-alter table DefinedTermBase_WaterbodyOrCountry add constraint FKCAF43931603B036 foreign key (waterbodiesorcountries_id) references DefinedTermBase;
-alter table DerivationEvent add constraint FK426BC03EF7921F6 foreign key (createdby_id) references Agent;
-alter table DerivationEvent add constraint FK426BC038524B89D foreign key (type_id) references DefinedTermBase;
-alter table DerivationEvent add constraint FK426BC035BE3EC03 foreign key (updatedby_id) references Agent;
-alter table DerivationEvent add constraint FK426BC03C04DF64 foreign key (actor_id) references Agent;
-alter table DerivationEvent_Annotation add constraint FKEFA0D10B4AAB411A foreign key (DerivationEvent_id) references DerivationEvent;
-alter table DerivationEvent_Annotation add constraint FKEFA0D10B1E403E0B foreign key (annotations_id) references Annotation;
-alter table DerivationEvent_Marker add constraint FKE412C8164AAB411A foreign key (DerivationEvent_id) references DerivationEvent;
-alter table DerivationEvent_Marker add constraint FKE412C816777265A1 foreign key (markers_id) references Marker;
-alter table DescriptionBase add constraint FKFF4D58CDEF7921F6 foreign key (createdby_id) references Agent;
-alter table DescriptionBase add constraint FKFF4D58CDDA93512F foreign key (taxonName_fk) references TaxonNameBase;
-alter table DescriptionBase add constraint FKFF4D58CD5BE3EC03 foreign key (updatedby_id) references Agent;
-alter table DescriptionBase add constraint FKFF4D58CDDE9A3DE3 foreign key (taxon_fk) references TaxonBase;
-alter table DescriptionBase_Annotation add constraint FKF3AD3201F1DDBFAB foreign key (DescriptionBase_id) references DescriptionBase;
-alter table DescriptionBase_Annotation add constraint FKF3AD32011E403E0B foreign key (annotations_id) references Annotation;
-alter table DescriptionBase_Extension add constraint FKD5D2B32DF1DDBFAB foreign key (DescriptionBase_id) references DescriptionBase;
-alter table DescriptionBase_Extension add constraint FKD5D2B32D927DE9DF foreign key (extensions_id) references Extension;
-alter table DescriptionBase_GeoScope add constraint FK3ADD7CD5D86445CE foreign key (DescriptionBase_id) references DescriptionBase;
-alter table DescriptionBase_GeoScope add constraint FK3ADD7CD586D04E74 foreign key (geoscopes_id) references DefinedTermBase;
-alter table DescriptionBase_Marker add constraint FK6132140CF1DDBFAB foreign key (DescriptionBase_id) references DescriptionBase;
-alter table DescriptionBase_Marker add constraint FK6132140C777265A1 foreign key (markers_id) references Marker;
-alter table DescriptionBase_OriginalSource add constraint FK1E2D0B1EF1DDBFAB foreign key (DescriptionBase_id) references DescriptionBase;
-alter table DescriptionBase_OriginalSource add constraint FK1E2D0B1E3BAB2414 foreign key (sources_id) references OriginalSource;
-alter table DescriptionBase_ReferenceBase add constraint FK76188CAAF1DDBFAB foreign key (DescriptionBase_id) references DescriptionBase;
-alter table DescriptionBase_ReferenceBase add constraint FK76188CAA45AB7BBA foreign key (descriptionsources_id) references ReferenceBase;
-alter table DescriptionBase_Rights add constraint FK6A2601A9F1DDBFAB foreign key (DescriptionBase_id) references DescriptionBase;
-alter table DescriptionBase_Rights add constraint FK6A2601A9C13F7B21 foreign key (rights_id) references Rights;
-alter table DescriptionBase_Scope add constraint FKB9257C42D86445CE foreign key (DescriptionBase_id) references DescriptionBase;
-alter table DescriptionBase_Scope add constraint FKB9257C42951A5D40 foreign key (scopes_id) references DefinedTermBase;
-alter table DescriptionElementBase add constraint FK38FE767134AF0E81 foreign key (indescription_id) references DescriptionBase;
-alter table DescriptionElementBase add constraint FK38FE76716561D9B1 foreign key (associatedspecimenorobservation_id) references SpecimenOrObservationBase;
-alter table DescriptionElementBase add constraint FK38FE7671EF7921F6 foreign key (createdby_id) references Agent;
-alter table DescriptionElementBase add constraint FK38FE767110A80E07 foreign key (unit_id) references DefinedTermBase;
-alter table DescriptionElementBase add constraint FK38FE76716D0D7A56 foreign key (format_id) references DefinedTermBase;
-alter table DescriptionElementBase add constraint FK38FE76715E9914B8 foreign key (status_id) references DefinedTermBase;
-alter table DescriptionElementBase add constraint FK38FE76714220AFEB foreign key (feature_id) references DefinedTermBase;
-alter table DescriptionElementBase add constraint FK38FE76719803512F foreign key (citation_id) references ReferenceBase;
-alter table DescriptionElementBase add constraint FK38FE76715BE3EC03 foreign key (updatedby_id) references Agent;
-alter table DescriptionElementBase add constraint FK38FE76719108D9B foreign key (taxon2_id) references TaxonBase;
-alter table DescriptionElementBase add constraint FK38FE76711C3C3FF7 foreign key (area_id) references DefinedTermBase;
-alter table DescriptionElementBase add constraint FK38FE7671E8D36B00 foreign key (language_id) references DefinedTermBase;
-alter table DescriptionElementBase_Annotation add constraint FK7EE5E5DD3B8BB609 foreign key (DescriptionElementBase_id) references DescriptionElementBase;
-alter table DescriptionElementBase_Annotation add constraint FK7EE5E5DD1E403E0B foreign key (annotations_id) references Annotation;
-alter table DescriptionElementBase_LanguageString add constraint FKC753F137ACF5F60B foreign key (multilanguagetext_id) references LanguageString;
-alter table DescriptionElementBase_LanguageString add constraint FKC753F137C086B46F foreign key (DescriptionElementBase_id) references DescriptionElementBase;
-alter table DescriptionElementBase_Marker add constraint FK1CB715E83B8BB609 foreign key (DescriptionElementBase_id) references DescriptionElementBase;
-alter table DescriptionElementBase_Marker add constraint FK1CB715E8777265A1 foreign key (markers_id) references Marker;
-alter table DescriptionElementBase_Media add constraint FK21F70076C2C29593 foreign key (media_id) references Media;
-alter table DescriptionElementBase_Media add constraint FK21F700763B8BB609 foreign key (DescriptionElementBase_id) references DescriptionElementBase;
-alter table DescriptionElementBase_Modifier add constraint FK97E0D105E0960EC4 foreign key (modifiers_id) references DefinedTermBase;
-alter table DescriptionElementBase_Modifier add constraint FK97E0D1053B8BB609 foreign key (DescriptionElementBase_id) references DescriptionElementBase;
-alter table DescriptionElementBase_StateData add constraint FK592D6F6D987CC6A4 foreign key (DescriptionElementBase_id) references DescriptionElementBase;
-alter table DescriptionElementBase_StateData add constraint FK592D6F6D15153604 foreign key (states_id) references StateData;
-alter table DescriptionElementBase_StatisticalMeasurementValue add constraint FK8AF511C2D883945E foreign key (statisticalvalues_id) references StatisticalMeasurementValue;
-alter table DescriptionElementBase_StatisticalMeasurementValue add constraint FK8AF511C28F213219 foreign key (DescriptionElementBase_id) references DescriptionElementBase;
-alter table DeterminationEvent add constraint FK1DB2497EF7921F6 foreign key (createdby_id) references Agent;
-alter table DeterminationEvent add constraint FK1DB2497378D1BD foreign key (modifier_id) references DefinedTermBase;
-alter table DeterminationEvent add constraint FK1DB2497DE9A3E39 foreign key (taxon_id) references TaxonBase;
-alter table DeterminationEvent add constraint FK1DB24974B251DAD foreign key (identifiedunit_id) references SpecimenOrObservationBase;
-alter table DeterminationEvent add constraint FK1DB24975BE3EC03 foreign key (updatedby_id) references Agent;
-alter table DeterminationEvent add constraint FK1DB2497C04DF64 foreign key (actor_id) references Agent;
-alter table DeterminationEvent_Annotation add constraint FKB74F03F76BE0BFDA foreign key (DeterminationEvent_id) references DeterminationEvent;
-alter table DeterminationEvent_Annotation add constraint FKB74F03F71E403E0B foreign key (annotations_id) references Annotation;
-alter table DeterminationEvent_Marker add constraint FK5C475102777265A1 foreign key (markers_id) references Marker;
-alter table DeterminationEvent_Marker add constraint FK5C4751026BE0BFDA foreign key (DeterminationEvent_id) references DeterminationEvent;
-alter table DeterminationEvent_ReferenceBase add constraint FK6248EEF4F3C981EE foreign key (references_id) references ReferenceBase;
-alter table DeterminationEvent_ReferenceBase add constraint FK6248EEF46BE0BFDA foreign key (DeterminationEvent_id) references DeterminationEvent;
-alter table Extension add constraint FK52EF3C1FEF7921F6 foreign key (createdby_id) references Agent;
-alter table Extension add constraint FK52EF3C1FAD392BD3 foreign key (type_id) references DefinedTermBase;
-alter table Extension add constraint FK52EF3C1F5BE3EC03 foreign key (updatedby_id) references Agent;
-alter table FeatureNode add constraint FK4CEED9F8E0AD2C03 foreign key (parent_fk) references FeatureNode;
-alter table FeatureNode add constraint FK4CEED9F8EF7921F6 foreign key (createdby_id) references Agent;
-alter table FeatureNode add constraint FK4CEED9F84220AFEB foreign key (feature_id) references DefinedTermBase;
-alter table FeatureNode add constraint FK4CEED9F85BE3EC03 foreign key (updatedby_id) references Agent;
-alter table FeatureTree add constraint FK4CF19F94EF7921F6 foreign key (createdby_id) references Agent;
-alter table FeatureTree add constraint FK4CF19F94B7892921 foreign key (root_id) references FeatureNode;
-alter table FeatureTree add constraint FK4CF19F945BE3EC03 foreign key (updatedby_id) references Agent;
-alter table FeatureTree_Representation add constraint FK8C458F847C496CB foreign key (FeatureTree_id) references FeatureTree;
-alter table FeatureTree_Representation add constraint FK8C458F8B31C4747 foreign key (representations_id) references Representation;
-alter table GatheringEvent add constraint FK6F1286F3F55AFD89 foreign key (exactlocation_referencesystem_id) references DefinedTermBase;
-alter table GatheringEvent add constraint FK6F1286F38B455EC6 foreign key (locality_id) references LanguageString;
-alter table GatheringEvent add constraint FK6F1286F3EF7921F6 foreign key (createdby_id) references Agent;
-alter table GatheringEvent add constraint FK6F1286F35BE3EC03 foreign key (updatedby_id) references Agent;
-alter table GatheringEvent add constraint FK6F1286F3C04DF64 foreign key (actor_id) references Agent;
-alter table GatheringEvent_Annotation add constraint FK76DDD01BF95F225A foreign key (GatheringEvent_id) references GatheringEvent;
-alter table GatheringEvent_Annotation add constraint FK76DDD01B1E403E0B foreign key (annotations_id) references Annotation;
-alter table GatheringEvent_DefinedTermBase add constraint FK69D9A11A7C34B6D6 foreign key (collectingareas_id) references DefinedTermBase;
-alter table GatheringEvent_DefinedTermBase add constraint FK69D9A11AF95F225A foreign key (GatheringEvent_id) references GatheringEvent;
-alter table GatheringEvent_Marker add constraint FK7B49CF26777265A1 foreign key (markers_id) references Marker;
-alter table GatheringEvent_Marker add constraint FK7B49CF26F95F225A foreign key (GatheringEvent_id) references GatheringEvent;
-alter table GenBankAccession add constraint FK86C1DBF8EF7921F6 foreign key (createdby_id) references Agent;
-alter table GenBankAccession add constraint FK86C1DBF85BE3EC03 foreign key (updatedby_id) references Agent;
-alter table GrantedAuthorityImpl add constraint FKB05CF928EF7921F6 foreign key (createdby_id) references Agent;
-alter table HomotypicalGroup add constraint FK7DECCC18EF7921F6 foreign key (createdby_id) references Agent;
-alter table HomotypicalGroup add constraint FK7DECCC185BE3EC03 foreign key (updatedby_id) references Agent;
-alter table HomotypicalGroup_Annotation add constraint FK7A0351D6BFEAE500 foreign key (HomotypicalGroup_id) references HomotypicalGroup;
-alter table HomotypicalGroup_Annotation add constraint FK7A0351D61E403E0B foreign key (annotations_id) references Annotation;
-alter table HomotypicalGroup_Marker add constraint FK97D36661BFEAE500 foreign key (HomotypicalGroup_id) references HomotypicalGroup;
-alter table HomotypicalGroup_Marker add constraint FK97D36661777265A1 foreign key (markers_id) references Marker;
-alter table HybridRelationship add constraint FK9033CE745831BDC3 foreign key (relatedfrom_id) references TaxonNameBase;
-alter table HybridRelationship add constraint FK9033CE7469ABE292 foreign key (relatedto_id) references TaxonNameBase;
-alter table HybridRelationship add constraint FK9033CE74EF7921F6 foreign key (createdby_id) references Agent;
-alter table HybridRelationship add constraint FK9033CE7455F241D4 foreign key (type_id) references DefinedTermBase;
-alter table HybridRelationship add constraint FK9033CE749803512F foreign key (citation_id) references ReferenceBase;
-alter table HybridRelationship add constraint FK9033CE745BE3EC03 foreign key (updatedby_id) references Agent;
-alter table HybridRelationship_Annotation add constraint FK2C7E7DFA59832240 foreign key (HybridRelationship_id) references HybridRelationship;
-alter table HybridRelationship_Annotation add constraint FK2C7E7DFA1E403E0B foreign key (annotations_id) references Annotation;
-alter table HybridRelationship_Marker add constraint FKCEF2448559832240 foreign key (HybridRelationship_id) references HybridRelationship;
-alter table HybridRelationship_Marker add constraint FKCEF24485777265A1 foreign key (markers_id) references Marker;
-alter table IdentificationKey_Taxon add constraint FKD847ADDC996CD055 foreign key (identificationKey_fk) references Media;
-alter table IdentificationKey_Taxon add constraint FKD847ADDCDE9A3DE3 foreign key (taxon_fk) references TaxonBase;
-alter table InstitutionalMembership add constraint FK3C8E1FF9EF7921F6 foreign key (createdby_id) references Agent;
-alter table InstitutionalMembership add constraint FK3C8E1FF9AAC1B820 foreign key (person_id) references Agent;
-alter table InstitutionalMembership add constraint FK3C8E1FF916B9CA77 foreign key (institute_id) references Agent;
-alter table InstitutionalMembership add constraint FK3C8E1FF95BE3EC03 foreign key (updatedby_id) references Agent;
-alter table LanguageString add constraint FKB5FDC9A9EF7921F6 foreign key (createdby_id) references Agent;
-alter table LanguageString add constraint FKB5FDC9A95BE3EC03 foreign key (updatedby_id) references Agent;
-alter table LanguageString add constraint FKB5FDC9A9E8D36B00 foreign key (language_id) references DefinedTermBase;
-alter table LanguageString_Annotation add constraint FK8400DFA51E403E0B foreign key (annotations_id) references Annotation;
-alter table LanguageString_Annotation add constraint FK8400DFA537998500 foreign key (LanguageString_id) references LanguageString;
-alter table LanguageString_Marker add constraint FK8DA633B0777265A1 foreign key (markers_id) references Marker;
-alter table LanguageString_Marker add constraint FK8DA633B037998500 foreign key (LanguageString_id) references LanguageString;
-alter table Locus add constraint FK462F1BEEF7921F6 foreign key (createdby_id) references Agent;
-alter table Locus add constraint FK462F1BE5BE3EC03 foreign key (updatedby_id) references Agent;
-alter table Marker add constraint FK88F1805AEF7921F6 foreign key (createdby_id) references Agent;
-alter table Marker add constraint FK88F1805AD64DC020 foreign key (markertype_id) references DefinedTermBase;
-alter table Marker add constraint FK88F1805A5BE3EC03 foreign key (updatedby_id) references Agent;
-alter table Media add constraint FK46C7FC4EF7921F6 foreign key (createdby_id) references Agent;
-alter table Media add constraint FK46C7FC490A4D0D2 foreign key (artist_id) references Agent;
-alter table Media add constraint FK46C7FC49803512F foreign key (citation_id) references ReferenceBase;
-alter table Media add constraint FK46C7FC45BE3EC03 foreign key (updatedby_id) references Agent;
-alter table MediaRepresentation add constraint FK1966BDB1EF7921F6 foreign key (createdby_id) references Agent;
-alter table MediaRepresentation add constraint FK1966BDB1C2C29593 foreign key (media_id) references Media;
-alter table MediaRepresentation add constraint FK1966BDB15BE3EC03 foreign key (updatedby_id) references Agent;
-alter table MediaRepresentationPart add constraint FK67A45544E3818E37 foreign key (representation_id) references MediaRepresentation;
-alter table MediaRepresentationPart add constraint FK67A45544EF7921F6 foreign key (createdby_id) references Agent;
-alter table MediaRepresentationPart add constraint FK67A455445BE3EC03 foreign key (updatedby_id) references Agent;
-alter table Media_Annotation add constraint FKA020DAAAC2C29593 foreign key (Media_id) references Media;
-alter table Media_Annotation add constraint FKA020DAAA1E403E0B foreign key (annotations_id) references Annotation;
-alter table Media_DefinedTermBase add constraint FK96F1D7EB8A6C9D18 foreign key (Media_id) references Media;
-alter table Media_DefinedTermBase add constraint FK96F1D7EB86D04E74 foreign key (geoscopes_id) references DefinedTermBase;
-alter table Media_Marker add constraint FKD21E7935C2C29593 foreign key (Media_id) references Media;
-alter table Media_Marker add constraint FKD21E7935777265A1 foreign key (markers_id) references Marker;
-alter table Media_Rights add constraint FKDB1266D2C2C29593 foreign key (Media_id) references Media;
-alter table Media_Rights add constraint FKDB1266D2C13F7B21 foreign key (rights_id) references Rights;
-alter table Media_Sequence add constraint FK61D09FC3282B64 foreign key (Media_id) references Media;
-alter table Media_Sequence add constraint FK61D09FCF29B4761 foreign key (usedsequences_id) references Sequence;
-alter table Media_TaxonBase add constraint FK1ABD49E07C3D0017 foreign key (coveredtaxa_id) references TaxonBase;
-alter table Media_TaxonBase add constraint FK1ABD49E08A6C9D18 foreign key (Media_id) references Media;
-alter table NameRelationship add constraint FK5E5108316CDFF85 foreign key (relatedfrom_id) references TaxonNameBase;
-alter table NameRelationship add constraint FK5E5108328482454 foreign key (relatedto_id) references TaxonNameBase;
-alter table NameRelationship add constraint FK5E51083EF7921F6 foreign key (createdby_id) references Agent;
-alter table NameRelationship add constraint FK5E51083AF619DE3 foreign key (type_id) references DefinedTermBase;
-alter table NameRelationship add constraint FK5E510839803512F foreign key (citation_id) references ReferenceBase;
-alter table NameRelationship add constraint FK5E510835BE3EC03 foreign key (updatedby_id) references Agent;
-alter table NameRelationship_Annotation add constraint FK2E38AC8B7B4CB560 foreign key (NameRelationship_id) references NameRelationship;
-alter table NameRelationship_Annotation add constraint FK2E38AC8B1E403E0B foreign key (annotations_id) references Annotation;
-alter table NameRelationship_Marker add constraint FKE3E463967B4CB560 foreign key (NameRelationship_id) references NameRelationship;
-alter table NameRelationship_Marker add constraint FKE3E46396777265A1 foreign key (markers_id) references Marker;
-alter table NomenclaturalStatus add constraint FK1FFEC88BEF7921F6 foreign key (createdby_id) references Agent;
-alter table NomenclaturalStatus add constraint FK1FFEC88B7029BD9F foreign key (type_id) references DefinedTermBase;
-alter table NomenclaturalStatus add constraint FK1FFEC88B9803512F foreign key (citation_id) references ReferenceBase;
-alter table NomenclaturalStatus add constraint FK1FFEC88B5BE3EC03 foreign key (updatedby_id) references Agent;
-alter table NomenclaturalStatus_Annotation add constraint FKE6E91F838D2CB1D4 foreign key (NomenclaturalStatus_id) references NomenclaturalStatus;
-alter table NomenclaturalStatus_Annotation add constraint FKE6E91F831E403E0B foreign key (annotations_id) references Annotation;
-alter table NomenclaturalStatus_Marker add constraint FK2F5128E8D2CB1D4 foreign key (NomenclaturalStatus_id) references NomenclaturalStatus;
-alter table NomenclaturalStatus_Marker add constraint FK2F5128E777265A1 foreign key (markers_id) references Marker;
-alter table OriginalSource add constraint FK229A496CEF7921F6 foreign key (createdby_id) references Agent;
-alter table OriginalSource add constraint FK229A496C9803512F foreign key (citation_id) references ReferenceBase;
-alter table OriginalSource add constraint FK229A496C5BE3EC03 foreign key (updatedby_id) references Agent;
-alter table OriginalSource_Annotation add constraint FK5B3FF802DC2DCA20 foreign key (OriginalSource_id) references OriginalSource;
-alter table OriginalSource_Annotation add constraint FK5B3FF8021E403E0B foreign key (annotations_id) references Annotation;
-alter table OriginalSource_Marker add constraint FKCF52028DDC2DCA20 foreign key (OriginalSource_id) references OriginalSource;
-alter table OriginalSource_Marker add constraint FKCF52028D777265A1 foreign key (markers_id) references Marker;
-alter table PermissionGroup add constraint FK629941D0EF7921F6 foreign key (createdby_id) references Agent;
-alter table PermissionGroup_GrantedAuthorityImpl add constraint FK5311437CA0971A3 foreign key (PermissionGroup_id) references PermissionGroup;
-alter table PermissionGroup_GrantedAuthorityImpl add constraint FK53114371857F6C2 foreign key (grantedauthorities_id) references GrantedAuthorityImpl;
-alter table Person_Keyword add constraint FK5F559EFF13A443BE foreign key (keyword_fk) references DefinedTermBase;
-alter table Person_Keyword add constraint FK5F559EFFAAC1B7CA foreign key (person_fk) references Agent;
-create index ReferenceBaseTitleCacheIndex on ReferenceBase (titleCache);
-alter table ReferenceBase add constraint FK8F034C9C1A488155 foreign key (inbook_id) references ReferenceBase;
-alter table ReferenceBase add constraint FK8F034C9CEF7921F6 foreign key (createdby_id) references Agent;
-alter table ReferenceBase add constraint FK8F034C9C403E17F4 foreign key (institution_id) references Agent;
-alter table ReferenceBase add constraint FK8F034C9CCCE9AAE2 foreign key (inseries_id) references ReferenceBase;
-alter table ReferenceBase add constraint FK8F034C9CD893F6E6 foreign key (crossref_id) references ReferenceBase;
-alter table ReferenceBase add constraint FK8F034C9CAEC3B8B8 foreign key (school_id) references Agent;
-alter table ReferenceBase add constraint FK8F034C9CE3A02620 foreign key (type_id) references DefinedTermBase;
-alter table ReferenceBase add constraint FK8F034C9CE87E60BF foreign key (inproceedings_id) references ReferenceBase;
-alter table ReferenceBase add constraint FK8F034C9CE019003F foreign key (injournal_id) references ReferenceBase;
-alter table ReferenceBase add constraint FK8F034C9C697665E foreign key (authorteam_id) references Agent;
-alter table ReferenceBase add constraint FK8F034C9C5BE3EC03 foreign key (updatedby_id) references Agent;
-alter table ReferenceBase_Annotation add constraint FKC97616D2F443DB5A foreign key (ReferenceBase_id) references ReferenceBase;
-alter table ReferenceBase_Annotation add constraint FKC97616D21E403E0B foreign key (annotations_id) references Annotation;
-alter table ReferenceBase_Extension add constraint FK81E1703C927DE9DF foreign key (extensions_id) references Extension;
-alter table ReferenceBase_Extension add constraint FK81E1703CF443DB5A foreign key (ReferenceBase_id) references ReferenceBase;
-alter table ReferenceBase_Marker add constraint FK6888095DF443DB5A foreign key (ReferenceBase_id) references ReferenceBase;
-alter table ReferenceBase_Marker add constraint FK6888095D777265A1 foreign key (markers_id) references Marker;
-alter table ReferenceBase_Media add constraint FK3D2F4A61C2C29593 foreign key (media_id) references Media;
-alter table ReferenceBase_Media add constraint FK3D2F4A61F443DB5A foreign key (ReferenceBase_id) references ReferenceBase;
-alter table ReferenceBase_OriginalSource add constraint FK68651F6F3BAB2414 foreign key (sources_id) references OriginalSource;
-alter table ReferenceBase_OriginalSource add constraint FK68651F6FF443DB5A foreign key (ReferenceBase_id) references ReferenceBase;
-alter table ReferenceBase_Rights add constraint FK717BF6FAF443DB5A foreign key (ReferenceBase_id) references ReferenceBase;
-alter table ReferenceBase_Rights add constraint FK717BF6FAC13F7B21 foreign key (rights_id) references Rights;
-alter table RelationshipTermBase_inverseRepresentation add constraint FK98592F33ECEEF4AF foreign key (DefinedTermBase_id) references DefinedTermBase;
-alter table RelationshipTermBase_inverseRepresentation add constraint FK98592F33473FB677 foreign key (inverserepresentations_id) references Representation;
-alter table Representation add constraint FK9C4724EDEF7921F6 foreign key (createdby_id) references Agent;
-alter table Representation add constraint FK9C4724ED5BE3EC03 foreign key (updatedby_id) references Agent;
-alter table Representation add constraint FK9C4724EDE8D36B00 foreign key (language_id) references DefinedTermBase;
-alter table Representation_Annotation add constraint FK371091E147E8AE60 foreign key (Representation_id) references Representation;
-alter table Representation_Annotation add constraint FK371091E11E403E0B foreign key (annotations_id) references Annotation;
-alter table Representation_Marker add constraint FK560063EC47E8AE60 foreign key (Representation_id) references Representation;
-alter table Representation_Marker add constraint FK560063EC777265A1 foreign key (markers_id) references Marker;
-alter table Rights add constraint FK91E56DF7C5F7EC54 foreign key (agent_id) references Agent;
-alter table Rights add constraint FK91E56DF7EF7921F6 foreign key (createdby_id) references Agent;
-alter table Rights add constraint FK91E56DF7E6D2886A foreign key (type_id) references DefinedTermBase;
-alter table Rights add constraint FK91E56DF75BE3EC03 foreign key (updatedby_id) references Agent;
-alter table Rights add constraint FK91E56DF7E8D36B00 foreign key (language_id) references DefinedTermBase;
-alter table Rights_Annotation add constraint FK27CB1E97C13F7B21 foreign key (Rights_id) references Rights;
-alter table Rights_Annotation add constraint FK27CB1E971E403E0B foreign key (annotations_id) references Annotation;
-alter table Rights_Marker add constraint FKB739BBA2C13F7B21 foreign key (Rights_id) references Rights;
-alter table Rights_Marker add constraint FKB739BBA2777265A1 foreign key (markers_id) references Marker;
-create index sequenceTitleCacheIndex on Sequence (titleCache);
-alter table Sequence add constraint FK544ADBE1EF7921F6 foreign key (createdby_id) references Agent;
-alter table Sequence add constraint FK544ADBE1B982A103 foreign key (publishedin_id) references ReferenceBase;
-alter table Sequence add constraint FK544ADBE12DBE1F1F foreign key (locus_id) references Locus;
-alter table Sequence add constraint FK544ADBE15BE3EC03 foreign key (updatedby_id) references Agent;
-alter table Sequence_Annotation add constraint FK1010BA6D1E403E0B foreign key (annotations_id) references Annotation;
-alter table Sequence_Annotation add constraint FK1010BA6DD57FFDD5 foreign key (Sequence_id) references Sequence;
-alter table Sequence_Extension add constraint FK7BE66D41927DE9DF foreign key (extensions_id) references Extension;
-alter table Sequence_Extension add constraint FK7BE66D41D57FFDD5 foreign key (Sequence_id) references Sequence;
-alter table Sequence_GenBankAccession add constraint FK8F69809615C4EF35 foreign key (genbankaccession_id) references GenBankAccession;
-alter table Sequence_GenBankAccession add constraint FK8F698096D57FFDD5 foreign key (Sequence_id) references Sequence;
-alter table Sequence_Marker add constraint FK3D22B278777265A1 foreign key (markers_id) references Marker;
-alter table Sequence_Marker add constraint FK3D22B278D57FFDD5 foreign key (Sequence_id) references Sequence;
-alter table Sequence_Media add constraint FK8E5D91E666ACA7EC foreign key (chromatograms_id) references Media;
-alter table Sequence_Media add constraint FK8E5D91E6D57FFDD5 foreign key (Sequence_id) references Sequence;
-alter table Sequence_OriginalSource add constraint FKD37E7D8A3BAB2414 foreign key (sources_id) references OriginalSource;
-alter table Sequence_OriginalSource add constraint FKD37E7D8AD57FFDD5 foreign key (Sequence_id) references Sequence;
-alter table Sequence_ReferenceBase add constraint FK18D91CBE7291F8A foreign key (citations_id) references ReferenceBase;
-alter table Sequence_ReferenceBase add constraint FK18D91CBED57FFDD5 foreign key (Sequence_id) references Sequence;
-alter table Sequence_Rights add constraint FK4616A015C13F7B21 foreign key (rights_id) references Rights;
-alter table Sequence_Rights add constraint FK4616A015D57FFDD5 foreign key (Sequence_id) references Sequence;
-create index specimenOrObservationBaseTitleCacheIndex on SpecimenOrObservationBase (titleCache);
-alter table SpecimenOrObservationBase add constraint FK21CA3272C8505DB foreign key (preservation_id) references DefinedTermBase;
-alter table SpecimenOrObservationBase add constraint FK21CA3272EF7921F6 foreign key (createdby_id) references Agent;
-alter table SpecimenOrObservationBase add constraint FK21CA32727CC340C5 foreign key (storedunder_id) references TaxonNameBase;
-alter table SpecimenOrObservationBase add constraint FK21CA3272EB62BE9A foreign key (collection_id) references Collection;
-alter table SpecimenOrObservationBase add constraint FK21CA3272E17C9A6B foreign key (sex_id) references DefinedTermBase;
-alter table SpecimenOrObservationBase add constraint FK21CA32728C750E27 foreign key (lifestage_id) references DefinedTermBase;
-alter table SpecimenOrObservationBase add constraint FK21CA32724AAB411A foreign key (derivationevent_id) references DerivationEvent;
-alter table SpecimenOrObservationBase add constraint FK21CA3272F95F225A foreign key (gatheringevent_id) references GatheringEvent;
-alter table SpecimenOrObservationBase add constraint FK21CA32725BE3EC03 foreign key (updatedby_id) references Agent;
-alter table SpecimenOrObservationBase_Annotation add constraint FK365E4F3C3B8A5ABA foreign key (SpecimenOrObservationBase_id) references SpecimenOrObservationBase;
-alter table SpecimenOrObservationBase_Annotation add constraint FK365E4F3C1E403E0B foreign key (annotations_id) references Annotation;
-alter table SpecimenOrObservationBase_DerivationEvent add constraint FK20132036BD59A1AD foreign key (derivationevents_id) references DerivationEvent;
-alter table SpecimenOrObservationBase_DerivationEvent add constraint FK2013203654C216AA foreign key (originals_id) references SpecimenOrObservationBase;
-alter table SpecimenOrObservationBase_Extension add constraint FKE03B82923B8A5ABA foreign key (SpecimenOrObservationBase_id) references SpecimenOrObservationBase;
-alter table SpecimenOrObservationBase_Extension add constraint FKE03B8292927DE9DF foreign key (extensions_id) references Extension;
-alter table SpecimenOrObservationBase_Marker add constraint FK8E6106C73B8A5ABA foreign key (SpecimenOrObservationBase_id) references SpecimenOrObservationBase;
-alter table SpecimenOrObservationBase_Marker add constraint FK8E6106C7777265A1 foreign key (markers_id) references Marker;
-alter table SpecimenOrObservationBase_Media add constraint FK4EEBF7B73B8A5ABA foreign key (SpecimenOrObservationBase_id) references SpecimenOrObservationBase;
-alter table SpecimenOrObservationBase_Media add constraint FK4EEBF7B7C2C29593 foreign key (media_id) references Media;
-alter table SpecimenOrObservationBase_OriginalSource add constraint FK3C4712D93B8A5ABA foreign key (SpecimenOrObservationBase_id) references SpecimenOrObservationBase;
-alter table SpecimenOrObservationBase_OriginalSource add constraint FK3C4712D93BAB2414 foreign key (sources_id) references OriginalSource;
-alter table SpecimenOrObservationBase_Rights add constraint FK9754F4643B8A5ABA foreign key (SpecimenOrObservationBase_id) references SpecimenOrObservationBase;
-alter table SpecimenOrObservationBase_Rights add constraint FK9754F464C13F7B21 foreign key (rights_id) references Rights;
-alter table SpecimenOrObservationBase_Sequence add constraint FKBBF27B0E7EE2770E foreign key (SpecimenOrObservationBase_id) references SpecimenOrObservationBase;
-alter table SpecimenOrObservationBase_Sequence add constraint FKBBF27B0E35B10F24 foreign key (sequences_id) references Sequence;
-alter table StateData add constraint FKFB1697BBEF7921F6 foreign key (createdby_id) references Agent;
-alter table StateData add constraint FKFB1697BB682A4E4B foreign key (state_id) references DefinedTermBase;
-alter table StateData add constraint FKFB1697BB5BE3EC03 foreign key (updatedby_id) references Agent;
-alter table StateData_DefinedTermBase add constraint FK107321E28E7BF9AB foreign key (StateData_id) references StateData;
-alter table StateData_DefinedTermBase add constraint FK107321E2E0960EC4 foreign key (modifiers_id) references DefinedTermBase;
-alter table StatisticalMeasurementValue add constraint FK2DCE0290EF7921F6 foreign key (createdby_id) references Agent;
-alter table StatisticalMeasurementValue add constraint FK2DCE02904C428112 foreign key (type_id) references DefinedTermBase;
-alter table StatisticalMeasurementValue add constraint FK2DCE02905BE3EC03 foreign key (updatedby_id) references Agent;
-alter table StatisticalMeasurementValue_DefinedTermBase add constraint FK686C42B75C9F4F2B foreign key (StatisticalMeasurementValue_id) references StatisticalMeasurementValue;
-alter table StatisticalMeasurementValue_DefinedTermBase add constraint FK686C42B7E0960EC4 foreign key (modifiers_id) references DefinedTermBase;
-alter table SynonymRelationship add constraint FKF483ADB34BAC703F foreign key (relatedfrom_id) references TaxonBase;
-alter table SynonymRelationship add constraint FKF483ADB3F8991B9D foreign key (relatedto_id) references TaxonBase;
-alter table SynonymRelationship add constraint FKF483ADB3EF7921F6 foreign key (createdby_id) references Agent;
-alter table SynonymRelationship add constraint FKF483ADB380924EEC foreign key (type_id) references DefinedTermBase;
-alter table SynonymRelationship add constraint FKF483ADB39803512F foreign key (citation_id) references ReferenceBase;
-alter table SynonymRelationship add constraint FKF483ADB35BE3EC03 foreign key (updatedby_id) references Agent;
-alter table SynonymRelationship_Annotation add constraint FKF494F15B260A8379 foreign key (SynonymRelationship_id) references SynonymRelationship;
-alter table SynonymRelationship_Annotation add constraint FKF494F15B1E403E0B foreign key (annotations_id) references Annotation;
-alter table SynonymRelationship_Marker add constraint FK7A439066260A8379 foreign key (SynonymRelationship_id) references SynonymRelationship;
-alter table SynonymRelationship_Marker add constraint FK7A439066777265A1 foreign key (markers_id) references Marker;
-create index taxonBaseTitleCacheIndex on TaxonBase (titleCache);
-alter table TaxonBase add constraint FK9249B49BEF7921F6 foreign key (createdby_id) references Agent;
-alter table TaxonBase add constraint FK9249B49BDA93512F foreign key (taxonName_fk) references TaxonNameBase;
-alter table TaxonBase add constraint FK9249B49B7C7B5AED foreign key (taxonomicparentcache_id) references TaxonBase;
-alter table TaxonBase add constraint FK9249B49B5E4A2F85 foreign key (sec_id) references ReferenceBase;
-alter table TaxonBase add constraint FK9249B49B5BE3EC03 foreign key (updatedby_id) references Agent;
-alter table TaxonBase_Annotation add constraint FK41ED09739C9D39 foreign key (TaxonBase_id) references TaxonBase;
-alter table TaxonBase_Annotation add constraint FK41ED09731E403E0B foreign key (annotations_id) references Annotation;
-alter table TaxonBase_Extension add constraint FKF961257B927DE9DF foreign key (extensions_id) references Extension;
-alter table TaxonBase_Extension add constraint FKF961257B9C9D39 foreign key (TaxonBase_id) references TaxonBase;
-alter table TaxonBase_Marker add constraint FK5CDB747E9C9D39 foreign key (TaxonBase_id) references TaxonBase;
-alter table TaxonBase_Marker add constraint FK5CDB747E777265A1 foreign key (markers_id) references Marker;
-alter table TaxonBase_OriginalSource add constraint FK10EFD9903BAB2414 foreign key (sources_id) references OriginalSource;
-alter table TaxonBase_OriginalSource add constraint FK10EFD9909C9D39 foreign key (TaxonBase_id) references TaxonBase;
-alter table TaxonBase_Rights add constraint FK65CF621BC13F7B21 foreign key (rights_id) references Rights;
-alter table TaxonBase_Rights add constraint FK65CF621B9C9D39 foreign key (TaxonBase_id) references TaxonBase;
-create index taxonNameBaseTitleCacheIndex on TaxonNameBase (titleCache);
-alter table TaxonNameBase add constraint FKB4870C6EF7921F6 foreign key (createdby_id) references Agent;
-alter table TaxonNameBase add constraint FKB4870C62B4FEDD6 foreign key (basionymauthorteam_id) references Agent;
-alter table TaxonNameBase add constraint FKB4870C64AC9C024 foreign key (nomenclaturalreference_id) references ReferenceBase;
-alter table TaxonNameBase add constraint FKB4870C6B14B73EF foreign key (combinationauthorteam_id) references Agent;
-alter table TaxonNameBase add constraint FKB4870C6BFEAE500 foreign key (homotypicalgroup_id) references HomotypicalGroup;
-alter table TaxonNameBase add constraint FKB4870C662AD57A2 foreign key (excombinationauthorteam_id) references Agent;
-alter table TaxonNameBase add constraint FKB4870C67F90DF03 foreign key (exbasionymauthorteam_id) references Agent;
-alter table TaxonNameBase add constraint FKB4870C65BE3EC03 foreign key (updatedby_id) references Agent;
-alter table TaxonNameBase add constraint FKB4870C6D7BE55A0 foreign key (rank_id) references DefinedTermBase;
-alter table TaxonNameBase_Annotation add constraint FK9E7794688C85CF94 foreign key (TaxonNameBase_id) references TaxonNameBase;
-alter table TaxonNameBase_Annotation add constraint FK9E7794681E403E0B foreign key (annotations_id) references Annotation;
-alter table TaxonNameBase_Extension add constraint FKC28EE7E6927DE9DF foreign key (extensions_id) references Extension;
-alter table TaxonNameBase_Extension add constraint FKC28EE7E68C85CF94 foreign key (TaxonNameBase_id) references TaxonNameBase;
-alter table TaxonNameBase_HybridRelationship add constraint FK371B728D2D57C7D5 foreign key (hybridrelationships_id) references HybridRelationship;
-alter table TaxonNameBase_HybridRelationship add constraint FK371B728DCDE98DD2 foreign key (TaxonNameBase_id) references TaxonNameBase;
-alter table TaxonNameBase_Marker add constraint FK39E3C1F38C85CF94 foreign key (TaxonNameBase_id) references TaxonNameBase;
-alter table TaxonNameBase_Marker add constraint FK39E3C1F3777265A1 foreign key (markers_id) references Marker;
-alter table TaxonNameBase_NomenclaturalStatus add constraint FK560BA7926615E90D foreign key (status_id) references NomenclaturalStatus;
-alter table TaxonNameBase_NomenclaturalStatus add constraint FK560BA7928C85CF94 foreign key (TaxonNameBase_id) references TaxonNameBase;
-alter table TaxonNameBase_OriginalSource add constraint FKBEA1E2053BAB2414 foreign key (sources_id) references OriginalSource;
-alter table TaxonNameBase_OriginalSource add constraint FKBEA1E2058C85CF94 foreign key (TaxonNameBase_id) references TaxonNameBase;
-alter table TaxonNameBase_Rights add constraint FK42D7AF90C13F7B21 foreign key (rights_id) references Rights;
-alter table TaxonNameBase_Rights add constraint FK42D7AF908C85CF94 foreign key (TaxonNameBase_id) references TaxonNameBase;
-alter table TaxonNameBase_TypeDesignationBase add constraint FKC0D6BBB5C7DF530C foreign key (typedesignations_id) references TypeDesignationBase;
-alter table TaxonNameBase_TypeDesignationBase add constraint FKC0D6BBB58C85CF94 foreign key (TaxonNameBase_id) references TaxonNameBase;
-alter table TaxonRelationship add constraint FK7482BA02E71EF6CE foreign key (relatedfrom_id) references TaxonBase;
-alter table TaxonRelationship add constraint FK7482BA02F8991B9D foreign key (relatedto_id) references TaxonBase;
-alter table TaxonRelationship add constraint FK7482BA02EF7921F6 foreign key (createdby_id) references Agent;
-alter table TaxonRelationship add constraint FK7482BA02F11BD77B foreign key (type_id) references DefinedTermBase;
-alter table TaxonRelationship add constraint FK7482BA029803512F foreign key (citation_id) references ReferenceBase;
-alter table TaxonRelationship add constraint FK7482BA025BE3EC03 foreign key (updatedby_id) references Agent;
-alter table TaxonRelationship_Annotation add constraint FK82C86DAC1E403E0B foreign key (annotations_id) references Annotation;
-alter table TaxonRelationship_Annotation add constraint FK82C86DAC2BD180D9 foreign key (TaxonRelationship_id) references TaxonRelationship;
-alter table TaxonRelationship_Marker add constraint FK69FBDD37777265A1 foreign key (markers_id) references Marker;
-alter table TaxonRelationship_Marker add constraint FK69FBDD372BD180D9 foreign key (TaxonRelationship_id) references TaxonRelationship;
-alter table TermVocabulary add constraint FK487AA692EF7921F6 foreign key (createdby_id) references Agent;
-alter table TermVocabulary add constraint FK487AA6925BE3EC03 foreign key (updatedby_id) references Agent;
-alter table TermVocabulary_Representation add constraint FKA408B63A258E060 foreign key (TermVocabulary_id) references TermVocabulary;
-alter table TermVocabulary_Representation add constraint FKA408B63AB31C4747 foreign key (representations_id) references Representation;
-alter table TypeDesignationBase add constraint FK8AC9DCAE2FB99E97 foreign key (typestatus_id) references DefinedTermBase;
-alter table TypeDesignationBase add constraint FK8AC9DCAEEF7921F6 foreign key (createdby_id) references Agent;
-alter table TypeDesignationBase add constraint FK8AC9DCAE94DB044A foreign key (typespecimen_id) references SpecimenOrObservationBase;
-alter table TypeDesignationBase add constraint FK8AC9DCAEBFEAE500 foreign key (homotypicalgroup_id) references HomotypicalGroup;
-alter table TypeDesignationBase add constraint FK8AC9DCAE9803512F foreign key (citation_id) references ReferenceBase;
-alter table TypeDesignationBase add constraint FK8AC9DCAE4CB0F315 foreign key (typename_id) references TaxonNameBase;
-alter table TypeDesignationBase add constraint FK8AC9DCAE5BE3EC03 foreign key (updatedby_id) references Agent;
-alter table TypeDesignationBase_Annotation add constraint FK4D73278044E9E6D4 foreign key (TypeDesignationBase_id) references TypeDesignationBase;
-alter table TypeDesignationBase_Annotation add constraint FK4D7327801E403E0B foreign key (annotations_id) references Annotation;
-alter table TypeDesignationBase_Marker add constraint FKB914A10B44E9E6D4 foreign key (TypeDesignationBase_id) references TypeDesignationBase;
-alter table TypeDesignationBase_Marker add constraint FKB914A10B777265A1 foreign key (markers_id) references Marker;
-alter table TypeDesignationBase_TaxonNameBase add constraint FKF61156F54D901A92 foreign key (typifiednames_id) references TaxonNameBase;
-alter table TypeDesignationBase_TaxonNameBase add constraint FKF61156F544E9E6D4 foreign key (TypeDesignationBase_id) references TypeDesignationBase;
-alter table User add constraint FK285FEBEF7921F6 foreign key (createdby_id) references Agent;
-alter table User_GrantedAuthorityImpl add constraint FKA2FB64FCCF9BC520 foreign key (User_id) references User;
-alter table User_GrantedAuthorityImpl add constraint FKA2FB64FC1857F6C2 foreign key (grantedauthorities_id) references GrantedAuthorityImpl;
-alter table User_PermissionGroup add constraint FKDD33C17CDA9DCB5F foreign key (groups_id) references PermissionGroup;
-alter table User_PermissionGroup add constraint FKDD33C17C887E3D12 foreign key (members_id) references User;
+
+    create table Address (
+        id integer not null,
+        created timestamp,
+        uuid varchar(255),
+        updated timestamp,
+        locality varchar(255),
+        location_errorradius integer,
+        location_latitude double,
+        location_longitude double,
+        pobox varchar(255),
+        postcode varchar(255),
+        region varchar(255),
+        street varchar(255),
+        createdby_id integer,
+        updatedby_id integer,
+        contact_id integer,
+        country_id integer,
+        location_referencesystem_id integer,
+        primary key (id)
+    );
+
+    create table Address_AUD (
+        id integer not null,
+        REV integer not null,
+        revtype tinyint,
+        created timestamp,
+        uuid varchar(255),
+        updated timestamp,
+        locality varchar(255),
+        location_errorradius integer,
+        location_latitude double,
+        location_longitude double,
+        pobox varchar(255),
+        postcode varchar(255),
+        region varchar(255),
+        street varchar(255),
+        createdby_id integer,
+        updatedby_id integer,
+        contact_id integer,
+        country_id integer,
+        location_referencesystem_id integer,
+        primary key (id, REV)
+    );
+
+    create table Agent (
+        DTYPE varchar(31) not null,
+        id integer not null,
+        created timestamp,
+        uuid varchar(255),
+        updated timestamp,
+        lsid varchar(255),
+        protectedtitlecache bit not null,
+        titleCache varchar(255),
+        code varchar(255),
+        name varchar(255),
+        nomenclaturaltitle varchar(255),
+        firstname varchar(255),
+        lastname varchar(255),
+        lifespan_end varchar(255),
+        lifespan_start varchar(255),
+        prefix varchar(255),
+        suffix varchar(255),
+        protectednomenclaturaltitlecache bit,
+        createdby_id integer,
+        updatedby_id integer,
+        contact_id integer,
+        ispartof_id integer,
+        primary key (id)
+    );
+
+    create table Agent_AUD (
+        DTYPE varchar(31) not null,
+        id integer not null,
+        REV integer not null,
+        revtype tinyint,
+        created timestamp,
+        uuid varchar(255),
+        updated timestamp,
+        lsid varchar(255),
+        protectedtitlecache bit,
+        titleCache varchar(255),
+        createdby_id integer,
+        updatedby_id integer,
+        nomenclaturaltitle varchar(255),
+        protectednomenclaturaltitlecache bit,
+        firstname varchar(255),
+        lastname varchar(255),
+        lifespan_end varchar(255),
+        lifespan_start varchar(255),
+        prefix varchar(255),
+        suffix varchar(255),
+        contact_id integer,
+        code varchar(255),
+        name varchar(255),
+        ispartof_id integer,
+        primary key (id, REV)
+    );
+
+    create table Agent_Agent (
+        Agent_id integer not null,
+        teammembers_id integer not null
+    );
+
+    create table Agent_Agent_AUD (
+        REV integer not null,
+        Agent_id integer not null,
+        teammembers_id integer not null,
+        revtype tinyint,
+        primary key (REV, Agent_id, teammembers_id)
+    );
+
+    create table Agent_Annotation (
+        Agent_id integer not null,
+        annotations_id integer not null,
+        primary key (Agent_id, annotations_id),
+        unique (annotations_id)
+    );
+
+    create table Agent_Annotation_AUD (
+        REV integer not null,
+        Agent_id integer not null,
+        annotations_id integer not null,
+        revtype tinyint,
+        primary key (REV, Agent_id, annotations_id)
+    );
+
+    create table Agent_DefinedTermBase (
+        Agent_id integer not null,
+        types_id integer not null,
+        primary key (Agent_id, types_id)
+    );
+
+    create table Agent_DefinedTermBase_AUD (
+        REV integer not null,
+        Agent_id integer not null,
+        types_id integer not null,
+        revtype tinyint,
+        primary key (REV, Agent_id, types_id)
+    );
+
+    create table Agent_Extension (
+        Agent_id integer not null,
+        extensions_id integer not null,
+        primary key (Agent_id, extensions_id),
+        unique (extensions_id)
+    );
+
+    create table Agent_Extension_AUD (
+        REV integer not null,
+        Agent_id integer not null,
+        extensions_id integer not null,
+        revtype tinyint,
+        primary key (REV, Agent_id, extensions_id)
+    );
+
+    create table Agent_Marker (
+        Agent_id integer not null,
+        markers_id integer not null,
+        primary key (Agent_id, markers_id),
+        unique (markers_id)
+    );
+
+    create table Agent_Marker_AUD (
+        REV integer not null,
+        Agent_id integer not null,
+        markers_id integer not null,
+        revtype tinyint,
+        primary key (REV, Agent_id, markers_id)
+    );
+
+    create table Agent_Media (
+        Agent_id integer not null,
+        media_id integer not null,
+        primary key (Agent_id, media_id),
+        unique (media_id)
+    );
+
+    create table Agent_Media_AUD (
+        REV integer not null,
+        Agent_id integer not null,
+        media_id integer not null,
+        revtype tinyint,
+        primary key (REV, Agent_id, media_id)
+    );
+
+    create table Agent_OriginalSource (
+        Agent_id integer not null,
+        sources_id integer not null,
+        primary key (Agent_id, sources_id),
+        unique (sources_id)
+    );
+
+    create table Agent_OriginalSource_AUD (
+        REV integer not null,
+        Agent_id integer not null,
+        sources_id integer not null,
+        revtype tinyint,
+        primary key (REV, Agent_id, sources_id)
+    );
+
+    create table Agent_Rights (
+        Agent_id integer not null,
+        rights_id integer not null,
+        primary key (Agent_id, rights_id),
+        unique (rights_id)
+    );
+
+    create table Agent_Rights_AUD (
+        REV integer not null,
+        Agent_id integer not null,
+        rights_id integer not null,
+        revtype tinyint,
+        primary key (REV, Agent_id, rights_id)
+    );
+
+    create table Annotation (
+        id integer not null,
+        created timestamp,
+        uuid varchar(255),
+        updated timestamp,
+        text varchar(4096),
+        annotatedObj_type varchar(255),
+        annotatedObj_id integer not null,
+        linkbackurlstr varbinary(255),
+        createdby_id integer,
+        updatedby_id integer,
+        language_id integer,
+        annotationtype_id integer,
+        commentator_id integer,
+        primary key (id)
+    );
+
+    create table Annotation_AUD (
+        id integer not null,
+        REV integer not null,
+        revtype tinyint,
+        created timestamp,
+        uuid varchar(255),
+        updated timestamp,
+        text varchar(4096),
+        linkbackurl varbinary(255),
+        createdby_id integer,
+        updatedby_id integer,
+        language_id integer,
+        annotationtype_id integer,
+        commentator_id integer,
+        primary key (id, REV)
+    );
+
+    create table Annotation_Annotation (
+        Annotation_id integer not null,
+        annotations_id integer not null,
+        primary key (Annotation_id, annotations_id),
+        unique (annotations_id)
+    );
+
+    create table Annotation_Annotation_AUD (
+        REV integer not null,
+        Annotation_id integer not null,
+        annotations_id integer not null,
+        revtype tinyint,
+        primary key (REV, Annotation_id, annotations_id)
+    );
+
+    create table Annotation_Marker (
+        Annotation_id integer not null,
+        markers_id integer not null,
+        primary key (Annotation_id, markers_id),
+        unique (markers_id)
+    );
+
+    create table Annotation_Marker_AUD (
+        REV integer not null,
+        Annotation_id integer not null,
+        markers_id integer not null,
+        revtype tinyint,
+        primary key (REV, Annotation_id, markers_id)
+    );
+
+    create table AuditEvent (
+        revisionnumber integer generated by default as identity (start with 1),
+        timestamp bigint,
+        uuid varchar(255),
+        primary key (revisionnumber)
+    );
+
+    create table CDM_VIEW (
+        id integer not null,
+        created timestamp,
+        uuid varchar(255),
+        description varchar(255),
+        name varchar(255),
+        createdby_id integer,
+        reference_id integer,
+        primary key (id)
+    );
+
+    create table CDM_VIEW_CDM_VIEW (
+        CDM_VIEW_id integer not null,
+        superviews_id integer not null,
+        primary key (CDM_VIEW_id, superviews_id),
+        unique (superviews_id)
+    );
+
+    create table Collection (
+        id integer not null,
+        created timestamp,
+        uuid varchar(255),
+        updated timestamp,
+        lsid varchar(255),
+        protectedtitlecache bit not null,
+        titleCache varchar(255),
+        code varchar(255),
+        codestandard varchar(255),
+        name varchar(255),
+        townorlocation varchar(255),
+        createdby_id integer,
+        updatedby_id integer,
+        institute_id integer,
+        supercollection_id integer,
+        primary key (id)
+    );
+
+    create table Collection_AUD (
+        id integer not null,
+        REV integer not null,
+        revtype tinyint,
+        created timestamp,
+        uuid varchar(255),
+        updated timestamp,
+        lsid varchar(255),
+        protectedtitlecache bit,
+        titleCache varchar(255),
+        code varchar(255),
+        codestandard varchar(255),
+        name varchar(255),
+        townorlocation varchar(255),
+        createdby_id integer,
+        updatedby_id integer,
+        institute_id integer,
+        supercollection_id integer,
+        primary key (id, REV)
+    );
+
+    create table Collection_Annotation (
+        Collection_id integer not null,
+        annotations_id integer not null,
+        primary key (Collection_id, annotations_id),
+        unique (annotations_id)
+    );
+
+    create table Collection_Annotation_AUD (
+        REV integer not null,
+        Collection_id integer not null,
+        annotations_id integer not null,
+        revtype tinyint,
+        primary key (REV, Collection_id, annotations_id)
+    );
+
+    create table Collection_Extension (
+        Collection_id integer not null,
+        extensions_id integer not null,
+        primary key (Collection_id, extensions_id),
+        unique (extensions_id)
+    );
+
+    create table Collection_Extension_AUD (
+        REV integer not null,
+        Collection_id integer not null,
+        extensions_id integer not null,
+        revtype tinyint,
+        primary key (REV, Collection_id, extensions_id)
+    );
+
+    create table Collection_Marker (
+        Collection_id integer not null,
+        markers_id integer not null,
+        primary key (Collection_id, markers_id),
+        unique (markers_id)
+    );
+
+    create table Collection_Marker_AUD (
+        REV integer not null,
+        Collection_id integer not null,
+        markers_id integer not null,
+        revtype tinyint,
+        primary key (REV, Collection_id, markers_id)
+    );
+
+    create table Collection_Media (
+        Collection_id integer not null,
+        media_id integer not null,
+        primary key (Collection_id, media_id),
+        unique (media_id)
+    );
+
+    create table Collection_Media_AUD (
+        REV integer not null,
+        Collection_id integer not null,
+        media_id integer not null,
+        revtype tinyint,
+        primary key (REV, Collection_id, media_id)
+    );
+
+    create table Collection_OriginalSource (
+        Collection_id integer not null,
+        sources_id integer not null,
+        primary key (Collection_id, sources_id),
+        unique (sources_id)
+    );
+
+    create table Collection_OriginalSource_AUD (
+        REV integer not null,
+        Collection_id integer not null,
+        sources_id integer not null,
+        revtype tinyint,
+        primary key (REV, Collection_id, sources_id)
+    );
+
+    create table Collection_Rights (
+        Collection_id integer not null,
+        rights_id integer not null,
+        primary key (Collection_id, rights_id),
+        unique (rights_id)
+    );
+
+    create table Collection_Rights_AUD (
+        REV integer not null,
+        Collection_id integer not null,
+        rights_id integer not null,
+        revtype tinyint,
+        primary key (REV, Collection_id, rights_id)
+    );
+
+    create table Contact (
+        id integer not null,
+        created timestamp,
+        uuid varchar(255),
+        updated timestamp,
+        email varchar(255),
+        fax varchar(255),
+        phone varchar(255),
+        url varchar(255),
+        createdby_id integer,
+        updatedby_id integer,
+        primary key (id)
+    );
+
+    create table Contact_AUD (
+        id integer not null,
+        REV integer not null,
+        revtype tinyint,
+        created timestamp,
+        uuid varchar(255),
+        updated timestamp,
+        email varchar(255),
+        fax varchar(255),
+        phone varchar(255),
+        url varchar(255),
+        createdby_id integer,
+        updatedby_id integer,
+        primary key (id, REV)
+    );
+
+    create table DefinedTermBase (
+        DTYPE varchar(31) not null,
+        id integer not null,
+        created timestamp,
+        uuid varchar(255),
+        updated timestamp,
+        uri varchar(255),
+        orderindex integer,
+        iso639_1 varchar(2),
+        iso639_2 varchar(3),
+        symmetric bit,
+        transitive bit,
+        defaultcolor varchar(255),
+        supportscommontaxonname bit,
+        supportsdistribution bit,
+        supportsindividualassociation bit,
+        supportsquantitativedata bit,
+        supportstaxoninteraction bit,
+        supportstextdata bit,
+        pointapproximation_errorradius integer,
+        pointapproximation_latitude double,
+        pointapproximation_longitude double,
+        validperiod_end varchar(255),
+        validperiod_start varchar(255),
+        iso3166_a2 varchar(2),
+        createdby_id integer,
+        updatedby_id integer,
+        kindof_id integer,
+        partof_id integer,
+        vocabulary_id integer,
+        level_id integer,
+        pointapproximation_referencesystem_id integer,
+        shape_id integer,
+        type_id integer,
+        primary key (id)
+    );
+
+    create table DefinedTermBase_AUD (
+        DTYPE varchar(31) not null,
+        id integer not null,
+        REV integer not null,
+        revtype tinyint,
+        created timestamp,
+        uuid varchar(255),
+        updated timestamp,
+        uri varchar(255),
+        createdby_id integer,
+        updatedby_id integer,
+        kindof_id integer,
+        partof_id integer,
+        vocabulary_id integer,
+        orderindex integer,
+        iso639_1 varchar(2),
+        iso639_2 varchar(3),
+        defaultcolor varchar(255),
+        supportscommontaxonname bit,
+        supportsdistribution bit,
+        supportsindividualassociation bit,
+        supportsquantitativedata bit,
+        supportstaxoninteraction bit,
+        supportstextdata bit,
+        pointapproximation_errorradius integer,
+        pointapproximation_latitude double,
+        pointapproximation_longitude double,
+        validperiod_end varchar(255),
+        validperiod_start varchar(255),
+        level_id integer,
+        pointapproximation_referencesystem_id integer,
+        shape_id integer,
+        type_id integer,
+        symmetric bit,
+        transitive bit,
+        iso3166_a2 varchar(2),
+        primary key (id, REV)
+    );
+
+    create table DefinedTermBase_Continent (
+        DefinedTermBase_id integer not null,
+        continents_id integer not null,
+        primary key (DefinedTermBase_id, continents_id)
+    );
+
+    create table DefinedTermBase_Continent_AUD (
+        REV integer not null,
+        DefinedTermBase_id integer not null,
+        continents_id integer not null,
+        revtype tinyint,
+        primary key (REV, DefinedTermBase_id, continents_id)
+    );
+
+    create table DefinedTermBase_Media (
+        DefinedTermBase_id integer not null,
+        media_id integer not null,
+        primary key (DefinedTermBase_id, media_id),
+        unique (media_id)
+    );
+
+    create table DefinedTermBase_Media_AUD (
+        REV integer not null,
+        DefinedTermBase_id integer not null,
+        media_id integer not null,
+        revtype tinyint,
+        primary key (REV, DefinedTermBase_id, media_id)
+    );
+
+    create table DefinedTermBase_RecommendedModifierEnumeration (
+        DefinedTermBase_id integer not null,
+        recommendedmodifierenumeration_id integer not null,
+        primary key (DefinedTermBase_id, recommendedmodifierenumeration_id),
+        unique (recommendedmodifierenumeration_id)
+    );
+
+    create table DefinedTermBase_RecommendedModifierEnumeration_AUD (
+        REV integer not null,
+        DefinedTermBase_id integer not null,
+        recommendedmodifierenumeration_id integer not null,
+        revtype tinyint,
+        primary key (REV, DefinedTermBase_id, recommendedmodifierenumeration_id)
+    );
+
+    create table DefinedTermBase_Representation (
+        DefinedTermBase_id integer not null,
+        representations_id integer not null,
+        primary key (DefinedTermBase_id, representations_id),
+        unique (representations_id)
+    );
+
+    create table DefinedTermBase_Representation_AUD (
+        REV integer not null,
+        DefinedTermBase_id integer not null,
+        representations_id integer not null,
+        revtype tinyint,
+        primary key (REV, DefinedTermBase_id, representations_id)
+    );
+
+    create table DefinedTermBase_StatisticalMeasure (
+        DefinedTermBase_id integer not null,
+        recommendedstatisticalmeasures_id integer not null,
+        primary key (DefinedTermBase_id, recommendedstatisticalmeasures_id)
+    );
+
+    create table DefinedTermBase_StatisticalMeasure_AUD (
+        REV integer not null,
+        DefinedTermBase_id integer not null,
+        recommendedstatisticalmeasures_id integer not null,
+        revtype tinyint,
+        primary key (REV, DefinedTermBase_id, recommendedstatisticalmeasures_id)
+    );
+
+    create table DefinedTermBase_SupportedCategoricalEnumeration (
+        DefinedTermBase_id integer not null,
+        supportedcategoricalenumerations_id integer not null,
+        primary key (DefinedTermBase_id, supportedcategoricalenumerations_id),
+        unique (supportedcategoricalenumerations_id)
+    );
+
+    create table DefinedTermBase_SupportedCategoricalEnumeration_AUD (
+        REV integer not null,
+        DefinedTermBase_id integer not null,
+        supportedcategoricalenumerations_id integer not null,
+        revtype tinyint,
+        primary key (REV, DefinedTermBase_id, supportedcategoricalenumerations_id)
+    );
+
+    create table DefinedTermBase_WaterbodyOrCountry (
+        DefinedTermBase_id integer not null,
+        waterbodiesorcountries_id integer not null,
+        primary key (DefinedTermBase_id, waterbodiesorcountries_id)
+    );
+
+    create table DefinedTermBase_WaterbodyOrCountry_AUD (
+        REV integer not null,
+        DefinedTermBase_id integer not null,
+        waterbodiesorcountries_id integer not null,
+        revtype tinyint,
+        primary key (REV, DefinedTermBase_id, waterbodiesorcountries_id)
+    );
+
+    create table DerivationEvent (
+        id integer not null,
+        created timestamp,
+        uuid varchar(255),
+        updated timestamp,
+        description varchar(255),
+        timeperiod_end varchar(255),
+        timeperiod_start varchar(255),
+        createdby_id integer,
+        updatedby_id integer,
+        actor_id integer,
+        type_id integer,
+        primary key (id)
+    );
+
+    create table DerivationEvent_AUD (
+        id integer not null,
+        REV integer not null,
+        revtype tinyint,
+        created timestamp,
+        uuid varchar(255),
+        updated timestamp,
+        description varchar(255),
+        timeperiod_end varchar(255),
+        timeperiod_start varchar(255),
+        createdby_id integer,
+        updatedby_id integer,
+        actor_id integer,
+        type_id integer,
+        primary key (id, REV)
+    );
+
+    create table DerivationEvent_Annotation (
+        DerivationEvent_id integer not null,
+        annotations_id integer not null,
+        primary key (DerivationEvent_id, annotations_id),
+        unique (annotations_id)
+    );
+
+    create table DerivationEvent_Annotation_AUD (
+        REV integer not null,
+        DerivationEvent_id integer not null,
+        annotations_id integer not null,
+        revtype tinyint,
+        primary key (REV, DerivationEvent_id, annotations_id)
+    );
+
+    create table DerivationEvent_Marker (
+        DerivationEvent_id integer not null,
+        markers_id integer not null,
+        primary key (DerivationEvent_id, markers_id),
+        unique (markers_id)
+    );
+
+    create table DerivationEvent_Marker_AUD (
+        REV integer not null,
+        DerivationEvent_id integer not null,
+        markers_id integer not null,
+        revtype tinyint,
+        primary key (REV, DerivationEvent_id, markers_id)
+    );
+
+    create table DescriptionBase (
+        DTYPE varchar(31) not null,
+        id integer not null,
+        created timestamp,
+        uuid varchar(255),
+        updated timestamp,
+        lsid varchar(255),
+        protectedtitlecache bit not null,
+        titleCache varchar(255),
+        createdby_id integer,
+        updatedby_id integer,
+        taxon_fk integer,
+        taxonName_fk integer,
+        primary key (id)
+    );
+
+    create table DescriptionBase_AUD (
+        DTYPE varchar(31) not null,
+        id integer not null,
+        REV integer not null,
+        revtype tinyint,
+        created timestamp,
+        uuid varchar(255),
+        updated timestamp,
+        lsid varchar(255),
+        protectedtitlecache bit,
+        titleCache varchar(255),
+        createdby_id integer,
+        updatedby_id integer,
+        taxon_fk integer,
+        taxonName_fk integer,
+        primary key (id, REV)
+    );
+
+    create table DescriptionBase_Annotation (
+        DescriptionBase_id integer not null,
+        annotations_id integer not null,
+        primary key (DescriptionBase_id, annotations_id),
+        unique (annotations_id)
+    );
+
+    create table DescriptionBase_Annotation_AUD (
+        REV integer not null,
+        DescriptionBase_id integer not null,
+        annotations_id integer not null,
+        revtype tinyint,
+        primary key (REV, DescriptionBase_id, annotations_id)
+    );
+
+    create table DescriptionBase_Extension (
+        DescriptionBase_id integer not null,
+        extensions_id integer not null,
+        primary key (DescriptionBase_id, extensions_id),
+        unique (extensions_id)
+    );
+
+    create table DescriptionBase_Extension_AUD (
+        REV integer not null,
+        DescriptionBase_id integer not null,
+        extensions_id integer not null,
+        revtype tinyint,
+        primary key (REV, DescriptionBase_id, extensions_id)
+    );
+
+    create table DescriptionBase_GeoScope (
+        DescriptionBase_id integer not null,
+        geoscopes_id integer not null,
+        primary key (DescriptionBase_id, geoscopes_id),
+        unique (geoscopes_id)
+    );
+
+    create table DescriptionBase_GeoScope_AUD (
+        REV integer not null,
+        DescriptionBase_id integer not null,
+        geoscopes_id integer not null,
+        revtype tinyint,
+        primary key (REV, DescriptionBase_id, geoscopes_id)
+    );
+
+    create table DescriptionBase_Marker (
+        DescriptionBase_id integer not null,
+        markers_id integer not null,
+        primary key (DescriptionBase_id, markers_id),
+        unique (markers_id)
+    );
+
+    create table DescriptionBase_Marker_AUD (
+        REV integer not null,
+        DescriptionBase_id integer not null,
+        markers_id integer not null,
+        revtype tinyint,
+        primary key (REV, DescriptionBase_id, markers_id)
+    );
+
+    create table DescriptionBase_OriginalSource (
+        DescriptionBase_id integer not null,
+        sources_id integer not null,
+        primary key (DescriptionBase_id, sources_id),
+        unique (sources_id)
+    );
+
+    create table DescriptionBase_OriginalSource_AUD (
+        REV integer not null,
+        DescriptionBase_id integer not null,
+        sources_id integer not null,
+        revtype tinyint,
+        primary key (REV, DescriptionBase_id, sources_id)
+    );
+
+    create table DescriptionBase_ReferenceBase (
+        DescriptionBase_id integer not null,
+        descriptionsources_id integer not null,
+        primary key (DescriptionBase_id, descriptionsources_id)
+    );
+
+    create table DescriptionBase_ReferenceBase_AUD (
+        REV integer not null,
+        DescriptionBase_id integer not null,
+        descriptionsources_id integer not null,
+        revtype tinyint,
+        primary key (REV, DescriptionBase_id, descriptionsources_id)
+    );
+
+    create table DescriptionBase_Rights (
+        DescriptionBase_id integer not null,
+        rights_id integer not null,
+        primary key (DescriptionBase_id, rights_id),
+        unique (rights_id)
+    );
+
+    create table DescriptionBase_Rights_AUD (
+        REV integer not null,
+        DescriptionBase_id integer not null,
+        rights_id integer not null,
+        revtype tinyint,
+        primary key (REV, DescriptionBase_id, rights_id)
+    );
+
+    create table DescriptionBase_Scope (
+        DescriptionBase_id integer not null,
+        scopes_id integer not null,
+        primary key (DescriptionBase_id, scopes_id),
+        unique (scopes_id)
+    );
+
+    create table DescriptionBase_Scope_AUD (
+        REV integer not null,
+        DescriptionBase_id integer not null,
+        scopes_id integer not null,
+        revtype tinyint,
+        primary key (REV, DescriptionBase_id, scopes_id)
+    );
+
+    create table DescriptionBase_SpecimenOrObservationBase (
+        descriptions_id integer not null,
+        describedspecimenorobservations_id integer not null,
+        primary key (descriptions_id, describedspecimenorobservations_id)
+    );
+
+    create table DescriptionBase_SpecimenOrObservationBase_AUD (
+        REV integer not null,
+        descriptions_id integer not null,
+        describedspecimenorobservations_id integer not null,
+        revtype tinyint,
+        primary key (REV, descriptions_id, describedspecimenorobservations_id)
+    );
+
+    create table DescriptionElementBase (
+        DTYPE varchar(31) not null,
+        id integer not null,
+        created timestamp,
+        uuid varchar(255),
+        updated timestamp,
+        citationmicroreference varchar(255),
+        originalnamestring varchar(255),
+        orderrelevant bit,
+        name varchar(255),
+		modifyingtext varchar(255),
+        createdby_id integer,
+        updatedby_id integer,
+        citation_id integer,
+        feature_id integer,
+        indescription_id integer,
+        language_id integer,
+        area_id integer,
+        status_id integer,
+        associatedspecimenorobservation_id integer,
+        unit_id integer,
+        taxon2_id integer,
+        format_id integer,
+        primary key (id)
+    );
+
+    create table DescriptionElementBase_AUD (
+        DTYPE varchar(31) not null,
+        id integer not null,
+        REV integer not null,
+        revtype tinyint,
+        created timestamp,
+        uuid varchar(255),
+        updated timestamp,
+        citationmicroreference varchar(255),
+        originalnamestring varchar(255),
+        createdby_id integer,
+        updatedby_id integer,
+        citation_id integer,
+        feature_id integer,
+        indescription_id integer,
+        name varchar(255),
+        language_id integer,
+        unit_id integer,
+        format_id integer,
+        taxon2_id integer,
+        area_id integer,
+        status_id integer,
+        orderrelevant bit,
+        associatedspecimenorobservation_id integer,
+        primary key (id, REV)
+    );
+
+    create table DescriptionElementBase_Annotation (
+        DescriptionElementBase_id integer not null,
+        annotations_id integer not null,
+        primary key (DescriptionElementBase_id, annotations_id),
+        unique (annotations_id)
+    );
+
+    create table DescriptionElementBase_Annotation_AUD (
+        REV integer not null,
+        DescriptionElementBase_id integer not null,
+        annotations_id integer not null,
+        revtype tinyint,
+        primary key (REV, DescriptionElementBase_id, annotations_id)
+    );
+
+    create table DescriptionElementBase_LanguageString (
+        DescriptionElementBase_id integer not null,
+        multilanguagetext_id integer not null,
+        primary key (DescriptionElementBase_id, multilanguagetext_id),
+        unique (multilanguagetext_id)
+    );
+
+    create table DescriptionElementBase_LanguageString_AUD (
+        REV integer not null,
+        DescriptionElementBase_id integer not null,
+        multilanguagetext_id integer not null,
+        revtype tinyint,
+        primary key (REV, DescriptionElementBase_id, multilanguagetext_id)
+    );
+
+    create table DescriptionElementBase_Marker (
+        DescriptionElementBase_id integer not null,
+        markers_id integer not null,
+        primary key (DescriptionElementBase_id, markers_id),
+        unique (markers_id)
+    );
+
+    create table DescriptionElementBase_Marker_AUD (
+        REV integer not null,
+        DescriptionElementBase_id integer not null,
+        markers_id integer not null,
+        revtype tinyint,
+        primary key (REV, DescriptionElementBase_id, markers_id)
+    );
+
+    create table DescriptionElementBase_Media (
+        DescriptionElementBase_id integer not null,
+        media_id integer not null,
+        primary key (DescriptionElementBase_id, media_id),
+        unique (media_id)
+    );
+
+    create table DescriptionElementBase_Media_AUD (
+        REV integer not null,
+        DescriptionElementBase_id integer not null,
+        media_id integer not null,
+        revtype tinyint,
+        primary key (REV, DescriptionElementBase_id, media_id)
+    );
+
+    create table DescriptionElementBase_Modifier (
+        DescriptionElementBase_id integer not null,
+        modifiers_id integer not null,
+        primary key (DescriptionElementBase_id, modifiers_id),
+        unique (modifiers_id)
+    );
+
+    create table DescriptionElementBase_Modifier_AUD (
+        REV integer not null,
+        DescriptionElementBase_id integer not null,
+        modifiers_id integer not null,
+        revtype tinyint,
+        primary key (REV, DescriptionElementBase_id, modifiers_id)
+    );
+
+    create table DescriptionElementBase_ModifyingText (
+        DescriptionElementBase_id integer not null,
+        modifyingtext_id integer not null,
+        modifyingtext_mapkey_id integer not null,
+        primary key (DescriptionElementBase_id, modifyingtext_mapkey_id),
+        unique (modifyingtext_id)
+    );
+
+    create table DescriptionElementBase_ModifyingText_AUD (
+        REV integer not null,
+        DescriptionElementBase_id integer not null,
+        modifyingtext_id integer not null,
+        modifyingtext_mapkey_id integer not null,
+        revtype tinyint,
+        primary key (REV, DescriptionElementBase_id, modifyingtext_id, modifyingtext_mapkey_id)
+    );
+
+    create table DescriptionElementBase_StateData (
+        DescriptionElementBase_id integer not null,
+        states_id integer not null
+    );
+
+    create table DescriptionElementBase_StateData_AUD (
+        REV integer not null,
+        DescriptionElementBase_id integer not null,
+        states_id integer not null,
+        revtype tinyint,
+        primary key (REV, DescriptionElementBase_id, states_id)
+    );
+
+    create table DescriptionElementBase_StatisticalMeasurementValue (
+        DescriptionElementBase_id integer not null,
+        statisticalvalues_id integer not null,
+        primary key (DescriptionElementBase_id, statisticalvalues_id),
+        unique (statisticalvalues_id)
+    );
+
+    create table DescriptionElementBase_StatisticalMeasurementValue_AUD (
+        REV integer not null,
+        DescriptionElementBase_id integer not null,
+        statisticalvalues_id integer not null,
+        revtype tinyint,
+        primary key (REV, DescriptionElementBase_id, statisticalvalues_id)
+    );
+
+    create table DeterminationEvent (
+        id integer not null,
+        created timestamp,
+        uuid varchar(255),
+        updated timestamp,
+        description varchar(255),
+        timeperiod_end varchar(255),
+        timeperiod_start varchar(255),
+        preferredflag bit not null,
+        createdby_id integer,
+        updatedby_id integer,
+        actor_id integer,
+        identifiedunit_id integer,
+        modifier_id integer,
+        taxon_id integer,
+        primary key (id)
+    );
+
+    create table DeterminationEvent_AUD (
+        id integer not null,
+        REV integer not null,
+        revtype tinyint,
+        created timestamp,
+        uuid varchar(255),
+        updated timestamp,
+        description varchar(255),
+        timeperiod_end varchar(255),
+        timeperiod_start varchar(255),
+        preferredflag bit,
+        createdby_id integer,
+        updatedby_id integer,
+        actor_id integer,
+        identifiedunit_id integer,
+        modifier_id integer,
+        taxon_id integer,
+        primary key (id, REV)
+    );
+
+    create table DeterminationEvent_Annotation (
+        DeterminationEvent_id integer not null,
+        annotations_id integer not null,
+        primary key (DeterminationEvent_id, annotations_id),
+        unique (annotations_id)
+    );
+
+    create table DeterminationEvent_Annotation_AUD (
+        REV integer not null,
+        DeterminationEvent_id integer not null,
+        annotations_id integer not null,
+        revtype tinyint,
+        primary key (REV, DeterminationEvent_id, annotations_id)
+    );
+
+    create table DeterminationEvent_Marker (
+        DeterminationEvent_id integer not null,
+        markers_id integer not null,
+        primary key (DeterminationEvent_id, markers_id),
+        unique (markers_id)
+    );
+
+    create table DeterminationEvent_Marker_AUD (
+        REV integer not null,
+        DeterminationEvent_id integer not null,
+        markers_id integer not null,
+        revtype tinyint,
+        primary key (REV, DeterminationEvent_id, markers_id)
+    );
+
+    create table DeterminationEvent_ReferenceBase (
+        DeterminationEvent_id integer not null,
+        setofreferences_id integer not null,
+        primary key (DeterminationEvent_id, setofreferences_id)
+    );
+
+    create table DeterminationEvent_ReferenceBase_AUD (
+        REV integer not null,
+        DeterminationEvent_id integer not null,
+        setofreferences_id integer not null,
+        revtype tinyint,
+        primary key (REV, DeterminationEvent_id, setofreferences_id)
+    );
+
+    create table Extension (
+        id integer not null,
+        created timestamp,
+        uuid varchar(255),
+        updated timestamp,
+        extendedObj_type varchar(255),
+        extendedObj_id integer not null,
+        value varchar(255),
+        createdby_id integer,
+        updatedby_id integer,
+        type_id integer,
+        primary key (id)
+    );
+
+    create table Extension_AUD (
+        id integer not null,
+        REV integer not null,
+        revtype tinyint,
+        created timestamp,
+        uuid varchar(255),
+        updated timestamp,
+        value varchar(255),
+        createdby_id integer,
+        updatedby_id integer,
+        type_id integer,
+        primary key (id, REV)
+    );
+
+    create table FeatureNode (
+        id integer not null,
+        created timestamp,
+        uuid varchar(255),
+        updated timestamp,
+        createdby_id integer,
+        updatedby_id integer,
+        feature_id integer,
+        parent_fk integer,
+        primary key (id)
+    );
+
+    create table FeatureNode_AUD (
+        id integer not null,
+        REV integer not null,
+        revtype tinyint,
+        created timestamp,
+        uuid varchar(255),
+        updated timestamp,
+        createdby_id integer,
+        updatedby_id integer,
+        feature_id integer,
+        parent_fk integer,
+        primary key (id, REV)
+    );
+
+    create table FeatureTree (
+        id integer not null,
+        created timestamp,
+        uuid varchar(255),
+        updated timestamp,
+        uri varchar(255),
+        descriptionseparated bit not null,
+        createdby_id integer,
+        updatedby_id integer,
+        root_id integer,
+        primary key (id)
+    );
+
+    create table FeatureTree_AUD (
+        id integer not null,
+        REV integer not null,
+        revtype tinyint,
+        created timestamp,
+        uuid varchar(255),
+        updated timestamp,
+        uri varchar(255),
+        descriptionseparated bit,
+        createdby_id integer,
+        updatedby_id integer,
+        root_id integer,
+        primary key (id, REV)
+    );
+
+    create table FeatureTree_Representation (
+        FeatureTree_id integer not null,
+        representations_id integer not null,
+        primary key (FeatureTree_id, representations_id),
+        unique (representations_id)
+    );
+
+    create table FeatureTree_Representation_AUD (
+        REV integer not null,
+        FeatureTree_id integer not null,
+        representations_id integer not null,
+        revtype tinyint,
+        primary key (REV, FeatureTree_id, representations_id)
+    );
+
+    create table GatheringEvent (
+        id integer not null,
+        created timestamp,
+        uuid varchar(255),
+        updated timestamp,
+        description varchar(255),
+        timeperiod_end varchar(255),
+        timeperiod_start varchar(255),
+        absoluteelevation integer,
+        absoluteelevationerror integer,
+        collectingmethod varchar(255),
+        distancetoground integer,
+        distancetowatersurface integer,
+        exactlocation_errorradius integer,
+        exactlocation_latitude double,
+        exactlocation_longitude double,
+        createdby_id integer,
+        updatedby_id integer,
+        actor_id integer,
+        exactlocation_referencesystem_id integer,
+        locality_id integer,
+        primary key (id)
+    );
+
+    create table GatheringEvent_AUD (
+        id integer not null,
+        REV integer not null,
+        revtype tinyint,
+        created timestamp,
+        uuid varchar(255),
+        updated timestamp,
+        description varchar(255),
+        timeperiod_end varchar(255),
+        timeperiod_start varchar(255),
+        absoluteelevation integer,
+        absoluteelevationerror integer,
+        collectingmethod varchar(255),
+        distancetoground integer,
+        distancetowatersurface integer,
+        exactlocation_errorradius integer,
+        exactlocation_latitude double,
+        exactlocation_longitude double,
+        createdby_id integer,
+        updatedby_id integer,
+        actor_id integer,
+        exactlocation_referencesystem_id integer,
+        locality_id integer,
+        primary key (id, REV)
+    );
+
+    create table GatheringEvent_Annotation (
+        GatheringEvent_id integer not null,
+        annotations_id integer not null,
+        primary key (GatheringEvent_id, annotations_id),
+        unique (annotations_id)
+    );
+
+    create table GatheringEvent_Annotation_AUD (
+        REV integer not null,
+        GatheringEvent_id integer not null,
+        annotations_id integer not null,
+        revtype tinyint,
+        primary key (REV, GatheringEvent_id, annotations_id)
+    );
+
+    create table GatheringEvent_DefinedTermBase (
+        GatheringEvent_id integer not null,
+        collectingareas_id integer not null,
+        primary key (GatheringEvent_id, collectingareas_id)
+    );
+
+    create table GatheringEvent_DefinedTermBase_AUD (
+        REV integer not null,
+        GatheringEvent_id integer not null,
+        collectingareas_id integer not null,
+        revtype tinyint,
+        primary key (REV, GatheringEvent_id, collectingareas_id)
+    );
+
+    create table GatheringEvent_Marker (
+        GatheringEvent_id integer not null,
+        markers_id integer not null,
+        primary key (GatheringEvent_id, markers_id),
+        unique (markers_id)
+    );
+
+    create table GatheringEvent_Marker_AUD (
+        REV integer not null,
+        GatheringEvent_id integer not null,
+        markers_id integer not null,
+        revtype tinyint,
+        primary key (REV, GatheringEvent_id, markers_id)
+    );
+
+    create table GenBankAccession (
+        id integer not null,
+        created timestamp,
+        uuid varchar(255),
+        updated timestamp,
+        accessionnumber varchar(255),
+        uri varchar(255),
+        createdby_id integer,
+        updatedby_id integer,
+        primary key (id)
+    );
+
+    create table GenBankAccession_AUD (
+        id integer not null,
+        REV integer not null,
+        revtype tinyint,
+        created timestamp,
+        uuid varchar(255),
+        updated timestamp,
+        accessionnumber varchar(255),
+        uri varchar(255),
+        createdby_id integer,
+        updatedby_id integer,
+        primary key (id, REV)
+    );
+
+    create table GrantedAuthorityImpl (
+        id integer not null,
+        created timestamp,
+        uuid varchar(255),
+        authority varchar(255),
+        createdby_id integer,
+        primary key (id),
+        unique (authority)
+    );
+
+    create table HomotypicalGroup (
+        id integer not null,
+        created timestamp,
+        uuid varchar(255),
+        updated timestamp,
+        createdby_id integer,
+        updatedby_id integer,
+        primary key (id)
+    );
+
+    create table HomotypicalGroup_AUD (
+        id integer not null,
+        REV integer not null,
+        revtype tinyint,
+        created timestamp,
+        uuid varchar(255),
+        updated timestamp,
+        createdby_id integer,
+        updatedby_id integer,
+        primary key (id, REV)
+    );
+
+    create table HomotypicalGroup_Annotation (
+        HomotypicalGroup_id integer not null,
+        annotations_id integer not null,
+        primary key (HomotypicalGroup_id, annotations_id),
+        unique (annotations_id)
+    );
+
+    create table HomotypicalGroup_Annotation_AUD (
+        REV integer not null,
+        HomotypicalGroup_id integer not null,
+        annotations_id integer not null,
+        revtype tinyint,
+        primary key (REV, HomotypicalGroup_id, annotations_id)
+    );
+
+    create table HomotypicalGroup_Marker (
+        HomotypicalGroup_id integer not null,
+        markers_id integer not null,
+        primary key (HomotypicalGroup_id, markers_id),
+        unique (markers_id)
+    );
+
+    create table HomotypicalGroup_Marker_AUD (
+        REV integer not null,
+        HomotypicalGroup_id integer not null,
+        markers_id integer not null,
+        revtype tinyint,
+        primary key (REV, HomotypicalGroup_id, markers_id)
+    );
+
+    create table HybridRelationship (
+        id integer not null,
+        created timestamp,
+        uuid varchar(255),
+        updated timestamp,
+        citationmicroreference varchar(255),
+        originalnamestring varchar(255),
+        doubtful bit not null,
+        ruleconsidered varchar(255),
+        createdby_id integer,
+        updatedby_id integer,
+        citation_id integer,
+        relatedfrom_id integer,
+        relatedto_id integer,
+        type_id integer,
+        primary key (id)
+    );
+
+    create table HybridRelationship_AUD (
+        id integer not null,
+        REV integer not null,
+        revtype tinyint,
+        created timestamp,
+        uuid varchar(255),
+        updated timestamp,
+        citationmicroreference varchar(255),
+        originalnamestring varchar(255),
+        doubtful bit,
+        ruleconsidered varchar(255),
+        createdby_id integer,
+        updatedby_id integer,
+        citation_id integer,
+        relatedfrom_id integer,
+        relatedto_id integer,
+        type_id integer,
+        primary key (id, REV)
+    );
+
+    create table HybridRelationship_Annotation (
+        HybridRelationship_id integer not null,
+        annotations_id integer not null,
+        primary key (HybridRelationship_id, annotations_id),
+        unique (annotations_id)
+    );
+
+    create table HybridRelationship_Annotation_AUD (
+        REV integer not null,
+        HybridRelationship_id integer not null,
+        annotations_id integer not null,
+        revtype tinyint,
+        primary key (REV, HybridRelationship_id, annotations_id)
+    );
+
+    create table HybridRelationship_Marker (
+        HybridRelationship_id integer not null,
+        markers_id integer not null,
+        primary key (HybridRelationship_id, markers_id),
+        unique (markers_id)
+    );
+
+    create table HybridRelationship_Marker_AUD (
+        REV integer not null,
+        HybridRelationship_id integer not null,
+        markers_id integer not null,
+        revtype tinyint,
+        primary key (REV, HybridRelationship_id, markers_id)
+    );
+
+    create table IdentificationKey_Taxon (
+        identificationKey_fk integer not null,
+        taxon_fk integer not null,
+        primary key (identificationKey_fk, taxon_fk)
+    );
+
+    create table IdentificationKey_Taxon_AUD (
+        REV integer not null,
+        identificationKey_fk integer not null,
+        taxon_fk integer not null,
+        revtype tinyint,
+        primary key (REV, identificationKey_fk, taxon_fk)
+    );
+
+    create table IndividualAssociation_LanguageString (
+        DescriptionElementBase_id integer not null,
+        description_id integer not null,
+        description_mapkey_id integer not null,
+        primary key (DescriptionElementBase_id, description_mapkey_id),
+        unique (description_id)
+    );
+
+    create table IndividualAssociation_LanguageString_AUD (
+        REV integer not null,
+        DescriptionElementBase_id integer not null,
+        description_id integer not null,
+        description_mapkey_id integer not null,
+        revtype tinyint,
+        primary key (REV, DescriptionElementBase_id, description_id, description_mapkey_id)
+    );
+
+    create table InstitutionalMembership (
+        id integer not null,
+        created timestamp,
+        uuid varchar(255),
+        updated timestamp,
+        department varchar(255),
+        period_end varchar(255),
+        period_start varchar(255),
+        role varchar(255),
+        createdby_id integer,
+        updatedby_id integer,
+        institute_id integer,
+        person_id integer,
+        primary key (id)
+    );
+
+    create table InstitutionalMembership_AUD (
+        id integer not null,
+        REV integer not null,
+        revtype tinyint,
+        created timestamp,
+        uuid varchar(255),
+        updated timestamp,
+        department varchar(255),
+        period_end varchar(255),
+        period_start varchar(255),
+        role varchar(255),
+        createdby_id integer,
+        updatedby_id integer,
+        institute_id integer,
+        person_id integer,
+        primary key (id, REV)
+    );
+
+    create table LanguageString (
+        id integer not null,
+        created timestamp,
+        uuid varchar(255),
+        updated timestamp,
+        text varchar(4096),
+        createdby_id integer,
+        updatedby_id integer,
+        language_id integer,
+        primary key (id)
+    );
+
+    create table LanguageString_AUD (
+        id integer not null,
+        REV integer not null,
+        revtype tinyint,
+        created timestamp,
+        uuid varchar(255),
+        updated timestamp,
+        text varchar(4096),
+        createdby_id integer,
+        updatedby_id integer,
+        language_id integer,
+        primary key (id, REV)
+    );
+
+    create table LanguageString_Annotation (
+        LanguageString_id integer not null,
+        annotations_id integer not null,
+        primary key (LanguageString_id, annotations_id),
+        unique (annotations_id)
+    );
+
+    create table LanguageString_Annotation_AUD (
+        REV integer not null,
+        LanguageString_id integer not null,
+        annotations_id integer not null,
+        revtype tinyint,
+        primary key (REV, LanguageString_id, annotations_id)
+    );
+
+    create table LanguageString_Marker (
+        LanguageString_id integer not null,
+        markers_id integer not null,
+        primary key (LanguageString_id, markers_id),
+        unique (markers_id)
+    );
+
+    create table LanguageString_Marker_AUD (
+        REV integer not null,
+        LanguageString_id integer not null,
+        markers_id integer not null,
+        revtype tinyint,
+        primary key (REV, LanguageString_id, markers_id)
+    );
+
+    create table Locus (
+        id integer not null,
+        created timestamp,
+        uuid varchar(255),
+        updated timestamp,
+        description varchar(255),
+        name varchar(255),
+        createdby_id integer,
+        updatedby_id integer,
+        primary key (id)
+    );
+
+    create table Locus_AUD (
+        id integer not null,
+        REV integer not null,
+        revtype tinyint,
+        created timestamp,
+        uuid varchar(255),
+        updated timestamp,
+        description varchar(255),
+        name varchar(255),
+        createdby_id integer,
+        updatedby_id integer,
+        primary key (id, REV)
+    );
+
+    create table Marker (
+        id integer not null,
+        created timestamp,
+        uuid varchar(255),
+        updated timestamp,
+        flag bit not null,
+        markedObj_type varchar(255),
+        markedObj_id integer not null,
+        createdby_id integer,
+        updatedby_id integer,
+        markertype_id integer,
+        primary key (id)
+    );
+
+    create table Marker_AUD (
+        id integer not null,
+        REV integer not null,
+        revtype tinyint,
+        created timestamp,
+        uuid varchar(255),
+        updated timestamp,
+        flag bit,
+        createdby_id integer,
+        updatedby_id integer,
+        markertype_id integer,
+        primary key (id, REV)
+    );
+
+    create table Media (
+        DTYPE varchar(31) not null,
+        id integer not null,
+        created timestamp,
+        uuid varchar(255),
+        updated timestamp,
+        mediacreated date,
+		description varchar(255),
+		title varchar(255),
+        citationmicroreference varchar(255),
+        createdby_id integer,
+        updatedby_id integer,
+        artist_id integer,
+        citation_id integer,
+        primary key (id)
+    );
+
+    create table MediaRepresentation (
+        id integer not null,
+        created timestamp,
+        uuid varchar(255),
+        updated timestamp,
+        mimetype varchar(255),
+        suffix varchar(255),
+        createdby_id integer,
+        updatedby_id integer,
+        media_id integer,
+        primary key (id)
+    );
+
+    create table MediaRepresentationPart (
+        DTYPE varchar(31) not null,
+        id integer not null,
+        created timestamp,
+        uuid varchar(255),
+        updated timestamp,
+        size integer,
+        uri varchar(255),
+        duration integer,
+        height integer,
+        width integer,
+        createdby_id integer,
+        updatedby_id integer,
+        representation_id integer not null,
+        sortIndex integer,
+        primary key (id)
+    );
+
+    create table MediaRepresentationPart_AUD (
+        DTYPE varchar(31) not null,
+        id integer not null,
+        REV integer not null,
+        revtype tinyint,
+        created timestamp,
+        uuid varchar(255),
+        updated timestamp,
+        size integer,
+        uri varchar(255),
+        createdby_id integer,
+        updatedby_id integer,
+        representation_id integer,
+        duration integer,
+        height integer,
+        width integer,
+        primary key (id, REV)
+    );
+
+    create table MediaRepresentation_AUD (
+        id integer not null,
+        REV integer not null,
+        revtype tinyint,
+        created timestamp,
+        uuid varchar(255),
+        updated timestamp,
+        mimetype varchar(255),
+        suffix varchar(255),
+        createdby_id integer,
+        updatedby_id integer,
+        media_id integer,
+        primary key (id, REV)
+    );
+
+    create table MediaRepresentation_MediaRepresentationPart_AUD (
+        REV integer not null,
+        representation_id integer not null,
+        id integer not null,
+        sortIndex integer not null,
+        revtype tinyint,
+        primary key (REV, representation_id, id, sortIndex)
+    );
+
+    create table Media_AUD (
+        DTYPE varchar(31) not null,
+        id integer not null,
+        REV integer not null,
+        revtype tinyint,
+        created timestamp,
+        uuid varchar(255),
+        updated timestamp,
+        mediacreated date,
+        createdby_id integer,
+        updatedby_id integer,
+        artist_id integer,
+        citationmicroreference varchar(255),
+        citation_id integer,
+        primary key (id, REV)
+    );
+
+    create table Media_Annotation (
+        Media_id integer not null,
+        annotations_id integer not null,
+        primary key (Media_id, annotations_id),
+        unique (annotations_id)
+    );
+
+    create table Media_Annotation_AUD (
+        REV integer not null,
+        Media_id integer not null,
+        annotations_id integer not null,
+        revtype tinyint,
+        primary key (REV, Media_id, annotations_id)
+    );
+
+    create table Media_DefinedTermBase (
+        Media_id integer not null,
+        geoscopes_id integer not null,
+        primary key (Media_id, geoscopes_id)
+    );
+
+    create table Media_DefinedTermBase_AUD (
+        REV integer not null,
+        Media_id integer not null,
+        geoscopes_id integer not null,
+        revtype tinyint,
+        primary key (REV, Media_id, geoscopes_id)
+    );
+
+    create table Media_Description (
+        Media_id integer not null,
+        description_id integer not null,
+        description_mapkey_id integer not null,
+        primary key (Media_id, description_mapkey_id),
+        unique (description_id)
+    );
+
+    create table Media_Description_AUD (
+        REV integer not null,
+        Media_id integer not null,
+        description_id integer not null,
+        description_mapkey_id integer not null,
+        revtype tinyint,
+        primary key (REV, Media_id, description_id, description_mapkey_id)
+    );
+
+    create table Media_LanguageString (
+        Media_id integer not null,
+        title_id integer not null,
+        title_mapkey_id integer not null,
+        primary key (Media_id, title_mapkey_id),
+        unique (title_id)
+    );
+
+    create table Media_LanguageString_AUD (
+        REV integer not null,
+        Media_id integer not null,
+        title_id integer not null,
+        title_mapkey_id integer not null,
+        revtype tinyint,
+        primary key (REV, Media_id, title_id, title_mapkey_id)
+    );
+
+    create table Media_Marker (
+        Media_id integer not null,
+        markers_id integer not null,
+        primary key (Media_id, markers_id),
+        unique (markers_id)
+    );
+
+    create table Media_Marker_AUD (
+        REV integer not null,
+        Media_id integer not null,
+        markers_id integer not null,
+        revtype tinyint,
+        primary key (REV, Media_id, markers_id)
+    );
+
+    create table Media_Rights (
+        Media_id integer not null,
+        rights_id integer not null,
+        primary key (Media_id, rights_id)
+    );
+
+    create table Media_Rights_AUD (
+        REV integer not null,
+        Media_id integer not null,
+        rights_id integer not null,
+        revtype tinyint,
+        primary key (REV, Media_id, rights_id)
+    );
+
+    create table Media_Sequence (
+        Media_id integer not null,
+        usedsequences_id integer not null,
+        primary key (Media_id, usedsequences_id),
+        unique (usedsequences_id)
+    );
+
+    create table Media_Sequence_AUD (
+        REV integer not null,
+        Media_id integer not null,
+        usedsequences_id integer not null,
+        revtype tinyint,
+        primary key (REV, Media_id, usedsequences_id)
+    );
+
+    create table Media_TaxonBase (
+        Media_id integer not null,
+        coveredtaxa_id integer not null,
+        primary key (Media_id, coveredtaxa_id),
+        unique (coveredtaxa_id)
+    );
+
+    create table Media_TaxonBase_AUD (
+        REV integer not null,
+        Media_id integer not null,
+        coveredtaxa_id integer not null,
+        revtype tinyint,
+        primary key (REV, Media_id, coveredtaxa_id)
+    );
+
+    create table NameRelationship (
+        id integer not null,
+        created timestamp,
+        uuid varchar(255),
+        updated timestamp,
+        citationmicroreference varchar(255),
+        originalnamestring varchar(255),
+        doubtful bit not null,
+        ruleconsidered varchar(255),
+        createdby_id integer,
+        updatedby_id integer,
+        citation_id integer,
+        relatedfrom_id integer,
+        relatedto_id integer,
+        type_id integer,
+        primary key (id)
+    );
+
+    create table NameRelationship_AUD (
+        id integer not null,
+        REV integer not null,
+        revtype tinyint,
+        created timestamp,
+        uuid varchar(255),
+        updated timestamp,
+        citationmicroreference varchar(255),
+        originalnamestring varchar(255),
+        doubtful bit,
+        ruleconsidered varchar(255),
+        createdby_id integer,
+        updatedby_id integer,
+        citation_id integer,
+        relatedfrom_id integer,
+        relatedto_id integer,
+        type_id integer,
+        primary key (id, REV)
+    );
+
+    create table NameRelationship_Annotation (
+        NameRelationship_id integer not null,
+        annotations_id integer not null,
+        primary key (NameRelationship_id, annotations_id),
+        unique (annotations_id)
+    );
+
+    create table NameRelationship_Annotation_AUD (
+        REV integer not null,
+        NameRelationship_id integer not null,
+        annotations_id integer not null,
+        revtype tinyint,
+        primary key (REV, NameRelationship_id, annotations_id)
+    );
+
+    create table NameRelationship_Marker (
+        NameRelationship_id integer not null,
+        markers_id integer not null,
+        primary key (NameRelationship_id, markers_id),
+        unique (markers_id)
+    );
+
+    create table NameRelationship_Marker_AUD (
+        REV integer not null,
+        NameRelationship_id integer not null,
+        markers_id integer not null,
+        revtype tinyint,
+        primary key (REV, NameRelationship_id, markers_id)
+    );
+
+    create table NomenclaturalStatus (
+        id integer not null,
+        created timestamp,
+        uuid varchar(255),
+        updated timestamp,
+        citationmicroreference varchar(255),
+        originalnamestring varchar(255),
+        ruleconsidered varchar(255),
+        createdby_id integer,
+        updatedby_id integer,
+        citation_id integer,
+        type_id integer,
+        primary key (id)
+    );
+
+    create table NomenclaturalStatus_AUD (
+        id integer not null,
+        REV integer not null,
+        revtype tinyint,
+        created timestamp,
+        uuid varchar(255),
+        updated timestamp,
+        citationmicroreference varchar(255),
+        originalnamestring varchar(255),
+        ruleconsidered varchar(255),
+        createdby_id integer,
+        updatedby_id integer,
+        citation_id integer,
+        type_id integer,
+        primary key (id, REV)
+    );
+
+    create table NomenclaturalStatus_Annotation (
+        NomenclaturalStatus_id integer not null,
+        annotations_id integer not null,
+        primary key (NomenclaturalStatus_id, annotations_id),
+        unique (annotations_id)
+    );
+
+    create table NomenclaturalStatus_Annotation_AUD (
+        REV integer not null,
+        NomenclaturalStatus_id integer not null,
+        annotations_id integer not null,
+        revtype tinyint,
+        primary key (REV, NomenclaturalStatus_id, annotations_id)
+    );
+
+    create table NomenclaturalStatus_Marker (
+        NomenclaturalStatus_id integer not null,
+        markers_id integer not null,
+        primary key (NomenclaturalStatus_id, markers_id),
+        unique (markers_id)
+    );
+
+    create table NomenclaturalStatus_Marker_AUD (
+        REV integer not null,
+        NomenclaturalStatus_id integer not null,
+        markers_id integer not null,
+        revtype tinyint,
+        primary key (REV, NomenclaturalStatus_id, markers_id)
+    );
+
+    create table OriginalSource (
+        id integer not null,
+        created timestamp,
+        uuid varchar(255),
+        updated timestamp,
+        citationmicroreference varchar(255),
+        originalnamestring varchar(255),
+        idinsource varchar(255),
+        idnamespace varchar(255),
+        sourcedObj_type varchar(255),
+        sourcedObj_id integer not null,
+        createdby_id integer,
+        updatedby_id integer,
+        citation_id integer,
+        primary key (id)
+    );
+
+    create table OriginalSource_AUD (
+        id integer not null,
+        REV integer not null,
+        revtype tinyint,
+        created timestamp,
+        uuid varchar(255),
+        updated timestamp,
+        citationmicroreference varchar(255),
+        originalnamestring varchar(255),
+        idinsource varchar(255),
+        idnamespace varchar(255),
+        createdby_id integer,
+        updatedby_id integer,
+        citation_id integer,
+        primary key (id, REV)
+    );
+
+    create table OriginalSource_Annotation (
+        OriginalSource_id integer not null,
+        annotations_id integer not null,
+        primary key (OriginalSource_id, annotations_id),
+        unique (annotations_id)
+    );
+
+    create table OriginalSource_Annotation_AUD (
+        REV integer not null,
+        OriginalSource_id integer not null,
+        annotations_id integer not null,
+        revtype tinyint,
+        primary key (REV, OriginalSource_id, annotations_id)
+    );
+
+    create table OriginalSource_Marker (
+        OriginalSource_id integer not null,
+        markers_id integer not null,
+        primary key (OriginalSource_id, markers_id),
+        unique (markers_id)
+    );
+
+    create table OriginalSource_Marker_AUD (
+        REV integer not null,
+        OriginalSource_id integer not null,
+        markers_id integer not null,
+        revtype tinyint,
+        primary key (REV, OriginalSource_id, markers_id)
+    );
+
+    create table PermissionGroup (
+        id integer not null,
+        created timestamp,
+        uuid varchar(255),
+        name varchar(255),
+        createdby_id integer,
+        primary key (id),
+        unique (name)
+    );
+
+    create table PermissionGroup_GrantedAuthorityImpl (
+        PermissionGroup_id integer not null,
+        grantedauthorities_id integer not null,
+        primary key (PermissionGroup_id, grantedauthorities_id)
+    );
+
+    create table Person_Keyword (
+        person_fk integer not null,
+        keyword_fk integer not null,
+        primary key (person_fk, keyword_fk)
+    );
+
+    create table Person_Keyword_AUD (
+        REV integer not null,
+        person_fk integer not null,
+        keyword_fk integer not null,
+        revtype tinyint,
+        primary key (REV, person_fk, keyword_fk)
+    );
+
+    create table ReferenceBase (
+        DTYPE varchar(31) not null,
+        id integer not null,
+        created timestamp,
+        uuid varchar(255),
+        updated timestamp,
+        lsid varchar(255),
+        protectedtitlecache bit not null,
+        titleCache varchar(255),
+        hasproblem bit not null,
+        nomenclaturallyrelevant bit not null,
+        problemends integer not null,
+        problemstarts integer not null,
+        uri varchar(255),
+        datepublished_end varchar(255),
+        datepublished_start varchar(255),
+        title varchar(255),
+        pages varchar(255),
+        series varchar(255),
+        volume varchar(255),
+        address varchar(255),
+        annote varchar(255),
+        booktitle varchar(255),
+        chapter varchar(255),
+        edition varchar(255),
+        editor varchar(255),
+        eprint varchar(255),
+        howpublished varchar(255),
+        institution varchar(255),
+        journal varchar(255),
+        month varchar(255),
+        note varchar(255),
+        number varchar(255),
+        organization varchar(255),
+        publisher varchar(255),
+        reporttype varchar(255),
+        school varchar(255),
+        year varchar(255),
+        placepublished varchar(255),
+        seriespart varchar(255),
+        isbn varchar(255),
+        issn varchar(255),
+        createdby_id integer,
+        updatedby_id integer,
+        authorteam_id integer,
+        injournal_id integer,
+        crossref_id integer,
+        type_id integer,
+        inseries_id integer,
+        inbook_id integer,
+        inproceedings_id integer,
+        institution_id integer,
+        school_id integer,
+        primary key (id)
+    );
+
+    create table ReferenceBase_AUD (
+        DTYPE varchar(31) not null,
+        id integer not null,
+        REV integer not null,
+        revtype tinyint,
+        created timestamp,
+        uuid varchar(255),
+        updated timestamp,
+        lsid varchar(255),
+        protectedtitlecache bit,
+        titleCache varchar(255),
+        hasproblem bit,
+        nomenclaturallyrelevant bit,
+        problemends integer,
+        problemstarts integer,
+        uri varchar(255),
+        createdby_id integer,
+        updatedby_id integer,
+        authorteam_id integer,
+        datepublished_end varchar(255),
+        datepublished_start varchar(255),
+        title varchar(255),
+        pages varchar(255),
+        placepublished varchar(255),
+        publisher varchar(255),
+        school_id integer,
+        editor varchar(255),
+        seriespart varchar(255),
+        volume varchar(255),
+        inseries_id integer,
+        edition varchar(255),
+        isbn varchar(255),
+        organization varchar(255),
+        series varchar(255),
+        issn varchar(255),
+        address varchar(255),
+        annote varchar(255),
+        booktitle varchar(255),
+        chapter varchar(255),
+        eprint varchar(255),
+        howpublished varchar(255),
+        institution varchar(255),
+        journal varchar(255),
+        month varchar(255),
+        note varchar(255),
+        number varchar(255),
+        reporttype varchar(255),
+        school varchar(255),
+        year varchar(255),
+        crossref_id integer,
+        type_id integer,
+        inbook_id integer,
+        injournal_id integer,
+        inproceedings_id integer,
+        institution_id integer,
+        primary key (id, REV)
+    );
+
+    create table ReferenceBase_Annotation (
+        ReferenceBase_id integer not null,
+        annotations_id integer not null,
+        primary key (ReferenceBase_id, annotations_id),
+        unique (annotations_id)
+    );
+
+    create table ReferenceBase_Annotation_AUD (
+        REV integer not null,
+        ReferenceBase_id integer not null,
+        annotations_id integer not null,
+        revtype tinyint,
+        primary key (REV, ReferenceBase_id, annotations_id)
+    );
+
+    create table ReferenceBase_Extension (
+        ReferenceBase_id integer not null,
+        extensions_id integer not null,
+        primary key (ReferenceBase_id, extensions_id),
+        unique (extensions_id)
+    );
+
+    create table ReferenceBase_Extension_AUD (
+        REV integer not null,
+        ReferenceBase_id integer not null,
+        extensions_id integer not null,
+        revtype tinyint,
+        primary key (REV, ReferenceBase_id, extensions_id)
+    );
+
+    create table ReferenceBase_Marker (
+        ReferenceBase_id integer not null,
+        markers_id integer not null,
+        primary key (ReferenceBase_id, markers_id),
+        unique (markers_id)
+    );
+
+    create table ReferenceBase_Marker_AUD (
+        REV integer not null,
+        ReferenceBase_id integer not null,
+        markers_id integer not null,
+        revtype tinyint,
+        primary key (REV, ReferenceBase_id, markers_id)
+    );
+
+    create table ReferenceBase_Media (
+        ReferenceBase_id integer not null,
+        media_id integer not null,
+        primary key (ReferenceBase_id, media_id),
+        unique (media_id)
+    );
+
+    create table ReferenceBase_Media_AUD (
+        REV integer not null,
+        ReferenceBase_id integer not null,
+        media_id integer not null,
+        revtype tinyint,
+        primary key (REV, ReferenceBase_id, media_id)
+    );
+
+    create table ReferenceBase_OriginalSource (
+        ReferenceBase_id integer not null,
+        sources_id integer not null,
+        primary key (ReferenceBase_id, sources_id),
+        unique (sources_id)
+    );
+
+    create table ReferenceBase_OriginalSource_AUD (
+        REV integer not null,
+        ReferenceBase_id integer not null,
+        sources_id integer not null,
+        revtype tinyint,
+        primary key (REV, ReferenceBase_id, sources_id)
+    );
+
+    create table ReferenceBase_Rights (
+        ReferenceBase_id integer not null,
+        rights_id integer not null,
+        primary key (ReferenceBase_id, rights_id),
+        unique (rights_id)
+    );
+
+    create table ReferenceBase_Rights_AUD (
+        REV integer not null,
+        ReferenceBase_id integer not null,
+        rights_id integer not null,
+        revtype tinyint,
+        primary key (REV, ReferenceBase_id, rights_id)
+    );
+
+    create table RelationshipTermBase_inverseRepresentation (
+        DefinedTermBase_id integer not null,
+        inverserepresentations_id integer not null,
+        primary key (DefinedTermBase_id, inverserepresentations_id),
+        unique (inverserepresentations_id)
+    );
+
+    create table RelationshipTermBase_inverseRepresentation_AUD (
+        REV integer not null,
+        DefinedTermBase_id integer not null,
+        inverserepresentations_id integer not null,
+        revtype tinyint,
+        primary key (REV, DefinedTermBase_id, inverserepresentations_id)
+    );
+
+    create table Representation (
+        id integer not null,
+        created timestamp,
+        uuid varchar(255),
+        updated timestamp,
+        text varchar(4096),
+        abbreviatedlabel varchar(255),
+        label varchar(255),
+        createdby_id integer,
+        updatedby_id integer,
+        language_id integer,
+        primary key (id)
+    );
+
+    create table Representation_AUD (
+        id integer not null,
+        REV integer not null,
+        revtype tinyint,
+        created timestamp,
+        uuid varchar(255),
+        updated timestamp,
+        text varchar(4096),
+        abbreviatedlabel varchar(255),
+        label varchar(255),
+        createdby_id integer,
+        updatedby_id integer,
+        language_id integer,
+        primary key (id, REV)
+    );
+
+    create table Representation_Annotation (
+        Representation_id integer not null,
+        annotations_id integer not null,
+        primary key (Representation_id, annotations_id),
+        unique (annotations_id)
+    );
+
+    create table Representation_Annotation_AUD (
+        REV integer not null,
+        Representation_id integer not null,
+        annotations_id integer not null,
+        revtype tinyint,
+        primary key (REV, Representation_id, annotations_id)
+    );
+
+    create table Representation_Marker (
+        Representation_id integer not null,
+        markers_id integer not null,
+        primary key (Representation_id, markers_id),
+        unique (markers_id)
+    );
+
+    create table Representation_Marker_AUD (
+        REV integer not null,
+        Representation_id integer not null,
+        markers_id integer not null,
+        revtype tinyint,
+        primary key (REV, Representation_id, markers_id)
+    );
+
+    create table Rights (
+        id integer not null,
+        created timestamp,
+        uuid varchar(255),
+        updated timestamp,
+        text varchar(4096),
+        abbreviatedtext varchar(255),
+        uri varchar(255),
+        createdby_id integer,
+        updatedby_id integer,
+        language_id integer,
+        agent_id integer,
+        type_id integer,
+        primary key (id)
+    );
+
+    create table Rights_AUD (
+        id integer not null,
+        REV integer not null,
+        revtype tinyint,
+        created timestamp,
+        uuid varchar(255),
+        updated timestamp,
+        text varchar(4096),
+        abbreviatedtext varchar(255),
+        uri varchar(255),
+        createdby_id integer,
+        updatedby_id integer,
+        language_id integer,
+        agent_id integer,
+        type_id integer,
+        primary key (id, REV)
+    );
+
+    create table Rights_Annotation (
+        Rights_id integer not null,
+        annotations_id integer not null,
+        primary key (Rights_id, annotations_id),
+        unique (annotations_id)
+    );
+
+    create table Rights_Annotation_AUD (
+        REV integer not null,
+        Rights_id integer not null,
+        annotations_id integer not null,
+        revtype tinyint,
+        primary key (REV, Rights_id, annotations_id)
+    );
+
+    create table Rights_Marker (
+        Rights_id integer not null,
+        markers_id integer not null,
+        primary key (Rights_id, markers_id),
+        unique (markers_id)
+    );
+
+    create table Rights_Marker_AUD (
+        REV integer not null,
+        Rights_id integer not null,
+        markers_id integer not null,
+        revtype tinyint,
+        primary key (REV, Rights_id, markers_id)
+    );
+
+    create table Sequence (
+        id integer not null,
+        created timestamp,
+        uuid varchar(255),
+        updated timestamp,
+        lsid varchar(255),
+        protectedtitlecache bit not null,
+        titleCache varchar(255),
+        barcode bit not null,
+        citationmicroreference varchar(255),
+        datesequenced date,
+        length integer,
+        locus varbinary(255),
+        sequence varchar(255),
+        createdby_id integer,
+        updatedby_id integer,
+        publishedin_id integer,
+        primary key (id)
+    );
+
+    create table Sequence_AUD (
+        id integer not null,
+        REV integer not null,
+        revtype tinyint,
+        created timestamp,
+        uuid varchar(255),
+        updated timestamp,
+        lsid varchar(255),
+        protectedtitlecache bit,
+        titleCache varchar(255),
+        barcode bit,
+        citationmicroreference varchar(255),
+        datesequenced date,
+        length integer,
+        locus varbinary(255),
+        sequence varchar(255),
+        createdby_id integer,
+        updatedby_id integer,
+        publishedin_id integer,
+        primary key (id, REV)
+    );
+
+    create table Sequence_Annotation (
+        Sequence_id integer not null,
+        annotations_id integer not null,
+        primary key (Sequence_id, annotations_id),
+        unique (annotations_id)
+    );
+
+    create table Sequence_Annotation_AUD (
+        REV integer not null,
+        Sequence_id integer not null,
+        annotations_id integer not null,
+        revtype tinyint,
+        primary key (REV, Sequence_id, annotations_id)
+    );
+
+    create table Sequence_Extension (
+        Sequence_id integer not null,
+        extensions_id integer not null,
+        primary key (Sequence_id, extensions_id),
+        unique (extensions_id)
+    );
+
+    create table Sequence_Extension_AUD (
+        REV integer not null,
+        Sequence_id integer not null,
+        extensions_id integer not null,
+        revtype tinyint,
+        primary key (REV, Sequence_id, extensions_id)
+    );
+
+    create table Sequence_GenBankAccession (
+        Sequence_id integer not null,
+        genbankaccession_id integer not null,
+        primary key (Sequence_id, genbankaccession_id),
+        unique (genbankaccession_id)
+    );
+
+    create table Sequence_GenBankAccession_AUD (
+        REV integer not null,
+        Sequence_id integer not null,
+        genbankaccession_id integer not null,
+        revtype tinyint,
+        primary key (REV, Sequence_id, genbankaccession_id)
+    );
+
+    create table Sequence_Marker (
+        Sequence_id integer not null,
+        markers_id integer not null,
+        primary key (Sequence_id, markers_id),
+        unique (markers_id)
+    );
+
+    create table Sequence_Marker_AUD (
+        REV integer not null,
+        Sequence_id integer not null,
+        markers_id integer not null,
+        revtype tinyint,
+        primary key (REV, Sequence_id, markers_id)
+    );
+
+    create table Sequence_Media (
+        Sequence_id integer not null,
+        chromatograms_id integer not null,
+        primary key (Sequence_id, chromatograms_id),
+        unique (chromatograms_id)
+    );
+
+    create table Sequence_Media_AUD (
+        REV integer not null,
+        Sequence_id integer not null,
+        chromatograms_id integer not null,
+        revtype tinyint,
+        primary key (REV, Sequence_id, chromatograms_id)
+    );
+
+    create table Sequence_OriginalSource (
+        Sequence_id integer not null,
+        sources_id integer not null,
+        primary key (Sequence_id, sources_id),
+        unique (sources_id)
+    );
+
+    create table Sequence_OriginalSource_AUD (
+        REV integer not null,
+        Sequence_id integer not null,
+        sources_id integer not null,
+        revtype tinyint,
+        primary key (REV, Sequence_id, sources_id)
+    );
+
+    create table Sequence_ReferenceBase (
+        Sequence_id integer not null,
+        citations_id integer not null,
+        primary key (Sequence_id, citations_id),
+        unique (citations_id)
+    );
+
+    create table Sequence_ReferenceBase_AUD (
+        REV integer not null,
+        Sequence_id integer not null,
+        citations_id integer not null,
+        revtype tinyint,
+        primary key (REV, Sequence_id, citations_id)
+    );
+
+    create table Sequence_Rights (
+        Sequence_id integer not null,
+        rights_id integer not null,
+        primary key (Sequence_id, rights_id),
+        unique (rights_id)
+    );
+
+    create table Sequence_Rights_AUD (
+        REV integer not null,
+        Sequence_id integer not null,
+        rights_id integer not null,
+        revtype tinyint,
+        primary key (REV, Sequence_id, rights_id)
+    );
+
+    create table SpecimenOrObservationBase (
+        DTYPE varchar(31) not null,
+        id integer not null,
+        created timestamp,
+        uuid varchar(255),
+        updated timestamp,
+        lsid varchar(255),
+        protectedtitlecache bit not null,
+        titleCache varchar(255),
+        individualcount integer,
+        accessionnumber varchar(255),
+        catalognumber varchar(255),
+        collectorsnumber varchar(255),
+        fieldnotes varchar(255),
+        fieldnumber varchar(255),
+        createdby_id integer,
+        updatedby_id integer,
+        lifestage_id integer,
+        sex_id integer,
+        collection_id integer,
+        derivationevent_id integer,
+        storedunder_id integer,
+        preservation_id integer,
+        gatheringevent_id integer,
+        primary key (id)
+    );
+
+    create table SpecimenOrObservationBase_AUD (
+        DTYPE varchar(31) not null,
+        id integer not null,
+        REV integer not null,
+        revtype tinyint,
+        created timestamp,
+        uuid varchar(255),
+        updated timestamp,
+        lsid varchar(255),
+        protectedtitlecache bit,
+        titleCache varchar(255),
+        individualcount integer,
+        createdby_id integer,
+        updatedby_id integer,
+        lifestage_id integer,
+        sex_id integer,
+        accessionnumber varchar(255),
+        catalognumber varchar(255),
+        collectorsnumber varchar(255),
+        collection_id integer,
+        derivationevent_id integer,
+        storedunder_id integer,
+        fieldnotes varchar(255),
+        fieldnumber varchar(255),
+        gatheringevent_id integer,
+        preservation_id integer,
+        primary key (id, REV)
+    );
+
+    create table SpecimenOrObservationBase_Annotation (
+        SpecimenOrObservationBase_id integer not null,
+        annotations_id integer not null,
+        primary key (SpecimenOrObservationBase_id, annotations_id),
+        unique (annotations_id)
+    );
+
+    create table SpecimenOrObservationBase_Annotation_AUD (
+        REV integer not null,
+        SpecimenOrObservationBase_id integer not null,
+        annotations_id integer not null,
+        revtype tinyint,
+        primary key (REV, SpecimenOrObservationBase_id, annotations_id)
+    );
+
+    create table SpecimenOrObservationBase_DerivationEvent (
+        originals_id integer not null,
+        derivationevents_id integer not null,
+        primary key (originals_id, derivationevents_id)
+    );
+
+    create table SpecimenOrObservationBase_DerivationEvent_AUD (
+        REV integer not null,
+        originals_id integer not null,
+        derivationevents_id integer not null,
+        revtype tinyint,
+        primary key (REV, originals_id, derivationevents_id)
+    );
+
+    create table SpecimenOrObservationBase_Extension (
+        SpecimenOrObservationBase_id integer not null,
+        extensions_id integer not null,
+        primary key (SpecimenOrObservationBase_id, extensions_id),
+        unique (extensions_id)
+    );
+
+    create table SpecimenOrObservationBase_Extension_AUD (
+        REV integer not null,
+        SpecimenOrObservationBase_id integer not null,
+        extensions_id integer not null,
+        revtype tinyint,
+        primary key (REV, SpecimenOrObservationBase_id, extensions_id)
+    );
+
+    create table SpecimenOrObservationBase_LanguageString (
+        SpecimenOrObservationBase_id integer not null,
+        description_id integer not null,
+        description_mapkey_id integer not null,
+        primary key (SpecimenOrObservationBase_id, description_mapkey_id),
+        unique (description_id)
+    );
+
+    create table SpecimenOrObservationBase_LanguageString_AUD (
+        REV integer not null,
+        SpecimenOrObservationBase_id integer not null,
+        description_id integer not null,
+        description_mapkey_id integer not null,
+        revtype tinyint,
+        primary key (REV, SpecimenOrObservationBase_id, description_id, description_mapkey_id)
+    );
+
+    create table SpecimenOrObservationBase_Marker (
+        SpecimenOrObservationBase_id integer not null,
+        markers_id integer not null,
+        primary key (SpecimenOrObservationBase_id, markers_id),
+        unique (markers_id)
+    );
+
+    create table SpecimenOrObservationBase_Marker_AUD (
+        REV integer not null,
+        SpecimenOrObservationBase_id integer not null,
+        markers_id integer not null,
+        revtype tinyint,
+        primary key (REV, SpecimenOrObservationBase_id, markers_id)
+    );
+
+    create table SpecimenOrObservationBase_Media (
+        SpecimenOrObservationBase_id integer not null,
+        media_id integer not null,
+        primary key (SpecimenOrObservationBase_id, media_id),
+        unique (media_id)
+    );
+
+    create table SpecimenOrObservationBase_Media_AUD (
+        REV integer not null,
+        SpecimenOrObservationBase_id integer not null,
+        media_id integer not null,
+        revtype tinyint,
+        primary key (REV, SpecimenOrObservationBase_id, media_id)
+    );
+
+    create table SpecimenOrObservationBase_OriginalSource (
+        SpecimenOrObservationBase_id integer not null,
+        sources_id integer not null,
+        primary key (SpecimenOrObservationBase_id, sources_id),
+        unique (sources_id)
+    );
+
+    create table SpecimenOrObservationBase_OriginalSource_AUD (
+        REV integer not null,
+        SpecimenOrObservationBase_id integer not null,
+        sources_id integer not null,
+        revtype tinyint,
+        primary key (REV, SpecimenOrObservationBase_id, sources_id)
+    );
+
+    create table SpecimenOrObservationBase_Rights (
+        SpecimenOrObservationBase_id integer not null,
+        rights_id integer not null,
+        primary key (SpecimenOrObservationBase_id, rights_id),
+        unique (rights_id)
+    );
+
+    create table SpecimenOrObservationBase_Rights_AUD (
+        REV integer not null,
+        SpecimenOrObservationBase_id integer not null,
+        rights_id integer not null,
+        revtype tinyint,
+        primary key (REV, SpecimenOrObservationBase_id, rights_id)
+    );
+
+    create table SpecimenOrObservationBase_Sequence (
+        SpecimenOrObservationBase_id integer not null,
+        sequences_id integer not null,
+        primary key (SpecimenOrObservationBase_id, sequences_id),
+        unique (sequences_id)
+    );
+
+    create table SpecimenOrObservationBase_Sequence_AUD (
+        REV integer not null,
+        SpecimenOrObservationBase_id integer not null,
+        sequences_id integer not null,
+        revtype tinyint,
+        primary key (REV, SpecimenOrObservationBase_id, sequences_id)
+    );
+
+    create table StateData (
+        id integer not null,
+        created timestamp,
+        uuid varchar(255),
+        updated timestamp,
+        createdby_id integer,
+        updatedby_id integer,
+        state_id integer,
+        primary key (id)
+    );
+
+    create table StateData_AUD (
+        id integer not null,
+        REV integer not null,
+        revtype tinyint,
+        created timestamp,
+        uuid varchar(255),
+        updated timestamp,
+        createdby_id integer,
+        updatedby_id integer,
+        state_id integer,
+        primary key (id, REV)
+    );
+
+    create table StateData_DefinedTermBase (
+        StateData_id integer not null,
+        modifiers_id integer not null,
+        primary key (StateData_id, modifiers_id),
+        unique (modifiers_id)
+    );
+
+    create table StateData_DefinedTermBase_AUD (
+        REV integer not null,
+        StateData_id integer not null,
+        modifiers_id integer not null,
+        revtype tinyint,
+        primary key (REV, StateData_id, modifiers_id)
+    );
+
+    create table StateData_LanguageString (
+        StateData_id integer not null,
+        modifyingtext_id integer not null,
+        modifyingtext_mapkey_id integer not null,
+        primary key (StateData_id, modifyingtext_mapkey_id),
+        unique (modifyingtext_id)
+    );
+
+    create table StateData_LanguageString_AUD (
+        REV integer not null,
+        StateData_id integer not null,
+        modifyingtext_id integer not null,
+        modifyingtext_mapkey_id integer not null,
+        revtype tinyint,
+        primary key (REV, StateData_id, modifyingtext_id, modifyingtext_mapkey_id)
+    );
+
+    create table StatisticalMeasurementValue (
+        id integer not null,
+        created timestamp,
+        uuid varchar(255),
+        updated timestamp,
+        value float not null,
+        createdby_id integer,
+        updatedby_id integer,
+        type_id integer,
+        primary key (id)
+    );
+
+    create table StatisticalMeasurementValue_AUD (
+        id integer not null,
+        REV integer not null,
+        revtype tinyint,
+        created timestamp,
+        uuid varchar(255),
+        updated timestamp,
+        value float,
+        createdby_id integer,
+        updatedby_id integer,
+        type_id integer,
+        primary key (id, REV)
+    );
+
+    create table StatisticalMeasurementValue_DefinedTermBase (
+        StatisticalMeasurementValue_id integer not null,
+        modifiers_id integer not null,
+        primary key (StatisticalMeasurementValue_id, modifiers_id),
+        unique (modifiers_id)
+    );
+
+    create table StatisticalMeasurementValue_DefinedTermBase_AUD (
+        REV integer not null,
+        StatisticalMeasurementValue_id integer not null,
+        modifiers_id integer not null,
+        revtype tinyint,
+        primary key (REV, StatisticalMeasurementValue_id, modifiers_id)
+    );
+
+    create table SynonymRelationship (
+        id integer not null,
+        created timestamp,
+        uuid varchar(255),
+        updated timestamp,
+        citationmicroreference varchar(255),
+        originalnamestring varchar(255),
+        doubtful bit not null,
+        partial bit not null,
+        proparte bit not null,
+        createdby_id integer,
+        updatedby_id integer,
+        citation_id integer,
+        relatedfrom_id integer,
+        relatedto_id integer,
+        type_id integer,
+        primary key (id)
+    );
+
+    create table SynonymRelationship_AUD (
+        id integer not null,
+        REV integer not null,
+        revtype tinyint,
+        created timestamp,
+        uuid varchar(255),
+        updated timestamp,
+        citationmicroreference varchar(255),
+        originalnamestring varchar(255),
+        doubtful bit,
+        partial bit,
+        proparte bit,
+        createdby_id integer,
+        updatedby_id integer,
+        citation_id integer,
+        relatedfrom_id integer,
+        relatedto_id integer,
+        type_id integer,
+        primary key (id, REV)
+    );
+
+    create table SynonymRelationship_Annotation (
+        SynonymRelationship_id integer not null,
+        annotations_id integer not null,
+        primary key (SynonymRelationship_id, annotations_id),
+        unique (annotations_id)
+    );
+
+    create table SynonymRelationship_Annotation_AUD (
+        REV integer not null,
+        SynonymRelationship_id integer not null,
+        annotations_id integer not null,
+        revtype tinyint,
+        primary key (REV, SynonymRelationship_id, annotations_id)
+    );
+
+    create table SynonymRelationship_Marker (
+        SynonymRelationship_id integer not null,
+        markers_id integer not null,
+        primary key (SynonymRelationship_id, markers_id),
+        unique (markers_id)
+    );
+
+    create table SynonymRelationship_Marker_AUD (
+        REV integer not null,
+        SynonymRelationship_id integer not null,
+        markers_id integer not null,
+        revtype tinyint,
+        primary key (REV, SynonymRelationship_id, markers_id)
+    );
+
+    create table TaxonBase (
+        DTYPE varchar(31) not null,
+        id integer not null,
+        created timestamp,
+        uuid varchar(255),
+        updated timestamp,
+        lsid varchar(255),
+        protectedtitlecache bit not null,
+        titleCache varchar(255),
+        doubtful bit not null,
+        taxonomicchildrencount integer,
+        createdby_id integer,
+        updatedby_id integer,
+        taxonName_fk integer,
+        sec_id integer,
+        taxonomicparentcache_id integer,
+        primary key (id)
+    );
+
+    create table TaxonBase_AUD (
+        DTYPE varchar(31) not null,
+        id integer not null,
+        REV integer not null,
+        revtype tinyint,
+        created timestamp,
+        uuid varchar(255),
+        updated timestamp,
+        lsid varchar(255),
+        protectedtitlecache bit,
+        titleCache varchar(255),
+        doubtful bit,
+        createdby_id integer,
+        updatedby_id integer,
+        taxonName_fk integer,
+        sec_id integer,
+        taxonomicchildrencount integer,
+        taxonomicparentcache_id integer,
+        primary key (id, REV)
+    );
+
+    create table TaxonBase_Annotation (
+        TaxonBase_id integer not null,
+        annotations_id integer not null,
+        primary key (TaxonBase_id, annotations_id),
+        unique (annotations_id)
+    );
+
+    create table TaxonBase_Annotation_AUD (
+        REV integer not null,
+        TaxonBase_id integer not null,
+        annotations_id integer not null,
+        revtype tinyint,
+        primary key (REV, TaxonBase_id, annotations_id)
+    );
+
+    create table TaxonBase_Extension (
+        TaxonBase_id integer not null,
+        extensions_id integer not null,
+        primary key (TaxonBase_id, extensions_id),
+        unique (extensions_id)
+    );
+
+    create table TaxonBase_Extension_AUD (
+        REV integer not null,
+        TaxonBase_id integer not null,
+        extensions_id integer not null,
+        revtype tinyint,
+        primary key (REV, TaxonBase_id, extensions_id)
+    );
+
+    create table TaxonBase_Marker (
+        TaxonBase_id integer not null,
+        markers_id integer not null,
+        primary key (TaxonBase_id, markers_id),
+        unique (markers_id)
+    );
+
+    create table TaxonBase_Marker_AUD (
+        REV integer not null,
+        TaxonBase_id integer not null,
+        markers_id integer not null,
+        revtype tinyint,
+        primary key (REV, TaxonBase_id, markers_id)
+    );
+
+    create table TaxonBase_OriginalSource (
+        TaxonBase_id integer not null,
+        sources_id integer not null,
+        primary key (TaxonBase_id, sources_id),
+        unique (sources_id)
+    );
+
+    create table TaxonBase_OriginalSource_AUD (
+        REV integer not null,
+        TaxonBase_id integer not null,
+        sources_id integer not null,
+        revtype tinyint,
+        primary key (REV, TaxonBase_id, sources_id)
+    );
+
+    create table TaxonBase_Rights (
+        TaxonBase_id integer not null,
+        rights_id integer not null,
+        primary key (TaxonBase_id, rights_id),
+        unique (rights_id)
+    );
+
+    create table TaxonBase_Rights_AUD (
+        REV integer not null,
+        TaxonBase_id integer not null,
+        rights_id integer not null,
+        revtype tinyint,
+        primary key (REV, TaxonBase_id, rights_id)
+    );
+
+    create table TaxonInteraction_LanguageString (
+        DescriptionElementBase_id integer not null,
+        description_id integer not null,
+        description_mapkey_id integer not null,
+        primary key (DescriptionElementBase_id, description_mapkey_id),
+        unique (description_id)
+    );
+
+    create table TaxonInteraction_LanguageString_AUD (
+        REV integer not null,
+        DescriptionElementBase_id integer not null,
+        description_id integer not null,
+        description_mapkey_id integer not null,
+        revtype tinyint,
+        primary key (REV, DescriptionElementBase_id, description_id, description_mapkey_id)
+    );
+
+    create table TaxonNameBase (
+        DTYPE varchar(31) not null,
+        id integer not null,
+        created timestamp,
+        uuid varchar(255),
+        updated timestamp,
+        lsid varchar(255),
+        protectedtitlecache bit not null,
+        titleCache varchar(255),
+        appendedphrase varchar(255),
+        fullTitleCache varchar(330),
+        hasproblem bit not null,
+        nomenclaturalmicroreference varchar(255),
+        problemends integer not null,
+        problemstarts integer not null,
+        protectedfulltitlecache bit not null,
+        authorshipcache varchar(255),
+        genusoruninomial varchar(255),
+        infragenericepithet varchar(255),
+        infraspecificepithet varchar(255),
+        namecache varchar(255),
+        protectedauthorshipcache bit,
+        protectednamecache bit,
+        specificepithet varchar(255),
+        nameapprobation varchar(255),
+        subgenusauthorship varchar(255),
+        anamorphic bit,
+        binomhybrid bit,
+        hybridformula bit,
+        monomhybrid bit,
+        trinomhybrid bit,
+        cultivarname varchar(255),
+        acronym varchar(255),
+        breed varchar(255),
+        originalpublicationyear integer,
+        publicationyear integer,
+        createdby_id integer,
+        updatedby_id integer,
+        homotypicalgroup_id integer,
+        nomenclaturalreference_id integer,
+        rank_id integer,
+        basionymauthorteam_id integer,
+        combinationauthorteam_id integer,
+        exbasionymauthorteam_id integer,
+        excombinationauthorteam_id integer,
+        primary key (id)
+    );
+
+    create table TaxonNameBase_AUD (
+        DTYPE varchar(31) not null,
+        id integer not null,
+        REV integer not null,
+        revtype tinyint,
+        created timestamp,
+        uuid varchar(255),
+        updated timestamp,
+        lsid varchar(255),
+        protectedtitlecache bit,
+        titleCache varchar(255),
+        appendedphrase varchar(255),
+        fullTitleCache varchar(330),
+        hasproblem bit,
+        nomenclaturalmicroreference varchar(255),
+        problemends integer,
+        problemstarts integer,
+        protectedfulltitlecache bit,
+        createdby_id integer,
+        updatedby_id integer,
+        homotypicalgroup_id integer,
+        nomenclaturalreference_id integer,
+        rank_id integer,
+        acronym varchar(255),
+        authorshipcache varchar(255),
+        genusoruninomial varchar(255),
+        infragenericepithet varchar(255),
+        infraspecificepithet varchar(255),
+        namecache varchar(255),
+        protectedauthorshipcache bit,
+        protectednamecache bit,
+        specificepithet varchar(255),
+        basionymauthorteam_id integer,
+        combinationauthorteam_id integer,
+        exbasionymauthorteam_id integer,
+        excombinationauthorteam_id integer,
+        nameapprobation varchar(255),
+        subgenusauthorship varchar(255),
+        anamorphic bit,
+        binomhybrid bit,
+        hybridformula bit,
+        monomhybrid bit,
+        trinomhybrid bit,
+        cultivarname varchar(255),
+        breed varchar(255),
+        originalpublicationyear integer,
+        publicationyear integer,
+        primary key (id, REV)
+    );
+
+    create table TaxonNameBase_Annotation (
+        TaxonNameBase_id integer not null,
+        annotations_id integer not null,
+        primary key (TaxonNameBase_id, annotations_id),
+        unique (annotations_id)
+    );
+
+    create table TaxonNameBase_Annotation_AUD (
+        REV integer not null,
+        TaxonNameBase_id integer not null,
+        annotations_id integer not null,
+        revtype tinyint,
+        primary key (REV, TaxonNameBase_id, annotations_id)
+    );
+
+    create table TaxonNameBase_Extension (
+        TaxonNameBase_id integer not null,
+        extensions_id integer not null,
+        primary key (TaxonNameBase_id, extensions_id),
+        unique (extensions_id)
+    );
+
+    create table TaxonNameBase_Extension_AUD (
+        REV integer not null,
+        TaxonNameBase_id integer not null,
+        extensions_id integer not null,
+        revtype tinyint,
+        primary key (REV, TaxonNameBase_id, extensions_id)
+    );
+
+    create table TaxonNameBase_HybridRelationship (
+        TaxonNameBase_id integer not null,
+        hybridrelationships_id integer not null,
+        primary key (TaxonNameBase_id, hybridrelationships_id),
+        unique (hybridrelationships_id)
+    );
+
+    create table TaxonNameBase_HybridRelationship_AUD (
+        REV integer not null,
+        TaxonNameBase_id integer not null,
+        hybridrelationships_id integer not null,
+        revtype tinyint,
+        primary key (REV, TaxonNameBase_id, hybridrelationships_id)
+    );
+
+    create table TaxonNameBase_Marker (
+        TaxonNameBase_id integer not null,
+        markers_id integer not null,
+        primary key (TaxonNameBase_id, markers_id),
+        unique (markers_id)
+    );
+
+    create table TaxonNameBase_Marker_AUD (
+        REV integer not null,
+        TaxonNameBase_id integer not null,
+        markers_id integer not null,
+        revtype tinyint,
+        primary key (REV, TaxonNameBase_id, markers_id)
+    );
+
+    create table TaxonNameBase_NomenclaturalStatus (
+        TaxonNameBase_id integer not null,
+        status_id integer not null,
+        primary key (TaxonNameBase_id, status_id),
+        unique (status_id)
+    );
+
+    create table TaxonNameBase_NomenclaturalStatus_AUD (
+        REV integer not null,
+        TaxonNameBase_id integer not null,
+        status_id integer not null,
+        revtype tinyint,
+        primary key (REV, TaxonNameBase_id, status_id)
+    );
+
+    create table TaxonNameBase_OriginalSource (
+        TaxonNameBase_id integer not null,
+        sources_id integer not null,
+        primary key (TaxonNameBase_id, sources_id),
+        unique (sources_id)
+    );
+
+    create table TaxonNameBase_OriginalSource_AUD (
+        REV integer not null,
+        TaxonNameBase_id integer not null,
+        sources_id integer not null,
+        revtype tinyint,
+        primary key (REV, TaxonNameBase_id, sources_id)
+    );
+
+    create table TaxonNameBase_Rights (
+        TaxonNameBase_id integer not null,
+        rights_id integer not null,
+        primary key (TaxonNameBase_id, rights_id),
+        unique (rights_id)
+    );
+
+    create table TaxonNameBase_Rights_AUD (
+        REV integer not null,
+        TaxonNameBase_id integer not null,
+        rights_id integer not null,
+        revtype tinyint,
+        primary key (REV, TaxonNameBase_id, rights_id)
+    );
+
+    create table TaxonNameBase_TypeDesignationBase (
+        TaxonNameBase_id integer not null,
+        typedesignations_id integer not null,
+        primary key (TaxonNameBase_id, typedesignations_id)
+    );
+
+    create table TaxonNameBase_TypeDesignationBase_AUD (
+        REV integer not null,
+        TaxonNameBase_id integer not null,
+        typedesignations_id integer not null,
+        revtype tinyint,
+        primary key (REV, TaxonNameBase_id, typedesignations_id)
+    );
+
+    create table TaxonRelationship (
+        id integer not null,
+        created timestamp,
+        uuid varchar(255),
+        updated timestamp,
+        citationmicroreference varchar(255),
+        originalnamestring varchar(255),
+        doubtful bit not null,
+        createdby_id integer,
+        updatedby_id integer,
+        citation_id integer,
+        relatedfrom_id integer,
+        relatedto_id integer,
+        type_id integer,
+        primary key (id)
+    );
+
+    create table TaxonRelationship_AUD (
+        id integer not null,
+        REV integer not null,
+        revtype tinyint,
+        created timestamp,
+        uuid varchar(255),
+        updated timestamp,
+        citationmicroreference varchar(255),
+        originalnamestring varchar(255),
+        doubtful bit,
+        createdby_id integer,
+        updatedby_id integer,
+        citation_id integer,
+        relatedfrom_id integer,
+        relatedto_id integer,
+        type_id integer,
+        primary key (id, REV)
+    );
+
+    create table TaxonRelationship_Annotation (
+        TaxonRelationship_id integer not null,
+        annotations_id integer not null,
+        primary key (TaxonRelationship_id, annotations_id),
+        unique (annotations_id)
+    );
+
+    create table TaxonRelationship_Annotation_AUD (
+        REV integer not null,
+        TaxonRelationship_id integer not null,
+        annotations_id integer not null,
+        revtype tinyint,
+        primary key (REV, TaxonRelationship_id, annotations_id)
+    );
+
+    create table TaxonRelationship_Marker (
+        TaxonRelationship_id integer not null,
+        markers_id integer not null,
+        primary key (TaxonRelationship_id, markers_id),
+        unique (markers_id)
+    );
+
+    create table TaxonRelationship_Marker_AUD (
+        REV integer not null,
+        TaxonRelationship_id integer not null,
+        markers_id integer not null,
+        revtype tinyint,
+        primary key (REV, TaxonRelationship_id, markers_id)
+    );
+
+    create table TermVocabulary (
+        DTYPE varchar(31) not null,
+        id integer not null,
+        created timestamp,
+        uuid varchar(255),
+        updated timestamp,
+        uri varchar(255),
+        termsourceuri varchar(255),
+        createdby_id integer,
+        updatedby_id integer,
+        primary key (id)
+    );
+
+    create table TermVocabulary_AUD (
+        DTYPE varchar(31) not null,
+        id integer not null,
+        REV integer not null,
+        revtype tinyint,
+        created timestamp,
+        uuid varchar(255),
+        updated timestamp,
+        uri varchar(255),
+        termsourceuri varchar(255),
+        createdby_id integer,
+        updatedby_id integer,
+        primary key (id, REV)
+    );
+
+    create table TermVocabulary_Representation (
+        TermVocabulary_id integer not null,
+        representations_id integer not null,
+        primary key (TermVocabulary_id, representations_id),
+        unique (representations_id)
+    );
+
+    create table TermVocabulary_Representation_AUD (
+        REV integer not null,
+        TermVocabulary_id integer not null,
+        representations_id integer not null,
+        revtype tinyint,
+        primary key (REV, TermVocabulary_id, representations_id)
+    );
+
+    create table TypeDesignationBase (
+        DTYPE varchar(31) not null,
+        id integer not null,
+        created timestamp,
+        uuid varchar(255),
+        updated timestamp,
+        citationmicroreference varchar(255),
+        originalnamestring varchar(255),
+        notdesignated bit not null,
+        conservedtype bit,
+        lectotype bit,
+        rejectedtype bit,
+        createdby_id integer,
+        updatedby_id integer,
+        citation_id integer,
+        homotypicalgroup_id integer,
+        typename_id integer,
+        typespecimen_id integer,
+        typestatus_id integer,
+        primary key (id)
+    );
+
+    create table TypeDesignationBase_AUD (
+        DTYPE varchar(31) not null,
+        id integer not null,
+        REV integer not null,
+        revtype tinyint,
+        created timestamp,
+        uuid varchar(255),
+        updated timestamp,
+        citationmicroreference varchar(255),
+        originalnamestring varchar(255),
+        notdesignated bit,
+        createdby_id integer,
+        updatedby_id integer,
+        citation_id integer,
+        homotypicalgroup_id integer,
+        conservedtype bit,
+        lectotype bit,
+        rejectedtype bit,
+        typename_id integer,
+        typespecimen_id integer,
+        typestatus_id integer,
+        primary key (id, REV)
+    );
+
+    create table TypeDesignationBase_Annotation (
+        TypeDesignationBase_id integer not null,
+        annotations_id integer not null,
+        primary key (TypeDesignationBase_id, annotations_id),
+        unique (annotations_id)
+    );
+
+    create table TypeDesignationBase_Annotation_AUD (
+        REV integer not null,
+        TypeDesignationBase_id integer not null,
+        annotations_id integer not null,
+        revtype tinyint,
+        primary key (REV, TypeDesignationBase_id, annotations_id)
+    );
+
+    create table TypeDesignationBase_Marker (
+        TypeDesignationBase_id integer not null,
+        markers_id integer not null,
+        primary key (TypeDesignationBase_id, markers_id),
+        unique (markers_id)
+    );
+
+    create table TypeDesignationBase_Marker_AUD (
+        REV integer not null,
+        TypeDesignationBase_id integer not null,
+        markers_id integer not null,
+        revtype tinyint,
+        primary key (REV, TypeDesignationBase_id, markers_id)
+    );
+
+    create table TypeDesignationBase_TaxonNameBase (
+        TypeDesignationBase_id integer not null,
+        typifiednames_id integer not null,
+        primary key (TypeDesignationBase_id, typifiednames_id)
+    );
+
+    create table TypeDesignationBase_TaxonNameBase_AUD (
+        REV integer not null,
+        TypeDesignationBase_id integer not null,
+        typifiednames_id integer not null,
+        revtype tinyint,
+        primary key (REV, TypeDesignationBase_id, typifiednames_id)
+    );
+
+    create table User (
+        id integer not null,
+        created timestamp,
+        uuid varchar(255),
+        accountnonexpired bit not null,
+        accountnonlocked bit not null,
+        credentialsnonexpired bit not null,
+        emailaddress varchar(255),
+        enabled bit not null,
+        password varchar(255),
+        username varchar(255),
+        createdby_id integer,
+        primary key (id),
+        unique (username)
+    );
+
+    create table User_GrantedAuthorityImpl (
+        User_id integer not null,
+        grantedauthorities_id integer not null,
+        primary key (User_id, grantedauthorities_id)
+    );
+
+    create table User_PermissionGroup (
+        members_id integer not null,
+        groups_id integer not null,
+        primary key (members_id, groups_id)
+    );
+
+    alter table Address 
+        add constraint FK1ED033D4132A2FE8 
+        foreign key (location_referencesystem_id) 
+        references DefinedTermBase;
+
+    alter table Address 
+        add constraint FK1ED033D4EE7A4BF4 
+        foreign key (contact_id) 
+        references Contact;
+
+    alter table Address 
+        add constraint FK1ED033D4EF7921F6 
+        foreign key (createdby_id) 
+        references Agent;
+
+    alter table Address 
+        add constraint FK1ED033D42687715A 
+        foreign key (country_id) 
+        references DefinedTermBase;
+
+    alter table Address 
+        add constraint FK1ED033D45BE3EC03 
+        foreign key (updatedby_id) 
+        references Agent;
+
+    alter table Address_AUD 
+        add constraint FK115657A534869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    create index agentTitleCacheIndex on Agent (titleCache);
+
+    alter table Agent 
+        add constraint FK3C452E5EE7A4BF4 
+        foreign key (contact_id) 
+        references Contact;
+
+    alter table Agent 
+        add constraint FK3C452E5EF7921F6 
+        foreign key (createdby_id) 
+        references Agent;
+
+    alter table Agent 
+        add constraint FK3C452E5A830578 
+        foreign key (ispartof_id) 
+        references Agent;
+
+    alter table Agent 
+        add constraint FK3C452E55BE3EC03 
+        foreign key (updatedby_id) 
+        references Agent;
+
+    alter table Agent_AUD 
+        add constraint FK1212863634869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table Agent_Agent 
+        add constraint FKD792890B8CB642F8 
+        foreign key (Agent_id) 
+        references Agent;
+
+    alter table Agent_Agent 
+        add constraint FKD792890BE9E535F9 
+        foreign key (teammembers_id) 
+        references Agent;
+
+    alter table Agent_Agent_AUD 
+        add constraint FK49ED395C34869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table Agent_Annotation 
+        add constraint FKDD9D78E9C5F7EC54 
+        foreign key (Agent_id) 
+        references Agent;
+
+    alter table Agent_Annotation 
+        add constraint FKDD9D78E91E403E0B 
+        foreign key (annotations_id) 
+        references Annotation;
+
+    alter table Agent_Annotation_AUD 
+        add constraint FK6F210A3A34869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table Agent_DefinedTermBase 
+        add constraint FK7029490CFE425B87 
+        foreign key (Agent_id) 
+        references Agent;
+
+    alter table Agent_DefinedTermBase 
+        add constraint FK7029490C9A161BED 
+        foreign key (types_id) 
+        references DefinedTermBase;
+
+    alter table Agent_DefinedTermBase_AUD 
+        add constraint FK393210DD34869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table Agent_Extension 
+        add constraint FK8AC9EF45C5F7EC54 
+        foreign key (Agent_id) 
+        references Agent;
+
+    alter table Agent_Extension 
+        add constraint FK8AC9EF45927DE9DF 
+        foreign key (extensions_id) 
+        references Extension;
+
+    alter table Agent_Extension_AUD 
+        add constraint FK2A32F29634869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table Agent_Marker 
+        add constraint FK2EEA0EF4C5F7EC54 
+        foreign key (Agent_id) 
+        references Agent;
+
+    alter table Agent_Marker 
+        add constraint FK2EEA0EF4777265A1 
+        foreign key (markers_id) 
+        references Marker;
+
+    alter table Agent_Marker_AUD 
+        add constraint FK7CCDA2C534869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table Agent_Media 
+        add constraint FKD83AB5EAC5F7EC54 
+        foreign key (Agent_id) 
+        references Agent;
+
+    alter table Agent_Media 
+        add constraint FKD83AB5EAC2C29593 
+        foreign key (media_id) 
+        references Media;
+
+    alter table Agent_Media_AUD 
+        add constraint FK2EE5DEBB34869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table Agent_OriginalSource 
+        add constraint FK774F9E06C5F7EC54 
+        foreign key (Agent_id) 
+        references Agent;
+
+    alter table Agent_OriginalSource 
+        add constraint FK774F9E063BAB2414 
+        foreign key (sources_id) 
+        references OriginalSource;
+
+    alter table Agent_OriginalSource_AUD 
+        add constraint FKEAD158D734869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table Agent_Rights 
+        add constraint FK37DDFC91C5F7EC54 
+        foreign key (Agent_id) 
+        references Agent;
+
+    alter table Agent_Rights 
+        add constraint FK37DDFC91C13F7B21 
+        foreign key (rights_id) 
+        references Rights;
+
+    alter table Agent_Rights_AUD 
+        add constraint FKE8A779E234869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table Annotation 
+        add constraint FK1A21C74FDF299D00 
+        foreign key (annotationtype_id) 
+        references DefinedTermBase;
+
+    alter table Annotation 
+        add constraint FK1A21C74FEF7921F6 
+        foreign key (createdby_id) 
+        references Agent;
+
+    alter table Annotation 
+        add constraint FK1A21C74FE7692740 
+        foreign key (commentator_id) 
+        references Agent;
+
+    alter table Annotation 
+        add constraint FK1A21C74F5BE3EC03 
+        foreign key (updatedby_id) 
+        references Agent;
+
+    alter table Annotation 
+        add constraint FK1A21C74FE8D36B00 
+        foreign key (language_id) 
+        references DefinedTermBase;
+
+    alter table Annotation_AUD 
+        add constraint FK1A6BB5A034869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table Annotation_Annotation 
+        add constraint FKC99DFE3F994CCE20 
+        foreign key (Annotation_id) 
+        references Annotation;
+
+    alter table Annotation_Annotation 
+        add constraint FKC99DFE3F1E403E0B 
+        foreign key (annotations_id) 
+        references Annotation;
+
+    alter table Annotation_Annotation_AUD 
+        add constraint FKB212F49034869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table Annotation_Marker 
+        add constraint FKB17EAF4A994CCE20 
+        foreign key (Annotation_id) 
+        references Annotation;
+
+    alter table Annotation_Marker 
+        add constraint FKB17EAF4A777265A1 
+        foreign key (markers_id) 
+        references Marker;
+
+    alter table Annotation_Marker_AUD 
+        add constraint FK68CE281B34869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table CDM_VIEW 
+        add constraint FKC5DE8EF8765B124B 
+        foreign key (reference_id) 
+        references ReferenceBase;
+
+    alter table CDM_VIEW 
+        add constraint FKC5DE8EF8EF7921F6 
+        foreign key (createdby_id) 
+        references Agent;
+
+    alter table CDM_VIEW_CDM_VIEW 
+        add constraint FK230A885F7208BB38 
+        foreign key (superviews_id) 
+        references CDM_VIEW;
+
+    alter table CDM_VIEW_CDM_VIEW 
+        add constraint FK230A885FC00D1213 
+        foreign key (CDM_VIEW_id) 
+        references CDM_VIEW;
+
+    create index collectionTitleCacheIndex on Collection (titleCache);
+
+    alter table Collection 
+        add constraint FKF078ABECEB38EFF 
+        foreign key (supercollection_id) 
+        references Collection;
+
+    alter table Collection 
+        add constraint FKF078ABEEF7921F6 
+        foreign key (createdby_id) 
+        references Agent;
+
+    alter table Collection 
+        add constraint FKF078ABE16B9CA77 
+        foreign key (institute_id) 
+        references Agent;
+
+    alter table Collection 
+        add constraint FKF078ABE5BE3EC03 
+        foreign key (updatedby_id) 
+        references Agent;
+
+    alter table Collection_AUD 
+        add constraint FKD6D4298F34869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table Collection_Annotation 
+        add constraint FKEA970F70EB62BE9A 
+        foreign key (Collection_id) 
+        references Collection;
+
+    alter table Collection_Annotation 
+        add constraint FKEA970F701E403E0B 
+        foreign key (annotations_id) 
+        references Annotation;
+
+    alter table Collection_Annotation_AUD 
+        add constraint FKA0CE054134869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table Collection_Extension 
+        add constraint FKF68FEBDE927DE9DF 
+        foreign key (extensions_id) 
+        references Extension;
+
+    alter table Collection_Extension 
+        add constraint FKF68FEBDEEB62BE9A 
+        foreign key (Collection_id) 
+        references Collection;
+
+    alter table Collection_Extension_AUD 
+        add constraint FK1306FAAF34869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table Collection_Marker 
+        add constraint FKF0CA00FBEB62BE9A 
+        foreign key (Collection_id) 
+        references Collection;
+
+    alter table Collection_Marker 
+        add constraint FKF0CA00FB777265A1 
+        foreign key (markers_id) 
+        references Marker;
+
+    alter table Collection_Marker_AUD 
+        add constraint FK89C7394C34869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table Collection_Media 
+        add constraint FK7320E703EB62BE9A 
+        foreign key (Collection_id) 
+        references Collection;
+
+    alter table Collection_Media 
+        add constraint FK7320E703C2C29593 
+        foreign key (media_id) 
+        references Media;
+
+    alter table Collection_Media_AUD 
+        add constraint FK9AABDB5434869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table Collection_OriginalSource 
+        add constraint FKA8FC990DEB62BE9A 
+        foreign key (Collection_id) 
+        references Collection;
+
+    alter table Collection_OriginalSource 
+        add constraint FKA8FC990D3BAB2414 
+        foreign key (sources_id) 
+        references OriginalSource;
+
+    alter table Collection_OriginalSource_AUD 
+        add constraint FK37EB785E34869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table Collection_Rights 
+        add constraint FKF9BDEE98EB62BE9A 
+        foreign key (Collection_id) 
+        references Collection;
+
+    alter table Collection_Rights 
+        add constraint FKF9BDEE98C13F7B21 
+        foreign key (rights_id) 
+        references Rights;
+
+    alter table Collection_Rights_AUD 
+        add constraint FKF5A1106934869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table Contact 
+        add constraint FK9BEFBC00EF7921F6 
+        foreign key (createdby_id) 
+        references Agent;
+
+    alter table Contact 
+        add constraint FK9BEFBC005BE3EC03 
+        foreign key (updatedby_id) 
+        references Agent;
+
+    alter table Contact_AUD 
+        add constraint FK65DDE9D134869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table DefinedTermBase 
+        add constraint FK2E340A6636C6F6F6 
+        foreign key (pointapproximation_referencesystem_id) 
+        references DefinedTermBase;
+
+    alter table DefinedTermBase 
+        add constraint FK2E340A66EF7921F6 
+        foreign key (createdby_id) 
+        references Agent;
+
+    alter table DefinedTermBase 
+        add constraint FK2E340A6688206484 
+        foreign key (type_id) 
+        references DefinedTermBase;
+
+    alter table DefinedTermBase 
+        add constraint FK2E340A6647AF954C 
+        foreign key (vocabulary_id) 
+        references TermVocabulary;
+
+    alter table DefinedTermBase 
+        add constraint FK2E340A663B0DA0EF 
+        foreign key (kindof_id) 
+        references DefinedTermBase;
+
+    alter table DefinedTermBase 
+        add constraint FK2E340A6624AF3F70 
+        foreign key (level_id) 
+        references DefinedTermBase;
+
+    alter table DefinedTermBase 
+        add constraint FK2E340A665BE3EC03 
+        foreign key (updatedby_id) 
+        references Agent;
+
+    alter table DefinedTermBase 
+        add constraint FK2E340A66CC0240B6 
+        foreign key (shape_id) 
+        references Media;
+
+    alter table DefinedTermBase 
+        add constraint FK2E340A66D040DBF0 
+        foreign key (partof_id) 
+        references DefinedTermBase;
+
+    alter table DefinedTermBase_AUD 
+        add constraint FK86E8953734869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table DefinedTermBase_Continent 
+        add constraint FK45F60AFBE8CE10AA 
+        foreign key (DefinedTermBase_id) 
+        references DefinedTermBase;
+
+    alter table DefinedTermBase_Continent 
+        add constraint FK45F60AFB3927C853 
+        foreign key (continents_id) 
+        references DefinedTermBase;
+
+    alter table DefinedTermBase_Continent_AUD 
+        add constraint FKF5DE434C34869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table DefinedTermBase_Media 
+        add constraint FK6FC908ABC0DB4934 
+        foreign key (DefinedTermBase_id) 
+        references DefinedTermBase;
+
+    alter table DefinedTermBase_Media 
+        add constraint FK6FC908ABC2C29593 
+        foreign key (media_id) 
+        references Media;
+
+    alter table DefinedTermBase_Media_AUD 
+        add constraint FKDD9AE8FC34869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table DefinedTermBase_RecommendedModifierEnumeration 
+        add constraint FKA72FB5AED0BDAE9B 
+        foreign key (DefinedTermBase_id) 
+        references DefinedTermBase;
+
+    alter table DefinedTermBase_RecommendedModifierEnumeration 
+        add constraint FKA72FB5AE5255EAFD 
+        foreign key (recommendedmodifierenumeration_id) 
+        references TermVocabulary;
+
+    alter table DefinedTermBase_RecommendedModifierEnumeration_AUD 
+        add constraint FK780D5C7F34869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table DefinedTermBase_Representation 
+        add constraint FKAAC8AFE6C0DB4934 
+        foreign key (DefinedTermBase_id) 
+        references DefinedTermBase;
+
+    alter table DefinedTermBase_Representation 
+        add constraint FKAAC8AFE6B31C4747 
+        foreign key (representations_id) 
+        references Representation;
+
+    alter table DefinedTermBase_Representation_AUD 
+        add constraint FKB5AE7AB734869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table DefinedTermBase_StatisticalMeasure 
+        add constraint FK6FF15DFCD0BDAE9B 
+        foreign key (DefinedTermBase_id) 
+        references DefinedTermBase;
+
+    alter table DefinedTermBase_StatisticalMeasure 
+        add constraint FK6FF15DFCC9CD5B57 
+        foreign key (recommendedstatisticalmeasures_id) 
+        references DefinedTermBase;
+
+    alter table DefinedTermBase_StatisticalMeasure_AUD 
+        add constraint FK3C062DCD34869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table DefinedTermBase_SupportedCategoricalEnumeration 
+        add constraint FK2170B25CD0BDAE9B 
+        foreign key (DefinedTermBase_id) 
+        references DefinedTermBase;
+
+    alter table DefinedTermBase_SupportedCategoricalEnumeration 
+        add constraint FK2170B25C5AF2C74 
+        foreign key (supportedcategoricalenumerations_id) 
+        references TermVocabulary;
+
+    alter table DefinedTermBase_SupportedCategoricalEnumeration_AUD 
+        add constraint FKBB04522D34869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table DefinedTermBase_WaterbodyOrCountry 
+        add constraint FKCAF4393CE5C0F9E 
+        foreign key (DefinedTermBase_id) 
+        references DefinedTermBase;
+
+    alter table DefinedTermBase_WaterbodyOrCountry 
+        add constraint FKCAF43931603B036 
+        foreign key (waterbodiesorcountries_id) 
+        references DefinedTermBase;
+
+    alter table DefinedTermBase_WaterbodyOrCountry_AUD 
+        add constraint FKD5996FE434869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table DerivationEvent 
+        add constraint FK426BC03EF7921F6 
+        foreign key (createdby_id) 
+        references Agent;
+
+    alter table DerivationEvent 
+        add constraint FK426BC038524B89D 
+        foreign key (type_id) 
+        references DefinedTermBase;
+
+    alter table DerivationEvent 
+        add constraint FK426BC035BE3EC03 
+        foreign key (updatedby_id) 
+        references Agent;
+
+    alter table DerivationEvent 
+        add constraint FK426BC03C04DF64 
+        foreign key (actor_id) 
+        references Agent;
+
+    alter table DerivationEvent_AUD 
+        add constraint FKDABF305434869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table DerivationEvent_Annotation 
+        add constraint FKEFA0D10B4AAB411A 
+        foreign key (DerivationEvent_id) 
+        references DerivationEvent;
+
+    alter table DerivationEvent_Annotation 
+        add constraint FKEFA0D10B1E403E0B 
+        foreign key (annotations_id) 
+        references Annotation;
+
+    alter table DerivationEvent_Annotation_AUD 
+        add constraint FKA197815C34869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table DerivationEvent_Marker 
+        add constraint FKE412C8164AAB411A 
+        foreign key (DerivationEvent_id) 
+        references DerivationEvent;
+
+    alter table DerivationEvent_Marker 
+        add constraint FKE412C816777265A1 
+        foreign key (markers_id) 
+        references Marker;
+
+    alter table DerivationEvent_Marker_AUD 
+        add constraint FK8ED0FAE734869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table DescriptionBase 
+        add constraint FKFF4D58CDEF7921F6 
+        foreign key (createdby_id) 
+        references Agent;
+
+    alter table DescriptionBase 
+        add constraint FKFF4D58CDDA93512F 
+        foreign key (taxonName_fk) 
+        references TaxonNameBase;
+
+    alter table DescriptionBase 
+        add constraint FKFF4D58CD5BE3EC03 
+        foreign key (updatedby_id) 
+        references Agent;
+
+    alter table DescriptionBase 
+        add constraint FKFF4D58CDDE9A3DE3 
+        foreign key (taxon_fk) 
+        references TaxonBase;
+
+    alter table DescriptionBase_AUD 
+        add constraint FK7456581E34869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table DescriptionBase_Annotation 
+        add constraint FKF3AD3201F1DDBFAB 
+        foreign key (DescriptionBase_id) 
+        references DescriptionBase;
+
+    alter table DescriptionBase_Annotation 
+        add constraint FKF3AD32011E403E0B 
+        foreign key (annotations_id) 
+        references Annotation;
+
+    alter table DescriptionBase_Annotation_AUD 
+        add constraint FK15FE775234869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table DescriptionBase_Extension 
+        add constraint FKD5D2B32DF1DDBFAB 
+        foreign key (DescriptionBase_id) 
+        references DescriptionBase;
+
+    alter table DescriptionBase_Extension 
+        add constraint FKD5D2B32D927DE9DF 
+        foreign key (extensions_id) 
+        references Extension;
+
+    alter table DescriptionBase_Extension_AUD 
+        add constraint FK79E7827E34869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table DescriptionBase_GeoScope 
+        add constraint FK3ADD7CD5D86445CE 
+        foreign key (DescriptionBase_id) 
+        references DescriptionBase;
+
+    alter table DescriptionBase_GeoScope 
+        add constraint FK3ADD7CD586D04E74 
+        foreign key (geoscopes_id) 
+        references DefinedTermBase;
+
+    alter table DescriptionBase_GeoScope_AUD 
+        add constraint FK63A5382634869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table DescriptionBase_Marker 
+        add constraint FK6132140CF1DDBFAB 
+        foreign key (DescriptionBase_id) 
+        references DescriptionBase;
+
+    alter table DescriptionBase_Marker 
+        add constraint FK6132140C777265A1 
+        foreign key (markers_id) 
+        references Marker;
+
+    alter table DescriptionBase_Marker_AUD 
+        add constraint FK92DD5BDD34869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table DescriptionBase_OriginalSource 
+        add constraint FK1E2D0B1EF1DDBFAB 
+        foreign key (DescriptionBase_id) 
+        references DescriptionBase;
+
+    alter table DescriptionBase_OriginalSource 
+        add constraint FK1E2D0B1E3BAB2414 
+        foreign key (sources_id) 
+        references OriginalSource;
+
+    alter table DescriptionBase_OriginalSource_AUD 
+        add constraint FKDC8279EF34869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table DescriptionBase_ReferenceBase 
+        add constraint FK76188CAAF1DDBFAB 
+        foreign key (DescriptionBase_id) 
+        references DescriptionBase;
+
+    alter table DescriptionBase_ReferenceBase 
+        add constraint FK76188CAA45AB7BBA 
+        foreign key (descriptionsources_id) 
+        references ReferenceBase;
+
+    alter table DescriptionBase_ReferenceBase_AUD 
+        add constraint FK687A557B34869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table DescriptionBase_Rights 
+        add constraint FK6A2601A9F1DDBFAB 
+        foreign key (DescriptionBase_id) 
+        references DescriptionBase;
+
+    alter table DescriptionBase_Rights 
+        add constraint FK6A2601A9C13F7B21 
+        foreign key (rights_id) 
+        references Rights;
+
+    alter table DescriptionBase_Rights_AUD 
+        add constraint FKFEB732FA34869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table DescriptionBase_Scope 
+        add constraint FKB9257C42D86445CE 
+        foreign key (DescriptionBase_id) 
+        references DescriptionBase;
+
+    alter table DescriptionBase_Scope 
+        add constraint FKB9257C42951A5D40 
+        foreign key (scopes_id) 
+        references DefinedTermBase;
+
+    alter table DescriptionBase_Scope_AUD 
+        add constraint FK75D5B91334869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table DescriptionBase_SpecimenOrObservationBase 
+        add constraint FKDE29CD8033B8A841 
+        foreign key (descriptions_id) 
+        references DescriptionBase;
+
+    alter table DescriptionBase_SpecimenOrObservationBase 
+        add constraint FKDE29CD805C9E3461 
+        foreign key (describedspecimenorobservations_id) 
+        references SpecimenOrObservationBase;
+
+    alter table DescriptionBase_SpecimenOrObservationBase_AUD 
+        add constraint FKF1B33B5134869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table DescriptionElementBase 
+        add constraint FK38FE767134AF0E81 
+        foreign key (indescription_id) 
+        references DescriptionBase;
+
+    alter table DescriptionElementBase 
+        add constraint FK38FE76716561D9B1 
+        foreign key (associatedspecimenorobservation_id) 
+        references SpecimenOrObservationBase;
+
+    alter table DescriptionElementBase 
+        add constraint FK38FE7671EF7921F6 
+        foreign key (createdby_id) 
+        references Agent;
+
+    alter table DescriptionElementBase 
+        add constraint FK38FE767110A80E07 
+        foreign key (unit_id) 
+        references DefinedTermBase;
+
+    alter table DescriptionElementBase 
+        add constraint FK38FE76716D0D7A56 
+        foreign key (format_id) 
+        references DefinedTermBase;
+
+    alter table DescriptionElementBase 
+        add constraint FK38FE76715E9914B8 
+        foreign key (status_id) 
+        references DefinedTermBase;
+
+    alter table DescriptionElementBase 
+        add constraint FK38FE76714220AFEB 
+        foreign key (feature_id) 
+        references DefinedTermBase;
+
+    alter table DescriptionElementBase 
+        add constraint FK38FE76719803512F 
+        foreign key (citation_id) 
+        references ReferenceBase;
+
+    alter table DescriptionElementBase 
+        add constraint FK38FE76715BE3EC03 
+        foreign key (updatedby_id) 
+        references Agent;
+
+    alter table DescriptionElementBase 
+        add constraint FK38FE76719108D9B 
+        foreign key (taxon2_id) 
+        references TaxonBase;
+
+    alter table DescriptionElementBase 
+        add constraint FK38FE76711C3C3FF7 
+        foreign key (area_id) 
+        references DefinedTermBase;
+
+    alter table DescriptionElementBase 
+        add constraint FK38FE7671E8D36B00 
+        foreign key (language_id) 
+        references DefinedTermBase;
+
+    alter table DescriptionElementBase_AUD 
+        add constraint FKF3803C234869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table DescriptionElementBase_Annotation 
+        add constraint FK7EE5E5DD3B8BB609 
+        foreign key (DescriptionElementBase_id) 
+        references DescriptionElementBase;
+
+    alter table DescriptionElementBase_Annotation 
+        add constraint FK7EE5E5DD1E403E0B 
+        foreign key (annotations_id) 
+        references Annotation;
+
+    alter table DescriptionElementBase_Annotation_AUD 
+        add constraint FK2BC1DD2E34869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table DescriptionElementBase_LanguageString 
+        add constraint FKC753F137ACF5F60B 
+        foreign key (multilanguagetext_id) 
+        references LanguageString;
+
+    alter table DescriptionElementBase_LanguageString 
+        add constraint FKC753F137C086B46F 
+        foreign key (DescriptionElementBase_id) 
+        references DescriptionElementBase;
+
+    alter table DescriptionElementBase_LanguageString_AUD 
+        add constraint FK2D26AB8834869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table DescriptionElementBase_Marker 
+        add constraint FK1CB715E83B8BB609 
+        foreign key (DescriptionElementBase_id) 
+        references DescriptionElementBase;
+
+    alter table DescriptionElementBase_Marker 
+        add constraint FK1CB715E8777265A1 
+        foreign key (markers_id) 
+        references Marker;
+
+    alter table DescriptionElementBase_Marker_AUD 
+        add constraint FK1E160FB934869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table DescriptionElementBase_Media 
+        add constraint FK21F70076C2C29593 
+        foreign key (media_id) 
+        references Media;
+
+    alter table DescriptionElementBase_Media 
+        add constraint FK21F700763B8BB609 
+        foreign key (DescriptionElementBase_id) 
+        references DescriptionElementBase;
+
+    alter table DescriptionElementBase_Media_AUD 
+        add constraint FK5522034734869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table DescriptionElementBase_Modifier 
+        add constraint FK97E0D105E0960EC4 
+        foreign key (modifiers_id) 
+        references DefinedTermBase;
+
+    alter table DescriptionElementBase_Modifier 
+        add constraint FK97E0D1053B8BB609 
+        foreign key (DescriptionElementBase_id) 
+        references DescriptionElementBase;
+
+    alter table DescriptionElementBase_Modifier_AUD 
+        add constraint FK2982F45634869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table DescriptionElementBase_ModifyingText 
+        add constraint FK522D90C7F05D08D4 
+        foreign key (modifyingtext_id) 
+        references LanguageString;
+
+    alter table DescriptionElementBase_ModifyingText 
+        add constraint FK522D90C73B8BB609 
+        foreign key (DescriptionElementBase_id) 
+        references DescriptionElementBase;
+
+    alter table DescriptionElementBase_ModifyingText 
+        add constraint FK522D90C79682414B 
+        foreign key (modifyingtext_mapkey_id) 
+        references DefinedTermBase;
+
+    alter table DescriptionElementBase_ModifyingText_AUD 
+        add constraint FK6C06031834869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table DescriptionElementBase_StateData 
+        add constraint FK592D6F6D987CC6A4 
+        foreign key (DescriptionElementBase_id) 
+        references DescriptionElementBase;
+
+    alter table DescriptionElementBase_StateData 
+        add constraint FK592D6F6D15153604 
+        foreign key (states_id) 
+        references StateData;
+
+    alter table DescriptionElementBase_StateData_AUD 
+        add constraint FK1D0A1EBE34869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table DescriptionElementBase_StatisticalMeasurementValue 
+        add constraint FK8AF511C2D883945E 
+        foreign key (statisticalvalues_id) 
+        references StatisticalMeasurementValue;
+
+    alter table DescriptionElementBase_StatisticalMeasurementValue 
+        add constraint FK8AF511C28F213219 
+        foreign key (DescriptionElementBase_id) 
+        references DescriptionElementBase;
+
+    alter table DescriptionElementBase_StatisticalMeasurementValue_AUD 
+        add constraint FK2DE8E9334869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table DeterminationEvent 
+        add constraint FK1DB2497EF7921F6 
+        foreign key (createdby_id) 
+        references Agent;
+
+    alter table DeterminationEvent 
+        add constraint FK1DB2497378D1BD 
+        foreign key (modifier_id) 
+        references DefinedTermBase;
+
+    alter table DeterminationEvent 
+        add constraint FK1DB2497DE9A3E39 
+        foreign key (taxon_id) 
+        references TaxonBase;
+
+    alter table DeterminationEvent 
+        add constraint FK1DB24974B251DAD 
+        foreign key (identifiedunit_id) 
+        references SpecimenOrObservationBase;
+
+    alter table DeterminationEvent 
+        add constraint FK1DB24975BE3EC03 
+        foreign key (updatedby_id) 
+        references Agent;
+
+    alter table DeterminationEvent 
+        add constraint FK1DB2497C04DF64 
+        foreign key (actor_id) 
+        references Agent;
+
+    alter table DeterminationEvent_AUD 
+        add constraint FKA0252EE834869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table DeterminationEvent_Annotation 
+        add constraint FKB74F03F76BE0BFDA 
+        foreign key (DeterminationEvent_id) 
+        references DeterminationEvent;
+
+    alter table DeterminationEvent_Annotation 
+        add constraint FKB74F03F71E403E0B 
+        foreign key (annotations_id) 
+        references Annotation;
+
+    alter table DeterminationEvent_Annotation_AUD 
+        add constraint FKAFDA5E4834869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table DeterminationEvent_Marker 
+        add constraint FK5C475102777265A1 
+        foreign key (markers_id) 
+        references Marker;
+
+    alter table DeterminationEvent_Marker 
+        add constraint FK5C4751026BE0BFDA 
+        foreign key (DeterminationEvent_id) 
+        references DeterminationEvent;
+
+    alter table DeterminationEvent_Marker_AUD 
+        add constraint FK567F2DD334869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table DeterminationEvent_ReferenceBase 
+        add constraint FK6248EEF43EF09CD5 
+        foreign key (setofreferences_id) 
+        references ReferenceBase;
+
+    alter table DeterminationEvent_ReferenceBase 
+        add constraint FK6248EEF46BE0BFDA 
+        foreign key (DeterminationEvent_id) 
+        references DeterminationEvent;
+
+    alter table DeterminationEvent_ReferenceBase_AUD 
+        add constraint FK25BC82C534869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table Extension 
+        add constraint FK52EF3C1FEF7921F6 
+        foreign key (createdby_id) 
+        references Agent;
+
+    alter table Extension 
+        add constraint FK52EF3C1FAD392BD3 
+        foreign key (type_id) 
+        references DefinedTermBase;
+
+    alter table Extension 
+        add constraint FK52EF3C1F5BE3EC03 
+        foreign key (updatedby_id) 
+        references Agent;
+
+    alter table Extension_AUD 
+        add constraint FK92D2427034869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table FeatureNode 
+        add constraint FK4CEED9F8E0AD2C03 
+        foreign key (parent_fk) 
+        references FeatureNode;
+
+    alter table FeatureNode 
+        add constraint FK4CEED9F8EF7921F6 
+        foreign key (createdby_id) 
+        references Agent;
+
+    alter table FeatureNode 
+        add constraint FK4CEED9F84220AFEB 
+        foreign key (feature_id) 
+        references DefinedTermBase;
+
+    alter table FeatureNode 
+        add constraint FK4CEED9F85BE3EC03 
+        foreign key (updatedby_id) 
+        references Agent;
+
+    alter table FeatureNode_AUD 
+        add constraint FK25AD4BC934869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table FeatureTree 
+        add constraint FK4CF19F94EF7921F6 
+        foreign key (createdby_id) 
+        references Agent;
+
+    alter table FeatureTree 
+        add constraint FK4CF19F94B7892921 
+        foreign key (root_id) 
+        references FeatureNode;
+
+    alter table FeatureTree 
+        add constraint FK4CF19F945BE3EC03 
+        foreign key (updatedby_id) 
+        references Agent;
+
+    alter table FeatureTree_AUD 
+        add constraint FK355BE36534869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table FeatureTree_Representation 
+        add constraint FK8C458F847C496CB 
+        foreign key (FeatureTree_id) 
+        references FeatureTree;
+
+    alter table FeatureTree_Representation 
+        add constraint FK8C458F8B31C4747 
+        foreign key (representations_id) 
+        references Representation;
+
+    alter table FeatureTree_Representation_AUD 
+        add constraint FKECAB4AC934869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table GatheringEvent 
+        add constraint FK6F1286F3F55AFD89 
+        foreign key (exactlocation_referencesystem_id) 
+        references DefinedTermBase;
+
+    alter table GatheringEvent 
+        add constraint FK6F1286F38B455EC6 
+        foreign key (locality_id) 
+        references LanguageString;
+
+    alter table GatheringEvent 
+        add constraint FK6F1286F3EF7921F6 
+        foreign key (createdby_id) 
+        references Agent;
+
+    alter table GatheringEvent 
+        add constraint FK6F1286F35BE3EC03 
+        foreign key (updatedby_id) 
+        references Agent;
+
+    alter table GatheringEvent 
+        add constraint FK6F1286F3C04DF64 
+        foreign key (actor_id) 
+        references Agent;
+
+    alter table GatheringEvent_AUD 
+        add constraint FK3EC034434869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table GatheringEvent_Annotation 
+        add constraint FK76DDD01BF95F225A 
+        foreign key (GatheringEvent_id) 
+        references GatheringEvent;
+
+    alter table GatheringEvent_Annotation 
+        add constraint FK76DDD01B1E403E0B 
+        foreign key (annotations_id) 
+        references Annotation;
+
+    alter table GatheringEvent_Annotation_AUD 
+        add constraint FK351E786C34869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table GatheringEvent_DefinedTermBase 
+        add constraint FK69D9A11A7C34B6D6 
+        foreign key (collectingareas_id) 
+        references DefinedTermBase;
+
+    alter table GatheringEvent_DefinedTermBase 
+        add constraint FK69D9A11AF95F225A 
+        foreign key (GatheringEvent_id) 
+        references GatheringEvent;
+
+    alter table GatheringEvent_DefinedTermBase_AUD 
+        add constraint FKB3BBB1EB34869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table GatheringEvent_Marker 
+        add constraint FK7B49CF26777265A1 
+        foreign key (markers_id) 
+        references Marker;
+
+    alter table GatheringEvent_Marker 
+        add constraint FK7B49CF26F95F225A 
+        foreign key (GatheringEvent_id) 
+        references GatheringEvent;
+
+    alter table GatheringEvent_Marker_AUD 
+        add constraint FK160DF9F734869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table GenBankAccession 
+        add constraint FK86C1DBF8EF7921F6 
+        foreign key (createdby_id) 
+        references Agent;
+
+    alter table GenBankAccession 
+        add constraint FK86C1DBF85BE3EC03 
+        foreign key (updatedby_id) 
+        references Agent;
+
+    alter table GenBankAccession_AUD 
+        add constraint FK5A2F4DC934869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table GrantedAuthorityImpl 
+        add constraint FKB05CF928EF7921F6 
+        foreign key (createdby_id) 
+        references Agent;
+
+    alter table HomotypicalGroup 
+        add constraint FK7DECCC18EF7921F6 
+        foreign key (createdby_id) 
+        references Agent;
+
+    alter table HomotypicalGroup 
+        add constraint FK7DECCC185BE3EC03 
+        foreign key (updatedby_id) 
+        references Agent;
+
+    alter table HomotypicalGroup_AUD 
+        add constraint FKE4252DE934869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table HomotypicalGroup_Annotation 
+        add constraint FK7A0351D6BFEAE500 
+        foreign key (HomotypicalGroup_id) 
+        references HomotypicalGroup;
+
+    alter table HomotypicalGroup_Annotation 
+        add constraint FK7A0351D61E403E0B 
+        foreign key (annotations_id) 
+        references Annotation;
+
+    alter table HomotypicalGroup_Annotation_AUD 
+        add constraint FK41E6A4A734869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table HomotypicalGroup_Marker 
+        add constraint FK97D36661BFEAE500 
+        foreign key (HomotypicalGroup_id) 
+        references HomotypicalGroup;
+
+    alter table HomotypicalGroup_Marker 
+        add constraint FK97D36661777265A1 
+        foreign key (markers_id) 
+        references Marker;
+
+    alter table HomotypicalGroup_Marker_AUD 
+        add constraint FK19337BB234869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table HybridRelationship 
+        add constraint FK9033CE745831BDC3 
+        foreign key (relatedfrom_id) 
+        references TaxonNameBase;
+
+    alter table HybridRelationship 
+        add constraint FK9033CE7469ABE292 
+        foreign key (relatedto_id) 
+        references TaxonNameBase;
+
+    alter table HybridRelationship 
+        add constraint FK9033CE74EF7921F6 
+        foreign key (createdby_id) 
+        references Agent;
+
+    alter table HybridRelationship 
+        add constraint FK9033CE7455F241D4 
+        foreign key (type_id) 
+        references DefinedTermBase;
+
+    alter table HybridRelationship 
+        add constraint FK9033CE749803512F 
+        foreign key (citation_id) 
+        references ReferenceBase;
+
+    alter table HybridRelationship 
+        add constraint FK9033CE745BE3EC03 
+        foreign key (updatedby_id) 
+        references Agent;
+
+    alter table HybridRelationship_AUD 
+        add constraint FK9C2BA24534869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table HybridRelationship_Annotation 
+        add constraint FK2C7E7DFA59832240 
+        foreign key (HybridRelationship_id) 
+        references HybridRelationship;
+
+    alter table HybridRelationship_Annotation 
+        add constraint FK2C7E7DFA1E403E0B 
+        foreign key (annotations_id) 
+        references Annotation;
+
+    alter table HybridRelationship_Annotation_AUD 
+        add constraint FKACE71ECB34869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table HybridRelationship_Marker 
+        add constraint FKCEF2448559832240 
+        foreign key (HybridRelationship_id) 
+        references HybridRelationship;
+
+    alter table HybridRelationship_Marker 
+        add constraint FKCEF24485777265A1 
+        foreign key (markers_id) 
+        references Marker;
+
+    alter table HybridRelationship_Marker_AUD 
+        add constraint FKCBAEA7D634869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table IdentificationKey_Taxon 
+        add constraint FKD847ADDC996CD055 
+        foreign key (identificationKey_fk) 
+        references Media;
+
+    alter table IdentificationKey_Taxon 
+        add constraint FKD847ADDCDE9A3DE3 
+        foreign key (taxon_fk) 
+        references TaxonBase;
+
+    alter table IdentificationKey_Taxon_AUD 
+        add constraint FKEEF18DAD34869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table IndividualAssociation_LanguageString 
+        add constraint FKB5C75EC02BEBA58D 
+        foreign key (description_id) 
+        references LanguageString;
+
+    alter table IndividualAssociation_LanguageString 
+        add constraint FKB5C75EC084FF3EDF 
+        foreign key (DescriptionElementBase_id) 
+        references DescriptionElementBase;
+
+    alter table IndividualAssociation_LanguageString 
+        add constraint FKB5C75EC028459272 
+        foreign key (description_mapkey_id) 
+        references DefinedTermBase;
+
+    alter table IndividualAssociation_LanguageString_AUD 
+        add constraint FKB1A62C9134869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table InstitutionalMembership 
+        add constraint FK3C8E1FF9EF7921F6 
+        foreign key (createdby_id) 
+        references Agent;
+
+    alter table InstitutionalMembership 
+        add constraint FK3C8E1FF9AAC1B820 
+        foreign key (person_id) 
+        references Agent;
+
+    alter table InstitutionalMembership 
+        add constraint FK3C8E1FF916B9CA77 
+        foreign key (institute_id) 
+        references Agent;
+
+    alter table InstitutionalMembership 
+        add constraint FK3C8E1FF95BE3EC03 
+        foreign key (updatedby_id) 
+        references Agent;
+
+    alter table InstitutionalMembership_AUD 
+        add constraint FK847A94A34869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table LanguageString 
+        add constraint FKB5FDC9A9EF7921F6 
+        foreign key (createdby_id) 
+        references Agent;
+
+    alter table LanguageString 
+        add constraint FKB5FDC9A95BE3EC03 
+        foreign key (updatedby_id) 
+        references Agent;
+
+    alter table LanguageString 
+        add constraint FKB5FDC9A9E8D36B00 
+        foreign key (language_id) 
+        references DefinedTermBase;
+
+    alter table LanguageString_AUD 
+        add constraint FK896AFAFA34869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table LanguageString_Annotation 
+        add constraint FK8400DFA51E403E0B 
+        foreign key (annotations_id) 
+        references Annotation;
+
+    alter table LanguageString_Annotation 
+        add constraint FK8400DFA537998500 
+        foreign key (LanguageString_id) 
+        references LanguageString;
+
+    alter table LanguageString_Annotation_AUD 
+        add constraint FKD3BAB2F634869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table LanguageString_Marker 
+        add constraint FK8DA633B0777265A1 
+        foreign key (markers_id) 
+        references Marker;
+
+    alter table LanguageString_Marker 
+        add constraint FK8DA633B037998500 
+        foreign key (LanguageString_id) 
+        references LanguageString;
+
+    alter table LanguageString_Marker_AUD 
+        add constraint FK2331098134869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table Locus 
+        add constraint FK462F1BEEF7921F6 
+        foreign key (createdby_id) 
+        references Agent;
+
+    alter table Locus 
+        add constraint FK462F1BE5BE3EC03 
+        foreign key (updatedby_id) 
+        references Agent;
+
+    alter table Locus_AUD 
+        add constraint FK5224108F34869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table Marker 
+        add constraint FK88F1805AEF7921F6 
+        foreign key (createdby_id) 
+        references Agent;
+
+    alter table Marker 
+        add constraint FK88F1805AD64DC020 
+        foreign key (markertype_id) 
+        references DefinedTermBase;
+
+    alter table Marker 
+        add constraint FK88F1805A5BE3EC03 
+        foreign key (updatedby_id) 
+        references Agent;
+
+    alter table Marker_AUD 
+        add constraint FKB951F12B34869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table Media 
+        add constraint FK46C7FC4EF7921F6 
+        foreign key (createdby_id) 
+        references Agent;
+
+    alter table Media 
+        add constraint FK46C7FC490A4D0D2 
+        foreign key (artist_id) 
+        references Agent;
+
+    alter table Media 
+        add constraint FK46C7FC49803512F 
+        foreign key (citation_id) 
+        references ReferenceBase;
+
+    alter table Media 
+        add constraint FK46C7FC45BE3EC03 
+        foreign key (updatedby_id) 
+        references Agent;
+
+    alter table MediaRepresentation 
+        add constraint FK1966BDB1EF7921F6 
+        foreign key (createdby_id) 
+        references Agent;
+
+    alter table MediaRepresentation 
+        add constraint FK1966BDB1C2C29593 
+        foreign key (media_id) 
+        references Media;
+
+    alter table MediaRepresentation 
+        add constraint FK1966BDB15BE3EC03 
+        foreign key (updatedby_id) 
+        references Agent;
+
+    alter table MediaRepresentationPart 
+        add constraint FK67A45544E3818E37 
+        foreign key (representation_id) 
+        references MediaRepresentation;
+
+    alter table MediaRepresentationPart 
+        add constraint FK67A45544EF7921F6 
+        foreign key (createdby_id) 
+        references Agent;
+
+    alter table MediaRepresentationPart 
+        add constraint FK67A455445BE3EC03 
+        foreign key (updatedby_id) 
+        references Agent;
+
+    alter table MediaRepresentationPart_AUD 
+        add constraint FKA75C411534869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table MediaRepresentation_AUD 
+        add constraint FK67AAAB0234869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table MediaRepresentation_MediaRepresentationPart_AUD 
+        add constraint FK3544378734869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table Media_AUD 
+        add constraint FKF70B2B9534869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table Media_Annotation 
+        add constraint FKA020DAAAC2C29593 
+        foreign key (Media_id) 
+        references Media;
+
+    alter table Media_Annotation 
+        add constraint FKA020DAAA1E403E0B 
+        foreign key (annotations_id) 
+        references Annotation;
+
+    alter table Media_Annotation_AUD 
+        add constraint FK99ABA37B34869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table Media_DefinedTermBase 
+        add constraint FK96F1D7EB8A6C9D18 
+        foreign key (Media_id) 
+        references Media;
+
+    alter table Media_DefinedTermBase 
+        add constraint FK96F1D7EB86D04E74 
+        foreign key (geoscopes_id) 
+        references DefinedTermBase;
+
+    alter table Media_DefinedTermBase_AUD 
+        add constraint FK994A183C34869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table Media_Description 
+        add constraint FK368283E1C2C29593 
+        foreign key (Media_id) 
+        references Media;
+
+    alter table Media_Description 
+        add constraint FK368283E12BEBA58D 
+        foreign key (description_id) 
+        references LanguageString;
+
+    alter table Media_Description 
+        add constraint FK368283E128459272 
+        foreign key (description_mapkey_id) 
+        references DefinedTermBase;
+
+    alter table Media_Description_AUD 
+        add constraint FK6817D93234869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table Media_LanguageString 
+        add constraint FK353DB784A0A6EDCE 
+        foreign key (title_mapkey_id) 
+        references DefinedTermBase;
+
+    alter table Media_LanguageString 
+        add constraint FK353DB784C2C29593 
+        foreign key (Media_id) 
+        references Media;
+
+    alter table Media_LanguageString 
+        add constraint FK353DB784A1CA19B1 
+        foreign key (title_id) 
+        references LanguageString;
+
+    alter table Media_LanguageString_AUD 
+        add constraint FK68FA835534869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table Media_Marker 
+        add constraint FKD21E7935C2C29593 
+        foreign key (Media_id) 
+        references Media;
+
+    alter table Media_Marker 
+        add constraint FKD21E7935777265A1 
+        foreign key (markers_id) 
+        references Marker;
+
+    alter table Media_Marker_AUD 
+        add constraint FK3F51048634869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table Media_Rights 
+        add constraint FKDB1266D2C2C29593 
+        foreign key (Media_id) 
+        references Media;
+
+    alter table Media_Rights 
+        add constraint FKDB1266D2C13F7B21 
+        foreign key (rights_id) 
+        references Rights;
+
+    alter table Media_Rights_AUD 
+        add constraint FKAB2ADBA334869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table Media_Sequence 
+        add constraint FK61D09FC3282B64 
+        foreign key (Media_id) 
+        references Media;
+
+    alter table Media_Sequence 
+        add constraint FK61D09FCF29B4761 
+        foreign key (usedsequences_id) 
+        references Sequence;
+
+    alter table Media_Sequence_AUD 
+        add constraint FK3C7BD9CD34869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table Media_TaxonBase 
+        add constraint FK1ABD49E07C3D0017 
+        foreign key (coveredtaxa_id) 
+        references TaxonBase;
+
+    alter table Media_TaxonBase 
+        add constraint FK1ABD49E08A6C9D18 
+        foreign key (Media_id) 
+        references Media;
+
+    alter table Media_TaxonBase_AUD 
+        add constraint FK857187B134869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table NameRelationship 
+        add constraint FK5E5108316CDFF85 
+        foreign key (relatedfrom_id) 
+        references TaxonNameBase;
+
+    alter table NameRelationship 
+        add constraint FK5E5108328482454 
+        foreign key (relatedto_id) 
+        references TaxonNameBase;
+
+    alter table NameRelationship 
+        add constraint FK5E51083EF7921F6 
+        foreign key (createdby_id) 
+        references Agent;
+
+    alter table NameRelationship 
+        add constraint FK5E51083AF619DE3 
+        foreign key (type_id) 
+        references DefinedTermBase;
+
+    alter table NameRelationship 
+        add constraint FK5E510839803512F 
+        foreign key (citation_id) 
+        references ReferenceBase;
+
+    alter table NameRelationship 
+        add constraint FK5E510835BE3EC03 
+        foreign key (updatedby_id) 
+        references Agent;
+
+    alter table NameRelationship_AUD 
+        add constraint FK743F44D434869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table NameRelationship_Annotation 
+        add constraint FK2E38AC8B7B4CB560 
+        foreign key (NameRelationship_id) 
+        references NameRelationship;
+
+    alter table NameRelationship_Annotation 
+        add constraint FK2E38AC8B1E403E0B 
+        foreign key (annotations_id) 
+        references Annotation;
+
+    alter table NameRelationship_Annotation_AUD 
+        add constraint FKD1D59CDC34869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table NameRelationship_Marker 
+        add constraint FKE3E463967B4CB560 
+        foreign key (NameRelationship_id) 
+        references NameRelationship;
+
+    alter table NameRelationship_Marker 
+        add constraint FKE3E46396777265A1 
+        foreign key (markers_id) 
+        references Marker;
+
+    alter table NameRelationship_Marker_AUD 
+        add constraint FKCD68D66734869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table NomenclaturalStatus 
+        add constraint FK1FFEC88BEF7921F6 
+        foreign key (createdby_id) 
+        references Agent;
+
+    alter table NomenclaturalStatus 
+        add constraint FK1FFEC88B7029BD9F 
+        foreign key (type_id) 
+        references DefinedTermBase;
+
+    alter table NomenclaturalStatus 
+        add constraint FK1FFEC88B9803512F 
+        foreign key (citation_id) 
+        references ReferenceBase;
+
+    alter table NomenclaturalStatus 
+        add constraint FK1FFEC88B5BE3EC03 
+        foreign key (updatedby_id) 
+        references Agent;
+
+    alter table NomenclaturalStatus_AUD 
+        add constraint FKFB2DB8DC34869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table NomenclaturalStatus_Annotation 
+        add constraint FKE6E91F838D2CB1D4 
+        foreign key (NomenclaturalStatus_id) 
+        references NomenclaturalStatus;
+
+    alter table NomenclaturalStatus_Annotation 
+        add constraint FKE6E91F831E403E0B 
+        foreign key (annotations_id) 
+        references Annotation;
+
+    alter table NomenclaturalStatus_Annotation_AUD 
+        add constraint FK6A3D3D434869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table NomenclaturalStatus_Marker 
+        add constraint FK2F5128E8D2CB1D4 
+        foreign key (NomenclaturalStatus_id) 
+        references NomenclaturalStatus;
+
+    alter table NomenclaturalStatus_Marker 
+        add constraint FK2F5128E777265A1 
+        foreign key (markers_id) 
+        references Marker;
+
+    alter table NomenclaturalStatus_Marker_AUD 
+        add constraint FK8619495F34869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table OriginalSource 
+        add constraint FK229A496CEF7921F6 
+        foreign key (createdby_id) 
+        references Agent;
+
+    alter table OriginalSource 
+        add constraint FK229A496C9803512F 
+        foreign key (citation_id) 
+        references ReferenceBase;
+
+    alter table OriginalSource 
+        add constraint FK229A496C5BE3EC03 
+        foreign key (updatedby_id) 
+        references Agent;
+
+    alter table OriginalSource_AUD 
+        add constraint FK506BE13D34869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table OriginalSource_Annotation 
+        add constraint FK5B3FF802DC2DCA20 
+        foreign key (OriginalSource_id) 
+        references OriginalSource;
+
+    alter table OriginalSource_Annotation 
+        add constraint FK5B3FF8021E403E0B 
+        foreign key (annotations_id) 
+        references Annotation;
+
+    alter table OriginalSource_Annotation_AUD 
+        add constraint FK4ACC54D334869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table OriginalSource_Marker 
+        add constraint FKCF52028DDC2DCA20 
+        foreign key (OriginalSource_id) 
+        references OriginalSource;
+
+    alter table OriginalSource_Marker 
+        add constraint FKCF52028D777265A1 
+        foreign key (markers_id) 
+        references Marker;
+
+    alter table OriginalSource_Marker_AUD 
+        add constraint FKFA7021DE34869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table PermissionGroup 
+        add constraint FK629941D0EF7921F6 
+        foreign key (createdby_id) 
+        references Agent;
+
+    alter table PermissionGroup_GrantedAuthorityImpl 
+        add constraint FK5311437CA0971A3 
+        foreign key (PermissionGroup_id) 
+        references PermissionGroup;
+
+    alter table PermissionGroup_GrantedAuthorityImpl 
+        add constraint FK53114371857F6C2 
+        foreign key (grantedauthorities_id) 
+        references GrantedAuthorityImpl;
+
+    alter table Person_Keyword 
+        add constraint FK5F559EFF13A443BE 
+        foreign key (keyword_fk) 
+        references DefinedTermBase;
+
+    alter table Person_Keyword 
+        add constraint FK5F559EFFAAC1B7CA 
+        foreign key (person_fk) 
+        references Agent;
+
+    alter table Person_Keyword_AUD 
+        add constraint FK6D8C355034869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    create index ReferenceBaseTitleCacheIndex on ReferenceBase (titleCache);
+
+    alter table ReferenceBase 
+        add constraint FK8F034C9C1A488155 
+        foreign key (inbook_id) 
+        references ReferenceBase;
+
+    alter table ReferenceBase 
+        add constraint FK8F034C9CEF7921F6 
+        foreign key (createdby_id) 
+        references Agent;
+
+    alter table ReferenceBase 
+        add constraint FK8F034C9C403E17F4 
+        foreign key (institution_id) 
+        references Agent;
+
+    alter table ReferenceBase 
+        add constraint FK8F034C9CCCE9AAE2 
+        foreign key (inseries_id) 
+        references ReferenceBase;
+
+    alter table ReferenceBase 
+        add constraint FK8F034C9CD893F6E6 
+        foreign key (crossref_id) 
+        references ReferenceBase;
+
+    alter table ReferenceBase 
+        add constraint FK8F034C9CAEC3B8B8 
+        foreign key (school_id) 
+        references Agent;
+
+    alter table ReferenceBase 
+        add constraint FK8F034C9CE3A02620 
+        foreign key (type_id) 
+        references DefinedTermBase;
+
+    alter table ReferenceBase 
+        add constraint FK8F034C9CE87E60BF 
+        foreign key (inproceedings_id) 
+        references ReferenceBase;
+
+    alter table ReferenceBase 
+        add constraint FK8F034C9CE019003F 
+        foreign key (injournal_id) 
+        references ReferenceBase;
+
+    alter table ReferenceBase 
+        add constraint FK8F034C9C697665E 
+        foreign key (authorteam_id) 
+        references Agent;
+
+    alter table ReferenceBase 
+        add constraint FK8F034C9C5BE3EC03 
+        foreign key (updatedby_id) 
+        references Agent;
+
+    alter table ReferenceBase_AUD 
+        add constraint FK8D3FCC6D34869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table ReferenceBase_Annotation 
+        add constraint FKC97616D2F443DB5A 
+        foreign key (ReferenceBase_id) 
+        references ReferenceBase;
+
+    alter table ReferenceBase_Annotation 
+        add constraint FKC97616D21E403E0B 
+        foreign key (annotations_id) 
+        references Annotation;
+
+    alter table ReferenceBase_Annotation_AUD 
+        add constraint FK60368BA334869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table ReferenceBase_Extension 
+        add constraint FK81E1703C927DE9DF 
+        foreign key (extensions_id) 
+        references Extension;
+
+    alter table ReferenceBase_Extension 
+        add constraint FK81E1703CF443DB5A 
+        foreign key (ReferenceBase_id) 
+        references ReferenceBase;
+
+    alter table ReferenceBase_Extension_AUD 
+        add constraint FKD723200D34869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table ReferenceBase_Marker 
+        add constraint FK6888095DF443DB5A 
+        foreign key (ReferenceBase_id) 
+        references ReferenceBase;
+
+    alter table ReferenceBase_Marker 
+        add constraint FK6888095D777265A1 
+        foreign key (markers_id) 
+        references Marker;
+
+    alter table ReferenceBase_Marker_AUD 
+        add constraint FK68A640AE34869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table ReferenceBase_Media 
+        add constraint FK3D2F4A61C2C29593 
+        foreign key (media_id) 
+        references Media;
+
+    alter table ReferenceBase_Media 
+        add constraint FK3D2F4A61F443DB5A 
+        foreign key (ReferenceBase_id) 
+        references ReferenceBase;
+
+    alter table ReferenceBase_Media_AUD 
+        add constraint FK25FD5FB234869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table ReferenceBase_OriginalSource 
+        add constraint FK68651F6F3BAB2414 
+        foreign key (sources_id) 
+        references OriginalSource;
+
+    alter table ReferenceBase_OriginalSource 
+        add constraint FK68651F6FF443DB5A 
+        foreign key (ReferenceBase_id) 
+        references ReferenceBase;
+
+    alter table ReferenceBase_OriginalSource_AUD 
+        add constraint FK6905FDC034869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table ReferenceBase_Rights 
+        add constraint FK717BF6FAF443DB5A 
+        foreign key (ReferenceBase_id) 
+        references ReferenceBase;
+
+    alter table ReferenceBase_Rights 
+        add constraint FK717BF6FAC13F7B21 
+        foreign key (rights_id) 
+        references Rights;
+
+    alter table ReferenceBase_Rights_AUD 
+        add constraint FKD48017CB34869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table RelationshipTermBase_inverseRepresentation 
+        add constraint FK98592F33ECEEF4AF 
+        foreign key (DefinedTermBase_id) 
+        references DefinedTermBase;
+
+    alter table RelationshipTermBase_inverseRepresentation 
+        add constraint FK98592F33473FB677 
+        foreign key (inverserepresentations_id) 
+        references Representation;
+
+    alter table RelationshipTermBase_inverseRepresentation_AUD 
+        add constraint FK5D248B8434869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table Representation 
+        add constraint FK9C4724EDEF7921F6 
+        foreign key (createdby_id) 
+        references Agent;
+
+    alter table Representation 
+        add constraint FK9C4724ED5BE3EC03 
+        foreign key (updatedby_id) 
+        references Agent;
+
+    alter table Representation 
+        add constraint FK9C4724EDE8D36B00 
+        foreign key (language_id) 
+        references DefinedTermBase;
+
+    alter table Representation_AUD 
+        add constraint FK294D143E34869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table Representation_Annotation 
+        add constraint FK371091E147E8AE60 
+        foreign key (Representation_id) 
+        references Representation;
+
+    alter table Representation_Annotation 
+        add constraint FK371091E11E403E0B 
+        foreign key (annotations_id) 
+        references Annotation;
+
+    alter table Representation_Annotation_AUD 
+        add constraint FK36EEE73234869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table Representation_Marker 
+        add constraint FK560063EC47E8AE60 
+        foreign key (Representation_id) 
+        references Representation;
+
+    alter table Representation_Marker 
+        add constraint FK560063EC777265A1 
+        foreign key (markers_id) 
+        references Marker;
+
+    alter table Representation_Marker_AUD 
+        add constraint FKD640BBBD34869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table Rights 
+        add constraint FK91E56DF7C5F7EC54 
+        foreign key (agent_id) 
+        references Agent;
+
+    alter table Rights 
+        add constraint FK91E56DF7EF7921F6 
+        foreign key (createdby_id) 
+        references Agent;
+
+    alter table Rights 
+        add constraint FK91E56DF7E6D2886A 
+        foreign key (type_id) 
+        references DefinedTermBase;
+
+    alter table Rights 
+        add constraint FK91E56DF75BE3EC03 
+        foreign key (updatedby_id) 
+        references Agent;
+
+    alter table Rights 
+        add constraint FK91E56DF7E8D36B00 
+        foreign key (language_id) 
+        references DefinedTermBase;
+
+    alter table Rights_AUD 
+        add constraint FK252BC84834869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table Rights_Annotation 
+        add constraint FK27CB1E97C13F7B21 
+        foreign key (Rights_id) 
+        references Rights;
+
+    alter table Rights_Annotation 
+        add constraint FK27CB1E971E403E0B 
+        foreign key (annotations_id) 
+        references Annotation;
+
+    alter table Rights_Annotation_AUD 
+        add constraint FKF98828E834869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table Rights_Marker 
+        add constraint FKB739BBA2C13F7B21 
+        foreign key (Rights_id) 
+        references Rights;
+
+    alter table Rights_Marker 
+        add constraint FKB739BBA2777265A1 
+        foreign key (markers_id) 
+        references Marker;
+
+    alter table Rights_Marker_AUD 
+        add constraint FKC6FB487334869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    create index sequenceTitleCacheIndex on Sequence (titleCache);
+
+    alter table Sequence 
+        add constraint FK544ADBE1EF7921F6 
+        foreign key (createdby_id) 
+        references Agent;
+
+    alter table Sequence 
+        add constraint FK544ADBE1B982A103 
+        foreign key (publishedin_id) 
+        references ReferenceBase;
+
+    alter table Sequence 
+        add constraint FK544ADBE15BE3EC03 
+        foreign key (updatedby_id) 
+        references Agent;
+
+    alter table Sequence_AUD 
+        add constraint FK39F4313234869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table Sequence_Annotation 
+        add constraint FK1010BA6D1E403E0B 
+        foreign key (annotations_id) 
+        references Annotation;
+
+    alter table Sequence_Annotation 
+        add constraint FK1010BA6DD57FFDD5 
+        foreign key (Sequence_id) 
+        references Sequence;
+
+    alter table Sequence_Annotation_AUD 
+        add constraint FKCB4FE9BE34869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table Sequence_Extension 
+        add constraint FK7BE66D41927DE9DF 
+        foreign key (extensions_id) 
+        references Extension;
+
+    alter table Sequence_Extension 
+        add constraint FK7BE66D41D57FFDD5 
+        foreign key (Sequence_id) 
+        references Sequence;
+
+    alter table Sequence_Extension_AUD 
+        add constraint FK1CA8129234869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table Sequence_GenBankAccession 
+        add constraint FK8F69809615C4EF35 
+        foreign key (genbankaccession_id) 
+        references GenBankAccession;
+
+    alter table Sequence_GenBankAccession 
+        add constraint FK8F698096D57FFDD5 
+        foreign key (Sequence_id) 
+        references Sequence;
+
+    alter table Sequence_GenBankAccession_AUD 
+        add constraint FKC717736734869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table Sequence_Marker 
+        add constraint FK3D22B278777265A1 
+        foreign key (markers_id) 
+        references Marker;
+
+    alter table Sequence_Marker 
+        add constraint FK3D22B278D57FFDD5 
+        foreign key (Sequence_id) 
+        references Sequence;
+
+    alter table Sequence_Marker_AUD 
+        add constraint FKAF40E44934869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table Sequence_Media 
+        add constraint FK8E5D91E666ACA7EC 
+        foreign key (chromatograms_id) 
+        references Media;
+
+    alter table Sequence_Media 
+        add constraint FK8E5D91E6D57FFDD5 
+        foreign key (Sequence_id) 
+        references Sequence;
+
+    alter table Sequence_Media_AUD 
+        add constraint FK20025CB734869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table Sequence_OriginalSource 
+        add constraint FKD37E7D8A3BAB2414 
+        foreign key (sources_id) 
+        references OriginalSource;
+
+    alter table Sequence_OriginalSource 
+        add constraint FKD37E7D8AD57FFDD5 
+        foreign key (Sequence_id) 
+        references Sequence;
+
+    alter table Sequence_OriginalSource_AUD 
+        add constraint FKCDBCD65B34869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table Sequence_ReferenceBase 
+        add constraint FK18D91CBE7291F8A 
+        foreign key (citations_id) 
+        references ReferenceBase;
+
+    alter table Sequence_ReferenceBase 
+        add constraint FK18D91CBED57FFDD5 
+        foreign key (Sequence_id) 
+        references Sequence;
+
+    alter table Sequence_ReferenceBase_AUD 
+        add constraint FK998CBB8F34869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table Sequence_Rights 
+        add constraint FK4616A015C13F7B21 
+        foreign key (rights_id) 
+        references Rights;
+
+    alter table Sequence_Rights 
+        add constraint FK4616A015D57FFDD5 
+        foreign key (Sequence_id) 
+        references Sequence;
+
+    alter table Sequence_Rights_AUD 
+        add constraint FK1B1ABB6634869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    create index specimenOrObservationBaseTitleCacheIndex on SpecimenOrObservationBase (titleCache);
+
+    alter table SpecimenOrObservationBase 
+        add constraint FK21CA3272C8505DB 
+        foreign key (preservation_id) 
+        references DefinedTermBase;
+
+    alter table SpecimenOrObservationBase 
+        add constraint FK21CA3272EF7921F6 
+        foreign key (createdby_id) 
+        references Agent;
+
+    alter table SpecimenOrObservationBase 
+        add constraint FK21CA32727CC340C5 
+        foreign key (storedunder_id) 
+        references TaxonNameBase;
+
+    alter table SpecimenOrObservationBase 
+        add constraint FK21CA3272EB62BE9A 
+        foreign key (collection_id) 
+        references Collection;
+
+    alter table SpecimenOrObservationBase 
+        add constraint FK21CA3272E17C9A6B 
+        foreign key (sex_id) 
+        references DefinedTermBase;
+
+    alter table SpecimenOrObservationBase 
+        add constraint FK21CA32728C750E27 
+        foreign key (lifestage_id) 
+        references DefinedTermBase;
+
+    alter table SpecimenOrObservationBase 
+        add constraint FK21CA32724AAB411A 
+        foreign key (derivationevent_id) 
+        references DerivationEvent;
+
+    alter table SpecimenOrObservationBase 
+        add constraint FK21CA3272F95F225A 
+        foreign key (gatheringevent_id) 
+        references GatheringEvent;
+
+    alter table SpecimenOrObservationBase 
+        add constraint FK21CA32725BE3EC03 
+        foreign key (updatedby_id) 
+        references Agent;
+
+    alter table SpecimenOrObservationBase_AUD 
+        add constraint FKF3D3D74334869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table SpecimenOrObservationBase_Annotation 
+        add constraint FK365E4F3C3B8A5ABA 
+        foreign key (SpecimenOrObservationBase_id) 
+        references SpecimenOrObservationBase;
+
+    alter table SpecimenOrObservationBase_Annotation 
+        add constraint FK365E4F3C1E403E0B 
+        foreign key (annotations_id) 
+        references Annotation;
+
+    alter table SpecimenOrObservationBase_Annotation_AUD 
+        add constraint FK34187F0D34869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table SpecimenOrObservationBase_DerivationEvent 
+        add constraint FK20132036BD59A1AD 
+        foreign key (derivationevents_id) 
+        references DerivationEvent;
+
+    alter table SpecimenOrObservationBase_DerivationEvent 
+        add constraint FK2013203654C216AA 
+        foreign key (originals_id) 
+        references SpecimenOrObservationBase;
+
+    alter table SpecimenOrObservationBase_DerivationEvent_AUD 
+        add constraint FKA4A8430734869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table SpecimenOrObservationBase_Extension 
+        add constraint FKE03B82923B8A5ABA 
+        foreign key (SpecimenOrObservationBase_id) 
+        references SpecimenOrObservationBase;
+
+    alter table SpecimenOrObservationBase_Extension 
+        add constraint FKE03B8292927DE9DF 
+        foreign key (extensions_id) 
+        references Extension;
+
+    alter table SpecimenOrObservationBase_Extension_AUD 
+        add constraint FK7AE0176334869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table SpecimenOrObservationBase_LanguageString 
+        add constraint FKCFAA93163B8A5ABA 
+        foreign key (SpecimenOrObservationBase_id) 
+        references SpecimenOrObservationBase;
+
+    alter table SpecimenOrObservationBase_LanguageString 
+        add constraint FKCFAA93162BEBA58D 
+        foreign key (description_id) 
+        references LanguageString;
+
+    alter table SpecimenOrObservationBase_LanguageString 
+        add constraint FKCFAA931628459272 
+        foreign key (description_mapkey_id) 
+        references DefinedTermBase;
+
+    alter table SpecimenOrObservationBase_LanguageString_AUD 
+        add constraint FK38B45E734869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table SpecimenOrObservationBase_Marker 
+        add constraint FK8E6106C73B8A5ABA 
+        foreign key (SpecimenOrObservationBase_id) 
+        references SpecimenOrObservationBase;
+
+    alter table SpecimenOrObservationBase_Marker 
+        add constraint FK8E6106C7777265A1 
+        foreign key (markers_id) 
+        references Marker;
+
+    alter table SpecimenOrObservationBase_Marker_AUD 
+        add constraint FKD58E791834869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table SpecimenOrObservationBase_Media 
+        add constraint FK4EEBF7B73B8A5ABA 
+        foreign key (SpecimenOrObservationBase_id) 
+        references SpecimenOrObservationBase;
+
+    alter table SpecimenOrObservationBase_Media 
+        add constraint FK4EEBF7B7C2C29593 
+        foreign key (media_id) 
+        references Media;
+
+    alter table SpecimenOrObservationBase_Media_AUD 
+        add constraint FK8457720834869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table SpecimenOrObservationBase_OriginalSource 
+        add constraint FK3C4712D93B8A5ABA 
+        foreign key (SpecimenOrObservationBase_id) 
+        references SpecimenOrObservationBase;
+
+    alter table SpecimenOrObservationBase_OriginalSource 
+        add constraint FK3C4712D93BAB2414 
+        foreign key (sources_id) 
+        references OriginalSource;
+
+    alter table SpecimenOrObservationBase_OriginalSource_AUD 
+        add constraint FKCA8C2C2A34869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table SpecimenOrObservationBase_Rights 
+        add constraint FK9754F4643B8A5ABA 
+        foreign key (SpecimenOrObservationBase_id) 
+        references SpecimenOrObservationBase;
+
+    alter table SpecimenOrObservationBase_Rights 
+        add constraint FK9754F464C13F7B21 
+        foreign key (rights_id) 
+        references Rights;
+
+    alter table SpecimenOrObservationBase_Rights_AUD 
+        add constraint FK4168503534869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table SpecimenOrObservationBase_Sequence 
+        add constraint FKBBF27B0E7EE2770E 
+        foreign key (SpecimenOrObservationBase_id) 
+        references SpecimenOrObservationBase;
+
+    alter table SpecimenOrObservationBase_Sequence 
+        add constraint FKBBF27B0E35B10F24 
+        foreign key (sequences_id) 
+        references Sequence;
+
+    alter table SpecimenOrObservationBase_Sequence_AUD 
+        add constraint FK392E71DF34869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table StateData 
+        add constraint FKFB1697BBEF7921F6 
+        foreign key (createdby_id) 
+        references Agent;
+
+    alter table StateData 
+        add constraint FKFB1697BB682A4E4B 
+        foreign key (state_id) 
+        references DefinedTermBase;
+
+    alter table StateData 
+        add constraint FKFB1697BB5BE3EC03 
+        foreign key (updatedby_id) 
+        references Agent;
+
+    alter table StateData_AUD 
+        add constraint FKDA6A700C34869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table StateData_DefinedTermBase 
+        add constraint FK107321E28E7BF9AB 
+        foreign key (StateData_id) 
+        references StateData;
+
+    alter table StateData_DefinedTermBase 
+        add constraint FK107321E2E0960EC4 
+        foreign key (modifiers_id) 
+        references DefinedTermBase;
+
+    alter table StateData_DefinedTermBase_AUD 
+        add constraint FK7C978EB334869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table StateData_LanguageString 
+        add constraint FK93FFD2AD8E7BF9AB 
+        foreign key (StateData_id) 
+        references StateData;
+
+    alter table StateData_LanguageString 
+        add constraint FK93FFD2ADF05D08D4 
+        foreign key (modifyingtext_id) 
+        references LanguageString;
+
+    alter table StateData_LanguageString 
+        add constraint FK93FFD2AD9682414B 
+        foreign key (modifyingtext_mapkey_id) 
+        references DefinedTermBase;
+
+    alter table StateData_LanguageString_AUD 
+        add constraint FK1578E1FE34869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table StatisticalMeasurementValue 
+        add constraint FK2DCE0290EF7921F6 
+        foreign key (createdby_id) 
+        references Agent;
+
+    alter table StatisticalMeasurementValue 
+        add constraint FK2DCE02904C428112 
+        foreign key (type_id) 
+        references DefinedTermBase;
+
+    alter table StatisticalMeasurementValue 
+        add constraint FK2DCE02905BE3EC03 
+        foreign key (updatedby_id) 
+        references Agent;
+
+    alter table StatisticalMeasurementValue_AUD 
+        add constraint FKBB16686134869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table StatisticalMeasurementValue_DefinedTermBase 
+        add constraint FK686C42B75C9F4F2B 
+        foreign key (StatisticalMeasurementValue_id) 
+        references StatisticalMeasurementValue;
+
+    alter table StatisticalMeasurementValue_DefinedTermBase 
+        add constraint FK686C42B7E0960EC4 
+        foreign key (modifiers_id) 
+        references DefinedTermBase;
+
+    alter table StatisticalMeasurementValue_DefinedTermBase_AUD 
+        add constraint FKFEBA3D0834869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table SynonymRelationship 
+        add constraint FKF483ADB34BAC703F 
+        foreign key (relatedfrom_id) 
+        references TaxonBase;
+
+    alter table SynonymRelationship 
+        add constraint FKF483ADB3F8991B9D 
+        foreign key (relatedto_id) 
+        references TaxonBase;
+
+    alter table SynonymRelationship 
+        add constraint FKF483ADB3EF7921F6 
+        foreign key (createdby_id) 
+        references Agent;
+
+    alter table SynonymRelationship 
+        add constraint FKF483ADB380924EEC 
+        foreign key (type_id) 
+        references DefinedTermBase;
+
+    alter table SynonymRelationship 
+        add constraint FKF483ADB39803512F 
+        foreign key (citation_id) 
+        references ReferenceBase;
+
+    alter table SynonymRelationship 
+        add constraint FKF483ADB35BE3EC03 
+        foreign key (updatedby_id) 
+        references Agent;
+
+    alter table SynonymRelationship_AUD 
+        add constraint FK8AEBCA0434869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table SynonymRelationship_Annotation 
+        add constraint FKF494F15B260A8379 
+        foreign key (SynonymRelationship_id) 
+        references SynonymRelationship;
+
+    alter table SynonymRelationship_Annotation 
+        add constraint FKF494F15B1E403E0B 
+        foreign key (annotations_id) 
+        references Annotation;
+
+    alter table SynonymRelationship_Annotation_AUD 
+        add constraint FKD3E2F9AC34869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table SynonymRelationship_Marker 
+        add constraint FK7A439066260A8379 
+        foreign key (SynonymRelationship_id) 
+        references SynonymRelationship;
+
+    alter table SynonymRelationship_Marker 
+        add constraint FK7A439066777265A1 
+        foreign key (markers_id) 
+        references Marker;
+
+    alter table SynonymRelationship_Marker_AUD 
+        add constraint FK93C51B3734869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    create index taxonBaseTitleCacheIndex on TaxonBase (titleCache);
+
+    alter table TaxonBase 
+        add constraint FK9249B49BEF7921F6 
+        foreign key (createdby_id) 
+        references Agent;
+
+    alter table TaxonBase 
+        add constraint FK9249B49BDA93512F 
+        foreign key (taxonName_fk) 
+        references TaxonNameBase;
+
+    alter table TaxonBase 
+        add constraint FK9249B49B7C7B5AED 
+        foreign key (taxonomicparentcache_id) 
+        references TaxonBase;
+
+    alter table TaxonBase 
+        add constraint FK9249B49B5E4A2F85 
+        foreign key (sec_id) 
+        references ReferenceBase;
+
+    alter table TaxonBase 
+        add constraint FK9249B49B5BE3EC03 
+        foreign key (updatedby_id) 
+        references Agent;
+
+    alter table TaxonBase_AUD 
+        add constraint FK37041CEC34869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table TaxonBase_Annotation 
+        add constraint FK41ED09739C9D39 
+        foreign key (TaxonBase_id) 
+        references TaxonBase;
+
+    alter table TaxonBase_Annotation 
+        add constraint FK41ED09731E403E0B 
+        foreign key (annotations_id) 
+        references Annotation;
+
+    alter table TaxonBase_Annotation_AUD 
+        add constraint FK8C145C434869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table TaxonBase_Extension 
+        add constraint FKF961257B927DE9DF 
+        foreign key (extensions_id) 
+        references Extension;
+
+    alter table TaxonBase_Extension 
+        add constraint FKF961257B9C9D39 
+        foreign key (TaxonBase_id) 
+        references TaxonBase;
+
+    alter table TaxonBase_Extension_AUD 
+        add constraint FK71381DCC34869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table TaxonBase_Marker 
+        add constraint FK5CDB747E9C9D39 
+        foreign key (TaxonBase_id) 
+        references TaxonBase;
+
+    alter table TaxonBase_Marker 
+        add constraint FK5CDB747E777265A1 
+        foreign key (markers_id) 
+        references Marker;
+
+    alter table TaxonBase_Marker_AUD 
+        add constraint FKE11D334F34869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table TaxonBase_OriginalSource 
+        add constraint FK10EFD9903BAB2414 
+        foreign key (sources_id) 
+        references OriginalSource;
+
+    alter table TaxonBase_OriginalSource 
+        add constraint FK10EFD9909C9D39 
+        foreign key (TaxonBase_id) 
+        references TaxonBase;
+
+    alter table TaxonBase_OriginalSource_AUD 
+        add constraint FKFB74BF6134869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table TaxonBase_Rights 
+        add constraint FK65CF621BC13F7B21 
+        foreign key (rights_id) 
+        references Rights;
+
+    alter table TaxonBase_Rights 
+        add constraint FK65CF621B9C9D39 
+        foreign key (TaxonBase_id) 
+        references TaxonBase;
+
+    alter table TaxonBase_Rights_AUD 
+        add constraint FK4CF70A6C34869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table TaxonInteraction_LanguageString 
+        add constraint FK579A1DC02BEBA58D 
+        foreign key (description_id) 
+        references LanguageString;
+
+    alter table TaxonInteraction_LanguageString 
+        add constraint FK579A1DC086C86FE0 
+        foreign key (DescriptionElementBase_id) 
+        references DescriptionElementBase;
+
+    alter table TaxonInteraction_LanguageString 
+        add constraint FK579A1DC028459272 
+        foreign key (description_mapkey_id) 
+        references DefinedTermBase;
+
+    alter table TaxonInteraction_LanguageString_AUD 
+        add constraint FK9E016B9134869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    create index taxonNameBaseTitleCacheIndex on TaxonNameBase (titleCache);
+
+    alter table TaxonNameBase 
+        add constraint FKB4870C6EF7921F6 
+        foreign key (createdby_id) 
+        references Agent;
+
+    alter table TaxonNameBase 
+        add constraint FKB4870C62B4FEDD6 
+        foreign key (basionymauthorteam_id) 
+        references Agent;
+
+    alter table TaxonNameBase 
+        add constraint FKB4870C64AC9C024 
+        foreign key (nomenclaturalreference_id) 
+        references ReferenceBase;
+
+    alter table TaxonNameBase 
+        add constraint FKB4870C6B14B73EF 
+        foreign key (combinationauthorteam_id) 
+        references Agent;
+
+    alter table TaxonNameBase 
+        add constraint FKB4870C6BFEAE500 
+        foreign key (homotypicalgroup_id) 
+        references HomotypicalGroup;
+
+    alter table TaxonNameBase 
+        add constraint FKB4870C662AD57A2 
+        foreign key (excombinationauthorteam_id) 
+        references Agent;
+
+    alter table TaxonNameBase 
+        add constraint FKB4870C67F90DF03 
+        foreign key (exbasionymauthorteam_id) 
+        references Agent;
+
+    alter table TaxonNameBase 
+        add constraint FKB4870C65BE3EC03 
+        foreign key (updatedby_id) 
+        references Agent;
+
+    alter table TaxonNameBase 
+        add constraint FKB4870C6D7BE55A0 
+        foreign key (rank_id) 
+        references DefinedTermBase;
+
+    alter table TaxonNameBase_AUD 
+        add constraint FK5CA2CB9734869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table TaxonNameBase_Annotation 
+        add constraint FK9E7794688C85CF94 
+        foreign key (TaxonNameBase_id) 
+        references TaxonNameBase;
+
+    alter table TaxonNameBase_Annotation 
+        add constraint FK9E7794681E403E0B 
+        foreign key (annotations_id) 
+        references Annotation;
+
+    alter table TaxonNameBase_Annotation_AUD 
+        add constraint FKB6734E3934869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table TaxonNameBase_Extension 
+        add constraint FKC28EE7E6927DE9DF 
+        foreign key (extensions_id) 
+        references Extension;
+
+    alter table TaxonNameBase_Extension 
+        add constraint FKC28EE7E68C85CF94 
+        foreign key (TaxonNameBase_id) 
+        references TaxonNameBase;
+
+    alter table TaxonNameBase_Extension_AUD 
+        add constraint FK8F98B2B734869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table TaxonNameBase_HybridRelationship 
+        add constraint FK371B728D2D57C7D5 
+        foreign key (hybridrelationships_id) 
+        references HybridRelationship;
+
+    alter table TaxonNameBase_HybridRelationship 
+        add constraint FK371B728DCDE98DD2 
+        foreign key (TaxonNameBase_id) 
+        references TaxonNameBase;
+
+    alter table TaxonNameBase_HybridRelationship_AUD 
+        add constraint FK800191DE34869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table TaxonNameBase_Marker 
+        add constraint FK39E3C1F38C85CF94 
+        foreign key (TaxonNameBase_id) 
+        references TaxonNameBase;
+
+    alter table TaxonNameBase_Marker 
+        add constraint FK39E3C1F3777265A1 
+        foreign key (markers_id) 
+        references Marker;
+
+    alter table TaxonNameBase_Marker_AUD 
+        add constraint FK3DA7BE4434869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table TaxonNameBase_NomenclaturalStatus 
+        add constraint FK560BA7926615E90D 
+        foreign key (status_id) 
+        references NomenclaturalStatus;
+
+    alter table TaxonNameBase_NomenclaturalStatus 
+        add constraint FK560BA7928C85CF94 
+        foreign key (TaxonNameBase_id) 
+        references TaxonNameBase;
+
+    alter table TaxonNameBase_NomenclaturalStatus_AUD 
+        add constraint FK9215BC6334869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table TaxonNameBase_OriginalSource 
+        add constraint FKBEA1E2053BAB2414 
+        foreign key (sources_id) 
+        references OriginalSource;
+
+    alter table TaxonNameBase_OriginalSource 
+        add constraint FKBEA1E2058C85CF94 
+        foreign key (TaxonNameBase_id) 
+        references TaxonNameBase;
+
+    alter table TaxonNameBase_OriginalSource_AUD 
+        add constraint FKF753855634869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table TaxonNameBase_Rights 
+        add constraint FK42D7AF90C13F7B21 
+        foreign key (rights_id) 
+        references Rights;
+
+    alter table TaxonNameBase_Rights 
+        add constraint FK42D7AF908C85CF94 
+        foreign key (TaxonNameBase_id) 
+        references TaxonNameBase;
+
+    alter table TaxonNameBase_Rights_AUD 
+        add constraint FKA981956134869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table TaxonNameBase_TypeDesignationBase 
+        add constraint FKC0D6BBB5C7DF530C 
+        foreign key (typedesignations_id) 
+        references TypeDesignationBase;
+
+    alter table TaxonNameBase_TypeDesignationBase 
+        add constraint FKC0D6BBB58C85CF94 
+        foreign key (TaxonNameBase_id) 
+        references TaxonNameBase;
+
+    alter table TaxonNameBase_TypeDesignationBase_AUD 
+        add constraint FKBB24070634869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table TaxonRelationship 
+        add constraint FK7482BA02E71EF6CE 
+        foreign key (relatedfrom_id) 
+        references TaxonBase;
+
+    alter table TaxonRelationship 
+        add constraint FK7482BA02F8991B9D 
+        foreign key (relatedto_id) 
+        references TaxonBase;
+
+    alter table TaxonRelationship 
+        add constraint FK7482BA02EF7921F6 
+        foreign key (createdby_id) 
+        references Agent;
+
+    alter table TaxonRelationship 
+        add constraint FK7482BA02F11BD77B 
+        foreign key (type_id) 
+        references DefinedTermBase;
+
+    alter table TaxonRelationship 
+        add constraint FK7482BA029803512F 
+        foreign key (citation_id) 
+        references ReferenceBase;
+
+    alter table TaxonRelationship 
+        add constraint FK7482BA025BE3EC03 
+        foreign key (updatedby_id) 
+        references Agent;
+
+    alter table TaxonRelationship_AUD 
+        add constraint FKA0DE16D334869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table TaxonRelationship_Annotation 
+        add constraint FK82C86DAC1E403E0B 
+        foreign key (annotations_id) 
+        references Annotation;
+
+    alter table TaxonRelationship_Annotation 
+        add constraint FK82C86DAC2BD180D9 
+        foreign key (TaxonRelationship_id) 
+        references TaxonRelationship;
+
+    alter table TaxonRelationship_Annotation_AUD 
+        add constraint FKE86DE57D34869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table TaxonRelationship_Marker 
+        add constraint FK69FBDD37777265A1 
+        foreign key (markers_id) 
+        references Marker;
+
+    alter table TaxonRelationship_Marker 
+        add constraint FK69FBDD372BD180D9 
+        foreign key (TaxonRelationship_id) 
+        references TaxonRelationship;
+
+    alter table TaxonRelationship_Marker_AUD 
+        add constraint FK21F8978834869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table TermVocabulary 
+        add constraint FK487AA692EF7921F6 
+        foreign key (createdby_id) 
+        references Agent;
+
+    alter table TermVocabulary 
+        add constraint FK487AA6925BE3EC03 
+        foreign key (updatedby_id) 
+        references Agent;
+
+    alter table TermVocabulary_AUD 
+        add constraint FKA6ED3B6334869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table TermVocabulary_Representation 
+        add constraint FKA408B63A258E060 
+        foreign key (TermVocabulary_id) 
+        references TermVocabulary;
+
+    alter table TermVocabulary_Representation 
+        add constraint FKA408B63AB31C4747 
+        foreign key (representations_id) 
+        references Representation;
+
+    alter table TermVocabulary_Representation_AUD 
+        add constraint FK681B370B34869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table TypeDesignationBase 
+        add constraint FK8AC9DCAE2FB99E97 
+        foreign key (typestatus_id) 
+        references DefinedTermBase;
+
+    alter table TypeDesignationBase 
+        add constraint FK8AC9DCAEEF7921F6 
+        foreign key (createdby_id) 
+        references Agent;
+
+    alter table TypeDesignationBase 
+        add constraint FK8AC9DCAE94DB044A 
+        foreign key (typespecimen_id) 
+        references SpecimenOrObservationBase;
+
+    alter table TypeDesignationBase 
+        add constraint FK8AC9DCAEBFEAE500 
+        foreign key (homotypicalgroup_id) 
+        references HomotypicalGroup;
+
+    alter table TypeDesignationBase 
+        add constraint FK8AC9DCAE9803512F 
+        foreign key (citation_id) 
+        references ReferenceBase;
+
+    alter table TypeDesignationBase 
+        add constraint FK8AC9DCAE4CB0F315 
+        foreign key (typename_id) 
+        references TaxonNameBase;
+
+    alter table TypeDesignationBase 
+        add constraint FK8AC9DCAE5BE3EC03 
+        foreign key (updatedby_id) 
+        references Agent;
+
+    alter table TypeDesignationBase_AUD 
+        add constraint FK243C037F34869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table TypeDesignationBase_Annotation 
+        add constraint FK4D73278044E9E6D4 
+        foreign key (TypeDesignationBase_id) 
+        references TypeDesignationBase;
+
+    alter table TypeDesignationBase_Annotation 
+        add constraint FK4D7327801E403E0B 
+        foreign key (annotations_id) 
+        references Annotation;
+
+    alter table TypeDesignationBase_Annotation_AUD 
+        add constraint FK88BF955134869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table TypeDesignationBase_Marker 
+        add constraint FKB914A10B44E9E6D4 
+        foreign key (TypeDesignationBase_id) 
+        references TypeDesignationBase;
+
+    alter table TypeDesignationBase_Marker 
+        add constraint FKB914A10B777265A1 
+        foreign key (markers_id) 
+        references Marker;
+
+    alter table TypeDesignationBase_Marker_AUD 
+        add constraint FKECA3515C34869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table TypeDesignationBase_TaxonNameBase 
+        add constraint FKF61156F54D901A92 
+        foreign key (typifiednames_id) 
+        references TaxonNameBase;
+
+    alter table TypeDesignationBase_TaxonNameBase 
+        add constraint FKF61156F544E9E6D4 
+        foreign key (TypeDesignationBase_id) 
+        references TypeDesignationBase;
+
+    alter table TypeDesignationBase_TaxonNameBase_AUD 
+        add constraint FK4F1F024634869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table User 
+        add constraint FK285FEBEF7921F6 
+        foreign key (createdby_id) 
+        references Agent;
+
+    alter table User_GrantedAuthorityImpl 
+        add constraint FKA2FB64FCCF9BC520 
+        foreign key (User_id) 
+        references User;
+
+    alter table User_GrantedAuthorityImpl 
+        add constraint FKA2FB64FC1857F6C2 
+        foreign key (grantedauthorities_id) 
+        references GrantedAuthorityImpl;
+
+    alter table User_PermissionGroup 
+        add constraint FKDD33C17CDA9DCB5F 
+        foreign key (groups_id) 
+        references PermissionGroup;
+
+    alter table User_PermissionGroup 
+        add constraint FKDD33C17C887E3D12 
+        foreign key (members_id) 
+        references User;
