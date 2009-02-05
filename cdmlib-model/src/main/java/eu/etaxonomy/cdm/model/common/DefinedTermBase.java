@@ -216,7 +216,7 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
 	}
 
 
-	@OneToMany(fetch = FetchType.LAZY)
+	@ManyToMany(fetch = FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<Media> getMedia(){
 		return this.media;
