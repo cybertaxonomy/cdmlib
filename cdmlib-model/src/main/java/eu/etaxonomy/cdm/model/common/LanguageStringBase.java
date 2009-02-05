@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.model.common;
 
 import javax.persistence.Column;
 import javax.persistence.FetchType;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
@@ -73,6 +74,7 @@ public abstract class LanguageStringBase extends AnnotatableEntity{
 	@Column(length=4096)
 	@Field(index=Index.TOKENIZED)
 	@FieldBridge(impl=StripHtmlBridge.class)
+	@Lob
 	public String getText(){
 		return this.text;
 	}
