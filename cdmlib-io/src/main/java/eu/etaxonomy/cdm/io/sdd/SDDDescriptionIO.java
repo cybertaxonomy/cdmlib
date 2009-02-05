@@ -1,11 +1,11 @@
 /**
-* Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
-* http://www.e-taxonomy.eu
-* 
-* The contents of this file are subject to the Mozilla Public License Version 1.1
-* See LICENSE.TXT at the top of this package for the full license terms.
-*/
+ * Copyright (C) 2007 EDIT
+ * European Distributed Institute of Taxonomy 
+ * http://www.e-taxonomy.eu
+ * 
+ * The contents of this file are subject to the Mozilla Public License Version 1.1
+ * See LICENSE.TXT at the top of this package for the full license terms.
+ */
 
 package eu.etaxonomy.cdm.io.sdd;
 
@@ -45,6 +45,8 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.LanguageString;
+import eu.etaxonomy.cdm.model.common.MultilanguageText;
 import eu.etaxonomy.cdm.model.common.OriginalSource;
 import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.common.TermBase;
@@ -52,6 +54,7 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.description.FeatureNode;
 import eu.etaxonomy.cdm.model.description.MeasurementUnit;
 import eu.etaxonomy.cdm.model.description.QuantitativeData;
 import eu.etaxonomy.cdm.model.description.State;
@@ -83,19 +86,21 @@ public class SDDDescriptionIO extends SDDIoBase implements ICdmIO<IImportConfigu
 
 	private static int modCount = 1000;
 
+	private Map<String,Person> authors = new HashMap<String,Person>();
+	private Map<String,String> citations = new HashMap<String,String>();
+	private Map<String,String> defaultUnitPrefixes = new HashMap<String,String>();
+	private Map<String,Person> editors = new HashMap<String,Person>();
+	private Map<String,FeatureNode> featureNodes = new HashMap<String,FeatureNode>();
+	private Map<String,Feature> features = new HashMap<String,Feature>();
+	private Map<String,String> locations = new HashMap<String,String>();
 	private Map<String,List<CdmBase>> mediaObject_ListCdmBase = new HashMap<String,List<CdmBase>>();
 	private Map<String,String> mediaObject_Role = new HashMap<String,String>();
-	private Map<String,TaxonDescription> taxonDescriptions = new HashMap<String,TaxonDescription>();
-	private Map<String,StateData> stateDatas = new HashMap<String,StateData>();
-	private Map<String,MeasurementUnit> units = new HashMap<String,MeasurementUnit>();
-	private Map<String,String> defaultUnitPrefixes = new HashMap<String,String>();
-	private Map<String,Feature> features = new HashMap<String,Feature>();
+	private Map<String,FeatureNode> nodes = new HashMap<String,FeatureNode>();
 	private Map<String,ReferenceBase> publications = new HashMap<String,ReferenceBase>();
-	private Map<String,Person> authors = new HashMap<String,Person>();
-	private Map<String,Person> editors = new HashMap<String,Person>();
+	private Map<String,StateData> stateDatas = new HashMap<String,StateData>();
+	private Map<String,TaxonDescription> taxonDescriptions = new HashMap<String,TaxonDescription>();
 	private Map<String,NonViralName> taxonNameBases = new HashMap<String,NonViralName>();
-	private Map<String,String> citations = new HashMap<String,String>();
-	private Map<String,String> locations = new HashMap<String,String>();
+	private Map<String,MeasurementUnit> units = new HashMap<String,MeasurementUnit>();
 
 	private ReferenceBase sec = Database.NewInstance();
 	private ReferenceBase sourceReference = null;
@@ -269,6 +274,20 @@ public class SDDDescriptionIO extends SDDIoBase implements ICdmIO<IImportConfigu
 				}
 			}
 			ve = tb;
+			
+		} else if (ve instanceof Media) {
+			Media m = (Media) ve;
+
+			if (label != null){
+				MultilanguageText mt = MultilanguageText.NewInstance();
+				mt.add(LanguageString.NewInstance(label, language));
+				m.setTitle(mt);
+			}
+			// TODO when the method setDescription() is accessible
+			if (detail != null) {
+				m.addDescription(detail, language);
+			}
+			ve = m;
 		}
 
 		List <Element> listMediaObjects = elRepresentation.getChildren("MediaObject",sddNamespace);
@@ -328,7 +347,7 @@ public class SDDDescriptionIO extends SDDIoBase implements ICdmIO<IImportConfigu
 		Element elGenerator = elTechnicalMetadata.getChild("Generator", sddNamespace);
 		generatorName = elGenerator.getAttributeValue("name");
 		generatorVersion = elGenerator.getAttributeValue("version");
-		
+
 		sec.addAnnotation(Annotation.NewDefaultLanguageInstance(generatorName + " - " + generatorVersion));
 		sourceReference.addAnnotation(Annotation.NewDefaultLanguageInstance(generatorName + " - " + generatorVersion));
 
@@ -342,7 +361,9 @@ public class SDDDescriptionIO extends SDDIoBase implements ICdmIO<IImportConfigu
 		importRevisionData(elDataset, sddNamespace);
 		importIPRStatements(elDataset, sddNamespace, sddConfig);
 		importTaxonNames(elDataset, sddNamespace, sddConfig);
+		importDescriptiveConcepts(elDataset, sddNamespace, sddConfig);
 		importCharacters(elDataset, sddNamespace, sddConfig, success);
+		importCharacterTrees(elDataset, sddNamespace, sddConfig, success);
 		importCodedDescriptions(elDataset, sddNamespace, sddConfig, success);
 		importAgents(elDataset, sddNamespace, sddConfig, success);
 		importPublications(elDataset, sddNamespace, sddConfig, success);
@@ -386,7 +407,7 @@ public class SDDDescriptionIO extends SDDIoBase implements ICdmIO<IImportConfigu
 		logger.info("end makeTaxonDescriptions ...");
 
 		sddConfig.setSourceReference(sourceReference);
-		
+
 		//saving of all imported data into the CDM db
 		ITermService termService = getTermService();
 		for (Iterator<StateData> k = stateDatas.values().iterator() ; k.hasNext() ;){
@@ -1064,10 +1085,13 @@ public class SDDDescriptionIO extends SDDIoBase implements ICdmIO<IImportConfigu
 			int j = 0;
 			//for each Publication
 			for (Element elMO : listMediaObjects){
+				
+				String id = "";
 
 				try {
 
 					String idMO = elMO.getAttributeValue("id");
+					id = idMO;
 
 					//  <Representation>
 					//   <Label>Image description, e.g. to be used for alt-attribute in html.</Label>
@@ -1116,27 +1140,27 @@ public class SDDDescriptionIO extends SDDIoBase implements ICdmIO<IImportConfigu
 									DefinedTermBase dtb = (DefinedTermBase) lcb.get(k);
 									// if (lcb.get(0) instanceof DefinedTermBase) {
 									// DefinedTermBase dtb = (DefinedTermBase) lcb.get(0);
-									if (dtb!=null) {
-										if (k == 0) {
+//									if (dtb!=null) {
+//										if (k == 0) {
 											dtb.addMedia(media);
-										} else {
-											Media me = (Media) media.clone();
-											dtb.addMedia(me);
-										}
-									}
+//										} else {
+//											Media me = (Media) media.clone();
+//											dtb.addMedia(me);
+//										}
+//									}
 								} else if (lcb.get(k) instanceof ReferenceBase) {
 									ReferenceBase rb = (ReferenceBase) lcb.get(k);
 									//} else if (lcb.get(0) instanceof ReferenceBase) {
 									//ReferenceBase rb = (ReferenceBase) lcb.get(0);
 									// rb.setTitleCache(label);
-									if (rb!=null) {
-										if (k == 0) {
+//									if (rb!=null) {
+//										if (k == 0) {
 											rb.addMedia(media);
-										} else {
-											Media me = (Media) media.clone();
-											rb.addMedia(me);
-										}
-									}
+//										} else {
+//											Media me = (Media) media.clone();
+//											rb.addMedia(me);
+//										}
+//									}
 								}
 							}
 						}
@@ -1144,13 +1168,115 @@ public class SDDDescriptionIO extends SDDIoBase implements ICdmIO<IImportConfigu
 
 				} catch (Exception e) {
 					//FIXME
-					logger.warn("Import of MediaObject " + j + " failed.");
+					logger.warn("Could not attached MediaObject " + j + "(SDD: " + id + ") to several objects.");
 					success = false; 
 				}
 
-				if ((++j % modCount) == 0){ logger.info("MediaObjects handled: " + j);}
+				if ((++j % modCount) == 0){ logger.info("MediaObjects handled: " + j);
+
+				}
+			}
+		}
+	}
+
+	// imports the <DescriptiveConcepts> block
+	protected void importDescriptiveConcepts(Element elDataset, Namespace sddNamespace, SDDImportConfigurator sddConfig){
+		// <DescriptiveConcepts>
+		logger.info("start DescriptiveConcepts ...");
+		Element elDescriptiveConcepts = elDataset.getChild("DescriptiveConcepts",sddNamespace);
+		// <DescriptiveConcept id="b">
+		if (elDescriptiveConcepts != null) {
+			List<Element> listDescriptiveConcepts = elDescriptiveConcepts.getChildren("DescriptiveConcepts", sddNamespace);
+			int j = 0;
+			//for each TaxonName
+			for (Element elDescriptiveConcept : listDescriptiveConcepts){
+
+				String id = elDescriptiveConcept.getAttributeValue("id");
+				String uri = elDescriptiveConcept.getAttributeValue("uri");
+
+				FeatureNode fn = null;
+				if (!id.equals("")) {
+					fn = FeatureNode.NewInstance();
+
+					//	TODO if an OriginalSource can be attached to a FeatureNode			
+					//					OriginalSource source = null;
+					//					if (uri != null) {
+					//						if (!uri.equals("")) {
+					//							source = OriginalSource.NewInstance(id, "DescriptiveConcept", Generic.NewInstance(), uri);
+					//						}
+					//					} else {
+					//						source = OriginalSource.NewInstance(id, "DescriptiveConcept");
+					//					}
+					//					fn.addSource(source);
+
+					featureNodes.put(id,fn);
+				}
+
+				//    <Representation>
+				//       <Label>Body</Label>
+				importRepresentation(elDescriptiveConcept, sddNamespace, fn, id, sddConfig);
+
+				if ((++j % modCount) == 0){ logger.info("DescriptiveConcepts handled: " + j);}
 
 			}
+		}
+	}
+
+	// imports the descriptions of taxa (specimens TODO)
+	protected void importCharacterTrees(Element elDataset, Namespace sddNamespace, SDDImportConfigurator sddConfig, boolean success){
+		// <CharacterTrees>
+		logger.info("start CharacterTrees ...");
+		Element elCharacterTrees = elDataset.getChild("CharacterTrees",sddNamespace);
+	
+		// <CharacterTree>
+	
+		if (elCharacterTrees != null) {
+			List<Element> listCharacterTrees = elCharacterTrees.getChildren("CharacterTree", sddNamespace);
+			int j = 0;
+			//for each CharacterTree
+	
+			for (Element elCharacterTree : listCharacterTrees){
+	
+				try {
+					Element elRepresentation = elCharacterTree.getChild("Representation",sddNamespace);
+					String label = (String)ImportHelper.getXmlInputValue(elRepresentation,"Label",sddNamespace);
+					Element elDesignedFor = elCharacterTree.getChild("DesignedFor",sddNamespace);
+					List<Element> listRoles = elDesignedFor.getChildren("Role",sddNamespace);
+					boolean groups = false;
+					
+					for (Element elRole : listRoles){
+						if (elRole.getText().equals("Filtering")) {
+							groups = true;
+						}
+					}
+	
+					if ((label.contains("group")) || (groups)) {
+						Element elNodes = elCharacterTree.getChild("Nodes", sddNamespace);
+						List<Element> listNodes = elNodes.getChildren("Node", sddNamespace);
+						for (Element elNode : listNodes){
+							String idN = elNode.getAttributeValue("id");
+							FeatureNode fn = null;
+							if (!idN.equals("")) {
+								Element elDescriptiveConcept = elNode.getChild("DescriptiveConcept", sddNamespace);
+								String refDC = elDescriptiveConcept.getAttributeValue("ref");
+								fn = featureNodes.get(refDC);
+							}
+							nodes.put(idN, fn);
+						}
+					}
+	
+
+	
+				} catch (Exception e) {
+					//FIXME
+					logger.warn("Import of Character tree " + j + " failed.");
+					success = false; 
+				}
+	
+				if ((++j % modCount) == 0){ logger.info("CharacterTrees handled: " + j);}
+	
+			}
+	
 		}
 	}
 }
