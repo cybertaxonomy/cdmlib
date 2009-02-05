@@ -169,8 +169,8 @@ public class SDDExportConfigurator extends ExportConfiguratorBase implements IEx
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.ImportConfiguratorBase#getSource()
 	 */
-	public File getDestination() {
-		return (File)super.getDestination();
+	public String getDestination() {
+		return (String) super.getDestination();
 	}
 
 	
