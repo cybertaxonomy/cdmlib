@@ -63,7 +63,10 @@ public class Media extends AnnotatableEntity {
 
 	@XmlElement(name = "MediaTitle")
     @XmlJavaTypeAdapter(MultilanguageTextAdapter.class)
-	private MultilanguageText title = new MultilanguageText();
+    // TODO once hibernate annotations support custom collection type
+	// private MultilanguageText title = new MultilanguageText();
+	private Map<Language, LanguageString> title = new HashMap<Language,LanguageString>();
+
 	
 	//creation date of the media (not of the record)
 	@XmlElement(name = "MediaCreated")
@@ -71,7 +74,9 @@ public class Media extends AnnotatableEntity {
 	
 	@XmlElement(name = "MediaDescription")
     @XmlJavaTypeAdapter(MultilanguageTextAdapter.class)
-	private MultilanguageText description = new MultilanguageText();
+    // TODO once hibernate annotations support custom collection type
+	// private MultilanguageText description = new MultilanguageText();
+	private Map<Language, LanguageString> description = new HashMap<Language,LanguageString>();
 	
 	//A single medium such as a picture can have multiple representations in files. 
 	//Common are multiple resolutions or file formats for images for example
@@ -155,11 +160,13 @@ public class Media extends AnnotatableEntity {
 		this.rights.remove(rights);
 	}
 
-	
-	public MultilanguageText getTitle(){
+	@OneToMany (fetch= FetchType.LAZY)
+	@Cascade({CascadeType.SAVE_UPDATE})
+	@JoinTable(name = "Media_Title")
+	public Map<Language, LanguageString> getTitle(){
 		return this.title;
 	}
-	public void setTitle(MultilanguageText title){
+	public void setTitle(Map<Language,LanguageString> title){
 		this.title = title;
 	}
 
@@ -171,15 +178,17 @@ public class Media extends AnnotatableEntity {
 		this.mediaCreated = mediaCreated;
 	}
 
-	
-	public MultilanguageText getDescription(){
+	@OneToMany (fetch= FetchType.LAZY)
+	@Cascade({CascadeType.SAVE_UPDATE})
+	@JoinTable(name = "Media_Description")
+	public Map<Language, LanguageString> getDescription(){
 		return this.description;
 	}
-	protected void setDescription(MultilanguageText description){
+	protected void setDescription(Map<Language, LanguageString> description){
 		this.description = description;
 	}
-	public void addDescription(LanguageString description){
-		this.description.add(description);
+	public void addDescription(Language key, LanguageString description){
+		this.description.put(key, description);
 	}
 	public void addDescription(String text, Language language){
 		this.description.put(language, LanguageString.NewInstance(text, language));
