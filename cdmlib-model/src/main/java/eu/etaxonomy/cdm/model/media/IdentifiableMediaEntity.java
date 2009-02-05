@@ -4,8 +4,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.FetchType;
+import javax.persistence.ManyToMany;
 import javax.persistence.MappedSuperclass;
-import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -44,7 +44,7 @@ public abstract class IdentifiableMediaEntity extends IdentifiableEntity impleme
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.media.IMediaEntity#getMedia()
 	 */
-	@OneToMany(fetch = FetchType.LAZY)
+	@ManyToMany(fetch = FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<Media> getMedia() {
 		return media;
