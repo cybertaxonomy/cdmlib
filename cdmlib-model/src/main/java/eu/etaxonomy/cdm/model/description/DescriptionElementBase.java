@@ -130,7 +130,7 @@ public abstract class DescriptionElementBase extends ReferencedEntityBase implem
 	 * Returns the set of {@link Media media} (that is pictures, movies,
 	 * recorded sounds ...) <i>this</i> description element is based on.
 	 */
-	@OneToMany(fetch = FetchType.LAZY)
+	@ManyToMany(fetch = FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<Media> getMedia(){
 		return this.media;
