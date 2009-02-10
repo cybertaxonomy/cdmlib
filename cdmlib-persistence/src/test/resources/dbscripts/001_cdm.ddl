@@ -1869,6 +1869,14 @@
         unique (coveredtaxa_id)
     );
 
+	create table Media_Title (
+		Media_id integer not null, 
+		title_id integer not null, 
+		title_mapkey_id integer not null, 
+		primary key (Media_id, title_mapkey_id), 
+		unique (title_id)
+	);
+
     create table Media_TaxonBase_AUD (
         REV integer not null,
         Media_id integer not null,
