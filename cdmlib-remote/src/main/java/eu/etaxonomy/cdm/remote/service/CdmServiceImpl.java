@@ -88,8 +88,9 @@ public class CdmServiceImpl implements ICdmService {
 	private IFeatureTreeDao featureTreeDAO;
 	@Autowired
 	private IFeatureDao featureDAO;
-	@Autowired
-	private AnnotatableDaoImpl<AnnotatableEntity> annotatableDao;
+//FIXME commented out below, since refactoring is urgently needed see ticket#593 http://dev.e-taxonomy.eu/trac/ticket/593
+//	@Autowired
+//	private AnnotatableDaoImpl<AnnotatableEntity> annotatableDao;
 	
 	//--------------------------
 	@Autowired
