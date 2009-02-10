@@ -111,15 +111,19 @@ public class PartialUserType implements UserType {
 		else
 		{
 			Partial p = ((Partial) value);
-			String strYear = getNullFilledString(p, DateTimeFieldType.year(),4);
-			String strMonth = getNullFilledString(p, DateTimeFieldType.monthOfYear(),2);
-			String strDay = getNullFilledString(p, DateTimeFieldType.dayOfMonth(),2);
-			String result = strYear + strMonth + strDay;
-			Hibernate.STRING.nullSafeSet(preparedStatement, result, index);
+			Hibernate.STRING.nullSafeSet(preparedStatement, partialToString(p), index);
 		}
 	}
+
+	public static String partialToString(Partial p) {
+		String strYear = getNullFilledString(p, DateTimeFieldType.year(),4);
+		String strMonth = getNullFilledString(p, DateTimeFieldType.monthOfYear(),2);
+		String strDay = getNullFilledString(p, DateTimeFieldType.dayOfMonth(),2);
+		String result = strYear + strMonth + strDay;
+		return result;
+	}
 	
-	private String getNullFilledString(Partial partial, DateTimeFieldType type, int count){
+	private static String getNullFilledString(Partial partial, DateTimeFieldType type, int count){
 		String nul = "0000000000";
 		if (! partial.isSupported(type)){
 			return nul.substring(0, count);
