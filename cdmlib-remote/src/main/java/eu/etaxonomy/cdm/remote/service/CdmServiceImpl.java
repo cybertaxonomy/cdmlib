@@ -89,7 +89,6 @@ public class CdmServiceImpl implements ICdmService {
 	@Autowired
 	private IFeatureDao featureDAO;
 	@Autowired
-	@Qualifier("annotatableDaoImpl")	
 	private AnnotatableDaoImpl<AnnotatableEntity> annotatableDao;
 	
 	//--------------------------
@@ -346,33 +345,35 @@ public class CdmServiceImpl implements ICdmService {
 		
 		return featureTreeList;
 	}
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.remote.service.ICdmService#getAnnotations(java.util.UUID)
-	 */
-	public AnnotationTO getAnnotation(UUID uuid, Enumeration<Locale> locales)
-			throws CdmObjectNonExisting {
-		List<AnnotationTO> annotationList = new ArrayList<AnnotationTO>();
-		
-		// TODO the cast should be removed, but i don't know how at the moment
-		AnnotatableEntity annotatableEntity = (AnnotatableEntity) annotatableDao.findByUuid(uuid);
-		
-		
-		return annotationAssembler.getTO(annotatableEntity, locales);
-	}
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.remote.service.ICdmService#saveAnnotation(java.util.UUID, eu.etaxonomy.cdm.model.common.Annotation)
-	 */
-	@Transactional(readOnly=false)
-	public UUID saveAnnotation(UUID uuid, Annotation annotation)
-			throws CdmObjectNonExisting {
-		
-		AnnotatableEntity annotatableEntity = (AnnotatableEntity) annotatableDao.findByUuid(uuid);
-		
-		annotatableEntity.addAnnotation(annotation);
-		
-		UUID updatedUuid = annotatableDao.saveOrUpdate(annotatableEntity);
-		annotatableDao.flush();
-		
-		return updatedUuid;
-	}
+	
+//FIXME commented out below, since refactoring is urgently needed see ticket#593 http://dev.e-taxonomy.eu/trac/ticket/593
+//	/* (non-Javadoc)
+//	 * @see eu.etaxonomy.cdm.remote.service.ICdmService#getAnnotations(java.util.UUID)
+//	 */
+//	public AnnotationTO getAnnotation(UUID uuid, Enumeration<Locale> locales)
+//			throws CdmObjectNonExisting {
+//		List<AnnotationTO> annotationList = new ArrayList<AnnotationTO>();
+//		
+//		// TODO the cast should be removed, but i (niels) don't know how at the moment
+//		AnnotatableEntity annotatableEntity = (AnnotatableEntity) annotatableDao.findByUuid(uuid);
+//		
+//		
+//		return annotationAssembler.getTO(annotatableEntity, locales);
+//	}
+//	/* (non-Javadoc)
+//	 * @see eu.etaxonomy.cdm.remote.service.ICdmService#saveAnnotation(java.util.UUID, eu.etaxonomy.cdm.model.common.Annotation)
+//	 */
+//	@Transactional(readOnly=false)
+//	public UUID saveAnnotation(UUID uuid, Annotation annotation)
+//			throws CdmObjectNonExisting {
+//		
+//		AnnotatableEntity annotatableEntity = (AnnotatableEntity) annotatableDao.findByUuid(uuid);
+//		
+//		annotatableEntity.addAnnotation(annotation);
+//		
+//		UUID updatedUuid = annotatableDao.saveOrUpdate(annotatableEntity);
+//		annotatableDao.flush();
+//		
+//		return updatedUuid;
+//	}
 }

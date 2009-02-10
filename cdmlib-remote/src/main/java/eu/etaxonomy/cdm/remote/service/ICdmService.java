@@ -222,22 +222,23 @@ public interface ICdmService {
 	 * @throws CdmObjectNonExisting
 	 */
 	public List<FeatureTO> getFeatures(Enumeration<Locale> locales) throws CdmObjectNonExisting;
-
-	/**
-	 * 
-	 * @param uuid
-	 * @return
-	 * @throws CdmObjectNonExisting
-	 */
-	public AnnotationTO getAnnotation(UUID uuid, Enumeration<Locale> locales) throws CdmObjectNonExisting;
 	
-	/**
-	 * 
-	 * @param uuid
-	 * @param annotation
-	 * @return
-	 * @throws CdmObjectNonExisting
-	 */
-	public UUID saveAnnotation(UUID uuid, Annotation annotation) throws CdmObjectNonExisting;
+//FIXME commented out below, since refactoring is urgently needed see ticket#593 http://dev.e-taxonomy.eu/trac/ticket/593
+//	/**
+//	 * 
+//	 * @param uuid
+//	 * @return
+//	 * @throws CdmObjectNonExisting
+//	 */
+//	public AnnotationTO getAnnotation(UUID uuid, Enumeration<Locale> locales) throws CdmObjectNonExisting;
+//	
+//	/**
+//	 * 
+//	 * @param uuid
+//	 * @param annotation
+//	 * @return
+//	 * @throws CdmObjectNonExisting
+//	 */
+//	public UUID saveAnnotation(UUID uuid, Annotation annotation) throws CdmObjectNonExisting;
 	
 }

@@ -204,31 +204,35 @@ public class RestController extends AbstractController
 					mv.addObject(feature);
 				}
 				
-			}else if(action.equalsIgnoreCase("annotations")){
-			
-				logger.info("Annotation action requested.");
-				
-				UUID annotatableEntityUuid = getUuid(uuid);
-				
-				String requestMethod = req.getMethod();
-				
-				if(requestMethod.equalsIgnoreCase("GET")){
-					logger.info("Processing GET request");
-					AnnotationTO annotation = service.getAnnotation(annotatableEntityUuid, locales);
-					mv.addObject(annotation);					
-				}else if(requestMethod.equalsIgnoreCase("POST")){
-					
-					String annotationText = req.getParameter("annotation");
-					// TODO set locale
-					logger.info("Processing POST request");
-					
-					Annotation annotation = Annotation.NewInstance(annotationText, null);
-					
-					service.saveAnnotation(annotatableEntityUuid, annotation);
-					//log.info(service.saveAnnotation(annotatableEntityUuid, annotation));
-					
-				}				
-			}else{
+			}
+
+//FIXME commented out below, since refactoring is urgently needed see ticket#593 http://dev.e-taxonomy.eu/trac/ticket/593
+//			else if(action.equalsIgnoreCase("annotations")){
+//			
+//				logger.info("Annotation action requested.");
+//				
+//				UUID annotatableEntityUuid = getUuid(uuid);
+//				
+//				String requestMethod = req.getMethod();
+//				
+//				if(requestMethod.equalsIgnoreCase("GET")){
+//					logger.info("Processing GET request");
+//					AnnotationTO annotation = service.getAnnotation(annotatableEntityUuid, locales);
+//					mv.addObject(annotation);					
+//				}else if(requestMethod.equalsIgnoreCase("POST")){
+//					
+//					String annotationText = req.getParameter("annotation");
+//					// TODO set locale
+//					logger.info("Processing POST request");
+//					
+//					Annotation annotation = Annotation.NewInstance(annotationText, null);
+//					
+//					service.saveAnnotation(annotatableEntityUuid, annotation);
+//					//log.info(service.saveAnnotation(annotatableEntityUuid, annotation));
+//					
+//				}				
+//			}
+				else{
 				// nothing matches
 				mv.addObject("status", "Controller does not know this operation");
 			}
