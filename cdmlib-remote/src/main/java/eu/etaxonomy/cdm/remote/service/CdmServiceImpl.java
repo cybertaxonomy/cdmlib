@@ -90,7 +90,7 @@ public class CdmServiceImpl implements ICdmService {
 	private IFeatureDao featureDAO;
 	@Autowired
 	@Qualifier("annotatableDaoImpl")	
-	private AnnotatableDaoImpl<AnnotatableEntity<?>> annotatableDao;
+	private AnnotatableDaoImpl<AnnotatableEntity> annotatableDao;
 	
 	//--------------------------
 	@Autowired
