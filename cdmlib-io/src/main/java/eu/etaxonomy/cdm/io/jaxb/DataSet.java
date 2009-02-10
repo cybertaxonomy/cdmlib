@@ -75,6 +75,7 @@ import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
+import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
@@ -269,6 +270,7 @@ public class DataSet {
     	@XmlElement(name = "BacterialName", namespace = "http://etaxonomy.eu/cdm/model/name/1.0", type = BacterialName.class),
     	@XmlElement(name = "BotanicalName", namespace = "http://etaxonomy.eu/cdm/model/name/1.0", type = BotanicalName.class),
     	@XmlElement(name = "CultivarPlantName", namespace = "http://etaxonomy.eu/cdm/model/name/1.0", type = CultivarPlantName.class),
+    	@XmlElement(name = "NonViralName", namespace = "http://etaxonomy.eu/cdm/model/name/1.0", type = NonViralName.class),
     	@XmlElement(name = "ViralName", namespace = "http://etaxonomy.eu/cdm/model/name/1.0", type = ViralName.class),
     	@XmlElement(name = "ZoologicalName", namespace = "http://etaxonomy.eu/cdm/model/name/1.0", type = ZoologicalName.class)
     })
