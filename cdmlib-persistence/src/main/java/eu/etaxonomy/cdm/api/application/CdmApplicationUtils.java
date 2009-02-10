@@ -42,9 +42,13 @@ public class CdmApplicationUtils {
 			//workaround to find out in which environment the library is executed
 			URL url = CdmUtils.class.getResource(MUST_EXIST_FILE);
 			if (url != null){
-				File file = new File(url.getPath()); 
-				if (file.exists()){
-					fileResourceDir= file.getParentFile();
+				String fileName = url.getPath();
+				if (fileName.contains("%20")) {
+					fileName = fileName.replaceAll("%20", " ");
+				}
+				File file = new File(fileName); 
+			    if (file.exists()){
+					fileResourceDir = file.getParentFile();
 				}else{
 					//String subPath = File.separator + "cdmResources" ;
 					file = new File(System.getProperty("user.home") + File.separator + ".cdmLibrary" + File.separator + "writableResources" );
