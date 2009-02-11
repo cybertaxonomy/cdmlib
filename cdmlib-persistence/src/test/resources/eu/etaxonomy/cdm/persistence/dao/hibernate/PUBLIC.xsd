@@ -189,6 +189,7 @@
 	<xsd:element name="REFERENCEBASE_AUD" type="REFERENCEBASE_AUD__type" />
 	<xsd:element name="TAXONNAMEBASE_ORIGINALSOURCE" type="TAXONNAMEBASE_ORIGINALSOURCE__type" />
 	<xsd:element name="TAXONBASE_EXTENSION" type="TAXONBASE_EXTENSION__type" />
+	<xsd:element name="MEDIA_TITLE" type="MEDIA_TITLE__type" />
 	<xsd:element name="MEDIA" type="MEDIA__type" />
 	<xsd:element name="HYBRIDRELATIONSHIP" type="HYBRIDRELATIONSHIP__type" />
 	<xsd:element name="DESCRIPTIONBASE_EXTENSION" type="DESCRIPTIONBASE_EXTENSION__type" />
@@ -1925,6 +1926,11 @@
 	<xsd:complexType name="TAXONBASE_EXTENSION__type">
 		<xsd:attribute name="TAXONBASE_ID" use="optional" />
 		<xsd:attribute name="EXTENSIONS_ID" use="optional" />
+	</xsd:complexType>
+	<xsd:complexType name="MEDIA_TITLE__type">
+		<xsd:attribute name="TITLE_ID" use="optional" />
+		<xsd:attribute name="MEDIA_ID" use="optional" />
+		<xsd:attribute name="TITLE_MAPKEY_ID" use="optional" />
 	</xsd:complexType>
 	<xsd:complexType name="MEDIA__type">
 		<xsd:attribute name="CITATIONMICROREFERENCE" use="optional" />

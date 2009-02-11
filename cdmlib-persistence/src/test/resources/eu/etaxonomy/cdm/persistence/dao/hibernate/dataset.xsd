@@ -193,6 +193,7 @@
 				<xsd:element name="REFERENCEBASE_AUD" type="dflt:REFERENCEBASE_AUD__type" />
 				<xsd:element name="TAXONNAMEBASE_ORIGINALSOURCE" type="dflt:TAXONNAMEBASE_ORIGINALSOURCE__type" />
 				<xsd:element name="TAXONBASE_EXTENSION" type="dflt:TAXONBASE_EXTENSION__type" />
+				<xsd:element name="MEDIA_TITLE" type="dflt:MEDIA_TITLE__type" />
 				<xsd:element name="MEDIA" type="dflt:MEDIA__type" />
 				<xsd:element name="HYBRIDRELATIONSHIP" type="dflt:HYBRIDRELATIONSHIP__type" />
 				<xsd:element name="DESCRIPTIONBASE_EXTENSION" type="dflt:DESCRIPTIONBASE_EXTENSION__type" />
