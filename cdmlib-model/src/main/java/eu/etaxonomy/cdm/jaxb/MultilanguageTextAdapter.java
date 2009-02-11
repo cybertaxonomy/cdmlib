@@ -1,7 +1,10 @@
 /**
-* Copyright (C) 2008 EDIT
+* Copyright (C) 2009 EDIT
 * European Distributed Institute of Taxonomy 
 * http://www.e-taxonomy.eu
+* 
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
 */
 
 package eu.etaxonomy.cdm.jaxb;
@@ -15,24 +18,21 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.MultilanguageTextHelper;
 
+/**
+ * @author a.babadshanjan
+ * @version 1.0
+ */
 public class MultilanguageTextAdapter extends XmlAdapter<MultilanguageTextHelper, Map<Language, LanguageString>> {
-//public class MultilanguageTextAdapter extends XmlAdapter<MultilanguageText, Map<Language, LanguageString>> {
 
 	@Override
 	public MultilanguageTextHelper marshal(Map<Language, LanguageString> value)
 			throws Exception {
 		
-//    	MultilanguageText multilanguageText = new MultilanguageText();
-//    	multilanguageText.putAll(value);
-//    	
-
 		MultilanguageTextHelper multilanguageTextHelper = new MultilanguageTextHelper();
 		
 		for(Language language : value.keySet()) {
 			multilanguageTextHelper.setLanguage(language);
 			multilanguageTextHelper.setLanguageString(value.get(language));
-			
-//			multilanguageText.add(value.get(language));
 		}
 
 		return multilanguageTextHelper;
@@ -40,7 +40,6 @@ public class MultilanguageTextAdapter extends XmlAdapter<MultilanguageTextHelper
 
     @Override
 	public Map<Language, LanguageString> unmarshal(MultilanguageTextHelper value)
-//	public Map<Language, LanguageString> unmarshal(MultilanguageText value)
 			throws Exception {
 		
 		Map<Language, LanguageString> map = new HashMap<Language, LanguageString>();
