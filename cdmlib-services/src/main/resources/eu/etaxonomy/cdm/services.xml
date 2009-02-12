@@ -4,23 +4,16 @@
 	xmlns:context="http://www.springframework.org/schema/context"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans 
     http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
-    http://www.springframework.org/schema/context
-    http://www.springframework.org/schema/context/spring-context-2.5.xsd">
+    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd"
+    >
 
     <import resource="classpath:/eu/etaxonomy/cdm/persistence.xml"/> 
     
-    <bean id="authenticationManager" class="org.springframework.security.providers.ProviderManager">
-        <property name="providers">
-            <list>
-                <bean class="org.springframework.security.providers.TestingAuthenticationProvider"/>
-            </list>
-        </property>
-    </bean>
+    <context:component-scan base-package="eu/etaxonomy/cdm/persistence"/>
+    <context:component-scan base-package="eu/etaxonomy/cdm/database"/>
     
-    <bean id="passwordEncoder" class="org.springframework.security.providers.encoding.Md5PasswordEncoder"/>
-    
-    <bean id="saltSource" class="org.springframework.security.providers.dao.salt.ReflectionSaltSource">
-        <property name="userPropertyToUse" value="getUsername"/>
-    </bean>
-    
+    <!-- enable the configuration of transactional behavior based on annotations -->
+    <!--<tx:annotation-driven transaction-manager="transactionManager"/>-->      
+  
+
 </beans>

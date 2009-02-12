@@ -21,7 +21,10 @@ import org.junit.Test;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
+import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.location.TdwgArea;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 
@@ -107,5 +110,12 @@ public class TermServiceImplTest extends CdmIntegrationTest {
 	@Test
 	public void testSetVocabularies() {
 		logger.warn("Not yet implemented");
+	}
+	
+	@Test
+	public void testGetAreaByTdwgAbbreviation(){
+		String tdwgAbbreviation = "GER-OO";
+		NamedArea germany = service.getAreaByTdwgAbbreviation(tdwgAbbreviation);
+		assertEquals(tdwgAbbreviation, germany.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel());
 	}
 }

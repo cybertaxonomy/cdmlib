@@ -23,6 +23,7 @@ import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.common.TermBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
+import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 
 public interface ITermService extends IService<DefinedTermBase> {
@@ -76,5 +77,7 @@ public interface ITermService extends IService<DefinedTermBase> {
 	       saveLanguageStringBasesAll(Collection<LanguageStringBase> languageStringBases);
 	
 	public Language getLanguageByIso(String iso639);
+	
+	public NamedArea getAreaByTdwgAbbreviation(String tdwgAbbreviation);
 
 }

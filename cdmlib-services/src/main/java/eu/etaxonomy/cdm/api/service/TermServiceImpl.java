@@ -30,6 +30,8 @@ import eu.etaxonomy.cdm.model.common.LanguageStringBase;
 import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
+import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.location.TdwgArea;
 import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ILanguageStringBaseDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ILanguageStringDao;
@@ -39,7 +41,7 @@ import eu.etaxonomy.cdm.persistence.dao.common.ITermVocabularyDao;
 @Service
 @Transactional(readOnly = true)
 public class TermServiceImpl extends ServiceBase<DefinedTermBase,IDefinedTermDao> implements ITermService{
-	static Logger logger = Logger.getLogger(TermServiceImpl.class);
+	private static final Logger logger = Logger.getLogger(TermServiceImpl.class);
 	
 	protected ITermVocabularyDao vocabularyDao;
 	@Autowired
@@ -151,5 +153,16 @@ public class TermServiceImpl extends ServiceBase<DefinedTermBase,IDefinedTermDao
 	protected void setDao(IDefinedTermDao dao) {
 		this.dao = dao;
 	}
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.service.ITermService#getAreaByTdwgAbbreviation(java.lang.String)
+	 */
+	public NamedArea getAreaByTdwgAbbreviation(String tdwgAbbreviation) {
+		//FIXME this is just a placeholder until it is decided where to implement this method 
+		//(see also FIXMEs in TdwgArea)
+		return TdwgArea.getAreaByTdwgAbbreviation(tdwgAbbreviation);
+	}
+	
+	
 	
 }
