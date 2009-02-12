@@ -1094,6 +1094,7 @@ cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/occurrence/IOc
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/reference/IReferenceDao.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/taxon/ITaxonDao.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/fetch/CdmFetch.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/CdmHibernateInterceptor.java -text
 cdmlib-persistence/src/main/java/org/hibernate/dialect/H2CorrectedDialect.java -text
 cdmlib-persistence/src/main/java/org/hibernate/dialect/HSQLCorrectedDialect.java -text
 cdmlib-persistence/src/main/java/org/hibernate/dialect/MySQL5InnoDBUtf8Dialect.java -text
@@ -1103,6 +1104,7 @@ cdmlib-persistence/src/main/resources/eu/etaxonomy/cdm/h2-datasource.xml -text
 cdmlib-persistence/src/main/resources/eu/etaxonomy/cdm/hibernate.cfg.xml -text
 cdmlib-persistence/src/main/resources/eu/etaxonomy/cdm/hsql-datasource.xml -text
 cdmlib-persistence/src/main/resources/eu/etaxonomy/cdm/persistence.xml -text
+cdmlib-persistence/src/main/resources/eu/etaxonomy/cdm/spelling.xml -text
 cdmlib-persistence/src/main/resources/log4j.properties -text
 cdmlib-persistence/src/site/site.xml -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/database/CdmDataSourceTest.java -text

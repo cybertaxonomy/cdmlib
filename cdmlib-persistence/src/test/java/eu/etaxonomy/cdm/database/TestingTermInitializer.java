@@ -46,9 +46,9 @@ public class TestingTermInitializer extends PersistentTermInitializer {
             UUID.fromString("ca04609b-1ba0-4d31-9c2e-aa8eb2f4e62d"), // AnnotationType.class
             UUID.fromString("e51d52d6-965b-4f7d-900f-4ba9c6f5dd33"), // NamedAreaType.class
             UUID.fromString("49034253-27c8-4219-97e8-f8d987d3d122"), // NamedAreaLevel.class
-            UUID.fromString("fa032b1a-1ad2-4fb0-a1d9-3016399a80fa"), // NomenclaturalCode.class
+           // UUID.fromString("fa032b1a-1ad2-4fb0-a1d9-3016399a80fa"), // NomenclaturalCode.class
             UUID.fromString("b187d555-f06f-4d65-9e53-da7c93f8eaa8"), // Feature.class
-            UUID.fromString("1fb40504-d1d7-44b0-9731-374fbe6cac77"), // NamedArea.class
+            UUID.fromString("1fb40504-d1d7-44b0-9731-374fbe6cac77"), // NamedArea.class //TDWGArea
             UUID.fromString("adbbbe15-c4d3-47b7-80a8-c7d104e53a05"), // PresenceTerm.class
             UUID.fromString("5cd438c8-a8a1-4958-842e-169e83e2ceee"), // AbsenceTerm.class
             UUID.fromString("9718b7dd-8bc0-4cad-be57-3c54d4d432fe"), // Sex.class

@@ -11,48 +11,23 @@
     http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
     ">
     
-    <context:component-scan base-package="eu/etaxonomy/cdm"/>
-
-    <!-- enable the configuration of transactional behavior based on annotations -->
-    <tx:annotation-driven transaction-manager="transactionManager"/>      
-       
     <bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
         <property name="sessionFactory" ref="sessionFactory" />
     </bean>
 
-<!--
-    <bean id="taxonSpellingDirectory" class="org.springmodules.lucene.index.support.FSDirectoryFactoryBean">
-      <!- TODO location ->
-      <property name="location" value="file:./target/test-classes/eu.etaxonomy.cdm.model.taxon.TaxonBase_spelling"/>
-      <property name="create" value="false"/>
-    </bean>
-    
-
-    <bean id="taxonSpellingIndex" class="org.springmodules.lucene.index.support.SimpleIndexFactoryBean">
-      <property name="directory" ref="taxonSpellingDirectory"/>
-      <property name="create" value="false"/>
-      <property name="analyzer">
-        <bean class="org.apache.lucene.analysis.SimpleAnalyzer"/>
-      </property>
-    </bean>
--->    
-
-<bean id="sessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
-    <property name="namingStrategy">
-    	<bean class="org.hibernate.cfg.DefaultComponentSafeNamingStrategy" />
-    </property>
-    <property name="configLocation" value="classpath:eu/etaxonomy/cdm/hibernate.cfg.xml"/>
-    <property  name="configurationClass" value="org.hibernate.cfg.AnnotationConfiguration"/>
-    <property name="dataSource" ref="dataSource"/>
-    <property name="hibernateProperties" ref="hibernateProperties"/>
-</bean>
-
-<!-- 
-    <bean id="timingAdvice" class="org.springframework.aop.interceptor.PerformanceMonitorInterceptor"/>
-   
-   <aop:config>
-       <aop:advisor id="profilingAdvisor" advice-ref="timingAdvice" pointcut="execution(* eu.etaxonomy..*.*(..))"/>
-    </aop:config>
--->
+	<bean id="sessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+	    <property name="namingStrategy">
+	    	<bean class="org.hibernate.cfg.DefaultComponentSafeNamingStrategy" />
+	    </property>
+	    
+<!--	    <property name="entityInterceptor">
+    		<bean class="eu.etaxonomy.cdm.persistence.hibernate.CdmHibernateInterceptor" />
+    	</property>
+  -->	    
+	    <property name="configLocation" value="classpath:eu/etaxonomy/cdm/hibernate.cfg.xml"/>
+	    <property  name="configurationClass" value="org.hibernate.cfg.AnnotationConfiguration"/>
+	    <property name="dataSource" ref="dataSource"/>
+	    <property name="hibernateProperties" ref="hibernateProperties"/>
+	</bean>
 
 </beans>
