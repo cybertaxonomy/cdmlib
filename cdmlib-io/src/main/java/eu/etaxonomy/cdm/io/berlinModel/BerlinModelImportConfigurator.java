@@ -70,7 +70,7 @@ public class BerlinModelImportConfigurator extends ImportConfiguratorBase implem
 	 */
 	private BerlinModelImportConfigurator(Source berlinModelSource, ICdmDataSource destination) {
 	   super();
-	   setNomenclaturalCode(NomenclaturalCode.ICBN()); //default for Berlin Model
+	   setNomenclaturalCode(NomenclaturalCode.ICBN); //default for Berlin Model
 	   setSource(berlinModelSource);
 	   setDestination(destination);
 	}

@@ -952,21 +952,21 @@ public class AbcdIO extends SpecimenIoBase implements ICdmIO<IImportConfigurator
 		boolean problem=false;
 
 		if (this.nomenclatureCode.toString().equals("Zoological")){
-			taxonName = (ZoologicalName)nvnpi.parseFullName(scientificName,NomenclaturalCode.ICZN(),null);
+			taxonName = (ZoologicalName)nvnpi.parseFullName(scientificName,NomenclaturalCode.ICZN,null);
 			if (taxonName.hasProblem())
 				problem=true;
 		}
 		if (this.nomenclatureCode.toString().equals("Botanical")){
-			taxonName  = (BotanicalName)nvnpi.parseFullName(scientificName,NomenclaturalCode.ICBN(),null);
+			taxonName  = (BotanicalName)nvnpi.parseFullName(scientificName,NomenclaturalCode.ICBN,null);
 			if (taxonName.hasProblem())
 				problem=true;;}
 		if (this.nomenclatureCode.toString().equals("Bacterial")){
-			taxonName = (BacterialName)nvnpi.parseFullName(scientificName,NomenclaturalCode.ICNB(), null);
+			taxonName = (BacterialName)nvnpi.parseFullName(scientificName,NomenclaturalCode.ICNB, null);
 			if (taxonName.hasProblem())
 				problem=true;
 		}
 		if (this.nomenclatureCode.toString().equals("Cultivar")){
-			taxonName = (CultivarPlantName)nvnpi.parseFullName(scientificName,NomenclaturalCode.ICNCP(), null);
+			taxonName = (CultivarPlantName)nvnpi.parseFullName(scientificName,NomenclaturalCode.ICNCP, null);
 			if (taxonName.hasProblem())
 				problem=true;;
 		}

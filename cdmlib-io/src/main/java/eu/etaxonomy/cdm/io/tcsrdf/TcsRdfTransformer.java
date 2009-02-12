@@ -114,11 +114,11 @@ public final class TcsRdfTransformer {
 		String tcsViral = tcsRoot + "VIRAL";
 		
 		if (nomCode == null){ return null;
-		}else if (tcsICBN.equals(nomCode)){return NomenclaturalCode.ICBN();
-		}else if (tcsICZN.equals(nomCode)){return NomenclaturalCode.ICZN();
-		}else if (tcsICNCP.equals(nomCode)){return NomenclaturalCode.ICNCP();
-		}else if (tcsBacteriological.equals(nomCode)){return NomenclaturalCode.ICNB();
-		}else if (tcsViral.equals(nomCode)){return NomenclaturalCode.ICVCN();
+		}else if (tcsICBN.equals(nomCode)){return NomenclaturalCode.ICBN;
+		}else if (tcsICZN.equals(nomCode)){return NomenclaturalCode.ICZN;
+		}else if (tcsICNCP.equals(nomCode)){return NomenclaturalCode.ICNCP;
+		}else if (tcsBacteriological.equals(nomCode)){return NomenclaturalCode.ICNB;
+		}else if (tcsViral.equals(nomCode)){return NomenclaturalCode.ICVCN;
 		}	
 		else {
 			throw new UnknownCdmTypeException("Unknown Nomenclatural Code " + nomCode);
