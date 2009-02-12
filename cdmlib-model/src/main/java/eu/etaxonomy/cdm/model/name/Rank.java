@@ -696,9 +696,6 @@ public class Rank extends OrderedTermBase<Rank> {
 			logger.warn("Abbreviation for this Rank " + this.toString() +  " not yet implemented");
 			return "xxx.";
 		}
-	
-	
-		
 	}
 
 	@Override

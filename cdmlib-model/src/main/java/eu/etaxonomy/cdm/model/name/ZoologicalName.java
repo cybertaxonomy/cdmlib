@@ -230,7 +230,7 @@ public class ZoologicalName extends NonViralName {
 		if (nameParser == null){
 			nameParser  = new NonViralNameParserImpl();
 		}
-		return (ZoologicalName)nameParser.parseFullName(fullNameString, NomenclaturalCode.ICZN(), rank);
+		return (ZoologicalName)nameParser.parseFullName(fullNameString, NomenclaturalCode.ICZN, rank);
 	}
 	
 	/**
@@ -247,7 +247,7 @@ public class ZoologicalName extends NonViralName {
 	@Transient
 	@Override
 	public NomenclaturalCode getNomenclaturalCode(){
-		return NomenclaturalCode.ICZN();
+		return NomenclaturalCode.ICZN;
 	}
 	
 /* ***************** GETTER / SETTER ***************************/

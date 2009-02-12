@@ -63,7 +63,7 @@ public class Continent extends NamedArea {
 	 * @return
 	 */
 	public static Continent NewInstance(){
-		logger.debug("NewInstance");
+		logger.debug("NewInstance of Continent");
 		return new Continent();
 	}
 

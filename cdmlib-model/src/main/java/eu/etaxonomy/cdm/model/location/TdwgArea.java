@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import javax.persistence.Entity;
@@ -27,9 +28,11 @@ import org.jdom.Namespace;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.XmlHelp;
+import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.Representation;
+import eu.etaxonomy.cdm.model.common.TermVocabulary;
 
 /**
  * @author a.mueller
@@ -49,9 +52,20 @@ public class TdwgArea extends NamedArea {
 	private static Map<String, UUID> abbrevMap = null;
 	private static Map<String, UUID> labelMap = null;
 	
+	
+	protected static Map<UUID, TdwgArea> termMap = null;		
+
+	protected static TdwgArea getTermByUuid(UUID uuid){
+		if (termMap == null){
+			DefaultTermInitializer vocabularyStore = new DefaultTermInitializer();
+			vocabularyStore.initialize();
+		}
+		return (TdwgArea)termMap.get(uuid);
+	}
+	
 	/**
 	 * FIXME This class should really be refactored into an interface and service implementation,
-	 * relying on TermVocabularyDao / service
+	 * relying on TermVocabularyDao / service (Ben)
 	 * @param tdwgAbbreviation
 	 * @return
 	 */
@@ -64,12 +78,12 @@ public class TdwgArea extends NamedArea {
 			logger.warn("Unknown TDWG area: " + CdmUtils.Nz(tdwgAbbreviation));
 			return null;
 		}
-		return null; //(NamedArea)DefinedTermBase.findByUuid(uuid);
+		return TdwgArea.getTermByUuid(uuid);
 	}
 	
 	/**
 	 * FIXME This class should really be refactored into an interface and service implementation,
-	 * relying on TermVocabularyDao / service
+	 * relying on TermVocabularyDao / service (Ben)
 	 * @param tdwgLabel
 	 * @return
 	 */
@@ -100,6 +114,28 @@ public class TdwgArea extends NamedArea {
 			return false;
 		}
 	}
+	
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.location.NamedArea#setDefaultTerms(eu.etaxonomy.cdm.model.common.TermVocabulary)
+	 */
+//	@Override
+//	protected void setDefaultTerms(TermVocabulary<NamedArea> termVocabulary) {
+//		Set<NamedArea> terms = termVocabulary.getTerms();
+//		for (NamedArea term : terms){
+//			addTdwgArea(term);
+//		}
+//	}
+	
+	@Override
+	protected void setDefaultTerms(TermVocabulary<NamedArea> termVocabulary) {
+		termMap = new HashMap<UUID, TdwgArea>();
+		for (NamedArea term : termVocabulary.getTerms()){
+			termMap.put(term.getUuid(), (TdwgArea)term);  //TODO casting
+			addTdwgArea((NamedArea)term);
+		}
+	}
+	
 	
 	protected static void addTdwgArea(NamedArea area){
 		if (area == null){
@@ -148,33 +184,6 @@ public class TdwgArea extends NamedArea {
 
 //********************* OLD ******************************/
 	
-	private static Map<String, UUID> labelUuidMap;
-	
-	//private until implemented
-	private static NamedArea areaByTdwgLabel(String tdwgLabel){
-		//from Hashtable
-		UUID uuid = getUuidByTdwgLabel(tdwgLabel);
-		//does Area already exist?
-		NamedArea result = getNameAreaByUuid(uuid);
-		if (result == null){
-			result = getNamedAreaByTdwgLabel(tdwgLabel);
-		}
-		return result;
-	}
-	
-	private static UUID getUuidByTdwgLabel(String tdwgLabel){
-		if (labelUuidMap == null || labelUuidMap.size() < 1){
-			labelUuidMap = new HashMap<String, UUID>();
-			logger.warn("Not yet implemented");
-		//	readLabelUuidMap();
-		}
-		return labelUuidMap.get(tdwgLabel);
-	}
-
-	private static NamedArea getNameAreaByUuid(UUID uuid){
-		logger.warn("Not yet implemented");
-		return null;
-	}
 	
 	private static NamedArea getNamedAreaByTdwgLabel(String tdwgLabel){
 		if (tdwgLabel == null){

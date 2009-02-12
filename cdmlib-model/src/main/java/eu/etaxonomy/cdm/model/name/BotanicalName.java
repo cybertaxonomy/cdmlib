@@ -250,7 +250,7 @@ public class BotanicalName extends NonViralName {
 		if (nameParser == null){
 			nameParser = new NonViralNameParserImpl();
 		}
-		return (BotanicalName)nameParser.parseFullName(fullNameString, NomenclaturalCode.ICBN(),  rank);
+		return (BotanicalName)nameParser.parseFullName(fullNameString, NomenclaturalCode.ICBN,  rank);
 	}
 	
 	/**
@@ -284,7 +284,7 @@ public class BotanicalName extends NonViralName {
 		if (nameParser == null){
 			nameParser = new NonViralNameParserImpl();
 		}
-		return (BotanicalName)nameParser.parseReferencedName(fullNameAndReferenceString, NomenclaturalCode.ICBN(), rank);
+		return (BotanicalName)nameParser.parseReferencedName(fullNameAndReferenceString, NomenclaturalCode.ICBN, rank);
 	}
 	
 	
@@ -568,7 +568,7 @@ public class BotanicalName extends NonViralName {
 	@Transient
 	@Override
 	public NomenclaturalCode getNomenclaturalCode(){
-		return NomenclaturalCode.ICBN();
+		return NomenclaturalCode.ICBN;
 
 	}
 

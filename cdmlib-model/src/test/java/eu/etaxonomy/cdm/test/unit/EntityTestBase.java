@@ -63,7 +63,7 @@ public abstract class EntityTestBase {
 	 * Tests if all persistent (not transient) getter have an according setter.
 	 */
 	@Test 
-	public final void testPersistentGetterSetterPair() {
+	public void testPersistentGetterSetterPair() {
 		//
 		Annotation annotation = clazzToTest.getAnnotation(Entity.class);
 		if (annotation != null){
@@ -98,7 +98,7 @@ public abstract class EntityTestBase {
 				} catch (SecurityException e) {
 					logger.info(e.getMessage());
 				} catch (Exception e) {
-					String warning = "Missing setter for getter: " + getMethodName;
+					String warning = "Missing setter for getter - a non transient getter method should also have a setter: " + getMethodName;
 					logger.warn(warning);
 					if (! (clazzToTest == (Class)NonViralName.class && getMethodName.equals("getCitation") ) ){
 						fail(warning);

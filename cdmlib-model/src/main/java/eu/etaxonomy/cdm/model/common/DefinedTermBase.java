@@ -18,6 +18,8 @@ import org.hibernate.search.annotations.Indexed;
 import au.com.bytecode.opencsv.CSVWriter;
 import eu.etaxonomy.cdm.model.common.init.ITermInitializer;
 import eu.etaxonomy.cdm.model.media.Media;
+import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
+
 import java.lang.reflect.Field;
 import java.util.*;
 
@@ -55,11 +57,10 @@ import javax.xml.bind.annotation.XmlType;
 //@Audited
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 @Indexed
-public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBase implements ILoadableTerm<T> {
+public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBase implements ILoadableTerm<T>, IDefinedTerm<T> {
 	private static final long serialVersionUID = 2931811562248571531L;
-	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DefinedTermBase.class);
-	
+		
 	@XmlElement(name = "KindOf")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
@@ -99,6 +100,8 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
 	@XmlSchemaType(name = "IDREF")
 	protected TermVocabulary<T> vocabulary;	
 	
+// ************** Constructor ******************************************/
+	
 	public DefinedTermBase() {
 		super();
 	}
@@ -110,6 +113,9 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.ILoadableTerm#readCsvLine(java.util.List)
+	 */
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.IDefinedTerm#readCsvLine(java.lang.Class, java.util.List, java.util.Map)
 	 */
 	public T readCsvLine(Class<T> termClass, List<String> csvLine, Map<UUID,DefinedTermBase> terms) {
 		try {
@@ -147,37 +153,58 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
 		writer.writeNext(line);
 	}
 	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.IDefinedTerm#getByUuid(java.util.UUID)
+	 */
 	@Transient
 	public T getByUuid(UUID uuid){
 		return this.vocabulary.findTermByUuid(uuid);
 	}
 	
 	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.IDefinedTerm#getKindOf()
+	 */
 	@ManyToOne(fetch = FetchType.LAZY, targetEntity = DefinedTermBase.class)
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public T getKindOf(){
 		return this.kindOf;
 	}
 	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.IDefinedTerm#setKindOf(T)
+	 */
 	public void setKindOf(T kindOf){
 		this.kindOf = kindOf;
 	}
 
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.IDefinedTerm#getGeneralizationOf()
+	 */
 	@OneToMany(fetch=FetchType.LAZY, mappedBy = "kindOf", targetEntity = DefinedTermBase.class)
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<T> getGeneralizationOf(){
 		return this.generalizationOf;
 	}
 	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.IDefinedTerm#setGeneralizationOf(java.util.Set)
+	 */
 	public void setGeneralizationOf(Set<T> generalizationOf) {
 		this.generalizationOf = generalizationOf;
 	}
 	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.IDefinedTerm#addGeneralizationOf(T)
+	 */
 	public void addGeneralizationOf(T generalization) {
 		generalization.setKindOf(this);
 		this.generalizationOf.add(generalization);
 	}
 	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.IDefinedTerm#removeGeneralization(T)
+	 */
 	public void removeGeneralization(T generalization) {
 		if(generalizationOf.contains(generalization)){
 			generalization.setKindOf(null);
@@ -186,28 +213,46 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
 	}
 
 
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.IDefinedTerm#getPartOf()
+	 */
 	@ManyToOne(fetch = FetchType.LAZY, targetEntity = DefinedTermBase.class)
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public T getPartOf(){
 		return this.partOf;
 	}
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.IDefinedTerm#setPartOf(T)
+	 */
 	public void setPartOf(T partOf){
 		this.partOf = partOf;
 	}
 
 	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.IDefinedTerm#getIncludes()
+	 */
 	@OneToMany(fetch=FetchType.LAZY, mappedBy = "partOf", targetEntity = DefinedTermBase.class)
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<T> getIncludes(){
 		return this.includes;
 	}
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.IDefinedTerm#setIncludes(java.util.Set)
+	 */
 	public void setIncludes(Set<T> includes) {
 		this.includes = includes;
 	}
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.IDefinedTerm#addIncludes(T)
+	 */
 	public void addIncludes(T includes) {
 		includes.setPartOf(this);
 		this.includes.add(includes);
 	}
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.IDefinedTerm#removeIncludes(T)
+	 */
 	public void removeIncludes(T includes) {
 		if(this.includes.contains(includes)) {
 			includes.setPartOf(null);
@@ -216,23 +261,38 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
 	}
 
 
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.IDefinedTerm#getMedia()
+	 */
 	@ManyToMany(fetch = FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<Media> getMedia(){
 		return this.media;
 	}
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.IDefinedTerm#setMedia(java.util.Set)
+	 */
 	public void setMedia(Set<Media> media) {
 		this.media = media;
 	}
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.IDefinedTerm#addMedia(eu.etaxonomy.cdm.model.media.Media)
+	 */
 	public void addMedia(Media media) {
 		this.media.add(media);
 	}
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.IDefinedTerm#removeMedia(eu.etaxonomy.cdm.model.media.Media)
+	 */
 	public void removeMedia(Media media) {
 		this.media.remove(media);
 	}
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.IDefTerm#getVocabulary()
+	 */
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.IDefinedTerm#getVocabulary()
 	 */
 	@XmlTransient
 	@ManyToOne(fetch=FetchType.LAZY)
@@ -242,6 +302,9 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
 	}
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.IDefTerm#setVocabulary(eu.etaxonomy.cdm.model.common.TermVocabulary)
+	 */
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.IDefinedTerm#setVocabulary(eu.etaxonomy.cdm.model.common.TermVocabulary)
 	 */
 	public void setVocabulary(TermVocabulary<T> newVocabulary) {
 		this.vocabulary = newVocabulary;		

@@ -26,6 +26,7 @@ import eu.etaxonomy.cdm.model.location.Continent;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
+import eu.etaxonomy.cdm.model.location.TdwgArea;
 import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
 import eu.etaxonomy.cdm.model.media.RightsTerm;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
@@ -45,35 +46,62 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
  *
  */
 public class DefaultTermInitializer implements ITermInitializer {
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DefaultTermInitializer.class);
 	protected ITermLoader termLoader = new TermLoader();
 
-	protected static Class[] classesToInitialize  =  {Language.class,Continent.class,WaterbodyOrCountry.class,
-		                                            Rank.class,TypeDesignationStatus.class,
-		                                            NomenclaturalStatusType.class,SynonymRelationshipType.class,HybridRelationshipType.class,
-		                                            NameRelationshipType.class,TaxonRelationshipType.class,MarkerType.class,
-		                                            AnnotationType.class,NamedAreaType.class,NamedAreaLevel.class,
-		                                            NomenclaturalCode.class,Feature.class,NamedArea.class,PresenceTerm.class,AbsenceTerm.class,Sex.class,
-		                                            DerivationEventType.class,PreservationMethod.class,DeterminationModifier.class,StatisticalMeasure.class,RightsTerm.class
-		};
+	@SuppressWarnings("unchecked")
+	protected static Class[] classesToInitialize  =  {
+		Language.class,
+		Continent.class,
+		WaterbodyOrCountry.class,
+		Rank.class,
+		TypeDesignationStatus.class,
+		NomenclaturalStatusType.class,
+		SynonymRelationshipType.class,
+		HybridRelationshipType.class,
+		NameRelationshipType.class,
+		TaxonRelationshipType.class,
+		MarkerType.class,
+		AnnotationType.class,
+		NamedAreaType.class,
+		NamedAreaLevel.class,
+		//NomenclaturalCode.class,
+		Feature.class,
+		TdwgArea.class,
+		//NamedArea.class,
+		PresenceTerm.class,
+		AbsenceTerm.class,
+		Sex.class,
+		DerivationEventType.class,
+		PreservationMethod.class,
+		DeterminationModifier.class,
+		StatisticalMeasure.class,
+		RightsTerm.class
+	};
 	
 	public void initialize() {
 		Map<UUID,DefinedTermBase> terms = new HashMap<UUID,DefinedTermBase>();
 		
-		for(Class clazz : classesToInitialize) {
-			TermVocabulary voc  = termLoader.loadTerms((Class<? extends DefinedTermBase>)clazz, terms);
-			setDefinedTerms((Class<? extends DefinedTermBase>)clazz,voc);
+		for(Class<? extends DefinedTermBase<?>> clazz : classesToInitialize) {
+			TermVocabulary<?> voc  = termLoader.loadTerms(clazz, terms);
+			setDefinedTerms(clazz,voc);
 		}		
 	}
 	
-	protected void setDefinedTerms(Class<? extends DefinedTermBase> clazz, TermVocabulary vocabulary) {
+	protected void setDefinedTerms(Class<? extends DefinedTermBase<?>> clazz, TermVocabulary<?> vocabulary) {
+		DefinedTermBase newInstance;
 		try {
-			DefinedTermBase newInstance = clazz.newInstance();
+			newInstance = clazz.newInstance();
 			newInstance.setDefaultTerms(vocabulary);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} 
+		} catch (InstantiationException e) {
+			// TODO Exception type
+			throw new RuntimeException("NewInstance could not be initialized in term initializer", e);
+		} catch (IllegalAccessException e) {
+			// TODO Exception type
+			throw new RuntimeException("NewInstance could not be accessed in term initializer", e);
+		}
+		
 	}
 
 

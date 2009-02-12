@@ -10,17 +10,15 @@
 package eu.etaxonomy.cdm.model.name;
 
 
-import org.apache.log4j.Logger;
-
-import eu.etaxonomy.cdm.strategy.cache.name.BotanicNameDefaultCacheStrategy;
-import eu.etaxonomy.cdm.strategy.cache.name.NonViralNameDefaultCacheStrategy;
-
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+
+import org.apache.log4j.Logger;
 
 /**
  * The taxon name class for bacteria.
@@ -177,7 +175,7 @@ public class BacterialName extends NonViralName {
 	@Transient
 	@Override
 	public NomenclaturalCode getNomenclaturalCode(){
-		return NomenclaturalCode.ICNB();
+		return NomenclaturalCode.ICNB;
 
 	}
 

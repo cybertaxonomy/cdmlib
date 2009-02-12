@@ -87,7 +87,7 @@ public class NonViralNameParserImplTest {
 	@Before
 	public void setUp() throws Exception {
 		parser = NonViralNameParserImpl.NewInstance();
-		botanicCode = NomenclaturalCode.ICBN();
+		botanicCode = NomenclaturalCode.ICBN;
 	}
 
 	/**
@@ -197,7 +197,7 @@ public class NonViralNameParserImplTest {
 		assertEquals( "Abies", nameZoo1.getGenusOrUninomial());
 		assertEquals( "alba", nameZoo1.getSpecificEpithet());
 		assertEquals("Mueller & L.",  nameZoo1.getCombinationAuthorTeam().getNomenclaturalTitle());
-		assertEquals(NomenclaturalCode.ICZN(), nameZoo1.getNomenclaturalCode() );
+		assertEquals(NomenclaturalCode.ICZN, nameZoo1.getNomenclaturalCode() );
 		assertEquals(Integer.valueOf(1822), nameZoo1.getPublicationYear());
 		assertTrue(nameZoo1.getCombinationAuthorTeam() instanceof Team);
 		Team teamZoo = (Team)nameZoo1.getCombinationAuthorTeam();
@@ -364,7 +364,7 @@ public class NonViralNameParserImplTest {
 		assertEquals(21, nameZooRefNotParsabel.getProblemStarts());
 		assertEquals(37, nameZooRefNotParsabel.getProblemEnds());
 		assertTrue(nameZooRefNotParsabel.getNomenclaturalReference().hasProblem());
-		assertEquals(NomenclaturalCode.ICZN(), nameZooRefNotParsabel.getNomenclaturalCode());
+		assertEquals(NomenclaturalCode.ICZN, nameZooRefNotParsabel.getNomenclaturalCode());
 		assertEquals(Integer.valueOf(1923), nameZooRefNotParsabel.getPublicationYear());
 		assertEquals(1, nameZooRefNotParsabel.getStatus().size());
 
@@ -494,7 +494,7 @@ public class NonViralNameParserImplTest {
 		
 		//volume, edition
 		String strNoSeparator = "Abies alba Mill. Sp. Pl. ed. 3, 4(5): 455. 1987";
-		NonViralName<?> nameNoSeparator = parser.parseReferencedName(strNoSeparator, NomenclaturalCode.ICBN(), Rank.SPECIES());
+		NonViralName<?> nameNoSeparator = parser.parseReferencedName(strNoSeparator, NomenclaturalCode.ICBN, Rank.SPECIES());
 		assertTrue(nameNoSeparator.hasProblem());
 		assertEquals(strNoSeparator, nameNoSeparator.getFullTitleCache());
 		assertEquals(10, nameNoSeparator.getProblemStarts()); //TODO better start behind Mill. (?)
