@@ -56,7 +56,7 @@ public class DipteraActivator {
 	static final boolean doDistributionParser = false;  //also run DipteraDistributionParser
 
 	//NomeclaturalCode
-	static final NomenclaturalCode nomenclaturalCode = NomenclaturalCode.ICZN();
+	static final NomenclaturalCode nomenclaturalCode = NomenclaturalCode.ICZN;
 
 	
 	

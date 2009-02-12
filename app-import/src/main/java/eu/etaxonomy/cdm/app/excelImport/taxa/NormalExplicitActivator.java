@@ -30,7 +30,7 @@ public class NormalExplicitActivator {
     	NormalExplicitImportConfigurator normalExplicitImportConfigurator = 
     		NormalExplicitImportConfigurator.NewInstance(fileName, destinationDb);
 
-    	normalExplicitImportConfigurator.setNomenclaturalCode(NomenclaturalCode.ICBN());
+    	normalExplicitImportConfigurator.setNomenclaturalCode(NomenclaturalCode.ICBN);
     	
 		CdmDefaultImport<NormalExplicitImportConfigurator> normalExplicitImport = 
 			new CdmDefaultImport<NormalExplicitImportConfigurator>();

@@ -49,7 +49,7 @@ public class EuroMedActivator {
 
 
 	//NomeclaturalCode
-	static final NomenclaturalCode nomenclaturalCode = NomenclaturalCode.ICBN();
+	static final NomenclaturalCode nomenclaturalCode = NomenclaturalCode.ICBN;
 
 	//authors
 	static final boolean doAuthors = true;

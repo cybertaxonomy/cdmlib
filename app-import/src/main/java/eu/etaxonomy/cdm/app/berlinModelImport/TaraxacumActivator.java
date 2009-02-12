@@ -59,7 +59,7 @@ public class TaraxacumActivator {
 	static final int sourceSecId = 7700000;
 	
 	static final UUID featureTreeUuid = UUID.fromString("ab007336-d853-4f2f-a490-7c8232eafe7b");
-	static final Object[] featureKeyList = new Integer[]{1, 4, 5, 10, 11, 12}; 	
+	static final Object[] featureKeyList = new Integer[]{1, 31, 4, 98}; 	
 	
 	//TODO update for Taraxacum
 	static final String mediaUrlString = "http://wp5.e-taxonomy.eu/dataportal/cichorieae/media/protolog/";
@@ -76,7 +76,7 @@ public class TaraxacumActivator {
 	static final CHECK check = CHECK.IMPORT_WITHOUT_CHECK;
 
 	//NomeclaturalCode
-	static final NomenclaturalCode nomenclaturalCode = NomenclaturalCode.ICBN();
+	static final NomenclaturalCode nomenclaturalCode = NomenclaturalCode.ICBN;
 
 	//ignore null
 	static final boolean ignoreNull = true;
@@ -178,7 +178,7 @@ public class TaraxacumActivator {
 			FeatureNode imageNode = FeatureNode.NewInstance(Feature.IMAGE());
 			tree.getRoot().addChild(imageNode);
 			FeatureNode distributionNode = FeatureNode.NewInstance(Feature.DISTRIBUTION());
-			tree.getRoot().addChild(distributionNode);
+			tree.getRoot().addChild(distributionNode, 2);
 			app.getDescriptionService().saveFeatureTree(tree);
 			mergeIntoCichorieae(app);
 			app.commitTransaction(tx);

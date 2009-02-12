@@ -54,7 +54,7 @@ public class ErmsActivator {
 
 
 	//NomeclaturalCode
-	static final NomenclaturalCode nomenclaturalCode = NomenclaturalCode.ICZN();
+	static final NomenclaturalCode nomenclaturalCode = NomenclaturalCode.ICZN;
 
 	//ignore null
 	static final boolean ignoreNull = true;

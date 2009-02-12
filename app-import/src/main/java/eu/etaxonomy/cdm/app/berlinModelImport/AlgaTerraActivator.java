@@ -52,7 +52,7 @@ public class AlgaTerraActivator {
 
 
 	//NomeclaturalCode
-	static final NomenclaturalCode nomenclaturalCode = NomenclaturalCode.ICBN();
+	static final NomenclaturalCode nomenclaturalCode = NomenclaturalCode.ICBN;
 
 // ****************** ALL *****************************************
 	
