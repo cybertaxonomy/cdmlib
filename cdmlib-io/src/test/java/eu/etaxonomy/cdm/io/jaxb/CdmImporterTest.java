@@ -17,7 +17,9 @@ import java.net.URL;
 
 import org.dbunit.Assertion;
 import org.dbunit.database.IDatabaseConnection;
+import org.dbunit.dataset.FilteredDataSet;
 import org.dbunit.dataset.IDataSet;
+import org.dbunit.dataset.filter.ExcludeTableFilter;
 import org.dbunit.dataset.xml.FlatXmlDataSet;
 import org.junit.Before;
 import org.junit.Test;
@@ -59,25 +61,16 @@ public class CdmImporterTest extends CdmTransactionalIntegrationTest{
 		try {
 			IDatabaseConnection databaseConnection = getConnection();
 			
-			IDataSet actualDataSet = databaseConnection.createDataSet();
 			IDataSet expectedDataSet = new FlatXmlDataSet(dataSet, this.getClass().getResourceAsStream("/eu/etaxonomy/cdm/io/dataset.dtd"));
 			
-//          Filter the table DB_VERSION
-			String[] actualTables = actualDataSet.getTableNames();
-			int nbrOfTables = actualTables.length - 1;
-			String[] filteredTables = new String[nbrOfTables];
-			for (int i = 0, j = 0; i < actualTables.length; i++) {
-				if (!actualTables[i].equals(dbVersionTable)) {
-					filteredTables[j] = actualTables[i];
-					j++;
-				}
-			}
-			IDataSet filteredActualDataSet = databaseConnection.createDataSet(filteredTables);
+            // Filter table DB_VERSION since column VERSION_TIMESTAMP has different value for different users
+			IDataSet filteredActualDataSet = 
+				new FilteredDataSet(new ExcludeTableFilter(new String[]{dbVersionTable}), databaseConnection.createDataSet());
 			Assertion.assertEquals(expectedDataSet, filteredActualDataSet);
 
 //          Instead of filtering the entire table DB_VERSION as above,
-//			it might be more elegant to filter the column VERSION_TIMESTAMP only (see commented code below).
-//          Need to find a way to add the filtered table back to the actual data set.
+//			it might be better to filter the column VERSION_TIMESTAMP only (see commented code below).
+//          Need to add the filtered table back to the actual data set.
 			
 //			ITable actualDbVersionTable = actualDataSet.getTable(dbVersionTable);
 //			ITable filteredTable = 
