@@ -14,6 +14,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -55,6 +56,7 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.FeatureNode;
+import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.model.description.MeasurementUnit;
 import eu.etaxonomy.cdm.model.description.QuantitativeData;
 import eu.etaxonomy.cdm.model.description.State;
@@ -115,6 +117,7 @@ public class SDDDescriptionIO extends SDDIoBase implements ICdmIO<IImportConfigu
 
 	private Set<StatisticalMeasure> statisticalMeasures = new HashSet<StatisticalMeasure>();
 	private Set<VersionableEntity> featureData = new HashSet<VersionableEntity>();
+	private Set<FeatureTree> featureTrees = new HashSet<FeatureTree>();
 
 	private Rights copyright = null;
 
@@ -493,7 +496,13 @@ public class SDDDescriptionIO extends SDDIoBase implements ICdmIO<IImportConfigu
 		descriptionService.saveDescription(taxonDescription); 
 	}
 
-	descriptionService.saveFeatureNodeAll(featureNodes.values());
+//	descriptionService.saveFeatureNodeAll(featureNodes.values());
+	
+	for (Iterator<FeatureTree> k = featureTrees.iterator() ; k.hasNext() ;) {
+		FeatureTree tree = k.next();
+		descriptionService.saveFeatureTree(tree);
+	}
+
 }
 
 // imports the default language of the dataset
@@ -681,7 +690,7 @@ protected void importCharacters(Element elDataset, Namespace sddNamespace, SDDIm
 				importRepresentation(elCategoricalCharacter, sddNamespace, categoricalCharacter, idCC, sddConfig);
 
 				categoricalCharacter.setSupportsQuantitativeData(false);
-				categoricalCharacter.setSupportsTextData(true);
+				categoricalCharacter.setSupportsTextData(false);
 
 				// <States>
 				Element elStates = elCategoricalCharacter.getChild("States",sddNamespace);
@@ -1236,17 +1245,26 @@ protected void importDescriptiveConcepts(Element elDataset, Namespace sddNamespa
 	if (elDescriptiveConcepts != null) {
 		List<Element> listDescriptiveConcepts = elDescriptiveConcepts.getChildren("DescriptiveConcept", sddNamespace);
 		int j = 0;
-		//for each TaxonName
+		//for each DescriptiveConcept
+		int g = 1;
 		for (Element elDescriptiveConcept : listDescriptiveConcepts){
 
 			String id = elDescriptiveConcept.getAttributeValue("id");
 			String uri = elDescriptiveConcept.getAttributeValue("uri");
 
 			FeatureNode fn = null;
+			
 			if (!id.equals("")) {
 				fn = FeatureNode.NewInstance();
+				Feature feature = Feature.NewInstance();
+				//	 <Representation>
+				//       <Label>Body</Label>
+				importRepresentation(elDescriptiveConcept, sddNamespace, feature, id, sddConfig);
+				features.put("g" + g, feature);
+				g++;
+				fn.setFeature(feature);
 
-				//	TODO if an OriginalSource can be attached to a FeatureNode			
+				//	TODO if an OriginalSource can be attached to a FeatureNode or a Feature		
 				//					OriginalSource source = null;
 				//					if (uri != null) {
 				//						if (!uri.equals("")) {
@@ -1259,10 +1277,6 @@ protected void importDescriptiveConcepts(Element elDataset, Namespace sddNamespa
 
 				featureNodes.put(id,fn);
 			}
-
-			//    <Representation>
-			//       <Label>Body</Label>
-			importRepresentation(elDescriptiveConcept, sddNamespace, fn, id, sddConfig);
 
 			if ((++j % modCount) == 0){ logger.info("DescriptiveConcepts handled: " + j);}
 
@@ -1290,15 +1304,20 @@ protected void importCharacterTrees(Element elDataset, Namespace sddNamespace, S
 				String label = (String)ImportHelper.getXmlInputValue(elRepresentation,"Label",sddNamespace);
 				Element elDesignedFor = elCharacterTree.getChild("DesignedFor",sddNamespace);
 				List<Element> listRoles = elDesignedFor.getChildren("Role",sddNamespace);
-				boolean groups = false;
+				boolean isgroups = false;
 
 				for (Element elRole : listRoles){
 					if (elRole.getText().equals("Filtering")) {
-						groups = true;
+						isgroups = true;
 					}
 				}
-
-				if ((label.contains("group")) || (groups)) {
+				
+				if ((label.contains("group")) || (isgroups)) {
+					
+					FeatureTree groups =  FeatureTree.NewInstance();
+					importRepresentation(elCharacterTree, sddNamespace, groups, "", sddConfig);
+					FeatureNode root = groups.getRoot();
+					
 					Element elNodes = elCharacterTree.getChild("Nodes", sddNamespace);
 					List<Element> listNodes = elNodes.getChildren("Node", sddNamespace);
 					for (Element elNode : listNodes){
@@ -1308,12 +1327,30 @@ protected void importCharacterTrees(Element elDataset, Namespace sddNamespace, S
 							Element elDescriptiveConcept = elNode.getChild("DescriptiveConcept", sddNamespace);
 							String refDC = elDescriptiveConcept.getAttributeValue("ref");
 							fn = featureNodes.get(refDC);
+							root.addChild(fn);
 						}
 						nodes.put(idN, fn);
 					}
+					
+					List<Element> listCharNodes = elNodes.getChildren("CharNode", sddNamespace);
+					for (Element elCharNode : listCharNodes){
+						Element elParent = elCharNode.getChild("Parent", sddNamespace);
+						String refP = elParent.getAttributeValue("ref");
+						Element elCharacter = elCharNode.getChild("Character", sddNamespace);
+						String refC = elCharacter.getAttributeValue("ref");
+						FeatureNode fn = FeatureNode.NewInstance();
+						if (!refP.equals("")) {
+							FeatureNode parent = nodes.get(refP);
+							parent.addChild(fn);
+							Feature character = features.get(refC);
+							fn.setFeature(character);
+							// if method setParent() in FeatureNode becomes visible
+							// fn.setParent(parent);
+						}
+						nodes.put(refC, fn);
+					}
+					featureTrees.add(groups);
 				}
-
-
 
 			} catch (Exception e) {
 				//FIXME
