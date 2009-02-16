@@ -7,7 +7,7 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package eu.etaxonomy.cdm.app.berlinModelImport;
+package eu.etaxonomy.cdm.app.wp6.diptera;
 
 import java.util.ArrayList;
 import java.util.HashSet;

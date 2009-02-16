@@ -4,7 +4,7 @@
 * http://www.e-taxonomy.eu
 */
 
-package eu.etaxonomy.cdm.app.excelImport.distribution;
+package eu.etaxonomy.cdm.app.wp6.cichorieae;
 
 import java.io.File;
 

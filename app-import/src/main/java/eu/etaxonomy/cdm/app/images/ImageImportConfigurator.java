@@ -26,7 +26,6 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
  * @version 1.0
  */
 public class ImageImportConfigurator extends ImportConfiguratorBase implements IImportConfigurator {
-	@SuppressWarnings("unused")
 	private static Logger logger = Logger.getLogger(ImageImportConfigurator.class);
 
 	public static ImageImportConfigurator NewInstance(File source, ICdmDataSource destination){

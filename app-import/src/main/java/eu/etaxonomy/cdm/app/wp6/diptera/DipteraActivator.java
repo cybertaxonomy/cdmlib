@@ -7,14 +7,15 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package eu.etaxonomy.cdm.app.berlinModelImport;
+package eu.etaxonomy.cdm.app.wp6.diptera;
 
-import java.io.File;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
+import eu.etaxonomy.cdm.app.berlinModelImport.BerlinModelSources;
+import eu.etaxonomy.cdm.app.berlinModelImport.TreeCreator;
 import eu.etaxonomy.cdm.app.common.CdmDestinations;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
@@ -23,13 +24,10 @@ import eu.etaxonomy.cdm.io.common.CdmDefaultImport;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator.CHECK;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator.DO_REFERENCES;
-import eu.etaxonomy.cdm.io.tcsrdf.TcsRdfImportConfigurator;
-import eu.etaxonomy.cdm.model.common.ISourceable;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.FeatureNode;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
-import eu.etaxonomy.cdm.model.name.ZoologicalName;
 
 
 /**
@@ -41,40 +39,32 @@ import eu.etaxonomy.cdm.model.name.ZoologicalName;
  * @author a.mueller
  *
  */
-public class CichorieaeActivator {
-	private static final Logger logger = Logger.getLogger(CichorieaeActivator.class);
+public class DipteraActivator {
+	@SuppressWarnings("unused")
+	private static final Logger logger = Logger.getLogger(DipteraActivator.class);
 
 	//database validation status (create, update, validate ...)
 	static DbSchemaValidation hbm2dll = DbSchemaValidation.CREATE;
-	static final Source berlinModelSource = BerlinModelSources.EDIT_CICHORIEAE();
+	static final Source berlinModelSource = BerlinModelSources.EDIT_Diptera();
 	static final ICdmDataSource cdmDestination = CdmDestinations.localH2();
-
-	static final UUID secUuid = UUID.fromString("6924c75d-e0d0-4a6d-afb7-3dd8c71195ca");
-	static final int sourceSecId = 7800000;
-	
+	static final UUID secUuid = UUID.fromString("06fd671f-1226-4e3b-beca-1959b3b32e20");
+	static final int sourceSecId = 1000000;
 	static final UUID featureTreeUuid = UUID.fromString("ae9615b8-bc60-4ed0-ad96-897f9226d568");
-	static final Object[] featureKeyList = new Integer[]{1, 31, 4, 98}; 	
-	
-	static final String mediaUrlString = "http://wp5.e-taxonomy.eu/dataportal/cichorieae/media/protolog/";
-	//Mac
-	//static final File mediaPath = new File("/Volumes/protolog/protolog/");
-	//Windows
-	static final File mediaPath = new File("\\\\Bgbm11\\Edit-WP6\\protolog");
-	// set to zero for unlimited nameFacts
-	static final int maximumNumberOfNameFacts = 0;
-	
+	static final Object[] featureKeyList = new Integer[]{1,4,5,10,11,12,13,99}; 
 	
 	//check - import
 	static final CHECK check = CHECK.IMPORT_WITHOUT_CHECK;
 
-	//NomeclaturalCode
-	static final NomenclaturalCode nomenclaturalCode = NomenclaturalCode.ICBN;
+	static final boolean doDistributionParser = false;  //also run DipteraDistributionParser
 
+	//NomeclaturalCode
+	static final NomenclaturalCode nomenclaturalCode = NomenclaturalCode.ICZN;
+
+	
+	
 	//ignore null
 	static final boolean ignoreNull = true;
-
-
-// **************** ALL *********************	
+	
 	//authors
 	static final boolean doAuthors = true;
 	//references
@@ -84,17 +74,14 @@ public class CichorieaeActivator {
 	static final boolean doRelNames = true;
 	static final boolean doNameStatus = true;
 	static final boolean doTypes = true;
-	static final boolean doNameFacts = true;
-	
+	static final boolean doNameFacts = true; 
+ 	
 	//taxa
 	static final boolean doTaxa = true;
 	static final boolean doRelTaxa = true;
 	static final boolean doFacts = true;
-	static final boolean doOccurences = true;
-
+	static final boolean doOccurences = false;
 	
-// **************** SELECTED *********************
-
 //	//authors
 //	static final boolean doAuthors = false;
 //	//references
@@ -106,17 +93,19 @@ public class CichorieaeActivator {
 //	static final boolean doTypes = false;
 //	static final boolean doNameFacts = false;
 //	
-//	//taxa 
-//	static final boolean doTaxa = false;
+//	//taxa
+//	static final boolean doTaxa = true;
 //	static final boolean doRelTaxa = false;
-//	static final boolean doFacts = false;
+//	static final boolean doFacts = true;
 //	static final boolean doOccurences = false;
+	
+
 	
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		System.out.println("Start import from BerlinModel("+ berlinModelSource.getDatabase() + ") to " + cdmDestination.getDatabase() + " ...");
+		System.out.println("Start import from BerlinModel("+ berlinModelSource.getDatabase() + ") ...");
 		
 		//make BerlinModel Source
 		Source source = berlinModelSource;
@@ -126,7 +115,6 @@ public class CichorieaeActivator {
 		
 		bmImportConfigurator.setSecUuid(secUuid);
 		bmImportConfigurator.setSourceSecId(sourceSecId);
-		
 		bmImportConfigurator.setNomenclaturalCode(nomenclaturalCode);
 
 		bmImportConfigurator.setIgnoreNull(ignoreNull);
@@ -144,18 +132,6 @@ public class CichorieaeActivator {
 		bmImportConfigurator.setDoOccurrence(doOccurences);
 		bmImportConfigurator.setDbSchemaValidation(hbm2dll);
 
-		// mediaResourceLocations
-		if ( mediaPath.exists() && mediaPath.isDirectory()){
-			bmImportConfigurator.setMediaUrl(mediaUrlString);
-			bmImportConfigurator.setMediaPath(mediaPath);
-		}else{
-			logger.warn("Could not configure mediaResourceLocations");
-		}
-		
-		// maximum number of name facts to import
-		bmImportConfigurator.setMaximumNumberOfNameFacts(maximumNumberOfNameFacts);
-		
-		
 		bmImportConfigurator.setCheck(check);
 		
 		// invoke import
@@ -164,18 +140,20 @@ public class CichorieaeActivator {
 		
 		if (bmImportConfigurator.getCheck().equals(CHECK.CHECK_AND_IMPORT)  || bmImportConfigurator.getCheck().equals(CHECK.IMPORT_WITHOUT_CHECK)    ){
 			CdmApplicationController app = bmImport.getCdmApp();
-			ISourceable obj = app.getCommonService().getSourcedObjectByIdInSource(ZoologicalName.class, "1000027", null);
-			logger.info(obj);
 			
+			//parse distributions
+			if (doDistributionParser){
+				DipteraDistributionParser dipDist = new DipteraDistributionParser();
+				dipDist.doDistribution(app);
+			}
+						
 			//make feature tree
+			app = bmImport.getCdmApp();
 			FeatureTree tree = TreeCreator.flatTree(featureTreeUuid, bmImportConfigurator.getFeatureMap(), featureKeyList);
-			FeatureNode imageNode = FeatureNode.NewInstance(Feature.IMAGE());
-			tree.getRoot().addChild(imageNode);
 			FeatureNode distributionNode = FeatureNode.NewInstance(Feature.DISTRIBUTION());
-			tree.getRoot().addChild(distributionNode, 2);
+			tree.getRoot().addChild(distributionNode);
 			app.getDescriptionService().saveFeatureTree(tree);
 		}
-		
 		System.out.println("End import from BerlinModel ("+ source.getDatabase() + ")...");
 	}
 
