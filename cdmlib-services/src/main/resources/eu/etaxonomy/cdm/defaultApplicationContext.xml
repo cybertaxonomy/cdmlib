@@ -13,8 +13,15 @@
 <!-- <import resource="classpath:/eu/etaxonomy/cdm/spelling.xml"/> -->
 
 
-	<!-- Overwrites the component-scan in service.xml; includes service beans e.g. in eu/etaxonomy/cdm/api -->
-	<context:component-scan base-package="eu/etaxonomy/cdm"/>
+	<!-- includes service beans e.g. in eu/etaxonomy/cdm/api -->
+	<context:component-scan base-package="eu/etaxonomy/cdm/api/service">
+	 	<context:exclude-filter type="regex" expression="eu\.etaxonomy\.cdm\.api\.service\.UserService"/>
+    </context:component-scan>
+	<context:component-scan base-package="eu/etaxonomy/cdm/api/application"/>
+	
+	<!-- TODO move to io -->
+	<context:component-scan base-package="eu/etaxonomy/cdm/io"/>
+
     
     <!-- enable the configuration of transactional behavior based on annotations -->
     <tx:annotation-driven transaction-manager="transactionManager"/>      
