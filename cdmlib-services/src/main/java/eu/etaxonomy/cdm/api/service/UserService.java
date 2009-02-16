@@ -59,7 +59,7 @@ public class UserService implements UserDetailsManager, GroupManager {
 		this.passwordEncoder = passwordEncoder;
 	}
 
-	@Autowired
+	@Autowired(required = false)
 	public void setSaltSource(SaltSource saltSource) {
 		this.saltSource = saltSource;
 	}
