@@ -53,16 +53,15 @@ public class OrderedTermVocabulary<T extends OrderedTermBase> extends TermVocabu
 
 	@Transient
 	public SortedSet<T> getOrderedTerms(T otb) {
-		SortedSet<T> result = new TreeSet<T>();
-		result.addAll(terms);
+		SortedSet<T> result = getSortedSetOfTerms();
 		return result;
 	}
+
 	
 	@Transient
 	public SortedSet<T> getHigherAndEqualTerms(T otb) {
 		SortedSet<T> result = new TreeSet<T>();
-		SortedSet<T> sortedSet = new TreeSet<T>();
-		sortedSet.addAll(terms);
+		SortedSet<T> sortedSet = getSortedSetOfTerms();
 		result.addAll( sortedSet.tailSet(otb));
 		return result;
 	}
@@ -80,8 +79,7 @@ public class OrderedTermVocabulary<T extends OrderedTermBase> extends TermVocabu
 	@Transient
 	public SortedSet<T> getLowerAndEqualTerms(T otb) {
 		SortedSet<T> result = new TreeSet<T>();
-		SortedSet<T> sortedSet = new TreeSet<T>();
-		sortedSet.addAll(terms);
+		SortedSet<T> sortedSet = getSortedSetOfTerms();
 		result.addAll( sortedSet.headSet(otb));
 		return result;
 	}
@@ -129,8 +127,7 @@ public class OrderedTermVocabulary<T extends OrderedTermBase> extends TermVocabu
 	@Transient
 	public T getLowestTerm() {
 		try {
-			SortedSet<T> sortedSet = new TreeSet<T>();
-			sortedSet.addAll(terms);
+			SortedSet<T> sortedSet = getSortedSetOfTerms();
 			return sortedSet.first();
 			//return ((SortedSet<T>)terms).first();
 		} catch (NoSuchElementException e) {
@@ -141,8 +138,7 @@ public class OrderedTermVocabulary<T extends OrderedTermBase> extends TermVocabu
 	@Transient
 	public T getHighestTerm() {
 		try {
-			SortedSet<T> sortedSet = new TreeSet<T>();
-			sortedSet.addAll(terms);
+			SortedSet<T> sortedSet = getSortedSetOfTerms();
 			return sortedSet.last();
 		} catch (NoSuchElementException e) {
 			return null;
@@ -151,12 +147,7 @@ public class OrderedTermVocabulary<T extends OrderedTermBase> extends TermVocabu
 	
 	@Override
 	public void addTerm(T term) {
-		logger.warn("term label: " + term.getLabel());
-		logger.warn("term vocabulary: " + term.getVocabulary());
-		logger.warn("term class: " + term.getClass());
-		
-		SortedSet<T> sortedTerms = (SortedSet<T>)terms;
-		
+		SortedSet<T> sortedTerms = getSortedSetOfTerms();
 		int lowestOrderIndex;
 		if (sortedTerms.size() == 0){
 			lowestOrderIndex = 0;
@@ -223,6 +214,14 @@ public class OrderedTermVocabulary<T extends OrderedTermBase> extends TermVocabu
 	
 	public boolean indexChangeAllowed(T otb){
 		return otb == toBeChangedByObject ;
+	}
+	
+	
+	@Transient
+	private SortedSet<T> getSortedSetOfTerms(){
+		SortedSet<T> sortedSet = new TreeSet<T>();
+		sortedSet.addAll(terms);
+		return sortedSet;
 	}
 
 }
