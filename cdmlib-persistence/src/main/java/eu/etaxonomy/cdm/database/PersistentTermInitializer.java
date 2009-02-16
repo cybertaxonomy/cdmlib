@@ -16,6 +16,7 @@ import java.util.UUID;
 import javax.annotation.PostConstruct;
 
 import org.apache.log4j.Logger;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -98,6 +99,7 @@ public class PersistentTermInitializer extends DefaultTermInitializer {
 		
 		for(Object obj : persistedVocabulary.getTerms()) {
 			DefinedTermBase d = (DefinedTermBase)obj;
+			Hibernate.initialize(d.getRepresentations());
 			terms.put(d.getUuid(), d);
 			
 		}
