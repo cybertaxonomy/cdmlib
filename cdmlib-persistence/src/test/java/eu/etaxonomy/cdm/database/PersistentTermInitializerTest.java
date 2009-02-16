@@ -33,7 +33,6 @@ public class PersistentTermInitializerTest extends CdmIntegrationTest {
 	@SpringBeanByType
 	private PersistentTermInitializer persistentTermInitializer;
 	
-	@Ignore
 	@Test
 	public void testInit() {
 		assertNotNull("TermInitializer should exist",persistentTermInitializer);
@@ -48,6 +47,7 @@ public class PersistentTermInitializerTest extends CdmIntegrationTest {
 		persistentTermInitializer.firstPass(Rank.class, persistedTerms);
 	}
 
+	@Ignore
 	@Test
 	public void testPrintData() {
 		printDataSet(System.out);
