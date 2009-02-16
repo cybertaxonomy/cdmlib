@@ -114,9 +114,9 @@ public class PersistentTermInitializer extends DefaultTermInitializer {
 	 * @param persistedTerms
 	 * @return
 	 */
-	private UUID firstPass(Class clazz, Map<UUID, DefinedTermBase> persistedTerms) {
+	public UUID firstPass(Class clazz, Map<UUID, DefinedTermBase> persistedTerms) {
 		TransactionStatus txStatus = transactionManager.getTransaction(txDefinition);
-		logger.debug("loading terms for " + clazz.getSimpleName());
+		logger.warn("loading terms for " + clazz.getSimpleName());
 		Map<UUID,DefinedTermBase> terms = new HashMap<UUID,DefinedTermBase>();
 		
 		for(DefinedTermBase d : persistedTerms.values()) {
@@ -127,13 +127,13 @@ public class PersistentTermInitializer extends DefaultTermInitializer {
 		
 		UUID vocabularyUuid = loadedVocabulary.getUuid();
 		
-		logger.debug("loading vocabulary " + vocabularyUuid);
+		logger.warn("loading vocabulary " + vocabularyUuid);
 		TermVocabulary persistedVocabulary = vocabularyDao.findByUuid(vocabularyUuid);
 		if(persistedVocabulary == null) { // i.e. there is no persisted vocabulary
-			logger.debug("vocabulary " + vocabularyUuid + " does not exist - saving");
+			logger.warn("vocabulary " + vocabularyUuid + " does not exist - saving");
 			saveVocabulary(loadedVocabulary);
 		} else {
-			logger.debug("vocabulary " + vocabularyUuid + " does exists and already has " + persistedVocabulary.size() + " terms");
+			logger.warn("vocabulary " + vocabularyUuid + " does exist and already has " + persistedVocabulary.size() + " terms");
 		    boolean persistedVocabularyHasMissingTerms = false;
 		    for(Object t : loadedVocabulary.getTerms()) {				
 		    	if(!persistedVocabulary.getTerms().contains(t)) {
@@ -142,7 +142,7 @@ public class PersistentTermInitializer extends DefaultTermInitializer {
 		    	}
 		    }				    
 		    if(persistedVocabularyHasMissingTerms) {
-		    	logger.debug("vocabulary " + vocabularyUuid + " exists but does not have all the required terms - updating");
+		    	logger.warn("vocabulary " + vocabularyUuid + " exists but does not have all the required terms - updating");
 		    	updateVocabulary(persistedVocabulary);
 		    }
 		}
