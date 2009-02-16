@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: CdmLibrary Plug-in
 Bundle-SymbolicName: eu.etaxonomy.cdmLibrary;singleton:=true
-Bundle-Version: 2.00.00.09
+Bundle-Version: 2.00.00.14
 Bundle-ClassPath: aspectjrt-1.5.4.jar,
  antlr-2.7.6.jar,
  asm-attrs.jar,
@@ -115,7 +115,6 @@ Export-Package: eu.etaxonomy.cdm,
  eu.etaxonomy.cdm.io.sdd,
  eu.etaxonomy.cdm.io.synthesys,
  eu.etaxonomy.cdm.io.taxonx,
- eu.etaxonomy.cdm.io.tcs,
  eu.etaxonomy.cdm.io.tcsxml,
  eu.etaxonomy.cdm.jaxb,
  eu.etaxonomy.cdm.model.agent,

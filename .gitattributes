@@ -1464,6 +1464,7 @@ eclipse-plugin/spring-orm-2.5.6.jar -text
 eclipse-plugin/spring-orm-2.5.jar -text
 eclipse-plugin/spring-orm-2.5src.zip -text
 eclipse-plugin/spring-security-core-2.0.4-sources.jar -text
+eclipse-plugin/spring-security-core-2.0.4-tests.jar -text
 eclipse-plugin/spring-security-core-2.0.4.jar -text
 eclipse-plugin/spring-test-2.5.6-sources.jar -text
 eclipse-plugin/spring-test-2.5.6.jar -text

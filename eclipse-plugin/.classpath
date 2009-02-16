@@ -2,6 +2,7 @@
 <classpath>
 	<classpathentry kind="src" output="target/test-classes" path="src/test/java"/>
 	<classpathentry kind="src" path="src/main/java"/>
+	<classpathentry exported="true" kind="lib" path="spring-security-core-2.0.4-tests.jar"/>
 	<classpathentry exported="true" kind="lib" path="aspectjweaver-1.5.4.jar"/>
 	<classpathentry exported="true" kind="lib" path="hibernate-3.2.6.ga.jar"/>
 	<classpathentry exported="true" kind="lib" path="hibernate-3.2.6.ga-sources.jar"/>
@@ -33,8 +34,6 @@
 	<classpathentry exported="true" kind="lib" path="spring-web-2.5.6-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="spring-webmvc-2.5.6.jar"/>
 	<classpathentry exported="true" kind="lib" path="spring-webmvc-2.5.6-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="unitils-1.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="unitils-1.0-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="poi-3.1-FINAL.jar"/>
 	<classpathentry exported="true" kind="lib" path="spring-security-core-2.0.4.jar"/>
 	<classpathentry exported="true" kind="lib" path="spring-security-core-2.0.4-sources.jar"/>
@@ -86,13 +85,5 @@
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="lib" path="aspectjrt-1.5.4.jar"/>
 	<classpathentry kind="lib" path="aopalliance-1.0.jar"/>
-	<classpathentry kind="lib" path="spring-2.5.jar"/>
-	<classpathentry kind="lib" path="spring-beans-2.5.jar" sourcepath="C:/Dokumente und Einstellungen/a.mueller/.m2/repository/org/springframework/spring-beans/2.5/spring-beans-2.5-sources.jar"/>
-	<classpathentry kind="lib" path="spring-context-2.5.jar" sourcepath="C:/Dokumente und Einstellungen/a.mueller/.m2/repository/org/springframework/spring-context/2.5/spring-context-2.5-sources.jar"/>
-	<classpathentry kind="lib" path="spring-core-2.5.jar" sourcepath="C:/Dokumente und Einstellungen/a.mueller/.m2/repository/org/springframework/spring-core/2.5/spring-core-2.5-sources.jar"/>
-	<classpathentry kind="lib" path="spring-jdbc-2.5.jar"/>
-	<classpathentry kind="lib" path="spring-orm-2.5.jar"/>
-	<classpathentry kind="lib" path="spring-test-2.5.jar"/>
-	<classpathentry kind="lib" path="spring-tx-2.5.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
