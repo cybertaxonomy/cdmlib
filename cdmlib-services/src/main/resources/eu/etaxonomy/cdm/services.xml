@@ -9,7 +9,10 @@
 
     <import resource="classpath:/eu/etaxonomy/cdm/persistence.xml"/> 
     
-    <context:component-scan base-package="eu/etaxonomy/cdm/persistence"/>
+    <context:component-scan base-package="eu/etaxonomy/cdm/persistence">
+    	<context:exclude-filter type="regex" expression="eu\.etaxonomy\.cdm\.persistence\.dao\.AlternativeSpellingSuggestionParser"/>
+    </context:component-scan>
+    
     <context:component-scan base-package="eu/etaxonomy/cdm/database"/>
     
     <!-- enable the configuration of transactional behavior based on annotations -->
