@@ -151,7 +151,12 @@ public class OrderedTermVocabulary<T extends OrderedTermBase> extends TermVocabu
 	
 	@Override
 	public void addTerm(T term) {
+		logger.warn("term label: " + term.getLabel());
+		logger.warn("term vocabulary: " + term.getVocabulary());
+		logger.warn("term class: " + term.getClass());
+		
 		SortedSet<T> sortedTerms = (SortedSet<T>)terms;
+		
 		int lowestOrderIndex;
 		if (sortedTerms.size() == 0){
 			lowestOrderIndex = 0;
