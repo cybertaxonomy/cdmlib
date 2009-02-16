@@ -18,6 +18,7 @@ import eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
 
 public class ZooNameDefaultCacheStrategy <T extends ZoologicalName> extends NonViralNameDefaultCacheStrategy<T> implements  INonViralNameCacheStrategy<T> {
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ZooNameDefaultCacheStrategy.class);
 	
 	final static UUID uuid = UUID.fromString("950c4236-8156-4675-b866-785df33bc4d9");
@@ -82,7 +83,7 @@ public class ZooNameDefaultCacheStrategy <T extends ZoologicalName> extends NonV
 	
 
 	/**
-	 * @return Strings that seperates the author part and the year part
+	 * @return Strings that separates the author part and the year part
 	 * @return
 	 */
 	public String getAuthorYearSeperator() {
