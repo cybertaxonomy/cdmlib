@@ -23,6 +23,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
+import org.hibernate.LazyInitializationException;
 
 import au.com.bytecode.opencsv.CSVWriter;
 
@@ -262,9 +263,9 @@ public class Language extends DefinedTermBase<Language> {
 	 */
 	@Override
 	public String toString() {
-		if (this.getLabel() != null){
+		try {
 			return this.getLabel();
-		}else{
+		} catch (LazyInitializationException e) {
 			return super.toString();
 		}
 	}

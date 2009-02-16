@@ -20,7 +20,9 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
+import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
@@ -223,7 +225,10 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 		Iterator<NomenclaturalStatus> iterator = ncStati.iterator();
 		while (iterator.hasNext()) {
 			NomenclaturalStatus ncStatus = (NomenclaturalStatus)iterator.next();
-			ncStatusCache = ", " + ncStatus.getType().getRepresentation(Language.LATIN()).getAbbreviatedLabel();
+			NomenclaturalStatusType statusType =  ncStatus.getType();
+			Language lang = Language.LATIN();
+			Representation repr = statusType.getRepresentation(lang);
+			ncStatusCache = ", " + repr.getAbbreviatedLabel();
 		}
 		String refConcat = " ";
 		if (referenceBaseCache != null && ! referenceBaseCache.trim().startsWith("in ")){

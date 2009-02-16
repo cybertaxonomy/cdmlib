@@ -62,7 +62,7 @@ public abstract class LanguageStringBase extends AnnotatableEntity{
 		
 	}
 	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	//@Cascade({CascadeType.SAVE_UPDATE})
 	public Language getLanguage(){
 		return this.language;

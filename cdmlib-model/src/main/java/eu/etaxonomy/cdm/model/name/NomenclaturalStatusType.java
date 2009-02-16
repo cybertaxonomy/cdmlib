@@ -802,7 +802,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 		NomenclaturalStatusType.AMBIGUOUS = termVocabulary.findTermByUuid(NomenclaturalStatusType.uuidAmbiguous);
 		NomenclaturalStatusType.COMBINATION_INVALID = termVocabulary.findTermByUuid(NomenclaturalStatusType.uuidCombinationInvalid);
 		NomenclaturalStatusType.CONFUSUM = termVocabulary.findTermByUuid(NomenclaturalStatusType.uuidConfusum);
-		NomenclaturalStatusType.CONSERVED = termVocabulary.findTermByUuid(NomenclaturalStatusType.uuidConfusum);
+		NomenclaturalStatusType.CONSERVED = termVocabulary.findTermByUuid(NomenclaturalStatusType.uuidConserved);
 		NomenclaturalStatusType.CONSERVED_PROP = termVocabulary.findTermByUuid(NomenclaturalStatusType.uuidConservedProp);
 		NomenclaturalStatusType.DOUBTFUL = termVocabulary.findTermByUuid(NomenclaturalStatusType.uuidDoubtful);
 		NomenclaturalStatusType.ILLEGITIMATE = termVocabulary.findTermByUuid(NomenclaturalStatusType.uuidIllegitimate);
@@ -822,7 +822,6 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 		NomenclaturalStatusType.UTIQUE_REJECTED = termVocabulary.findTermByUuid(NomenclaturalStatusType.uuidUtiqueRejected);
 		NomenclaturalStatusType.UTIQUE_REJECTED_PROP = termVocabulary.findTermByUuid(NomenclaturalStatusType.uuidUtiqueRejectedProp);
 		NomenclaturalStatusType.VALID = termVocabulary.findTermByUuid(NomenclaturalStatusType.uuidValid);
-		
 		
 	}
 }
