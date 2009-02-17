@@ -10,7 +10,7 @@
 
     <import resource="classpath:/eu/etaxonomy/cdm/services.xml"/> 
 <!--     <import resource="classpath:/eu/etaxonomy/cdm/defaultSecurityContext.xml"/> -->
-<!-- <import resource="classpath:/eu/etaxonomy/cdm/spelling.xml"/> -->
+    <import resource="classpath:/eu/etaxonomy/cdm/spelling.xml"/> 
 
 
 	<!-- includes service beans e.g. in eu/etaxonomy/cdm/api -->
