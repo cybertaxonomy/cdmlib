@@ -138,7 +138,9 @@ public class CdmApplicationAwareDefaultImport<T extends IImportConfigurator> imp
 		}
 				
 		ReferenceBase sourceReference = config.getSourceReference();
-		System.out.println("Start import from Source ("+ config.getSourceNameString() + ") to Cdm ...");
+		
+		System.out.println("Start import from source '" + config.getSourceNameString() 
+				+ "' to destination '" + config.getDestinationNameString() + "'");
 		
 		//do invoke for each class
 		for (Class<ICdmIO> ioClass: config.getIoClassList()){
@@ -177,7 +179,8 @@ public class CdmApplicationAwareDefaultImport<T extends IImportConfigurator> imp
 //		}
 		
 		
-		System.out.println("End import from Source ("+ config.getSourceNameString() + ") to Cdm ...");
+		System.out.println("End import from source '" + config.getSourceNameString() 
+				+ "' to destination '" + config.getDestinationNameString() + "'");
 		return result;
 	}
 	

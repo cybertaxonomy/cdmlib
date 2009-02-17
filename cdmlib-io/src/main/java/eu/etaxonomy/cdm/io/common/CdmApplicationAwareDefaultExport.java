@@ -138,8 +138,9 @@ public class CdmApplicationAwareDefaultExport<T extends IExportConfigurator> imp
 			logger.warn("Configuration is not valid");
 			return false;
 		}
-				
-		System.out.println("Start export from Source ("+ config.getSourceNameString() + ") to Cdm ...");
+			
+		System.out.println("Start export from source '" + config.getSourceNameString() 
+				+ "' to destination '" + config.getDestinationNameString() + "'");
 		
 		//do invoke for each class
 		for (Class<ICdmIO> ioClass: config.getIoClassList()){
@@ -178,7 +179,8 @@ public class CdmApplicationAwareDefaultExport<T extends IExportConfigurator> imp
 //		}
 		
 		
-		System.out.println("End export from Source ("+ config.getSourceNameString() + ") to Cdm ...");
+		System.out.println("End export from source '" + config.getSourceNameString() 
+				+ "' to destination '" + config.getDestinationNameString() + "'");
 		return result;
 	}
 	
