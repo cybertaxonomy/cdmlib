@@ -36,7 +36,7 @@ public interface ICdmDataSource {
 	 * @param cacheProviderClass
 	 * @return BeanDefinition
 	 */
-	public BeanDefinition getHibernatePropertiesBean(DbSchemaValidation hbm2dll, Boolean showSql, Boolean formatSql, Class<? extends CacheProvider> cacheProviderClass);
+	public BeanDefinition getHibernatePropertiesBean(DbSchemaValidation hbm2dll, Boolean showSql, Boolean formatSql, Boolean registerSearchListener, Class<? extends CacheProvider> cacheProviderClass);
 
 	
 	/**

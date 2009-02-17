@@ -354,8 +354,9 @@ public class CdmPersistentDataSource extends CdmDataSourceBase{
 	public BeanDefinition getHibernatePropertiesBean(DbSchemaValidation hbm2dll){
 		boolean showSql = false;
 		boolean formatSql = false;
+		boolean registerSearchListener = false;
 		Class<? extends CacheProvider> cacheProviderClass = NoCacheProvider.class;
-		return getHibernatePropertiesBean(hbm2dll, showSql, formatSql, cacheProviderClass);
+		return getHibernatePropertiesBean(hbm2dll, showSql, formatSql, registerSearchListener, cacheProviderClass);
 	}
 	
 	
@@ -364,7 +365,7 @@ public class CdmPersistentDataSource extends CdmDataSourceBase{
 	 * @param showSql
 	 * @return
 	 */
-	public BeanDefinition getHibernatePropertiesBean(DbSchemaValidation hbm2dll, Boolean showSql, Boolean formatSql, Class<? extends CacheProvider> cacheProviderClass){
+	public BeanDefinition getHibernatePropertiesBean(DbSchemaValidation hbm2dll, Boolean showSql, Boolean formatSql, Boolean registerSearchListener, Class<? extends CacheProvider> cacheProviderClass){
 		//Hibernate default values
 		if (hbm2dll == null){
 			hbm2dll = DbSchemaValidation.VALIDATE;
@@ -378,7 +379,10 @@ public class CdmPersistentDataSource extends CdmDataSourceBase{
 		if (cacheProviderClass == null){
 			cacheProviderClass = NoCacheProvider.class;
 		}
-		
+		if(registerSearchListener == null){
+			registerSearchListener = false;
+		}
+				
 		DatabaseTypeEnum dbtype = getDatabaseType();
 		AbstractBeanDefinition bd = new RootBeanDefinition(PropertiesFactoryBean.class);
 		MutablePropertyValues hibernateProps = new MutablePropertyValues();
@@ -389,6 +393,7 @@ public class CdmPersistentDataSource extends CdmDataSourceBase{
 		props.setProperty("hibernate.cache.provider_class", cacheProviderClass.getName());
 		props.setProperty("hibernate.show_sql", String.valueOf(showSql));
 		props.setProperty("hibernate.format_sql", String.valueOf(formatSql));
+		props.setProperty("hibernate.search.autoregister_listeners", String.valueOf(registerSearchListener));
 
 		hibernateProps.addPropertyValue("properties",props);
 		bd.setPropertyValues(hibernateProps);

@@ -49,6 +49,7 @@ public class CdmDataSource extends CdmDataSourceBase {
 	private DbSchemaValidation hbm2dll = DbSchemaValidation.VALIDATE;
 	private boolean showSql = false;
 	private boolean formatSql = false;
+	private boolean registerSearchListener = false;
 	private Class<? extends CacheProvider> cacheProviderClass = NoCacheProvider.class;;
 
 	static public CdmDataSource  NewMySqlInstance(String server, String database, String username, String password){
@@ -165,14 +166,15 @@ public class CdmDataSource extends CdmDataSourceBase {
 	public BeanDefinition getHibernatePropertiesBean(DbSchemaValidation hbm2dll){
 		boolean showSql = false;
 		boolean formatSql = false;
+		boolean registerSearchListener = false;
 		Class<? extends CacheProvider> cacheProviderClass = NoCacheProvider.class;
-		return getHibernatePropertiesBean(hbm2dll, showSql, formatSql, cacheProviderClass);
+		return getHibernatePropertiesBean(hbm2dll, showSql, formatSql, registerSearchListener, cacheProviderClass);
 	}
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.application.ICdmDataSource#getHibernatePropertiesBean(eu.etaxonomy.cdm.database.CdmPersistentDataSource.HBM2DDL, java.lang.Boolean, java.lang.Boolean, java.lang.Class)
 	 */
-	public BeanDefinition getHibernatePropertiesBean(DbSchemaValidation hbm2dll, Boolean showSql, Boolean formatSql, Class<? extends CacheProvider> cacheProviderClass){
+	public BeanDefinition getHibernatePropertiesBean(DbSchemaValidation hbm2dll, Boolean showSql, Boolean formatSql, Boolean registerSearchListener, Class<? extends CacheProvider> cacheProviderClass){
 		//Hibernate default values
 		if (hbm2dll == null){
 			hbm2dll = this.hbm2dll;
@@ -186,6 +188,9 @@ public class CdmDataSource extends CdmDataSourceBase {
 		if (cacheProviderClass == null){
 			cacheProviderClass = this.cacheProviderClass;
 		}
+		if(registerSearchListener == null){
+			registerSearchListener = this.registerSearchListener;
+		}
 		
 		DatabaseTypeEnum dbtype = dbType;
 		AbstractBeanDefinition bd = new RootBeanDefinition(PropertiesFactoryBean.class);
@@ -197,6 +202,7 @@ public class CdmDataSource extends CdmDataSourceBase {
 		props.setProperty("hibernate.cache.provider_class", cacheProviderClass.getName());
 		props.setProperty("hibernate.show_sql", String.valueOf(showSql));
 		props.setProperty("hibernate.format_sql", String.valueOf(formatSql));
+		props.setProperty("hibernate.search.autoregister_listeners", String.valueOf(registerSearchListener));
 
 		hibernateProps.addPropertyValue("properties",props);
 		bd.setPropertyValues(hibernateProps);
