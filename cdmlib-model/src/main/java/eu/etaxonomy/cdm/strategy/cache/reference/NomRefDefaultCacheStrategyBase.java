@@ -23,7 +23,8 @@ import eu.etaxonomy.cdm.strategy.StrategyBase;
  * @version 1.0
  */
 public abstract class NomRefDefaultCacheStrategyBase<T extends ReferenceBase> extends StrategyBase implements  INomenclaturalReferenceCacheStrategy<T>{
-	private static Logger logger = Logger.getLogger(NomRefDefaultCacheStrategyBase.class);
+	@SuppressWarnings("unused")
+	private static final Logger logger = Logger.getLogger(NomRefDefaultCacheStrategyBase.class);
 	
 	protected String beforeYear = ". ";
 	protected String beforeMicroReference = ": ";
