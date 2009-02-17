@@ -178,7 +178,7 @@ public class CdmApplicationAwareDefaultExport<T extends IExportConfigurator> imp
 //		}
 		
 		
-		System.out.println("End import from Source ("+ config.getSourceNameString() + ") to Cdm ...");
+		System.out.println("End export from Source ("+ config.getSourceNameString() + ") to Cdm ...");
 		return result;
 	}
 	
