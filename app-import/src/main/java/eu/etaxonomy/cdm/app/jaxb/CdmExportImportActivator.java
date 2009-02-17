@@ -2,6 +2,9 @@
  * Copyright (C) 2008 EDIT
  * European Distributed Institute of Taxonomy 
  * http://www.e-taxonomy.eu
+ * 
+ * The contents of this file are subject to the Mozilla Public License Version 1.1
+ * See LICENSE.TXT at the top of this package for the full license terms.
  */
 
 package eu.etaxonomy.cdm.app.jaxb;
@@ -9,9 +12,8 @@ package eu.etaxonomy.cdm.app.jaxb;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
+import eu.etaxonomy.cdm.app.common.CdmDestinations;
 import eu.etaxonomy.cdm.app.util.TestDatabase;
-import eu.etaxonomy.cdm.common.AccountStore;
-import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.CdmDefaultExport;
@@ -27,8 +29,8 @@ import eu.etaxonomy.cdm.io.jaxb.JaxbImportConfigurator;
 public class CdmExportImportActivator {
 
 	/* SerializeFrom DB **/
-	private static final String sourceDbName = "cdm_test_anahit";
-	private static final String destinationDbName = "cdm_test_anahit2";
+	private static final ICdmDataSource source = CdmDestinations.cdm_test_jaxb();
+	private static final ICdmDataSource destination = CdmDestinations.cdm_test_jaxb2();
 
 	// Import:
 	private static String importFileName = 
@@ -43,47 +45,12 @@ public class CdmExportImportActivator {
 	 *  Only root taxa and no synonyms and relationships are retrieved. */
 	private static final int NUMBER_ROWS_TO_RETRIEVE = 0;
 
-	private static final String server = "192.168.2.10";
-	private static final String username = "edit";
-
-	public static ICdmDataSource CDM_DB(String dbname) {
-
-		logger.info("Setting DB " + dbname);
-		String password = AccountStore.readOrStorePassword(dbname, server, username, null);
-		ICdmDataSource datasource = CdmDataSource.NewMySqlInstance(server, dbname, username, password);
-		return datasource;
-	}
-
 	private static final Logger logger = Logger.getLogger(CdmExportImportActivator.class);
-
-	private static final ICdmDataSource sourceDb = CdmExportImportActivator.CDM_DB(sourceDbName);
-	private static final ICdmDataSource destinationDb = CdmExportImportActivator.CDM_DB(destinationDbName);
-
-	private static boolean doAgents = true;
-	private static boolean doAgentData = true;
-	private static boolean doLanguageData = true;
-	private static boolean doFeatureData = true;
-	private static boolean doDescriptions = true;
-	private static boolean doMedia = true;
-	private static boolean doOccurrences = true;
-	//private static boolean doReferences = true;
-	private static final DO_REFERENCES doReferences =  DO_REFERENCES.ALL;
-    private static boolean doReferencedEntities = true;
-	private static boolean doRelationships = true;
-	private static boolean doSynonyms = true;
-	private static boolean doTaxonNames = true;
-	private static boolean doTaxa = true;
-	private static boolean doTerms = true;
-	private static boolean doTermVocabularies = true;
-	private static boolean doHomotypicalGroups = true;
-
-	//private String fileName = new String(System.getProperty("user.home") + File.separator + "cdm_test_jaxb_marshalled.xml");
-
 
 	private void invokeExport() {
 		
 		JaxbExportConfigurator jaxbExportConfigurator = 
-			JaxbExportConfigurator.NewInstance(sourceDb, exportFileName);
+			JaxbExportConfigurator.NewInstance(source, exportFileName);
 		
 		CdmDefaultExport<JaxbExportConfigurator> jaxbExport = 
 			new CdmDefaultExport<JaxbExportConfigurator>();
@@ -121,7 +88,7 @@ public class CdmExportImportActivator {
 	private void invokeImport() {
 
 		JaxbImportConfigurator jaxbImportConfigurator = 
-			JaxbImportConfigurator.NewInstance(importFileName, destinationDb);
+			JaxbImportConfigurator.NewInstance(importFileName, destination);
 
 		CdmDefaultImport<JaxbImportConfigurator> jaxbImport = 
 			new CdmDefaultImport<JaxbImportConfigurator>();
@@ -145,7 +112,7 @@ public class CdmExportImportActivator {
 //		jaxbImportConfigurator.setDoSynonyms(doSynonyms);
 //		jaxbImportConfigurator.setDoTaxonNames(doTaxonNames);
 //		jaxbImportConfigurator.setDoTaxa(doTaxa);
-//		jaxbImportConfigurator.setDoTerms(doTerms);
+//		jaxbImportConfigurator.setDoTerms(false);
 //		jaxbImportConfigurator.setDoTermVocabularies(doTermVocabularies);
 //		jaxbImportConfigurator.setDoHomotypicalGroups(doHomotypicalGroups);
 
@@ -163,7 +130,6 @@ public class CdmExportImportActivator {
 		// Init source DB
 		CdmApplicationController appCtrInit = null;
 
-		// initDb(ICdmDataSource db, DbSchemaValidation dbSchemaValidation, boolean omitTermLoading)
 		appCtrInit = TestDatabase.initDb(db, DbSchemaValidation.CREATE, false);
 
 		return appCtrInit;
@@ -173,7 +139,7 @@ public class CdmExportImportActivator {
 	// Load test data to DB
 	private void loadTestData(CdmApplicationController appCtrInit) {
 
-		TestDatabase.loadTestData(sourceDbName, appCtrInit);
+		TestDatabase.loadTestData("", appCtrInit);
 	}
 
 
@@ -185,10 +151,11 @@ public class CdmExportImportActivator {
 		CdmExportImportActivator sc = new CdmExportImportActivator();
 
 //		CdmApplicationController appCtr = null;
+//		appCtr = sc.initDb(cdmTestAnahit);
 //		appCtr = sc.initDb(sourceDb);
 //		sc.loadTestData(appCtr);
 		
-		sc.invokeExport();
+//		sc.invokeExport();
 		sc.invokeImport();
 	}
 
