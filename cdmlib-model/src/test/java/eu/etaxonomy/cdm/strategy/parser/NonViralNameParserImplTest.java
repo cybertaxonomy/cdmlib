@@ -27,6 +27,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NonViralName;
@@ -72,6 +73,8 @@ public class NonViralNameParserImplTest {
 	 */
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
+		DefaultTermInitializer termInitializer = new DefaultTermInitializer();
+		termInitializer.initialize();
 	}
 
 	/**
