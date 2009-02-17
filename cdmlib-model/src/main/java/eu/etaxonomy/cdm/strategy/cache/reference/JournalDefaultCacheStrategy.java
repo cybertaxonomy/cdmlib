@@ -15,7 +15,6 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
-import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.reference.Journal;
 import eu.etaxonomy.cdm.strategy.StrategyBase;
 
@@ -24,8 +23,9 @@ import eu.etaxonomy.cdm.strategy.StrategyBase;
  * @created 29.06.2008
  * @version 1.0
  */
-public class JournalDefaultCacheStrategy<T extends Journal> extends StrategyBase<JournalDefaultCacheStrategy<T>> implements IReferenceBaseCacheStrategy<T> {
-	private static Logger logger = Logger.getLogger(JournalDefaultCacheStrategy.class);
+public class JournalDefaultCacheStrategy<T extends Journal> extends StrategyBase implements IReferenceBaseCacheStrategy<T> {
+	@SuppressWarnings("unused")
+	private static final Logger logger = Logger.getLogger(JournalDefaultCacheStrategy.class);
 
 	
 	protected String beforeYear = ". ";
@@ -52,7 +52,7 @@ public class JournalDefaultCacheStrategy<T extends Journal> extends StrategyBase
 	 * @return
 	 */
 	public static JournalDefaultCacheStrategy NewInstance(){
-		return new JournalDefaultCacheStrategy();
+		return new JournalDefaultCacheStrategy<Journal>();
 	}
 	
 	/**
