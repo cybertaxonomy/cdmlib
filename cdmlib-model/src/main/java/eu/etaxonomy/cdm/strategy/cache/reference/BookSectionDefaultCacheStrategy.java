@@ -64,42 +64,24 @@ public class BookSectionDefaultCacheStrategy <T extends BookSection> extends Nom
 		if (bookSection == null || bookSection.getInBook() == null){
 			return null;
 		}
-		//use booksection's publication date if it exists
-		//better solution but creates probelms with hibernate, when getFullTitleCache (TaxonNameBase) is called during session.flush. Problems occurred when opening TaxonPage in Taxonomic Editor with non-empty database
-		//Book inBook = bookSection.getInBook().clone();  
 		Book inBook = bookSection.getInBook();
-		
-	//	if (bookSection.getDatePublished() != null){
-	//		inBook.setDatePublished(bookSection.getDatePublished());
-//		}
-		String result = inBook.getNomenclaturalCitation(INomenclaturalReference.MICRO_REFERENCE_TOKEN);
+		String result;
+		//use booksection's publication date if it exists
+		if (bookSection.getDatePublished() != null){
+			BookDefaultCacheStrategy<Book> bookStrategy = BookDefaultCacheStrategy.NewInstance();
+			result =  bookStrategy.getNomRefTitleWithoutYearAndAuthor(inBook);
+			result += INomenclaturalReference.MICRO_REFERENCE_TOKEN;
+			result = addYear(result, bookSection);
+		}else{
+			//else use book's publication date
+			result = inBook.getNomenclaturalCitation(INomenclaturalReference.MICRO_REFERENCE_TOKEN);
+			result = result.replace(beforeMicroReference +  INomenclaturalReference.MICRO_REFERENCE_TOKEN, INomenclaturalReference.MICRO_REFERENCE_TOKEN);
+		}
 		result = getBookAuthorPart(bookSection.getInBook(), afterNomRefBookAuthor) + result;
-		//TODO beforeMicroReference should be the bookstrategy one's
-		result = result.replace(beforeMicroReference +  INomenclaturalReference.MICRO_REFERENCE_TOKEN, INomenclaturalReference.MICRO_REFERENCE_TOKEN);
 		result = "in " +  result;
-		
-		result = replaceBookYearByBookSectionYear(result, inBook, bookSection);
 		return result;
 	}
 	
-    //	replace book.datePublished by bookSection.datePublished if bookSection.datePublished != null
-	private String replaceBookYearByBookSectionYear(String result, Book inBook, T bookSection){
-		if (bookSection.getDatePublished() == null){
-			return result;
-		}
-		try {
-			Field cacheStrategyField = ReferenceBase.class.getDeclaredField("cacheStrategy");
-			cacheStrategyField.setAccessible(true);
-			NomRefDefaultCacheStrategyBase cacheStrategy = (NomRefDefaultCacheStrategyBase)cacheStrategyField.get(inBook);
-			String dateString = cacheStrategy.addYear("", inBook);
-			int lastIndexOfDateString = result.lastIndexOf(dateString);
-			result = result.replace(result, this.addYear("", bookSection));
-			return result;
-		} catch (Exception e) {
-			throw new RuntimeException("replaceBookYearByBookSectionYear has a problem", e);
-		}
-	}
-
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.strategy.cache.reference.INomenclaturalReferenceCacheStrategy#getTitleCache(eu.etaxonomy.cdm.model.reference.INomenclaturalReference)
 	 */
@@ -109,7 +91,7 @@ public class BookSectionDefaultCacheStrategy <T extends BookSection> extends Nom
 			return null;
 		}
 		String result = bookSection.getInBook().getTitleCache();
-		TeamOrPersonBase team = bookSection.getAuthorTeam();
+		TeamOrPersonBase<?> team = bookSection.getAuthorTeam();
 		String bookAuthor = CdmUtils.Nz(team == null? "" : team.getTitleCache());
 		result = bookAuthor + afterBookAuthor + result;
 		result = inBook +  result;
