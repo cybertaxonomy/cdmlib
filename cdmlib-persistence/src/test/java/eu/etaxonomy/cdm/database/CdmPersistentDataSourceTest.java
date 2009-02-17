@@ -32,6 +32,7 @@ import eu.etaxonomy.cdm.database.DbSchemaValidation;
  *
  */
 public class CdmPersistentDataSourceTest {
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CdmPersistentDataSourceTest.class);
 	
 	private static CdmPersistentDataSource dataSource;
