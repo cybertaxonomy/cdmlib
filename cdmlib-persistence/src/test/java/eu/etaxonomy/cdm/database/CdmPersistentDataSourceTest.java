@@ -208,9 +208,10 @@ public class CdmPersistentDataSourceTest {
 		DbSchemaValidation hbm2dll = DbSchemaValidation.CREATE;
 		boolean showSql = false;
 		boolean formatSql = false;
+		boolean registerSearchListener = false;
 		Class<? extends CacheProvider> cacheProviderClass = NoCacheProvider.class;
 		
-		BeanDefinition beanDef = dataSource.getHibernatePropertiesBean(hbm2dll, showSql, formatSql, cacheProviderClass);
+		BeanDefinition beanDef = dataSource.getHibernatePropertiesBean(hbm2dll, showSql, formatSql, registerSearchListener, cacheProviderClass);
 		PropertyValues propValues = beanDef.getPropertyValues();
 		String propName =  "properties"; 
 		PropertyValue propValue =  propValues.getPropertyValue(propName);
