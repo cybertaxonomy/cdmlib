@@ -32,6 +32,17 @@ public class CdmDefaultImport<T extends IImportConfigurator> implements ICdmImpo
 		return invoke(config, destination, omitTermLoading);
 	}
 
+	/**
+	 * Starts the CdmApplicationController if not yet started
+	 * @param config Configuration
+	 * @param destination destination
+	 * @return false if start not successful
+	 */
+	public boolean startController(IImportConfigurator config, ICdmDataSource destination){
+		boolean omitTermLoading = false;
+		boolean createNew = false;
+		return startApplicationController(config, destination, omitTermLoading, createNew);
+	}
 	
 	public boolean invoke(IImportConfigurator config, ICdmDataSource destination, boolean omitTermLoading){
 		destination = destination;
