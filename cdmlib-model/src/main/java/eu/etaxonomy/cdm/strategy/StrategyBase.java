@@ -5,7 +5,7 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 
 
-public abstract class StrategyBase<T extends StrategyBase> implements IStrategy {
+public abstract class StrategyBase implements IStrategy {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(StrategyBase.class);
 	
