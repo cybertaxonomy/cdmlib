@@ -96,7 +96,7 @@ public class LocalH2 extends DriverManagerDataSource {
 //** ********************************************************************************/
 	
 	public void init(){
-		logger.warn("LocalH2init");
+		logger.info("LocalH2init");
 		if (true){   //starting sever is not necessary for H2
 			return;
 		}
@@ -128,19 +128,9 @@ public class LocalH2 extends DriverManagerDataSource {
 				logger.info("Start H2Server"); 
 				String[] args = new String[] { "-trace" };
 				h2Server = Server.createTcpServer(args).start();
-				if (logger.isDebugEnabled()){
-					for (int i = 0; i < 10; i++){
-//						logger.info("DatabaseName " + i + ": " + h2Server.getDatabaseName(i, true));
-//						logger.info("DatabaseName " + i + ": " + h2Server.getDatabaseName(i, false));
-//						logger.info("DatabasePath " + i + ": " + h2Server.getDatabasePath(i, true));
-//						logger.info("DatabasePath " + i + ": " + h2Server.getDatabasePath(i, false));
-//						logger.info("DatabaseType " + i + ": " + h2Server.getDatabaseType(i));
-					}
-				}
 //				h2Server.setDatabaseName(0, getDbName());
 //				h2Server.setDatabasePath(0,  getDatabasePath());
 				h2Server.start();
-//				h2Server.checkRunning(true);
 			} catch (SQLException sqle1) {
 				logger.error("SQL Exception when starting Local H2Server: "+ sqle1);
 			} catch (RuntimeException e1) {
@@ -199,7 +189,7 @@ public class LocalH2 extends DriverManagerDataSource {
 	}
 	
 	public void setLocalUrl(){
-		logger.warn("setLocalUrl");
+		logger.info("setLocalUrl");
 		String dbName = "cdmLocal";
 		setUrl(pureUrl + "file:" + getDefaultPath() + "/" + dbName);
 	}
