@@ -16,6 +16,7 @@ import java.util.Locale;
 import java.util.Set;
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.persistence.dao.common.ITitledDao;
@@ -113,6 +114,13 @@ public interface ICdmService {
 	 * @throws CdmObjectNonExisting 
 	 */
 	public ReferenceBase getReference(UUID uuid, Enumeration<Locale> locales) throws CdmObjectNonExisting;
+	
+	/**
+	 * @param uuid
+	 * @return
+	 * @throws CdmObjectNonExisting 
+	 */
+	public Pager<ReferenceBase> listReferences(Integer pageSize, Integer pageNumber) throws CdmObjectNonExisting;
 	
 	
 	public ReferenceSTO getSimpleReference(UUID uuid, Enumeration<Locale> locales) throws CdmObjectNonExisting;

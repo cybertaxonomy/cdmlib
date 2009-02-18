@@ -31,6 +31,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
 
+import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.persistence.dao.common.ITitledDao.MATCH_MODE;
@@ -57,6 +58,8 @@ public class RestController extends AbstractController
 
 	@Autowired
 	private ICdmService service;
+	
+	private static final int DEFAULT_PAGE_SIZE = 25;
 
 	/* 
 	 * return page not found http error (404) for unknown or incorrect UUIDs
@@ -73,8 +76,11 @@ public class RestController extends AbstractController
 			String uuid = getNonNullPara("uuid",req);
 			String sec = getNonNullPara("sec",req);
 			String q = getNonNullPara("q",req);
+			Integer pageNumber = getIntPara("pageNumber", 0 , req);
 			
 			Enumeration<Locale> locales = req.getLocales();
+			
+			
 			
 			log.info(String.format("Request received: act=%s op=%s dto=%s uuid=%s sec=%s", action, op, dto, uuid, sec));
 			
@@ -95,9 +101,15 @@ public class RestController extends AbstractController
 					
 					TaxonTO t = service.getTaxon(taxonUuid, featureTreeUuid, locales);
 					mv.addObject(t);
-				}else if(dto.equalsIgnoreCase("ref")){
-					ReferenceBase r = service.getReference(getUuid(uuid), locales);
-					mv.addObject(r);
+				}else if(dto.equalsIgnoreCase("reference")){
+					if(op.equals("list")){
+						
+						Pager<ReferenceBase> pager = service.listReferences(DEFAULT_PAGE_SIZE, pageNumber);
+						mv.addObject(pager);
+					} else {
+						ReferenceBase r = service.getReference(getUuid(uuid), locales);
+						mv.addObject(r);						
+					}
 				}else if(dto.equalsIgnoreCase("whatis")){
 					//TODO: somehow the whatis url path is not delegated to this controller ?!#!??
 					Object cl = service.whatis(getUuid(uuid));
@@ -116,7 +128,7 @@ public class RestController extends AbstractController
 						List<TaxonSTO> t = service.getSimpleTaxa(uuids, locales);
 						mv.addObject(t);
 					}
-				}else if(dto.equalsIgnoreCase("ref")){
+				}else if(dto.equalsIgnoreCase("reference")){
 					List<ReferenceSTO> r = service.getSimpleReferences(uuids, locales);
 					mv.addObject(r);
 				}
@@ -156,16 +168,8 @@ public class RestController extends AbstractController
 				if (onlyAccepted==null){
 					onlyAccepted=false;
 				};
-				Integer page = getIntPara("page",req);
-				if (page==null){
-					page=1;
-				};
-				
-				
-				Integer pagesize = getIntPara("pagesize",req);
-				if (pagesize==null){
-					pagesize=25;
-				}; 
+				Integer page = getIntPara("page", 1, req);
+				Integer pagesize = getIntPara("pagesize", DEFAULT_PAGE_SIZE, req);
 				
 				//
 				// search for taxa
@@ -321,17 +325,23 @@ public class RestController extends AbstractController
 		}
 		return val;
 	}
+	
 	private Integer getIntPara(String parameterName, HttpServletRequest req){
+		return getIntPara(parameterName, null, req);
+	}
+	
+	private Integer getIntPara(String parameterName, Integer defaultValue, HttpServletRequest req){
 		// first try URL parameters set by org.springframework.web.servlet.handler.SimpleUrlHandlerMapping controller mapping
 		Integer result;
 		String tmp = getStringPara(parameterName, req);
 		try{
 			result = Integer.valueOf(tmp);
 		}catch (Exception e){
-			result = null;
+			result = defaultValue;
 		}
 		return result;
 	}
+	
 	private Boolean getBoolPara(String parameterName, HttpServletRequest req){
 		// first try URL parameters set by org.springframework.web.servlet.handler.SimpleUrlHandlerMapping controller mapping
 		String tmp = getStringPara(parameterName, req);
@@ -345,17 +355,18 @@ public class RestController extends AbstractController
 	 * @return
 	 */
 	private String getLogicalView(HttpServletRequest request){
-		String DEFAULT_VIEW = "xmlView";
-		String ctype = request.getHeader("Accept");
-		String[] ctypes = ctype.split("[,;]");
-		for (String ct : ctypes){
-			if (ct.endsWith("json")){
-				return "jsonView";
-			}else if (ct.endsWith("xml")){
-				return "xmlView";
-			}
-		}
-		return DEFAULT_VIEW;
+//		String DEFAULT_VIEW = "xmlView";
+//		String ctype = request.getHeader("Accept");
+//		String[] ctypes = ctype.split("[,;]");
+//		for (String ct : ctypes){
+//			if (ct.endsWith("json")){
+//				return "jsonView";
+//			}else if (ct.endsWith("xml")){
+//				return "xmlView";
+//			}
+//		}
+//		return DEFAULT_VIEW;
+		return "jsonView";
 	}
 
 
