@@ -644,6 +644,7 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/tcsxml/TcsXmlTaxonNameImport.java -t
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/tcsxml/TcsXmlTaxonNameRelationsImport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/tcsxml/TcsXmlTaxonRelationsImport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/tcsxml/TcsXmlTransformer.java -text
+cdmlib-io/src/main/resources/defaultIoApplicationContext.xml -text
 cdmlib-io/src/main/resources/log4j.properties -text
 cdmlib-io/src/site/site.xml -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/abcd206/SpecimenImportConfiguratorTest.java -text

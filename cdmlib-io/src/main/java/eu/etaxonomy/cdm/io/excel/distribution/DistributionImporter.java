@@ -1,5 +1,6 @@
 package eu.etaxonomy.cdm.io.excel.distribution;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -59,7 +60,13 @@ public class DistributionImporter extends CdmIoBase<IImportConfigurator> impleme
 		if (logger.isDebugEnabled()) { logger.debug("Importing distribution data"); }
     	
 		// read and save all rows of the excel worksheet
-    	ArrayList<HashMap<String, String>> recordList = ExcelUtils.parseXLS(config.getSourceNameString());
+		ArrayList<HashMap<String, String>> recordList;
+    	try{
+    		recordList = ExcelUtils.parseXLS(config.getSourceNameString());
+		} catch (FileNotFoundException e1) {
+			logger.error("File not found: " + (String)config.getSource());
+			return false;
+		}
     	if (recordList != null) {
     		HashMap<String,String> record = null;
     		TransactionStatus txStatus = startTransaction();

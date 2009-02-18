@@ -18,7 +18,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
-import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.service.IService;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -53,18 +52,18 @@ public class CdmApplicationAwareDefaultImport<T extends IImportConfigurator> imp
 	final boolean FACULTATIVE = false; 
 	final int modCount = 1000;
 
-	IService service = null;
+	IService<CdmBase> service = null;
 	
 	//different type of stores that are used by the known imports
 	Map<String, MapWrapper<? extends CdmBase>> stores = new HashMap<String, MapWrapper<? extends CdmBase>>();
 
 	public CdmApplicationAwareDefaultImport(){
-		stores.put(ICdmIO.AUTHOR_STORE, new MapWrapper<TeamOrPersonBase>(service));
+		stores.put(ICdmIO.AUTHOR_STORE, new MapWrapper<TeamOrPersonBase<?>>(service));
 		stores.put(ICdmIO.REFERENCE_STORE, new MapWrapper<ReferenceBase>(service));
 		stores.put(ICdmIO.NOMREF_STORE, new MapWrapper<ReferenceBase>(service));
 		stores.put(ICdmIO.NOMREF_DETAIL_STORE, new MapWrapper<ReferenceBase>(service));
 		stores.put(ICdmIO.REF_DETAIL_STORE, new MapWrapper<ReferenceBase>(service));
-		stores.put(ICdmIO.TAXONNAME_STORE, new MapWrapper<TaxonNameBase>(service));
+		stores.put(ICdmIO.TAXONNAME_STORE, new MapWrapper<TaxonNameBase<?,?>>(service));
 		stores.put(ICdmIO.TAXON_STORE, new MapWrapper<TaxonBase>(service));
 		stores.put(ICdmIO.SPECIMEN_STORE, new MapWrapper<Specimen>(service));
 	}
@@ -138,9 +137,7 @@ public class CdmApplicationAwareDefaultImport<T extends IImportConfigurator> imp
 		}
 				
 		ReferenceBase sourceReference = config.getSourceReference();
-		
-		System.out.println("Start import from source '" + config.getSourceNameString() 
-				+ "' to destination '" + config.getDestinationNameString() + "'");
+		logger.info("Start import from Source '"+ config.getSourceNameString() + "' to destination '" + config.getDestinationNameString() + "'");
 		
 		//do invoke for each class
 		for (Class<ICdmIO> ioClass: config.getIoClassList()){
@@ -179,7 +176,7 @@ public class CdmApplicationAwareDefaultImport<T extends IImportConfigurator> imp
 //		}
 		
 		
-		System.out.println("End import from source '" + config.getSourceNameString() 
+		logger.info("End import from source '" + config.getSourceNameString() 
 				+ "' to destination '" + config.getDestinationNameString() + "'");
 		return result;
 	}

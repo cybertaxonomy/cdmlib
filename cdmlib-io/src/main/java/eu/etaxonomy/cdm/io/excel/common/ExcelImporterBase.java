@@ -3,6 +3,7 @@
  */
 package eu.etaxonomy.cdm.io.excel.common;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -55,7 +56,12 @@ public abstract class ExcelImporterBase extends CdmIoBase<IImportConfigurator> {
 			return false;
 		}
 		// read and save all rows of the excel worksheet
-    	recordList = ExcelUtils.parseXLS((String)config.getSource());
+    	try {
+			recordList = ExcelUtils.parseXLS((String)config.getSource());
+		} catch (FileNotFoundException e1) {
+			logger.error("File not found: " + (String)config.getSource());
+			return false;
+		}
     	
     	if (recordList != null) {
     		HashMap<String,String> record = null;
