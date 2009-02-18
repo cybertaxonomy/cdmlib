@@ -144,21 +144,25 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
 		return homotypicalGroupDao.list(limit, start);
 	}
 	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.service.INameService#getRankVocabulary()
+	 */
 	public OrderedTermVocabulary<Rank> getRankVocabulary() {
-		String uuidRank = "ef0d1ce1-26e3-4e83-b47b-ca74eed40b1b";
-		UUID rankUuid = UUID.fromString(uuidRank);
-		OrderedTermVocabulary<Rank> rankVocabulary = (OrderedTermVocabulary)orderedVocabularyDao.findByUuid(rankUuid);
+		String uuidString = "ef0d1ce1-26e3-4e83-b47b-ca74eed40b1b";
+		UUID uuid = UUID.fromString(uuidString);
+		OrderedTermVocabulary<Rank> rankVocabulary = 
+			(OrderedTermVocabulary)orderedVocabularyDao.findByUuid(uuid);
 		return rankVocabulary;
 	}
 
-	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.INameService#getNameRelationshipTypeVocabulary()
 	 */
 	public TermVocabulary<NameRelationshipType> getNameRelationshipTypeVocabulary() {
-		String uuidRank = "6878cb82-c1a4-4613-b012-7e73b413c8cd";
-		UUID rankUuid = UUID.fromString(uuidRank);
-		TermVocabulary<NameRelationshipType> nameRelTypeVocabulary = (TermVocabulary)vocabularyDao.findByUuid(rankUuid);
+		String uuidString = "6878cb82-c1a4-4613-b012-7e73b413c8cd";
+		UUID uuid = UUID.fromString(uuidString);
+		TermVocabulary<NameRelationshipType> nameRelTypeVocabulary = 
+			(TermVocabulary)vocabularyDao.findByUuid(uuid);
 		return nameRelTypeVocabulary;
 	}
 
@@ -166,12 +170,24 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
 	 * @see eu.etaxonomy.cdm.api.service.INameService#getStatusTypeVocabulary()
 	 */
 	public TermVocabulary<NomenclaturalStatusType> getStatusTypeVocabulary() {
-		String uuidRank = "bb28cdca-2f8a-4f11-9c21-517e9ae87f1f";
-		UUID rankUuid = UUID.fromString(uuidRank);
-		TermVocabulary<NomenclaturalStatusType> nomStatusTypeVocabulary = (TermVocabulary)vocabularyDao.findByUuid(rankUuid);
+		String uuidString = "bb28cdca-2f8a-4f11-9c21-517e9ae87f1f";
+		UUID uuid = UUID.fromString(uuidString);
+		TermVocabulary<NomenclaturalStatusType> nomStatusTypeVocabulary = 
+			(TermVocabulary)vocabularyDao.findByUuid(uuid);
 		return nomStatusTypeVocabulary;
 	}
 
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.service.INameService#getTypeDesignationStatusVocabulary()
+	 */
+	public TermVocabulary<TypeDesignationStatus> getTypeDesignationStatusVocabulary() {
+		String uuidString = "ab177bd7-d3c8-4e58-a388-226fff6ba3c2";
+		UUID uuid = UUID.fromString(uuidString);
+		TermVocabulary<TypeDesignationStatus> typeDesigStatusVocabulary = 
+			(TermVocabulary)vocabularyDao.findByUuid(uuid);
+		return null;
+	}
+	
 	public void generateTitleCache() {
 		logger.warn("Not yet implemented");
 		// TODO Auto-generated method stub

@@ -29,21 +29,21 @@ public interface INameService extends IIdentifiableEntityService<TaxonNameBase> 
 	 * @param uuid
 	 * @return
 	 */
-	public abstract TaxonNameBase getTaxonNameByUuid(UUID uuid);
+	public TaxonNameBase getTaxonNameByUuid(UUID uuid);
 
 	/**
 	 * FIXME candidate for harmonization?
 	 * @param taxonName
 	 * @return
 	 */
-	public abstract UUID saveTaxonName(TaxonNameBase taxonName);
+	public UUID saveTaxonName(TaxonNameBase taxonName);
 
 	/**
 	 * FIXME candidate for harmonization?
 	 * Saves a collection of  TaxonNames and return its UUID@param taxonCollection
 	 * @return
 	 */
-	public abstract Map<UUID, TaxonNameBase> saveTaxonNameAll(Collection<? extends TaxonNameBase> taxonCollection);
+	public Map<UUID, TaxonNameBase> saveTaxonNameAll(Collection<? extends TaxonNameBase> taxonCollection);
 
 	public Map<UUID, TypeDesignationBase> saveTypeDesignationAll(Collection<TypeDesignationBase> typeDesignationCollection);
 
@@ -57,53 +57,57 @@ public interface INameService extends IIdentifiableEntityService<TaxonNameBase> 
 	 * @param start
 	 * @return
 	 */
-	public abstract List<TaxonNameBase> getAllNames(int limit, int start);
+	public List<TaxonNameBase> getAllNames(int limit, int start);
 
-	public abstract List<NomenclaturalStatus> getAllNomenclaturalStatus(int limit, int start);
+	public List<NomenclaturalStatus> getAllNomenclaturalStatus(int limit, int start);
 
-	public abstract List<TypeDesignationBase> getAllTypeDesignations(int limit, int start);
+	public List<TypeDesignationBase> getAllTypeDesignations(int limit, int start);
 	
 	/**
 	 * @param name
 	 * @return
 	 */
-	public abstract List<TaxonNameBase> getNamesByName(String name);
+	public List<TaxonNameBase> getNamesByName(String name);
 
 	/**
 	 * @param name
 	 * @param sessionObject An object that is attached to the session before executing the query
 	 * @return
 	 */
-	public abstract List getNamesByName(String name, CdmBase sessionObject);
+	public List getNamesByName(String name, CdmBase sessionObject);
 	
 	// TODO: Remove getNamesByName() methods. Use findNamesByTitle() instead.
 	
 	// FIXME candidate for harmonization?
-	public abstract List findNamesByTitle(String title);
+	public List findNamesByTitle(String title);
 	
-	public abstract List findNamesByTitle(String title, CdmBase sessionObject);
+	public List findNamesByTitle(String title, CdmBase sessionObject);
 	
 	public List<HomotypicalGroup> getAllHomotypicalGroups(int limit, int start);
 
 	/**
-	 * Returns all Ranks.
+	 * Returns all Ranks
 	 * @return
 	 */
-	public abstract OrderedTermVocabulary<Rank> getRankVocabulary();
-	
-
-	/**
-	 * Returns all NomenclaturalStatusTypes.
-	 * @return
-	 */
-	public abstract TermVocabulary<NomenclaturalStatusType> getStatusTypeVocabulary();
-	
+	public OrderedTermVocabulary<Rank> getRankVocabulary();
 	
 	/**
-	 * Returns all NameRelationshipTypes.
+	 * Returns all NomenclaturalStatusTypes
 	 * @return
 	 */
-	public abstract TermVocabulary<NameRelationshipType> getNameRelationshipTypeVocabulary();
+	public TermVocabulary<NomenclaturalStatusType> getStatusTypeVocabulary();
+	
+	/**
+	 * Returns all TypeDesignationStatus
+	 * @return
+	 */
+	public TermVocabulary<TypeDesignationStatus> getTypeDesignationStatusVocabulary();
+		
+	/**
+	 * Returns all NameRelationshipTypes
+	 * @return
+	 */
+	public TermVocabulary<NameRelationshipType> getNameRelationshipTypeVocabulary();
 	
 	/**
 	 * Return a List of relationships related to this name, optionally filtered 
