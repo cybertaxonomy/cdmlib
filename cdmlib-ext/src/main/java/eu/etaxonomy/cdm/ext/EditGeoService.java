@@ -38,7 +38,8 @@ import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 public class EditGeoService {
 	private static final Logger logger = Logger.getLogger(EditGeoService.class);
 
-	
+	private static PresenceAbsenceTermBase<?> defaultStatus = PresenceTerm.PRESENT();
+
 	//preliminary implementation for TDWG areas
 	/**
 	 * Returns the parameter String for the EDIT geo webservice to create a map.
@@ -72,7 +73,8 @@ public class EditGeoService {
 		String adLayerSeparator = ":";
 		String msSeparator = ","; //seperator for the ms parameter values , e.g. 'x' => ms=600x400
 		int borderWidth = 1;
-
+		
+		
 		
 		if (presenceAbsenceTermColors == null) {
 			//presenceAbsenceTermColors = new HashMap<PresenceAbsenceTermBase<?>, Color>();
@@ -108,6 +110,9 @@ public class EditGeoService {
 		for (Distribution distribution:distributions){
 			//collect status
 			PresenceAbsenceTermBase<?> status = distribution.getStatus();
+			if(status == null){
+				status = defaultStatus;
+			}
 			if (! statusList.contains(status)){
 				statusList.add(status);
 			}
@@ -140,7 +145,6 @@ public class EditGeoService {
 		
 		//style
 		areaStyle = "";
-		Map<PresenceAbsenceTermBase<?>, Character> styleCharMap = new HashMap<PresenceAbsenceTermBase<?>, Character>();
 		int i = 0;
 		for (PresenceAbsenceTermBase<?> status: statusList){
 			char style = getStyleAbbrev(i);
@@ -149,13 +153,16 @@ public class EditGeoService {
 			if (statusColor != null){
 				rgb = Integer.toHexString(statusColor.getRGB()).substring(2);
 			}else{
-				rgb = status.getDefaultColor(); //TODO
+				if(status != null){
+					rgb = status.getDefaultColor(); //TODO
+				} else {
+					rgb = defaultStatus.getDefaultColor();
+				}
 			}
 			areaStyle += "|" + style + ":" + rgb;
 			if (borderWidth >0){
 				areaStyle += ",," + borderWidth;
 			}
-			styleCharMap.put(status, style);
 			i++;
 		}
 		
@@ -172,7 +179,7 @@ public class EditGeoService {
 			boolean isFirstStyle = true;
 			for (int style: styleMap.keySet()){
 				char styleChar = getStyleAbbrev(style);
-				areaData += (isFirstStyle? "" : "|") + styleChar + ":";
+				areaData += (isFirstStyle? "" : "/") + styleChar + ":";
 				Set<Distribution> distributionSet = styleMap.get(style);
 				boolean isFirstDistribution = true;
 				for (Distribution distribution: distributionSet){
@@ -250,7 +257,11 @@ public class EditGeoService {
 	}
 	
 	private static void addDistributionToMap(Distribution distribution, Map<Integer, Set<Distribution>> styleMap, List<PresenceAbsenceTermBase<?>> statusList){
-		int style = statusList.indexOf(distribution.getStatus());
+		PresenceAbsenceTermBase<?> status = distribution.getStatus();
+		if(status == null) {
+			status = defaultStatus;
+		}
+		int style = statusList.indexOf(status);
 		Set<Distribution> distributionSet = styleMap.get(style);
 		if (distributionSet == null){
 			distributionSet = new HashSet<Distribution>();
