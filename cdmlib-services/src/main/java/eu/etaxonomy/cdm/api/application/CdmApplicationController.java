@@ -13,6 +13,7 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.hibernate.SessionFactory;
+import org.springframework.beans.MutablePropertyValues;
 import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
@@ -152,9 +153,11 @@ public class CdmApplicationController {
 			XmlBeanDefinitionReader xmlReader = new XmlBeanDefinitionReader(appContext);
 			xmlReader.loadBeanDefinitions(new ClassPathResource("/eu/etaxonomy/cdm/defaultApplicationContext.xml"));		 
 			
-            //TODO: This is a workaround to omit term loading for JAXB serializing/deserializing.
-			/* should be able to omit defined terms loading using a */
-//			CdmTermInitializer.omit = omitTermLoading;
+			//omitTerms
+			String initializerName = "persistentTermInitializer";
+			BeanDefinition beanDef = appContext.getBeanDefinition(initializerName);
+			MutablePropertyValues values = beanDef.getPropertyValues();
+			values.addPropertyValue("omit", omitTermLoading);
 			
 			appContext.refresh();
 			appContext.start();
