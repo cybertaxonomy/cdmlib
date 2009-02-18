@@ -269,7 +269,7 @@ public class BerlinModelNameFactsImport  extends BerlinModelImportBase  {
         file = new File(mediaPath, "pdf" + sep + nameFact + "." + suffixPdf); 
         MediaRepresentation representationPdf = MediaRepresentation.NewInstance(mimeTypePdf, suffixPdf); 
         if (file.exists()){  
-                representationPdf.addRepresentationPart(makeImage(urlStringPdf, size, file)); 
+                representationPdf.addRepresentationPart(MediaRepresentationPart.NewInstance(urlStringPdf, size)); 
         }else{ 
                 fileExists = true; 
                 int pdfCount = 0; 
@@ -279,7 +279,7 @@ public class BerlinModelNameFactsImport  extends BerlinModelImportBase  {
                         file = new File(mediaPath, "pdf/" + sep + nameFact + "00" + pdfCount + "." + suffixPdf); 
                          
                         if (file.exists()){  
-                                representationPdf.addRepresentationPart(makeImage(urlStringPdf, size, file)); 
+                                representationPdf.addRepresentationPart(MediaRepresentationPart.NewInstance(urlStringPdf, size)); 
                         }else{ 
                                 fileExists = false; 
                         } 
