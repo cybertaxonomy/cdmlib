@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.Map;
 
+import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
 
@@ -41,8 +42,18 @@ public interface IReferenceService extends IIdentifiableEntityService<ReferenceB
 	/**
 	 * FIXME candidate for harmonization? 
 	 * Gets all references 
+	 * @deprecated use {@link #getAllReferences(Integer, Integer) instead
 	 */
+	@Deprecated
 	public abstract List<ReferenceBase> getAllReferences(int limit, int start);
+	
+	/**
+	 * Gets all references 
+	 * @param pageSize the maximum number of entities returned entries per page. Can be null to return all entities.
+	 * @param pageNumber a numeric zero based page index 
+	 * @return a Pager instance
+	 */
+	public abstract Pager<ReferenceBase> getAllReferences(Integer pageSize, Integer pageNumber);
 
 //	public abstract UUID saveReference(ReferenceBase reference);
 

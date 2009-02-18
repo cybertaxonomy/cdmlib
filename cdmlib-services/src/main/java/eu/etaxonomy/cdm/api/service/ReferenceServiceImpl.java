@@ -9,6 +9,7 @@
 
 package eu.etaxonomy.cdm.api.service;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +20,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import eu.etaxonomy.cdm.api.service.pager.Pager;
+import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
+import eu.etaxonomy.cdm.model.name.BotanicalName;
+import eu.etaxonomy.cdm.model.name.HybridRelationship;
+import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
 
@@ -51,8 +57,27 @@ public class ReferenceServiceImpl extends IdentifiableServiceBase<ReferenceBase,
 		return saveCdmObjectAll(referenceCollection);
 	}
 
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.service.IReferenceService#getAllReferences(int, int)
+	 */
+	@Deprecated
 	public List<ReferenceBase> getAllReferences(int limit, int start){
 			return dao.list(limit, start);
+	}
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.service.IReferenceService#getAllReferences(java.lang.Integer, java.lang.Integer)
+	 */
+	public Pager<ReferenceBase> getAllReferences(Integer pageSize, Integer pageNumber) {
+        Integer numberOfResults = dao.count();
+		
+		List<ReferenceBase> results = new ArrayList<ReferenceBase>();
+		if(numberOfResults > 0) { // no point checking again
+			Integer start = pageSize == null ? 0 : pageSize * (pageNumber - 1);
+			results = dao.list(pageSize, start); //TODO implement pager like method in dao?
+		}
+		
+		return new DefaultPagerImpl<ReferenceBase>(pageNumber, numberOfResults, pageSize, results);
 	}
 
 
