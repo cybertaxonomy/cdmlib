@@ -172,9 +172,8 @@ public enum NomenclaturalCode implements IDefinedTerm<NomenclaturalCode> {
 	@Transient
 	public TaxonNameBase<?,?> getNewTaxonNameInstance(Rank rank){
 		TaxonNameBase<?,?> result;
-		NomenclaturalCode nomCode = this;
 		if (this.equals(NomenclaturalCode.ICBN)){
-			result = ZoologicalName.NewInstance(rank);
+			result = BotanicalName.NewInstance(rank);
 		}else if (this.equals(NomenclaturalCode.ICZN)){
 			result = ZoologicalName.NewInstance(rank);
 		}else if (this.equals(NomenclaturalCode.ICNCP)){
