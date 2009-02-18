@@ -35,7 +35,17 @@ public class CdmDestinations {
 		String cdmUserName = "edit";
 		return makeDestination(cdmServer, cdmDB, -1, cdmUserName, null);
 	}
-
+	
+	/**
+	 * Intended to be used for imports
+	 */
+	public static ICdmDataSource cdm_import(){
+		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
+		String cdmServer = "192.168.2.10";
+		String cdmDB = "cdm_import";
+		String cdmUserName = "edit";
+		return makeDestination(cdmServer, cdmDB, -1, cdmUserName, null);
+	}
 	
 	public static ICdmDataSource cdm_test(){
 		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
@@ -160,6 +170,15 @@ public class CdmDestinations {
 		return makeDestination(cdmServer, cdmDB, -1, cdmUserName, null);
 	}
 	
+	public static ICdmDataSource cdm_test_andreasK2(){
+		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
+		String cdmServer = "192.168.2.10";
+		String cdmDB = "cdm_test_andreasK2";
+		String cdmUserName = "edit";
+		return makeDestination(cdmServer, cdmDB, -1, cdmUserName, null);
+	}
+	
+
 	public static ICdmDataSource cdm_pesi_erms(){
 		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
 		String cdmServer = "192.168.2.10";
@@ -183,6 +202,31 @@ public class CdmDestinations {
 		String cdmUserName = "edit";
 		return makeDestination(cdmServer, cdmDB, -1, cdmUserName, null);
 	}
+	
+	public static ICdmDataSource cdm_local_cichorieae(){
+		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
+		String cdmServer = "172.0.0.1";
+		String cdmDB = "cdm_edit_cichorieae";
+		String cdmUserName = "edit";
+		return makeDestination(cdmServer, cdmDB, -1, cdmUserName, null);
+	}
+	
+	public static ICdmDataSource cdm_local_dipera(){
+		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
+		String cdmServer = "172.0.0.1";
+		String cdmDB = "cdm_edit_diptera";
+		String cdmUserName = "edit";
+		return makeDestination(cdmServer, cdmDB, -1, cdmUserName, null);
+	}
+	
+	public static ICdmDataSource cdm_local_palmae(){
+		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
+		String cdmServer = "172.0.0.1";
+		String cdmDB = "cdm_edit_palmae";
+		String cdmUserName = "edit";
+		return makeDestination(cdmServer, cdmDB, -1, cdmUserName, null);
+	}
+	
 	
 	public static ICdmDataSource NULL(){
 		return null;
@@ -295,6 +339,8 @@ public class CdmDestinations {
 		String cdmUserName = "edit";
 		return makeDestination(cdmServer, cdmDB, -1, cdmUserName, null);
 	}
+	
+	
 	
 //	public static ICdmDataSource LAPTOP_HP(){
 //		DatabaseTypeEnum dbType = DatabaseTypeEnum.SqlServer2005;
