@@ -9,6 +9,7 @@
 
 package eu.etaxonomy.cdm.app.synthesysImport;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -445,11 +446,17 @@ public class SynthesysCacheActivator {
 		
 		logger.info("main method");
 		SynthesysCacheActivator abcdAct = new SynthesysCacheActivator();
-		ArrayList<HashMap<String,String>> units = ExcelUtils.parseXLS(filename);
+		ArrayList<HashMap<String, String>> units;
+		try {
+			units = ExcelUtils.parseXLS(filename);
+		} catch (FileNotFoundException e) {
+			logger.error("FileNotFound: " + filename);
+			return;
+		}
 		HashMap<String,String> unit=null;
 		for (int i=0; i<units.size();i++){
 			unit = units.get(i);
-			System.out.println(unit);
+			logger.info(unit);
 			abcdAct.saveUnit(unit);//and then invoke
 			abcdAct.invoke();
 			

@@ -15,10 +15,14 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.app.common.CdmDestinations;
+import eu.etaxonomy.cdm.app.images.ImageImportConfigurator;
 import eu.etaxonomy.cdm.app.tcs.TcsSources;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
+import eu.etaxonomy.cdm.io.PalmaeImageImport;
+import eu.etaxonomy.cdm.io.PalmaeProtologueImport;
 import eu.etaxonomy.cdm.io.common.CdmDefaultImport;
+import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator.CHECK;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator.DO_REFERENCES;
 import eu.etaxonomy.cdm.io.tcsrdf.TcsRdfImportConfigurator;
@@ -32,20 +36,23 @@ import eu.etaxonomy.cdm.model.description.FeatureTree;
  * @version 1.0
  */
 public class PalmaeActivator {
-	private static Logger logger = Logger.getLogger(PalmaeActivator.class);
+	private static final Logger logger = Logger.getLogger(PalmaeActivator.class);
 	
 	//database validation status (create, update, validate ...)
 	static DbSchemaValidation hbm2dll = DbSchemaValidation.CREATE;
 	static final String tcsSource = TcsSources.arecaceae_local();
-	static final ICdmDataSource cdmDestination = CdmDestinations.localH2();
+	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_test_andreasM3();
 //	static final ICdmDataSource cdmDestination = CdmDestinations.localH2();
 
 	static final UUID featureTreeUuid = UUID.fromString("72ccce05-7cc8-4dab-8e47-bf3f5fd848a0");
 		
 	static final UUID secUuid = UUID.fromString("5f32b8af-0c97-48ac-8d33-6099ed68c625");
 	static final String sourceSecId = "palm_pub_ed_999999";
+	
 	//should the taxonX import run as well?
-	static final boolean includeTaxonX = false;
+	static final boolean includeTaxonX = true;
+	static final boolean includeImages = true;
+	static final boolean includeProtologue = true;
 	
 	//check - import
 	static final CHECK check = CHECK.IMPORT_WITHOUT_CHECK;
@@ -164,11 +171,34 @@ public class PalmaeActivator {
 		PalmaeActivator me = new PalmaeActivator();
 		me.doImport();
 		
+		if (includeImages){
+			System.out.println("Start importing images ...");
+			CdmDefaultImport<IImportConfigurator> imageImporter = new CdmDefaultImport<IImportConfigurator>();
+			ImageImportConfigurator imageConfigurator = ImageImportConfigurator.NewInstance(
+					PalmaeProtologueActivator.sourceFile, cdmDestination, PalmaeImageImport.class);
+			imageConfigurator.setSecUuid(secUuid);
+			success &= imageImporter.invoke(imageConfigurator);
+			System.out.println("End importing images ...");
+		}
+
+		if (includeProtologue){
+			System.out.println("Start importing protologues ...");
+			ImageImportConfigurator imageConfigurator = ImageImportConfigurator.NewInstance(
+					PalmaeProtologueActivator.sourceFile, cdmDestination, PalmaeProtologueImport.class);
+			imageConfigurator.setSecUuid(secUuid);
+			
+			CdmDefaultImport<IImportConfigurator> imageImporter = new CdmDefaultImport<IImportConfigurator>();
+			imageImporter.invoke(imageConfigurator);
+			System.out.println("End importing protologues ...");
+		}
+		
 		if (includeTaxonX){
+			System.out.println("Start importing taxonX ...");
 			PalmaeTaxonXImportActivator taxonXimporter = new PalmaeTaxonXImportActivator();
 			PalmaeTaxonXImportActivator.cdmDestination = cdmDestination;
 			PalmaeTaxonXImportActivator.secUuid = secUuid;
 			success &= taxonXimporter.runImport();
+			System.out.println("End importing taxonX ...");
 		}
 		
 		String strSuccess = "";

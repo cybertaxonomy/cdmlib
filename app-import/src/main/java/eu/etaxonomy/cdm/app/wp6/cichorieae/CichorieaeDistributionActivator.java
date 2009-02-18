@@ -6,8 +6,6 @@
 
 package eu.etaxonomy.cdm.app.wp6.cichorieae;
 
-import java.io.File;
-
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.app.util.TestDatabase;

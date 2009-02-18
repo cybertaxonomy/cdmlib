@@ -7,14 +7,13 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package eu.etaxonomy.cdm.app.images;
+package eu.etaxonomy.cdm.io;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
-import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.apache.sanselan.ImageReadException;
@@ -22,11 +21,11 @@ import org.apache.sanselan.Sanselan;
 import org.apache.sanselan.common.IImageMetadata;
 import org.apache.sanselan.common.ImageMetadata.Item;
 import org.apache.sanselan.formats.jpeg.JpegImageMetadata;
+import org.springframework.stereotype.Component;
 
-import eu.etaxonomy.cdm.app.common.CdmDestinations;
+import eu.etaxonomy.cdm.app.images.AbstractImageImporter;
+import eu.etaxonomy.cdm.app.images.ImageImportConfigurator;
 import eu.etaxonomy.cdm.common.MediaMetaData.ImageMetaData;
-import eu.etaxonomy.cdm.database.ICdmDataSource;
-import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.media.ImageFile;
@@ -36,22 +35,15 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 /**
- * 
+ * TODO not working at the moment
  * 
  * @author n.hoffmann
  * @created 18.11.2008
  * @version 1.0
  */
-public class PalmaeImageActivator extends AbstractImageImporter {
-	private static Logger logger = Logger.getLogger(PalmaeImageActivator.class);
-	
-	private static final File sourceFolder = new File("src/main/resources/images/palmae");
-	private static final ICdmDataSource cdmDestination = CdmDestinations.cdm_preview_palmae();
-	
-	// set the webserver path to the images
-	private static final String urlString = "http://wp5.e-taxonomy.eu/media/palmae/images/";
-	
-	static final UUID secUuid = UUID.fromString("5f32b8af-0c97-48ac-8d33-6099ed68c625");
+@Component
+public class PalmaeImageImport extends AbstractImageImporter {
+	private static final Logger logger = Logger.getLogger(PalmaeImageImport.class);
 	
 	/**
 	 * Rudimetary implementation using apache sanselan. This implementation depends
@@ -98,11 +90,11 @@ public class PalmaeImageActivator extends AbstractImageImporter {
 		
 		return name.trim();
 	}
-	
-	protected boolean invokeImageImport (IImportConfigurator config){
+
+	protected boolean invokeImageImport (ImageImportConfigurator config){
 		
-		logger.info("importing images from directory: " + sourceFolder);
-		
+		logger.info("importing images from directory: " + config.getSourceNameString());
+		File sourceFolder = (File)config.getSource();
 		if(sourceFolder.isDirectory()){
 			for( File file : sourceFolder.listFiles()){
 				if(file.isFile()){
@@ -128,12 +120,6 @@ public class PalmaeImageActivator extends AbstractImageImporter {
 						ImageMetaData imageMetaData = new ImageMetaData();
 						imageMetaData.readFrom(file);
 						
-						int width = imageMetaData.getWidth();
-						int height = imageMetaData.getHeight();
-						
-						// TODO size is supposed to be be filesize
-						int size = width * height;
-						
 						String mimeType = imageMetaData.getMimeType();
 						String suffix = "jpg";
 						
@@ -141,7 +127,7 @@ public class PalmaeImageActivator extends AbstractImageImporter {
 						// URL for this image
 						URL url = null;
 						try {
-							url = new URL(urlString + file.getName());
+							url = new URL(config.getMediaUrlString() + file.getName());
 						} catch (MalformedURLException e) {
 							logger.warn("URL is malformed: "+ url);
 						}
@@ -178,12 +164,73 @@ public class PalmaeImageActivator extends AbstractImageImporter {
 		return true;
 	}
 	
-	public static void main (String[] cowabunga){
-		ImageImportConfigurator imageConfigurator = ImageImportConfigurator.NewInstance(sourceFolder, cdmDestination);
-		imageConfigurator.setSecUuid(secUuid);
-		
-		AbstractImageImporter imageImporter = new PalmaeImageActivator();
-		imageImporter.invoke(imageConfigurator, null);
-	}
+	
+//	protected boolean invokeImageImport (IImportConfigurator config){
+//		
+//		logger.info("importing images from directory: " + config.getSourceNameString());
+//		File sourceFolder = (File)config.getSource();
+//		if( sourceFolder.isDirectory()){
+//			for( File file : sourceFolder.listFiles()){
+//				logger.info(file);
+//				String taxonName = retrieveTaxonNameFromImageMetadata(file);
+//			
+//				List<TaxonBase> taxa = getTaxonService().searchTaxaByName(taxonName, config.getSourceReference());			
+//				
+//				
+//				if(taxa.size() == 0){
+//					logger.warn("no taxon with this name found" + taxonName);
+//				}else if(taxa.size() > 1){
+//					logger.warn("multiple taxa with this name found: " + taxonName);
+//				}else{
+//					Taxon taxon = (Taxon) taxa.get(0);
+//					
+//					taxonService.saveTaxon(taxon);
+//					
+//					TextData feature = TextData.NewInstance();
+//					
+//					URL url = null;
+//					try {
+//						url = new URL("test");
+//					} catch (MalformedURLException e) {
+//						logger.warn("URL is malformed: "+ url);
+//					}
+//					ImageMetaData imageMetaData = new ImageMetaData();
+//					imageMetaData.readFrom(url);
+//					
+//					int size = 100;
+//					
+//					String mimeType = "mime";
+//					String suffix = "suffix";
+//					
+//					
+//					
+//					MediaRepresentationPart mediaRepresentationPart = MediaRepresentationPart.NewInstance(url.toString(), size);
+//					
+//					MediaRepresentation representation = MediaRepresentation.NewInstance(mimeType, suffix);
+//					representation.addRepresentationPart(mediaRepresentationPart);
+//					
+//					Media media = Media.NewInstance();
+//					media.addRepresentation(representation);
+//					
+//					feature.addMedia(media);
+//					
+//					TaxonDescription description = TaxonDescription.NewInstance(taxon);
+//					
+//					description.addElement(feature);
+//					
+//					//taxon.addDescription(description);
+//					//taxonService.saveTaxon(taxon);
+//					//descriptionService.saveDescription(description);
+//					
+//				}
+//				
+//				logger.info(taxonName);
+//			}
+//		}else{
+//			logger.error("given source folder is not a directory");
+//		}
+//		return true;
+//	}
+
 
 }
