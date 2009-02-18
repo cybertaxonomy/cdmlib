@@ -64,6 +64,7 @@ public class PalmaeTaxonXImportActivator {
 		taxonXImportConfigurator.setCheck(check);
 		taxonXImportConfigurator.setDbSchemaValidation(hbm2dll);
 
+		cdmImport.startController(taxonXImportConfigurator, destination);
 		TransactionStatus tx = cdmImport.getCdmApp().startTransaction();
 				
 		//new Test().invoke(tcsImportConfigurator);
