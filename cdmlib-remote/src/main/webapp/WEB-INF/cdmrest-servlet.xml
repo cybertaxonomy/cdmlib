@@ -17,12 +17,13 @@
                 <prop key="/(whatis:dto)/(*:uuid)">restController</prop>
                 <prop key="/(name:dto)/(*:uuid)">restController</prop>
                 <prop key="/(taxon:dto)/(*:uuid)">restController</prop>
-                <prop key="/(ref:dto)/(*:uuid)">restController</prop>
+                <prop key="/(reference:dto)/(*:uuid)">restController</prop>
+                <prop key="/(reference:dto)/(list:operation)/(*:pageNumber)/(*:q)">restController</prop>
                 
                 <prop key="/(simple:action)/(taxon:dto)/(*:uuid)">restController</prop>
                 <prop key="/(simple:action)/(taxon:dto)/(acceptedfor:operation)/(*:uuid)">restController</prop>
                 <prop key="/(simple:action)/(name:dto)/(*:uuid)">restController</prop>
-                <prop key="/(simple:action)/(ref:dto)/(*:uuid)">restController</prop>
+                <prop key="/(simple:action)/(reference:dto)/(*:uuid)">restController</prop>
                 <prop key="/(find:action)/(taxon:dto)/(*:q)">restController</prop>
                 
                 <prop key="/(annotations:action)/(*:uuid)">restController</prop>
