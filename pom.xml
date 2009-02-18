@@ -862,6 +862,13 @@
 	  		<artifactId>hsqldb</artifactId>
 	  		<version>1.8.0.7</version>
 	  	</dependency>
+
+	  	<dependency>
+	  		<groupId>com.microsoft.sqlserver</groupId>
+	  		<artifactId>jdbc</artifactId>
+	  		<version>1.2</version>
+	  	</dependency>
+<!-- use SQL Server 2005 driver instead (com.microsoft.sqlserver/jdbc)
 	  	<dependency>
 	  		<groupId>com.microsoft.jdbcdriver</groupId>
 	  		<artifactId>mssqlserver</artifactId>
@@ -877,11 +884,7 @@
 	  		<artifactId>msbase</artifactId>
 	  		<version>2000.3</version>
 	  	</dependency>
-	  	<dependency>
-	  		<groupId>com.microsoft.sqlserver</groupId>
-	  		<artifactId>jdbc</artifactId>
-	  		<version>1.2</version>
-	  	</dependency>
+-->
         <dependency>
         	<groupId>oracle</groupId>
         	<artifactId>ojdbc14</artifactId>
