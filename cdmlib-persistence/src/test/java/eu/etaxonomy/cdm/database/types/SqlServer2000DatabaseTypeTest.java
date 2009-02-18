@@ -43,7 +43,7 @@ public class SqlServer2000DatabaseTypeTest {
 	 */
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		enumType = DatabaseTypeEnum.SqlServer2000;
+		enumType = DatabaseTypeEnum.SqlServer2005;
 	}
 
 	/**
@@ -79,7 +79,8 @@ public class SqlServer2000DatabaseTypeTest {
 	 */
 	@Test
 	public void testGetConnectionStringICdmDataSource() {
-		String expected = "jdbc:microsoft:sqlserver://" + server + ":" + port + ";databaseName=" + dbName + ";SelectMethod=cursor";
+		//OLD: String expected = "jdbc:microsoft:sqlserver://" + server + ":" + port + ";databaseName=" + dbName + ";SelectMethod=cursor";
+		String expected = "jdbc:sqlserver://" + server + ":" + port + ";databaseName=" + dbName + ";SelectMethod=cursor";
 		assertEquals(expected, enumType.getConnectionString(dataSource));
 	}
 	
@@ -89,8 +90,9 @@ public class SqlServer2000DatabaseTypeTest {
 	@Test
 	public void testGetConnectionStringICdmDataSourceInt() {
 		port = 357;
-		String expected = "jdbc:microsoft:sqlserver://" + server + ":" + port + ";databaseName=" + dbName + ";SelectMethod=cursor";
-		assertEquals(expected, ((SqlServer2000DatabaseType)enumType.getDatabaseType()).getConnectionString(dataSource, port));
+		//OLD: String expected = "jdbc:microsoft:sqlserver://" + server + ":" + port + ";databaseName=" + dbName + ";SelectMethod=cursor";
+		String expected = "jdbc:sqlserver://" + server + ":" + port + ";databaseName=" + dbName + ";SelectMethod=cursor";
+		assertEquals(expected, ((SqlServer2005DatabaseType)enumType.getDatabaseType()).getConnectionString(dataSource, port));
 	}
 
 	/**

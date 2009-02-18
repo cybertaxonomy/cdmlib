@@ -30,10 +30,10 @@ public class SqlServer2005DatabaseType extends DatabaseTypeBase {
 	//[serverName[\instanceName][:portNumber]][;property=value[;property=value]]
 	
     //default port
-    private int defaultPort = 1433;
+    protected int defaultPort = 1433;
     
     //hibernate dialect
-    private String hibernateDialect = "SQLServerDialect";
+    protected String hibernateDialect = "SQLServerDialect";
  
     public String getConnectionString(ICdmDataSource ds, int port){
     	return getConnectionString(ds, port, null);

@@ -102,16 +102,16 @@ public class DatabaseEnumTest {
 	@Test
 	public void testGetAllTypes() {
 		List<DatabaseTypeEnum> typeList = DatabaseTypeEnum.getAllTypes();
-		assertEquals(9, typeList.size());
+		assertEquals(8, typeList.size());
 		assertEquals(DatabaseTypeEnum.HSqlDb, typeList.get(0));
 		assertEquals(DatabaseTypeEnum.MySQL, typeList.get(1));
 		assertEquals(DatabaseTypeEnum.ODBC, typeList.get(2));
 		assertEquals(DatabaseTypeEnum.PostgreSQL, typeList.get(3));
 		assertEquals(DatabaseTypeEnum.Oracle, typeList.get(4));
-		assertEquals(DatabaseTypeEnum.SqlServer2000, typeList.get(5));
-		assertEquals(DatabaseTypeEnum.SqlServer2005, typeList.get(6));
-		assertEquals(DatabaseTypeEnum.Sybase, typeList.get(7));
-		assertEquals(DatabaseTypeEnum.H2, typeList.get(8));
+	//	assertEquals(DatabaseTypeEnum.SqlServer2000, typeList.get(5));
+		assertEquals(DatabaseTypeEnum.SqlServer2005, typeList.get(5));
+		assertEquals(DatabaseTypeEnum.Sybase, typeList.get(6));
+		assertEquals(DatabaseTypeEnum.H2, typeList.get(7));
 	}
 	
 
@@ -120,8 +120,11 @@ public class DatabaseEnumTest {
 	 */
 	@Test
 	public void testGetDatabaseEnumByDriverClass() {
-		assertEquals(DatabaseTypeEnum.SqlServer2000, DatabaseTypeEnum.getDatabaseEnumByDriverClass("com.microsoft.jdbc.sqlserver.SQLServerDriver"));
-		assertEquals(DatabaseTypeEnum.SqlServer2005, DatabaseTypeEnum.getDatabaseEnumByDriverClass("com.microsoft.sqlserver.jdbc.SQLServerDriver"));
+		//assertEquals(DatabaseTypeEnum.SqlServer2000, DatabaseTypeEnum.getDatabaseEnumByDriverClass("com.microsoft.jdbc.sqlserver.SQLServerDriver"));
+		//does not work anymore as SQLServer driver is ambigous
+		//assertEquals(DatabaseTypeEnum.SqlServer2000, DatabaseTypeEnum.getDatabaseEnumByDriverClass("com.microsoft.sqlserver.jdbc.SQLServerDriver"));
+		//assertEquals(DatabaseTypeEnum.SqlServer2005, DatabaseTypeEnum.getDatabaseEnumByDriverClass("com.microsoft.sqlserver.jdbc.SQLServerDriver"));
+		assertEquals(DatabaseTypeEnum.MySQL, DatabaseTypeEnum.getDatabaseEnumByDriverClass("com.mysql.jdbc.Driver"));
 		assertEquals(null, DatabaseTypeEnum.getDatabaseEnumByDriverClass("com.microsoft.xxx"));	
 	}
 

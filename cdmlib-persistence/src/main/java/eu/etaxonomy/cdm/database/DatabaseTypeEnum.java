@@ -36,7 +36,7 @@ public enum DatabaseTypeEnum {
 	ODBC(3),
 	PostgreSQL(4),
 	Oracle(5),
-	SqlServer2000(6),
+	//SqlServer2000(6),
 	SqlServer2005(7),
 	Sybase(8),
 	H2(9)
@@ -59,8 +59,8 @@ public enum DatabaseTypeEnum {
             	this.dbType = new PostgreSQLDatabaseType(); break;
         	case 5:
              	this.dbType = new OracleDatabaseType(); break;
-            case 6:
-            	this.dbType = new SqlServer2000DatabaseType(); break;
+//            case 6:
+//            	this.dbType = new SqlServer2000DatabaseType(); break;
             case 7:
             	this.dbType = new SqlServer2005DatabaseType(); break;
             case 8:
