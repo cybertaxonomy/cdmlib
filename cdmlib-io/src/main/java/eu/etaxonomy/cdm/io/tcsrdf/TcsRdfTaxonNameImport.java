@@ -19,7 +19,6 @@ import org.jdom.Element;
 import org.jdom.Namespace;
 import org.springframework.stereotype.Component;
 
-import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.common.XmlHelp;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
@@ -190,27 +189,46 @@ public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<I
 				}
 				
 				if (nameBase instanceof NonViralName){
-					NonViralName nonViralName = (NonViralName)nameBase;
+					NonViralName<?> nonViralName = (NonViralName<?>)nameBase;
 					
 					//AuthorTeams
 					//TODO
 					tcsElementName = "basionymAuthorship";
-					value = (String)ImportHelper.getXmlInputValue(elTaxonName, tcsElementName, taxonNameNamespace);
-					if (value != null){
+					String basionymAuthorValue = (String)ImportHelper.getXmlInputValue(elTaxonName, tcsElementName, taxonNameNamespace);
+					if (basionymAuthorValue != null){
 						INomenclaturalAuthor basionymAuthor = Team.NewInstance();
-						basionymAuthor.setNomenclaturalTitle(value);
+						basionymAuthor.setNomenclaturalTitle(basionymAuthorValue);
 						nonViralName.setBasionymAuthorTeam(basionymAuthor);
 					}
 						
 					//TODO
 					tcsElementName = "combinationAuthorship";
-					value = (String)ImportHelper.getXmlInputValue(elTaxonName, tcsElementName, taxonNameNamespace);
-					if (value != null){
+					String combinationAuthorValue = (String)ImportHelper.getXmlInputValue(elTaxonName, tcsElementName, taxonNameNamespace);
+					if (combinationAuthorValue != null){
 						INomenclaturalAuthor combinationAuthor = Team.NewInstance();
-						combinationAuthor.setNomenclaturalTitle(value);
+						combinationAuthor.setNomenclaturalTitle(combinationAuthorValue);
 						nonViralName.setCombinationAuthorTeam(combinationAuthor);
 					}
-						
+					
+					//set the authorshipCache
+					tcsElementName = "authorship";
+					String authorValue = (String)ImportHelper.getXmlInputValue(elTaxonName, tcsElementName, taxonNameNamespace);
+					String cache = nonViralName.getAuthorshipCache();
+					if ( authorValue != null){
+						//compare existing authorship cache with new one and check if it is necessary to 
+						//make cache protected  //TODO refinement
+						if (cache == null){
+							nonViralName.setAuthorshipCache(authorValue);
+						}else{
+							cache = basionymAuthorValue == null ? cache : cache.replace(basionymAuthorValue, "");
+							cache = combinationAuthorValue == null ? cache : cache.replace(combinationAuthorValue, "");
+							cache = cache.replace("\\(|\\)", "");
+							cache = cache.trim();
+							if (! cache.equals("")){
+								nonViralName.setAuthorshipCache(authorValue);
+							}
+						}
+					}
 				}
 				ImportHelper.setOriginalSource(nameBase, config.getSourceReference(), nameAbout, idNamespace);
 				
