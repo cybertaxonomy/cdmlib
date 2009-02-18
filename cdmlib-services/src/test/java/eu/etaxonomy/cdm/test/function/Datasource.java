@@ -68,7 +68,7 @@ public class Datasource {
 	}
 
 	private void testSqlServer(){
-		DatabaseTypeEnum databaseTypeEnum = DatabaseTypeEnum.SqlServer2000;
+		DatabaseTypeEnum databaseTypeEnum = DatabaseTypeEnum.SqlServer2005;
 		String server = "LAPTOPHP";
 		String database = "cdmTest";
 		String username = "edit";
