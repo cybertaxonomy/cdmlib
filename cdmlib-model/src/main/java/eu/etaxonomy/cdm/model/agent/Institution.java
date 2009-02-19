@@ -71,6 +71,7 @@ public class Institution extends Agent {
     @XmlSchemaType(name = "IDREF")
 	private Institution isPartOf;
 	
+    // TODO: Move to Agent
     @XmlElement(name = "Contact")
 	private Contact contact;
 
@@ -94,6 +95,7 @@ public class Institution extends Agent {
 	 * It includes telecommunication data
 	 * and electronic as well as multiple postal addresses.
  	 */
+	// TODO: Move to Agent, mark as @OneToOne
 	@ManyToOne
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public Contact getContact(){

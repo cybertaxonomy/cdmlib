@@ -86,6 +86,7 @@ public class Person extends TeamOrPersonBase<Person> {
     @XmlElement(name = "InstitutionalMembership")
 	protected Set<InstitutionalMembership> institutionalMemberships;
 	
+    // TODO: Move to Agent
     @XmlElement(name = "Contact")
 	private Contact contact;
 	
@@ -249,13 +250,13 @@ public class Person extends TeamOrPersonBase<Person> {
 	}
 
 
-
 	/** 
 	 * Returns the {@link Contact contact} of <i>this</i> person.
 	 * The contact contains several ways to approach <i>this</i> person.
 	 *
 	 * @see 	Contact
 	 */
+	// TODO: Move to Agent, mark as @OneToOne
 	@ManyToOne(fetch=FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE})
 	public Contact getContact(){

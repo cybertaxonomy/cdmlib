@@ -11,7 +11,11 @@ package eu.etaxonomy.cdm.model.agent;
 
 import java.util.Set;
 
+//import javax.persistence.Column;
 import javax.persistence.Entity;
+//import javax.persistence.JoinColumn;
+//import javax.persistence.JoinTable;
+//import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -25,6 +29,7 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+//import org.hibernate.annotations.CollectionOfElements;
 
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 
@@ -52,6 +57,7 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
 })
 @XmlRootElement(name = "Contact")
 @Entity
+//@Embeddable
 //@Audited
 public class Contact extends VersionableEntity {
 	private static final long serialVersionUID = -1851305307069277625L;
@@ -69,6 +75,8 @@ public class Contact extends VersionableEntity {
 	
 	@XmlElement(name = "EmailAddress")
 	private String email;
+	// TODO: Make email, url, phone, fax Sets
+	//private Set<String> email;
 	
 	@XmlElement(name = "URL")
     @XmlSchemaType(name = "anyURI")
@@ -134,6 +142,16 @@ public class Contact extends VersionableEntity {
 	 * Returns the string representing the electronic mail address
 	 * included in <i>this</i> contact.
 	 */
+	// TODO:
+//	@CollectionOfElements(
+//			targetElement = String.class
+//	)
+//	@JoinTable(
+//		name = "item_email",
+//		joinColumns = @JoinColumn(name = "email_id")
+//	)
+//	@Column(name = "EINNAME" , nullable = false)
+//	public Set<String> getEmail(){
 	public String getEmail(){
 		return this.email;
 	}
@@ -141,6 +159,7 @@ public class Contact extends VersionableEntity {
 	/**
 	 * @see  #getEmail()
 	 */
+	//public void setEmail(Set<String> email){
 	public void setEmail(String email){
 		this.email = email;
 	}

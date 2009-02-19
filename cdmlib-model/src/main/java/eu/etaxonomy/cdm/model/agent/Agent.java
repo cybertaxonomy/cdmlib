@@ -11,11 +11,17 @@ package eu.etaxonomy.cdm.model.agent;
 
 
 
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.OneToOne;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Index;
 import org.hibernate.annotations.Table;
 
@@ -45,6 +51,26 @@ public abstract class Agent extends IdentifiableMediaEntity{
 	 */
 	private static final long serialVersionUID = 7732768617469448829L;
 
+	// TODO: Move contact field here (from Person and Institution)
+//    @XmlElement(name = "Contact")
+//	private Contact contact;
+	
+	/** 
+	 * Returns the {@link Contact contact} of <i>this</i> person.
+	 * The contact contains several ways to approach <i>this</i> person.
+	 *
+	 * @see 	Contact
+	 */
+//	@Embedded
+//	public Contact getContact(){
+//		return this.contact;
+//	}
+	/**
+	 * @see  #getContact()
+	 */
+//	public void setContact(Contact contact){
+//		this.contact = contact;
+//	}
 
 	
 
