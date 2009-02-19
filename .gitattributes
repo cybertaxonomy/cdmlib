@@ -1497,11 +1497,13 @@ eclipse-updateSite/features/eu.etaxonomy.cdmLibrary_2.0.0.08.jar -text
 eclipse-updateSite/features/eu.etaxonomy.cdmLibrary_2.0.0.09.jar -text
 eclipse-updateSite/features/eu.etaxonomy.cdmLibrary_2.0.0.14.jar -text
 eclipse-updateSite/features/eu.etaxonomy.cdmLibrary_2.0.0.20.jar -text
+eclipse-updateSite/features/eu.etaxonomy.cdmLibrary_2.0.0.21.jar -text
 eclipse-updateSite/index.html -text
 eclipse-updateSite/plugins/eu.etaxonomy.cdmLibrary_2.0.0.08.jar -text
 eclipse-updateSite/plugins/eu.etaxonomy.cdmLibrary_2.0.0.09.jar -text
 eclipse-updateSite/plugins/eu.etaxonomy.cdmLibrary_2.0.0.14.jar -text
 eclipse-updateSite/plugins/eu.etaxonomy.cdmLibrary_2.0.0.20.jar -text
+eclipse-updateSite/plugins/eu.etaxonomy.cdmLibrary_2.0.0.21.jar -text
 eclipse-updateSite/site.xml -text
 libraryTesterApplication/.classpath -text
 libraryTesterApplication/.project -text
