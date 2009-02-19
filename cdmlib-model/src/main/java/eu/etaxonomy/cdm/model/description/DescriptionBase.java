@@ -16,7 +16,9 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -30,6 +32,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.IndexedEmbedded;
 
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
@@ -57,6 +60,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 @XmlType(name = "DescriptionBase", propOrder = {
     "describedSpecimenOrObservations",
     "descriptionSources",
+    "descriptiveSystem",
     "descriptionElements"
 })
 @Entity
@@ -74,6 +78,10 @@ public abstract class DescriptionBase extends IdentifiableEntity {
 	@XmlElementWrapper(name = "DescriptionSources")
 	@XmlElement(name = "DescriptionSource")
 	private Set<ReferenceBase> descriptionSources = new HashSet<ReferenceBase>();
+	
+	@XmlElementWrapper(name = "DescriptiveSystem")
+	@XmlElement(name = "Feature")
+	private Set<Feature> descriptiveSystem = new HashSet<Feature>();
 	
 	@XmlElementWrapper(name = "DescriptionElements")
     @XmlElements({
@@ -190,6 +198,52 @@ public abstract class DescriptionBase extends IdentifiableEntity {
 		this.descriptionSources.remove(descriptionSource);
 	}
 
+	/**
+	 * Returns the set of {@link Feature feature} used as 
+	 * features/characters/descriptors for <i>this</i> description.
+	 * 
+	 * @see    #addFeature(Feature)
+	 * @see    #removeFeature(Feature)
+	 */
+	@ManyToMany(fetch = FetchType.LAZY)  //FIXME
+	@Cascade( { CascadeType.SAVE_UPDATE })
+	@JoinTable(name = "DescriptionBase_Feature")
+	public Set<Feature> getDescriptiveSystem() {
+		return this.descriptiveSystem;
+	}
+	
+	/** 
+	 * @see    #getDescriptiveSystem()
+	 * @see    #addDescriptiveSystem(Feature)
+	 */
+	public void setDescriptiveSystem(Set<Feature> descriptiveSystem) {
+		this.descriptiveSystem = descriptiveSystem;
+	}
+	
+	/**
+	 * Adds an existing {@link Feature feature} to the set of
+	 * {@link #getDescriptiveSystem() descriptiveSystem} used as features for
+	 * <i>this</i> description.
+	 * 
+	 * @param feature	the feature to be added to the descriptive system
+	 * @see     #getDescriptiveSystem()
+	 */
+	public void addFeature(Feature feature) {
+		this.descriptiveSystem.add(feature);
+	}
+	
+	/** 
+	 * Removes one element from the set of {@link #getDescriptiveSystem() features} used as
+	 * features for <i>this</i> description.
+	 *
+	 * @param  feature	the feature which should be deleted
+	 * @see     #getDescriptiveSystem()
+	 * @see     addFeature(Feature)
+	 */
+	public void removeFeature(Feature feature) {
+		this.descriptiveSystem.remove(feature);
+	}
+	
 	/**
 	 * Returns the set of {@link DescriptionElementBase elementary description data} which constitute
 	 * <i>this</i> description as a whole. 
