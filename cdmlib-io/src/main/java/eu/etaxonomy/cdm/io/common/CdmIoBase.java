@@ -53,14 +53,16 @@ public abstract class CdmIoBase<T extends IIoConfigurator> extends CdmApplicatio
 		TransactionDefinition txDef = defaultTxDef;
 
 		// Log some transaction-related debug information.
-		logger.debug("Transaction name = " + txDef.getName());
-		logger.debug("Transaction facets:");
-		logger.debug("Propagation behavior = " + txDef.getPropagationBehavior());
-		logger.debug("Isolation level = " + txDef.getIsolationLevel());
-		logger.debug("Timeout = " + txDef.getTimeout());
-		logger.debug("Read Only = " + txDef.isReadOnly());
-		// org.springframework.orm.hibernate3.HibernateTransactionManager
-		// provides more transaction/session-related debug information.
+		if (logger.isDebugEnabled()) { 
+			logger.debug("Transaction name = " + txDef.getName());
+			logger.debug("Transaction facets:");
+			logger.debug("Propagation behavior = " + txDef.getPropagationBehavior());
+			logger.debug("Isolation level = " + txDef.getIsolationLevel());
+			logger.debug("Timeout = " + txDef.getTimeout());
+			logger.debug("Read Only = " + txDef.isReadOnly());
+			// org.springframework.orm.hibernate3.HibernateTransactionManager
+			// provides more transaction/session-related debug information.
+		}
 		
 		TransactionStatus txStatus = super.getTransactionManager().getTransaction(txDef);
 		return txStatus;

@@ -26,6 +26,7 @@ public class CdmDefaultExport<T extends IExportConfigurator> implements ICdmExpo
 
 	private CdmApplicationController cdmApp = null;
 	
+
 	public boolean invoke(T config){
 		ICdmDataSource source = config.getSource();
 		return invoke(config, source);
@@ -33,8 +34,14 @@ public class CdmDefaultExport<T extends IExportConfigurator> implements ICdmExpo
 
 	
 	public boolean invoke(IExportConfigurator config, ICdmDataSource source){
-		source = source;
+//		source = source;
 		boolean omitTermLoading = false;
+		
+		return invoke(config, source, omitTermLoading);
+	}
+	
+	public boolean invoke(IExportConfigurator config, ICdmDataSource source, boolean omitTermLoading) {
+
 		boolean createNew = false;
 		
 		if (startApplicationController(config, source, omitTermLoading, createNew) == false){
@@ -45,7 +52,7 @@ public class CdmDefaultExport<T extends IExportConfigurator> implements ICdmExpo
 			return defaultExport.invoke(config);
 		}
 	}
-	
+
 	/**
 	 * Executes the whole 
 	 */

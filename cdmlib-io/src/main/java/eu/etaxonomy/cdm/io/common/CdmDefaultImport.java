@@ -32,6 +32,19 @@ public class CdmDefaultImport<T extends IImportConfigurator> implements ICdmImpo
 		return invoke(config, destination, omitTermLoading);
 	}
 
+	public boolean invoke(IImportConfigurator config, ICdmDataSource destination, boolean omitTermLoading){
+//		destination = destination;
+//		omitTermLoading = omitTermLoading;
+		boolean createNew = false;
+		
+		if (startApplicationController(config, destination, omitTermLoading, createNew) == false){
+			return false;
+		}else{
+			CdmApplicationAwareDefaultImport<?> defaultImport = (CdmApplicationAwareDefaultImport<?>)cdmApp.applicationContext.getBean("defaultImport");
+			return defaultImport.invoke(config);
+		}
+	}
+
 	/**
 	 * Starts the CdmApplicationController if not yet started
 	 * @param config Configuration
@@ -44,19 +57,6 @@ public class CdmDefaultImport<T extends IImportConfigurator> implements ICdmImpo
 		return startApplicationController(config, destination, omitTermLoading, createNew);
 	}
 	
-	public boolean invoke(IImportConfigurator config, ICdmDataSource destination, boolean omitTermLoading){
-		destination = destination;
-		omitTermLoading = omitTermLoading;
-		boolean createNew = false;
-		
-		if (startApplicationController(config, destination, omitTermLoading, createNew) == false){
-			return false;
-		}else{
-			CdmApplicationAwareDefaultImport<?> defaultImport = (CdmApplicationAwareDefaultImport<?>)cdmApp.applicationContext.getBean("defaultImport");
-			return defaultImport.invoke(config);
-		}
-	}
-
 	/**
 	 * Creates a new {@link CdmApplicationController} if it does not exist yet or if createNew is <ocde>true</code>
 	 * @param config

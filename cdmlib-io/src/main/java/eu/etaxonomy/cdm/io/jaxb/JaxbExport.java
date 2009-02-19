@@ -40,25 +40,21 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 /**
  * @author a.babadshanjan
  * @created 25.09.2008
+ * @version 1.0
  */
 @Component
 public class JaxbExport extends CdmIoBase<IExportConfigurator> implements ICdmIO<IExportConfigurator> {
-// public class JaxbExport extends CdmIoBase implements ICdmIoExport {
-// TODO: public class JaxbExport extends CdmIoBase implements ICdmIO {
 
 	private static final Logger logger = Logger.getLogger(JaxbExport.class);
 	private CdmDocumentBuilder cdmDocumentBuilder = null;
 
-	private String ioName = null;
-
-	
 	/**
 	 * 
 	 */
-	public JaxbExport() {
-		super();
-		this.ioName = this.getClass().getSimpleName();
-	}
+//	public JaxbExport() {
+//		super();
+//		this.ioName = this.getClass().getSimpleName();
+//	}
 
 	/** Retrieves data from a CDM DB and serializes them CDM to XML.
 	 * Starts with root taxa and traverses the taxonomic tree to retrieve children taxa, synonyms and relationships.
@@ -80,8 +76,6 @@ public class JaxbExport extends CdmIoBase<IExportConfigurator> implements ICdmIO
 
 		TransactionStatus txStatus = startTransaction(true);
 		DataSet dataSet = new DataSet();
-		List<Taxon> taxa = null;
-		List<DefinedTermBase> terms = null;
 
 		// get data from DB
 

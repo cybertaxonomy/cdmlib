@@ -42,6 +42,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 /**
  * @author a.babadshanjan
  * @created 13.11.2008
+ * @version 1.0
  */
 @Component
 public class JaxbImport extends CdmIoBase<IImportConfigurator> implements ICdmIO<IImportConfigurator> {
@@ -49,10 +50,8 @@ public class JaxbImport extends CdmIoBase<IImportConfigurator> implements ICdmIO
 	private static final Logger logger = Logger.getLogger(JaxbImport.class);
 	private CdmDocumentBuilder cdmDocumentBuilder = null;
 	
-	
 
-	
-    /** Reads data from an XML file and stores them into a CDM DB.
+	/** Reads data from an XML file and stores them into a CDM DB.
      * 
      * @param config
      * @param stores (not used)
@@ -64,7 +63,6 @@ public class JaxbImport extends CdmIoBase<IImportConfigurator> implements ICdmIO
 		boolean success = true;
         URI uri = null;
 		JaxbImportConfigurator jaxbImpConfig = (JaxbImportConfigurator)config;
-//    	String dbname = jaxbImpConfig.getDestination().getDatabase();
     	
     	String urlFileName = (String)config.getSource();
 		logger.debug("urlFileName: " + urlFileName);
@@ -81,7 +79,6 @@ public class JaxbImport extends CdmIoBase<IImportConfigurator> implements ICdmIO
 		DataSet dataSet = new DataSet();
 		
         // unmarshalling XML file
-		
 		try {
 			cdmDocumentBuilder = new CdmDocumentBuilder();
 			logger.info("Unmarshalling file: " + urlFileName);
@@ -111,11 +108,10 @@ public class JaxbImport extends CdmIoBase<IImportConfigurator> implements ICdmIO
 		List<DefinedTermBase> terms;
 		List<ReferenceBase> references;
 		List<TaxonNameBase> taxonomicNames;
-		List<DescriptionBase> descriptions;
+		//List<DescriptionBase> descriptions;
 		List<ReferencedEntityBase> referencedEntities;
 		List<SpecimenOrObservationBase> occurrences;
 		List<VersionableEntity> featureData;
-//		List<VersionableEntity> featureData;
 		List<Media> media;
 		List<LanguageStringBase> languageData;
 		List<TermVocabulary<DefinedTermBase>> termVocabularies;
@@ -124,8 +120,8 @@ public class JaxbImport extends CdmIoBase<IImportConfigurator> implements ICdmIO
 		// Get an app controller that omits term loading
 		// CdmApplicationController.getCdmAppController(boolean createNew, boolean omitTermLoading){
 //		CdmApplicationController appCtr = jaxbImpConfig.getCdmAppController(false, true);
-		//TransactionStatus txStatus = appCtr.startTransaction();
-		TransactionStatus txStatus = null;
+		//TransactionStatus txStatus = startTransaction();
+		//TransactionStatus txStatus = null;
 
 		// Have single transactions per service save call. Otherwise, getting
 		// H2 HYT00 error (timeout locking table DEFINEDTERMBASE) when running from editor.
@@ -137,21 +133,21 @@ public class JaxbImport extends CdmIoBase<IImportConfigurator> implements ICdmIO
 
 		if ((jaxbImpConfig.isDoTermVocabularies() == true) 
 				&& (termVocabularies = dataSet.getTermVocabularies()).size() > 0) {
-			txStatus = startTransaction();
+			//txStatus = startTransaction();
 			ret &= saveTermVocabularies(termVocabularies);
-			commitTransaction(txStatus);
+			//commitTransaction(txStatus);
 		}
 		
 		if ((jaxbImpConfig.isDoTerms() == true)
 				&& (terms = dataSet.getTerms()).size() > 0) {
-			txStatus = startTransaction();
+			//txStatus = startTransaction();
 			ret &= saveTerms(terms);
-			commitTransaction(txStatus);
+			//commitTransaction(txStatus);
 		}
 		
 		// TODO: Have separate data save methods
 
-		txStatus = startTransaction();
+		//txStatus = startTransaction();
 		try {
 			if (jaxbImpConfig.isDoLanguageData() == true) {
 				if ((languageData = dataSet.getLanguageData()).size() > 0) {
@@ -163,10 +159,10 @@ public class JaxbImport extends CdmIoBase<IImportConfigurator> implements ICdmIO
 			logger.error("Error saving language data");
 			ret = false;
 		}
-		commitTransaction(txStatus);
+		//commitTransaction(txStatus);
 
 		
-		txStatus = startTransaction();
+		//txStatus = startTransaction();
 		try {
 			if (jaxbImpConfig.isDoAuthors() == true) {
 				if ((agents = dataSet.getAgents()).size() > 0) {
@@ -178,10 +174,10 @@ public class JaxbImport extends CdmIoBase<IImportConfigurator> implements ICdmIO
 			logger.error("Error saving agents");
 			ret = false;
 		}
-		commitTransaction(txStatus);
+		//commitTransaction(txStatus);
 
 
-		txStatus = startTransaction();
+		//txStatus = startTransaction();
 		try {
 			if (jaxbImpConfig.getDoReferences() != IImportConfigurator.DO_REFERENCES.NONE) {
 				if ((references = dataSet.getReferences()).size() > 0) {
@@ -193,10 +189,10 @@ public class JaxbImport extends CdmIoBase<IImportConfigurator> implements ICdmIO
 			logger.error("Error saving references");
 			ret = false;
 		}
-		commitTransaction(txStatus);
+		//commitTransaction(txStatus);
 
 
-		txStatus = startTransaction();
+		//txStatus = startTransaction();
 		try {
 			if (jaxbImpConfig.isDoTaxonNames() == true) {
 				if ((taxonomicNames = dataSet.getTaxonomicNames()).size() > 0) {
@@ -208,10 +204,10 @@ public class JaxbImport extends CdmIoBase<IImportConfigurator> implements ICdmIO
 			logger.error("Error saving taxon names");
 			ret = false;
 		}
-		commitTransaction(txStatus);
+		//commitTransaction(txStatus);
 
 
-		txStatus = startTransaction();
+		//txStatus = startTransaction();
 		try {
 			if (jaxbImpConfig.isDoHomotypicalGroups() == true) {
 				if ((homotypicalGroups = dataSet.getHomotypicalGroups()).size() > 0) {
@@ -223,10 +219,10 @@ public class JaxbImport extends CdmIoBase<IImportConfigurator> implements ICdmIO
 			logger.error("Error saving homotypical groups");
 			ret = false;
 		}
-		commitTransaction(txStatus);
+		//commitTransaction(txStatus);
 
 
-		txStatus = startTransaction();
+		//txStatus = startTransaction();
 		// Need to get the taxa and the synonyms here.
 		try {
 			if (jaxbImpConfig.isDoTaxa() == true) {
@@ -239,10 +235,10 @@ public class JaxbImport extends CdmIoBase<IImportConfigurator> implements ICdmIO
 			logger.error("Error saving taxa");
 			ret = false;
 		}
-		commitTransaction(txStatus);
+		//commitTransaction(txStatus);
 
 
-		txStatus = startTransaction();
+		//txStatus = startTransaction();
 		// NomenclaturalStatus, TypeDesignations
 		try {
 			if (jaxbImpConfig.isDoReferencedEntities() == true) {
@@ -255,7 +251,7 @@ public class JaxbImport extends CdmIoBase<IImportConfigurator> implements ICdmIO
 			logger.error("Error saving referenced entities");
 			ret = false;
 		}
-		commitTransaction(txStatus);
+		//commitTransaction(txStatus);
 
 
 		// TODO: Implement dataSet.getDescriptions() and IDescriptionService.saveDescriptionAll()
@@ -264,7 +260,7 @@ public class JaxbImport extends CdmIoBase<IImportConfigurator> implements ICdmIO
 //		getDescriptionService().saveDescriptionAll(descriptions);
 //		}
 
-		txStatus = startTransaction();
+		//txStatus = startTransaction();
 		try {
 			if (jaxbImpConfig.isDoOccurrence() == true) {
 				if ((occurrences = dataSet.getOccurrences()).size() > 0) {
@@ -276,10 +272,10 @@ public class JaxbImport extends CdmIoBase<IImportConfigurator> implements ICdmIO
 			logger.error("Error saving occurrences");
 			ret = false;
 		}
-		commitTransaction(txStatus);
+		//commitTransaction(txStatus);
 
 
-		txStatus = startTransaction();
+		//txStatus = startTransaction();
 		try {
 			if (jaxbImpConfig.isDoFeatureData() == true) {
 				if ((featureData = dataSet.getFeatureData()).size() > 0) {
@@ -291,10 +287,10 @@ public class JaxbImport extends CdmIoBase<IImportConfigurator> implements ICdmIO
 			logger.error("Error saving feature data");
 			ret = false;
 		}
-		commitTransaction(txStatus);
+		//commitTransaction(txStatus);
 
 
-		txStatus = startTransaction();
+		//txStatus = startTransaction();
 		try {
 			if (jaxbImpConfig.isDoMedia() == true) {
 				if ((media = dataSet.getMedia()).size() > 0) {
@@ -306,9 +302,9 @@ public class JaxbImport extends CdmIoBase<IImportConfigurator> implements ICdmIO
 			logger.error("Error saving media");
 			ret = false;
 		}
-		commitTransaction(txStatus);
+		//commitTransaction(txStatus);
 
-//		commitTransaction(txStatus);
+		//commitTransaction(txStatus);
 		logger.info("All data saved");
 
 		return ret;
