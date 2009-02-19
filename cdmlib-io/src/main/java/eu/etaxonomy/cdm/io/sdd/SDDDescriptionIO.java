@@ -104,6 +104,8 @@ public class SDDDescriptionIO extends SDDIoBase implements ICdmIO<IImportConfigu
 	private Map<String,TaxonDescription> taxonDescriptions = new HashMap<String,TaxonDescription>();
 	private Map<String,NonViralName> taxonNameBases = new HashMap<String,NonViralName>();
 	private Map<String,MeasurementUnit> units = new HashMap<String,MeasurementUnit>();
+	
+	private Set<Feature> featureSet = new HashSet<Feature>();
 
 	private ReferenceBase sec = Database.NewInstance();
 	private ReferenceBase sourceReference = null;
@@ -833,6 +835,11 @@ protected void importCharacters(Element elDataset, Namespace sddNamespace, SDDIm
 		}
 
 	}
+	
+	for (Iterator<Feature> f = features.values().iterator() ; f.hasNext() ;){
+		featureSet.add(f.next());
+	}
+	
 }
 
 // imports the descriptions of taxa (specimens TODO)
@@ -1002,7 +1009,9 @@ protected void importCodedDescriptions(Element elDataset, Namespace sddNamespace
 				if (!location.equals("")){
 					locations.put(idCD, location);
 				}
-
+				
+				taxonDescription.setDescriptiveSystem(featureSet);
+				
 				taxonDescriptions.put(idCD, taxonDescription);
 
 			} catch (Exception e) {
