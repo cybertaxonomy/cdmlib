@@ -25,6 +25,7 @@ import eu.etaxonomy.cdm.io.jaxb.JaxbImportConfigurator;
 /**
  * @author a.babadshanjan
  * @created 25.09.2008
+ * @version 1.0
  */
 public class CdmExportImportActivator {
 
@@ -120,7 +121,7 @@ public class CdmExportImportActivator {
 		logger.debug("Invoking Jaxb import");
 //		CdmImporter cdmImporter = new CdmImporter();
 //		cdmImporter.invoke(jaxbImportConfigurator, null);
-		jaxbImport.invoke(jaxbImportConfigurator);
+		jaxbImport.invoke(jaxbImportConfigurator, destination, true);
 
 	}
 
@@ -155,7 +156,7 @@ public class CdmExportImportActivator {
 //		appCtr = sc.initDb(sourceDb);
 //		sc.loadTestData(appCtr);
 		
-//		sc.invokeExport();
+		sc.invokeExport();
 		sc.invokeImport();
 	}
 
