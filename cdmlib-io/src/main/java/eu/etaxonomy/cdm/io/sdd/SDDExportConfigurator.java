@@ -49,7 +49,7 @@ public class SDDExportConfigurator extends ExportConfiguratorBase implements IEx
 	
 	
 	public static SDDExportConfigurator NewInstance(ICdmDataSource source, String url, String destinationFolder) {
-		return new SDDExportConfigurator(source, url);
+		return new SDDExportConfigurator(source, destinationFolder + File.separator + url);
 	}
 	
 	
