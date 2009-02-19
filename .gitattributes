@@ -1341,8 +1341,10 @@ cdmlib-services/src/main/resources/eu/etaxonomy/cdm/defaultApplicationContext.xm
 cdmlib-services/src/main/resources/eu/etaxonomy/cdm/defaultSecurityContext.xml -text
 cdmlib-services/src/main/resources/eu/etaxonomy/cdm/services.xml -text
 cdmlib-services/src/site/site.xml -text
+cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/DescriptionServiceImplTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/NameServiceImplTest2.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/TaxonServiceImplTest.java -text
+cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/TaxonServiceSearchTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/TermServiceImplTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/function/Datasource.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/function/TestDatabase.java -text
@@ -1355,6 +1357,7 @@ cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/integration/TestTaxonService
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/suite/CdmTestSuite.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/unit/CdmUnitTestBase.java -text
 cdmlib-services/src/test/resources/dbscripts/001_cdm.ddl -text
+cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/TaxonServiceImplTest.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/applicationContext-test.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/applicationContext.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/cdm.datasources.xml -text

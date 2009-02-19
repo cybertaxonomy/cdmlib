@@ -39,31 +39,32 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
 	 * @param uuid
 	 * @return
 	 */
-	public abstract DescriptionBase getDescriptionBaseByUuid(UUID uuid);
+	public DescriptionBase getDescriptionBaseByUuid(UUID uuid);
 
 	/**
 	 * Persists a <code>Description</code>
 	  * @param description
 	 * @return
 	 */
-	public abstract UUID saveDescription(DescriptionBase description);
+	public UUID saveDescription(DescriptionBase description);
 
 	/**
 	 * Persists a <code>FeatureTree</code>
 	 * @param tree
 	 * @return
 	 */
-	public abstract UUID saveFeatureTree(FeatureTree tree);
+	public UUID saveFeatureTree(FeatureTree tree);
 	// FIXME could you handle the feature data elements using @Cascade?
-	public abstract void saveFeatureDataAll(Collection<VersionableEntity> featureData);
-	public abstract Map<UUID, FeatureTree> saveFeatureTreeAll(Collection<FeatureTree> trees);
-	public abstract Map<UUID, FeatureNode> saveFeatureNodeAll(Collection<FeatureNode> nodes);
+	public void saveFeatureDataAll(Collection<VersionableEntity> featureData);
+	public Map<UUID, FeatureTree> saveFeatureTreeAll(Collection<FeatureTree> trees);
+	public Map<UUID, FeatureNode> saveFeatureNodeAll(Collection<FeatureNode> nodes);
 	
-	public abstract List<FeatureTree> getFeatureTreesAll();
-	public abstract List<FeatureNode> getFeatureNodesAll();
+	public List<FeatureTree> getFeatureTreesAll();
+	public List<FeatureNode> getFeatureNodesAll();
 	
-	public abstract TermVocabulary<Feature> getDefaultFeatureVocabulary();
-	public abstract TermVocabulary<Feature> getFeatureVocabulary(UUID uuid);
+	public TermVocabulary<Feature> getDefaultFeatureVocabulary();
+	//public TermVocabulary<Feature> getFeatureVocabulary();
+	public TermVocabulary<Feature> getFeatureVocabulary(UUID uuid);
 
 	/**
 	 * List the descriptions of type <TYPE>, filtered using the following parameters

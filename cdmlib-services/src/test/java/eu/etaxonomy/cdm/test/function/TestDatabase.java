@@ -2,6 +2,8 @@
 
 package eu.etaxonomy.cdm.test.function;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
@@ -9,11 +11,16 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.service.IDatabaseService;
 import eu.etaxonomy.cdm.api.service.INameService;
+import eu.etaxonomy.cdm.common.AccountStore;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
+import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
+import eu.etaxonomy.cdm.model.agent.Agent;
+import eu.etaxonomy.cdm.model.agent.Contact;
+import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.init.TermNotFoundException;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
@@ -226,6 +233,57 @@ public class TestDatabase {
 		}
 	}
 	
+	
+	public void testContact(){
+		try {
+//			String server = "192.168.2.10";
+//			String database = "cdm_test_andreasM";
+//			String username = "edit";
+//			String password = CdmUtils.readInputLine("Password: ");
+			DbSchemaValidation dbSchemaValidation = DbSchemaValidation.CREATE;
+
+//			ICdmDataSource datasource = CdmDataSource.NewMySqlInstance(server, database, username, password);
+			//ICdmDataSource datasource = CdmDataSource.NewH2EmbeddedInstance("CDM", "sa", "");
+			ICdmDataSource datasource = cdm_test_anahit2();
+			CdmApplicationController appCtr = CdmApplicationController.NewInstance(datasource, dbSchemaValidation);
+			Agent person = Person.NewTitledInstance("TestPerson");
+			Contact contact1 = new Contact();
+			Set<String> set = new HashSet<String>();
+			set.add("email1");
+			set.add("c@d.org");
+//			contact1.setEmail(set);
+//			person.setContact(contact1);
+			appCtr.getAgentService().save(person);
+			appCtr.close();
+			System.out.println("End");
+		} catch (DataSourceNotFoundException e) {
+			logger.error("datasource error");
+		} catch (TermNotFoundException e) {
+			logger.error("defined terms not found");
+		}
+	}
+	
+	
+	public static ICdmDataSource cdm_test_anahit2(){
+		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
+		String cdmServer = "192.168.2.10";
+		String cdmDB = "cdm_test_anahit2"; 
+		String cdmUserName = "edit";
+		return makeDestination(cdmServer, cdmDB, -1, cdmUserName, null);
+	}
+	
+	/**
+	 * initializes source
+	 * @return true, if connection establisehd
+	 */
+	private static ICdmDataSource makeDestination(String cdmServer, String cdmDB, int port, String cdmUserName, String pwd ){
+		//establish connection
+		pwd = AccountStore.readOrStorePassword(cdmServer, cdmDB, cdmUserName, pwd);
+		//TODO not MySQL
+		ICdmDataSource destination = CdmDataSource.NewMySqlInstance(cdmServer, cdmDB, port, cdmUserName, pwd);
+		return destination;
+
+	}
 
 	
 	/**
@@ -233,7 +291,7 @@ public class TestDatabase {
 	 */
 	public static void  main(String[] args) {
 		TestDatabase sc = new TestDatabase();
-    	sc.test();
+    	sc.testContact();
 	}
 
 }

@@ -56,7 +56,7 @@ import eu.etaxonomy.cdm.persistence.dao.description.IStatisticalMeasurementValue
 @Service
 @Transactional(readOnly = true)
 public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionBase,IDescriptionDao> implements IDescriptionService {
-	
+ 	
 	private static final Logger logger = Logger.getLogger(DescriptionServiceImpl.class);
 
 	protected IDescriptionElementDao descriptionElementDao;
@@ -173,6 +173,16 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
 		}
 		return featureVocabulary;
 	}
+
+//	public TermVocabulary<Feature> getFeatureVocabulary(){
+//		TermVocabulary<Feature> featureVocabulary;
+//		try {
+//			featureVocabulary = (TermVocabulary)vocabularyDao.findByUuid(uuid);
+//		} catch (ClassCastException e) {
+//			return null;
+//		}
+//		return featureVocabulary;
+//	}
 
 	public TermVocabulary<Feature> getDefaultFeatureVocabulary(){
 		String uuidFeature = "b187d555-f06f-4d65-9e53-da7c93f8eaa8";

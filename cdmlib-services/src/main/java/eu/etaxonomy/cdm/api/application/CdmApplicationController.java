@@ -162,8 +162,6 @@ public class CdmApplicationController {
 			appContext.refresh();
 			appContext.start();
 			
-//			CdmTermInitializer.omit = false;
-
 		} catch (BeanCreationException e) {
 			// create new schema
 			if (dbSchemaValidation == DbSchemaValidation.VALIDATE) {
@@ -178,15 +176,6 @@ public class CdmApplicationController {
 			return false;
 		}
 		setApplicationContext(appContext);
-		// load defined terms if necessary 
-		//TODO not necessary any more
-//		if (CdmTermInitializer.omit == false) {
-//			if (testDefinedTermsAreMissing()){
-//				throw new TermNotFoundException("Some needed Terms are Missing.");
-//			}
-//		}
-//		
-//		CdmTermInitializer.omit = false;
 		return true;
 	}
 	
@@ -354,14 +343,16 @@ public class CdmApplicationController {
 		TransactionDefinition txDef = defaultTxDef;
 
 		// Log some transaction-related debug information.
-		logger.debug("Transaction name = " + txDef.getName());
-		logger.debug("Transaction facets:");
-		logger.debug("Propagation behavior = " + txDef.getPropagationBehavior());
-		logger.debug("Isolation level = " + txDef.getIsolationLevel());
-		logger.debug("Timeout = " + txDef.getTimeout());
-		logger.debug("Read Only = " + txDef.isReadOnly());
-		// org.springframework.orm.hibernate3.HibernateTransactionManager
-		// provides more transaction/session-related debug information.
+		if (logger.isDebugEnabled()) {
+			logger.debug("Transaction name = " + txDef.getName());
+			logger.debug("Transaction facets:");
+			logger.debug("Propagation behavior = " + txDef.getPropagationBehavior());
+			logger.debug("Isolation level = " + txDef.getIsolationLevel());
+			logger.debug("Timeout = " + txDef.getTimeout());
+			logger.debug("Read Only = " + txDef.isReadOnly());
+			// org.springframework.orm.hibernate3.HibernateTransactionManager
+			// provides more transaction/session-related debug information.
+		}
 		
 		TransactionStatus txStatus = txManager.getTransaction(txDef);
 		return txStatus;
