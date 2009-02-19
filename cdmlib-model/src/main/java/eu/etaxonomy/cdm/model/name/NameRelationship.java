@@ -68,6 +68,8 @@ public class NameRelationship extends RelationshipBase<TaxonNameBase, TaxonNameB
 	private TaxonNameBase relatedTo;
 	
     @XmlElement(name = "Type")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
 	private NameRelationshipType type;
 
 	//for hibernate, don't use
