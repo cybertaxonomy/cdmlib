@@ -104,8 +104,7 @@ public abstract class DescriptionBase extends IdentifiableEntity {
 	 * @see    #addDescribedSpecimenOrObservations(SpecimenOrObservationBase)
 	 * @see    #removeDescribedSpecimenOrObservations(SpecimenOrObservationBase)
 	 */
-	//@ManyToMany  //FIXME
-	@Transient 
+	@ManyToMany(fetch = FetchType.LAZY)
 	public Set<SpecimenOrObservationBase> getDescribedSpecimenOrObservations() {
 		return describedSpecimenOrObservations;
 	}

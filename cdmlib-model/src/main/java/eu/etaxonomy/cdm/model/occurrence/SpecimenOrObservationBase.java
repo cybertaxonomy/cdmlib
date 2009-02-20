@@ -38,6 +38,7 @@ import org.hibernate.annotations.Table;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.MultilanguageText;
+import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.Sex;
 import eu.etaxonomy.cdm.model.description.SpecimenDescription;
 import eu.etaxonomy.cdm.model.description.Stage;
@@ -70,7 +71,9 @@ public abstract class SpecimenOrObservationBase extends IdentifiableMediaEntity 
 	
 	@XmlElementWrapper(name = "Descriptions")
 	@XmlElement(name = "Description")
-	private Set<SpecimenDescription> descriptions = getNewDescriptionSet();
+	@XmlIDREF
+	@XmlSchemaType(name = "IDREF")
+	private Set<DescriptionBase> descriptions = getNewDescriptionSet();
 	
 	@XmlElementWrapper(name = "Determinations")
 	@XmlElement(name = "Determination")
@@ -108,13 +111,11 @@ public abstract class SpecimenOrObservationBase extends IdentifiableMediaEntity 
 		super();
 	}
 	
-//	@ManyToMany   //FIXME
-//	@Cascade( { CascadeType.SAVE_UPDATE })
-	@Transient
-	public Set<SpecimenDescription> getDescriptions() {
+	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "describedSpecimenOrObservations")
+	public Set<DescriptionBase> getDescriptions() {
 		return this.descriptions;
 	}
-	protected void setDescriptions(Set<SpecimenDescription> descriptions) {
+	protected void setDescriptions(Set<DescriptionBase> descriptions) {
 		this.descriptions = descriptions;
 	}
 	public void addDescription(SpecimenDescription description) {
@@ -254,7 +255,7 @@ public abstract class SpecimenOrObservationBase extends IdentifiableMediaEntity 
 		result.setLifeStage(this.lifeStage);
 		
 		//Descriptions
-		Set<SpecimenDescription> descriptions = getNewDescriptionSet();
+		Set<DescriptionBase> descriptions = getNewDescriptionSet();
 		descriptions.addAll(this.descriptions);
 		result.setDescriptions(descriptions);
 		
@@ -273,8 +274,8 @@ public abstract class SpecimenOrObservationBase extends IdentifiableMediaEntity 
 	}
 	
 	@Transient
-	private Set<SpecimenDescription> getNewDescriptionSet(){
-		return new HashSet<SpecimenDescription>();
+	private Set<DescriptionBase> getNewDescriptionSet(){
+		return new HashSet<DescriptionBase>();
 	}
 
 	@Transient
