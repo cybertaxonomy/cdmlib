@@ -45,7 +45,7 @@ public class NomenclaturalStatus extends ReferencedEntityBase {
 	
 	//The nomenclatural code rule considered. The article/note/recommendation in the code in question that is commented on in
 	//the note property.
-	@XmlElement(name = "ruleConsidered")
+	@XmlElement(name = "RuleConsidered")
 	private String ruleConsidered;
 	
 	@XmlElement(name = "NomenclaturalStatusType")
