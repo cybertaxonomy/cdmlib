@@ -48,9 +48,6 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 
-
-
-
 /**
  * @author PK
  * @created 19.09.2008

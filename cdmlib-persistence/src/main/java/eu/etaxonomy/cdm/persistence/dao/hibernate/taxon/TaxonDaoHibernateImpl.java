@@ -72,7 +72,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		super(TaxonBase.class);
 	}
 	
-//	@Autowired   //TODO switched of because it caused problems when starting CdmApplicationController
+	@Autowired(required = false)   //TODO switched of because it caused problems when starting CdmApplicationController
 	public void setAlternativeSpellingSuggestionParser(AlternativeSpellingSuggestionParser<TaxonBase> alternativeSpellingSuggestionParser) {
 		this.alternativeSpellingSuggestionParser = alternativeSpellingSuggestionParser;
 	}

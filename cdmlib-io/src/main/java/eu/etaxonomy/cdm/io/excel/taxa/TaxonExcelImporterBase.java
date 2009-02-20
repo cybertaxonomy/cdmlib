@@ -1,9 +1,15 @@
 /**
+ * Copyright (C) 2007 EDIT
+ * European Distributed Institute of Taxonomy 
+ * http://www.e-taxonomy.eu
  * 
+ * The contents of this file are subject to the Mozilla Public License Version 1.1
+ * See LICENSE.TXT at the top of this package for the full license terms.
  */
+
 package eu.etaxonomy.cdm.io.excel.taxa;
 
-//import org.apache.log4j.Logger;
+import org.apache.log4j.Logger;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -18,7 +24,8 @@ import eu.etaxonomy.cdm.io.excel.common.ExcelImporterBase;
  */
 public abstract class TaxonExcelImporterBase extends ExcelImporterBase {
 
-	//private static final Logger logger = Logger.getLogger(TaxonExcelImporterBase.class);
+	@SuppressWarnings("unused")
+	private static final Logger logger = Logger.getLogger(TaxonExcelImporterBase.class);
 
 	/*
 	 * Supported Columns:

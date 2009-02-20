@@ -20,6 +20,7 @@ import eu.etaxonomy.cdm.io.common.IImportConfigurator;
  * @version 1.0
  */
 public abstract class SDDIoBase  extends CdmIoBase<IImportConfigurator> {
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(SDDIoBase.class);
 
 }

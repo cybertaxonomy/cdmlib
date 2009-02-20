@@ -11,8 +11,6 @@ package eu.etaxonomy.cdm.io.jaxb;
 
 import javax.xml.bind.Marshaller;
 
-import eu.etaxonomy.cdm.model.common.DefinedTermBase;
-
 /**
  * @author a.babadshanjan
  * @created 19.08.2008
