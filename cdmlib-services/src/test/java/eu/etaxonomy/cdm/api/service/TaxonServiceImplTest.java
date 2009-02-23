@@ -103,48 +103,7 @@ public class TaxonServiceImplTest extends CdmIntegrationTest {
 		logger.warn("Not yet implemented"); // TODO
 	}
 	
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.api.service.TaxonServiceImpl#findTaxaAndNames(eu.etaxonomy.cdm.api.service.config.ITaxonServiceConfigurator)}.
-	 */
 	@Ignore
-	@Test
-	@DataSet("TaxonServiceImplTest.xml")
-	//@ExpectedDataSet
-	public final void testFindTaxaAndNames() {
-
-		ITaxonServiceConfigurator configurator = new TaxonServiceConfiguratorImpl();
-		configurator.setDoSynonyms(true);
-		configurator.setDoNamesWithoutTaxa(true);
-		Pager<IdentifiableEntity> pager = service.findTaxaAndNames(configurator);
-		List<IdentifiableEntity> list = pager.getRecords();
-
-	}
-	
-	@Test
-	public final void testBuildDataSet() {
-
-		BotanicalName abies_Mill, abiesAlba_Michx, abiesAlba_Mill;
-//		BotanicalName abies, abies_Mill, abiesAlba, abiesAlba_Michx, abiesAlba_Mill;
-//		Synonym s_abiesAlba_Michx;
-//		Taxon t_abies_Mill, t_abiesAlba_Mill;
-
-		Person mill = Person.NewInstance();
-		mill.setTitleCache("Mill.");
-		Person michx = Person.NewInstance();
-		michx.setTitleCache("Michx.");
-
-		nameService.saveTaxonName(BotanicalName.NewInstance(Rank.GENUS(), "Abies", null, null, null, null, null, null, null));
-		abies_Mill = BotanicalName.NewInstance(Rank.GENUS(), "Abies", null, null, null, mill, null, null, null);
-		nameService.saveTaxonName(BotanicalName.NewInstance(Rank.SPECIES(), "Abies", null, "alba", null, null, null, null, null));
-		abiesAlba_Michx = BotanicalName.NewInstance(Rank.SPECIES(), "Abies", null, "alba", null, michx, null, null, null);
-		abiesAlba_Mill = BotanicalName.NewInstance(Rank.SPECIES(), "Abies", null, "alba", null, mill, null, null, null);
-
-		service.saveTaxon(Taxon.NewInstance(abies_Mill, null));
-		service.saveTaxon(Taxon.NewInstance(abiesAlba_Mill, null));
-		service.saveTaxon(Synonym.NewInstance(abiesAlba_Michx, null));
-
-	}
-	
 	@Test
 	public final void testPrintDataSet() {
 		
