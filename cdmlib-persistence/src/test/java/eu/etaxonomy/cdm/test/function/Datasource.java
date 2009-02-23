@@ -14,16 +14,17 @@ public class Datasource {
 		int port = -1;
 		String username = "";
 		String pwd = "";
+		String server = "87.106.XXX.XXX";
 		
 		CdmPersistentDataSource defaultDataSource = CdmPersistentDataSource.save(
-				"mysql_cichorieae", DatabaseTypeEnum.MySQL, "87.106.88.177", "cdm_edit_cichorieae",port, username, pwd);
+				"mysql_cichorieae", DatabaseTypeEnum.MySQL, server , "cdm_edit_cichorieae",port, username, pwd);
 
 //		logger.warn(defaultDataSource.getDatabase());
 //		logger.warn(defaultDataSource.getPort());
 //		logger.warn(defaultDataSource.getServer());
 		
 		defaultDataSource = CdmPersistentDataSource.save(
-				"mysql_cichorieae", DatabaseTypeEnum.SqlServer2005, "87.106.88.177", "cdm_edit_cichorieae", port, username, pwd);
+				"mysql_cichorieae", DatabaseTypeEnum.SqlServer2005, server, "cdm_edit_cichorieae", port, username, pwd);
 
 		logger.warn(defaultDataSource.getDatabase());
 		logger.warn(defaultDataSource.getPort());
@@ -33,7 +34,7 @@ public class Datasource {
 				"mysql_cichorieae", DatabaseTypeEnum.MySQL, "192.168.2.10", "cdm_edit_cichorieae", 3306, username, "XXX");
 		
 		defaultDataSource = CdmPersistentDataSource.save(
-				"mysql_cichorieae", DatabaseTypeEnum.MySQL, "87.106.88.177", "cdm_edit_cichorieae", port, username, pwd);
+				"mysql_cichorieae", DatabaseTypeEnum.MySQL, server, "cdm_edit_cichorieae", port, username, pwd);
 
 		logger.warn("Connect: " + defaultDataSource.testConnection());
 		
