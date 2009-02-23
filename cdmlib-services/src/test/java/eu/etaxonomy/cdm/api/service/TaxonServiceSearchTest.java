@@ -88,11 +88,11 @@ public class TaxonServiceSearchTest extends CdmIntegrationTest {
 		ITaxonServiceConfigurator configurator = new TaxonServiceConfiguratorImpl();
 		configurator.setDoSynonyms(true);
 		configurator.setDoNamesWithoutTaxa(true);
+		configurator.setSearchString("Abies");
 		Pager<IdentifiableEntity> pager = service.findTaxaAndNames(configurator);
 		List<IdentifiableEntity> list = pager.getRecords();
-		for (int i = 0; i > list.size(); i++) {
-			logger.error(i + " = " + list.get(i).getTitleCache());
-			//System.out.println(i + " = " + list.get(i).getTitleCache());
+		for (int i = 0; i < list.size(); i++) {
+			if (logger.isDebugEnabled()) { logger.debug(i + " = " + list.get(i).getTitleCache()); }
 		}
 
 	}
