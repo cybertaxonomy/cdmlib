@@ -29,7 +29,7 @@ public class Source {
     private final static boolean DEBUG_LOG_WRITER = false;
 	
     //DB info
-	public final static String SQL_SERVER_2000 = "SQLServer2000";
+//	public final static String SQL_SERVER_2000 = "SQLServer2000";
 	public final static String SQL_SERVER_2005 = "SQLServer2005";
 	public final static String ACCESS = "Access";
 	public final static String EXCEL = "Excel";
@@ -42,7 +42,7 @@ public class Source {
 	public final static String SELECT_CURSOR = "cursor";
 		
     //driver class
-    private static String clsSQLServer2000 = "com.microsoft.jdbc.sqlserver.SQLServerDriver";
+//    private static String clsSQLServer2000 = "com.microsoft.jdbc.sqlserver.SQLServerDriver";
     private static String clsSQLServer2005 = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
     private static String clsODBC = "sun.jdbc.odbc.JdbcOdbcDriver";
     private static String clsOracle = "oracle.jdbc.driver.OracleDriver";
@@ -51,7 +51,7 @@ public class Source {
     private static String clsDefault = "com.microsoft.jdbc.sqlserver.SQLServerDriver";
     
     //url
-    private static String urlSQLServer = "jdbc:microsoft:sqlserver://";
+//    private static String urlSQLServer = "jdbc:microsoft:sqlserver://";
     private static String urlSQLServer2005 = "jdbc:sqlserver://";
     private static String urlDB2 = "jdbc:db2://";
     private static String urlOracle = "jdbc:oracle:thin:@:1243:";
@@ -228,11 +228,11 @@ public class Source {
 	    	selectMethod = SELECT_DIRECT;
 	    try{
 	        if (DEBUG_LOG_WRITER) DriverManager.setLogWriter((new PrintWriter(System.out)));
-	        if (mDbms.equalsIgnoreCase(SQL_SERVER_2000)) {
-	            Class.forName(clsSQLServer2000);
-	            server = mServer + ":" + mPort;
-	            mUrl = urlSQLServer + server + ";DataBase=" + mDb + ";SelectMethod="+ selectMethod; 
-	        }
+//	        if (mDbms.equalsIgnoreCase(SQL_SERVER_2000)) {
+//	            Class.forName(clsSQLServer2000);
+//	            server = mServer + ":" + mPort;
+//	            mUrl = urlSQLServer + server + ";DataBase=" + mDb + ";SelectMethod="+ selectMethod; 
+//	        }
 	        else if (mDbms.equalsIgnoreCase(SQL_SERVER_2005)) {
 	            Class.forName(clsSQLServer2005);
 	            server = mServer + ":" + mPort;
