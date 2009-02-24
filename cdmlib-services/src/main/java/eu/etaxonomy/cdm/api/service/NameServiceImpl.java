@@ -185,7 +185,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
 		UUID uuid = UUID.fromString(uuidString);
 		TermVocabulary<TypeDesignationStatus> typeDesigStatusVocabulary = 
 			(TermVocabulary)vocabularyDao.findByUuid(uuid);
-		return null;
+		return typeDesigStatusVocabulary;
 	}
 	
 	public void generateTitleCache() {
