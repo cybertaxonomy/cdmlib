@@ -109,7 +109,7 @@ public final class TaxonXTransformer {
 		}else if ("uses".equals(descriptionType)){return Feature.USES();
 		}else if ("vernacular".equals(descriptionType)){return Feature.COMMON_NAME();
 		}else {
-			throw new UnknownCdmTypeException("Unknown Description Type " + descriptionType);
+			throw new UnknownCdmTypeException("Unknown Description Type: " + descriptionType);
 		}
 	}
 	
