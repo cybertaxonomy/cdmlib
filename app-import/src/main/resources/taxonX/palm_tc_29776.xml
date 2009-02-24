@@ -1,0 +1,42 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>Calamus pauciflorus T. Evans et al. non Ridl. renamed Calamus oligostachys T. Evans et al.</mods:title>
+</mods:titleInfo>
+<mods:name><mods:namePart>Tom Evans, Khamphone Sengdala, Oulathing V. Viengkham, Banxa Thammavong and John Dransfield</mods:namePart></mods:name>
+<mods:originInfo>
+<mods:publisher>Kew Bulletin, Vol. 56, No. 1, p. 242</mods:publisher>
+<mods:dateIssued>2001</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Calamus oligostachys</name>
+<author>T Evans, K. Sengdala, O. V Viengkham, B. Thammavong and J. Dransf.</author>
+<citation>Kew Bull. 56: 242 (2001)</citation>
+<type>Laos, Bolikhamxay Province, Thaphabaat Distr., Ban Pakleuk; Khamphone Sengdala; 324</type>
+<type_loc></type_loc>
+<synonymy>
+<name>Calamus pauciflorus</name>
+<author>T. Evans et al.</author>
+<bibref>T. Evans et al., Kew Bull. 55: 935 [and 937, illustration] (2000) non Ridl., Fl. Malay. Penins. 5: 57 (1925)</bibref>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="diagnosis"><p></p></div>
+<div type="description"><p></p></div>
+<div type="distribution"><p></p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p></p></div>
+<div type="materials_examined"><p></p></div>
+<div type="acknowledgements"><p>We thank Katherine Challis for pointing out our error and commenting on a draft of this note.</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>
