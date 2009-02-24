@@ -71,7 +71,7 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
 	@Autowired
 	//@Qualifier("commonService")
 	private ICommonService commonService;
-	//@Autowired
+	@Autowired
 	//@Qualifier("mainService")
 	private IService<CdmBase> mainService;
 
