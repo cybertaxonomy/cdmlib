@@ -22,7 +22,7 @@ public class BerlinModelSources {
 	
 	public static Source euroMed(){
 		//	BerlinModel - Euro+Med
-		String dbms = Source.SQL_SERVER_2000;
+		String dbms = Source.SQL_SERVER_2005;
 		String strServer = "BGBM111";
 		String strDB = "EuroPlusMed_00_Edit";
 		int port = 1247;
@@ -32,7 +32,7 @@ public class BerlinModelSources {
 	
 	public static Source EDIT_CICHORIEAE(){
 		//	BerlinModel - EditWP6
-		String dbms = Source.SQL_SERVER_2000;
+		String dbms = Source.SQL_SERVER_2005;
 		String strServer = "BGBM111";
 		String strDB = "EditWP6";
 		int port = 1247;
@@ -42,7 +42,7 @@ public class BerlinModelSources {
 	
 	public static Source EDIT_Taraxacum(){
 		//	BerlinModel - EditWP6
-		String dbms = Source.SQL_SERVER_2000;
+		String dbms = Source.SQL_SERVER_2005;
 		String strServer = "BGBM111";
 		String strDB = "Edit_Taraxacum";
 		int port = 1247;
@@ -52,7 +52,7 @@ public class BerlinModelSources {
 
 	public static Source EDIT_Diptera(){
 		//	BerlinModel - EDIT_Diptera
-		String dbms = Source.SQL_SERVER_2000;
+		String dbms = Source.SQL_SERVER_2005;
 		String strServer = "BGBM111";
 		String strDB = "EDIT_Diptera";
 		int port = 1247;
@@ -62,7 +62,7 @@ public class BerlinModelSources {
 	
 	public static Source EDIT_Palmae(){
 		//	BerlinModel - EDIT_Palmae
-		String dbms = Source.SQL_SERVER_2000;
+		String dbms = Source.SQL_SERVER_2005;
 		String strServer = "BGBM111";
 		String strDB = "EDIT_Palmae";
 		int port = 1247;
@@ -92,7 +92,7 @@ public class BerlinModelSources {
 	
 	public static Source PESI_ERMS(){
 		//	BerlinModel - Pesi-ERMS
-		String dbms = Source.SQL_SERVER_2000;
+		String dbms = Source.SQL_SERVER_2005;
 		String strServer = "SQL2000Intern\\SQL2005";
 		String strDB = "BM_ERMS";
 		int port = 1433;
