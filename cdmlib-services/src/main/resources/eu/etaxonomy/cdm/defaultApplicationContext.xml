@@ -12,7 +12,6 @@
 <!-- <import resource="classpath:/eu/etaxonomy/cdm/defaultSecurityContext.xml"/> -->
  <!-- <import resource="classpath:/eu/etaxonomy/cdm/spelling.xml"/> -->
 
-
 	<!-- includes service beans e.g. in eu/etaxonomy/cdm/api -->
 	<context:component-scan base-package="eu/etaxonomy/cdm/api/service">
 	 	<context:exclude-filter type="regex" expression="eu\.etaxonomy\.cdm\.api\.service\.UserService"/>

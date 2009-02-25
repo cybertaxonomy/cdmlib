@@ -15,28 +15,28 @@ import java.util.Map;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
-import eu.etaxonomy.cdm.model.agent.Agent;
+import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.InstitutionalMembership;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 
-public interface IAgentService extends IIdentifiableEntityService<Agent> {
+public interface IAgentService extends IIdentifiableEntityService<AgentBase> {
 	
 	// FIXME Candidate for harmonization
-	public abstract Agent getAgentByUuid(UUID uuid);
+	public abstract AgentBase getAgentByUuid(UUID uuid);
 
 	// FIXME Candidate for harmonization
-	public abstract UUID saveAgent(Agent agent);
+	public abstract UUID saveAgent(AgentBase agent);
 	
 	// FIXME Candidate for harmonization
-	public abstract Map<UUID, Agent> saveAgentAll(Collection<? extends Agent> agentCollection);
+	public abstract Map<UUID, AgentBase> saveAgentAll(Collection<? extends AgentBase> agentCollection);
 	
 	// FIXME Candidate for harmonization
-	public abstract List<Agent> findAgentsByTitle(String title);
+	public abstract List<AgentBase> findAgentsByTitle(String title);
 
 	// FIXME Candidate for harmonization
-	public abstract List<Agent> getAllAgents(int limit, int start);
+	public abstract List<AgentBase> getAllAgents(int limit, int start);
 	
 	public abstract List<Institution> searchInstitutionByCode(String code);
 	

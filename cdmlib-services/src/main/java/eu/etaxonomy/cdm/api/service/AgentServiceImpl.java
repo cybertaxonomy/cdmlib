@@ -22,7 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
-import eu.etaxonomy.cdm.model.agent.Agent;
+import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.InstitutionalMembership;
 import eu.etaxonomy.cdm.model.agent.Person;
@@ -37,30 +37,30 @@ import eu.etaxonomy.cdm.persistence.dao.agent.IAgentDao;
  */
 @Service
 @Transactional
-public class AgentServiceImpl extends IdentifiableServiceBase<Agent,IAgentDao> implements IAgentService {
+public class AgentServiceImpl extends IdentifiableServiceBase<AgentBase,IAgentDao> implements IAgentService {
     @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(AgentServiceImpl.class);
 	
 
-	public List<Agent> findAgentsByTitle(String title) {
+	public List<AgentBase> findAgentsByTitle(String title) {
 		return super.findCdmObjectsByTitle(title);
 	}
 
-	public Agent getAgentByUuid(UUID uuid) {
+	public AgentBase getAgentByUuid(UUID uuid) {
 		return dao.findByUuid(uuid);
 	}
 
-	public UUID saveAgent(Agent agent) {
+	public UUID saveAgent(AgentBase agent) {
 		return super.saveCdmObject(agent);
 	}
 	
 	@Transactional(readOnly = false)
-	public Map<UUID, Agent> saveAgentAll(Collection<? extends Agent> agentCollection){
+	public Map<UUID, AgentBase> saveAgentAll(Collection<? extends AgentBase> agentCollection){
 		return saveCdmObjectAll(agentCollection);
 	}
 
 	
-	public List<Agent> getAllAgents(int limit, int start){
+	public List<AgentBase> getAllAgents(int limit, int start){
 		return dao.list(limit, start);
 	}
 	

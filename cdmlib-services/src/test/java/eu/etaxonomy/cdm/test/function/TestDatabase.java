@@ -18,7 +18,7 @@ import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
 import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
-import eu.etaxonomy.cdm.model.agent.Agent;
+import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Contact;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -246,7 +246,7 @@ public class TestDatabase {
 			//ICdmDataSource datasource = CdmDataSource.NewH2EmbeddedInstance("CDM", "sa", "");
 			ICdmDataSource datasource = cdm_test_anahit2();
 			CdmApplicationController appCtr = CdmApplicationController.NewInstance(datasource, dbSchemaValidation);
-			Agent person = Person.NewTitledInstance("TestPerson");
+			AgentBase person = Person.NewTitledInstance("TestPerson");
 			Contact contact1 = new Contact();
 			Set<String> set = new HashSet<String>();
 			set.add("email1");
