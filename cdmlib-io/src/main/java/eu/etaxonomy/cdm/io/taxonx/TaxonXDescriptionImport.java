@@ -133,7 +133,7 @@ public class TaxonXDescriptionImport extends CdmIoBase<IImportConfigurator> impl
 					description.addElement(descriptionElement);
 				}
 			} catch (UnknownCdmTypeException e) {
-				logger.warn(e.getMessage());
+				logger.warn(e.getMessage() + getBracketSourceName(txConfig));
 			}
 		}
 		if (description.size() >0){
@@ -184,6 +184,10 @@ public class TaxonXDescriptionImport extends CdmIoBase<IImportConfigurator> impl
 	 */
 	protected boolean isIgnore(IImportConfigurator config){
 		return ! config.isDoFacts();
+	}
+	
+	private String getBracketSourceName(TaxonXImportConfigurator config){
+		return "(" + config.getSourceNameString() + ")";
 	}
 
 }

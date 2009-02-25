@@ -50,6 +50,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 public class TaxonXNomenclatureImport extends CdmIoBase<IImportConfigurator> implements ICdmIO<IImportConfigurator> {
 	private static final Logger logger = Logger.getLogger(TaxonXNomenclatureImport.class);
 
+	@SuppressWarnings("unused")
 	private static int modCount = 10000;
 
 	public TaxonXNomenclatureImport(){
@@ -92,7 +93,7 @@ public class TaxonXNomenclatureImport extends CdmIoBase<IImportConfigurator> imp
 			for (Element elSynonymy : elSynonymyList){
 				String synonymName = elSynonymy.getChildTextTrim("name");
 				if (elSynonymy.getChild("type", nsTaxonx) != null || elSynonymy.getChild("type_loc", nsTaxonx) != null){
-					Synonym synonym = getSynonym(config, taxon, synonymName);
+					Synonym synonym = getSynonym(txConfig, taxon, synonymName);
 					if (synonym != null){
 						isChanged |= doNomenclaturalType(txConfig, elSynonymy, nsTaxonx, synonym.getName());
 					}
@@ -108,7 +109,7 @@ public class TaxonXNomenclatureImport extends CdmIoBase<IImportConfigurator> imp
 		return true;
 	}
 	
-	private Synonym getSynonym(IImportConfigurator config, Taxon taxon, String synName){
+	private Synonym getSynonym(TaxonXImportConfigurator config, Taxon taxon, String synName){
 		Synonym result = null;
 		unlazySynonym(config, taxon);
 		Set<Synonym> synList = taxon.getSynonyms();
@@ -117,7 +118,7 @@ public class TaxonXNomenclatureImport extends CdmIoBase<IImportConfigurator> imp
 				return syn;  //only first synonym is returned
 			}
 		}
-		logger.warn("Synonym ("+synName+ ")not found for taxon " + taxon.getTitleCache());
+		logger.warn("Synonym ("+synName+ ")not found for taxon " + taxon.getTitleCache() + getBracketSourceName(config));
 		return result;
 	}
 	
@@ -177,7 +178,7 @@ public class TaxonXNomenclatureImport extends CdmIoBase<IImportConfigurator> imp
 			SimpleSpecimen simpleSpecimen = SimpleSpecimen.NewInstance();
 			//elType
 			if (elType != null){
-				doElType(elType, simpleSpecimen);
+				doElType(elType, simpleSpecimen, config);
 			}//elType
 			
 			//typeLoc
@@ -199,7 +200,7 @@ public class TaxonXNomenclatureImport extends CdmIoBase<IImportConfigurator> imp
 		return false;
 	}
 
-	private boolean doElType(Element elType, SimpleSpecimen simpleSpecimen){
+	private boolean doElType(Element elType, SimpleSpecimen simpleSpecimen, TaxonXImportConfigurator config){
 		//type
 		String text = elType.getTextNormalize();
 		if (text.endsWith(";")){
@@ -207,7 +208,11 @@ public class TaxonXNomenclatureImport extends CdmIoBase<IImportConfigurator> imp
 		}
 		String[] type = text.split(";");
 		if (type.length != 3 ){
-			logger.warn("<nomenclature><type> is of unsupported format: " + elType.getTextNormalize());
+			if (text.equals("")){
+				logger.info("<nomenclature><type> is empty: " + getBracketSourceName(config));
+			}else{
+				logger.warn("<nomenclature><type> is of unsupported format: " + elType.getTextNormalize() + getBracketSourceName(config));
+			}
 			simpleSpecimen.setTitleCache(elType.getTextNormalize());
 		}else{
 			String strLocality = type[0].trim();
@@ -258,17 +263,17 @@ public class TaxonXNomenclatureImport extends CdmIoBase<IImportConfigurator> imp
 			typeLocStatus = typeLocStatus.trim();
 			int pos = typeLocStatus.indexOf(" ");
 			if (pos == -1){
-				logger.warn("Unknown format for type_loc : " + typeLocStatus);
+				logger.warn("Unknown format or empty type_loc : '" +typeLocStatus + "'" + getBracketSourceName(config));
 				result.put(originalSpecimen, null);
 			}else{
 				String statusString = typeLocStatus.substring(0,pos); 
-				TypeDesignationStatus status = getStatusByStatusString(statusString.trim());
+				TypeDesignationStatus status = getStatusByStatusString(statusString.trim(), config);
 				//TODO
 				//String[] collectionStrings = typeLocStatus.substring(pos).split(",");
 				String tmpCollString = typeLocStatus.substring(pos).trim();
 				//for(String collectionString : collectionStrings){
 					if (tmpCollString.contains("typ")){
-						logger.warn("Is this really only a collection string?");
+						logger.warn("Is this really only a collection string? : "  + tmpCollString + getBracketSourceName(config));
 					}
 					Specimen specimen;
 					specimen = (Specimen)originalSpecimen.clone();
@@ -340,7 +345,7 @@ public class TaxonXNomenclatureImport extends CdmIoBase<IImportConfigurator> imp
 				logger.warn("Unknown format: " + typeLocStatus);
 			}else{
 				String statusString = typeLocStatus.substring(0,pos); 
-				TypeDesignationStatus status = getStatusByStatusString(statusString.trim());
+				TypeDesignationStatus status = getStatusByStatusString(statusString.trim(), config);
 				String[] collectionStrings = typeLocStatus.substring(pos).split(",");
 				for(String collectionString : collectionStrings){
 					if (taxonBase != null){
@@ -383,7 +388,7 @@ public class TaxonXNomenclatureImport extends CdmIoBase<IImportConfigurator> imp
 	 * @param statusString
 	 * @return TypeDesignationStatus
 	 */
-	private static TypeDesignationStatus getStatusByStatusString(String statusString){
+	private static TypeDesignationStatus getStatusByStatusString(String statusString, TaxonXImportConfigurator config){
 		TypeDesignationStatus result = null;
 		if (statusString == null || "".equals(statusString.trim())){
 			return null;
@@ -399,9 +404,9 @@ public class TaxonXNomenclatureImport extends CdmIoBase<IImportConfigurator> imp
 		}
 		result = statusMap.get(statusString);
 		if (statusString.equals("type")){
-			logger.info("No type designation type");
+			logger.info("No type designation type" + getBracketSourceName(config));
 		}else if (result == null){
-			logger.warn("Unknown type status string: " + statusString);
+			logger.warn("Unknown type status string: " + statusString + getBracketSourceName(config));
 		}
 		return result;
 	}
@@ -435,6 +440,10 @@ public class TaxonXNomenclatureImport extends CdmIoBase<IImportConfigurator> imp
 		logger.debug(synonyms.size());
 		//taxonService.saveTaxon(taxon);
 		commitTransaction(txStatus);
+	}
+	
+	private static String getBracketSourceName(TaxonXImportConfigurator config){
+		return "(" + config.getSourceNameString() + ")";
 	}
 
 	
