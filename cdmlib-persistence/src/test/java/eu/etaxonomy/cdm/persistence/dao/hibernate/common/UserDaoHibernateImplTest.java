@@ -7,6 +7,7 @@ import java.lang.reflect.Array;
 
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
+import org.unitils.spring.annotation.SpringApplicationContext;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.model.common.User;

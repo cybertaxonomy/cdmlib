@@ -1,10 +1,16 @@
 package eu.etaxonomy.cdm.test.integration;
 
-import java.io.FileOutputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 import java.sql.SQLException;
 
 import javax.sql.DataSource;
+import javax.xml.transform.Result;
+import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.stream.StreamResult;
 
 import org.apache.log4j.Logger;
 import org.dbunit.database.DatabaseConfig;
@@ -24,7 +30,7 @@ import org.unitils.spring.annotation.SpringApplicationContext;
  * @author ben.clark
  * @see <a href="http://www.unitils.org">unitils home page</a>
  */
-@SpringApplicationContext("classpath:eu/etaxonomy/cdm/applicationContext-test.xml")
+@SpringApplicationContext("file:./target/test-classes/eu/etaxonomy/cdm/applicationContext-test.xml")
 public abstract class CdmIntegrationTest extends UnitilsJUnit4 {
 	protected static final Logger logger = Logger.getLogger(CdmIntegrationTest.class);
 
@@ -104,4 +110,13 @@ public abstract class CdmIntegrationTest extends UnitilsJUnit4 {
 		}
 	}
 
+	public String transformSourceToString(Source source) throws TransformerException {
+		TransformerFactory transformerFactory = TransformerFactory.newInstance();
+		Transformer transformer = transformerFactory.newTransformer();
+		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+		Result result = new StreamResult(outputStream);
+		transformer.transform(source, result);
+		
+		return new String(outputStream.toByteArray());
+    }	
 }

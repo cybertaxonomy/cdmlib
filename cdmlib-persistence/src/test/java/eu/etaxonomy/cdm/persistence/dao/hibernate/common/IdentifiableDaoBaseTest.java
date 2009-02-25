@@ -7,17 +7,16 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.util.List;
 import java.util.UUID;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
+import org.unitils.spring.annotation.SpringApplicationContext;
 import org.unitils.spring.annotation.SpringBeanByType;
 
+import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.common.OriginalSource;
 import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
@@ -41,8 +40,7 @@ public class IdentifiableDaoBaseTest extends CdmIntegrationTest {
 		uuid = UUID.fromString("496b1325-be50-4b0a-9aa2-3ecd610215f2");
 	}
 
-/************ TESTS *******************************
- * @throws FileNotFoundException */
+/************ TESTS ********************************/
 	
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase#IdentifiableDaoBase(java.lang.Class)}.
@@ -76,7 +74,7 @@ public class IdentifiableDaoBaseTest extends CdmIntegrationTest {
 	}
 	
 	@Test
-	public void testSources() {
+	public void testSources() throws Exception {
 		TaxonBase taxon = identifiableDao.findByUuid(uuid);
 		assert taxon != null : "IdentifiableEntity must exist";
 		
@@ -87,13 +85,25 @@ public class IdentifiableDaoBaseTest extends CdmIntegrationTest {
 		assertEquals("getSources should return 2 OriginalSource instances",2, sources.size());
 	}
 
-//	@Test
-//	TODO - implement this later
-//	public void testGetByLSID() throws Exception {
-//		LSID lsid = new LSID("urn:lsid:cate-project.org:taxonconcepts:1");
-//		TaxonBase result = taxonDAO.find(lsid);
-//		
-//		Assert.assertNotNull(result);
-//	}
-//	
+	@Test
+	public void testGetByLsidWithoutVersion() throws Exception {
+		LSID lsid = new LSID("urn:lsid:example.org:namespace:1");
+		TaxonBase result = identifiableDao.find(lsid);
+		assertNotNull(result);
+	}
+	
+	@Test
+	public void testGetByLsidWithVersionCurrent() throws Exception {
+		LSID lsid = new LSID("urn:lsid:example.org:namespace:1:2");
+		TaxonBase result = identifiableDao.find(lsid);
+		assertNotNull(result);
+	}
+	
+	@Test
+	public void testGetByLsidWithVersionPast() throws Exception {
+		LSID lsid = new LSID("urn:lsid:example.org:namespace:1:1");
+		TaxonBase result = identifiableDao.find(lsid);
+		assertNotNull(result);
+	}
+	
 }

@@ -14,7 +14,6 @@
         street varchar(255),
         createdby_id integer,
         updatedby_id integer,
-        contact_id integer,
         country_id integer,
         location_referencesystem_id integer,
         primary key (id)
@@ -37,19 +36,22 @@
         street varchar(255),
         createdby_id integer,
         updatedby_id integer,
-        contact_id integer,
         country_id integer,
         location_referencesystem_id integer,
         primary key (id, REV)
     );
 
-    create table Agent (
+    create table AgentBase (
         DTYPE varchar(31) not null,
         id integer not null,
         created timestamp,
         uuid varchar(255),
         updated timestamp,
-        lsid varchar(255),
+        lsid_authority varchar(255),
+        lsid_lsid varchar(255),
+        lsid_namespace varchar(255),
+        lsid_object varchar(255),
+        lsid_revision varchar(255),
         protectedtitlecache bit not null,
         titleCache varchar(255),
         code varchar(255),
@@ -64,12 +66,11 @@
         protectednomenclaturaltitlecache bit,
         createdby_id integer,
         updatedby_id integer,
-        contact_id integer,
         ispartof_id integer,
         primary key (id)
     );
 
-    create table Agent_AUD (
+    create table AgentBase_AUD (
         DTYPE varchar(31) not null,
         id integer not null,
         REV integer not null,
@@ -77,7 +78,11 @@
         created timestamp,
         uuid varchar(255),
         updated timestamp,
-        lsid varchar(255),
+        lsid_authority varchar(255),
+        lsid_lsid varchar(255),
+        lsid_namespace varchar(255),
+        lsid_object varchar(255),
+        lsid_revision varchar(255),
         protectedtitlecache bit,
         titleCache varchar(255),
         createdby_id integer,
@@ -90,128 +95,193 @@
         lifespan_start varchar(255),
         prefix varchar(255),
         suffix varchar(255),
-        contact_id integer,
         code varchar(255),
         name varchar(255),
         ispartof_id integer,
         primary key (id, REV)
     );
 
-    create table Agent_Agent (
-        Agent_id integer not null,
+    create table AgentBase_Address (
+        AgentBase_id integer not null,
+        contact_addresses_id integer not null,
+        primary key (AgentBase_id, contact_addresses_id),
+        unique (contact_addresses_id)
+    );
+
+    create table AgentBase_Address_AUD (
+        REV integer not null,
+        AgentBase_id integer not null,
+        contact_addresses_id integer not null,
+        revtype tinyint,
+        primary key (REV, AgentBase_id, contact_addresses_id)
+    );
+
+    create table AgentBase_AgentBase (
+        AgentBase_id integer not null,
         teammembers_id integer not null
     );
 
-    create table Agent_Agent_AUD (
+    create table AgentBase_AgentBase_AUD (
         REV integer not null,
-        Agent_id integer not null,
+        AgentBase_id integer not null,
         teammembers_id integer not null,
         revtype tinyint,
-        primary key (REV, Agent_id, teammembers_id)
+        primary key (REV, AgentBase_id, teammembers_id)
     );
 
-    create table Agent_Annotation (
-        Agent_id integer not null,
+    create table AgentBase_Annotation (
+        AgentBase_id integer not null,
         annotations_id integer not null,
-        primary key (Agent_id, annotations_id),
+        primary key (AgentBase_id, annotations_id),
         unique (annotations_id)
     );
 
-    create table Agent_Annotation_AUD (
+    create table AgentBase_Annotation_AUD (
         REV integer not null,
-        Agent_id integer not null,
+        AgentBase_id integer not null,
         annotations_id integer not null,
         revtype tinyint,
-        primary key (REV, Agent_id, annotations_id)
+        primary key (REV, AgentBase_id, annotations_id)
     );
 
-    create table Agent_DefinedTermBase (
-        Agent_id integer not null,
+    create table AgentBase_DefinedTermBase (
+        AgentBase_id integer not null,
         types_id integer not null,
-        primary key (Agent_id, types_id)
+        primary key (AgentBase_id, types_id)
     );
 
-    create table Agent_DefinedTermBase_AUD (
+    create table AgentBase_DefinedTermBase_AUD (
         REV integer not null,
-        Agent_id integer not null,
+        AgentBase_id integer not null,
         types_id integer not null,
         revtype tinyint,
-        primary key (REV, Agent_id, types_id)
+        primary key (REV, AgentBase_id, types_id)
     );
 
-    create table Agent_Extension (
-        Agent_id integer not null,
+    create table AgentBase_Extension (
+        AgentBase_id integer not null,
         extensions_id integer not null,
-        primary key (Agent_id, extensions_id),
+        primary key (AgentBase_id, extensions_id),
         unique (extensions_id)
     );
 
-    create table Agent_Extension_AUD (
+    create table AgentBase_Extension_AUD (
         REV integer not null,
-        Agent_id integer not null,
+        AgentBase_id integer not null,
         extensions_id integer not null,
         revtype tinyint,
-        primary key (REV, Agent_id, extensions_id)
+        primary key (REV, AgentBase_id, extensions_id)
     );
 
-    create table Agent_Marker (
-        Agent_id integer not null,
+    create table AgentBase_Marker (
+        AgentBase_id integer not null,
         markers_id integer not null,
-        primary key (Agent_id, markers_id),
+        primary key (AgentBase_id, markers_id),
         unique (markers_id)
     );
 
-    create table Agent_Marker_AUD (
+    create table AgentBase_Marker_AUD (
         REV integer not null,
-        Agent_id integer not null,
+        AgentBase_id integer not null,
         markers_id integer not null,
         revtype tinyint,
-        primary key (REV, Agent_id, markers_id)
+        primary key (REV, AgentBase_id, markers_id)
     );
 
-    create table Agent_Media (
-        Agent_id integer not null,
+    create table AgentBase_Media (
+        AgentBase_id integer not null,
         media_id integer not null,
-        primary key (Agent_id, media_id),
-        unique (media_id)
+        primary key (AgentBase_id, media_id)
     );
 
-    create table Agent_Media_AUD (
+    create table AgentBase_Media_AUD (
         REV integer not null,
-        Agent_id integer not null,
+        AgentBase_id integer not null,
         media_id integer not null,
         revtype tinyint,
-        primary key (REV, Agent_id, media_id)
+        primary key (REV, AgentBase_id, media_id)
     );
 
-    create table Agent_OriginalSource (
-        Agent_id integer not null,
+    create table AgentBase_OriginalSource (
+        AgentBase_id integer not null,
         sources_id integer not null,
-        primary key (Agent_id, sources_id),
+        primary key (AgentBase_id, sources_id),
         unique (sources_id)
     );
 
-    create table Agent_OriginalSource_AUD (
+    create table AgentBase_OriginalSource_AUD (
         REV integer not null,
-        Agent_id integer not null,
+        AgentBase_id integer not null,
         sources_id integer not null,
         revtype tinyint,
-        primary key (REV, Agent_id, sources_id)
+        primary key (REV, AgentBase_id, sources_id)
     );
 
-    create table Agent_Rights (
-        Agent_id integer not null,
+    create table AgentBase_Rights (
+        AgentBase_id integer not null,
         rights_id integer not null,
-        primary key (Agent_id, rights_id),
+        primary key (AgentBase_id, rights_id),
         unique (rights_id)
     );
 
-    create table Agent_Rights_AUD (
+    create table AgentBase_Rights_AUD (
         REV integer not null,
-        Agent_id integer not null,
+        AgentBase_id integer not null,
         rights_id integer not null,
         revtype tinyint,
-        primary key (REV, Agent_id, rights_id)
+        primary key (REV, AgentBase_id, rights_id)
+    );
+
+    create table AgentBase_contact_emailaddresses (
+        AgentBase_id integer not null,
+        contact_emailaddresses_element varchar(255)
+    );
+
+    create table AgentBase_contact_emailaddresses_AUD (
+        REV integer not null,
+        AgentBase_id integer not null,
+        contact_emailaddresses_element varchar(255) not null,
+        revtype tinyint,
+        primary key (REV, AgentBase_id, contact_emailaddresses_element)
+    );
+
+    create table AgentBase_contact_faxnumbers (
+        AgentBase_id integer not null,
+        contact_faxnumbers_element varchar(255)
+    );
+
+    create table AgentBase_contact_faxnumbers_AUD (
+        REV integer not null,
+        AgentBase_id integer not null,
+        contact_faxnumbers_element varchar(255) not null,
+        revtype tinyint,
+        primary key (REV, AgentBase_id, contact_faxnumbers_element)
+    );
+
+    create table AgentBase_contact_phonenumbers (
+        AgentBase_id integer not null,
+        contact_phonenumbers_element varchar(255)
+    );
+
+    create table AgentBase_contact_phonenumbers_AUD (
+        REV integer not null,
+        AgentBase_id integer not null,
+        contact_phonenumbers_element varchar(255) not null,
+        revtype tinyint,
+        primary key (REV, AgentBase_id, contact_phonenumbers_element)
+    );
+
+    create table AgentBase_contact_urls (
+        AgentBase_id integer not null,
+        contact_urls_element varchar(255)
+    );
+
+    create table AgentBase_contact_urls_AUD (
+        REV integer not null,
+        AgentBase_id integer not null,
+        contact_urls_element varchar(255) not null,
+        revtype tinyint,
+        primary key (REV, AgentBase_id, contact_urls_element)
     );
 
     create table Annotation (
@@ -219,10 +289,10 @@
         created timestamp,
         uuid varchar(255),
         updated timestamp,
-        text varchar(4096),
+        text longvarchar,
         annotatedObj_type varchar(255),
         annotatedObj_id integer not null,
-        linkbackurlstr varbinary(255),
+        linkbackurl varbinary(255),
         createdby_id integer,
         updatedby_id integer,
         language_id integer,
@@ -238,7 +308,7 @@
         created timestamp,
         uuid varchar(255),
         updated timestamp,
-        text varchar(4096),
+        text longvarchar,
         linkbackurl varbinary(255),
         createdby_id integer,
         updatedby_id integer,
@@ -308,7 +378,11 @@
         created timestamp,
         uuid varchar(255),
         updated timestamp,
-        lsid varchar(255),
+        lsid_authority varchar(255),
+        lsid_lsid varchar(255),
+        lsid_namespace varchar(255),
+        lsid_object varchar(255),
+        lsid_revision varchar(255),
         protectedtitlecache bit not null,
         titleCache varchar(255),
         code varchar(255),
@@ -329,7 +403,11 @@
         created timestamp,
         uuid varchar(255),
         updated timestamp,
-        lsid varchar(255),
+        lsid_authority varchar(255),
+        lsid_lsid varchar(255),
+        lsid_namespace varchar(255),
+        lsid_object varchar(255),
+        lsid_revision varchar(255),
         protectedtitlecache bit,
         titleCache varchar(255),
         code varchar(255),
@@ -391,8 +469,7 @@
     create table Collection_Media (
         Collection_id integer not null,
         media_id integer not null,
-        primary key (Collection_id, media_id),
-        unique (media_id)
+        primary key (Collection_id, media_id)
     );
 
     create table Collection_Media_AUD (
@@ -431,36 +508,6 @@
         rights_id integer not null,
         revtype tinyint,
         primary key (REV, Collection_id, rights_id)
-    );
-
-    create table Contact (
-        id integer not null,
-        created timestamp,
-        uuid varchar(255),
-        updated timestamp,
-        email varchar(255),
-        fax varchar(255),
-        phone varchar(255),
-        url varchar(255),
-        createdby_id integer,
-        updatedby_id integer,
-        primary key (id)
-    );
-
-    create table Contact_AUD (
-        id integer not null,
-        REV integer not null,
-        revtype tinyint,
-        created timestamp,
-        uuid varchar(255),
-        updated timestamp,
-        email varchar(255),
-        fax varchar(255),
-        phone varchar(255),
-        url varchar(255),
-        createdby_id integer,
-        updatedby_id integer,
-        primary key (id, REV)
     );
 
     create table DefinedTermBase (
@@ -514,16 +561,9 @@
         kindof_id integer,
         partof_id integer,
         vocabulary_id integer,
-        orderindex integer,
         iso639_1 varchar(2),
         iso639_2 varchar(3),
-        defaultcolor varchar(255),
-        supportscommontaxonname bit,
-        supportsdistribution bit,
-        supportsindividualassociation bit,
-        supportsquantitativedata bit,
-        supportstaxoninteraction bit,
-        supportstextdata bit,
+        orderindex integer,
         pointapproximation_errorradius integer,
         pointapproximation_latitude double,
         pointapproximation_longitude double,
@@ -533,9 +573,16 @@
         pointapproximation_referencesystem_id integer,
         shape_id integer,
         type_id integer,
+        supportscommontaxonname bit,
+        supportsdistribution bit,
+        supportsindividualassociation bit,
+        supportsquantitativedata bit,
+        supportstaxoninteraction bit,
+        supportstextdata bit,
+        iso3166_a2 varchar(2),
+        defaultcolor varchar(255),
         symmetric bit,
         transitive bit,
-        iso3166_a2 varchar(2),
         primary key (id, REV)
     );
 
@@ -709,7 +756,11 @@
         created timestamp,
         uuid varchar(255),
         updated timestamp,
-        lsid varchar(255),
+        lsid_authority varchar(255),
+        lsid_lsid varchar(255),
+        lsid_namespace varchar(255),
+        lsid_object varchar(255),
+        lsid_revision varchar(255),
         protectedtitlecache bit not null,
         titleCache varchar(255),
         createdby_id integer,
@@ -727,13 +778,17 @@
         created timestamp,
         uuid varchar(255),
         updated timestamp,
-        lsid varchar(255),
+        lsid_authority varchar(255),
+        lsid_lsid varchar(255),
+        lsid_namespace varchar(255),
+        lsid_object varchar(255),
+        lsid_revision varchar(255),
         protectedtitlecache bit,
         titleCache varchar(255),
         createdby_id integer,
         updatedby_id integer,
-        taxon_fk integer,
         taxonName_fk integer,
+        taxon_fk integer,
         primary key (id, REV)
     );
 
@@ -767,11 +822,24 @@
         primary key (REV, DescriptionBase_id, extensions_id)
     );
 
+    create table DescriptionBase_Feature (
+        DescriptionBase_id integer not null,
+        descriptivesystem_id integer not null,
+        primary key (DescriptionBase_id, descriptivesystem_id)
+    );
+
+    create table DescriptionBase_Feature_AUD (
+        REV integer not null,
+        DescriptionBase_id integer not null,
+        descriptivesystem_id integer not null,
+        revtype tinyint,
+        primary key (REV, DescriptionBase_id, descriptivesystem_id)
+    );
+
     create table DescriptionBase_GeoScope (
         DescriptionBase_id integer not null,
         geoscopes_id integer not null,
-        primary key (DescriptionBase_id, geoscopes_id),
-        unique (geoscopes_id)
+        primary key (DescriptionBase_id, geoscopes_id)
     );
 
     create table DescriptionBase_GeoScope_AUD (
@@ -844,8 +912,7 @@
     create table DescriptionBase_Scope (
         DescriptionBase_id integer not null,
         scopes_id integer not null,
-        primary key (DescriptionBase_id, scopes_id),
-        unique (scopes_id)
+        primary key (DescriptionBase_id, scopes_id)
     );
 
     create table DescriptionBase_Scope_AUD (
@@ -880,7 +947,6 @@
         originalnamestring varchar(255),
         orderrelevant bit,
         name varchar(255),
-		modifyingtext varchar(255),
         createdby_id integer,
         updatedby_id integer,
         citation_id integer,
@@ -914,12 +980,12 @@
         name varchar(255),
         language_id integer,
         unit_id integer,
-        format_id integer,
+        orderrelevant bit,
+        associatedspecimenorobservation_id integer,
         taxon2_id integer,
         area_id integer,
         status_id integer,
-        orderrelevant bit,
-        associatedspecimenorobservation_id integer,
+        format_id integer,
         primary key (id, REV)
     );
 
@@ -971,8 +1037,7 @@
     create table DescriptionElementBase_Media (
         DescriptionElementBase_id integer not null,
         media_id integer not null,
-        primary key (DescriptionElementBase_id, media_id),
-        unique (media_id)
+        primary key (DescriptionElementBase_id, media_id)
     );
 
     create table DescriptionElementBase_Media_AUD (
@@ -986,8 +1051,7 @@
     create table DescriptionElementBase_Modifier (
         DescriptionElementBase_id integer not null,
         modifiers_id integer not null,
-        primary key (DescriptionElementBase_id, modifiers_id),
-        unique (modifiers_id)
+        primary key (DescriptionElementBase_id, modifiers_id)
     );
 
     create table DescriptionElementBase_Modifier_AUD (
@@ -1537,12 +1601,33 @@
         primary key (id, REV)
     );
 
+    create table LSIDAuthority (
+        id integer not null,
+        created timestamp,
+        uuid varchar(255),
+        authority varchar(255),
+        authoritywsdl longvarchar,
+        port integer not null,
+        server varchar(255),
+        url varchar(255),
+        createdby_id integer,
+        primary key (id),
+        unique (authority)
+    );
+
+    create table LSIDAuthority_namespaces (
+        LSIDAuthority_id integer not null,
+        namespaces_element varchar(255),
+        namespaces_mapkey varchar(255),
+        primary key (LSIDAuthority_id, namespaces_mapkey)
+    );
+
     create table LanguageString (
         id integer not null,
         created timestamp,
         uuid varchar(255),
         updated timestamp,
-        text varchar(4096),
+        text longvarchar,
         createdby_id integer,
         updatedby_id integer,
         language_id integer,
@@ -1556,7 +1641,7 @@
         created timestamp,
         uuid varchar(255),
         updated timestamp,
-        text varchar(4096),
+        text longvarchar,
         createdby_id integer,
         updatedby_id integer,
         language_id integer,
@@ -1654,8 +1739,6 @@
         uuid varchar(255),
         updated timestamp,
         mediacreated date,
-		description varchar(255),
-		title varchar(255),
         citationmicroreference varchar(255),
         createdby_id integer,
         updatedby_id integer,
@@ -1868,14 +1951,6 @@
         primary key (Media_id, coveredtaxa_id),
         unique (coveredtaxa_id)
     );
-
-	create table Media_Title (
-		Media_id integer not null, 
-		title_id integer not null, 
-		title_mapkey_id integer not null, 
-		primary key (Media_id, title_mapkey_id), 
-		unique (title_id)
-	);
 
     create table Media_TaxonBase_AUD (
         REV integer not null,
@@ -2115,7 +2190,11 @@
         created timestamp,
         uuid varchar(255),
         updated timestamp,
-        lsid varchar(255),
+        lsid_authority varchar(255),
+        lsid_lsid varchar(255),
+        lsid_namespace varchar(255),
+        lsid_object varchar(255),
+        lsid_revision varchar(255),
         protectedtitlecache bit not null,
         titleCache varchar(255),
         hasproblem bit not null,
@@ -2173,7 +2252,11 @@
         created timestamp,
         uuid varchar(255),
         updated timestamp,
-        lsid varchar(255),
+        lsid_authority varchar(255),
+        lsid_lsid varchar(255),
+        lsid_namespace varchar(255),
+        lsid_object varchar(255),
+        lsid_revision varchar(255),
         protectedtitlecache bit,
         titleCache varchar(255),
         hasproblem bit,
@@ -2187,23 +2270,12 @@
         datepublished_end varchar(255),
         datepublished_start varchar(255),
         title varchar(255),
-        pages varchar(255),
-        placepublished varchar(255),
-        publisher varchar(255),
-        school_id integer,
-        editor varchar(255),
-        seriespart varchar(255),
-        volume varchar(255),
-        inseries_id integer,
-        edition varchar(255),
-        isbn varchar(255),
-        organization varchar(255),
-        series varchar(255),
-        issn varchar(255),
         address varchar(255),
         annote varchar(255),
         booktitle varchar(255),
         chapter varchar(255),
+        edition varchar(255),
+        editor varchar(255),
         eprint varchar(255),
         howpublished varchar(255),
         institution varchar(255),
@@ -2211,15 +2283,26 @@
         month varchar(255),
         note varchar(255),
         number varchar(255),
+        organization varchar(255),
+        pages varchar(255),
+        publisher varchar(255),
         reporttype varchar(255),
         school varchar(255),
+        series varchar(255),
+        volume varchar(255),
         year varchar(255),
         crossref_id integer,
         type_id integer,
-        inbook_id integer,
+        placepublished varchar(255),
+        institution_id integer,
+        school_id integer,
+        issn varchar(255),
         injournal_id integer,
         inproceedings_id integer,
-        institution_id integer,
+        inbook_id integer,
+        seriespart varchar(255),
+        inseries_id integer,
+        isbn varchar(255),
         primary key (id, REV)
     );
 
@@ -2271,8 +2354,7 @@
     create table ReferenceBase_Media (
         ReferenceBase_id integer not null,
         media_id integer not null,
-        primary key (ReferenceBase_id, media_id),
-        unique (media_id)
+        primary key (ReferenceBase_id, media_id)
     );
 
     create table ReferenceBase_Media_AUD (
@@ -2333,7 +2415,7 @@
         created timestamp,
         uuid varchar(255),
         updated timestamp,
-        text varchar(4096),
+        text longvarchar,
         abbreviatedlabel varchar(255),
         label varchar(255),
         createdby_id integer,
@@ -2349,7 +2431,7 @@
         created timestamp,
         uuid varchar(255),
         updated timestamp,
-        text varchar(4096),
+        text longvarchar,
         abbreviatedlabel varchar(255),
         label varchar(255),
         createdby_id integer,
@@ -2393,7 +2475,7 @@
         created timestamp,
         uuid varchar(255),
         updated timestamp,
-        text varchar(4096),
+        text longvarchar,
         abbreviatedtext varchar(255),
         uri varchar(255),
         createdby_id integer,
@@ -2411,7 +2493,7 @@
         created timestamp,
         uuid varchar(255),
         updated timestamp,
-        text varchar(4096),
+        text longvarchar,
         abbreviatedtext varchar(255),
         uri varchar(255),
         createdby_id integer,
@@ -2457,17 +2539,21 @@
         created timestamp,
         uuid varchar(255),
         updated timestamp,
-        lsid varchar(255),
+        lsid_authority varchar(255),
+        lsid_lsid varchar(255),
+        lsid_namespace varchar(255),
+        lsid_object varchar(255),
+        lsid_revision varchar(255),
         protectedtitlecache bit not null,
         titleCache varchar(255),
         barcode bit not null,
         citationmicroreference varchar(255),
         datesequenced date,
         length integer,
-        locus varbinary(255),
         sequence varchar(255),
         createdby_id integer,
         updatedby_id integer,
+        locus_id integer,
         publishedin_id integer,
         primary key (id)
     );
@@ -2479,17 +2565,21 @@
         created timestamp,
         uuid varchar(255),
         updated timestamp,
-        lsid varchar(255),
+        lsid_authority varchar(255),
+        lsid_lsid varchar(255),
+        lsid_namespace varchar(255),
+        lsid_object varchar(255),
+        lsid_revision varchar(255),
         protectedtitlecache bit,
         titleCache varchar(255),
         barcode bit,
         citationmicroreference varchar(255),
         datesequenced date,
         length integer,
-        locus varbinary(255),
         sequence varchar(255),
         createdby_id integer,
         updatedby_id integer,
+        locus_id integer,
         publishedin_id integer,
         primary key (id, REV)
     );
@@ -2620,7 +2710,11 @@
         created timestamp,
         uuid varchar(255),
         updated timestamp,
-        lsid varchar(255),
+        lsid_authority varchar(255),
+        lsid_lsid varchar(255),
+        lsid_namespace varchar(255),
+        lsid_object varchar(255),
+        lsid_revision varchar(255),
         protectedtitlecache bit not null,
         titleCache varchar(255),
         individualcount integer,
@@ -2649,7 +2743,11 @@
         created timestamp,
         uuid varchar(255),
         updated timestamp,
-        lsid varchar(255),
+        lsid_authority varchar(255),
+        lsid_lsid varchar(255),
+        lsid_namespace varchar(255),
+        lsid_object varchar(255),
+        lsid_revision varchar(255),
         protectedtitlecache bit,
         titleCache varchar(255),
         individualcount integer,
@@ -2657,15 +2755,15 @@
         updatedby_id integer,
         lifestage_id integer,
         sex_id integer,
+        fieldnotes varchar(255),
+        fieldnumber varchar(255),
+        gatheringevent_id integer,
         accessionnumber varchar(255),
         catalognumber varchar(255),
         collectorsnumber varchar(255),
         collection_id integer,
         derivationevent_id integer,
         storedunder_id integer,
-        fieldnotes varchar(255),
-        fieldnumber varchar(255),
-        gatheringevent_id integer,
         preservation_id integer,
         primary key (id, REV)
     );
@@ -2749,8 +2847,7 @@
     create table SpecimenOrObservationBase_Media (
         SpecimenOrObservationBase_id integer not null,
         media_id integer not null,
-        primary key (SpecimenOrObservationBase_id, media_id),
-        unique (media_id)
+        primary key (SpecimenOrObservationBase_id, media_id)
     );
 
     create table SpecimenOrObservationBase_Media_AUD (
@@ -2979,7 +3076,11 @@
         created timestamp,
         uuid varchar(255),
         updated timestamp,
-        lsid varchar(255),
+        lsid_authority varchar(255),
+        lsid_lsid varchar(255),
+        lsid_namespace varchar(255),
+        lsid_object varchar(255),
+        lsid_revision varchar(255),
         protectedtitlecache bit not null,
         titleCache varchar(255),
         doubtful bit not null,
@@ -3000,7 +3101,11 @@
         created timestamp,
         uuid varchar(255),
         updated timestamp,
-        lsid varchar(255),
+        lsid_authority varchar(255),
+        lsid_lsid varchar(255),
+        lsid_namespace varchar(255),
+        lsid_object varchar(255),
+        lsid_revision varchar(255),
         protectedtitlecache bit,
         titleCache varchar(255),
         doubtful bit,
@@ -3111,7 +3216,11 @@
         created timestamp,
         uuid varchar(255),
         updated timestamp,
-        lsid varchar(255),
+        lsid_authority varchar(255),
+        lsid_lsid varchar(255),
+        lsid_namespace varchar(255),
+        lsid_object varchar(255),
+        lsid_revision varchar(255),
         protectedtitlecache bit not null,
         titleCache varchar(255),
         appendedphrase varchar(255),
@@ -3161,7 +3270,11 @@
         created timestamp,
         uuid varchar(255),
         updated timestamp,
-        lsid varchar(255),
+        lsid_authority varchar(255),
+        lsid_lsid varchar(255),
+        lsid_namespace varchar(255),
+        lsid_object varchar(255),
+        lsid_revision varchar(255),
         protectedtitlecache bit,
         titleCache varchar(255),
         appendedphrase varchar(255),
@@ -3196,10 +3309,10 @@
         hybridformula bit,
         monomhybrid bit,
         trinomhybrid bit,
-        cultivarname varchar(255),
         breed varchar(255),
         originalpublicationyear integer,
         publicationyear integer,
+        cultivarname varchar(255),
         primary key (id, REV)
     );
 
@@ -3555,14 +3668,9 @@
         references DefinedTermBase;
 
     alter table Address 
-        add constraint FK1ED033D4EE7A4BF4 
-        foreign key (contact_id) 
-        references Contact;
-
-    alter table Address 
         add constraint FK1ED033D4EF7921F6 
         foreign key (createdby_id) 
-        references Agent;
+        references AgentBase;
 
     alter table Address 
         add constraint FK1ED033D42687715A 
@@ -3572,157 +3680,207 @@
     alter table Address 
         add constraint FK1ED033D45BE3EC03 
         foreign key (updatedby_id) 
-        references Agent;
+        references AgentBase;
 
     alter table Address_AUD 
         add constraint FK115657A534869AAE 
         foreign key (REV) 
         references AuditEvent;
 
-    create index agentTitleCacheIndex on Agent (titleCache);
+    create index agentTitleCacheIndex on AgentBase (titleCache);
 
-    alter table Agent 
-        add constraint FK3C452E5EE7A4BF4 
-        foreign key (contact_id) 
-        references Contact;
-
-    alter table Agent 
-        add constraint FK3C452E5EF7921F6 
+    alter table AgentBase 
+        add constraint FK1205D356EF7921F6 
         foreign key (createdby_id) 
-        references Agent;
+        references AgentBase;
 
-    alter table Agent 
-        add constraint FK3C452E5A830578 
+    alter table AgentBase 
+        add constraint FK1205D356A830578 
         foreign key (ispartof_id) 
-        references Agent;
+        references AgentBase;
 
-    alter table Agent 
-        add constraint FK3C452E55BE3EC03 
+    alter table AgentBase 
+        add constraint FK1205D3565BE3EC03 
         foreign key (updatedby_id) 
-        references Agent;
+        references AgentBase;
 
-    alter table Agent_AUD 
-        add constraint FK1212863634869AAE 
+    alter table AgentBase_AUD 
+        add constraint FK29CC662734869AAE 
         foreign key (REV) 
         references AuditEvent;
 
-    alter table Agent_Agent 
-        add constraint FKD792890B8CB642F8 
-        foreign key (Agent_id) 
-        references Agent;
+    alter table AgentBase_Address 
+        add constraint FK1EDFF7EB50751EC5 
+        foreign key (contact_addresses_id) 
+        references Address;
 
-    alter table Agent_Agent 
-        add constraint FKD792890BE9E535F9 
+    alter table AgentBase_Address 
+        add constraint FK1EDFF7EB86EFC5D4 
+        foreign key (AgentBase_id) 
+        references AgentBase;
+
+    alter table AgentBase_Address_AUD 
+        add constraint FK3D28383C34869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table AgentBase_AgentBase 
+        add constraint FK4D34EDAD1C0E9907 
+        foreign key (AgentBase_id) 
+        references AgentBase;
+
+    alter table AgentBase_AgentBase 
+        add constraint FK4D34EDADE9E535F9 
         foreign key (teammembers_id) 
-        references Agent;
+        references AgentBase;
 
-    alter table Agent_Agent_AUD 
-        add constraint FK49ED395C34869AAE 
+    alter table AgentBase_AgentBase_AUD 
+        add constraint FKA8A87CFE34869AAE 
         foreign key (REV) 
         references AuditEvent;
 
-    alter table Agent_Annotation 
-        add constraint FKDD9D78E9C5F7EC54 
-        foreign key (Agent_id) 
-        references Agent;
+    alter table AgentBase_Annotation 
+        add constraint FK44D5F7D886EFC5D4 
+        foreign key (AgentBase_id) 
+        references AgentBase;
 
-    alter table Agent_Annotation 
-        add constraint FKDD9D78E91E403E0B 
+    alter table AgentBase_Annotation 
+        add constraint FK44D5F7D81E403E0B 
         foreign key (annotations_id) 
         references Annotation;
 
-    alter table Agent_Annotation_AUD 
-        add constraint FK6F210A3A34869AAE 
+    alter table AgentBase_Annotation_AUD 
+        add constraint FK771279A934869AAE 
         foreign key (REV) 
         references AuditEvent;
 
-    alter table Agent_DefinedTermBase 
-        add constraint FK7029490CFE425B87 
-        foreign key (Agent_id) 
-        references Agent;
-
-    alter table Agent_DefinedTermBase 
-        add constraint FK7029490C9A161BED 
+    alter table AgentBase_DefinedTermBase 
+        add constraint FK6665C77D9A161BED 
         foreign key (types_id) 
         references DefinedTermBase;
 
-    alter table Agent_DefinedTermBase_AUD 
-        add constraint FK393210DD34869AAE 
+    alter table AgentBase_DefinedTermBase 
+        add constraint FK6665C77D8D9AB196 
+        foreign key (AgentBase_id) 
+        references AgentBase;
+
+    alter table AgentBase_DefinedTermBase_AUD 
+        add constraint FKA737EECE34869AAE 
         foreign key (REV) 
         references AuditEvent;
 
-    alter table Agent_Extension 
-        add constraint FK8AC9EF45C5F7EC54 
-        foreign key (Agent_id) 
-        references Agent;
-
-    alter table Agent_Extension 
-        add constraint FK8AC9EF45927DE9DF 
+    alter table AgentBase_Extension 
+        add constraint FK8E1E5676927DE9DF 
         foreign key (extensions_id) 
         references Extension;
 
-    alter table Agent_Extension_AUD 
-        add constraint FK2A32F29634869AAE 
+    alter table AgentBase_Extension 
+        add constraint FK8E1E567686EFC5D4 
+        foreign key (AgentBase_id) 
+        references AgentBase;
+
+    alter table AgentBase_Extension_AUD 
+        add constraint FK11AE594734869AAE 
         foreign key (REV) 
         references AuditEvent;
 
-    alter table Agent_Marker 
-        add constraint FK2EEA0EF4C5F7EC54 
-        foreign key (Agent_id) 
-        references Agent;
+    alter table AgentBase_Marker 
+        add constraint FK365D5D6386EFC5D4 
+        foreign key (AgentBase_id) 
+        references AgentBase;
 
-    alter table Agent_Marker 
-        add constraint FK2EEA0EF4777265A1 
+    alter table AgentBase_Marker 
+        add constraint FK365D5D63777265A1 
         foreign key (markers_id) 
         references Marker;
 
-    alter table Agent_Marker_AUD 
-        add constraint FK7CCDA2C534869AAE 
+    alter table AgentBase_Marker_AUD 
+        add constraint FKE40621B434869AAE 
         foreign key (REV) 
         references AuditEvent;
 
-    alter table Agent_Media 
-        add constraint FKD83AB5EAC5F7EC54 
-        foreign key (Agent_id) 
-        references Agent;
-
-    alter table Agent_Media 
-        add constraint FKD83AB5EAC2C29593 
+    alter table AgentBase_Media 
+        add constraint FKE8FC5D9BC2C29593 
         foreign key (media_id) 
         references Media;
 
-    alter table Agent_Media_AUD 
-        add constraint FK2EE5DEBB34869AAE 
+    alter table AgentBase_Media 
+        add constraint FKE8FC5D9B86EFC5D4 
+        foreign key (AgentBase_id) 
+        references AgentBase;
+
+    alter table AgentBase_Media_AUD 
+        add constraint FK323A45EC34869AAE 
         foreign key (REV) 
         references AuditEvent;
 
-    alter table Agent_OriginalSource 
-        add constraint FK774F9E06C5F7EC54 
-        foreign key (Agent_id) 
-        references Agent;
-
-    alter table Agent_OriginalSource 
-        add constraint FK774F9E063BAB2414 
+    alter table AgentBase_OriginalSource 
+        add constraint FK7F410D753BAB2414 
         foreign key (sources_id) 
         references OriginalSource;
 
-    alter table Agent_OriginalSource_AUD 
-        add constraint FKEAD158D734869AAE 
+    alter table AgentBase_OriginalSource 
+        add constraint FK7F410D7586EFC5D4 
+        foreign key (AgentBase_id) 
+        references AgentBase;
+
+    alter table AgentBase_OriginalSource_AUD 
+        add constraint FKB48F78C634869AAE 
         foreign key (REV) 
         references AuditEvent;
 
-    alter table Agent_Rights 
-        add constraint FK37DDFC91C5F7EC54 
-        foreign key (Agent_id) 
-        references Agent;
+    alter table AgentBase_Rights 
+        add constraint FK3F514B0086EFC5D4 
+        foreign key (AgentBase_id) 
+        references AgentBase;
 
-    alter table Agent_Rights 
-        add constraint FK37DDFC91C13F7B21 
+    alter table AgentBase_Rights 
+        add constraint FK3F514B00C13F7B21 
         foreign key (rights_id) 
         references Rights;
 
-    alter table Agent_Rights_AUD 
-        add constraint FKE8A779E234869AAE 
+    alter table AgentBase_Rights_AUD 
+        add constraint FK4FDFF8D134869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table AgentBase_contact_emailaddresses 
+        add constraint FK4BD2B08E86EFC5D4 
+        foreign key (AgentBase_id) 
+        references AgentBase;
+
+    alter table AgentBase_contact_emailaddresses_AUD 
+        add constraint FKCAF7E75F34869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table AgentBase_contact_faxnumbers 
+        add constraint FK52E1AD9586EFC5D4 
+        foreign key (AgentBase_id) 
+        references AgentBase;
+
+    alter table AgentBase_contact_faxnumbers_AUD 
+        add constraint FK88A308E634869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table AgentBase_contact_phonenumbers 
+        add constraint FKC171CC2486EFC5D4 
+        foreign key (AgentBase_id) 
+        references AgentBase;
+
+    alter table AgentBase_contact_phonenumbers_AUD 
+        add constraint FKDDD347F534869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table AgentBase_contact_urls 
+        add constraint FK9A9643EC86EFC5D4 
+        foreign key (AgentBase_id) 
+        references AgentBase;
+
+    alter table AgentBase_contact_urls_AUD 
+        add constraint FK1CE69BBD34869AAE 
         foreign key (REV) 
         references AuditEvent;
 
@@ -3734,17 +3892,17 @@
     alter table Annotation 
         add constraint FK1A21C74FEF7921F6 
         foreign key (createdby_id) 
-        references Agent;
+        references AgentBase;
 
     alter table Annotation 
         add constraint FK1A21C74FE7692740 
         foreign key (commentator_id) 
-        references Agent;
+        references AgentBase;
 
     alter table Annotation 
         add constraint FK1A21C74F5BE3EC03 
         foreign key (updatedby_id) 
-        references Agent;
+        references AgentBase;
 
     alter table Annotation 
         add constraint FK1A21C74FE8D36B00 
@@ -3794,7 +3952,7 @@
     alter table CDM_VIEW 
         add constraint FKC5DE8EF8EF7921F6 
         foreign key (createdby_id) 
-        references Agent;
+        references AgentBase;
 
     alter table CDM_VIEW_CDM_VIEW 
         add constraint FK230A885F7208BB38 
@@ -3816,17 +3974,17 @@
     alter table Collection 
         add constraint FKF078ABEEF7921F6 
         foreign key (createdby_id) 
-        references Agent;
+        references AgentBase;
 
     alter table Collection 
         add constraint FKF078ABE16B9CA77 
         foreign key (institute_id) 
-        references Agent;
+        references AgentBase;
 
     alter table Collection 
         add constraint FKF078ABE5BE3EC03 
         foreign key (updatedby_id) 
-        references Agent;
+        references AgentBase;
 
     alter table Collection_AUD 
         add constraint FKD6D4298F34869AAE 
@@ -3923,21 +4081,6 @@
         foreign key (REV) 
         references AuditEvent;
 
-    alter table Contact 
-        add constraint FK9BEFBC00EF7921F6 
-        foreign key (createdby_id) 
-        references Agent;
-
-    alter table Contact 
-        add constraint FK9BEFBC005BE3EC03 
-        foreign key (updatedby_id) 
-        references Agent;
-
-    alter table Contact_AUD 
-        add constraint FK65DDE9D134869AAE 
-        foreign key (REV) 
-        references AuditEvent;
-
     alter table DefinedTermBase 
         add constraint FK2E340A6636C6F6F6 
         foreign key (pointapproximation_referencesystem_id) 
@@ -3946,7 +4089,7 @@
     alter table DefinedTermBase 
         add constraint FK2E340A66EF7921F6 
         foreign key (createdby_id) 
-        references Agent;
+        references AgentBase;
 
     alter table DefinedTermBase 
         add constraint FK2E340A6688206484 
@@ -3971,7 +4114,7 @@
     alter table DefinedTermBase 
         add constraint FK2E340A665BE3EC03 
         foreign key (updatedby_id) 
-        references Agent;
+        references AgentBase;
 
     alter table DefinedTermBase 
         add constraint FK2E340A66CC0240B6 
@@ -4096,7 +4239,7 @@
     alter table DerivationEvent 
         add constraint FK426BC03EF7921F6 
         foreign key (createdby_id) 
-        references Agent;
+        references AgentBase;
 
     alter table DerivationEvent 
         add constraint FK426BC038524B89D 
@@ -4106,12 +4249,12 @@
     alter table DerivationEvent 
         add constraint FK426BC035BE3EC03 
         foreign key (updatedby_id) 
-        references Agent;
+        references AgentBase;
 
     alter table DerivationEvent 
-        add constraint FK426BC03C04DF64 
+        add constraint FK426BC033DA462D5 
         foreign key (actor_id) 
-        references Agent;
+        references AgentBase;
 
     alter table DerivationEvent_AUD 
         add constraint FKDABF305434869AAE 
@@ -4151,7 +4294,7 @@
     alter table DescriptionBase 
         add constraint FKFF4D58CDEF7921F6 
         foreign key (createdby_id) 
-        references Agent;
+        references AgentBase;
 
     alter table DescriptionBase 
         add constraint FKFF4D58CDDA93512F 
@@ -4161,7 +4304,7 @@
     alter table DescriptionBase 
         add constraint FKFF4D58CD5BE3EC03 
         foreign key (updatedby_id) 
-        references Agent;
+        references AgentBase;
 
     alter table DescriptionBase 
         add constraint FKFF4D58CDDE9A3DE3 
@@ -4200,6 +4343,21 @@
 
     alter table DescriptionBase_Extension_AUD 
         add constraint FK79E7827E34869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table DescriptionBase_Feature 
+        add constraint FK58ACF564F1DDBFAB 
+        foreign key (DescriptionBase_id) 
+        references DescriptionBase;
+
+    alter table DescriptionBase_Feature 
+        add constraint FK58ACF5649AE62C6 
+        foreign key (descriptivesystem_id) 
+        references DefinedTermBase;
+
+    alter table DescriptionBase_Feature_AUD 
+        add constraint FKA4D7D13534869AAE 
         foreign key (REV) 
         references AuditEvent;
 
@@ -4321,7 +4479,7 @@
     alter table DescriptionElementBase 
         add constraint FK38FE7671EF7921F6 
         foreign key (createdby_id) 
-        references Agent;
+        references AgentBase;
 
     alter table DescriptionElementBase 
         add constraint FK38FE767110A80E07 
@@ -4351,7 +4509,7 @@
     alter table DescriptionElementBase 
         add constraint FK38FE76715BE3EC03 
         foreign key (updatedby_id) 
-        references Agent;
+        references AgentBase;
 
     alter table DescriptionElementBase 
         add constraint FK38FE76719108D9B 
@@ -4501,7 +4659,7 @@
     alter table DeterminationEvent 
         add constraint FK1DB2497EF7921F6 
         foreign key (createdby_id) 
-        references Agent;
+        references AgentBase;
 
     alter table DeterminationEvent 
         add constraint FK1DB2497378D1BD 
@@ -4521,12 +4679,12 @@
     alter table DeterminationEvent 
         add constraint FK1DB24975BE3EC03 
         foreign key (updatedby_id) 
-        references Agent;
+        references AgentBase;
 
     alter table DeterminationEvent 
-        add constraint FK1DB2497C04DF64 
+        add constraint FK1DB24973DA462D5 
         foreign key (actor_id) 
-        references Agent;
+        references AgentBase;
 
     alter table DeterminationEvent_AUD 
         add constraint FKA0252EE834869AAE 
@@ -4581,7 +4739,7 @@
     alter table Extension 
         add constraint FK52EF3C1FEF7921F6 
         foreign key (createdby_id) 
-        references Agent;
+        references AgentBase;
 
     alter table Extension 
         add constraint FK52EF3C1FAD392BD3 
@@ -4591,7 +4749,7 @@
     alter table Extension 
         add constraint FK52EF3C1F5BE3EC03 
         foreign key (updatedby_id) 
-        references Agent;
+        references AgentBase;
 
     alter table Extension_AUD 
         add constraint FK92D2427034869AAE 
@@ -4606,7 +4764,7 @@
     alter table FeatureNode 
         add constraint FK4CEED9F8EF7921F6 
         foreign key (createdby_id) 
-        references Agent;
+        references AgentBase;
 
     alter table FeatureNode 
         add constraint FK4CEED9F84220AFEB 
@@ -4616,7 +4774,7 @@
     alter table FeatureNode 
         add constraint FK4CEED9F85BE3EC03 
         foreign key (updatedby_id) 
-        references Agent;
+        references AgentBase;
 
     alter table FeatureNode_AUD 
         add constraint FK25AD4BC934869AAE 
@@ -4626,7 +4784,7 @@
     alter table FeatureTree 
         add constraint FK4CF19F94EF7921F6 
         foreign key (createdby_id) 
-        references Agent;
+        references AgentBase;
 
     alter table FeatureTree 
         add constraint FK4CF19F94B7892921 
@@ -4636,7 +4794,7 @@
     alter table FeatureTree 
         add constraint FK4CF19F945BE3EC03 
         foreign key (updatedby_id) 
-        references Agent;
+        references AgentBase;
 
     alter table FeatureTree_AUD 
         add constraint FK355BE36534869AAE 
@@ -4671,17 +4829,17 @@
     alter table GatheringEvent 
         add constraint FK6F1286F3EF7921F6 
         foreign key (createdby_id) 
-        references Agent;
+        references AgentBase;
 
     alter table GatheringEvent 
         add constraint FK6F1286F35BE3EC03 
         foreign key (updatedby_id) 
-        references Agent;
+        references AgentBase;
 
     alter table GatheringEvent 
-        add constraint FK6F1286F3C04DF64 
+        add constraint FK6F1286F33DA462D5 
         foreign key (actor_id) 
-        references Agent;
+        references AgentBase;
 
     alter table GatheringEvent_AUD 
         add constraint FK3EC034434869AAE 
@@ -4736,12 +4894,12 @@
     alter table GenBankAccession 
         add constraint FK86C1DBF8EF7921F6 
         foreign key (createdby_id) 
-        references Agent;
+        references AgentBase;
 
     alter table GenBankAccession 
         add constraint FK86C1DBF85BE3EC03 
         foreign key (updatedby_id) 
-        references Agent;
+        references AgentBase;
 
     alter table GenBankAccession_AUD 
         add constraint FK5A2F4DC934869AAE 
@@ -4751,17 +4909,17 @@
     alter table GrantedAuthorityImpl 
         add constraint FKB05CF928EF7921F6 
         foreign key (createdby_id) 
-        references Agent;
+        references AgentBase;
 
     alter table HomotypicalGroup 
         add constraint FK7DECCC18EF7921F6 
         foreign key (createdby_id) 
-        references Agent;
+        references AgentBase;
 
     alter table HomotypicalGroup 
         add constraint FK7DECCC185BE3EC03 
         foreign key (updatedby_id) 
-        references Agent;
+        references AgentBase;
 
     alter table HomotypicalGroup_AUD 
         add constraint FKE4252DE934869AAE 
@@ -4811,7 +4969,7 @@
     alter table HybridRelationship 
         add constraint FK9033CE74EF7921F6 
         foreign key (createdby_id) 
-        references Agent;
+        references AgentBase;
 
     alter table HybridRelationship 
         add constraint FK9033CE7455F241D4 
@@ -4826,7 +4984,7 @@
     alter table HybridRelationship 
         add constraint FK9033CE745BE3EC03 
         foreign key (updatedby_id) 
-        references Agent;
+        references AgentBase;
 
     alter table HybridRelationship_AUD 
         add constraint FK9C2BA24534869AAE 
@@ -4901,37 +5059,47 @@
     alter table InstitutionalMembership 
         add constraint FK3C8E1FF9EF7921F6 
         foreign key (createdby_id) 
-        references Agent;
+        references AgentBase;
 
     alter table InstitutionalMembership 
         add constraint FK3C8E1FF9AAC1B820 
         foreign key (person_id) 
-        references Agent;
+        references AgentBase;
 
     alter table InstitutionalMembership 
         add constraint FK3C8E1FF916B9CA77 
         foreign key (institute_id) 
-        references Agent;
+        references AgentBase;
 
     alter table InstitutionalMembership 
         add constraint FK3C8E1FF95BE3EC03 
         foreign key (updatedby_id) 
-        references Agent;
+        references AgentBase;
 
     alter table InstitutionalMembership_AUD 
         add constraint FK847A94A34869AAE 
         foreign key (REV) 
         references AuditEvent;
 
+    alter table LSIDAuthority 
+        add constraint FK759DB881EF7921F6 
+        foreign key (createdby_id) 
+        references AgentBase;
+
+    alter table LSIDAuthority_namespaces 
+        add constraint FKB04948F64FFCFD94 
+        foreign key (LSIDAuthority_id) 
+        references LSIDAuthority;
+
     alter table LanguageString 
         add constraint FKB5FDC9A9EF7921F6 
         foreign key (createdby_id) 
-        references Agent;
+        references AgentBase;
 
     alter table LanguageString 
         add constraint FKB5FDC9A95BE3EC03 
         foreign key (updatedby_id) 
-        references Agent;
+        references AgentBase;
 
     alter table LanguageString 
         add constraint FKB5FDC9A9E8D36B00 
@@ -4976,12 +5144,12 @@
     alter table Locus 
         add constraint FK462F1BEEF7921F6 
         foreign key (createdby_id) 
-        references Agent;
+        references AgentBase;
 
     alter table Locus 
         add constraint FK462F1BE5BE3EC03 
         foreign key (updatedby_id) 
-        references Agent;
+        references AgentBase;
 
     alter table Locus_AUD 
         add constraint FK5224108F34869AAE 
@@ -4991,7 +5159,7 @@
     alter table Marker 
         add constraint FK88F1805AEF7921F6 
         foreign key (createdby_id) 
-        references Agent;
+        references AgentBase;
 
     alter table Marker 
         add constraint FK88F1805AD64DC020 
@@ -5001,7 +5169,7 @@
     alter table Marker 
         add constraint FK88F1805A5BE3EC03 
         foreign key (updatedby_id) 
-        references Agent;
+        references AgentBase;
 
     alter table Marker_AUD 
         add constraint FKB951F12B34869AAE 
@@ -5011,12 +5179,12 @@
     alter table Media 
         add constraint FK46C7FC4EF7921F6 
         foreign key (createdby_id) 
-        references Agent;
+        references AgentBase;
 
     alter table Media 
-        add constraint FK46C7FC490A4D0D2 
+        add constraint FK46C7FC4C2445443 
         foreign key (artist_id) 
-        references Agent;
+        references AgentBase;
 
     alter table Media 
         add constraint FK46C7FC49803512F 
@@ -5026,12 +5194,12 @@
     alter table Media 
         add constraint FK46C7FC45BE3EC03 
         foreign key (updatedby_id) 
-        references Agent;
+        references AgentBase;
 
     alter table MediaRepresentation 
         add constraint FK1966BDB1EF7921F6 
         foreign key (createdby_id) 
-        references Agent;
+        references AgentBase;
 
     alter table MediaRepresentation 
         add constraint FK1966BDB1C2C29593 
@@ -5041,7 +5209,7 @@
     alter table MediaRepresentation 
         add constraint FK1966BDB15BE3EC03 
         foreign key (updatedby_id) 
-        references Agent;
+        references AgentBase;
 
     alter table MediaRepresentationPart 
         add constraint FK67A45544E3818E37 
@@ -5051,12 +5219,12 @@
     alter table MediaRepresentationPart 
         add constraint FK67A45544EF7921F6 
         foreign key (createdby_id) 
-        references Agent;
+        references AgentBase;
 
     alter table MediaRepresentationPart 
         add constraint FK67A455445BE3EC03 
         foreign key (updatedby_id) 
-        references Agent;
+        references AgentBase;
 
     alter table MediaRepresentationPart_AUD 
         add constraint FKA75C411534869AAE 
@@ -5221,7 +5389,7 @@
     alter table NameRelationship 
         add constraint FK5E51083EF7921F6 
         foreign key (createdby_id) 
-        references Agent;
+        references AgentBase;
 
     alter table NameRelationship 
         add constraint FK5E51083AF619DE3 
@@ -5236,7 +5404,7 @@
     alter table NameRelationship 
         add constraint FK5E510835BE3EC03 
         foreign key (updatedby_id) 
-        references Agent;
+        references AgentBase;
 
     alter table NameRelationship_AUD 
         add constraint FK743F44D434869AAE 
@@ -5276,7 +5444,7 @@
     alter table NomenclaturalStatus 
         add constraint FK1FFEC88BEF7921F6 
         foreign key (createdby_id) 
-        references Agent;
+        references AgentBase;
 
     alter table NomenclaturalStatus 
         add constraint FK1FFEC88B7029BD9F 
@@ -5291,7 +5459,7 @@
     alter table NomenclaturalStatus 
         add constraint FK1FFEC88B5BE3EC03 
         foreign key (updatedby_id) 
-        references Agent;
+        references AgentBase;
 
     alter table NomenclaturalStatus_AUD 
         add constraint FKFB2DB8DC34869AAE 
@@ -5331,7 +5499,7 @@
     alter table OriginalSource 
         add constraint FK229A496CEF7921F6 
         foreign key (createdby_id) 
-        references Agent;
+        references AgentBase;
 
     alter table OriginalSource 
         add constraint FK229A496C9803512F 
@@ -5341,7 +5509,7 @@
     alter table OriginalSource 
         add constraint FK229A496C5BE3EC03 
         foreign key (updatedby_id) 
-        references Agent;
+        references AgentBase;
 
     alter table OriginalSource_AUD 
         add constraint FK506BE13D34869AAE 
@@ -5381,7 +5549,7 @@
     alter table PermissionGroup 
         add constraint FK629941D0EF7921F6 
         foreign key (createdby_id) 
-        references Agent;
+        references AgentBase;
 
     alter table PermissionGroup_GrantedAuthorityImpl 
         add constraint FK5311437CA0971A3 
@@ -5401,7 +5569,7 @@
     alter table Person_Keyword 
         add constraint FK5F559EFFAAC1B7CA 
         foreign key (person_fk) 
-        references Agent;
+        references AgentBase;
 
     alter table Person_Keyword_AUD 
         add constraint FK6D8C355034869AAE 
@@ -5418,12 +5586,12 @@
     alter table ReferenceBase 
         add constraint FK8F034C9CEF7921F6 
         foreign key (createdby_id) 
-        references Agent;
+        references AgentBase;
 
     alter table ReferenceBase 
         add constraint FK8F034C9C403E17F4 
         foreign key (institution_id) 
-        references Agent;
+        references AgentBase;
 
     alter table ReferenceBase 
         add constraint FK8F034C9CCCE9AAE2 
@@ -5438,7 +5606,7 @@
     alter table ReferenceBase 
         add constraint FK8F034C9CAEC3B8B8 
         foreign key (school_id) 
-        references Agent;
+        references AgentBase;
 
     alter table ReferenceBase 
         add constraint FK8F034C9CE3A02620 
@@ -5458,12 +5626,12 @@
     alter table ReferenceBase 
         add constraint FK8F034C9C697665E 
         foreign key (authorteam_id) 
-        references Agent;
+        references AgentBase;
 
     alter table ReferenceBase 
         add constraint FK8F034C9C5BE3EC03 
         foreign key (updatedby_id) 
-        references Agent;
+        references AgentBase;
 
     alter table ReferenceBase_AUD 
         add constraint FK8D3FCC6D34869AAE 
@@ -5578,12 +5746,12 @@
     alter table Representation 
         add constraint FK9C4724EDEF7921F6 
         foreign key (createdby_id) 
-        references Agent;
+        references AgentBase;
 
     alter table Representation 
         add constraint FK9C4724ED5BE3EC03 
         foreign key (updatedby_id) 
-        references Agent;
+        references AgentBase;
 
     alter table Representation 
         add constraint FK9C4724EDE8D36B00 
@@ -5626,14 +5794,14 @@
         references AuditEvent;
 
     alter table Rights 
-        add constraint FK91E56DF7C5F7EC54 
+        add constraint FK91E56DF7F7976FC5 
         foreign key (agent_id) 
-        references Agent;
+        references AgentBase;
 
     alter table Rights 
         add constraint FK91E56DF7EF7921F6 
         foreign key (createdby_id) 
-        references Agent;
+        references AgentBase;
 
     alter table Rights 
         add constraint FK91E56DF7E6D2886A 
@@ -5643,7 +5811,7 @@
     alter table Rights 
         add constraint FK91E56DF75BE3EC03 
         foreign key (updatedby_id) 
-        references Agent;
+        references AgentBase;
 
     alter table Rights 
         add constraint FK91E56DF7E8D36B00 
@@ -5690,7 +5858,7 @@
     alter table Sequence 
         add constraint FK544ADBE1EF7921F6 
         foreign key (createdby_id) 
-        references Agent;
+        references AgentBase;
 
     alter table Sequence 
         add constraint FK544ADBE1B982A103 
@@ -5698,9 +5866,14 @@
         references ReferenceBase;
 
     alter table Sequence 
+        add constraint FK544ADBE12DBE1F1F 
+        foreign key (locus_id) 
+        references Locus;
+
+    alter table Sequence 
         add constraint FK544ADBE15BE3EC03 
         foreign key (updatedby_id) 
-        references Agent;
+        references AgentBase;
 
     alter table Sequence_AUD 
         add constraint FK39F4313234869AAE 
@@ -5837,7 +6010,7 @@
     alter table SpecimenOrObservationBase 
         add constraint FK21CA3272EF7921F6 
         foreign key (createdby_id) 
-        references Agent;
+        references AgentBase;
 
     alter table SpecimenOrObservationBase 
         add constraint FK21CA32727CC340C5 
@@ -5872,7 +6045,7 @@
     alter table SpecimenOrObservationBase 
         add constraint FK21CA32725BE3EC03 
         foreign key (updatedby_id) 
-        references Agent;
+        references AgentBase;
 
     alter table SpecimenOrObservationBase_AUD 
         add constraint FKF3D3D74334869AAE 
@@ -6022,7 +6195,7 @@
     alter table StateData 
         add constraint FKFB1697BBEF7921F6 
         foreign key (createdby_id) 
-        references Agent;
+        references AgentBase;
 
     alter table StateData 
         add constraint FKFB1697BB682A4E4B 
@@ -6032,7 +6205,7 @@
     alter table StateData 
         add constraint FKFB1697BB5BE3EC03 
         foreign key (updatedby_id) 
-        references Agent;
+        references AgentBase;
 
     alter table StateData_AUD 
         add constraint FKDA6A700C34869AAE 
@@ -6077,7 +6250,7 @@
     alter table StatisticalMeasurementValue 
         add constraint FK2DCE0290EF7921F6 
         foreign key (createdby_id) 
-        references Agent;
+        references AgentBase;
 
     alter table StatisticalMeasurementValue 
         add constraint FK2DCE02904C428112 
@@ -6087,7 +6260,7 @@
     alter table StatisticalMeasurementValue 
         add constraint FK2DCE02905BE3EC03 
         foreign key (updatedby_id) 
-        references Agent;
+        references AgentBase;
 
     alter table StatisticalMeasurementValue_AUD 
         add constraint FKBB16686134869AAE 
@@ -6122,7 +6295,7 @@
     alter table SynonymRelationship 
         add constraint FKF483ADB3EF7921F6 
         foreign key (createdby_id) 
-        references Agent;
+        references AgentBase;
 
     alter table SynonymRelationship 
         add constraint FKF483ADB380924EEC 
@@ -6137,7 +6310,7 @@
     alter table SynonymRelationship 
         add constraint FKF483ADB35BE3EC03 
         foreign key (updatedby_id) 
-        references Agent;
+        references AgentBase;
 
     alter table SynonymRelationship_AUD 
         add constraint FK8AEBCA0434869AAE 
@@ -6179,7 +6352,7 @@
     alter table TaxonBase 
         add constraint FK9249B49BEF7921F6 
         foreign key (createdby_id) 
-        references Agent;
+        references AgentBase;
 
     alter table TaxonBase 
         add constraint FK9249B49BDA93512F 
@@ -6199,7 +6372,7 @@
     alter table TaxonBase 
         add constraint FK9249B49B5BE3EC03 
         foreign key (updatedby_id) 
-        references Agent;
+        references AgentBase;
 
     alter table TaxonBase_AUD 
         add constraint FK37041CEC34869AAE 
@@ -6306,12 +6479,12 @@
     alter table TaxonNameBase 
         add constraint FKB4870C6EF7921F6 
         foreign key (createdby_id) 
-        references Agent;
+        references AgentBase;
 
     alter table TaxonNameBase 
         add constraint FKB4870C62B4FEDD6 
         foreign key (basionymauthorteam_id) 
-        references Agent;
+        references AgentBase;
 
     alter table TaxonNameBase 
         add constraint FKB4870C64AC9C024 
@@ -6321,7 +6494,7 @@
     alter table TaxonNameBase 
         add constraint FKB4870C6B14B73EF 
         foreign key (combinationauthorteam_id) 
-        references Agent;
+        references AgentBase;
 
     alter table TaxonNameBase 
         add constraint FKB4870C6BFEAE500 
@@ -6331,17 +6504,17 @@
     alter table TaxonNameBase 
         add constraint FKB4870C662AD57A2 
         foreign key (excombinationauthorteam_id) 
-        references Agent;
+        references AgentBase;
 
     alter table TaxonNameBase 
         add constraint FKB4870C67F90DF03 
         foreign key (exbasionymauthorteam_id) 
-        references Agent;
+        references AgentBase;
 
     alter table TaxonNameBase 
         add constraint FKB4870C65BE3EC03 
         foreign key (updatedby_id) 
-        references Agent;
+        references AgentBase;
 
     alter table TaxonNameBase 
         add constraint FKB4870C6D7BE55A0 
@@ -6486,7 +6659,7 @@
     alter table TaxonRelationship 
         add constraint FK7482BA02EF7921F6 
         foreign key (createdby_id) 
-        references Agent;
+        references AgentBase;
 
     alter table TaxonRelationship 
         add constraint FK7482BA02F11BD77B 
@@ -6501,7 +6674,7 @@
     alter table TaxonRelationship 
         add constraint FK7482BA025BE3EC03 
         foreign key (updatedby_id) 
-        references Agent;
+        references AgentBase;
 
     alter table TaxonRelationship_AUD 
         add constraint FKA0DE16D334869AAE 
@@ -6541,12 +6714,12 @@
     alter table TermVocabulary 
         add constraint FK487AA692EF7921F6 
         foreign key (createdby_id) 
-        references Agent;
+        references AgentBase;
 
     alter table TermVocabulary 
         add constraint FK487AA6925BE3EC03 
         foreign key (updatedby_id) 
-        references Agent;
+        references AgentBase;
 
     alter table TermVocabulary_AUD 
         add constraint FKA6ED3B6334869AAE 
@@ -6576,7 +6749,7 @@
     alter table TypeDesignationBase 
         add constraint FK8AC9DCAEEF7921F6 
         foreign key (createdby_id) 
-        references Agent;
+        references AgentBase;
 
     alter table TypeDesignationBase 
         add constraint FK8AC9DCAE94DB044A 
@@ -6601,7 +6774,7 @@
     alter table TypeDesignationBase 
         add constraint FK8AC9DCAE5BE3EC03 
         foreign key (updatedby_id) 
-        references Agent;
+        references AgentBase;
 
     alter table TypeDesignationBase_AUD 
         add constraint FK243C037F34869AAE 
@@ -6656,7 +6829,7 @@
     alter table User 
         add constraint FK285FEBEF7921F6 
         foreign key (createdby_id) 
-        references Agent;
+        references AgentBase;
 
     alter table User_GrantedAuthorityImpl 
         add constraint FKA2FB64FCCF9BC520 

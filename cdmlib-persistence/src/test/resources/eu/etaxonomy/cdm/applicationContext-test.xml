@@ -10,8 +10,7 @@
     http://www.springframework.org/schema/tx 
     http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
 
-
-    <import resource="classpath:/eu/etaxonomy/cdm/persistence.xml"/>   
+    <!-- requires at least spring 2.5.4 <context:property-override location="classpath:eu/etaxonomy/cdm/persistence/override.properties"/>-->
 
     <bean id="dataSource" class="org.unitils.database.UnitilsDataSourceFactoryBean"/>
  
@@ -19,16 +18,15 @@
     <context:component-scan base-package="eu/etaxonomy/cdm">
       <context:exclude-filter type="regex" expression="eu\.etaxonomy\.cdm\.database\.PersistentTermInitializer"/>
     </context:component-scan>
-    <!--  requires at least spring 2.5.4  
-    	<context:property-override location="classpath:eu/etaxonomy/cdm/persistence/override.properties"/>
- 	--> 
+    
+    <!-- enable the configuration of transactional behavior based on annotations -->
+    <tx:annotation-driven transaction-manager="transactionManager"/>      
     
     <bean id="termInitializer" class="eu.etaxonomy.cdm.database.TestingTermInitializer">
         <property name="termsDataSet" value="classpath:/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml"/>
         <property name="termsDtd" value="classpath:/eu/etaxonomy/cdm/persistence/dao/hibernate/dataset.dtd"/>
     </bean>
-
-     
+    
     <bean id="hibernateProperties" 
         class="org.springframework.beans.factory.config.PropertiesFactoryBean">
         <property name="properties">
@@ -55,5 +53,7 @@
         <bean class="org.apache.lucene.analysis.SimpleAnalyzer"/>
       </property>
     </bean>
+    
+    <import resource="classpath:/eu/etaxonomy/cdm/persistence.xml" />
  
 </beans>

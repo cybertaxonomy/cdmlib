@@ -18,6 +18,7 @@ public class AnnotationDaoImpl extends LanguageStringBaseDaoImpl<Annotation> imp
 	}
 
 	public int count(Person commentator, MarkerType status) {
+		checkNotInPriorView("AnnotationDaoImpl.count(Person commentator, MarkerType status)");
         Query query = null;
 		
 		if(status == null) {
@@ -33,6 +34,7 @@ public class AnnotationDaoImpl extends LanguageStringBaseDaoImpl<Annotation> imp
 	}
 
 	public List<Annotation> list(Person commentator, MarkerType status,	Integer pageSize, Integer pageNumber) {
+		checkNotInPriorView("AnnotationDaoImpl.list(Person commentator, MarkerType status,	Integer pageSize, Integer pageNumber)");
         Query query = null;
 		
 		if(status == null) {

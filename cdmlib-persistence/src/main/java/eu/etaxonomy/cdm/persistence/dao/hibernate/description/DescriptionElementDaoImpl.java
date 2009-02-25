@@ -32,6 +32,7 @@ public class DescriptionElementDaoImpl extends AnnotatableDaoImpl<DescriptionEle
 	}
 
 	public int countMedia(DescriptionElementBase descriptionElement) {
+		checkNotInPriorView("DescriptionElementDaoImpl.countMedia(DescriptionElementBase descriptionElement)");
 		Query query = getSession().createQuery("select count(media) from DescriptionElementBase descriptionElement join descriptionElement.media media where descriptionElement = :descriptionElement");
 		query.setParameter("descriptionElement", descriptionElement);
 		
@@ -39,6 +40,7 @@ public class DescriptionElementDaoImpl extends AnnotatableDaoImpl<DescriptionEle
 	}
 
 	public int countTextData(String queryString) {
+		checkNotInPriorView("DescriptionElementDaoImpl.countTextData(String queryString)");
 		QueryParser queryParser = new QueryParser("multilanguageText.text", new SimpleAnalyzer());
 		 
 		try {
@@ -53,6 +55,7 @@ public class DescriptionElementDaoImpl extends AnnotatableDaoImpl<DescriptionEle
 	}
 
 	public List<Media> getMedia(DescriptionElementBase descriptionElement,	Integer pageSize, Integer pageNumber) {
+		checkNotInPriorView("DescriptionElementDaoImpl.getMedia(DescriptionElementBase descriptionElement,	Integer pageSize, Integer pageNumber)");
 		Query query = getSession().createQuery("select media from DescriptionElementBase descriptionElement join descriptionElement.media media where descriptionElement = :descriptionElement");
 		query.setParameter("descriptionElement", descriptionElement);
 		
@@ -69,6 +72,7 @@ public class DescriptionElementDaoImpl extends AnnotatableDaoImpl<DescriptionEle
 	}
 
 	public List<TextData> searchTextData(String queryString, Integer pageSize,	Integer pageNumber) {
+		checkNotInPriorView("DescriptionElementDaoImpl.searchTextData(String queryString, Integer pageSize,	Integer pageNumber)");
 		QueryParser queryParser = new QueryParser("multilanguageText.text", new SimpleAnalyzer());
 		 
 		try {

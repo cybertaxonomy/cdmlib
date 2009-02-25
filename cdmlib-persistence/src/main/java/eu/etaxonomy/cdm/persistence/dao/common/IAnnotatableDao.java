@@ -20,7 +20,7 @@ import eu.etaxonomy.cdm.model.common.MarkerType;
  * @created 24.09.2008
  * @version 1.0
  */
-public interface IAnnotatableDao<T extends AnnotatableEntity> extends ICdmEntityDao<T>{
+public interface IAnnotatableDao<T extends AnnotatableEntity> extends IVersionableDao<T>{
 	
 	/**
 	 * Returns a List of Annotations belonging to the supplied AnnotatableEntity

@@ -16,7 +16,6 @@ import java.util.Set;
 
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
@@ -24,7 +23,7 @@ import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
 import eu.etaxonomy.cdm.model.media.Media;
 
 
-public interface IDefinedTermDao extends ICdmEntityDao<DefinedTermBase>, ITitledDao<DefinedTermBase>{
+public interface IDefinedTermDao extends IVersionableDao<DefinedTermBase>, ITitledDao<DefinedTermBase>{
 	
 	/**
 	 * @param iso639 a two or three letter language code according to iso639-1 or iso639-2

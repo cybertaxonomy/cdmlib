@@ -9,6 +9,9 @@
 package eu.etaxonomy.cdm.persistence.dao.hibernate.taxon;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -24,9 +27,13 @@ import org.hibernate.FetchMode;
 import org.hibernate.Hibernate;
 import org.hibernate.LazyInitializationException;
 import org.hibernate.Query;
+import org.hibernate.Transaction;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.envers.query.AuditEntity;
+import org.hibernate.envers.query.AuditQuery;
+import org.hibernate.search.FullTextQuery;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.Search;
 import org.hibernate.search.SearchFactory;
@@ -36,11 +43,16 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.common.Annotation;
+import eu.etaxonomy.cdm.model.common.Extension;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.OriginalSource;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
+import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
+import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.occurrence.Collection;
+import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
@@ -49,6 +61,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
+import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.persistence.dao.QueryParseException;
 import eu.etaxonomy.cdm.persistence.dao.common.ITitledDao;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.AlternativeSpellingSuggestionParser;
@@ -56,6 +69,15 @@ import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.fetch.CdmFetch;
 
+/**
+ * @author a.mueller
+ *
+ */
+/**
+ * @author a.mueller
+ * @created 24.11.2008
+ * @version 1.0
+ */
 /**
  * @author a.mueller
  * @created 24.11.2008
@@ -66,6 +88,8 @@ import eu.etaxonomy.cdm.persistence.fetch.CdmFetch;
 public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implements ITaxonDao {	
 	private AlternativeSpellingSuggestionParser<TaxonBase> alternativeSpellingSuggestionParser;
 	
+	
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TaxonDaoHibernateImpl.class);
 
 	public TaxonDaoHibernateImpl() {
@@ -84,12 +108,23 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		return getRootTaxa(sec, CdmFetch.FETCH_CHILDTAXA(), true, false);
 	}
 	
-
-
+	@Override
+	public TaxonBase findByUuid(UUID uuid) {
+		TaxonBase taxonBase = super.findByUuid(uuid);
+		if(taxonBase == null) 
+			return taxonBase;
+		
+		Hibernate.initialize(taxonBase.getName());
+		Hibernate.initialize(taxonBase.getSec());
+		
+		return taxonBase; 
+	}
+	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#getRootTaxa(eu.etaxonomy.cdm.model.reference.ReferenceBase, eu.etaxonomy.cdm.persistence.fetch.CdmFetch, java.lang.Boolean, java.lang.Boolean)
 	 */
 	public List<Taxon> getRootTaxa(ReferenceBase sec, CdmFetch cdmFetch, Boolean onlyWithChildren, Boolean withMisapplications) {
+		checkNotInPriorView("TaxonDaoHibernateImpl.getRootTaxa(ReferenceBase sec, CdmFetch cdmFetch, Boolean onlyWithChildren, Boolean withMisapplications)");
 		if (onlyWithChildren == null){
 			onlyWithChildren = true;
 		}
@@ -99,7 +134,6 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		if (cdmFetch == null){
 			cdmFetch = CdmFetch.NO_FETCH();
 		}
-
 
 //		String query = "from Taxon root ";
 //		query += " where root.taxonomicParentCache is NULL ";
@@ -111,13 +145,11 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 //		q.setInteger("sec", sec.getId());
 //		}
 
-
 		Criteria crit = getSession().createCriteria(Taxon.class);
 		crit.add(Restrictions.isNull("taxonomicParentCache"));
 		if (sec != null){
 			crit.add(Restrictions.eq("sec", sec) );
 		}
-
 
 		if (! cdmFetch.includes(CdmFetch.FETCH_CHILDTAXA())){
 			logger.warn("no child taxa fetch");
@@ -137,25 +169,27 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		}
 		return results;
 	}
-
+	
 	public List<TaxonBase> getTaxaByName(String queryString, ReferenceBase sec) {
 		
 		return getTaxaByName(queryString, true, sec);
 	}
 
 	public List<TaxonBase> getTaxaByName(String queryString, Boolean accepted, ReferenceBase sec) {
+		checkNotInPriorView("TaxonDaoHibernateImpl.getTaxaByName(String name, ReferenceBase sec)");
 		
-		Criteria criteria = null;
+        Criteria criteria = null;
 		if (accepted == true) {
 			criteria = getSession().createCriteria(Taxon.class);
 		} else {
 			criteria = getSession().createCriteria(Synonym.class);
 		}
-
+		
 		criteria.setFetchMode( "name", FetchMode.JOIN );
 		criteria.createAlias("name", "name");
-
+		
 		if (sec != null){
+			// FIXME I don't think that we should be saving objects in get methods
 			if(sec.getId() == 0){
 				getSession().save(sec);
 			}
@@ -164,92 +198,116 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		if (queryString != null) {
 			criteria.add(Restrictions.ilike("name.nameCache", queryString));
 		}
-		List<TaxonBase> results = criteria.list();
-		return results;
+
+		return (List<TaxonBase>)criteria.list();
 	}
 
 	public List<TaxonBase> getAllTaxonBases(Integer pagesize, Integer page) {
-		Criteria crit = getSession().createCriteria(TaxonBase.class);
-		List<TaxonBase> results = crit.list();
-		// TODO add page & pagesize criteria
-		return results;
+		return super.list(pagesize, page);
 	}
 
 	public List<Synonym> getAllSynonyms(Integer limit, Integer start) {
-		Criteria crit = getSession().createCriteria(Synonym.class);
-		List<Synonym> results = crit.list();
-		return results;
+		return super.list(Synonym.class, limit, start);
 	}
 
 	public List<Taxon> getAllTaxa(Integer limit, Integer start) {
-		Criteria crit = getSession().createCriteria(Taxon.class);
-		List<Taxon> results = crit.list();
-		return results;
+		return super.list(Taxon.class, limit, start);
 	}
 
 	public List<RelationshipBase> getAllRelationships(Integer limit, Integer start) {
-		Criteria crit = getSession().createCriteria(RelationshipBase.class);
-		List<RelationshipBase> results = crit.list();
-		return results;
+		AuditEvent auditEvent = getAuditEventFromContext();
+		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
+		    Criteria criteria = getSession().createCriteria(RelationshipBase.class);
+		    return (List<RelationshipBase>)criteria.list();
+		} else {
+			AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(RelationshipBase.class,auditEvent.getRevisionNumber());
+			return (List<RelationshipBase>)query.getResultList();
+		}
 	}
 
 	@Override
 	public UUID delete(TaxonBase taxonBase) throws DataAccessException{
-		//getSession().update(taxonBase); doesn't work with lazy collections
 		if (taxonBase == null){
 			logger.warn("TaxonBase was 'null'");
 			return null;
 		}
-		//annotations
-		try {
-			Set<Annotation> annotations = taxonBase.getAnnotations();
-			for (Annotation annotation: annotations){
-				taxonBase.removeAnnotation(annotation);
-			}
-		} catch (LazyInitializationException e) {
-			logger.warn("LazyInitializationException: " + e);
-		}
-		//markers
-		try {
-			Set<Marker> markers = taxonBase.getMarkers();
-			for (Marker marker: markers){
-				taxonBase.removeMarker(marker);
-			}
-		} catch (LazyInitializationException e) {
-			logger.warn("LazyInitializationException: " + e);
-		}
-		//originalSource
-		try {
-			Set<OriginalSource> origSources = taxonBase.getSources();
-			for (OriginalSource source: origSources){
-				taxonBase.removeSource(source);
-			}
-		} catch (LazyInitializationException e) {
-			logger.warn("LazyInitializationException: " + e);
-		}
-		//is Taxon
-		TaxonNameBase taxonNameBase =taxonBase.getName();
-		if (taxonNameBase != null){
-			taxonNameBase.removeTaxonBase(taxonBase);
-		}
-		if (taxonBase instanceof Taxon){
+		
+		// Merge the object in if it is detached
+		//
+		// I think this is preferable to catching lazy initialization errors 
+		// as that solution only swallows and hides the exception, but doesn't 
+		// actually solve it.
+		getSession().merge(taxonBase);
+		
+		for(Iterator<Annotation> iterator = taxonBase.getAnnotations().iterator(); iterator.hasNext();) {
+			Annotation annotation = iterator.next();
+		    annotation.setAnnotatedObj(null);
+		    iterator.remove();
+		    getSession().delete(annotation);
+	    }
+		
+		for(Iterator<Marker> iterator = taxonBase.getMarkers().iterator(); iterator.hasNext();) {
+			Marker marker = iterator.next();
+		    marker.setMarkedObj(null);
+		    iterator.remove();
+		    getSession().delete(marker);
+	    }
+		
+		for(Iterator<Extension> iterator = taxonBase.getExtensions().iterator(); iterator.hasNext();) {
+			Extension extension = iterator.next();
+		    extension.setExtendedObj(null);
+		    iterator.remove();
+		    getSession().delete(extension);
+	    }
+		
+		for(Iterator<OriginalSource> iterator = taxonBase.getSources().iterator(); iterator.hasNext();) {
+			OriginalSource source = iterator.next();
+		    source.setSourcedObj(null);
+		    iterator.remove();
+		    getSession().delete(source);
+	    }
+
+		for(Iterator<Rights> iterator = taxonBase.getRights().iterator(); iterator.hasNext();) {
+			Rights rights = iterator.next();
+		    iterator.remove();
+		    getSession().delete(rights);
+	    }
+		
+		if (taxonBase instanceof Taxon){ //	is Taxon
 			//taxonRelationships
 			Taxon taxon = (Taxon)taxonBase;
-			Set<TaxonRelationship> taxRels = taxon.getTaxonRelations();
-			for (TaxonRelationship taxRel: taxRels){
-				taxon.removeTaxonRelation(taxRel);
-			} ;
+						
+			for (Iterator<TaxonRelationship> iterator = taxon.getRelationsFromThisTaxon().iterator(); iterator.hasNext();){
+				TaxonRelationship relationToThisTaxon = iterator.next();
+				iterator.remove();
+				relationToThisTaxon.setFromTaxon(null);
+				relationToThisTaxon.setToTaxon(null);
+				getSession().delete(relationToThisTaxon);
+			}
+			
+			for (Iterator<TaxonRelationship> iterator = taxon.getRelationsToThisTaxon().iterator(); iterator.hasNext();){
+				TaxonRelationship relationFromThisTaxon = iterator.next();
+				iterator.remove();
+				relationFromThisTaxon.setToTaxon(null);
+				relationFromThisTaxon.setFromTaxon(null);
+				getSession().delete(relationFromThisTaxon);
+			}
+			
 			//SynonymRelationships
-			Set<SynonymRelationship> synRels = taxon.getSynonymRelations();
-			for (SynonymRelationship synRel: synRels){
-				taxon.removeSynonymRelation(synRel);
-			} ;
-		}//is Synonym
-		else if (taxonBase instanceof Synonym){
+			for (Iterator<SynonymRelationship> iterator = taxon.getSynonymRelations().iterator(); iterator.hasNext();){
+				SynonymRelationship synonymRelation = iterator.next();
+				iterator.remove();
+				synonymRelation.setAcceptedTaxon(null);
+				synonymRelation.setSynonym(null);
+				getSession().delete(synonymRelation);
+			} 
+		} else if (taxonBase instanceof Synonym){ //is Synonym
 			Synonym synonym = (Synonym)taxonBase;
-			Set<SynonymRelationship> synRels = synonym.getSynonymRelations();
-			for (SynonymRelationship synRel: synRels){
-				synonym.removeSynonymRelation(synRel);
+			for (Iterator<SynonymRelationship> iterator = synonym.getSynonymRelations().iterator(); iterator.hasNext();){
+				SynonymRelationship synonymRelation = iterator.next();
+				iterator.remove();
+				synonymRelation.setAcceptedTaxon(null);
+				synonymRelation.setSynonym(null);
 			} ;
 		}
 		return super.delete(taxonBase);
@@ -265,9 +323,9 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 	}
 
 	public int countMatchesByName(String queryString, ITitledDao.MATCH_MODE matchMode, boolean onlyAcccepted) {
-
+		checkNotInPriorView("TaxonDaoHibernateImpl.countMatchesByName(String queryString, ITitledDao.MATCH_MODE matchMode, boolean onlyAcccepted)");
 		Criteria crit = getSession().createCriteria(type);
-		crit.add(Restrictions.ilike("persistentTitleCache", matchMode.queryStringFrom(queryString)));
+		crit.add(Restrictions.ilike("titleCache", matchMode.queryStringFrom(queryString)));
 		crit.setProjection(Projections.rowCount());
 		int result = ((Integer)crit.list().get(0)).intValue();
 		return result;
@@ -275,9 +333,9 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 
 
 	public int countMatchesByName(String queryString, ITitledDao.MATCH_MODE matchMode, boolean onlyAcccepted, List<Criterion> criteria) {
-
+		checkNotInPriorView("TaxonDaoHibernateImpl.countMatchesByName(String queryString, ITitledDao.MATCH_MODE matchMode, boolean onlyAcccepted, List<Criterion> criteria)");
 		Criteria crit = getSession().createCriteria(type);
-		crit.add(Restrictions.ilike("persistentTitleCache", matchMode.queryStringFrom(queryString)));
+		crit.add(Restrictions.ilike("titleCache", matchMode.queryStringFrom(queryString)));
 		if(criteria != null){
 			for (Criterion criterion : criteria) {
 				crit.add(criterion);
@@ -289,37 +347,64 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 	}
 
 	public int countRelatedTaxa(Taxon taxon, TaxonRelationshipType type) {
-		Query query = null;
+		AuditEvent auditEvent = getAuditEventFromContext();
+		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
+		    Query query = null;
 		
-		if(type == null) {
-			query = getSession().createQuery("select count(taxonRelationship) from TaxonRelationship taxonRelationship where taxonRelationship.relatedTo = :relatedTo");
+		    if(type == null) {
+			    query = getSession().createQuery("select count(taxonRelationship) from TaxonRelationship taxonRelationship where taxonRelationship.relatedTo = :relatedTo");
+		    } else {
+			    query = getSession().createQuery("select count(taxonRelationship) from TaxonRelationship taxonRelationship where taxonRelationship.relatedTo = :relatedTo and taxonRelationship.type = :type");
+			    query.setParameter("type",type);
+		    }
+		
+		    query.setParameter("relatedTo", taxon);
+		
+		    return ((Long)query.uniqueResult()).intValue();
 		} else {
-			query = getSession().createQuery("select count(taxonRelationship) from TaxonRelationship taxonRelationship where taxonRelationship.relatedTo = :relatedTo and taxonRelationship.type = :type");
-			query.setParameter("type",type);
+			AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(TaxonRelationship.class,auditEvent.getRevisionNumber());
+			query.add(AuditEntity.relatedId("relatedTo").eq(taxon.getId()));
+			query.addProjection(AuditEntity.id().count("id"));
+			
+			if(type != null) {
+				query.add(AuditEntity.relatedId("type").eq(type.getId()));
+		    }
+			
+			return ((Long)query.getSingleResult()).intValue();
 		}
-		
-		query.setParameter("relatedTo", taxon);
-		
-		return ((Long)query.uniqueResult()).intValue();
 	}
 
 	public int countSynonyms(Taxon taxon, SynonymRelationshipType type) {
-        Query query = null;
-		
-		if(type == null) {
-			query = getSession().createQuery("select count(synonymRelationship) from SynonymRelationship synonymRelationship where synonymRelationship.relatedTo = :relatedTo");
+		AuditEvent auditEvent = getAuditEventFromContext();
+		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
+			Query query = null;
+
+			if(type == null) {
+				query = getSession().createQuery("select count(synonymRelationship) from SynonymRelationship synonymRelationship where synonymRelationship.relatedTo = :relatedTo");
+			} else {
+				query = getSession().createQuery("select count(synonymRelationship) from SynonymRelationship synonymRelationship where synonymRelationship.relatedTo = :relatedTo and synonymRelationship.type = :type");
+				query.setParameter("type",type);
+			}
+
+			query.setParameter("relatedTo", taxon);
+
+			return ((Long)query.uniqueResult()).intValue();
 		} else {
-			query = getSession().createQuery("select count(synonymRelationship) from SynonymRelationship synonymRelationship where synonymRelationship.relatedTo = :relatedTo and synonymRelationship.type = :type");
-			query.setParameter("type",type);
+			AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(SynonymRelationship.class,auditEvent.getRevisionNumber());
+			query.add(AuditEntity.relatedId("relatedTo").eq(taxon.getId()));
+			query.addProjection(AuditEntity.id().count("id"));
+			
+			if(type != null) {
+				query.add(AuditEntity.relatedId("type").eq(type.getId()));
+		    }
+			
+			return ((Long)query.getSingleResult()).intValue();
 		}
-		
-		query.setParameter("relatedTo", taxon);
-		
-		return ((Long)query.uniqueResult()).intValue();
 	}
 
 	public int countTaxa(String queryString, Boolean accepted) {
-        QueryParser queryParser = new QueryParser("name.persistentTitleCache", new SimpleAnalyzer());
+		checkNotInPriorView("TaxonDaoHibernateImpl.countTaxa(String queryString, Boolean accepted)");
+        QueryParser queryParser = new QueryParser("name.titleCache", new SimpleAnalyzer());
 		
 		try {
 			org.apache.lucene.search.Query query = queryParser.parse(queryString);
@@ -346,7 +431,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 	}
 	
 	public int countTaxaByName(String queryString, Boolean accepted, ReferenceBase sec) {
-		
+		checkNotInPriorView("TaxonDaoHibernateImpl.countTaxaByName(String queryString, Boolean accepted, ReferenceBase sec)");
 		Criteria criteria = null;
 		
 		if (accepted == true) {
@@ -372,7 +457,8 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		return (Integer)criteria.uniqueResult();
 	}
 
-	public int countTaxaByName(Boolean accepted, String genusOrUninomial, String infraGenericEpithet, String specificEpithet,	String infraSpecificEpithet, Rank rank) {
+	public int countTaxaByName(Boolean accepted, String genusOrUninomial,	String infraGenericEpithet, String specificEpithet,	String infraSpecificEpithet, Rank rank) {
+		checkNotInPriorView("TaxonDaoHibernateImpl.countTaxaByName(Boolean accepted, String genusOrUninomial,	String infraGenericEpithet, String specificEpithet,	String infraSpecificEpithet, Rank rank)");
         Criteria criteria = null;
 		
 		if(accepted == null) {
@@ -414,6 +500,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 	}
 
 	public List<TaxonBase> findTaxaByName(Boolean accepted, String genusOrUninomial, String infraGenericEpithet, String specificEpithet, String infraSpecificEpithet, Rank rank, Integer pageSize,	Integer pageNumber) {
+		checkNotInPriorView("TaxonDaoHibernateImpl.findTaxaByName(Boolean accepted, String genusOrUninomial, String infraGenericEpithet, String specificEpithet, String infraSpecificEpithet, Rank rank, Integer pageSize,	Integer pageNumber)");
 		Criteria criteria = null;
 		
 		if(accepted == null) {
@@ -464,55 +551,108 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 	}
 
 	public List<TaxonRelationship> getRelatedTaxa(Taxon taxon,	TaxonRelationshipType type, Integer pageSize, Integer pageNumber) {
-        Query query = null;
-		
-		if(type == null) {
-			query = getSession().createQuery("select taxonRelationship from TaxonRelationship taxonRelationship join fetch taxonRelationship.relatedFrom where taxonRelationship.relatedTo = :relatedTo");
-		} else {
-			query = getSession().createQuery("select taxonRelationship from TaxonRelationship taxonRelationship join fetch taxonRelationship.relatedFrom where taxonRelationship.relatedTo = :relatedTo and taxonRelationship.type = :type");
-			query.setParameter("type",type);
-		}
-		
-		query.setParameter("relatedTo", taxon);
-		
-		if(pageSize != null) {
-		    query.setMaxResults(pageSize);
-		    if(pageNumber != null) {
-		        query.setFirstResult(pageNumber * pageSize);
+		AuditEvent auditEvent = getAuditEventFromContext();
+		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
+            Query query = null;
+            
+		    if(type == null) {
+			    query = getSession().createQuery("select taxonRelationship from TaxonRelationship taxonRelationship join fetch taxonRelationship.relatedFrom where taxonRelationship.relatedTo = :relatedTo");
 		    } else {
-		    	query.setFirstResult(0);
+			    query = getSession().createQuery("select taxonRelationship from TaxonRelationship taxonRelationship join fetch taxonRelationship.relatedFrom where taxonRelationship.relatedTo = :relatedTo and taxonRelationship.type = :type");
+			    query.setParameter("type",type);
 		    }
-		}
 		
-		return (List<TaxonRelationship>)query.list();
+		    query.setParameter("relatedTo", taxon);
+		
+		    if(pageSize != null) {
+		        query.setMaxResults(pageSize);
+		        if(pageNumber != null) {
+		            query.setFirstResult(pageNumber * pageSize);
+		        } else {
+		    	    query.setFirstResult(0);
+		        }
+		    }
+		
+		    return (List<TaxonRelationship>)query.list();
+		} else {
+			AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(TaxonRelationship.class,auditEvent.getRevisionNumber());
+			query.add(AuditEntity.relatedId("relatedTo").eq(taxon.getId()));
+			
+			if(type != null) {
+				query.add(AuditEntity.relatedId("type").eq(type.getId()));
+		    }
+			
+			if(pageSize != null) {
+		        query.setMaxResults(pageSize);
+		        if(pageNumber != null) {
+		            query.setFirstResult(pageNumber * pageSize);
+		        } else {
+		    	    query.setFirstResult(0);
+		        }
+		    }
+			
+			List<TaxonRelationship> result = (List<TaxonRelationship>)query.getResultList();
+			for(TaxonRelationship relationship : result) {
+				Hibernate.initialize(relationship.getFromTaxon());
+			}
+			
+			return result;
+		}
 	}
 
 	public List<SynonymRelationship> getSynonyms(Taxon taxon, SynonymRelationshipType type, Integer pageSize, Integer pageNumber) {
-        Query query = null;
-		
-		if(type == null) {
-			query = getSession().createQuery("select synonymRelationship from SynonymRelationship synonymRelationship join fetch synonymRelationship.relatedFrom where synonymRelationship.relatedTo = :relatedTo");
+		AuditEvent auditEvent = getAuditEventFromContext();
+		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
+			Query query = null;
+
+			if(type == null) {
+				query = getSession().createQuery("select synonymRelationship from SynonymRelationship synonymRelationship join fetch synonymRelationship.relatedFrom where synonymRelationship.relatedTo = :relatedTo");
+			} else {
+				query = getSession().createQuery("select synonymRelationship from SynonymRelationship synonymRelationship join fetch synonymRelationship.relatedFrom where synonymRelationship.relatedTo = :relatedTo and synonymRelationship.type = :type");
+				query.setParameter("type",type);
+			}
+
+			query.setParameter("relatedTo", taxon);
+
+			if(pageSize != null) {
+				query.setMaxResults(pageSize);
+				if(pageNumber != null) {
+					query.setFirstResult(pageNumber * pageSize);
+				} else {
+					query.setFirstResult(0);
+				}
+			}
+
+			return (List<SynonymRelationship>)query.list();
 		} else {
-			query = getSession().createQuery("select synonymRelationship from SynonymRelationship synonymRelationship join fetch synonymRelationship.relatedFrom where synonymRelationship.relatedTo = :relatedTo and synonymRelationship.type = :type");
-			query.setParameter("type",type);
-		}
-		
-		query.setParameter("relatedTo", taxon);
-		
-		if(pageSize != null) {
-		    query.setMaxResults(pageSize);
-		    if(pageNumber != null) {
-		        query.setFirstResult(pageNumber * pageSize);
-		    } else {
-		    	query.setFirstResult(0);
+			AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(SynonymRelationship.class,auditEvent.getRevisionNumber());
+			query.add(AuditEntity.relatedId("relatedTo").eq(taxon.getId()));
+			
+			if(type != null) {
+				query.add(AuditEntity.relatedId("type").eq(type.getId()));
 		    }
+			
+			if(pageSize != null) {
+		        query.setMaxResults(pageSize);
+		        if(pageNumber != null) {
+		            query.setFirstResult(pageNumber * pageSize);
+		        } else {
+		    	    query.setFirstResult(0);
+		        }
+		    }
+			
+			List<SynonymRelationship> result = (List<SynonymRelationship>)query.getResultList();
+			for(SynonymRelationship relationship : result) {
+				Hibernate.initialize(relationship.getSynonym());
+			}
+			
+			return result;
 		}
-		
-		return (List<SynonymRelationship>)query.list();
 	}
 
 	public List<TaxonBase> searchTaxa(String queryString, Boolean accepted,	Integer pageSize, Integer pageNumber) {
-		QueryParser queryParser = new QueryParser("name.persistentTitleCache", new SimpleAnalyzer());
+		checkNotInPriorView("TaxonDaoHibernateImpl.searchTaxa(String queryString, Boolean accepted,	Integer pageSize, Integer pageNumber)");
+		QueryParser queryParser = new QueryParser("name.titleCache", new SimpleAnalyzer());
 		List<TaxonBase> results = new ArrayList<TaxonBase>();
 		 
 		try {
@@ -582,16 +722,23 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 	}
 
 	public String suggestQuery(String queryString) {
-		try {
-			String alternativeQueryString = null;
-			alternativeSpellingSuggestionParser.parse(queryString);
-			org.apache.lucene.search.Query alternativeQuery = alternativeSpellingSuggestionParser.suggest(queryString);
-			if(alternativeQuery != null) {
-				alternativeQueryString = alternativeQuery.toString("name.persistentTitleCache");
+		checkNotInPriorView("TaxonDaoHibernateImpl.suggestQuery(String queryString)");
+		String alternativeQueryString = null;
+		if (alternativeSpellingSuggestionParser != null) {
+			try {
+
+				alternativeSpellingSuggestionParser.parse(queryString);
+				org.apache.lucene.search.Query alternativeQuery = alternativeSpellingSuggestionParser
+						.suggest(queryString);
+				if (alternativeQuery != null) {
+					alternativeQueryString = alternativeQuery
+							.toString("name.titleCache");
+				}
+
+			} catch (ParseException e) {
+				throw new QueryParseException(e, queryString);
 			}
-			return alternativeQueryString;
-		} catch (ParseException e) {
-			throw new QueryParseException(e, queryString);
 		}
+		return alternativeQueryString;
 	}
 }

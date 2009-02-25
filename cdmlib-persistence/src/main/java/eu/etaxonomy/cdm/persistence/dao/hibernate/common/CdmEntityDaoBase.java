@@ -27,7 +27,6 @@ import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
@@ -35,7 +34,7 @@ import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
 
 /**
  * @author a.mueller
- *
+ * FIXME CdmEntityDaoBase is abstract, can it be annotated with @Repository?
  */
 @Repository
 public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implements ICdmEntityDao<T> {
@@ -192,5 +191,9 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 		query.setMaxResults(limit);
 		List<T> result = query.list();
 		return result;
+	}
+	
+	public Class<T> getType() {
+		return type;
 	}
 }

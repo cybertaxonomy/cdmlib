@@ -10,7 +10,7 @@ import org.springmodules.lucene.index.factory.IndexFactory;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.AlternativeSpellingSuggestionParser;
 
-//@Component //FIXME
+@Component
 public class TaxonAlternativeSpellingSuggestionParser extends AlternativeSpellingSuggestionParser<TaxonBase> {
 
 	public TaxonAlternativeSpellingSuggestionParser() {

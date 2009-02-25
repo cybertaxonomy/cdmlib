@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.common;
 import static org.junit.Assert.assertNotNull;
 
 import org.junit.Test;
+import org.unitils.spring.annotation.SpringApplicationContext;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.persistence.dao.hibernate.taxon.TaxonDaoHibernateImpl;
@@ -36,5 +37,4 @@ public class DaoBaseTest  extends CdmIntegrationTest {
 	public void testGetSession() {
 		assertNotNull(daoBaseTester.getSession());
 	}
-
 }

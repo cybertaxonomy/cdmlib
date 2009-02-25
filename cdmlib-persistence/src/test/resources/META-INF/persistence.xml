@@ -4,7 +4,7 @@
         <provider>org.hibernate.ejb.HibernatePersistence</provider>
       <!-- Annotation Package -->
         <class>eu.etaxonomy.cdm.model.agent.Address</class>
-        <class>eu.etaxonomy.cdm.model.agent.Agent</class>
+        <class>eu.etaxonomy.cdm.model.agent.AgentBase</class>
         <class>eu.etaxonomy.cdm.model.agent.Contact</class>
         <class>eu.etaxonomy.cdm.model.agent.Institution</class>
         <class>eu.etaxonomy.cdm.model.agent.InstitutionalMembership</class>
@@ -24,6 +24,8 @@
         <class>eu.etaxonomy.cdm.model.common.Keyword</class>
         <class>eu.etaxonomy.cdm.model.common.Language</class>
         <class>eu.etaxonomy.cdm.model.common.LanguageString</class>
+        <class>eu.etaxonomy.cdm.model.common.LSID</class>
+        <class>eu.etaxonomy.cdm.model.common.LSIDAuthority</class>
         <class>eu.etaxonomy.cdm.model.common.Marker</class>
         <class>eu.etaxonomy.cdm.model.common.MarkerType</class>
         <class>eu.etaxonomy.cdm.model.common.OrderedTermBase</class>
@@ -156,6 +158,9 @@
         <class>eu.etaxonomy.cdm.model.taxon.TaxonBase</class>
         <class>eu.etaxonomy.cdm.model.taxon.TaxonRelationship</class>
         <class>eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType</class>
+        <!-- View Package -->
+        <class>eu.etaxonomy.cdm.model.view.View</class>
+        <class>eu.etaxonomy.cdm.model.view.AuditEvent</class>
         <class>eu.etaxonomy.cdm.model.common</class>
         <exclude-unlisted-classes />
         <properties>

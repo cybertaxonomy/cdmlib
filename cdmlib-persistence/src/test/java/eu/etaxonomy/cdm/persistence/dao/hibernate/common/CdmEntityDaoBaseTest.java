@@ -24,10 +24,9 @@ import org.unitils.dbunit.annotation.ExpectedDataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.name.BotanicalName;
-import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 
 /**
@@ -37,10 +36,10 @@ import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 public class CdmEntityDaoBaseTest extends CdmIntegrationTest {
 	
 	private UUID uuid;
-	private CdmBase cdmBase;
+	private TaxonBase cdmBase;
 	
 	@SpringBeanByType
-	private CdmEntityDaoBaseTestClass cdmEntityDaoBase;
+	private ITaxonDao cdmEntityDaoBase;
 
 	/**
 	 * @throws java.lang.Exception
@@ -48,7 +47,7 @@ public class CdmEntityDaoBaseTest extends CdmIntegrationTest {
 	@Before
 	public void setUp() throws Exception {	
 		uuid = UUID.fromString("8d77c380-c76a-11dd-ad8b-0800200c9a66");
-		cdmBase = Taxon.NewInstance(BotanicalName.NewInstance(Rank.SPECIES()), null);;
+		cdmBase = Taxon.NewInstance(null, null);
 		cdmBase.setUuid(UUID.fromString("e463b270-c76b-11dd-ad8b-0800200c9a66"));
 	}
 	
@@ -71,7 +70,7 @@ public class CdmEntityDaoBaseTest extends CdmIntegrationTest {
 	@DataSet("CdmEntityDaoBaseTest.xml")
 	@ExpectedDataSet
 	public void testSaveOrUpdate() {
-		CdmBase cdmBase = cdmEntityDaoBase.findByUuid(uuid);
+		TaxonBase cdmBase = cdmEntityDaoBase.findByUuid(uuid);
 		cdmBase.setUuid(UUID.fromString("61410dd0-c774-11dd-ad8b-0800200c9a66"));
 		cdmEntityDaoBase.saveOrUpdate(cdmBase);
 	}
@@ -82,7 +81,7 @@ public class CdmEntityDaoBaseTest extends CdmIntegrationTest {
 	@Test
 	@DataSet("CdmEntityDaoBaseTest.xml")
 	@ExpectedDataSet
-	public void testSave() {
+	public void testSave() throws Exception {
 		cdmEntityDaoBase.save(cdmBase);
 	}
 
@@ -93,7 +92,7 @@ public class CdmEntityDaoBaseTest extends CdmIntegrationTest {
 	@DataSet("CdmEntityDaoBaseTest.xml")
 	@ExpectedDataSet
 	public void testUpdate() {
-		CdmBase cdmBase = cdmEntityDaoBase.findByUuid(uuid);
+		TaxonBase cdmBase = cdmEntityDaoBase.findByUuid(uuid);
 		cdmBase.setUuid(UUID.fromString("65bc7d70-c76c-11dd-ad8b-0800200c9a66"));
 		cdmEntityDaoBase.update(cdmBase);
 	}
@@ -148,7 +147,7 @@ public class CdmEntityDaoBaseTest extends CdmIntegrationTest {
 	@DataSet("CdmEntityDaoBaseTest.xml")
 	@ExpectedDataSet
 	public void testDelete() {
-		CdmBase cdmBase = cdmEntityDaoBase.findByUuid(uuid);
+		TaxonBase cdmBase = cdmEntityDaoBase.findByUuid(uuid);
 		assertNotNull(cdmBase);
 		cdmEntityDaoBase.delete(cdmBase);
 	}

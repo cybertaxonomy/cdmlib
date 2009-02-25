@@ -112,10 +112,15 @@ public interface ICdmEntityDao<T extends CdmBase> {
 	public <TYPE extends T> int count(Class<TYPE> clazz);
 
 	/**
-	 * 
+	 * FIXME Should this method exist : I would expect flushing of a session to be
+	 * something that a DAO should hide?
 	 */
 	public void flush();
 	
-		
-	
+	/**
+	 * Convenience method which makes it easy to discover what type of object this DAO returns at runtime
+	 * 
+	 * @return
+	 */
+	public Class<T> getType();
 }

@@ -19,6 +19,7 @@ import java.util.UUID;
 import org.junit.Before;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
+import org.unitils.spring.annotation.SpringApplicationContext;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.model.common.Annotation;
@@ -63,6 +64,7 @@ public class AnnotationDaoTest extends CdmIntegrationTest {
 	public void testCountAnnotationsWithStatus() {
 		Annotation annotatedObj = annotationDao.findByUuid(uuid);
 		MarkerType markerType = MarkerType.TO_BE_CHECKED();
+		
 		assert annotatedObj != null : "annotatedObj must exist";
 		assert markerType != null : "markerType must exist";
 		

@@ -167,6 +167,7 @@ public class DescriptionDaoHibernateImplTest extends CdmIntegrationTest {
 	
 	@Test
 	public void testListDescriptionsWithTextAndFeatures() {
+		assert Feature.ECOLOGY() != null;
 		features.add(Feature.ECOLOGY());
 		List<TaxonDescription> descriptions = descriptionDao.listDescriptions(TaxonDescription.class, null, true, features,null,null);
 		

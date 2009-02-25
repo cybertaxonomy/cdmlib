@@ -15,6 +15,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
+import java.io.FileOutputStream;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -23,15 +24,16 @@ import java.util.UUID;
 import org.junit.Before;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
+import org.unitils.spring.annotation.SpringApplicationContext;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 
-@DataSet
 public class DefinedTermDaoImplTest extends CdmIntegrationTest {
 
 	@SpringBeanByType
@@ -46,7 +48,7 @@ public class DefinedTermDaoImplTest extends CdmIntegrationTest {
 	
 	@Before
 	public void setUp() {
-		uuid = UUID.fromString("d6781519-ec60-4afa-b5ea-375f4d2a1729");
+		uuid = UUID.fromString("910307f1-dc3c-452c-a6dd-af5ac7cd365c");
 		armUuid = UUID.fromString("7a0fde13-26e9-4382-a5c9-5640fc2b3334");
 		northernEuropeUuid = UUID.fromString("22524ba2-6e57-4b71-89ab-89fc50fba6b4");
 		middleEuropeUuid = UUID.fromString("d292f237-da3d-408b-93a1-3257a8c80b97");
@@ -56,37 +58,17 @@ public class DefinedTermDaoImplTest extends CdmIntegrationTest {
 
 	@Test
 	public void findByTitle() throws Exception {
-		List<DefinedTermBase> terms = dao.findByTitle("nomenclature");
+		List<DefinedTermBase> terms = dao.findByTitle("Diagnosis");
 		assertNotNull("findByTitle should return a List", terms);
 		assertEquals("findByTitle should return one term ",terms.size(),1);
-		assertEquals("findByTitle should return a term with uuid " + uuid,terms.get(0).getUuid(),uuid);
-	}
-
-	/**
-	 * FIXME Should list() be tested in CdmEntityDaoBaseTest?
-	 * Also - how is this list sorted? Should we supply an enum that allows
-	 * the list to be sorted by different fields (titleCache? label? text? uri?)
-	 */
-	@Test
-	public void listOneTerm() {
-		List<DefinedTermBase> terms = dao.list(1,2017);
-		assertNotNull("list should return a list",terms);
-		assertEquals("list should return one term",1, terms.size());
-		assertEquals("list should return one term with uuid " + uuid, uuid,terms.get(0).getUuid());		
-	}
-	
-	@Test
-	public void listManyTerms() {
-		List<DefinedTermBase> terms = dao.list(5,2013);
-		assertNotNull("list should return a list",terms);
-		assertEquals("list should return five terms",5, terms.size());
-		assertEquals("list should return a term with uuid " + uuid + " at position 5", uuid,terms.get(4).getUuid());	
+		assertEquals("findByTitle should return Feature.DIAGNOSIS",terms.get(0),Feature.DIAGNOSIS());
 	}
 	
 	@Test
 	public void getTermByUUID() {
 		DefinedTermBase term = dao.findByUuid(uuid);
 		assertNotNull("findByUuid should return a term",term);
+		assertEquals("findByUuid should return Feature.UNKNOWN",Feature.UNKNOWN(),term);
 	}
 
 	
@@ -160,14 +142,15 @@ public class DefinedTermDaoImplTest extends CdmIntegrationTest {
 	 @Test
 	 public void countPartOf() {
 		 NamedArea northernEurope = (NamedArea)dao.findByUuid(northernEuropeUuid);
-		    NamedArea middleEurope = (NamedArea)dao.findByUuid(middleEuropeUuid);
-		    NamedArea westTropicalAfrica = (NamedArea)dao.findByUuid(westTropicalAfricaUuid);
-		    assert northernEurope != null : "NamedArea must exist";
-		    assert middleEurope != null : "NamedArea must exist";
-		    assert westTropicalAfrica != null : "NamedArea must exist";
-		    namedAreas.add(northernEurope);
-		    namedAreas.add(middleEurope);
-		    namedAreas.add(westTropicalAfrica);
+		 NamedArea middleEurope = (NamedArea)dao.findByUuid(middleEuropeUuid);
+		 NamedArea westTropicalAfrica = (NamedArea)dao.findByUuid(westTropicalAfricaUuid);
+		 assert northernEurope != null : "NamedArea must exist";
+		 assert middleEurope != null : "NamedArea must exist";
+		 assert westTropicalAfrica != null : "NamedArea must exist";
+		 
+		 namedAreas.add(northernEurope);
+		 namedAreas.add(middleEurope);
+		 namedAreas.add(westTropicalAfrica);
 		 
 		 int numberOfPartOf = dao.countPartOf(namedAreas);
 		 assertEquals("countPartOf should return 2",2,numberOfPartOf);

@@ -35,6 +35,7 @@ public class MediaDaoHibernateImpl extends AnnotatableDaoImpl<Media>
 	}
 
 	public int countIdentificationKeys(Set<Taxon> taxonomicScope,	Set<NamedArea> geoScopes) {
+		checkNotInPriorView("MediaDaoHibernateImpl.countIdentificationKeys(Set<Taxon> taxonomicScope,	Set<NamedArea> geoScopes)");
 		Criteria criteria = getSession().createCriteria(IdentificationKey.class);
 		
 		if(taxonomicScope != null && !taxonomicScope.isEmpty()) {
@@ -59,6 +60,7 @@ public class MediaDaoHibernateImpl extends AnnotatableDaoImpl<Media>
 	}
 
 	public List<IdentificationKey> getIdentificationKeys(Set<Taxon> taxonomicScope, Set<NamedArea> geoScopes, Integer pageSize, Integer pageNumber) {
+		checkNotInPriorView("MediaDaoHibernateImpl.getIdentificationKeys(Set<Taxon> taxonomicScope, Set<NamedArea> geoScopes, Integer pageSize, Integer pageNumber)");
         Criteria inner = getSession().createCriteria(IdentificationKey.class);
 		
 		if(taxonomicScope != null && !taxonomicScope.isEmpty()) {

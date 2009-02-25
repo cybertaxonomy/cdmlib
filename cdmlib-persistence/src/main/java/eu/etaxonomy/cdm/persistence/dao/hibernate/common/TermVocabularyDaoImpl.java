@@ -12,10 +12,13 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.common;
 import java.util.List;
 
 import org.hibernate.Query;
+import org.hibernate.envers.query.AuditEntity;
+import org.hibernate.envers.query.AuditQuery;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
+import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.persistence.dao.common.ITermVocabularyDao;
 
 /**
@@ -23,7 +26,7 @@ import eu.etaxonomy.cdm.persistence.dao.common.ITermVocabularyDao;
  *
  */
 @Repository
-public class TermVocabularyDaoImpl extends CdmEntityDaoBase<TermVocabulary<DefinedTermBase>> implements
+public class TermVocabularyDaoImpl extends VersionableDaoBase<TermVocabulary<DefinedTermBase>> implements
 		ITermVocabularyDao {
 
 	
@@ -35,24 +38,47 @@ public class TermVocabularyDaoImpl extends CdmEntityDaoBase<TermVocabulary<Defin
 	}
 
 	public int countTerms(TermVocabulary termVocabulary) {
-		Query query = getSession().createQuery("select count(term) from TermVocabulary termVocabulary join termVocabulary.terms term where termVocabulary = :termVocabulary");
-		query.setParameter("termVocabulary", termVocabulary);
+		AuditEvent auditEvent = getAuditEventFromContext();
+		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
+		    Query query = getSession().createQuery("select count(term) from DefinedTermBase term where term.vocabulary = :vocabulary");
+		    query.setParameter("vocabulary", termVocabulary);
 		
-		return ((Long)query.uniqueResult()).intValue();
+		    return ((Long)query.uniqueResult()).intValue();
+		} else {
+			AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(type,auditEvent.getRevisionNumber());
+			query.addProjection(AuditEntity.id().count("id"));
+			query.add(AuditEntity.relatedId("vocabulary").eq(termVocabulary.getId()));
+			return (Integer)query.getSingleResult();
+		}
 	}
 
 	public <T extends DefinedTermBase> List<T> getTerms(TermVocabulary<T> termVocabulary, Integer pageSize, Integer pageNumber) {
-		Query query = getSession().createQuery("select term from TermVocabulary termVocabulary join termVocabulary.terms term where termVocabulary = :termVocabulary");
-		query.setParameter("termVocabulary", termVocabulary);
+		AuditEvent auditEvent = getAuditEventFromContext();
+		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
+    		Query query = getSession().createQuery("select term from DefinedTermBase term where term.vocabulary = :vocabulary");
+	    	query.setParameter("vocabulary", termVocabulary);
 		
-		if(pageSize != null) {
-			query.setMaxResults(pageSize);
-		    if(pageNumber != null) {
-		    	query.setFirstResult(pageNumber * pageSize);
+		    if(pageSize != null) {
+			    query.setMaxResults(pageSize);
+		        if(pageNumber != null) {
+		    	    query.setFirstResult(pageNumber * pageSize);
+		        }
 		    }
-		}
 		
-		return (List<T>)query.list();
+		    return (List<T>)query.list();
+		} else {
+			AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(type,auditEvent.getRevisionNumber());
+			query.add(AuditEntity.relatedId("vocabulary").eq(termVocabulary.getId()));
+			
+			if(pageSize != null) {
+			    query.setMaxResults(pageSize);
+		        if(pageNumber != null) {
+		    	    query.setFirstResult(pageNumber * pageSize);
+		        }
+		    }
+			
+			return (List<T>)query.getResultList();
+		}
 	}
 
 

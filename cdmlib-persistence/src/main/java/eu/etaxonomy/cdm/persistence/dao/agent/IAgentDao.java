@@ -12,14 +12,14 @@ package eu.etaxonomy.cdm.persistence.dao.agent;
 import java.util.List;
 
 import eu.etaxonomy.cdm.model.agent.Address;
-import eu.etaxonomy.cdm.model.agent.Agent;
+import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.InstitutionalMembership;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
 
-public interface IAgentDao extends IIdentifiableDao<Agent> {
+public interface IAgentDao extends IIdentifiableDao<AgentBase> {
 	
 	public List<Institution> getInstitutionByCode(String code);
 	
