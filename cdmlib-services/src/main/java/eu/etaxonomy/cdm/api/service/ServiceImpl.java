@@ -18,6 +18,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
 
 @Service
+//@Service("mainService")
 @Transactional(readOnly = true)
 public class ServiceImpl extends ServiceBase<CdmBase, ICdmEntityDao<CdmBase>> implements IService<CdmBase> {
 	@SuppressWarnings("unused")
