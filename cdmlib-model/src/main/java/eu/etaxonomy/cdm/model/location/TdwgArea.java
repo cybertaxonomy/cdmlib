@@ -94,7 +94,7 @@ public class TdwgArea extends NamedArea {
 			logger.warn("Unknown TDWG area: " + CdmUtils.Nz(tdwgLabel));
 			return null;
 		}
-		return null;//(NamedArea)DefinedTermBase.findByUuid(uuid);
+		return TdwgArea.getTermByUuid(uuid);
 	}
 	
 	public static boolean isTdwgAreaLabel(String label){
