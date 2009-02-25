@@ -158,6 +158,10 @@
     </dependency>
     <dependency>
       <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-envers</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.hibernate</groupId>
       <artifactId>hibernate-search</artifactId>
     </dependency>
     <dependency>
@@ -202,7 +206,14 @@
     	<groupId>org.springframework.security</groupId>
     	<artifactId>spring-security-core</artifactId>
     </dependency>
-
+    <dependency>
+      <groupId>com.ibm.lsid</groupId>
+      <artifactId>lsid-client</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>wsdl4j</groupId>
+      <artifactId>wsdl4j</artifactId>
+    </dependency>
     <!-- joda-time perhaps needed in future for JAXB binding -->
     <!--
     <dependency>

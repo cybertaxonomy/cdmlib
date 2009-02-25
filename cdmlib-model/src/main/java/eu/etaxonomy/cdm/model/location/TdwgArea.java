@@ -22,6 +22,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
+import org.hibernate.envers.Audited;
 import org.jdom.Element;
 import org.jdom.Namespace;
 
@@ -41,7 +42,7 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
 @XmlType(name = "TdwgArea")
 @XmlRootElement(name = "TdwgArea")
 @Entity
-//@Audited
+@Audited
 public class TdwgArea extends NamedArea {
 	private static final long serialVersionUID = 4662215686356109015L;
 	private static final Logger logger = Logger.getLogger(TdwgArea.class);
@@ -49,7 +50,6 @@ public class TdwgArea extends NamedArea {
 	
 	private static Map<String, UUID> abbrevMap = null;
 	private static Map<String, UUID> labelMap = null;
-	
 	
 	protected static Map<UUID, TdwgArea> termMap = null;		
 

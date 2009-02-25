@@ -9,19 +9,23 @@
 
 package eu.etaxonomy.cdm.model.name;
 
-import eu.etaxonomy.cdm.model.common.RelationshipBase;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
-import org.apache.log4j.Logger;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
-
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.ManyToOne;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
+
+import org.apache.log4j.Logger;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
+import org.hibernate.envers.Audited;
+
+import eu.etaxonomy.cdm.model.common.RelationshipBase;
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
 /**
  * The class representing a relationship between two {@link TaxonNameBase taxon names} according
@@ -47,7 +51,7 @@ import javax.xml.bind.annotation.XmlType;
     "ruleConsidered"
 })
 @Entity
-//@Audited
+@Audited
 public class NameRelationship extends RelationshipBase<TaxonNameBase, TaxonNameBase, NameRelationshipType> {
 
   static Logger logger = Logger.getLogger(NameRelationship.class);
@@ -60,16 +64,21 @@ public class NameRelationship extends RelationshipBase<TaxonNameBase, TaxonNameB
     @XmlElement(name = "RelatedFrom")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
+    @ManyToOne(fetch=FetchType.LAZY)
+    @Cascade(CascadeType.SAVE_UPDATE)
 	private TaxonNameBase relatedFrom;
 
 	@XmlElement(name = "RelatedTo")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
+    @ManyToOne(fetch=FetchType.LAZY)
+    @Cascade(CascadeType.SAVE_UPDATE)
 	private TaxonNameBase relatedTo;
 	
     @XmlElement(name = "Type")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
+    @ManyToOne(fetch = FetchType.LAZY)
 	private NameRelationshipType type;
 
 	//for hibernate, don't use
@@ -128,10 +137,10 @@ public class NameRelationship extends RelationshipBase<TaxonNameBase, TaxonNameB
 	 * @see   #getToName()
 	 * @see   eu.etaxonomy.cdm.model.common.RelationshipBase#getRelatedFrom()
 	 */
-	@Transient
 	public TaxonNameBase getFromName(){
 		return this.getRelatedFrom();
 	}
+	
 	/**
 	 * @see  #getFromName()
 	 */
@@ -146,10 +155,10 @@ public class NameRelationship extends RelationshipBase<TaxonNameBase, TaxonNameB
 	 * @see   #getFromName()
 	 * @see   eu.etaxonomy.cdm.model.common.RelationshipBase#getRelatedTo()
 	 */
-	@Transient
 	public TaxonNameBase getToName(){
 		return this.getRelatedTo();
 	}
+	
 	/**
 	 * @see  #getToName()
 	 */
@@ -176,36 +185,27 @@ public class NameRelationship extends RelationshipBase<TaxonNameBase, TaxonNameB
 		this.ruleConsidered = ruleConsidered;
 	}
 
-	@ManyToOne(fetch=FetchType.EAGER)
-	@Cascade({CascadeType.SAVE_UPDATE})
 	protected TaxonNameBase getRelatedFrom() {
 		return relatedFrom;
 	}
 
-	@ManyToOne(fetch=FetchType.EAGER)
-	@Cascade({CascadeType.SAVE_UPDATE})
 	protected TaxonNameBase getRelatedTo() {
 		return relatedTo;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
 	public NameRelationshipType getType() {
 		return type;
 	}
-
 
 	protected void setRelatedFrom(TaxonNameBase relatedFrom) {
 		this.relatedFrom = relatedFrom;
 	}
 
-
 	protected void setRelatedTo(TaxonNameBase relatedTo) {
 		this.relatedTo = relatedTo;
 	}
 
-
 	protected void setType(NameRelationshipType type) {
 		this.type = type;
 	}
-
 }

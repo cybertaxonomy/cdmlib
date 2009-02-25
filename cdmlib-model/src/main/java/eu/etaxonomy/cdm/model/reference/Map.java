@@ -17,6 +17,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
+import org.hibernate.envers.Audited;
 
 /**
  * This class represents published maps from which information can be derived.
@@ -33,7 +34,7 @@ import org.apache.log4j.Logger;
 @XmlType(name = "Map")
 @XmlRootElement(name = "Map")
 @Entity
-//@Audited
+@Audited
 public class Map extends PublicationBase implements Cloneable {
 	private static final Logger logger = Logger.getLogger(Map.class);
 

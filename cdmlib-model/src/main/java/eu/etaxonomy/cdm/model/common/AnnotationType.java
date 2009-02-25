@@ -10,17 +10,16 @@
 package eu.etaxonomy.cdm.model.common;
 
 
-import org.apache.log4j.Logger;
+import java.util.UUID;
 
-import au.com.bytecode.opencsv.CSVWriter;
-
-import java.util.*;
-
-import javax.persistence.*;
+import javax.persistence.Entity;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+
+import org.apache.log4j.Logger;
+import org.hibernate.envers.Audited;
 
 /**
  * Annotation types ...
@@ -32,7 +31,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "AnnotationType")
 @XmlRootElement(name = "AnnotationType")
 @Entity
-//@Audited
+@Audited
 public class AnnotationType extends DefinedTermBase<AnnotationType> {
 	private static final long serialVersionUID = 49629121282854575L;
 	@SuppressWarnings("unused")

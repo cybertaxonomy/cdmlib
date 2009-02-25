@@ -4,15 +4,13 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.FetchType;
-import javax.persistence.ManyToMany;
 import javax.persistence.MappedSuperclass;
-import javax.persistence.Transient;
+import javax.persistence.ManyToMany;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlIDREF;
-import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
@@ -26,7 +24,6 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 @XmlType(name = "IdentifiableMediaEntity", propOrder = {
     "media"
 })
-@XmlRootElement(name = "IdentifiableMediaEntity")
 @MappedSuperclass
 public abstract class IdentifiableMediaEntity extends IdentifiableEntity implements IMediaDocumented, IMediaEntity{
 
@@ -38,20 +35,18 @@ public abstract class IdentifiableMediaEntity extends IdentifiableEntity impleme
     @XmlElement(name = "Medium")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
-	private Set<Media> media = getNewMediaSet();
+    @ManyToMany(fetch = FetchType.LAZY)
+	@Cascade({CascadeType.SAVE_UPDATE})
+	private Set<Media> media = new HashSet<Media>();
 	
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.media.IMediaEntity#getMedia()
 	 */
-	@ManyToMany(fetch = FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<Media> getMedia() {
 		return media;
 	}
-	protected void setMedia(Set<Media> media) {
-		this.media = media;
-	}
+	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.media.IMediaEntity#addMedia(eu.etaxonomy.cdm.model.media.Media)
 	 */
@@ -74,16 +69,12 @@ public abstract class IdentifiableMediaEntity extends IdentifiableEntity impleme
 	public Object clone() throws CloneNotSupportedException{
 		IdentifiableMediaEntity result = (IdentifiableMediaEntity)super.clone();
 		//Media
-		Set<Media> media = getNewMediaSet();
-		media.addAll(this.media);
-		result.setMedia(media);
+		result.media = new HashSet<Media>();
+		for(Media media : this.media) {
+			result.addMedia(media);
+		}
 		//no changes to: -
 		return result;
-	}
-	
-	@Transient
-	private Set<Media> getNewMediaSet(){
-		return new HashSet<Media>();
 	}
 
 }

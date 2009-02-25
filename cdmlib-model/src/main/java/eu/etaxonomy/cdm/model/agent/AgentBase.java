@@ -9,21 +9,16 @@
 
 package eu.etaxonomy.cdm.model.agent;
 
-
-
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.OneToOne;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Index;
 import org.hibernate.annotations.Table;
+import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity;
 
@@ -40,20 +35,21 @@ import eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Agent", propOrder = {
+		"contact"
 })
 @Entity
-//@Audited
-@Table(appliesTo="Agent", indexes = { @Index(name = "agentTitleCacheIndex", columnNames = { "titleCache" }) })
-public abstract class Agent extends IdentifiableMediaEntity{
+@Audited
+@Table(appliesTo="AgentBase", indexes = { @Index(name = "agentTitleCacheIndex", columnNames = { "titleCache" }) })
+public abstract class AgentBase extends IdentifiableMediaEntity{
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 7732768617469448829L;
-
-	// TODO: Move contact field here (from Person and Institution)
-//    @XmlElement(name = "Contact")
-//	private Contact contact;
+	
+	@XmlElement(name = "Contact")
+    @Embedded
+	private Contact contact;
 	
 	/** 
 	 * Returns the {@link Contact contact} of <i>this</i> person.
@@ -61,19 +57,14 @@ public abstract class Agent extends IdentifiableMediaEntity{
 	 *
 	 * @see 	Contact
 	 */
-//	@Embedded
-//	public Contact getContact(){
-//		return this.contact;
-//	}
+	public Contact getContact(){
+		return this.contact;
+	}
 	/**
 	 * @see  #getContact()
 	 */
-//	public void setContact(Contact contact){
-//		this.contact = contact;
-//	}
+	public void setContact(Contact contact){
+		this.contact = contact;
+	}
 
-	
-
-	
-	
 }

@@ -15,7 +15,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
-import eu.etaxonomy.cdm.model.agent.Agent;
+import eu.etaxonomy.cdm.model.agent.AgentBase;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "EventBase", propOrder = {
@@ -36,7 +36,9 @@ public abstract class EventBase extends AnnotatableEntity implements IEvent {
 	@XmlElement(name = "Actor")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
-	private Agent actor;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@Cascade(CascadeType.SAVE_UPDATE)
+	private AgentBase actor;
 	
 	@XmlElement(name = "Description")
 	private String description;
@@ -58,15 +60,13 @@ public abstract class EventBase extends AnnotatableEntity implements IEvent {
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.occurrence.IEvent#getActor()
 	 */
-	@ManyToOne(fetch = FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE})
-	public Agent getActor() {
+	public AgentBase getActor() {
 		return actor;
 	}
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.occurrence.IEvent#setActor(eu.etaxonomy.cdm.model.agent.Agent)
 	 */
-	public void setActor(Agent actor) {
+	public void setActor(AgentBase actor) {
 		this.actor = actor;
 	}
 	

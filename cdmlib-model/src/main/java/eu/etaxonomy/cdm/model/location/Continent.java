@@ -20,6 +20,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
+import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -34,7 +35,7 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
 @XmlType(name = "Continent")
 @XmlRootElement(name = "Continent")
 @Entity
-//@Audited
+@Audited
 public class Continent extends NamedArea {
 	private static final long serialVersionUID = 4650684072484353151L;
 	private static final Logger logger = Logger.getLogger(Continent.class);

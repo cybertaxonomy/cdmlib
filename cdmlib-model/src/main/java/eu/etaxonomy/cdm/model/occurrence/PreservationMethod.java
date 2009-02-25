@@ -9,17 +9,17 @@
 
 package eu.etaxonomy.cdm.model.occurrence;
 
-import java.util.UUID;
-
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 
 import org.apache.log4j.Logger;
+import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * http://rs.tdwg.org/ontology/voc/Collection.rdf#SpecimenPreservationMethodTypeTerm
@@ -28,9 +28,10 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @created 08-Nov-2007 13:06:44
  */
 @XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "PreservationMethod")
 @XmlRootElement(name = "PreservationMethod")
 @Entity
-//@Audited
+@Audited
 public class PreservationMethod extends DefinedTermBase<PreservationMethod> {
 	private static final Logger logger = Logger.getLogger(PreservationMethod.class);
 	

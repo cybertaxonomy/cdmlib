@@ -25,6 +25,8 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlElements;
+import javax.xml.bind.annotation.XmlIDREF;
+import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
@@ -32,6 +34,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.IndexColumn;
+import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 
@@ -50,10 +53,11 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
 @XmlType(name = "MediaRepresentation", propOrder = {
 	"mimeType",
     "suffix",
+    "media",
     "mediaRepresentationParts"
 })
 @Entity
-//@Audited
+@Audited
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 public class MediaRepresentation extends VersionableEntity {
 	private static final long serialVersionUID = -1520078266008619806L;
@@ -67,7 +71,11 @@ public class MediaRepresentation extends VersionableEntity {
 	@XmlElement(name = "Suffix")
 	private String suffix;
 	
-	@XmlTransient
+	@XmlElement(name = "Media")
+	@XmlIDREF
+	@XmlSchemaType(name = "IDREF")
+	@ManyToOne(fetch = FetchType.LAZY)
+	@Cascade(CascadeType.SAVE_UPDATE)
 	private Media media;
 	
 	@XmlElementWrapper(name = "MediaRepresentationParts")
@@ -76,6 +84,10 @@ public class MediaRepresentation extends VersionableEntity {
         @XmlElement(name = "ImageFile", namespace = "http://etaxonomy.eu/cdm/model/media/1.0", type = ImageFile.class),
         @XmlElement(name = "MovieFile", namespace = "http://etaxonomy.eu/cdm/model/media/1.0", type = MovieFile.class)
     })
+    @OneToMany (cascade = {javax.persistence.CascadeType.ALL}, fetch= FetchType.LAZY)
+	@IndexColumn(name="sortIndex", base = 0)
+	@JoinColumn (name = "representation_id",  nullable=false)
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE_ORPHAN})
 	private List<MediaRepresentationPart> mediaRepresentationParts = new ArrayList<MediaRepresentationPart>();
 		
 	/**
@@ -134,7 +146,6 @@ public class MediaRepresentation extends VersionableEntity {
 		this.suffix = suffix;
 	}
 	
-	@ManyToOne(fetch = FetchType.LAZY)
 	public Media getMedia() {
 		return media;
 	}
@@ -145,16 +156,10 @@ public class MediaRepresentation extends VersionableEntity {
 	}
 	
 	
-	@OneToMany (cascade = {javax.persistence.CascadeType.ALL}, fetch= FetchType.LAZY)
-	@IndexColumn(name="sortIndex", base = 0)
-	@JoinColumn (name = "representation_id",  nullable=false)
-	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE_ORPHAN})
 	public List<MediaRepresentationPart> getParts(){
 		return this.mediaRepresentationParts;
 	}
-	protected void setParts(List<MediaRepresentationPart> mediaRepresentationParts){
-		this.mediaRepresentationParts = mediaRepresentationParts;
-	}
+
 	@SuppressWarnings("deprecation")
 	public void addRepresentationPart(MediaRepresentationPart mediaRepresentationPart){
 		if (mediaRepresentationPart != null){

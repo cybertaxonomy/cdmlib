@@ -16,8 +16,11 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IReferencedEntity;
 import org.apache.log4j.Logger;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Index;
 import org.hibernate.annotations.Table;
+import org.hibernate.envers.Audited;
 
 import java.util.*;
 
@@ -42,7 +45,7 @@ import javax.xml.bind.annotation.XmlType;
     "sequence",
     "length",
     "dateSequenced",
-    "isBarcode",
+    "barcode",
     "citationMicroReference",
     "publishedIn",
     "locus",
@@ -52,7 +55,7 @@ import javax.xml.bind.annotation.XmlType;
 })
 @XmlRootElement(name = "Sequence")
 @Entity
-//@Audited
+@Audited
 @Table(appliesTo="Sequence", indexes = { @Index(name = "sequenceTitleCacheIndex", columnNames = { "titleCache" }) })
 public class Sequence extends IdentifiableEntity implements IReferencedEntity, IMediaDocumented{
 	private static final long serialVersionUID = 8298983152731241775L;
@@ -68,64 +71,67 @@ public class Sequence extends IdentifiableEntity implements IReferencedEntity, I
 	
 	//should be calculated in case sequence is set
 	@XmlElement(name = "DateSequenced")
+	@Temporal(TemporalType.DATE)
 	private Calendar dateSequenced;
 	
 	//should be calculated in case sequence is set
 	@XmlAttribute(name = "isBarcode")
-	private boolean isBarcode;
+	private boolean barcode;
 	
 	//the sequence as a string of base pairs. 5'->3'
 	@XmlElement(name = "CitationMicroReference")
 	private String citationMicroReference;
 	
-	@XmlElement(name = "IublishedIn")
+	@XmlElement(name = "PublishedIn")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @Cascade(CascadeType.SAVE_UPDATE)
 	private ReferenceBase publishedIn;
 	
 	@XmlElementWrapper(name = "Citations")
 	@XmlElement(name = "Citation")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
+    @OneToMany(fetch = FetchType.LAZY)
 	private Set<ReferenceBase> citations = new HashSet<ReferenceBase>();
 	
 	@XmlElementWrapper(name = "GenBankAccessions")
 	@XmlElement(name = "GenBankAccession")
-    @XmlIDREF
-    @XmlSchemaType(name = "IDREF")
+    @OneToMany(fetch = FetchType.LAZY)
 	private Set<GenBankAccession> genBankAccession = new HashSet<GenBankAccession>();
 	
 	@XmlElement(name = "Locus")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @Cascade(CascadeType.SAVE_UPDATE)
 	private Locus locus;
 	
 	@XmlElementWrapper(name = "Chromatograms")
 	@XmlElement(name = "Chromatogram")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
+    @OneToMany(fetch = FetchType.LAZY)
 	private Set<Media> chromatograms = new HashSet<Media>();
-
-	@ManyToOne(fetch = FetchType.LAZY)
+	
 	public Locus getLocus(){
 		logger.debug("getLocus");
 		return this.locus;
 	}
+
 	public void setLocus(Locus locus){
 		this.locus = locus;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
 	public ReferenceBase getPublishedIn(){
 		return this.publishedIn;
 	}
+	
 	public void setPublishedIn(ReferenceBase publishedIn){
 		this.publishedIn = publishedIn;
 	}
 
-
-	
-	@OneToMany(fetch = FetchType.LAZY)
 	public Set<ReferenceBase> getCitations() {
 		return citations;
 	}
@@ -139,44 +145,34 @@ public class Sequence extends IdentifiableEntity implements IReferencedEntity, I
 		this.citations.remove(citation);
 	}
 
-	
-	@OneToMany(fetch = FetchType.LAZY)
 	public Set<GenBankAccession> getGenBankAccession() {
 		return genBankAccession;
 	}
 
-	protected void setGenBankAccession(Set<GenBankAccession> genBankAccession) {
-		this.genBankAccession = genBankAccession;
-	}
 	public void addGenBankAccession(GenBankAccession genBankAccession) {
 		this.genBankAccession.add(genBankAccession);
 	}
+	
 	public void removeGenBankAccession(GenBankAccession genBankAccession) {
 		this.genBankAccession.remove(genBankAccession);
 	}
-
 	
-	@OneToMany(fetch = FetchType.LAZY)
 	public Set<Media> getChromatograms() {
 		return chromatograms;
 	}
 
-	protected void setChromatograms(Set<Media> chromatograms) {
-		this.chromatograms = chromatograms;
-	}
 	public void addChromatogram(Media chromatogram) {
 		this.chromatograms.add(chromatogram);
 	}
+	
 	public void removeChromatogram(Media chromatogram) {
 		this.chromatograms.remove(chromatogram);
 	}
 	
-	@Transient
 	public Set<Media> getMedia() {
 		return getChromatograms();
 	}
 
-	
 	public String getSequence(){
 		return this.sequence;
 	}
@@ -201,7 +197,6 @@ public class Sequence extends IdentifiableEntity implements IReferencedEntity, I
 		this.length = length;
 	}
 
-	@Temporal(TemporalType.DATE)
 	public Calendar getDateSequenced(){
 		return this.dateSequenced;
 	}
@@ -215,15 +210,15 @@ public class Sequence extends IdentifiableEntity implements IReferencedEntity, I
 	}
 
 	public boolean isBarcode(){
-		return this.isBarcode;
+		return this.barcode;
 	}
 
 	/**
 	 * 
 	 * @param isBarcode    isBarcode
 	 */
-	public void setBarcode(boolean isBarcode){
-		this.isBarcode = isBarcode;
+	public void setBarcode(boolean barcode){
+		this.barcode = barcode;
 	}
 
 	public String getCitationMicroReference(){
@@ -243,9 +238,8 @@ public class Sequence extends IdentifiableEntity implements IReferencedEntity, I
 		return "";
 	}
 
-	@Transient
 	public ReferenceBase getCitation(){
-		return null;
+		return publishedIn;
 	}
 
 }

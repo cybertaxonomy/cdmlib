@@ -16,6 +16,7 @@ import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.common.IMultiLanguageText;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
@@ -26,6 +27,7 @@ import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 
@@ -68,14 +70,51 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 	    "inDescription"
 })
 @Entity
-//@Audited
+@Audited
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 @Indexed
-public abstract class DescriptionElementBase extends ReferencedEntityBase implements IMediaEntity{
+public abstract class DescriptionElementBase extends ReferencedEntityBase implements IMediaEntity {
 	private static final long serialVersionUID = 5000910777835755905L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DescriptionElementBase.class);
 	
+	//type, category of information. In structured descriptions characters
+	@XmlElement(name = "Feature")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
+    @ManyToOne(fetch = FetchType.LAZY)
+	@IndexedEmbedded
+	private Feature feature;
+	
+	@XmlElementWrapper(name = "Modifiers")
+	@XmlElement(name = "Modifier")
+	@XmlIDREF
+    @XmlSchemaType(name = "IDREF")
+	@ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name="DescriptionElementBase_Modifier")
+	private Set<Modifier> modifiers = new HashSet<Modifier>();
+	
+	@XmlElement(name = "ModifyingText")
+    @XmlJavaTypeAdapter(MultilanguageTextAdapter.class)
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "DescriptionElementBase_ModifyingText")
+	private Map<Language,LanguageString> modifyingText = new HashMap<Language,LanguageString>();
+	
+	@XmlElementWrapper(name = "Media")
+	@XmlElement(name = "Medium")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
+    @ManyToMany(fetch = FetchType.LAZY)
+	@Cascade({CascadeType.SAVE_UPDATE})
+	private Set<Media> media = new HashSet<Media>();
+	
+	@XmlElement(name = "InDescription")
+	@XmlIDREF
+    @XmlSchemaType(name = "IDREF")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @Cascade(CascadeType.SAVE_UPDATE)
+	@IndexedEmbedded
+    private DescriptionBase inDescription;
 
 	// ************* CONSTRUCTORS *************/	
 	/** 
@@ -99,48 +138,15 @@ public abstract class DescriptionElementBase extends ReferencedEntityBase implem
 		}
 		this.feature = feature; 
 	}
-	
-	//type, category of information. In structured descriptions characters
-	@XmlElement(name = "Feature")
-    @XmlIDREF
-    @XmlSchemaType(name = "IDREF")
-	private Feature feature;
-	
-	@XmlElementWrapper(name = "Modifiers")
-	@XmlElement(name = "Modifier")
-	private Set<Modifier> modifiers = new HashSet<Modifier>();
-	
-	@XmlElement(name = "ModifyingText")
-    @XmlJavaTypeAdapter(MultilanguageTextAdapter.class)
-	private MultilanguageText modifyingText;
-	
-	@XmlElementWrapper(name = "Media")
-	@XmlElement(name = "Medium")
-    @XmlIDREF
-    @XmlSchemaType(name = "IDREF")
-	private Set<Media> media = new HashSet<Media>();
-	
-	@XmlElement(name = "InDescription")
-	@XmlIDREF
-    @XmlSchemaType(name = "IDREF")
-    private DescriptionBase inDescription;
-
 
 	/** 
 	 * Returns the set of {@link Media media} (that is pictures, movies,
 	 * recorded sounds ...) <i>this</i> description element is based on.
 	 */
-	@ManyToMany(fetch = FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<Media> getMedia(){
 		return this.media;
 	}
-	/**
-	 * @see	#getMedia() 
-	 */
-	protected void setMedia(Set<Media> media) {
-		this.media = media;
-	}
+
 	/**
 	 * Adds a {@link Media media} to the set of {@link #getMedia() media}
 	 * <i>this</i> description element is based on.
@@ -168,31 +174,24 @@ public abstract class DescriptionElementBase extends ReferencedEntityBase implem
 	 * part of. 
 	 * @return
 	 */
-	@ManyToOne(fetch = FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE})
-	@IndexedEmbedded
 	public DescriptionBase getInDescription() {
 		return this.inDescription;
 	}
 	
 	/**
-	 * Sets the {@link DescriptionBase description} that <i>this</i> DescriptionElement
-	 * is part of 
-	 * 
-	 * @param description the {@link DescriptionBase description} that <i>this</i> 
-	 *        DescriptionElement is part of
+	 * @see	#setInDescription() 
 	 */
 	protected void setInDescription(DescriptionBase inDescription) {
 		this.inDescription = inDescription;
 	}
 
-
 	/**
 	 * Does exactly the same as getFeature().
+	 * @author ben.clark
+	 * FIXME Is there a need to have two methods with different names which do the same thing?
 	 * 
 	 * @see #getFeature() 
 	 */
-	@Transient
 	public Feature getType(){
 		return this.getFeature();
 	}
@@ -212,12 +211,10 @@ public abstract class DescriptionElementBase extends ReferencedEntityBase implem
 	 * A feature is a property that can be described or measured but not the
 	 * description or the measurement itself.
 	 */
-	@ManyToOne(fetch = FetchType.LAZY)
-	@Cascade(CascadeType.SAVE_UPDATE)
-	@IndexedEmbedded
 	public Feature getFeature(){
 		return this.feature;
 	}
+	
 	/**
 	 * @see	#getFeature() 
 	 */
@@ -225,22 +222,14 @@ public abstract class DescriptionElementBase extends ReferencedEntityBase implem
 		this.feature = feature;
 	}
 
-	
 	/** 
 	 * Returns the set of {@link Modifier modifiers} used to qualify the validity of
 	 * <i>this</i> description element. This is only metainformation.
 	 */
-	@OneToMany(fetch = FetchType.LAZY)
-    @JoinTable(name="DescriptionElementBase_Modifier")
 	public Set<Modifier> getModifiers(){
 		return this.modifiers;
 	}
-	/**
-	 * @see	#getModifiers() 
-	 */
-	protected void setModifiers(Set<Modifier> modifiers){
-		this.modifiers = modifiers;
-	}
+
 	/**
 	 * Adds a {@link Modifier modifier} to the set of {@link #getModifiers() modifiers}
 	 * used to qualify the validity of <i>this</i> description element.
@@ -275,15 +264,10 @@ public abstract class DescriptionElementBase extends ReferencedEntityBase implem
 	 * stored in the modifying text. This is only metainformation
 	 * (like "Some experts express doubt about this assertion").
 	 */
-	public MultilanguageText getModifyingText(){
+	public Map<Language,LanguageString> getModifyingText(){
 		return this.modifyingText;
 	}
-	/**
-	 * @see	#getModifyingText() 
-	 */
-	protected void setModifyingText(MultilanguageText modifyingText){
-		this.modifyingText = modifyingText;
-	}
+
 	/**
 	 * Adds a translated {@link LanguageString text in a particular language}
 	 * to the {@link MultilanguageText multilanguage text} used to qualify the validity
@@ -295,7 +279,7 @@ public abstract class DescriptionElementBase extends ReferencedEntityBase implem
 	 * @see    	   			#addModifyingText(String, Language)
 	 */
 	public LanguageString addModifyingText(LanguageString description){
-		return this.modifyingText.add(description);
+		return this.modifyingText.put(description.getLanguage(),description);
 	}
 	/**
 	 * Creates a {@link LanguageString language string} based on the given text string

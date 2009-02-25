@@ -9,22 +9,28 @@
 
 package eu.etaxonomy.cdm.model.occurrence;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Calendar;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
-import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
+
+import com.ibm.lsid.MalformedLSIDException;
 
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.Extension;
+import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageStringBase;
 import eu.etaxonomy.cdm.model.common.Marker;
@@ -47,35 +53,11 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 public class SpecimenTest {
 	private static final Logger logger = Logger.getLogger(SpecimenTest.class);
 
-	private static Specimen specimen;
+	private Specimen specimen;
 	
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@AfterClass
-	public static void tearDownAfterClass() throws Exception {
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
 	@Before
 	public void setUp() throws Exception {
 		specimen = Specimen.NewInstance();
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@After
-	public void tearDown() throws Exception {
 	}
 
 	/**
@@ -131,7 +113,13 @@ public class SpecimenTest {
 		int id = 22;
 		int individualCount = 25;
 		Stage lifeStage = Stage.NewInstance();
-		String lsid = "lsid";
+		LSID lsid = null;
+		try {
+			lsid = new LSID("urn:lsid:example.com:foo:1");
+		} catch (MalformedLSIDException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		Specimen nextVersion = Specimen.NewInstance();
 		Specimen previousVersion = Specimen.NewInstance();
 		PreservationMethod preservation = PreservationMethod.NewInstance();
@@ -213,12 +201,12 @@ public class SpecimenTest {
 		assertEquals(sex, specimenClone.getSex());
 		assertEquals(titleCache, specimenClone.getTitleCache());
 		
-
-		assertFalse(annotation.equals(specimenClone.getAnnotations().iterator().next()));
+		Annotation clonedAnnotation = specimenClone.getAnnotations().iterator().next();
+		assertFalse(annotation.equals(clonedAnnotation));
 		assertEquals(annotation.getText(), ((LanguageStringBase)specimenClone.getAnnotations().iterator().next()).getText() );
 		assertNotSame(annotation, specimenClone.getAnnotations().iterator().next() );
 		
-		assertEquals(definition, specimenClone.getDefinition().getText(Language.DEFAULT()));
+		assertEquals(definition, specimenClone.getDefinition().get(Language.DEFAULT()).getText());
 //TODO	
 //		assertNotSame(definition, specimenClone.getDefinition().getText(Language.DEFAULT()));
 		

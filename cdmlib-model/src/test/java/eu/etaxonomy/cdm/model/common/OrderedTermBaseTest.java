@@ -30,11 +30,9 @@ public class OrderedTermBaseTest extends EntityTestBase {
 	private OrderedTermBase otb4;
 	
 	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-	}
-
-	@AfterClass
-	public static void tearDownAfterClass() throws Exception {
+	public static void setUpBeforeClass() {
+		DefaultTermInitializer vocabularyStore = new DefaultTermInitializer();
+		vocabularyStore.initialize();
 	}
 
 	@Before
@@ -48,10 +46,6 @@ public class OrderedTermBaseTest extends EntityTestBase {
 		otb2.orderIndex = 4;
 		otb3.orderIndex = 4;
 		otb4.orderIndex = 5;
-	}
-
-	@After
-	public void tearDown() throws Exception {
 	}
 	
 	private class DerivedOrderedTermBase extends OrderedTermBase<DerivedOrderedTermBase>{

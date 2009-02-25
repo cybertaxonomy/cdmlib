@@ -16,6 +16,7 @@ import eu.etaxonomy.cdm.strategy.cache.agent.PersonDefaultCacheStrategy;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.envers.Audited;
 
 import java.util.*;
 import javax.persistence.*;
@@ -56,12 +57,11 @@ import javax.xml.bind.annotation.XmlType;
 	    "suffix",
 	    "lifespan",
 	    "institutionalMemberships",
-	    "contact",
 	    "keywords"
 	})
 @XmlRootElement(name = "Person")
 @Entity
-//@Audited
+@Audited
 public class Person extends TeamOrPersonBase<Person> {
 	private static final long serialVersionUID = 4153566493065539763L;
 	public static final Logger logger = Logger.getLogger(Person.class);
@@ -79,21 +79,24 @@ public class Person extends TeamOrPersonBase<Person> {
 	private String suffix;
 	
     @XmlElement(name = "Lifespan")
-    //@XmlJavaTypeAdapter(IntervalAdapter.class)
 	private TimePeriod lifespan;
 	
     @XmlElementWrapper(name = "InstitutionalMemberships")
     @XmlElement(name = "InstitutionalMembership")
+    @OneToMany(fetch=FetchType.LAZY, mappedBy = "person")
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE})
 	protected Set<InstitutionalMembership> institutionalMemberships;
-	
-    // TODO: Move to Agent
-    @XmlElement(name = "Contact")
-	private Contact contact;
 	
     @XmlElementWrapper(name = "Keywords")
     @XmlElement(name = "Keyword")
     @XmlIDREF
     @XmlSchemaType(name="IDREF")
+    @ManyToMany(fetch=FetchType.LAZY)
+	@JoinTable(
+	        name="Person_Keyword",
+	        joinColumns=@JoinColumn(name="person_fk"),
+	        inverseJoinColumns=@JoinColumn(name="keyword_fk")
+	)
 	private Set<Keyword> keywords = new HashSet<Keyword>();
 
 	/** 
@@ -156,17 +159,10 @@ public class Person extends TeamOrPersonBase<Person> {
 	 *
 	 * @see     InstitutionalMembership
 	 */
-	@OneToMany(fetch=FetchType.LAZY, mappedBy = "person")
-	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE})
 	public Set<InstitutionalMembership> getInstitutionalMemberships(){
 		return this.institutionalMemberships;
 	}
-	/** 
-	 * @see     #getInstitutionalMemberships()
-	 */
-	protected void setInstitutionalMemberships(Set<InstitutionalMembership> institutionalMemberships){
-		this.institutionalMemberships = institutionalMemberships;
-	}
+
 	
 	/** 
 	 * Adds a new {@link InstitutionalMembership membership} of <i>this</i> person in an {@link Institution institution}
@@ -212,22 +208,10 @@ public class Person extends TeamOrPersonBase<Person> {
 	 *
 	 * @see 	Keyword
 	 */
-	@ManyToMany(fetch=FetchType.LAZY)
-	@JoinTable(
-	        name="Person_Keyword",
-	        joinColumns=@JoinColumn(name="person_fk"),
-	        inverseJoinColumns=@JoinColumn(name="keyword_fk")
-	)
-	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE_ORPHAN})
 	public Set<Keyword> getKeywords(){
 		return this.keywords;
 	}
-	/** 
-	 * @see     #getKeywords()
-	 */
-	public void setKeywords(Set<Keyword> keywords){
-		this.keywords = keywords;
-	}
+
 	/** 
 	 * Adds a new keyword from the keyword vocabulary to the set of keywords
 	 * describing or circumscribing <i>this</i> person's activities.
@@ -248,27 +232,6 @@ public class Person extends TeamOrPersonBase<Person> {
 	public void removeKeyword(Keyword keyword){
 		this.keywords.remove(keyword);
 	}
-
-
-	/** 
-	 * Returns the {@link Contact contact} of <i>this</i> person.
-	 * The contact contains several ways to approach <i>this</i> person.
-	 *
-	 * @see 	Contact
-	 */
-	// TODO: Move to Agent, mark as @OneToOne
-	@ManyToOne(fetch=FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE})
-	public Contact getContact(){
-		return this.contact;
-	}
-	/**
-	 * @see  #getContact()
-	 */
-	public void setContact(Contact contact){
-		this.contact = contact;
-	}
-
 	
 	/**
 	 * Returns the string representing the prefix (for instance "Prof.&nbsp;Dr.<!-- -->")

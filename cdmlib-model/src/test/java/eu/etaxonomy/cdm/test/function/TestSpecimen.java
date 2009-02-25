@@ -14,7 +14,7 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.model.agent.Agent;
+import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.Annotation;
@@ -74,7 +74,7 @@ public class TestSpecimen {
 		
 		logger.info("Create gathering event");
 		GatheringEvent gatheringEvent = GatheringEvent.NewInstance();
-		Agent gatherer = Person.NewTitledInstance("Lorentz,P.G. s.n.");
+		AgentBase gatherer = Person.NewTitledInstance("Lorentz,P.G. s.n.");
 		gatheringEvent.setActor(gatherer);
 		Calendar gatheringDate = Calendar.getInstance();
 		int year = 1922;
@@ -146,7 +146,7 @@ public class TestSpecimen {
 				logger.warn("FieldObservation: " + fieldObservation2);
 				GatheringEvent gatheringEvent2= fieldObservation2.getGatheringEvent();
 				logger.warn("GatheringEvent: " + gatheringEvent2);
-				Agent gatherer2 = gatheringEvent2.getCollector();
+				AgentBase gatherer2 = gatheringEvent2.getCollector();
 				logger.warn("Gatherer: "+  gatherer2);
 			}
 		}

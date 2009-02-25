@@ -16,7 +16,6 @@ import java.util.Set;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
-import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -27,10 +26,12 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.strategy.cache.name.BotanicNameDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.parser.INonViralNameParser;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
@@ -46,40 +47,47 @@ import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "BotanicalName", propOrder = {
-    "isHybridFormula",
-    "isMonomHybrid",
-    "isBinomHybrid",
-    "isTrinomHybrid",
-    "isAnamorphic",
+    "hybridFormula",
+    "monomHybrid",
+    "binomHybrid",
+    "trinomHybrid",
+    "anamorphic",
     "hybridRelationships"
 })
 @XmlRootElement(name = "BotanicalName")
 @Entity
-//@Audited
-public class BotanicalName extends NonViralName {
+@Audited
+public class BotanicalName extends NonViralName<BotanicalName> {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6818651572463497727L;
+
 	private static final Logger logger = Logger.getLogger(BotanicalName.class);
 	
 	//if set: this name is a hybrid formula (a hybrid that does not have an own name) and no other hybrid flags may be set. A
 	//hybrid name  may not have either an authorteam nor other name components.
     @XmlElement(name ="IsHybridFormula")
-	private boolean isHybridFormula = false;
+	private boolean hybridFormula = false;
 	
     @XmlElement(name ="IsMonomHybrid")
-	private boolean isMonomHybrid = false;
+	private boolean monomHybrid = false;
 	
     @XmlElement(name ="IsBinomHybrid")
-	private boolean isBinomHybrid = false;
+	private boolean binomHybrid = false;
 	
     @XmlElement(name ="IsTrinomHybrid")
-	private boolean isTrinomHybrid = false;
+	private boolean trinomHybrid = false;
 	
 	//Only for fungi: to indicate that the type of the name is asexual or not
     @XmlElement(name ="IsAnamorphic")
-	private boolean isAnamorphic;
+	private boolean anamorphic;
 	
     @XmlElementWrapper(name = "HybridRelationships")
     @XmlElement(name = "HybridRelationship")
+    @OneToMany(fetch = FetchType.LAZY)
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE_ORPHAN})
 	private Set<HybridRelationship> hybridRelationships = new HashSet();
 
 	static private INonViralNameParser nameParser = new NonViralNameParserImpl();
@@ -299,17 +307,10 @@ public class BotanicalName extends NonViralName {
 	 * @see    #addHybridRelationship(HybridRelationship)
 	 * @see    #addRelationship(RelationshipBase)
 	 */
-	@OneToMany(fetch = FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE_ORPHAN})
 	public Set<HybridRelationship> getHybridRelationships() {
 		return hybridRelationships;
 	}
-	/**
-	 * @see  #getHybridRelationships()
-	 */
-	protected void setHybridRelationships(Set<HybridRelationship> relationships) {
-		this.hybridRelationships = relationships;
-	}
+
 	/**
 	 * Adds the given {@link HybridRelationship hybrid relationship} to the set
 	 * of {@link #getHybridRelationships() hybrid relationships} of both botanical taxon names
@@ -396,7 +397,6 @@ public class BotanicalName extends NonViralName {
 	 * @see    #getChildRelationships()
 	 * @see    HybridRelationshipType
 	 */
-	@Transient
 	public Set<HybridRelationship> getParentRelationships() {
 		// FIXME: filter relations
 		return hybridRelationships;
@@ -409,7 +409,6 @@ public class BotanicalName extends NonViralName {
 	 * @see    #getParentRelationships()
 	 * @see    HybridRelationshipType
 	 */
-	@Transient
 	public Set<HybridRelationship> getChildRelationships() {
 		// FIXME: filter relations
 		return hybridRelationships;
@@ -451,14 +450,14 @@ public class BotanicalName extends NonViralName {
 	 * @see		#isTrinomHybrid()
 	 */
 	public boolean isHybridFormula(){
-		return this.isHybridFormula;
+		return this.hybridFormula;
 	}
 
 	/**
 	 * @see  #isHybridFormula()
 	 */
-	public void setHybridFormula(boolean isHybridFormula){
-		this.isHybridFormula = isHybridFormula;
+	public void setHybridFormula(boolean hybridFormula){
+		this.hybridFormula = hybridFormula;
 	}
 
 	/**
@@ -473,7 +472,7 @@ public class BotanicalName extends NonViralName {
 	 * @see		#isTrinomHybrid()
 	 */
 	public boolean isMonomHybrid(){
-		return this.isMonomHybrid;
+		return this.monomHybrid;
 	}
 
 	/**
@@ -481,8 +480,8 @@ public class BotanicalName extends NonViralName {
 	 * @see	 #isBinomHybrid()
 	 * @see	 #isTrinomHybrid()
 	 */
-	public void setMonomHybrid(boolean isMonomHybrid){
-		this.isMonomHybrid = isMonomHybrid;
+	public void setMonomHybrid(boolean monomHybrid){
+		this.monomHybrid = monomHybrid;
 	}
 
 	/**
@@ -497,7 +496,7 @@ public class BotanicalName extends NonViralName {
 	 * @see		#isTrinomHybrid()
 	 */
 	public boolean isBinomHybrid(){
-		return this.isBinomHybrid;
+		return this.binomHybrid;
 	}
 
 	/**
@@ -505,8 +504,8 @@ public class BotanicalName extends NonViralName {
 	 * @see  #isMonomHybrid()
 	 * @see	 #isTrinomHybrid()
 	 */
-	public void setBinomHybrid(boolean isBinomHybrid){
-		this.isBinomHybrid = isBinomHybrid;
+	public void setBinomHybrid(boolean binomHybrid){
+		this.binomHybrid = binomHybrid;
 	}
 
 	/**
@@ -522,7 +521,7 @@ public class BotanicalName extends NonViralName {
 	 * @see		#isBinomHybrid()
 	 */
 	public boolean isTrinomHybrid(){
-		return this.isTrinomHybrid;
+		return this.trinomHybrid;
 	}
 
 	/**
@@ -530,8 +529,8 @@ public class BotanicalName extends NonViralName {
 	 * @see	 #isBinomHybrid()
 	 * @see  #isMonomHybrid()
 	 */
-	public void setTrinomHybrid(boolean isTrinomHybrid){
-		this.isTrinomHybrid = isTrinomHybrid;
+	public void setTrinomHybrid(boolean trinomHybrid){
+		this.trinomHybrid = trinomHybrid;
 	}
 
 	/**
@@ -544,14 +543,14 @@ public class BotanicalName extends NonViralName {
 	 * @return  the boolean value of the isAnamorphic flag
 	 */
 	public boolean isAnamorphic(){
-		return this.isAnamorphic;
+		return this.anamorphic;
 	}
 
 	/**
 	 * @see  #isAnamorphic()
 	 */
-	public void setAnamorphic(boolean isAnamorphic){
-		this.isAnamorphic = isAnamorphic;
+	public void setAnamorphic(boolean anamorphic){
+		this.anamorphic = anamorphic;
 	}
 	
 	
@@ -565,11 +564,9 @@ public class BotanicalName extends NonViralName {
 	 * @see  	NonViralName#isCodeCompliant()
 	 * @see  	TaxonNameBase#getHasProblem()
 	 */
-	@Transient
 	@Override
 	public NomenclaturalCode getNomenclaturalCode(){
 		return NomenclaturalCode.ICBN;
-
 	}
 
 }

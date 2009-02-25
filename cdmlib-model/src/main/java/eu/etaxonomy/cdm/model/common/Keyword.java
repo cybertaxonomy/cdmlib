@@ -16,6 +16,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
+import org.hibernate.envers.Audited;
 
 /**
  * simple keywords. could be taxonomic scope/skill , geographic scope or anything else
@@ -26,7 +27,7 @@ import org.apache.log4j.Logger;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Keyword")
 @Entity
-//@Audited
+@Audited
 public class Keyword extends OrderedTermBase<Keyword> {
 	private static final long serialVersionUID = -4907208557010483263L;
 	@SuppressWarnings("unused")

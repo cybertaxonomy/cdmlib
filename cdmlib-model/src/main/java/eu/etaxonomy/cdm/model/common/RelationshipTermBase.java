@@ -23,6 +23,7 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.envers.Audited;
 
 import au.com.bytecode.opencsv.CSVWriter;
 
@@ -34,7 +35,7 @@ import au.com.bytecode.opencsv.CSVWriter;
 })
 @XmlRootElement(name = "RelationshipTermBase")
 @Entity
-//@Audited
+@Audited
 public abstract class RelationshipTermBase<T extends RelationshipTermBase> extends OrderedTermBase<T> {
 	private static final long serialVersionUID = 5497187985269083971L;
 	@SuppressWarnings("unused")
@@ -50,7 +51,10 @@ public abstract class RelationshipTermBase<T extends RelationshipTermBase> exten
 	@XmlElement(name = "InverseRepresentation")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
-	private Set<Representation> inverseRepresentations = new HashSet();
+		@OneToMany(fetch = FetchType.LAZY)
+	@JoinTable(name="RelationshipTermBase_inverseRepresentation")
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE})
+	private Set<Representation> inverseRepresentations = new HashSet<Representation>();
 	
 	public RelationshipTermBase() {
 		super();
@@ -76,17 +80,10 @@ public abstract class RelationshipTermBase<T extends RelationshipTermBase> exten
 		this.transitive = transitive;
 	}
 	
-	
-	@OneToMany(fetch = FetchType.LAZY)
-	@JoinTable(name="RelationshipTermBase_inverseRepresentation")
-	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE})
 	public Set<Representation> getInverseRepresentations() {
 		return inverseRepresentations;
 	}
-	protected void setInverseRepresentations(
-			Set<Representation> inverseRepresentations) {
-		this.inverseRepresentations = inverseRepresentations;
-	}
+
 	public void addInverseRepresentation(Representation inverseRepresentation) {
 		this.inverseRepresentations.add(inverseRepresentation);
 	}
@@ -98,7 +95,6 @@ public abstract class RelationshipTermBase<T extends RelationshipTermBase> exten
 		this.addInverseRepresentation(inverseRepresentation);
 	}
 	
-	@Transient
 	public Representation getInverseRepresentation(Language lang) {
 		Representation result = null;
 		if (this.isSymmetric()){
@@ -121,7 +117,6 @@ public abstract class RelationshipTermBase<T extends RelationshipTermBase> exten
 	 * Inverse representation convenience methods similar to TermBase.xxx 
 	 * @see eu.etaxonomy.cdm.model.common.TermBase#getLabel()
 	 */
-	@Transient
 	public String getInverseLabel() {
 		if(getInverseLabel(Language.DEFAULT())!=null){
 			return this.getInverseRepresentation(Language.DEFAULT()).getLabel();
@@ -133,7 +128,6 @@ public abstract class RelationshipTermBase<T extends RelationshipTermBase> exten
 		return super.getUuid().toString();
 	}
 
-	@Transient
 	public String getInverseLabel(Language lang) {
 		Representation r = this.getInverseRepresentation(lang);
 		if(r==null){
@@ -143,12 +137,10 @@ public abstract class RelationshipTermBase<T extends RelationshipTermBase> exten
 		}
 	}
 
-	@Transient
 	public String getInverseDescription() {
 		return this.getInverseRepresentation(Language.DEFAULT()).getDescription();
 	}
 
-	@Transient
 	public String getInverseDescription(Language lang) {
 		return this.getInverseRepresentation(lang).getDescription();
 	}

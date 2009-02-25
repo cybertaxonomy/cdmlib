@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.model.name;
 
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -26,6 +27,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Target;
+import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Fields;
 import org.hibernate.search.annotations.Index;
@@ -34,6 +36,7 @@ import org.hibernate.search.annotations.Indexed;
 import eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.strategy.cache.name.INonViralNameCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.name.NonViralNameDefaultCacheStrategy;
 
@@ -41,7 +44,7 @@ import eu.etaxonomy.cdm.strategy.cache.name.NonViralNameDefaultCacheStrategy;
  * The taxon name class for all non viral taxa. Parenthetical authorship is derived
  * from basionym relationship. The scientific name including author strings and
  * maybe year can be stored as a string in the inherited {@link eu.etaxonomy.cdm.model.common.IdentifiableEntity#getTitleCache() titleCache} attribute.
- * The year itself is an information obtained from the {@link eu.etaxonomy.cdm.model.reference.INomenclaturalReference#getYear() nomenclatural reference}.
+ * The year itself is an information obtained from the {@link eu.etaxonomy.cdm.model.reference.ReferenceBase#getYear() nomenclatural reference}.
  * The scientific name string without author strings and year can be stored in the {@link #getNameCache() nameCache} attribute.
  * <P>
  * This class corresponds partially to: <ul>
@@ -72,48 +75,68 @@ import eu.etaxonomy.cdm.strategy.cache.name.NonViralNameDefaultCacheStrategy;
 })
 @XmlRootElement(name = "NonViralName")
 @Entity
-//@Audited
+@Audited
 @Indexed
 public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonViralNameCacheStrategy> {
 	
 	private static final Logger logger = Logger.getLogger(NonViralName.class);
 	
 	@XmlElement(name = "NameCache")
+	@Fields({@Field(index = org.hibernate.search.annotations.Index.TOKENIZED),
+    	 @Field(name = "name_forSort", index = org.hibernate.search.annotations.Index.UN_TOKENIZED)
+    })
 	private String nameCache;
 	
 	@XmlElement(name = "GenusOrUninomial")
+	@Field(index=Index.TOKENIZED)
 	private String genusOrUninomial;
 	
 	@XmlElement(name = "InfraGenericEpithet")
+	@Field(index=Index.TOKENIZED)
 	private String infraGenericEpithet;
 	
 	@XmlElement(name = "SpecificEpithet")
+	@Field(index=Index.TOKENIZED)
 	private String specificEpithet;
 	
 	@XmlElement(name = "InfraSpecificEpithet")
+	@Field(index=Index.TOKENIZED)
 	private String infraSpecificEpithet;
 	
 	@XmlElement(name = "CombinationAuthorTeam", type = TeamOrPersonBase.class)
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
+    @ManyToOne(fetch = FetchType.LAZY)
+	@Target(TeamOrPersonBase.class)
+	@Cascade(CascadeType.SAVE_UPDATE)
 	private INomenclaturalAuthor combinationAuthorTeam;
 	
-	@XmlElement(name = "CombinationAuthorTeam", type = TeamOrPersonBase.class)
+	@XmlElement(name = "ExCombinationAuthorTeam", type = TeamOrPersonBase.class)
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
+    @ManyToOne(fetch = FetchType.LAZY)
+	@Target(TeamOrPersonBase.class)
+	@Cascade(CascadeType.SAVE_UPDATE)
 	private INomenclaturalAuthor exCombinationAuthorTeam;
 	
-	@XmlElement(name = "CombinationAuthorTeam", type = TeamOrPersonBase.class)
+	@XmlElement(name = "BasionymAuthorTeam", type = TeamOrPersonBase.class)
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
+    @ManyToOne(fetch = FetchType.LAZY)
+	@Target(TeamOrPersonBase.class)
+	@Cascade(CascadeType.SAVE_UPDATE)
 	private INomenclaturalAuthor basionymAuthorTeam;
 	
-	@XmlElement(name = "CombinationAuthorTeam", type = TeamOrPersonBase.class)
+	@XmlElement(name = "ExBasionymAuthorTeam", type = TeamOrPersonBase.class)
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
+    @ManyToOne(fetch = FetchType.LAZY)
+	@Target(TeamOrPersonBase.class)
+	@Cascade(CascadeType.SAVE_UPDATE)
 	private INomenclaturalAuthor exBasionymAuthorTeam;
 	
 	@XmlElement(name = "AuthorshipCache")
+	@Field(index=Index.TOKENIZED)
 	private String authorshipCache;
 	
 	@XmlElement(name = "ProtectedAuthorshipCache")
@@ -123,6 +146,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 	protected boolean protectedNameCache;
 
     @XmlTransient
+    @Transient
 	protected INonViralNameCacheStrategy cacheStrategy;
 	
 	// ************* CONSTRUCTORS *************/	
@@ -133,7 +157,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 	 * only containing the {@link eu.etaxonomy.cdm.strategy.cache.name.NonViralNameDefaultCacheStrategy default cache strategy}.
 	 * 
 	 * @see #NonViralName(Rank, HomotypicalGroup)
-	 * @see #NonViralName(Rank, String, String, String, String, TeamOrPersonBase, INomenclaturalReference, String, HomotypicalGroup)
+	 * @see #NonViralName(Rank, String, String, String, String, TeamOrPersonBase, ReferenceBase, String, HomotypicalGroup)
 	 * @see eu.etaxonomy.cdm.strategy.cache.name.INonViralNameCacheStrategy
 	 * @see eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy
 	 * @see eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy
@@ -154,7 +178,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 	 * @param	rank  the rank to be assigned to <i>this</i> non viral taxon name
 	 * @param	homotypicalGroup  the homotypical group to which <i>this</i> non viral taxon name belongs
 	 * @see 	#NonViralName()
-	 * @see		#NonViralName(Rank, String, String, String, String, TeamOrPersonBase, INomenclaturalReference, String, HomotypicalGroup)
+	 * @see		#NonViralName(Rank, String, String, String, String, TeamOrPersonBase, ReferenceBase, String, HomotypicalGroup)
 	 * @see		#NewInstance(Rank, HomotypicalGroup)
 	 * @see 	eu.etaxonomy.cdm.strategy.cache.name.INonViralNameCacheStrategy
 	 * @see 	eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy
@@ -169,7 +193,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 	 * containing its {@link Rank rank},
 	 * its {@link HomotypicalGroup homotypical group},
 	 * its scientific name components, its {@link eu.etaxonomy.cdm.model.agent.TeamOrPersonBase author(team)},
-	 * its {@link eu.etaxonomy.cdm.model.reference.INomenclaturalReference nomenclatural reference} and
+	 * its {@link eu.etaxonomy.cdm.model.reference.ReferenceBase nomenclatural reference} and
 	 * the {@link eu.etaxonomy.cdm.strategy.cache.name.NonViralNameDefaultCacheStrategy default cache strategy}.
 	 * The new non viral taxon name instance will be also added to the set of
 	 * non viral taxon names belonging to this homotypical group.
@@ -218,7 +242,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 	 * @see    #NewInstance(Rank, HomotypicalGroup)
 	 * @see    #NonViralName(Rank, HomotypicalGroup)
 	 * @see    #NonViralName()
-	 * @see    #NonViralName(Rank, String, String, String, String, TeamOrPersonBase, INomenclaturalReference, String, HomotypicalGroup)
+	 * @see    #NonViralName(Rank, String, String, String, String, TeamOrPersonBase, ReferenceBase, String, HomotypicalGroup)
 	 * @see    eu.etaxonomy.cdm.strategy.cache.name.INonViralNameCacheStrategy
 	 * @see    eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy
 	 * @see    eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy
@@ -240,7 +264,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 	 * @see    #NewInstance(Rank)
 	 * @see    #NonViralName(Rank, HomotypicalGroup)
 	 * @see    #NonViralName()
-	 * @see    #NonViralName(Rank, String, String, String, String, TeamOrPersonBase, INomenclaturalReference, String, HomotypicalGroup)
+	 * @see    #NonViralName(Rank, String, String, String, String, TeamOrPersonBase, ReferenceBase, String, HomotypicalGroup)
 	 * @see    eu.etaxonomy.cdm.strategy.cache.name.INonViralNameCacheStrategy
 	 * @see    eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy
 	 * @see    eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy
@@ -267,11 +291,11 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 	 * @see 	eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy
 	 * @see     eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy
 	 */
-	@Transient
 	@Override
 	public INonViralNameCacheStrategy getCacheStrategy() {
 		return cacheStrategy;
 	}
+	
 	/**
 	 * @see  #getCacheStrategy()
 	 */
@@ -288,12 +312,10 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 	 * @see 	eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor
 	 * @see 	eu.etaxonomy.cdm.model.agent.TeamOrPersonBase#getNomenclaturalTitle()
 	 */
-	@ManyToOne
-	@Cascade({CascadeType.SAVE_UPDATE})
-	@Target(TeamOrPersonBase.class)
 	public INomenclaturalAuthor getCombinationAuthorTeam(){
 		return this.combinationAuthorTeam;
 	}
+	
 	/**
 	 * @see  #getCombinationAuthorTeam()
 	 */
@@ -324,12 +346,10 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 	 * @see 	eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor
 	 * @see 	eu.etaxonomy.cdm.model.agent.TeamOrPersonBase#getNomenclaturalTitle()
 	 */
-	@ManyToOne
-	@Cascade({CascadeType.SAVE_UPDATE})
-	@Target(TeamOrPersonBase.class)
 	public INomenclaturalAuthor getExCombinationAuthorTeam(){
 		return this.exCombinationAuthorTeam;
 	}
+	
 	/**
 	 * @see  #getExCombinationAuthorTeam()
 	 */
@@ -348,12 +368,10 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 	 * @see 	eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor
 	 * @see 	eu.etaxonomy.cdm.model.agent.TeamOrPersonBase#getNomenclaturalTitle()
 	 */
-	@ManyToOne
-	@Cascade({CascadeType.SAVE_UPDATE})
-	@Target(TeamOrPersonBase.class)
 	public INomenclaturalAuthor getBasionymAuthorTeam(){
 		return basionymAuthorTeam;
 	}
+	
 	/**
 	 * @see  #getBasionymAuthorTeam()
 	 */
@@ -377,12 +395,10 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 	 * @see 	eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor
 	 * @see 	eu.etaxonomy.cdm.model.agent.TeamOrPersonBase#getNomenclaturalTitle()
 	 */
-	@ManyToOne
-	@Cascade({CascadeType.SAVE_UPDATE})
-	@Target(TeamOrPersonBase.class)
 	public INomenclaturalAuthor getExBasionymAuthorTeam(){
 		return exBasionymAuthorTeam;
 	}
+	
 	/**
 	 * @see  #getExBasionymAuthorTeam()
 	 */
@@ -398,7 +414,6 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 	 * @return  the string containing the suprageneric name, the genus name or the genus part of <i>this</i> non viral taxon name
 	 * @see 	#getNameCache()
 	 */
-	@Field(index=Index.TOKENIZED)
 	public String getGenusOrUninomial() {
 		return genusOrUninomial;
 	}
@@ -419,7 +434,6 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 	 * @return  the string containing the infrageneric part of <i>this</i> non viral taxon name
 	 * @see 	#getNameCache()
 	 */
-	@Field(index=Index.TOKENIZED)
 	public String getInfraGenericEpithet(){
 		return this.infraGenericEpithet;
 	}
@@ -439,7 +453,6 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 	 * @return  the string containing the species epithet of <i>this</i> non viral taxon name
 	 * @see 	#getNameCache()
 	 */
-	@Field(index=Index.TOKENIZED)
 	public String getSpecificEpithet(){
 		return this.specificEpithet;
 	}
@@ -460,7 +473,6 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 	 * @return  the string containing the infraspecific part of <i>this</i> non viral taxon name
 	 * @see 	#getNameCache()
 	 */
-	@Field(index=Index.TOKENIZED)
 	public String getInfraSpecificEpithet(){
 		return this.infraSpecificEpithet;
 	}
@@ -536,9 +548,6 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 	 * @return  the string which identifies <i>this</i> non viral taxon name (without authors or year)
 	 * @see 	#generateNameCache()
 	 */
-	@Fields({@Field(index = org.hibernate.search.annotations.Index.TOKENIZED),
-    	 @Field(name = "name_forSort", index = org.hibernate.search.annotations.Index.UN_TOKENIZED)
-    })
 	public String getNameCache() {
 		if (protectedNameCache){
 			return this.nameCache;			
@@ -625,7 +634,6 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 	 * @return  the string with the concatenated and formated authorteams for <i>this</i> non viral taxon name
 	 * @see 	#generateAuthorship()
 	 */
-	@Field(index=Index.TOKENIZED)
 	public String getAuthorshipCache() {
 		if (protectedAuthorshipCache){
 			return this.authorshipCache;			
@@ -684,7 +692,6 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 	 * @see	   	TaxonNameBase#isCodeCompliant()
 	 */
 	@Override
-	@Transient
 	public boolean isCodeCompliant() {
 		//FIXME
 		logger.warn("is CodeCompliant not yet implemented");
@@ -707,7 +714,6 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 	 * @see  	#isCodeCompliant()
 	 * @see  	TaxonNameBase#getHasProblem()
 	 */
-	@Transient
 	@Override
 	public NomenclaturalCode getNomenclaturalCode() {
 		logger.warn("Non Viral Name has no specific Code defined. Use subclasses");

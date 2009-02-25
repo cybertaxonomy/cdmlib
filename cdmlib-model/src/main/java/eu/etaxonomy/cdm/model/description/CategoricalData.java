@@ -27,6 +27,7 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.envers.Audited;
 
 /**
  * This class represents information pieces expressed in categorical type of
@@ -56,7 +57,7 @@ import org.hibernate.annotations.CascadeType;
 })
 @XmlRootElement(name = "CategoricalData")
 @Entity
-//@Audited
+@Audited
 public class CategoricalData extends DescriptionElementBase {
 	private static final long serialVersionUID = -6298361966947668998L;
 	private static final Logger logger = Logger.getLogger(CategoricalData.class);
@@ -67,8 +68,7 @@ public class CategoricalData extends DescriptionElementBase {
 	
 	@XmlElementWrapper(name = "States")
 	@XmlElement(name = "State")
-	@XmlIDREF
-	@XmlSchemaType(name = "IDREF")
+	@ManyToMany(fetch = FetchType.LAZY)
 	private List<StateData> states = new ArrayList<StateData>();
 
 	
@@ -91,18 +91,10 @@ public class CategoricalData extends DescriptionElementBase {
 	 * Returns the (ordered) list of {@link State states} describing the {@link Feature feature}
 	 * corresponding to <i>this</i> categorical data.
 	 */
-	@ManyToMany(fetch = FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE})
 	public List<StateData> getStates(){
 		return this.states;
 	}
-	/**
-	 * @see	#getStates() 
-	 */
-	@SuppressWarnings("unused")
-	private void setStates(List<StateData> states){
-		this.states = states;
-	}
+
 	/**
 	 * Adds a {@link State state} to the list of {@link #getStates() states}
 	 * describing the {@link Feature feature} corresponding to <i>this</i> categorical data.

@@ -31,9 +31,9 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
+import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
-import eu.etaxonomy.cdm.model.common.ILoadableTerm;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
@@ -86,7 +86,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 })
 @XmlRootElement(name = "Feature")
 @Entity
-//@Audited
+@Audited
 public class Feature extends DefinedTermBase<Feature> {
 	private static final long serialVersionUID = 6754598791831848704L;
 	private static final Logger logger = Logger.getLogger(Feature.class);
@@ -131,22 +131,34 @@ public class Feature extends DefinedTermBase<Feature> {
 	@XmlElement(name = "SupportsCommonTaxonName")
 	private boolean supportsCommonTaxonName;
 	
+	/*
+	 * FIXME Should this be Many-To-Many or do we expect each Feature to have its own unique modifier enums?
+	 */
 	@XmlElementWrapper(name = "RecommendedModifierEnumerations")
 	@XmlElement(name = "RecommendedModifierEnumeration")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
+	@OneToMany(fetch = FetchType.LAZY)
+    @JoinTable(name="DefinedTermBase_RecommendedModifierEnumeration")
 	private Set<TermVocabulary<Modifier>> recommendedModifierEnumeration = new HashSet<TermVocabulary<Modifier>>();
 	
 	@XmlElementWrapper(name = "RecommendedStatisticalMeasures")
 	@XmlElement(name = "RecommendedStatisticalMeasure")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
+	@ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name="DefinedTermBase_StatisticalMeasure")
 	private Set<StatisticalMeasure> recommendedStatisticalMeasures = new HashSet<StatisticalMeasure>();
 	
+	/*
+	 * FIXME Should this be Many-To-Many or do we expect each Feature to have its own unique state enums?
+	 */
 	@XmlElementWrapper(name = "SupportedCategoricalEnumerations")
 	@XmlElement(name = "SupportedCategoricalEnumeration")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
+	@OneToMany(fetch = FetchType.LAZY)
+    @JoinTable(name="DefinedTermBase_SupportedCategoricalEnumeration")
 	private Set<TermVocabulary<State>> supportedCategoricalEnumerations = new HashSet<TermVocabulary<State>>();
 	
 /* ***************** CONSTRUCTOR AND FACTORY METHODS **********************************/
@@ -211,7 +223,7 @@ public class Feature extends DefinedTermBase<Feature> {
 	 *  
 	 * @return  the boolean value of the supportsQuantitativeData flag
 	 */
-	public boolean isSupportsQuantitativeData() {
+	public boolean supportsQuantitativeData() {
 		return supportsQuantitativeData;
 	}
 
@@ -229,7 +241,7 @@ public class Feature extends DefinedTermBase<Feature> {
 	 *  
 	 * @return  the boolean value of the supportsTextData flag
 	 */
-	public boolean isSupportsTextData() {
+	public boolean supportsTextData() {
 		return supportsTextData;
 	}
 
@@ -248,7 +260,7 @@ public class Feature extends DefinedTermBase<Feature> {
 	 *  
 	 * @return  the boolean value of the supportsDistribution flag
 	 */
-	public boolean isSupportsDistribution() {
+	public boolean supportsDistribution() {
 		return supportsDistribution;
 	}
 
@@ -266,7 +278,7 @@ public class Feature extends DefinedTermBase<Feature> {
 	 *  
 	 * @return  the boolean value of the supportsIndividualAssociation flag
 	 */
-	public boolean isSupportsIndividualAssociation() {
+	public boolean supportsIndividualAssociation() {
 		return supportsIndividualAssociation;
 	}
 
@@ -285,7 +297,7 @@ public class Feature extends DefinedTermBase<Feature> {
 	 *  
 	 * @return  the boolean value of the supportsTaxonInteraction flag
 	 */
-	public boolean isSupportsTaxonInteraction() {
+	public boolean supportsTaxonInteraction() {
 		return supportsTaxonInteraction;
 	}
 
@@ -304,7 +316,7 @@ public class Feature extends DefinedTermBase<Feature> {
 	 *  
 	 * @return  the boolean value of the supportsCommonTaxonName flag
 	 */
-	public boolean isSupportsCommonTaxonName() {
+	public boolean supportsCommonTaxonName() {
 		return supportsCommonTaxonName;
 	}
 
@@ -320,20 +332,9 @@ public class Feature extends DefinedTermBase<Feature> {
 	 * {@link Modifier modifiers} recommended to be used for {@link DescriptionElementBase description elements}
 	 * with <i>this</i> feature.
 	 *  
-	 * FIXME Should this be Many-To-Many or do we expect each Feature to have its own unique modifier enums?
 	 */
-	@OneToMany(fetch = FetchType.LAZY)
-    @JoinTable(name="DefinedTermBase_RecommendedModifierEnumeration")
 	public Set<TermVocabulary<Modifier>> getRecommendedModifierEnumeration() {
 		return recommendedModifierEnumeration;
-	}
-
-	/**
-	 * @see	#getRecommendedModifierEnumeration() 
-	 */
-	protected void setRecommendedModifierEnumeration(
-			Set<TermVocabulary<Modifier>> recommendedModifierEnumeration) {
-		this.recommendedModifierEnumeration = recommendedModifierEnumeration;
 	}
 
 	/**
@@ -365,19 +366,8 @@ public class Feature extends DefinedTermBase<Feature> {
 	 * Returns the set of {@link StatisticalMeasure statistical measures} recommended to be used
 	 * in case of {@link QuantitativeData quantitative data} with <i>this</i> feature.
 	 */
-	@ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name="DefinedTermBase_StatisticalMeasure")
-//	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<StatisticalMeasure> getRecommendedStatisticalMeasures() {
 		return recommendedStatisticalMeasures;
-	}
-
-	/**
-	 * @see	#getRecommendedStatisticalMeasures() 
-	 */
-	protected void setRecommendedStatisticalMeasures(
-			Set<StatisticalMeasure> recommendedStatisticalMeasures) {
-		this.recommendedStatisticalMeasures = recommendedStatisticalMeasures;
 	}
 
 	/**
@@ -410,21 +400,11 @@ public class Feature extends DefinedTermBase<Feature> {
 	 * possible {@link State states} to be used in {@link CategoricalData categorical data}
 	 * with <i>this</i> feature.
 	 * 
-	 * FIXME Should this be Many-To-Many or do we expect each Feature to have its own unique state enums?
 	 */
-	@OneToMany(fetch = FetchType.LAZY)
-    @JoinTable(name="DefinedTermBase_SupportedCategoricalEnumeration")
 	public Set<TermVocabulary<State>> getSupportedCategoricalEnumerations() {
 		return supportedCategoricalEnumerations;
 	}
 
-	/**
-	 * @see	#getSupportedCategoricalEnumerations() 
-	 */
-	protected void setSupportedCategoricalEnumerations(
-			Set<TermVocabulary<State>> supportedCategoricalEnumerations) {
-		this.supportedCategoricalEnumerations = supportedCategoricalEnumerations;
-	}
 	/**
 	 * Adds a {@link TermVocabulary term vocabulary} to the set of
 	 * {@link #getSupportedCategoricalEnumerations() supported state vocabularies} assigned
@@ -449,7 +429,6 @@ public class Feature extends DefinedTermBase<Feature> {
 			TermVocabulary<State> supportedCategoricalEnumeration) {
 		this.supportedCategoricalEnumerations.remove(supportedCategoricalEnumeration);
 	}
-
 	
 	private static final UUID uuidUnknown = UUID.fromString("910307f1-dc3c-452c-a6dd-af5ac7cd365c");
 	private static final UUID uuidDescription = UUID.fromString("9087cdcd-8b08-4082-a1de-34c9ba9fb493");
@@ -669,7 +648,6 @@ public class Feature extends DefinedTermBase<Feature> {
 		return PHENOLOGY;
 	}
 
-	
 	/**
 	 * Returns the "occurrence" feature.
 	 */

@@ -31,12 +31,11 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
+import org.hibernate.envers.Audited;
 
 import au.com.bytecode.opencsv.CSVWriter;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
-import eu.etaxonomy.cdm.model.common.ILoadableTerm;
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.TermVocabulary;
 
 /**
  * +/- current ISO codes. year given with each entry
@@ -53,7 +52,7 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
 })
 @XmlRootElement(name = "WaterbodyOrCountry")
 @Entity
-//@Audited
+@Audited
 public class WaterbodyOrCountry extends NamedArea {
 	private static final long serialVersionUID = -6791671976199722843L;
 	private static final Logger logger = Logger.getLogger(WaterbodyOrCountry.class);
@@ -62,12 +61,15 @@ public class WaterbodyOrCountry extends NamedArea {
 	 * 2 character ISO 3166 Country codes
 	 */
 	@XmlAttribute(name = "iso3166_A2")
-	private char[] iso3166_A2 = new char[2];
+	@Column(length=2)
+	private String iso3166_A2;
 	
     @XmlElementWrapper(name = "Continents")
     @XmlElement(name = "Continent")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
+    @ManyToMany(fetch = FetchType.LAZY)
+	@JoinTable(name="DefinedTermBase_Continent")
 	private Set<Continent> continents = new HashSet<Continent>();
 	
 	private static final UUID uuidAfghanistan = UUID.fromString("974ce01a-5bce-4be8-b728-a46869354960");
@@ -596,7 +598,6 @@ uuidPersianGulf
 		return new WaterbodyOrCountry(term, label, labelAbbrev);
 	}
 	
-
 	public WaterbodyOrCountry() {
 		super();
 	}
@@ -604,19 +605,14 @@ uuidPersianGulf
 		super(term, label, labelAbbrev);
 	}
 
-	@ManyToMany(fetch = FetchType.LAZY)
-	@JoinTable(name="DefinedTermBase_Continent")
-//	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<Continent> getContinents() {
 		return continents;
 	}
 
-	protected void setContinents(Set<Continent> continents) {
-		this.continents = continents;
-	}
 	public void addContinents(Continent continent) {
 		this.continents.add(continent);
 	}
+	
 	public void removeContinents(Continent continent) {
 		this.continents.remove(continent);
 	}
@@ -625,10 +621,8 @@ uuidPersianGulf
 	 * Get 2 character ISO 3166 Country code
 	 * @return  a String representation of the ISO 3166 code
 	 */
-	//TODO create userDefinedType ?
-	@Column(length=2)
 	public String getIso3166_A2(){
-		return String.valueOf(iso3166_A2);
+		return iso3166_A2;
 	}
 
 	/**
@@ -636,7 +630,7 @@ uuidPersianGulf
 	 * @param iso3166_A2  a String representation of the ISO 3166 code
 	 */
 	public void setIso3166_A2(String iso3166_A2){
-		this.iso3166_A2 = iso3166_A2.toCharArray();
+		this.iso3166_A2 = iso3166_A2;
 	}
 
 //	public TimePeriod getValidPeriod(){
@@ -677,6 +671,7 @@ uuidPersianGulf
 		} 
 		return null;
 	}
+	
 	public void writeCsvLine(CSVWriter writer) {
 		String [] line = new String[6];
 		line[0] = getUuid().toString();

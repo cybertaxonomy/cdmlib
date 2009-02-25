@@ -19,6 +19,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
+import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
@@ -37,7 +38,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 @XmlType(name = "PresenceTerm")
 @XmlRootElement(name = "PresenceTerm")
 @Entity
-//@Audited
+@Audited
 public class PresenceTerm extends PresenceAbsenceTermBase<PresenceTerm> {
 	private static final long serialVersionUID = -2876981902335193596L;
 	private static final Logger logger = Logger.getLogger(PresenceTerm.class);
@@ -149,8 +150,7 @@ public class PresenceTerm extends PresenceAbsenceTermBase<PresenceTerm> {
 	public static final PresenceTerm INTRODUCED_NATURALIZED(){return INTRODUCED_NATURALIZED; }
 	public static final PresenceTerm INTRODUCED_REPORTED_IN_ERROR(){return INTRODUCED_REPORTED_IN_ERROR; } 
 	public static final PresenceTerm ENDEMIC_FOR_THE_RELEVANT_AREA(){return ENDEMIC_FOR_THE_RELEVANT_AREA; } 
-	
-	@Transient
+
 	public static PresenceTerm getPresenceTermByAbbreviation(String abbrev) { 
 
 		if (abbrev == null) { throw new NullPointerException("abbrev is 'null' in getPresenceTermByAbbreviation");

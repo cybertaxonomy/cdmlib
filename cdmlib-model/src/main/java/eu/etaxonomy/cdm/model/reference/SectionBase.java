@@ -19,6 +19,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
+import org.hibernate.envers.Audited;
 
 /**
  * This (abstract) class represents isolated sections (parts, chapters or
@@ -37,7 +38,7 @@ import org.apache.log4j.Logger;
 })
 @XmlRootElement(name = "SectionBase")
 @Entity
-//@Audited
+@Audited
 public abstract class SectionBase extends StrictReferenceBase {
 	
 	static Logger logger = Logger.getLogger(SectionBase.class);
@@ -68,7 +69,6 @@ public abstract class SectionBase extends StrictReferenceBase {
 	 * 
 	 * @return  the printed unit containing <i>this</i> section
 	 */
-	@Transient
 	public PrintedUnitBase getPrintedUnit(){
 		logger.warn("Not yet implemented");
 		return null;

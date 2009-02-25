@@ -1,5 +1,6 @@
 /* Package Annotations*/
 
+@javax.xml.bind.annotation.XmlSchema(namespace = "http://etaxonomy.eu/cdm/model/common/1.0", elementFormDefault = javax.xml.bind.annotation.XmlNsForm.QUALIFIED)
 @GenericGenerator(
 		name="system-increment", 
 		strategy = "increment"
@@ -14,14 +15,14 @@
 		                              metaType="string", 
 		                              idType="integer",
 		                              metaValues={
-		@MetaValue(value = "Institution", targetEntity = Institution.class),
-		@MetaValue(value = "Person", targetEntity = Person.class),
-		@MetaValue(value = "Team", targetEntity = Team.class),
-		@MetaValue(value = "Annotation", targetEntity = Annotation.class),
-		@MetaValue(value = "TaxonDescription", targetEntity = TaxonDescription.class),
-		@MetaValue(value = "SpecimenDescription", targetEntity = SpecimenDescription.class),
-		@MetaValue(value = "Synonym", targetEntity = Synonym.class),
-		@MetaValue(value = "Taxon", targetEntity = Taxon.class)
+		@MetaValue(value = "eu.etaxonomy.cdm.model.agent.Institution", targetEntity = Institution.class),
+		@MetaValue(value = "eu.etaxonomy.cdm.model.agent.Person", targetEntity = Person.class),
+		@MetaValue(value = "eu.etaxonomy.cdm.model.agent.Team", targetEntity = Team.class),
+		@MetaValue(value = "eu.etaxonomy.cdm.model.common.Annotation", targetEntity = Annotation.class),
+		@MetaValue(value = "eu.etaxonomy.cdm.model.description.TaxonDescription", targetEntity = TaxonDescription.class),
+		@MetaValue(value = "eu.etaxonomy.cdm.model.description.SpecimenDescription", targetEntity = SpecimenDescription.class),
+		@MetaValue(value = "eu.etaxonomy.cdm.model.taxon.Synonym", targetEntity = Synonym.class),
+		@MetaValue(value = "eu.etaxonomy.cdm.model.taxon.Taxon", targetEntity = Taxon.class)
 		})
 package eu.etaxonomy.cdm.model.common;
 

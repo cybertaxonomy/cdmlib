@@ -24,6 +24,7 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.agent.Institution;
 
@@ -46,13 +47,15 @@ import eu.etaxonomy.cdm.model.agent.Institution;
 })
 @XmlRootElement(name = "Report")
 @Entity
-//@Audited
+@Audited
 public class Report extends PublicationBase implements Cloneable {
 	static Logger logger = Logger.getLogger(Report.class);
 	
 	@XmlElement(name = "Institution")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
+	@ManyToOne(fetch = FetchType.LAZY)
+	@Cascade(CascadeType.SAVE_UPDATE)
 	private Institution institution;
 
 	/** 
@@ -86,19 +89,16 @@ public class Report extends PublicationBase implements Cloneable {
 	 * @return  the institution
 	 * @see 	eu.etaxonomy.cdm.model.agent.Institution
 	 */
-	@ManyToOne(fetch = FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE})
 	public Institution getInstitution(){
 		return this.institution;
 	}
+	
 	/**
 	 * @see #getInstitution()
 	 */
 	public void setInstitution(Institution institution){
 		this.institution = institution;
 	}
-
-
 	
 	/** 
 	 * Clones <i>this</i> report instance. This is a shortcut that enables to

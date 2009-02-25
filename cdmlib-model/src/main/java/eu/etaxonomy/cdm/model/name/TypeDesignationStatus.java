@@ -21,6 +21,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
+import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.common.OrderedTermBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
@@ -51,7 +52,7 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "TypeDesignationStatus")
 @Entity
-//@Audited
+@Audited
 public class TypeDesignationStatus extends OrderedTermBase<TypeDesignationStatus> {
 	static Logger logger = Logger.getLogger(TypeDesignationStatus.class);
 
@@ -150,7 +151,6 @@ public class TypeDesignationStatus extends OrderedTermBase<TypeDesignationStatus
 	 * @see  #HOLOTYPE()
 	 * @see  eu.etaxonomy.cdm.model.common.DefinedTermBase#getKindOf()
 	 */
-	@Transient
 	public boolean isLectotype(){
 		if (this.equals(LECTOTYPE()) ||
 				this.equals(ISOLECTOTYPE()) ||

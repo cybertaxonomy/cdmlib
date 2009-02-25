@@ -17,6 +17,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
+import org.hibernate.envers.Audited;
 
 /**
  * This class represents electronic publications available on the world wide web.
@@ -32,7 +33,7 @@ import org.apache.log4j.Logger;
 @XmlType(name = "WebPage")
 @XmlRootElement(name = "WebPage")
 @Entity
-//@Audited
+@Audited
 public class WebPage extends PublicationBase implements Cloneable {
 	static Logger logger = Logger.getLogger(WebPage.class);
 

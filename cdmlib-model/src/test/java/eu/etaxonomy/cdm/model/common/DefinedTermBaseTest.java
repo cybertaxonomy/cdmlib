@@ -1,21 +1,17 @@
 /**
-* Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
-* http://www.e-taxonomy.eu
-* 
-* The contents of this file are subject to the Mozilla Public License Version 1.1
-* See LICENSE.TXT at the top of this package for the full license terms.
-*/
- 
+ * Copyright (C) 2007 EDIT
+ * European Distributed Institute of Taxonomy 
+ * http://www.e-taxonomy.eu
+ * 
+ * The contents of this file are subject to the Mozilla Public License Version 1.1
+ * See LICENSE.TXT at the top of this package for the full license terms.
+ */
+
 package eu.etaxonomy.cdm.model.common;
 
 import junit.framework.Assert;
 
 import org.apache.log4j.Logger;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.test.unit.EntityTestBase;
@@ -23,23 +19,7 @@ import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 public class DefinedTermBaseTest extends EntityTestBase {
 	private static Logger logger = Logger.getLogger(DefinedTermBaseTest.class);
 
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-	}
-
-	@AfterClass
-	public static void tearDownAfterClass() throws Exception {
-	}
-
-	@Before
-	public void setUp() throws Exception {
-	}
-
-	@After
-	public void tearDown() throws Exception {
-	}
-	
-/********* TEST *************************************/
+	/** ******* TEST ************************************ */
 
 	@Test
 	public final void testInitTermList() {
@@ -164,11 +144,5 @@ public class DefinedTermBaseTest extends EntityTestBase {
 	@Test
 	public final void testSetVocabulary() {
 		logger.warn("Not yet implemented"); // TODO
-	}
-	
-	@Test
-	@Override //has Problem
-	public final void testPersistentGetterSetterPair() {
-		Assert.assertTrue(true);
 	}
 }

@@ -9,20 +9,23 @@
 
 package eu.etaxonomy.cdm.model.name;
 
-import eu.etaxonomy.cdm.model.common.RelationshipBase;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
-
-import org.apache.log4j.Logger;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
-
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.ManyToOne;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
+
+import org.apache.log4j.Logger;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
+import org.hibernate.envers.Audited;
+
+import eu.etaxonomy.cdm.model.common.RelationshipBase;
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
 /**
  * The class representing a hybrid relationship between one of the {@link BotanicalName parents}
@@ -50,7 +53,7 @@ import javax.xml.bind.annotation.XmlType;
     "ruleConsidered"
 })
 @Entity
-//@Audited
+@Audited
 public class HybridRelationship extends RelationshipBase<BotanicalName, BotanicalName, HybridRelationshipType> {
   
 	private static final Logger logger = Logger.getLogger(HybridRelationship.class);
@@ -63,16 +66,21 @@ public class HybridRelationship extends RelationshipBase<BotanicalName, Botanica
 	@XmlElement(name = "RelatedFrom")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
+    @ManyToOne(fetch=FetchType.LAZY)
+    @Cascade(CascadeType.SAVE_UPDATE)
 	private BotanicalName relatedFrom;
 
 	@XmlElement(name = "RelatedTo")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
+    @ManyToOne(fetch=FetchType.LAZY)
+    @Cascade(CascadeType.SAVE_UPDATE)
 	private BotanicalName relatedTo;
 	
     @XmlElement(name = "Type")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
+    @ManyToOne(fetch=FetchType.LAZY)
 	private HybridRelationshipType type;
 
 	//for hibernate use only, don't use
@@ -127,7 +135,6 @@ public class HybridRelationship extends RelationshipBase<BotanicalName, Botanica
 	 * @see   #getHybridName()
 	 * @see   eu.etaxonomy.cdm.model.common.RelationshipBase#getRelatedFrom()
 	 */
-	@Transient
 	public BotanicalName getParentName(){
 		return this.getRelatedFrom();
 	}
@@ -145,7 +152,6 @@ public class HybridRelationship extends RelationshipBase<BotanicalName, Botanica
 	 * @see   #getParentName()
 	 * @see   eu.etaxonomy.cdm.model.common.RelationshipBase#getRelatedTo()
 	 */
-	@Transient
 	public BotanicalName getHybridName(){
 		return this.getRelatedTo();
 	}
@@ -172,19 +178,14 @@ public class HybridRelationship extends RelationshipBase<BotanicalName, Botanica
 		this.ruleConsidered = ruleConsidered;
 	}
 
-	@ManyToOne(fetch=FetchType.EAGER)
-	@Cascade({CascadeType.SAVE_UPDATE})
 	protected BotanicalName getRelatedFrom() {
 		return relatedFrom;
 	}
 
-	@ManyToOne(fetch=FetchType.EAGER)
-	@Cascade({CascadeType.SAVE_UPDATE})
 	protected BotanicalName getRelatedTo() {
 		return relatedTo;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
 	public HybridRelationshipType getType() {
 		return type;
 	}

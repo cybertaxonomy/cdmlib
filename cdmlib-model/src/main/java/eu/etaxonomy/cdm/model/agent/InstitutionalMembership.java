@@ -10,13 +10,9 @@
 package eu.etaxonomy.cdm.model.agent;
 
 
-import eu.etaxonomy.cdm.model.common.TimePeriod;
-import eu.etaxonomy.cdm.model.common.VersionableEntity;
-import org.apache.log4j.Logger;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
-
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.ManyToOne;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -24,6 +20,14 @@ import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
+
+import org.apache.log4j.Logger;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
+import org.hibernate.envers.Audited;
+
+import eu.etaxonomy.cdm.model.common.TimePeriod;
+import eu.etaxonomy.cdm.model.common.VersionableEntity;
 
 /**
  * This class allows to hold one {@link Institution institution} to which a {@link Person person}
@@ -46,7 +50,7 @@ import javax.xml.bind.annotation.XmlType;
 })
 @XmlRootElement(name = "InstitutionalMembership")
 @Entity
-//@Audited
+@Audited
 public class InstitutionalMembership extends VersionableEntity {
 	private static final long serialVersionUID = -800814712134999042L;
 	public static final Logger logger = Logger.getLogger(InstitutionalMembership.class);
@@ -68,11 +72,15 @@ public class InstitutionalMembership extends VersionableEntity {
     @XmlElement(name = "Institution", required = true)
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
+	@ManyToOne(fetch = FetchType.LAZY)
+	@Cascade(CascadeType.SAVE_UPDATE)
 	private Institution institute;
 	
     @XmlElement(name = "Person", required = true)
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @Cascade(CascadeType.SAVE_UPDATE)
 	private Person person;
 	
 	public static InstitutionalMembership NewInstance() {
@@ -115,30 +123,26 @@ public class InstitutionalMembership extends VersionableEntity {
 	 * @see  Person#institutionalMemberships
 	 * @see  Person#addInstitutionalMembership(Institution, TimePeriod, String, String)
 	 */
-	@ManyToOne(fetch = FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE})
 	public Person getPerson() {
 		return person;
 	}
-	/** 
+	
+	/**
 	 * Assigns a new {@link Person person} (replacing the actual one) to <i>this</i> institutional membership.
 	 * This method also updates both sets of institutions
-	 * the two persons (the new one and the substituted one) belong to. 
+	 * the two persons (the new one and the substituted one) belong to.
 	 *
 	 * @param  newPerson  the new person to be included in <i>this</i> institutional membership
 	 * @see               #getPerson()
 	 * @see               Person#removeInstitutionalMembership(InstitutionalMembership)
 	 */
-	protected void setPerson(Person newPerson) {
-		this.person = newPerson;
+	protected void setPerson(Person person) {
+		this.person = person;
 	}
 
-	
 	/** 
 	 * Returns the {@link Institution institution} corresponding to <i>this</i> institutional membership.
 	 */
-	@Cascade({CascadeType.SAVE_UPDATE})
-	@ManyToOne(fetch = FetchType.LAZY)
 	public Institution getInstitute(){
 		return this.institute;
 	}
@@ -200,5 +204,4 @@ public class InstitutionalMembership extends VersionableEntity {
 	public void setRole(String role){
 		this.role = role;
 	}
-
 }

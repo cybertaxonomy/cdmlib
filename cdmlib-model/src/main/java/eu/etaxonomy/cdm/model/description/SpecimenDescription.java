@@ -16,6 +16,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
+import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 
@@ -33,7 +34,7 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 @XmlType(name = "SpecimenDescription")
 @XmlRootElement(name = "SpecimenDescription")
 @Entity
-//@Audited
+@Audited
 public class SpecimenDescription extends DescriptionBase {
 	private static final long serialVersionUID = -8506790426682192703L;
 	@SuppressWarnings("unused")

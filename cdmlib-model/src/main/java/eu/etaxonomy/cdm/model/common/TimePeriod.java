@@ -18,6 +18,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Type;
@@ -26,6 +27,8 @@ import org.joda.time.DateTimeFieldType;
 import org.joda.time.LocalDate;
 import org.joda.time.Partial;
 import org.joda.time.ReadableInstant;
+
+import eu.etaxonomy.cdm.jaxb.PartialAdapter;
 
 /**
  * @author m.doering
@@ -48,9 +51,13 @@ public class TimePeriod implements Cloneable {
 	
 	
 	@XmlElement(name = "Start")
+	@XmlJavaTypeAdapter(value = PartialAdapter.class)
+	@Type(type="partialUserType")
 	private Partial start;
 	
 	@XmlElement(name = "End")
+	@XmlJavaTypeAdapter(value = PartialAdapter.class)
+	@Type(type="partialUserType")
 	private Partial end;
 
 	
@@ -202,7 +209,6 @@ public class TimePeriod implements Cloneable {
 	 * and both have a year value that is not null
 	 * @return
 	 */
-	@Transient
 	public boolean isPeriod(){
 		if (getStartYear() != null && getEndYear() != null ){
 			return true;
@@ -211,17 +217,15 @@ public class TimePeriod implements Cloneable {
 		}
 	}
 	
-	//@Temporal(TemporalType.TIMESTAMP)
-	@Type(type="partialUserType")
+	
 	public Partial getStart() {
 		return start;
 	}
+	
 	public void setStart(Partial start) {
 		this.start = start;
 	}
 	
-	//@Temporal(TemporalType.TIMESTAMP)
-	@Type(type="partialUserType")
 	public Partial getEnd() {
 		return end;
 	}
@@ -229,7 +233,7 @@ public class TimePeriod implements Cloneable {
 		this.end = end;
 	}
 	
-	@Transient
+
 	public String getYear(){
 		String result = "";
 		if (getStartYear() != null){
@@ -245,38 +249,30 @@ public class TimePeriod implements Cloneable {
 		return result;
 	}
 	
-	@Transient
 	public Integer getStartYear(){
 		return getPartialValue(start, yearType);
 	}
 	
-	@Transient
 	public Integer getStartMonth(){
 		return getPartialValue(start, monthType);
 	}
 
-	@Transient
 	public Integer getStartDay(){
 		return getPartialValue(start, dayType);
 	}
 
-	@Transient
 	public Integer getEndYear(){
 		return getPartialValue(end, yearType);
 	}
 
-	@Transient
 	public Integer getEndMonth(){
 		return getPartialValue(end, monthType);
 	}
 
-	@Transient
 	public Integer getEndDay(){
 		return getPartialValue(end, dayType);
 	}
 	
-	
-	@Transient
 	private Integer getPartialValue(Partial partial, DateTimeFieldType type){
 		if (partial == null || ! partial.isSupported(type)){
 			return null;
@@ -377,8 +373,6 @@ public class TimePeriod implements Cloneable {
 			end = new Partial();
 		}
 	}
-	
-	
 	
 //*********** CLONE **********************************/	
 	

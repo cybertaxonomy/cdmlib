@@ -1,6 +1,6 @@
 package eu.etaxonomy.cdm.model.common;
 
-import eu.etaxonomy.cdm.model.agent.Agent;
+import eu.etaxonomy.cdm.model.agent.AgentBase;
 
 public interface IEvent {
 
@@ -8,8 +8,8 @@ public interface IEvent {
 
 	public abstract void setTimeperiod(TimePeriod timeperiod);
 
-	public abstract Agent getActor();
+	public abstract AgentBase getActor();
 
-	public abstract void setActor(Agent actor);
+	public abstract void setActor(AgentBase actor);
 
 }

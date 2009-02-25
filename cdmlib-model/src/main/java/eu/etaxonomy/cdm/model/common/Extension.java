@@ -10,8 +10,10 @@
 package eu.etaxonomy.cdm.model.common;
 
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -22,6 +24,9 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
+import org.hibernate.annotations.Any;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 
 /**
  * This class aims to make available more "attributes" for identifiable entities
@@ -39,7 +44,7 @@ import org.apache.log4j.Logger;
     "extendedObj"
 })
 @Entity
-//@Audited
+@Audited
 public class Extension extends VersionableEntity implements Cloneable {
 	private static final long serialVersionUID = -857207737641432202L;
 	@SuppressWarnings("unused")
@@ -51,11 +56,18 @@ public class Extension extends VersionableEntity implements Cloneable {
     @XmlElement(name = "ExtensionType")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
+    @ManyToOne(fetch = FetchType.LAZY)
 	private ExtensionType type;
 	
     @XmlElement(name = "ExtendedObject")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
+    @Any(metaDef = "CdmBase",
+	    	 metaColumn=@Column(name = "extendedObj_type"),
+	    	 fetch = FetchType.LAZY,
+	    	 optional = false)
+	@JoinColumn(name = "extendedObj_id")
+	@NotAudited
 	private IdentifiableEntity extendedObj;
 	
 	public static Extension NewInstance(){
@@ -70,9 +82,6 @@ public class Extension extends VersionableEntity implements Cloneable {
 		
 	}
 	
-	
-	
-	@Transient
 	public IdentifiableEntity getExtendedObj() {
 		return extendedObj;
 	}
@@ -80,7 +89,7 @@ public class Extension extends VersionableEntity implements Cloneable {
 		this.extendedObj = extendedObj;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	
 	public ExtensionType getType(){
 		return this.type;
 	}

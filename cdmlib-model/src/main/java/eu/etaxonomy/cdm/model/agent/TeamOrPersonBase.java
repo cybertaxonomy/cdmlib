@@ -9,6 +9,7 @@
 package eu.etaxonomy.cdm.model.agent;
 
 import javax.persistence.Entity;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -16,12 +17,13 @@ import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
+import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.strategy.cache.agent.INomenclaturalAuthorCacheStrategy;
 
 
 /**
- * The abstract class for such {@link Agent agents} ({@link Person persons} or {@link Team teams}) who might also be used
+ * The abstract class for such {@link AgentBase agents} ({@link Person persons} or {@link Team teams}) who might also be used
  * for authorship of {@link eu.etaxonomy.cdm.model.reference.ReferenceBase references} or of {@link eu.etaxonomy.cdm.model.name.TaxonNameBase taxon names}.
  * 
  * @author a.mueller
@@ -33,8 +35,8 @@ import eu.etaxonomy.cdm.strategy.cache.agent.INomenclaturalAuthorCacheStrategy;
 	"nomenclaturalTitle"
 })
 @Entity
-//@Audited
-public abstract class TeamOrPersonBase<T extends TeamOrPersonBase<?>> extends Agent implements INomenclaturalAuthor {
+@Audited
+public abstract class TeamOrPersonBase<T extends TeamOrPersonBase<?>> extends AgentBase implements INomenclaturalAuthor {
 	private static final long serialVersionUID = 5216821307314001961L;
 	public static final Logger logger = Logger.getLogger(TeamOrPersonBase.class);
 
@@ -42,6 +44,7 @@ public abstract class TeamOrPersonBase<T extends TeamOrPersonBase<?>> extends Ag
 	protected String nomenclaturalTitle;
 	
 	@XmlTransient
+	@Transient
 	protected INomenclaturalAuthorCacheStrategy<T> cacheStrategy;
 
 	/**

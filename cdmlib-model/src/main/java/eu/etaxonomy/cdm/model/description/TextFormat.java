@@ -17,6 +17,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
+import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
@@ -33,7 +34,7 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
 @XmlType(name = "TextFormat")
 @XmlRootElement(name = "TextFormat")
 @Entity
-//@Audited
+@Audited
 public class TextFormat extends DefinedTermBase<TextFormat> {
 	private static final long serialVersionUID = 2063382669537212917L;
 	@SuppressWarnings("unused")

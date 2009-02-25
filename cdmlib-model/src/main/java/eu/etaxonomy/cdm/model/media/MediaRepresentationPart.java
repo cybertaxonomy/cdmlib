@@ -16,10 +16,15 @@ import javax.persistence.ManyToOne;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlIDREF;
+import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
+import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 
@@ -33,9 +38,13 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
  * @version 1.0
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "MediaRepresentationPart", propOrder = { "uri", "size" })
+@XmlType(name = "MediaRepresentationPart", propOrder = { 
+		"uri", 
+        "size",
+        "mediaRepresentation"
+  })
 @Entity
-//@Audited
+@Audited
 public class MediaRepresentationPart extends VersionableEntity {
 	private static final long serialVersionUID = -1674422508643785796L;
 	private static final Logger logger = Logger.getLogger(MediaRepresentationPart.class);
@@ -49,7 +58,12 @@ public class MediaRepresentationPart extends VersionableEntity {
 	private Integer size;
 
 	// the MediaRepresentation of this MediaRepresentationPart
-	@XmlTransient
+	@XmlElement(name = "MediaRepresentation")
+	@XmlIDREF
+	@XmlSchemaType(name = "IDREF")
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "representation_id", nullable = false, updatable = false, insertable = false)
+	@Cascade(CascadeType.SAVE_UPDATE)
 	private MediaRepresentation mediaRepresentation;
 
 	/**
@@ -81,8 +95,6 @@ public class MediaRepresentationPart extends VersionableEntity {
 
 	/*************** getter /setter *************************************/
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "representation_id", nullable = false, updatable = false, insertable = false)
 	public MediaRepresentation getMediaRepresentation() {
 		return this.mediaRepresentation;
 	}

@@ -21,6 +21,7 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
+import org.hibernate.envers.Audited;
 
 /**
  * A specimen is regarded as derived from an field observation, 
@@ -36,13 +37,14 @@ import org.apache.log4j.Logger;
 })
 @XmlRootElement(name = "Specimen")
 @Entity
-//@Audited
+@Audited
 public class Specimen extends DerivedUnitBase implements Cloneable {
 	private static final Logger logger = Logger.getLogger(Specimen.class);
 	
 	@XmlElement(name = "Preservation")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
+	@ManyToOne(fetch = FetchType.LAZY)
 	private PreservationMethod preservation;
 	
 	/**
@@ -60,10 +62,10 @@ public class Specimen extends DerivedUnitBase implements Cloneable {
 		super();
 	}
 	
-	@ManyToOne(fetch = FetchType.LAZY)
 	public PreservationMethod getPreservation(){
 		return this.preservation;
 	}
+	
 	public void setPreservation(PreservationMethod preservation){
 		this.preservation = preservation;
 	}

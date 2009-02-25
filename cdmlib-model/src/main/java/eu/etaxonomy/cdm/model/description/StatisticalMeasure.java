@@ -18,6 +18,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
+import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -37,7 +38,7 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
 @XmlType(name = "StatisticalMeasure")
 @XmlRootElement(name = "StatisticalMeasure")
 @Entity
-//@Audited
+@Audited
 public class StatisticalMeasure extends DefinedTermBase<StatisticalMeasure> {
 	private static final long serialVersionUID = 9168097283660941430L;
 	@SuppressWarnings("unused")

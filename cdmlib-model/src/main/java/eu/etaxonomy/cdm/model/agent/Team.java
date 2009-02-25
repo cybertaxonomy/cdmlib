@@ -13,8 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.ManyToMany;
-import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -25,8 +25,7 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
+import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.strategy.cache.agent.TeamDefaultCacheStrategy;
 
@@ -56,7 +55,7 @@ import eu.etaxonomy.cdm.strategy.cache.agent.TeamDefaultCacheStrategy;
 })
 @XmlRootElement
 @Entity
-//@Audited
+@Audited
 public class Team extends TeamOrPersonBase<Team> {
 	private static final long serialVersionUID = 97640416905934622L;
 	public static final Logger logger = Logger.getLogger(Team.class);
@@ -70,6 +69,7 @@ public class Team extends TeamOrPersonBase<Team> {
     @XmlElement(name = "TeamMember")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
+    @ManyToMany(fetch = FetchType.LAZY)
 	private List<Person> teamMembers = new ArrayList<Person>();
 	
 	
@@ -93,18 +93,8 @@ public class Team extends TeamOrPersonBase<Team> {
 	 * Returns the list of {@link Person members} belonging to <i>this</i> team. 
 	 * A person may be a member of several distinct teams. 
 	 */
-	@ManyToMany
-	//@IndexColumn(name="sortIndex", base = 0)
-	//@JoinColumn (name = "representation_id",  nullable=false)
-	@Cascade({CascadeType.SAVE_UPDATE})
 	public List<Person> getTeamMembers(){
 		return this.teamMembers;
-	}
-	/** 
-	 * @see     #getTeamMembers()
-	 */
-	protected void setTeamMembers(List<Person> teamMembers){
-		this.teamMembers = teamMembers;
 	}
 	
 	/** 
@@ -181,7 +171,6 @@ public class Team extends TeamOrPersonBase<Team> {
 	 * @return  a string which identifies <i>this</i> team for nomenclature
 	 */
 	@Override
-	@Transient
 	public String getNomenclaturalTitle() {
 		if (protectedNomenclaturalTitleCache == PROTECTED){
 			return this.nomenclaturalTitle;
@@ -216,9 +205,4 @@ public class Team extends TeamOrPersonBase<Team> {
 		this.nomenclaturalTitle = nomenclaturalTitle;
 		this.protectedNomenclaturalTitleCache = protectedNomenclaturalTitleCache;
 	}
-
-	
-	
-	
-
 }

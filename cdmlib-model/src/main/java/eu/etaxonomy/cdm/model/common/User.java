@@ -21,6 +21,7 @@ public class User extends CdmBase implements UserDetails {
 	 */
 	private static final long serialVersionUID = 6582191171369439163L;
 
+	@NaturalId
 	protected String username;
 	
 	/**
@@ -30,8 +31,10 @@ public class User extends CdmBase implements UserDetails {
 	
 	protected String emailAddress;
 	
+	@ManyToMany(fetch = FetchType.LAZY, targetEntity = GrantedAuthorityImpl.class)
 	protected Set <GrantedAuthority> grantedAuthorities = new HashSet<GrantedAuthority>();
 	
+	@ManyToMany(fetch = FetchType.LAZY)
 	protected Set<Group> groups = new HashSet<Group>();
 	
 	protected boolean enabled;
@@ -42,6 +45,7 @@ public class User extends CdmBase implements UserDetails {
 	
 	protected boolean accountNonLocked;	
 	
+	@Transient
 	private GrantedAuthority[] authorities;
 	
 	private void initAuthorities() {
@@ -54,7 +58,6 @@ public class User extends CdmBase implements UserDetails {
 		authorities = allAuthorities.toArray(new GrantedAuthority[allAuthorities.size()]);
 	}
 	
-	@Transient
 	public GrantedAuthority[] getAuthorities() {
 		if(authorities == null) initAuthorities();
 		return authorities;
@@ -64,7 +67,6 @@ public class User extends CdmBase implements UserDetails {
 		return password;
 	}
 
-	@NaturalId
 	public String getUsername() {
 		return username;
 	}
@@ -93,7 +95,6 @@ public class User extends CdmBase implements UserDetails {
 		this.emailAddress = emailAddress;
 	}
 
-	@ManyToMany(fetch = FetchType.LAZY, targetEntity = GrantedAuthorityImpl.class)
 	public Set<GrantedAuthority> getGrantedAuthorities() {
 		return grantedAuthorities;
 	}
@@ -132,7 +133,6 @@ public class User extends CdmBase implements UserDetails {
 		initAuthorities();
 	}
 	
-	@ManyToMany(fetch = FetchType.LAZY)
 	public Set<Group> getGroups() {
 		return groups;
 	}

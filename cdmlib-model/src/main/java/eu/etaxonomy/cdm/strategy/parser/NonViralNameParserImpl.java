@@ -34,6 +34,7 @@ import eu.etaxonomy.cdm.model.reference.Generic;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.IVolumeReference;
 import eu.etaxonomy.cdm.model.reference.Journal;
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.reference.StrictReferenceBase;
 import eu.etaxonomy.cdm.strategy.exceptions.StringNotParsableException;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
@@ -79,7 +80,7 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName>
 	
 	public NonViralName getNonViralNameInstance(String fullString, NomenclaturalCode code, Rank rank){
 		NonViralName result = null;
-		if (code == null){
+		if(code ==null) {
 			boolean isBotanicalName = anyBotanicFullNamePattern.matcher(fullString).find();
 			boolean isZoologicalName = anyZooFullNamePattern.matcher(fullString).find();;
 			boolean isBacteriologicalName = false;
@@ -97,20 +98,29 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName>
 			}else {
 				result =  NonViralName.NewInstance(rank);
 			}
-		}else if (code.equals(NomenclaturalCode.ICBN)){
-			result = BotanicalName.NewInstance(rank);
-		}else if (code.equals(NomenclaturalCode.ICZN)){
-			result = ZoologicalName.NewInstance(rank);
-		}else if (code.equals(NomenclaturalCode.ICNCP)){
-			logger.warn("ICNCP parsing not yet implemented");
-			result = CultivarPlantName.NewInstance(rank);
-		}else if (code.equals(NomenclaturalCode.ICNB)){
-			logger.warn("ICNB not yet implemented");
-			result = BacterialName.NewInstance(rank);
-		}else if (code.equals(NomenclaturalCode.ICVCN)){
-			logger.error("Viral name is not a NonViralName !!");
-		}else{
-			logger.error("Unknown Nomenclatural Code !!");
+		} else {
+			switch (code) {
+			case ICBN:
+				result = BotanicalName.NewInstance(rank);
+				break;
+			case ICZN:
+				result = ZoologicalName.NewInstance(rank);
+				break;
+			case ICNCP:
+				logger.warn("ICNCP parsing not yet implemented");
+				result = CultivarPlantName.NewInstance(rank);
+				break;
+			case ICNB:
+				logger.warn("ICNB not yet implemented");
+				result = BacterialName.NewInstance(rank);
+				break;
+			case ICVCN:
+				logger.error("Viral name is not a NonViralName !!");
+				break;
+			default:
+				// FIXME Unreachable code
+				logger.error("Unknown Nomenclatural Code !!");
+			}
 		}
 		return result;
 	}

@@ -10,11 +10,11 @@
 package eu.etaxonomy.cdm.model.taxon;
 
 import java.lang.reflect.Method;
+
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -28,6 +28,7 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Index;
 import org.hibernate.annotations.Table;
+import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 
@@ -60,7 +61,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
     "sec"
 })
 @Entity
-//@Audited
+@Audited
 @Indexed
 @Table(appliesTo="TaxonBase", indexes = { @Index(name = "taxonBaseTitleCacheIndex", columnNames = { "titleCache" }) })
 public abstract class TaxonBase extends IdentifiableEntity {
@@ -69,31 +70,37 @@ public abstract class TaxonBase extends IdentifiableEntity {
 	
 	private static Method methodTaxonNameAddTaxonBase;
 	
-	private static void initMethods()  { 
-		if (methodTaxonNameAddTaxonBase == null){
-			try {
-				methodTaxonNameAddTaxonBase = TaxonNameBase.class.getDeclaredMethod("addTaxonBase", TaxonBase.class);
-				methodTaxonNameAddTaxonBase.setAccessible(true);
-			} catch (Exception e) {
-				e.printStackTrace();
-				//TODO handle exception
+	static {
+		try {
+			methodTaxonNameAddTaxonBase = TaxonNameBase.class.getDeclaredMethod("addTaxonBase", TaxonBase.class);
+			methodTaxonNameAddTaxonBase.setAccessible(true);
+		} catch (Exception e) {
+			logger.error(e);
+			for(StackTraceElement ste : e.getStackTrace()) {
+				logger.error(ste);
 			}
 		}
 	}
 	
 	//The assignment to the Taxon or to the Synonym class is not definitive
     @XmlAttribute(name = "isDoubtful")
-	private boolean isDoubtful;
+	private boolean doubtful;
 	
     @XmlElement(name = "Name", required = true)
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
+    @ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="taxonName_fk")
+	@IndexedEmbedded
+	@Cascade(CascadeType.SAVE_UPDATE)
 	private TaxonNameBase name;
 	
 	// The concept reference
     @XmlElement(name = "Sec")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @Cascade(CascadeType.SAVE_UPDATE)
 	private ReferenceBase sec;
 
 	
@@ -119,7 +126,6 @@ public abstract class TaxonBase extends IdentifiableEntity {
 	protected TaxonBase(TaxonNameBase taxonNameBase, ReferenceBase sec){
 		super();
 		if (taxonNameBase != null){
-			initMethods(); 
 			this.invokeSetMethod(methodTaxonNameAddTaxonBase, taxonNameBase);  
 		}
 		this.setSec(sec);
@@ -160,23 +166,21 @@ public abstract class TaxonBase extends IdentifiableEntity {
 	/** 
 	 * Returns the {@link TaxonNameBase taxon name} used in <i>this</i> (abstract) taxon.
 	 */
-	@ManyToOne
-	@JoinColumn(name="taxonName_fk")
-	@Cascade(CascadeType.SAVE_UPDATE)
-	@IndexedEmbedded
 	public TaxonNameBase getName(){
 		return this.name;
 	}
-	@Deprecated //for hibernate use only, use taxon.addDescription() instead
-	private void setName(TaxonNameBase newName){
-		this.name = newName;
+	
+	/* 
+	 * @see #getName
+	 */
+	protected void setName(TaxonNameBase name) {
+		this.name = name;
 	}
 	
 	/** 
 	 * Returns the {@link eu.etaxonomy.cdm.model.name.HomotypicalGroup homotypical group} of the
 	 * {@link eu.etaxonomy.cdm.model.name.TaxonNameBase taxon name} used in <i>this</i> (abstract) taxon.
 	 */
-	@Transient
 	public HomotypicalGroup getHomotypicGroup(){
 		if (this.getName() == null){
 			return null;
@@ -193,13 +197,13 @@ public abstract class TaxonBase extends IdentifiableEntity {
 	 * still change in the course of taxonomical working process. 
 	 */
 	public boolean isDoubtful(){
-		return this.isDoubtful;
+		return this.doubtful;
 	}
 	/**
 	 * @see  #isDoubtful()
 	 */
-	public void setDoubtful(boolean isDoubtful){
-		this.isDoubtful = isDoubtful;
+	public void setDoubtful(boolean doubtful){
+		this.doubtful = doubtful;
 	}
 
 	/** 
@@ -207,8 +211,6 @@ public abstract class TaxonBase extends IdentifiableEntity {
 	 * This is the reference or the treatment using the {@link TaxonNameBase taxon name}
 	 * in <i>this</i> (abstract) taxon.
 	 */
-	@ManyToOne(fetch = FetchType.LAZY)
-	@Cascade(CascadeType.SAVE_UPDATE)
 	public ReferenceBase getSec() {
 		return sec;
 	}
@@ -225,8 +227,8 @@ public abstract class TaxonBase extends IdentifiableEntity {
 	 * might be saved (true) or not (false). An (abstract) taxon is meaningful
 	 * as long as both its {@link #getName() taxon name} and its {@link #getSec() reference}
 	 * exist (are not "null").
+	 * FIXME This should be part of a more generic validation architecture
 	 */
-	@Transient
 	public boolean isSaveable(){
 		if (  (this.getName() == null)  ||  (this.getSec() == null)  ){
 			return false;

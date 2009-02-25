@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.model.common;
 
 
 import org.apache.log4j.Logger;
+import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.media.ReferencedMedia;
 
@@ -27,7 +28,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Figure")
 @Entity
-//@Audited
+@Audited
 public class Figure extends ReferencedMedia {
 	private static final long serialVersionUID = -1712467725277327725L;
 	@SuppressWarnings("unused")

@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.model.reference;
 
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -26,6 +27,7 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
@@ -53,12 +55,11 @@ import eu.etaxonomy.cdm.strategy.cache.reference.ArticleDefaultCacheStrategy;
 		"series",
 		"volume",
 		"pages",
-		"inJournal",
-		"nomRefBase"
+		"inJournal"
 })
 @XmlRootElement(name = "Article")
 @Entity
-//@Audited
+@Audited
 public class Article extends StrictReferenceBase implements INomenclaturalReference, IVolumeReference, Cloneable {
 	private static final long serialVersionUID = -1528079480114388117L;
 	private static final Logger logger = Logger.getLogger(Article.class);
@@ -75,10 +76,12 @@ public class Article extends StrictReferenceBase implements INomenclaturalRefere
     @XmlElement(name = "InJournal")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @Cascade(CascadeType.SAVE_UPDATE)
 	private Journal inJournal;
 	
-    //@XmlTransient
-    @XmlElementRef(name = "NomenclaturalReferenceBase")
+    @XmlTransient
+    @Transient
 	private NomenclaturalReferenceHelper nomRefBase = NomenclaturalReferenceHelper.NewInstance(this);
 
 
@@ -150,11 +153,10 @@ public class Article extends StrictReferenceBase implements INomenclaturalRefere
 	 * @return  the journal
 	 * @see 	Journal
 	 */
-	@ManyToOne
-	@Cascade({CascadeType.SAVE_UPDATE})
 	public Journal getInJournal(){
 		return this.inJournal;
 	}
+	
 	/**
 	 * @see #getInJournal()
 	 */
@@ -225,7 +227,6 @@ public class Article extends StrictReferenceBase implements INomenclaturalRefere
 	 * @see  StrictReferenceBase#getCitation()
 	 */
 	@Override
-	@Transient
 	public String getCitation(){
 		return nomRefBase.getCitation();
 	}
@@ -243,7 +244,6 @@ public class Article extends StrictReferenceBase implements INomenclaturalRefere
 	 * 
 	 * @see  					#getCitation()
 	 */
-	@Transient
 	public String getNomenclaturalCitation(String microReference) {
 		return nomRefBase.getNomenclaturalCitation(microReference);
 	}

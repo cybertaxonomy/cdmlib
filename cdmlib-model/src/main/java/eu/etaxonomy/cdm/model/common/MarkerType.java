@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.model.common;
 
 
 import org.apache.log4j.Logger;
+import org.hibernate.envers.Audited;
 
 import java.util.*;
 
@@ -29,7 +30,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "MarkerType")
 @Entity
-//@Audited
+@Audited
 public class MarkerType extends DefinedTermBase<MarkerType> {
 	private static final long serialVersionUID = -9117424749919907396L;
 	public static final Logger logger = Logger.getLogger(MarkerType.class);

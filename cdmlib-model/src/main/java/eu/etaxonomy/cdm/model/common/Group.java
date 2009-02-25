@@ -20,22 +20,19 @@ public class Group extends CdmBase {
 	 */
 	private static final long serialVersionUID = 7216686200093054648L;
 	
+	@NaturalId
 	protected String name;
 	
+	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "groups")
 	protected Set<User> members = new HashSet<User>();
 	
+	@ManyToMany(fetch = FetchType.LAZY, targetEntity = GrantedAuthorityImpl.class)
 	protected Set <GrantedAuthority> grantedAuthorities = new HashSet<GrantedAuthority>();
 	
-	@ManyToMany(fetch = FetchType.LAZY, targetEntity = GrantedAuthorityImpl.class)
 	public Set<GrantedAuthority> getGrantedAuthorities() {
 		return grantedAuthorities;
 	}
-
-	public void setGrantedAuthorities(Set<GrantedAuthority> grantedAuthorities) {
-		this.grantedAuthorities = grantedAuthorities;
-	}
 	
-	@NaturalId
 	public void setName(String name) {
 		this.name = name;
 	}
@@ -44,13 +41,8 @@ public class Group extends CdmBase {
 		return name;
 	}
 	
-	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "groups")
 	public Set<User> getMembers() {
 		return members;
-	}
-	
-	protected void setMembers(Set<User> members) {
-		this.members = members;
 	}
 
 	public boolean addMember(User user) {

@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.model.reference;
 
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -23,6 +24,7 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.envers.Audited;
 
 /**
  * This class represents isolated parts (usually papers or abstracts) within
@@ -41,7 +43,7 @@ import org.hibernate.annotations.CascadeType;
 })
 @XmlRootElement(name = "InProceedings")
 @Entity
-//@Audited
+@Audited
 public class InProceedings extends SectionBase {
 
 
@@ -55,6 +57,8 @@ public class InProceedings extends SectionBase {
 	@XmlElement(name = "InProceedings")
 	@XmlIDREF
 	@XmlSchemaType(name = "InProceedings")
+	@ManyToOne(fetch = FetchType.LAZY)
+	@Cascade(CascadeType.SAVE_UPDATE)
 	private Proceedings inProceedings;
 
 	/** 
@@ -89,8 +93,6 @@ public class InProceedings extends SectionBase {
 	 * 			published
 	 * @see 	Proceedings
 	 */
-	@ManyToOne
-	@Cascade({CascadeType.SAVE_UPDATE})
 	public Proceedings getInProceedings(){
 		return this.inProceedings;
 	}

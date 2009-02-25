@@ -9,6 +9,8 @@
 
 package eu.etaxonomy.cdm.jaxb;
 
+import java.util.UUID;
+
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
 import org.apache.log4j.Logger;
@@ -20,27 +22,29 @@ import org.apache.log4j.Logger;
  */
 
 
-public class UUIDAdapter extends XmlAdapter<String, String> {
+public class UUIDAdapter extends XmlAdapter<String, UUID> {
 	private static final Logger logger = Logger.getLogger(UUIDAdapter.class);
 	
 	public static String UUID_URN_PREFIX = "urn-uuid-";
 
 	@Override
-	public String marshal(String uuidStr) throws Exception {
+	public String marshal(UUID uuid) throws Exception {
 		if (logger.isDebugEnabled()){logger.debug("marshal");}
-		return UUIDAdapter.UUID_URN_PREFIX + uuidStr;
+		if(uuid != null) {
+			return UUIDAdapter.UUID_URN_PREFIX + uuid.toString();
+		} else {
+			return null;
+		}
 	}
 
 	@Override
-	public String unmarshal(String string) throws Exception {
+	public UUID unmarshal(String string) throws Exception {
 		if (logger.isDebugEnabled()){logger.debug("unmarshal");}
 		if(string.startsWith(UUIDAdapter.UUID_URN_PREFIX)) {
 			String uuidPart = string.substring(UUIDAdapter.UUID_URN_PREFIX.length());
-			return uuidPart;
+			return UUID.fromString(uuidPart);
 		} else {
 			throw new Exception("uuid attribute should start with " + UUIDAdapter.UUID_URN_PREFIX);
-		}
-		
+		}	
 	}
-
 }

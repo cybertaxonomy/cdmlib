@@ -39,8 +39,8 @@ public abstract class TermBase extends VersionableEntity {
 	
 	@XmlElementWrapper(name = "Representations")
 	@XmlElement(name = "Representation")
-    @XmlIDREF
-    @XmlSchemaType(name = "IDREF")
+    @OneToMany(fetch=FetchType.LAZY)
+	@Cascade( { CascadeType.SAVE_UPDATE, CascadeType.DELETE })
 	private Set<Representation> representations = new HashSet<Representation>();
 	
 	public TermBase(){
@@ -51,14 +51,8 @@ public abstract class TermBase extends VersionableEntity {
 		this.addRepresentation(new Representation(term, label, labelAbbrev, Language.DEFAULT()) );
 	}
 
-	@OneToMany(fetch=FetchType.LAZY)
-	@Cascade( { CascadeType.SAVE_UPDATE, CascadeType.DELETE })
 	public Set<Representation> getRepresentations() {
 		return this.representations;
-	}
-
-	public void setRepresentations(Set<Representation> representations) {
-		this.representations = representations;
 	}
 
 	public void addRepresentation(Representation representation) {
@@ -69,7 +63,6 @@ public abstract class TermBase extends VersionableEntity {
 		this.representations.remove(representation);
 	}
 
-	@Transient
 	public Representation getRepresentation(Language lang) {
 		for (Representation repr : representations){
 			Language reprLanguage = repr.getLanguage();
@@ -85,7 +78,6 @@ public abstract class TermBase extends VersionableEntity {
 	 * @param language
 	 * @return
 	 */
-	@Transient
 	public Representation getPreferredRepresentation(Language language) {
 		Representation repr = getRepresentation(language); 
 		if(repr == null){
@@ -110,7 +102,6 @@ public abstract class TermBase extends VersionableEntity {
 	 * @param languages
 	 * @return
 	 */
-	@Transient
 	public Representation getPreferredRepresentation(List<Language> languages) {
 		Representation repr = null;
 		if(languages != null){
@@ -138,7 +129,6 @@ public abstract class TermBase extends VersionableEntity {
 		this.uri = uri;
 	}
 
-	@Transient
 	public String getLabel() {
 		if(getLabel(Language.DEFAULT())!=null){
 			Representation repr = getRepresentation(Language.DEFAULT());
@@ -151,19 +141,16 @@ public abstract class TermBase extends VersionableEntity {
 		return super.getUuid().toString();
 	}
 	
-	@Transient
 	public String getLabel(Language lang) {
 		Representation repr = this.getRepresentation(lang);
 		return (repr == null) ? null : repr.getLabel();
 	}	
 	
-	@Transient
 	public void setLabel(String label){
 		Language lang = Language.DEFAULT();
 		setLabel(label, lang);
 	}
 
-	@Transient
 	public void setLabel(String label, Language language){
 		if (language != null){
 			Representation repr = getRepresentation(language);
@@ -176,13 +163,10 @@ public abstract class TermBase extends VersionableEntity {
 		}
 	}
 
-
-	@Transient
 	public String getDescription() {
 		return this.getDescription(Language.DEFAULT());
 	}
 
-	@Transient
 	public String getDescription(Language lang) {
 		Representation repr = this.getRepresentation(lang);
 		return (repr == null) ? null :repr.getDescription();

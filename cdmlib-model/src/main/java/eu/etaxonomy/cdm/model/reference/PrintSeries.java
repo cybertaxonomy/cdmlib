@@ -18,6 +18,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
+import org.hibernate.envers.Audited;
 
 /**
  * This class represents collections of {@link PrintedUnitBase printed published references} which
@@ -36,7 +37,7 @@ import org.apache.log4j.Logger;
 })
 @XmlRootElement(name = "PrintSeries")
 @Entity
-//@Audited
+@Audited
 public class PrintSeries extends PublicationBase implements Cloneable {
 	private static final Logger logger = Logger.getLogger(PrintSeries.class);
 	

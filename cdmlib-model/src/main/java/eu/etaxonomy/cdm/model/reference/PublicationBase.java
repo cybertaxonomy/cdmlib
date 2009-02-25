@@ -17,6 +17,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
+import org.hibernate.envers.Audited;
 
 /**
  * This (abstract) class represents all different kind of published {@link StrictReferenceBase references}
@@ -34,7 +35,7 @@ import org.apache.log4j.Logger;
 })
 @XmlRootElement(name = "PublicationBase")
 @Entity
-//@Audited
+@Audited
 public abstract class PublicationBase extends StrictReferenceBase {
 	
 	static Logger logger = Logger.getLogger(PublicationBase.class);

@@ -11,12 +11,12 @@ package eu.etaxonomy.cdm.model.reference;
 
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
@@ -26,6 +26,7 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
@@ -43,12 +44,11 @@ import eu.etaxonomy.cdm.strategy.cache.reference.BookSectionDefaultCacheStrategy
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "BookSection", propOrder = {
-    "inBook",
-    "nomRefBase"
+    "inBook"
 })
 @XmlRootElement(name = "BookSection")
 @Entity
-//@Audited
+@Audited
 public class BookSection extends SectionBase implements INomenclaturalReference, Cloneable {
 	
 	/**
@@ -61,10 +61,12 @@ public class BookSection extends SectionBase implements INomenclaturalReference,
     @XmlElement(name = "BookSection")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @Cascade(CascadeType.SAVE_UPDATE)
 	private Book inBook;
 	
-    //@XmlTransient
-    @XmlElementRef(name = "NomenclaturalReferenceBase")
+    @XmlTransient
+    @Transient
 	private NomenclaturalReferenceHelper nomRefBase = NomenclaturalReferenceHelper.NewInstance(this);
 
 	
@@ -121,8 +123,6 @@ public class BookSection extends SectionBase implements INomenclaturalReference,
 	 * @return  the book containing <i>this</i> book section
 	 * @see 	Book
 	 */
-	@ManyToOne
-	@Cascade({CascadeType.SAVE_UPDATE})
 	public Book getInBook(){
 		return this.inBook;
 	}
@@ -146,7 +146,6 @@ public class BookSection extends SectionBase implements INomenclaturalReference,
 	 * @see  StrictReferenceBase#getCitation()
 	 */
 	@Override
-	@Transient
 	public String getCitation(){
 		return nomRefBase.getCitation();
 	}
@@ -163,7 +162,6 @@ public class BookSection extends SectionBase implements INomenclaturalReference,
 	 * 							nomenclatural citation
 	 * @see  					#getCitation()
 	 */
-	@Transient
 	public String getNomenclaturalCitation(String microReference) {
 		return nomRefBase.getNomenclaturalCitation(microReference);
 	}
@@ -180,7 +178,6 @@ public class BookSection extends SectionBase implements INomenclaturalReference,
 	 * @see 	StrictReferenceBase#getDatePublished()
 	 **/
 	 @Override
-	 @Transient 
 	 // This method overrides StrictReferenceBase.getDatePublished() only to have 
 	 // a specific Javadoc for BookSection.getDatePublished().
 	public TimePeriod getDatePublished(){

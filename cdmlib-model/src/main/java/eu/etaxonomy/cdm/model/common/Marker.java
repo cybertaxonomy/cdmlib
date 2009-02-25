@@ -9,18 +9,22 @@
 
 package eu.etaxonomy.cdm.model.common;
 
-import org.apache.log4j.Logger;
-import org.hibernate.annotations.Any;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
-
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
+
+import org.apache.log4j.Logger;
+import org.hibernate.annotations.Any;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 
 /**
  * This class aims to make available some "flags" for identifiable entities in a
@@ -33,7 +37,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Marker")
 @Entity
-//@Audited
+@Audited
 public class Marker extends VersionableEntity implements Cloneable{
 	private static final long serialVersionUID = -7474489691871404610L;
 	@SuppressWarnings("unused")
@@ -45,11 +49,18 @@ public class Marker extends VersionableEntity implements Cloneable{
     @XmlElement(name = "MarkerType")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
+    @ManyToOne(fetch = FetchType.LAZY)
 	private MarkerType markerType;
     
     @XmlElement(name = "MarkedObject")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
+    @Any(metaDef = "CdmBase",
+		     fetch=FetchType.LAZY, 
+		     metaColumn = @Column(name="markedObj_type"),
+		     optional = false)
+	@JoinColumn(name = "markedObj_id")
+	@NotAudited
 	private AnnotatableEntity markedObj;
 	
 	/**
@@ -88,24 +99,16 @@ public class Marker extends VersionableEntity implements Cloneable{
 	/**
 	 * @return
 	 */
-	@Any(metaDef = "CdmBase",
-		     fetch=FetchType.LAZY, 
-		     metaColumn = @Column(name="markedObj_type"),
-		     optional = false)
-	@JoinColumn(name = "markedObj_id")
-//	@NotAudited
 	public AnnotatableEntity getMarkedObj() {
 		return markedObj;
 	}
-	protected void setMarkedObj(AnnotatableEntity newMarkedObject) {
+	public void setMarkedObj(AnnotatableEntity newMarkedObject) {
 		this.markedObj = newMarkedObject;
 	}
 
 	/**
 	 * @return
 	 */
-	@ManyToOne(fetch = FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE})
 	public MarkerType getMarkerType(){
 		return this.markerType;
 	}

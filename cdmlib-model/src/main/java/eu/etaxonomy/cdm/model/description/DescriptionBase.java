@@ -20,7 +20,6 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -33,8 +32,8 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
-import org.hibernate.search.annotations.IndexedEmbedded;
 
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
@@ -63,10 +62,10 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
     "describedSpecimenOrObservations",
     "descriptionSources",
     "descriptiveSystem",
-    "descriptionElements"
+    "elements"
 })
 @Entity
-//@Audited
+@Audited
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 @Indexed
 public abstract class DescriptionBase extends IdentifiableEntity {
@@ -76,15 +75,22 @@ public abstract class DescriptionBase extends IdentifiableEntity {
 	@XmlElementWrapper(name = "DescribedSpecimenOrObservations")
 	@XmlElement(name = "DescribedSpecimenOrObservation")
 	@XmlIDREF
-	@XmlSchemaType(name = "IDREF")
+	@XmlSchemaType(name="IDREF")
+	@ManyToMany(fetch = FetchType.LAZY)
 	private Set<SpecimenOrObservationBase> describedSpecimenOrObservations = new HashSet<SpecimenOrObservationBase>();
 	
 	@XmlElementWrapper(name = "DescriptionSources")
 	@XmlElement(name = "DescriptionSource")
+	@XmlIDREF
+	@XmlSchemaType(name="IDREF")
+	@ManyToMany(fetch = FetchType.LAZY)  //FIXME what is the difference between this and IdentifiableEntity.sources
 	private Set<ReferenceBase> descriptionSources = new HashSet<ReferenceBase>();
 	
 	@XmlElementWrapper(name = "DescriptiveSystem")
 	@XmlElement(name = "Feature")
+	@ManyToMany(fetch = FetchType.LAZY)  //FIXME
+    @Cascade( { CascadeType.SAVE_UPDATE })
+    @JoinTable(name = "DescriptionBase_Feature")
 	private Set<Feature> descriptiveSystem = new HashSet<Feature>();
 	
 	@XmlElementWrapper(name = "DescriptionElements")
@@ -97,7 +103,9 @@ public abstract class DescriptionBase extends IdentifiableEntity {
         @XmlElement(name = "TaxonInteraction", namespace = "http://etaxonomy.eu/cdm/model/description/1.0", type = TaxonInteraction.class),
         @XmlElement(name = "TextData", namespace = "http://etaxonomy.eu/cdm/model/description/1.0", type = TextData.class)
     })
-	private Set<DescriptionElementBase> descriptionElements = new HashSet<DescriptionElementBase>();
+    @OneToMany(fetch=FetchType.LAZY, mappedBy = "inDescription")
+	@Cascade( { CascadeType.SAVE_UPDATE })
+	private Set<DescriptionElementBase> elements = new HashSet<DescriptionElementBase>();
 
 	/**
 	 * Returns the set of {@link SpecimenOrObservationBase specimens or observations} involved in
@@ -108,18 +116,8 @@ public abstract class DescriptionBase extends IdentifiableEntity {
 	 * @see    #addDescribedSpecimenOrObservations(SpecimenOrObservationBase)
 	 * @see    #removeDescribedSpecimenOrObservations(SpecimenOrObservationBase)
 	 */
-	@ManyToMany(fetch = FetchType.LAZY)
 	public Set<SpecimenOrObservationBase> getDescribedSpecimenOrObservations() {
 		return describedSpecimenOrObservations;
-	}
-
-	/** 
-	 * @see    #getDescribedSpecimenOrObservations()
-	 * @see    #addDescribedSpecimenOrObservations(SpecimenOrObservationBase)
-	 */
-	public void setDescribedSpecimenOrObservations(
-			Set<SpecimenOrObservationBase> describedSpecimenOrObservations) {
-		this.describedSpecimenOrObservations = describedSpecimenOrObservations;
 	}
 	
 	/**
@@ -163,18 +161,8 @@ public abstract class DescriptionBase extends IdentifiableEntity {
 	 * @see    #addDescriptionSource(ReferenceBase)
 	 * @see    #removeDescriptionSource(ReferenceBase)
 	 */
-	@ManyToMany(fetch = FetchType.LAZY)  //FIXME
-	@Cascade( { CascadeType.SAVE_UPDATE })
 	public Set<ReferenceBase> getDescriptionSources() {
 		return this.descriptionSources;
-	}
-	
-	/** 
-	 * @see    #getDescriptionSources()
-	 * @see    #addDescriptionSource(ReferenceBase)
-	 */
-	protected void setDescriptionSources(Set<ReferenceBase> descriptionSources) {
-		this.descriptionSources = descriptionSources;
 	}
 	
 	/**
@@ -254,21 +242,8 @@ public abstract class DescriptionBase extends IdentifiableEntity {
 	 * @see    #addElement(DescriptionElementBase)
 	 * @see    #removeElement(DescriptionElementBase)
 	 */
-	@OneToMany(fetch=FetchType.LAZY, mappedBy = "inDescription")
-	@Cascade( { CascadeType.SAVE_UPDATE })
 	public Set<DescriptionElementBase> getElements() {
-		return this.descriptionElements;
-	}
-
-	/** 
-	 * @see    #getElements()
-	 * @see    #addElement(DescriptionElementBase)
-	 */
-	protected void setElements(Set<DescriptionElementBase> element) {
-		this.descriptionElements = element;
-		if (element == null){
-			this.setElements(new HashSet<DescriptionElementBase>());
-		}
+		return this.elements;
 	}
 
 	/**
@@ -281,7 +256,7 @@ public abstract class DescriptionBase extends IdentifiableEntity {
 	 */
 	public void addElement(DescriptionElementBase element) {
 		element.setInDescription(this);
-		this.descriptionElements.add(element);
+		this.elements.add(element);
 	}
 
 	/** 
@@ -293,7 +268,7 @@ public abstract class DescriptionBase extends IdentifiableEntity {
 	 * @see     		#addElement(DescriptionElementBase)
 	 */
 	public void removeElement(DescriptionElementBase element) {
-		this.descriptionElements.remove(element);
+		this.elements.remove(element);
 		element.setInDescription(null);
 	}
 	
@@ -306,7 +281,7 @@ public abstract class DescriptionBase extends IdentifiableEntity {
 	 * @return	the number of elements of the elementary description data set
 	 */
 	public int size(){
-		return this.descriptionElements.size();
+		return this.elements.size();
 	}
 	
 	/**

@@ -14,17 +14,17 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.FetchType;
-import javax.persistence.ManyToMany;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.OneToMany;
-import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
@@ -33,9 +33,10 @@ import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
 import org.hibernate.search.annotations.Fields;
 
+import eu.etaxonomy.cdm.jaxb.FormattedTextAdapter;
+import eu.etaxonomy.cdm.jaxb.LSIDAdapter;
 import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.name.NonViralName;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 
 /**
  * Superclass for the primary CDM classes that can be referenced from outside via LSIDs and contain a simple generated title string as a label for human reading.
@@ -65,14 +66,22 @@ implements ISourceable, IIdentifiableEntity, Comparable<IdentifiableEntity> {
 	private static final Logger logger = Logger.getLogger(IdentifiableEntity.class);
 
 	@XmlTransient
-	public final boolean PROTECTED = true;
+	public static final boolean PROTECTED = true;
 	@XmlTransient
-	public final boolean NOT_PROTECTED = false;
+	public static final boolean NOT_PROTECTED = false;
 	
-	@XmlElement(name = "LSID")
-	private String lsid;
+	@XmlElement(name = "LSID", type = String.class)
+	@XmlJavaTypeAdapter(LSIDAdapter.class)
+	@Embedded
+	private LSID lsid;
 	
 	@XmlElement(name = "TitleCache", required = true)
+	@XmlJavaTypeAdapter(FormattedTextAdapter.class)
+	@Column(length=255, name="titleCache")
+	@Fields({@Field(index = org.hibernate.search.annotations.Index.TOKENIZED),
+	     	 @Field(name = "titleCache_forSort", index = org.hibernate.search.annotations.Index.UN_TOKENIZED)
+	})
+	@FieldBridge(impl=StripHtmlBridge.class)
 	private String titleCache;
 	
 	//if true titleCache will not be automatically generated/updated
@@ -81,28 +90,44 @@ implements ISourceable, IIdentifiableEntity, Comparable<IdentifiableEntity> {
 	
     @XmlElementWrapper(name = "Rights")
     @XmlElement(name = "Rights")
-	private Set<Rights> rights = getNewRightsSet();
+    @OneToMany(fetch = FetchType.LAZY)
+	@Cascade({CascadeType.SAVE_UPDATE})
+	private Set<Rights> rights = new HashSet<Rights>();
 	
     @XmlElementWrapper(name = "Extensions")
     @XmlElement(name = "Extension")
-	private Set<Extension> extensions = getNewExtensionSet();
+    @OneToMany(fetch = FetchType.LAZY)
+	@Cascade({CascadeType.SAVE_UPDATE})
+	private Set<Extension> extensions = new HashSet<Extension>();
 	
     @XmlElementWrapper(name = "Sources")
     @XmlElement(name = "OriginalSource")
-	private Set<OriginalSource> sources = getNewOriginalSourcesSet();
+    @OneToMany(fetch = FetchType.LAZY)		
+	@Cascade({CascadeType.SAVE_UPDATE})
+	private Set<OriginalSource> sources = new HashSet<OriginalSource>();
 
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#getLsid()
 	 */
-	public String getLsid(){
+	public LSID getLsid(){
 		return this.lsid;
 	}
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#setLsid(java.lang.String)
 	 */
-	public void setLsid(String lsid){
+	public void setLsid(LSID lsid){
 		this.lsid = lsid;
+	}
+
+	/**
+	 * By default, we expect most cdm objects to be abstract things 
+	 * i.e. unable to return a data representation.
+	 * 
+	 * Specific subclasses (e.g. Sequence) can override if necessary.
+	 */
+	public byte[] getData() {
+		return null;
 	}
 
 	/* (non-Javadoc)
@@ -113,7 +138,6 @@ implements ISourceable, IIdentifiableEntity, Comparable<IdentifiableEntity> {
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#getTitleCache()
 	 */
-    @Transient
 	public String getTitleCache(){
 		if (protectedTitleCache){
 			return this.titleCache;			
@@ -131,26 +155,6 @@ implements ISourceable, IIdentifiableEntity, Comparable<IdentifiableEntity> {
 		setTitleCache(titleCache, PROTECTED);
 	}
 	
-	//@Index(name="titleCacheIndex")
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#getTitleCache()
-	 */
-	@Column(length=255, name="titleCache")
-	@Fields({@Field(index = org.hibernate.search.annotations.Index.TOKENIZED),
-	     	 @Field(name = "titleCache_forSort", index = org.hibernate.search.annotations.Index.UN_TOKENIZED)
-	})
-	@FieldBridge(impl=StripHtmlBridge.class)
-	@Deprecated //for hibernate use only
-	protected String getPersistentTitleCache(){
-		return getTitleCache();
-	}	
-	@Deprecated //for hibernate use only
-	protected void setPersistentTitleCache(String titleCache){
-		this.titleCache = titleCache;
-	}
-	
-	
-	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#setTitleCache(java.lang.String, boolean)
 	 */
@@ -166,18 +170,11 @@ implements ISourceable, IIdentifiableEntity, Comparable<IdentifiableEntity> {
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#getRights()
-	 * FIXME do we really mean ManyToMany i.e. that objects can share 
-	 * rights statements? This should be made explict
 	 */
-	@ManyToMany(fetch = FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE})
-	public Set<Rights> getRights(){
-		return this.rights;
+	public Set<Rights> getRights() {
+		return this.rights;		
 	}
-
-	protected void setRights(Set<Rights> rights) {
-		this.rights = rights;
-	}
+	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#addRights(eu.etaxonomy.cdm.model.media.Rights)
 	 */
@@ -194,14 +191,10 @@ implements ISourceable, IIdentifiableEntity, Comparable<IdentifiableEntity> {
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#getExtensions()
 	 */
-	@OneToMany(fetch = FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<Extension> getExtensions(){
 		return this.extensions;
 	}
-	protected void setExtensions(Set<Extension> extensions) {
-		this.extensions = extensions;
-	}
+	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#addExtension(eu.etaxonomy.cdm.model.common.Extension)
 	 */
@@ -233,13 +226,8 @@ implements ISourceable, IIdentifiableEntity, Comparable<IdentifiableEntity> {
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#getSources()
 	 */
-	@OneToMany(fetch = FetchType.LAZY)		
-	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<OriginalSource> getSources() {
 		return this.sources;		
-	}
-	protected void setSources(Set<OriginalSource> sources) {
-		this.sources = sources;		
 	}
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#addSource(eu.etaxonomy.cdm.model.common.OriginalSource)
@@ -314,25 +302,24 @@ implements ISourceable, IIdentifiableEntity, Comparable<IdentifiableEntity> {
 		IdentifiableEntity result = (IdentifiableEntity)super.clone();
 		
 		//Extensions
-		Set<Extension> newExtensions = getNewExtensionSet();
+		result.extensions = new HashSet<Extension>();
 		for (Extension extension : this.extensions ){
-			Extension newExtension = extension.clone(this);
-			newExtensions.add(newExtension);
+			Extension newExtension = (Extension)extension.clone();
+			result.addExtension(newExtension);
 		}
-		result.setExtensions(newExtensions);
 		
 		//OriginalSources
-		Set<OriginalSource> newOriginalSources = getNewOriginalSourcesSet();
+		result.sources = new HashSet<OriginalSource>();
 		for (OriginalSource originalSource : this.sources){
-			OriginalSource newSource = originalSource.clone(this);
-			newOriginalSources.add(newSource);	
+			OriginalSource newSource = (OriginalSource)originalSource.clone();
+			result.addSource(newSource);
 		}
-		result.setSources(newOriginalSources);
 		
 		//Rights
-		Set<Rights> rights = getNewRightsSet();
-		rights.addAll(this.rights);
-		result.setRights(rights);
+		result.rights = new HashSet<Rights>();
+        for(Rights rights : this.rights) {
+        	result.addRights(rights);
+        }
 		
 		//result.setLsid(lsid);
 		//result.setTitleCache(titleCache); 
@@ -346,20 +333,4 @@ implements ISourceable, IIdentifiableEntity, Comparable<IdentifiableEntity> {
 		}
 		return result;
 	}
-	
-	@Transient
-	private Set<Extension> getNewExtensionSet(){
-		return new HashSet<Extension>();
-	}
-	
-	@Transient
-	private Set<OriginalSource> getNewOriginalSourcesSet(){
-		return new HashSet<OriginalSource>();
-	}
-	
-	@Transient
-	private Set<Rights> getNewRightsSet(){
-		return new HashSet<Rights>();
-	}
-
 }

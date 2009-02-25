@@ -126,9 +126,8 @@ public class TextDataTest {
 	public void testSetMultilanguageText() {
 		MultilanguageText multilanguageText = MultilanguageText.NewInstance();
 		assertFalse(multilanguageText.equals(textData1.getMultilanguageText()));
-		textData1.setMultilanguageText(multilanguageText);
-		assertSame(multilanguageText, textData1.getMultilanguageText());
-		textData1.setMultilanguageText(null);
+		
+		textData1.getMultilanguageText().clear();
 		assertNotNull(textData1.getMultilanguageText());
 		assertEquals(0, textData1.getMultilanguageText().size());
 	}

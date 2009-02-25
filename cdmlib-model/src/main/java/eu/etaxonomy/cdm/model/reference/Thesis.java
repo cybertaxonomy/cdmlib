@@ -16,13 +16,17 @@ import javax.persistence.ManyToOne;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.envers.Audited;
 
+import sun.management.resources.agent;
 import eu.etaxonomy.cdm.model.agent.Institution;
 
 /**
@@ -44,12 +48,16 @@ import eu.etaxonomy.cdm.model.agent.Institution;
 })
 @XmlRootElement(name = "Thesis")
 @Entity
-//@Audited
+@Audited
 public class Thesis extends PublicationBase implements Cloneable{
 	
 	private static final Logger logger = Logger.getLogger(Thesis.class);
 	
 	@XmlElement(name = "School")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
+	@ManyToOne(fetch = FetchType.LAZY)
+	@Cascade(CascadeType.SAVE_UPDATE)
 	private Institution school;
 
 	/** 
@@ -82,8 +90,6 @@ public class Thesis extends PublicationBase implements Cloneable{
 	 * @return  the high school institution
 	 * @see 	agent.Institution
 	 */
-	@ManyToOne(fetch = FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE})
 	public Institution getSchool(){
 		return this.school;
 	}

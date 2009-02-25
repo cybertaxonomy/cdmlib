@@ -15,7 +15,6 @@ import java.util.Set;
 import javax.persistence.FetchType;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.OneToMany;
-import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -45,11 +44,15 @@ public abstract class AnnotatableEntity extends VersionableEntity {
 
 	@XmlElementWrapper(name = "Markers")
 	@XmlElement(name = "Marker")
-	protected Set<Marker> markers = getNewMarkerSet();
+	@OneToMany(fetch=FetchType.LAZY)
+	@Cascade({CascadeType.SAVE_UPDATE})
+	protected Set<Marker> markers = new HashSet<Marker>();
 	
 	@XmlElementWrapper(name = "Annotations")
 	@XmlElement(name = "Annotation")
-	protected Set<Annotation> annotations = getNewAnnotationSet();
+	@OneToMany(fetch=FetchType.LAZY)
+	@Cascade({CascadeType.SAVE_UPDATE})
+	protected Set<Annotation> annotations = new HashSet<Annotation>();
 	
 	protected AnnotatableEntity() {
 		super();
@@ -58,8 +61,6 @@ public abstract class AnnotatableEntity extends VersionableEntity {
 //*************** MARKER **********************************************
 	
 	
-	@OneToMany(fetch=FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<Marker> getMarkers(){
 		return this.markers;
 	}
@@ -72,14 +73,9 @@ public abstract class AnnotatableEntity extends VersionableEntity {
 	public void removeMarker(Marker marker){
 		marker.setMarkedObj(null);
 	}
-	protected void setMarkers(Set<Marker> markers) {
-		this.markers = markers;
-	}
 
 //*************** ANNOTATIONS **********************************************
 	
-	@OneToMany(fetch=FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE})
 	public Set<Annotation> getAnnotations(){
 		return this.annotations;
 	}
@@ -95,10 +91,6 @@ public abstract class AnnotatableEntity extends VersionableEntity {
 		annotation.setAnnotatedObj(null);
 	}
 	
-	protected void setAnnotations(Set<Annotation> annotations) {
-		this.annotations = annotations;
-	}
-	
 //********************** CLONE *****************************************/
 
 	/* (non-Javadoc)
@@ -109,34 +101,20 @@ public abstract class AnnotatableEntity extends VersionableEntity {
 		AnnotatableEntity result = (AnnotatableEntity)super.clone();
 		
 		//Annotations
-		Set<Annotation> newAnnotations = getNewAnnotationSet();
+		result.annotations = new HashSet<Annotation>();
 		for (Annotation annotation : this.annotations ){
-			Annotation newExtension = annotation.clone(this);
-			newAnnotations.add(newExtension);
+			Annotation newAnnotation = (Annotation)annotation.clone();
+			result.addAnnotation(newAnnotation);
 		}
-		result.setAnnotations(newAnnotations);
-		
 		
 		//Markers
-		Set<Marker> newMarkers = getNewMarkerSet();
+		result.markers = new HashSet<Marker>();
 		for (Marker marker : this.markers ){
-			Marker newMarker = marker.clone(this);
-			newMarkers.add(newMarker);
+			Marker newMarker = (Marker)marker.clone();
+			result.addMarker(newMarker);
 		}
-		result.setMarkers(newMarkers);
 		
 		//no changes to: -
 		return result;
-	}
-	
-	@Transient
-	private Set<Annotation> getNewAnnotationSet(){
-		return new HashSet<Annotation>();
-	}
-	
-	@Transient
-	private Set<Marker> getNewMarkerSet(){
-		return new HashSet<Marker>();
-	}
-	
+	}	
 }

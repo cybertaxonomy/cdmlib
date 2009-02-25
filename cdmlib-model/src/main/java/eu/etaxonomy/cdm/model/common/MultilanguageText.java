@@ -11,25 +11,16 @@ package eu.etaxonomy.cdm.model.common;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 
-
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
 
 /**
  * @author m.doering
  * Special array that takes care that all LanguageString elements have a unique language
  */
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "MultilanguageText")
-@XmlRootElement(name = "MultilanguageText")
-public class MultilanguageText extends HashMap<Language, LanguageString> implements Cloneable{
+public class MultilanguageText extends HashMap<Language, LanguageString> implements Cloneable, IMultiLanguageText {
 	private static final long serialVersionUID = 7876604337076705862L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(MultilanguageText.class);
@@ -47,8 +38,8 @@ public class MultilanguageText extends HashMap<Language, LanguageString> impleme
 	 * Factory method
 	 * @return
 	 */
-	public static MultilanguageText NewInstance(LanguageString languageString){
-		MultilanguageText result =  new MultilanguageText(languageString);
+	public static IMultiLanguageText NewInstance(LanguageString languageString){
+		IMultiLanguageText result =  new MultilanguageText(languageString);
 		return result;
 	}
 	
@@ -65,11 +56,12 @@ public class MultilanguageText extends HashMap<Language, LanguageString> impleme
 		this.add(languageString);
 	}
 	
-	
-	
-	/**
-	 * @param language
-	 * @return
+	public MultilanguageText(int initialCapacity, float loadFactor) {
+		super(initialCapacity, loadFactor);
+	}
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.IMultiLanguageText#getText(eu.etaxonomy.cdm.model.common.Language)
 	 */
 	public String getText(Language language){
 		LanguageString languageString = super.get(language);
@@ -80,10 +72,8 @@ public class MultilanguageText extends HashMap<Language, LanguageString> impleme
 		}
 	}
 	
-	/**
-	 * @param languageString
-	 * @return String the previous text in the MultilanguageSet that was associated with the language
-	 * defined in languageString, or null if there was no such text before. (A null return can also indicate that the text was previously null.)
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.IMultiLanguageText#add(eu.etaxonomy.cdm.model.common.LanguageString)
 	 */
 	public LanguageString add(LanguageString languageString){
 		if (languageString == null){
@@ -94,11 +84,8 @@ public class MultilanguageText extends HashMap<Language, LanguageString> impleme
 	}
 	
 	
-	/**
-	 * Iterates on the languages. As soon as there exists a language string for this language in this multilanguage text
-	 * it is returned.
-	 * @param languages
-	 * @return 
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.IMultiLanguageText#getPreferredLanguageString(java.util.List)
 	 */
 	public LanguageString getPreferredLanguageString(List<Language> languages){
 		
@@ -125,12 +112,17 @@ public class MultilanguageText extends HashMap<Language, LanguageString> impleme
 	 * @see java.lang.Object#clone()
 	 */
 	@Override
-	public MultilanguageText clone(){
+	public MultilanguageText clone() {
 		MultilanguageText result = (MultilanguageText)super.clone();
-		Set<Language> languages = super.keySet();
-		for (Language language : languages){
-			LanguageString languageString = super.get(language);
-			this.put(language, languageString);
+		
+		for (LanguageString languageString : this.values()){
+			LanguageString newLanguageString;
+			try {
+				newLanguageString = (LanguageString)languageString.clone();
+				result.put(newLanguageString.getLanguage(), newLanguageString);
+			} catch (CloneNotSupportedException e) {
+				logger.error(e);
+			}
 		}
 		//no changes to: -
 		return result;

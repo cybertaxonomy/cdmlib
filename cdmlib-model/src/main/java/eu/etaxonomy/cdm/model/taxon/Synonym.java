@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.model.taxon;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.common.IRelated;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
@@ -51,17 +52,18 @@ import javax.xml.bind.annotation.XmlType;
 })
 @XmlRootElement(name = "Synonym")
 @Entity
-//@Audited
+@Audited
 public class Synonym extends TaxonBase implements IRelated<SynonymRelationship>{
 	
 	static Logger logger = Logger.getLogger(Synonym.class);
 
-	//@XmlTransient
 	// Don't need the synonym relations here since they are stored at taxon side?
 	@XmlElementWrapper(name = "SynonymRelations")
 	@XmlElement(name = "SynonymRelationship")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
+    @OneToMany(mappedBy="relatedFrom", fetch=FetchType.LAZY)
+	@Cascade({CascadeType.SAVE_UPDATE})
 	private Set<SynonymRelationship> synonymRelations = new HashSet<SynonymRelationship>();
 
 	// ************* CONSTRUCTORS *************/	
@@ -112,18 +114,10 @@ public class Synonym extends TaxonBase implements IRelated<SynonymRelationship>{
 	 * @see    #addRelationship(SynonymRelationship)
 	 * @see    #removeSynonymRelation(SynonymRelationship)
 	 */
-	@OneToMany(mappedBy="relatedFrom", fetch=FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE})
 	public Set<SynonymRelationship> getSynonymRelations() {
 		return synonymRelations;
 	}
-	/** 
-	 * @see    #getSynonymRelations()
-	 * @see    #addRelationship(SynonymRelationship)
-	 */
-	protected void setSynonymRelations(Set<SynonymRelationship> synonymRelations) {
-		this.synonymRelations = synonymRelations;
-	}
+
 	/**
 	 * Adds an existing {@link SynonymRelationship synonym relationship} to the set of
 	 * {@link #getSynonymRelations() synonym relationships} assigned to <i>this</i> synonym. If
@@ -199,7 +193,6 @@ public class Synonym extends TaxonBase implements IRelated<SynonymRelationship>{
 	 * @see    #getRelationType(Taxon)
 	 * @see    SynonymRelationship#isProParte()
 	 */
-	@Transient
 	public Set<Taxon> getAcceptedTaxa() {
 		Set<Taxon>taxa=new HashSet<Taxon>();
 		for (SynonymRelationship rel:getSynonymRelations()){
@@ -221,7 +214,6 @@ public class Synonym extends TaxonBase implements IRelated<SynonymRelationship>{
 	 * @see    		#getSynonymRelations()
 	 * @see    		#getAcceptedTaxa()
 	 */
-	@Transient
 	public Set<SynonymRelationshipType> getRelationType(Taxon taxon){
 		Set<SynonymRelationshipType> result = new HashSet<SynonymRelationshipType>();
 		if (taxon == null ){

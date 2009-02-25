@@ -27,6 +27,7 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
+import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
@@ -44,7 +45,7 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 })
 @XmlRootElement(name = "DnaSample")
 @Entity
-//@Audited
+@Audited
 public class DnaSample extends Specimen implements Cloneable {
 	private static final long serialVersionUID = -2978411330023671805L;
 	private static final Logger logger = Logger.getLogger(DnaSample.class);
@@ -56,41 +57,39 @@ public class DnaSample extends Specimen implements Cloneable {
 	@XmlElement(name = "sequence")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
-	private Set<Sequence> sequences = getNewSequenceSet();
+    @OneToMany(fetch = FetchType.LAZY)
+	private Set<Sequence> sequences = new HashSet<Sequence>();
 
-	@OneToMany(fetch = FetchType.LAZY)
 	public Set<Sequence> getSequences() {
 		return sequences;
 	}
-	protected void setSequences(Set<Sequence> sequences) {
-		this.sequences = sequences;
-	}
+
+	// FIXME shouldn't this be the singular? i.e. addSequence( . . . )
 	public void addSequences(Sequence sequence) {
 		this.sequences.add(sequence);
 	}
+
+	// FIXME shouldn't this be the singular? i.e. removeSequence( . . . )
 	public void removeSequences(Sequence sequence) {
 		this.sequences.remove(sequence);
 	}
 
-
-	@Transient
 	public Collection getStoredAt(){
-		logger.debug("getStoredAt");
 		return this.getCollection();
 	}
+	
 	public void setStoredAt(Collection storedAt){
 		this.setCollection(storedAt);
 	}
 
-	@Transient
 	public Set<SpecimenOrObservationBase> getExtractedFrom(){
 		return getOriginals();
 	}
 
-	@Transient
 	public String getBankNumber(){
 		return this.getCatalogNumber();
 	}
+	
 	public void setBankNumber(String bankNumber){
 		this.setCatalogNumber(bankNumber);
 	}
@@ -113,17 +112,11 @@ public class DnaSample extends Specimen implements Cloneable {
 	public DnaSample clone(){
 		DnaSample result = (DnaSample)super.clone();
 		//sequenceSet
-		Set<Sequence> sequenceSet = getNewSequenceSet();
-		sequenceSet.addAll(this.sequences);
-		result.setSequences(sequenceSet);
+		result.sequences = new HashSet<Sequence>();
+		for(Sequence sequence : this.sequences) {
+			result.addSequences(sequence);
+		}
 		//no changes to: bankNumber
 		return result;
 	}
-	
-	@Transient
-	private Set<Sequence> getNewSequenceSet(){
-		return new HashSet<Sequence>();
-	}
-
-
 }

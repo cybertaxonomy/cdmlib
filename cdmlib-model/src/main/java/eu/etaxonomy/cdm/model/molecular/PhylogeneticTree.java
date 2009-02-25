@@ -13,6 +13,7 @@ package eu.etaxonomy.cdm.model.molecular;
 import eu.etaxonomy.cdm.model.media.ReferencedMedia;
 
 import org.apache.log4j.Logger;
+import org.hibernate.envers.Audited;
 
 import java.util.*;
 
@@ -37,7 +38,7 @@ import javax.xml.bind.annotation.XmlType;
 })
 @XmlRootElement(name = "PhylogeneticTree")
 @Entity
-//@Audited
+@Audited
 public class PhylogeneticTree extends ReferencedMedia {
 	private static final long serialVersionUID = -7020182117362324067L;
 	private static final  Logger logger = Logger.getLogger(PhylogeneticTree.class);
@@ -46,21 +47,19 @@ public class PhylogeneticTree extends ReferencedMedia {
 	@XmlElement(name = "UsedSequence")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
+    @OneToMany(fetch = FetchType.LAZY)
 	private Set<Sequence> usedSequences = new HashSet<Sequence>();
 	
-	@OneToMany(fetch = FetchType.LAZY)
 	public Set<Sequence> getUsedSequences() {
 		logger.debug("getUsedSequences");
 		return usedSequences;
 	}
-	protected void setUsedSequences(Set<Sequence> usedSequences) {
-		this.usedSequences = usedSequences;
-	}
+
 	public void addUsedSequences(Sequence usedSequence) {
 		this.usedSequences.add(usedSequence);
 	}
+	
 	public void removeUsedSequences(Sequence usedSequence) {
 		this.usedSequences.remove(usedSequence);
 	}
-
 }

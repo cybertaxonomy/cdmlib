@@ -13,6 +13,7 @@ import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.strategy.cache.reference.StrictReferenceBaseDefaultCacheStrategy;
 
 import org.apache.log4j.Logger;
+import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -45,7 +46,7 @@ import javax.xml.bind.annotation.XmlType;
 })
 @XmlRootElement(name = "StrictReferenceBase")
 @Entity
-//@Audited
+@Audited
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 public abstract class StrictReferenceBase extends ReferenceBase {
 	
@@ -104,7 +105,6 @@ public abstract class StrictReferenceBase extends ReferenceBase {
 	 * @see  #getTitle()
 	 */
 	@Override
-	@Transient
 	// TODO implement 
 	public String getCitation(){
 		return "";
@@ -116,7 +116,6 @@ public abstract class StrictReferenceBase extends ReferenceBase {
 	 * the {@link #getDatePublished() datePublished} attribute.
 	 */
 	@Override
-	@Transient
 	public String getYear(){
 		if (this.getDatePublished() == null){
 			return null;
@@ -152,6 +151,4 @@ public abstract class StrictReferenceBase extends ReferenceBase {
 			return null;
 		}
 	}
-
-
 }

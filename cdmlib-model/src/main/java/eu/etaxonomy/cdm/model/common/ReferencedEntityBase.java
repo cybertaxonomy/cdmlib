@@ -51,6 +51,8 @@ public abstract class ReferencedEntityBase extends AnnotatableEntity implements 
     @XmlElement(name = "Citation")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @Cascade(CascadeType.SAVE_UPDATE)
 	private ReferenceBase citation;
 
     @XmlElement(name = "CitationMicroReference")
@@ -72,9 +74,7 @@ public abstract class ReferencedEntityBase extends AnnotatableEntity implements 
 		this.originalNameString = originalNameString;
 		this.citation = citation;
 	}
-
-
-
+	
 	public String getCitationMicroReference(){
 		return this.citationMicroReference;
 	}
@@ -90,8 +90,6 @@ public abstract class ReferencedEntityBase extends AnnotatableEntity implements 
 		this.originalNameString = originalNameString;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE})
 	public ReferenceBase getCitation(){
 		return this.citation;
 	}

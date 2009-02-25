@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.model.molecular;
 
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import org.apache.log4j.Logger;
+import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -32,7 +33,7 @@ import javax.xml.bind.annotation.XmlType;
 })
 @XmlRootElement(name = "GenBankAccession")
 @Entity
-//@Audited
+@Audited
 public class GenBankAccession extends VersionableEntity {
 	private static final long serialVersionUID = -8179493118062601585L;
 	private static final Logger logger = Logger.getLogger(GenBankAccession.class);

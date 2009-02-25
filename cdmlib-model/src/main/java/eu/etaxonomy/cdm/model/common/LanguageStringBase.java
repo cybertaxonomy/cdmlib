@@ -14,18 +14,20 @@ import javax.persistence.FetchType;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
-import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.apache.log4j.Logger;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
 import org.hibernate.search.annotations.Index;
+
+import eu.etaxonomy.cdm.jaxb.FormattedTextAdapter;
 
 /**
  * @author a.mueller
@@ -44,11 +46,17 @@ public abstract class LanguageStringBase extends AnnotatableEntity{
 	private static final Logger logger = Logger.getLogger(LanguageStringBase.class);
 
 	@XmlElement(name = "Text")
+	@XmlJavaTypeAdapter(FormattedTextAdapter.class)
+	@Column(length=4096)
+	@Field(index=Index.TOKENIZED)
+	@FieldBridge(impl=StripHtmlBridge.class)
+	@Lob
 	protected String text;
 	
 	@XmlElement(name = "Language")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
+	@ManyToOne(fetch = FetchType.EAGER)
 	protected Language language;
 
 	protected LanguageStringBase() {
@@ -62,8 +70,6 @@ public abstract class LanguageStringBase extends AnnotatableEntity{
 		
 	}
 	
-	@ManyToOne(fetch = FetchType.EAGER)
-	//@Cascade({CascadeType.SAVE_UPDATE})
 	public Language getLanguage(){
 		return this.language;
 	}
@@ -71,10 +77,6 @@ public abstract class LanguageStringBase extends AnnotatableEntity{
 		this.language = language;
 	}
 
-	@Column(length=4096)
-	@Field(index=Index.TOKENIZED)
-	@FieldBridge(impl=StripHtmlBridge.class)
-	@Lob
 	public String getText(){
 		return this.text;
 	}
@@ -82,7 +84,6 @@ public abstract class LanguageStringBase extends AnnotatableEntity{
 		this.text = text;
 	}
 	
-	@Transient
 	public String getLanguageLabel(){
 		if (language != null){
 			return this.language.getRepresentation(Language.DEFAULT()).getLabel();
@@ -90,12 +91,18 @@ public abstract class LanguageStringBase extends AnnotatableEntity{
 			return null;
 		}
 	}
-	@Transient
+
 	public String getLanguageLabel(Language lang){
 		if (language != null){
 			return this.language.getRepresentation(lang).getLabel();
 		}else{
 			return null;
 		}
+	}
+	
+	@Override
+	public Object clone() throws CloneNotSupportedException{
+		LanguageStringBase result = (LanguageStringBase) super.clone();
+		return result;
 	}
 }

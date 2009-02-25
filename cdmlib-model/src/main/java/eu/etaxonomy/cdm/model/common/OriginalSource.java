@@ -14,7 +14,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
-import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -24,6 +23,8 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Any;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
@@ -42,7 +43,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 })
 @XmlRootElement(name = "OriginalSource")
 @Entity
-//@Audited
+@Audited
 public class OriginalSource extends ReferencedEntityBase implements Cloneable {
 	private static final long serialVersionUID = -1972959999261181462L;
 	@SuppressWarnings("unused")
@@ -56,6 +57,12 @@ public class OriginalSource extends ReferencedEntityBase implements Cloneable {
 	private String idNamespace;
 	
 	@XmlTransient
+	@Any(metaDef = "CdmBase",
+	    	 metaColumn=@Column(name = "sourcedObj_type"),
+	    	 fetch = FetchType.LAZY,
+	    	 optional = false)
+	@JoinColumn(name = "sourcedObj_id")
+	@NotAudited
 	private IdentifiableEntity sourcedObj;
 
 	/**
@@ -123,13 +130,6 @@ public class OriginalSource extends ReferencedEntityBase implements Cloneable {
 		this.idNamespace = idNamespace;
 	}
 
-
-	@Any(metaDef = "CdmBase",
-	    	 metaColumn=@Column(name = "sourcedObj_type"),
-	    	 fetch = FetchType.LAZY,
-	    	 optional = false)
-	@JoinColumn(name = "sourcedObj_id")
-//	@NotAudited
 	public IdentifiableEntity getSourcedObj() {
 		return sourcedObj;
 	}

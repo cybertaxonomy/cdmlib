@@ -15,9 +15,9 @@ import eu.etaxonomy.cdm.model.media.Rights;
 
 public interface IIdentifiableEntity {
 
-	public String getLsid();
+	public LSID getLsid();
 
-	public void setLsid(String lsid);
+	public void setLsid(LSID lsid);
 
 	public String generateTitle();
 
@@ -60,5 +60,7 @@ public interface IIdentifiableEntity {
 	 * @see java.lang.Object#toString()
 	 */
 	public String toString();
+
+	public byte[] getData();
 
 }

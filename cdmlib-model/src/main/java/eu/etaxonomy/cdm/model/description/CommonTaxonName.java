@@ -22,9 +22,10 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
+import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.MultilanguageText;
+
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 /**
@@ -47,7 +48,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 })
 @XmlRootElement(name = "CommonTaxonName")
 @Entity
-//@Audited
+@Audited
 public class CommonTaxonName extends DescriptionElementBase {
 	private static final long serialVersionUID = 2643808051976643339L;
 	private static final Logger logger = Logger.getLogger(CommonTaxonName.class);
@@ -58,6 +59,7 @@ public class CommonTaxonName extends DescriptionElementBase {
 	@XmlElement(name = "Language")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
+	@ManyToOne(fetch = FetchType.LAZY)
 	private Language language;
 
 	/**
@@ -103,7 +105,6 @@ public class CommonTaxonName extends DescriptionElementBase {
 	/** 
 	 * Returns the {@link Language language} used for <i>this</i> common name.
 	 */
-	@ManyToOne(fetch = FetchType.LAZY)
 	public Language getLanguage(){
 		return this.language;
 	}

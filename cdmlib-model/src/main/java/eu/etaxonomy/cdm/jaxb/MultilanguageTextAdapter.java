@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.jaxb;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
@@ -22,30 +23,29 @@ import eu.etaxonomy.cdm.model.common.MultilanguageTextHelper;
  * @author a.babadshanjan
  * @version 1.0
  */
-public class MultilanguageTextAdapter extends XmlAdapter<MultilanguageTextHelper, Map<Language, LanguageString>> {
+public class MultilanguageTextAdapter extends XmlAdapter<MultilanguageTextElement, Map<Language, LanguageString>> {
 
 	@Override
-	public MultilanguageTextHelper marshal(Map<Language, LanguageString> value)
+	public MultilanguageTextElement marshal(Map<Language, LanguageString> value)
 			throws Exception {
 		
-		MultilanguageTextHelper multilanguageTextHelper = new MultilanguageTextHelper();
+		MultilanguageTextElement multilanguageTextElement = new MultilanguageTextElement();
 		
-		for(Language language : value.keySet()) {
-			multilanguageTextHelper.setLanguage(language);
-			multilanguageTextHelper.setLanguageString(value.get(language));
+		for(Language l : value.keySet()) {
+			multilanguageTextElement.getLanguageString().add(value.get(l));
 		}
-
-		return multilanguageTextHelper;
+		return multilanguageTextElement;
 	}
 
     @Override
-	public Map<Language, LanguageString> unmarshal(MultilanguageTextHelper value)
+	public Map<Language, LanguageString> unmarshal(MultilanguageTextElement value)
 			throws Exception {
 		
-		Map<Language, LanguageString> map = new HashMap<Language, LanguageString>();
+        Map<Language,LanguageString> map = new ConcurrentHashMap<Language, LanguageString>();
 		
-		map.put(value.getLanguage(), value.getLanguageString());
-		
+		for(LanguageString l : value.getLanguageString()) {
+			map.put(l.getLanguage(), l);
+		}
 		return map;
 	}
 }

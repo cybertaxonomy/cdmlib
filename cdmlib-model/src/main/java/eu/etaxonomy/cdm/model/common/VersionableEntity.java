@@ -17,12 +17,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.persistence.Transient;
-import javax.persistence.Version;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlIDREF;
+import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
@@ -52,7 +51,6 @@ import eu.etaxonomy.cdm.model.agent.Person;
 //    "updated",
     "updatedBy"
 })
-@XmlRootElement(name = "VersionableEntity")
 @MappedSuperclass
 public abstract class VersionableEntity extends CdmBase {
 	private static final long serialVersionUID = 1409299200302758513L;
@@ -63,13 +61,17 @@ public abstract class VersionableEntity extends CdmBase {
 	// There is a problem with "updated" during deserialization because of the @Version annotation.
 	@XmlTransient
 	//@XmlElement(name ="Updated")
+	@Temporal(TemporalType.TIMESTAMP)
+	@Basic(fetch = FetchType.LAZY)
 	private Calendar updated;
 	
 	@XmlElement(name = "UpdatedBy")
+	@XmlIDREF
+	@XmlSchemaType(name = "IDREF")
+	@ManyToOne(fetch=FetchType.LAZY)
+	@Cascade(CascadeType.SAVE_UPDATE)
 	private Person updatedBy;
 
-	@ManyToOne(fetch=FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE})
 	public Person getUpdatedBy(){
 		return this.updatedBy;
 	}
@@ -86,8 +88,6 @@ public abstract class VersionableEntity extends CdmBase {
 	 * 
 	 * @return
 	 */
-	@Temporal(TemporalType.TIMESTAMP)
-	@Basic(fetch = FetchType.LAZY)
 	public Calendar getUpdated(){
 		return this.updated;
 	}
@@ -98,22 +98,6 @@ public abstract class VersionableEntity extends CdmBase {
 	 */
 	public void setUpdated(Calendar updated){
 		this.updated = updated;
-	}
-
-	/**
-	 * based on created
-	 */
-	@Transient
-	public Calendar getValidFrom(){
-		return null;
-	}
-
-	/**
-	 * based on updated
-	 */
-	@Transient
-	public Calendar getValidTo(){
-		return null;
 	}
 	
 	/**

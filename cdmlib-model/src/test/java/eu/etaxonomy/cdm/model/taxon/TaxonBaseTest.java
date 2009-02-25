@@ -18,6 +18,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -40,19 +41,11 @@ public class TaxonBaseTest extends EntityTestBase {
 	private Taxon taxon1;
 	private Synonym synonym1;
 	private Taxon freeT;
-	/**
-	 * @throws java.lang.Exception
-	 */
+	
 	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@AfterClass
-	public static void tearDownAfterClass() throws Exception {
+	public static void setUpBeforeClass() {
+		DefaultTermInitializer vocabularyStore = new DefaultTermInitializer();
+		vocabularyStore.initialize();
 	}
 
 	/**

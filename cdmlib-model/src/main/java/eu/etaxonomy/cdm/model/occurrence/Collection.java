@@ -26,6 +26,7 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Index;
 import org.hibernate.annotations.Table;
+import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity;
@@ -46,7 +47,7 @@ import eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity;
 })
 @XmlRootElement(name = "Collection")
 @Entity
-//@Audited
+@Audited
 @Table(appliesTo="Collection", indexes = { @Index(name = "collectionTitleCacheIndex", columnNames = { "titleCache" }) })
 public class Collection extends IdentifiableMediaEntity implements Cloneable{
 	private static final Logger logger = Logger.getLogger(Collection.class);
@@ -66,11 +67,15 @@ public class Collection extends IdentifiableMediaEntity implements Cloneable{
 	@XmlElement(name = "Institution")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
+	@ManyToOne(fetch = FetchType.LAZY)
+	@Cascade(CascadeType.SAVE_UPDATE)
 	private Institution institute;
 	
 	@XmlElement(name = "SuperCollection")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
+	@ManyToOne(fetch = FetchType.LAZY)
+	@Cascade(CascadeType.SAVE_UPDATE)
 	private Collection superCollection;
 	
 	
@@ -89,9 +94,6 @@ public class Collection extends IdentifiableMediaEntity implements Cloneable{
 		super();
 	}
 
-	
-	@ManyToOne(fetch = FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE})
 	public Institution getInstitute(){
 		return this.institute;
 	}
@@ -157,8 +159,6 @@ public class Collection extends IdentifiableMediaEntity implements Cloneable{
 		return "";
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE})
 	public Collection getSuperCollection() {
 		return superCollection;
 	}
@@ -195,7 +195,4 @@ public class Collection extends IdentifiableMediaEntity implements Cloneable{
 			return null;
 		}
 	}
-		
-	
-	
 }

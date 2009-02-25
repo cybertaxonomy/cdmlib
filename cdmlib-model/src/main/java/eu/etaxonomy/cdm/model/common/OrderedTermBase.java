@@ -9,18 +9,16 @@
 
 package eu.etaxonomy.cdm.model.common;
 
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
-import org.apache.log4j.Logger;
-
+import javax.persistence.Entity;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
-import javax.persistence.*;
+
+import org.apache.log4j.Logger;
+import org.hibernate.envers.Audited;
 
 /**
  * @author m.doering
@@ -33,7 +31,7 @@ import javax.persistence.*;
 })
 @XmlRootElement(name = "OrderedTermBase")
 @Entity
-//@Audited
+@Audited
 public abstract class OrderedTermBase<T extends OrderedTermBase> extends DefinedTermBase<T> implements Comparable<T> {
 	private static final long serialVersionUID = 8000797926720467399L;
 	@SuppressWarnings("unused")
@@ -48,13 +46,7 @@ public abstract class OrderedTermBase<T extends OrderedTermBase> extends Defined
 	}
 	public OrderedTermBase(String term, String label, String labelAbbrev) {
 		super(term, label, labelAbbrev);
-	}
-	private int getOrderIndex(){
-		return this.orderIndex;
-	}
-	private void setOrderIndex(int orderIndex){
-		this.orderIndex = orderIndex;
-	}
+	}	
 	
 	/* (non-Javadoc)
 	 * @see java.lang.Comparable#compareTo(java.lang.Object)
@@ -83,7 +75,6 @@ public abstract class OrderedTermBase<T extends OrderedTermBase> extends Defined
 	 * @param orderedTerm
 	 * @return boolean result of the comparison
 	 */
-	@Transient
 	public boolean isLower(T orderedTerm){
 		return (this.compareTo(orderedTerm) < 0 );
 	}
@@ -95,7 +86,6 @@ public abstract class OrderedTermBase<T extends OrderedTermBase> extends Defined
 	 * @param orderedTerm
 	 * @return boolean result of the comparison
 	 */
-	@Transient
 	public boolean isHigher(T orderedTerm){
 		return (this.compareTo(orderedTerm) > 0 );
 	}
@@ -103,7 +93,7 @@ public abstract class OrderedTermBase<T extends OrderedTermBase> extends Defined
 	
 	/** To be used only by OrderedTermVocabulary*/
 	@Deprecated
-	public boolean decreaseIndex(OrderedTermVocabulary<OrderedTermBase> vocabulary){
+	protected boolean decreaseIndex(OrderedTermVocabulary<T> vocabulary){
 		if (vocabulary.indexChangeAllowed(this) == true){
 			orderIndex--;
 			return true;
@@ -114,7 +104,7 @@ public abstract class OrderedTermBase<T extends OrderedTermBase> extends Defined
 	
 	/** To be used only by OrderedTermVocabulary*/
 	@Deprecated
-	public boolean incrementIndex(OrderedTermVocabulary<OrderedTermBase> vocabulary){
+	protected boolean incrementIndex(OrderedTermVocabulary<T> vocabulary){
 		if (vocabulary.indexChangeAllowed(this) == true){
 			orderIndex++;
 			return true;
@@ -124,12 +114,14 @@ public abstract class OrderedTermBase<T extends OrderedTermBase> extends Defined
 	}
 	
 	@Override
-	public boolean equals(Object o){
-		if (! OrderedTermBase.class.isAssignableFrom(o.getClass())){
+	public boolean equals(Object object){
+		if(this == object)
+			return true;
+		if((object == null) || (!OrderedTermBase.class.isAssignableFrom(object.getClass()))) {
 			return false;
 		}else{
-			OrderedTermBase otb = (OrderedTermBase)o;
-			if (otb.getUuid().equals(this.getUuid())){
+			OrderedTermBase orderedTermBase = (OrderedTermBase)object;
+			if (orderedTermBase.getUuid().equals(this.getUuid())){
 				return true;
 			}else{
 				return false;

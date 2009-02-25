@@ -55,5 +55,4 @@ public class DefaultTermInitializerTest {
 		assertEquals("The uuid of GERMAN should equal d1131746-e58b-4e80-a865-f5182c9c3073",uuidGerman,Language.GERMAN().getUuid());
 		assertNotNull("GERMAN should have an ENGLISH representation",Language.GERMAN().getRepresentation(Language.ENGLISH()));
 	}
-
 }

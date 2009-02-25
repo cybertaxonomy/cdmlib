@@ -13,7 +13,6 @@ package eu.etaxonomy.cdm.model.name;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
-import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -25,6 +24,7 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
@@ -56,7 +56,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
     "typeStatus"
 })
 @Entity
-//@Audited
+@Audited
 public class SpecimenTypeDesignation extends TypeDesignationBase implements ITypeDesignation {
 	
 	private static final Logger logger = Logger.getLogger(SpecimenTypeDesignation.class);
@@ -64,15 +64,15 @@ public class SpecimenTypeDesignation extends TypeDesignationBase implements ITyp
 	@XmlElement(name = "TypeSpecimen")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
+	@ManyToOne(fetch = FetchType.LAZY)
+	@Cascade(CascadeType.SAVE_UPDATE)
 	private DerivedUnitBase typeSpecimen;
 	
 	@XmlElement(name = "TypeStatus")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
+	@ManyToOne(fetch = FetchType.LAZY)
 	private TypeDesignationStatus typeStatus;
-	
-
-	
 
 //	/**
 //	 * Creates a new specimen type designation instance
@@ -137,12 +137,7 @@ public class SpecimenTypeDesignation extends TypeDesignationBase implements ITyp
 		this.setTypeStatus(status);
 	}
 	
-
-	
-	
 	//********* METHODS **************************************/
-
-
 
 	/** 
 	 * Returns the {@link occurrence.DerivedUnitBase derived unit} (specimen or figure) that is used
@@ -150,8 +145,6 @@ public class SpecimenTypeDesignation extends TypeDesignationBase implements ITyp
 	 *  
 	 * @see   #getHomotypicalGroup()
 	 */
-	@ManyToOne(fetch = FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE})
 	public DerivedUnitBase getTypeSpecimen(){
 		return this.typeSpecimen;
 	}
@@ -168,7 +161,6 @@ public class SpecimenTypeDesignation extends TypeDesignationBase implements ITyp
 	 * types like "holotype", "neotype", "syntype" or "isotype" applies to <i>this</i>
 	 * specimen type designation.
 	 */
-	@ManyToOne(fetch = FetchType.LAZY)
 	public TypeDesignationStatus getTypeStatus(){
 		return this.typeStatus;
 	}
@@ -194,7 +186,6 @@ public class SpecimenTypeDesignation extends TypeDesignationBase implements ITyp
 	 * @see  TypeDesignationStatus#isLectotype()
 	 * @see  TypeDesignationStatus#HOLOTYPE()
 	 */
-	@Transient
 	public boolean isLectoType() {
 		return typeStatus.isLectotype();
 	}

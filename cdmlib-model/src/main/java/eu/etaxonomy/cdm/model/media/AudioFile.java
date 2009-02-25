@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.model.media;
 
 import org.apache.log4j.Logger;
+import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -29,7 +30,7 @@ import javax.xml.bind.annotation.XmlType;
 })
 @XmlRootElement(name = "AudioFile")
 @Entity
-//@Audited
+@Audited
 public class AudioFile extends MediaRepresentationPart {
 	private static final long serialVersionUID = 2327736023969971196L;
 	private static final Logger logger = Logger.getLogger(AudioFile.class);
@@ -37,7 +38,6 @@ public class AudioFile extends MediaRepresentationPart {
 	//length of recording in seconds
 	@XmlElement(name = "Duration")
 	private int duration;
-
 
 	public static AudioFile NewInstance(String uri, Integer size){
 		logger.debug("NewInstance");

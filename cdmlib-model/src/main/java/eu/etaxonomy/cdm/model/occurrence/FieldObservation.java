@@ -10,11 +10,14 @@
 package eu.etaxonomy.cdm.model.occurrence;
 
 
-import org.apache.log4j.Logger;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
+import java.util.HashSet;
+import java.util.Set;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.ManyToOne;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations .CascadeType;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -22,6 +25,9 @@ import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
+
+import org.apache.log4j.Logger;
+import org.hibernate.envers.Audited;
 
 /**
  * In situ observation of a taxon in the field. If a specimen exists, 
@@ -38,7 +44,7 @@ import javax.xml.bind.annotation.XmlType;
 })
 @XmlRootElement(name = "FieldObservation")
 @Entity
-//@Audited
+@Audited
 public class FieldObservation extends SpecimenOrObservationBase implements Cloneable{
 	private static final Logger logger = Logger.getLogger(FieldObservation.class);
 
@@ -51,6 +57,8 @@ public class FieldObservation extends SpecimenOrObservationBase implements Clone
 	@XmlElement(name = "GatheringEvent")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
+	@ManyToOne(fetch = FetchType.LAZY)
+    @Cascade( { CascadeType.SAVE_UPDATE })
 	private GatheringEvent gatheringEvent;
 
 	/**
@@ -61,20 +69,18 @@ public class FieldObservation extends SpecimenOrObservationBase implements Clone
 		return new FieldObservation();
 	}
 	
-	
 	/**
 	 * Constructor
 	 */
 	protected FieldObservation(){
 		super();
 	}
-	
-	@Override
-	@ManyToOne(fetch = FetchType.LAZY)
-	@Cascade( { CascadeType.SAVE_UPDATE })
+
+    @Override
 	public GatheringEvent getGatheringEvent() {
-		return this.gatheringEvent;
+    	return gatheringEvent;
 	}
+	
 	public void setGatheringEvent(GatheringEvent gatheringEvent) {
 		this.gatheringEvent = gatheringEvent;
 	}	
@@ -83,18 +89,18 @@ public class FieldObservation extends SpecimenOrObservationBase implements Clone
 	public String getFieldNumber() {
 		return fieldNumber;
 	}
+	
 	public void setFieldNumber(String fieldNumber) {
 		this.fieldNumber = fieldNumber;
 	}
 
-
 	public String getFieldNotes() {
 		return fieldNotes;
 	}
+	
 	public void setFieldNotes(String fieldNotes) {
 		this.fieldNotes = fieldNotes;
 	}
-	
 	
 	//*********** CLONE **********************************/	
 	
@@ -111,8 +117,7 @@ public class FieldObservation extends SpecimenOrObservationBase implements Clone
 	@Override
 	public FieldObservation clone(){
 		try{
-			FieldObservation result = (FieldObservation)super.clone();
-			result.setGatheringEvent(this.gatheringEvent);  //TODO ?
+			FieldObservation result = (FieldObservation)super.clone();		
 			//no changes to: fieldNotes, fieldNumber
 			return result;
 		} catch (CloneNotSupportedException e) {
@@ -122,6 +127,4 @@ public class FieldObservation extends SpecimenOrObservationBase implements Clone
 		}
 		
 	}
-
-
 }

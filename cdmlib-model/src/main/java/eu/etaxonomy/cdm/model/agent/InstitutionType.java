@@ -15,6 +15,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
+import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
@@ -32,7 +33,7 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "InstitutionType")
 @Entity
-//@Audited
+@Audited
 public class InstitutionType extends DefinedTermBase<InstitutionType> {
 	private static final long serialVersionUID = 8714866112728127219L;
 	public static final Logger logger = Logger.getLogger(InstitutionType.class);

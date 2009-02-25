@@ -21,6 +21,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
+import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
@@ -55,7 +56,7 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "NameRelationshipType")
 @Entity
-//@Audited
+@Audited
 public class NameRelationshipType extends RelationshipTermBase<NameRelationshipType> {
 	static Logger logger = Logger.getLogger(NameRelationshipType.class);
 
@@ -138,7 +139,6 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	 * @see  NomenclaturalStatusType#isInvalidType()
 	 * @see  eu.etaxonomy.cdm.model.common.RelationshipBase#getRelatedFrom()
 	 */
-	@Transient
 	public boolean isInvalidType(){
 		if (this.equals(VALIDATED_BY_NAME()) || 
 				this.equals(LATER_VALIDATED_BY_NAME())
@@ -162,7 +162,6 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	 * @see  NomenclaturalStatusType#isLegitimateType()
 	 * @see  eu.etaxonomy.cdm.model.common.RelationshipBase#getRelatedFrom()
 	 */
-	@Transient
 	public boolean isLegitimateType(){
 		if (this.equals(BASIONYM()) || 
 				this.equals(REPLACED_SYNONYM()) || 
@@ -188,7 +187,6 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	 * @see  NomenclaturalStatusType#isIllegitimateType()
 	 * @see  eu.etaxonomy.cdm.model.common.RelationshipBase#getRelatedFrom()
 	 */
-	@Transient
 	public boolean isIllegitimateType(){
 		//TODO: implement isX method. Maybe as persistent class attribute?
 		//TODO: RejectedInFavour,

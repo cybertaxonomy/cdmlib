@@ -20,6 +20,7 @@ import org.junit.Test;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
+import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 
 import eu.etaxonomy.cdm.strategy.parser.INonViralNameParser;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
@@ -125,7 +126,7 @@ public class TestTaxonNameParserBotanicalNameImpl {
 		System.out.println(nvName.hasProblem());
 		System.out.println("  Name: " + nvName.getTitleCache());
 		System.out.println("  Reference: " + ((nvName.getNomenclaturalReference() == null) ? "-" : nvName.getNomenclaturalReference().getTitleCache()));
-		System.out.println("  FullReference: " + ((nvName.getNomenclaturalReference() == null) ? "-" : nvName.getNomenclaturalReference().getNomenclaturalCitation(nvName.getNomenclaturalMicroReference())));
+		System.out.println("  FullReference: " + ((nvName.getNomenclaturalReference() == null) ? "-" : ((INomenclaturalReference)nvName.getNomenclaturalReference()).getNomenclaturalCitation(nvName.getNomenclaturalMicroReference())));
 		return nvName.hasProblem() == true? 1: 0;
 
 	}

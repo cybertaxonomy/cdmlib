@@ -23,6 +23,7 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -50,7 +51,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 })
 @XmlRootElement(name = "Distribution")
 @Entity
-//@Audited
+@Audited
 public class Distribution extends DescriptionElementBase {
 	private static final long serialVersionUID = 8366462435651559730L;
 	@SuppressWarnings("unused")
@@ -59,11 +60,13 @@ public class Distribution extends DescriptionElementBase {
 	@XmlElement(name = "NamedArea")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
+	@ManyToOne(fetch = FetchType.LAZY)
 	private NamedArea area;
 	
 	@XmlElement(name = "PresenceAbsenceStatus")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
+	@ManyToOne(fetch = FetchType.LAZY)
 	private PresenceAbsenceTermBase<?> status;
 
 	
@@ -102,9 +105,6 @@ public class Distribution extends DescriptionElementBase {
 		return result;
 	}
 	
-
-		
-	
 	/** 
 	 * Deprecated because {@link Feature feature} should always be {@link Feature#DISTRIBUTION() DISTRIBUTION}
 	 * for all distribution instances.
@@ -121,8 +121,6 @@ public class Distribution extends DescriptionElementBase {
 	/** 
 	 * Returns the {@link NamedArea named area} <i>this</i> distribution applies to.
 	 */
-	@ManyToOne(fetch = FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE})
 	public NamedArea getArea(){
 		return this.area;
 	}
@@ -136,7 +134,6 @@ public class Distribution extends DescriptionElementBase {
 	/** 
 	 * Returns the {@link PresenceAbsenceTermBase presence or absence term} for <i>this</i> distribution.
 	 */
-	@ManyToOne(fetch = FetchType.LAZY)
 	public PresenceAbsenceTermBase<?> getStatus(){
 		return this.status;
 	}

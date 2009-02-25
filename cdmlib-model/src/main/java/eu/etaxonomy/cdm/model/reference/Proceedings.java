@@ -18,6 +18,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
+import org.hibernate.envers.Audited;
 
 /**
  * This class represents conference proceedings. Proceedings are a
@@ -39,7 +40,7 @@ import org.apache.log4j.Logger;
 })
 @XmlRootElement(name = "Proceedings")
 @Entity
-//@Audited
+@Audited
 public class Proceedings extends PrintedUnitBase implements Cloneable {
 	private static final Logger logger = Logger.getLogger(Proceedings.class);
 	

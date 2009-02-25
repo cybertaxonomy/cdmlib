@@ -23,7 +23,6 @@ import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.OneToMany;
-import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -37,6 +36,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Type;
+import org.hibernate.envers.Audited;
 
 
 /**
@@ -53,24 +53,12 @@ import org.hibernate.annotations.Type;
 })
 @XmlRootElement(name = "TermVocabulary")
 @Entity
-//@Audited
+@Audited
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 public class TermVocabulary<T extends DefinedTermBase> extends TermBase implements Iterable<T> {
 	private static final long serialVersionUID = 1925052321596648672L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TermVocabulary.class);
-
-	
-	public T findTermByUuid(UUID uuid){
-		for(T t : terms) {
-			if(t.getUuid().equals(uuid)) {
-				return t;
-			}
-		}
-		return null;
-	}
-	
-	
 
 	//The vocabulary source (e.g. ontology) defining the terms to be loaded when a database is created for the first time.  
 	// Software can go and grap these terms incl labels and description. 
@@ -84,7 +72,19 @@ public class TermVocabulary<T extends DefinedTermBase> extends TermBase implemen
 	@XmlElement(name = "Term")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
+    @OneToMany(mappedBy="vocabulary", fetch=FetchType.LAZY, targetEntity = DefinedTermBase.class)
+	@Type(type="DefinedTermBase")
+	@Cascade({CascadeType.SAVE_UPDATE})
 	protected Set<T> terms = getNewTermSet();
+	
+	public T findTermByUuid(UUID uuid){
+		for(T t : terms) {
+			if(t.getUuid().equals(uuid)) {
+				return t;
+			}
+		}
+		return null;
+	}
 
 	public TermVocabulary(String term, String label, String labelAbbrev, String termSourceUri) {
 		super(term, label, labelAbbrev);
@@ -95,19 +95,12 @@ public class TermVocabulary<T extends DefinedTermBase> extends TermBase implemen
 		// TODO Auto-generated constructor stub
 	}
 	
-	@Transient
 	Set<T> getNewTermSet() {
 		return new HashSet<T>();
 	}
 
-	@OneToMany(mappedBy="vocabulary", fetch=FetchType.LAZY, targetEntity = DefinedTermBase.class)
-	@Type(type="DefinedTermBase")
-	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<T> getTerms() {
 		return terms;
-	}
-	protected void setTerms(Set<T> terms) {
-		this.terms = terms;
 	}
 	
 	public void addTerm(T term) {
@@ -160,7 +153,6 @@ public class TermVocabulary<T extends DefinedTermBase> extends TermBase implemen
 	 * @param language
 	 * @return
 	 */
-	@Transient
 	public SortedSet<T> getTermsOrderedByLabels(Language language){
 		TermLanguageComparator<T> comp = new TermLanguageComparator<T>();
 		comp.setCompareLanguage(language);
@@ -177,6 +169,7 @@ public class TermVocabulary<T extends DefinedTermBase> extends TermBase implemen
 	public TermVocabulary<T> readCsvLine(List<String> csvLine) {
 		return readCsvLine(csvLine, Language.ENGLISH());
 	}
+	
 	public TermVocabulary<T> readCsvLine(List<String> csvLine, Language lang) {
 		this.setUuid(UUID.fromString(csvLine.get(0)));
 		this.setUri(csvLine.get(1));

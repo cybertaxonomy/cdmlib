@@ -9,15 +9,9 @@
 
 package eu.etaxonomy.cdm.model.media;
 
-import org.apache.log4j.Logger;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
-
-import eu.etaxonomy.cdm.model.agent.Agent;
-import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.LanguageStringBase;
-
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.ManyToOne;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -25,6 +19,15 @@ import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
+
+import org.apache.log4j.Logger;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
+import org.hibernate.envers.Audited;
+
+import eu.etaxonomy.cdm.model.agent.AgentBase;
+import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.LanguageStringBase;
 
 /**
  * Typically, rights information includes a statement about various property
@@ -44,7 +47,7 @@ import javax.xml.bind.annotation.XmlType;
 })
 @XmlRootElement(name = "Rights")
 @Entity
-//@Audited
+@Audited
 public class Rights extends LanguageStringBase {
 	private static final long serialVersionUID = 4920749849951432284L;
 	private static final Logger logger = Logger.getLogger(Rights.class);
@@ -59,13 +62,16 @@ public class Rights extends LanguageStringBase {
 	@XmlElement(name = "Type")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
+	@ManyToOne(fetch = FetchType.LAZY)
 	private RightsTerm type;
 	
 	// owner etc as defined by the rightstype
 	@XmlElement(name = "Agent")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
-	private Agent agent;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@Cascade(CascadeType.SAVE_UPDATE)
+	private AgentBase agent;
 
 	
 	/**
@@ -99,40 +105,35 @@ public class Rights extends LanguageStringBase {
 		super(text, language);
 	}
 
-	
-	@ManyToOne(fetch = FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE})
 	public RightsTerm getType(){
 		return this.type;
 	}
+	
 	public void setType(RightsTerm type){
 		this.type = type;
 	}
 
-
 	public String getUri(){
 		return this.uri;
 	}
+	
 	public void setUri(String uri){
 		this.uri = uri;
 	}
-
-
+	
 	public String getAbbreviatedText(){
 		return this.abbreviatedText;
 	}
+	
 	public void setAbbreviatedText(String abbreviatedStatement){
 		this.abbreviatedText = abbreviatedStatement;
 	}
 
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE})
-	public Agent getAgent() {
+	public AgentBase getAgent() {
 		return agent;
 	}
-	public void setAgent(Agent agent) {
+	
+	public void setAgent(AgentBase agent) {
 		this.agent = agent;
 	}
-
 }

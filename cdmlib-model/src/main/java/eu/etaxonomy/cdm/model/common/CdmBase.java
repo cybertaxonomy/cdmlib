@@ -13,15 +13,13 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlID;
-import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
@@ -54,23 +52,44 @@ import eu.etaxonomy.cdm.model.agent.Person;
  * @author m.doering
  *
  */
-@XmlAccessorType(XmlAccessType.PROPERTY)
+@XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "CdmBase", propOrder = {
     "created",
     "createdBy"
 })
-@XmlRootElement(name = "CdmBase")
 @MappedSuperclass
 public abstract class CdmBase implements Serializable, ICdmBase{
 	private static final long serialVersionUID = -3053225700018294809L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CdmBase.class);
 
+	@Transient
+	@XmlTransient
 	private PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
+	
+	@XmlAttribute(name = "id", required = true)
+	@Id
+	@GeneratedValue(generator = "system-increment")
+	@DocumentId
 	private int id;
     
-	private UUID uuid;
+	@XmlAttribute(required = true)
+    @XmlJavaTypeAdapter(UUIDAdapter.class)
+    @XmlID
+	@Type(type="uuidUserType")
+	protected UUID uuid;
+	
+	@XmlElement (name = "Created", type= String.class)
+	@XmlJavaTypeAdapter(DateTimeAdapter.class)
+	@Type(type="dateTimeUserType")
+	@Basic(fetch = FetchType.LAZY)
 	private DateTime created;
+	
+	@XmlElement (name = "CreatedBy")
+	@XmlIDREF
+	@XmlSchemaType(name = "IDREF")
+	@ManyToOne(fetch=FetchType.LAZY)
+	@Cascade(CascadeType.SAVE_UPDATE)
     private Person createdBy;
 
 	/**
@@ -79,7 +98,7 @@ public abstract class CdmBase implements Serializable, ICdmBase{
 	 */
 	public CdmBase() {
 		this.uuid = UUID.randomUUID();
-		this.setCreated(new DateTime());
+		this.created = new DateTime().withMillisOfSecond(0);
 	}
 	
 	/**
@@ -111,7 +130,6 @@ public abstract class CdmBase implements Serializable, ICdmBase{
 		propertyChangeSupport.removePropertyChangeListener(propertyName, listener);
 	}
 	
-	@Transient
 	public boolean hasListeners(String propertyName) {
 		return propertyChangeSupport.hasListeners(propertyName);
 	}
@@ -135,36 +153,11 @@ public abstract class CdmBase implements Serializable, ICdmBase{
 		propertyChangeSupport.firePropertyChange(evt);
 	}
 
-	/**
-	 * Method for JAXB only to obtain the UUID value as a String instance.
-	 * For getting the UUID please use the getUuid method.
-	 * @return String representation of the UUID
-	 */
-	@XmlAttribute(name = "uuid", required = true)
-    @XmlJavaTypeAdapter(UUIDAdapter.class)
-    @XmlID
-	@XmlSchemaType(name = "ID")
-	@Transient
-	private String getStrUuid() {
-		return this.uuid.toString();
-	}
-		
-	/**
-	 * Method for JAXB only to set the UUID value as a String instance.
-	 * For setting the UUID please use setUuid method.
-	 */
-	@Transient
-	private void setStrUuid(String uuid) {
-		this.uuid = UUID.fromString(uuid);
-	}
-
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.ICdmBase#getUuid()
-	 */
-    @XmlTransient
-	@Type(type="uuidUserType")
+	 */	
 	public UUID getUuid() {
-		return this.uuid;
+		return uuid;
 	}
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.ICdmBase#setUuid(java.util.UUID)
@@ -176,10 +169,6 @@ public abstract class CdmBase implements Serializable, ICdmBase{
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.ICdmBase#getId()
 	 */
-	@XmlAttribute(name = "id", required = true)
-	@Id
-	@GeneratedValue(generator = "system-increment")
-	@DocumentId
 	public int getId() {
 		return this.id;
 	}
@@ -193,10 +182,6 @@ public abstract class CdmBase implements Serializable, ICdmBase{
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.ICdmBase#getCreated()
 	 */
-	@XmlElement (name = "Created", type= String.class)
-	@XmlJavaTypeAdapter(DateTimeAdapter.class)
-	@Type(type="dateTimeUserType")
-	@Basic(fetch = FetchType.LAZY)
 	public DateTime getCreated() {
 		return created;
 	}
@@ -216,9 +201,6 @@ public abstract class CdmBase implements Serializable, ICdmBase{
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.ICdmBase#getCreatedBy()
 	 */
-	@XmlElement (name = "CreatedBy")
-	@ManyToOne(fetch=FetchType.LAZY)
-	@Cascade( { CascadeType.SAVE_UPDATE })
 	public Person getCreatedBy() {
 		return this.createdBy;
 	}

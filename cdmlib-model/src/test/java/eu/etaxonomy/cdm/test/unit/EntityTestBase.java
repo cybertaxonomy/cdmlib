@@ -21,6 +21,7 @@ import javax.persistence.Entity;
 import javax.persistence.Transient;
 
 import org.apache.log4j.Logger;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -61,9 +62,14 @@ public abstract class EntityTestBase {
 	
 	/**
 	 * Tests if all persistent (not transient) getter have an according setter.
+	 * FIXME Having matched getter / setter pairs is not strictly necessary if we 
+	 * use field-level hibernate annotations, and is perhaps even desirable (i.e. 
+	 * prevent the use of set() methods on *-to-Many fields by enforcing use of add*() 
+	 * and remove*())
 	 */
 	@Test 
-	public void testPersistentGetterSetterPair() {
+	@Ignore
+	public final void testPersistentGetterSetterPair() {
 		//
 		Annotation annotation = clazzToTest.getAnnotation(Entity.class);
 		if (annotation != null){

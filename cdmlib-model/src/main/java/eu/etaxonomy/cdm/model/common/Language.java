@@ -23,7 +23,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
-import org.hibernate.LazyInitializationException;
+import org.hibernate.envers.Audited;
 
 import au.com.bytecode.opencsv.CSVWriter;
 
@@ -39,7 +39,7 @@ import au.com.bytecode.opencsv.CSVWriter;
 @XmlType(name = "Language")
 @XmlRootElement(name = "Language")
 @Entity
-//@Audited
+@Audited
 public class Language extends DefinedTermBase<Language> {
 	private static final long serialVersionUID = -5030610079904074217L;
 	private static final Logger logger = Logger.getLogger(Language.class);
@@ -82,9 +82,14 @@ public class Language extends DefinedTermBase<Language> {
 	}
 	
 	@XmlAttribute(name = "iso639_1")
-	private char[] iso639_1 = new char[2];
+	//TODO create userDefinedType ?
+	@Column(length=2)
+	private String iso639_1;
+	
 	@XmlAttribute(name = "iso639_2")
-	private char[] iso639_2 = new char[3];
+	//TODO create userDefinedType ?
+	@Column(length=3)
+	private String iso639_2;
 	
 	public Language() {
 		super();
@@ -93,19 +98,19 @@ public class Language extends DefinedTermBase<Language> {
 		super();
 		this.setUuid(uuid);
 	}
-	public Language(char[] iso639_1, char[] iso639_2, String englishLabel, String frenchLabel) throws Exception {
+	public Language(String iso639_1, String iso639_2, String englishLabel, String frenchLabel) throws Exception {
 		super();
-		if(iso639_1.length > 2){
+		if(iso639_1 != null && iso639_1.length() > 2){
 			logger.warn("iso639_1 too long: "+iso639_1.toString());
 		}
-		if(iso639_2.length > 3){
+		if(iso639_1 != null && iso639_2.length() > 3){
 			logger.warn("iso639_2 too long: "+iso639_2.toString());
 		}
 		this.iso639_1=iso639_1;
 		this.iso639_2=iso639_2;
 		String textEnglish = englishLabel;
 		String textFrench = englishLabel;
-		String label = String.valueOf(iso639_2);
+		String label = iso639_2;
 		String labelAbbrev = null;
 		this.addRepresentation(new Representation(textEnglish, label, labelAbbrev, Language.ENGLISH()));
 		this.addRepresentation(new Representation(textFrench, label, labelAbbrev, Language.FRENCH()));
@@ -184,11 +189,8 @@ public class Language extends DefinedTermBase<Language> {
 	 * 
 	 * @return the iso639 alpha-2 language code or null if not available
 	 */
-	//TODO create userDefinedType ?
-	@Column(length=2)
 	public String getIso639_1() {
-		
-		return String.valueOf(iso639_1);
+		return iso639_1;
 	}
 
 	public void setIso639_1(String iso639_1) {
@@ -196,7 +198,7 @@ public class Language extends DefinedTermBase<Language> {
 		if(iso639_1.length() > 2){
 			logger.warn("Iso639-1: "+iso639_1+" too long");
 		}
-		this.iso639_1 = iso639_1.toCharArray();
+		this.iso639_1 = iso639_1;
 	}
 
 	/**
@@ -205,10 +207,8 @@ public class Language extends DefinedTermBase<Language> {
 	 * 
 	 * @return the iso639 alpha-3 language code or null if not available
 	 */
-	//TODO create userDefinedType ?
-	@Column(length=3)
 	public String getIso639_2() {
-		return String.valueOf(iso639_2);
+		return iso639_2;
 	}
 
 	public void setIso639_2(String iso639_2) {
@@ -216,7 +216,7 @@ public class Language extends DefinedTermBase<Language> {
 		if(iso639_2.length() > 3 ){
 			logger.warn("Iso639-2: "+iso639_2+" too long");
 		}
-		this.iso639_2 = iso639_2.toCharArray();
+		this.iso639_2 = iso639_2;
 	}
  
 	@Override 
@@ -232,10 +232,10 @@ public class Language extends DefinedTermBase<Language> {
 		    newInstance.setIso639_1(csvLine.get(5).trim());
 		    newInstance.setIso639_2(csvLine.get(4).trim());
 		    //TODO could replace with generic validation
-		    if(iso639_1.length > 2){
+		    if(iso639_1 != null && iso639_1.length() > 2){
 			    logger.warn("Iso639-1: "+ newInstance.getIso639_1() +" from "+csvLine.get(3)+" ,"+csvLine.get(2)+" too long");
 		    }
-		    if(iso639_2.length > 3 ){
+		    if(iso639_2 != null &&  iso639_2.length() > 3 ){
 			    logger.warn("Iso639-2: "+newInstance.getIso639_2()+" from "+csvLine.get(3)+" ,"+csvLine.get(2)+" too long");
 		    }
 		
@@ -263,9 +263,9 @@ public class Language extends DefinedTermBase<Language> {
 	 */
 	@Override
 	public String toString() {
-		try {
+		if (this.getLabel() != null){
 			return this.getLabel();
-		} catch (LazyInitializationException e) {
+		}else{
 			return super.toString();
 		}
 	}

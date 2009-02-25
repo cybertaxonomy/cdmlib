@@ -51,8 +51,7 @@ import eu.etaxonomy.cdm.strategy.cache.reference.GenericDefaultCacheStrategy;
 		"pages",
 		"editor",
 		"publisher",
-		"placePublished",
-		"nomRefBase"
+		"placePublished"
 })
 @XmlRootElement(name = "Generic")
 @Entity
@@ -83,8 +82,8 @@ public class Generic extends StrictReferenceBase implements INomenclaturalRefere
     @XmlElement(name = "Pages")
 	private String pages;
 	
-    //@XmlTransient
-    @XmlElementRef(name = "NomenclaturalReferenceBase")
+    @XmlTransient
+    @Transient
 	private NomenclaturalReferenceHelper nomRefBase = NomenclaturalReferenceHelper.NewInstance(this);
 
 	
@@ -248,7 +247,6 @@ public class Generic extends StrictReferenceBase implements INomenclaturalRefere
 	 * @see  StrictReferenceBase#getCitation()
 	 */
 	@Override
-	@Transient
 	public String getCitation(){
 		return nomRefBase.getCitation();
 	}
@@ -265,7 +263,6 @@ public class Generic extends StrictReferenceBase implements INomenclaturalRefere
 	 * 							nomenclatural citation
 	 * @see  					#getCitation()
 	 */
-	@Transient
 	public String getNomenclaturalCitation(String microReference) {
 		return nomRefBase.getNomenclaturalCitation(microReference);
 	}

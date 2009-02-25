@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.model.name;
 
 import org.apache.log4j.Logger;
+import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -36,7 +37,7 @@ import javax.xml.bind.annotation.XmlType;
 })
 @XmlRootElement(name = "CultivarPlantName")
 @Entity
-//@Audited
+@Audited
 public class CultivarPlantName extends BotanicalName {
 	static Logger logger = Logger.getLogger(CultivarPlantName.class);
 	
@@ -138,7 +139,6 @@ public class CultivarPlantName extends BotanicalName {
 	 * @see  	NonViralName#isCodeCompliant()
 	 * @see  	TaxonNameBase#getHasProblem()
 	 */
-	@Transient
 	@Override
 	public NomenclaturalCode getNomenclaturalCode(){
 		return NomenclaturalCode.ICNCP;

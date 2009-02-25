@@ -15,12 +15,12 @@ import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
+import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.strategy.cache.reference.BookDefaultCacheStrategy;
 
@@ -41,12 +41,11 @@ import eu.etaxonomy.cdm.strategy.cache.reference.BookDefaultCacheStrategy;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Book", propOrder = {
     "edition",
-    "isbn",
-    "nomRefBase"
+    "isbn"
 })
 @XmlRootElement(name = "Book")
 @Entity
-//@Audited
+@Audited
 public class Book extends PrintedUnitBase implements INomenclaturalReference, Cloneable {
 	
 	/**
@@ -62,11 +61,9 @@ public class Book extends PrintedUnitBase implements INomenclaturalReference, Cl
     @XmlElement(name = "ISBN")
 	private String isbn;
 	
-    //@XmlTransient
-    @XmlElementRef(name = "NomenclaturalReferenceBase")
+    @XmlTransient
+    @Transient
 	private NomenclaturalReferenceHelper nomRefBase = NomenclaturalReferenceHelper.NewInstance(this);
-
-
 	
 	/** 
 	 * Class constructor: creates a new empty book instance
@@ -140,7 +137,6 @@ public class Book extends PrintedUnitBase implements INomenclaturalReference, Cl
 	 * @see  StrictReferenceBase#getCitation()
 	 */
 	@Override
-	@Transient
 	public String getCitation(){
 		return nomRefBase.getCitation();
 	}
@@ -157,7 +153,6 @@ public class Book extends PrintedUnitBase implements INomenclaturalReference, Cl
 	 * 							nomenclatural citation
 	 * @see  					#getCitation()
 	 */
-	@Transient
 	public String getNomenclaturalCitation(String microReference) {
 		return nomRefBase.getNomenclaturalCitation(microReference);
 	}

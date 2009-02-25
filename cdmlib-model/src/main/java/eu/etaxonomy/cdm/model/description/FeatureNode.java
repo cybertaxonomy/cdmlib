@@ -30,6 +30,7 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 
@@ -50,13 +51,12 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "FeatureNode", propOrder = {
 	"feature",
-//    "type",
     "parent",
     "children"
 })
 @XmlRootElement(name = "FeatureNode")
 @Entity
-//@Audited
+@Audited
 public class FeatureNode extends VersionableEntity {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(FeatureNode.class);
@@ -64,22 +64,21 @@ public class FeatureNode extends VersionableEntity {
     @XmlElement(name = "Feature")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
+    @ManyToOne(fetch = FetchType.LAZY)
 	private Feature feature;
-	
-//    @XmlElement(name = "FeatureType")
-//    @XmlIDREF
-//    @XmlSchemaType(name = "IDREF")
-//	private Feature type;
     
     @XmlElement(name = "Parent")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @Cascade(CascadeType.SAVE_UPDATE)
+	@JoinColumn(name="parent_fk")
 	private FeatureNode parent;
     
     @XmlElementWrapper(name = "Children")
     @XmlElement(name = "Child")
-    @XmlIDREF
-    @XmlSchemaType(name = "IDREF")
+    @OneToMany(fetch = FetchType.LAZY,mappedBy="parent")
+	@Cascade({CascadeType.SAVE_UPDATE})
 	private List<FeatureNode> children = new ArrayList<FeatureNode>();
 	
 	/** 
@@ -110,30 +109,12 @@ public class FeatureNode extends VersionableEntity {
 		result.setFeature(feature);
 		return result;
 	}
-
-
-	
 	
 //** ********************** FEATURE ******************************/
-//	/**
-//	 * Does the same as getFeature
-	//	 */
-	//	@Transient
-	//	@Deprecated
-	//	protected Feature getType() {
-	//		return feature;
-	//	}
-	//	/**
-	//	 * Does the same as setFeature
-	//	 */
-	//	protected void setType(Feature feature) {
-	//		this.feature = feature;
-	//	}
 
 	/** 
 	 * Returns the {@link Feature feature} <i>this</i> feature node is based on.
 	 */
-	@ManyToOne(fetch = FetchType.LAZY)
 	public Feature getFeature() {
 		return feature;
 	}
@@ -143,19 +124,14 @@ public class FeatureNode extends VersionableEntity {
 	public void setFeature(Feature feature) {
 		this.feature = feature;
 	}
-	
 
 //** ********************** PARENT ******************************/
 
-	
 	/** 
 	 * Returns the feature node <i>this</i> feature node is a child of.
 	 * 
 	 * @see	#getChildren()
 	 */
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name="parent_fk")
-	@Cascade({CascadeType.SAVE_UPDATE})
 	public FeatureNode getParent() {
 		return parent;
 	}
@@ -177,24 +153,10 @@ public class FeatureNode extends VersionableEntity {
 	 * Returns the (ordered) list of feature nodes which are children nodes of
 	 * <i>this</i> feature node.
 	 */
-	@OneToMany(fetch = FetchType.LAZY,mappedBy="parent")
-	@Cascade({CascadeType.SAVE_UPDATE})
 	public List<FeatureNode> getChildren() {
 		return children;
 	}
-	/**
-	 * Assigns the given feature node list as the list of children of
-	 * <i>this</i> feature node. Due to bidirectionality this method must also
-	 * add <i>this</i> feature node to the list of children of the given parent.
-	 * 
-	 * @param	children	the feature node list to be set as child list 
-	 * @see					#getChildren() 
-	 * @see					#addChild(FeatureNode) 
-	 * @see					#addChild(FeatureNode, int) 
-	 */
-	public void setChildren(List<FeatureNode> children) {
-		this.children = children;
-	}
+
 	/**
 	 * Adds the given feature node at the end of the list of children of
 	 * <i>this</i> feature node. Due to bidirectionality this method must also
@@ -283,7 +245,6 @@ public class FeatureNode extends VersionableEntity {
 	 * @see					#addChild(FeatureNode, int) 
 	 * @see					#removeChild(int) 
 	 */
-	@Transient
 	public FeatureNode getChildAt(int childIndex) {
 			return children.get(childIndex);
 	}
@@ -293,7 +254,6 @@ public class FeatureNode extends VersionableEntity {
 	 * 
 	 * @see	#getChildren()
 	 */
-	@Transient
 	public int getChildCount() {
 		return children.size();
 	}
@@ -307,8 +267,6 @@ public class FeatureNode extends VersionableEntity {
 	 * @see			#addChild(FeatureNode, int) 
 	 * @see			#removeChild(int) 
 	 */
-	@Transient
-//	public int getIndex(TreeNode node) {
 	public int getIndex(FeatureNode node) {
 		if (! children.contains(node)){
 			return -1;
@@ -325,7 +283,6 @@ public class FeatureNode extends VersionableEntity {
 	 * @see	#getChildren()
 	 * @see	#getChildCount()
 	 */
-	@Transient
 	public boolean isLeaf() {
 		return children.size() < 1;
 	}

@@ -14,6 +14,7 @@ import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 
 import org.apache.log4j.Logger;
+import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -33,7 +34,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "ReferenceSystem")
 @XmlRootElement(name = "ReferenceSystem")
 @Entity
-//@Audited
+@Audited
 public class ReferenceSystem extends DefinedTermBase<ReferenceSystem> {
 	private static final long serialVersionUID = 2704455299046749175L;
 	private static final Logger logger = Logger.getLogger(ReferenceSystem.class);

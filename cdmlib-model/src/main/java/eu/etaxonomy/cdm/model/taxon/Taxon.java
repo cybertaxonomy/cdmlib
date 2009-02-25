@@ -20,7 +20,9 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
+import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.Method;
 import java.util.*;
@@ -58,7 +60,7 @@ import javax.xml.bind.annotation.XmlType;
 })
 @XmlRootElement(name = "Taxon")
 @Entity
-//@Audited
+@Audited
 @Indexed
 public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<RelationshipBase>{
 
@@ -66,20 +68,22 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 
 	@XmlElementWrapper(name = "Descriptions")
 	@XmlElement(name = "Description")
+	@OneToMany(mappedBy="taxon", fetch= FetchType.LAZY) 
+	@Cascade({CascadeType.SAVE_UPDATE})
 	private Set<TaxonDescription> descriptions = new HashSet<TaxonDescription>();
 
 	// all related synonyms
 	@XmlElementWrapper(name = "SynonymRelations")
 	@XmlElement(name = "SynonymRelationship")
-    @XmlIDREF
-    @XmlSchemaType(name = "IDREF")
+    @OneToMany(mappedBy="relatedTo", fetch=FetchType.LAZY)
+	@Cascade({CascadeType.SAVE_UPDATE})
 	private Set<SynonymRelationship> synonymRelations = new HashSet<SynonymRelationship>();
 
 	// all taxa relations with rel.fromTaxon==this
 	@XmlElementWrapper(name = "RelationsFromThisTaxon")
 	@XmlElement(name = "FromThisTaxonRelationship")
-    @XmlIDREF
-    @XmlSchemaType(name = "IDREF")
+    @OneToMany(mappedBy="relatedFrom", fetch=FetchType.LAZY)
+	@Cascade({CascadeType.SAVE_UPDATE})
 	private Set<TaxonRelationship> relationsFromThisTaxon = new HashSet<TaxonRelationship>();
 
 	// all taxa relations with rel.toTaxon==this
@@ -87,20 +91,21 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	@XmlElement(name = "ToThisTaxonRelationship")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
+    @OneToMany(mappedBy="relatedTo", fetch=FetchType.LAZY)
+	@Cascade({CascadeType.SAVE_UPDATE})
 	private Set<TaxonRelationship> relationsToThisTaxon = new HashSet<TaxonRelationship>();
 
 	// shortcut to the taxonomicIncluded (parent) taxon. Managed by the taxonRelations setter
 	@XmlElement(name = "TaxonomicParentCache")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
+	@ManyToOne(fetch = FetchType.LAZY)
+//	@Cascade(CascadeType.SAVE_UPDATE)
 	private Taxon taxonomicParentCache;
 
 	//cached number of taxonomic children
 	@XmlElement(name = "TaxonomicChildrenCount")
 	private int taxonomicChildrenCount;
-
-	private static Method methodDescriptionSetTaxon;
-	
 	
 // ************* CONSTRUCTORS *************/	
 
@@ -137,7 +142,6 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 		Taxon result = new Taxon(taxonNameBase, sec);
 		return result;
 	}
-	
 	 
 	/** 
 	 * Returns the set of {@link eu.etaxonomy.cdm.model.description.TaxonDescription taxon descriptions}
@@ -147,17 +151,10 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	 * @see #addDescription(TaxonDescription)
 	 * @see eu.etaxonomy.cdm.model.description.TaxonDescription#getTaxon()
 	 */
-	@OneToMany(mappedBy="taxon", fetch= FetchType.LAZY) 
-	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<TaxonDescription> getDescriptions() {
 		return descriptions;
 	}
-	/** 
-	 * @see #getDescriptions()
-	 */
-	protected void setDescriptions(Set<TaxonDescription> descriptions) {
-		this.descriptions = descriptions;
-	}
+
 	/** 
 	 * Adds a new {@link eu.etaxonomy.cdm.model.description.TaxonDescription taxon description} to the set
 	 * of taxon descriptions assigned to <i>this</i> (accepted/correct) taxon.
@@ -172,12 +169,12 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	 * @see 			  	eu.etaxonomy.cdm.model.description.TaxonDescription#getTaxon()
 	 */
 	public void addDescription(TaxonDescription description) {
-		initMethods();
 		if (description.getTaxon() != null){
 			description.getTaxon().removeDescription(description);
 		}
-		//description.setTaxon(this) for not visible method
-		this.invokeSetMethod(methodDescriptionSetTaxon, description);
+		Method method = ReflectionUtils.findMethod(TaxonDescription.class, "setTaxon", new Class[] {Taxon.class});
+		ReflectionUtils.makeAccessible(method);
+		ReflectionUtils.invokeMethod(method, description, new Object[] {this});
 		descriptions.add(description);
 		
 	}
@@ -193,24 +190,12 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	 * @see 			  	eu.etaxonomy.cdm.model.description.TaxonDescription#getTaxon()
 	 */
 	public void removeDescription(TaxonDescription description) {
-		initMethods();
 		//description.setTaxon(null) for not visible method
-		this.invokeSetMethodWithNull(methodDescriptionSetTaxon, description);
+		Method method = ReflectionUtils.findMethod(TaxonDescription.class, "setTaxon", new Class[] {Taxon.class});
+		ReflectionUtils.makeAccessible(method);
+		ReflectionUtils.invokeMethod(method, description, new Object[] {null});
 		descriptions.remove(description);
 	}
-
-	private void initMethods(){
-		if (methodDescriptionSetTaxon == null){
-			try {
-				methodDescriptionSetTaxon = TaxonDescription.class.getDeclaredMethod("setTaxon", Taxon.class);
-				methodDescriptionSetTaxon.setAccessible(true);
-			} catch (Exception e) {
-				e.printStackTrace();
-				//TODO handle exception
-			}
-		}
-	}
-
 
 	/** 
 	 * Returns the set of all {@link SynonymRelationship synonym relationships}
@@ -221,18 +206,10 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	 * @see    #removeSynonymRelation(SynonymRelationship)
 	 * @see    #getSynonyms()
 	 */
-	@OneToMany(mappedBy="relatedTo", fetch=FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<SynonymRelationship> getSynonymRelations() {
 		return synonymRelations;
 	}
-	/** 
-	 * @see    #getSynonymRelations()
-	 * @see    #addSynonymRelation(SynonymRelationship)
-	 */
-	protected void setSynonymRelations(Set<SynonymRelationship> synonymRelations) {
-		this.synonymRelations = synonymRelations;
-	}
+	
 	/**
 	 * Adds an existing {@link SynonymRelationship synonym relationship} to the set of
 	 * {@link #getSynonymRelations() synonym relationships} assigned to <i>this</i> taxon. If
@@ -283,17 +260,8 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	 * @see    #getRelationsToThisTaxon()
 	 * @see    #getTaxonRelations()
 	 */
-	@OneToMany(mappedBy="relatedFrom", fetch=FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE_ORPHAN})
 	public Set<TaxonRelationship> getRelationsFromThisTaxon() {
 		return relationsFromThisTaxon;
-	}
-	/** 
-	 * @see    #getRelationsFromThisTaxon()
-	 */
-	protected void setRelationsFromThisTaxon(
-			Set<TaxonRelationship> relationsFromThisTaxon) {
-		this.relationsFromThisTaxon = relationsFromThisTaxon;
 	}
 
 
@@ -304,8 +272,6 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	 * @see    #getRelationsFromThisTaxon()
 	 * @see    #getTaxonRelations()
 	 */
-	@OneToMany(mappedBy="relatedTo", fetch=FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE_ORPHAN})
 	public Set<TaxonRelationship> getRelationsToThisTaxon() {
 		return relationsToThisTaxon;
 	}
@@ -316,15 +282,6 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 		this.relationsToThisTaxon = relationsToThisTaxon;
 	}
 
-	@ManyToOne
-	// used by hibernate only...
-	private Taxon getTaxonomicParentCache() {
-		return taxonomicParentCache;
-	}
-	private void setTaxonomicParentCache(Taxon taxonomicParent) {
-		this.taxonomicParentCache = taxonomicParent;
-	}
-
 	/** 
 	 * Returns the set of all {@link TaxonRelationship taxon relationships}
 	 * between two taxa in which <i>this</i> taxon is involved either as a source or
@@ -333,7 +290,6 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	 * @see    #getRelationsFromThisTaxon()
 	 * @see    #getRelationsToThisTaxon()
 	 */
-	@Transient
 	public Set<TaxonRelationship> getTaxonRelations() {
 		Set<TaxonRelationship> rels = new HashSet<TaxonRelationship>();
 		rels.addAll(getRelationsToThisTaxon());
@@ -369,7 +325,7 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 		// check if this removes the taxonomical parent. If so, also remove shortcut to the higher taxon
 		if (rel.getType().equals(TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN()) ){
 			if (fromTaxon != null && fromTaxon.equals(this)){
-				this.setTaxonomicParentCache(null);
+				this.taxonomicParentCache = null;
 			}else if (toTaxon != null && toTaxon.equals(this)){
 				this.setTaxonomicChildrenCount(computeTaxonomicChildrenCount());	
 			}
@@ -417,7 +373,7 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 					}
 					// check if this sets the taxonomical parent. If so, remember a shortcut to this taxon
 					if (rel.getType().equals(TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN()) && toTaxon!=null ){
-						this.setTaxonomicParentCache(toTaxon);
+						this.taxonomicParentCache = toTaxon;
 					}
 				}else if (this.equals(toTaxon)){
 					relationsToThisTaxon.add(rel);
@@ -493,8 +449,6 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 		misappliedNameTaxon.addTaxonRelation(this, TaxonRelationshipType.MISAPPLIED_NAME_FOR(), citation, microcitation);
 	}
 
-	
-//	@Transient
 //	public void removeMisappliedName(Taxon misappliedNameTaxon){
 //		Set<TaxonRelationship> taxRels = this.getTaxonRelations();
 //		for (TaxonRelationship taxRel : taxRels ){
@@ -518,12 +472,11 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	 * @param taxon			the taxon which plays the source role in the taxon relationship
 	 * @param taxonRelType	the taxon relationship type
 	 */
-	@Transient
-	public void removeTaxon(Taxon toTaxon, TaxonRelationshipType taxonRelType){
+	public void removeTaxon(Taxon taxon, TaxonRelationshipType taxonRelType){
 		Set<TaxonRelationship> taxRels = this.getTaxonRelations();
 		for (TaxonRelationship taxRel : taxRels ){
 			if (taxRel.getType().equals(taxonRelType) 
-				&& taxRel.getToTaxon().equals(toTaxon)){
+				&& taxRel.getFromTaxon().equals(taxon)){
 				this.removeTaxonRelation(taxRel);
 			}
 		}
@@ -555,7 +508,6 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	 * @see    	   			#getTaxonomicParent()
 	 * @see    	   			#getTaxonomicChildrenCount()
 	 */
-	@Transient
 	public void addTaxonomicChild(Taxon child, ReferenceBase citation, String microcitation){
 		if (child == null){
 			throw new NullPointerException("Child Taxon is 'null'");
@@ -563,6 +515,7 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 			child.setTaxonomicParent(this, citation, microcitation);
 		}
 	}
+	
 	/** 
 	 * Removes one {@link TaxonRelationship taxon relationship} with {@link TaxonRelationshipType taxon relationship type}
 	 * "taxonomically included in" and with the given child taxon playing the
@@ -585,7 +538,6 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	 * @see    			eu.etaxonomy.cdm.model.common.RelationshipBase#getRelatedTo()
 	 * 
 	 */
-	@Transient
 	public void removeTaxonomicChild(Taxon child){
 		Set<TaxonRelationship> taxRels = this.getTaxonRelations();
 		for (TaxonRelationship taxRel : taxRels ){
@@ -611,9 +563,8 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	 * @see  #getTaxonomicChildrenCount()
 	 * @see  #getRelationsFromThisTaxon()
 	 */
-	@Transient
 	public Taxon getTaxonomicParent() {
-		return getTaxonomicParentCache();
+		return this.taxonomicParentCache;
 	}
 	/**
 	 * Replaces both the taxonomic parent cache with the given new parent taxon
@@ -670,7 +621,6 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	 * @see  #getTaxonomicChildrenCount()
 	 * @see  #getRelationsToThisTaxon()
 	 */
-	@Transient
 	public Set<Taxon> getTaxonomicChildren() {
 		Set<Taxon> taxa = new HashSet<Taxon>();
 		Set<TaxonRelationship> rels = this.getRelationsToThisTaxon();
@@ -701,7 +651,6 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 		return taxonomicChildrenCount;
 	}	
 	
-	
 	/**
 	 * @see  #getTaxonomicChildrenCount()
 	 */
@@ -716,12 +665,10 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	 * @see  #getTaxonomicChildrenCount()
 	 * @see  #getTaxonomicChildren()
 	 */
-	@Transient
 	public boolean hasTaxonomicChildren(){
 		return this.taxonomicChildrenCount > 0;
 	}
 
-	@Transient
 	private int computeTaxonomicChildrenCount(){
 		int count = 0;
 		for (TaxonRelationship rel: this.getRelationsToThisTaxon()){
@@ -737,7 +684,6 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	 * (misapplied name) for at least one other taxon. 
 	 */
 	// TODO cache as for #hasTaxonomicChildren
-	@Transient
 	public boolean isMisappliedName(){
 		return computeMisapliedNameRelations() > 0;
 	}
@@ -747,7 +693,6 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	 * misaplied name for another taxon.
 	 * @return
 	 */
-	@Transient
 	private int computeMisapliedNameRelations(){
 		int count = 0;
 		for (TaxonRelationship rel: this.getRelationsFromThisTaxon()){
@@ -769,7 +714,6 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	 * @see  #removeSynonym(Synonym)
 	 * @see  SynonymRelationship
 	 */
-	@Transient
 	public boolean hasSynonyms(){
 		return this.getSynonymRelations().size() > 0;
 	}
@@ -786,7 +730,6 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	 * @see  #removeTaxonRelation(TaxonRelationship)
 	 * @see  TaxonRelationship
 	 */
-	@Transient
 	public boolean hasTaxonRelationships(){
 		return this.getTaxonRelations().size() > 0;
 	}
@@ -806,7 +749,6 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	 * @see  #getRelationsToThisTaxon()
 	 * @see  #addMisappliedName(Taxon, ReferenceBase, String)
 	 */
-	@Transient
 	public Set<Taxon> getMisappliedNames(){
 		Set<Taxon> taxa = new HashSet<Taxon>();
 		Set<TaxonRelationship> rels = this.getRelationsToThisTaxon();
@@ -841,7 +783,6 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	 * @see    #removeSynonymRelation(SynonymRelationship)
 	 * @see    #removeSynonym(Synonym)
 	 */
-	@Transient
 	public Set<Synonym> getSynonyms(){
 		Set<Synonym> syns = new HashSet<Synonym>();
 		for (SynonymRelationship rel: this.getSynonymRelations()){
@@ -863,7 +804,6 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	 * @see    #removeSynonymRelation(SynonymRelationship)
 	 * @see    #removeSynonym(Synonym)
 	 */
-	@Transient
 	public Set<Synonym> getSynonymsSortedByType(){
 		// FIXME: need to sort synonyms according to type!!!
 		logger.warn("getSynonymsSortedByType() not yet implemented");
@@ -883,7 +823,6 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	 * @see    #removeSynonymRelation(SynonymRelationship)
 	 * @see    #removeSynonym(Synonym)
 	 */
-	@Transient
 	public Set<TaxonNameBase> getSynonymNames(){
 		Set<TaxonNameBase> names = new HashSet<TaxonNameBase>();
 		for (SynonymRelationship rel: this.getSynonymRelations()){
@@ -1020,7 +959,6 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 		Synonym synonym = Synonym.NewInstance(synonymName, this.getSec());
 		return addSynonym(synonym, synonymType, citation, citationMicroReference);
 	}
-	
 
 	/**
 	 * Creates a new {@link Synonym synonym} (with the given {@link eu.etaxonomy.cdm.model.name.TaxonNameBase taxon name}),
@@ -1052,7 +990,6 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	public SynonymRelationship addHeterotypicSynonymName(TaxonNameBase synonymName){
 		return addHeterotypicSynonymName(synonymName, null, null, null);
 	}
-
 	
 	/**
 	 * Creates a new {@link Synonym synonym} (with the given {@link eu.etaxonomy.cdm.model.name.TaxonNameBase taxon name}),
@@ -1198,8 +1135,6 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 		}
 	}
 	
-	
-	
 	/** 
 	 * Returns an {@link java.lang.Iterable#iterator() iterator} over the set of taxa which
 	 * are {@link #getTaxonomicChildren() taxonomic children} of <i>this</i> taxon.
@@ -1242,7 +1177,6 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	 * @see			eu.etaxonomy.cdm.model.name.HomotypicalGroup
 	 * @see			eu.etaxonomy.cdm.model.name.HomotypicalGroup#getSynonymsInGroup(ReferenceBase)
 	 */
-	@Transient
 	public List<Synonym> getHomotypicSynonymsByHomotypicGroup(){
 		if (this.getHomotypicGroup() == null){
 			return null;
@@ -1264,7 +1198,6 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	 * @see			#getHomotypicSynonymyGroups()
 	 * @see			SynonymRelationshipType
 	 */
-	@Transient
 	public List<Synonym> getHomotypicSynonymsByHomotypicRelationship(){
 		Set<SynonymRelationship> synonymRelations = this.getSynonymRelations(); 
 		List<Synonym> result = new ArrayList<Synonym>();
@@ -1289,7 +1222,6 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	 * @see			#getSynonyms()
 	 * @see			eu.etaxonomy.cdm.model.name.HomotypicalGroup
 	 */
-	@Transient
 	public List<HomotypicalGroup> getHomotypicSynonymyGroups(){
 		List<HomotypicalGroup> result = new ArrayList<HomotypicalGroup>();
 		result.add(this.getHomotypicGroup());
@@ -1326,7 +1258,6 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	 * @see			SynonymRelationshipType#HETEROTYPIC_SYNONYM_OF()
 	 * @see			eu.etaxonomy.cdm.model.name.HomotypicalGroup
 	 */
-	@Transient
 	public List<HomotypicalGroup> getHeterotypicSynonymyGroups(){
 		List<HomotypicalGroup> list = getHomotypicSynonymyGroups();
 		list.remove(this.getHomotypicGroup());

@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.model.occurrence;
 
 
 import org.apache.log4j.Logger;
+import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -24,9 +25,10 @@ import javax.xml.bind.annotation.XmlType;
  * @created 08-Nov-2007 13:06:32
  */
 @XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "Observation")
 @XmlRootElement(name = "Observation")
 @Entity
-//@Audited
+@Audited
 public class Observation extends DerivedUnitBase implements Cloneable{
 	private static final Logger logger = Logger.getLogger(Observation.class);
 	

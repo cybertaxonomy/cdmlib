@@ -14,9 +14,11 @@ import javax.persistence.Entity;
 import javax.persistence.Transient;
 
 import org.apache.log4j.Logger;
+import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.strategy.cache.name.ZooNameDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.parser.INonViralNameParser;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
@@ -45,9 +47,14 @@ import javax.xml.bind.annotation.XmlType;
 })
 @XmlRootElement(name = "ZoologicalName")
 @Entity
-//@Audited
-public class ZoologicalName extends NonViralName {
+@Audited
+public class ZoologicalName extends NonViralName<ZoologicalName> {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 845745609734814484L;
+
 	static Logger logger = Logger.getLogger(ZoologicalName.class);
 
 	//Name of the breed of an animal
@@ -244,7 +251,6 @@ public class ZoologicalName extends NonViralName {
 	 * @see  	NonViralName#getNomenclaturalCode()
 	 * @see  	TaxonNameBase#getHasProblem()
 	 */
-	@Transient
 	@Override
 	public NomenclaturalCode getNomenclaturalCode(){
 		return NomenclaturalCode.ICZN;

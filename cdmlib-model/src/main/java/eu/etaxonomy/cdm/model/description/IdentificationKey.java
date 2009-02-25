@@ -14,6 +14,7 @@ import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import org.apache.log4j.Logger;
+import org.hibernate.envers.Audited;
 
 import java.util.*;
 
@@ -48,26 +49,38 @@ import javax.xml.bind.annotation.XmlType;
 })
 @XmlRootElement(name = "IdentificationKey")
 @Entity
-//@Audited
+@Audited
 public class IdentificationKey extends Media {
 	private static final long serialVersionUID = -29095811051894471L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(IdentificationKey.class);
 	
+	/*
+     * FIXME - shouldn't this be @ManyToMany - i.e. many keys can refer to the
+	 * same taxon and some taxa will be covered by multiple keys?
+	 */
 	@XmlElementWrapper(name = "CoveredTaxa")
 	@XmlElement(name = "CoveredTaxon")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
+	@OneToMany(fetch = FetchType.LAZY)
 	private Set<Taxon> coveredTaxa = new HashSet<Taxon>();
 	
 	@XmlElementWrapper( name = "GeoScopes")
 	@XmlElement( name = "GeoScope")
+	@ManyToMany(fetch = FetchType.LAZY)
 	private Set<NamedArea> geoScopes = new HashSet<NamedArea>();
 	
 	@XmlElementWrapper(name = "TaxonomicScope")
 	@XmlElement(name = "Taxon")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
+	@ManyToMany(fetch = FetchType.LAZY)
+	@JoinTable(
+	        name="IdentificationKey_Taxon",
+	        joinColumns=@JoinColumn(name="identificationKey_fk"),
+	        inverseJoinColumns=@JoinColumn(name="taxon_fk")
+	)
 	private Set<Taxon> taxonomicScope = new HashSet<Taxon>();
 	
 	/** 
@@ -88,10 +101,7 @@ public class IdentificationKey extends Media {
 	/** 
 	 * Returns the set of possible {@link Taxon taxa} corresponding to
 	 * <i>this</i> identification key.
-	 * FIXME - shouldn't this be @ManyToMany - i.e. many keys can refer to the
-	 * same taxon and some taxa will be covered by multiple keys?
 	 */
-	@OneToMany(fetch = FetchType.LAZY)
 	public Set<Taxon> getCoveredTaxa() {
 		return coveredTaxa;
 	}
@@ -129,16 +139,8 @@ public class IdentificationKey extends Media {
 	 * Returns the set of {@link NamedArea named areas} indicating the geospatial
 	 * data where <i>this</i> identification key is valid.
 	 */
-	@ManyToMany(fetch = FetchType.LAZY)
 	public Set<NamedArea> getGeoScopes() {
 		return geoScopes;
-	}
-
-	/**
-	 * @see	#getGeoScopes() 
-	 */
-	public void setGeoScopes(Set<NamedArea> geoScopes) {
-		this.geoScopes = geoScopes;
 	}
 	
 	/**
@@ -167,21 +169,8 @@ public class IdentificationKey extends Media {
 	 * Returns the set of {@link Taxon taxa} that define the taxonomic
 	 * scope of <i>this</i> identification key 
 	 */
-	@ManyToMany(fetch = FetchType.LAZY)
-	@JoinTable(
-	        name="IdentificationKey_Taxon",
-	        joinColumns=@JoinColumn(name="identificationKey_fk"),
-	        inverseJoinColumns=@JoinColumn(name="taxon_fk")
-	)
 	public Set<Taxon> getTaxonomicScope() {
 		return taxonomicScope;
-	}
-
-	/**
-	 * @see	#getTaxonomicScope() 
-	 */
-	public void setTaxonomicScope(Set<Taxon> taxonomicScope) {
-		this.taxonomicScope = taxonomicScope;
 	}
 	
 	/**

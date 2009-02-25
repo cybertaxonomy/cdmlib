@@ -9,19 +9,17 @@
 
 package eu.etaxonomy.cdm.model.agent;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
-//import javax.persistence.Column;
-import javax.persistence.Entity;
-//import javax.persistence.JoinColumn;
-//import javax.persistence.JoinTable;
-//import javax.persistence.ManyToOne;
+import javax.persistence.Embeddable;
+import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
-import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
@@ -29,9 +27,8 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
-//import org.hibernate.annotations.CollectionOfElements;
-
-import eu.etaxonomy.cdm.model.common.VersionableEntity;
+import org.hibernate.annotations.CollectionOfElements;
+import org.hibernate.envers.Audited;
 
 /**
  * The class for information on how to approach a {@link Person person} or an {@link Institution institution}.
@@ -49,17 +46,16 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Contact", propOrder = {
-    "email",
-    "url",
-    "phone",
-    "fax",
+    "emailAddresses",
+    "urls",
+    "phoneNumbers",
+    "faxNumbers",
     "addresses"
 })
 @XmlRootElement(name = "Contact")
-@Entity
-//@Embeddable
-//@Audited
-public class Contact extends VersionableEntity {
+@Embeddable
+@Audited
+public class Contact {
 	private static final long serialVersionUID = -1851305307069277625L;
 	private static final Logger logger = Logger.getLogger(Contact.class);
 	
@@ -72,26 +68,31 @@ public class Contact extends VersionableEntity {
 		logger.debug("Constructor call");
 	}
 
-	
+	@XmlElementWrapper(name = "EmailAddresses")
 	@XmlElement(name = "EmailAddress")
-	private String email;
-	// TODO: Make email, url, phone, fax Sets
-	//private Set<String> email;
+	@CollectionOfElements(fetch = FetchType.LAZY)
+	private List<String> emailAddresses = new ArrayList<String>();
 	
+	@XmlElementWrapper(name = "URLs")
 	@XmlElement(name = "URL")
     @XmlSchemaType(name = "anyURI")
-	private String url;
+    @CollectionOfElements(fetch = FetchType.LAZY)
+	private List<String> urls = new ArrayList<String>();
 	
+	@XmlElementWrapper(name = "PhoneNumbers")
 	@XmlElement(name = "PhoneNumber")
-	private String phone;
+	@CollectionOfElements(fetch = FetchType.LAZY)
+	private List<String> phoneNumbers = new ArrayList<String>();
 	
+	@XmlElementWrapper(name = "FaxNumbers")
 	@XmlElement(name = "FaxNumber")
-	private String fax;
+	@CollectionOfElements(fetch = FetchType.LAZY)
+	private List<String> faxNumbers = new ArrayList<String>();
 	
     @XmlElementWrapper(name = "Addresses")
     @XmlElement(name = "Address")
-    @XmlIDREF
-    @XmlSchemaType(name = "IDREF")
+    @OneToMany(fetch = FetchType.LAZY)
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE_ORPHAN})
 	protected Set<Address> addresses;
 	
 	
@@ -103,17 +104,10 @@ public class Contact extends VersionableEntity {
 	 * @return	the set of postal addresses
 	 * @see     Address
 	 */
-	@OneToMany(mappedBy="contact")
-	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE_ORPHAN})
 	public Set<Address> getAddresses(){
 		return this.addresses;
 	}
-	/** 
-	 * @see     #getAddresses()
-	 */
-	protected void setAddresses(Set<Address> addresses){
-		this.addresses = addresses;
-	}
+	
 	/** 
 	 * Adds a new postal {@link Address address} to the set of postal addresses of <i>this</i> contact.
 	 *
@@ -123,10 +117,10 @@ public class Contact extends VersionableEntity {
 	 */
 	public void addAddress(Address address){
 		if (address != null){
-			address.setContact(this);
 			addresses.add(address);
 		}
 	}
+	
 	/** 
 	 * Removes one element from the set of postal addresses of <i>this</i> contact.
 	 *
@@ -134,79 +128,107 @@ public class Contact extends VersionableEntity {
 	 * @see     		#getAddresses()
 	 */
 	public void removeAddress(Address address){
-		address.setContact(null);
+		addresses.remove(address);
 	}
 
 	
 	/**
-	 * Returns the string representing the electronic mail address
+	 * Returns the List of strings representing the electronic mail addresses
 	 * included in <i>this</i> contact.
 	 */
-	// TODO:
-//	@CollectionOfElements(
-//			targetElement = String.class
-//	)
-//	@JoinTable(
-//		name = "item_email",
-//		joinColumns = @JoinColumn(name = "email_id")
-//	)
-//	@Column(name = "EINNAME" , nullable = false)
-//	public Set<String> getEmail(){
-	public String getEmail(){
-		return this.email;
+	public List<String> getEmailAddresses(){
+		return this.emailAddresses;
 	}
 
 	/**
-	 * @see  #getEmail()
+	 * @see  #getEmailAddress()
 	 */
-	//public void setEmail(Set<String> email){
-	public void setEmail(String email){
-		this.email = email;
+	public void addEmailAddress(String emailAddress){
+		this.emailAddresses.add(emailAddress);
+	}
+	
+	/** 
+	 * Removes one element from the list of email addresses of <i>this</i> contact.
+	 *
+	 * @param  emailAddress  the email address of <i>this</i> contact which should be deleted
+	 * @see     		#getEmailAddresses()
+	 */
+	public void removeEmailAddress(String emailAddress){
+		emailAddresses.remove(emailAddress);
 	}
 
 	/**
-	 * Returns the string representing the "Uniform Resource Locator" (url)
+	 * Returns the list of strings representing the "Uniform Resource Locators" (urls)
 	 * included in <i>this</i> contact.
 	 */
-	public String getUrl(){
-		return this.url;
+	public List<String> getUrls(){
+		return this.urls;
 	}
 
 	/**
-	 * @see  #getUrl()
+	 * @see  #getUrls()
 	 */
-	public void setUrl(String url){
-		this.url = url;
+	public void addUrl(String url){
+		this.urls.add(url);
+	}
+	
+	/** 
+	 * Removes one element from the list of urls of <i>this</i> contact.
+	 *
+	 * @param  url  the url of <i>this</i> contact which should be deleted
+	 * @see     		#getUrls()
+	 */
+	public void removeUrl(String url){
+		urls.remove(url);
 	}
 
 	/**
-	 * Returns the string representing the phone number
+	 * Returns the list of strings representing the phone numbers
 	 * included in <i>this</i> contact.
 	 */
-	public String getPhone(){
-		return this.phone;
+	public List<String> getPhoneNumbers(){
+		return this.phoneNumbers;
 	}
 
 	/**
 	 * @see  #getPhone()
 	 */
-	public void setPhone(String phone){
-		this.phone = phone;
+	public void addPhoneNumber(String phoneNumber){
+		this.phoneNumbers.add(phoneNumber);
+	}
+	
+	/** 
+	 * Removes one element from the list of phone numbers of <i>this</i> contact.
+	 *
+	 * @param  phoneNumber  the phone number of <i>this</i> contact which should be deleted
+	 * @see     		#getPhoneNumber()
+	 */
+	public void removePhoneNumber(String phoneNumber){
+		phoneNumbers.remove(phoneNumber);
 	}
 
 	/**
-	 * Returns the string representing the telefax number
+	 * Returns the list of strings representing the telefax numbers
 	 * included in <i>this</i> contact.
 	 */
-	public String getFax(){
-		return this.fax;
+	public List<String> getFaxNumbers(){
+		return this.faxNumbers;
 	}
 
 	/**
-	 * @see  #getFax()
+	 * @see  #getFaxNumbers()
 	 */
-	public void setFax(String fax){
-		this.fax = fax;
+	public void addFaxNumber(String faxNumber){
+		this.faxNumbers.add(faxNumber);
 	}
 
+	/** 
+	 * Removes one element from the list of telefax numbers of <i>this</i> contact.
+	 *
+	 * @param  faxNumber  the telefax number of <i>this</i> contact which should be deleted
+	 * @see     		#getFaxNumber()
+	 */
+	public void removeFaxNumber(String faxNumber){
+		faxNumbers.remove(faxNumber);
+	}
 }

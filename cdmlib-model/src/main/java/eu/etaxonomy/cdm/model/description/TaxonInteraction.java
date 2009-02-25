@@ -10,9 +10,14 @@
 package eu.etaxonomy.cdm.model.description;
 
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -23,6 +28,9 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.apache.log4j.Logger;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
+import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.jaxb.MultilanguageTextAdapter;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -53,7 +61,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 })
 @XmlRootElement(name = "TaxonInteraction")
 @Entity
-//@Audited
+@Audited
 public class TaxonInteraction extends DescriptionElementBase {
 	private static final long serialVersionUID = -5014025677925668627L;
 	@SuppressWarnings("unused")
@@ -61,11 +69,15 @@ public class TaxonInteraction extends DescriptionElementBase {
 	
 	@XmlElement(name = "Description")
     @XmlJavaTypeAdapter(MultilanguageTextAdapter.class)
-	private MultilanguageText description;
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "TaxonInteraction_LanguageString")
+	private Map<Language,LanguageString> description = new HashMap<Language,LanguageString>();
 	
 	@XmlElement(name = "Taxon2")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
+	@ManyToOne(fetch = FetchType.LAZY)
+	@Cascade(CascadeType.SAVE_UPDATE)
 	private Taxon taxon2;
 	
 	/** 
@@ -88,7 +100,6 @@ public class TaxonInteraction extends DescriptionElementBase {
 	 * The first taxon is the taxon described in the corresponding
 	 * {@link TaxonDescription taxon description}.
 	 */
-	@ManyToOne(fetch = FetchType.LAZY)
 	public Taxon getTaxon2(){
 		return this.taxon2;
 	}
@@ -104,16 +115,10 @@ public class TaxonInteraction extends DescriptionElementBase {
 	 * <i>this</i> taxon interaction. The different {@link LanguageString language strings}
 	 * contained in the multilanguage text should all have the same meaning.
 	 */
-	public MultilanguageText getDescription(){
+	public Map<Language,LanguageString> getDescription(){
 		return this.description;
 	}
-	/**
-	 * @see	#getDescription() 
-	 */
-	@SuppressWarnings("unused")
-	private void setDescription(MultilanguageText description){
-		this.description = description;
-	}
+
 	/**
 	 * Adds a translated {@link LanguageString text in a particular language}
 	 * to the {@link MultilanguageText multilanguage text} used to describe
@@ -125,7 +130,7 @@ public class TaxonInteraction extends DescriptionElementBase {
 	 * @see    	   			#addDescription(String, Language)
 	 */
 	public void addDescription(LanguageString description){
-		this.description.add(description);
+		this.description.put(description.getLanguage(),description);
 	}
 	/**
 	 * Creates a {@link LanguageString language string} based on the given text string

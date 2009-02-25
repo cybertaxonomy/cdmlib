@@ -9,11 +9,15 @@
 
 package eu.etaxonomy.cdm.model.name;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 import org.apache.log4j.Logger;
-import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -43,7 +47,7 @@ public class TaxonNameBaseTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
-		nameBase1 = new TaxonNameBaseTestClass();
+		nameBase1 = new TaxonNameBaseTestClass(null,null);
 		nameBase2 = new TaxonNameBaseTestClass(Rank.GENUS());
 	}
 

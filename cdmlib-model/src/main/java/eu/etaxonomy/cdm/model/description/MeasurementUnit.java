@@ -15,6 +15,7 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 
 import org.apache.log4j.Logger;
+import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -34,7 +35,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "MeasurementUnit")
 @XmlRootElement(name = "MeasurementUnit")
 @Entity
-//@Audited
+@Audited
 public class MeasurementUnit extends DefinedTermBase<MeasurementUnit> {
 	private static final long serialVersionUID = 4904519152652248312L;
 	@SuppressWarnings("unused")

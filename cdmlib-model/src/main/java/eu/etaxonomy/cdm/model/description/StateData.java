@@ -10,16 +10,15 @@
 package eu.etaxonomy.cdm.model.description;
 
 
-import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.LanguageString;
-import eu.etaxonomy.cdm.model.common.MultilanguageText;
-import eu.etaxonomy.cdm.model.common.TermVocabulary;
-import eu.etaxonomy.cdm.model.common.VersionableEntity;
-import org.apache.log4j.Logger;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
-import java.util.*;
-
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -28,6 +27,17 @@ import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
+import org.apache.log4j.Logger;
+import org.hibernate.envers.Audited;
+
+import eu.etaxonomy.cdm.jaxb.MultilanguageTextAdapter;
+import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.LanguageString;
+import eu.etaxonomy.cdm.model.common.MultilanguageText;
+import eu.etaxonomy.cdm.model.common.TermVocabulary;
+import eu.etaxonomy.cdm.model.common.VersionableEntity;
 
 /**
  * This class represents the assignment of values ({@link State state terms}) to {@link Feature features}
@@ -50,7 +60,7 @@ import javax.xml.bind.annotation.XmlType;
 })
 @XmlRootElement(name = "StateData")
 @Entity
-//@Audited
+@Audited
 public class StateData extends VersionableEntity {
 	private static final long serialVersionUID = -4380314126624505415L;
 	@SuppressWarnings("unused")
@@ -59,14 +69,18 @@ public class StateData extends VersionableEntity {
 	@XmlElement(name = "State")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
+    @ManyToOne(fetch = FetchType.LAZY)
 	private State state;
 	
 	@XmlElementWrapper(name = "Modifiers")
 	@XmlElement(name = "Modifier")
+	@OneToMany(fetch = FetchType.LAZY)
 	private Set<Modifier> modifiers = new HashSet<Modifier>();
 	
 	@XmlElement(name = "ModifyingText")
-	private MultilanguageText modifyingText;
+	@XmlJavaTypeAdapter(MultilanguageTextAdapter.class)
+	@OneToMany(fetch = FetchType.LAZY)
+	private Map<Language,LanguageString> modifyingText = new HashMap<Language,LanguageString>();
 	
 	/** 
 	 * Class constructor: creates a new empty state data instance.
@@ -85,7 +99,6 @@ public class StateData extends VersionableEntity {
 	/** 
 	 * Returns the {@link State state term} used in <i>this</i> state data.
 	 */
-	@ManyToOne(fetch = FetchType.LAZY)
 	public State getState(){
 		return this.state;
 	}
@@ -101,17 +114,10 @@ public class StateData extends VersionableEntity {
 	 * Returns the set of {@link Modifier modifiers} used to qualify the validity
 	 * of <i>this</i> state data. This is only metainformation.
 	 */
-	@OneToMany(fetch = FetchType.LAZY)
 	public Set<Modifier> getModifiers(){
 		return this.modifiers;
 	}
-	/**
-	 * @see	#getModifiers() 
-	 */
-	@SuppressWarnings("unused")
-	private void setModifiers(Set<Modifier> modifiers) {
-		this.modifiers = modifiers;
-	}
+	
 	/**
 	 * Adds a {@link Modifier modifier} to the set of {@link #getModifiers() modifiers}
 	 * used to qualify the validity of <i>this</i> state data.
@@ -146,16 +152,10 @@ public class StateData extends VersionableEntity {
 	 * stored in the modifying text. This is only metainformation
 	 * (like "Some experts express doubt about this assertion").
 	 */
-	public MultilanguageText getModifyingText(){
+	public Map<Language,LanguageString> getModifyingText(){
 		return this.modifyingText;
 	}
-	/**
-	 * @see	#getModifyingText() 
-	 */
-	@SuppressWarnings("unused")
-	private void setModifyingText(MultilanguageText modifyingText) {
-		this.modifyingText = modifyingText;
-	}
+
 	/**
 	 * Creates a {@link LanguageString language string} based on the given text string
 	 * and the given {@link Language language} and adds it to the {@link MultilanguageText multilanguage text} 
@@ -181,7 +181,7 @@ public class StateData extends VersionableEntity {
 	 * @see    	   	#addModifyingText(String, Language)
 	 */
 	public void addModifyingText(LanguageString text){
-		this.modifyingText.add(text);
+		this.modifyingText.put(text.getLanguage(),text);
 	}
 	/** 
 	 * Removes from the {@link MultilanguageText multilanguage text} used to qualify the validity

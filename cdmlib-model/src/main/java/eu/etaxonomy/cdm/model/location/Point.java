@@ -9,6 +9,7 @@
 
 package eu.etaxonomy.cdm.model.location;
 import javax.persistence.Embeddable;
+import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -54,6 +55,7 @@ public class Point implements Cloneable {
 	@XmlElement(name = "ReferenceSystem")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
+	@ManyToOne(fetch = FetchType.LAZY)
 	private ReferenceSystem referenceSystem;
 	
 	/**
@@ -70,7 +72,6 @@ public class Point implements Cloneable {
 	public Point() {
 	}
 	
-	@ManyToOne
 	public ReferenceSystem getReferenceSystem(){
 		return this.referenceSystem;
 	}

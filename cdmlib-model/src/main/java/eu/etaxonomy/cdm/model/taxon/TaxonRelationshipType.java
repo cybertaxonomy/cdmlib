@@ -15,6 +15,7 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
 
 import org.apache.log4j.Logger;
+import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -49,7 +50,7 @@ import java.util.UUID;
 @XmlType(name = "TaxonRelationshipType")
 @XmlRootElement(name = "TaxonRelationshipType")
 @Entity
-//@Audited
+@Audited
 public class TaxonRelationshipType extends RelationshipTermBase<TaxonRelationshipType> {
 	
 	static Logger logger = Logger.getLogger(TaxonRelationshipType.class);

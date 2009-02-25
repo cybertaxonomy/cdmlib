@@ -9,21 +9,18 @@
 
 package eu.etaxonomy.cdm.model.common;
 
-import org.apache.log4j.Logger;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
-import org.hibernate.collection.AbstractPersistentCollection;
-import org.hibernate.search.annotations.Indexed;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 
-import au.com.bytecode.opencsv.CSVWriter;
-import eu.etaxonomy.cdm.model.common.init.ITermInitializer;
-import eu.etaxonomy.cdm.model.media.Media;
-import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
-
-import java.lang.reflect.Field;
-import java.util.*;
-
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -31,8 +28,16 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
+
+import org.apache.log4j.Logger;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
+import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Indexed;
+
+import au.com.bytecode.opencsv.CSVWriter;
+import eu.etaxonomy.cdm.model.media.Media;
 
 
 /**
@@ -54,7 +59,7 @@ import javax.xml.bind.annotation.XmlType;
 })
 @XmlRootElement(name = "DefinedTermBase")
 @Entity
-//@Audited
+@Audited
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 @Indexed
 public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBase implements ILoadableTerm<T>, IDefinedTerm<T> {
@@ -64,20 +69,25 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
 	@XmlElement(name = "KindOf")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
+    @ManyToOne(fetch = FetchType.LAZY, targetEntity = DefinedTermBase.class)
+    @Cascade(CascadeType.SAVE_UPDATE)
 	private T kindOf;
 	/**
 	 * FIXME - Hibernate retuns this as a collection of CGLibProxy$$DefinedTermBase objects 
 	 * which can't be cast to instances of T - can we explicitly initialize these terms using 
 	 * Hibernate.initialize(), does this imply a distinct load, and find methods in the dao?
 	 */
+	@XmlElementWrapper(name = "Generalizations")
 	@XmlElement(name = "GeneralizationOf")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
+    @OneToMany(fetch=FetchType.LAZY, mappedBy = "kindOf", targetEntity = DefinedTermBase.class)
+	@Cascade({CascadeType.SAVE_UPDATE})
 	private Set<T> generalizationOf = new HashSet<T>();
 	
 	@XmlElement(name = "PartOf")
-    @XmlIDREF
-    @XmlSchemaType(name = "IDREF")
+	@ManyToOne(fetch = FetchType.LAZY, targetEntity = DefinedTermBase.class)
+	@Cascade(CascadeType.SAVE_UPDATE)
 	private T partOf;
 	
 	/**
@@ -87,22 +97,29 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
 	 */
 	@XmlElementWrapper(name = "Includes")
 	@XmlElement(name = "Include")
-    @XmlIDREF
+	@XmlIDREF
     @XmlSchemaType(name = "IDREF")
-    private Set<T> includes = new HashSet<T>();
+	@OneToMany(fetch=FetchType.LAZY, mappedBy = "partOf", targetEntity = DefinedTermBase.class)
+	@Cascade({CascadeType.SAVE_UPDATE})
+	private Set<T> includes = new HashSet<T>();
 	
+	/**
+	 * FIXME should be many-to-many?
+	 */
 	@XmlElementWrapper(name = "Media")
 	@XmlElement(name = "Medium")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
+    @OneToMany(fetch = FetchType.LAZY)
+	@Cascade({CascadeType.SAVE_UPDATE})
 	private Set<Media> media = new HashSet<Media>();
 	
 	@XmlElement(name = "TermVocabulary")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
+	@ManyToOne(fetch=FetchType.LAZY)
+	@Cascade(CascadeType.SAVE_UPDATE)
 	protected TermVocabulary<T> vocabulary;	
-	
-// ************** Constructor ******************************************/
 	
 	public DefinedTermBase() {
 		super();
@@ -115,9 +132,6 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.ILoadableTerm#readCsvLine(java.util.List)
-	 */
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.IDefinedTerm#readCsvLine(java.lang.Class, java.util.List, java.util.Map)
 	 */
 	public T readCsvLine(Class<T> termClass, List<String> csvLine, Map<UUID,DefinedTermBase> terms) {
 		try {
@@ -158,23 +172,18 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.IDefinedTerm#getByUuid(java.util.UUID)
 	 */
-	@Transient
 	public T getByUuid(UUID uuid){
 		return this.vocabulary.findTermByUuid(uuid);
 	}
 	
-	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.IDefinedTerm#getKindOf()
 	 */
-	@ManyToOne(fetch = FetchType.LAZY, targetEntity = DefinedTermBase.class)
-	@Cascade({CascadeType.SAVE_UPDATE})
 	public T getKindOf(){
 		return this.kindOf;
 	}
-	
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.IDefinedTerm#setKindOf(T)
+	 * @see eu.etaxonomy.cdm.model.common.IDefinedTerm#getByUuid(java.util.UUID)
 	 */
 	public void setKindOf(T kindOf){
 		this.kindOf = kindOf;
@@ -183,17 +192,8 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.IDefinedTerm#getGeneralizationOf()
 	 */
-	@OneToMany(fetch=FetchType.LAZY, mappedBy = "kindOf", targetEntity = DefinedTermBase.class)
-	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<T> getGeneralizationOf(){
 		return this.generalizationOf;
-	}
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.IDefinedTerm#setGeneralizationOf(java.util.Set)
-	 */
-	public void setGeneralizationOf(Set<T> generalizationOf) {
-		this.generalizationOf = generalizationOf;
 	}
 	
 	/* (non-Javadoc)
@@ -214,15 +214,13 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
 		}
 	}
 
-
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.IDefinedTerm#getPartOf()
 	 */
-	@ManyToOne(fetch = FetchType.LAZY, targetEntity = DefinedTermBase.class)
-	@Cascade({CascadeType.SAVE_UPDATE})
 	public T getPartOf(){
 		return this.partOf;
 	}
+	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.IDefinedTerm#setPartOf(T)
 	 */
@@ -230,21 +228,13 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
 		this.partOf = partOf;
 	}
 
-	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.IDefinedTerm#getIncludes()
 	 */
-	@OneToMany(fetch=FetchType.LAZY, mappedBy = "partOf", targetEntity = DefinedTermBase.class)
-	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<T> getIncludes(){
 		return this.includes;
 	}
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.IDefinedTerm#setIncludes(java.util.Set)
-	 */
-	public void setIncludes(Set<T> includes) {
-		this.includes = includes;
-	}
+	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.IDefinedTerm#addIncludes(T)
 	 */
@@ -262,49 +252,29 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
 		}
 	}
 
-
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.IDefinedTerm#getMedia()
 	 */
-	@ManyToMany(fetch = FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<Media> getMedia(){
 		return this.media;
 	}
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.IDefinedTerm#setMedia(java.util.Set)
-	 */
-	public void setMedia(Set<Media> media) {
-		this.media = media;
-	}
+	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.IDefinedTerm#addMedia(eu.etaxonomy.cdm.model.media.Media)
 	 */
 	public void addMedia(Media media) {
 		this.media.add(media);
 	}
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.IDefinedTerm#removeMedia(eu.etaxonomy.cdm.model.media.Media)
-	 */
 	public void removeMedia(Media media) {
 		this.media.remove(media);
 	}
 
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.IDefTerm#getVocabulary()
-	 */
-	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.IDefinedTerm#getVocabulary()
 	 */
-	@XmlTransient
-	@ManyToOne(fetch=FetchType.LAZY)
-	@Cascade( { CascadeType.SAVE_UPDATE })
 	public TermVocabulary<T> getVocabulary() {
 		return this.vocabulary;
 	}
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.IDefTerm#setVocabulary(eu.etaxonomy.cdm.model.common.TermVocabulary)
-	 */
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.IDefinedTerm#setVocabulary(eu.etaxonomy.cdm.model.common.TermVocabulary)
 	 */

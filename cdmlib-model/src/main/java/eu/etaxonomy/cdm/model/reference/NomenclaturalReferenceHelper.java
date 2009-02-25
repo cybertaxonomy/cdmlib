@@ -9,7 +9,6 @@
 
 package eu.etaxonomy.cdm.model.reference;
 
-import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -31,17 +30,9 @@ import eu.etaxonomy.cdm.strategy.cache.reference.INomenclaturalReferenceCacheStr
  * @created 28.06.2008
  * @version 1.0
  */
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "NomenclaturalReferenceHelper", propOrder = {
-    "nomenclaturalReference"
-})
-@XmlRootElement(name = "NomenclaturalReferenceHelper")
 class NomenclaturalReferenceHelper {
 	private static final Logger logger = Logger.getLogger(NomenclaturalReferenceHelper.class);
 
-	@XmlElement(name = "NomenclaturalReference")
-	@XmlIDREF
-	@XmlSchemaType(name = "IDREF")
 	private ReferenceBase nomenclaturalReference; 
 	//private IReferenceBaseCacheStrategy<ReferenceBase> cacheStrategy; 
 	
@@ -75,7 +66,6 @@ class NomenclaturalReferenceHelper {
 	 * 
 	 * @see  strategy.cache.reference.INomenclaturalReferenceCacheStrategy
 	 */
-	@Transient
 	public String getCitation(){
 		//TODO
 		logger.warn("getCitation not yet fully implemented");
@@ -99,7 +89,6 @@ class NomenclaturalReferenceHelper {
 	 * @see 					name.TaxonNameBase#getNomenclaturalReference()
 	 * @see 					strategy.cache.reference.INomenclaturalReferenceCacheStrategy
 	 */
-	@Transient
 	public String getNomenclaturalCitation(String microReference) {
 		if (nomenclaturalReference.isProtectedTitleCache()){
 			return nomenclaturalReference.getTitleCache();
@@ -117,7 +106,6 @@ class NomenclaturalReferenceHelper {
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.reference.ReferenceBase#generateTitle()
 	 */
-	@Transient
 	/**
 	 * Generates, according to the {@link INomenclaturalReferenceCacheStrategy cache strategy}
 	 * assigned to the {@link ReferenceBase reference} of <i>this</i> nomenclatural reference helper,
@@ -134,7 +122,6 @@ class NomenclaturalReferenceHelper {
 	}
 	
 	//
-	@Transient
 	private String getTokenizedFullNomenclaturalTitel() {
 		if (getCacheStrategy() == null || ! (getCacheStrategy() instanceof INomenclaturalReferenceCacheStrategy) ){
 			logger.warn("cacheStrategy == null of not instanceOf INomenclaturalReferenceCacheStrategy");

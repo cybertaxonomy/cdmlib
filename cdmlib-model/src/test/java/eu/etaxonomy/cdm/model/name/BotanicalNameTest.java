@@ -27,6 +27,7 @@ import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.reference.Article;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 
 
@@ -120,19 +121,17 @@ public class BotanicalNameTest extends EntityTestBase{
 		
 		HybridRelationship hybridRelationship1 = new HybridRelationship(femaleParent, botanicalName1, HybridRelationshipType.FEMALE_PARENT(), null );
 		HybridRelationship hybridRelationship2 = new HybridRelationship(maleParent, botanicalName1, HybridRelationshipType.MALE_PARENT(), null );
-		Set set = new HashSet<HybridRelationship>();
-		set.add(hybridRelationship1);
-		set.add(hybridRelationship2);
-		botanicalName1.setHybridRelationships(set);
+		
+		botanicalName1.addHybridRelationship(hybridRelationship1);
+		botanicalName1.addHybridRelationship(hybridRelationship2);
 		assertEquals(2, botanicalName1.getHybridRelationships().size());
-		botanicalName1.setHybridRelationships(set);
-		set.add("sdfds");
+
 		//TODO
 		//assertEquals(2, botanicalName1.getHybridRelationships().size());
 		logger.warn("not yet fully implemented");
-		botanicalName2.setHybridRelationships(null);
+		botanicalName2.getHybridRelationships().clear();
 		//TODO how should this be defined??
-		assertNull(botanicalName2.getHybridRelationships());
+		assertTrue(botanicalName2.getHybridRelationships().isEmpty());
 	}
 
 	@Test

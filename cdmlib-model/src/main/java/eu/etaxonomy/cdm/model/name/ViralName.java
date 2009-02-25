@@ -20,6 +20,7 @@ import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
+import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy;
 
@@ -44,12 +45,13 @@ import eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy;
 })
 @XmlRootElement(name = "ViralName")
 @Entity
-//@Audited
+@Audited
 public class ViralName extends TaxonNameBase<ViralName, INameCacheStrategy<ViralName>>  {
 	
 	private static final Logger logger = Logger.getLogger(ViralName.class);
 
     @XmlTransient
+    @Transient
 	protected INameCacheStrategy<ViralName> cacheStrategy;
 	
 	@XmlElement(name = "Acronym")
@@ -137,7 +139,6 @@ public class ViralName extends TaxonNameBase<ViralName, INameCacheStrategy<Viral
 	 * @see	   	TaxonNameBase#isCodeCompliant()
 	 */
 	@Override
-	@Transient
 	public boolean isCodeCompliant() {
 		logger.warn("not yet implemented");
 		return false;
@@ -155,7 +156,6 @@ public class ViralName extends TaxonNameBase<ViralName, INameCacheStrategy<Viral
 	 * @see  	TaxonNameBase#getHasProblem()
 	 * @see  	TaxonNameBase#getNomenclaturalCode()
 	 */
-	@Transient
 	@Override
 	public NomenclaturalCode getNomenclaturalCode(){
 		return NomenclaturalCode.ICVCN;
@@ -170,7 +170,6 @@ public class ViralName extends TaxonNameBase<ViralName, INameCacheStrategy<Viral
 	 * @see 	eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy
 	 * @see     eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy
 	 */
-	@Transient
 	@Override
 	public INameCacheStrategy getCacheStrategy() {
 		return cacheStrategy;

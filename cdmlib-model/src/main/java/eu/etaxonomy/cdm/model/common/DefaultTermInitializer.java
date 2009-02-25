@@ -66,7 +66,6 @@ public class DefaultTermInitializer implements ITermInitializer {
 		AnnotationType.class,
 		NamedAreaType.class,
 		NamedAreaLevel.class,
-		//NomenclaturalCode.class,
 		Feature.class,
 		TdwgArea.class,
 		//NamedArea.class,

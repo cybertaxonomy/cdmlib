@@ -14,6 +14,8 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.Any;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -38,7 +40,7 @@ import javax.xml.bind.annotation.XmlType;
     "linkbackUrl"
 })
 @Entity
-//@Audited
+@Audited
 public class Annotation extends LanguageStringBase implements Cloneable {
 	private static final long serialVersionUID = -4484677078599520233L;
 	private static final Logger logger = Logger.getLogger(Annotation.class);
@@ -81,16 +83,25 @@ public class Annotation extends LanguageStringBase implements Cloneable {
 	@XmlElement(name = "Commentator")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @Cascade(CascadeType.SAVE_UPDATE)
 	private Person commentator;
 	
 	@XmlElement(name = "AnnotatedObject")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
+    @Any(metaDef = "CdmBase",
+	    	 metaColumn=@Column(name = "annotatedObj_type"),
+	    	 fetch = FetchType.LAZY,
+	    	 optional = false)
+	@JoinColumn(name = "annotatedObj_id")
+	@NotAudited
 	private AnnotatableEntity annotatedObj;
 	
     @XmlElement(name = "AnnotationType")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
+    @ManyToOne(fetch = FetchType.LAZY)
 	private AnnotationType annotationType;
 	
 	// for external annotations/comments the URL of these can be set.
@@ -103,20 +114,13 @@ public class Annotation extends LanguageStringBase implements Cloneable {
 	 * Currently envers does not support @Any
 	 * @return
 	 */
-	@Any(metaDef = "CdmBase",
-	    	 metaColumn=@Column(name = "annotatedObj_type"),
-	    	 fetch = FetchType.LAZY,
-	    	 optional = false)
-	@JoinColumn(name = "annotatedObj_id")
-//	@NotAudited
 	public AnnotatableEntity getAnnotatedObj() {
 		return annotatedObj;
 	}
-	protected void setAnnotatedObj(AnnotatableEntity newAnnotatedObj) {
+	public void setAnnotatedObj(AnnotatableEntity newAnnotatedObj) {
 		this.annotatedObj = newAnnotatedObj;		
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
 	public AnnotationType getAnnotationType() {
 		return annotationType;
 	}
@@ -125,8 +129,6 @@ public class Annotation extends LanguageStringBase implements Cloneable {
 		this.annotationType = annotationType;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE})
 	public Person getCommentator(){
 		return this.commentator;
 	}
@@ -134,7 +136,6 @@ public class Annotation extends LanguageStringBase implements Cloneable {
 		this.commentator = commentator;
 	}
 	
-	@Transient
 	public URL getLinkbackUrl() {
 		return linkbackUrl;
 	}

@@ -18,33 +18,74 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.Transient;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlIDREF;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlType;
 
-import eu.etaxonomy.cdm.model.agent.Agent;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
-import eu.etaxonomy.cdm.model.taxon.Taxon;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.envers.Audited;
 import org.joda.time.Partial;
 
+import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.common.EventBase;
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 /**
  * @author m.doering
  * @version 1.0
  * @created 08-Nov-2007 13:06:21
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "DeterminationEvent", propOrder = {
+    "identifiedUnit",
+    "taxon",
+    "modifier",
+    "preferredFlag",
+    "setOfReferences"
+})
+@XmlRootElement(name = "DeterminationEvent")
 @Entity
-//@Audited
+@Audited
 public class DeterminationEvent extends EventBase {
 	private static final Logger logger = Logger.getLogger(DeterminationEvent.class);
 
+	@XmlElement(name = "IdentifiedUnit")
+	@XmlIDREF
+	@XmlSchemaType(name = "IDREF")
+	@ManyToOne(fetch = FetchType.LAZY)
+	@Cascade(CascadeType.SAVE_UPDATE)
 	private SpecimenOrObservationBase identifiedUnit;
-	private Taxon taxon;
+	
+	@XmlElement(name = "Taxon")
+	@XmlIDREF
+	@XmlSchemaType(name = "IDREF")
+	@ManyToOne(fetch = FetchType.LAZY)
+    @Cascade(CascadeType.SAVE_UPDATE)
+    private Taxon taxon;
+	
+	@XmlElement(name = "Modifier")
+	@XmlIDREF
+	@XmlSchemaType(name = "IDREF")
+	@ManyToOne(fetch = FetchType.LAZY)
 	private DeterminationModifier modifier;
+	
+	@XmlElement(name = "PreferredFlag")
 	private boolean preferredFlag;
-	private Set<ReferenceBase> setOfReferences = getNewReferencesSet();
+	
+	@XmlElementWrapper(name = "SetOfReferences")
+	@XmlElement(name = "Reference")
+	@XmlIDREF
+	@XmlSchemaType(name = "IDREF")
+	@ManyToMany(fetch = FetchType.LAZY)
+	private Set<ReferenceBase> setOfReferences = new HashSet<ReferenceBase>();
 
 	
 	
@@ -63,8 +104,6 @@ public class DeterminationEvent extends EventBase {
 		super();
 	}
 	
-	@ManyToOne(fetch = FetchType.LAZY)
-	@Cascade( { CascadeType.SAVE_UPDATE })
 	public DeterminationModifier getModifier() {
 		return modifier;
 	}
@@ -73,8 +112,6 @@ public class DeterminationEvent extends EventBase {
 		this.modifier = modifier;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@Cascade( { CascadeType.SAVE_UPDATE })
 	public Taxon getTaxon(){
 		return this.taxon;
 	}
@@ -87,8 +124,6 @@ public class DeterminationEvent extends EventBase {
 		this.taxon = taxon;
 	}
 
-
-	@Transient
 	public Partial getIdentificationDate(){
 		return this.getTimeperiod().getStart();
 	}
@@ -101,16 +136,14 @@ public class DeterminationEvent extends EventBase {
 		this.getTimeperiod().setStart(identificationDate);
 	}
 
-	@Transient
-	public Agent getDeterminer() {
+	public AgentBase getDeterminer() {
 		return this.getActor();
 	}
-	public void setDeterminer(Agent determiner) {
+	
+	public void setDeterminer(AgentBase determiner) {
 		this.setActor(determiner);
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@Cascade( { CascadeType.SAVE_UPDATE })
 	public SpecimenOrObservationBase getIdentifiedUnit() {
 		return identifiedUnit;
 	}
@@ -127,13 +160,6 @@ public class DeterminationEvent extends EventBase {
 		this.preferredFlag = preferredFlag;
 	}
 	
-	@Transient
-	private static Set<ReferenceBase> getNewReferencesSet(){
-		return new HashSet<ReferenceBase>();
-	}
-	
-	@ManyToMany(fetch = FetchType.LAZY)
-	@Cascade( { CascadeType.SAVE_UPDATE })
 	public Set<ReferenceBase> getReferences() {
 		return setOfReferences;
 	}

@@ -12,10 +12,10 @@ public class GrantedAuthorityImpl extends CdmBase implements GrantedAuthority {
 	 * 
 	 */
 	private static final long serialVersionUID = 2651969425860655040L;
-	
-	private String authority;
 
 	@NaturalId
+	private String authority;
+
 	public String getAuthority() {
 		return authority;
 	}

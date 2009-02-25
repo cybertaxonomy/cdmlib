@@ -17,6 +17,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
+import org.hibernate.envers.Audited;
 
 /**
  * This class represents a database used as an information source. A database is
@@ -33,7 +34,7 @@ import org.apache.log4j.Logger;
 @XmlType(name = "Database")
 @XmlRootElement(name = "Database")
 @Entity
-//@Audited
+@Audited
 public class Database extends PublicationBase implements Cloneable {
 
 	/**

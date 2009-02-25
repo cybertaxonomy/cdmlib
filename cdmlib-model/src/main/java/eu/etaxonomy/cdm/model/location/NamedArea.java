@@ -9,21 +9,17 @@
 
 package eu.etaxonomy.cdm.model.location;
 
-import eu.etaxonomy.cdm.model.common.DefinedTermBase;
-import eu.etaxonomy.cdm.model.common.ILoadableTerm;
-import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.TermVocabulary;
-import eu.etaxonomy.cdm.model.common.TimePeriod;
-import eu.etaxonomy.cdm.model.common.OrderedTermBase;
-import eu.etaxonomy.cdm.model.media.Media;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 
-import org.apache.log4j.Logger;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
-
-import java.util.*;
-
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -32,6 +28,17 @@ import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
+
+import org.apache.log4j.Logger;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
+import org.hibernate.envers.Audited;
+
+import eu.etaxonomy.cdm.model.common.DefinedTermBase;
+import eu.etaxonomy.cdm.model.common.OrderedTermBase;
+import eu.etaxonomy.cdm.model.common.TermVocabulary;
+import eu.etaxonomy.cdm.model.common.TimePeriod;
+import eu.etaxonomy.cdm.model.media.Media;
 
 /**
  * @author m.doering
@@ -49,7 +56,7 @@ import javax.xml.bind.annotation.XmlType;
 })
 @XmlRootElement(name = "NamedArea")
 @Entity
-//@Audited
+@Audited
 public class NamedArea extends OrderedTermBase<NamedArea> {
 	private static final long serialVersionUID = 6248434369557403036L;
 	private static final Logger logger = Logger.getLogger(NamedArea.class);
@@ -62,6 +69,8 @@ public class NamedArea extends OrderedTermBase<NamedArea> {
 	@XmlElement(name = "Shape")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
+	@ManyToOne(fetch = FetchType.LAZY)
+	@Cascade(CascadeType.SAVE_UPDATE)
 	private Media shape;
 	
     @XmlElement(name = "PointApproximation")
@@ -71,16 +80,20 @@ public class NamedArea extends OrderedTermBase<NamedArea> {
 	@XmlElement(name = "WaterbodiesOrCountry")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
+	@ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name="DefinedTermBase_WaterbodyOrCountry")
 	private Set<WaterbodyOrCountry> waterbodiesOrCountries = new HashSet<WaterbodyOrCountry>();
 	
 	@XmlElement(name = "NamedAreaType")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
+	@ManyToOne(fetch = FetchType.LAZY)
 	private NamedAreaType type;
 	
 	@XmlElement(name = "NamedAreaLevel")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
+	@ManyToOne(fetch = FetchType.LAZY)
 	private NamedAreaLevel level;
 	
 	/**
@@ -106,25 +119,23 @@ public class NamedArea extends OrderedTermBase<NamedArea> {
 	public NamedArea() {
 		super();
 	}
+	
 	public NamedArea(String term, String label, String labelAbbrev) {
 		super(term, label, labelAbbrev);
 	}
 	
-	
-	@ManyToOne(fetch = FetchType.LAZY)
-	//@Cascade({CascadeType.SAVE_UPDATE})  //NamedAreaType is DefinedTerm -> no Cascade
 	public NamedAreaType getType(){
 		return this.type;
 	}
+	
 	public void setType(NamedAreaType type){
 		this.type = type;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	//@Cascade({CascadeType.SAVE_UPDATE})  //NamedAreaLevel is DefinedTerm -> no Cascade
 	public NamedAreaLevel getLevel(){
 		return this.level;
 	}
+	
 	public void setLevel(NamedAreaLevel level){
 		this.level = level;
 	}
@@ -132,12 +143,11 @@ public class NamedArea extends OrderedTermBase<NamedArea> {
 	public TimePeriod getValidPeriod(){
 		return this.validPeriod;
 	}
+	
 	public void setValidPeriod(TimePeriod validPeriod){
 		this.validPeriod = validPeriod;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE})
 	public Media getShape(){
 		return this.shape;
 	}
@@ -145,22 +155,16 @@ public class NamedArea extends OrderedTermBase<NamedArea> {
 		this.shape = shape;
 	}
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name="DefinedTermBase_WaterbodyOrCountry")
-//	@Cascade({CascadeType.SAVE_UPDATE})
+    
 	public Set<WaterbodyOrCountry> getWaterbodiesOrCountries() {
 		return waterbodiesOrCountries;
 	}
-	protected void setWaterbodiesOrCountries(
-			Set<WaterbodyOrCountry> waterbodiesOrCountries) {
-		this.waterbodiesOrCountries = waterbodiesOrCountries;
-	}
-	public void addWaterbodyOrCountry(
-			WaterbodyOrCountry waterbodyOrCountry) {
+	
+	public void addWaterbodyOrCountry(WaterbodyOrCountry waterbodyOrCountry) {
 		this.waterbodiesOrCountries.add(waterbodyOrCountry);
 	}
-	public void removeWaterbodyOrCountry(
-			WaterbodyOrCountry waterbodyOrCountry) {
+	
+	public void removeWaterbodyOrCountry(WaterbodyOrCountry waterbodyOrCountry) {
 		this.waterbodiesOrCountries.remove(waterbodyOrCountry);
 	}
 	
@@ -180,6 +184,7 @@ public class NamedArea extends OrderedTermBase<NamedArea> {
 		NamedArea newInstance = super.readCsvLine(termClass, csvLine, terms);
 		
 		String levelString = (String)csvLine.get(6);
+		
 		if(levelString != null && levelString.length() != 0) {
 			UUID levelUuid = UUID.fromString(levelString);
 			NamedAreaLevel level = (NamedAreaLevel)terms.get(levelUuid);
@@ -191,8 +196,8 @@ public class NamedArea extends OrderedTermBase<NamedArea> {
 		if(partOfString != null && partOfString.length() != 0) {
 			UUID partOfUuid = UUID.fromString(partOfString);
 			NamedArea partOf = (NamedArea)terms.get(partOfUuid);
-			partOf.addIncludes(this);
-		}
+			partOf.addIncludes(newInstance);
+		} 
 		return newInstance;
 	}
 	

@@ -9,6 +9,7 @@
 
 package eu.etaxonomy.cdm.model.common;
 
+import javax.persistence.Embeddable;
 import javax.persistence.Entity;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -16,6 +17,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
+import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
 
 /**
@@ -27,9 +29,9 @@ import org.hibernate.search.annotations.Indexed;
 @XmlType(name = "LanguageString")
 @XmlRootElement(name = "LanguageString")
 @Entity
-//@Audited
+@Audited
 @Indexed
-public class LanguageString  extends LanguageStringBase{
+public class LanguageString  extends LanguageStringBase implements Cloneable {
 	private static final long serialVersionUID = -1502298496073201104L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(LanguageString.class);
@@ -66,6 +68,10 @@ public class LanguageString  extends LanguageStringBase{
 		}
 	}
 	
-	
+	@Override
+	public Object clone() throws CloneNotSupportedException {
+		LanguageString result = (LanguageString)super.clone();
+		return result;
+	}
 	
 }

@@ -13,23 +13,22 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
-import javax.persistence.FetchType;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
@@ -52,28 +51,31 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 @XmlType(name = "TypeDesignationBase", propOrder = {
     "typifiedNames",
     "homotypicalGroup",
-    "isNotDesignated"
+    "notDesignated"
 })
 @Entity
-//@Audited
+@Audited
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 public abstract class TypeDesignationBase extends ReferencedEntityBase implements ITypeDesignation {
 	private static final Logger logger = Logger.getLogger(TypeDesignationBase.class);
 
 
 	@XmlElement(name = "IsNotDesignated")
-	private boolean isNotDesignated;
+	private boolean notDesignated;
 	
 	@XmlElementWrapper(name = "TypifiedNames")
 	@XmlElement(name = "TypifiedName")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
     // Need these references (bidirectional) to fill table TypeDesignationBase_TaxonNameBase
+	@ManyToMany(fetch = FetchType.LAZY)
 	private Set<TaxonNameBase> typifiedNames = new HashSet<TaxonNameBase>();
 	
 	@XmlElement(name = "HomotypicalGroup")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
+	@ManyToOne(fetch = FetchType.LAZY)
+	@Cascade(CascadeType.SAVE_UPDATE)
 	private HomotypicalGroup homotypicalGroup;
 
 // **************** CONSTRUCTOR *************************************/
@@ -102,9 +104,9 @@ public abstract class TypeDesignationBase extends ReferencedEntityBase implement
 	 * @see							#isNotDesignated()
 	 * @see							TaxonNameBase#getTypeDesignations()
 	 */
-	protected TypeDesignationBase(ReferenceBase citation, String citationMicroReference, String originalNameString, boolean isNotDesignated){
+	protected TypeDesignationBase(ReferenceBase citation, String citationMicroReference, String originalNameString, boolean notDesignated){
 		super(citation, citationMicroReference, originalNameString);
-		this.isNotDesignated = isNotDesignated;
+		this.notDesignated = notDesignated;
 	}
 	
 	
@@ -120,15 +122,8 @@ public abstract class TypeDesignationBase extends ReferencedEntityBase implement
 	 *  
 	 * @see   #getTypifiedNames()
 	 */
-	@ManyToOne(fetch = FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE})
 	public HomotypicalGroup getHomotypicalGroup() {
 		return homotypicalGroup;
-	}
-
-	@Deprecated //for hibernate use only
-	private void setHomotypicalGroup(HomotypicalGroup homotypicalGroup) {
-		this.homotypicalGroup = homotypicalGroup;		
 	}
 
 	/* (non-Javadoc)
@@ -139,8 +134,6 @@ public abstract class TypeDesignationBase extends ReferencedEntityBase implement
 	 * type designation. This is a subset of the taxon names belonging to the
 	 * corresponding {@link #getHomotypicalGroup() homotypical group}.
 	 */
-	@ManyToMany(fetch = FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<TaxonNameBase> getTypifiedNames() {
 		return typifiedNames;
 	}
@@ -161,26 +154,18 @@ public abstract class TypeDesignationBase extends ReferencedEntityBase implement
 	 * in case of a {@link SpecimenTypeDesignation specimen type designation}, should then be "null".
 	 */
 	public boolean isNotDesignated() {
-		return isNotDesignated;
+		return notDesignated;
 	}
 
 	/**
 	 * @see   #isNotDesignated()
 	 */
-	public void setNotDesignated(boolean isNotDesignated) {
-		this.isNotDesignated = isNotDesignated;
-	}
-
-
-	@Deprecated //for hibernate use only
-	private void setTypifiedNames(Set<TaxonNameBase> typifiedNames) {
-		this.typifiedNames = typifiedNames;
+	public void setNotDesignated(boolean notDesignated) {
+		this.notDesignated = notDesignated;
 	}
 	
 	@Deprecated //for bidirectional use only
 	protected void addTypifiedName(TaxonNameBase taxonName){
 		this.typifiedNames.add(taxonName);
 	}
-	
-
 }

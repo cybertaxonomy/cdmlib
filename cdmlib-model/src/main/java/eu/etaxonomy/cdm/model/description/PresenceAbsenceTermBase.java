@@ -21,6 +21,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
+import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
@@ -47,7 +48,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 @XmlType(name = "PresenceAbsenceTermBase")
 @XmlRootElement(name = "PresenceAbsenceTermBase")
 @Entity
-//@Audited
+@Audited
 public abstract class PresenceAbsenceTermBase<T extends PresenceAbsenceTermBase<?>> extends OrderedTermBase<T> {
 	private static final long serialVersionUID = 1596291470042068880L;
 	private static final Logger logger = Logger.getLogger(PresenceAbsenceTermBase.class);

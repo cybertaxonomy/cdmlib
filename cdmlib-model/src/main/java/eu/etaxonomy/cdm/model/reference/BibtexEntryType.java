@@ -17,6 +17,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
+import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
@@ -39,7 +40,7 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
 @XmlType(name = "BibtexEntryType")
 @XmlRootElement(name = "BibtexEntryType")
 @Entity
-//@Audited
+@Audited
 public class BibtexEntryType extends DefinedTermBase<BibtexEntryType> {
 	/**
 	 * 

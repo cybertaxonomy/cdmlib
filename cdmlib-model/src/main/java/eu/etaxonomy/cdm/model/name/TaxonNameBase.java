@@ -21,7 +21,6 @@ import javax.persistence.InheritanceType;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -38,8 +37,9 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Index;
 import org.hibernate.annotations.Table;
-import org.hibernate.annotations.Target;
+import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
+import org.springframework.util.ReflectionUtils;
 
 import eu.etaxonomy.cdm.model.common.IParsable;
 import eu.etaxonomy.cdm.model.common.IReferencedEntity;
@@ -87,12 +87,12 @@ import eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy;
     "relationsFromThisName",
     "relationsToThisName",
     "status",
-    "descriptions"
-//    "taxonBases"
+    "descriptions",
+    "taxonBases"
 })
 @XmlRootElement(name = "TaxonNameBase")
 @Entity
-//@Audited
+@Audited
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 @Table(appliesTo="TaxonNameBase", indexes = { @Index(name = "taxonNameBaseTitleCacheIndex", columnNames = { "titleCache" }) })
 @Indexed
@@ -105,9 +105,8 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 
 	private static final Logger logger = Logger.getLogger(TaxonNameBase.class);
 
-	private static Method methodDescriptionSetTaxonName;
-
 	@XmlElement(name = "FullTitleCache")
+	@Column(length=330, name="fullTitleCache")
 	private String fullTitleCache;
 	
 	//if true titleCache will not be automatically generated/updated
@@ -116,6 +115,8 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 	
     @XmlElementWrapper(name = "Descriptions")
     @XmlElement(name = "Description")
+    @OneToMany(mappedBy="taxonName", fetch= FetchType.LAZY) 
+	@Cascade({CascadeType.SAVE_UPDATE})
 	private Set<TaxonNameDescription> descriptions = new HashSet<TaxonNameDescription>();
 	
     @XmlElement(name = "AppendedPhrase")
@@ -137,53 +138,58 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
     @XmlElement(name = "TypeDesignation")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
+    @ManyToMany(fetch = FetchType.LAZY)
+	//TODO @Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE_ORPHAN})
+	@Cascade(CascadeType.SAVE_UPDATE)
 	private Set<TypeDesignationBase> typeDesignations = new HashSet<TypeDesignationBase>();
 
     @XmlElement(name = "HomotypicalGroup")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
-	private HomotypicalGroup homotypicalGroup = new HomotypicalGroup();
+    @ManyToOne(fetch = FetchType.LAZY)
+	@Cascade({CascadeType.SAVE_UPDATE})
+	private HomotypicalGroup homotypicalGroup;
 
     @XmlElementWrapper(name = "RelationsFromThisName")
     @XmlElement(name = "RelationFromThisName")
-    @XmlIDREF
-    @XmlSchemaType(name = "IDREF")
+    @OneToMany(mappedBy="relatedFrom", fetch= FetchType.LAZY)
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE_ORPHAN})
 	private Set<NameRelationship> relationsFromThisName = new HashSet<NameRelationship>();
 
     @XmlElementWrapper(name = "RelationsToThisName")
     @XmlElement(name = "RelationToThisName")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
+    @OneToMany(mappedBy="relatedTo", fetch= FetchType.LAZY)
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE_ORPHAN})
 	private Set<NameRelationship> relationsToThisName = new HashSet<NameRelationship>();
 
-    @XmlElementWrapper(name = "NomenclaturalStatus_")
+    @XmlElementWrapper(name = "NomenclaturalStatuses")
     @XmlElement(name = "NomenclaturalStatus")
-    @XmlIDREF
-    @XmlSchemaType(name = "IDREF")
+    @OneToMany(fetch= FetchType.LAZY)
+	@Cascade({CascadeType.SAVE_UPDATE})
 	private Set<NomenclaturalStatus> status = new HashSet<NomenclaturalStatus>();
 
-    @XmlTransient
-    //@XmlElementWrapper(name = "TaxonBases")
-    //@XmlElement(name = "TaxonBase")
+    @XmlElementWrapper(name = "TaxonBases")
+    @XmlElement(name = "TaxonBase")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
+    @OneToMany(mappedBy="name", fetch= FetchType.LAZY)
 	private Set<TaxonBase> taxonBases = new HashSet<TaxonBase>();
     
-    
-    
-
     @XmlElement(name = "Rank")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
+	@ManyToOne(fetch = FetchType.LAZY)
 	private Rank rank;
 
-//  FIXME: This must be an IDREF to the corresponding nomenclatural reference.
-//    @XmlTransient
-//    @XmlAnyElement
-	@XmlElement(name = "NomenclaturalReference", type = ReferenceBase.class)
+
+	@XmlElement(name = "NomenclaturalReference")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
-	private INomenclaturalReference nomenclaturalReference;
-
-	static Method methodTaxonBaseSetName;
+    @ManyToOne(fetch = FetchType.LAZY)
+	@Cascade({CascadeType.SAVE_UPDATE})
+	private ReferenceBase nomenclaturalReference;
 	
 // ************* CONSTRUCTORS *************/	
 	/** 
@@ -194,7 +200,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 	 * @see #TaxonNameBase(Rank, HomotypicalGroup)
 	 */
 	public TaxonNameBase() {
-		this(null, null);
+		super();
 	}
 	/** 
 	 * Class constructor: creates a new taxon name
@@ -245,11 +251,6 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 	}
 	
 //********* METHODS **************************************/
-
-	//@Index(name="TaxonNameBaseTitleCacheIndex")
-//	public String getTitleCache(){
-//		return super.getTitleCache();
-//	}
 	
 	/**
 	 * Returns the boolean value "false" since the components of <i>this</i> taxon name
@@ -262,12 +263,10 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 	 *  
 	 * @return  false
 	 */
-	@Transient
 	public abstract boolean isCodeCompliant();
 	
 	public abstract String generateFullTitle();
 
-    @Transient
 	public String getFullTitleCache(){
 		if (protectedFullTitleCache){
 			return this.fullTitleCache;			
@@ -292,17 +291,6 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 		this.setProtectedFullTitleCache(protectCache);
 	}
 	
-	@Column(length=330, name="fullTitleCache")
-	@Deprecated //for hibernate use only
-	protected String getPersistentFullTitleCache(){
-		return getFullTitleCache();
-	}	
-	
-	@Deprecated //for hibernate use only
-	protected void setPersistentFullTitleCache(String fullTitleCache){
-		this.fullTitleCache = fullTitleCache;
-	}
-	
 	public boolean isProtectedFullTitleCache() {
 		return protectedFullTitleCache;
 	}
@@ -322,7 +310,6 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 	 * @see    #addRelationshipToName(TaxonNameBase, NameRelationshipType, String)
 	 * @see    #addRelationshipFromName(TaxonNameBase, NameRelationshipType, String)
 	 */
-	@Transient
 	public Set<NameRelationship> getNameRelations() {
 		Set<NameRelationship> rels = new HashSet<NameRelationship>();
 		rels.addAll(getRelationsFromThisName());
@@ -414,7 +401,6 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 		this.relationsToThisName.remove(nameRelation);
 		this.relationsFromThisName.remove(nameRelation);
 	}
-
 		
 	public void removeTaxonName(TaxonNameBase taxonName) {
 		Set<NameRelationship> nameRelationships = new HashSet<NameRelationship>();
@@ -478,15 +464,10 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 	 * @see    #getRelationsToThisName()
 	 * @see    #addRelationshipFromName(TaxonNameBase, NameRelationshipType, String)
 	 */
-	@OneToMany(mappedBy="relatedFrom", fetch= FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE_ORPHAN})
 	public Set<NameRelationship> getRelationsFromThisName() {
 		return relationsFromThisName;
 	}
-	private void setRelationsFromThisName(Set<NameRelationship> relationsFromThisName) {
-		this.relationsFromThisName = relationsFromThisName;
-	}
-	
+
 	/** 
 	 * Returns the set of all {@link NameRelationship name relationships}
 	 * in which <i>this</i> taxon name is involved as a target.
@@ -495,15 +476,9 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 	 * @see    #getRelationsFromThisName()
 	 * @see    #addRelationshipToName(TaxonNameBase, NameRelationshipType, String)
 	 */
-	@OneToMany(mappedBy="relatedTo", fetch= FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE_ORPHAN})
 	public Set<NameRelationship> getRelationsToThisName() {
 		return relationsToThisName;
 	}
-	private void setRelationsToThisName(Set<NameRelationship> relationsToThisName) {
-		this.relationsToThisName = relationsToThisName;
-	}
-
 	
 	/** 
 	 * Returns the set of {@link NomenclaturalStatus nomenclatural status} assigned
@@ -514,17 +489,10 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 	 * @see     NomenclaturalStatus
 	 * @see     NomenclaturalStatusType
 	 */
-	@OneToMany(fetch= FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<NomenclaturalStatus> getStatus() {
 		return status;
 	}
-	/** 
-	 * @see     #getStatus()
-	 */
-	protected void setStatus(Set<NomenclaturalStatus> nomStatus) {
-		this.status = nomStatus;
-	}
+
 	/** 
 	 * Adds a new {@link NomenclaturalStatus nomenclatural status}
 	 * to <i>this</i> taxon name's set of nomenclatural status.
@@ -535,6 +503,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 	public void addStatus(NomenclaturalStatus nomStatus) {
 		this.status.add(nomStatus);
 	}
+	
 	/** 
 	 * Removes one element from the set of nomenclatural status of <i>this</i> taxon name.
 	 * Type and ruleConsidered attributes of the nomenclatural status object
@@ -558,7 +527,6 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 	 * false otherwise (also in case <i>this</i> taxon name is the only one in the
 	 * homotypical group).
 	 */
-	@Transient
 	public boolean isOriginalCombination(){
 		Set<NameRelationship> relationsFromThisName = this.getRelationsFromThisName();
 		for (NameRelationship relation : relationsFromThisName) {
@@ -577,7 +545,6 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 	 * Karsten transferred later <i>this</i> taxon to the genus Picea. Therefore,
 	 * <i>Pinus abies</i> L. is the basionym of the new combination <i>Picea abies</i> (L.) H. Karst.
 	 */
-	@Transient
 	public T getBasionym(){
 		//TODO: pick the right name relationships...
 		logger.warn("get Basionym not yet implemented");
@@ -630,8 +597,6 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 		logger.warn("not yet implemented");
 	}
 
-
-
 	/**
 	 * Returns the {@link eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy cache strategy} used to generate
 	 * several strings corresponding to <i>this</i> taxon name
@@ -641,11 +606,11 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 	 * @see 	eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy
 	 * @see     eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy
 	 */
-	@Transient
 	public abstract S getCacheStrategy();
 	/** 
 	 * @see 	#getCacheStrategy()
 	 */
+	
 	public abstract void setCacheStrategy(S cacheStrategy);
 	
 	/** 
@@ -653,11 +618,10 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 	 *
 	 * @see 	Rank
 	 */
-	@ManyToOne(fetch = FetchType.LAZY)
-	//@Cascade({CascadeType.SAVE_UPDATE})
 	public Rank getRank(){
 		return this.rank;
 	}
+	
 	/**
 	 * @see  #getRank()
 	 */
@@ -674,11 +638,8 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 	 * @see 	eu.etaxonomy.cdm.model.reference.INomenclaturalReference
 	 * @see 	eu.etaxonomy.cdm.model.reference.ReferenceBase
 	 */
-	@ManyToOne
-	@Cascade({CascadeType.SAVE_UPDATE})
-	@Target(ReferenceBase.class)
 	public INomenclaturalReference getNomenclaturalReference(){
-		return this.nomenclaturalReference;
+		return (INomenclaturalReference)this.nomenclaturalReference;
 	}
 	/**
 	 * Assigns a {@link eu.etaxonomy.cdm.model.reference.INomenclaturalReference nomenclatural reference} to <i>this</i> taxon name.
@@ -688,7 +649,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 	 * @see  #getNomenclaturalReference()
 	 */
 	public void setNomenclaturalReference(INomenclaturalReference nomenclaturalReference){
-		this.nomenclaturalReference = nomenclaturalReference;
+		this.nomenclaturalReference = (ReferenceBase)nomenclaturalReference;
 	}
 
 	/** 
@@ -699,6 +660,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 	public String getAppendedPhrase(){
 		return this.appendedPhrase;
 	}
+	
 	/**
 	 * @see  #getAppendedPhrase()
 	 */
@@ -774,32 +736,16 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 		this.problemEnds = end;
 	}
 
-
-	
-	
 //*********************** TYPE DESIGNATION *********************************************//	
 	
-
-	
-
 	/** 
 	 * Returns the set of {@link TypeDesignationBase type designations} assigned
 	 * to <i>this</i> taxon name.
 	 * @see     NameTypeDesignation
 	 * @see     SpecimenTypeDesignation
 	 */
-	@ManyToMany(fetch = FetchType.LAZY)
-	//TODO @Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE_ORPHAN})
-	@Cascade(CascadeType.SAVE_UPDATE)
 	public Set<TypeDesignationBase> getTypeDesignations() {
 		return typeDesignations;
-	}
-	
-	/** 
-	 * @see     #getNameTypeDesignations()
-	 */
-	private void setTypeDesignations(Set<TypeDesignationBase> typeDesignations) {
-		this.typeDesignations = typeDesignations;
 	}
 	
 	/** 
@@ -812,7 +758,6 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 		logger.warn("not yet fully implemented: nullify the specimen type designation itself?");
 		this.typeDesignations.remove(typeDesignation);
 	}
-	
 	
 	/** 
 	 * Returns the set of {@link SpecimenTypeDesignation specimen type designations} assigned
@@ -827,7 +772,6 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 	 * @see     NameTypeDesignation
 	 * @see     HomotypicalGroup
 	 */
-	@Transient
 	public Set<SpecimenTypeDesignation> getSpecimenTypeDesignationsOfHomotypicalGroup() {
 		return this.getHomotypicalGroup().getSpecimenTypeDesignations();
 	}
@@ -844,7 +788,6 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 	 * @see     NameTypeDesignation
 	 * @see     SpecimenTypeDesignation
 	 */
-	@Transient
 	public Set<NameTypeDesignation> getNameTypeDesignations() {
 		Set<NameTypeDesignation> result = new HashSet<NameTypeDesignation>();
 		for (TypeDesignationBase typeDesignation : this.typeDesignations){
@@ -892,7 +835,6 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 	 * Returns the set of {@link SpecimenTypeDesignation specimen type designations}
 	 * that typify <i>this</i> taxon name.
 	 */
-	@Transient
 	public Set<SpecimenTypeDesignation> getSpecimenTypeDesignations() {
 		Set<SpecimenTypeDesignation> result = new HashSet<SpecimenTypeDesignation>();
 		for (TypeDesignationBase typeDesignation : this.typeDesignations){
@@ -963,14 +905,16 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 	 *
 	 * @see 	HomotypicalGroup
 	 */
-	@ManyToOne(fetch = FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE})
+	
 	public HomotypicalGroup getHomotypicalGroup() {
 		return homotypicalGroup;
 	}
-	@Deprecated //only for bidirectional and persistence use
-	protected void setHomotypicalGroup(HomotypicalGroup newHomotypicalGroup) {
-		this.homotypicalGroup = newHomotypicalGroup;		
+	
+	/* 
+	 * @see #getHomotypicalGroup()
+	 */
+	protected void setHomotypicalGroup(HomotypicalGroup homotypicalGroup) {
+		this.homotypicalGroup = homotypicalGroup;
 	}
 
 // *************************************************************************//
@@ -978,7 +922,6 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 	/** 
 	 * @see #getNomenclaturalReference()
 	 */
-	@Transient
 	public StrictReferenceBase getCitation(){
 		//TODO What is the purpose of this method differing from the getNomenclaturalReference method? 
 		logger.warn("getCitation not yet implemented");
@@ -995,7 +938,6 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 	 * @see		#getNomenclaturalReference()
 	 * @see		#getNomenclaturalMicroReference()
 	 */
-	@Transient
 	@Deprecated
 	public String getCitationString(){
 		logger.warn("getCitationString not yet implemented");
@@ -1005,7 +947,6 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 	/** 
 	 * Not yet implemented
 	 */
-	@Transient
 	@Deprecated
 	public String[] getProblems(){
 		logger.warn("getProblems not yet implemented");
@@ -1020,7 +961,6 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 	 * @return  the string containing the publication date of <i>this</i> taxon name
 	 * @see		eu.etaxonomy.cdm.model.reference.INomenclaturalReference#getYear()
 	 */
-	@Transient
 	public String getReferenceYear(){
 		if (this.getNomenclaturalReference() != null ){
 			return this.getNomenclaturalReference().getYear();
@@ -1040,20 +980,10 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 	 * @see	#getTaxa()
 	 * @see	#getSynonyms()
 	 */
-	@OneToMany(mappedBy="name", fetch= FetchType.LAZY)
 	public Set<TaxonBase> getTaxonBases() {
 		return this.taxonBases;
 	}
-	/** 
-	 * @see     #getTaxonBases()
-	 */
-	protected void setTaxonBases(Set<TaxonBase> taxonBases) {
-		if (taxonBases == null){
-			taxonBases = new HashSet<TaxonBase>();
-		}else{
-			this.taxonBases = taxonBases;
-		}
-	}
+	
 	/** 
 	 * Adds a new {@link eu.etaxonomy.cdm.model.taxon.TaxonBase taxon base}
 	 * to the set of taxon bases using <i>this</i> taxon name.
@@ -1064,9 +994,10 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 	 */
 	//TODO protected
 	public void addTaxonBase(TaxonBase taxonBase){
+		Method method = ReflectionUtils.findMethod(TaxonBase.class, "setName", new Class[] {TaxonNameBase.class});
+		ReflectionUtils.makeAccessible(method);
+		ReflectionUtils.invokeMethod(method, taxonBase, new Object[] {this});
 		taxonBases.add(taxonBase);
-		initMethods();
-		invokeSetMethod(methodTaxonBaseSetName, taxonBase);
 	}
 	/** 
 	 * Removes one element from the set of {@link eu.etaxonomy.cdm.model.taxon.TaxonBase taxon bases} that refer to <i>this</i> taxon name.
@@ -1076,33 +1007,11 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 	 * @see    				#addTaxonBase(TaxonBase)
 	 */
 	public void removeTaxonBase(TaxonBase taxonBase){
+		Method method = ReflectionUtils.findMethod(TaxonBase.class, "setName", new Class[] {TaxonNameBase.class});
+		ReflectionUtils.makeAccessible(method);
+		ReflectionUtils.invokeMethod(method, taxonBase, new Object[] {null});
 		taxonBases.remove(taxonBase);
-		initMethods();
-		invokeSetMethodWithNull(methodTaxonBaseSetName, taxonBase);
 	}
-
-	private void initMethods(){
-		if (methodTaxonBaseSetName == null){
-			try {
-				methodTaxonBaseSetName = TaxonBase.class.getDeclaredMethod("setName", TaxonNameBase.class);
-				methodTaxonBaseSetName.setAccessible(true);
-			} catch (Exception e) {
-				e.printStackTrace();
-				//TODO handle exception
-			}
-		}
-		if (methodDescriptionSetTaxonName == null){
-			try {
-				methodDescriptionSetTaxonName = TaxonNameDescription.class.getDeclaredMethod("setTaxonName", TaxonNameBase.class);
-				methodDescriptionSetTaxonName.setAccessible(true);
-			} catch (Exception e) {
-				e.printStackTrace();
-				//TODO handle exception
-			}
-		}
-	}
-	
-	
 	
 	/**
 	 * Returns the set of {@link eu.etaxonomy.cdm.model.taxon.Taxon taxa} ("accepted/correct" names according to any
@@ -1113,7 +1022,6 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 	 * @see	#getTaxonBases()
 	 * @see	#getSynonyms()
 	 */
-	@Transient
 	public Set<Taxon> getTaxa(){
 		Set<Taxon> result = new HashSet<Taxon>();
 		for (TaxonBase taxonBase : this.taxonBases){
@@ -1133,7 +1041,6 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 	 * @see	#getTaxonBases()
 	 * @see	#getTaxa()
 	 */
-	@Transient
 	public Set<Synonym> getSynonyms() {
 		Set<Synonym> result = new HashSet<Synonym>();
 		for (TaxonBase taxonBase : this.taxonBases){
@@ -1157,17 +1064,10 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 	 * @see	#removeDescription(TaxonNameDescription)
 	 * @see	eu.etaxonomy.cdm.model.description.TaxonNameDescription
 	 */
-	@OneToMany(mappedBy="taxonName", fetch= FetchType.LAZY) 
-	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<TaxonNameDescription> getDescriptions() {
 		return descriptions;
 	}
-	/**
-	 * @see	#getDescriptions()
-	 */
-	protected void setDescriptions(Set<TaxonNameDescription> descriptions) {
-		this.descriptions = descriptions;
-	}
+
 	/** 
 	 * Adds a new {@link eu.etaxonomy.cdm.model.description.TaxonNameDescription taxon name description}
 	 * to the set of taxon name descriptions assigned to <i>this</i> taxon name. The
@@ -1179,8 +1079,9 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 	 * @see 			  	#removeDescription(TaxonNameDescription)
 	 */
 	public void addDescription(TaxonNameDescription description) {
-		initMethods();
-		this.invokeSetMethod(methodDescriptionSetTaxonName, description);
+		Method method = ReflectionUtils.findMethod(TaxonNameDescription.class, "setTaxonName", new Class[] {TaxonNameBase.class});
+		ReflectionUtils.makeAccessible(method);
+		ReflectionUtils.invokeMethod(method, description, new Object[] {this});
 		descriptions.add(description);
 	}
 	/** 
@@ -1194,15 +1095,11 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 	 * @see 			  	eu.etaxonomy.cdm.model.description.TaxonNameDescription#getTaxonName()
 	 */
 	public void removeDescription(TaxonNameDescription description) {
-		initMethods();
-		this.invokeSetMethod(methodDescriptionSetTaxonName, null);
+		Method method = ReflectionUtils.findMethod(TaxonNameDescription.class, "setTaxonName", new Class[] {TaxonNameBase.class});
+		ReflectionUtils.makeAccessible(method);
+		ReflectionUtils.invokeMethod(method, description, new Object[] {null});
 		descriptions.remove(description);
 	}
-	
-	
-	
-	
-	
 	
 // ***********
 	/**
@@ -1229,8 +1126,6 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 		return false;
 	}
 	
-	
-	
 //*********  Rank comparison shortcuts   ********************//
 	/**
 	 * Returns the boolean value indicating whether the taxonomic {@link Rank rank} of <i>this</i>
@@ -1243,7 +1138,6 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 	 * @see  #isSpecies()
 	 * @see  #isInfraSpecific()
 	 */
-	@Transient
 	public boolean isSupraGeneric() {
 		if (rank == null){
 			return false;
@@ -1260,7 +1154,6 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 	 * @see  #isSpecies()
 	 * @see  #isInfraSpecific()
 	 */
-	@Transient
 	public boolean isGenus() {
 		if (rank == null){
 			return false;
@@ -1278,7 +1171,6 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 	 * @see  #isSpecies()
 	 * @see  #isInfraSpecific()
 	 */
-	@Transient
 	public boolean isInfraGeneric() {
 		if (rank == null){
 			return false;
@@ -1296,7 +1188,6 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 	 * @see  #isInfraGeneric()
 	 * @see  #isInfraSpecific()
 	 */
-	@Transient
 	public boolean isSpecies() {
 		if (rank == null){
 			return false;
@@ -1314,7 +1205,6 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 	 * @see  #isInfraGeneric()
 	 * @see  #isSpecies()
 	 */
-	@Transient
 	public boolean isInfraSpecific() {
 		if (rank == null){
 			return false;
@@ -1336,7 +1226,6 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 	 * @see  	#isCodeCompliant()
 	 * @see  	#getHasProblem()
 	 */
-	@Transient
 	abstract public NomenclaturalCode getNomenclaturalCode();
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.IdentifiableEntity#generateTitle()
@@ -1359,6 +1248,5 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 		// TODO Auto-generated method stub
 		logger.warn("not yet implemented");
 		return null;
-	}
-	
+	}	
 }

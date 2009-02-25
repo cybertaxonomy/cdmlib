@@ -13,10 +13,12 @@ import java.util.Calendar;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -30,9 +32,10 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.envers.Audited;
 import org.joda.time.Partial;
 
-import eu.etaxonomy.cdm.model.agent.Agent;
+import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.common.EventBase;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
@@ -57,13 +60,14 @@ import eu.etaxonomy.cdm.model.location.Point;
 })
 @XmlRootElement(name = "GatheringEvent")
 @Entity
-//@Audited
+@Audited
 public class GatheringEvent extends EventBase implements Cloneable{
 	
 	static Logger logger = Logger.getLogger(GatheringEvent.class);
 
-	//Locality name (as free text) where this occurrence happened
 	@XmlElement(name = "Locality")
+	@OneToOne(fetch = FetchType.LAZY)
+	@Cascade({CascadeType.ALL,CascadeType.DELETE_ORPHAN})
 	private LanguageString locality;
 	
 	@XmlElement(name = "ExactLocation")
@@ -73,7 +77,8 @@ public class GatheringEvent extends EventBase implements Cloneable{
 	@XmlElement(name = "CollectingArea")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
-	private Set<NamedArea> collectingAreas = getNewNamedAreaSet();
+	@ManyToMany(fetch = FetchType.LAZY)
+	private Set<NamedArea> collectingAreas = new HashSet<NamedArea>();
 	
 	@XmlElement(name = "CollectingMethod")
 	private String collectingMethod;
@@ -92,7 +97,6 @@ public class GatheringEvent extends EventBase implements Cloneable{
 	// distance in meters to lake or sea surface. Similar to distanceToGround use negative integers for distance *below* the surface, ie under water 
 	@XmlElement(name = "DistanceToWaterSurface")
 	private Integer distanceToWaterSurface;
-
 
 	/**
 	 * Factory method
@@ -116,32 +120,28 @@ public class GatheringEvent extends EventBase implements Cloneable{
 		this.exactLocation = exactLocation;
 	}
 
-	@ManyToMany(fetch = FetchType.LAZY)
+
 	public Set<NamedArea> getCollectingAreas(){
 		return this.collectingAreas;
 	}
-	public void setCollectingAreas(Set<NamedArea> area){
-		if (area == null){
-			getNewNamedAreaSet();
-		}
-		this.collectingAreas = area;
-	}
+
+	
 	public void addCollectingArea(NamedArea area){
 		if (this.collectingAreas == null)
 			this.collectingAreas = getNewNamedAreaSet();
 		this.collectingAreas.add(area);
 	}
+	
 	public void removeCollectingArea(NamedArea area){
 		//TODO to be implemented?
 		logger.warn("not yet fully implemented?");
 		this.collectingAreas.remove(area);
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE})
 	public LanguageString getLocality(){
 		return this.locality;
 	}
+	
 	public void setLocality(LanguageString locality){
 		this.locality = locality;
 	}
@@ -150,34 +150,34 @@ public class GatheringEvent extends EventBase implements Cloneable{
 	 * EventBase managed attributes
 	 * @return
 	 */
-	@Transient
+
 	public Partial getGatheringDate(){
 		return this.getTimeperiod().getStart();
 	}
+	
 	public void setGatheringDate(Partial gatheringDate){
 		this.setTimeperiod(TimePeriod.NewInstance(gatheringDate));
 	}	
-	@Transient
+
 	public void setGatheringDate(Calendar gatheringDate){
 		this.setTimeperiod(TimePeriod.NewInstance(gatheringDate));
 	}
 	
-	@Transient
-	public Agent getCollector(){
+	public AgentBase getCollector(){
 		return this.getActor();
 	}
-	public void setCollector(Agent collector){
+	
+	public void setCollector(AgentBase collector){
 		this.setActor(collector);
 	}
-
 
 	public String getCollectingMethod() {
 		return collectingMethod;
 	}
+	
 	public void setCollectingMethod(String collectingMethod) {
 		this.collectingMethod = collectingMethod;
 	}
-
 
 	public Integer getAbsoluteElevation() {
 		return absoluteElevation;
@@ -187,26 +187,29 @@ public class GatheringEvent extends EventBase implements Cloneable{
 		this.absoluteElevation = absoluteElevation;
 	}
 
-
 	public Integer getAbsoluteElevationError() {
 		return absoluteElevationError;
 	}
+	
 	public void setAbsoluteElevationError(Integer absoluteElevationError) {
 		this.absoluteElevationError = absoluteElevationError;
 	}
+	
 	public Integer getDistanceToGround() {
 		return distanceToGround;
 	}
+	
 	public void setDistanceToGround(Integer distanceToGround) {
 		this.distanceToGround = distanceToGround;
 	}
+	
 	public Integer getDistanceToWaterSurface() {
 		return distanceToWaterSurface;
 	}
+	
 	public void setDistanceToWaterSurface(Integer distanceToWaterSurface) {
 		this.distanceToWaterSurface = distanceToWaterSurface;
 	}
-	
 	
 //*********** CLONE **********************************/	
 	
@@ -230,9 +233,10 @@ public class GatheringEvent extends EventBase implements Cloneable{
 			//exact location
 			result.setExactLocation(this.exactLocation.clone());
 			//namedAreas
-			Set<NamedArea> namedAreas = getNewNamedAreaSet();
-			namedAreas.addAll(this.collectingAreas);
-			result.setCollectingAreas(namedAreas);
+			result.collectingAreas = new HashSet<NamedArea>();
+			for(NamedArea collectingArea : this.collectingAreas) {
+				result.addCollectingArea(collectingArea);
+			}
 			
 			//no changes to: distanceToWaterSurface, distanceToGround, collectingMethod, absoluteElevationError, absoluteElevation
 			return result;

@@ -9,7 +9,6 @@
 
 package eu.etaxonomy.cdm.model.description;
 
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -17,7 +16,7 @@ import java.util.UUID;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
-import javax.persistence.Transient;
+import javax.persistence.OneToOne;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -29,6 +28,7 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.common.TermBase;
 
@@ -54,12 +54,12 @@ import eu.etaxonomy.cdm.model.common.TermBase;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "FeatureTree", propOrder = {
-    "isDescriptionSeparated",
+    "descriptionSeparated",
     "root"
 })
 @XmlRootElement(name = "FeatureTree")
 @Entity
-//@Audited
+@Audited
 public class FeatureTree extends TermBase {
 	/**
 	 * 
@@ -71,12 +71,12 @@ public class FeatureTree extends TermBase {
 	//private Set<FeatureNode> nodes = new HashSet<FeatureNode>();
 	
 	@XmlElement(name = "Root")
-	@XmlIDREF
-	@XmlSchemaType(name = "IDREF")
+	@OneToOne(fetch = FetchType.LAZY)
+	@Cascade({CascadeType.SAVE_UPDATE})
 	private FeatureNode root;
 	
 	@XmlElement(name = "IsDescriptionSeparated")
-	private boolean isDescriptionSeparated = false;
+	private boolean descriptionSeparated = false;
 		
 	/** 
 	 * Class constructor: creates a new feature tree instance with an empty
@@ -145,14 +145,14 @@ public class FeatureTree extends TermBase {
 	 * @return  the boolean value of the isDescriptionSeparated flag
 	 */
 	public boolean isDescriptionSeparated() {
-		return isDescriptionSeparated;
+		return descriptionSeparated;
 	}
 
 	/**
 	 * @see	#isDescriptionSeparated() 
 	 */
-	public void setDescriptionSeparated(boolean isDescriptionSeperated) {
-		this.isDescriptionSeparated = isDescriptionSeperated;
+	public void setDescriptionSeparated(boolean descriptionSeperated) {
+		this.descriptionSeparated = descriptionSeperated;
 	}
 	
 //	@OneToMany
@@ -170,8 +170,6 @@ public class FeatureTree extends TermBase {
 	 * recursively point to their child nodes the complete feature tree is
 	 * defined by its root node.
 	 */
-	@ManyToOne(fetch = FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE})
 	public FeatureNode getRoot() {
 		return root;
 	}
@@ -186,7 +184,6 @@ public class FeatureTree extends TermBase {
 	 * Returns the (ordered) list of {@link FeatureNode feature nodes} which are immediate
 	 * children of the root node of <i>this</i> feature tree.
 	 */
-	@Transient
 	public List<FeatureNode> getRootChildren(){
 		List<FeatureNode> result = new ArrayList<FeatureNode>();
 		result.addAll(root.getChildren());

@@ -17,6 +17,7 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
 import org.apache.log4j.Logger;
+import org.hibernate.envers.Audited;
 
 import java.util.*;
 
@@ -45,7 +46,7 @@ import javax.persistence.*;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Rank")
 @Entity
-//@Audited
+@Audited
 public class Rank extends OrderedTermBase<Rank> {
 	private static final Logger logger = Logger.getLogger(Rank.class);
 	
@@ -398,7 +399,6 @@ public class Rank extends OrderedTermBase<Rank> {
 	 * @see  #isSpecies()
 	 * @see  #isInfraSpecific()
 	 */
-	@Transient
 	public boolean isSupraGeneric(){
 		return (this.isHigher(Rank.GENUS()));
 	}
@@ -412,7 +412,6 @@ public class Rank extends OrderedTermBase<Rank> {
 	 * @see  #isSpecies()
 	 * @see  #isInfraSpecific()
 	 */
-	@Transient
 	public boolean isGenus(){
 		return (this.equals(Rank.GENUS()));
 	}
@@ -427,7 +426,6 @@ public class Rank extends OrderedTermBase<Rank> {
 	 * @see  #isSpecies()
 	 * @see  #isInfraSpecific()
 	 */
-	@Transient
 	public boolean isInfraGeneric(){
 		return (this.isLower(Rank.GENUS()) && this.isHigher(Rank.SPECIES()));
 	}
@@ -441,7 +439,6 @@ public class Rank extends OrderedTermBase<Rank> {
 	 * @see  #isInfraGeneric()
 	 * @see  #isInfraSpecific()
 	 */
-	@Transient
 	public boolean isSpecies(){
 		return (this.equals(Rank.SPECIES()));
 	}
@@ -455,7 +452,6 @@ public class Rank extends OrderedTermBase<Rank> {
 	 * @see  #isInfraGeneric()
 	 * @see  #isSpecies()
 	 */
-	@Transient
 	public boolean isInfraSpecific(){
 		return (this.isLower(Rank.SPECIES()));
 	}
@@ -468,7 +464,6 @@ public class Rank extends OrderedTermBase<Rank> {
 	 * @param	strRank	the string identifying the rank
 	 * @return  		the rank
 	 */
-	@Transient
 	public static Rank getRankByNameOrAbbreviation(String strRank)
 				throws UnknownCdmTypeException{
 		return getRankByNameOrAbbreviation(strRank, false);
@@ -486,7 +481,6 @@ public class Rank extends OrderedTermBase<Rank> {
 	 * 			unknown or not yet implemented
 	 * @return  		the rank
 	 */
-	@Transient
 	public static Rank getRankByNameOrAbbreviation(String strRank, boolean useUnknown)
 			throws UnknownCdmTypeException{
 		try {
@@ -504,7 +498,6 @@ public class Rank extends OrderedTermBase<Rank> {
 	 * @param	abbrev	the string for the name abbreviation
 	 * @return  		the rank
 	 */
-	@Transient
 	public static Rank getRankByAbbreviation(String abbrev) 
 						throws UnknownCdmTypeException{
 		return getRankByAbbreviation(abbrev, false);
@@ -522,7 +515,6 @@ public class Rank extends OrderedTermBase<Rank> {
 	 * 			unknown or not yet implemented
 	 * @return  the rank
 	 */
-	@Transient
 	public static Rank getRankByAbbreviation(String abbrev, boolean useUnknown) 
 						throws UnknownCdmTypeException{
 		if (abbrev == null){ throw new NullPointerException("abbrev is 'null' in getRankByAbbreviation");
@@ -587,7 +579,6 @@ public class Rank extends OrderedTermBase<Rank> {
 	 * @param	rankName	the string for the name of the rank
 	 * @return  			the rank
 	 */
-	@Transient
 	public static Rank getRankByName(String rankName)throws UnknownCdmTypeException{
 		return getRankByName(rankName, false);
 	}
@@ -602,7 +593,6 @@ public class Rank extends OrderedTermBase<Rank> {
 	 * 			unknown or not yet implemented
 	 * @return  			the rank
 	 */
-	@Transient
 	public static Rank getRankByName(String rankName, boolean useUnknown)
 			throws UnknownCdmTypeException{
 		if (rankName.equalsIgnoreCase("Regnum")){ return Rank.KINGDOM();
@@ -670,7 +660,6 @@ public class Rank extends OrderedTermBase<Rank> {
 	 * 
 	 * @return	the abbreviation string for <i>this</i> rank
 	 */
-	@Transient
 	public String getAbbreviation(){
 		if (this.equals(Rank.ORDER()) ){return "ordo";}
 		if (this.equals(Rank.FAMILY()) ){return "fam.";}
@@ -763,8 +752,4 @@ public class Rank extends OrderedTermBase<Rank> {
 		Rank.UNKNOWN_RANK = termVocabulary.findTermByUuid(Rank.uuidUnknownRank);
 		Rank.VARIETY = termVocabulary.findTermByUuid(Rank.uuidVariety);
 	}
-
-	
-	
-
 }

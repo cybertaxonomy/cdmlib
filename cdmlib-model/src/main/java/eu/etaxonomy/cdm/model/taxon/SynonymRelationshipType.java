@@ -20,6 +20,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
+import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
@@ -46,7 +47,7 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "SynonymRelationshipType")
 @Entity
-//@Audited
+@Audited
 public class SynonymRelationshipType extends RelationshipTermBase<SynonymRelationshipType> {
 	
 	static Logger logger = Logger.getLogger(SynonymRelationshipType.class);

@@ -10,15 +10,18 @@
 package eu.etaxonomy.cdm.model.name;
 
 
-import javax.persistence.Entity;
-import javax.persistence.Transient;
+import org.apache.log4j.Logger;
+import org.hibernate.envers.Audited;
+
+import eu.etaxonomy.cdm.strategy.cache.name.BotanicNameDefaultCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.name.NonViralNameDefaultCacheStrategy;
+
+import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
-
-import org.apache.log4j.Logger;
 
 /**
  * The taxon name class for bacteria.
@@ -36,9 +39,14 @@ import org.apache.log4j.Logger;
 })
 @XmlRootElement(name = "BacterialName")
 @Entity
-//@Audited
-public class BacterialName extends NonViralName {
+@Audited
+public class BacterialName extends NonViralName<BacterialName> {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7641841279209976443L;
+
 	static Logger logger = Logger.getLogger(BacterialName.class);
 
 	//Author team and year of the subgenus name
@@ -172,7 +180,6 @@ public class BacterialName extends NonViralName {
 	 * @see  	NonViralName#isCodeCompliant()
 	 * @see  	TaxonNameBase#getHasProblem()
 	 */
-	@Transient
 	@Override
 	public NomenclaturalCode getNomenclaturalCode(){
 		return NomenclaturalCode.ICNB;

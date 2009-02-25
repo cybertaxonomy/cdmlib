@@ -13,6 +13,7 @@ import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
@@ -24,7 +25,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
  * @author m.doering
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "RelationshipBase", propOrder = { })
+@XmlType(name = "RelationshipBase")
 @XmlRootElement(name = "RelationshipBase")
 @MappedSuperclass
 public abstract class RelationshipBase<FROM extends IRelated, TO extends IRelated, TYPE extends RelationshipTermBase> extends ReferencedEntityBase {
@@ -32,7 +33,8 @@ public abstract class RelationshipBase<FROM extends IRelated, TO extends IRelate
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(RelationshipBase.class);
 
-	private boolean isDoubtful;
+	@XmlAttribute(name = "isDoubtful")
+	private boolean doubtful;
 	
 	protected RelationshipBase(){
 		super();
@@ -57,17 +59,14 @@ public abstract class RelationshipBase<FROM extends IRelated, TO extends IRelate
 		to.addRelationship(this);
 	}
 	
-	@Transient
 	public abstract TYPE getType();
 	
 	protected abstract void setType(TYPE type);
 	
-	@Transient
 	protected abstract FROM getRelatedFrom();
 	
 	protected abstract void setRelatedFrom(FROM relatedFrom);
 	
-	@Transient
 	protected abstract TO getRelatedTo();
 	
 	protected abstract void setRelatedTo(TO relatedTo);
@@ -81,11 +80,11 @@ public abstract class RelationshipBase<FROM extends IRelated, TO extends IRelate
 	 * @return true, if the relationship is doubtful, false otherwise
 	 */
 	public boolean isDoubtful(){
-		return this.isDoubtful;
+		return this.doubtful;
 	}
 	
-	public void setDoubtful(boolean isDoubtful){
-		this.isDoubtful = isDoubtful;
+	public void setDoubtful(boolean doubtful){
+		this.doubtful = doubtful;
 	}
 	
 	

@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.model.reference;
 
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -23,6 +24,7 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.envers.Audited;
 
 /**
  * This (abstract) class represents printed {@link PublicationBase published references} which
@@ -44,7 +46,7 @@ import org.hibernate.annotations.CascadeType;
 })
 @XmlRootElement(name = "PrintedUnitBase")
 @Entity
-//@Audited
+@Audited
 public abstract class PrintedUnitBase extends PublicationBase implements IVolumeReference{
 	
 	static Logger logger = Logger.getLogger(PrintedUnitBase.class);
@@ -61,6 +63,8 @@ public abstract class PrintedUnitBase extends PublicationBase implements IVolume
     @XmlElement(name = "InSeries")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @Cascade(CascadeType.SAVE_UPDATE)
 	private PrintSeries inSeries;
 	
     @XmlElement(name = "SeriesPart")
@@ -72,8 +76,6 @@ public abstract class PrintedUnitBase extends PublicationBase implements IVolume
 	 * @return  printed series
 	 * @see 	PrintSeries
 	 */
-	@ManyToOne
-	@Cascade({CascadeType.SAVE_UPDATE})
 	public PrintSeries getInSeries(){
 		return this.inSeries;
 	}

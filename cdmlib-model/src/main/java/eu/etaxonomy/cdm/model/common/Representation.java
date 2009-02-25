@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.model.common;
 
 
 import org.apache.log4j.Logger;
+import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -33,7 +34,7 @@ import javax.xml.bind.annotation.XmlType;
 })
 @XmlRootElement(name = "Representation")
 @Entity
-//@Audited
+@Audited
 public class Representation extends LanguageStringBase {
 	private static final long serialVersionUID = -4202420199587324532L;
 	@SuppressWarnings("unused")
@@ -84,10 +85,10 @@ public class Representation extends LanguageStringBase {
 		this.abbreviatedLabel = abbreviatedLabel;
 	}
 	
-	@Transient
 	public String getDescription(){
 		return getText();
 	}
+	
 	protected void setDescription(String text) {
 		super.setText(text);
 	}
@@ -98,7 +99,6 @@ public class Representation extends LanguageStringBase {
 	 * should be used for a larger description of the label.
 	 */
 	@Override
-	@Transient
 	public String getText(){
 		return super.getText();
 	}

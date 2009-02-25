@@ -18,7 +18,6 @@ import java.util.Set;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
-import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -28,14 +27,12 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
+import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.TaxonComparator;
-import eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy;
 
 
 /**
@@ -72,7 +69,7 @@ import eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy;
     "typifiedNames"
 })
 @Entity
-//@Audited
+@Audited
 public class HomotypicalGroup extends AnnotatableEntity {
 	static Logger logger = Logger.getLogger(HomotypicalGroup.class);
 
@@ -80,6 +77,7 @@ public class HomotypicalGroup extends AnnotatableEntity {
 	@XmlElement(name = "TypifiedName")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
+	@OneToMany(mappedBy="homotypicalGroup", fetch=FetchType.LAZY)
 	protected Set<TaxonNameBase> typifiedNames = new HashSet<TaxonNameBase>();
 	    
 	/** 
@@ -105,15 +103,8 @@ public class HomotypicalGroup extends AnnotatableEntity {
 	 *
 	 * @see	#getSpecimenTypeDesignations()
 	 */
-	@OneToMany(mappedBy="homotypicalGroup", fetch=FetchType.LAZY)
 	public Set<TaxonNameBase> getTypifiedNames() {
 		return typifiedNames;
-	}
-	/** 
-	 * @see #getTypifiedNames()
-	 */
-	protected void setTypifiedNames(Set<TaxonNameBase> typifiedNames) {
-		this.typifiedNames = typifiedNames;
 	}
 	
 	/** 
@@ -170,7 +161,6 @@ public class HomotypicalGroup extends AnnotatableEntity {
 	 * @see	#getTypeDesignations()
 	 * @see	TaxonNameBase#getSpecimenTypeDesignations()
 	 */
-	@Transient
 	public Set<SpecimenTypeDesignation> getSpecimenTypeDesignations(){
 		Set<SpecimenTypeDesignation> result = new HashSet<SpecimenTypeDesignation>();
 		for (TaxonNameBase taxonName : typifiedNames){
@@ -189,7 +179,6 @@ public class HomotypicalGroup extends AnnotatableEntity {
 	 * @see	#getTypeDesignations()
 	 * @see	TaxonNameBase#getNameTypeDesignations()
 	 */
-	@Transient
 	public Set<NameTypeDesignation> getNameTypeDesignations(){
 		Set<NameTypeDesignation> result = new HashSet<NameTypeDesignation>();
 		for (TaxonNameBase taxonName : typifiedNames){
@@ -210,7 +199,6 @@ public class HomotypicalGroup extends AnnotatableEntity {
 	 * @see	#getSpecimenTypeDesignations()
 	 * @see	TaxonNameBase#getTypeDesignations()
 	 */
-	@Transient
 	public Set<TypeDesignationBase> getTypeDesignations(){
 		Set<TypeDesignationBase> result = new HashSet<TypeDesignationBase>();
 		for (TaxonNameBase taxonName : typifiedNames){
@@ -365,7 +353,6 @@ public class HomotypicalGroup extends AnnotatableEntity {
 	 * @see			TaxonNameBase#getTaxa()
 	 * @see			taxon.Synonym
 	 */
-	@Transient
 	public List<Synonym> getSynonymsInGroup(ReferenceBase sec){
 		List<Synonym> result = new ArrayList();
 		for (TaxonNameBase<?, ?>n : this.getTypifiedNames()){

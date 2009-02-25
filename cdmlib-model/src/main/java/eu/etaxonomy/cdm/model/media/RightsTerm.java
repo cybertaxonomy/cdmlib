@@ -18,6 +18,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
+import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
@@ -31,7 +32,7 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
 @XmlType(name = "RightsTerm")
 @XmlRootElement(name = "RightsTerm")
 @Entity
-//@Audited
+@Audited
 public class RightsTerm extends DefinedTermBase<RightsTerm> {
 	private static final long serialVersionUID = -5823263624000932116L;
 	private static final Logger logger = Logger.getLogger(RightsTerm.class);

@@ -22,6 +22,7 @@ import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
+import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.location.Point;
@@ -41,19 +42,18 @@ import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
  * @created 08-Nov-2007 13:06:09
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = {
+@XmlType(name = "Address", propOrder = {
     "pobox",
     "street",
     "postcode",
     "locality",
     "region",
     "country",
-    "location",
-    "contact"
+    "location"
 })
 @XmlRootElement(name = "Address")
 @Entity
-//@Audited
+@Audited
 public class Address extends VersionableEntity {
 	
 	/**
@@ -81,55 +81,17 @@ public class Address extends VersionableEntity {
     @XmlElement(name = "Country")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
+    @ManyToOne(fetch = FetchType.LAZY)
 	private WaterbodyOrCountry country;
     
     @XmlElement(name = "Location")
 	private Point location;
-    
-	//Bidirectional only private
-    @XmlElement(name = "Contact")
-	private Contact contact;
-	
-	
-	/** 
-	 * Returns the {@link Contact contact} (of a {@link Person person} or of an {@link Institution institution})
-	 * to which <i>this</i> address belongs.
-	 * Both kinds of agents cannot have more than one contact, but a contact may include
-	 * several postal addresses. 
-	 *
-	 * @return	the contact <i>this</i> postal address belongs to
-	 * @see     Contact
-	 */
-	@ManyToOne
-	public Contact getContact() {
-		return contact;
-	}
-
-
-	/** 
-	 * Adds <i>this</i> postal address to the set of addresses of a {@link Contact contact}.
-	 * The same address instance cannot be assigned to different persons
-	 * or institutions (if they do have the same postal address several
-	 * address instances must be created). If <i>this</i> address already belongs to a
-	 * contact this method shifts it from this contact to a new one.
-	 * Therefore <i>this</i> address will be removed from the set of addresses of the old
-	 * contact and added to the set of the new one. 
-	 *
-	 * @param  newContact  the new contact to which <i>this</i> postal address should belong
-	 * @see                Contact#addAddress(Address)
-	 * @see                Contact#removeAddress(Address)
-	 */
-	protected void setContact(Contact newContact) {
-		this.contact = newContact;
-	}
-
 	
 	/**
 	 * Returns the {@link WaterbodyOrCountry country} involved in <i>this</i> postal address.
 	 * 
 	 * @return	the country 
 	 */
-	@ManyToOne(fetch = FetchType.LAZY)
 	public WaterbodyOrCountry getCountry(){
 		return this.country;
 	}

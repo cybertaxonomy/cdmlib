@@ -9,16 +9,9 @@
 
 package eu.etaxonomy.cdm.model.taxon;
 
-import eu.etaxonomy.cdm.model.common.IRelated;
-import eu.etaxonomy.cdm.model.common.RelationshipBase;
-import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
-
-import org.apache.log4j.Logger;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
-
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.ManyToOne;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -26,6 +19,16 @@ import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
+
+import org.apache.log4j.Logger;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
+import org.hibernate.envers.Audited;
+
+import eu.etaxonomy.cdm.model.common.IRelated;
+import eu.etaxonomy.cdm.model.common.RelationshipBase;
+import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
 /**
  * The class representing the assignation of a {@link Synonym synonym} to an
@@ -51,34 +54,39 @@ import javax.xml.bind.annotation.XmlType;
 	"relatedFrom",
 	"relatedTo",
 	"type",
-    "isProParte",
-    "isPartial"
+    "proParte",
+    "partial"
 })
 @XmlRootElement(name = "SynonymRelationship")
 @Entity
-//@Audited
+@Audited
 public class SynonymRelationship extends RelationshipBase<Synonym, Taxon, SynonymRelationshipType> {
 	private static final Logger logger = Logger.getLogger(SynonymRelationship.class);
 
     @XmlElement(name = "IsProParte")
-	private boolean isProParte = false;
+	private boolean proParte = false;
     
     @XmlElement(name = "IsPartial")
-	private boolean isPartial = false;
+	private boolean partial = false;
 
 	@XmlElement(name = "RelatedFrom")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
+    @ManyToOne(fetch=FetchType.EAGER)
+    @Cascade(CascadeType.SAVE_UPDATE)
 	private Synonym relatedFrom;
 
 	@XmlElement(name = "RelatedTo")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
+    @ManyToOne(fetch=FetchType.EAGER)
+    @Cascade(CascadeType.SAVE_UPDATE)
 	private Taxon relatedTo;
 
 	@XmlElement(name = "Type")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
+    @ManyToOne(fetch=FetchType.EAGER)
 	private SynonymRelationshipType type;
 	
 	//for hibernate, don't use
@@ -116,14 +124,14 @@ public class SynonymRelationship extends RelationshipBase<Synonym, Taxon, Synony
 	 * more synonym relationship with the same synonym should exist.
 	 */
 	public boolean isProParte() {
-		return isProParte;
+		return proParte;
 	}
 
 	/**
 	 * @see #isProParte()
 	 */
-	public void setProParte(boolean isProParte) {
-		this.isProParte = isProParte;
+	public void setProParte(boolean proParte) {
+		this.proParte = proParte;
 	}
 
 	/**
@@ -137,14 +145,14 @@ public class SynonymRelationship extends RelationshipBase<Synonym, Taxon, Synony
 	 * exist.
 	 */
 	public boolean isPartial() {
-		return isPartial;
+		return partial;
 	}
 
 	/**
 	 * @see #isPartial()
 	 */
-	public void setPartial(boolean isPartial) {
-		this.isPartial = isPartial;
+	public void setPartial(boolean partial) {
+		this.partial = partial;
 	}
 	
 	/** 
@@ -156,7 +164,6 @@ public class SynonymRelationship extends RelationshipBase<Synonym, Taxon, Synony
 	 * @see    eu.etaxonomy.cdm.model.common.RelationshipBase#getRelatedTo()
 	 * @see    eu.etaxonomy.cdm.model.common.RelationshipBase#getType()
 	 */
-	@Transient
 	public Taxon getAcceptedTaxon(){
 		return this.getRelatedTo();
 	}
@@ -173,7 +180,7 @@ public class SynonymRelationship extends RelationshipBase<Synonym, Taxon, Synony
 	 * @see   				#getAcceptedTaxon()
 	 * @see   				Taxon#getSynonymRelations()
 	 */
-	protected void setAcceptedTaxon(Taxon acceptedTaxon){
+	public void setAcceptedTaxon(Taxon acceptedTaxon){
 		this.setRelatedTo(acceptedTaxon);
 	}
 
@@ -186,7 +193,6 @@ public class SynonymRelationship extends RelationshipBase<Synonym, Taxon, Synony
 	 * @see    eu.etaxonomy.cdm.model.common.RelationshipBase#getRelatedFrom()
 	 * @see    eu.etaxonomy.cdm.model.common.RelationshipBase#getType()
 	 */
-	@Transient
 	public Synonym getSynonym(){
 		return this.getRelatedFrom();
 	}
@@ -202,23 +208,18 @@ public class SynonymRelationship extends RelationshipBase<Synonym, Taxon, Synony
 	 * @see    			#getSynonym()
 	 * @see   			Synonym#getSynonymRelations()
 	 */
-	protected void setSynonym(Synonym synonym){
+	public void setSynonym(Synonym synonym){
 		this.setRelatedFrom(synonym);
 	}
 
-	@ManyToOne(fetch=FetchType.EAGER)
-	@Cascade({CascadeType.SAVE_UPDATE})
 	protected Synonym getRelatedFrom() {
 		return relatedFrom;
 	}
 
-	@ManyToOne(fetch=FetchType.EAGER)
-	@Cascade({CascadeType.SAVE_UPDATE})
 	protected Taxon getRelatedTo() {
 		return relatedTo;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
 	public SynonymRelationshipType getType() {
 		return type;
 	}

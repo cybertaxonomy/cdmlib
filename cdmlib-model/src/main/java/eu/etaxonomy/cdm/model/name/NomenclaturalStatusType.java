@@ -11,22 +11,24 @@ package eu.etaxonomy.cdm.model.name;
 
 
 
-import eu.etaxonomy.cdm.model.common.DefinedTermBase;
-import eu.etaxonomy.cdm.model.common.ILoadableTerm;
-import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.OrderedTermBase;
-import eu.etaxonomy.cdm.model.common.Representation;
-import eu.etaxonomy.cdm.model.common.TermVocabulary;
-import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
-import org.apache.log4j.Logger;
-
-import java.util.*;
-
-import javax.persistence.*;
+import javax.persistence.Entity;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
+
+import org.apache.log4j.Logger;
+import org.hibernate.envers.Audited;
+
+import eu.etaxonomy.cdm.model.common.DefinedTermBase;
+import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.OrderedTermBase;
+import eu.etaxonomy.cdm.model.common.TermVocabulary;
+import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
 /**
  * The class representing categories of nomenclatural status (like "invalid",
@@ -55,7 +57,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "NomenclaturalStatusType")
 @Entity
-//@Audited
+@Audited
 public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatusType> {
 
 	static Logger logger = Logger.getLogger(NomenclaturalStatusType.class);
@@ -199,7 +201,6 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	 * @see  #isIllegitimateType()
 	 * @see  eu.etaxonomy.cdm.model.common.DefinedTermBase#getKindOf()
 	 */
-	@Transient
 	public boolean isInvalidType(){
 		if (this.equals(INVALID())
 			|| this.equals(NUDUM())
@@ -226,7 +227,6 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	 * @see  #isIllegitimateType()
 	 * @see  eu.etaxonomy.cdm.model.common.DefinedTermBase#getKindOf()
 	 */
-	@Transient
 	public boolean isLegitimateType(){
 		if (this.equals(LEGITIMATE()) ||
 				this.equals(NOVUM()) ||
@@ -258,7 +258,6 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	 * @see  #SANCTIONED()
 	 * @see  eu.etaxonomy.cdm.model.common.DefinedTermBase#getKindOf()
 	 */
-	@Transient
 	public boolean isIllegitimateType(){
 		if (this.equals(ILLEGITIMATE()) ||
 				this.equals(SUPERFLUOUS()) ||
@@ -701,7 +700,6 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	 * @return  					the nomenclatural status type
 	 * 					
 	 */
-	@Transient
 	public static NomenclaturalStatusType getNomenclaturalStatusTypeByAbbreviation(String statusAbbreviation) throws UnknownCdmTypeException{
 		if (statusAbbreviation == null){ throw new NullPointerException("statusAbbreviation is 'null' in getNomenclaturalStatusTypeByAbbreviation");
 		}else if (statusAbbreviation.equalsIgnoreCase("nom. ambig.")) { return NomenclaturalStatusType.AMBIGUOUS();
@@ -745,7 +743,6 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	 * @return  the nomenclatural status type
 	 * 					
 	 */
-	@Transient
 	public static NomenclaturalStatusType getNomenclaturalStatusTypeByLabel(String statusLabel) throws UnknownCdmTypeException{
 		if (statusLabel == null){ throw new NullPointerException("statusLabel is 'null' in getNomenclaturalStatusTypeByLabel");
 		}else if (statusLabel.equalsIgnoreCase("Ambiguous")) { return NomenclaturalStatusType.AMBIGUOUS();

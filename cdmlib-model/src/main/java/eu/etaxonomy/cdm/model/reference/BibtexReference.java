@@ -24,8 +24,7 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
+import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.strategy.cache.reference.BibtexDefaultCacheStrategy;
@@ -73,7 +72,7 @@ import eu.etaxonomy.cdm.strategy.cache.reference.BibtexDefaultCacheStrategy;
 })
 @XmlRootElement(name = "BibtexReference")
 @Entity
-//@Audited
+@Audited
 public class BibtexReference extends ReferenceBase implements INomenclaturalReference, Cloneable {
 	/**
 	 * 
@@ -83,6 +82,7 @@ public class BibtexReference extends ReferenceBase implements INomenclaturalRefe
 	private static final Logger logger = Logger.getLogger(BibtexReference.class);
 	
 	@XmlElement(name = "BibtexEntryType")
+	@ManyToOne(fetch = FetchType.LAZY)
 	private BibtexEntryType type;
 	
 	@XmlElement(name = "Journal")
@@ -154,9 +154,11 @@ public class BibtexReference extends ReferenceBase implements INomenclaturalRefe
 	@XmlElement(name = "Crossref")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
+    @ManyToOne(fetch = FetchType.LAZY)
 	private BibtexReference crossref;
 
     @XmlElementRef(name = "NomenclaturalReferenceBase")
+    @Transient
 	private NomenclaturalReferenceHelper nomRefBase = NomenclaturalReferenceHelper.NewInstance(this);
 
 	
@@ -193,8 +195,6 @@ public class BibtexReference extends ReferenceBase implements INomenclaturalRefe
 	 * @return  the BibTeX reference containing <i>this</i> BibTeX reference
 	 * @see 	BibtexEntryType
 	 */
-	@ManyToOne
-	@Cascade({CascadeType.SAVE_UPDATE})
 	public BibtexReference getCrossref(){
 		return this.crossref;
 	}
@@ -656,7 +656,6 @@ public class BibtexReference extends ReferenceBase implements INomenclaturalRefe
 	 * 
 	 * @return  the BibTeX entry type of <i>this</i> BibTeX reference
 	 */
-	@ManyToOne(fetch = FetchType.LAZY)
 	public BibtexEntryType getType() {
 		return type;
 	}
@@ -667,9 +666,6 @@ public class BibtexReference extends ReferenceBase implements INomenclaturalRefe
 	public void setType(BibtexEntryType type) {
 		this.type = type;
 	}
-	
-	
-	
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.reference.INomenclaturalReference#setDatePublished(eu.etaxonomy.cdm.model.common.TimePeriod)
@@ -688,7 +684,6 @@ public class BibtexReference extends ReferenceBase implements INomenclaturalRefe
 	 * @see  ReferenceBase#getCitation()
 	 */
 	@Override
-	@Transient
 	public String getCitation(){
 		return nomRefBase.getCitation();
 	}
@@ -705,7 +700,6 @@ public class BibtexReference extends ReferenceBase implements INomenclaturalRefe
 	 * @see  					getCitation()
 	 * @see  					INomenclaturalReference#getNomenclaturalCitation(String)
 	 */
-	@Transient
 	public String getNomenclaturalCitation(String microReference) {
 		return nomRefBase.getNomenclaturalCitation(microReference);
 	}

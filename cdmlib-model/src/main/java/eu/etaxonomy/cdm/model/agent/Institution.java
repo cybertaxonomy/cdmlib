@@ -10,12 +10,13 @@
 package eu.etaxonomy.cdm.model.agent;
 
 
-import org.apache.log4j.Logger;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
+import java.util.HashSet;
+import java.util.Set;
 
-import java.util.*;
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -24,6 +25,11 @@ import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
+
+import org.apache.log4j.Logger;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
+import org.hibernate.envers.Audited;
 
 /**
  * This class represents public or private institutions.
@@ -44,13 +50,12 @@ import javax.xml.bind.annotation.XmlType;
 	"code",
 	"name",
 	"types",
-	"isPartOf",
-	"contact"
+	"isPartOf"
 })
 @XmlRootElement(name = "Institution")
 @Entity
-//@Audited
-public class Institution extends Agent {
+@Audited
+public class Institution extends AgentBase {
 	private static final long serialVersionUID = -951321271656955808L;
 	public static final Logger logger = Logger.getLogger(Institution.class);
 	
@@ -62,18 +67,17 @@ public class Institution extends Agent {
 	
     @XmlElementWrapper(name = "Types")
     @XmlElement(name = "Type")
-    //@XmlIDREF
-    //@XmlSchemaType(name = "IDREF")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
+    @ManyToMany(fetch = FetchType.LAZY)
 	private Set<InstitutionType> types = new HashSet<InstitutionType>();
 	
     @XmlElement(name = "IsPartOf")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @Cascade(CascadeType.SAVE_UPDATE)
 	private Institution isPartOf;
-	
-    // TODO: Move to Agent
-    @XmlElement(name = "Contact")
-	private Contact contact;
 
 	/**
 	 * Creates a new empty institution instance.
@@ -91,24 +95,6 @@ public class Institution extends Agent {
 	}
 
 	/** 
-	 * Returns the {@link Contact contact} corresponding to <i>this</i> institution.
-	 * It includes telecommunication data
-	 * and electronic as well as multiple postal addresses.
- 	 */
-	// TODO: Move to Agent, mark as @OneToOne
-	@ManyToOne
-	@Cascade({CascadeType.SAVE_UPDATE})
-	public Contact getContact(){
-		return this.contact;
-	}
-	/** 
-	 * @see  #getContact()
-	 */
-	public void setContact(Contact contact){
-		this.contact = contact;
-	}
-
-	/** 
 	 * Returns the set of institution {@link InstitutionType types} (categories)
 	 * used to describe or circumscribe <i>this</i> institution's activities.
 	 * Institution types are items of a controlled {@link eu.etaxonomy.cdm.model.common.TermVocabulary vocabulary}.
@@ -116,7 +102,6 @@ public class Institution extends Agent {
 	 * @return	the set of institution types
 	 * @see     InstitutionType
 	 */
-	@ManyToMany(fetch = FetchType.LAZY)
 	public Set<InstitutionType> getTypes(){
 		return this.types;
 	}
@@ -142,24 +127,16 @@ public class Institution extends Agent {
 	public void removeType(InstitutionType t){
 		this.types.remove(t);
 	}
-	/** 
-	 * @see     #getTypes()
-	 */
-	protected void setTypes(Set<InstitutionType> types){
-		this.types = types;
-	}
-
 
 	/** 
 	 * Returns the parent institution of this institution.
 	 * This is for instance the case when this institution is a herbarium
 	 * belonging to a parent institution such as a museum.
 	 */
-	@ManyToOne
-	@Cascade({CascadeType.SAVE_UPDATE})
 	public Institution getIsPartOf(){
 		return this.isPartOf;
 	}
+	
 	/** 
 	 * Assigns a parent institution to which this institution belongs.
 	 *

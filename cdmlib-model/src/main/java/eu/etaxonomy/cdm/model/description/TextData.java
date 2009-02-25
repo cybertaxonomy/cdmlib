@@ -9,6 +9,7 @@
 
 package eu.etaxonomy.cdm.model.description;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.persistence.Entity;
@@ -16,7 +17,6 @@ import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapKey;
 import javax.persistence.OneToMany;
-import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -29,13 +29,13 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 
 import eu.etaxonomy.cdm.jaxb.MultilanguageTextAdapter;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
-import eu.etaxonomy.cdm.model.common.MultilanguageText;
 
 /**
  * This class represents information pieces expressed in one or several natural
@@ -51,12 +51,12 @@ import eu.etaxonomy.cdm.model.common.MultilanguageText;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "TextData", propOrder = {
-    "multiLanguageText",
+    "multilanguageText",
     "format"
 })
 @XmlRootElement(name = "TextData")
 @Entity
-//@Audited
+@Audited
 @Indexed
 public class TextData extends DescriptionElementBase {
 	private static final long serialVersionUID = -2165015581278282615L;
@@ -66,12 +66,16 @@ public class TextData extends DescriptionElementBase {
 	//@XmlElement(name = "MultiLanguageText", type = MultilanguageText.class)
 	@XmlElement(name = "MultiLanguageText")
     @XmlJavaTypeAdapter(MultilanguageTextAdapter.class)
-	//private MultilanguageText multiLanguageText;
-	private Map<Language, LanguageString> multiLanguageText;
+    @OneToMany (fetch= FetchType.LAZY)
+	@MapKey(name="language")
+    @Cascade({CascadeType.SAVE_UPDATE})
+    @IndexedEmbedded
+	private Map<Language, LanguageString> multilanguageText = new HashMap<Language,LanguageString>();
 	
 	@XmlElement(name = "Format")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
+	@ManyToOne(fetch = FetchType.LAZY)
 	private TextFormat format;
 	
 	// ************* CONSTRUCTORS *************/	
@@ -93,7 +97,6 @@ public class TextData extends DescriptionElementBase {
 	 */
 	public TextData(Feature feature){
 		super(feature);
-		initTextSet();
 	}
 	
 	//********* METHODS **************************************/
@@ -143,33 +146,20 @@ public class TextData extends DescriptionElementBase {
 	 * 
 	 * @see	#getText(Language)
 	 */
-	@OneToMany (fetch= FetchType.LAZY)
-	@MapKey(name="language")
-    @Cascade({CascadeType.SAVE_UPDATE})
-    @IndexedEmbedded
+
     public Map<Language, LanguageString> getMultilanguageText() {
-    //public MultilanguageText getMultilanguageText() {
-		initTextSet();
-		return multiLanguageText;
+		return multilanguageText;
 	}
-	/**
-	 * @see	#getMultilanguageText() 
-	 */
-	protected void setMultilanguageText(Map<Language, LanguageString> texts) {
-	//protected void setMultilanguageText(MultilanguageText texts) {
-		this.multiLanguageText = texts;
-	}
+
 	/** 
 	 * Returns the text string in the given {@link Language language} with the content
 	 * of <i>this</i> text data.
 	 * 
 	 * @param language	the language in which the text string looked for is formulated
 	 * @see				#getMultilanguageText()
-	 */
-	@Transient 
+	 */ 
 	public String getText(Language language) {
-		initTextSet();
-		LanguageString languageString = multiLanguageText.get(language);
+		LanguageString languageString = multilanguageText.get(language);
 		if (languageString == null){
 			return null;
 		}else{
@@ -189,10 +179,8 @@ public class TextData extends DescriptionElementBase {
 	 * @see    	   		#getMultilanguageText()
 	 * @see    	   		#putText(LanguageString)
 	 */
-	@Transient
 	public LanguageString putText(String text, Language language) {
-		initTextSet();
-		LanguageString result = this.multiLanguageText.put(language , LanguageString.NewInstance(text, language));
+		LanguageString result = this.multilanguageText.put(language , LanguageString.NewInstance(text, language));
 		return (result == null ? null : result);
 	}
 	/**
@@ -206,15 +194,13 @@ public class TextData extends DescriptionElementBase {
 	 * @see    	   				#getMultilanguageText()
 	 * @see    	   				#putText(String, Language)
 	 */
-	@Transient
 	public LanguageString putText(LanguageString languageString) {
-		initTextSet();
 		
 		if (languageString == null){
 			return null;
 		}else{
 			Language language = languageString.getLanguage();
-			return this.multiLanguageText.put(language, languageString);
+			return this.multilanguageText.put(language, languageString);
 		}
 	}
 	/** 
@@ -229,14 +215,7 @@ public class TextData extends DescriptionElementBase {
 	 * @see     		#getMultilanguageText()
 	 */
 	public LanguageString removeText(Language language) {
-		initTextSet();
-		return this.multiLanguageText.remove(language);
-	}
-	
-	private void initTextSet(){
-		if (multiLanguageText == null){
-			multiLanguageText = MultilanguageText.NewInstance();
-		}
+		return this.multilanguageText.remove(language);
 	}
 	
 	/** 
@@ -246,8 +225,7 @@ public class TextData extends DescriptionElementBase {
 	 * @see	#getMultilanguageText()
 	 */
 	public int countLanguages(){
-		initTextSet();
-		return multiLanguageText.size();
+		return multilanguageText.size();
 	}
 	
 
@@ -257,7 +235,6 @@ public class TextData extends DescriptionElementBase {
 	 * 
 	 * @see	#getMultilanguageText()
 	 */
-	@ManyToOne(fetch = FetchType.LAZY)
 	public TextFormat getFormat() {
 		return format;
 	}

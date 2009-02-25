@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.model.description;
 
 import org.apache.log4j.Logger;
+import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
@@ -35,7 +36,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "Stage")
 @XmlRootElement(name = "Stage")
 @Entity
-//@Audited
+@Audited
 public class Stage extends Scope {
 	private static final long serialVersionUID = 2338810516765894760L;
 	@SuppressWarnings("unused")

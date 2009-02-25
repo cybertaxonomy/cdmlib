@@ -15,6 +15,7 @@ import eu.etaxonomy.cdm.model.common.OrderedTermBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 
 import org.apache.log4j.Logger;
+import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -40,7 +41,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "Modifier")
 @XmlRootElement(name = "Modifier")
 @Entity
-//@Audited
+@Audited
 public class Modifier extends OrderedTermBase<Modifier> {
 	private static final long serialVersionUID = -2491833848163461951L;
 	@SuppressWarnings("unused")

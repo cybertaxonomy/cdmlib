@@ -9,18 +9,12 @@
 
 package eu.etaxonomy.cdm.model.name;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
@@ -29,6 +23,7 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
@@ -56,29 +51,31 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 @XmlRootElement(name = "NameTypeDesignation")
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "NameTypeDesignation", propOrder = {
-    "isRejectedType",
-    "isConservedType",
-    "isLectoType",
+    "rejectedType",
+    "conservedType",
+    "lectoType",
     "typeName"
 })
 @Entity
-//@Audited
+@Audited
 public class NameTypeDesignation extends TypeDesignationBase implements ITypeDesignation {
 	
 	static Logger logger = Logger.getLogger(NameTypeDesignation.class);
 	
 	@XmlElement(name = "IsRejectedType")
-	private boolean isRejectedType;
+	private boolean rejectedType;
 	
 	@XmlElement(name = "IsConservedType")
-	private boolean isConservedType;
+	private boolean conservedType;
 	
 	@XmlElement(name = "IsLectoType")
-	private boolean isLectoType;
+	private boolean lectoType;
 	
 	@XmlElement(name = "TypeName")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
+	@ManyToOne(fetch = FetchType.LAZY)
+	@Cascade(CascadeType.SAVE_UPDATE)
 	private TaxonNameBase typeName;
 	
 //	@XmlElement(name = "HomotypicalGroup")
@@ -119,11 +116,11 @@ public class NameTypeDesignation extends TypeDesignationBase implements ITypeDes
 	 * @see							TaxonNameBase#addNameTypeDesignation(TaxonNameBase, ReferenceBase, String, String, boolean, boolean, boolean, boolean, boolean)
 	 */
 	protected NameTypeDesignation(TaxonNameBase typeName, ReferenceBase citation, String citationMicroReference,
-			String originalNameString, boolean isRejectedType, boolean isConservedType, boolean isNotDesignated) {
+			String originalNameString, boolean rejectedType, boolean conservedType, boolean isNotDesignated) {
 		super(citation, citationMicroReference, originalNameString, isNotDesignated);
 		this.setTypeName(typeName);
-		this.isRejectedType = isRejectedType;
-		this.isConservedType = isConservedType;
+		this.rejectedType = rejectedType;
+		this.conservedType = conservedType;
 	}
 		
 	//********* METHODS **************************************/
@@ -134,8 +131,6 @@ public class NameTypeDesignation extends TypeDesignationBase implements ITypeDes
 	 * taxon name type in <i>this</i> taxon name type designation. The {@link Rank rank}
 	 * of the taxon name type must be "species".
 	 */
-	@ManyToOne(fetch = FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE})
 	public TaxonNameBase getTypeName(){
 		return this.typeName;
 	}
@@ -154,13 +149,13 @@ public class NameTypeDesignation extends TypeDesignationBase implements ITypeDes
 	 * @see   #isConservedType()
 	 */
 	public boolean isRejectedType(){
-		return this.isRejectedType;
+		return this.rejectedType;
 	}
 	/**
 	 * @see  #isRejectedType()
 	 */
-	public void setRejectedType(boolean isRejectedType){
-		this.isRejectedType = isRejectedType;
+	public void setRejectedType(boolean rejectedType){
+		this.rejectedType = rejectedType;
 	}
 
 	/** 
@@ -171,13 +166,13 @@ public class NameTypeDesignation extends TypeDesignationBase implements ITypeDes
 	 * @see   #isRejectedType()
 	 */
 	public boolean isConservedType(){
-		return this.isConservedType;
+		return this.conservedType;
 	}
 	/**
 	 * @see  #isConservedType()
 	 */
-	public void setConservedType(boolean isConservedType){
-		this.isConservedType = isConservedType;
+	public void setConservedType(boolean conservedType){
+		this.conservedType = conservedType;
 	}
 
 	/** 
@@ -193,14 +188,13 @@ public class NameTypeDesignation extends TypeDesignationBase implements ITypeDes
 	 * @see eu.etaxonomy.cdm.model.name.ITypeDesignation#isLectoType()
 	 */
 	public boolean isLectoType() {
-		return isLectoType;
+		return lectoType;
 	}
 
 	/**
 	 * @see   #isLectoType()
 	 */
-	public void setLectoType(boolean isLectoType) {
-		this.isLectoType = isLectoType;
+	public void setLectoType(boolean lectoType) {
+		this.lectoType = lectoType;
 	}
-
 }

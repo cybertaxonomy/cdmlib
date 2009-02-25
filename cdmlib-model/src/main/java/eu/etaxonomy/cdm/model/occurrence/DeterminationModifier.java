@@ -9,6 +9,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
+import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.description.Modifier;
@@ -23,7 +24,7 @@ import eu.etaxonomy.cdm.model.description.Modifier;
 @XmlType(name = "DeterminationModifier")
 @XmlRootElement(name = "DeterminationModifier")
 @Entity
-//@Audited
+@Audited
 public class DeterminationModifier extends Modifier {
 	private static final Logger logger = Logger.getLogger(DeterminationModifier.class);
 

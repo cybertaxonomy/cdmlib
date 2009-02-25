@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.model.common;
 
 
 import org.apache.log4j.Logger;
+import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -28,7 +29,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "ExtensionType")
 @Entity
-//@Audited
+@Audited
 public class ExtensionType extends DefinedTermBase<ExtensionType> {
 	private static final long serialVersionUID = -7761963794004133427L;
 	@SuppressWarnings("unused")

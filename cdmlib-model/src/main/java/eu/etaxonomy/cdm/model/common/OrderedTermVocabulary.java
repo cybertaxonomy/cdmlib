@@ -17,6 +17,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
+import org.hibernate.envers.Audited;
 
 /**
  * @author a.mueller
@@ -26,7 +27,7 @@ import org.apache.log4j.Logger;
 @XmlType(name = "OrderedTermVocabulary")
 @XmlRootElement(name = "OrderedTermVocabulary")
 @Entity
-//@Audited
+@Audited
 public class OrderedTermVocabulary<T extends OrderedTermBase> extends TermVocabulary<T> {
 	private static final long serialVersionUID = 7871741306306371242L;
 	@SuppressWarnings("unused")
@@ -45,27 +46,24 @@ public class OrderedTermVocabulary<T extends OrderedTermBase> extends TermVocabu
 		super();
 	}
 	
-	@Transient
 	@Override
 	public Set<T> getNewTermSet() {
 		return new TreeSet<T>();
 	}
 
-	@Transient
 	public SortedSet<T> getOrderedTerms(T otb) {
 		SortedSet<T> result = getSortedSetOfTerms();
 		return result;
 	}
 
 	
-	@Transient
 	public SortedSet<T> getHigherAndEqualTerms(T otb) {
 		SortedSet<T> result = new TreeSet<T>();
 		SortedSet<T> sortedSet = getSortedSetOfTerms();
 		result.addAll( sortedSet.tailSet(otb));
 		return result;
 	}
-	@Transient
+
 	public SortedSet<T> getHigherTerms(T otb) {
 		SortedSet<T> result = getHigherAndEqualTerms(otb);
 		for (T setObject : terms){
@@ -76,7 +74,6 @@ public class OrderedTermVocabulary<T extends OrderedTermBase> extends TermVocabu
 		return result;
 	}
 
-	@Transient
 	public SortedSet<T> getLowerAndEqualTerms(T otb) {
 		SortedSet<T> result = new TreeSet<T>();
 		SortedSet<T> sortedSet = getSortedSetOfTerms();
@@ -84,7 +81,6 @@ public class OrderedTermVocabulary<T extends OrderedTermBase> extends TermVocabu
 		return result;
 	}
 	
-	@Transient
 	public SortedSet<T> getLowerTerms(T otb) {
 		SortedSet<T> result = getLowerAndEqualTerms(otb);
 		for (T setObject : terms){
@@ -95,7 +91,6 @@ public class OrderedTermVocabulary<T extends OrderedTermBase> extends TermVocabu
 		return result;
 	}
 
-	@Transient
 	public SortedSet<T> getEqualTerms(T otb) {
 		SortedSet<T> result = new TreeSet<T>();
 		for (T setObject : terms){
@@ -106,7 +101,6 @@ public class OrderedTermVocabulary<T extends OrderedTermBase> extends TermVocabu
 		return result;
 	}
 	
-	@Transient
 	public T getNextHigherTerm(T otb) {
 		try {
 			return getHigherTerms(otb).first();
@@ -115,7 +109,6 @@ public class OrderedTermVocabulary<T extends OrderedTermBase> extends TermVocabu
 		}
 	}
 	
-	@Transient
 	public T getNextLowerTerm(T otb) {
 		try {
 			return getLowerTerms(otb).last();
@@ -124,7 +117,6 @@ public class OrderedTermVocabulary<T extends OrderedTermBase> extends TermVocabu
 		}
 	}
 	
-	@Transient
 	public T getLowestTerm() {
 		try {
 			SortedSet<T> sortedSet = getSortedSetOfTerms();
@@ -135,7 +127,6 @@ public class OrderedTermVocabulary<T extends OrderedTermBase> extends TermVocabu
 		}
 	}
 	
-	@Transient
 	public T getHighestTerm() {
 		try {
 			SortedSet<T> sortedSet = getSortedSetOfTerms();
@@ -145,7 +136,6 @@ public class OrderedTermVocabulary<T extends OrderedTermBase> extends TermVocabu
 		}
 	}
 	
-	@Override
 	public void addTerm(T term) {
 		SortedSet<T> sortedTerms = getSortedSetOfTerms();
 		int lowestOrderIndex;
@@ -210,10 +200,11 @@ public class OrderedTermVocabulary<T extends OrderedTermBase> extends TermVocabu
 		super.removeTerm(term);
 	}
 	
+	@Transient
 	private T toBeChangedByObject;
 	
-	public boolean indexChangeAllowed(T otb){
-		return otb == toBeChangedByObject ;
+	public boolean indexChangeAllowed(OrderedTermBase<T> orderedTermBase){
+		return orderedTermBase == toBeChangedByObject ;
 	}
 	
 	

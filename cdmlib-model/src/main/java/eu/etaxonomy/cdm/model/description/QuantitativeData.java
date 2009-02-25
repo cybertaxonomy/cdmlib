@@ -16,7 +16,6 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -29,6 +28,7 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.envers.Audited;
 
 /**
  * This class represents information pieces expressed in numerical data
@@ -62,7 +62,7 @@ import org.hibernate.annotations.CascadeType;
 })
 @XmlRootElement(name = "QuantitativeData")
 @Entity
-//@Audited
+@Audited
 public class QuantitativeData extends DescriptionElementBase {
 	private static final long serialVersionUID = -2755806455420051488L;
 	@SuppressWarnings("unused")
@@ -71,12 +71,13 @@ public class QuantitativeData extends DescriptionElementBase {
 	@XmlElement(name = "MeasurementUnit")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
+	@ManyToOne(fetch = FetchType.LAZY)
 	private MeasurementUnit unit;
 	
 	@XmlElementWrapper(name = "StatisticalValues")
 	@XmlElement(name = "StatisticalValue")
-	@XmlIDREF
-	@XmlSchemaType(name = "IDREF")
+	@OneToMany(fetch = FetchType.LAZY)
+	@Cascade({CascadeType.SAVE_UPDATE})
 	private Set<StatisticalMeasurementValue> statisticalValues = new HashSet<StatisticalMeasurementValue>();
 	
 	/** 
@@ -97,18 +98,10 @@ public class QuantitativeData extends DescriptionElementBase {
 	 * Returns the set of {@link StatisticalMeasurementValue statistical measurement values} describing
 	 * the {@link Feature feature} corresponding to <i>this</i> quantitative data.
 	 */
-	@OneToMany(fetch = FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<StatisticalMeasurementValue> getStatisticalValues() {
 		return statisticalValues;
 	}
-	/**
-	 * @see	#getStatisticalValues() 
-	 */
-	protected void setStatisticalValues(
-			Set<StatisticalMeasurementValue> statisticalValues) {
-		this.statisticalValues = statisticalValues;
-	}
+
 	/**
 	 * Adds a {@link StatisticalMeasurementValue statistical measurement value} to the set of
 	 * {@link #getStatisticalValues() statistical measurement values} describing
@@ -140,7 +133,6 @@ public class QuantitativeData extends DescriptionElementBase {
 	 * Returns the {@link MeasurementUnit measurement unit} used in <i>this</i>
 	 * quantitative data.
 	 */
-	@ManyToOne(fetch = FetchType.LAZY)
 	public MeasurementUnit getUnit(){
 		return this.unit;
 	}
@@ -157,7 +149,6 @@ public class QuantitativeData extends DescriptionElementBase {
 	 * belonging to <i>this</i> quantitative data. Returns "0" if no such
 	 * statistical measurement value instance exists. 
 	 */
-	@Transient
 	public float getMin(){
 		return 0;
 	}
@@ -168,7 +159,6 @@ public class QuantitativeData extends DescriptionElementBase {
 	 * belonging to <i>this</i> quantitative data. Returns "0" if no such
 	 * statistical measurement value instance exists. 
 	 */
-	@Transient
 	public float getMax(){
 		return 0;
 	}
@@ -179,7 +169,6 @@ public class QuantitativeData extends DescriptionElementBase {
 	 * "typical lower boundary" and belonging to <i>this</i> quantitative data.
 	 * Returns "0" if no such statistical measurement value instance exists. 
 	 */
-	@Transient
 	public float getTypicalLowerBoundary(){
 		return 0;
 	}
@@ -190,7 +179,6 @@ public class QuantitativeData extends DescriptionElementBase {
 	 * "typical upper boundary" and belonging to <i>this</i> quantitative data.
 	 * Returns "0" if no such statistical measurement value instance exists. 
 	 */
-	@Transient
 	public float getTypicalUpperBoundary(){
 		return 0;
 	}

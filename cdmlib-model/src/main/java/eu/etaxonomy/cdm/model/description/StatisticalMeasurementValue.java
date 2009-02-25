@@ -27,6 +27,7 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
+import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 
@@ -48,7 +49,7 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
 @XmlType(name = "StatisticalMeasureValue")
 @XmlRootElement(name = "StatisticalMeasureValue")
 @Entity
-//@Audited
+@Audited
 public class StatisticalMeasurementValue extends VersionableEntity {
 	private static final long serialVersionUID = -3576311887760351982L;
 	@SuppressWarnings("unused")
@@ -61,11 +62,13 @@ public class StatisticalMeasurementValue extends VersionableEntity {
 	@XmlElement(name = "Modifier")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
+	@OneToMany(fetch = FetchType.LAZY)
 	private Set<Modifier> modifiers = new HashSet<Modifier>();
 	
 	@XmlElement(name = "StatisticalMeasureType")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
+	@ManyToOne(fetch = FetchType.LAZY)
 	private StatisticalMeasure type;
 
 
@@ -88,7 +91,6 @@ public class StatisticalMeasurementValue extends VersionableEntity {
 	 * Returns the type of {@link StatisticalMeasure statistical measure} used in
 	 * <i>this</i> statistical measurement value.
 	 */
-	@ManyToOne(fetch = FetchType.LAZY)
 	public StatisticalMeasure getType(){
 		return this.type;
 	}
@@ -121,16 +123,10 @@ public class StatisticalMeasurementValue extends VersionableEntity {
 	 * or probability of <i>this</i> statistical measurement value.
 	 * This is only metainformation.
 	 */
-	@OneToMany(fetch = FetchType.LAZY)
 	public Set<Modifier> getModifiers() {
 		return modifiers;
 	}
-	/**
-	 * @see	#getModifiers() 
-	 */
-	protected void setModifiers(Set<Modifier> modifiers) {
-		this.modifiers = modifiers;
-	}
+
 	/**
 	 * Adds a {@link Modifier modifier} to the set of {@link #getModifiers() modifiers}
 	 * used to qualify the validity of <i>this</i> statistical measurement value.

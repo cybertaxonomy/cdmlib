@@ -11,6 +11,8 @@ package eu.etaxonomy.cdm.model.view;
 
 
 import org.apache.log4j.Logger;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ICdmBase;
@@ -35,9 +37,14 @@ public class View extends CdmBase implements IReferencedEntity{
 	
 	private String name;
 	private String description;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@Cascade(CascadeType.SAVE_UPDATE)
 	private ReferenceBase reference;
+	@OneToMany(fetch = FetchType.LAZY)
 	private Set<View> superViews = new HashSet<View>();
+	@Transient
 	private Set<CdmBase> members = new HashSet<CdmBase>();
+	@Transient
 	private Set<CdmBase> nonMembers = new HashSet<CdmBase>();
 	
 	public String getName(){
@@ -51,11 +58,11 @@ public class View extends CdmBase implements IReferencedEntity{
 	public String getDescription(){
 		return this.description;
 	}
+	
 	public void setDescription(String description){
 		this.description = description;
 	}
 
-	@Transient
 	public ReferenceBase getCitation() {
 		return getReference();
 	}
@@ -68,14 +75,10 @@ public class View extends CdmBase implements IReferencedEntity{
 		this.reference = reference;
 	}
 	
-
-	@OneToMany
 	public Set<View> getSuperViews() {
 		return superViews;
 	}
-	protected void setSuperViews(Set<View> superViews) {
-		this.superViews = superViews;
-	}
+
 	public void addSuperView(View superView) {
 		this.superViews.add(superView);
 	}
@@ -83,14 +86,10 @@ public class View extends CdmBase implements IReferencedEntity{
 		this.superViews.remove(superView);
 	}
 	
-
-	@Transient
 	public Set<CdmBase> getMembers() {
 		return members;
 	}
-	protected void setMembers(Set<CdmBase> members) {
-		this.members = members;
-	}
+
 	public void addMember(CdmBase member) {
 		this.members.add(member);
 	}
@@ -98,19 +97,14 @@ public class View extends CdmBase implements IReferencedEntity{
 		this.members.remove(member);
 	}
 
-	
-	@Transient
 	public Set<CdmBase> getNonMembers() {
 		return nonMembers;
 	}
-	protected void setNonMembers(Set<CdmBase> nonMembers) {
-		this.nonMembers = nonMembers;
-	}
+
 	public void addNonMember(CdmBase member) {
 		this.nonMembers.add(member);
 	}
 	public void removeNonMember(ICdmBase member) {
 		this.nonMembers.remove(member);
 	}
-
 }

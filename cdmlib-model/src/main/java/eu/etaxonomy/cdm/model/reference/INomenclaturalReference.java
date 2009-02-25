@@ -32,14 +32,12 @@ public interface INomenclaturalReference extends IIdentifiableEntity, IParsable{
 	 * Returns a formatted string containing the reference citation excluding
 	 * authors but including the details as used in a {@link TaxonNameBase taxon name}.
 	 */
-	@Transient
 	public String getNomenclaturalCitation(String  microReference);
 
 	/**
 	 * Returns a string representation for the year of publication / creation
 	 * of a reference.
 	 */
-	@Transient
 	public String getYear();
 
 	/**

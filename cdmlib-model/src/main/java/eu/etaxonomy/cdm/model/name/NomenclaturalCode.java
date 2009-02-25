@@ -9,26 +9,21 @@
 
 package eu.etaxonomy.cdm.model.name;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import javax.persistence.Entity;
-import javax.persistence.Transient;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlEnum;
+import javax.xml.bind.annotation.XmlEnumValue;
+import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 
 import au.com.bytecode.opencsv.CSVWriter;
-
-import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.IDefinedTerm;
-import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.media.Media;
 
 /**
@@ -50,27 +45,26 @@ import eu.etaxonomy.cdm.model.media.Media;
  * @version 2.0
  */
 
+@XmlType(name = "NomenclaturalCode")
+@XmlEnum
 public enum NomenclaturalCode implements IDefinedTerm<NomenclaturalCode> {
 	//International Code of Nomenclature of Bacteria
-	ICNB(UUID.fromString("ff4b0979-7abf-4b40-95c0-8b8b1e8a4d5e"), 1 ), 
+	@XmlEnumValue("ICNB") ICNB(UUID.fromString("ff4b0979-7abf-4b40-95c0-8b8b1e8a4d5e")), 
 	//International Code of Botanical Nomenclature
-	ICBN(UUID.fromString("540fc02a-8a8e-4813-89d2-581dad4dd482"), 2 ), 
+	@XmlEnumValue("ICBN") ICBN(UUID.fromString("540fc02a-8a8e-4813-89d2-581dad4dd482")), 
 	//International Code of Cultivated Plants
-	ICNCP(UUID.fromString("65a432b5-92b1-4c9a-8090-2a185e423d2e"), 3 ), 
+	@XmlEnumValue("ICNCP") ICNCP(UUID.fromString("65a432b5-92b1-4c9a-8090-2a185e423d2e")), 
 	//International Code of Zoological Nomenclature
-	ICZN(UUID.fromString("b584c2f8-dbe5-4454-acad-2b45e63ec11b"), 4 ), 
+	@XmlEnumValue("ICZN") ICZN(UUID.fromString("b584c2f8-dbe5-4454-acad-2b45e63ec11b")), 
 	//International Code for Virus Classification and Nomenclature
-	ICVCN(UUID.fromString("e9d6d6b4-ccb7-4f28-b828-0b1501f8c75a"), 5 );
-	
+	@XmlEnumValue("ICVCN") ICVCN(UUID.fromString("e9d6d6b4-ccb7-4f28-b828-0b1501f8c75a"));	
 
 	private static final Logger logger = Logger.getLogger(NomenclaturalCode.class);
 	
 	private UUID uuid;
-	private Integer id;
 	
-	private NomenclaturalCode(UUID uuid, int id){
+	private NomenclaturalCode(UUID uuid){
 		this.uuid = uuid;
-		this.id = id;
 	}
 	
 	
@@ -169,20 +163,27 @@ public enum NomenclaturalCode implements IDefinedTerm<NomenclaturalCode> {
 	 * @see 			BacterialName#NewInstance(Rank)
 	 * @see 			ViralName#NewInstance(Rank)
 	 */
-	@Transient
 	public TaxonNameBase<?,?> getNewTaxonNameInstance(Rank rank){
 		TaxonNameBase<?,?> result;
-		if (this.equals(NomenclaturalCode.ICBN)){
-			result = BotanicalName.NewInstance(rank);
-		}else if (this.equals(NomenclaturalCode.ICZN)){
+		NomenclaturalCode nomCode = this;
+		
+		switch (this){
+		case ICBN:
 			result = ZoologicalName.NewInstance(rank);
-		}else if (this.equals(NomenclaturalCode.ICNCP)){
+			break;
+		case ICZN:
+			result = ZoologicalName.NewInstance(rank);
+			break;
+		case ICNCP:
 			result = CultivarPlantName.NewInstance(rank);
-		}else if (this.equals(NomenclaturalCode.ICNB)){
+			break;
+		case ICNB:
 			result = BacterialName.NewInstance(rank);
-		}else if (this.equals(NomenclaturalCode.ICVCN)){
+			break;
+		case ICVCN:
 			result = ViralName.NewInstance(rank);
-		}else {
+			break;
+		default:
 			logger.warn("Unknown nomenclatural code: " + this.getUuid());
 			result = null;
 		}
@@ -201,27 +202,30 @@ public enum NomenclaturalCode implements IDefinedTerm<NomenclaturalCode> {
 	 * @see 			BacterialName#NewInstance(Rank)
 	 * @see 			ViralName#NewInstance(Rank)
 	 */
-	@Transient
 	public <T extends TaxonNameBase> Class<? extends T> getCdmClass(){
 		Class<? extends T> result;
-		if (this.equals(NomenclaturalCode.ICBN)){
+		switch (this){
+		case ICBN:
 			result = (Class<T>)BotanicalName.class;
-		}else if (this.equals(NomenclaturalCode.ICZN)){
+			break;
+		case ICZN:
 			result = (Class<T>)ZoologicalName.class;
-		}else if (this.equals(NomenclaturalCode.ICNCP)){
+			break;
+		case ICNCP:
 			result = (Class<T>)CultivarPlantName.class;
-		}else if (this.equals(NomenclaturalCode.ICNB)){
+			break;
+		case ICNB:
 			result = (Class<T>)BacterialName.class;
-		}else if (this.equals(NomenclaturalCode.ICVCN)){
+			break;
+		case ICVCN:
 			result = (Class<T>)ViralName.class;
-		}else {
+			break;
+		default:
 			logger.warn("Unknown nomenclatural code: " + this.getUuid());
 			result = null;
 		}
 		return result;
-	}
-
-	
+	}	
 }
 
 //@XmlAccessorType(XmlAccessType.FIELD)

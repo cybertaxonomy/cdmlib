@@ -17,19 +17,23 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
 
 import eu.etaxonomy.cdm.model.location.NamedArea;
@@ -51,11 +55,12 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "TaxonDescription", propOrder = {
     "scopes",
-    "geoScopes"
+    "geoScopes",
+    "taxon"
 })
 @XmlRootElement(name = "TaxonDescription")
 @Entity
-//@Audited
+@Audited
 @Indexed
 public class TaxonDescription extends DescriptionBase {
 	private static final long serialVersionUID = 8065879180505546803L;
@@ -64,15 +69,32 @@ public class TaxonDescription extends DescriptionBase {
 
 	@XmlElementWrapper(name = "Scopes")
 	@XmlElement(name = "Scope")
+	@XmlIDREF
+	@XmlSchemaType(name="IDREF")
+	@ManyToMany(fetch = FetchType.LAZY)
+	@JoinTable(name="DescriptionBase_Scope")
 	private Set<Scope> scopes = new HashSet<Scope>();
 	
 	@XmlElementWrapper( name = "GeoScopes")
 	@XmlElement( name = "GeoScope")
+	@XmlIDREF
+	@XmlSchemaType(name="IDREF")
+	@ManyToMany(fetch = FetchType.LAZY)
+	@JoinTable(name="DescriptionBase_GeoScope")
+	//@Cascade({CascadeType.SAVE_UPDATE})
 	private Set<NamedArea> geoScopes = new HashSet<NamedArea>();
 	
-	@XmlTransient
+	@XmlElement( name = "Taxon")
+	@ManyToOne(fetch = FetchType.LAZY)
+	@XmlIDREF
+	@XmlSchemaType(name="IDREF")
+	@JoinColumn(name="taxon_fk")
+	@Cascade(CascadeType.SAVE_UPDATE)
 	private Taxon taxon;
 
+	public Taxon getTaxon() {
+		return taxon;
+	}
 
 	/**
 	 * Class constructor: creates a new empty taxon description instance.
@@ -80,7 +102,6 @@ public class TaxonDescription extends DescriptionBase {
 	public TaxonDescription(){
 		super();
 	}
-	
 	
 	/**
 	 * Creates a new empty taxon description instance.
@@ -108,18 +129,10 @@ public class TaxonDescription extends DescriptionBase {
 	 * Returns the set of {@link NamedArea named areas} indicating the geospatial
 	 * data where <i>this</i> taxon description is valid.
 	 */
-	@OneToMany(fetch = FetchType.LAZY)
-	@JoinTable(name="DescriptionBase_GeoScope")
-	//@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<NamedArea> getGeoScopes(){
 		return this.geoScopes;
 	}
-	/**
-	 * @see	#getGeoScopes()
-	 */
-	protected void setGeoScopes(Set<NamedArea> geoScopes){
-		this.geoScopes = geoScopes;
-	}
+
 	/**
 	 * Adds a {@link NamedArea named area} to the set of {@link #getGeoScopes() named areas}
 	 * delimiting the geospatial area where <i>this</i> taxon description is valid.
@@ -130,6 +143,7 @@ public class TaxonDescription extends DescriptionBase {
 	public void addGeoScope(NamedArea geoScope){
 		this.geoScopes.add(geoScope);
 	}
+	
 	/** 
 	 * Removes one element from the set of {@link #getGeoScopes() named areas} delimiting
 	 * the geospatial area where <i>this</i> taxon description is valid.
@@ -148,17 +162,10 @@ public class TaxonDescription extends DescriptionBase {
 	 * restricting the validity of <i>this</i> taxon description. This set
 	 * of scopes should contain no more than one "sex" and one "life stage".
 	 */
-	@OneToMany(fetch = FetchType.LAZY)
-	@JoinTable(name="DescriptionBase_Scope")
 	public Set<Scope> getScopes(){
 		return this.scopes;
 	}
-	/**
-	 * @see	#getScopes()
-	 */
-	protected void setScopes(Set<Scope> scopes){
-		this.scopes = scopes;
-	}
+
 	/**
 	 * Adds a {@link Scope scope} (mostly a {@link Stage life stage} or a {@link Sex sex})
 	 * to the set of {@link #getScopes() scopes} restricting the validity of
@@ -170,6 +177,7 @@ public class TaxonDescription extends DescriptionBase {
 	public void addScope(Scope scope){
 		this.scopes.add(scope);
 	}
+	
 	/** 
 	 * Removes one element from the set of {@link #getScopes() scopes}
 	 * restricting the validity of <i>this</i> taxon description.
@@ -181,20 +189,4 @@ public class TaxonDescription extends DescriptionBase {
 	public void removeScope(Scope scope){
 		this.scopes.remove(scope);
 	}
-
-
-	/** 
-	 * Returns the {@link Taxon taxon} <i>this</i> taxon description is about.
-	 */
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name="taxon_fk")
-	@Cascade(CascadeType.SAVE_UPDATE)
-	public Taxon getTaxon() {
-		return taxon;
-	}
-	@Deprecated //for hibernate use only, use taxon.addDescription() instead
-	protected void setTaxon(Taxon taxon) {
-		this.taxon = taxon;
-	}
-
 }

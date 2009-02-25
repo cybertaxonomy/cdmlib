@@ -17,6 +17,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
+import org.hibernate.envers.Audited;
 
 /**
  * This class represents electronic publications the support of which are Cds 
@@ -31,7 +32,7 @@ import org.apache.log4j.Logger;
 @XmlType(name = "CdDvd")
 @XmlRootElement(name = "CdDvd")
 @Entity
-//@Audited
+@Audited
 public class CdDvd extends PublicationBase implements Cloneable{
 	/**
 	 * 

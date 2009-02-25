@@ -9,14 +9,9 @@
 
 package eu.etaxonomy.cdm.model.taxon;
 
-import eu.etaxonomy.cdm.model.common.RelationshipBase;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
-
-import org.apache.log4j.Logger;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
-
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.ManyToOne;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -24,6 +19,14 @@ import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
+
+import org.apache.log4j.Logger;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
+import org.hibernate.envers.Audited;
+
+import eu.etaxonomy.cdm.model.common.RelationshipBase;
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
 /**
  * The class representing a relationship between two {@link Taxon ("accepted/correct") taxa}. 
@@ -47,7 +50,7 @@ import javax.xml.bind.annotation.XmlType;
 })
 @XmlRootElement(name = "TaxonRelationship")
 @Entity
-//@Audited
+@Audited
 public class TaxonRelationship extends RelationshipBase<Taxon, Taxon, TaxonRelationshipType> {
 
 	static private final Logger logger = Logger.getLogger(TaxonRelationship.class);
@@ -55,16 +58,21 @@ public class TaxonRelationship extends RelationshipBase<Taxon, Taxon, TaxonRelat
 	@XmlElement(name = "RelatedFrom")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
+    @ManyToOne(fetch=FetchType.EAGER)
+    @Cascade(CascadeType.SAVE_UPDATE)
 	private Taxon relatedFrom;
 
 	@XmlElement(name = "RelatedTo")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
+    @ManyToOne(fetch=FetchType.EAGER)
+    @Cascade(CascadeType.SAVE_UPDATE)
 	private Taxon relatedTo;
 	
     @XmlElement(name = "Type")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
+    @ManyToOne(fetch=FetchType.EAGER)
 	private TaxonRelationshipType type;
 	
 	//for hibernate, don't use
@@ -90,7 +98,6 @@ public class TaxonRelationship extends RelationshipBase<Taxon, Taxon, TaxonRelat
 		super(from, to, type, citation, citationMicroReference);
 	}
 	
-	
 	/** 
 	 * Returns the {@link Taxon taxon} involved as a source in <i>this</i>
 	 * taxon relationship.
@@ -100,7 +107,6 @@ public class TaxonRelationship extends RelationshipBase<Taxon, Taxon, TaxonRelat
 	 * @see    eu.etaxonomy.cdm.model.common.RelationshipBase#getRelatedFrom()
 	 * @see    eu.etaxonomy.cdm.model.common.RelationshipBase#getType()
 	 */
-	@Transient
 	public Taxon getFromTaxon(){
 		return getRelatedFrom();
 	}
@@ -128,7 +134,6 @@ public class TaxonRelationship extends RelationshipBase<Taxon, Taxon, TaxonRelat
 	 * @see    eu.etaxonomy.cdm.model.common.RelationshipBase#getRelatedTo()
 	 * @see    eu.etaxonomy.cdm.model.common.RelationshipBase#getType()
 	 */
-	@Transient
 	public Taxon getToTaxon(){
 		return getRelatedTo();
 	}
@@ -148,19 +153,14 @@ public class TaxonRelationship extends RelationshipBase<Taxon, Taxon, TaxonRelat
 		setRelatedTo(toTaxon);
 	}
 
-	@ManyToOne(fetch=FetchType.EAGER)
-	@Cascade({CascadeType.SAVE_UPDATE})
 	protected Taxon getRelatedFrom() {
 		return relatedFrom;
 	}
 
-	@ManyToOne(fetch=FetchType.EAGER)
-	@Cascade({CascadeType.SAVE_UPDATE})
 	protected Taxon getRelatedTo() {
 		return relatedTo;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
 	public TaxonRelationshipType getType() {
 		return type;
 	}
@@ -176,5 +176,4 @@ public class TaxonRelationship extends RelationshipBase<Taxon, Taxon, TaxonRelat
 	protected void setType(TaxonRelationshipType type) {
 		this.type = type;
 	}
-
 }

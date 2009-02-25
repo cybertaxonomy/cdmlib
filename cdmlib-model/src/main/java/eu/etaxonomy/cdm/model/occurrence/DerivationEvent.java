@@ -17,7 +17,6 @@ import javax.persistence.FetchType;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -30,6 +29,7 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.common.EventBase;
 
@@ -41,7 +41,7 @@ import eu.etaxonomy.cdm.model.common.EventBase;
 })
 @XmlRootElement(name = "DerivationEvent")
 @Entity
-//@Audited
+@Audited
 public class DerivationEvent extends EventBase implements Cloneable{
 	
 	static Logger logger = Logger.getLogger(DerivationEvent.class);
@@ -50,17 +50,21 @@ public class DerivationEvent extends EventBase implements Cloneable{
 	@XmlElement(name = "Original")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
-	private Set<SpecimenOrObservationBase> originals = getNewOriginalsSet();
+	@ManyToMany(fetch = FetchType.LAZY,mappedBy="derivationEvents")
+	protected Set<SpecimenOrObservationBase> originals = new HashSet<SpecimenOrObservationBase>();
 	
 	@XmlElementWrapper(name = "Derivatives")
 	@XmlElement(name = "Derivative")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
-	protected Set<DerivedUnitBase> derivatives = getNewDerivatesSet();
+	@OneToMany(fetch=FetchType.LAZY,mappedBy="derivationEvent")
+	@Cascade({CascadeType.SAVE_UPDATE})
+	protected Set<DerivedUnitBase> derivatives = new HashSet<DerivedUnitBase>();
 	
 	@XmlElement(name = "DerivationEventType")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
+    @ManyToOne(fetch = FetchType.LAZY)
 	private DerivationEventType type;
 	
 	/**
@@ -78,14 +82,10 @@ public class DerivationEvent extends EventBase implements Cloneable{
 		super();
 	}
 	
-	@ManyToMany(fetch = FetchType.LAZY,mappedBy="derivationEvents")
-	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<SpecimenOrObservationBase> getOriginals() {
 		return originals;
 	}
-	protected void setOriginals(Set<SpecimenOrObservationBase> originals) {
-		this.originals = originals;
-	}
+
 	public void addOriginal(SpecimenOrObservationBase original) {
 		if (! this.originals.contains(original)){
 			this.originals.add(original);
@@ -96,15 +96,10 @@ public class DerivationEvent extends EventBase implements Cloneable{
 		this.originals.remove(original);
 	}
 	
-	
-	@OneToMany(fetch=FetchType.LAZY,mappedBy="derivationEvent")
-	@Cascade({CascadeType.SAVE_UPDATE})
 	public Set<DerivedUnitBase> getDerivatives() {
 		return derivatives;
 	}
-	protected void setDerivatives(Set<DerivedUnitBase> derivatives) {
-		this.derivatives = derivatives;
-	}
+	
 	public void addDerivative(DerivedUnitBase derivative) {
 		if (derivative != null){
 			derivative.setDerivedFrom(this);
@@ -116,15 +111,13 @@ public class DerivationEvent extends EventBase implements Cloneable{
 		}
 	}
 
-	
-	@ManyToOne(fetch = FetchType.LAZY)
 	public DerivationEventType getType() {
 		return type;
 	}
+	
 	public void setType(DerivationEventType type) {
 		this.type = type;
 	}
-	
 	
 //*********** CLONE **********************************/	
 	
@@ -138,19 +131,21 @@ public class DerivationEvent extends EventBase implements Cloneable{
 	 * @see java.lang.Object#clone()
 	 */
 	@Override
-	public Object clone(){
+	public Object clone() throws CloneNotSupportedException {
 		try{
 			DerivationEvent result = (DerivationEvent)super.clone();
 			//type
 			result.setType(this.getType());
 			//derivates
-			Set<DerivedUnitBase> derivates = getNewDerivatesSet();
-			derivates.addAll(this.derivatives);
-			result.setDerivatives(derivates);
+			result.derivatives = new HashSet<DerivedUnitBase>();
+			for(DerivedUnitBase derivative : this.derivatives) {
+				result.addDerivative(derivative);
+			}
 			//originals
-			Set<SpecimenOrObservationBase> originals = getNewOriginalsSet();
-			originals.addAll(this.originals);
-			result.setOriginals(this.getOriginals());
+			result.originals = new HashSet<SpecimenOrObservationBase>();
+			for(SpecimenOrObservationBase original : this.originals) {
+				result.addOriginal(original);
+			}
 			//no changes to: -
 			return result;
 		} catch (CloneNotSupportedException e) {
@@ -159,15 +154,4 @@ public class DerivationEvent extends EventBase implements Cloneable{
 			return null;
 		}
 	}
-	
-	@Transient
-	private static Set<DerivedUnitBase> getNewDerivatesSet(){
-		return new HashSet<DerivedUnitBase>();
-	}
-
-	@Transient
-	private static Set<SpecimenOrObservationBase> getNewOriginalsSet(){
-		return new HashSet<SpecimenOrObservationBase>();
-	}
-	
 }

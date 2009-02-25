@@ -14,7 +14,6 @@ import java.util.Set;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
-import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -25,6 +24,7 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 
@@ -42,18 +42,20 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
     "collection",
     "catalogNumber",
     "storedUnder",
-    "derivedFrom",
+    "derivationEvent",
     "accessionNumber",
     "collectorsNumber"
 })
 @XmlRootElement(name = "DerivedUnitBase")
 @Entity
-//@Audited
+@Audited
 public abstract class DerivedUnitBase extends SpecimenOrObservationBase implements Cloneable{
 
 	@XmlElement(name = "Collection")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
+	@ManyToOne(fetch = FetchType.LAZY)
+	@Cascade(CascadeType.SAVE_UPDATE)
 	private Collection collection;
 
 	@XmlElement(name = "CatalogNumber")
@@ -68,12 +70,16 @@ public abstract class DerivedUnitBase extends SpecimenOrObservationBase implemen
 	@XmlElement(name = "StoredUnder")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
+	@ManyToOne(fetch = FetchType.LAZY)
+	@Cascade(CascadeType.SAVE_UPDATE)
 	private TaxonNameBase storedUnder;
 	
 	@XmlElement(name = "DerivedFrom")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
-	private DerivationEvent derivedFrom;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@Cascade(CascadeType.SAVE_UPDATE)
+	private DerivationEvent derivationEvent;
 
 	/**
 	 * Constructor
@@ -104,53 +110,36 @@ public abstract class DerivedUnitBase extends SpecimenOrObservationBase implemen
 		FieldObservation field = (FieldObservation) this.getOriginalUnit();
 		field.setGatheringEvent(gatheringEvent);
 	}
-	
-	
-	
-	@Deprecated //only for bidirectional and persistence use
-	@ManyToOne(fetch = FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE})
-	private DerivationEvent getDerivationEvent() {
-		return getDerivedFrom();
-	}
-	@Deprecated //only for bidirectional and persistence use
-	private void setDerivationEvent(DerivationEvent derivationEvent) {
-		this.derivedFrom = derivationEvent;
-	}
-	@Transient
+
 	public DerivationEvent getDerivedFrom() {
-		return derivedFrom;
+		return derivationEvent;
 	}
+	
 	public void setDerivedFrom(DerivationEvent derivedFrom){
 		if (getDerivedFrom() != null){
 			getDerivedFrom().getDerivatives().remove(derivedFrom);
 		}
-		this.derivedFrom = derivedFrom;
+		this.derivationEvent = derivedFrom;
 		if (derivedFrom != null){
 			derivedFrom.getDerivatives().add(this);
 		}
 	}
 	
-	@Transient
 	public Set<SpecimenOrObservationBase> getOriginals(){
 		return this.getDerivedFrom().getOriginals();
 	}
 
-
 	@Override
-	@Transient
 	public GatheringEvent getGatheringEvent() {
 		// FIXME: implement efficient way of getting original gathering event
 		// keep link to original gathering event for performance mainly.
 		return null;
 	}
 
-	
-	@ManyToOne(fetch = FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE})
 	public Collection getCollection(){
 		return this.collection;
 	}
+	
 	public void setCollection(Collection collection){
 		this.collection = collection;
 	}
@@ -185,13 +174,9 @@ public abstract class DerivedUnitBase extends SpecimenOrObservationBase implemen
 		this.collectorsNumber = collectorsNumber;
 	}
 	
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE})
 	public TaxonNameBase getStoredUnder() {
 		return storedUnder;
 	}
-	
 	
 	//*********** CLONE **********************************/	
 	
@@ -211,13 +196,10 @@ public abstract class DerivedUnitBase extends SpecimenOrObservationBase implemen
 		//collection
 		result.setCollection(this.collection);
 		//derivedFrom
-		result.setDerivedFrom(this.derivedFrom);
+		result.setDerivedFrom(this.derivationEvent);
 		//storedUnder
 		result.setStoredUnder(this.storedUnder);
 		//no changes to: accessionNumber, catalogNumber, collectorsNumber
 		return result;
 	}
-
-
-
 }
