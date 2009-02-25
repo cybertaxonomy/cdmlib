@@ -199,11 +199,21 @@
 			<url>http://people.apache.org/repo/m2-incubating-repository/</url>
 		</repository>
 		<!-- Neccessary for hibernate-envers -->
-<!--        <repository>
-          <id>jboss-repository</id>
-          <name>JBoss Repository</name>
-          <url>http://repository.jboss.com/maven2</url>
-        </repository>-->
+        <repository>
+          <releases>
+          <enabled>true</enabled>
+          <updatePolicy>always</updatePolicy>
+          <checksumPolicy>warn</checksumPolicy>
+        </releases>
+        <snapshots>
+          <enabled>false</enabled>
+          <updatePolicy>never</updatePolicy>
+          <checksumPolicy>fail</checksumPolicy>
+        </snapshots>
+        <id>jboss-repository</id>
+        <name>JBoss Repository</name>
+        <url>http://repository.jboss.com/maven2</url>
+      </repository>
 	</repositories>
 
 	<!-- **** PLUGINS **** -->
@@ -472,7 +482,7 @@
 			<dependency>
               <groupId>javax.xml.bind</groupId>
               <artifactId>jaxb-api</artifactId>
-              <version>2.0</version>
+              <version>2.1.6</version>
             </dependency>
             <dependency>
               <groupId>xml-resolver</groupId>
@@ -492,17 +502,17 @@
             <dependency>
               <groupId>com.sun.xml.bind</groupId>
               <artifactId>jaxb-impl</artifactId>
-              <version>2.0</version>
+              <version>2.1.6</version>
             </dependency>
             <dependency>
               <groupId>com.sun.xml.bind</groupId>
               <artifactId>jaxb1-impl</artifactId>
-              <version>2.0</version>
+              <version>2.1.6</version>
             </dependency>
             <dependency>
               <groupId>com.sun.xml.bind</groupId>
               <artifactId>jaxb-xjc</artifactId>
-              <version>2.0</version>
+              <version>2.1.6</version>
             </dependency>
 
 		  	<!-- ******* VARIOUS ******* -->
@@ -511,12 +521,12 @@
 				<artifactId>log4j</artifactId>
 				<version>1.2.15</version>
 			</dependency>
-                  <!-- hibernate 3.4 uses slf4j -->
-			<!--<dependency>
+            <!-- hibernate 3.4 uses slf4j -->
+			<dependency>
                     <groupId>org.slf4j</groupId>
                     <artifactId>slf4j-log4j12</artifactId>
                     <version>1.5.2</version>
-                  </dependency>-->
+            </dependency>
 			<dependency>
 				<groupId>junit</groupId>
 				<artifactId>junit</artifactId>
@@ -529,6 +539,18 @@
 			  <version>1.0</version>
 			  <scope>test</scope>
 			</dependency>
+			<dependency>
+				<groupId>org.easymock</groupId>
+				<artifactId>easymock</artifactId>
+				<version>2.2</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+              <groupId>xmlunit</groupId>
+              <artifactId>xmlunit</artifactId>
+              <version>1.2</version>
+              <scope>test</scope>
+            </dependency>
 		  	<dependency>
 		  		<groupId>org.aspectj</groupId>
 		  		<artifactId>aspectjrt</artifactId>
@@ -677,7 +699,26 @@
 				 </exclusion>
 				</exclusions>
 		   </dependency>
-	
+	       <dependency>
+             <groupId>com.ibm.lsid</groupId>
+             <artifactId>lsid-client</artifactId>
+             <version>1.1.2</version>
+            </dependency>
+            <dependency>
+              <groupId>com.ibm.lsid</groupId>
+              <artifactId>lsid-server</artifactId>
+              <version>1.1.2</version>
+            </dependency>
+            <dependency>
+              <groupId>wsdl4j</groupId>
+              <artifactId>wsdl4j</artifactId>
+              <version>1.6.1</version>
+            </dependency>
+			<dependency>
+				<groupId>net.sf.dozer</groupId>
+				<artifactId>dozer</artifactId>
+				<version>4.4</version>
+			</dependency>
 		  	<!-- ******* XML ******* -->
 			<dependency>
 				<groupId>xml-apis</groupId>
@@ -700,76 +741,72 @@
 		  		<version>1.0</version>
 		  	</dependency>
 			<dependency>
-				<groupId>xstream</groupId>
+				<groupId>com.thoughtworks.xstream</groupId>
 				<artifactId>xstream</artifactId>
-				<version>1.1</version>
+				<version>1.3.1</version>
 			</dependency>
 			<dependency>
 				<groupId>xpp3</groupId>
 				<artifactId>xpp3</artifactId>
 				<version>1.1.3.3</version>
 			</dependency>
+			<dependency>
+				<groupId>stax</groupId>
+				<artifactId>stax</artifactId>
+				<version>1.2.0</version>
+			</dependency>
 
 		  	<!-- ******* HIBERNATE / EJB3 ******* -->
-                  <dependency>
-		  		<groupId>javax.persistence</groupId>
-		  		<artifactId>ejb</artifactId>
-		  		<version>3</version>
-		  	</dependency>
-                  <!-- required for hibernate 3.4 -->
-		  	<!--<dependency>
+		  	<dependency>
 		  		<groupId>javax.persistence</groupId>
 		  		<artifactId>persistence-api</artifactId>
 		  		<version>1.0</version>
-		  	</dependency>-->
+		  	</dependency>
 		  	<dependency>
 		  		<groupId>org.hibernate</groupId>
 		  		<artifactId>hibernate-annotations</artifactId>
-		  		<version>3.3.1.GA</version>
+		  		<version>3.4.0-SNAPSHOT</version>
 		  	</dependency>
 		  	<dependency>
 		  		<groupId>org.hibernate</groupId>
 		  		<artifactId>hibernate-commons-annotations</artifactId>
-		  		<version>3.3.0.ga</version>
+		  		<version>3.4.0-SNAPSHOT</version>
 		  	</dependency>
 		  	<dependency>
 		  		<groupId>org.hibernate</groupId>
-		  		<artifactId>hibernate</artifactId>
-		  		<version>3.2.6.ga</version>
+		  		<artifactId>hibernate-core</artifactId>
+		  		<version>3.4.0-SNAPSHOT</version>
 		  	</dependency>
 		  	<dependency>
 		  	  <groupId>org.hibernate</groupId>
 		  	  <artifactId>hibernate-search</artifactId>
-		  	  <version>3.0.1.GA</version>
+		  	  <version>3.1.0.GA</version>
 		  	</dependency>
-                  <!-- required for envers -->
-		  	<!--<dependency>
-                    <groupId>org.hibernate</groupId>
-                    <artifactId>hibernate-entitymanager</artifactId>
-                    <version>3.4.0-SNAPSHOT</version>
-                  </dependency>
-                  <dependency>
-                    <groupId>org.hibernate</groupId>
-                    <artifactId>hibernate-envers</artifactId>
-                    <version>3.4.0-SNAPSHOT</version>
-                  </dependency>-->
-                  <!--only needed if using javassist, not cglib-->
-                  <!--<dependency> 
-                    <groupId>javassist</groupId>
-                    <artifactId>javassist</artifactId>
-                    <version>3.4.GA</version>
-                  </dependency>
-                  <dependency>
-                    <groupId>org.hibernate</groupId>
-                    <artifactId>hibernate-cglib-repack</artifactId>
-                    <version>2.1_3</version>
-                  </dependency>-->
-                  <!-- only needed if using second level caching -->
-                  <!--<dependency>
-                    <groupId>org.hibernate</groupId>
-                    <artifactId>hibernate-ehcache</artifactId>
-                    <version>3.4.0-SNAPSHOT</version>
-                  </dependency>-->
+		  	<dependency>
+              <groupId>org.hibernate</groupId>
+              <artifactId>hibernate-entitymanager</artifactId>
+              <version>3.4.0-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+              <groupId>org.hibernate</groupId>
+              <artifactId>hibernate-envers</artifactId>
+              <version>3.4.0-SNAPSHOT</version>
+            </dependency>
+            <dependency> 
+              <groupId>javassist</groupId>
+              <artifactId>javassist</artifactId>
+              <version>3.4.GA</version>
+            </dependency>
+            <dependency>
+              <groupId>org.hibernate</groupId>
+              <artifactId>hibernate-cglib-repack</artifactId>
+              <version>2.1_3</version>
+            </dependency>
+            <dependency>
+              <groupId>org.hibernate</groupId>
+              <artifactId>hibernate-ehcache</artifactId>
+              <version>3.4.0-SNAPSHOT</version>
+            </dependency>
 			<dependency>
 				<groupId>javax.servlet</groupId>
 				<artifactId>servlet-api</artifactId>
