@@ -38,7 +38,7 @@ import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.Source;
-import eu.etaxonomy.cdm.model.agent.Agent;
+import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.Annotation;
@@ -118,7 +118,7 @@ public class TestTransaction {
 			
 	    	TransactionStatus txStatOne = appCtr.startTransaction();
 	    	
-	    	List<? extends Agent> agents = appCtr.getAgentService().getAllAgents(MAX_ENTRIES, 0);
+	    	List<? extends AgentBase> agents = appCtr.getAgentService().getAllAgents(MAX_ENTRIES, 0);
 	    	//List<TeamOrPersonBase> agents = appCtr.getAgentService().getAllAgents(MAX_ENTRIES, 0);
 	    	TeamOrPersonBase author = (TeamOrPersonBase) agents.get(0);
 	    	List<ReferenceBase> references = appCtr.getReferenceService().getAllReferences(MAX_ENTRIES, 0);
@@ -196,7 +196,7 @@ public class TestTransaction {
 			
 	    	TransactionStatus txStatOne = appCtr.startTransaction();
 	    	
-	    	List<? extends Agent> agents = appCtr.getAgentService().getAllAgents(MAX_ENTRIES, 0);
+	    	List<? extends AgentBase> agents = appCtr.getAgentService().getAllAgents(MAX_ENTRIES, 0);
 	    	//List<TeamOrPersonBase> agents = appCtr.getAgentService().getAllAgents(MAX_ENTRIES, 0);
 	    	TeamOrPersonBase author = (TeamOrPersonBase) agents.get(0);
 	    	List<ReferenceBase> references = appCtr.getReferenceService().getAllReferences(MAX_ENTRIES, 0);
@@ -297,7 +297,7 @@ public class TestTransaction {
 			
 	    	TransactionStatus txStatOne = appCtr.startTransaction();
 	    	
-	    	List<? extends Agent> agents = appCtr.getAgentService().getAllAgents(MAX_ENTRIES, 0);
+	    	List<? extends AgentBase> agents = appCtr.getAgentService().getAllAgents(MAX_ENTRIES, 0);
 	    	//List<TeamOrPersonBase> agents = appCtr.getAgentService().getAllAgents(MAX_ENTRIES, 0);
 	    	//Agent author = agents.get(0);
 	    	TeamOrPersonBase author = (TeamOrPersonBase) agents.get(0);

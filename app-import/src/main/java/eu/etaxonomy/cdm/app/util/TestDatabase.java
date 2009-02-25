@@ -21,7 +21,7 @@ import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.jaxb.DataSet;
-import eu.etaxonomy.cdm.model.agent.Agent;
+import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.InstitutionalMembership;
 import eu.etaxonomy.cdm.model.agent.Person;
@@ -85,7 +85,7 @@ public class TestDatabase {
 		TransactionStatus txStatus = appCtr.startTransaction();
 		DataSet dataSet = buildDataSet();
 		
-		appCtr.getTaxonService().saveTaxonAll(dataSet.getTaxa());
+		appCtr.getTaxonService().saveTaxonAll(dataSet.getTaxonBases());
 
 		appCtr.commitTransaction(txStatus);
 		appCtr.close();
@@ -98,7 +98,7 @@ public class TestDatabase {
 	 */
 	private static DataSet buildDataSet() {
 
-		List<Agent> agents = new ArrayList<Agent>();
+		List<AgentBase> agents = new ArrayList<AgentBase>();
 	    List<VersionableEntity> agentData = new ArrayList<VersionableEntity>();
 	    //List<Agent> agentData = new ArrayList<Agent>();
 	    
@@ -248,14 +248,16 @@ public class TestDatabase {
 		taxa.add(childR2_2);
 		
 		DataSet dataSet = new DataSet();
-		
-		dataSet.setAgents(agents);
-		dataSet.setAgentData(agentData);
-		dataSet.setTerms(terms);
-		dataSet.setReferences(references);
-		dataSet.setTaxonomicNames(taxonomicNames);
-		dataSet.setTaxa(taxa);
-		dataSet.setSynonyms(synonyms);
+	
+		logger.warn("WARNING: TestDatabase has been commented in parts after refactoring (2009-02-25)");
+//TODO commented after Bens refactoring for version 2.1  		
+//		dataSet.setAgents(agents);
+//		dataSet.setAgentData(agentData);
+//		dataSet.setTerms(terms);
+//		dataSet.setReferences(references);
+//		dataSet.setTaxonomicNames(taxonomicNames);
+//		dataSet.setTaxa(taxa);
+//		dataSet.setSynonyms(synonyms);
 		
 		return dataSet;
 

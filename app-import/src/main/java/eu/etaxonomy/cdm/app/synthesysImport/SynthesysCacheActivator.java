@@ -24,7 +24,7 @@ import eu.etaxonomy.cdm.app.common.CdmDestinations;
 import eu.etaxonomy.cdm.common.ExcelUtils;
 import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
-import eu.etaxonomy.cdm.model.agent.Agent;
+import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -355,7 +355,7 @@ public class SynthesysCacheActivator {
 			gatheringEvent.addCollectingArea(area);
 
 			//create collector
-			Agent collector;
+			AgentBase collector;
 			ListIterator<String> collectors = this.gatheringAgentList.listIterator();
 			//add the collectors
 			String collName;
@@ -363,7 +363,7 @@ public class SynthesysCacheActivator {
 				collName = collectors.next();
 				/*check if the collector does already exist*/
 				try{
-					List<Agent> col = app.getAgentService().findAgentsByTitle(collName);
+					List<AgentBase> col = app.getAgentService().findAgentsByTitle(collName);
 					collector=col.get(0);
 					System.out.println("a trouve l'agent");
 				}catch (Exception e) {
