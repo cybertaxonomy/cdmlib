@@ -38,7 +38,7 @@ public class PalmaeTaxonXImportActivator {
 	static DbSchemaValidation hbm2dll = DbSchemaValidation.UPDATE;
 	//static final String tcsSource = TcsSources.taxonX_local();
 	static File source  = TcsSources.taxonX_localDir();
-	static ICdmDataSource cdmDestination = CdmDestinations.localH2();
+	static ICdmDataSource cdmDestination = CdmDestinations.cdm_test_andreasM3();
 	
 	static UUID secUuid = UUID.fromString("5f32b8af-0c97-48ac-8d33-6099ed68c625");
 	
@@ -99,6 +99,7 @@ public class PalmaeTaxonXImportActivator {
 		System.out.println("Start import from Source("+ source.toString() + ") ...");
 		
 		PalmaeTaxonXImportActivator importer = new PalmaeTaxonXImportActivator();
+		
 		importer.runImport();
 		
 		 
