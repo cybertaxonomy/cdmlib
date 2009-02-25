@@ -26,7 +26,7 @@ import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IExportConfigurator;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
-import eu.etaxonomy.cdm.model.agent.Agent;
+import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
@@ -137,12 +137,12 @@ public class JaxbExport extends CdmIoBase<IExportConfigurator> implements ICdmIO
 			dataSet.setTermVocabularies(getTermService().getAllTermVocabularies(MAX_ROWS, 0));;
 		}
 
-		if (jaxbExpConfig.isDoLanguageData() == true) {
-			if (languageDataRows == 0) { languageDataRows = MAX_ROWS; }
-			logger.info("# Representation, Language String");
-			dataSet.setLanguageData(getTermService().getAllRepresentations(MAX_ROWS, 0));
-			dataSet.addLanguageData(getTermService().getAllLanguageStrings(MAX_ROWS, 0));
-		}
+//		if (jaxbExpConfig.isDoLanguageData() == true) {
+//			if (languageDataRows == 0) { languageDataRows = MAX_ROWS; }
+//			logger.info("# Representation, Language String");
+//			dataSet.setLanguageData(getTermService().getAllRepresentations(MAX_ROWS, 0));
+//			dataSet.addLanguageData(getTermService().getAllLanguageStrings(MAX_ROWS, 0));
+//		}
 
 		if (jaxbExpConfig.isDoTerms() == true) {
 			if (definedTermBaseRows == 0) { definedTermBaseRows = getTermService().count(DefinedTermBase.class); }
@@ -151,7 +151,7 @@ public class JaxbExport extends CdmIoBase<IExportConfigurator> implements ICdmIO
 		}
 
 		if (jaxbExpConfig.isDoAuthors() == true) {
-			if (agentRows == 0) { agentRows = getAgentService().count(Agent.class); }
+			if (agentRows == 0) { agentRows = getAgentService().count(AgentBase.class); }
 			logger.info("# Agents: " + agentRows);
 			//logger.info("    # Team: " + appCtr.getAgentService().count(Team.class));
 			dataSet.setAgents(getAgentService().getAllAgents(agentRows, 0));
@@ -183,13 +183,7 @@ public class JaxbExport extends CdmIoBase<IExportConfigurator> implements ICdmIO
 //			dataSet.setSynonyms(new ArrayList<Synonym>());
 			List<TaxonBase> tb = getTaxonService().getAllTaxonBases(taxonBaseRows, 0);
 			for (TaxonBase taxonBase : tb) {
-				if (taxonBase instanceof Taxon) {
-					dataSet.addTaxon((Taxon)taxonBase);
-				} else if (taxonBase instanceof Synonym) {
-					dataSet.addSynonym((Synonym)taxonBase);
-				} else {
-					logger.error("entry of wrong type: " + taxonBase.toString());
-				}
+				dataSet.addTaxonBase(taxonBase);
 			}
 		}
 
@@ -201,18 +195,17 @@ public class JaxbExport extends CdmIoBase<IExportConfigurator> implements ICdmIO
 //		dataSet.setSynonyms(new ArrayList<Synonym>());
 //		dataSet.setSynonyms(getTaxonService().getAllSynonyms(taxonBaseRows, 0));
 
-		if (jaxbExpConfig.isDoRelTaxa() == true) {
-			if (relationshipRows == 0) { relationshipRows = MAX_ROWS; }
-			logger.info("# Relationships");
-			List<RelationshipBase> relationList = getTaxonService().getAllRelationships(relationshipRows, 0);
-			Set<RelationshipBase> relationSet = new HashSet<RelationshipBase>(relationList);
-			dataSet.setRelationships(relationSet);
-		}
+//		if (jaxbExpConfig.isDoRelTaxa() == true) {
+//			if (relationshipRows == 0) { relationshipRows = MAX_ROWS; }
+//			logger.info("# Relationships");
+//			List<RelationshipBase> relationList = getTaxonService().getAllRelationships(relationshipRows, 0);
+//			Set<RelationshipBase> relationSet = new HashSet<RelationshipBase>(relationList);
+//			dataSet.setRelationships(relationSet);
+//		}
 
-		if (jaxbExpConfig.isDoReferencedEntities() == true) {
-			logger.info("# Referenced Entities");
-			dataSet.setReferencedEntities(getNameService().getAllNomenclaturalStatus(MAX_ROWS, 0));
-			dataSet.addReferencedEntities(getNameService().getAllTypeDesignations(MAX_ROWS, 0));
+		if (jaxbExpConfig.isDoTypeDesignations() == true) {
+			logger.info("# TypeDesignations");
+			dataSet.addTypeDesignations(getNameService().getAllTypeDesignations(MAX_ROWS, 0));
 		}
 
 		if (jaxbExpConfig.isDoOccurrence() == true) {
@@ -232,8 +225,7 @@ public class JaxbExport extends CdmIoBase<IExportConfigurator> implements ICdmIO
 		if (jaxbExpConfig.isDoFeatureData() == true) {
 			if (featureDataRows == 0) { featureDataRows = MAX_ROWS; }
 			logger.info("# Feature Tree, Feature Node");
-			dataSet.setFeatureData(getDescriptionService().getFeatureNodesAll());
-			dataSet.addFeatureData(getDescriptionService().getFeatureTreesAll());
+			dataSet.setFeatureTrees(getDescriptionService().getFeatureTreesAll());
 		}
 	}
 

@@ -329,9 +329,7 @@ public class SDDDescriptionIO extends SDDIoBase implements ICdmIO<IImportConfigu
 				Language lang = l.next();
 				List<String> labDet = langLabDet.get(lang);
 				if (labDet.get(0) != null){
-					MultilanguageText mt = MultilanguageText.NewInstance();
-					mt.add(LanguageString.NewInstance(labDet.get(0), lang));
-					m.setTitle(mt);
+					m.addTitle(LanguageString.NewInstance(labDet.get(0), lang));
 				}
 				if (labDet.size()>1) {
 					m.addDescription(labDet.get(1), lang);

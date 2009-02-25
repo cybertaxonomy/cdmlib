@@ -535,7 +535,7 @@ public class SDDDocumentBuilder {
 			for (int i = 0; i < f; i++) {
 				if (cdmSource.getTerms().get(i) instanceof Feature) {
 					Feature character = (Feature) cdmSource.getTerms().get(i);
-					if (character.isSupportsQuantitativeData()) {
+					if (character.supportsQuantitativeData()) {
 						ElementImpl elQuantitativeCharacter = new ElementImpl(document, QUANTITATIVE_CHARACTER);
 						charactersCount = buildReference(character, characters, ID, elQuantitativeCharacter, "c", charactersCount);
 						// TODO if the character also supports text, add to the label a short tag to distinguish
@@ -544,7 +544,7 @@ public class SDDDocumentBuilder {
 						// TODO <MeasurementUnit> and <Default>
 						elCharacters.appendChild(elQuantitativeCharacter);
 					}
-					if (character.isSupportsTextData()) {
+					if (character.supportsTextData()) {
 						Set<TermVocabulary<State>> enumerations = character.getSupportedCategoricalEnumerations();
 						if (enumerations != null) {
 							if (enumerations.size()>0) {

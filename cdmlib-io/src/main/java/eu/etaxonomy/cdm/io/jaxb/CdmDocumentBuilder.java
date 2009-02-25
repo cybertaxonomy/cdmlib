@@ -10,17 +10,39 @@
 package eu.etaxonomy.cdm.io.jaxb;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 
+import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
-import javax.xml.bind.helpers.DefaultValidationEventHandler;
+import javax.xml.bind.UnmarshallerHandler;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+import javax.xml.transform.Source;
+import javax.xml.transform.sax.SAXSource;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
 
 import org.apache.log4j.Logger;
+import org.apache.xml.resolver.tools.CatalogResolver;
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+import org.xml.sax.XMLReader;
+
+import eu.etaxonomy.cdm.jaxb.CdmNamespacePrefixMapper;
+import eu.etaxonomy.cdm.jaxb.FormattedText;
+import eu.etaxonomy.cdm.jaxb.MultilanguageTextElement;
+import eu.etaxonomy.cdm.model.agent.Person;
 
 /**
  * Initializes a JaxbContext with one class (eu.etaxonomy.cdm.model.DataSet). 
@@ -36,72 +58,108 @@ public class CdmDocumentBuilder {
 	
 	private JAXBContext jaxbContext;
 	private boolean formattedOutput = Boolean.TRUE;
-	private String encoding = "UTF-8"; 
+	private String encoding = "UTF-8";
+    private Marshaller marshaller;
+    private Unmarshaller unmarshaller;
+    private XMLReader xmlReader;
 	
-//	public static String CDM_NAMESPACE = "eu.etaxonomy.cdm.model";
-//	public static String[] CDM_SCHEMA_FILES = { "/schema/cdm/common.xsd",
-//		                                        "/schema/cdm/name.xsd",
-//		                                        "/schema/cdm/cdm.xsd" };
+	public static String CDM_NAMESPACE = "eu.etaxonomy.cdm.model";
+	public static String[] CDM_SCHEMA_FILES = { "/schema/cdm/agent.xsd",
+		                                        "/schema/cdm/cdm.xsd",
+		                                        "/schema/cdm/common.xsd",
+		                                        "/schema/cdm/description.xsd",
+		                                        "/schema/cdm/location.xsd",
+		                                        "/schema/cdm/media.xsd",
+		                                        "/schema/cdm/molecular.xsd",
+		                                        "/schema/cdm/name.xsd",
+		                                        "/schema/cdm/occurrence.xsd",
+		                                        "/schema/cdm/reference.xsd",
+		                                        "/schema/cdm/taxon.xsd"};
 		                                        
-	public CdmDocumentBuilder() throws SAXException, JAXBException, IOException {
+	public CdmDocumentBuilder() throws SAXException, JAXBException, IOException, ParserConfigurationException {
 		
-//		SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-//		schemaFactory.setResourceResolver(new CdmResourceResolver());
-//		Source[] sources = new Source[CdmDocumentBuilder.CDM_SCHEMA_FILES.length];
-//		
-//		for(int i = 0; i < CdmDocumentBuilder.CDM_SCHEMA_FILES.length; i++) {
-//			String schemaName = CdmDocumentBuilder.CDM_SCHEMA_FILES[i];
-//			sources[i] = new StreamSource(this.getClass().getResourceAsStream(schemaName));
-//		}
-//		Schema cdmSchema = schemaFactory.newSchema(sources);
-					
-		jaxbContext = JAXBContext.newInstance(new Class[] {DataSet.class});
-		if (logger.isDebugEnabled()) { logger.debug(jaxbContext.toString()); }
+		SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+		schemaFactory.setResourceResolver(new CdmResourceResolver());
+		Source[] sources = new Source[CdmDocumentBuilder.CDM_SCHEMA_FILES.length];
+		
+		for(int i = 0; i < CdmDocumentBuilder.CDM_SCHEMA_FILES.length; i++) {
+			String schemaName = CdmDocumentBuilder.CDM_SCHEMA_FILES[i];
+			sources[i] = new StreamSource(this.getClass().getResourceAsStream(schemaName));
+		}
+		Schema cdmSchema = schemaFactory.newSchema(sources);
+		
+	    jaxbContext = JAXBContext.newInstance(new Class[]{DataSet.class,FormattedText.class,MultilanguageTextElement.class});
+		
+        unmarshaller = jaxbContext.createUnmarshaller();
+        unmarshaller.setSchema(cdmSchema);
+        
+        UnmarshallerHandler unmarshallerHandler = unmarshaller.getUnmarshallerHandler();
+	    
+        SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
+	
+        saxParserFactory.setNamespaceAware(true);
+        saxParserFactory.setXIncludeAware(true);
+        saxParserFactory.setValidating(true);
+        
+        SAXParser saxParser = saxParserFactory.newSAXParser();
+        saxParser.setProperty("http://java.sun.com/xml/jaxp/properties/schemaLanguage",
+    			              "http://www.w3.org/2001/XMLSchema");
+	    xmlReader = saxParser.getXMLReader();
+	    xmlReader.setEntityResolver(new CatalogResolver());
+	    xmlReader.setErrorHandler(new DefaultErrorHandler());
+        unmarshaller.setEventHandler(new WarningTolerantValidationEventHandler());
+	    
+        marshaller = jaxbContext.createMarshaller();
+        marshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper", new CdmNamespacePrefixMapper() );
+		marshaller.setSchema(cdmSchema);
+        
+		// For test purposes insert newlines to make the XML output readable
+		marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, formattedOutput);
+		marshaller.setProperty(Marshaller.JAXB_SCHEMA_LOCATION,"http://etaxonomy.eu/cdm/model/1.0 schema/cdm/cdm.xsd");
+		marshaller.setProperty(Marshaller.JAXB_ENCODING, encoding);
+		
+		CdmMarshallerListener marshallerListener = new CdmMarshallerListener();
+		marshaller.setListener(marshallerListener);		
+		marshaller.setEventHandler(new WarningTolerantValidationEventHandler());
 
 	}
 	
 	public CdmDocumentBuilder(boolean formattedOutput, String encoding) 
-	throws SAXException, JAXBException, IOException {
-		
+	throws SAXException, JAXBException, IOException, ParserConfigurationException {
 		this();
-		this.formattedOutput = formattedOutput;
-		this.encoding = encoding;
 	}
 	
 	public void marshal(DataSet dataSet, Writer writer) throws JAXBException {
 		
-		Marshaller marshaller;
-		marshaller = jaxbContext.createMarshaller();
-		
-		// For test purposes insert newlines to make the XML output readable
-		marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, formattedOutput);
-		
-		marshaller.setProperty(Marshaller.JAXB_ENCODING, encoding);
-		
-		CdmMarshallerListener marshallerListener = new CdmMarshallerListener();
-		marshaller.setListener(marshallerListener);
-		
-		// validate with explicit schema
-		//marshaller.setSchema(cdmSchema);
-		
-		marshaller.setEventHandler(new DefaultValidationEventHandler());
-
 		logger.info("Start marshalling");
 		marshaller.marshal(dataSet, writer);
 		
 	}
-
-	public DataSet unmarshal(DataSet dataSet, File file) throws JAXBException {
-		
-		Unmarshaller unmarshaller;
-		unmarshaller = jaxbContext.createUnmarshaller();
-		
-		// DefaultValidationEventHandler implementation is part of the API and convenient for trouble-shooting.
-		// It prints errors to System.out.
-		//unmarshaller.setEventHandler(new DefaultValidationEventHandler());
-
+	
+	public DataSet unmarshal(DataSet dataSet,Reader reader) throws JAXBException {
+		InputSource input = new InputSource(reader);
+		SAXSource saxSource = new SAXSource( xmlReader, input);
 		logger.info("Start unmarshalling");
-		dataSet = (DataSet) unmarshaller.unmarshal(file);
+		dataSet = (DataSet) unmarshaller.unmarshal(saxSource);
+		return dataSet;
+	} 
+	
+	public DataSet unmarshal(DataSet dataSet,Reader reader, String systemId) throws JAXBException {
+		InputSource input = new InputSource(reader);
+		input.setSystemId(systemId);
+		SAXSource saxSource = new SAXSource( xmlReader, input);
+		logger.info("Start unmarshalling");
+		dataSet = (DataSet) unmarshaller.unmarshal(saxSource);
+		return dataSet;
+	} 
+
+	public DataSet unmarshal(DataSet dataSet, File file) throws JAXBException, UnsupportedEncodingException, FileNotFoundException {
+
+		InputSource input = new InputSource(new InputStreamReader(new FileInputStream(file),encoding));
+		input.setSystemId(file.toURI().toString());
+		SAXSource saxSource = new SAXSource( xmlReader, input);
+		logger.info("Start unmarshalling");
+		dataSet = (DataSet) unmarshaller.unmarshal(saxSource);
 		return dataSet;
 		
 	}

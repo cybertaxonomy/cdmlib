@@ -44,7 +44,7 @@ public class JaxbImportConfigurator extends ImportConfiguratorBase implements II
 	private boolean doTerms = true;
 	private boolean doTermVocabularies = true;
 	private boolean doHomotypicalGroups = true;
-
+	private boolean doTypeDesignations = true;
 
 	public int getMaxRows() {
 		return maxRows;
@@ -204,6 +204,14 @@ public class JaxbImportConfigurator extends ImportConfiguratorBase implements II
 		}else{
 			return (String)this.getSource();
 		}
+	}
+	
+	public boolean isDoTypeDesignations() {
+		return doTypeDesignations;
+	}
+
+	public void setDoTypeDesignations(boolean doTypeDesignations) {
+		this.doTypeDesignations = doTypeDesignations;
 	}
 }
 

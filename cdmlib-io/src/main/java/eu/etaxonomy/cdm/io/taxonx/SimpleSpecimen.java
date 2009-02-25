@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.io.taxonx;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.model.agent.Agent;
+import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
@@ -108,11 +108,11 @@ public class SimpleSpecimen {
 	/**
 	 * @return the collection
 	 */
-	public Agent getCollector() {
+	public AgentBase getCollector() {
 		return gatheringEvent.getCollector();
 	}
 	
-	public void setCollector(Agent collector){
+	public void setCollector(AgentBase collector){
 		gatheringEvent.setCollector(collector);
 	}
 

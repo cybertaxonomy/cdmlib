@@ -1,0 +1,476 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema elementFormDefault="qualified" attributeFormDefault="unqualified" version="1.0" 
+  targetNamespace="http://etaxonomy.eu/cdm/model/description/1.0" 
+  xmlns:description="http://etaxonomy.eu/cdm/model/description/1.0" 
+  xmlns:location="http://etaxonomy.eu/cdm/model/location/1.0" 
+  xmlns:common="http://etaxonomy.eu/cdm/model/common/1.0" 
+  xmlns:reference="http://etaxonomy.eu/cdm/model/reference/1.0" 
+  xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+  xmlns:occurrence="http://etaxonomy.eu/cdm/model/occurrence/1.0" 
+  xmlns:cdm="http://etaxonomy.eu/cdm/model/1.0"
+  xmlns:media="http://etaxonomy.eu/cdm/model/media/1.0" 
+  xmlns:taxon="http://etaxonomy.eu/cdm/model/taxon/1.0"
+  xmlns:jxb="http://java.sun.com/xml/ns/jaxb"
+  xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
+  jxb:extensionBindingPrefixes="xjc"
+  jxb:version="2.1"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xsi:schemaLocation="http://www.w3.org/XML/1998/namespace
+    http://www.w3.org/2005/08/xml.xsd
+    http://www.w3.org/2001/XMLSchema
+    http://www.w3.org/2001/XMLSchema.xsd">
+  <xs:import namespace="http://etaxonomy.eu/cdm/model/common/1.0" schemaLocation="common.xsd"/>
+  <xs:import namespace="http://etaxonomy.eu/cdm/model/occurrence/1.0" schemaLocation="occurrence.xsd"/>
+  <xs:import namespace="http://etaxonomy.eu/cdm/model/reference/1.0" schemaLocation="reference.xsd"/>
+  <xs:import namespace="http://etaxonomy.eu/cdm/model/location/1.0" schemaLocation="location.xsd"/>
+  <xs:import namespace="http://etaxonomy.eu/cdm/model/1.0" schemaLocation="cdm.xsd"/>
+  <xs:import namespace="http://etaxonomy.eu/cdm/model/media/1.0" schemaLocation="media.xsd"/>
+  <xs:import namespace="http://etaxonomy.eu/cdm/model/taxon/1.0" schemaLocation="taxon.xsd"/>
+  <xs:annotation>
+        <xs:appinfo>
+            <jxb:schemaBindings>
+                <jxb:package name="eu.etaxonomy.cdm.model.description"/>
+            </jxb:schemaBindings>
+        </xs:appinfo>
+    </xs:annotation>
+  <xs:element name="AbsenceTerm" type="description:AbsenceTerm"/>
+  
+  <xs:element name="CategoricalData" type="description:CategoricalData"/>
+
+  <xs:element name="CommonTaxonName" type="description:CommonTaxonName"/>
+
+  <xs:element name="Distribution" type="description:Distribution"/>
+
+  <xs:element name="Feature" type="description:Feature"/>
+
+  <xs:element name="FeatureNode" type="description:FeatureNode"/>
+
+  <xs:element name="FeatureTree" type="description:FeatureTree"/>
+
+  <xs:element name="IndividualsAssociation" type="description:IndividualsAssociation"/>
+
+  <xs:element name="MeasurementUnit" type="description:MeasurementUnit"/>
+
+  <xs:element name="Modifier" type="description:Modifier"/>
+
+  <xs:element name="PresenceAbsenceTermBase" type="description:PresenceAbsenceTermBase"/>
+
+  <xs:element name="PresenceTerm" type="description:PresenceTerm"/>
+
+  <xs:element name="QuantitativeData" type="description:QuantitativeData"/>
+
+  <xs:element name="Scope" type="description:Scope"/>
+
+  <xs:element name="Sex" type="description:Sex"/>
+
+  <xs:element name="SpecimenDescription" type="description:SpecimenDescription"/>
+
+  <xs:element name="Stage" type="description:Stage"/>
+
+  <xs:element name="State" type="description:State"/>
+
+  <xs:element name="StateData" type="description:StateData"/>
+
+  <xs:element name="StatisticalMeasure" type="description:StatisticalMeasure"/>
+
+  <xs:element name="StatisticalMeasureValue" type="description:StatisticalMeasureValue"/>
+
+  <xs:element name="TaxonDescription" type="description:TaxonDescription"/>
+
+  <xs:element name="TaxonInteraction" type="description:TaxonInteraction"/>
+
+  <xs:element name="TaxonNameDescription" type="description:TaxonNameDescription"/>
+
+  <xs:element name="TextData" type="description:TextData"/>
+
+  <xs:element name="TextFormat" type="description:TextFormat"/>
+
+  <xs:complexType name="AbsenceTerm">
+    <xs:complexContent>
+      <xs:extension base="description:PresenceAbsenceTermBase">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="PresenceAbsenceTermBase" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="common:OrderedTermBase">
+        <xs:sequence>
+          <xs:element name="defaultColor" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="Modifier">
+    <xs:complexContent>
+      <xs:extension base="common:OrderedTermBase">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="Feature">
+    <xs:complexContent>
+      <xs:extension base="common:DefinedTermBase">
+        <xs:sequence>
+          <xs:element name="SupportsTextData" type="xs:boolean"/>
+          <xs:element name="SupportsQuantitativeData" type="xs:boolean"/>
+          <xs:element name="SupportsDistribution" type="xs:boolean"/>
+          <xs:element name="SupportsIndividualAssociation" type="xs:boolean"/>
+          <xs:element name="SupportsTaxonInteraction" type="xs:boolean"/>
+          <xs:element name="SupportsCommonTaxonName" type="xs:boolean"/>
+          <xs:element name="RecommendedModifierEnumerations" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="RecommendedModifierEnumeration" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="RecommendedStatisticalMeasures" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="RecommendedStatisticalMeasure" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="SupportedCategoricalEnumerations" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="SupportedCategoricalEnumeration" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="StatisticalMeasure">
+    <xs:complexContent>
+      <xs:extension base="common:DefinedTermBase">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="MeasurementUnit">
+    <xs:complexContent>
+      <xs:extension base="common:DefinedTermBase">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="PresenceTerm">
+    <xs:complexContent>
+      <xs:extension base="description:PresenceAbsenceTermBase">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="Scope">
+    <xs:complexContent>
+      <xs:extension base="description:Modifier">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="Sex">
+    <xs:complexContent>
+      <xs:extension base="description:Scope">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="Stage">
+    <xs:complexContent>
+      <xs:extension base="description:Scope">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="State">
+    <xs:complexContent>
+      <xs:extension base="common:OrderedTermBase">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="TextFormat">
+    <xs:complexContent>
+      <xs:extension base="common:DefinedTermBase">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="TaxonNameDescription">
+    <xs:complexContent>
+      <xs:extension base="description:DescriptionBase">
+        <xs:sequence>
+          <xs:element name="TaxonName" type="xs:IDREF"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="DescriptionBase" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="common:IdentifiableEntity">
+        <xs:sequence>
+          <xs:element name="DescribedSpecimenOrObservations" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="DescribedSpecimenOrObservation" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="DescriptionSources" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="DescriptionSource" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="DescriptionElements" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:choice minOccurs="0" maxOccurs="unbounded">
+                  <xs:element ref="description:CategoricalData"/>
+                  <xs:element ref="description:CommonTaxonName"/>
+                  <xs:element ref="description:Distribution"/>
+                  <xs:element ref="description:IndividualsAssociation"/>
+                  <xs:element ref="description:QuantitativeData"/>
+                  <xs:element ref="description:TaxonInteraction"/>
+                  <xs:element ref="description:TextData"/>
+                </xs:choice>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="SpecimenDescription">
+    <xs:complexContent>
+      <xs:extension base="description:DescriptionBase">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="TaxonDescription">
+    <xs:complexContent>
+      <xs:extension base="description:DescriptionBase">
+        <xs:sequence>
+          <xs:element name="Scopes" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="Scope" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="GeoScopes" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="GeoScope" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+         <xs:element name="Taxon" type="xs:IDREF"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="CategoricalData">
+    <xs:complexContent>
+      <xs:extension base="description:DescriptionElementBase">
+        <xs:sequence>
+          <xs:element name="OrderRelevant" type="xs:boolean"/>
+          <xs:element name="States" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="State" type="description:StateData" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="DescriptionElementBase" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="common:ReferencedEntityBase">
+        <xs:sequence>
+          <xs:element name="Feature" type="xs:IDREF" minOccurs="0"/>
+          <xs:element name="Modifiers" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="Modifier" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="ModifyingText" type="common:MultilanguageText" minOccurs="0"/>
+          <xs:element name="Media" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="Medium" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="InDescription" type="xs:IDREF" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="StateData">
+    <xs:complexContent>
+      <xs:extension base="common:VersionableEntity">
+        <xs:sequence>
+          <xs:element name="State" type="xs:IDREF" minOccurs="0"/>
+          <xs:element name="Modifiers" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="Modifier" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="ModifyingText" type="common:MultilanguageText" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="CommonTaxonName">
+    <xs:complexContent>
+      <xs:extension base="description:DescriptionElementBase">
+        <xs:sequence>
+          <xs:element name="Name" type="xs:string" minOccurs="0"/>
+          <xs:element name="Language" type="xs:IDREF" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="Distribution">
+    <xs:complexContent>
+      <xs:extension base="description:DescriptionElementBase">
+        <xs:sequence>
+          <xs:element name="NamedArea" type="xs:IDREF" minOccurs="0"/>
+          <xs:element name="PresenceAbsenceStatus" type="xs:IDREF" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="IndividualsAssociation">
+    <xs:complexContent>
+      <xs:extension base="description:DescriptionElementBase">
+        <xs:sequence>
+          <xs:element name="Description" type="common:MultilanguageText" minOccurs="0"/>
+          <xs:element name="AssociatedSpecimenOrObservation" type="xs:IDREF" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="QuantitativeData">
+    <xs:complexContent>
+      <xs:extension base="description:DescriptionElementBase">
+        <xs:sequence>
+          <xs:element name="MeasurementUnit" type="xs:IDREF" minOccurs="0"/>
+          <xs:element name="StatisticalValues" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element ref="description:StatisticalValue" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  
+  <xs:element name="StatisticalValue" type="description:StatisticalMeasureValue" />
+
+  <xs:complexType name="StatisticalMeasureValue">
+    <xs:complexContent>
+      <xs:extension base="common:VersionableEntity">
+        <xs:sequence>
+          <xs:element name="Value" type="xs:float"/>
+          <xs:element name="Modifiers" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="Modifier" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="StatisticalMeasureType" type="xs:IDREF" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="TaxonInteraction">
+    <xs:complexContent>
+      <xs:extension base="description:DescriptionElementBase">
+        <xs:sequence>
+          <xs:element name="Description" type="common:MultilanguageText" minOccurs="0"/>
+          <xs:element name="Taxon2" type="xs:IDREF" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="TextData">
+    <xs:complexContent>
+      <xs:extension base="description:DescriptionElementBase">
+        <xs:sequence>
+          <xs:element name="MultiLanguageText" type="common:MultilanguageText" minOccurs="0"/>
+          <xs:element name="Format" type="xs:IDREF" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="FeatureNode">
+    <xs:complexContent>
+      <xs:extension base="common:VersionableEntity">
+        <xs:sequence>
+          <xs:element name="Feature" type="xs:IDREF" minOccurs="0"/>
+          <xs:element name="Parent" type="xs:IDREF" minOccurs="0"/>
+          <xs:element name="Children" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="Child" type="description:FeatureNode" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="FeatureTree">
+    <xs:complexContent>
+      <xs:extension base="common:TermBase">
+        <xs:sequence>
+          <xs:element name="IsDescriptionSeparated" type="xs:boolean"/>
+          <xs:element name="Root" type="description:FeatureNode" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+</xs:schema>
+

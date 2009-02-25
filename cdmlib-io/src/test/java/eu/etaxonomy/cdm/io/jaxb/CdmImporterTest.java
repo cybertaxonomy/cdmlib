@@ -12,13 +12,20 @@ package eu.etaxonomy.cdm.io.jaxb;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.sql.SQLException;
 
 import org.dbunit.Assertion;
 import org.dbunit.database.IDatabaseConnection;
+import org.dbunit.dataset.DataSetException;
+import org.dbunit.dataset.FilteredDataSet;
 import org.dbunit.dataset.FilteredDataSet;
 import org.dbunit.dataset.IDataSet;
+import org.dbunit.dataset.xml.FlatDtdDataSet;
 import org.dbunit.dataset.filter.ExcludeTableFilter;
 import org.dbunit.dataset.xml.FlatXmlDataSet;
 import org.junit.Before;
@@ -29,7 +36,7 @@ import org.unitils.spring.annotation.SpringBeanByType;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
-public class CdmImporterTest extends CdmTransactionalIntegrationTest{
+public class CdmImporterTest  extends CdmTransactionalIntegrationTest{
 	
 	@SpringBeanByType
 	JaxbImport jaxbImport;
@@ -48,6 +55,7 @@ public class CdmImporterTest extends CdmTransactionalIntegrationTest{
 		assertNotNull("jaxbImport should not be null",jaxbImport);
 	}
 	
+	
 	@Test
 	@DataSet
 	public void testImport() throws Exception {
@@ -56,26 +64,13 @@ public class CdmImporterTest extends CdmTransactionalIntegrationTest{
 	}
 
 	protected void testExpectedDataSet(InputStream dataSet) {
-		
-		final String dbVersionTable = "DB_VERSION";
 		try {
 			IDatabaseConnection databaseConnection = getConnection();
 			
 			IDataSet expectedDataSet = new FlatXmlDataSet(dataSet, this.getClass().getResourceAsStream("/eu/etaxonomy/cdm/io/dataset.dtd"));
+			IDataSet actualDataSet = new FilteredDataSet(expectedDataSet.getTableNames(),databaseConnection.createDataSet());
 			
-            // Filter table DB_VERSION since column VERSION_TIMESTAMP has different value for different users
-			IDataSet filteredActualDataSet = 
-				new FilteredDataSet(new ExcludeTableFilter(new String[]{dbVersionTable}), databaseConnection.createDataSet());
-			Assertion.assertEquals(expectedDataSet, filteredActualDataSet);
-
-//          Instead of filtering the entire table DB_VERSION as above,
-//			it might be better to filter the column VERSION_TIMESTAMP only (see commented code below).
-//          Need to add the filtered table back to the actual data set.
-			
-//			ITable actualDbVersionTable = actualDataSet.getTable(dbVersionTable);
-//			ITable filteredTable = 
-//				DefaultColumnFilter.excludedColumnsTable(actualDbVersionTable, new String[]{dbVersionTable});
-//			filteredTable.getTableMetaData();
+			Assertion.assertEquals(expectedDataSet,actualDataSet);
 			
 		} catch (Exception e) {
 			System.out.println(e);

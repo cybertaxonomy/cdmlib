@@ -43,6 +43,8 @@ public class JaxbExportConfigurator extends ExportConfiguratorBase implements IE
 	private boolean doTerms = true;
 	private boolean doTermVocabularies = true;
 	private boolean doHomotypicalGroups = true;
+
+	private boolean doTypeDesignations = true;
 	
 	
 	public int getMaxRows() {
@@ -202,5 +204,12 @@ public class JaxbExportConfigurator extends ExportConfiguratorBase implements IE
 			return (String)this.getDestination();
 		}
 	}
-		
+
+	public boolean isDoTypeDesignations() {
+		return doTypeDesignations;
+	}
+
+	public void setDoTypeDesignations(boolean doTypeDesignations) {
+		this.doTypeDesignations = doTypeDesignations;
+	}	
 }

@@ -24,7 +24,7 @@ import eu.etaxonomy.cdm.io.common.CdmIoBase;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
-import eu.etaxonomy.cdm.model.agent.Agent;
+import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.LanguageStringBase;
@@ -32,9 +32,11 @@ import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
+import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
@@ -104,14 +106,14 @@ public class JaxbImport extends CdmIoBase<IImportConfigurator> implements ICdmIO
 
 		boolean ret = true;
 		Collection<TaxonBase> taxonBases;
-		List<? extends Agent> agents;
+		List<? extends AgentBase> agents;
 		List<DefinedTermBase> terms;
 		List<ReferenceBase> references;
 		List<TaxonNameBase> taxonomicNames;
-		//List<DescriptionBase> descriptions;
-		List<ReferencedEntityBase> referencedEntities;
+		List<DescriptionBase> descriptions;
+		List<TypeDesignationBase> typeDesignations;
 		List<SpecimenOrObservationBase> occurrences;
-		List<VersionableEntity> featureData;
+		List<FeatureTree> featureTrees;
 		List<Media> media;
 		List<LanguageStringBase> languageData;
 		List<TermVocabulary<DefinedTermBase>> termVocabularies;
@@ -147,19 +149,19 @@ public class JaxbImport extends CdmIoBase<IImportConfigurator> implements ICdmIO
 		
 		// TODO: Have separate data save methods
 
-		//txStatus = startTransaction();
-		try {
-			if (jaxbImpConfig.isDoLanguageData() == true) {
-				if ((languageData = dataSet.getLanguageData()).size() > 0) {
-					logger.info("Language data: " + languageData.size());
-					getTermService().saveLanguageDataAll(languageData);
-				}
-			}
-		} catch (Exception ex) {
-			logger.error("Error saving language data");
-			ret = false;
-		}
-		//commitTransaction(txStatus);
+//		txStatus = startTransaction();
+//		try {
+//			if (jaxbImpConfig.isDoLanguageData() == true) {
+//				if ((languageData = dataSet.getLanguageData()).size() > 0) {
+//					logger.info("Language data: " + languageData.size());
+//					getTermService().saveLanguageDataAll(languageData);
+//				}
+//			}
+//		} catch (Exception ex) {
+//			logger.error("Error saving language data");
+//			ret = false;
+//		}
+//		commitTransaction(txStatus);
 
 		
 		//txStatus = startTransaction();
@@ -241,14 +243,14 @@ public class JaxbImport extends CdmIoBase<IImportConfigurator> implements ICdmIO
 		//txStatus = startTransaction();
 		// NomenclaturalStatus, TypeDesignations
 		try {
-			if (jaxbImpConfig.isDoReferencedEntities() == true) {
-				if ((referencedEntities = dataSet.getReferencedEntities()).size() > 0) {
-					logger.info("Referenced entities: " + referencedEntities.size());
-					getNameService().saveReferencedEntitiesAll(referencedEntities);
+			if (jaxbImpConfig.isDoTypeDesignations() == true) {
+				if ((typeDesignations = dataSet.getTypeDesignations()).size() > 0) {
+					logger.info("Type Designations: " + typeDesignations.size());
+					getNameService().saveTypeDesignationAll(typeDesignations);
 				}
 			}
 		} catch (Exception ex) {
-			logger.error("Error saving referenced entities");
+			logger.error("Error saving type designations");
 			ret = false;
 		}
 		//commitTransaction(txStatus);
@@ -278,9 +280,9 @@ public class JaxbImport extends CdmIoBase<IImportConfigurator> implements ICdmIO
 		//txStatus = startTransaction();
 		try {
 			if (jaxbImpConfig.isDoFeatureData() == true) {
-				if ((featureData = dataSet.getFeatureData()).size() > 0) {
-					logger.info("Feature data: " + featureData.size());
-					getDescriptionService().saveFeatureDataAll(featureData);
+				if ((featureTrees = dataSet.getFeatureTrees()).size() > 0) {
+					logger.info("Feature data: " + featureTrees.size());
+					getDescriptionService().saveFeatureTreeAll(featureTrees);
 				}
 			}
 		} catch (Exception ex) {

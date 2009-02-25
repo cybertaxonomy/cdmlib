@@ -16,7 +16,7 @@ import java.util.ListIterator;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration;
-import eu.etaxonomy.cdm.model.agent.Agent;
+import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -113,7 +113,7 @@ public class UnitsGatheringEvent {
 	 */
 	public void setCollector(ICdmApplicationConfiguration config, ArrayList<String> collectorNames,boolean getExisting){
 		//create collector
-		Agent collector;
+		AgentBase collector;
 		ListIterator<String> collectors = collectorNames.listIterator();
 		//add the collectors
 		String collName;
@@ -121,7 +121,7 @@ public class UnitsGatheringEvent {
 			collName = collectors.next();
 			/*check if the collector does already exist*/
 			try{
-				List<Agent> col = config.getAgentService().findAgentsByTitle(collName);
+				List<AgentBase> col = config.getAgentService().findAgentsByTitle(collName);
 				collector=col.get(0);
 			}catch (Exception e) {
 				collector = Person.NewInstance();

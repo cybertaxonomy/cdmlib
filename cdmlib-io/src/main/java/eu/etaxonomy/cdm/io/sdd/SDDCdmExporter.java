@@ -27,7 +27,7 @@ import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IExportConfigurator;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
-import eu.etaxonomy.cdm.model.agent.Agent;
+import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
@@ -164,7 +164,7 @@ public class SDDCdmExporter extends CdmIoBase<IExportConfigurator> implements IC
 		}
 
 		if (sddExpConfig.isDoAuthors() == true) {
-			if (agentRows == 0) { agentRows = getAgentService().count(Agent.class); }
+			if (agentRows == 0) { agentRows = getAgentService().count(AgentBase.class); }
 			logger.info("# Agents: " + agentRows);
 			//logger.info("    # Team: " + getAgentService().count(Team.class));
 			sddDataSet.setAgents(getAgentService().getAllAgents(agentRows, 0));

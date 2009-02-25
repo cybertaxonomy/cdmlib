@@ -12,6 +12,8 @@ package eu.etaxonomy.cdm.io.sdd;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.net.URL;
 
 import org.junit.Before;
@@ -56,6 +58,8 @@ public class SDDDescriptionIOTest extends CdmTransactionalIntegrationTest {
 	@Test
 	public void testDoInvoke() {
 		sddDescriptionIo.doInvoke(configurator, null);
+		this.setComplete();
+		this.endTransaction();
 		assertEquals("Number of TaxonNames should be 1", 1, nameService.count());
 	}
 

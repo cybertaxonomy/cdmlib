@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog   xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog">
+    <system systemId="http://www.w3.org/2005/08/xml.xsd" uri="schema/xml/xml.xsd"/>
+    <system systemId="http://www.w3.org/2001/XMLSchema" uri="schema/xml/XMLSchema.xsd"/>
+    <system systemId="http://etaxonomy.eu/cdm/model/1.0" uri="schema/cdm/cdm.xsd"/>
+    <system systemId="http://etaxonomy.eu/cdm/model/common/1.0" uri="schema/cdm/common.xsd"/>
+    <system systemId="http://etaxonomy.eu/cdm/model/agent/1.0" uri="schema/cdm/agent.xsd"/>
+    <system systemId="http://etaxonomy.eu/cdm/model/description/1.0" uri="schema/cdm/description.xsd"/>
+    <system systemId="http://etaxonomy.eu/cdm/model/location/1.0" uri="schema/cdm/location.xsd"/>
+    <system systemId="http://etaxonomy.eu/cdm/model/name/1.0" uri="schema/cdm/name.xsd"/>
+    <system systemId="http://etaxonomy.eu/cdm/model/media/1.0" uri="schema/cdm/media.xsd"/>
+    <system systemId="http://etaxonomy.eu/cdm/model/molecular/1.0" uri="schema/cdm/molecular.xsd"/>
+    <system systemId="http://etaxonomy.eu/cdm/model/reference/1.0" uri="schema/cdm/reference.xsd"/>
+    <system systemId="http://etaxonomy.eu/cdm/model/occurrence/1.0" uri="schema/cdm/occurrence.xsd"/>
+    <system systemId="http://etaxonomy.eu/cdm/model/taxon/1.0" uri="schema/cdm/taxon.xsd"/>
+</catalog>

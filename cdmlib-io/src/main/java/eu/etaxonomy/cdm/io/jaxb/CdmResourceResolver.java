@@ -58,9 +58,9 @@ public class CdmResourceResolver implements LSResourceResolver {
 		InputSource inputSource = catalogResolver.resolveEntity( publicId, systemId );
 		if ( inputSource == null ) {
 			if(log.isInfoEnabled()) {
-			    log.info("Not found in filesystem: Looking in jar files for /eu/etaxonomy/cdm/model/" + systemId);
+			    log.info("Not found in filesystem: Looking in jar files for /schema/cdm/" + systemId);
 			}
-			inputSource = new InputSource(this.getClass().getResourceAsStream("/eu/etaxonomy/cdm/model/" + systemId));
+			inputSource = new InputSource(this.getClass().getResourceAsStream("/schema/cdm/" + systemId));
 			
 			if(inputSource == null) {
 				if(log.isWarnEnabled()) {

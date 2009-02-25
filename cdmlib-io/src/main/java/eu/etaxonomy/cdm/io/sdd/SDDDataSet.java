@@ -24,7 +24,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 import eu.etaxonomy.cdm.model.agent.Address;
-import eu.etaxonomy.cdm.model.agent.Agent;
+import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Contact;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.InstitutionType;
@@ -155,7 +155,7 @@ public class SDDDataSet {
         @XmlElement(name = "Institution", namespace = "http://etaxonomy.eu/cdm/model/agent/1.0", type = Institution.class),
         @XmlElement(name = "Person", namespace = "http://etaxonomy.eu/cdm/model/agent/1.0", type = Person.class)
     })
-    protected List<? extends Agent> agents;
+    protected List<? extends AgentBase> agents;
     
     @XmlElementWrapper(name = "AgentData")
     @XmlElements({
@@ -305,7 +305,7 @@ public class SDDDataSet {
 
 	public SDDDataSet () {
 		
-		agents = new ArrayList<Agent>(); 
+		agents = new ArrayList<AgentBase>(); 
 		agentData = new ArrayList<VersionableEntity>();
 //		featureData = new ArrayList<VersionableEntity>();
 		featureData = new ArrayList<VersionableEntity>();
@@ -331,7 +331,7 @@ public class SDDDataSet {
      *     {@link List<Agent> }
      *     
      */
-    public List<? extends Agent> getAgents() {
+    public List<? extends AgentBase> getAgents() {
         return agents;
     }
 
@@ -343,7 +343,7 @@ public class SDDDataSet {
      *     {@link List<Agent> }
      *     
      */
-    public void setAgents(List<? extends Agent> value) {
+    public void setAgents(List<? extends AgentBase> value) {
         this.agents = value;
     }
 

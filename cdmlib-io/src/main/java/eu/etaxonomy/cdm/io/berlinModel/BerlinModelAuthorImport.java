@@ -20,7 +20,7 @@ import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.io.common.Source;
-import eu.etaxonomy.cdm.model.agent.Agent;
+import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -61,7 +61,7 @@ public class BerlinModelAuthorImport extends BerlinModelImportBase {
 	protected boolean doInvoke(IImportConfigurator config, 
 			Map<String, MapWrapper<? extends CdmBase>> stores){ 
 
-		MapWrapper<Agent> teamMap = (MapWrapper<Agent>)stores.get(ICdmIO.AUTHOR_STORE);
+		MapWrapper<AgentBase> teamMap = (MapWrapper<AgentBase>)stores.get(ICdmIO.AUTHOR_STORE);
 		
 		BerlinModelImportConfigurator bmiConfig = (BerlinModelImportConfigurator)config;
 		Source source = bmiConfig.getSource();

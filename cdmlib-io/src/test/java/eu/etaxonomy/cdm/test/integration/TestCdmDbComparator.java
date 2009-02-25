@@ -23,7 +23,7 @@ import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.Source;
-import eu.etaxonomy.cdm.model.agent.Agent;
+import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.LanguageString;
@@ -443,8 +443,8 @@ public class TestCdmDbComparator {
 		Map<String, List<String>> tables = new HashMap<String, List<String>>(table_list.length);
 		
 		List<String> agentTableContent = new ArrayList<String>(MAX_ROWS);
-		List<? extends Agent> agents = appCtr.getAgentService().getAllAgents(MAX_ROWS, 0);
-		for (Agent agent: agents ) {
+		List<? extends AgentBase> agents = appCtr.getAgentService().getAllAgents(MAX_ROWS, 0);
+		for (AgentBase agent: agents ) {
 			//TODO: Want the entire row as string not just toString() of the object.
 			agentTableContent.add(agent.toString());
 		}

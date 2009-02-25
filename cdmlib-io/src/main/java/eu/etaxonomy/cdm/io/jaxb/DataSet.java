@@ -11,9 +11,7 @@ package eu.etaxonomy.cdm.io.jaxb;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -23,25 +21,20 @@ import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-import eu.etaxonomy.cdm.model.agent.Address;
-import eu.etaxonomy.cdm.model.agent.Agent;
+import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Contact;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.InstitutionType;
-import eu.etaxonomy.cdm.model.agent.InstitutionalMembership;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
+import eu.etaxonomy.cdm.model.common.EventBase;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.Keyword;
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.LanguageString;
-import eu.etaxonomy.cdm.model.common.LanguageStringBase;
 import eu.etaxonomy.cdm.model.common.MarkerType;
-import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
-import eu.etaxonomy.cdm.model.common.RelationshipBase;
-import eu.etaxonomy.cdm.model.common.Representation;
+import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.description.AbsenceTerm;
@@ -70,26 +63,26 @@ import eu.etaxonomy.cdm.model.name.BacterialName;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.CultivarPlantName;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
-import eu.etaxonomy.cdm.model.name.HybridRelationship;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
-import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
-import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.ViralName;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
+import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEventType;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationModifier;
 import eu.etaxonomy.cdm.model.occurrence.FieldObservation;
 import eu.etaxonomy.cdm.model.occurrence.Fossil;
+import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
 import eu.etaxonomy.cdm.model.occurrence.LivingBeing;
 import eu.etaxonomy.cdm.model.occurrence.Observation;
 import eu.etaxonomy.cdm.model.occurrence.PreservationMethod;
@@ -114,76 +107,46 @@ import eu.etaxonomy.cdm.model.reference.Report;
 import eu.etaxonomy.cdm.model.reference.Thesis;
 import eu.etaxonomy.cdm.model.reference.WebPage;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
-import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
-import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 
 /**
  * @author a.babadshanjan
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = {
+@XmlType(name = "DataSet", propOrder = {
 	    "terms",
 	    "termVocabularies",
 		"agents",
-		"agentData",
+		"collections",
 		"occurrences",
+		"eventBases",
 	    "references",
-	    "referencedEntities",
-	    "featureData",
-	    "languageData",
+	    "typeDesignations",
+	    "featureTrees",
 	    "taxonomicNames",
 	    "homotypicalGroups",
-	    "taxa",
-	    "synonyms",
-	    "relationships",
+	    "taxonBases",
 	    "media"
 })
-@XmlRootElement(name = "DataSet", namespace = "http://etaxonomy.eu/cdm/model/1.0")
+@XmlRootElement(name = "DataSet")
 public class DataSet {
-	
-    // Some fields are of type List and some are of type Set. 
-	// This is mainly because
-	// the service classes return lists, i.e.
-    // TaxonServiceImpl.getRootTaxa() returns List<Taxon>
-	// and the Taxon methods return sets, i.e.
-    // Taxon.getTaxonomicChildren() returns Set<Taxon>.
 
-    @XmlElementWrapper(name = "Agents", namespace = "http://etaxonomy.eu/cdm/model/1.0")
-    @XmlElements({
+    @XmlElementWrapper(name = "Agents")
+    @XmlElements({             
         @XmlElement(name = "Team", namespace = "http://etaxonomy.eu/cdm/model/agent/1.0", type = Team.class),
         @XmlElement(name = "Institution", namespace = "http://etaxonomy.eu/cdm/model/agent/1.0", type = Institution.class),
         @XmlElement(name = "Person", namespace = "http://etaxonomy.eu/cdm/model/agent/1.0", type = Person.class)
     })
-    protected List<? extends Agent> agents;
-    
-    @XmlElementWrapper(name = "AgentData", namespace = "http://etaxonomy.eu/cdm/model/1.0")
-    @XmlElements({
-    @XmlElement(name = "Address", namespace = "http://etaxonomy.eu/cdm/model/agent/1.0", type = Address.class),
-    @XmlElement(name = "Contact", namespace = "http://etaxonomy.eu/cdm/model/agent/1.0", type = Contact.class),
-    @XmlElement(name = "InstitutionalMembership", namespace = "http://etaxonomy.eu/cdm/model/agent/1.0", type = InstitutionalMembership.class)
-    })
-    protected List<VersionableEntity> agentData;
+    protected List<AgentBase> agents = new ArrayList<AgentBase>();
 
-    @XmlElementWrapper(name = "FeatureData", namespace = "http://etaxonomy.eu/cdm/model/1.0")
-    @XmlElements({
-    @XmlElement(name = "FeatureNode", namespace = "http://etaxonomy.eu/cdm/model/description/1.0", type = FeatureNode.class),
-    @XmlElement(name = "FeatureTree", namespace = "http://etaxonomy.eu/cdm/model/description/1.0", type = FeatureTree.class)
-    })
-//    protected List<VersionableEntity> featureData;
-    protected List<VersionableEntity> featureData;
-
-    @XmlElementWrapper(name = "LanguageData", namespace = "http://etaxonomy.eu/cdm/model/1.0")
-    @XmlElements({
-    @XmlElement(name = "Representation", namespace = "http://etaxonomy.eu/cdm/model/common/1.0", type = Representation.class),
-    @XmlElement(name = "LanguageString", namespace = "http://etaxonomy.eu/cdm/model/common/1.0", type = LanguageString.class)
-    })
-    protected List<LanguageStringBase> languageData;
+    @XmlElementWrapper(name = "FeatureTrees")
+    @XmlElement(name = "FeatureTree", namespace = "http://etaxonomy.eu/cdm/model/description/1.0")
+    protected List<FeatureTree> featureTrees = new ArrayList<FeatureTree>();
     
-    @XmlElementWrapper(name = "Terms", namespace = "http://etaxonomy.eu/cdm/model/1.0")
+    @XmlElementWrapper(name = "Terms")
     @XmlElements({
     	@XmlElement(name = "AbsenceTerm", namespace = "http://etaxonomy.eu/cdm/model/description/1.0", type = AbsenceTerm.class),
     	@XmlElement(name = "AnnotationType", namespace = "http://etaxonomy.eu/cdm/model/common/1.0", type = AnnotationType.class),
@@ -222,13 +185,20 @@ public class DataSet {
     	@XmlElement(name = "TypeDesignationStatus", namespace = "http://etaxonomy.eu/cdm/model/name/1.0", type = TypeDesignationStatus.class),
     	@XmlElement(name = "WaterbodyOrCountry", namespace = "http://etaxonomy.eu/cdm/model/location/1.0", type = WaterbodyOrCountry.class)
     })
-    protected List<DefinedTermBase> terms;
+    protected List<DefinedTermBase> terms = new ArrayList<DefinedTermBase>();
 
-    @XmlElementWrapper(name = "TermVocabularies", namespace = "http://etaxonomy.eu/cdm/model/1.0")
-    @XmlElement(name = "TermVocabulary", namespace = "http://etaxonomy.eu/cdm/model/common/1.0")
-    protected List<TermVocabulary<DefinedTermBase>> termVocabularies;
+    @XmlElementWrapper(name = "TermVocabularies")
+    @XmlElements({
+        @XmlElement(name = "TermVocabulary", namespace = "http://etaxonomy.eu/cdm/model/common/1.0", type = TermVocabulary.class),
+        @XmlElement(name = "OrderedTermVocabulary", namespace = "http://etaxonomy.eu/cdm/model/common/1.0", type = OrderedTermVocabulary.class)
+    })
+    protected List<TermVocabulary<DefinedTermBase>> termVocabularies = new ArrayList<TermVocabulary<DefinedTermBase>>();
 
-    @XmlElementWrapper(name = "Occurrences", namespace = "http://etaxonomy.eu/cdm/model/1.0")
+    @XmlElementWrapper(name = "Collections")
+    @XmlElement(name = "Collection", namespace = "http://etaxonomy.eu/cdm/model/occurrence/1.0")
+    protected List<eu.etaxonomy.cdm.model.occurrence.Collection> collections = new ArrayList<eu.etaxonomy.cdm.model.occurrence.Collection>();
+    
+    @XmlElementWrapper(name = "Occurrences")
     @XmlElements({
     	@XmlElement(name = "DerivedUnit", namespace = "http://etaxonomy.eu/cdm/model/occurrence/1.0", type = DerivedUnit.class),
     	@XmlElement(name = "DnaSample", namespace = "http://etaxonomy.eu/cdm/model/occurrence/1.0", type = DnaSample.class),
@@ -238,9 +208,16 @@ public class DataSet {
     	@XmlElement(name = "Observation", namespace = "http://etaxonomy.eu/cdm/model/occurrence/1.0", type = Observation.class),
     	@XmlElement(name = "Specimen", namespace = "http://etaxonomy.eu/cdm/model/occurrence/1.0", type = Specimen.class)
     })
-    protected List<SpecimenOrObservationBase> occurrences;
+    protected List<SpecimenOrObservationBase> occurrences = new ArrayList<SpecimenOrObservationBase>();
     
-    @XmlElementWrapper(name = "References", namespace = "http://etaxonomy.eu/cdm/model/1.0")
+    @XmlElementWrapper(name = "EventBases")
+    @XmlElements({
+    	@XmlElement(name = "DerivationEvent", namespace = "http://etaxonomy.eu/cdm/model/occurrence/1.0", type = DerivationEvent.class),
+    	@XmlElement(name = "GatheringEvent", namespace = "http://etaxonomy.eu/cdm/model/occurrence/1.0", type = GatheringEvent.class)
+    })
+    protected List<EventBase> eventBases = new ArrayList<EventBase>();
+    
+    @XmlElementWrapper(name = "References")
     @XmlElements({
     	@XmlElement(name = "Article", namespace = "http://etaxonomy.eu/cdm/model/reference/1.0", type = Article.class),
     	@XmlElement(name = "Book", namespace = "http://etaxonomy.eu/cdm/model/reference/1.0", type = Book.class),
@@ -259,18 +236,16 @@ public class DataSet {
     	@XmlElement(name = "Thesis", namespace = "http://etaxonomy.eu/cdm/model/reference/1.0", type = Thesis.class),
     	@XmlElement(name = "WebPage", namespace = "http://etaxonomy.eu/cdm/model/reference/1.0", type = WebPage.class)
     })
-    protected List<ReferenceBase> references;
+    protected List<ReferenceBase> references = new ArrayList<ReferenceBase>();
 
-    @XmlElementWrapper(name = "ReferencedEntities", namespace = "http://etaxonomy.eu/cdm/model/1.0")
+    @XmlElementWrapper(name = "TypeDesignations")
     @XmlElements({
-    	@XmlElement(name = "NomenclaturalStatus", namespace = "http://etaxonomy.eu/cdm/model/name/1.0", type = NomenclaturalStatus.class),
     	@XmlElement(name = "NameTypeDesignation", namespace = "http://etaxonomy.eu/cdm/model/name/1.0", type = NameTypeDesignation.class),
     	@XmlElement(name = "SpecimenTypeDesignation", namespace = "http://etaxonomy.eu/cdm/model/name/1.0", type = SpecimenTypeDesignation.class)
     })
-    protected List<ReferencedEntityBase> referencedEntities;
-
+    protected List<TypeDesignationBase> typeDesignations = new ArrayList<TypeDesignationBase>();
     	
-    @XmlElementWrapper(name = "TaxonomicNames", namespace = "http://etaxonomy.eu/cdm/model/1.0")
+    @XmlElementWrapper(name = "TaxonomicNames")
     @XmlElements({
     	@XmlElement(name = "BacterialName", namespace = "http://etaxonomy.eu/cdm/model/name/1.0", type = BacterialName.class),
     	@XmlElement(name = "BotanicalName", namespace = "http://etaxonomy.eu/cdm/model/name/1.0", type = BotanicalName.class),
@@ -279,54 +254,22 @@ public class DataSet {
     	@XmlElement(name = "ViralName", namespace = "http://etaxonomy.eu/cdm/model/name/1.0", type = ViralName.class),
     	@XmlElement(name = "ZoologicalName", namespace = "http://etaxonomy.eu/cdm/model/name/1.0", type = ZoologicalName.class)
     })
-    protected List<TaxonNameBase> taxonomicNames;
+    protected List<TaxonNameBase> taxonomicNames = new ArrayList<TaxonNameBase>();
 
-    @XmlElementWrapper(name = "Taxa", namespace = "http://etaxonomy.eu/cdm/model/1.0")
-    @XmlElement(name = "Taxon", namespace = "http://etaxonomy.eu/cdm/model/taxon/1.0")
-    protected List<Taxon> taxa;
-	
-    @XmlElementWrapper(name = "Synonyms", namespace = "http://etaxonomy.eu/cdm/model/1.0")
-    @XmlElement(name = "Synonym", namespace = "http://etaxonomy.eu/cdm/model/taxon/1.0")
-    protected List<Synonym> synonyms;
-
-    @XmlElementWrapper(name = "Relationships", namespace = "http://etaxonomy.eu/cdm/model/1.0")
+    @XmlElementWrapper(name = "TaxonBases")
     @XmlElements({
-    	@XmlElement(name = "TaxonRelationship", namespace = "http://etaxonomy.eu/cdm/model/taxon/1.0", type = TaxonRelationship.class),
-    	@XmlElement(name = "SynonymRelationship", namespace = "http://etaxonomy.eu/cdm/model/taxon/1.0", type = SynonymRelationship.class),
-    	@XmlElement(name = "NameRelationship", namespace = "http://etaxonomy.eu/cdm/model/name/1.0", type = NameRelationship.class),
-    	@XmlElement(name = "HybridRelationship", namespace = "http://etaxonomy.eu/cdm/model/name/1.0", type = HybridRelationship.class)
+      @XmlElement(name = "Taxon", namespace = "http://etaxonomy.eu/cdm/model/taxon/1.0", type = Taxon.class),
+      @XmlElement(name = "Synonym", namespace = "http://etaxonomy.eu/cdm/model/taxon/1.0", type = Synonym.class)
     })
-    protected Set<RelationshipBase> relationships;
+    protected List<TaxonBase> taxonBases = new ArrayList<TaxonBase>();
 
-    @XmlElementWrapper(name = "Media", namespace = "http://etaxonomy.eu/cdm/model/1.0")
+    @XmlElementWrapper(name = "Media")
     @XmlElement(name = "Media", namespace = "http://etaxonomy.eu/cdm/model/media/1.0")
-    protected List<Media> media;
+    protected List<Media> media = new ArrayList<Media>();
     
-    @XmlElementWrapper(name = "HomotypicalGroups", namespace = "http://etaxonomy.eu/cdm/model/1.0")
+    @XmlElementWrapper(name = "HomotypicalGroups")
     @XmlElement(name = "HomotypicalGroup", namespace = "http://etaxonomy.eu/cdm/model/name/1.0")
-    protected List<HomotypicalGroup> homotypicalGroups;
-
-//	@XmlElement(name = "TdwgArea", namespace = "http://etaxonomy.eu/cdm/model/location/1.0", type = TdwgArea.class),
-
-	public DataSet () {
-		
-		agents = new ArrayList<Agent>(); 
-		agentData = new ArrayList<VersionableEntity>();
-//		featureData = new ArrayList<VersionableEntity>();
-		featureData = new ArrayList<VersionableEntity>();
-		languageData = new ArrayList<LanguageStringBase>();
-		terms = new ArrayList<DefinedTermBase>();
-		termVocabularies = new ArrayList<TermVocabulary<DefinedTermBase>>();
-		occurrences = new ArrayList<SpecimenOrObservationBase>();
-		references = new ArrayList<ReferenceBase>();
-		referencedEntities = new ArrayList<ReferencedEntityBase>();
-		taxonomicNames = new ArrayList<TaxonNameBase>();
-		taxa = new ArrayList<Taxon>();
-		synonyms = new ArrayList<Synonym>();
-		relationships = new HashSet<RelationshipBase>();
-		media = new ArrayList<Media>();
-		homotypicalGroups = new ArrayList<HomotypicalGroup>();
-	}
+    protected List<HomotypicalGroup> homotypicalGroups = new ArrayList<HomotypicalGroup>();
 
     /**
      * Gets the value of the agents property.
@@ -336,7 +279,7 @@ public class DataSet {
      *     {@link List<Agent> }
      *     
      */
-    public List<? extends Agent> getAgents() {
+    public List<AgentBase> getAgents() {
         return agents;
     }
 
@@ -348,32 +291,32 @@ public class DataSet {
      *     {@link List<Agent> }
      *     
      */
-    public void setAgents(List<? extends Agent> value) {
+    public void setAgents(List<AgentBase> value) {
         this.agents = value;
     }
 
     /**
-     * Gets the value of the agentData property.
+     * Gets the value of the collections property.
      * 
      * @return
      *     possible object is
-     *     {@link List<VersionableEntity> }
+     *     {@link List<eu.etaxonomy.cdm.model.occurrence.Collection> }
      *     
      */
-    public List<VersionableEntity> getAgentData() {
-        return agentData;
+    public List<eu.etaxonomy.cdm.model.occurrence.Collection> getCollections() {
+        return collections;
     }
 
     /**
-     * Sets the value of the agentData property.
+     * Sets the value of the collections property.
      * 
      * @param value
      *     allowed object is
-     *     {@link List<VersionableEntity> }
+     *     {@link List<eu.etaxonomy.cdm.model.occurrence.Collection> }
      *     
      */
-    public void setAgentData(List<VersionableEntity> value) {
-        this.agentData = value;
+    public void setCollections(List<eu.etaxonomy.cdm.model.occurrence.Collection> value) {
+        this.collections = value;
     }
 
     /**
@@ -384,8 +327,6 @@ public class DataSet {
      *     {@link List<TermBase> }
      *     
      */
-    
-    //public List<? extends TermBase> getTerms() {
     public List<DefinedTermBase> getTerms() {
         return terms;
     }
@@ -398,7 +339,6 @@ public class DataSet {
      *     {@link List<TermBase> }
      *     
      */
-    //public void setTerms(List<? extends TermBase> value) {
     public void setTerms(List<DefinedTermBase> value) {
         this.terms = value;
     }
@@ -451,9 +391,33 @@ public class DataSet {
     public void setTaxonomicNames(List<TaxonNameBase> value) {
         this.taxonomicNames = value;
     }
+    
+    /**
+     * Gets the value of the eventBases property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link List<EventBase> }
+     *     
+     */
+    public List<EventBase> getEventBases() {
+        return eventBases;
+    }
 
     /**
-     * Gets the value of the references property.
+     * Sets the value of the eventBases property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link List<EventBase> }
+     *     
+     */
+    public void setEventBases(List<EventBase> value) {
+        this.eventBases = value;
+    }
+
+    /**
+     * Gets the value of the occurrences property.
      * 
      * @return
      *     possible object is
@@ -465,7 +429,7 @@ public class DataSet {
     }
 
     /**
-     * Sets the value of the references property.
+     * Sets the value of the occurrences property.
      * 
      * @param value
      *     allowed object is
@@ -501,294 +465,74 @@ public class DataSet {
     }
 
     /**
-     * Adds the referenced entities in value to the referenced entity property list.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Collection<ReferencedEntityBase> }
-     *     
-     */
-    public <T extends ReferencedEntityBase> void addReferencedEntities(Collection<T> value) {
-    	for (T referencedEntity: value) {
-    		this.referencedEntities.add(referencedEntity);
-    	}
-    }
-
-    /**
-     * Gets the value of the  property.
+     * Gets the value of the featureTrees property.
      * 
      * @return
      *     possible object is
-     *     {@link List<ReferencedEntityBase> }
+     *     {@link List<FeatureTree> }
      *     
      */
-    public List<ReferencedEntityBase> getReferencedEntities() {
-        return referencedEntities;
+    public List<FeatureTree> getFeatureTrees() {
+        return featureTrees;
     }
 
     /**
-     * Sets the value of the referencedEntities property.
+     * Sets the value of the featureTrees property.
      * 
      * @param value
      *     allowed object is
-     *     {@link List<ReferencedEntityBase> }
+     *     {@link List<FeatureTree> }
      *     
      */
-    public void setReferencedEntities(List<? extends ReferencedEntityBase> value) {
-        this.referencedEntities = new ArrayList<ReferencedEntityBase>();
-        referencedEntities.addAll(value);
+    public void setFeatureTrees(List<FeatureTree> value) {
+    	this.featureTrees = value;
     }
     
-    /**
-     * Adds the features in value to the feature data property list.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Collection<VersionableEntity> }
-     *     
-     */
-    public <T extends VersionableEntity> void addFeatureData(Collection<T> value) {
-    	for (T featureItem: value) {
-    		this.featureData.add(featureItem);
-    	}
-    }
-
-    /**
-     * Gets the value of the feature data property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link List<VersionableEntity> }
-     *     
-     */
-//    public List<VersionableEntity> getFeatureData() {
-    public List<VersionableEntity> getFeatureData() {
-        return featureData;
-    }
-
-    /**
-     * Sets the value of the feature data property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link List<VersionableEntity> }
-     *     
-     */
-    public <T extends VersionableEntity> void setFeatureData(List<T> value) {
-        featureData = new ArrayList<VersionableEntity>();
-    	for (T featureItem: value) {
-    		this.featureData.add(featureItem);
-    	}
-    }
-
-//    public void setFeatureData(List<? extends VersionableEntity> value) {
-    //public void setFeatureData(List<? extends VersionableEntity<?>> value) {
-//        this.featureData = new ArrayList<VersionableEntity>();
-    //    this.featureData = new ArrayList<VersionableEntity<?>>();
-    //    featureData.addAll(value);
-    //}
     
     /**
-     * Adds the features in value to the language data property list.
+     * Adds the taxonBases in value to the taxonBases property list.
      * 
      * @param value
      *     allowed object is
-     *     {@link Collection<LanguageStringBase> }
-     *     
-     */
-    public <T extends LanguageStringBase> void addLanguageData(Collection<T> value) {
-    	for (T languageItem: value) {
-    		this.languageData.add(languageItem);
-    	}
-    }
-
-    /**
-     * Gets the value of the language data property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link List<LanguageStringBase> }
-     *     
-     */
-    public List<LanguageStringBase> getLanguageData() {
-        return languageData;
-    }
-
-    /**
-     * Sets the value of the feature data property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link List<LanguageStringBase> }
-     *     
-     */
-    public void setLanguageData(List<? extends LanguageStringBase> value) {
-        this.languageData = new ArrayList<LanguageStringBase>();
-        languageData.addAll(value);
-    }
-    
-    /**
-     * Adds the taxa in value to the taxa property list.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Collection<Taxon> }
-     *     
-     */
-    public void addTaxa(Collection<Taxon> value) {
-    	for (Taxon taxon: value) {
-    		this.taxa.add(taxon);
-    	}
-    }
-
-    /**
-     * Gets the value of the taxa property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link List<Taxon> }
-     *     
-     */
-//    public List<Taxon> getTaxa() {
-//        return taxa;
-//    }
-
-    /**
-     * Gets the value of the taxa property as {@link Collection<TaxonBase> }
-     * 
-     * @return
-     *     possible object is
      *     {@link Collection<TaxonBase> }
      *     
      */
-    public Collection<? extends TaxonBase> getTaxa() {
-    	
-    	//TODO can be deleted when everything works
-    	//Object obj = taxa;
-    	//Collection<TaxonBase> taxonBases = (Collection<TaxonBase>)obj;
-        List<Taxon> list = taxa;
-    	return list;
-    }
-
-    public Collection<TaxonBase> getTaxonBases() {
-    	
-    	Collection<TaxonBase> result = new HashSet<TaxonBase>();;
-    	if (taxa != null) {
-        	result.addAll(taxa);
-    	}
-    	if (synonyms != null) {
-        	result.addAll(synonyms);
-    	}
-        return result;
+    public void addTaxonBases(Collection<TaxonBase> value) {
+    	this.taxonBases.addAll(value);
     }
 
     /**
-     * Sets the value of the taxa property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link List<Taxon> }
-     *     
-     */
-    public void setTaxa(List<Taxon> value) {
-        this.taxa = value;
-    }
-
-    /**
-     * Adds the taxon in value to the taxa property list.
-     * 
-     * @param value
-     *     
-     */
-    public void addTaxon(Taxon value) {
-    		this.taxa.add(value);
-    }
-
-
-    /**
-     * Gets the value of the synonyms property.
+     * Gets the value of the taxonBases property as {@link Collection<TaxonBase> }
      * 
      * @return
      *     possible object is
-     *     {@link List<Synonym> }
+     *     {@link List<TaxonBase> }
      *     
      */
-    public List<Synonym> getSynonyms() {
-        return synonyms;
+    public List<TaxonBase> getTaxonBases() {
+    	return taxonBases;
     }
 
     /**
-     * Sets the value of the synonyms property.
+     * Sets the value of the taxonBases property.
      * 
      * @param value
      *     allowed object is
-     *     {@link List<Synonym> }
+     *     {@link List<TaxonBase> }
      *     
      */
-    public void setSynonyms(List<Synonym> value) {
-        this.synonyms = value;
-    }
-    
-    /**
-     * Adds the synonym in value to the taxa property list.
-     * 
-     * @param value
-     *     
-     */
-    public void addSynonym(Synonym value) {
-    		this.synonyms.add(value);
-    }
-    
-    /**
-     * Adds the synonym in value to the synonyms property list.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Collection<Synonym> }
-     *     
-     */
-    public void addSynonyms(Collection<Synonym> value) {
-    	for (Synonym synonym: value) {
-    		this.synonyms.add(synonym);
-    	}
+    public void setTaxonBases(List<TaxonBase> value) {
+        this.taxonBases = value;
     }
 
     /**
-     * Gets the value of the relationships property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Set<RelationshipBase> }
-     *     
-     */
-    public Set<RelationshipBase> getRelationships() {
-        return relationships;
-    }
-
-    /**
-     * Sets the value of the relationships property.
+     * Adds the taxonBase in value to the taxonBases property list.
      * 
      * @param value
-     *     allowed object is
-     *     {@link Set<RelationshipBase> }
      *     
      */
-    public void setRelationships(Set<RelationshipBase> value) {
-        this.relationships = value;
-    }
-
-    /**
-     * Adds the relationship in value to the relationships property list.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Collection<RelationshipBase> }
-     *     
-     */
-    public void addRelationships(Collection<? extends RelationshipBase> value) {
-    	for (RelationshipBase relationship: value) {
-    		this.relationships.add(relationship);
-    	}
+    public void addTaxonBase(TaxonBase value) {
+    		this.taxonBases.add(value);
     }
 
     /**
@@ -853,5 +597,13 @@ public class DataSet {
     public void setHomotypicalGroups(List<HomotypicalGroup> value) {
         this.homotypicalGroups = value;
     }
+
+    public List<TypeDesignationBase> getTypeDesignations() {
+    	return typeDesignations;
+    }
+    
+	public void addTypeDesignations(List<TypeDesignationBase> typeDesignations) {
+		this.typeDesignations.addAll(typeDesignations);
+	}
     
 }

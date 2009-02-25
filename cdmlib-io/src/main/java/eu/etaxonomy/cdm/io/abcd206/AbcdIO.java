@@ -1078,7 +1078,7 @@ public class AbcdIO extends SpecimenIoBase implements ICdmIO<IImportConfigurator
 			else return taxonName;
 		}
 		if (this.nomenclatureCode.equals("Cultivar")){
-			NonViralName<CultivarPlantName> taxonName = CultivarPlantName.NewInstance(null);
+			CultivarPlantName taxonName = CultivarPlantName.NewInstance(null);
 
 			if (taxonName.hasProblem())
 				logger.info("pb ICNCP");

@@ -28,7 +28,7 @@ import eu.etaxonomy.cdm.io.common.CdmIoBase;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
-import eu.etaxonomy.cdm.model.agent.Agent;
+import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.name.NonViralName;
@@ -218,7 +218,7 @@ public class TaxonXNomenclatureImport extends CdmIoBase<IImportConfigurator> imp
 			
 			String strCollector = type[1].trim();
 			if (! "".equals(strCollector)){
-				Agent collector = Person.NewTitledInstance(strCollector);
+				AgentBase collector = Person.NewTitledInstance(strCollector);
 //				simpleSpecimen.setCollector(collector);
 			}
 			
@@ -318,7 +318,7 @@ public class TaxonXNomenclatureImport extends CdmIoBase<IImportConfigurator> imp
 		if (type.length != 2 ){
 			logger.warn("<collecion_even><type> is of unsupported format: " + elType.getTextNormalize());
 		}else{
-			Agent collector = Person.NewTitledInstance(type[0]);
+			AgentBase collector = Person.NewTitledInstance(type[0]);
 			simpleSpecimen.setCollector(collector);
 			
 			String collectorNumber = type[1];
