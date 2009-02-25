@@ -12,6 +12,7 @@ import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -19,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.media.AudioFile;
 import eu.etaxonomy.cdm.model.media.ImageFile;
 import eu.etaxonomy.cdm.model.media.Media;
@@ -45,10 +47,22 @@ public class MediaAssembler extends AssemblerBase<MediaSTO, MediaTO, Media> {
 		if (media !=null){
 			mediaSTO = new MediaSTO();
 			setVersionableEntity(media, mediaSTO);
-			mediaSTO.setTitle(media.getTitle().get(languages));
+			mediaSTO.setTitle(getPreferredLanguageString(languages,media.getTitle()));
 			mediaSTO.setRepresentations(getMediaRepresentationSTOs(media.getRepresentations()));
 		}
 		return mediaSTO;
+	}
+	
+	private LanguageString getPreferredLanguageString(List<Language> languages, Map<Language,LanguageString> multiLanguageSet){
+		
+		LanguageString languageString = null;
+		for (Language language : languages) {
+			languageString = multiLanguageSet.get(language);
+			if(languageString != null){
+				return languageString;
+			}
+		}
+		return multiLanguageSet.get(Language.DEFAULT());
 	}
 
 	@Override
@@ -58,8 +72,8 @@ public class MediaAssembler extends AssemblerBase<MediaSTO, MediaTO, Media> {
 		if (media !=null){
 			mediaTO = new MediaTO();
 			setVersionableEntity(media, mediaTO);
-			mediaTO.setTitle(media.getTitle().get(languages));
-			mediaTO.setDescription(media.getDescription().get(languages));
+			mediaTO.setTitle(getPreferredLanguageString(languages,media.getTitle()));
+			mediaTO.setDescription(getPreferredLanguageString(languages,media.getDescription()));
 			mediaTO.setRepresentations(getMediaRepresentationSTOs(media.getRepresentations()));
 		}
 		

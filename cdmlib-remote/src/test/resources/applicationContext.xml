@@ -16,6 +16,7 @@
   	<!-- Overwrites the component-scan in services.xml -->
     <context:component-scan base-package="eu/etaxonomy/cdm">
       <context:exclude-filter type="regex" expression="eu\.etaxonomy\.cdm\.api\.service\.UserService"/>
+      <context:exclude-filter type="regex" expression="eu\.etaxonomy\.cdm\.persistence\.dao\.hibernate\.taxon\.TaxonAlternativeSpellingSuggestionParser"/>
     </context:component-scan>
 
    <import resource="classpath:/eu/etaxonomy/cdm/h2-datasource.xml" />

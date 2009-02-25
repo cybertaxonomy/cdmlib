@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:tt="http://rs.tdwg.org/ontology/voc/Team#" xmlns:tpc="http://rs.tdwg.org/ontology/voc/PublicationCitation#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:tp="http://rs.tdwg.org/ontology/voc/Person#" xmlns:tn="http://rs.tdwg.org/ontology/voc/TaxonName#" xmlns:tcom="http://rs.tdwg.org/ontology/voc/Common#" xmlns:tc="http://rs.tdwg.org/ontology/voc/TaxonConcept#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:owl="http://www.w3.org/2002/07/owl#">
+    <tc:TaxonConcept>
+        <dc:title>Lorem ipsum</dc:title>
+        <dc:identifier>urn:lsid:example.org:taxonconcepts:1</dc:identifier>
+        <dcterms:created>2004-12-25T12:00:00.000Z</dcterms:created>
+        <dc:relation rdf:resource="http://www.example.org/"/>
+        <tcom:publishedIn>Lorem ipsum dolor</tcom:publishedIn>
+        <tc:accordingTo>
+            <tt:Team>
+                <dc:title>team name</dc:title>
+            </tt:Team>
+        </tc:accordingTo>
+        <tc:hasName>
+            <tn:TaxonName>
+                <dc:identifier>urn:lsid:example.org:names:1</dc:identifier>
+                <tn:authorship>authorship</tn:authorship>
+                <tn:nameComplete>Aus aus</tn:nameComplete>
+            </tn:TaxonName>
+        </tc:hasName>
+        <tc:hasRelationship>
+            <Relationship>
+                <tc:fromTaxon rdf:resource="urn:lsid:example.org:taxonconcepts:1"/>
+                <tc:relationshipCategory>
+                    <tc:TaxonRelationshipTerm>
+                        <dc:identifier>http://rs.e-taxonomy.eu/voc/TaxonRelationshipTerm.rdf</dc:identifier>
+                    </tc:TaxonRelationshipTerm>
+                </tc:relationshipCategory>
+                <tc:toTaxon rdf:resource="urn:lsid:example.org:taxonconcepts:2"/>
+            </Relationship>
+        </tc:hasRelationship>
+    </tc:TaxonConcept>
+</rdf:RDF>
+
+
+
