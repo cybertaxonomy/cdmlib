@@ -49,7 +49,7 @@ public class TaraxacumActivator {
 	//database validation status (create, update, validate ...)
 	static DbSchemaValidation hbm2dll = DbSchemaValidation.UPDATE;
 	static final Source berlinModelSource = BerlinModelSources.EDIT_Taraxacum();
-	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_test_anahit2();
+	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_test_anahit();
 
 	org.h2.jdbc.JdbcSQLException h;
 	static final UUID secUuid = UUID.fromString("ba7120ce-4fab-49dc-aaa4-f36276426aa8");
@@ -81,41 +81,41 @@ public class TaraxacumActivator {
 
 // **************** ALL *********************	
 	//authors
-//	static final boolean doAuthors = true;
-//	//references
-//	static final DO_REFERENCES doReferences =  DO_REFERENCES.ALL;
-//	//names
-//	static final boolean doTaxonNames = true;
-//	static final boolean doRelNames = true;
-//	static final boolean doNameStatus = true;
-//	static final boolean doTypes = true;
-//	static final boolean doNameFacts = true;
-//	
-//	//taxa
-//	static final boolean doTaxa = true;
-//	static final boolean doRelTaxa = true;
-//	static final boolean doFacts = true;
-//	static final boolean doOccurences = true;
+	static final boolean doAuthors = true;
+	//references
+	static final DO_REFERENCES doReferences =  DO_REFERENCES.ALL;
+	//names
+	static final boolean doTaxonNames = true;
+	static final boolean doRelNames = true;
+	static final boolean doNameStatus = true;
+	static final boolean doTypes = true;
+	static final boolean doNameFacts = true;
+	
+	//taxa
+	static final boolean doTaxa = true;
+	static final boolean doRelTaxa = true;
+	static final boolean doFacts = true;
+	static final boolean doOccurences = true;
 
 	
 // **************** SELECTED *********************
 
-	//authors
-	static final boolean doAuthors = false;
-	//references
-	static final DO_REFERENCES doReferences =  DO_REFERENCES.NONE;
-	//names
-	static final boolean doTaxonNames = false;
-	static final boolean doRelNames = false;
-	static final boolean doNameStatus = false;
-	static final boolean doTypes = false;
-	static final boolean doNameFacts = false;
-	
-	//taxa 
-	static final boolean doTaxa = true;
-	static final boolean doRelTaxa = false;
-	static final boolean doFacts = false;
-	static final boolean doOccurences = true;
+//	//authors
+//	static final boolean doAuthors = false;
+//	//references
+//	static final DO_REFERENCES doReferences =  DO_REFERENCES.NONE;
+//	//names
+//	static final boolean doTaxonNames = false;
+//	static final boolean doRelNames = false;
+//	static final boolean doNameStatus = false;
+//	static final boolean doTypes = false;
+//	static final boolean doNameFacts = false;
+//	
+//	//taxa 
+//	static final boolean doTaxa = true;
+//	static final boolean doRelTaxa = false;
+//	static final boolean doFacts = false;
+//	static final boolean doOccurences = true;
 	
 	/**
 	 * @param args
