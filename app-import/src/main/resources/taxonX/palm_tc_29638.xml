@@ -1,0 +1,36 @@
+<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>Four new species of Calamus (Arecaceae: Caiamoideae) from Laos and Thailand</mods:title>
+</mods:titleInfo>
+<mods:name><mods:namePart>Tom Evans, Khamphone Sengdala, Oulathong V. Viengkham, Banxa Thammavong and John Dransfield</mods:namePart></mods:name>
+<mods:originInfo>
+<mods:publisher>Kew Bulletin, Vol. 55, No. 4, pp. 929-940</mods:publisher>
+<mods:dateIssued>2000</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Calamus laoensis</name>
+<author>T.Evans and al.</author>
+<citation>Kew Bull. 55: 929 (2000)</citation>
+<type>Laos; Khamphone Sengdala; 206</type>
+<type_loc>Holotypus K; isotypus FRCL</type_loc>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>Wai keyomee, wai leum, wai wa and wai katok.</p></div>
+<div type="diagnosis"><p> C. flagello Griff., C. karinensi S. J. Pei and S. Y. Chen et C. rudento Lour. affinis sed foliolis conspicue discoloribus, arcte aggregatis plumosis setulis carentibus differt; a C. rudento fructibus elongatis majoribus recedit endospermio homogeneo differt; a C. longiseto Griff. paginis foliolorum setis longis carentibus foliolis discoloribus, fructibus pyriformibus abrupte rostratis, squamis profunde porcatis et rachillis gracilioribus differt.</p></div>
+<div type="description"><p>Robust, climbing, clustering, flagellate rattan reaching at least 40 m long. Stem without sheath 20 - 25 mm diam., with sheath 35 - 50 mm. Leaf ecirrate, total length 1.7 - 2.5 m, sheath light grey-green or pale yellow-green in life, bearing numerous larger laminar spines up to 6 cm long, pale straw- or copper-coloured at base merging into a dark tip and numerous smaller, acicular, black spines, indumentum dark, persistent amongst the spines, ocrea forming a brittle margin to the sheath mouth about 1 cm tall, armed as the sheath, rapidly disintegrating; knee present but indistinct, petiole on upper leaves 5 - 10 cm long, up to 40 cm on some apparently mature middle leaves and longest in basal leaves, petiole deeply grooved adaxially, rounded abaxially, armed on both surfaces with many laminar spines like the sheath, rachis becoming acutely bifaced distally, armed abaxially with partial whorls of laminar spines coloured as on the sheath; leaflets lanceolate or, on upper leaves, ensiform, 35 - 65 x 3.2 - 4 cm, up to 50 per side in upper leaves, strongly grouped 2 - 5 at a time on each side of the rachis, moderately plumose, strongly divaricate on juvenile leaves, less so on upper leaves, strongly discolorous with grey-white indumentum abaxially which, in the oldest leaflets, eventually wears off leaving traces close to the point of attachment, central costa prominent and naked on both surfaces, leaflet margins bristly, transverse veinlets many, sinuous, often interrupted. Male inflorescences flagelliform, branched to 3 - 4 orders, up to at least 6 m long excluding a long terminal flagellum, pendulous in all parts; primary bracts coarsely lacerate at the mouth, with many half-whorls of strong claws towards the base and more scattered smaller claws towards the mouth; partial inflorescences deeply inserted in the mouth of the primary bract, up to 120 cm long; secondary bracts unarmed, very tightly sheathing at the base, slightly inflated above half way, the terminal part neatly delineated, strongly tattering, dying early; tertiary branches deeply inserted in secondary bracts, tertiary bracts also tightly sheathing at base, slightly inflated distally, mouth entire, without a distal part dying early; oblique with a short, pointed limb; rachillae inserted in the axils of the tertiary bracts, often over 15 cm and sometimes up to 30 cm long, slender (rachilla bracts up to 4 mm wide at mouth), involucre deeply inserted within rachilla bract, flowers at 3 mm intervals, not seen mature. Female inflorescences not seen entire; rachillae to at least 25 cm long, moderately robust (mouth of rachilla bract up to 6 mm wide), flowers at 6 mm intervals, involucre inserted near the mouth of the rachilla bract. Fruiting perianth explanate. Fruit broadly ovoid, slightly wider above mid point than below, abruptly short-beaked, length with beak 20 mm, 12 mm diam., epicarp scales in 12 vertical rows, deeply channelled, drying rich rusty orange with narrow dark submarginal band and narrower cream margin which is slightly erose; seed homogeneous.</p></div>
+<div type="distribution"><p>Laos, in Xayaboury, Vientiane and Bolikhamxay Provinces in evergreen forest, including sites at the foot of karst limestone, at 220 - 360 m. </p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p>The conservation status of the species is unknown. The site in Vientiane Province supports a number of individuals in a sacred forest patch where they are protected from cutting by local taboos; this is why the holotype includes no stem or sheath. The stems are believed to be of at least moderate commercial potential. The name 'laoensis' is preferred to 'laosensis' because the name 'Lao' is generally preferred today for official purposes within the country. Lao is pronounced as 'cow', not 'layo'.</p></div>
+<div type="materials_examined"><p>LAOS. Xayaboury Province, exact locality unknown, undated, ster. Khamphone Sengdala 103 (FRCL, K); Ban Na Oum, near Houay Deua, Phieng Distr., Xayaboury Province, 18°38'28" 101°31'13", 5 June 1999, stam. Oulathong V Viengkham 224 (FRCL, K); Cemetery forest near Ban Meuang, Feuang Distr., Vientiane Province, 18°43'14" 102°07'57", 11 May 1998, stam. and fr. Khamphone Sengdala 206 (isotype FRCL, holotype K); Ban Naphong, Pakkading Distr., Bolikhamxay Province, 11 Dec. 1992, ster. Sounthone Ketphanh 26 (FRCL, K); Pha Noy, near Ban Naphong, Pakkading Distr., Bolikhamxay Province, 18°08'29" 104°23'29", 4 Feb. 1999, stam. Khamphone Sengdala 352 (FRCL, K); foot of Tat Thone waterfall, Ban Naphong, Pakkading Distr., Bolikhamxay Province, 18°11'50" 104°23'00", 11 Jan. 1999, ster. T Evans 15 (FRCL).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

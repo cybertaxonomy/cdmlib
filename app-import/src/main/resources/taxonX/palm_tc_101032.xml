@@ -1,0 +1,41 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>A synopsis of the genus Hydriastele (Arecaceae)</mods:title>
+</mods:titleInfo>
+<mods:name><mods:namePart>William J. Baker and Adrian H. B. Loo</mods:namePart></mods:name>
+<mods:originInfo>
+<mods:publisher>Kew Bulletin, Vol. 59, No. 1, pp. 61-68</mods:publisher>
+<mods:dateIssued>2004</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Hydriastele dransfieldii</name>
+<author>(Hambali and al.) W.J.Baker and Loo</author>
+<citation>Kew Bull. 59: 64 (2004)</citation>
+<type>Indonesia, Papua, Biak; Maturbongs; 555</type>
+<type_loc>Holotype K; isotypes BH, BO, L, MAN</type_loc>
+<synonymy>
+<name>Siphokentia dransfieldii</name>
+<author>Hambali, Maturb., Wanggai and W. J. Baker</author>
+<bibref>Hambali, Maturb., Wanggai and W. J. Baker, Palms 44: 179 (2000)</bibref>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="diagnosis"><p></p></div>
+<div type="description"><p></p></div>
+<div type="distribution"><p></p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p></p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>
