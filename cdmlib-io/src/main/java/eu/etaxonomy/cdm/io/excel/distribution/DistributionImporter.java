@@ -146,7 +146,7 @@ public class DistributionImporter extends CdmIoBase<IImportConfigurator> impleme
 				literature = (String) CdmUtils.removeDuplicateWhitespace(value.trim());
 				
 			} else {
-				logger.warn("Column " + key + " ignored");
+				//logger.warn("Column " + key + " ignored");
 			}
     	}
     	
