@@ -208,7 +208,11 @@ public class TaxonXNomenclatureImport extends CdmIoBase<IImportConfigurator> imp
 		}
 		String[] type = text.split(";");
 		if (type.length != 3 ){
-			logger.warn("<nomenclature><type> is of unsupported format: " + elType.getTextNormalize() + getBracketSourceName(config));
+			if (text.equals("")){
+				logger.info("<nomenclature><type> is empty: " + getBracketSourceName(config));
+			}else{
+				logger.warn("<nomenclature><type> is of unsupported format: " + elType.getTextNormalize() + getBracketSourceName(config));
+			}
 			simpleSpecimen.setTitleCache(elType.getTextNormalize());
 		}else{
 			String strLocality = type[0].trim();
@@ -259,11 +263,11 @@ public class TaxonXNomenclatureImport extends CdmIoBase<IImportConfigurator> imp
 			typeLocStatus = typeLocStatus.trim();
 			int pos = typeLocStatus.indexOf(" ");
 			if (pos == -1){
-				logger.warn("Unknown format for type_loc : " + typeLocStatus + getBracketSourceName(config));
+				logger.warn("Unknown format or empty type_loc : '" +typeLocStatus + "'" + getBracketSourceName(config));
 				result.put(originalSpecimen, null);
 			}else{
 				String statusString = typeLocStatus.substring(0,pos); 
-				TypeDesignationStatus status = getStatusByStatusString(statusString.trim());
+				TypeDesignationStatus status = getStatusByStatusString(statusString.trim(), config);
 				//TODO
 				//String[] collectionStrings = typeLocStatus.substring(pos).split(",");
 				String tmpCollString = typeLocStatus.substring(pos).trim();
@@ -341,7 +345,7 @@ public class TaxonXNomenclatureImport extends CdmIoBase<IImportConfigurator> imp
 				logger.warn("Unknown format: " + typeLocStatus);
 			}else{
 				String statusString = typeLocStatus.substring(0,pos); 
-				TypeDesignationStatus status = getStatusByStatusString(statusString.trim());
+				TypeDesignationStatus status = getStatusByStatusString(statusString.trim(), config);
 				String[] collectionStrings = typeLocStatus.substring(pos).split(",");
 				for(String collectionString : collectionStrings){
 					if (taxonBase != null){
@@ -384,7 +388,7 @@ public class TaxonXNomenclatureImport extends CdmIoBase<IImportConfigurator> imp
 	 * @param statusString
 	 * @return TypeDesignationStatus
 	 */
-	private static TypeDesignationStatus getStatusByStatusString(String statusString){
+	private static TypeDesignationStatus getStatusByStatusString(String statusString, TaxonXImportConfigurator config){
 		TypeDesignationStatus result = null;
 		if (statusString == null || "".equals(statusString.trim())){
 			return null;
@@ -400,9 +404,9 @@ public class TaxonXNomenclatureImport extends CdmIoBase<IImportConfigurator> imp
 		}
 		result = statusMap.get(statusString);
 		if (statusString.equals("type")){
-			logger.info("No type designation type");
+			logger.info("No type designation type" + getBracketSourceName(config));
 		}else if (result == null){
-			logger.warn("Unknown type status string: " + statusString);
+			logger.warn("Unknown type status string: " + statusString + getBracketSourceName(config));
 		}
 		return result;
 	}
@@ -438,7 +442,7 @@ public class TaxonXNomenclatureImport extends CdmIoBase<IImportConfigurator> imp
 		commitTransaction(txStatus);
 	}
 	
-	private String getBracketSourceName(TaxonXImportConfigurator config){
+	private static String getBracketSourceName(TaxonXImportConfigurator config){
 		return "(" + config.getSourceNameString() + ")";
 	}
 
