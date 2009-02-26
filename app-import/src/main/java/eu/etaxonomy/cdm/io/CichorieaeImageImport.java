@@ -98,7 +98,6 @@ public class CichorieaeImageImport extends AbstractImageImporter {
 					media.addRepresentation(representation);
 					
 					feature.addMedia(media);
-					//feature.putText(row.get(CichorieaeImageImport.URL_APP).trim(), Language.ENGLISH());
 					
 					feature.setType(Feature.IMAGE());
 					
