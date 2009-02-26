@@ -50,7 +50,7 @@ public class CichorieaeImageImport extends AbstractImageImporter {
 	private static final String NAME = "NAME";
 	//private static final String CODE = "CODE";
 	
-	protected boolean invokeImageImport3 (ImageImportConfigurator config){
+	protected boolean invokeImageImport_ (ImageImportConfigurator config){
 		
 		ArrayList<HashMap<String, String>> contents;
 		try {
@@ -65,8 +65,6 @@ public class CichorieaeImageImport extends AbstractImageImporter {
 			String taxonName = row.get(CichorieaeImageImport.NAME).trim();
 			
 			INameService nameService = getNameService();
-//			List<TaxonNameBase> tName = nameService.getNamesByName(taxonName);
-//			logger.warn(tName.size());
 			List<TaxonBase> taxa = taxonService.searchTaxaByName(taxonName, config.getSourceReference());			
 			
 			if(taxa.size() == 0){
@@ -129,9 +127,10 @@ public class CichorieaeImageImport extends AbstractImageImporter {
 						logger.warn("No file extension found for: " +  name);
 						continue;
 					}
-					String extension = fileNameParts[fileNameParts.length -1];
+					String extension = fileNameParts[fileNameParts.length - 1];
 					if (! "jpg".equalsIgnoreCase(extension)) { 
 						logger.warn("Extension not recognized: " + extension);
+						// Sometimes occurs here "Thumbs.db"
 						continue;
 					}
 					String firstPart = name.substring(0, name.length() - extension.length() - 1);
@@ -142,16 +141,23 @@ public class CichorieaeImageImport extends AbstractImageImporter {
 						continue;
 					}
 					String featureString = nameParts[nameParts.length-2];
-					logger.info("FeatureString: " +  featureString);
+					logger.debug("FeatureString: " +  featureString);
 					String detailString = nameParts[nameParts.length-1];
-					logger.info("detailString: " +  detailString);
+					logger.debug("detailString: " +  detailString);
 				
 					String taxonName = "";
 					for (int i= 0; i < nameParts.length-2; i++){
 						taxonName += nameParts[i] + " ";
 					}
 					taxonName = taxonName.trim();
-					logger.warn("taxonName: " +  taxonName);
+					logger.info("Taxon name: " +  taxonName);
+					
+					String _s_ = " s ";
+					String subsp = " subsp. ";
+					if (taxonName.contains(_s_)) {
+						taxonName = taxonName.replace(_s_, subsp);
+						logger.info("Taxon name: " +  taxonName);
+					}
 					
 					List<TaxonBase> taxa = taxonService.searchTaxaByName(taxonName, config.getSourceReference());			
 					
@@ -167,12 +173,9 @@ public class CichorieaeImageImport extends AbstractImageImporter {
 						ImageMetaData imageMetaData = new ImageMetaData();
 						try {
 							String urlPrefix = "http://media.bgbm.org/erez/erez?src=EditWP6/photos/";
-//							String under = "%5F";
-//							String urlTaxonName = taxonName.replace(" ", under);
 							String urlString = urlPrefix + name;
-							logger.warn(urlString);
+							logger.info(urlString);
 							URL url = new URL(urlString);
-							//URL url = new URL(row.get(CichorieaeImageImport.URL).trim());
 							
 							imageMetaData.readFrom(url);
 							ImageFile image = ImageFile.NewInstance(url.toString(), null, imageMetaData);
