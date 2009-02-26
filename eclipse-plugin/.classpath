@@ -2,6 +2,8 @@
 <classpath>
 	<classpathentry kind="src" output="target/test-classes" path="src/test/java"/>
 	<classpathentry kind="src" path="src/main/java"/>
+	<classpathentry exported="true" kind="lib" path="jsr250-api-1.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="jsr250-api-1.0-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="spring-security-core-2.0.4-tests.jar"/>
 	<classpathentry exported="true" kind="lib" path="aspectjweaver-1.5.4.jar"/>
 	<classpathentry exported="true" kind="lib" path="hibernate-3.2.6.ga.jar"/>
