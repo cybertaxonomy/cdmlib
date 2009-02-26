@@ -188,6 +188,17 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
 		return typeDesigStatusVocabulary;
 	}
 	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.service.INameService#getTypeDesignationStatusVocabulary()
+	 */
+	public OrderedTermVocabulary<TypeDesignationStatus> getTypeDesignationVocabulary() {
+		String uuidString = "ab177bd7-d3c8-4e58-a388-226fff6ba3c2";
+		UUID uuid = UUID.fromString(uuidString);
+		OrderedTermVocabulary<TypeDesignationStatus> typeDesignationVocabulary = 
+			(OrderedTermVocabulary)orderedVocabularyDao.findByUuid(uuid);
+		return typeDesignationVocabulary;
+	}
+
 	public void generateTitleCache() {
 		logger.warn("Not yet implemented");
 		// TODO Auto-generated method stub

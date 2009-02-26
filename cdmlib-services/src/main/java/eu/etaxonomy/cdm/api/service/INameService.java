@@ -98,11 +98,17 @@ public interface INameService extends IIdentifiableEntityService<TaxonNameBase> 
 	public TermVocabulary<NomenclaturalStatusType> getStatusTypeVocabulary();
 	
 	/**
-	 * Returns all TypeDesignationStatus
+	 * Returns all TypeDesignationStatus vocabulary
 	 * @return
 	 */
 	public TermVocabulary<TypeDesignationStatus> getTypeDesignationStatusVocabulary();
 		
+	/**
+	 * Returns TypeDesignationStatus ordered vocabulary
+	 * @return
+	 */
+	public OrderedTermVocabulary<TypeDesignationStatus> getTypeDesignationVocabulary();
+
 	/**
 	 * Returns all NameRelationshipTypes
 	 * @return
