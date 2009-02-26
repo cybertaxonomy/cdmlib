@@ -138,6 +138,21 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		return results;
 	}
 
+
+//	public List<TaxonBase> getTaxaByName(String name, ReferenceBase sec) {
+//		
+//		Criteria crit = getSession().createCriteria(Taxon.class);
+//		if (sec != null){
+//			if(sec.getId() == 0){
+//				getSession().save(sec);
+//			}
+//			crit.add(Restrictions.eq("sec", sec ) );
+//		}
+//		crit.createCriteria("name").add(Restrictions.like("nameCache", name));
+//		List<TaxonBase> results = crit.list();
+//		return results;
+//	}
+    		
 	public List<TaxonBase> getTaxaByName(String queryString, ReferenceBase sec) {
 		
 		return getTaxaByName(queryString, true, sec);
@@ -155,12 +170,13 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		criteria.setFetchMode( "name", FetchMode.JOIN );
 		criteria.createAlias("name", "name");
 
-		if (sec != null){
-			if(sec.getId() == 0){
-				getSession().save(sec);
-			}
-			criteria.add(Restrictions.eq("sec", sec ) );
-		}
+		// FIXME: sec restriction caused problems in cich image import: results was empty
+//		if (sec != null){
+//			if(sec.getId() == 0){
+//				getSession().save(sec);
+//			}
+//			criteria.add(Restrictions.eq("sec", sec ) );
+//		}
 		if (queryString != null) {
 			criteria.add(Restrictions.ilike("name.nameCache", queryString));
 		}
