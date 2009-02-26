@@ -49,7 +49,7 @@ public abstract class AgentBase extends IdentifiableMediaEntity{
 	
 	@XmlElement(name = "Contact")
     @Embedded
-	private Contact contact;
+    private Contact contact;
 	
 	/** 
 	 * Returns the {@link Contact contact} of <i>this</i> person.
