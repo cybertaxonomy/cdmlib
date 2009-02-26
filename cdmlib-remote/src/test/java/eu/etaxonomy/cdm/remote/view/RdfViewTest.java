@@ -18,7 +18,9 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.custommonkey.xmlunit.XMLAssert;
 import org.custommonkey.xmlunit.XMLUnit;
+import org.hibernate.envers.event.AuditEventListener;
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.oxm.Marshaller;
@@ -59,7 +61,7 @@ public class RdfViewTest extends UnitilsJUnit4 {
 		taxonConcept.setHasName(taxonName);
 		taxonConcept.setIdentifier(new URI("urn:lsid:example.org:taxonconcepts:1"));
 		taxonConcept.setTitle("Lorem ipsum");
-		taxonConcept.setCreated(new DateTime(2004, 12, 25, 12, 0, 0, 0));
+		taxonConcept.setCreated(new DateTime(2004, 12, 25, 12, 0, 0, 0, DateTimeZone.UTC));
 		
 		Set<Relation> relations = new HashSet<Relation>();
 		Relation relation = new Relation();
@@ -71,7 +73,6 @@ public class RdfViewTest extends UnitilsJUnit4 {
 		
 		Team team = new Team();
 		team.setTitle("team name");
-		
 		taxonConcept.setAccordingTo(team);
 		
 		TaxonRelationshipTerm taxonRelationshipTerm = new TaxonRelationshipTerm();
