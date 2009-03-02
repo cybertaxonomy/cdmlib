@@ -24,6 +24,7 @@ import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
 import org.springframework.util.ReflectionUtils;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.*;
 
@@ -172,9 +173,9 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 		if (description.getTaxon() != null){
 			description.getTaxon().removeDescription(description);
 		}
-		Method method = ReflectionUtils.findMethod(TaxonDescription.class, "setTaxon", new Class[] {Taxon.class});
-		ReflectionUtils.makeAccessible(method);
-		ReflectionUtils.invokeMethod(method, description, new Object[] {this});
+		Field field = ReflectionUtils.findField(TaxonDescription.class, "taxon", Taxon.class);
+		ReflectionUtils.makeAccessible(field);
+		ReflectionUtils.setField(field, description, this);
 		descriptions.add(description);
 		
 	}
@@ -191,9 +192,9 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	 */
 	public void removeDescription(TaxonDescription description) {
 		//description.setTaxon(null) for not visible method
-		Method method = ReflectionUtils.findMethod(TaxonDescription.class, "setTaxon", new Class[] {Taxon.class});
-		ReflectionUtils.makeAccessible(method);
-		ReflectionUtils.invokeMethod(method, description, new Object[] {null});
+		Field field = ReflectionUtils.findField(TaxonDescription.class, "taxon", Taxon.class);
+		ReflectionUtils.makeAccessible(field);
+		ReflectionUtils.setField(field, description, null);
 		descriptions.remove(description);
 	}
 

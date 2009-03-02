@@ -21,6 +21,7 @@ import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
+import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
@@ -161,6 +162,17 @@ public class TaxonTest extends EntityTestBase {
 		assertTrue(freeT.getSynonyms().contains(syn1));
 		assertTrue(syn1.getAcceptedTaxa().contains(freeT));
 		assertFalse(freeT.getSynonyms().contains(syn2));
+	}
+	
+	@Test
+	public void testAddAndRemoveDescriptionTaxonDescription() {
+		TaxonDescription desc = TaxonDescription.NewInstance();
+		rootT.addDescription(desc);  //test if reflection method in addDescription() works
+		assertTrue("The description has not properly been added to the taxon", rootT.getDescriptions().contains(desc));
+		assertEquals("The taxon has not properly been added to the description", rootT, desc.getTaxon());
+		rootT.removeDescription(desc); //test if reflection method in removeDescription() works
+		assertFalse("The description has not properly been removed from the taxon", rootT.getDescriptions().contains(desc));
+		assertEquals("The taxon has not properly been removed from the description", null, desc.getTaxon());
 	}
 	
 	/**
