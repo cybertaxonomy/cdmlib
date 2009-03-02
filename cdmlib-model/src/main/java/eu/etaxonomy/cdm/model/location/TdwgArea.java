@@ -28,6 +28,7 @@ import org.jdom.Namespace;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.XmlHelp;
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
+import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
@@ -94,7 +95,7 @@ public class TdwgArea extends NamedArea {
 			logger.warn("Unknown TDWG area: " + CdmUtils.Nz(tdwgLabel));
 			return null;
 		}
-		return null;//(NamedArea)DefinedTermBase.findByUuid(uuid);
+		return TdwgArea.getTermByUuid(uuid);
 	}
 	
 	public static boolean isTdwgAreaLabel(String label){

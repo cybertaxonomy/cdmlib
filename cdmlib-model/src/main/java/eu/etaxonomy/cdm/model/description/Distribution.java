@@ -72,7 +72,7 @@ public class Distribution extends DescriptionElementBase {
 	 * The corresponding {@link Feature feature} is set to {@link Feature#DISTRIBUTION() DISTRIBUTION}.
 	 */
 	protected Distribution(){
-		super(Feature.DISTRIBUTION());
+		super();
 	}
 	
 	
@@ -84,6 +84,7 @@ public class Distribution extends DescriptionElementBase {
 	 */
 	public static Distribution NewInstance(){
 		Distribution result = new Distribution();
+		result.setType(Feature.DISTRIBUTION());
 		return result;
 	}
 
@@ -96,7 +97,7 @@ public class Distribution extends DescriptionElementBase {
 	 * @see				#NewInstance()
 	 */
 	public static Distribution NewInstance(NamedArea area, PresenceAbsenceTermBase<?> status){
-		Distribution result = new Distribution();
+		Distribution result = NewInstance();
 		result.setArea(area);
 		result.setStatus(status);
 		return result;
