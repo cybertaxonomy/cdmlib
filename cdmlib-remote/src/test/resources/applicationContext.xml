@@ -18,6 +18,9 @@
       <context:exclude-filter type="regex" expression="eu\.etaxonomy\.cdm\.api\.service\.UserService"/>
     </context:component-scan>
 
+    <!-- enable the configuration of transactional behavior based on annotations -->
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+
    <import resource="classpath:/eu/etaxonomy/cdm/h2-datasource.xml" />
       
     <!-- This configures default properties, which can overridden with the file specified by the location property -->

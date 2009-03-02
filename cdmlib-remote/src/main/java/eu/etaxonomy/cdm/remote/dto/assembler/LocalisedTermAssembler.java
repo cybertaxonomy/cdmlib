@@ -56,18 +56,20 @@ public class LocalisedTermAssembler extends AssemblerBase <LocalisedTermSTO, Bas
 		LocalisedTermSTO sto = new LocalisedTermSTO();
 		List<Language> languages = languageDao.getLanguagesByLocale(locales);
 		Representation r = term.getPreferredRepresentation(languages);
-		switch(termtype){
-		case LABEL: 
-			sto.setTerm(r.getLabel()); 
-			break;
-		case TEXT: 
-			sto.setTerm(r.getText()); 
-			break;
-		case ABBREVLABEL: 
-			sto.setTerm(r.getAbbreviatedLabel()); 
-			break;
+		if(r != null){
+			switch(termtype){
+			case LABEL: 
+				sto.setTerm(r.getLabel()); 
+				break;
+			case TEXT: 
+				sto.setTerm(r.getText()); 
+				break;
+			case ABBREVLABEL: 
+				sto.setTerm(r.getAbbreviatedLabel()); 
+				break;
+			}
+			sto.setLanguage(r.getLanguage().toString());
 		}
-		sto.setLanguage(r.getLanguage().toString());
 		return sto;
 	}
 	

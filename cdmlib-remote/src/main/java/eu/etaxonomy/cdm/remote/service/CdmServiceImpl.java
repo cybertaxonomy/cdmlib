@@ -17,11 +17,16 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
+import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.datasource.AbstractDataSource;
+import org.springframework.jdbc.datasource.AbstractDriverBasedDataSource;
+import org.springframework.orm.hibernate3.SessionFactoryUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.unitils.hibernate.HibernateUnitils;
 
 import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
@@ -39,6 +44,7 @@ import eu.etaxonomy.cdm.persistence.dao.description.IFeatureTreeDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
+import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.remote.dto.FeatureTO;
 import eu.etaxonomy.cdm.remote.dto.FeatureTreeTO;
 import eu.etaxonomy.cdm.remote.dto.NameSTO;
@@ -84,6 +90,7 @@ public class CdmServiceImpl implements ICdmService {
 	private IFeatureDao featureDAO;
 	
 	
+	
 //FIXME commented out below, since refactoring is urgently needed see ticket#593 http://dev.e-taxonomy.eu/trac/ticket/593
 //	@Autowired
 //	private AnnotatableDaoImpl<AnnotatableEntity> annotatableDao;
@@ -94,11 +101,22 @@ public class CdmServiceImpl implements ICdmService {
 	
 	
 	private final int MAXRESULTS = 500;
+	
+	private static List<OrderHint> defaultReferenceOrder = new ArrayList();
 
 	
 	
 //	private CdmEntityDaoBase entityDAO = new CdmEntityDaoBase<CdmBase>();
 		
+	
+	public CdmServiceImpl() {
+		
+		super();
+		defaultReferenceOrder.add(new OrderHint("authorTeam.persistentTitleCache", OrderHint.SortOrder.ASCENDING));
+		defaultReferenceOrder.add(new OrderHint("year", OrderHint.SortOrder.ASCENDING));
+		defaultReferenceOrder.add(new OrderHint("persistentTitleCache", OrderHint.SortOrder.ASCENDING));
+	}
+
 	
 	/**
 	 * find matching taxonbase instance or throw CdmObjectNonExisting exception.
@@ -264,7 +282,8 @@ public class CdmServiceImpl implements ICdmService {
 	}
 	
 	public Pager<ReferenceBase> listReferences(Integer pageSize, Integer pageNumber) throws CdmObjectNonExisting {
-		return referenceService.getAllReferences(pageSize, pageNumber);	
+		
+		return referenceService.getAllReferences(pageSize, pageNumber, defaultReferenceOrder);	
 	}
 	
 	

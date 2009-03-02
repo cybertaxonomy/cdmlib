@@ -16,6 +16,9 @@ import java.util.Locale;
 import java.util.Set;
 import java.util.UUID;
 
+import org.springframework.jdbc.datasource.AbstractDataSource;
+import org.springframework.jdbc.datasource.AbstractDriverBasedDataSource;
+
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
@@ -48,7 +51,7 @@ import eu.etaxonomy.cdm.remote.dto.TreeNode;
  * @created 30.1.2008
  */
 public interface ICdmService {
-
+	
 	/**
 	 * @param uuid
 	 * @return 

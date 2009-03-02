@@ -27,11 +27,16 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.datasource.AbstractDataSource;
+import org.springframework.jdbc.datasource.AbstractDriverBasedDataSource;
+import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
+import org.unitils.hibernate.HibernateUnitils;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
+import eu.etaxonomy.cdm.database.NamedContextHolder;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.persistence.dao.common.ITitledDao.MATCH_MODE;
@@ -70,6 +75,7 @@ public class RestController extends AbstractController
 	{
 		try{
 			ModelAndView mv = new ModelAndView();
+			String basepath = getNonNullPara("basepath",req);
 			String action = getNonNullPara("action",req);
 			String op = getNonNullPara("operation",req);
 			String dto = getNonNullPara("dto",req);
@@ -80,9 +86,18 @@ public class RestController extends AbstractController
 			
 			Enumeration<Locale> locales = req.getLocales();
 			
+			log.info(String.format("Request received for %s: act=%s op=%s dto=%s uuid=%s sec=%s", basepath, action, op, dto, uuid, sec));
 			
-			
-			log.info(String.format("Request received: act=%s op=%s dto=%s uuid=%s sec=%s", action, op, dto, uuid, sec));
+			NamedContextHolder.setContextKey(basepath);
+
+			/* ----------------------------------------
+			 * FIXME test implementation !!!!!! works OK :) however compeletly
+			 * misplaced in here, when moving also reconsider service.getDataSource()
+			 * which was implemented for testing only
+			 */
+//			AbstractDataSource ads = service.getDataSource();
+//			DataSourceLoader.updateRoutingDataSource(ads);
+			// ---------------------------------------- 
 			
 			if(action==""){
 				// get Object by UUID
@@ -242,9 +257,15 @@ public class RestController extends AbstractController
 			}
 			// set xml or json view
 			mv.setViewName(getLogicalView(req));
+			
+			// avoid memory leaks
+			NamedContextHolder.clearContextKey();
+			
 			return mv;
 		}catch(CdmObjectNonExisting e){
 			sendNonExistingUuidError(resp, e);
+			// avoid memory leaks
+			NamedContextHolder.clearContextKey();
 			return null;
 		}
 	}
