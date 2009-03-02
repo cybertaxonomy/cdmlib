@@ -9,6 +9,7 @@
 
 package eu.etaxonomy.cdm.model.name;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.Set;
@@ -46,6 +47,7 @@ import eu.etaxonomy.cdm.model.common.IReferencedEntity;
 import eu.etaxonomy.cdm.model.common.IRelated;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
+import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
@@ -1079,9 +1081,9 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 	 * @see 			  	#removeDescription(TaxonNameDescription)
 	 */
 	public void addDescription(TaxonNameDescription description) {
-		Method method = ReflectionUtils.findMethod(TaxonNameDescription.class, "setTaxonName", new Class[] {TaxonNameBase.class});
-		ReflectionUtils.makeAccessible(method);
-		ReflectionUtils.invokeMethod(method, description, new Object[] {this});
+		Field field = ReflectionUtils.findField(TaxonNameDescription.class, "taxonName", TaxonNameBase.class);
+		ReflectionUtils.makeAccessible(field);
+		ReflectionUtils.setField(field, description, this);
 		descriptions.add(description);
 	}
 	/** 
@@ -1095,9 +1097,9 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 	 * @see 			  	eu.etaxonomy.cdm.model.description.TaxonNameDescription#getTaxonName()
 	 */
 	public void removeDescription(TaxonNameDescription description) {
-		Method method = ReflectionUtils.findMethod(TaxonNameDescription.class, "setTaxonName", new Class[] {TaxonNameBase.class});
-		ReflectionUtils.makeAccessible(method);
-		ReflectionUtils.invokeMethod(method, description, new Object[] {null});
+		Field field = ReflectionUtils.findField(TaxonNameDescription.class, "taxonName", TaxonNameBase.class);
+		ReflectionUtils.makeAccessible(field);
+		ReflectionUtils.setField(field, description, null);
 		descriptions.remove(description);
 	}
 	

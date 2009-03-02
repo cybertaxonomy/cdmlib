@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.model.common;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import javax.persistence.Column;
@@ -286,6 +287,16 @@ public class Language extends DefinedTermBase<Language> {
 		Language.PORTUGUESE = termVocabulary.findTermByUuid(Language.uuidPortuguese);
 		Language.RUSSIAN = termVocabulary.findTermByUuid(Language.uuidRussian);
 		Language.SPANISH = termVocabulary.findTermByUuid(Language.uuidSpanish);
+		addLanguageForVocabularyRepresentation(termVocabulary);
+	}
+	
+	private void addLanguageForVocabularyRepresentation(TermVocabulary<Language> termVocabulary){
+		for (Representation repr : termVocabulary.getRepresentations()){
+			Language lang = repr.getLanguage();
+			if (lang == null){
+				repr.setLanguage(Language.DEFAULT());
+			}
+		}
 	}
 	
 	

@@ -23,6 +23,9 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
+import eu.etaxonomy.cdm.model.description.TaxonDescription;
+import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy;
 
 /**
@@ -537,35 +540,29 @@ public class TaxonNameBaseTest {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.name.TaxonNameBase#getTaxonBases()}.
-	 */
-	@Test
-	public void testGetTaxonBases() {
-		logger.warn("not yet implemented");
-	}
-
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.name.TaxonNameBase#setTaxonBases(java.util.Set)}.
-	 */
-	@Test
-	public void testSetTaxonBases() {
-		logger.warn("not yet implemented");
-	}
-
-	/**
 	 * Test method for {@link eu.etaxonomy.cdm.model.name.TaxonNameBase#addTaxonBase(eu.etaxonomy.cdm.model.taxon.TaxonBase)}.
 	 */
 	@Test
 	public void testAddTaxonBase() {
-		logger.warn("not yet implemented");
+		Taxon taxon = Taxon.NewInstance(null, null);  
+		nameBase2.addTaxonBase(taxon);  //test if reflection method addTaxonBase() works
+		assertTrue("The taxon has not properly been added to the taxonName", nameBase2.getTaxonBases().contains(taxon));
+		assertEquals("The taxon name has not properly been added to the taxon", nameBase2, taxon.getName());
+		nameBase2.removeTaxonBase(taxon); //test if reflection method in removeTaxonBase() works
+		assertFalse("The taxon has not properly been removed from the taxon name", nameBase2.getTaxonBases().contains(taxon));
+		assertEquals("The taxon name has not properly been removed from the taxon", null, taxon.getName());
 	}
-
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.name.TaxonNameBase#removeTaxonBase(eu.etaxonomy.cdm.model.taxon.TaxonBase)}.
-	 */
+	
+	
 	@Test
-	public void testRemoveTaxonBase() {
-		logger.warn("not yet implemented");
+	public void testAddAndRemoveDescriptionTaxonNameDescription() {
+		TaxonNameDescription description = TaxonNameDescription.NewInstance();
+		nameBase2.addDescription(description);  //test if reflection method in addDescription() works
+		assertTrue("The description has not properly been added to the taxonName", nameBase2.getDescriptions().contains(description));
+		assertEquals("The taxon name has not properly been added to the description", nameBase2, description.getTaxonName());
+		nameBase2.removeDescription(description); //test if reflection method in removeDescription() works
+		assertFalse("The description has not properly been removed from the taxon name", nameBase2.getDescriptions().contains(description));
+		assertEquals("The taxon name has not properly been removed from the description", null, description.getTaxonName());
 	}
 
 	/**
