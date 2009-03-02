@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.model.agent;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -93,7 +94,7 @@ public class Contact {
     @XmlElement(name = "Address")
     @OneToMany(fetch = FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE_ORPHAN})
-	protected Set<Address> addresses;
+	protected Set<Address> addresses = new HashSet<Address>();
 	
 	
 	/** 
