@@ -31,6 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
+import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 
 /**
@@ -168,10 +169,38 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 	}
 
 	public List<T> list(Integer limit, Integer start) {
+		return list(limit, start, null); 
+	}
+	
+	public List<T> list(Integer limit, Integer start, List<OrderHint> orderHints) {
+		
 		Criteria crit = getSession().createCriteria(type); 
 		if(limit != null) {
 		    crit.setFirstResult(start);
 		    crit.setMaxResults(limit);
+		}
+		if(orderHints != null){
+			for(OrderHint orderHint : orderHints){
+				Order order;
+				String assocObj = null, propname;
+				int pos;
+				if((pos = orderHint.getPropertyName().indexOf('.', 0)) >= 0){
+					assocObj = orderHint.getPropertyName().substring(0, pos);
+					propname = orderHint.getPropertyName().substring(pos + 1);
+				} else {
+					propname = orderHint.getPropertyName();
+				}
+				if(orderHint.isAscending()){
+					order = Order.asc(propname);					
+				} else {
+					order = Order.desc(propname);
+				}
+				if(assocObj != null){
+					crit.createCriteria(assocObj).addOrder(order);
+				} else {
+					crit.addOrder(order);				
+				}
+			}
 		}
 		return crit.list(); 
 	}
@@ -184,8 +213,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 		}
 		return crit.list(); 
 	}
-
-
+	
 	public List<T> rows(String tableName, int limit, int start) {
 		Query query = getSession().createQuery("from " + tableName + " order by uuid");
 		query.setFirstResult(start);

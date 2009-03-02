@@ -126,7 +126,8 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		}
 
 		List<Taxon> results = new ArrayList<Taxon>();
-		for(Taxon taxon : (List<Taxon>) crit.list()){
+		List<Taxon> taxa = crit.list();
+		for(Taxon taxon : taxa){
 			//childTaxa
 			//TODO create restriction instead
 			if (onlyWithChildren == false || taxon.hasTaxonomicChildren()){
