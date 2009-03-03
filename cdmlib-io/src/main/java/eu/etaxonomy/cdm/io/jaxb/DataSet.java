@@ -264,7 +264,10 @@ public class DataSet {
     protected List<TaxonBase> taxonBases = new ArrayList<TaxonBase>();
 
     @XmlElementWrapper(name = "Media")
-    @XmlElement(name = "Media", namespace = "http://etaxonomy.eu/cdm/model/media/1.0")
+    @XmlElements({
+      @XmlElement(name = "Media", namespace = "http://etaxonomy.eu/cdm/model/media/1.0"),
+      @XmlElement(name = "IdentificationKey", namespace = "http://etaxonomy.eu/cdm/model/description/1.0")
+    })
     protected List<Media> media = new ArrayList<Media>();
     
     @XmlElementWrapper(name = "HomotypicalGroups")

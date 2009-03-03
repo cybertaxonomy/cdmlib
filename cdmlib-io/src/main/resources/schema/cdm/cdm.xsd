@@ -226,7 +226,10 @@
         <xs:element name="Media" minOccurs="0">
           <xs:complexType>
             <xs:sequence>
-              <xs:element ref="media:Media" minOccurs="0" maxOccurs="unbounded"/>
+              <xs:choice minOccurs="0" maxOccurs="unbounded">
+                <xs:element ref="media:Media" minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element ref="description:IdentificationKey" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:choice>
             </xs:sequence>
             <xs:attribute ref="xml:base"/>
           </xs:complexType>

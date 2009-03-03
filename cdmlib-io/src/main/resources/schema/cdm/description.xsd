@@ -48,6 +48,8 @@
   <xs:element name="FeatureTree" type="description:FeatureTree"/>
 
   <xs:element name="IndividualsAssociation" type="description:IndividualsAssociation"/>
+  
+  <xs:element name="IdentificationKey" type="description:IdentificationKey"/>
 
   <xs:element name="MeasurementUnit" type="description:MeasurementUnit"/>
 
@@ -84,6 +86,36 @@
   <xs:element name="TextData" type="description:TextData"/>
 
   <xs:element name="TextFormat" type="description:TextFormat"/>
+  
+  <xs:complexType name="IdentificationKey">
+    <xs:complexContent>
+      <xs:extension base="media:Media">
+        <xs:sequence>
+          <xs:element name="CoveredTaxa" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="CoveredTaxon" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="GeoScopes" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="GeoScope" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="TaxonomicScope" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="Taxon" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
 
   <xs:complexType name="AbsenceTerm">
     <xs:complexContent>

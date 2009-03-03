@@ -96,9 +96,9 @@
     <xs:complexContent>
       <xs:extension base="reference:StrictReferenceBase">
         <xs:sequence>
-          <xs:element name="Series" type="xs:string" minOccurs="0"/>
           <xs:element name="Volume" type="xs:string" minOccurs="0"/>
           <xs:element name="Pages" type="xs:string" minOccurs="0"/>
+          <xs:element name="Series" type="xs:string" minOccurs="0"/>
           <xs:element name="InJournal" type="xs:IDREF" minOccurs="0"/>
         </xs:sequence>
       </xs:extension>
@@ -176,7 +176,7 @@
     <xs:complexContent>
       <xs:extension base="reference:SectionBase">
         <xs:sequence>
-          <xs:element name="BookSection" type="xs:IDREF" minOccurs="0"/>
+          <xs:element name="InBook" type="xs:IDREF" minOccurs="0"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
@@ -212,12 +212,12 @@
     <xs:complexContent>
       <xs:extension base="reference:StrictReferenceBase">
         <xs:sequence>
-          <xs:element name="series" type="xs:string" minOccurs="0"/>
-          <xs:element name="Volume" type="xs:string" minOccurs="0"/>
-          <xs:element name="Pages" type="xs:string" minOccurs="0"/>
-          <xs:element name="Editor" type="xs:string" minOccurs="0"/>
           <xs:element name="Publisher" type="xs:string" minOccurs="0"/>
           <xs:element name="PlacePublished" type="xs:string" minOccurs="0"/>
+          <xs:element name="Editor" type="xs:string" minOccurs="0"/>
+          <xs:element name="Volume" type="xs:string" minOccurs="0"/>
+          <xs:element name="Pages" type="xs:string" minOccurs="0"/>
+          <xs:element name="Series" type="xs:string" minOccurs="0"/>          
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
