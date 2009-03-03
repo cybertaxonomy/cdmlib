@@ -68,6 +68,8 @@ public class IdentificationKey extends Media {
 	
 	@XmlElementWrapper( name = "GeoScopes")
 	@XmlElement( name = "GeoScope")
+	@XmlIDREF
+	@XmlSchemaType(name = "IDREF")
 	@ManyToMany(fetch = FetchType.LAZY)
 	private Set<NamedArea> geoScopes = new HashSet<NamedArea>();
 	

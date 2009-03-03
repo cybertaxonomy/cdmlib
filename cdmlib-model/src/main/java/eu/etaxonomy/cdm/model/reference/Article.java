@@ -52,9 +52,9 @@ import eu.etaxonomy.cdm.strategy.cache.reference.ArticleDefaultCacheStrategy;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Article", propOrder = {
-		"series",
 		"volume",
 		"pages",
+		"series",
 		"inJournal"
 })
 @XmlRootElement(name = "Article")

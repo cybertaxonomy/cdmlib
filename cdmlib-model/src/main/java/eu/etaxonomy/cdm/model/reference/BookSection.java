@@ -58,7 +58,7 @@ public class BookSection extends SectionBase implements INomenclaturalReference,
 
 	private static final Logger logger = Logger.getLogger(BookSection.class);
 	
-    @XmlElement(name = "BookSection")
+    @XmlElement(name = "InBook")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)

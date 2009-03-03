@@ -46,12 +46,12 @@ import eu.etaxonomy.cdm.strategy.cache.reference.GenericDefaultCacheStrategy;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Generic", propOrder = {
-		"series",
+		"publisher",
+		"placePublished",
+		"editor",
 		"volume",
 		"pages",
-		"editor",
-		"publisher",
-		"placePublished"
+		"series"
 })
 @XmlRootElement(name = "Generic")
 @Entity
@@ -73,7 +73,7 @@ public class Generic extends StrictReferenceBase implements INomenclaturalRefere
     @XmlElement(name = "Editor")
 	private String editor;
 	
-    @XmlElement(name = "series")
+    @XmlElement(name = "Series")
 	private String series;
 	
     @XmlElement(name = "Volume")
