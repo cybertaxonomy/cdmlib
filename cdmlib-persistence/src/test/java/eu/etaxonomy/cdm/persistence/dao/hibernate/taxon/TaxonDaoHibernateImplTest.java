@@ -7,8 +7,6 @@ import static junit.framework.Assert.assertTrue;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.util.List;
 import java.util.UUID;
 
@@ -19,7 +17,6 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.dbunit.annotation.ExpectedDataSet;
-import org.unitils.spring.annotation.SpringApplicationContext;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
@@ -286,12 +283,6 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 		taxonDao.delete(taxon);
 		setComplete();
 		endTransaction();
-		try {
-			printDataSet(new FileOutputStream("test.xml"));
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 	}
 	
 	@Test
@@ -400,7 +391,6 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 	@ExpectedDataSet
 	@Ignore
 	public void testAddChild() throws Exception {
-		printDataSet(new FileOutputStream("test.xml"));
 		Taxon parent = (Taxon)taxonDao.findByUuid(acherontiaLachesis);
 		assert parent != null : "taxon cannot be null";
 		Taxon child = Taxon.NewInstance(null, null);
