@@ -163,16 +163,21 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 				
 				int taxonId = rs.getInt("taxonId");
 				int factId = rs.getInt("factId");
-				int factRefFk = rs.getInt("factRefFk");
+				Integer factRefFk = rs.getInt("factRefFk");
 				String details = rs.getString("Details");
 //				int ptDesignationRefFk = rs.getInt("PTDesignationRefFk");
 //				String ptDesignation details = rs.getInt("PTDesignationRefDetailFk");
-				int categoryFk = rs.getInt("factCategoryFk");
+				Integer categoryFk = rs.getInt("factCategoryFk");
 				String fact = CdmUtils.Nz(rs.getString("Fact"));
 				String notes = CdmUtils.Nz(rs.getString("notes"));
 				
 				TaxonBase taxonBase = taxonMap.get(taxonId);
-				Feature feature = featureMap.get(categoryFk); 
+				Feature feature;
+				if (categoryFk != null){
+					feature = featureMap.get(categoryFk); 
+				}else{
+					feature = null;
+				}
 				
 				if (taxonBase != null){
 					Taxon taxon;
@@ -207,7 +212,10 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 					textData.setType(feature);
 					
 					//
-					ReferenceBase citation = referenceMap.get(factRefFk);
+					ReferenceBase citation = null;
+					if (factRefFk != null){
+						citation = referenceMap.get(factRefFk);	
+					}
 					if (citation == null){
 						citation = nomRefMap.get(factRefFk);
 					}
