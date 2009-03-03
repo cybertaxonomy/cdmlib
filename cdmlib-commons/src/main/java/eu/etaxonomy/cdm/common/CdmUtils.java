@@ -128,6 +128,10 @@ public class CdmUtils {
 		return (value == null ? 0 : value);
 	}
 	
+	static public Long Nz(Long value){
+		return (value == null ? 0 : value);
+	}
+	
 	/**
 	 * Concatenates the an Array of Strings, using the defined seperator.
 	 * Null values are interpreted as empty Strings
