@@ -32,6 +32,7 @@ import org.hibernate.annotations.Type;
 import org.hibernate.search.annotations.DocumentId;
 import org.joda.time.DateTime;
 
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.jaxb.DateTimeAdapter;
 import eu.etaxonomy.cdm.jaxb.UUIDAdapter;
 import eu.etaxonomy.cdm.model.agent.Person;
@@ -63,8 +64,6 @@ public abstract class CdmBase implements Serializable, ICdmBase{
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CdmBase.class);
 
-	private static IProxyHelper proxyHelper = new ProxyHelperHibernateImpl();
-	
 	@Transient
 	@XmlTransient
 	private PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
@@ -229,12 +228,13 @@ public abstract class CdmBase implements Serializable, ICdmBase{
 	 * @return
 	 * @throws ClassCastException
 	 */
-	 public <T extends CdmBase> T deproxy(Class<T> clazz) throws ClassCastException {
-		 return proxyHelper.deproxy(this, clazz);
+	//non-static does not work because javassist already unwrapps the proxy before calling the method
+	 public static <T extends CdmBase> T deproxy(Object object, Class<T> clazz) throws ClassCastException {
+		 return HibernateProxyHelper.deproxy(object, clazz);
 	 }
 	        
 	 public boolean isInstanceOf(Class<? extends CdmBase> clazz) throws ClassCastException {
-	     return proxyHelper.isInstanceOf(this, clazz);
+	     return HibernateProxyHelper.isInstanceOf(this, clazz);
 	 }
 
 // ************* Object overrides *************************/ 
