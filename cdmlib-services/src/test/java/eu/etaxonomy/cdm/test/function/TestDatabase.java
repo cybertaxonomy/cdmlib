@@ -264,6 +264,41 @@ public class TestDatabase {
 	}
 	
 	
+	public void testNewVersion(){
+		try {
+			System.out.println("Start");
+			DbSchemaValidation dbSchemaValidation = DbSchemaValidation.CREATE;
+
+//			ICdmDataSource datasource = CdmDataSource.NewMySqlInstance(server, database, username, password);
+			ICdmDataSource datasource = CdmDataSource.NewH2EmbeddedInstance("CDM", "sa", "");
+			CdmApplicationController appCtr = CdmApplicationController.NewInstance(datasource, dbSchemaValidation);
+			BotanicalName botName = BotanicalName.NewInstance(Rank.SPECIES());
+			botName.setGenusOrUninomial("Genus");
+			botName.setSpecificEpithet("species");
+			appCtr.getNameService().save(botName);
+			botName.testPrepersist();
+			java.util.List<?> names = appCtr.getNameService().findNamesByTitle("Genus species");
+			names.size();
+//			AgentBase person = Person.NewTitledInstance("TestPerson");
+//			Contact contact1 = new Contact();
+//			Set<String> set = new HashSet<String>();
+//			set.add("email1");
+//			set.add("c@d.org");
+////			contact1.setEmail(set);
+//			person.setContact(contact1);
+//			appCtr.getAgentService().save(person);
+			appCtr.close();
+			System.out.println("End");
+		} catch (DataSourceNotFoundException e) {
+			logger.error("datasource error");
+		} catch (TermNotFoundException e) {
+			logger.error("defined terms not found");
+		}
+	}
+
+	
+	
+	
 	public static ICdmDataSource cdm_test_anahit2(){
 		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
 		String cdmServer = "192.168.2.10";
@@ -291,7 +326,7 @@ public class TestDatabase {
 	 */
 	public static void  main(String[] args) {
 		TestDatabase sc = new TestDatabase();
-    	sc.testContact();
+    	sc.testNewVersion();
 	}
 
 }
