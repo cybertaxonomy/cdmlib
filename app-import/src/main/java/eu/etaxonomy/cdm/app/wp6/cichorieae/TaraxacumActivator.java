@@ -56,7 +56,7 @@ public class TaraxacumActivator {
 	static final int sourceSecId = 7700000;
 	
 	static final UUID featureTreeUuid = UUID.fromString("ab007336-d853-4f2f-a490-7c8232eafe7b");
-	static final Object[] featureKeyList = new Integer[]{1, 31, 4, 98}; 	
+	static final Object[] featureKeyList = new Integer[]{1, 31, 4, 98, 41}; 	
 	
 	//TODO update for Taraxacum
 	static final String mediaUrlString = "http://wp5.e-taxonomy.eu/dataportal/cichorieae/media/protolog/";
