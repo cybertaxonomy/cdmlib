@@ -354,15 +354,7 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 					
 					if ((i++ % modCount) == 0 && i!= 1 ){ logger.info("References handled: " + (i-1) + " in round " + j);}
 
-					Map<String, Object> valueMap = new HashMap<String, Object>();
-					int colCount = rs.getMetaData().getColumnCount();
-					for (int c = 0; c < colCount ; c++){
-						Object value = rs.getObject(c+1);
-						String label = rs.getMetaData().getColumnLabel(c+1).toLowerCase();
-						if (value != null && ! CdmUtils.Nz(value.toString()).trim().equals("")){
-							valueMap.put(label, value);
-						}
-					}
+					Map<String, Object> valueMap = getValueMap(rs);
 					
 					Integer categoryFk = (Integer)valueMap.get("refCategoryFk".toLowerCase());
 					Integer refId = (Integer)valueMap.get("refId".toLowerCase());
@@ -444,6 +436,8 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 			return false;
 		}
 	}
+	
+
 	
 	private boolean makeNomAndBiblioReference(ResultSet rs, 
 				int refId, 

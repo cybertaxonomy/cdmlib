@@ -30,6 +30,7 @@ import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
@@ -66,6 +67,18 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 		return result;
 	}
 
+	private TermVocabulary<Feature> getFeatureVocabulary(){
+		try {
+			//TODO work around until service method works
+			TermVocabulary<Feature> featureVocabulary =  BerlinModelTransformer.factCategory2Feature(1).getVocabulary();
+			//TermVocabulary<Feature> vocabulary = getTermService().getVocabulary(vocabularyUuid);
+			return featureVocabulary;
+		} catch (UnknownCdmTypeException e) {
+			logger.error("Feature vocabulary not available. New vocabulary created");
+			return new TermVocabulary<Feature>() ;
+		}
+	}
+	
 	private MapWrapper<Feature> invokeFactCategories(BerlinModelImportConfigurator bmiConfig){
 		
 //		Map<Integer, Feature> featureMap = new HashMap<Integer, Feature>();
@@ -82,6 +95,8 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
                     " WHERE (1=1)";
 			ResultSet rs = source.getResultSet(strQuery) ;
 
+			
+			TermVocabulary<Feature> featureVocabulary = getFeatureVocabulary();
 			int i = 0;
 			//for each reference
 			while (rs.next()){
@@ -91,12 +106,14 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 				int factCategoryId = rs.getInt("factCategoryId");
 				String factCategory = rs.getString("factCategory");
 				
+					
 				Feature feature;
 				try {
 					feature = BerlinModelTransformer.factCategory2Feature(factCategoryId);
 				} catch (UnknownCdmTypeException e) {
 					logger.warn("New Feature (FactCategoryId: " + factCategoryId + ")");
 					feature = Feature.NewInstance(factCategory, factCategory, null);
+					feature.setVocabulary(featureVocabulary);
 					feature.setSupportsTextData(true);
 					//TODO
 //					MaxFactNumber	int	Checked
@@ -127,7 +144,8 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 	@Override
 	protected boolean doInvoke(IImportConfigurator config,
 			Map<String, MapWrapper<? extends CdmBase>> stores){
-			
+		boolean result = true;
+		
 		MapWrapper<TaxonBase> taxonMap = (MapWrapper<TaxonBase>)stores.get(ICdmIO.TAXON_STORE);
 		MapWrapper<ReferenceBase> referenceMap = (MapWrapper<ReferenceBase>)stores.get(ICdmIO.REFERENCE_STORE);
 		MapWrapper<ReferenceBase> nomRefMap = (MapWrapper<ReferenceBase>)stores.get(ICdmIO.NOMREF_STORE);
@@ -158,99 +176,122 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 			int i = 0;
 			//for each reference
 			while (rs.next()){
-				
-				if ((i++ % modCount) == 0){ logger.info("Facts handled: " + (i-1));}
-				
-				int taxonId = rs.getInt("taxonId");
-				int factId = rs.getInt("factId");
-				Integer factRefFk = rs.getInt("factRefFk");
-				String details = rs.getString("Details");
-//				int ptDesignationRefFk = rs.getInt("PTDesignationRefFk");
-//				String ptDesignation details = rs.getInt("PTDesignationRefDetailFk");
-				Integer categoryFk = rs.getInt("factCategoryFk");
-				String fact = CdmUtils.Nz(rs.getString("Fact"));
-				String notes = CdmUtils.Nz(rs.getString("notes"));
-				
-				TaxonBase taxonBase = taxonMap.get(taxonId);
-				Feature feature;
-				if (categoryFk != null){
-					feature = featureMap.get(categoryFk); 
-				}else{
-					feature = null;
-				}
-				
-				if (taxonBase != null){
-					Taxon taxon;
-					if ( taxonBase instanceof Taxon ) {
-						taxon = (Taxon) taxonBase;
+				try{
+					if ((i++ % modCount) == 0){ logger.info("Facts handled: " + (i-1));}
+					
+					//Map<String, Object> valueMap = getValueMap(rs);
+					
+					int factId = rs.getInt("factId");
+					
+					
+					Object taxonIdObj = rs.getObject("taxonId");
+					int taxonId = rs.getInt("taxonId");
+					Object factRefFkObj = rs.getObject("factRefFk");
+					int factRefFk = rs.getInt("factRefFk");
+					Object categoryFkObj = rs.getObject("factCategoryFk");
+					Integer categoryFk = rs.getInt("factCategoryFk");
+					
+					String details = rs.getString("Details");
+	//				int ptDesignationRefFk = rs.getInt("PTDesignationRefFk");
+	//				String ptDesignation details = rs.getInt("PTDesignationRefDetailFk");
+					String fact = CdmUtils.Nz(rs.getString("Fact"));
+					String notes = CdmUtils.Nz(rs.getString("notes"));
+					
+					
+					
+					TaxonBase taxonBase;
+					if (taxonIdObj != null){
+						taxonBase = taxonMap.get(taxonId);
 					}else{
-						logger.warn("TaxonBase " + taxonId + " for Fact " + factId + " was not of type Taxon but: " + taxonBase.getClass().getSimpleName());
-						continue;
+						taxonBase = null;
 					}
-					
-					TaxonDescription taxonDescription;
-					Set<TaxonDescription> descriptionSet= taxon.getDescriptions();
-					if (descriptionSet.size() > 0) {
-						taxonDescription = descriptionSet.iterator().next(); 
+					Feature feature;
+					if (categoryFkObj != null){
+						feature = featureMap.get(categoryFk); 
 					}else{
-						taxonDescription = TaxonDescription.NewInstance();
-						taxon.addDescription(taxonDescription);
+						feature = null;
 					}
 					
-					//textData
-					TextData textData = TextData.NewInstance();
-					//TODO textData.putText(fact, bmiConfig.getFactLanguage());  //doesn't work because  bmiConfig.getFactLanguage() is not not a persistent Language Object
-					//throws  in thread "main" org.springframework.dao.InvalidDataAccessApiUsageException: object references an unsaved transient instance - save the transient instance before flushing: eu.etaxonomy.cdm.model.common.Language; nested exception is org.hibernate.TransientObjectException: object references an unsaved transient instance - save the transient instance before flushing: eu.etaxonomy.cdm.model.common.Language
-					
-					//for diptera database
-					if (categoryFk == 99 && notes.contains("<OriginalName>")){
-						notes = notes.replaceAll("<OriginalName>", "");
-						notes = notes.replaceAll("</OriginalName>", "");
-						fact = notes + ": " +  fact ;
-					}
-					textData.putText(fact, Language.DEFAULT());
-					textData.setType(feature);
-					
-					//
-					ReferenceBase citation = null;
-					if (factRefFk != null){
-						citation = referenceMap.get(factRefFk);	
-					}
-					if (citation == null){
-						citation = nomRefMap.get(factRefFk);
-					}
-					if (citation == null && factRefFk != 0){
-						logger.warn("Citation not found in referenceMap: " + CdmUtils.Nz(factRefFk));
-					}
-
-					
-					textData.setCitation(citation);
-					textData.setCitationMicroReference(details);
-					taxonDescription.addElement(textData);
-					
-					if (categoryFk == FACT_DESCRIPTION){
-						//;
-					}else if (categoryFk == FACT_OBSERVATION){
-						//;
-					}else if (categoryFk == FACT_DISTRIBUTION_EM){
+					if (taxonBase != null){
+						Taxon taxon;
+						if ( taxonBase instanceof Taxon ) {
+							taxon = (Taxon) taxonBase;
+						}else{
+							logger.warn("TaxonBase " + (taxonIdObj==null?"(null)":taxonIdObj) + " for Fact " + factId + " was not of type Taxon but: " + taxonBase.getClass().getSimpleName());
+							continue;
+						}
+						
+						TaxonDescription taxonDescription;
+						Set<TaxonDescription> descriptionSet= taxon.getDescriptions();
+						if (descriptionSet.size() > 0) {
+							taxonDescription = descriptionSet.iterator().next(); 
+						}else{
+							taxonDescription = TaxonDescription.NewInstance();
+							taxon.addDescription(taxonDescription);
+						}
+						
+						//textData
+						TextData textData = TextData.NewInstance();
+						//TODO textData.putText(fact, bmiConfig.getFactLanguage());  //doesn't work because  bmiConfig.getFactLanguage() is not not a persistent Language Object
+						//throws  in thread "main" org.springframework.dao.InvalidDataAccessApiUsageException: object references an unsaved transient instance - save the transient instance before flushing: eu.etaxonomy.cdm.model.common.Language; nested exception is org.hibernate.TransientObjectException: object references an unsaved transient instance - save the transient instance before flushing: eu.etaxonomy.cdm.model.common.Language
+						
+						//for diptera database
+						if (categoryFk == 99 && notes.contains("<OriginalName>")){
+							notes = notes.replaceAll("<OriginalName>", "");
+							notes = notes.replaceAll("</OriginalName>", "");
+							fact = notes + ": " +  fact ;
+						}
+						textData.putText(fact, Language.DEFAULT());
+						textData.setType(feature);
+						
 						//
-					}else {
-						//TODO
-						//logger.warn("FactCategory " + categoryFk + " not yet implemented");
-					}
-					
-					//TODO
-					//References
-					//etc.
-					
-					//TODO created, notes
-					//doIdCreatedUpdatedNotes(bmiConfig, textData, rs, factId);
+						ReferenceBase citation;
+						if (factRefFkObj != null){
+							citation = referenceMap.get(factRefFk);	
+							if (citation == null){
+								citation = nomRefMap.get(factRefFk);
+							}
+							if (citation == null && (factRefFk != 0)){
+								logger.warn("Citation not found in referenceMap: " + factRefFk);
+							}
+						}else{
+							citation = null;
+						}
 
-					
-					taxonStore.add(taxon);
-				}else{
-					//TODO
-					logger.warn("Taxon for Fact " + factId + " does not exist in store");
+						
+						textData.setCitation(citation);
+						textData.setCitationMicroReference(details);
+						taxonDescription.addElement(textData);
+						
+						
+//						if (categoryFkObj == FACT_DESCRIPTION){
+//							//;
+//						}else if (categoryFkObj == FACT_OBSERVATION){
+//							//;
+//						}else if (categoryFkObj == FACT_DISTRIBUTION_EM){
+//							//
+//						}else {
+//							//TODO
+//							//logger.warn("FactCategory " + categoryFk + " not yet implemented");
+//						}
+						
+						//TODO
+						//References
+						//etc.
+						
+						//TODO created, notes
+						//doIdCreatedUpdatedNotes(bmiConfig, textData, rs, factId);
+	
+						
+						taxonStore.add(taxon);
+					}else{
+						//TODO
+						logger.warn("Taxon for Fact " + factId + " does not exist in store");
+					}
+				} catch (RuntimeException re){
+					logger.error("A runtime exception occurred during the facts import");
+					result = false;
+					throw re;
 				}
 				//put
 			}
@@ -259,7 +300,7 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 			getTaxonService().saveTaxonAll(taxonStore);	
 			
 			logger.info("end makeFacts ...");
-			return true;
+			return result;
 		} catch (SQLException e) {
 			logger.error("SQLException:" +  e);
 			return false;

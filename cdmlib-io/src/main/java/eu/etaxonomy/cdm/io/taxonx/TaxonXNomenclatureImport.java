@@ -114,8 +114,14 @@ public class TaxonXNomenclatureImport extends CdmIoBase<IImportConfigurator> imp
 		unlazySynonym(config, taxon);
 		Set<Synonym> synList = taxon.getSynonyms();
 		for (Synonym syn : synList){
-			if (syn.getName() != null && ((NonViralName<?>)syn.getName()).getNameCache().equals(synName)){
-				return syn;  //only first synonym is returned
+			TaxonNameBase<?,?> nameBase = syn.getName();
+			if (nameBase != null){
+				if (nameBase.isInstanceOf(NonViralName.class)){
+					NonViralName<?> nonViralName = nameBase.deproxy(NonViralName.class);
+					if (nonViralName.getNameCache().equals(synName)){
+						return syn;  //only first synonym is returned
+					}
+				}
 			}
 		}
 		logger.warn("Synonym ("+synName+ ")not found for taxon " + taxon.getTitleCache() + getBracketSourceName(config));

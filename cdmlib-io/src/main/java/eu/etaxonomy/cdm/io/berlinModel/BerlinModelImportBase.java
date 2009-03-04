@@ -12,9 +12,12 @@ package eu.etaxonomy.cdm.io.berlinModel;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.CdmIoBase;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
@@ -115,6 +118,30 @@ public abstract class BerlinModelImportBase extends CdmIoBase<IImportConfigurato
 			return false;
 		}
 		
+	}
+	
+	/**
+	 * Returns a map that holds all values of a ResultSet. This is needed if a value needs to
+	 * be accessed twice
+	 * @param rs
+	 * @return
+	 * @throws SQLException
+	 */
+	protected Map<String, Object> getValueMap(ResultSet rs) throws SQLException{
+		try{
+			Map<String, Object> valueMap = new HashMap<String, Object>();
+			int colCount = rs.getMetaData().getColumnCount();
+			for (int c = 0; c < colCount ; c++){
+				Object value = rs.getObject(c+1);
+				String label = rs.getMetaData().getColumnLabel(c+1).toLowerCase();
+				if (value != null && ! CdmUtils.Nz(value.toString()).trim().equals("")){
+					valueMap.put(label, value);
+				}
+			}
+			return valueMap;
+		}catch(SQLException e){
+			throw e;
+		}
 	}
 	
 }
