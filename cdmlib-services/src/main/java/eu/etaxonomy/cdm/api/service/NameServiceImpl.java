@@ -21,6 +21,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import eu.etaxonomy.cdm.api.service.config.IIdentifiableEntityServiceConfigurator;
+import eu.etaxonomy.cdm.api.service.config.INameServiceConfigurator;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.model.common.Annotation;
@@ -37,6 +39,7 @@ import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
+import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
@@ -73,7 +76,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
 	 * Constructor
 	 */
 	public NameServiceImpl(){
-		logger.debug("Load NameService Bean");
+		if (logger.isDebugEnabled()) { logger.debug("Load NameService Bean"); }
 	}
 
 //********************* METHODS ****************************************************************//	
@@ -92,6 +95,10 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
 	
 	public List findNamesByTitle(String title, CdmBase sessionObject){
 		return super.findCdmObjectsByTitle(title, sessionObject);
+	}
+ 	
+	public List<TaxonNameBase> findByTitle(IIdentifiableEntityServiceConfigurator config) {
+		return super.findByTitle(config);
 	}
 	
 	public TaxonNameBase<?,?> getTaxonNameByUuid(UUID uuid) {
