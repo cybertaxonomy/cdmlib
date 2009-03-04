@@ -16,6 +16,7 @@ import java.util.Set;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
+import javax.persistence.PrePersist;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -388,7 +389,7 @@ public class BotanicalName extends NonViralName<BotanicalName> {
 		logger.warn("Birelationship not yet implemented");
 		this.hybridRelationships.remove(relationship);
 	}
-
+	
 	/** 
 	 * Returns the set of all {@link HybridRelationship hybrid relationships}
 	 * in which <i>this</i> botanical taxon name is involved as a {@link common.RelationshipBase#getRelatedFrom() parent}.

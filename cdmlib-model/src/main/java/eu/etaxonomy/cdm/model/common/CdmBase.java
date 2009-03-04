@@ -63,6 +63,8 @@ public abstract class CdmBase implements Serializable, ICdmBase{
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CdmBase.class);
 
+	private static IProxyHelper proxyHelper = new ProxyHelperHibernateImpl();
+	
 	@Transient
 	@XmlTransient
 	private PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
@@ -210,7 +212,32 @@ public abstract class CdmBase implements Serializable, ICdmBase{
 	public void setCreatedBy(Person createdBy) {
 		this.createdBy = createdBy;
 	}
+	
+// ************************** Hibernate proxies *******************/
+	/**
+	 * These methods are present due to HHH-1517 - that in a one-to-many
+	 * relationship with a superclass at the "one" end, the proxy created
+	 * by hibernate is the superclass, and not the subclass, resulting in
+	 * a classcastexception when you try to cast it.
+	 *
+	 * Hopefully this will be resolved through improvements with the creation of
+	 * proxy objects by hibernate and the following methods will become redundant,
+	 * but for the time being . . .
+	 * @param <T>
+	 * @param object
+	 * @param clazz
+	 * @return
+	 * @throws ClassCastException
+	 */
+	 public <T extends CdmBase> T deproxy(Class<T> clazz) throws ClassCastException {
+		 return proxyHelper.deproxy(this, clazz);
+	 }
+	        
+	 public boolean isInstanceOf(Class<? extends CdmBase> clazz) throws ClassCastException {
+	     return proxyHelper.isInstanceOf(this, clazz);
+	 }
 
+// ************* Object overrides *************************/ 
 	
 	/**
 	 * Is true if UUID is the same for the passed Object and this one.
@@ -266,6 +293,8 @@ public abstract class CdmBase implements Serializable, ICdmBase{
 	public String toString() {
 		return this.getClass().getSimpleName()+"#"+this.getId()+"<"+this.getUuid()+">";
 	}
+	
+// **************** invoke methods **************************/
 	
 	protected void invokeSetMethod(Method method, Object object){
 		try {

@@ -861,6 +861,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/IIdentifiableEntity.jav
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/ILoadableTerm.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/IMultiLanguageText.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/IParsable.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/IProxyHelper.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/IReferencedEntity.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/IRelated.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/ISourceable.java -text
@@ -883,6 +884,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/OriginalSource.java -te
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/PartialUserType.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/PersistentMultiLanguageText.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/PersistentMultiLanguageTextType.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/ProxyHelperHibernateImpl.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/ReferencedEntityBase.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/RelationshipBase.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/RelationshipTermBase.java -text
