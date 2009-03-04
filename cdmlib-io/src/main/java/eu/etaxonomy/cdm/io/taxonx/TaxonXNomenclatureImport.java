@@ -24,6 +24,7 @@ import eu.etaxonomy.cdm.api.service.ICommonService;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.io.common.CdmIoBase;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
@@ -117,7 +118,7 @@ public class TaxonXNomenclatureImport extends CdmIoBase<IImportConfigurator> imp
 			TaxonNameBase<?,?> nameBase = syn.getName();
 			if (nameBase != null){
 				if (nameBase.isInstanceOf(NonViralName.class)){
-					NonViralName<?> nonViralName = nameBase.deproxy(NonViralName.class);
+					NonViralName<?> nonViralName = nameBase.deproxy(nameBase, NonViralName.class);
 					if (nonViralName.getNameCache().equals(synName)){
 						return syn;  //only first synonym is returned
 					}
