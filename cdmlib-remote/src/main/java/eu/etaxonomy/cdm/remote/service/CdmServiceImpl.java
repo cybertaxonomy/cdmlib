@@ -17,16 +17,11 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
-import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.datasource.AbstractDataSource;
-import org.springframework.jdbc.datasource.AbstractDriverBasedDataSource;
-import org.springframework.orm.hibernate3.SessionFactoryUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.unitils.hibernate.HibernateUnitils;
 
 import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
@@ -37,13 +32,13 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
-import eu.etaxonomy.cdm.persistence.dao.common.ITitledDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IFeatureDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IFeatureTreeDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
+import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.remote.dto.FeatureTO;
 import eu.etaxonomy.cdm.remote.dto.FeatureTreeTO;
@@ -198,7 +193,7 @@ public class CdmServiceImpl implements ICdmService {
 		return this.getClass();
 	}
 
-	public ResultSetPageSTO<TaxonSTO> findTaxa(String q, Set<UUID> sec, Set<UUID> higherTaxa, ITitledDao.MATCH_MODE matchMode, boolean onlyAccepted, int page, int pagesize, Enumeration<Locale> locales) {
+	public ResultSetPageSTO<TaxonSTO> findTaxa(String q, Set<UUID> sec, Set<UUID> higherTaxa, MatchMode matchMode, boolean onlyAccepted, int page, int pagesize, Enumeration<Locale> locales) {
 		ResultSetPageSTO<TaxonSTO> resultSetPage = new ResultSetPageSTO<TaxonSTO>();
 
 		resultSetPage.setPageNumber(page);

@@ -39,7 +39,7 @@ import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.database.NamedContextHolder;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
-import eu.etaxonomy.cdm.persistence.dao.common.ITitledDao.MATCH_MODE;
+import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.remote.dto.AnnotationTO;
 import eu.etaxonomy.cdm.remote.dto.FeatureTO;
 import eu.etaxonomy.cdm.remote.dto.FeatureTreeTO;
@@ -168,12 +168,12 @@ public class RestController extends AbstractController
 				// TODO: take higher taxa UUIDs from "higherTaxa"
 				//
 				
-				MATCH_MODE matchMode = null;
+				MatchMode matchMode = null;
 				try{
 					String matchModeStr = getStringPara("mode",req);
-					matchMode = MATCH_MODE.valueOf(matchModeStr.toUpperCase());
+					matchMode = MatchMode.valueOf(matchModeStr.toUpperCase());
 				} catch(Exception e){
-					matchMode = MATCH_MODE.BEGINNING;
+					matchMode = MatchMode.BEGINNING;
 				}				
 				
 				String featureTree = getStringPara("feature", req); 
