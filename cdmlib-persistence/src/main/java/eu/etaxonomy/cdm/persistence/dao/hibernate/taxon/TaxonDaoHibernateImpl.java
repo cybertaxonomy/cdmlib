@@ -55,6 +55,7 @@ import eu.etaxonomy.cdm.persistence.dao.hibernate.AlternativeSpellingSuggestionP
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.fetch.CdmFetch;
+import eu.etaxonomy.cdm.persistence.query.MatchMode;
 
 /**
  * @author a.mueller
@@ -274,14 +275,14 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 
 
 	// TODO add generic return type !!
-	public List findByName(String queryString, ITitledDao.MATCH_MODE matchMode, int page, int pagesize, boolean onlyAcccepted) {
+	public List findByName(String queryString, MatchMode matchMode, int page, int pagesize, boolean onlyAcccepted) {
 		ArrayList<Criterion> criteria = new ArrayList<Criterion>();
 		//TODO ... Restrictions.eq(propertyName, value)
 		return super.findByTitle(queryString, matchMode, page, pagesize, criteria);
 
 	}
 
-	public int countMatchesByName(String queryString, ITitledDao.MATCH_MODE matchMode, boolean onlyAcccepted) {
+	public int countMatchesByName(String queryString, MatchMode matchMode, boolean onlyAcccepted) {
 
 		Criteria crit = getSession().createCriteria(type);
 		crit.add(Restrictions.ilike("persistentTitleCache", matchMode.queryStringFrom(queryString)));
@@ -291,7 +292,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 	}
 
 
-	public int countMatchesByName(String queryString, ITitledDao.MATCH_MODE matchMode, boolean onlyAcccepted, List<Criterion> criteria) {
+	public int countMatchesByName(String queryString, MatchMode matchMode, boolean onlyAcccepted, List<Criterion> criteria) {
 
 		Criteria crit = getSession().createCriteria(type);
 		crit.add(Restrictions.ilike("persistentTitleCache", matchMode.queryStringFrom(queryString)));

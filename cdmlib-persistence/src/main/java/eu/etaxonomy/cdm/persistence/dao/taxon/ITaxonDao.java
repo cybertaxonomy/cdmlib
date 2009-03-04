@@ -26,6 +26,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ITitledDao;
 import eu.etaxonomy.cdm.persistence.fetch.CdmFetch;
+import eu.etaxonomy.cdm.persistence.query.MatchMode;
 
 /**
  * @author a.mueller
@@ -129,7 +130,7 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
 	 * @param onlyAcccepted
 	 * @return
 	 */
-	public List<Taxon> findByName(String queryString, ITitledDao.MATCH_MODE matchMode, int page, int pagesize, boolean onlyAcccepted);
+	public List<Taxon> findByName(String queryString, MatchMode matchMode, int page, int pagesize, boolean onlyAcccepted);
 	
 	/**
 	 * @param queryString
@@ -137,7 +138,7 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
 	 * @param onlyAcccepted
 	 * @return
 	 */
-	public int countMatchesByName(String queryString, ITitledDao.MATCH_MODE matchMode, boolean onlyAcccepted);
+	public int countMatchesByName(String queryString, MatchMode matchMode, boolean onlyAcccepted);
 	
 	/**
 	 * @param queryString
@@ -146,7 +147,7 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
 	 * @param criteria
 	 * @return
 	 */
-	public int countMatchesByName(String queryString, ITitledDao.MATCH_MODE matchMode, boolean onlyAcccepted, List<Criterion> criteria);
+	public int countMatchesByName(String queryString, MatchMode matchMode, boolean onlyAcccepted, List<Criterion> criteria);
 	
 	/**
 	 * Returns a count of the TaxonRelationships (of where relationship.type == type,

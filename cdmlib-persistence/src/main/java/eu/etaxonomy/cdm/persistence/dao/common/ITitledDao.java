@@ -15,26 +15,27 @@ import org.hibernate.criterion.Criterion;
 
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.persistence.query.MatchMode;
 
 public interface ITitledDao<T extends CdmBase> {
 	
-	public static enum MATCH_MODE{
-		EXACT,
-		BEGINNING,
-		ANYWHERE;
-		
-		public String queryStringFrom(String queryString){
-			queryString = queryString.replace('*', '%');
-			switch(this){	
-				case BEGINNING:
-					return queryString+"%";			
-				case ANYWHERE:
-					return "%"+queryString+"%";
-				default:
-					return queryString;
-			}
-		}
-	}
+//	public static enum MATCH_MODE{
+//		EXACT,
+//		BEGINNING,
+//		ANYWHERE;
+//		
+//		public String queryStringFrom(String queryString){
+//			queryString = queryString.replace('*', '%');
+//			switch(this){	
+//				case BEGINNING:
+//					return queryString+"%";			
+//				case ANYWHERE:
+//					return "%"+queryString+"%";
+//				default:
+//					return queryString;
+//			}
+//		}
+//	}
 
 	/**
 	 * @param queryString
@@ -59,6 +60,6 @@ public interface ITitledDao<T extends CdmBase> {
 	 * @param criteria TODO
 	 * @return
 	 */
-	public List<T> findByTitle(String queryString, MATCH_MODE matchMode, int page, int pagesize, List<Criterion> criteria);
+	public List<T> findByTitle(String queryString, MatchMode matchMode, int page, int pagesize, List<Criterion> criteria);
 	
 }
