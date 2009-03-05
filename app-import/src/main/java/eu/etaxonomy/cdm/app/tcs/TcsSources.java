@@ -42,7 +42,7 @@ public class TcsSources {
 
 	public static File taxonX_localDir(){
 		//		Monocots rdf
-		File sourceDir = new File("C:/localCopy/eclipse/cdmlib/app-import/src/main/resources/taxonX/");
+		File sourceDir = new File("C:/localCopy/eclipse/cdmlib/app-import/src/main/resources/taxonX/"); //palm_tc_14495.xml
 		return sourceDir;
 	}
 	

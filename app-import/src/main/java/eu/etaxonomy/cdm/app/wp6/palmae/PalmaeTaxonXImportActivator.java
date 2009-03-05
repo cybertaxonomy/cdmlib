@@ -38,7 +38,7 @@ public class PalmaeTaxonXImportActivator {
 	static DbSchemaValidation hbm2dll = DbSchemaValidation.UPDATE;
 	//static final String tcsSource = TcsSources.taxonX_local();
 	static File source  = TcsSources.taxonX_localDir();
-	static ICdmDataSource cdmDestination = CdmDestinations.cdm_test_andreasM3();
+	static ICdmDataSource cdmDestination = CdmDestinations.localH2();
 	
 	static UUID secUuid = UUID.fromString("5f32b8af-0c97-48ac-8d33-6099ed68c625");
 	
@@ -64,31 +64,37 @@ public class PalmaeTaxonXImportActivator {
 		taxonXImportConfigurator.setDbSchemaValidation(hbm2dll);
 
 		cdmImport.startController(taxonXImportConfigurator, destination);
-		TransactionStatus tx = cdmImport.getCdmApp().startTransaction();
 				
 		//new Test().invoke(tcsImportConfigurator);
 		if (source.isDirectory()){
-			
 			for (File file : source.listFiles() ){
 				if (file.isFile()){
-					URL url;
-					try {
-						url = file.toURI().toURL();
-						taxonXImportConfigurator.setSource(url.toString());
-						String originalSourceId = file.getName();
-						originalSourceId =originalSourceId.replace(".xml", "");
-						taxonXImportConfigurator.setOriginalSourceId(originalSourceId);
-						success &= cdmImport.invoke(taxonXImportConfigurator);
-					} catch (MalformedURLException e) {
-						logger.warn(e);
-					}
+					success &= importFile(cdmImport, taxonXImportConfigurator, file);
 				}
 			}	
 		}else{
-			success &= cdmImport.invoke(taxonXImportConfigurator);
+			success &= importFile(cdmImport, taxonXImportConfigurator, source);
 		}
-		cdmImport.getCdmApp().commitTransaction(tx);		
 		return success;
+	}
+	
+	private boolean importFile(CdmDefaultImport<IImportConfigurator> cdmImport, 
+				TaxonXImportConfigurator config, File file){
+		boolean success = true;
+		try{
+			URL url = file.toURI().toURL();
+			config.setSource(url.toString());
+			String originalSourceId = file.getName();
+			originalSourceId =originalSourceId.replace(".xml", "");
+			config.setOriginalSourceId(originalSourceId);
+			TransactionStatus tx = cdmImport.getCdmApp().startTransaction();
+			success &= cdmImport.invoke(config);
+			cdmImport.getCdmApp().commitTransaction(tx);		
+			return success;			
+		} catch (MalformedURLException e) {
+			logger.warn(e);
+			return false;
+		}
 	}
 	
 	
