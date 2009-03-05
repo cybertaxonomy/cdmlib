@@ -110,6 +110,14 @@ public abstract class CdmIntegrationTest extends UnitilsJUnit4 {
 		}
 	}
 
+	/**
+	 * Transforms a javax.xml.transform.Source to a java.lang.String (useful for comparison in 
+	 * XmlUnit tests etc).
+	 * 
+	 * @param source
+	 * @return
+	 * @throws TransformerException
+	 */
 	public String transformSourceToString(Source source) throws TransformerException {
 		TransformerFactory transformerFactory = TransformerFactory.newInstance();
 		Transformer transformer = transformerFactory.newTransformer();

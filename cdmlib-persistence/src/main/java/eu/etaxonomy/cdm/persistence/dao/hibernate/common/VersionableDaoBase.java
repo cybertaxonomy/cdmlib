@@ -10,7 +10,12 @@ import org.hibernate.envers.AuditReader;
 import org.hibernate.envers.AuditReaderFactory;
 import org.hibernate.envers.query.AuditEntity;
 import org.hibernate.envers.query.AuditQuery;
+import org.joda.time.DateTime;
+import org.springframework.dao.DataAccessException;
+import org.springframework.security.Authentication;
+import org.springframework.security.context.SecurityContextHolder;
 
+import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.model.view.AuditEventRecord;
@@ -49,8 +54,7 @@ public abstract class VersionableDaoBase<T extends VersionableEntity> extends Cd
 		if(!auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
 			throw new OperationNotSupportedInPriorViewException(message);
 		}
-	}
-	 
+	}	 
 	
 	@Override
 	public T findByUuid(UUID uuid) {

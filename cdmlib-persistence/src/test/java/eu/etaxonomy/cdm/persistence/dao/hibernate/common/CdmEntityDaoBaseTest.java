@@ -14,18 +14,29 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.util.List;
 import java.util.UUID;
 
+import org.hibernate.Hibernate;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.security.Authentication;
+import org.springframework.security.AuthenticationManager;
+import org.springframework.security.context.SecurityContextHolder;
+import org.springframework.security.context.SecurityContextImpl;
+import org.springframework.security.providers.TestingAuthenticationToken;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.dbunit.annotation.ExpectedDataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.GrantedAuthorityImpl;
+import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.persistence.dao.common.IUserDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 
@@ -40,6 +51,12 @@ public class CdmEntityDaoBaseTest extends CdmIntegrationTest {
 	
 	@SpringBeanByType
 	private ITaxonDao cdmEntityDaoBase;
+	
+	@SpringBeanByType
+    private AuthenticationManager authenticationManager;
+	
+	@SpringBeanByType
+	private IUserDao userDao;
 
 	/**
 	 * @throws java.lang.Exception
@@ -49,6 +66,18 @@ public class CdmEntityDaoBaseTest extends CdmIntegrationTest {
 		uuid = UUID.fromString("8d77c380-c76a-11dd-ad8b-0800200c9a66");
 		cdmBase = Taxon.NewInstance(null, null);
 		cdmBase.setUuid(UUID.fromString("e463b270-c76b-11dd-ad8b-0800200c9a66"));
+		
+		// Clear the context prior to each test
+		SecurityContextHolder.clearContext();
+	}
+	
+	private void setAuthentication(User user) {
+		TestingAuthenticationToken token = new TestingAuthenticationToken(user, "password",  new GrantedAuthorityImpl[0]);
+	    Authentication authentication = authenticationManager.authenticate(token);
+	        
+	    SecurityContextImpl secureContext = new SecurityContextImpl();
+	    secureContext.setAuthentication(authentication);
+	    SecurityContextHolder.setContext(secureContext);
 	}
 	
 /************ TESTS ********************************/
@@ -84,6 +113,20 @@ public class CdmEntityDaoBaseTest extends CdmIntegrationTest {
 	public void testSave() throws Exception {
 		cdmEntityDaoBase.save(cdmBase);
 	}
+	
+	/**
+	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmEntityDaoBase#save(eu.etaxonomy.cdm.model.common.CdmBase)}.
+	 */
+	@Test
+	@DataSet("CdmEntityDaoBaseTest.xml")
+	@ExpectedDataSet
+	public void testSaveWithAuthentication() throws Exception {
+		User user = userDao.findByUuid(UUID.fromString("dbac0f20-07f2-11de-8c30-0800200c9a66"));
+		assert user != null : "User cannot be null";
+		
+		setAuthentication(user);
+		cdmEntityDaoBase.save(cdmBase);
+	}
 
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmEntityDaoBase#update(eu.etaxonomy.cdm.model.common.CdmBase)}.
@@ -92,6 +135,19 @@ public class CdmEntityDaoBaseTest extends CdmIntegrationTest {
 	@DataSet("CdmEntityDaoBaseTest.xml")
 	@ExpectedDataSet
 	public void testUpdate() {
+		TaxonBase cdmBase = cdmEntityDaoBase.findByUuid(uuid);
+		cdmBase.setUuid(UUID.fromString("65bc7d70-c76c-11dd-ad8b-0800200c9a66"));
+		cdmEntityDaoBase.update(cdmBase);
+	}
+	
+	@Test
+	@DataSet("CdmEntityDaoBaseTest.xml")
+	@ExpectedDataSet
+	public void testUpdateWithAuthentication() {
+		User user = userDao.findByUuid(UUID.fromString("dbac0f20-07f2-11de-8c30-0800200c9a66"));
+		assert user != null : "User cannot be null";
+		
+		setAuthentication(user);
 		TaxonBase cdmBase = cdmEntityDaoBase.findByUuid(uuid);
 		cdmBase.setUuid(UUID.fromString("65bc7d70-c76c-11dd-ad8b-0800200c9a66"));
 		cdmEntityDaoBase.update(cdmBase);
@@ -151,5 +207,4 @@ public class CdmEntityDaoBaseTest extends CdmIntegrationTest {
 		assertNotNull(cdmBase);
 		cdmEntityDaoBase.delete(cdmBase);
 	}
-
 }

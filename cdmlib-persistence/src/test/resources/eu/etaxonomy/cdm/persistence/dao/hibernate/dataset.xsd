@@ -97,6 +97,7 @@
 				<xsd:element name="REFERENCEBASE_EXTENSION_AUD" type="dflt:REFERENCEBASE_EXTENSION_AUD__type" />
 				<xsd:element name="HOMOTYPICALGROUP" type="dflt:HOMOTYPICALGROUP__type" />
 				<xsd:element name="SEQUENCE_REFERENCEBASE" type="dflt:SEQUENCE_REFERENCEBASE__type" />
+				<xsd:element name="USER_AUD" type="dflt:USER_AUD__type" />
 				<xsd:element name="TYPEDESIGNATIONBASE_ANNOTATION" type="dflt:TYPEDESIGNATIONBASE_ANNOTATION__type" />
 				<xsd:element name="AGENTBASE_MEDIA" type="dflt:AGENTBASE_MEDIA__type" />
 				<xsd:element name="DESCRIPTIONELEMENTBASE_MARKER_AUD" type="dflt:DESCRIPTIONELEMENTBASE_MARKER_AUD__type" />

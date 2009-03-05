@@ -165,6 +165,14 @@
       <!-- View Package -->
       <mapping class="eu.etaxonomy.cdm.model.view.View"/>
       <mapping class="eu.etaxonomy.cdm.model.view.AuditEvent"/>
+      <event type="save">
+          <listener class="eu.etaxonomy.cdm.persistence.hibernate.CacheStrategyGenerator"/>
+          <listener class="org.hibernate.event.def.DefaultSaveEventListener"/>
+      </event>
+      <event type="update">
+          <listener class="eu.etaxonomy.cdm.persistence.hibernate.UpdateEntityListener"/>
+          <listener class="org.hibernate.event.def.DefaultUpdateEventListener"/>
+      </event>
       <event type="post-insert">
             <listener class="org.hibernate.envers.event.AuditEventListener"/>
         </event>
