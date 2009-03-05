@@ -276,7 +276,7 @@ public class TestDatabase {
 			botName.setGenusOrUninomial("Genus");
 			botName.setSpecificEpithet("species");
 			appCtr.getNameService().save(botName);
-			botName.testPrepersist();
+//			botName.testPrepersist();
 			java.util.List<?> names = appCtr.getNameService().findNamesByTitle("Genus species");
 			names.size();
 //			AgentBase person = Person.NewTitledInstance("TestPerson");

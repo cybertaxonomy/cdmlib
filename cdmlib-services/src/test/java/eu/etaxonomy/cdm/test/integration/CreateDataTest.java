@@ -9,6 +9,8 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 import static org.junit.Assert.*;
 
+import org.joda.time.DateTime;
+
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.After;
@@ -206,7 +208,7 @@ public class CreateDataTest {
 		Taxon genusTaxon = (Taxon)taxonService.getTaxonByUuid(UUID.fromString(genusUuid));
 		BotanicalName genusName = (BotanicalName)genusTaxon.getName();
 		genusName.setGenusOrUninomial("newGenusUninomial");
-		genusName.setUpdated(Calendar.getInstance());
+		genusName.setUpdated(new DateTime());
 		BotanicalName newName = BotanicalName.NewInstance(Rank.SPECIES());
 		Taxon newTaxon = Taxon.NewInstance(newName, genusTaxon.getSec());
 		genusTaxon.addTaxonomicChild(newTaxon, null, "5677");

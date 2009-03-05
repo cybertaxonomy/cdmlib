@@ -93,6 +93,7 @@
 	<xsd:element name="REFERENCEBASE_EXTENSION_AUD" type="REFERENCEBASE_EXTENSION_AUD__type" />
 	<xsd:element name="HOMOTYPICALGROUP" type="HOMOTYPICALGROUP__type" />
 	<xsd:element name="SEQUENCE_REFERENCEBASE" type="SEQUENCE_REFERENCEBASE__type" />
+	<xsd:element name="USER_AUD" type="USER_AUD__type" />
 	<xsd:element name="TYPEDESIGNATIONBASE_ANNOTATION" type="TYPEDESIGNATIONBASE_ANNOTATION__type" />
 	<xsd:element name="AGENTBASE_MEDIA" type="AGENTBASE_MEDIA__type" />
 	<xsd:element name="DESCRIPTIONELEMENTBASE_MARKER_AUD" type="DESCRIPTIONELEMENTBASE_MARKER_AUD__type" />
@@ -1022,8 +1023,8 @@
 		<xsd:attribute name="UPDATED" use="optional" />
 		<xsd:attribute name="UPDATEDBY_ID" use="optional" />
 		<xsd:attribute name="SUPPORTSINDIVIDUALASSOCIATION" use="optional" />
-		<xsd:attribute name="SUPPORTSCOMMONTAXONNAME" use="optional" />
 		<xsd:attribute name="REVTYPE" use="optional" />
+		<xsd:attribute name="SUPPORTSCOMMONTAXONNAME" use="optional" />
 		<xsd:attribute name="ORDERINDEX" use="optional" />
 		<xsd:attribute name="SUPPORTSTAXONINTERACTION" use="optional" />
 		<xsd:attribute name="REV" use="optional" />
@@ -1102,6 +1103,21 @@
 	<xsd:complexType name="SEQUENCE_REFERENCEBASE__type">
 		<xsd:attribute name="SEQUENCE_ID" use="optional" />
 		<xsd:attribute name="CITATIONS_ID" use="optional" />
+	</xsd:complexType>
+	<xsd:complexType name="USER_AUD__type">
+		<xsd:attribute name="ACCOUNTNONEXPIRED" use="optional" />
+		<xsd:attribute name="PERSON_ID" use="optional" />
+		<xsd:attribute name="USERNAME" use="optional" />
+		<xsd:attribute name="REVTYPE" use="optional" />
+		<xsd:attribute name="EMAILADDRESS" use="optional" />
+		<xsd:attribute name="CREDENTIALSNONEXPIRED" use="optional" />
+		<xsd:attribute name="CREATEDBY_ID" use="optional" />
+		<xsd:attribute name="ACCOUNTNONLOCKED" use="optional" />
+		<xsd:attribute name="REV" use="optional" />
+		<xsd:attribute name="UUID" use="optional" />
+		<xsd:attribute name="ENABLED" use="optional" />
+		<xsd:attribute name="ID" use="optional" />
+		<xsd:attribute name="CREATED" use="optional" />
 	</xsd:complexType>
 	<xsd:complexType name="TYPEDESIGNATIONBASE_ANNOTATION__type">
 		<xsd:attribute name="TYPEDESIGNATIONBASE_ID" use="optional" />
@@ -1391,8 +1407,8 @@
 		<xsd:attribute name="REV" use="optional" />
 	</xsd:complexType>
 	<xsd:complexType name="DESCRIPTIONELEMENTBASE_AUD__type">
-		<xsd:attribute name="TAXON2_ID" use="optional" />
 		<xsd:attribute name="ASSOCIATEDSPECIMENOROBSERVATION_ID" use="optional" />
+		<xsd:attribute name="TAXON2_ID" use="optional" />
 		<xsd:attribute name="UPDATED" use="optional" />
 		<xsd:attribute name="UNIT_ID" use="optional" />
 		<xsd:attribute name="INDESCRIPTION_ID" use="optional" />
@@ -2534,10 +2550,10 @@
 		<xsd:attribute name="PUBLISHER" use="optional" />
 		<xsd:attribute name="INJOURNAL_ID" use="optional" />
 		<xsd:attribute name="CREATEDBY_ID" use="optional" />
-		<xsd:attribute name="INBOOK_ID" use="optional" />
 		<xsd:attribute name="MONTH" use="optional" />
-		<xsd:attribute name="TITLE" use="optional" />
+		<xsd:attribute name="INBOOK_ID" use="optional" />
 		<xsd:attribute name="ORGANIZATION" use="optional" />
+		<xsd:attribute name="TITLE" use="optional" />
 		<xsd:attribute name="TYPE_ID" use="optional" />
 		<xsd:attribute name="SCHOOL_ID" use="optional" />
 		<xsd:attribute name="SERIES" use="optional" />
@@ -2674,8 +2690,8 @@
 		<xsd:attribute name="ISPARTOF_ID" use="optional" />
 		<xsd:attribute name="PROTECTEDTITLECACHE" use="optional" />
 		<xsd:attribute name="CODE" use="optional" />
-		<xsd:attribute name="NAME" use="optional" />
 		<xsd:attribute name="SUFFIX" use="optional" />
+		<xsd:attribute name="NAME" use="optional" />
 		<xsd:attribute name="PROTECTEDNOMENCLATURALTITLECACHE" use="optional" />
 		<xsd:attribute name="LIFESPAN_START" use="optional" />
 		<xsd:attribute name="ID" use="optional" />
@@ -2844,6 +2860,7 @@
 		<xsd:attribute name="REV" use="optional" />
 	</xsd:complexType>
 	<xsd:complexType name="USER__type">
+		<xsd:attribute name="PERSON_ID" use="optional" />
 		<xsd:attribute name="ACCOUNTNONEXPIRED" use="optional" />
 		<xsd:attribute name="UUID" use="optional" />
 		<xsd:attribute name="USERNAME" use="optional" />
