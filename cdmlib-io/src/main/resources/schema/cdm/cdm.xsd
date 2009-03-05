@@ -41,8 +41,10 @@
             </jxb:schemaBindings>
         </xs:appinfo>
   </xs:annotation>
-  <xs:element name="DataSet">
-    <xs:complexType>
+  
+  <xs:element name="DataSet" type="DataSet"/>
+    
+  <xs:complexType name="DataSet">
       <xs:sequence>
         <xs:element name="Terms" minOccurs="0">
           <xs:complexType>
@@ -234,8 +236,31 @@
             <xs:attribute ref="xml:base"/>
           </xs:complexType>
         </xs:element>
+        <xs:element name="Users" minOccurs="0">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element ref="common:User" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+            <xs:attribute ref="xml:base"/>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Groups" minOccurs="0">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element ref="common:Group" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+            <xs:attribute ref="xml:base"/>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="GrantedAuthorities" minOccurs="0">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element ref="common:GrantedAuthority" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+            <xs:attribute ref="xml:base"/>
+          </xs:complexType>
+        </xs:element>
       </xs:sequence>
     </xs:complexType>
-  </xs:element>
 </xs:schema>
 

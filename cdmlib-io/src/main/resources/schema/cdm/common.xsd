@@ -62,6 +62,76 @@
   <xs:element name="OrderedTermVocabulary" type="common:OrderedTermVocabulary"/>
 
   <xs:element name="TimePeriod" type="common:TimePeriod"/>
+  
+  <xs:element name="User" type="common:User"/>
+  
+  <xs:element name="GrantedAuthority" type="common:GrantedAuthority"/>
+  
+  <xs:element name="Group" type="common:Group"/>
+  
+  <xs:complexType name="User">
+    <xs:complexContent>
+      <xs:extension base="common:CdmBase">
+        <xs:sequence>
+          <xs:element name="Username" type="xs:string"/>
+          <xs:element name="Password" type="xs:string"/>
+          <xs:element name="EmailAddress" type="xs:string"/>
+          <xs:element name="GrantedAuthorities" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="GrantedAuthority" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="Groups" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="Group" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="Enabled" type="xs:boolean"/>
+          <xs:element name="AccountNonExpired" type="xs:boolean"/>
+          <xs:element name="CredentialsNonExpired" type="xs:boolean"/>
+          <xs:element name="AccountNonLocked" type="xs:boolean"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  
+  <xs:complexType name="Group">
+    <xs:complexContent>
+      <xs:extension base="common:CdmBase">
+        <xs:sequence>
+          <xs:element name="Name" type="xs:string"/>
+          <xs:element name="Members" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="Member" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="GrantedAuthorities" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="GrantedAuthority" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  
+  <xs:complexType name="GrantedAuthority">
+    <xs:complexContent>
+      <xs:extension base="common:CdmBase">
+        <xs:sequence>
+          <xs:element name="Authority" type="xs:string"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
 
   <xs:complexType name="OrderedTermBase" abstract="true">
     <xs:complexContent>

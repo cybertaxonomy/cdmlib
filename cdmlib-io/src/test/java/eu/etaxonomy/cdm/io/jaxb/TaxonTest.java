@@ -22,8 +22,7 @@ public class TaxonTest {
 	    public void testUnmarshalTaxon() throws Exception {
 	        CdmDocumentBuilder cdmDocumentBuilder = new CdmDocumentBuilder();
 	        URI uri = new URI(URIEncoder.encode(this.getClass().getResource(resource).toString()));
-	        DataSet dataSet = null;
-	        dataSet = cdmDocumentBuilder.unmarshal(dataSet, new InputStreamReader(this.getClass().getResourceAsStream(resource)),uri.toString());
+	        DataSet dataSet = cdmDocumentBuilder.unmarshal(DataSet.class, new InputStreamReader(this.getClass().getResourceAsStream(resource)),uri.toString());
 			
 			Taxon parent = (Taxon)dataSet.getTaxonBases().get(0);	
 			assertNotNull("Taxon must not be null",parent);

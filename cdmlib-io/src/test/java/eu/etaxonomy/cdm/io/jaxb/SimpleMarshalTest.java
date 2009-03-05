@@ -49,8 +49,7 @@ public class SimpleMarshalTest {
     public void testUnmarshalEmptyDocument() throws JAXBException
     {	
 		Reader reader = new StringReader(documentText);
-		DataSet dataSet = null;
-		dataSet = cdmDocumentBuilder.unmarshal(dataSet, reader);	
+		DataSet dataSet = cdmDocumentBuilder.unmarshal(DataSet.class, reader);	
     }
     
     /**

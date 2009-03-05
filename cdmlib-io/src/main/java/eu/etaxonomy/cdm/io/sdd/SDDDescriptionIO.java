@@ -432,8 +432,9 @@ public class SDDDescriptionIO extends SDDIoBase implements ICdmIO<IImportConfigu
 			for (Iterator<Person> editor = editors.values().iterator() ; editor.hasNext() ;){
 				ed = editor.next();
 			}
-			sec.setUpdatedBy(ed);
-			sourceReference.setUpdatedBy(ed);
+			// TODO updatedBy refactored to use a user account, so setting a person is no longer applicable
+//			sec.setUpdatedBy(ed);
+//			sourceReference.setUpdatedBy(ed);
 		}
 
 		if (copyright != null) {
@@ -566,10 +567,9 @@ protected void importRevisionData(Element elDataset, Namespace sddNamespace){
 			e.printStackTrace();
 		}
 
-		GregorianCalendar updated = null;
+		DateTime updated = null;
 		if (d != null) {
-			updated = new java.util.GregorianCalendar();
-			updated.setTime(d);
+			updated = new DateTime(d);
 			sourceReference.setUpdated(updated);
 			sec.setUpdated(updated);
 		}

@@ -26,6 +26,8 @@ import javax.xml.bind.Marshaller;
 
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.ISODateTimeFormat;
 import org.xml.sax.SAXException;
 
 import org.apache.xerces.dom.DocumentImpl;
@@ -424,10 +426,10 @@ public class SDDDocumentBuilder {
 		if (database.getUpdated() != null) {
 			ElementImpl dateModified = new ElementImpl(document, DATE_MODIFIED);
 
-			java.util.Calendar c = database.getUpdated();
-			Date d = c.getTime();
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss");
-			String date = sdf.format(d);
+			DateTime c = database.getUpdated();
+			DateTimeFormatter fmt = ISODateTimeFormat.dateTime();
+		
+			String date = fmt.print(c);
 			dateModified.appendChild(document.createTextNode(date));
 
 			revisionData.appendChild(dateModified);
@@ -478,16 +480,16 @@ public class SDDDocumentBuilder {
 
 		// authors
 		TeamOrPersonBase authors = database.getAuthorTeam();
-		TeamOrPersonBase editors = database.getUpdatedBy();
+//		TeamOrPersonBase editors = database.getUpdatedBy();
 
-		if ((authors != null) || (editors != null)) {
+		if ((authors != null)) { // || (editors != null)) {
 			ElementImpl creators = new ElementImpl(document, CREATORS);
 			if (authors != null) {
 				buildRefAgent(creators, authors, "aut");
 			}
-			if (editors != null) {
-				buildRefAgent(creators, editors, "edt");
-			}
+//			if (editors != null) {
+//				buildRefAgent(creators, editors, "edt");
+//			}
 			revisionData.appendChild(creators);
 		}
 

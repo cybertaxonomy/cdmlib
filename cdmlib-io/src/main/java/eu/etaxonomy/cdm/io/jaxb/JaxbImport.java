@@ -86,7 +86,7 @@ public class JaxbImport extends CdmIoBase<IImportConfigurator> implements ICdmIO
 			logger.info("Unmarshalling file: " + urlFileName);
 			File file = new File(uri);
 			logger.debug("Absolute path: " + file.getAbsolutePath());
-			dataSet = cdmDocumentBuilder.unmarshal(dataSet, file);
+			dataSet = cdmDocumentBuilder.unmarshal(DataSet.class, file);
 
 		} catch (Exception e) {
 			logger.error("Unmarshalling error");

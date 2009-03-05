@@ -17,8 +17,7 @@ public class NamedAreaTest {
 	    public void testUnmarshalNamedArea() throws Exception {
 	        CdmDocumentBuilder cdmDocumentBuilder = new CdmDocumentBuilder();
 	        URI uri = new URI(URIEncoder.encode(this.getClass().getResource(resource).toString()));
-	        DataSet dataSet = null;
-	        dataSet = cdmDocumentBuilder.unmarshal(dataSet, new InputStreamReader(this.getClass().getResourceAsStream(resource)),uri.toString());
+	        DataSet dataSet = cdmDocumentBuilder.unmarshal(DataSet.class, new InputStreamReader(this.getClass().getResourceAsStream(resource)),uri.toString());
 			
 			NamedArea namedArea = (NamedArea)dataSet.getTerms().get(1);	
 			assertNotNull("NamedArea must not be null",namedArea);

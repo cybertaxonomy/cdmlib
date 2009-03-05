@@ -6,14 +6,10 @@ import static org.junit.Assert.assertNotNull;
 import java.io.InputStreamReader;
 import java.net.URI;
 
-import org.joda.time.DateTimeFieldType;
 import org.junit.Test;
 
-import eu.etaxonomy.cdm.model.agent.InstitutionalMembership;
-import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.Annotation;
-import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 public class AnnotationTest {
 		
@@ -23,8 +19,7 @@ public class AnnotationTest {
 	    public void testUnmarshalAnnotations() throws Exception {
 	        CdmDocumentBuilder cdmDocumentBuilder = new CdmDocumentBuilder();
 	        URI uri = new URI(URIEncoder.encode(this.getClass().getResource(resource).toString()));
-	        DataSet dataSet = null;
-	        dataSet = cdmDocumentBuilder.unmarshal(dataSet, new InputStreamReader(this.getClass().getResourceAsStream(resource)),uri.toString());
+	        DataSet dataSet = cdmDocumentBuilder.unmarshal(DataSet.class, new InputStreamReader(this.getClass().getResourceAsStream(resource)),uri.toString());
 			
 			AnnotatableEntity annotatableEntity = (AnnotatableEntity)dataSet.getTaxonBases().get(0);	
 			assertNotNull("annotatableEntity must exist",annotatableEntity);

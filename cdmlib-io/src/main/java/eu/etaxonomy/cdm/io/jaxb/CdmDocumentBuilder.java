@@ -59,6 +59,7 @@ public class CdmDocumentBuilder {
 	private JAXBContext jaxbContext;
 	private boolean formattedOutput = Boolean.TRUE;
 	private String encoding = "UTF-8";
+	private Schema schema;
     private Marshaller marshaller;
     private Unmarshaller unmarshaller;
     private XMLReader xmlReader;
@@ -75,25 +76,34 @@ public class CdmDocumentBuilder {
 		                                        "/schema/cdm/occurrence.xsd",
 		                                        "/schema/cdm/reference.xsd",
 		                                        "/schema/cdm/taxon.xsd"};
-		                                        
-	public CdmDocumentBuilder() throws SAXException, JAXBException, IOException, ParserConfigurationException {
-		
+	public static Class[] CONTEXT_CLASSES = {DataSet.class,FormattedText.class,MultilanguageTextElement.class};
+	
+	protected String[] getSchemaFiles() {
+		return CDM_SCHEMA_FILES;
+	}
+	
+	protected Class[] getContextClasses() {
+		return CONTEXT_CLASSES;
+	}
+	
+	protected void constructSchema() throws IOException, SAXException {
 		SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
 		schemaFactory.setResourceResolver(new CdmResourceResolver());
-		Source[] sources = new Source[CdmDocumentBuilder.CDM_SCHEMA_FILES.length];
+		String[] schemaFiles = getSchemaFiles();
 		
-		for(int i = 0; i < CdmDocumentBuilder.CDM_SCHEMA_FILES.length; i++) {
-			String schemaName = CdmDocumentBuilder.CDM_SCHEMA_FILES[i];
+		Source[] sources = new Source[schemaFiles.length];
+		
+		for(int i = 0; i < schemaFiles.length; i++) {
+			String schemaName = schemaFiles[i];
 			sources[i] = new StreamSource(this.getClass().getResourceAsStream(schemaName));
 		}
-		Schema cdmSchema = schemaFactory.newSchema(sources);
-		
-	    jaxbContext = JAXBContext.newInstance(new Class[]{DataSet.class,FormattedText.class,MultilanguageTextElement.class});
-		
-        unmarshaller = jaxbContext.createUnmarshaller();
-        unmarshaller.setSchema(cdmSchema);
-        
-        UnmarshallerHandler unmarshallerHandler = unmarshaller.getUnmarshallerHandler();
+
+		schema = schemaFactory.newSchema(sources);
+	}
+	
+	protected void contstructUnmarshaller() throws ParserConfigurationException, SAXException, JAXBException {
+		unmarshaller = jaxbContext.createUnmarshaller();
+        unmarshaller.setSchema(schema);
 	    
         SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
 	
@@ -108,10 +118,21 @@ public class CdmDocumentBuilder {
 	    xmlReader.setEntityResolver(new CatalogResolver());
 	    xmlReader.setErrorHandler(new DefaultErrorHandler());
         unmarshaller.setEventHandler(new WarningTolerantValidationEventHandler());
-	    
-        marshaller = jaxbContext.createMarshaller();
+	}
+		                                        
+	public CdmDocumentBuilder() throws SAXException, JAXBException, IOException, ParserConfigurationException {
+		constructSchema();
+		
+	    jaxbContext = JAXBContext.newInstance(getContextClasses());
+		
+        contstructUnmarshaller();
+        constructMarshaller();
+	}
+	
+	protected void constructMarshaller() throws JAXBException {
+		marshaller = jaxbContext.createMarshaller();
         marshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper", new CdmNamespacePrefixMapper() );
-		marshaller.setSchema(cdmSchema);
+		marshaller.setSchema(schema);
         
 		// For test purposes insert newlines to make the XML output readable
 		marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, formattedOutput);
@@ -121,12 +142,17 @@ public class CdmDocumentBuilder {
 		CdmMarshallerListener marshallerListener = new CdmMarshallerListener();
 		marshaller.setListener(marshallerListener);		
 		marshaller.setEventHandler(new WarningTolerantValidationEventHandler());
-
 	}
-	
-	public CdmDocumentBuilder(boolean formattedOutput, String encoding) 
-	throws SAXException, JAXBException, IOException, ParserConfigurationException {
-		this();
+
+	public CdmDocumentBuilder(boolean formattedOutput, String encoding) throws SAXException, JAXBException, IOException, ParserConfigurationException {
+		this.formattedOutput = formattedOutput;
+		this.encoding = encoding;
+        constructSchema();
+		
+	    jaxbContext = JAXBContext.newInstance(getContextClasses());
+		
+        contstructUnmarshaller();
+        constructMarshaller();
 	}
 	
 	public void marshal(DataSet dataSet, Writer writer) throws JAXBException {
@@ -136,31 +162,31 @@ public class CdmDocumentBuilder {
 		
 	}
 	
-	public DataSet unmarshal(DataSet dataSet,Reader reader) throws JAXBException {
+	public <T> T unmarshal(Class<T> clazz,Reader reader) throws JAXBException {
 		InputSource input = new InputSource(reader);
 		SAXSource saxSource = new SAXSource( xmlReader, input);
 		logger.info("Start unmarshalling");
-		dataSet = (DataSet) unmarshaller.unmarshal(saxSource);
-		return dataSet;
+		T t = (T) unmarshaller.unmarshal(saxSource);
+		return t;
 	} 
 	
-	public DataSet unmarshal(DataSet dataSet,Reader reader, String systemId) throws JAXBException {
+	public <T> T unmarshal(Class<T> clazz,Reader reader, String systemId) throws JAXBException {
 		InputSource input = new InputSource(reader);
 		input.setSystemId(systemId);
 		SAXSource saxSource = new SAXSource( xmlReader, input);
 		logger.info("Start unmarshalling");
-		dataSet = (DataSet) unmarshaller.unmarshal(saxSource);
-		return dataSet;
+		T t = (T) unmarshaller.unmarshal(saxSource);
+		return t;
 	} 
 
-	public DataSet unmarshal(DataSet dataSet, File file) throws JAXBException, UnsupportedEncodingException, FileNotFoundException {
+	public <T> T unmarshal(Class<T> clazz, File file) throws JAXBException, UnsupportedEncodingException, FileNotFoundException {
 
 		InputSource input = new InputSource(new InputStreamReader(new FileInputStream(file),encoding));
 		input.setSystemId(file.toURI().toString());
 		SAXSource saxSource = new SAXSource( xmlReader, input);
 		logger.info("Start unmarshalling");
-		dataSet = (DataSet) unmarshaller.unmarshal(saxSource);
-		return dataSet;
+		T t = (T) unmarshaller.unmarshal(saxSource);
+		return t;
 		
 	}
 

@@ -10,15 +10,11 @@ import java.net.URI;
 
 import org.junit.Test;
 
-import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
-import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
-import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 
 public class TaxonNameTest {
 		
@@ -28,8 +24,7 @@ public class TaxonNameTest {
 	    public void testUnmarshalName() throws Exception {
 	        CdmDocumentBuilder cdmDocumentBuilder = new CdmDocumentBuilder();
 	        URI uri = new URI(URIEncoder.encode(this.getClass().getResource(resource).toString()));
-	        DataSet dataSet = null;
-	        dataSet = cdmDocumentBuilder.unmarshal(dataSet, new InputStreamReader(this.getClass().getResourceAsStream(resource)),uri.toString());
+	        DataSet dataSet = cdmDocumentBuilder.unmarshal(DataSet.class, new InputStreamReader(this.getClass().getResourceAsStream(resource)),uri.toString());
 			
 			BotanicalName botanicalName = (BotanicalName)dataSet.getTaxonomicNames().get(0);	
 			assertNotNull("BotanicalName must not be null",botanicalName);

@@ -21,6 +21,8 @@ import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
+import org.springframework.security.GrantedAuthority;
+
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Contact;
 import eu.etaxonomy.cdm.model.agent.Institution;
@@ -31,11 +33,14 @@ import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.EventBase;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
+import eu.etaxonomy.cdm.model.common.GrantedAuthorityImpl;
+import eu.etaxonomy.cdm.model.common.Group;
 import eu.etaxonomy.cdm.model.common.Keyword;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
+import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.description.AbsenceTerm;
 import eu.etaxonomy.cdm.model.description.Feature;
@@ -129,7 +134,10 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 	    "taxonomicNames",
 	    "homotypicalGroups",
 	    "taxonBases",
-	    "media"
+	    "media",
+	    "users",
+	    "groups",
+	    "grantedAuthorities"
 })
 @XmlRootElement(name = "DataSet")
 public class DataSet {
@@ -273,6 +281,18 @@ public class DataSet {
     @XmlElementWrapper(name = "HomotypicalGroups")
     @XmlElement(name = "HomotypicalGroup", namespace = "http://etaxonomy.eu/cdm/model/name/1.0")
     protected List<HomotypicalGroup> homotypicalGroups = new ArrayList<HomotypicalGroup>();
+    
+    @XmlElementWrapper(name = "Users")
+    @XmlElement(name = "User", namespace = "http://etaxonomy.eu/cdm/model/common/1.0")
+    protected List<User> users = new ArrayList<User>();
+    
+    @XmlElementWrapper(name = "Groups")
+    @XmlElement(name = "Group", namespace = "http://etaxonomy.eu/cdm/model/common/1.0")
+    protected List<Group> groups = new ArrayList<Group>();
+    
+    @XmlElementWrapper(name = "GrantedAuthorities")
+    @XmlElement(name = "GrantedAuthority", namespace = "http://etaxonomy.eu/cdm/model/common/1.0", type = GrantedAuthorityImpl.class)
+    protected List<GrantedAuthority> grantedAuthorities = new ArrayList<GrantedAuthority>();
 
     /**
      * Gets the value of the agents property.
@@ -601,12 +621,100 @@ public class DataSet {
         this.homotypicalGroups = value;
     }
 
+    /**
+     * Gets the value of the typeDesignations property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link List<TypeDesignationBase> }
+     *     
+     */
     public List<TypeDesignationBase> getTypeDesignations() {
     	return typeDesignations;
     }
     
+    /**
+     * Sets the value of the typeDesignations property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link List<TypeDesignationBase> }
+     *     
+     */
 	public void addTypeDesignations(List<TypeDesignationBase> typeDesignations) {
 		this.typeDesignations.addAll(typeDesignations);
+	}
+
+	/**
+     * Gets the value of the users property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link List<User> }
+     *     
+     */
+	public List<User> getUsers() {
+		return users;
+	}
+
+	/**
+     * Sets the value of the users property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link List<User> }
+     *     
+     */
+	public void setUsers(List<User> users) {
+		this.users = users;
+	}
+
+	/**
+     * Gets the value of the groups property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link List<Group> }
+     *     
+     */
+	public List<Group> getGroups() {
+		return groups;
+	}
+
+	/**
+     * Sets the value of the groups property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link List<Group> }
+     *     
+     */
+	public void setGroups(List<Group> groups) {
+		this.groups = groups;
+	}
+
+	/**
+     * Gets the value of the grantedAuthorities property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link List<GrantedAuthority> }
+     *     
+     */
+	public List<GrantedAuthority> getGrantedAuthorities() {
+		return grantedAuthorities;
+	}
+
+	/**
+     * Sets the value of the grantedAuthorities property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link List<GrantedAuthority> }
+     *     
+     */
+	public void setGrantedAuthorities(List<GrantedAuthority> grantedAuthorities) {
+		this.grantedAuthorities = grantedAuthorities;
 	}
     
 }
