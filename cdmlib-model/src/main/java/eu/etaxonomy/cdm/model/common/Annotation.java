@@ -112,7 +112,7 @@ public class Annotation extends LanguageStringBase implements Cloneable {
 	public AnnotatableEntity getAnnotatedObj() {
 		return annotatedObj;
 	}
-	protected void setAnnotatedObj(AnnotatableEntity newAnnotatedObj) {
+	public void setAnnotatedObj(AnnotatableEntity newAnnotatedObj) {
 		this.annotatedObj = newAnnotatedObj;		
 	}
 

@@ -208,6 +208,7 @@ public abstract class DescriptionBase extends IdentifiableEntity {
 	@ManyToMany(fetch = FetchType.LAZY)  //FIXME
 	@Cascade( { CascadeType.SAVE_UPDATE })
 	@JoinTable(name = "DescriptionBase_Feature")
+	@Transient
 	public Set<Feature> getDescriptiveSystem() {
 		return this.descriptiveSystem;
 	}
@@ -216,6 +217,7 @@ public abstract class DescriptionBase extends IdentifiableEntity {
 	 * @see    #getDescriptiveSystem()
 	 * @see    #addDescriptiveSystem(Feature)
 	 */
+	@Transient
 	public void setDescriptiveSystem(Set<Feature> descriptiveSystem) {
 		this.descriptiveSystem = descriptiveSystem;
 	}
@@ -228,6 +230,7 @@ public abstract class DescriptionBase extends IdentifiableEntity {
 	 * @param feature	the feature to be added to the descriptive system
 	 * @see     #getDescriptiveSystem()
 	 */
+	@Transient
 	public void addFeature(Feature feature) {
 		this.descriptiveSystem.add(feature);
 	}
@@ -240,6 +243,7 @@ public abstract class DescriptionBase extends IdentifiableEntity {
 	 * @see     #getDescriptiveSystem()
 	 * @see     addFeature(Feature)
 	 */
+	@Transient
 	public void removeFeature(Feature feature) {
 		this.descriptiveSystem.remove(feature);
 	}

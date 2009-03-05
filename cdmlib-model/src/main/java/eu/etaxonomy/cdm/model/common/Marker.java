@@ -97,7 +97,7 @@ public class Marker extends VersionableEntity implements Cloneable{
 	public AnnotatableEntity getMarkedObj() {
 		return markedObj;
 	}
-	protected void setMarkedObj(AnnotatableEntity newMarkedObject) {
+	public void setMarkedObj(AnnotatableEntity newMarkedObject) {
 		this.markedObj = newMarkedObject;
 	}
 

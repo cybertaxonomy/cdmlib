@@ -173,7 +173,7 @@ public class SynonymRelationship extends RelationshipBase<Synonym, Taxon, Synony
 	 * @see   				#getAcceptedTaxon()
 	 * @see   				Taxon#getSynonymRelations()
 	 */
-	protected void setAcceptedTaxon(Taxon acceptedTaxon){
+	public void setAcceptedTaxon(Taxon acceptedTaxon){
 		this.setRelatedTo(acceptedTaxon);
 	}
 
@@ -202,7 +202,7 @@ public class SynonymRelationship extends RelationshipBase<Synonym, Taxon, Synony
 	 * @see    			#getSynonym()
 	 * @see   			Synonym#getSynonymRelations()
 	 */
-	protected void setSynonym(Synonym synonym){
+	public void setSynonym(Synonym synonym){
 		this.setRelatedFrom(synonym);
 	}
 
