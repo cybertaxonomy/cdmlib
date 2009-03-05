@@ -9,6 +9,7 @@
 package eu.etaxonomy.cdm.persistence.dao.hibernate.taxon;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -36,9 +37,11 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.common.Annotation;
+import eu.etaxonomy.cdm.model.common.Extension;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.OriginalSource;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
+import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
@@ -86,6 +89,55 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 	}
 	
 
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#getRootTaxa(eu.etaxonomy.cdm.model.name.Rank, eu.etaxonomy.cdm.model.reference.ReferenceBase, eu.etaxonomy.cdm.persistence.fetch.CdmFetch, java.lang.Boolean, java.lang.Boolean)
+	 */
+	public List<Taxon> 
+	getRootTaxa(Rank rank, ReferenceBase sec, CdmFetch cdmFetch, Boolean onlyWithChildren, Boolean withMisapplications) {
+		if (onlyWithChildren == null){
+			onlyWithChildren = true;
+		}
+		if (withMisapplications == null){
+			withMisapplications = true;
+		}
+		if (cdmFetch == null){
+			cdmFetch = CdmFetch.NO_FETCH();
+		}
+
+		Criteria crit = getSession().createCriteria(Taxon.class);
+		//crit.add(Restrictions.isNull("taxonomicParentCache"));
+		
+		crit.setFetchMode("name", FetchMode.JOIN);
+		crit.createAlias("name", "name");
+		
+		if (rank != null) {
+			crit.add(Restrictions.eq("name.rank", rank));
+		}
+
+		if (sec != null){
+			crit.add(Restrictions.eq("sec", sec) );
+		}
+
+		if (! cdmFetch.includes(CdmFetch.FETCH_CHILDTAXA())){
+			logger.warn("no child taxa fetch");
+			//TODO overwrite LAZY (SELECT) does not work (bug in hibernate?)
+			crit.setFetchMode("relationsToThisTaxon.fromTaxon", FetchMode.LAZY);
+		}
+
+		List<Taxon> results = new ArrayList<Taxon>();
+		List<Taxon> taxa = crit.list();
+		for(Taxon taxon : taxa){
+			//childTaxa
+			//TODO create restriction instead
+			if (onlyWithChildren == false || taxon.hasTaxonomicChildren()){
+				if (withMisapplications == true || ! taxon.isMisappliedName()){
+					results.add(taxon);
+				}
+			}
+		}
+		return results;
+	}
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#getRootTaxa(eu.etaxonomy.cdm.model.reference.ReferenceBase, eu.etaxonomy.cdm.persistence.fetch.CdmFetch, java.lang.Boolean, java.lang.Boolean)
@@ -213,61 +265,87 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 
 	@Override
 	public UUID delete(TaxonBase taxonBase) throws DataAccessException{
-		//getSession().update(taxonBase); doesn't work with lazy collections
 		if (taxonBase == null){
 			logger.warn("TaxonBase was 'null'");
 			return null;
 		}
-		//annotations
-		try {
-			Set<Annotation> annotations = taxonBase.getAnnotations();
-			for (Annotation annotation: annotations){
-				taxonBase.removeAnnotation(annotation);
-			}
-		} catch (LazyInitializationException e) {
-			logger.warn("LazyInitializationException: " + e);
-		}
-		//markers
-		try {
-			Set<Marker> markers = taxonBase.getMarkers();
-			for (Marker marker: markers){
-				taxonBase.removeMarker(marker);
-			}
-		} catch (LazyInitializationException e) {
-			logger.warn("LazyInitializationException: " + e);
-		}
-		//originalSource
-		try {
-			Set<OriginalSource> origSources = taxonBase.getSources();
-			for (OriginalSource source: origSources){
-				taxonBase.removeSource(source);
-			}
-		} catch (LazyInitializationException e) {
-			logger.warn("LazyInitializationException: " + e);
-		}
-		//is Taxon
-		TaxonNameBase taxonNameBase =taxonBase.getName();
-		if (taxonNameBase != null){
-			taxonNameBase.removeTaxonBase(taxonBase);
-		}
-		if (taxonBase instanceof Taxon){
+		
+		// Merge the object in if it is detached
+		//
+		// I think this is preferable to catching lazy initialization errors 
+		// as that solution only swallows and hides the exception, but doesn't 
+		// actually solve it.
+		getSession().merge(taxonBase);
+		
+		for(Iterator<Annotation> iterator = taxonBase.getAnnotations().iterator(); iterator.hasNext();) {
+			Annotation annotation = iterator.next();
+		    annotation.setAnnotatedObj(null);
+		    iterator.remove();
+		    getSession().delete(annotation);
+	    }
+		
+		for(Iterator<Marker> iterator = taxonBase.getMarkers().iterator(); iterator.hasNext();) {
+			Marker marker = iterator.next();
+		    marker.setMarkedObj(null);
+		    iterator.remove();
+		    getSession().delete(marker);
+	    }
+		
+		for(Iterator<Extension> iterator = taxonBase.getExtensions().iterator(); iterator.hasNext();) {
+			Extension extension = iterator.next();
+		    extension.setExtendedObj(null);
+		    iterator.remove();
+		    getSession().delete(extension);
+	    }
+		
+		for(Iterator<OriginalSource> iterator = taxonBase.getSources().iterator(); iterator.hasNext();) {
+			OriginalSource source = iterator.next();
+		    source.setSourcedObj(null);
+		    iterator.remove();
+		    getSession().delete(source);
+	    }
+
+		for(Iterator<Rights> iterator = taxonBase.getRights().iterator(); iterator.hasNext();) {
+			Rights rights = iterator.next();
+		    iterator.remove();
+		    getSession().delete(rights);
+	    }
+		
+		if (taxonBase instanceof Taxon){ //	is Taxon
 			//taxonRelationships
 			Taxon taxon = (Taxon)taxonBase;
-			Set<TaxonRelationship> taxRels = taxon.getTaxonRelations();
-			for (TaxonRelationship taxRel: taxRels){
-				taxon.removeTaxonRelation(taxRel);
-			} ;
+						
+			for (Iterator<TaxonRelationship> iterator = taxon.getRelationsFromThisTaxon().iterator(); iterator.hasNext();){
+				TaxonRelationship relationToThisTaxon = iterator.next();
+				iterator.remove();
+				relationToThisTaxon.setFromTaxon(null);
+				relationToThisTaxon.setToTaxon(null);
+				getSession().delete(relationToThisTaxon);
+			}
+			
+			for (Iterator<TaxonRelationship> iterator = taxon.getRelationsToThisTaxon().iterator(); iterator.hasNext();){
+				TaxonRelationship relationFromThisTaxon = iterator.next();
+				iterator.remove();
+				relationFromThisTaxon.setToTaxon(null);
+				relationFromThisTaxon.setFromTaxon(null);
+				getSession().delete(relationFromThisTaxon);
+			}
+			
 			//SynonymRelationships
-			Set<SynonymRelationship> synRels = taxon.getSynonymRelations();
-			for (SynonymRelationship synRel: synRels){
-				taxon.removeSynonymRelation(synRel);
-			} ;
-		}//is Synonym
-		else if (taxonBase instanceof Synonym){
+			for (Iterator<SynonymRelationship> iterator = taxon.getSynonymRelations().iterator(); iterator.hasNext();){
+				SynonymRelationship synonymRelation = iterator.next();
+				iterator.remove();
+				synonymRelation.setAcceptedTaxon(null);
+				synonymRelation.setSynonym(null);
+				getSession().delete(synonymRelation);
+			} 
+		} else if (taxonBase instanceof Synonym){ //is Synonym
 			Synonym synonym = (Synonym)taxonBase;
-			Set<SynonymRelationship> synRels = synonym.getSynonymRelations();
-			for (SynonymRelationship synRel: synRels){
-				synonym.removeSynonymRelation(synRel);
+			for (Iterator<SynonymRelationship> iterator = synonym.getSynonymRelations().iterator(); iterator.hasNext();){
+				SynonymRelationship synonymRelation = iterator.next();
+				iterator.remove();
+				synonymRelation.setAcceptedTaxon(null);
+				synonymRelation.setSynonym(null);
 			} ;
 		}
 		return super.delete(taxonBase);
