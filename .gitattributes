@@ -775,6 +775,7 @@ cdmlib-model/README.TXT -text
 cdmlib-model/pom.xml -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/aspectj/PropertyChangeAspect.aj -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/datagenerator/TaxonGenerator.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/HibernateProxyHelper.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/jaxb/DateTimeAdapter.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/jaxb/MultilanguageTextAdapter.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/jaxb/UUIDAdapter.java -text
@@ -807,7 +808,6 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/IEvent.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/IIdentifiableEntity.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/ILoadableTerm.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/IParsable.java -text
-cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/IProxyHelper.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/IReferencedEntity.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/IRelated.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/ISourceable.java -text
@@ -825,7 +825,6 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/OrderedTermBase.java -t
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/OrderedTermVocabulary.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/OriginalSource.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/PartialUserType.java -text
-cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/ProxyHelperHibernateImpl.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/ReferencedEntityBase.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/RelationshipBase.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/RelationshipTermBase.java -text
