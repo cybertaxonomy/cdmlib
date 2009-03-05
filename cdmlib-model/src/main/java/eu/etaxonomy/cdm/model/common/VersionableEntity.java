@@ -9,14 +9,10 @@
 
 package eu.etaxonomy.cdm.model.common;
 
-import java.util.Calendar;
-
 import javax.persistence.Basic;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -24,12 +20,13 @@ import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.apache.log4j.Logger;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.Type;
+import org.joda.time.DateTime;
 
-import eu.etaxonomy.cdm.model.agent.Person;
+import eu.etaxonomy.cdm.jaxb.DateTimeAdapter;
 
 /**
  * The class keeps track of versions via a full linked list to different version objects, or a simple updated/updatedBy property in the same object.
@@ -48,7 +45,7 @@ import eu.etaxonomy.cdm.model.agent.Person;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "VersionableEntity", propOrder = {
-//    "updated",
+    "updated",
     "updatedBy"
 })
 @MappedSuperclass
@@ -57,22 +54,19 @@ public abstract class VersionableEntity extends CdmBase {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(VersionableEntity.class);
 	
-	//time of last update for this object
-	// There is a problem with "updated" during deserialization because of the @Version annotation.
-	@XmlTransient
-	//@XmlElement(name ="Updated")
-	@Temporal(TemporalType.TIMESTAMP)
+	@XmlElement(name ="Updated", type = String.class)
+	@XmlJavaTypeAdapter(DateTimeAdapter.class)
+	@Type(type="dateTimeUserType")
 	@Basic(fetch = FetchType.LAZY)
-	private Calendar updated;
+	private DateTime updated;
 	
 	@XmlElement(name = "UpdatedBy")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch=FetchType.LAZY)
-	@Cascade(CascadeType.SAVE_UPDATE)
-	private Person updatedBy;
+	private User updatedBy;
 
-	public Person getUpdatedBy(){
+	public User getUpdatedBy(){
 		return this.updatedBy;
 	}
 
@@ -80,7 +74,7 @@ public abstract class VersionableEntity extends CdmBase {
 	 * 
 	 * @param updatedBy    updatedBy
 	 */
-	public void setUpdatedBy(Person updatedBy){
+	public void setUpdatedBy(User updatedBy){
 		this.updatedBy = updatedBy;
 	}
 
@@ -88,7 +82,7 @@ public abstract class VersionableEntity extends CdmBase {
 	 * 
 	 * @return
 	 */
-	public Calendar getUpdated(){
+	public DateTime getUpdated(){
 		return this.updated;
 	}
 
@@ -96,7 +90,7 @@ public abstract class VersionableEntity extends CdmBase {
 	 * 
 	 * @param updated    updated
 	 */
-	public void setUpdated(Calendar updated){
+	public void setUpdated(DateTime updated){
 		this.updated = updated;
 	}
 	

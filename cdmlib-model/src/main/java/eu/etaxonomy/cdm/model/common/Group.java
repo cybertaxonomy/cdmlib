@@ -7,10 +7,25 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlIDREF;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlType;
 
 import org.hibernate.annotations.NaturalId;
 import org.springframework.security.GrantedAuthority;
 
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "Group", propOrder = {
+    "name",
+    "members",
+    "grantedAuthorities"
+})
+@XmlRootElement(name = "Group")
 @Entity
 @Table(name = "PermissionGroup")
 public class Group extends CdmBase {
@@ -20,12 +35,21 @@ public class Group extends CdmBase {
 	 */
 	private static final long serialVersionUID = 7216686200093054648L;
 	
+	@XmlElement(name = "Name")
 	@NaturalId
 	protected String name;
 	
+	@XmlElementWrapper(name = "Members")
+	@XmlElement(name = "Member")
+	@XmlIDREF
+	@XmlSchemaType(name = "IDREF")
 	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "groups")
 	protected Set<User> members = new HashSet<User>();
 	
+	@XmlElementWrapper(name = "GrantedAuthorities")
+	@XmlElement(name = "GrantedAuthority", type = GrantedAuthorityImpl.class)
+	@XmlIDREF
+	@XmlSchemaType(name = "IDREF")
 	@ManyToMany(fetch = FetchType.LAZY, targetEntity = GrantedAuthorityImpl.class)
 	protected Set <GrantedAuthority> grantedAuthorities = new HashSet<GrantedAuthority>();
 	

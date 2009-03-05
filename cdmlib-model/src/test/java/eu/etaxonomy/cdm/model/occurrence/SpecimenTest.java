@@ -149,7 +149,7 @@ public class SpecimenTest {
 		specimen.setCollection(collection);
 		specimen.setCollectorsNumber(collectorsNumber);
 		specimen.setCreated(created);
-		specimen.setCreatedBy(createdBy);
+//		specimen.setCreatedBy(createdBy);
 		specimen.setDerivedFrom(derivedFrom);
 		specimen.setId(id);
 		specimen.setIndividualCount(individualCount);
@@ -160,8 +160,8 @@ public class SpecimenTest {
 		specimen.setSex(sex);
 		specimen.setStoredUnder(storedUnder);
 		specimen.setTitleCache(titleCache, protectedTitleCache);
-		specimen.setUpdated(updated);
-		specimen.setUpdatedBy(updatedBy);
+//		specimen.setUpdated(updated);
+//		specimen.setUpdatedBy(updatedBy);
 		specimen.setUuid(uuid);
 		
 		specimen.addAnnotation(annotation);

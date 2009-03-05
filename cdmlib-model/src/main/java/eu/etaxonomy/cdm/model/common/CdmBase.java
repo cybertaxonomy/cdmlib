@@ -26,8 +26,6 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.apache.log4j.Logger;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Type;
 import org.hibernate.search.annotations.DocumentId;
 import org.joda.time.DateTime;
@@ -35,7 +33,6 @@ import org.joda.time.DateTime;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.jaxb.DateTimeAdapter;
 import eu.etaxonomy.cdm.jaxb.UUIDAdapter;
-import eu.etaxonomy.cdm.model.agent.Person;
 
 
 
@@ -90,8 +87,7 @@ public abstract class CdmBase implements Serializable, ICdmBase{
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch=FetchType.LAZY)
-	@Cascade(CascadeType.SAVE_UPDATE)
-    private Person createdBy;
+    private User createdBy;
 
 	/**
 	 * Class constructor assigning a unique UUID and creation date.
@@ -202,13 +198,13 @@ public abstract class CdmBase implements Serializable, ICdmBase{
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.ICdmBase#getCreatedBy()
 	 */
-	public Person getCreatedBy() {
+	public User getCreatedBy() {
 		return this.createdBy;
 	}
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.ICdmBase#setCreatedBy(eu.etaxonomy.cdm.model.agent.Person)
 	 */
-	public void setCreatedBy(Person createdBy) {
+	public void setCreatedBy(User createdBy) {
 		this.createdBy = createdBy;
 	}
 	
@@ -342,5 +338,4 @@ public abstract class CdmBase implements Serializable, ICdmBase{
 		//no changes to: -
 		return result;
 	}
-	
 }

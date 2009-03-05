@@ -38,8 +38,8 @@ public interface ICdmBase {
 	 */
 	public abstract void setCreated(DateTime created);
 
-	public abstract Person getCreatedBy();
+	public abstract User getCreatedBy();
 
-	public abstract void setCreatedBy(Person createdBy);
+	public abstract void setCreatedBy(User createdBy);
 
 }

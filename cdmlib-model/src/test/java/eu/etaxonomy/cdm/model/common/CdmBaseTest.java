@@ -477,10 +477,10 @@ public class CdmBaseTest extends EntityTestBase{
 	@Test
 	public void testGetCreatedBy() {
 		assertNull(cdmBase.getCreatedBy());
-		Person person = Person.NewInstance();
-		cdmBase.setCreatedBy(person);
-		assertEquals(person, cdmBase.getCreatedBy());
-		assertSame(person, cdmBase.getCreatedBy());
+		User user = new User();
+		cdmBase.setCreatedBy(user);
+		assertEquals(user, cdmBase.getCreatedBy());
+		assertSame(user, cdmBase.getCreatedBy());
 	}
 
 	/**
@@ -488,13 +488,9 @@ public class CdmBaseTest extends EntityTestBase{
 	 */
 	@Test
 	public void testSetCreatedBy() {
-		Person person = Person.NewInstance();
-		String trueLastName = "person1";
-		person.setLastname(trueLastName);
+		User person = new User();
 		
-		Person personFalse = Person.NewInstance();
-		personFalse.setLastname(trueLastName);
-		personFalse.setFirstname("xxx");
+		User personFalse = new User();
 		
 		cdmBase.setCreatedBy(person);
 		assertEquals(person, cdmBase.getCreatedBy());
@@ -514,7 +510,7 @@ public class CdmBaseTest extends EntityTestBase{
 		ICdmBase cdmBase2 = getTestCdmBase();
 		cdmBase2.setUuid(cdmBase.getUuid());
 		cdmBase2.setCreated(cdmBase.getCreated());
-		cdmBase2.setCreatedBy(Person.NewInstance());
+//		cdmBase2.setCreatedBy(Person.NewInstance());
 		assertEquals(cdmBase, cdmBase2);
 		//null
 		assertFalse(cdmBase.equals(null));

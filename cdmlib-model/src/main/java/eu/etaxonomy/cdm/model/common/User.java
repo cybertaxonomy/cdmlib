@@ -7,13 +7,42 @@ import java.util.TreeSet;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Transient;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlIDREF;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.XmlType;
 
 import org.hibernate.annotations.NaturalId;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 import org.springframework.security.GrantedAuthority;
 import org.springframework.security.userdetails.UserDetails;
 
+import eu.etaxonomy.cdm.model.agent.Person;
+
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "User", propOrder = {
+    "username",
+    "password",
+    "emailAddress",
+    "grantedAuthorities",
+    "groups",
+    "enabled",
+    "accountNonExpired",
+    "credentialsNonExpired",
+    "accountNonLocked",
+    "person"    
+})
+@XmlRootElement(name = "User")
 @Entity
+@Audited
 public class User extends CdmBase implements UserDetails {
 
 	/**
@@ -21,30 +50,55 @@ public class User extends CdmBase implements UserDetails {
 	 */
 	private static final long serialVersionUID = 6582191171369439163L;
 
+	@XmlElement(name = "Username")
 	@NaturalId
 	protected String username;
 	
 	/**
 	 * a salted, MD5 encoded hash of the plaintext password
 	 */
+	@XmlElement(name = "Password")
+	@NotAudited
 	protected String password;
 	
+	@XmlElement(name = "EmailAddress")
 	protected String emailAddress;
 	
+	@XmlElementWrapper(name = "GrantedAuthorities")
+	@XmlElement(name = "GrantedAuthority", type = GrantedAuthorityImpl.class)
+	@XmlIDREF
+	@XmlSchemaType(name = "IDREF")
 	@ManyToMany(fetch = FetchType.LAZY, targetEntity = GrantedAuthorityImpl.class)
-	protected Set <GrantedAuthority> grantedAuthorities = new HashSet<GrantedAuthority>();
+	@NotAudited
+	protected Set<GrantedAuthority> grantedAuthorities = new HashSet<GrantedAuthority>();
 	
+	@XmlElementWrapper(name = "Groups")
+	@XmlElement(name = "Group")
+	@XmlIDREF
+	@XmlSchemaType(name = "IDREF")
 	@ManyToMany(fetch = FetchType.LAZY)
+	@NotAudited
 	protected Set<Group> groups = new HashSet<Group>();
 	
+	@XmlElement(name = "Enabled")
 	protected boolean enabled;
 	
+	@XmlElement(name = "AccountNonExpired")
 	protected boolean accountNonExpired;
-	
+
+	@XmlElement(name = "CredentialsNonExpired")
 	protected boolean credentialsNonExpired;
 	
+	@XmlElement(name = "AccountNonLocked")
 	protected boolean accountNonLocked;	
 	
+	@XmlElement(name = "Person")
+	@XmlIDREF
+	@XmlSchemaType(name = "IDREF")
+	@OneToOne(fetch = FetchType.LAZY)
+	protected Person person;
+	
+	@XmlTransient
 	@Transient
 	private GrantedAuthority[] authorities;
 	
@@ -135,5 +189,13 @@ public class User extends CdmBase implements UserDetails {
 	
 	public Set<Group> getGroups() {
 		return groups;
+	}
+	
+	public Person getPerson() {
+		return person;
+	}
+	
+	public void setPerson(Person person) {
+		this.person = person;
 	}
 }
