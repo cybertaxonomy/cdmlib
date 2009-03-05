@@ -218,6 +218,7 @@ public class CdmServiceImpl implements ICdmService {
 //		}
 		
 		List<TaxonBase> results = taxonDAO.findByTitle(q, matchMode, page, pagesize, criteria);
+		//descriptionDAO
 		resultSetPage.setResultsOnPage(results.size());
 		for (TaxonBase taxonBase : results){
 			resultSetPage.getResults().add(taxonAssembler.getSTO(taxonBase, locales));

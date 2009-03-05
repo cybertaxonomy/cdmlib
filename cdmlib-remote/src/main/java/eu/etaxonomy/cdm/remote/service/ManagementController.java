@@ -8,18 +8,9 @@
 */
 package eu.etaxonomy.cdm.remote.service;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.StringReader;
 import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.HashSet;
-import java.util.Hashtable;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -27,28 +18,12 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.datasource.AbstractDataSource;
-import org.springframework.jdbc.datasource.AbstractDriverBasedDataSource;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
-import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
-import org.unitils.hibernate.HibernateUnitils;
 
-import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.database.DataSourceLoader;
-import eu.etaxonomy.cdm.model.common.Annotation;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
-import eu.etaxonomy.cdm.remote.dto.AnnotationTO;
-import eu.etaxonomy.cdm.remote.dto.FeatureTO;
-import eu.etaxonomy.cdm.remote.dto.FeatureTreeTO;
-import eu.etaxonomy.cdm.remote.dto.NameSTO;
-import eu.etaxonomy.cdm.remote.dto.NameTO;
-import eu.etaxonomy.cdm.remote.dto.ReferenceSTO;
-import eu.etaxonomy.cdm.remote.dto.ReferenceTO;
-import eu.etaxonomy.cdm.remote.dto.TaxonSTO;
-import eu.etaxonomy.cdm.remote.dto.TaxonTO;
 
 
 @Controller("managementController")
