@@ -22,6 +22,7 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
+import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
@@ -34,9 +35,9 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
+import eu.etaxonomy.cdm.persistence.query.MatchMode;
 
-
-@Repository
+@Repository 
 @Qualifier("descriptionDaoImpl")
 public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> implements IDescriptionDao{
 
@@ -294,4 +295,22 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
 		return (List<TaxonDescription>)query.list();
 	}
 	
+	public List<CommonTaxonName> searchDescriptionByCommonName(String queryString, MatchMode matchMode, Integer pageSize, Integer pageNumber) {
+		
+		Criteria crit = getSession().createCriteria(CommonTaxonName.class); 
+		if (matchMode == MatchMode.EXACT) { 
+			crit.add(Restrictions.eq("name", matchMode.queryStringFrom(queryString))); 
+		} else { 
+			crit.add(Restrictions.ilike("name", matchMode.queryStringFrom(queryString))); 
+		} 
+
+		if(pageSize != null) {
+			crit.setMaxResults(pageSize); 
+			if(pageNumber != null) {
+				crit.setFirstResult(pageNumber * pageSize);
+			}
+		}
+		List<CommonTaxonName> results = (List<CommonTaxonName>)crit.list();
+		return results;
+	}
 }

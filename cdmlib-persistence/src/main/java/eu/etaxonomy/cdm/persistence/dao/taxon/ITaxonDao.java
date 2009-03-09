@@ -83,6 +83,19 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
 	
 	
 	/**
+	 * Computes all Taxon instances which name is of a certain Rank.
+	 * @param rank The rank of the taxon
+	 * @param sec The concept reference that the taxon belongs to
+	 * @param cdmFetch not used yet !! TODO
+	 * @param onlyWithChildren if true only taxa are returned that have taxonomic children. <Br>Default: true.
+	 * @param withMisaplications if false only taxa are returned that have no isMisappliedNameFor relationship. 
+	 * <Br>Default: true.
+	 * @return The List<Taxon> of root taxa.
+	 */
+	public List<Taxon> 
+	getRootTaxa(Rank rank, ReferenceBase sec, CdmFetch cdmFetch, Boolean onlyWithChildren, Boolean withMisapplications);
+
+		/**
 	 * TODO necessary? 
 	 * @param pagesize max maximum number of returned taxa
 	 * @param page page to start, with 0 being first page 
