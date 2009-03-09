@@ -15,6 +15,7 @@ import org.joda.time.DateTime;
 
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.User;
 
 /**
  * Data Transfer Object representing derived from the domain object {@link CdmBase}. 
@@ -29,7 +30,7 @@ public abstract class BaseTO extends BaseSTO{
 	
 	private DateTime created;
 	private String createdBy;
-	private Calendar updated;
+	private DateTime updated;
 	private String updatedBy;
 	
 	public DateTime getCreated() {
@@ -44,15 +45,16 @@ public abstract class BaseTO extends BaseSTO{
 	public void setCreatedBy(String createdBy) {
 		this.createdBy = createdBy;
 	}
-	public void setCreatedBy(Person createdBy) {
+	public void setCreatedBy(User createdBy) {
 		if(createdBy != null){
-			this.createdBy = createdBy.getTitleCache();			
+		    // FIXME could use createdBy.getPerson().getTitleCache() too - depends what you want to do here.
+			this.createdBy = createdBy.getUsername();			
 		}
 	}
-	public Calendar getUpdated() {
+	public DateTime getUpdated() {
 		return updated;
 	}
-	public void setUpdated(Calendar updated) {
+	public void setUpdated(DateTime updated) {
 		this.updated = updated;
 	}
 	public String getUpdatedBy() {
