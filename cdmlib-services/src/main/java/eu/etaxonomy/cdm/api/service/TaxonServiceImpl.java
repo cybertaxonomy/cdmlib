@@ -129,6 +129,14 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		return dao.getRootTaxa(sec, null, onlyWithChildren, withMisapplications);
 	}
 
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#getRootTaxa(eu.etaxonomy.cdm.model.name.Rank, eu.etaxonomy.cdm.model.reference.ReferenceBase, boolean, boolean)
+	 */
+	public List<Taxon> getRootTaxa(Rank rank, ReferenceBase sec, boolean onlyWithChildren,
+			boolean withMisapplications) {
+		return dao.getRootTaxa(rank, sec, null, onlyWithChildren, withMisapplications);
+	}
+
 	public List<RelationshipBase> getAllRelationships(int limit, int start){
 		return dao.getAllRelationships(limit, start);
 	}
