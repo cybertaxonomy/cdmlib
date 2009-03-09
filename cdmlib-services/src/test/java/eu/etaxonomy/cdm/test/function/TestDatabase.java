@@ -3,6 +3,7 @@
 package eu.etaxonomy.cdm.test.function;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -276,8 +277,8 @@ public class TestDatabase {
 			botName.setGenusOrUninomial("Genus");
 			botName.setSpecificEpithet("species");
 			appCtr.getNameService().save(botName);
-//			botName.testPrepersist();
-			java.util.List<?> names = appCtr.getNameService().findNamesByTitle("Genus species");
+			List<?> names = appCtr.getNameService().findNamesByTitle("Genus species");
+
 			names.size();
 //			AgentBase person = Person.NewTitledInstance("TestPerson");
 //			Contact contact1 = new Contact();
