@@ -45,7 +45,7 @@
                 </iajc>
               </tasks>
           </configuration>
-        </execution>
+        </execution> 
         <execution>
             <id>aspectj-test</id>
             <goals>
@@ -69,7 +69,7 @@
           </configuration>
         </execution>
       </executions>
-        <dependencies>
+      <dependencies>
           <dependency>
             <groupId>org.aspectj</groupId>
 			<artifactId>aspectjtools</artifactId>
@@ -80,7 +80,7 @@
 			<artifactId>aspectjrt</artifactId>
 			<version>1.5.4</version>
           </dependency>
-        </dependencies>
+      </dependencies>
       </plugin>
       
     <!-- JAXB Schema compiler task (xjc) not used at this point -->
@@ -199,6 +199,14 @@
         <exclusion>
           <groupId>cglib</groupId>
           <artifactId>cglib-full</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.hibernate</groupId>
+          <artifactId>hibernate</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>hibernate</groupId>
+          <artifactId>hibernate</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
