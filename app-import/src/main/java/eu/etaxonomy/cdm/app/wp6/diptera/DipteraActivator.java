@@ -28,6 +28,7 @@ import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.FeatureNode;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
+import eu.etaxonomy.cdm.model.name.Rank;
 
 
 /**
@@ -55,14 +56,12 @@ public class DipteraActivator {
 	//check - import
 	static final CHECK check = CHECK.IMPORT_WITHOUT_CHECK;
 
-	static final boolean doDistributionParser = false;  //also run DipteraDistributionParser
+	static final boolean doDistributionParser = true;  //also run DipteraDistributionParser
 
 	//NomeclaturalCode
 	static final NomenclaturalCode nomenclaturalCode = NomenclaturalCode.ICZN;
 
-	
-	
-	//ignore null
+//	//ignore null
 	static final boolean ignoreNull = true;
 	
 	//authors
@@ -83,7 +82,7 @@ public class DipteraActivator {
 	static final boolean doOccurences = false;
 	
 //	//authors
-//	static final boolean doAuthors = false;
+//	static final boolean doAuthors = true;
 //	//references
 //	static final DO_REFERENCES doReferences =  DO_REFERENCES.NONE;
 //	//names
@@ -146,7 +145,6 @@ public class DipteraActivator {
 				DipteraDistributionParser dipDist = new DipteraDistributionParser();
 				dipDist.doDistribution(app);
 			}
-						
 			//make feature tree
 			app = bmImport.getCdmApp();
 			FeatureTree tree = TreeCreator.flatTree(featureTreeUuid, bmImportConfigurator.getFeatureMap(), featureKeyList);
