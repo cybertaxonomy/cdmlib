@@ -1,6 +1,7 @@
 package eu.etaxonomy.cdm.model.common;
 
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -95,7 +96,7 @@ public abstract class TermBase extends VersionableEntity {
 	 * Language instances in the order of preference. If no representation in
 	 * any preferred languages is found the method falls back to return the
 	 * Representation in Language.DEFAULT() and if nessecary further falls back
-	 * to return the first element found.
+	 * to return the first element found if any.
 	 * 
 	 * TODO think about this fall-back strategy!
 	 * 
@@ -116,7 +117,10 @@ public abstract class TermBase extends VersionableEntity {
 			repr = getRepresentation(Language.DEFAULT());
 		}
 		if(repr == null){
-			repr = getRepresentations().iterator().next();
+			Iterator<Representation> it = getRepresentations().iterator();
+			if(it.hasNext()){
+				repr = getRepresentations().iterator().next();
+			}
 		}
 		return repr;
 	}
