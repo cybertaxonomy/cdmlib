@@ -41,6 +41,7 @@ import eu.etaxonomy.cdm.model.common.Extension;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.OriginalSource;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
+import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
@@ -339,7 +340,16 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 				synonymRelation.setSynonym(null);
 				getSession().delete(synonymRelation);
 			} 
-		} else if (taxonBase instanceof Synonym){ //is Synonym
+			
+			// Descriptions
+			for (Iterator<TaxonDescription> iterator = taxon.getDescriptions().iterator(); iterator.hasNext();) {
+				TaxonDescription taxonDescription = iterator.next();
+				iterator.remove();
+				taxonDescription.setTaxon(null);
+				getSession().delete(taxonDescription);
+			}
+			
+		} else { //is Synonym
 			Synonym synonym = (Synonym)taxonBase;
 			for (Iterator<SynonymRelationship> iterator = synonym.getSynonymRelations().iterator(); iterator.hasNext();){
 				SynonymRelationship synonymRelation = iterator.next();

@@ -84,7 +84,7 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
 	
 	/**
 	 * Computes all Taxon instances which name is of a certain Rank.
-	 * @param rank The rank of the taxon
+	 * @param rank The rank of the taxon name
 	 * @param sec The concept reference that the taxon belongs to
 	 * @param cdmFetch not used yet !! TODO
 	 * @param onlyWithChildren if true only taxa are returned that have taxonomic children. <Br>Default: true.
