@@ -18,6 +18,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -41,6 +42,7 @@ import org.hibernate.annotations.Table;
 import org.hibernate.annotations.Target;
 import org.hibernate.search.annotations.Indexed;
 
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.IParsable;
 import eu.etaxonomy.cdm.model.common.IReferencedEntity;
 import eu.etaxonomy.cdm.model.common.IRelated;
@@ -679,14 +681,6 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 		return (INomenclaturalReference)getNomenclaturalReference_();
 	}
 	
-	@ManyToOne
-	@Cascade({CascadeType.SAVE_UPDATE})
-	//@Target(ReferenceBase.class)
-	@Column(name="nomenclaturalReference_id")
-	protected ReferenceBase getNomenclaturalReference_(){
-		return (ReferenceBase)this.nomenclaturalReference;
-	}
-
 	/**
 	 * Assigns a {@link eu.etaxonomy.cdm.model.reference.INomenclaturalReference nomenclatural reference} to <i>this</i> taxon name.
 	 * The corresponding {@link eu.etaxonomy.cdm.model.reference.ReferenceBase.isNomenclaturallyRelevant nomenclaturally relevant flag} will be set to true
@@ -696,6 +690,19 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 	 */
 	public void setNomenclaturalReference(INomenclaturalReference nomenclaturalReference){
 		this.nomenclaturalReference = nomenclaturalReference;
+	}
+
+	// FIXME: This method is a workaround.
+	@ManyToOne
+	@Cascade({CascadeType.SAVE_UPDATE})
+	//@Target(ReferenceBase.class)
+	@JoinColumn(name="nomenclaturalReference_id")
+	protected ReferenceBase getNomenclaturalReference_(){
+		return (ReferenceBase)this.nomenclaturalReference;
+	}
+
+	public void setNomenclaturalReference_(ReferenceBase nomenclaturalReference){
+		this.nomenclaturalReference = HibernateProxyHelper.deproxy(nomenclaturalReference, INomenclaturalReference.class) ;
 	}
 
 	/** 
