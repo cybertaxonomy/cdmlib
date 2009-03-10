@@ -479,7 +479,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 	 * @see    #addRelationshipFromName(TaxonNameBase, NameRelationshipType, String)
 	 */
 	@OneToMany(mappedBy="relatedFrom", fetch= FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE_ORPHAN})
+	@Cascade({CascadeType.SAVE_UPDATE /*, CascadeType.DELETE_ORPHAN*/})
 	public Set<NameRelationship> getRelationsFromThisName() {
 		return relationsFromThisName;
 	}
@@ -496,7 +496,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 	 * @see    #addRelationshipToName(TaxonNameBase, NameRelationshipType, String)
 	 */
 	@OneToMany(mappedBy="relatedTo", fetch= FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE_ORPHAN})
+	@Cascade({CascadeType.SAVE_UPDATE /*, CascadeType.DELETE_ORPHAN */})
 	public Set<NameRelationship> getRelationsToThisName() {
 		return relationsToThisName;
 	}
