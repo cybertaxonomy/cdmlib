@@ -674,12 +674,19 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 	 * @see 	eu.etaxonomy.cdm.model.reference.INomenclaturalReference
 	 * @see 	eu.etaxonomy.cdm.model.reference.ReferenceBase
 	 */
+	@Transient
+	public INomenclaturalReference getNomenclaturalReference(){
+		return (INomenclaturalReference)getNomenclaturalReference_();
+	}
+	
 	@ManyToOne
 	@Cascade({CascadeType.SAVE_UPDATE})
-	@Target(ReferenceBase.class)
-	public INomenclaturalReference getNomenclaturalReference(){
-		return this.nomenclaturalReference;
+	//@Target(ReferenceBase.class)
+	@Column(name="nomenclaturalReference_id")
+	protected ReferenceBase getNomenclaturalReference_(){
+		return (ReferenceBase)this.nomenclaturalReference;
 	}
+
 	/**
 	 * Assigns a {@link eu.etaxonomy.cdm.model.reference.INomenclaturalReference nomenclatural reference} to <i>this</i> taxon name.
 	 * The corresponding {@link eu.etaxonomy.cdm.model.reference.ReferenceBase.isNomenclaturallyRelevant nomenclaturally relevant flag} will be set to true
@@ -883,6 +890,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 				boolean isNotDesignated, 
 				boolean addToAllHomotypicNames) {
 		NameTypeDesignation nameTypeDesignation = new NameTypeDesignation(typeSpecies, citation, citationMicroReference, originalNameString, isRejectedType, isConservedType, isNotDesignated);
+		nameTypeDesignation.setLectoType(isLectoType);
 		addTypeDesignation(nameTypeDesignation, addToAllHomotypicNames);
 	}
 	

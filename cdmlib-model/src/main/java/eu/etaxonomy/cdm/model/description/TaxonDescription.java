@@ -193,7 +193,7 @@ public class TaxonDescription extends DescriptionBase {
 		return taxon;
 	}
 	@Deprecated //for hibernate use only, use taxon.addDescription() instead
-	protected void setTaxon(Taxon taxon) {
+	public void setTaxon(Taxon taxon) {
 		this.taxon = taxon;
 	}
 

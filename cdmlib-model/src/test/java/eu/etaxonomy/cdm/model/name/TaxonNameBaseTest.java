@@ -19,6 +19,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
+import eu.etaxonomy.cdm.model.reference.Generic;
+import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy;
 
 /**
@@ -329,7 +331,11 @@ public class TaxonNameBaseTest {
 	 */
 	@Test
 	public void testGetNomenclaturalReference() {
-		logger.warn("not yet implemented");
+		INomenclaturalReference nr = nameBase1.getNomenclaturalReference();
+		assertNull("Nomenclatural Reference shall be null", nr);
+		nameBase1.setNomenclaturalReference(Generic.NewInstance());
+		nr = nameBase1.getNomenclaturalReference();
+		assertNotNull("Nomenclatural Reference shall not be null", nr);
 	}
 
 	/**
