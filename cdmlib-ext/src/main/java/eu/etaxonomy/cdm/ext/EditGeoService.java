@@ -71,6 +71,7 @@ public class EditGeoService {
 		String widthStr = "";
 		String heightStr = "";
 		String adLayerSeparator = ":";
+		String styleInAreaDataSeparator = "|";
 		String msSeparator = ","; //seperator for the ms parameter values , e.g. 'x' => ms=600x400
 		int borderWidth = 1;
 		
@@ -179,7 +180,7 @@ public class EditGeoService {
 			boolean isFirstStyle = true;
 			for (int style: styleMap.keySet()){
 				char styleChar = getStyleAbbrev(style);
-				areaData += (isFirstStyle? "" : "/") + styleChar + ":";
+				areaData += (isFirstStyle? "" : styleInAreaDataSeparator) + styleChar + ":";
 				Set<Distribution> distributionSet = styleMap.get(style);
 				boolean isFirstDistribution = true;
 				for (Distribution distribution: distributionSet){
