@@ -49,4 +49,15 @@ public class HibernateProxyHelper {
 	         return clazz.isAssignableFrom(object.getClass());
 	     }
 	 }
+	
+	/**
+	 * Get the class of an instance or the underlying class
+	 * of a proxy (without initializing the proxy!). It is
+	 * almost always better to use the entity name!
+	 * 
+	 * delegates calls to {@link org.hibernate.proxy.HibernateProxyHelper}
+	 */
+	public static Class getClassWithoutInitializingProxy(Object object) {
+		return org.hibernate.proxy.HibernateProxyHelper.getClassWithoutInitializingProxy(object);
+	}
 }
