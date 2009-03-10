@@ -192,7 +192,7 @@
             <listener class="org.hibernate.envers.event.AuditEventListener"/>
         </event>
         <!-- for filling caches -->
-        <event type="save">
+        <event type="save-update">
   			<listener class="eu.etaxonomy.cdm.persistence.hibernate.CacheStrategyGenerator"/>
   			<listener class="org.hibernate.event.def.DefaultSaveEventListener"/>
 		</event>
