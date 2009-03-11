@@ -116,11 +116,12 @@ public class NameTypeDesignation extends TypeDesignationBase implements ITypeDes
 	 * @see							TaxonNameBase#addNameTypeDesignation(TaxonNameBase, ReferenceBase, String, String, boolean, boolean, boolean, boolean, boolean)
 	 */
 	protected NameTypeDesignation(TaxonNameBase typeName, ReferenceBase citation, String citationMicroReference,
-			String originalNameString, boolean rejectedType, boolean conservedType, boolean isNotDesignated) {
+			String originalNameString, boolean rejectedType, boolean conservedType, boolean lectoType, boolean isNotDesignated) {
 		super(citation, citationMicroReference, originalNameString, isNotDesignated);
 		this.setTypeName(typeName);
 		this.rejectedType = rejectedType;
 		this.conservedType = conservedType;
+		this.lectoType = lectoType;
 	}
 		
 	//********* METHODS **************************************/

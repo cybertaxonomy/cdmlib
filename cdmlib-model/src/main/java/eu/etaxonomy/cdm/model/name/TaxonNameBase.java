@@ -155,7 +155,8 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
     @XmlElementWrapper(name = "RelationsFromThisName")
     @XmlElement(name = "RelationFromThisName")
     @OneToMany(mappedBy="relatedFrom", fetch= FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE_ORPHAN})
+	//TODO @Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE_ORPHAN}) => DELETE_ORPHAN does not work ( org.hibernate.HibernateException: Don't change the reference to a collection with cascade="all-delete-orphan": eu.etaxonomy.cdm.model.name.TaxonNameBase.relationsFromThisName)
+	@Cascade(CascadeType.SAVE_UPDATE)
 	private Set<NameRelationship> relationsFromThisName = new HashSet<NameRelationship>();
 
     @XmlElementWrapper(name = "RelationsToThisName")
@@ -163,7 +164,8 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @OneToMany(mappedBy="relatedTo", fetch= FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE_ORPHAN})
+	//@Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE_ORPHAN})
+	@Cascade(CascadeType.SAVE_UPDATE)
 	private Set<NameRelationship> relationsToThisName = new HashSet<NameRelationship>();
 
     @XmlElementWrapper(name = "NomenclaturalStatuses")
@@ -827,7 +829,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 				boolean isLectoType, 
 				boolean isNotDesignated, 
 				boolean addToAllHomotypicNames) {
-		NameTypeDesignation nameTypeDesignation = new NameTypeDesignation(typeSpecies, citation, citationMicroReference, originalNameString, isRejectedType, isConservedType, isNotDesignated);
+		NameTypeDesignation nameTypeDesignation = new NameTypeDesignation(typeSpecies, citation, citationMicroReference, originalNameString, isRejectedType, isConservedType, isLectoType, isNotDesignated);
 		addTypeDesignation(nameTypeDesignation, addToAllHomotypicNames);
 	}
 	
