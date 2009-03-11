@@ -169,7 +169,7 @@ public enum NomenclaturalCode implements IDefinedTerm<NomenclaturalCode> {
 		
 		switch (this){
 		case ICBN:
-			result = ZoologicalName.NewInstance(rank);
+			result = BotanicalName.NewInstance(rank);
 			break;
 		case ICZN:
 			result = ZoologicalName.NewInstance(rank);
