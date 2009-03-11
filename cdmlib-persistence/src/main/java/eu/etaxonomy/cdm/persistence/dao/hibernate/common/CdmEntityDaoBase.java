@@ -40,7 +40,7 @@ import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
 public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implements ICdmEntityDao<T> {
 	private static final Logger logger = Logger.getLogger(CdmEntityDaoBase.class);
 
-	int flushAfterNo = 2000;
+	int flushAfterNo = 1000; //large numbers may cause synchronisation errors when commiting the session !!
 	protected Class<T> type;
 	
 	public CdmEntityDaoBase(Class<T> type){
@@ -71,7 +71,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 		Iterator<T> iterator = cdmObjCollection.iterator();
 		int i = 0;
 		while(iterator.hasNext()){
-			if ( ( (i % 5000) == 0) && (i > 0)   ){logger.debug("Saved " + i + " objects" );}
+			if ( ( (i % 2000) == 0) && (i > 0)   ){logger.debug("Saved " + i + " objects" );}
 			T cdmObj = iterator.next();
 			UUID uuid = saveCdmObject_(cdmObj);
 			if (logger.isDebugEnabled()){logger.debug("Save cdmObj: " + (cdmObj == null? null: cdmObj.toString()));}
