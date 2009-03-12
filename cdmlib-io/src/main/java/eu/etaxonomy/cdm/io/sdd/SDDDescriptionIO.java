@@ -14,9 +14,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -31,6 +29,7 @@ import org.joda.time.DateTime;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
+import eu.etaxonomy.cdm.api.service.IAgentService;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.api.service.ITermService;
@@ -42,12 +41,12 @@ import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.Annotation;
+import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
-import eu.etaxonomy.cdm.model.common.MultilanguageText;
 import eu.etaxonomy.cdm.model.common.OriginalSource;
 import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.common.TermBase;
@@ -105,6 +104,7 @@ public class SDDDescriptionIO extends SDDIoBase implements ICdmIO<IImportConfigu
 	private Map<String,NonViralName> taxonNameBases = new HashMap<String,NonViralName>();
 	private Map<String,MeasurementUnit> units = new HashMap<String,MeasurementUnit>();
 	
+	private Set<AnnotationType> annotationTypes = new HashSet<AnnotationType>();
 	private Set<Feature> featureSet = new HashSet<Feature>();
 
 	private ReferenceBase sec = Database.NewInstance();
@@ -449,7 +449,11 @@ public class SDDDescriptionIO extends SDDIoBase implements ICdmIO<IImportConfigu
 			if (citations.containsKey(ref)) {
 				Article publication = (Article) publications.get(citations.get(ref));
 				if (locations.containsKey(ref)) {
-					publication.addAnnotation(Annotation.NewInstance(locations.get(ref), datasetLanguage));
+					Annotation location = Annotation.NewInstance(locations.get(ref), datasetLanguage);
+					AnnotationType annotationType = AnnotationType.NewInstance("", "location", "");
+					annotationTypes.add(annotationType);
+					location.setAnnotationType(annotationType);
+					publication.addAnnotation(location);
 				}
 				td.addDescriptionSource(publication);
 			}
@@ -480,6 +484,11 @@ public class SDDDescriptionIO extends SDDIoBase implements ICdmIO<IImportConfigu
 		StatisticalMeasure sm = k.next();
 		termService.saveTerm(sm); 
 	}
+	
+	for (Iterator<AnnotationType> at = annotationTypes.iterator() ; at.hasNext() ;) {
+		AnnotationType annotationType = at.next();
+		termService.saveTerm(annotationType); 
+	}
 
 	IReferenceService referenceService = getReferenceService();
 	// referenceService.saveReference(sourceReference); 
@@ -488,9 +497,20 @@ public class SDDDescriptionIO extends SDDIoBase implements ICdmIO<IImportConfigu
 		referenceService.saveReference(publication); 
 	}
 
+	IAgentService agentService = getAgentService();
+	for (Iterator<Person> p = authors.values().iterator() ; p.hasNext() ;) {
+		Person person = p.next();
+		agentService.saveAgent(person);
+	}
+	
+	for (Iterator<Person> p = editors.values().iterator() ; p.hasNext() ;) {
+		Person person = p.next();
+		agentService.saveAgent(person);
+	}
+	
 	// Returns a CdmApplicationController created by the values of this configuration.
 	IDescriptionService descriptionService = getDescriptionService();
-
+	
 	for (Iterator<TaxonDescription> k = taxonDescriptions.values().iterator() ; k.hasNext() ;){
 		TaxonDescription taxonDescription = k.next();
 		// Persists a Description
@@ -689,8 +709,7 @@ protected void importCharacters(Element elDataset, Namespace sddNamespace, SDDIm
 				Feature categoricalCharacter = Feature.NewInstance();
 				importRepresentation(elCategoricalCharacter, sddNamespace, categoricalCharacter, idCC, sddConfig);
 
-				categoricalCharacter.setSupportsQuantitativeData(false);
-				categoricalCharacter.setSupportsTextData(false);
+				categoricalCharacter.setSupportsCategoricalData(true);
 
 				// <States>
 				Element elStates = elCategoricalCharacter.getChild("States",sddNamespace);
@@ -749,7 +768,6 @@ protected void importCharacters(Element elDataset, Namespace sddNamespace, SDDIm
 				importRepresentation(elQuantitativeCharacter, sddNamespace, quantitativeCharacter, idQC, sddConfig);
 
 				quantitativeCharacter.setSupportsQuantitativeData(true);
-				quantitativeCharacter.setSupportsTextData(false);
 
 				// <MeasurementUnit>
 				//  <Label role="Abbrev">m</Label>
@@ -817,7 +835,6 @@ protected void importCharacters(Element elDataset, Namespace sddNamespace, SDDIm
 				Feature textCharacter = Feature.NewInstance();
 				importRepresentation(elTextCharacter, sddNamespace, textCharacter, idTC, sddConfig);
 
-				textCharacter.setSupportsQuantitativeData(false);
 				textCharacter.setSupportsTextData(true);
 
 				features.put(idTC, textCharacter);
