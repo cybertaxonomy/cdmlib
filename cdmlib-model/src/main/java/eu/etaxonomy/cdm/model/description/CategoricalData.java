@@ -15,13 +15,12 @@ import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
-import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
@@ -69,6 +68,7 @@ public class CategoricalData extends DescriptionElementBase {
 	@XmlElementWrapper(name = "States")
 	@XmlElement(name = "State")
 	@ManyToMany(fetch = FetchType.LAZY)
+	@Cascade({ CascadeType.SAVE_UPDATE })
 	private List<StateData> states = new ArrayList<StateData>();
 
 	
@@ -91,6 +91,7 @@ public class CategoricalData extends DescriptionElementBase {
 	 * Returns the (ordered) list of {@link State states} describing the {@link Feature feature}
 	 * corresponding to <i>this</i> categorical data.
 	 */
+	
 	public List<StateData> getStates(){
 		return this.states;
 	}
