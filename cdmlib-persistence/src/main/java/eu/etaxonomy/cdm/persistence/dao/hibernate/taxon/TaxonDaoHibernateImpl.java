@@ -41,6 +41,7 @@ import eu.etaxonomy.cdm.model.common.Extension;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.OriginalSource;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
+import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -342,10 +343,16 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 			} 
 			
 			// Descriptions
-			for (Iterator<TaxonDescription> iterator = taxon.getDescriptions().iterator(); iterator.hasNext();) {
-				TaxonDescription taxonDescription = iterator.next();
-				iterator.remove();
+			for (Iterator<TaxonDescription> iterDesc = taxon.getDescriptions().iterator(); iterDesc.hasNext();) {
+				TaxonDescription taxonDescription = iterDesc.next();
+				iterDesc.remove();
 				taxonDescription.setTaxon(null);
+				for (Iterator<DescriptionElementBase> iterDescElem = 
+					taxonDescription.getElements().iterator(); iterDescElem.hasNext();) {
+					DescriptionElementBase descriptionElement = iterDescElem.next();
+					iterDescElem.remove();
+					getSession().delete(descriptionElement);
+				}
 				getSession().delete(taxonDescription);
 			}
 			
