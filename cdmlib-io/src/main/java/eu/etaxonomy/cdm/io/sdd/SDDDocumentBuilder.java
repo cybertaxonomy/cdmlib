@@ -14,8 +14,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -25,20 +23,17 @@ import java.util.Set;
 import javax.xml.bind.Marshaller;
 
 import org.apache.log4j.Logger;
+import org.apache.xerces.dom.DocumentImpl;
+import org.apache.xerces.dom.ElementImpl;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 import org.xml.sax.SAXException;
 
-import org.apache.xerces.dom.DocumentImpl;
-//import com.sun.org.apache.xerces.internal.dom.ElementImpl;
 import com.sun.org.apache.xerces.internal.impl.xpath.regex.ParseException;
 import com.sun.org.apache.xml.internal.serialize.DOMSerializer;
 import com.sun.org.apache.xml.internal.serialize.OutputFormat;
 import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
-
-import org.apache.xerces.dom.ElementImpl;
-
 
 import eu.etaxonomy.cdm.io.jaxb.CdmMarshallerListener;
 import eu.etaxonomy.cdm.model.agent.Person;
@@ -57,6 +52,7 @@ import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.reference.Article;
 import eu.etaxonomy.cdm.model.reference.Database;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
@@ -81,6 +77,7 @@ public class SDDDocumentBuilder {
 	private Map<Feature,String> characters = new HashMap<Feature,String>();
 	private Map<Media,String> medias = new HashMap<Media,String>();
 	private Map<State,String> states = new HashMap<State,String>();
+	private Map<Article, String> articles = new HashMap<Article, String>();
 	private int agentsCount = 0;
 	private int taxonNamesCount = 0;
 	private int charactersCount = 0;
