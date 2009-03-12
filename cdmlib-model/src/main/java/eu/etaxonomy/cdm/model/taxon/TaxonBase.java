@@ -62,7 +62,6 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 })
 @Entity
 @Audited
-@Indexed
 @Table(appliesTo="TaxonBase", indexes = { @Index(name = "taxonBaseTitleCacheIndex", columnNames = { "titleCache" }) })
 public abstract class TaxonBase extends IdentifiableEntity {
 	

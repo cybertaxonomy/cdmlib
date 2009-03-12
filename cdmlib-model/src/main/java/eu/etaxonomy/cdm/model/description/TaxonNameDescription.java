@@ -19,13 +19,13 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Indexed;
 
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
@@ -45,6 +45,7 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 })
 @XmlRootElement(name = "TaxonNameDescription")
 @Entity
+@Indexed(index = "eu.etaxonomy.cdm.model.description.DescriptionBase")
 @Audited
 public class TaxonNameDescription extends DescriptionBase {
 	private static final long serialVersionUID = -7349160369642038687L;

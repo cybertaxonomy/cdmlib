@@ -10,18 +10,16 @@
 package eu.etaxonomy.cdm.model.name;
 
 
-import org.apache.log4j.Logger;
-import org.hibernate.envers.Audited;
-
-import eu.etaxonomy.cdm.strategy.cache.name.BotanicNameDefaultCacheStrategy;
-import eu.etaxonomy.cdm.strategy.cache.name.NonViralNameDefaultCacheStrategy;
-
-import javax.persistence.*;
+import javax.persistence.Entity;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+
+import org.apache.log4j.Logger;
+import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Indexed;
 
 /**
  * The taxon name class for bacteria.
@@ -39,6 +37,7 @@ import javax.xml.bind.annotation.XmlType;
 })
 @XmlRootElement(name = "BacterialName")
 @Entity
+@Indexed(index = "eu.etaxonomy.cdm.model.name.TaxonNameBase")
 @Audited
 public class BacterialName extends NonViralName<BacterialName> {
 	

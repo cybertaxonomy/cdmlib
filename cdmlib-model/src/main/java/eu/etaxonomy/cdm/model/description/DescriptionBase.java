@@ -67,7 +67,6 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 @Entity
 @Audited
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
-@Indexed
 public abstract class DescriptionBase extends IdentifiableEntity {
 	private static final long serialVersionUID = 5504218413819040193L;
 	private static final Logger logger = Logger.getLogger(DescriptionBase.class);

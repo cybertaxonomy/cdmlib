@@ -7,8 +7,6 @@ import java.util.GregorianCalendar;
 
 import junit.framework.Assert;
 
-import org.joda.time.DateMidnight;
-import org.joda.time.Partial;
 import org.junit.Before;
 import org.junit.Test;
 

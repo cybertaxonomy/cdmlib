@@ -21,6 +21,9 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Index;
+import org.hibernate.search.annotations.Indexed;
 
 import eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy;
 
@@ -45,6 +48,7 @@ import eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy;
 })
 @XmlRootElement(name = "ViralName")
 @Entity
+@Indexed(index = "eu.etaxonomy.cdm.model.name.TaxonNameBase")
 @Audited
 public class ViralName extends TaxonNameBase<ViralName, INameCacheStrategy<ViralName>>  {
 	
@@ -55,6 +59,7 @@ public class ViralName extends TaxonNameBase<ViralName, INameCacheStrategy<Viral
 	protected INameCacheStrategy<ViralName> cacheStrategy;
 	
 	@XmlElement(name = "Acronym")
+	@Field(index=Index.TOKENIZED)
 	private String acronym;
 
 	// ************* CONSTRUCTORS *************/	

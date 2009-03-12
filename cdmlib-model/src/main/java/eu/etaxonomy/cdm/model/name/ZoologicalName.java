@@ -11,23 +11,21 @@ package eu.etaxonomy.cdm.model.name;
 
 
 import javax.persistence.Entity;
-import javax.persistence.Transient;
-
-import org.apache.log4j.Logger;
-import org.hibernate.envers.Audited;
-
-import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
-import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
-import eu.etaxonomy.cdm.strategy.cache.name.ZooNameDefaultCacheStrategy;
-import eu.etaxonomy.cdm.strategy.parser.INonViralNameParser;
-import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
-
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+
+import org.apache.log4j.Logger;
+import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Indexed;
+
+import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
+import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
+import eu.etaxonomy.cdm.strategy.cache.name.ZooNameDefaultCacheStrategy;
+import eu.etaxonomy.cdm.strategy.parser.INonViralNameParser;
+import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 
 /**
  * The taxon name class for animals.
@@ -47,6 +45,7 @@ import javax.xml.bind.annotation.XmlType;
 })
 @XmlRootElement(name = "ZoologicalName")
 @Entity
+@Indexed(index = "eu.etaxonomy.cdm.model.name.TaxonNameBase")
 @Audited
 public class ZoologicalName extends NonViralName<ZoologicalName> {
 	

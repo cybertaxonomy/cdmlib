@@ -13,6 +13,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Indexed;
 
 import eu.etaxonomy.cdm.model.common.IRelated;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
@@ -52,6 +53,7 @@ import javax.xml.bind.annotation.XmlType;
 })
 @XmlRootElement(name = "Synonym")
 @Entity
+@Indexed(index = "eu.etaxonomy.cdm.model.taxon.TaxonBase")
 @Audited
 public class Synonym extends TaxonBase implements IRelated<SynonymRelationship>{
 	

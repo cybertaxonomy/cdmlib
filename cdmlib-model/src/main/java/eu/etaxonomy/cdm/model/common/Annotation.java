@@ -65,7 +65,7 @@ public class Annotation extends LanguageStringBase implements Cloneable {
 		return new Annotation(text, Language.DEFAULT());
 	}
 	
-	private Annotation(){
+	protected Annotation(){
 		super();
 	}
 	

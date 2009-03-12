@@ -17,6 +17,7 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Indexed;
 
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 
@@ -34,6 +35,7 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 @XmlType(name = "SpecimenDescription")
 @XmlRootElement(name = "SpecimenDescription")
 @Entity
+@Indexed(index = "eu.etaxonomy.cdm.model.description.DescriptionBase")
 @Audited
 public class SpecimenDescription extends DescriptionBase {
 	private static final long serialVersionUID = -8506790426682192703L;

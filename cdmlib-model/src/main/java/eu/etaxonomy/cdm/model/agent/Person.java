@@ -129,7 +129,7 @@ public class Person extends TeamOrPersonBase<Person> {
 	 * 
 	 * @see #Person(String, String, String)
 	 */
-	private Person() {
+	protected Person() {
 		super();
 		this.cacheStrategy = PersonDefaultCacheStrategy.NewInstance();
 

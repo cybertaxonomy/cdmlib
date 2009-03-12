@@ -9,7 +9,6 @@
 
 package eu.etaxonomy.cdm.model.common;
 
-import javax.persistence.Embeddable;
 import javax.persistence.Entity;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -29,8 +28,8 @@ import org.hibernate.search.annotations.Indexed;
 @XmlType(name = "LanguageString")
 @XmlRootElement(name = "LanguageString")
 @Entity
+@Indexed(index = "eu.etaxonomy.cdm.model.common.LanguageStringBase")
 @Audited
-@Indexed
 public class LanguageString  extends LanguageStringBase implements Cloneable {
 	private static final long serialVersionUID = -1502298496073201104L;
 	@SuppressWarnings("unused")

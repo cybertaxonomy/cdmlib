@@ -10,13 +10,13 @@
 package eu.etaxonomy.cdm.model.common;
 
 
-import org.apache.log4j.Logger;
-import org.hibernate.envers.Audited;
-
-import javax.persistence.*;
+import javax.persistence.Entity;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
+
+import org.apache.log4j.Logger;
+import org.hibernate.envers.Audited;
 
 /**
  * Extension types similar to dynamically defined attributes. These are not data

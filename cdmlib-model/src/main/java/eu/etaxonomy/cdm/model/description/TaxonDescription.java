@@ -60,8 +60,8 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 })
 @XmlRootElement(name = "TaxonDescription")
 @Entity
+@Indexed(index = "eu.etaxonomy.cdm.model.description.DescriptionBase")
 @Audited
-@Indexed
 public class TaxonDescription extends DescriptionBase {
 	private static final long serialVersionUID = 8065879180505546803L;
 	@SuppressWarnings("unused")

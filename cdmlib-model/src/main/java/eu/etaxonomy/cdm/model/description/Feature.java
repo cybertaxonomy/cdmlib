@@ -32,6 +32,7 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Indexed;
 
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -86,6 +87,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 })
 @XmlRootElement(name = "Feature")
 @Entity
+@Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
 @Audited
 public class Feature extends DefinedTermBase<Feature> {
 	private static final long serialVersionUID = 6754598791831848704L;
@@ -336,12 +338,12 @@ public class Feature extends DefinedTermBase<Feature> {
 	 *  
 	 * @return  the boolean value of the supportsCategoricalData flag
 	 */
-	public boolean isSupportsCategoricalData() {
+	public boolean supportsCategoricalData() {
 		return supportsCategoricalData;
 	}
 
 	/**
-	 * @see	#isSupportsCategoricalData() 
+	 * @see	#supportsCategoricalData() 
 	 */
 	public void setSupportsCategoricalData(boolean supportsCategoricalData) {
 		this.supportsCategoricalData = supportsCategoricalData;

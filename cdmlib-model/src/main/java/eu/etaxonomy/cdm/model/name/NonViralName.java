@@ -71,12 +71,11 @@ import eu.etaxonomy.cdm.strategy.cache.name.NonViralNameDefaultCacheStrategy;
     "authorshipCache",
     "protectedAuthorshipCache",
     "protectedNameCache"
-//    "cacheStrategy"
 })
 @XmlRootElement(name = "NonViralName")
 @Entity
+@Indexed(index = "eu.etaxonomy.cdm.model.name.TaxonNameBase")
 @Audited
-@Indexed
 public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonViralNameCacheStrategy> {
 	
 	private static final Logger logger = Logger.getLogger(NonViralName.class);

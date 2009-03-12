@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.model.name;
 
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Indexed;
 
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -37,6 +38,7 @@ import javax.xml.bind.annotation.XmlType;
 })
 @XmlRootElement(name = "CultivarPlantName")
 @Entity
+@Indexed(index = "eu.etaxonomy.cdm.model.name.TaxonNameBase")
 @Audited
 public class CultivarPlantName extends BotanicalName {
 	static Logger logger = Logger.getLogger(CultivarPlantName.class);

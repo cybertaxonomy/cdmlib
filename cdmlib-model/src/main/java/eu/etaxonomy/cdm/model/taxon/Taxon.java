@@ -61,8 +61,8 @@ import javax.xml.bind.annotation.XmlType;
 })
 @XmlRootElement(name = "Taxon")
 @Entity
+@Indexed(index = "eu.etaxonomy.cdm.model.taxon.TaxonBase")
 @Audited
-@Indexed
 public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<RelationshipBase>{
 
 	static Logger logger = Logger.getLogger(Taxon.class);

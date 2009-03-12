@@ -57,7 +57,7 @@ import eu.etaxonomy.cdm.model.common.LanguageString;
 @XmlRootElement(name = "TextData")
 @Entity
 @Audited
-@Indexed
+@Indexed(index = "eu.etaxonomy.cdm.model.description.DescriptionElementBase")
 public class TextData extends DescriptionElementBase {
 	private static final long serialVersionUID = -2165015581278282615L;
 	@SuppressWarnings("unused")

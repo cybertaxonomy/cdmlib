@@ -58,6 +58,7 @@ public abstract class StrictReferenceBase extends ReferenceBase {
 	
 	//The date range assigned to the reference. ISO Date range like. Flexible, year can be left out, etc
 	@XmlElement(name ="DatePublished" )
+	@Embedded
 	private TimePeriod datePublished;
 	
 	protected StrictReferenceBase(){
