@@ -1,9 +1,18 @@
 package eu.etaxonomy.cdm.database;
 
+import java.io.File;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.sql.DataSource;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.xml.XmlBeanFactory;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.jdbc.datasource.AbstractDataSource;
+import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
 
 
@@ -30,24 +39,74 @@ import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
  */
 public class UpdatableRoutingDataSource extends AbstractRoutingDataSource {
 	
-	private static final String DEFAULT_DATASOURCE_KEY = "empty_default";
+	
+	private static final String DATASOURCE_BEANDEF_FILE = "datasources.xml";
+	private static final String DATASOURCE_BEANDEF_PATH = System.getProperty("user.home")+File.separator+".cdmLibrary"+File.separator;
+	
+	private static String userdefinedBeanDefinitionFile = null;
+	
+	private String defaultDatasourceName = "empty_default";
 
 	@Override
 	protected Object determineCurrentLookupKey() {
 		return NamedContextHolder.getContextKey();
 	}
 	
-	/**
-	 * preserves the default target datasource on updating the targetdatasource map.
-	 * All other datasources are replaced by those stored in the Map.
-	 * @param targetDataSources
-	 */
-	public void updateTargetDataSources(Map targetDataSources) {
-		DataSource tds = determineTargetDataSource();
-		targetDataSources.put(DEFAULT_DATASOURCE_KEY, tds);
-		setTargetDataSources(targetDataSources);
-		setDefaultTargetDataSource(targetDataSources);
-		afterPropertiesSet();
+	@Override
+	public void afterPropertiesSet() {
+		updateDataSources();
+		// super.afterPropertiesSet() is called by updateRoutingDataSource()
+	}
+	
+	public void setDefaultDatasourceName(String name){
+		this.defaultDatasourceName = name;
+	}
+	
+	
+	public void setBeanDefinitionFile(String filename){
+		userdefinedBeanDefinitionFile = filename;
+	}
+	
+	public Map<String,SimpleDriverDataSource> updateDataSources() {
+		logger.info("loading & testing datasources .. ");
+		Map<String,SimpleDriverDataSource> datasources = loadDataSources();
+		setTargetDataSources(datasources);
+		DataSource defaultDatasource = datasources.get(defaultDatasourceName);
+		if(defaultDatasource == null) {
+			logger.error("Defaultdatasource '" +defaultDatasourceName + "' not found.");
+		}
+		setDefaultTargetDataSource(defaultDatasource);
+		super.afterPropertiesSet();
+		return datasources;
+	}
+
+	protected Map<String, SimpleDriverDataSource> loadDataSources() {
+
+		Map<String, SimpleDriverDataSource> dataSources = new HashMap<String, SimpleDriverDataSource>();
+
+		String path = DATASOURCE_BEANDEF_PATH + (userdefinedBeanDefinitionFile == null ? DATASOURCE_BEANDEF_FILE : userdefinedBeanDefinitionFile);
+		logger.info("    loading bean definition file: " + path);
+		FileSystemResource file = new FileSystemResource(path);
+		XmlBeanFactory beanFactory  = new XmlBeanFactory(file);
+		
+		for(String beanName : beanFactory.getBeanDefinitionNames()){
+			SimpleDriverDataSource datasource = (SimpleDriverDataSource)beanFactory.getBean(beanName, SimpleDriverDataSource.class);
+			Connection connection = null;
+			String sqlerror = null;
+			try {
+				connection = datasource.getConnection();
+				connection.close();
+			} catch (SQLException e) {
+				sqlerror = e.getMessage() + "["+ e.getSQLState() + "]";
+				if(connection !=  null){
+					try {connection.close();} catch (SQLException e1) { /* IGNORE */ }
+				}
+			}
+			logger.info("    /" + beanName + " => "+ datasource.getUrl() + "[ "+(sqlerror == null ? "OK" : "ERROR: " + sqlerror) + " ]");
+			dataSources.put(beanName, datasource);
+		}
+		
+		return dataSources;
 	}
 
 }
