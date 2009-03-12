@@ -23,7 +23,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
 
-import eu.etaxonomy.cdm.database.DataSourceLoader;
+import eu.etaxonomy.cdm.database.DataSourceReloader;
 
 
 @Controller("managementController")
@@ -32,7 +32,7 @@ public class ManagementController extends AbstractController
 	Log log = LogFactory.getLog(ManagementController.class);
 
 	@Autowired
-	private DataSourceLoader datasoucrceLoader;
+	private DataSourceReloader datasourceLoader;
 	
 	private static final int DEFAULT_PAGE_SIZE = 25;
 
@@ -55,7 +55,7 @@ public class ManagementController extends AbstractController
 				// get Object by UUID
 				if(op.equalsIgnoreCase("reload")){
 					mv.addObject("title", "CDM Community Server - Manager");
-					Map<String,SimpleDriverDataSource> dataSources = datasoucrceLoader.updateRoutingDataSource();
+					Map<String,SimpleDriverDataSource> dataSources = datasourceLoader.reload();
 					String bodyHtml = "<div><h4>Available Data Sources</h4><dl>";
 					bodyHtml += "<p><i>The following data sources have been loaded:</i></p><table><th>BasePath</th><th>DataSource URI</th>";
 					for(String key : dataSources.keySet()) {
