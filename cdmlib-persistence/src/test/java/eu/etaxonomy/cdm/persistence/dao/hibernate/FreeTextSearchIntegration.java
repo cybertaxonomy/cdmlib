@@ -10,7 +10,6 @@ import org.apache.commons.logging.LogFactory;
 import org.hibernate.Hibernate;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.spring.annotation.SpringApplicationContext;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
@@ -18,10 +17,10 @@ import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionElementDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
-import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
+import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 @DataSet
-public class FreeTextSearchIntegration extends CdmIntegrationTest {
+public class FreeTextSearchIntegration extends CdmTransactionalIntegrationTest {
 
 	private static Log log = LogFactory.getLog(FreeTextSearchIntegration.class);
 
@@ -33,7 +32,7 @@ public class FreeTextSearchIntegration extends CdmIntegrationTest {
 	
 //	@SpringBeanByType
 //	TaxonAlternativeSpellingSuggestionParser alternativeSpellingSuggestionParser;
-
+//
 //	@Test
 //	public void test() {
 //		taxonDao.rebuildIndex();
@@ -41,8 +40,11 @@ public class FreeTextSearchIntegration extends CdmIntegrationTest {
 //		
 //		descriptionElementDao.rebuildIndex();
 //		descriptionElementDao.optimizeIndex();
+//		setComplete();
+//		endTransaction();
+//		taxonDao.countTaxa("Arum",null); // For some reason this flushes the indexes and allows the next method to create the spellings index
 //	}
-	
+//	
 //	@Test
 //	public void test1() {
 //		alternativeSpellingSuggestionParser.refresh();
@@ -54,7 +56,6 @@ public class FreeTextSearchIntegration extends CdmIntegrationTest {
 		
 		assertNotNull("searchTextData should return a List",results);
 		assertEquals("there should be 4 TextData entities in the list",4,results.size());
-		
 		
 		assertTrue("DescriptionElementBase.feature should be initialized",Hibernate.isInitialized(results.get(0).getFeature()));
 		assertTrue("DescriptionElementBase.inDescription should be initialized",Hibernate.isInitialized(results.get(0).getInDescription()));
@@ -73,14 +74,14 @@ public class FreeTextSearchIntegration extends CdmIntegrationTest {
     @Test
     public void testSearchWord() {
     	List<TaxonBase> results = taxonDao.searchTaxa("Arum",null, null, null);
-		assertEquals("searchTaxa should return 43 results",43,results.size());
+		assertEquals("searchTaxa should return 463 results",46,results.size());
 		assertTrue("TaxonBase.name should be initialized",Hibernate.isInitialized(results.get(0).getName()));
     }
     
     @Test
     public void testSearchCount() {
 		int numberOfResults = taxonDao.countTaxa("Arum",null);
-		assertEquals("countTaxa should return 43",43,numberOfResults);
+		assertEquals("countTaxa should return 46",46,numberOfResults);
 		
     }
     
@@ -92,9 +93,9 @@ public class FreeTextSearchIntegration extends CdmIntegrationTest {
 		assertEquals("page 1 should contain 30 taxa",30,page1.size());
 		assertEquals("page 1 should be sorted alphabetically","Arum L.",page1.get(0).getName().getTitleCache());
 		assertEquals("page 1 should be sorted alphabetically","Arum lucanum Cavara & Grande",page1.get(29).getName().getTitleCache());
-		assertEquals("page 2 should contain 13 taxa",13,page2.size());
+		assertEquals("page 2 should contain 16 taxa",16,page2.size());
 		assertEquals("page 2 should be sorted alphabetically","Arum maculatum L.",page2.get(0).getName().getTitleCache());
-		assertEquals("page 2 should be sorted alphabetically","Arum x sooi Terpó",page2.get(12).getName().getTitleCache());
+		assertEquals("page 2 should be sorted alphabetically","Arum x sooi Terpó",page2.get(15).getName().getTitleCache());
     }
     
     @Test

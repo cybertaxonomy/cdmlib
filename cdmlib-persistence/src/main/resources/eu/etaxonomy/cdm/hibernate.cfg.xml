@@ -165,6 +165,7 @@
       <!-- View Package -->
       <mapping class="eu.etaxonomy.cdm.model.view.View"/>
       <mapping class="eu.etaxonomy.cdm.model.view.AuditEvent"/>
+      <!-- for filling caches -->
       <event type="save">
           <listener class="eu.etaxonomy.cdm.persistence.hibernate.CacheStrategyGenerator"/>
           <listener class="org.hibernate.event.def.DefaultSaveEventListener"/>
@@ -191,11 +192,5 @@
         <event type="post-collection-recreate">
             <listener class="org.hibernate.envers.event.AuditEventListener"/>
         </event>
-        <!-- for filling caches -->
-        <event type="save-update">
-  			<listener class="eu.etaxonomy.cdm.persistence.hibernate.CacheStrategyGenerator"/>
-  			<listener class="org.hibernate.event.def.DefaultSaveEventListener"/>
-		</event>
-        
     </session-factory>
 </hibernate-configuration>

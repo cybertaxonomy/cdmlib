@@ -53,14 +53,6 @@
       <property name="location" value="file:./target/test-classes/eu.etaxonomy.cdm.model.taxon.TaxonBase_spelling"/>
       <property name="create" value="false"/>
     </bean>
-
-    <bean id="taxonSpellingIndex" class="org.springmodules.lucene.index.support.SimpleIndexFactoryBean">
-      <property name="directory" ref="taxonSpellingDirectory"/>
-      <property name="create" value="false"/>
-      <property name="analyzer">
-        <bean class="org.apache.lucene.analysis.SimpleAnalyzer"/>
-      </property>
-    </bean>
     
     <import resource="classpath:/eu/etaxonomy/cdm/persistence.xml" />
  
