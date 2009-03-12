@@ -63,6 +63,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.persistence.dao.QueryParseException;
+import eu.etaxonomy.cdm.persistence.dao.common.ISearchableDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ITitledDao;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.AlternativeSpellingSuggestionParser;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
@@ -91,9 +92,16 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 	
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TaxonDaoHibernateImpl.class);
+	
+	private String defaultField = "name.titleCache";
+	private String defaultSort = "name.titleCache_forSort";
+	private Class<? extends TaxonBase> indexedClasses[]; 
 
 	public TaxonDaoHibernateImpl() {
 		super(TaxonBase.class);
+		indexedClasses = new Class[2];
+		indexedClasses[0] = Taxon.class;
+		indexedClasses[1] = Synonym.class;
 	}
 	
 	@Autowired(required = false)   //TODO switched of because it caused problems when starting CdmApplicationController
@@ -409,7 +417,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		try {
 			org.apache.lucene.search.Query query = queryParser.parse(queryString);
 			
-			FullTextSession fullTextSession = Search.createFullTextSession(this.getSession());
+			FullTextSession fullTextSession = Search.getFullTextSession(this.getSession());
 			org.hibernate.search.FullTextQuery fullTextQuery = null;
 			
 			if(accepted == null) {
@@ -652,35 +660,28 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 
 	public List<TaxonBase> searchTaxa(String queryString, Boolean accepted,	Integer pageSize, Integer pageNumber) {
 		checkNotInPriorView("TaxonDaoHibernateImpl.searchTaxa(String queryString, Boolean accepted,	Integer pageSize, Integer pageNumber)");
-		QueryParser queryParser = new QueryParser("name.titleCache", new SimpleAnalyzer());
+		QueryParser queryParser = new QueryParser(defaultField, new SimpleAnalyzer());
 		List<TaxonBase> results = new ArrayList<TaxonBase>();
 		 
 		try {
 			org.apache.lucene.search.Query query = queryParser.parse(queryString);
 			
-			FullTextSession fullTextSession = Search.createFullTextSession(getSession());
+			FullTextSession fullTextSession = Search.getFullTextSession(getSession());
 			org.hibernate.search.FullTextQuery fullTextQuery = null;
-			Criteria criteria = null;
 			
 			if(accepted == null) {
 				fullTextQuery = fullTextSession.createFullTextQuery(query, TaxonBase.class);
-				criteria =  getSession().createCriteria( TaxonBase.class );
 			} else {
 				if(accepted) {
 					fullTextQuery = fullTextSession.createFullTextQuery(query, Taxon.class);
-					criteria =  getSession().createCriteria( Taxon.class );
 				} else {
 					fullTextQuery = fullTextSession.createFullTextQuery(query, Synonym.class);
-					criteria =  getSession().createCriteria( Synonym.class );
 				}
 			}
 			
-			org.apache.lucene.search.Sort sort = new Sort(new SortField("name.titleCache_forSort"));
+			org.apache.lucene.search.Sort sort = new Sort(new SortField(defaultSort));
 			fullTextQuery.setSort(sort);
 			
-			criteria.setFetchMode( "name", FetchMode.JOIN );
-		    fullTextQuery.setCriteriaQuery(criteria);
-		    
 		    if(pageSize != null) {
 		    	fullTextQuery.setMaxResults(pageSize);
 			    if(pageNumber != null) {
@@ -690,7 +691,11 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 			    }
 			}
 		    
-		    return (List<TaxonBase>)fullTextQuery.list();
+		    List<TaxonBase> result = (List<TaxonBase>)fullTextQuery.list();
+		    for(TaxonBase taxonBase : result) {
+		    	Hibernate.initialize(taxonBase.getName());
+		    }
+		    return result;
 
 		} catch (ParseException e) {
 			throw new QueryParseException(e, queryString);
@@ -698,27 +703,30 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 	}
 	
 	public void purgeIndex() {
-		FullTextSession fullTextSession = Search.createFullTextSession(getSession());
-		
-		fullTextSession.purgeAll(type); // remove all taxon base from indexes
-		// fullTextSession.flushToIndexes() not implemented in 3.0.0.GA
+		FullTextSession fullTextSession = Search.getFullTextSession(getSession());
+		for(Class clazz : indexedClasses) {
+		    fullTextSession.purgeAll(clazz); // remove all taxon base from indexes
+		}
+		fullTextSession.flushToIndexes();
 	}
 
 	public void rebuildIndex() {
-		FullTextSession fullTextSession = Search.createFullTextSession(getSession());
+		FullTextSession fullTextSession = Search.getFullTextSession(getSession());
 		
 		for(TaxonBase taxonBase : list(null,null)) { // re-index all taxon base
 			Hibernate.initialize(taxonBase.getName());
 			fullTextSession.index(taxonBase);
 		}
-		// fullTextSession.flushToIndexes() not implemented in 3.0.0.GA
+		fullTextSession.flushToIndexes();
 	}
 	
 	public void optimizeIndex() {
-		FullTextSession fullTextSession = Search.createFullTextSession(getSession());
+		FullTextSession fullTextSession = Search.getFullTextSession(getSession());
 		SearchFactory searchFactory = fullTextSession.getSearchFactory();
-	    searchFactory.optimize(type); // optimize the indices ()
-	    // fullTextSession.flushToIndexes() not implemented in 3.0.0.GA
+		for(Class clazz : indexedClasses) {
+	        searchFactory.optimize(clazz); // optimize the indices ()
+		}
+	    fullTextSession.flushToIndexes();
 	}
 
 	public String suggestQuery(String queryString) {
@@ -728,8 +736,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 			try {
 
 				alternativeSpellingSuggestionParser.parse(queryString);
-				org.apache.lucene.search.Query alternativeQuery = alternativeSpellingSuggestionParser
-						.suggest(queryString);
+				org.apache.lucene.search.Query alternativeQuery = alternativeSpellingSuggestionParser.suggest(queryString);
 				if (alternativeQuery != null) {
 					alternativeQueryString = alternativeQuery
 							.toString("name.titleCache");
@@ -740,5 +747,57 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 			}
 		}
 		return alternativeQueryString;
+	}
+
+	public int count(String queryString) {
+		checkNotInPriorView("TaxonDaoHibernateImpl.count(String queryString)");
+        QueryParser queryParser = new QueryParser(defaultField, new SimpleAnalyzer());
+		
+		try {
+			org.apache.lucene.search.Query query = queryParser.parse(queryString);
+		
+			FullTextSession fullTextSession = Search.getFullTextSession(this.getSession());
+			org.hibernate.search.FullTextQuery fullTextQuery = fullTextSession.createFullTextQuery(query, type);
+				
+		    return fullTextQuery.getResultSize();
+
+		} catch (ParseException e) {
+			throw new QueryParseException(e, queryString);
+		}
+	}
+
+	public List<TaxonBase> search(String queryString, Integer pageSize,	Integer pageNumber) {
+		checkNotInPriorView("TaxonDaoHibernateImpl.search(String queryString, Integer pageSize,	Integer pageNumber)");
+		QueryParser queryParser = new QueryParser(defaultField, new SimpleAnalyzer());
+		List<TaxonBase> results = new ArrayList<TaxonBase>();
+		 
+		try {
+			org.apache.lucene.search.Query query = queryParser.parse(queryString);
+			
+			FullTextSession fullTextSession = Search.getFullTextSession(getSession());
+			
+			org.hibernate.search.FullTextQuery fullTextQuery = fullTextSession.createFullTextQuery(query, type);
+			
+			org.apache.lucene.search.Sort sort = new Sort(new SortField(defaultSort));
+			fullTextQuery.setSort(sort);
+		    
+		    if(pageSize != null) {
+		    	fullTextQuery.setMaxResults(pageSize);
+			    if(pageNumber != null) {
+			    	fullTextQuery.setFirstResult(pageNumber * pageSize);
+			    } else {
+			    	fullTextQuery.setFirstResult(0);
+			    }
+			}
+		    
+		    List<TaxonBase> result = (List<TaxonBase>)fullTextQuery.list();
+		    for(TaxonBase taxonBase : result) {
+		    	Hibernate.initialize(taxonBase.getName());
+		    }
+		    return result;
+
+		} catch (ParseException e) {
+			throw new QueryParseException(e, queryString);
+		}
 	}
 }

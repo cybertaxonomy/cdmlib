@@ -5,8 +5,9 @@ import org.apache.lucene.store.Directory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
-import org.springmodules.lucene.index.factory.IndexFactory;
 
+import eu.etaxonomy.cdm.model.taxon.Synonym;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.AlternativeSpellingSuggestionParser;
 
@@ -15,7 +16,11 @@ public class TaxonAlternativeSpellingSuggestionParser extends AlternativeSpellin
 
 	public TaxonAlternativeSpellingSuggestionParser() {
 		super(TaxonBase.class);
-		super.setDefaultField("name.persistentTitleCache");
+		Class<? extends TaxonBase> indexedClasses[] = new Class[2];
+		indexedClasses[0] = Taxon.class;
+		indexedClasses[1] = Synonym.class;
+		super.setIndexedClasses(indexedClasses);
+		super.setDefaultField("name.titleCache");
 	}
 
 	@Override
@@ -23,11 +28,4 @@ public class TaxonAlternativeSpellingSuggestionParser extends AlternativeSpellin
 	public void setDirectory(@Qualifier("taxonSpellingDirectory")Directory directory) {
 		this.directory = directory;
 	}
-
-	@Override
-	@Autowired
-	public void setIndexFactory(@Qualifier("taxonSpellingIndex")IndexFactory indexFactory) {
-		this.indexFactory = indexFactory;
-	}
-
 }

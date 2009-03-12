@@ -81,5 +81,20 @@ public class TermVocabularyDaoImpl extends VersionableDaoBase<TermVocabulary<Def
 		}
 	}
 
+	public <T extends DefinedTermBase> TermVocabulary<T> findByUri(String termSourceUri, Class<T> clazz) {
+		AuditEvent auditEvent = getAuditEventFromContext();
+		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
+    		Query query = getSession().createQuery("select vocabulary from TermVocabulary vocabulary where vocabulary.termSourceUri= :termSourceUri");
+	    	query.setParameter("termSourceUri", termSourceUri);
+		 
+		    return (TermVocabulary<T>)query.uniqueResult();
+		} else {
+			AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(type,auditEvent.getRevisionNumber());
+			query.add(AuditEntity.property("termSourceUri").eq(termSourceUri));
+			
+			return (TermVocabulary<T>)query.getSingleResult();
+		}
+	}
+
 
 }

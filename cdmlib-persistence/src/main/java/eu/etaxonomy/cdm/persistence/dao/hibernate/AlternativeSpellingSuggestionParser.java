@@ -41,35 +41,35 @@ import org.hibernate.search.reader.ReaderProvider;
 import org.hibernate.search.store.DirectoryProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
-import org.springmodules.lucene.index.factory.IndexFactory;
-import org.springmodules.lucene.index.factory.LuceneIndexWriter;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.persistence.dao.IAlternativeSpellingSuggestionParser;
 
 
 public abstract class AlternativeSpellingSuggestionParser<T extends CdmBase> extends HibernateDaoSupport  implements
-		IAlternativeSpellingSuggestionParser {
+IAlternativeSpellingSuggestionParser {
 	private static Log log = LogFactory.getLog(AlternativeSpellingSuggestionParser.class);
-	
+
 	private String defaultField;
-	protected IndexFactory indexFactory;
 	protected Directory directory;
 	private Class<T> type;
-	
+	private Class<? extends T> indexedClasses[];
+
 	public AlternativeSpellingSuggestionParser(Class<T> type) {
 		this.type = type;
 	}
-	
+
+	public void setIndexedClasses(Class<? extends T> indexedClasses[]) {
+		this.indexedClasses = indexedClasses;
+	}
+
 	public abstract void setDirectory(Directory directory);
-	
-	public abstract void setIndexFactory(IndexFactory indexFactory);
-	
+
 	@Autowired
 	public void setHibernateSessionFactory(SessionFactory sessionFactory) {
 		super.setSessionFactory(sessionFactory);
 	}
-	
+
 	public void setDefaultField(String defaultField) {
 		this.defaultField = defaultField;
 	}
@@ -84,7 +84,7 @@ public abstract class AlternativeSpellingSuggestionParser<T extends CdmBase> ext
 		Query query = querySuggester.parse(queryString);
 		return querySuggester.hasSuggestedQuery() ? query : null;
 	}
-	
+
 	private class QuerySuggester extends QueryParser {
 		private boolean suggestedQuery = false;
 		public QuerySuggester(String field, Analyzer analyzer) {
@@ -94,7 +94,7 @@ public abstract class AlternativeSpellingSuggestionParser<T extends CdmBase> ext
 			// Copied from org.apache.lucene.queryParser.QueryParser
 			// replacing construction of TermQuery with call to getTermQuery()
 			// which finds close matches.
-		    TokenStream source = getAnalyzer().tokenStream(field, new StringReader(queryText));
+			TokenStream source = getAnalyzer().tokenStream(field, new StringReader(queryText));
 			Vector v = new Vector();
 			Token t;
 
@@ -127,9 +127,9 @@ public abstract class AlternativeSpellingSuggestionParser<T extends CdmBase> ext
 				return q;
 			}
 		}
-		
+
 		private Term getTerm(String field, String queryText) throws ParseException {
-						
+
 			try {
 				SpellChecker spellChecker = new SpellChecker(directory);
 				if (spellChecker.exist(queryText)) {
@@ -149,45 +149,41 @@ public abstract class AlternativeSpellingSuggestionParser<T extends CdmBase> ext
 			return suggestedQuery;
 		}	
 	}
-	
-	public void refresh() {
-		
-		FullTextSession fullTextSession = Search.createFullTextSession(getSession());
-		SearchFactory searchFactory = fullTextSession.getSearchFactory();
-        DirectoryProvider directoryProvider = searchFactory.getDirectoryProviders(type)[0];
-        
-        ReaderProvider readerProvider = searchFactory.getReaderProvider();
-        
-		IndexReader indexReader = null;
-		LuceneIndexWriter indexWriter = null;
-		try {
-			try {
-				indexWriter = indexFactory.getIndexWriter();
-				indexReader = readerProvider.openReader(directoryProvider);
 
-				log.debug("Creating new dictionary for words in " + defaultField + " docs " + indexReader.numDocs());
-				Dictionary dictionary = new LuceneDictionary(indexReader, defaultField);
-				
-				if(log.isDebugEnabled()) {
-				    Iterator iterator = dictionary.getWordsIterator();
-				    while(iterator.hasNext()) {
-					    log.debug("Indexing word " + iterator.next());
-				    }
-				}
-				
-	            SpellChecker spellChecker = new SpellChecker(directory);
-	            spellChecker.indexDictionary(dictionary);
-			} catch (CorruptIndexException cie) {
-				log.error("Spellings index is corrupted", cie);
-			} finally {
-				if (indexReader != null) {
-					readerProvider.closeReader(indexReader);
-				}
-				if(indexWriter != null) {
-                    indexWriter.close();
-                }
+	public void refresh() {
+		FullTextSession fullTextSession = Search.getFullTextSession(getSession());
+		SearchFactory searchFactory = fullTextSession.getSearchFactory();
+		try {
+			SpellChecker spellChecker = new SpellChecker(directory);
+
+			for(Class<? extends T> indexedClass : indexedClasses) {
+				DirectoryProvider directoryProvider = searchFactory.getDirectoryProviders(indexedClass)[0];
+				ReaderProvider readerProvider = searchFactory.getReaderProvider();
+				IndexReader indexReader = null;
+
+				try {
+
+					indexReader = readerProvider.openReader(directoryProvider);
+					log.debug("Creating new dictionary for words in " + defaultField + " docs " + indexReader.numDocs());
+
+					Dictionary dictionary = new LuceneDictionary(indexReader, defaultField);
+					if(log.isDebugEnabled()) {
+						Iterator iterator = dictionary.getWordsIterator();
+						while(iterator.hasNext()) {
+							log.debug("Indexing word " + iterator.next());
+						}
+					}
+
+					spellChecker.indexDictionary(dictionary);
+				} catch (CorruptIndexException cie) {
+					log.error("Spellings index is corrupted", cie);
+				} finally {
+					if (indexReader != null) {
+						readerProvider.closeReader(indexReader);
+					}
+				} 
 			} 
-		} catch (IOException ioe) {
+		}catch (IOException ioe) {
 			log.error(ioe);
 		}
 	}

@@ -6,8 +6,9 @@ import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.persistence.dao.common.IAnnotatableDao;
+import eu.etaxonomy.cdm.persistence.dao.common.ISearchableDao;
 
-public interface IDescriptionElementDao extends IAnnotatableDao<DescriptionElementBase> {
+public interface IDescriptionElementDao extends IAnnotatableDao<DescriptionElementBase>,ISearchableDao<DescriptionElementBase> {
 	/**
 	 * This query is designed to search the the descriptions. 
 	 * This is complicated somewhat by the 1 ... n relation between
@@ -62,21 +63,4 @@ public interface IDescriptionElementDao extends IAnnotatableDao<DescriptionEleme
      * @return a count of media instances
      */
 	public int countMedia(DescriptionElementBase descriptionElement);
-	
-	/**
-	 * Removes all DescriptionElementBase entities from the index
-	 */
-	public void purgeIndex();
-
-	/**
-	 * Index all DescriptionElementBase entities currenly in the database (useful in concert with purgeIndex() to (re-)create
-	 * indexes or in the  case of corrupt indexes / mismatch between 
-	 * the database and the free-text indices) 
-	 */
-	public void rebuildIndex();
-	
-	/**
-	 * Calls optimize on the relevant index (useful periodically to increase response times on the free-text search)
-	 */
-	public void optimizeIndex();
 }

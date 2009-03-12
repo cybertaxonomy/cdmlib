@@ -24,6 +24,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
+import eu.etaxonomy.cdm.persistence.dao.common.ISearchableDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ITitledDao;
 import eu.etaxonomy.cdm.persistence.fetch.CdmFetch;
 
@@ -31,7 +32,7 @@ import eu.etaxonomy.cdm.persistence.fetch.CdmFetch;
  * @author a.mueller
  *
  */
-public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<TaxonBase> {
+public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<TaxonBase>, ISearchableDao<TaxonBase> {
 	
 	/**
 	 * Returns a count of TaxonBase instances (or Taxon instances, if accepted == true, or Synonym instance, if accepted == false) 
@@ -245,30 +246,4 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
 	 * @return a list of TaxonBase instances
 	 */
 	public List<TaxonBase> findTaxaByName(Boolean accepted, String uninomial, String infragenericEpithet, String specificEpithet, String infraspecificEpithet, Rank rank, Integer pageSize, Integer pageNumber);
-
-	/**
-	 * Suggest a query that will return hits based upon an existing lucene query string (that is presumably misspelt and returns no hits)
-	 * Used to implement "did you mean?"-type functionality using the lucene spellchecker.
-	 * 
-	 * @param string Query string to check
-	 * @return a suggested query string that will return hits or null if no such alternative spelling can be found.
-	 */
-	public String suggestQuery(String string);
-	
-	/**
-	 * Removes all TaxonBase entities from the index
-	 */
-	public void purgeIndex();
-
-	/**
-	 * Index all TaxonBase entities currenly in the database (useful in concert with purgeIndex() to (re-)create
-	 * indexes or in the  case of corrupt indexes / mismatch between 
-	 * the database and the free-text indices) 
-	 */
-	public void rebuildIndex();
-	
-	/**
-	 * Calls optimize on the relevant index (useful periodically to increase response times on the free-text search)
-	 */
-	public void optimizeIndex();
 }

@@ -39,4 +39,6 @@ public interface ITermVocabularyDao extends IVersionableDao<TermVocabulary<Defin
 	 * @return a List of terms
 	 */
 	public <T extends DefinedTermBase> List<T> getTerms(TermVocabulary<T> termVocabulary, Integer pageSize, Integer pageNumber);
+	
+	public <T extends DefinedTermBase> TermVocabulary<T> findByUri(String termSourceUri, Class<T> clazz);
 }

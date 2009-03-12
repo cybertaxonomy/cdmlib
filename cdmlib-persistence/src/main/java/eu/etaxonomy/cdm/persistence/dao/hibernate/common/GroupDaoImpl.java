@@ -17,7 +17,7 @@ public class GroupDaoImpl extends CdmEntityDaoBase<Group> implements IGroupDao {
 	}
 
 	public Group findGroupByName(String groupName) {
-		Query query = getSession().createQuery("select group from Group group where group.name = :name");
+		Query query = getSession().createQuery("select g from Group g where g.name = :name");
 		query.setParameter("name",groupName);
 		
 		Group group = (Group)query.uniqueResult();
@@ -26,11 +26,11 @@ public class GroupDaoImpl extends CdmEntityDaoBase<Group> implements IGroupDao {
 		  Hibernate.initialize(group.getMembers());
 		}
 		
-		return null;
+		return group;
 	}
 
 	public List<String> listNames(Integer pageSize, Integer pageNumber) {
-		Query query = getSession().createQuery("select group.name from Group group");
+		Query query = getSession().createQuery("select g.name from Group g");
 		
 		if(pageSize != null) {
 		    query.setMaxResults(pageSize);
@@ -45,7 +45,7 @@ public class GroupDaoImpl extends CdmEntityDaoBase<Group> implements IGroupDao {
 	}
 
 	public List<String> listMembers(Group group, Integer pageSize,	Integer pageNumber) {
-		Query query = getSession().createQuery("select member.username from Group group join group.members member where group = :group");
+		Query query = getSession().createQuery("select m.username from Group g join g.members m where g = :group");
 		query.setParameter("group", group);
 		
 		if(pageSize != null) {

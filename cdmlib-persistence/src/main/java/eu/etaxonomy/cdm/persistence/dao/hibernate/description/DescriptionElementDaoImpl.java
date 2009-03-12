@@ -1,5 +1,6 @@
 package eu.etaxonomy.cdm.persistence.dao.hibernate.description;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.lucene.analysis.SimpleAnalyzer;
@@ -20,15 +21,25 @@ import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.media.Media;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.QueryParseException;
+import eu.etaxonomy.cdm.persistence.dao.common.ISearchableDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionElementDao;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.AnnotatableDaoImpl;
 
 @Repository
 public class DescriptionElementDaoImpl extends AnnotatableDaoImpl<DescriptionElementBase> implements IDescriptionElementDao {
 
+	private String defaultField = "titleCache";
+	private String defaultSort = "titleCache_forSort";
+	
+	private Class<? extends DescriptionElementBase> indexedClasses[]; 
+
 	public DescriptionElementDaoImpl() {
 		super(DescriptionElementBase.class);
+		indexedClasses = new Class[1];
+		indexedClasses[0] = TextData.class;
 	}
 
 	public int countMedia(DescriptionElementBase descriptionElement) {
@@ -46,7 +57,7 @@ public class DescriptionElementDaoImpl extends AnnotatableDaoImpl<DescriptionEle
 		try {
 			org.apache.lucene.search.Query query = queryParser.parse(queryString);
 			
-			FullTextSession fullTextSession = Search.createFullTextSession(getSession());
+			FullTextSession fullTextSession = Search.getFullTextSession(getSession());
 			org.hibernate.search.FullTextQuery fullTextQuery = fullTextSession.createFullTextQuery(query, TextData.class);
 			return  fullTextQuery.getResultSize();
 		} catch (ParseException e) {
@@ -78,7 +89,7 @@ public class DescriptionElementDaoImpl extends AnnotatableDaoImpl<DescriptionEle
 		try {
 			org.apache.lucene.search.Query query = queryParser.parse(queryString);
 			
-			FullTextSession fullTextSession = Search.createFullTextSession(getSession());
+			FullTextSession fullTextSession = Search.getFullTextSession(getSession());
 			org.hibernate.search.FullTextQuery fullTextQuery = fullTextSession.createFullTextQuery(query, TextData.class);
 			org.apache.lucene.search.Sort sort = new Sort(new SortField("inDescription.titleCache_forSort"));
 			fullTextQuery.setSort(sort);
@@ -114,26 +125,83 @@ public class DescriptionElementDaoImpl extends AnnotatableDaoImpl<DescriptionEle
 	}
 	
 	public void purgeIndex() {
-		FullTextSession fullTextSession = Search.createFullTextSession(getSession());
-		
-		fullTextSession.purgeAll(type); // remove all description element base from indexes
-		// fullTextSession.flushToIndexes() not implemented in 3.0.0.GA
+		FullTextSession fullTextSession = Search.getFullTextSession(getSession());
+		for(Class clazz : indexedClasses) {
+		  fullTextSession.purgeAll(type); // remove all description element base from indexes
+		}
+		fullTextSession.flushToIndexes();
 	}
 
 	public void rebuildIndex() {
-		FullTextSession fullTextSession = Search.createFullTextSession(getSession());
+		FullTextSession fullTextSession = Search.getFullTextSession(getSession());
 		
 		for(DescriptionElementBase descriptionElementBase : list(null,null)) { // re-index all descriptionElements
 			Hibernate.initialize(descriptionElementBase.getInDescription());
 			Hibernate.initialize(descriptionElementBase.getFeature());
 			fullTextSession.index(descriptionElementBase);
 		}
+		fullTextSession.flushToIndexes();
 	}
 	
 	public void optimizeIndex() {
-		FullTextSession fullTextSession = Search.createFullTextSession(getSession());
+		FullTextSession fullTextSession = Search.getFullTextSession(getSession());
 		SearchFactory searchFactory = fullTextSession.getSearchFactory();
-	    searchFactory.optimize(type); // optimize the indices ()
+		for(Class clazz : indexedClasses) {
+	        searchFactory.optimize(clazz); // optimize the indices ()
+		}
+	    fullTextSession.flushToIndexes();
+	}
+
+	public int count(String queryString) {
+		checkNotInPriorView("DescriptionElementDaoImpl.count(String queryString)");
+        QueryParser queryParser = new QueryParser(defaultField, new SimpleAnalyzer());
+		
+		try {
+			org.apache.lucene.search.Query query = queryParser.parse(queryString);
+		
+			FullTextSession fullTextSession = Search.getFullTextSession(this.getSession());
+			org.hibernate.search.FullTextQuery fullTextQuery = fullTextSession.createFullTextQuery(query, type);
+				
+		    return fullTextQuery.getResultSize();
+
+		} catch (ParseException e) {
+			throw new QueryParseException(e, queryString);
+		}
+	}
+
+	public List<DescriptionElementBase> search(String queryString,	Integer pageSize, Integer pageNumber) {
+		checkNotInPriorView("DescriptionElementDaoImpl.search(String queryString, Integer pageSize,	Integer pageNumber)");
+		QueryParser queryParser = new QueryParser(defaultField, new SimpleAnalyzer());
+		List<TaxonBase> results = new ArrayList<TaxonBase>();
+		 
+		try {
+			org.apache.lucene.search.Query query = queryParser.parse(queryString);
+			
+			FullTextSession fullTextSession = Search.getFullTextSession(getSession());
+			
+			org.hibernate.search.FullTextQuery fullTextQuery = fullTextSession.createFullTextQuery(query, type);
+			
+			org.apache.lucene.search.Sort sort = new Sort(new SortField(defaultSort));
+			fullTextQuery.setSort(sort);
+		    
+		    if(pageSize != null) {
+		    	fullTextQuery.setMaxResults(pageSize);
+			    if(pageNumber != null) {
+			    	fullTextQuery.setFirstResult(pageNumber * pageSize);
+			    } else {
+			    	fullTextQuery.setFirstResult(0);
+			    }
+			}
+		    
+		    return (List<DescriptionElementBase>)fullTextQuery.list();
+
+		} catch (ParseException e) {
+			throw new QueryParseException(e, queryString);
+		}
+	}
+
+	public String suggestQuery(String string) {
+		throw new UnsupportedOperationException("suggest query is not supported yet");
 	}
 
 }
