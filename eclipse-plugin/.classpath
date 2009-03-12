@@ -2,6 +2,8 @@
 <classpath>
 	<classpathentry kind="src" output="target/test-classes" path="src/test/java"/>
 	<classpathentry kind="src" path="src/main/java"/>
+	<classpathentry exported="true" kind="lib" path="hibernate-commons-annotations-3.3.0.ga.jar"/>
+	<classpathentry exported="true" kind="lib" path="hibernate-commons-annotations-3.3.0.ga-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="jsr250-api-1.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="jsr250-api-1.0-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="spring-security-core-2.0.4-tests.jar"/>
@@ -66,10 +68,6 @@
 	<classpathentry exported="true" kind="lib" path="dom4j-1.6.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="ehcache-1.2.3.jar"/>
 	<classpathentry exported="true" kind="lib" path="ejb3-persistence.jar"/>
-	<classpathentry exported="true" kind="lib" path="hibernate-annotations.jar"/>
-	<classpathentry exported="true" kind="lib" path="hibernate-commons-annotations.jar"/>
-	<classpathentry exported="true" kind="lib" path="hibernate-validator.jar"/>
-	<classpathentry exported="true" kind="lib" path="hibernate3.jar" sourcepath="C:/Dokumente und Einstellungen/a.mueller/.m2/repository/org/hibernate/hibernate/3.2.5.ga/hibernate-3.2.5.ga-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="javassist.jar"/>
 	<classpathentry exported="true" kind="lib" path="jdbc2_0-stdext.jar"/>
 	<classpathentry exported="true" kind="lib" path="jta.jar"/>

@@ -1525,6 +1525,8 @@ eclipse-plugin/hibernate-3.2.6.ga-sources.jar -text
 eclipse-plugin/hibernate-3.2.6.ga.jar -text
 eclipse-plugin/hibernate-annotations-3.3.1.GA.jar -text
 eclipse-plugin/hibernate-annotations.jar -text
+eclipse-plugin/hibernate-commons-annotations-3.3.0.ga-sources.jar -text
+eclipse-plugin/hibernate-commons-annotations-3.3.0.ga.jar -text
 eclipse-plugin/hibernate-commons-annotations.jar -text
 eclipse-plugin/hibernate-search-3.0.1.GA.jar -text
 eclipse-plugin/hibernate-validator.jar -text
