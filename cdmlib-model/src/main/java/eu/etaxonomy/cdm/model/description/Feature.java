@@ -81,6 +81,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 	    "supportsIndividualAssociation",
 	    "supportsTaxonInteraction",
 	    "supportsCommonTaxonName",
+	    "supportsCategoricalData",
 	    "recommendedModifierEnumeration",
 	    "recommendedStatisticalMeasures",
 	    "supportedCategoricalEnumerations"
