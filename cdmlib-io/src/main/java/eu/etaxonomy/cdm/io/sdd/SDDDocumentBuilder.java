@@ -14,6 +14,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -40,6 +42,7 @@ import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.Annotation;
+import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.OriginalSource;
@@ -47,14 +50,22 @@ import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.common.TermBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
+import eu.etaxonomy.cdm.model.description.CategoricalData;
+import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.description.QuantitativeData;
 import eu.etaxonomy.cdm.model.description.State;
+import eu.etaxonomy.cdm.model.description.StateData;
+import eu.etaxonomy.cdm.model.description.StatisticalMeasurementValue;
+import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Article;
 import eu.etaxonomy.cdm.model.reference.Database;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 /**
  * Writes the SDD XML file. 
@@ -79,6 +90,7 @@ public class SDDDocumentBuilder {
 	private Map<State,String> states = new HashMap<State,String>();
 	private Map<Article, String> articles = new HashMap<Article, String>();
 	private int agentsCount = 0;
+	private int articlesCount = 0;
 	private int taxonNamesCount = 0;
 	private int charactersCount = 0;
 	private int mediasCount = 0;
@@ -93,6 +105,7 @@ public class SDDDocumentBuilder {
 	private String CHARACTER_TREE = "CharacterTree";
 	private String CHARACTER_TREES = "CharacterTrees";
 	private String CHAR_NODE = "CharNode";
+	private String CITATION = "Citation";
 	private String CODED_DESCRIPTION = "CodedDescription";
 	private String CODED_DESCRIPTIONS = "CodedDescriptions";
 	private String CREATORS = "Creators";
@@ -111,17 +124,20 @@ public class SDDDocumentBuilder {
 	private String IPR_STATEMENT = "IPRStatement";
 	private String IPR_STATEMENTS = "IPRStatements";
 	private String LABEL = "Label";
+	private String MEASURE = "Measure";
 	private String MEDIA_OBJECT = "MediaObject";
 	private String MEDIA_OBJECTS = "MediaObjects";
 	private String NODE = "Node";
 	private String NODES = "Nodes";
 	private String NOTE = "Note";
 	private String PARENT = "Parent";
+	private String QUANTITATIVE = "Quantitative";
 	private String QUANTITATIVE_CHARACTER = "QuantitativeCharacter";
 	private String REF = "ref";
 	private String REPRESENTATION = "Representation";
 	private String REVISION_DATA = "RevisionData";
 	private String ROLE = "role";
+	private String SCOPE = "Scope";
 	private String SHOULD_CONTAIN_ALL_CHARACTERS = "ShouldContainAllCharacters";
 	private String SOURCE = "Source";
 	private String STATE = "State";
@@ -270,6 +286,7 @@ public class SDDDocumentBuilder {
 		buildIPRStatements(dataset, reference);
 		buildTaxonNames(dataset);
 		buildCharacters(dataset);
+		buildCodedDescriptions(dataset);
 
 	}
 
@@ -543,13 +560,15 @@ public class SDDDocumentBuilder {
 						// TODO <MeasurementUnit> and <Default>
 						elCharacters.appendChild(elQuantitativeCharacter);
 					}
-					if (character.supportsTextData()) {
+
+					if (character.isSupportsCategoricalData()) {
+						ElementImpl elCategoricalCharacter = new ElementImpl(document, CATEGORICAL_CHARACTER);
+						charactersCount = buildReference(character, characters, ID, elCategoricalCharacter, "c", charactersCount);
+						buildRepresentation(elCategoricalCharacter, character);
+
 						Set<TermVocabulary<State>> enumerations = character.getSupportedCategoricalEnumerations();
 						if (enumerations != null) {
 							if (enumerations.size()>0) {
-								ElementImpl elCategoricalCharacter = new ElementImpl(document, CATEGORICAL_CHARACTER);
-								charactersCount = buildReference(character, characters, ID, elCategoricalCharacter, "c", charactersCount);
-								buildRepresentation(elCategoricalCharacter, character);
 								ElementImpl elStates = new ElementImpl(document, STATES);
 								TermVocabulary tv = (TermVocabulary) enumerations.toArray()[0];
 								Set<State> stateList = tv.getTerms();
@@ -564,13 +583,13 @@ public class SDDDocumentBuilder {
 								elCharacters.appendChild(elCategoricalCharacter);
 							}
 						}
-						if ((enumerations == null) || (enumerations.size() <= 0)) {
-							ElementImpl elTextCharacter = new ElementImpl(document, TEXT_CHARACTER);
-							charactersCount = buildReference(character, characters, ID, elTextCharacter, "c", charactersCount);
-							buildRepresentation(elTextCharacter, character);
-							// TODO <MeasurementUnit> and <Default>
-							elCharacters.appendChild(elTextCharacter);
-						}
+					}
+					if (character.supportsTextData()) {
+						ElementImpl elTextCharacter = new ElementImpl(document, TEXT_CHARACTER);
+						charactersCount = buildReference(character, characters, ID, elTextCharacter, "c", charactersCount);
+						buildRepresentation(elTextCharacter, character);
+						// TODO <MeasurementUnit> and <Default>
+						elCharacters.appendChild(elTextCharacter);
 					}
 				}
 			}
@@ -584,15 +603,24 @@ public class SDDDocumentBuilder {
 	 * Builds an element Agent referring to Agent defined later in the SDD file
 	 */
 	public int buildReference(VersionableEntity ve, Map references, String refOrId, ElementImpl element, String prefix, int count) throws ParseException {
-		if (ve instanceof IdentifiableEntity) {
-			IdentifiableEntity ie = (IdentifiableEntity) ve;
-			if (ie.getSources() != null) {
-				OriginalSource os = (OriginalSource) ie.getSources().toArray()[0];
-				String id = os.getIdInSource();
-				if (id != null) {
-					if (!id.equals("")) {
-						if (!references.containsValue(id)) {
-							element.setAttribute(refOrId, id);
+		if (references.containsKey(ve)) {
+			element.setAttribute(refOrId,(String) references.get(ve));
+		} else {
+			if (ve instanceof IdentifiableEntity) {
+				IdentifiableEntity ie = (IdentifiableEntity) ve;
+				if (ie.getSources().size() > 0) {
+					OriginalSource os = (OriginalSource) ie.getSources().toArray()[0];
+					String id = os.getIdInSource();
+					if (id != null) {
+						if (!id.equals("")) {
+							if (!references.containsValue(id)) {
+								element.setAttribute(refOrId, id);
+							} else while (element.getAttribute(refOrId).equals("")) {
+								if (!references.containsValue(prefix + (count+1))) {
+									element.setAttribute(refOrId, prefix + (count+1));
+								}
+								count++;
+							}
 						} else while (element.getAttribute(refOrId).equals("")) {
 							if (!references.containsValue(prefix + (count+1))) {
 								element.setAttribute(refOrId, prefix + (count+1));
@@ -617,13 +645,8 @@ public class SDDDocumentBuilder {
 				}
 				count++;
 			}
-		} else while (element.getAttribute(refOrId).equals("")) {
-			if (!references.containsValue(prefix + (count+1))) {
-				element.setAttribute(refOrId, prefix + (count+1));
-			}
-			count++;
+			references.put(ve, element.getAttribute(refOrId));
 		}
-		references.put(ve, element.getAttribute(refOrId));
 		return count;
 	}
 
@@ -631,15 +654,15 @@ public class SDDDocumentBuilder {
 	 * Builds a Representation element using a Feature
 	 */
 	public void buildRepresentation(ElementImpl element, TermBase tb) throws ParseException {
-	
+
 		//			create <Representation> element
 		ElementImpl representation = new ElementImpl(document, REPRESENTATION);
 		element.appendChild(representation);
 		String label = ((Representation) tb.getRepresentations().toArray()[0]).getLabel();
 		buildLabel(representation, label);
-	
+
 		String detailText = tb.getDescription();
-	
+
 		if (detailText != null && !detailText.equals("")) {
 			if (!detailText.equals(label)) {
 				ElementImpl detail = new ElementImpl(document, DETAIL);
@@ -647,7 +670,7 @@ public class SDDDocumentBuilder {
 				representation.appendChild(detail);
 			}
 		}
-	
+
 		if (tb instanceof DefinedTermBase) {
 			DefinedTermBase dtb = (DefinedTermBase) tb;
 			Set<Media> rm = dtb.getMedia();
@@ -662,8 +685,189 @@ public class SDDDocumentBuilder {
 				}
 			}
 		}
-	
+
 	}
+
+	//	/**
+	//	 * Builds Coded Descriptions associated with the Dataset
+	//	 */
+	public void buildCodedDescriptions(ElementImpl dataset) throws ParseException {
+
+		if (cdmSource.getTaxa() != null) {
+			ElementImpl elCodedDescriptions = new ElementImpl(document, CODED_DESCRIPTIONS);
+
+			for (Iterator<? extends TaxonBase> tb = cdmSource.getTaxa().iterator() ; tb.hasNext() ;){
+				Taxon taxon = (Taxon) tb.next();
+				Set<TaxonDescription> descriptions = taxon.getDescriptions();
+				for (Iterator<TaxonDescription> td = descriptions.iterator() ; td.hasNext() ;){
+					TaxonDescription taxonDescription = td.next();
+					ElementImpl elCodedDescription = new ElementImpl(document, CODED_DESCRIPTION);
+					buildRepresentation(elCodedDescription, taxonDescription);
+					buildScope(elCodedDescription, taxonDescription);
+					buildSummaryData(elCodedDescription, taxonDescription);
+					elCodedDescriptions.appendChild(elCodedDescription);
+				}
+			}
+
+			dataset.appendChild(elCodedDescriptions);
+		}
+
+	}
+
+	/**
+	 * Builds Scope associated with a CodedDescription
+	 */
+	public void buildScope(ElementImpl element, TaxonDescription taxonDescription) throws ParseException {
+
+		//		  <Scope>
+		//         <TaxonName ref="t1"/>
+		//         <Citation ref="p1" location="p. 30"/>
+		//        </Scope>
+
+		ElementImpl scope = new ElementImpl(document, SCOPE);
+
+		Taxon taxon = taxonDescription.getTaxon();
+		if (taxon != null) {
+			TaxonNameBase taxonNameBase = taxon.getName();
+			if (taxonNameBase != null) {
+				String ref = taxonNames.get(taxonNameBase);
+				if (!ref.equals("")) {
+					ElementImpl taxonName = new ElementImpl(document, TAXON_NAME);
+					taxonName.setAttribute(REF, ref);
+					scope.appendChild(taxonName);
+				}
+			}
+		}
+
+		Set<ReferenceBase> descriptionSources = taxonDescription.getDescriptionSources();
+		for (Iterator<ReferenceBase> rb = descriptionSources.iterator() ; rb.hasNext() ;){
+			ReferenceBase descriptionSource = rb.next();
+			if (descriptionSource instanceof Article) {
+				Article article = (Article) descriptionSource;
+				ElementImpl citation = new ElementImpl(document, CITATION);
+				articlesCount = buildReference(article, articles, REF, citation, "p", articlesCount);
+
+				Set<Annotation> annotations = article.getAnnotations();
+				for (Iterator<Annotation> a = annotations.iterator() ; a.hasNext() ;){
+					Annotation annotation = a.next();
+					AnnotationType annotationType = annotation.getAnnotationType();
+					if (annotationType != null) {
+						String type = annotationType.getLabel();
+						if (type.equals("location")) {
+							citation.setAttribute("location", annotation.getText());
+						}
+					}
+				}
+
+				scope.appendChild(citation);
+			}
+		}
+
+		element.appendChild(scope);
+	}
+
+	/**
+	 * Builds SummaryData associated with a CodedDescription
+	 */
+	public void buildSummaryData(ElementImpl element, TaxonDescription taxonDescription) throws ParseException {
+
+		//			<SummaryData>
+		//	          <Categorical ref="c4">
+		//	            <State ref="s3"/>
+		//	            <State ref="s4"/>
+		//	          </Categorical>
+
+		ElementImpl summaryData = new ElementImpl(document, SUMMARY_DATA);
+		Set<DescriptionElementBase> elements = taxonDescription.getElements();
+		for (Iterator<DescriptionElementBase> deb = elements.iterator() ; deb.hasNext() ;){
+			DescriptionElementBase descriptionElement = deb.next();
+			if (descriptionElement instanceof CategoricalData) {
+				CategoricalData categoricalData = (CategoricalData) descriptionElement;
+				buildCategorical(summaryData, categoricalData);
+			}
+			if (descriptionElement instanceof QuantitativeData) {
+				QuantitativeData quantitativeData = (QuantitativeData) descriptionElement;
+				buildQuantitative(summaryData, quantitativeData);
+			}
+		}
+		element.appendChild(summaryData);
+	}
+
+	/**
+	 * Builds Categorical associated with a SummaryData
+	 */
+	public void buildCategorical(ElementImpl element, CategoricalData categoricalData) throws ParseException {
+
+		//			<SummaryData>
+		//	          <Categorical ref="c4">
+		//	            <State ref="s3"/>
+		//	            <State ref="s4"/>
+		//	          </Categorical>
+
+		ElementImpl categorical = new ElementImpl(document, CATEGORICAL);
+		List<StateData> states = categoricalData.getStates();
+		for (Iterator<StateData> sd = states.iterator() ; sd.hasNext() ;){
+			StateData stateData = sd.next();
+			State s = stateData.getState();
+			buildState(categorical, s);
+		}
+		element.appendChild(categorical);
+	}
+
+	/**
+	 * Builds State associated with a Categorical
+	 */
+	public void buildState(ElementImpl element, State s) throws ParseException {
+
+		//			<SummaryData>
+		//	          <Categorical ref="c4">
+		//	            <State ref="s3"/>
+		//	            <State ref="s4"/>
+		//	          </Categorical>
+
+		ElementImpl state = new ElementImpl(document, STATE);
+		buildReference(s, states, REF, state, "s", statesCount);
+		element.appendChild(state);
+	}
+
+	/**
+	 * Builds Quantitative associated with a SummaryData
+	 */
+	public void buildQuantitative(ElementImpl element, QuantitativeData quantitativeData) throws ParseException {
+	
+//		<Quantitative ref="c2">
+//        <Measure type="Min" value="2.3"></Measure>
+//        <Measure type="Mean" value="5.1"/>
+//        <Measure type="Max" value="7.9"/>
+//        <Measure type="SD" value="1.3"/>
+//        <Measure type="N" value="20"/>
+//      </Quantitative>
+	
+		ElementImpl quantitative = new ElementImpl(document, QUANTITATIVE);
+		Set<StatisticalMeasurementValue> statisticalValues = quantitativeData.getStatisticalValues();
+		for (Iterator<StatisticalMeasurementValue> smv = statisticalValues.iterator() ; smv.hasNext() ;){
+			StatisticalMeasurementValue statisticalValue = smv.next();
+			buildMeasure(quantitative, statisticalValue);
+		}
+		element.appendChild(quantitative);
+	}
+
+	/**
+		 * Builds Measure associated with a Quantitative
+		 */
+		public void buildMeasure(ElementImpl element, StatisticalMeasurementValue statisticalValue) throws ParseException {
+		
+	//		<Quantitative ref="c2">
+	//        <Measure type="Min" value="2.3"></Measure>
+	//        <Measure type="Mean" value="5.1"/>
+	//        <Measure type="Max" value="7.9"/>
+	//        <Measure type="SD" value="1.3"/>
+	//        <Measure type="N" value="20"/>
+	//      </Quantitative>
+		
+			ElementImpl measure = new ElementImpl(document, MEASURE);
+			element.appendChild(measure);
+		}
 
 
 	//	/**
