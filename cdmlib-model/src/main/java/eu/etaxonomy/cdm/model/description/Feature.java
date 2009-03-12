@@ -128,8 +128,8 @@ public class Feature extends DefinedTermBase<Feature> {
 	@XmlElement(name = "SupportsTaxonInteraction")
 	private boolean supportsTaxonInteraction;
 	
-	@XmlElement(name = "SupportsCommonTaxonName")
-	private boolean supportsCommonTaxonName;
+	@XmlElement(name = "SupportsCategoricalData")
+	private boolean supportsCategoricalData;
 	
 	/*
 	 * FIXME Should this be Many-To-Many or do we expect each Feature to have its own unique modifier enums?
@@ -160,6 +160,8 @@ public class Feature extends DefinedTermBase<Feature> {
 	@OneToMany(fetch = FetchType.LAZY)
     @JoinTable(name="DefinedTermBase_SupportedCategoricalEnumeration")
 	private Set<TermVocabulary<State>> supportedCategoricalEnumerations = new HashSet<TermVocabulary<State>>();
+	@XmlElement(name = "SupportsCommonTaxonName")
+	private boolean supportsCommonTaxonName;
 	
 /* ***************** CONSTRUCTOR AND FACTORY METHODS **********************************/
 	
@@ -328,6 +330,25 @@ public class Feature extends DefinedTermBase<Feature> {
 	}
 
 	/**
+	 * Returns the boolean value of the flag indicating whether <i>this</i>
+	 * feature can be described with {@link CategoricalData categorical data}
+	 * (true) or not (false).
+	 *  
+	 * @return  the boolean value of the supportsCategoricalData flag
+	 */
+	public boolean isSupportsCategoricalData() {
+		return supportsCategoricalData;
+	}
+
+	/**
+	 * @see	#isSupportsCategoricalData() 
+	 */
+	public void setSupportsCategoricalData(boolean supportsCategoricalData) {
+		this.supportsCategoricalData = supportsCategoricalData;
+	}
+
+	
+	/**
 	 * Returns the set of {@link TermVocabulary term vocabularies} containing the
 	 * {@link Modifier modifiers} recommended to be used for {@link DescriptionElementBase description elements}
 	 * with <i>this</i> feature.
@@ -488,6 +509,7 @@ public class Feature extends DefinedTermBase<Feature> {
 			if ("1".equals(text.substring(3, 4))){newInstance.setSupportsIndividualAssociation(true);};
 			if ("1".equals(text.substring(4, 5))){newInstance.setSupportsTaxonInteraction(true);};
 			if ("1".equals(text.substring(5, 6))){newInstance.setSupportsCommonTaxonName(true);};
+			// if ("1".equals(text.substring(6, 7))){newInstance.setSupportsCategoricalData(true);};
 		}
 		return newInstance;
 	}
