@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.api.service;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
@@ -26,9 +27,12 @@ import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
+import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmEntityDaoBaseTestClass;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 
@@ -49,27 +53,8 @@ public class TaxonServiceSearchTest extends CdmIntegrationTest {
 //	@SpringBeanByType
 //	private CdmEntityDaoBaseTestClass cdmEntityDaoBase;
 
-	@Before
-	public void setUp() {
-		
-		BotanicalName abies_Mill, abiesAlba_Michx, abiesAlba_Mill;
 
-		Person mill = Person.NewInstance();
-		mill.setTitleCache("Mill.");
-		Person michx = Person.NewInstance();
-		michx.setTitleCache("Michx.");
-		
-		nameService.saveTaxonName(BotanicalName.NewInstance(Rank.GENUS(), "Abies", null, null, null, null, null, null, null));
-		abies_Mill = BotanicalName.NewInstance(Rank.GENUS(), "Abies", null, null, null, mill, null, null, null);
-		nameService.saveTaxonName(BotanicalName.NewInstance(Rank.SPECIES(), "Abies", null, "alba", null, null, null, null, null));
-		abiesAlba_Michx = BotanicalName.NewInstance(Rank.SPECIES(), "Abies", null, "alba", null, michx, null, null, null);
-		abiesAlba_Mill = BotanicalName.NewInstance(Rank.SPECIES(), "Abies", null, "alba", null, mill, null, null, null);
-
-		taxonService.saveTaxon(Taxon.NewInstance(abies_Mill, null));
-		taxonService.saveTaxon(Taxon.NewInstance(abiesAlba_Mill, null));
-		taxonService.saveTaxon(Synonym.NewInstance(abiesAlba_Michx, null));
-	}
-
+	//@Ignore
 	@Test
 	public void testDbUnitUsageTest() throws Exception {
 		assertNotNull("taxonService should exist", taxonService);
@@ -78,18 +63,12 @@ public class TaxonServiceSearchTest extends CdmIntegrationTest {
 //		assertNotNull("cdmEntityDaoBase should exist", cdmEntityDaoBase);
 	}
 
-//	@Test
-//	public final void testBuildDataSet() {
-//
-//
-//	}
-	
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.api.service.TaxonServiceImpl#findTaxaAndNames(eu.etaxonomy.cdm.api.service.config.ITaxonServiceConfigurator)}.
 	 */
+	//@Ignore
 	@Test
-	//@DataSet("TaxonServiceImplTest.xml")
-	//@ExpectedDataSet
+	@DataSet
 	public final void testFindTaxaAndNames() {
 
 		ITaxonServiceConfigurator configurator = new TaxonServiceConfiguratorImpl();
@@ -97,14 +76,26 @@ public class TaxonServiceSearchTest extends CdmIntegrationTest {
 		configurator.setDoNamesWithoutTaxa(true);
 		Pager<IdentifiableEntity> pager = taxonService.findTaxaAndNames(configurator);
 		List<IdentifiableEntity> list = pager.getRecords();
-		for (int i = 0; i < list.size(); i++) {
-			logger.error(i + " = " + list.get(i).getTitleCache());
-			//System.out.println(i + " = " + list.get(i).getTitleCache());
+		if (logger.isDebugEnabled()) {
+			for (int i = 0; i < list.size(); i++) {
+				String nameCache = "";
+				if (list.get(i) instanceof NonViralName) {
+					nameCache = ((NonViralName<?>)list.get(i)).getNameCache();
+				} else if (list.get(i) instanceof TaxonBase) {
+					TaxonNameBase<?,?> taxonNameBase= ((TaxonBase)list.get(i)).getName();
+					nameCache = ((NonViralName<?>)taxonNameBase).getNameCache();
+				} else {}
+				logger.debug(list.get(i).getClass() + "(" + i +")" + 
+						": Name Cache = " + nameCache + ", Title Cache = " + list.get(i).getTitleCache());
+			}
 		}
-
+		assertEquals(list.get(2).getTitleCache(), "Abies mill. sec. ???");
+		assertEquals(list.get(5).getTitleCache(), "Abies alba Mill. sec. ???");
 	}
 	
+	@Ignore
 	@Test
+	@DataSet
 	public final void testPrintDataSet() {
 		
 		printDataSet(System.out);

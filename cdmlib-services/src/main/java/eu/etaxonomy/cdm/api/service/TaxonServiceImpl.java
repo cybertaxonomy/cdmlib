@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.api.service;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -358,6 +359,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 				numberOfResults += numberNameResults;
 			}
 		}
+		Collections.sort(results);
 		return new DefaultPagerImpl<IdentifiableEntity>
 			(configurator.getPageNumber(), numberOfResults, configurator.getPageSize(), results);
 	}
