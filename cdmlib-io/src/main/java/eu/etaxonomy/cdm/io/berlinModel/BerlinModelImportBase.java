@@ -33,7 +33,6 @@ import eu.etaxonomy.cdm.model.common.Language;
  * @version 1.0
  */
 public abstract class BerlinModelImportBase extends CdmIoBase<IImportConfigurator> implements ICdmIO<IImportConfigurator> {
-	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(BerlinModelImportBase.class);
 	
 	public BerlinModelImportBase() {
