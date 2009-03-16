@@ -561,7 +561,7 @@ public class SDDDocumentBuilder {
 						elCharacters.appendChild(elQuantitativeCharacter);
 					}
 
-					if (character.isSupportsCategoricalData()) {
+					if (character.supportsCategoricalData()) {
 						ElementImpl elCategoricalCharacter = new ElementImpl(document, CATEGORICAL_CHARACTER);
 						charactersCount = buildReference(character, characters, ID, elCategoricalCharacter, "c", charactersCount);
 						buildRepresentation(elCategoricalCharacter, character);
