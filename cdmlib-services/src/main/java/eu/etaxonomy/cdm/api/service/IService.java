@@ -101,6 +101,20 @@ public interface IService<T extends CdmBase>{
 	public Map<UUID,T> saveAll(Collection<T> newInstances);
 	
 	/**
+	 * Re-read the state of the given instance from the underlying database.
+	 * 
+	 * Hibernate claims that it is inadvisable to use refresh in long-running-sessions. 
+	 * I don't really see where we would get into a situation where problems as discussed
+	 * this forum thread would apply for our scenario 
+	 * 
+	 * http://forum.hibernate.org/viewtopic.php?t=974544 
+	 * 
+	 * @param persistentObject the object to be refreshed
+	 * @return the unique identifier
+	 */
+	public UUID refresh(T persistentObject);
+	
+	/**
 	 * Delete an existing persistent object
 	 * 
 	 * @param persistentObject the object to be deleted

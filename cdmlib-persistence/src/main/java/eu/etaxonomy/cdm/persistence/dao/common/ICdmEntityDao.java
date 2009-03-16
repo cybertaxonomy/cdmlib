@@ -57,6 +57,13 @@ public interface ICdmEntityDao<T extends CdmBase> {
 	 * @return
 	 * @throws DataAccessException
 	 */
+	public UUID refresh(T persistentObject) throws DataAccessException;
+	
+	/**
+	 * @param persistentObject
+	 * @return
+	 * @throws DataAccessException
+	 */
 	public UUID delete(T persistentObject) throws DataAccessException;
 	
 	/**

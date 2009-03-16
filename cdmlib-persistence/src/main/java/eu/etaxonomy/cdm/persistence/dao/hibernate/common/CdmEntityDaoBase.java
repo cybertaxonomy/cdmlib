@@ -127,6 +127,11 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 		return transientObject.getUuid();
 	}
 	
+	public UUID refresh(T persistentObject) throws DataAccessException {
+		getSession().refresh(persistentObject);
+		return persistentObject.getUuid();
+	}
+	
 	public UUID delete(T persistentObject) throws DataAccessException {
 		getSession().delete(persistentObject);
 		return persistentObject.getUuid();
