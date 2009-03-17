@@ -14,8 +14,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -45,6 +43,8 @@ import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.OriginalSource;
 import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.common.TermBase;
@@ -56,8 +56,10 @@ import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.QuantitativeData;
 import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.StateData;
+import eu.etaxonomy.cdm.model.description.StatisticalMeasure;
 import eu.etaxonomy.cdm.model.description.StatisticalMeasurementValue;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
+import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
@@ -108,6 +110,7 @@ public class SDDDocumentBuilder {
 	private String CITATION = "Citation";
 	private String CODED_DESCRIPTION = "CodedDescription";
 	private String CODED_DESCRIPTIONS = "CodedDescriptions";
+	private String CONTENT = "Content";
 	private String CREATORS = "Creators";
 	private String DATASET = "Dataset";
 	private String DATASETS = "Datasets";
@@ -149,9 +152,12 @@ public class SDDDocumentBuilder {
 	private String TAXON_NAMES = "TaxonNames";
 	private String TECHNICAL_METADATA = "TechnicalMetadata";
 	private String TEXT = "Text";
+	private String TEXT_CHAR = "TextChar";
 	private String TEXT_CHARACTER = "TextCharacter";
 	private String TYPE = "Type";
 	private String URI = "uri";
+	
+	private Language defaultLanguage = Language.DEFAULT();
 
 	private static final Logger logger = Logger.getLogger(SDDDocumentBuilder.class);
 
@@ -279,7 +285,7 @@ public class SDDDocumentBuilder {
 		// create Dataset and language
 		ElementImpl dataset = new ElementImpl(document, DATASET);
 		// no default language associated with a dataset in the CDM
-		// dataset.setAttribute("xml:lang", datasetLanguage);
+		dataset.setAttribute("xml:lang", Language.DEFAULT().getIso639_1());
 		baselement.appendChild(dataset);
 		buildRepresentation(dataset, reference);
 		buildRevisionData(dataset, reference);
@@ -789,6 +795,10 @@ public class SDDDocumentBuilder {
 				QuantitativeData quantitativeData = (QuantitativeData) descriptionElement;
 				buildQuantitative(summaryData, quantitativeData);
 			}
+			if (descriptionElement instanceof TextData) {
+				TextData textData = (TextData) descriptionElement;
+				buildTextChar(summaryData, textData);
+			}
 		}
 		element.appendChild(summaryData);
 	}
@@ -805,6 +815,8 @@ public class SDDDocumentBuilder {
 		//	          </Categorical>
 
 		ElementImpl categorical = new ElementImpl(document, CATEGORICAL);
+		Feature feature = categoricalData.getFeature();
+		buildReference(feature, characters, REF, categorical, "c", charactersCount);
 		List<StateData> states = categoricalData.getStates();
 		for (Iterator<StateData> sd = states.iterator() ; sd.hasNext() ;){
 			StateData stateData = sd.next();
@@ -844,6 +856,8 @@ public class SDDDocumentBuilder {
 //      </Quantitative>
 	
 		ElementImpl quantitative = new ElementImpl(document, QUANTITATIVE);
+		Feature feature = quantitativeData.getFeature();
+		buildReference(feature, characters, REF, quantitative, "c", charactersCount);
 		Set<StatisticalMeasurementValue> statisticalValues = quantitativeData.getStatisticalValues();
 		for (Iterator<StatisticalMeasurementValue> smv = statisticalValues.iterator() ; smv.hasNext() ;){
 			StatisticalMeasurementValue statisticalValue = smv.next();
@@ -866,8 +880,61 @@ public class SDDDocumentBuilder {
 	//      </Quantitative>
 		
 			ElementImpl measure = new ElementImpl(document, MEASURE);
+			StatisticalMeasure type = statisticalValue.getType();
+			String label = type.getLabel();
+			if (label.equals("Average")) {
+				measure.setAttribute("type", "Mean");
+			} else if (label.equals("StandardDeviation")) {
+				measure.setAttribute("type", "SD");
+			} else if (label.equals("SampleSize")) {
+				measure.setAttribute("type", "N");
+			} else {
+				measure.setAttribute("type", label);
+			}
+			float value = statisticalValue.getValue();
+			measure.setAttribute("value", String.valueOf(value));
 			element.appendChild(measure);
 		}
+
+	/**
+		 * Builds TextChar associated with a SummaryData
+		 */
+		public void buildTextChar(ElementImpl element, TextData textData) throws ParseException {
+		
+//			<TextChar ref="c3">
+//            <Content>Free form text</Content>
+//          </TextChar>
+		
+			ElementImpl textChar = new ElementImpl(document, TEXT_CHAR);
+			Feature feature = textData.getFeature();
+			buildReference(feature, characters, REF, textChar, "c", charactersCount);
+			Map<Language,LanguageString> multilanguageText = textData.getMultilanguageText();
+			for (Iterator<Language> l = multilanguageText.keySet().iterator() ; l.hasNext() ;){
+				Language language = l.next();
+				LanguageString languageString = multilanguageText.get(language);
+				buildContent(textChar,languageString);
+			}
+			element.appendChild(textChar);
+		}
+
+	/**
+			 * Builds Content associated with a TextChar
+			 */
+			public void buildContent(ElementImpl element, LanguageString languageString) throws ParseException {
+			
+	//			<TextChar ref="c3">
+	//            <Content>Free form text</Content>
+	//          </TextChar>
+			
+				ElementImpl content = new ElementImpl(document, CONTENT);
+				Language language = languageString.getLanguage();
+				String text = languageString.getText();
+				if (!language.getIso639_1().equals(defaultLanguage.getIso639_1())) {
+					content.setAttribute("xml:lang", language.getIso639_1());
+				}
+				content.setTextContent(text);
+				element.appendChild(content);
+			}
 
 
 	//	/**
