@@ -76,12 +76,10 @@ public interface ICdmApplicationConfiguration {
 	 */
 	public ITermService getTermService();
 
-	
 	/**
 	 * @return
 	 */
 	public ICommonService getCommonService();
-	
 	
 	/**
 	 * @return
@@ -92,5 +90,10 @@ public interface ICdmApplicationConfiguration {
 	 * @return
 	 */
 	public PlatformTransactionManager getTransactionManager();
-
+	
+	/**
+	 * @return
+	 */
+	public ConversationHolder NewConversation();
+	
 }

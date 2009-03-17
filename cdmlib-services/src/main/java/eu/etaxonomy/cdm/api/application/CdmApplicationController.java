@@ -323,6 +323,19 @@ public class CdmApplicationController {
 		return configuration.getMainService();
 	}
 	
+	/*
+	 * Conversation
+	 */
+	
+	public final ConversationHolder NewConversation(){
+		return configuration.NewConversation();
+	}
+	
+	
+	/*
+	 * OLD TRANSACTION STUFF 
+	 */
+	
 	/* **** flush ***********/
 	public void flush() {
 		SessionFactory sf = (SessionFactory)applicationContext.getBean("sessionFactory");
