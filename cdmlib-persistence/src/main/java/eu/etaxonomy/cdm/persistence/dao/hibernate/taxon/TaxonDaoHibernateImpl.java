@@ -195,20 +195,6 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 	}
 
 
-//	public List<TaxonBase> getTaxaByName(String name, ReferenceBase sec) {
-//		
-//		Criteria crit = getSession().createCriteria(Taxon.class);
-//		if (sec != null){
-//			if(sec.getId() == 0){
-//				getSession().save(sec);
-//			}
-//			crit.add(Restrictions.eq("sec", sec ) );
-//		}
-//		crit.createCriteria("name").add(Restrictions.like("nameCache", name));
-//		List<TaxonBase> results = crit.list();
-//		return results;
-//	}
-    		
 	public List<TaxonBase> getTaxaByName(String queryString, ReferenceBase sec) {
 		
 		return getTaxaByName(queryString, true, sec);
@@ -236,6 +222,41 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		if (queryString != null) {
 			criteria.add(Restrictions.ilike("name.nameCache", queryString));
 		}
+		List<TaxonBase> results = criteria.list();
+		return results;
+	}
+
+	public List<TaxonBase> getTaxaByName(String queryString, MatchMode matchMode, 
+			Boolean accepted, Integer pageSize, Integer pageNumber) {
+		
+		Criteria criteria = null;
+		if (accepted == true) {
+			criteria = getSession().createCriteria(Taxon.class);
+		} else {
+			criteria = getSession().createCriteria(Synonym.class);
+		}
+
+		criteria.setFetchMode( "name", FetchMode.JOIN );
+		criteria.createAlias("name", "name");
+		
+		if (matchMode == MatchMode.EXACT) {
+			criteria.add(Restrictions.eq("name.nameCache", matchMode.queryStringFrom(queryString)));
+		} else {
+			criteria.add(Restrictions.ilike("name.nameCache", matchMode.queryStringFrom(queryString)));
+		}
+		
+
+//		if (queryString != null) {
+//			criteria.add(Restrictions.ilike("name.nameCache", queryString));
+//		}
+//		
+		if(pageSize != null) {
+			criteria.setMaxResults(pageSize);
+			if(pageNumber != null) {
+				criteria.setFirstResult(pageNumber * pageSize);
+			}
+		}
+
 		List<TaxonBase> results = criteria.list();
 		return results;
 	}
