@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.api.service.config;
 
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.persistence.query.MatchMode;
 
 /**
  * @author a.babadshanjan
@@ -26,18 +27,26 @@ public interface ITaxonServiceConfigurator {
 	
 	public void setDoSynonyms(boolean doSynonyms);
 	
-	public String getSearchString();
-	
-	public void setSearchString(String searchString);
-	
-	public ReferenceBase getSec();
-	
-	public void setReferenceBase(ReferenceBase sec);
-	
 	public boolean isDoNamesWithoutTaxa();
 	
 	public void setDoNamesWithoutTaxa(boolean doNamesWithoutTaxa);
 
+	public boolean isDoTaxaByCommonNames();
+	
+	public void setDoTaxaByCommonNames(boolean doTaxaByCommonNames);
+
+	public String getSearchString();
+	
+	public void setSearchString(String searchString);
+	
+	public MatchMode getMatchMode();
+
+	public void setMatchMode(MatchMode matchMode);
+
+	public ReferenceBase getSec();
+	
+	public void setReferenceBase(ReferenceBase sec);
+	
 	public Integer getPageSize();
 
 	public void setPageSize(Integer pageSize);

@@ -34,6 +34,7 @@ import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmEntityDaoBaseTestClass;
+import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 
 /**
@@ -54,7 +55,7 @@ public class TaxonServiceSearchTest extends CdmIntegrationTest {
 //	private CdmEntityDaoBaseTestClass cdmEntityDaoBase;
 
 
-	//@Ignore
+	@Ignore
 	@Test
 	public void testDbUnitUsageTest() throws Exception {
 		assertNotNull("taxonService should exist", taxonService);
@@ -72,8 +73,12 @@ public class TaxonServiceSearchTest extends CdmIntegrationTest {
 	public final void testFindTaxaAndNames() {
 
 		ITaxonServiceConfigurator configurator = new TaxonServiceConfiguratorImpl();
+		configurator.setSearchString("Abies*");
+		configurator.setMatchMode(MatchMode.BEGINNING);
+		configurator.setDoTaxa(true);
 		configurator.setDoSynonyms(true);
 		configurator.setDoNamesWithoutTaxa(true);
+		configurator.setDoTaxaByCommonNames(true);
 		Pager<IdentifiableEntity> pager = taxonService.findTaxaAndNames(configurator);
 		List<IdentifiableEntity> list = pager.getRecords();
 		if (logger.isDebugEnabled()) {
@@ -93,12 +98,11 @@ public class TaxonServiceSearchTest extends CdmIntegrationTest {
 		assertEquals(list.get(5).getTitleCache(), "Abies alba Mill. sec. ???");
 	}
 	
-	@Ignore
-	@Test
-	@DataSet
-	public final void testPrintDataSet() {
-		
-		printDataSet(System.out);
-	}
+//	@Test
+//	@DataSet
+//	public final void testPrintDataSet() {
+//		
+//		printDataSet(System.out);
+//	}
 	
 }
