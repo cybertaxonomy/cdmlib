@@ -9,14 +9,12 @@
 
 package eu.etaxonomy.cdm.api.service;
 
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
@@ -24,16 +22,10 @@ import org.unitils.spring.annotation.SpringBeanByType;
 import eu.etaxonomy.cdm.api.service.config.ITaxonServiceConfigurator;
 import eu.etaxonomy.cdm.api.service.config.impl.TaxonServiceConfiguratorImpl;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
-import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
-import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.NonViralName;
-import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.model.taxon.Synonym;
-import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
-import eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmEntityDaoBaseTestClass;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 
@@ -49,25 +41,17 @@ public class TaxonServiceSearchTest extends CdmIntegrationTest {
 	private ITaxonService taxonService;
 	@SpringBeanByType
 	private INameService nameService;
-	@SpringBeanByType
-	private IAgentService agentService;
-//	@SpringBeanByType
-//	private CdmEntityDaoBaseTestClass cdmEntityDaoBase;
 
 
-	@Ignore
 	@Test
 	public void testDbUnitUsageTest() throws Exception {
 		assertNotNull("taxonService should exist", taxonService);
 		assertNotNull("nameService should exist", nameService);
-		assertNotNull("agentService should exist", agentService);
-//		assertNotNull("cdmEntityDaoBase should exist", cdmEntityDaoBase);
 	}
 
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.api.service.TaxonServiceImpl#findTaxaAndNames(eu.etaxonomy.cdm.api.service.config.ITaxonServiceConfigurator)}.
 	 */
-	//@Ignore
 	@Test
 	@DataSet
 	public final void testFindTaxaAndNames() {
@@ -94,14 +78,13 @@ public class TaxonServiceSearchTest extends CdmIntegrationTest {
 						": Name Cache = " + nameCache + ", Title Cache = " + list.get(i).getTitleCache());
 			}
 		}
-		assertEquals(list.get(2).getTitleCache(), "Abies mill. sec. ???");
-		assertEquals(list.get(5).getTitleCache(), "Abies alba Mill. sec. ???");
+		assertEquals(list.get(1).getTitleCache(), "Abies mill. sec. ???");
+		assertEquals(list.get(4).getTitleCache(), "Abies alba Mill. sec. ???");
 	}
 	
 //	@Test
 //	@DataSet
 //	public final void testPrintDataSet() {
-//		
 //		printDataSet(System.out);
 //	}
 	
