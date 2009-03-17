@@ -1410,6 +1410,7 @@ cdmlib-services/README.TXT -text
 cdmlib-services/pom.xml -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/application/CdmApplicationController.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/application/CdmApplicationDefaultConfiguration.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/application/ConversationHolder.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/application/ICdmApplicationConfiguration.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/application/eclipse/EclipseRcpSaveFileSystemXmlApplicationContext.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/application/eclipse/EclipseRcpSaveGenericApplicationContext.java -text
@@ -1462,10 +1463,12 @@ cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/NameServiceImplTest2.
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/TaxonServiceImplTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/TaxonServiceSearchTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/TermServiceImplTest.java -text
+cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/function/ConcurrentSessionTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/function/Datasource.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/function/TestDatabase.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/function/TestService.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/function/TestTaxonFunction.java -text
+cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/function/hibernate.cfg.xml -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/integration/CreateDataTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/integration/CreateDataTestNoUnit.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/integration/TermLoaderIntegrationTest.java -text
@@ -1479,6 +1482,7 @@ cdmlib-services/src/test/resources/eu/etaxonomy/cdm/applicationContext.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/cdm.datasources.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/service/PUBLIC.xsd -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/service/dataset.xsd -text
+cdmlib-services/src/test/resources/eu/etaxonomy/cdm/test/function/ConcurrentSessionTest.xml -text
 cdmlib-services/src/test/resources/log4j.properties -text
 cdmlib-services/src/test/resources/unitils.properties -text
 eclipse-feature-sources/build.properties -text
