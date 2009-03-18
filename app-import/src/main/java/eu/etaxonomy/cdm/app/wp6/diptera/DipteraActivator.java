@@ -47,7 +47,7 @@ public class DipteraActivator {
 	//database validation status (create, update, validate ...)
 	static DbSchemaValidation hbm2dll = DbSchemaValidation.CREATE;
 	static final Source berlinModelSource = BerlinModelSources.EDIT_Diptera();
-	static final ICdmDataSource cdmDestination = CdmDestinations.localH2();
+	static final ICdmDataSource cdmDestination = CdmDestinations.localH2Diptera();
 	static final UUID secUuid = UUID.fromString("06fd671f-1226-4e3b-beca-1959b3b32e20");
 	static final int sourceSecId = 1000000;
 	static final UUID featureTreeUuid = UUID.fromString("ae9615b8-bc60-4ed0-ad96-897f9226d568");
