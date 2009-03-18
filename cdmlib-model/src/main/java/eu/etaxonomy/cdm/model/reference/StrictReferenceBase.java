@@ -108,6 +108,7 @@ public abstract class StrictReferenceBase extends ReferenceBase {
 	@Override
 	// TODO implement 
 	public String getCitation(){
+		logger.warn("getCitation not yet implemented");
 		return "";
 	}
 

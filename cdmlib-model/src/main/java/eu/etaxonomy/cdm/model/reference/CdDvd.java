@@ -11,18 +11,25 @@ package eu.etaxonomy.cdm.model.reference;
 
 
 import javax.persistence.Entity;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 
+import eu.etaxonomy.cdm.strategy.cache.reference.BookDefaultCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.reference.CdDvdDefaultCacheStrategy;
+
 /**
  * This class represents electronic publications the support of which are Cds 
  * (Compact Discs) or Dvds (Digital Versatile Discs). This class applies for Cds
  * or Dvds as a whole but not for parts of it.
+ * CdDvd implements INomenclaturalReference as this seems to be allowed by the ICZN
+ * (see http://www.iczn.org/electronic_publication.html)
  * 
  * @author m.doering
  * @version 1.0
@@ -33,14 +40,32 @@ import org.hibernate.envers.Audited;
 @XmlRootElement(name = "CdDvd")
 @Entity
 @Audited
-public class CdDvd extends PublicationBase implements Cloneable{
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+public class CdDvd extends PublicationBase implements INomenclaturalReference, Cloneable{
 	static Logger logger = Logger.getLogger(CdDvd.class);
 
+	public static CdDvd NewInstance() {
+		return new CdDvd();
+	}
+	
+	
+    @XmlTransient
+    @Transient
+	private NomenclaturalReferenceHelper nomRefBase = NomenclaturalReferenceHelper.NewInstance(this);
 
+	
+	protected CdDvd(){
+		super();
+		this.cacheStrategy = CdDvdDefaultCacheStrategy.NewInstance();
+	}
+	
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.reference.INomenclaturalReference#getNomenclaturalCitation(java.lang.String)
+	 */
+	public String getNomenclaturalCitation(String microReference) {
+		return nomRefBase.getNomenclaturalCitation(microReference);
+	}
+	
 
 //*********** CLONE **********************************/	
 	
@@ -55,7 +80,7 @@ public class CdDvd extends PublicationBase implements Cloneable{
 	 * @see java.lang.Object#clone()
 	 */
 	@Override
-	public CdDvd clone(){
+	public Object clone(){
 		CdDvd result = (CdDvd)super.clone();
 		//no changes to: -
 		return result;
