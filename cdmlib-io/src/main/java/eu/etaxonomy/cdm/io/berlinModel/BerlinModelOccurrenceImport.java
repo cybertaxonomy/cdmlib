@@ -20,11 +20,13 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
@@ -176,17 +178,22 @@ public class BerlinModelOccurrenceImport  extends BerlinModelImportBase {
                      for (NamedArea tdwgArea : tdwgAreas){
                            Distribution distribution = Distribution.NewInstance(tdwgArea, status);
                            if (taxonDescription != null) { 
-                               taxonDescription.addElement(distribution); 
-                               countDistributions++; 
-                               if (taxonDescription != oldDescription){ 
-                                       taxonStore.add(taxonDescription.getTaxon()); 
-                                       oldDescription = taxonDescription; 
-                                       countDescriptions++; 
-                               } 
-	                       } else { 
-	                               logger.warn("Distribution " + tdwgArea.toString() + " ignored"); 
-	                     }
+                               if (checkIsNoDuplicate(taxonDescription , distribution)){
+	                        	   taxonDescription.addElement(distribution); 
+	                               countDistributions++; 
+	                               if (taxonDescription != oldDescription){ 
+	                            	   taxonStore.add(taxonDescription.getTaxon()); 
+	                                   oldDescription = taxonDescription; 
+	                                   countDescriptions++; 
+	                               	} 
+                               }else{
+                            	   logger.debug("Distribution is duplicate");
+                               }
+	                       	} else { 
+	                       		logger.warn("Distribution " + tdwgArea.toString() + " ignored"); 
+	                       	}
                      }
+                     
                 } catch (UnknownCdmTypeException e) {
                      // TODO Auto-generated catch block
                      e.printStackTrace();
@@ -210,7 +217,30 @@ public class BerlinModelOccurrenceImport  extends BerlinModelImportBase {
 		}
 
 	}
+
 	
+    /**
+     * Tests if a distribution with the same tdwgArea and the same status already exists in the description
+     * Returns false, if a duplicate exists. True otherwise
+     * @param description
+     * @param tdwgArea
+     * @return
+     */
+    private boolean checkIsNoDuplicate(TaxonDescription description, Distribution distribution){
+    	for (DescriptionElementBase descElBase : description.getElements()){
+    		if (descElBase.isInstanceOf(Distribution.class)){
+    			Distribution oldDistr = HibernateProxyHelper.deproxy(descElBase, Distribution.class);
+    			NamedArea oldArea = oldDistr.getArea();
+    			if (oldArea != null && oldArea.equals(distribution.getArea())){
+    				PresenceAbsenceTermBase<?> oldStatus = oldDistr.getStatus();
+    				if (oldStatus != null && oldStatus.equals(distribution.getStatus())){
+    					return false;
+    				}
+    			}
+    		}
+    	}
+    	return true;
+    }
 	
 	/**
 	 * Use same TaxonDescription if two records belong to the same taxon 

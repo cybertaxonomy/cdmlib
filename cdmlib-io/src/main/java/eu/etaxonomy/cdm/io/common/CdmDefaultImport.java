@@ -33,8 +33,6 @@ public class CdmDefaultImport<T extends IImportConfigurator> implements ICdmImpo
 	}
 
 	public boolean invoke(IImportConfigurator config, ICdmDataSource destination, boolean omitTermLoading){
-//		destination = destination;
-//		omitTermLoading = omitTermLoading;
 		boolean createNew = false;
 		
 		if (startApplicationController(config, destination, omitTermLoading, createNew) == false){

@@ -21,29 +21,26 @@ import eu.etaxonomy.cdm.model.common.init.TermNotFoundException;
  * @created 17.11.2008
  */
 public class CdmDefaultExport<T extends IExportConfigurator> implements ICdmExport<T> {
-	
 	private static final Logger logger = Logger.getLogger(CdmDefaultExport.class);
 
 	private CdmApplicationController cdmApp = null;
-	
 
 	public boolean invoke(T config){
 		ICdmDataSource source = config.getSource();
 		return invoke(config, source);
 	}
-
 	
-	public boolean invoke(IExportConfigurator config, ICdmDataSource source){
-//		source = source;
-		boolean omitTermLoading = false;
-		
-		return invoke(config, source, omitTermLoading);
-	}
 	
-	public boolean invoke(IExportConfigurator config, ICdmDataSource source, boolean omitTermLoading) {
+	/**
+	 * @param config
+	 * @param source
+	 * @param omitTermLoading
+	 * @return
+	 */
+	public boolean invoke(IExportConfigurator config, ICdmDataSource source) {
 
 		boolean createNew = false;
-		
+		boolean omitTermLoading = false;
 		if (startApplicationController(config, source, omitTermLoading, createNew) == false){
 			return false;
 		}else{
