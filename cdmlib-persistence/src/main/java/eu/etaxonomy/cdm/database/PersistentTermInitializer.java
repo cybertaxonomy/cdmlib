@@ -47,13 +47,6 @@ public class PersistentTermInitializer extends DefaultTermInitializer {
 	private boolean omit = false;
 	protected ITermVocabularyDao vocabularyDao;
 
-	/**
-	 * After a bit of head-scratching I found section 3.5.1.3. in the current spring 
-	 * reference manual - @PostConstruct / afterPropertiesSet() is called 
-	 * immediatly after the bean is constructed, prior to any AOP interceptors being 
-	 * wrapped round the bean. Thus, we have to use programmatic transactions, not 
-	 * annotations or pointcuts.
-	 */
 	protected PlatformTransactionManager transactionManager;
 	protected DefaultTransactionDefinition txDefinition = new DefaultTransactionDefinition();
 	
@@ -76,6 +69,13 @@ public class PersistentTermInitializer extends DefaultTermInitializer {
 		this.transactionManager = transactionManager;
 	}
 	
+	/*
+	 * After a bit of head-scratching I found section 3.5.1.3. in the current spring 
+	 * reference manual - @PostConstruct / afterPropertiesSet() is called 
+	 * immediatly after the bean is constructed, prior to any AOP interceptors being 
+	 * wrapped round the bean. Thus, we have to use programmatic transactions, not 
+	 * annotations or pointcuts.
+	 */
 	@PostConstruct
 	@Override
 	public void initialize(){
