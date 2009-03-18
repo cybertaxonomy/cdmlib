@@ -49,7 +49,10 @@ public class CichorieaeImageImport extends AbstractImageImporter {
 	private static final String URL_APP = "URL_APP";
 	private static final String NAME = "NAME";
 	//private static final String CODE = "CODE";
-	
+
+	/** 
+	 * Imports images from an Excel file.
+	 */
 	protected boolean invokeImageImport_ (ImageImportConfigurator config){
 		
 		ArrayList<HashMap<String, String>> contents;
@@ -115,6 +118,9 @@ public class CichorieaeImageImport extends AbstractImageImporter {
 		
 	}
 	
+	/** 
+	 * Imports images from a directory.
+	 */
 	protected boolean invokeImageImport (ImageImportConfigurator config){
 		File source = (File)config.getSource();
 		if (source.isDirectory()){
