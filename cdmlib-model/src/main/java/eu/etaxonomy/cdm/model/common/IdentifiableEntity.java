@@ -39,6 +39,8 @@ import eu.etaxonomy.cdm.jaxb.FormattedTextAdapter;
 import eu.etaxonomy.cdm.jaxb.LSIDAdapter;
 import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.name.NonViralName;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 /**
  * Superclass for the primary CDM classes that can be referenced from outside via LSIDs and contain a simple generated title string as a label for human reading.
@@ -277,22 +279,37 @@ implements ISourceable, IIdentifiableEntity, Comparable<IdentifiableEntity> {
 		 // TODO: Avoid using instanceof operator
 		 // Use Class.getDeclaredMethod() instead to find out whether class has getNameCache() method?
 
-		 if ((identifiableEntity instanceof NonViralName) && (this instanceof NonViralName)) {
-
-			 String thisNameCache = ((NonViralName<?>)this).getNameCache();
-			 String specifiedNameCache = ((NonViralName<?>)identifiableEntity).getNameCache();
+		 // Compare name cache
+		 String specifiedNameCache = "";
+		 String thisNameCache = "";
+		 
+		 if(identifiableEntity instanceof NonViralName) {
+			 specifiedNameCache = ((NonViralName<?>)identifiableEntity).getNameCache();
+		 } else if(identifiableEntity instanceof TaxonBase) {
+			 TaxonNameBase<?,?> taxonNameBase= ((TaxonBase)identifiableEntity).getName();
+			 specifiedNameCache = ((NonViralName<?>)taxonNameBase).getNameCache();
+		 }
+		 
+		 if(this instanceof NonViralName) {
+			 thisNameCache = ((NonViralName<?>)this).getNameCache();
+		 } else if(this instanceof TaxonBase) {
+			 TaxonNameBase<?,?> taxonNameBase= ((TaxonBase)this).getName();
+			 thisNameCache = ((NonViralName<?>)taxonNameBase).getNameCache();
+		 }
+		 
+		 if (!specifiedNameCache.equals("") && !thisNameCache.equals("")) {
 			 result = thisNameCache.compareTo(specifiedNameCache);
 		 }
 		 
-		 // Compare the title cache if name cache is equal
+		 // Compare title cache
 		 if (result == 0) {
 			 String thisTitleCache = getTitleCache();
 			 String specifiedTitleCache = identifiableEntity.getTitleCache();
 			 result = thisTitleCache.compareTo(specifiedTitleCache);
-			 
 		 }
 		 return result;
 	 }
+	 
 	 
 //****************** CLONE ************************************************/
 	 

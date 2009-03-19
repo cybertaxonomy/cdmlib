@@ -6,7 +6,6 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.model.common;
 
 import java.beans.PropertyChangeEvent;
@@ -69,7 +68,7 @@ public abstract class CdmBase implements Serializable, ICdmBase{
 	private static final long serialVersionUID = -3053225700018294809L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CdmBase.class);
-
+	
 	@Transient
 	@XmlTransient
 	private PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
@@ -347,4 +346,5 @@ public abstract class CdmBase implements Serializable, ICdmBase{
 		//no changes to: -
 		return result;
 	}
+	
 }

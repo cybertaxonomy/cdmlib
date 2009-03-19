@@ -190,7 +190,7 @@ public class FeatureNode extends VersionableEntity {
 	 */
 	public void addChild(FeatureNode child, int index){
 		if (index < 0 || index > children.size() + 1){
-			throw new IndexOutOfBoundsException("Wrong index");
+			throw new IndexOutOfBoundsException("Wrong index: " + index);
 		}
 		if (child.getParent() != null){
 			child.getParent().removeChild(child);

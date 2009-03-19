@@ -18,6 +18,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -41,6 +42,7 @@ import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Indexed;
 import org.springframework.util.ReflectionUtils;
 
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.IParsable;
 import eu.etaxonomy.cdm.model.common.IReferencedEntity;
 import eu.etaxonomy.cdm.model.common.IRelated;
@@ -96,6 +98,7 @@ import eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy;
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 @Table(appliesTo="TaxonNameBase", indexes = { @Index(name = "taxonNameBaseTitleCacheIndex", columnNames = { "titleCache" }) })
 public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INameCacheStrategy> extends IdentifiableEntity implements IReferencedEntity, IParsable, IRelated {
+
 	private static final long serialVersionUID = -4530368639601532116L;
 private static final Logger logger = Logger.getLogger(TaxonNameBase.class);
 
@@ -639,6 +642,7 @@ private static final Logger logger = Logger.getLogger(TaxonNameBase.class);
 	public INomenclaturalReference getNomenclaturalReference(){
 		return (INomenclaturalReference)this.nomenclaturalReference;
 	}
+	
 	/**
 	 * Assigns a {@link eu.etaxonomy.cdm.model.reference.INomenclaturalReference nomenclatural reference} to <i>this</i> taxon name.
 	 * The corresponding {@link eu.etaxonomy.cdm.model.reference.ReferenceBase.isNomenclaturallyRelevant nomenclaturally relevant flag} will be set to true
@@ -824,6 +828,7 @@ private static final Logger logger = Logger.getLogger(TaxonNameBase.class);
 				boolean isNotDesignated, 
 				boolean addToAllHomotypicNames) {
 		NameTypeDesignation nameTypeDesignation = new NameTypeDesignation(typeSpecies, citation, citationMicroReference, originalNameString, isRejectedType, isConservedType, isLectoType, isNotDesignated);
+		nameTypeDesignation.setLectoType(isLectoType);
 		addTypeDesignation(nameTypeDesignation, addToAllHomotypicNames);
 	}
 	
