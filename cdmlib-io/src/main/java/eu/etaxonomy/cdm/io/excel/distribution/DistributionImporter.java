@@ -19,6 +19,8 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
+import eu.etaxonomy.cdm.api.service.config.IIdentifiableEntityServiceConfigurator;
+import eu.etaxonomy.cdm.api.service.config.impl.IdentifiableServiceConfiguratorImpl;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.ExcelUtils;
 import eu.etaxonomy.cdm.io.common.CdmIoBase;
@@ -35,6 +37,7 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.TdwgArea;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.persistence.query.MatchMode;
 
 /**
  * @author a.babadshanjan
@@ -146,7 +149,7 @@ public class DistributionImporter extends CdmIoBase<IImportConfigurator> impleme
 				literature = (String) CdmUtils.removeDuplicateWhitespace(value.trim());
 				
 			} else {
-				logger.warn("Column " + key + " ignored");
+				//logger.warn("Column " + key + " ignored");
 			}
     	}
     	
@@ -163,9 +166,15 @@ public class DistributionImporter extends CdmIoBase<IImportConfigurator> impleme
     private void saveRecord(String taxonName, ArrayList<String> distributionList,
     		String status, String literatureNumber, String literature) {
 
+    	IdentifiableServiceConfiguratorImpl config = 
+    		IdentifiableServiceConfiguratorImpl.NewInstance();
+    	config.setTitleSearchString(taxonName);
+    	config.setMatchMode(MatchMode.EXACT);
+    	
 		try {
     		// get the matching names from the DB
-    		List<TaxonNameBase<?,?>> taxonNameBases = getNameService().findNamesByTitle(taxonName);
+    		List<TaxonNameBase> taxonNameBases = getNameService().findByTitle(config);
+//    		List<TaxonNameBase<?,?>> taxonNameBases = getNameService().findNamesByTitle(taxonName);
     		if (taxonNameBases.isEmpty()) {
     			logger.error("Taxon name '" + taxonName + "' not found in DB");
     		} else {
