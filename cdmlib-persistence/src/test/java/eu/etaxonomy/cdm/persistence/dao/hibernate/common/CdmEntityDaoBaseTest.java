@@ -120,9 +120,9 @@ public class CdmEntityDaoBaseTest extends CdmIntegrationTest {
 	public void testSaveWithAuthentication() throws Exception {
 		User user = userDao.findByUuid(UUID.fromString("dbac0f20-07f2-11de-8c30-0800200c9a66"));
 		assert user != null : "User cannot be null";
-		
 		setAuthentication(user);
 		cdmEntityDaoBase.save(cdmBase);
+		System.out.println(((Taxon)cdmBase).getTitleCache());
 	}
 
 	/**

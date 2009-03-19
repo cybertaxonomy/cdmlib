@@ -35,17 +35,8 @@ public class CacheStrategyGenerator implements SaveOrUpdateEventListener {
     public void onSaveOrUpdate(SaveOrUpdateEvent event) throws HibernateException {
         Object entity = event.getObject();
         if (entity != null){
-            Class entityClazz = entity.getClass();
+            Class<?> entityClazz = entity.getClass();
             
-            if(ICdmBase.class.isAssignableFrom(entityClazz)) {
-              ICdmBase cdmBase = (ICdmBase)entity;
-  			  cdmBase.setCreated(new DateTime());
-  			  Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-  			  if(authentication != null && authentication.getPrincipal() != null && authentication.getPrincipal() instanceof User) {
-  			    User user = (User)authentication.getPrincipal();
-  			    cdmBase.setCreatedBy(user);
-  			  }
-            }
         	//title cache
         	if(IdentifiableEntity.class.isAssignableFrom(entityClazz)) {
         		IdentifiableEntity identifiableEntity = (IdentifiableEntity)entity;

@@ -79,7 +79,7 @@ public class PersistentTermInitializer extends DefaultTermInitializer {
 	@PostConstruct
 	@Override
 	public void initialize(){
-		logger.debug("PersistentTermInitializer initialize()");
+		logger.debug("PersistentTermInitializer initialize start ...");
 		if (omit){
 			logger.info("PersistentTermInitializer.omit == true, returning without initializing terms");
 			return;
@@ -92,6 +92,7 @@ public class PersistentTermInitializer extends DefaultTermInitializer {
 			}
 			
 		}
+		logger.debug("PersistentTermInitializer initialize end ...");
 	}	
 	
 	protected void secondPass(Class clazz, UUID vocabularyUuid,Map<UUID,DefinedTermBase> terms) {
@@ -155,7 +156,7 @@ public class PersistentTermInitializer extends DefaultTermInitializer {
 
 	private void updateVocabulary(TermVocabulary vocabulary) {
 		TransactionStatus txStatus = transactionManager.getTransaction(txDefinition);
-		vocabularyDao.update(vocabulary);		
+		vocabularyDao.update(vocabulary);
 		transactionManager.commit(txStatus);		
 	}
 
