@@ -1553,6 +1553,7 @@ cdmlib-services/README.TXT -text
 cdmlib-services/pom.xml -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/application/CdmApplicationController.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/application/CdmApplicationDefaultConfiguration.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/application/ConversationHolder.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/application/ICdmApplicationConfiguration.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/application/eclipse/EclipseRcpSaveFileSystemXmlApplicationContext.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/application/eclipse/EclipseRcpSaveGenericApplicationContext.java -text
@@ -1591,8 +1592,11 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/TaxonServiceImpl.java
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/TermServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/UserService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/VersionableServiceBase.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/IIdentifiableEntityServiceConfigurator.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/INameServiceConfigurator.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/ITaxonServiceConfigurator.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/IdentifiableServiceConfiguratorBase.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/impl/IdentifiableServiceConfiguratorImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/impl/NameServiceConfiguratorImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/impl/TaxonServiceConfiguratorImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/lsid/LSIDAuthorityService.java -text
@@ -1636,10 +1640,12 @@ cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/lsid/LSIDAuthoritySer
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/lsid/LSIDDataServiceTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/lsid/LSIDMetadataServiceTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/lsid/LSIDRegistryTest.java -text
+cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/function/ConcurrentSessionTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/function/Datasource.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/function/TestDatabase.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/function/TestService.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/function/TestTaxonFunction.java -text
+cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/function/hibernate.cfg.xml -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/integration/CreateDataTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/integration/CreateDataTestNoUnit.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/integration/TermLoaderIntegrationTest.java -text
@@ -1647,7 +1653,7 @@ cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/integration/TestTaxonService
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/suite/CdmTestSuite.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/unit/CdmUnitTestBase.java -text
 cdmlib-services/src/test/resources/dbscripts/001_cdm.ddl -text
-cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/TaxonServiceImplTest.xml -text
+cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/TaxonServiceSearchTest.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/UserServiceImplTest.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/lsid/LSIDAuthorityServiceTest.testGetAuthorityWSDL-result.wsdl -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/lsid/LSIDAuthorityServiceTest.testGetAvailableServices.xml -text
@@ -1659,6 +1665,7 @@ cdmlib-services/src/test/resources/eu/etaxonomy/cdm/applicationContext.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/cdm.datasources.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/service/PUBLIC.xsd -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/service/dataset.xsd -text
+cdmlib-services/src/test/resources/eu/etaxonomy/cdm/test/function/ConcurrentSessionTest.xml -text
 cdmlib-services/src/test/resources/log4j.properties -text
 cdmlib-services/src/test/resources/unitils.properties -text
 eclipse-feature-sources/build.properties -text

@@ -14,38 +14,18 @@ import eu.etaxonomy.cdm.persistence.query.MatchMode;
 
 /**
  * @author a.babadshanjan
- * @created 20.01.2009
+ * @created 03.03.2009
  * @version 1.0
  */
-public interface ITaxonServiceConfigurator {
+public interface IIdentifiableEntityServiceConfigurator {
 
-	public boolean isDoTaxa();
+	public String getTitleSearchString();
 	
-	public void setDoTaxa(boolean doTaxa);
-
-	public boolean isDoSynonyms();
-	
-	public void setDoSynonyms(boolean doSynonyms);
-	
-	public boolean isDoNamesWithoutTaxa();
-	
-	public void setDoNamesWithoutTaxa(boolean doNamesWithoutTaxa);
-
-	public boolean isDoTaxaByCommonNames();
-	
-	public void setDoTaxaByCommonNames(boolean doTaxaByCommonNames);
-
-	public String getSearchString();
-	
-	public void setSearchString(String searchString);
+	public void setTitleSearchString(String titleSearchString);
 	
 	public MatchMode getMatchMode();
 
 	public void setMatchMode(MatchMode matchMode);
-
-	public ReferenceBase getSec();
-	
-	public void setReferenceBase(ReferenceBase sec);
 	
 	public Integer getPageSize();
 

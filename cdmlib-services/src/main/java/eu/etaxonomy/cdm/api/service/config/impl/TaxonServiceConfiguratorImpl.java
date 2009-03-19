@@ -8,35 +8,30 @@
 package eu.etaxonomy.cdm.api.service.config.impl;
 
 import eu.etaxonomy.cdm.api.service.config.ITaxonServiceConfigurator;
+import eu.etaxonomy.cdm.api.service.config.IdentifiableServiceConfiguratorBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.persistence.query.MatchMode;
 
 /**
  * @author a.babadshanjan
  * @created 20.01.2009
  * @version 1.0
  */
-public class TaxonServiceConfiguratorImpl implements ITaxonServiceConfigurator {
+public class TaxonServiceConfiguratorImpl extends IdentifiableServiceConfiguratorBase
+implements ITaxonServiceConfigurator {
 	
 	private boolean doTaxa = true;
 	private boolean doSynonyms = false;
+	private boolean doTaxaByCommonNames = false;
 	private boolean doNamesWithoutTaxa = false;
 	private String searchString;
+	private MatchMode matchMode;
 	private ReferenceBase sec = null;
-	private Integer pageSize = null;
-	private Integer pageNumber = null;
 	
 	public static TaxonServiceConfiguratorImpl NewInstance() {
 		return new TaxonServiceConfiguratorImpl();
 	}
 	
-	public boolean isDoSynonyms() {
-		return doSynonyms;
-	}
-
-	public void setDoSynonyms(boolean doSynonyms) {
-        this.doSynonyms = doSynonyms;
-	}
-
 	public boolean isDoTaxa() {
 		return doTaxa;
 	}
@@ -45,6 +40,42 @@ public class TaxonServiceConfiguratorImpl implements ITaxonServiceConfigurator {
 		this.doTaxa = doTaxa;
 	}
 
+	public boolean isDoSynonyms() {
+		return doSynonyms;
+	}
+
+	public void setDoSynonyms(boolean doSynonyms) {
+        this.doSynonyms = doSynonyms;
+	}
+
+	/**
+	 * @return doTaxaByCommonNames
+	 */
+	public boolean isDoTaxaByCommonNames() {
+		return doTaxaByCommonNames;
+	}
+
+	/**
+	 * @param doTaxaByCommonNames
+	 */
+	public void setDoTaxaByCommonNames(boolean doTaxaByCommonNames) {
+		this.doTaxaByCommonNames = doTaxaByCommonNames;
+	}
+	
+	/**
+	 * @return doNamesWithoutTaxa
+	 */
+	public boolean isDoNamesWithoutTaxa() {
+		return doNamesWithoutTaxa;
+	}
+
+	/**
+	 * @param doNamesWithoutTaxa
+	 */
+	public void setDoNamesWithoutTaxa(boolean doNamesWithoutTaxa) {
+		this.doNamesWithoutTaxa = doNamesWithoutTaxa;
+	}
+	
 	public String getSearchString() {
 		return searchString;
 	}
@@ -53,53 +84,19 @@ public class TaxonServiceConfiguratorImpl implements ITaxonServiceConfigurator {
 		this.searchString = searchString;
 	}
 
+	public MatchMode getMatchMode() {
+		return matchMode;
+	}
+
+	public void setMatchMode(MatchMode matchMode) {
+		this.matchMode = matchMode;
+	}
+	
 	public ReferenceBase getSec() {
 		return sec;
 	}
 	
 	public void setReferenceBase(ReferenceBase sec) {
 		this.sec = sec;
-	}
-
-	/**
-	 * @return the doNamesWithoutTaxa
-	 */
-	public boolean isDoNamesWithoutTaxa() {
-		return doNamesWithoutTaxa;
-	}
-
-	/**
-	 * @param doNamesWithoutTaxa the doEmptyNames to set
-	 */
-	public void setDoNamesWithoutTaxa(boolean doNamesWithoutTaxa) {
-		this.doNamesWithoutTaxa = doNamesWithoutTaxa;
-	}
-
-	/**
-	 * @return the pageSize
-	 */
-	public Integer getPageSize() {
-		return pageSize;
-	}
-
-	/**
-	 * @param pageSize the pageSize to set
-	 */
-	public void setPageSize(Integer pageSize) {
-		this.pageSize = pageSize;
-	}
-
-	/**
-	 * @return the pageNumber
-	 */
-	public Integer getPageNumber() {
-		return pageNumber;
-	}
-
-	/**
-	 * @param pageNumber the pageNumber to set
-	 */
-	public void setPageNumber(Integer pageNumber) {
-		this.pageNumber = pageNumber;
 	}
 }

@@ -16,6 +16,7 @@ import java.util.Map;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 
 public interface IReferenceService extends IIdentifiableEntityService<ReferenceBase> {
@@ -48,7 +49,16 @@ public interface IReferenceService extends IIdentifiableEntityService<ReferenceB
 	public abstract List<ReferenceBase> getAllReferences(int limit, int start);
 	
 	/**
-	 * Gets all references 
+	 * Gets all references ordered by the properties defined by <code>orderHints</code>
+	 * @param pageSize the maximum number of entities returned entries per page. Can be null to return all entities.
+	 * @param pageNumber a numeric zero based page index 
+	 * @param orderHints
+	 * @return a Pager instance
+	 */
+	public Pager<ReferenceBase> getAllReferences(Integer pageSize, Integer pageNumber, List<OrderHint> orderHints);
+	
+	/**
+	 * Gets all references unordered
 	 * @param pageSize the maximum number of entities returned entries per page. Can be null to return all entities.
 	 * @param pageNumber a numeric zero based page index 
 	 * @return a Pager instance

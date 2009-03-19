@@ -14,13 +14,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.api.service.config.IIdentifiableEntityServiceConfigurator;
+import eu.etaxonomy.cdm.api.service.config.INameServiceConfigurator;
+import eu.etaxonomy.cdm.api.service.config.ITaxonServiceConfigurator;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.name.*;
+import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
 
 public interface INameService extends IIdentifiableEntityService<TaxonNameBase> {
 
@@ -83,7 +88,15 @@ public interface INameService extends IIdentifiableEntityService<TaxonNameBase> 
 	
 	public List findNamesByTitle(String title, CdmBase sessionObject);
 	
-	public List<HomotypicalGroup> getAllHomotypicalGroups(int limit, int start);
+	/**
+	 * Finds taxon name(s) according to specifications in configurator
+	 * 
+	 * @param configurator
+	 * @return
+	 */
+	public List<TaxonNameBase> findByTitle(IIdentifiableEntityServiceConfigurator config);
+
+    public List<HomotypicalGroup> getAllHomotypicalGroups(int limit, int start);
 
 	/**
 	 * Returns all Ranks
@@ -98,11 +111,17 @@ public interface INameService extends IIdentifiableEntityService<TaxonNameBase> 
 	public TermVocabulary<NomenclaturalStatusType> getStatusTypeVocabulary();
 	
 	/**
-	 * Returns all TypeDesignationStatus
+	 * Returns TypeDesignationStatus vocabulary
 	 * @return
 	 */
 	public TermVocabulary<TypeDesignationStatus> getTypeDesignationStatusVocabulary();
 		
+	/**
+	 * Returns TypeDesignationStatus ordered vocabulary
+	 * @return
+	 */
+	public OrderedTermVocabulary<TypeDesignationStatus> getTypeDesignationVocabulary();
+
 	/**
 	 * Returns all NameRelationshipTypes
 	 * @return

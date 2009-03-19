@@ -9,9 +9,11 @@
 
 package eu.etaxonomy.cdm.api.application;
 
+import javax.sql.DataSource;
+
 import org.apache.log4j.Logger;
+import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.orm.hibernate3.HibernateTransactionManager;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -74,7 +76,10 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
 //	@Autowired
 	//@Qualifier("mainService")
 	private IService<CdmBase> mainService;
-
+	@Autowired
+	private SessionFactory sessionFactory;
+	@Autowired
+	private DataSource dataSource;
 	
 	/**
 	 * 
@@ -158,6 +163,13 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
 	 */
 	public PlatformTransactionManager getTransactionManager() {
 		return this.transactionManager;
+	}
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#NewConversation()
+	 */
+	public ConversationHolder NewConversation() {
+		return new ConversationHolder(dataSource, sessionFactory, transactionManager);
 	}
 
 	

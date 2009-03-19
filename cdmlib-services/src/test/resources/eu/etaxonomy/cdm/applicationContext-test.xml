@@ -24,6 +24,8 @@
             <props>
                 <prop key="hibernate.dialect">org.hibernate.dialect.HSQLCorrectedDialect</prop>
                 <prop key="hibernate.cache.provider_class">org.hibernate.cache.NoCacheProvider</prop>
+                <!-- TODO trying to use a managed session context -->
+                <prop key="hibernate.current_session_context_class">managed</prop>
                 <prop key="hibernate.show_sql">false</prop>
                 <prop key="hibernate.format_sql">false</prop>
                 <prop key="hibernate.search.default.directory_provider">org.hibernate.search.store.FSDirectoryProvider</prop>
@@ -31,7 +33,6 @@
             </props>
         </property>
     </bean> 
-    
     
     <bean id="authenticationManager" class="org.springframework.security.providers.ProviderManager">
         <property name="providers">

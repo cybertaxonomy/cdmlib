@@ -27,6 +27,7 @@ import eu.etaxonomy.cdm.model.name.HybridRelationship;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
+import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 
 @Service
@@ -68,18 +69,21 @@ public class ReferenceServiceImpl extends IdentifiableServiceBase<ReferenceBase,
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.IReferenceService#getAllReferences(java.lang.Integer, java.lang.Integer)
 	 */
-	public Pager<ReferenceBase> getAllReferences(Integer pageSize, Integer pageNumber) {
+	public Pager<ReferenceBase> getAllReferences(Integer pageSize, Integer pageNumber, List<OrderHint> orderHints) {
         Integer numberOfResults = dao.count();
 		
 		List<ReferenceBase> results = new ArrayList<ReferenceBase>();
 		if(numberOfResults > 0) { // no point checking again
 			Integer start = pageSize == null ? 0 : pageSize * (pageNumber - 1);
-			results = dao.list(pageSize, start); //TODO implement pager like method in dao?
+			results = dao.list(pageSize, start, orderHints); //TODO implement pager like method in dao?
 		}
 		
 		return new DefaultPagerImpl<ReferenceBase>(pageNumber, numberOfResults, pageSize, results);
 	}
 
+	public Pager<ReferenceBase> getAllReferences(Integer pageSize, Integer pageNumber) {
+		return getAllReferences(pageSize, pageNumber, null);
+	}
 
 	public void generateTitleCache() {
 		logger.warn("Not yet implemented");
@@ -91,6 +95,7 @@ public class ReferenceServiceImpl extends IdentifiableServiceBase<ReferenceBase,
 	protected void setDao(IReferenceDao dao) {
 		this.dao = dao;
 	}
+
 
 
 }

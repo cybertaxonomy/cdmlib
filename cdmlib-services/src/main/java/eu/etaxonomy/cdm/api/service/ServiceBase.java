@@ -161,6 +161,11 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
 		return dao.update(transientObject);
 	}
 
+	@Transactional(readOnly = true)
+	public UUID refresh(T persistentObject) {
+		return dao.refresh(persistentObject);
+	}
+	
 	/**
 	 * FIXME harmonise with delete()
 	 * @param cdmObj

@@ -14,6 +14,8 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.api.service.config.IIdentifiableEntityServiceConfigurator;
+import eu.etaxonomy.cdm.api.service.config.ITaxonServiceConfigurator;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -51,6 +53,12 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 			return new DefaultPagerImpl<OriginalSource>(pageNumber, numberOfResults, pageSize, results);
 	}
 
+	protected List<T> findByTitle(IIdentifiableEntityServiceConfigurator config){
+		return ((IIdentifiableDao)dao).findByTitle(config.getTitleSearchString(),
+				config.getMatchMode(), 0, -1, null);
+		// TODO: Implement parameters pageSize, pageNumber, and criteria
+	}
+	
 	protected List<T> findCdmObjectsByTitle(String title){
 		return ((IIdentifiableDao)dao).findByTitle(title);
 	}

@@ -1,6 +1,11 @@
 /**
- * 
- */
+* Copyright (C) 2009 EDIT
+* European Distributed Institute of Taxonomy 
+* http://www.e-taxonomy.eu
+* 
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
 package eu.etaxonomy.cdm.api.service;
 
 import static org.junit.Assert.assertEquals;
@@ -14,6 +19,7 @@ import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.TypeDesignationStatus;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 
 /**
@@ -104,16 +110,33 @@ public class NameServiceImplTest2 extends CdmIntegrationTest {
 	 * Test method for {@link eu.etaxonomy.cdm.api.service.NameServiceImpl#getRankVocabulary()}.
 	 */
 	@Test
-	@Ignore
+	//@Ignore
 	public void testGetRankVocabulary() {
 		OrderedTermVocabulary<Rank> rankVocabulary = service.getRankVocabulary();
 		assertNotNull(rankVocabulary);
-		assertEquals(61, rankVocabulary.size());
+		assertEquals(62, rankVocabulary.size());
 		Rank highestRank = rankVocabulary.getHighestTerm();
 		assertEquals(Rank.EMPIRE(), highestRank);
 		assertEquals(Rank.DOMAIN(), rankVocabulary.getNextLowerTerm(highestRank));
 		assertSame(Rank.EMPIRE(), highestRank);
 		assertSame(Rank.DOMAIN(), rankVocabulary.getNextLowerTerm(highestRank));
+	}
+
+	/**
+	 * Test method for {@link eu.etaxonomy.cdm.api.service.NameServiceImpl#getTypeDesignationVocabulary()}.
+	 */
+	//@Ignore
+	@Test
+	public void testGetTypeDesignationVocabulary() {
+		OrderedTermVocabulary<TypeDesignationStatus> typeDesignationVocabulary = 
+			service.getTypeDesignationVocabulary();
+		assertNotNull(typeDesignationVocabulary);
+		assertEquals(62, typeDesignationVocabulary.size());
+		TypeDesignationStatus highestType = typeDesignationVocabulary.getHighestTerm();
+		assertEquals(TypeDesignationStatus.EPITYPE(), highestType);
+		assertEquals(TypeDesignationStatus.HOLOTYPE(), typeDesignationVocabulary.getNextLowerTerm(highestType));
+		assertSame(TypeDesignationStatus.EPITYPE(), highestType);
+		assertSame(TypeDesignationStatus.HOLOTYPE(), typeDesignationVocabulary.getNextLowerTerm(highestType));
 	}
 
 	/**

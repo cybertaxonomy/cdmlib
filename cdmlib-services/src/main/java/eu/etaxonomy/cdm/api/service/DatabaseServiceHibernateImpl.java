@@ -15,7 +15,7 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.jdbc.datasource.AbstractDriverBasedDataSource;
 import org.springframework.orm.hibernate3.SessionFactoryUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -143,10 +143,10 @@ public class DatabaseServiceHibernateImpl  implements IDatabaseService, Applicat
 		return getDataSource().getUsername();
 	}
 
-
-	//returns the DriverManagerDataSource from hibernate
-	private DriverManagerDataSource getDataSource(){
-		DriverManagerDataSource ds = (DriverManagerDataSource)SessionFactoryUtils.getDataSource(factory);
+    //  returns the AbstractDriverBasedDataSource from hibernate 
+	// (generalized in order to also allow using SimpleDriverDataSource)
+	private AbstractDriverBasedDataSource getDataSource(){
+		AbstractDriverBasedDataSource ds = (AbstractDriverBasedDataSource)SessionFactoryUtils.getDataSource(factory);
 		return ds;
 	}
 

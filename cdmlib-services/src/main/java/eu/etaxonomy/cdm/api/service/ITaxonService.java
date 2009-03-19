@@ -120,6 +120,16 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	 */
 	public abstract List<Taxon> getRootTaxa(ReferenceBase sec, boolean onlyWithChildren, boolean withMisapplications);
 
+	/**
+	 * Computes all Taxon instances which name is of a certain Rank.
+	 * @param rank The rank of the taxon name
+	 * @param sec The concept reference that the taxon belongs to
+	 * @param onlyWithChildren if true only taxa are returned that have taxonomic children. <Br>Default: true.
+	 * @param withMisapplications if false taxa that have at least one misapplied name relationship in which they are
+	 * the misapplied name are not returned.<Br>Default: true.
+	 * @return The List<Taxon> of root taxa.
+	 */
+	public abstract List<Taxon> getRootTaxa(Rank rank, ReferenceBase sec, boolean onlyWithChildren, boolean withMisapplications);
 	
 	/**
 	 * Computes all relationships.
