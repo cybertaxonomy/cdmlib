@@ -8,9 +8,7 @@
 */
 package eu.etaxonomy.cdm.remote.service;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashSet;
@@ -32,16 +30,14 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
-import eu.etaxonomy.cdm.model.common.Annotation;
+import eu.etaxonomy.cdm.database.NamedContextHolder;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
-import eu.etaxonomy.cdm.persistence.dao.common.ITitledDao.MATCH_MODE;
-import eu.etaxonomy.cdm.remote.dto.AnnotationTO;
+import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.remote.dto.FeatureTO;
 import eu.etaxonomy.cdm.remote.dto.FeatureTreeTO;
 import eu.etaxonomy.cdm.remote.dto.NameSTO;
 import eu.etaxonomy.cdm.remote.dto.NameTO;
 import eu.etaxonomy.cdm.remote.dto.ReferenceSTO;
-import eu.etaxonomy.cdm.remote.dto.ReferenceTO;
 import eu.etaxonomy.cdm.remote.dto.TaxonSTO;
 import eu.etaxonomy.cdm.remote.dto.TaxonTO;
 
@@ -70,6 +66,7 @@ public class RestController extends AbstractController
 	{
 		try{
 			ModelAndView mv = new ModelAndView();
+			String basepath = getNonNullPara("basepath",req);
 			String action = getNonNullPara("action",req);
 			String op = getNonNullPara("operation",req);
 			String dto = getNonNullPara("dto",req);
@@ -80,9 +77,18 @@ public class RestController extends AbstractController
 			
 			Enumeration<Locale> locales = req.getLocales();
 			
+			log.info(String.format("Request received for %s: act=%s op=%s dto=%s uuid=%s sec=%s", basepath, action, op, dto, uuid, sec));
 			
-			
-			log.info(String.format("Request received: act=%s op=%s dto=%s uuid=%s sec=%s", action, op, dto, uuid, sec));
+			NamedContextHolder.setContextKey(basepath);
+
+			/* ----------------------------------------
+			 * FIXME test implementation !!!!!! works OK :) however compeletly
+			 * misplaced in here, when moving also reconsider service.getDataSource()
+			 * which was implemented for testing only
+			 */
+//			AbstractDataSource ads = service.getDataSource();
+//			DataSourceLoader.updateRoutingDataSource(ads);
+			// ---------------------------------------- 
 			
 			if(action==""){
 				// get Object by UUID
@@ -153,12 +159,12 @@ public class RestController extends AbstractController
 				// TODO: take higher taxa UUIDs from "higherTaxa"
 				//
 				
-				MATCH_MODE matchMode = null;
+				MatchMode matchMode = null;
 				try{
 					String matchModeStr = getStringPara("mode",req);
-					matchMode = MATCH_MODE.valueOf(matchModeStr.toUpperCase());
+					matchMode = MatchMode.valueOf(matchModeStr.toUpperCase());
 				} catch(Exception e){
-					matchMode = MATCH_MODE.BEGINNING;
+					matchMode = MatchMode.BEGINNING;
 				}				
 				
 				String featureTree = getStringPara("feature", req); 
@@ -242,9 +248,15 @@ public class RestController extends AbstractController
 			}
 			// set xml or json view
 			mv.setViewName(getLogicalView(req));
+			
+			// avoid memory leaks
+			NamedContextHolder.clearContextKey();
+			
 			return mv;
 		}catch(CdmObjectNonExisting e){
 			sendNonExistingUuidError(resp, e);
+			// avoid memory leaks
+			NamedContextHolder.clearContextKey();
 			return null;
 		}
 	}

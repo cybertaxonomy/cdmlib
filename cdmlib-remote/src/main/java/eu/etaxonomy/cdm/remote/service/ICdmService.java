@@ -16,10 +16,14 @@ import java.util.Locale;
 import java.util.Set;
 import java.util.UUID;
 
+import org.springframework.jdbc.datasource.AbstractDataSource;
+import org.springframework.jdbc.datasource.AbstractDriverBasedDataSource;
+
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.persistence.dao.common.ITitledDao;
+import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.remote.dto.AnnotationTO;
 import eu.etaxonomy.cdm.remote.dto.FeatureTO;
 import eu.etaxonomy.cdm.remote.dto.FeatureTreeTO;
@@ -48,7 +52,7 @@ import eu.etaxonomy.cdm.remote.dto.TreeNode;
  * @created 30.1.2008
  */
 public interface ICdmService {
-
+	
 	/**
 	 * @param uuid
 	 * @return 
@@ -175,7 +179,7 @@ public interface ICdmService {
 	 * @return a ResultSetPageSTO<TaxonSTO> instance
 	 */
 	public ResultSetPageSTO<TaxonSTO> findTaxa(String q, Set<UUID> sec,
-			Set<UUID> higherTaxa, ITitledDao.MATCH_MODE matchMode, boolean onlyAccepted,
+			Set<UUID> higherTaxa, MatchMode matchMode, boolean onlyAccepted,
 			int pagesize, int page, Enumeration<Locale> locales);
 
 	/**

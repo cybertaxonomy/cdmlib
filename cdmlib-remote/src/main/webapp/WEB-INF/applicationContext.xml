@@ -7,6 +7,7 @@
     http://www.springframework.org/schema/context   http://www.springframework.org/schema/context/spring-context-2.5.xsd
     http://www.springframework.org/schema/tx   http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
     ">
+	
 
      <import resource="classpath:/eu/etaxonomy/cdm/services.xml"/> 
 <!-- 
@@ -14,58 +15,30 @@
      <import resource="classpath:/eu/etaxonomy/cdm/spelling.xml"/>
  -->
  
+ 
   	<!-- Overwrites the component-scan in services.xml -->
     <context:component-scan base-package="eu/etaxonomy/cdm">
       <context:exclude-filter type="regex" expression="eu\.etaxonomy\.cdm\.api\.service\.UserService"/>
     </context:component-scan>
-     
-    <bean id="dataSource"  lazy-init="true" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-        <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
-        <!-- 
-        //ACCOUNTS
-        <property name="username" value="xxx"/>
-        <property name="password" value="xxx"/>
-        //DRIVERS
-        <property name="driverClassName" value="com.p6spy.engine.spy.P6SpyDriver"/>
-        <property name="driverClassName" value="org.h2.Driver"/>
-        //TEST@LOCAL
-        <property name="url" value="jdbc:mysql://127.0.0.1/cdm_portal_test"/>
-        <property name="url" value="jdbc:h2:C:/Dokumente und Einstellungen/a.mueller/.cdmLibrary/writableResources/h2/LocalH2/CDM"/>
-		//TEST@192.168.2.10
-		<property name="username" value="xxx"/>
-        <property name="password" value="xxx"/>
-        <property name="url" value="jdbc:mysql://192.168.2.10/cdm_portal"/>
-        <property name="url" value="jdbc:mysql://192.168.2.10/cdm_portal_test"/>
-        <property name="url" value="jdbc:mysql://192.168.2.10/cdm_test_andreasM2"/>
-        <property name="url" value="jdbc:mysql://192.168.2.10/cdm_test_andreasK1"/>
-		//
-		<property name="username" value="xxx"/>
-        <property name="password" value="xxx"/>
-        <property name="url" value="jdbc:mysql://192.168.2.10/cdm_edit_diptera"/> 
-        <property name="url" value="jdbc:mysql://192.168.2.10/cdm_edit_palmae"/>
-		//PREVIEW@87.106.88.177
-        <property name="url" value="jdbc:mysql://87.106.88.177:80/cdm_edit_cichorieae"/>
-        <property name="url" value="jdbc:mysql://87.106.88.177:80/cdm_edit_diptera"/>      
-        -->
-        <!-- Configure the webapp -->
-        <property name="url" value="jdbc:mysql://87.106.88.177:80/cdm_edit_palmae"/>      
-        <property name="password" value="xxx"/>
-		<property name="username" value="xxx"/>
-    </bean>
     
-    <!-- This configures default properties, which can overridden with the file specified by the location property -->
-    <bean id="hibernateProperties" 
-        class="org.springframework.beans.factory.config.PropertiesFactoryBean">
-        <property name="properties">
-            <props>
-                <prop key="hibernate.hbm2ddl.auto">create</prop>
-                <prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
-                <prop key="hibernate.cache.provider_class">org.hibernate.cache.NoCacheProvider</prop>
-                <prop key="hibernate.show_sql">false</prop>
-                <prop key="hibernate.format_sql">false</prop>
-            </props>
-        </property>
-    </bean>
+    
+    <!-- enable the configuration of transactional behavior based on annotations -->
+    <tx:annotation-driven transaction-manager="transactionManager"/>
 
 
+	<!--  load usenames and passwords from properties file and import datasource bean configurations -->
+    <context:property-placeholder location="file:${user.home}/.cdmLibrary/cdmserver.properties"/>
+    <!-- CONFIGURE WEB APPLICATION HERE -->
+    <import resource="routing-datasource.xml"/>
+    <!-- 
+    <import resource="empty-default-datasource.xml"/>
+    <import resource="empty-default-datasource-wp7virtual.xml"/>
+    <import resource="datasources-local.xml"/>
+    <import resource="datasources-wp7virtual-production-A.xml"/> 
+    <import resource="p6spy.xml"/>
+    <import resource="datasources-bgbm24-import.xml"/>
+    <import resource="datasources-wp7virtual-production-B.xml"/>
+     -->
+    
+ 
 </beans>

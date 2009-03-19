@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+    http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context-2.5.xsd">
+
+    <bean id="dataSource"  lazy-init="true" class="eu.etaxonomy.cdm.database.UpdatableRoutingDataSource">
+    	<property name="targetDataSources">
+	      <map key-type="java.lang.String">
+	         <entry key="cichorieae" value-ref="cichorieaeDataSource"/>
+	         <entry key="palmae" value-ref="palmaeDataSource"/>
+	         <entry key="diptera" value-ref="dipteraDataSource"/>
+	      </map>
+   		</property>
+   		<property name="defaultTargetDataSource" ref="cichorieaeDataSource"/>
+   </bean>
+
+    <bean id="cichorieaeDataSource"  lazy-init="true" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+        <property name="username" value="${local.usr}"/>
+        <property name="password" value="${local.pwd}"/>
+        <property name="url" value="jdbc:mysql://${local.host}/cdm_local_cichorieae"/>
+    </bean>
+    <bean id="palmaeDataSource"  lazy-init="true" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+        <property name="username" value="${local.usr}"/>
+        <property name="password" value="${local.pwd}"/>
+        <property name="url" value="jdbc:mysql://${local.host}/cdm_local_palmae"/>
+    </bean>
+
+    <bean id="dipteraDataSource"  lazy-init="true" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+        <property name="username" value="${local.usr}"/>
+        <property name="password" value="${local.pwd}"/>
+        <property name="url" value="jdbc:mysql://${local.host}/cdm_local_diptera"/>
+    </bean>
+    
+    <!-- This configures default properties, which can overridden with the file specified by the location property -->
+    <bean id="hibernateProperties" 
+        class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+        <property name="properties">
+            <props>
+                <prop key="hibernate.hbm2ddl.auto">validate</prop>
+                <prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
+                <prop key="hibernate.cache.provider_class">org.hibernate.cache.NoCacheProvider</prop>
+                <prop key="hibernate.show_sql">true</prop>
+                <prop key="hibernate.format_sql">false</prop>
+            </props>
+        </property>
+    </bean>
+
+</beans>

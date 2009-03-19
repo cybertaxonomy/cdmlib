@@ -5,4 +5,5 @@
 <beans>
     <bean name="xmlView" class="eu.etaxonomy.cdm.remote.view.XmlView"/>
     <bean name="jsonView" class="eu.etaxonomy.cdm.remote.view.JsonView"/>
+    <bean name="htmlView" class="eu.etaxonomy.cdm.remote.view.HtmlView"/>
 </beans>

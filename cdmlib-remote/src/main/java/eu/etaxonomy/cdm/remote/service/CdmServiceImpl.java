@@ -27,18 +27,21 @@ import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
+import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
-import eu.etaxonomy.cdm.persistence.dao.common.ITitledDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IFeatureDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IFeatureTreeDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
+import eu.etaxonomy.cdm.persistence.fetch.CdmFetch;
+import eu.etaxonomy.cdm.persistence.query.MatchMode;
+import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.remote.dto.FeatureTO;
 import eu.etaxonomy.cdm.remote.dto.FeatureTreeTO;
 import eu.etaxonomy.cdm.remote.dto.NameSTO;
@@ -84,6 +87,7 @@ public class CdmServiceImpl implements ICdmService {
 	private IFeatureDao featureDAO;
 	
 	
+	
 //FIXME commented out below, since refactoring is urgently needed see ticket#593 http://dev.e-taxonomy.eu/trac/ticket/593
 //	@Autowired
 //	private AnnotatableDaoImpl<AnnotatableEntity> annotatableDao;
@@ -94,11 +98,22 @@ public class CdmServiceImpl implements ICdmService {
 	
 	
 	private final int MAXRESULTS = 500;
+	
+	private static List<OrderHint> defaultReferenceOrder = new ArrayList();
 
 	
 	
 //	private CdmEntityDaoBase entityDAO = new CdmEntityDaoBase<CdmBase>();
 		
+	
+	public CdmServiceImpl() {
+		
+		super();
+		defaultReferenceOrder.add(new OrderHint("authorTeam.persistentTitleCache", OrderHint.SortOrder.ASCENDING));
+		defaultReferenceOrder.add(new OrderHint("year", OrderHint.SortOrder.ASCENDING));
+		defaultReferenceOrder.add(new OrderHint("persistentTitleCache", OrderHint.SortOrder.ASCENDING));
+	}
+
 	
 	/**
 	 * find matching taxonbase instance or throw CdmObjectNonExisting exception.
@@ -180,7 +195,7 @@ public class CdmServiceImpl implements ICdmService {
 		return this.getClass();
 	}
 
-	public ResultSetPageSTO<TaxonSTO> findTaxa(String q, Set<UUID> sec, Set<UUID> higherTaxa, ITitledDao.MATCH_MODE matchMode, boolean onlyAccepted, int page, int pagesize, Enumeration<Locale> locales) {
+	public ResultSetPageSTO<TaxonSTO> findTaxa(String q, Set<UUID> sec, Set<UUID> higherTaxa, MatchMode matchMode, boolean onlyAccepted, int page, int pagesize, Enumeration<Locale> locales) {
 		ResultSetPageSTO<TaxonSTO> resultSetPage = new ResultSetPageSTO<TaxonSTO>();
 
 		resultSetPage.setPageNumber(page);
@@ -205,6 +220,7 @@ public class CdmServiceImpl implements ICdmService {
 //		}
 		
 		List<TaxonBase> results = taxonDAO.findByTitle(q, matchMode, page, pagesize, criteria);
+		//descriptionDAO
 		resultSetPage.setResultsOnPage(results.size());
 		for (TaxonBase taxonBase : results){
 			resultSetPage.getResults().add(taxonAssembler.getSTO(taxonBase, locales));
@@ -264,7 +280,8 @@ public class CdmServiceImpl implements ICdmService {
 	}
 	
 	public Pager<ReferenceBase> listReferences(Integer pageSize, Integer pageNumber) throws CdmObjectNonExisting {
-		return referenceService.getAllReferences(pageSize, pageNumber);	
+		
+		return referenceService.getAllReferences(pageSize, pageNumber, defaultReferenceOrder);	
 	}
 	
 	
@@ -278,7 +295,8 @@ public class CdmServiceImpl implements ICdmService {
 		if(uuid != null){
 			sec = getCdmReferenceBase(uuid);
 		}
-		return taxonAssembler.getTreeNodeListSortedByName(taxonDAO.getRootTaxa(sec));
+		List<Taxon> rt = taxonDAO.getRootTaxa(Rank.GENUS(), sec, null, true, false);
+		return taxonAssembler.getTreeNodeListSortedByName(rt);
 	}
 
 	public Set<ReferencedEntityBaseSTO> getTypes(UUID uuid) {

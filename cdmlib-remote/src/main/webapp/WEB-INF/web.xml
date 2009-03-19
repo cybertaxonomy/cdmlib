@@ -9,7 +9,7 @@
     <listener>
         <listener-class>
             org.springframework.web.context.ContextLoaderListener
-            <!-- defaults to /WEB-INF/applicationContext.xml -->
+            <!-- defaults to /WEB-INF/applicationContext.xml if contextConfigLocation is not set -->
         </listener-class>
     </listener>
     

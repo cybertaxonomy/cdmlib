@@ -137,10 +137,11 @@
 
 	<build>
 	<!-- Configure the webapp -->
-		<finalName>cdmserver-palmae</finalName>
+ 	<finalName>cdmserver</finalName> 
 <!--		
-		<finalName>cdmserver-diptera</finalName>
  		<finalName>cdmserver-cichorieae</finalName> 
+		<finalName>cdmserver-palmae</finalName>
+		<finalName>cdmserver-diptera</finalName>
 		<finalName>cdmserver</finalName>
 		<finalName>cdmserver-elsalvador</finalName>
 		<finalName>cdmserver-erms</finalName>
@@ -189,10 +190,10 @@
 				<artifactId>maven-jetty-plugin</artifactId>
 				<configuration>
 					<!-- Configure the webapp -->
-					<contextPath>/cdmserver-palmae/</contextPath>
-<!--					
-					<contextPath>/cdmserver-diptera/</contextPath>
 					<contextPath>/cdmserver-cichorieae/</contextPath>
+<!--					
+					<contextPath>/cdmserver-palmae/</contextPath>
+					<contextPath>/cdmserver-diptera/</contextPath>
 					<contextPath>/cdmserver/</contextPath>
 					<contextPath>/cdmserver-elsalvador/</contextPath>
 					<contextPath>/cdmserver-erms/</contextPath>

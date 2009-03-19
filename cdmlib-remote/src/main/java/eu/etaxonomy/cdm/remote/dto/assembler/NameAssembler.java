@@ -19,6 +19,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -31,6 +33,7 @@ import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.persistence.dao.hibernate.HibernateProxyHelperExtended;
 import eu.etaxonomy.cdm.remote.dto.DescriptionTO;
 import eu.etaxonomy.cdm.remote.dto.NameRelationshipTO;
 import eu.etaxonomy.cdm.remote.dto.NameSTO;
@@ -44,6 +47,9 @@ import eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy;
 
 @Component
 public class NameAssembler extends AssemblerBase<NameSTO, NameTO, TaxonNameBase>{
+	
+	private static final Logger logger = Logger.getLogger(NameAssembler.class);
+
 	
 	@Autowired
 	private ReferenceAssembler referenceAssembler;
@@ -83,6 +89,7 @@ public class NameAssembler extends AssemblerBase<NameSTO, NameTO, TaxonNameBase>
 	}	
 	public NameTO getTO(TaxonNameBase taxonNameBase, Enumeration<Locale> locales){		
 		NameTO name = null;
+		logger.warn("HomotypicalGroup initialized:" + (Hibernate.isInitialized(taxonNameBase.getHomotypicalGroup())? "TRUE":"FALSE"));
 		if (taxonNameBase !=null){
 			name = new NameTO();
 			setVersionableEntity(taxonNameBase, name);
@@ -171,12 +178,25 @@ public class NameAssembler extends AssemblerBase<NameSTO, NameTO, TaxonNameBase>
 	
 	
 	public List<TaggedText> getTaggedName(TaxonNameBase taxonNameBase){
+		
 		List<TaggedText> tags = new ArrayList<TaggedText>();
-		//FIXME rude hack:
+		
+		/** 
+		 * taxonNameBase.getHibernateLazyInitializer().getImplementation();
+		 * class eu.etaxonomy.cdm.model.name.TaxonNameBase$$EnhancerByCGLIB$$3683183d
+		 * @link( CGLIBLazyInitializer.getImplementation())
+		 */
+//		if(taxonNameBase instanceof HibernateProxy) {
+//			LazyInitializer lazyInitializer = ((HibernateProxy)taxonNameBase).getHibernateLazyInitializer();
+//			taxonNameBase = (TaxonNameBase)lazyInitializer.getImplementation();
+//		}
+		taxonNameBase = (TaxonNameBase)HibernateProxyHelperExtended.getProxyTarget(taxonNameBase);
+		
+			//FIXME rude hack:
 		if(!(taxonNameBase instanceof NonViralName)){
 			return tags;
 		}
-		taxonNameBase = (NonViralName)taxonNameBase;
+		
 		// --- end of rude hack
 		//FIXME infrageneric epithets are not jet handled!
 		//   - infraGenericEpithet	"Cicerbita"	

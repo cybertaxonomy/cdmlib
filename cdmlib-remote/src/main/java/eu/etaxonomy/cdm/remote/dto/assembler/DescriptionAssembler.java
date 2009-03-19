@@ -194,7 +194,7 @@ public class DescriptionAssembler extends AssemblerBase<BaseSTO, DescriptionTO, 
 				
 
 				// KLUDGE can this be handled more generic?  
-				if(featureTO.getFeature().getTerm().equals("Distribution")){
+				if(featureTO.getFeature().getTerm() != null && featureTO.getFeature().getTerm().equals("Distribution")){
 					
 					Set<Distribution> distributionSet = new HashSet<Distribution>();
 					for (DescriptionElementBase des : description.getElements()){
