@@ -10,6 +10,8 @@ package eu.etaxonomy.cdm.persistence.dao.name;
 
 import java.util.List;
 
+import org.hibernate.criterion.Criterion;
+
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.HybridRelationship;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
@@ -20,6 +22,7 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationStatus;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
+import eu.etaxonomy.cdm.persistence.query.MatchMode;
 
 /**
  * @author a.mueller
@@ -136,4 +139,7 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonNameBase> {
 	 * @return a count of TaxonNameBase instances
 	 */
 	public int countNames(String queryString);
+
+	public List<? extends TaxonNameBase<?,?>> 
+	findByName(String queryString, MatchMode matchmode, Integer pageSize, Integer pageNumber, List<Criterion> criteria);
 }

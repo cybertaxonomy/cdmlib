@@ -8,6 +8,7 @@
  */
 package eu.etaxonomy.cdm.persistence.dao.hibernate.taxon;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -41,14 +42,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.ReflectionUtils;
 
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.Extension;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.OriginalSource;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
-import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
+import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
+import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.media.Rights;
+import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
@@ -69,6 +73,7 @@ import eu.etaxonomy.cdm.persistence.dao.hibernate.AlternativeSpellingSuggestionP
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.fetch.CdmFetch;
+import eu.etaxonomy.cdm.persistence.query.MatchMode;
 
 /**
  * @author a.mueller
@@ -129,6 +134,55 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 	}
 	
 	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#getRootTaxa(eu.etaxonomy.cdm.model.name.Rank, eu.etaxonomy.cdm.model.reference.ReferenceBase, eu.etaxonomy.cdm.persistence.fetch.CdmFetch, java.lang.Boolean, java.lang.Boolean)
+	 */
+	public List<Taxon> 
+	getRootTaxa(Rank rank, ReferenceBase sec, CdmFetch cdmFetch, Boolean onlyWithChildren, Boolean withMisapplications) {
+		if (onlyWithChildren == null){
+			onlyWithChildren = true;
+		}
+		if (withMisapplications == null){
+			withMisapplications = true;
+		}
+		if (cdmFetch == null){
+			cdmFetch = CdmFetch.NO_FETCH();
+		}
+
+		Criteria crit = getSession().createCriteria(Taxon.class);
+		//crit.add(Restrictions.isNull("taxonomicParentCache"));
+		
+		crit.setFetchMode("name", FetchMode.JOIN);
+		crit.createAlias("name", "name");
+		
+		if (rank != null) {
+			crit.add(Restrictions.eq("name.rank", rank));
+		}
+
+		if (sec != null){
+			crit.add(Restrictions.eq("sec", sec) );
+		}
+
+		if (! cdmFetch.includes(CdmFetch.FETCH_CHILDTAXA())){
+			logger.warn("no child taxa fetch");
+			//TODO overwrite LAZY (SELECT) does not work (bug in hibernate?)
+			crit.setFetchMode("relationsToThisTaxon.fromTaxon", FetchMode.LAZY);
+		}
+
+		List<Taxon> results = new ArrayList<Taxon>();
+		List<Taxon> taxa = crit.list();
+		for(Taxon taxon : taxa){
+			//childTaxa
+			//TODO create restriction instead
+			if (onlyWithChildren == false || taxon.hasTaxonomicChildren()){
+				if (withMisapplications == true || ! taxon.isMisappliedName()){
+					results.add(taxon);
+				}
+			}
+		}
+		return results;
+	}
+
+	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#getRootTaxa(eu.etaxonomy.cdm.model.reference.ReferenceBase, eu.etaxonomy.cdm.persistence.fetch.CdmFetch, java.lang.Boolean, java.lang.Boolean)
 	 */
 	public List<Taxon> getRootTaxa(ReferenceBase sec, CdmFetch cdmFetch, Boolean onlyWithChildren, Boolean withMisapplications) {
@@ -166,7 +220,8 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		}
 
 		List<Taxon> results = new ArrayList<Taxon>();
-		for(Taxon taxon : (List<Taxon>) crit.list()){
+		List<Taxon> taxa = crit.list();
+		for(Taxon taxon : taxa){
 			//childTaxa
 			//TODO create restriction instead
 			if (onlyWithChildren == false || taxon.hasTaxonomicChildren()){
@@ -178,6 +233,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		return results;
 	}
 	
+
 	public List<TaxonBase> getTaxaByName(String queryString, ReferenceBase sec) {
 		
 		return getTaxaByName(queryString, true, sec);
@@ -196,18 +252,53 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		criteria.setFetchMode( "name", FetchMode.JOIN );
 		criteria.createAlias("name", "name");
 		
-		if (sec != null){
-			// FIXME I don't think that we should be saving objects in get methods
-			if(sec.getId() == 0){
-				getSession().save(sec);
-			}
-			criteria.add(Restrictions.eq("sec", sec ) );
-		}
+		// FIXME: sec restriction caused problems in cich image import: results was empty
+//		if (sec != null){
+//			if(sec.getId() == 0){
+//				getSession().save(sec);
+//			}
+//			criteria.add(Restrictions.eq("sec", sec ) );
+//		}
 		if (queryString != null) {
 			criteria.add(Restrictions.ilike("name.nameCache", queryString));
 		}
 
 		return (List<TaxonBase>)criteria.list();
+	}
+
+	public List<TaxonBase> getTaxaByName(String queryString, MatchMode matchMode, 
+			Boolean accepted, Integer pageSize, Integer pageNumber) {
+		
+		Criteria criteria = null;
+		if (accepted == true) {
+			criteria = getSession().createCriteria(Taxon.class);
+		} else {
+			criteria = getSession().createCriteria(Synonym.class);
+		}
+
+		criteria.setFetchMode( "name", FetchMode.JOIN );
+		criteria.createAlias("name", "name");
+		
+		if (matchMode == MatchMode.EXACT) {
+			criteria.add(Restrictions.eq("name.nameCache", matchMode.queryStringFrom(queryString)));
+		} else {
+			criteria.add(Restrictions.ilike("name.nameCache", matchMode.queryStringFrom(queryString)));
+		}
+		
+
+//		if (queryString != null) {
+//			criteria.add(Restrictions.ilike("name.nameCache", queryString));
+//		}
+//		
+		if(pageSize != null) {
+			criteria.setMaxResults(pageSize);
+			if(pageNumber != null) {
+				criteria.setFirstResult(pageNumber * pageSize);
+			}
+		}
+
+		List<TaxonBase> results = criteria.list();
+		return results;
 	}
 
 	public List<TaxonBase> getAllTaxonBases(Integer pagesize, Integer page) {
@@ -309,7 +400,25 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 				synonymRelation.setSynonym(null);
 				getSession().delete(synonymRelation);
 			} 
-		} else if (taxonBase instanceof Synonym){ //is Synonym
+			
+			// Descriptions
+			for (Iterator<TaxonDescription> iterDesc = taxon.getDescriptions().iterator(); iterDesc.hasNext();) {
+				TaxonDescription taxonDescription = iterDesc.next();
+				iterDesc.remove();
+				//taxonDescription.setTaxon(null);
+				Field field = ReflectionUtils.findField(TaxonDescription.class, "taxon", Taxon.class);
+				ReflectionUtils.makeAccessible(field);
+				ReflectionUtils.setField(field, taxonDescription, null);
+				for (Iterator<DescriptionElementBase> iterDescElem = 
+					taxonDescription.getElements().iterator(); iterDescElem.hasNext();) {
+					DescriptionElementBase descriptionElement = iterDescElem.next();
+					iterDescElem.remove();
+					getSession().delete(descriptionElement);
+				}
+				getSession().delete(taxonDescription);
+			}
+			
+		} else { //is Synonym
 			Synonym synonym = (Synonym)taxonBase;
 			for (Iterator<SynonymRelationship> iterator = synonym.getSynonymRelations().iterator(); iterator.hasNext();){
 				SynonymRelationship synonymRelation = iterator.next();
@@ -323,14 +432,14 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 
 
 	// TODO add generic return type !!
-	public List findByName(String queryString, ITitledDao.MATCH_MODE matchMode, int page, int pagesize, boolean onlyAcccepted) {
+	public List findByName(String queryString, MatchMode matchMode, int page, int pagesize, boolean onlyAcccepted) {
 		ArrayList<Criterion> criteria = new ArrayList<Criterion>();
 		//TODO ... Restrictions.eq(propertyName, value)
 		return super.findByTitle(queryString, matchMode, page, pagesize, criteria);
 
 	}
 
-	public int countMatchesByName(String queryString, ITitledDao.MATCH_MODE matchMode, boolean onlyAcccepted) {
+	public int countMatchesByName(String queryString, MatchMode matchMode, boolean onlyAcccepted) {
 		checkNotInPriorView("TaxonDaoHibernateImpl.countMatchesByName(String queryString, ITitledDao.MATCH_MODE matchMode, boolean onlyAcccepted)");
 		Criteria crit = getSession().createCriteria(type);
 		crit.add(Restrictions.ilike("titleCache", matchMode.queryStringFrom(queryString)));
@@ -340,7 +449,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 	}
 
 
-	public int countMatchesByName(String queryString, ITitledDao.MATCH_MODE matchMode, boolean onlyAcccepted, List<Criterion> criteria) {
+	public int countMatchesByName(String queryString, MatchMode matchMode, boolean onlyAcccepted, List<Criterion> criteria) {
 		checkNotInPriorView("TaxonDaoHibernateImpl.countMatchesByName(String queryString, ITitledDao.MATCH_MODE matchMode, boolean onlyAcccepted, List<Criterion> criteria)");
 		Criteria crit = getSession().createCriteria(type);
 		crit.add(Restrictions.ilike("titleCache", matchMode.queryStringFrom(queryString)));

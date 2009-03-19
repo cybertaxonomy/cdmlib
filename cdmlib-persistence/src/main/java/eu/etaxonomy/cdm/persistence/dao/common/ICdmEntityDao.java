@@ -17,6 +17,7 @@ import java.util.UUID;
 import org.springframework.dao.DataAccessException;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
  * an data access interface that all data access classes implement
@@ -56,6 +57,13 @@ public interface ICdmEntityDao<T extends CdmBase> {
 	 * @return
 	 * @throws DataAccessException
 	 */
+	public UUID refresh(T persistentObject) throws DataAccessException;
+	
+	/**
+	 * @param persistentObject
+	 * @return
+	 * @throws DataAccessException
+	 */
 	public UUID delete(T persistentObject) throws DataAccessException;
 	
 	/**
@@ -67,6 +75,17 @@ public interface ICdmEntityDao<T extends CdmBase> {
 	 * @throws DataAccessException
 	 */
 	public List<T> list(Integer limit, Integer start) throws DataAccessException;
+
+	/**
+	 * Returns a sublist of CdmBase instances stored in the database.
+	 * A maximum of 'limit' objects are returned, starting at object with index 'start'.
+	 * @param limit the maximum number of entities returned (can be null to return all entities)
+	 * @param start
+	 * @param orderHints
+	 * @return
+	 * @throws DataAccessException
+	 */
+	public List<T> list(Integer limit, Integer start, List<OrderHint> orderHints);
 	
 	/**
 	 * Returns a sublist of CdmBase instances of type <TYPE> stored in the database.
@@ -77,6 +96,7 @@ public interface ICdmEntityDao<T extends CdmBase> {
 	 * @throws DataAccessException
 	 */
 	public <TYPE extends T> List<TYPE> list(Class<TYPE> type, Integer limit, Integer start) throws DataAccessException;
+	
 
 	public List<T> rows(String tableName, int limit, int start) throws DataAccessException;
 

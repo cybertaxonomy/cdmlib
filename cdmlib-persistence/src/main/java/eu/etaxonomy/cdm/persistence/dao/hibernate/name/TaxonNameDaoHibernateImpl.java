@@ -14,6 +14,8 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
+import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.envers.query.AuditEntity;
@@ -26,6 +28,7 @@ import eu.etaxonomy.cdm.model.name.HybridRelationship;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
+import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
@@ -33,6 +36,7 @@ import eu.etaxonomy.cdm.model.name.TypeDesignationStatus;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
+import eu.etaxonomy.cdm.persistence.query.MatchMode;
 
 /**
  * @author a.mueller
@@ -339,7 +343,7 @@ extends IdentifiableDaoBase<TaxonNameBase> implements ITaxonNameDao {
 	}
 
 	
-	public List<TaxonNameBase<?,?>> searchNames(String queryString, Integer pageSize, Integer pageNumber) {
+	public List<TaxonNameBase<?,?>> searchNames(String queryString, MatchMode matchMode, Integer pageSize, Integer pageNumber) {
 		checkNotInPriorView("TaxonNameDaoHibernateImpl.searchNames(String queryString, Integer pageSize, Integer pageNumber)");
 		Criteria criteria = getSession().createCriteria(TaxonNameBase.class);
 
@@ -358,6 +362,11 @@ extends IdentifiableDaoBase<TaxonNameBase> implements ITaxonNameDao {
 		return results;
 	}
 
+	
+	public List<TaxonNameBase<?,?>> searchNames(String queryString, Integer pageSize, Integer pageNumber) {
+		return searchNames(queryString, MatchMode.BEGINNING, pageSize, pageNumber);
+	}
+	
 	
 	public List<TaxonNameBase> searchNames(String genusOrUninomial,String infraGenericEpithet, String specificEpithet,	String infraSpecificEpithet, Rank rank, Integer pageSize,Integer pageNumber) {
 		AuditEvent auditEvent = getAuditEventFromContext();
@@ -450,4 +459,30 @@ extends IdentifiableDaoBase<TaxonNameBase> implements ITaxonNameDao {
 		}
 	}
 
+	public List<? extends TaxonNameBase<?,?>> findByName(String queryString, 
+			MatchMode matchmode, Integer pageSize, Integer pageNumber, List<Criterion> criteria) {
+
+		Criteria crit = getSession().createCriteria(type);
+		if (matchmode == MatchMode.EXACT) {
+			crit.add(Restrictions.eq("nameCache", matchmode.queryStringFrom(queryString)));
+		} else {
+			crit.add(Restrictions.ilike("nameCache", matchmode.queryStringFrom(queryString)));
+		}
+		if(criteria != null){
+			for (Criterion criterion : criteria) {
+				crit.add(criterion);
+			}
+		}
+		crit.addOrder(Order.asc("nameCache"));
+
+		if(pageSize != null) {
+			crit.setMaxResults(pageSize);
+			if(pageNumber != null) {
+				crit.setFirstResult(pageNumber * pageSize);
+			}
+		}
+
+		List<? extends TaxonNameBase<?,?>> results = crit.list();
+		return results;
+	}
 }

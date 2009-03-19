@@ -27,6 +27,7 @@ import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ISearchableDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ITitledDao;
 import eu.etaxonomy.cdm.persistence.fetch.CdmFetch;
+import eu.etaxonomy.cdm.persistence.query.MatchMode;
 
 /**
  * @author a.mueller
@@ -63,6 +64,19 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
 	 */
 	public List<TaxonBase> getTaxaByName(String queryString, Boolean accepted, ReferenceBase sec);
 
+	/** 
+	 * Returns a list of TaxonBase instances (or Taxon instances, if accepted == true, or Synonym instance, if accepted == false) 
+	 * where the taxonBase.name.nameCache property matches the String queryString.
+	 * @param queryString
+	 * @param matchMode
+	 * @param accepted
+	 * @param pageSize
+	 * @param pageNumber
+	 * @return
+	 */
+	public List<TaxonBase> getTaxaByName(String queryString, MatchMode matchMode, 
+			Boolean accepted, Integer pageSize, Integer pageNumber);
+		
 	/**
 	 * Computes all Taxon instances that do not have a taxonomic parent and has at least one child.
 	 * @return The List<Taxon> of root taxa.
@@ -83,6 +97,19 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
 	
 	
 	/**
+	 * Computes all Taxon instances which name is of a certain Rank.
+	 * @param rank The rank of the taxon name
+	 * @param sec The concept reference that the taxon belongs to
+	 * @param cdmFetch not used yet !! TODO
+	 * @param onlyWithChildren if true only taxa are returned that have taxonomic children. <Br>Default: true.
+	 * @param withMisaplications if false only taxa are returned that have no isMisappliedNameFor relationship. 
+	 * <Br>Default: true.
+	 * @return The List<Taxon> of root taxa.
+	 */
+	public List<Taxon> 
+	getRootTaxa(Rank rank, ReferenceBase sec, CdmFetch cdmFetch, Boolean onlyWithChildren, Boolean withMisapplications);
+
+		/**
 	 * TODO necessary? 
 	 * @param pagesize max maximum number of returned taxa
 	 * @param page page to start, with 0 being first page 
@@ -130,7 +157,7 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
 	 * @param onlyAcccepted
 	 * @return
 	 */
-	public List<Taxon> findByName(String queryString, ITitledDao.MATCH_MODE matchMode, int page, int pagesize, boolean onlyAcccepted);
+	public List<Taxon> findByName(String queryString, MatchMode matchMode, int page, int pagesize, boolean onlyAcccepted);
 	
 	/**
 	 * @param queryString
@@ -138,7 +165,7 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
 	 * @param onlyAcccepted
 	 * @return
 	 */
-	public int countMatchesByName(String queryString, ITitledDao.MATCH_MODE matchMode, boolean onlyAcccepted);
+	public int countMatchesByName(String queryString, MatchMode matchMode, boolean onlyAcccepted);
 	
 	/**
 	 * @param queryString
@@ -147,7 +174,7 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
 	 * @param criteria
 	 * @return
 	 */
-	public int countMatchesByName(String queryString, ITitledDao.MATCH_MODE matchMode, boolean onlyAcccepted, List<Criterion> criteria);
+	public int countMatchesByName(String queryString, MatchMode matchMode, boolean onlyAcccepted, List<Criterion> criteria);
 	
 	/**
 	 * Returns a count of the TaxonRelationships (of where relationship.type == type,

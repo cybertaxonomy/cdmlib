@@ -19,6 +19,7 @@ import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.dbunit.annotation.ExpectedDataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
+import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
@@ -33,6 +34,8 @@ import eu.etaxonomy.cdm.persistence.dao.common.AuditEventSort;
 import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
+import eu.etaxonomy.cdm.persistence.fetch.CdmFetch;
+import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 
 /**
  * @author a.mueller
@@ -81,6 +84,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 	@DataSet
 	public void testInit() {
 		assertNotNull("Instance of ITaxonDao expected",taxonDao);
+		assertNotNull("Instance of IReferenceDao expected",referenceDao);
 	}
 	
 	/**
@@ -89,13 +93,53 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 	@Test
 	@DataSet
 	public void testGetRootTaxa() { 
-		ReferenceBase sec = referenceDao.findById(1);
-		assert sec != null : "sec must exist";
+		ReferenceBase sec1 = referenceDao.findById(1);
+		assert sec1 != null : "sec1 must exist";
+		ReferenceBase sec2 = referenceDao.findById(2);
+		assert sec2 != null : "sec2 must exist";
 		
-		List<Taxon> rootTaxa = taxonDao.getRootTaxa(sec);
+		List<Taxon> rootTaxa = taxonDao.getRootTaxa(sec1);
 		assertNotNull("getRootTaxa should return a List",rootTaxa);
 		assertFalse("The list should not be empty",rootTaxa.isEmpty());
 		assertEquals("There should be one root taxon",1, rootTaxa.size());
+		
+		rootTaxa = taxonDao.getRootTaxa(sec1, CdmFetch.FETCH_CHILDTAXA(), true, false);
+		assertNotNull("getRootTaxa should return a List",rootTaxa);
+		assertFalse("The list should not be empty",rootTaxa.isEmpty());
+		assertEquals("There should be one root taxon",1, rootTaxa.size());
+		
+		rootTaxa = taxonDao.getRootTaxa(Rank.GENUS(), sec1, CdmFetch.FETCH_CHILDTAXA(), true, false);
+		assertNotNull("getRootTaxa should return a List",rootTaxa);
+		assertFalse("The list should not be empty",rootTaxa.isEmpty());
+		assertEquals("There should be one root taxon",1, rootTaxa.size());
+		
+		rootTaxa = taxonDao.getRootTaxa(Rank.FAMILY(), sec2, CdmFetch.FETCH_CHILDTAXA(), true, false);
+		if (logger.isDebugEnabled()) {
+		logger.debug("Root taxa rank Family (" + rootTaxa.size() + "):");
+		for (Taxon taxon: rootTaxa) {
+			logger.debug(taxon.getTitleCache());
+		}
+	}
+		assertEquals("There should be one root taxon rank Family",1, rootTaxa.size());
+		rootTaxa = taxonDao.getRootTaxa(Rank.GENUS(), sec2, CdmFetch.FETCH_CHILDTAXA(), true, false);
+		assertNotNull("getRootTaxa should return a List",rootTaxa);
+		assertFalse("The list should not be empty",rootTaxa.isEmpty());
+		if (logger.isDebugEnabled()) {
+		logger.debug("Root taxa rank Genus (" + rootTaxa.size() + "):");
+		for (Taxon taxon: rootTaxa) {
+			logger.debug(taxon.getTitleCache());
+		}
+	}
+		assertEquals("There should be 22 root taxa rank Genus",22, rootTaxa.size());
+		
+		rootTaxa = taxonDao.getRootTaxa(Rank.SPECIES(), sec2, CdmFetch.FETCH_CHILDTAXA(), true, false);
+		if (logger.isDebugEnabled()) {
+		logger.debug("Root taxa rank Species (" + rootTaxa.size() + "):");
+		for (Taxon taxon: rootTaxa) {
+			logger.debug(taxon.getTitleCache());
+		}
+	}
+		assertEquals("There should be 4 root taxa rank Species",3, rootTaxa.size());
 	}
 	
 	/**

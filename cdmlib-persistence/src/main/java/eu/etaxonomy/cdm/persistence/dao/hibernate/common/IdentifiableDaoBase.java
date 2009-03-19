@@ -29,6 +29,7 @@ import eu.etaxonomy.cdm.model.common.OriginalSource;
 import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
+import eu.etaxonomy.cdm.persistence.query.MatchMode;
 
 
 public class IdentifiableDaoBase<T extends IdentifiableEntity> extends AnnotatableDaoImpl<T> implements IIdentifiableDao<T>{
@@ -78,11 +79,17 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity> extends Annotatab
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.persistence.dao.common.ITitledDao#findByTitle(java.lang.String, boolean, int, int, java.util.List)
 	 */
-	public List<T> findByTitle(String queryString, MATCH_MODE matchmode, int page, int pagesize, List<Criterion> criteria) {
+	public List<T> findByTitle(String queryString, MatchMode matchmode, int page, int pagesize, List<Criterion> criteria) {
 		checkNotInPriorView("IdentifiableDaoBase.findByTitle(String queryString, MATCH_MODE matchmode, int page, int pagesize, List<Criterion> criteria)");
 		Criteria crit = getSession().createCriteria(type);
-		crit.add(Restrictions.ilike("titleCache", matchmode.queryStringFrom(queryString)));
-		crit.setMaxResults(pagesize);
+		if (matchmode == MatchMode.EXACT) {
+			crit.add(Restrictions.eq("titleCache", matchmode.queryStringFrom(queryString)));
+		} else {
+			crit.add(Restrictions.ilike("titleCache", matchmode.queryStringFrom(queryString)));
+		}
+		if (pagesize >= 0) {
+			crit.setMaxResults(pagesize);
+		}
 		if(criteria != null){
 			for (Criterion criterion : criteria) {
 				crit.add(criterion);

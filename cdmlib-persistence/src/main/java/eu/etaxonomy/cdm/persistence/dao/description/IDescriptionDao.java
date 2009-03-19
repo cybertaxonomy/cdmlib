@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.persistence.dao.description;
 import java.util.List;
 import java.util.Set;
 
+import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
@@ -23,6 +24,7 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
+import eu.etaxonomy.cdm.persistence.query.MatchMode;
 
 public interface IDescriptionDao extends IIdentifiableDao<DescriptionBase> {
 	/**
@@ -122,7 +124,16 @@ public interface IDescriptionDao extends IIdentifiableDao<DescriptionBase> {
 	 * @return a List of TaxonDescription instances
 	 */
 	List<TaxonDescription> searchDescriptionByDistribution(Set<NamedArea> namedAreas, PresenceAbsenceTermBase presence, Integer pageSize, Integer pageNumber);
-	
+
+	/**
+	 * Returns a list of CommonTaxonName instances that match a search string
+	 * @param searchString
+	 * @param pageSize
+	 * @param pageNumber
+	 * @return
+	 */
+	List<CommonTaxonName> searchDescriptionByCommonName(String queryString, MatchMode matchMode, Integer pageSize, Integer pageNumber);
+ 
 	/**
 	 * Returns a count of distinct TaxonDescription instances which have Distribution elements that refer to one of the NamedArea instances passed (optionally
 	 * filtered by a type of PresenceAbsenceTerm e.g. PRESENT / ABSENT / NATIVE / CULTIVATED etc)
