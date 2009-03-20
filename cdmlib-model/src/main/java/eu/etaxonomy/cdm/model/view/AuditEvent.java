@@ -24,6 +24,14 @@ public static final AuditEvent CURRENT_VIEW;
 	@Type(type="uuidUserType")
 	private UUID uuid;
 	
+	public UUID getUuid() {
+		return uuid;
+	}
+
+	public Long getTimestamp() {
+		return timestamp;
+	}
+
 	public AuditEvent() {
 		this.uuid = UUID.randomUUID();
 	}
