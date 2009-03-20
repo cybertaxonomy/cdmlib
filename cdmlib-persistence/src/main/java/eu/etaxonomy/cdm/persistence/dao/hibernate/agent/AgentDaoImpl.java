@@ -19,6 +19,7 @@ import org.hibernate.envers.query.AuditEntity;
 import org.hibernate.envers.query.AuditQuery;
 import org.springframework.stereotype.Repository;
 
+import eu.etaxonomy.cdm.model.agent.Address;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.InstitutionalMembership;
@@ -118,5 +119,28 @@ public class AgentDaoImpl extends IdentifiableDaoBase<AgentBase> implements IAge
 		    }
 		}
 		return (List<Person>)query.list();
+	}
+
+	public Integer countAddresses(AgentBase agent) {
+		checkNotInPriorView("AgentDaoImpl.countAddresses(AgentBase agent)");
+		Query query = getSession().createQuery("select count(address) from AgentBase agent join agent.contact.addresses address where agent = :agent");
+		query.setParameter("agent", agent);
+		return ((Long)query.uniqueResult()).intValue();
+	}
+
+	public List<Address> getAddresses(AgentBase agent, Integer pageSize,Integer pageNumber) {
+		checkNotInPriorView("AgentDaoImpl.getAddresses(AgentBase agent, Integer pageSize,Integer pageNumber)");
+		Query query = getSession().createQuery("select address from AgentBase agent join agent.contact.addresses address where agent = :agent");
+		query.setParameter("agent", agent);
+		
+		if(pageSize != null) {
+		    query.setMaxResults(pageSize);
+		    if(pageNumber != null) {
+		        query.setFirstResult(pageNumber * pageSize);
+		    } else {
+		    	query.setFirstResult(0);
+		    }
+		}
+		return (List<Address>)query.list();
 	}
 }

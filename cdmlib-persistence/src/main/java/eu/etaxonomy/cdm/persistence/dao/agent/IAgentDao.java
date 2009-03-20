@@ -64,4 +64,22 @@ public interface IAgentDao extends IIdentifiableDao<AgentBase> {
 	 * @return a count of Person instances
 	 */
 	public int countMembers(Team team);
+
+	/**
+	 * Return a count of addresses of a given agent
+	 * 
+	 * @param agent the agent
+	 * @return a count of Address instances
+	 */
+	public Integer countAddresses(AgentBase agent);
+
+	/**
+	 * Return a List of addresses of a given agent
+	 * 
+	 * @param agent the agent
+	 * @param pageSize The maximum number of addresses returned (can be null for all addresses)
+	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
+	 * @return a List of Address instances
+	 */
+	public List<Address> getAddresses(AgentBase agent, Integer pageSize,Integer pageNumber);
 }
