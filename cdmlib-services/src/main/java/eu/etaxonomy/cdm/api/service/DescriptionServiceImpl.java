@@ -23,7 +23,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
-import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
@@ -282,5 +281,13 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
 		}
 		
 		return new DefaultPagerImpl<TextData>(pageNumber, numberOfResults, pageSize, results);
+	}
+
+	public FeatureTree getFeatureTreeByUuid(UUID uuid) {
+		return featureTreeDao.findByUuid(uuid);
+	}
+
+	public DescriptionElementBase getDescriptionElementByUuid(UUID uuid) {
+		return descriptionElementDao.findByUuid(uuid);
 	}
 }

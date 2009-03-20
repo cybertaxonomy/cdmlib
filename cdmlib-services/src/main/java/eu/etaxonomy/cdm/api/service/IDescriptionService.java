@@ -39,6 +39,7 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
 	 * @param uuid
 	 * @return
 	 */
+	// FIXME candidate for harmonization? findByUuid
 	public DescriptionBase getDescriptionBaseByUuid(UUID uuid);
 
 	/**
@@ -46,6 +47,7 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
 	  * @param description
 	 * @return
 	 */
+	// FIXME candidate for harmonization? save
 	public UUID saveDescription(DescriptionBase description);
 
 	/**
@@ -59,6 +61,14 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
 	public Map<UUID, FeatureTree> saveFeatureTreeAll(Collection<FeatureTree> trees);
 	public Map<UUID, FeatureNode> saveFeatureNodeAll(Collection<FeatureNode> nodes);
 	
+	/**
+	 * Gets a FeatureTree instance matching the supplied uuid
+	 * 
+	 * @param uuid the uuid of the FeatureTree of interest
+	 * @return a FeatureTree, or null if the FeatureTree does not exist
+	 */
+	public FeatureTree getFeatureTreeByUuid(UUID uuid);
+	
 	public List<FeatureTree> getFeatureTreesAll();
 	public List<FeatureNode> getFeatureNodesAll();
 	
@@ -66,6 +76,14 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
 	//public TermVocabulary<Feature> getFeatureVocabulary();
 	public TermVocabulary<Feature> getFeatureVocabulary(UUID uuid);
 
+	/**
+	 * Gets a DescriptionElementBase instance matching the supplied uuid
+	 * 
+	 * @param uuid the uuid of the DescriptionElement of interest
+	 * @return a DescriptionElement, or null if the DescriptionElement does not exist
+	 */
+	public DescriptionElementBase getDescriptionElementByUuid(UUID uuid);
+	
 	/**
 	 * List the descriptions of type <TYPE>, filtered using the following parameters
 	 *  

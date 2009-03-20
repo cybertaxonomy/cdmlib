@@ -73,8 +73,8 @@ public class TaxonServiceSearchTest extends CdmIntegrationTest {
 				if (list.get(i) instanceof NonViralName) {
 					nameCache = ((NonViralName<?>)list.get(i)).getNameCache();
 				} else if (list.get(i) instanceof TaxonBase) {
-					TaxonNameBase<?,?> taxonNameBase= ((TaxonBase)list.get(i)).getName();
-					nameCache = ((NonViralName<?>)taxonNameBase).getNameCache();
+					TaxonNameBase taxonNameBase= ((TaxonBase)list.get(i)).getName();
+					nameCache = ((NonViralName)taxonNameBase).getNameCache();
 				} else {}
 				logger.debug(list.get(i).getClass() + "(" + i +")" + 
 						": Name Cache = " + nameCache + ", Title Cache = " + list.get(i).getTitleCache());

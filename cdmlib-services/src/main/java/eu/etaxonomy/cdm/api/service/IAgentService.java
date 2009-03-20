@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
+import eu.etaxonomy.cdm.model.agent.Address;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.InstitutionalMembership;
@@ -59,4 +60,14 @@ public interface IAgentService extends IIdentifiableEntityService<AgentBase> {
 	 * @return a Pager containing Person  instances
 	 */
 	public Pager<Person> getMembers(Team team, Integer pageSize, Integer pageNumber);
+	
+	/**
+	 * Return a paged list of the addresses of an agent
+	 * 
+	 * @param agent the agent
+	 * @param pageSize The maximum number of addresses returned (can be null for all members)
+	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
+	 * @return a Pager containing Address  instances
+	 */
+	public Pager<Address> getAddresses(AgentBase agent, Integer pageSize, Integer pageNumber);
 }

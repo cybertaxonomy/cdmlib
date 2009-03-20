@@ -141,5 +141,9 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 		
 		return new DefaultPagerImpl<Media>(pageNumber, numberOfResults, pageSize, results);
 	}
+
+	public UUID saveCollection(eu.etaxonomy.cdm.model.occurrence.Collection collection) {
+		return collectionDao.save(collection);
+	}
 	
 }

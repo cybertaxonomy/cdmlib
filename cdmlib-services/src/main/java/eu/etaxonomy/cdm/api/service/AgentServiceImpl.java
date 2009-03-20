@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
+import eu.etaxonomy.cdm.model.agent.Address;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.InstitutionalMembership;
@@ -99,6 +100,17 @@ public class AgentServiceImpl extends IdentifiableServiceBase<AgentBase,IAgentDa
 		}
 			
 		return new DefaultPagerImpl<Person>(pageNumber, numberOfResults, pageSize, results);
+	}
+
+	public Pager<Address> getAddresses(AgentBase agent, Integer pageSize, Integer pageNumber) {
+		Integer numberOfResults = dao.countAddresses(agent);
+		
+		List<Address> results = new ArrayList<Address>();
+		if(numberOfResults > 0) { // no point checking again
+			results = dao.getAddresses(agent, pageSize, pageNumber); 
+		}
+			
+		return new DefaultPagerImpl<Address>(pageNumber, numberOfResults, pageSize, results);
 	}
 
 	

@@ -9,6 +9,7 @@
 
 package eu.etaxonomy.cdm.api.service;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +24,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import sun.print.resources.serviceui;
 
+import eu.etaxonomy.cdm.api.service.pager.Pager;
+import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
@@ -31,7 +34,11 @@ import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
+import eu.etaxonomy.cdm.model.location.NamedAreaType;
 import eu.etaxonomy.cdm.model.location.TdwgArea;
+import eu.etaxonomy.cdm.model.media.Media;
+import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ILanguageStringBaseDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ILanguageStringDao;
@@ -110,6 +117,10 @@ public class TermServiceImpl extends ServiceBase<DefinedTermBase,IDefinedTermDao
     saveTermVocabulariesAll(Collection<TermVocabulary<DefinedTermBase>> termVocabularies) {
 		return vocabularyDao.saveAll(termVocabularies);
 	}
+	
+	public UUID saveTermVocabulary(TermVocabulary termVocabulary) {
+		return vocabularyDao.save(termVocabulary);
+	}
 
 //	@Transactional(readOnly = false)
 //	public Map<UUID, Representation> saveRepresentationsAll(Collection<Representation> representations){
@@ -161,6 +172,61 @@ public class TermServiceImpl extends ServiceBase<DefinedTermBase,IDefinedTermDao
 		//FIXME this is just a placeholder until it is decided where to implement this method 
 		//(see also FIXMEs in TdwgArea)
 		return TdwgArea.getAreaByTdwgAbbreviation(tdwgAbbreviation);
+	}
+
+	public <T extends DefinedTermBase> Pager<T> getGeneralizationOf(T definedTerm, Integer pageSize, Integer pageNumber) {
+        Integer numberOfResults = dao.countGeneralizationOf(definedTerm);
+		
+		List<T> results = new ArrayList<T>();
+		if(numberOfResults > 0) { // no point checking again
+			results = dao.getGeneralizationOf(definedTerm, pageSize, pageNumber); 
+		}
+		
+		return new DefaultPagerImpl<T>(pageNumber, numberOfResults, pageSize, results);
+	}
+
+	public <T extends DefinedTermBase> Pager<T> getIncludes(Set<T> definedTerms, Integer pageSize, Integer pageNumber) {
+        Integer numberOfResults = dao.countIncludes(definedTerms);
+		
+		List<T> results = new ArrayList<T>();
+		if(numberOfResults > 0) { // no point checking again
+			results = dao.getIncludes(definedTerms, pageSize, pageNumber); 
+		}
+		
+		return new DefaultPagerImpl<T>(pageNumber, numberOfResults, pageSize, results);
+	}
+
+	public Pager<Media> getMedia(DefinedTermBase definedTerm, Integer pageSize,	Integer pageNumber) {
+        Integer numberOfResults = dao.countMedia(definedTerm);
+		
+		List<Media> results = new ArrayList<Media>();
+		if(numberOfResults > 0) { // no point checking again
+			results = dao.getMedia(definedTerm, pageSize, pageNumber); 
+		}
+		
+		return new DefaultPagerImpl<Media>(pageNumber, numberOfResults, pageSize, results);
+	}
+
+	public <T extends DefinedTermBase> Pager<T> getPartOf(Set<T> definedTerms,Integer pageSize, Integer pageNumber) {
+        Integer numberOfResults = dao.countPartOf(definedTerms);
+		
+		List<T> results = new ArrayList<T>();
+		if(numberOfResults > 0) { // no point checking again
+			results = dao.getPartOf(definedTerms, pageSize, pageNumber); 
+		}
+		
+		return new DefaultPagerImpl<T>(pageNumber, numberOfResults, pageSize, results);
+	}
+
+	public Pager<NamedArea> list(NamedAreaLevel level, NamedAreaType type,	Integer pageSize, Integer pageNumber) {
+        Integer numberOfResults = dao.count(level, type);
+		
+		List<NamedArea> results = new ArrayList<NamedArea>();
+		if(numberOfResults > 0) { // no point checking again
+			results = dao.list(level, type, pageSize, pageNumber); 
+		}
+		
+		return new DefaultPagerImpl<NamedArea>(pageNumber, numberOfResults, pageSize, results);
 	}
 	
 	

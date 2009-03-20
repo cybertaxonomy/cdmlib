@@ -110,7 +110,6 @@ public class NameServiceImplTest2 extends CdmIntegrationTest {
 	 * Test method for {@link eu.etaxonomy.cdm.api.service.NameServiceImpl#getRankVocabulary()}.
 	 */
 	@Test
-	//@Ignore
 	public void testGetRankVocabulary() {
 		OrderedTermVocabulary<Rank> rankVocabulary = service.getRankVocabulary();
 		assertNotNull(rankVocabulary);
@@ -125,7 +124,6 @@ public class NameServiceImplTest2 extends CdmIntegrationTest {
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.api.service.NameServiceImpl#getTypeDesignationVocabulary()}.
 	 */
-	//@Ignore
 	@Test
 	public void testGetTypeDesignationVocabulary() {
 		OrderedTermVocabulary<TypeDesignationStatus> typeDesignationVocabulary = 

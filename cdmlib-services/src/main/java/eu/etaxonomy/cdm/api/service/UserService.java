@@ -1,6 +1,7 @@
 package eu.etaxonomy.cdm.api.service;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.hibernate.NonUniqueResultException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -259,6 +260,10 @@ public class UserService implements UserDetailsManager, GroupManager {
 		
 		group.setName(newName);
 		groupDao.update(group);
+	}
+	
+	public UUID save(User user) {
+		return userDao.save(user);
 	}
 
 }

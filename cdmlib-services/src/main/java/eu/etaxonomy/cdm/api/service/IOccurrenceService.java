@@ -54,6 +54,8 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
 	/** */
 	public abstract List<Collection> searchCollectionByCode(String code);
 	
+	public abstract UUID saveCollection(Collection collection);
+	
 	/**
      * Returns a List of Media that are associated with a given occurence
      * 
