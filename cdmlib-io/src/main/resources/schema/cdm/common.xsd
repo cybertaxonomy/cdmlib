@@ -147,22 +147,6 @@
     <xs:complexContent>
       <xs:extension base="common:TermBase">
         <xs:sequence>
-          <xs:element name="KindOf" type="xs:IDREF" minOccurs="0"/>
-          <xs:element name="Generalizations" minOccurs="0">
-            <xs:complexType>
-              <xs:sequence>
-                <xs:element name="GeneralizationOf" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
-              </xs:sequence>
-            </xs:complexType>
-          </xs:element>
-          <xs:element name="PartOf" type="xs:IDREF" minOccurs="0"/>
-          <xs:element name="Includes" minOccurs="0">
-            <xs:complexType>
-              <xs:sequence>
-                <xs:element name="Include" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
-              </xs:sequence>
-            </xs:complexType>
-          </xs:element>
           <xs:element name="Media" minOccurs="0">
             <xs:complexType>
               <xs:sequence>
@@ -480,6 +464,24 @@
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
+  <xs:element name="KindOf" type="xs:IDREF"/>
+  
+  <xs:element name="Generalizations">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="GeneralizationOf" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="PartOf" type="xs:IDREF"/>
+  
+  <xs:element name="Includes">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Include" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
 
   <xs:complexType name="EventBase" abstract="true">
     <xs:complexContent>

@@ -58,6 +58,10 @@
     <xs:complexContent>
       <xs:extension base="common:OrderedTermBase">
         <xs:sequence>
+          <xs:element ref="common:KindOf" minOccurs="0"/>
+          <xs:element ref="common:Generalizations" minOccurs="0"/>
+          <xs:element ref="common:PartOf" minOccurs="0"/>
+          <xs:element ref="common:Includes" minOccurs="0"/>
           <xs:element name="ValidPeriod" type="common:TimePeriod" minOccurs="0"/>
           <xs:element name="Shape" type="xs:IDREF" minOccurs="0"/>
           <xs:element name="PointApproximation" type="location:Point" minOccurs="0"/>
