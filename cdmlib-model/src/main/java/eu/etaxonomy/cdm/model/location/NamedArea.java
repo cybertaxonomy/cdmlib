@@ -27,6 +27,7 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
@@ -45,8 +46,12 @@ import eu.etaxonomy.cdm.model.media.Media;
  * @version 1.0
  * @created 08-Nov-2007 13:06:36
  */
-@XmlAccessorType(XmlAccessType.FIELD)
+@XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(name = "NamedArea", propOrder = {
+	"kindOf",
+	"generalizationOf",
+	"partOf",
+	"includes",
     "validPeriod",
     "shape",
     "pointApproximation",
@@ -55,6 +60,7 @@ import eu.etaxonomy.cdm.model.media.Media;
     "level"
 })
 @XmlRootElement(name = "NamedArea")
+@XmlSeeAlso({TdwgArea.class})
 @Entity
 @Audited
 public class NamedArea extends OrderedTermBase<NamedArea> {
@@ -62,37 +68,22 @@ public class NamedArea extends OrderedTermBase<NamedArea> {
 	private static final Logger logger = Logger.getLogger(NamedArea.class);
 	
 	//description of time valid context of this area. e.g. year range
-    @XmlElement(name = "ValidPeriod")
 	private TimePeriod validPeriod;
 	
 	//Binary shape definition for user's defined area as polygon
-	@XmlElement(name = "Shape")
-	@XmlIDREF
-	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
 	@Cascade(CascadeType.SAVE_UPDATE)
 	private Media shape;
 	
-    @XmlElement(name = "PointApproximation")
 	private Point pointApproximation;
 	
-	@XmlElementWrapper(name = "WaterbodiesOrCountries")
-	@XmlElement(name = "WaterbodiesOrCountry")
-	@XmlIDREF
-	@XmlSchemaType(name = "IDREF")
 	@ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name="DefinedTermBase_WaterbodyOrCountry")
 	private Set<WaterbodyOrCountry> waterbodiesOrCountries = new HashSet<WaterbodyOrCountry>();
 	
-	@XmlElement(name = "NamedAreaType")
-	@XmlIDREF
-	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
 	private NamedAreaType type;
 	
-	@XmlElement(name = "NamedAreaLevel")
-	@XmlIDREF
-	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
 	private NamedAreaLevel level;
 	
@@ -124,6 +115,9 @@ public class NamedArea extends OrderedTermBase<NamedArea> {
 		super(term, label, labelAbbrev);
 	}
 	
+	@XmlElement(name = "NamedAreaType")
+	@XmlIDREF
+	@XmlSchemaType(name = "IDREF")
 	public NamedAreaType getType(){
 		return this.type;
 	}
@@ -132,6 +126,9 @@ public class NamedArea extends OrderedTermBase<NamedArea> {
 		this.type = type;
 	}
 
+	@XmlElement(name = "NamedAreaLevel")
+	@XmlIDREF
+	@XmlSchemaType(name = "IDREF")
 	public NamedAreaLevel getLevel(){
 		return this.level;
 	}
@@ -140,6 +137,7 @@ public class NamedArea extends OrderedTermBase<NamedArea> {
 		this.level = level;
 	}
 
+	@XmlElement(name = "ValidPeriod")
 	public TimePeriod getValidPeriod(){
 		return this.validPeriod;
 	}
@@ -148,6 +146,9 @@ public class NamedArea extends OrderedTermBase<NamedArea> {
 		this.validPeriod = validPeriod;
 	}
 
+	@XmlElement(name = "Shape")
+	@XmlIDREF
+	@XmlSchemaType(name = "IDREF")
 	public Media getShape(){
 		return this.shape;
 	}
@@ -155,7 +156,10 @@ public class NamedArea extends OrderedTermBase<NamedArea> {
 		this.shape = shape;
 	}
 
-    
+	@XmlElementWrapper(name = "WaterbodiesOrCountries")
+	@XmlElement(name = "WaterbodiesOrCountry")
+	@XmlIDREF
+	@XmlSchemaType(name = "IDREF")
 	public Set<WaterbodyOrCountry> getWaterbodiesOrCountries() {
 		return waterbodiesOrCountries;
 	}
@@ -168,11 +172,58 @@ public class NamedArea extends OrderedTermBase<NamedArea> {
 		this.waterbodiesOrCountries.remove(waterbodyOrCountry);
 	}
 	
+	@XmlElement(name = "PointApproximation")
 	public Point getPointApproximation() {
 		return pointApproximation;
 	}
 	public void setPointApproximation(Point pointApproximation) {
 		this.pointApproximation = pointApproximation;
+	}
+	
+	@XmlElement(name = "KindOf", namespace = "http://etaxonomy.eu/cdm/model/common/1.0")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
+	public NamedArea getKindOf(){
+		return super.getKindOf();
+	}
+
+	public void setKindOf(NamedArea kindOf){
+		super.setKindOf(kindOf);
+	}
+	
+	@XmlElement(name = "PartOf", namespace = "http://etaxonomy.eu/cdm/model/common/1.0")
+	@XmlIDREF
+    @XmlSchemaType(name = "IDREF")
+	public NamedArea getPartOf(){
+		return super.getPartOf();
+	}
+	
+	public void setPartOf(NamedArea partOf){
+		super.setPartOf(partOf);
+	}
+	
+	@XmlElementWrapper(name = "Generalizations", namespace = "http://etaxonomy.eu/cdm/model/common/1.0")
+	@XmlElement(name = "GeneralizationOf", namespace = "http://etaxonomy.eu/cdm/model/common/1.0")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
+	public Set<NamedArea> getGeneralizationOf(){
+		return super.getGeneralizationOf();
+	}
+	
+	protected void setGeneralizationOf(Set<NamedArea> value){
+		super.setGeneralizationOf(value);
+	}
+	
+	@XmlElementWrapper(name = "Includes", namespace = "http://etaxonomy.eu/cdm/model/common/1.0")
+	@XmlElement(name = "Include", namespace = "http://etaxonomy.eu/cdm/model/common/1.0")
+	@XmlIDREF
+    @XmlSchemaType(name = "IDREF")
+	public Set<NamedArea> getIncludes(){
+		return super.getIncludes();
+	}
+	
+	protected void setIncludes(Set<NamedArea> includes) {
+		super.setIncludes(includes);
 	}
 	
 

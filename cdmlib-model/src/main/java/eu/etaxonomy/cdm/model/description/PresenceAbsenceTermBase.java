@@ -18,6 +18,7 @@ import javax.persistence.Entity;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
@@ -46,7 +47,10 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "PresenceAbsenceTermBase")
-@XmlRootElement(name = "PresenceAbsenceTermBase")
+@XmlSeeAlso({
+	AbsenceTerm.class,
+	PresenceTerm.class
+})
 @Entity
 @Audited
 public abstract class PresenceAbsenceTermBase<T extends PresenceAbsenceTermBase<?>> extends OrderedTermBase<T> {

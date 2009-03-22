@@ -9,16 +9,26 @@
 
 package eu.etaxonomy.cdm.model.common;
 
+import java.util.Set;
+
 import javax.persistence.Entity;
-import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
+
+import eu.etaxonomy.cdm.model.description.Modifier;
+import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
+import eu.etaxonomy.cdm.model.description.State;
+import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
+import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
+import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.TypeDesignationStatus;
 
 /**
  * @author m.doering
@@ -29,7 +39,18 @@ import org.hibernate.envers.Audited;
 @XmlType(name = "OrderedTermBase", propOrder = {
     "orderIndex"
 })
-@XmlRootElement(name = "OrderedTermBase")
+@XmlSeeAlso({
+	Keyword.class,
+	RelationshipTermBase.class,
+	Modifier.class,
+	PresenceAbsenceTermBase.class,
+	State.class,
+	NamedArea.class,
+	NamedAreaLevel.class,
+	NomenclaturalStatusType.class,
+	Rank.class,
+	TypeDesignationStatus.class
+})
 @Entity
 @Audited
 public abstract class OrderedTermBase<T extends OrderedTermBase> extends DefinedTermBase<T> implements Comparable<T> {

@@ -73,8 +73,12 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
  * @version 1.0
  * @created 08-Nov-2007 13:06:24
  */
-@XmlAccessorType(XmlAccessType.FIELD)
+@XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(name="Feature", factoryMethod="NewInstance", propOrder = {
+		"kindOf",
+		"generalizationOf",
+		"partOf",
+		"includes",
 	    "supportsTextData",
 	    "supportsQuantitativeData",
 	    "supportsDistribution",
@@ -452,6 +456,52 @@ public class Feature extends DefinedTermBase<Feature> {
 	public void removeSupportedCategoricalEnumeration(
 			TermVocabulary<State> supportedCategoricalEnumeration) {
 		this.supportedCategoricalEnumerations.remove(supportedCategoricalEnumeration);
+	}
+	
+	@XmlElement(name = "KindOf", namespace = "http://etaxonomy.eu/cdm/model/common/1.0")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
+	public Feature getKindOf(){
+		return super.getKindOf();
+	}
+
+	public void setKindOf(Feature kindOf){
+		super.setKindOf(kindOf);
+	}
+	
+	@XmlElement(name = "PartOf", namespace = "http://etaxonomy.eu/cdm/model/common/1.0")
+	@XmlIDREF
+    @XmlSchemaType(name = "IDREF")
+	public Feature getPartOf(){
+		return super.getPartOf();
+	}
+	
+	public void setPartOf(Feature partOf){
+		super.setPartOf(partOf);
+	}
+	
+	@XmlElementWrapper(name = "Generalizations", namespace = "http://etaxonomy.eu/cdm/model/common/1.0")
+	@XmlElement(name = "GeneralizationOf", namespace = "http://etaxonomy.eu/cdm/model/common/1.0")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
+	public Set<Feature> getGeneralizationOf(){
+		return super.getGeneralizationOf();
+	}
+	
+	protected void setGeneralizationOf(Set<Feature> value){
+		super.setGeneralizationOf(value);
+	}
+	
+	@XmlElementWrapper(name = "Includes", namespace = "http://etaxonomy.eu/cdm/model/common/1.0")
+	@XmlElement(name = "Include", namespace = "http://etaxonomy.eu/cdm/model/common/1.0")
+	@XmlIDREF
+    @XmlSchemaType(name = "IDREF")
+	public Set<Feature> getIncludes(){
+		return super.getIncludes();
+	}
+	
+	protected void setIncludes(Set<Feature> includes) {
+		super.setIncludes(includes);
 	}
 	
 	private static final UUID uuidUnknown = UUID.fromString("910307f1-dc3c-452c-a6dd-af5ac7cd365c");

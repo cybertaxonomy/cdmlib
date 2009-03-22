@@ -28,16 +28,29 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlSeeAlso;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.Indexed;
 
 import au.com.bytecode.opencsv.CSVWriter;
+import eu.etaxonomy.cdm.model.agent.InstitutionType;
+import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.description.MeasurementUnit;
+import eu.etaxonomy.cdm.model.description.StatisticalMeasure;
+import eu.etaxonomy.cdm.model.description.TextFormat;
+import eu.etaxonomy.cdm.model.location.NamedAreaType;
+import eu.etaxonomy.cdm.model.location.ReferenceSystem;
 import eu.etaxonomy.cdm.model.media.Media;
+import eu.etaxonomy.cdm.model.media.RightsTerm;
+import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
+import eu.etaxonomy.cdm.model.occurrence.DerivationEventType;
+import eu.etaxonomy.cdm.model.occurrence.PreservationMethod;
+import eu.etaxonomy.cdm.model.reference.BibtexEntryType;
 
 
 /**
@@ -50,14 +63,28 @@ import eu.etaxonomy.cdm.model.media.Media;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "DefinedTermBase", propOrder = {
-    "kindOf",
-    "generalizationOf",
-    "partOf",
-    "includes",
     "media",
     "vocabulary"
 })
 @XmlRootElement(name = "DefinedTermBase")
+@XmlSeeAlso({
+	AnnotationType.class,
+	BibtexEntryType.class,
+	DerivationEventType.class,
+	ExtensionType.class,
+    Feature.class,
+    InstitutionType.class,
+    Language.class,
+    MarkerType.class,
+    MeasurementUnit.class,
+    NamedAreaType.class,
+    NomenclaturalCode.class,
+    PreservationMethod.class,
+    ReferenceSystem.class,
+    RightsTerm.class,
+    StatisticalMeasure.class,
+    TextFormat.class,
+})
 @Entity
 @Audited
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
@@ -65,9 +92,10 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
 	private static final long serialVersionUID = 2931811562248571531L;
 	private static final Logger logger = Logger.getLogger(DefinedTermBase.class);
 		
-	@XmlElement(name = "KindOf")
-    @XmlIDREF
-    @XmlSchemaType(name = "IDREF")
+//	@XmlElement(name = "KindOf")
+//    @XmlIDREF
+//    @XmlSchemaType(name = "IDREF")
+	@XmlTransient
     @ManyToOne(fetch = FetchType.LAZY, targetEntity = DefinedTermBase.class)
     @Cascade(CascadeType.SAVE_UPDATE)
 	private T kindOf;
@@ -76,15 +104,19 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
 	 * which can't be cast to instances of T - can we explicitly initialize these terms using 
 	 * Hibernate.initialize(), does this imply a distinct load, and find methods in the dao?
 	 */
-	@XmlElementWrapper(name = "Generalizations")
-	@XmlElement(name = "GeneralizationOf")
-    @XmlIDREF
-    @XmlSchemaType(name = "IDREF")
+//	@XmlElementWrapper(name = "Generalizations")
+//	@XmlElement(name = "GeneralizationOf")
+//    @XmlIDREF
+//    @XmlSchemaType(name = "IDREF")
+	@XmlTransient
     @OneToMany(fetch=FetchType.LAZY, mappedBy = "kindOf", targetEntity = DefinedTermBase.class)
 	@Cascade({CascadeType.SAVE_UPDATE})
 	private Set<T> generalizationOf = new HashSet<T>();
 	
-	@XmlElement(name = "PartOf")
+//	@XmlElement(name = "PartOf")
+//	@XmlIDREF
+//  @XmlSchemaType(name = "IDREF")
+	@XmlTransient
 	@ManyToOne(fetch = FetchType.LAZY, targetEntity = DefinedTermBase.class)
 	@Cascade(CascadeType.SAVE_UPDATE)
 	private T partOf;
@@ -94,10 +126,11 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
 	 * which can't be cast to instances of T - can we explicitly initialize these terms using 
 	 * Hibernate.initialize(), does this imply a distinct load, and find methods in the dao?
 	 */
-	@XmlElementWrapper(name = "Includes")
-	@XmlElement(name = "Include")
-	@XmlIDREF
-    @XmlSchemaType(name = "IDREF")
+//	@XmlElementWrapper(name = "Includes")
+//	@XmlElement(name = "Include")
+//	@XmlIDREF
+//    @XmlSchemaType(name = "IDREF")
+	@XmlTransient
 	@OneToMany(fetch=FetchType.LAZY, mappedBy = "partOf", targetEntity = DefinedTermBase.class)
 	@Cascade({CascadeType.SAVE_UPDATE})
 	private Set<T> includes = new HashSet<T>();
@@ -195,6 +228,10 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
 		return this.generalizationOf;
 	}
 	
+	protected void setGeneralizationOf(Set<T> value) {
+		this.generalizationOf = value;
+	}
+	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.IDefinedTerm#addGeneralizationOf(T)
 	 */
@@ -232,6 +269,10 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
 	 */
 	public Set<T> getIncludes(){
 		return this.includes;
+	}
+	
+	protected void setIncludes(Set<T> includes) {
+		this.includes = includes;
 	}
 	
 	/* (non-Javadoc)

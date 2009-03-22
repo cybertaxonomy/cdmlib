@@ -8,14 +8,11 @@ import java.util.Set;
 import javax.persistence.FetchType;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.OneToMany;
-import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
-import javax.xml.bind.annotation.XmlIDREF;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
@@ -23,12 +20,18 @@ import org.hibernate.LazyInitializationException;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
+import eu.etaxonomy.cdm.model.description.FeatureTree;
+
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "TermBase", propOrder = {
     "uri",
     "representations"
 })
-@XmlRootElement(name = "TermBase")
+@XmlSeeAlso({
+	DefinedTermBase.class,
+	TermVocabulary.class,
+	FeatureTree.class
+})
 @MappedSuperclass
 public abstract class TermBase extends VersionableEntity {
 	private static final long serialVersionUID = 1471561531632115822L;

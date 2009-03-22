@@ -18,12 +18,18 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
+
+import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
+import eu.etaxonomy.cdm.model.name.NameRelationshipType;
+import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
+import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 
 import au.com.bytecode.opencsv.CSVWriter;
 
@@ -33,7 +39,12 @@ import au.com.bytecode.opencsv.CSVWriter;
     "transitive",
     "inverseRepresentations"
 })
-@XmlRootElement(name = "RelationshipTermBase")
+@XmlSeeAlso({
+	HybridRelationshipType.class,
+	NameRelationshipType.class,
+	SynonymRelationshipType.class,
+	TaxonRelationshipType.class
+})
 @Entity
 @Audited
 public abstract class RelationshipTermBase<T extends RelationshipTermBase> extends OrderedTermBase<T> {
