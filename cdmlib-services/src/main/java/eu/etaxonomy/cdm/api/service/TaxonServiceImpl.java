@@ -75,7 +75,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 	}
 	
 	public TaxonBase getTaxonByUuid(UUID uuid) {
-		return super.getCdmObjectByUuid(uuid); 
+		return super.findByUuid(uuid);
 	}
 
 	@Transactional(readOnly = false)
