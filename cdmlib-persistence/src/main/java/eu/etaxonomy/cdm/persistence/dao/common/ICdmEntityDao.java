@@ -85,7 +85,7 @@ public interface ICdmEntityDao<T extends CdmBase> {
 	 * @return
 	 * @throws DataAccessException
 	 */
-	public List<T> list(Integer limit, Integer start, List<OrderHint> orderHints);
+	public <TYPE extends T> List<TYPE> list(Integer limit, Integer start, List<OrderHint> orderHints);
 	
 	/**
 	 * Returns a sublist of CdmBase instances of type <TYPE> stored in the database.
