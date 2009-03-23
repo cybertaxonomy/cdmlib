@@ -474,8 +474,7 @@ public class TcsXmlTaxonNameImport extends TcsXmlImportBase implements ICdmIO<II
 			Class<? extends ReferenceBase> clazz = Generic.class;
 			ReferenceBase ref = makeReferenceType(elPublishedIn, clazz, referenceMap, success);
 			if (ref instanceof INomenclaturalReference){
-				INomenclaturalReference nomRef = (INomenclaturalReference)ref;
-				name.setNomenclaturalReference(nomRef);
+				name.setNomenclaturalReference(ref);
 			}else{
 				logger.warn("Reference is not of type INomenclaturalReference and could not be added to the name " + name.getTitleCache());
 			}

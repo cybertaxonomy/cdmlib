@@ -335,7 +335,7 @@ public class BerlinModelTaxonNameImport extends BerlinModelImportBase {
 					" is not assignable from INomenclaturalReference. Relation was not set!! (Class = " + nomReference.getClass()+ ")");
 				}else{
 					nomReference.setNomenclaturallyRelevant(true);
-					taxonNameBase.setNomenclaturalReference((INomenclaturalReference)nomReference);
+					taxonNameBase.setNomenclaturalReference(nomReference);
 				}
 			}
 		}
