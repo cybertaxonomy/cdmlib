@@ -18,12 +18,21 @@ import java.util.UUID;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 
 /**
  * @author a.mueller
  *
+ */
+/**
+ * @author a.kohlbecker
+ * @date 23.03.2009
+ *
+ * @param <T>
  */
 @Transactional(propagation=Propagation.SUPPORTS)
 public interface IService<T extends CdmBase>{
@@ -64,6 +73,23 @@ public interface IService<T extends CdmBase>{
 	 * @return a List of entities
 	 */
 	public <TYPE extends T> List<TYPE> list(Class<TYPE> type, int limit, int start);
+	
+	
+	/**
+	 * @param pageSize
+	 * @param pageNumber
+	 * @return
+	 */
+	public Pager<T> list(Integer pageSize, Integer pageNumber);
+	
+	
+	/**
+	 * @param pageSize
+	 * @param pageNumber
+	 * @param orderHints may be null
+	 * @return
+	 */
+	public Pager<T> list(Integer pageSize, Integer pageNumber, List<OrderHint> orderHints);
 	
 	public List<T> rows(String tableName, int limit, int start);
 	

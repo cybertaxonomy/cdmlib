@@ -9,6 +9,7 @@
 
 package eu.etaxonomy.cdm.api.service;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -23,8 +24,12 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
 
+import eu.etaxonomy.cdm.api.service.pager.Pager;
+import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
+import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T>> implements IService<T>, ApplicationContextAware {
 	private static final Logger logger = Logger.getLogger(ServiceBase.class);
@@ -139,6 +144,22 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
 	@Transactional(readOnly = true)
 	public <TYPE extends T> List<TYPE> list(Class<TYPE> type, int limit,int start) {
 		return dao.list(type, limit, start);
+	}
+	
+	@Transactional(readOnly = true)
+	public Pager<T> list(Integer pageSize, Integer pageNumber){
+		return list(pageSize, pageNumber, null);
+	}
+	
+	@Transactional (readOnly = true)
+	public Pager<T> list(Integer pageSize, Integer pageNumber, List<OrderHint> orderHints){
+		Integer numberOfResults = dao.count();
+		List<T> results = new ArrayList<T>();
+		if(numberOfResults > 0) { // no point checking again
+			Integer start = pageSize == null ? 0 : pageSize * (pageNumber - 1);
+			results = dao.list(pageSize, start, orderHints);
+		}
+		return new DefaultPagerImpl<T>(pageNumber, numberOfResults, pageSize, results);
 	}
 
 	@Transactional(readOnly = false)

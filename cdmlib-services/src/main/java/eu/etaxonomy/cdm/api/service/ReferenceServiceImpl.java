@@ -77,7 +77,6 @@ public class ReferenceServiceImpl extends IdentifiableServiceBase<ReferenceBase,
 			Integer start = pageSize == null ? 0 : pageSize * (pageNumber - 1);
 			results = dao.list(pageSize, start, orderHints); //TODO implement pager like method in dao?
 		}
-		
 		return new DefaultPagerImpl<ReferenceBase>(pageNumber, numberOfResults, pageSize, results);
 	}
 
