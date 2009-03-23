@@ -227,6 +227,7 @@ public class Article extends StrictReferenceBase implements INomenclaturalRefere
 	 * @see  StrictReferenceBase#getCitation()
 	 */
 	@Override
+	@Transient
 	public String getCitation(){
 		return nomRefBase.getCitation();
 	}
@@ -244,6 +245,7 @@ public class Article extends StrictReferenceBase implements INomenclaturalRefere
 	 * 
 	 * @see  					#getCitation()
 	 */
+	@Transient
 	public String getNomenclaturalCitation(String microReference) {
 		return nomRefBase.getNomenclaturalCitation(microReference);
 	}

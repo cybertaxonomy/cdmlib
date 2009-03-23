@@ -151,6 +151,7 @@ public class TypeDesignationStatus extends OrderedTermBase<TypeDesignationStatus
 	 * @see  #HOLOTYPE()
 	 * @see  eu.etaxonomy.cdm.model.common.DefinedTermBase#getKindOf()
 	 */
+	@Transient
 	public boolean isLectotype(){
 		if (this.equals(LECTOTYPE()) ||
 				this.equals(ISOLECTOTYPE()) ||

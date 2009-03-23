@@ -46,17 +46,17 @@ public class OrderedTermVocabulary<T extends OrderedTermBase> extends TermVocabu
 		super();
 	}
 	
+	@Transient
 	@Override
 	public Set<T> getNewTermSet() {
 		return new TreeSet<T>();
 	}
-
+	
 	public SortedSet<T> getOrderedTerms(T otb) {
 		SortedSet<T> result = getSortedSetOfTerms();
 		return result;
 	}
 
-	
 	public SortedSet<T> getHigherAndEqualTerms(T otb) {
 		SortedSet<T> result = new TreeSet<T>();
 		SortedSet<T> sortedSet = getSortedSetOfTerms();
@@ -116,7 +116,8 @@ public class OrderedTermVocabulary<T extends OrderedTermBase> extends TermVocabu
 			return null;
 		}
 	}
-	
+
+	@Transient
 	public T getLowestTerm() {
 		try {
 			SortedSet<T> sortedSet = getSortedSetOfTerms();
@@ -127,6 +128,7 @@ public class OrderedTermVocabulary<T extends OrderedTermBase> extends TermVocabu
 		}
 	}
 	
+	@Transient
 	public T getHighestTerm() {
 		try {
 			SortedSet<T> sortedSet = getSortedSetOfTerms();

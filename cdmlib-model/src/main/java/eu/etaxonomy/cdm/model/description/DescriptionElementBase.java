@@ -23,6 +23,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -199,6 +200,7 @@ public abstract class DescriptionElementBase extends ReferencedEntityBase implem
 	 * 
 	 * @see #getFeature() 
 	 */
+	@Transient
 	public Feature getType(){
 		return this.getFeature();
 	}

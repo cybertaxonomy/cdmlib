@@ -20,6 +20,7 @@ import javax.persistence.MappedSuperclass;
 import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -142,6 +143,7 @@ implements ISourceable, IIdentifiableEntity, Comparable<IdentifiableEntity> {
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#getTitleCache()
 	 */
+	@Transient
 	public String getTitleCache(){
 		if (protectedTitleCache){
 			return this.titleCache;			

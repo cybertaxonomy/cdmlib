@@ -14,6 +14,7 @@ import javax.persistence.FetchType;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -84,6 +85,7 @@ public abstract class LanguageStringBase extends AnnotatableEntity{
 		this.text = text;
 	}
 	
+	@Transient
 	public String getLanguageLabel(){
 		if (language != null){
 			return this.language.getRepresentation(Language.DEFAULT()).getLabel();

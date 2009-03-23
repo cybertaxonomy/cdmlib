@@ -21,6 +21,7 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -204,6 +205,7 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.IDefinedTerm#getByUuid(java.util.UUID)
 	 */
+	@Transient
 	public T getByUuid(UUID uuid){
 		return this.vocabulary.findTermByUuid(uuid);
 	}

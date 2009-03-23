@@ -5,6 +5,7 @@ import java.util.Map;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.Transient;
 import javax.wsdl.Definition;
 
 import org.hibernate.annotations.CollectionOfElements;
@@ -127,6 +128,7 @@ public class LSIDAuthority extends CdmBase {
 	 * server and port properties, and might contain a full path or even a different protocol.
 	 * @return String
 	 */
+	@Transient
 	public String getUrl() {
 		if (url == null) {
 			if (server != null && port != -1)
@@ -181,6 +183,7 @@ public class LSIDAuthority extends CdmBase {
 	/**
 	 * @return boolean, whether or not the authority has been resolved.
 	 */
+	@Transient
 	public boolean isResolved() {
 		return (getUrl() != null);
 	}

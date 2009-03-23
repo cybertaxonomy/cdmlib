@@ -69,6 +69,7 @@ public abstract class SectionBase extends StrictReferenceBase {
 	 * 
 	 * @return  the printed unit containing <i>this</i> section
 	 */
+	@Transient
 	public PrintedUnitBase getPrintedUnit(){
 		logger.warn("Not yet implemented");
 		return null;

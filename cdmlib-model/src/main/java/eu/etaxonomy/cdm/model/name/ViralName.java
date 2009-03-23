@@ -144,6 +144,7 @@ public class ViralName extends TaxonNameBase<ViralName, INameCacheStrategy<Viral
 	 * @see	   	TaxonNameBase#isCodeCompliant()
 	 */
 	@Override
+	@Transient
 	public boolean isCodeCompliant() {
 		logger.warn("not yet implemented");
 		return false;
@@ -176,6 +177,7 @@ public class ViralName extends TaxonNameBase<ViralName, INameCacheStrategy<Viral
 	 * @see     eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy
 	 */
 	@Override
+	@Transient
 	public INameCacheStrategy getCacheStrategy() {
 		return cacheStrategy;
 	}

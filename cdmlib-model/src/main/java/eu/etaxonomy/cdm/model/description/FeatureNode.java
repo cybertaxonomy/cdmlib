@@ -254,6 +254,7 @@ public class FeatureNode extends VersionableEntity {
 	 * 
 	 * @see	#getChildren()
 	 */
+	@Transient
 	public int getChildCount() {
 		return children.size();
 	}
@@ -283,6 +284,7 @@ public class FeatureNode extends VersionableEntity {
 	 * @see	#getChildren()
 	 * @see	#getChildCount()
 	 */
+	@Transient
 	public boolean isLeaf() {
 		return children.size() < 1;
 	}

@@ -15,6 +15,7 @@ import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToMany;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -171,6 +172,7 @@ public class Team extends TeamOrPersonBase<Team> {
 	 * @return  a string which identifies <i>this</i> team for nomenclature
 	 */
 	@Override
+	@Transient
 	public String getNomenclaturalTitle() {
 		if (protectedNomenclaturalTitleCache == PROTECTED){
 			return this.nomenclaturalTitle;

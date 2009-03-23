@@ -247,6 +247,7 @@ public class Generic extends StrictReferenceBase implements INomenclaturalRefere
 	 * @see  StrictReferenceBase#getCitation()
 	 */
 	@Override
+	@Transient
 	public String getCitation(){
 		return nomRefBase.getCitation();
 	}
@@ -263,6 +264,7 @@ public class Generic extends StrictReferenceBase implements INomenclaturalRefere
 	 * 							nomenclatural citation
 	 * @see  					#getCitation()
 	 */
+	@Transient
 	public String getNomenclaturalCitation(String microReference) {
 		return nomRefBase.getNomenclaturalCitation(microReference);
 	}

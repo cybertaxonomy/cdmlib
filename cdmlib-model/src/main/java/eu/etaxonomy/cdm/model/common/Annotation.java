@@ -136,6 +136,7 @@ public class Annotation extends LanguageStringBase implements Cloneable {
 		this.commentator = commentator;
 	}
 	
+	
 	public URL getLinkbackUrl() {
 		return linkbackUrl;
 	}

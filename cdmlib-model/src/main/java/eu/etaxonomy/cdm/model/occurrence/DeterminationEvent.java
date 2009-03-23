@@ -18,6 +18,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -124,6 +125,7 @@ public class DeterminationEvent extends EventBase {
 		this.taxon = taxon;
 	}
 
+	@Transient
 	public Partial getIdentificationDate(){
 		return this.getTimeperiod().getStart();
 	}
@@ -136,6 +138,7 @@ public class DeterminationEvent extends EventBase {
 		this.getTimeperiod().setStart(identificationDate);
 	}
 
+	@Transient
 	public AgentBase getDeterminer() {
 		return this.getActor();
 	}

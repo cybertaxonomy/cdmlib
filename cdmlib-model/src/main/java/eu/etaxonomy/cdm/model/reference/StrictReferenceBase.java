@@ -9,18 +9,22 @@
 
 package eu.etaxonomy.cdm.model.reference;
 
-import eu.etaxonomy.cdm.model.common.TimePeriod;
-import eu.etaxonomy.cdm.strategy.cache.reference.StrictReferenceBaseDefaultCacheStrategy;
-
-import org.apache.log4j.Logger;
-import org.hibernate.envers.Audited;
-
-import javax.persistence.*;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+
+import org.apache.log4j.Logger;
+import org.hibernate.envers.Audited;
+
+import eu.etaxonomy.cdm.model.common.TimePeriod;
+import eu.etaxonomy.cdm.strategy.cache.reference.StrictReferenceBaseDefaultCacheStrategy;
 
 /**
  * This (abstract) class represents all different kind of references regardless
@@ -106,6 +110,7 @@ public abstract class StrictReferenceBase extends ReferenceBase {
 	 * @see  #getTitle()
 	 */
 	@Override
+	@Transient
 	// TODO implement 
 	public String getCitation(){
 		logger.warn("getCitation not yet implemented");
@@ -117,6 +122,7 @@ public abstract class StrictReferenceBase extends ReferenceBase {
 	 * of <i>this</i> reference. The string is obtained by transformation of
 	 * the {@link #getDatePublished() datePublished} attribute.
 	 */
+	@Transient
 	@Override
 	public String getYear(){
 		if (this.getDatePublished() == null){

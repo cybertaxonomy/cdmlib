@@ -18,6 +18,7 @@ import java.util.Set;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -161,6 +162,7 @@ public class HomotypicalGroup extends AnnotatableEntity {
 	 * @see	#getTypeDesignations()
 	 * @see	TaxonNameBase#getSpecimenTypeDesignations()
 	 */
+	@Transient
 	public Set<SpecimenTypeDesignation> getSpecimenTypeDesignations(){
 		Set<SpecimenTypeDesignation> result = new HashSet<SpecimenTypeDesignation>();
 		for (TaxonNameBase taxonName : typifiedNames){
@@ -179,6 +181,7 @@ public class HomotypicalGroup extends AnnotatableEntity {
 	 * @see	#getTypeDesignations()
 	 * @see	TaxonNameBase#getNameTypeDesignations()
 	 */
+	@Transient
 	public Set<NameTypeDesignation> getNameTypeDesignations(){
 		Set<NameTypeDesignation> result = new HashSet<NameTypeDesignation>();
 		for (TaxonNameBase taxonName : typifiedNames){
@@ -199,6 +202,7 @@ public class HomotypicalGroup extends AnnotatableEntity {
 	 * @see	#getSpecimenTypeDesignations()
 	 * @see	TaxonNameBase#getTypeDesignations()
 	 */
+	@Transient
 	public Set<TypeDesignationBase> getTypeDesignations(){
 		Set<TypeDesignationBase> result = new HashSet<TypeDesignationBase>();
 		for (TaxonNameBase taxonName : typifiedNames){

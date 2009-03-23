@@ -684,6 +684,7 @@ public class BibtexReference extends ReferenceBase implements INomenclaturalRefe
 	 * @see  ReferenceBase#getCitation()
 	 */
 	@Override
+	@Transient
 	public String getCitation(){
 		return nomRefBase.getCitation();
 	}
@@ -700,6 +701,7 @@ public class BibtexReference extends ReferenceBase implements INomenclaturalRefe
 	 * @see  					getCitation()
 	 * @see  					INomenclaturalReference#getNomenclaturalCitation(String)
 	 */
+	@Transient
 	public String getNomenclaturalCitation(String microReference) {
 		return nomRefBase.getNomenclaturalCitation(microReference);
 	}

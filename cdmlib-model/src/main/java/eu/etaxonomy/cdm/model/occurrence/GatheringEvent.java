@@ -151,6 +151,7 @@ public class GatheringEvent extends EventBase implements Cloneable{
 	 * @return
 	 */
 
+	@Transient
 	public Partial getGatheringDate(){
 		return this.getTimeperiod().getStart();
 	}
@@ -163,6 +164,7 @@ public class GatheringEvent extends EventBase implements Cloneable{
 		this.setTimeperiod(TimePeriod.NewInstance(gatheringDate));
 	}
 	
+	@Transient
 	public AgentBase getCollector(){
 		return this.getActor();
 	}

@@ -14,6 +14,7 @@ import java.util.Set;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -111,6 +112,7 @@ public abstract class DerivedUnitBase extends SpecimenOrObservationBase implemen
 		field.setGatheringEvent(gatheringEvent);
 	}
 
+
 	public DerivationEvent getDerivedFrom() {
 		return derivationEvent;
 	}
@@ -125,11 +127,13 @@ public abstract class DerivedUnitBase extends SpecimenOrObservationBase implemen
 		}
 	}
 	
+	@Transient
 	public Set<SpecimenOrObservationBase> getOriginals(){
 		return this.getDerivedFrom().getOriginals();
 	}
 
 	@Override
+	@Transient
 	public GatheringEvent getGatheringEvent() {
 		// FIXME: implement efficient way of getting original gathering event
 		// keep link to original gathering event for performance mainly.

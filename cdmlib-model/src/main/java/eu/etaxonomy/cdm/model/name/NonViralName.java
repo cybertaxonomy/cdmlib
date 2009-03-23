@@ -227,7 +227,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 		setSpecificEpithet(specificEpithet);
 		setInfraSpecificEpithet(infraSpecificEpithet);
 		setCombinationAuthorTeam(combinationAuthorTeam);
-		setNomenclaturalReference(nomenclaturalReference);
+		setNomenclaturalReference((ReferenceBase)nomenclaturalReference);
 		this.setNomenclaturalMicroReference(nomenclMicroRef);
 	}
 	
@@ -291,6 +291,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 	 * @see     eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy
 	 */
 	@Override
+	@Transient
 	public INonViralNameCacheStrategy getCacheStrategy() {
 		return cacheStrategy;
 	}
@@ -547,6 +548,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 	 * @return  the string which identifies <i>this</i> non viral taxon name (without authors or year)
 	 * @see 	#generateNameCache()
 	 */
+	@Transient
 	public String getNameCache() {
 		if (protectedNameCache){
 			return this.nameCache;			
@@ -633,6 +635,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 	 * @return  the string with the concatenated and formated authorteams for <i>this</i> non viral taxon name
 	 * @see 	#generateAuthorship()
 	 */
+	@Transient
 	public String getAuthorshipCache() {
 		if (protectedAuthorshipCache){
 			return this.authorshipCache;			
@@ -691,6 +694,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 	 * @see	   	TaxonNameBase#isCodeCompliant()
 	 */
 	@Override
+	@Transient
 	public boolean isCodeCompliant() {
 		//FIXME
 		logger.warn("is CodeCompliant not yet implemented");
@@ -714,6 +718,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 	 * @see  	TaxonNameBase#getHasProblem()
 	 */
 	@Override
+	@Transient
 	public NomenclaturalCode getNomenclaturalCode() {
 		logger.warn("Non Viral Name has no specific Code defined. Use subclasses");
 		return null;

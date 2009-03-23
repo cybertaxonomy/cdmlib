@@ -166,7 +166,8 @@ public abstract class ReferenceBase extends IdentifiableMediaEntity implements I
 	 * 
 	 * @see  #generateTitle()
 	 */
-	// TODO implement 
+	// TODO implement
+	@Transient
 	public String getCitation(){
 		return "";
 	}
@@ -175,6 +176,7 @@ public abstract class ReferenceBase extends IdentifiableMediaEntity implements I
 	 * Returns a string containing the date (mostly only the year) of
 	 * publication / creation of <i>this</i> reference.
 	 */
+	@Transient
 	public abstract String getYear();
 
 	/* (non-Javadoc)

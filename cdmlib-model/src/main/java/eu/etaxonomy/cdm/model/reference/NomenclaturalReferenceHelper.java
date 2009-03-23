@@ -9,6 +9,7 @@
 
 package eu.etaxonomy.cdm.model.reference;
 
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -66,6 +67,7 @@ class NomenclaturalReferenceHelper {
 	 * 
 	 * @see  strategy.cache.reference.INomenclaturalReferenceCacheStrategy
 	 */
+	@Transient
 	public String getCitation(){
 		//TODO
 		logger.warn("getCitation not yet fully implemented");

@@ -131,6 +131,7 @@ public class Book extends PrintedUnitBase implements INomenclaturalReference, Cl
 	 * @see  #getNomenclaturalCitation(String)
 	 * @see  StrictReferenceBase#getCitation()
 	 */
+	@Transient
 	@Override
 	public String getCitation(){
 		return nomRefBase.getCitation();
@@ -148,6 +149,7 @@ public class Book extends PrintedUnitBase implements INomenclaturalReference, Cl
 	 * 							nomenclatural citation
 	 * @see  					#getCitation()
 	 */
+	@Transient
 	public String getNomenclaturalCitation(String microReference) {
 		return nomRefBase.getNomenclaturalCitation(microReference);
 	}

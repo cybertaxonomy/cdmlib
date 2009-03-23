@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.model.name;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -135,6 +136,7 @@ public class HybridRelationship extends RelationshipBase<BotanicalName, Botanica
 	 * @see   #getHybridName()
 	 * @see   eu.etaxonomy.cdm.model.common.RelationshipBase#getRelatedFrom()
 	 */
+	@Transient
 	public BotanicalName getParentName(){
 		return this.getRelatedFrom();
 	}
@@ -152,6 +154,7 @@ public class HybridRelationship extends RelationshipBase<BotanicalName, Botanica
 	 * @see   #getParentName()
 	 * @see   eu.etaxonomy.cdm.model.common.RelationshipBase#getRelatedTo()
 	 */
+	@Transient
 	public BotanicalName getHybridName(){
 		return this.getRelatedTo();
 	}

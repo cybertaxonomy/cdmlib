@@ -23,6 +23,7 @@ import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -95,6 +96,7 @@ public class TermVocabulary<T extends DefinedTermBase> extends TermBase implemen
 		// TODO Auto-generated constructor stub
 	}
 	
+	@Transient
 	Set<T> getNewTermSet() {
 		return new HashSet<T>();
 	}

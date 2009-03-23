@@ -8,6 +8,7 @@ import java.util.Set;
 import javax.persistence.FetchType;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -136,6 +137,7 @@ public abstract class TermBase extends VersionableEntity {
 		this.uri = uri;
 	}
 
+	@Transient
 	public String getLabel() {
 		if(getLabel(Language.DEFAULT())!=null){
 			Representation repr = getRepresentation(Language.DEFAULT());
@@ -170,6 +172,7 @@ public abstract class TermBase extends VersionableEntity {
 		}
 	}
 
+	@Transient
 	public String getDescription() {
 		return this.getDescription(Language.DEFAULT());
 	}

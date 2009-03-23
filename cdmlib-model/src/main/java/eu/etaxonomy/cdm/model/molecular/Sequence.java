@@ -169,6 +169,7 @@ public class Sequence extends IdentifiableEntity implements IReferencedEntity, I
 		this.chromatograms.remove(chromatogram);
 	}
 	
+	@Transient
 	public Set<Media> getMedia() {
 		return getChromatograms();
 	}

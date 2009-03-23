@@ -213,7 +213,7 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 		String titleCache = getTitleCache(nonViralName);
 		
 		String microReference = nonViralName.getNomenclaturalMicroReference();
-		INomenclaturalReference ref = nonViralName.getNomenclaturalReference();
+		INomenclaturalReference ref = (INomenclaturalReference)nonViralName.getNomenclaturalReference();
 		String referenceBaseCache = null;
 		if (ref != null){
 			referenceBaseCache = ref.getNomenclaturalCitation(microReference);

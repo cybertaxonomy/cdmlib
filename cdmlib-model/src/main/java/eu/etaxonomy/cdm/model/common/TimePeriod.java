@@ -209,6 +209,7 @@ public class TimePeriod implements Cloneable {
 	 * and both have a year value that is not null
 	 * @return
 	 */
+	@Transient
 	public boolean isPeriod(){
 		if (getStartYear() != null && getEndYear() != null ){
 			return true;
@@ -229,11 +230,12 @@ public class TimePeriod implements Cloneable {
 	public Partial getEnd() {
 		return end;
 	}
+	
 	public void setEnd(Partial end) {
 		this.end = end;
 	}
 	
-
+	@Transient
 	public String getYear(){
 		String result = "";
 		if (getStartYear() != null){
@@ -249,26 +251,32 @@ public class TimePeriod implements Cloneable {
 		return result;
 	}
 	
+	@Transient
 	public Integer getStartYear(){
 		return getPartialValue(start, yearType);
 	}
 	
+	@Transient
 	public Integer getStartMonth(){
 		return getPartialValue(start, monthType);
 	}
 
+	@Transient
 	public Integer getStartDay(){
 		return getPartialValue(start, dayType);
 	}
 
+	@Transient
 	public Integer getEndYear(){
 		return getPartialValue(end, yearType);
 	}
 
+	@Transient
 	public Integer getEndMonth(){
 		return getPartialValue(end, monthType);
 	}
 
+	@Transient
 	public Integer getEndDay(){
 		return getPartialValue(end, dayType);
 	}

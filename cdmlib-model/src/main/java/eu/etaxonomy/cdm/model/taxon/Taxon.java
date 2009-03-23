@@ -291,6 +291,7 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	 * @see    #getRelationsFromThisTaxon()
 	 * @see    #getRelationsToThisTaxon()
 	 */
+	@Transient
 	public Set<TaxonRelationship> getTaxonRelations() {
 		Set<TaxonRelationship> rels = new HashSet<TaxonRelationship>();
 		rels.addAll(getRelationsToThisTaxon());
@@ -622,6 +623,7 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	 * @see  #getTaxonomicChildrenCount()
 	 * @see  #getRelationsToThisTaxon()
 	 */
+	@Transient
 	public Set<Taxon> getTaxonomicChildren() {
 		Set<Taxon> taxa = new HashSet<Taxon>();
 		Set<TaxonRelationship> rels = this.getRelationsToThisTaxon();
@@ -685,6 +687,7 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	 * (misapplied name) for at least one other taxon. 
 	 */
 	// TODO cache as for #hasTaxonomicChildren
+	@Transient
 	public boolean isMisappliedName(){
 		return computeMisapliedNameRelations() > 0;
 	}
@@ -750,6 +753,7 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	 * @see  #getRelationsToThisTaxon()
 	 * @see  #addMisappliedName(Taxon, ReferenceBase, String)
 	 */
+	@Transient
 	public Set<Taxon> getMisappliedNames(){
 		Set<Taxon> taxa = new HashSet<Taxon>();
 		Set<TaxonRelationship> rels = this.getRelationsToThisTaxon();
@@ -784,6 +788,7 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	 * @see    #removeSynonymRelation(SynonymRelationship)
 	 * @see    #removeSynonym(Synonym)
 	 */
+	@Transient
 	public Set<Synonym> getSynonyms(){
 		Set<Synonym> syns = new HashSet<Synonym>();
 		for (SynonymRelationship rel: this.getSynonymRelations()){
@@ -805,6 +810,7 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	 * @see    #removeSynonymRelation(SynonymRelationship)
 	 * @see    #removeSynonym(Synonym)
 	 */
+	@Transient
 	public Set<Synonym> getSynonymsSortedByType(){
 		// FIXME: need to sort synonyms according to type!!!
 		logger.warn("getSynonymsSortedByType() not yet implemented");
@@ -824,6 +830,7 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	 * @see    #removeSynonymRelation(SynonymRelationship)
 	 * @see    #removeSynonym(Synonym)
 	 */
+	@Transient
 	public Set<TaxonNameBase> getSynonymNames(){
 		Set<TaxonNameBase> names = new HashSet<TaxonNameBase>();
 		for (SynonymRelationship rel: this.getSynonymRelations()){
@@ -1178,6 +1185,7 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	 * @see			eu.etaxonomy.cdm.model.name.HomotypicalGroup
 	 * @see			eu.etaxonomy.cdm.model.name.HomotypicalGroup#getSynonymsInGroup(ReferenceBase)
 	 */
+	@Transient
 	public List<Synonym> getHomotypicSynonymsByHomotypicGroup(){
 		if (this.getHomotypicGroup() == null){
 			return null;
@@ -1199,6 +1207,7 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	 * @see			#getHomotypicSynonymyGroups()
 	 * @see			SynonymRelationshipType
 	 */
+	@Transient
 	public List<Synonym> getHomotypicSynonymsByHomotypicRelationship(){
 		Set<SynonymRelationship> synonymRelations = this.getSynonymRelations(); 
 		List<Synonym> result = new ArrayList<Synonym>();
@@ -1223,6 +1232,7 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	 * @see			#getSynonyms()
 	 * @see			eu.etaxonomy.cdm.model.name.HomotypicalGroup
 	 */
+	@Transient
 	public List<HomotypicalGroup> getHomotypicSynonymyGroups(){
 		List<HomotypicalGroup> result = new ArrayList<HomotypicalGroup>();
 		result.add(this.getHomotypicGroup());
@@ -1237,11 +1247,6 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 		return result;
 	}
 	
-	/**
-	 * Returns the List of all homotypic groups heterotypic synonyms of this taxon belongs too.
-	 * This does not include the homotypic group of <i>this</i> taxon.
-	 * @return
-	 */
 	/**
 	 * Returns the ordered list of all {@link eu.etaxonomy.cdm.model.name.HomotypicalGroup homotypical groups} heterotypic
 	 * {@link Synonym synonyms} of <i>this</i> taxon belongs to.
@@ -1259,6 +1264,7 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	 * @see			SynonymRelationshipType#HETEROTYPIC_SYNONYM_OF()
 	 * @see			eu.etaxonomy.cdm.model.name.HomotypicalGroup
 	 */
+	@Transient
 	public List<HomotypicalGroup> getHeterotypicSynonymyGroups(){
 		List<HomotypicalGroup> list = getHomotypicSynonymyGroups();
 		list.remove(this.getHomotypicGroup());

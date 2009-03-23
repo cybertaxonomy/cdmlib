@@ -74,6 +74,7 @@ public class DnaSample extends Specimen implements Cloneable {
 		this.sequences.remove(sequence);
 	}
 
+	@Transient
 	public Collection getStoredAt(){
 		return this.getCollection();
 	}
@@ -82,10 +83,12 @@ public class DnaSample extends Specimen implements Cloneable {
 		this.setCollection(storedAt);
 	}
 
+	@Transient
 	public Set<SpecimenOrObservationBase> getExtractedFrom(){
 		return getOriginals();
 	}
 
+	@Transient
 	public String getBankNumber(){
 		return this.getCatalogNumber();
 	}

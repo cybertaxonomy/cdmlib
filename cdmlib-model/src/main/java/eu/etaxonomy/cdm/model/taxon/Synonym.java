@@ -195,6 +195,7 @@ public class Synonym extends TaxonBase implements IRelated<SynonymRelationship>{
 	 * @see    #getRelationType(Taxon)
 	 * @see    SynonymRelationship#isProParte()
 	 */
+	@Transient
 	public Set<Taxon> getAcceptedTaxa() {
 		Set<Taxon>taxa=new HashSet<Taxon>();
 		for (SynonymRelationship rel:getSynonymRelations()){

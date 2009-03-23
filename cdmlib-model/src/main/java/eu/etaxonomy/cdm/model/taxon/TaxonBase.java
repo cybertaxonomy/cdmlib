@@ -15,6 +15,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -180,6 +181,7 @@ public abstract class TaxonBase extends IdentifiableEntity {
 	 * Returns the {@link eu.etaxonomy.cdm.model.name.HomotypicalGroup homotypical group} of the
 	 * {@link eu.etaxonomy.cdm.model.name.TaxonNameBase taxon name} used in <i>this</i> (abstract) taxon.
 	 */
+	@Transient
 	public HomotypicalGroup getHomotypicGroup(){
 		if (this.getName() == null){
 			return null;
@@ -228,6 +230,7 @@ public abstract class TaxonBase extends IdentifiableEntity {
 	 * exist (are not "null").
 	 * FIXME This should be part of a more generic validation architecture
 	 */
+	@Transient
 	public boolean isSaveable(){
 		if (  (this.getName() == null)  ||  (this.getSec() == null)  ){
 			return false;

@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import javax.persistence.Entity;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
@@ -201,6 +202,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	 * @see  #isIllegitimateType()
 	 * @see  eu.etaxonomy.cdm.model.common.DefinedTermBase#getKindOf()
 	 */
+	@Transient
 	public boolean isInvalidType(){
 		if (this.equals(INVALID())
 			|| this.equals(NUDUM())
@@ -227,6 +229,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	 * @see  #isIllegitimateType()
 	 * @see  eu.etaxonomy.cdm.model.common.DefinedTermBase#getKindOf()
 	 */
+	@Transient
 	public boolean isLegitimateType(){
 		if (this.equals(LEGITIMATE()) ||
 				this.equals(NOVUM()) ||
@@ -258,6 +261,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	 * @see  #SANCTIONED()
 	 * @see  eu.etaxonomy.cdm.model.common.DefinedTermBase#getKindOf()
 	 */
+	@Transient
 	public boolean isIllegitimateType(){
 		if (this.equals(ILLEGITIMATE()) ||
 				this.equals(SUPERFLUOUS()) ||

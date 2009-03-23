@@ -22,6 +22,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -38,6 +39,7 @@ import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Index;
 import org.hibernate.annotations.Table;
 import org.hibernate.envers.Audited;
+import org.hibernate.proxy.HibernateProxy;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Indexed;
 import org.springframework.util.ReflectionUtils;
@@ -100,7 +102,7 @@ import eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy;
 public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INameCacheStrategy> extends IdentifiableEntity implements IReferencedEntity, IParsable, IRelated {
 
 	private static final long serialVersionUID = -4530368639601532116L;
-private static final Logger logger = Logger.getLogger(TaxonNameBase.class);
+	private static final Logger logger = Logger.getLogger(TaxonNameBase.class);
 
 	@XmlElement(name = "FullTitleCache")
 	@Column(length=330, name="fullTitleCache")
@@ -264,10 +266,12 @@ private static final Logger logger = Logger.getLogger(TaxonNameBase.class);
 	 *  
 	 * @return  false
 	 */
+	@Transient
 	public abstract boolean isCodeCompliant();
 	
 	public abstract String generateFullTitle();
 
+	@Transient
 	public String getFullTitleCache(){
 		if (protectedFullTitleCache){
 			return this.fullTitleCache;			
@@ -311,6 +315,7 @@ private static final Logger logger = Logger.getLogger(TaxonNameBase.class);
 	 * @see    #addRelationshipToName(TaxonNameBase, NameRelationshipType, String)
 	 * @see    #addRelationshipFromName(TaxonNameBase, NameRelationshipType, String)
 	 */
+	@Transient
 	public Set<NameRelationship> getNameRelations() {
 		Set<NameRelationship> rels = new HashSet<NameRelationship>();
 		rels.addAll(getRelationsFromThisName());
@@ -528,6 +533,7 @@ private static final Logger logger = Logger.getLogger(TaxonNameBase.class);
 	 * false otherwise (also in case <i>this</i> taxon name is the only one in the
 	 * homotypical group).
 	 */
+	@Transient
 	public boolean isOriginalCombination(){
 		Set<NameRelationship> relationsFromThisName = this.getRelationsFromThisName();
 		for (NameRelationship relation : relationsFromThisName) {
@@ -546,6 +552,7 @@ private static final Logger logger = Logger.getLogger(TaxonNameBase.class);
 	 * Karsten transferred later <i>this</i> taxon to the genus Picea. Therefore,
 	 * <i>Pinus abies</i> L. is the basionym of the new combination <i>Picea abies</i> (L.) H. Karst.
 	 */
+	@Transient
 	public T getBasionym(){
 		//TODO: pick the right name relationships...
 		logger.warn("get Basionym not yet implemented");
@@ -607,6 +614,7 @@ private static final Logger logger = Logger.getLogger(TaxonNameBase.class);
 	 * @see 	eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy
 	 * @see     eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy
 	 */
+	@Transient
 	public abstract S getCacheStrategy();
 	/** 
 	 * @see 	#getCacheStrategy()
@@ -639,19 +647,26 @@ private static final Logger logger = Logger.getLogger(TaxonNameBase.class);
 	 * @see 	eu.etaxonomy.cdm.model.reference.INomenclaturalReference
 	 * @see 	eu.etaxonomy.cdm.model.reference.ReferenceBase
 	 */
-	public INomenclaturalReference getNomenclaturalReference(){
-		return (INomenclaturalReference)this.nomenclaturalReference;
+	public ReferenceBase getNomenclaturalReference(){
+		return this.nomenclaturalReference;
 	}
-	
 	/**
 	 * Assigns a {@link eu.etaxonomy.cdm.model.reference.INomenclaturalReference nomenclatural reference} to <i>this</i> taxon name.
 	 * The corresponding {@link eu.etaxonomy.cdm.model.reference.ReferenceBase.isNomenclaturallyRelevant nomenclaturally relevant flag} will be set to true
 	 * as it is obviously used for nomenclatural purposes.
 	 *
+	 * @throws IllegalArgumentException if parameter <code>nomenclaturalReference</code> is not assignable from {@link INomenclaturalReference}
 	 * @see  #getNomenclaturalReference()
 	 */
-	public void setNomenclaturalReference(INomenclaturalReference nomenclaturalReference){
-		this.nomenclaturalReference = (ReferenceBase)nomenclaturalReference;
+	public void setNomenclaturalReference(ReferenceBase nomenclaturalReference){
+		if(nomenclaturalReference != null){
+			if(!INomenclaturalReference.class.isAssignableFrom(nomenclaturalReference.getClass())){
+				throw new IllegalArgumentException("Parameter nomenclaturalReference is not assignable from INomenclaturalReference");
+			}
+			this.nomenclaturalReference = (ReferenceBase)nomenclaturalReference;
+		} else {
+			this.nomenclaturalReference = null;
+		}
 	}
 
 	/** 
@@ -774,6 +789,7 @@ private static final Logger logger = Logger.getLogger(TaxonNameBase.class);
 	 * @see     NameTypeDesignation
 	 * @see     HomotypicalGroup
 	 */
+	@Transient
 	public Set<SpecimenTypeDesignation> getSpecimenTypeDesignationsOfHomotypicalGroup() {
 		return this.getHomotypicalGroup().getSpecimenTypeDesignations();
 	}
@@ -790,6 +806,7 @@ private static final Logger logger = Logger.getLogger(TaxonNameBase.class);
 	 * @see     NameTypeDesignation
 	 * @see     SpecimenTypeDesignation
 	 */
+	@Transient
 	public Set<NameTypeDesignation> getNameTypeDesignations() {
 		Set<NameTypeDesignation> result = new HashSet<NameTypeDesignation>();
 		for (TypeDesignationBase typeDesignation : this.typeDesignations){
@@ -838,6 +855,7 @@ private static final Logger logger = Logger.getLogger(TaxonNameBase.class);
 	 * Returns the set of {@link SpecimenTypeDesignation specimen type designations}
 	 * that typify <i>this</i> taxon name.
 	 */
+	@Transient
 	public Set<SpecimenTypeDesignation> getSpecimenTypeDesignations() {
 		Set<SpecimenTypeDesignation> result = new HashSet<SpecimenTypeDesignation>();
 		for (TypeDesignationBase typeDesignation : this.typeDesignations){
@@ -925,6 +943,7 @@ private static final Logger logger = Logger.getLogger(TaxonNameBase.class);
 	/** 
 	 * @see #getNomenclaturalReference()
 	 */
+	@Transient
 	public StrictReferenceBase getCitation(){
 		//TODO What is the purpose of this method differing from the getNomenclaturalReference method? 
 		logger.warn("getCitation not yet implemented");
@@ -941,6 +960,7 @@ private static final Logger logger = Logger.getLogger(TaxonNameBase.class);
 	 * @see		#getNomenclaturalReference()
 	 * @see		#getNomenclaturalMicroReference()
 	 */
+	@Transient
 	@Deprecated
 	public String getCitationString(){
 		logger.warn("getCitationString not yet implemented");
@@ -964,6 +984,7 @@ private static final Logger logger = Logger.getLogger(TaxonNameBase.class);
 	 * @return  the string containing the publication date of <i>this</i> taxon name
 	 * @see		eu.etaxonomy.cdm.model.reference.INomenclaturalReference#getYear()
 	 */
+	@Transient
 	public String getReferenceYear(){
 		if (this.getNomenclaturalReference() != null ){
 			return this.getNomenclaturalReference().getYear();
@@ -1025,6 +1046,7 @@ private static final Logger logger = Logger.getLogger(TaxonNameBase.class);
 	 * @see	#getTaxonBases()
 	 * @see	#getSynonyms()
 	 */
+	@Transient
 	public Set<Taxon> getTaxa(){
 		Set<Taxon> result = new HashSet<Taxon>();
 		for (TaxonBase taxonBase : this.taxonBases){
@@ -1044,6 +1066,7 @@ private static final Logger logger = Logger.getLogger(TaxonNameBase.class);
 	 * @see	#getTaxonBases()
 	 * @see	#getTaxa()
 	 */
+	@Transient
 	public Set<Synonym> getSynonyms() {
 		Set<Synonym> result = new HashSet<Synonym>();
 		for (TaxonBase taxonBase : this.taxonBases){
@@ -1115,6 +1138,7 @@ private static final Logger logger = Logger.getLogger(TaxonNameBase.class);
 	 * @return  			   the boolean value of the check
 	 * @see     			   HomotypicalGroup
 	 */
+	@Transient
 	public boolean isHomotypic(TaxonNameBase homoTypicName) {
 		if (homoTypicName == null) {
 			return false;
@@ -1141,6 +1165,7 @@ private static final Logger logger = Logger.getLogger(TaxonNameBase.class);
 	 * @see  #isSpecies()
 	 * @see  #isInfraSpecific()
 	 */
+	@Transient
 	public boolean isSupraGeneric() {
 		if (rank == null){
 			return false;
@@ -1157,6 +1182,7 @@ private static final Logger logger = Logger.getLogger(TaxonNameBase.class);
 	 * @see  #isSpecies()
 	 * @see  #isInfraSpecific()
 	 */
+	@Transient
 	public boolean isGenus() {
 		if (rank == null){
 			return false;
@@ -1174,6 +1200,7 @@ private static final Logger logger = Logger.getLogger(TaxonNameBase.class);
 	 * @see  #isSpecies()
 	 * @see  #isInfraSpecific()
 	 */
+	@Transient
 	public boolean isInfraGeneric() {
 		if (rank == null){
 			return false;
@@ -1191,6 +1218,7 @@ private static final Logger logger = Logger.getLogger(TaxonNameBase.class);
 	 * @see  #isInfraGeneric()
 	 * @see  #isInfraSpecific()
 	 */
+	@Transient
 	public boolean isSpecies() {
 		if (rank == null){
 			return false;
@@ -1208,6 +1236,7 @@ private static final Logger logger = Logger.getLogger(TaxonNameBase.class);
 	 * @see  #isInfraGeneric()
 	 * @see  #isSpecies()
 	 */
+	@Transient
 	public boolean isInfraSpecific() {
 		if (rank == null){
 			return false;

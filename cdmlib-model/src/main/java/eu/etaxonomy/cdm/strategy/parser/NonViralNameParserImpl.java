@@ -306,7 +306,7 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName>
 		parseFullName(nameToBeFilled, name, rank, makeEmpty);
 	    nameToBeFilled.setProblemEnds(oldProblemEnds);
 		parseReference(nameToBeFilled, referenceString, isInReference); 
-	    INomenclaturalReference ref = nameToBeFilled.getNomenclaturalReference();
+	    INomenclaturalReference ref = (INomenclaturalReference)nameToBeFilled.getNomenclaturalReference();
 
 	    //problem start
 	    int start = nameToBeFilled.getProblemStarts();
@@ -416,7 +416,7 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName>
 			if (ref.hasProblem()){
 				ref.setTitleCache( (isInReference?"in ":"") +  originalStrReference);
 			}
-			nameToBeFilled.setNomenclaturalReference(ref);
+			nameToBeFilled.setNomenclaturalReference((ReferenceBase)ref);
 			int end = Math.min(strReference.length(), ref.getProblemEnds());
 			ref.setProblemEnds(end);
 	    }else{  //detail and year not parsable
@@ -425,7 +425,7 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName>
 	    	ref.setProblemEnds(strReference.length());
 	    	ref.setHasProblem(true);
 	    	nameToBeFilled.setHasProblem(true);
-	    	nameToBeFilled.setNomenclaturalReference(ref);
+	    	nameToBeFilled.setNomenclaturalReference((ReferenceBase)ref);
 	    }
 	}
 		

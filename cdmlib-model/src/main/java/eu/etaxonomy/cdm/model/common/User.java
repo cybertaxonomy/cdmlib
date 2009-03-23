@@ -121,6 +121,7 @@ public class User extends CdmBase implements UserDetails {
 		authorities = allAuthorities.toArray(new GrantedAuthority[allAuthorities.size()]);
 	}
 	
+	@Transient
 	public GrantedAuthority[] getAuthorities() {
 		if(authorities == null) initAuthorities();
 		return authorities;

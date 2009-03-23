@@ -128,6 +128,7 @@ public abstract class RelationshipTermBase<T extends RelationshipTermBase> exten
 	 * Inverse representation convenience methods similar to TermBase.xxx 
 	 * @see eu.etaxonomy.cdm.model.common.TermBase#getLabel()
 	 */
+	@Transient
 	public String getInverseLabel() {
 		if(getInverseLabel(Language.DEFAULT())!=null){
 			return this.getInverseRepresentation(Language.DEFAULT()).getLabel();
@@ -147,7 +148,8 @@ public abstract class RelationshipTermBase<T extends RelationshipTermBase> exten
 			return r.getLabel();
 		}
 	}
-
+	
+	@Transient
 	public String getInverseDescription() {
 		return this.getInverseRepresentation(Language.DEFAULT()).getDescription();
 	}

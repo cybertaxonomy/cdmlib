@@ -63,6 +63,7 @@ public class View extends CdmBase implements IReferencedEntity{
 		this.description = description;
 	}
 
+	@Transient
 	public ReferenceBase getCitation() {
 		return getReference();
 	}

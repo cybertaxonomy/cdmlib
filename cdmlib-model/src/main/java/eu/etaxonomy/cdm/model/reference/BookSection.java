@@ -145,6 +145,7 @@ public class BookSection extends SectionBase implements INomenclaturalReference,
 	 * @see  #getNomenclaturalCitation(String)
 	 * @see  StrictReferenceBase#getCitation()
 	 */
+	@Transient
 	@Override
 	public String getCitation(){
 		return nomRefBase.getCitation();
@@ -162,6 +163,7 @@ public class BookSection extends SectionBase implements INomenclaturalReference,
 	 * 							nomenclatural citation
 	 * @see  					#getCitation()
 	 */
+	@Transient
 	public String getNomenclaturalCitation(String microReference) {
 		return nomRefBase.getNomenclaturalCitation(microReference);
 	}
@@ -177,6 +179,7 @@ public class BookSection extends SectionBase implements INomenclaturalReference,
 	 * 
 	 * @see 	StrictReferenceBase#getDatePublished()
 	 **/
+	 @Transient
 	 @Override
 	 // This method overrides StrictReferenceBase.getDatePublished() only to have 
 	 // a specific Javadoc for BookSection.getDatePublished().

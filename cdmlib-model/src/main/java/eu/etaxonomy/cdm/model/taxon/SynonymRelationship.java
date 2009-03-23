@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.model.taxon;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -164,6 +165,7 @@ public class SynonymRelationship extends RelationshipBase<Synonym, Taxon, Synony
 	 * @see    eu.etaxonomy.cdm.model.common.RelationshipBase#getRelatedTo()
 	 * @see    eu.etaxonomy.cdm.model.common.RelationshipBase#getType()
 	 */
+	@Transient
 	public Taxon getAcceptedTaxon(){
 		return this.getRelatedTo();
 	}
@@ -193,6 +195,7 @@ public class SynonymRelationship extends RelationshipBase<Synonym, Taxon, Synony
 	 * @see    eu.etaxonomy.cdm.model.common.RelationshipBase#getRelatedFrom()
 	 * @see    eu.etaxonomy.cdm.model.common.RelationshipBase#getType()
 	 */
+	@Transient
 	public Synonym getSynonym(){
 		return this.getRelatedFrom();
 	}

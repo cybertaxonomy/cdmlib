@@ -17,6 +17,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -184,6 +185,7 @@ public class FeatureTree extends TermBase {
 	 * Returns the (ordered) list of {@link FeatureNode feature nodes} which are immediate
 	 * children of the root node of <i>this</i> feature tree.
 	 */
+	@Transient
 	public List<FeatureNode> getRootChildren(){
 		List<FeatureNode> result = new ArrayList<FeatureNode>();
 		result.addAll(root.getChildren());

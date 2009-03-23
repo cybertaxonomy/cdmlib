@@ -75,7 +75,7 @@ public class TaxonComparator implements Comparator<TaxonBase> {
 					
 					result = String.valueOf(((ZoologicalName)name).getPublicationYear());
 				}else{
-					INomenclaturalReference ref = name.getNomenclaturalReference();
+					INomenclaturalReference ref = (INomenclaturalReference) name.getNomenclaturalReference();
 					if (ref == null){
 						result = null;
 					}else{

@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlEnumValue;
 import javax.xml.bind.annotation.XmlType;
@@ -202,6 +203,7 @@ public enum NomenclaturalCode implements IDefinedTerm<NomenclaturalCode> {
 	 * @see 			BacterialName#NewInstance(Rank)
 	 * @see 			ViralName#NewInstance(Rank)
 	 */
+	@Transient
 	public <T extends TaxonNameBase> Class<? extends T> getCdmClass(){
 		Class<? extends T> result;
 		switch (this){
