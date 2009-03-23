@@ -83,7 +83,7 @@ public class DescriptionAssembler extends AssemblerBase<BaseSTO, DescriptionTO, 
 		DescriptionTO to = new DescriptionTO();
 		to.setUuid(descriptionBase.getUuid().toString());
 		to.setCreated(descriptionBase.getCreated());
-		to.setCreatedBy(descriptionBase.getCreatedBy());
+		to.setCreatedBy(descriptionBase.getCreatedBy().toString());
 		//TODO to.setLabel(label);
 		for(DescriptionElementBase descriptionElementBase :  descriptionBase.getElements()){
 			to.addElement(getDescriptionElementSTO(descriptionElementBase, locales));

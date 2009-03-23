@@ -6,10 +6,19 @@
     <description>EDIT CDM Community Server</description>
     <display-name>CDM Community Server</display-name>
 
+
+	<context-param>
+		  <param-name>contextConfigLocation</param-name>
+		  <param-value>/WEB-INF/applicationContext.xml</param-value>
+	</context-param>
+	<context-param>
+	    <param-name>log4jConfigLocation</param-name>
+	    <param-value>/WEB-INF/classes/eu/etaxonomy/cdm/remote/log4j.properties</param-value>
+  	</context-param>
     <listener>
         <listener-class>
             org.springframework.web.context.ContextLoaderListener
-            <!-- defaults to /WEB-INF/applicationContext.xml if contextConfigLocation is not set -->
+            <!-- defaults to /WEB-INF/applicationContext.xml if contextConfigLocation not set -->
         </listener-class>
     </listener>
     
@@ -23,16 +32,30 @@
             <param-value>DEBUG</param-value>
         </init-param> 
         -->
-        <load-on-startup>2</load-on-startup>
+        <load-on-startup>1</load-on-startup>
     </servlet>
     <servlet-mapping>
         <servlet-name>cdmrest</servlet-name>
         <url-pattern>/</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+    	<servlet-name>default</servlet-name>
+    	<url-pattern>/favicon.ico</url-pattern>
+    </servlet-mapping>
+        <servlet-mapping>
+    	<servlet-name>default</servlet-name>
+    	<url-pattern>/robots.txt</url-pattern>
     </servlet-mapping>
     
 
     <welcome-file-list>
         <welcome-file>index.jsp</welcome-file>
     </welcome-file-list>
+    
+   	<!-- 
+   	 <listener>
+    	<listener-class>org.springframework.web.util.Log4jConfigListener</listener-class>
+	</listener>
+   	 -->
     
 </web-app>

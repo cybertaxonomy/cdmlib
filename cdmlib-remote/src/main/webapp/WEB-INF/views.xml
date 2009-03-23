@@ -1,9 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN 2.0//EN"
-		  "http://www.springframework.org/dtd/spring-beans-2.0.dtd">
-		  
-<beans>
-    <bean name="xmlView" class="eu.etaxonomy.cdm.remote.view.XmlView"/>
-    <bean name="jsonView" class="eu.etaxonomy.cdm.remote.view.JsonView"/>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+    
+    <!-- 
+    	- bean names are ant style patterns
+    	- the eu.etaxonomy.cdm.remote.view.PatternViewResolver 
+    	  must be used to resolve patterns used as bean names
+    -->
+    <bean name="**/*.xml" class="eu.etaxonomy.cdm.remote.view.JsonView">
+    	<property name="type" value="XML" />
+    	<property name="jsonConfig" ref="jsonConfig" />
+    </bean>
+    <bean name="**/*.json" class="eu.etaxonomy.cdm.remote.view.JsonView">
+    	<property name="jsonConfig" ref="jsonConfig" />
+    </bean>
     <bean name="htmlView" class="eu.etaxonomy.cdm.remote.view.HtmlView"/>
 </beans>

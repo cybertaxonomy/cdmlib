@@ -8,77 +8,60 @@
     http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
     http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
     ">
-            
-    <bean class="carbonfive.spring.web.pathparameter.ParameterizedUrlHandlerMapping">
-        <!-- see http://www.carbonfive.com/community/archives/2007/06/parameterized_rest_urls_with_spring_mvc.html -->
-        <property name="alwaysUseFullPath" value="true"/>
-        <property name="mappings">
-            <props>
-                <prop key="/manager/(dataSources:resource)/(reload:operation)">managementController</prop>
-                
-                <prop key="/(*:basepath)/(name:dto)/(*:uuid)">restController</prop>
-                <prop key="/(*:basepath)/(taxon:dto)/(*:uuid)">restController</prop>
-                <prop key="/(*:basepath)/(reference:dto)/(*:uuid)">restController</prop>
-                <prop key="/(*:basepath)/(reference:dto)/(list:operation)/(*:pageNumber)/(*:q)">restController</prop>
-                
-                <prop key="/(*:basepath)/(simple:action)/(taxon:dto)/(*:uuid)">restController</prop>
-                <prop key="/(*:basepath)/(simple:action)/(taxon:dto)/(acceptedfor:operation)/(*:uuid)">restController</prop>
-                <prop key="/(*:basepath)/(simple:action)/(name:dto)/(*:uuid)">restController</prop>
-                <prop key="/(*:basepath)/(simple:action)/(reference:dto)/(*:uuid)">restController</prop>
-                <prop key="/(*:basepath)/(find:action)/(taxon:dto)/(*:q)">restController</prop>
-                
-                <prop key="/(*:basepath)/(annotations:action)/(*:uuid)">restController</prop>
-                
-                <prop key="/(*:basepath)/(features:action)/(*:q)">restController</prop>                
-                <prop key="/(*:basepath)/(features:action)/(tree:operation)/(*:uuid)">restController</prop>
-                <prop key="/(*:basepath)/(taxonomy:action)/(root:operation)/(*:sec)">restController</prop>
-                <prop key="/(*:basepath)/(taxonomy:action)/(parents:operation)/(*:uuid)">restController</prop>
-                <prop key="/(*:basepath)/(taxonomy:action)/(children:operation)/(*:uuid)">restController</prop>
-                
-                <prop key="/(*:basepath)/(find:action)/(taxon:dto)/(*:q)">restController</prop>
-                <prop key="/(*:basepath)/(find:action)/(taxon:dto)/(*:q)">restController</prop>
-            </props>
+    <context:component-scan base-package="eu/etaxonomy/cdm/remote"/>
+    
+    <!-- Subclass of org.springframework.web.servlet.view.XmlViewResolver which 
+    	 accepts a configuration file. The default configuration file is /WEB-INF/views.xml -->
+    <bean  name="viewResolver" class="eu.etaxonomy.cdm.remote.view.PatternViewResolver">
+ 		<!-- FOR DEBUGING ONLY !!!!   
+ 		<property name="cache" value="false"/> 
+ 		 -->
+    </bean>
+
+	<bean id="datasourceContextHandlerInterceptor" class="eu.etaxonomy.cdm.remote.controller.interceptor.DatasourceContextHandlerInterceptor">
+    </bean>
+    <bean id="contentNegociationHandlerInterceptor" class="eu.etaxonomy.cdm.remote.controller.interceptor.ContentNegociationHandlerInterceptor">
+        <property name="mapping">
+            <map>
+                <entry key="text/json" value="json"/>
+            </map>
         </property>
+        <property name="defaultExtension" value="json"/>
+    </bean>
+    
+    <!--  first we try to find the controller using the simpleurlmapping, then the classname
+          this follows the principal of "convention over configuration" -->   
+    <bean class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping">
+        <property name="order" value="1" />
+        <property name="interceptors">
+            <list>
+                <ref bean="datasourceContextHandlerInterceptor" />
+                <ref bean="contentNegociationHandlerInterceptor" />
+            </list>
+        </property>         
+    </bean>
+    
+    <bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
+	</bean>
+	
+	<bean id="exceptionResolver" class="eu.etaxonomy.cdm.remote.exception.CdmExceptionResolver">
+	 	<property name="exceptionMappings">
+			<props>
+			    <prop key="IllegalArgumentException">illegalArgumentException</prop>
+			</props>
+		</property>
         <!-- 
-        <property name="mappings">
-            <props>
-                <prop key="/(whatis:dto)/(*:uuid)">restController</prop>
-                <prop key="/(name:dto)/(*:uuid)">restController</prop>
-                <prop key="/(taxon:dto)/(*:uuid)">restController</prop>
-                <prop key="/(reference:dto)/(*:uuid)">restController</prop>
-                <prop key="/(reference:dto)/(list:operation)/(*:pageNumber)/(*:q)">restController</prop>
-                
-                <prop key="/(simple:action)/(taxon:dto)/(*:uuid)">restController</prop>
-                <prop key="/(simple:action)/(taxon:dto)/(acceptedfor:operation)/(*:uuid)">restController</prop>
-                <prop key="/(simple:action)/(name:dto)/(*:uuid)">restController</prop>
-                <prop key="/(simple:action)/(reference:dto)/(*:uuid)">restController</prop>
-                <prop key="/(find:action)/(taxon:dto)/(*:q)">restController</prop>
-                
-                <prop key="/(annotations:action)/(*:uuid)">restController</prop>
-                
-                <prop key="/(features:action)/(*:q)">restController</prop>                
-                <prop key="/(features:action)/(tree:operation)/(*:uuid)">restController</prop>
-                <prop key="/(taxonomy:action)/(root:operation)/(*:sec)">restController</prop>
-                <prop key="/(taxonomy:action)/(parents:operation)/(*:uuid)">restController</prop>
-                <prop key="/(taxonomy:action)/(children:operation)/(*:uuid)">restController</prop>
-                
-                <prop key="/(find:action)/(taxon:dto)/(*:q)">restController</prop>
-                <prop key="/(find:action)/(taxon:dto)/(*:q)">restController</prop>
-                
-                <prop key="/(insert:action)">restController</prop>
-            </props>
-        </property>
+         <property name="contentNegociationHandlerInterceptor" ref="contentNegociationHandlerInterceptor"/>
          -->
     </bean>
     
-    <!-- default=views.xml -->
-    <bean  name="viewResolver" class="org.springframework.web.servlet.view.XmlViewResolver" />
-
-    <bean id="viewResolverJsp"
-        class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+    
+	<!--
+    <bean id="viewResolverJsp"  class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+	   	<property name="cache" value="false"/> <!- -  FOR DEBUGING ONLY !!!!  -  ->
         <property name="prefix" value="/jsp/"/>
         <property name="suffix" value=".jsp"/>
     </bean>
+	 -->
 
 </beans>
- 

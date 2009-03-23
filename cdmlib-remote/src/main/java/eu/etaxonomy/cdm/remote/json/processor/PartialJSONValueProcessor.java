@@ -7,7 +7,7 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package eu.etaxonomy.cdm.remote.view.processor;
+package eu.etaxonomy.cdm.remote.json.processor;
 
 import net.sf.json.JsonConfig;
 import net.sf.json.processors.JsonValueProcessor;

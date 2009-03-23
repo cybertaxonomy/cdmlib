@@ -1,4 +1,4 @@
-package eu.etaxonomy.cdm.remote.view.processor;
+package eu.etaxonomy.cdm.remote.json.util;
 
 import net.sf.json.util.PropertyFilter;
 
@@ -7,8 +7,7 @@ import org.hibernate.Hibernate;
 
 public class InitializedHibernatePropertyFilter implements PropertyFilter {
 
-	private static final Logger logger = Logger
-			.getLogger(InitializedHibernatePropertyFilter.class);
+	private static final Logger logger = Logger.getLogger(InitializedHibernatePropertyFilter.class);
 
 	public boolean apply(Object source, String name, Object value) {
 		if (logger.isDebugEnabled()) {

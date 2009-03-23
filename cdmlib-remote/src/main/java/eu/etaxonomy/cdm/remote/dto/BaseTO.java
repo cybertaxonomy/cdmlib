@@ -47,15 +47,15 @@ public abstract class BaseTO extends BaseSTO{
 	}
 	public void setCreatedBy(User createdBy) {
 		if(createdBy != null){
-		    // FIXME could use createdBy.getPerson().getTitleCache() too - depends what you want to do here.
-			this.createdBy = createdBy.getUsername();			
+		    this.createdBy = createdBy.getUsername();			
+
 		}
 	}
 	public DateTime getUpdated() {
 		return updated;
 	}
-	public void setUpdated(DateTime updated) {
-		this.updated = updated;
+	public void setUpdated(DateTime dateTime) {
+		this.updated = dateTime;
 	}
 	public String getUpdatedBy() {
 		return updatedBy;

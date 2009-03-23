@@ -254,13 +254,14 @@ public class TaxonAssembler extends AssemblerBase<TaxonSTO, TaxonTO, TaxonBase>{
 		if(taxon!=null){
 			treeNode = new TreeNode();
 			setVersionableEntity(taxon, treeNode);
+			treeNode.setHasChildren(taxon.getTaxonomicChildrenCount());		
 			treeNode.setFullname(taxon.getName().getTitleCache());
-			treeNode.setHasChildren(taxon.getTaxonomicChildrenCount());
 			treeNode.setTaggedName(nameAssembler.getTaggedName(taxon.getName()));
 			treeNode.setSecUuid(taxon.getSec().getUuid().toString());
 		}
 		return treeNode;
 	}
+	
 	public List<TreeNode> getTreeNodeList(Taxon[] taxa){
 		ArrayList<TreeNode> result = new ArrayList<TreeNode>();
 		for (Taxon t : taxa){

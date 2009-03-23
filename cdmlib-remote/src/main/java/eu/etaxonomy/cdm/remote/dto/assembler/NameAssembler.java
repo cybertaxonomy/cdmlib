@@ -21,9 +21,14 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Hibernate;
+import org.hibernate.proxy.HibernateProxy;
+import org.hibernate.proxy.LazyInitializer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import sun.org.mozilla.javascript.internal.GeneratedClassLoader;
+
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
@@ -33,7 +38,7 @@ import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
-import eu.etaxonomy.cdm.persistence.dao.hibernate.HibernateProxyHelperExtended;
+import eu.etaxonomy.cdm.persistence.dao.hibernate.taxon.TaxonDaoHibernateImpl;
 import eu.etaxonomy.cdm.remote.dto.DescriptionTO;
 import eu.etaxonomy.cdm.remote.dto.NameRelationshipTO;
 import eu.etaxonomy.cdm.remote.dto.NameSTO;
@@ -190,7 +195,7 @@ public class NameAssembler extends AssemblerBase<NameSTO, NameTO, TaxonNameBase>
 //			LazyInitializer lazyInitializer = ((HibernateProxy)taxonNameBase).getHibernateLazyInitializer();
 //			taxonNameBase = (TaxonNameBase)lazyInitializer.getImplementation();
 //		}
-		taxonNameBase = (TaxonNameBase)HibernateProxyHelperExtended.getProxyTarget(taxonNameBase);
+		taxonNameBase = HibernateProxyHelper.deproxy(taxonNameBase, TaxonNameBase.class);
 		
 			//FIXME rude hack:
 		if(!(taxonNameBase instanceof NonViralName)){

@@ -8,37 +8,47 @@
     http://www.springframework.org/schema/tx   http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
     ">
 	
-
+	 <!-- include services application context and override default settings for the PersistentTermInitializer -->
      <import resource="classpath:/eu/etaxonomy/cdm/services.xml"/> 
-<!-- 
+     <bean id="persistentTermInitializer" class="eu.etaxonomy.cdm.database.PersistentTermInitializer">
+     	<property name="omit" value="true" />
+     </bean>
+     
+     <!-- 
      <import resource="classpath:/eu/etaxonomy/cdm/defaultSecurityContext.xml"/>  
      <import resource="classpath:/eu/etaxonomy/cdm/spelling.xml"/>
- -->
- 
+     -->
  
   	<!-- Overwrites the component-scan in services.xml -->
-    <context:component-scan base-package="eu/etaxonomy/cdm">
-      <context:exclude-filter type="regex" expression="eu\.etaxonomy\.cdm\.api\.service\.UserService"/>
+    <!-- includes service beans e.g. in eu/etaxonomy/cdm/api -->
+	<context:component-scan base-package="eu/etaxonomy/cdm/api/service">
+	 	<context:exclude-filter type="regex" expression="eu\.etaxonomy\.cdm\.api\.service\.UserService"/>
     </context:component-scan>
-    
+	<context:component-scan base-package="eu/etaxonomy/cdm/api/application"/>
+
+	<!-- TODO move to io
+	<context:component-scan base-package="eu/etaxonomy/cdm/io"/>
+	 -->
     
     <!-- enable the configuration of transactional behavior based on annotations -->
     <tx:annotation-driven transaction-manager="transactionManager"/>
-
+    
+    <!-- import additional beans into the root context -->
+    <import resource="viewsContext.xml"/> 
 
 	<!--  load usenames and passwords from properties file and import datasource bean configurations -->
     <context:property-placeholder location="file:${user.home}/.cdmLibrary/cdmserver.properties"/>
     <!-- CONFIGURE WEB APPLICATION HERE -->
-    <import resource="routing-datasource.xml"/>
+    <import resource="datasources/routing-datasource.xml"/>
     <!-- 
-    <import resource="empty-default-datasource.xml"/>
-    <import resource="empty-default-datasource-wp7virtual.xml"/>
-    <import resource="datasources-local.xml"/>
-    <import resource="datasources-wp7virtual-production-A.xml"/> 
-    <import resource="p6spy.xml"/>
-    <import resource="datasources-bgbm24-import.xml"/>
-    <import resource="datasources-wp7virtual-production-B.xml"/>
+    <import resource="datasources/empty-default-datasource.xml"/>
+	<import resource="datasources/datasources-bgbm24-test.xml"/>
+    <import resource="datasources/empty-default-datasource-wp7virtual.xml"/>
+    <import resource="datasources/datasources-local.xml"/>
+    <import resource="datasources/datasources-wp7virtual-production-A.xml"/> 
+    <import resource="datasources/p6spy.xml"/>
+    <import resource="datasources/datasources-bgbm24-import.xml"/>
+    <import resource="datasources/datasources-wp7virtual-production-B.xml"/>
      -->
-    
- 
+
 </beans>

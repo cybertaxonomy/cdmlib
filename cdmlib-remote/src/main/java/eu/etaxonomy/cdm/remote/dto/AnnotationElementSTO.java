@@ -19,7 +19,7 @@ import eu.etaxonomy.cdm.model.agent.Person;
  * @version 1.0
  */
 public class AnnotationElementSTO extends BaseTO {
-	private static Logger logger = Logger.getLogger(AnnotationElementSTO.class);
+	private static final Logger logger = Logger.getLogger(AnnotationElementSTO.class);
 	
 	private String text;
 	private Person commentator;

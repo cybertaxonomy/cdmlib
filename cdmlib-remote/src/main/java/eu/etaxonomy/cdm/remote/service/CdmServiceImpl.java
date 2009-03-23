@@ -27,19 +27,18 @@ import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
-import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.persistence.dao.common.ITitledDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IFeatureDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IFeatureTreeDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
-import eu.etaxonomy.cdm.persistence.fetch.CdmFetch;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.remote.dto.FeatureTO;
@@ -220,7 +219,6 @@ public class CdmServiceImpl implements ICdmService {
 //		}
 		
 		List<TaxonBase> results = taxonDAO.findByTitle(q, matchMode, page, pagesize, criteria);
-		//descriptionDAO
 		resultSetPage.setResultsOnPage(results.size());
 		for (TaxonBase taxonBase : results){
 			resultSetPage.getResults().add(taxonAssembler.getSTO(taxonBase, locales));
@@ -295,8 +293,7 @@ public class CdmServiceImpl implements ICdmService {
 		if(uuid != null){
 			sec = getCdmReferenceBase(uuid);
 		}
-		List<Taxon> rt = taxonDAO.getRootTaxa(Rank.GENUS(), sec, null, true, false);
-		return taxonAssembler.getTreeNodeListSortedByName(rt);
+		return taxonAssembler.getTreeNodeListSortedByName(taxonDAO.getRootTaxa(sec));
 	}
 
 	public Set<ReferencedEntityBaseSTO> getTypes(UUID uuid) {
