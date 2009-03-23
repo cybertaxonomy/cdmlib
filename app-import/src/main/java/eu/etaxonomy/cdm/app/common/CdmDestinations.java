@@ -236,6 +236,19 @@ public class CdmDestinations {
 		return CdmDataSource.NewH2EmbeddedInstance("cdm", "sa", "");
 	}
 	
+	public static ICdmDataSource localH2Diptera(){
+		return CdmDataSource.NewH2EmbeddedInstance("diptera", "sa", "");
+	}
+	
+	
+	public static ICdmDataSource localH2Cichorieae(){
+		return CdmDataSource.NewH2EmbeddedInstance("cichorieae", "sa", "");
+	}
+	
+	public static ICdmDataSource localH2Palmae(){
+		return CdmDataSource.NewH2EmbeddedInstance("palmae", "sa", "");
+	}
+	
 	public static ICdmDataSource localH2_viola(){
 		return CdmDataSource.NewH2EmbeddedInstance("testViola", "sa", "");
 	}
