@@ -338,10 +338,10 @@ public class TaxonNameBaseTest {
 	 */
 	@Test
 	public void testGetNomenclaturalReference() {
-		INomenclaturalReference nr = nameBase1.getNomenclaturalReference();
+		INomenclaturalReference nr = (INomenclaturalReference) nameBase1.getNomenclaturalReference();
 		assertNull("Nomenclatural Reference shall be null", nr);
 		nameBase1.setNomenclaturalReference(Generic.NewInstance());
-		nr = nameBase1.getNomenclaturalReference();
+		nr = (INomenclaturalReference) nameBase1.getNomenclaturalReference();
 		assertNotNull("Nomenclatural Reference shall not be null", nr);
 	}
 

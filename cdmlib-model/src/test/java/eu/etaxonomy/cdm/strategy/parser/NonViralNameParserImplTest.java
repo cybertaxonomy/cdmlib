@@ -313,7 +313,7 @@ public class NonViralNameParserImplTest {
 		assertFullRefNameStandard(name2);
 		assertEquals(fullReference, name2.getFullTitleCache());
 		assertFalse(name2.hasProblem());
-		INomenclaturalReference ref = name2.getNomenclaturalReference();
+		INomenclaturalReference ref = (INomenclaturalReference)name2.getNomenclaturalReference();
 		assertEquals(BookSection.class, ref.getClass());
 		BookSection bookSection = (BookSection)ref;
 		Book inBook = bookSection.getInBook();
@@ -330,7 +330,7 @@ public class NonViralNameParserImplTest {
 		assertFullRefNameStandard(name3);
 		assertEquals(fullReference, name3.getFullTitleCache());
 		assertFalse(name3.hasProblem());
-		ref = name3.getNomenclaturalReference();
+		ref = (INomenclaturalReference)name3.getNomenclaturalReference();
 		assertEquals(Article.class, ref.getClass());
 		Article article = (Article)ref;
 		Journal journal = article.getInJournal();
@@ -351,7 +351,7 @@ public class NonViralNameParserImplTest {
 		assertFalse(name4.hasProblem());
 		assertFullRefNameStandard(name4);
 		assertEquals(fullReferenceWithoutYear + " " + parsedYear, name4.getFullTitleCache());
-		ref = name4.getNomenclaturalReference();
+		ref = (INomenclaturalReference)name4.getNomenclaturalReference();
 		assertEquals(Article.class, ref.getClass());
 		article = (Article)ref;
 		assertEquals(parsedYear, ref.getYear());
@@ -587,7 +587,7 @@ public class NonViralNameParserImplTest {
 		assertEquals("Mill.", name.getAuthorshipCache());
 		assertEquals("455", name.getNomenclaturalMicroReference());
 		assertNotNull(name.getNomenclaturalReference());
-		INomenclaturalReference ref = name.getNomenclaturalReference();
+		INomenclaturalReference ref = (INomenclaturalReference)name.getNomenclaturalReference();
 		assertEquals("1987", ref.getYear());
 		StrictReferenceBase refBase = (StrictReferenceBase)ref;
 		assertEquals("Sp. Pl.", refBase.getTitle());
