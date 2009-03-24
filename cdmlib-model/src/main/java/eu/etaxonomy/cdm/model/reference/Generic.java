@@ -10,17 +10,27 @@
 package eu.etaxonomy.cdm.model.reference;
 
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementRef;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.IndexColumn;
 
 import eu.etaxonomy.cdm.strategy.cache.reference.GenericDefaultCacheStrategy;
 
@@ -46,8 +56,6 @@ import eu.etaxonomy.cdm.strategy.cache.reference.GenericDefaultCacheStrategy;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Generic", propOrder = {
-		"publisher",
-		"placePublished",
 		"editor",
 		"volume",
 		"pages",
@@ -55,21 +63,18 @@ import eu.etaxonomy.cdm.strategy.cache.reference.GenericDefaultCacheStrategy;
 })
 @XmlRootElement(name = "Generic")
 @Entity
-public class Generic extends StrictReferenceBase implements INomenclaturalReference, IVolumeReference, Cloneable {
-
-	/**
-	 * 
-	 */
+public class Generic extends PublicationBase implements INomenclaturalReference, IVolumeReference, Cloneable {
 	private static final long serialVersionUID = -2547067957118035042L;
+	private static final Logger logger = Logger.getLogger(Generic.class);
 
-	static Logger logger = Logger.getLogger(Generic.class);
-	
-    @XmlElement(name = "Publisher")
-	private String publisher;
-	
-    @XmlElement(name = "PlacePublished")
-	private String placePublished;
-	
+//	@XmlElementWrapper(name = "Publishers")
+//	@XmlElement(name = "Publisher")
+//    @OneToMany (cascade = {javax.persistence.CascadeType.ALL}, fetch= FetchType.LAZY)
+//	@IndexColumn(name="sortIndex", base = 0)
+//	@JoinColumn (name = "genericReferenceBase_id", insertable=false, updatable=false)
+//	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE_ORPHAN})
+//	private List<Publisher> genericPublishers = new ArrayList<Publisher>();
+
     @XmlElement(name = "Editor")
 	private String editor;
 	
@@ -110,49 +115,6 @@ public class Generic extends StrictReferenceBase implements INomenclaturalRefere
 		return new Generic();
 	}
 	
-	/**
-	 * Returns the string representing the name of the publisher of <i>this</i>
-	 * generic reference. A publisher is mostly an institution or a private
-	 * company which assumed the global responsibility for the publication
-	 * process.<BR>
-	 * If there is a publisher then the generic reference must be some kind of
-	 * {@link PublicationBase publication}.
-	 * 
-	 * @return  the string identifying the publisher of <i>this</i>
-	 * 			generic reference
-	 * @see 	#getEditor()
-	 */
-	public String getPublisher(){
-		return this.publisher;
-	}
-
-	/**
-	 * @see #getPublisher()
-	 */
-	public void setPublisher(String publisher){
-		this.publisher = publisher;
-	}
-
-	/**
-	 * Returns the string representing the name of the place (mostly the city)
-	 * where <i>this</i> generic reference has been published.<BR>
-	 * If there is a published place then the generic reference must be some
-	 * kind of {@link PublicationBase publication}.
-	 * 
-	 * @return  the string identifying the publication place of <i>this</i>
-	 * 			generic reference
-	 */
-	public String getPlacePublished(){
-		return this.placePublished;
-	}
-
-	/**
-	 * @see #getPlacePublished()
-	 */
-	public void setPlacePublished(String placePublished){
-		this.placePublished = placePublished;
-	}
-
 	/**
 	 * Returns the string representing the name of the editor of <i>this</i>
 	 * generic reference. An editor is mostly a person (team) who assumed the

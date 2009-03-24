@@ -61,7 +61,7 @@ public class CdDvdDefaultCacheStrategy <T extends CdDvd> extends NomRefDefaultCa
 		String nomRefCache = "";
 		//TODO
 		String titelAbbrev = CdmUtils.Nz(nomenclaturalReference.getTitle()).trim();
-		String publisher = CdmUtils.Nz(nomenclaturalReference.getPublisher());
+//		String publisher = CdmUtils.Nz(nomenclaturalReference.getPublisher());
 		
 		boolean needsComma = false;
 		//titelAbbrev

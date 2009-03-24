@@ -48,7 +48,7 @@ public class CichorieaeActivator {
 	//database validation status (create, update, validate ...)
 	static DbSchemaValidation hbm2dll = DbSchemaValidation.CREATE;
 	static final Source berlinModelSource = BerlinModelSources.EDIT_CICHORIEAE();
-	static final ICdmDataSource cdmDestination = CdmDestinations.localH2();
+	static final ICdmDataSource cdmDestination = CdmDestinations.localH2Cichorieae();
 
 	static final UUID secUuid = UUID.fromString("6924c75d-e0d0-4a6d-afb7-3dd8c71195ca");
 	static final int sourceSecId = 7800000;
@@ -76,42 +76,42 @@ public class CichorieaeActivator {
 
 
 // **************** ALL *********************	
-//	//authors
-//	static final boolean doAuthors = true;
-//	//references
-//	static final DO_REFERENCES doReferences =  DO_REFERENCES.ALL;
-//	//names
-//	static final boolean doTaxonNames = true;
-//	static final boolean doRelNames = true;
-//	static final boolean doNameStatus = true;
-//	static final boolean doTypes = true;
-//	static final boolean doNameFacts = true;
-//	
-//	//taxa
-//	static final boolean doTaxa = true;
-//	static final boolean doRelTaxa = true;
-//	static final boolean doFacts = true;
-//	static final boolean doOccurences = true;
+	//authors
+	static final boolean doAuthors = true;
+	//references
+	static final DO_REFERENCES doReferences =  DO_REFERENCES.ALL;
+	//names
+	static final boolean doTaxonNames = true;
+	static final boolean doRelNames = true;
+	static final boolean doNameStatus = true;
+	static final boolean doTypes = true;
+	static final boolean doNameFacts = false;
+	
+	//taxa
+	static final boolean doTaxa = true;
+	static final boolean doRelTaxa = true;
+	static final boolean doFacts = true;
+	static final boolean doOccurences = true;
 
 	
 // **************** SELECTED *********************
 
-	//authors
-	static final boolean doAuthors = false;
-	//references
-	static final DO_REFERENCES doReferences =  DO_REFERENCES.ALL;
-	//names
-	static final boolean doTaxonNames = false;
-	static final boolean doRelNames = false;
-	static final boolean doNameStatus = false;
-	static final boolean doTypes = false;
-	static final boolean doNameFacts = false;
-	
-	//taxa 
-	static final boolean doTaxa = true;
-	static final boolean doRelTaxa = false;
-	static final boolean doFacts = true;
-	static final boolean doOccurences = false;
+//	//authors
+//	static final boolean doAuthors = false;
+//	//references
+//	static final DO_REFERENCES doReferences =  DO_REFERENCES.ALL;
+//	//names
+//	static final boolean doTaxonNames = false;
+//	static final boolean doRelNames = false;
+//	static final boolean doNameStatus = false;
+//	static final boolean doTypes = false;
+//	static final boolean doNameFacts = false;
+//	
+//	//taxa 
+//	static final boolean doTaxa = true;
+//	static final boolean doRelTaxa = false;
+//	static final boolean doFacts = true;
+//	static final boolean doOccurences = false;
 	
 	/**
 	 * @param args

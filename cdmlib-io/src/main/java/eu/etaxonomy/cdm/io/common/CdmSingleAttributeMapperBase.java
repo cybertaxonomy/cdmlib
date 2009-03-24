@@ -16,13 +16,14 @@ import org.apache.log4j.Logger;
  * @created 05.08.2008
  * @version 1.0
  */
-public abstract class CdmIoMapperBase {
-	private static final Logger logger = Logger.getLogger(CdmIoMapperBase.class);
+public abstract class CdmSingleAttributeMapperBase extends CdmAttributeMapperBase{
+	@SuppressWarnings("unused")
+	private static final Logger logger = Logger.getLogger(CdmSingleAttributeMapperBase.class);
 	
 	private String sourceValue;
 	private String destinationValue;
 
-	protected CdmIoMapperBase(String dbAttributString, String cdmAttributeString){
+	protected CdmSingleAttributeMapperBase(String dbAttributString, String cdmAttributeString){
 		this.sourceValue = dbAttributString;
 		this.destinationValue = cdmAttributeString;
 	}

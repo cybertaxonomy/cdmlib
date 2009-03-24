@@ -9,15 +9,19 @@
 
 package eu.etaxonomy.cdm.io.berlinModel;
 
-import eu.etaxonomy.cdm.io.common.CdmIoMapperBase;
+import org.apache.log4j.Logger;
+
+import eu.etaxonomy.cdm.io.common.CdmSingleAttributeMapperBase;
 
 /**
  * @author a.mueller
  * @created 20.03.2008
  * @version 1.0
  */
-public class CdmStringMapper extends CdmIoMapperBase {
-
+public class CdmStringMapper extends CdmSingleAttributeMapperBase {
+	@SuppressWarnings("unused")
+	private static Logger logger = Logger.getLogger(CdmStringMapper.class);
+	
 	/**
 	 * @param dbValue
 	 * @param cdmValue

@@ -9,14 +9,14 @@
 
 package eu.etaxonomy.cdm.io.berlinModel;
 
-import eu.etaxonomy.cdm.io.common.CdmIoMapperBase;
+import eu.etaxonomy.cdm.io.common.CdmSingleAttributeMapperBase;
 
 /**
  * @author a.mueller
  * @created 20.03.2008
  * @version 1.0
  */
-public class CdmBooleanMapper extends CdmIoMapperBase {
+public class CdmBooleanMapper extends CdmSingleAttributeMapperBase {
 
 	/**
 	 * @param dbAttributString

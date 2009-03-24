@@ -8,6 +8,7 @@ import java.lang.reflect.Method;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Calendar;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.jdom.Element;
@@ -157,6 +158,64 @@ public class ImportHelper {
 				return true;
 			}
 		}
+		
+	}
+
+	private static boolean valuesAreNull(List<Object> values){
+		for (Object sourceValue : values.toArray()){
+			if (sourceValue != null){
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	public static boolean addMultipleValues(List<Object> sourceValues, CdmBase cdmBase, String cdmAttrName, List<Class> classes, boolean overwriteNull, boolean obligat){
+		String methodName;
+//		Object strValue;
+		try {
+			
+			if (overwriteNull == NO_OVERWRITE && valuesAreNull(sourceValues)){
+				if (logger.isDebugEnabled()) { logger.debug("no overwrite for NULL-value");}
+				return true;
+			}
+			if (logger.isDebugEnabled()) { logger.debug("addValues: " + sourceValues.toString());}
+			
+			
+			if (cdmAttrName == null || cdmAttrName.length() < 1 ){
+				throw new IllegalArgumentException("CdmAttributeName should have atleast 1 character");
+			}
+			methodName = "add" + cdmAttrName.substring(0, 1).toUpperCase() + cdmAttrName.substring(1) ;
+			
+			Class[] classArray = classes.toArray(new Class[0]);
+			Method cdmMethod = cdmBase.getClass().getMethod(methodName, classArray);
+			cdmMethod.invoke(cdmBase, sourceValues.toArray());
+			return true;
+		} catch (NullPointerException e) {
+			logger.error("NullPointerException: " + e.getMessage());
+			return false;
+		} catch (IllegalArgumentException e) {
+			logger.error("IllegalArgumentException: " + e.getMessage());
+			return false;
+		} catch (IllegalAccessException e) {
+			logger.error("IllegalAccessException: " + e.getMessage());
+			return false;
+		} catch (InvocationTargetException e) {
+			logger.error("InvocationTargetException: " + e.getMessage());
+			return false;
+		}catch (SecurityException e) {
+			logger.error("SecurityException: " + e.getMessage());
+			return false;
+		} catch (NoSuchMethodException e) {
+			if (obligat){
+				logger.error("NoSuchMethod: " + e.getMessage());
+				return false;
+			}else{
+				if (logger.isDebugEnabled()){ logger.debug("NoSuchMethod: " + e.getMessage());}
+				return true;
+			}
+		}
+		
 	}
 	
 	public static boolean addAnnotationFromResultSet(ResultSet rs, String attributeName, AnnotatableEntity cdmBase, Language language){

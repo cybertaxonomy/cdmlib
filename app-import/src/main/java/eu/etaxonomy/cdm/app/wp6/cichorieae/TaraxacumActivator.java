@@ -80,7 +80,7 @@ public class TaraxacumActivator {
 
 
 // **************** ALL *********************	
-//	authors
+////	authors
 	static final boolean doAuthors = true;
 	//references
 	static final DO_REFERENCES doReferences =  DO_REFERENCES.ALL;
@@ -112,10 +112,10 @@ public class TaraxacumActivator {
 //	static final boolean doNameFacts = false;
 //	
 //	//taxa 
-//	static final boolean doTaxa = true;
+//	static final boolean doTaxa = false;
 //	static final boolean doRelTaxa = false;
 //	static final boolean doFacts = false;
-//	static final boolean doOccurences = true;
+//	static final boolean doOccurences = false;
 	
 	/**
 	 * @param args

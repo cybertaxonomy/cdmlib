@@ -25,7 +25,10 @@ import static eu.etaxonomy.cdm.io.common.IImportConfigurator.DO_REFERENCES.CONCE
 import static eu.etaxonomy.cdm.io.common.IImportConfigurator.DO_REFERENCES.NOMENCLATURAL;
 import static eu.etaxonomy.cdm.io.common.ImportHelper.OBLIGATORY;
 import static eu.etaxonomy.cdm.io.common.ImportHelper.OVERWRITE;
+import static eu.etaxonomy.cdm.io.common.ImportHelper.NO_OVERWRITE;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -42,7 +45,8 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
-import eu.etaxonomy.cdm.io.common.CdmIoMapperBase;
+import eu.etaxonomy.cdm.io.common.CdmAttributeMapperBase;
+import eu.etaxonomy.cdm.io.common.CdmSingleAttributeMapperBase;
 import eu.etaxonomy.cdm.io.common.CdmIoMapping;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
@@ -63,6 +67,8 @@ import eu.etaxonomy.cdm.model.reference.Generic;
 import eu.etaxonomy.cdm.model.reference.Journal;
 import eu.etaxonomy.cdm.model.reference.PrintSeries;
 import eu.etaxonomy.cdm.model.reference.Proceedings;
+import eu.etaxonomy.cdm.model.reference.PublicationBase;
+import eu.etaxonomy.cdm.model.reference.Publisher;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.reference.StrictReferenceBase;
 import eu.etaxonomy.cdm.model.reference.WebPage;
@@ -83,11 +89,17 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 	}
 	
 	
-	protected static CdmIoMapperBase[] classMappers = new CdmIoMapperBase[]{
+	protected static CdmAttributeMapperBase[] classMappers = new CdmAttributeMapperBase[]{
 		new CdmStringMapper("edition", "edition"),
 		new CdmStringMapper("volume", "volume"),
-		new CdmStringMapper("publicationTown", "placePublished"),
-		new CdmStringMapper("publisher", "publisher"),
+		new CdmOneToManyMapper<PublicationBase, Publisher>(
+				PublicationBase.class, 
+				Publisher.class,
+				"publisher",
+				new CdmSingleAttributeMapperBase[]{
+					new CdmStringMapper("publisher", "publisher"),
+					new CdmStringMapper("publicationTown", "placePublished")
+				}),
 		new CdmStringMapper("isbn", "isbn"),
 		new CdmStringMapper("pageString", "pages"),
 		new CdmStringMapper("series", "series"),
@@ -157,7 +169,7 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 		result.addAll(Arrays.asList(createdAndNotesAttributes));
 		result.addAll(Arrays.asList(operationalAttributes));
 		CdmIoMapping mapping = new CdmIoMapping();
-		for (CdmIoMapperBase mapper : classMappers){
+		for (CdmAttributeMapperBase mapper : classMappers){
 			mapping.addMapper(mapper);
 		}
 		result.addAll(mapping.getSourceAttributes());
@@ -749,23 +761,62 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 	}
 
 	
-	private boolean makeStandardMapper(Map<String, Object> valueMap, StrictReferenceBase ref, Set<String> omitAttributes){
+	private boolean makeStandardMapper(Map<String, Object> valueMap, CdmBase cdmBase, Set<String> omitAttributes){
+		boolean result = true;	
+		for (CdmAttributeMapperBase mapper : classMappers){
+			if (mapper instanceof CdmSingleAttributeMapperBase){
+				result &= makeStandardSingleMapper(valueMap, cdmBase, (CdmSingleAttributeMapperBase)mapper, omitAttributes);
+			}else if (mapper instanceof CdmOneToManyMapper){
+				result &= makeMultipleValueAddMapper(valueMap, cdmBase, (CdmOneToManyMapper)mapper, omitAttributes);
+			}else{
+				logger.error("Unknown mapper type");
+				result = false;
+			}
+		}
+		return result;
+	}
+	
+	private boolean makeStandardSingleMapper(Map<String, Object> valueMap, CdmBase cdmBase, CdmSingleAttributeMapperBase mapper, Set<String> omitAttributes){
 		if (omitAttributes == null){
 			omitAttributes = new HashSet<String>();
 		}
-		boolean result = true;	
-		for (CdmIoMapperBase mapper : classMappers){
-			String sourceAttribute = mapper.getSourceAttribute().toLowerCase();
-			Object value = valueMap.get(sourceAttribute);
-			if (value != null){
-				String destinationAttribute = mapper.getDestinationAttribute();
-				if (! omitAttributes.contains(destinationAttribute)){
-					result &= ImportHelper.addValue(value, ref, destinationAttribute, mapper.getTypeClass(), OVERWRITE, OBLIGATORY);
-				}
+		boolean result = true;
+		String sourceAttribute = mapper.getSourceAttribute().toLowerCase();
+		Object value = valueMap.get(sourceAttribute);
+		if (value != null){
+			String destinationAttribute = mapper.getDestinationAttribute();
+			if (! omitAttributes.contains(destinationAttribute)){
+				result &= ImportHelper.addValue(value, cdmBase, destinationAttribute, mapper.getTypeClass(), OVERWRITE, OBLIGATORY);
 			}
 		}
-		return true;
+		return result;
 	}
+
+	
+	private boolean makeMultipleValueAddMapper(Map<String, Object> valueMap, CdmBase cdmBase, CdmOneToManyMapper<CdmBase, CdmBase> mapper, Set<String> omitAttributes){
+		if (omitAttributes == null){
+			omitAttributes = new HashSet<String>();
+		}
+		boolean result = true;
+		String destinationAttribute = mapper.getSingleAttributeName();
+		List<Object> sourceValues = new ArrayList<Object>();
+		List<Class> classes = new ArrayList<Class>();
+		for (CdmSingleAttributeMapperBase singleMapper : mapper.getSingleMappers()){
+			String sourceAttribute = singleMapper.getSourceAttribute();
+			Object value = valueMap.get(sourceAttribute);
+			sourceValues.add(value);
+			Class clazz = singleMapper.getTypeClass();
+			classes.add(clazz);
+		}
+		
+		result &= ImportHelper.addMultipleValues(sourceValues, cdmBase, destinationAttribute, classes, NO_OVERWRITE, OBLIGATORY);
+		if (cdmBase instanceof PublicationBase){
+			PublicationBase pub = ((PublicationBase)cdmBase);
+			pub.addPublisher("A new publisher for " + pub.getTitleCache(), "A nice place");
+		}
+		return result;
+	}
+
 	
 	private static TeamOrPersonBase getAuthorTeam(String authorString, TeamOrPersonBase nomAuthor, boolean preferNomeclaturalAuthor){
 		TeamOrPersonBase result;

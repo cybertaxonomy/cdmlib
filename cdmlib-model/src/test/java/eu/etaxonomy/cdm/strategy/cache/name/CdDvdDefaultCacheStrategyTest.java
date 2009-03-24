@@ -22,6 +22,7 @@ public class CdDvdDefaultCacheStrategyTest {
 	CdDvd cdDvd;
 	String title;
 	String publisher;
+	String place;
 	TimePeriod publicationDate;
 	CdDvdDefaultCacheStrategy<CdDvd> instance;
 	
@@ -39,7 +40,8 @@ public class CdDvdDefaultCacheStrategyTest {
 		title = "A nice CD title";
 		cdDvd.setTitle(title);
 		publisher = "An ugly publisher";
-		cdDvd.setPublisher(publisher);
+		place = "A beutiful place"; 
+		cdDvd.addPublisher(publisher, place);
 		publicationDate = TimePeriod.NewInstance(1999, 2001);
 		cdDvd.setDatePublished(publicationDate);
 		this.instance = CdDvdDefaultCacheStrategy.NewInstance();

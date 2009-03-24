@@ -2186,6 +2186,33 @@
         primary key (REV, person_fk, keyword_fk)
     );
 
+
+    create table Publisher (
+        id integer not null,
+        created timestamp,
+        uuid varchar(255),
+        publishername varchar(255),
+        place varchar(255),
+		referencebase_id integer not null,
+		sortindex integer not null,
+        createdby_id integer,
+        primary key (id)
+    );
+
+    create table Publisher_AUD (
+        id integer not null,
+        REV integer not null,
+        revtype tinyint,
+        created timestamp,
+        uuid varchar(255),
+        publishername varchar(255),
+        place varchar(255),
+		referencebase_id integer not null,
+		sortindex integer not null,
+        createdby_id integer,
+        primary key (id, REV)
+    );
+
     create table ReferenceBase (
         DTYPE varchar(31) not null,
         id integer not null,
@@ -3086,7 +3113,8 @@
         protectedtitlecache bit not null,
         titleCache varchar(255),
         doubtful bit not null,
-        taxonomicchildrencount integer,
+        taxonstatusunknown bit not null,
+		taxonomicchildrencount integer,
         createdby_id integer,
         updatedby_id integer,
         taxonName_fk integer,
@@ -3108,7 +3136,8 @@
         lsid_namespace varchar(255),
         lsid_object varchar(255),
         lsid_revision varchar(255),
-        protectedtitlecache bit,
+        taxonstatusunknown bit not null,
+		protectedtitlecache bit,
         titleCache varchar(255),
         doubtful bit,
         createdby_id integer,

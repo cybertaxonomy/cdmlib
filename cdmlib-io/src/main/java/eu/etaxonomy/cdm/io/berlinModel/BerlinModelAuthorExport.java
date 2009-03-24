@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.io.berlinModel;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
@@ -17,11 +18,11 @@ import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IExportConfigurator;
-import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
+import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -72,6 +73,27 @@ public class BerlinModelAuthorExport extends BerlinModelExportBase {
 		logger.info("start makeAuthors ...");
 		boolean success = true ;
 		
+		String sql = "";
+		
+		//TODO get all persons ; getAllTeams
+		List<? extends AgentBase> persons = getAgentService().getAllAgents(0, 10);
+		sql = "INSERT INTO author (authorID, authorCache, ...) VALUES ";  
+		for (AgentBase agent : persons){
+			if (agent instanceof Person){
+				Person person = (Person)agent;
+				sql += person.getFirstname() + ", " + ", " + person.getLastname() + ", " + person.getFirstname() + ", ";  
+			}
+		}
+		
+		//TODO get all persons ; getAllTeams
+		List<? extends AgentBase> teams = getAgentService().getAllAgents(0, 10);
+		sql = "INSERT INTO AuthorTeam (AuthorTeamId, AuthorTeamCache, FullAuthorTeamCache) VALUES ";  
+		for (AgentBase agent : teams){
+			if (agent instanceof Team){
+				Team team = (Team)agent;
+				sql += team.getSources()/*TODO*/ + ", " + ", " + team.getTitleCache() + ", " + team.getTeamMembers() + ", ";  
+			}
+		}
 		
 		
 		//get data from database

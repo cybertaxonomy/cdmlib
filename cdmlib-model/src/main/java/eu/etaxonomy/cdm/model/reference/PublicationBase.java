@@ -9,14 +9,27 @@
 
 package eu.etaxonomy.cdm.model.reference;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.IndexColumn;
 import org.hibernate.envers.Audited;
 
 /**
@@ -30,64 +43,72 @@ import org.hibernate.envers.Audited;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "PublicationBase", propOrder = {
-    "publisher",
-    "placePublished"
+    "publishers"
 })
 @XmlRootElement(name = "PublicationBase")
 @Entity
 @Audited
 public abstract class PublicationBase extends StrictReferenceBase {
-	
-	static Logger logger = Logger.getLogger(PublicationBase.class);
-	
-	@XmlElement(name = "Publisher")
-	private String publisher;
-	
-	@XmlElement(name = "PlacePublished")
-	private String placePublished;
+	private static final Logger logger = Logger.getLogger(PublicationBase.class);
 
+	@XmlElementWrapper(name = "Publishers")
+	@XmlElement(name = "Publisher")
+    @OneToMany (cascade = {javax.persistence.CascadeType.ALL}, fetch= FetchType.LAZY)
+	@IndexColumn(name="sortIndex", base = 0)
+	@JoinColumn (name = "referenceBase_id")
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE_ORPHAN})
+	private List<Publisher> publishers = new ArrayList<Publisher>();
+	
+	
 	public PublicationBase(){
 		super();
 	}
 
-	
 	/**
-	 * Returns the string representing the name of the publisher of <i>this</i>
-	 * publication. A publisher is mostly an institution or a private
-	 * company which assumed the global responsibility for the publication
-	 * process.
+	 * Returns the list of publishers representing the name of the publisher and the place. 
+	 * A publisher is mostly an institution or a private company which assumed the 
+	 * global responsibility for the publication process whereas the place is 
+	 * mostly a city .<BR>
 	 * 
-	 * @return  the string identifying the publisher of <i>this</i>
+	 * @return  the list of publishers of <i>this</i>
 	 * 			publication
+	 * @see 	#getEditor()
 	 */
-	public String getPublisher(){
-		return this.publisher;
-	}
-	/**
-	 * @see #getPublisher()
-	 */
-	public void setPublisher(String publisher){
-		this.publisher = publisher;
-	}
-
-
-	/**
-	 * Returns the string representing the name of the place (mostly the city)
-	 * where <i>this</i> publication has been published.
-	 * 
-	 * @return  the string identifying the publication place of <i>this</i>
-	 * 			publication
-	 */
-	public String getPlacePublished(){
-		return this.placePublished;
-	}
-	/**
-	 * @see #getPlacePublished()
-	 */
-	public void setPlacePublished(String placePublished){
-		this.placePublished = placePublished;
+	public List<Publisher> getPublishers(){
+		List<Publisher> result = new ArrayList<Publisher>();
+		result.addAll(publishers);
+		return result;
 	}
 	
+
+	public Publisher getPublisher(int index) throws IndexOutOfBoundsException{
+		try{	
+//			return this.publishers.iterator().next();
+			return this.publishers.get(index);
+		} catch (IndexOutOfBoundsException e) {
+			logger.warn("IndexOutOfBoundsException. Index is " + index + " but must be 0 <= index < " + publishers.size());
+			throw e;
+		}
+	}
+	
+	public void addPublisher(String publisher, String place){
+		Publisher newPublisher = new Publisher(publisher, place);
+		publishers.add(newPublisher);
+	}
+	public void addPublisher(String publisher, String place, int index) throws IndexOutOfBoundsException{
+		try {
+			Publisher newPublisher = new Publisher(publisher, place);
+//			publishers.add(newPublisher);
+			publishers.add(index, newPublisher);
+		} catch (IndexOutOfBoundsException e) {
+			logger.warn("IndexOutOfBoundsException. Index is " + index + " but must be 0 <= index < " + publishers.size());
+			throw e;
+		}
+	}
+	
+	public void removePublisher(Publisher publisher){
+		publishers.remove(publisher);
+	}
 	
 //*********** CLONE **********************************/	
 

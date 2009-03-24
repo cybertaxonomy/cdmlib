@@ -22,6 +22,7 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
+import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.Field;
@@ -31,6 +32,7 @@ import java.util.*;
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlIDREF;
@@ -96,6 +98,9 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	@Cascade({CascadeType.SAVE_UPDATE})
 	private Set<TaxonRelationship> relationsToThisTaxon = new HashSet<TaxonRelationship>();
 
+	@XmlAttribute(name= "taxonStatusUnknown")
+	private boolean taxonStatusUnknown = false;
+	
 	// shortcut to the taxonomicIncluded (parent) taxon. Managed by the taxonRelations setter
 	@XmlElement(name = "TaxonomicParentCache")
 	@XmlIDREF
@@ -103,6 +108,8 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	@ManyToOne(fetch = FetchType.LAZY)
 //	@Cascade(CascadeType.SAVE_UPDATE)
 	private Taxon taxonomicParentCache;
+	
+	
 
 	//cached number of taxonomic children
 	@XmlElement(name = "TaxonomicChildrenCount")
@@ -143,7 +150,22 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 		Taxon result = new Taxon(taxonNameBase, sec);
 		return result;
 	}
-	 
+
+	/** 
+	 * Creates a new taxon instance with an unknown status (accepted/synonym) and with
+	 * the {@link eu.etaxonomy.cdm.model.name.TaxonNameBase taxon name} used and the {@link eu.etaxonomy.cdm.model.reference.ReferenceBase reference}
+	 * using it.
+	 * 
+	 * @param  taxonNameBase	the taxon name used
+	 * @param  sec				the reference using the taxon name
+	 * @see    					#Taxon(TaxonNameBase, ReferenceBase)
+	 */
+	public static Taxon NewUnknownStatusInstance(TaxonNameBase taxonNameBase, ReferenceBase sec){
+		Taxon result = new Taxon(taxonNameBase, sec);
+		result.setTaxonStatusUnknown(true);
+		return result;
+	}
+	
 	/** 
 	 * Returns the set of {@link eu.etaxonomy.cdm.model.description.TaxonDescription taxon descriptions}
 	 * concerning <i>this</i> taxon.
@@ -1247,7 +1269,29 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 		return result;
 	}
 	
+	
+	
 	/**
+	 * @return the taxonStatusUnknown
+	 */
+	public boolean isTaxonStatusUnknown() {
+		return taxonStatusUnknown;
+	}
+
+	/**
+	 * @param taxonStatusUnknown the taxonStatusUnknown to set
+	 */
+	public void setTaxonStatusUnknown(boolean taxonStatusUnknown) {
+		this.taxonStatusUnknown = taxonStatusUnknown;
+	}
+
+	/**
+	 * Returns the List of all homotypic groups heterotypic synonyms of this taxon belongs too.
+	 * This does not include the homotypic group of <i>this</i> taxon.
+	 * @return
+	 */
+	/**
+
 	 * Returns the ordered list of all {@link eu.etaxonomy.cdm.model.name.HomotypicalGroup homotypical groups} heterotypic
 	 * {@link Synonym synonyms} of <i>this</i> taxon belongs to.
 	 * {@link eu.etaxonomy.cdm.model.name.TaxonNameBase Taxon names} of heterotypic synonyms belong to at least

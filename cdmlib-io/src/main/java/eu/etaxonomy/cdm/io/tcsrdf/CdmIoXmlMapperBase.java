@@ -13,7 +13,7 @@ import org.jdom.Content;
 import org.jdom.Element;
 import org.jdom.Namespace;
 
-import eu.etaxonomy.cdm.io.common.CdmIoMapperBase;
+import eu.etaxonomy.cdm.io.common.CdmSingleAttributeMapperBase;
 
 
 /**
@@ -22,7 +22,7 @@ import eu.etaxonomy.cdm.io.common.CdmIoMapperBase;
  * @version 1.0
  */
 
-public abstract class CdmIoXmlMapperBase extends CdmIoMapperBase {
+public abstract class CdmIoXmlMapperBase extends CdmSingleAttributeMapperBase {
 	private static final Logger logger = Logger.getLogger(CdmIoXmlMapperBase.class);
 	
 	protected Namespace sourceNamespace;

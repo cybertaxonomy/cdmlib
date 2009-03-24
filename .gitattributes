@@ -664,14 +664,16 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/BerlinModelTaxonRelation
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/BerlinModelTransformer.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/BerlinModelTypesImport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/CdmBooleanMapper.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/CdmOneToManyMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/CdmStringMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/CdmApplicationAwareDefaultExport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/CdmApplicationAwareDefaultImport.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/CdmAttributeMapperBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/CdmDefaultExport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/CdmDefaultImport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/CdmIoBase.java -text
-cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/CdmIoMapperBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/CdmIoMapping.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/CdmSingleAttributeMapperBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/ExportConfiguratorBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/ICdmExport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/ICdmIO.java -text
@@ -1030,6 +1032,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/PrintSeries.java -te
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/PrintedUnitBase.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/Proceedings.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/PublicationBase.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/Publisher.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/ReferenceBase.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/Report.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/SectionBase.java -text
@@ -1158,6 +1161,7 @@ cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/name/NonViralNameTest.java -te
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/name/RankTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/name/TaxonNameBaseTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/occurrence/SpecimenTest.java -text
+cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/reference/PublicationBaseTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/taxon/TaxonBaseTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/taxon/TaxonComparatorTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/taxon/TaxonTest.java -text

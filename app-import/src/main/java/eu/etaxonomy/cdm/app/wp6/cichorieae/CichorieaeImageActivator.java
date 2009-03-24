@@ -33,8 +33,8 @@ public class CichorieaeImageActivator  {
 	
 	private static final File sourceFile  = new File("\\\\media\\editwp6\\photos");
 //	private static final File sourceFile = new File("src/main/resources/images/images_cich.xls");
-
-	private static final ICdmDataSource cdmDestination = CdmDestinations.cdm_import_cichorieae();
+	private static final ICdmDataSource cdmDestination = CdmDestinations.localH2Cichorieae();
+//	private static final ICdmDataSource cdmDestination = CdmDestinations.cdm_import_cichorieae();
 	
 	static final UUID secUuid = UUID.fromString("6924c75d-e0d0-4a6d-afb7-3dd8c71195ca");
 	

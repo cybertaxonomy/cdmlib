@@ -16,6 +16,8 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.io.berlinModel.CdmOneToManyMapper;
+
 
 /**
  * @author a.mueller
@@ -23,21 +25,33 @@ import org.apache.log4j.Logger;
  * @version 1.0
  */
 public class CdmIoMapping {
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CdmIoMapping.class);
 	
-	List<CdmIoMapperBase> mapperList = new ArrayList<CdmIoMapperBase>();
+	List<CdmAttributeMapperBase> mapperList = new ArrayList<CdmAttributeMapperBase>();
 	Set<String> sourceAttributes = new HashSet<String>();
 	Set<String> destinationAttributes = new HashSet<String>();
 	List<String> sourceAttributeList = new ArrayList<String>();
 	List<String> destinationAttributeList = new ArrayList<String>();
 	
 	
-	public void addMapper(CdmIoMapperBase mapper){
+	public void addMapper(CdmAttributeMapperBase mapper){
 		mapperList.add(mapper);
-		sourceAttributes.add(mapper.getSourceAttribute());
-		sourceAttributeList.add(mapper.getSourceAttribute());
-		destinationAttributes.add(mapper.getDestinationAttribute());
-		destinationAttributeList.add(mapper.getDestinationAttribute());	
+		if (mapper instanceof CdmSingleAttributeMapperBase){
+			CdmSingleAttributeMapperBase singleMapper = (CdmSingleAttributeMapperBase)mapper;
+			sourceAttributes.add(singleMapper.getSourceAttribute());
+			sourceAttributeList.add(singleMapper.getSourceAttribute());
+			destinationAttributes.add(singleMapper.getDestinationAttribute());
+			destinationAttributeList.add(singleMapper.getDestinationAttribute());
+		}else if (mapper instanceof CdmOneToManyMapper<?, ?>){
+			CdmOneToManyMapper<?, ?> multipleMapper = (CdmOneToManyMapper<?, ?>)mapper;
+			sourceAttributes.addAll(multipleMapper.getSourceAttributes());
+			sourceAttributeList.addAll(multipleMapper.getSourceAttributes());
+			destinationAttributes.addAll(multipleMapper.getDestinationAttributes());
+			destinationAttributeList.addAll(multipleMapper.getDestinationAttributes());
+		}else{
+			logger.error("Unknown mapper type");
+		}
 	}
 	
 	public Set<String> getSourceAttributes(){
