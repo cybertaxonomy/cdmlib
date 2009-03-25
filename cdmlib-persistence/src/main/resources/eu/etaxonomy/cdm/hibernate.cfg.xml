@@ -104,6 +104,7 @@
       <mapping class="eu.etaxonomy.cdm.model.name.NameRelationship"/>
       <mapping class="eu.etaxonomy.cdm.model.name.NameRelationshipType"/>
       <mapping class="eu.etaxonomy.cdm.model.name.NameTypeDesignation"/>
+      <mapping class="eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus"/>
       <mapping class="eu.etaxonomy.cdm.model.name.NomenclaturalCode"/>
       <mapping class="eu.etaxonomy.cdm.model.name.NomenclaturalStatus"/>
       <mapping class="eu.etaxonomy.cdm.model.name.NomenclaturalStatusType"/>

@@ -37,6 +37,7 @@ public class TestingTermInitializer extends PersistentTermInitializer {
 			UUID.fromString("006b1870-7347-4624-990f-e5ed78484a1a"), // WaterbodyOrCountry.class
             UUID.fromString("ef0d1ce1-26e3-4e83-b47b-ca74eed40b1b"), // Rank.class
             UUID.fromString("ab177bd7-d3c8-4e58-a388-226fff6ba3c2"), // TypeDesignationStatus.class
+            UUID.fromString("ab60e738-4d09-4c24-a1b3-9466b01f9f55"), // NameTypeDesignationStatus.class
             UUID.fromString("bb28cdca-2f8a-4f11-9c21-517e9ae87f1f"), // NomenclaturalStatusType.class
             UUID.fromString("48917fde-d083-4659-b07d-413db843bd50"), // SynonymRelationshipType.class
             UUID.fromString("fc4abe52-9c25-4cfa-a682-8615bf4bbf07"), // HybridRelationshipType.class
