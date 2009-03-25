@@ -84,7 +84,7 @@ import eu.etaxonomy.cdm.model.reference.BibtexEntryType;
     ReferenceSystem.class,
     RightsTerm.class,
     StatisticalMeasure.class,
-    TextFormat.class,
+    TextFormat.class
 })
 @Entity
 @Audited

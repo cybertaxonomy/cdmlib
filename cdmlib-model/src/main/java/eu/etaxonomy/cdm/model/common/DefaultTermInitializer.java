@@ -31,6 +31,7 @@ import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
 import eu.etaxonomy.cdm.model.media.RightsTerm;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
+import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -57,6 +58,7 @@ public class DefaultTermInitializer implements ITermInitializer {
 		WaterbodyOrCountry.class,
 		Rank.class,
 		TypeDesignationStatus.class,
+		NameTypeDesignationStatus.class,
 		NomenclaturalStatusType.class,
 		SynonymRelationshipType.class,
 		HybridRelationshipType.class,

@@ -36,14 +36,6 @@ import eu.etaxonomy.cdm.model.name.NonViralName;
 public abstract class EntityTestBase {
 	private static Logger logger = Logger.getLogger(EntityTestBase.class);
 
-	/**
-	 * Constructor
-	 */
-	public EntityTestBase() {
-		super();
-	}
-	
-
 	protected Class<CdmBase> clazzToTest = clazzToTest();
 	protected Class<CdmBase> clazzToTest(){
 		String testClassName = this.getClass().getName();

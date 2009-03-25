@@ -158,7 +158,6 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	 * @see 	#readCsvLine(List)
 	 */
 	public NomenclaturalStatusType() {
-		super();
 	}
 
 	/** 

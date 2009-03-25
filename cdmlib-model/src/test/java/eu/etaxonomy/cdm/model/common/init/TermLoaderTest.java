@@ -29,6 +29,7 @@ import eu.etaxonomy.cdm.model.common.NoDefinedTermClassException;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.init.ITermInitializer;
 import eu.etaxonomy.cdm.model.common.init.TermLoader;
+import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.Rank;
 
 /**
@@ -42,6 +43,7 @@ public class TermLoaderTest {
 	private Map<UUID,DefinedTermBase> terms;
 
 	private UUID uuidGenus;
+	private UUID uuidTautonymy;
 
 	/**
 	 * @throws java.lang.Exception
@@ -51,6 +53,7 @@ public class TermLoaderTest {
 		termLoader = new TermLoader();
 		terms = new HashMap<UUID,DefinedTermBase>();
 		uuidGenus = UUID.fromString("1b11c34c-48a8-4efa-98d5-84f7f66ef43a");
+		uuidTautonymy = UUID.fromString("84521f09-3e10-43f5-aa6f-2173a55a6790");
 	}
 	
 /************** TESTS **********************************/
@@ -65,4 +68,10 @@ public class TermLoaderTest {
 		assertTrue(terms.containsKey(uuidGenus));
 	}
 
+	@Test
+	public void testLoadNameTypeDesignationStatus() {
+        TermVocabulary<NameTypeDesignationStatus> defaultStatus = termLoader.loadTerms(NameTypeDesignationStatus.class, terms);
+		assertNotNull(defaultStatus.findTermByUuid(uuidTautonymy));
+		assertTrue(terms.containsKey(uuidTautonymy));
+	}
 }

@@ -183,7 +183,6 @@ public class Rank extends OrderedTermBase<Rank> {
 	 * @see 	#Rank(String, String, String)
 	 */
 	public Rank() {
-			super();
 	}
 
 	/** 
