@@ -1699,8 +1699,8 @@ cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/lsid/LSIDAuthoritySer
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/lsid/LSIDDataServiceTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/lsid/LSIDMetadataServiceTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/lsid/LSIDRegistryTest.java -text
-cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/function/ConcurrentSessionTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/function/Datasource.java -text
+cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/function/TestConcurrentSession.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/function/TestDatabase.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/function/TestService.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/function/TestTaxonFunction.java -text

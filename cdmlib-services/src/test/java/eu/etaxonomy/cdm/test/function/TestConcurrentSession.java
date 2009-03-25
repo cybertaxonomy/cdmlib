@@ -15,6 +15,10 @@ import org.apache.log4j.Logger;
 import org.hibernate.LockMode;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.envers.event.AuditEventListener;
+import org.hibernate.event.EventListeners;
+import org.hibernate.event.PostDeleteEventListener;
+import org.hibernate.event.def.DefaultPostLoadEventListener;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -26,12 +30,13 @@ import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.hibernate.annotation.HibernateSessionFactory;
 import org.unitils.spring.annotation.SpringBeanByType;
 
+import eu.etaxonomy.cdm.api.conversation.ConversationHolder;
 import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
-import eu.etaxonomy.cdm.application.api.conversation.ConversationHolder;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
@@ -42,9 +47,9 @@ import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
  * @author n.hoffmann
  *
  */
-public class ConcurrentSessionTest extends CdmIntegrationTest{
+public class TestConcurrentSession extends CdmIntegrationTest{
 
-	private static final Logger logger = Logger.getLogger(ConcurrentSessionTest.class);
+	private static final Logger logger = Logger.getLogger(TestConcurrentSession.class);
 	
 	@HibernateSessionFactory 
 	private SessionFactory sessionFactory;
@@ -431,13 +436,22 @@ public class ConcurrentSessionTest extends CdmIntegrationTest{
 		conversationHolder1.commit();		
 	}
 	
+	@Test
+	@DataSet("ConcurrentSessionTest.xml")
+	public void testInsert(){
+		conversationHolder1.bind();
+		conversationHolder1.startTransaction();
+		TaxonBase newTaxon = Taxon.NewInstance(null, null);
+		taxonService.save(newTaxon);
+		conversationHolder1.commit();
+	}
+	
 	/**
 	 * this is a locking playground
 	 */
 	@Test
 	@DataSet("ConcurrentSessionTest.xml")
 	public void testLocking(){
-		
 		conversationHolder1.preExecute();
 		// first session, first transaction
 		conversationHolder1.startTransaction();
@@ -463,4 +477,6 @@ public class ConcurrentSessionTest extends CdmIntegrationTest{
 		conversationHolder1.postExecute();
 		
 	}
+	
+
 }
