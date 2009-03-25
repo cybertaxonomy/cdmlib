@@ -21,8 +21,8 @@ import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
  * @version 1.0
  */
 public class DescriptionServiceImplTest extends CdmIntegrationTest {
-	private static Logger logger = Logger
-			.getLogger(DescriptionServiceImplTest.class);
+	@SuppressWarnings("unused")
+	private static Logger logger = Logger.getLogger(DescriptionServiceImplTest.class);
 	
 	@SpringBeanByType
 	private IDescriptionService service;
