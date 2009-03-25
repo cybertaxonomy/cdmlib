@@ -27,8 +27,6 @@ import org.unitils.hibernate.annotation.HibernateSessionFactory;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.conversation.ConversationHolder;
-import eu.etaxonomy.cdm.api.conversation.ConversationMediationEvent;
-import eu.etaxonomy.cdm.api.conversation.ConversationMediator;
 import eu.etaxonomy.cdm.api.conversation.IConversationEnabled;
 import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
@@ -38,6 +36,8 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
+import eu.etaxonomy.cdm.persistence.hibernate.CdmCrudEvent;
+import eu.etaxonomy.cdm.persistence.hibernate.CdmPostCrudObservableListener;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 
 /**
@@ -440,7 +440,7 @@ public class TestConcurrentSession extends CdmIntegrationTest{
 	public void testInsert(){
 		TestConversationEnabled testConversationEnabled = new TestConversationEnabled();
 		
-		ConversationMediator mediator = ConversationMediator.getDefault();
+		CdmPostCrudObservableListener mediator = CdmPostCrudObservableListener.getDefault();
 		mediator.register(testConversationEnabled);
 		
 		conversationHolder1.bind();

@@ -13,8 +13,8 @@ package eu.etaxonomy.cdm.test.function;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.conversation.ConversationHolder;
-import eu.etaxonomy.cdm.api.conversation.ConversationMediationEvent;
 import eu.etaxonomy.cdm.api.conversation.IConversationEnabled;
+import eu.etaxonomy.cdm.persistence.hibernate.CdmCrudEvent;
 
 /**
  * @author nho
@@ -36,9 +36,9 @@ public class TestConversationEnabled implements IConversationEnabled {
 	}
 
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.conversation.IConversationEnabled#updateAfterEvent(eu.etaxonomy.cdm.api.conversation.ConversationMediationEvent)
+	 * @see eu.etaxonomy.cdm.persistence.hibernate.ICdmPostCrudObserver#update(eu.etaxonomy.cdm.persistence.hibernate.CdmCrudEvent)
 	 */
-	public void updateAfterEvent(ConversationMediationEvent event) {
-		logger.warn("ConversationMediationEvent fired: " + event.getEventType());
+	public void update(CdmCrudEvent event) {
+		logger.warn("CdmCrudEvent fired: " + event.getEventType());
 	}
 }
