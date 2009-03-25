@@ -58,7 +58,7 @@ public class DefaultTermInitializer implements ITermInitializer {
 		WaterbodyOrCountry.class,
 		Rank.class,
 		TypeDesignationStatus.class,
-		NameTypeDesignationStatus.class,
+//		NameTypeDesignationStatus.class,
 		NomenclaturalStatusType.class,
 		SynonymRelationshipType.class,
 		HybridRelationshipType.class,

@@ -39,16 +39,6 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
 public class NameTypeDesignationStatus extends DefinedTermBase<NameTypeDesignationStatus> {
 	static Logger logger = Logger.getLogger(NameTypeDesignationStatus.class);
 
-//	private static NameTypeDesignationStatus AUTOMATIC;
-//	private static NameTypeDesignationStatus FIRST_REVISOR;
-//	private static NameTypeDesignationStatus MONOTYPY;
-//	private static NameTypeDesignationStatus NOT_APPLICABLE;
-//	private static NameTypeDesignationStatus ORIGINAL_DESIGNATION;
-//	private static NameTypeDesignationStatus PRESENT_DESIGNATION;
-//	private static NameTypeDesignationStatus SUBSEQUENT_MONOTYPY;
-//	private static NameTypeDesignationStatus SUBSEQUENT_DESIGNATION;
-//	private static NameTypeDesignationStatus TAUTONOMY;
-
 	private static final UUID uuidAutomatic = UUID.fromString("e89d8b21-615a-4602-913f-1625bf39a69f");
 	private static final UUID uuidFirstRevisor = UUID.fromString("a14ec046-c48f-4a73-939f-bd57880c7565");
 	private static final UUID uuidMonotypy = UUID.fromString("3fc639b2-9a64-45f8-9a81-657a4043ad74");
@@ -177,19 +167,6 @@ public class NameTypeDesignationStatus extends DefinedTermBase<NameTypeDesignati
 		return findTermByUuid(uuidTautonymy);
 	}
 	
-//	@Override
-//	protected void setDefaultTerms(TermVocabulary<NameTypeDesignationStatus> termVocabulary) {
-//		NameTypeDesignationStatus.AUTOMATIC = termVocabulary.findTermByUuid(NameTypeDesignationStatus.uuidAutomatic);
-//		NameTypeDesignationStatus.FIRST_REVISOR = termVocabulary.findTermByUuid(NameTypeDesignationStatus.uuidFirstRevisor);
-//		NameTypeDesignationStatus.MONOTYPY = termVocabulary.findTermByUuid(NameTypeDesignationStatus.uuidMonotypy);
-//		NameTypeDesignationStatus.NOT_APPLICABLE = termVocabulary.findTermByUuid(NameTypeDesignationStatus.uuidNotApplicable);
-//		NameTypeDesignationStatus.ORIGINAL_DESIGNATION = termVocabulary.findTermByUuid(NameTypeDesignationStatus.uuidOriginalDesignation);
-//		NameTypeDesignationStatus.PRESENT_DESIGNATION = termVocabulary.findTermByUuid(NameTypeDesignationStatus.uuidPresentDesignation);
-//		NameTypeDesignationStatus.SUBSEQUENT_MONOTYPY = termVocabulary.findTermByUuid(NameTypeDesignationStatus.uuidSubsequentMonotypy);
-//		NameTypeDesignationStatus.SUBSEQUENT_DESIGNATION = termVocabulary.findTermByUuid(NameTypeDesignationStatus.uuidSubsequentDesignation);
-//		NameTypeDesignationStatus.TAUTONOMY = termVocabulary.findTermByUuid(NameTypeDesignationStatus.uuidTautonymy);
-//	}
-
 	@Override
 	protected void setDefaultTerms(TermVocabulary<NameTypeDesignationStatus> termVocabulary) {
 		termMap = new HashMap<UUID, NameTypeDesignationStatus>();
