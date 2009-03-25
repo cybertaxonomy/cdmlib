@@ -681,6 +681,7 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/ICdmImport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/IExportConfigurator.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/IImportConfigurator.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/IIoConfigurator.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/IXmlMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/ImportConfiguratorBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/ImportHelper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/ImportWrapper.java -text
@@ -726,7 +727,8 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/taxonx/TaxonXDescriptionImport.java 
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/taxonx/TaxonXImportConfigurator.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/taxonx/TaxonXNomenclatureImport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/taxonx/TaxonXTransformer.java -text
-cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/tcsrdf/CdmIoXmlMapperBase.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/tcsrdf/CdmOneToManyXmlMapper.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/tcsrdf/CdmSingleAttributeXmlMapperBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/tcsrdf/CdmTextElementMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/tcsrdf/CdmUnclearMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/tcsrdf/TcsRdfImportBase.java -text

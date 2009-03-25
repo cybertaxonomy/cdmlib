@@ -23,18 +23,15 @@ import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.REF_WEBSITE
 import static eu.etaxonomy.cdm.io.common.IImportConfigurator.DO_REFERENCES.ALL;
 import static eu.etaxonomy.cdm.io.common.IImportConfigurator.DO_REFERENCES.CONCEPT_REFERENCES;
 import static eu.etaxonomy.cdm.io.common.IImportConfigurator.DO_REFERENCES.NOMENCLATURAL;
+import static eu.etaxonomy.cdm.io.common.ImportHelper.NO_OVERWRITE;
 import static eu.etaxonomy.cdm.io.common.ImportHelper.OBLIGATORY;
 import static eu.etaxonomy.cdm.io.common.ImportHelper.OVERWRITE;
-import static eu.etaxonomy.cdm.io.common.ImportHelper.NO_OVERWRITE;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -46,8 +43,8 @@ import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.CdmAttributeMapperBase;
-import eu.etaxonomy.cdm.io.common.CdmSingleAttributeMapperBase;
 import eu.etaxonomy.cdm.io.common.CdmIoMapping;
+import eu.etaxonomy.cdm.io.common.CdmSingleAttributeMapperBase;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
@@ -92,7 +89,7 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 	protected static CdmAttributeMapperBase[] classMappers = new CdmAttributeMapperBase[]{
 		new CdmStringMapper("edition", "edition"),
 		new CdmStringMapper("volume", "volume"),
-		new CdmOneToManyMapper<PublicationBase, Publisher>(
+		new CdmOneToManyMapper<PublicationBase, Publisher, CdmSingleAttributeMapperBase>(
 				PublicationBase.class, 
 				Publisher.class,
 				"publisher",
@@ -781,7 +778,7 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 			omitAttributes = new HashSet<String>();
 		}
 		boolean result = true;
-		String sourceAttribute = mapper.getSourceAttribute().toLowerCase();
+		String sourceAttribute = mapper.getSourceAttributeList().get(0).toLowerCase();
 		Object value = valueMap.get(sourceAttribute);
 		if (value != null){
 			String destinationAttribute = mapper.getDestinationAttribute();
@@ -793,7 +790,7 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 	}
 
 	
-	private boolean makeMultipleValueAddMapper(Map<String, Object> valueMap, CdmBase cdmBase, CdmOneToManyMapper<CdmBase, CdmBase> mapper, Set<String> omitAttributes){
+	private boolean makeMultipleValueAddMapper(Map<String, Object> valueMap, CdmBase cdmBase, CdmOneToManyMapper<CdmBase, CdmBase, CdmSingleAttributeMapperBase> mapper, Set<String> omitAttributes){
 		if (omitAttributes == null){
 			omitAttributes = new HashSet<String>();
 		}
@@ -810,10 +807,11 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 		}
 		
 		result &= ImportHelper.addMultipleValues(sourceValues, cdmBase, destinationAttribute, classes, NO_OVERWRITE, OBLIGATORY);
-		if (cdmBase instanceof PublicationBase){
-			PublicationBase pub = ((PublicationBase)cdmBase);
-			pub.addPublisher("A new publisher for " + pub.getTitleCache(), "A nice place");
-		}
+//		//only for testing
+//		if (cdmBase instanceof PublicationBase){
+//			PublicationBase pub = ((PublicationBase)cdmBase);
+//			pub.addPublisher("A new publisher for " + pub.getTitleCache(), "A nice place");
+//		}
 		return result;
 	}
 

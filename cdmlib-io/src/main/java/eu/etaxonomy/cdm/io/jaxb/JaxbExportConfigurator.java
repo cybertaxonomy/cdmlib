@@ -20,7 +20,6 @@ import eu.etaxonomy.cdm.io.common.IExportConfigurator;
  * @created 03.09.2008
  */
 public class JaxbExportConfigurator extends ExportConfiguratorBase implements IExportConfigurator {
-	
 	private static final Logger logger = Logger.getLogger(JaxbExportConfigurator.class);
 
 	private int maxRows = 0;

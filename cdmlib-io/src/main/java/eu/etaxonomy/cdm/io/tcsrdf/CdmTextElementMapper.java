@@ -20,7 +20,8 @@ import org.jdom.Namespace;
  * @version 1.0
  */
 
-public class CdmTextElementMapper extends CdmIoXmlMapperBase {
+public class CdmTextElementMapper extends CdmSingleAttributeXmlMapperBase {
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CdmTextElementMapper.class);
 	
 	/**

@@ -20,7 +20,7 @@ import org.jdom.Namespace;
  * @created 29.07.2008
  * @version 1.0
  */
-public class CdmUnclearMapper extends CdmIoXmlMapperBase {
+public class CdmUnclearMapper extends CdmSingleAttributeXmlMapperBase {
 	private static final Logger logger = Logger.getLogger(CdmUnclearMapper.class);
 	
 	

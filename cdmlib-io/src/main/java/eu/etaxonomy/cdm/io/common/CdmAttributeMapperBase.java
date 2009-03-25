@@ -9,6 +9,9 @@
 
 package eu.etaxonomy.cdm.io.common;
 
+import java.util.List;
+import java.util.Set;
+
 import org.apache.log4j.Logger;
 
 /**
@@ -19,5 +22,13 @@ import org.apache.log4j.Logger;
 public abstract class CdmAttributeMapperBase {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CdmAttributeMapperBase.class);
+	
+	public abstract Set<String> getSourceAttributes();
+	
+	public abstract Set<String> getDestinationAttributes();
+	
+	public abstract List<String> getSourceAttributeList();
+	
+	public abstract List<String> getDestinationAttributeList();
 	
 }

@@ -29,6 +29,7 @@ import org.jdom.Text;
 
 import eu.etaxonomy.cdm.io.common.CdmIoBase;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
+import eu.etaxonomy.cdm.io.common.IXmlMapper;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -51,12 +52,12 @@ public abstract class TcsRdfImportBase  extends CdmIoBase<IImportConfigurator> {
 	protected static Namespace nsTpalm = Namespace.getNamespace("http://wp5.e-taxonomy.eu/import/palmae/common");
 	
 	
-	protected boolean makeStandardMapper(Element parentElement, CdmBase ref, Set<String> omitAttributes, CdmIoXmlMapperBase[] classMappers){
+	protected boolean makeStandardMapper(Element parentElement, CdmBase ref, Set<String> omitAttributes, CdmSingleAttributeXmlMapperBase[] classMappers){
 		if (omitAttributes == null){
 			omitAttributes = new HashSet<String>();
 		}
 		boolean result = true;	
-		for (CdmIoXmlMapperBase mapper : classMappers){
+		for (CdmSingleAttributeXmlMapperBase mapper : classMappers){
 			Object value = getValue(mapper, parentElement);
 			//write to destination
 			if (value != null){
@@ -69,7 +70,7 @@ public abstract class TcsRdfImportBase  extends CdmIoBase<IImportConfigurator> {
 		return true;
 	}
 	
-	private Object getValue(CdmIoXmlMapperBase mapper, Element parentElement){
+	private Object getValue(CdmSingleAttributeXmlMapperBase mapper, Element parentElement){
 		String sourceAttribute = mapper.getSourceAttribute();
 		Namespace sourceNamespace = mapper.getSourceNamespace(parentElement);
 		Element child = parentElement.getChild(sourceAttribute, sourceNamespace);
@@ -83,10 +84,10 @@ public abstract class TcsRdfImportBase  extends CdmIoBase<IImportConfigurator> {
 		return value;
 	}
 	
-	protected boolean checkAdditionalContents(Element parentElement, CdmIoXmlMapperBase[] classMappers, CdmIoXmlMapperBase[] operationalMappers, CdmIoXmlMapperBase[] unclearMappers){
+	protected boolean checkAdditionalContents(Element parentElement, IXmlMapper[] classMappers, CdmSingleAttributeXmlMapperBase[] operationalMappers, CdmSingleAttributeXmlMapperBase[] unclearMappers){
 		List<Content> additionalContentList = new ArrayList<Content>();
 		List<Content> contentList = parentElement.getContent();
-		List<CdmIoXmlMapperBase> mapperList = new ArrayList<CdmIoXmlMapperBase>();
+		List<IXmlMapper> mapperList = new ArrayList<IXmlMapper>();
 		
 		mapperList.addAll(Arrays.asList(classMappers));
 		mapperList.addAll(Arrays.asList(operationalMappers));
@@ -96,7 +97,7 @@ public abstract class TcsRdfImportBase  extends CdmIoBase<IImportConfigurator> {
 			boolean contentExists = false;
 			if (content instanceof Element){
 				Element elementContent = (Element)content;
-				for (CdmIoXmlMapperBase mapper : mapperList){
+				for (IXmlMapper mapper : mapperList){
 					if (mapper.mapsSource(content, parentElement)){
 						contentExists = true;
 						break;

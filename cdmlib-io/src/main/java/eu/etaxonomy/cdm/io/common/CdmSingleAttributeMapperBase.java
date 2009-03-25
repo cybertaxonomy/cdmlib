@@ -9,6 +9,11 @@
 
 package eu.etaxonomy.cdm.io.common;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import org.apache.log4j.Logger;
 
 /**
@@ -31,9 +36,38 @@ public abstract class CdmSingleAttributeMapperBase extends CdmAttributeMapperBas
 	public String getSourceAttribute(){
 		return sourceValue;
 	}
-
+	
 	public String getDestinationAttribute(){
 		return destinationValue;
+	}
+	
+	@Override
+	public Set<String> getSourceAttributes(){
+		Set<String>  result = new HashSet<String>();
+		result.add(sourceValue);
+		return result;
+	}
+
+	@Override
+	public Set<String>  getDestinationAttributes(){
+		Set<String>  result = new HashSet<String>();
+		result.add(destinationValue);
+		return result;
+	}
+	
+	
+	@Override
+	public List<String> getSourceAttributeList(){
+		List<String>  result = new ArrayList<String>();
+		result.add(sourceValue);
+		return result;
+	}
+
+	@Override
+	public List<String>  getDestinationAttributeList(){
+		List<String>  result = new ArrayList<String>();
+		result.add(destinationValue);
+		return result;
 	}
 	
 	public abstract Class getTypeClass();

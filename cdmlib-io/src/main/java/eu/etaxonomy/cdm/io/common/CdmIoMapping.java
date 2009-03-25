@@ -39,12 +39,12 @@ public class CdmIoMapping {
 		mapperList.add(mapper);
 		if (mapper instanceof CdmSingleAttributeMapperBase){
 			CdmSingleAttributeMapperBase singleMapper = (CdmSingleAttributeMapperBase)mapper;
-			sourceAttributes.add(singleMapper.getSourceAttribute());
-			sourceAttributeList.add(singleMapper.getSourceAttribute());
-			destinationAttributes.add(singleMapper.getDestinationAttribute());
-			destinationAttributeList.add(singleMapper.getDestinationAttribute());
-		}else if (mapper instanceof CdmOneToManyMapper<?, ?>){
-			CdmOneToManyMapper<?, ?> multipleMapper = (CdmOneToManyMapper<?, ?>)mapper;
+			sourceAttributes.addAll(singleMapper.getSourceAttributes());
+			sourceAttributeList.addAll(singleMapper.getSourceAttributeList());
+			destinationAttributes.addAll(singleMapper.getDestinationAttributes());
+			destinationAttributeList.addAll(singleMapper.getDestinationAttributeList());
+		}else if (mapper instanceof CdmOneToManyMapper<?, ?,?>){
+			CdmOneToManyMapper<?, ?,?> multipleMapper = (CdmOneToManyMapper<?, ?,?>)mapper;
 			sourceAttributes.addAll(multipleMapper.getSourceAttributes());
 			sourceAttributeList.addAll(multipleMapper.getSourceAttributes());
 			destinationAttributes.addAll(multipleMapper.getDestinationAttributes());

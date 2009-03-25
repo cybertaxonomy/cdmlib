@@ -65,7 +65,7 @@ public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<I
 		return result;
 	}
 	
-	protected static CdmIoXmlMapperBase[] standardMappers = new CdmIoXmlMapperBase[]{
+	protected static CdmSingleAttributeXmlMapperBase[] standardMappers = new CdmSingleAttributeXmlMapperBase[]{
 		new CdmTextElementMapper("genusPart", "genusOrUninomial") 
 		, new CdmTextElementMapper("uninomial", "genusOrUninomial")  //TODO make it a more specific Mapper for both attributes
 		, new CdmTextElementMapper("specificEpithet", "specificEpithet")
@@ -75,7 +75,7 @@ public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<I
 		
 	};
 
-	protected static CdmIoXmlMapperBase[] operationalMappers = new CdmIoXmlMapperBase[]{
+	protected static CdmSingleAttributeXmlMapperBase[] operationalMappers = new CdmSingleAttributeXmlMapperBase[]{
 		new CdmUnclearMapper("basionymAuthorship")
 		, new CdmUnclearMapper("combinationAuthorship")
 		, new CdmUnclearMapper("hasAnnotation")
@@ -85,7 +85,7 @@ public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<I
 		, new CdmUnclearMapper("year")
 	};
 	
-	protected static CdmIoXmlMapperBase[] unclearMappers = new CdmIoXmlMapperBase[]{
+	protected static CdmSingleAttributeXmlMapperBase[] unclearMappers = new CdmSingleAttributeXmlMapperBase[]{
 		new CdmUnclearMapper("authorship")
 		, new CdmUnclearMapper("rankString")
 		, new CdmUnclearMapper("nameComplete")

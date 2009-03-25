@@ -9,9 +9,11 @@
 
 package eu.etaxonomy.cdm.io.tcsrdf;
 
+import static eu.etaxonomy.cdm.io.common.ImportHelper.NO_OVERWRITE;
 import static eu.etaxonomy.cdm.io.common.ImportHelper.OBLIGATORY;
 import static eu.etaxonomy.cdm.io.common.ImportHelper.OVERWRITE;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -24,8 +26,13 @@ import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.XmlHelp;
+import eu.etaxonomy.cdm.io.berlinModel.CdmOneToManyMapper;
+import eu.etaxonomy.cdm.io.berlinModel.CdmStringMapper;
+import eu.etaxonomy.cdm.io.common.CdmAttributeMapperBase;
+import eu.etaxonomy.cdm.io.common.CdmSingleAttributeMapperBase;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
+import eu.etaxonomy.cdm.io.common.IXmlMapper;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.model.agent.Team;
@@ -37,6 +44,8 @@ import eu.etaxonomy.cdm.model.reference.Book;
 import eu.etaxonomy.cdm.model.reference.BookSection;
 import eu.etaxonomy.cdm.model.reference.Generic;
 import eu.etaxonomy.cdm.model.reference.Journal;
+import eu.etaxonomy.cdm.model.reference.PublicationBase;
+import eu.etaxonomy.cdm.model.reference.Publisher;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.reference.StrictReferenceBase;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
@@ -80,11 +89,17 @@ public class TcsRdfReferenceImport extends TcsRdfImportBase implements ICdmIO<II
 	}
 	
 	
-	protected static CdmIoXmlMapperBase[] standardMappers = new CdmIoXmlMapperBase[]{
+	protected static IXmlMapper[] standardMappers = new IXmlMapper[]{
 		//new CdmTextElementMapper("edition", "edition"),
 		new CdmTextElementMapper("volume", "volume"),
-		new CdmTextElementMapper("placePublished", "placePublished"),
-		new CdmTextElementMapper("publisher", "publisher"),
+		new CdmOneToManyXmlMapper<PublicationBase, Publisher, CdmTextElementMapper>(
+				PublicationBase.class, 
+				Publisher.class,
+				"publisher",
+				new CdmTextElementMapper[]{
+					new CdmTextElementMapper("publisher", "publisher"),
+					new CdmTextElementMapper("placePublished", "placePublished")
+				}),
 		//new CdmTextElementMapper("isbn", "isbn"),
 		new CdmTextElementMapper("pages", "pages"),
 		//new CdmTextElementMapper("series", "series"),
@@ -92,7 +107,7 @@ public class TcsRdfReferenceImport extends TcsRdfImportBase implements ICdmIO<II
 		//new CdmTextElementMapper("url", "uri")
 	};
 	
-	protected static CdmIoXmlMapperBase[] operationalMappers = new CdmIoXmlMapperBase[]{
+	protected static CdmSingleAttributeXmlMapperBase[] operationalMappers = new CdmSingleAttributeXmlMapperBase[]{
 		new CdmUnclearMapper("year")
 		, new CdmUnclearMapper("title")
 		, new CdmUnclearMapper("shortTitle")
@@ -106,7 +121,7 @@ public class TcsRdfReferenceImport extends TcsRdfImportBase implements ICdmIO<II
 //			"created_When", "updated_When", "created_Who", "updated_Who", "notes"
 //	};
 	
-	protected static CdmIoXmlMapperBase[] unclearMappers = new CdmIoXmlMapperBase[]{
+	protected static CdmSingleAttributeXmlMapperBase[] unclearMappers = new CdmSingleAttributeXmlMapperBase[]{
 		
 	};
 
@@ -117,20 +132,56 @@ public class TcsRdfReferenceImport extends TcsRdfImportBase implements ICdmIO<II
 			omitAttributes = new HashSet<String>();
 		}
 		boolean result = true;	
-		for (CdmIoXmlMapperBase mapper : standardMappers){
-			Object value = getValue(mapper, parentElement);
-			//write to destination
-			if (value != null){
-				String destinationAttribute = mapper.getDestinationAttribute();
-				if (! omitAttributes.contains(destinationAttribute)){
-					result &= ImportHelper.addValue(value, ref, destinationAttribute, mapper.getTypeClass(), OVERWRITE, OBLIGATORY);
-				}
+		for (IXmlMapper mapper : standardMappers){
+			if (mapper instanceof CdmSingleAttributeMapperBase){
+				makeSingleAttributeMapper((CdmSingleAttributeXmlMapperBase)mapper, parentElement, ref, omitAttributes);
+			}else if (mapper instanceof CdmOneToManyMapper){
+				makeMultipleAttributeMapper((CdmOneToManyMapper)mapper, parentElement, ref, omitAttributes);
+			}else{
+				logger.error("Unrecognized mapper type");
+				return false;
 			}
+			
+			
 		}
 		return true;
 	}
 	
-	private Object getValue(CdmIoXmlMapperBase mapper, Element parentElement){
+	private boolean makeSingleAttributeMapper(CdmSingleAttributeXmlMapperBase mapper, Element parentElement, StrictReferenceBase ref, Set<String> omitAttributes){
+		boolean result = true;
+		Object value = getValue(mapper, parentElement);
+		//write to destination
+		if (value != null){
+			String destinationAttribute = mapper.getDestinationAttribute();
+			if (! omitAttributes.contains(destinationAttribute)){
+				result &= ImportHelper.addValue(value, ref, destinationAttribute, mapper.getTypeClass(), OVERWRITE, OBLIGATORY);
+			}
+		}
+		return result;
+	}
+	
+	private boolean makeMultipleAttributeMapper(CdmOneToManyMapper<?,?,CdmTextElementMapper> mapper, Element parentElement, StrictReferenceBase ref, Set<String> omitAttributes){
+		if (omitAttributes == null){
+			omitAttributes = new HashSet<String>();
+		}
+		boolean result = true;
+		String destinationAttribute = mapper.getSingleAttributeName();
+		List<Object> sourceValues = new ArrayList<Object>();
+		List<Class> classes = new ArrayList<Class>();
+		for (CdmTextElementMapper singleMapper : mapper.getSingleMappers()){
+			String sourceAttribute = singleMapper.getSourceAttribute();
+			Object value = getValue(singleMapper, parentElement);
+			//Object value = valueMap.get(sourceAttribute);
+			sourceValues.add(value);
+			Class clazz = singleMapper.getTypeClass();
+			classes.add(clazz);
+		}
+		
+		result &= ImportHelper.addMultipleValues(sourceValues, ref, destinationAttribute, classes, NO_OVERWRITE, OBLIGATORY);
+		return result;
+	}
+	
+	private Object getValue(CdmSingleAttributeXmlMapperBase mapper, Element parentElement){
 		String sourceAttribute = mapper.getSourceAttribute().toLowerCase();
 		Namespace sourceNamespace = mapper.getSourceNamespace(parentElement);
 		Element child = parentElement.getChild(sourceAttribute, sourceNamespace);

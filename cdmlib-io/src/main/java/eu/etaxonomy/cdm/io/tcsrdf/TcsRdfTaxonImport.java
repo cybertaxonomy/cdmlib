@@ -71,13 +71,13 @@ public class TcsRdfTaxonImport  extends TcsRdfImportBase implements ICdmIO<IImpo
 		return result;
 	}
 	
-	protected static CdmIoXmlMapperBase[] standardMappers = new CdmIoXmlMapperBase[]{
+	protected static CdmSingleAttributeXmlMapperBase[] standardMappers = new CdmSingleAttributeXmlMapperBase[]{
 //		new CdmTextElementMapper("genusPart", "genusOrUninomial")
 	
 	};
 
 	
-	protected static CdmIoXmlMapperBase[] operationalMappers = new CdmIoXmlMapperBase[]{
+	protected static CdmSingleAttributeXmlMapperBase[] operationalMappers = new CdmSingleAttributeXmlMapperBase[]{
 		 new CdmUnclearMapper("hasName")
 		,new CdmUnclearMapper("hasName")
 		, new CdmUnclearMapper("accordingTo")
@@ -85,7 +85,7 @@ public class TcsRdfTaxonImport  extends TcsRdfImportBase implements ICdmIO<IImpo
 		, new CdmUnclearMapper("code", nsTgeo)	
 	};
 	
-	protected static CdmIoXmlMapperBase[] unclearMappers = new CdmIoXmlMapperBase[]{
+	protected static CdmSingleAttributeXmlMapperBase[] unclearMappers = new CdmSingleAttributeXmlMapperBase[]{
 		new CdmUnclearMapper("primary")
 		, new CdmUnclearMapper("note", nsTcom)	
 		, new CdmUnclearMapper("taxonStatus", nsTpalm)

@@ -14,6 +14,7 @@ import org.jdom.Element;
 import org.jdom.Namespace;
 
 import eu.etaxonomy.cdm.io.common.CdmSingleAttributeMapperBase;
+import eu.etaxonomy.cdm.io.common.IXmlMapper;
 
 
 /**
@@ -22,8 +23,9 @@ import eu.etaxonomy.cdm.io.common.CdmSingleAttributeMapperBase;
  * @version 1.0
  */
 
-public abstract class CdmIoXmlMapperBase extends CdmSingleAttributeMapperBase {
-	private static final Logger logger = Logger.getLogger(CdmIoXmlMapperBase.class);
+public abstract class CdmSingleAttributeXmlMapperBase extends CdmSingleAttributeMapperBase implements IXmlMapper{
+	@SuppressWarnings("unused")
+	private static final Logger logger = Logger.getLogger(CdmSingleAttributeXmlMapperBase.class);
 	
 	protected Namespace sourceNamespace;
 
@@ -33,7 +35,7 @@ public abstract class CdmIoXmlMapperBase extends CdmSingleAttributeMapperBase {
 	 * @param sourceNamespace
 	 * @param cdmAttributeString
 	 */
-	protected CdmIoXmlMapperBase(String sourceElementString,Namespace sourceNamespace, String cdmAttributeString){
+	protected CdmSingleAttributeXmlMapperBase(String sourceElementString,Namespace sourceNamespace, String cdmAttributeString){
 		super(sourceElementString, cdmAttributeString);
 		
 	}
@@ -44,7 +46,7 @@ public abstract class CdmIoXmlMapperBase extends CdmSingleAttributeMapperBase {
 	 * @param sourceElementString
 	 * @param cdmAttributeString
 	 */
-	protected CdmIoXmlMapperBase(String sourceElementString, String cdmAttributeString){
+	protected CdmSingleAttributeXmlMapperBase(String sourceElementString, String cdmAttributeString){
 		super(sourceElementString, cdmAttributeString);
 		
 	}

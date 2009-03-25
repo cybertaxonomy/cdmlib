@@ -6,7 +6,7 @@
 
 package eu.etaxonomy.cdm.io.common;
 
-import eu.etaxonomy.cdm.database.ICdmDataSource;
+import eu.etaxonomy.cdm.database.ICdmDataSource;;
 
 
 /**
