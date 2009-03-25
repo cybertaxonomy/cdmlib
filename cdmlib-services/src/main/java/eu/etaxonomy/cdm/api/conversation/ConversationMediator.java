@@ -33,6 +33,9 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * @version 1.0
  */
 public class ConversationMediator implements PostDeleteEventListener, PostInsertEventListener, PostUpdateEventListener{
+
+	private static final long serialVersionUID = -8764348096490526927L;
+
 	private static final Logger logger = Logger
 			.getLogger(ConversationMediator.class);
 	
