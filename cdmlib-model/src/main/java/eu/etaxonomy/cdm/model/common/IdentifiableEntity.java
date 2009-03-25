@@ -143,7 +143,7 @@ implements ISourceable, IIdentifiableEntity, Comparable<IdentifiableEntity> {
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#getTitleCache()
 	 */
-	@Transient
+	//@Transient
 	public String getTitleCache(){
 		if (protectedTitleCache){
 			return this.titleCache;			
