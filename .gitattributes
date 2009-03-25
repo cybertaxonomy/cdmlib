@@ -1712,6 +1712,7 @@ cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/integration/TestTaxonService
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/suite/CdmTestSuite.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/unit/CdmUnitTestBase.java -text
 cdmlib-services/src/test/resources/dbscripts/001_cdm.ddl -text
+cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/TaxonServiceImplTest.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/TaxonServiceSearchTest.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/UserServiceImplTest.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/lsid/LSIDAuthorityServiceTest.testGetAuthorityWSDL-result.wsdl -text
