@@ -24,13 +24,11 @@ public class DoubleResult<S extends Object, T extends Object> {
 	private T secondResult = null;
 	
 	public DoubleResult() {
-		super();
 		if (logger.isDebugEnabled()){logger.debug("Constructor");}
 	}
 
 	
 	public DoubleResult(S firstResult, T secondResult) {
-		super();
 		this.firstResult = firstResult;
 		this.secondResult = secondResult;
 	}
