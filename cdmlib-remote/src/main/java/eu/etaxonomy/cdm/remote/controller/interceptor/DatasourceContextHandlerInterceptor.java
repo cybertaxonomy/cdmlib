@@ -16,7 +16,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
-import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import eu.etaxonomy.cdm.database.NamedContextHolder;
@@ -26,7 +25,6 @@ import eu.etaxonomy.cdm.database.NamedContextHolder;
  *
  */
 public class DatasourceContextHandlerInterceptor extends HandlerInterceptorAdapter {
-	
 	private static final Logger logger = Logger.getLogger(DatasourceContextHandlerInterceptor.class);
 	
 	private final static Pattern basepathPattern = Pattern.compile("^/([^/]+)/.*");
