@@ -8,6 +8,8 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.service.IDatabaseService;
@@ -15,6 +17,7 @@ import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.common.AccountStore;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.database.CdmDataSource;
+import eu.etaxonomy.cdm.database.CdmPersistentDataSource;
 import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
 import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
@@ -51,7 +54,13 @@ public class TestDatabase {
 	
 	public void testNewDatabaseConnection(){
 		try {
-			CdmApplicationController appCtr = CdmApplicationController.NewInstance(DbSchemaValidation.CREATE);
+			boolean omitTermLoading = false;
+			Resource applicationContextResource = new ClassPathResource(CdmApplicationController.DEFAULT_APPLICATION_CONTEXT_RESOURCE);
+			CdmPersistentDataSource dataSource = CdmPersistentDataSource.NewDefaultInstance();
+			CdmApplicationController appCtr = CdmApplicationController.NewInstance(applicationContextResource, dataSource, DbSchemaValidation.CREATE, omitTermLoading);
+			
+			
+			//CdmApplicationController appCtr = CdmApplicationController.NewInstance(DbSchemaValidation.CREATE);
 			appCtr.close();
 		} catch (DataSourceNotFoundException e) {
 			logger.error("datasource error");
@@ -327,7 +336,7 @@ public class TestDatabase {
 	 */
 	public static void  main(String[] args) {
 		TestDatabase sc = new TestDatabase();
-    	sc.testNewVersion();
+    	sc.testNewDatabaseConnection();
 	}
 
 }
