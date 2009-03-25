@@ -22,6 +22,7 @@ import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
@@ -56,10 +57,14 @@ import eu.etaxonomy.cdm.model.common.init.TermNotFoundException;
 public class CdmApplicationController {
 	private static final Logger logger = Logger.getLogger(CdmApplicationController.class);
 	
+	public static final String DEFAULT_APPLICATION_CONTEXT_RESOURCE = "/eu/etaxonomy/cdm/defaultApplicationContext.xml";
+	
 	public AbstractApplicationContext applicationContext;
 	private ICdmApplicationConfiguration configuration;
+	private Resource applicationContextResource;
 	
 	final static DbSchemaValidation defaultDbSchemaValidation = DbSchemaValidation.VALIDATE;
+	
 	
 	
 	/**
@@ -69,7 +74,7 @@ public class CdmApplicationController {
 		logger.info("Start CdmApplicationController with default data source");
 		CdmPersistentDataSource dataSource = CdmPersistentDataSource.NewDefaultInstance();
 		DbSchemaValidation dbSchemaValidation = defaultDbSchemaValidation;
-		return new CdmApplicationController(dataSource, dbSchemaValidation);
+		return new CdmApplicationController(null, dataSource, dbSchemaValidation, false);
 	}
 
 	
@@ -84,7 +89,7 @@ public class CdmApplicationController {
 		if (dbSchemaValidation == null){
 			dbSchemaValidation = defaultDbSchemaValidation;
 		}
-		return new CdmApplicationController(dataSource, dbSchemaValidation);
+		return new CdmApplicationController(null, dataSource, dbSchemaValidation, false);
 	}
 
 	
@@ -95,26 +100,22 @@ public class CdmApplicationController {
 	 */
 	public static CdmApplicationController NewInstance(ICdmDataSource dataSource) 
 	throws DataSourceNotFoundException, TermNotFoundException{
-		return new CdmApplicationController(dataSource, defaultDbSchemaValidation);
+		return new CdmApplicationController(null, dataSource, defaultDbSchemaValidation, false);
 	}
 	
 	public static CdmApplicationController NewInstance(ICdmDataSource dataSource, DbSchemaValidation dbSchemaValidation) 
 	throws DataSourceNotFoundException, TermNotFoundException{
-		return new CdmApplicationController(dataSource, dbSchemaValidation);
+		return new CdmApplicationController(null, dataSource, dbSchemaValidation, false);
 	}
 
 	public static CdmApplicationController NewInstance(ICdmDataSource dataSource, DbSchemaValidation dbSchemaValidation, boolean omitTermLoading) 
 	throws DataSourceNotFoundException, TermNotFoundException{
-		return new CdmApplicationController(dataSource, dbSchemaValidation, omitTermLoading);
+		return new CdmApplicationController(null, dataSource, dbSchemaValidation, omitTermLoading);
 	}
 	
-	/**
-	 * Constructor, opens an spring 2.5 ApplicationContext by using the according data source
-	 * @param dataSource
-	 * @param dbSchemaValidation
-	 */
-	private CdmApplicationController(ICdmDataSource dataSource, DbSchemaValidation dbSchemaValidation) throws DataSourceNotFoundException, TermNotFoundException{
-        this(dataSource, dbSchemaValidation, false);
+	public static CdmApplicationController NewInstance(Resource applicationContextResource, ICdmDataSource dataSource, DbSchemaValidation dbSchemaValidation, boolean omitTermLoading) 
+	throws DataSourceNotFoundException, TermNotFoundException{
+		return new CdmApplicationController(applicationContextResource, dataSource, dbSchemaValidation, omitTermLoading);
 	}
 
 	/**
@@ -123,13 +124,19 @@ public class CdmApplicationController {
 	 * @param dbSchemaValidation
 	 * @param omitTermLoading
 	 */
-	private CdmApplicationController(ICdmDataSource dataSource, DbSchemaValidation dbSchemaValidation, boolean omitTermLoading) 
+	private CdmApplicationController(Resource applicationContextResource, ICdmDataSource dataSource, DbSchemaValidation dbSchemaValidation, boolean omitTermLoading) 
 	throws DataSourceNotFoundException, TermNotFoundException{
 		logger.info("Start CdmApplicationController with datasource: " + dataSource.getName());
+		if (applicationContextResource != null){
+			this.applicationContextResource = applicationContextResource;
+		}else{
+			this.applicationContextResource = new ClassPathResource(DEFAULT_APPLICATION_CONTEXT_RESOURCE);
+		}
 		if (setNewDataSource(dataSource, dbSchemaValidation, omitTermLoading) == false){
 			throw new DataSourceNotFoundException("Wrong datasource: " + dataSource );
 		}
 	}
+		
 	
 	/**
 	 * Sets the application context to a new spring ApplicationContext by using the according data source and initializes the Controller.
@@ -154,7 +161,7 @@ public class CdmApplicationController {
 			appContext.registerBeanDefinition("hibernateProperties", hibernatePropBean);
 			
 			XmlBeanDefinitionReader xmlReader = new XmlBeanDefinitionReader(appContext);
-			xmlReader.loadBeanDefinitions(new ClassPathResource("/eu/etaxonomy/cdm/defaultApplicationContext.xml"));		 
+			xmlReader.loadBeanDefinitions(this.applicationContextResource);		 
 			
 			//omitTerms
 			String initializerName = "persistentTermInitializer";
