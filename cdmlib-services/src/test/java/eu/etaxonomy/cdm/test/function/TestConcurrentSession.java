@@ -15,10 +15,6 @@ import org.apache.log4j.Logger;
 import org.hibernate.LockMode;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.envers.event.AuditEventListener;
-import org.hibernate.event.EventListeners;
-import org.hibernate.event.PostDeleteEventListener;
-import org.hibernate.event.def.DefaultPostLoadEventListener;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -31,6 +27,9 @@ import org.unitils.hibernate.annotation.HibernateSessionFactory;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.conversation.ConversationHolder;
+import eu.etaxonomy.cdm.api.conversation.ConversationMediationEvent;
+import eu.etaxonomy.cdm.api.conversation.ConversationMediator;
+import eu.etaxonomy.cdm.api.conversation.IConversationEnabled;
 import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
@@ -108,13 +107,13 @@ public class TestConcurrentSession extends CdmIntegrationTest{
 	@DataSet("ConcurrentSessionTest.xml")
 	public void testTwoSessions(){
 	
-		conversationHolder1.preExecute();		
+		conversationHolder1.bind();		
 		int context1Count = taxonDao.count();
-		conversationHolder1.postExecute();
+		conversationHolder1.unbind();
 		
-		conversationHolder2.preExecute();		
+		conversationHolder2.bind();		
 		int context2Count = taxonDao.count();
-		conversationHolder2.postExecute();
+		conversationHolder2.unbind();
 		
 		assertNotSame("The contexts sessions should be distinct.", conversationHolder1.getSession(), conversationHolder2.getSession());
 		assertEquals("Both contexts should yield the same results(at least if " +
@@ -128,13 +127,13 @@ public class TestConcurrentSession extends CdmIntegrationTest{
 	@DataSet("ConcurrentSessionTest.xml")
 	public void testTwoSessionsEqualTaxon(){
 		
-		conversationHolder1.preExecute();	
+		conversationHolder1.bind();	
 		TaxonBase taxonBase1 = taxonDao.findByUuid(taxonUuid1);
-		conversationHolder1.postExecute();
+		conversationHolder1.unbind();
 		
-		conversationHolder2.preExecute();		
+		conversationHolder2.bind();		
 		TaxonBase taxonBase2 = taxonDao.findByUuid(taxonUuid1);
-		conversationHolder2.postExecute();
+		conversationHolder2.unbind();
 		
 		assertEquals("The objects should be equal", taxonBase1, taxonBase2);
 		assertNotSame("The objects should not be the same", taxonBase1, taxonBase2);
@@ -146,13 +145,13 @@ public class TestConcurrentSession extends CdmIntegrationTest{
 	@Test
 	@DataSet("ConcurrentSessionTest.xml")
 	public void testTwoSessionsEqualTaxonWithTaxonService(){
-		conversationHolder1.preExecute();	
+		conversationHolder1.bind();	
 		TaxonBase taxonBase1 = taxonService.getTaxonByUuid(taxonUuid1);
-		conversationHolder1.postExecute();
+		conversationHolder1.unbind();
 		
-		conversationHolder2.preExecute();		
+		conversationHolder2.bind();		
 		TaxonBase taxonBase2 = taxonService.getTaxonByUuid(taxonUuid1);
-		conversationHolder2.postExecute();
+		conversationHolder2.unbind();
 		
 		assertEquals("The objects should be equal", taxonBase1, taxonBase2);
 		assertNotSame("The objects should not be the same", taxonBase1, taxonBase2);
@@ -166,13 +165,13 @@ public class TestConcurrentSession extends CdmIntegrationTest{
 	@DataSet("ConcurrentSessionTest.xml")
 	public void testOneSessionsTwoTransactionsSameTaxon(){
 		TransactionStatus txStatusOne = transactionManager.getTransaction(definition);
-		conversationHolder1.preExecute();	
+		conversationHolder1.bind();	
 		TaxonBase taxonBase1 = taxonDao.findByUuid(taxonUuid1);
-		conversationHolder1.postExecute();
+		conversationHolder1.unbind();
 		
-		conversationHolder1.preExecute();		
+		conversationHolder1.bind();		
 		TaxonBase taxonBase2 = taxonDao.findByUuid(taxonUuid1);
-		conversationHolder1.postExecute();
+		conversationHolder1.unbind();
 		
 		assertEquals("The objects should be equal", taxonBase1, taxonBase2);
 		assertSame("The objects should  not be the same", taxonBase1, taxonBase2);
@@ -186,13 +185,13 @@ public class TestConcurrentSession extends CdmIntegrationTest{
 	public void testLongConversationWithMultipleTransactions(){
 		
 		TransactionStatus txStatusOne = transactionManager.getTransaction(definition);
-		conversationHolder1.preExecute();	
+		conversationHolder1.bind();	
 		TaxonBase taxonBase1 = taxonDao.findByUuid(taxonUuid1);
 		TaxonNameBase taxonName1 = taxonBase1.getName();
 		transactionManager.commit(txStatusOne);
 		
 		TransactionStatus txStatusTwo = transactionManager.getTransaction(definition);
-		conversationHolder1.preExecute();	
+		conversationHolder1.bind();	
 		TaxonNameBase taxonName2 = taxonBase1.getName();
 		transactionManager.commit(txStatusTwo);
 		
@@ -207,19 +206,19 @@ public class TestConcurrentSession extends CdmIntegrationTest{
 	@DataSet("ConcurrentSessionTest.xml")
 	public void testSwitchSessions(){
 		
-		conversationHolder1.preExecute();	
+		conversationHolder1.bind();	
 		TransactionStatus txStatusOne = transactionManager.getTransaction(definition);
 		TaxonBase taxonBase1 = taxonService.getTaxonByUuid(taxonUuid1);
-		conversationHolder1.postExecute();
+		conversationHolder1.unbind();
 
-		conversationHolder2.preExecute();		
+		conversationHolder2.bind();		
 		TransactionStatus txStatusTwo = transactionManager.getTransaction(definition );
 		TaxonBase taxonBase2 = taxonService.getTaxonByUuid(taxonUuid1);
-		conversationHolder2.postExecute();
+		conversationHolder2.unbind();
 		
-		conversationHolder1.preExecute();	
+		conversationHolder1.bind();	
 		TaxonBase taxonBase3 = taxonService.getTaxonByUuid(taxonUuid2);
-		conversationHolder1.postExecute();
+		conversationHolder1.unbind();
 		
 		
 	}
@@ -233,24 +232,24 @@ public class TestConcurrentSession extends CdmIntegrationTest{
 	@DataSet("ConcurrentSessionTest.xml")
 	public void testSavingAndReaccessingTheSameObject(){
 		
-		conversationHolder1.preExecute();	
+		conversationHolder1.bind();	
 		TransactionStatus txStatusOne = transactionManager.getTransaction(definition);
 		Session sessionFirstTransaction = conversationHolder1.getSession();
 		TaxonBase taxonBase = taxonService.getTaxonByUuid(taxonUuid1);
 		TaxonNameBase newTaxonName = BotanicalName.NewInstance(null);
-		conversationHolder1.postExecute();
+		conversationHolder1.unbind();
 		
-		conversationHolder1.preExecute();
+		conversationHolder1.bind();
 		newTaxonName.addTaxonBase(taxonBase);
-		conversationHolder1.postExecute();
+		conversationHolder1.unbind();
 		
-		conversationHolder1.preExecute();
+		conversationHolder1.bind();
 		taxonService.save(taxonBase);
-		conversationHolder1.postExecute();
+		conversationHolder1.unbind();
 		transactionManager.commit(txStatusOne);
 		
 		
-		conversationHolder1.preExecute();	
+		conversationHolder1.bind();	
 		TransactionStatus txStatusTwo = transactionManager.getTransaction(definition);
 		Session sessionSecondTransaction = conversationHolder1.getSession();
 		TaxonBase taxonBase2 = taxonService.getTaxonByUuid(taxonUuid1);
@@ -274,15 +273,15 @@ public class TestConcurrentSession extends CdmIntegrationTest{
 	@Test
 	@DataSet("ConcurrentSessionTest.xml")
 	public void testWhatHappensWhenEncounteringStaleData(){
-		conversationHolder1.preExecute();
+		conversationHolder1.bind();
 		TransactionStatus txStatusOne = transactionManager.getTransaction(definition);
 		TaxonBase taxonBase1 = taxonService.getTaxonByUuid(taxonUuid1);
 		
-		conversationHolder2.preExecute();
+		conversationHolder2.bind();
 		TransactionStatus txStatusTwo = transactionManager.getTransaction(definition);
 		TaxonBase taxonBase2 = taxonService.getTaxonByUuid(taxonUuid1);
 		
-		conversationHolder1.preExecute();
+		conversationHolder1.bind();
 		ReferenceBase reference1 = referenceService.getReferenceByUuid(referenceUuid1);
 		assertEquals("This should be the sec", taxonBase1.getSec(), reference1);
 		
@@ -291,12 +290,12 @@ public class TestConcurrentSession extends CdmIntegrationTest{
 		taxonService.save(taxonBase1);
 		transactionManager.commit(txStatusOne);
 		
-		conversationHolder2.preExecute();
+		conversationHolder2.bind();
 		taxonBase2.setSec(null);
 		taxonService.save(taxonBase2);
 		transactionManager.commit(txStatusTwo);
 		
-		conversationHolder3.preExecute();
+		conversationHolder3.bind();
 		TaxonBase taxonBase3 = taxonService.getTaxonByUuid(taxonUuid1);
 		assertNull(taxonBase3.getSec());
 	}
@@ -308,7 +307,7 @@ public class TestConcurrentSession extends CdmIntegrationTest{
 	@DataSet("ConcurrentSessionTest.xml")
 	public void testProofOfDataPersistency(){
 		// first conversation
-		conversationHolder1.preExecute();
+		conversationHolder1.bind();
 		TransactionStatus txStatusOne = transactionManager.getTransaction(definition);
 		// get a taxon
 		TaxonBase taxonBase = taxonService.getTaxonByUuid(taxonUuid1);
@@ -321,11 +320,11 @@ public class TestConcurrentSession extends CdmIntegrationTest{
 		// save and commit
 		taxonService.save(taxonBase);
 		transactionManager.commit(txStatusOne);
-		conversationHolder1.postExecute();
+		conversationHolder1.unbind();
 		
 		
 		// second conversation
-		conversationHolder2.preExecute();
+		conversationHolder2.bind();
 		TransactionStatus txStatusTwo = transactionManager.getTransaction(definition);
 		// load the same taxon in a different session
 		TaxonBase taxonBaseInSecondTransaction = taxonService.getTaxonByUuid(taxonUuid1);
@@ -334,7 +333,7 @@ public class TestConcurrentSession extends CdmIntegrationTest{
 		// we assume that
 		assertSame("The reference should be the sec now.", taxonBaseInSecondTransaction.getSec(), referenceInSecondTransaction);
 		assertNotSame("The reference should not be the same object as in first transaction.", reference, referenceInSecondTransaction);		
-		conversationHolder2.postExecute();
+		conversationHolder2.unbind();
 	}
 	
 	/**
@@ -344,7 +343,7 @@ public class TestConcurrentSession extends CdmIntegrationTest{
 	@DataSet("ConcurrentSessionTest.xml")
 	public void testProofOfDataPersistencyNewTransactionModel(){
 		// first conversation
-		conversationHolder1.preExecute();
+		conversationHolder1.bind();
 		conversationHolder1.startTransaction();
 		// get a taxon
 		TaxonBase taxonBase = taxonService.getTaxonByUuid(taxonUuid1);
@@ -357,11 +356,11 @@ public class TestConcurrentSession extends CdmIntegrationTest{
 		// save and commit
 		taxonService.save(taxonBase);
 		conversationHolder1.commit();
-		conversationHolder1.postExecute();
+		conversationHolder1.unbind();
 		
 		
 		// second conversation
-		conversationHolder2.preExecute();
+		conversationHolder2.bind();
 		conversationHolder2.startTransaction();
 		// load the same taxon in a different session
 		TaxonBase taxonBaseInSecondTransaction = taxonService.getTaxonByUuid(taxonUuid1);
@@ -370,7 +369,7 @@ public class TestConcurrentSession extends CdmIntegrationTest{
 		// we assume that
 		assertSame("The reference should be the sec now.", taxonBaseInSecondTransaction.getSec(), referenceInSecondTransaction);
 		assertNotSame("The reference should not be the same object as in first transaction.", reference, referenceInSecondTransaction);		
-		conversationHolder2.postExecute();
+		conversationHolder2.unbind();
 	}
 	
 	/**
@@ -381,7 +380,7 @@ public class TestConcurrentSession extends CdmIntegrationTest{
 	@DataSet("ConcurrentSessionTest.xml")
 	public void testIfDataGetsPersistedWhenFiringCommit(){
 		// first conversation
-		conversationHolder1.preExecute();
+		conversationHolder1.bind();
 		conversationHolder1.startTransaction();
 		// get a taxon
 		TaxonBase taxonBase = taxonService.getTaxonByUuid(taxonUuid1);
@@ -394,17 +393,17 @@ public class TestConcurrentSession extends CdmIntegrationTest{
 		taxonBase.setSec(reference);
 		// save and commit
 		taxonService.save(taxonBase);
-		conversationHolder1.postExecute();
+		conversationHolder1.unbind();
 		
 		// second conversation
-		conversationHolder2.preExecute();
+		conversationHolder2.bind();
 		// load the same taxon in a different session, since we did not commit the first transaction,
 		// the reference change did not make its way to the database and the references should be distinct
 		TaxonBase taxonBaseInSecondTransaction = taxonService.getTaxonByUuid(taxonUuid1);
 		assertFalse(taxonBase.getSec().equals(taxonBaseInSecondTransaction.getSec()));
 		
 		// commit the first transaction
-		conversationHolder1.preExecute();
+		conversationHolder1.bind();
 		conversationHolder1.commit();
 		
 		// as the taxonBaseInSecondTransaction still has it's data from before the first transaction was committed
@@ -412,7 +411,7 @@ public class TestConcurrentSession extends CdmIntegrationTest{
 		assertFalse(taxonBase.getSec().equals(taxonBaseInSecondTransaction.getSec()));
 		
 		// we call a refresh on the taxonBaseInSecondTransaction to synchronize its state with the database
-		conversationHolder2.preExecute();
+		conversationHolder2.bind();
 		taxonService.refresh(taxonBaseInSecondTransaction);
 		
 		// the objects should now be equal
@@ -426,7 +425,7 @@ public class TestConcurrentSession extends CdmIntegrationTest{
 	@Test
 	@DataSet("ConcurrentSessionTest.xml")
 	public void testMultipleTransactionsInOneSession(){
-		conversationHolder1.preExecute();
+		conversationHolder1.bind();
 		conversationHolder1.startTransaction();
 		TaxonBase taxonBase1 = taxonService.getTaxonByUuid(taxonUuid1);
 		conversationHolder1.commit();
@@ -439,6 +438,11 @@ public class TestConcurrentSession extends CdmIntegrationTest{
 	@Test
 	@DataSet("ConcurrentSessionTest.xml")
 	public void testInsert(){
+		TestConversationEnabled testConversationEnabled = new TestConversationEnabled();
+		
+		ConversationMediator mediator = ConversationMediator.getDefault();
+		mediator.register(testConversationEnabled);
+		
 		conversationHolder1.bind();
 		conversationHolder1.startTransaction();
 		TaxonBase newTaxon = Taxon.NewInstance(null, null);
@@ -446,35 +450,36 @@ public class TestConcurrentSession extends CdmIntegrationTest{
 		conversationHolder1.commit();
 	}
 	
+	
 	/**
 	 * this is a locking playground
 	 */
 	@Test
 	@DataSet("ConcurrentSessionTest.xml")
 	public void testLocking(){
-		conversationHolder1.preExecute();
+		conversationHolder1.bind();
 		// first session, first transaction
 		conversationHolder1.startTransaction();
 		TaxonBase taxonBase = taxonService.getTaxonByUuid(taxonUuid1);
-		conversationHolder1.postExecute();
+		conversationHolder1.unbind();
 		// leave the first transaction without committing it
 		
 		// start a new session with a new transaction
-		conversationHolder2.preExecute();
+		conversationHolder2.bind();
 		conversationHolder2.startTransaction();
 		TaxonBase taxonBase2 = taxonService.getTaxonByUuid(taxonUuid1);
 		taxonBase.setSec(null);
 		conversationHolder2.commit();
-		conversationHolder2.postExecute();
+		conversationHolder2.unbind();
 		// transaction of the second session got committed
 		
 		// return to the first session and commit its transaction
-		conversationHolder1.preExecute();
+		conversationHolder1.bind();
 		conversationHolder1.commit();
 		
 		conversationHolder1.startTransaction();
 		conversationHolder1.lock(taxonBase, LockMode.READ);
-		conversationHolder1.postExecute();
+		conversationHolder1.unbind();
 		
 	}
 	

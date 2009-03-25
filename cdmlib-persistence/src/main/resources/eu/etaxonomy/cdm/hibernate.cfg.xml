@@ -167,7 +167,7 @@
       <!-- View Package -->
       <mapping class="eu.etaxonomy.cdm.model.view.View"/>
       <mapping class="eu.etaxonomy.cdm.model.view.AuditEvent"/>
-      <!-- for filling caches -->
+      <!-- for filling caches -->	  
 	  <event type="save-update">
      		<listener class="eu.etaxonomy.cdm.persistence.hibernate.CacheStrategyGenerator"/>
      		<listener class="org.hibernate.event.def.DefaultSaveOrUpdateEventListener"/>	
@@ -182,12 +182,15 @@
       </event>
       <event type="post-insert">
             <listener class="org.hibernate.envers.event.AuditEventListener"/>
+            <listener class="eu.etaxonomy.cdm.api.conversation.ConversationMediator"/>
         </event>
         <event type="post-update">
             <listener class="org.hibernate.envers.event.AuditEventListener"/>
+            <listener class="eu.etaxonomy.cdm.api.conversation.ConversationMediator"/>
         </event>
         <event type="post-delete">
             <listener class="org.hibernate.envers.event.AuditEventListener"/>
+            <listener class="eu.etaxonomy.cdm.api.conversation.ConversationMediator"/>
         </event>
         <event type="pre-collection-update">
             <listener class="org.hibernate.envers.event.AuditEventListener"/>

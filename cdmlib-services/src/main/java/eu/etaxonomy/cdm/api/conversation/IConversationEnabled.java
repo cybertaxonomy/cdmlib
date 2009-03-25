@@ -29,5 +29,5 @@ public interface IConversationEnabled {
 	 * IConversationEnabled instance. Any actions that have to be taken to cope with these changes 
 	 * should take place here, as it gets called automatically by the mediator.
 	 */
-	public void updateAfterPropagation();
+	public void updateAfterEvent(ConversationMediationEvent event);
 }

@@ -10,8 +10,6 @@ import org.hibernate.FlushMode;
 import org.hibernate.LockMode;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.engine.PersistenceContext;
-import org.hibernate.engine.SessionImplementor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.orm.hibernate3.SessionFactoryUtils;
@@ -33,26 +31,14 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
  */
 public class ConversationHolder {
 
-	/**
-	 * This class logger instance 
-	 */
 	private static final Logger logger = Logger.getLogger(ConversationHolder.class);
 
-	/**
-	 * The applications session factory
-	 */
 	@Autowired
 	private SessionFactory sessionFactory;
 	
-	/**
-	 * The datasource associated with the application context
-	 */
 	@Autowired
 	private DataSource dataSource;
 	
-	/**
-	 * 
-	 */
 	@Autowired
 	private PlatformTransactionManager transactionManager;
 	
@@ -67,7 +53,7 @@ public class ConversationHolder {
 	private SessionHolder sessionHolder = null;
 
 	/**
-	 * see TransactionDefinition
+	 * @see TransactionDefinition
 	 */
 	private TransactionDefinition definition;
 	
@@ -76,12 +62,6 @@ public class ConversationHolder {
 	 */
 	private TransactionStatus transactionStatus;
 
-	
-	/**
-	 * 
-	 */
-	private static final ConversationMediator mediator = new ConversationMediator();
-	
 	/**
 	 * Simple constructor
 	 */
@@ -160,24 +140,6 @@ public class ConversationHolder {
 		}
 		
 		
-//		// FIXME in case this gets called something went wrong and resources were not freed correctly before
-//		// right now we handle this gracefully by unbinding the resources here, but I think this will 
-//		// lead to lots of trouble 
-//		if(TransactionSynchronizationManager.hasResource(getSessionFactory())){
-//			logger.info("Session Factory was already bound to TransactionSynchronizationManager. Unbinding it.");
-//			TransactionSynchronizationManager.unbindResource(getSessionFactory());
-//		}		
-//		if(TransactionSynchronizationManager.isSynchronizationActive()){
-//			logger.info("Synchronization was already bound to TransactionSynchronizationManager. Unbinding it.");
-//			TransactionSynchronizationManager.clearSynchronization();
-//		}
-//		
-//		logger.info("Binding SessionFactory to TransactionSynchronizationManager: [" + TransactionSynchronizationManager.class + "]");
-//		TransactionSynchronizationManager.bindResource(getSessionFactory(),
-//				sessionHolder);
-//		
-//		logger.info("Binding Synchronization to TransactionSynchronizationManager: [" + TransactionSynchronizationManager.class + "]");
-//		TransactionSynchronizationManager.initSynchronization();
 		if( ! TransactionSynchronizationManager.hasResource(getSessionFactory())){
 			logger.info("Session Factory not bound to TransactionSynchronizationManager. Binding it.");
 			TransactionSynchronizationManager.bindResource(getSessionFactory(), sessionHolder);
@@ -192,14 +154,6 @@ public class ConversationHolder {
 		return sessionHolder != null && longSession != null && longSession.isConnected();
 	}
 	
-	/**
-	 * API change! use bind() instead
-	 * 
-	 * @deprecated
-	 */
-	public void preExecute(){
-		bind();
-	}
 
 	/**
 	 * This method is to be run to free up resources after the unit-of-work has completed 
@@ -217,15 +171,6 @@ public class ConversationHolder {
 		
 		TransactionSynchronizationManager.unbindResource(getSessionFactory());
 		TransactionSynchronizationManager.clearSynchronization();
-	}
-	
-	/**
-	 * API change! use unbind() instead.
-	 * 
-	 * @deprecated
-	 */
-	public void postExecute(){
-		unbind();
 	}
 	
 	/**
@@ -269,23 +214,13 @@ public class ConversationHolder {
 	public void commit(boolean restartTransaction){
 		if(isTransactionActive()){
 			
-			// before we commit we have to get the dirty objects for mediation
-			ConversationMediationEvent event = new ConversationMediationEvent();
-			
-			// TODO implements this FIXME implement this
-			PersistenceContext persistenceContext = ((SessionImplementor) longSession).getPersistenceContext();
-			
-			//event.addObject(object);
-			
 			// commit the changes
 			transactionManager.commit(transactionStatus);
-			
-			
-			
-			
+						
 			// Reset the transactionStatus.
 			transactionStatus = null;
-			// Commiting a transaction frees all resources.
+			
+			// Committing a transaction frees all resources.
 			// Since we are in a conversation we directly rebind those resources and start a new transaction
 			bind();
 			if(restartTransaction){
@@ -343,17 +278,5 @@ public class ConversationHolder {
 	 */
 	public void setDefinition(TransactionDefinition definition) {
 		this.definition = definition;
-	}
-
-	/**
-	 * @param event
-	 */
-	public void propagateEvent(ConversationMediationEvent event) {
-		// TODO Auto-generated method stub
-		
-	}
-	
-	public static ConversationMediator getMediator(){
-		return mediator;
 	}
 }
