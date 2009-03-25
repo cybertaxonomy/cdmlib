@@ -1780,6 +1780,8 @@ eclipse-plugin/jdom-1.0.jar -text
 eclipse-plugin/joda-time-1.5-sources.jar -text
 eclipse-plugin/joda-time-1.5.jar -text
 eclipse-plugin/joda-time-hibernate-1.0.jar -text
+eclipse-plugin/jsr250-api-1.0-sources.jar -text
+eclipse-plugin/jsr250-api-1.0.jar -text
 eclipse-plugin/jta.jar -text
 eclipse-plugin/jtds-1.2.2.jar -text
 eclipse-plugin/junit-4.4.jar -text
@@ -1854,9 +1856,15 @@ eclipse-updateSite/features/eu.etaxonomy.cdmLibrary_2.0.0.09.jar -text
 eclipse-updateSite/features/eu.etaxonomy.cdmLibrary_2.0.0.14.jar -text
 eclipse-updateSite/features/eu.etaxonomy.cdmLibrary_2.0.0.20.jar -text
 eclipse-updateSite/features/eu.etaxonomy.cdmLibrary_2.0.0.21.jar -text
+eclipse-updateSite/features/eu.etaxonomy.cdmLibrary_2.0.0.46.jar -text
+eclipse-updateSite/features/eu.etaxonomy.cdmLibrary_2.0.0.47.jar -text
+eclipse-updateSite/features/eu.etaxonomy.cdmLibrary_2.0.0.48.jar -text
 eclipse-updateSite/index.html -text
 eclipse-updateSite/plugins/eu.etaxonomy.cdmLibrary_2.0.0.20.jar -text
 eclipse-updateSite/plugins/eu.etaxonomy.cdmLibrary_2.0.0.21.jar -text
+eclipse-updateSite/plugins/eu.etaxonomy.cdmLibrary_2.0.0.46.jar -text
+eclipse-updateSite/plugins/eu.etaxonomy.cdmLibrary_2.0.0.47.jar -text
+eclipse-updateSite/plugins/eu.etaxonomy.cdmLibrary_2.0.0.48.jar -text
 eclipse-updateSite/site.xml -text
 libraryTesterApplication/.classpath -text
 libraryTesterApplication/.project -text

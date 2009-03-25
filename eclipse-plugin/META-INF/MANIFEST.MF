@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: CdmLibrary Plug-in
 Bundle-SymbolicName: eu.etaxonomy.cdmLibrary;singleton:=true
-Bundle-Version: 2.00.00.21
+Bundle-Version: 2.0.0.48
 Bundle-ClassPath: aspectjrt-1.5.4.jar,
  antlr-2.7.6.jar,
  asm-attrs.jar,
@@ -91,10 +91,12 @@ Bundle-ClassPath: aspectjrt-1.5.4.jar,
  spring-webmvc-2.5.6.jar,
  spring-webmvc-2.5.6-sources.jar,
  unitils-1.0.jar,
- unitils-1.0-sources.jar
+ unitils-1.0-sources.jar,
+ jsr250-api-1.0.jar
 Export-Package: eu.etaxonomy.cdm,
  eu.etaxonomy.cdm.api.application,
  eu.etaxonomy.cdm.api.application.eclipse,
+ eu.etaxonomy.cdm.api.conversation,
  eu.etaxonomy.cdm.api.service,
  eu.etaxonomy.cdm.api.service.config,
  eu.etaxonomy.cdm.api.service.config.impl,
