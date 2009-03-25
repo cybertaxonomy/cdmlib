@@ -26,6 +26,7 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import eu.etaxonomy.cdm.api.application.eclipse.EclipseRcpSaveGenericApplicationContext;
+import eu.etaxonomy.cdm.api.conversation.ConversationHolder;
 import eu.etaxonomy.cdm.api.service.IAgentService;
 import eu.etaxonomy.cdm.api.service.ICommonService;
 import eu.etaxonomy.cdm.api.service.IDatabaseService;
@@ -269,7 +270,7 @@ public class CdmApplicationController {
 			logger.info("Registered Beans: ");
 			String[] beans = applicationContext.getBeanDefinitionNames();
 			for (String bean:beans){
-				logger.info(bean);
+				logger.info("\t - " + bean);
 			}
 		}
 		configuration = (ICdmApplicationConfiguration)applicationContext.getBean("cdmApplicationDefaultConfiguration");
@@ -343,7 +344,6 @@ public class CdmApplicationController {
 	}
 	
 	public TransactionStatus startTransaction() {
-		
 		return startTransaction(false);
 	}
 	
