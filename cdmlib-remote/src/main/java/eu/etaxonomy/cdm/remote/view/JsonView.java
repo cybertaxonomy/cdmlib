@@ -15,7 +15,6 @@ import java.io.Writer;
 import java.util.Collection;
 import java.util.Map;
 
-import javax.lang.model.type.TypeVariable;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
