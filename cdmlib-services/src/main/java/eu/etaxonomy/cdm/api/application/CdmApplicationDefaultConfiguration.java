@@ -29,6 +29,7 @@ import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.api.service.IService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
+import eu.etaxonomy.cdm.application.api.conversation.ConversationHolder;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**

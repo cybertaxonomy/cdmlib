@@ -1599,7 +1599,6 @@ cdmlib-services/README.TXT -text
 cdmlib-services/pom.xml -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/application/CdmApplicationController.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/application/CdmApplicationDefaultConfiguration.java -text
-cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/application/ConversationHolder.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/application/ICdmApplicationConfiguration.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/application/eclipse/EclipseRcpSaveFileSystemXmlApplicationContext.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/application/eclipse/EclipseRcpSaveGenericApplicationContext.java -text
@@ -1665,6 +1664,10 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/pager/Pager.java -tex
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/pager/impl/AbstractPagerImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/pager/impl/DefaultPagerImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/pager/impl/StringLabelPagerImpl.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/application/api/conversation/ConversationHolder.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/application/api/conversation/ConversationMediationEvent.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/application/api/conversation/ConversationMediator.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/application/api/conversation/IConversationEnabled.java -text
 cdmlib-services/src/main/resources/eu/etaxonomy/cdm/defaultApplicationContext.xml -text
 cdmlib-services/src/main/resources/eu/etaxonomy/cdm/defaultSecurityContext.xml -text
 cdmlib-services/src/main/resources/eu/etaxonomy/cdm/services.xml -text
