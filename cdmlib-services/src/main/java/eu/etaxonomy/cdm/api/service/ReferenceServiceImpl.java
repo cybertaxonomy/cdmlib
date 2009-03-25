@@ -36,6 +36,13 @@ public class ReferenceServiceImpl extends IdentifiableServiceBase<ReferenceBase,
 	
 	static Logger logger = Logger.getLogger(ReferenceServiceImpl.class);
 
+	/**
+	 * Constructor
+	 */
+	public ReferenceServiceImpl(){
+		if (logger.isDebugEnabled()) { logger.debug("Load ReferenceService Bean"); }
+	}
+	
 	public ReferenceBase getReferenceByUuid(UUID uuid) {
 		return super.getCdmObjectByUuid(uuid); 
 	}

@@ -43,6 +43,13 @@ public class AgentServiceImpl extends IdentifiableServiceBase<AgentBase,IAgentDa
 	private static final Logger logger = Logger.getLogger(AgentServiceImpl.class);
 	
 
+	/**
+	 * Constructor
+	 */
+	public AgentServiceImpl(){
+		if (logger.isDebugEnabled()) { logger.debug("Load AgentService Bean"); }
+	}
+
 	public List<AgentBase> findAgentsByTitle(String title) {
 		return super.findCdmObjectsByTitle(title);
 	}
