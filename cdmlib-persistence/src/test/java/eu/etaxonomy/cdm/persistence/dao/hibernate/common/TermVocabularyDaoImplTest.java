@@ -14,7 +14,6 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.unitils.spring.annotation.SpringBeanByType;
 
-import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ITermVocabularyDao;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 
@@ -25,8 +24,8 @@ import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
  */
 @Ignore
 public class TermVocabularyDaoImplTest extends CdmIntegrationTest {
-	private static Logger logger = Logger
-			.getLogger(TermVocabularyDaoImplTest.class);
+	@SuppressWarnings("unused")
+	private static Logger logger = Logger.getLogger(TermVocabularyDaoImplTest.class);
 
 	@SpringBeanByType
 	private ITermVocabularyDao dao;
@@ -35,4 +34,4 @@ public class TermVocabularyDaoImplTest extends CdmIntegrationTest {
 	public void setUp() {
 	}
 	
-	}
+}
