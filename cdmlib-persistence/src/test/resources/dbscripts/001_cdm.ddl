@@ -144,6 +144,23 @@
         primary key (REV, AgentBase_id, annotations_id)
     );
 
+    create table AgentBase_Credit (
+        AgentBase_id integer not null,
+        credits_id integer not null,
+        sortindex integer not null,
+        primary key (AgentBase_id, credits_id),
+        unique (credits_id)
+    );
+
+    create table AgentBase_Credit_AUD (
+        REV integer not null,
+        AgentBase_id integer not null,
+        credits_id integer not null,
+        sortindex integer not null,
+        revtype tinyint,
+        primary key (REV, AgentBase_id, credits_id)
+    );
+
     create table AgentBase_DefinedTermBase (
         AgentBase_id integer not null,
         types_id integer not null,
@@ -436,6 +453,24 @@
         primary key (REV, Collection_id, annotations_id)
     );
 
+
+    create table Collection_Credit (
+        Collection_id integer not null,
+        credits_id integer not null,
+		sortindex integer not null,
+        primary key (Collection_id, credits_id),
+        unique (credits_id)
+    );
+
+    create table Collection_Credit_AUD (
+        REV integer not null,
+        Collection_id integer not null,
+        credits_id integer not null,
+        sortindex integer not null,
+        revtype tinyint,
+        primary key (REV, Collection_id, credits_id)
+    );
+
     create table Collection_Extension (
         Collection_id integer not null,
         extensions_id integer not null,
@@ -508,6 +543,67 @@
         rights_id integer not null,
         revtype tinyint,
         primary key (REV, Collection_id, rights_id)
+    );
+
+
+    create table Credit (
+        id integer not null,
+        created timestamp,
+        uuid varchar(255),
+        updated timestamp,
+        text longvarchar,
+        abbreviatedtext varchar(255),
+        createdby_id integer,
+        updatedby_id integer,
+        language_id integer,
+        agent_id integer,
+        primary key (id)
+    );
+
+    create table Credit_AUD (
+        id integer not null,
+        REV integer not null,
+        revtype tinyint,
+        created timestamp,
+        uuid varchar(255),
+        updated timestamp,
+        text longvarchar,
+        abbreviatedtext varchar(255),
+        createdby_id integer,
+        updatedby_id integer,
+        language_id integer,
+        agent_id integer,
+        primary key (id, REV)
+    );
+
+    create table Credit_Annotation (
+        Credit_id integer not null,
+        annotations_id integer not null,
+        primary key (Credit_id, annotations_id),
+        unique (annotations_id)
+    );
+
+    create table Credit_Annotation_AUD (
+        REV integer not null,
+        Credit_id integer not null,
+        annotations_id integer not null,
+        revtype tinyint,
+        primary key (REV, Credit_id, annotations_id)
+    );
+
+    create table Credit_Marker (
+        Credit_id integer not null,
+        markers_id integer not null,
+        primary key (Credit_id, markers_id),
+        unique (markers_id)
+    );
+
+    create table Credit_Marker_AUD (
+        REV integer not null,
+        Credit_id integer not null,
+        markers_id integer not null,
+        revtype tinyint,
+        primary key (REV, Credit_id, markers_id)
     );
 
     create table DefinedTermBase (
@@ -894,6 +990,23 @@
         descriptionsources_id integer not null,
         revtype tinyint,
         primary key (REV, DescriptionBase_id, descriptionsources_id)
+    );
+
+    create table DescriptionBase_Credit (
+        DescriptionBase_id integer not null,
+        credits_id integer not null,
+        sortindex integer not null,
+        primary key (DescriptionBase_id, credits_id),
+        unique (credits_id)
+    );
+
+    create table DescriptionBase_Credit_AUD (
+        REV integer not null,
+        DescriptionBase_id integer not null,
+        credits_id integer not null,
+        sortindex integer not null,
+        revtype tinyint,
+        primary key (REV, DescriptionBase_id, credits_id)
     );
 
     create table DescriptionBase_Rights (
@@ -2627,6 +2740,24 @@
         primary key (REV, Sequence_id, annotations_id)
     );
 
+
+    create table Sequence_Credit (
+        Sequence_id integer not null,
+        credits_id integer not null,
+        sortindex integer not null,
+        primary key (Sequence_id, credits_id),
+        unique (credits_id)
+    );
+
+    create table Sequence_Credit_AUD (
+        REV integer not null,
+        Sequence_id integer not null,
+        credits_id integer not null,
+        sortindex integer not null,
+        revtype tinyint,
+        primary key (REV, Sequence_id, credits_id)
+    );
+
     create table Sequence_Extension (
         Sequence_id integer not null,
         extensions_id integer not null,
@@ -3163,6 +3294,23 @@
         primary key (REV, TaxonBase_id, annotations_id)
     );
 
+    create table TaxonBase_Credit (
+        TaxonBase_id integer not null,
+        credits_id integer not null,
+		sortindex integer not null,
+        primary key (TaxonBase_id, credits_id),
+        unique (credits_id)
+    );
+
+    create table TaxonBase_Credit_AUD (
+        REV integer not null,
+        TaxonBase_id integer not null,
+        credits_id integer not null,
+        sortindex integer not null,
+        revtype tinyint,
+        primary key (REV, TaxonBase_id, credits_id)
+    );
+
     create table TaxonBase_Extension (
         TaxonBase_id integer not null,
         extensions_id integer not null,
@@ -3359,6 +3507,24 @@
         annotations_id integer not null,
         revtype tinyint,
         primary key (REV, TaxonNameBase_id, annotations_id)
+    );
+
+
+    create table TaxonNameBase_Credit (
+        TaxonNameBase_id integer not null,
+        credits_id integer not null,
+        sortindex integer not null,
+        primary key (TaxonNameBase_id, credits_id),
+        unique (credits_id)
+    );
+
+    create table TaxonNameBase_Credit_AUD (
+        REV integer not null,
+        TaxonNameBase_id integer not null,
+        credits_id integer not null,
+        sortindex integer not null,
+        revtype tinyint,
+        primary key (REV, TaxonNameBase_id, credits_id)
     );
 
     create table TaxonNameBase_Extension (

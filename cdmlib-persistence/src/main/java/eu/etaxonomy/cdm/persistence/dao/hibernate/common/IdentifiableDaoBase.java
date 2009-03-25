@@ -23,6 +23,7 @@ import org.hibernate.envers.query.AuditQuery;
 import org.hibernate.impl.AbstractQueryImpl;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.Credit;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.common.OriginalSource;
@@ -120,17 +121,16 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity> extends Annotatab
 		checkNotInPriorView("IdentifiableDaoBase.getRights(T identifiableEntity, Integer pageSize, Integer pageNumber)");
 		Query query = getSession().createQuery("select rights from " + type.getSimpleName() + " identifiableEntity join identifiableEntity.rights rights where identifiableEntity = :identifiableEntity");
 		query.setParameter("identifiableEntity",identifiableEntity);
-		
-		if(pageSize != null) {
-	    	query.setMaxResults(pageSize);
-		    if(pageNumber != null) {
-		    	query.setFirstResult(pageNumber * pageSize);
-		    } else {
-		    	query.setFirstResult(0);
-		    }
-		}
-		
+		setPagingParameter(query, pageSize, pageNumber);
 		return (List<Rights>)query.list();
+	}
+	
+	public List<Credit> getCredits(T identifiableEntity, Integer pageSize, Integer pageNumber) {
+		checkNotInPriorView("IdentifiableDaoBase.getCredits(T identifiableEntity, Integer pageSize, Integer pageNumber)");
+		Query query = getSession().createQuery("select credits from " + type.getSimpleName() + " identifiableEntity join identifiableEntity.credits credits where identifiableEntity = :identifiableEntity");
+		query.setParameter("identifiableEntity",identifiableEntity);
+		setPagingParameter(query, pageSize, pageNumber);
+		return (List<Credit>)query.list();
 	}
 
 	public List<OriginalSource> getSources(T identifiableEntity, Integer pageSize, Integer pageNumber) {
@@ -138,15 +138,7 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity> extends Annotatab
 		Query query = getSession().createQuery("select source from OriginalSource source where source.sourcedObj.id = :id and source.sourcedObj.class = :class");
 		query.setParameter("id",identifiableEntity.getId());
 		query.setParameter("class",identifiableEntity.getClass().getName());
-		if(pageSize != null) {
-	    	query.setMaxResults(pageSize);
-		    if(pageNumber != null) {
-		    	query.setFirstResult(pageNumber * pageSize);
-		    } else {
-		    	query.setFirstResult(0);
-		    }
-		}
-
+		setPagingParameter(query, pageSize, pageNumber);
 		return (List<OriginalSource>)query.list();
 	}
 

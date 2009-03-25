@@ -79,28 +79,12 @@ public class AgentDaoImpl extends IdentifiableDaoBase<AgentBase> implements IAge
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
 		    Query query = getSession().createQuery("select institutionalMembership from InstitutionalMembership institutionalMembership left join fetch institutionalMembership.institute where institutionalMembership.person = :person");
 		    query.setParameter("person", person);
-		    if(pageSize != null) {
-		        query.setMaxResults(pageSize);
-		        if(pageNumber != null) {
-		            query.setFirstResult(pageNumber * pageSize);
-		        } else {
-		    	    query.setFirstResult(0);
-		        }
-		    }
-		
-		    return (List<InstitutionalMembership>)query.list();
+		    setPagingParameter(query, pageSize, pageNumber);
+			return (List<InstitutionalMembership>)query.list();
 		} else {
 			AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(InstitutionalMembership.class,auditEvent.getRevisionNumber());
 			query.add(AuditEntity.relatedId("person").eq(person.getId()));
-			
-			if(pageSize != null) {
-		        query.setMaxResults(pageSize);
-		        if(pageNumber != null) {
-		            query.setFirstResult(pageNumber * pageSize);
-		        } else {
-		    	    query.setFirstResult(0);
-		        }
-		    }
+			setPagingParameter(query, pageSize, pageNumber);
 			return (List<InstitutionalMembership>)query.getResultList();
 		}
 	}
@@ -109,15 +93,7 @@ public class AgentDaoImpl extends IdentifiableDaoBase<AgentBase> implements IAge
 		checkNotInPriorView("AgentDaoImpl.getMembers(Team team, Integer pageSize,	Integer pageNumber)");
 		Query query = getSession().createQuery("select teamMember from Team team join team.teamMembers teamMember where team = :team");
 		query.setParameter("team", team);
-		
-		if(pageSize != null) {
-		    query.setMaxResults(pageSize);
-		    if(pageNumber != null) {
-		        query.setFirstResult(pageNumber * pageSize);
-		    } else {
-		    	query.setFirstResult(0);
-		    }
-		}
+		setPagingParameter(query, pageSize, pageNumber);
 		return (List<Person>)query.list();
 	}
 
@@ -132,15 +108,7 @@ public class AgentDaoImpl extends IdentifiableDaoBase<AgentBase> implements IAge
 		checkNotInPriorView("AgentDaoImpl.getAddresses(AgentBase agent, Integer pageSize,Integer pageNumber)");
 		Query query = getSession().createQuery("select address from AgentBase agent join agent.contact.addresses address where agent = :agent");
 		query.setParameter("agent", agent);
-		
-		if(pageSize != null) {
-		    query.setMaxResults(pageSize);
-		    if(pageNumber != null) {
-		        query.setFirstResult(pageNumber * pageSize);
-		    } else {
-		    	query.setFirstResult(0);
-		    }
-		}
+		setPagingParameter(query, pageSize, pageNumber);
 		return (List<Address>)query.list();
 	}
 }

@@ -13,9 +13,9 @@ import java.util.UUID;
 import org.junit.Before;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.spring.annotation.SpringApplicationContext;
 import org.unitils.spring.annotation.SpringBeanByType;
 
+import eu.etaxonomy.cdm.model.common.Credit;
 import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.common.OriginalSource;
 import eu.etaxonomy.cdm.model.media.Rights;
@@ -72,6 +72,34 @@ public class IdentifiableDaoBaseTest extends CdmIntegrationTest {
 		assertFalse("the list should not be empty",rights.isEmpty());
 		assertEquals("getRights should return 2 Rights instances",2,rights.size());
 	}
+	
+	@Test
+	public void testGetCredits() {
+		TaxonBase taxon = identifiableDao.findByUuid(uuid);
+		assert taxon != null : "IdentifiableEntity must exist";
+		taxon.getCredits();
+		
+		List<Credit> credits = identifiableDao.getCredits(taxon, null, null);
+		
+		assertNotNull("getCredits should return a List",credits);
+		assertFalse("the list should not be empty",credits.isEmpty());
+		assertEquals("getCredits should return 3 Credit instances",3,credits.size());
+	}
+
+	@Test
+	public void testCreditsOrder() {
+		TaxonBase taxon = identifiableDao.findByUuid(uuid);
+		assert taxon != null : "IdentifiableEntity must exist";
+		List<Credit> credits = taxon.getCredits();
+		
+		assertNotNull("getCredits should return a List",credits);
+		assertFalse("the list should not be empty",credits.isEmpty());
+		assertEquals("getCredits should return 3 Credit instances",3,credits.size());
+		assertEquals("My first credit", credits.get(0).getText());
+		assertEquals("My second credit", credits.get(1).getText());
+		assertEquals("My third credit", credits.get(2).getText());
+	}
+
 	
 	@Test
 	public void testSources() throws Exception {

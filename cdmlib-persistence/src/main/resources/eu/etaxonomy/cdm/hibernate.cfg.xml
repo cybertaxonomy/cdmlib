@@ -19,6 +19,7 @@
       <!-- Common Package -->
       <mapping class="eu.etaxonomy.cdm.model.common.Annotation"/>
       <mapping class="eu.etaxonomy.cdm.model.common.AnnotationType"/>
+      <mapping class="eu.etaxonomy.cdm.model.common.Credit"/>
       <mapping class="eu.etaxonomy.cdm.model.common.DefinedTermBase"/>
       <mapping class="eu.etaxonomy.cdm.model.common.Extension"/>
       <mapping class="eu.etaxonomy.cdm.model.common.ExtensionType"/>

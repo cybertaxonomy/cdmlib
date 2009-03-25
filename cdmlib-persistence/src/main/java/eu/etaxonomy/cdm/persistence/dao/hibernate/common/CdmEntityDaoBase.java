@@ -25,6 +25,7 @@ import org.hibernate.Session;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.envers.query.AuditQuery;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Repository;
 
@@ -228,5 +229,27 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 	
 	public Class<T> getType() {
 		return type;
+	}
+	
+	protected void setPagingParameter(Query query, Integer pageSize, Integer pageNumber){
+		if(pageSize != null) {
+	    	query.setMaxResults(pageSize);
+		    if(pageNumber != null) {
+		    	query.setFirstResult(pageNumber * pageSize);
+		    } else {
+		    	query.setFirstResult(0);
+		    }
+		}
+	}
+	
+	protected void setPagingParameter(AuditQuery query, Integer pageSize, Integer pageNumber){
+		if(pageSize != null) {
+	    	query.setMaxResults(pageSize);
+		    if(pageNumber != null) {
+		    	query.setFirstResult(pageNumber * pageSize);
+		    } else {
+		    	query.setFirstResult(0);
+		    }
+		}
 	}
 }
