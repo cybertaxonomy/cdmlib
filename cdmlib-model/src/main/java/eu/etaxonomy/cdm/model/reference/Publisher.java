@@ -17,8 +17,9 @@ import org.hibernate.envers.Audited;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
- * A publisher is part of any reference inheriting from PublicationBase. The UML association type is composition,
- * which means that a publisher exists only as part of a publication base, not on its own. Therefore
+ * A publisher is part of any reference inheriting from PublicationBase.
+ * A publication can have several publishers each of them having it's own publication place. 
+ * The UML association type is composition, which means that a publisher exists only as part of a publication base, not on its own. Therefore
  * all the methods of publisher are not visible but handled by publication base.
  * 
  * @author a.mueller
@@ -27,7 +28,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  */
 @Entity
 @Audited
-public class Publisher extends CdmBase {
+public class Publisher extends CdmBase implements Cloneable{
 	@SuppressWarnings("unused")
 	private static Logger logger = Logger.getLogger(Publisher.class);
 	

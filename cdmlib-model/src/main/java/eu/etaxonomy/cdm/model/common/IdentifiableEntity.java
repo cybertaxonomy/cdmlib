@@ -10,7 +10,9 @@
 package eu.etaxonomy.cdm.model.common;
 
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -18,9 +20,6 @@ import javax.persistence.Embedded;
 import javax.persistence.FetchType;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.OneToMany;
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
-import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -32,6 +31,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.IndexColumn;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
 import org.hibernate.search.annotations.Fields;
@@ -62,6 +62,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
     "protectedTitleCache",
     "rights",
     "extensions",
+    "credits",
     "sources"
 })
 @MappedSuperclass
@@ -98,6 +99,13 @@ implements ISourceable, IIdentifiableEntity, Comparable<IdentifiableEntity> {
     @OneToMany(fetch = FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE})
 	private Set<Rights> rights = new HashSet<Rights>();
+    
+    @XmlElementWrapper(name = "Credits")
+    @XmlElement(name = "Credit")
+    @IndexColumn(name="sortIndex", base = 0)
+	@OneToMany(fetch = FetchType.LAZY)
+	@Cascade({CascadeType.SAVE_UPDATE})
+    private List<Credit> credits = new ArrayList<Credit>();
 	
     @XmlElementWrapper(name = "Extensions")
     @XmlElement(name = "Extension")
@@ -194,6 +202,51 @@ implements ISourceable, IIdentifiableEntity, Comparable<IdentifiableEntity> {
 		this.rights.remove(right);
 	}
 
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#getCredits()
+	 */
+	public List<Credit> getCredits() {
+		return this.credits;		
+	}
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#getCredits(int)
+	 */
+	public Credit getCredits(int index){
+		return this.credits.get(index);
+	}
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#addCredit(eu.etaxonomy.cdm.model.common.Credit)
+	 */
+	public void addCredit(Credit credit){
+		this.credits.add(credit);
+	}
+	
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#addCredit(eu.etaxonomy.cdm.model.common.Credit, int)
+	 */
+	public void addCredit(Credit credit, int index){
+		this.credits.add(index, credit);
+	}
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#removeCredit(eu.etaxonomy.cdm.model.common.Credit)
+	 */
+	public void removeCredit(Credit credit){
+		this.credits.remove(credit);
+	}
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#removeCredit(int)
+	 */
+	public void removeCredit(int index){
+		this.credits.remove(index);
+	}
+	
+	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#getExtensions()
 	 */

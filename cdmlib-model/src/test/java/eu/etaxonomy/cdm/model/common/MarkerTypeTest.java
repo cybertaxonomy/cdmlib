@@ -9,14 +9,12 @@
 
 package eu.etaxonomy.cdm.model.common;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -26,6 +24,7 @@ import org.junit.Test;
  * @version 1.0
  */
 public class MarkerTypeTest {
+	@SuppressWarnings("unused")
 	private static Logger logger = Logger.getLogger(MarkerTypeTest.class);
 	
 	private static final UUID uuidImported = UUID.fromString("96878790-4ceb-42a2-9738-a2242079b679");

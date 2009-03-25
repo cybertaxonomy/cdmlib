@@ -9,6 +9,7 @@
 
 package eu.etaxonomy.cdm.model.common;
 
+import java.util.List;
 import java.util.Set;
 
 import eu.etaxonomy.cdm.model.media.Rights;
@@ -32,6 +33,18 @@ public interface IIdentifiableEntity {
 	public void addRights(Rights right);
 
 	public void removeRights(Rights right);
+
+	public List<Credit> getCredits();
+
+	public Credit getCredits(int index);
+	
+	public void addCredit(Credit credig);
+	
+	public void addCredit(Credit credit, int index);
+
+	public void removeCredit(Credit credit);
+
+	public void removeCredit(int index);
 
 	public Set<Extension> getExtensions();
 

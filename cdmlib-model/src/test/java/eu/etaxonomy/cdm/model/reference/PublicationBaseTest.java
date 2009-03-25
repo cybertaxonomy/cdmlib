@@ -26,6 +26,7 @@ import org.junit.Test;
  * @version 1.0
  */
 public class PublicationBaseTest {
+	@SuppressWarnings("unused")
 	private static Logger logger = Logger.getLogger(PublicationBaseTest.class);
 
 	private PublicationBase publicationBase;
@@ -136,8 +137,10 @@ public class PublicationBaseTest {
 	@Test
 	public void testClone() {
 		publicationBase.addPublisher(publisher1, place1);
-		assertEquals("Publishers list must contains exactly 1 entry", 1, publicationBase.getPublishers().size());
-		CdDvd cd = (CdDvd)publicationBase.clone();
-		assertEquals(place1, cd.getPublisher(0).getPlace());
+		publicationBase.addPublisher(publisher2, place2);
+		assertEquals("Publishers list must contains exactly 2 entry", 2, publicationBase.getPublishers().size());
+		CdDvd clone = (CdDvd)publicationBase.clone();
+		assertEquals("Publisher place must be equal in original publication and cloned publication", place1, clone.getPublisher(0).getPlace());
+		assertNotSame(place1, publicationBase.getPublisher(0), clone.getPublisher(0));	
 	}
 }

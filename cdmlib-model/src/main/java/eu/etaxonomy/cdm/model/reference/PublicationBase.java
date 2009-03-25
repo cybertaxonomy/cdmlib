@@ -12,13 +12,11 @@ package eu.etaxonomy.cdm.model.reference;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
-import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -30,7 +28,10 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.IndexColumn;
+import org.hibernate.collection.PersistentSet;
 import org.hibernate.envers.Audited;
+
+import eu.etaxonomy.cdm.model.common.Annotation;
 
 /**
  * This (abstract) class represents all different kind of published {@link StrictReferenceBase references}
@@ -75,9 +76,7 @@ public abstract class PublicationBase extends StrictReferenceBase {
 	 * @see 	#getEditor()
 	 */
 	public List<Publisher> getPublishers(){
-		List<Publisher> result = new ArrayList<Publisher>();
-		result.addAll(publishers);
-		return result;
+		return publishers;
 	}
 	
 
@@ -124,9 +123,21 @@ public abstract class PublicationBase extends StrictReferenceBase {
 	 * @see java.lang.Object#clone()
 	 */
 	@Override
-	public Object clone(){
+	public Object clone() {
 		PublicationBase result = (PublicationBase)super.clone();
-		//no changes to: placePublished, publisher
+		//Publisher
+		result.publishers = new ArrayList<Publisher>();
+		for (Publisher publisher : this.publishers ){
+			Publisher newPublisher;
+			try {
+				newPublisher = (Publisher)publisher.clone();
+			} catch (CloneNotSupportedException e) {
+				//Publisher implements Cloneable therefore this should not be reached
+				throw new RuntimeException("Publisher does not implement Cloneable");
+			}
+			result.addPublisher(newPublisher.getPublisherName(), newPublisher.getPlace());
+		}
+		//No changes: -
 		return result;
 	}
 
