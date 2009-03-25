@@ -123,9 +123,8 @@ eclipse-plugin/target
 eclipse-updateSite/.classpath
 eclipse-updateSite/artifacts.xml
 eclipse-updateSite/content.xml
-eclipse-updateSite/features/eu.etaxonomy.cdmLibrary_1.2.3.04.jar
-eclipse-updateSite/features/eu.etaxonomy.cdmLibrary_1.2.4.01.jar
-eclipse-updateSite/features/eu.etaxonomy.cdmLibrary_2.00.00.00.jar
+eclipse-updateSite/features/*.jar
+eclipse-updateSite/plugins/*.jar
 musiclib-hibernatetest/.classpath
 musiclib-hibernatetest/.project
 musiclib-hibernatetest/.settings
