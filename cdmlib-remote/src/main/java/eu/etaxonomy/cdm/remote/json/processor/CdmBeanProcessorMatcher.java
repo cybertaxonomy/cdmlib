@@ -1,3 +1,4 @@
+// $Id$
 /**
  * Copyright (C) 2009 EDIT European Distributed Institute of Taxonomy
  * http://www.e-taxonomy.eu
@@ -13,6 +14,8 @@ import java.util.Set;
 import org.hamcrest.core.IsInstanceOf;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 import net.sf.json.processors.JsonBeanProcessorMatcher;
 
@@ -27,8 +30,11 @@ public class CdmBeanProcessorMatcher extends JsonBeanProcessorMatcher {
 	 */
 	@Override
 	public Object getMatch(Class target, Set set) {
-		if(target.getClass().isAssignableFrom(CdmBase.class)){
-			return DEFAULT.getMatch(CdmBase.class, set);
+		if(target.getClass().isAssignableFrom(Taxon.class)){
+			return DEFAULT.getMatch(Taxon.class, set);
+		}
+		if(target.getClass().isAssignableFrom(Taxon.class)){
+			return DEFAULT.getMatch(TaxonBase.class, set);
 		}
 		return DEFAULT.getMatch(target, set);
 	}

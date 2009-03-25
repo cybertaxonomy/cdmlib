@@ -16,6 +16,7 @@
  		<!-- FOR DEBUGING ONLY !!!!   
  		<property name="cache" value="false"/> 
  		 -->
+ 		 
     </bean>
 
 	<bean id="datasourceContextHandlerInterceptor" class="eu.etaxonomy.cdm.remote.controller.interceptor.DatasourceContextHandlerInterceptor">
@@ -24,9 +25,10 @@
         <property name="mapping">
             <map>
                 <entry key="text/json" value="json"/>
+                <entry key="application/xml" value="xml"/>
             </map>
         </property>
-        <property name="defaultExtension" value="json"/>
+        <property name="defaultExtension" value="xml"/>
     </bean>
     
     <!--  first we try to find the controller using the simpleurlmapping, then the classname

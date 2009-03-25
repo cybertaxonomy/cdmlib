@@ -1,3 +1,4 @@
+// $Id$
 /**
 * Copyright (C) 2007 EDIT
 * European Distributed Institute of Taxonomy 
@@ -31,7 +32,6 @@ public class TaxonController extends AnnotatableController<TaxonBase, ITaxonServ
 	public TaxonController(){
 		super();
 		setUuidParameterPattern("^/(?:[^/]+)/taxon/([^/?#&\\.]+).*");
-		logger.debug("TaxonController()");
 	}
 	
 	/* (non-Javadoc)
@@ -42,5 +42,4 @@ public class TaxonController extends AnnotatableController<TaxonBase, ITaxonServ
 	public void setService(ITaxonService service) {
 		this.service = service;
 	}
-
 }

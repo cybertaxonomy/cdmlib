@@ -11,7 +11,7 @@
 	 <!-- include services application context and override default settings for the PersistentTermInitializer -->
      <import resource="classpath:/eu/etaxonomy/cdm/services.xml"/> 
      <bean id="persistentTermInitializer" class="eu.etaxonomy.cdm.database.PersistentTermInitializer">
-     	<property name="omit" value="true" />
+     	<property name="omit" value="false" />
      </bean>
      
      <!-- 
@@ -34,7 +34,7 @@
     <tx:annotation-driven transaction-manager="transactionManager"/>
     
     <!-- import additional beans into the root context -->
-    <import resource="viewsContext.xml"/> 
+    <import resource="applicationContext.views.xml"/> 
 
 	<!--  load usenames and passwords from properties file and import datasource bean configurations -->
     <context:property-placeholder location="file:${user.home}/.cdmLibrary/cdmserver.properties"/>

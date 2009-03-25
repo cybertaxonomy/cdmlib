@@ -25,7 +25,7 @@ import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
  * 
  * @author a.kohlbecker
  * @author  m.doering
- * @version 1.0 $Id: NameTO.java 1108 2007-12-14 18:03:12Z m.doering $
+ * @version 1.0 $Id$
  * @created 11.12.2007 11:04:42
  */
 public class NameTO extends BaseTO {

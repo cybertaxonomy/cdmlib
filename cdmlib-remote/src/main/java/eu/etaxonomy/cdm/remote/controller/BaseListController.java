@@ -1,15 +1,15 @@
+// $Id$
 /**
-* Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
-* http://www.e-taxonomy.eu
-* 
-* The contents of this file are subject to the Mozilla Public License Version 1.1
-* See LICENSE.TXT at the top of this package for the full license terms.
-*/
+ * Copyright (C) 2007 EDIT
+ * European Distributed Institute of Taxonomy 
+ * http://www.e-taxonomy.eu
+ * 
+ * The contents of this file are subject to the Mozilla Public License Version 1.1
+ * See LICENSE.TXT at the top of this package for the full license terms.
+ */
+
 
 package eu.etaxonomy.cdm.remote.controller;
-
-import java.util.List;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -20,15 +20,11 @@ import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
 
-public abstract class BaseListController <T extends CdmBase, SERVICE extends IService<T>> {
+public abstract class BaseListController <T extends CdmBase, SERVICE extends IService<T>> extends AbstractListController<T, SERVICE> {
 
-	protected SERVICE service;
-	
 	public static final Integer DEFAULT_PAGESIZE = 20;
 	public static final Integer DEFAULT_PAGE = 1;
 	
-	public abstract void setService(SERVICE service);
-
 	@RequestMapping(method = RequestMethod.GET)
 	public Pager<T> doGet(
 			@RequestParam(value = "page", required = false) Integer page,

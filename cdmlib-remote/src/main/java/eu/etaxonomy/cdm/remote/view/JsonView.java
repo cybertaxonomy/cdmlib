@@ -1,3 +1,4 @@
+// $Id$
 /**
 * Copyright (C) 2007 EDIT
 * European Distributed Institute of Taxonomy 
@@ -14,6 +15,7 @@ import java.io.Writer;
 import java.util.Collection;
 import java.util.Map;
 
+import javax.lang.model.type.TypeVariable;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -61,37 +63,38 @@ public class JsonView extends BaseView implements View{
 
 	public void render(Map model, HttpServletRequest req, HttpServletResponse resp) throws Exception {
 		
-//		// configure the serialisation
-//		// TODO implement a more generic approach as done in CATE: http://forge.nesc.ac.uk/cgi-bin/cvsweb.cgi/cate-view/src/main/java/org/cateproject/view/json/JsonConfigFactoryBean.java?rev=1.1&content-type=text/x-cvsweb-markup&cvsroot=cate
-//		jsonConfig.registerJsonValueProcessor(org.joda.time.DateTime.class, new DateTimeJSONValueProcessor());
-//		jsonConfig.registerJsonValueProcessor(java.util.Calendar.class, new CalendarJSONValueProcessor());
-//		jsonConfig.registerJsonValueProcessor(Partial.class, new PartialJSONValueProcessor());
-//		jsonConfig.registerJsonValueProcessor(UUID.class, new UUIDJSONValueProcessor());
-//		jsonConfig.setJsonPropertyFilter(new InitializedHibernatePropertyFilter());
-//		jsonConfig.setIgnoreJPATransient(true);
-//		//jsonConfig.setJsonBeanProcessorMatcher(new CGLibEnhancedBeanProcessorMatcher());
-		
-		
 		// Retrieve data from model
-		Object dto = getResponseData(model);
+		Object entity = getResponseData(model);
 		
 		// prepare writer
 		// TODO determine preferred charset from HTTP Accept-Charset header
 		Writer out = new BufferedWriter(new OutputStreamWriter(resp.getOutputStream(),  "UTF-8"));
 		// create JSON Object
+		boolean isCollectionType = false;
 		JSON jsonObj;
-		if (dto != null && Collection.class.isAssignableFrom(dto.getClass())){
-			jsonObj = JSONArray.fromObject(dto, jsonConfig);
-		}else if(dto instanceof Class){
-			StringBuffer jsonStr = new StringBuffer().append("{\"name\":\"").append(((Class)dto).getName()).append("\", \"simpleName\": \"").append(((Class)dto).getSimpleName()).append("\"}");
-			jsonObj = JSONObject.fromObject(jsonStr);
+		if (entity != null && Collection.class.isAssignableFrom(entity.getClass())){
+			isCollectionType = true;
+			jsonObj = JSONArray.fromObject(entity, jsonConfig);
+//		}else if(dto instanceof Class){
+//			StringBuffer jsonStr = new StringBuffer().append("{\"name\":\"").append(((Class)dto).getName()).append("\", \"simpleName\": \"").append(((Class)dto).getSimpleName()).append("\"}");
+//			jsonObj = JSONObject.fromObject(jsonStr);
 		}else{
-			jsonObj = JSONObject.fromObject(dto, jsonConfig);
+			jsonObj = JSONObject.fromObject(entity, jsonConfig);
 		}
 		
 		if(type.equals(Type.XML)){
 			XMLSerializer xmlSerializer = new XMLSerializer();
-			xmlSerializer.setObjectName(dto.getClass().getSimpleName());
+			if(isCollectionType){
+				xmlSerializer.setArrayName(entity.getClass().getSimpleName());
+				Class elementType = Object.class;
+				Collection c = (Collection)entity;
+				if(c.size() > 0){
+					elementType = c.iterator().next().getClass();
+				}
+				xmlSerializer.setObjectName(elementType.getSimpleName());
+			} else {
+				xmlSerializer.setObjectName(entity.getClass().getSimpleName());
+			}
 			String xml = xmlSerializer.write( jsonObj );
 			out.append(xml);
 		} else {

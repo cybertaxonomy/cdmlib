@@ -1,3 +1,4 @@
+// $Id$
 /**
 * Copyright (C) 2007 EDIT
 * European Distributed Institute of Taxonomy 
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import eu.etaxonomy.cdm.api.service.IService;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
+//$Id$
 /**
  * based on org.cateproject.controller.common
  * @author b.clark

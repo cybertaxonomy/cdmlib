@@ -1,3 +1,4 @@
+// $Id$
 /**
  * Copyright (C) 2009 EDIT European Distributed Institute of Taxonomy
  * http://www.e-taxonomy.eu
@@ -18,7 +19,6 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 /**
  * @author a.kohlbecker
  * @date 20.03.2009
- *
  */
 @Controller
 @RequestMapping(value = {"/*/taxon.*", "/*/taxon"})
@@ -31,9 +31,5 @@ public class TaxonListController extends BaseListController<TaxonBase, ITaxonSer
 	@Autowired
 	public void setService(ITaxonService service) {
 		this.service = service; 
-	}
-
-
-
-		
+	}	
 }

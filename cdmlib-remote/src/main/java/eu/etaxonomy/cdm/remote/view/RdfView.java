@@ -1,3 +1,4 @@
+// $Id$
 package eu.etaxonomy.cdm.remote.view;
 
 import java.util.HashMap;

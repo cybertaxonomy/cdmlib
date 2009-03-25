@@ -1,3 +1,4 @@
+// $Id$
 /**
 * Copyright (C) 2007 EDIT
 * European Distributed Institute of Taxonomy 
@@ -9,6 +10,7 @@
 
 package eu.etaxonomy.cdm.remote.view;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
@@ -22,6 +24,8 @@ import org.springframework.util.Assert;
 import org.springframework.util.PathMatcher;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.view.XmlViewResolver;
+
+import com.sun.xml.bind.v2.runtime.unmarshaller.XsiNilLoader.Array;
 
 /**
  * Resolves views by using a {@link PathMatcher} to match the view name to the bean names.
@@ -51,8 +55,7 @@ public class PatternViewResolver extends XmlViewResolver {
 	}
 	
 	@Override
-	public View resolveViewName(String viewName, Locale locale)
-     throws Exception {
+	public View resolveViewName(String viewName, Locale locale)  throws Exception {
 		// Direct match?
 		if (this.viewSet.contains(viewName)) {
 			return super.resolveViewName(viewName, locale);
@@ -78,6 +81,7 @@ public class PatternViewResolver extends XmlViewResolver {
 		String[] beanDefinitionNames = beanFactory.getBeanDefinitionNames();
 		for(String beanDefinitionName : beanDefinitionNames) {
 			viewSet.add(beanDefinitionName);
+			viewSet.addAll(Arrays.asList(beanFactory.getAliases(beanDefinitionName)));
 		}
 		return beanFactory;
 	}

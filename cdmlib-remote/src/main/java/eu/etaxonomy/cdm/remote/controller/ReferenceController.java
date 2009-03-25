@@ -14,23 +14,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import eu.etaxonomy.cdm.api.service.ITaxonService;
-import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.api.service.IReferenceService;
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
 /**
  * @author a.kohlbecker
- * @created 2009.
- *
+ * @date 24.03.2009
  */
 
 @Controller
 @RequestMapping(value = {"/*/reference/*","/*/reference/annotation/*"})
-public class ReferenceController extends AnnotatableController<TaxonBase, ITaxonService>
+public class ReferenceController extends AnnotatableController<ReferenceBase, IReferenceService>
 {
 	
 	public ReferenceController(){
 		super();
-		setUuidParameterPattern("^/(?:[^/]+)/taxon/([^/?#&\\.]+).*");
+		setUuidParameterPattern("^/(?:[^/]+)/reference/([^/?#&\\.]+).*");
 	}
 	
 	/* (non-Javadoc)
@@ -38,7 +37,7 @@ public class ReferenceController extends AnnotatableController<TaxonBase, ITaxon
 	 */
 	@Autowired
 	@Override
-	public void setService(ITaxonService service) {
+	public void setService(IReferenceService service) {
 		this.service = service;
 	}
 
