@@ -129,15 +129,15 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		
 		Hibernate.initialize(taxonBase.getName());
 		Hibernate.initialize(taxonBase.getSec());
-		
+
 		return taxonBase; 
 	}
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#getRootTaxa(eu.etaxonomy.cdm.model.name.Rank, eu.etaxonomy.cdm.model.reference.ReferenceBase, eu.etaxonomy.cdm.persistence.fetch.CdmFetch, java.lang.Boolean, java.lang.Boolean)
 	 */
-	public List<Taxon> 
-	getRootTaxa(Rank rank, ReferenceBase sec, CdmFetch cdmFetch, Boolean onlyWithChildren, Boolean withMisapplications) {
+	public List<Taxon> getRootTaxa(Rank rank, ReferenceBase sec, CdmFetch cdmFetch, Boolean onlyWithChildren, Boolean withMisapplications) {
+		checkNotInPriorView("TaxonDaoHibernateImpl.getRootTaxa(Rank rank, ReferenceBase sec, CdmFetch cdmFetch, Boolean onlyWithChildren, Boolean withMisapplications)");
 		if (onlyWithChildren == null){
 			onlyWithChildren = true;
 		}
@@ -173,6 +173,17 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		for(Taxon taxon : taxa){
 			//childTaxa
 			//TODO create restriction instead
+			//Hibernate.initialize(taxon.getName());
+			Hibernate.initialize(taxon.getSec());
+			
+			// (a) not using cache fields
+			/*Hibernate.initialize(taxon.getRelationsFromThisTaxon());
+			if (onlyWithChildren == false || taxon.getRelationsFromThisTaxon().size() > 0){
+				if (withMisapplications == true || ! taxon.isMisappliedName()){
+					results.add(taxon);
+				}
+			}*/
+			// (b) using cache fields
 			if (onlyWithChildren == false || taxon.hasTaxonomicChildren()){
 				if (withMisapplications == true || ! taxon.isMisappliedName()){
 					results.add(taxon);
@@ -186,51 +197,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 	 * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#getRootTaxa(eu.etaxonomy.cdm.model.reference.ReferenceBase, eu.etaxonomy.cdm.persistence.fetch.CdmFetch, java.lang.Boolean, java.lang.Boolean)
 	 */
 	public List<Taxon> getRootTaxa(ReferenceBase sec, CdmFetch cdmFetch, Boolean onlyWithChildren, Boolean withMisapplications) {
-		checkNotInPriorView("TaxonDaoHibernateImpl.getRootTaxa(ReferenceBase sec, CdmFetch cdmFetch, Boolean onlyWithChildren, Boolean withMisapplications)");
-		if (onlyWithChildren == null){
-			onlyWithChildren = true;
-		}
-		if (withMisapplications == null){
-			withMisapplications = true;
-		}
-		if (cdmFetch == null){
-			cdmFetch = CdmFetch.NO_FETCH();
-		}
-
-//		String query = "from Taxon root ";
-//		query += " where root.taxonomicParentCache is NULL ";
-//		if (sec != null){
-//		query += " AND root.sec.id = :sec "; 
-//		}		
-//		Query q = getSession().createQuery(query);
-//		if (sec != null){
-//		q.setInteger("sec", sec.getId());
-//		}
-
-		Criteria crit = getSession().createCriteria(Taxon.class);
-		crit.add(Restrictions.isNull("taxonomicParentCache"));
-		if (sec != null){
-			crit.add(Restrictions.eq("sec", sec) );
-		}
-
-		if (! cdmFetch.includes(CdmFetch.FETCH_CHILDTAXA())){
-			logger.warn("no child taxa fetch");
-			//TODO overwrite LAZY (SELECT) does not work (bug in hibernate?)
-			crit.setFetchMode("relationsToThisTaxon.fromTaxon", FetchMode.LAZY);
-		}
-
-		List<Taxon> results = new ArrayList<Taxon>();
-		List<Taxon> taxa = crit.list();
-		for(Taxon taxon : taxa){
-			//childTaxa
-			//TODO create restriction instead
-			if (onlyWithChildren == false || taxon.hasTaxonomicChildren()){
-				if (withMisapplications == true || ! taxon.isMisappliedName()){
-					results.add(taxon);
-				}
-			}
-		}
-		return results;
+		return getRootTaxa(null, sec, cdmFetch, onlyWithChildren, withMisapplications);
 	}
 	
 
