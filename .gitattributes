@@ -1572,11 +1572,6 @@ cdmlib-remote/src/main/resources/spy.properties -text
 cdmlib-remote/src/main/webapp/WEB-INF/applicationContext.views.xml -text
 cdmlib-remote/src/main/webapp/WEB-INF/applicationContext.xml -text
 cdmlib-remote/src/main/webapp/WEB-INF/cdmrest-servlet.xml -text
-cdmlib-remote/src/main/webapp/WEB-INF/datasources-bgbm24-import.xml -text
-cdmlib-remote/src/main/webapp/WEB-INF/datasources-local.xml -text
-cdmlib-remote/src/main/webapp/WEB-INF/datasources-wp7virtual-import.xml -text
-cdmlib-remote/src/main/webapp/WEB-INF/datasources-wp7virtual-production-A.xml -text
-cdmlib-remote/src/main/webapp/WEB-INF/datasources-wp7virtual-production-B.xml -text
 cdmlib-remote/src/main/webapp/WEB-INF/datasources/datasources-bgbm24-import.xml -text
 cdmlib-remote/src/main/webapp/WEB-INF/datasources/datasources-local.xml -text
 cdmlib-remote/src/main/webapp/WEB-INF/datasources/datasources-wp7virtual-import.xml -text
@@ -1584,11 +1579,8 @@ cdmlib-remote/src/main/webapp/WEB-INF/datasources/datasources-wp7virtual-product
 cdmlib-remote/src/main/webapp/WEB-INF/datasources/datasources-wp7virtual-production-B.xml -text
 cdmlib-remote/src/main/webapp/WEB-INF/datasources/empty-default-datasource-wp7virtual.xml -text
 cdmlib-remote/src/main/webapp/WEB-INF/datasources/empty-default-datasource.xml -text
+cdmlib-remote/src/main/webapp/WEB-INF/datasources/p6spy.xml -text
 cdmlib-remote/src/main/webapp/WEB-INF/datasources/routing-datasource.xml -text
-cdmlib-remote/src/main/webapp/WEB-INF/empty-default-datasource-wp7virtual.xml -text
-cdmlib-remote/src/main/webapp/WEB-INF/empty-default-datasource.xml -text
-cdmlib-remote/src/main/webapp/WEB-INF/p6spy.xml -text
-cdmlib-remote/src/main/webapp/WEB-INF/routing-datasource.xml -text
 cdmlib-remote/src/main/webapp/WEB-INF/views.xml -text
 cdmlib-remote/src/main/webapp/WEB-INF/web.xml -text
 cdmlib-remote/src/main/webapp/favicon.ico -text svneol=unset#unset
