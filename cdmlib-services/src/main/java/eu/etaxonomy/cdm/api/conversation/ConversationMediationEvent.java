@@ -1,4 +1,3 @@
-// $Id$
 /**
 * Copyright (C) 2007 EDIT
 * European Distributed Institute of Taxonomy 
@@ -8,7 +7,7 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package eu.etaxonomy.cdm.application.api.conversation;
+package eu.etaxonomy.cdm.api.conversation;
 
 import java.util.HashSet;
 import java.util.Set;
