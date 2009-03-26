@@ -17,6 +17,7 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
@@ -27,6 +28,7 @@ import eu.etaxonomy.cdm.test.unit.EntityTestBase;
  * @created 24.03.2009
  * @version 1.0
  */
+@Ignore
 public class NameTypeDesignationStatusTest extends EntityTestBase {
 	private static final Logger logger = Logger
 			.getLogger(NameTypeDesignationStatusTest.class);
