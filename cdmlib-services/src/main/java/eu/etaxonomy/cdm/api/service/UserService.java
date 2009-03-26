@@ -37,8 +37,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 import eu.etaxonomy.cdm.model.common.Group;
+import eu.etaxonomy.cdm.model.common.GrantedAuthorityImpl;
 import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.persistence.dao.common.IGroupDao;
+import eu.etaxonomy.cdm.persistence.dao.common.IGrantedAuthorityDao;
 import eu.etaxonomy.cdm.persistence.dao.common.IUserDao;
 
 @Service
@@ -48,6 +50,8 @@ public class UserService implements UserDetailsManager, GroupManager {
 	protected IUserDao userDao;
 	
 	protected IGroupDao groupDao;
+	
+	protected IGrantedAuthorityDao grantedAuthorityDao;
 	
 	private SaltSource saltSource = new ReflectionSaltSource();
 	
@@ -87,6 +91,11 @@ public class UserService implements UserDetailsManager, GroupManager {
 	@Autowired
 	public void setGroupDao(IGroupDao groupDao) {
 		this.groupDao = groupDao;
+	}
+	
+	@Autowired
+	public void setGrantedAuthorityDao(IGrantedAuthorityDao grantedAuthorityDao) {
+		this.grantedAuthorityDao = grantedAuthorityDao;
 	}
 	
 	protected Authentication createNewAuthentication(Authentication currentAuth, String newPassword) {
@@ -245,7 +254,6 @@ public class UserService implements UserDetailsManager, GroupManager {
 		if(group.getGrantedAuthorities().remove(authority)) {
 			groupDao.update(group);
 		}
-		
 	}
 
 	public void removeUserFromGroup(String username, String groupName) {
@@ -275,4 +283,11 @@ public class UserService implements UserDetailsManager, GroupManager {
 		return userDao.save(user);
 	}
 
-}
+	public UUID saveGrantedAuthority(GrantedAuthority grantedAuthority) {
+		return grantedAuthorityDao.save((GrantedAuthorityImpl)grantedAuthority);
+	}
+	
+	public UUID saveGroup(Group group) {
+		return groupDao.save(group);
+	}
+} 
