@@ -94,6 +94,7 @@
           <xs:element name="AccountNonExpired" type="xs:boolean"/>
           <xs:element name="CredentialsNonExpired" type="xs:boolean"/>
           <xs:element name="AccountNonLocked" type="xs:boolean"/>
+          <xs:element name="Person" type="xs:IDREF" minOccurs="0"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
