@@ -177,7 +177,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 		return list(limit, start, null); 
 	}
 	
-	public List<T> list(Integer limit, Integer start, List<OrderHint> orderHints) {
+	public <TYPE extends T> List<TYPE> list(Integer limit, Integer start, List<OrderHint> orderHints) {
 		
 		Criteria crit = getSession().createCriteria(type); 
 		if(limit != null) {
