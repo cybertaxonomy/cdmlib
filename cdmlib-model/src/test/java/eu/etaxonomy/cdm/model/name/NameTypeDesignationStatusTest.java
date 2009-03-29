@@ -28,10 +28,10 @@ import eu.etaxonomy.cdm.test.unit.EntityTestBase;
  * @created 24.03.2009
  * @version 1.0
  */
-@Ignore
+@Ignore  //FIXME if testTerminitializer in persistence works again, ignore can be deleted
 public class NameTypeDesignationStatusTest extends EntityTestBase {
-	private static final Logger logger = Logger
-			.getLogger(NameTypeDesignationStatusTest.class);
+	@SuppressWarnings("unused")
+	private static final Logger logger = Logger.getLogger(NameTypeDesignationStatusTest.class);
 	
 	private static final UUID uuidAutomatic = UUID.fromString("e89d8b21-615a-4602-913f-1625bf39a69f");
 	private static final UUID uuidFirstRevisor = UUID.fromString("a14ec046-c48f-4a73-939f-bd57880c7565");
