@@ -14,7 +14,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.dbunit.annotation.ExpectedDataSet;
-import org.unitils.spring.annotation.SpringApplicationContext;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.model.agent.AgentBase;
@@ -70,6 +69,13 @@ public class AgentDaoImplTest extends CdmTransactionalIntegrationTest {
 		assertNotNull("getMembers should return a List", members);
 		assertFalse("getMembers should not be empty",members.isEmpty());
 		assertEquals("getMembers should return 5 person instances",5,members.size());
+		//test order (3,4,1)
+		Person firstMember = members.get(0);
+		assertEquals("First member must be the one with agentbase id 3 (sortindex = 0)", 3, firstMember.getId());
+		Person lastMember = members.get(4);
+		assertEquals("Last member must be the one with agentbase id 4 (sortindex = 4)", 4, lastMember.getId());
+		Person id1Member = members.get(2);
+		assertEquals("The member with id = 1 must be the third (sortindex = 2)", 1, id1Member.getId());
 	}
 	
 	@Test

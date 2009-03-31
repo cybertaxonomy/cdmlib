@@ -118,13 +118,15 @@
 
     create table AgentBase_AgentBase (
         AgentBase_id integer not null,
-        teammembers_id integer not null
+        teammembers_id integer not null,
+		sortindex integer not null
     );
 
     create table AgentBase_AgentBase_AUD (
         REV integer not null,
         AgentBase_id integer not null,
         teammembers_id integer not null,
+		sortindex integer not null,
         revtype tinyint,
         primary key (REV, AgentBase_id, teammembers_id)
     );

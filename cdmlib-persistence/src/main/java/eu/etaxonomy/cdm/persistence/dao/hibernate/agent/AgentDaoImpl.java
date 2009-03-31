@@ -14,6 +14,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.envers.query.AuditEntity;
 import org.hibernate.envers.query.AuditQuery;
@@ -91,8 +92,9 @@ public class AgentDaoImpl extends IdentifiableDaoBase<AgentBase> implements IAge
 
 	public List<Person> getMembers(Team team, Integer pageSize,	Integer pageNumber) {
 		checkNotInPriorView("AgentDaoImpl.getMembers(Team team, Integer pageSize,	Integer pageNumber)");
-		Query query = getSession().createQuery("select teamMember from Team team join team.teamMembers teamMember where team = :team");
+		Query query = getSession().createQuery("select teamMember from Team team join team.teamMembers teamMember where team = :team order by sortindex");
 		query.setParameter("team", team);
+		//query.addOrder( Order.asc("sortindex") );
 		setPagingParameter(query, pageSize, pageNumber);
 		return (List<Person>)query.list();
 	}
