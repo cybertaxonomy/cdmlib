@@ -11,13 +11,9 @@ package eu.etaxonomy.cdm.remote.json.processor;
 
 import java.util.Set;
 
-import org.hamcrest.core.IsInstanceOf;
-
-import eu.etaxonomy.cdm.model.common.CdmBase;
+import net.sf.json.processors.JsonBeanProcessorMatcher;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
-
-import net.sf.json.processors.JsonBeanProcessorMatcher;
 
 /**
  * @author a.kohlbecker
