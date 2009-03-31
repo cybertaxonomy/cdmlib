@@ -63,9 +63,6 @@ public class PalmaeActivator {
 	//names
 	static final boolean doTaxonNames = true;
 	static final boolean doRelNames = true;
-
-	//static final boolean doTypes = true;
-	//static final boolean doNameFacts = true;
 	
 	//taxa
 	static final boolean doTaxa = true;
@@ -104,12 +101,9 @@ public class PalmaeActivator {
 		//new Test().invoke(tcsImportConfigurator);
 		success &= tcsImport.invoke(tcsImportConfigurator);
 		
-		
 		//make feature tree
 		logger.info("Make feature tree");
 		CdmApplicationController app = tcsImport.getCdmApp();
-		
-
 		
 		FeatureTree tree = getFeatureTree();
 		app.getDescriptionService().saveFeatureTree(tree);
