@@ -26,6 +26,9 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.IndexColumn;
 import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.strategy.cache.agent.TeamDefaultCacheStrategy;
@@ -70,7 +73,9 @@ public class Team extends TeamOrPersonBase<Team> {
     @XmlElement(name = "TeamMember")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
-    @ManyToMany(fetch = FetchType.LAZY)
+    @IndexColumn(name="sortIndex", base = 0)
+	@ManyToMany(fetch = FetchType.LAZY)
+	@Cascade(CascadeType.SAVE_UPDATE)
 	private List<Person> teamMembers = new ArrayList<Person>();
 	
 	
