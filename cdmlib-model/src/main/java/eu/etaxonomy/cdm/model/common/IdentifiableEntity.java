@@ -36,6 +36,7 @@ import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
 import org.hibernate.search.annotations.Fields;
 
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.jaxb.FormattedTextAdapter;
 import eu.etaxonomy.cdm.jaxb.LSIDAdapter;
 import eu.etaxonomy.cdm.model.media.Rights;
@@ -339,17 +340,18 @@ implements ISourceable, IIdentifiableEntity, Comparable<IdentifiableEntity> {
 		 String thisNameCache = "";
 		 
 		 if(identifiableEntity instanceof NonViralName) {
-			 specifiedNameCache = ((NonViralName<?>)identifiableEntity).getNameCache();
+			 specifiedNameCache = HibernateProxyHelper.deproxy(identifiableEntity, NonViralName.class).getNameCache();
 		 } else if(identifiableEntity instanceof TaxonBase) {
-			 TaxonNameBase<?,?> taxonNameBase= ((TaxonBase)identifiableEntity).getName();
-			 specifiedNameCache = ((NonViralName<?>)taxonNameBase).getNameCache();
+			 TaxonBase taxonBase = HibernateProxyHelper.deproxy(identifiableEntity, TaxonBase.class);
+			 TaxonNameBase<?,?> taxonNameBase= taxonBase.getName();
+			 specifiedNameCache = HibernateProxyHelper.deproxy(taxonNameBase, NonViralName.class).getNameCache();
 		 }
 		 
 		 if(this instanceof NonViralName) {
-			 thisNameCache = ((NonViralName<?>)this).getNameCache();
+			 thisNameCache = HibernateProxyHelper.deproxy(this, NonViralName.class).getNameCache();
 		 } else if(this instanceof TaxonBase) {
-			 TaxonNameBase<?,?> taxonNameBase= ((TaxonBase)this).getName();
-			 thisNameCache = ((NonViralName<?>)taxonNameBase).getNameCache();
+			 TaxonNameBase<?,?> taxonNameBase= HibernateProxyHelper.deproxy(this, TaxonBase.class).getName();
+			 thisNameCache = HibernateProxyHelper.deproxy(taxonNameBase, NonViralName.class).getNameCache();
 		 }
 		 
 		 if (!specifiedNameCache.equals("") && !thisNameCache.equals("")) {
