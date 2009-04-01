@@ -10,6 +10,8 @@
 
 package eu.etaxonomy.cdm.persistence.hibernate;
 
+import java.util.Observer;
+
 
 /**
  * Objects implementing this will be updated when the CdmPostCrudListener fires

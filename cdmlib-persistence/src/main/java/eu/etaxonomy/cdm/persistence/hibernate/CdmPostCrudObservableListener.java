@@ -67,7 +67,7 @@ public class CdmPostCrudObservableListener implements PostDeleteEventListener, P
 	 * 
 	 * @param observer
 	 */
-	public static void register(ICdmPostCrudObserver observer){
+	public void register(ICdmPostCrudObserver observer){
 		getDefault().observers.add(observer);
 	}
 	
@@ -76,9 +76,9 @@ public class CdmPostCrudObservableListener implements PostDeleteEventListener, P
 	 * 
 	 * @param event
 	 */
-	private void mediate(CdmCrudEvent event){
+	private void notifyObservers(CdmCrudEvent event){
 		for( ICdmPostCrudObserver observer : observers){
-			// update the ICdmPostCrudObserver implementor
+			// call update() on the ICdmPostCrudObserver implementor
 			observer.update(event);
 		}
 	}
@@ -87,9 +87,9 @@ public class CdmPostCrudObservableListener implements PostDeleteEventListener, P
 	 * @see org.hibernate.event.PostInsertEventListener#onPostInsert(org.hibernate.event.PostInsertEvent)
 	 */
 	public void onPostInsert(PostInsertEvent event) {
-		logger.trace("post insert fired");	
+		logger.trace("post insert fired: " + event.getEntity());	
 		if(event.getEntity() instanceof CdmBase){
-			getDefault().mediate(CdmCrudEvent.NewInstance(event));
+			getDefault().notifyObservers(CdmCrudEvent.NewInstance(event));
 		}
 	}
 	
@@ -97,9 +97,9 @@ public class CdmPostCrudObservableListener implements PostDeleteEventListener, P
 	 * @see org.hibernate.event.PostLoadEventListener#onPostLoad(org.hibernate.event.PostLoadEvent)
 	 */
 	public void onPostLoad(PostLoadEvent event) {
-		logger.trace("post load fired");
+		logger.trace("post load fired: " + event.getEntity());
 		if(event.getEntity() instanceof CdmBase){
-			getDefault().mediate(CdmCrudEvent.NewInstance(event));
+			getDefault().notifyObservers(CdmCrudEvent.NewInstance(event));
 		}
 	}
 
@@ -107,9 +107,9 @@ public class CdmPostCrudObservableListener implements PostDeleteEventListener, P
 	 * @see org.hibernate.event.PostUpdateEventListener#onPostUpdate(org.hibernate.event.PostUpdateEvent)
 	 */
 	public void onPostUpdate(PostUpdateEvent event) {
-		logger.trace("post update fired");
+		logger.trace("post update fired: " + event.getEntity());
 		if(event.getEntity() instanceof CdmBase){
-			getDefault().mediate(CdmCrudEvent.NewInstance(event));
+			getDefault().notifyObservers(CdmCrudEvent.NewInstance(event));
 		}
 	}
 
@@ -117,9 +117,9 @@ public class CdmPostCrudObservableListener implements PostDeleteEventListener, P
 	 * @see org.hibernate.event.PostDeleteEventListener#onPostDelete(org.hibernate.event.PostDeleteEvent)
 	 */
 	public void onPostDelete(PostDeleteEvent event) {
-		logger.trace("post delete fired");
+		logger.trace("post delete fired: " + event.getEntity());
 		if(event.getEntity() instanceof CdmBase){
-			getDefault().mediate(CdmCrudEvent.NewInstance(event));
+			getDefault().notifyObservers(CdmCrudEvent.NewInstance(event));
 		}
 	}
 	

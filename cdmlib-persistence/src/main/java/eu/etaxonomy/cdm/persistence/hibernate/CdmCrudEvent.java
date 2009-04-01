@@ -132,7 +132,7 @@ public class CdmCrudEvent extends AbstractEvent{
 																null,
 																updateEvent.getPersister(), 
 																updateEvent.getSession(), 
-																EventType.INSERT
+																EventType.LOAD
 																);
 			}
 			if(event instanceof PostUpdateEvent){
@@ -144,7 +144,7 @@ public class CdmCrudEvent extends AbstractEvent{
 																updateEvent.getOldState(),
 																updateEvent.getPersister(), 
 																updateEvent.getSession(), 
-																EventType.INSERT
+																EventType.UPDATE
 																);
 			}
 			if(event instanceof PostDeleteEvent){
@@ -156,7 +156,7 @@ public class CdmCrudEvent extends AbstractEvent{
 																null,
 																deleteEvent.getPersister(), 
 																deleteEvent.getSession(), 
-																EventType.INSERT
+																EventType.DELETE
 																);
 			}	
 		}catch(ClassCastException e){
