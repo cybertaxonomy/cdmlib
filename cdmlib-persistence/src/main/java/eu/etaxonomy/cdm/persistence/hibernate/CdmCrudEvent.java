@@ -102,6 +102,21 @@ public class CdmCrudEvent extends AbstractEvent{
 		return eventType;
 	}
 
+	public boolean isInsert(){
+		return eventType == EventType.INSERT;
+	}
+	
+	public boolean isLoad(){
+		return eventType == EventType.LOAD;
+	}
+	
+	public boolean isUpdate(){
+		return eventType == EventType.UPDATE;
+	}
+	
+	public boolean isDelete(){
+		return eventType == EventType.DELETE;
+	}
 
 	/**
 	 * @param event
