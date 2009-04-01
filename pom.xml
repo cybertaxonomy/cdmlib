@@ -159,6 +159,23 @@
 		</developer>
 		<developer>
 			<!-- your SVN account id please! -->
+			<id>n.hoffmann</id>
+			<name>
+				Niels Hoffmann
+			</name>
+			<email>n.hoffmann [at] bgbm.org</email>
+			<organization>
+				Botanic Garden Botanical Museum Berlin
+			</organization>
+			<organizationUrl>http://www.bgbm.org/BioDivInf/</organizationUrl>
+			<timezone>+1</timezone>
+			<roles>
+				<role>developer</role>
+			</roles>
+			<url></url>
+		</developer>
+		<developer>
+			<!-- your SVN account id please! -->
 			<id>ben.clark</id>
 			<name>
 				Ben Clark
