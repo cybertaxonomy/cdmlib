@@ -189,9 +189,10 @@ public class LocalH2 extends DriverManagerDataSource {
 	}
 	
 	public void setLocalUrl(){
-		logger.info("setLocalUrl");
 		String dbName = "cdmLocal";
-		setUrl(pureUrl + "file:" + getDefaultPath() + "/" + dbName);
+		String localUrlString = pureUrl + "file:" + getDefaultPath() + "/" + dbName;
+		logger.info("setLocalUrl: " + localUrlString);
+		setUrl(localUrlString);
 	}
 	
 	public void setMode(String mode){
