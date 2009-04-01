@@ -17,7 +17,10 @@ import org.springframework.orm.hibernate3.SessionHolder;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.ResourceHolder;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
+
+import eu.etaxonomy.cdm.persistence.hibernate.CdmPostCrudObservableListener;
 
 /**
  * This is an implementation of the session-per-conversation pattern for usage
@@ -29,7 +32,7 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
  * @created 12.03.2009
  * @version 1.0
  */
-public class ConversationHolder {
+public class ConversationHolder{
 
 	private static final Logger logger = Logger.getLogger(ConversationHolder.class);
 
@@ -41,7 +44,8 @@ public class ConversationHolder {
 	
 	@Autowired
 	private PlatformTransactionManager transactionManager;
-	
+
+
 	/**
 	 * The persistence context for this conversation
 	 */
@@ -63,59 +67,47 @@ public class ConversationHolder {
 	private TransactionStatus transactionStatus;
 
 	/**
-	 * Simple constructor
+	 * Simple constructor used by Spring only
 	 */
-	public ConversationHolder(){
-		logger.trace("Creating new ConversationHolder.");
-	}
-	
-	/**
-	 * 
-	 * @param dataSource
-	 */
-	public ConversationHolder(DataSource dataSource) {
-		this.dataSource = dataSource;
-	}
-
-	/**
-	 * 
-	 * @param dataSource
-	 * @param sessionFactory
-	 */
-	public ConversationHolder(DataSource dataSource, SessionFactory sessionFactory) {
-		this(dataSource);
-		this.sessionFactory = sessionFactory;
+	private ConversationHolder(){
 	}
 
 	public ConversationHolder(DataSource dataSource, SessionFactory sessionFactory, 
 			PlatformTransactionManager transactionManager) {
-		this(dataSource, sessionFactory);
+		this();
+		this.dataSource = dataSource;
+		this.sessionFactory = sessionFactory;
 		this.transactionManager = transactionManager;
 	}
 	
-	/**
-	 * 
-	 * @param dataSource
-	 * @param sessionFactory
-	 * @param session
-	 */
-	public ConversationHolder(DataSource dataSource, SessionFactory sessionFactory,
-			PlatformTransactionManager transactionManager, Session session) {
-		this(dataSource, sessionFactory, transactionManager);
-		longSession = session;
-	}
-	
-
-
-
 	/**
 	 * This method has to be called when starting a new unit-of-work. All required resources are
 	 * bound so that SessionFactory.getCurrentSession() returns the right session for this conversation
 	 */
 	public void bind() {
 		
-		// do nothing if this conversation is already bound
-		if(isBound()) return;
+
+		if(TransactionSynchronizationManager.hasResource(getSessionFactory())){
+			TransactionSynchronizationManager.unbindResource(getSessionFactory());
+		}
+
+		/*
+		 * FIXME it is a rather strange behaviour that HibernateTransactionManager 
+		 * binds a dataSource and then complains about that later on. At least that 
+		 * is what happens in the editor.
+		 * 
+		 *  With this in the code the tests will not run, but the editor for now.
+		 * 
+		 */
+//		if(TransactionSynchronizationManager.hasResource(getDataSource())){
+//			TransactionSynchronizationManager.unbindResource(getDataSource());
+//		}
+	
+		
+		if(TransactionSynchronizationManager.isSynchronizationActive()){
+			TransactionSynchronizationManager.clearSynchronization();
+		}
+
 		
 		logger.info("Binding resources for ConversationHolder: [" + this + "]");
 		
@@ -124,8 +116,11 @@ public class ConversationHolder {
 			longSession = SessionFactoryUtils.getNewSession(getSessionFactory());
 			longSession.setFlushMode(FlushMode.MANUAL);
 
+			// TODO set the ConnectionReleaseMode to AFTER_TRANSACTION, possibly in applicationContext
+			
 			logger.info("Creating Session: [" + longSession + "]");
 		}
+		
 
 		// lazy creation of session holder
 		if(sessionHolder == null){
@@ -135,42 +130,34 @@ public class ConversationHolder {
 		
 		// connect dataSource with session
 		if (!longSession.isConnected()){
+			
 			longSession.reconnect(DataSourceUtils.getConnection(dataSource));
 			logger.info("Reconnecting DataSource: [" + dataSource + "]" );
 		}
 		
 		
-		if( ! TransactionSynchronizationManager.hasResource(getSessionFactory())){
-			logger.info("Session Factory not bound to TransactionSynchronizationManager. Binding it.");
-			TransactionSynchronizationManager.bindResource(getSessionFactory(), sessionHolder);
-		}	
-		if( ! TransactionSynchronizationManager.isSynchronizationActive()){
-			logger.info("Synchronization not bound to TransactionSynchronizationManager. Binding it.");
-			TransactionSynchronizationManager.initSynchronization();
-		}
+		logger.info("Binding Session to TransactionSynchronizationManager.");
+		TransactionSynchronizationManager.bindResource(getSessionFactory(), sessionHolder);
+
+		logger.info("Starting new Synchronization in TransactionSynchronizationManager.");
+		TransactionSynchronizationManager.initSynchronization();
+		
+		
 	}
 	
-	public boolean isBound(){
-		return sessionHolder != null && longSession != null && longSession.isConnected();
+	/**
+	 * @return
+	 */
+	private DataSource getDataSource() {
+		return this.dataSource;
 	}
-	
 
 	/**
-	 * This method is to be run to free up resources after the unit-of-work has completed 
-	 * 
-	 * TODO 
-	 * we do not need this in a test environment as the junit magic will try to 
-	 * clear up resources after the tests are run and if the resources are unbound 
-	 * manually beforehand, it will result in exceptions.
-	 * maybe we need this in a live environment
-	 * 
-	 * @deprecated it looks like we don't need this at all
+	 * @return true if this longSession is bound to the session factory.
 	 */
-	public void unbind() {
-		logger.info("Freeing resources bound to ConversationHolder: [" + this + "]");
-		
-		TransactionSynchronizationManager.unbindResource(getSessionFactory());
-		TransactionSynchronizationManager.clearSynchronization();
+	public boolean isBound(){
+		//return sessionHolder != null && longSession != null && longSession.isConnected();
+		return longSession != null && getSessionFactory().getCurrentSession() == longSession;
 	}
 	
 	/**
@@ -186,6 +173,8 @@ public class ConversationHolder {
 					"ConversationManager");
 		}else{	
 			transactionStatus = transactionManager.getTransaction(definition);
+
+			
 			logger.info("Transaction started: [" + transactionStatus + "]");
 		}
 		return transactionStatus;
@@ -211,7 +200,7 @@ public class ConversationHolder {
 	 * 
 	 * @param restartTransaction whether to start a new transaction
 	 */
-	public void commit(boolean restartTransaction){
+	public TransactionStatus commit(boolean restartTransaction){
 		if(isTransactionActive()){
 			
 			// commit the changes
@@ -224,11 +213,12 @@ public class ConversationHolder {
 			// Since we are in a conversation we directly rebind those resources and start a new transaction
 			bind();
 			if(restartTransaction){
-				startTransaction();
+				return startTransaction();
 			}
 		}else{
 			logger.warn("No active transaction but commit was called");
 		}
+		return null;
 	}
 	
 
@@ -251,7 +241,7 @@ public class ConversationHolder {
 	/** 
 	 * @return the session factory that is bound to this conversation manager
 	 */
-	protected SessionFactory getSessionFactory() {
+	public SessionFactory getSessionFactory() {
 		return sessionFactory;
 	}
 
@@ -278,5 +268,12 @@ public class ConversationHolder {
 	 */
 	public void setDefinition(TransactionDefinition definition) {
 		this.definition = definition;
+	}
+	
+	/**
+	 * Register to get updated after any interaction with the datastore
+	 */
+	public void registerForDataStoreChanges(IConversationEnabled observer) {
+		CdmPostCrudObservableListener.getDefault().register(observer);
 	}
 }

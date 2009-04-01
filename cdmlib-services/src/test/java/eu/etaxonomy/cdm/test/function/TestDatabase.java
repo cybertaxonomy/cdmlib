@@ -58,7 +58,8 @@ public class TestDatabase {
 			Resource applicationContextResource = new ClassPathResource(CdmApplicationController.DEFAULT_APPLICATION_CONTEXT_RESOURCE);
 			CdmPersistentDataSource dataSource = CdmPersistentDataSource.NewDefaultInstance();
 			CdmApplicationController appCtr = CdmApplicationController.NewInstance(applicationContextResource, dataSource, DbSchemaValidation.CREATE, omitTermLoading);
-			
+			appCtr.NewConversation();
+			appCtr.NewConversation();
 			
 			//CdmApplicationController appCtr = CdmApplicationController.NewInstance(DbSchemaValidation.CREATE);
 			appCtr.close();

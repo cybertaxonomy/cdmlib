@@ -171,6 +171,7 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
 	 * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#NewConversation()
 	 */
 	public ConversationHolder NewConversation() {
+		// TODO make this a prototype
 		return new ConversationHolder(dataSource, sessionFactory, transactionManager);
 	}
 

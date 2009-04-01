@@ -333,11 +333,8 @@ public class CdmApplicationController {
 		return configuration.getMainService();
 	}
 	
-	/*
-	 * Conversation
-	 */
-	
 	public final ConversationHolder NewConversation(){
+		//return (ConversationHolder)applicationContext.getBean("conversationHolder");
 		return configuration.NewConversation();
 	}
 	

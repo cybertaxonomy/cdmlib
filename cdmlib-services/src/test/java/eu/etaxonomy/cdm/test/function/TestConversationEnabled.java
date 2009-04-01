@@ -10,6 +10,8 @@
 
 package eu.etaxonomy.cdm.test.function;
 
+import java.util.Observable;
+
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.conversation.ConversationHolder;
@@ -39,6 +41,14 @@ public class TestConversationEnabled implements IConversationEnabled {
 	 * @see eu.etaxonomy.cdm.persistence.hibernate.ICdmPostCrudObserver#update(eu.etaxonomy.cdm.persistence.hibernate.CdmCrudEvent)
 	 */
 	public void update(CdmCrudEvent event) {
-		logger.warn("CdmCrudEvent fired: " + event.getEventType());
+		logger.warn("CdmCrudEvent fired: " + event.getEventType() + " : " + event.getEntity());
+	}
+
+	/* (non-Javadoc)
+	 * @see java.util.Observer#update(java.util.Observable, java.lang.Object)
+	 */
+	public void update(Observable o, Object arg) {
+		// TODO Auto-generated method stub
+		
 	}
 }
