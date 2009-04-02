@@ -10,26 +10,21 @@
 package eu.etaxonomy.cdm.model.taxon;
 
 
-import eu.etaxonomy.cdm.model.common.IRelated;
-import eu.etaxonomy.cdm.model.common.RelationshipBase;
-import eu.etaxonomy.cdm.model.description.TaxonDescription;
-import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
-
-import org.apache.log4j.Logger;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
-import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.Indexed;
-import org.springframework.beans.factory.annotation.Configurable;
-import org.springframework.util.ReflectionUtils;
-
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -39,6 +34,20 @@ import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
+
+import org.apache.log4j.Logger;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
+import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Indexed;
+import org.springframework.util.ReflectionUtils;
+
+import eu.etaxonomy.cdm.model.common.IRelated;
+import eu.etaxonomy.cdm.model.common.RelationshipBase;
+import eu.etaxonomy.cdm.model.description.TaxonDescription;
+import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
 /**
  * The class for "accepted/correct" {@link TaxonBase taxa} (only these taxa according to
@@ -55,6 +64,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Taxon", propOrder = {
     "taxonomicParentCache",
+    "taxonNodes",
     "taxonomicChildrenCount",
     "synonymRelations",
     "relationsFromThisTaxon",
@@ -66,8 +76,8 @@ import javax.xml.bind.annotation.XmlType;
 @Indexed(index = "eu.etaxonomy.cdm.model.taxon.TaxonBase")
 @Audited
 public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<RelationshipBase>{
-
-	static Logger logger = Logger.getLogger(Taxon.class);
+	private static final long serialVersionUID = -584946869762749006L;
+	private static final Logger logger = Logger.getLogger(Taxon.class);
 
 	@XmlElementWrapper(name = "Descriptions")
 	@XmlElement(name = "Description")
@@ -110,6 +120,13 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	private Taxon taxonomicParentCache;
 	
 	
+	@XmlElementWrapper(name = "taxonNodes")
+	@XmlElement(name = "taxonNode")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
+    @OneToMany(mappedBy="taxon", fetch=FetchType.LAZY)
+    @Cascade({CascadeType.SAVE_UPDATE})
+	private Set<TaxonNode> taxonNodes = new HashSet<TaxonNode>();
 
 	//cached number of taxonomic children
 	@XmlElement(name = "TaxonomicChildrenCount")
@@ -220,6 +237,23 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 		descriptions.remove(description);
 	}
 
+	
+	public Set<TaxonNode> getTaxonNodes() {
+		return taxonNodes;
+	}
+	//	protected void setTaxonNodes(Set<TaxonNode> taxonNodes) {
+//		this.taxonNodes = taxonNodes;
+//	}
+	protected void addTaxonNode(TaxonNode taxonNode){
+		taxonNodes.add(taxonNode);
+	}
+	protected void removeTaxonNode(TaxonNode taxonNode){
+		taxonNodes.remove(taxonNode);
+	}
+
+
+	
+	
 	/** 
 	 * Returns the set of all {@link SynonymRelationship synonym relationships}
 	 * in which <i>this</i> ("accepted/correct") taxon is involved. <i>This</i> taxon can only
