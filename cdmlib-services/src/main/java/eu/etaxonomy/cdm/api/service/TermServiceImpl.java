@@ -23,8 +23,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import sun.print.resources.serviceui;
-
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
@@ -39,7 +37,6 @@ import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
 import eu.etaxonomy.cdm.model.location.TdwgArea;
 import eu.etaxonomy.cdm.model.media.Media;
-import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ILanguageStringBaseDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ILanguageStringDao;
@@ -112,6 +109,17 @@ public class TermServiceImpl extends ServiceBase<DefinedTermBase,IDefinedTermDao
 
 	public List<TermVocabulary<DefinedTermBase>> getAllTermVocabularies(int limit, int start) {
 		return vocabularyDao.list(limit, start);
+	}
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.service.ITermService#getLanguageVocabulary()
+	 */
+	public TermVocabulary<Language> getLanguageVocabulary() {
+		String uuidString = "45ac7043-7f5e-4f37-92f2-3874aaaef2de";
+		UUID uuid = UUID.fromString(uuidString);
+		TermVocabulary<Language> languageVocabulary = 
+			(TermVocabulary)vocabularyDao.findByUuid(uuid);
+		return languageVocabulary;
 	}
 	
 	public Map<UUID, TermVocabulary<DefinedTermBase>> 

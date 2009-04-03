@@ -29,14 +29,15 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
 import eu.etaxonomy.cdm.model.media.Media;
+import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 
 public interface ITermService extends IService<DefinedTermBase> {
 
-	public abstract DefinedTermBase getTermByUri(String uri);
+	public DefinedTermBase getTermByUri(String uri);
 
 	// FIXME candidate for harmonization?
-	public abstract DefinedTermBase getTermByUuid(UUID uuid);
+	public DefinedTermBase getTermByUuid(UUID uuid);
 
 	/**
 	 * FIXME candidate for harmonization?
@@ -44,20 +45,26 @@ public interface ITermService extends IService<DefinedTermBase> {
 	 * @param start
 	 * @return
 	 */
-	public abstract List<DefinedTermBase> getAllDefinedTerms(int limit, int start);
+	public List<DefinedTermBase> getAllDefinedTerms(int limit, int start);
 
-	public abstract TermVocabulary getVocabulary(UUID vocabularyUuid);
+	public TermVocabulary getVocabulary(UUID vocabularyUuid);
 	
-	public abstract Set<TermVocabulary> listVocabularies(Class termClass);
+	public Set<TermVocabulary> listVocabularies(Class termClass);
 
-	public abstract UUID saveTermVocabulary(TermVocabulary termVocabulary);
+	/**
+	 * Returns Language Vocabulary
+	 * @return
+	 */
+	public TermVocabulary<Language> getLanguageVocabulary();
+
+	public UUID saveTermVocabulary(TermVocabulary termVocabulary);
 
 	/**
 	 * FIXME candidate for harmonization?
 	 * @param termBase
 	 * @return
 	 */
-	public abstract UUID saveTerm(DefinedTermBase termBase);
+	public UUID saveTerm(DefinedTermBase termBase);
 
 	/**
 	 * FIXME candidate for harmonization?
