@@ -51,9 +51,9 @@ public class DistributionImporter extends CdmIoBase<IImportConfigurator> impleme
     private static final String EDIT_NAME_COLUMN = "EDIT";
     private static final String TDWG_DISTRIBUTION_COLUMN = "TDWG";
     private static final String STATUS_COLUMN = "Status";
-    private static final String LITERATURE_NUMBER_COLUMN = "Lit.";
-    private static final String LITERATURE_COLUMN = "Literature";
-    /* not yet used */
+    /* not used */
+//    private static final String LITERATURE_NUMBER_COLUMN = "Lit.";
+//    private static final String LITERATURE_COLUMN = "Literature";
 //    private static final String VERNACULAR_NAME_COLUMN = "Vernacular";
 //    private static final String HABITAT_COLUMN = "Habitat";
 //    private static final String CONTROL_COLUMN = "Control";
@@ -142,12 +142,12 @@ public class DistributionImporter extends CdmIoBase<IImportConfigurator> impleme
 			} else if(key.contains(STATUS_COLUMN)) {
 				status = (String) CdmUtils.removeDuplicateWhitespace(value.trim());
 				
-			} else if(key.contains(LITERATURE_NUMBER_COLUMN)) {
-				literatureNumber = (String) CdmUtils.removeDuplicateWhitespace(value.trim());
-				
-			} else if(key.contains(LITERATURE_COLUMN)) {
-				literature = (String) CdmUtils.removeDuplicateWhitespace(value.trim());
-				
+//			} else if(key.contains(LITERATURE_NUMBER_COLUMN)) {
+//				literatureNumber = (String) CdmUtils.removeDuplicateWhitespace(value.trim());
+//				
+//			} else if(key.contains(LITERATURE_COLUMN)) {
+//				literature = (String) CdmUtils.removeDuplicateWhitespace(value.trim());
+//				
 			} else {
 				//logger.warn("Column " + key + " ignored");
 			}
@@ -169,12 +169,12 @@ public class DistributionImporter extends CdmIoBase<IImportConfigurator> impleme
     	IdentifiableServiceConfiguratorImpl config = 
     		IdentifiableServiceConfiguratorImpl.NewInstance();
     	config.setTitleSearchString(taxonName);
-    	config.setMatchMode(MatchMode.EXACT);
+    	config.setMatchMode(MatchMode.BEGINNING);
     	
 		try {
     		// get the matching names from the DB
-    		List<TaxonNameBase> taxonNameBases = getNameService().findByTitle(config);
-//    		List<TaxonNameBase<?,?>> taxonNameBases = getNameService().findNamesByTitle(taxonName);
+    		//List<TaxonNameBase> taxonNameBases = getNameService().findByTitle(config);
+    		List<TaxonNameBase<?,?>> taxonNameBases = getNameService().findNamesByTitle(taxonName);
     		if (taxonNameBases.isEmpty()) {
     			logger.error("Taxon name '" + taxonName + "' not found in DB");
     		} else {
