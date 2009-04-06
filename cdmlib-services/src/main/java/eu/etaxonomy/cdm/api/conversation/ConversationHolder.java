@@ -3,6 +3,8 @@
  */
 package eu.etaxonomy.cdm.api.conversation;
 
+import java.util.Map;
+
 import javax.sql.DataSource;
 
 import org.apache.log4j.Logger;
@@ -20,7 +22,7 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.ResourceHolder;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
-import eu.etaxonomy.cdm.persistence.hibernate.CdmPostCrudObservableListener;
+import eu.etaxonomy.cdm.persistence.hibernate.CdmPostDataChangeObservableListener;
 
 /**
  * This is an implementation of the session-per-conversation pattern for usage
@@ -46,6 +48,7 @@ public class ConversationHolder{
 	private PlatformTransactionManager transactionManager;
 
 
+	
 	/**
 	 * The persistence context for this conversation
 	 */
@@ -86,69 +89,47 @@ public class ConversationHolder{
 	 */
 	public void bind() {
 		
-
-		if(TransactionSynchronizationManager.hasResource(getSessionFactory())){
-			TransactionSynchronizationManager.unbindResource(getSessionFactory());
-		}
-
-		/*
-		 * FIXME it is a rather strange behaviour that HibernateTransactionManager 
-		 * binds a dataSource and then complains about that later on. At least that 
-		 * is what happens in the editor.
-		 * 
-		 *  With this in the code the tests will not run, but the editor for now.
-		 * 
-		 */
-//		if(TransactionSynchronizationManager.hasResource(getDataSource())){
-//			TransactionSynchronizationManager.unbindResource(getDataSource());
-//		}
-	
+		logger.info("Binding resources for ConversationHolder: [" + this + "]");	
 		
 		if(TransactionSynchronizationManager.isSynchronizationActive()){
 			TransactionSynchronizationManager.clearSynchronization();
 		}
-
 		
-		logger.info("Binding resources for ConversationHolder: [" + this + "]");
-		
-		// lazy creation of session
-		if (longSession == null) {
-			longSession = SessionFactoryUtils.getNewSession(getSessionFactory());
-			longSession.setFlushMode(FlushMode.MANUAL);
-
-			// TODO set the ConnectionReleaseMode to AFTER_TRANSACTION, possibly in applicationContext
+		try{
+			// FIXME for debugging -> remove
+			Map resourceMap = TransactionSynchronizationManager.getResourceMap();
 			
-			logger.info("Creating Session: [" + longSession + "]");
-		}
-		
-
-		// lazy creation of session holder
-		if(sessionHolder == null){
-			sessionHolder = new SessionHolder(longSession);
-			logger.info("Creating SessionHolder: [" + sessionHolder + "]");
-		}
-		
-		// connect dataSource with session
-		if (!longSession.isConnected()){
 			
-			longSession.reconnect(DataSourceUtils.getConnection(dataSource));
-			logger.info("Reconnecting DataSource: [" + dataSource + "]" );
-		}
-		
-		
-		logger.info("Binding Session to TransactionSynchronizationManager.");
-		TransactionSynchronizationManager.bindResource(getSessionFactory(), sessionHolder);
-
-		logger.info("Starting new Synchronization in TransactionSynchronizationManager.");
-		TransactionSynchronizationManager.initSynchronization();
-		
+			logger.info("Starting new Synchronization in TransactionSynchronizationManager.");
+			TransactionSynchronizationManager.initSynchronization();
+			
+			if(TransactionSynchronizationManager.hasResource(getSessionFactory())){
+				TransactionSynchronizationManager.unbindResource(getSessionFactory());
+			}
+			
+			logger.info("Binding Session to TransactionSynchronizationManager.");
+			TransactionSynchronizationManager.bindResource(getSessionFactory(), getSessionHolder());
+			
+		}catch(Exception e){
+			logger.error("Error binding resources for session", e);
+		}			
 		
 	}
+	
+	public SessionHolder getSessionHolder(){
+		if(this.sessionHolder == null){
+			logger.info("Creating SessionHolder: [" + sessionHolder + "]");
+			this.sessionHolder = new SessionHolder(getSession());
+		}
+		return this.sessionHolder;
+	}
+	
+	
 	
 	/**
 	 * @return
 	 */
-	private DataSource getDataSource() {
+	public DataSource getDataSource() {
 		return this.dataSource;
 	}
 
@@ -171,9 +152,8 @@ public class ConversationHolder{
 			logger.warn("We allow only one transaction at the moment but startTransaction " +
 					"was called a second time.\nReturning the transaction already associated with this " +
 					"ConversationManager");
-		}else{	
+		}else{				
 			transactionStatus = transactionManager.getTransaction(definition);
-
 			
 			logger.info("Transaction started: [" + transactionStatus + "]");
 		}
@@ -205,7 +185,10 @@ public class ConversationHolder{
 			
 			// commit the changes
 			transactionManager.commit(transactionStatus);
-						
+			
+			// propagate transaction end
+			CdmPostDataChangeObservableListener.getDefault().delayedNotify();	
+			
 			// Reset the transactionStatus.
 			transactionStatus = null;
 			
@@ -235,6 +218,18 @@ public class ConversationHolder{
 	 * @return the session associated with this conversation manager 
 	 */
 	public Session getSession() {
+		if(longSession == null){
+			logger.info("Creating Session: [" + longSession + "]");
+			longSession = SessionFactoryUtils.getNewSession(getSessionFactory());
+			longSession.setFlushMode(FlushMode.MANUAL);
+		}
+		
+		// connect dataSource with session
+		if (!longSession.isConnected()){
+			longSession.reconnect(DataSourceUtils.getConnection(getDataSource()));
+			logger.info("Reconnecting DataSource: [" + dataSource + "]" );
+		}
+		
 		return longSession;
 	}
 	
@@ -274,6 +269,6 @@ public class ConversationHolder{
 	 * Register to get updated after any interaction with the datastore
 	 */
 	public void registerForDataStoreChanges(IConversationEnabled observer) {
-		CdmPostCrudObservableListener.getDefault().register(observer);
+		CdmPostDataChangeObservableListener.getDefault().register(observer);
 	}
 }

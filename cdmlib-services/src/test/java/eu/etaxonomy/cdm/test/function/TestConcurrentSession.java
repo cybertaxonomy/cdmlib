@@ -357,7 +357,7 @@ public class TestConcurrentSession extends CdmIntegrationTest{
 	public void testProofOfDataPersistency(){
 		// first conversation
 		conversationHolder1.bind();
-		TransactionStatus txStatusOne = transactionManager.getTransaction(definition);
+		conversationHolder1.startTransaction();
 		// get a taxon
 		TaxonBase taxonBase = taxonService.getTaxonByUuid(taxonUuid1);
 		// get a reference
@@ -368,12 +368,12 @@ public class TestConcurrentSession extends CdmIntegrationTest{
 		taxonBase.setSec(reference);
 		// save and commit
 		taxonService.save(taxonBase);
-		transactionManager.commit(txStatusOne);
+		conversationHolder1.commit();
 		
 		
 		// second conversation
 		conversationHolder2.bind();
-		TransactionStatus txStatusTwo = transactionManager.getTransaction(definition);
+		conversationHolder2.startTransaction();
 		// load the same taxon in a different session
 		TaxonBase taxonBaseInSecondTransaction = taxonService.getTaxonByUuid(taxonUuid1);
 		// load the reference
@@ -478,6 +478,20 @@ public class TestConcurrentSession extends CdmIntegrationTest{
 		TaxonBase taxonBase2 = taxonService.getTaxonByUuid(taxonUuid2);
 		conversationHolder1.commit();		
 	}
+	
+	@Test
+	@DataSet("ConcurrentSessionTest.xml")
+	public void testMultipleTransactionsInMultipleSessions(){
+		conversationHolder1.bind();
+		conversationHolder1.startTransaction();
+		
+		conversationHolder2.bind();
+		conversationHolder2.startTransaction();
+		
+		conversationHolder3.bind();
+		conversationHolder3.startTransaction();
+	}
+	
 	
 	@Test
 	@DataSet("ConcurrentSessionTest.xml")

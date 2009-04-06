@@ -13,11 +13,8 @@
  	<context:component-scan base-package="eu/etaxonomy/cdm/api"/>
     
     <!-- enable the configuration of transactional behavior based on annotations -->
-<!--    <tx:annotation-driven transaction-manager="transactionManager"/>      -->
+    <tx:annotation-driven transaction-manager="transactionManager"/>      
   
-  	<bean id="conversationHolder" class="eu.etaxonomy.cdm.api.conversation.ConversationHolder" scope="prototype"/>
-	
-
     <bean id="dataSource" class="org.unitils.database.UnitilsDataSourceFactoryBean"/>
     
     <bean id="hibernateProperties" 

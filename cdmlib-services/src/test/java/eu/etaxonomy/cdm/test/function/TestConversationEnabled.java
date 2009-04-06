@@ -10,16 +10,17 @@
 
 package eu.etaxonomy.cdm.test.function;
 
+import java.util.List;
 import java.util.Observable;
 
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.conversation.ConversationHolder;
 import eu.etaxonomy.cdm.api.conversation.IConversationEnabled;
-import eu.etaxonomy.cdm.persistence.hibernate.CdmCrudEvent;
+import eu.etaxonomy.cdm.persistence.hibernate.CdmDataChangeEvent;
 
 /**
- * @author nho
+ * @author n.hoffmann
  * @created 25.03.2009
  * @version 1.0
  */
@@ -40,8 +41,10 @@ public class TestConversationEnabled implements IConversationEnabled {
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.persistence.hibernate.ICdmPostCrudObserver#update(eu.etaxonomy.cdm.persistence.hibernate.CdmCrudEvent)
 	 */
-	public void update(CdmCrudEvent event) {
-		logger.warn("CdmCrudEvent fired: " + event.getEventType() + " : " + event.getEntity());
+	public void update(List<CdmDataChangeEvent> events) {
+		for(CdmDataChangeEvent event : events){
+			logger.warn("CdmCrudEvent fired: " + event.getEventType() + " : " + event.getEntity());
+		}
 	}
 
 	/* (non-Javadoc)

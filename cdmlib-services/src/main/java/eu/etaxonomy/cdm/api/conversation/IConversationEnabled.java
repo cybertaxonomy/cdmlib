@@ -9,7 +9,7 @@
 
 package eu.etaxonomy.cdm.api.conversation;
 
-import eu.etaxonomy.cdm.persistence.hibernate.ICdmPostCrudObserver;
+import eu.etaxonomy.cdm.persistence.hibernate.ICdmPostDataChangeObserver;
 
 
 /**
@@ -19,7 +19,7 @@ import eu.etaxonomy.cdm.persistence.hibernate.ICdmPostCrudObserver;
  * @created 17.03.2009
  * @version 1.0
  */
-public interface IConversationEnabled extends ICdmPostCrudObserver {
+public interface IConversationEnabled extends ICdmPostDataChangeObserver {
 	
 	/** 
 	 * @return the conversation holder
