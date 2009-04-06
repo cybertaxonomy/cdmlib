@@ -32,12 +32,12 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * @created 24.03.2009
  * @version 1.0
  */
-public class CdmCrudEvent extends AbstractEvent{
+public class CdmDataChangeEvent extends AbstractEvent{
 	
 	private static final long serialVersionUID = 9113025682352080372L;
 
 	private static final Logger logger = Logger
-			.getLogger(CdmCrudEvent.class);
+			.getLogger(CdmDataChangeEvent.class);
 	
 	/**
 	 * The event types currently implemented
@@ -61,7 +61,7 @@ public class CdmCrudEvent extends AbstractEvent{
 	/**
 	 * @param source
 	 */
-	private CdmCrudEvent(
+	private CdmDataChangeEvent(
 			CdmBase entity, 
 			Serializable id,
 			Object[] state,
@@ -122,13 +122,13 @@ public class CdmCrudEvent extends AbstractEvent{
 	 * @param event
 	 * @return
 	 */
-	public static CdmCrudEvent NewInstance(AbstractEvent event) {
+	public static CdmDataChangeEvent NewInstance(AbstractEvent event) {
 
-		CdmCrudEvent mediationEvent = null;
+		CdmDataChangeEvent mediationEvent = null;
 		try{
 			if(event instanceof PostInsertEvent){
 				PostInsertEvent postEvent = (PostInsertEvent) event;
-				mediationEvent = new CdmCrudEvent(
+				mediationEvent = new CdmDataChangeEvent(
 																(CdmBase)postEvent.getEntity(), 
 																postEvent.getId(), 
 																postEvent.getState(), 
@@ -140,7 +140,7 @@ public class CdmCrudEvent extends AbstractEvent{
 			}
 			if(event instanceof PostLoadEvent){
 				PostLoadEvent updateEvent = (PostLoadEvent) event;
-				mediationEvent = new CdmCrudEvent(
+				mediationEvent = new CdmDataChangeEvent(
 																(CdmBase)updateEvent.getEntity(), 
 																updateEvent.getId(), 
 																null,
@@ -152,7 +152,7 @@ public class CdmCrudEvent extends AbstractEvent{
 			}
 			if(event instanceof PostUpdateEvent){
 				PostUpdateEvent updateEvent = (PostUpdateEvent) event;
-				mediationEvent = new CdmCrudEvent(
+				mediationEvent = new CdmDataChangeEvent(
 																(CdmBase)updateEvent.getEntity(), 
 																updateEvent.getId(), 
 																updateEvent.getState(), 
@@ -164,7 +164,7 @@ public class CdmCrudEvent extends AbstractEvent{
 			}
 			if(event instanceof PostDeleteEvent){
 				PostDeleteEvent deleteEvent = (PostDeleteEvent) event;
-				mediationEvent = new CdmCrudEvent(
+				mediationEvent = new CdmDataChangeEvent(
 																(CdmBase)deleteEvent.getEntity(), 
 																deleteEvent.getId(), 
 																deleteEvent.getDeletedState(), 

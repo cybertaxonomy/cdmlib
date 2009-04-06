@@ -10,6 +10,7 @@
 
 package eu.etaxonomy.cdm.persistence.hibernate;
 
+import java.util.List;
 import java.util.Observer;
 
 
@@ -21,10 +22,10 @@ import java.util.Observer;
  * @created 17.03.2009
  * @version 1.0
  */
-public interface ICdmPostCrudObserver {
+public interface ICdmPostDataChangeObserver {
 	
 	/**
 	 * gets called when the observable objects notifies its observers
 	 */
-	public void update(CdmCrudEvent event);
+	public void update(List<CdmDataChangeEvent> changeEvents);
 }
