@@ -13,6 +13,8 @@ package eu.etaxonomy.cdm.api.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.transaction.annotation.Transactional;
+
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
@@ -23,6 +25,7 @@ import eu.etaxonomy.cdm.persistence.dao.common.IAnnotatableDao;
 public abstract class AnnotatableServiceBase<T extends AnnotatableEntity,DAO extends IAnnotatableDao<T>> extends VersionableServiceBase<T, DAO>
 		implements IAnnotatableService<T> {
 	
+	@Transactional
 	public Pager<Annotation> getAnnotations(T annotatedObj, MarkerType status, Integer pageSize, Integer pageNumber) {
 		Integer numberOfResults = dao.countAnnotations(annotatedObj, status);
 		

@@ -46,6 +46,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
+import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.common.IOrderedTermVocabularyDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
@@ -67,6 +68,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 	private IOrderedTermVocabularyDao orderedVocabularyDao;
 	@Autowired
 	private IDescriptionDao descriptionDao;
+
 	
 	/**
 	 * Constructor
@@ -401,5 +403,5 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		return new DefaultPagerImpl<IdentifiableEntity>
 			(configurator.getPageNumber(), numberOfResults, configurator.getPageSize(), results);
 	}
-	
+
 }

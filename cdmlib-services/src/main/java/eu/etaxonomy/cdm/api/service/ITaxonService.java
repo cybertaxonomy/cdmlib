@@ -33,6 +33,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
+import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
 import eu.etaxonomy.cdm.persistence.fetch.CdmFetch;
 
 
@@ -42,7 +43,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	 * FIXME candidate for harmonization? 
 	 */
 	public abstract TaxonBase getTaxonByUuid(UUID uuid);
-
+	
 	/**
 	 * FIXME candidate for harmonization? 
 	 * save a taxon and return its UUID

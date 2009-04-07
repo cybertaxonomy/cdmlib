@@ -29,6 +29,7 @@ import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
@@ -141,6 +142,17 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
 	public T findByUuid(UUID uuid) {
 		return dao.findByUuid(uuid);
 	}
+	
+	@Transactional(readOnly = true)
+	public T load(UUID uuid) {
+		return dao.load(uuid);
+	}
+	
+	@Transactional(readOnly = true)
+	public T load(UUID uuid, List<String> propertyPaths){
+		return dao.load(uuid, propertyPaths);
+	}
+	
 
 	@Transactional(readOnly = true)
 	public <TYPE extends T> List<TYPE> list(Class<TYPE> type, int limit,int start) {

@@ -22,6 +22,8 @@ import org.springframework.transaction.annotation.Transactional;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 
@@ -157,6 +159,30 @@ public interface IService<T extends CdmBase>{
 	 * @return an entity of type <T>, or null if the entity does not exist
 	 */
 	public T findByUuid(UUID uuid);
+	
+	/**
+	 * Finds the cdm entity specified by the <code>uuid</code> parameter and
+	 * initializes all its *ToOne relations.
+	 * 
+	 * @param uuid
+	 * @return
+	 */
+	public T load(UUID uuid);	
+	
+	/**
+	 * Finds the cdm entity specified by the <code>uuid</code> parameter and
+	 * recursively initializes all bean properties given in the
+	 * <code>propertyPaths</code> parameter.
+	 * <p>
+	 * For detailed description and examples <b>please refer to:</b> 
+	 * {@link BeanInitializer#initializeProperties(Object, List)}
+	 * 
+	 * @param uuid
+	 * @return
+	 */
+	public T load(UUID uuid, List<String> propertyPaths);
+	
+	
 	
 	/**
 	 * Returns true if an entity of type <T> with a unique identifier matching the 
