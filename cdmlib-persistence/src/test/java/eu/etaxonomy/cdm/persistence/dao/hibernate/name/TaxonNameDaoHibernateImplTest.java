@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringApplicationContext;
@@ -20,6 +21,7 @@ import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
+import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 
 @DataSet
@@ -119,5 +121,24 @@ public class TaxonNameDaoHibernateImplTest extends CdmIntegrationTest {
 		int count = taxonNameDao.countNames("Atropos", null, null, null, Rank.GENUS());
 		
 		assertEquals("countNames should return 3",3,count);
+	}
+	
+	@Test
+	/**
+	 * This test check for a specific bug where the rank of a taxon name base
+	 * has no order index (=0)
+	 */
+	@Ignore //FIXME resolve bug Ticket #686
+	public void testMissingRankOrderIndex() {
+		TaxonNameBase acherontiaLachesis = taxonNameDao.findByUuid(acherontiaLachesisUuid);
+		Rank rank = null;
+		try {
+			rank = Rank.getRankByName("Species");
+		} catch (UnknownCdmTypeException e) {
+			e.printStackTrace();
+		}
+		assertNotNull(rank);
+		assertFalse("Rank are equal, level must not be higher", rank.isHigher(acherontiaLachesis.getRank()));
+		assertFalse("Rank are equal, level must not be lower", rank.isLower(acherontiaLachesis.getRank()));
 	}
 }
