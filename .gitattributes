@@ -1223,6 +1223,8 @@ cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/types/PostgreSQLDatab
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/types/SqlServer2000DatabaseType.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/types/SqlServer2005DatabaseType.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/types/SybaseDatabaseType.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/AbstractBeanInitializer.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/BeanInitializer.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/IAlternativeSpellingSuggestionParser.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/QueryParseException.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/agent/IAgentDao.java -text
@@ -1255,6 +1257,7 @@ cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/description/IF
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/description/IFeatureTreeDao.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/description/IStatisticalMeasurementValueDao.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/hibernate/AlternativeSpellingSuggestionParser.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/hibernate/HibernateBeanInitializer.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/hibernate/HibernateProxyHelperExtended.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/hibernate/agent/AgentDaoImpl.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/hibernate/common/AnnotatableDaoImpl.java -text

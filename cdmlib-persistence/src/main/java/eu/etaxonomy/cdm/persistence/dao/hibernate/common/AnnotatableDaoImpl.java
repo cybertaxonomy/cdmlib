@@ -33,6 +33,7 @@ public abstract class AnnotatableDaoImpl<T extends AnnotatableEntity> extends Ve
 	public AnnotatableDaoImpl(Class<T> type) {
 		super(type);
 	}
+	
 	public int countAnnotations(T annotatableEntity, MarkerType status) {
 		checkNotInPriorView("AnnotatableDaoImpl.countAnnotations(T annotatableEntity, MarkerType status)");
 		Query query = null;

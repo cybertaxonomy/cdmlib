@@ -26,10 +26,13 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.envers.query.AuditQuery;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
@@ -44,6 +47,11 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 
 	int flushAfterNo = 1000; //large numbers may cause synchronisation errors when commiting the session !!
 	protected Class<T> type;
+	
+	@Autowired
+	@Qualifier("defaultBeanInitializer")
+	private BeanInitializer defaultBeanInitializer;
+	
 	
 	public CdmEntityDaoBase(Class<T> type){
 		this.type = type;
@@ -152,6 +160,26 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 		}else{
 			return results.get(0);			
 		}
+	}
+	
+	public T load(UUID uuid) {
+		T bean = findByUuid(uuid);
+		if(bean == null) 
+			return null;
+		defaultBeanInitializer.load(bean);
+		
+		return bean;
+	}
+	
+
+	public T load(UUID uuid, List<String> propertyPaths){
+		T bean = findByUuid(uuid);
+		if(bean == null) 
+			return bean;
+		
+		defaultBeanInitializer.initializeProperties(bean, propertyPaths);
+		
+		return bean;
 	}
 	
 	public Boolean exists(UUID uuid) {

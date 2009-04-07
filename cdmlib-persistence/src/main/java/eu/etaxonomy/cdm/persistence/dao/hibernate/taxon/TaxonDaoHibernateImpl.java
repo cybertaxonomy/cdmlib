@@ -66,24 +66,18 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
+import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.QueryParseException;
 import eu.etaxonomy.cdm.persistence.dao.common.ISearchableDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ITitledDao;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.AlternativeSpellingSuggestionParser;
+import eu.etaxonomy.cdm.persistence.dao.hibernate.HibernateBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.fetch.CdmFetch;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 
-/**
- * @author a.mueller
- *
- */
-/**
- * @author a.mueller
- * @created 24.11.2008
- * @version 1.0
- */
+
 /**
  * @author a.mueller
  * @created 24.11.2008
@@ -97,7 +91,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 	
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TaxonDaoHibernateImpl.class);
-	
+		
 	private String defaultField = "name.titleCache";
 	private String defaultSort = "name.titleCache_forSort";
 	private Class<? extends TaxonBase> indexedClasses[]; 
@@ -129,9 +123,9 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		
 		Hibernate.initialize(taxonBase.getName());
 		Hibernate.initialize(taxonBase.getSec());
-
 		return taxonBase; 
 	}
+	
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#getRootTaxa(eu.etaxonomy.cdm.model.name.Rank, eu.etaxonomy.cdm.model.reference.ReferenceBase, eu.etaxonomy.cdm.persistence.fetch.CdmFetch, java.lang.Boolean, java.lang.Boolean)

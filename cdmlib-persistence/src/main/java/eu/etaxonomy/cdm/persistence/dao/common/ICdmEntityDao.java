@@ -17,6 +17,8 @@ import java.util.UUID;
 import org.springframework.dao.DataAccessException;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
@@ -77,11 +79,17 @@ public interface ICdmEntityDao<T extends CdmBase> {
 	public List<T> list(Integer limit, Integer start) throws DataAccessException;
 
 	/**
-	 * Returns a sublist of CdmBase instances stored in the database.
-	 * A maximum of 'limit' objects are returned, starting at object with index 'start'.
-	 * @param limit the maximum number of entities returned (can be null to return all entities)
+	 * Returns a sublist of CdmBase instances stored in the database. A maximum
+	 * of 'limit' objects are returned, starting at object with index 'start'.
+	 * 
+	 * @param limit
+	 *            the maximum number of entities returned (can be null to return
+	 *            all entities)
 	 * @param start
 	 * @param orderHints
+	 *            Supports path like <code>orderHints.propertyNames</code> which
+	 *            include *-to-one properties like createdBy.username or
+	 *            authorTeam.persistentTitleCache
 	 * @return
 	 * @throws DataAccessException
 	 */
@@ -113,6 +121,28 @@ public interface ICdmEntityDao<T extends CdmBase> {
 	 * @throws DataAccessException
 	 */
 	public T findByUuid(UUID Uuid) throws DataAccessException;
+	
+	/**
+	 * Finds the cdm entity specified by the <code>uuid</code> parameter and
+	 * initializes all its *ToOne relations.
+	 * 
+	 * @param uuid
+	 * @return
+	 */
+	public T load(UUID uuid);
+	
+	/**
+	 * Finds the cdm entity specified by the <code>uuid</code> parameter and
+	 * recursively initializes all bean properties given in the
+	 * <code>propertyPaths</code> parameter.
+	 * <p>
+	 * For detailed description and examples <b>please refer to:</b> 
+	 * {@link BeanInitializer#initializeProperties(Object, List)}
+	 * 
+	 * @param uuid
+	 * @return
+	 */
+	public T load(UUID uuid, List<String> propertyPaths);
 	
 	/**
 	 * @param uuid

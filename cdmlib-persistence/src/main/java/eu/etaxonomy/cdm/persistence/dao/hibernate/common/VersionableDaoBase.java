@@ -11,17 +11,21 @@ import org.hibernate.envers.AuditReaderFactory;
 import org.hibernate.envers.query.AuditEntity;
 import org.hibernate.envers.query.AuditQuery;
 import org.joda.time.DateTime;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.DataAccessException;
 import org.springframework.security.Authentication;
 import org.springframework.security.context.SecurityContextHolder;
 
 import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.model.view.AuditEventRecord;
 import eu.etaxonomy.cdm.model.view.AuditEventRecordImpl;
 import eu.etaxonomy.cdm.model.view.context.AuditEventContext;
 import eu.etaxonomy.cdm.model.view.context.AuditEventContextHolder;
+import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.common.AuditEventSort;
 import eu.etaxonomy.cdm.persistence.dao.common.IVersionableDao;
 import eu.etaxonomy.cdm.persistence.dao.common.OperationNotSupportedInPriorViewException;
@@ -68,6 +72,7 @@ public abstract class VersionableDaoBase<T extends VersionableEntity> extends Cd
 			return (T)query.getSingleResult();			
 		}
 	}
+	
 	
 	@Override
 	public Boolean exists(UUID uuid) {
