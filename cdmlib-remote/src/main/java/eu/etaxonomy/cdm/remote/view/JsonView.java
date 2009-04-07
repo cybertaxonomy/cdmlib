@@ -11,10 +11,12 @@ package eu.etaxonomy.cdm.remote.view;
 
 import java.io.BufferedWriter;
 import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.io.Writer;
 import java.util.Collection;
 import java.util.Map;
 
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -39,7 +41,13 @@ public class JsonView extends BaseView implements View{
 	}
 
 	private Type type = Type.JSON;
+
+	private String xsl;
 	
+	public void setXsl(String xsl) {
+		this.xsl = xsl;
+	}
+
 	public Type getType() {
 		return type;
 	}
@@ -67,7 +75,8 @@ public class JsonView extends BaseView implements View{
 		
 		// prepare writer
 		// TODO determine preferred charset from HTTP Accept-Charset header
-		Writer out = new BufferedWriter(new OutputStreamWriter(resp.getOutputStream(),  "UTF-8"));
+		//Writer out = new BufferedWriter(new OutputStreamWriter(resp.getOutputStream(),  "UTF-8"));
+		PrintWriter out =  resp.getWriter();
 		// create JSON Object
 		boolean isCollectionType = false;
 		JSON jsonObj;
@@ -91,10 +100,14 @@ public class JsonView extends BaseView implements View{
 					elementType = c.iterator().next().getClass();
 				}
 				xmlSerializer.setObjectName(elementType.getSimpleName());
-			} else {
+			} else if(entity != null){
 				xmlSerializer.setObjectName(entity.getClass().getSimpleName());
 			}
 			String xml = xmlSerializer.write( jsonObj );
+			if(xsl != null){
+				String xslInclude = "\r\n<?xml-stylesheet type=\"text/xsl\" href=\"human.xsl\"?>\r\n";
+				xml = xml.replaceFirst("\r\n", xslInclude);
+			}
 			out.append(xml);
 		} else {
 			// assuming json

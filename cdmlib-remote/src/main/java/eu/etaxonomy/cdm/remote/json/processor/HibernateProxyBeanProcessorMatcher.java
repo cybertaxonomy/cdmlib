@@ -38,6 +38,7 @@ public class HibernateProxyBeanProcessorMatcher extends
 			logger.debug("Found HibernateProxy object of class " + target.getClass() + " returning " + HibernateProxy.class);
 			return HibernateProxy.class;
         }
+		
         return DEFAULT.getMatch(target, set);
 	}
 

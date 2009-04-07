@@ -9,6 +9,8 @@
 */
 package eu.etaxonomy.cdm.remote.exception;
 
+import java.io.IOException;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -17,6 +19,8 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.SimpleMappingExceptionResolver;
 
 import com.ibm.lsid.LSIDException;
+
+import eu.etaxonomy.cdm.remote.controller.BaseController;
 
 public class CdmExceptionResolver extends SimpleMappingExceptionResolver {
 	
@@ -28,14 +32,30 @@ public class CdmExceptionResolver extends SimpleMappingExceptionResolver {
 
 	@Override  
 	protected ModelAndView doResolveException(HttpServletRequest request,  HttpServletResponse response, Object handler, Exception exception) {
-				
+			
+		ModelAndView mv = new ModelAndView("error");
+		
+//			if(exception instanceof IllegalArgumentException){
+//				try {
+//					if(exception.getMessage().equals(BaseController.MSG_INVALID_UUID)){
+//						response.sendError(HttpServletResponse.SC_BAD_REQUEST, exception.getMessage());
+//					} else if(exception.getMessage().equals(BaseController.MSG_UUID_MISSING)){
+//						response.sendError(HttpServletResponse.SC_BAD_REQUEST, exception.getMessage());
+//					} else if(exception.getMessage().equals(BaseController.MSG_UUID_NOT_FOUND)){
+//						response.sendError(HttpServletResponse.SC_NOT_FOUND, exception.getMessage());
+//					}
+//				} catch (IOException e) {
+//					logger.error(e.getMessage(), e);
+//				}
+//			}
+		
 		if(exception instanceof LSIDException) {
 			LSIDException lsidException = (LSIDException) exception;
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			response.addHeader(CdmExceptionResolver.LSID_ERROR_CODE_HEADER,Integer.toString(lsidException.getErrorCode()));
+			//return mv;
 		}
 		
-		
-		return super.doResolveException(request, response, handler, exception);  
+		return super.doResolveException(request, response, handler, exception); 
 	}
 }

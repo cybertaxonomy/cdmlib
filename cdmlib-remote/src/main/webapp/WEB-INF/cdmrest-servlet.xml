@@ -47,23 +47,11 @@
 	</bean>
 	
 	<bean id="exceptionResolver" class="eu.etaxonomy.cdm.remote.exception.CdmExceptionResolver">
-	 	<property name="exceptionMappings">
-			<props>
-			    <prop key="IllegalArgumentException">illegalArgumentException</prop>
-			</props>
-		</property>
-        <!-- 
-         <property name="contentNegociationHandlerInterceptor" ref="contentNegociationHandlerInterceptor"/>
-         -->
     </bean>
     
-    
-	<!--
     <bean id="viewResolverJsp"  class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-	   	<property name="cache" value="false"/> <!- -  FOR DEBUGING ONLY !!!!  -  ->
         <property name="prefix" value="/jsp/"/>
         <property name="suffix" value=".jsp"/>
     </bean>
-	 -->
 
 </beans>

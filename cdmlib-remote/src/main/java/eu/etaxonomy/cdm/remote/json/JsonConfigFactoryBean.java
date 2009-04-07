@@ -40,9 +40,10 @@ public class JsonConfigFactoryBean implements FactoryBean {
 	
 	private Map<Class,JsonBeanProcessor> jsonBeanProcessors = new HashMap<Class,JsonBeanProcessor>();
 	private List<PropertyFilter> jsonPropertyFilters = new ArrayList<PropertyFilter>();
-	private List<JsonBeanProcessorMatcher> jsonBeanProcessorMatchers = new ArrayList<JsonBeanProcessorMatcher>();
 	private Map<Class,JsonValueProcessor> jsonValueProcessors = new HashMap<Class,JsonValueProcessor>();
+	private JsonBeanProcessorMatcher jsonBeanProcessorMatcher = JsonBeanProcessorMatcher.DEFAULT;
 	private JsonValueProcessorMatcher jsonValueProcessorMatcher = JsonValueProcessorMatcher.DEFAULT;
+	private List<String> excludes = new ArrayList<String>();
 	
 	public void setCycleDetectionStrategy(CycleDetectionStrategy cycleDetectionStrategy) {
 		this.cycleDetectionStrategy = cycleDetectionStrategy;
@@ -60,8 +61,8 @@ public class JsonConfigFactoryBean implements FactoryBean {
 		this.jsonPropertyFilters = jsonPropertyFilters;
 	}
 
-	public void setJsonBeanProcessorMatchers(List<JsonBeanProcessorMatcher> jsonBeanProcessorMatchers) {
-		this.jsonBeanProcessorMatchers = jsonBeanProcessorMatchers;
+	public void setJsonBeanProcessorMatcher(JsonBeanProcessorMatcher jsonBeanProcessorMatcher) {
+		this.jsonBeanProcessorMatcher = jsonBeanProcessorMatcher;
 	}
 	
 	public void setJsonValueProcessorMatcher(JsonValueProcessorMatcher jsonValueProcessorMatcher ) {
@@ -72,6 +73,10 @@ public class JsonConfigFactoryBean implements FactoryBean {
 		this.jsonValueProcessors = jsonValueProcessors;
 	}
 	
+	public void setExcludes(List<String> excludes) {
+		this.excludes = excludes;
+	}
+
 	public void init() {
 		jsonConfig = new JsonConfig();
 		
@@ -80,6 +85,10 @@ public class JsonConfigFactoryBean implements FactoryBean {
 		jsonConfig.setIgnoreJPATransient(ignoreJPATransient);
 		
 		jsonConfig.setJsonValueProcessorMatcher(jsonValueProcessorMatcher);
+
+		jsonConfig.setJsonBeanProcessorMatcher(jsonBeanProcessorMatcher);
+		
+		jsonConfig.setExcludes(excludes.toArray(new String[]{}));
 		
 		for(Class clazz : jsonBeanProcessors.keySet()) {
 			jsonConfig.registerJsonBeanProcessor(clazz, jsonBeanProcessors.get(clazz));
@@ -89,9 +98,6 @@ public class JsonConfigFactoryBean implements FactoryBean {
 		    jsonConfig.setJsonPropertyFilter(propertyFilter);
 		}
 
-		for(JsonBeanProcessorMatcher jsonBeanProcessorMatcher : jsonBeanProcessorMatchers) {
-		    jsonConfig.setJsonBeanProcessorMatcher(jsonBeanProcessorMatcher);
-		}
 		
 		for(Class clazz : jsonValueProcessors.keySet()) {
 		    jsonConfig.registerJsonValueProcessor(clazz, jsonValueProcessors.get(clazz)); 

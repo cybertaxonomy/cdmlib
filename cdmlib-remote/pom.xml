@@ -64,9 +64,9 @@
 			<artifactId>easymock</artifactId>
 		</dependency>
 		<dependency>
-            <groupId>xmlunit</groupId>
-            <artifactId>xmlunit</artifactId>
-        </dependency>
+      <groupId>xmlunit</groupId>
+      <artifactId>xmlunit</artifactId>
+      </dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-test</artifactId>
@@ -80,13 +80,17 @@
 			<artifactId>joda-time</artifactId>    
 		</dependency>
 		<dependency>
-              <groupId>org.hibernate</groupId>
-              <artifactId>hibernate-cglib-repack</artifactId>
-            </dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-cglib-repack</artifactId>
+    </dependency>
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-core</artifactId>
 		</dependency>
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+    </dependency>
 		<!-- JsonView -->
     <dependency>
       <groupId>net.sf.json-lib</groupId>

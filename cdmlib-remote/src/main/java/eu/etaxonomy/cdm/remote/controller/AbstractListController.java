@@ -23,13 +23,6 @@ public abstract class AbstractListController<T extends CdmBase, SERVICE extends 
 
 	protected SERVICE service;
 
-	/**
-	 * 
-	 */
-	public AbstractListController() {
-		super();
-	}
-
 	public abstract void setService(SERVICE service);
 
 }

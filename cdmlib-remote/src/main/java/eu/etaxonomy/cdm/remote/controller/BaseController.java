@@ -10,11 +10,13 @@
 
 package eu.etaxonomy.cdm.remote.controller;
 
+import java.io.IOException;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 import org.springframework.util.Assert;
@@ -66,22 +68,32 @@ public abstract class BaseController<T extends CdmBase, SERVICE extends IService
 					UUID uuid = UUID.fromString(uuidMatcher.group(1));
 					return uuid;
 				} catch (Exception e) {
-					logger.warn(uuidMatcher.group(1) + "is not a uuid");
+					throw new IllegalArgumentException(HttpStatusMessage.UUID_INVALID.toString());
 				}
+			} else {
+				throw new IllegalArgumentException(HttpStatusMessage.UUID_MISSING.toString());
 			}
 		}
 		return null;
 	}
 	
 	@RequestMapping(method = RequestMethod.GET)
-	public T doGet(HttpServletRequest request) {
+	public T doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		
-		UUID uuid = readValueUuid(request);
-		Assert.notNull(uuid, "no valid uuid");
-		if(uuid == null){
+		T obj;
+		try {
+			UUID uuid = readValueUuid(request);
+			Assert.notNull(uuid, HttpStatusMessage.UUID_MISSING.toString());
+			
+			obj = service.findByUuid(uuid);
+			Assert.notNull(obj, HttpStatusMessage.UUID_NOT_FOUND.toString());
+			
+		} catch (IllegalArgumentException iae) {
+			HttpStatusMessage.fromString(iae.getMessage()).send(response);
 			return null;
 		}
-		return service.findByUuid(uuid);
+		
+		return obj;
 	}
 
 	  /* TODO implement

@@ -15,8 +15,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import eu.etaxonomy.cdm.api.service.AnnotatableServiceBase;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.persistence.dao.common.IAnnotatableDao;
 
 /**
  * @author a.kohlbecker
@@ -24,7 +26,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  */
 
 @Controller
-@RequestMapping(value = {"/*/taxon/*","/*/taxon/annotation/*"})
+@RequestMapping(value = {"/*/taxon/*","/*/taxon/*/annotation"})
 public class TaxonController extends AnnotatableController<TaxonBase, ITaxonService>
 {
 	public static final Logger logger = Logger.getLogger(TaxonController.class);
@@ -42,4 +44,6 @@ public class TaxonController extends AnnotatableController<TaxonBase, ITaxonServ
 	public void setService(ITaxonService service) {
 		this.service = service;
 	}
+
+	
 }

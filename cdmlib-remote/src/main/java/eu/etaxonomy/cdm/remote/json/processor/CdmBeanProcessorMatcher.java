@@ -11,9 +11,12 @@ package eu.etaxonomy.cdm.remote.json.processor;
 
 import java.util.Set;
 
+import org.apache.log4j.Logger;
+import org.hibernate.proxy.HibernateProxy;
+
 import net.sf.json.processors.JsonBeanProcessorMatcher;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 /**
  * @author a.kohlbecker
@@ -21,17 +24,30 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  */
 public class CdmBeanProcessorMatcher extends JsonBeanProcessorMatcher {
 
+	public static final Logger logger = Logger.getLogger(CdmBeanProcessorMatcher.class);
+	
 	/* (non-Javadoc)
 	 * @see net.sf.json.processors.JsonBeanProcessorMatcher#getMatch(java.lang.Class, java.util.Set)
 	 */
 	@Override
 	public Object getMatch(Class target, Set set) {
-		if(target.getClass().isAssignableFrom(Taxon.class)){
+		
+		
+		if (HibernateProxy.class.isAssignableFrom(target)) {
+			if(logger.isDebugEnabled()){
+				logger.debug("Found HibernateProxy object of class " + target.getClass() + " returning " + HibernateProxy.class);
+			}
+			return HibernateProxy.class;
+        }
+		if (target.getClass().isAssignableFrom(Taxon.class)) {
 			return DEFAULT.getMatch(Taxon.class, set);
 		}
-		if(target.getClass().isAssignableFrom(Taxon.class)){
-			return DEFAULT.getMatch(TaxonBase.class, set);
+		if (target.getClass().isAssignableFrom(TaxonNameBase.class)) {
+			return DEFAULT.getMatch(TaxonNameBase.class, set);
 		}
+
 		return DEFAULT.getMatch(target, set);
 	}
+	
+	
 }
