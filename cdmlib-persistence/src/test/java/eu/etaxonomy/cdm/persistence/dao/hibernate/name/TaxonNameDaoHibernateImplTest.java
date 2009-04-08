@@ -133,7 +133,7 @@ public class TaxonNameDaoHibernateImplTest extends CdmIntegrationTest {
 		TaxonNameBase acherontiaLachesis = taxonNameDao.findByUuid(acherontiaLachesisUuid);
 		Rank rank = null;
 		try {
-			rank = Rank.getRankByName("Species");
+			rank = Rank.getRankByName(acherontiaLachesis.getRank().getLabel());
 		} catch (UnknownCdmTypeException e) {
 			e.printStackTrace();
 		}
