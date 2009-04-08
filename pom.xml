@@ -624,6 +624,11 @@
 		      <artifactId>commons-collections</artifactId>
 		      <version>3.2</version>
 		    </dependency>
+        <dependency>
+          <groupId>commons-io</groupId>
+          <artifactId>commons-io</artifactId>
+          <version>1.4</version>
+        </dependency>
 		    <dependency>
 		      <groupId>net.sf.ezmorph</groupId>
 		      <artifactId>ezmorph</artifactId>
@@ -642,7 +647,7 @@
 		    <dependency>
 		      <groupId>net.sf.json-lib</groupId>
 		      <artifactId>json-lib</artifactId>
-		      <version>2.2.1</version>
+		      <version>2.2.3</version>
 		    </dependency>
 			<dependency>
 				<groupId>org.devlib.schmidt</groupId>
