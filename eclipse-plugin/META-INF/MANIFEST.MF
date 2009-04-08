@@ -1,8 +1,8 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: CdmLibrary Plug-in
+Bundle-Name: CDM Library Plug-in
 Bundle-SymbolicName: eu.etaxonomy.cdmLibrary;singleton:=true
-Bundle-Version: 2.1.0.19
+Bundle-Version: 2.1.0.31
 Bundle-ClassPath: aspectjrt-1.5.4.jar,
  antlr-2.7.6.jar,
  asm-attrs.jar,
@@ -194,6 +194,11 @@ Export-Package: eu.etaxonomy.cdm,
  org.joda.time.format;uses:="org.joda.time",
  org.joda.time.tz;uses:="org.joda.time",
  org.springframework.orm.hibernate3,
- org.springframework.transaction;uses:="org.springframework.core"
+ org.springframework.transaction;uses:="org.springframework.core",
+ org.springframework.transaction.annotation,
+ org.springframework.transaction.config,
+ org.springframework.transaction.interceptor,
+ org.springframework.transaction.jta,
+ org.springframework.transaction.support
 Require-Bundle: org.eclipse.osgi,
  org.eclipse.pde.source
