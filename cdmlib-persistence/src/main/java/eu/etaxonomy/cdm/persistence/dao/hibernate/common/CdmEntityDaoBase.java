@@ -50,7 +50,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 	
 	@Autowired
 	@Qualifier("defaultBeanInitializer")
-	private BeanInitializer defaultBeanInitializer;
+	protected BeanInitializer defaultBeanInitializer;
 	
 	
 	public CdmEntityDaoBase(Class<T> type){
