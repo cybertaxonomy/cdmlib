@@ -11,7 +11,9 @@
 package eu.etaxonomy.cdm.api.service;
 
 import java.util.Collection;
+import java.util.Enumeration;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -90,6 +92,8 @@ public interface ITermService extends IService<DefinedTermBase> {
 	       saveLanguageStringBasesAll(Collection<LanguageStringBase> languageStringBases);
 	
 	public Language getLanguageByIso(String iso639);
+	
+	public List<Language> getLanguagesByLocale(Enumeration<Locale> locales);
 	
 	public NamedArea getAreaByTdwgAbbreviation(String tdwgAbbreviation);
 	

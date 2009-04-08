@@ -12,7 +12,9 @@ package eu.etaxonomy.cdm.api.service;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Enumeration;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -161,6 +163,10 @@ public class TermServiceImpl extends ServiceBase<DefinedTermBase,IDefinedTermDao
 	
 	public Language getLanguageByIso(String iso639) {
 		return dao.getLanguageByIso(iso639);
+	}
+	
+	public List<Language> getLanguagesByLocale(Enumeration<Locale> locales){
+		return dao.getLanguagesByLocale(locales);
 	}
 	
 	@Transactional(readOnly = false)
