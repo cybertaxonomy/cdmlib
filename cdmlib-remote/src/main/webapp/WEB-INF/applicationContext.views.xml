@@ -99,6 +99,12 @@
                 </entry>
             </map>
         </property>
+        <property name="excludes">
+            <list value-type="java.lang.String">
+                <value>id</value>
+                <value>cacheStrategy</value>
+            </list>
+        </property>
         <property name="ignoreJPATransient" value="true" />
     </bean> 
     
@@ -119,6 +125,9 @@
                 </entry>
                 <entry key="eu.etaxonomy.cdm.model.name.TaxonNameBase">
                         <bean class="eu.etaxonomy.cdm.remote.json.processor.TaxonNameBaseBeanProcessor"/>
+                </entry>   
+                <entry key="eu.etaxonomy.cdm.model.common.TermBase">
+                        <bean class="eu.etaxonomy.cdm.remote.json.processor.TermBaseBeanProcessor"/>
                 </entry>   
             </map>
         </property>
@@ -151,6 +160,7 @@
                 <value>id</value>
                 <value>annotations</value>
                 <value>cacheStrategy</value>
+                <value>markers</value>
             </list>
         </property>
         

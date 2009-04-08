@@ -19,8 +19,8 @@
  		 
     </bean>
 
-	<bean id="datasourceContextHandlerInterceptor" class="eu.etaxonomy.cdm.remote.controller.interceptor.DatasourceContextHandlerInterceptor">
-    </bean>
+	<bean id="datasourceContextHandlerInterceptor" class="eu.etaxonomy.cdm.remote.controller.interceptor.DatasourceContextHandlerInterceptor"/>
+    <bean id="localeContextHandlerInterceptor" class="eu.etaxonomy.cdm.remote.controller.interceptor.LocaleContextHandlerInterceptor"/>
     <bean id="contentNegociationHandlerInterceptor" class="eu.etaxonomy.cdm.remote.controller.interceptor.ContentNegociationHandlerInterceptor">
         <property name="mapping">
             <map>
@@ -39,6 +39,7 @@
             <list>
                 <ref bean="datasourceContextHandlerInterceptor" />
                 <ref bean="contentNegociationHandlerInterceptor" />
+                <ref bean="localeContextHandlerInterceptor" />
             </list>
         </property>         
     </bean>
