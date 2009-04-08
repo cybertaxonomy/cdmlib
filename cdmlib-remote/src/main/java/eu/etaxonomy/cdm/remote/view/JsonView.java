@@ -9,14 +9,10 @@
 */
 package eu.etaxonomy.cdm.remote.view;
 
-import java.io.BufferedWriter;
-import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-import java.io.Writer;
 import java.util.Collection;
 import java.util.Map;
 
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -26,12 +22,8 @@ import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
 import net.sf.json.xml.XMLSerializer;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.Logger;
 import org.springframework.web.servlet.View;
-
-import eu.etaxonomy.cdm.remote.json.CdmJsonConfig;
 
 
 public class JsonView extends BaseView implements View{
