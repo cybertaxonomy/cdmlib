@@ -39,16 +39,14 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 {
 	public static final Logger logger = Logger.getLogger(TaxonPortalController.class);
 	
-	private static List<String> taxonInititialization;
-	
-	static{
-		taxonInititialization = Arrays.asList(new String []{
-				"*",
-				"name.*",
-				"name.nomenclaturalReference.authorTeam.*",
-				"name.homotypicalGroup.typifiedNames.*",
-				"synonymRelations.*"});
-	}
+	private static final List<String> TAXON_INIT_STRATEGY = Arrays.asList(new String []{
+			"*",
+			"name.*",
+			"name.nomenclaturalReference.authorTeam.*",
+			"name.homotypicalGroup.typifiedNames.*",
+			"name.status.type.representations",
+			"name.rank.representations",
+			"synonymRelations.*"});
 	
 	public TaxonPortalController(){
 		super();
@@ -73,7 +71,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 			UUID uuid = readValueUuid(request);
 			Assert.notNull(uuid, HttpStatusMessage.UUID_NOT_FOUND.toString());
 			
-			tb = service.load(uuid, taxonInititialization);
+			tb = service.load(uuid, TAXON_INIT_STRATEGY);
 			Assert.notNull(tb, HttpStatusMessage.UUID_NOT_FOUND.toString());
 		} catch (IllegalArgumentException iae) {
 			HttpStatusMessage.fromString(iae.getMessage()).send(response);

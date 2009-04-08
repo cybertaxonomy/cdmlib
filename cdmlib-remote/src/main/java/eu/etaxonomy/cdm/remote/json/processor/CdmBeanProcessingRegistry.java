@@ -20,8 +20,9 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 /**
  * @author a.kohlbecker
  * @date 30.03.2009
- *
+ * @deprecated class is not beeing used but kept as reference
  */
+@Deprecated
 public class CdmBeanProcessingRegistry extends CycleSetAcess {
 	
 	public static final Logger logger = Logger.getLogger(CdmBeanProcessingRegistry.class);

@@ -78,10 +78,10 @@ public abstract class AbstractCdmBeanProcessor<T extends CdmBase>{
 	            }
 	            if(Collection.class.isAssignableFrom(type)){
 	            	JSONArray jsonList = JSONArray.fromObject(value, jsonConfig);
-	            	json.element(key, jsonList);
+	            	json.element(key, jsonList, jsonConfig);
 	            } else if(Object.class.isAssignableFrom(type)){
 	            	JSONObject jsonObj = JSONObject.fromObject(value, jsonConfig);
-	            	json.element(key, jsonObj);
+	            	json.element(key, jsonObj, jsonConfig);
 	            } else {
 	            	throw new JSONException( "Value " + value + " can not be processed.");
 	            }

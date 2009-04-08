@@ -15,6 +15,8 @@ import org.apache.log4j.Logger;
 import org.hibernate.proxy.HibernateProxy;
 
 import net.sf.json.processors.JsonBeanProcessorMatcher;
+import eu.etaxonomy.cdm.model.common.OrderedTermBase;
+import eu.etaxonomy.cdm.model.common.TermBase;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
@@ -29,6 +31,7 @@ public class CdmBeanProcessorMatcher extends JsonBeanProcessorMatcher {
 	/* (non-Javadoc)
 	 * @see net.sf.json.processors.JsonBeanProcessorMatcher#getMatch(java.lang.Class, java.util.Set)
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public Object getMatch(Class target, Set set) {
 		
@@ -39,13 +42,16 @@ public class CdmBeanProcessorMatcher extends JsonBeanProcessorMatcher {
 			}
 			return HibernateProxy.class;
         }
-		if (target.getClass().isAssignableFrom(Taxon.class)) {
+		if (Taxon.class.isAssignableFrom(target)) {
 			return DEFAULT.getMatch(Taxon.class, set);
 		}
-		if (target.getClass().isAssignableFrom(TaxonNameBase.class)) {
+		if (TaxonNameBase.class.isAssignableFrom(target)) {
 			return DEFAULT.getMatch(TaxonNameBase.class, set);
 		}
-
+		if (TermBase.class.isAssignableFrom(target)) {
+			return DEFAULT.getMatch(TermBase.class, set);
+		}
+		
 		return DEFAULT.getMatch(target, set);
 	}
 	

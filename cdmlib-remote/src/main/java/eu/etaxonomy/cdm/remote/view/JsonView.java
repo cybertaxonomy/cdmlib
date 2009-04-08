@@ -28,11 +28,15 @@ import net.sf.json.xml.XMLSerializer;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 import org.springframework.web.servlet.View;
+
+import eu.etaxonomy.cdm.remote.json.CdmJsonConfig;
 
 
 public class JsonView extends BaseView implements View{
-	Log log = LogFactory.getLog(JsonView.class);
+	
+	public static final Logger logger = Logger.getLogger(JsonView.class);
 
 	private JsonConfig jsonConfig;
 	
@@ -61,7 +65,9 @@ public class JsonView extends BaseView implements View{
 	}
 
 	public void setJsonConfig(JsonConfig jsonConfig) {
-		this.jsonConfig = jsonConfig;
+		
+			this.jsonConfig = jsonConfig;
+		
 	}
 	
 	public String getContentType() {
