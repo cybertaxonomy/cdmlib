@@ -11,6 +11,7 @@
 package eu.etaxonomy.cdm.remote.controller;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -21,11 +22,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import eu.etaxonomy.cdm.api.service.AnnotatableServiceBase;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
-import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.persistence.dao.common.IAnnotatableDao;
+import eu.etaxonomy.cdm.model.description.Feature;
 
 /**
  * @author a.kohlbecker
@@ -33,13 +32,13 @@ import eu.etaxonomy.cdm.persistence.dao.common.IAnnotatableDao;
  */
 
 @Controller
-@RequestMapping(value = {"/*/description/*","/*/description/annotation/*"})
-public class DescriptionController extends AnnotatableController<DescriptionBase, IDescriptionService>
+@RequestMapping(value = {"/*/feature/", "/*/feature/*"})
+public class FeatureListController extends BaseController<DescriptionBase, IDescriptionService>
 {
 
-	public DescriptionController(){
+	public FeatureListController(){
 		super();
-		setUuidParameterPattern("^/(?:[^/]+)/description/([^/?#&\\.]+).*");
+		setUuidParameterPattern("^/(?:[^/]+)/feature/([^/?#&\\.]+).*");
 	}
 	
 	/* (non-Javadoc)
@@ -49,6 +48,20 @@ public class DescriptionController extends AnnotatableController<DescriptionBase
 	@Override
 	public void setService(IDescriptionService service) {
 		this.service = service;
+	}
+	
+	@RequestMapping()
+	@Deprecated
+	public DescriptionBase doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		return null;
+	}
+	
+	
+	@RequestMapping(method = RequestMethod.GET)
+	public List<Feature> doGetFeatures(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		
+		List<Feature> obj = service.getFeaturesAll(Arrays.asList(new String[]{"representations"}));
+		return obj;
 	}
 
 }

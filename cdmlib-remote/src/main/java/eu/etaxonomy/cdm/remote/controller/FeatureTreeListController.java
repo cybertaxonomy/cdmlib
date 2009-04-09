@@ -11,19 +11,25 @@
 package eu.etaxonomy.cdm.remote.controller;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import eu.etaxonomy.cdm.api.service.AnnotatableServiceBase;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
+import eu.etaxonomy.cdm.model.description.FeatureNode;
+import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.persistence.dao.common.IAnnotatableDao;
 
@@ -33,13 +39,13 @@ import eu.etaxonomy.cdm.persistence.dao.common.IAnnotatableDao;
  */
 
 @Controller
-@RequestMapping(value = {"/*/description/*","/*/description/annotation/*"})
-public class DescriptionController extends AnnotatableController<DescriptionBase, IDescriptionService>
+@RequestMapping(value = {"/*/featuretree/", "/*/featuretree/*"})
+public class FeatureTreeListController extends BaseController<DescriptionBase, IDescriptionService>
 {
 
-	public DescriptionController(){
+	public FeatureTreeListController(){
 		super();
-		setUuidParameterPattern("^/(?:[^/]+)/description/([^/?#&\\.]+).*");
+		setUuidParameterPattern("^/(?:[^/]+)/featuretree/([^/?#&\\.]+).*");
 	}
 	
 	/* (non-Javadoc)
@@ -49,6 +55,22 @@ public class DescriptionController extends AnnotatableController<DescriptionBase
 	@Override
 	public void setService(IDescriptionService service) {
 		this.service = service;
+	}
+	
+	@RequestMapping()
+	@Deprecated
+	public DescriptionBase doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		return null;
+	}
+	
+	//	public List<FeatureTree> getFeatureTreesAll();
+	//  public List<FeatureNode> getFeatureNodesAll();
+	
+	@RequestMapping(method = RequestMethod.GET)
+	public List<FeatureTree> doGetFeatureTrees(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		
+		List<FeatureTree> obj = service.getFeatureTreesAll();
+		return obj;
 	}
 
 }

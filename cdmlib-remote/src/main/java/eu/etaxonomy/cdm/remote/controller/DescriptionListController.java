@@ -21,7 +21,7 @@ import eu.etaxonomy.cdm.model.description.DescriptionBase;
  * @date 24.03.2009
  */
 @Controller
-@RequestMapping(value = {"/*/description.*", "/*/description"})
+@RequestMapping(value = {"/*/description/"})
 public class DescriptionListController extends BaseListController<DescriptionBase, IDescriptionService> {
 
 	/* (non-Javadoc)

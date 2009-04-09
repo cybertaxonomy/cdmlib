@@ -21,7 +21,7 @@ import eu.etaxonomy.cdm.model.agent.AgentBase;
  * @date 24.03.2009
  */
 @Controller
-@RequestMapping(value = {"/*/agent.*", "/*/agent"})
+@RequestMapping(value = {"/*/agent/"})
 public class AgentListController extends BaseListController<AgentBase, IAgentService> {
 
 	/* (non-Javadoc)

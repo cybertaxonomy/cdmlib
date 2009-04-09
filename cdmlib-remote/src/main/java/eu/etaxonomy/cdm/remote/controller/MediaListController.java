@@ -21,7 +21,7 @@ import eu.etaxonomy.cdm.model.media.Media;
  * @date 24.03.2009
  */
 @Controller
-@RequestMapping(value = {"/*/media.*", "/*/media"})
+@RequestMapping(value = {"/*/media/"})
 public class MediaListController extends BaseListController<Media, IMediaService> {
 
 	/* (non-Javadoc)

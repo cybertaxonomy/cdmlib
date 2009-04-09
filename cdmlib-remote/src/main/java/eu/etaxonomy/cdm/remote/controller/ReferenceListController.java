@@ -21,7 +21,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
  * @date 24.03.2009
  */
 @Controller
-@RequestMapping(value = {"/*/reference.*", "/*/reference"})
+@RequestMapping(value = {"/*/reference/"})
 public class ReferenceListController extends BaseListController<ReferenceBase, IReferenceService> {
 
 	/* (non-Javadoc)
