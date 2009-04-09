@@ -77,7 +77,7 @@ public interface ICdmEntityDao<T extends CdmBase> {
 	 * @throws DataAccessException
 	 */
 	public List<T> list(Integer limit, Integer start) throws DataAccessException;
-
+	
 	/**
 	 * Returns a sublist of CdmBase instances stored in the database. A maximum
 	 * of 'limit' objects are returned, starting at object with index 'start'.
@@ -94,6 +94,30 @@ public interface ICdmEntityDao<T extends CdmBase> {
 	 * @throws DataAccessException
 	 */
 	public <TYPE extends T> List<TYPE> list(Integer limit, Integer start, List<OrderHint> orderHints);
+	
+	/**
+	 * Returns a sublist of CdmBase instances stored in the database. A maximum
+	 * of 'limit' objects are returned, starting at object with index 'start'.
+	 * The bean properties specified by the parameter <code>propertyPaths</code>
+	 * and recursively initialized for each of the entities in the resultset
+	 * 
+	 * For detailed description and examples redarding
+	 * <code>propertyPaths</code> <b>please refer to:</b>
+	 * {@link BeanInitializer#initialize(Object, List)}
+	 * 
+	 * @param limit
+	 *            the maximum number of entities returned (can be null to return
+	 *            all entities)
+	 * @param start
+	 * @param orderHints
+	 *            Supports path like <code>orderHints.propertyNames</code> which
+	 *            include *-to-one properties like createdBy.username or
+	 *            authorTeam.persistentTitleCache
+	 * @param propertyPaths
+	 * @return
+	 * @throws DataAccessException
+	 */
+	public List<T> list(Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
 	
 	/**
 	 * Returns a sublist of CdmBase instances of type <TYPE> stored in the database.
@@ -137,9 +161,10 @@ public interface ICdmEntityDao<T extends CdmBase> {
 	 * <code>propertyPaths</code> parameter.
 	 * <p>
 	 * For detailed description and examples <b>please refer to:</b> 
-	 * {@link BeanInitializer#initializeProperties(Object, List)}
+	 * {@link BeanInitializer#initialize(Object, List)}
 	 * 
 	 * @param uuid
+	 * @param propertyPaths
 	 * @return
 	 */
 	public T load(UUID uuid, List<String> propertyPaths);

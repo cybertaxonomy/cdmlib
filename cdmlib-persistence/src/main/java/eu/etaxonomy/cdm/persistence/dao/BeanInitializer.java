@@ -71,7 +71,10 @@ public interface BeanInitializer {
 	 * @param propertyPaths
 	 *            a List of property names
 	 */
-	public void initializeProperties(Object bean,  List<String> propertyPaths);
+	public void initialize(Object bean,  List<String> propertyPaths);
+	
+	public void initializeAll(List list,  List<String> propertyPaths);
+	
 	
 	/*TODO implement:
 	public void loadBy(UUID uuid);

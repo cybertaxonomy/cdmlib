@@ -177,7 +177,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 		if(bean == null) 
 			return bean;
 		
-		defaultBeanInitializer.initializeProperties(bean, propertyPaths);
+		defaultBeanInitializer.initialize(bean, propertyPaths);
 		
 		return bean;
 	}
@@ -238,6 +238,14 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 		return crit.list(); 
 	}
 	
+	
+	
+	public List<T> list(Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
+		List<T> entities = list(limit, start, orderHints);
+		defaultBeanInitializer.initializeAll(entities, propertyPaths);
+		return entities;
+	}
+
 	public <TYPE extends T> List<TYPE> list(Class<TYPE> type, Integer limit, Integer start) {
 		Criteria crit = getSession().createCriteria(type); 
 		if(limit != null) {

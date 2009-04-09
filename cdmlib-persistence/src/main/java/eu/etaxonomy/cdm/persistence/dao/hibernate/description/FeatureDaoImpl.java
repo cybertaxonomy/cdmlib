@@ -18,6 +18,7 @@ import org.springframework.stereotype.Repository;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.persistence.dao.description.IFeatureDao;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmEntityDaoBase;
+import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 
 @Repository
@@ -33,5 +34,4 @@ public class FeatureDaoImpl extends CdmEntityDaoBase<Feature> implements IFeatur
 		Criteria crit = getSession().createCriteria(type); 
 		return crit.list(); 
 	}
-
 }

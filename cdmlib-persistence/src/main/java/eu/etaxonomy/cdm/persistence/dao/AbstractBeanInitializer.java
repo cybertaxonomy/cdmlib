@@ -90,7 +90,7 @@ public abstract class AbstractBeanInitializer implements BeanInitializer{
 	 * @see eu.etaxonomy.cdm.persistence.dao.BeanInitializer#initializeProperties(java.lang.Object, java.util.List)
 	 */
 	//TODO optimize algorithm ..
-	public void initializeProperties(Object bean, List<String> propertyPaths) {
+	public void initialize(Object bean, List<String> propertyPaths) {
 		
 		Collections.sort(propertyPaths);
 	
@@ -98,6 +98,12 @@ public abstract class AbstractBeanInitializer implements BeanInitializer{
 			initializePropertyPath(bean, propPath);
 		}
 		
+	}
+	
+	public void initializeAll(List list,  List<String> propertyPaths){
+		for(Object bean : list){
+			initialize(bean, propertyPaths);
+		}
 	}
 
 	/**
