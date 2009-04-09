@@ -143,13 +143,14 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		}
 
 		Criteria crit = getSession().createCriteria(Taxon.class);
-		//crit.add(Restrictions.isNull("taxonomicParentCache"));
 		
 		crit.setFetchMode("name", FetchMode.JOIN);
 		crit.createAlias("name", "name");
 		
 		if (rank != null) {
 			crit.add(Restrictions.eq("name.rank", rank));
+		}else{
+			crit.add(Restrictions.isNull("taxonomicParentCache"));
 		}
 
 		if (sec != null){
@@ -157,7 +158,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		}
 
 		if (! cdmFetch.includes(CdmFetch.FETCH_CHILDTAXA())){
-			logger.warn("no child taxa fetch");
+			logger.info("Not fetching child taxa");
 			//TODO overwrite LAZY (SELECT) does not work (bug in hibernate?)
 			crit.setFetchMode("relationsToThisTaxon.fromTaxon", FetchMode.LAZY);
 		}
