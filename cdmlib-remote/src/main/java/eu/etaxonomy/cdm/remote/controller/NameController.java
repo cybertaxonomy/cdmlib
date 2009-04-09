@@ -10,6 +10,8 @@
 
 package eu.etaxonomy.cdm.remote.controller;
 
+import java.util.Arrays;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,6 +34,7 @@ public class NameController extends AnnotatableController<TaxonNameBase, INameSe
 	public NameController(){
 		super();
 		setUuidParameterPattern("^/(?:[^/]+)/name/([^/?#&\\.]+).*");
+		setInitializationStrategy(Arrays.asList(new String[]{"$"}));
 	}
 	
 	/* (non-Javadoc)

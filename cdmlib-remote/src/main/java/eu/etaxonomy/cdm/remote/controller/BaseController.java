@@ -11,6 +11,7 @@
 package eu.etaxonomy.cdm.remote.controller;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -46,12 +47,18 @@ public abstract class BaseController<T extends CdmBase, SERVICE extends IService
 	
 	protected Pattern uuidParameterPattern = null;
 	
+	protected List<String> initializationStrategy = null;
+
+	public abstract void setService(SERVICE service);
+	
 	protected void setUuidParameterPattern(String pattern){
 		uuidParameterPattern = Pattern.compile(pattern);
 	}
 	
-	public abstract void setService(SERVICE service);
-	
+	public void setInitializationStrategy(List<String> initializationStrategy) {
+		this.initializationStrategy = initializationStrategy;
+	}
+
 	/**@InitBinder
     public void initBinder(WebDataBinder binder) {
 		binder.registerCustomEditor(UUID.class, new UUIDPropertyEditor());
@@ -85,7 +92,11 @@ public abstract class BaseController<T extends CdmBase, SERVICE extends IService
 			UUID uuid = readValueUuid(request);
 			Assert.notNull(uuid, HttpStatusMessage.UUID_MISSING.toString());
 			
-			obj = service.findByUuid(uuid);
+			if(initializationStrategy != null){
+				obj = service.load(uuid, initializationStrategy);
+			} else {				
+				obj = service.findByUuid(uuid);
+			}
 			Assert.notNull(obj, HttpStatusMessage.UUID_NOT_FOUND.toString());
 			
 		} catch (IllegalArgumentException iae) {

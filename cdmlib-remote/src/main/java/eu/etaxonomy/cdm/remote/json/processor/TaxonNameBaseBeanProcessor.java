@@ -35,7 +35,7 @@ import net.sf.json.processors.JsonBeanProcessor;
  * @author a.kohlbecker
  *
  */
-public class TaxonNameBaseBeanProcessor extends AbstractCdmBeanProcessor<TaxonNameBase> implements JsonBeanProcessor {
+public class TaxonNameBaseBeanProcessor extends AbstractCdmBeanProcessor<TaxonNameBase> {
 
 	public static final Logger logger = Logger.getLogger(TaxonNameBaseBeanProcessor.class);
 

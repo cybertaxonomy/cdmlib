@@ -24,13 +24,16 @@
      <!-- default configuration for RESTful read(/write) service -->
     <bean name="jsonConfig" class="eu.etaxonomy.cdm.remote.json.JsonConfigFactoryBean" init-method="init">
         <property name="jsonBeanProcessorMatcher">
-            <bean class="eu.etaxonomy.cdm.remote.json.processor.HibernateProxyBeanProcessorMatcher"/>
+            <bean class="eu.etaxonomy.cdm.remote.json.processor.CdmProxyBeanProcessorMatcher" />
         </property>
-          <property name="jsonBeanProcessors">
+        <property name="jsonBeanProcessors">
 			<map>
 				<entry key="org.hibernate.proxy.HibernateProxy">
 	                    <bean class="eu.etaxonomy.cdm.remote.json.processor.HibernateProxyBeanProcessor"/>
 	            </entry>
+	            <entry key="eu.etaxonomy.cdm.model.common.TermBase">
+                    <bean class="eu.etaxonomy.cdm.remote.json.processor.TermBaseBeanProcessor" />
+                </entry> 
             </map>
         </property>
         <property name="jsonPropertyFilters">
@@ -112,8 +115,7 @@
     
     <bean name="jsonConfigPortal" class="eu.etaxonomy.cdm.remote.json.JsonConfigFactoryBean" init-method="init">
         <property name="jsonBeanProcessorMatcher">
-            <!-- <bean class="eu.etaxonomy.cdm.remote.json.processor.HibernateProxyBeanProcessorMatcher"/> -->
-            <bean class="eu.etaxonomy.cdm.remote.json.processor.CdmBeanProcessorMatcher"/>
+            <bean class="eu.etaxonomy.cdm.remote.json.processor.CdmProxyBeanProcessorMatcher"/>
         </property>
           <property name="jsonBeanProcessors">
             <map>
@@ -127,7 +129,9 @@
                         <bean class="eu.etaxonomy.cdm.remote.json.processor.TaxonNameBaseBeanProcessor"/>
                 </entry>   
                 <entry key="eu.etaxonomy.cdm.model.common.TermBase">
-                        <bean class="eu.etaxonomy.cdm.remote.json.processor.TermBaseBeanProcessor"/>
+                        <bean class="eu.etaxonomy.cdm.remote.json.processor.TermBaseBeanProcessor">
+                        	<property name="replaceRepresentations" value="true" />
+                        </bean>
                 </entry>   
             </map>
         </property>

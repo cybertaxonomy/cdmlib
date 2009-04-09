@@ -17,8 +17,8 @@ import net.sf.json.processors.JsonValueProcessor;
 import org.apache.log4j.Logger;
 
 public class UUIDJSONValueProcessor implements JsonValueProcessor {
-	private static final Logger logger = Logger
-			.getLogger(UUIDJSONValueProcessor.class);
+	
+	private static final Logger logger = Logger.getLogger(UUIDJSONValueProcessor.class);
 
 	public Object processArrayValue(Object obj, JsonConfig jsonConfig) {
 		logger.debug("Processing UUID");

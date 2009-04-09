@@ -36,6 +36,9 @@ import eu.etaxonomy.cdm.model.description.Feature;
 public class FeatureListController extends BaseController<DescriptionBase, IDescriptionService>
 {
 
+	private static final List<String> FEATURE_INIT_STRATEGY = Arrays.asList(new String[]{"representations"});
+
+
 	public FeatureListController(){
 		super();
 		setUuidParameterPattern("^/(?:[^/]+)/feature/([^/?#&\\.]+).*");
@@ -60,7 +63,7 @@ public class FeatureListController extends BaseController<DescriptionBase, IDesc
 	@RequestMapping(method = RequestMethod.GET)
 	public List<Feature> doGetFeatures(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		
-		List<Feature> obj = service.getFeaturesAll(Arrays.asList(new String[]{"representations"}));
+		List<Feature> obj = service.getFeaturesAll(FEATURE_INIT_STRATEGY);
 		return obj;
 	}
 

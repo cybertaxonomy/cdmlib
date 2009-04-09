@@ -10,6 +10,8 @@
 
 package eu.etaxonomy.cdm.remote.controller;
 
+import java.util.Arrays;
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -34,6 +36,7 @@ public class TaxonController extends AnnotatableController<TaxonBase, ITaxonServ
 	public TaxonController(){
 		super();
 		setUuidParameterPattern("^/(?:[^/]+)/taxon/([^/?#&\\.]+).*");
+		setInitializationStrategy(Arrays.asList(new String[]{"$","name.nomenclaturalReference"}));
 	}
 	
 	/* (non-Javadoc)

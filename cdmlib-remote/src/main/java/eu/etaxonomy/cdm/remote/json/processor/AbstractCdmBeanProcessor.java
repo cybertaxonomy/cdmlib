@@ -23,6 +23,7 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONException;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
+import net.sf.json.processors.JsonBeanProcessor;
 import net.sf.json.processors.JsonValueProcessor;
 import net.sf.json.processors.JsonVerifier;
 import net.sf.json.util.PropertyFilter;
@@ -34,14 +35,14 @@ import eu.etaxonomy.cdm.persistence.dao.AbstractBeanInitializer;
  * @date 30.03.2009
  *
  */
-public abstract class AbstractCdmBeanProcessor<T extends CdmBase>{
+public abstract class AbstractCdmBeanProcessor<T extends CdmBase> implements JsonBeanProcessor{
 	
 	public static final Logger logger = Logger.getLogger(AbstractCdmBeanProcessor.class);
 	
 	public final JSONObject processBean(Object bean, JsonConfig jsonConfig) {
 
 		if(logger.isDebugEnabled()){
-			logger.debug("processing " + bean);
+			logger.debug("processing " + bean.getClass());
 		}
 		
 		JSONObject json =  new JSONObject();

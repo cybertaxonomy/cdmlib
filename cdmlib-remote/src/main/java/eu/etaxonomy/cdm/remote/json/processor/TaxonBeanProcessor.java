@@ -26,7 +26,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
  * @author a.kohlbecker
  *
  */
-public class TaxonBeanProcessor extends AbstractCdmBeanProcessor<Taxon> implements JsonBeanProcessor {
+public class TaxonBeanProcessor extends AbstractCdmBeanProcessor<Taxon> {
 
 	public static final Logger logger = Logger.getLogger(TaxonBeanProcessor.class);
 

@@ -21,12 +21,14 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 /**
+ * can handle HibernateProxys
+ * 
  * @author a.kohlbecker
  *
  */
-public class CdmBeanProcessorMatcher extends JsonBeanProcessorMatcher {
+public class CdmProxyBeanProcessorMatcher extends JsonBeanProcessorMatcher {
 
-	public static final Logger logger = Logger.getLogger(CdmBeanProcessorMatcher.class);
+	public static final Logger logger = Logger.getLogger(CdmProxyBeanProcessorMatcher.class);
 	
 	/* (non-Javadoc)
 	 * @see net.sf.json.processors.JsonBeanProcessorMatcher#getMatch(java.lang.Class, java.util.Set)

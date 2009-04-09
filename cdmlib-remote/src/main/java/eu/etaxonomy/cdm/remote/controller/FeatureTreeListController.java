@@ -11,6 +11,7 @@
 package eu.etaxonomy.cdm.remote.controller;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -43,6 +44,13 @@ import eu.etaxonomy.cdm.persistence.dao.common.IAnnotatableDao;
 public class FeatureTreeListController extends BaseController<DescriptionBase, IDescriptionService>
 {
 
+	private static final List<String> FEATURETREE_INIT_STRATEGY = Arrays.asList(
+				new String[]{
+					"representations",
+					"root.feature.representations",
+					"root.children.feature.representations",
+				});
+
 	public FeatureTreeListController(){
 		super();
 		setUuidParameterPattern("^/(?:[^/]+)/featuretree/([^/?#&\\.]+).*");
@@ -69,7 +77,7 @@ public class FeatureTreeListController extends BaseController<DescriptionBase, I
 	@RequestMapping(method = RequestMethod.GET)
 	public List<FeatureTree> doGetFeatureTrees(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		
-		List<FeatureTree> obj = service.getFeatureTreesAll();
+		List<FeatureTree> obj = service.getFeatureTreesAll(FEATURETREE_INIT_STRATEGY);
 		return obj;
 	}
 

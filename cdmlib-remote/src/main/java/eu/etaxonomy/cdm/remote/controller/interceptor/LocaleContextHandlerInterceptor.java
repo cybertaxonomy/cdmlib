@@ -16,7 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
-import eu.etaxonomy.cdm.remote.i18n.LocaleContext;
+import eu.etaxonomy.cdm.remote.l10n.LocaleContext;
 
 /**
  * @author a.kohlbecker

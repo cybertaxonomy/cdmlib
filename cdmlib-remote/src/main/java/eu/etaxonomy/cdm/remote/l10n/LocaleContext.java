@@ -1,4 +1,4 @@
-package eu.etaxonomy.cdm.remote.i18n;
+package eu.etaxonomy.cdm.remote.l10n;
 
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -16,7 +16,14 @@ import eu.etaxonomy.cdm.model.common.Language;
 @Component
 public class LocaleContext {
 	
-	protected static ThreadLocal<Vector<Locale>> localesHolder = new ThreadLocal<Vector<Locale>>();
+	protected static ThreadLocal<Vector<Locale>> localesHolder = new ThreadLocal<Vector<Locale>>(){
+
+		@Override
+		protected Vector<Locale> initialValue() {
+			return new Vector<Locale>();
+		}
+		
+	};
 	
 	protected static Hashtable<String, List<Language>> languageMap = new Hashtable<String, List<Language>>(); 
 	
