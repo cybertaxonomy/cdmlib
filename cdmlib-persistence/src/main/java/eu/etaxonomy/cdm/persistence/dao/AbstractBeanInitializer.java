@@ -142,7 +142,7 @@ public abstract class AbstractBeanInitializer implements BeanInitializer{
 			try {
 				Object proxy = PropertyUtils.getProperty( bean, property);
 				initializeInstance(proxy);
-				if(nestedPath != null){
+				if(proxy != null && nestedPath != null){
 					if (Collection.class.isAssignableFrom(proxy.getClass())) {
 						for (Object entrybean : (Collection) proxy) {
 							initializePropertyPath(entrybean, nestedPath);
