@@ -10,8 +10,6 @@
 
 package eu.etaxonomy.cdm.persistence.hibernate;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Vector;
 
 import org.apache.log4j.Logger;
@@ -68,7 +66,7 @@ public class CdmPostDataChangeObservableListener
 	/**
 	 * DataChangeEvents get stored in this list for delayed propagation
 	 */
-	private List<CdmDataChangeEvent> changeEvents;
+	private CdmDataChangeMap changeEvents;
 	
 	/**
 	 * Observing objects 
@@ -122,12 +120,12 @@ public class CdmPostDataChangeObservableListener
 		for( ICdmPostDataChangeObserver observer : observers){
 			if(delayed){
 				// store event for delayed propagation
-				changeEvents.add(event);
+				changeEvents.add(event.getEventType(), event);
 			}else{
 				// propagate event directly
-				List<CdmDataChangeEvent> tmpList = new ArrayList<CdmDataChangeEvent>();
-				tmpList.add(event);
-				observer.update(tmpList);
+				CdmDataChangeMap tmpMap = new CdmDataChangeMap();
+				tmpMap.add(event.getEventType(), event);
+				observer.update(tmpMap);
 			}
 		}
 	}
@@ -180,7 +178,7 @@ public class CdmPostDataChangeObservableListener
 	 */
 	public void setDelayed(boolean delayed) {
 		if(delayed && changeEvents == null){
-			changeEvents = new ArrayList<CdmDataChangeEvent>();
+			changeEvents = new CdmDataChangeMap();
 		}
 		this.delayed = delayed;
 	}

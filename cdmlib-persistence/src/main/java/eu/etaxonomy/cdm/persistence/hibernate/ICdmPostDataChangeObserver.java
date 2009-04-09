@@ -27,5 +27,5 @@ public interface ICdmPostDataChangeObserver {
 	/**
 	 * gets called when the observable objects notifies its observers
 	 */
-	public void update(List<CdmDataChangeEvent> changeEvents);
+	public void update(CdmDataChangeMap changeEvents);
 }
