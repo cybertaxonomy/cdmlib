@@ -24,6 +24,7 @@ import eu.etaxonomy.cdm.api.service.IAgentService;
 import eu.etaxonomy.cdm.api.service.ICommonService;
 import eu.etaxonomy.cdm.api.service.IDatabaseService;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
+import eu.etaxonomy.cdm.api.service.ILocationService;
 import eu.etaxonomy.cdm.api.service.IMediaService;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
@@ -75,6 +76,8 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
 	@Autowired
 	//@Qualifier("commonService")
 	private ICommonService commonService;
+	@Autowired
+	private ILocationService locationService;
 //	@Autowired
 	//@Qualifier("mainService")
 	private IService<CdmBase> mainService;
@@ -82,6 +85,7 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
 	private SessionFactory sessionFactory;
 	@Autowired
 	private DataSource dataSource;
+
 	
 	/**
 	 * 
@@ -154,6 +158,13 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
 	}
 	
 	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getLocationService()
+	 */
+	public ILocationService getLocationService() {
+		return this.locationService;
+	}
+	
+	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getCommonService()
 	 */
 	public IService<CdmBase> getMainService(){
@@ -173,7 +184,6 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
 	public ConversationHolder NewConversation() {
 		// TODO make this a prototype
 		return new ConversationHolder(dataSource, sessionFactory, transactionManager);
-	}
-
+	}	
 	
 }

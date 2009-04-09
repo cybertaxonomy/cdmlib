@@ -181,5 +181,4 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
      * @return a Pager containing media instances
      */
     public Pager<Media> getMedia(DescriptionElementBase descriptionElement, Integer pageSize, Integer pageNumber);
-	
 }

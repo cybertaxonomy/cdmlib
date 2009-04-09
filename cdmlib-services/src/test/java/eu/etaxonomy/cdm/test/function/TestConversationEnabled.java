@@ -10,14 +10,14 @@
 
 package eu.etaxonomy.cdm.test.function;
 
-import java.util.List;
-import java.util.Observable;
+import java.util.Collection;
 
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.conversation.ConversationHolder;
 import eu.etaxonomy.cdm.api.conversation.IConversationEnabled;
 import eu.etaxonomy.cdm.persistence.hibernate.CdmDataChangeEvent;
+import eu.etaxonomy.cdm.persistence.hibernate.CdmDataChangeMap;
 
 /**
  * @author n.hoffmann
@@ -38,20 +38,14 @@ public class TestConversationEnabled implements IConversationEnabled {
 		return null;
 	}
 
+
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.persistence.hibernate.ICdmPostCrudObserver#update(eu.etaxonomy.cdm.persistence.hibernate.CdmCrudEvent)
+	 * @see eu.etaxonomy.cdm.persistence.hibernate.ICdmPostDataChangeObserver#update(eu.etaxonomy.cdm.persistence.hibernate.CdmDataChangeMap)
 	 */
-	public void update(List<CdmDataChangeEvent> events) {
+	public void update(CdmDataChangeMap changeEvents) {
+		Collection<CdmDataChangeEvent> events = changeEvents.getAllEvents();
 		for(CdmDataChangeEvent event : events){
 			logger.warn("CdmCrudEvent fired: " + event.getEventType() + " : " + event.getEntity());
 		}
-	}
-
-	/* (non-Javadoc)
-	 * @see java.util.Observer#update(java.util.Observable, java.lang.Object)
-	 */
-	public void update(Observable o, Object arg) {
-		// TODO Auto-generated method stub
-		
 	}
 }

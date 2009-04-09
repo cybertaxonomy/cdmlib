@@ -34,6 +34,7 @@ import eu.etaxonomy.cdm.api.service.IAgentService;
 import eu.etaxonomy.cdm.api.service.ICommonService;
 import eu.etaxonomy.cdm.api.service.IDatabaseService;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
+import eu.etaxonomy.cdm.api.service.ILocationService;
 import eu.etaxonomy.cdm.api.service.IMediaService;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
@@ -327,6 +328,10 @@ public class CdmApplicationController {
 
 	public final ICommonService getCommonService(){
 		return configuration.getCommonService();
+	}
+	
+	public final ILocationService getLocationService(){
+		return configuration.getLocationService();
 	}
 	
 	public final IService<CdmBase> getMainService(){
