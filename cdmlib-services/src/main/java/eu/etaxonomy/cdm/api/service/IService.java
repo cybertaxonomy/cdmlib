@@ -175,7 +175,7 @@ public interface IService<T extends CdmBase>{
 	 * <code>propertyPaths</code> parameter.
 	 * <p>
 	 * For detailed description and examples <b>please refer to:</b> 
-	 * {@link BeanInitializer#initializeProperties(Object, List)}
+	 * {@link BeanInitializer#initialize(Object, List)}
 	 * 
 	 * @param uuid
 	 * @return

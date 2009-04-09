@@ -72,6 +72,12 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
 	
 	public List<FeatureTree> getFeatureTreesAll();
 	public List<FeatureNode> getFeatureNodesAll();
+	public List<Feature> getFeaturesAll();
+	
+	public List<FeatureTree> getFeatureTreesAll(List<String> propertyPaths);
+	public List<FeatureNode> getFeatureNodesAll(List<String> propertyPaths);
+	public List<Feature> getFeaturesAll(List<String> propertyPaths);
+	
 	
 	public TermVocabulary<Feature> getDefaultFeatureVocabulary();
 	//public TermVocabulary<Feature> getFeatureVocabulary();

@@ -44,6 +44,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.persistence.dao.common.ITermVocabularyDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionElementDao;
+import eu.etaxonomy.cdm.persistence.dao.description.IFeatureDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IFeatureNodeDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IFeatureTreeDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IStatisticalMeasurementValueDao;
@@ -62,6 +63,7 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
 	protected IDescriptionElementDao descriptionElementDao;
 	protected IFeatureTreeDao featureTreeDao;
 	protected IFeatureNodeDao featureNodeDao;
+	protected IFeatureDao featureDao;
 	protected ITermVocabularyDao vocabularyDao;
 	protected IStatisticalMeasurementValueDao statisticalMeasurementValueDao;
 	
@@ -73,6 +75,11 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
 	@Autowired
 	protected void setFeatureNodeDao(IFeatureNodeDao featureNodeDao) {
 		this.featureNodeDao = featureNodeDao;
+	}
+	
+	@Autowired
+	protected void setFeatureDao(IFeatureDao featureDao) {
+		this.featureDao = featureDao;
 	}
 	
 	@Autowired
@@ -196,6 +203,20 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
 	
 	public List<FeatureNode> getFeatureNodesAll() {
 		return featureNodeDao.list();
+	}
+	
+	public List<Feature> getFeaturesAll() {
+		return featureDao.list();
+	}
+	
+	public List<FeatureTree> getFeatureTreesAll(List<String> propertyPaths){
+		return featureTreeDao.list(null, null, null, propertyPaths);
+	}
+	public List<FeatureNode> getFeatureNodesAll(List<String> propertyPaths){
+		return featureNodeDao.list(null, null, null, propertyPaths);
+	}
+	public List<Feature> getFeaturesAll(List<String> propertyPaths){
+		return featureDao.list(null, null, null, propertyPaths);
 	}
 
 	@Autowired
