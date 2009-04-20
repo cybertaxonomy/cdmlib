@@ -35,7 +35,7 @@ import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.name.TypeDesignationStatus;
+import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEventType;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationModifier;
 import eu.etaxonomy.cdm.model.occurrence.PreservationMethod;
@@ -57,8 +57,7 @@ public class DefaultTermInitializer implements ITermInitializer {
 		Continent.class,
 		WaterbodyOrCountry.class,
 		Rank.class,
-		TypeDesignationStatus.class,
-//		NameTypeDesignationStatus.class,
+		SpecimenTypeDesignationStatus.class,
 		NomenclaturalStatusType.class,
 		SynonymRelationshipType.class,
 		HybridRelationshipType.class,
@@ -79,6 +78,7 @@ public class DefaultTermInitializer implements ITermInitializer {
 		DeterminationModifier.class,
 		StatisticalMeasure.class,
 		RightsTerm.class
+//		NameTypeDesignationStatus.class
 	};
 	
 	public void initialize() {

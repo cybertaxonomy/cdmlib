@@ -51,14 +51,14 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 @XmlType(name = "TypeDesignationBase", propOrder = {
     "typifiedNames",
     "homotypicalGroup",
-    "notDesignated"
+    "notDesignated",
+    "typeStatus"
 })
 @Entity
 @Audited
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
-public abstract class TypeDesignationBase extends ReferencedEntityBase implements ITypeDesignation {
+public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase> extends ReferencedEntityBase implements ITypeDesignation {
 	private static final Logger logger = Logger.getLogger(TypeDesignationBase.class);
-
 
 	@XmlElement(name = "IsNotDesignated")
 	private boolean notDesignated;
@@ -77,6 +77,12 @@ public abstract class TypeDesignationBase extends ReferencedEntityBase implement
 	@ManyToOne(fetch = FetchType.LAZY)
 	@Cascade(CascadeType.SAVE_UPDATE)
 	private HomotypicalGroup homotypicalGroup;
+
+	@XmlElement(name = "TypeStatus")
+	@XmlIDREF
+	@XmlSchemaType(name = "IDREF")
+	@ManyToOne(fetch = FetchType.LAZY)
+	private T typeStatus;
 
 // **************** CONSTRUCTOR *************************************/
 
@@ -112,6 +118,22 @@ public abstract class TypeDesignationBase extends ReferencedEntityBase implement
 	
 // **************** METHODS *************************************/
 
+
+	/** 
+	 * Returns the {@link SpecimenTypeDesignationStatus type designation status} for <i>this</i> specimen type
+	 * designation. This status describes which of the possible categories of
+	 * types like "holotype", "neotype", "syntype" or "isotype" applies to <i>this</i>
+	 * specimen type designation.
+	 */
+	public T getTypeStatus(){
+		return this.typeStatus;
+	}
+	/**
+	 * @see  #getTypeStatus()
+	 */
+	public void setTypeStatus(T typeStatus){
+		this.typeStatus = typeStatus;
+	}
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.name.ITypeDesignation#getHomotypicalGroup()

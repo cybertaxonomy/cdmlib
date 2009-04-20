@@ -28,7 +28,7 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.name.TypeDesignationStatus;
+import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 
 /**
  * @author m.doering
@@ -49,7 +49,7 @@ import eu.etaxonomy.cdm.model.name.TypeDesignationStatus;
 	NamedAreaLevel.class,
 	NomenclaturalStatusType.class,
 	Rank.class,
-	TypeDesignationStatus.class
+	SpecimenTypeDesignationStatus.class
 })
 @Entity
 @Audited

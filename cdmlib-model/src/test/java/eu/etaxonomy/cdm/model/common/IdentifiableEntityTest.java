@@ -60,7 +60,7 @@ public class IdentifiableEntityTest {
 
 		abies = NonViralName.NewInstance(Rank.GENUS(), null);
 		abies.setNameCache("Abies");
-		//abies.setTitleCache("Abies");
+		abies.setTitleCache("Abies");
 		
 		abiesMill = NonViralName.NewInstance(Rank.GENUS(), null);
 		abiesMill.setNameCache("Abies");

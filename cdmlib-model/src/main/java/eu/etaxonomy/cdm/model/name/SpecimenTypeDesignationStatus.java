@@ -53,41 +53,45 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
 @XmlType(name = "TypeDesignationStatus")
 @Entity
 @Audited
-public class TypeDesignationStatus extends OrderedTermBase<TypeDesignationStatus> {
-	static Logger logger = Logger.getLogger(TypeDesignationStatus.class);
+public class SpecimenTypeDesignationStatus extends TypeDesignationStatusBase<SpecimenTypeDesignationStatus> {
+	static Logger logger = Logger.getLogger(SpecimenTypeDesignationStatus.class);
 
-	private static TypeDesignationStatus PHOTOTYPE;
+	private static SpecimenTypeDesignationStatus PHOTOTYPE;
 
-	private static TypeDesignationStatus ICONOTYPE;
+	private static SpecimenTypeDesignationStatus ICONOTYPE;
 
-	private static TypeDesignationStatus ISOEPITYPE;
+	private static SpecimenTypeDesignationStatus ISOEPITYPE;
 
-	private static TypeDesignationStatus PARALECTOTYPE;
+	private static SpecimenTypeDesignationStatus PARALECTOTYPE;
 
-	private static TypeDesignationStatus SECOND_STEP_NEOTYPE;
+	private static SpecimenTypeDesignationStatus SECOND_STEP_NEOTYPE;
 
-	private static TypeDesignationStatus SECOND_STEP_LECTOTYPE;
+	private static SpecimenTypeDesignationStatus SECOND_STEP_LECTOTYPE;
 
-	private static TypeDesignationStatus PARANEOTYPE;
+	private static SpecimenTypeDesignationStatus PARANEOTYPE;
 
-	private static TypeDesignationStatus ISONEOTYPE;
+	private static SpecimenTypeDesignationStatus ISONEOTYPE;
 
-	private static TypeDesignationStatus ISOLECTOTYPE;
+	private static SpecimenTypeDesignationStatus ISOLECTOTYPE;
 
-	private static TypeDesignationStatus PARATYPE;
+	private static SpecimenTypeDesignationStatus PARATYPE;
 
-	private static TypeDesignationStatus SYNTYPE;
+	private static SpecimenTypeDesignationStatus SYNTYPE;
 
-	private static TypeDesignationStatus ISOTYPE;
+	private static SpecimenTypeDesignationStatus ISOTYPE;
 
-	private static TypeDesignationStatus EPITYPE;
+	private static SpecimenTypeDesignationStatus EPITYPE;
 
-	private static TypeDesignationStatus NEOTYPE;
+	private static SpecimenTypeDesignationStatus NEOTYPE;
 
-	private static TypeDesignationStatus LECTOTYPE;
+	private static SpecimenTypeDesignationStatus LECTOTYPE;
 
-	private static TypeDesignationStatus HOLOTYPE;
+	private static SpecimenTypeDesignationStatus HOLOTYPE;
 
+	private static SpecimenTypeDesignationStatus UNSPECIFIC;
+	
+	private static SpecimenTypeDesignationStatus ORIGINAL_MATERIAL;
+	
 	private static final UUID uuidHolotype = UUID.fromString("a407dbc7-e60c-46ff-be11-eddf4c5a970d");
 	private static final UUID uuidLectotype = UUID.fromString("05002d46-083e-4b27-8731-2e7c28a8825c");
 	private static final UUID uuidNeotype = UUID.fromString("26e13359-8f77-4e40-a85a-56c01782fce0");
@@ -104,6 +108,8 @@ public class TypeDesignationStatus extends OrderedTermBase<TypeDesignationStatus
 	private static final UUID uuidIsoepitype = UUID.fromString("95b90696-e103-4bc0-b60b-c594983fb566");
 	private static final UUID uuidIconotype = UUID.fromString("643513d0-32f5-46ba-840b-d9b9caf8160f");
 	private static final UUID uuidPhototype = UUID.fromString("b7807acc-f559-474e-ad4a-e7a41e085e34");
+	private static final UUID uuidUnspecific = UUID.fromString("230fd762-b143-49de-ac2e-744bcc48a63b");
+	private static final UUID uuidOriginalMaterial = UUID.fromString("230fd762-b143-49de-ac2e-744bcc48a63b");
 
 	
 	// ************* CONSTRUCTORS *************/	
@@ -112,8 +118,7 @@ public class TypeDesignationStatus extends OrderedTermBase<TypeDesignationStatus
 	 * 
 	 * @see 	#TypeDesignationStatus(String, String, String)
 	 */
-	public TypeDesignationStatus() {
-		super();
+	public SpecimenTypeDesignationStatus() {
 	}
 
 
@@ -130,7 +135,7 @@ public class TypeDesignationStatus extends OrderedTermBase<TypeDesignationStatus
 	 * 						 new type designation status to be created
 	 * @see 				 #TypeDesignationStatus()
 	 */
-	public TypeDesignationStatus(String term, String label, String labelAbbrev) {
+	public SpecimenTypeDesignationStatus(String term, String label, String labelAbbrev) {
 		super(term, label, labelAbbrev);
 	}
 
@@ -173,7 +178,7 @@ public class TypeDesignationStatus extends OrderedTermBase<TypeDesignationStatus
 	 * 
 	 * @see		NameRelationshipType#VALIDATED_BY_NAME()
 	 */
-	public static final TypeDesignationStatus HOLOTYPE(){
+	public static final SpecimenTypeDesignationStatus HOLOTYPE(){
 		return HOLOTYPE;
 	}
 
@@ -187,7 +192,7 @@ public class TypeDesignationStatus extends OrderedTermBase<TypeDesignationStatus
 	 * 
 	 * @see	#HOLOTYPE()
 	 */
-	public static final TypeDesignationStatus LECTOTYPE(){
+	public static final SpecimenTypeDesignationStatus LECTOTYPE(){
 		return LECTOTYPE;
 	}
 
@@ -199,7 +204,7 @@ public class TypeDesignationStatus extends OrderedTermBase<TypeDesignationStatus
 	 * 
 	 * @see	#HOLOTYPE()
 	 */
-	public static final TypeDesignationStatus NEOTYPE(){
+	public static final SpecimenTypeDesignationStatus NEOTYPE(){
 		return NEOTYPE;
 	}
 
@@ -217,7 +222,7 @@ public class TypeDesignationStatus extends OrderedTermBase<TypeDesignationStatus
 	 * @see	#LECTOTYPE()
 	 * @see	#NEOTYPE()
 	 */
-	public static final TypeDesignationStatus EPITYPE(){
+	public static final SpecimenTypeDesignationStatus EPITYPE(){
 		return EPITYPE;
 	}
 
@@ -227,7 +232,7 @@ public class TypeDesignationStatus extends OrderedTermBase<TypeDesignationStatus
 	 * 
 	 * @see	#HOLOTYPE()
 	 */
-	public static final TypeDesignationStatus ISOTYPE(){
+	public static final SpecimenTypeDesignationStatus ISOTYPE(){
 		return ISOTYPE;
 	}
 
@@ -239,7 +244,7 @@ public class TypeDesignationStatus extends OrderedTermBase<TypeDesignationStatus
 	 * 
 	 * @see	#HOLOTYPE()
 	 */
-	public static final TypeDesignationStatus SYNTYPE(){
+	public static final SpecimenTypeDesignationStatus SYNTYPE(){
 		return SYNTYPE;
 	}
 
@@ -254,7 +259,7 @@ public class TypeDesignationStatus extends OrderedTermBase<TypeDesignationStatus
 	 * @see	#ISOTYPE()
 	 * @see	#SYNTYPE()
 	 */
-	public static final TypeDesignationStatus PARATYPE(){
+	public static final SpecimenTypeDesignationStatus PARATYPE(){
 		return PARATYPE;
 	}
 
@@ -264,7 +269,7 @@ public class TypeDesignationStatus extends OrderedTermBase<TypeDesignationStatus
 	 * 
 	 * @see	#LECTOTYPE()
 	 */
-	public static final TypeDesignationStatus ISOLECTOTYPE(){
+	public static final SpecimenTypeDesignationStatus ISOLECTOTYPE(){
 		return ISOLECTOTYPE;
 	}
 
@@ -274,7 +279,7 @@ public class TypeDesignationStatus extends OrderedTermBase<TypeDesignationStatus
 	 * 
 	 * @see	#NEOTYPE()
 	 */
-	public static final TypeDesignationStatus ISONEOTYPE(){
+	public static final SpecimenTypeDesignationStatus ISONEOTYPE(){
 		return ISONEOTYPE;
 	}
 	/**
@@ -284,7 +289,7 @@ public class TypeDesignationStatus extends OrderedTermBase<TypeDesignationStatus
 	 * 
 	 * @see	#NEOTYPE()
 	 */
-	public static final TypeDesignationStatus PARANEOTYPE(){
+	public static final SpecimenTypeDesignationStatus PARANEOTYPE(){
 		return PARANEOTYPE;
 	}
 
@@ -295,7 +300,7 @@ public class TypeDesignationStatus extends OrderedTermBase<TypeDesignationStatus
 	 * 
 	 * @see	#LECTOTYPE()
 	 */
-	public static final TypeDesignationStatus SECOND_STEP_LECTOTYPE(){
+	public static final SpecimenTypeDesignationStatus SECOND_STEP_LECTOTYPE(){
 		return SECOND_STEP_LECTOTYPE;
 	}
 
@@ -306,7 +311,7 @@ public class TypeDesignationStatus extends OrderedTermBase<TypeDesignationStatus
 	 * 
 	 * @see	#LECTOTYPE()
 	 */
-	public static final TypeDesignationStatus SECOND_STEP_NEOTYPE(){
+	public static final SpecimenTypeDesignationStatus SECOND_STEP_NEOTYPE(){
 		return SECOND_STEP_NEOTYPE;
 	}
 
@@ -317,7 +322,7 @@ public class TypeDesignationStatus extends OrderedTermBase<TypeDesignationStatus
 	 * 
 	 * @see	#LECTOTYPE()
 	 */
-	public static final TypeDesignationStatus PARALECTOTYPE(){
+	public static final SpecimenTypeDesignationStatus PARALECTOTYPE(){
 		return PARALECTOTYPE;
 	}
 
@@ -327,7 +332,7 @@ public class TypeDesignationStatus extends OrderedTermBase<TypeDesignationStatus
 	 * 
 	 * @see	#EPITYPE()
 	 */
-	public static final TypeDesignationStatus ISOEPITYPE(){
+	public static final SpecimenTypeDesignationStatus ISOEPITYPE(){
 		return ISOEPITYPE;
 	}
 
@@ -335,44 +340,64 @@ public class TypeDesignationStatus extends OrderedTermBase<TypeDesignationStatus
 	 * Returns the "iconotype" designation status. An iconotype is a holotype or
 	 * a lectotype that is a {@link eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase drawing}
 	 * and not a {@link eu.etaxonomy.cdm.model.occurrence.Specimen specimen}.
+	 * "Iconotype" does not have type status according to the ICBN.
 	 * 
 	 * @see	#HOLOTYPE()
 	 * @see	#LECTOTYPE()
 	 */
-	public static final TypeDesignationStatus ICONOTYPE(){
+	public static final SpecimenTypeDesignationStatus ICONOTYPE(){
 		return ICONOTYPE;
 	}
 
 	/**
-	 * Returns the "iconotype" designation status. An iconotype is a holotype or
-	 * a lectotype that is a {@link eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase photograph}
-	 * and not a {@link eu.etaxonomy.cdm.model.occurrence.Specimen specimen}.
+	 * Returns the "unspecific" type designation status. Used if from literature where it is not 
+	 * clear if it refers to another publication not cited or if it is a new designation.
 	 * 
-	 * @see	#HOLOTYPE()
-	 * @see	#LECTOTYPE()
 	 */
-	public static final TypeDesignationStatus PHOTOTYPE(){
+	public static final SpecimenTypeDesignationStatus UNSPECIFIC(){
+		return UNSPECIFIC;
+	}
+
+	/**
+	 * Returns the "original material" type designation status.
+	 * Botanical term for material from which a lectotype can be designated.
+	 * "Original material" does not have type status according to the ICBN.
+	 * 
+	 */
+	public static final SpecimenTypeDesignationStatus ORIGINAL_MATERIAL(){
+		return ORIGINAL_MATERIAL;
+	}
+	
+	
+	/**
+	 * Returns the "phototype" type designation status.
+	 * "Phototype" does not have type status according to the ICBN.
+	 * 
+	 */
+	public static final SpecimenTypeDesignationStatus PHOTOTYPE(){
 		return PHOTOTYPE;
 	}
 	
 	@Override
-	protected void setDefaultTerms(TermVocabulary<TypeDesignationStatus> termVocabulary) {
-		TypeDesignationStatus.EPITYPE = termVocabulary.findTermByUuid(TypeDesignationStatus.uuidEpitype);
-		TypeDesignationStatus.HOLOTYPE = termVocabulary.findTermByUuid(TypeDesignationStatus.uuidHolotype);
-		TypeDesignationStatus.ICONOTYPE = termVocabulary.findTermByUuid(TypeDesignationStatus.uuidIconotype);
-		TypeDesignationStatus.ISOEPITYPE = termVocabulary.findTermByUuid(TypeDesignationStatus.uuidIsoepitype);
-		TypeDesignationStatus.ISOLECTOTYPE = termVocabulary.findTermByUuid(TypeDesignationStatus.uuidIsolectotype);
-		TypeDesignationStatus.ISONEOTYPE = termVocabulary.findTermByUuid(TypeDesignationStatus.uuidIsoneotype);
-		TypeDesignationStatus.ISOTYPE = termVocabulary.findTermByUuid(TypeDesignationStatus.uuidIsotype);
-		TypeDesignationStatus.LECTOTYPE = termVocabulary.findTermByUuid(TypeDesignationStatus.uuidLectotype);
-		TypeDesignationStatus.NEOTYPE = termVocabulary.findTermByUuid(TypeDesignationStatus.uuidNeotype);
-		TypeDesignationStatus.PARALECTOTYPE = termVocabulary.findTermByUuid(TypeDesignationStatus.uuidParalectotype);
-		TypeDesignationStatus.PARANEOTYPE = termVocabulary.findTermByUuid(TypeDesignationStatus.uuidParaneotype);
-		TypeDesignationStatus.PARATYPE = termVocabulary.findTermByUuid(TypeDesignationStatus.uuidParatype);
-		TypeDesignationStatus.PHOTOTYPE = termVocabulary.findTermByUuid(TypeDesignationStatus.uuidPhototype);
-		TypeDesignationStatus.SECOND_STEP_LECTOTYPE= termVocabulary.findTermByUuid(TypeDesignationStatus.uuidSecondStepLectotype);
-		TypeDesignationStatus.SECOND_STEP_NEOTYPE = termVocabulary.findTermByUuid(TypeDesignationStatus.uuidSecondStepNeotype);
-		TypeDesignationStatus.SYNTYPE = termVocabulary.findTermByUuid(TypeDesignationStatus.uuidSyntype);		
+	protected void setDefaultTerms(TermVocabulary<SpecimenTypeDesignationStatus> termVocabulary) {
+		SpecimenTypeDesignationStatus.EPITYPE = termVocabulary.findTermByUuid(SpecimenTypeDesignationStatus.uuidEpitype);
+		SpecimenTypeDesignationStatus.HOLOTYPE = termVocabulary.findTermByUuid(SpecimenTypeDesignationStatus.uuidHolotype);
+		SpecimenTypeDesignationStatus.ICONOTYPE = termVocabulary.findTermByUuid(SpecimenTypeDesignationStatus.uuidIconotype);
+		SpecimenTypeDesignationStatus.ISOEPITYPE = termVocabulary.findTermByUuid(SpecimenTypeDesignationStatus.uuidIsoepitype);
+		SpecimenTypeDesignationStatus.ISOLECTOTYPE = termVocabulary.findTermByUuid(SpecimenTypeDesignationStatus.uuidIsolectotype);
+		SpecimenTypeDesignationStatus.ISONEOTYPE = termVocabulary.findTermByUuid(SpecimenTypeDesignationStatus.uuidIsoneotype);
+		SpecimenTypeDesignationStatus.ISOTYPE = termVocabulary.findTermByUuid(SpecimenTypeDesignationStatus.uuidIsotype);
+		SpecimenTypeDesignationStatus.LECTOTYPE = termVocabulary.findTermByUuid(SpecimenTypeDesignationStatus.uuidLectotype);
+		SpecimenTypeDesignationStatus.NEOTYPE = termVocabulary.findTermByUuid(SpecimenTypeDesignationStatus.uuidNeotype);
+		SpecimenTypeDesignationStatus.PARALECTOTYPE = termVocabulary.findTermByUuid(SpecimenTypeDesignationStatus.uuidParalectotype);
+		SpecimenTypeDesignationStatus.PARANEOTYPE = termVocabulary.findTermByUuid(SpecimenTypeDesignationStatus.uuidParaneotype);
+		SpecimenTypeDesignationStatus.PARATYPE = termVocabulary.findTermByUuid(SpecimenTypeDesignationStatus.uuidParatype);
+		SpecimenTypeDesignationStatus.PHOTOTYPE = termVocabulary.findTermByUuid(SpecimenTypeDesignationStatus.uuidPhototype);
+		SpecimenTypeDesignationStatus.SECOND_STEP_LECTOTYPE= termVocabulary.findTermByUuid(SpecimenTypeDesignationStatus.uuidSecondStepLectotype);
+		SpecimenTypeDesignationStatus.SECOND_STEP_NEOTYPE = termVocabulary.findTermByUuid(SpecimenTypeDesignationStatus.uuidSecondStepNeotype);
+		SpecimenTypeDesignationStatus.SYNTYPE = termVocabulary.findTermByUuid(SpecimenTypeDesignationStatus.uuidSyntype);		
+		SpecimenTypeDesignationStatus.UNSPECIFIC = termVocabulary.findTermByUuid(SpecimenTypeDesignationStatus.uuidUnspecific);		
+		SpecimenTypeDesignationStatus.ORIGINAL_MATERIAL = termVocabulary.findTermByUuid(SpecimenTypeDesignationStatus.uuidOriginalMaterial);		
 	}
 
 }

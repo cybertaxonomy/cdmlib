@@ -877,12 +877,12 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 	 * 									added to all taxon names of the homotypical group the typified
 	 * 									taxon name belongs to
 	 * @see 			  				#getSpecimenTypeDesignations()
-	 * @see 			  				TypeDesignationStatus
+	 * @see 			  				SpecimenTypeDesignationStatus
 	 * @see 			  				SpecimenTypeDesignation
 	 * @see 			  				TypeDesignationBase#isNotDesignated()
 	 */
 	public void addSpecimenTypeDesignation(Specimen typeSpecimen, 
-				TypeDesignationStatus status, 
+				SpecimenTypeDesignationStatus status, 
 				ReferenceBase citation, 
 				String citationMicroReference, 
 				String originalNameString, 

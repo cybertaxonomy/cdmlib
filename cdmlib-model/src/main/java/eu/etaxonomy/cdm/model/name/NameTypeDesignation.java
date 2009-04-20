@@ -58,7 +58,8 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 })
 @Entity
 @Audited
-public class NameTypeDesignation extends TypeDesignationBase implements ITypeDesignation {
+public class NameTypeDesignation extends TypeDesignationBase<NameTypeDesignationStatus> 
+implements ITypeDesignation {
 	
 	static Logger logger = Logger.getLogger(NameTypeDesignation.class);
 	
@@ -92,7 +93,6 @@ public class NameTypeDesignation extends TypeDesignationBase implements ITypeDes
 	 * @see	#NameTypeDesignation(TaxonNameBase, ReferenceBase, String, String, boolean, boolean, boolean)
 	 */
 	protected NameTypeDesignation() {
-		super();
 	}
 
 	/**

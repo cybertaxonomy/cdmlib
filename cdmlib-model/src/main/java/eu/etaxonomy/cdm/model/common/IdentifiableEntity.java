@@ -335,35 +335,52 @@ implements ISourceable, IIdentifiableEntity, Comparable<IdentifiableEntity> {
 		 // TODO: Avoid using instanceof operator
 		 // Use Class.getDeclaredMethod() instead to find out whether class has getNameCache() method?
 
-		 // Compare name cache
 		 String specifiedNameCache = "";
 		 String thisNameCache = "";
+		 String specifiedTitleCache = "";
+		 String thisTitleCache = "";
+		 String specifiedReferenceTitleCache = "";
+		 String thisReferenceTitleCache = "";	
 		 
 		 if(identifiableEntity instanceof NonViralName) {
 			 specifiedNameCache = HibernateProxyHelper.deproxy(identifiableEntity, NonViralName.class).getNameCache();
+			 specifiedTitleCache = identifiableEntity.getTitleCache();
 		 } else if(identifiableEntity instanceof TaxonBase) {
 			 TaxonBase taxonBase = HibernateProxyHelper.deproxy(identifiableEntity, TaxonBase.class);
 			 TaxonNameBase<?,?> taxonNameBase= taxonBase.getName();
 			 specifiedNameCache = HibernateProxyHelper.deproxy(taxonNameBase, NonViralName.class).getNameCache();
+			 specifiedTitleCache = taxonNameBase.getTitleCache();
+			 specifiedReferenceTitleCache = ((TaxonBase)identifiableEntity).getSec().getTitleCache();
 		 }
 		 
 		 if(this instanceof NonViralName) {
 			 thisNameCache = HibernateProxyHelper.deproxy(this, NonViralName.class).getNameCache();
+			 thisTitleCache = getTitleCache();
 		 } else if(this instanceof TaxonBase) {
 			 TaxonNameBase<?,?> taxonNameBase= HibernateProxyHelper.deproxy(this, TaxonBase.class).getName();
 			 thisNameCache = HibernateProxyHelper.deproxy(taxonNameBase, NonViralName.class).getNameCache();
+			 thisTitleCache = taxonNameBase.getTitleCache();
+			 thisReferenceTitleCache = getTitleCache();
 		 }
 		 
+		 // Compare name cache of taxon names
+
 		 if (!specifiedNameCache.equals("") && !thisNameCache.equals("")) {
 			 result = thisNameCache.compareTo(specifiedNameCache);
 		 }
 		 
-		 // Compare title cache
-		 if (result == 0) {
-			 String thisTitleCache = getTitleCache();
-			 String specifiedTitleCache = identifiableEntity.getTitleCache();
+		 // Compare title cache of taxon names
+		 
+		 if ((result == 0) && !specifiedTitleCache.equals("") && !thisTitleCache.equals("")) {
 			 result = thisTitleCache.compareTo(specifiedTitleCache);
 		 }
+		 
+		 // Compare title cache of taxon references
+		 
+		 if ((result == 0) && !specifiedReferenceTitleCache.equals("") && !thisReferenceTitleCache.equals("")) {
+			 result = thisReferenceTitleCache.compareTo(specifiedReferenceTitleCache);
+		 }
+		 
 		 return result;
 	 }
 	 

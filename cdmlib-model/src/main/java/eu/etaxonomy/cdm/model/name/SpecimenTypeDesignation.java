@@ -36,7 +36,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
  * {@link eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase specimen or a figure}. All {@link TaxonNameBase taxon names}
  * which have a {@link Rank rank} "species aggregate" or lower can only be typified
  * by specimens. Moreover each typification by a specimen (or by a figure) has a
- * {@link TypeDesignationStatus status} like "holotype" or "isotype".
+ * {@link SpecimenTypeDesignationStatus status} like "holotype" or "isotype".
  * <P>
  * This class corresponds to: <ul>
  * <li> NomenclaturalType according to the TDWG ontology
@@ -53,12 +53,12 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 @XmlRootElement(name = "SpecimenTypeDesignation")
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "SpecimenTypeDesignation", propOrder = {
-    "typeSpecimen",
-    "typeStatus"
+    "typeSpecimen"
 })
 @Entity
 @Audited
-public class SpecimenTypeDesignation extends TypeDesignationBase implements ITypeDesignation {
+public class SpecimenTypeDesignation extends TypeDesignationBase<SpecimenTypeDesignationStatus>
+implements ITypeDesignation {
 	
 	private static final Logger logger = Logger.getLogger(SpecimenTypeDesignation.class);
 	
@@ -69,12 +69,6 @@ public class SpecimenTypeDesignation extends TypeDesignationBase implements ITyp
 	@Cascade(CascadeType.SAVE_UPDATE)
 	private DerivedUnitBase typeSpecimen;
 	
-	@XmlElement(name = "TypeStatus")
-	@XmlIDREF
-	@XmlSchemaType(name = "IDREF")
-	@ManyToOne(fetch = FetchType.LAZY)
-	private TypeDesignationStatus typeStatus;
-
 //	/**
 //	 * Creates a new specimen type designation instance
 //	 * (including its {@link reference.ReferenceBase reference source} and eventually
@@ -103,11 +97,10 @@ public class SpecimenTypeDesignation extends TypeDesignationBase implements ITyp
 	/** 
 	 * Class constructor: creates a new empty specimen type designation.
 	 * 
-	 * @see	#SpecimenTypeDesignation(DerivedUnitBase, TypeDesignationStatus,
+	 * @see	#SpecimenTypeDesignation(DerivedUnitBase, SpecimenTypeDesignationStatus,
 	 * ReferenceBase, String, String, boolean)
 	 */
 	protected SpecimenTypeDesignation(){
-		
 	}
 	
 	/**
@@ -127,11 +120,11 @@ public class SpecimenTypeDesignation extends TypeDesignationBase implements ITyp
 	 * @param isNotDesignated		the boolean flag indicating whether there is no specimen type at all for 
 	 * 								<i>this</i> specimen type designation
 	 * @see							#SpecimenTypeDesignation()
-	 * @see							TaxonNameBase#addSpecimenTypeDesignation(Specimen, TypeDesignationStatus, ReferenceBase, String, String, boolean, boolean)
+	 * @see							TaxonNameBase#addSpecimenTypeDesignation(Specimen, SpecimenTypeDesignationStatus, ReferenceBase, String, String, boolean, boolean)
 	 * @see							TypeDesignationBase#isNotDesignated()
 	 * @see							eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase
 	 */
-	protected SpecimenTypeDesignation(DerivedUnitBase specimen, TypeDesignationStatus status, ReferenceBase citation, String citationMicroReference, 
+	protected SpecimenTypeDesignation(DerivedUnitBase specimen, SpecimenTypeDesignationStatus status, ReferenceBase citation, String citationMicroReference, 
 			String originalNameString, boolean isNotDesignated) {
 		super(citation, citationMicroReference, originalNameString, isNotDesignated);
 		this.setTypeSpecimen(specimen);
@@ -156,22 +149,6 @@ public class SpecimenTypeDesignation extends TypeDesignationBase implements ITyp
 		this.typeSpecimen = typeSpecimen;
 	}
 
-	/** 
-	 * Returns the {@link TypeDesignationStatus type designation status} for <i>this</i> specimen type
-	 * designation. This status describes which of the possible categories of
-	 * types like "holotype", "neotype", "syntype" or "isotype" applies to <i>this</i>
-	 * specimen type designation.
-	 */
-	public TypeDesignationStatus getTypeStatus(){
-		return this.typeStatus;
-	}
-	/**
-	 * @see  #getTypeStatus()
-	 */
-	public void setTypeStatus(TypeDesignationStatus typeStatus){
-		this.typeStatus = typeStatus;
-	}
-
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.name.ITypeDesignation#isLectoType()
 	 */
@@ -184,12 +161,12 @@ public class SpecimenTypeDesignation extends TypeDesignationBase implements ITyp
 	 * holotype is found to belong to more than one taxon name,
 	 * or as long as it is missing.
 	 *
-	 * @see  TypeDesignationStatus#isLectotype()
-	 * @see  TypeDesignationStatus#HOLOTYPE()
+	 * @see  SpecimenTypeDesignationStatus#isLectotype()
+	 * @see  SpecimenTypeDesignationStatus#HOLOTYPE()
 	 */
 	@Transient
 	public boolean isLectoType() {
-		return typeStatus.isLectotype();
+		return getTypeStatus().isLectotype();
 	}
 	
 }

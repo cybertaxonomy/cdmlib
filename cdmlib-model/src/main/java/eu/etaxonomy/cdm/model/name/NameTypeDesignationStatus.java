@@ -24,6 +24,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
+import eu.etaxonomy.cdm.model.common.OrderedTermBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 
 /**
@@ -36,7 +37,7 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
 @XmlType(name = "NameTypeDesignationStatus")
 @Entity
 @Audited
-public class NameTypeDesignationStatus extends DefinedTermBase<NameTypeDesignationStatus> {
+public class NameTypeDesignationStatus extends TypeDesignationStatusBase<NameTypeDesignationStatus> {
 	static Logger logger = Logger.getLogger(NameTypeDesignationStatus.class);
 
 	private static final UUID uuidAutomatic = UUID.fromString("e89d8b21-615a-4602-913f-1625bf39a69f");

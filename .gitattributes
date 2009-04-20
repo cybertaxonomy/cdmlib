@@ -908,7 +908,6 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/WSDLDefinitionUserType.
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/WrongTermTypeException.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/init/ITermInitializer.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/init/ITermLoader.java -text
-cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/init/IVocabularyStore.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/init/TermLoader.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/init/TermNotFoundException.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/package-info.java -text
@@ -991,9 +990,10 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/name/NomenclaturalStatusType.j
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/name/NonViralName.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/name/Rank.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/name/SpecimenTypeDesignation.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/name/SpecimenTypeDesignationStatus.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/name/TaxonNameBase.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/name/TypeDesignationBase.java -text
-cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/name/TypeDesignationStatus.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/name/TypeDesignationStatusBase.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/name/ViralName.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/name/ZoologicalName.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/name/package-info.java -text
@@ -1117,11 +1117,11 @@ cdmlib-model/src/main/resources/terms/README.TXT -text
 cdmlib-model/src/main/resources/terms/Rank.csv -text
 cdmlib-model/src/main/resources/terms/RightsTerm.csv -text
 cdmlib-model/src/main/resources/terms/Sex.csv -text
+cdmlib-model/src/main/resources/terms/SpecimenTypeDesignationStatus.csv -text
 cdmlib-model/src/main/resources/terms/StatisticalMeasure.csv -text
 cdmlib-model/src/main/resources/terms/SynonymRelationshipType.csv -text
 cdmlib-model/src/main/resources/terms/TaxonRelationshipType.csv -text
 cdmlib-model/src/main/resources/terms/TdwgArea.csv -text
-cdmlib-model/src/main/resources/terms/TypeDesignationStatus.csv -text
 cdmlib-model/src/main/resources/terms/WaterbodyOrCountry.csv -text
 cdmlib-model/src/site/resources/images/uml/Agent.png -text
 cdmlib-model/src/site/resources/images/uml/Base_classes.png -text
