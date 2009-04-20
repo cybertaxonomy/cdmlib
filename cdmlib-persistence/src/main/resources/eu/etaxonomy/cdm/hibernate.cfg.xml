@@ -115,9 +115,9 @@
       <mapping class="eu.etaxonomy.cdm.model.name.NonViralName"/>
       <mapping class="eu.etaxonomy.cdm.model.name.Rank"/>
       <mapping class="eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation"/>
+      <mapping class="eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus"/>
       <mapping class="eu.etaxonomy.cdm.model.name.TaxonNameBase"/>
       <mapping class="eu.etaxonomy.cdm.model.name.TypeDesignationBase"/>
-      <mapping class="eu.etaxonomy.cdm.model.name.TypeDesignationStatus"/>
       <mapping class="eu.etaxonomy.cdm.model.name.ViralName"/>
       <mapping class="eu.etaxonomy.cdm.model.name.ZoologicalName"/>
       <!-- Occurence Package -->

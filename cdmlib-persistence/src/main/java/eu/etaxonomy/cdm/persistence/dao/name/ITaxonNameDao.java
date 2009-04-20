@@ -20,7 +20,7 @@ import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
-import eu.etaxonomy.cdm.model.name.TypeDesignationStatus;
+import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 
@@ -82,7 +82,7 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonNameBase> {
 	 * @param status the type designation status (or null to return all types) 
 	 * @return a count of TypeDesignationBase instances
 	 */
-	public int countTypeDesignations(TaxonNameBase name, TypeDesignationStatus status);
+	public int countTypeDesignations(TaxonNameBase name, SpecimenTypeDesignationStatus status);
 	
 	/**
 	 * Return a List of types related to this name, optionally filtered 
@@ -94,7 +94,7 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonNameBase> {
 	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
 	 * @return a List of TypeDesignationBase instances
 	 */
-	public List<TypeDesignationBase> getTypeDesignations(TaxonNameBase name, TypeDesignationStatus status, Integer pageSize, Integer pageNumber);
+	public List<TypeDesignationBase> getTypeDesignations(TaxonNameBase name, SpecimenTypeDesignationStatus status, Integer pageSize, Integer pageNumber);
 
 	/**
 	 * Returns a List of TaxonNameBase instances that match the properties passed

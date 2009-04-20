@@ -86,7 +86,8 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity> extends Annotatab
 		if (matchmode == MatchMode.EXACT) {
 			crit.add(Restrictions.eq("titleCache", matchmode.queryStringFrom(queryString)));
 		} else {
-			crit.add(Restrictions.ilike("titleCache", matchmode.queryStringFrom(queryString)));
+//			crit.add(Restrictions.ilike("titleCache", matchmode.queryStringFrom(queryString)));
+			crit.add(Restrictions.like("titleCache", matchmode.queryStringFrom(queryString)));
 		}
 		if (pagesize >= 0) {
 			crit.setMaxResults(pagesize);
