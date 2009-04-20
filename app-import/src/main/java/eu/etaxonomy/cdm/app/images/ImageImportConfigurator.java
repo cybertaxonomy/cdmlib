@@ -33,7 +33,6 @@ public class ImageImportConfigurator extends ImportConfiguratorBase implements I
 	}
 	
 	private ImageImportConfigurator(File source, ICdmDataSource destination, Class<? extends AbstractImageImporter> importerClass){
-		super();
 		FileNotFoundException e;
 		setSource(source);
 		setDestination(destination);
