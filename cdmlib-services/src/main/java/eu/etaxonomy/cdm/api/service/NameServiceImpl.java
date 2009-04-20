@@ -44,7 +44,8 @@ import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
-import eu.etaxonomy.cdm.model.name.TypeDesignationStatus;
+import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
+import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
 import eu.etaxonomy.cdm.persistence.dao.common.IOrderedTermVocabularyDao;
 import eu.etaxonomy.cdm.persistence.dao.common.IReferencedEntityDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ITermVocabularyDao;
@@ -188,10 +189,10 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.INameService#getTypeDesignationStatusVocabulary()
 	 */
-	public TermVocabulary<TypeDesignationStatus> getTypeDesignationStatusVocabulary() {
+	public TermVocabulary<SpecimenTypeDesignationStatus> getSpecimenTypeDesignationStatusVocabulary() {
 		String uuidString = "ab177bd7-d3c8-4e58-a388-226fff6ba3c2";
 		UUID uuid = UUID.fromString(uuidString);
-		TermVocabulary<TypeDesignationStatus> typeDesigStatusVocabulary = 
+		TermVocabulary<SpecimenTypeDesignationStatus> typeDesigStatusVocabulary = 
 			(TermVocabulary)vocabularyDao.findByUuid(uuid);
 		return typeDesigStatusVocabulary;
 	}
@@ -199,10 +200,10 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.INameService#getTypeDesignationStatusVocabulary()
 	 */
-	public OrderedTermVocabulary<TypeDesignationStatus> getTypeDesignationVocabulary() {
+	public OrderedTermVocabulary<SpecimenTypeDesignationStatus> getSpecimenTypeDesignationVocabulary() {
 		String uuidString = "ab177bd7-d3c8-4e58-a388-226fff6ba3c2";
 		UUID uuid = UUID.fromString(uuidString);
-		OrderedTermVocabulary<TypeDesignationStatus> typeDesignationVocabulary = 
+		OrderedTermVocabulary<SpecimenTypeDesignationStatus> typeDesignationVocabulary = 
 			(OrderedTermVocabulary)orderedVocabularyDao.findByUuid(uuid);
 		return typeDesignationVocabulary;
 	}
@@ -239,7 +240,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
 		return new DefaultPagerImpl<NameRelationship>(pageNumber, numberOfResults, pageSize, results);
 	}
 
-	public Pager<TypeDesignationBase> getTypeDesignations(TaxonNameBase name,TypeDesignationStatus status, Integer pageSize, Integer pageNumber) {
+	public Pager<TypeDesignationBase> getTypeDesignations(TaxonNameBase name, SpecimenTypeDesignationStatus status, Integer pageSize, Integer pageNumber) {
         Integer numberOfResults = dao.countTypeDesignations(name, status);
 		
 		List<TypeDesignationBase> results = new ArrayList<TypeDesignationBase>();

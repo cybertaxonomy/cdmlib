@@ -115,13 +115,13 @@ public interface INameService extends IIdentifiableEntityService<TaxonNameBase> 
 	 * Returns TypeDesignationStatus vocabulary
 	 * @return
 	 */
-	public TermVocabulary<TypeDesignationStatus> getTypeDesignationStatusVocabulary();
+	public TermVocabulary<SpecimenTypeDesignationStatus> getSpecimenTypeDesignationStatusVocabulary();
 		
 	/**
 	 * Returns TypeDesignationStatus ordered vocabulary
 	 * @return
 	 */
-	public OrderedTermVocabulary<TypeDesignationStatus> getTypeDesignationVocabulary();
+	public OrderedTermVocabulary<SpecimenTypeDesignationStatus> getSpecimenTypeDesignationVocabulary();
 
 	/**
 	 * Returns all NameRelationshipTypes
@@ -163,7 +163,7 @@ public interface INameService extends IIdentifiableEntityService<TaxonNameBase> 
 	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
 	 * @return a Pager of TypeDesignationBase instances
 	 */
-	public Pager<TypeDesignationBase> getTypeDesignations(TaxonNameBase name, TypeDesignationStatus status, Integer pageSize, Integer pageNumber);
+	public Pager<TypeDesignationBase> getTypeDesignations(TaxonNameBase name, SpecimenTypeDesignationStatus status, Integer pageSize, Integer pageNumber);
 	
 	/**
 	 * Returns a List of TaxonNameBase instances that match the properties passed

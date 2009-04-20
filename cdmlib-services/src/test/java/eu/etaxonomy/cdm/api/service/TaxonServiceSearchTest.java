@@ -53,7 +53,7 @@ public class TaxonServiceSearchTest extends CdmIntegrationTest {
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.api.service.TaxonServiceImpl#findTaxaAndNames(eu.etaxonomy.cdm.api.service.config.ITaxonServiceConfigurator)}.
 	 */
-	//@Ignore // TaxonServiceSearchTest.xml cannot be inserted - structure changed?
+	@Ignore // TaxonServiceSearchTest.xml cannot be inserted - structure changed?
 	@Test
 	@DataSet
 	public final void testFindTaxaAndNames() {

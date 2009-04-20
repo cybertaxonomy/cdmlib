@@ -19,7 +19,7 @@ import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.name.TypeDesignationStatus;
+import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 
 /**
@@ -126,15 +126,15 @@ public class NameServiceImplTest2 extends CdmIntegrationTest {
 	 */
 	@Test
 	public void testGetTypeDesignationVocabulary() {
-		OrderedTermVocabulary<TypeDesignationStatus> typeDesignationVocabulary = 
-			service.getTypeDesignationVocabulary();
+		OrderedTermVocabulary<SpecimenTypeDesignationStatus> typeDesignationVocabulary = 
+			service.getSpecimenTypeDesignationVocabulary();
 		assertNotNull(typeDesignationVocabulary);
 		assertEquals(62, typeDesignationVocabulary.size());
-		TypeDesignationStatus highestType = typeDesignationVocabulary.getHighestTerm();
-		assertEquals(TypeDesignationStatus.EPITYPE(), highestType);
-		assertEquals(TypeDesignationStatus.HOLOTYPE(), typeDesignationVocabulary.getNextLowerTerm(highestType));
-		assertSame(TypeDesignationStatus.EPITYPE(), highestType);
-		assertSame(TypeDesignationStatus.HOLOTYPE(), typeDesignationVocabulary.getNextLowerTerm(highestType));
+		SpecimenTypeDesignationStatus highestType = typeDesignationVocabulary.getHighestTerm();
+		assertEquals(SpecimenTypeDesignationStatus.EPITYPE(), highestType);
+		assertEquals(SpecimenTypeDesignationStatus.HOLOTYPE(), typeDesignationVocabulary.getNextLowerTerm(highestType));
+		assertSame(SpecimenTypeDesignationStatus.EPITYPE(), highestType);
+		assertSame(SpecimenTypeDesignationStatus.HOLOTYPE(), typeDesignationVocabulary.getNextLowerTerm(highestType));
 	}
 
 	/**
