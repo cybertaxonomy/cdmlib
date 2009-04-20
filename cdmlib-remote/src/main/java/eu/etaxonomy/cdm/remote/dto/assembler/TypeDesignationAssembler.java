@@ -24,7 +24,7 @@ import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
-import eu.etaxonomy.cdm.model.name.TypeDesignationStatus;
+import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.remote.dto.BaseTO;
 import eu.etaxonomy.cdm.remote.dto.IdentifiedString;
 import eu.etaxonomy.cdm.remote.dto.NameTypeDesignationSTO;
@@ -52,7 +52,7 @@ public class TypeDesignationAssembler extends AssemblerBase<TypeDesignationSTO, 
 	public SpecimenTypeDesignationSTO getSTO(SpecimenTypeDesignation typeDesignation, Enumeration<Locale> locales) {
 		SpecimenTypeDesignationSTO sto = new SpecimenTypeDesignationSTO();
 		sto.setUuid(typeDesignation.getUuid().toString());
-		TypeDesignationStatus status = typeDesignation.getTypeStatus();
+		SpecimenTypeDesignationStatus status = typeDesignation.getTypeStatus();
 		
 		if (status == null){
 			sto.setStatus(new IdentifiedString(
