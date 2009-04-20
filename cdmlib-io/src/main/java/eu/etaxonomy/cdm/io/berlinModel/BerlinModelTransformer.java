@@ -21,7 +21,7 @@ import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
 import eu.etaxonomy.cdm.model.description.PresenceTerm;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.name.TypeDesignationStatus;
+import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
@@ -135,23 +135,23 @@ public final class BerlinModelTransformer {
 	public static int FACT_DISTRIBUTION_WORLD = 11;
 	
 	//TypeDesignation
-	public static TypeDesignationStatus typeStatusId2TypeStatus (int typeStatusId)  throws UnknownCdmTypeException{
+	public static SpecimenTypeDesignationStatus typeStatusId2TypeStatus (int typeStatusId)  throws UnknownCdmTypeException{
 		switch (typeStatusId){
 			case 0: return null;
-			case 1: return TypeDesignationStatus.HOLOTYPE();
-			case 2: return TypeDesignationStatus.LECTOTYPE();
-			case 3: return TypeDesignationStatus.NEOTYPE();
-			case 4: return TypeDesignationStatus.EPITYPE();
-			case 5: return TypeDesignationStatus.ISOLECTOTYPE();
-			case 6: return TypeDesignationStatus.ISONEOTYPE();
-			case 7: return TypeDesignationStatus.ISOTYPE();
-			case 8: return TypeDesignationStatus.PARANEOTYPE();
-			case 9: return TypeDesignationStatus.PARATYPE();
-			case 10: return TypeDesignationStatus.SECOND_STEP_LECTOTYPE();
-			case 11: return TypeDesignationStatus.SECOND_STEP_NEOTYPE();
-			case 12: return TypeDesignationStatus.SYNTYPE();
-			case 21: return TypeDesignationStatus.ICONOTYPE();
-			case 22: return TypeDesignationStatus.PHOTOTYPE();
+			case 1: return SpecimenTypeDesignationStatus.HOLOTYPE();
+			case 2: return SpecimenTypeDesignationStatus.LECTOTYPE();
+			case 3: return SpecimenTypeDesignationStatus.NEOTYPE();
+			case 4: return SpecimenTypeDesignationStatus.EPITYPE();
+			case 5: return SpecimenTypeDesignationStatus.ISOLECTOTYPE();
+			case 6: return SpecimenTypeDesignationStatus.ISONEOTYPE();
+			case 7: return SpecimenTypeDesignationStatus.ISOTYPE();
+			case 8: return SpecimenTypeDesignationStatus.PARANEOTYPE();
+			case 9: return SpecimenTypeDesignationStatus.PARATYPE();
+			case 10: return SpecimenTypeDesignationStatus.SECOND_STEP_LECTOTYPE();
+			case 11: return SpecimenTypeDesignationStatus.SECOND_STEP_NEOTYPE();
+			case 12: return SpecimenTypeDesignationStatus.SYNTYPE();
+			case 21: return SpecimenTypeDesignationStatus.ICONOTYPE();
+			case 22: return SpecimenTypeDesignationStatus.PHOTOTYPE();
 			default: {
 				throw new UnknownCdmTypeException("Unknown TypeDesignationStatus (id=" + Integer.valueOf(typeStatusId).toString() + ")");
 			}

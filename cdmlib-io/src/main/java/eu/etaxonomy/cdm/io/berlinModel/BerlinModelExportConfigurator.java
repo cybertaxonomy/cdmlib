@@ -109,7 +109,7 @@ public class BerlinModelExportConfigurator extends ExportConfiguratorBase implem
 	 * @see eu.etaxonomy.cdm.io.common.IIoConfigurator#getDestinationNameString()
 	 */
 	public String getDestinationNameString() {
-		logger.warn("NOt yet implemented");
+		logger.warn("Not yet implemented");
 		return null;
 	}
 	

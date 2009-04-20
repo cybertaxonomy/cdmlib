@@ -34,7 +34,7 @@ import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.model.name.TypeDesignationStatus;
+import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
@@ -189,17 +189,17 @@ public class TaxonXNomenclatureImport extends CdmIoBase<IImportConfigurator> imp
 			}//elType
 			
 			//typeLoc
-			HashMap<Specimen, TypeDesignationStatus> typeLocMap = null; 
+			HashMap<Specimen, SpecimenTypeDesignationStatus> typeLocMap = null; 
 			if (elTypeLoc != null){
 				typeLocMap = doElTypeLoc(elTypeLoc, simpleSpecimen, taxonName, config);
 			}
 			if (typeLocMap != null && typeLocMap.size() >0){
 				for (Specimen specimen : typeLocMap.keySet()){
-					TypeDesignationStatus status = typeLocMap.get(specimen);
+					SpecimenTypeDesignationStatus status = typeLocMap.get(specimen);
 					taxonName.addSpecimenTypeDesignation(specimen, status, citation, citationMicroReference, originalNameString, isNotDesignated, addToAllHomotypicNames);
 				}
 			}else{ // no type_loc
-				TypeDesignationStatus status = null;
+				SpecimenTypeDesignationStatus status = null;
 				taxonName.addSpecimenTypeDesignation(simpleSpecimen.getSpecimen(), status, citation, citationMicroReference, originalNameString, isNotDesignated, addToAllHomotypicNames);
 			}
 			return true;
@@ -252,12 +252,12 @@ public class TaxonXNomenclatureImport extends CdmIoBase<IImportConfigurator> imp
 	 * @param config
 	 * @return
 	 */
-	private HashMap<Specimen, TypeDesignationStatus> doElTypeLoc(Element elTypeLoc, 
+	private HashMap<Specimen, SpecimenTypeDesignationStatus> doElTypeLoc(Element elTypeLoc, 
 			SimpleSpecimen simpleSpecimen, 
 			TaxonNameBase<?,?> taxonName,
 			TaxonXImportConfigurator config){
 		
-		HashMap<Specimen, TypeDesignationStatus> result = new HashMap<Specimen, TypeDesignationStatus>();
+		HashMap<Specimen, SpecimenTypeDesignationStatus> result = new HashMap<Specimen, SpecimenTypeDesignationStatus>();
 
 		String typeLocFullString = elTypeLoc.getTextTrim();
 		typeLocFullString = typeLocFullString.replace("(", "").replace(")", "");
@@ -274,7 +274,7 @@ public class TaxonXNomenclatureImport extends CdmIoBase<IImportConfigurator> imp
 				result.put(originalSpecimen, null);
 			}else{
 				String statusString = typeLocStatus.substring(0,pos); 
-				TypeDesignationStatus status = getStatusByStatusString(statusString.trim(), config);
+				SpecimenTypeDesignationStatus status = getStatusByStatusString(statusString.trim(), config);
 				//TODO
 				//String[] collectionStrings = typeLocStatus.substring(pos).split(",");
 				String tmpCollString = typeLocStatus.substring(pos).trim();
@@ -352,7 +352,7 @@ public class TaxonXNomenclatureImport extends CdmIoBase<IImportConfigurator> imp
 				logger.warn("Unknown format: " + typeLocStatus);
 			}else{
 				String statusString = typeLocStatus.substring(0,pos); 
-				TypeDesignationStatus status = getStatusByStatusString(statusString.trim(), config);
+				SpecimenTypeDesignationStatus status = getStatusByStatusString(statusString.trim(), config);
 				String[] collectionStrings = typeLocStatus.substring(pos).split(",");
 				for(String collectionString : collectionStrings){
 					if (taxonBase != null){
@@ -376,14 +376,14 @@ public class TaxonXNomenclatureImport extends CdmIoBase<IImportConfigurator> imp
 	}
 	
 	
-	private static Map<String, TypeDesignationStatus> statusMap;
+	private static Map<String, SpecimenTypeDesignationStatus> statusMap;
 	private static void fillTypeStatusMap(){
-		statusMap = new HashMap<String, TypeDesignationStatus>();
-		statusMap.put("holotype", TypeDesignationStatus.HOLOTYPE());
-		statusMap.put("isotype", TypeDesignationStatus.ISOTYPE());
-		statusMap.put("lectotype", TypeDesignationStatus.LECTOTYPE());
-		statusMap.put("syntype", TypeDesignationStatus.SYNTYPE());
-		statusMap.put("isolectotype", TypeDesignationStatus.ISOLECTOTYPE());
+		statusMap = new HashMap<String, SpecimenTypeDesignationStatus>();
+		statusMap.put("holotype", SpecimenTypeDesignationStatus.HOLOTYPE());
+		statusMap.put("isotype", SpecimenTypeDesignationStatus.ISOTYPE());
+		statusMap.put("lectotype", SpecimenTypeDesignationStatus.LECTOTYPE());
+		statusMap.put("syntype", SpecimenTypeDesignationStatus.SYNTYPE());
+		statusMap.put("isolectotype", SpecimenTypeDesignationStatus.ISOLECTOTYPE());
 		statusMap.put("type", null);
 		//TODO to be continued
 	}
@@ -395,8 +395,8 @@ public class TaxonXNomenclatureImport extends CdmIoBase<IImportConfigurator> imp
 	 * @param statusString
 	 * @return TypeDesignationStatus
 	 */
-	private static TypeDesignationStatus getStatusByStatusString(String statusString, TaxonXImportConfigurator config){
-		TypeDesignationStatus result = null;
+	private static SpecimenTypeDesignationStatus getStatusByStatusString(String statusString, TaxonXImportConfigurator config){
+		SpecimenTypeDesignationStatus result = null;
 		if (statusString == null || "".equals(statusString.trim())){
 			return null;
 		}

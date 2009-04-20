@@ -95,7 +95,7 @@ public class BerlinModelAuthorExport extends BerlinModelExportBase {
 			}
 		}
 		
-		
+//****************** FROM IMPORT ************/		
 		//get data from database
 		String strQuery = 
 				" SELECT *  " +
