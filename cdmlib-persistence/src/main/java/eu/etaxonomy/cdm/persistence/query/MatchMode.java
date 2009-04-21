@@ -22,11 +22,11 @@ public enum MatchMode {
 		queryString = queryString.replace('*', '%');
 		switch(this){	
 			case BEGINNING:
-				return "'" + queryString + "%'";			
+				return queryString + "%";			
 			case ANYWHERE:
-				return "'%" + queryString + "%'";
+				return "%" + queryString + "%";
 			default:
-				return "'" + queryString + "'";
+				return queryString;
 		}
 	}
 }
