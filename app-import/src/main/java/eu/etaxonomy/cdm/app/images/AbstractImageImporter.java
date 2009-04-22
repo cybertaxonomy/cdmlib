@@ -16,6 +16,7 @@ import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
+import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.io.common.CdmIoBase;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
@@ -36,9 +37,8 @@ public abstract class AbstractImageImporter extends CdmIoBase<ImageImportConfigu
 	protected CdmApplicationController cdmApp;
 	protected ITaxonService taxonService;
 	protected IDescriptionService descriptionService;
+	protected IReferenceService referenceService;
 	
-	
-
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doInvoke(eu.etaxonomy.cdm.io.common.IImportConfigurator, java.util.Map)
 	 */
@@ -50,6 +50,7 @@ public abstract class AbstractImageImporter extends CdmIoBase<ImageImportConfigu
 		TransactionStatus status = startTransaction();
 		
 		taxonService = getTaxonService();
+		referenceService = getReferenceService();
 
 		boolean result = invokeImageImport(config);
 		

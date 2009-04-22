@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.apache.sanselan.ImageReadException;
@@ -31,6 +32,7 @@ import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.media.ImageFile;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
@@ -79,7 +81,7 @@ public class PalmaeImageImport extends AbstractImageImporter {
 			for (Object object : jpegMetadata.getItems()){
 				Item item = (Item) object;
 				if(item.getKeyword().equals("ObjectName")){
-					logger.warn("File: " + imageFile.getName() + ". ObjectName string is: " + item.getText());
+					logger.info("File: " + imageFile.getName() + ". ObjectName string is: " + item.getText());
 					String[] objectNameSplit = item.getText().split(";");
 					
 					name = objectNameSplit[1];
@@ -93,19 +95,21 @@ public class PalmaeImageImport extends AbstractImageImporter {
 
 	protected boolean invokeImageImport (ImageImportConfigurator config){
 		
-		logger.info("importing images from directory: " + config.getSourceNameString());
+		logger.info("Importing images from directory: " + config.getSourceNameString());
 		File sourceFolder = (File)config.getSource();
 		if(sourceFolder.isDirectory()){
 			for( File file : sourceFolder.listFiles()){
 				if(file.isFile()){
 				
 					String taxonName = retrieveTaxonNameFromImageMetadata(file);
-					logger.warn("Looking up taxa with taxon name: " + taxonName);
-					List<TaxonBase> taxa = taxonService.searchTaxaByName(taxonName, config.getSourceReference());			
+					logger.info("Looking up taxa with taxon name: " + taxonName);
 					
+					ReferenceBase sec = referenceService.getReferenceByUuid(config.getSecUuid());
+
+					List<TaxonBase> taxa = taxonService.searchTaxaByName(taxonName, sec);			
 					
 					if(taxa.size() == 0){
-						logger.warn("no taxon with this name found" + taxonName);
+						logger.warn("no taxon with this name found: " + taxonName);
 					}else if(taxa.size() > 1){
 						logger.error(taxa);
 						logger.error("multiple taxa with this name found: " + taxonName);
@@ -147,14 +151,13 @@ public class PalmaeImageImport extends AbstractImageImporter {
 						TaxonDescription description = TaxonDescription.NewInstance(taxon);
 						
 						description.addElement(feature);
+						taxon.addDescription(description);
 						
-						//taxon.addDescription(description);
-						//taxonService.saveTaxon(taxon);
+						taxonService.saveTaxon(taxon);
+						
 						//descriptionService.saveDescription(description);
 						
 					}
-				
-					logger.info(taxonName);
 				}
 			}
 		}else{

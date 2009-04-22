@@ -42,7 +42,6 @@ public class PalmaeActivator {
 	static DbSchemaValidation hbm2dll = DbSchemaValidation.CREATE;
 	static final String tcsSource = TcsSources.arecaceae_local();
 	static final ICdmDataSource cdmDestination = CdmDestinations.localH2();
-//	static final ICdmDataSource cdmDestination = CdmDestinations.localH2();
 
 	static final UUID featureTreeUuid = UUID.fromString("72ccce05-7cc8-4dab-8e47-bf3f5fd848a0");
 		
@@ -175,7 +174,7 @@ public class PalmaeActivator {
 			System.out.println("Start importing images ...");
 			CdmDefaultImport<IImportConfigurator> imageImporter = new CdmDefaultImport<IImportConfigurator>();
 			ImageImportConfigurator imageConfigurator = ImageImportConfigurator.NewInstance(
-					PalmaeProtologueActivator.sourceFile, cdmDestination, PalmaeImageImport.class);
+					PalmaeImageActivator.sourceFolder, cdmDestination, PalmaeImageImport.class);
 			imageConfigurator.setSecUuid(secUuid);
 			success &= imageImporter.invoke(imageConfigurator);
 			System.out.println("End importing images ...");

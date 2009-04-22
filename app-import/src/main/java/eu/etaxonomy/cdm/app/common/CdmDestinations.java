@@ -205,7 +205,7 @@ public class CdmDestinations {
 	
 	public static ICdmDataSource cdm_local_cichorieae(){
 		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
-		String cdmServer = "172.0.0.1";
+		String cdmServer = "127.0.0.1";
 		String cdmDB = "cdm_edit_cichorieae";
 		String cdmUserName = "edit";
 		return makeDestination(cdmServer, cdmDB, -1, cdmUserName, null);
@@ -213,7 +213,7 @@ public class CdmDestinations {
 	
 	public static ICdmDataSource cdm_local_dipera(){
 		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
-		String cdmServer = "172.0.0.1";
+		String cdmServer = "127.0.0.1";
 		String cdmDB = "cdm_edit_diptera";
 		String cdmUserName = "edit";
 		return makeDestination(cdmServer, cdmDB, -1, cdmUserName, null);
@@ -221,7 +221,7 @@ public class CdmDestinations {
 	
 	public static ICdmDataSource cdm_local_palmae(){
 		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
-		String cdmServer = "172.0.0.1";
+		String cdmServer = "127.0.0.1";
 		String cdmDB = "cdm_edit_palmae";
 		String cdmUserName = "edit";
 		return makeDestination(cdmServer, cdmDB, -1, cdmUserName, null);
