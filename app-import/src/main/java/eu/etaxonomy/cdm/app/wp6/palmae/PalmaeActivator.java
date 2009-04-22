@@ -165,7 +165,7 @@ public class PalmaeActivator {
 			System.out.println("Start importing images ...");
 			CdmDefaultImport<IImportConfigurator> imageImporter = new CdmDefaultImport<IImportConfigurator>();
 			ImageImportConfigurator imageConfigurator = ImageImportConfigurator.NewInstance(
-					PalmaeProtologueActivator.sourceFile, cdmDestination, PalmaeImageImport.class);
+					PalmaeImageActivator.sourceFolder, cdmDestination, PalmaeImageImport.class);
 			imageConfigurator.setSecUuid(secUuid);
 			success &= imageImporter.invoke(imageConfigurator);
 			System.out.println("End importing images ...");
