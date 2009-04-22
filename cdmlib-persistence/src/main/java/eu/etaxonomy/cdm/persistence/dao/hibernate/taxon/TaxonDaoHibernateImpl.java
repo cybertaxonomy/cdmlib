@@ -214,13 +214,12 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		criteria.setFetchMode( "name", FetchMode.JOIN );
 		criteria.createAlias("name", "name");
 		
+		if (sec != null && sec.getId() != 0) {
+			criteria.add(Restrictions.eq("sec", sec ) );
+		}
+
 		// FIXME: sec restriction caused problems in cich image import: results was empty
-//		if (sec != null){
-//			if(sec.getId() == 0){
-//				getSession().save(sec);
-//			}
-//			criteria.add(Restrictions.eq("sec", sec ) );
-//		}
+		
 		if (queryString != null) {
 			criteria.add(Restrictions.ilike("name.nameCache", queryString));
 		}
