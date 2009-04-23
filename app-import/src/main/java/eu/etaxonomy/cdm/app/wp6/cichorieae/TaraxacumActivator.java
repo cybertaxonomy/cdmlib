@@ -63,7 +63,7 @@ public class TaraxacumActivator {
 	//Mac
 	//static final File mediaPath = new File("/Volumes/protolog/protolog/");
 	//Windows
-	static final File mediaPath = new File("\\\\Bgbm11\\Edit-WP6\\protolog");
+	static final File mediaPath = new File("\\\\media\\editwp6\\protolog");
 	// set to zero for unlimited nameFacts
 	static final int maximumNumberOfNameFacts = 0;
 	
