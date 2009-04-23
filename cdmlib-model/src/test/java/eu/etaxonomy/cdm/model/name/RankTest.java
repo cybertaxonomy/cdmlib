@@ -510,6 +510,8 @@ public class RankTest extends EntityTestBase {
 	public void testGetRankByName() {
 		try {
 			assertEquals(Rank.SPECIES(), Rank.getRankByName("species"));
+			// TODO: Cleanup Rank label names and rank to name mapping
+			//assertEquals(Rank.SUBFAMILY(), Rank.getRankByName("subfamily"));
 		} catch (UnknownCdmTypeException e) {
 			fail();
 		}
