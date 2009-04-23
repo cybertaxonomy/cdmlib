@@ -34,6 +34,7 @@ import eu.etaxonomy.cdm.persistence.dao.common.AuditEventSort;
 import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.fetch.CdmFetch;
+import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 /**
@@ -157,8 +158,24 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 		assert sec != null : "sec must exist";
 		
 		List<TaxonBase> results = taxonDao.getTaxaByName("Aus", sec);
-		assertNotNull("getTaxaByName should return a List",results);
-		assertFalse("The list should not be empty",results.isEmpty());
+		assertNotNull("getTaxaByName should return a List", results);
+		//assertFalse("The list should not be empty", results.isEmpty());
+		assertTrue(results.size() == 1);
+
+		results = taxonDao.getTaxaByName("A*", MatchMode.BEGINNING, 
+				true, null, null);
+		assertNotNull("getTaxaByName should return a List", results);
+		assertTrue(results.size() == 9);
+		
+		results = taxonDao.getTaxaByName("A", MatchMode.BEGINNING, 
+				true, null, null);
+		assertNotNull("getTaxaByName should return a List", results);
+		assertTrue(results.size() == 9);
+		
+		results = taxonDao.getTaxaByName("Aus", MatchMode.EXACT, 
+				true, null, null);
+		assertNotNull("getTaxaByName should return a List", results);
+		assertTrue(results.size() == 1);
 	}	
 	
 	@Test
