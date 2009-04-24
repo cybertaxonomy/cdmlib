@@ -88,7 +88,8 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 	    "supportsCategoricalData",
 	    "recommendedModifierEnumeration",
 	    "recommendedStatisticalMeasures",
-	    "supportedCategoricalEnumerations"
+	    "supportedCategoricalEnumerations",
+	    "recommendedMeasurementUnits"
 })
 @XmlRootElement(name = "Feature")
 @Entity
@@ -169,6 +170,14 @@ public class Feature extends DefinedTermBase<Feature> {
 	private Set<TermVocabulary<State>> supportedCategoricalEnumerations = new HashSet<TermVocabulary<State>>();
 	@XmlElement(name = "SupportsCommonTaxonName")
 	private boolean supportsCommonTaxonName;
+	
+	@XmlElementWrapper(name = "RecommendedMeasurementUnits")
+	@XmlElement(name = "RecommendedMeasurementUnit")
+	@XmlIDREF
+	@XmlSchemaType(name = "IDREF")
+	@ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name="DefinedTermBase_MeasurementUnit")
+	private Set<MeasurementUnit> recommendedMeasurementUnits = new HashSet<MeasurementUnit>();
 	
 /* ***************** CONSTRUCTOR AND FACTORY METHODS **********************************/
 	
@@ -423,6 +432,39 @@ public class Feature extends DefinedTermBase<Feature> {
 		this.recommendedStatisticalMeasures.remove(recommendedStatisticalMeasure);
 	}
 
+	/**
+	 * Returns the set of {@link StatisticalMeasure statistical measures} recommended to be used
+	 * in case of {@link QuantitativeData quantitative data} with <i>this</i> feature.
+	 */
+	public Set<MeasurementUnit> getRecommendedMeasurementUnits() {
+		return recommendedMeasurementUnits;
+	}
+
+	/**
+	 * Adds a {@link StatisticalMeasure statistical measure} to the set of
+	 * {@link #getRecommendedStatisticalMeasures() recommended statistical measures} assigned
+	 * to <i>this</i> feature.
+	 * 
+	 * @param recommendedStatisticalMeasure	the statistical measure to be added
+	 * @see    	   							#getRecommendedStatisticalMeasures()
+	 */
+	public void addRecommendedMeasurementUnit(
+			MeasurementUnit recommendedMeasurementUnit) {
+		this.recommendedMeasurementUnits.add(recommendedMeasurementUnit);
+	}
+	/** 
+	 * Removes one element from the set of {@link #getRecommendedStatisticalMeasures() recommended statistical measures}
+	 * assigned to <i>this</i> feature.
+	 *
+	 * @param  recommendedStatisticalMeasure	the statistical measure which should be removed
+	 * @see     								#getRecommendedStatisticalMeasures()
+	 * @see     								#addRecommendedStatisticalMeasure(StatisticalMeasure)
+	 */
+	public void removeRecommendedMeasurementUnit(
+			MeasurementUnit recommendedMeasurementUnit) {
+		this.recommendedMeasurementUnits.remove(recommendedMeasurementUnit);
+	}
+	
 	/**
 	 * Returns the set of {@link TermVocabulary term vocabularies} containing the list of
 	 * possible {@link State states} to be used in {@link CategoricalData categorical data}
