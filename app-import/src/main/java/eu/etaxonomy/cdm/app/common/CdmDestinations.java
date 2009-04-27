@@ -39,10 +39,24 @@ public class CdmDestinations {
 	/**
 	 * Intended to be used for imports
 	 */
-	public static ICdmDataSource cdm_import(){
+	public static ICdmDataSource cdm_import_diptera(){
 		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
 		String cdmServer = "192.168.2.10";
-		String cdmDB = "cdm_import";
+		String cdmDB = "cdm_import_diptera";
+		String cdmUserName = "edit";
+		return makeDestination(cdmServer, cdmDB, -1, cdmUserName, null);
+	}
+	public static ICdmDataSource cdm_import_cichorieae(){
+		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
+		String cdmServer = "192.168.2.10";
+		String cdmDB = "cdm_import_cichorieae";
+		String cdmUserName = "edit";
+		return makeDestination(cdmServer, cdmDB, -1, cdmUserName, null);
+	}
+	public static ICdmDataSource cdm_import_palmae(){
+		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
+		String cdmServer = "192.168.2.10";
+		String cdmDB = "cdm_import_palmae";
 		String cdmUserName = "edit";
 		return makeDestination(cdmServer, cdmDB, -1, cdmUserName, null);
 	}
@@ -344,30 +358,6 @@ public class CdmDestinations {
 		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
 		String cdmServer = "192.168.2.10";
 		String cdmDB = "cdm_edit_salvador"; 
-		String cdmUserName = "edit";
-		return makeDestination(cdmServer, cdmDB, -1, cdmUserName, null);
-	}
-	
-	public static ICdmDataSource cdm_import_cichorieae() {
-		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
-		String cdmServer = "192.168.2.10";
-		String cdmDB = "cdm_import_cichorieae"; 
-		String cdmUserName = "edit";
-		return makeDestination(cdmServer, cdmDB, -1, cdmUserName, null);
-	}
-	
-	public static ICdmDataSource cdm_import_diptera() {
-		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
-		String cdmServer = "192.168.2.10";
-		String cdmDB = "cdm_import_diptera"; 
-		String cdmUserName = "edit";
-		return makeDestination(cdmServer, cdmDB, -1, cdmUserName, null);
-	}
-	
-	public static ICdmDataSource cdm_import_palmae() {
-		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
-		String cdmServer = "192.168.2.10";
-		String cdmDB = "cdm_import_palmae"; 
 		String cdmUserName = "edit";
 		return makeDestination(cdmServer, cdmDB, -1, cdmUserName, null);
 	}

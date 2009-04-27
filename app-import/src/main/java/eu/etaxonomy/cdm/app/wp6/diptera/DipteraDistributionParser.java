@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
@@ -29,6 +30,7 @@ import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
 import eu.etaxonomy.cdm.model.description.PresenceTerm;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
@@ -46,7 +48,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 public class DipteraDistributionParser {
 	private static final Logger logger = Logger.getLogger(DipteraDistributionParser.class);
 	
-	private static ICdmDataSource cdmDestination = CdmDestinations.localH2();
+	private static ICdmDataSource cdmDestination = CdmDestinations.cdm_import_diptera();
 	
 	
 	final static String epiSplitter = "(\\s+|\\[|\\]|\\(|\\))"; //( ' '+| '(' | ')'| '[' | ']' )
@@ -55,6 +57,11 @@ public class DipteraDistributionParser {
 	protected void doDistribution(CdmApplicationController app){
 		pattern = Pattern.compile(epiSplitter); 
 	    TransactionStatus txStatus = app.startTransaction();
+//	    List<FeatureTree> featureTrees = app.getDescriptionService().getFeatureTreesAll();
+//		Feature f = (Feature)app.getTermService().getTermByUuid(UUID.fromString("99b2842f-9aa7-42fa-bd5f-7285311e0101"));
+		Feature c = Feature.CITATION();
+	    app.getTermService().update(c);
+//	    app.commitTransaction(txStatus);
 		List<TaxonBase> taxa = app.getTaxonService().getAllTaxonBases(1000000, 0);
 		for (TaxonBase taxon: taxa ){
 			if (taxon instanceof Taxon){
@@ -65,6 +72,10 @@ public class DipteraDistributionParser {
 					descElements.addAll(description.getElements());
 					
 					for (DescriptionElementBase descEl: descElements){
+						if(descEl == null || descEl.getFeature() == null){
+							logger.error("Null pointer error: descEl="+descEl+", descEl.getFeature()="+descEl.getFeature());
+							break;
+						}
 						if (descEl.getFeature().equals(Feature.OCCURRENCE())){
 							if (descEl instanceof TextData){
 								String occString = ((TextData)descEl).getText(Language.ENGLISH());
@@ -163,6 +174,9 @@ public class DipteraDistributionParser {
 								}
 								if (isDoubtful){
 									term = PresenceTerm.INTRODUCED_PRESENCE_QUESTIONABLE();
+								}
+								if(area == null){
+									logger.warn("TDWG area '"+word+"' NOT FOUND");
 								}
 								Distribution distr = Distribution.NewInstance(area, term);
 								desc.addElement(distr);
@@ -396,7 +410,7 @@ public class DipteraDistributionParser {
 	public static void main(String[] args) {
 		CdmApplicationController app = null;
 		try {
-			DbSchemaValidation val = DbSchemaValidation.UPDATE;
+			DbSchemaValidation val = DbSchemaValidation.VALIDATE;
 			app = CdmApplicationController.NewInstance(cdmDestination, val);
 		} catch (DataSourceNotFoundException e) {
 			e.printStackTrace();
