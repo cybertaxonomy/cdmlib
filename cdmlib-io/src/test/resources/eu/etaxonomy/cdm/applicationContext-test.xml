@@ -26,6 +26,8 @@
     </bean> 
     
     <bean id="taxonSpellingDirectory" class="org.springmodules.lucene.index.support.FSDirectoryFactoryBean">
+    
+<!--      <property name="location" value="file:${user.home}/.cdmLibrary/lucene/eu.etaxonomy.cdm.model.taxon.TaxonBase_spelling"/>-->
       <property name="location" value="file:./target/test-classes/eu.etaxonomy.cdm.model.taxon.TaxonBase_spelling"/>
       <property name="create" value="true"/>
     </bean>
