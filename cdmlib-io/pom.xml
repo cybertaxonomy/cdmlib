@@ -34,12 +34,12 @@
       </plugin>
     </plugins>
   </build>
-  <dependencies>
-    <dependency>
+  <dependencies>   
+  <dependency>
   		<groupId>eu.etaxonomy</groupId>
   		<artifactId>cdmlib-persistence</artifactId>
   		<type>test-jar</type>
-  		<scope>test</scope>
+  		<scope>test</scope> 
   		<version>${parent.version}</version>
   	</dependency>
    	<dependency>
