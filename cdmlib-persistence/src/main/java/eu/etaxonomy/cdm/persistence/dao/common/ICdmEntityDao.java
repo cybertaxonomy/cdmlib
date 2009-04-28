@@ -164,7 +164,7 @@ public interface ICdmEntityDao<T extends CdmBase> {
 	 * {@link BeanInitializer#initialize(Object, List)}
 	 * 
 	 * @param uuid
-	 * @param propertyPaths
+	 * @param propertyPaths properties to be initialized
 	 * @return
 	 */
 	public T load(UUID uuid, List<String> propertyPaths);

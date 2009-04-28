@@ -300,7 +300,14 @@ extends IdentifiableDaoBase<TaxonNameBase> implements ITaxonNameDao {
 		}
 	}
 
-	public List<TypeDesignationBase> getTypeDesignations(TaxonNameBase name, SpecimenTypeDesignationStatus status, Integer pageSize, Integer pageNumber) {
+	public List<TypeDesignationBase> getTypeDesignations(TaxonNameBase name, 
+			SpecimenTypeDesignationStatus status, Integer pageSize, Integer pageNumber) {
+		return getTypeDesignations(name, status, pageSize, pageNumber, null);
+	}
+	
+	public List<TypeDesignationBase> getTypeDesignations(TaxonNameBase name,
+				SpecimenTypeDesignationStatus status, Integer pageSize, Integer pageNumber,
+				List<String> propertyPaths){
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
 			Query query = null;
@@ -320,7 +327,7 @@ extends IdentifiableDaoBase<TaxonNameBase> implements ITaxonNameDao {
 					query.setFirstResult(0);
 				}
 			}
-			return (List<TypeDesignationBase>)query.list();
+			return defaultBeanInitializer.initializeAll((List<TypeDesignationBase>)query.list(), propertyPaths);
 		} else {
 			AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(TypeDesignationBase.class,auditEvent.getRevisionNumber());
 			query.add(AuditEntity.relatedId("typifiedNames").eq(name.getId()));
@@ -337,8 +344,7 @@ extends IdentifiableDaoBase<TaxonNameBase> implements ITaxonNameDao {
 					query.setFirstResult(0);
 				}
 			}
-
-			return (List<TypeDesignationBase>)query.getResultList();
+			return defaultBeanInitializer.initializeAll((List<TypeDesignationBase>)query.getResultList(), propertyPaths);
 		}
 	}
 
@@ -484,5 +490,14 @@ extends IdentifiableDaoBase<TaxonNameBase> implements ITaxonNameDao {
 
 		List<? extends TaxonNameBase<?,?>> results = crit.list();
 		return results;
+	}
+	
+	
+	public Integer countByName(String queryString, 
+			MatchMode matchmode, List<Criterion> criteria) {
+		//TODO improve performance
+		List<? extends TaxonNameBase<?,?>> results = findByName(queryString, matchmode, null, null, criteria);
+		return results.size();
+		
 	}
 }

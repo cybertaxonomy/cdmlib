@@ -73,7 +73,7 @@ public interface BeanInitializer {
 	 */
 	public void initialize(Object bean,  List<String> propertyPaths);
 	
-	public void initializeAll(List list,  List<String> propertyPaths);
+	public <T> List<T> initializeAll(List<T> list,  List<String> propertyPaths);
 	
 	
 	/*TODO implement:

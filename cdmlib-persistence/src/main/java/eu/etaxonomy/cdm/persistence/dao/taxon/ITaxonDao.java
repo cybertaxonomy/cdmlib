@@ -78,6 +78,16 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
 	 */
 	public List<TaxonBase> getTaxaByName(String queryString, MatchMode matchMode, 
 			Boolean accepted, Integer pageSize, Integer pageNumber);
+	
+	
+	/**
+	 * @param queryString
+	 * @param matchMode
+	 * @param accepted
+	 * @return
+	 */
+	public Integer countTaxaByName(String queryString, MatchMode matchMode, 
+			Boolean accepted);
 		
 	/**
 	 * Computes all Taxon instances that do not have a taxonomic parent and has at least one child.
@@ -100,16 +110,28 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
 	
 	/**
 	 * Computes all Taxon instances which name is of a certain Rank.
-	 * @param rank The rank of the taxon name
-	 * @param sec The concept reference that the taxon belongs to
-	 * @param cdmFetch not used yet !! TODO
-	 * @param onlyWithChildren if true only taxa are returned that have taxonomic children. <Br>Default: true.
-	 * @param withMisaplications if false only taxa are returned that have no isMisappliedNameFor relationship. 
-	 * <Br>Default: true.
+	 * 
+	 * @param rank
+	 *            The rank of the taxon name
+	 * @param sec
+	 *            The concept reference that the taxon belongs to
+	 * @param cdmFetch
+	 *            not used yet !! TODO
+	 * @param onlyWithChildren
+	 *            if true only taxa are returned that have taxonomic children. <Br>
+	 *            Default: true.
+	 * @param withMisaplications
+	 *            if false only taxa are returned that have no
+	 *            isMisappliedNameFor relationship.
+	 * @param propertyPaths
+	 *            properties to be initialized, For detailed description and
+	 *            examples <b>please refer to:</b>
+	 *            {@link BeanInitializer#initialize(Object, List)}. <Br>
+	 *            Default: true.
 	 * @return The List<Taxon> of root taxa.
 	 */
 	public List<Taxon> 
-	getRootTaxa(Rank rank, ReferenceBase sec, CdmFetch cdmFetch, Boolean onlyWithChildren, Boolean withMisapplications);
+	getRootTaxa(Rank rank, ReferenceBase sec, CdmFetch cdmFetch, Boolean onlyWithChildren, Boolean withMisapplications, List<String> propertyPaths);
 
 		/**
 	 * TODO necessary? 

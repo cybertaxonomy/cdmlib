@@ -13,6 +13,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.Hibernate;
 import org.springframework.stereotype.Component;
 
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.persistence.dao.AbstractBeanInitializer;
 
 /**
@@ -25,8 +26,9 @@ public class HibernateBeanInitializer extends AbstractBeanInitializer{
 	
 	public static final Logger logger = Logger.getLogger(HibernateBeanInitializer.class);
 
-	protected void initializeInstance(Object bean) {
+	protected Object initializeInstance(Object bean) {
 		Hibernate.initialize(bean);
+		return HibernateProxyHelperExtended.getProxyTarget(bean);
 	}
 	
 }

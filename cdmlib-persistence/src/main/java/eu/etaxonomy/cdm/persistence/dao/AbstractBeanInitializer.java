@@ -15,10 +15,16 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.log4j.Logger;
+import org.hibernate.Hibernate;
+import org.hibernate.proxy.HibernateProxy;
+import org.hibernate.proxy.HibernateProxyHelper;
+import org.hibernate.proxy.LazyInitializer;
+import org.hibernate.proxy.pojo.javassist.JavassistLazyInitializer;
 
 import com.ibm.lsid.client.conf.castor.PropertiesDescriptor;
 
@@ -33,7 +39,12 @@ public abstract class AbstractBeanInitializer implements BeanInitializer{
 	
 	public static final Logger logger = Logger.getLogger(AbstractBeanInitializer.class);
 	
-	protected abstract void initializeInstance(Object proxy);
+	/**
+	 * Initialize the the proxy, unwrap the target object and return it. 
+	 * @param proxy the proxy to initialize
+	 * @return the unwrapped target object
+	 */
+	protected abstract Object initializeInstance(Object proxy);
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.persistence.dao.BeanInitializer#load(eu.etaxonomy.cdm.model.common.CdmBase)
@@ -46,7 +57,7 @@ public abstract class AbstractBeanInitializer implements BeanInitializer{
 	 * @see eu.etaxonomy.cdm.persistence.dao.BeanInitializer#loadFully(eu.etaxonomy.cdm.model.common.CdmBase)
 	 */
 	public void loadFully(Object bean) {
-		initializeBean(bean, true, true); 
+		initializeBean(bean, true, true);
 	}
 	
 	/**
@@ -57,9 +68,16 @@ public abstract class AbstractBeanInitializer implements BeanInitializer{
 	public void initializeBean(Object bean, boolean cdmEntities, boolean collections){
 		
 		if(logger.isDebugEnabled()){
-			logger.debug("starting initialisation of " + bean + " ;class:" + bean.getClass().getSimpleName());
+			logger.debug(">> starting initializeBean() of " + bean + " ;class:" + bean.getClass().getSimpleName());
 		}
-		Set<PropertyDescriptor> props = getProperties(bean, cdmEntities, collections); 
+		Set<Class> restrictions = new HashSet<Class>();
+		if(cdmEntities){
+			restrictions.add(CdmBase.class);
+		} 
+		if(collections){
+			restrictions.add(Collections.class);
+		} 
+		Set<PropertyDescriptor> props = getProperties(bean, restrictions); 
 		for(PropertyDescriptor prop : props){
 			try {
 				Object proxy = PropertyUtils.getProperty( bean, prop.getName());
@@ -82,7 +100,7 @@ public abstract class AbstractBeanInitializer implements BeanInitializer{
 			}
 		}
 		if(logger.isDebugEnabled()){
-			logger.debug("initialisation of " + bean + " complete");
+			logger.debug("  completed initializeBean() of " + bean);
 		}
 	}
 	
@@ -91,19 +109,30 @@ public abstract class AbstractBeanInitializer implements BeanInitializer{
 	 */
 	//TODO optimize algorithm ..
 	public void initialize(Object bean, List<String> propertyPaths) {
+		if(propertyPaths == null){
+			return;
+		}
 		
 		Collections.sort(propertyPaths);
-	
+		if(logger.isDebugEnabled()){
+			logger.debug(">> starting initialize() of " + bean + " ;class:" + bean.getClass().getSimpleName());
+		}
 		for(String propPath : propertyPaths){
 			initializePropertyPath(bean, propPath);
+		}
+		if(logger.isDebugEnabled()){
+			logger.debug("  completed initialize() of " + bean);
 		}
 		
 	}
 	
-	public void initializeAll(List list,  List<String> propertyPaths){
-		for(Object bean : list){
-			initialize(bean, propertyPaths);
+	public <T> List<T> initializeAll(List<T> beanList,  List<String> propertyPaths){
+		if(propertyPaths != null){			
+			for(Object bean : beanList){
+				initialize(bean, propertyPaths);
+			}
 		}
+		return beanList;
 	}
 
 	/**
@@ -114,6 +143,47 @@ public abstract class AbstractBeanInitializer implements BeanInitializer{
 		if(logger.isDebugEnabled()){
 			logger.debug("processing " + propPath);
 		}
+		
+		// if a wildcard is used for the property do a batch initialization
+		if(propPath.equals(LOAD_2ONE_WILDCARD)){
+			if(Collection.class.isAssignableFrom(bean.getClass())){
+				initializeAllEntries((Collection)bean, true, false);
+			} else {				
+				initializeBean(bean, true, false);
+			}
+		} else if(propPath.equals(LOAD_2ONE_2MANY_WILDCARD)){
+			if(Collection.class.isAssignableFrom(bean.getClass())){
+				initializeAllEntries((Collection)bean, true, true);
+			} else {
+				initializeBean(bean, true, true);				
+			}
+		} else {
+		    // initialize a specific property or property path
+			initializeProperty(bean, propPath);
+		}
+	}
+
+	/**
+	 * @param bean
+	 * @param property
+	 * @param nestedPath
+	 */
+//	private void initializeUsingLazyInitializer(Object bean, String property, String nestedPath) {
+//		if (bean instanceof HibernateProxy) {
+//			HibernateProxy proxy = (HibernateProxy) bean;
+//			JavassistLazyInitializer li = (JavassistLazyInitializer)proxy.getHibernateLazyInitializer();
+//			li.invoke(bean, thisMethod, proceed, args);
+//		}
+//	}
+
+	/**
+	 * @param bean
+	 * @param property
+	 * @param nestedPath
+	 */
+	private void initializeProperty(Object bean, String propPath) {
+		
+		// split next path token of
 		String property;
 		String nestedPath = null;
 		int pos;
@@ -124,43 +194,45 @@ public abstract class AbstractBeanInitializer implements BeanInitializer{
 			property = propPath;
 		}
 		
-		// if a wildcard is used for the property do a batch initialization
-		if(property.equals(LOAD_2ONE_WILDCARD)){
-			if(Collection.class.isAssignableFrom(bean.getClass())){
-				initializeAllEntries((Collection)bean, true, false);
-			} else {				
-				initializeBean(bean, true, false);
-			}
-		} else if(property.equals(LOAD_2ONE_2MANY_WILDCARD)){
-			if(Collection.class.isAssignableFrom(bean.getClass())){
-				initializeAllEntries((Collection)bean, true, true);
-			} else {
-				initializeBean(bean, true, true);				
-			}
-		} else {
-		// initialize a specific property or property path
-			try {
-				Object proxy = PropertyUtils.getProperty( bean, property);
-				initializeInstance(proxy);
-				if(proxy != null && nestedPath != null){
-					if (Collection.class.isAssignableFrom(proxy.getClass())) {
-						for (Object entrybean : (Collection) proxy) {
-							initializePropertyPath(entrybean, nestedPath);
-						}
-
-					} else {
-						initializePropertyPath(proxy, nestedPath);
-					}
-				}
-			} catch (IllegalAccessException e) {
-				logger.error("Illegal access on property " + property);
-			} catch (InvocationTargetException e) {
-				logger.error("Cannot invoke property " + property + " not found");
-			} catch (NoSuchMethodException e) {
-				logger.error("Property " + property + " not found");
-			}
+		// is the property indexed?
+		Integer index = null;
+		if((pos = property.indexOf('[')) > 0){
+			String indexString = property.substring(pos + 1, property.indexOf(']'));
+			index = Integer.valueOf(indexString);
+			property = property.substring(0, pos);
 		}
 		
+		try {
+			// initialize
+			//Class targetClass = HibernateProxyHelper.getClassWithoutInitializingProxy(bean); // used for debugging
+			Object proxy = PropertyUtils.getProperty(bean, property);
+			Object unwrappedBean = initializeInstance(proxy);
+			
+			// handle nested properties
+			if(proxy != null && nestedPath != null){
+				if (Collection.class.isAssignableFrom(proxy.getClass())) {
+					int i = 0;
+					for (Object entrybean : (Collection) proxy) {
+						if(index == null){
+							initializePropertyPath(entrybean, nestedPath);
+						} else if(index.equals(i)){
+							initializePropertyPath(entrybean, nestedPath);
+							break;
+						}
+						i++;
+					}
+				} else {
+					initializePropertyPath(unwrappedBean, nestedPath);
+				}
+			}
+			
+		} catch (IllegalAccessException e) {
+			logger.error("Illegal access on property " + property);
+		} catch (InvocationTargetException e) {
+			logger.error("Cannot invoke property " + property + " not found");
+		} catch (NoSuchMethodException e) {
+			logger.error("Property " + property + " not found");
+		}
 	}
 
 	/**
@@ -181,13 +253,13 @@ public abstract class AbstractBeanInitializer implements BeanInitializer{
 	 * @param collections
 	 * @return
 	 */
-	public static Set<PropertyDescriptor> getProperties(Object bean, boolean cdmEntities, boolean collections) {
+	public static Set<PropertyDescriptor> getProperties(Object bean, Set<Class> typeRestrictions) {
 		
 		Set<PropertyDescriptor> properties = new HashSet<PropertyDescriptor>();
 		PropertyDescriptor[] prop = PropertyUtils.getPropertyDescriptors(bean);
 		
 		for (int i = 0; i < prop.length; i++) {
-			String propName = prop[i].getName();
+			//String propName = prop[i].getName();
 			
 	        // only read methods & skip transient getters
 			if( prop[i].getReadMethod() != null ){
@@ -199,10 +271,13 @@ public abstract class AbstractBeanInitializer implements BeanInitializer{
 			      }catch( ClassNotFoundException cnfe ){
 			         // ignore
 			      }
-			      if(cdmEntities && CdmBase.class.isAssignableFrom(prop[i].getPropertyType())){
-			    	  properties.add(prop[i]);
-			      }
-			      if(collections && Collection.class.isAssignableFrom(prop[i].getPropertyType())){
+			      if(typeRestrictions != null && typeRestrictions.size() > 1){
+			    	  for(Class type : typeRestrictions){
+			    		  if(type.isAssignableFrom(prop[i].getPropertyType())){
+			    			  properties.add(prop[i]);
+			    		  }
+			    	  }
+			      } else {
 			    	  properties.add(prop[i]);
 			      }
 			}
