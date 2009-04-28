@@ -115,7 +115,14 @@ public class PartialUserType implements UserType {
 		}
 	}
 
+	/**
+	 * @param p
+	 * @return an ISO 8601 like time representations of the form yyyyMMdd
+	 */
 	public static String partialToString(Partial p) {
+		//FIXME reduce code by use org.joda.time.format.ISODateTimeFormat.basicDate() instead ?
+		//      for a date with unknown day this will produce e.g. 195712?? 
+		// 		
 		String strYear = getNullFilledString(p, DateTimeFieldType.year(),4);
 		String strMonth = getNullFilledString(p, DateTimeFieldType.monthOfYear(),2);
 		String strDay = getNullFilledString(p, DateTimeFieldType.dayOfMonth(),2);

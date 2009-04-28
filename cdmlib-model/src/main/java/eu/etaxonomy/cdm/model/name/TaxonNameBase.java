@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.model.name;
 
 import java.lang.reflect.Method;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -276,6 +277,11 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 			this.setFullTitleCache(generateFullTitle(), protectedFullTitleCache);
 		}
 		return fullTitleCache;
+	}
+	
+	@Transient
+	public List<Object> getTaggedName(){
+		return getCacheStrategy().getTaggedName(this);
 	}
 
     public void setFullTitleCache(String fullTitleCache){

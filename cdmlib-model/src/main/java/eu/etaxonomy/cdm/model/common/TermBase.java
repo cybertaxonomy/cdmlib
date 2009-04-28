@@ -22,6 +22,7 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
 import eu.etaxonomy.cdm.model.description.FeatureTree;
+import eu.etaxonomy.cdm.model.description.TextData;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "TermBase", propOrder = {
@@ -102,7 +103,8 @@ public abstract class TermBase extends VersionableEntity {
 	 * Representation in Language.DEFAULT() and if nessecary further falls back
 	 * to return the first element found if any.
 	 * 
-	 * TODO think about this fall-back strategy!
+	 * TODO think about this fall-back strategy & 
+	 * see also {@link TextData#getPreferredLanguageString(List)}
 	 * 
 	 * @param languages
 	 * @return
