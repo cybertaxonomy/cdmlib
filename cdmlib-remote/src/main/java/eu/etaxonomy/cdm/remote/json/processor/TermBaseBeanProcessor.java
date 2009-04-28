@@ -65,13 +65,19 @@ public class TermBaseBeanProcessor extends AbstractCdmBeanProcessor<TermBase> {
 			
 			representation = term.getPreferredRepresentation(languages);
 			if(representation != null){
-				json.element("representation_L10n", representation.getText());
+				if(representation.getText() != null && !representation.getText().isEmpty()){
+					json.element("representation_L10n", representation.getText());
+				} else if (representation.getLabel() != null && !representation.getLabel().isEmpty()) {
+					json.element("representation_L10n", representation.getLabel());
+				} else {
+					json.element("representation_L10n", representation.getAbbreviatedLabel());
+				}
 			}
 			if(!replaceRepresentations){
 				json.element("representations", term.getRepresentations(), jsonConfig);
 			}
 		} else {
-			logger.info("representations of term not initialized  " + term.getUuid().toString());
+			logger.debug("representations of term not initialized  " + term.getUuid().toString());
 		}
 		return json;
 	}

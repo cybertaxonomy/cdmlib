@@ -11,6 +11,7 @@
 package eu.etaxonomy.cdm.remote.json.processor;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -18,6 +19,7 @@ import org.hibernate.Hibernate;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.remote.dto.TaggedText;
 
 import net.sf.json.CycleSetAcess;
 import net.sf.json.JSONObject;
@@ -39,7 +41,9 @@ public class TaxonomyNodeBeanProcessor extends CycleSetAcess implements JsonBean
 	
 		Taxon taxon = (Taxon)bean;
 		JSONObject json = new JSONObject();
-		json.element("titleCache", taxon.getTitleCache(), jsonConfig);
+		json.element("titleCache", taxon.getName().getTitleCache(), jsonConfig);
+		List<TaggedText> taggedTitle = TaxonNameBaseBeanProcessor.getTaggedName(taxon.getName());
+		json.element("taggedTitle", taggedTitle, jsonConfig);
 		json.element("uuid", taxon.getUuid(), jsonConfig);
 		json.element("secUuid", taxon.getSec().getUuid(), jsonConfig);
 		json.element("taxonomicChildrenCount", taxon.getTaxonomicChildrenCount(), jsonConfig);

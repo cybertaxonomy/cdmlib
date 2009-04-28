@@ -43,6 +43,7 @@ public class JsonConfigFactoryBean implements FactoryBean {
 	private Map<Class,JsonValueProcessor> jsonValueProcessors = new HashMap<Class,JsonValueProcessor>();
 	private JsonBeanProcessorMatcher jsonBeanProcessorMatcher = JsonBeanProcessorMatcher.DEFAULT;
 	private JsonValueProcessorMatcher jsonValueProcessorMatcher = JsonValueProcessorMatcher.DEFAULT;
+	private boolean ignoreDefaultExcludes = false;
 	private List<String> excludes = new ArrayList<String>();
 	
 	public void setCycleDetectionStrategy(CycleDetectionStrategy cycleDetectionStrategy) {
@@ -73,6 +74,10 @@ public class JsonConfigFactoryBean implements FactoryBean {
 		this.jsonValueProcessors = jsonValueProcessors;
 	}
 	
+	public void setIgnoreDefaultExcludes(boolean ignoreDefaultExcludes) {
+		this.ignoreDefaultExcludes = ignoreDefaultExcludes;
+	}
+
 	public void setExcludes(List<String> excludes) {
 		this.excludes = excludes;
 	}
@@ -89,6 +94,8 @@ public class JsonConfigFactoryBean implements FactoryBean {
 		jsonConfig.setJsonBeanProcessorMatcher(jsonBeanProcessorMatcher);
 		
 		jsonConfig.setExcludes(excludes.toArray(new String[]{}));
+		
+		jsonConfig.setIgnoreDefaultExcludes(ignoreDefaultExcludes);
 		
 		for(Class clazz : jsonBeanProcessors.keySet()) {
 			jsonConfig.registerJsonBeanProcessor(clazz, jsonBeanProcessors.get(clazz));

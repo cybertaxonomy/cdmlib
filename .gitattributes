@@ -1461,10 +1461,12 @@ cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/MediaController.j
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/MediaListController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/NameController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/NameListController.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/NamePortalController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/OccurrenceController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/OccurrenceListController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/ReferenceController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/ReferenceListController.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/ReferencePortalController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/TaxonController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/TaxonListController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/TaxonPortalController.java -text
@@ -1560,6 +1562,7 @@ cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/processor/CGLibEnhanced
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/processor/CalendarJSONValueProcessor.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/processor/CdmBeanProcessingRegistry.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/processor/CdmProxyBeanProcessorMatcher.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/processor/ClassJSONValueProcessor.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/processor/DateTimeJSONValueProcessor.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/processor/HibernateJSONValueProcessor.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/processor/HibernateJSONValueProcessorMatcher.java -text
@@ -1570,6 +1573,7 @@ cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/processor/TaxonBeanProc
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/processor/TaxonNameBaseBeanProcessor.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/processor/TaxonomyNodeBeanProcessor.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/processor/TermBaseBeanProcessor.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/processor/TextDataBeanProcessor.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/processor/UUIDJSONValueProcessor.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/util/InitializedHibernatePropertyFilter.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/l10n/LocaleContext.java -text

@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * @date 09.04.2009
  *
  */
-@Controller
+//currently unused @Controller
 @RequestMapping(value = {"/*/portal/featuretree/", "/*/portal/featuretree/*"})
 public class FeatureTreeListPortalController extends FeatureTreeListController {
 

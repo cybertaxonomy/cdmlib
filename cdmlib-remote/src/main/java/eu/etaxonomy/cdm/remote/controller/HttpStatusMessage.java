@@ -27,6 +27,8 @@ public class HttpStatusMessage {
 	public final static HttpStatusMessage UUID_MISSING = new HttpStatusMessage(HttpServletResponse.SC_BAD_REQUEST, "missing uuid parameter");
 	public final static HttpStatusMessage UUID_INVALID = new HttpStatusMessage(HttpServletResponse.SC_BAD_REQUEST, "invalid uuid");
 	public final static HttpStatusMessage UUID_NOT_FOUND = new HttpStatusMessage(HttpServletResponse.SC_NOT_FOUND, "uuid not found");
+	public final static HttpStatusMessage UUID_REFERENCES_WRONG_TYPE = new HttpStatusMessage(HttpServletResponse.SC_NOT_FOUND, "uuid references wrong type");
+
 
 	
 	private int statusCode;

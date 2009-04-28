@@ -14,10 +14,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
-
-import org.apache.commons.beanutils.PropertyUtils;
-import org.apache.log4j.Logger;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONException;
@@ -27,6 +25,10 @@ import net.sf.json.processors.JsonBeanProcessor;
 import net.sf.json.processors.JsonValueProcessor;
 import net.sf.json.processors.JsonVerifier;
 import net.sf.json.util.PropertyFilter;
+
+import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.log4j.Logger;
+
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.persistence.dao.AbstractBeanInitializer;
 
@@ -39,6 +41,9 @@ public abstract class AbstractCdmBeanProcessor<T extends CdmBase> implements Jso
 	
 	public static final Logger logger = Logger.getLogger(AbstractCdmBeanProcessor.class);
 	
+	/* (non-Javadoc)
+	 * @see net.sf.json.processors.JsonBeanProcessor#processBean(java.lang.Object, net.sf.json.JsonConfig)
+	 */
 	public final JSONObject processBean(Object bean, JsonConfig jsonConfig) {
 
 		if(logger.isDebugEnabled()){
@@ -46,16 +51,18 @@ public abstract class AbstractCdmBeanProcessor<T extends CdmBase> implements Jso
 		}
 		
 		JSONObject json =  new JSONObject();
-		
-		Set<PropertyDescriptor> props = AbstractBeanInitializer.getProperties(bean, true, true);
+		Collection exclusions = jsonConfig.getMergedExcludes( bean.getClass() );
+		Set<Class> typeRestrictions = new HashSet<Class>();
+		typeRestrictions.add(CdmBase.class);
+		Set<PropertyDescriptor> props = AbstractBeanInitializer.getProperties(bean, null);
 		PropertyFilter jsonPropertyFilter = jsonConfig.getJsonPropertyFilter();
 		for(PropertyDescriptor prop: props){
 			String key = prop.getName();
-			if(getIgnorePropNames().contains(key)){
+			if(getIgnorePropNames().contains(key) || exclusions.contains(key)){
 				if(logger.isDebugEnabled()){
 					logger.debug("skipping excluded property " + key);
-					continue;
 				}
+				continue;
 			}
 			
 			try {
@@ -77,14 +84,10 @@ public abstract class AbstractCdmBeanProcessor<T extends CdmBase> implements Jso
 	            if(logger.isDebugEnabled()){
 	            	logger.debug("processing " + key + " of " + bean.getClass());
 	            }
-	            if(Collection.class.isAssignableFrom(type)){
-	            	JSONArray jsonList = JSONArray.fromObject(value, jsonConfig);
-	            	json.element(key, jsonList, jsonConfig);
-	            } else if(Object.class.isAssignableFrom(type)){
-	            	JSONObject jsonObj = JSONObject.fromObject(value, jsonConfig);
-	            	json.element(key, jsonObj, jsonConfig);
+	            if(Collection.class.isAssignableFrom(type) || Object.class.isAssignableFrom(type) || Map.class.isAssignableFrom(type)){
+	            	json.element(key, value, jsonConfig);
 	            } else {
-	            	throw new JSONException( "Value " + value + " can not be processed.");
+	            	json.element(key, value);
 	            }
 	            
 			} catch (IllegalAccessException e) {
@@ -101,8 +104,29 @@ public abstract class AbstractCdmBeanProcessor<T extends CdmBase> implements Jso
 		return json;
 	}
 	
+	/**
+	 * This method is called ate the end of {@link #processBean(Object, JsonConfig)} just before the JSONObject is returned.
+	 * By overriding this method it is possible to to further processing. 
+	 * <p>
+	 * <b>See also {@link #getIgnorePropNames()}!</b>
+	 * 
+	 * @param bean
+	 * @param json
+	 * @param jsonConfig
+	 * @return
+	 */
 	public abstract JSONObject processBeanSecondStep(T bean, JSONObject json, JsonConfig jsonConfig) ;
 	
+	/**
+	 * Implementations of this abstract class may override this method in order
+	 * to supply a List of property names to be ignored in
+	 * {@link #processBean(Object, JsonConfig)}. This feature generally is used
+	 * when {@link #processBeanSecondStep(CdmBase, JSONObject, JsonConfig)} is
+	 * implemented. such that this method is responsible of serializing this
+	 * property.
+	 * 
+	 * @return a List of property names.
+	 */
 	public abstract List<String> getIgnorePropNames();
 	
 

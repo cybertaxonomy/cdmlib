@@ -15,10 +15,12 @@ import net.sf.json.processors.JsonValueProcessor;
 
 import org.apache.log4j.Logger;
 import org.joda.time.Partial;
+import org.joda.time.format.ISODateTimeFormat;
 
 import eu.etaxonomy.cdm.model.common.PartialUserType;
 
 /**
+ * Partial time as four digit year, two digit month of year, and two digit day of month (yyyy-MM-dd).
  * @author a.kohlbecker
  * @created 20.01.2008
  * @version 1.0
@@ -38,7 +40,7 @@ public class PartialJSONValueProcessor implements JsonValueProcessor {
 		if (logger.isDebugEnabled()) {
 			logger.debug("processArrayValue of joda.time.DateTime: " + PartialUserType.partialToString(partial));
 		}
-        return PartialUserType.partialToString(partial);
+        return partial.toString(ISODateTimeFormat.date());
 	}
 
 	/* (non-Javadoc)
@@ -52,6 +54,6 @@ public class PartialJSONValueProcessor implements JsonValueProcessor {
 		if (logger.isDebugEnabled()) {
 			logger.debug("processObjectValue of joda.time.DateTime: " + PartialUserType.partialToString(partial));
 		}
-        return PartialUserType.partialToString(partial);
+		return partial.toString(ISODateTimeFormat.date());
 	}
 }

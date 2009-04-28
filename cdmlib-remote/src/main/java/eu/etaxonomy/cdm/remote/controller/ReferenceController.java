@@ -10,6 +10,9 @@
 
 package eu.etaxonomy.cdm.remote.controller;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,6 +35,9 @@ public class ReferenceController extends AnnotatableController<ReferenceBase, IR
 	public ReferenceController(){
 		super();
 		setUuidParameterPattern("^/(?:[^/]+)/reference/([^/?#&\\.]+).*");
+		setInitializationStrategy(Arrays.asList(new String[]{
+				"$",
+				"authorTeam.$"}));
 	}
 	
 	/* (non-Javadoc)

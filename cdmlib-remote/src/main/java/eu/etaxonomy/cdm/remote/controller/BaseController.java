@@ -11,6 +11,7 @@
 package eu.etaxonomy.cdm.remote.controller;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.regex.Matcher;
@@ -66,6 +67,13 @@ public abstract class BaseController<T extends CdmBase, SERVICE extends IService
 	}
 	*/
 	
+	@RequestMapping(method = RequestMethod.GET)
+	public T doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		T obj = (T) getCdmBase(request, response, initializationStrategy, CdmBase.class);
+		return obj;
+	}
+
+	
 	protected UUID readValueUuid(HttpServletRequest request) {
 		String path = request.getServletPath();
 		if(path != null) {
@@ -84,16 +92,23 @@ public abstract class BaseController<T extends CdmBase, SERVICE extends IService
 		return null;
 	}
 	
-	@RequestMapping(method = RequestMethod.GET)
-	public T doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		
-		T obj;
+
+	/**
+	 * @param request
+	 * @param response
+	 * @param obj
+	 * @return
+	 * @throws IOException
+	 */
+	protected <CDM_BASE> CDM_BASE  getCdmBase(HttpServletRequest request, HttpServletResponse response, 
+			List<String> initStrategy, Class<CDM_BASE> clazz) throws IOException {
+		T obj = null;
 		try {
 			UUID uuid = readValueUuid(request);
 			Assert.notNull(uuid, HttpStatusMessage.UUID_MISSING.toString());
 			
-			if(initializationStrategy != null){
-				obj = service.load(uuid, initializationStrategy);
+			if(initStrategy != null){
+				obj = service.load(uuid, initStrategy);
 			} else {				
 				obj = service.findByUuid(uuid);
 			}
@@ -101,10 +116,15 @@ public abstract class BaseController<T extends CdmBase, SERVICE extends IService
 			
 		} catch (IllegalArgumentException iae) {
 			HttpStatusMessage.fromString(iae.getMessage()).send(response);
+		}
+		CDM_BASE t;
+		try {
+			t = (CDM_BASE)obj;
+			return t;
+		} catch (Exception e) {
+			HttpStatusMessage.UUID_REFERENCES_WRONG_TYPE.send(response);
 			return null;
 		}
-		
-		return obj;
 	}
 
 	  /* TODO implement

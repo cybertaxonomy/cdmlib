@@ -14,6 +14,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -56,14 +58,37 @@ public class TaxonomyController extends AbstractListController<TaxonBase, ITaxon
 	private static final List<String> TAXON_INIT_STRATEGY = Arrays.asList(new String[]{
 			"sec", 
 			"relationsToThisTaxon.toTaxon.$",
-			"name.rank.representations"});
+			//"name.rank.$",
+			"name.rank.representations",
+			"name.nomenclaturalReference.authorTeam.*"
+			});
+	
+	private static final List<String> CHILD_TAXON_INIT_STRATEGY = Arrays.asList(new String[]{
+			"sec", 
+			"relationsToThisTaxon.fromTaxon.$",
+			"relationsToThisTaxon.fromTaxon.name.taggedName",
+			"name.taggedName",
+			});
 	
 	private static final List<String> PARENT_TAXON_INIT_STRATEGY = Arrays.asList(new String[]{
 			"sec", 
-			"relationsFromThisTaxon.fromTaxon.$",
-			"relationsFromThisTaxon.fromTaxon.name.rank.representations",
-			"name.rank.$",
-			"name.rank.representations"});
+			"relationsFromThisTaxon.toTaxon.$",
+			"relationsFromThisTaxon.toTaxon.name.rank.representations",
+			"name.taggedName",
+			"name.rank.representations",
+			"name.nomenclaturalReference.authorTeam.*"
+			});
+	
+	//TODO get rid of the bloodyRankLabelMap ------ can be deleted once the FIXME in getPathToRoot is solved
+	private static Hashtable<String, String> bloodyRankLabelMap = new Hashtable<String, String>();	
+	static{
+		bloodyRankLabelMap.put("Subfamily", "Subfamilia");
+		bloodyRankLabelMap.put("Family", "Familia");
+		bloodyRankLabelMap.put("Suborder", "Subordo");
+		bloodyRankLabelMap.put("Order", "Ordo");
+		
+	}
+	// --------------------------------------------
 
 	public static final Logger logger = Logger.getLogger(TaxonomyController.class);
 
@@ -98,12 +123,13 @@ public class TaxonomyController extends AbstractListController<TaxonBase, ITaxon
 	 * @throws IOException 
 	 */
 	@RequestMapping(
-			value = {"/*/taxonomy"},
+			value = {"/*/taxonomy/"},
 			params = {"uuid"},
 			method = RequestMethod.GET)
 	public String findTaxon(
 			@RequestParam(value = "uuid", required = true) UUID uuid,
 			@RequestParam(value = "rank", required = false) Rank rank,
+			//TODO implement view uuid parameter
 			HttpServletRequest request, HttpServletResponse response) throws IOException {
 		
 		String msg404 = rank != null ? "Taxon not found within rank "+ rank.getLabel() : "Taxon not found.";
@@ -162,7 +188,7 @@ public class TaxonomyController extends AbstractListController<TaxonBase, ITaxon
 		ReferenceBase secref = null;
 		Rank rank = null;
 		if(uriParams == null){
-			return (List<Taxon>) service.getRootTaxa(rank, null, true, false);
+			return (List<Taxon>) service.getRootTaxa(rank, null, true, false, TAXON_INIT_STRATEGY);
 			//response.sendError(HttpServletResponse.SC_NOT_FOUND, "");
 			//return null;
 		}
@@ -181,7 +207,7 @@ public class TaxonomyController extends AbstractListController<TaxonBase, ITaxon
 			response.sendError(400, "Only one uuid parameter expected but found  " + uriParams.size());
 			return null;
 		}
-		return (List<Taxon>) service.getRootTaxa(rank, secref, true, false);
+		return (List<Taxon>) service.getRootTaxa(rank, secref, true, false, TAXON_INIT_STRATEGY);
 	}
 
 
@@ -203,7 +229,7 @@ public class TaxonomyController extends AbstractListController<TaxonBase, ITaxon
 		}
 		try {
 			UUID uuid = stringToUuid(uriParameters.get(uriParameters.size() - 1));
-			Taxon taxon = (Taxon) service.load(uuid, TAXON_INIT_STRATEGY);
+			Taxon taxon = (Taxon) service.load(uuid, CHILD_TAXON_INIT_STRATEGY);
 			return taxon.getTaxonomicChildren();
 		} catch (ClassCastException cce) {
 			response.sendError(500, "The specified instance is not a taxon");
@@ -239,7 +265,11 @@ public class TaxonomyController extends AbstractListController<TaxonBase, ITaxon
 				// Preliminary solution below:
 				if(rank != null){
 					try {
-						Rank compareToRank = Rank.getRankByName(parentTaxon.getName().getRank().getLabel());
+						String bloodyRankLabel = bloodyRankLabelMap.get(parentTaxon.getName().getRank().getLabel());
+						if(bloodyRankLabel == null){
+							bloodyRankLabel = parentTaxon.getName().getRank().getLabel();
+						}
+						Rank compareToRank = Rank.getRankByName(bloodyRankLabel);
 						if(rank.isLower(compareToRank)){
 							break;
 						}
@@ -324,7 +354,7 @@ public class TaxonomyController extends AbstractListController<TaxonBase, ITaxon
 			UUID uuid = UUID.fromString(uuidStr);
 			return uuid;
 		} catch (Exception e) {
-			throw new IllegalArgumentException(uuidStr + "is not a uuid");
+			throw new IllegalArgumentException(uuidStr + " is not a uuid");
 		}
 	}
 	

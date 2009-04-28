@@ -12,17 +12,13 @@ package eu.etaxonomy.cdm.remote.controller;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Hashtable;
 import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
@@ -31,7 +27,6 @@ import eu.etaxonomy.cdm.api.service.AnnotatableServiceBase;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.persistence.dao.common.IAnnotatableDao;
 
 /**
@@ -40,13 +35,21 @@ import eu.etaxonomy.cdm.persistence.dao.common.IAnnotatableDao;
  */
 
 @Controller
-@RequestMapping(value = {"/*/name/*","/*/name/annotation/*"})
-public class NameController extends AnnotatableController<TaxonNameBase, INameService>
+@RequestMapping(value = {"/*/portal/name/*","/*/portal/name/*/typedesignations"})
+public class NamePortalController extends BaseController<TaxonNameBase, INameService>
 {
 	
-	public NameController(){
+	private static final List<String> TYPE_INIT_STRATEGY = Arrays.asList(new String []{
+			"citation.authorTeam",
+			"typeName.$",
+			"typeName.taggedName",
+			"typeStatus.representations",
+			"typeSpecimen.media.representations.parts"
+	});
+
+	public NamePortalController(){
 		super();
-		setUuidParameterPattern("^/(?:[^/]+)/name/([^/?#&\\.]+).*");
+		setUuidParameterPattern("^/(?:[^/]+)/portal/name/([^/?#&\\.]+).*");
 		setInitializationStrategy(Arrays.asList(new String[]{"$"}));
 	}
 	
@@ -58,5 +61,17 @@ public class NameController extends AnnotatableController<TaxonNameBase, INameSe
 	public void setService(INameService service) {
 		this.service = service;
 	}
-	
+
+	@RequestMapping(
+			value = {"/*/portal/name/*/typedesignations"},
+			method = RequestMethod.GET)
+	public ModelAndView doGetTypeDesignations(HttpServletRequest request, HttpServletResponse response)throws IOException {
+		ModelAndView mv = new ModelAndView();
+		TaxonNameBase name = getCdmBase(request, response, null, TaxonNameBase.class);
+		Pager p = service.getTypeDesignations(name,  null, null, null, TYPE_INIT_STRATEGY);
+		mv.addObject(p.getRecords());
+		return mv;
+	}
+
+
 }

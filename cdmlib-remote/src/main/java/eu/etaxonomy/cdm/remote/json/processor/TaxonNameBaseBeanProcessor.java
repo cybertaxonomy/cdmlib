@@ -66,7 +66,7 @@ public class TaxonNameBaseBeanProcessor extends AbstractCdmBeanProcessor<TaxonNa
 	 * @param taxonNameBase
 	 * @return
 	 */
-	public List<TaggedText> getTaggedName(TaxonNameBase taxonNameBase){
+	public static List<TaggedText> getTaggedName(TaxonNameBase taxonNameBase){
 		
 		List<TaggedText> tags = new ArrayList<TaggedText>();
 		
