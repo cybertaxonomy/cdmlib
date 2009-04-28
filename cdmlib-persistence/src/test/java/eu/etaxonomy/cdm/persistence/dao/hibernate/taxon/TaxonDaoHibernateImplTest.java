@@ -114,12 +114,12 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 		assertFalse("The list should not be empty",rootTaxa.isEmpty());
 		assertEquals("There should be one root taxon",1, rootTaxa.size());
 		
-		rootTaxa = taxonDao.getRootTaxa(Rank.GENUS(), sec1, CdmFetch.FETCH_CHILDTAXA(), true, false);
+		rootTaxa = taxonDao.getRootTaxa(Rank.GENUS(), sec1, CdmFetch.FETCH_CHILDTAXA(), true, false, null);
 		assertNotNull("getRootTaxa should return a List",rootTaxa);
 		assertFalse("The list should not be empty",rootTaxa.isEmpty());
 		assertEquals("There should be one root taxon",1, rootTaxa.size());
 		
-		rootTaxa = taxonDao.getRootTaxa(Rank.FAMILY(), sec2, CdmFetch.FETCH_CHILDTAXA(), true, false);
+		rootTaxa = taxonDao.getRootTaxa(Rank.FAMILY(), sec2, CdmFetch.FETCH_CHILDTAXA(), true, false, null);
 		if (logger.isDebugEnabled()) {
 		logger.debug("Root taxa rank Family (" + rootTaxa.size() + "):");
 		for (Taxon taxon: rootTaxa) {
@@ -127,7 +127,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 		}
 	}
 		assertEquals("There should be one root taxon rank Family",1, rootTaxa.size());
-		rootTaxa = taxonDao.getRootTaxa(Rank.GENUS(), sec2, CdmFetch.FETCH_CHILDTAXA(), true, false);
+		rootTaxa = taxonDao.getRootTaxa(Rank.GENUS(), sec2, CdmFetch.FETCH_CHILDTAXA(), true, false, null);
 		assertNotNull("getRootTaxa should return a List",rootTaxa);
 		assertFalse("The list should not be empty",rootTaxa.isEmpty());
 		if (logger.isDebugEnabled()) {
@@ -138,7 +138,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 	}
 		assertEquals("There should be 22 root taxa rank Genus",22, rootTaxa.size());
 		
-		rootTaxa = taxonDao.getRootTaxa(Rank.SPECIES(), sec2, CdmFetch.FETCH_CHILDTAXA(), true, false);
+		rootTaxa = taxonDao.getRootTaxa(Rank.SPECIES(), sec2, CdmFetch.FETCH_CHILDTAXA(), true, false, null);
 		if (logger.isDebugEnabled()) {
 		logger.debug("Root taxa rank Species (" + rootTaxa.size() + "):");
 		for (Taxon taxon: rootTaxa) {
