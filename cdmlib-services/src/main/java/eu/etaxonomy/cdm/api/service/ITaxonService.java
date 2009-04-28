@@ -23,6 +23,7 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
+import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
@@ -129,9 +130,14 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	 * @param onlyWithChildren if true only taxa are returned that have taxonomic children. <Br>Default: true.
 	 * @param withMisapplications if false taxa that have at least one misapplied name relationship in which they are
 	 * the misapplied name are not returned.<Br>Default: true.
+	 * @param propertyPaths
+	 *            properties to be initialized, For detailed description and
+	 *            examples <b>please refer to:</b>
+	 *            {@link BeanInitializer#initialize(Object, List)}. <Br>
+	 *            Default: true.
 	 * @return The List<Taxon> of root taxa.
 	 */
-	public abstract List<Taxon> getRootTaxa(Rank rank, ReferenceBase sec, boolean onlyWithChildren, boolean withMisapplications);
+	public abstract List<Taxon> getRootTaxa(Rank rank, ReferenceBase sec, boolean onlyWithChildren, boolean withMisapplications, List<String> propertyPaths);
 	
 	/**
 	 * Computes all relationships.
@@ -175,6 +181,10 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	 * @return a Pager of SynonymRelationship instances
 	 */
 	public Pager<SynonymRelationship> getSynonyms(Taxon taxon, SynonymRelationshipType type, Integer pageSize, Integer pageNumber);
+	
+	public List<Synonym> getHomotypicSynonymsByHomotypicGroup(Taxon taxon, List<String> propertyPaths);
+	
+	public List<List<Synonym>> getHeterotypicSynonymyGroups(Taxon taxon, List<String> propertyPaths);
 	
 	/**
 	 * Returns a List of TaxonBase instances (or Taxon instances, if accepted == true, or Synonym instance, if accepted == false) where the 

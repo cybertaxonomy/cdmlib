@@ -163,7 +163,12 @@ public interface INameService extends IIdentifiableEntityService<TaxonNameBase> 
 	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
 	 * @return a Pager of TypeDesignationBase instances
 	 */
-	public Pager<TypeDesignationBase> getTypeDesignations(TaxonNameBase name, SpecimenTypeDesignationStatus status, Integer pageSize, Integer pageNumber);
+	public Pager<TypeDesignationBase> getTypeDesignations(TaxonNameBase name, 
+			SpecimenTypeDesignationStatus status, Integer pageSize, Integer pageNumber);
+	
+	public Pager<TypeDesignationBase> getTypeDesignations(TaxonNameBase name,
+			SpecimenTypeDesignationStatus status, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
+	
 	
 	/**
 	 * Returns a List of TaxonNameBase instances that match the properties passed

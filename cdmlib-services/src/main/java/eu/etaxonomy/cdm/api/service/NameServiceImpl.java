@@ -240,12 +240,19 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
 		return new DefaultPagerImpl<NameRelationship>(pageNumber, numberOfResults, pageSize, results);
 	}
 
-	public Pager<TypeDesignationBase> getTypeDesignations(TaxonNameBase name, SpecimenTypeDesignationStatus status, Integer pageSize, Integer pageNumber) {
+	
+	public Pager<TypeDesignationBase> getTypeDesignations(TaxonNameBase name, SpecimenTypeDesignationStatus status, 
+			Integer pageSize, Integer pageNumber) {	
+		return getTypeDesignations(name, status, pageSize, pageNumber, null);
+	}
+	
+	public Pager<TypeDesignationBase> getTypeDesignations(TaxonNameBase name, SpecimenTypeDesignationStatus status, 
+				Integer pageSize, Integer pageNumber, List<String> propertyPaths){
         Integer numberOfResults = dao.countTypeDesignations(name, status);
 		
 		List<TypeDesignationBase> results = new ArrayList<TypeDesignationBase>();
 		if(numberOfResults > 0) { // no point checking again
-			results = dao.getTypeDesignations(name, status, pageSize, pageNumber); 
+			results = dao.getTypeDesignations(name, status, pageSize, pageNumber, propertyPaths); 
 		}
 		
 		return new DefaultPagerImpl<TypeDesignationBase>(pageNumber, numberOfResults, pageSize, results);

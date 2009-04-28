@@ -80,7 +80,10 @@ public interface IService<T extends CdmBase>{
 	
 	/**
 	 * @param pageSize
-	 * @param pageNumber
+	 *            the maximum number of entities returned per page (can be null
+	 *            to return all entities in a single page)
+	 * @param pageNumber the number of the page to be returned, the first page has the
+	 *            pageNumber = 1
 	 * @return
 	 */
 	public Pager<T> list(Integer pageSize, Integer pageNumber);
@@ -88,8 +91,13 @@ public interface IService<T extends CdmBase>{
 	
 	/**
 	 * @param pageSize
+	 *            the maximum number of entities returned per page (can be null
+	 *            to return all entities in a single page)
 	 * @param pageNumber
-	 * @param orderHints may be null
+	 *            the number of the page to be returned, the first page has the
+	 *            pageNumber = 1
+	 * @param orderHints
+	 *            may be null
 	 * @return
 	 */
 	public Pager<T> list(Integer pageSize, Integer pageNumber, List<OrderHint> orderHints);

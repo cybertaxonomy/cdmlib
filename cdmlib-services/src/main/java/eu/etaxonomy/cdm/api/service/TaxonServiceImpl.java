@@ -36,6 +36,7 @@ import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
+import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
@@ -150,8 +151,8 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#getRootTaxa(eu.etaxonomy.cdm.model.name.Rank, eu.etaxonomy.cdm.model.reference.ReferenceBase, boolean, boolean)
 	 */
 	public List<Taxon> getRootTaxa(Rank rank, ReferenceBase sec, boolean onlyWithChildren,
-			boolean withMisapplications) {
-		return dao.getRootTaxa(rank, sec, null, onlyWithChildren, withMisapplications);
+			boolean withMisapplications, List<String> propertyPaths) {
+		return dao.getRootTaxa(rank, sec, null, onlyWithChildren, withMisapplications, propertyPaths);
 	}
 
 	public List<RelationshipBase> getAllRelationships(int limit, int start){
@@ -312,6 +313,21 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		
 		return new DefaultPagerImpl<SynonymRelationship>(pageNumber, numberOfResults, pageSize, results);
 	}
+	
+	public List<Synonym> getHomotypicSynonymsByHomotypicGroup(Taxon taxon, List<String> propertyPaths){
+		Taxon t = (Taxon)dao.load(taxon.getUuid(), propertyPaths);
+		return t.getHomotypicSynonymsByHomotypicGroup();
+	}
+	
+	public List<List<Synonym>> getHeterotypicSynonymyGroups(Taxon taxon, List<String> propertyPaths){
+		Taxon t = (Taxon)dao.load(taxon.getUuid(), propertyPaths);
+		List<HomotypicalGroup> hsgl = t.getHeterotypicSynonymyGroups();
+		List<List<Synonym>> heterotypicSynonymyGroups = new ArrayList<List<Synonym>>(hsgl.size());
+		for(HomotypicalGroup hsg : hsgl){
+			heterotypicSynonymyGroups.add(hsg.getSynonymsInGroup(t.getSec()));
+		}
+		return heterotypicSynonymyGroups;
+	}
 
 	public Pager<TaxonBase> searchTaxa(String queryString, Boolean accepted, Integer pageSize, Integer pageNumber) {
         Integer numberOfResults = dao.countTaxa(queryString, accepted);
@@ -333,7 +349,8 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		// TODO: Implement matching count-methods for the search methods
 
 		if(configurator.isDoTaxa()) {
-			int numberTaxaResults = 0;
+			int numberTaxaResults = dao.countTaxaByName(configurator.getSearchString(), configurator.getMatchMode(),
+					true);
 //			int numberTaxaResults = dao.countTaxaByName(configurator.getSearchString(), true, configurator.getSec());
 			List<TaxonBase> taxa =  
 				dao.getTaxaByName(configurator.getSearchString(), configurator.getMatchMode(),
@@ -347,7 +364,8 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		}
 
 		if(configurator.isDoSynonyms()) {
-			int numberSynonymResults = 0;
+			int numberSynonymResults = dao.countTaxaByName(configurator.getSearchString(), configurator.getMatchMode(),
+					false);
 			List<TaxonBase> synonyms = 
 				dao.getTaxaByName(configurator.getSearchString(), configurator.getMatchMode(),
 						false, configurator.getPageSize(), configurator.getPageNumber());
@@ -360,7 +378,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		}
 
 		if (configurator.isDoNamesWithoutTaxa()) {
-			int numberNameResults = 0;
+			int numberNameResults = nameDao.countByName(configurator.getSearchString(), configurator.getMatchMode(), null);
 			List<? extends TaxonNameBase<?,?>> names = 
 				nameDao.findByName(configurator.getSearchString(), configurator.getMatchMode(), 
 						configurator.getPageSize(), configurator.getPageNumber(), null);
@@ -378,7 +396,8 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		}
 		
 		if (configurator.isDoTaxaByCommonNames()) {
-			int numberCommonNameResults = 0;
+			int numberCommonNameResults = descriptionDao.countDescriptionByCommonName(configurator.getSearchString(), 
+					configurator.getMatchMode());
 			List<CommonTaxonName> commonTaxonNames = 
 				descriptionDao.searchDescriptionByCommonName(configurator.getSearchString(), 
 						configurator.getMatchMode(), configurator.getPageSize(), configurator.getPageNumber());

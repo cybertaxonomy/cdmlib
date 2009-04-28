@@ -169,7 +169,7 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
 		Integer numberOfResults = dao.count();
 		List<T> results = new ArrayList<T>();
 		if(numberOfResults > 0) { // no point checking again
-			Integer start = pageSize == null ? 0 : pageSize * (pageNumber - 1);
+			Integer start = pageSize == null ? null : pageSize * (pageNumber - 1);
 			results = dao.list(pageSize, start, orderHints);
 		}
 		return new DefaultPagerImpl<T>(pageNumber, numberOfResults, pageSize, results);
