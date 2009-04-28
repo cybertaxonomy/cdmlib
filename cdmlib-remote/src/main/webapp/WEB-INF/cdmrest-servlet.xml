@@ -25,6 +25,7 @@
         <property name="mapping">
             <map>
                 <entry key="text/json" value="json"/>
+                <entry key="application/json" value="json"/>
                 <entry key="application/xml" value="xml"/>
             </map>
         </property>

@@ -33,7 +33,10 @@
 	            </entry>
 	            <entry key="eu.etaxonomy.cdm.model.common.TermBase">
                     <bean class="eu.etaxonomy.cdm.remote.json.processor.TermBaseBeanProcessor" />
-                </entry> 
+                </entry>
+                <entry key="eu.etaxonomy.cdm.model.description.TextData">
+                    <bean class="eu.etaxonomy.cdm.remote.json.processor.TextDataBeanProcessor" />
+                </entry>
             </map>
         </property>
         <property name="jsonPropertyFilters">
@@ -58,9 +61,21 @@
                 <entry key="org.joda.time.Partial">
                     <bean class="eu.etaxonomy.cdm.remote.json.processor.PartialJSONValueProcessor"/>
                 </entry>
+                <entry key="java.lang.Class">
+                    <bean class="eu.etaxonomy.cdm.remote.json.processor.ClassJSONValueProcessor"/>
+                </entry>
             </map>
         </property>
         <property name="ignoreJPATransient" value="true" />
+        <property name="ignoreDefaultExcludes" value="true" />
+        <property name="excludes">
+            <list value-type="java.lang.String">
+				<value>declaringClass</value><!-- DefaultExclude -->
+				<value>metaClass</value><!-- DefaultExclude -->
+				<value>id</value>
+                <value>cacheStrategy</value>
+			</list>
+		</property>
     </bean>
     
     <!-- configuration for RESTful taxonomy service -->
@@ -100,10 +115,16 @@
                 <entry key="org.joda.time.Partial">
                     <bean class="eu.etaxonomy.cdm.remote.json.processor.PartialJSONValueProcessor"/>
                 </entry>
+                <entry key="java.lang.Class">
+                    <bean class="eu.etaxonomy.cdm.remote.json.processor.ClassJSONValueProcessor"/>
+                </entry>
             </map>
         </property>
+		<property name="ignoreDefaultExcludes" value="true" />
         <property name="excludes">
             <list value-type="java.lang.String">
+				<value>declaringClass</value><!-- DefaultExclude -->
+				<value>metaClass</value><!-- DefaultExclude -->
                 <value>id</value>
                 <value>cacheStrategy</value>
             </list>
@@ -132,7 +153,12 @@
                         <bean class="eu.etaxonomy.cdm.remote.json.processor.TermBaseBeanProcessor">
                         	<property name="replaceRepresentations" value="true" />
                         </bean>
-                </entry>   
+                </entry>
+                <entry key="eu.etaxonomy.cdm.model.description.TextData">
+                    <bean class="eu.etaxonomy.cdm.remote.json.processor.TextDataBeanProcessor">
+                    	<property name="replaceMultilanguageText" value="true" />
+                    </bean>
+                </entry>
             </map>
         </property>
         <property name="jsonPropertyFilters">
@@ -157,17 +183,27 @@
                 <entry key="org.joda.time.Partial">
                     <bean class="eu.etaxonomy.cdm.remote.json.processor.PartialJSONValueProcessor"/>
                 </entry>
+                <entry key="java.lang.Class">
+                    <bean class="eu.etaxonomy.cdm.remote.json.processor.ClassJSONValueProcessor"/>
+                </entry>
             </map>
         </property>
+        <property name="ignoreDefaultExcludes" value="true" />
         <property name="excludes">
             <list value-type="java.lang.String">
+				<value>declaringClass</value><!-- DefaultExclude -->
+				<value>metaClass</value><!-- DefaultExclude -->
                 <value>id</value>
                 <value>annotations</value>
                 <value>cacheStrategy</value>
                 <value>markers</value>
+                <!--  FIXME must exclude partOf, kindOf, includes, generalizationOf .. to avoid class cast or lazy loading exceptions in TDWG Areas -->
+                <value>partOf</value>
+                <value>kindOf</value>
+                <value>includes</value>
+                <value>generalizationOf</value>
             </list>
         </property>
-        
         <property name="ignoreJPATransient" value="true" />
     </bean> 
 </beans>
