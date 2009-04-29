@@ -44,6 +44,7 @@ import org.springframework.util.ReflectionUtils;
 
 import eu.etaxonomy.cdm.model.common.IRelated;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
+import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
@@ -1367,5 +1368,4 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 		//sort end
 		return result;
 	}	
-
 }

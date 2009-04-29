@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.model.description;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Entity;
@@ -18,8 +19,8 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -33,9 +34,12 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.Indexed;
 
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.model.media.ImageFile;
+import eu.etaxonomy.cdm.model.media.Media;
+import eu.etaxonomy.cdm.model.media.MediaRepresentation;
+import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
@@ -62,7 +66,8 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
     "describedSpecimenOrObservations",
     "descriptionSources",
     "descriptiveSystem",
-    "elements"
+    "elements",
+    "imageGallery"
 })
 @Entity
 @Audited
@@ -106,6 +111,10 @@ public abstract class DescriptionBase extends IdentifiableEntity {
 	@Cascade( { CascadeType.SAVE_UPDATE })
 	private Set<DescriptionElementBase> elements = new HashSet<DescriptionElementBase>();
 
+	@XmlElement(name = "ImageGallery")
+	private boolean imageGallery;
+	
+	
 	/**
 	 * Returns the set of {@link SpecimenOrObservationBase specimens or observations} involved in
 	 * <i>this</i> description as a whole. {@link TaxonDescription Taxon descriptions} are also often based
@@ -298,5 +307,19 @@ public abstract class DescriptionBase extends IdentifiableEntity {
 	public String generateTitle() {
 		//TODO generate title "generate Title not yet implemented"
 		return this.toString();
+	}
+
+	/**
+	 * @return the imageGallery
+	 */
+	public boolean isImageGallery() {
+		return imageGallery;
+	}
+
+	/**
+	 * @param imageGallery the imageGallery to set
+	 */
+	public void setImageGallery(boolean imageGallery) {
+		this.imageGallery = imageGallery;
 	}
 }

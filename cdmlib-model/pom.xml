@@ -17,51 +17,51 @@
     <plugins>
       <plugin>
         <artifactId>maven-antrun-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>aspectj-main</id>
-            <phase>process-sources</phase>
-            <goals>
-              <goal>run</goal>
-            </goals>
-            <configuration>
-              <tasks>
-                <taskdef classname="org.aspectj.tools.ant.taskdefs.AjcTask" name="iajc">
-                  <classpath refid="maven.plugin.classpath" />
-                </taskdef>
-                <iajc verbose="false" source="1.5" destDir="target/classes">
-                  <classpath refid="maven.plugin.classpath" />
-                  <classpath refid="maven.compile.classpath" />
-                  <sourceroots>
-                    <pathelement location="src/main/java" />
-                  </sourceroots>
-                </iajc>
-              </tasks>
-            </configuration>
-          </execution>
-          <execution>
-            <id>aspectj-test</id>
-            <phase>process-test-sources</phase>
-            <goals>
-              <goal>run</goal>
-            </goals>
-            <configuration>
-              <tasks>
-                <taskdef classname="org.aspectj.tools.ant.taskdefs.AjcTask" name="iajc">
-                  <classpath refid="maven.plugin.classpath" />
-                </taskdef>
-                <iajc verbose="false" source="1.5" destDir="target/test-classes">
-                  <classpath refid="maven.plugin.classpath" />
-                  <classpath refid="maven.compile.classpath" />
-                  <classpath refid="maven.test.classpath" />
-                  <sourceroots>
-                    <pathelement location="src/test/java" />
-                  </sourceroots>
-                </iajc>
-              </tasks>
-            </configuration>
-          </execution>
-        </executions>
+<!--        <executions>-->
+<!--          <execution>-->
+<!--            <id>aspectj-main</id>-->
+<!--            <phase>process-sources</phase>-->
+<!--            <goals>-->
+<!--              <goal>run</goal>-->
+<!--            </goals>-->
+<!--            <configuration>-->
+<!--              <tasks>-->
+<!--                <taskdef classname="org.aspectj.tools.ant.taskdefs.AjcTask" name="iajc">-->
+<!--                  <classpath refid="maven.plugin.classpath" />-->
+<!--                </taskdef>-->
+<!--                <iajc verbose="false" source="1.5" destDir="target/classes">-->
+<!--                  <classpath refid="maven.plugin.classpath" />-->
+<!--                  <classpath refid="maven.compile.classpath" />-->
+<!--                  <sourceroots>-->
+<!--                    <pathelement location="src/main/java" />-->
+<!--                  </sourceroots>-->
+<!--                </iajc>-->
+<!--              </tasks>-->
+<!--            </configuration>-->
+<!--          </execution>-->
+<!--          <execution>-->
+<!--            <id>aspectj-test</id>-->
+<!--            <phase>process-test-sources</phase>-->
+<!--            <goals>-->
+<!--              <goal>run</goal>-->
+<!--            </goals>-->
+<!--            <configuration>-->
+<!--              <tasks>-->
+<!--                <taskdef classname="org.aspectj.tools.ant.taskdefs.AjcTask" name="iajc">-->
+<!--                  <classpath refid="maven.plugin.classpath" />-->
+<!--                </taskdef>-->
+<!--                <iajc verbose="false" source="1.5" destDir="target/test-classes">-->
+<!--                  <classpath refid="maven.plugin.classpath" />-->
+<!--                  <classpath refid="maven.compile.classpath" />-->
+<!--                  <classpath refid="maven.test.classpath" />-->
+<!--                  <sourceroots>-->
+<!--                    <pathelement location="src/test/java" />-->
+<!--                  </sourceroots>-->
+<!--                </iajc>-->
+<!--              </tasks>-->
+<!--            </configuration>-->
+<!--          </execution>-->
+<!--        </executions>-->
         <dependencies>
           <dependency>
             <groupId>org.aspectj</groupId>
