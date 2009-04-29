@@ -867,6 +867,7 @@
         updatedby_id integer,
         taxon_fk integer,
         taxonName_fk integer,
+        imageGallery bit not null,
         primary key (id)
     );
 
@@ -889,6 +890,7 @@
         updatedby_id integer,
         taxon_fk integer,
         taxonName_fk integer,
+        imageGallery bit,
         primary key (id, REV)
     );
 
