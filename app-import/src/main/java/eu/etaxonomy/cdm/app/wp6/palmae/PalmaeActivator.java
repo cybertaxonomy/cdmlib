@@ -41,7 +41,7 @@ public class PalmaeActivator {
 	//database validation status (create, update, validate ...)
 	static DbSchemaValidation hbm2dll = DbSchemaValidation.CREATE;
 	static final String tcsSource = TcsSources.arecaceae_local();
-	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_local_palmae();
+	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_test_jaxb2();
 
 	static final UUID featureTreeUuid = UUID.fromString("72ccce05-7cc8-4dab-8e47-bf3f5fd848a0");
 		
@@ -153,6 +153,8 @@ public class PalmaeActivator {
 		newNode = FeatureNode.NewInstance(Feature.DESCRIPTION());
 		root.addChild(newNode);
 		newNode = FeatureNode.NewInstance(Feature.MATERIALS_EXAMINED());
+		root.addChild(newNode);
+		newNode = FeatureNode.NewInstance(Feature.IMAGE());
 		root.addChild(newNode);
 
 		return result;

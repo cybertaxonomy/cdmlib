@@ -44,11 +44,13 @@ app-import/src/main/java/eu/etaxonomy/cdm/app/wp6/cichorieae/CichorieaeImageActi
 app-import/src/main/java/eu/etaxonomy/cdm/app/wp6/cichorieae/TaraxacumActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/wp6/diptera/DipteraActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/wp6/diptera/DipteraDistributionParser.java -text
+app-import/src/main/java/eu/etaxonomy/cdm/app/wp6/diptera/DipteraImageActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/wp6/palmae/PalmaeActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/wp6/palmae/PalmaeImageActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/wp6/palmae/PalmaeProtologueActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/wp6/palmae/PalmaeTaxonXImportActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/io/CichorieaeImageImport.java -text
+app-import/src/main/java/eu/etaxonomy/cdm/io/DipteraImageImport.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/io/PalmaeImageImport.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/io/PalmaeProtologueImport.java -text
 app-import/src/main/resources/Asteraceae[!!-~]Specimen[!!-~]Images[!!-~]Vienna.xls -text
@@ -56,6 +58,7 @@ app-import/src/main/resources/AsteraceaeSpecimenImagesVienna.mdb -text
 app-import/src/main/resources/arecaceae.rdf -text
 app-import/src/main/resources/distribution/distribution_cich.xls -text
 app-import/src/main/resources/images/images_cich.xls -text
+app-import/src/main/resources/images/images_diptera.xls -text
 app-import/src/main/resources/images/palmae/KPALM00000001.jpg -text
 app-import/src/main/resources/images/palmae/KPALM00000043.jpg -text
 app-import/src/main/resources/images/palmae/KPALM00000073.jpg -text

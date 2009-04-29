@@ -55,7 +55,7 @@ public class DipteraActivator {
 	//check - import
 	static final CHECK check = CHECK.CHECK_AND_IMPORT;
 
-	static final boolean doDistributionParser = false;  //also run DipteraDistributionParser
+	static final boolean doDistributionParser = true;  //also run DipteraDistributionParser
 
 	//NomeclaturalCode
 	static final NomenclaturalCode nomenclaturalCode = NomenclaturalCode.ICZN;
@@ -148,9 +148,12 @@ public class DipteraActivator {
 			//make feature tree
 			app = bmImport.getCdmApp();
 			FeatureTree tree = TreeCreator.flatTree(featureTreeUuid, bmImportConfigurator.getFeatureMap(), featureKeyList);
+			FeatureNode imageNode = FeatureNode.NewInstance(Feature.IMAGE());
+			tree.getRoot().addChild(imageNode);
 			FeatureNode distributionNode = FeatureNode.NewInstance(Feature.DISTRIBUTION());
 			tree.getRoot().addChild(distributionNode);
 			app.getDescriptionService().saveFeatureTree(tree);
+			
 		}
 		System.out.println("End import from BerlinModel ("+ source.getDatabase() + ")...");
 	}

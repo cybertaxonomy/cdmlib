@@ -56,14 +56,15 @@ public class TaraxacumActivator {
 	static final int sourceSecId = 7700000;
 	
 	static final UUID featureTreeUuid = UUID.fromString("ab007336-d853-4f2f-a490-7c8232eafe7b");
-	static final Object[] featureKeyList = new Integer[]{1, 31, 4, 98}; 	
+	static final Object[] featureKeyList = new Integer[]{1, 31, 4, 98, 41}; 	
 	
 	//TODO update for Taraxacum
 	static final String mediaUrlString = "http://wp5.e-taxonomy.eu/dataportal/cichorieae/media/protolog/";
 	//Mac
 	//static final File mediaPath = new File("/Volumes/protolog/protolog/");
 	//Windows
-	static final File mediaPath = new File("\\\\Bgbm11\\Edit-WP6\\protolog");
+	static final File mediaPath = new File("\\\\media\\editwp6\\protolog");
+	//static final File mediaPath = new File("\\\\Bgbm11\\Edit-WP6\\protolog");
 	// set to zero for unlimited nameFacts
 	static final int maximumNumberOfNameFacts = 0;
 	
@@ -177,7 +178,7 @@ public class TaraxacumActivator {
 			FeatureNode distributionNode = FeatureNode.NewInstance(Feature.DISTRIBUTION());
 			tree.getRoot().addChild(distributionNode, 2);
 			app.getDescriptionService().saveFeatureTree(tree);
-			mergeIntoCichorieae(app);
+			//mergeIntoCichorieae(app);
 			app.commitTransaction(tx);
 		}
 		

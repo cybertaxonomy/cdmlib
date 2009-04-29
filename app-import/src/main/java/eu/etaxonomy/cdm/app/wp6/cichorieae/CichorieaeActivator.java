@@ -54,13 +54,14 @@ public class CichorieaeActivator {
 	static final int sourceSecId = 7800000;
 	
 	static final UUID featureTreeUuid = UUID.fromString("ae9615b8-bc60-4ed0-ad96-897f9226d568");
-	static final Object[] featureKeyList = new Integer[]{1, 31, 4, 98}; 	
+	static final Object[] featureKeyList = new Integer[]{1, 31, 4, 98, 41}; 	
 	
 	static final String mediaUrlString = "http://wp5.e-taxonomy.eu/dataportal/cichorieae/media/protolog/";
 	//Mac
 	//static final File mediaPath = new File("/Volumes/protolog/protolog/");
 	//Windows
-	static final File mediaPath = new File("\\\\Bgbm11\\Edit-WP6\\protolog");
+	static final File mediaPath = new File("\\\\media\\editwp6\\protolog");
+	//static final File mediaPath = new File("\\\\Bgbm11\\Edit-WP6\\protolog");
 	// set to zero for unlimited nameFacts
 	static final int maximumNumberOfNameFacts = 0;
 	
@@ -96,21 +97,21 @@ public class CichorieaeActivator {
 	
 // **************** SELECTED *********************
 
-//	//authors
+	//authors
 //	static final boolean doAuthors = false;
 //	//references
 //	static final DO_REFERENCES doReferences =  DO_REFERENCES.NONE;
 //	//names
-//	static final boolean doTaxonNames = false;
+//	static final boolean doTaxonNames = true;
 //	static final boolean doRelNames = false;
 //	static final boolean doNameStatus = false;
 //	static final boolean doTypes = false;
-//	static final boolean doNameFacts = false;
+//	static final boolean doNameFacts = true;
 //	
 //	//taxa 
 //	static final boolean doTaxa = false;
 //	static final boolean doRelTaxa = false;
-//	static final boolean doFacts = false;
+//	static final boolean doFacts = true;
 //	static final boolean doOccurences = false;
 	
 	/**

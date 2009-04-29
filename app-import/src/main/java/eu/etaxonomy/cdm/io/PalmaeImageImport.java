@@ -27,6 +27,8 @@ import org.springframework.stereotype.Component;
 import eu.etaxonomy.cdm.app.images.AbstractImageImporter;
 import eu.etaxonomy.cdm.app.images.ImageImportConfigurator;
 import eu.etaxonomy.cdm.common.MediaMetaData.ImageMetaData;
+import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.media.ImageFile;
@@ -37,8 +39,6 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 /**
- * TODO not working at the moment
- * 
  * @author n.hoffmann
  * @created 18.11.2008
  * @version 1.0
@@ -118,8 +118,7 @@ public class PalmaeImageImport extends AbstractImageImporter {
 						
 						taxonService.saveTaxon(taxon);
 						
-						TextData feature = TextData.NewInstance();
-						
+						TextData descriptionElement = TextData.NewInstance();
 	
 						ImageMetaData imageMetaData = new ImageMetaData();
 						imageMetaData.readFrom(file);
@@ -146,11 +145,14 @@ public class PalmaeImageImport extends AbstractImageImporter {
 						Media media = Media.NewInstance();
 						media.addRepresentation(representation);
 						
-						feature.addMedia(media);
+						descriptionElement.addMedia(media);
+						descriptionElement.putText(taxonName, Language.ENGLISH());
+						//descriptionElement.setFeature(Feature.IMAGE());
+						descriptionElement.setType(Feature.IMAGE());
 						
 						TaxonDescription description = TaxonDescription.NewInstance(taxon);
 						
-						description.addElement(feature);
+						description.addElement(descriptionElement);
 						taxon.addDescription(description);
 						
 						taxonService.saveTaxon(taxon);
@@ -167,73 +169,4 @@ public class PalmaeImageImport extends AbstractImageImporter {
 		return true;
 	}
 	
-	
-//	protected boolean invokeImageImport (IImportConfigurator config){
-//		
-//		logger.info("importing images from directory: " + config.getSourceNameString());
-//		File sourceFolder = (File)config.getSource();
-//		if( sourceFolder.isDirectory()){
-//			for( File file : sourceFolder.listFiles()){
-//				logger.info(file);
-//				String taxonName = retrieveTaxonNameFromImageMetadata(file);
-//			
-//				List<TaxonBase> taxa = getTaxonService().searchTaxaByName(taxonName, config.getSourceReference());			
-//				
-//				
-//				if(taxa.size() == 0){
-//					logger.warn("no taxon with this name found" + taxonName);
-//				}else if(taxa.size() > 1){
-//					logger.warn("multiple taxa with this name found: " + taxonName);
-//				}else{
-//					Taxon taxon = (Taxon) taxa.get(0);
-//					
-//					taxonService.saveTaxon(taxon);
-//					
-//					TextData feature = TextData.NewInstance();
-//					
-//					URL url = null;
-//					try {
-//						url = new URL("test");
-//					} catch (MalformedURLException e) {
-//						logger.warn("URL is malformed: "+ url);
-//					}
-//					ImageMetaData imageMetaData = new ImageMetaData();
-//					imageMetaData.readFrom(url);
-//					
-//					int size = 100;
-//					
-//					String mimeType = "mime";
-//					String suffix = "suffix";
-//					
-//					
-//					
-//					MediaRepresentationPart mediaRepresentationPart = MediaRepresentationPart.NewInstance(url.toString(), size);
-//					
-//					MediaRepresentation representation = MediaRepresentation.NewInstance(mimeType, suffix);
-//					representation.addRepresentationPart(mediaRepresentationPart);
-//					
-//					Media media = Media.NewInstance();
-//					media.addRepresentation(representation);
-//					
-//					feature.addMedia(media);
-//					
-//					TaxonDescription description = TaxonDescription.NewInstance(taxon);
-//					
-//					description.addElement(feature);
-//					
-//					//taxon.addDescription(description);
-//					//taxonService.saveTaxon(taxon);
-//					//descriptionService.saveDescription(description);
-//					
-//				}
-//				
-//				logger.info(taxonName);
-//			}
-//		}else{
-//			logger.error("given source folder is not a directory");
-//		}
-//		return true;
-//	}
-
-
 }

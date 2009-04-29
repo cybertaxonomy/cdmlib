@@ -33,10 +33,12 @@ public class PalmaeImageActivator  {
 	private static final Logger logger = Logger.getLogger(PalmaeImageActivator.class);
 	
 	public static final File sourceFolder = new File("src/main/resources/images/palmae");
-	private static final ICdmDataSource cdmDestination = CdmDestinations.localH2();
+
+	private static final ICdmDataSource cdmDestination = CdmDestinations.cdm_test_jaxb2();
 	
 	// set the webserver path to the images
-	private static final String urlString = "http://wp5.e-taxonomy.eu/media/palmae/images/";
+	//private static final String urlString = "http://wp5.e-taxonomy.eu/media/palmae/images/";
+	private static final String urlString = "http://media.bgbm.org/erez/erez?src=EditWP6/palmae/photos/";
 	
 	static final UUID secUuid = UUID.fromString("5f32b8af-0c97-48ac-8d33-6099ed68c625");
 

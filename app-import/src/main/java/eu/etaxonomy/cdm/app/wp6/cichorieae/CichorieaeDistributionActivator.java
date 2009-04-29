@@ -25,7 +25,7 @@ public class CichorieaeDistributionActivator {
 	
 	private static final String dbName = "cdm_test_anahit";
 	private static String fileName = 
-		new String( System.getProperty("user.home") + "\\workspace\\cdmlib\\app-import\\src\\main\\resources\\distribution\\Africa plus x.xls");
+		new String( System.getProperty("user.home") + "\\workspace\\cdmlib20\\app-import\\src\\main\\resources\\distribution\\distribution_cich.xls");
 //	private static String fileName = new String( System.getProperty("user.home") + File.separator + "Africa plus x.xls");
 	
 	private static final ICdmDataSource destinationDb = TestDatabase.CDM_DB(dbName);
