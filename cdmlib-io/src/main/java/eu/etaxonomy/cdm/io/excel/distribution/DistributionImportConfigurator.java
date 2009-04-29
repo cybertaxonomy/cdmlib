@@ -24,7 +24,7 @@ public class DistributionImportConfigurator extends ImportConfiguratorBase imple
 
 	private static final Logger logger = Logger.getLogger(DistributionImportConfigurator.class);
 	
-//	@SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked")
 	protected void makeIoClassList() {
 		ioClassList = new Class[] {
 				DistributionImporter.class
