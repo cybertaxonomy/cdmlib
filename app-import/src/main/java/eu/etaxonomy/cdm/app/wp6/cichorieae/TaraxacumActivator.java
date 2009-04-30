@@ -113,10 +113,10 @@ public class TaraxacumActivator {
 //	static final boolean doNameFacts = false;
 //	
 //	//taxa 
-//	static final boolean doTaxa = true;
+//	static final boolean doTaxa = false;
 //	static final boolean doRelTaxa = false;
 //	static final boolean doFacts = false;
-//	static final boolean doOccurences = true;
+//	static final boolean doOccurences = false;
 	
 	/**
 	 * @param args
@@ -178,7 +178,7 @@ public class TaraxacumActivator {
 			FeatureNode distributionNode = FeatureNode.NewInstance(Feature.DISTRIBUTION());
 			tree.getRoot().addChild(distributionNode, 2);
 			app.getDescriptionService().saveFeatureTree(tree);
-			//mergeIntoCichorieae(app);
+			mergeIntoCichorieae(app);
 			app.commitTransaction(tx);
 		}
 		
@@ -186,7 +186,8 @@ public class TaraxacumActivator {
 	}
 	
 	public void mergeIntoCichorieae(CdmApplicationController app){
-		String taraxTaraxacum = "2fd3283f-44e3-4ffd-9d15-bc5f7f0058cb";
+		
+		String taraxTaraxacum = "9a7bced0-fa1a-432e-9cca-57b62219cde6";
 		String cichTaraxacum = "c946ac62-b6c6-493b-8ed9-278fa38b931a";
 		UUID taraxacumCichUUID = UUID.fromString(cichTaraxacum);
 		Taxon taraxacumInCich = (Taxon)app.getTaxonService().findByUuid(taraxacumCichUUID);
