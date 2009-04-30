@@ -10,9 +10,6 @@
 
 package eu.etaxonomy.cdm.api.service.config;
 
-import eu.etaxonomy.cdm.api.service.config.IIdentifiableEntityServiceConfigurator;
-import eu.etaxonomy.cdm.api.service.config.ITaxonServiceConfigurator;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 
 /**
@@ -47,6 +44,8 @@ public class IdentifiableServiceConfiguratorBase {
 	}
 
 	/**
+	 * Sets the number of results that should be shown on current page
+	 * 
 	 * @param pageSize the pageSize to set
 	 */
 	public void setPageSize(Integer pageSize) {
@@ -61,6 +60,9 @@ public class IdentifiableServiceConfiguratorBase {
 	}
 
 	/**
+	 * Sets the number of the page the first result should come from, starting 
+	 * with 0 as the first page.
+	 * 
 	 * @param pageNumber the pageNumber to set
 	 */
 	public void setPageNumber(Integer pageNumber) {
