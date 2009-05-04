@@ -139,7 +139,7 @@
 				<artifactId>maven-jetty-plugin</artifactId>
 				<configuration>
 					<!-- Configure the webapp -->
-					<contextPath>/cdmserver-cichorieae/</contextPath>
+					<contextPath>/cdmserver/</contextPath>
 <!--					
 					<contextPath>/cdmserver-palmae/</contextPath>
 					<contextPath>/cdmserver-diptera/</contextPath>
