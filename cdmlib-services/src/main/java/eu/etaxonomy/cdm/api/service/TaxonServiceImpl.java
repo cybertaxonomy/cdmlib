@@ -330,11 +330,13 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		// TODO: Implement matching count-methods for the search methods
 
 		if(configurator.isDoTaxa()) {
-			int numberTaxaResults = 0;
-//			int numberTaxaResults = dao.countTaxaByName(configurator.getSearchString(), true, configurator.getSec());
+			int numberTaxaResults = dao.countTaxaByName(configurator.getSearchString(), configurator.getMatchMode(),
+					true);
+			
 			List<TaxonBase> taxa =  
 				dao.getTaxaByName(configurator.getSearchString(), configurator.getMatchMode(),
 						true, configurator.getPageSize(), configurator.getPageNumber());
+			
 //			dao.getTaxaByName(configurator.getSearchString(), true, configurator.getSec());
 			if (logger.isDebugEnabled()) { logger.debug(taxa.size() + " matching taxa counted"); }
 			if (taxa.size() > 0) {
@@ -344,7 +346,8 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		}
 
 		if(configurator.isDoSynonyms()) {
-			int numberSynonymResults = 0;
+			int numberSynonymResults = dao.countTaxaByName(configurator.getSearchString(), configurator.getMatchMode(),
+					false);
 			List<TaxonBase> synonyms = 
 				dao.getTaxaByName(configurator.getSearchString(), configurator.getMatchMode(),
 						false, configurator.getPageSize(), configurator.getPageNumber());
@@ -357,7 +360,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		}
 
 		if (configurator.isDoNamesWithoutTaxa()) {
-			int numberNameResults = 0;
+			int numberNameResults = nameDao.countByName(configurator.getSearchString(), configurator.getMatchMode(), null);
 			List<? extends TaxonNameBase<?,?>> names = 
 				nameDao.findByName(configurator.getSearchString(), configurator.getMatchMode(), 
 						configurator.getPageSize(), configurator.getPageNumber(), null);
@@ -375,7 +378,8 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		}
 		
 		if (configurator.isDoTaxaByCommonNames()) {
-			int numberCommonNameResults = 0;
+			int numberCommonNameResults = descriptionDao.countDescriptionByCommonName(configurator.getSearchString(), 
+					configurator.getMatchMode());
 			List<CommonTaxonName> commonTaxonNames = 
 				descriptionDao.searchDescriptionByCommonName(configurator.getSearchString(), 
 						configurator.getMatchMode(), configurator.getPageSize(), configurator.getPageNumber());

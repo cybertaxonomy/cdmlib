@@ -390,7 +390,8 @@ public class BotanicalName extends NonViralName {
 
 	/** 
 	 * Returns the set of all {@link HybridRelationship hybrid relationships}
-	 * in which <i>this</i> botanical taxon name is involved as a {@link common.RelationshipBase#getRelatedFrom() parent}.
+	 * in which <i>this</i> botanical taxon name is involved as a 
+	 * {@link common.RelationshipBase#getRelatedFrom() parent}.
 	 *  
 	 * @see    #getHybridRelationships()
 	 * @see    #getChildRelationships()
@@ -403,7 +404,8 @@ public class BotanicalName extends NonViralName {
 	}
 	/** 
 	 * Returns the set of all {@link HybridRelationship hybrid relationships}
-	 * in which <i>this</i> botanical taxon name is involved as a {@link common.RelationshipBase#getRelatedTo() child}.
+	 * in which <i>this</i> botanical taxon name is involved as a 
+	 * {@link common.RelationshipBase#getRelatedTo() child}.
 	 *  
 	 * @see    #getHybridRelationships()
 	 * @see    #getParentRelationships()

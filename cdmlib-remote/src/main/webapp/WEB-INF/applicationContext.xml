@@ -31,9 +31,9 @@
     <!-- CONFIGURE WEB APPLICATION HERE -->
     <import resource="routing-datasource.xml"/>
     <!-- 
+    <import resource="datasources-local.xml"/>
     <import resource="empty-default-datasource.xml"/>
     <import resource="empty-default-datasource-wp7virtual.xml"/>
-    <import resource="datasources-local.xml"/>
     <import resource="datasources-wp7virtual-production-A.xml"/> 
     <import resource="p6spy.xml"/>
     <import resource="datasources-bgbm24-import.xml"/>

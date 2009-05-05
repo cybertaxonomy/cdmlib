@@ -238,17 +238,13 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		criteria.setFetchMode( "name", FetchMode.JOIN );
 		criteria.createAlias("name", "name");
 		
+		String hqlQueryString = matchMode.queryStringFrom(queryString);
 		if (matchMode == MatchMode.EXACT) {
-			criteria.add(Restrictions.eq("name.nameCache", matchMode.queryStringFrom(queryString)));
+			criteria.add(Restrictions.eq("name.nameCache", hqlQueryString));
 		} else {
-			criteria.add(Restrictions.ilike("name.nameCache", matchMode.queryStringFrom(queryString)));
+			criteria.add(Restrictions.ilike("name.nameCache", hqlQueryString));
 		}
 		
-
-//		if (queryString != null) {
-//			criteria.add(Restrictions.ilike("name.nameCache", queryString));
-//		}
-//		
 		if(pageSize != null) {
 			criteria.setMaxResults(pageSize);
 			if(pageNumber != null) {
@@ -259,7 +255,14 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		List<TaxonBase> results = criteria.list();
 		return results;
 	}
-
+	
+	public Integer countTaxaByName(String queryString, MatchMode matchMode, 
+			Boolean accepted) {
+		//TODO improve performance
+		List<TaxonBase> restultSet = getTaxaByName(queryString, matchMode, accepted, null, null);
+		return restultSet.size();
+	}
+	
 	public List<TaxonBase> getAllTaxonBases(Integer pagesize, Integer page) {
 		Criteria crit = getSession().createCriteria(TaxonBase.class);
 		List<TaxonBase> results = crit.list();

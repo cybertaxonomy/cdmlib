@@ -25,7 +25,6 @@ implements ITaxonServiceConfigurator {
 	private boolean doTaxaByCommonNames = false;
 	private boolean doNamesWithoutTaxa = false;
 	private String searchString;
-	private MatchMode matchMode;
 	private ReferenceBase sec = null;
 	
 	public static TaxonServiceConfiguratorImpl NewInstance() {

@@ -24,7 +24,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.IReferenceService;
+import eu.etaxonomy.cdm.api.service.ITaxonService;
+import eu.etaxonomy.cdm.api.service.config.ITaxonServiceConfigurator;
+import eu.etaxonomy.cdm.api.service.config.impl.TaxonServiceConfiguratorImpl;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
+import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -57,6 +61,7 @@ import eu.etaxonomy.cdm.remote.dto.assembler.DescriptionAssembler;
 import eu.etaxonomy.cdm.remote.dto.assembler.NameAssembler;
 import eu.etaxonomy.cdm.remote.dto.assembler.ReferenceAssembler;
 import eu.etaxonomy.cdm.remote.dto.assembler.TaxonAssembler;
+import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
 @Service
 @Transactional(readOnly = true)
@@ -76,6 +81,8 @@ public class CdmServiceImpl implements ICdmService {
 	@Autowired
 	private ITaxonDao taxonDAO;
 	@Autowired
+	private ITaxonService taxonService;
+	@Autowired
 	private ITaxonNameDao nameDAO;
 	@Autowired
 	private IReferenceDao refDAO;
@@ -85,7 +92,6 @@ public class CdmServiceImpl implements ICdmService {
 	private IFeatureTreeDao featureTreeDAO;
 	@Autowired
 	private IFeatureDao featureDAO;
-	
 	
 	
 //FIXME commented out below, since refactoring is urgently needed see ticket#593 http://dev.e-taxonomy.eu/trac/ticket/593
@@ -196,36 +202,40 @@ public class CdmServiceImpl implements ICdmService {
 	}
 
 	public ResultSetPageSTO<TaxonSTO> findTaxa(String q, Set<UUID> sec, Set<UUID> higherTaxa, MatchMode matchMode, boolean onlyAccepted, int page, int pagesize, Enumeration<Locale> locales) {
-		ResultSetPageSTO<TaxonSTO> resultSetPage = new ResultSetPageSTO<TaxonSTO>();
 
-		resultSetPage.setPageNumber(page);
-		resultSetPage.setPageSize(pagesize);
+		ITaxonServiceConfigurator taxonServiceConfig =  TaxonServiceConfiguratorImpl.NewInstance();
 		
-		// TODO: add other criteria. Has to be done in DAO...
+		taxonServiceConfig.setPageSize(pagesize);
+		taxonServiceConfig.setPageNumber(page);
+		taxonServiceConfig.setMatchMode(matchMode);
+		taxonServiceConfig.setDoSynonyms(!onlyAccepted);
+		taxonServiceConfig.setDoTaxaByCommonNames(true);
+		taxonServiceConfig.setDoTaxa(true);
+		taxonServiceConfig.setSearchString(q);
 		
-		List<Criterion> criteria = new ArrayList<Criterion>();
 		if(sec.size()>0){
-			List<ReferenceBase> secundum = new ArrayList<ReferenceBase>(); 
 			for (UUID uuid : sec){
 				ReferenceBase referenceBase = refDAO.findByUuid(uuid);
-				secundum.add(referenceBase);
+				taxonServiceConfig.setReferenceBase(referenceBase);
+				break;
 			}			
-			criteria.add(Restrictions.in("sec", secundum));
+		}
+
+		Pager<IdentifiableEntity> resultSetPage = taxonService.findTaxaAndNames(taxonServiceConfig);
+		
+		// use DTOs instead
+		ResultSetPageSTO<TaxonSTO> dtoResultSetPage = new ResultSetPageSTO<TaxonSTO>();
+
+		dtoResultSetPage.setPageNumber(page);
+		dtoResultSetPage.setPageSize(pagesize);
+		dtoResultSetPage.setTotalResultsCount(resultSetPage.getCount());
+		
+		dtoResultSetPage.setResultsOnPage(resultSetPage.getCount());
+		for (IdentifiableEntity taxonBase : resultSetPage.getRecords()){
+			dtoResultSetPage.getResults().add(taxonAssembler.getSTO((TaxonBase)taxonBase, locales));
 		}
 		
-		resultSetPage.setTotalResultsCount((int)taxonDAO.countMatchesByName(q, matchMode, onlyAccepted, criteria));
-//		if(MAXRESULTS > 0 && rs.getTotalResultsCount() > MAXRESULTS){
-//			rs.setTotalResultsCount(-1);
-//			return rs;
-//		}
-		
-		List<TaxonBase> results = taxonDAO.findByTitle(q, matchMode, page, pagesize, criteria);
-		//descriptionDAO
-		resultSetPage.setResultsOnPage(results.size());
-		for (TaxonBase taxonBase : results){
-			resultSetPage.getResults().add(taxonAssembler.getSTO(taxonBase, locales));
-		}
-		return resultSetPage;
+		return dtoResultSetPage;
 	}
 
 	/* (non-Javadoc)
@@ -258,13 +268,43 @@ public class CdmServiceImpl implements ICdmService {
 		Taxon tx = getCdmTaxon(uuid);
 		return taxonAssembler.getTreeNodeListSortedByName(tx.getTaxonomicChildren());
 	}
-
+	
+	//TODO get rid of the bloodyRankLabelMap ------ can be deleted once the FIXME in getPathToRoot is solved
+	private static Hashtable<String, String> bloodyRankLabelMap = new Hashtable<String, String>();	
+	static{
+		bloodyRankLabelMap.put("Subfamily", "Subfamilia");
+		bloodyRankLabelMap.put("Family", "Familia");
+		bloodyRankLabelMap.put("Suborder", "Subordo");
+		bloodyRankLabelMap.put("Order", "Ordo");
+	}
+		
 	public List<TreeNode> getParentTaxa(UUID uuid) throws CdmObjectNonExisting {
 		ArrayList<TreeNode> result = new ArrayList<TreeNode>();
 		Taxon tx = getCdmTaxon(uuid);
 		result.add(taxonAssembler.getTreeNode(tx));
+		Rank rank = Rank.GENUS();
+		
 		while(tx.getTaxonomicParent() != null){
+		
 			Taxon parent = tx.getTaxonomicParent();
+			//FIXME orderindex in parentTaxon.getName().getRank() is not set !!!
+			// original: if(rank != null && rank.isLower(parentTaxon.getName().getRank())){
+			// Preliminary solution below:
+			if(rank != null){
+				try {
+					String bloodyRankLabel = bloodyRankLabelMap.get(parent.getName().getRank().getLabel());
+					if(bloodyRankLabel == null){
+						bloodyRankLabel = parent.getName().getRank().getLabel();
+					}
+					Rank compareToRank = Rank.getRankByName(bloodyRankLabel);
+					if(rank.isLower(compareToRank)){
+						break;
+					}
+				} catch (UnknownCdmTypeException e) {
+					logger.error(e);
+				}
+			}
+			
 			result.add(taxonAssembler.getTreeNode(parent));
 			tx=parent;
 		}

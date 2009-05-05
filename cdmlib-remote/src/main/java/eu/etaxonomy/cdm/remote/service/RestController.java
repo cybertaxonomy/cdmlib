@@ -175,6 +175,7 @@ public class RestController extends AbstractController
 					onlyAccepted=false;
 				};
 				Integer page = getIntPara("page", 1, req);
+				page--;
 				Integer pagesize = getIntPara("pagesize", DEFAULT_PAGE_SIZE, req);
 				
 				//

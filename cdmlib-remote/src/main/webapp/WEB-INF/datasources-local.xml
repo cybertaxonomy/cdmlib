@@ -15,7 +15,7 @@
 	         <entry key="diptera" value-ref="dipteraDataSource"/>
 	      </map>
    		</property>
-   		<property name="defaultTargetDataSource" ref="cichorieaeDataSource"/>
+   		<property name="defaultTargetDataSource" ref="dipteraDataSource"/>
    </bean>
 
     <bean id="cichorieaeDataSource"  lazy-init="true" class="org.springframework.jdbc.datasource.DriverManagerDataSource">

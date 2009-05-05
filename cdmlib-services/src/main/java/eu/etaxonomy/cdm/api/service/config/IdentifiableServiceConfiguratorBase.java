@@ -20,7 +20,7 @@ import eu.etaxonomy.cdm.persistence.query.MatchMode;
 public class IdentifiableServiceConfiguratorBase {
 	
 	private String titleSearchString = null;
-	private MatchMode matchMode = MatchMode.EXACT;
+	protected MatchMode matchMode = MatchMode.EXACT;
 	private Integer pageSize = null;
 	private Integer pageNumber = null;
 	

@@ -313,4 +313,10 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
 		List<CommonTaxonName> results = (List<CommonTaxonName>)crit.list();
 		return results;
 	}
+	
+	public Integer countDescriptionByCommonName(String queryString, MatchMode matchMode) {
+		//TODO inprove performance
+		List<CommonTaxonName> results =  searchDescriptionByCommonName(queryString, matchMode, null, null);
+		return results.size();
+	}
 }

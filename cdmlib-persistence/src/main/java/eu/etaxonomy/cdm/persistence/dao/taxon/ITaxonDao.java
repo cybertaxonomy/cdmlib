@@ -75,6 +75,9 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
 	 */
 	public List<TaxonBase> getTaxaByName(String queryString, MatchMode matchMode, 
 			Boolean accepted, Integer pageSize, Integer pageNumber);
+	
+	public Integer countTaxaByName(String queryString, MatchMode matchMode, 
+			Boolean accepted);
 		
 	/**
 	 * Computes all Taxon instances that do not have a taxonomic parent and has at least one child.

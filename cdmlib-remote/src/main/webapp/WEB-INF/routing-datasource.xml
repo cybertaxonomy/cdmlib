@@ -11,7 +11,9 @@
     <bean id="dataSource"  lazy-init="true" class="eu.etaxonomy.cdm.database.UpdatableRoutingDataSource">
     	<!--  beanDefinitionFile defaults to "datasources.xml" -->
     	<!-- 
+    	<property name="beanDefinitionFile" value="datasources-local.xml" />
     	<property name="beanDefinitionFile" value="datasources-test21.xml" />
+    	<property name="beanDefinitionFile" value="datasources-wp5dev-production.xml" />
     	 -->
     	<!--  defaultDatasourceName defaults to "empty_default" -->
     	<property name="defaultDatasourceName" value="cichorieae" />

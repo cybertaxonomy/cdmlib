@@ -25,7 +25,7 @@ import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.hibernate.annotation.HibernateSessionFactory;
 import org.unitils.spring.annotation.SpringBeanByType;
 
-import eu.etaxonomy.cdm.api.application.ConversationHolder;
+import eu.etaxonomy.cdm.api.conversation.ConversationHolder;
 import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.model.name.BotanicalName;

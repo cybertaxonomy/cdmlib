@@ -134,6 +134,9 @@ public interface IDescriptionDao extends IIdentifiableDao<DescriptionBase> {
 	 */
 	List<CommonTaxonName> searchDescriptionByCommonName(String queryString, MatchMode matchMode, Integer pageSize, Integer pageNumber);
  
+	
+	public Integer countDescriptionByCommonName(String queryString, MatchMode matchMode); 
+	
 	/**
 	 * Returns a count of distinct TaxonDescription instances which have Distribution elements that refer to one of the NamedArea instances passed (optionally
 	 * filtered by a type of PresenceAbsenceTerm e.g. PRESENT / ABSENT / NATIVE / CULTIVATED etc)

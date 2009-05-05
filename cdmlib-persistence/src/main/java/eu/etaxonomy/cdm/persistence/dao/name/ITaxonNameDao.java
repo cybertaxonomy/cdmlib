@@ -142,4 +142,8 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonNameBase> {
 
 	public List<? extends TaxonNameBase<?,?>> 
 	findByName(String queryString, MatchMode matchmode, Integer pageSize, Integer pageNumber, List<Criterion> criteria);
+	
+	public Integer countByName(String queryString, 
+			MatchMode matchmode, List<Criterion> criteria);
+	
 }

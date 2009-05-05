@@ -25,6 +25,7 @@
       <plugin>
         <artifactId>maven-antrun-plugin</artifactId>
         <executions>
+         <!--
           <execution>
             <id>aspectj-main</id>
             <goals>
@@ -68,8 +69,10 @@
               </tasks>
           </configuration>
         </execution>
+        --> 
       </executions>
-        <dependencies>
+      <dependencies>
+      <!--
           <dependency>
             <groupId>org.aspectj</groupId>
 			<artifactId>aspectjtools</artifactId>
@@ -80,7 +83,8 @@
 			<artifactId>aspectjrt</artifactId>
 			<version>1.5.4</version>
           </dependency>
-        </dependencies>
+        -->
+      </dependencies>
       </plugin>
       
     <!-- JAXB Schema compiler task (xjc) not used at this point -->

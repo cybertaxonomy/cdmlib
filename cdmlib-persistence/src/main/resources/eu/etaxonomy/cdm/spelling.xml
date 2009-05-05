@@ -13,6 +13,7 @@
     
     <bean id="taxonSpellingDirectory" class="org.springmodules.lucene.index.support.FSDirectoryFactoryBean">
       <!-- TODO location -->
+<!--      <property name="location" value="file:${user.home}/.cdmLibrary/lucene/eu.etaxonomy.cdm.model.taxon.TaxonBase_spelling"/>-->
       <property name="location" value="file:./target/test-classes/eu.etaxonomy.cdm.model.taxon.TaxonBase_spelling"/>
 <!--      <property name="location" value="file:\\C:\localCopy\eclipse\cdmlib\cdmlib-persistence\target\test-classes\eu.etaxonomy.cdm.model.taxon.TaxonBase_spelling"/>-->
 <!--     <property name="location" value="file:\\C:\tmpXXX\eu.etaxonomy.cdm.model.taxon.TaxonBase_spelling"/>-->

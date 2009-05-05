@@ -296,4 +296,12 @@ public class TaxonNameDaoHibernateImpl
 		List<? extends TaxonNameBase<?,?>> results = crit.list();
 		return results;
 	}
+	
+	public Integer countByName(String queryString, 
+			MatchMode matchmode, List<Criterion> criteria) {
+		//TODO inprove performance
+		List<? extends TaxonNameBase<?,?>> results = findByName(queryString, matchmode, null, null, criteria);
+		return results.size();
+		
+	}
 }

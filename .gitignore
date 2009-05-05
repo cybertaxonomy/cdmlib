@@ -62,6 +62,7 @@ cdmlib-remote/.classpath
 cdmlib-remote/.project
 cdmlib-remote/.settings
 cdmlib-remote/null
+cdmlib-remote/secret-accounts.diff
 cdmlib-remote/target
 cdmlib-services/.classpath
 cdmlib-services/.project
@@ -72,6 +73,8 @@ cdmlib-services/cdmlib-services.uml
 cdmlib-services/src/main/resources/log4j.properties
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/integrationTest.xml
 cdmlib-services/target
+/diff-trunk_cdmlib-r4474-to-r4473.diff
+/diff-trunk_cdmlib-r4654-to-r4651.diff
 eclipse-feature-sources/.classpath
 eclipse-feature-sources/.project
 eclipse-plugin-sources/.classpath
@@ -110,7 +113,8 @@ eclipse-updateSite/content.xml
 eclipse-updateSite/features/eu.etaxonomy.cdmLibrary_1.2.3.04.jar
 eclipse-updateSite/features/eu.etaxonomy.cdmLibrary_1.2.4.01.jar
 eclipse-updateSite/features/eu.etaxonomy.cdmLibrary_2.00.00.00.jar
+/hibernate.log
 musiclib-hibernatetest/.classpath
 musiclib-hibernatetest/.project
 musiclib-hibernatetest/.settings
-/testANTLR
+/target
