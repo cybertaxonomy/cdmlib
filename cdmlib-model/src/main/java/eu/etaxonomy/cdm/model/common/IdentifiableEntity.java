@@ -371,13 +371,13 @@ implements ISourceable, IIdentifiableEntity, Comparable<IdentifiableEntity> {
 		 
 		 // Compare title cache of taxon names
 		 
-		 if ((result == 0) && !specifiedTitleCache.equals("") && !thisTitleCache.equals("")) {
+		 if ((result == 0) && (!specifiedTitleCache.equals("") || !thisTitleCache.equals(""))) {
 			 result = thisTitleCache.compareTo(specifiedTitleCache);
 		 }
 		 
 		 // Compare title cache of taxon references
 		 
-		 if ((result == 0) && !specifiedReferenceTitleCache.equals("") && !thisReferenceTitleCache.equals("")) {
+		 if ((result == 0) && (!specifiedReferenceTitleCache.equals("") || !thisReferenceTitleCache.equals(""))) {
 			 result = thisReferenceTitleCache.compareTo(specifiedReferenceTitleCache);
 		 }
 		 
