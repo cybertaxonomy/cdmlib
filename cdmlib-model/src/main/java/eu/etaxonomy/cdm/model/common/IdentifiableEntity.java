@@ -33,9 +33,12 @@ import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
 import org.hibernate.search.annotations.Fields;
 
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.StrictReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 /**
@@ -288,34 +291,61 @@ implements ISourceable, IIdentifiableEntity, Comparable<IdentifiableEntity> {
 		 // TODO: Avoid using instanceof operator
 		 // Use Class.getDeclaredMethod() instead to find out whether class has getNameCache() method?
 
-		 // Compare name cache
 		 String specifiedNameCache = "";
 		 String thisNameCache = "";
+		 String specifiedTitleCache = "";
+		 String thisTitleCache = "";
+		 String specifiedReferenceTitleCache = "";
+		 String thisReferenceTitleCache = "";	
 		 
 		 if(identifiableEntity instanceof NonViralName) {
-			 specifiedNameCache = ((NonViralName<?>)identifiableEntity).getNameCache();
+			 specifiedNameCache = HibernateProxyHelper.deproxy(identifiableEntity, NonViralName.class).getNameCache();
+			 specifiedTitleCache = identifiableEntity.getTitleCache();
+			 
 		 } else if(identifiableEntity instanceof TaxonBase) {
-			 TaxonNameBase<?,?> taxonNameBase= ((TaxonBase)identifiableEntity).getName();
-			 specifiedNameCache = ((NonViralName<?>)taxonNameBase).getNameCache();
+			 TaxonBase taxonBase = HibernateProxyHelper.deproxy(identifiableEntity, TaxonBase.class);
+			 
+			 TaxonNameBase<?,?> taxonNameBase = taxonBase.getName();
+			 specifiedNameCache = HibernateProxyHelper.deproxy(taxonNameBase, NonViralName.class).getNameCache();
+			 specifiedTitleCache = taxonNameBase.getTitleCache();
+			 
+			 //specifiedReferenceTitleCache = ((TaxonBase)identifiableEntity).getSec().getTitleCache();
+//			 ReferenceBase referenceBase = taxonBase.getSec();
+//			 if (referenceBase != null) {
+//           FIXME: HibernateProxyHelper.deproxy(referenceBase, ReferenceBase.class) throws exception
+//				 referenceBase = HibernateProxyHelper.deproxy(referenceBase, ReferenceBase.class);
+//				 specifiedReferenceTitleCache = referenceBase.getTitleCache();
+//			 }
 		 }
 		 
 		 if(this instanceof NonViralName) {
-			 thisNameCache = ((NonViralName<?>)this).getNameCache();
+			 thisNameCache = HibernateProxyHelper.deproxy(this, NonViralName.class).getNameCache();
+			 thisTitleCache = getTitleCache();
 		 } else if(this instanceof TaxonBase) {
-			 TaxonNameBase<?,?> taxonNameBase= ((TaxonBase)this).getName();
-			 thisNameCache = ((NonViralName<?>)taxonNameBase).getNameCache();
+			 TaxonNameBase<?,?> taxonNameBase= HibernateProxyHelper.deproxy(this, TaxonBase.class).getName();
+			 thisNameCache = HibernateProxyHelper.deproxy(taxonNameBase, NonViralName.class).getNameCache();
+			 thisTitleCache = taxonNameBase.getTitleCache();
+			 thisReferenceTitleCache = getTitleCache();
 		 }
 		 
+		 // Compare name cache of taxon names
+
 		 if (!specifiedNameCache.equals("") && !thisNameCache.equals("")) {
 			 result = thisNameCache.compareTo(specifiedNameCache);
 		 }
 		 
-		 // Compare title cache
-		 if (result == 0) {
-			 String thisTitleCache = getTitleCache();
-			 String specifiedTitleCache = identifiableEntity.getTitleCache();
+		 // Compare title cache of taxon names
+		 
+		 if ((result == 0) && (!specifiedTitleCache.equals("") || !thisTitleCache.equals(""))) {
 			 result = thisTitleCache.compareTo(specifiedTitleCache);
 		 }
+		 
+		 // Compare title cache of taxon references
+		 
+		 if ((result == 0) && (!specifiedReferenceTitleCache.equals("") || !thisReferenceTitleCache.equals(""))) {
+			 result = thisReferenceTitleCache.compareTo(specifiedReferenceTitleCache);
+		 }
+		 
 		 return result;
 	 }
 	 
