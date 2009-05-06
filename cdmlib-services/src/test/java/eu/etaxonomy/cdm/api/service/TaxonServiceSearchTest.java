@@ -78,8 +78,12 @@ public class TaxonServiceSearchTest extends CdmIntegrationTest {
 						": Name Cache = " + nameCache + ", Title Cache = " + list.get(i).getTitleCache());
 			}
 		}
-		assertEquals(list.get(1).getTitleCache(), "Abies mill. sec. ???");
-		assertEquals(list.get(4).getTitleCache(), "Abies alba Mill. sec. ???");
+		assertEquals(list.get(0).getTitleCache(), "Abies sec. ???");
+		assertEquals(list.get(1).getTitleCache(), "Abies Mill.");
+		assertEquals(list.get(2).getTitleCache(), "Abies mill. sec. ???");
+		assertEquals(list.get(3).getTitleCache(), "Abies alba sec. ???");
+		assertEquals(list.get(4).getTitleCache(), "Abies alba Michx. sec. ???");
+		assertEquals(list.get(5).getTitleCache(), "Abies alba Mill. sec. ???");
 	}
 	
 //	@Test

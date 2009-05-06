@@ -17,6 +17,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
@@ -41,6 +42,7 @@ import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
  * @author n.hoffmann
  *
  */
+@Ignore // not needed in 2.0
 public class ConcurrentSessionTest extends CdmIntegrationTest{
 
 	private static final Logger logger = Logger.getLogger(ConcurrentSessionTest.class);
