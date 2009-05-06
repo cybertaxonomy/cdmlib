@@ -113,6 +113,24 @@ public class TaxonNameDaoHibernateImpl
 		return (Integer)criteria.uniqueResult();
 	}
 
+	public int countNames(String queryString, MatchMode matchMode, List<Criterion> criteria) {
+		
+		Criteria crit = getSession().createCriteria(type);
+		if (matchMode == MatchMode.EXACT) {
+			crit.add(Restrictions.eq("nameCache", matchMode.queryStringFrom(queryString)));
+		} else {
+			crit.add(Restrictions.ilike("nameCache", matchMode.queryStringFrom(queryString)));
+		}
+		if(criteria != null) {
+			for (Criterion criterion : criteria) {
+				crit.add(criterion);
+			}
+		}
+
+		crit.setProjection(Projections.projectionList().add(Projections.rowCount()));
+		return (Integer)crit.uniqueResult();
+	}
+	
 	public int countRelatedNames(TaxonNameBase name, NameRelationshipType type) {
 		Query query = null;
 		if(type == null) {

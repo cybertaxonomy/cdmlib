@@ -76,9 +76,6 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
 	public List<TaxonBase> getTaxaByName(String queryString, MatchMode matchMode, 
 			Boolean accepted, Integer pageSize, Integer pageNumber);
 	
-	public Integer countTaxaByName(String queryString, MatchMode matchMode, 
-			Boolean accepted);
-		
 	/**
 	 * Computes all Taxon instances that do not have a taxonomic parent and has at least one child.
 	 * @return The List<Taxon> of root taxa.
@@ -259,6 +256,16 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
 	 * @return a count of TaxonBase instances
 	 */
 	public int countTaxaByName(Boolean accepted, String uninomial, String infragenericEpithet,String specificEpithet, String infraspecificEpithet, Rank rank);
+	
+	/**
+	 * Returns a count of TaxonBase instances (or Taxon instances, if accepted == true, or Synonym instance, if accepted == false) where the
+	 * taxon.name properties match the parameters passed.
+	 * 
+	 * @param queryString search string
+	 * @param matchMode way how search string shall be matched: exact, beginning, or anywhere
+	 * @param accepted indication whether taxon is accepted (true) or synonym (false)
+	 */ 
+	public Integer countTaxaByName(String queryString, MatchMode matchMode, Boolean accepted);
 	
 	/**
 	 * Returns a list of TaxonBase instances (or Taxon instances, if accepted == true, or Synonym instance, if accepted == false) where the
