@@ -326,18 +326,18 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 	public Pager<IdentifiableEntity> findTaxaAndNames(ITaxonServiceConfigurator configurator) {
 		
 		List<IdentifiableEntity> results = new ArrayList<IdentifiableEntity>();
-		int numberOfResults = 0;
+		int numberOfResults = 0; // overall number of results (as opposed to number of results per page)
 		List<TaxonBase> taxa = null; 
-		int taxaCount = 0;
-		int numberTaxaResults = 0;
-		boolean isMisappliedName = false;
-		
+
 		// Taxa and synonyms
+		
+		int numberTaxaResults = 0;
 		
 		if (configurator.isDoTaxa() && configurator.isDoSynonyms()) {
 			taxa = dao.getTaxaByName(configurator.getSearchString(), configurator.getMatchMode(),
 						SelectMode.ALL, configurator.getPageSize(), configurator.getPageNumber());
-			numberTaxaResults = dao.countTaxaByName(configurator.getSearchString(), configurator.getMatchMode(), true);
+			numberTaxaResults = 
+				dao.countTaxaByName(configurator.getSearchString(), configurator.getMatchMode(), SelectMode.ALL);
 			
 		} else if(configurator.isDoTaxa()) {
 			taxa = dao.getTaxaByName(configurator.getSearchString(), configurator.getMatchMode(),
