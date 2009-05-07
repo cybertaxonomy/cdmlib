@@ -103,10 +103,10 @@
 					 					  
 				<!--Uncomment tomcat to deploy to-->
 					<!-- current production -->
-<!--					<update>true</update>
-					<server>tomcat-edit</server>
-					<url>http://search.biocase.org:8080/manager</url>
-	-->						
+<!--					<update>true</update>-->
+<!--					<server>tomcat-edit</server>-->
+<!--					<url>http://search.biocase.org:8080/manager</url>-->
+					
 					<!-- remote testing-->
 					<update>true</update>
 					<server>tomcat-cdm</server>

@@ -328,6 +328,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		List<IdentifiableEntity> results = new ArrayList<IdentifiableEntity>();
 		int numberOfResults = 0;
 		List<TaxonBase> taxa = null; 
+		int taxaCount = 0;
 		int numberTaxaResults = 0;
 		boolean isMisappliedName = false;
 		
@@ -336,28 +337,23 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		if (configurator.isDoTaxa() && configurator.isDoSynonyms()) {
 			taxa = dao.getTaxaByName(configurator.getSearchString(), configurator.getMatchMode(),
 						SelectMode.ALL, configurator.getPageSize(), configurator.getPageNumber());
+			numberTaxaResults = dao.countTaxaByName(configurator.getSearchString(), configurator.getMatchMode(), true);
 			
 		} else if(configurator.isDoTaxa()) {
 			taxa = dao.getTaxaByName(configurator.getSearchString(), configurator.getMatchMode(),
 						true, configurator.getPageSize(), configurator.getPageNumber());
+			numberTaxaResults = dao.countTaxaByName(configurator.getSearchString(), configurator.getMatchMode(), true);
 			
 		} else if (configurator.isDoSynonyms()) {
 			taxa = dao.getTaxaByName(configurator.getSearchString(), configurator.getMatchMode(),
 					false, configurator.getPageSize(), configurator.getPageNumber());
+			numberTaxaResults = dao.countTaxaByName(configurator.getSearchString(), configurator.getMatchMode(), false);
 		}
 
-		if (logger.isDebugEnabled()) { logger.debug(taxa.size() + " matching taxa counted"); }
+		if (logger.isDebugEnabled()) { logger.debug(numberTaxaResults + " matching taxa counted"); }
 		
-		for (TaxonBase taxonBase : taxa) {
-			if (taxonBase instanceof Taxon) {
-				Taxon taxon = (Taxon)taxonBase; 
-				if (taxon.isMisappliedName()) { isMisappliedName = true; }
-			}
-			if (!results.contains(taxonBase) && !isMisappliedName) {
-				results.add(taxonBase);
-				numberTaxaResults++;
-			}
-		}
+		results.addAll(taxa);
+		
 		numberOfResults += numberTaxaResults;
 		
 		// Names without taxa 

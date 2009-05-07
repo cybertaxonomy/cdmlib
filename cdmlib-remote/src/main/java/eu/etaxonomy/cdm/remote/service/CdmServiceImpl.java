@@ -17,8 +17,6 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
-import org.hibernate.criterion.Criterion;
-import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,7 +41,6 @@ import eu.etaxonomy.cdm.persistence.dao.description.IFeatureTreeDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
-import eu.etaxonomy.cdm.persistence.fetch.CdmFetch;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.remote.dto.FeatureTO;
@@ -335,7 +332,8 @@ public class CdmServiceImpl implements ICdmService {
 		if(uuid != null){
 			sec = getCdmReferenceBase(uuid);
 		}
-		List<Taxon> rt = taxonDAO.getRootTaxa(Rank.GENUS(), sec, null, true, false);
+		//List<Taxon> rt = taxonDAO.getRootTaxa(Rank.GENUS(), sec, null, true, false);
+		List<Taxon> rt = taxonDAO.getRootTaxa(sec, null, true, false);
 		return taxonAssembler.getTreeNodeListSortedByName(rt);
 	}
 

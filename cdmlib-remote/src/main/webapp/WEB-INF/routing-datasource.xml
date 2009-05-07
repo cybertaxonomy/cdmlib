@@ -16,7 +16,8 @@
     	<property name="beanDefinitionFile" value="datasources-wp5dev-production.xml" />
     	 -->
     	<!--  defaultDatasourceName defaults to "empty_default" -->
-    	<property name="defaultDatasourceName" value="cichorieae" />
+<!--    	<property name="defaultDatasourceName" value="cichorieae" />-->
+    	<property name="defaultDatasourceName" value="cdm_test_anahit" />
     </bean>
     
     
