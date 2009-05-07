@@ -36,6 +36,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
 import eu.etaxonomy.cdm.persistence.fetch.CdmFetch;
+import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 
 public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
@@ -166,9 +167,11 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	 * @param type The type of TaxonRelationship (can be null)
 	 * @param pageSize The maximum number of relationships returned (can be null for all relationships)
 	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
+	 * @param orderHints Properties to order by
+	 * @param propertyPaths Properties to initialize in the returned entities, following the syntax described in {@link BeanInitializer#initialize(Object, List)}
 	 * @return a Pager of TaxonRelationship instances
 	 */
-	public Pager<TaxonRelationship> getRelatedTaxa(Taxon taxon, TaxonRelationshipType type, Integer pageSize, Integer pageNumber);
+	public Pager<TaxonRelationship> getRelatedTaxa(Taxon taxon, TaxonRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 	
 	/**
 	 * Returns the SynonymRelationships (of where relationship.type == type, if this arguement is supplied) 
@@ -178,9 +181,11 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	 * @param type The type of SynonymRelationship (can be null)
 	 * @param pageSize The maximum number of relationships returned (can be null for all relationships)
 	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
+	 * * @param orderHints Properties to order by
+	 * @param propertyPaths Properties to initialize in the returned entities, following the syntax described in {@link BeanInitializer#initialize(Object, List)}
 	 * @return a Pager of SynonymRelationship instances
 	 */
-	public Pager<SynonymRelationship> getSynonyms(Taxon taxon, SynonymRelationshipType type, Integer pageSize, Integer pageNumber);
+	public Pager<SynonymRelationship> getSynonyms(Taxon taxon, SynonymRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 	
 	public List<Synonym> getHomotypicSynonymsByHomotypicGroup(Taxon taxon, List<String> propertyPaths);
 	

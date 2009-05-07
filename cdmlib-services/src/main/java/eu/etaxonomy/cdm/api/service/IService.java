@@ -102,6 +102,28 @@ public interface IService<T extends CdmBase>{
 	 */
 	public Pager<T> list(Integer pageSize, Integer pageNumber, List<OrderHint> orderHints);
 	
+	/**
+	  Returns a paged list of entities of type <TYPE> which must extend 
+	 * <T>
+	 * 
+	 * @param type  The type of entities to return
+	 * @param pageSize
+	 * @param pageNumber
+	 * @param orderHints may be null
+	 * @param propertyPaths properties to initialize - see {@link BeanInitializer#initialize(Object, List)}
+	 * @return
+	 */
+	public <TYPE extends T> Pager<TYPE> list(Class<TYPE> type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+	
+	/**
+	 * @param pageSize
+	 * @param pageNumber
+	 * @param orderHints may be null
+	 * @param propertyPaths properties to initialize - see {@link BeanInitializer#initialize(Object, List)}
+	 * @return
+	 */
+	public Pager<T> list(Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+	
 	public List<T> rows(String tableName, int limit, int start);
 	
 	/**

@@ -26,7 +26,9 @@ import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.name.*;
+import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
+import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 public interface INameService extends IIdentifiableEntityService<TaxonNameBase> {
 
@@ -137,9 +139,11 @@ public interface INameService extends IIdentifiableEntityService<TaxonNameBase> 
 	 * @param type the relationship type (or null to return all relationships) 
 	 * @param pageSize The maximum number of relationships returned (can be null for all relationships)
 	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
+	 * @param orderHints may be null
+	 * @param propertyPaths properties to initialize - see {@link BeanInitializer#initialize(Object, List)}
 	 * @return a Pager of NameRelationship instances
 	 */
-	public Pager<NameRelationship> getRelatedNames(TaxonNameBase name,  NameRelationshipType type, Integer pageSize, Integer pageNumber);
+	public Pager<NameRelationship> getRelatedNames(TaxonNameBase name,  NameRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 	
 	/**
 	 * Return a List of hybrids related to this name, optionally filtered 
@@ -149,9 +153,11 @@ public interface INameService extends IIdentifiableEntityService<TaxonNameBase> 
 	 * @param type the hybrid relationship type (or null to return all hybrids) 
 	 * @param pageSize The maximum number of hybrid relationships returned (can be null for all relationships)
 	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
+	 * @param orderHints may be null
+	 * @param propertyPaths properties to initialize - see {@link BeanInitializer#initialize(Object, List)}
 	 * @return a Pager of HybridRelationship instances
 	 */
-	public Pager<HybridRelationship> getHybridNames(BotanicalName name, HybridRelationshipType type, Integer pageSize, Integer pageNumber);
+	public Pager<HybridRelationship> getHybridNames(BotanicalName name, HybridRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 	
 	/**
 	 * Return a List of types related to this name, optionally filtered 

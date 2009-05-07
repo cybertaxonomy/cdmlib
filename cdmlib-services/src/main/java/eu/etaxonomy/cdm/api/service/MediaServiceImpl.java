@@ -28,6 +28,7 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
+import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.persistence.dao.media.IMediaDao;
 import eu.etaxonomy.cdm.persistence.dao.media.IMediaRepresentationDao;
@@ -67,14 +68,25 @@ public class MediaServiceImpl extends AnnotatableServiceBase<Media,IMediaDao> im
 		this.dao = dao;
 	}
 
-	public Pager<IdentificationKey> getIdentificationKeys(Set<Taxon> taxonomicScope, Set<NamedArea> geoScopes,	Integer pageSize, Integer pageNumber) {
+	public Pager<IdentificationKey> getIdentificationKeys(Set<Taxon> taxonomicScope, Set<NamedArea> geoScopes, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
         Integer numberOfResults = dao.countIdentificationKeys(taxonomicScope, geoScopes);
 		
 		List<IdentificationKey> results = new ArrayList<IdentificationKey>();
 		if(numberOfResults > 0) { // no point checking again
-			results = dao.getIdentificationKeys(taxonomicScope, geoScopes, pageSize, pageNumber); 
+			results = dao.getIdentificationKeys(taxonomicScope, geoScopes, pageSize, pageNumber, propertyPaths); 
 		}
 		
 		return new DefaultPagerImpl<IdentificationKey>(pageNumber, numberOfResults, pageSize, results);
+	}
+	
+	public Pager<Rights> getRights(Media t, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
+        Integer numberOfResults = dao.countRights(t);
+		
+		List<Rights> results = new ArrayList<Rights>();
+		if(numberOfResults > 0) { // no point checking again
+			results = dao.getRights(t, pageSize, pageNumber,propertyPaths); 
+		}
+		
+		return new DefaultPagerImpl<Rights>(pageNumber, numberOfResults, pageSize, results);
 	}
 }

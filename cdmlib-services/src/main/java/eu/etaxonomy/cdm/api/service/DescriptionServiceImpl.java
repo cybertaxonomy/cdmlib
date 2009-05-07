@@ -48,6 +48,7 @@ import eu.etaxonomy.cdm.persistence.dao.description.IFeatureDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IFeatureNodeDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IFeatureTreeDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IStatisticalMeasurementValueDao;
+import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
  * @author a.mueller
@@ -228,78 +229,78 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
 		return dao.countDescriptions(type, hasImages, hasText, feature);
 	}
 
-	public <TYPE extends DescriptionElementBase> Pager<TYPE> getDescriptionElements(DescriptionBase description, Set<Feature> features,	Class<TYPE> type, Integer pageSize, Integer pageNumber) {
+	public <TYPE extends DescriptionElementBase> Pager<TYPE> getDescriptionElements(DescriptionBase description, Set<Feature> features,	Class<TYPE> type, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
         Integer numberOfResults = dao.countDescriptionElements(description, features, type);
 		
 		List<TYPE> results = new ArrayList<TYPE>();
 		if(numberOfResults > 0) { // no point checking again
-			results = dao.getDescriptionElements(description, features, type, pageSize, pageNumber); 
+			results = dao.getDescriptionElements(description, features, type, pageSize, pageNumber, propertyPaths); 
 		}
 		
 		return new DefaultPagerImpl<TYPE>(pageNumber, numberOfResults, pageSize, results);
 	}
 
-	public Pager<Media> getMedia(DescriptionElementBase descriptionElement,	Integer pageSize, Integer pageNumber) {
+	public Pager<Media> getMedia(DescriptionElementBase descriptionElement,	Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
         Integer numberOfResults = descriptionElementDao.countMedia(descriptionElement);
 		
 		List<Media> results = new ArrayList<Media>();
 		if(numberOfResults > 0) { // no point checking again
-			results = descriptionElementDao.getMedia(descriptionElement, pageSize, pageNumber); 
+			results = descriptionElementDao.getMedia(descriptionElement, pageSize, pageNumber, propertyPaths); 
 		}
 		
 		return new DefaultPagerImpl<Media>(pageNumber, numberOfResults, pageSize, results);
 	}
 
-	public Pager<TaxonDescription> getTaxonDescriptions(Taxon taxon, Set<Scope> scopes, Set<NamedArea> geographicalScope, Integer pageSize, Integer pageNumber) {
+	public Pager<TaxonDescription> getTaxonDescriptions(Taxon taxon, Set<Scope> scopes, Set<NamedArea> geographicalScope, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
         Integer numberOfResults = dao.countTaxonDescriptions(taxon, scopes, geographicalScope);
 		
 		List<TaxonDescription> results = new ArrayList<TaxonDescription>();
 		if(numberOfResults > 0) { // no point checking again
-			results = dao.getTaxonDescriptions(taxon, scopes, geographicalScope, pageSize, pageNumber); 
+			results = dao.getTaxonDescriptions(taxon, scopes, geographicalScope, pageSize, pageNumber, propertyPaths); 
 		}
 		
 		return new DefaultPagerImpl<TaxonDescription>(pageNumber, numberOfResults, pageSize, results);
 	}
 
-	public Pager<TaxonNameDescription> getTaxonNameDescriptions(TaxonNameBase name, Integer pageSize, Integer pageNumber) {
+	public Pager<TaxonNameDescription> getTaxonNameDescriptions(TaxonNameBase name, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
         Integer numberOfResults = dao.countTaxonNameDescriptions(name);
 		
 		List<TaxonNameDescription> results = new ArrayList<TaxonNameDescription>();
 		if(numberOfResults > 0) { // no point checking again
-			results = dao.getTaxonNameDescriptions(name, pageSize, pageNumber); 
+			results = dao.getTaxonNameDescriptions(name, pageSize, pageNumber,propertyPaths); 
 		}
 		
 		return new DefaultPagerImpl<TaxonNameDescription>(pageNumber, numberOfResults, pageSize, results);
 	}
 
-	public <TYPE extends DescriptionBase> Pager<TYPE> listDescriptions(Class<TYPE> type, Boolean hasImages, Boolean hasText,	Set<Feature> feature, Integer pageSize, Integer pageNumber) {
+	public <TYPE extends DescriptionBase> Pager<TYPE> listDescriptions(Class<TYPE> type, Boolean hasImages, Boolean hasText, Set<Feature> feature, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
         Integer numberOfResults = dao.countDescriptions(type, hasImages, hasText, feature);
 		
 		List<TYPE> results = new ArrayList<TYPE>();
 		if(numberOfResults > 0) { // no point checking again
-			results = dao.listDescriptions(type, hasImages, hasText, feature, pageSize, pageNumber); 
+			results = dao.listDescriptions(type, hasImages, hasText, feature, pageSize, pageNumber,orderHints,propertyPaths); 
 		}
 		
 		return new DefaultPagerImpl<TYPE>(pageNumber, numberOfResults, pageSize, results);
 	}
 
-	public Pager<TaxonDescription> searchDescriptionByDistribution(Set<NamedArea> namedAreas, PresenceAbsenceTermBase presence,	Integer pageSize, Integer pageNumber) {
+	public Pager<TaxonDescription> searchDescriptionByDistribution(Set<NamedArea> namedAreas, PresenceAbsenceTermBase presence,	Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
         Integer numberOfResults = dao.countDescriptionByDistribution(namedAreas, presence);
 		
 		List<TaxonDescription> results = new ArrayList<TaxonDescription>();
 		if(numberOfResults > 0) { // no point checking again
-			results = dao.searchDescriptionByDistribution(namedAreas, presence, pageSize, pageNumber); 
+			results = dao.searchDescriptionByDistribution(namedAreas, presence, pageSize, pageNumber,orderHints,propertyPaths); 
 		}
 		
 		return new DefaultPagerImpl<TaxonDescription>(pageNumber, numberOfResults, pageSize, results);
 	}
 
-	public Pager<TextData> searchTextData(String queryString, Integer pageSize,	Integer pageNumber) {
+	public Pager<TextData> searchTextData(String queryString, Integer pageSize,	Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
         Integer numberOfResults = descriptionElementDao.countTextData(queryString);
 		
 		List<TextData> results = new ArrayList<TextData>();
 		if(numberOfResults > 0) { // no point checking again
-			results = descriptionElementDao.searchTextData(queryString, pageSize, pageNumber); 
+			results = descriptionElementDao.searchTextData(queryString, pageSize, pageNumber, orderHints, propertyPaths); 
 		}
 		
 		return new DefaultPagerImpl<TextData>(pageNumber, numberOfResults, pageSize, results);
@@ -311,5 +312,13 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
 
 	public DescriptionElementBase getDescriptionElementByUuid(UUID uuid) {
 		return descriptionElementDao.findByUuid(uuid);
+	}	
+
+	public FeatureNode loadFeatureNode(UUID uuid, List<String> propertyPaths) {
+		return featureNodeDao.load(uuid, propertyPaths);
+	}
+
+	public FeatureTree loadFeatureTree(UUID uuid, List<String> propertyPaths) {
+		return featureTreeDao.load(uuid, propertyPaths);
 	}
 }

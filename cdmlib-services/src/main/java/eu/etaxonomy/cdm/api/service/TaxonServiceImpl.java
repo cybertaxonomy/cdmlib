@@ -21,7 +21,6 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
@@ -47,12 +46,12 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
-import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.common.IOrderedTermVocabularyDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.fetch.CdmFetch;
+import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 
 @Service
@@ -292,23 +291,23 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		return new DefaultPagerImpl<TaxonBase>(pageNumber, numberOfResults, pageSize, results);
 	}
 
-	public Pager<TaxonRelationship> getRelatedTaxa(Taxon taxon,	TaxonRelationshipType type, Integer pageSize, Integer pageNumber) {
+	public Pager<TaxonRelationship> getRelatedTaxa(Taxon taxon,	TaxonRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
         Integer numberOfResults = dao.countRelatedTaxa(taxon, type);
 		
 		List<TaxonRelationship> results = new ArrayList<TaxonRelationship>();
 		if(numberOfResults > 0) { // no point checking again
-			results = dao.getRelatedTaxa(taxon, type, pageSize, pageNumber); 
+			results = dao.getRelatedTaxa(taxon, type, pageSize, pageNumber, orderHints, propertyPaths); 
 		}
 		
 		return new DefaultPagerImpl<TaxonRelationship>(pageNumber, numberOfResults, pageSize, results);
 	}
 
-	public Pager<SynonymRelationship> getSynonyms(Taxon taxon,	SynonymRelationshipType type, Integer pageSize, Integer pageNumber) {
+	public Pager<SynonymRelationship> getSynonyms(Taxon taxon,	SynonymRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
         Integer numberOfResults = dao.countSynonyms(taxon, type);
 		
 		List<SynonymRelationship> results = new ArrayList<SynonymRelationship>();
 		if(numberOfResults > 0) { // no point checking again
-			results = dao.getSynonyms(taxon, type, pageSize, pageNumber); 
+			results = dao.getSynonyms(taxon, type, pageSize, pageNumber, orderHints, propertyPaths); 
 		}
 		
 		return new DefaultPagerImpl<SynonymRelationship>(pageNumber, numberOfResults, pageSize, results);

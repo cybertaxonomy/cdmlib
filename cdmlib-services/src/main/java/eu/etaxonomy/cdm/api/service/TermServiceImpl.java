@@ -200,12 +200,12 @@ public class TermServiceImpl extends ServiceBase<DefinedTermBase,IDefinedTermDao
 		return new DefaultPagerImpl<T>(pageNumber, numberOfResults, pageSize, results);
 	}
 
-	public <T extends DefinedTermBase> Pager<T> getIncludes(Set<T> definedTerms, Integer pageSize, Integer pageNumber) {
+	public <T extends DefinedTermBase> Pager<T> getIncludes(Set<T> definedTerms, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
         Integer numberOfResults = dao.countIncludes(definedTerms);
 		
 		List<T> results = new ArrayList<T>();
 		if(numberOfResults > 0) { // no point checking again
-			results = dao.getIncludes(definedTerms, pageSize, pageNumber); 
+			results = dao.getIncludes(definedTerms, pageSize, pageNumber,propertyPaths); 
 		}
 		
 		return new DefaultPagerImpl<T>(pageNumber, numberOfResults, pageSize, results);
@@ -222,12 +222,12 @@ public class TermServiceImpl extends ServiceBase<DefinedTermBase,IDefinedTermDao
 		return new DefaultPagerImpl<Media>(pageNumber, numberOfResults, pageSize, results);
 	}
 
-	public <T extends DefinedTermBase> Pager<T> getPartOf(Set<T> definedTerms,Integer pageSize, Integer pageNumber) {
+	public <T extends DefinedTermBase> Pager<T> getPartOf(Set<T> definedTerms,Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
         Integer numberOfResults = dao.countPartOf(definedTerms);
 		
 		List<T> results = new ArrayList<T>();
 		if(numberOfResults > 0) { // no point checking again
-			results = dao.getPartOf(definedTerms, pageSize, pageNumber); 
+			results = dao.getPartOf(definedTerms, pageSize, pageNumber, propertyPaths); 
 		}
 		
 		return new DefaultPagerImpl<T>(pageNumber, numberOfResults, pageSize, results);

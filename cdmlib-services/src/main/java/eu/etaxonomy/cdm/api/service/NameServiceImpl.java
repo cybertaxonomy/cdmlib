@@ -53,6 +53,7 @@ import eu.etaxonomy.cdm.persistence.dao.name.IHomotypicalGroupDao;
 import eu.etaxonomy.cdm.persistence.dao.name.INomenclaturalStatusDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITypeDesignationDao;
+import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 
 @Service
@@ -218,23 +219,23 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
 		this.dao = dao;
 	}
 
-	public Pager<HybridRelationship> getHybridNames(BotanicalName name,	HybridRelationshipType type, Integer pageSize, Integer pageNumber) {
+	public Pager<HybridRelationship> getHybridNames(BotanicalName name,	HybridRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
         Integer numberOfResults = dao.countHybridNames(name, type);
 		
 		List<HybridRelationship> results = new ArrayList<HybridRelationship>();
 		if(numberOfResults > 0) { // no point checking again
-			results = dao.getHybridNames(name, type, pageSize, pageNumber); 
+			results = dao.getHybridNames(name, type, pageSize, pageNumber,orderHints,propertyPaths); 
 		}
 		
 		return new DefaultPagerImpl<HybridRelationship>(pageNumber, numberOfResults, pageSize, results);
 	}
 
-	public Pager<NameRelationship> getRelatedNames(TaxonNameBase name,NameRelationshipType type, Integer pageSize, Integer pageNumber) {
+	public Pager<NameRelationship> getRelatedNames(TaxonNameBase name,NameRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
         Integer numberOfResults = dao.countRelatedNames(name, type);
 		
 		List<NameRelationship> results = new ArrayList<NameRelationship>();
 		if(numberOfResults > 0) { // no point checking again
-			results = dao.getRelatedNames(name, type, pageSize, pageNumber); 
+			results = dao.getRelatedNames(name, type, pageSize, pageNumber,orderHints,propertyPaths); 
 		}
 		
 		return new DefaultPagerImpl<NameRelationship>(pageNumber, numberOfResults, pageSize, results);

@@ -23,6 +23,7 @@ import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.AnnotationDaoImpl;
+import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 @Service
 @Transactional
@@ -38,12 +39,12 @@ public class AnnotationService extends AnnotatableServiceBase<Annotation, Annota
 		return dao.count(commentator, status);
 	}
 
-	public Pager<Annotation> list(Person commentator, MarkerType status,Integer pageSize, Integer pageNumber) {
+	public Pager<Annotation> list(Person commentator, MarkerType status,Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
 		Integer numberOfResults = dao.count(commentator, status);
 		
 		List<Annotation> results = new ArrayList<Annotation>();
 		if(numberOfResults > 0) { // no point checking again
-			results = dao.list(commentator, status, pageSize, pageNumber);
+			results = dao.list(commentator, status, pageSize, pageNumber, orderHints, propertyPaths);
 		}
 		
 		return new DefaultPagerImpl<Annotation>(pageNumber, numberOfResults, pageSize, results);

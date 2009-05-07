@@ -1683,6 +1683,7 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IReferenceService.jav
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/ITaxonService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/ITermService.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IUserService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IVersionableService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IdentifiableServiceBase.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/LocationServiceImpl.java -text
@@ -1744,6 +1745,7 @@ cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/lsid/LSIDAuthoritySer
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/lsid/LSIDDataServiceTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/lsid/LSIDMetadataServiceTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/lsid/LSIDRegistryTest.java -text
+cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/pager/PagerTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/function/Datasource.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/function/TestConcurrentSession.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/function/TestConversationEnabled.java -text

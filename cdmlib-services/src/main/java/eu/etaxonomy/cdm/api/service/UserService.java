@@ -9,6 +9,7 @@
  */
 package eu.etaxonomy.cdm.api.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -36,18 +37,20 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
+import eu.etaxonomy.cdm.api.service.pager.Pager;
+import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.model.common.Group;
 import eu.etaxonomy.cdm.model.common.GrantedAuthorityImpl;
 import eu.etaxonomy.cdm.model.common.User;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.common.IGroupDao;
 import eu.etaxonomy.cdm.persistence.dao.common.IGrantedAuthorityDao;
 import eu.etaxonomy.cdm.persistence.dao.common.IUserDao;
+import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 @Service
 @Transactional
-public class UserService implements UserDetailsManager, GroupManager {
-
-	protected IUserDao userDao;
+public class UserService extends ServiceBase<User,IUserDao> implements IUserService {
 	
 	protected IGroupDao groupDao;
 	
@@ -83,9 +86,10 @@ public class UserService implements UserDetailsManager, GroupManager {
 		this.authenticationManager = authenticationManager;
 	}
 	
+	@Override
 	@Autowired
-	public void setUserDao(IUserDao userDao) {
-		this.userDao = userDao;
+	protected void setDao(IUserDao dao) {
+		this.dao = dao;
 	}
 	
 	@Autowired
@@ -121,7 +125,7 @@ public class UserService implements UserDetailsManager, GroupManager {
 			String password = passwordEncoder.encodePassword(newPassword, salt);
 			((User)user).setPassword(password);
 			
-			userDao.update((User)user);
+			dao.update((User)user);
 			SecurityContextHolder.getContext().setAuthentication(createNewAuthentication(authentication, newPassword));
 			userCache.removeUserFromCache(user.getUsername());
 		} else {
@@ -138,15 +142,15 @@ public class UserService implements UserDetailsManager, GroupManager {
 		String password = passwordEncoder.encodePassword(rawPassword, salt);
 		((User)user).setPassword(password);
 		
-		userDao.save((User)user);
+		dao.save((User)user);
 	}
 
 	public void deleteUser(String username) {
 		Assert.hasLength(username);
 		
-		User user = userDao.findUserByUsername(username); 
+		User user = dao.findUserByUsername(username); 
         if(user != null) {		
-		    userDao.delete((User)user);
+		    dao.delete((User)user);
         }
         
         userCache.removeUserFromCache(username);
@@ -155,14 +159,14 @@ public class UserService implements UserDetailsManager, GroupManager {
 	public void updateUser(UserDetails user) {
 		Assert.isInstanceOf(User.class, user);
 		
-		userDao.update((User)user);
+		dao.update((User)user);
 		userCache.removeUserFromCache(user.getUsername());
 	}
 
 	public boolean userExists(String username) {
 		Assert.hasText(username);
 		
-		User user = userDao.findUserByUsername(username);
+		User user = dao.findUserByUsername(username);
 		return user != null;
 	}
 
@@ -170,7 +174,7 @@ public class UserService implements UserDetailsManager, GroupManager {
 			throws UsernameNotFoundException, DataAccessException {
 		Assert.hasText(username);
 		try {
-		    User user = userDao.findUserByUsername(username);
+		    User user = dao.findUserByUsername(username);
 		    if(user == null) {
 				throw new UsernameNotFoundException(username);
 			}
@@ -195,7 +199,7 @@ public class UserService implements UserDetailsManager, GroupManager {
 		Assert.hasText(groupName);
 		
 		Group group = groupDao.findGroupByName(groupName);
-		User user = userDao.findUserByUsername(username);
+		User user = dao.findUserByUsername(username);
 		
 		if(group.addMember(user)) {
 			groupDao.update(group);
@@ -261,7 +265,7 @@ public class UserService implements UserDetailsManager, GroupManager {
 		Assert.hasText(groupName);
 		
 		Group group = groupDao.findGroupByName(groupName);
-		User user = userDao.findUserByUsername(username);
+		User user = dao.findUserByUsername(username);
 		
 		if(group.removeMember(user)) {
 			groupDao.update(group);
@@ -280,7 +284,7 @@ public class UserService implements UserDetailsManager, GroupManager {
 	}
 	
 	public UUID save(User user) {
-		return userDao.save(user);
+		return dao.save(user);
 	}
 
 	public UUID saveGrantedAuthority(GrantedAuthority grantedAuthority) {
@@ -289,5 +293,9 @@ public class UserService implements UserDetailsManager, GroupManager {
 	
 	public UUID saveGroup(Group group) {
 		return groupDao.save(group);
+	}
+
+	public <TYPE extends User> Pager<TYPE> list(Class<TYPE> type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,	List<String> propertyPaths) {
+		return null;
 	}
 } 

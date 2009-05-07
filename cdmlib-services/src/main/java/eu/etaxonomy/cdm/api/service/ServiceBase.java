@@ -152,7 +152,6 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
 	public T load(UUID uuid, List<String> propertyPaths){
 		return dao.load(uuid, propertyPaths);
 	}
-	
 
 	@Transactional(readOnly = true)
 	public <TYPE extends T> List<TYPE> list(Class<TYPE> type, int limit,int start) {
@@ -166,13 +165,31 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
 	
 	@Transactional (readOnly = true)
 	public Pager<T> list(Integer pageSize, Integer pageNumber, List<OrderHint> orderHints){
+		return list(pageSize,pageNumber,orderHints,null);
+	}
+	
+	@Transactional (readOnly = true)
+	public Pager<T> list(Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths){
 		Integer numberOfResults = dao.count();
 		List<T> results = new ArrayList<T>();
+		pageNumber = pageNumber == null ? 0 : pageNumber;
 		if(numberOfResults > 0) { // no point checking again
-			Integer start = pageSize == null ? null : pageSize * (pageNumber - 1);
-			results = dao.list(pageSize, start, orderHints);
+			Integer start = pageSize == null ? 0 : pageSize * (pageNumber - 1);
+			results = dao.list(pageSize, start, orderHints,propertyPaths);
 		}
 		return new DefaultPagerImpl<T>(pageNumber, numberOfResults, pageSize, results);
+	}
+	
+	@Transactional (readOnly = true)
+	public <TYPE extends T> Pager<TYPE> list(Class<TYPE> type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths){
+		Integer numberOfResults = dao.count();
+		List<TYPE> results = new ArrayList<TYPE>();
+		pageNumber = pageNumber == null ? 0 : pageNumber;
+		if(numberOfResults > 0) { // no point checking again
+			Integer start = pageSize == null ? 0 : pageSize * (pageNumber - 1);
+			results = dao.list(type,pageSize, start, orderHints,propertyPaths);
+		}
+		return new DefaultPagerImpl<TYPE>(pageNumber, numberOfResults, pageSize, results);
 	}
 
 	@Transactional(readOnly = false)

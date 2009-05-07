@@ -135,12 +135,12 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 		return new DefaultPagerImpl<DeterminationEvent>(pageNumber, numberOfResults, pageSize, results);
 	}
 
-	public Pager<Media> getMedia(SpecimenOrObservationBase occurence,Integer pageSize, Integer pageNumber) {
+	public Pager<Media> getMedia(SpecimenOrObservationBase occurence,Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
         Integer numberOfResults = dao.countMedia(occurence);
 		
 		List<Media> results = new ArrayList<Media>();
 		if(numberOfResults > 0) { // no point checking again
-			results = dao.getMedia(occurence, pageSize, pageNumber); 
+			results = dao.getMedia(occurence, pageSize, pageNumber, propertyPaths); 
 		}
 		
 		return new DefaultPagerImpl<Media>(pageNumber, numberOfResults, pageSize, results);

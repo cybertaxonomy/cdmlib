@@ -14,9 +14,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.config.IIdentifiableEntityServiceConfigurator;
-import eu.etaxonomy.cdm.api.service.config.ITaxonServiceConfigurator;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -26,29 +26,30 @@ import eu.etaxonomy.cdm.model.common.OriginalSource;
 import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
 
+@Transactional(readOnly = true)
 public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO extends IIdentifiableDao<T>> extends AnnotatableServiceBase<T,DAO> 
 						implements IIdentifiableEntityService<T>{
 	@SuppressWarnings("unused")
 	private static final  Logger logger = Logger.getLogger(IdentifiableServiceBase.class);
 
 	
-	public Pager<Rights> getRights(T t, Integer pageSize, Integer pageNumber) {
+	public Pager<Rights> getRights(T t, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
         Integer numberOfResults = dao.countRights(t);
 		
 		List<Rights> results = new ArrayList<Rights>();
 		if(numberOfResults > 0) { // no point checking again
-			results = dao.getRights(t, pageSize, pageNumber); 
+			results = dao.getRights(t, pageSize, pageNumber,propertyPaths); 
 		}
 		
 		return new DefaultPagerImpl<Rights>(pageNumber, numberOfResults, pageSize, results);
 	}
 
-	public Pager<OriginalSource> getSources(T t, Integer pageSize, Integer pageNumber) {
+	public Pager<OriginalSource> getSources(T t, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
 		 Integer numberOfResults = dao.countSources(t);
 			
 			List<OriginalSource> results = new ArrayList<OriginalSource>();
 			if(numberOfResults > 0) { // no point checking again
-				results = dao.getSources(t, pageSize, pageNumber); 
+				results = dao.getSources(t, pageSize, pageNumber,propertyPaths); 
 			}
 			
 			return new DefaultPagerImpl<OriginalSource>(pageNumber, numberOfResults, pageSize, results);

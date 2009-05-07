@@ -14,8 +14,6 @@ import java.util.List;
 
 public class DefaultPagerImpl<T> extends AbstractPagerImpl<T> {
 	
-
-
     public DefaultPagerImpl(Integer currentIndex, Integer count, Integer pageSize,	List<T> records) {
 		super(currentIndex, count, pageSize, records);
 	}
