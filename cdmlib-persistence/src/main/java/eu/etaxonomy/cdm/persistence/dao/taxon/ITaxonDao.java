@@ -282,6 +282,16 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
 	public Integer countTaxaByName(String queryString, MatchMode matchMode, Boolean accepted);
 	
 	/**
+	 * Returns a count of TaxonBase instances where the
+	 * taxon.name properties match the parameters passed.
+	 * 
+	 * @param queryString search string
+	 * @param matchMode way how search string shall be matched: exact, beginning, or anywhere
+	 * @param selectModel all taxon base, taxa, or synonyms
+	 */ 
+	public Integer countTaxaByName(String queryString, MatchMode matchMode, SelectMode selectMode);
+	
+	/**
 	 * Returns a list of TaxonBase instances (or Taxon instances, if accepted == true, or Synonym instance, if accepted == false) where the
 	 * taxon.name properties match the parameters passed.
 	 * 

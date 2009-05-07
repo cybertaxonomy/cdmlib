@@ -553,6 +553,25 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		return (Integer)criteria.uniqueResult();
 	}
 
+	public Integer countTaxaByName(String queryString, MatchMode matchMode, SelectMode selectMode) {
+		
+		Criteria criteria = null;
+		Class<?> clazz = selectMode.criteria();
+		criteria = getSession().createCriteria(clazz);
+
+		criteria.setFetchMode( "name", FetchMode.JOIN );
+		criteria.createAlias("name", "name");
+		
+		if (matchMode == MatchMode.EXACT) {
+			criteria.add(Restrictions.eq("name.nameCache", matchMode.queryStringFrom(queryString)));
+		} else {
+			criteria.add(Restrictions.ilike("name.nameCache", matchMode.queryStringFrom(queryString)));
+		}
+		
+		criteria.setProjection(Projections.projectionList().add(Projections.rowCount()));
+		return (Integer)criteria.uniqueResult();
+	}
+	
 	public Integer countTaxaByName(String queryString, MatchMode matchMode, Boolean accepted) {
 		
 		Criteria criteria = null;
