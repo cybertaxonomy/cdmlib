@@ -86,6 +86,14 @@ public class TaxonServiceSearchTest extends CdmIntegrationTest {
 		assertEquals(list.get(5).getTitleCache(), "Abies alba Mill. sec. ???");
 	}
 	
+	/**
+	 * Test method for {@link eu.etaxonomy.cdm.api.service.TaxonServiceImpl#searchTaxaByName(java.lang.String, eu.etaxonomy.cdm.model.reference.ReferenceBase)}.
+	 */
+	@Test
+	public final void testSearchTaxaByName() {
+		logger.warn("Not yet implemented"); // TODO
+	}
+
 //	@Test
 //	@DataSet
 //	public final void testPrintDataSet() {
