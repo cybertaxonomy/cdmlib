@@ -26,6 +26,7 @@ import org.hibernate.Hibernate;
 import org.hibernate.LazyInitializationException;
 import org.hibernate.Query;
 import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.search.FullTextSession;
@@ -60,6 +61,7 @@ import eu.etaxonomy.cdm.persistence.dao.hibernate.AlternativeSpellingSuggestionP
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.fetch.CdmFetch;
+import eu.etaxonomy.cdm.persistence.query.SelectMode;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 
 /**
@@ -225,16 +227,13 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		return results;
 	}
 
-	public List<TaxonBase> getTaxaByName(String queryString, MatchMode matchMode, 
-			Boolean accepted, Integer pageSize, Integer pageNumber) {
+	public List<TaxonBase> getTaxaByName(String queryString, MatchMode matchMode, SelectMode selectMode,
+			Integer pageSize, Integer pageNumber) {
 		
 		Criteria criteria = null;
-		if (accepted == true) {
-			criteria = getSession().createCriteria(Taxon.class);
-		} else {
-			criteria = getSession().createCriteria(Synonym.class);
-		}
-
+		Class<?> clazz = selectMode.criteria();
+		criteria = getSession().createCriteria(clazz);
+		
 		criteria.setFetchMode( "name", FetchMode.JOIN );
 		criteria.createAlias("name", "name");
 		
@@ -245,6 +244,8 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 			criteria.add(Restrictions.ilike("name.nameCache", hqlQueryString));
 		}
 		
+		criteria.addOrder(Order.asc("name.nameCache"));
+		 
 		if(pageSize != null) {
 			criteria.setMaxResults(pageSize);
 			if(pageNumber != null) {
@@ -254,6 +255,16 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 
 		List<TaxonBase> results = criteria.list();
 		return results;
+	}
+	
+	public List<TaxonBase> getTaxaByName(String queryString, MatchMode matchMode, 
+			Boolean accepted, Integer pageSize, Integer pageNumber) {
+		
+		if (accepted == true) {
+			return getTaxaByName(queryString, matchMode, SelectMode.TAXA, pageSize, pageNumber);
+		} else {
+			return getTaxaByName(queryString, matchMode, SelectMode.SYNONYMS, pageSize, pageNumber);
+		}
 	}
 	
 	public List<TaxonBase> getAllTaxonBases(Integer pagesize, Integer page) {

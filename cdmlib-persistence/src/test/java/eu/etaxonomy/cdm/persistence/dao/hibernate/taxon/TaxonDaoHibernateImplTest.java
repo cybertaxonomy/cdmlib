@@ -4,6 +4,7 @@ import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 import java.util.UUID;
@@ -15,7 +16,9 @@ import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
+import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
@@ -56,7 +59,6 @@ public class TaxonDaoHibernateImplTest extends CdmIntegrationTest {
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.taxon.TaxonDaoHibernateImpl#TaxonDaoHibernateImpl()}.
 	 */
-	//@Ignore
 	@Test
 	@DataSet
 	public void testInit() {
@@ -122,7 +124,6 @@ public class TaxonDaoHibernateImplTest extends CdmIntegrationTest {
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.taxon.TaxonDaoHibernateImpl#getTaxaByName(java.lang.String, eu.etaxonomy.cdm.model.reference.ReferenceBase)}.
 	 */
-	//@Ignore
 	@Test
 	@DataSet
 //	public void testGetTaxaByName() {
@@ -137,7 +138,7 @@ public class TaxonDaoHibernateImplTest extends CdmIntegrationTest {
 	public void testGetTaxaByName() {
 		ReferenceBase sec = referenceDao.findById(1);
 		assert sec != null : "sec must exist";
-		
+
 		List<TaxonBase> results = taxonDao.getTaxaByName("Aus", sec);
 		assertNotNull("getTaxaByName should return a List", results);
 		//assertFalse("The list should not be empty", results.isEmpty());
@@ -147,19 +148,34 @@ public class TaxonDaoHibernateImplTest extends CdmIntegrationTest {
 				true, null, null);
 		assertNotNull("getTaxaByName should return a List", results);
 		assertTrue(results.size() == 9);
-		
+
+		if (logger.isDebugEnabled()) {
+			for (int i = 0; i < results.size(); i++) {
+				String nameCache = "";
+				TaxonNameBase<?,?> taxonNameBase= ((TaxonBase)results.get(i)).getName();
+				nameCache = ((NonViralName<?>)taxonNameBase).getNameCache();
+				logger.debug(results.get(i).getClass() + "(" + i +")" + 
+						": Name Cache = " + nameCache + ", Title Cache = " + results.get(i).getTitleCache());
+			}
+		}
+//		assertEquals(results.get(0).getTitleCache(), "Abies sec. ???");
+//		assertEquals(results.get(1).getTitleCache(), "Abies Mill.");
+//		assertEquals(results.get(2).getTitleCache(), "Abies mill. sec. ???");
+//		assertEquals(results.get(3).getTitleCache(), "Abies alba sec. ???");
+//		assertEquals(results.get(4).getTitleCache(), "Abies alba Michx. sec. ???");
+//		assertEquals(results.get(5).getTitleCache(), "Abies alba Mill. sec. ???");
+
 		results = taxonDao.getTaxaByName("A", MatchMode.BEGINNING, 
 				true, null, null);
 		assertNotNull("getTaxaByName should return a List", results);
 		assertTrue(results.size() == 9);
-		
+
 		results = taxonDao.getTaxaByName("Aus", MatchMode.EXACT, 
 				true, null, null);
 		assertNotNull("getTaxaByName should return a List", results);
 		assertTrue(results.size() == 1);
 	}	
 
-	//@Ignore
 	@Test
 	@DataSet
 	public void testFindByUuid() {
@@ -168,7 +184,6 @@ public class TaxonDaoHibernateImplTest extends CdmIntegrationTest {
 		assertTrue("findByUuid should return a taxon with it's name initialized",Hibernate.isInitialized(taxon.getName()));
 	}
 	
-	//@Ignore
 	@Test
 	@DataSet
 	public void testCountRelatedTaxa()	{
@@ -179,7 +194,15 @@ public class TaxonDaoHibernateImplTest extends CdmIntegrationTest {
 		assertEquals("countRelatedTaxa should return 23", 23, numberOfRelatedTaxa);
 	}
 	
-	//@Ignore
+	@Test
+	@DataSet
+	public void testCountTaxaByName() {
+		int numberOfTaxa = taxonDao.countTaxaByName("A*", MatchMode.BEGINNING, true);
+		assertEquals(numberOfTaxa, 9);
+		numberOfTaxa = taxonDao.countTaxaByName("A*", MatchMode.BEGINNING, false);
+		assertEquals(numberOfTaxa, 3);
+	}
+	
 	@Test
 	@DataSet
 	public void testRelatedTaxa() {
@@ -192,7 +215,6 @@ public class TaxonDaoHibernateImplTest extends CdmIntegrationTest {
 		assertTrue("getRelatedTaxa should return TaxonRelationship objects with the relatedFrom taxon initialized",Hibernate.isInitialized(relatedTaxa.get(0).getFromTaxon()));
 	}
 	
-	//@Ignore
 	@Test
 	@DataSet
 	public void testGetRelatedTaxaPaged()	{
@@ -211,7 +233,6 @@ public class TaxonDaoHibernateImplTest extends CdmIntegrationTest {
 		assertEquals("getRelatedTaxa: 10, 2 should return a List with 3 elements",thirdPage.size(),3);
 	}
 	
-	//@Ignore
 	@Test
 	@DataSet
 	public void testCountSynonymRelationships() {
@@ -222,7 +243,6 @@ public class TaxonDaoHibernateImplTest extends CdmIntegrationTest {
 		assertEquals("countSynonymRelationships should return 5",5,numberOfSynonymRelationships);
 	}
 	
-	//@Ignore
 	@Test
 	@DataSet
 	public void testSynonymRelationships()	{
@@ -236,7 +256,6 @@ public class TaxonDaoHibernateImplTest extends CdmIntegrationTest {
 		assertTrue("getSynonyms should return SynonymRelationship objects with the synonym initialized",Hibernate.isInitialized(synonyms.get(0).getSynonym()));
 	}
 	
-	//@Ignore
 	@Test
 	@DataSet
 	public void testCountSynonymRelationshipsByType()	{
@@ -247,7 +266,6 @@ public class TaxonDaoHibernateImplTest extends CdmIntegrationTest {
 		assertEquals("countSynonyms should return 4",numberOfTaxonomicSynonyms, 4);
 	}
 	
-	//@Ignore
 	@Test
 	@DataSet
 	public void testSynonymRelationshipsByType() {
@@ -260,7 +278,6 @@ public class TaxonDaoHibernateImplTest extends CdmIntegrationTest {
 		assertEquals("getSynonyms should return 4 SynonymRelationship entities",synonyms.size(),4);
 	}
 	
-	//@Ignore
 	@Test
 	@DataSet
 	public void testPageSynonymRelationships(){
@@ -276,7 +293,6 @@ public class TaxonDaoHibernateImplTest extends CdmIntegrationTest {
 		assertEquals("getSynonyms: 4, 1 should return 1 SynonymRelationship",secondPage.size(),1);
 	}
 	
-	//@Ignore
 	@Test
 	@DataSet
 	public void testGetTaxonMatchingUninomial() {
@@ -287,7 +303,6 @@ public class TaxonDaoHibernateImplTest extends CdmIntegrationTest {
 		assertEquals("findTaxaByName should return a Taxon with id 5",5,result.get(0).getId());
 	}
 	
-	//@Ignore
 	@Test
 	@DataSet
 	public void testGetTaxonMatchingSpeciesBinomial() {
@@ -298,7 +313,6 @@ public class TaxonDaoHibernateImplTest extends CdmIntegrationTest {
 		assertEquals("findTaxaByName should return a Taxon with id 8",8,result.get(0).getId());
 	}
 	  
-	//@Ignore
 	@Test
 	@DataSet
 	public void testGetTaxonMatchingTrinomial() {
@@ -309,7 +323,6 @@ public class TaxonDaoHibernateImplTest extends CdmIntegrationTest {
 		assertEquals("findTaxaByName should return a Taxon with id 38",38,result.get(0).getId());
 	}
 	
-	//@Ignore
 	@Test
 	@DataSet
 	public void testNegativeMatch() {
@@ -319,7 +332,6 @@ public class TaxonDaoHibernateImplTest extends CdmIntegrationTest {
 		assertTrue("findTaxaByName should return an empty List",result.isEmpty());
 	}
 	
-	//@Ignore
 	@Test
 	@DataSet
 	public void testCountAllTaxa() {
@@ -327,7 +339,6 @@ public class TaxonDaoHibernateImplTest extends CdmIntegrationTest {
 		assertEquals("count should return 33 taxa",33, numberOfTaxa);
 	}
 	
-	//@Ignore
 	@Test
 	@DataSet
 	public void testListAllTaxa() {
@@ -336,10 +347,9 @@ public class TaxonDaoHibernateImplTest extends CdmIntegrationTest {
 		assertEquals("list should return 33 taxa",33, taxa.size());
 	}
 	
-	@Ignore
-	@Test
-	@DataSet
-	public void testPrintDataSet() {
-		printDataSet(System.out);
-	}
+//	@Test
+//	@DataSet
+//	public void testPrintDataSet() {
+//		printDataSet(System.out);
+//	}
 }
