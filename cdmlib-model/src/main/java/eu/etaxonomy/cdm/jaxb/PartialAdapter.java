@@ -73,7 +73,7 @@ public class PartialAdapter extends XmlAdapter<String, Partial> {
 				dateTimeFieldTypes[1] = DateTimeFieldType.monthOfYear();
 				values[1] = Integer.parseInt(matcher.group(2));
 			case 1:
-				dateTimeFieldTypes[0] = DateTimeFieldType.yearOfEra();
+				dateTimeFieldTypes[0] = DateTimeFieldType.year();
 				values[0] = Integer.parseInt(matcher.group(1));
 			}
 			return new Partial(dateTimeFieldTypes, values);

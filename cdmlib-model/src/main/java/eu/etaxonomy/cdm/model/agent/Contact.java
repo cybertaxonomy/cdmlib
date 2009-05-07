@@ -9,6 +9,7 @@
 
 package eu.etaxonomy.cdm.model.agent;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -56,7 +57,7 @@ import org.hibernate.envers.Audited;
 @XmlRootElement(name = "Contact")
 @Embeddable
 @Audited
-public class Contact {
+public class Contact implements Serializable {
 	private static final long serialVersionUID = -1851305307069277625L;
 	private static final Logger logger = Logger.getLogger(Contact.class);
 	

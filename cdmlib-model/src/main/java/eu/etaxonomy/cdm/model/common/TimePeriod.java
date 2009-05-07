@@ -9,6 +9,7 @@
 
 package eu.etaxonomy.cdm.model.common;
 
+import java.io.Serializable;
 import java.util.Calendar;
 
 import javax.persistence.Embeddable;
@@ -43,7 +44,7 @@ import eu.etaxonomy.cdm.jaxb.PartialAdapter;
 })
 @XmlRootElement(name = "TimePeriod")
 @Embeddable
-public class TimePeriod implements Cloneable {
+public class TimePeriod implements Cloneable, Serializable {
 	private static final Logger logger = Logger.getLogger(TimePeriod.class);
 	private static final DateTimeFieldType monthType = DateTimeFieldType.monthOfYear();
 	private static final DateTimeFieldType yearType = DateTimeFieldType.year();

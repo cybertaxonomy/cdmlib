@@ -11,6 +11,10 @@ package eu.etaxonomy.cdm.model.occurrence;
 
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
+import org.springframework.beans.factory.annotation.Configurable;
+
+import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.common.IdentifiableEntityDefaultCacheStrategy;
 
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -29,7 +33,8 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "LivingBeing")
 @Entity
 @Audited
-public class LivingBeing extends DerivedUnitBase implements Cloneable {
+@Configurable
+public class LivingBeing extends DerivedUnitBase<IIdentifiableEntityCacheStrategy<LivingBeing>> implements Cloneable {
 	private static final Logger logger = Logger.getLogger(LivingBeing.class);
 
 	/**
@@ -45,6 +50,7 @@ public class LivingBeing extends DerivedUnitBase implements Cloneable {
 	 */
 	protected LivingBeing() {
 		super();
+		this.cacheStrategy = new IdentifiableEntityDefaultCacheStrategy<LivingBeing>();
 	}
 
 //*********** CLONE **********************************/	

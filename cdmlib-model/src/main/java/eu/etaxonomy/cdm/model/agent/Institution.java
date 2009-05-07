@@ -17,6 +17,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -24,12 +25,17 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
+import org.springframework.beans.factory.annotation.Configurable;
+
+import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.common.IdentifiableEntityDefaultCacheStrategy;
 
 /**
  * This class represents public or private institutions.
@@ -55,7 +61,8 @@ import org.hibernate.envers.Audited;
 @XmlRootElement(name = "Institution")
 @Entity
 @Audited
-public class Institution extends AgentBase {
+@Configurable
+public class Institution extends AgentBase<IIdentifiableEntityCacheStrategy<Institution>> {
 	private static final long serialVersionUID = -951321271656955808L;
 	public static final Logger logger = Logger.getLogger(Institution.class);
 	
@@ -92,6 +99,7 @@ public class Institution extends AgentBase {
 	 */
 	public Institution() {
 		super();
+		this.cacheStrategy = new IdentifiableEntityDefaultCacheStrategy<Institution>();
 	}
 
 	/** 
@@ -175,20 +183,4 @@ public class Institution extends AgentBase {
 	public void setName(String name){
 		this.name = name;
 	}
-
-	/**
-	 * Generates the identification string for this institution.
-	 * The string is based on its name and code as well as on the name and code of
-	 * its parent institution, if existing.
-	 * This method overrides {@link eu.etaxonomy.cdm.model.common.IdentifiableEntity#generateTitle() generateTitle}.
-	 * The result might be kept as {@link eu.etaxonomy.cdm.model.common.IdentifiableEntity#setTitleCache(String) titleCache} if the
-	 * flag {@link eu.etaxonomy.cdm.model.common.IdentifiableEntity#protectedTitleCache protectedTitleCache} is not set.
-	 * 
-	 * @return  the identification string
-	 */
-	@Override
-	public String generateTitle(){
-		return "";
-	}
-
 }

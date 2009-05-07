@@ -18,6 +18,10 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
+import org.springframework.beans.factory.annotation.Configurable;
+
+import eu.etaxonomy.cdm.strategy.cache.reference.IReferenceBaseCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.reference.StrictReferenceBaseDefaultCacheStrategy;
 
 /**
  * This class represents published maps from which information can be derived.
@@ -35,9 +39,14 @@ import org.hibernate.envers.Audited;
 @XmlRootElement(name = "Map")
 @Entity
 @Audited
-public class Map extends PublicationBase implements Cloneable {
+@Configurable
+public class Map extends PublicationBase<IReferenceBaseCacheStrategy<Map>> implements Cloneable {
 	private static final Logger logger = Logger.getLogger(Map.class);
 
+	protected Map() {
+		this.cacheStrategy = new StrictReferenceBaseDefaultCacheStrategy<Map>();
+	}
+	
 	/** 
 	 * Creates a new empty map instance.
 	 */

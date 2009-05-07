@@ -28,10 +28,12 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
+import org.springframework.beans.factory.annotation.Configurable;
 
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.strategy.cache.reference.ArticleDefaultCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.reference.INomenclaturalReferenceCacheStrategy;
 
 
 /**
@@ -60,7 +62,8 @@ import eu.etaxonomy.cdm.strategy.cache.reference.ArticleDefaultCacheStrategy;
 @XmlRootElement(name = "Article")
 @Entity
 @Audited
-public class Article extends StrictReferenceBase implements INomenclaturalReference, IVolumeReference, Cloneable {
+@Configurable
+public class Article extends StrictReferenceBase<INomenclaturalReferenceCacheStrategy<Article>> implements INomenclaturalReference, IVolumeReference, Cloneable {
 	private static final long serialVersionUID = -1528079480114388117L;
 	private static final Logger logger = Logger.getLogger(Article.class);
 	
@@ -79,10 +82,6 @@ public class Article extends StrictReferenceBase implements INomenclaturalRefere
     @ManyToOne(fetch = FetchType.LAZY)
     @Cascade(CascadeType.SAVE_UPDATE)
 	private Journal inJournal;
-	
-    @XmlTransient
-    @Transient
-	private NomenclaturalReferenceHelper nomRefBase = NomenclaturalReferenceHelper.NewInstance(this);
 
 
 	/** 
@@ -226,11 +225,11 @@ public class Article extends StrictReferenceBase implements INomenclaturalRefere
 	 * @see  #getNomenclaturalCitation(String)
 	 * @see  StrictReferenceBase#getCitation()
 	 */
-	@Override
-	@Transient
-	public String getCitation(){
-		return nomRefBase.getCitation();
-	}
+//	@Override
+//	@Transient
+//	public String getCitation(){
+//		return nomRefBase.getCitation();
+//	}
 
 	/**
 	 * Returns a formatted string containing the entire citation used for
@@ -247,7 +246,12 @@ public class Article extends StrictReferenceBase implements INomenclaturalRefere
 	 */
 	@Transient
 	public String getNomenclaturalCitation(String microReference) {
-		return nomRefBase.getNomenclaturalCitation(microReference);
+		if (cacheStrategy == null){
+			logger.warn("No CacheStrategy defined for "+ this.getClass() + ": " + this.getUuid());
+			return null;
+		}else{
+			return cacheStrategy.getNomenclaturalCitation(this,microReference);
+		}
 	}
 
 
@@ -264,10 +268,10 @@ public class Article extends StrictReferenceBase implements INomenclaturalRefere
 	 * @see  	eu.etaxonomy.cdm.model.common.IdentifiableEntity#getTitleCache()
 	 * @see  	eu.etaxonomy.cdm.model.common.IdentifiableEntity#generateTitle()
 	 */
-	@Override
-	public String generateTitle(){
-		return nomRefBase.generateTitle();
-	}
+//	@Override
+//	public String generateTitle(){
+//		return nomRefBase.generateTitle();
+//	}
 	
 //*********** CLONE **********************************/	
 
@@ -285,7 +289,7 @@ public class Article extends StrictReferenceBase implements INomenclaturalRefere
 	@Override
 	public Article clone(){
 		Article result = (Article)super.clone();
-		result.nomRefBase = NomenclaturalReferenceHelper.NewInstance(result);
+		result.cacheStrategy = ArticleDefaultCacheStrategy.NewInstance();
 		//no changes to: inJournal, pages, series, volume
 		return result;
 	}

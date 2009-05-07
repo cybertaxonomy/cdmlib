@@ -88,4 +88,21 @@ public class JournalDefaultCacheStrategy<T extends Journal> extends StrategyBase
 		}
 		return result;
 	}
+	
+	public String getCitation(T referenceBase) {
+		StringBuilder stringBuilder = new StringBuilder();
+		
+		TeamOrPersonBase<?> team = referenceBase.getAuthorTeam();
+		if (team != null &&  ! (team.getTitleCache() == null) && ! team.getTitleCache().trim().equals("")){
+			//String author = CdmUtils.Nz(team == null? "" : team.getTitleCache());
+			stringBuilder.append(team.getTitleCache() + afterAuthor);
+		}
+		
+		String year = CdmUtils.Nz(referenceBase.getYear());
+		if (!"".equals(year)){
+			stringBuilder.append(beforeYear + year);
+		}
+		
+		return stringBuilder.toString();
+	}
 }

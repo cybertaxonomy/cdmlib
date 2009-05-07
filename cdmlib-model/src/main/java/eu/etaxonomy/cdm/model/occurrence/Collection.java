@@ -27,9 +27,12 @@ import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Index;
 import org.hibernate.annotations.Table;
 import org.hibernate.envers.Audited;
+import org.springframework.beans.factory.annotation.Configurable;
 
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity;
+import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.common.IdentifiableEntityDefaultCacheStrategy;
 
 /**
  * @author m.doering
@@ -48,8 +51,9 @@ import eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity;
 @XmlRootElement(name = "Collection")
 @Entity
 @Audited
+@Configurable
 @Table(appliesTo="Collection", indexes = { @Index(name = "collectionTitleCacheIndex", columnNames = { "titleCache" }) })
-public class Collection extends IdentifiableMediaEntity implements Cloneable{
+public class Collection extends IdentifiableMediaEntity<IIdentifiableEntityCacheStrategy<Collection>> implements Cloneable{
 	/**
 	 * 
 	 */
@@ -97,6 +101,7 @@ public class Collection extends IdentifiableMediaEntity implements Cloneable{
 	 */
 	protected Collection() {
 		super();
+		this.cacheStrategy = new IdentifiableEntityDefaultCacheStrategy<Collection>();
 	}
 
 	public Institution getInstitute(){
@@ -159,10 +164,10 @@ public class Collection extends IdentifiableMediaEntity implements Cloneable{
 		this.townOrLocation = townOrLocation;
 	}
 
-	@Override
-	public String generateTitle(){
-		return "";
-	}
+//	@Override
+//	public String generateTitle(){
+//		return "";
+//	}
 
 	public Collection getSuperCollection() {
 		return superCollection;

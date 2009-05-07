@@ -448,5 +448,18 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 				return resultString + " " + appendedPhrase;
 			}
 		}
-	
+
+
+		public String getLastEpithet(T taxonNameBase) {
+			Rank rank = taxonNameBase.getRank();
+			if(rank.isGenus() || rank.isSupraGeneric()) {
+				return taxonNameBase.getGenusOrUninomial();
+			} else if(rank.isInfraGeneric()) {
+				return taxonNameBase.getInfraGenericEpithet();
+			} else if(rank.isSpecies()) {
+				return taxonNameBase.getSpecificEpithet();
+			} else {
+				return taxonNameBase.getInfraSpecificEpithet();
+			}
+		}
 }

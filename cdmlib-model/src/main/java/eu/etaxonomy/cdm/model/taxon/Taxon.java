@@ -10,6 +10,23 @@
 package eu.etaxonomy.cdm.model.taxon;
 
 
+import eu.etaxonomy.cdm.model.common.IRelated;
+import eu.etaxonomy.cdm.model.common.RelationshipBase;
+import eu.etaxonomy.cdm.model.description.TaxonDescription;
+import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
+import eu.etaxonomy.cdm.strategy.taxon.TaxonBaseDefaultCacheStrategy;
+
+import org.apache.log4j.Logger;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
+import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Indexed;
+import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.util.ReflectionUtils;
+
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -76,7 +93,8 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 @Entity
 @Indexed(index = "eu.etaxonomy.cdm.model.taxon.TaxonBase")
 @Audited
-public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<RelationshipBase>{
+@Configurable
+public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> implements Iterable<Taxon>, IRelated<RelationshipBase>{
 	private static final long serialVersionUID = -584946869762749006L;
 	private static final Logger logger = Logger.getLogger(Taxon.class);
 
@@ -138,6 +156,7 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	//TODO should be private, but still produces Spring init errors
 	@Deprecated
 	public Taxon(){
+		this.cacheStrategy = new TaxonBaseDefaultCacheStrategy<Taxon>();
 	}
 	
 	/** 
@@ -151,6 +170,7 @@ public class Taxon extends TaxonBase implements Iterable<Taxon>, IRelated<Relati
 	 */
 	public Taxon(TaxonNameBase taxonNameBase, ReferenceBase sec){
 		super(taxonNameBase, sec);
+		this.cacheStrategy = new TaxonBaseDefaultCacheStrategy<Taxon>();
 	}
 	 
 //********* METHODS **************************************/

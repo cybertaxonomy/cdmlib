@@ -1,11 +1,10 @@
 package eu.etaxonomy.cdm.model.common;
 
+import java.io.Serializable;
 import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
 
 import javax.persistence.Embeddable;
-import javax.persistence.FetchType;
-import javax.persistence.ManyToOne;
 
 import com.ibm.lsid.MalformedLSIDException;
 
@@ -19,7 +18,7 @@ import com.ibm.lsid.MalformedLSIDException;
  * @see com.ibm.lsid.client.LSID
  */
 @Embeddable
-public class LSID {
+public class LSID implements Serializable {
 
 	private String lsid;
 	

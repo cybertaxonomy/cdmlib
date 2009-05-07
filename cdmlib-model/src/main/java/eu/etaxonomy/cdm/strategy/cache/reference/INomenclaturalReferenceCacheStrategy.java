@@ -3,6 +3,7 @@
  */
 package eu.etaxonomy.cdm.strategy.cache.reference;
 
+import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
 /**
@@ -33,5 +34,23 @@ public interface INomenclaturalReferenceCacheStrategy<T extends ReferenceBase> e
 	 * @return
 	 */
 	public String getBeforeMicroReference();
-
+	
+	/**
+	 * Returns a formatted string containing the entire citation used for
+	 * nomenclatural purposes based on the {@link ReferenceBase reference} supplied - including
+	 * (abbreviated) title  but not authors - and on the given details.<BR>
+	 * The returned string is build according to the corresponding
+	 * {@link INomenclaturalReferenceCacheStrategy cache strategy}.
+	 * 
+	 * @param  nomenclaturalReference The nomenclatural reference
+	 * @param  microReference	the string with the details (generally pages)
+	 * 							corresponding to the nomenclatural reference supplied 
+	 * 							as the first argument
+	 * @return					the formatted string representing the
+	 * 							nomenclatural citation
+	 * @see  					INomenclaturalReference#getNomenclaturalCitation(String)
+	 * @see 					name.TaxonNameBase#getNomenclaturalReference()
+	 * @see 					strategy.cache.reference.INomenclaturalReferenceCacheStrategy
+	 */
+	public String getNomenclaturalCitation(T nomenclaturalReference, String microReference);
 }

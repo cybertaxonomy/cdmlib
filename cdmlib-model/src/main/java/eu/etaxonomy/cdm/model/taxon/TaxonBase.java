@@ -37,6 +37,7 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
 /**
  * The upmost (abstract) class for the use of a {@link eu.etaxonomy.cdm.model.name.TaxonNameBase taxon name} in a {@link eu.etaxonomy.cdm.model.reference.ReferenceBase reference}
@@ -64,7 +65,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 @Entity
 @Audited
 @Table(appliesTo="TaxonBase", indexes = { @Index(name = "taxonBaseTitleCacheIndex", columnNames = { "titleCache" }) })
-public abstract class TaxonBase extends IdentifiableEntity {
+public abstract class TaxonBase<S extends IIdentifiableEntityCacheStrategy> extends IdentifiableEntity<S> {
 	
 	static Logger logger = Logger.getLogger(TaxonBase.class);
 	
@@ -147,21 +148,21 @@ public abstract class TaxonBase extends IdentifiableEntity {
 	 * @see  	eu.etaxonomy.cdm.model.common.IdentifiableEntity#generateTitle()
 	 * @see  	eu.etaxonomy.cdm.model.common.IdentifiableEntity#getTitleCache()
 	 */
-	@Override
-	public String generateTitle() {
-		String title;
-		if (name != null && name.getTitleCache() != null){
-			title = name.getTitleCache() + " sec. ";
-			if (sec != null){
-				title += sec.getTitleCache();
-			}else{
-				title += "???";
-			}
-		}else{
-			title = this.toString();
-		}
-		return title;
-	}
+//	@Override
+//	public String generateTitle() {
+//		String title;
+//		if (name != null && name.getTitleCache() != null){
+//			title = name.getTitleCache() + " sec. ";
+//			if (sec != null){
+//				title += sec.getTitleCache();
+//			}else{
+//				title += "???";
+//			}
+//		}else{
+//			title = this.toString();
+//		}
+//		return title;
+//	}
 	
 	/** 
 	 * Returns the {@link TaxonNameBase taxon name} used in <i>this</i> (abstract) taxon.

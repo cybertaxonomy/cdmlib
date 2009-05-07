@@ -25,8 +25,11 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
+import org.springframework.beans.factory.annotation.Configurable;
 
 import eu.etaxonomy.cdm.model.agent.Institution;
+import eu.etaxonomy.cdm.strategy.cache.reference.IReferenceBaseCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.reference.StrictReferenceBaseDefaultCacheStrategy;
 
 /**
  * This class represents reports. A report is a document characterized by 
@@ -48,7 +51,8 @@ import eu.etaxonomy.cdm.model.agent.Institution;
 @XmlRootElement(name = "Report")
 @Entity
 @Audited
-public class Report extends PublicationBase implements Cloneable {
+@Configurable
+public class Report extends PublicationBase<IReferenceBaseCacheStrategy<Report>> implements Cloneable {
 	static Logger logger = Logger.getLogger(Report.class);
 	
 	@XmlElement(name = "Institution")
@@ -58,6 +62,10 @@ public class Report extends PublicationBase implements Cloneable {
 	@Cascade(CascadeType.SAVE_UPDATE)
 	private Institution institution;
 
+	protected Report() {
+		this.cacheStrategy = new StrictReferenceBaseDefaultCacheStrategy<Report>();
+	}
+	
 	/** 
 	 * Creates a new empty report instance
 	 * 

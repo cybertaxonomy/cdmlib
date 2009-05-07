@@ -44,6 +44,7 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
 /**
  * The upmost (abstract) class for a description as a whole (with possibly
@@ -72,7 +73,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 @Entity
 @Audited
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
-public abstract class DescriptionBase extends IdentifiableEntity {
+public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy> extends IdentifiableEntity<S> {
 	private static final long serialVersionUID = 5504218413819040193L;
 	private static final Logger logger = Logger.getLogger(DescriptionBase.class);
 	
@@ -303,13 +304,13 @@ public abstract class DescriptionBase extends IdentifiableEntity {
 	 * @see  	eu.etaxonomy.cdm.model.common.IdentifiableEntity#generateTitle()
 	 * @see  	eu.etaxonomy.cdm.model.common.IdentifiableEntity#getTitleCache()
 	 */
-	@Override
-	public String generateTitle() {
-		//TODO generate title "generate Title not yet implemented"
-		return this.toString();
-	}
+//	@Override
+//	public String generateTitle() {
+//		//TODO generate title "generate Title not yet implemented"
+//		return this.toString();
+//	}
 
-	/**
+    /**
 	 * @return the imageGallery
 	 */
 	public boolean isImageGallery() {

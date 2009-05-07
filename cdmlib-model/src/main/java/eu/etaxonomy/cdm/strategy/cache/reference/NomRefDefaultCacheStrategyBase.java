@@ -29,9 +29,7 @@ public abstract class NomRefDefaultCacheStrategyBase<T extends ReferenceBase> ex
 	protected String beforeYear = ". ";
 	protected String beforeMicroReference = ": ";
 	protected String afterYear = "";
-	protected String afterAuthor = ", ";
-
-	
+	protected String afterAuthor = ", ";	
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.strategy.cache.reference.INomenclaturalReferenceCacheStrategy#getTokenizedNomenclaturalTitel(eu.etaxonomy.cdm.model.reference.INomenclaturalReference)
@@ -61,6 +59,22 @@ public abstract class NomRefDefaultCacheStrategyBase<T extends ReferenceBase> ex
 		return result;
 	}
 	
+	public String getCitation(T referenceBase) {
+		StringBuilder stringBuilder = new StringBuilder();
+		
+		TeamOrPersonBase<?> team = referenceBase.getAuthorTeam();
+		if (team != null &&  ! (team.getTitleCache() == null) && ! team.getTitleCache().trim().equals("")){
+			//String author = CdmUtils.Nz(team == null? "" : team.getTitleCache());
+			stringBuilder.append(team.getTitleCache() + afterAuthor);
+		}
+		
+		String year = CdmUtils.Nz(referenceBase.getYear());
+		if (!"".equals(year)){
+			stringBuilder.append(beforeYear + year);
+		}
+		
+		return stringBuilder.toString();
+	}
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.strategy.cache.reference.INomenclaturalReferenceCacheStrategy#getBeforeMicroReference()
@@ -84,5 +98,17 @@ public abstract class NomRefDefaultCacheStrategyBase<T extends ReferenceBase> ex
 	}
 	
 	protected abstract String getNomRefTitleWithoutYearAndAuthor(T reference);
-
+	
+	public String getNomenclaturalCitation(T nomenclaturalReference, String microReference) {
+		if (nomenclaturalReference.isProtectedTitleCache()){
+			return nomenclaturalReference.getTitleCache();
+		}
+		String result = getTokenizedNomenclaturalTitel(nomenclaturalReference);
+		microReference = CdmUtils.Nz(microReference);
+		if (! "".equals(microReference)){
+			microReference = getBeforeMicroReference() + microReference;
+		}
+		result = result.replaceAll(INomenclaturalReference.MICRO_REFERENCE_TOKEN, microReference);
+		return result;
+	}
 }

@@ -17,6 +17,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -28,6 +29,8 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
@@ -52,6 +55,7 @@ import eu.etaxonomy.cdm.model.agent.Person;
 @XmlRootElement(name = "User")
 @Entity
 @Audited
+@Table(name = "UserAccount")
 public class User extends CdmBase implements UserDetails {
 
 	/**
@@ -105,6 +109,7 @@ public class User extends CdmBase implements UserDetails {
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@OneToOne(fetch = FetchType.LAZY)
+	@Cascade({CascadeType.SAVE_UPDATE})
 	protected Person person;
 	
 	@XmlTransient

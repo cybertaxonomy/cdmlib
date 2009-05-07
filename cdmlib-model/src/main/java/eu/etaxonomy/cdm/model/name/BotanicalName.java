@@ -29,6 +29,7 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
+import org.springframework.beans.factory.annotation.Configurable;
 
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
@@ -59,6 +60,7 @@ import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 @Entity
 @Indexed(index = "eu.etaxonomy.cdm.model.name.TaxonNameBase")
 @Audited
+@Configurable
 public class BotanicalName extends NonViralName<BotanicalName> {
 	
 	/**

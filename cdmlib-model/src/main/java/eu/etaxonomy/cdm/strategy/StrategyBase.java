@@ -1,11 +1,12 @@
 package eu.etaxonomy.cdm.strategy;
 
+import java.io.Serializable;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
 
-public abstract class StrategyBase implements IStrategy {
+public abstract class StrategyBase implements IStrategy, Serializable {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(StrategyBase.class);
 	

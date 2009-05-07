@@ -1,5 +1,6 @@
 package eu.etaxonomy.cdm.model.view;
 
+import java.io.Serializable;
 import java.util.UUID;
 
 import javax.persistence.Entity;
@@ -13,7 +14,12 @@ import org.hibernate.envers.RevisionTimestamp;
 
 @Entity
 @RevisionEntity
-public class AuditEvent {
+public class AuditEvent implements Serializable {
+/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6584537382484488953L;
+
 public static final AuditEvent CURRENT_VIEW;
 	
 	static {

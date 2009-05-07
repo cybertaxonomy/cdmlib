@@ -18,6 +18,10 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
+import org.springframework.beans.factory.annotation.Configurable;
+
+import eu.etaxonomy.cdm.strategy.cache.reference.IReferenceBaseCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.reference.StrictReferenceBaseDefaultCacheStrategy;
 
 /**
  * This class represents electronic publications available on the world wide web.
@@ -34,7 +38,8 @@ import org.hibernate.envers.Audited;
 @XmlRootElement(name = "WebPage")
 @Entity
 @Audited
-public class WebPage extends PublicationBase implements Cloneable {
+@Configurable
+public class WebPage extends PublicationBase<IReferenceBaseCacheStrategy<WebPage>> implements Cloneable {
 	static Logger logger = Logger.getLogger(WebPage.class);
 
 	/** 
@@ -42,6 +47,7 @@ public class WebPage extends PublicationBase implements Cloneable {
 	 */
 	protected WebPage(){
 		super();
+		this.cacheStrategy = new StrictReferenceBaseDefaultCacheStrategy<WebPage>();
 	}
 	
 	/** 
@@ -65,10 +71,10 @@ public class WebPage extends PublicationBase implements Cloneable {
 	 * @see  	eu.etaxonomy.cdm.model.common.IdentifiableEntity#generateTitle()
 	 * @see  	eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy#getTitleCache()
 	 */
-	@Override
-	public String generateTitle(){
-		return this.cacheStrategy.getTitleCache(this);
-	}
+//	@Override
+//	public String generateTitle(){
+//		return this.cacheStrategy.getTitleCache(this);
+//	}
 //*********** CLONE **********************************/	
 	
 	/** 

@@ -55,15 +55,11 @@ public class IdentificationKey extends Media {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(IdentificationKey.class);
 	
-	/*
-     * FIXME - shouldn't this be @ManyToMany - i.e. many keys can refer to the
-	 * same taxon and some taxa will be covered by multiple keys?
-	 */
 	@XmlElementWrapper(name = "CoveredTaxa")
 	@XmlElement(name = "CoveredTaxon")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
-	@OneToMany(fetch = FetchType.LAZY)
+	@ManyToMany(fetch = FetchType.LAZY)
 	private Set<Taxon> coveredTaxa = new HashSet<Taxon>();
 	
 	@XmlElementWrapper( name = "GeoScopes")

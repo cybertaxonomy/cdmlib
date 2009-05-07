@@ -11,9 +11,11 @@ package eu.etaxonomy.cdm.model.agent;
 
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
 import org.hibernate.annotations.Index;
@@ -21,6 +23,8 @@ import org.hibernate.annotations.Table;
 import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity;
+import eu.etaxonomy.cdm.strategy.cache.agent.INomenclaturalAuthorCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
 /**
  * The upmost (abstract) class for agents such as persons, teams or institutions.
@@ -40,7 +44,7 @@ import eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity;
 @Entity
 @Audited
 @Table(appliesTo="AgentBase", indexes = { @Index(name = "agentTitleCacheIndex", columnNames = { "titleCache" }) })
-public abstract class AgentBase extends IdentifiableMediaEntity{
+public abstract class AgentBase<S extends IIdentifiableEntityCacheStrategy> extends IdentifiableMediaEntity<S>{
 
 	/**
 	 * 
@@ -66,5 +70,4 @@ public abstract class AgentBase extends IdentifiableMediaEntity{
 	public void setContact(Contact contact){
 		this.contact = contact;
 	}
-
 }

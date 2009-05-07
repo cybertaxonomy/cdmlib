@@ -96,7 +96,7 @@ import eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy;
 @Audited
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 @Table(appliesTo="TaxonNameBase", indexes = { @Index(name = "taxonNameBaseTitleCacheIndex", columnNames = { "titleCache" }) })
-public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INameCacheStrategy> extends IdentifiableEntity implements IReferencedEntity, IParsable, IRelated {
+public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INameCacheStrategy> extends IdentifiableEntity<S> implements IReferencedEntity, IParsable, IRelated {
 
 	private static final long serialVersionUID = -4530368639601532116L;
 	private static final Logger logger = Logger.getLogger(TaxonNameBase.class);
@@ -180,9 +180,8 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
     @XmlElement(name = "Rank")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	private Rank rank;
-
 
 	@XmlElement(name = "NomenclaturalReference")
     @XmlIDREF
@@ -606,23 +605,6 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 		//TODO implement
 		logger.warn("not yet implemented");
 	}
-
-	/**
-	 * Returns the {@link eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy cache strategy} used to generate
-	 * several strings corresponding to <i>this</i> taxon name
-	 * (in particular taxon name caches and author strings).
-	 * 
-	 * @return  the cache strategy used for <i>this</i> taxon name
-	 * @see 	eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy
-	 * @see     eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy
-	 */
-	@Transient
-	public abstract S getCacheStrategy();
-	/** 
-	 * @see 	#getCacheStrategy()
-	 */
-	
-	public abstract void setCacheStrategy(S cacheStrategy);
 	
 	/** 
 	 * Returns the taxonomic {@link Rank rank} of <i>this</i> taxon name.
@@ -1277,10 +1259,6 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 	 * @see  	eu.etaxonomy.cdm.model.common.IdentifiableEntity#generateTitle()
 	 * @see  	eu.etaxonomy.cdm.model.common.IdentifiableEntity#getTitleCache()
 	 */
-	@Override
-	public String generateTitle() {
-		// TODO Auto-generated method stub
-		logger.warn("not yet implemented");
-		return null;
-	}	
+//	@Override
+//	public abstract String generateTitle();
 }

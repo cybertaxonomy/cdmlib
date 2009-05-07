@@ -26,9 +26,12 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
+import org.springframework.beans.factory.annotation.Configurable;
 
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.common.IdentifiableEntityDefaultCacheStrategy;
 
 /**
  * This class represents all piece of information (not ruled by a {@link NomenclaturalCode nomenclatural code})
@@ -47,7 +50,8 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 @Entity
 @Indexed(index = "eu.etaxonomy.cdm.model.description.DescriptionBase")
 @Audited
-public class TaxonNameDescription extends DescriptionBase {
+@Configurable
+public class TaxonNameDescription extends DescriptionBase<IIdentifiableEntityCacheStrategy<TaxonNameDescription>> {
 	private static final long serialVersionUID = -7349160369642038687L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TaxonNameDescription.class);
@@ -65,6 +69,7 @@ public class TaxonNameDescription extends DescriptionBase {
 	 */
 	public TaxonNameDescription() {
 		super();
+		this.cacheStrategy = new IdentifiableEntityDefaultCacheStrategy();
 	}
 	
 	/**

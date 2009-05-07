@@ -14,10 +14,13 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
+import org.springframework.beans.factory.annotation.Configurable;
 
 import eu.etaxonomy.cdm.model.common.IRelated;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
+import eu.etaxonomy.cdm.strategy.taxon.TaxonBaseDefaultCacheStrategy;
 
 import java.util.*;
 
@@ -55,7 +58,8 @@ import javax.xml.bind.annotation.XmlType;
 @Entity
 @Indexed(index = "eu.etaxonomy.cdm.model.taxon.TaxonBase")
 @Audited
-public class Synonym extends TaxonBase implements IRelated<SynonymRelationship>{
+@Configurable
+public class Synonym extends TaxonBase<IIdentifiableEntityCacheStrategy<Synonym>> implements IRelated<SynonymRelationship>{
 	
 	static Logger logger = Logger.getLogger(Synonym.class);
 
@@ -76,6 +80,7 @@ public class Synonym extends TaxonBase implements IRelated<SynonymRelationship>{
 	 */
 	//TODO should be private, but still produces Spring init errors
 	public Synonym(){
+		this.cacheStrategy = new TaxonBaseDefaultCacheStrategy<Synonym>();
 	}
 	
 	/** 
@@ -89,6 +94,7 @@ public class Synonym extends TaxonBase implements IRelated<SynonymRelationship>{
 	 */
 	public Synonym(TaxonNameBase taxonNameBase, ReferenceBase sec){
 		super(taxonNameBase, sec);
+		this.cacheStrategy = new TaxonBaseDefaultCacheStrategy<Synonym>();
 	}
 	 
 	//********* METHODS **************************************/

@@ -29,7 +29,7 @@ public class PublicationBaseTest {
 	@SuppressWarnings("unused")
 	private static Logger logger = Logger.getLogger(PublicationBaseTest.class);
 
-	private PublicationBase publicationBase;
+	private CdDvd publicationBase;
 	private String publisher1;
 	private String publisher2;
 	private String place1;

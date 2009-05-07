@@ -18,6 +18,10 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
+import org.springframework.beans.factory.annotation.Configurable;
+
+import eu.etaxonomy.cdm.strategy.cache.reference.IReferenceBaseCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.reference.StrictReferenceBaseDefaultCacheStrategy;
 /**
  * This class represents patents. A patent is a document containing the set of
  * exclusive rights granted by a state to an inventor or his assignee for a
@@ -35,8 +39,13 @@ import org.hibernate.envers.Audited;
 @XmlRootElement(name = "Patent")
 @Entity
 @Audited
-public class Patent extends StrictReferenceBase implements Cloneable {
+@Configurable
+public class Patent extends StrictReferenceBase<IReferenceBaseCacheStrategy<Patent>> implements Cloneable {
 	private static final Logger logger = Logger.getLogger(Patent.class);
+	
+	protected Patent() {
+		this.cacheStrategy = new StrictReferenceBaseDefaultCacheStrategy<Patent>();
+	}	
 	
 	/** 
 	 * Creates a new empty patent instance

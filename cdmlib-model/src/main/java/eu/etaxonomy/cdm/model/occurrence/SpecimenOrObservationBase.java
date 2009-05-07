@@ -49,6 +49,7 @@ import eu.etaxonomy.cdm.model.description.Sex;
 import eu.etaxonomy.cdm.model.description.SpecimenDescription;
 import eu.etaxonomy.cdm.model.description.Stage;
 import eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity;
+import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
 /**
  * type figures are observations with at least a figure object in media
@@ -71,7 +72,7 @@ import eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity;
 @Audited
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 @Table(appliesTo="SpecimenOrObservationBase", indexes = { @Index(name = "specimenOrObservationBaseTitleCacheIndex", columnNames = { "titleCache" }) })
-public abstract class SpecimenOrObservationBase extends IdentifiableMediaEntity {
+public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCacheStrategy> extends IdentifiableMediaEntity<S> {
 	
 	private static final Logger logger = Logger.getLogger(SpecimenOrObservationBase.class);
 	

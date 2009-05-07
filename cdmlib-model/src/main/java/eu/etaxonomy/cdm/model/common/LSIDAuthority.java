@@ -7,15 +7,34 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Transient;
 import javax.wsdl.Definition;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.hibernate.annotations.CollectionOfElements;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
+import org.hibernate.envers.Audited;
 
 import com.ibm.lsid.MalformedLSIDException;
 
+import eu.etaxonomy.cdm.jaxb.NamespacesAdapter;
+
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "LSIDAuthority", propOrder = {
+		"authority",
+		"server",
+		"port",
+		"url",
+		"namespaces"
+})
+@XmlRootElement(name = "LSIDAuthority")
 @Entity
 @TypeDefs(@TypeDef(name="wsdlDefinitionUserType", typeClass=WSDLDefinitionUserType.class))
 public class LSIDAuthority extends CdmBase {
@@ -30,18 +49,25 @@ public class LSIDAuthority extends CdmBase {
 	private static final String AUTHORITY_PROTOCOL="http";
     private static final String AUTHORITY_PATH="/authority/";
 
+    @XmlElement(name = "Authority")
     @NaturalId
 	private String authority;
 	
 	// the resolved components of the lsid
+    @XmlElement(name = "Server")
 	private String server;
+    @XmlElement(name = "Port")
 	private int port = -1;
+    @XmlElement(name = "Url")
 	private String url;
 	
 	// the wsdl describing how to invoke operations on the authority
+    @XmlTransient
 	@Type(type = "wsdlDefinitionUserType")
 	private Definition authorityWSDL;
 	
+    @XmlElement(name = "Namespaces")
+    @XmlJavaTypeAdapter(NamespacesAdapter.class)
 	@CollectionOfElements(fetch = FetchType.LAZY)
 	private Map<String,Class<? extends IIdentifiableEntity>> namespaces = new HashMap<String,Class<? extends IIdentifiableEntity>>();
 	

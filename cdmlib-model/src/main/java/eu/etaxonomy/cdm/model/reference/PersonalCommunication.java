@@ -18,6 +18,10 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
+import org.springframework.beans.factory.annotation.Configurable;
+
+import eu.etaxonomy.cdm.strategy.cache.reference.IReferenceBaseCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.reference.StrictReferenceBaseDefaultCacheStrategy;
 
 /**
  * This class represents personal communications. A personal communication is a
@@ -37,8 +41,13 @@ import org.hibernate.envers.Audited;
 @XmlRootElement(name = "PersonalCommunication")
 @Entity
 @Audited
-public class PersonalCommunication extends StrictReferenceBase implements Cloneable {
+@Configurable
+public class PersonalCommunication extends StrictReferenceBase<IReferenceBaseCacheStrategy<PersonalCommunication>> implements Cloneable {
 	private static final Logger logger = Logger.getLogger(PersonalCommunication.class);
+	
+	protected PersonalCommunication() {
+		this.cacheStrategy = new StrictReferenceBaseDefaultCacheStrategy<PersonalCommunication>();
+	}
 	
 	/**
 	 * Creates a new empty personal communication instance.

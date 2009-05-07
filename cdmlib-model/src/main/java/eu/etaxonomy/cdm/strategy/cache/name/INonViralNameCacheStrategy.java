@@ -19,6 +19,18 @@ import eu.etaxonomy.cdm.model.name.NonViralName;
  */
 public interface INonViralNameCacheStrategy<T extends NonViralName> extends INameCacheStrategy<T> {
 	
+	/**
+	 * returns the last epithet of the name (i.e. uninomial if generic or above, infrageneric epithet if infrageneric, 
+	 * specific epithet if species and infraspecific epithet if infraspecific, possibly with other information (e.g. ranks
+	 * in infraspecific names, indications of hybrid status etc)).
+	 * 
+	 * This is suitable for rendering the name in context of the name which taxonomically includes it i.e. taxonomic hierarchies or 
+	 * checklists organised into a hierarchy where the initial epithets are removed for brevity
+	 * 
+	 * @param object
+	 * @return
+	 */
+	public String getLastEpithet(T taxonNameBase);
 	
 	/**
 	 * returns the composed scientific taxon name string without authors nor year

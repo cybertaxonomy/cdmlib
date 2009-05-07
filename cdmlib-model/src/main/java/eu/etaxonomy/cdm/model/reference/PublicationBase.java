@@ -32,6 +32,7 @@ import org.hibernate.collection.PersistentSet;
 import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.common.Annotation;
+import eu.etaxonomy.cdm.strategy.cache.reference.IReferenceBaseCacheStrategy;
 
 /**
  * This (abstract) class represents all different kind of published {@link StrictReferenceBase references}
@@ -49,7 +50,7 @@ import eu.etaxonomy.cdm.model.common.Annotation;
 @XmlRootElement(name = "PublicationBase")
 @Entity
 @Audited
-public abstract class PublicationBase extends StrictReferenceBase {
+public abstract class PublicationBase<S extends IReferenceBaseCacheStrategy> extends StrictReferenceBase<S> {
 	private static final Logger logger = Logger.getLogger(PublicationBase.class);
 
 	@XmlElementWrapper(name = "Publishers")

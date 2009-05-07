@@ -20,6 +20,7 @@ import javax.persistence.Embedded;
 import javax.persistence.FetchType;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -43,6 +44,7 @@ import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
 /**
  * Superclass for the primary CDM classes that can be referenced from outside via LSIDs and contain a simple generated title string as a label for human reading.
@@ -67,7 +69,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
     "sources"
 })
 @MappedSuperclass
-public abstract class IdentifiableEntity extends AnnotatableEntity 
+public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrategy> extends AnnotatableEntity 
 implements ISourceable, IIdentifiableEntity, Comparable<IdentifiableEntity> {
 	private static final long serialVersionUID = -5610995424730659058L;
 	private static final Logger logger = Logger.getLogger(IdentifiableEntity.class);
@@ -119,7 +121,10 @@ implements ISourceable, IIdentifiableEntity, Comparable<IdentifiableEntity> {
     @OneToMany(fetch = FetchType.LAZY)		
 	@Cascade({CascadeType.SAVE_UPDATE})
 	private Set<OriginalSource> sources = new HashSet<OriginalSource>();
-
+    
+    @XmlTransient
+	@Transient
+	protected S cacheStrategy;
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#getLsid()
@@ -143,11 +148,6 @@ implements ISourceable, IIdentifiableEntity, Comparable<IdentifiableEntity> {
 	public byte[] getData() {
 		return null;
 	}
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#generateTitle()
-	 */
-	public abstract String generateTitle();
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#getTitleCache()
@@ -425,5 +425,33 @@ implements ISourceable, IIdentifiableEntity, Comparable<IdentifiableEntity> {
 			titleCache = null;
 		}
 		return result;
+	}
+	
+	/**
+	 * Returns the {@link eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy cache strategy} used to generate
+	 * several strings corresponding to <i>this</i> identifiable entity
+	 * (in particular taxon name caches and author strings).
+	 * 
+	 * @return  the cache strategy used for <i>this</i> identifiable entity
+	 * @see     eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy
+	 */
+	public S getCacheStrategy() {
+		return this.cacheStrategy;
+	}
+	/** 
+	 * @see 	#getCacheStrategy()
+	 */
+	
+	public void setCacheStrategy(S cacheStrategy) {
+		this.cacheStrategy = cacheStrategy;
+	}
+	
+	public String generateTitle() {
+		if (cacheStrategy == null){
+			logger.warn("No CacheStrategy defined for "+ this.getClass() + ": " + this.getUuid());
+			return null;
+		}else{
+			return cacheStrategy.getTitleCache(this);
+		}
 	}
 }

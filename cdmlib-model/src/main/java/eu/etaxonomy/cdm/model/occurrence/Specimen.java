@@ -22,6 +22,10 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
+import org.springframework.beans.factory.annotation.Configurable;
+
+import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.common.IdentifiableEntityDefaultCacheStrategy;
 
 /**
  * A specimen is regarded as derived from an field observation, 
@@ -38,7 +42,8 @@ import org.hibernate.envers.Audited;
 @XmlRootElement(name = "Specimen")
 @Entity
 @Audited
-public class Specimen extends DerivedUnitBase implements Cloneable {
+@Configurable
+public class Specimen extends DerivedUnitBase<IIdentifiableEntityCacheStrategy<Specimen>> implements Cloneable {
 	private static final Logger logger = Logger.getLogger(Specimen.class);
 	
 	@XmlElement(name = "Preservation")
@@ -60,6 +65,7 @@ public class Specimen extends DerivedUnitBase implements Cloneable {
 	 */
 	protected Specimen() {
 		super();
+		this.cacheStrategy = new IdentifiableEntityDefaultCacheStrategy<Specimen>();
 	}
 	
 	public PreservationMethod getPreservation(){

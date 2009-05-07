@@ -19,6 +19,10 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
+import org.springframework.beans.factory.annotation.Configurable;
+
+import eu.etaxonomy.cdm.strategy.cache.reference.IReferenceBaseCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.reference.StrictReferenceBaseDefaultCacheStrategy;
 
 /**
  * This class represents collections of {@link PrintedUnitBase printed published references} which
@@ -38,12 +42,17 @@ import org.hibernate.envers.Audited;
 @XmlRootElement(name = "PrintSeries")
 @Entity
 @Audited
-public class PrintSeries extends PublicationBase implements Cloneable {
+@Configurable
+public class PrintSeries extends PublicationBase<IReferenceBaseCacheStrategy<PrintSeries>> implements Cloneable {
 	private static final Logger logger = Logger.getLogger(PrintSeries.class);
 	
 	@XmlElement(name = "Series")
 	private String series;
 
+	protected PrintSeries() {
+		this.cacheStrategy = new StrictReferenceBaseDefaultCacheStrategy<PrintSeries>();
+	}
+	
 	/** 
 	 * Creates a new empty print series instance.
 	 */

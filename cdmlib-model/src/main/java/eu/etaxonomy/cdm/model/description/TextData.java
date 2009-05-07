@@ -71,7 +71,6 @@ public class TextData extends DescriptionElementBase {
 	@XmlElement(name = "MultiLanguageText")
     @XmlJavaTypeAdapter(MultilanguageTextAdapter.class)
     @OneToMany (fetch= FetchType.LAZY)
-	@MapKey(name="language")
     @Cascade({CascadeType.SAVE_UPDATE})
     @IndexedEmbedded
 	private Map<Language, LanguageString> multilanguageText = new HashMap<Language,LanguageString>();

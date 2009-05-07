@@ -136,7 +136,4 @@ public class ArticleDefaultCacheStrategy <T extends Article> extends NomRefDefau
 		}
 		
 	}
-
-
-
 }

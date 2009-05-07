@@ -25,9 +25,11 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
+import org.springframework.beans.factory.annotation.Configurable;
 
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.strategy.cache.reference.BibtexDefaultCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.reference.INomenclaturalReferenceCacheStrategy;
 
 /**
  * This class represents references which are structured according to the BibTeX
@@ -73,7 +75,8 @@ import eu.etaxonomy.cdm.strategy.cache.reference.BibtexDefaultCacheStrategy;
 @XmlRootElement(name = "BibtexReference")
 @Entity
 @Audited
-public class BibtexReference extends ReferenceBase implements INomenclaturalReference, Cloneable {
+@Configurable
+public class BibtexReference extends ReferenceBase<INomenclaturalReferenceCacheStrategy<BibtexReference>> implements INomenclaturalReference, Cloneable {
 	/**
 	 * 
 	 */
@@ -157,9 +160,9 @@ public class BibtexReference extends ReferenceBase implements INomenclaturalRefe
     @ManyToOne(fetch = FetchType.LAZY)
 	private BibtexReference crossref;
 
-    @XmlElementRef(name = "NomenclaturalReferenceBase")
-    @Transient
-	private NomenclaturalReferenceHelper nomRefBase = NomenclaturalReferenceHelper.NewInstance(this);
+//    @XmlElementRef(name = "NomenclaturalReferenceBase")
+//    @Transient
+//	private NomenclaturalReferenceHelper nomRefBase = NomenclaturalReferenceHelper.NewInstance(this);
 
 	
 	/** 
@@ -683,11 +686,11 @@ public class BibtexReference extends ReferenceBase implements INomenclaturalRefe
 	 * @see  #getNomenclaturalCitation(String)
 	 * @see  ReferenceBase#getCitation()
 	 */
-	@Override
-	@Transient
-	public String getCitation(){
-		return nomRefBase.getCitation();
-	}
+//	@Override
+//	@Transient
+//	public String getCitation(){
+//		return nomRefBase.getCitation();
+//	}
 
 	/**
 	 * Returns a formatted string containing the entire citation used for
@@ -703,7 +706,12 @@ public class BibtexReference extends ReferenceBase implements INomenclaturalRefe
 	 */
 	@Transient
 	public String getNomenclaturalCitation(String microReference) {
-		return nomRefBase.getNomenclaturalCitation(microReference);
+		if (cacheStrategy == null){
+			logger.warn("No CacheStrategy defined for "+ this.getClass() + ": " + this.getUuid());
+			return null;
+		}else{
+			return cacheStrategy.getNomenclaturalCitation(this,microReference);
+		}
 	}
 
 
@@ -720,10 +728,10 @@ public class BibtexReference extends ReferenceBase implements INomenclaturalRefe
 	 * @see  	eu.etaxonomy.cdm.model.common.IdentifiableEntity#getTitleCache()
 	 * @see  	eu.etaxonomy.cdm.model.common.IdentifiableEntity#generateTitle()
 	 */
-	@Override
-	public String generateTitle(){
-		return nomRefBase.generateTitle();
-	}
+//	@Override
+//	public String generateTitle(){
+//		return nomRefBase.generateTitle();
+//	}
 	
 	
 //****************** clone ********************** //
@@ -743,7 +751,7 @@ public class BibtexReference extends ReferenceBase implements INomenclaturalRefe
 	public BibtexReference clone(){
 		try{
 			BibtexReference result = (BibtexReference)super.clone();
-			result.nomRefBase = NomenclaturalReferenceHelper.NewInstance(result);
+			result.cacheStrategy = BibtexDefaultCacheStrategy.NewInstance();
 			result.setCrossref(this.getCrossref());
 			//no changes to: crossref, type
 			return result;

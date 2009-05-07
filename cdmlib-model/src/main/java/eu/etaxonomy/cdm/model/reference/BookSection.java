@@ -27,10 +27,12 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
+import org.springframework.beans.factory.annotation.Configurable;
 
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.strategy.cache.reference.BookSectionDefaultCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.reference.INomenclaturalReferenceCacheStrategy;
 
 /**
  * This class represents isolated sections (parts or chapters) within a {@link Book book}.
@@ -49,7 +51,8 @@ import eu.etaxonomy.cdm.strategy.cache.reference.BookSectionDefaultCacheStrategy
 @XmlRootElement(name = "BookSection")
 @Entity
 @Audited
-public class BookSection extends SectionBase implements INomenclaturalReference, Cloneable {
+@Configurable
+public class BookSection extends SectionBase<INomenclaturalReferenceCacheStrategy<BookSection>> implements INomenclaturalReference, Cloneable {
 	
 	/**
 	 * 
@@ -65,9 +68,9 @@ public class BookSection extends SectionBase implements INomenclaturalReference,
     @Cascade(CascadeType.SAVE_UPDATE)
 	private Book inBook;
 	
-    @XmlTransient
-    @Transient
-	private NomenclaturalReferenceHelper nomRefBase = NomenclaturalReferenceHelper.NewInstance(this);
+//    @XmlTransient
+//    @Transient
+//	private NomenclaturalReferenceHelper nomRefBase = NomenclaturalReferenceHelper.NewInstance(this);
 
 	
 	/** 
@@ -145,11 +148,11 @@ public class BookSection extends SectionBase implements INomenclaturalReference,
 	 * @see  #getNomenclaturalCitation(String)
 	 * @see  StrictReferenceBase#getCitation()
 	 */
-	@Transient
-	@Override
-	public String getCitation(){
-		return nomRefBase.getCitation();
-	}
+//	@Transient
+//	@Override
+//	public String getCitation(){
+//		return nomRefBase.getCitation();
+//	}
 
 	/**
 	 * Returns a formatted string containing the entire citation used for
@@ -165,7 +168,12 @@ public class BookSection extends SectionBase implements INomenclaturalReference,
 	 */
 	@Transient
 	public String getNomenclaturalCitation(String microReference) {
-		return nomRefBase.getNomenclaturalCitation(microReference);
+		if (cacheStrategy == null){
+			logger.warn("No CacheStrategy defined for "+ this.getClass() + ": " + this.getUuid());
+			return null;
+		}else{
+			return cacheStrategy.getNomenclaturalCitation(this,microReference);
+		}
 	}
 	
 	 /** 
@@ -201,10 +209,10 @@ public class BookSection extends SectionBase implements INomenclaturalReference,
 	 * @see  	eu.etaxonomy.cdm.model.common.IdentifiableEntity#getTitleCache()
 	 * @see  	eu.etaxonomy.cdm.model.common.IdentifiableEntity#generateTitle()
 	 */
-	@Override
-	public String generateTitle(){
-		return nomRefBase.generateTitle();
-	}
+//	@Override
+//	public String generateTitle(){
+//		return nomRefBase.generateTitle();
+//	}
 	
 //*********** CLONE **********************************/	
 
@@ -221,7 +229,7 @@ public class BookSection extends SectionBase implements INomenclaturalReference,
 	@Override
 	public Object clone(){
 		BookSection result = (BookSection)super.clone();
-		result.nomRefBase = NomenclaturalReferenceHelper.NewInstance(result);
+		result.cacheStrategy = BookSectionDefaultCacheStrategy.NewInstance();
 		//no changes to: inBook
 		return result;
 	}

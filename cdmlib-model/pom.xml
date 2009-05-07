@@ -17,61 +17,66 @@
     <plugins>
       <plugin>
         <artifactId>maven-antrun-plugin</artifactId>
-<!--        <executions>-->
-<!--          <execution>-->
-<!--            <id>aspectj-main</id>-->
-<!--            <phase>process-sources</phase>-->
-<!--            <goals>-->
-<!--              <goal>run</goal>-->
-<!--            </goals>-->
-<!--            <configuration>-->
-<!--              <tasks>-->
-<!--                <taskdef classname="org.aspectj.tools.ant.taskdefs.AjcTask" name="iajc">-->
-<!--                  <classpath refid="maven.plugin.classpath" />-->
-<!--                </taskdef>-->
-<!--                <iajc verbose="false" source="1.5" destDir="target/classes">-->
-<!--                  <classpath refid="maven.plugin.classpath" />-->
-<!--                  <classpath refid="maven.compile.classpath" />-->
-<!--                  <sourceroots>-->
-<!--                    <pathelement location="src/main/java" />-->
-<!--                  </sourceroots>-->
-<!--                </iajc>-->
-<!--              </tasks>-->
-<!--            </configuration>-->
-<!--          </execution>-->
-<!--          <execution>-->
-<!--            <id>aspectj-test</id>-->
-<!--            <phase>process-test-sources</phase>-->
-<!--            <goals>-->
-<!--              <goal>run</goal>-->
-<!--            </goals>-->
-<!--            <configuration>-->
-<!--              <tasks>-->
-<!--                <taskdef classname="org.aspectj.tools.ant.taskdefs.AjcTask" name="iajc">-->
-<!--                  <classpath refid="maven.plugin.classpath" />-->
-<!--                </taskdef>-->
-<!--                <iajc verbose="false" source="1.5" destDir="target/test-classes">-->
-<!--                  <classpath refid="maven.plugin.classpath" />-->
-<!--                  <classpath refid="maven.compile.classpath" />-->
-<!--                  <classpath refid="maven.test.classpath" />-->
-<!--                  <sourceroots>-->
-<!--                    <pathelement location="src/test/java" />-->
-<!--                  </sourceroots>-->
-<!--                </iajc>-->
-<!--              </tasks>-->
-<!--            </configuration>-->
-<!--          </execution>-->
-<!--        </executions>-->
+        <executions>
+          <execution>
+            <id>aspectj-main</id>
+            <phase>process-sources</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <tasks>
+                <property name="spring.aspects.jar" value="${settings.localRepository}/org/springframework/spring-aspects/2.5.6/spring-aspects-2.5.6.jar"/>
+                <path id="aspectPath">
+                  <pathelement location="${spring.aspects.jar}"/>
+                </path>
+                <taskdef classname="org.aspectj.tools.ant.taskdefs.AjcTask" name="iajc">
+                  <classpath refid="maven.plugin.classpath" />
+                </taskdef>
+                <iajc verbose="false" source="1.5" destDir="target/classes"
+                  aspectPathRef="aspectPath">
+                  <classpath refid="maven.plugin.classpath" />
+                  <classpath refid="maven.compile.classpath" />
+                  <sourceroots>
+                    <pathelement location="src/main/java" />
+                  </sourceroots>
+                </iajc>
+              </tasks>
+            </configuration>
+          </execution>
+          <execution>
+            <id>aspectj-test</id>
+            <phase>process-test-sources</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <tasks>
+                <taskdef classname="org.aspectj.tools.ant.taskdefs.AjcTask" name="iajc">
+                  <classpath refid="maven.plugin.classpath" />
+                </taskdef>
+                <iajc verbose="false" source="1.5" destDir="target/test-classes">
+                  <classpath refid="maven.plugin.classpath" />
+                  <classpath refid="maven.compile.classpath" />
+                  <classpath refid="maven.test.classpath" />
+                  <sourceroots>
+                    <pathelement location="src/test/java" />
+                  </sourceroots>
+                </iajc>
+              </tasks>
+            </configuration>
+          </execution>
+        </executions>
         <dependencies>
           <dependency>
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjtools</artifactId>
-            <version>1.5.4</version>
+            <version>1.6.3</version>
           </dependency>
           <dependency>
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjrt</artifactId>
-            <version>1.5.4</version>
+            <version>1.6.3</version>
           </dependency>
         </dependencies>
       </plugin>
@@ -137,6 +142,10 @@
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-test</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-aspects</artifactId>
     </dependency>
     <dependency>
       <groupId>net.sf.opencsv</groupId>

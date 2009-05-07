@@ -100,7 +100,7 @@ public class AnnotationTest extends EntityTestBase {
 	 */
 	@Test
 	public void testGetSetAnnotatedObj() {
-		AnnotatableEntity database = new Database();
+		AnnotatableEntity database = Database.NewInstance();
 		annotation1.setAnnotatedObj(database);
 		assertSame(database, annotation1.getAnnotatedObj());
 		annotation1.setAnnotatedObj(null);

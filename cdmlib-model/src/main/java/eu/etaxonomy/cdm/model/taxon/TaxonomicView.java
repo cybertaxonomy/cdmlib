@@ -243,6 +243,8 @@ public class TaxonomicView extends IdentifiableEntity implements IReferencedEnti
 		return name.getText();
 	}
 
-
+	public int compareTo(Object o) {
+		return 0;
+	}
 
 }

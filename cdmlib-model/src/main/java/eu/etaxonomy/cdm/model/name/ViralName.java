@@ -24,6 +24,7 @@ import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
+import org.springframework.beans.factory.annotation.Configurable;
 
 import eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy;
 
@@ -50,13 +51,14 @@ import eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy;
 @Entity
 @Indexed(index = "eu.etaxonomy.cdm.model.name.TaxonNameBase")
 @Audited
+@Configurable
 public class ViralName extends TaxonNameBase<ViralName, INameCacheStrategy<ViralName>>  {
 	
 	private static final Logger logger = Logger.getLogger(ViralName.class);
 
-    @XmlTransient
-    @Transient
-	protected INameCacheStrategy<ViralName> cacheStrategy;
+//    @XmlTransient
+//    @Transient
+//	protected INameCacheStrategy<ViralName> cacheStrategy;
 	
 	@XmlElement(name = "Acronym")
 	@Field(index=Index.TOKENIZED)
@@ -120,11 +122,11 @@ public class ViralName extends TaxonNameBase<ViralName, INameCacheStrategy<Viral
 	 * @see  	eu.etaxonomy.cdm.model.common.IdentifiableEntity#getTitleCache()
 	 * @see  	TaxonNameBase#generateTitle()
 	 */
-	@Override
-	public String generateTitle(){
-		logger.warn("not yet implemented");
-		return this.toString();
-	}
+//	@Override
+//	public String generateTitle(){
+//		logger.warn("not yet implemented");
+//		return this.toString();
+//	}
 
 	@Override
 	public String generateFullTitle(){
@@ -176,19 +178,19 @@ public class ViralName extends TaxonNameBase<ViralName, INameCacheStrategy<Viral
 	 * @see 	eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy
 	 * @see     eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy
 	 */
-	@Override
-	@Transient
-	public INameCacheStrategy getCacheStrategy() {
-		return cacheStrategy;
-	}
+//	@Override
+//	@Transient
+//	public INameCacheStrategy getCacheStrategy() {
+//		return cacheStrategy;
+//	}
 
 
 	/**
 	 * @see  #getCacheStrategy()
 	 */
-	@Override
-	public void setCacheStrategy(INameCacheStrategy cacheStrategy) {
-		this.cacheStrategy = cacheStrategy;
-	}
+//	@Override
+//	public void setCacheStrategy(INameCacheStrategy cacheStrategy) {
+//		this.cacheStrategy = cacheStrategy;
+//	}
 
 }

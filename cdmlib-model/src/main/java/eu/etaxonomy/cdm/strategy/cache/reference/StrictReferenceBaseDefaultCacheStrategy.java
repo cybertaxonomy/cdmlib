@@ -15,27 +15,27 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.reference.StrictReferenceBase;
+import eu.etaxonomy.cdm.strategy.StrategyBase;
 /**
  * @author a.mueller
  * @version 1.0
  * @created 08-Aug-2008 22:06:45
  */
-public class StrictReferenceBaseDefaultCacheStrategy <T extends StrictReferenceBase> implements IReferenceBaseCacheStrategy<T> {
+public class StrictReferenceBaseDefaultCacheStrategy<T extends StrictReferenceBase> extends StrategyBase implements IReferenceBaseCacheStrategy<T> {
 	private static final Logger logger = Logger.getLogger(StrictReferenceBaseDefaultCacheStrategy.class);
 	
-
-	/**
-	 * Factory method
-	 * @return
-	 */
-	public static StrictReferenceBaseDefaultCacheStrategy NewInstance(){
-		return new StrictReferenceBaseDefaultCacheStrategy<StrictReferenceBase>();
-	}
+//	/**
+//	 * Factory method
+//	 * @return
+//	 */
+//	public static StrictReferenceBaseDefaultCacheStrategy NewInstance(){
+//		return new StrictReferenceBaseDefaultCacheStrategy();
+//	}
 	
 	/**
 	 * Constructor
 	 */
-	private StrictReferenceBaseDefaultCacheStrategy(){
+	public StrictReferenceBaseDefaultCacheStrategy(){
 		super();
 	}
 	
@@ -96,7 +96,28 @@ public class StrictReferenceBaseDefaultCacheStrategy <T extends StrictReferenceB
 		}
 		return result;
 	}
+	
+	public String getCitation(T referenceBase) {
+		StringBuilder stringBuilder = new StringBuilder();
+		
+		TeamOrPersonBase<?> team = referenceBase.getAuthorTeam();
+		if (team != null &&  ! (team.getTitleCache() == null) && ! team.getTitleCache().trim().equals("")){
+			//String author = CdmUtils.Nz(team == null? "" : team.getTitleCache());
+			stringBuilder.append(team.getTitleCache() + afterAuthor);
+		}
+		
+		String year = CdmUtils.Nz(referenceBase.getYear());
+		if (!"".equals(year)){
+			stringBuilder.append(beforeYear + year);
+		}
+		
+		return stringBuilder.toString();
+	}
 
 
 
+	@Override
+	protected UUID getUuid() {
+		return UUID.fromString("919dbf70-33e7-11de-b418-0800200c9a66");
+	}
 }

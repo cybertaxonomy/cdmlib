@@ -18,8 +18,11 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
+import org.springframework.beans.factory.annotation.Configurable;
 
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
+import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.common.IdentifiableEntityDefaultCacheStrategy;
 
 /**
  * This class represents descriptions for {@link SpecimenOrObservationBase specimens or observations}.
@@ -37,7 +40,8 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 @Entity
 @Indexed(index = "eu.etaxonomy.cdm.model.description.DescriptionBase")
 @Audited
-public class SpecimenDescription extends DescriptionBase {
+@Configurable
+public class SpecimenDescription extends DescriptionBase<IIdentifiableEntityCacheStrategy<SpecimenDescription>> {
 	private static final long serialVersionUID = -8506790426682192703L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(SpecimenDescription.class);
@@ -48,6 +52,7 @@ public class SpecimenDescription extends DescriptionBase {
 	 */
 	public SpecimenDescription() {
 		super();
+		this.cacheStrategy = new IdentifiableEntityDefaultCacheStrategy<SpecimenDescription>();
 	}
 	
 

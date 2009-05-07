@@ -21,6 +21,7 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
+import org.springframework.beans.factory.annotation.Configurable;
 
 /**
  * The taxon name class for bacteria.
@@ -40,6 +41,7 @@ import org.hibernate.search.annotations.Indexed;
 @Entity
 @Indexed(index = "eu.etaxonomy.cdm.model.name.TaxonNameBase")
 @Audited
+@Configurable
 public class BacterialName extends NonViralName<BacterialName> {
 	
 	/**

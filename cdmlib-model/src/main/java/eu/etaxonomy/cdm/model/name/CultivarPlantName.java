@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.model.name;
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
+import org.springframework.beans.factory.annotation.Configurable;
 
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -40,6 +41,7 @@ import javax.xml.bind.annotation.XmlType;
 @Entity
 @Indexed(index = "eu.etaxonomy.cdm.model.name.TaxonNameBase")
 @Audited
+@Configurable
 public class CultivarPlantName extends BotanicalName {
 	static Logger logger = Logger.getLogger(CultivarPlantName.class);
 	

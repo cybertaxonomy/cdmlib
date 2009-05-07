@@ -19,17 +19,18 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "IdentifiableMediaEntity", propOrder = {
     "media"
 })
 @MappedSuperclass
-public abstract class IdentifiableMediaEntity extends IdentifiableEntity implements IMediaDocumented, IMediaEntity{
+public abstract class IdentifiableMediaEntity<S extends IIdentifiableEntityCacheStrategy> extends IdentifiableEntity<S> implements IMediaDocumented, IMediaEntity{
 
 	private static final long serialVersionUID = 4038647011021908313L;
 
-	static Logger logger = Logger.getLogger(IdentifiableMediaEntity.class);
+	protected static Logger logger = Logger.getLogger(IdentifiableMediaEntity.class);
 
     @XmlElementWrapper(name = "Media")
     @XmlElement(name = "Medium")

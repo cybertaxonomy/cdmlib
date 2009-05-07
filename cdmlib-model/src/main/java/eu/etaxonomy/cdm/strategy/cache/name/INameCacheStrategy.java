@@ -36,5 +36,4 @@ public interface INameCacheStrategy<T extends TaxonNameBase> extends IIdentifiab
 	public List<Object> getTaggedName(T taxonNameBase);
 	
 	public String getFullTitleCache(T taxonNameBase);
-
 }

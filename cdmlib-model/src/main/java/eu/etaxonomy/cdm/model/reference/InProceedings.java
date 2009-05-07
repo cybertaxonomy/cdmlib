@@ -25,6 +25,10 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
+import org.springframework.beans.factory.annotation.Configurable;
+
+import eu.etaxonomy.cdm.strategy.cache.reference.IReferenceBaseCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.reference.StrictReferenceBaseDefaultCacheStrategy;
 
 /**
  * This class represents isolated parts (usually papers or abstracts) within
@@ -44,8 +48,8 @@ import org.hibernate.envers.Audited;
 @XmlRootElement(name = "InProceedings")
 @Entity
 @Audited
-public class InProceedings extends SectionBase {
-
+@Configurable
+public class InProceedings extends SectionBase<IReferenceBaseCacheStrategy<InProceedings>> {
 
 	/**
 	 * 
@@ -61,6 +65,10 @@ public class InProceedings extends SectionBase {
 	@Cascade(CascadeType.SAVE_UPDATE)
 	private Proceedings inProceedings;
 
+	protected InProceedings() {
+		this.cacheStrategy = new StrictReferenceBaseDefaultCacheStrategy<InProceedings>();
+	}
+	
 	/** 
 	 * Creates a new empty "in proceedings" instance.
 	 * 

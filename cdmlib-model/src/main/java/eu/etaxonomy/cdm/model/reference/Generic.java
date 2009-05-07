@@ -10,29 +10,20 @@
 package eu.etaxonomy.cdm.model.reference;
 
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementRef;
-import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
-import org.hibernate.annotations.IndexColumn;
+import org.hibernate.envers.Audited;
+import org.springframework.beans.factory.annotation.Configurable;
 
 import eu.etaxonomy.cdm.strategy.cache.reference.GenericDefaultCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.reference.INomenclaturalReferenceCacheStrategy;
 
 /**
  * This class represents all references which cannot be clearly assigned to a
@@ -63,7 +54,9 @@ import eu.etaxonomy.cdm.strategy.cache.reference.GenericDefaultCacheStrategy;
 })
 @XmlRootElement(name = "Generic")
 @Entity
-public class Generic extends PublicationBase implements INomenclaturalReference, IVolumeReference, Cloneable {
+@Audited
+@Configurable
+public class Generic extends PublicationBase<INomenclaturalReferenceCacheStrategy<Generic>> implements INomenclaturalReference, IVolumeReference, Cloneable {
 	private static final long serialVersionUID = -2547067957118035042L;
 	private static final Logger logger = Logger.getLogger(Generic.class);
 
@@ -87,9 +80,9 @@ public class Generic extends PublicationBase implements INomenclaturalReference,
     @XmlElement(name = "Pages")
 	private String pages;
 	
-    @XmlTransient
-    @Transient
-	private NomenclaturalReferenceHelper nomRefBase = NomenclaturalReferenceHelper.NewInstance(this);
+//    @XmlTransient
+//    @Transient
+//	private NomenclaturalReferenceHelper nomRefBase = NomenclaturalReferenceHelper.NewInstance(this);
 
 	
 	/** 
@@ -208,11 +201,11 @@ public class Generic extends PublicationBase implements INomenclaturalReference,
 	 * @see  #getNomenclaturalCitation(String)
 	 * @see  StrictReferenceBase#getCitation()
 	 */
-	@Override
-	@Transient
-	public String getCitation(){
-		return nomRefBase.getCitation();
-	}
+//	@Override
+//	@Transient
+//	public String getCitation(){
+//		return nomRefBase.getCitation();
+//	}
 
 	/**
 	 * Returns a formatted string containing the entire citation used for
@@ -228,7 +221,12 @@ public class Generic extends PublicationBase implements INomenclaturalReference,
 	 */
 	@Transient
 	public String getNomenclaturalCitation(String microReference) {
-		return nomRefBase.getNomenclaturalCitation(microReference);
+		if (cacheStrategy == null){
+			logger.warn("No CacheStrategy defined for "+ this.getClass() + ": " + this.getUuid());
+			return null;
+		}else{
+			return cacheStrategy.getNomenclaturalCitation(this,microReference);
+		}
 	}
 
 
@@ -248,10 +246,10 @@ public class Generic extends PublicationBase implements INomenclaturalReference,
 	 * @see  	eu.etaxonomy.cdm.model.common.IdentifiableEntity#getTitleCache()
 	 * @see  	eu.etaxonomy.cdm.model.common.IdentifiableEntity#generateTitle()
 	 */
-	@Override
-	public String generateTitle(){
-		return nomRefBase.generateTitle();
-	}
+//	@Override
+//	public String generateTitle(){
+//		return nomRefBase.generateTitle();
+//	}
 	
 //*********** CLONE **********************************/	
 	
@@ -269,7 +267,7 @@ public class Generic extends PublicationBase implements INomenclaturalReference,
 	@Override
 	public Generic clone(){
 		Generic result = (Generic)super.clone();
-		result.nomRefBase = NomenclaturalReferenceHelper.NewInstance(result);
+		result.cacheStrategy = GenericDefaultCacheStrategy.NewInstance();
 		//no changes to: editor, pages, placePublished,publisher, series, volume
 		return result;
 	}

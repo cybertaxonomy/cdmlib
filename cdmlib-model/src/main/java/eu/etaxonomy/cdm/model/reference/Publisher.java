@@ -13,6 +13,7 @@ import javax.persistence.Entity;
 
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
+import org.springframework.beans.factory.annotation.Configurable;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
@@ -28,6 +29,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  */
 @Entity
 @Audited
+@Configurable
 public class Publisher extends CdmBase implements Cloneable{
 	@SuppressWarnings("unused")
 	private static Logger logger = Logger.getLogger(Publisher.class);

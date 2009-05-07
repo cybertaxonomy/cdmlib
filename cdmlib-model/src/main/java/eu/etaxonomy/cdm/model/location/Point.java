@@ -8,6 +8,8 @@
 */
 
 package eu.etaxonomy.cdm.model.location;
+import java.io.Serializable;
+
 import javax.persistence.Embeddable;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
@@ -38,7 +40,7 @@ import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
 })
 @XmlRootElement(name = "Point")
 @Embeddable
-public class Point implements Cloneable {
+public class Point implements Cloneable, Serializable {
 	private static final Logger logger = Logger.getLogger(Point.class);
 	
 	//TODO was Float but H2 threw errors

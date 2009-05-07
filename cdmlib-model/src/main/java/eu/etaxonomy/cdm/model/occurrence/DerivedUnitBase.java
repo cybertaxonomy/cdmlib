@@ -28,6 +28,7 @@ import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
 /**
  * http://www.bgbm.org/biodivinf/docs/CollectionModel/ReprintTNR.pdf
@@ -50,7 +51,7 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 @XmlRootElement(name = "DerivedUnitBase")
 @Entity
 @Audited
-public abstract class DerivedUnitBase extends SpecimenOrObservationBase implements Cloneable{
+public abstract class DerivedUnitBase<S extends IIdentifiableEntityCacheStrategy> extends SpecimenOrObservationBase<S> implements Cloneable{
 
 	@XmlElement(name = "Collection")
 	@XmlIDREF

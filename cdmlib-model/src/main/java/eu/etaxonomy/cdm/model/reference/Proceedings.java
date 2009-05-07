@@ -19,6 +19,10 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
+import org.springframework.beans.factory.annotation.Configurable;
+
+import eu.etaxonomy.cdm.strategy.cache.reference.IReferenceBaseCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.reference.StrictReferenceBaseDefaultCacheStrategy;
 
 /**
  * This class represents conference proceedings. Proceedings are a
@@ -41,7 +45,8 @@ import org.hibernate.envers.Audited;
 @XmlRootElement(name = "Proceedings")
 @Entity
 @Audited
-public class Proceedings extends PrintedUnitBase implements Cloneable {
+@Configurable
+public class Proceedings extends PrintedUnitBase<IReferenceBaseCacheStrategy<Proceedings>> implements Cloneable {
 	private static final Logger logger = Logger.getLogger(Proceedings.class);
 	
 	//The conference sponsor
@@ -73,6 +78,7 @@ public class Proceedings extends PrintedUnitBase implements Cloneable {
 	
 	protected Proceedings(){
 		super();
+		this.cacheStrategy = new StrictReferenceBaseDefaultCacheStrategy<Proceedings>();
 	}
 	
 

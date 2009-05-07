@@ -71,7 +71,10 @@ public abstract class AnnotatableEntity extends VersionableEntity {
 		}
 	}
 	public void removeMarker(Marker marker){
-		marker.setMarkedObj(null);
+		if(this.markers.contains(marker)) {
+		    this.markers.remove(marker);
+		    marker.setMarkedObj(null);
+		}
 	}
 
 //*************** ANNOTATIONS **********************************************
@@ -87,8 +90,10 @@ public abstract class AnnotatableEntity extends VersionableEntity {
 	}
 	
 	public void removeAnnotation(Annotation annotation){
-		this.annotations.remove(annotation);
-		annotation.setAnnotatedObj(null);
+		if(this.annotations.contains(annotation)) {
+		    this.annotations.remove(annotation);
+		    annotation.setAnnotatedObj(null);
+		}
 	}
 	
 //********************** CLONE *****************************************/

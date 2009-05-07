@@ -1,5 +1,5 @@
 
-package eu.etaxonomy.cdm.strategy.cache.name;
+package eu.etaxonomy.cdm.strategy.cache.reference;
 
 import static org.junit.Assert.*;
 

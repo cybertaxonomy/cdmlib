@@ -25,9 +25,11 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
+import org.springframework.beans.factory.annotation.Configurable;
 
-import sun.management.resources.agent;
 import eu.etaxonomy.cdm.model.agent.Institution;
+import eu.etaxonomy.cdm.strategy.cache.reference.IReferenceBaseCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.reference.StrictReferenceBaseDefaultCacheStrategy;
 
 /**
  * This class represents thesis. A thesis is a document that presents the
@@ -49,7 +51,8 @@ import eu.etaxonomy.cdm.model.agent.Institution;
 @XmlRootElement(name = "Thesis")
 @Entity
 @Audited
-public class Thesis extends PublicationBase implements Cloneable{
+@Configurable
+public class Thesis extends PublicationBase<IReferenceBaseCacheStrategy<Thesis>> implements Cloneable{
 	
 	private static final Logger logger = Logger.getLogger(Thesis.class);
 	
@@ -59,6 +62,10 @@ public class Thesis extends PublicationBase implements Cloneable{
 	@ManyToOne(fetch = FetchType.LAZY)
 	@Cascade(CascadeType.SAVE_UPDATE)
 	private Institution school;
+	
+	protected Thesis() {
+		this.cacheStrategy = new StrictReferenceBaseDefaultCacheStrategy<Thesis>();
+	}
 
 	/** 
 	 * Creates a new empty thesis instance

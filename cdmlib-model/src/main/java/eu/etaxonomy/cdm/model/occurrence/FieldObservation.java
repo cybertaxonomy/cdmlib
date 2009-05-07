@@ -28,6 +28,10 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
+import org.springframework.beans.factory.annotation.Configurable;
+
+import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.common.IdentifiableEntityDefaultCacheStrategy;
 
 /**
  * In situ observation of a taxon in the field. If a specimen exists, 
@@ -45,7 +49,8 @@ import org.hibernate.envers.Audited;
 @XmlRootElement(name = "FieldObservation")
 @Entity
 @Audited
-public class FieldObservation extends SpecimenOrObservationBase implements Cloneable{
+@Configurable
+public class FieldObservation extends SpecimenOrObservationBase<IIdentifiableEntityCacheStrategy<FieldObservation>> implements Cloneable{
 	private static final Logger logger = Logger.getLogger(FieldObservation.class);
 
 	@XmlElement(name = "FieldNumber")
@@ -74,6 +79,7 @@ public class FieldObservation extends SpecimenOrObservationBase implements Clone
 	 */
 	protected FieldObservation(){
 		super();
+		this.cacheStrategy = new IdentifiableEntityDefaultCacheStrategy<FieldObservation>();
 	}
 
     @Override

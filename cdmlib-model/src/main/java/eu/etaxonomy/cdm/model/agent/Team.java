@@ -30,6 +30,7 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.IndexColumn;
 import org.hibernate.envers.Audited;
+import org.springframework.beans.factory.annotation.Configurable;
 
 import eu.etaxonomy.cdm.strategy.cache.agent.TeamDefaultCacheStrategy;
 
@@ -60,6 +61,7 @@ import eu.etaxonomy.cdm.strategy.cache.agent.TeamDefaultCacheStrategy;
 @XmlRootElement
 @Entity
 @Audited
+@Configurable
 public class Team extends TeamOrPersonBase<Team> {
 	private static final long serialVersionUID = 97640416905934622L;
 	public static final Logger logger = Logger.getLogger(Team.class);
@@ -156,10 +158,10 @@ public class Team extends TeamOrPersonBase<Team> {
 	 * 
 	 * @return  a string which identifies <i>this</i> team
 	 */
-	@Override
-	public String generateTitle() {
-		return cacheStrategy.getTitleCache(this);
-	}
+//	@Override
+//	public String generateTitle() {
+//		return cacheStrategy.getTitleCache(this);
+//	}
 	
 	
 	/**

@@ -35,9 +35,12 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
+import org.springframework.beans.factory.annotation.Configurable;
 
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.common.IdentifiableEntityDefaultCacheStrategy;
 
 /**
  * This class represents descriptions that delimit or circumscribe a real taxon.
@@ -62,7 +65,8 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 @Entity
 @Indexed(index = "eu.etaxonomy.cdm.model.description.DescriptionBase")
 @Audited
-public class TaxonDescription extends DescriptionBase {
+@Configurable
+public class TaxonDescription extends DescriptionBase<IIdentifiableEntityCacheStrategy<TaxonDescription>> {
 	private static final long serialVersionUID = 8065879180505546803L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TaxonDescription.class);
@@ -101,6 +105,7 @@ public class TaxonDescription extends DescriptionBase {
 	 */
 	public TaxonDescription(){
 		super();
+		this.cacheStrategy = new IdentifiableEntityDefaultCacheStrategy<TaxonDescription>();
 	}
 	
 	/**

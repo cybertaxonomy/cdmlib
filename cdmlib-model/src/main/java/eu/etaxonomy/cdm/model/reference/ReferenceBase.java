@@ -67,7 +67,7 @@ import eu.etaxonomy.cdm.strategy.cache.reference.IReferenceBaseCacheStrategy;
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 @Audited
 @Table(appliesTo="ReferenceBase", indexes = { @Index(name = "ReferenceBaseTitleCacheIndex", columnNames = { "titleCache" }) })
-public abstract class ReferenceBase extends IdentifiableMediaEntity implements IParsable{
+public abstract class ReferenceBase<S extends IReferenceBaseCacheStrategy> extends IdentifiableMediaEntity<S> implements IParsable{
 	
 	/**
 	 * 
@@ -101,10 +101,6 @@ public abstract class ReferenceBase extends IdentifiableMediaEntity implements I
     
     @XmlAttribute
     private int problemEnds = -1;
-    
-	@XmlTransient
-	@Transient
-	protected IReferenceBaseCacheStrategy<ReferenceBase> cacheStrategy;
 	
 	/**
 	 * Returns the {@link eu.etaxonomy.cdm.model.agent.TeamOrPersonBase author (team)} who created the
@@ -167,9 +163,13 @@ public abstract class ReferenceBase extends IdentifiableMediaEntity implements I
 	 * @see  #generateTitle()
 	 */
 	// TODO implement
-	@Transient
 	public String getCitation(){
-		return "";
+		if (cacheStrategy == null){
+			logger.warn("No CacheStrategy defined for "+ this.getClass() + ": " + this.getUuid());
+			return null;
+		}else{
+			return cacheStrategy.getTitleCache(this);
+		}
 	}
 	
 	/**
@@ -243,15 +243,15 @@ public abstract class ReferenceBase extends IdentifiableMediaEntity implements I
 	 * @see  	eu.etaxonomy.cdm.model.common.IdentifiableEntity#generateTitle()
 	 * @see  	eu.etaxonomy.cdm.strategy.strategy.cache.common.IIdentifiableEntityCacheStrategy#getTitleCache()
 	 */
-	@Override
-	public String generateTitle(){
-		if (cacheStrategy == null){
-			logger.warn("No CacheStrategy defined for ReferenceBase: " + this.getUuid());
-			return null;
-		}else{
-			return cacheStrategy.getTitleCache(this);
-		}
-	}
+//	@Override
+//	public String generateTitle(){
+//		if (cacheStrategy == null){
+//			logger.warn("No CacheStrategy defined for ReferenceBase: " + this.getUuid());
+//			return null;
+//		}else{
+//			return cacheStrategy.getTitleCache(this);
+//		}
+//	}
 	
 //**************************** CLONE *********************************/
 

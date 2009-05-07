@@ -26,6 +26,8 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 
+import eu.etaxonomy.cdm.strategy.cache.reference.IReferenceBaseCacheStrategy;
+
 /**
  * This (abstract) class represents printed {@link PublicationBase published references} which
  * are recurrent products of publishing companies or of research organisations.
@@ -47,7 +49,7 @@ import org.hibernate.envers.Audited;
 @XmlRootElement(name = "PrintedUnitBase")
 @Entity
 @Audited
-public abstract class PrintedUnitBase extends PublicationBase implements IVolumeReference{
+public abstract class PrintedUnitBase<S extends IReferenceBaseCacheStrategy> extends PublicationBase<S> implements IVolumeReference{
 	
 	static Logger logger = Logger.getLogger(PrintedUnitBase.class);
 	

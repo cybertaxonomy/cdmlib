@@ -14,6 +14,10 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
  */
 public interface IReferenceBaseCacheStrategy<T extends ReferenceBase> extends IIdentifiableEntityCacheStrategy<T> {
 	
-
+	/**
+	 * Returns a short version of the reference, suitable for citation (e.g. ${authorname}, ${year})
+	 * @return
+	 */
+	public String getCitation(T referenceBase);
 
 }

@@ -15,12 +15,16 @@ import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IReferencedEntity;
+import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.common.IdentifiableEntityDefaultCacheStrategy;
+
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Index;
 import org.hibernate.annotations.Table;
 import org.hibernate.envers.Audited;
+import org.springframework.beans.factory.annotation.Configurable;
 
 import java.util.*;
 
@@ -56,8 +60,9 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "Sequence")
 @Entity
 @Audited
+@Configurable
 @Table(appliesTo="Sequence", indexes = { @Index(name = "sequenceTitleCacheIndex", columnNames = { "titleCache" }) })
-public class Sequence extends IdentifiableEntity implements IReferencedEntity, IMediaDocumented{
+public class Sequence extends IdentifiableEntity<IIdentifiableEntityCacheStrategy<Sequence>> implements IReferencedEntity, IMediaDocumented{
 	private static final long serialVersionUID = 8298983152731241775L;
 	private static final Logger logger = Logger.getLogger(Sequence.class);
 	
@@ -114,6 +119,11 @@ public class Sequence extends IdentifiableEntity implements IReferencedEntity, I
     @XmlSchemaType(name = "IDREF")
     @OneToMany(fetch = FetchType.LAZY)
 	private Set<Media> chromatograms = new HashSet<Media>();
+	
+	protected Sequence() {
+		super(); // FIXME I think this is explicit - do we really need to call this?
+		this.cacheStrategy = new IdentifiableEntityDefaultCacheStrategy<Sequence>();
+	}
 	
 	public Locus getLocus(){
 		logger.debug("getLocus");
@@ -234,13 +244,7 @@ public class Sequence extends IdentifiableEntity implements IReferencedEntity, I
 		this.citationMicroReference = citationMicroReference;
 	}
 
-	@Override
-	public String generateTitle(){
-		return "";
-	}
-
 	public ReferenceBase getCitation(){
 		return publishedIn;
 	}
-
 }

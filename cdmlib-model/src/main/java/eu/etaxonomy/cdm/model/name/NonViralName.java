@@ -32,6 +32,7 @@ import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Fields;
 import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
+import org.springframework.beans.factory.annotation.Configurable;
 
 import eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
@@ -76,6 +77,7 @@ import eu.etaxonomy.cdm.strategy.cache.name.NonViralNameDefaultCacheStrategy;
 @Entity
 @Indexed(index = "eu.etaxonomy.cdm.model.name.TaxonNameBase")
 @Audited
+@Configurable
 public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonViralNameCacheStrategy> {
 	
 	private static final Logger logger = Logger.getLogger(NonViralName.class);
@@ -144,9 +146,9 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 	@XmlElement(name = "ProtectedNameCache")
 	protected boolean protectedNameCache;
 
-    @XmlTransient
-    @Transient
-	protected INonViralNameCacheStrategy cacheStrategy;
+//    @XmlTransient
+//    @Transient
+//	protected INonViralNameCacheStrategy cacheStrategy;
 	
 	// ************* CONSTRUCTORS *************/	
 	
@@ -290,19 +292,19 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 	 * @see 	eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy
 	 * @see     eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy
 	 */
-	@Override
-	@Transient
-	public INonViralNameCacheStrategy getCacheStrategy() {
-		return cacheStrategy;
-	}
+//	@Override
+//	@Transient
+//	public INonViralNameCacheStrategy getCacheStrategy() {
+//		return cacheStrategy;
+//	}
 	
 	/**
 	 * @see  #getCacheStrategy()
 	 */
-	@Override
-	public void setCacheStrategy(INonViralNameCacheStrategy cacheStrategy) {
-		this.cacheStrategy = cacheStrategy;
-	}
+//	@Override
+//	public void setCacheStrategy(INonViralNameCacheStrategy cacheStrategy) {
+//		this.cacheStrategy = cacheStrategy;
+//	}
 
 	/**
 	 * Returns the {@link eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor author (team)} that published <i>this</i> non viral
@@ -499,15 +501,15 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 	 * @see  	eu.etaxonomy.cdm.model.common.IdentifiableEntity#getTitleCache()
 	 * @see  	TaxonNameBase#generateTitle()
 	 */
-	@Override
-	public String generateTitle(){
-		if (cacheStrategy == null){
-			logger.warn("No CacheStrategy defined for nonViralName: " + this.getUuid());
-			return null;
-		}else{
-			return cacheStrategy.getTitleCache(this);
-		}
-	}
+//	@Override
+//	public String generateTitle(){
+//		if (cacheStrategy == null){
+//			logger.warn("No CacheStrategy defined for nonViralName: " + this.getUuid());
+//			return null;
+//		}else{
+//			return cacheStrategy.getTitleCache(this);
+//		}
+//	}
 	
 	@Override
 	public String generateFullTitle(){

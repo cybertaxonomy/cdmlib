@@ -20,6 +20,7 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
+import org.springframework.beans.factory.annotation.Configurable;
 
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
@@ -47,6 +48,7 @@ import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 @Entity
 @Indexed(index = "eu.etaxonomy.cdm.model.name.TaxonNameBase")
 @Audited
+@Configurable
 public class ZoologicalName extends NonViralName<ZoologicalName> {
 	
 	/**

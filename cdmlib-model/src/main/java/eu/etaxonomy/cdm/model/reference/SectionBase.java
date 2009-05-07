@@ -21,6 +21,8 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 
+import eu.etaxonomy.cdm.strategy.cache.reference.IReferenceBaseCacheStrategy;
+
 /**
  * This (abstract) class represents isolated sections (parts, chapters or
  * papers) within a {@link PrintedUnitBase printed unit}.
@@ -39,7 +41,7 @@ import org.hibernate.envers.Audited;
 @XmlRootElement(name = "SectionBase")
 @Entity
 @Audited
-public abstract class SectionBase extends StrictReferenceBase {
+public abstract class SectionBase<S extends IReferenceBaseCacheStrategy> extends StrictReferenceBase<S> {
 	
 	static Logger logger = Logger.getLogger(SectionBase.class);
 	

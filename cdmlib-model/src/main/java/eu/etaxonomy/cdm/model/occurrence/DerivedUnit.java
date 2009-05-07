@@ -12,6 +12,10 @@ package eu.etaxonomy.cdm.model.occurrence;
 
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
+import org.springframework.beans.factory.annotation.Configurable;
+
+import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.common.IdentifiableEntityDefaultCacheStrategy;
 
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -25,7 +29,12 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement(name = "DerivedUnit")
 @Entity
 @Audited
-public class DerivedUnit extends DerivedUnitBase implements Cloneable{
+@Configurable
+public class DerivedUnit extends DerivedUnitBase<IIdentifiableEntityCacheStrategy<DerivedUnit>> implements Cloneable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private static final Logger logger = Logger.getLogger(DerivedUnit.class);
 	
 	/**
@@ -41,6 +50,7 @@ public class DerivedUnit extends DerivedUnitBase implements Cloneable{
 	 */
 	protected DerivedUnit() {
 		super();
+		this.cacheStrategy = new IdentifiableEntityDefaultCacheStrategy<DerivedUnit>();
 	}
 	
 //*********** CLONE **********************************/	

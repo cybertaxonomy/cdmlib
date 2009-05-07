@@ -18,6 +18,10 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
+import org.springframework.beans.factory.annotation.Configurable;
+
+import eu.etaxonomy.cdm.strategy.cache.reference.IReferenceBaseCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.reference.StrictReferenceBaseDefaultCacheStrategy;
 
 /**
  * This class represents a database used as an information source. A database is
@@ -35,7 +39,8 @@ import org.hibernate.envers.Audited;
 @XmlRootElement(name = "Database")
 @Entity
 @Audited
-public class Database extends PublicationBase implements Cloneable {
+@Configurable
+public class Database extends PublicationBase<IReferenceBaseCacheStrategy<Database>> implements Cloneable {
 
 	/**
 	 * 
@@ -43,6 +48,10 @@ public class Database extends PublicationBase implements Cloneable {
 	private static final long serialVersionUID = -7077612779393752878L;
 	private static final Logger logger = Logger.getLogger(Database.class);
 
+	protected Database() {
+		this.cacheStrategy = new StrictReferenceBaseDefaultCacheStrategy<Database>();
+	}
+	
 	/** 
 	 * Creates a new empty database instance.
 	 */

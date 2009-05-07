@@ -9,10 +9,12 @@
 
 package eu.etaxonomy.cdm.model.reference;
 
+import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.Lob;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -24,6 +26,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.common.TimePeriod;
+import eu.etaxonomy.cdm.strategy.cache.reference.IReferenceBaseCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.reference.StrictReferenceBaseDefaultCacheStrategy;
 
 /**
@@ -52,12 +55,14 @@ import eu.etaxonomy.cdm.strategy.cache.reference.StrictReferenceBaseDefaultCache
 @Entity
 @Audited
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
-public abstract class StrictReferenceBase extends ReferenceBase {
+public abstract class StrictReferenceBase<S extends IReferenceBaseCacheStrategy> extends ReferenceBase<S> {
 	
 	private static final Logger logger = Logger.getLogger(StrictReferenceBase.class);
 	
 	//Title of the reference
 	@XmlElement(name ="Title" )
+	@Column(length=4096, name="title")
+	@Lob
 	private String title;
 	
 	//The date range assigned to the reference. ISO Date range like. Flexible, year can be left out, etc
@@ -67,7 +72,6 @@ public abstract class StrictReferenceBase extends ReferenceBase {
 	
 	protected StrictReferenceBase(){
 		super();
-		this.cacheStrategy = StrictReferenceBaseDefaultCacheStrategy.NewInstance();
 	}
 	
 	

@@ -21,8 +21,10 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
+import org.springframework.beans.factory.annotation.Configurable;
 
 import eu.etaxonomy.cdm.strategy.cache.reference.BookDefaultCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.reference.INomenclaturalReferenceCacheStrategy;
 
 /**
  * This class represents books. A book is a  {@link PrintedUnitBase printed unit} usually
@@ -46,7 +48,8 @@ import eu.etaxonomy.cdm.strategy.cache.reference.BookDefaultCacheStrategy;
 @XmlRootElement(name = "Book")
 @Entity
 @Audited
-public class Book extends PrintedUnitBase implements INomenclaturalReference, Cloneable {
+@Configurable
+public class Book extends PrintedUnitBase<INomenclaturalReferenceCacheStrategy<Book>> implements INomenclaturalReference, Cloneable {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(Book.class);
 	
@@ -56,9 +59,9 @@ public class Book extends PrintedUnitBase implements INomenclaturalReference, Cl
     @XmlElement(name = "ISBN")
 	private String isbn;
 	
-    @XmlTransient
-    @Transient
-	private NomenclaturalReferenceHelper nomRefBase = NomenclaturalReferenceHelper.NewInstance(this);
+//    @XmlTransient
+//    @Transient
+//	private NomenclaturalReferenceHelper nomRefBase = NomenclaturalReferenceHelper.NewInstance(this);
 	
 	/** 
 	 * Class constructor: creates a new empty book instance
@@ -131,11 +134,11 @@ public class Book extends PrintedUnitBase implements INomenclaturalReference, Cl
 	 * @see  #getNomenclaturalCitation(String)
 	 * @see  StrictReferenceBase#getCitation()
 	 */
-	@Transient
-	@Override
-	public String getCitation(){
-		return nomRefBase.getCitation();
-	}
+//	@Transient
+//	@Override
+//	public String getCitation(){
+//		return nomRefBase.getCitation();
+//	}
 
 	/**
 	 * Returns a formatted string containing the entire citation used for
@@ -151,7 +154,12 @@ public class Book extends PrintedUnitBase implements INomenclaturalReference, Cl
 	 */
 	@Transient
 	public String getNomenclaturalCitation(String microReference) {
-		return nomRefBase.getNomenclaturalCitation(microReference);
+		if (cacheStrategy == null){
+			logger.warn("No CacheStrategy defined for "+ this.getClass() + ": " + this.getUuid());
+			return null;
+		}else{
+			return cacheStrategy.getNomenclaturalCitation(this,microReference);
+		}
 	}
 
 
@@ -168,10 +176,10 @@ public class Book extends PrintedUnitBase implements INomenclaturalReference, Cl
 	 * @see  	eu.etaxonomy.cdm.model.common.IdentifiableEntity#getTitleCache()
 	 * @see  	eu.etaxonomy.cdm.model.common.IdentifiableEntity#generateTitle()
 	 */
-	@Override
-	public String generateTitle(){
-		return nomRefBase.generateTitle();
-	}
+//	@Override
+//	public String generateTitle(){
+//		return nomRefBase.generateTitle();
+//	}
 	
 	
 //*********** CLONE **********************************/	
@@ -189,7 +197,7 @@ public class Book extends PrintedUnitBase implements INomenclaturalReference, Cl
 	@Override
 	public Book clone(){
 		Book result = (Book)super.clone();
-		result.nomRefBase = NomenclaturalReferenceHelper.NewInstance(result);
+		result.cacheStrategy = BookDefaultCacheStrategy.NewInstance();
 		//no changes to: edition, isbn
 		return result;
 	}

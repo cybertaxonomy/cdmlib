@@ -57,7 +57,7 @@ public class TaxonNameBaseTest {
 	}
 
 	
-	private class TaxonNameBaseTestClass extends TaxonNameBase{
+	private class TaxonNameBaseTestClass extends TaxonNameBase<TaxonNameBaseTestClass, INameCacheStrategy<TaxonNameBaseTestClass>>{
 		public TaxonNameBaseTestClass(){super();};
 		public TaxonNameBaseTestClass(Rank rank){super(rank);};
 		public TaxonNameBaseTestClass(HomotypicalGroup hg){super(hg);};
@@ -71,7 +71,12 @@ public class TaxonNameBaseTest {
 		@Override
 		public NomenclaturalCode getNomenclaturalCode(){return null;};
 		@Override
-		public String generateFullTitle(){return null;};
+		public String generateFullTitle(){return null;}
+		@Override
+		public String generateTitle() {
+			// TODO Auto-generated method stub
+			return null;
+		};
 	}
 
 	

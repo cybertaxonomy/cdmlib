@@ -829,12 +829,16 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/aspectj/PropertyChangeAspect.aj -tex
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/datagenerator/TaxonGenerator.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/HibernateProxyHelper.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/jaxb/CdmNamespacePrefixMapper.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/jaxb/ClassAdapter.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/jaxb/DateTimeAdapter.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/jaxb/FormattedText.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/jaxb/FormattedTextAdapter.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/jaxb/LSIDAdapter.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/jaxb/MultilanguageTextAdapter.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/jaxb/MultilanguageTextElement.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/jaxb/Namespace.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/jaxb/NamespacesAdapter.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/jaxb/NamespacesElement.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/jaxb/PartialAdapter.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/jaxb/TDWGNamespacePrefixMapper.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/jaxb/UUIDAdapter.java -text
@@ -1029,7 +1033,6 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/IVolumeReference.jav
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/InProceedings.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/Journal.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/Map.java -text
-cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/NomenclaturalReferenceHelper.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/Patent.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/PersonalCommunication.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/PrintSeries.java -text
@@ -1074,6 +1077,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/agent/INomenclaturalA
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/agent/PersonDefaultCacheStrategy.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/agent/TeamDefaultCacheStrategy.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/common/IIdentifiableEntityCacheStrategy.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/common/IdentifiableEntityDefaultCacheStrategy.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/name/BotanicNameDefaultCacheStrategy.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/name/INameCacheStrategy.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/name/INonViralNameCacheStrategy.java -text
@@ -1095,6 +1099,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/exceptions/StringNotParsabl
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/exceptions/UnknownCdmTypeException.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/parser/INonViralNameParser.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/parser/NonViralNameParserImpl.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/taxon/TaxonBaseDefaultCacheStrategy.java -text
 cdmlib-model/src/main/resources/log4j.properties -text
 cdmlib-model/src/main/resources/terms/AbsenceTerm.csv -text
 cdmlib-model/src/main/resources/terms/AnnotationType.csv -text
@@ -1177,9 +1182,9 @@ cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/taxon/TaxonNodeTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/taxon/TaxonTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/taxon/TaxonomicViewTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/cache/name/BotanicNameCacheStrategyTest.java -text
-cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/cache/name/CdDvdDefaultCacheStrategyTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/cache/name/NonViralNameDefaultCacheStrategyTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/cache/name/ZoologicalNameCacheStrategyTest.java -text
+cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/cache/reference/CdDvdDefaultCacheStrategyTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/parser/NonViralNameParserImplTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/test/function/TestFullReferenceParser.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/test/function/TestModel.java -text

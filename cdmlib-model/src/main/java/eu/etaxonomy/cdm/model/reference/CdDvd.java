@@ -20,9 +20,11 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
+import org.springframework.beans.factory.annotation.Configurable;
 
 import eu.etaxonomy.cdm.strategy.cache.reference.BookDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.reference.CdDvdDefaultCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.reference.INomenclaturalReferenceCacheStrategy;
 
 /**
  * This class represents electronic publications the support of which are Cds 
@@ -40,7 +42,8 @@ import eu.etaxonomy.cdm.strategy.cache.reference.CdDvdDefaultCacheStrategy;
 @XmlRootElement(name = "CdDvd")
 @Entity
 @Audited
-public class CdDvd extends PublicationBase implements INomenclaturalReference, Cloneable{
+@Configurable
+public class CdDvd extends PublicationBase<INomenclaturalReferenceCacheStrategy<CdDvd>> implements INomenclaturalReference, Cloneable{
 	static Logger logger = Logger.getLogger(CdDvd.class);
 
 	public static CdDvd NewInstance() {
@@ -48,9 +51,9 @@ public class CdDvd extends PublicationBase implements INomenclaturalReference, C
 	}
 	
 	
-    @XmlTransient
-    @Transient
-	private NomenclaturalReferenceHelper nomRefBase = NomenclaturalReferenceHelper.NewInstance(this);
+//    @XmlTransient
+//    @Transient
+//	private NomenclaturalReferenceHelper nomRefBase = NomenclaturalReferenceHelper.NewInstance(this);
 
 	
 	protected CdDvd(){
@@ -63,7 +66,12 @@ public class CdDvd extends PublicationBase implements INomenclaturalReference, C
 	 * @see eu.etaxonomy.cdm.model.reference.INomenclaturalReference#getNomenclaturalCitation(java.lang.String)
 	 */
 	public String getNomenclaturalCitation(String microReference) {
-		return nomRefBase.getNomenclaturalCitation(microReference);
+		if (cacheStrategy == null){
+			logger.warn("No CacheStrategy defined for "+ this.getClass() + ": " + this.getUuid());
+			return null;
+		}else{
+			return cacheStrategy.getNomenclaturalCitation(this,microReference);
+		}
 	}
 	
 

@@ -17,6 +17,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
+import org.springframework.beans.factory.annotation.Configurable;
 
 import java.util.*;
 import javax.persistence.*;
@@ -62,6 +63,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "Person")
 @Entity
 @Audited
+@Configurable
 public class Person extends TeamOrPersonBase<Person> {
 	private static final long serialVersionUID = 4153566493065539763L;
 	public static final Logger logger = Logger.getLogger(Person.class);
@@ -318,24 +320,24 @@ public class Person extends TeamOrPersonBase<Person> {
 		this.lifespan = lifespan;
 	}
 
-	/**
-	 * Generates the "full" name string of <i>this</i> person according to the strategy
-	 * defined in {@link eu.etaxonomy.cdm.strategy.cache.agent.PersonDefaultCacheStrategy PersonDefaultCacheStrategy}.
-	 * The used attributes are:
-	 * {@link #getPrefix() prefix}, {@link #getFirstname() firstname}, {@link #getLastname() lastname} and {@link #getSuffix() suffix}.
-	 * This method overrides {@link eu.etaxonomy.cdm.model.common.IdentifiableEntity#generateTitle() generateTitle}.
-	 * The result might be kept as {@link eu.etaxonomy.cdm.model.common.IdentifiableEntity#setTitleCache(String) titleCache} if the
-	 * flag {@link eu.etaxonomy.cdm.model.common.IdentifiableEntity#protectedTitleCache protectedTitleCache} is not set.
-	 * 
-	 * @return  the string with the full name of <i>this</i> person
-	 */
-	@Override
-	public String generateTitle() {
-		String title = null;
-		if (cacheStrategy != null) {
-		title = cacheStrategy.getTitleCache(this);
-		} 
-        return title;
-	}
+//	/**
+//	 * Generates the "full" name string of <i>this</i> person according to the strategy
+//	 * defined in {@link eu.etaxonomy.cdm.strategy.cache.agent.PersonDefaultCacheStrategy PersonDefaultCacheStrategy}.
+//	 * The used attributes are:
+//	 * {@link #getPrefix() prefix}, {@link #getFirstname() firstname}, {@link #getLastname() lastname} and {@link #getSuffix() suffix}.
+//	 * This method overrides {@link eu.etaxonomy.cdm.model.common.IdentifiableEntity#generateTitle() generateTitle}.
+//	 * The result might be kept as {@link eu.etaxonomy.cdm.model.common.IdentifiableEntity#setTitleCache(String) titleCache} if the
+//	 * flag {@link eu.etaxonomy.cdm.model.common.IdentifiableEntity#protectedTitleCache protectedTitleCache} is not set.
+//	 * 
+//	 * @return  the string with the full name of <i>this</i> person
+//	 */
+//	@Override
+//	public String generateTitle() {
+//		String title = null;
+//		if (cacheStrategy != null) {
+//		title = cacheStrategy.getTitleCache(this);
+//		} 
+//        return title;
+//	}
 
 }

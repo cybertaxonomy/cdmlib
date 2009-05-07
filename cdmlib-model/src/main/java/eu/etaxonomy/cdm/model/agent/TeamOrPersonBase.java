@@ -36,16 +36,12 @@ import eu.etaxonomy.cdm.strategy.cache.agent.INomenclaturalAuthorCacheStrategy;
 })
 @Entity
 @Audited
-public abstract class TeamOrPersonBase<T extends TeamOrPersonBase<?>> extends AgentBase implements INomenclaturalAuthor {
+public abstract class TeamOrPersonBase<T extends TeamOrPersonBase<?>> extends AgentBase<INomenclaturalAuthorCacheStrategy<T>> implements INomenclaturalAuthor {
 	private static final long serialVersionUID = 5216821307314001961L;
 	public static final Logger logger = Logger.getLogger(TeamOrPersonBase.class);
 
 	@XmlElement(name="NomenclaturalTitle")
 	protected String nomenclaturalTitle;
-	
-	@XmlTransient
-	@Transient
-	protected INomenclaturalAuthorCacheStrategy<T> cacheStrategy;
 
 	/**
 	 * Returns the identification string (nomenclatural abbreviation) used in
@@ -63,5 +59,4 @@ public abstract class TeamOrPersonBase<T extends TeamOrPersonBase<?>> extends Ag
 	public void setNomenclaturalTitle(String nomenclaturalTitle) {
 		this.nomenclaturalTitle = nomenclaturalTitle;
 	}
-
 }
