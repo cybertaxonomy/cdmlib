@@ -10,6 +10,7 @@ import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
 import org.hibernate.Hibernate;
 import org.hibernate.Query;
+import org.hibernate.envers.query.AuditQuery;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.Search;
 import org.hibernate.search.SearchFactory;
@@ -19,6 +20,7 @@ import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.persistence.dao.QueryParseException;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionElementDao;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.AnnotatableDaoImpl;
@@ -39,11 +41,20 @@ public class DescriptionElementDaoImpl extends AnnotatableDaoImpl<DescriptionEle
 	}
 
 	public int countMedia(DescriptionElementBase descriptionElement) {
-		checkNotInPriorView("DescriptionElementDaoImpl.countMedia(DescriptionElementBase descriptionElement)");
-		Query query = getSession().createQuery("select count(media) from DescriptionElementBase descriptionElement join descriptionElement.media media where descriptionElement = :descriptionElement");
-		query.setParameter("descriptionElement", descriptionElement);
+		AuditEvent auditEvent = getAuditEventFromContext();
+		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
+    		Query query = getSession().createQuery("select count(media) from DescriptionElementBase descriptionElement join descriptionElement.media media where descriptionElement = :descriptionElement");
+	    	query.setParameter("descriptionElement", descriptionElement);
 		
-		return ((Long)query.uniqueResult()).intValue();
+		    return ((Long)query.uniqueResult()).intValue();
+		} else {
+			// Horribly inefficient, I know, but hard to do at the moment with envers.
+			// FIXME Improve this (by improving envers)
+			List<String> propertyPaths = new ArrayList<String>();
+			propertyPaths.add("media");
+			DescriptionElementBase d = super.load(descriptionElement.getUuid(), propertyPaths);
+			return d.getMedia().size();
+		}
 	}
 
 	public int countTextData(String queryString) {
@@ -62,22 +73,43 @@ public class DescriptionElementDaoImpl extends AnnotatableDaoImpl<DescriptionEle
 	}
 
 	public List<Media> getMedia(DescriptionElementBase descriptionElement,	Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
-		checkNotInPriorView("DescriptionElementDaoImpl.getMedia(DescriptionElementBase descriptionElement,	Integer pageSize, Integer pageNumber, List<String> propertyPaths)");
-		Query query = getSession().createQuery("select media from DescriptionElementBase descriptionElement join descriptionElement.media media where descriptionElement = :descriptionElement");
-		query.setParameter("descriptionElement", descriptionElement);
-		
-		if(pageSize != null) {
-		    query.setMaxResults(pageSize);
-		    if(pageNumber != null) {
-		        query.setFirstResult(pageNumber * pageSize);
-		    } else {
-		    	query.setFirstResult(0);
-		    }
+		AuditEvent auditEvent = getAuditEventFromContext();
+		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
+			Query query = getSession().createQuery("select media from DescriptionElementBase descriptionElement join descriptionElement.media media where descriptionElement = :descriptionElement");
+			query.setParameter("descriptionElement", descriptionElement);
+
+			if(pageSize != null) {
+				query.setMaxResults(pageSize);
+				if(pageNumber != null) {
+					query.setFirstResult(pageNumber * pageSize);
+				} else {
+					query.setFirstResult(0);
+				}
+			}
+
+			List<Media> results = (List<Media>)query.list();
+			defaultBeanInitializer.initializeAll(results, propertyPaths);
+			return results;
+		} else {
+			// Horribly inefficient, I know, but hard to do at the moment with envers.
+			// FIXME Improve this (by improving envers)
+			List<String> pPaths = new ArrayList<String>();
+			propertyPaths.add("media");
+			DescriptionElementBase d = super.load(descriptionElement.getUuid(), pPaths);
+			List<Media> results = new ArrayList<Media>();
+			results.addAll(d.getMedia());
+			if(pageSize != null) {
+				int fromIndex = 0;
+				int toIndex = 0;
+				if(pageNumber != null) {
+				    fromIndex =  pageNumber * pageSize;  
+				} 
+				toIndex = fromIndex + pageSize;
+				results = results.subList(fromIndex, toIndex);
+			}
+			defaultBeanInitializer.initializeAll(results, propertyPaths);
+			return results;			
 		}
-		
-		List<Media> results = (List<Media>)query.list();
-		defaultBeanInitializer.initializeAll(results, propertyPaths);
-		return results;
 	}
 
 	public List<TextData> searchTextData(String queryString, Integer pageSize,	Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
