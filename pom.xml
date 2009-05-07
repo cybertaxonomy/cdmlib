@@ -576,12 +576,12 @@
 		  	<dependency>
 		  		<groupId>org.aspectj</groupId>
 		  		<artifactId>aspectjrt</artifactId>
-		  		<version>1.5.4</version>
+		  		<version>1.6.3</version>
 		  	</dependency>
 		  	<dependency>
       			<groupId>org.aspectj</groupId>
       			<artifactId>aspectjweaver</artifactId>
-      			<version>1.5.4</version>
+      			<version>1.6.3</version>
     		</dependency>
 			<dependency>
 			    <groupId>javax.annotation</groupId>
@@ -895,6 +895,17 @@
 		  		<artifactId>spring-aop</artifactId>
 		  		<version>${spring.version}</version>
 		  	</dependency>
+		  	<dependency>
+              <groupId>org.springframework</groupId>
+              <artifactId>spring-agent</artifactId>
+              <version>2.5.6</version>
+              <scope>provided</scope>
+            </dependency>
+           <dependency>
+              <groupId>org.springframework</groupId>
+              <artifactId>spring-aspects</artifactId>
+              <version>2.5.6</version>
+            </dependency>
 		  	<dependency>
 		  		<groupId>org.springframework.security</groupId>
 		  		<artifactId>spring-security-core</artifactId>
