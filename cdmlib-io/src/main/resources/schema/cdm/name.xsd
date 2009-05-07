@@ -78,7 +78,7 @@
 
   <xs:element name="TypeDesignationBase" type="name:TypeDesignationBase"/>
 
-  <xs:element name="TypeDesignationStatus" type="name:TypeDesignationStatus"/>
+  <xs:element name="SpecimenTypeDesignationStatus" type="name:SpecimenTypeDesignationStatus"/>
 
   <xs:element name="ViralName">
     <xs:complexType>
@@ -137,7 +137,7 @@
     </xs:complexContent>
   </xs:complexType>
 
-  <xs:complexType name="TypeDesignationStatus">
+  <xs:complexType name="SpecimenTypeDesignationStatus">
     <xs:complexContent>
       <xs:extension base="common:OrderedTermBase">
         <xs:sequence/>

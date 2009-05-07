@@ -246,7 +246,7 @@ public class SDDCdmExporter extends CdmIoBase<IExportConfigurator> implements IC
 			if (featureDataRows == 0) { featureDataRows = MAX_ROWS; }
 			logger.info("# Feature Tree, Feature Node");
 			sddDataSet.setFeatureData(getDescriptionService().getFeatureNodesAll());
-			sddDataSet.addFeatureData(getDescriptionService().getFeatureTreesAll());
+			sddDataSet.addFeatureData(getDescriptionService().getFeatureTreesAll(null));
 		}
 	}
 

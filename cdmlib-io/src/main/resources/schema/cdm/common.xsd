@@ -495,6 +495,27 @@
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
+  <xs:complexType name="LSIDAuthority">
+    <xs:sequence>
+      <xs:element name="Authority" type="xs:string"/>
+      <xs:element name="Server" type="xs:string"/>
+      <xs:element name="Port" type="xs:string"/>
+      <xs:element name="Url" type="xs:string"/>
+      <xs:element name="Namespaces" type="common:Namespaces"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="Namespaces">
+    <xs:sequence>
+      <xs:element ref="common:Namespace" minOccurs="1" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="Namespace" type="common:Namespace"/>
+  <xs:complexType name="Namespace">
+    <xs:sequence>
+      <xs:element name="NSpace" type="xs:string"/>
+      <xs:element name="Class" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
   <xs:complexType name="MultilanguageText">
     <xs:sequence>
       <xs:element ref="common:LanguageString" minOccurs="1" maxOccurs="unbounded"/>

@@ -98,17 +98,17 @@
               </xs:sequence>
             </xs:complexType>
           </xs:element>
-          <xs:element name="GeoScopes" minOccurs="0">
-            <xs:complexType>
-              <xs:sequence>
-                <xs:element name="GeoScope" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
-              </xs:sequence>
-            </xs:complexType>
-          </xs:element>
           <xs:element name="TaxonomicScope" minOccurs="0">
             <xs:complexType>
               <xs:sequence>
                 <xs:element name="Taxon" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="GeoScopes" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="GeoScope" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
               </xs:sequence>
             </xs:complexType>
           </xs:element>

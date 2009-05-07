@@ -85,7 +85,7 @@ public class BerlinModelExportConfigurator extends ExportConfiguratorBase implem
 	 */
 	public ReferenceBase getSourceReference() {
 		if (sourceReference == null){
-			sourceReference =  new Database();
+			sourceReference =  Database.NewInstance();
 			if (getSource() != null){
 				sourceReference.setTitleCache(getSource().getDatabase());
 			}

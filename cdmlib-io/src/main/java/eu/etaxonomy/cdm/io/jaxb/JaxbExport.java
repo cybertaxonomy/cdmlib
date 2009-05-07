@@ -225,7 +225,7 @@ public class JaxbExport extends CdmIoBase<IExportConfigurator> implements ICdmIO
 		if (jaxbExpConfig.isDoFeatureData() == true) {
 			if (featureDataRows == 0) { featureDataRows = MAX_ROWS; }
 			logger.info("# Feature Tree, Feature Node");
-			dataSet.setFeatureTrees(getDescriptionService().getFeatureTreesAll());
+			dataSet.setFeatureTrees(getDescriptionService().getFeatureTreesAll(null));
 		}
 	}
 

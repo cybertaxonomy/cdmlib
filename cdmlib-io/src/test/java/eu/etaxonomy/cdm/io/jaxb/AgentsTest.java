@@ -29,7 +29,7 @@ public class AgentsTest {
 			assertEquals("Person.getLastName should return \'Miller\'","Miller",person.getLastname());
 			assertNotNull("Person.getLifespan should not be null",person.getLifespan());
 			assertNotNull("Person.getLifespan.getStart should not be null",person.getLifespan().getStart());
-			assertEquals("Person.getLifespan.getStart should equal 1691", person.getLifespan().getStart().get(DateTimeFieldType.yearOfEra()),1691);
+			assertEquals("Person.getLifespan.getStart should equal 1691", person.getLifespan().getStart().get(DateTimeFieldType.year()),1691);
             assertNotNull("Person.getInstitutionalMemberships should not be null",person.getInstitutionalMemberships());
             assertEquals("There should be one institutional membership",1,person.getInstitutionalMemberships().size());
             InstitutionalMembership institutionalMembership = person.getInstitutionalMemberships().iterator().next();

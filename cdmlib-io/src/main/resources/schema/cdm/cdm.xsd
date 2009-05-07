@@ -84,7 +84,7 @@
                 <xs:element ref="taxon:SynonymRelationshipType"/>
                 <xs:element ref="taxon:TaxonRelationshipType"/>
                 <xs:element ref="description:TextFormat"/>
-                <xs:element ref="name:TypeDesignationStatus"/>
+                <xs:element ref="name:SpecimenTypeDesignationStatus"/>
                 <xs:element ref="location:WaterbodyOrCountry"/>
               </xs:choice>
             </xs:sequence>
