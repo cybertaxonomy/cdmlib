@@ -9,6 +9,10 @@ import java.util.List;
 import java.util.UUID;
 
 import org.hibernate.Hibernate;
+import org.hibernate.collection.PersistentCollection;
+import org.hibernate.envers.entities.mapper.relation.lazy.proxy.CollectionProxy;
+import org.hibernate.envers.entities.mapper.relation.lazy.proxy.MapProxy;
+import org.hibernate.proxy.HibernateProxy;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -64,6 +68,8 @@ public class BeanInitializerIntegration extends CdmTransactionalIntegrationTest 
 		propertyPaths.add("nomenclaturalReference");
 		
 		TaxonNameBase sphingidae = taxonNameDao.load(sphingidaeUuid, propertyPaths);
+		setComplete();
+		endTransaction();
 		
 		assertNotNull("Sphingidae should not be null",sphingidae);
 		assertFalse("TaxonNameBase.homotypicalGroup should not be initialized",Hibernate.isInitialized(sphingidae.getHomotypicalGroup()));
@@ -87,11 +93,17 @@ public class BeanInitializerIntegration extends CdmTransactionalIntegrationTest 
 		propertyPaths.add("hybridRelationships");
 		
 		NonViralName sphingidae = (NonViralName)taxonNameDao.load(sphingidaeUuid, propertyPaths);
+		setComplete();
+		endTransaction();
 		
 		assertNotNull("Sphingidae should not be null",sphingidae);
 		assertTrue("TaxonNameBase.nomenclaturalReference should be initialized",Hibernate.isInitialized(sphingidae.getCombinationAuthorTeam()));
 	}
 	
+	/**
+	 * Because java.util.Map is not an instanceof java.util.Collection, we need to 
+	 * add an extra clause to DefaultBeanInitializer to catch Map properties 
+	 */
 	@Test
 	public void testInitializeMapProperty() {
 		List<String> propertyPaths = new ArrayList<String>();
@@ -99,6 +111,9 @@ public class BeanInitializerIntegration extends CdmTransactionalIntegrationTest 
 		propertyPaths.add("multilanguageText.language");
 		
 		TextData textData = (TextData)descriptionElementDao.load(textDataUuid, propertyPaths);
+		setComplete();
+		endTransaction();
+		
 		assertNotNull("textData should not be null",textData);
 		assertTrue("TextData.multilanguageText should be initialized",Hibernate.isInitialized(textData.getMultilanguageText()));
 		assertFalse("TextData.multilanguageText should not be empty",textData.getMultilanguageText().isEmpty());
@@ -106,6 +121,11 @@ public class BeanInitializerIntegration extends CdmTransactionalIntegrationTest 
 		assertTrue("LanguageString.language should be initialized",Hibernate.isInitialized(languageString.getLanguage()));
 	}
 	
+	/**
+	 * Interesting bug in envers where the three entity (object, parent and mapkey) query was not correct.
+	 * Also Hibernate.initialize does not initalize *-to-Many relationships in envers as envers proxies dont implement
+	 * HibernateProxy etc.
+	 */
 	@Test
 	public void testInitializeMapInPriorView() {
 		AuditEventContextHolder.getContext().setAuditEvent(previousAuditEvent);
@@ -114,6 +134,9 @@ public class BeanInitializerIntegration extends CdmTransactionalIntegrationTest 
 		propertyPaths.add("multilanguageText.language");
 		
 		TextData textData = (TextData)descriptionElementDao.load(textDataUuid, propertyPaths);
+		setComplete();
+		endTransaction();
+		
 		assertNotNull("textData should not be null",textData);
 		assertTrue("TextData.multilanguageText should be initialized",Hibernate.isInitialized(textData.getMultilanguageText()));
 		assertFalse("TextData.multilanguageText should not be empty",textData.getMultilanguageText().isEmpty());

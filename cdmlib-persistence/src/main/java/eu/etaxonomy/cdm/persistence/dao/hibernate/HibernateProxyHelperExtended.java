@@ -1,5 +1,6 @@
 package eu.etaxonomy.cdm.persistence.dao.hibernate;
 
+import org.hibernate.envers.entities.mapper.relation.lazy.proxy.MapProxy;
 import org.hibernate.proxy.HibernateProxy;
 import org.hibernate.proxy.LazyInitializer;
 
