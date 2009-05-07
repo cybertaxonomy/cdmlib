@@ -96,6 +96,7 @@ public class PersistentTermInitializer extends DefaultTermInitializer {
 	
 	protected void secondPass(Class clazz, UUID vocabularyUuid,Map<UUID,DefinedTermBase> terms) {
 		TransactionStatus txStatus = transactionManager.getTransaction(txDefinition);
+		logger.info("Loading vocabulary for class " + clazz.getSimpleName() + " with uuid " + vocabularyUuid );
 		
 		TermVocabulary persistedVocabulary = vocabularyDao.findByUuid(vocabularyUuid);
 		

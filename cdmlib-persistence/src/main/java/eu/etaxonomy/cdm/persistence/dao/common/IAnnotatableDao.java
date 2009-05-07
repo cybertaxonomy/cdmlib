@@ -14,6 +14,8 @@ import java.util.List;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.MarkerType;
+import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
+import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
  * @author n.hoffmann
@@ -29,9 +31,11 @@ public interface IAnnotatableDao<T extends AnnotatableEntity> extends IVersionab
 	 * @param status The status of the annotations (null to return annotations regardless of status)
 	 * @param pageSize The maximum number of annotations returned (can be null for all annotations)
 	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
+	 * @param orderHints may be null
+	 * @param propertyPaths properties to initialize - see {@link BeanInitializer#initialize(Object, List)}
 	 * @return a List of Annotation instances
 	 */
-    public List<Annotation> getAnnotations(T annotatableEntity, MarkerType status, Integer pageSize, Integer pageNumber);
+    public List<Annotation> getAnnotations(T annotatableEntity, MarkerType status, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 	
     /**
 	 * Returns a count of Annotations belonging to the supplied AnnotatableEntity

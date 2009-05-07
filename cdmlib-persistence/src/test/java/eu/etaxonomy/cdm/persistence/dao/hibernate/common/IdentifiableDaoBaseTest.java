@@ -66,7 +66,7 @@ public class IdentifiableDaoBaseTest extends CdmIntegrationTest {
 		TaxonBase taxon = identifiableDao.findByUuid(uuid);
 		assert taxon != null : "IdentifiableEntity must exist";
 		
-		List<Rights> rights = identifiableDao.getRights(taxon, null, null);
+		List<Rights> rights = identifiableDao.getRights(taxon, null, null, null);
 		
 		assertNotNull("getRights should return a List",rights);
 		assertFalse("the list should not be empty",rights.isEmpty());
@@ -106,7 +106,7 @@ public class IdentifiableDaoBaseTest extends CdmIntegrationTest {
 		TaxonBase taxon = identifiableDao.findByUuid(uuid);
 		assert taxon != null : "IdentifiableEntity must exist";
 		
-		List<OriginalSource> sources = identifiableDao.getSources(taxon, null, null);
+		List<OriginalSource> sources = identifiableDao.getSources(taxon, null, null,null);
 
 		assertNotNull("getSources should return a List", sources);
 		assertFalse("the list should not be empty", sources.isEmpty());

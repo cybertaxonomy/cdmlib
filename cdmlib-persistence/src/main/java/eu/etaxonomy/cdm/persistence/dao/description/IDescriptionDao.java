@@ -23,8 +23,10 @@ import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
+import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 public interface IDescriptionDao extends IIdentifiableDao<DescriptionBase> {
 	/**
@@ -36,9 +38,11 @@ public interface IDescriptionDao extends IIdentifiableDao<DescriptionBase> {
 	 * @param feature Restrict the description to those <i>elements</i> which are scoped by one of the Features passed (can be null or empty)
 	 * @param pageSize The maximum number of descriptions returned (can be null for all descriptions)
 	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
+	 * @param orderHints may be null
+	 * @param propertyPaths properties to initialize - see {@link BeanInitializer#initialize(Object, List)}
 	 * @return a List of DescriptionBase instances
 	 */
-	<TYPE extends DescriptionBase> List<TYPE> listDescriptions(Class<TYPE> type, Boolean hasMedia, Boolean hasText, Set<Feature> feature, Integer pageSize, Integer pageNumber);
+	<TYPE extends DescriptionBase> List<TYPE> listDescriptions(Class<TYPE> type, Boolean hasMedia, Boolean hasText, Set<Feature> feature, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 	
 	/**
 	 * Count the descriptions of type <TYPE>, filtered using the following parameters
@@ -59,9 +63,10 @@ public interface IDescriptionDao extends IIdentifiableDao<DescriptionBase> {
 	 * @param type The type of description
 	 * @param pageSize The maximum number of description elements returned (can be null for all description elements)
 	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
+	 * @param propertyPaths Properties to initialize in the returned entities, following the syntax described in {@link BeanInitializer#initialize(Object, List)}
 	 * @return a List of DescriptionElementBase instances
 	 */
-	<TYPE extends DescriptionElementBase> List<TYPE> getDescriptionElements(DescriptionBase description,Set<Feature> features, Class<TYPE> type, Integer pageSize, Integer pageNumber);
+	<TYPE extends DescriptionElementBase> List<TYPE> getDescriptionElements(DescriptionBase description,Set<Feature> features, Class<TYPE> type, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 	
 	/**
 	 * Returns a count of description elements of type <TYPE>, belonging to a given description, optionally filtered by one or more features
@@ -81,9 +86,10 @@ public interface IDescriptionDao extends IIdentifiableDao<DescriptionBase> {
 	 * @param geographicalScope Restrict the results to those descriptions which have a geographical scope that overlaps with the NamedArea instances passed (can be null or empty)
 	 * @param pageSize The maximum number of descriptions returned (can be null for all descriptions)
 	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
+	 * @param propertyPaths Properties to initialize in the returned entities, following the syntax described in {@link BeanInitializer#initialize(Object, List)}
 	 * @return a List of TaxonDescription instances
 	 */
-	List<TaxonDescription> getTaxonDescriptions(Taxon taxon, Set<Scope> scopes, Set<NamedArea> geographicalScope, Integer pageSize, Integer pageNumber);
+	List<TaxonDescription> getTaxonDescriptions(Taxon taxon, Set<Scope> scopes, Set<NamedArea> geographicalScope, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 	
 	/**
 	 * Returns a count of TaxonDescription instances, optionally filtered by parameters passed to this method
@@ -101,9 +107,10 @@ public interface IDescriptionDao extends IIdentifiableDao<DescriptionBase> {
 	 * @param name Restrict the results to those descriptions that refer to a specific name (can be null for all TaxonNameDescription instances)
 	 * @param pageSize The maximum number of descriptions returned (can be null for all descriptions)
 	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
+	 * @param propertyPaths Properties to initialize in the returned entities, following the syntax described in {@link BeanInitializer#initialize(Object, List)}
 	 * @return a List of TaxonNameBase instances
 	 */
-    List<TaxonNameDescription> getTaxonNameDescriptions(TaxonNameBase name, Integer pageSize, Integer pageNumber);
+    List<TaxonNameDescription> getTaxonNameDescriptions(TaxonNameBase name, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 	
     /**
 	 * Returns a count of TaxonNameDescription instances, optionally filtered by the name which they refer to
@@ -121,9 +128,11 @@ public interface IDescriptionDao extends IIdentifiableDao<DescriptionBase> {
 	 * @param presence Restrict the descriptions to those which have Distribution elements are of this status (can be null)
 	 * @param pageSize The maximum number of descriptions returned (can be null for all descriptions)
 	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
+	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
+	 * @param propertyPaths Properties to initialize in the returned entities, following the syntax described in {@link BeanInitializer#initialize(Object, List)}
 	 * @return a List of TaxonDescription instances
 	 */
-	List<TaxonDescription> searchDescriptionByDistribution(Set<NamedArea> namedAreas, PresenceAbsenceTermBase presence, Integer pageSize, Integer pageNumber);
+	List<TaxonDescription> searchDescriptionByDistribution(Set<NamedArea> namedAreas, PresenceAbsenceTermBase presence, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
 	/**
 	 * Returns a list of CommonTaxonName instances that match a search string

@@ -12,12 +12,15 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.description;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import org.hibernate.Hibernate;
 import org.junit.Before;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
@@ -32,6 +35,8 @@ import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
+import eu.etaxonomy.cdm.persistence.query.OrderHint;
+import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 
 @DataSet
@@ -115,10 +120,19 @@ public class DescriptionDaoHibernateImplTest extends CdmIntegrationTest {
 		namedAreas.add(southernAmerica);
 		namedAreas.add(antarctica);
 		
-		List<TaxonDescription> descriptions = descriptionDao.searchDescriptionByDistribution(namedAreas, null, 10,2);
+		List<String> propertyPaths = new ArrayList<String>();
+		propertyPaths.add("taxon");
+		
+		List<OrderHint> orderHints = new ArrayList<OrderHint>();
+		orderHints.add(new OrderHint("titleCache",SortOrder.ASCENDING));
+		
+		List<TaxonDescription> descriptions = descriptionDao.searchDescriptionByDistribution(namedAreas, null, 10,2,orderHints,propertyPaths);
 		assertNotNull("searchDescriptionByDistribution should return a List",descriptions);
 		assertFalse("searchDescriptionsByDistribution should not be empty",descriptions.isEmpty());
-		assertEquals("searchDescriptionsByDistribution should return 3 elements",3,descriptions.size());		
+		assertEquals("searchDescriptionsByDistribution should return 3 elements",3,descriptions.size());
+		assertTrue("TaxonDescription.taxon should be initialized",Hibernate.isInitialized(descriptions.get(0).getTaxon()));
+		assertEquals("Sphingidae Linnaeus, 1758 sec. cate-sphingidae.org should come first","Sphingidae Linnaeus, 1758 sec. cate-sphingidae.org",descriptions.get(0).getTitleCache());
+		assertEquals("Sphinx Linnaeus, 1758 sec. cate-sphingidae.org should come last","Sphinx Linnaeus, 1758 sec. cate-sphingidae.org",descriptions.get(2).getTitleCache());
 	}
 	
 	@Test
@@ -135,7 +149,7 @@ public class DescriptionDaoHibernateImplTest extends CdmIntegrationTest {
 		namedAreas.add(southernAmerica);
 		namedAreas.add(antarctica);
 		
-		List<TaxonDescription> descriptions = descriptionDao.searchDescriptionByDistribution(namedAreas, AbsenceTerm.ABSENT(), 10,0);
+		List<TaxonDescription> descriptions = descriptionDao.searchDescriptionByDistribution(namedAreas, AbsenceTerm.ABSENT(), 10,0,null,null);
 		assertNotNull("searchDescriptionByDistribution should return a List",descriptions);
 		assertFalse("searchDescriptionsByDistribution should not be empty",descriptions.isEmpty());
 		assertEquals("searchDescriptionsByDistribution should return 3 elements",3,descriptions.size());		
@@ -150,7 +164,11 @@ public class DescriptionDaoHibernateImplTest extends CdmIntegrationTest {
 	
 	@Test
 	public void testListDescriptionsWithText() {
-		List<TaxonDescription> descriptions = descriptionDao.listDescriptions(TaxonDescription.class, null, true, null,null,null);
+		List<OrderHint> orderHints = new ArrayList<OrderHint>();
+		orderHints.add(new OrderHint("titleCache",SortOrder.ASCENDING));
+		List<String> propertyPaths = new ArrayList<String>();
+		propertyPaths.add("taxon");
+		List<TaxonDescription> descriptions = descriptionDao.listDescriptions(TaxonDescription.class, null, true, null,null,null,orderHints,propertyPaths);
 		
 		assertNotNull("listDescriptions should return a List",descriptions);
 		assertFalse("listDescriptions should not be empty", descriptions.isEmpty());
@@ -169,7 +187,7 @@ public class DescriptionDaoHibernateImplTest extends CdmIntegrationTest {
 	public void testListDescriptionsWithTextAndFeatures() {
 		assert Feature.ECOLOGY() != null;
 		features.add(Feature.ECOLOGY());
-		List<TaxonDescription> descriptions = descriptionDao.listDescriptions(TaxonDescription.class, null, true, features,null,null);
+		List<TaxonDescription> descriptions = descriptionDao.listDescriptions(TaxonDescription.class, null, true, features,null,null,null,null);
 		
 		assertNotNull("listDescriptions should return a List",descriptions);
 		assertFalse("listDescriptions should not be empty", descriptions.isEmpty());
@@ -191,11 +209,21 @@ public class DescriptionDaoHibernateImplTest extends CdmIntegrationTest {
 		DescriptionBase description = descriptionDao.findByUuid(uuid);
 		assert description != null : "description must exist";
 		
-		List<TextData> elements = descriptionDao.getDescriptionElements(description, null, TextData.class, null, null);
+		List<String> propertyPaths = new ArrayList<String>();
+		propertyPaths.add("multilanguageText");
+		propertyPaths.add("media");
+		propertyPaths.add("citation");
+		propertyPaths.add("feature");
+		
+		List<TextData> elements = descriptionDao.getDescriptionElements(description, null, TextData.class, null, null,propertyPaths);
 		
 		assertNotNull("getDescriptionElements should return a List");
 		assertFalse("getDescriptionElements should not be empty",elements.isEmpty());
 		assertEquals("getDescriptionElement should return 2 elements",2,elements.size());
+		assertTrue("ReferencedEntityBase.citation should be initialized",Hibernate.isInitialized(elements.get(0).getCitation()));
+		assertTrue("DescriptionElementBase.feature should be initialized",Hibernate.isInitialized(elements.get(0).getFeature()));
+		assertTrue("DescriptionElementBase.media should be initialized",Hibernate.isInitialized(elements.get(0).getMedia()));
+		assertTrue("TextData.multilanguageText should be initialized",Hibernate.isInitialized(elements.get(0).getMultilanguageText()));
 	}
 	
 	@Test
@@ -215,7 +243,7 @@ public class DescriptionDaoHibernateImplTest extends CdmIntegrationTest {
 		DescriptionBase description = descriptionDao.findByUuid(uuid);
 		assert description != null : "description must exist";
 		
-		List<TextData> elements = descriptionDao.getDescriptionElements(description, features, TextData.class, null, null);
+		List<TextData> elements = descriptionDao.getDescriptionElements(description, features, TextData.class, null, null,null);
 		
 		assertNotNull("getDescriptionElements should return a List");
 		assertFalse("getDescriptionElements should not be empty",elements.isEmpty());

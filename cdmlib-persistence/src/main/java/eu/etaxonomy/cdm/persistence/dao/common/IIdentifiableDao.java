@@ -15,6 +15,7 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.common.OriginalSource;
 import eu.etaxonomy.cdm.model.media.Rights;
+import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
 
 public interface IIdentifiableDao <T extends IdentifiableEntity> extends IAnnotatableDao<T>, ITitledDao<T>{
 	
@@ -47,9 +48,10 @@ public interface IIdentifiableDao <T extends IdentifiableEntity> extends IAnnota
 	 * @param identifiableEntity The identifiable entity
 	 * @param pageSize The maximum number of sources returned (can be null for all sources)
 	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
+	 * @param propertyPaths properties to initialize - see {@link BeanInitializer#initialize(Object, List)}
 	 * @return a List of OriginalSource instances
 	 */
-	public List<OriginalSource> getSources(T identifiableEntity, Integer pageSize, Integer pageNumber);
+	public List<OriginalSource> getSources(T identifiableEntity, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 	
 	/**
 	 * Return a count of the rights for this identifiable entity
@@ -65,9 +67,10 @@ public interface IIdentifiableDao <T extends IdentifiableEntity> extends IAnnota
 	 * @param identifiableEntity The identifiable entity
 	 * @param pageSize The maximum number of rights returned (can be null for all rights)
 	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
+	 * @param propertyPaths properties to initialize - see {@link BeanInitializer#initialize(Object, List)}
 	 * @return a List of Rights instances
 	 */
-	public List<Rights> getRights(T identifiableEntity, Integer pageSize, Integer pageNumber);
+	public List<Rights> getRights(T identifiableEntity, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 	
 	// TODO Migrated from IOriginalSourceDao
 	public List<T> findOriginalSourceByIdInSource(String idInSource, String idNamespace);

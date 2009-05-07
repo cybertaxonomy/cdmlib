@@ -205,13 +205,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 		return list(limit, start, null); 
 	}
 	
-	public <TYPE extends T> List<TYPE> list(Integer limit, Integer start, List<OrderHint> orderHints) {
-		
-		Criteria crit = getSession().createCriteria(type); 
-		if(limit != null) {
-		    crit.setFirstResult(start);
-		    crit.setMaxResults(limit);
-		}
+	protected void addOrder(Criteria criteria, List<OrderHint> orderHints) {
 		if(orderHints != null){
 			for(OrderHint orderHint : orderHints){
 				Order order;
@@ -229,30 +223,52 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 					order = Order.desc(propname);
 				}
 				if(assocObj != null){
-					crit.createCriteria(assocObj).addOrder(order);
+					criteria.createCriteria(assocObj).addOrder(order);
 				} else {
-					crit.addOrder(order);				
+					criteria.addOrder(order);				
 				}
 			}
 		}
-		return crit.list(); 
 	}
 	
-	
+	public List<T> list(Integer limit, Integer start, List<OrderHint> orderHints) {
+		return list(limit,start,orderHints,null);
+	}
 	
 	public List<T> list(Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
-		List<T> entities = list(limit, start, orderHints);
-		defaultBeanInitializer.initializeAll(entities, propertyPaths);
-		return entities;
+		Criteria criteria = getSession().createCriteria(type); 
+		if(limit != null) {
+			criteria.setFirstResult(start);
+			criteria.setMaxResults(limit);
+		}
+		
+		addOrder(criteria,orderHints);
+		List<T> results = (List<T>)criteria.list();
+		
+		defaultBeanInitializer.initializeAll(results, propertyPaths);
+		return results;
 	}
 
-	public <TYPE extends T> List<TYPE> list(Class<TYPE> type, Integer limit, Integer start) {
+	public <TYPE extends T> List<TYPE> list(Class<TYPE> type, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
 		Criteria crit = getSession().createCriteria(type); 
 		if(limit != null) {
 		    crit.setFirstResult(start);
 		    crit.setMaxResults(limit);
 		}
-		return crit.list(); 
+		
+		addOrder(crit,orderHints);
+		
+		List<TYPE> results = (List<TYPE>)crit.list();
+		defaultBeanInitializer.initializeAll(results, propertyPaths);
+		return results; 
+	}
+	
+	public <TYPE extends T> List<TYPE> list(Class<TYPE> type, Integer limit, Integer start, List<OrderHint> orderHints) {
+		return list(type,limit,start,orderHints,null);
+	}
+	
+	public <TYPE extends T> List<TYPE> list(Class<TYPE> type, Integer limit, Integer start) {
+		return list(type,limit,start,null,null);
 	}
 	
 	public List<T> rows(String tableName, int limit, int start) {

@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.persistence.dao.hibernate.description;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +19,7 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
+import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.envers.query.AuditEntity;
@@ -38,9 +40,11 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
+import eu.etaxonomy.cdm.persistence.dao.common.OperationNotSupportedInPriorViewException;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
+import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 @Repository 
 @Qualifier("descriptionDaoImpl")
@@ -142,35 +146,50 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
 	}
 
 	public int countTaxonDescriptions(Taxon taxon, Set<Scope> scopes,Set<NamedArea> geographicalScopes) {
-		checkNotInPriorView("DescriptionDaoImpl.countTaxonDescriptions(Taxon taxon, Set<Scope> scopes,Set<NamedArea> geographicalScopes)");
-		Criteria criteria = getSession().createCriteria(TaxonDescription.class);
-		
-		if(taxon != null) {
-			criteria.add(Restrictions.eq("taxon", taxon));
-		}
-		
-		if(scopes != null && !scopes.isEmpty()) {
-			Set<Integer> scopeIds = new HashSet<Integer>();
-			for(Scope s : scopes) {
-				scopeIds.add(s.getId());
+		AuditEvent auditEvent = getAuditEventFromContext();
+		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
+			Criteria criteria = getSession().createCriteria(TaxonDescription.class);
+
+			if(taxon != null) {
+				criteria.add(Restrictions.eq("taxon", taxon));
 			}
-			criteria.createCriteria("scopes").add(Restrictions.in("id", scopeIds));
-		}
-		
-		if(geographicalScopes != null && !geographicalScopes.isEmpty()) {
-			Set<Integer> geoScopeIds = new HashSet<Integer>();
-			for(NamedArea n : geographicalScopes) {
-				geoScopeIds.add(n.getId());
+
+			if(scopes != null && !scopes.isEmpty()) {
+				Set<Integer> scopeIds = new HashSet<Integer>();
+				for(Scope s : scopes) {
+					scopeIds.add(s.getId());
+				}
+				criteria.createCriteria("scopes").add(Restrictions.in("id", scopeIds));
 			}
-			criteria.createCriteria("geoScopes").add(Restrictions.in("id", geoScopeIds));
+
+			if(geographicalScopes != null && !geographicalScopes.isEmpty()) {
+				Set<Integer> geoScopeIds = new HashSet<Integer>();
+				for(NamedArea n : geographicalScopes) {
+					geoScopeIds.add(n.getId());
+				}
+				criteria.createCriteria("geoScopes").add(Restrictions.in("id", geoScopeIds));
+			}
+
+			criteria.setProjection(Projections.rowCount());
+
+			return (Integer)criteria.uniqueResult();
+		} else {
+			if((scopes == null || scopes.isEmpty())&& (geographicalScopes == null || geographicalScopes.isEmpty())) {
+				AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(TaxonDescription.class,auditEvent.getRevisionNumber());
+				if(taxon != null) {
+				    query.add(AuditEntity.relatedId("taxon").eq(taxon.getId()));
+				}
+				
+				query.addProjection(AuditEntity.id().count("id"));
+				
+				return ((Long)query.getSingleResult()).intValue();
+			} else {
+				throw new OperationNotSupportedInPriorViewException("countTaxonDescriptions(Taxon taxon, Set<Scope> scopes,Set<NamedArea> geographicalScopes)");
+			}
 		}
-		
-		criteria.setProjection(Projections.rowCount());
-		
-		return (Integer)criteria.uniqueResult();
 	}
 
-	public <TYPE extends DescriptionElementBase> List<TYPE> getDescriptionElements(DescriptionBase description, Set<Feature> features,	Class<TYPE> type, Integer pageSize, Integer pageNumber) {
+	public <TYPE extends DescriptionElementBase> List<TYPE> getDescriptionElements(DescriptionBase description, Set<Feature> features,	Class<TYPE> type, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
             Criteria criteria = getSession().createCriteria(type);
@@ -189,11 +208,16 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
 		    	    criteria.setFirstResult(pageNumber * pageSize);
 		        }
 		    }
+		    
+		    List<TYPE> results = (List<TYPE>)criteria.list();
+		    
+		    defaultBeanInitializer.initializeAll(results, propertyPaths);
 		
-	    	return (List<TYPE>)criteria.list();
+	    	return results; 
 		} else {
+			List<TYPE> result = new ArrayList<TYPE>();
 			if(features != null && !features.isEmpty()) {
-				List<TYPE> result = new ArrayList<TYPE>();
+				
 			    for(Feature f : features) {
 			        AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(type,auditEvent.getRevisionNumber());
 			    
@@ -204,8 +228,6 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
 			        query.add(AuditEntity.relatedId("feature").eq(f.getId()));
 			        result.addAll((List<TYPE>)query.getResultList());
 			    }
-			    
-			    return result;
 			} else {
 				AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(type,auditEvent.getRevisionNumber());
 			    
@@ -213,46 +235,78 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
 		    	    query.add(AuditEntity.relatedId("inDescription").eq(description.getId()));
 		        }
 		        
-		        return (List<TYPE>)query.getResultList();
+		        result = query.getResultList();
 			}
+			
+			defaultBeanInitializer.initializeAll(result, propertyPaths);
+			
+			return result;
 		}
 	}
 
-	public List<TaxonDescription> getTaxonDescriptions(Taxon taxon,	Set<Scope> scopes, Set<NamedArea> geographicalScopes,Integer pageSize, Integer pageNumber) {
-		checkNotInPriorView("DescriptionDaoImpl.getTaxonDescriptions(Taxon taxon, Set<Scope> scopes, Set<NamedArea> geographicalScopes,Integer pageSize, Integer pageNumber)");
-        Criteria criteria = getSession().createCriteria(TaxonDescription.class);
-		
-		if(taxon != null) {
-			criteria.add(Restrictions.eq("taxon", taxon));
-		}
-		
-		if(scopes != null && !scopes.isEmpty()) {
-			Set<Integer> scopeIds = new HashSet<Integer>();
-			for(Scope s : scopes) {
-				scopeIds.add(s.getId());
+	public List<TaxonDescription> getTaxonDescriptions(Taxon taxon,	Set<Scope> scopes, Set<NamedArea> geographicalScopes,Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
+		AuditEvent auditEvent = getAuditEventFromContext();
+		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
+			Criteria criteria = getSession().createCriteria(TaxonDescription.class);
+
+			if(taxon != null) {
+				criteria.add(Restrictions.eq("taxon", taxon));
 			}
-			criteria.createCriteria("scopes").add(Restrictions.in("id", scopeIds));
-		}
-		
-		if(geographicalScopes != null && !geographicalScopes.isEmpty()) {
-			Set<Integer> geoScopeIds = new HashSet<Integer>();
-			for(NamedArea n : geographicalScopes) {
-				geoScopeIds.add(n.getId());
+
+			if(scopes != null && !scopes.isEmpty()) {
+				Set<Integer> scopeIds = new HashSet<Integer>();
+				for(Scope s : scopes) {
+					scopeIds.add(s.getId());
+				}
+				criteria.createCriteria("scopes").add(Restrictions.in("id", scopeIds));
 			}
-			criteria.createCriteria("geoScopes").add(Restrictions.in("id", geoScopeIds));
+
+			if(geographicalScopes != null && !geographicalScopes.isEmpty()) {
+				Set<Integer> geoScopeIds = new HashSet<Integer>();
+				for(NamedArea n : geographicalScopes) {
+					geoScopeIds.add(n.getId());
+				}
+				criteria.createCriteria("geoScopes").add(Restrictions.in("id", geoScopeIds));
+			}
+
+			if(pageSize != null) {
+				criteria.setMaxResults(pageSize);
+				if(pageNumber != null) {
+					criteria.setFirstResult(pageNumber * pageSize);
+				}
+			}
+
+			List<TaxonDescription> results = (List<TaxonDescription>)criteria.list();
+
+			defaultBeanInitializer.initializeAll(results, propertyPaths);
+
+			return results;
+		} else {
+			if((scopes == null || scopes.isEmpty())&& (geographicalScopes == null || geographicalScopes.isEmpty())) {
+				AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(TaxonDescription.class,auditEvent.getRevisionNumber());
+				if(taxon != null) {
+				    query.add(AuditEntity.relatedId("taxon").eq(taxon.getId()));
+				}
+				
+				if(pageSize != null) {
+			        query.setMaxResults(pageSize);
+			        if(pageNumber != null) {
+			            query.setFirstResult(pageNumber * pageSize);
+			        } else {
+			    	    query.setFirstResult(0);
+			        }
+			    }
+				
+				List<TaxonDescription> results = (List<TaxonDescription>)query.getResultList();
+				defaultBeanInitializer.initializeAll(results, propertyPaths);
+				return results;
+			} else {
+				throw new OperationNotSupportedInPriorViewException("countTaxonDescriptions(Taxon taxon, Set<Scope> scopes,Set<NamedArea> geographicalScopes)");
+			}
 		}
-		
-		if(pageSize != null) {
-			criteria.setMaxResults(pageSize);
-		    if(pageNumber != null) {
-		    	criteria.setFirstResult(pageNumber * pageSize);
-		    }
-		}
-		
-		return (List<TaxonDescription>)criteria.list();
 	}
 	
-    public List<TaxonNameDescription> getTaxonNameDescriptions(TaxonNameBase name, Integer pageSize, Integer pageNumber) {
+    public List<TaxonNameDescription> getTaxonNameDescriptions(TaxonNameBase name, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
         AuditEvent auditEvent = getAuditEventFromContext();
 	    if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
 	        Criteria criteria = getSession().createCriteria(TaxonNameDescription.class);
@@ -268,7 +322,11 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
 		      }
 	      }
 	  
-	      return (List<TaxonNameDescription>)criteria.list();
+	      List<TaxonNameDescription> results = (List<TaxonNameDescription>)criteria.list();
+	      
+	      defaultBeanInitializer.initializeAll(results, propertyPaths);
+	      
+	      return results; 
 	    } else {
 	    	AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(TaxonNameDescription.class,auditEvent.getRevisionNumber());
 	    	
@@ -282,7 +340,12 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
 			    	  query.setFirstResult(pageNumber * pageSize);
 			      }
 		    }
-	    	return (List<TaxonNameDescription>)query.getResultList();
+	    	
+	    	List<TaxonNameDescription> results = (List<TaxonNameDescription>)query.getResultList();
+	    	
+	    	defaultBeanInitializer.initializeAll(results, propertyPaths);
+	    	
+	    	return results;
 	    }
 	  
     }
@@ -318,7 +381,7 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
 	 * 
 	 * outer.add(Subqueries.propertyIn("id", inner));
 	 */
-	public <TYPE extends DescriptionBase> List<TYPE> listDescriptions(Class<TYPE> type, Boolean hasImages, Boolean hasText,	Set<Feature> features, Integer pageSize, Integer pageNumber) {
+	public <TYPE extends DescriptionBase> List<TYPE> listDescriptions(Class<TYPE> type, Boolean hasImages, Boolean hasText,	Set<Feature> features, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
 		checkNotInPriorView("DescriptionDaoImpl.listDescriptions(Class<TYPE> type, Boolean hasImages, Boolean hasText,	Set<Feature> features, Integer pageSize, Integer pageNumber)");
 		Criteria inner = getSession().createCriteria(type);
 		Criteria elementsCriteria = inner.createCriteria("elements");
@@ -342,47 +405,99 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
 			elementsCriteria.add(Restrictions.in("feature", features));
 		}
 		
-		inner.setProjection(Projections.distinct(Projections.id()));
+		ProjectionList projectionList = Projections.projectionList().add(Projections.id());
 		
-		List<Integer> ids = (List<Integer>)inner.list();
+		if(orderHints != null && !orderHints.isEmpty()) {
+		    for(OrderHint orderHint : orderHints) {
+			    projectionList = projectionList.add(Projections.property(orderHint.getPropertyName()));
+		    }
+		}
 		
-		if(ids.isEmpty()) {
+		inner.setProjection(Projections.distinct(projectionList));
+		
+		addOrder(inner, orderHints);
+		if(pageSize != null) {
+			inner.setMaxResults(pageSize);
+		    if(pageNumber != null) {
+		    	inner.setFirstResult(pageNumber * pageSize);
+		    }
+		}
+		
+		List<Object> intermediateResult = (List<Object>)inner.list();
+		
+		if(intermediateResult.isEmpty()) {
 			return new ArrayList<TYPE>();
 		}
 		
-		Criteria outer = getSession().createCriteria(type);
-		outer.add(Restrictions.in("id", ids));
-		
-		if(pageSize != null) {
-			outer.setMaxResults(pageSize);
-		    if(pageNumber != null) {
-		    	outer.setFirstResult(pageNumber * pageSize);
-		    }
+		Integer[] resultIds = new Integer[intermediateResult.size()];
+		for(int i = 0; i < resultIds.length; i++) {
+			if(orderHints == null || orderHints.isEmpty()) {
+				resultIds[i] = (Integer)intermediateResult.get(i);
+			} else {
+			  resultIds[i] = (Integer)((Object[])intermediateResult.get(i))[0];
+			}
 		}
 		
-		return (List<TYPE>)outer.list();
+		Criteria outer = getSession().createCriteria(type);
+		outer.add(Restrictions.in("id", resultIds));
+		addOrder(outer, orderHints);
+		
+		List<TYPE> results = (List<TYPE>)outer.list();
+		defaultBeanInitializer.initializeAll(results, propertyPaths);
+		return results;
 	}
 
-	public List<TaxonDescription> searchDescriptionByDistribution(Set<NamedArea> namedAreas, PresenceAbsenceTermBase status, Integer pageSize, Integer pageNumber) {
-		checkNotInPriorView("DescriptionDaoImpl.searchDescriptionByDistribution(Set<NamedArea> namedAreas, PresenceAbsenceTermBase status, Integer pageSize, Integer pageNumber)");
-        Query query = null;
+	public List<TaxonDescription> searchDescriptionByDistribution(Set<NamedArea> namedAreas, PresenceAbsenceTermBase status, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+		checkNotInPriorView("DescriptionDaoImpl.searchDescriptionByDistribution(Set<NamedArea> namedAreas, PresenceAbsenceTermBase status, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths)");
+        
+        Criteria criteria = getSession().createCriteria(TaxonDescription.class);
+        Criteria elements = criteria.createCriteria("elements", "element", Criteria.LEFT_JOIN);
+		elements.add(Restrictions.in("area", namedAreas.toArray()));
 		
-		if(status == null) {
-			query = getSession().createQuery("select distinct description from TaxonDescription description left join description.elements element join element.area area where area in (:namedAreas)");
-		} else {
-			query = getSession().createQuery("select distinct description from TaxonDescription description left join description.elements element join element.area area  join element.status status where area in (:namedAreas) and status = :status");
-			query.setParameter("status", status);
+		if(status != null) {
+			elements.add(Restrictions.eq("status", status));
 		}
-		query.setParameterList("namedAreas", namedAreas);
 		
-		if(pageSize != null) {
-			query.setMaxResults(pageSize);
-		    if(pageNumber != null) {
-		    	query.setFirstResult(pageNumber * pageSize);
+		ProjectionList projectionList = Projections.projectionList().add(Projections.id());
+		
+		if(orderHints != null && !orderHints.isEmpty()) {
+		    for(OrderHint orderHint : orderHints) {
+			    projectionList = projectionList.add(Projections.property(orderHint.getPropertyName()));
 		    }
 		}
 		
-		return (List<TaxonDescription>)query.list();
+		criteria.setProjection(Projections.distinct(projectionList));	
+		
+		if(pageSize != null) {
+			criteria.setMaxResults(pageSize);
+		    if(pageNumber != null) {
+		    	criteria.setFirstResult(pageNumber * pageSize);
+		    }
+		}
+		
+		addOrder(criteria,orderHints);
+		
+		List<Object> intermediateResult = (List<Object>)criteria.list();
+		
+		if(intermediateResult.isEmpty())
+			return new ArrayList<TaxonDescription>();
+		
+		Integer[] resultIds = new Integer[intermediateResult.size()];
+		for(int i = 0; i < resultIds.length; i++) {
+			if(orderHints == null || orderHints.isEmpty()) {
+				resultIds[i] = (Integer)intermediateResult.get(i);
+			} else {
+			  resultIds[i] = (Integer)((Object[])intermediateResult.get(i))[0];
+			}
+		}
+		
+		criteria = getSession().createCriteria(TaxonDescription.class);
+		criteria.add(Restrictions.in("id", resultIds));
+		addOrder(criteria,orderHints);
+		
+		List<TaxonDescription> results = (List<TaxonDescription>)criteria.list();
+		defaultBeanInitializer.initializeAll(results, propertyPaths);
+		return results;
 	}
 	
 	public List<CommonTaxonName> searchDescriptionByCommonName(String queryString, MatchMode matchMode, Integer pageSize, Integer pageNumber) {

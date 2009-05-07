@@ -37,6 +37,7 @@ import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
+import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
  * @author a.mueller
@@ -216,27 +217,29 @@ extends IdentifiableDaoBase<TaxonNameBase> implements ITaxonNameDao {
 		}
 	}
 
-	public List<HybridRelationship> getHybridNames(BotanicalName name, HybridRelationshipType type, Integer pageSize, Integer pageNumber) {
+	public List<HybridRelationship> getHybridNames(BotanicalName name, HybridRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
-			Query query = null;
-			if(type == null) {
-				query = getSession().createQuery("select relation from HybridRelationship relation where relation.relatedFrom = :name");
-			} else {
-				query = getSession().createQuery("select relation from HybridRelationship relation where relation.relatedFrom = :name and relation.type = :type");
-				query.setParameter("type", type);
+			Criteria criteria = getSession().createCriteria(HybridRelationship.class);
+			criteria.add(Restrictions.eq("relatedFrom", name));
+			if(type != null) {
+				criteria.add(Restrictions.eq("type", type));
 			}
-			query.setParameter("name",name);
 
 			if(pageSize != null) {
-				query.setMaxResults(pageSize);
+				criteria.setMaxResults(pageSize);
 				if(pageNumber != null) {
-					query.setFirstResult(pageNumber * pageSize);
+					criteria.setFirstResult(pageNumber * pageSize);
 				} else {
-					query.setFirstResult(0);
+					criteria.setFirstResult(0);
 				}
 			}
-			return (List<HybridRelationship>)query.list();
+			
+			addOrder(criteria, orderHints);
+			
+			List<HybridRelationship> results = (List<HybridRelationship>)criteria.list();
+			defaultBeanInitializer.initializeAll(results, propertyPaths);
+			return results;
 		} else {
 			AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(HybridRelationship.class,auditEvent.getRevisionNumber());
 			query.add(AuditEntity.relatedId("relatedFrom").eq(name.getId()));
@@ -254,31 +257,34 @@ extends IdentifiableDaoBase<TaxonNameBase> implements ITaxonNameDao {
 				}
 			}
 
-			return (List<HybridRelationship>)query.getResultList();
+			List<HybridRelationship> results =  (List<HybridRelationship>)query.getResultList();
+			defaultBeanInitializer.initializeAll(results, propertyPaths);
+			return results;
 		}
 	}
 
-	public List<NameRelationship> getRelatedNames(TaxonNameBase name, NameRelationshipType type, Integer pageSize, Integer pageNumber) {
+	public List<NameRelationship> getRelatedNames(TaxonNameBase name, NameRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
-			Query query = null;
-			if(type == null) {
-				query = getSession().createQuery("select relation from NameRelationship relation where relation.relatedFrom = :name");
-			} else {
-				query = getSession().createQuery("select relation from NameRelationship relation where relation.relatedFrom = :name and relation.type = :type");
-				query.setParameter("type", type);
+			Criteria criteria = getSession().createCriteria(NameRelationship.class);
+			criteria.add(Restrictions.eq("relatedFrom", name));
+			if(type != null) {
+				criteria.add(Restrictions.eq("type", type));
 			}
-			query.setParameter("name",name);
 
 			if(pageSize != null) {
-				query.setMaxResults(pageSize);
+				criteria.setMaxResults(pageSize);
 				if(pageNumber != null) {
-					query.setFirstResult(pageNumber * pageSize);
+					criteria.setFirstResult(pageNumber * pageSize);
 				} else {
-					query.setFirstResult(0);
+					criteria.setFirstResult(0);
 				}
 			}
-			return (List<NameRelationship>)query.list();
+			addOrder(criteria, orderHints);
+			
+			List<NameRelationship> results = (List<NameRelationship>)criteria.list();
+			defaultBeanInitializer.initializeAll(results, propertyPaths);
+			return results;
 		} else {
 			AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(NameRelationship.class,auditEvent.getRevisionNumber());
 			query.add(AuditEntity.relatedId("relatedFrom").eq(name.getId()));
@@ -296,7 +302,9 @@ extends IdentifiableDaoBase<TaxonNameBase> implements ITaxonNameDao {
 				}
 			}
 
-			return (List<NameRelationship>)query.getResultList();
+			List<NameRelationship> results = (List<NameRelationship>)query.getResultList();
+			defaultBeanInitializer.initializeAll(results, propertyPaths);
+			return results;
 		}
 	}
 
@@ -344,7 +352,8 @@ extends IdentifiableDaoBase<TaxonNameBase> implements ITaxonNameDao {
 					query.setFirstResult(0);
 				}
 			}
-			return defaultBeanInitializer.initializeAll((List<TypeDesignationBase>)query.getResultList(), propertyPaths);
+
+			return (List<TypeDesignationBase>)query.getResultList();
 		}
 	}
 

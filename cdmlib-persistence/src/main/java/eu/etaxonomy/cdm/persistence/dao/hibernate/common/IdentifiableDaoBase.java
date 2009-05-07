@@ -118,12 +118,14 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity> extends Annotatab
 		return ((Long)query.uniqueResult()).intValue();
 	}
 
-	public List<Rights> getRights(T identifiableEntity, Integer pageSize, Integer pageNumber) {
-		checkNotInPriorView("IdentifiableDaoBase.getRights(T identifiableEntity, Integer pageSize, Integer pageNumber)");
+	public List<Rights> getRights(T identifiableEntity, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
+		checkNotInPriorView("IdentifiableDaoBase.getRights(T identifiableEntity, Integer pageSize, Integer pageNumber, List<String> propertyPaths)");
 		Query query = getSession().createQuery("select rights from " + type.getSimpleName() + " identifiableEntity join identifiableEntity.rights rights where identifiableEntity = :identifiableEntity");
 		query.setParameter("identifiableEntity",identifiableEntity);
 		setPagingParameter(query, pageSize, pageNumber);
-		return (List<Rights>)query.list();
+		List<Rights> results = (List<Rights>)query.list();
+		defaultBeanInitializer.initializeAll(results, propertyPaths);
+		return results;
 	}
 	
 	public List<Credit> getCredits(T identifiableEntity, Integer pageSize, Integer pageNumber) {
@@ -134,13 +136,15 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity> extends Annotatab
 		return (List<Credit>)query.list();
 	}
 
-	public List<OriginalSource> getSources(T identifiableEntity, Integer pageSize, Integer pageNumber) {
+	public List<OriginalSource> getSources(T identifiableEntity, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
 		checkNotInPriorView("IdentifiableDaoBase.getSources(T identifiableEntity, Integer pageSize, Integer pageNumber)");
 		Query query = getSession().createQuery("select source from OriginalSource source where source.sourcedObj.id = :id and source.sourcedObj.class = :class");
 		query.setParameter("id",identifiableEntity.getId());
 		query.setParameter("class",identifiableEntity.getClass().getName());
 		setPagingParameter(query, pageSize, pageNumber);
-		return (List<OriginalSource>)query.list();
+		List<OriginalSource> results = (List<OriginalSource>)query.list();
+		defaultBeanInitializer.initializeAll(results, propertyPaths);
+		return results;
 	}
 
 	public List<T> findOriginalSourceByIdInSource(String idInSource, String idNamespace) {

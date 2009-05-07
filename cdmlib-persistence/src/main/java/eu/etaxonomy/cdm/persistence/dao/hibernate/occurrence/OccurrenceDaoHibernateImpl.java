@@ -118,8 +118,8 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
 		}
 	}
 
-	public List<Media> getMedia(SpecimenOrObservationBase occurence, Integer pageSize, Integer pageNumber) {
-		checkNotInPriorView("OccurrenceDaoHibernateImpl.getMedia(SpecimenOrObservationBase occurence, Integer pageSize, Integer pageNumber)");
+	public List<Media> getMedia(SpecimenOrObservationBase occurence, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
+		checkNotInPriorView("OccurrenceDaoHibernateImpl.getMedia(SpecimenOrObservationBase occurence, Integer pageSize, Integer pageNumber, List<String> propertyPaths)");
 		Query query = getSession().createQuery("select media from SpecimenOrObservationBase occurence join occurence.media media where occurence = :occurence");
 		query.setParameter("occurence", occurence);
 		
@@ -132,6 +132,8 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
 		    }
 		}
 		
-		return (List<Media>)query.list();
+		List<Media> results = (List<Media>)query.list();
+		defaultBeanInitializer.initializeAll(results, propertyPaths);		
+		return results;
 	}	
 }

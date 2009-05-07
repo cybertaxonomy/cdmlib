@@ -1244,6 +1244,7 @@ cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/common/IIdenti
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/common/ILanguageStringBaseDao.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/common/ILanguageStringDao.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/common/ILsidAuthorityDao.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/common/IMarkerDao.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/common/IOrderedTermVocabularyDao.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/common/IOriginalSourceDao.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/common/IReferencedEntityDao.java -text
@@ -1276,6 +1277,7 @@ cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/hibernate/comm
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/hibernate/common/LanguageStringBaseDaoImpl.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/hibernate/common/LanguageStringDaoImpl.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/hibernate/common/LsidAuthorityDaoImpl.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/hibernate/common/MarkerDaoImpl.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/hibernate/common/OrderedTermVocabularyDaoImpl.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/hibernate/common/OriginalSourceDaoImpl.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/hibernate/common/ReferencedEntityDaoImpl.java -text
@@ -1350,6 +1352,7 @@ cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/database/types/SqlServer2000Da
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/database/types/SqlServer2005DatabaseTypeTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/database/types/SybaseDatabaseTypeTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/datagenerator/TaxonGenerator.java -text
+cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/dao/BeanInitializerIntegration.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/dao/hibernate/FreeTextSearchIntegration.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/dao/hibernate/agent/AgentDaoImplTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/dao/hibernate/common/AnnotationDaoTest.java -text
@@ -1362,7 +1365,10 @@ cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/dao/hibernate/comm
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/dao/hibernate/common/UserDaoHibernateImplTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/dao/hibernate/description/DescriptionDaoHibernateImplTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/dao/hibernate/media/MediaDaoImplTest.java -text
+cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/dao/hibernate/name/ConfigurableNameCacheStrategyGeneratorsTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/dao/hibernate/name/TaxonNameDaoHibernateImplTest.java -text
+cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/dao/hibernate/name/TestingBotanicalNameCacheStrategy.java -text
+cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/dao/hibernate/name/TestingZoologicalNameCacheStrategy.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/dao/hibernate/reference/ReferenceDaoHibernateImplTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/dao/hibernate/taxon/TaxonDaoHibernateImplTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/hibernate/CacheStrategyGeneratorTest.java -text
@@ -1400,11 +1406,13 @@ cdmlib-persistence/src/test/resources/eu.etaxonomy.cdm.model.taxon.TaxonBase_spe
 cdmlib-persistence/src/test/resources/eu.etaxonomy.cdm.model.taxon.TaxonBase_spelling/segments_2 -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/applicationContext-test.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/applicationContext-testPersistentDataSource.xml -text
+cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/applicationContext-testWithConfigurableNameCacheStrategyGenerators.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/applicationContext.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/cdm.datasources.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/database/TermsDataSet-with_auditing_info.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/database/TermsDataSet.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/jdbc-datasource.xml -text
+cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/BeanInitializerIntegration.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/FreeTextSearchIntegration.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/agent/AgentDaoImplTest.testDelete-result.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/agent/AgentDaoImplTest.testExists.xml -text

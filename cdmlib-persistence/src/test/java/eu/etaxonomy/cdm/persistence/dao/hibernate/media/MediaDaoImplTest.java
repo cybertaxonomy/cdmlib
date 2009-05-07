@@ -12,12 +12,15 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.media;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import org.hibernate.Hibernate;
 import org.junit.Before;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
@@ -70,11 +73,14 @@ public class MediaDaoImplTest extends CdmIntegrationTest {
 	
 	@Test
 	public void testGetIdentificationKeys() {
-		List<IdentificationKey> keys = mediaDao.getIdentificationKeys(null, null, null, null);
+		List<String> propertyPaths = new ArrayList<String>();
+		propertyPaths.add("title");
+		List<IdentificationKey> keys = mediaDao.getIdentificationKeys(null, null, null, null,propertyPaths);
 		
 		assertNotNull("getIdentificationKeys should return a List",keys);
 		assertFalse("The list should not be empty",keys.isEmpty());
 		assertEquals("The list should contain 3 IdentificationKey instances",3, keys.size());
+		assertTrue("Media.title should have been initialized",Hibernate.isInitialized(keys.get(0).getTitle()));
 	}
 	
 	@Test
@@ -97,6 +103,8 @@ public class MediaDaoImplTest extends CdmIntegrationTest {
 	
 	@Test
 	public void testGetIdentificationKeysWithScope() {
+		List<String> propertyPaths = new ArrayList<String>();
+		propertyPaths.add("title");
 		NamedArea europe = (NamedArea)definedTermDao.findByUuid(europeUuid);
 		NamedArea africa = (NamedArea)definedTermDao.findByUuid(africaUuid);
 		Taxon sphingidae = (Taxon)taxonDao.findByUuid(sphingidaeUuid);
@@ -108,11 +116,12 @@ public class MediaDaoImplTest extends CdmIntegrationTest {
 		geoScopes.add(africa);
 		taxonomicScope.add(sphingidae);
 		
-		List<IdentificationKey> keys = mediaDao.getIdentificationKeys(taxonomicScope,geoScopes, null, null);
+		List<IdentificationKey> keys = mediaDao.getIdentificationKeys(taxonomicScope,geoScopes, null, null,propertyPaths);
 		
 		assertNotNull("getIdentificationKeys should return a List",keys);
 		assertFalse("The list should not be empty",keys.isEmpty());
 		assertEquals("The list should contain 1 IdentificationKey instance",1, keys.size());
+		assertTrue("Media.title should have been initialized",Hibernate.isInitialized(keys.get(0).getTitle()));
 	}
 	
 }

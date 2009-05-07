@@ -9,10 +9,9 @@ import org.dbunit.dataset.datatype.DefaultDataTypeFactory;
 public class HsqldbDataTypeFactory  extends DefaultDataTypeFactory {
  
    public DataType createDataType(int sqlType, String sqlTypeName) throws DataTypeException {
-      if (sqlType == Types.BOOLEAN)
-      {
+      if (sqlType == Types.BOOLEAN) {
          return DataType.BOOLEAN;
-       }
+      }
   
       return super.createDataType(sqlType, sqlTypeName);
     }

@@ -7,6 +7,7 @@ import static junit.framework.Assert.assertTrue;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -34,6 +35,8 @@ import eu.etaxonomy.cdm.persistence.dao.common.AuditEventSort;
 import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.fetch.CdmFetch;
+import eu.etaxonomy.cdm.persistence.query.OrderHint;
+import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
@@ -64,10 +67,10 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 		acherontia = UUID.fromString("c5cc8674-4242-49a4-aada-72d63194f5fa");
 		acherontiaLachesis = UUID.fromString("b04cc9cb-2b4a-4cc4-a94a-3c93a2158b06");
 		previousAuditEvent = new AuditEvent();
-		previousAuditEvent.setRevisionNumber(1000);
+		previousAuditEvent.setRevisionNumber(1025);
 		previousAuditEvent.setUuid(UUID.fromString("a680fab4-365e-4765-b49e-768f2ee30cda"));
 		mostRecentAuditEvent = new AuditEvent();
-		mostRecentAuditEvent.setRevisionNumber(1025);
+		mostRecentAuditEvent.setRevisionNumber(1026);
 		mostRecentAuditEvent.setUuid(UUID.fromString("afe8e761-8545-497b-9134-6a6791fc0b0d"));
 		AuditEventContextHolder.clearContext(); // By default we're in the current view (i.e. view == null)
 	}
@@ -77,12 +80,6 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 		AuditEventContextHolder.clearContext();
 	}
 	
-//	@Test
-//	@DataSet
-//	public final void testPrintDataSet() {
-//		printDataSet(System.out);
-//	}
-
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.taxon.TaxonDaoHibernateImpl#TaxonDaoHibernateImpl()}.
 	 */
@@ -183,7 +180,19 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 	public void testFindByUuid() {
 		Taxon taxon = (Taxon)taxonDao.findByUuid(uuid);
 		assertNotNull("findByUuid should return a taxon",taxon);
-		assertTrue("findByUuid should return a taxon with it's name initialized",Hibernate.isInitialized(taxon.getName()));
+		assertFalse("findByUuid should not return a taxon with it's name initialized",Hibernate.isInitialized(taxon.getName()));
+	}
+	
+	@Test
+	@DataSet
+	public void testLoad() {
+		List<String> propertyPaths = new ArrayList<String>();
+		propertyPaths.add("name");
+		propertyPaths.add("sec");
+		Taxon taxon = (Taxon)taxonDao.load(uuid, propertyPaths);
+		assertNotNull("findByUuid should return a taxon",taxon);
+		assertTrue("load should return a taxon with it's name initialized, given that the property was specified in the method",Hibernate.isInitialized(taxon.getName()));
+		assertTrue("load should return a taxon with it's secundum reference initialized, given that the property was specified in the method",Hibernate.isInitialized(taxon.getSec()));
 	}
 	
 	@Test
@@ -202,10 +211,20 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 		Taxon taxon = (Taxon)taxonDao.findByUuid(sphingidae);
 		assert taxon != null : "taxon must exist"; 
 		
-		List<TaxonRelationship> relatedTaxa = taxonDao.getRelatedTaxa(taxon, TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN(), null, null);
+		List<String> propertyPaths = new ArrayList<String>();
+		propertyPaths.add("fromTaxon");
+		propertyPaths.add("fromTaxon.name");
+		List<OrderHint> orderHints = new ArrayList<OrderHint>();
+		orderHints.add(new OrderHint("relatedFrom.titleCache", SortOrder.ASCENDING));
+		
+		List<TaxonRelationship> relatedTaxa = taxonDao.getRelatedTaxa(taxon, TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN(), null, null, orderHints,propertyPaths);
 		assertNotNull("getRelatedTaxa should return a List",relatedTaxa);
 		assertEquals("getRelatedTaxa should return all 23 related taxa",relatedTaxa.size(),23);
 		assertTrue("getRelatedTaxa should return TaxonRelationship objects with the relatedFrom taxon initialized",Hibernate.isInitialized(relatedTaxa.get(0).getFromTaxon()));
+		assertTrue("getRelatedTaxa should return TaxonRelationship objects with the relatedFrom taxon initialized",Hibernate.isInitialized(relatedTaxa.get(0).getFromTaxon().getName()));
+		
+		assertEquals("Acherontia should appear first in the list of related taxa", relatedTaxa.get(0).getFromTaxon().getTitleCache(), "Acherontia Laspeyres, 1809 sec. cate-sphingidae.org");
+		assertEquals("Sphingonaepiopsis should appear last in the list of related taxa", relatedTaxa.get(22).getFromTaxon().getTitleCache(), "Sphinx Linnaeus, 1758 sec. cate-sphingidae.org");
 	}
 	
 	@Test
@@ -214,9 +233,16 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 		Taxon taxon = (Taxon)taxonDao.findByUuid(sphingidae);
 		assert taxon != null : "taxon must exist";
 		
-		List<TaxonRelationship> firstPage = taxonDao.getRelatedTaxa(taxon,TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN(), 10, 0);
-		List<TaxonRelationship> secondPage = taxonDao.getRelatedTaxa(taxon,TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN(),10, 1);
-		List<TaxonRelationship> thirdPage = taxonDao.getRelatedTaxa(taxon,TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN(), 10, 2);
+		List<String> propertyPaths = new ArrayList<String>();
+		propertyPaths.add("fromTaxon");
+		propertyPaths.add("fromTaxon.name");
+		
+		List<OrderHint> orderHints = new ArrayList<OrderHint>();
+		orderHints.add(new OrderHint("relatedFrom.titleCache", SortOrder.ASCENDING));
+		
+		List<TaxonRelationship> firstPage = taxonDao.getRelatedTaxa(taxon,TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN(), 10, 0, orderHints,propertyPaths);
+		List<TaxonRelationship> secondPage = taxonDao.getRelatedTaxa(taxon,TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN(),10, 1, orderHints,propertyPaths);
+		List<TaxonRelationship> thirdPage = taxonDao.getRelatedTaxa(taxon,TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN(), 10, 2, orderHints,propertyPaths);
 		
 		assertNotNull("getRelatedTaxa: 10, 0 should return a List",firstPage);
 		assertEquals("getRelatedTaxa: 10, 0 should return a List with 10 elements",10,firstPage.size());
@@ -241,8 +267,14 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 	public void testSynonymRelationships()	{
 		Taxon taxon = (Taxon)taxonDao.findByUuid(acherontia);
 		assert taxon != null : "taxon must exist";
+		List<String> propertyPaths = new ArrayList<String>();
+		propertyPaths.add("synonym");
+		propertyPaths.add("synonym.name");
 		
-		List<SynonymRelationship> synonyms = taxonDao.getSynonyms(taxon, null, null, null);
+		List<OrderHint> orderHints = new ArrayList<OrderHint>();
+		orderHints.add(new OrderHint("relatedFrom.titleCache", SortOrder.ASCENDING));
+		
+		List<SynonymRelationship> synonyms = taxonDao.getSynonyms(taxon, null, null, null,orderHints,propertyPaths);
 		
 		assertNotNull("getSynonyms should return a List",synonyms);
 		assertEquals("getSynonyms should return 5 SynonymRelationship entities",synonyms.size(),5);
@@ -265,7 +297,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 		Taxon taxon = (Taxon)taxonDao.findByUuid(acherontia);
 		assert taxon != null : "taxon must exist";
 		
-        List<SynonymRelationship> synonyms = taxonDao.getSynonyms(taxon, SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF(), null, null);
+        List<SynonymRelationship> synonyms = taxonDao.getSynonyms(taxon, SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF(), null, null,null,null);
 		
         assertNotNull("getSynonyms should return a List",synonyms);
 		assertEquals("getSynonyms should return 4 SynonymRelationship entities",synonyms.size(),4);
@@ -277,8 +309,8 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 		Taxon taxon = (Taxon)taxonDao.findByUuid(acherontia);
 		assert taxon != null : "taxon must exist";
 		
-		List<SynonymRelationship> firstPage = taxonDao.getSynonyms(taxon, null, 4, 0);
-		List<SynonymRelationship> secondPage = taxonDao.getSynonyms(taxon, null, 4, 1);
+		List<SynonymRelationship> firstPage = taxonDao.getSynonyms(taxon, null, 4, 0,null,null);
+		List<SynonymRelationship> secondPage = taxonDao.getSynonyms(taxon, null, 4, 1,null,null);
 		
 		assertNotNull("getSynonyms: 4, 0 should return a List",firstPage);
 		assertEquals("getSynonyms: 4, 0 should return 4 SynonymRelationships", firstPage.size(),4);
@@ -289,7 +321,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 	@Test
 	@DataSet
 	public void testGetTaxonMatchingUninomial() {
-		List<TaxonBase> result = taxonDao.findTaxaByName(true, "Smerinthus", null, null, null,null,null,null);
+		List<TaxonBase> result = taxonDao.findTaxaByName(true, "Smerinthus", "*", "*", "*",null,null,null);
 		
 		assertNotNull("findTaxaByName should return a List", result);
 		assertEquals("findTaxaByName should return two Taxa",2,result.size());
@@ -493,9 +525,19 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     public void testGetRelations() {
     	Taxon taxon = (Taxon)taxonDao.findByUuid(acherontiaLachesis);
     	assert taxon != null : "taxon cannot be null";
-    	List<TaxonRelationship> taxonRelations = taxonDao.getRelatedTaxa(taxon, TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN(), null, null);
+    	
+    	List<String> propertyPaths = new ArrayList<String>();
+ 	    propertyPaths.add("fromTaxon");
+ 	    propertyPaths.add("fromTaxon.name");
+ 		
+ 	    List<OrderHint> orderHints = new ArrayList<OrderHint>();
+ 	    orderHints.add(new OrderHint("relatedFrom.titleCache", SortOrder.ASCENDING));
+    	
+    	List<TaxonRelationship> taxonRelations = taxonDao.getRelatedTaxa(taxon, TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN(), null, null,orderHints,propertyPaths);
     	assertNotNull("getRelatedTaxa should return a list", taxonRelations);
     	assertEquals("there should be one TaxonRelationship in the list in the current view",1,taxonRelations.size());
+    	assertTrue("TaxonRelationship.relatedFrom should be initialized",Hibernate.isInitialized(taxonRelations.get(0).getFromTaxon()));
+    	assertTrue("TaxonRelationship.relatedFrom.name should be initialized",Hibernate.isInitialized(taxonRelations.get(0).getFromTaxon().getName()));
     }
     
     @Test
@@ -512,10 +554,17 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
        AuditEventContextHolder.getContext().setAuditEvent(previousAuditEvent);
        Taxon taxon = (Taxon)taxonDao.findByUuid(acherontiaLachesis);
        assert taxon != null : "taxon cannot be null";
+       
+       List<String> propertyPaths = new ArrayList<String>();
+	   propertyPaths.add("relatedFrom");
+	   propertyPaths.add("relatedFrom.name");
+		
+	   List<OrderHint> orderHints = new ArrayList<OrderHint>();
+	   orderHints.add(new OrderHint("relatedFrom.titleCache", SortOrder.ASCENDING));
     
-    	List<TaxonRelationship> taxonRelations = taxonDao.getRelatedTaxa(taxon, TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN(), null, null);
-    	assertNotNull("getRelatedTaxa should return a list",taxonRelations);
-    	assertTrue("there should be no TaxonRelationships in the list in the prior view",taxonRelations.isEmpty());
+       List<TaxonRelationship> taxonRelations = taxonDao.getRelatedTaxa(taxon, TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN(), null, null,orderHints,propertyPaths);
+       assertNotNull("getRelatedTaxa should return a list",taxonRelations);
+       assertTrue("there should be no TaxonRelationships in the list in the prior view",taxonRelations.isEmpty());
     }
     
     @Test

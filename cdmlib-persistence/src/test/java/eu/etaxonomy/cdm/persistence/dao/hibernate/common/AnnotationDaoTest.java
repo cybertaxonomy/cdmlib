@@ -13,6 +13,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -24,6 +25,8 @@ import org.unitils.spring.annotation.SpringBeanByType;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.persistence.dao.common.IAnnotationDao;
+import eu.etaxonomy.cdm.persistence.query.OrderHint;
+import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 
 @DataSet
@@ -52,8 +55,13 @@ public class AnnotationDaoTest extends CdmIntegrationTest {
 	public void testGetAnnotations() {
 		Annotation annotatedObj = annotationDao.findByUuid(uuid);
 		assert annotatedObj != null : "annotatedObj must exist";
+		List<OrderHint> orderHints = new ArrayList<OrderHint>();
+		orderHints.add(new OrderHint("created", SortOrder.ASCENDING));
+		List<String> propertyPaths = new ArrayList<String>();
+		propertyPaths.add("annotatedObj");
+		propertyPaths.add("createdBy");
 		
-		List<Annotation> annotations = annotationDao.getAnnotations(annotatedObj, null,null,null);
+		List<Annotation> annotations = annotationDao.getAnnotations(annotatedObj, null,null,null,orderHints,propertyPaths);
 		assertNotNull("getAnnotations should return a List",annotations);
 		assertFalse("the list should contain Annotation instances",annotations.isEmpty());
 		assertEquals("getAnnotations should return 4",4,annotations.size());		
@@ -78,7 +86,7 @@ public class AnnotationDaoTest extends CdmIntegrationTest {
 		assert annotatedObj != null : "annotatedObj must exist";
 		assert markerType != null : "markerType must exist";
 		
-		List<Annotation> annotations = annotationDao.getAnnotations(annotatedObj, markerType,null,null);
+		List<Annotation> annotations = annotationDao.getAnnotations(annotatedObj, markerType,null,null,null,null);
 		assertNotNull("getAnnotations should return a List",annotations);
 		assertFalse("the list should contain Annotation instances",annotations.isEmpty());
 		assertEquals("getAnnotations should return 2",2,annotations.size());		

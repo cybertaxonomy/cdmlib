@@ -1,6 +1,7 @@
 package eu.etaxonomy.cdm.database;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
@@ -60,6 +61,14 @@ public class PersistentTermInitializerTest extends CdmIntegrationTest {
 	@Test
 	public void testPrintData() {
 		printDataSet(System.out);
+	}
+	
+	@Test
+	public void testGetRepresentations() {
+		assertNotNull("Rank.SPECIES() should not be null", Rank.SPECIES());
+		assertFalse("Rank.SPECIES().getRepresentations() should not be empty",Rank.SPECIES().getRepresentations().isEmpty());
+		assertEquals("Rank.SPECIES().getLabel() should return \"Species\"","Species",Rank.SPECIES().getLabel());
+		
 	}
 	
 

@@ -5,8 +5,10 @@ import java.util.List;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.media.Media;
+import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.common.IAnnotatableDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ISearchableDao;
+import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 public interface IDescriptionElementDao extends IAnnotatableDao<DescriptionElementBase>,ISearchableDao<DescriptionElementBase> {
 	/**
@@ -33,10 +35,12 @@ public interface IDescriptionElementDao extends IAnnotatableDao<DescriptionEleme
 	 * @param queryString
 	 * @param pageSize
 	 * @param pageNumber
+	 * @param orderHints may be null
+	 * @param propertyPaths Properties to initialize in the returned entities, following the syntax described in {@link BeanInitializer#initialize(Object, List)}
 	 * @return
 	 * @throws QueryParseException
 	 */
-	public List<TextData> searchTextData(String queryString, Integer pageSize, Integer pageNumber);
+	public List<TextData> searchTextData(String queryString, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 	
 	/**
 	 * Return a count of TextData elements who's content matches the query string
@@ -52,9 +56,10 @@ public interface IDescriptionElementDao extends IAnnotatableDao<DescriptionEleme
 	 * @param descriptionElement the description element associated with these media
 	 * @param pageSize The maximum number of media returned (can be null for all related media)
 	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
+	 * @param propertyPaths properties to initialize - see {@link BeanInitializer#initialize(Object, List)}
      * @return a List of media instances
      */
-    public List<Media> getMedia(DescriptionElementBase descriptionElement, Integer pageSize, Integer pageNumber);
+    public List<Media> getMedia(DescriptionElementBase descriptionElement, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 	
     /**
      * Returns a count of Media that are associated with a given description element

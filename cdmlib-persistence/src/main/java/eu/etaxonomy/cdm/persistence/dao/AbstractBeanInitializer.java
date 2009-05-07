@@ -26,8 +26,6 @@ import org.hibernate.proxy.HibernateProxyHelper;
 import org.hibernate.proxy.LazyInitializer;
 import org.hibernate.proxy.pojo.javassist.JavassistLazyInitializer;
 
-import com.ibm.lsid.client.conf.castor.PropertiesDescriptor;
-
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
@@ -148,12 +146,16 @@ public abstract class AbstractBeanInitializer implements BeanInitializer{
 		if(propPath.equals(LOAD_2ONE_WILDCARD)){
 			if(Collection.class.isAssignableFrom(bean.getClass())){
 				initializeAllEntries((Collection)bean, true, false);
-			} else {				
+			} else if(Map.class.isAssignableFrom(bean.getClass())) {
+				initializeAllEntries(((Map)bean).values(), true, false);
+			} else{
 				initializeBean(bean, true, false);
 			}
 		} else if(propPath.equals(LOAD_2ONE_2MANY_WILDCARD)){
 			if(Collection.class.isAssignableFrom(bean.getClass())){
 				initializeAllEntries((Collection)bean, true, true);
+			} else if(Map.class.isAssignableFrom(bean.getClass())) {
+				initializeAllEntries(((Map)bean).values(), true, false);
 			} else {
 				initializeBean(bean, true, true);				
 			}
@@ -221,7 +223,18 @@ public abstract class AbstractBeanInitializer implements BeanInitializer{
 						}
 						i++;
 					}
-				} else {
+				} else if(Map.class.isAssignableFrom(proxy.getClass())) {
+					int i = 0;
+					for (Object entrybean : ((Map) proxy).values()) {
+						if(index == null){
+							initializePropertyPath(entrybean, nestedPath);
+						} else if(index.equals(i)){
+							initializePropertyPath(entrybean, nestedPath);
+							break;
+						}
+						i++;
+					}
+				}else {
 					initializePropertyPath(unwrappedBean, nestedPath);
 				}
 			}

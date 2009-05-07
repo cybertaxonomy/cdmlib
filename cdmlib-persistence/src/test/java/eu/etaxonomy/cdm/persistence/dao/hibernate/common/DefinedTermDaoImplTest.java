@@ -14,17 +14,17 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
-import java.io.FileOutputStream;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import org.hibernate.Hibernate;
 import org.junit.Before;
 import org.junit.Test;
-import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.spring.annotation.SpringApplicationContext;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
@@ -102,11 +102,15 @@ public class DefinedTermDaoImplTest extends CdmIntegrationTest {
 		    assert northernEurope != null : "NamedArea must exist";
 		    namedAreas.add(northernEurope);
 		    
-		    List<NamedArea> includes = dao.getIncludes(namedAreas, null, null);
+		    List<String> propertyPaths = new ArrayList<String>();
+		    propertyPaths.add("level");
+		    
+		    List<NamedArea> includes = dao.getIncludes(namedAreas, null, null,propertyPaths);
 		    
 		    assertNotNull("getIncludes should return a List",includes);
 		    assertFalse("The list should not be empty",includes.isEmpty());
 		    assertEquals("getIncludes should return 9 NamedArea entities",9,includes.size());
+		    assertTrue("NamedArea.level should be initialized",Hibernate.isInitialized(includes.get(0).getLevel()));
 	 }
 	 
 	 @Test
@@ -132,11 +136,15 @@ public class DefinedTermDaoImplTest extends CdmIntegrationTest {
 		    namedAreas.add(middleEurope);
 		    namedAreas.add(westTropicalAfrica);
 		    
-		    List<NamedArea> partOf = dao.getPartOf(namedAreas, null, null);
+		    List<String> propertyPaths = new ArrayList<String>();
+		    propertyPaths.add("level");
+		    
+		    List<NamedArea> partOf = dao.getPartOf(namedAreas, null, null,propertyPaths);
 		    
 		    assertNotNull("getPartOf should return a List",partOf);
 		    assertFalse("The list should not be empty",partOf.isEmpty());
 		    assertEquals("getPartOf should return 2 NamedArea entities",2,partOf.size());
+		    assertTrue("NamedArea.level should be initialized",Hibernate.isInitialized(partOf.get(0).getLevel()));
 	 }
 	 
 	 @Test

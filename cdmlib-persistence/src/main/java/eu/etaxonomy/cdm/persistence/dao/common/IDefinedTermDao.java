@@ -23,6 +23,7 @@ import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
 import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
 import eu.etaxonomy.cdm.model.media.Media;
+import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
 
 
 public interface IDefinedTermDao extends IVersionableDao<DefinedTermBase>, ITitledDao<DefinedTermBase>{
@@ -105,9 +106,10 @@ public interface IDefinedTermDao extends IVersionableDao<DefinedTermBase>, ITitl
 	 * @param definedTerms the set of terms which are part of the terms of interest 
 	 * @param pageSize The maximum number of terms returned (can be null for all terms)
 	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
+	 * @param propertyPaths properties to initialize - see {@link BeanInitializer#initialize(Object, List)}
 	 * @return a List of DefinedTerms
 	 */
-	public <T extends DefinedTermBase> List<T> getPartOf(Set<T> definedTerms, Integer pageSize, Integer pageNumber);
+	public <T extends DefinedTermBase> List<T> getPartOf(Set<T> definedTerms, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 	
 	/**
 	 * Return a count of distinct terms which include the terms supplied
@@ -123,9 +125,10 @@ public interface IDefinedTermDao extends IVersionableDao<DefinedTermBase>, ITitl
 	 * @param definedTerms the set of terms which include the terms of interest 
 	 * @param pageSize The maximum number of terms returned (can be null for all terms)
 	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
+	 * @param propertyPaths properties to initialize - see {@link BeanInitializer#initialize(Object, List)}
 	 * @return a List of DefinedTerms
 	 */
-	public <T extends DefinedTermBase> List<T> getIncludes(Set<T> definedTerms, Integer pageSize, Integer pageNumber);
+	public <T extends DefinedTermBase> List<T> getIncludes(Set<T> definedTerms, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 	
 	/**
 	 * Return a count of terms which are part of the terms supplied

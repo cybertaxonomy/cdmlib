@@ -21,8 +21,10 @@ import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
+import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
+import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
  * @author a.mueller
@@ -55,12 +57,13 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonNameBase> {
 	 *            all relationships)
 	 * @param pageNumber
 	 *            The offset (in pageSize chunks) from the start of the result
-	 *            set (0 - based)
+	 *            set (0 - based) of the result set (0 - based)
+	 * @param orderHints may be null
+	 * @param propertyPaths properties to initialize - see {@link BeanInitializer#initialize(Object, List)}
 	 * @return a List of NameRelationship instances
 	 */
-	public List<NameRelationship> getRelatedNames(TaxonNameBase name,
-			NameRelationshipType type, Integer pageSize, Integer pageNumber);
-
+	public List<NameRelationship> getRelatedNames(TaxonNameBase name,  NameRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+	
 	/**
 	 * Return a count of hybrids related to this name, optionally filtered by
 	 * hybrid relationship type
@@ -89,8 +92,7 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonNameBase> {
 	 *            set (0 - based)
 	 * @return a List of HybridRelationship instances
 	 */
-	public List<HybridRelationship> getHybridNames(BotanicalName name,
-			HybridRelationshipType type, Integer pageSize, Integer pageNumber);
+	public List<HybridRelationship> getHybridNames(BotanicalName name, HybridRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
 	/**
 	 * Return a count of types related to this name, optionally filtered by type

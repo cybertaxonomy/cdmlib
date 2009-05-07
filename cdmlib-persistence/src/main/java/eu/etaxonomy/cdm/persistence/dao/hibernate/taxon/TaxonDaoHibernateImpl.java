@@ -11,10 +11,13 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.taxon;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
@@ -76,6 +79,7 @@ import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.fetch.CdmFetch;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
+import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 
 /**
@@ -114,19 +118,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 	public List<Taxon> getRootTaxa(ReferenceBase sec) {
 		return getRootTaxa(sec, CdmFetch.FETCH_CHILDTAXA(), true, false);
 	}
-	
-	@Override
-	public TaxonBase findByUuid(UUID uuid) {
-		TaxonBase taxonBase = super.findByUuid(uuid);
-		if(taxonBase == null) 
-			return taxonBase;
 		
-		Hibernate.initialize(taxonBase.getName());
-		Hibernate.initialize(taxonBase.getSec());
-		return taxonBase; 
-	}
-	
-	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#getRootTaxa(eu.etaxonomy.cdm.model.name.Rank, eu.etaxonomy.cdm.model.reference.ReferenceBase, eu.etaxonomy.cdm.persistence.fetch.CdmFetch, java.lang.Boolean, java.lang.Boolean)
 	 */
@@ -599,21 +591,28 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		criteria.setFetchMode( "name", FetchMode.JOIN );
 		criteria.createAlias("name", "name");
 		
-		if(genusOrUninomial != null) {
+		if(genusOrUninomial == null) {
+			criteria.add(Restrictions.isNull("name.genusOrUninomial"));
+		} else if(!genusOrUninomial.equals("*")) {
 			criteria.add(Restrictions.eq("name.genusOrUninomial", genusOrUninomial));
 		}
 		
-		if(infraGenericEpithet != null) {
-			criteria.add(Restrictions.eq("name.infraGenericEpithet", infraGenericEpithet));
-		} else {
+		if(infraGenericEpithet == null) {
 			criteria.add(Restrictions.isNull("name.infraGenericEpithet"));
-		}
+		} else if(!infraGenericEpithet.equals("*")) {
+			criteria.add(Restrictions.eq("name.infraGenericEpithet", infraGenericEpithet));
+		} 
 		
-		if(specificEpithet != null) {
+		if(specificEpithet == null) {
+			criteria.add(Restrictions.isNull("name.specificEpithet"));
+		} else if(!specificEpithet.equals("*")) {
 			criteria.add(Restrictions.eq("name.specificEpithet", specificEpithet));
+			
 		}
 		
-		if(infraSpecificEpithet != null) {
+		if(infraSpecificEpithet == null) {
+			criteria.add(Restrictions.isNull("name.infraSpecificEpithet"));
+		} else if(!infraSpecificEpithet.equals("*")) {
 			criteria.add(Restrictions.eq("name.infraSpecificEpithet", infraSpecificEpithet));
 		}
 		
@@ -633,30 +632,31 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		return (List<TaxonBase>)criteria.list();
 	}
 
-	public List<TaxonRelationship> getRelatedTaxa(Taxon taxon,	TaxonRelationshipType type, Integer pageSize, Integer pageNumber) {
+	public List<TaxonRelationship> getRelatedTaxa(Taxon taxon,	TaxonRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
-            Query query = null;
+			Criteria criteria = getSession().createCriteria(TaxonRelationship.class);
             
-		    if(type == null) {
-			    query = getSession().createQuery("select taxonRelationship from TaxonRelationship taxonRelationship join fetch taxonRelationship.relatedFrom where taxonRelationship.relatedTo = :relatedTo");
-		    } else {
-			    query = getSession().createQuery("select taxonRelationship from TaxonRelationship taxonRelationship join fetch taxonRelationship.relatedFrom where taxonRelationship.relatedTo = :relatedTo and taxonRelationship.type = :type");
-			    query.setParameter("type",type);
-		    }
+			criteria.add(Restrictions.eq("relatedTo", taxon));
+		    if(type != null) {
+		    	criteria.add(Restrictions.eq("type", type));
+		    } 
 		
-		    query.setParameter("relatedTo", taxon);
+            addOrder(criteria,orderHints);
 		
 		    if(pageSize != null) {
-		        query.setMaxResults(pageSize);
+		    	criteria.setMaxResults(pageSize);
 		        if(pageNumber != null) {
-		            query.setFirstResult(pageNumber * pageSize);
+		        	criteria.setFirstResult(pageNumber * pageSize);
 		        } else {
-		    	    query.setFirstResult(0);
+		        	criteria.setFirstResult(0);
 		        }
 		    }
 		
-		    return (List<TaxonRelationship>)query.list();
+		    List<TaxonRelationship> result = (List<TaxonRelationship>)criteria.list();
+		    defaultBeanInitializer.initializeAll(result, propertyPaths);
+		    
+		    return result;
 		} else {
 			AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(TaxonRelationship.class,auditEvent.getRevisionNumber());
 			query.add(AuditEntity.relatedId("relatedTo").eq(taxon.getId()));
@@ -675,38 +675,54 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		    }
 			
 			List<TaxonRelationship> result = (List<TaxonRelationship>)query.getResultList();
-			for(TaxonRelationship relationship : result) {
-				Hibernate.initialize(relationship.getFromTaxon());
+			defaultBeanInitializer.initializeAll(result, propertyPaths);
+			
+			// Ugly, but for now, there is no way to sort on a related entity property in Envers,
+			// and we can't live without this functionality in CATE as it screws up the whole 
+			// taxon tree thing
+			if(orderHints != null && !orderHints.isEmpty()) {
+			    SortedSet<TaxonRelationship> sortedList = new TreeSet<TaxonRelationship>(new TaxonRelationshipFromTaxonComparator());
+			    sortedList.addAll(result);
+			    return new ArrayList<TaxonRelationship>(sortedList);
 			}
 			
 			return result;
 		}
 	}
+	
+	class TaxonRelationshipFromTaxonComparator implements Comparator<TaxonRelationship> {
 
-	public List<SynonymRelationship> getSynonyms(Taxon taxon, SynonymRelationshipType type, Integer pageSize, Integer pageNumber) {
+		public int compare(TaxonRelationship o1, TaxonRelationship o2) {
+			return o1.getFromTaxon().getTitleCache().compareTo(o2.getFromTaxon().getTitleCache());
+		}
+		
+	}
+
+	public List<SynonymRelationship> getSynonyms(Taxon taxon, SynonymRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
-			Query query = null;
-
-			if(type == null) {
-				query = getSession().createQuery("select synonymRelationship from SynonymRelationship synonymRelationship join fetch synonymRelationship.relatedFrom where synonymRelationship.relatedTo = :relatedTo");
-			} else {
-				query = getSession().createQuery("select synonymRelationship from SynonymRelationship synonymRelationship join fetch synonymRelationship.relatedFrom where synonymRelationship.relatedTo = :relatedTo and synonymRelationship.type = :type");
-				query.setParameter("type",type);
-			}
-
-			query.setParameter("relatedTo", taxon);
-
-			if(pageSize != null) {
-				query.setMaxResults(pageSize);
-				if(pageNumber != null) {
-					query.setFirstResult(pageNumber * pageSize);
-				} else {
-					query.setFirstResult(0);
-				}
-			}
-
-			return (List<SynonymRelationship>)query.list();
+            Criteria criteria = getSession().createCriteria(SynonymRelationship.class);
+            
+			criteria.add(Restrictions.eq("relatedTo", taxon));
+		    if(type != null) {
+		    	criteria.add(Restrictions.eq("type", type));
+		    } 
+		
+            addOrder(criteria,orderHints);
+		
+		    if(pageSize != null) {
+		    	criteria.setMaxResults(pageSize);
+		        if(pageNumber != null) {
+		        	criteria.setFirstResult(pageNumber * pageSize);
+		        } else {
+		        	criteria.setFirstResult(0);
+		        }
+		    }
+		
+		    List<SynonymRelationship> result = (List<SynonymRelationship>)criteria.list();
+		    defaultBeanInitializer.initializeAll(result, propertyPaths);
+		    
+		    return result;
 		} else {
 			AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(SynonymRelationship.class,auditEvent.getRevisionNumber());
 			query.add(AuditEntity.relatedId("relatedTo").eq(taxon.getId()));
@@ -725,9 +741,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		    }
 			
 			List<SynonymRelationship> result = (List<SynonymRelationship>)query.getResultList();
-			for(SynonymRelationship relationship : result) {
-				Hibernate.initialize(relationship.getSynonym());
-			}
+			defaultBeanInitializer.initializeAll(result, propertyPaths);
 			
 			return result;
 		}

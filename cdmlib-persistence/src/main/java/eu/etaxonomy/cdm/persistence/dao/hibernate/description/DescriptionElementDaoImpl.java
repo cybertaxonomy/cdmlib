@@ -8,8 +8,6 @@ import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
-import org.hibernate.Criteria;
-import org.hibernate.FetchMode;
 import org.hibernate.Hibernate;
 import org.hibernate.Query;
 import org.hibernate.search.FullTextSession;
@@ -18,15 +16,13 @@ import org.hibernate.search.SearchFactory;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
-import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.media.Media;
-import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.QueryParseException;
-import eu.etaxonomy.cdm.persistence.dao.common.ISearchableDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionElementDao;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.AnnotatableDaoImpl;
+import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 @Repository
 public class DescriptionElementDaoImpl extends AnnotatableDaoImpl<DescriptionElementBase> implements IDescriptionElementDao {
@@ -65,8 +61,8 @@ public class DescriptionElementDaoImpl extends AnnotatableDaoImpl<DescriptionEle
 		}
 	}
 
-	public List<Media> getMedia(DescriptionElementBase descriptionElement,	Integer pageSize, Integer pageNumber) {
-		checkNotInPriorView("DescriptionElementDaoImpl.getMedia(DescriptionElementBase descriptionElement,	Integer pageSize, Integer pageNumber)");
+	public List<Media> getMedia(DescriptionElementBase descriptionElement,	Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
+		checkNotInPriorView("DescriptionElementDaoImpl.getMedia(DescriptionElementBase descriptionElement,	Integer pageSize, Integer pageNumber, List<String> propertyPaths)");
 		Query query = getSession().createQuery("select media from DescriptionElementBase descriptionElement join descriptionElement.media media where descriptionElement = :descriptionElement");
 		query.setParameter("descriptionElement", descriptionElement);
 		
@@ -79,10 +75,12 @@ public class DescriptionElementDaoImpl extends AnnotatableDaoImpl<DescriptionEle
 		    }
 		}
 		
-		return (List<Media>)query.list();
+		List<Media> results = (List<Media>)query.list();
+		defaultBeanInitializer.initializeAll(results, propertyPaths);
+		return results;
 	}
 
-	public List<TextData> searchTextData(String queryString, Integer pageSize,	Integer pageNumber) {
+	public List<TextData> searchTextData(String queryString, Integer pageSize,	Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
 		checkNotInPriorView("DescriptionElementDaoImpl.searchTextData(String queryString, Integer pageSize,	Integer pageNumber)");
 		QueryParser queryParser = new QueryParser("multilanguageText.text", new SimpleAnalyzer());
 		 
@@ -91,14 +89,21 @@ public class DescriptionElementDaoImpl extends AnnotatableDaoImpl<DescriptionEle
 			
 			FullTextSession fullTextSession = Search.getFullTextSession(getSession());
 			org.hibernate.search.FullTextQuery fullTextQuery = fullTextSession.createFullTextQuery(query, TextData.class);
-			org.apache.lucene.search.Sort sort = new Sort(new SortField("inDescription.titleCache_forSort"));
-			fullTextQuery.setSort(sort);
-			
-			Criteria criteria = getSession().createCriteria(TextData.class);
-			criteria.setFetchMode("inDescription",FetchMode.JOIN);
-			criteria.setFetchMode("feature", FetchMode.JOIN);
-			
-			fullTextQuery.setCriteriaQuery(criteria);
+			if(orderHints != null && !orderHints.isEmpty()) {
+			    org.apache.lucene.search.Sort sort = new Sort();
+			    SortField[] sortFields = new SortField[orderHints.size()];
+			    for(int i = 0; i < orderHints.size(); i++) {
+			    	OrderHint orderHint = orderHints.get(i);
+			    	switch(orderHint.getSortOrder()) {
+			    	case ASCENDING:
+			            sortFields[i] = new SortField(orderHint.getPropertyName() + "_forSort", false);
+			    	case DESCENDING:
+			    		sortFields[i] = new SortField(orderHint.getPropertyName() + "_forSort",true);
+			    	}
+			    }
+			    sort.setSort(sortFields);
+			    fullTextQuery.setSort(sort);
+			}
 			
 		    if(pageSize != null) {
 		    	fullTextQuery.setMaxResults(pageSize);
@@ -108,15 +113,9 @@ public class DescriptionElementDaoImpl extends AnnotatableDaoImpl<DescriptionEle
 			    	fullTextQuery.setFirstResult(0);
 			    }
 			}
-		    List<TextData> textData = fullTextQuery.list();
 		    
-		    for(TextData t : textData) {
-		    	Hibernate.initialize(t.getMultilanguageText());
-		    	if(t.getInDescription() instanceof TaxonDescription) {
-		    		TaxonDescription taxonDescription = (TaxonDescription)t.getInDescription();
-		    		Hibernate.initialize(taxonDescription.getTaxon());
-		    	}
-		    }
+		    List<TextData> textData = fullTextQuery.list();
+		    defaultBeanInitializer.initializeAll(textData, propertyPaths);
 		    return textData;
 
 		} catch (ParseException e) {

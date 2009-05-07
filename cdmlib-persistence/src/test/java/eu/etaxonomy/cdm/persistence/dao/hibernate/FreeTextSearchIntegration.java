@@ -3,6 +3,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -17,6 +18,8 @@ import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionElementDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
+import eu.etaxonomy.cdm.persistence.query.OrderHint;
+import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 @DataSet
@@ -52,7 +55,13 @@ public class FreeTextSearchIntegration extends CdmTransactionalIntegrationTest {
 	
 	@Test
 	public void testSearchTextData() {
-		List<TextData> results = descriptionElementDao.searchTextData("Lorem",null,null);
+		List<OrderHint> orderHints = new ArrayList<OrderHint>();
+		orderHints.add(new OrderHint("inDescription.titleCache",SortOrder.ASCENDING));
+		
+		List<String> propertyPaths = new ArrayList<String>();
+		propertyPaths.add("inDescription");
+		propertyPaths.add("inDescription.taxon");
+		List<TextData> results = descriptionElementDao.searchTextData("Lorem",null,null,orderHints,propertyPaths);
 		
 		assertNotNull("searchTextData should return a List",results);
 		assertEquals("there should be 4 TextData entities in the list",4,results.size());

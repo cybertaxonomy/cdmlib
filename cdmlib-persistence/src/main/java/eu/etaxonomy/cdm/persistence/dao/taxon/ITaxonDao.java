@@ -30,6 +30,7 @@ import eu.etaxonomy.cdm.persistence.dao.common.ISearchableDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ITitledDao;
 import eu.etaxonomy.cdm.persistence.fetch.CdmFetch;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
+import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
  * @author a.mueller
@@ -156,20 +157,6 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
 	 */
 	public List<Synonym> getAllSynonyms(Integer limit, Integer start);
 
-	/**
-	 * @param limit
-	 * @param start 
-	 * @return
-	 */
-	//public List<TaxonRelationship> getAllTaxonRelationships(Integer limit, Integer start);
-	
-	/**
-	 * @param limit
-	 * @param start 
-	 * @return
-	 */
-	//public List<SynonymRelationship> getAllSynonymRelationships(Integer limit, Integer start);
-
 	public List<RelationshipBase> getAllRelationships(Integer limit, Integer start); 
 
 	/**
@@ -218,9 +205,11 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
 	 * @param type The type of TaxonRelationship (can be null)
 	 * @param pageSize The maximum number of relationships returned (can be null for all relationships)
 	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
+	 * @param orderHints Properties to order by
+	 * @param propertyPaths Properties to initialize in the returned entities, following the syntax described in {@link BeanInitializer#initialize(Object, List)}
 	 * @return a List of TaxonRelationship instances
 	 */
-	public List<TaxonRelationship> getRelatedTaxa(Taxon taxon, TaxonRelationshipType type, Integer pageSize, Integer pageNumber);
+	public List<TaxonRelationship> getRelatedTaxa(Taxon taxon, TaxonRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 	
 	/**
 	 * Returns a count of the SynonymRelationships (of where relationship.type == type,
@@ -240,9 +229,11 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
 	 * @param type The type of SynonymRelationship (can be null)
 	 * @param pageSize The maximum number of relationships returned (can be null for all relationships)
 	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
+	 * * @param orderHints Properties to order by
+	 * @param propertyPaths Properties to initialize in the returned entities, following the syntax described in {@link BeanInitializer#initialize(Object, List)}
 	 * @return a List of SynonymRelationship instances
 	 */
-	public List<SynonymRelationship> getSynonyms(Taxon taxon, SynonymRelationshipType type, Integer pageSize, Integer pageNumber);
+	public List<SynonymRelationship> getSynonyms(Taxon taxon, SynonymRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 	
 	/**
 	 * Returns a count of TaxonBase instances (or Taxon instances, if accepted == true, or Synonym instance, if accepted == false) where the 
@@ -284,7 +275,8 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
 	
 	/**
 	 * Returns a list of TaxonBase instances (or Taxon instances, if accepted == true, or Synonym instance, if accepted == false) where the
-	 * taxon.name properties match the parameters passed.
+	 * taxon.name properties match the parameters passed. In order to search for any string value, pass '*', passing the string value of 
+	 * <i>null</i> will search for those taxa with a value of null in that field
 	 * 
 	 * @param accepted Whether the taxon is accepted (true) a synonym (false), or either (null)
 	 * @param uninomial 

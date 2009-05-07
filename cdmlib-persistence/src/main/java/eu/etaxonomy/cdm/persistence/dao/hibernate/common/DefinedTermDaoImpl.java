@@ -310,7 +310,7 @@ public class DefinedTermDaoImpl extends VersionableDaoBase<DefinedTermBase> impl
 		}
 	}
 
-	public <T extends DefinedTermBase> List<T> getIncludes(Set<T> partOf,	Integer pageSize, Integer pageNumber) {
+	public <T extends DefinedTermBase> List<T> getIncludes(Set<T> partOf,	Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
     		Query query = getSession().createQuery("select term from DefinedTermBase term where term.partOf in (:partOf)");
@@ -322,8 +322,10 @@ public class DefinedTermDaoImpl extends VersionableDaoBase<DefinedTermBase> impl
 		    	    query.setFirstResult(pageNumber * pageSize);
 		        }
 		    }
-		
-		    return (List<T>)query.list();
+		    
+		    List<T> results = (List<T>)query.list();
+		    defaultBeanInitializer.initializeAll(results, propertyPaths);
+		    return results; 
 		} else {
 			List<T> result = new ArrayList<T>();
 			for(T t : partOf) {
@@ -338,20 +340,21 @@ public class DefinedTermDaoImpl extends VersionableDaoBase<DefinedTermBase> impl
 
 			    result.addAll((List<T>)query.getResultList());
 			}
+			defaultBeanInitializer.initializeAll(result, propertyPaths);
 			return result;
 		}
 	}
 	
 	public <T extends DefinedTermBase> int countPartOf(Set<T> definedTerms) {
 		checkNotInPriorView("DefinedTermDaoImpl.countPartOf(Set<T> definedTerms)");
-		Query query = getSession().createQuery("select count(distinct partOf) from DefinedTermBase definedTerm join definedTerm.partOf partOf where definedTerm in (:definedTerms)");
+		Query query = getSession().createQuery("select count(distinct definedTerm) from DefinedTermBase definedTerm join definedTerm.includes included where included in (:definedTerms)");
 		query.setParameterList("definedTerms", definedTerms);
 		return ((Long)query.uniqueResult()).intValue();
 	}
 
-	public <T extends DefinedTermBase> List<T> getPartOf(Set<T> definedTerms, Integer pageSize, Integer pageNumber) {
+	public <T extends DefinedTermBase> List<T> getPartOf(Set<T> definedTerms, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
 		checkNotInPriorView("DefinedTermDaoImpl.getPartOf(Set<T> definedTerms, Integer pageSize, Integer pageNumber)");
-		Query query = getSession().createQuery("select distinct partOf from DefinedTermBase definedTerm join definedTerm.partOf partOf where definedTerm in (:definedTerms)");
+		Query query = getSession().createQuery("select distinct definedTerm from DefinedTermBase definedTerm join definedTerm.includes included where included in (:definedTerms)");
 		query.setParameterList("definedTerms", definedTerms);
 		
 		if(pageSize != null) {
@@ -360,8 +363,24 @@ public class DefinedTermDaoImpl extends VersionableDaoBase<DefinedTermBase> impl
 		    	query.setFirstResult(pageNumber * pageSize);
 		    }
 		}
-		
-		return (List<T>)query.list();
+		List<T> r = (List<T>)query.list();
+		/**
+		 * For some weird reason, hibernate returns proxies (extending the superclass), not the actual class on this, 
+		 * despite querying the damn database and returning the discriminator along with the rest of the object properties!
+		 * 
+		 * Probably a bug in hibernate, but we'll manually deproxy for now since the objects are initialized anyway, the 
+		 * performance implications are small (we're swapping one array of references for another, not hitting the db or 
+		 * cache). 
+		 */
+		List<T> results = new ArrayList<T>();
+		if(!definedTerms.isEmpty()) {
+		    Class<T> type = (Class<T>)definedTerms.iterator().next().getClass();
+		    for(T t : r) {
+			    results.add(CdmBase.deproxy(t, type));
+		    }
+		    defaultBeanInitializer.initializeAll(results, propertyPaths);
+		}
+		return results;
 	}
 
 	public DefinedTermBase findByUri(String uri) {

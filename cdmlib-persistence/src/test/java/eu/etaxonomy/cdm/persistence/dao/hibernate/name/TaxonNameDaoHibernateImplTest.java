@@ -46,7 +46,7 @@ public class TaxonNameDaoHibernateImplTest extends CdmIntegrationTest {
 		BotanicalName cryptocoryneGriffithii = (BotanicalName)taxonNameDao.findByUuid(cryptocoryneGriffithiiUuid);
 		assert cryptocoryneGriffithii!= null : "name must exist";
 		
-		List<HybridRelationship> result = taxonNameDao.getHybridNames(cryptocoryneGriffithii, null, null, null);
+		List<HybridRelationship> result = taxonNameDao.getHybridNames(cryptocoryneGriffithii, null, null, null,null,null);
 		
 		assertNotNull("getHybridNames should return a list",result);
 		assertFalse("the list should not be empty", result.isEmpty());
@@ -68,7 +68,7 @@ public class TaxonNameDaoHibernateImplTest extends CdmIntegrationTest {
 		TaxonNameBase acherontia = taxonNameDao.findByUuid(acherontiaUuid);
 		assert acherontia != null : "name must exist";
 		
-		List<NameRelationship> result = taxonNameDao.getRelatedNames(acherontia, null, null, null);
+		List<NameRelationship> result = taxonNameDao.getRelatedNames(acherontia, null, null, null,null,null);
 		
 		assertNotNull("getRelatedNames should return a list",result);
 		assertFalse("the list should not be empty", result.isEmpty());
