@@ -44,8 +44,6 @@ public class LSIDAuthorityServiceTest extends CdmIntegrationTest {
 	    XMLUnit.setSAXParserFactory("org.apache.xerces.jaxp.SAXParserFactoryImpl");
 	    XMLUnit.setIgnoreWhitespace(true);
 	    ((LsidRegistryImpl)lsidRegistry).init();
-	    ((LsidAuthorityServiceImpl)lsidAuthorityService).setLsidDomain("example.org");
-	    ((LsidAuthorityServiceImpl)lsidAuthorityService).setLsidPort(80);
 	}
 
 	@Test

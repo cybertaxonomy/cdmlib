@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.api.service.lsid.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.ibm.lsid.LSIDException;
 import com.ibm.lsid.MetadataResponse;
@@ -25,6 +26,7 @@ import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
 
 @Service("lsidMetadataService")
+@Transactional
 public class LsidMetadataServiceImpl  implements LSIDMetadataService {
 
 	private LSIDRegistry lsidRegistry;

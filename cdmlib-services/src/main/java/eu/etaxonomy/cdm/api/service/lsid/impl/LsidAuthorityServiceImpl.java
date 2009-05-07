@@ -22,6 +22,7 @@ import com.ibm.lsid.ExpiringResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.ibm.lsid.LSIDException;
 
@@ -45,6 +46,7 @@ import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
  *
  */
 @Service("lsidAuthorityService")
+@Transactional
 public class LsidAuthorityServiceImpl implements LSIDAuthorityService {
 	private static Log log = LogFactory.getLog(LsidAuthorityServiceImpl.class);
 	private String lsidDomain;
