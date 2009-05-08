@@ -218,8 +218,6 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 			criteria.add(Restrictions.eq("sec", sec ) );
 		}
 
-		// FIXME: sec restriction caused problems in cich image import: results was empty
-		
 		if (queryString != null) {
 			criteria.add(Restrictions.ilike("name.nameCache", queryString));
 		}
@@ -227,9 +225,10 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		return results;
 	}
 
+	
 	public List<TaxonBase> getTaxaByName(String queryString, MatchMode matchMode, SelectMode selectMode,
-			Integer pageSize, Integer pageNumber) {
-		
+			ReferenceBase sec, Integer pageSize, Integer pageNumber) {
+
 		Criteria criteria = null;
 		Class<?> clazz = selectMode.criteria();
 		criteria = getSession().createCriteria(clazz);
@@ -237,11 +236,17 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		criteria.setFetchMode( "name", FetchMode.JOIN );
 		criteria.createAlias("name", "name");
 		
-		String hqlQueryString = matchMode.queryStringFrom(queryString);
-		if (matchMode == MatchMode.EXACT) {
-			criteria.add(Restrictions.eq("name.nameCache", hqlQueryString));
-		} else {
-			criteria.add(Restrictions.ilike("name.nameCache", hqlQueryString));
+		if (queryString != null) {
+			String hqlQueryString = matchMode.queryStringFrom(queryString);
+			if (matchMode == MatchMode.EXACT) {
+				criteria.add(Restrictions.eq("name.nameCache", hqlQueryString));
+			} else {
+				criteria.add(Restrictions.ilike("name.nameCache", hqlQueryString));
+			}
+		}
+		
+		if (sec != null && sec.getId() != 0) {
+			criteria.add(Restrictions.eq("sec", sec ) );
 		}
 		
 		criteria.addOrder(Order.asc("name.nameCache"));
@@ -255,6 +260,14 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 
 		List<TaxonBase> results = criteria.list();
 		return results;
+		
+	}
+
+	
+	public List<TaxonBase> getTaxaByName(String queryString, MatchMode matchMode, SelectMode selectMode,
+			Integer pageSize, Integer pageNumber) {
+		
+		return getTaxaByName(queryString, matchMode, selectMode, null, pageSize, pageNumber);
 	}
 	
 	public List<TaxonBase> getTaxaByName(String queryString, MatchMode matchMode, 

@@ -78,6 +78,19 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
 			Boolean accepted, Integer pageSize, Integer pageNumber);
 	
 	/** 
+	 * Returns a list of TaxonBase instances 
+	 * where the taxonBase.name.nameCache property matches the String queryString.
+	 * @param queryString
+	 * @param matchMode
+	 * @param selectMode all (taxa and synonyms), taxa, or synonyms
+	 * @param pageSize
+	 * @param pageNumber
+	 * @return list of found taxa
+	 */
+	public List<TaxonBase> getTaxaByName(String queryString, MatchMode matchMode, SelectMode selectMode,
+			Integer pageSize, Integer pageNumber);
+	
+	/** 
 	 * Returns a list of TaxonBase instances (or Taxon instances, if accepted == true, or Synonym instance, if accepted == false) 
 	 * where the taxonBase.name.nameCache property matches the String queryString.
 	 * @param queryString
@@ -88,7 +101,7 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
 	 * @return list of found taxa
 	 */
 	public List<TaxonBase> getTaxaByName(String queryString, MatchMode matchMode, SelectMode selectMode,
-			Integer pageSize, Integer pageNumber);
+			ReferenceBase sec, Integer pageSize, Integer pageNumber);
 	
 	/**
 	 * Computes all Taxon instances that do not have a taxonomic parent and has at least one child.
