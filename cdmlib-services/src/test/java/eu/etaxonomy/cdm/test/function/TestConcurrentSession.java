@@ -101,9 +101,6 @@ public class TestConcurrentSession extends CdmIntegrationTest{
 	
 	@After
 	public void tearDown(){
-		conversationHolder1.dispose();
-		conversationHolder2.dispose();
-		conversationHolder3.dispose();
 	}
 	
 	/**

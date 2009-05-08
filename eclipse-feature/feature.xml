@@ -2,7 +2,7 @@
 <feature
       id="eu.etaxonomy.cdmLibrary"
       label="CDM Library"
-      version="2.1.0.42"
+      version="2.1.0.50"
       provider-name="EDIT">
 
    <description url="http://www.example.com/description">

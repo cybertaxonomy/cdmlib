@@ -102,6 +102,14 @@ public class CdmPostDataChangeObservableListener
 		getDefault().observers.add(observer);
 	}
 	
+	/**
+	 * Remove observer from notify queue
+	 * @param observer
+	 */
+	public void unregister(ICdmPostDataChangeObserver observer){
+		getDefault().observers.remove(observer);
+	}
+	
 	public void delayedNotify(){
 		if(delayed && changeEvents.size() > 0){
 			for( ICdmPostDataChangeObserver observer : observers){

@@ -3,8 +3,6 @@
  */
 package eu.etaxonomy.cdm.api.conversation;
 
-import java.util.Map;
-
 import javax.sql.DataSource;
 
 import org.apache.log4j.Logger;
@@ -19,7 +17,6 @@ import org.springframework.orm.hibernate3.SessionHolder;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.support.ResourceHolder;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import eu.etaxonomy.cdm.persistence.hibernate.CdmPostDataChangeObservableListener;
@@ -81,6 +78,15 @@ public class ConversationHolder{
 		this.dataSource = dataSource;
 		this.sessionFactory = sessionFactory;
 		this.transactionManager = transactionManager;
+		
+		bind();
+		
+
+		// moved this from editor to here
+		// 
+		if(TransactionSynchronizationManager.hasResource(getDataSource())){
+			TransactionSynchronizationManager.unbindResource(getDataSource());
+		}
 	}
 	
 	/**
@@ -96,9 +102,6 @@ public class ConversationHolder{
 		}
 		
 		try{
-			// FIXME for debugging -> remove
-			Map resourceMap = TransactionSynchronizationManager.getResourceMap();
-			
 			
 			logger.info("Starting new Synchronization in TransactionSynchronizationManager.");
 			TransactionSynchronizationManager.initSynchronization();
@@ -171,7 +174,7 @@ public class ConversationHolder{
 	 * Commit the running transaction.
 	 */
 	public void commit(){
-		commit(false);
+		commit(true);
 	}
 	
 	/**
@@ -202,16 +205,6 @@ public class ConversationHolder{
 			logger.warn("No active transaction but commit was called");
 		}
 		return null;
-	}
-	
-
-	/**
-	 * close the session if it is still open
-	 */
-	public void dispose() {
-		if (longSession != null && longSession.isOpen()){
-			longSession.close();
-		}
 	}
 
 	/**
@@ -270,5 +263,12 @@ public class ConversationHolder{
 	 */
 	public void registerForDataStoreChanges(IConversationEnabled observer) {
 		CdmPostDataChangeObservableListener.getDefault().register(observer);
+	}
+	
+	/**
+	 * Register to get updated after any interaction with the datastore
+	 */
+	public void unregisterForDataStoreChanges(IConversationEnabled observer) {
+		CdmPostDataChangeObservableListener.getDefault().unregister(observer);
 	}
 }
