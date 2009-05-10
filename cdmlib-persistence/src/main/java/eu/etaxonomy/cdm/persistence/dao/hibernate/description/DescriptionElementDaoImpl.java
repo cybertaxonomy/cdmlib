@@ -102,9 +102,13 @@ public class DescriptionElementDaoImpl extends AnnotatableDaoImpl<DescriptionEle
 				int fromIndex = 0;
 				int toIndex = 0;
 				if(pageNumber != null) {
-				    fromIndex =  pageNumber * pageSize;  
+					// if the page is out of scope
+					if(results.size() < (pageNumber * pageSize)) {
+						return new ArrayList<Media>();
+					}
+				    fromIndex =   pageNumber * pageSize;  
 				} 
-				toIndex = fromIndex + pageSize;
+				toIndex = results.size() < (fromIndex + pageSize) ? results.size() : fromIndex + pageSize;
 				results = results.subList(fromIndex, toIndex);
 			}
 			defaultBeanInitializer.initializeAll(results, propertyPaths);
