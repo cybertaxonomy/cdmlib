@@ -9,6 +9,8 @@
 package eu.etaxonomy.cdm.persistence.dao.hibernate.taxon;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -281,7 +283,29 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 			return (List<RelationshipBase>)query.getResultList();
 		}
 	}
+	
+	/** Sets the taxonomic parent to null. Does not handle taxonomic relationships. */
+	private boolean nullifyTaxonomicParent(Taxon taxon) {
 
+		try {
+			Method nullifyTaxonomicParent = taxon.getClass().getMethod("nullifyTaxonomicParent");
+			nullifyTaxonomicParent.invoke(taxon);
+		} catch (NoSuchMethodException ex) {
+			logger.error("NoSuchMethod: " + ex.getMessage());
+			return false;
+		} catch (IllegalArgumentException ex) {
+			logger.error("IllegalArgumentException: " + ex.getMessage());
+			return false;
+		} catch (IllegalAccessException ex) {
+			logger.error("IllegalAccessException: " + ex.getMessage());
+			return false;
+		} catch (InvocationTargetException ex) {
+			logger.error("IllegalAccessException: " + ex.getMessage());
+			return false;
+		}
+		return true;
+	}
+	
 	@Override
 	public UUID delete(TaxonBase taxonBase) throws DataAccessException{
 		if (taxonBase == null){
@@ -335,19 +359,38 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 			Taxon taxon = (Taxon)taxonBase;
 						
 			for (Iterator<TaxonRelationship> iterator = taxon.getRelationsFromThisTaxon().iterator(); iterator.hasNext();){
-				TaxonRelationship relationToThisTaxon = iterator.next();
+				TaxonRelationship relationFromThisTaxon = iterator.next();
 				iterator.remove();
-				relationToThisTaxon.setFromTaxon(null);
-				relationToThisTaxon.setToTaxon(null);
-				getSession().delete(relationToThisTaxon);
+				
+				relationFromThisTaxon.setToTaxon(null);
+				relationFromThisTaxon.setFromTaxon(null);
+
+				// decrease children count of taxonomic parent by one
+				if (relationFromThisTaxon.getType().equals(TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN())) {
+					Taxon toTaxon = relationFromThisTaxon.getToTaxon(); // parent
+					if (toTaxon != null) {
+						toTaxon.setTaxonomicChildrenCount(toTaxon.getTaxonomicChildrenCount() - 1);	
+					}
+				}
+				getSession().delete(relationFromThisTaxon);
 			}
 			
 			for (Iterator<TaxonRelationship> iterator = taxon.getRelationsToThisTaxon().iterator(); iterator.hasNext();){
-				TaxonRelationship relationFromThisTaxon = iterator.next();
+				TaxonRelationship relationToThisTaxon = iterator.next();
 				iterator.remove();
-				relationFromThisTaxon.setToTaxon(null);
-				relationFromThisTaxon.setFromTaxon(null);
-				getSession().delete(relationFromThisTaxon);
+				
+				relationToThisTaxon.setFromTaxon(null);
+				relationToThisTaxon.setToTaxon(null);
+
+                // set parent cache of child to null
+				if (relationToThisTaxon.getType().equals(TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN())) {
+					Taxon fromTaxon = relationToThisTaxon.getFromTaxon(); // child
+					if (fromTaxon != null) {
+						fromTaxon.nullifyTaxonomicParent();
+						//nullifyTaxonomicParent(fromTaxon);
+					}
+				}
+				getSession().delete(relationToThisTaxon);
 			}
 			
 			//SynonymRelationships
@@ -376,6 +419,9 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 				getSession().delete(taxonDescription);
 			}
 			
+			taxon.nullifyTaxonomicParent();
+			//nullifyTaxonomicParent(taxon);
+
 		} else { //is Synonym
 			Synonym synonym = (Synonym)taxonBase;
 			for (Iterator<SynonymRelationship> iterator = synonym.getSynonymRelations().iterator(); iterator.hasNext();){

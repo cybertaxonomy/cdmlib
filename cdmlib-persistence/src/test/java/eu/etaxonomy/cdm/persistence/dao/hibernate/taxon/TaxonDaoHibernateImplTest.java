@@ -3,6 +3,7 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.taxon;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertNotNull;
+import static junit.framework.Assert.assertSame;
 import static junit.framework.Assert.assertTrue;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
@@ -56,6 +57,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 	private UUID uuid;
 	private UUID sphingidae;
 	private UUID acherontia;
+	private UUID mimas;
 	private UUID acherontiaLachesis;
 	private AuditEvent previousAuditEvent;
 	private AuditEvent mostRecentAuditEvent;
@@ -66,6 +68,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 		sphingidae = UUID.fromString("54e767ee-894e-4540-a758-f906ecb4e2d9");
 		acherontia = UUID.fromString("c5cc8674-4242-49a4-aada-72d63194f5fa");
 		acherontiaLachesis = UUID.fromString("b04cc9cb-2b4a-4cc4-a94a-3c93a2158b06");
+		mimas = UUID.fromString("900052b7-b69c-4e26-a8f0-01c215214c40");
 		previousAuditEvent = new AuditEvent();
 		previousAuditEvent.setRevisionNumber(1025);
 		previousAuditEvent.setUuid(UUID.fromString("a680fab4-365e-4765-b49e-768f2ee30cda"));
@@ -379,6 +382,11 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 		Taxon taxon = (Taxon)taxonDao.findByUuid(acherontia);
 		assert taxon != null : "taxon must exist";
 		taxonDao.delete(taxon);
+		Taxon taxonWithChildren = (Taxon)taxonDao.findByUuid(mimas);
+		assert taxonWithChildren != null : "taxon must exist";
+		assertEquals(taxonWithChildren.getTaxonomicChildrenCount(), 2);
+		assertSame(taxonWithChildren.getTaxonomicParent(), (Taxon)taxonDao.findByUuid(sphingidae));
+		taxonDao.delete(taxonWithChildren);
 		setComplete();
 		endTransaction();
 	}
