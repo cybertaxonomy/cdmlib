@@ -1091,7 +1091,8 @@
         unit_id integer,
         taxon2_id integer,
         format_id integer,
-        primary key (id)
+		nameusedinreference_id integer,
+		primary key (id)
     );
 
     create table DescriptionElementBase_AUD (
@@ -1118,7 +1119,8 @@
         associatedspecimenorobservation_id integer,
         name varchar(255),
         language_id integer,
-        primary key (id, REV)
+        nameusedinreference_id integer,
+		primary key (id, REV)
     );
 
     create table DescriptionElementBase_Annotation (

@@ -76,7 +76,8 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 	    "modifiers",
 	    "modifyingText",
 	    "media",
-	    "inDescription"
+	    "inDescription",
+	    "nameUsedInReference"
 })
 @Entity
 @Audited
@@ -123,6 +124,14 @@ public abstract class DescriptionElementBase extends ReferencedEntityBase implem
     @Cascade(CascadeType.SAVE_UPDATE)
 	@IndexedEmbedded
     private DescriptionBase inDescription;
+	
+	@XmlElement(name = "nameUsedInReference")
+	@XmlIDREF
+	@XmlSchemaType(name = "IDREF")
+	@ManyToOne(fetch = FetchType.LAZY)
+	@Cascade({CascadeType.SAVE_UPDATE})
+	private TaxonNameBase nameUsedInReference;
+	
 
 	// ************* CONSTRUCTORS *************/	
 	/** 
@@ -316,4 +325,20 @@ public abstract class DescriptionElementBase extends ReferencedEntityBase implem
 	public LanguageString removeModifyingText(Language language){
 		return this.modifyingText.remove(language);
 	}
+
+	/**
+	 * @return the nameUsedInReference
+	 */
+	public TaxonNameBase getNameUsedInReference() {
+		return nameUsedInReference;
+	}
+
+	/**
+	 * @param nameUsedInReference the nameUsedInReference to set
+	 */
+	public void setNameUsedInReference(TaxonNameBase nameUsedInReference) {
+		this.nameUsedInReference = nameUsedInReference;
+	}
+	
+	
 }

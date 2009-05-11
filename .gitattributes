@@ -1048,6 +1048,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/Thesis.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/WebPage.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/package-info.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/package.html -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/AlternativeViewRoot.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/Synonym.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/SynonymRelationship.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/SynonymRelationshipType.java -text

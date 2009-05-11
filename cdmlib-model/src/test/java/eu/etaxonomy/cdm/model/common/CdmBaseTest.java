@@ -9,7 +9,13 @@
  
 package eu.etaxonomy.cdm.model.common;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -25,7 +31,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 
 
@@ -34,11 +39,13 @@ import eu.etaxonomy.cdm.test.unit.EntityTestBase;
  *
  */
 public class CdmBaseTest extends EntityTestBase{
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CdmBaseTest.class);
 	
 	static CdmBase cdmBase;
 
 	static public class TestCdmBaseClass extends CdmBase{
+		private static final long serialVersionUID = -489812714256694973L;
 		public String testString = "testStringXsdfjlksj";
 		public float testFloat = 1.43446E-5f;
 		public boolean testBoolean = false;
