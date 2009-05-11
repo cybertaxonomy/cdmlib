@@ -645,6 +645,15 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 	public Taxon getTaxonomicParent() {
 		return this.taxonomicParentCache;
 	}
+
+	/** 
+	 * Sets the taxononomic parent of <i>this</i> taxon to null.
+	 * Note that this method does not handle taxonomic relationships.
+	 */
+	public void nullifyTaxonomicParent() {
+		this.taxonomicParentCache = null;
+	}
+		
 	/**
 	 * Replaces both the taxonomic parent cache with the given new parent taxon
 	 * and the corresponding taxon relationship with a new {@link TaxonRelationship taxon relationship}
@@ -734,7 +743,7 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 	/**
 	 * @see  #getTaxonomicChildrenCount()
 	 */
-	private void setTaxonomicChildrenCount(int taxonomicChildrenCount) {
+	public void setTaxonomicChildrenCount(int taxonomicChildrenCount) {
 		this.taxonomicChildrenCount = taxonomicChildrenCount;
 	}
 
@@ -1387,5 +1396,6 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 		}
 		//sort end
 		return result;
-	}	
+	}
+
 }
