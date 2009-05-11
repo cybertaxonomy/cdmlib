@@ -55,13 +55,9 @@ import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
 @Entity
 @Audited
 public class Address extends VersionableEntity {
-	
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 682106303069088972L;
-
-	static Logger logger = Logger.getLogger(Address.class);
+	@SuppressWarnings("unused")
+	private static final Logger logger = Logger.getLogger(Address.class);
 	
     @XmlElement(name = "POBox")
 	private String pobox;
