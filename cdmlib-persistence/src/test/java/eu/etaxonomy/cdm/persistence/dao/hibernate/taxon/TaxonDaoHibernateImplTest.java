@@ -385,8 +385,11 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 		Taxon taxonWithChildren = (Taxon)taxonDao.findByUuid(mimas);
 		assert taxonWithChildren != null : "taxon must exist";
 		assertEquals(taxonWithChildren.getTaxonomicChildrenCount(), 2);
-		assertSame(taxonWithChildren.getTaxonomicParent(), (Taxon)taxonDao.findByUuid(sphingidae));
+		Taxon parent = (Taxon)taxonDao.findByUuid(sphingidae);
+		assertSame(taxonWithChildren.getTaxonomicParent(), parent);
+		assertEquals(parent.getTaxonomicChildrenCount(), 203);
 		taxonDao.delete(taxonWithChildren);
+		assertEquals(parent.getTaxonomicChildrenCount(), 202);
 		setComplete();
 		endTransaction();
 	}
