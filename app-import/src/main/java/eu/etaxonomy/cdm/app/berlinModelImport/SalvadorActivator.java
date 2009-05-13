@@ -39,7 +39,7 @@ public class SalvadorActivator {
 	//database validation status (create, update, validate ...)
 	static DbSchemaValidation hbm2dll = DbSchemaValidation.CREATE;
 	static final Source berlinModelSource = BerlinModelSources.El_Salvador();
-	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_test_andreasM();
+	static final ICdmDataSource cdmDestination = CdmDestinations.localH2();
 	static final UUID secUuid = UUID.fromString("d03ef02a-f226-4cb1-bdb4-f6c154f08a34");
 	static final int sourceSecId = 7331;
 	
@@ -51,7 +51,7 @@ public class SalvadorActivator {
 
 
 	//NomeclaturalCode
-	static final NomenclaturalCode nomenclaturalCode  = null ;//NomenclaturalCode.ICBN();
+	static final NomenclaturalCode nomenclaturalCode  = NomenclaturalCode.ICBN;
 
 // ****************** ALL *****************************************
 	
