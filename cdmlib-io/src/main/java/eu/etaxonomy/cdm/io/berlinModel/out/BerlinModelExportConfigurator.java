@@ -7,37 +7,37 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package eu.etaxonomy.cdm.io.berlinModel;
-
-import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.HashSet;
-import java.util.Set;
+package eu.etaxonomy.cdm.io.berlinModel.out;
 
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.ExportConfiguratorBase;
 import eu.etaxonomy.cdm.io.common.IExportConfigurator;
-import eu.etaxonomy.cdm.io.common.IImportConfigurator;
-import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
 import eu.etaxonomy.cdm.io.common.Source;
-import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.reference.Database;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
-import eu.etaxonomy.cdm.model.taxon.Synonym;
 
 /**
  * @author a.mueller
  * @created 20.03.2008
  * @version 1.0
  */
-public class BerlinModelExportConfigurator extends ExportConfiguratorBase implements IExportConfigurator{
+public class BerlinModelExportConfigurator extends ExportConfiguratorBase<Source> implements IExportConfigurator{
 	@SuppressWarnings("unused")
 	private static Logger logger = Logger.getLogger(BerlinModelExportConfigurator.class);
 
 	private boolean doAuthors;
+	private boolean doTaxonNames;
+	private BerlinModelExportState<BerlinModelExportConfigurator> state;
+	
+	public enum IdType{
+		CDM_ID,
+		ORIGINAL_SOURCE_ID,
+		MAX_ID
+	}
+	
+	private IdType idType = IdType.CDM_ID;
 	
 	public static BerlinModelExportConfigurator NewInstance(Source berlinModelDestination, ICdmDataSource source){
 			return new BerlinModelExportConfigurator(berlinModelDestination, source);
@@ -45,16 +45,16 @@ public class BerlinModelExportConfigurator extends ExportConfiguratorBase implem
 	
 	protected void makeIoClassList(){
 		ioClassList = new Class[]{
-				BerlinModelAuthorExport.class
-//				, BerlinModelReferenceImport.class
-//				, BerlinModelTaxonNameImport.class
+				BerlinModelAuthorTeamExport.class
+				, BerlinModelReferenceExport.class
+				, BerlinModelTaxonNameExport.class
 //				, BerlinModelTaxonNameRelationImport.class
 //				, BerlinModelNameStatusImport.class
 //				, BerlinModelNameFactsImport.class
 //				, BerlinModelTypesImport.class
-//				, BerlinModelTaxonImport.class
-//				, BerlinModelTaxonRelationImport.class
-//				, BerlinModelFactsImport.class
+				, BerlinModelTaxonExport.class
+				, BerlinModelTaxonRelationExport.class
+				, BerlinModelFactExport.class
 //				, BerlinModelOccurrenceImport.class
 		};
 		
@@ -70,6 +70,7 @@ public class BerlinModelExportConfigurator extends ExportConfiguratorBase implem
 //	   setNomenclaturalCode(NomenclaturalCode.ICBN); //default for Berlin Model
 	   setSource(cdmSource);
 	   setDestination(berlinModelDestination);
+	   setState(new BerlinModelExportState<BerlinModelExportConfigurator>());
 	}
 	
 	
@@ -109,8 +110,11 @@ public class BerlinModelExportConfigurator extends ExportConfiguratorBase implem
 	 * @see eu.etaxonomy.cdm.io.common.IIoConfigurator#getDestinationNameString()
 	 */
 	public String getDestinationNameString() {
-		logger.warn("Not yet implemented");
-		return null;
+		if (getSource() != null){
+			return getSource().getDatabase();
+		}else{
+			return null;
+		}
 	}
 	
 	public boolean isDoAuthors(){
@@ -120,6 +124,50 @@ public class BerlinModelExportConfigurator extends ExportConfiguratorBase implem
 	public void setDoAuthors(boolean doAuthors){
 		this.doAuthors = doAuthors;
 	}
+
+	/**
+	 * @return the doTaxonNames
+	 */
+	public boolean isDoTaxonNames() {
+		return doTaxonNames;
+	}
+
+	/**
+	 * @param doTaxonNames the doTaxonNames to set
+	 */
+	public void setDoTaxonNames(boolean doTaxonNames) {
+		this.doTaxonNames = doTaxonNames;
+	}
+
+	/**
+	 * @return the idType
+	 */
+	public IdType getIdType() {
+		return idType;
+	}
+
+	/**
+	 * @param idType the idType to set
+	 */
+	public void setIdType(IdType idType) {
+		this.idType = idType;
+	}
+
+	/**
+	 * @return the state
+	 */
+	public BerlinModelExportState<BerlinModelExportConfigurator> getState() {
+		return state;
+	}
+
+	/**
+	 * @param state the state to set
+	 */
+	public void setState(BerlinModelExportState<BerlinModelExportConfigurator> state) {
+		this.state = state;
+	}
+	
+	
 
 	
 }

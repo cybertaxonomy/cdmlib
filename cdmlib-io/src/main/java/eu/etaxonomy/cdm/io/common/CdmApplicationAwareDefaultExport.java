@@ -21,6 +21,8 @@ import org.springframework.stereotype.Component;
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.service.IService;
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.io.berlinModel.out.DbExportState;
+import eu.etaxonomy.cdm.io.berlinModel.out.IoState;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
@@ -149,6 +151,8 @@ public class CdmApplicationAwareDefaultExport<T extends IExportConfigurator> imp
 				ICdmIO<S> cdmIo = (ICdmIO<S>)applicationContext.getBean(ioBeanName, ICdmIO.class);
 				if (cdmIo != null){
 					result &= cdmIo.invoke(config, stores);
+//					IoState<S> state = null;
+//					result &= cdmIo.invoke(state);
 				}else{
 					logger.error("cdmIO was null");
 					result = false;

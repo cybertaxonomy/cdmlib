@@ -26,12 +26,12 @@ public class CdmStringMapper extends CdmSingleAttributeMapperBase {
 	 * @param dbValue
 	 * @param cdmValue
 	 */
-	public CdmStringMapper(String dbAttributString, String cdmAttributeString) {
-		super(dbAttributString, cdmAttributeString);
+	public CdmStringMapper(String dbAttributeString, String cdmAttributeString) {
+		super(dbAttributeString, cdmAttributeString);
 	}
 	
-	public Class getTypeClass(){
+	public Class<String> getTypeClass(){
 		return String.class;
 	}
-
+	
 }

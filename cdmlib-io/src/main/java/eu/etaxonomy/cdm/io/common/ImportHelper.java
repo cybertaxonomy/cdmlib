@@ -286,6 +286,61 @@ public class ImportHelper {
 
 	}
 
+	//************** EXPORT *******************/
+	
+	
+	public static<T extends Object> T getValue(CdmBase cdmBase, String cdmAttrName, boolean isBoolean, boolean obligatory){
+		String methodName;
+		T result;
+		try {
+			if (isBoolean){
+				if (cdmAttrName == null || cdmAttrName.length() < 3 || !cdmAttrName.startsWith("is")){
+					throw new IllegalArgumentException("boolean CdmAttributeName should have atleast 3 characters and start with 'is': " + cdmAttrName);
+				}
+				methodName = cdmAttrName ;
+			}else {
+				if (cdmAttrName == null || cdmAttrName.length() < 1 ){
+					throw new IllegalArgumentException("CdmAttributeName should have atleast 1 character");
+				}
+				methodName = "get" + cdmAttrName.substring(0, 1).toUpperCase() + cdmAttrName.substring(1) ;
+			}
+//			else{
+//				logger.error("Class not supported: " + clazz.toString());
+//				return null;
+//			}
+			Method cdmMethod = cdmBase.getClass().getMethod(methodName);
+			result = (T)cdmMethod.invoke(cdmBase);
+			return result;
+		} catch (NullPointerException e) {
+			logger.error("NullPointerException: " + e.getMessage());
+			return null;
+		} catch (IllegalArgumentException e) {
+			logger.error("IllegalArgumentException: " + e.getMessage());
+			return null;
+		} catch (IllegalAccessException e) {
+			logger.error("IllegalAccessException: " + e.getMessage());
+			return null;
+		} catch (InvocationTargetException e) {
+			logger.error("InvocationTargetException: " + e.getMessage());
+			return null;
+		}catch (SecurityException e) {
+			logger.error("SecurityException: " + e.getMessage());
+			return null;
+		} catch (NoSuchMethodException e) {
+			if (obligatory){
+				logger.error("NoSuchMethod: " + e.getMessage());
+				return null;
+			}else{
+				if (logger.isDebugEnabled()){ logger.debug("NoSuchMethod: " + e.getMessage());}
+				return null;
+			}
+		}
+		
+	}
+
+	
+	
+	
 	
 	//******* old *****************
 	

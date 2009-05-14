@@ -16,8 +16,6 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.io.berlinModel.CdmOneToManyMapper;
-
 
 /**
  * @author a.mueller
@@ -25,10 +23,9 @@ import eu.etaxonomy.cdm.io.berlinModel.CdmOneToManyMapper;
  * @version 1.0
  */
 public class CdmIoMapping {
-	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CdmIoMapping.class);
 	
-	List<CdmAttributeMapperBase> mapperList = new ArrayList<CdmAttributeMapperBase>();
+	protected List<CdmAttributeMapperBase> mapperList = new ArrayList<CdmAttributeMapperBase>();
 	Set<String> sourceAttributes = new HashSet<String>();
 	Set<String> destinationAttributes = new HashSet<String>();
 	List<String> sourceAttributeList = new ArrayList<String>();
@@ -43,14 +40,15 @@ public class CdmIoMapping {
 			sourceAttributeList.addAll(singleMapper.getSourceAttributeList());
 			destinationAttributes.addAll(singleMapper.getDestinationAttributes());
 			destinationAttributeList.addAll(singleMapper.getDestinationAttributeList());
-		}else if (mapper instanceof CdmOneToManyMapper<?, ?,?>){
-			CdmOneToManyMapper<?, ?,?> multipleMapper = (CdmOneToManyMapper<?, ?,?>)mapper;
+		}else if (mapper instanceof MultipleAttributeMapperBase){
+			MultipleAttributeMapperBase<?> multipleMapper = (MultipleAttributeMapperBase<?>)mapper;
 			sourceAttributes.addAll(multipleMapper.getSourceAttributes());
 			sourceAttributeList.addAll(multipleMapper.getSourceAttributes());
 			destinationAttributes.addAll(multipleMapper.getDestinationAttributes());
-			destinationAttributeList.addAll(multipleMapper.getDestinationAttributes());
+			destinationAttributeList.addAll(multipleMapper.getDestinationAttributeList());
 		}else{
-			logger.error("Unknown mapper type");
+			logger.error("Unknown mapper type: " + mapper.getClass().getSimpleName());
+			throw new IllegalArgumentException("Unknown mapper type: " + mapper.getClass().getSimpleName());
 		}
 	}
 	
@@ -75,6 +73,12 @@ public class CdmIoMapping {
 	public Set<String> getDestinationAttributes(){
 		Set<String> result = new HashSet<String>();
 		result.addAll(destinationAttributes);
+		return result;
+	}
+	
+	public List<String> getDestinationAttributeList(){
+		List<String> result = new ArrayList<String>();
+		result.addAll(destinationAttributeList);
 		return result;
 	}
 	

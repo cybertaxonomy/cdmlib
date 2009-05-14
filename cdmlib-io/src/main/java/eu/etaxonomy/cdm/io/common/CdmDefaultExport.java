@@ -105,7 +105,7 @@ public class CdmDefaultExport<T extends IExportConfigurator> implements ICdmExpo
 			}
 			return true;
 		} catch (DataSourceNotFoundException  e) {
-			logger.error("could not connect to destination database");
+			logger.error("could not connect to source CDM database");
 			return false;
 		}catch (TermNotFoundException e) {
 			logger.error("could not find needed term in destination datasource");

@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.io.common;
 
 import java.util.Map;
 
+import eu.etaxonomy.cdm.io.berlinModel.out.IoState;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
@@ -34,5 +35,9 @@ public interface ICdmIO<T extends IIoConfigurator> {
 	public boolean check(T config);
 	
 	public boolean invoke(T config, Map<String, MapWrapper<? extends CdmBase>> stores);
+	
+//	public boolean invoke(IoState<T> state);
+	
+	
 	
 }

@@ -21,14 +21,14 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
  * @author a.babadshanjan
  * @created 16.11.2008
  */
-public abstract class ExportConfiguratorBase extends IoConfiguratorBase {
+public abstract class ExportConfiguratorBase<DESTINATION extends Object> extends IoConfiguratorBase {
 
 	private static final Logger logger = Logger.getLogger(ExportConfiguratorBase.class);
 
 	private CHECK check = CHECK.EXPORT_WITHOUT_CHECK;
 
 	private ICdmDataSource source;
-	private Object destination;
+	private DESTINATION destination;
 	//private DbSchemaValidation dbSchemaValidation = DbSchemaValidation.VALIDATE;
 	private CdmApplicationController cdmApp = null;
 	protected ReferenceBase sourceReference;
@@ -37,7 +37,7 @@ public abstract class ExportConfiguratorBase extends IoConfiguratorBase {
 	
 	public ExportConfiguratorBase(){
 		super();
-		setDbSchemaValidation(DbSchemaValidation.UPDATE);
+		//setDbSchemaValidation(DbSchemaValidation.UPDATE);
 		makeIoClassList();
 	}
 	
@@ -54,14 +54,14 @@ public abstract class ExportConfiguratorBase extends IoConfiguratorBase {
 	/**
 	 * @param source the source to get
 	 */
-	public Object getDestination() {
+	public DESTINATION getDestination() {
 		return destination;
 	}
 	
 	/**
 	 * @param source the source to set
 	 */
-	public void setDestination(Object destination) {
+	public void setDestination(DESTINATION destination) {
 		this.destination = destination;
 	}
 	

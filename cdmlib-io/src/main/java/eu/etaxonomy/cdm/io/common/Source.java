@@ -155,6 +155,29 @@ public class Source {
         }
     }
 
+    //******* INSERT, UPDATE, DELETE *******************//
+    /**
+     * Executes an insert, update or delete statement.
+     * Returns the number of rows changed or -1 if updatedStatement was 0 or and error occurred. 
+     * Does not change the Sources query-string!!
+     * @return Resultset for the query.
+     */
+    public int update (String updateStatement){
+    	int result;
+    	try {
+            this.getConnection(); //establish connection
+        	if (updateStatement == null){
+        		return -1;
+        	}
+            mStmt = mConn.createStatement();
+            result = mStmt.executeUpdate(updateStatement);
+            return result;
+        }catch(SQLException e){
+            logger.error("Problems when creating Resultset for query \n  " + updateStatement + " \n" + "Exception: " + e);
+            return -1;
+        }
+    }
+
     
     /** 
      * Returns the Resultset for Sources query. 

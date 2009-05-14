@@ -18,7 +18,7 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.CdmAttributeMapperBase;
 import eu.etaxonomy.cdm.io.common.CdmSingleAttributeMapperBase;
-import eu.etaxonomy.cdm.io.common.IXmlMapper;
+import eu.etaxonomy.cdm.io.common.MultipleAttributeMapperBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
@@ -26,11 +26,10 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * @created 20.03.2008
  * @version 1.0
  */
-public class CdmOneToManyMapper<ONE extends CdmBase, MANY extends CdmBase, SINGLE_MAPPER extends CdmSingleAttributeMapperBase> extends CdmAttributeMapperBase {
+public class CdmOneToManyMapper<ONE extends CdmBase, MANY extends CdmBase, SINGLE_MAPPER extends CdmSingleAttributeMapperBase> extends MultipleAttributeMapperBase<SINGLE_MAPPER> {
 	@SuppressWarnings("unused")
 	private static Logger logger = Logger.getLogger(CdmOneToManyMapper.class);
 
-	private List<SINGLE_MAPPER> singleMappers = new ArrayList<SINGLE_MAPPER>();
 	private Class<MANY> manyClass;
 	private Class<ONE> oneClass;
 	private String singleAttributeName;
@@ -47,12 +46,12 @@ public class CdmOneToManyMapper<ONE extends CdmBase, MANY extends CdmBase, SINGL
 		this.singleAttributeName = singleAttributeName;
 	}
 	
-	@Override
-	public Set<String> getSourceAttributes(){
-		Set<String> result = new HashSet<String>();
-		result.addAll(getSourceAttributeList());
-		return result;
-	}
+//	@Override
+//	public Set<String> getSourceAttributes(){
+//		Set<String> result = new HashSet<String>();
+//		result.addAll(getSourceAttributeList());
+//		return result;
+//	}
 	
 	@Override
 	public List<String> getSourceAttributeList(){
@@ -63,12 +62,12 @@ public class CdmOneToManyMapper<ONE extends CdmBase, MANY extends CdmBase, SINGL
 		return result;
 	}
 	
-	@Override
-	public Set<String> getDestinationAttributes(){
-		Set<String> result = new HashSet<String>();
-		result.addAll(getDestinationAttributeList());
-		return result;
-	}
+//	@Override
+//	public Set<String> getDestinationAttributes(){
+//		Set<String> result = new HashSet<String>();
+//		result.addAll(getDestinationAttributeList());
+//		return result;
+//	}
 	
 	@Override
 	public List<String> getDestinationAttributeList(){

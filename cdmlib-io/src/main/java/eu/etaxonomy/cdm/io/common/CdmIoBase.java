@@ -111,6 +111,22 @@ public abstract class CdmIoBase<T extends IIoConfigurator> extends CdmApplicatio
 		}
 	}
 	
+//	/* (non-Javadoc)
+//	 * @see eu.etaxonomy.cdm.io.common.ICdmIO#invoke(eu.etaxonomy.cdm.io.common.IIoConfigurator, eu.etaxonomy.cdm.api.application.CdmApplicationController, java.util.Map)
+//	 */
+//	public boolean invoke(T config,
+////	public boolean invoke(IIoConfigurator config,
+//			Map<String, MapWrapper<? extends CdmBase>> stores) {
+//		if (isIgnore(config)){
+//			logger.warn("No invoke for " + ioName + " (ignored)");
+//			return true;
+//		}else{
+//			return doInvoke(config, stores);
+//		}
+//	}
+	
+	
+	
 	protected abstract boolean doInvoke(T config,
 			Map<String, MapWrapper<? extends CdmBase>> stores);
 

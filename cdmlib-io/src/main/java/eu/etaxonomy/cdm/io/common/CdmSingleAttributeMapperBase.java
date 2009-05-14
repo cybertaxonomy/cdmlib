@@ -27,11 +27,18 @@ public abstract class CdmSingleAttributeMapperBase extends CdmAttributeMapperBas
 	
 	private String sourceValue;
 	private String destinationValue;
+	protected Object defaultValue;
 
-	protected CdmSingleAttributeMapperBase(String dbAttributString, String cdmAttributeString){
-		this.sourceValue = dbAttributString;
-		this.destinationValue = cdmAttributeString;
+	protected CdmSingleAttributeMapperBase(String sourceAttributString, String destinationAttributeString){
+		this(sourceAttributString,destinationAttributeString, null);
 	}
+
+	protected CdmSingleAttributeMapperBase(String sourceAttributString, String destinationAttributeString, Object defaultValue){
+		this.sourceValue = sourceAttributString;
+		this.destinationValue = destinationAttributeString;
+		this.defaultValue = defaultValue;
+	}
+
 	
 	public String getSourceAttribute(){
 		return sourceValue;

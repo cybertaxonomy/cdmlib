@@ -13,15 +13,38 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import org.apache.log4j.Logger;
-import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.common.ResultWrapper;
+import eu.etaxonomy.cdm.model.common.RelationshipBase;
+import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
 import eu.etaxonomy.cdm.model.description.PresenceTerm;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
+import eu.etaxonomy.cdm.model.name.NameRelationshipType;
+import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
+import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
+import eu.etaxonomy.cdm.model.reference.Article;
+import eu.etaxonomy.cdm.model.reference.Book;
+import eu.etaxonomy.cdm.model.reference.CdDvd;
+import eu.etaxonomy.cdm.model.reference.Database;
+import eu.etaxonomy.cdm.model.reference.Generic;
+import eu.etaxonomy.cdm.model.reference.Journal;
+import eu.etaxonomy.cdm.model.reference.Patent;
+import eu.etaxonomy.cdm.model.reference.PersonalCommunication;
+import eu.etaxonomy.cdm.model.reference.PrintSeries;
+import eu.etaxonomy.cdm.model.reference.Proceedings;
+import eu.etaxonomy.cdm.model.reference.Report;
+import eu.etaxonomy.cdm.model.reference.SectionBase;
+import eu.etaxonomy.cdm.model.reference.StrictReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Thesis;
+import eu.etaxonomy.cdm.model.reference.WebPage;
+import eu.etaxonomy.cdm.model.taxon.Synonym;
+import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
@@ -203,7 +226,7 @@ public final class BerlinModelTransformer {
 		}
 	}
 	
-	//TypeDesignation
+	//OccStatus
 	public static PresenceAbsenceTermBase<?> occStatus2PresenceAbsence (int occStatusId)  throws UnknownCdmTypeException{
 		switch (occStatusId){
 			case 0: return null;
@@ -234,7 +257,7 @@ public final class BerlinModelTransformer {
 	}
 	
 	
-	//TypeDesignation
+	//FactCategory
 	public static Feature factCategory2Feature (int factCategoryId)  throws UnknownCdmTypeException{
 		switch (factCategoryId){
 			case 0: return null;
@@ -329,6 +352,239 @@ public final class BerlinModelTransformer {
 			return Rank.UNKNOWN_RANK();
 		}		
 	}
+	
+	
+	public static Integer rank2RankId (Rank rank){
+		if (rank.equals(null)){return null;}
+		else if (rank.equals(Rank.KINGDOM())){		return 1;}
+		else if (rank.equals(Rank.SUBKINGDOM())){	return 3;}
+		else if (rank.equals(Rank.PHYLUM())){		return 5;}
+		else if (rank.equals(Rank.SUBPHYLUM())){	return 7;}
+		else if (rank.equals(Rank.DIVISION())){		return 8;}
+		else if (rank.equals(Rank.SUBDIVISION())){	return 9;}
 		
+		else if (rank.equals(Rank.CLASS())){		return 10;}
+		else if (rank.equals(Rank.SUBCLASS())){		return 13;}
+		else if (rank.equals(Rank.SUPERORDER())){	return 16;}
+		else if (rank.equals(Rank.ORDER())){		return 18;}
+		else if (rank.equals(Rank.SUBORDER())){		return 19;}
+		else if (rank.equals(Rank.FAMILY())){		return 20;}
+		else if (rank.equals(Rank.SUBFAMILY())){	return 25;}
+		else if (rank.equals(Rank.TRIBE())){		return 30;}
+		else if (rank.equals(Rank.SUBTRIBE())){		return 35;}
+		else if (rank.equals(Rank.GENUS())){		return 40;}
+		else if (rank.equals(Rank.SUBGENUS())){		return 42;}
+		else if (rank.equals(Rank.SECTION())){		return 45;}
+		else if (rank.equals(Rank.SUBSECTION())){	return 47;}
+		else if (rank.equals(Rank.SERIES())){		return 50;}
+		else if (rank.equals(Rank.SUBSERIES())){	return 52;}
+		else if (rank.equals(Rank.SPECIESAGGREGATE())){	return 58;}
+		//TODO
+		//		else if (rank.equals(Rank.XXX())){	return 59;}
+		else if (rank.equals(Rank.SPECIES())){		return 60;}
+		else if (rank.equals(Rank.SUBSPECIES())){	return 65;}
+		else if (rank.equals(Rank.CONVAR())){		return 68;}
+		else if (rank.equals(Rank.VARIETY())){		return 70;}
+		else if (rank.equals(Rank.SUBVARIETY())){	return 73;}
+		else if (rank.equals(Rank.FORM())){			return 80;}
+		else if (rank.equals(Rank.SUBFORM())){		return 82;}
+		else if (rank.equals(Rank.SPECIALFORM())){	return 84;}
+		else if (rank.equals(Rank.INFRAGENERICTAXON())){	return 98;}
+		else if (rank.equals(Rank.INFRASPECIFICTAXON())){	return 99;}
+		
+		else if (rank.equals(Rank.SUPERCLASS())){	return 750;}
+		else if (rank.equals(Rank.INFRACLASS())){	return 780;}
+		else if (rank.equals(Rank.INFRAORDER())){	return 820;}
+		else if (rank.equals(Rank.SUPERFAMILY())){	return 830;}
+		
+		else {
+			//TODO Exception
+			logger.warn("Rank not yet supported in Berlin Model: "+ rank.getLabel());
+			return null;
+		}
+	}
+	
+	public static Integer textData2FactCategoryFk (Feature feature){
+		if (feature.equals(Feature.DESCRIPTION())){
+			return 1;
+		}else if (feature.equals(Feature.ECOLOGY())){
+			return 4;
+		}else if (feature.equals(Feature.PHENOLOGY())){
+			return 5;
+		}else if (feature.equals(Feature.COMMON_NAME())){
+			return 12;
+		}else if (feature.equals(Feature.OCCURRENCE())){
+			return 13;
+		}else if (feature.equals(Feature.CITATION())){
+			return 99;
+		}else{
+			logger.warn("Unknown Feature. Used DESCRIPTION instead");
+			return 4;
+		}
+	}
+	
+	
+	public static Integer taxonBase2statusFk (TaxonBase<?> taxonBase){
+		if (taxonBase.isInstanceOf(Taxon.class)){
+			return T_STATUS_ACCEPTED;
+		}else if (taxonBase.isInstanceOf(Synonym.class)){
+			return T_STATUS_SYNONYM;
+		}else{
+			logger.warn("Unknown ");
+			return T_STATUS_UNRESOLVED;
+		}
+		//TODO 
+//		public static int T_STATUS_PARTIAL_SYN = 3;
+//		public static int T_STATUS_PRO_PARTE_SYN = 4;
+//		public static int T_STATUS_UNRESOLVED = 5;
+//		public static int T_STATUS_ORPHANED = 6;
+	}
+		
+	public static Integer ref2refCategoryId (StrictReferenceBase<?> ref){
+		if (ref == null){
+			return null;
+		}
+		else if (ref instanceof Article){		return REF_ARTICLE;}
+		else if (ref instanceof SectionBase){	return REF_PART_OF_OTHER_TITLE;}
+		else if (ref instanceof Book){	return REF_BOOK;}
+		else if (ref instanceof Database){	return REF_DATABASE;}
+//		else if (ref instanceof SectionBas){	return REF_INFORMAL;}
+//		else if (ref instanceof SectionBas){	return REF_NOT_APPLICABLE;}
+		else if (ref instanceof WebPage){	return REF_WEBSITE;}
+		else if (ref instanceof CdDvd){	return REF_CD;}
+		else if (ref instanceof Journal){	return REF_JOURNAL;}
+		else if (ref instanceof Generic){	return REF_UNKNOWN;}
+		else if (ref instanceof PrintSeries){	
+			logger.warn("Print Series is not a standard Berlin Model category");
+			return REF_PRINT_SERIES;
+		}
+		else if (ref instanceof Proceedings){	
+			logger.warn("Proceedings is not a standard Berlin Model category");
+			return REF_CONFERENCE_PROCEEDINGS;
+		}
+//		else if (ref instanceof ){	return REF_JOURNAL_VOLUME;}
+		else if (ref instanceof Patent){	return REF_NOT_APPLICABLE;}
+		else if (ref instanceof PersonalCommunication){	return REF_INFORMAL;}
+		else if (ref instanceof Report){	return REF_NOT_APPLICABLE;}
+		else if (ref instanceof Thesis){	return REF_NOT_APPLICABLE;}
+		else if (ref instanceof Report){	return REF_NOT_APPLICABLE;}
+		
+		else {
+			//TODO Exception
+			logger.warn("Reference type not yet supported in Berlin Model: "+ ref.getClass().getSimpleName());
+			return null;
+		}
+	}
+	
+	
+	public static Integer taxRelation2relPtQualifierFk (RelationshipBase<?,?,?> rel){
+		if (rel == null){
+			return null;
+		}
+//		else if (rel instanceof SynonymRelationship){		
+//			return ;
+//		}else if (rel instanceof TaxonRelationship){
+			RelationshipTermBase<?> type = rel.getType();
+			if (type.equals(TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN())) {return TAX_REL_IS_INCLUDED_IN;
+			}else if (type.equals(TaxonRelationshipType.MISAPPLIED_NAME_FOR())) {return TAX_REL_IS_MISAPPLIED_NAME_OF;
+			}else if (type.equals(SynonymRelationshipType.SYNONYM_OF())) {return TAX_REL_IS_SYNONYM_OF;
+			}else if (type.equals(SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF())) {return TAX_REL_IS_HOMOTYPIC_SYNONYM_OF;
+			}else if (type.equals(SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF())) {return TAX_REL_IS_HETEROTYPIC_SYNONYM_OF;
+			}else if (type.equals(TaxonRelationshipType.CONGRUENT_TO())) {return 11;
+//			public static int TAX_REL_IS_PROPARTE_SYN_OF = 4;
+//			public static int TAX_REL_IS_PARTIAL_SYN_OF = 5;
+//			public static int TAX_REL_IS_PROPARTE_HOMOTYPIC_SYNONYM_OF = 101;
+//			public static int TAX_REL_IS_PROPARTE_HETEROTYPIC_SYNONYM_OF = 102;
+//			public static int TAX_REL_IS_PARTIAL_HOMOTYPIC_SYNONYM_OF = 103;
+//			public static int TAX_REL_IS_PARTIAL_HETEROTYPIC_SYNONYM_OF = 104;
+			
+			}else {
+				//TODO Exception
+				logger.warn("Relationship type not yet supported by Berlin Model export: "+ rel.getType());
+				return null;
+		}
+	}
+	
+	public static Integer nomStatus2nomStatusFk (NomenclaturalStatus status){
+		if (status == null){
+			return null;
+		}
+		if (status.equals(NomenclaturalStatusType.INVALID())) {return NAME_ST_NOM_INVAL;
+		}else if (status.equals(NomenclaturalStatusType.ILLEGITIMATE())) {return NAME_ST_NOM_ILLEG;
+		}else if (status.equals(NomenclaturalStatusType.NUDUM())) {return NAME_ST_NOM_NUD;
+		}else if (status.equals(NomenclaturalStatusType.REJECTED())) {return NAME_ST_NOM_REJ;
+		}else if (status.equals(NomenclaturalStatusType.REJECTED_PROP())) {return NAME_ST_NOM_REJ_PROP;
+		}else if (status.equals(NomenclaturalStatusType.UTIQUE_REJECTED())) {return NAME_ST_NOM_UTIQUE_REJ;
+		}else if (status.equals(NomenclaturalStatusType.UTIQUE_REJECTED_PROP())) {return NAME_ST_NOM_UTIQUE_REJ_PROP;
+		}else if (status.equals(NomenclaturalStatusType.CONSERVED())) {return NAME_ST_NOM_CONS;
+		
+		}else if (status.equals(NomenclaturalStatusType.CONSERVED_PROP())) {return NAME_ST_NOM_CONS_PROP;
+		}else if (status.equals(NomenclaturalStatusType.ORTHOGRAPHY_CONSERVED())) {return NAME_ST_ORTH_CONS;
+		}else if (status.equals(NomenclaturalStatusType.ORTHOGRAPHY_CONSERVED_PROP())) {return NAME_ST_ORTH_CONS_PROP;
+		}else if (status.equals(NomenclaturalStatusType.SUPERFLUOUS())) {return NAME_ST_NOM_SUPERFL;
+		}else if (status.equals(NomenclaturalStatusType.AMBIGUOUS())) {return NAME_ST_NOM_AMBIG;
+		}else if (status.equals(NomenclaturalStatusType.PROVISIONAL())) {return NAME_ST_NOM_PROVIS;
+		}else if (status.equals(NomenclaturalStatusType.DOUBTFUL())) {return NAME_ST_NOM_DUB;
+		}else if (status.equals(NomenclaturalStatusType.NOVUM())) {return NAME_ST_NOM_NOV;
+		
+		}else if (status.equals(NomenclaturalStatusType.CONFUSUM())) {return NAME_ST_NOM_CONFUS;
+		}else if (status.equals(NomenclaturalStatusType.ALTERNATIVE())) {return NAME_ST_NOM_ALTERN;
+		}else if (status.equals(NomenclaturalStatusType.COMBINATION_INVALID())) {return NAME_ST_COMB_INVAL;
+		//TODO
+		}else {
+			//TODO Exception
+			logger.warn("NomStatus type not yet supported by Berlin Model export: "+ status);
+			return null;
+		}
+	}
+
+	
+	
+	public static Integer nameRel2RelNameQualifierFk (RelationshipBase<?,?,?> rel){
+		if (rel == null){
+			return null;
+		}
+		RelationshipTermBase<?> type = rel.getType();
+		if (type.equals(NameRelationshipType.BASIONYM())) {return NAME_REL_IS_BASIONYM_FOR;
+		}else if (type.equals(NameRelationshipType.LATER_HOMONYM())) {return NAME_REL_IS_LATER_HOMONYM_OF;
+		}else if (type.equals(NameRelationshipType.REPLACED_SYNONYM())) {return NAME_REL_IS_REPLACED_SYNONYM_FOR;
+		//TODO
+		}else if (type.equals(NameRelationshipType.VALIDATED_BY_NAME())) {return NAME_REL_IS_VALIDATION_OF;
+		}else if (type.equals(NameRelationshipType.LATER_VALIDATED_BY_NAME())) {return NAME_REL_IS_LATER_VALIDATION_OF;
+		}else if (type.equals(NameRelationshipType.CONSERVED_AGAINST())) {return NAME_REL_IS_CONSERVED_AGAINST;
+		
+		
+		}else if (type.equals(NameRelationshipType.TREATED_AS_LATER_HOMONYM())) {return NAME_REL_IS_TREATED_AS_LATER_HOMONYM_OF;
+		}else if (type.equals(NameRelationshipType.ORTHOGRAPHIC_VARIANT())) {return NAME_REL_IS_ORTHOGRAPHIC_VARIANT_OF;
+//		}else if (type.equals(NameRelationshipType.())) {return NAME_REL_IS_ORTHOGRAPHIC_VARIANT_OF;
+		}else {
+			//TODO Exception
+			logger.warn("Relationship type not yet supported by Berlin Model export: "+ rel.getType());
+			return null;
+	}
+			
+			//NameRelationShip
+
+//	}else if (type.equals(NameRelationshipType.())) {return NAME_REL_IS_REJECTED_IN_FAVOUR_OF;
+
+//			public static int NAME_REL_IS_FIRST_PARENT_OF = 9;
+//			public static int NAME_REL_IS_SECOND_PARENT_OF = 10;
+//			public static int NAME_REL_IS_FEMALE_PARENT_OF = 11;
+//			public static int NAME_REL_IS_MALE_PARENT_OF = 12;
+//
+//			public static int NAME_REL_IS_REJECTED_IN_FAVOUR_OF = 14;
+//	}else if (type.equals(NameRelationshipType.)) {return NAME_REL_IS_REJECTED_TYPE_OF;
+//			
+//			public static int NAME_REL_HAS_SAME_TYPE_AS = 18;
+//			public static int NAME_REL_IS_LECTOTYPE_OF = 61;
+//			public static int NAME_REL_TYPE_NOT_DESIGNATED = 62;
+
+		//	}else if (type.equals(NameRelationshipType.LATER_VALIDATED_BY_NAME())) {return NAME_REL_IS_TYPE_OF;
+			
+			
+	}
+	
+
+	
 	
 }
