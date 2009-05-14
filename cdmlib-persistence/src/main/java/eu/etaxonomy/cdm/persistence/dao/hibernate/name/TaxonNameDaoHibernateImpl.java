@@ -23,6 +23,7 @@ import org.hibernate.envers.query.AuditQuery;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
+import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.HybridRelationship;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
@@ -499,6 +500,18 @@ extends IdentifiableDaoBase<TaxonNameBase> implements ITaxonNameDao {
 
 		List<? extends TaxonNameBase<?,?>> results = crit.list();
 		return results;
+	}
+	
+	public List<RelationshipBase> getAllRelationships(Integer limit, Integer start) {
+		AuditEvent auditEvent = getAuditEventFromContext();
+		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
+		    //FIXME only NameRelationships
+			Criteria criteria = getSession().createCriteria(RelationshipBase.class);
+		    return (List<RelationshipBase>)criteria.list();
+		} else {
+			AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(RelationshipBase.class,auditEvent.getRevisionNumber());
+			return (List<RelationshipBase>)query.getResultList();
+		}
 	}
 	
 	

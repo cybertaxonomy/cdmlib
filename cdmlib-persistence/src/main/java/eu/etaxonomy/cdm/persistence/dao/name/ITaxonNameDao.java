@@ -12,6 +12,7 @@ import java.util.List;
 
 import org.hibernate.criterion.Criterion;
 
+import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.HybridRelationship;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
@@ -229,4 +230,6 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonNameBase> {
 	 */
 	public Integer countByName(String queryString, 
 			MatchMode matchmode, List<Criterion> criteria);
+	
+	public List<RelationshipBase> getAllRelationships(Integer limit, Integer start); 
 }
