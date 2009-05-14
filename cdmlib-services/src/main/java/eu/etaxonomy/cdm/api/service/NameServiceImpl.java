@@ -30,6 +30,7 @@ import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
+import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
@@ -152,6 +153,10 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
  	
 	public List<HomotypicalGroup> getAllHomotypicalGroups(int limit, int start){
 		return homotypicalGroupDao.list(limit, start);
+	}
+	
+	public List<RelationshipBase> getAllRelationships(int limit, int start){
+		return dao.getAllRelationships(limit, start);
 	}
 	
 	/* (non-Javadoc)

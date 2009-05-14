@@ -23,6 +23,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
+import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.name.*;
@@ -101,6 +102,8 @@ public interface INameService extends IIdentifiableEntityService<TaxonNameBase> 
 
     public List<HomotypicalGroup> getAllHomotypicalGroups(int limit, int start);
 
+    public List<RelationshipBase> getAllRelationships(int limit, int start);
+    
 	/**
 	 * Returns all Ranks
 	 * @return
