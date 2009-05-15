@@ -57,7 +57,7 @@ public class DescriptionElementDaoImpl extends AnnotatableDaoImpl<DescriptionEle
 		}
 	}
 
-	public int countTextData(String queryString) {
+	public int count(Class<? extends DescriptionElementBase> clazz, String queryString) {
 		checkNotInPriorView("DescriptionElementDaoImpl.countTextData(String queryString)");
 		QueryParser queryParser = new QueryParser("multilanguageText.text", new SimpleAnalyzer());
 		 
@@ -65,7 +65,13 @@ public class DescriptionElementDaoImpl extends AnnotatableDaoImpl<DescriptionEle
 			org.apache.lucene.search.Query query = queryParser.parse(queryString);
 			
 			FullTextSession fullTextSession = Search.getFullTextSession(getSession());
-			org.hibernate.search.FullTextQuery fullTextQuery = fullTextSession.createFullTextQuery(query, TextData.class);
+			org.hibernate.search.FullTextQuery fullTextQuery = null;
+			
+		    if(clazz == null) {
+			    fullTextQuery = fullTextSession.createFullTextQuery(query, type);
+		    } else {
+		    	fullTextQuery = fullTextSession.createFullTextQuery(query, clazz);
+		    }
 			return  fullTextQuery.getResultSize();
 		} catch (ParseException e) {
 			throw new QueryParseException(e, queryString);
@@ -116,30 +122,20 @@ public class DescriptionElementDaoImpl extends AnnotatableDaoImpl<DescriptionEle
 		}
 	}
 
-	public List<TextData> searchTextData(String queryString, Integer pageSize,	Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+	public List<DescriptionElementBase> search(Class<? extends DescriptionElementBase> clazz, String queryString, Integer pageSize,	Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
 		checkNotInPriorView("DescriptionElementDaoImpl.searchTextData(String queryString, Integer pageSize,	Integer pageNumber)");
-		QueryParser queryParser = new QueryParser("multilanguageText.text", new SimpleAnalyzer());
+		QueryParser queryParser = new QueryParser(defaultField, new SimpleAnalyzer());
 		 
 		try {
 			org.apache.lucene.search.Query query = queryParser.parse(queryString);
-			
+			org.hibernate.search.FullTextQuery fullTextQuery = null;
 			FullTextSession fullTextSession = Search.getFullTextSession(getSession());
-			org.hibernate.search.FullTextQuery fullTextQuery = fullTextSession.createFullTextQuery(query, TextData.class);
-			if(orderHints != null && !orderHints.isEmpty()) {
-			    org.apache.lucene.search.Sort sort = new Sort();
-			    SortField[] sortFields = new SortField[orderHints.size()];
-			    for(int i = 0; i < orderHints.size(); i++) {
-			    	OrderHint orderHint = orderHints.get(i);
-			    	switch(orderHint.getSortOrder()) {
-			    	case ASCENDING:
-			            sortFields[i] = new SortField(orderHint.getPropertyName() + "_forSort", false);
-			    	case DESCENDING:
-			    		sortFields[i] = new SortField(orderHint.getPropertyName() + "_forSort",true);
-			    	}
-			    }
-			    sort.setSort(sortFields);
-			    fullTextQuery.setSort(sort);
+			if(clazz == null) {
+			    fullTextQuery = fullTextSession.createFullTextQuery(query, type);
+			} else {
+				fullTextQuery = fullTextSession.createFullTextQuery(query, clazz);
 			}
+			addOrder(fullTextQuery,orderHints);
 			
 		    if(pageSize != null) {
 		    	fullTextQuery.setMaxResults(pageSize);
@@ -150,9 +146,9 @@ public class DescriptionElementDaoImpl extends AnnotatableDaoImpl<DescriptionEle
 			    }
 			}
 		    
-		    List<TextData> textData = fullTextQuery.list();
-		    defaultBeanInitializer.initializeAll(textData, propertyPaths);
-		    return textData;
+		    List<DescriptionElementBase> results = fullTextQuery.list();
+		    defaultBeanInitializer.initializeAll(results, propertyPaths);
+		    return results;
 
 		} catch (ParseException e) {
 			throw new QueryParseException(e, queryString);
@@ -203,38 +199,7 @@ public class DescriptionElementDaoImpl extends AnnotatableDaoImpl<DescriptionEle
 			throw new QueryParseException(e, queryString);
 		}
 	}
-
-	public List<DescriptionElementBase> search(String queryString,	Integer pageSize, Integer pageNumber) {
-		checkNotInPriorView("DescriptionElementDaoImpl.search(String queryString, Integer pageSize,	Integer pageNumber)");
-		QueryParser queryParser = new QueryParser(defaultField, new SimpleAnalyzer());
-		List<TaxonBase> results = new ArrayList<TaxonBase>();
-		 
-		try {
-			org.apache.lucene.search.Query query = queryParser.parse(queryString);
-			
-			FullTextSession fullTextSession = Search.getFullTextSession(getSession());
-			
-			org.hibernate.search.FullTextQuery fullTextQuery = fullTextSession.createFullTextQuery(query, type);
-			
-			org.apache.lucene.search.Sort sort = new Sort(new SortField(defaultSort));
-			fullTextQuery.setSort(sort);
-		    
-		    if(pageSize != null) {
-		    	fullTextQuery.setMaxResults(pageSize);
-			    if(pageNumber != null) {
-			    	fullTextQuery.setFirstResult(pageNumber * pageSize);
-			    } else {
-			    	fullTextQuery.setFirstResult(0);
-			    }
-			}
-		    
-		    return (List<DescriptionElementBase>)fullTextQuery.list();
-
-		} catch (ParseException e) {
-			throw new QueryParseException(e, queryString);
-		}
-	}
-
+	
 	public String suggestQuery(String string) {
 		throw new UnsupportedOperationException("suggest query is not supported yet");
 	}

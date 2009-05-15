@@ -18,16 +18,11 @@ import eu.etaxonomy.cdm.model.agent.InstitutionalMembership;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
+import eu.etaxonomy.cdm.persistence.dao.common.ISearchableDao;
 
-public interface IAgentDao extends IIdentifiableDao<AgentBase> {
+public interface IAgentDao extends IIdentifiableDao<AgentBase>, ISearchableDao<AgentBase> {
 	
 	public List<Institution> getInstitutionByCode(String code);
-	
-//  TODO Currently Contact is a property of Person or Institution, but according 
-//	to http://rs.tdwg.org/ontology/voc/Team, teams should have a Contact too - so
-//  implementation of these methods is dependent upon a bit of refactoring in cdmlib-model
-//	List<Address> getAddresses(Agent agent, Integer pageSize, Integer pageNumber);
-//  int countAddresses(Agent agent);
 	
 	/**
 	 * Return a List of the institutional memberships of a given person

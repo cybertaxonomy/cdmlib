@@ -17,6 +17,8 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
+import org.apache.lucene.search.Sort;
+import org.apache.lucene.search.SortField;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.NonUniqueObjectException;
@@ -26,6 +28,7 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.envers.query.AuditQuery;
+import org.hibernate.search.FullTextQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.DataAccessException;
@@ -228,6 +231,24 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 					criteria.addOrder(order);				
 				}
 			}
+		}
+	}
+	
+	protected void addOrder(FullTextQuery fullTextQuery, List<OrderHint> orderHints) {
+		if(orderHints != null && !orderHints.isEmpty()) {
+		    org.apache.lucene.search.Sort sort = new Sort();
+		    SortField[] sortFields = new SortField[orderHints.size()];
+		    for(int i = 0; i < orderHints.size(); i++) {
+		    	OrderHint orderHint = orderHints.get(i);
+		    	switch(orderHint.getSortOrder()) {
+		    	case ASCENDING:
+		            sortFields[i] = new SortField(orderHint.getPropertyName() + "_forSort", false);
+		    	case DESCENDING:
+		    		sortFields[i] = new SortField(orderHint.getPropertyName() + "_forSort",true);
+		    	}
+		    }
+		    sort.setSort(sortFields);
+		    fullTextQuery.setSort(sort);
 		}
 	}
 	

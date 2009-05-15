@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.Query;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
@@ -22,24 +23,28 @@ public class AnnotationDaoImpl extends LanguageStringBaseDaoImpl<Annotation> imp
 
 	public int count(Person commentator, MarkerType status) {
 		checkNotInPriorView("AnnotationDaoImpl.count(Person commentator, MarkerType status)");
-        Query query = null;
+		Criteria criteria = getSession().createCriteria(Annotation.class);
 		
-		if(status == null) {
-			query = getSession().createQuery("select count(annotation) from Annotation annotation where annotation.commentator = :commentator");
-		} else {
-			query = getSession().createQuery("select count(annotation) from Annotation annotation join annotation.markers marker where annotation.commentator = :commentator and marker.markerType = :status");
-			query.setParameter("status",status);
-		}
+		 if(commentator != null) {
+	        criteria.add(Restrictions.eq("commentator",commentator));
+	     }
+			
+		if(status != null) {
+			criteria.createCriteria("markers").add(Restrictions.eq("markerType", status));
+		} 
 		
-		query.setParameter("commentator",commentator);
+		criteria.setProjection(Projections.countDistinct("id"));
 		
-		return ((Long)query.uniqueResult()).intValue();
+		return (Integer)criteria.uniqueResult();
 	}
 
 	public List<Annotation> list(Person commentator, MarkerType status,	Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
 		checkNotInPriorView("AnnotationDaoImpl.list(Person commentator, MarkerType status,	Integer pageSize, Integer pageNumber)");
         Criteria criteria = getSession().createCriteria(Annotation.class);
-        criteria.add(Restrictions.eq("commentator",commentator));
+        
+        if(commentator != null) {
+            criteria.add(Restrictions.eq("commentator",commentator));
+        }
 		
 		if(status != null) {
 			criteria.createCriteria("markers").add(Restrictions.eq("markerType", status));

@@ -91,4 +91,25 @@ public class AnnotationDaoTest extends CdmIntegrationTest {
 		assertFalse("the list should contain Annotation instances",annotations.isEmpty());
 		assertEquals("getAnnotations should return 2",2,annotations.size());		
 	}
+	
+	@Test
+	public void testCountAllAnnotationsWithStatus() {
+		MarkerType markerType = MarkerType.TO_BE_CHECKED();	
+
+		assert markerType != null : "markerType must exist";
+		
+		int numberOfAnnotations = annotationDao.count(null, markerType);
+		assertEquals("countAnnotations should return 2",2,numberOfAnnotations);		
+	}
+	
+	@Test
+	public void testListAllAnnotationsWithStatus() {
+		MarkerType markerType = MarkerType.TO_BE_CHECKED();
+		assert markerType != null : "markerType must exist";
+		
+		List<Annotation> annotations = annotationDao.list(null, markerType, null, null, null, null);
+		assertNotNull("getAnnotations should return a List",annotations);
+		assertFalse("the list should contain Annotation instances",annotations.isEmpty());
+		assertEquals("getAnnotations should return 2",2,annotations.size());		
+	}
 }

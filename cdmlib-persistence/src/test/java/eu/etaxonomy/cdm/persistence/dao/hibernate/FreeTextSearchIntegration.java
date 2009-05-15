@@ -13,6 +13,7 @@ import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
+import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
@@ -61,7 +62,7 @@ public class FreeTextSearchIntegration extends CdmTransactionalIntegrationTest {
 		List<String> propertyPaths = new ArrayList<String>();
 		propertyPaths.add("inDescription");
 		propertyPaths.add("inDescription.taxon");
-		List<TextData> results = descriptionElementDao.searchTextData("Lorem",null,null,orderHints,propertyPaths);
+		List<DescriptionElementBase> results = descriptionElementDao.search(TextData.class,"Lorem",null,null,orderHints,propertyPaths);
 		
 		assertNotNull("searchTextData should return a List",results);
 		assertEquals("there should be 4 TextData entities in the list",4,results.size());
@@ -76,28 +77,37 @@ public class FreeTextSearchIntegration extends CdmTransactionalIntegrationTest {
     
     @Test
     public void testCountTextData() {
-    	int matches = descriptionElementDao.countTextData("Lorem");
+    	int matches = descriptionElementDao.count(TextData.class,"Lorem");
     	assertEquals("countTextData should return 4",4,matches);
     }
 	
     @Test
     public void testSearchWord() {
-    	List<TaxonBase> results = taxonDao.searchTaxa("Arum",null, null, null);
+    	List<OrderHint> orderHints = new ArrayList<OrderHint>();
+    	orderHints.add(new OrderHint("name.titleCache",SortOrder.ASCENDING));
+    	List<String> propertyPaths = new ArrayList<String>();
+    	propertyPaths.add("name");
+    	
+    	List<TaxonBase> results = taxonDao.search(null,"Arum", null, null, orderHints, propertyPaths);
 		assertEquals("searchTaxa should return 463 results",46,results.size());
 		assertTrue("TaxonBase.name should be initialized",Hibernate.isInitialized(results.get(0).getName()));
     }
     
     @Test
     public void testSearchCount() {
-		int numberOfResults = taxonDao.countTaxa("Arum",null);
+		int numberOfResults = taxonDao.count(null,"Arum");
 		assertEquals("countTaxa should return 46",46,numberOfResults);
 		
     }
     
     @Test
     public void testSearchPaged() {
-		List<TaxonBase> page1 = taxonDao.searchTaxa("Arum",null, 30, 0);
-		List<TaxonBase> page2 = taxonDao.searchTaxa("Arum",null, 30, 1);
+    	List<OrderHint> orderHints = new ArrayList<OrderHint>();
+    	orderHints.add(new OrderHint("name.titleCache",SortOrder.ASCENDING));
+    	List<String> propertyPaths = new ArrayList<String>();
+    	propertyPaths.add("name");
+		List<TaxonBase> page1 = taxonDao.search(null,"Arum", 30, 0,orderHints,propertyPaths);
+		List<TaxonBase> page2 = taxonDao.search(null,"Arum", 30, 1,orderHints,propertyPaths);
 		
 		assertEquals("page 1 should contain 30 taxa",30,page1.size());
 		assertEquals("page 1 should be sorted alphabetically","Arum L.",page1.get(0).getName().getTitleCache());
@@ -109,13 +119,23 @@ public class FreeTextSearchIntegration extends CdmTransactionalIntegrationTest {
     
     @Test
     public void testSearchPhrase() {
-		List<TaxonBase> results = taxonDao.searchTaxa("\"Arum italicum\"",null, null, null);
+    	List<OrderHint> orderHints = new ArrayList<OrderHint>();
+    	orderHints.add(new OrderHint("name.titleCache",SortOrder.ASCENDING));
+    	List<String> propertyPaths = new ArrayList<String>();
+    	propertyPaths.add("name");
+    	
+		List<TaxonBase> results = taxonDao.search(null,"\"Arum italicum\"", null, null,orderHints,propertyPaths);
 		assertEquals("searchTaxa should return 5 taxa",5,results.size());
     }
     
     @Test
     public void testSearchWildcard()  {
-		List<TaxonBase> results = taxonDao.searchTaxa("Aroph*", null, null, null);
+    	List<OrderHint> orderHints = new ArrayList<OrderHint>();
+    	orderHints.add(new OrderHint("name.titleCache",SortOrder.ASCENDING));
+    	List<String> propertyPaths = new ArrayList<String>();
+    	propertyPaths.add("name");
+    	
+		List<TaxonBase> results = taxonDao.search(null,"Aroph*",  null, null,orderHints,propertyPaths);
 		assertEquals("searchTaxa should return 6 taxa",7,results.size());
     }
     

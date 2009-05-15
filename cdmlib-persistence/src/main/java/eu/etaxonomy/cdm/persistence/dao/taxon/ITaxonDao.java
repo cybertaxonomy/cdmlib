@@ -236,30 +236,6 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
 	public List<SynonymRelationship> getSynonyms(Taxon taxon, SynonymRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 	
 	/**
-	 * Returns a count of TaxonBase instances (or Taxon instances, if accepted == true, or Synonym instance, if accepted == false) where the 
-	 * taxonBase.name.nameCache property matches the String queryString (as interpreted by the Lucene QueryParser)
-	 * 
-	 * @param queryString
-	 * @param accepted
-	 * @return a count of the matching taxa
-	 * @see <a href="http://lucene.apache.org/java/2_4_0/queryparsersyntax.html">Apache Lucene - Query Parser Syntax</a>
-	 */
-	public int countTaxa(String queryString, Boolean accepted);
-	
-	/**
-	 * Returns a List of TaxonBase instances (or Taxon instances, if accepted == true, or Synonym instance, if accepted == false) where the 
-	 * taxonBase.name.nameCache property matches the String queryString (as interpreted by the Lucene QueryParser)
-	 * 
-	 * @param queryString
-	 * @param accepted
-	 * @param pageSize The maximum number of taxa returned (can be null for all matching taxa)
-	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
-	 * @return a List Taxon instances
-	 * @see <a href="http://lucene.apache.org/java/2_4_0/queryparsersyntax.html">Apache Lucene - Query Parser Syntax</a>
-	 */
-	public List<TaxonBase> searchTaxa(String queryString, Boolean accepted, Integer pageSize, Integer pageNumber);
-	
-	/**
 	 * Returns a count of TaxonBase instances (or Taxon instances, if accepted == true, or Synonym instance, if accepted == false) where the
 	 * taxon.name properties match the parameters passed.
 	 * 

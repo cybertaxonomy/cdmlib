@@ -99,7 +99,6 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 	private static final Logger logger = Logger.getLogger(TaxonDaoHibernateImpl.class);
 		
 	private String defaultField = "name.titleCache";
-	private String defaultSort = "name.titleCache_forSort";
 	private Class<? extends TaxonBase> indexedClasses[]; 
 
 	public TaxonDaoHibernateImpl() {
@@ -519,9 +518,9 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		}
 	}
 
-	public int countTaxa(String queryString, Boolean accepted) {
-		checkNotInPriorView("TaxonDaoHibernateImpl.countTaxa(String queryString, Boolean accepted)");
-        QueryParser queryParser = new QueryParser("name.titleCache", new SimpleAnalyzer());
+	public int count(Class<? extends TaxonBase> clazz, String queryString) {
+		checkNotInPriorView("TaxonDaoHibernateImpl.count(String queryString, Boolean accepted)");
+        QueryParser queryParser = new QueryParser(defaultField, new SimpleAnalyzer());
 		
 		try {
 			org.apache.lucene.search.Query query = queryParser.parse(queryString);
@@ -529,14 +528,10 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 			FullTextSession fullTextSession = Search.getFullTextSession(this.getSession());
 			org.hibernate.search.FullTextQuery fullTextQuery = null;
 			
-			if(accepted == null) {
-				fullTextQuery = fullTextSession.createFullTextQuery(query, TaxonBase.class);
+			if(clazz == null) {
+				fullTextQuery = fullTextSession.createFullTextQuery(query, type);
 			} else {
-				if(accepted) {
-					fullTextQuery = fullTextSession.createFullTextQuery(query, Taxon.class);
-				} else {
-					fullTextQuery = fullTextSession.createFullTextQuery(query, Synonym.class);
-				}
+				fullTextQuery = fullTextSession.createFullTextQuery(query, clazz);
 			}
 			
 		    Integer  result = fullTextQuery.getResultSize();
@@ -789,7 +784,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		}
 	}
 
-	public List<TaxonBase> searchTaxa(String queryString, Boolean accepted,	Integer pageSize, Integer pageNumber) {
+	public List<TaxonBase> search(Class<? extends TaxonBase> clazz, String queryString,Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths)  {
 		checkNotInPriorView("TaxonDaoHibernateImpl.searchTaxa(String queryString, Boolean accepted,	Integer pageSize, Integer pageNumber)");
 		QueryParser queryParser = new QueryParser(defaultField, new SimpleAnalyzer());
 		List<TaxonBase> results = new ArrayList<TaxonBase>();
@@ -800,18 +795,13 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 			FullTextSession fullTextSession = Search.getFullTextSession(getSession());
 			org.hibernate.search.FullTextQuery fullTextQuery = null;
 			
-			if(accepted == null) {
+			if(clazz == null) {
 				fullTextQuery = fullTextSession.createFullTextQuery(query, TaxonBase.class);
 			} else {
-				if(accepted) {
-					fullTextQuery = fullTextSession.createFullTextQuery(query, Taxon.class);
-				} else {
-					fullTextQuery = fullTextSession.createFullTextQuery(query, Synonym.class);
-				}
+				fullTextQuery = fullTextSession.createFullTextQuery(query, clazz);
 			}
 			
-			org.apache.lucene.search.Sort sort = new Sort(new SortField(defaultSort));
-			fullTextQuery.setSort(sort);
+			addOrder(fullTextQuery,orderHints);
 			
 		    if(pageSize != null) {
 		    	fullTextQuery.setMaxResults(pageSize);
@@ -823,9 +813,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 			}
 		    
 		    List<TaxonBase> result = (List<TaxonBase>)fullTextQuery.list();
-		    for(TaxonBase taxonBase : result) {
-		    	Hibernate.initialize(taxonBase.getName());
-		    }
+		    defaultBeanInitializer.initializeAll(result, propertyPaths);
 		    return result;
 
 		} catch (ParseException e) {
@@ -878,57 +866,5 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 			}
 		}
 		return alternativeQueryString;
-	}
-
-	public int count(String queryString) {
-		checkNotInPriorView("TaxonDaoHibernateImpl.count(String queryString)");
-        QueryParser queryParser = new QueryParser(defaultField, new SimpleAnalyzer());
-		
-		try {
-			org.apache.lucene.search.Query query = queryParser.parse(queryString);
-		
-			FullTextSession fullTextSession = Search.getFullTextSession(this.getSession());
-			org.hibernate.search.FullTextQuery fullTextQuery = fullTextSession.createFullTextQuery(query, type);
-				
-		    return fullTextQuery.getResultSize();
-
-		} catch (ParseException e) {
-			throw new QueryParseException(e, queryString);
-		}
-	}
-
-	public List<TaxonBase> search(String queryString, Integer pageSize,	Integer pageNumber) {
-		checkNotInPriorView("TaxonDaoHibernateImpl.search(String queryString, Integer pageSize,	Integer pageNumber)");
-		QueryParser queryParser = new QueryParser(defaultField, new SimpleAnalyzer());
-		List<TaxonBase> results = new ArrayList<TaxonBase>();
-		 
-		try {
-			org.apache.lucene.search.Query query = queryParser.parse(queryString);
-			
-			FullTextSession fullTextSession = Search.getFullTextSession(getSession());
-			
-			org.hibernate.search.FullTextQuery fullTextQuery = fullTextSession.createFullTextQuery(query, type);
-			
-			org.apache.lucene.search.Sort sort = new Sort(new SortField(defaultSort));
-			fullTextQuery.setSort(sort);
-		    
-		    if(pageSize != null) {
-		    	fullTextQuery.setMaxResults(pageSize);
-			    if(pageNumber != null) {
-			    	fullTextQuery.setFirstResult(pageNumber * pageSize);
-			    } else {
-			    	fullTextQuery.setFirstResult(0);
-			    }
-			}
-		    
-		    List<TaxonBase> result = (List<TaxonBase>)fullTextQuery.list();
-		    for(TaxonBase taxonBase : result) {
-		    	Hibernate.initialize(taxonBase.getName());
-		    }
-		    return result;
-
-		} catch (ParseException e) {
-			throw new QueryParseException(e, queryString);
-		}
 	}
 }
