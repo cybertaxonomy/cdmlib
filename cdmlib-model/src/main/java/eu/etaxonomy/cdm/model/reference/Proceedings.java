@@ -19,6 +19,9 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Index;
+import org.hibernate.search.annotations.Indexed;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import eu.etaxonomy.cdm.strategy.cache.reference.IReferenceBaseCacheStrategy;
@@ -44,6 +47,7 @@ import eu.etaxonomy.cdm.strategy.cache.reference.StrictReferenceBaseDefaultCache
 })
 @XmlRootElement(name = "Proceedings")
 @Entity
+@Indexed(index = "eu.etaxonomy.cdm.model.reference.ReferenceBase")
 @Audited
 @Configurable
 public class Proceedings extends PrintedUnitBase<IReferenceBaseCacheStrategy<Proceedings>> implements Cloneable {
@@ -51,6 +55,7 @@ public class Proceedings extends PrintedUnitBase<IReferenceBaseCacheStrategy<Pro
 	
 	//The conference sponsor
 	@XmlElement(name = "Organization")
+	@Field(index=Index.TOKENIZED)
 	private String organization;
 	
 	

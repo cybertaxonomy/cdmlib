@@ -20,6 +20,9 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Index;
+import org.hibernate.search.annotations.Indexed;
 
 import eu.etaxonomy.cdm.strategy.cache.reference.IReferenceBaseCacheStrategy;
 
@@ -40,12 +43,14 @@ import eu.etaxonomy.cdm.strategy.cache.reference.IReferenceBaseCacheStrategy;
 })
 @XmlRootElement(name = "SectionBase")
 @Entity
+@Indexed(index = "eu.etaxonomy.cdm.model.reference.ReferenceBase")
 @Audited
 public abstract class SectionBase<S extends IReferenceBaseCacheStrategy> extends StrictReferenceBase<S> {
 	
 	static Logger logger = Logger.getLogger(SectionBase.class);
 	
 	@XmlElement(name = "Pages")
+	@Field(index=Index.TOKENIZED)
 	private String pages;
 
 	/**

@@ -32,6 +32,9 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Index;
+import org.hibernate.search.annotations.Indexed;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
@@ -60,6 +63,7 @@ import eu.etaxonomy.cdm.strategy.cache.common.IdentifiableEntityDefaultCacheStra
 })
 @XmlRootElement(name = "Institution")
 @Entity
+@Indexed(index = "eu.etaxonomy.cdm.model.agent.AgentBase")
 @Audited
 @Configurable
 public class Institution extends AgentBase<IIdentifiableEntityCacheStrategy<Institution>> {
@@ -67,9 +71,11 @@ public class Institution extends AgentBase<IIdentifiableEntityCacheStrategy<Inst
 	public static final Logger logger = Logger.getLogger(Institution.class);
 	
     @XmlElement(name = "Code")
+    @Field(index=Index.TOKENIZED)
 	private String code;
 	
     @XmlElement(name = "Name")
+    @Field(index=Index.TOKENIZED)
 	private String name;
 	
     @XmlElementWrapper(name = "Types")

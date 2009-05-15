@@ -18,6 +18,7 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Indexed;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import eu.etaxonomy.cdm.strategy.cache.reference.IReferenceBaseCacheStrategy;
@@ -40,6 +41,7 @@ import eu.etaxonomy.cdm.strategy.cache.reference.StrictReferenceBaseDefaultCache
 @XmlType(name = "PersonalCommunication")
 @XmlRootElement(name = "PersonalCommunication")
 @Entity
+@Indexed(index = "eu.etaxonomy.cdm.model.reference.ReferenceBase")
 @Audited
 @Configurable
 public class PersonalCommunication extends StrictReferenceBase<IReferenceBaseCacheStrategy<PersonalCommunication>> implements Cloneable {

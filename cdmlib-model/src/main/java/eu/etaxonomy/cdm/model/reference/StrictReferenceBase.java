@@ -24,6 +24,10 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Index;
+import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.IndexedEmbedded;
 
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.strategy.cache.reference.IReferenceBaseCacheStrategy;
@@ -53,6 +57,7 @@ import eu.etaxonomy.cdm.strategy.cache.reference.StrictReferenceBaseDefaultCache
 })
 @XmlRootElement(name = "StrictReferenceBase")
 @Entity
+@Indexed(index = "eu.etaxonomy.cdm.model.reference.ReferenceBase")
 @Audited
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 public abstract class StrictReferenceBase<S extends IReferenceBaseCacheStrategy> extends ReferenceBase<S> {
@@ -63,11 +68,13 @@ public abstract class StrictReferenceBase<S extends IReferenceBaseCacheStrategy>
 	@XmlElement(name ="Title" )
 	@Column(length=4096, name="title")
 	@Lob
+	@Field(index=Index.TOKENIZED)
 	private String title;
 	
 	//The date range assigned to the reference. ISO Date range like. Flexible, year can be left out, etc
 	@XmlElement(name ="DatePublished" )
 	@Embedded
+	@IndexedEmbedded
 	private TimePeriod datePublished;
 	
 	protected StrictReferenceBase(){

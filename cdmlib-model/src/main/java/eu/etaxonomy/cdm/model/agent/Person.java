@@ -17,6 +17,10 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Index;
+import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.IndexedEmbedded;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import java.util.*;
@@ -62,6 +66,7 @@ import javax.xml.bind.annotation.XmlType;
 	})
 @XmlRootElement(name = "Person")
 @Entity
+@Indexed(index = "eu.etaxonomy.cdm.model.agent.AgentBase")
 @Audited
 @Configurable
 public class Person extends TeamOrPersonBase<Person> {
@@ -69,18 +74,23 @@ public class Person extends TeamOrPersonBase<Person> {
 	public static final Logger logger = Logger.getLogger(Person.class);
 
     @XmlElement(name = "Prefix")
+    @Field(index=Index.TOKENIZED)
 	private String prefix;
     
     @XmlElement(name = "FirstName")
+    @Field(index=Index.TOKENIZED)
 	private String firstname;
 	
     @XmlElement(name = "LastName")
+    @Field(index=Index.TOKENIZED)
 	private String lastname;
 	
     @XmlElement(name = "Suffix")
+    @Field(index=Index.TOKENIZED)
 	private String suffix;
 	
     @XmlElement(name = "Lifespan")
+    @IndexedEmbedded
 	private TimePeriod lifespan;
 	
     @XmlElementWrapper(name = "InstitutionalMemberships")

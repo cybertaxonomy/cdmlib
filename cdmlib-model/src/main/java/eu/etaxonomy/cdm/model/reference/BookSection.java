@@ -27,6 +27,8 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.IndexedEmbedded;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
@@ -50,6 +52,7 @@ import eu.etaxonomy.cdm.strategy.cache.reference.INomenclaturalReferenceCacheStr
 })
 @XmlRootElement(name = "BookSection")
 @Entity
+@Indexed(index = "eu.etaxonomy.cdm.model.reference.ReferenceBase")
 @Audited
 @Configurable
 public class BookSection extends SectionBase<INomenclaturalReferenceCacheStrategy<BookSection>> implements INomenclaturalReference, Cloneable {
@@ -65,6 +68,7 @@ public class BookSection extends SectionBase<INomenclaturalReferenceCacheStrateg
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
+    @IndexedEmbedded
     @Cascade(CascadeType.SAVE_UPDATE)
 	private Book inBook;
 	

@@ -20,6 +20,9 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Index;
+import org.hibernate.search.annotations.Indexed;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import eu.etaxonomy.cdm.strategy.cache.reference.GenericDefaultCacheStrategy;
@@ -54,6 +57,7 @@ import eu.etaxonomy.cdm.strategy.cache.reference.INomenclaturalReferenceCacheStr
 })
 @XmlRootElement(name = "Generic")
 @Entity
+@Indexed(index = "eu.etaxonomy.cdm.model.reference.ReferenceBase")
 @Audited
 @Configurable
 public class Generic extends PublicationBase<INomenclaturalReferenceCacheStrategy<Generic>> implements INomenclaturalReference, IVolumeReference, Cloneable {
@@ -69,21 +73,20 @@ public class Generic extends PublicationBase<INomenclaturalReferenceCacheStrateg
 //	private List<Publisher> genericPublishers = new ArrayList<Publisher>();
 
     @XmlElement(name = "Editor")
+    @Field(index=Index.TOKENIZED)
 	private String editor;
 	
     @XmlElement(name = "Series")
+    @Field(index=Index.TOKENIZED)
 	private String series;
 	
     @XmlElement(name = "Volume")
+    @Field(index=Index.TOKENIZED)
 	private String volume;
 	
     @XmlElement(name = "Pages")
+    @Field(index=Index.TOKENIZED)
 	private String pages;
-	
-//    @XmlTransient
-//    @Transient
-//	private NomenclaturalReferenceHelper nomRefBase = NomenclaturalReferenceHelper.NewInstance(this);
-
 	
 	/** 
 	 * Class constructor: creates a new empty generic reference instance

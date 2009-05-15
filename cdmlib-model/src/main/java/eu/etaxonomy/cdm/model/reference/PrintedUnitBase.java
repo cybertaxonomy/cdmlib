@@ -25,6 +25,10 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Index;
+import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.IndexedEmbedded;
 
 import eu.etaxonomy.cdm.strategy.cache.reference.IReferenceBaseCacheStrategy;
 
@@ -48,28 +52,34 @@ import eu.etaxonomy.cdm.strategy.cache.reference.IReferenceBaseCacheStrategy;
 })
 @XmlRootElement(name = "PrintedUnitBase")
 @Entity
+@Indexed(index = "eu.etaxonomy.cdm.model.reference.ReferenceBase")
 @Audited
 public abstract class PrintedUnitBase<S extends IReferenceBaseCacheStrategy> extends PublicationBase<S> implements IVolumeReference{
 	
 	static Logger logger = Logger.getLogger(PrintedUnitBase.class);
 	
     @XmlElement(name = "Editor")
+    @Field(index=Index.TOKENIZED)
 	private String editor;
 	
     @XmlElement(name = "Volume")
+    @Field(index=Index.TOKENIZED)
 	private String volume;
 	
     @XmlElement(name = "Pages")
+    @Field(index=Index.TOKENIZED)
 	private String pages;
 	
     @XmlElement(name = "InSeries")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
+    @IndexedEmbedded
     @Cascade(CascadeType.SAVE_UPDATE)
 	private PrintSeries inSeries;
 	
     @XmlElement(name = "SeriesPart")
+    @Field(index=Index.TOKENIZED)
 	private String seriesPart;
 
 	/**

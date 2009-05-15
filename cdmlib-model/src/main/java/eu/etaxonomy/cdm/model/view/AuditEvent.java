@@ -3,7 +3,9 @@ package eu.etaxonomy.cdm.model.view;
 import java.io.Serializable;
 import java.util.UUID;
 
+import javax.persistence.Basic;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
@@ -11,6 +13,7 @@ import org.hibernate.annotations.Type;
 import org.hibernate.envers.RevisionEntity;
 import org.hibernate.envers.RevisionNumber;
 import org.hibernate.envers.RevisionTimestamp;
+import org.joda.time.DateTime;
 
 @Entity
 @RevisionEntity
@@ -40,8 +43,17 @@ public static final AuditEvent CURRENT_VIEW;
 
 	public AuditEvent() {
 		this.uuid = UUID.randomUUID();
+		this.date = new DateTime();
 	}
 	
+	@Type(type="dateTimeUserType")
+	@Basic(fetch = FetchType.LAZY)
+	private DateTime date;
+	
+	public DateTime getDate() {
+		return date;
+	}
+
 	@Id
 	@GeneratedValue
 	@RevisionNumber

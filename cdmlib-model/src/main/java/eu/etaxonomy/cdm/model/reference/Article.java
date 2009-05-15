@@ -28,6 +28,10 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Index;
+import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.IndexedEmbedded;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
@@ -61,6 +65,7 @@ import eu.etaxonomy.cdm.strategy.cache.reference.INomenclaturalReferenceCacheStr
 })
 @XmlRootElement(name = "Article")
 @Entity
+@Indexed(index = "eu.etaxonomy.cdm.model.reference.ReferenceBase")
 @Audited
 @Configurable
 public class Article extends StrictReferenceBase<INomenclaturalReferenceCacheStrategy<Article>> implements INomenclaturalReference, IVolumeReference, Cloneable {
@@ -68,18 +73,22 @@ public class Article extends StrictReferenceBase<INomenclaturalReferenceCacheStr
 	private static final Logger logger = Logger.getLogger(Article.class);
 	
     @XmlElement(name = "Series")
+    @Field(index=Index.TOKENIZED)
 	private String series;
 	
     @XmlElement(name = "Volume")
+    @Field(index=Index.TOKENIZED)
 	private String volume;
 	
     @XmlElement(name = "Pages")
+    @Field(index=Index.TOKENIZED)
 	private String pages;
 	
     @XmlElement(name = "InJournal")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
+    @IndexedEmbedded
     @Cascade(CascadeType.SAVE_UPDATE)
 	private Journal inJournal;
 

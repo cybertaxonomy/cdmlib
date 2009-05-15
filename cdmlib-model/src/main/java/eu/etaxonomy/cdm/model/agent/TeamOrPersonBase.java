@@ -18,6 +18,9 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Index;
+import org.hibernate.search.annotations.Indexed;
 
 import eu.etaxonomy.cdm.strategy.cache.agent.INomenclaturalAuthorCacheStrategy;
 
@@ -35,12 +38,14 @@ import eu.etaxonomy.cdm.strategy.cache.agent.INomenclaturalAuthorCacheStrategy;
 	"nomenclaturalTitle"
 })
 @Entity
+@Indexed(index = "eu.etaxonomy.cdm.model.agent.AgentBase")
 @Audited
 public abstract class TeamOrPersonBase<T extends TeamOrPersonBase<?>> extends AgentBase<INomenclaturalAuthorCacheStrategy<T>> implements INomenclaturalAuthor {
 	private static final long serialVersionUID = 5216821307314001961L;
 	public static final Logger logger = Logger.getLogger(TeamOrPersonBase.class);
 
 	@XmlElement(name="NomenclaturalTitle")
+	@Field(index=Index.TOKENIZED)
 	protected String nomenclaturalTitle;
 
 	/**

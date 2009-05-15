@@ -20,6 +20,8 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
 import org.springframework.beans.factory.annotation.Configurable;
 
@@ -53,10 +55,12 @@ public class BacterialName extends NonViralName<BacterialName> {
 
 	//Author team and year of the subgenus name
 	@XmlElement(name = "SubGenusAuthorship")
+	@Field(index=Index.TOKENIZED)
 	private String subGenusAuthorship;
 	
 	//Approbation of name according to approved list, validation list, or validly published, paper in IJSB after 1980
 	@XmlElement(name = "NameApprobation")
+	@Field(index=Index.TOKENIZED)
 	private String nameApprobation;
 
 	// ************* CONSTRUCTORS *************/

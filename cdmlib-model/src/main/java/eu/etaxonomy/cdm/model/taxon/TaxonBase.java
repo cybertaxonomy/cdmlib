@@ -101,6 +101,7 @@ public abstract class TaxonBase<S extends IIdentifiableEntityCacheStrategy> exte
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
+    @IndexedEmbedded
     @Cascade(CascadeType.SAVE_UPDATE)
 	private ReferenceBase sec;
 

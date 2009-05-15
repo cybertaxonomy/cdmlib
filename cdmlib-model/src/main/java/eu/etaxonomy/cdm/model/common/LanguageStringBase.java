@@ -28,6 +28,7 @@ import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
 import org.hibernate.search.annotations.Index;
 
+import eu.etaxonomy.cdm.hibernate.StripHtmlBridge;
 import eu.etaxonomy.cdm.jaxb.FormattedTextAdapter;
 
 /**
@@ -81,7 +82,8 @@ public abstract class LanguageStringBase extends AnnotatableEntity{
 	public String getText(){
 		return this.text;
 	}
-	protected void setText(String text) {
+	
+	public void setText(String text) {
 		this.text = text;
 	}
 	

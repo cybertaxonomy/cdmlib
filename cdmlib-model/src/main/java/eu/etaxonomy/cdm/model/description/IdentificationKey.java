@@ -15,6 +15,7 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Indexed;
 
 import java.util.*;
 
@@ -49,6 +50,7 @@ import javax.xml.bind.annotation.XmlType;
 })
 @XmlRootElement(name = "IdentificationKey")
 @Entity
+@Indexed(index = "eu.etaxonomy.cdm.model.media.Media")
 @Audited
 public class IdentificationKey extends Media {
 	private static final long serialVersionUID = -29095811051894471L;

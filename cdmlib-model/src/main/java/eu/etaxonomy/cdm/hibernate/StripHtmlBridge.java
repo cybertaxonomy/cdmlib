@@ -1,4 +1,4 @@
-package eu.etaxonomy.cdm.model.common;
+package eu.etaxonomy.cdm.hibernate;
 
 import org.hibernate.search.bridge.StringBridge;
 

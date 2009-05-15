@@ -30,6 +30,7 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.IndexColumn;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Indexed;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import eu.etaxonomy.cdm.strategy.cache.agent.TeamDefaultCacheStrategy;
@@ -60,6 +61,7 @@ import eu.etaxonomy.cdm.strategy.cache.agent.TeamDefaultCacheStrategy;
 })
 @XmlRootElement
 @Entity
+@Indexed(index = "eu.etaxonomy.cdm.model.agent.AgentBase")
 @Audited
 @Configurable
 public class Team extends TeamOrPersonBase<Team> {

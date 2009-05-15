@@ -153,6 +153,10 @@ public class TextData extends DescriptionElementBase {
     public Map<Language, LanguageString> getMultilanguageText() {
 		return multilanguageText;
 	}
+    
+    public void setMultilanguageText(Map<Language,LanguageString> multilanguageText) {
+    	this.multilanguageText = multilanguageText;
+    }
 
 	/** 
 	 * Returns the text string in the given {@link Language language} with the content

@@ -856,6 +856,8 @@ cdmlib-model/pom.xml -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/aspectj/PropertyChangeAspect.aj -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/datagenerator/TaxonGenerator.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/HibernateProxyHelper.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/PartialBridge.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/StripHtmlBridge.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/jaxb/CdmNamespacePrefixMapper.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/jaxb/ClassAdapter.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/jaxb/DateTimeAdapter.java -text
@@ -928,7 +930,6 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/ReferencedEntityBase.ja
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/RelationshipBase.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/RelationshipTermBase.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/Representation.java -text
-cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/StripHtmlBridge.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/TermBase.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/TermLanguageComparator.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/TermVocabulary.java -text

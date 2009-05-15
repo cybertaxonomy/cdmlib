@@ -18,6 +18,7 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Indexed;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import eu.etaxonomy.cdm.strategy.cache.reference.IReferenceBaseCacheStrategy;
@@ -37,6 +38,7 @@ import eu.etaxonomy.cdm.strategy.cache.reference.StrictReferenceBaseDefaultCache
 @XmlType(name = "WebPage")
 @XmlRootElement(name = "WebPage")
 @Entity
+@Indexed(index = "eu.etaxonomy.cdm.model.reference.ReferenceBase")
 @Audited
 @Configurable
 public class WebPage extends PublicationBase<IReferenceBaseCacheStrategy<WebPage>> implements Cloneable {
@@ -57,24 +59,6 @@ public class WebPage extends PublicationBase<IReferenceBaseCacheStrategy<WebPage
 		return new WebPage();
 	}
 	
-	/**
-	 * Generates, according to the {@link eu.etaxonomy.cdm.strategy.cache.reference.IReferenceBaseCacheStrategy cache strategy}
-	 * assigned to <i>this</i> web page, a string that identifies <i>this</i>
-	 * web page and returns it. This string may be stored in the inherited
-	 * {@link eu.etaxonomy.cdm.model.common.IdentifiableEntity#getTitleCache() titleCache} attribute.<BR>
-	 * This method overrides the generic and inherited generateTitle method
-	 * from {@link ReferenceBase ReferenceBase}.
-	 *
-	 * @return  the string identifying <i>this</i> web page
-	 * @see  	ReferenceBase#generateTitle()
-	 * @see  	eu.etaxonomy.cdm.model.common.IdentifiableEntity#getTitleCache()
-	 * @see  	eu.etaxonomy.cdm.model.common.IdentifiableEntity#generateTitle()
-	 * @see  	eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy#getTitleCache()
-	 */
-//	@Override
-//	public String generateTitle(){
-//		return this.cacheStrategy.getTitleCache(this);
-//	}
 //*********** CLONE **********************************/	
 	
 	/** 

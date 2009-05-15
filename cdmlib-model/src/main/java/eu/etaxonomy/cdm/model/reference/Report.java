@@ -25,6 +25,8 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.IndexedEmbedded;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import eu.etaxonomy.cdm.model.agent.Institution;
@@ -50,6 +52,7 @@ import eu.etaxonomy.cdm.strategy.cache.reference.StrictReferenceBaseDefaultCache
 })
 @XmlRootElement(name = "Report")
 @Entity
+@Indexed(index = "eu.etaxonomy.cdm.model.reference.ReferenceBase")
 @Audited
 @Configurable
 public class Report extends PublicationBase<IReferenceBaseCacheStrategy<Report>> implements Cloneable {
@@ -59,6 +62,7 @@ public class Report extends PublicationBase<IReferenceBaseCacheStrategy<Report>>
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
+	@IndexedEmbedded
 	@Cascade(CascadeType.SAVE_UPDATE)
 	private Institution institution;
 

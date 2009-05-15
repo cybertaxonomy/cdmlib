@@ -21,6 +21,9 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Index;
+import org.hibernate.search.annotations.Indexed;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import eu.etaxonomy.cdm.strategy.cache.reference.BookDefaultCacheStrategy;
@@ -47,6 +50,7 @@ import eu.etaxonomy.cdm.strategy.cache.reference.INomenclaturalReferenceCacheStr
 })
 @XmlRootElement(name = "Book")
 @Entity
+@Indexed(index = "eu.etaxonomy.cdm.model.reference.ReferenceBase")
 @Audited
 @Configurable
 public class Book extends PrintedUnitBase<INomenclaturalReferenceCacheStrategy<Book>> implements INomenclaturalReference, Cloneable {
@@ -54,9 +58,11 @@ public class Book extends PrintedUnitBase<INomenclaturalReferenceCacheStrategy<B
 	private static final Logger logger = Logger.getLogger(Book.class);
 	
     @XmlElement(name = "Edition")
+    @Field(index=Index.TOKENIZED)
 	private String edition;
 
     @XmlElement(name = "ISBN")
+    @Field(index=Index.TOKENIZED)
 	private String isbn;
 	
 //    @XmlTransient

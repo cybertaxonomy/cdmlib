@@ -32,6 +32,8 @@ import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Index;
 import org.hibernate.annotations.Table;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.IndexedEmbedded;
 
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.IParsable;
@@ -78,6 +80,7 @@ public abstract class ReferenceBase<S extends IReferenceBaseCacheStrategy> exten
 	
 	//URIs like DOIs, LSIDs or Handles for this reference
 	@XmlElement(name = "URI")
+	@Field(index=org.hibernate.search.annotations.Index.TOKENIZED)
 	private String uri;
 	
 	//flag to subselect only references that could be useful for nomenclatural citations. If a reference is used as a
@@ -89,6 +92,7 @@ public abstract class ReferenceBase<S extends IReferenceBaseCacheStrategy> exten
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
+	@IndexedEmbedded
 	@Cascade(CascadeType.SAVE_UPDATE)
 	private TeamOrPersonBase authorTeam;
 

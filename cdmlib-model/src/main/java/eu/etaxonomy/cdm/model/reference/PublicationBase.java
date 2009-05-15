@@ -30,6 +30,7 @@ import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.IndexColumn;
 import org.hibernate.collection.PersistentSet;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Indexed;
 
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.strategy.cache.reference.IReferenceBaseCacheStrategy;
@@ -49,6 +50,7 @@ import eu.etaxonomy.cdm.strategy.cache.reference.IReferenceBaseCacheStrategy;
 })
 @XmlRootElement(name = "PublicationBase")
 @Entity
+@Indexed(index = "eu.etaxonomy.cdm.model.reference.ReferenceBase")
 @Audited
 public abstract class PublicationBase<S extends IReferenceBaseCacheStrategy> extends StrictReferenceBase<S> {
 	private static final Logger logger = Logger.getLogger(PublicationBase.class);

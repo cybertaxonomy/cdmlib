@@ -17,7 +17,9 @@ import javax.persistence.JoinColumn;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
@@ -39,7 +41,8 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "OriginalSource", propOrder = {
     "idInSource",
-    "idNamespace"
+    "idNamespace",
+    "sourcedObj"
 })
 @XmlRootElement(name = "OriginalSource")
 @Entity
@@ -56,7 +59,9 @@ public class OriginalSource extends ReferencedEntityBase implements Cloneable {
 	@XmlElement(name = "IdNamespace")
 	private String idNamespace;
 	
-	@XmlTransient
+	@XmlElement(name = "SourcedObject")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
 	@Any(metaDef = "CdmBase",
 	    	 metaColumn=@Column(name = "sourcedObj_type"),
 	    	 fetch = FetchType.LAZY,

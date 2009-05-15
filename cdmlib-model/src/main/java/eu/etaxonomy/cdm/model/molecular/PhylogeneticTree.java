@@ -14,6 +14,7 @@ import eu.etaxonomy.cdm.model.media.ReferencedMedia;
 
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Indexed;
 
 import java.util.*;
 
@@ -38,6 +39,7 @@ import javax.xml.bind.annotation.XmlType;
 })
 @XmlRootElement(name = "PhylogeneticTree")
 @Entity
+@Indexed(index = "eu.etaxonomy.cdm.model.media.Media")
 @Audited
 public class PhylogeneticTree extends ReferencedMedia {
 	private static final long serialVersionUID = -7020182117362324067L;

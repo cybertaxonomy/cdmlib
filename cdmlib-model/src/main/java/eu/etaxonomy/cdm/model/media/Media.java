@@ -21,6 +21,8 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.IndexedEmbedded;
 
 import java.util.*;
 import javax.persistence.*;
@@ -57,6 +59,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 })
 @XmlRootElement(name = "Media")
 @Entity
+@Indexed
 @Audited
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 public class Media extends AnnotatableEntity {
@@ -68,10 +71,12 @@ public class Media extends AnnotatableEntity {
 	@XmlElement(name = "MediaTitle")
     @XmlJavaTypeAdapter(MultilanguageTextAdapter.class)
     @OneToMany(fetch = FetchType.LAZY)
+    @IndexedEmbedded
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.DELETE})
 	private Map<Language,LanguageString> title = new HashMap<Language,LanguageString>();
 	
-	//creation date of the media (not of the record)
+	//creation date of the media (not of the record) 
+	// FIXME Surely this should be a DateTime, not a Calender
 	@XmlElement(name = "MediaCreated")
 	@Temporal(TemporalType.DATE)
 	private Calendar mediaCreated;
@@ -81,6 +86,7 @@ public class Media extends AnnotatableEntity {
 	@XmlElement(name = "MediaDescription")
     @XmlJavaTypeAdapter(MultilanguageTextAdapter.class)
     @OneToMany(fetch = FetchType.LAZY)
+    @IndexedEmbedded
     @JoinTable(name = "Media_Description")
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.DELETE})
 	private Map<Language,LanguageString> description = new HashMap<Language,LanguageString>();
@@ -104,6 +110,7 @@ public class Media extends AnnotatableEntity {
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
+	@IndexedEmbedded
 	@Cascade(CascadeType.SAVE_UPDATE)
 	private AgentBase artist;
 

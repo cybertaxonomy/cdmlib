@@ -17,7 +17,6 @@ import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
@@ -25,6 +24,9 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Index;
+import org.hibernate.search.annotations.Indexed;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import eu.etaxonomy.cdm.model.common.TimePeriod;
@@ -74,6 +76,7 @@ import eu.etaxonomy.cdm.strategy.cache.reference.INomenclaturalReferenceCacheStr
 })
 @XmlRootElement(name = "BibtexReference")
 @Entity
+@Indexed(index = "eu.etaxonomy.cdm.model.reference.ReferenceBase")
 @Audited
 @Configurable
 public class BibtexReference extends ReferenceBase<INomenclaturalReferenceCacheStrategy<BibtexReference>> implements INomenclaturalReference, Cloneable {
@@ -89,69 +92,91 @@ public class BibtexReference extends ReferenceBase<INomenclaturalReferenceCacheS
 	private BibtexEntryType type;
 	
 	@XmlElement(name = "Journal")
+	@Field(index=Index.TOKENIZED)
 	private String journal;
 	
 	@XmlElement(name = "Booktitle")
+	@Field(index=Index.TOKENIZED)
 	private String booktitle;
 	
 	@XmlElement(name = "Chapter")
+	@Field(index=Index.TOKENIZED)
 	private String chapter;
 	
 	@XmlElement(name = "Title")
+	@Field(index=Index.TOKENIZED)
 	private String title;
 	
 	@XmlElement(name = "Series")
+	@Field(index=Index.TOKENIZED)
 	private String series;
 	
 	@XmlElement(name = "Edition")
+	@Field(index=Index.TOKENIZED)
 	private String edition;
 	
 	@XmlElement(name = "Volume")
+	@Field(index=Index.TOKENIZED)
 	private String volume;
 	
 	@XmlElement(name = "Number")
+	@Field(index=Index.TOKENIZED)
 	private String number;
 	
 	@XmlElement(name = "Pages")
+	@Field(index=Index.TOKENIZED)
 	private String pages;
 	
 	@XmlElement(name = "Annote")
+	@Field(index=Index.TOKENIZED)
 	private String annote;
 	
 	@XmlElement(name = "Editor")
+	@Field(index=Index.TOKENIZED)
 	private String editor;
 	
 	@XmlElement(name = "Institution")
+	@Field(index=Index.TOKENIZED)
 	private String institution;
 	
 	@XmlElement(name = "School")
+	@Field(index=Index.TOKENIZED)
 	private String school;
 	
 	@XmlElement(name = "Organization")
+	@Field(index=Index.TOKENIZED)
 	private String organization;
 	
 	@XmlElement(name = "Publisher")
+	@Field(index=Index.TOKENIZED)
 	private String publisher;
 	
 	@XmlElement(name = "Address")
+	@Field(index=Index.TOKENIZED)
 	private String address;
 	
 	@XmlElement(name = "HowPublished")
+	@Field(index=Index.TOKENIZED)
 	private String howpublished;
 	
 	@XmlElement(name = "ReportType")
+	@Field(index=Index.TOKENIZED)
 	private String reportType;
 	
 	@XmlElement(name = "Month")
+	@Field(index=Index.TOKENIZED)
 	private String month;
 	
 	@XmlElement(name = "Year")
+	@Field(index=Index.TOKENIZED)
 	private String year;
 	
 	@XmlElement(name = "Eprint")
+	@Field(index=Index.TOKENIZED)
 	private String eprint;
 	
 	@XmlElement(name = "Note")
+	@Field(index=Index.TOKENIZED)
 	private String note;
 	
 	@XmlElement(name = "Crossref")

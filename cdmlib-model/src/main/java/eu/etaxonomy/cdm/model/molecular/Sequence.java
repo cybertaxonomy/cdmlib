@@ -24,6 +24,8 @@ import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Index;
 import org.hibernate.annotations.Table;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Indexed;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import java.util.*;
@@ -75,6 +77,7 @@ public class Sequence extends IdentifiableEntity<IIdentifiableEntityCacheStrateg
 	private Integer length;
 	
 	//should be calculated in case sequence is set
+	// FIXME Should be a DateTime
 	@XmlElement(name = "DateSequenced")
 	@Temporal(TemporalType.DATE)
 	private Calendar dateSequenced;

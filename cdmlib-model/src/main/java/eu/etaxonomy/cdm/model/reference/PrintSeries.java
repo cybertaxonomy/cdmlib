@@ -19,6 +19,9 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Index;
+import org.hibernate.search.annotations.Indexed;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import eu.etaxonomy.cdm.strategy.cache.reference.IReferenceBaseCacheStrategy;
@@ -41,12 +44,14 @@ import eu.etaxonomy.cdm.strategy.cache.reference.StrictReferenceBaseDefaultCache
 })
 @XmlRootElement(name = "PrintSeries")
 @Entity
+@Indexed(index = "eu.etaxonomy.cdm.model.reference.ReferenceBase")
 @Audited
 @Configurable
 public class PrintSeries extends PublicationBase<IReferenceBaseCacheStrategy<PrintSeries>> implements Cloneable {
 	private static final Logger logger = Logger.getLogger(PrintSeries.class);
 	
 	@XmlElement(name = "Series")
+	@Field(index=Index.TOKENIZED)
 	private String series;
 
 	protected PrintSeries() {
