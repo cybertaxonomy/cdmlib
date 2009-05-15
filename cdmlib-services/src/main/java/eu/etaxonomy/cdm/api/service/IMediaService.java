@@ -25,6 +25,7 @@ import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
+import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 public interface IMediaService extends IAnnotatableService<Media> {
 
@@ -60,4 +61,21 @@ public interface IMediaService extends IAnnotatableService<Media> {
 	 * @return a Pager of Rights entities
 	 */
     public Pager<Rights> getRights(Media t, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
+    
+    /**
+	 * Returns a Paged List of Media instances where the default field matches the String queryString (as interpreted by the Lucene QueryParser)
+	 * 
+	 * @param clazz filter the results by class (or pass null to return all Media instances)
+	 * @param queryString
+	 * @param pageSize The maximum number of media returned (can be null for all matching media)
+	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
+	 * @param orderHints
+	 *            Supports path like <code>orderHints.propertyNames</code> which
+	 *            include *-to-one properties like createdBy.username or
+	 *            authorTeam.persistentTitleCache
+	 * @param propertyPaths properties to be initialized
+	 * @return a Pager Media instances
+	 * @see <a href="http://lucene.apache.org/java/2_4_0/queryparsersyntax.html">Apache Lucene - Query Parser Syntax</a>
+	 */
+	public Pager<Media> search(Class<? extends Media> clazz, String queryString, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 }

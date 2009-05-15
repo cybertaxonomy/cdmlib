@@ -33,6 +33,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.persistence.dao.media.IMediaDao;
 import eu.etaxonomy.cdm.persistence.dao.media.IMediaRepresentationDao;
 import eu.etaxonomy.cdm.persistence.dao.media.IMediaRepresentationPartDao;
+import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 @Service
 @Transactional
@@ -88,5 +89,16 @@ public class MediaServiceImpl extends AnnotatableServiceBase<Media,IMediaDao> im
 		}
 		
 		return new DefaultPagerImpl<Rights>(pageNumber, numberOfResults, pageSize, results);
+	}
+	
+	public Pager<Media> search(Class<? extends Media> clazz, String queryString, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+        Integer numberOfResults = dao.count(clazz,queryString);
+		
+		List<Media> results = new ArrayList<Media>();
+		if(numberOfResults > 0) { // no point checking again
+			results = dao.search(clazz,queryString, pageSize, pageNumber, orderHints, propertyPaths); 
+		}
+		
+		return new DefaultPagerImpl<Media>(pageNumber, numberOfResults, pageSize, results);
 	}
 }

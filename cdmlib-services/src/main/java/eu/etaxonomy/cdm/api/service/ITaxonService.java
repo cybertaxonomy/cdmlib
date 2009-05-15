@@ -192,17 +192,21 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	public List<List<Synonym>> getHeterotypicSynonymyGroups(Taxon taxon, List<String> propertyPaths);
 	
 	/**
-	 * Returns a List of TaxonBase instances (or Taxon instances, if accepted == true, or Synonym instance, if accepted == false) where the 
-	 * taxonBase.name.nameCache property matches the String queryString (as interpreted by the Lucene QueryParser)
+	 * Returns a Paged List of TaxonBase instances where the default field matches the String queryString (as interpreted by the Lucene QueryParser)
 	 * 
+	 * @param clazz filter the results by class (or pass null to return all TaxonBase instances)
 	 * @param queryString
-	 * @param accepted
 	 * @param pageSize The maximum number of taxa returned (can be null for all matching taxa)
 	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
+	 * @param orderHints
+	 *            Supports path like <code>orderHints.propertyNames</code> which
+	 *            include *-to-one properties like createdBy.username or
+	 *            authorTeam.persistentTitleCache
+	 * @param propertyPaths properties to be initialized
 	 * @return a Pager Taxon instances
 	 * @see <a href="http://lucene.apache.org/java/2_4_0/queryparsersyntax.html">Apache Lucene - Query Parser Syntax</a>
 	 */
-	public Pager<TaxonBase> searchTaxa(String queryString, Boolean accepted, Integer pageSize, Integer pageNumber);
+	public Pager<TaxonBase> search(Class<? extends TaxonBase> clazz, String queryString, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 	
 	/**
 	 * Returns a list of TaxonBase instances (or Taxon instances, if accepted == true, or Synonym instance, if accepted == false) where the

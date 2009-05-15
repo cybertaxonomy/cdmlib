@@ -36,7 +36,6 @@ import eu.etaxonomy.cdm.model.description.Scope;
 import eu.etaxonomy.cdm.model.description.StatisticalMeasurementValue;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
-import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
@@ -295,15 +294,15 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
 		return new DefaultPagerImpl<TaxonDescription>(pageNumber, numberOfResults, pageSize, results);
 	}
 
-	public Pager<TextData> searchTextData(String queryString, Integer pageSize,	Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
-        Integer numberOfResults = descriptionElementDao.countTextData(queryString);
+	public Pager<DescriptionElementBase> search(Class<? extends DescriptionElementBase> clazz, String queryString, Integer pageSize,	Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+        Integer numberOfResults = descriptionElementDao.count(clazz,queryString);
 		
-		List<TextData> results = new ArrayList<TextData>();
+		List<DescriptionElementBase> results = new ArrayList<DescriptionElementBase>();
 		if(numberOfResults > 0) { // no point checking again
-			results = descriptionElementDao.searchTextData(queryString, pageSize, pageNumber, orderHints, propertyPaths); 
+			results = descriptionElementDao.search(clazz, queryString, pageSize, pageNumber, orderHints, propertyPaths); 
 		}
 		
-		return new DefaultPagerImpl<TextData>(pageNumber, numberOfResults, pageSize, results);
+		return new DefaultPagerImpl<DescriptionElementBase>(pageNumber, numberOfResults, pageSize, results);
 	}
 
 	public FeatureTree getFeatureTreeByUuid(UUID uuid) {
@@ -320,5 +319,16 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
 
 	public FeatureTree loadFeatureTree(UUID uuid, List<String> propertyPaths) {
 		return featureTreeDao.load(uuid, propertyPaths);
+	}
+	public DescriptionElementBase loadDescriptionElement(UUID uuid,	List<String> propertyPaths) {
+		return descriptionElementDao.load(uuid, propertyPaths);
+	}
+
+	public UUID saveDescriptionElement(DescriptionElementBase descriptionElement) {
+		return descriptionElementDao.save(descriptionElement);
+	}
+	
+	public UUID deleteDescriptionElement(DescriptionElementBase descriptionElement) {
+		return descriptionElementDao.delete(descriptionElement);
 	}
 }

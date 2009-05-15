@@ -39,7 +39,6 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 public interface IDescriptionService extends IIdentifiableEntityService<DescriptionBase> {
 
 	/**
-	 * @param uuid
 	 * @return
 	 */
 	// FIXME candidate for harmonization? findByUuid
@@ -120,6 +119,34 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
 	public DescriptionElementBase getDescriptionElementByUuid(UUID uuid);
 	
 	/**
+	 * Loads and existing DescriptionElementBase instance matching the supplied uuid,
+	 * and recursively initializes all bean properties given in the
+	 * <code>propertyPaths</code> parameter.
+	 * <p>
+	 * For detailed description and examples <b>please refer to:</b> 
+	 * {@link BeanInitializer#initialize(Object, List)}
+	 * 
+	 * @param uuid the uuid of the DescriptionElement of interest
+	 * @return a DescriptionElement, or null if the DescriptionElement does not exist
+	 */
+	public DescriptionElementBase loadDescriptionElement(UUID uuid,List<String> propertyPaths);
+	
+	/**
+	 * Persists a <code>DescriptionElementBase</code>
+	 * @param descriptionElement
+	 * @return
+	 */
+	public UUID saveDescriptionElement(DescriptionElementBase descriptionElement);
+	
+	/**
+	 * Delete an existing description element
+	 * 
+	 * @param descriptionElement the description element to be deleted
+	 * @return the unique identifier of the deleted entity
+	 */
+	public UUID deleteDescriptionElement(DescriptionElementBase descriptionElement);
+	
+	/**
 	 * List the descriptions of type <TYPE>, filtered using the following parameters
 	 *  
 	 * @param type The type of description returned (Taxon, TaxonName, or Specimen)
@@ -197,17 +224,21 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
 	public Pager<TaxonDescription> searchDescriptionByDistribution(Set<NamedArea> namedAreas, PresenceAbsenceTermBase presence, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 	
 	/**
-     * Returns a List of TextData elements that match a given queryString provided.
+	 * Returns a Paged List of DescriptionElementBase instances where the default field matches the String queryString (as interpreted by the Lucene QueryParser)
 	 * 
-	 * @param queryString 
-	 * @param pageSize
-	 * @param pageNumber
-	 * @param orderHints may be null
-	 * @param propertyPaths Properties to initialize in the returned entities, following the syntax described in {@link BeanInitializer#initialize(Object, List)}
-	 * @return
-	 * @throws QueryParseException
+	 * @param clazz filter the results by class (or pass null to return all DescriptionElementBase instances)
+	 * @param queryString
+	 * @param pageSize The maximum number of descriptionElements returned (can be null for all matching descriptionElements)
+	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
+	 * @param orderHints
+	 *            Supports path like <code>orderHints.propertyNames</code> which
+	 *            include *-to-one properties like createdBy.username or
+	 *            authorTeam.persistentTitleCache
+	 * @param propertyPaths properties to be initialized
+	 * @return a Pager DescriptionElementBase instances
+	 * @see <a href="http://lucene.apache.org/java/2_4_0/queryparsersyntax.html">Apache Lucene - Query Parser Syntax</a>
 	 */
-	public Pager<TextData> searchTextData(String queryString, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+	public Pager<DescriptionElementBase> search(Class<? extends DescriptionElementBase> clazz, String queryString, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 	
 	/**
      * Returns a List of Media that are associated with a given description element

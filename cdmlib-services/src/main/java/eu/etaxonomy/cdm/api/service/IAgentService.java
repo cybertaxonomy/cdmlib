@@ -22,6 +22,7 @@ import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.InstitutionalMembership;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 public interface IAgentService extends IIdentifiableEntityService<AgentBase> {
 	
@@ -71,4 +72,21 @@ public interface IAgentService extends IIdentifiableEntityService<AgentBase> {
 	 * @return a Pager containing Address  instances
 	 */
 	public Pager<Address> getAddresses(AgentBase agent, Integer pageSize, Integer pageNumber);
+	
+	/**
+	 * Returns a Paged List of AgentBase instances where the default field matches the String queryString (as interpreted by the Lucene QueryParser)
+	 * 
+	 * @param clazz filter the results by class (or pass null to return all AgentBase instances)
+	 * @param queryString
+	 * @param pageSize The maximum number of agents returned (can be null for all matching agents)
+	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
+	 * @param orderHints
+	 *            Supports path like <code>orderHints.propertyNames</code> which
+	 *            include *-to-one properties like createdBy.username or
+	 *            authorTeam.persistentTitleCache
+	 * @param propertyPaths properties to be initialized
+	 * @return a Pager Agent instances
+	 * @see <a href="http://lucene.apache.org/java/2_4_0/queryparsersyntax.html">Apache Lucene - Query Parser Syntax</a>
+	 */
+	public Pager<AgentBase> search(Class<? extends AgentBase> clazz, String queryString, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 }
