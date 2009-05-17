@@ -569,18 +569,14 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		return (Integer)criteria.uniqueResult();
 	}
 
-	public int countTaxaByName(Boolean accepted, String genusOrUninomial,	String infraGenericEpithet, String specificEpithet,	String infraSpecificEpithet, Rank rank) {
+	public int countTaxaByName(Class<? extends TaxonBase> clazz, String genusOrUninomial,	String infraGenericEpithet, String specificEpithet,	String infraSpecificEpithet, Rank rank) {
 		checkNotInPriorView("TaxonDaoHibernateImpl.countTaxaByName(Boolean accepted, String genusOrUninomial,	String infraGenericEpithet, String specificEpithet,	String infraSpecificEpithet, Rank rank)");
         Criteria criteria = null;
 		
-		if(accepted == null) {
+		if(clazz == null) {
 			criteria = getSession().createCriteria(TaxonBase.class);
 		} else {
-			if(accepted) {
-				criteria = getSession().createCriteria(Taxon.class);
-			} else {
-				criteria = getSession().createCriteria(Synonym.class);
-			}
+			criteria = getSession().createCriteria(clazz);		
 		}
 		
 		criteria.setFetchMode( "name", FetchMode.JOIN );
@@ -611,18 +607,14 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		return (Integer)criteria.uniqueResult();
 	}
 
-	public List<TaxonBase> findTaxaByName(Boolean accepted, String genusOrUninomial, String infraGenericEpithet, String specificEpithet, String infraSpecificEpithet, Rank rank, Integer pageSize,	Integer pageNumber) {
+	public List<TaxonBase> findTaxaByName(Class<? extends TaxonBase> clazz, String genusOrUninomial, String infraGenericEpithet, String specificEpithet, String infraSpecificEpithet, Rank rank, Integer pageSize,	Integer pageNumber) {
 		checkNotInPriorView("TaxonDaoHibernateImpl.findTaxaByName(Boolean accepted, String genusOrUninomial, String infraGenericEpithet, String specificEpithet, String infraSpecificEpithet, Rank rank, Integer pageSize,	Integer pageNumber)");
 		Criteria criteria = null;
 		
-		if(accepted == null) {
+		if(clazz == null) {
 			criteria = getSession().createCriteria(TaxonBase.class);
 		} else {
-			if(accepted) {
-				criteria = getSession().createCriteria(Taxon.class);
-			} else {
-				criteria = getSession().createCriteria(Synonym.class);
-			}
+			criteria = getSession().createCriteria(clazz);
 		}
 		
 		criteria.setFetchMode( "name", FetchMode.JOIN );

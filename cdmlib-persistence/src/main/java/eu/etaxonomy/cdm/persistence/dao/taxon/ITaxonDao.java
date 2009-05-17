@@ -236,10 +236,10 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
 	public List<SynonymRelationship> getSynonyms(Taxon taxon, SynonymRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 	
 	/**
-	 * Returns a count of TaxonBase instances (or Taxon instances, if accepted == true, or Synonym instance, if accepted == false) where the
+	 * Returns a count of TaxonBase instances where the
 	 * taxon.name properties match the parameters passed.
 	 * 
-	 * @param accepted
+	 * @param clazz 
 	 * @param uninomial
 	 * @param infragenericEpithet
 	 * @param specificEpithet
@@ -247,14 +247,14 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
 	 * @param rank
 	 * @return a count of TaxonBase instances
 	 */
-	public int countTaxaByName(Boolean accepted, String uninomial, String infragenericEpithet,String specificEpithet, String infraspecificEpithet, Rank rank);
+	public int countTaxaByName(Class<? extends TaxonBase> clazz, String uninomial, String infragenericEpithet,String specificEpithet, String infraspecificEpithet, Rank rank);
 	
 	/**
-	 * Returns a list of TaxonBase instances (or Taxon instances, if accepted == true, or Synonym instance, if accepted == false) where the
+	 * Returns a list of TaxonBase instances where the
 	 * taxon.name properties match the parameters passed. In order to search for any string value, pass '*', passing the string value of 
 	 * <i>null</i> will search for those taxa with a value of null in that field
 	 * 
-	 * @param accepted Whether the taxon is accepted (true) a synonym (false), or either (null)
+	 * @param clazz optionally filter by class (can be null to return all taxa)
 	 * @param uninomial 
 	 * @param infragenericEpithet
 	 * @param specificEpithet
@@ -264,7 +264,7 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
 	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
 	 * @return a list of TaxonBase instances
 	 */
-	public List<TaxonBase> findTaxaByName(Boolean accepted, String uninomial, String infragenericEpithet, String specificEpithet, String infraspecificEpithet, Rank rank, Integer pageSize, Integer pageNumber);
+	public List<TaxonBase> findTaxaByName(Class<? extends TaxonBase> clazz, String uninomial, String infragenericEpithet, String specificEpithet, String infraspecificEpithet, Rank rank, Integer pageSize, Integer pageNumber);
 	
 	
 }

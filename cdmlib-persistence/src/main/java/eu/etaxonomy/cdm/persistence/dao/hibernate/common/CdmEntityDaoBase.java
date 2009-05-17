@@ -196,9 +196,9 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 		return count(type);
 	}
 	
-	public <TYPE extends T> int count(Class<TYPE> type) {
+	public <TYPE extends T> int count(Class<TYPE> clazz) {
 		Session session = getSession();
-		Criteria crit = session.createCriteria(type);
+		Criteria crit = session.createCriteria(clazz);
 		crit.setProjection(Projections.projectionList().add(Projections.rowCount()));
 		Integer nbrRows = (Integer) crit.uniqueResult();
 		return nbrRows.intValue();
@@ -242,9 +242,9 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 		    	OrderHint orderHint = orderHints.get(i);
 		    	switch(orderHint.getSortOrder()) {
 		    	case ASCENDING:
-		            sortFields[i] = new SortField(orderHint.getPropertyName() + "_forSort", false);
+		            sortFields[i] = new SortField(orderHint.getPropertyName() + "_forSort", true);
 		    	case DESCENDING:
-		    		sortFields[i] = new SortField(orderHint.getPropertyName() + "_forSort",true);
+		    		sortFields[i] = new SortField(orderHint.getPropertyName() + "_forSort",false);
 		    	}
 		    }
 		    sort.setSort(sortFields);

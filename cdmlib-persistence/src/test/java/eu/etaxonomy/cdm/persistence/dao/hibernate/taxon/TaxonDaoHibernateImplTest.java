@@ -324,7 +324,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 	@Test
 	@DataSet
 	public void testGetTaxonMatchingUninomial() {
-		List<TaxonBase> result = taxonDao.findTaxaByName(true, "Smerinthus", "*", "*", "*",null,null,null);
+		List<TaxonBase> result = taxonDao.findTaxaByName(Taxon.class, "Smerinthus", "*", "*", "*",null,null,null);
 		
 		assertNotNull("findTaxaByName should return a List", result);
 		assertEquals("findTaxaByName should return two Taxa",2,result.size());
@@ -334,7 +334,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 	@Test
 	@DataSet
 	public void testGetTaxonMatchingSpeciesBinomial() {
-		List<TaxonBase> result = taxonDao.findTaxaByName(true,"Smerinthus", null, "kindermannii", null,null,null,null);
+		List<TaxonBase> result = taxonDao.findTaxaByName(Taxon.class,"Smerinthus", null, "kindermannii", null,null,null,null);
 		
 		assertNotNull("findTaxaByName should return a List", result);
 		assertEquals("findTaxaByName should return one Taxon",1,result.size());
@@ -344,7 +344,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 	@Test
 	@DataSet
 	public void testGetTaxonMatchingTrinomial() {
-		List<TaxonBase> result = taxonDao.findTaxaByName(true,"Cryptocoryne", null,"purpurea","borneoensis",null,null,null);
+		List<TaxonBase> result = taxonDao.findTaxaByName(Taxon.class,"Cryptocoryne", null,"purpurea","borneoensis",null,null,null);
 		
 		assertNotNull("findTaxaByName should return a List", result);
 		assertEquals("findTaxaByName should return one Taxon",1,result.size());
@@ -354,7 +354,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 	@Test
 	@DataSet
 	public void testNegativeMatch() {
-		List<TaxonBase> result = taxonDao.findTaxaByName(true,"Acherontia", null,"atropos","dehli",null,null,null);
+		List<TaxonBase> result = taxonDao.findTaxaByName(Taxon.class,"Acherontia", null,"atropos","dehli",null,null,null);
 		
 		assertNotNull("findTaxaByName should return a List", result);
 		assertTrue("findTaxaByName should return an empty List",result.isEmpty());
