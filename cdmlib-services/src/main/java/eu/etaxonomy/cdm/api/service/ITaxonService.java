@@ -209,10 +209,10 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	public Pager<TaxonBase> search(Class<? extends TaxonBase> clazz, String queryString, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 	
 	/**
-	 * Returns a list of TaxonBase instances (or Taxon instances, if accepted == true, or Synonym instance, if accepted == false) where the
+	 * Returns a list of TaxonBase instances where the
 	 * taxon.name properties match the parameters passed.
 	 * 
-	 * @param accepted Whether the taxon is accepted (true) a synonym (false), or either (null)
+	 * @param clazz optionally filter by class 
 	 * @param uninomial 
 	 * @param infragenericEpithet
 	 * @param specificEpithet
@@ -222,7 +222,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
 	 * @return a Pager of TaxonBase instances
 	 */
-	public Pager<TaxonBase> findTaxaByName(Boolean accepted, String uninomial, String infragenericEpithet, String specificEpithet, String infraspecificEpithet, Rank rank, Integer pageSize, Integer pageNumber);
+	public Pager<TaxonBase> findTaxaByName(Class<? extends TaxonBase> clazz, String uninomial, String infragenericEpithet, String specificEpithet, String infraspecificEpithet, Rank rank, Integer pageSize, Integer pageNumber);
 
 	/**
 	 * Returns a list of IdentifiableEntity instances (in particular, TaxonNameBase and TaxonBase instances)

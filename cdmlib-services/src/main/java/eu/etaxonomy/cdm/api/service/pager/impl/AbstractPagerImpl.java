@@ -10,6 +10,7 @@
 
 package eu.etaxonomy.cdm.api.service.pager.impl;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -20,7 +21,7 @@ import org.apache.commons.logging.LogFactory;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 
-public abstract class AbstractPagerImpl<T> implements Pager<T> {
+public abstract class AbstractPagerImpl<T> implements Pager<T>, Serializable {
 
 	protected static Integer MAX_PAGE_LABELS = 3;
 	protected static String LABEL_DIVIDER = " - ";
