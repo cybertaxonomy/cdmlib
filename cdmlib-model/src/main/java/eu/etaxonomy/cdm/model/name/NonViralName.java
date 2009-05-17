@@ -84,7 +84,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 	
 	@XmlElement(name = "NameCache")
 	@Fields({@Field(index = org.hibernate.search.annotations.Index.TOKENIZED),
-    	 @Field(name = "name_forSort", index = org.hibernate.search.annotations.Index.UN_TOKENIZED)
+    	 @Field(name = "nameCache_forSort", index = org.hibernate.search.annotations.Index.UN_TOKENIZED)
     })
 	private String nameCache;
 	
