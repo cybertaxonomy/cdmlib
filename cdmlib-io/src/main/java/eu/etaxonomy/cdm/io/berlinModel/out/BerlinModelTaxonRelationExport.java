@@ -18,13 +18,11 @@ import org.springframework.transaction.TransactionStatus;
 import eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.CreatedAndNotesMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbObjectMapper;
-import eu.etaxonomy.cdm.io.berlinModel.out.mapper.IdMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.MethodMapper;
 import eu.etaxonomy.cdm.io.common.IExportConfigurator;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
-import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
@@ -36,7 +34,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
  * @version 1.0
  */
 @Component
-public class BerlinModelTaxonRelationExport extends BerlinModelExportBase {
+public class BerlinModelTaxonRelationExport extends BerlinModelExportBase<RelationshipBase> {
 	private static final Logger logger = Logger.getLogger(BerlinModelTaxonRelationExport.class);
 
 	private static int modCount = 1000;

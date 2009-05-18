@@ -42,7 +42,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
  * @version 1.0
  */
 @Component
-public class BerlinModelFactExport extends BerlinModelExportBase {
+public class BerlinModelFactExport extends BerlinModelExportBase<TextData> {
 	private static final Logger logger = Logger.getLogger(BerlinModelFactExport.class);
 
 	private static int modCount = 2500;

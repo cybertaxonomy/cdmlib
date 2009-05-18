@@ -32,7 +32,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * @version 1.0
  */
 @Component
-public class BerlinModelAuthorTeamExport extends BerlinModelExportBase {
+public class BerlinModelAuthorTeamExport extends BerlinModelExportBase<Team> {
 	private static final Logger logger = Logger.getLogger(BerlinModelAuthorTeamExport.class);
 
 	private static int modCount = 1000;

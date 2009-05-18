@@ -355,7 +355,9 @@ public final class BerlinModelTransformer {
 	
 	
 	public static Integer rank2RankId (Rank rank){
-		if (rank.equals(null)){return null;}
+		if (rank == null){
+			return null;
+		}
 		else if (rank.equals(Rank.KINGDOM())){		return 1;}
 		else if (rank.equals(Rank.SUBKINGDOM())){	return 3;}
 		else if (rank.equals(Rank.PHYLUM())){		return 5;}
@@ -405,6 +407,7 @@ public final class BerlinModelTransformer {
 	}
 	
 	public static Integer textData2FactCategoryFk (Feature feature){
+		if (feature == null){return null;}
 		if (feature.equals(Feature.DESCRIPTION())){
 			return 1;
 		}else if (feature.equals(Feature.ECOLOGY())){
@@ -418,13 +421,14 @@ public final class BerlinModelTransformer {
 		}else if (feature.equals(Feature.CITATION())){
 			return 99;
 		}else{
-			logger.warn("Unknown Feature. Used DESCRIPTION instead");
-			return 4;
+			logger.debug("Unknown Feature.");
+			return null;
 		}
 	}
 	
 	
 	public static Integer taxonBase2statusFk (TaxonBase<?> taxonBase){
+		if (taxonBase == null){return null;}		
 		if (taxonBase.isInstanceOf(Taxon.class)){
 			return T_STATUS_ACCEPTED;
 		}else if (taxonBase.isInstanceOf(Synonym.class)){
@@ -583,8 +587,5 @@ public final class BerlinModelTransformer {
 			
 			
 	}
-	
-
-	
 	
 }

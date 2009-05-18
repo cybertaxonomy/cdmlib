@@ -87,7 +87,13 @@ public abstract class DbSingleAttributeExportMapperBase<STATE extends DbExportSt
 				getPreparedStatement().setNull(getIndex(), sqlType);
 			}else{
 				if (sqlType == Types.INTEGER){
-					getPreparedStatement().setInt(getIndex(), (Integer)value);
+					try{
+						getPreparedStatement().setInt(getIndex(), (Integer)value);
+					}catch (Exception e) {
+						logger.error("Exception: " + e.getLocalizedMessage() + ": " + cdmBase.toString());
+						value = getValue(cdmBase);
+						throw new RuntimeException( e);
+					}
 				}else if (sqlType == Types.CLOB){
 					getPreparedStatement().setString(getIndex(), (String)value);
 				}else if (sqlType == Types.VARCHAR){
@@ -114,6 +120,9 @@ public abstract class DbSingleAttributeExportMapperBase<STATE extends DbExportSt
 		} catch (IllegalArgumentException e) {
 			logger.error("IllegalArgumentException: " + e.getLocalizedMessage() + ": " + cdmBase.toString());
 			return false;
+		} catch (Exception e) {
+			logger.error("Exception: " + e.getLocalizedMessage() + ": " + cdmBase.toString());
+			throw new RuntimeException( e);
 		}
 	}
 	

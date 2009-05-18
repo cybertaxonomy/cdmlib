@@ -34,7 +34,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  * @version 1.0
  */
 @Component
-public class BerlinModelTaxonExport extends BerlinModelExportBase {
+public class BerlinModelTaxonExport extends BerlinModelExportBase<TaxonBase> {
 	private static final Logger logger = Logger.getLogger(BerlinModelTaxonExport.class);
 
 	private static int modCount = 1000;

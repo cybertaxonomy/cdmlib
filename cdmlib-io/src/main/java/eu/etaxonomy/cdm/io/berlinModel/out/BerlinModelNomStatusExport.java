@@ -18,7 +18,6 @@ import org.springframework.transaction.TransactionStatus;
 import eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.CreatedAndNotesMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbObjectMapper;
-import eu.etaxonomy.cdm.io.berlinModel.out.mapper.IdMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.MethodMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.RefDetailMapper;
 import eu.etaxonomy.cdm.io.common.IExportConfigurator;
@@ -36,7 +35,7 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
  * @version 1.0
  */
 @Component
-public class BerlinModelNomStatusExport extends BerlinModelExportBase {
+public class BerlinModelNomStatusExport extends BerlinModelExportBase<NomenclaturalStatus> {
 	private static final Logger logger = Logger.getLogger(BerlinModelNomStatusExport.class);
 
 	private static int modCount = 1000;
@@ -125,7 +124,7 @@ public class BerlinModelNomStatusExport extends BerlinModelExportBase {
 		String sql;
 		Source destination =  bmeConfig.getDestination();
 		//RelPTaxon
-		sql = "DELETE FROM RelPTaxon";
+		sql = "DELETE FROM NomStatusRel";
 		destination.setQuery(sql);
 		destination.update(sql);
 

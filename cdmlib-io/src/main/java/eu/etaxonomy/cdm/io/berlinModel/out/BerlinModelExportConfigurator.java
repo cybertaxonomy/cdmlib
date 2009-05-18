@@ -48,7 +48,7 @@ public class BerlinModelExportConfigurator extends ExportConfiguratorBase<Source
 				BerlinModelAuthorTeamExport.class
 				, BerlinModelReferenceExport.class
 				, BerlinModelTaxonNameExport.class
-//				, BerlinModelTaxonNameRelationImport.class
+				, BerlinModelNameRelationExport.class
 //				, BerlinModelNameStatusImport.class
 //				, BerlinModelNameFactsImport.class
 //				, BerlinModelTypesImport.class

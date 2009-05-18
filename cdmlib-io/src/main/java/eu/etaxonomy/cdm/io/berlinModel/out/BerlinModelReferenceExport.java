@@ -27,6 +27,7 @@ import eu.etaxonomy.cdm.io.berlinModel.out.mapper.MethodMapper;
 import eu.etaxonomy.cdm.io.common.IExportConfigurator;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.reference.Article;
 import eu.etaxonomy.cdm.model.reference.BookSection;
 import eu.etaxonomy.cdm.model.reference.InProceedings;
@@ -41,7 +42,7 @@ import eu.etaxonomy.cdm.model.reference.StrictReferenceBase;
  * @version 1.0
  */
 @Component
-public class BerlinModelReferenceExport extends BerlinModelExportBase {
+public class BerlinModelReferenceExport extends BerlinModelExportBase<ReferenceBase> {
 	private static final Logger logger = Logger.getLogger(BerlinModelReferenceExport.class);
 
 	private static int modCount = 1000;
@@ -87,6 +88,7 @@ public class BerlinModelReferenceExport extends BerlinModelExportBase {
 		mapping.addMapper(DbStringMapper.NewFacultativeInstance("pages", "PageString"));
 		mapping.addMapper(DbStringMapper.NewFacultativeInstance("isbn", "ISBN"));
 		mapping.addMapper(DbStringMapper.NewFacultativeInstance("issn", "ISSN"));
+//		mapping.addMapper(MethodMapper.NewInstance("RefYear", this));
 		
 
 		
@@ -218,11 +220,13 @@ public class BerlinModelReferenceExport extends BerlinModelExportBase {
 	}
 	
 	//called by MethodMapper
+	@SuppressWarnings("unused")
 	private static Integer getRefCategoryFk(StrictReferenceBase<?> ref){
 		return BerlinModelTransformer.ref2refCategoryId(ref);
 	}
 	
 	//called by MethodMapper
+	@SuppressWarnings("unused")
 	private static String getRefCache(StrictReferenceBase<?> ref){
 		if (ref.isProtectedTitleCache()){
 			return ref.getTitleCache();
@@ -232,6 +236,7 @@ public class BerlinModelReferenceExport extends BerlinModelExportBase {
 	}
 
 	//called by MethodMapper
+	@SuppressWarnings("unused")
 	private static String getNomRefCache(StrictReferenceBase<?> ref){
 		if (ref.isProtectedTitleCache()){
 			return ref.getTitleCache();
@@ -241,6 +246,7 @@ public class BerlinModelReferenceExport extends BerlinModelExportBase {
 	}
 	
 	//called by MethodMapper
+	@SuppressWarnings("unused")
 	private static String getRefAuthorString(StrictReferenceBase<?> ref){
 		if (ref == null){
 			return null;
@@ -248,8 +254,24 @@ public class BerlinModelReferenceExport extends BerlinModelExportBase {
 			return (ref.getAuthorTeam() == null)? null: ref.getAuthorTeam().getTitleCache();
 		}
 	}
+
+	//called by MethodMapper
+	@SuppressWarnings("unused")
+	private static String getRefYear(StrictReferenceBase<?> ref){
+		if (ref == null || ref.getDatePublished() == null){
+			return null;
+		}else{
+			TimePeriod period = ref.getDatePublished();
+			//TODO
+			String result = period.toString();
+			if (result != null){result = result.substring(0, 20);}
+			return result;
+		}
+	}
+
 	
 	//called by MethodMapper
+	@SuppressWarnings("unused")
 	private static Boolean getPreliminaryFlag(StrictReferenceBase<?> ref){
 		if (ref.isProtectedTitleCache()){
 			return true;

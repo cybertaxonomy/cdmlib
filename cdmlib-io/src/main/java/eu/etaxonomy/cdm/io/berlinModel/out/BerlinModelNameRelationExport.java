@@ -35,13 +35,13 @@ import eu.etaxonomy.cdm.model.name.NameRelationship;
  * @version 1.0
  */
 @Component
-public class BerlinModelNameRelationExport extends BerlinModelExportBase {
+public class BerlinModelNameRelationExport extends BerlinModelExportBase<RelationshipBase> {
 	private static final Logger logger = Logger.getLogger(BerlinModelNameRelationExport.class);
 
-	private static int modCount = 1000;
+	private static int modCount = 100;
 	private static final String dbTableName = "RelName";
 	private static final String pluralString = "NameRelationships";
-	private static final Class<? extends CdmBase> standardMethodParameter = NameRelationship.class;
+	private static final Class<? extends CdmBase> standardMethodParameter = RelationshipBase.class;
 
 
 	public BerlinModelNameRelationExport(){
@@ -67,7 +67,7 @@ public class BerlinModelNameRelationExport extends BerlinModelExportBase {
 		mapping.addMapper(IdMapper.NewInstance("RelNameId"));
 
 		mapping.addMapper(DbObjectMapper.NewInstance("fromName", "NameFk1"));
-		mapping.addMapper(DbObjectMapper.NewInstance("toName", "NameFk1"));
+		mapping.addMapper(DbObjectMapper.NewInstance("toName", "NameFk2"));
 
 		
 		mapping.addMapper(MethodMapper.NewInstance("RelNameQualifierFk", this));
@@ -119,7 +119,7 @@ public class BerlinModelNameRelationExport extends BerlinModelExportBase {
 		String sql;
 		Source destination =  bmeConfig.getDestination();
 		//RelPTaxon
-		sql = "DELETE FROM RelPTaxon";
+		sql = "DELETE FROM RelName";
 		destination.setQuery(sql);
 		destination.update(sql);
 
