@@ -16,6 +16,8 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.io.berlinModel.out.mapper.IDbExportMapper;
+
 
 /**
  * @author a.mueller
@@ -25,6 +27,7 @@ import org.apache.log4j.Logger;
 public class CdmIoMapping {
 	private static final Logger logger = Logger.getLogger(CdmIoMapping.class);
 	
+	//protected List<CdmAttributeMapperBase> mapperList = new ArrayList<CdmAttributeMapperBase>();
 	protected List<CdmAttributeMapperBase> mapperList = new ArrayList<CdmAttributeMapperBase>();
 	Set<String> sourceAttributes = new HashSet<String>();
 	Set<String> destinationAttributes = new HashSet<String>();

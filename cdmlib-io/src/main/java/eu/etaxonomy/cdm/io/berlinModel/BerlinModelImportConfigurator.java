@@ -45,9 +45,11 @@ public class BerlinModelImportConfigurator extends ImportConfiguratorBase implem
 	private URL mediaUrl;
 	private File mediaPath;
 	private int maximumNumberOfNameFacts;
+	private boolean isIgnore0AuthorTeam = false;
 	
 	protected void makeIoClassList(){
 		ioClassList = new Class[]{
+				BerlinModelAuthorImport.class,
 				BerlinModelAuthorTeamImport.class
 				, BerlinModelReferenceImport.class
 				, BerlinModelTaxonNameImport.class
@@ -179,5 +181,22 @@ public class BerlinModelImportConfigurator extends ImportConfiguratorBase implem
 	public void setMaximumNumberOfNameFacts(int maximumNumberOfNameFacts) {
 		this.maximumNumberOfNameFacts = maximumNumberOfNameFacts;
 	}
+
+	/**
+	 * If true, an authorTeam with authorTeamId = 0 is not imported (casus Salvador)
+	 * @return the isIgnore0AuthorTeam
+	 */
+	public boolean isIgnore0AuthorTeam() {
+		return isIgnore0AuthorTeam;
+	}
+
+	/**
+	 * @param isIgnore0AuthorTeam the isIgnore0AuthorTeam to set
+	 */
+	public void setIgnore0AuthorTeam(boolean isIgnore0AuthorTeam) {
+		this.isIgnore0AuthorTeam = isIgnore0AuthorTeam;
+	}
+	
+	
 	
 }

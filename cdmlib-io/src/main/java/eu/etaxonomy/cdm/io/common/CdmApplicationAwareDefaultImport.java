@@ -19,6 +19,7 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.api.service.IService;
+import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
@@ -58,7 +59,8 @@ public class CdmApplicationAwareDefaultImport<T extends IImportConfigurator> imp
 	Map<String, MapWrapper<? extends CdmBase>> stores = new HashMap<String, MapWrapper<? extends CdmBase>>();
 
 	public CdmApplicationAwareDefaultImport(){
-		stores.put(ICdmIO.AUTHOR_STORE, new MapWrapper<TeamOrPersonBase<?>>(service));
+		stores.put(ICdmIO.PERSON_STORE, new MapWrapper<Person>(service));
+		stores.put(ICdmIO.TEAM_STORE, new MapWrapper<TeamOrPersonBase<?>>(service));
 		stores.put(ICdmIO.REFERENCE_STORE, new MapWrapper<ReferenceBase>(service));
 		stores.put(ICdmIO.NOMREF_STORE, new MapWrapper<ReferenceBase>(service));
 		stores.put(ICdmIO.NOMREF_DETAIL_STORE, new MapWrapper<ReferenceBase>(service));

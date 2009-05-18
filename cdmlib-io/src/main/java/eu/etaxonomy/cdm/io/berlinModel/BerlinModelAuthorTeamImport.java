@@ -21,8 +21,8 @@ import eu.etaxonomy.cdm.io.common.ImportHelper;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
+import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
-import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
 
@@ -36,6 +36,8 @@ public class BerlinModelAuthorTeamImport extends BerlinModelImportBase {
 	private static final Logger logger = Logger.getLogger(BerlinModelAuthorTeamImport.class);
 
 	private static int modCount = 1000;
+	private static final String pluralString = "AuthorTeams";
+	 
 
 	public BerlinModelAuthorTeamImport(){
 		super();
@@ -47,7 +49,7 @@ public class BerlinModelAuthorTeamImport extends BerlinModelImportBase {
 	@Override
 	protected boolean doCheck(IImportConfigurator config){
 		boolean result = true;
-		logger.warn("Checking for Authors not yet implemented");
+		logger.warn("Checking for "+pluralString+" not yet implemented");
 		//result &= checkArticlesWithoutJournal(bmiConfig);
 		//result &= checkPartOfJournal(bmiConfig);
 		
@@ -61,52 +63,65 @@ public class BerlinModelAuthorTeamImport extends BerlinModelImportBase {
 	protected boolean doInvoke(IImportConfigurator config, 
 			Map<String, MapWrapper<? extends CdmBase>> stores){ 
 
-		MapWrapper<AgentBase> teamMap = (MapWrapper<AgentBase>)stores.get(ICdmIO.AUTHOR_STORE);
+		MapWrapper<AgentBase> teamMap = (MapWrapper<AgentBase>)stores.get(ICdmIO.TEAM_STORE);
+		MapWrapper<AgentBase> personMap = (MapWrapper<AgentBase>)stores.get(ICdmIO.PERSON_STORE);
 		
 		BerlinModelImportConfigurator bmiConfig = (BerlinModelImportConfigurator)config;
 		Source source = bmiConfig.getSource();
 		String dbAttrName;
 		String cdmAttrName;
 
-		logger.info("start makeAuthors ...");
+		logger.info("start make "+pluralString+" ...");
 		boolean success = true ;
 		
 		
 		
 		//get data from database
-		String strQuery = 
+		String strQueryTeam = 
 				" SELECT *  " +
-                " FROM AuthorTeam " ;
-		ResultSet rs = source.getResultSet(strQuery) ;
+                " FROM AuthorTeam " + 
+                " ORDER By authorTeamId ";
+		ResultSet rsTeam = source.getResultSet(strQueryTeam) ;
 		String namespace = "AuthorTeam";
+
+		String strQuerySequence = 
+			" SELECT *  " +
+            " FROM AuthorTeamSequence " + 
+            " ORDER By authorTeamFk, Sequence ";
+		ResultSet rsSequence = source.getResultSet(strQuerySequence) ;
 		
 		int i = 0;
 		//for each reference
 		try{
-			while (rs.next()){
+			while (rsTeam.next()){
 				
-				if ((i++ % modCount ) == 0 && i!= 1 ){ logger.info("Authors handled: " + (i-1));}
+				if ((i++ % modCount ) == 0 && i!= 1 ){ logger.info(""+pluralString+" handled: " + (i-1));}
 				
 				//create Agent element
-				int teamId = rs.getInt("AuthorTeamId");
+				int teamId = rsTeam.getInt("AuthorTeamId");
+				if (teamId == 0 && bmiConfig.isIgnore0AuthorTeam()){
+					continue;
+				}
 				
-				TeamOrPersonBase team = new Team();
+				Team team = Team.NewInstance();
 				
 				dbAttrName = "AuthorTeamCache";
 				cdmAttrName = "nomenclaturalTitle";
-				success &= ImportHelper.addStringValue(rs, team, dbAttrName, cdmAttrName);
+				success &= ImportHelper.addStringValue(rsTeam, team, dbAttrName, cdmAttrName);
 
 				dbAttrName = "AuthorTeamCache";
 				cdmAttrName = "titleCache";
-				success &= ImportHelper.addStringValue(rs, team, dbAttrName, cdmAttrName);
+				success &= ImportHelper.addStringValue(rsTeam, team, dbAttrName, cdmAttrName);
 
 				//TODO
 				//FullAuthorTeamCache
 				//preliminaryFlag
 				//title cache or nomenclaturalTitle?
 
+				makeSequence(team, teamId, rsSequence, stores);
+				
 				//created, notes
-				doIdCreatedUpdatedNotes(config, team, rs, teamId, namespace);
+				doIdCreatedUpdatedNotes(config, team, rsTeam, teamId, namespace);
 
 				teamMap.put(teamId, team);
 			} //while rs.hasNext()
@@ -116,12 +131,45 @@ public class BerlinModelAuthorTeamImport extends BerlinModelImportBase {
 		}
 
 			
-		logger.info(i + " authors handled");
+		logger.info(i + " "+pluralString+" handled");
 		getAgentService().saveAgentAll(teamMap.objects());
 
-		logger.info("end make authors ...");
+		logger.info("end make "+pluralString+" ...");
+		personMap.makeEmpty();
 		return success;
 	}
+	
+	private boolean makeSequence(Team team, int teamId, ResultSet rsSequence, Map<String, MapWrapper<? extends CdmBase>> stores){
+		MapWrapper<Person> personMap = (MapWrapper<Person>)stores.get(ICdmIO.PERSON_STORE);
+		try {
+			if (rsSequence.isBeforeFirst()){
+				rsSequence.next();
+			}
+			if (rsSequence.isAfterLast()){
+				return true;
+			}
+			int sequenceTeamFk = rsSequence.getInt("AuthorTeamFk");
+			while (sequenceTeamFk < teamId){
+				rsSequence.next();
+				sequenceTeamFk = rsSequence.getInt("AuthorTeamFk");
+			}
+			while (sequenceTeamFk == teamId){
+				int authorFk = rsSequence.getInt("AuthorFk");
+				Person author = personMap.get(authorFk);
+				team.addTeamMember(author);
+				if (rsSequence.next()){
+					sequenceTeamFk = rsSequence.getInt("AuthorTeamFk");
+				}else{
+					break;
+				}
+			}
+			return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)

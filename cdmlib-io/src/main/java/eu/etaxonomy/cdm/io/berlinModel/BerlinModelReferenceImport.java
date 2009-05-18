@@ -214,7 +214,7 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 	
 	private boolean doPreliminaryRefDetails(IImportConfigurator config, Map<String, MapWrapper<? extends CdmBase>> stores){
 		
-		MapWrapper<TeamOrPersonBase> authorMap = (MapWrapper<TeamOrPersonBase>)stores.get(ICdmIO.AUTHOR_STORE);
+		MapWrapper<TeamOrPersonBase> teamMap = (MapWrapper<TeamOrPersonBase>)stores.get(ICdmIO.TEAM_STORE);
 		MapWrapper<ReferenceBase> refDetailMap = (MapWrapper<ReferenceBase>)stores.get(ICdmIO.REF_DETAIL_STORE);
 		MapWrapper<ReferenceBase> nomRefDetailMap = (MapWrapper<ReferenceBase>)stores.get(ICdmIO.NOMREF_DETAIL_STORE);
 		
@@ -295,7 +295,9 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 	protected boolean doInvoke(IImportConfigurator config,
 			Map<String, MapWrapper<? extends CdmBase>> stores){
 		
-		MapWrapper<TeamOrPersonBase> authorMap = (MapWrapper<TeamOrPersonBase>)stores.get(ICdmIO.AUTHOR_STORE);
+		String teamStore = ICdmIO.TEAM_STORE;
+		MapWrapper<? extends CdmBase> store = stores.get(teamStore);
+		MapWrapper<TeamOrPersonBase> teamMap = (MapWrapper<TeamOrPersonBase>)store;
 				
 		BerlinModelImportConfigurator bmiConfig = (BerlinModelImportConfigurator)config;
 		Source source = bmiConfig.getSource();
@@ -410,7 +412,7 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 						
 						//
 						success &= makeNomAndBiblioReference(rs, refId, referenceBase, refCounter, 
-								referenceStore, nomRefStore, authorMap, stores );
+								referenceStore, nomRefStore, teamMap, stores );
 
 					} catch (Exception e) {
 						logger.warn("Reference with BM refId " + refId +  " threw Exception and could not be saved");
@@ -454,12 +456,12 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 				RefCounter refCounter, 
 				MapWrapper<ReferenceBase> referenceStore, 
 				MapWrapper<ReferenceBase> nomRefStore, 
-				MapWrapper<TeamOrPersonBase> authorMap,
+				MapWrapper<TeamOrPersonBase> teamMap,
 				Map<String, MapWrapper<? extends CdmBase>> stores				
 				) throws SQLException{
 		
-		MapWrapper<ReferenceBase> referenceMap = (MapWrapper<ReferenceBase>)stores.get(ICdmIO.REFERENCE_STORE);
-		MapWrapper<ReferenceBase> nomRefMap = (MapWrapper<ReferenceBase>)stores.get(ICdmIO.NOMREF_STORE);
+		MapWrapper<ReferenceBase<?>> referenceMap = (MapWrapper<ReferenceBase<?>>)stores.get(ICdmIO.REFERENCE_STORE);
+		MapWrapper<ReferenceBase<?>> nomRefMap = (MapWrapper<ReferenceBase<?>>)stores.get(ICdmIO.NOMREF_STORE);
 		
 		
 		String refCache = rs.getString("refCache");
@@ -469,13 +471,13 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 		boolean isPreliminary = rs.getBoolean("PreliminaryFlag");
 		String refAuthorString = rs.getString("refAuthorString");
 		int nomAuthorTeamFk = rs.getInt("NomAuthorTeamFk");
-		TeamOrPersonBase nomAuthor = authorMap.get(nomAuthorTeamFk);
+		TeamOrPersonBase<?> nomAuthor = teamMap.get(nomAuthorTeamFk);
 		
 		boolean hasNomRef = false;
 		//is Nomenclatural Reference
 		if ( (! CdmUtils.Nz(nomRefCache).equals("") && isPreliminary) || (! CdmUtils.Nz(nomTitleAbbrev).equals("") && ! isPreliminary) ){
 			referenceBase.setTitle(nomTitleAbbrev);
-			TeamOrPersonBase author = getAuthorTeam(refAuthorString , nomAuthor, true);
+			TeamOrPersonBase<?> author = getAuthorTeam(refAuthorString , nomAuthor, true);
 			referenceBase.setAuthorTeam(author);
 			//referenceBase.setNomenclaturallyRelevant(true);
 			if (isPreliminary){

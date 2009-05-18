@@ -10,130 +10,121 @@
 
 package eu.etaxonomy.cdm.io.berlinModel.out.mapper;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.Date;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.hsqldb.Types;
 
+import eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer;
 import eu.etaxonomy.cdm.io.berlinModel.out.BerlinModelExportConfigurator;
 import eu.etaxonomy.cdm.io.berlinModel.out.BerlinModelExportMapping;
 import eu.etaxonomy.cdm.io.berlinModel.out.BerlinModelExportState;
-import eu.etaxonomy.cdm.io.common.ImportHelper;
+import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 
 /**
  * @author a.mueller
  * @created 12.05.2009
  * @version 1.0
  */
-public class NomStatusMapper extends DbSingleAttributeExportMapperBase<BerlinModelExportState<?>> implements IDbExportMapper<BerlinModelExportState<?>>{
+//TODO inheritence
+public class NomStatusMapper /*extends DbSingleAttributeExportMapperBase<BerlinModelExportState<?>>*/ implements IDbExportMapper<BerlinModelExportState<?>>{
 	private static final Logger logger = Logger.getLogger(NomStatusMapper.class);
 	
 	private BerlinModelExportMapping mapping = null; 
+	private BerlinModelExportMapping nameMapping = null; 
 	private String dbTableName = "NomStatusRel";
+	protected BerlinModelExportState<?> state;
 	
-		
-	public static NomStatusMapper NewInstance(String cdmAttributeString, String dbAttributeString){
-		return new NomStatusMapper(cdmAttributeString, dbAttributeString);
+	
+	public static NomStatusMapper NewInstance(){
+		return new NomStatusMapper();
 	}
 	
-	
-	/**
-	 * @param dbAttributString
-	 * @param cdmAttributeString
-	 */
-	private NomStatusMapper(String cdmAttributeString, String dbAttributeString) {
-		super(cdmAttributeString, dbAttributeString, null);
-	}
 
-
-	private BerlinModelExportMapping getMapping(){
+	private BerlinModelExportMapping getStatusMapping(){
+		boolean doExecute = false;
 		String tableName = dbTableName;
-		BerlinModelExportMapping mapping = new BerlinModelExportMapping(tableName);
-//		NameFk
-//		NomStatusFk
-//		NomStatusRefFk
-//		NomStatusRefDetailFk
-//		DoubtfulFlag
-		
-		mapping.addMapper(DbObjectMapper.NewInstance("fromName", "NameFk"));
-		mapping.addMapper(DbObjectMapper.NewInstance("toName", "NameFk1"));
+		BerlinModelExportMapping mapping = new BerlinModelExportMapping(tableName,doExecute);
 
-		
 		mapping.addMapper(MethodMapper.NewInstance("NomStatusFk", this.getClass(), "getNomStatusFk", NomenclaturalStatus.class));
-		
 		mapping.addMapper(DbObjectMapper.NewInstance("citation", "NomStatusRefFk"));
 		mapping.addMapper(RefDetailMapper.NewInstance("citationMicroReference","citation", "NomStatusRefDetailFk"));
 		
 		mapping.addMapper(CreatedAndNotesMapper.NewInstance());
-		
-		NomenclaturalStatus r = null;
-		
+		//TODO
+//		DoubtfulFlag
 		
 		return mapping;
 	}
 
-	
+
+
+	private BerlinModelExportMapping getNameMapping(){
+		boolean doExecute = true;
+		String tableName = dbTableName;
+		BerlinModelExportMapping mapping = new BerlinModelExportMapping(dbTableName, doExecute);
+		mapping.addMapper(IdMapper.NewInstance("NameFk"));
+		return mapping;
+	}
 	
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbSingleAttributeExportMapperBase#initialize(java.sql.PreparedStatement, eu.etaxonomy.cdm.io.berlinModel.out.mapper.IndexCounter, eu.etaxonomy.cdm.io.berlinModel.out.DbExportState)
 	 */
-	@Override
 	public void initialize(PreparedStatement stmt, IndexCounter index,BerlinModelExportState<?> state, String tableName) {
-		mapping = getMapping();
+		this.state = state;
+		
 		try {
-			mapping.initialize(getState());
+			mapping = getStatusMapping();
+			nameMapping = getNameMapping();
+			mapping.initialize(state);
+			nameMapping.initialize(state, mapping.getPreparedStatement());
 		} catch (SQLException e) {
 			logger.error("SQLException in NomStatusMapper.initialize()");
 			throw new RuntimeException(e);
 		}
 	}
-
+	
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbSingleAttributeExportMapperBase#getValue()
+	 * @see eu.etaxonomy.cdm.io.berlinModel.out.mapper.IDbExportMapper#invoke(eu.etaxonomy.cdm.model.common.CdmBase)
 	 */
-	@Override
-	protected Object getValue(CdmBase cdmBase) {
+	public boolean invoke(CdmBase cdmBase) throws SQLException {
+		boolean result = true;
 		try {
-			mapping.invoke(cdmBase);
+			Set<NomenclaturalStatus> statusSet = ((TaxonNameBase)cdmBase).getStatus();
+			for (NomenclaturalStatus status : statusSet){
+				result &= mapping.invoke(status);
+				result &= nameMapping.invoke(cdmBase);
+			}
+			return result; 
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			return false;
 		}
-//		String value = (String)super.getValue(cdmBase);
-		return null;
 	}
 
-	protected Integer getId(CdmBase cdmBase){
-		BerlinModelExportConfigurator config = getState().getConfig();
-		if (false && config.getIdType() == BerlinModelExportConfigurator.IdType.CDM_ID){
-			return cdmBase.getId();
-		}else{
-			Integer id = getState().getDbId(cdmBase);
-			return id;
-		}
-	}	
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbSingleAttributeExportMapperBase#getValueType()
-	 */
-	@Override
-	protected int getSqlType() {
-		return Types.INTEGER;
+	protected boolean doDelete(BerlinModelExportState<BerlinModelExportConfigurator> state){
+		BerlinModelExportConfigurator bmeConfig = state.getConfig();
+		
+		String sql;
+		Source destination =  bmeConfig.getDestination();
+		//NomStatusRel
+		sql = "DELETE FROM NomStatusRel";
+		destination.setQuery(sql);
+		destination.update(sql);
+		return true;
 	}
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.CdmSingleAttributeMapperBase#getTypeClass()
-	 */
-	@Override
-	public Class<?> getTypeClass() {
-		return String.class;
+	
+	//called by MethodMapper
+	@SuppressWarnings("unused")
+	private static Integer getNomStatusFk(NomenclaturalStatus status){
+		return BerlinModelTransformer.nomStatus2nomStatusFk(status.getType());
 	}
 
 }

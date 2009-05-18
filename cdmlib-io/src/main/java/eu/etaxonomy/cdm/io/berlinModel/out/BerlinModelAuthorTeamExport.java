@@ -39,6 +39,7 @@ public class BerlinModelAuthorTeamExport extends BerlinModelExportBase<Team> {
 	private static final String dbTableName = "AuthorTeam";
 	private static final String pluralString = "AuthorTeams";
 	private static final Class<? extends CdmBase> standardMethodParameter = Team.class;
+	
 	public BerlinModelAuthorTeamExport(){
 		super();
 	}
@@ -86,7 +87,7 @@ public class BerlinModelAuthorTeamExport extends BerlinModelExportBase<Team> {
 			
 			TransactionStatus txStatus = startTransaction(true);
 			Class<Team> clazz = Team.class;
-			List<? extends AgentBase> persons = getAgentService().list(clazz, 100000000, 0);
+			List<? extends AgentBase> list = getAgentService().list(clazz, 100000000, 0);
 			
 			BerlinModelExportMapping mapping = getMapping();
 			mapping.initialize(state);
@@ -98,7 +99,7 @@ public class BerlinModelAuthorTeamExport extends BerlinModelExportBase<Team> {
 //			}
 			logger.info("save "+pluralString+" ...");
 			int count = 0;
-			for (AgentBase<?> agent : persons){
+			for (AgentBase<?> agent : list){
 				doCount(count++, modCount, pluralString);
 				if (agent instanceof Team){
 					success &= mapping.invoke(agent);

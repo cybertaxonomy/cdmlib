@@ -22,6 +22,7 @@ import eu.etaxonomy.cdm.io.berlinModel.out.mapper.CreatedAndNotesMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbBooleanMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbObjectMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbStringMapper;
+import eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbTimePeriodMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.IdMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.MethodMapper;
 import eu.etaxonomy.cdm.io.common.IExportConfigurator;
@@ -88,14 +89,11 @@ public class BerlinModelReferenceExport extends BerlinModelExportBase<ReferenceB
 		mapping.addMapper(DbStringMapper.NewFacultativeInstance("pages", "PageString"));
 		mapping.addMapper(DbStringMapper.NewFacultativeInstance("isbn", "ISBN"));
 		mapping.addMapper(DbStringMapper.NewFacultativeInstance("issn", "ISSN"));
-//		mapping.addMapper(MethodMapper.NewInstance("RefYear", this));
-		
-
+		mapping.addMapper(DbTimePeriodMapper.NewInstance("datePublished", "RefYear"));
 		
 		mapping.addMapper(CreatedAndNotesMapper.NewInstance());
           
 //		        ,[Series] ??
-//		        ,[RefYear]
 //		        ,[DateString]
 //		        ,[URL]
 //		        ,[ExportDate]
@@ -108,7 +106,7 @@ public class BerlinModelReferenceExport extends BerlinModelExportBase<ReferenceB
 //		        ,[RefSourceFk]
 //		        ,[IdInSource]
 //		        ,[NomStandard]
-
+		
 		       
 		return mapping;
 	}
@@ -252,20 +250,6 @@ public class BerlinModelReferenceExport extends BerlinModelExportBase<ReferenceB
 			return null;
 		}else{
 			return (ref.getAuthorTeam() == null)? null: ref.getAuthorTeam().getTitleCache();
-		}
-	}
-
-	//called by MethodMapper
-	@SuppressWarnings("unused")
-	private static String getRefYear(StrictReferenceBase<?> ref){
-		if (ref == null || ref.getDatePublished() == null){
-			return null;
-		}else{
-			TimePeriod period = ref.getDatePublished();
-			//TODO
-			String result = period.toString();
-			if (result != null){result = result.substring(0, 20);}
-			return result;
 		}
 	}
 

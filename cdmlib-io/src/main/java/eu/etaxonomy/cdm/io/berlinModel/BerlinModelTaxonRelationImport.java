@@ -141,8 +141,11 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 		//make not needed maps empty
 		MapWrapper<TaxonNameBase> taxonNameMap = (MapWrapper<TaxonNameBase>)stores.get(ICdmIO.TAXONNAME_STORE);
 		taxonNameMap.makeEmpty();
-		MapWrapper<TeamOrPersonBase> authorMap = (MapWrapper<TeamOrPersonBase>)stores.get(ICdmIO.AUTHOR_STORE);
-		authorMap.makeEmpty();
+		
+		String strTeamStore = ICdmIO.TEAM_STORE;
+		MapWrapper<? extends CdmBase> map = stores.get(strTeamStore);
+		MapWrapper<TeamOrPersonBase> teamMap = (MapWrapper<TeamOrPersonBase>)map;
+		teamMap.makeEmpty();
 
 		MapWrapper<ReferenceBase> referenceMap = (MapWrapper<ReferenceBase>)stores.get(ICdmIO.REFERENCE_STORE);
 		MapWrapper<TaxonBase> taxonMap = (MapWrapper<TaxonBase>)stores.get(ICdmIO.TAXON_STORE);

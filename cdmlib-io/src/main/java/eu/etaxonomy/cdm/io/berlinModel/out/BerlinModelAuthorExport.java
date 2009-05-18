@@ -17,7 +17,9 @@ import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.CreatedAndNotesMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbStringMapper;
+import eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbTimePeriodMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.IdMapper;
+import eu.etaxonomy.cdm.io.berlinModel.out.mapper.MethodMapper;
 import eu.etaxonomy.cdm.io.common.IExportConfigurator;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
@@ -63,7 +65,7 @@ public class BerlinModelAuthorExport extends BerlinModelExportBase<Person> {
 		mapping.addMapper(DbStringMapper.NewInstance("nomenclaturalTitle", "Abbrev"));
 		mapping.addMapper(DbStringMapper.NewInstance("firstName", "FirstName"));
 		mapping.addMapper(DbStringMapper.NewInstance("lastName", "LastName"));
-		mapping.addMapper(DbStringMapper.NewInstance("lifespan", "Dates"));
+		mapping.addMapper(DbTimePeriodMapper.NewInstance("lifespan", "Dates"));
 
 //TODO		
 //		mapping.addMapper(DbStringMapper.NewInstance("", "NomStandard"));

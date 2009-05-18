@@ -648,6 +648,7 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/abcd206/SpecimenImportConfigurator.j
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/abcd206/SpecimenIoBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/abcd206/UnitsGatheringArea.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/abcd206/UnitsGatheringEvent.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/BerlinModelAuthorImport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/BerlinModelAuthorTeamImport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/BerlinModelCommonNamesImport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/BerlinModelFactsImport.java -text
@@ -690,6 +691,7 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/out/mapper/DbNullMapper.
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/out/mapper/DbObjectMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/out/mapper/DbSingleAttributeExportMapperBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/out/mapper/DbStringMapper.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/out/mapper/DbTimePeriodMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/out/mapper/FactCategoryMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/out/mapper/IDbExportMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/out/mapper/IdMapper.java -text

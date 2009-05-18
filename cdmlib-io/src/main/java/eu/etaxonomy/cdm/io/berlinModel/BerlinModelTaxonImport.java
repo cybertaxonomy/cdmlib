@@ -60,7 +60,7 @@ public class BerlinModelTaxonImport  extends BerlinModelImportBase  {
 		BerlinModelImportConfigurator bmiConfig = (BerlinModelImportConfigurator)config;
 		logger.warn("Checking for Taxa not yet fully implemented");
 		result &= checkTaxonStatus(bmiConfig);
-		//result &= checkArticlesWithoutJournal(bmiConfig);
+		result &= checkInactivated(bmiConfig);
 		
 		return result;
 	}
@@ -106,6 +106,44 @@ public class BerlinModelTaxonImport  extends BerlinModelImportBase  {
 		}
 	}
 	
+	private boolean checkInactivated(BerlinModelImportConfigurator bmiConfig){
+		try {
+			boolean result = true;
+			Source source = bmiConfig.getSource();
+			String strSQL = " SELECT * "  +
+				" FROM PTaxon " +
+					" INNER JOIN Name ON PTaxon.PTNameFk = Name.NameId " +
+				" WHERE (PTaxon.DoubtfulFlag = 'i') ";
+			ResultSet rs = source.getResultSet(strSQL);
+			boolean firstRow = true;
+			int i = 0;
+			while (rs.next()){
+				i++;
+				if (firstRow){
+					System.out.println("========================================================");
+					logger.warn("There are taxa that have a doubtful flag 'i'(inactivated). Inactivated is not supported by CDM!");
+					System.out.println("========================================================");
+				}
+				int rIdentifier = rs.getInt("RIdentifier");
+				int nameFk = rs.getInt("PTNameFk");
+				int refFk = rs.getInt("PTRefFk");
+				String taxonName = rs.getString("FullNameCache");
+				
+				System.out.println("RIdentifier:" + rIdentifier + "\n  nameId: " + nameFk + 
+						"\n  taxonName: " + taxonName + "\n  refId: " + refFk  );
+				result = firstRow = false;
+			}
+			if (i > 0){
+				System.out.println(" ");
+			}
+			
+			return result;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doInvoke(eu.etaxonomy.cdm.io.common.IImportConfigurator, eu.etaxonomy.cdm.api.application.CdmApplicationController, java.util.Map)
 	 */
@@ -114,8 +152,10 @@ public class BerlinModelTaxonImport  extends BerlinModelImportBase  {
 			Map<String, MapWrapper<? extends CdmBase>> stores){				
 		
 		//make not needed maps empty
-		MapWrapper<TeamOrPersonBase<?>> authorMap = (MapWrapper<TeamOrPersonBase<?>>)stores.get(ICdmIO.AUTHOR_STORE);
-		authorMap.makeEmpty();
+		String teamStore = ICdmIO.TEAM_STORE;
+		MapWrapper<? extends CdmBase> store = stores.get(teamStore);
+		MapWrapper<TeamOrPersonBase> teamMap = (MapWrapper<TeamOrPersonBase>)store;
+		teamMap.makeEmpty();
 
 		
 		MapWrapper<TaxonNameBase<?,?>> taxonNameMap = (MapWrapper<TaxonNameBase<?,?>>)stores.get(ICdmIO.TAXONNAME_STORE);

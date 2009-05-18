@@ -72,7 +72,10 @@ public class BerlinModelTaxonNameImport extends BerlinModelImportBase {
 			Map<String, MapWrapper<? extends CdmBase>> stores){				
 			
 		MapWrapper<TaxonNameBase> taxonNameMap = (MapWrapper<TaxonNameBase>)stores.get(ICdmIO.TAXONNAME_STORE);
-		MapWrapper<TeamOrPersonBase> authorMap = (MapWrapper<TeamOrPersonBase>)stores.get(ICdmIO.AUTHOR_STORE);
+		
+		String strTeamStore = ICdmIO.TEAM_STORE;
+		MapWrapper<? extends CdmBase> map = stores.get(strTeamStore);
+		MapWrapper<TeamOrPersonBase> teamMap = (MapWrapper<TeamOrPersonBase>)map;
 		
 		BerlinModelImportConfigurator bmiConfig = (BerlinModelImportConfigurator)config;
 		Source source = bmiConfig.getSource();
@@ -188,12 +191,13 @@ public class BerlinModelTaxonNameImport extends BerlinModelImportBase {
 						NonViralName nonViralName = (NonViralName)taxonNameBase;
 						
 						//authorTeams
-						if (authorMap != null ){
-							boolean ignoreNull = config.isIgnoreNull();
-							nonViralName.setCombinationAuthorTeam(getAuthorTeam(authorMap, authorFk, nameId, ignoreNull));
-							nonViralName.setExCombinationAuthorTeam(getAuthorTeam(authorMap, exAuthorFk, nameId, ignoreNull));
-							nonViralName.setBasionymAuthorTeam(getAuthorTeam(authorMap, basAuthorFk, nameId, ignoreNull));
-							nonViralName.setExBasionymAuthorTeam(getAuthorTeam(authorMap, exBasAuthorFk, nameId, ignoreNull));
+						if (teamMap != null ){
+							nonViralName.setCombinationAuthorTeam(getAuthorTeam(teamMap, authorFk, nameId, bmiConfig));
+							nonViralName.setExCombinationAuthorTeam(getAuthorTeam(teamMap, exAuthorFk, nameId, bmiConfig));
+							nonViralName.setBasionymAuthorTeam(getAuthorTeam(teamMap, basAuthorFk, nameId, bmiConfig));
+							nonViralName.setExBasionymAuthorTeam(getAuthorTeam(teamMap, exBasAuthorFk, nameId, bmiConfig));
+						}else{
+							logger.warn("TeamMap is null");
 						}
 					}//nonviralName
 
@@ -342,20 +346,17 @@ public class BerlinModelTaxonNameImport extends BerlinModelImportBase {
 		return success;
 	}
 	
-	private static TeamOrPersonBase getAuthorTeam(MapWrapper<TeamOrPersonBase> authorMap, Object teamIdObject, int nameId, boolean ignoreNull){
+	private static TeamOrPersonBase getAuthorTeam(MapWrapper<TeamOrPersonBase> teamMap, Object teamIdObject, int nameId, BerlinModelImportConfigurator bmiConfig){
 		if (teamIdObject == null){
 			return null;
 		}else {
 			int teamId = (Integer)teamIdObject;
-			TeamOrPersonBase author = authorMap.get(teamId);
+			TeamOrPersonBase author = teamMap.get(teamId);
 			if (author == null){
 				//TODO
-				if (!ignoreNull){ logger.warn("AuthorTeam (teamId = " + teamId + ") for TaxonName (nameId = " + nameId + ")"+
+				if (!bmiConfig.isIgnoreNull() && ! (teamId == 0 && bmiConfig.isIgnore0AuthorTeam()) ){ logger.warn("AuthorTeam (teamId = " + teamId + ") for TaxonName (nameId = " + nameId + ")"+
 				" was not found in authorTeam store. Relation was not set!!");}
 				return null;
-//			}else if(teamId == 0){ //casus El Salvador
-//				//do nothing 
-//				return null;
 			}else{
 				return author;
 			}

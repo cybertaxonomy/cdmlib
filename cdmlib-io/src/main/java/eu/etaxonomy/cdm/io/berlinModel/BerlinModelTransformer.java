@@ -509,7 +509,7 @@ public final class BerlinModelTransformer {
 		}
 	}
 	
-	public static Integer nomStatus2nomStatusFk (NomenclaturalStatus status){
+	public static Integer nomStatus2nomStatusFk (NomenclaturalStatusType status){
 		if (status == null){
 			return null;
 		}

@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.io.common;
 
 import java.util.Map;
 
-import eu.etaxonomy.cdm.io.berlinModel.out.IoState;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
@@ -22,7 +21,8 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 
 public interface ICdmIO<T extends IIoConfigurator> {
 	
-	final String AUTHOR_STORE = "author";
+	final String PERSON_STORE = "person";
+	final String TEAM_STORE = "team";
 	final String REFERENCE_STORE = "reference";
 	final String NOMREF_STORE = "nomRef";
 	final String REF_DETAIL_STORE = "refDetail";
