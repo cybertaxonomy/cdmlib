@@ -645,7 +645,7 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/abcd206/SpecimenImportConfigurator.j
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/abcd206/SpecimenIoBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/abcd206/UnitsGatheringArea.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/abcd206/UnitsGatheringEvent.java -text
-cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/BerlinModelAuthorImport.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/BerlinModelAuthorTeamImport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/BerlinModelCommonNamesImport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/BerlinModelFactsImport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/BerlinModelImportBase.java -text

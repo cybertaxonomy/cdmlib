@@ -48,7 +48,7 @@ public class BerlinModelImportConfigurator extends ImportConfiguratorBase implem
 	
 	protected void makeIoClassList(){
 		ioClassList = new Class[]{
-				BerlinModelAuthorImport.class
+				BerlinModelAuthorTeamImport.class
 				, BerlinModelReferenceImport.class
 				, BerlinModelTaxonNameImport.class
 				, BerlinModelTaxonNameRelationImport.class
