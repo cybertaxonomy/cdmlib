@@ -22,17 +22,18 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.apache.log4j.Logger;
-import org.apache.lucene.document.Field.Index;
 import org.hibernate.annotations.Type;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
-import org.hibernate.search.annotations.Indexed;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeFieldType;
 import org.joda.time.LocalDate;
 import org.joda.time.Partial;
 import org.joda.time.ReadableInstant;
+import org.joda.time.ReadablePartial;
+import org.joda.time.format.DateTimeFormatter;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.hibernate.PartialBridge;
 import eu.etaxonomy.cdm.jaxb.PartialAdapter;
 
@@ -390,6 +391,99 @@ public class TimePeriod implements Cloneable, Serializable {
 		if (end == null){
 			end = new Partial();
 		}
+	}
+	
+	
+	public static TimePeriod parseString(String strPeriod) throws IllegalArgumentException{
+		//FIXME until now only quick and dirty and wrong
+		if (strPeriod == null){
+			return null;
+		}
+		String[] years = strPeriod.split("-");
+		Partial dtStart = null;
+		Partial dtEnd = null;
+		
+		if (years.length > 2 || years.length <= 0){
+			throw new IllegalArgumentException("More than 1 '-' in period String: " + strPeriod);
+		}else {
+			//start
+			if (! CdmUtils.Nz(years[0]).trim().equals("")){
+				dtStart = parseSingleDate(years[0]);
+			}
+			
+			//end
+			if (years.length >= 2 && ! CdmUtils.Nz(years[1]).trim().equals("")){
+				if (years[1].length()==2 && dtStart != null && dtStart.isSupported(DateTimeFieldType.year())){
+					years[1] = String.valueOf(dtStart.get(DateTimeFieldType.year())/100) + years[1];
+				}
+				dtEnd = parseSingleDate(years[1]);
+			}
+		}
+		TimePeriod result = TimePeriod.NewInstance(dtStart, dtEnd);
+		return result;
+	}
+	
+	
+	protected static Partial parseSingleDate(String singleDateString){
+		//FIXME until now only quick and dirty and wrong
+		Partial partial =  new Partial();
+		if (CdmUtils.isNumeric(singleDateString)){
+			try {
+				Integer year = Integer.valueOf(singleDateString.trim());
+				if (year > 1750 && year < 2050){
+					partial = partial.with(yearType, year);
+				}
+			} catch (NumberFormatException e) {
+				logger.debug("Not a Integer format in getCalendar()");
+				throw new IllegalArgumentException(e);
+			}
+		}
+		return partial;
+
+	}
+	
+	
+	private class TimePeriodPartialFormatter extends DateTimeFormatter{
+		private TimePeriodPartialFormatter(){
+			super(null, null);
+		}
+		public String print(ReadablePartial partial){
+			//TODO
+			String result = "";
+			String year = (partial.isSupported(yearType))? String.valueOf(partial.get(yearType)):null;
+			String month = (partial.isSupported(monthType))? String.valueOf(partial.get(monthType)):null;;
+			String day = (partial.isSupported(dayType))? String.valueOf(partial.get(dayType)):null;;
+			
+			if (month !=null){
+				if (year == null){
+					year = "xxxx";
+				}
+			}
+			if (day != null){
+				if (month == null){
+					month = "xx";
+				}
+				if (year == null){
+					year = "xxxx";
+				}
+			}
+			result = (day != null)? day + "." : "";
+			result += (month != null)? month + "." : "";
+			result += (year != null)? year : "";
+			
+			return result;
+		}
+		
+	}
+	
+	public String toString(){
+		String result = null;
+		DateTimeFormatter formatter = new TimePeriodPartialFormatter();
+		
+		String strStart = start != null? start.toString(formatter): null;
+		String strEnd = end != null? end.toString(formatter): null;
+		result = CdmUtils.concat("-", strStart, strEnd);
+		return result;
 	}
 	
 //*********** CLONE **********************************/	

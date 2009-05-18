@@ -4,8 +4,12 @@
 package eu.etaxonomy.cdm.model.common;
 
 import static org.junit.Assert.*;
+import junit.framework.Assert;
 
 import org.apache.log4j.Logger;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeFieldType;
+import org.joda.time.Partial;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -330,6 +334,62 @@ public class TimePeriodTest {
 	public void testSetEndDay() {
 		logger.warn("Not yet implemented");
 	}
+	
+	@Test
+	public void testParseSingleDateString() {
+		String strDate = "1756";
+		Partial date = TimePeriod.parseSingleDate(strDate);
+		assertNotNull(date);
+		Assert.assertEquals(Integer.parseInt(strDate), date.get(DateTimeFieldType.year()));
+		try {
+			date.get(DateTimeFieldType.monthOfYear());
+			assertFalse(true); //should not be reached
+		} catch (Exception e) {
+			assertTrue(e instanceof IllegalArgumentException);
+		}
+		try {
+			date.get(DateTimeFieldType.dayOfMonth());
+			assertFalse(true); //should not be reached
+		} catch (Exception e) {
+			assertTrue(e instanceof IllegalArgumentException);
+		}
+		//to be continued
+	}
+	
+	
+	/**
+	 * Test method for {@link eu.etaxonomy.cdm.model.common.TimePeriod#parseString(java.lang.String)}.
+	 */
+	@Test
+	public void testParseStringString() {
+		String strTimePeriod = "1756";
+		TimePeriod tp1 = TimePeriod.parseString(strTimePeriod);
+		assertNotNull(tp1);
+		Assert.assertEquals(strTimePeriod, tp1.getYear());
+		Assert.assertEquals(strTimePeriod, String.valueOf(tp1.getStartYear()));
+		assertNull(tp1.getEnd());
+		assertNull(tp1.getStartMonth());
+		strTimePeriod = "1756-88";
+		tp1 = TimePeriod.parseString(strTimePeriod);
+		assertNotNull(tp1);
+		Assert.assertEquals("1756-1788", tp1.getYear());
+		Assert.assertEquals("1756", String.valueOf(tp1.getStartYear()));
+		Assert.assertEquals("1788", String.valueOf(tp1.getEndYear()));
+		assertNull(tp1.getEndMonth());
+		assertNull(tp1.getStartMonth());
+	}
+	
+	@Test
+	public void testToStringTimePeriod() {
+		TimePeriod tp1 = TimePeriod.NewInstance(1788,1799);
+		assertNotNull(tp1);
+		Assert.assertEquals("1788-1799", tp1.toString());
+		tp1.setStartDay(3);
+		Assert.assertEquals("3.xx.1788-1799", tp1.toString());
+		tp1.setEndMonth(11);
+		Assert.assertEquals("3.xx.1788-11.1799", tp1.toString());
+	}
+	
 
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.model.common.TimePeriod#clone()}.
