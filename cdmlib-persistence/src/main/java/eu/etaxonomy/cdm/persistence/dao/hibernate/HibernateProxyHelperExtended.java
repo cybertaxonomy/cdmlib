@@ -4,9 +4,12 @@ import org.hibernate.envers.entities.mapper.relation.lazy.proxy.MapProxy;
 import org.hibernate.proxy.HibernateProxy;
 import org.hibernate.proxy.LazyInitializer;
 
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
+ * TODO merge with {@link HibernateProxyHelper}
+ * 
  * This class extends the {@link org.hibernate.proxy.HibernateProxyHelper}. 
  * Since {@link org.hibernate.proxy.HibernateProxyHelper} is final the {@link #getClassWithoutInitializingProxy(Object)} 
  * is repeated here for convenience.
@@ -42,7 +45,6 @@ public class HibernateProxyHelperExtended {
 		} else {
 			return object;
 		}
-	
 	}
 
 }
