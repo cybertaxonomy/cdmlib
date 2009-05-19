@@ -28,7 +28,6 @@ import eu.etaxonomy.cdm.test.unit.EntityTestBase;
  * @created 24.03.2009
  * @version 1.0
  */
-@Ignore  //FIXME if testTerminitializer in persistence works again, ignore can be deleted
 public class NameTypeDesignationStatusTest extends EntityTestBase {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(NameTypeDesignationStatusTest.class);
@@ -105,6 +104,5 @@ public class NameTypeDesignationStatusTest extends EntityTestBase {
 	public void testTAUTONOMY() {
 		assertEquals(uuidTautonymy,  NameTypeDesignationStatus.TAUTONYMY().getUuid());	
 	}
-
 
 }
