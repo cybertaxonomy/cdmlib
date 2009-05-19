@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.hibernate;
 
 import org.apache.log4j.Logger;
 import org.hibernate.proxy.HibernateProxy;
+import org.hibernate.proxy.LazyInitializer;
 
 /**
  * @author a.mueller
@@ -33,6 +34,18 @@ public class HibernateProxyHelper {
 	         return clazz.cast(object);
 	     }
 	 }
+	 
+		/**
+		 * Unwrap the target instance from the proxy.
+		 */
+		public static Object deproxy(Object object){
+			if(object instanceof HibernateProxy) {
+				LazyInitializer lazyInitializer = ((HibernateProxy)object).getHibernateLazyInitializer();
+				return lazyInitializer.getImplementation();
+			} else {
+				return object;
+			}
+		}
 	        
 	 /* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.IProxyHelper#isInstanceOf(java.lang.Object, java.lang.Class)
