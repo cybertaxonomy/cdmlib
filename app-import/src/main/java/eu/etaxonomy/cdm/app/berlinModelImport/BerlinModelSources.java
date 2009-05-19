@@ -80,6 +80,17 @@ public class BerlinModelSources {
 		return  makeSource(dbms, strServer, strDB, port, userName, null);
 	}
 	
+	public static Source El_Salvador_Local(){
+		//	BerlinModel - El_Salvador
+		String dbms = Source.SQL_SERVER_2005;
+		String strServer = "LENOVO-T61";
+		String strDB = "Salvador";
+		int port = 1433;
+		String userName = "salvadorExport";
+		return  makeSource(dbms, strServer, strDB, port, userName, null);
+	}
+
+	
 	public static Source AlgaTerra(){
 		//	BerlinModel - AlgaTerra
 		String dbms = Source.SQL_SERVER_2005;

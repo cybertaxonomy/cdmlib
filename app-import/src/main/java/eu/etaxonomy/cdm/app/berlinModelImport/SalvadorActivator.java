@@ -34,17 +34,19 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
  *
  */
 public class SalvadorActivator {
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(SalvadorActivator.class);
 
 	//database validation status (create, update, validate ...)
 	static DbSchemaValidation hbm2dll = DbSchemaValidation.CREATE;
-	static final Source berlinModelSource = BerlinModelSources.El_Salvador();
-	static final ICdmDataSource cdmDestination = CdmDestinations.localH2();
+	static final Source berlinModelSource = BerlinModelSources.El_Salvador_Local();
+	static final ICdmDataSource cdmDestination = CdmDestinations.localH2Salvador();
 	static final UUID secUuid = UUID.fromString("d03ef02a-f226-4cb1-bdb4-f6c154f08a34");
 	static final int sourceSecId = 7331;
 	
 	static final UUID featureTreeUuid = UUID.fromString("ae9615b8-bc60-4ed0-ad96-897f9226d568");
 	static final Object[] featureKeyList = new Integer[]{302, 303, 306, 307, 309, 310, 311, 312, 350, 1500, 1800, 1900, 1950, 1980, 2000, 10299}; 
+	static boolean isIgnore0AuthorTeam = true;
 	
 	//check - import
 	static final CHECK check = CHECK.CHECK_AND_IMPORT;
@@ -79,14 +81,14 @@ public class SalvadorActivator {
 //	//references
 //	static final DO_REFERENCES doReferences =  DO_REFERENCES.NONE;
 //	//names
-//	static final boolean doTaxonNames = false;
+//	static final boolean doTaxonNames = true;
 //	static final boolean doRelNames = false;
 //	static final boolean doNameStatus = false;
 //	static final boolean doTypes = false;
 //	static final boolean doNameFacts = false;
 //	
 //	//taxa
-//	static final boolean doTaxa = false;
+//	static final boolean doTaxa = true;
 //	static final boolean doRelTaxa = false;
 //	static final boolean doFacts = true;
 //	static final boolean doOccurences = false;
@@ -124,6 +126,7 @@ public class SalvadorActivator {
 		bmImportConfigurator.setDbSchemaValidation(hbm2dll);
 
 		bmImportConfigurator.setCheck(check);
+		bmImportConfigurator.setIgnore0AuthorTeam(isIgnore0AuthorTeam);
 		
 		// invoke import
 		CdmDefaultImport<BerlinModelImportConfigurator> bmImport = new CdmDefaultImport<BerlinModelImportConfigurator>();
