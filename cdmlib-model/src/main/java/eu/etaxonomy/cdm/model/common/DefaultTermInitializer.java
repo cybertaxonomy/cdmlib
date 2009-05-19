@@ -77,8 +77,8 @@ public class DefaultTermInitializer implements ITermInitializer {
 		PreservationMethod.class,
 		DeterminationModifier.class,
 		StatisticalMeasure.class,
-		RightsTerm.class
-//		NameTypeDesignationStatus.class
+		RightsTerm.class,
+		NameTypeDesignationStatus.class
 	};
 	
 	public void initialize() {
