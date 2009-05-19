@@ -66,7 +66,7 @@ public class TcsXmlTaxonNameImport extends TcsXmlImportBase implements ICdmIO<II
 	public boolean doInvoke(IImportConfigurator config, Map<String, MapWrapper<? extends CdmBase>> stores){
 		
 		logger.info("start make TaxonNames ...");
-		MapWrapper<Person> authorMap = (MapWrapper<Person>)stores.get(ICdmIO.AUTHOR_STORE);
+		MapWrapper<Person> authorMap = (MapWrapper<Person>)stores.get(ICdmIO.TEAM_STORE);
 		MapWrapper<TaxonNameBase> taxonNameMap = (MapWrapper<TaxonNameBase>)stores.get(ICdmIO.TAXONNAME_STORE);
 		MapWrapper<ReferenceBase> referenceMap =  (MapWrapper<ReferenceBase>)stores.get(ICdmIO.REFERENCE_STORE);
 
