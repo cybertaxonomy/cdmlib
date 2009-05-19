@@ -51,6 +51,8 @@ public class ReferenceTO extends BaseTO implements IReferenceSTO{
 
 	private Set<MediaSTO> media = new HashSet<MediaSTO>();
 
+	private String pages;
+
 
 	
 	public String getUri() {
@@ -113,5 +115,13 @@ public class ReferenceTO extends BaseTO implements IReferenceSTO{
 
 	public void setMedia(Set<MediaSTO> media) {
 		this.media = media;
+	}
+
+	public String getPages() {
+		return pages;
+	}
+
+	public void setPages(String pages) {
+		this.pages = pages;		
 	}
 }

@@ -24,6 +24,7 @@ public class NameSTO extends BaseSTO {
 	
 	private String fullname;
 	private IReferenceSTO nomenclaturalReference;
+	private String nomenclaturalMicroReference;
 	private List<TaggedText> taggedName = new ArrayList();
 	private Set<LocalisedTermSTO> status = new HashSet<LocalisedTermSTO>();
 	private Set<DescriptionTO> descriptions = new HashSet<DescriptionTO>();
@@ -74,5 +75,13 @@ public class NameSTO extends BaseSTO {
 	public void setNameRelations(Set<NameRelationshipTO> nameRelationship) {
 		this.nameRelations = nameRelationship;
 	}
+	public String getNomenclaturalMicroReference() {
+		return nomenclaturalMicroReference;
+	}
+	public void setNomenclaturalMicroReference(String nomenclaturalMicroReference) {
+		this.nomenclaturalMicroReference = nomenclaturalMicroReference;
+	}
+	
+	
 	
 }

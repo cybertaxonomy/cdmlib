@@ -12,12 +12,18 @@ import java.util.Enumeration;
 import java.util.Locale;
 
 import org.apache.log4j.Logger;
+import org.hibernate.proxy.HibernateProxyHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.model.media.Media;
+import eu.etaxonomy.cdm.model.reference.Article;
+import eu.etaxonomy.cdm.model.reference.Generic;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
+import eu.etaxonomy.cdm.model.reference.PrintedUnitBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.SectionBase;
+import eu.etaxonomy.cdm.persistence.dao.hibernate.HibernateProxyHelperExtended;
 import eu.etaxonomy.cdm.remote.dto.IReferenceSTO;
 import eu.etaxonomy.cdm.remote.dto.ReferenceSTO;
 import eu.etaxonomy.cdm.remote.dto.ReferenceTO;
@@ -77,6 +83,21 @@ public class ReferenceAssembler extends AssemblerBase<ReferenceSTO, ReferenceTO,
 		//TODO compile fullCitation using a formatter
 		r.setFullCitation(fullCitation);
 		r.setYear(rb.getYear());
+		
+		ReferenceBase rbTarget = (ReferenceBase)HibernateProxyHelperExtended.getProxyTarget(rb);
+		if(SectionBase.class.isAssignableFrom(rbTarget.getClass()) ){
+			r.setPages(((SectionBase)rbTarget).getPages());			
+		}
+		if(PrintedUnitBase.class.isAssignableFrom(rbTarget.getClass())){
+			r.setPages(((PrintedUnitBase)rbTarget).getPages());			
+		}
+		if(Article.class.isAssignableFrom(rbTarget.getClass())){
+			r.setPages(((Article)rbTarget).getPages());	
+		}
+		if(Generic.class.isAssignableFrom(rbTarget.getClass())){
+			r.setPages(((Generic)rbTarget).getPages());	
+		}
+
 		return r;
 	}
 }

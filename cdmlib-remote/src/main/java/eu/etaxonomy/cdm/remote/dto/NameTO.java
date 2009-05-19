@@ -46,6 +46,7 @@ public class NameTO extends BaseTO {
 	
 	private List<NameTypeDesignationSTO> nameTypeDesignations = new ArrayList<NameTypeDesignationSTO>();
 	private List<SpecimenTypeDesignationSTO> typeDesignations = new ArrayList<SpecimenTypeDesignationSTO>();
+	private String nomenclaturalMicroReference;
 	public String getFullname() {
 		return fullname;
 	}
@@ -119,6 +120,13 @@ public class NameTO extends BaseTO {
 	}
 	public void setDescriptions(Set<DescriptionTO> descriptions) {
 		this.descriptions = descriptions;
+	}
+	
+	public String getNomenclaturalMicroReference() {
+		return nomenclaturalMicroReference;
+	}
+	public void setNomenclaturalMicroReference(String nomenclaturalMicroReference) {
+		this.nomenclaturalMicroReference = nomenclaturalMicroReference;
 	}
 
 }

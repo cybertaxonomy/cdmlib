@@ -29,6 +29,8 @@ public class ReferenceSTO extends BaseSTO implements IReferenceSTO {
 	 */
 	private String fullCitation;
 	
+	private String pages = "";
+	
 	private String year;
 
 	private Set<MediaSTO> media = new HashSet<MediaSTO>();
@@ -62,9 +64,20 @@ public class ReferenceSTO extends BaseSTO implements IReferenceSTO {
 	}
 
 	
+	
 	public Set<MediaSTO> getMedia() {
 		return media;
 	}
+	
+	
+	public String getPages() {
+		return pages;
+	}
+
+	public void setPages(String pages) {
+		this.pages = pages;
+	}
+
 	public void setMedia(Set<MediaSTO> media) {
 		this.media = media;
 	}

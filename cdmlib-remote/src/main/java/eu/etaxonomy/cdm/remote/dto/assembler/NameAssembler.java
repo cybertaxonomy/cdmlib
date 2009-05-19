@@ -65,10 +65,12 @@ public class NameAssembler extends AssemblerBase<NameSTO, NameTO, TaxonNameBase>
 			setVersionableEntity(taxonNameBase, name);
 			name.setFullname(taxonNameBase.getTitleCache());
 			name.setTaggedName(getTaggedName(taxonNameBase));
+			name.setNomenclaturalMicroReference(taxonNameBase.getNomenclaturalMicroReference());
 			ReferenceBase nomRef = (ReferenceBase)taxonNameBase.getNomenclaturalReference();
 			if(nomRef != null) {
 				name.setNomenclaturalReference(referenceAssembler.getSTO(nomRef, true, taxonNameBase.getNomenclaturalMicroReference(), locales));				
 			}
+			
 			for (NomenclaturalStatus status : (Set<NomenclaturalStatus>)taxonNameBase.getStatus()) {
 				locales = prependLocale(locales, new Locale("la"));
 				name.addStatus(localisedTermAssembler.getSTO(status.getType(), locales, TermType.ABBREVLABEL));
@@ -95,6 +97,7 @@ public class NameAssembler extends AssemblerBase<NameSTO, NameTO, TaxonNameBase>
 			setVersionableEntity(taxonNameBase, name);
 			name.setFullname(taxonNameBase.getTitleCache());
 			name.setTaggedName(getTaggedName(taxonNameBase));
+			name.setNomenclaturalMicroReference(taxonNameBase.getNomenclaturalMicroReference());
 			ReferenceBase nomRef = (ReferenceBase)taxonNameBase.getNomenclaturalReference();
 			if(nomRef != null) {
 				name.setNomenclaturalReference(referenceAssembler.getTO(nomRef, true ,taxonNameBase.getNomenclaturalMicroReference(), locales));

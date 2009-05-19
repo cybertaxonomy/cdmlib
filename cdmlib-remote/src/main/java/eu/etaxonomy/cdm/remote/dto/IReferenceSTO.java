@@ -29,4 +29,8 @@ public interface IReferenceSTO extends IBaseSTO{
 	
 	public abstract void setYear(String year);
 
+	public abstract void setPages(String pages);
+	
+	public abstract String getPages();
+
 }
