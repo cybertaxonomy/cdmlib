@@ -29,8 +29,7 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 @Repository
 public class DescriptionElementDaoImpl extends AnnotatableDaoImpl<DescriptionElementBase> implements IDescriptionElementDao {
 
-	private String defaultField = "titleCache";
-	private String defaultSort = "titleCache_forSort";
+	private String defaultField = "multilanguageText.text";
 	
 	private Class<? extends DescriptionElementBase> indexedClasses[]; 
 
@@ -59,7 +58,7 @@ public class DescriptionElementDaoImpl extends AnnotatableDaoImpl<DescriptionEle
 
 	public int count(Class<? extends DescriptionElementBase> clazz, String queryString) {
 		checkNotInPriorView("DescriptionElementDaoImpl.countTextData(String queryString)");
-		QueryParser queryParser = new QueryParser("multilanguageText.text", new SimpleAnalyzer());
+		QueryParser queryParser = new QueryParser(defaultField, new SimpleAnalyzer());
 		 
 		try {
 			org.apache.lucene.search.Query query = queryParser.parse(queryString);
