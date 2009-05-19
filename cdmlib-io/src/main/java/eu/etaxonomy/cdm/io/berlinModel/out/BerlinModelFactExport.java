@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.io.berlinModel.out;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -216,16 +217,22 @@ public class BerlinModelFactExport extends BerlinModelExportBase<TextData> {
 		return result;
 	}
 	
+	private static Map<Feature, Integer> featureMap = new HashMap<Feature, Integer>();
+	
 	@Deprecated  //TODO quick and dirty for Salvador export
 	private static Integer findCategory(Feature feature){
+		if (featureMap.get(feature) != null){
+			return featureMap.get(feature);
+		}
 		Integer result = null;
 		String label = feature.getLabel();
 		ResultSet rs = source.getResultSet("SELECT FactCategoryId FROM FactCategory WHERE FactCategory = '"+label+"'");
 		try {
 			while (rs.next()){
-				result = rs.getInt(1) ;
-				if (! rs.isLast()){
+				if (result != null){
 					logger.warn("FactCategory is not distinct: " + label);
+				}else{
+					result = rs.getInt(1) ;
 				}
 			}
 		} catch (SQLException e) {
@@ -233,6 +240,7 @@ public class BerlinModelFactExport extends BerlinModelExportBase<TextData> {
 			e.printStackTrace();
 			return null;
 		}
+		featureMap.put(feature, result);
 		return result;
 	}
 		

@@ -10,13 +10,11 @@
 
 package eu.etaxonomy.cdm.io.berlinModel.out;
 
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Collection;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbObjectMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbSequenceMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.IDbExportMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.IdMapper;
@@ -62,35 +60,6 @@ public class CollectionExportMapping extends BerlinModelExportMapping {
 		this.collectionAttributeName = collectionAttributeName;
 	}
 
-	@Override
-	public boolean initialize(BerlinModelExportState<?> state) throws SQLException{
-		BerlinModelExportConfigurator bmeConfig = (BerlinModelExportConfigurator)state.getConfig();
-		Source db = bmeConfig.getDestination();
-		
-		try {
-			IndexCounter index;
-			String strPreparedStatement = prepareStatement();
-			logger.debug(strPreparedStatement);
-			setPreparedStatement(db.getConnection().prepareStatement(strPreparedStatement));
-			index = new IndexCounter(1);
-//			parentMapper.initialize(getPreparedStatement(), index, state, getDbTableName());
-			//sequenceMapper.initialize(this.preparedStatement, index, state, dbTableName);
-			
-			for (CdmAttributeMapperBase mapper : this.mapperList){
-				if (mapper instanceof IDbExportMapper){
-					IDbExportMapper<DbExportState<?>> dbMapper = (IDbExportMapper)mapper;
-					dbMapper.initialize(getPreparedStatement(), index, state, getDbTableName());
-				}else{
-					logger.warn("mapper is not of type " + IDbExportMapper.class.getSimpleName());
-				}
-			}
-			return true;
-		} catch (SQLException e) {
-			logger.warn("SQL Exception");
-			throw e;
-		}
-	}
-	
 	
 	@Override
 	public boolean invoke(CdmBase parent) throws SQLException{
@@ -101,9 +70,6 @@ public class CollectionExportMapping extends BerlinModelExportMapping {
 				this.sequenceMapper.reset();
 			}
 			for(CdmBase collectionObject : collection){
-				//Main ObjectMapper
-				//sequenceMapper
-				//sequenceMapper
 				for (CdmAttributeMapperBase mapper : this.mapperList){
 					if (mapper == this.parentMapper){
 						parentMapper.invoke(parent);
