@@ -53,6 +53,8 @@ public class FaunaEuropaeaTaxonImport extends FaunaEuropaeaImportBase  {
 	private static final Logger logger = Logger.getLogger(FaunaEuropaeaTaxonImport.class);
 
 	private int modCount = 10000;
+	/* Max number of taxa to be saved with one service call */
+	private int limit = 20000; // TODO: Make configurable
 	
 	public FaunaEuropaeaTaxonImport(){
 	}
@@ -92,7 +94,7 @@ public class FaunaEuropaeaTaxonImport extends FaunaEuropaeaImportBase  {
 		
 		boolean success = true;
 		//make not needed maps empty
-		MapWrapper<TeamOrPersonBase<?>> authorMap = (MapWrapper<TeamOrPersonBase<?>>)stores.get(ICdmIO.AUTHOR_STORE);
+		MapWrapper<TeamOrPersonBase<?>> authorMap = (MapWrapper<TeamOrPersonBase<?>>)stores.get(ICdmIO.TEAM_STORE);
 		authorMap.makeEmpty();
 
 		
@@ -183,7 +185,21 @@ public class FaunaEuropaeaTaxonImport extends FaunaEuropaeaImportBase  {
 			}
 			//invokeRelations(source, cdmApp, deleteAll, taxonMap, referenceMap);
 			logger.info("saving taxa ...");
-			getTaxonService().saveTaxonAll(taxonMap.objects());
+			
+//			int nbrOfTaxa = taxonMap.size();
+//				
+//			for (int j = 1; j <= nbrOfTaxa / limit; j++)
+//			 {
+//				
+//				// save taxa in chunks
+//				if ((j++ % modCount) == 0 && j!= 1 ) { 
+//					
+//					logger.info("Taxa handled: " + (j-1));
+//				}
+//			
+//			getTaxonService().saveTaxonAll(taxonMap.objects());
+//			
+//			}
 			
 			logger.info("end making taxa ...");
 			

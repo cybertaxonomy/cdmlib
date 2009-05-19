@@ -58,7 +58,7 @@ public class FaunaEuropaeaAuthorImport extends FaunaEuropaeaImportBase {
 	protected boolean doInvoke(IImportConfigurator config, 
 			Map<String, MapWrapper<? extends CdmBase>> stores){ 
 
-		MapWrapper<AgentBase> teamMap = (MapWrapper<AgentBase>)stores.get(ICdmIO.AUTHOR_STORE);
+		MapWrapper<AgentBase> teamMap = (MapWrapper<AgentBase>)stores.get(ICdmIO.TEAM_STORE);
 		
 		FaunaEuropaeaImportConfigurator fauEuConfig = (FaunaEuropaeaImportConfigurator)config;
 		Source source = fauEuConfig.getSource();
