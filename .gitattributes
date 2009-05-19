@@ -675,7 +675,6 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/out/BerlinModelExportMap
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/out/BerlinModelExportState.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/out/BerlinModelFactExport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/out/BerlinModelNameRelationExport.java -text
-cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/out/BerlinModelNomStatusExport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/out/BerlinModelReferenceExport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/out/BerlinModelTaxonExport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/out/BerlinModelTaxonNameExport.java -text
@@ -699,7 +698,6 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/out/mapper/IDbExportMapp
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/out/mapper/IdMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/out/mapper/IndexCounter.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/out/mapper/MethodMapper.java -text
-cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/out/mapper/NomStatusMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/out/mapper/RefDetailMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/CdmApplicationAwareDefaultExport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/CdmApplicationAwareDefaultImport.java -text
