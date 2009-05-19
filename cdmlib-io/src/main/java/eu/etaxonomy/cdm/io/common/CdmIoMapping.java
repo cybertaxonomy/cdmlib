@@ -36,6 +36,9 @@ public class CdmIoMapping {
 	
 	
 	public void addMapper(CdmAttributeMapperBase mapper){
+		if (mapper == null){
+			return;
+		}
 		mapperList.add(mapper);
 		if (mapper instanceof CdmSingleAttributeMapperBase){
 			CdmSingleAttributeMapperBase singleMapper = (CdmSingleAttributeMapperBase)mapper;
