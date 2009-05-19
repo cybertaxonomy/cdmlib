@@ -57,8 +57,11 @@ public class DbTimePeriodMapper extends DbSingleAttributeExportMapperBase<DbExpo
 	 */
 	@Override
 	protected Object getValue(CdmBase cdmBase) {
+		String result = null;
 		TimePeriod timePeriod = (TimePeriod)super.getValue(cdmBase);
-		String result = timePeriod.toString();
+		if (timePeriod != null){
+			result = timePeriod.toString();
+		}
 		return result;
 	}
 	

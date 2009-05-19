@@ -28,6 +28,7 @@ import eu.etaxonomy.cdm.io.berlinModel.out.mapper.RefDetailMapper;
 import eu.etaxonomy.cdm.io.common.IExportConfigurator;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 
@@ -112,9 +113,9 @@ public class BerlinModelTaxonNameExport extends BerlinModelExportBase<TaxonNameB
 		mapping.addMapper(DbObjectMapper.NewInstance("nomenclaturalReference", "NomRefFk"));
 		mapping.addMapper(RefDetailMapper.NewInstance("nomenclaturalMicroReference","nomenclaturalReference", "NomRefDetailFk"));
 		mapping.addMapper(CreatedAndNotesMapper.NewInstance(false));
-		
-		//NomRef (must be last)
-//		mapping.addMapper(NomStatusMapper.NewInstance());
+		mapping.addCollectionMapping(getNomStatusMapping());
+		//Mapper(NomStatusMapper.NewInstance());
+	
 		
 		//TODO
 		//CultivarGroupName
@@ -126,6 +127,19 @@ public class BerlinModelTaxonNameExport extends BerlinModelExportBase<TaxonNameB
 		//breed
 		NonViralName<?> n = null;
 		//n.getNomenclaturalMicroReference()
+		return mapping;
+	}
+	
+	private CollectionExportMapping getNomStatusMapping(){
+		String tableName = "NomStatusRel";
+		String collectionAttribute = "status";
+		IdMapper parentMapper = IdMapper.NewInstance("NameFk");
+		CollectionExportMapping mapping = CollectionExportMapping.NewInstance(tableName, collectionAttribute, parentMapper);
+		mapping.addMapper(MethodMapper.NewInstance("NomStatusFk", this.getClass(), "getNomStatusFk", NomenclaturalStatus.class));
+		mapping.addMapper(DbObjectMapper.NewInstance("citation", "NomStatusRefFk"));
+		mapping.addMapper(RefDetailMapper.NewInstance("citationMicroReference","citation", "NomStatusRefDetailFk"));
+		mapping.addMapper(CreatedAndNotesMapper.NewInstance());
+
 		return mapping;
 	}
 	
@@ -219,6 +233,12 @@ public class BerlinModelTaxonNameExport extends BerlinModelExportBase<TaxonNameB
 			result = 1;
 		}
 		return result;
+	}
+	
+	//called by MethodMapper
+	@SuppressWarnings("unused")
+	private static Integer getNomStatusFk(NomenclaturalStatus status){
+		return BerlinModelTransformer.nomStatus2nomStatusFk(status.getType());
 	}
 	
 	//called by MethodMapper

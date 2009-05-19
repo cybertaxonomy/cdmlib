@@ -63,8 +63,8 @@ public class BerlinModelAuthorExport extends BerlinModelExportBase<Person> {
 		BerlinModelExportMapping mapping = new BerlinModelExportMapping(tableName);
 		mapping.addMapper(IdMapper.NewInstance("AuthorId"));
 		mapping.addMapper(DbStringMapper.NewInstance("nomenclaturalTitle", "Abbrev"));
-		mapping.addMapper(DbStringMapper.NewInstance("firstName", "FirstName"));
-		mapping.addMapper(DbStringMapper.NewInstance("lastName", "LastName"));
+		mapping.addMapper(DbStringMapper.NewInstance("firstname", "FirstName"));
+		mapping.addMapper(DbStringMapper.NewInstance("lastname", "LastName"));
 		mapping.addMapper(DbTimePeriodMapper.NewInstance("lifespan", "Dates"));
 
 //TODO		
@@ -91,8 +91,8 @@ public class BerlinModelAuthorExport extends BerlinModelExportBase<Person> {
 			doDelete(bmeConfig);
 			
 			TransactionStatus txStatus = startTransaction(true);
-			Class<Team> clazz = Team.class;
-			List<? extends AgentBase> persons = getAgentService().list(clazz, 100000000, 0);
+			Class<Person> clazz = Person.class;
+			List<? extends Person> persons = getAgentService().list(clazz, 100000000, 0);
 			
 			BerlinModelExportMapping mapping = getMapping();
 			mapping.initialize(state);
@@ -119,6 +119,55 @@ public class BerlinModelAuthorExport extends BerlinModelExportBase<Person> {
 	protected boolean doDelete(BerlinModelExportConfigurator config){
 		String sql;
 		Source destination =  config.getDestination();
+		//RelPTaxon
+		sql = "DELETE FROM RelPTaxon";
+		destination.setQuery(sql);
+		destination.update(sql);
+		//Fact
+		sql = "DELETE FROM Fact";
+		destination.setQuery(sql);
+		destination.update(sql);
+		//PTaxon
+		sql = "DELETE FROM PTaxon";
+		destination.setQuery(sql);
+		destination.update(sql);
+		
+		//NameHistory
+		sql = "DELETE FROM NameHistory";
+		destination.setQuery(sql);
+		destination.update(sql);
+		//RelName
+		sql = "DELETE FROM RelName";
+		destination.setQuery(sql);
+		destination.update(sql);
+		//NomStatusRel
+		sql = "DELETE FROM NomStatusRel";
+		destination.setQuery(sql);
+		destination.update(sql);
+		//Name
+		sql = "DELETE FROM Name";
+		destination.setQuery(sql);
+		destination.update(sql);
+		//RefDetail
+		sql = "DELETE FROM RefDetail";
+		destination.setQuery(sql);
+		destination.update(sql);
+		//Reference
+		sql = "DELETE FROM Reference";
+		destination.setQuery(sql);
+		destination.update(sql);
+		//AuthorTeamSequence
+		sql = "DELETE FROM AuthorTeamSequence";
+		destination.setQuery(sql);
+		destination.update(sql);
+		//AuthorTeam
+		sql = "DELETE FROM AuthorTeam";
+		destination.setQuery(sql);
+		destination.update(sql);
+		//Author
+		sql = "DELETE FROM Author";
+		destination.setQuery(sql);
+		destination.update(sql);
 		return true;
 	}
 	

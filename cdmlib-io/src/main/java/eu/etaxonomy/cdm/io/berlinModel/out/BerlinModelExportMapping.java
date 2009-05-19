@@ -12,7 +12,8 @@ package eu.etaxonomy.cdm.io.berlinModel.out;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.UUID;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 
@@ -32,42 +33,35 @@ public class BerlinModelExportMapping extends CdmIoMapping {
 	private static final Logger logger = Logger.getLogger(BerlinModelExportMapping.class);
 	
 	private PreparedStatement preparedStatement;
-	private String berlinModelTableName;
-	private boolean doExecute = true;
+	private String dbTableName;
+	private List<CollectionExportMapping> collectionMappingList = new ArrayList<CollectionExportMapping>();
 	
-	public BerlinModelExportMapping(String tableName){
-		this(tableName, true);
-	}
 
-	public BerlinModelExportMapping(String tableName, boolean doExecute){
-		this.berlinModelTableName = tableName;
-		this.doExecute = doExecute;
+	public BerlinModelExportMapping(String tableName){
+		this.dbTableName = tableName;
 	}
 	
 	public boolean initialize(BerlinModelExportState<?> state) throws SQLException{
-		return this.initialize(state, null);
-	}
-	
-	public boolean initialize(BerlinModelExportState<?> state, PreparedStatement stmt) throws SQLException{
 		BerlinModelExportConfigurator bmeConfig = (BerlinModelExportConfigurator)state.getConfig();
 		Source db = bmeConfig.getDestination();
 		
 		try {
-			if (stmt ==null){
-				String strPreparedStatement = preparedStatement();
-				logger.debug(strPreparedStatement);
-				this.preparedStatement = db.getConnection().prepareStatement(strPreparedStatement);
-			}else{
-				this.preparedStatement = stmt;
-			}
-			IndexCounter index = new IndexCounter(1);
+			IndexCounter index;
+			String strPreparedStatement = prepareStatement();
+			logger.debug(strPreparedStatement);
+			this.preparedStatement = db.getConnection().prepareStatement(strPreparedStatement);
+			index = new IndexCounter(1);
+			
 			for (CdmAttributeMapperBase mapper : this.mapperList){
 				if (mapper instanceof IDbExportMapper){
 					IDbExportMapper<DbExportState<?>> dbMapper = (IDbExportMapper)mapper;
-					dbMapper.initialize(preparedStatement, index, state, berlinModelTableName);
+					dbMapper.initialize(preparedStatement, index, state, dbTableName);
 				}else{
 					logger.warn("mapper is not of type " + IDbExportMapper.class.getSimpleName());
 				}
+			}
+			for (CollectionExportMapping collectionMapping : this.collectionMappingList ){
+				collectionMapping.initialize(state);
 			}
 			return true;
 		} catch (SQLException e) {
@@ -75,6 +69,7 @@ public class BerlinModelExportMapping extends CdmIoMapping {
 			throw e;
 		}
 	}
+
 	
 	public boolean invoke(CdmBase cdmBase) throws SQLException{
 		try {
@@ -94,9 +89,10 @@ public class BerlinModelExportMapping extends CdmIoMapping {
 					logger.warn("mapper is not of type " + IDbExportMapper.class.getSimpleName());
 				}
 			}
-			if (doExecute){
-				int count = preparedStatement.executeUpdate();
-				if (logger.isDebugEnabled())logger.debug("Number of rows affected: " + count);
+			int count = preparedStatement.executeUpdate();
+			if (logger.isDebugEnabled())logger.debug("Number of rows affected: " + count);
+			for (CollectionExportMapping collectionMapping : this.collectionMappingList ){
+				result &= collectionMapping.invoke(cdmBase);
 			}
 			return result;
 		} catch(SQLException e){
@@ -107,9 +103,12 @@ public class BerlinModelExportMapping extends CdmIoMapping {
 	}
 	
 	
+	public void addCollectionMapping(CollectionExportMapping collectionMapping){
+		this.collectionMappingList.add(collectionMapping);
+	}
 	
-	private String preparedStatement(){
-		String sqlInsert = "INSERT INTO " + getBerlinModelTableName() + " (";
+	protected String prepareStatement(){
+		String sqlInsert = "INSERT INTO " + getDbTableName() + " (";
 		String sqlValues = ") VALUES(";
 		String sqlEnd = ")";
 		String attributes = "";
@@ -127,23 +126,31 @@ public class BerlinModelExportMapping extends CdmIoMapping {
 	/**
 	 * @return the berlinModelTableName
 	 */
-	public String getBerlinModelTableName() {
-		return berlinModelTableName;
+	public String getDbTableName() {
+		return dbTableName;
 	}
 
 	/**
 	 * @param berlinModelTableName the berlinModelTableName to set
 	 */
-	public void setBerlinModelTableName(String berlinModelTableName) {
-		this.berlinModelTableName = berlinModelTableName;
+	public void setDbTableName(String dbTableName) {
+		this.dbTableName = dbTableName;
 	}
 
 	/**
 	 * @return the preparedStatement
 	 */
-	public PreparedStatement getPreparedStatement() {
+	protected PreparedStatement getPreparedStatement() {
 		return preparedStatement;
 	}
+
+	/**
+	 * @param preparedStatement the preparedStatement to set
+	 */
+	protected void setPreparedStatement(PreparedStatement preparedStatement) {
+		this.preparedStatement = preparedStatement;
+	}
+	
 	
 	
 	

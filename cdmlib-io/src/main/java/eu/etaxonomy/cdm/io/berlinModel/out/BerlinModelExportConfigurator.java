@@ -45,11 +45,11 @@ public class BerlinModelExportConfigurator extends ExportConfiguratorBase<Source
 	
 	protected void makeIoClassList(){
 		ioClassList = new Class[]{
-				BerlinModelAuthorTeamExport.class
+				BerlinModelAuthorExport.class
+				, BerlinModelAuthorTeamExport.class
 				, BerlinModelReferenceExport.class
 				, BerlinModelTaxonNameExport.class
 				, BerlinModelNameRelationExport.class
-//				, BerlinModelNameStatusImport.class
 //				, BerlinModelNameFactsImport.class
 //				, BerlinModelTypesImport.class
 				, BerlinModelTaxonExport.class

@@ -17,6 +17,8 @@ import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.CreatedAndNotesMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbBooleanMapper;
+import eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbObjectMapper;
+import eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbSequenceMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.IdMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.MethodMapper;
 import eu.etaxonomy.cdm.io.common.IExportConfigurator;
@@ -63,21 +65,25 @@ public class BerlinModelAuthorTeamExport extends BerlinModelExportBase<Team> {
 		mapping.addMapper(IdMapper.NewInstance("AuthorTeamId"));
 		mapping.addMapper(MethodMapper.NewInstance("AuthorTeamCache", this));
 		mapping.addMapper(MethodMapper.NewInstance("FullAuthorTeamCache", this));
-		//mapping.addMapper(new DbStringMapper("infraGenericEpithet", "GenusSubDivisionEpi"));
 		mapping.addMapper(DbBooleanMapper.NewFalseInstance("isProtectedTitleCache", "PreliminaryFlag"));
 		mapping.addMapper(CreatedAndNotesMapper.NewInstance());
-		
-
-//		Team n = null;
-		//n.isProtectedTitleCache()
+		mapping.addCollectionMapping(getTeamMemberMapping());
+		return mapping;
+	}
+	
+	private CollectionExportMapping getTeamMemberMapping(){
+		String tableName = "AuthorTeamSequence";
+		String collectionAttribute = "teamMembers";
+		IdMapper parentMapper = IdMapper.NewInstance("AuthorTeamFk");
+		int sequenceStart = 0;
+		String sequenceAttribute = "Sequence";
+		CollectionExportMapping mapping = CollectionExportMapping.NewInstance(tableName, collectionAttribute, parentMapper, sequenceAttribute, sequenceStart);
+		mapping.addMapper(IdMapper.NewInstance("AuthorFk"));
 		return mapping;
 	}
 	
 	
 	protected boolean doInvoke(BerlinModelExportState<BerlinModelExportConfigurator> state){
-		//MapWrapper<AgentBase> teamMap = (MapWrapper<AgentBase>)stores.get(ICdmIO.AUTHOR_STORE);
-		//MapWrapper<AgentBase> teamMap = (MapWrapper<AgentBase>)stores.get(ICdmIO.AUTHOR_STORE);
-		
 		try{
 			BerlinModelExportConfigurator bmeConfig = (BerlinModelExportConfigurator)state.getConfig();
 			
@@ -92,17 +98,12 @@ public class BerlinModelAuthorTeamExport extends BerlinModelExportBase<Team> {
 			BerlinModelExportMapping mapping = getMapping();
 			mapping.initialize(state);
 			
-//			for (AgentBase agent : persons){
-//				if (agent instanceof Person){
-//					success &= mapping.invoke(agent);
-//				}
-//			}
 			logger.info("save "+pluralString+" ...");
 			int count = 0;
-			for (AgentBase<?> agent : list){
+			for (AgentBase<?> team : list){
 				doCount(count++, modCount, pluralString);
-				if (agent instanceof Team){
-					success &= mapping.invoke(agent);
+				if (team instanceof Team){
+					success &= mapping.invoke(team);
 				}
 			}
 			

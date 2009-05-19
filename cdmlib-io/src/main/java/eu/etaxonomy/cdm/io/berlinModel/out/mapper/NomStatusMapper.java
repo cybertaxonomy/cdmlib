@@ -50,7 +50,7 @@ public class NomStatusMapper /*extends DbSingleAttributeExportMapperBase<BerlinM
 	private BerlinModelExportMapping getStatusMapping(){
 		boolean doExecute = false;
 		String tableName = dbTableName;
-		BerlinModelExportMapping mapping = new BerlinModelExportMapping(tableName,doExecute);
+		BerlinModelExportMapping mapping = new BerlinModelExportMapping(tableName);
 
 		mapping.addMapper(MethodMapper.NewInstance("NomStatusFk", this.getClass(), "getNomStatusFk", NomenclaturalStatus.class));
 		mapping.addMapper(DbObjectMapper.NewInstance("citation", "NomStatusRefFk"));
@@ -68,7 +68,7 @@ public class NomStatusMapper /*extends DbSingleAttributeExportMapperBase<BerlinM
 	private BerlinModelExportMapping getNameMapping(){
 		boolean doExecute = true;
 		String tableName = dbTableName;
-		BerlinModelExportMapping mapping = new BerlinModelExportMapping(dbTableName, doExecute);
+		BerlinModelExportMapping mapping = new BerlinModelExportMapping(dbTableName);
 		mapping.addMapper(IdMapper.NewInstance("NameFk"));
 		return mapping;
 	}
@@ -84,7 +84,7 @@ public class NomStatusMapper /*extends DbSingleAttributeExportMapperBase<BerlinM
 			mapping = getStatusMapping();
 			nameMapping = getNameMapping();
 			mapping.initialize(state);
-			nameMapping.initialize(state, mapping.getPreparedStatement());
+	//		nameMapping.initialize(state, mapping.getPreparedStatement());
 		} catch (SQLException e) {
 			logger.error("SQLException in NomStatusMapper.initialize()");
 			throw new RuntimeException(e);

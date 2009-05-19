@@ -99,7 +99,7 @@ public abstract class DbSingleAttributeExportMapperBase<STATE extends DbExportSt
 				}else if (sqlType == Types.VARCHAR){
 					String strValue = (String)value;
 					if (strValue.length() > 255){
-						logger.warn("String to long (" + strValue.length() + ") for object " + cdmBase.toString() + ": " + value);
+						logger.debug("String to long (" + strValue.length() + ") for object " + cdmBase.toString() + ": " + value);
 					}
 					getPreparedStatement().setString(getIndex(), (String)value);
 				}else if (sqlType == Types.BOOLEAN){

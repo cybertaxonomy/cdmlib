@@ -142,7 +142,7 @@ public class BerlinModelNomStatusExport extends BerlinModelExportBase<Nomenclatu
 	//called by MethodMapper
 	@SuppressWarnings("unused")
 	private static Integer getNomStatusFk(NomenclaturalStatus status){
-		return BerlinModelTransformer.nomStatus2nomStatusFk(status);
+		return BerlinModelTransformer.nomStatus2nomStatusFk(status.getType());
 	}
 	
 	/* (non-Javadoc)

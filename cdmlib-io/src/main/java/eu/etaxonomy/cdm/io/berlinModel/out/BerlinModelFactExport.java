@@ -8,6 +8,7 @@
 */
 package eu.etaxonomy.cdm.io.berlinModel.out;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
@@ -49,6 +50,8 @@ public class BerlinModelFactExport extends BerlinModelExportBase<TextData> {
 	private static final String dbTableName = "Fact";
 	private static final String pluralString = "Facts";
 	private static final Class<? extends CdmBase> standardMethodParameter = TextData.class;
+	@Deprecated
+	private static Source source;
 
 	public BerlinModelFactExport(){
 		super();
@@ -71,28 +74,17 @@ public class BerlinModelFactExport extends BerlinModelExportBase<TextData> {
 		String tableName = dbTableName;
 		BerlinModelExportMapping mapping = new BerlinModelExportMapping(tableName);
 		mapping.addMapper(IdMapper.NewInstance("FactId"));
-		
-		
-//		mapping.addMapper(DbObjectMapper.NewInstance("name", "PTNameFk"));
-//		mapping.addMapper(DbObjectMapper.NewInstance("sec", "PTRefFk"));
-		
 		mapping.addMapper(MethodMapper.NewInstance("PTNameFk", this.getClass(), "getPTNameFk", TextData.class, DbExportState.class));
 		mapping.addMapper(MethodMapper.NewInstance("PTRefFk", this.getClass(), "getPTRefFk", TextData.class, DbExportState.class));
-		
 		mapping.addMapper(MethodMapper.NewInstance("Fact", this));
 		mapping.addMapper(MethodMapper.NewInstance("FactCategoryFk", this));
 		
 		mapping.addMapper(DbObjectMapper.NewInstance("citation", "FactRefFk"));
 		mapping.addMapper(RefDetailMapper.NewInstance("citationMicroReference","citation", "FactRefDetailFk"));
-
 		mapping.addMapper(DbObjectMapper.NewInstance("citation", "PTDesignationRefFk"));
 		mapping.addMapper(RefDetailMapper.NewInstance("citationMicroReference","citation", "PTDesignationRefDetailFk"));
-
 		mapping.addMapper(CreatedAndNotesMapper.NewInstance());
 
-		
-		
-		
 		//TODO
 //	       designationRef
 //		       doubtful
@@ -115,6 +107,7 @@ public class BerlinModelFactExport extends BerlinModelExportBase<TextData> {
 			BerlinModelExportMapping mapping = getMapping();
 			mapping.initialize(state);
 			
+			this.source = state.getConfig().getDestination(); 
 			int count = 0;
 			for (DescriptionBase<?> desc : list){
 				for (DescriptionElementBase descEl : desc.getElements()){
@@ -166,9 +159,9 @@ public class BerlinModelFactExport extends BerlinModelExportBase<TextData> {
 	private static Integer getFactCategoryFk(TextData textData){
 		Feature feature = textData.getFeature();
 		Integer catFk = BerlinModelTransformer.textData2FactCategoryFk(feature);
-		catFk = 302;
+		//catFk = 302;
 		if (catFk == null){
-			//catFk = findCategory(feature);
+			catFk = findCategory(feature);
 		}
 		if (catFk == null){
 			//catFk = insertCategory(feature);
@@ -219,6 +212,26 @@ public class BerlinModelFactExport extends BerlinModelExportBase<TextData> {
 					break;
 				}
 			}
+		}
+		return result;
+	}
+	
+	@Deprecated  //TODO quick and dirty for Salvador export
+	private static Integer findCategory(Feature feature){
+		Integer result = null;
+		String label = feature.getLabel();
+		ResultSet rs = source.getResultSet("SELECT FactCategoryId FROM FactCategory WHERE FactCategory = '"+label+"'");
+		try {
+			while (rs.next()){
+				result = rs.getInt(1) ;
+				if (! rs.isLast()){
+					logger.warn("FactCategory is not distinct: " + label);
+				}
+			}
+		} catch (SQLException e) {
+			logger.error(e.getMessage());
+			e.printStackTrace();
+			return null;
 		}
 		return result;
 	}
