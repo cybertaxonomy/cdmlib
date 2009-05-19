@@ -56,8 +56,8 @@ public class TestingTermInitializer extends PersistentTermInitializer {
             UUID.fromString("a7dc20c9-e6b3-459e-8f05-8d6d8fceb465"), // PreservationMethod.class
             UUID.fromString("fe87ea8d-6e0a-4e5d-b0da-0ab8ea67ca77"), // DeterminationModifier.class
             UUID.fromString("066cc62e-7213-495e-a020-97a1233bc037"), // StatisticalMeasure.class
-            UUID.fromString("8627c526-73af-44d9-902c-11c1f11b60b4") //RightsTerm.class
-//          UUID.fromString("ab60e738-4d09-4c24-a1b3-9466b01f9f55") // NameTypeDesignationStatus.class
+            UUID.fromString("8627c526-73af-44d9-902c-11c1f11b60b4"), //RightsTerm.class
+            UUID.fromString("ab60e738-4d09-4c24-a1b3-9466b01f9f55") // NameTypeDesignationStatus.class
             };
 	
 	public void setTermsDataSet(Resource termsDataSet) {
