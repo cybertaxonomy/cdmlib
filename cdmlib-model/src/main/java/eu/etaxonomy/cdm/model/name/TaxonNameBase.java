@@ -340,6 +340,11 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 	public void addRelationshipToName(TaxonNameBase toName, NameRelationshipType type, String ruleConsidered){
 		NameRelationship rel = new NameRelationship(toName, this, type, ruleConsidered);
 	}
+	
+	public void addRelationshipToName(TaxonNameBase toName, NameRelationshipType type, ReferenceBase citation, String microCitation, String ruleConsidered){
+		NameRelationship rel = new NameRelationship(toName, this, type, citation, microCitation, ruleConsidered);
+	}
+	
 	/**
 	 * Creates a new {@link NameRelationship#NameRelationship(TaxonNameBase, TaxonNameBase, NameRelationshipType, String) name relationship} from another taxon name to <i>this</i> taxon name
 	 * and adds it both to the set of {@link #getRelationsToThisName() relations to <i>this</i> taxon name} and
@@ -356,6 +361,10 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 	public void addRelationshipFromName(TaxonNameBase fromName, NameRelationshipType type, String ruleConsidered){
 		NameRelationship rel = new NameRelationship(this, fromName, type, ruleConsidered);
 	}
+	public void addRelationshipFromName(TaxonNameBase fromName, NameRelationshipType type, ReferenceBase citation, String microCitation, String ruleConsidered){
+		NameRelationship rel = new NameRelationship(this, fromName, type, citation, microCitation, ruleConsidered);
+	}
+
 	/**
 	 * Adds an existing {@link NameRelationship name relationship} either to the set of
 	 * {@link #getRelationsToThisName() relations to <i>this</i> taxon name} or to the set of
@@ -571,7 +580,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 	 * @see  				#addBasionym(TaxonNameBase, String)
 	 */
 	public void addBasionym(T basionym){
-		addBasionym(basionym, null);
+		addBasionym(basionym, null, null, null);
 	}
 	/**
 	 * Assigns a taxon name as {@link NameRelationshipType#BASIONYM() basionym} of <i>this</i> taxon name
@@ -586,9 +595,9 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 	 * @see  					#getBasionym()
 	 * @see  					#addBasionym(TaxonNameBase)
 	 */
-	public void addBasionym(T basionym, String ruleConsidered){
+	public void addBasionym(T basionym, ReferenceBase citation, String microcitation, String ruleConsidered){
 		if (basionym != null){
-			basionym.addRelationshipToName(this, NameRelationshipType.BASIONYM(), ruleConsidered);
+			basionym.addRelationshipToName(this, NameRelationshipType.BASIONYM(), citation, microcitation, ruleConsidered);
 		}
 	}
 	

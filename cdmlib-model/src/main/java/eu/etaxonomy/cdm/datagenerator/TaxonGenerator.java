@@ -45,7 +45,7 @@ public class TaxonGenerator {
         basionym.setTitleCache("Hieracilla DC."); 
         basionym.setGenusOrUninomial("Hieracilla"); 
         basionym.setCombinationAuthorTeam(deCandolle); 
-        botName.addBasionym(basionym, "216");
+        botName.addBasionym(basionym, null, null, "216");
         
         //species taxon that is the child of genus taxon
         BotanicalName botSpecies = BotanicalName.NewInstance(Rank.SPECIES()); 

@@ -175,7 +175,11 @@ public class SpecimenTest {
 		specimen.addRights(right);
 		specimen.addSource(source);
 
-		
+		try {
+			Thread.sleep(200);
+		} catch (InterruptedException e) {
+			//ignore
+		}
 		Specimen specimenClone = (Specimen)specimen.clone();
 		
 		assertFalse(id == specimenClone.getId());
