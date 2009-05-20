@@ -41,8 +41,7 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 @Service
 @Transactional
 public class AgentServiceImpl extends IdentifiableServiceBase<AgentBase,IAgentDao> implements IAgentService {
-    @SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(AgentServiceImpl.class);
+    private static final Logger logger = Logger.getLogger(AgentServiceImpl.class);
 	
 
 	/**
