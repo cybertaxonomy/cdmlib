@@ -30,6 +30,7 @@ import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.fetch.CdmFetch;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
+import eu.etaxonomy.cdm.persistence.query.SelectMode;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 
 /**
@@ -199,8 +200,17 @@ public class TaxonDaoHibernateImplTest extends CdmIntegrationTest {
 	public void testCountTaxaByName() {
 		int numberOfTaxa = taxonDao.countTaxaByName("A*", MatchMode.BEGINNING, true);
 		assertEquals(numberOfTaxa, 9);
+		numberOfTaxa = taxonDao.countTaxaByName("A*", MatchMode.BEGINNING, SelectMode.TAXA);
+		assertEquals(numberOfTaxa, 9);
 		numberOfTaxa = taxonDao.countTaxaByName("A*", MatchMode.BEGINNING, false);
 		assertEquals(numberOfTaxa, 3);
+		numberOfTaxa = taxonDao.countTaxaByName("A*", MatchMode.BEGINNING, SelectMode.SYNONYMS);
+		assertEquals(numberOfTaxa, 3);
+		numberOfTaxa = taxonDao.countTaxaByName("A*", MatchMode.BEGINNING, SelectMode.ALL);
+		assertEquals(numberOfTaxa, 12);
+		ReferenceBase reference = referenceDao.findByUuid(UUID.fromString("596b1325-be50-4b0a-9aa2-3ecd610215f2"));
+		numberOfTaxa = taxonDao.countTaxaByName("A*", MatchMode.BEGINNING, SelectMode.ALL, reference);
+		assertEquals(numberOfTaxa, 2);
 	}
 	
 	@Test
