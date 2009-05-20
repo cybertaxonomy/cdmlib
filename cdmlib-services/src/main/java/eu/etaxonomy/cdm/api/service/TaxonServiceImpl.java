@@ -334,20 +334,28 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		int numberTaxaResults = 0;
 		
 		if (configurator.isDoTaxa() && configurator.isDoSynonyms()) {
-			taxa = dao.getTaxaByName(configurator.getSearchString(), configurator.getMatchMode(),
-						SelectMode.ALL, configurator.getPageSize(), configurator.getPageNumber());
+			taxa = dao.getTaxaByName(configurator.getSearchString(), 
+					configurator.getMatchMode(), SelectMode.ALL, configurator.getSec(),
+						configurator.getPageSize(), configurator.getPageNumber());
 			numberTaxaResults = 
-				dao.countTaxaByName(configurator.getSearchString(), configurator.getMatchMode(), SelectMode.ALL);
+				dao.countTaxaByName(configurator.getSearchString(), 
+						configurator.getMatchMode(), SelectMode.ALL, configurator.getSec());
 			
 		} else if(configurator.isDoTaxa()) {
-			taxa = dao.getTaxaByName(configurator.getSearchString(), configurator.getMatchMode(),
-						true, configurator.getPageSize(), configurator.getPageNumber());
-			numberTaxaResults = dao.countTaxaByName(configurator.getSearchString(), configurator.getMatchMode(), true);
+			taxa = dao.getTaxaByName(configurator.getSearchString(), 
+					configurator.getMatchMode(), SelectMode.TAXA, configurator.getSec(),
+					configurator.getPageSize(), configurator.getPageNumber());
+			numberTaxaResults = 
+				dao.countTaxaByName(configurator.getSearchString(), 
+						configurator.getMatchMode(), SelectMode.TAXA, configurator.getSec());
 			
 		} else if (configurator.isDoSynonyms()) {
-			taxa = dao.getTaxaByName(configurator.getSearchString(), configurator.getMatchMode(),
-					false, configurator.getPageSize(), configurator.getPageNumber());
-			numberTaxaResults = dao.countTaxaByName(configurator.getSearchString(), configurator.getMatchMode(), false);
+			taxa = dao.getTaxaByName(configurator.getSearchString(), 
+					configurator.getMatchMode(), SelectMode.SYNONYMS, configurator.getSec(),
+					configurator.getPageSize(), configurator.getPageNumber());
+			numberTaxaResults = 
+				dao.countTaxaByName(configurator.getSearchString(), 
+						configurator.getMatchMode(), SelectMode.SYNONYMS, configurator.getSec());
 		}
 
 		if (logger.isDebugEnabled()) { logger.debug(numberTaxaResults + " matching taxa counted"); }
