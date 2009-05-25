@@ -290,6 +290,7 @@ public class DescriptionAssembler extends AssemblerBase<BaseSTO, DescriptionTO, 
 		if(descriptionElementBase.getCitation() != null){
 			sto.setReference(referenceAssembler.getSTO(descriptionElementBase.getCitation(), locales));
 		}
+		sto.setCitationMicroreference(descriptionElementBase.getCitationMicroReference());
 		
 		// media
 		for(Media media : descriptionElementBase.getMedia()){

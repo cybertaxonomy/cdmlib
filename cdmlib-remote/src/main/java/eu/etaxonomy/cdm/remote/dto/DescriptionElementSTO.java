@@ -27,6 +27,7 @@ public class DescriptionElementSTO extends BaseSTO {
 	private String description;
 	private String language;
 	private ReferenceSTO reference;
+	private String citationMicroreference;
 	private LocalisedTermSTO areaTerm;
 	private LocalisedTermSTO mediaType;
 	private String classType;
@@ -75,5 +76,12 @@ public class DescriptionElementSTO extends BaseSTO {
 	}
 	public void setClassType(String classType) {
 		this.classType = classType;
-	}	
+	}
+	public String getCitationMicroreference() {
+		return citationMicroreference;
+	}
+	public void setCitationMicroreference(String citationMicroreference) {
+		this.citationMicroreference = citationMicroreference;
+	}
+	
 }
