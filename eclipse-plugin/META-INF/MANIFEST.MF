@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: CDM Library Plug-in
 Bundle-SymbolicName: eu.etaxonomy.cdmLibrary;singleton:=true
-Bundle-Version: 2.1.0.53
+Bundle-Version: 2.1.0.70
 Bundle-ClassPath: antlr-2.7.6.jar,
  asm-attrs.jar,
  asm.jar,
@@ -99,6 +99,8 @@ Export-Package: eu.etaxonomy.cdm,
  eu.etaxonomy.cdm.database,
  eu.etaxonomy.cdm.database.types,
  eu.etaxonomy.cdm.datagenerator,
+ eu.etaxonomy.cdm.ext,
+ eu.etaxonomy.cdm.hibernate,
  eu.etaxonomy.cdm.io.abcd206,
  eu.etaxonomy.cdm.io.berlinModel,
  eu.etaxonomy.cdm.io.common,
@@ -199,6 +201,7 @@ Export-Package: eu.etaxonomy.cdm,
  org.joda.time.format;uses:="org.joda.time",
  org.joda.time.tz;uses:="org.joda.time",
  org.springframework.core,
+ org.springframework.core.io,
  org.springframework.orm.hibernate3,
  org.springframework.transaction;uses:="org.springframework.core",
  org.springframework.transaction.annotation,
