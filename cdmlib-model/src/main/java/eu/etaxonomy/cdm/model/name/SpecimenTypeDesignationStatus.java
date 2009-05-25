@@ -50,7 +50,7 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
  * @created 08-Nov-2007 13:07:00
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "TypeDesignationStatus")
+@XmlType(name = "SpecimenTypeDesignationStatus")
 @Entity
 @Audited
 public class SpecimenTypeDesignationStatus extends TypeDesignationStatusBase<SpecimenTypeDesignationStatus> {

@@ -58,8 +58,11 @@ public class SpecimenTypeDesignationTest {
 	
 	@Test
 	public void testGetTypeStatus() {
+		SpecimenTypeDesignationStatus std = term1.getTypeStatus();
+		std = term2.getTypeStatus();
 		term1.setTypeStatus(SpecimenTypeDesignationStatus.EPITYPE());
 		assertEquals(term1.getTypeStatus(), SpecimenTypeDesignationStatus.EPITYPE());
 		assertTrue(term1.getTypeStatus().isInstanceOf(SpecimenTypeDesignationStatus.class));
 	}
+
 }

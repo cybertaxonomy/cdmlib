@@ -81,7 +81,7 @@ public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase> e
 	@XmlElement(name = "TypeStatus")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY, targetEntity = TypeDesignationStatusBase.class)
 	private T typeStatus;
 
 // **************** CONSTRUCTOR *************************************/
