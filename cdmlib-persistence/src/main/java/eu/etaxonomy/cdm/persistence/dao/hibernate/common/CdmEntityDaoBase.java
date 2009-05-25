@@ -161,6 +161,9 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 		if (results.isEmpty()){
 			return null;
 		}else{
+			if(results.size() > 1){
+				logger.error("findByUuid() delivers more than one result for UUID: " + uuid);
+			}
 			return results.get(0);			
 		}
 	}

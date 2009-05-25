@@ -80,7 +80,7 @@ public class H2DatabaseType extends DatabaseTypeBase {
 	@Override
 	public String getServerNameByConnectionString(String connectionString) {
 		String result;
-		if (connectionString.startsWith("file:")){
+		if (connectionString.startsWith("file:") || connectionString.startsWith( urlString + "file:")){
 			result = null; 
 		}else if (connectionString.startsWith("tcp://")){
 			String prefix = "tcp://";
@@ -105,7 +105,7 @@ public class H2DatabaseType extends DatabaseTypeBase {
 	public String getDatabaseNameByConnectionString(String connectionString) {
 		int pos = -1;
 		String result;
-		if (connectionString.startsWith("file:")){
+		if (connectionString.startsWith("file:") || connectionString.startsWith( urlString + "file:")){
 			pos = connectionString.lastIndexOf("/");
 			result = connectionString.substring(pos + 1);
 		}else if (connectionString.startsWith("tcp://")){
@@ -126,7 +126,7 @@ public class H2DatabaseType extends DatabaseTypeBase {
 	@Override
 	public int getPortByConnectionString(String connectionString) {
 		int result;
-		if (connectionString.startsWith("file:")){
+		if (connectionString.startsWith("file:") || connectionString.startsWith( urlString + "file:")){
 			result = -1; 
 		}else if (connectionString.startsWith("tcp://")){
 			String prefix = "tcp://";

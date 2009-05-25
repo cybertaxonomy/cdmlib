@@ -46,7 +46,7 @@ public interface ILocationService extends IService<DefinedTermBase> {
      * @param vocabularyType
      * @return
      */
-    public OrderedTermVocabulary<NamedArea> getNamedAreaVocabulary(NamedAreaVocabularyType vocabularyType, NamedAreaLevel namedAreaLevel, NamedAreaType namedAreaType);
+    public OrderedTermVocabulary<NamedArea> getNamedAreaVocabulary(NamedAreaVocabularyType vocabularyType);
     
     public TermVocabulary<NamedAreaType> getNamedAreaTypeVocabulary();
     
@@ -63,5 +63,9 @@ public interface ILocationService extends IService<DefinedTermBase> {
      * @return
      */
     public OrderedTermVocabulary<AbsenceTerm> getAbsenceTermVocabulary(); 
-	
+    
+    /**
+     * 
+     */
+    public List<NamedArea> getTopLevelNamedAreasByVocabularyType(NamedAreaVocabularyType vocabularyType);
 }

@@ -24,12 +24,9 @@ import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.description.AbsenceTerm;
 import eu.etaxonomy.cdm.model.description.PresenceTerm;
-import eu.etaxonomy.cdm.model.location.Continent;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
-import eu.etaxonomy.cdm.model.location.TdwgArea;
-import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
 import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
 import eu.etaxonomy.cdm.persistence.dao.common.IOrderedTermVocabularyDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ITermVocabularyDao;
@@ -101,25 +98,21 @@ public class LocationServiceImpl extends ServiceBase<DefinedTermBase,IDefinedTer
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.ILocationService#getNamedAreas(java.lang.Object)
 	 */
-	public OrderedTermVocabulary<NamedArea> getNamedAreaVocabulary(NamedAreaVocabularyType vocabularyType, NamedAreaLevel level, NamedAreaType type) {
+	public OrderedTermVocabulary<NamedArea> getNamedAreaVocabulary(NamedAreaVocabularyType vocabularyType) {
 
-		OrderedTermVocabulary<NamedArea> namedAreaVocabulary = new OrderedTermVocabulary<NamedArea>(); 
-		
-		List<NamedArea> namedAreaList = definedTermDao.list(level, type, null, null);
-		
-		for(NamedArea namedArea : namedAreaList){
-			if(vocabularyType == NamedAreaVocabularyType.TDWG_AREA && (namedArea instanceof TdwgArea)){
-				namedAreaVocabulary.addTerm(namedArea);
-			}
-			if(vocabularyType == NamedAreaVocabularyType.CONTINENT && (namedArea instanceof Continent)){
-				namedAreaVocabulary.addTerm(namedArea);
-			}
-			if(vocabularyType == NamedAreaVocabularyType.WATERBODY_OR_COUNTRY && (namedArea instanceof WaterbodyOrCountry)){
-				namedAreaVocabulary.addTerm(namedArea);
-			}
+		UUID namedAreaVocabularyUuid = null;
+			
+		if(vocabularyType == NamedAreaVocabularyType.TDWG_AREA){
+			namedAreaVocabularyUuid = UUID.fromString("1fb40504-d1d7-44b0-9731-374fbe6cac77"); 
+		}
+		if(vocabularyType == NamedAreaVocabularyType.CONTINENT){
+			namedAreaVocabularyUuid = UUID.fromString("e72cbcb6-58f8-4201-9774-15d0c6abc128");
+		}
+		if(vocabularyType == NamedAreaVocabularyType.WATERBODY_OR_COUNTRY){
+			namedAreaVocabularyUuid = UUID.fromString("006b1870-7347-4624-990f-e5ed78484a1a");
 		}
 
-		return namedAreaVocabulary;
+		return (OrderedTermVocabulary)orderedVocabularyDao.findByUuid(namedAreaVocabularyUuid);
 	}
 
 	/* (non-Javadoc)
@@ -145,7 +138,20 @@ public class LocationServiceImpl extends ServiceBase<DefinedTermBase,IDefinedTer
 		return namedAreaTypeVocabulary;
 	}
 
+	public List<NamedArea> getTopLevelNamedAreasByVocabularyType(NamedAreaVocabularyType vocabularyType){
+		
+		OrderedTermVocabulary<NamedArea> vocabulary = getNamedAreaVocabulary(vocabularyType);
 
+		List<NamedArea> topLevelTerms = new ArrayList<NamedArea>();
+		
+		for(NamedArea area : vocabulary){			
+			if(area.getPartOf() == null){
+				topLevelTerms.add(area);
+			}
+		}
+		
+		return topLevelTerms;
+	}
 
 
 

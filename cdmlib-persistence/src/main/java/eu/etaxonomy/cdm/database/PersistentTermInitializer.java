@@ -84,7 +84,7 @@ public class PersistentTermInitializer extends DefaultTermInitializer {
 			return;
 		} else {
 			Map<UUID,DefinedTermBase> terms = new HashMap<UUID,DefinedTermBase>();
-			logger.info("PersistentTermInitializer.omit == false, initializing " + terms.size() + " term classes");
+			logger.info("PersistentTermInitializer.omit == false, initializing " + classesToInitialize.length + " term classes");
 			for(Class clazz : classesToInitialize) {
 				UUID vocabularyUuid = firstPass(clazz,terms);
 				secondPass(clazz,vocabularyUuid,terms);

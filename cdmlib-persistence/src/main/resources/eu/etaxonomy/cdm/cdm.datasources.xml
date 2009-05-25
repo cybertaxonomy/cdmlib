@@ -7,24 +7,6 @@
     http://www.springframework.org/schema/context
     http://www.springframework.org/schema/context/spring-context-2.5.xsd">
 
-
-	<bean id="localDefaultH2DataSource" 
-			lazy-init="true"
-  			class="eu.etaxonomy.cdm.database.LocalH2" 	
-			init-method="init"
-  			destroy-method="destroy"
-  			>
-        <property name="driverClassName" value="org.h2.Driver"/>
-        <property name="username" value="sa"/>
-        <property name="password" value=""/>
-        <!-- property name="startServer" value="true"/> -->
-        <!--  property name="silent" value="true"/>-->
-        <!-- property name="pureUrl" value="jdbc:h2:tcp://localhost/"/-->
-        <!-- property name="dbName" value="cdm"/> -->
-        <!--  <property name="databasePath" value="C:\tmp\cdmDb\"/> -->
-  	</bean>
-  	
-  	
 <!--JDBC datasource pattern-->
 <!--  	<bean id="defaultDataSource"  lazy-init="true" class="org.springframework.jdbc.datasource.DriverManagerDataSource">-->
 <!--        <property name="driverClassName" value="com.mysql.jdbc.Driver"/>-->

@@ -79,6 +79,7 @@ public class CdmPersistentDataSource extends CdmDataSourceBase{
 		}
 	}
 	
+	
 	//name
 	protected String dataSourceName;
 
@@ -452,6 +453,25 @@ public class CdmPersistentDataSource extends CdmDataSourceBase{
 		String server = "localhost";
 		int port = databaseTypeEnum.getDefaultPort();
 		return save(strDataSourceName, databaseTypeEnum, server, databaseName, port, username, password, driverManagerDataSource, "init", "destroy", true, true, databasePath, null);
+	}
+	
+	/**
+	 * Saves an H2 instance 
+	 * 
+	 * @param strDataSourceName
+	 * @param databasePath
+	 * @param databaseName
+	 * @param username
+	 * @param password
+	 * @param mode
+	 * @return
+	 */
+	public static CdmPersistentDataSource saveLocalH2(String strDataSourceName, String databasePath, String databaseName, String username, String password, H2Mode mode){
+		DatabaseTypeEnum databaseTypeEnum = DatabaseTypeEnum.H2;
+		Class<? extends DriverManagerDataSource> driverManagerDataSource =  LocalH2.class;
+		String server = "localhost";
+		int port = databaseTypeEnum.getDefaultPort();
+		return save(strDataSourceName, databaseTypeEnum, server, databaseName, port, username, password, driverManagerDataSource, null, null, null, null, databasePath, mode);
 	}
 	
 	//
