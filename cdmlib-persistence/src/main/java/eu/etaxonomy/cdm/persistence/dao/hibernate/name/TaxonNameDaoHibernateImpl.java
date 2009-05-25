@@ -34,6 +34,7 @@ import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
+import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
@@ -310,12 +311,12 @@ extends IdentifiableDaoBase<TaxonNameBase> implements ITaxonNameDao {
 	}
 
 	public List<TypeDesignationBase> getTypeDesignations(TaxonNameBase name, 
-			SpecimenTypeDesignationStatus status, Integer pageSize, Integer pageNumber) {
+			TypeDesignationStatusBase status, Integer pageSize, Integer pageNumber) {
 		return getTypeDesignations(name, status, pageSize, pageNumber, null);
 	}
 	
 	public List<TypeDesignationBase> getTypeDesignations(TaxonNameBase name,
-				SpecimenTypeDesignationStatus status, Integer pageSize, Integer pageNumber,
+				TypeDesignationStatusBase status, Integer pageSize, Integer pageNumber,
 				List<String> propertyPaths){
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
