@@ -17,8 +17,6 @@ import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.CreatedAndNotesMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbBooleanMapper;
-import eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbObjectMapper;
-import eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbSequenceMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.IdMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.MethodMapper;
 import eu.etaxonomy.cdm.io.common.IExportConfigurator;

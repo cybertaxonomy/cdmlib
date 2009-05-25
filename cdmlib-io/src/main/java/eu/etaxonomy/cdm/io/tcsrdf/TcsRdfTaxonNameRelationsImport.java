@@ -20,7 +20,6 @@ import org.jdom.Element;
 import org.jdom.Namespace;
 import org.springframework.stereotype.Component;
 
-import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.io.common.CdmIoBase;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
@@ -123,7 +122,9 @@ public class TcsRdfTaxonNameRelationsImport extends CdmIoBase<IImportConfigurato
 					}
 				}
 				String ruleConcidered = null; //TODO
-				fromName.addBasionym(basionym, ruleConcidered);
+				String microCitation = null; //TODO;
+				ReferenceBase citation = null; //TODO;
+				fromName.addBasionym(basionym, citation, microCitation, ruleConcidered);
 				nameStore.add(fromName);
 
 			}

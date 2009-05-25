@@ -119,21 +119,16 @@ public class BerlinModelTaxonNameRelationImport extends BerlinModelImportBase {
 				ReferenceBase citation = referenceMap.get(relRefFk);
 				//TODO (preliminaryFlag = true testen
 				String microcitation = details;
-
+				String rule = null;  //TODO
+				
 				if (nameFrom != null && nameTo != null){
 					if (relQualifierFk == NAME_REL_IS_BASIONYM_FOR){
-						//TODO references, mikroref, etc
-						nameTo.addBasionym(nameFrom);
+						nameTo.addBasionym(nameFrom, citation, microcitation, rule);
 					}else if (relQualifierFk == NAME_REL_IS_LATER_HOMONYM_OF){
-						String rule = null;  //TODO
-						nameFrom.addRelationshipToName(nameTo, NameRelationshipType.LATER_HOMONYM(), rule) ;
-						//TODO reference
+						nameFrom.addRelationshipToName(nameTo, NameRelationshipType.LATER_HOMONYM(), citation, microcitation, rule) ;
 					}else if (relQualifierFk == NAME_REL_IS_REPLACED_SYNONYM_FOR){
-						String rule = null;  //TODO
-						nameFrom.addRelationshipToName(nameTo, NameRelationshipType.REPLACED_SYNONYM(), rule) ;
-						//TODO reference
+						nameFrom.addRelationshipToName(nameTo, NameRelationshipType.REPLACED_SYNONYM(), citation, microcitation, rule) ;
 					}else if (relQualifierFk == NAME_REL_HAS_SAME_TYPE_AS){
-						String rule = null;  //TODO
 						nameTo.getHomotypicalGroup().merge(nameFrom.getHomotypicalGroup());//nameFrom.addRelationshipToName(nameTo, NameRelationshipType.REPLACED_SYNONYM(), rule) ;
 					}else if (relQualifierFk == NAME_REL_IS_TYPE_OF || relQualifierFk == NAME_REL_IS_REJECTED_TYPE_OF ||  relQualifierFk == NAME_REL_IS_CONSERVED_TYPE_OF || relQualifierFk == NAME_REL_IS_LECTOTYPE_OF || relQualifierFk == NAME_REL_TYPE_NOT_DESIGNATED ){
 						//TODO
@@ -147,9 +142,7 @@ public class BerlinModelTaxonNameRelationImport extends BerlinModelImportBase {
 						nameTo.addNameTypeDesignation(nameFrom, citation, microcitation, originalNameString, isRejectedType, isConservedType, isLectoType, isNotDesignated, false);
 						
 					}else if (relQualifierFk == NAME_REL_IS_ORTHOGRAPHIC_VARIANT_OF){
-						String rule = null;  //TODO
-						nameFrom.addRelationshipToName(nameTo, NameRelationshipType.ORTHOGRAPHIC_VARIANT(), rule) ;
-						//TODO reference
+						nameFrom.addRelationshipToName(nameTo, NameRelationshipType.ORTHOGRAPHIC_VARIANT(), citation, microcitation, rule) ;
 					}else if (relQualifierFk == NAME_REL_IS_FIRST_PARENT_OF || relQualifierFk == NAME_REL_IS_SECOND_PARENT_OF || relQualifierFk == NAME_REL_IS_FEMALE_PARENT_OF || relQualifierFk == NAME_REL_IS_MALE_PARENT_OF){
 						//HybridRelationships
 						if (! (nameTo instanceof BotanicalName) || ! (nameFrom instanceof BotanicalName)){
@@ -157,7 +150,6 @@ public class BerlinModelTaxonNameRelationImport extends BerlinModelImportBase {
 						}
 						try {
 							HybridRelationshipType hybridRelType = BerlinModelTransformer.relNameId2HybridRel(relQualifierFk);
-							String rule = null;  //TODO
 							BotanicalName parent = (BotanicalName)nameFrom;
 							BotanicalName child = (BotanicalName)nameTo;
 							

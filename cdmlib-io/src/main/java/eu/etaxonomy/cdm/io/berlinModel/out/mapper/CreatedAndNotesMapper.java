@@ -20,6 +20,7 @@ import eu.etaxonomy.cdm.io.berlinModel.out.DbExportState;
 import eu.etaxonomy.cdm.io.common.MultipleAttributeMapperBase;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.Annotation;
+import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
@@ -82,7 +83,9 @@ public class CreatedAndNotesMapper extends MultipleAttributeMapperBase<DbSingleA
 		String result = "";
 		String separator = ";";
 		for (Annotation annotation :obj.getAnnotations()){
-			result = CdmUtils.concat(separator, result, annotation.getText());
+			if (! AnnotationType.TECHNICAL().equals(annotation.getAnnotationType())){
+				result = CdmUtils.concat(separator, result, annotation.getText());
+			}
 		}
 		return (result.trim().equals("")? null : result);
 	}

@@ -9,10 +9,6 @@
 
 package eu.etaxonomy.cdm.io.berlinModel;
 
-import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.FACT_DESCRIPTION;
-import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.FACT_DISTRIBUTION_EM;
-import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.FACT_OBSERVATION;
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
@@ -277,11 +273,11 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 						
 						//TODO
 						//References
-						//etc.
+						//factId, 
 						
-						//TODO created, notes
-						//doIdCreatedUpdatedNotes(bmiConfig, textData, rs, factId);
-	
+						//etc.
+						doCreatedUpdatedNotes(bmiConfig, textData, rs, "Fact");
+
 						
 						taxonStore.add(taxon);
 					}else{

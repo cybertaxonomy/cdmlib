@@ -23,7 +23,9 @@ import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
 import eu.etaxonomy.cdm.io.common.Source;
+import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.Annotation;
+import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
 
@@ -42,7 +44,18 @@ public abstract class BerlinModelImportBase extends CdmIoBase<IImportConfigurato
 	
 	protected boolean doIdCreatedUpdatedNotes(IImportConfigurator bmiConfig, IdentifiableEntity identifiableEntity, ResultSet rs, long id, String namespace)
 			throws SQLException{
-		
+		boolean success = true;
+		//id
+		success &= ImportHelper.setOriginalSource(identifiableEntity, bmiConfig.getSourceReference(), id, namespace);
+		//createdUpdateNotes
+		success &= doCreatedUpdatedNotes(bmiConfig, identifiableEntity, rs, namespace);
+		return success;
+	}
+	
+	
+	protected boolean doCreatedUpdatedNotes(IImportConfigurator bmiConfig, AnnotatableEntity annotatableEntity, ResultSet rs, String namespace)
+			throws SQLException{
+
 		Object createdWhen = rs.getObject("Created_When");
 		Object createdWho = rs.getObject("Created_Who");
 		Object updatedWhen = null;
@@ -54,12 +67,8 @@ public abstract class BerlinModelImportBase extends CdmIoBase<IImportConfigurato
 			//Table "Name" has no updated when/who
 		}
 		Object notes = rs.getObject("notes");
-
-		boolean success  = true;
 		
-		//id
-		ImportHelper.setOriginalSource(identifiableEntity, bmiConfig.getSourceReference(), id, namespace);
-
+		boolean success  = true;
 		
 		//Created When, Who, Updated When Who
 		String createdAnnotationString = "Berlin Model record was created By: " + String.valueOf(createdWho) + " (" + String.valueOf(createdWhen) + ") ";
@@ -68,17 +77,20 @@ public abstract class BerlinModelImportBase extends CdmIoBase<IImportConfigurato
 		}
 		Annotation annotation = Annotation.NewInstance(createdAnnotationString, Language.ENGLISH());
 		annotation.setCommentator(bmiConfig.getCommentator());
-		identifiableEntity.addAnnotation(annotation);
+		annotation.setAnnotationType(AnnotationType.TECHNICAL());
+		annotatableEntity.addAnnotation(annotation);
 		
 		//notes
 		if (notes != null){
 			String notesString = String.valueOf(notes);
-			if (notesString.length() > 254 ){
-				notesString = notesString.substring(0, 250) + "...";
+			if (notesString.length() > 3999 ){
+				notesString = notesString.substring(0, 3996) + "...";
+				logger.warn("Notes string is longer than 3999 and was truncated: " + annotatableEntity);
 			}
 			Annotation notesAnnotation = Annotation.NewInstance(notesString, null);
+			//notesAnnotation.setAnnotationType(AnnotationType.EDITORIAL());
 			//notes.setCommentator(bmiConfig.getCommentator());
-			identifiableEntity.addAnnotation(notesAnnotation);
+			annotatableEntity.addAnnotation(notesAnnotation);
 		}
 		return success;
 	}

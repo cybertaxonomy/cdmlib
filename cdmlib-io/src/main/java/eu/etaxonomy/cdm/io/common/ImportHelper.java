@@ -248,6 +248,17 @@ public class ImportHelper {
 	
 	
 	public static TimePeriod getDatePublished(String refYear){
+		if (true){
+			TimePeriod resultNew;
+			try {
+				resultNew = TimePeriod.parseString(refYear);
+			} catch (IllegalArgumentException e) {
+				logger.warn("RefYear could not be parsed: " + refYear);
+				resultNew = null;
+			}
+			return resultNew;
+		}
+		
 		//FIXME until now only quick and dirty and wrong
 		if (refYear == null){
 			return null;

@@ -29,6 +29,7 @@ import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
@@ -202,7 +203,7 @@ public class BerlinModelTaxonImport  extends BerlinModelImportBase  {
 					taxonName  = taxonNameMap.get(nameFk);
 				}
 								
-				ReferenceBase reference = null;
+				ReferenceBase<?> reference = null;
 				if (referenceMap != null){
 					reference = referenceMap.get(refFk);
 					if (reference == null){
@@ -219,7 +220,7 @@ public class BerlinModelTaxonImport  extends BerlinModelImportBase  {
 						continue; //next taxon
 					}
 				}
-				TaxonBase taxonBase;
+				TaxonBase<?> taxonBase;
 				Synonym synonym;
 				Taxon taxon;
 				try {
@@ -244,10 +245,7 @@ public class BerlinModelTaxonImport  extends BerlinModelImportBase  {
 						taxonBase.setUuid(UUID.fromString(uuid));
 					}
 					
-					//TODO
-//						dbAttrName = "Detail";
-//						cdmAttrName = "Micro";
-//						ImportHelper.addStringValue(rs, taxonBase, dbAttrName, cdmAttrName);
+
 					
 					if (doubtful.equals("a")){
 						taxonBase.setDoubtful(false);
@@ -261,11 +259,17 @@ public class BerlinModelTaxonImport  extends BerlinModelImportBase  {
 					//nameId
 					ImportHelper.setOriginalSource(taxonBase, bmiConfig.getSourceReference(), taxonId, namespace);
 
-					
+					doIdCreatedUpdatedNotes(bmiConfig, taxonBase, rs, taxonId, namespace);
 					//TODO
+					//dbAttrName = "Detail";
+//					cdmAttrName = "Micro";
+//					ImportHelper.addStringValue(rs, taxonBase, dbAttrName, cdmAttrName);
+					
+					//IdInSource
+					//NamePhrase
+					//UseNameCacheFlag
+					//PublishFlag
 					//
-					//Created
-					//Note
 					//ALL
 					
 					taxonMap.put(taxonId, taxonBase);
@@ -274,7 +278,7 @@ public class BerlinModelTaxonImport  extends BerlinModelImportBase  {
 				}
 			}
 			//invokeRelations(source, cdmApp, deleteAll, taxonMap, referenceMap);
-			logger.info("saving taxa ...");
+			logger.info("saving "+i+" taxa ...");
 			getTaxonService().saveTaxonAll(taxonMap.objects());
 			
 			logger.info("end makeTaxa ...");
