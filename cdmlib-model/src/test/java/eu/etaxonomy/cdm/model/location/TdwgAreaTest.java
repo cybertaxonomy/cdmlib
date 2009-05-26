@@ -24,6 +24,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.common.Language;
 
 /**
@@ -134,4 +135,13 @@ public class TdwgAreaTest {
 //		assertEquals("Northern Europe should be TDWG Level 2",northernEurope.getLevel(),NamedAreaLevel.TDWG_LEVEL2());
 //		assertEquals("Britain should be TDWG Level 3",britain.getLevel(),NamedAreaLevel.TDWG_LEVEL3());
 	}
+	
+	@Test
+	public void testUtf8(){
+		DefaultTermInitializer initializer = new DefaultTermInitializer();
+		initializer.initialize();
+		NamedArea saoTome = TdwgArea.getTermByUuid(UUID.fromString("c64e07cc-0a58-44b3-ac91-c216d1b91c1f"));
+		assertEquals("Utf8 error", "São Tomé", saoTome.getLabel());
+		
+	}	
 }
