@@ -9,11 +9,12 @@
  
 package eu.etaxonomy.cdm.model.name;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import junit.framework.Assert;
 
 import org.apache.log4j.Logger;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -21,6 +22,8 @@ import org.junit.Test;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.reference.Article;
+import eu.etaxonomy.cdm.model.reference.Generic;
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 
 /**
@@ -31,8 +34,8 @@ public class NonViralNameTest extends EntityTestBase {
 	private static Logger logger = Logger.getLogger(NonViralNameTest.class);
 
 	
-	NonViralName nonViralName1;
-	NonViralName nonViralName2;
+	NonViralName<?> nonViralName1;
+	NonViralName<?> nonViralName2;
 	
 	@BeforeClass
 	public static void setUpBeforeClass() {
@@ -92,7 +95,7 @@ public class NonViralNameTest extends EntityTestBase {
 	 */
 	@Test
 	public final void testNonViralNameRank() {
-		NonViralName nonViralName = NonViralName.NewInstance(Rank.GENUS());
+		NonViralName<?> nonViralName = NonViralName.NewInstance(Rank.GENUS());
 		assertNotNull(nonViralName);
 	}
 
@@ -104,7 +107,7 @@ public class NonViralNameTest extends EntityTestBase {
 		Team agent = Team.NewInstance();
 		Article article = Article.NewInstance();
 		HomotypicalGroup homotypicalGroup = HomotypicalGroup.NewInstance();
-		NonViralName nonViralName = new NonViralName(Rank.GENUS(), "Genus", "infraGen", "species", "infraSpec", agent, article, "mikro", homotypicalGroup);
+		NonViralName<?> nonViralName = new NonViralName(Rank.GENUS(), "Genus", "infraGen", "species", "infraSpec", agent, article, "mikro", homotypicalGroup);
 		assertEquals("Genus", nonViralName.getGenusOrUninomial() );
 		assertEquals("infraGen", nonViralName.getInfraGenericEpithet());
 		assertEquals("species", nonViralName.getSpecificEpithet() );
@@ -229,18 +232,43 @@ public class NonViralNameTest extends EntityTestBase {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.name.NonViralName#getAuthorshipCache()}.
-	 */
-	@Test
-	public final void testGetAuthorshipCache() {
-		logger.warn("Not yet implemented"); // TODO
-	}
-
-	/**
 	 * Test method for {@link eu.etaxonomy.cdm.model.name.NonViralName#setAuthorshipCache(java.lang.String)}.
-	 */
+	 * Test method for {@link eu.etaxonomy.cdm.model.name.NonViralName#getAuthorshipCache()}.
+	 * NOT FINISHED YET/
 	@Test
-	public final void testSetAuthorshipCache() {
-		logger.warn("Not yet implemented"); // TODO
+	public final void testGetSetAuthorshipCache() {
+		String strTeam1 = "Team1";
+		String strTeam2 = "Team2";
+		String strTeam3 = "Team3";
+		ReferenceBase<?> ref1 = Generic.NewInstance();
+		ref1.setTitleCache("RefTitle");
+		
+		Team team1 = Team.NewInstance();
+		Team team2 = Team.NewInstance();
+		team1.setNomenclaturalTitle(strTeam1);
+		team2.setNomenclaturalTitle(strTeam2);
+		nonViralName1.setGenusOrUninomial("Abies");
+		nonViralName1.setSpecificEpithet("alba");
+		nonViralName1.setNomenclaturalReference(ref1);
+		Assert.assertEquals("Abies alba", nonViralName1.getNameCache());
+		
+		nonViralName1.setCombinationAuthorTeam(team1);
+		assertEquals(team1, nonViralName1.getCombinationAuthorTeam());
+		assertEquals(strTeam1, nonViralName1.getAuthorshipCache());
+		Assert.assertEquals("Abies alba "+strTeam1, nonViralName1.getTitleCache());
+		Assert.assertEquals("Abies alba "+strTeam1+ ", RefTitle", nonViralName1.getFullTitleCache());
+		
+		nonViralName1.setAuthorshipCache(strTeam2);
+		assertEquals(strTeam2, nonViralName1.getAuthorshipCache());
+		nonViralName1.setGenusOrUninomial("Calendula");
+		Assert.assertEquals("Calendula alba "+strTeam2, nonViralName1.getTitleCache());
+		
+		nonViralName1.setAuthorshipCache(strTeam3);
+		Assert.assertEquals("Calendula alba "+strTeam3, nonViralName1.getTitleCache());
+		
+		Assert.assertEquals("Calendula alba "+strTeam3+ ", RefTitle", nonViralName1.getFullTitleCache());
+		
+		nonViralName1.setCombinationAuthorTeam(null);
+		assertEquals(null, nonViralName1.getCombinationAuthorTeam());
 	}
 }
