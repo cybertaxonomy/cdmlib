@@ -13,6 +13,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -52,6 +53,20 @@ public class CdmUtils {
 			throws IOException{
 		InputStream urlStream = CdmUtils.class.getResourceAsStream("/"+ resourceFileName);
 		return urlStream;
+	}
+	
+	
+	/**
+	 * Returns the an InputStream for a read-only source
+	 * @param resourceFileName the resources path within the classpath(!)
+	 * @return
+	 * @throws IOException
+	 */
+	public static InputStreamReader getUtf8ResourceReader(String resourceFileName) 
+			throws IOException{
+		InputStream urlStream = CdmUtils.class.getResourceAsStream("/"+ resourceFileName);
+		InputStreamReader inputStreamReader = new InputStreamReader(urlStream, "UTF8");
+		return inputStreamReader;
 	}
 
 	
