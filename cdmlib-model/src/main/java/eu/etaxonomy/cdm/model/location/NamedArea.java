@@ -35,7 +35,7 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 
-import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.OrderedTermBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
@@ -196,7 +196,13 @@ public class NamedArea extends OrderedTermBase<NamedArea> {
 	@XmlIDREF
     @XmlSchemaType(name = "IDREF")
 	public NamedArea getPartOf(){
-		return super.getPartOf();
+		Object area = super.getPartOf();
+		
+		if(!(area instanceof NamedArea)){
+			area = HibernateProxyHelper.deproxy(area, NamedArea.class);
+		}
+		
+		return (NamedArea) area;
 	}
 	
 	public void setPartOf(NamedArea partOf){

@@ -11,6 +11,7 @@
 package eu.etaxonomy.cdm.api.service;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
@@ -19,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
@@ -144,7 +146,11 @@ public class LocationServiceImpl extends ServiceBase<DefinedTermBase,IDefinedTer
 
 		List<NamedArea> topLevelTerms = new ArrayList<NamedArea>();
 		
-		for(NamedArea area : vocabulary){			
+//		for(NamedArea area : vocabulary){		
+		Iterator<NamedArea> it = vocabulary.iterator();
+		while(it.hasNext()){
+			
+			NamedArea area =  HibernateProxyHelper.deproxy(it.next(), NamedArea.class);
 			if(area.getPartOf() == null){
 				topLevelTerms.add(area);
 			}
