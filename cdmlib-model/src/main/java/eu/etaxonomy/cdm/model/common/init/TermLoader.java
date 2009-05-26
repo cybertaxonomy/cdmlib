@@ -60,9 +60,10 @@ public class TermLoader implements ITermLoader {
 		
 		try {
 			//Could we use resources?
-			InputStream inputStream = CdmUtils.getReadableResourceStream("terms" + CdmUtils.getFolderSeperator() + filename);
-			if (inputStream == null) {logger.info("inputStream is null");}
-			CSVReader reader = new CSVReader(new InputStreamReader(inputStream));
+			//InputStream inputStream = CdmUtils.getReadableResourceStream("terms" + CdmUtils.getFolderSeperator() + filename);
+			//if (inputStream == null) {logger.info("inputStream is null");}
+			//CSVReader reader = new CSVReader(new InputStreamReader(inputStream, ""));
+			CSVReader reader = new CSVReader(CdmUtils.getUtf8ResourceReader("terms" + CdmUtils.getFolderSeperator() + filename));
 			
 			//vocabulary
 			TermVocabulary<T> voc = null;
