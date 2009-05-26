@@ -234,7 +234,8 @@ public class NonViralNameTest extends EntityTestBase {
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.model.name.NonViralName#setAuthorshipCache(java.lang.String)}.
 	 * Test method for {@link eu.etaxonomy.cdm.model.name.NonViralName#getAuthorshipCache()}.
-	 * NOT FINISHED YET/
+	 * NOT FINISHED YET
+	 */
 	@Test
 	public final void testGetSetAuthorshipCache() {
 		String strTeam1 = "Team1";
