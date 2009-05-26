@@ -282,7 +282,17 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 		if (nonViralName.isProtectedAuthorshipCache() == true) {
 			return nonViralName.getAuthorshipCache();
 		}
-		
+		return getNonCacheAuthorshipCache(nonViralName);
+
+	}
+	
+	/**
+	 * Returns the authorshipcache string for the atomized authorship fields. Does not use the authorshipfield.
+	 * @throws NullPointerException if nonViralName is null.
+	 * @param nonViralName
+	 * @return
+	 */
+	protected String getNonCacheAuthorshipCache(T nonViralName){
 		String result = "";
 		INomenclaturalAuthor combinationAuthor = nonViralName.getCombinationAuthorTeam();
 		INomenclaturalAuthor exCombinationAuthor = nonViralName.getExCombinationAuthorTeam();

@@ -9,14 +9,14 @@
 
 package eu.etaxonomy.cdm.strategy.cache.name;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import org.apache.log4j.Logger;
-import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -27,8 +27,6 @@ import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
-import eu.etaxonomy.cdm.strategy.cache.name.NonViralNameDefaultCacheStrategy;
-import eu.etaxonomy.cdm.strategy.cache.name.ZooNameDefaultCacheStrategy;
 
 /**
  * @author a.mueller
@@ -165,7 +163,17 @@ public class ZoologicalNameCacheStrategyTest {
 		subSpeciesName.setExBasionymAuthorTeam(exBasAuthor);
 		assertEquals("(" + exBasAuthorString + " ex " +  basAuthorString + ", " + originalPublicationYear  + ")" +  " " + exAuthorString + " ex " + authorString  + ", " + publicationYear   , strategy.getAuthorshipCache(subSpeciesName));
 		
-		assertNull(subSpeciesNameString, strategy.getAuthorshipCache(null));
+		//cache
+		subSpeciesName.setAuthorshipCache(authorString);
+		assertEquals("AuthorshipCache must be updated", authorString, subSpeciesName.getAuthorshipCache());
+		assertEquals("TitleCache must be updated", "Abies alba subsp. beta " + authorString, subSpeciesName.getTitleCache());
+		subSpeciesName.setProtectedAuthorshipCache(false);
+		//TODO make this not needed
+		subSpeciesName.setTitleCache(null, false);
+		assertEquals("TitleCache must be updated", "Abies alba subsp. beta " + "(ExBas. N. ex Basio, A., 1860) Exaut. ex L., 1928", subSpeciesName.getTitleCache());
+		
+		assertNull("Authorship cache for null must return null", strategy.getAuthorshipCache(null));
+		
 	}
 	
 	/**
@@ -215,6 +223,11 @@ public class ZoologicalNameCacheStrategyTest {
 		assertEquals("Abies alba alba", strategy.getNameCache(subSpeciesName));
 		assertEquals("Abies alba L. subsp. alba", strategy.getTitleCache(subSpeciesName));
 	}
+	
+	
+	
+	
+	
 	
 	protected Method getMethod(Class clazz, String methodName, Class paramClazzes){
 		Method method;
