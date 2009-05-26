@@ -72,11 +72,16 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
 		return ((Long)query.uniqueResult()).intValue();
 	}
 
-	public <TYPE extends DescriptionElementBase> int countDescriptionElements(DescriptionBase description, Set<Feature> features, Class<TYPE> type) {
+	public <TYPE extends DescriptionElementBase> int countDescriptionElements(DescriptionBase description, Set<Feature> features, Class<TYPE> clazz) {
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
-		    Criteria criteria = getSession().createCriteria(type);
-		
+			Criteria criteria = null;
+			if(clazz == null) {
+		        criteria = getSession().createCriteria(DescriptionElementBase.class);
+			} else {
+			    criteria = getSession().createCriteria(clazz);	
+			}	
+			
 		    if(description != null) {
 		        criteria.add(Restrictions.eq("inDescription", description));
 		    }
@@ -92,7 +97,12 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
 			if(features != null && !features.isEmpty()) {
 				Integer count = 0;
 			    for(Feature f : features) {
-			        AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(type,auditEvent.getRevisionNumber());
+			        AuditQuery query = null;
+			        if(clazz == null) {
+			        	query = getAuditReader().createQuery().forEntitiesAtRevision(DescriptionElementBase.class,auditEvent.getRevisionNumber());
+			        } else {
+			        	query = getAuditReader().createQuery().forEntitiesAtRevision(clazz,auditEvent.getRevisionNumber());
+			        }
 			    
 			        if(description != null) {
 			    	    query.add(AuditEntity.relatedId("inDescription").eq(description.getId()));
@@ -105,7 +115,12 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
 			    
 			    return count;
 			} else {
-				AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(type,auditEvent.getRevisionNumber());
+				AuditQuery query = null;
+		        if(clazz == null) {
+		        	query = getAuditReader().createQuery().forEntitiesAtRevision(DescriptionElementBase.class,auditEvent.getRevisionNumber());
+		        } else {
+		        	query = getAuditReader().createQuery().forEntitiesAtRevision(clazz,auditEvent.getRevisionNumber());
+		        }
 			    
 		        if(description != null) {
 		    	    query.add(AuditEntity.relatedId("inDescription").eq(description.getId()));
@@ -189,10 +204,15 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
 		}
 	}
 
-	public <TYPE extends DescriptionElementBase> List<TYPE> getDescriptionElements(DescriptionBase description, Set<Feature> features,	Class<TYPE> type, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
+	public <TYPE extends DescriptionElementBase> List<TYPE> getDescriptionElements(DescriptionBase description, Set<Feature> features,	Class<TYPE> clazz, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
-            Criteria criteria = getSession().createCriteria(type);
+            Criteria criteria = null;
+            if(clazz == null) {
+            	criteria = getSession().createCriteria(DescriptionElementBase.class);
+            } else {
+            	criteria = getSession().createCriteria(clazz);
+            }
 		
             if(description != null) {
 		        criteria.add(Restrictions.eq("inDescription", description));
@@ -219,8 +239,13 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
 			if(features != null && !features.isEmpty()) {
 				
 			    for(Feature f : features) {
-			        AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(type,auditEvent.getRevisionNumber());
-			    
+			    	AuditQuery query = null;
+			    	if(clazz == null) {
+			            query = getAuditReader().createQuery().forEntitiesAtRevision(DescriptionElementBase.class,auditEvent.getRevisionNumber());
+			    	} else {
+			    		query = getAuditReader().createQuery().forEntitiesAtRevision(clazz,auditEvent.getRevisionNumber());
+			    	}
+			    	
 			        if(description != null) {
 			    	    query.add(AuditEntity.relatedId("inDescription").eq(description.getId()));
 			        }
@@ -229,7 +254,12 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
 			        result.addAll((List<TYPE>)query.getResultList());
 			    }
 			} else {
-				AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(type,auditEvent.getRevisionNumber());
+				AuditQuery query = null;
+		    	if(clazz == null) {
+		            query = getAuditReader().createQuery().forEntitiesAtRevision(DescriptionElementBase.class,auditEvent.getRevisionNumber());
+		    	} else {
+		    		query = getAuditReader().createQuery().forEntitiesAtRevision(clazz,auditEvent.getRevisionNumber());
+		    	}
 			    
 		        if(description != null) {
 		    	    query.add(AuditEntity.relatedId("inDescription").eq(description.getId()));
