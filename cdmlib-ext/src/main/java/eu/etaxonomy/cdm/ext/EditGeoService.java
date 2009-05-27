@@ -55,7 +55,6 @@ public class EditGeoService {
 	 * If null 'earth' is taken as default. 
 	 * @return
 	 */
-	//TODO move to an other place -> e.g. service layer
 	@Transient
 	public static String getEditGeoServiceUrlParameterString(
 			Set<Distribution> distributions, 
