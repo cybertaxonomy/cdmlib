@@ -203,6 +203,7 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 		result &= checkPartOfArticle(bmiConfig);
 		result &= checkJournalsWithSeries(bmiConfig);
 		result &= checkObligatoryAttributes(bmiConfig);
+		result &= checkPartOfWithVolume(bmiConfig);
 		
 		if (result == false ){System.out.println("========================================================");}
 		
@@ -1124,6 +1125,45 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 			return false;
 		}
 	}
+	
+	private static boolean checkPartOfWithVolume(BerlinModelImportConfigurator bmiConfig){
+		try {
+			boolean result = true;
+			Source source = bmiConfig.getSource();
+			String strQueryArticlesWithoutJournal = "SELECT * " +
+					" FROM Reference  INNER JOIN RefCategory ON Reference.RefCategoryFk = RefCategory.RefCategoryId " + 
+					" WHERE (RefCategoryFk = 2) AND (Volume IS NOT NULL) " ; 
+			ResultSet rs = source.getResultSet(strQueryArticlesWithoutJournal);
+			boolean firstRow = true;
+			while (rs.next()){
+				if (firstRow){
+					System.out.println("========================================================");
+					logger.warn("There are PartOfOtherTitles with volumes !");
+					System.out.println("========================================================");
+				}
+				int refId = rs.getInt("RefId");
+				String cat = rs.getString("RefCategoryAbbrev");
+				String nomRefCache = rs.getString("nomRefCache");
+				String refCache = rs.getString("refCache");
+				String title = rs.getString("title");
+				String nomTitleAbbrev = rs.getString("nomTitleAbbrev");
+				
+				System.out.println("RefID:" + refId + "\n  cat: " + cat + 
+						"\n  refCache: " + refCache + "\n  nomRefCache: " + nomRefCache + 
+						"\n  title: " + title +  "\n  nomTitleAbbrev: " + nomTitleAbbrev +
+						"" );
+				result = firstRow = false;
+			}
+			
+			return result;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
+	
+	
 	
 	
 //********************************** MAIN ************************************************
