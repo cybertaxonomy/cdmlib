@@ -9,8 +9,6 @@
 
 package eu.etaxonomy.cdm.model.common.init;
 
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -23,7 +21,6 @@ import org.springframework.stereotype.Component;
 import au.com.bytecode.opencsv.CSVReader;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
-import eu.etaxonomy.cdm.model.common.IDefinedTerm;
 import eu.etaxonomy.cdm.model.common.OrderedTermBase;
 import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;

@@ -14,8 +14,8 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.model.common.init.ITermLoader;
 import eu.etaxonomy.cdm.model.common.init.ITermInitializer;
+import eu.etaxonomy.cdm.model.common.init.ITermLoader;
 import eu.etaxonomy.cdm.model.common.init.TermLoader;
 import eu.etaxonomy.cdm.model.description.AbsenceTerm;
 import eu.etaxonomy.cdm.model.description.Feature;
@@ -23,7 +23,6 @@ import eu.etaxonomy.cdm.model.description.PresenceTerm;
 import eu.etaxonomy.cdm.model.description.Sex;
 import eu.etaxonomy.cdm.model.description.StatisticalMeasure;
 import eu.etaxonomy.cdm.model.location.Continent;
-import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
 import eu.etaxonomy.cdm.model.location.TdwgArea;
@@ -32,7 +31,6 @@ import eu.etaxonomy.cdm.model.media.RightsTerm;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
-import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;

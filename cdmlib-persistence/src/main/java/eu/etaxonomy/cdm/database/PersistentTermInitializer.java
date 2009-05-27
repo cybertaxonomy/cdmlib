@@ -24,11 +24,11 @@ import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.init.TermLoader;
-import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ITermVocabularyDao;
 
 /**
@@ -85,17 +85,25 @@ public class PersistentTermInitializer extends DefaultTermInitializer {
 		} else {
 			Map<UUID,DefinedTermBase> terms = new HashMap<UUID,DefinedTermBase>();
 			logger.info("PersistentTermInitializer.omit == false, initializing " + classesToInitialize.length + " term classes");
+			TransactionStatus txStatus = transactionManager.getTransaction(txDefinition);
 			for(Class clazz : classesToInitialize) {
 				UUID vocabularyUuid = firstPass(clazz,terms);
 				secondPass(clazz,vocabularyUuid,terms);
 			}
-			
+			transactionManager.commit(txStatus);
 		}
 		logger.debug("PersistentTermInitializer initialize end ...");
 	}	
 	
+	/**
+	 * Initializes the static fields of the <code>TermVocabulary</code> classes.
+	 * 
+	 * @param clazz the <code>Class</code> of the vocabulary
+	 * @param vocabularyUuid the <code>UUID</code> of the vocabulary
+	 * @param termsa <code>Map</code> containing all already 
+	 * 						 loaded terms with their <code>UUID</code> as key
+	 */
 	protected void secondPass(Class clazz, UUID vocabularyUuid,Map<UUID,DefinedTermBase> terms) {
-		TransactionStatus txStatus = transactionManager.getTransaction(txDefinition);
 		logger.info("Loading vocabulary for class " + clazz.getSimpleName() + " with uuid " + vocabularyUuid );
 		
 		TermVocabulary persistedVocabulary = vocabularyDao.findByUuid(vocabularyUuid);
@@ -108,18 +116,19 @@ public class PersistentTermInitializer extends DefaultTermInitializer {
 		
 		logger.debug("Setting defined Terms for class " + clazz.getSimpleName());
 		super.setDefinedTerms(clazz, persistedVocabulary);
-
-		transactionManager.commit(txStatus);
 	}
  
 	/**
-	 * T
-	 * @param clazz
-	 * @param persistedTerms
-	 * @return
+	 * This method loads the vocabularies from CSV files and compares them to the vocabularies
+	 * already in database. Non-existing vocabularies will be created and vocabularies with missing 
+	 * terms will be updated.
+	 * 
+	 * @param clazz the <code>Class</code> of the vocabulary
+	 * @param persistedTerms a <code>Map</code> containing all already 
+	 * 						 loaded terms with their <code>UUID</code> as key
+	 * @return the <code>UUID</code> of the loaded vocabulary as found in CSV file
 	 */
 	public UUID firstPass(Class clazz, Map<UUID, DefinedTermBase> persistedTerms) {
-		TransactionStatus txStatus = transactionManager.getTransaction(txDefinition);
 		logger.debug("loading terms for " + clazz.getSimpleName());
 		Map<UUID,DefinedTermBase> terms = new HashMap<UUID,DefinedTermBase>();
 		
@@ -131,12 +140,13 @@ public class PersistentTermInitializer extends DefaultTermInitializer {
 		
 		UUID vocabularyUuid = loadedVocabulary.getUuid();
 		
+		
 		logger.debug("loading vocabulary " + vocabularyUuid);
 		TermVocabulary persistedVocabulary = vocabularyDao.findByUuid(vocabularyUuid);
 		if(persistedVocabulary == null) { // i.e. there is no persisted vocabulary
 			logger.debug("vocabulary " + vocabularyUuid + " does not exist - saving");
 			saveVocabulary(loadedVocabulary);
-		} else {
+		}else {
 			logger.debug("vocabulary " + vocabularyUuid + " does exist and already has " + persistedVocabulary.size() + " terms");
 		    boolean persistedVocabularyHasMissingTerms = false;
 		    for(Object t : loadedVocabulary.getTerms()) {				
@@ -150,7 +160,6 @@ public class PersistentTermInitializer extends DefaultTermInitializer {
 		    	updateVocabulary(persistedVocabulary);
 		    }
 		}
-		transactionManager.commit(txStatus);
 		return vocabularyUuid;
 	}
 

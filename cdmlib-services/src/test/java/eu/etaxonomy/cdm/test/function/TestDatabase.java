@@ -306,8 +306,7 @@ public class TestDatabase {
 			logger.error("defined terms not found");
 		}
 	}
-
-	
+		
 	
 	
 	public static ICdmDataSource cdm_test_anahit2(){

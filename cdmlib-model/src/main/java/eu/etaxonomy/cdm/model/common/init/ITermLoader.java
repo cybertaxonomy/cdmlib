@@ -9,12 +9,10 @@
 
 package eu.etaxonomy.cdm.model.common.init;
 
-import java.io.IOException;
 import java.util.Map;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
-import eu.etaxonomy.cdm.model.common.IDefinedTerm;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 
 public interface ITermLoader {
