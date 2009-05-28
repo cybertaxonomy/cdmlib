@@ -281,6 +281,9 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName>
 		nameToBeFilled.setHasProblem(true);
 		nameToBeFilled.setTitleCache(fullReferenceString);
 		nameToBeFilled.setFullTitleCache(fullReferenceString);
+		// FIXME Quick fix, otherwise search would not deilver results for unparsable names
+		nameToBeFilled.setNameCache(fullReferenceString);
+		// END
 		nameToBeFilled.setProblemStarts(start);
 		nameToBeFilled.setProblemEnds(fullReferenceString.length());
 		logger.info("no applicable parsing rule could be found for \"" + fullReferenceString + "\"");    
@@ -785,6 +788,9 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName>
 				}else{
 					nameToBeFilled.setHasProblem(true);
 					nameToBeFilled.setTitleCache(fullNameString);
+					// FIXME Quick fix, otherwise search would not deilver results for unparsable names
+					nameToBeFilled.setNameCache(fullNameString);
+					// END
 					logger.info("Name string " + fullNameString + " could not be parsed because UnnnamedNamePhrase is not yet implemented!");
 				}
 			}
@@ -792,6 +798,9 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName>
 			else{ 
 				nameToBeFilled.setHasProblem(true);
 				nameToBeFilled.setTitleCache(fullNameString);
+				// FIXME Quick fix, otherwise search would not deilver results for unparsable names
+				nameToBeFilled.setNameCache(fullNameString);
+				// END
 				logger.info("no applicable parsing rule could be found for \"" + fullNameString + "\"");
 		    }
 			//authors
@@ -804,6 +813,9 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName>
 				} catch (StringNotParsableException e) {
 					nameToBeFilled.setHasProblem(true);
 					nameToBeFilled.setTitleCache(fullNameString);
+					// FIXME Quick fix, otherwise search would not deilver results for unparsable names
+					nameToBeFilled.setNameCache(fullNameString);
+					// END
 					logger.info("no applicable parsing rule could be found for \"" + fullNameString + "\"");;
 				}
 				nameToBeFilled.setCombinationAuthorTeam(authors[0]);
@@ -824,6 +836,9 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName>
 		} catch (UnknownCdmTypeException e) {
 			nameToBeFilled.setHasProblem(true);
 			nameToBeFilled.setTitleCache(fullNameString);
+			// FIXME Quick fix, otherwise search would not deilver results for unparsable names
+			nameToBeFilled.setNameCache(fullNameString);
+			// END
 			logger.info("unknown rank (" + (rank == null? "null":rank) + ") or abbreviation in string " +  fullNameString);
 			//return result;
 			return;
