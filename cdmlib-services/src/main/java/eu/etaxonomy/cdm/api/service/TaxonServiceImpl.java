@@ -52,6 +52,7 @@ import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.fetch.CdmFetch;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
+import eu.etaxonomy.cdm.persistence.query.SelectMode;
 
 
 @Service
@@ -343,41 +344,48 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 	public Pager<IdentifiableEntity> findTaxaAndNames(ITaxonServiceConfigurator configurator) {
 		
 		List<IdentifiableEntity> results = new ArrayList<IdentifiableEntity>();
-		int numberOfResults = 0;
+		int numberOfResults = 0; // overall number of results (as opposed to number of results per page)
+		List<TaxonBase> taxa = null; 
 
-		// TODO: Implement matching count-methods for the search methods
-
-		if(configurator.isDoTaxa()) {
-			int numberTaxaResults = dao.countTaxaByName(configurator.getSearchString(), configurator.getMatchMode(),
-					true);
-//			int numberTaxaResults = dao.countTaxaByName(configurator.getSearchString(), true, configurator.getSec());
-			List<TaxonBase> taxa =  
-				dao.getTaxaByName(configurator.getSearchString(), configurator.getMatchMode(),
-						true, configurator.getPageSize(), configurator.getPageNumber());
-//			dao.getTaxaByName(configurator.getSearchString(), true, configurator.getSec());
-			if (logger.isDebugEnabled()) { logger.debug(taxa.size() + " matching taxa counted"); }
-			if (taxa.size() > 0) {
-				results.addAll(taxa);
-				numberOfResults += numberTaxaResults;
-			}
+		// Taxa and synonyms
+		
+		int numberTaxaResults = 0;
+		
+		if (configurator.isDoTaxa() && configurator.isDoSynonyms()) {
+			taxa = dao.getTaxaByName(configurator.getSearchString(), 
+					configurator.getMatchMode(), SelectMode.ALL, configurator.getSec(),
+						configurator.getPageSize(), configurator.getPageNumber());
+			numberTaxaResults = 
+				dao.countTaxaByName(configurator.getSearchString(), 
+						configurator.getMatchMode(), SelectMode.ALL, configurator.getSec());
+			
+		} else if(configurator.isDoTaxa()) {
+			taxa = dao.getTaxaByName(configurator.getSearchString(), 
+					configurator.getMatchMode(), SelectMode.TAXA, configurator.getSec(),
+					configurator.getPageSize(), configurator.getPageNumber());
+			numberTaxaResults = 
+				dao.countTaxaByName(configurator.getSearchString(), 
+						configurator.getMatchMode(), SelectMode.TAXA, configurator.getSec());
+			
+		} else if (configurator.isDoSynonyms()) {
+			taxa = dao.getTaxaByName(configurator.getSearchString(), 
+					configurator.getMatchMode(), SelectMode.SYNONYMS, configurator.getSec(),
+					configurator.getPageSize(), configurator.getPageNumber());
+			numberTaxaResults = 
+				dao.countTaxaByName(configurator.getSearchString(), 
+						configurator.getMatchMode(), SelectMode.SYNONYMS, configurator.getSec());
 		}
 
-		if(configurator.isDoSynonyms()) {
-			int numberSynonymResults = dao.countTaxaByName(configurator.getSearchString(), configurator.getMatchMode(),
-					false);
-			List<TaxonBase> synonyms = 
-				dao.getTaxaByName(configurator.getSearchString(), configurator.getMatchMode(),
-						false, configurator.getPageSize(), configurator.getPageNumber());
-//			dao.getTaxaByName(configurator.getSearchString(), false, configurator.getSec());
-			if (logger.isDebugEnabled()) { logger.debug(synonyms.size() + " matching synonym(s) counted"); }
-			if (synonyms.size() > 0) {
-				results.addAll(synonyms);
-				numberOfResults += numberSynonymResults;
-			}
-		}
-
+		if (logger.isDebugEnabled()) { logger.debug(numberTaxaResults + " matching taxa counted"); }
+		
+		results.addAll(taxa);
+		
+		numberOfResults += numberTaxaResults;
+		
+		// Names without taxa 
+		
 		if (configurator.isDoNamesWithoutTaxa()) {
-			int numberNameResults = nameDao.countByName(configurator.getSearchString(), configurator.getMatchMode(), null);
+            int numberNameResults = 0;
 			List<? extends TaxonNameBase<?,?>> names = 
 				nameDao.findByName(configurator.getSearchString(), configurator.getMatchMode(), 
 						configurator.getPageSize(), configurator.getPageNumber(), null);
@@ -394,9 +402,10 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 			}
 		}
 		
+		// Taxa from common names
+		
 		if (configurator.isDoTaxaByCommonNames()) {
-			int numberCommonNameResults = descriptionDao.countDescriptionByCommonName(configurator.getSearchString(), 
-					configurator.getMatchMode());
+			int numberCommonNameResults = 0;
 			List<CommonTaxonName> commonTaxonNames = 
 				descriptionDao.searchDescriptionByCommonName(configurator.getSearchString(), 
 						configurator.getMatchMode(), configurator.getPageSize(), configurator.getPageNumber());
@@ -406,9 +415,13 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 					DescriptionBase description = commonTaxonName.getInDescription();
 					description = HibernateProxyHelper.deproxy(description, DescriptionBase.class);
 					if (description instanceof TaxonDescription) {
-						Taxon taxon = ((TaxonDescription)description).getTaxon();
-						results.add(taxon);
-						numberCommonNameResults++;
+						TaxonDescription taxonDescription = HibernateProxyHelper.deproxy(description, TaxonDescription.class);
+						Taxon taxon = taxonDescription.getTaxon();
+						taxon = HibernateProxyHelper.deproxy(taxon, Taxon.class);
+						if (!results.contains(taxon) && !taxon.isMisappliedName()) {
+							results.add(taxon);
+							numberCommonNameResults++;
+						}
 					} else {
 						logger.warn("Description of " + commonTaxonName.getName() + " is not an instance of TaxonDescription");
 					}
