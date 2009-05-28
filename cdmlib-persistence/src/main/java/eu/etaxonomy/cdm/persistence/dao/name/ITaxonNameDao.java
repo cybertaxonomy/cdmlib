@@ -186,6 +186,15 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonNameBase> {
 			String specificEpithet, String infraspecificEpithet, Rank rank);
 
 	/**
+	 * Returns a count of TaxonNameBase instances that match the properties passed
+	 * 
+	 * @param queryString
+	 * @param matchMode
+	 * @param criteria
+	 */
+	public int countNames(String queryString, MatchMode matchMode, List<Criterion> criteria);
+
+	/**
 	 * Returns a List of TaxonNameBase instances which nameCache matches the
 	 * query string
 	 * 

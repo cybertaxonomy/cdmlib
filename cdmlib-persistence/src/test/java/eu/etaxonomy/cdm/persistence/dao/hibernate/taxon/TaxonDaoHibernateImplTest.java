@@ -21,7 +21,9 @@ import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.dbunit.annotation.ExpectedDataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
+import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
@@ -37,6 +39,7 @@ import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.fetch.CdmFetch;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
+import eu.etaxonomy.cdm.persistence.query.SelectMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
@@ -156,7 +159,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 	public void testGetTaxaByName() {
 		ReferenceBase sec = referenceDao.findById(1);
 		assert sec != null : "sec must exist";
-		
+
 		List<TaxonBase> results = taxonDao.getTaxaByName("Aus", sec);
 		assertNotNull("getTaxaByName should return a List", results);
 		//assertFalse("The list should not be empty", results.isEmpty());
@@ -166,17 +169,34 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 				true, null, null);
 		assertNotNull("getTaxaByName should return a List", results);
 		assertTrue(results.size() == 9);
-		
+
+		if (logger.isDebugEnabled()) {
+			for (int i = 0; i < results.size(); i++) {
+				String nameCache = "";
+				TaxonNameBase<?,?> taxonNameBase= ((TaxonBase)results.get(i)).getName();
+				nameCache = ((NonViralName<?>)taxonNameBase).getNameCache();
+				logger.debug(results.get(i).getClass() + "(" + i +")" + 
+						": Name Cache = " + nameCache + ", Title Cache = " + results.get(i).getTitleCache());
+			}
+		}
+//		assertEquals(results.get(0).getTitleCache(), "Abies sec. ???");
+//		assertEquals(results.get(1).getTitleCache(), "Abies Mill.");
+//		assertEquals(results.get(2).getTitleCache(), "Abies mill. sec. ???");
+//		assertEquals(results.get(3).getTitleCache(), "Abies alba sec. ???");
+//		assertEquals(results.get(4).getTitleCache(), "Abies alba Michx. sec. ???");
+//		assertEquals(results.get(5).getTitleCache(), "Abies alba Mill. sec. ???");
+
 		results = taxonDao.getTaxaByName("A", MatchMode.BEGINNING, 
 				true, null, null);
 		assertNotNull("getTaxaByName should return a List", results);
 		assertTrue(results.size() == 9);
-		
+
 		results = taxonDao.getTaxaByName("Aus", MatchMode.EXACT, 
 				true, null, null);
 		assertNotNull("getTaxaByName should return a List", results);
 		assertTrue(results.size() == 1);
 	}	
+
 	
 	@Test
 	@DataSet
@@ -206,6 +226,24 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 		
 		int numberOfRelatedTaxa = taxonDao.countRelatedTaxa(taxon,TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN());
 		assertEquals("countRelatedTaxa should return 23", 23, numberOfRelatedTaxa);
+	}
+	
+	@Test
+	@DataSet
+	public void testCountTaxaByName() {
+		int numberOfTaxa = taxonDao.countTaxaByName("A*", MatchMode.BEGINNING, true);
+		assertEquals(numberOfTaxa, 9);
+		numberOfTaxa = taxonDao.countTaxaByName("A*", MatchMode.BEGINNING, SelectMode.TAXA);
+		assertEquals(numberOfTaxa, 9);
+		numberOfTaxa = taxonDao.countTaxaByName("A*", MatchMode.BEGINNING, false);
+		assertEquals(numberOfTaxa, 3);
+		numberOfTaxa = taxonDao.countTaxaByName("A*", MatchMode.BEGINNING, SelectMode.SYNONYMS);
+		assertEquals(numberOfTaxa, 3);
+		numberOfTaxa = taxonDao.countTaxaByName("A*", MatchMode.BEGINNING, SelectMode.ALL);
+		assertEquals(numberOfTaxa, 12);
+		ReferenceBase reference = referenceDao.findByUuid(UUID.fromString("596b1325-be50-4b0a-9aa2-3ecd610215f2"));
+		numberOfTaxa = taxonDao.countTaxaByName("A*", MatchMode.BEGINNING, SelectMode.ALL, reference);
+		assertEquals(numberOfTaxa, 2);
 	}
 	
 	@Test

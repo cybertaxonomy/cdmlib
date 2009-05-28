@@ -35,6 +35,7 @@ import org.hibernate.LazyInitializationException;
 import org.hibernate.Query;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.envers.query.AuditEntity;
@@ -82,6 +83,7 @@ import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.fetch.CdmFetch;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
+import eu.etaxonomy.cdm.persistence.query.SelectMode;
 
 
 /**
@@ -212,8 +214,6 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 			criteria.add(Restrictions.eq("sec", sec ) );
 		}
 
-		// FIXME: sec restriction caused problems in cich image import: results was empty
-		
 		if (queryString != null) {
 			criteria.add(Restrictions.ilike("name.nameCache", queryString));
 		}
@@ -221,8 +221,94 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		return (List<TaxonBase>)criteria.list();
 	}
 
+	public List<TaxonBase> getTaxaByName(String queryString, MatchMode matchMode, SelectMode selectMode,
+			Integer pageSize, Integer pageNumber) {
+		
+		return getTaxaByName(queryString, matchMode, selectMode, null, pageSize, pageNumber);
+	}
+	
 	public List<TaxonBase> getTaxaByName(String queryString, MatchMode matchMode, 
 			Boolean accepted, Integer pageSize, Integer pageNumber) {
+		
+		if (accepted == true) {
+			return getTaxaByName(queryString, matchMode, SelectMode.TAXA, pageSize, pageNumber);
+		} else {
+			return getTaxaByName(queryString, matchMode, SelectMode.SYNONYMS, pageSize, pageNumber);
+		}
+	}
+	
+	
+	public List<TaxonBase> getTaxaByName(String queryString, MatchMode matchMode, SelectMode selectMode,
+			ReferenceBase sec, Integer pageSize, Integer pageNumber) {
+
+		Criteria criteria = null;
+		Class<?> clazz = selectMode.criteria();
+		criteria = getSession().createCriteria(clazz);
+		
+		criteria.setFetchMode( "name", FetchMode.JOIN );
+		criteria.createAlias("name", "name");
+		
+		if (queryString != null) {
+			String hqlQueryString = matchMode.queryStringFrom(queryString);
+			if (matchMode == MatchMode.EXACT) {
+				criteria.add(Restrictions.eq("name.nameCache", hqlQueryString));
+			} else {
+				criteria.add(Restrictions.ilike("name.nameCache", hqlQueryString));
+			}
+		}
+		
+		if (sec != null && sec.getId() != 0) {
+			criteria.add(Restrictions.eq("sec", sec ) );
+		}
+		
+		criteria.addOrder(Order.asc("name.nameCache"));
+		 
+		if(pageSize != null) {
+			criteria.setMaxResults(pageSize);
+			if(pageNumber != null) {
+				criteria.setFirstResult(pageNumber * pageSize);
+			}
+		}
+
+		List<TaxonBase> results = criteria.list();
+		return results;
+		
+	}
+	
+	public Integer countTaxaByName(String queryString, MatchMode matchMode, SelectMode selectMode) {
+		
+		return countTaxaByName(queryString, matchMode, selectMode, null);
+	}
+
+	public Integer countTaxaByName(String queryString, 
+			MatchMode matchMode, SelectMode selectMode, ReferenceBase sec) {
+
+		Criteria criteria = null;
+		Class<?> clazz = selectMode.criteria();
+		criteria = getSession().createCriteria(clazz);
+
+		criteria.setFetchMode( "name", FetchMode.JOIN );
+		criteria.createAlias("name", "name");
+
+		if (queryString != null) {
+			String hqlQueryString = matchMode.queryStringFrom(queryString);
+			if (matchMode == MatchMode.EXACT) {
+				criteria.add(Restrictions.eq("name.nameCache", hqlQueryString));
+			} else {
+				criteria.add(Restrictions.ilike("name.nameCache", hqlQueryString));
+			}
+		}
+
+		if (sec != null && sec.getId() != 0) {
+			criteria.add(Restrictions.eq("sec", sec ) );
+		}
+
+		criteria.setProjection(Projections.projectionList().add(Projections.rowCount()));
+		return (Integer)criteria.uniqueResult();
+
+	}
+	
+	public Integer countTaxaByName(String queryString, MatchMode matchMode, Boolean accepted) {
 		
 		Criteria criteria = null;
 		if (accepted == true) {
@@ -234,29 +320,14 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		criteria.setFetchMode( "name", FetchMode.JOIN );
 		criteria.createAlias("name", "name");
 		
-		String hqlQueryString = matchMode.queryStringFrom(queryString);
 		if (matchMode == MatchMode.EXACT) {
-			criteria.add(Restrictions.eq("name.nameCache", hqlQueryString));
+			criteria.add(Restrictions.eq("name.nameCache", matchMode.queryStringFrom(queryString)));
 		} else {
-			criteria.add(Restrictions.ilike("name.nameCache", hqlQueryString));
+			criteria.add(Restrictions.ilike("name.nameCache", matchMode.queryStringFrom(queryString)));
 		}
-				
-		if(pageSize != null) {
-			criteria.setMaxResults(pageSize);
-			if(pageNumber != null) {
-				criteria.setFirstResult(pageNumber * pageSize);
-			}
-		}
-
-		List<TaxonBase> results = criteria.list();
-		return results;
-	}
-	
-	public Integer countTaxaByName(String queryString, MatchMode matchMode, 
-			Boolean accepted) {
-		//TODO improve performance
-		List<TaxonBase> restultSet = getTaxaByName(queryString, matchMode, accepted, null, null);
-		return restultSet.size();
+		
+		criteria.setProjection(Projections.projectionList().add(Projections.rowCount()));
+		return (Integer)criteria.uniqueResult();
 	}
 	
 

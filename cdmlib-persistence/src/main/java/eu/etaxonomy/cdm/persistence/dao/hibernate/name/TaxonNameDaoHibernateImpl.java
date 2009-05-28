@@ -94,6 +94,24 @@ extends IdentifiableDaoBase<TaxonNameBase> implements ITaxonNameDao {
 		return (Integer)criteria.uniqueResult();
 	}
 
+	public int countNames(String queryString, MatchMode matchMode, List<Criterion> criteria) {
+		
+		Criteria crit = getSession().createCriteria(type);
+		if (matchMode == MatchMode.EXACT) {
+			crit.add(Restrictions.eq("nameCache", matchMode.queryStringFrom(queryString)));
+		} else {
+			crit.add(Restrictions.ilike("nameCache", matchMode.queryStringFrom(queryString)));
+		}
+		if(criteria != null) {
+			for (Criterion criterion : criteria) {
+				crit.add(criterion);
+			}
+		}
+
+		crit.setProjection(Projections.projectionList().add(Projections.rowCount()));
+		return (Integer)crit.uniqueResult();
+	}
+	
 	public int countNames(String genusOrUninomial, String infraGenericEpithet,	String specificEpithet, String infraSpecificEpithet, Rank rank) {
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
