@@ -43,10 +43,16 @@ public class FaunaEuropaeaActivator {
 	static final boolean doTaxa = true;
 	static final boolean doSynonyms = true;
 	static final boolean doRelTaxa = true;
-	static final boolean doDistributions = false;
+	static final boolean doDistributions = true;
 
 // ************************ NONE **************************************** //
 		
+//	static final boolean doAuthors = false;
+//	static final DO_REFERENCES doReferences =  DO_REFERENCES.NONE;
+//	static final boolean doTaxa = false;
+//	static final boolean doSynonyms = false;
+//	static final boolean doRelTaxa = false;
+//	static final boolean doDistributions = false;
 	
 	
 	/**
