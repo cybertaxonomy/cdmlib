@@ -30,9 +30,10 @@ public class FaunaEuropaeaImportConfigurator extends ImportConfiguratorBase impl
 	@SuppressWarnings("unchecked")
 	protected void makeIoClassList() {
 		ioClassList = new Class[] {
-//				FaunaEuropaeaAuthorImport.class,
-				FaunaEuropaeaTaxonImport.class,
-				FaunaEuropaeaDistributionImport.class
+				FaunaEuropaeaAuthorImport.class,
+				FaunaEuropaeaReferenceImport.class,
+				FaunaEuropaeaTaxonImport.class
+//				FaunaEuropaeaDistributionImport.class
 		};
 	};
 	
@@ -80,7 +81,7 @@ public class FaunaEuropaeaImportConfigurator extends ImportConfiguratorBase impl
 	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#getSourceNameString()
 	 */
 	public String getSourceNameString() {
-		if (this.getSource() == null){
+		if (this.getSource() == null) {
 			return null;
 		}else{
 			return this.getSource().toString();

@@ -59,7 +59,7 @@ public class MapWrapper<T extends CdmBase> {
 	}
 	
 	/**
-	 * Returns all values that are either stored in the wrapper or the the database.
+	 * Returns all values that are either stored in the wrapper or the database.
 	 * If <code>service</code> is null then only the elements stored in the wrapper are returned. 
 	 * @return
 	 */
@@ -115,4 +115,25 @@ public class MapWrapper<T extends CdmBase> {
 			}
 			return true;
 	}
+	
+	public int size() {
+		return internalMap.size();
+	}
+	
+	public Collection<T> objects(int start, int limit) {
+		//TODO from service
+		
+		Map internalPartMap = new HashMap<Integer, CdmBase>(limit);
+		
+		for (int i = start; i < limit; i++) {
+			internalPartMap.put(i, internalMap.get(i));
+		}
+		
+		return (Collection<T>)internalPartMap.values();
+	}
+	
+	public Set<Integer> keySet() {
+		return internalMap.keySet();
+	}
+	
 }

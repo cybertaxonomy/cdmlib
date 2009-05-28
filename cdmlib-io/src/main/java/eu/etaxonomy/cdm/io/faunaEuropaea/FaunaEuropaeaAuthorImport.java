@@ -21,9 +21,11 @@ import eu.etaxonomy.cdm.io.common.ImportHelper;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
+import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
 
 /**
@@ -58,57 +60,71 @@ public class FaunaEuropaeaAuthorImport extends FaunaEuropaeaImportBase {
 	protected boolean doInvoke(IImportConfigurator config, 
 			Map<String, MapWrapper<? extends CdmBase>> stores){ 
 
-		MapWrapper<AgentBase> teamMap = (MapWrapper<AgentBase>)stores.get(ICdmIO.TEAM_STORE);
+		MapWrapper<TeamOrPersonBase> authorStore = (MapWrapper<TeamOrPersonBase>)stores.get(ICdmIO.TEAM_STORE);
 		
 		FaunaEuropaeaImportConfigurator fauEuConfig = (FaunaEuropaeaImportConfigurator)config;
 		Source source = fauEuConfig.getSource();
-		String dbAttrName;
-		String cdmAttrName;
-
-		logger.info("Start making authors ...");
-		boolean success = true ;
 		
-		//get data from database
-		String strQuery = 
-				" SELECT *  " +
-                " FROM author " ;
-		ResultSet rs = source.getResultSet(strQuery) ;
 		String namespace = "AuthorTeam";
+		boolean success = true;
 		
-		int i = 0;
-		try{
-			while (rs.next()){
-				
-				if ((i++ % modCount ) == 0 && i!= 1 ){ logger.info("Authors handled: " + (i-1));}
-				
-				//create Agent element
-				int teamId = rs.getInt("aut_id");
-				
-				TeamOrPersonBase<Team> team = new Team();
-				
-				dbAttrName = "aut_name";
-				cdmAttrName = "nomenclaturalTitle";
-				success &= ImportHelper.addStringValue(rs, team, dbAttrName, cdmAttrName);
+		if(logger.isInfoEnabled()) { logger.info("Start making Authors ..."); }
+		
+		try {
 
-				dbAttrName = "aut_name";
-				cdmAttrName = "titleCache";
-				success &= ImportHelper.addStringValue(rs, team, dbAttrName, cdmAttrName);
+			String strQuery = 
+				" SELECT *  " +
+				" FROM author " ;
+			ResultSet rs = source.getResultSet(strQuery) ;
 
-				//TODO
-				//title cache or nomenclaturalTitle?
+			int i = 0;
+			while (rs.next()) {
 
-				teamMap.put(teamId, team);
+				if ((i++ % modCount) == 0 && i!= 1 ) { 
+					if(logger.isInfoEnabled()) {
+						logger.info("Authors handled: " + (i-1)); 
+					}
+				}
+
+				int authorId = rs.getInt("aut_id");
+				String authorName = rs.getString("aut_name");
+
+				TeamOrPersonBase<Team> author = null;
+
+				try {
+					author = Team.NewInstance();
+					author.setTitleCache(authorName);
+
+					ImportHelper.setOriginalSource(author, fauEuConfig.getSourceReference(), authorId, namespace);
+
+					if (!authorStore.containsId(authorId)) {
+						if (author == null) {
+							logger.warn("Reference is null");
+						}
+						authorStore.put(authorId, author);
+					} else {
+						logger.warn("Reference with duplicated aut_id (" + authorId + 
+						") not imported.");
+					}
+				} catch (Exception e) {
+					logger.warn("An exception occurred when creating author with id " + authorId + 
+					". Author could not be saved.");
+				}
 			}
+			
+			if(logger.isInfoEnabled()) { logger.info("Saving authors ..."); }
+
+			// save authors
+			getAgentService().saveAgentAll(authorStore.objects());
+
+			if(logger.isInfoEnabled()) { logger.info("End making authors ..."); }
+
+			return true;
+
 		} catch (SQLException e) {
 			logger.error("SQLException:" +  e);
 			return false;
 		}
-
-		logger.info(i + " authors handled");
-		getAgentService().saveAgentAll(teamMap.objects());
-
-		logger.info("End making authors ...");
-		return success;
 	}
 	
 	/* (non-Javadoc)

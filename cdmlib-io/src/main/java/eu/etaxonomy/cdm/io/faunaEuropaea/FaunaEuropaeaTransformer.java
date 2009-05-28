@@ -39,8 +39,32 @@ public final class FaunaEuropaeaTransformer {
 	private static final Logger logger = Logger.getLogger(FaunaEuropaeaTransformer.class);
 	
 	//TaxonStatus
-	public static int T_STATUS_ACCEPTED = 1;
-	public static int T_STATUS_NOT_ACCEPTED = 0;
+	public static final int T_STATUS_ACCEPTED = 1;
+	public static final int T_STATUS_NOT_ACCEPTED = 0;
+	
+	// Rank
+	public static final int R_KINGDOM = 1;
+	public static final int R_SUBKINGDOM = 2;
+	public static final int R_SUPERPHYLUM = 3;
+	public static final int R_PHYLUM = 4;
+	public static final int R_SUBPHYLUM = 5;
+	public static final int R_INFRAPHYLUM = 6;
+	public static final int R_CLASS = 7;
+	public static final int R_SUBCLASS = 8;
+	public static final int R_INFRACLASS = 9;
+	public static final int R_SUPERORDER = 10;
+	public static final int R_ORDER = 11;
+	public static final int R_SUBORDER = 12;
+	public static final int R_INFRAORDER = 13;
+	public static final int R_SUPERFAMILY = 14;
+	public static final int R_FAMILY = 15;
+	public static final int R_SUBFAMILY = 16;
+	public static final int R_TRIBE = 17;
+	public static final int R_SUBTRIBE = 18;
+	public static final int R_GENUS = 19;
+	public static final int R_SUBGENUS = 20;
+	public static final int R_SPECIES = 21;
+	public static final int R_SUBSPECIES = 22;
 	
 	private static Map<String, String> tdwgAreas = null;
 
@@ -93,28 +117,28 @@ public final class FaunaEuropaeaTransformer {
 
 				switch (rankId) {
 				case 0: return null;
-				case 1: return Rank.KINGDOM();
-				case 2: return Rank.SUBKINGDOM();
-				case 3: return Rank.SUPERPHYLUM();
-				case 4: return Rank.PHYLUM();
-				case 5: return Rank.SUBPHYLUM();
-				case 6: return Rank.INFRAPHYLUM();
-				case 7: return Rank.CLASS();
-				case 8: return Rank.SUBCLASS();
-				case 9: return Rank.INFRACLASS();
-				case 10: return Rank.SUPERORDER();
-				case 11: return Rank.ORDER();
-				case 12: return Rank.SUBORDER();
-				case 13: return Rank.INFRAORDER();
-				case 14: return Rank.SUPERFAMILY();
-				case 15: return Rank.FAMILY();
-				case 16: return Rank.SUBFAMILY();
-				case 17: return Rank.TRIBE();
-				case 18: return Rank.SUBTRIBE();
-				case 19: return Rank.GENUS();
-				case 20: return Rank.SUBGENUS();
-				case 21: return Rank.SPECIES();
-				case 22: return Rank.SUBSPECIES();
+				case R_KINGDOM: return Rank.KINGDOM();
+				case R_SUBKINGDOM: return Rank.SUBKINGDOM();
+				case R_SUPERPHYLUM: return Rank.SUPERPHYLUM();
+				case R_PHYLUM: return Rank.PHYLUM();
+				case R_SUBPHYLUM: return Rank.SUBPHYLUM();
+				case R_INFRAPHYLUM: return Rank.INFRAPHYLUM();
+				case R_CLASS: return Rank.CLASS();
+				case R_SUBCLASS: return Rank.SUBCLASS();
+				case R_INFRACLASS: return Rank.INFRACLASS();
+				case R_SUPERORDER: return Rank.SUPERORDER();
+				case R_ORDER: return Rank.ORDER();
+				case R_SUBORDER: return Rank.SUBORDER();
+				case R_INFRAORDER: return Rank.INFRAORDER();
+				case R_SUPERFAMILY: return Rank.SUPERFAMILY();
+				case R_FAMILY: return Rank.FAMILY();
+				case R_SUBFAMILY: return Rank.SUBFAMILY();
+				case R_TRIBE: return Rank.TRIBE();
+				case R_SUBTRIBE: return Rank.SUBTRIBE();
+				case R_GENUS: return Rank.GENUS();
+				case R_SUBGENUS: return Rank.SUBGENUS();
+				case R_SPECIES: return Rank.SPECIES();
+				case R_SUBSPECIES: return Rank.SUBSPECIES();
 
 				default: {
 					if (useUnknown){
