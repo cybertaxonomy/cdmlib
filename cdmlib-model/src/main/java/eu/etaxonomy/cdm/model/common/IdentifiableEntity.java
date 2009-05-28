@@ -346,12 +346,21 @@ implements ISourceable, IIdentifiableEntity, Comparable<IdentifiableEntity> {
 		 if(identifiableEntity instanceof NonViralName) {
 			 specifiedNameCache = HibernateProxyHelper.deproxy(identifiableEntity, NonViralName.class).getNameCache();
 			 specifiedTitleCache = identifiableEntity.getTitleCache();
+			 
 		 } else if(identifiableEntity instanceof TaxonBase) {
 			 TaxonBase taxonBase = HibernateProxyHelper.deproxy(identifiableEntity, TaxonBase.class);
-			 TaxonNameBase<?,?> taxonNameBase= taxonBase.getName();
+			 
+			 TaxonNameBase<?,?> taxonNameBase = taxonBase.getName();
 			 specifiedNameCache = HibernateProxyHelper.deproxy(taxonNameBase, NonViralName.class).getNameCache();
 			 specifiedTitleCache = taxonNameBase.getTitleCache();
-			 specifiedReferenceTitleCache = ((TaxonBase)identifiableEntity).getSec().getTitleCache();
+			 
+			 //specifiedReferenceTitleCache = ((TaxonBase)identifiableEntity).getSec().getTitleCache();
+//			 ReferenceBase referenceBase = taxonBase.getSec();
+//			 if (referenceBase != null) {
+//           FIXME: HibernateProxyHelper.deproxy(referenceBase, ReferenceBase.class) throws exception
+//				 referenceBase = HibernateProxyHelper.deproxy(referenceBase, ReferenceBase.class);
+//				 specifiedReferenceTitleCache = referenceBase.getTitleCache();
+//			 }
 		 }
 		 
 		 if(this instanceof NonViralName) {
