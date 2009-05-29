@@ -121,14 +121,22 @@ public class MapWrapper<T extends CdmBase> {
 	}
 	
 	public Collection<T> objects(int start, int limit) {
-		//TODO from service
 		
 		Map internalPartMap = new HashMap<Integer, CdmBase>(limit);
 		
-		for (int i = start; i < limit; i++) {
-			internalPartMap.put(i, internalMap.get(i));
+		for (int i = 0; i < limit; i++) {
+//		for (int i = start; i < limit; i++) {
+			
+			int j = start + i;
+			
+			Object object = internalMap.get(j);
+			if(object != null) {
+				internalPartMap.put(i, internalMap.get(j));
+			} else {
+				logger.warn("Object (" + j + ") is null");
+			}
 		}
-		
+//		return (Collection<T>)internalMap.values();
 		return (Collection<T>)internalPartMap.values();
 	}
 	

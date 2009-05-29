@@ -108,7 +108,7 @@ public final class FaunaEuropaeaTransformer {
 			int rankCategory = rs.getInt("rnk_category");
 
 			if (logger.isDebugEnabled()) {
-				logger.debug(rankId + ", " + parentRankId + ", " + rankName + ", " + rankLatinName + ", " + rankCategory);
+				logger.debug(rankId + ", " + parentRankId + ", " + rankName + ", " + rankCategory);
 			}
 
 			try {
@@ -158,7 +158,7 @@ public final class FaunaEuropaeaTransformer {
 	}
 	
 	
-	public static NamedArea areaId2TdwgArea (ResultSet rs, boolean useUnknown) throws UnknownCdmTypeException {
+	public static NamedArea areaId2TdwgArea (ResultSet rs) throws UnknownCdmTypeException {
 		
 		NamedArea tdwgArea = null;
 		
@@ -220,7 +220,7 @@ public final class FaunaEuropaeaTransformer {
 			else if (areaCode.equals("NAF")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("20"); // North Africa - Northern Africa
 			else if (areaCode.equals("NEA")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("7");	// Nearctic region - Northern America
 			else if (areaCode.equals("NEO")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("8"); // Neotropical region - Southern America
-else if (areaCode.equals("NL")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("NET-OO");
+			else if (areaCode.equals("NL")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("NET-OO");
 			else if (areaCode.equals("NO-NOR")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("NOR-OO");
 			else if (areaCode.equals("NO-SVA")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("SVA-OO");
 			else if (areaCode.equals("NRE")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("34"); // Near East - Western Asia
