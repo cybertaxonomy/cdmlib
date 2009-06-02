@@ -113,7 +113,7 @@ public class FaunaEuropaeaReferenceImport extends FaunaEuropaeaImportBase {
 		String namespace = "Reference";
 		boolean success = true;
 		
-		if(logger.isInfoEnabled()) { logger.info("Start making References ..."); }
+		if(logger.isInfoEnabled()) { logger.info("Start making References..."); }
 		
 		try {
 			String strQuery = 
@@ -142,6 +142,7 @@ public class FaunaEuropaeaReferenceImport extends FaunaEuropaeaImportBase {
 				//String author = rs.getString("ref_author");
 				String year = rs.getString("ref_year");
 				String title = rs.getString("ref_title");
+				String ref_author = rs.getString("ref_author");
 				String refSource = rs.getString("ref_source");
 //				int authorId = rs.getInt("aut_id");
 				
@@ -160,16 +161,19 @@ public class FaunaEuropaeaReferenceImport extends FaunaEuropaeaImportBase {
 //						}
 //					}
 										
-					ImportHelper.setOriginalSource(reference, fauEuConfig.getSourceReference(), refId, namespace);
+//					ImportHelper.setOriginalSource(reference, fauEuConfig.getSourceReference(), refId, namespace);
 					
 					if (!refStore.containsId(refId)) {
 						if (reference == null) {
 							logger.warn("Reference is null");
 						}
 						refStore.put(refId, reference);
+						if (logger.isDebugEnabled()) { 
+							logger.debug("Stored reference (" + refId + ") " + ref_author); 
+						}
 					} else {
-						logger.warn("Reference with duplicated ref_id (" + refId + 
-								") not imported.");
+						logger.warn("Not imported reference with duplicated ref_id (" + refId + 
+								") " + ref_author);
 					}
 					
 				} catch (Exception e) {

@@ -68,7 +68,7 @@ public class FaunaEuropaeaAuthorImport extends FaunaEuropaeaImportBase {
 		String namespace = "AuthorTeam";
 		boolean success = true;
 		
-		if(logger.isInfoEnabled()) { logger.info("Start making Authors ..."); }
+		if(logger.isInfoEnabled()) { logger.info("Start making Authors..."); }
 		
 		try {
 
@@ -99,12 +99,15 @@ public class FaunaEuropaeaAuthorImport extends FaunaEuropaeaImportBase {
 
 					if (!authorStore.containsId(authorId)) {
 						if (author == null) {
-							logger.warn("Reference is null");
+							logger.warn("Author is null");
 						}
 						authorStore.put(authorId, author);
+						if (logger.isDebugEnabled()) { 
+							logger.debug("Stored author (" + authorId + ") " + authorName); 
+						}
 					} else {
-						logger.warn("Reference with duplicated aut_id (" + authorId + 
-						") not imported.");
+						logger.warn("Not imported author with duplicated aut_id (" + authorId + 
+								") " + authorName);
 					}
 				} catch (Exception e) {
 					logger.warn("An exception occurred when creating author with id " + authorId + 
