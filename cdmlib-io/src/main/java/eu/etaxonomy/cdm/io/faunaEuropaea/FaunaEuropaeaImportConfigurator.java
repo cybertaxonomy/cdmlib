@@ -32,7 +32,8 @@ public class FaunaEuropaeaImportConfigurator extends ImportConfiguratorBase impl
 		ioClassList = new Class[] {
 //				FaunaEuropaeaAuthorImport.class,
 //				FaunaEuropaeaReferenceImport.class,
-				FaunaEuropaeaTaxonImport.class
+//				FaunaEuropaeaTaxonNameImport.class
+				FaunaEuropaeaTaxonImport.class,
 //				FaunaEuropaeaDistributionImport.class
 		};
 	};

@@ -21,6 +21,7 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.io.berlinModel.CdmOneToManyMapper;
 import eu.etaxonomy.cdm.io.berlinModel.CdmStringMapper;
@@ -57,6 +58,7 @@ public class FaunaEuropaeaTaxonImport extends FaunaEuropaeaImportBase  {
 	private int modCount = 10000;
 	/* Max number of taxa to be saved with one service call */
 	private int limit = 20000; // TODO: Make configurable
+	private int highestTaxonIndex = 0;
 	
 
 	/* (non-Javadoc)
@@ -99,36 +101,44 @@ public class FaunaEuropaeaTaxonImport extends FaunaEuropaeaImportBase  {
 	protected boolean doInvoke(IImportConfigurator config, 
 			Map<String, MapWrapper<? extends CdmBase>> stores) {				
 		
+		MapWrapper<TaxonNameBase<?,?>> taxonNamesStore = (MapWrapper<TaxonNameBase<?,?>>)stores.get(ICdmIO.TAXONNAME_STORE);
 		Map<Integer, FaunaEuropaeaTaxon> fauEuTaxonMap = new HashMap();
 		FaunaEuropaeaImportConfigurator fauEuConfig = (FaunaEuropaeaImportConfigurator)config;
 		boolean success = true;
 		
-		if(logger.isInfoEnabled()) { logger.info("Start making Taxa ..."); }
+		if(logger.isInfoEnabled()) { logger.info("Start making taxa..."); }
 		
 		success = retrieveTaxa(fauEuConfig, stores, fauEuTaxonMap);
-		success = processTaxaSecondPass(stores, fauEuTaxonMap);
+//		success = processTaxaSecondPass(stores, fauEuTaxonMap);
 		success = saveTaxa(stores);
 		
-		logger.info("End making taxa ...");
+		logger.info("End making taxa...");
 		return success;
 	}
 
-	
+
+//	private int countTaxa() {
+//		
+//	}
+
+			
 	private boolean retrieveTaxa(FaunaEuropaeaImportConfigurator fauEuConfig, 
-			Map<String, MapWrapper<? extends CdmBase>> stores, 
+			Map<String, MapWrapper<? extends CdmBase>> stores,
 			Map<Integer, FaunaEuropaeaTaxon> fauEuTaxonMap) {
 
 		MapWrapper<TeamOrPersonBase> authorStore = (MapWrapper<TeamOrPersonBase>)stores.get(ICdmIO.TEAM_STORE);
 		MapWrapper<ReferenceBase> refStore = (MapWrapper<ReferenceBase>)stores.get(ICdmIO.NOMREF_STORE);
-		MapWrapper<TaxonNameBase<?,?>> taxonNameStore = (MapWrapper<TaxonNameBase<?,?>>)stores.get(ICdmIO.TAXONNAME_STORE);
+		MapWrapper<TaxonNameBase<?,?>> taxonNamesStore = (MapWrapper<TaxonNameBase<?,?>>)stores.get(ICdmIO.TAXONNAME_STORE);
 		MapWrapper<TaxonBase> taxonStore = (MapWrapper<TaxonBase>)stores.get(ICdmIO.TAXON_STORE);
 
 		Source source = fauEuConfig.getSource();
 		String namespace = "Taxon";
+		int i = 0;
 		boolean success = true;
 
 		try {
 			String strQuery = 
+//				" SELECT TOP 10000 Taxon.*, rank.* " + 
 				" SELECT Taxon.*, rank.* " + 
 				" FROM dbo.Taxon INNER JOIN dbo.rank ON dbo.Taxon.TAX_RNK_ID = dbo.rank.rnk_id " +
 				" WHERE (1=1)";
@@ -139,12 +149,12 @@ public class FaunaEuropaeaTaxonImport extends FaunaEuropaeaImportBase  {
 
 			ResultSet rs = source.getResultSet(strQuery) ;
 
-			int i = 0;
+//			int i = 0;
 			while (rs.next()) {
 
 				if ((i++ % modCount) == 0 && i != 1 ) { 
 					if(logger.isInfoEnabled()) {
-						logger.info("Taxa handled: " + (i-1)); 
+						logger.info("Taxa retrieved: " + (i-1)); 
 					}
 				}
 
@@ -166,6 +176,7 @@ public class FaunaEuropaeaTaxonImport extends FaunaEuropaeaImportBase  {
 				ReferenceBase<?> reference = null;
 
 				ZoologicalName zooName = ZoologicalName.NewInstance(rank);
+//				zooName.setId(taxonId);
 				zooName.setNameCache(taxonName);
 				zooName.setTitleCache(taxonName); // FIXME: Add the author
 				zooName.setFullTitleCache(taxonName); // FIXME: Add author, reference, NC status
@@ -189,15 +200,16 @@ public class FaunaEuropaeaTaxonImport extends FaunaEuropaeaImportBase  {
 					}
 
 					taxonBase.setUuid(taxonBaseUuid);
-					taxonBase.setId(taxonId);
+//					taxonBase.setId(taxonId);
 					taxonBase.setTitleCache(taxonName);
 
 					fauEuTaxon.setParentId(parentId);
+					fauEuTaxon.setId(taxonId);
 
 					ImportHelper.setOriginalSource(taxonBase, fauEuConfig.getSourceReference(), taxonId, namespace);
 					
-					if(!taxonNameStore.containsId(taxonId) && !taxonStore.containsId(taxonId) && !taxonStore.containsId(taxonId)) {
-						taxonNameStore.put(taxonId, zooName);
+					if(!taxonNamesStore.containsId(taxonId) && !taxonStore.containsId(taxonId) && !taxonStore.containsId(taxonId)) {
+						taxonNamesStore.put(taxonId, zooName);
 						taxonStore.put(taxonId, taxonBase);
 						fauEuTaxonMap.put(taxonId, fauEuTaxon);
 					} else {
@@ -214,6 +226,7 @@ public class FaunaEuropaeaTaxonImport extends FaunaEuropaeaImportBase  {
 			return false;
 		}
 
+		highestTaxonIndex = i;
 		return success;
 	}
 	
@@ -282,37 +295,98 @@ public class FaunaEuropaeaTaxonImport extends FaunaEuropaeaImportBase  {
 	}
 
 	
-	private boolean saveTaxa(Map<String, MapWrapper<? extends CdmBase>> stores) {
+	private boolean saveTaxa_(Map<String, MapWrapper<? extends CdmBase>> stores) {
 
+		MapWrapper<TaxonNameBase<?,?>> taxonNameStore = (MapWrapper<TaxonNameBase<?,?>>)stores.get(ICdmIO.TAXONNAME_STORE);
 		MapWrapper<TaxonBase> taxonStore = (MapWrapper<TaxonBase>)stores.get(ICdmIO.TAXON_STORE);
-		
+
 		int n = 0;
-		int nbrOfTaxa = taxonStore.size();
+		int nbrOfTaxa = highestTaxonIndex;
+//		int nbrOfTaxa = taxonStore.size();
 		boolean success = true;
-		
+
+		if(logger.isInfoEnabled()) { logger.info("Saving taxa ..."); }
+
+		if(logger.isDebugEnabled()) { 
+			logger.debug("number of taxa = " + taxonStore.size() 
+					+ ", highest taxon index = " + highestTaxonIndex 
+					+ ", limit = " + limit); 
+		}
+
 		if (nbrOfTaxa < limit) {
 			n = nbrOfTaxa;
 		} else {
 			n = nbrOfTaxa / limit;
 		}
-		
-		if(logger.isInfoEnabled()) { logger.info("Saving taxa ..."); }
 
 		// save taxa in chunks
 		for (int j = 1; j <= n; j++)
 		{
 			int start = (j-1)*limit;
-			
+
 			if(logger.isInfoEnabled()) { logger.info("Saving taxa: " + start + " - " + (start + limit - 1)); }
-			
-//			Collection<TaxonBase> taxonMapPart = taxonStore.objects(start, limit);
-//			getTaxonService().saveTaxonAll(taxonMapPart);
-			
+
+			Collection<TaxonBase> taxonMapPart = taxonStore.objects(start, limit);
+			getTaxonService().saveTaxonAll(taxonMapPart);
+
 		}
-		
-		getTaxonService().saveTaxonAll(taxonStore.objects());
+
+//		getTaxonService().saveTaxonAll(taxonStore.objects());
 
 		return success;
 	}
 
+	
+	private boolean saveTaxa(Map<String, MapWrapper<? extends CdmBase>> stores) {
+
+		MapWrapper<TaxonNameBase<?,?>> taxonNameStore = (MapWrapper<TaxonNameBase<?,?>>)stores.get(ICdmIO.TAXONNAME_STORE);
+		MapWrapper<TaxonBase> taxonStore = (MapWrapper<TaxonBase>)stores.get(ICdmIO.TAXON_STORE);
+
+		int n = 0;
+		int nbrOfTaxa = highestTaxonIndex;
+//		int nbrOfTaxa = taxonStore.size();
+		int offset = 0;
+		boolean success = true;
+
+		if(logger.isInfoEnabled()) { logger.info("Saving taxa ..."); }
+
+		if (nbrOfTaxa < limit) {
+//			n = nbrOfTaxa;
+			n = 1;
+		} else {
+			n = nbrOfTaxa / limit;
+		}
+
+		if(logger.isDebugEnabled()) { 
+			logger.debug("number of taxa = " + taxonStore.size() 
+					+ ", highest taxon index = " + highestTaxonIndex 
+					+ ", limit = " + limit
+					+ ", n = " + n); 
+		}
+
+		// save taxa in chunks
+		for (int j = 1; j <= n; j++)
+		{
+//			int start = (j-1)*limit;
+			int start = offset * limit;
+
+			if(logger.isInfoEnabled()) { logger.info("Saving taxa: " + start + " - " + (start + limit - 1)); }
+
+			if(logger.isDebugEnabled()) { 
+				logger.debug("index = " + j 
+						+ ", offset = " + offset
+						+ ", start = " + start); 
+			}
+
+			Collection<TaxonBase> taxonMapPart = taxonStore.objects(start, limit);
+			getTaxonService().saveTaxonAll(taxonMapPart);
+			offset++;
+		}
+		
+		// TODO: Save the remainder
+
+//		getTaxonService().saveTaxonAll(taxonStore.objects());
+
+		return success;
+	}
 }

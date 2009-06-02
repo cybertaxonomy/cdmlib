@@ -161,7 +161,7 @@ public class FaunaEuropaeaReferenceImport extends FaunaEuropaeaImportBase {
 //						}
 //					}
 										
-//					ImportHelper.setOriginalSource(reference, fauEuConfig.getSourceReference(), refId, namespace);
+					ImportHelper.setOriginalSource(reference, fauEuConfig.getSourceReference(), refId, namespace);
 					
 					if (!refStore.containsId(refId)) {
 						if (reference == null) {

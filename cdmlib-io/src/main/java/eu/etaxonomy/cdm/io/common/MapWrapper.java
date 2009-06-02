@@ -122,7 +122,8 @@ public class MapWrapper<T extends CdmBase> {
 	
 	public Collection<T> objects(int start, int limit) {
 		
-		Map internalPartMap = new HashMap<Integer, CdmBase>(limit);
+		Map internalPartMap = new HashMap<Integer, CdmBase>();
+		int index = 0;
 		
 		for (int i = 0; i < limit; i++) {
 //		for (int i = start; i < limit; i++) {
@@ -131,15 +132,17 @@ public class MapWrapper<T extends CdmBase> {
 			
 			Object object = internalMap.get(j);
 			if(object != null) {
-				internalPartMap.put(i, internalMap.get(j));
+				internalPartMap.put(index, internalMap.get(j));
+				index++;
 			} else {
-				logger.warn("Object (" + j + ") is null");
+				if (logger.isDebugEnabled()) { logger.debug("Object (" + j + ") is null"); }
 			}
 		}
 //		return (Collection<T>)internalMap.values();
 		return (Collection<T>)internalPartMap.values();
 	}
 	
+		
 	public Set<Integer> keySet() {
 		return internalMap.keySet();
 	}
