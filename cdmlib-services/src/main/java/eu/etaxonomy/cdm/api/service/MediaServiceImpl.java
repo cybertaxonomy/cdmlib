@@ -36,7 +36,7 @@ import eu.etaxonomy.cdm.persistence.dao.media.IMediaRepresentationPartDao;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 @Service
-@Transactional
+@Transactional(readOnly=true)
 public class MediaServiceImpl extends AnnotatableServiceBase<Media,IMediaDao> implements IMediaService {
 	
 	@Autowired

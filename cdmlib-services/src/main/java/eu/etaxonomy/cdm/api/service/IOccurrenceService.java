@@ -77,7 +77,7 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
 	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
      * @return a Pager of determination instances
      */
-	public Pager<DeterminationEvent> getDeterminations(SpecimenOrObservationBase occurence, Integer pageSize, Integer pageNumber);
+	public Pager<DeterminationEvent> getDeterminations(SpecimenOrObservationBase occurence, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 	
 	/**
      * Returns a list of derivation events that have involved creating new DerivedUnits from this occurence
@@ -87,5 +87,5 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
 	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
      * @return a Pager of derivation events
      */
-	public Pager<DerivationEvent> getDerivationEvents(SpecimenOrObservationBase occurence, Integer pageSize, Integer pageNumber);
+	public Pager<DerivationEvent> getDerivationEvents(SpecimenOrObservationBase occurence, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 }

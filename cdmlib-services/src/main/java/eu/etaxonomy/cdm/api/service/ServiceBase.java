@@ -31,6 +31,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
+@Transactional(readOnly=true)
 public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T>> implements IService<T>, ApplicationContextAware {
 	private static final Logger logger = Logger.getLogger(ServiceBase.class);
 	
@@ -54,12 +55,10 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
 		return dao.findByUuid(uuid);
 	}
 	
-	@Transactional(readOnly = true)
 	public <TYPE extends T> int count(Class<TYPE> clazz) {
 		return dao.count(clazz);
 	}
 	
-	@Transactional(readOnly = true)
 	public int count() {
 		return dao.count();
 	}
@@ -131,42 +130,34 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
 		return dao.delete(persistentObject);
 	}
 
-	@Transactional(readOnly = true)
 	public boolean exists(UUID uuid) {
 		return dao.exists(uuid);
 	}
 
-	@Transactional(readOnly = true)
 	public T findByUuid(UUID uuid) {
 		return dao.findByUuid(uuid);
 	}
 	
-	@Transactional(readOnly = true)
 	public T load(UUID uuid) {
 		return dao.load(uuid);
 	}
 	
-	@Transactional(readOnly = true)
 	public T load(UUID uuid, List<String> propertyPaths){
 		return dao.load(uuid, propertyPaths);
 	}
 
-	@Transactional(readOnly = true)
 	public <TYPE extends T> List<TYPE> list(Class<TYPE> type, int limit,int start) {
 		return dao.list(type, limit, start);
 	}
 	
-	@Transactional(readOnly = true)
 	public Pager<T> list(Integer pageSize, Integer pageNumber){
 		return list(pageSize, pageNumber, null);
 	}
 	
-	@Transactional (readOnly = true)
 	public Pager<T> list(Integer pageSize, Integer pageNumber, List<OrderHint> orderHints){
 		return list(pageSize,pageNumber,orderHints,null);
 	}
 	
-	@Transactional (readOnly = true)
 	public Pager<T> list(Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths){
 		Integer numberOfResults = dao.count();
 		List<T> results = new ArrayList<T>();
@@ -178,7 +169,6 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
 		return new DefaultPagerImpl<T>(pageNumber, numberOfResults, pageSize, results);
 	}
 	
-	@Transactional (readOnly = true)
 	public <TYPE extends T> Pager<TYPE> list(Class<TYPE> type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths){
 		Integer numberOfResults = dao.count(type);
 		List<TYPE> results = new ArrayList<TYPE>();
@@ -196,6 +186,11 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
 	}
 	
 	@Transactional(readOnly = false)
+	public UUID merge(T newInstance) {
+		return dao.merge(newInstance);
+	}
+	
+	@Transactional(readOnly = false)
 	public Map<UUID, T> saveAll(Collection<T> newInstances) {
 		return dao.saveAll(newInstances);
 	}
@@ -210,7 +205,6 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
 		return dao.update(transientObject);
 	}
 
-	@Transactional(readOnly = true)
 	public UUID refresh(T persistentObject) {
 		return dao.refresh(persistentObject);
 	}
@@ -225,13 +219,11 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
 		if (logger.isDebugEnabled()){logger.debug("Save cdmObj: " + (cdmObj == null? null: cdmObj.toString()));}
 		return dao.delete(cdmObj);
 	}
-	
-	@Transactional(readOnly = true)
+
 	public List<T> list(int limit, int start) {
 		return dao.list(limit, start);
 	}
 
-	@Transactional(readOnly = true)
 	public List<T> rows(String tableName, int limit, int start) {
 		return dao.rows(tableName, limit, start);
 	}

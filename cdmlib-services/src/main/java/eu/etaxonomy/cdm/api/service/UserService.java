@@ -49,7 +49,7 @@ import eu.etaxonomy.cdm.persistence.dao.common.IUserDao;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 @Service
-@Transactional
+@Transactional(readOnly=true)
 public class UserService extends ServiceBase<User,IUserDao> implements IUserService {
 	
 	protected IGroupDao groupDao;
@@ -102,6 +102,7 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
 		this.grantedAuthorityDao = grantedAuthorityDao;
 	}
 	
+	@Transactional(readOnly=false)
 	protected Authentication createNewAuthentication(Authentication currentAuth, String newPassword) {
 		UserDetails user = loadUserByUsername(currentAuth.getName());
 			
@@ -111,6 +112,7 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
 		return newAuthentication;
 	}
 	
+	@Transactional(readOnly=false)
 	public void changePassword(String oldPassword, String newPassword) {
 		Assert.hasText(oldPassword);
 		Assert.hasText(newPassword);
@@ -133,6 +135,7 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
 		}		
 	}
 
+	@Transactional(readOnly=false)
 	public void createUser(UserDetails user) {
 		Assert.isInstanceOf(User.class, user);
 		
@@ -145,6 +148,7 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
 		dao.save((User)user);
 	}
 
+	@Transactional(readOnly=false)
 	public void deleteUser(String username) {
 		Assert.hasLength(username);
 		
@@ -156,6 +160,7 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
         userCache.removeUserFromCache(username);
 	}
 
+	@Transactional(readOnly=false)
 	public void updateUser(UserDetails user) {
 		Assert.isInstanceOf(User.class, user);
 		
@@ -184,6 +189,7 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
 		}
 	}
 
+	@Transactional(readOnly=false)
 	public void addGroupAuthority(String groupName, GrantedAuthority authority) {
 		Assert.hasText(groupName);
 		Assert.notNull(authority);
@@ -194,6 +200,7 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
 		}
 	}
 
+	@Transactional(readOnly=false)
 	public void addUserToGroup(String username, String groupName) {
 		Assert.hasText(username);
 		Assert.hasText(groupName);
@@ -207,6 +214,7 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
 		}		
 	}
 
+	@Transactional(readOnly=false)
 	public void createGroup(String groupName, GrantedAuthority[] authorities) {
 		Assert.hasText(groupName);
 		Assert.notNull(authorities);
@@ -221,6 +229,7 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
 		groupDao.save(group);
 	}
 
+	@Transactional(readOnly=false)
 	public void deleteGroup(String groupName) {
 		Assert.hasText(groupName);
 		
@@ -249,6 +258,7 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
 		return users.toArray(new String[users.size()]);
 	}
 
+	@Transactional(readOnly=false)
 	public void removeGroupAuthority(String groupName,	GrantedAuthority authority) {
 		Assert.hasText(groupName);
 		Assert.notNull(authority);
@@ -260,6 +270,7 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
 		}
 	}
 
+	@Transactional(readOnly=false)
 	public void removeUserFromGroup(String username, String groupName) {
 		Assert.hasText(username);
 		Assert.hasText(groupName);
@@ -273,6 +284,7 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
 		}
 	}
 
+	@Transactional(readOnly=false)
 	public void renameGroup(String oldName, String newName) {
 		Assert.hasText(oldName);
 		Assert.hasText(newName);
@@ -283,14 +295,17 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
 		groupDao.update(group);
 	}
 	
+	@Transactional(readOnly=false)
 	public UUID save(User user) {
 		return dao.save(user);
 	}
 
+	@Transactional(readOnly=false)
 	public UUID saveGrantedAuthority(GrantedAuthority grantedAuthority) {
 		return grantedAuthorityDao.save((GrantedAuthorityImpl)grantedAuthority);
 	}
 	
+	@Transactional(readOnly=false)
 	public UUID saveGroup(Group group) {
 		return groupDao.save(group);
 	}

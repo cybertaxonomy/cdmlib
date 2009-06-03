@@ -33,7 +33,7 @@ import eu.etaxonomy.cdm.model.common.init.TermNotFoundException;
  *
  */
 @Service
-@Transactional
+@Transactional(readOnly=true)
 public class DatabaseServiceHibernateImpl  implements IDatabaseService, ApplicationContextAware {
 	private static final Logger logger = Logger.getLogger(DatabaseServiceHibernateImpl.class);
 	
@@ -84,6 +84,7 @@ public class DatabaseServiceHibernateImpl  implements IDatabaseService, Applicat
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.IDatabaseService#saveDataSource(eu.etaxonomy.cdm.database.DatabaseTypeEnum, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
 	 */
+	@Transactional(readOnly=false)
 	public CdmPersistentDataSource saveDataSource(String strDataSourceName, DatabaseTypeEnum databaseTypeEnum,
 			String server, String database, String username, String password) throws TermNotFoundException  {
 		return CdmPersistentDataSource.save(strDataSourceName, databaseTypeEnum, server, database, username, password);
@@ -92,6 +93,7 @@ public class DatabaseServiceHibernateImpl  implements IDatabaseService, Applicat
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.IDatabaseService#useLocalHsqldb(java.lang.String, java.lang.String, boolean, boolean)
 	 */
+	@Transactional(readOnly=false)
 	public CdmPersistentDataSource saveLocalHsqldb(String strDataSourceName, String databasePath, String databaseName, String username, String password, boolean silent, boolean startServer) {
 		return CdmPersistentDataSource.saveLocalHsqlDb(strDataSourceName, databasePath, databaseName, username, password);
 	}

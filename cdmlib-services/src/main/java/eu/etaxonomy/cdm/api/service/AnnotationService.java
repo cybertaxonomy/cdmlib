@@ -26,7 +26,7 @@ import eu.etaxonomy.cdm.persistence.dao.hibernate.common.AnnotationDaoImpl;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 @Service
-@Transactional
+@Transactional(readOnly=true)
 public class AnnotationService extends AnnotatableServiceBase<Annotation, AnnotationDaoImpl> implements
 		IAnnotationService {
 

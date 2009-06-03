@@ -39,7 +39,7 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
  *
  */
 @Service
-@Transactional
+@Transactional(readOnly=true)
 public class AgentServiceImpl extends IdentifiableServiceBase<AgentBase,IAgentDao> implements IAgentService {
     private static final Logger logger = Logger.getLogger(AgentServiceImpl.class);
 	
@@ -59,6 +59,7 @@ public class AgentServiceImpl extends IdentifiableServiceBase<AgentBase,IAgentDa
 		return dao.findByUuid(uuid);
 	}
 
+	@Transactional(readOnly=false)
 	public UUID saveAgent(AgentBase agent) {
 		return super.saveCdmObject(agent);
 	}

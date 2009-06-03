@@ -41,7 +41,7 @@ import eu.etaxonomy.cdm.persistence.dao.common.ITermVocabularyDao;
  * @version 1.0
  */
 @Service
-@Transactional
+@Transactional(readOnly=true)
 public class LocationServiceImpl extends ServiceBase<DefinedTermBase,IDefinedTermDao> implements ILocationService {
 	private static final Logger logger = Logger
 			.getLogger(LocationServiceImpl.class);

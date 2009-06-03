@@ -113,23 +113,23 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 		this.dao = dao;
 	}
 
-	public Pager<DerivationEvent> getDerivationEvents(SpecimenOrObservationBase occurence, Integer pageSize,Integer pageNumber) {
+	public Pager<DerivationEvent> getDerivationEvents(SpecimenOrObservationBase occurence, Integer pageSize,Integer pageNumber, List<String> propertyPaths) {
         Integer numberOfResults = dao.countDerivationEvents(occurence);
 		
 		List<DerivationEvent> results = new ArrayList<DerivationEvent>();
 		if(numberOfResults > 0) { // no point checking again
-			results = dao.getDerivationEvents(occurence, pageSize, pageNumber); 
+			results = dao.getDerivationEvents(occurence, pageSize, pageNumber,propertyPaths); 
 		}
 		
 		return new DefaultPagerImpl<DerivationEvent>(pageNumber, numberOfResults, pageSize, results);
 	}
 
-	public Pager<DeterminationEvent> getDeterminations(SpecimenOrObservationBase occurence, Integer pageSize,Integer pageNumber) {
+	public Pager<DeterminationEvent> getDeterminations(SpecimenOrObservationBase occurence, Integer pageSize,Integer pageNumber, List<String> propertyPaths) {
         Integer numberOfResults = dao.countDeterminations(occurence);
 		
 		List<DeterminationEvent> results = new ArrayList<DeterminationEvent>();
 		if(numberOfResults > 0) { // no point checking again
-			results = dao.getDeterminations(occurence, pageSize, pageNumber); 
+			results = dao.getDeterminations(occurence, pageSize, pageNumber, propertyPaths); 
 		}
 		
 		return new DefaultPagerImpl<DeterminationEvent>(pageNumber, numberOfResults, pageSize, results);

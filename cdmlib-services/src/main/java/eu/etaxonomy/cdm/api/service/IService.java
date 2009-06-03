@@ -37,7 +37,7 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
  *
  * @param <T>
  */
-@Transactional(propagation=Propagation.SUPPORTS)
+@Transactional(propagation=Propagation.SUPPORTS, readOnly=true)
 public interface IService<T extends CdmBase>{
 
 	/**
@@ -131,6 +131,7 @@ public interface IService<T extends CdmBase>{
 	 * @param newInstance the new entity to be persisted
 	 * @return A generated UUID for the new persistent entity
 	 */
+	@Transactional(readOnly=false)
 	public UUID save(T newInstance);
 	
 	/**
@@ -140,6 +141,7 @@ public interface IService<T extends CdmBase>{
 	 * @param transientObject the entity to be persisted
 	 * @return The unique identifier of the persisted entity
 	 */
+	@Transactional(readOnly=false)
 	public UUID saveOrUpdate(T transientObject);
 	
 	/**
@@ -149,7 +151,17 @@ public interface IService<T extends CdmBase>{
 	 * @param transientObject the entity to be persisted
 	 * @return The unique identifier of the persisted entity
 	 */
+	@Transactional(readOnly=false)
 	public UUID update(T transientObject);
+	
+	/**
+	 * Copy the state of the given object onto the persistent object with the same identifier.
+	 * 
+	 * @param transientObject the entity to be merged
+	 * @return The unique identifier of the persisted entity
+	 */
+	@Transactional(readOnly=false)
+	public UUID merge(T transientObject);
 	
 	/**
 	 * Save a collection containing new entities (persists the entities)
@@ -157,6 +169,7 @@ public interface IService<T extends CdmBase>{
 	 * @return A Map containing the new entities, keyed using the generated UUID's
 	 *         of those entities
 	 */
+	@Transactional(readOnly=false)
 	public Map<UUID,T> saveAll(Collection<T> newInstances);
 	
 	/**
@@ -171,6 +184,7 @@ public interface IService<T extends CdmBase>{
 	 * @param persistentObject the object to be refreshed
 	 * @return the unique identifier
 	 */
+	@Transactional(readOnly=false)
 	public UUID refresh(T persistentObject);
 	
 	/**
@@ -179,6 +193,7 @@ public interface IService<T extends CdmBase>{
 	 * @param persistentObject the object to be deleted
 	 * @return the unique identifier of the deleted entity
 	 */
+	@Transactional(readOnly=false)
 	public UUID delete(T persistentObject);
 	
 	/**
