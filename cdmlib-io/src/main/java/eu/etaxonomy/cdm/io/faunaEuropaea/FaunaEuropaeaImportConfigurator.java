@@ -30,10 +30,10 @@ public class FaunaEuropaeaImportConfigurator extends ImportConfiguratorBase impl
 	@SuppressWarnings("unchecked")
 	protected void makeIoClassList() {
 		ioClassList = new Class[] {
-//				FaunaEuropaeaAuthorImport.class,
-//				FaunaEuropaeaReferenceImport.class,
+				FaunaEuropaeaAuthorImport.class,
+				FaunaEuropaeaReferenceImport.class,
 //				FaunaEuropaeaTaxonNameImport.class
-				FaunaEuropaeaTaxonImport.class,
+				FaunaEuropaeaTaxonImport.class
 //				FaunaEuropaeaDistributionImport.class
 		};
 	};

@@ -143,6 +143,16 @@ public class MapWrapper<T extends CdmBase> {
 	}
 	
 		
+	public Collection<T> removeObjects(int start, int limit) {
+		
+		for (int i = start; i < start + limit; i++) {
+			internalMap.remove(i);
+			if (logger.isDebugEnabled()) { logger.debug("Object (" + i + ") removed"); }
+		}
+		return (Collection<T>)internalMap.values();
+	}
+
+	
 	public Set<Integer> keySet() {
 		return internalMap.keySet();
 	}
