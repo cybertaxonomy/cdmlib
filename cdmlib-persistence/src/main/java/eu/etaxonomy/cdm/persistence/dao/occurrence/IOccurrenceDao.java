@@ -56,7 +56,7 @@ public interface IOccurrenceDao extends IIdentifiableDao<SpecimenOrObservationBa
 	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
      * @return a List of determination instances
      */
-	public List<DeterminationEvent> getDeterminations(SpecimenOrObservationBase occurence, Integer pageSize, Integer pageNumber);
+	public List<DeterminationEvent> getDeterminations(SpecimenOrObservationBase occurence, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 
 	/**
      * Returns a count of derivation events that have involved creating new DerivedUnits from this occurence
@@ -74,5 +74,5 @@ public interface IOccurrenceDao extends IIdentifiableDao<SpecimenOrObservationBa
 	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
      * @return a List of derivation events
      */
-	public List<DerivationEvent> getDerivationEvents(SpecimenOrObservationBase occurence, Integer pageSize, Integer pageNumber);
+	public List<DerivationEvent> getDerivationEvents(SpecimenOrObservationBase occurence, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 }

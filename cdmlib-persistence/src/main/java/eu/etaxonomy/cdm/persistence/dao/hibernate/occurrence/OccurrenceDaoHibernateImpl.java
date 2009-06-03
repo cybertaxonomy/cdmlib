@@ -69,7 +69,7 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
 		return ((Long)query.uniqueResult()).intValue();
 	}
 
-	public List<DerivationEvent> getDerivationEvents(SpecimenOrObservationBase occurence, Integer pageSize,Integer pageNumber) {
+	public List<DerivationEvent> getDerivationEvents(SpecimenOrObservationBase occurence, Integer pageSize,Integer pageNumber, List<String> propertyPaths) {
 		checkNotInPriorView("OccurrenceDaoHibernateImpl.getDerivationEvents(SpecimenOrObservationBase occurence, Integer pageSize,Integer pageNumber)");
 		Query query = getSession().createQuery("select distinct derivationEvent from DerivationEvent derivationEvent join derivationEvent.originals occurence where occurence = :occurence");
 		query.setParameter("occurence", occurence);
@@ -83,10 +83,12 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
 		    }
 		}
 		
-		return (List<DerivationEvent>)query.list();
+		List<DerivationEvent> result = (List<DerivationEvent>)query.list();
+		defaultBeanInitializer.initializeAll(result,propertyPaths);
+		return result;
 	}
 
-	public List<DeterminationEvent> getDeterminations(SpecimenOrObservationBase occurence, Integer pageSize, Integer pageNumber) {
+	public List<DeterminationEvent> getDeterminations(SpecimenOrObservationBase occurence, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
 			Query query = getSession().createQuery("select determination from DeterminationEvent determination where determination.identifiedUnit = :occurence");
@@ -101,7 +103,9 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
 				}
 			}
 
-			return (List<DeterminationEvent>)query.list();
+			List<DeterminationEvent> result = (List<DeterminationEvent>)query.list();
+			defaultBeanInitializer.initializeAll(result,propertyPaths);
+			return result;
 		} else {
 			AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(DeterminationEvent.class,auditEvent.getRevisionNumber());
 			query.add(AuditEntity.relatedId("identifiedUnit").eq(occurence.getId()));
@@ -114,7 +118,9 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
 				}
 			}
 
-			return (List<DeterminationEvent>)query.getResultList();
+			List<DeterminationEvent> result = (List<DeterminationEvent>)query.getResultList();
+			defaultBeanInitializer.initializeAll(result,propertyPaths);
+			return result;
 		}
 	}
 

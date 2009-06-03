@@ -105,6 +105,12 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 		return resultMap;
 	}
 
+	public UUID merge(T transientObject) throws DataAccessException {
+		Session session = getSession();
+		session.merge(transientObject);
+		if (logger.isDebugEnabled()){logger.debug("dao merge end");}
+		return transientObject.getUuid();
+	}
 	
 	public UUID saveOrUpdate(T transientObject) throws DataAccessException  {
 		try {

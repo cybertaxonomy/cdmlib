@@ -30,7 +30,7 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 public class DescriptionElementDaoImpl extends AnnotatableDaoImpl<DescriptionElementBase> implements IDescriptionElementDao {
 
 	private String defaultField = "multilanguageText.text";
-	
+
 	private Class<? extends DescriptionElementBase> indexedClasses[]; 
 
 	public DescriptionElementDaoImpl() {

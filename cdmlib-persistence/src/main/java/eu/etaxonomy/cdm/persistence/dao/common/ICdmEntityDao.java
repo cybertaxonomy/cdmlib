@@ -45,6 +45,8 @@ public interface ICdmEntityDao<T extends CdmBase> {
 	 */
 	public UUID save(T newOrManagedObject) throws DataAccessException;
 	
+	public UUID merge(T transientObject) throws DataAccessException;
+	
 	public Map<UUID, T> saveAll(Collection<T> cdmObjCollection) throws DataAccessException;
 
 	/**

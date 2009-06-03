@@ -186,6 +186,10 @@
           <listener class="eu.etaxonomy.cdm.persistence.hibernate.UpdateEntityListener"/>
           <listener class="org.hibernate.event.def.DefaultUpdateEventListener"/>
       </event>
+      <event type="merge">
+          <listener class="eu.etaxonomy.cdm.persistence.hibernate.MergeEntityListener"/>
+          <listener class="org.hibernate.event.def.DefaultMergeEventListener"/>
+      </event>
       <event type="post-insert">
             <listener class="org.hibernate.envers.event.AuditEventListener"/>
             <listener class="eu.etaxonomy.cdm.persistence.hibernate.CdmPostDataChangeObservableListener"/>

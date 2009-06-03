@@ -99,7 +99,7 @@ public class CdmEntityDaoBaseTest extends CdmIntegrationTest {
 	@ExpectedDataSet
 	public void testSaveOrUpdate() {
 		TaxonBase cdmBase = cdmEntityDaoBase.findByUuid(uuid);
-		cdmBase.setUuid(UUID.fromString("61410dd0-c774-11dd-ad8b-0800200c9a66"));
+		cdmBase.setDoubtful(true);
 		cdmEntityDaoBase.saveOrUpdate(cdmBase);
 	}
 	
@@ -124,7 +124,6 @@ public class CdmEntityDaoBaseTest extends CdmIntegrationTest {
 		assert user != null : "User cannot be null";
 		setAuthentication(user);
 		cdmEntityDaoBase.save(cdmBase);
-		System.out.println(((Taxon)cdmBase).getTitleCache());
 	}
 
 	/**
@@ -135,7 +134,7 @@ public class CdmEntityDaoBaseTest extends CdmIntegrationTest {
 	@ExpectedDataSet
 	public void testUpdate() {
 		TaxonBase cdmBase = cdmEntityDaoBase.findByUuid(uuid);
-		cdmBase.setUuid(UUID.fromString("65bc7d70-c76c-11dd-ad8b-0800200c9a66"));
+		cdmBase.setDoubtful(true);
 		cdmEntityDaoBase.update(cdmBase);
 	}
 	
@@ -148,7 +147,7 @@ public class CdmEntityDaoBaseTest extends CdmIntegrationTest {
 		
 		setAuthentication(user);
 		TaxonBase cdmBase = cdmEntityDaoBase.findByUuid(uuid);
-		cdmBase.setUuid(UUID.fromString("65bc7d70-c76c-11dd-ad8b-0800200c9a66"));
+		cdmBase.setDoubtful(true);
 		cdmEntityDaoBase.update(cdmBase);
 	}
 

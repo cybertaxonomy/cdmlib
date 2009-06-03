@@ -19,6 +19,7 @@ import org.springframework.security.context.SecurityContextHolder;
 
 import eu.etaxonomy.cdm.model.common.ICdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 
@@ -36,6 +37,25 @@ public class CacheStrategyGenerator implements SaveOrUpdateEventListener {
         Object entity = event.getObject();
         if (entity != null){
             Class<?> entityClazz = entity.getClass();
+            if(ICdmBase.class.isAssignableFrom(entityClazz)) {
+	            ICdmBase cdmBase = (ICdmBase)entity;
+                if(cdmBase.getId() == 0) {
+                	cdmBase.setCreated(new DateTime());
+  				    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+  				    if(authentication != null && authentication.getPrincipal() != null && authentication.getPrincipal() instanceof User) {
+  				      User user = (User)authentication.getPrincipal();
+  				      cdmBase.setCreatedBy(user);
+  				    }
+                  } else if(VersionableEntity.class.isAssignableFrom(entityClazz)) {
+    			    VersionableEntity versionableEntity = (VersionableEntity)cdmBase;
+    			    versionableEntity.setUpdated(new DateTime());
+    			    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    			    if(authentication != null && authentication.getPrincipal() != null && authentication.getPrincipal() instanceof User) {
+    			      User user = (User)authentication.getPrincipal();
+    			      versionableEntity.setUpdatedBy(user);
+    			    } 
+    		      }
+            }
             
         	//title cache
         	if(IdentifiableEntity.class.isAssignableFrom(entityClazz)) {

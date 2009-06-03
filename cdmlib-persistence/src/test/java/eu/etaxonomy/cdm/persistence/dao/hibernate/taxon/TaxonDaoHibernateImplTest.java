@@ -8,6 +8,7 @@ import static junit.framework.Assert.assertTrue;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -174,7 +175,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 			for (int i = 0; i < results.size(); i++) {
 				String nameCache = "";
 				TaxonNameBase<?,?> taxonNameBase= ((TaxonBase)results.get(i)).getName();
-				nameCache = ((NonViralName<?>)taxonNameBase).getNameCache();
+				nameCache = ((NonViralName)taxonNameBase).getNameCache();
 				logger.debug(results.get(i).getClass() + "(" + i +")" + 
 						": Name Cache = " + nameCache + ", Title Cache = " + results.get(i).getTitleCache());
 			}
@@ -194,7 +195,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 		results = taxonDao.getTaxaByName("Aus", MatchMode.EXACT, 
 				true, null, null);
 		assertNotNull("getTaxaByName should return a List", results);
-		assertTrue(results.size() == 1);
+		assertEquals("Results list should contain one entity",1,results.size());
 	}	
 
 	
@@ -420,16 +421,21 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 		Taxon taxon = (Taxon)taxonDao.findByUuid(acherontia);
 		assert taxon != null : "taxon must exist";
 		taxonDao.delete(taxon);
+		setComplete();
+		endTransaction();
+	}
+	
+	@Test
+	@DataSet
+	public void testDeleteWithChildren() {
 		Taxon taxonWithChildren = (Taxon)taxonDao.findByUuid(mimas);
 		assert taxonWithChildren != null : "taxon must exist";
 		assertEquals(taxonWithChildren.getTaxonomicChildrenCount(), 2);
 		Taxon parent = (Taxon)taxonDao.findByUuid(sphingidae);
 		assertSame(taxonWithChildren.getTaxonomicParent(), parent);
-		assertEquals(parent.getTaxonomicChildrenCount(), 203);
+		assertEquals(parent.getTaxonomicChildrenCount(), 204);
 		taxonDao.delete(taxonWithChildren);
-		assertEquals(parent.getTaxonomicChildrenCount(), 202);
-		setComplete();
-		endTransaction();
+		assertEquals(parent.getTaxonomicChildrenCount(), 203);
 	}
 	
 	@Test
