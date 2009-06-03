@@ -179,7 +179,7 @@ public class EditGeoService {
 			boolean isFirstStyle = true;
 			for (int style: styleMap.keySet()){
 				char styleChar = getStyleAbbrev(style);
-				areaData += (isFirstStyle? "" : "/") + styleChar + ":";
+				areaData += (isFirstStyle? "" : "|") + styleChar + ":";
 				Set<Distribution> distributionSet = styleMap.get(style);
 				boolean isFirstDistribution = true;
 				for (Distribution distribution: distributionSet){
@@ -203,13 +203,18 @@ public class EditGeoService {
 	
 	private static Map<PresenceAbsenceTermBase<?>,Color> makeDefaultColorMap(){
 		Map<PresenceAbsenceTermBase<?>,Color> result = new HashMap<PresenceAbsenceTermBase<?>, Color>();
-		result.put(PresenceTerm.NATIVE(), Color.RED);
-		result.put(PresenceTerm.CULTIVATED(), Color.BLUE);
-		result.put(PresenceTerm.INTRODUCED(), Color.GREEN);
-		result.put(PresenceTerm.INTRODUCED_ADVENTITIOUS(), Color.YELLOW);
-		result.put(PresenceTerm.INTRODUCED_CULTIVATED(), Color.MAGENTA);
-		result.put(PresenceTerm.INTRODUCED_NATURALIZED(), Color.ORANGE);
-		result.put(PresenceTerm.NATIVE_DOUBTFULLY_NATIVE(), Color.PINK);
+		
+		try {
+			result.put(PresenceTerm.NATIVE(), Color.decode("0x4daf4a"));
+			result.put(PresenceTerm.NATIVE_DOUBTFULLY_NATIVE(), Color.decode("0x377eb8"));
+			result.put(PresenceTerm.CULTIVATED(), Color.decode("0x984ea3"));
+			result.put(PresenceTerm.INTRODUCED(), Color.decode("0xff7f00"));
+			result.put(PresenceTerm.INTRODUCED_ADVENTITIOUS(), Color.decode("0xffff33"));
+			result.put(PresenceTerm.INTRODUCED_CULTIVATED(), Color.decode("0xa65628"));
+			result.put(PresenceTerm.INTRODUCED_NATURALIZED(), Color.decode("0xf781bf"));
+		} catch (NumberFormatException nfe) {
+			logger.error(nfe);
+		}
 		return result;
 	}
 	
