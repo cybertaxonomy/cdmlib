@@ -2,7 +2,7 @@
 <feature
       id="eu.etaxonomy.cdmLibrary"
       label="CDM Library"
-      version="2.1.0.70"
+      version="2.1.0.v20090603_1459"
       provider-name="EDIT">
 
    <description url="http://www.example.com/description">
@@ -17,10 +17,14 @@
       to be added
    </license>
 
+   <url>
+      <update label="EDIT Taxonomic Editor" url="http://wp5.e-taxonomy.eu/taxeditor/update"/>
+   </url>
+
    <plugin
          id="eu.etaxonomy.cdmLibrary"
          download-size="0"
          install-size="0"
-         version="0.0.0"/>
+         version="2.1.0.v20090603_1459"/>
 
 </feature>
