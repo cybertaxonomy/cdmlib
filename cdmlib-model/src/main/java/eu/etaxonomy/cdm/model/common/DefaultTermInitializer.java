@@ -17,28 +17,6 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.model.common.init.ITermInitializer;
 import eu.etaxonomy.cdm.model.common.init.ITermLoader;
 import eu.etaxonomy.cdm.model.common.init.TermLoader;
-import eu.etaxonomy.cdm.model.description.AbsenceTerm;
-import eu.etaxonomy.cdm.model.description.Feature;
-import eu.etaxonomy.cdm.model.description.PresenceTerm;
-import eu.etaxonomy.cdm.model.description.Sex;
-import eu.etaxonomy.cdm.model.description.StatisticalMeasure;
-import eu.etaxonomy.cdm.model.location.Continent;
-import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
-import eu.etaxonomy.cdm.model.location.NamedAreaType;
-import eu.etaxonomy.cdm.model.location.TdwgArea;
-import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
-import eu.etaxonomy.cdm.model.media.RightsTerm;
-import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
-import eu.etaxonomy.cdm.model.name.NameRelationshipType;
-import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
-import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
-import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
-import eu.etaxonomy.cdm.model.occurrence.DerivationEventType;
-import eu.etaxonomy.cdm.model.occurrence.DeterminationModifier;
-import eu.etaxonomy.cdm.model.occurrence.PreservationMethod;
-import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
-import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 
 /**
  * @author a.mueller
@@ -48,41 +26,13 @@ public class DefaultTermInitializer implements ITermInitializer {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DefaultTermInitializer.class);
 	protected ITermLoader termLoader = new TermLoader();
-
-	@SuppressWarnings("unchecked")
-	protected static Class[] classesToInitialize  =  {
-		Language.class,
-		Continent.class,
-		WaterbodyOrCountry.class,
-		Rank.class,
-		SpecimenTypeDesignationStatus.class,
-		NomenclaturalStatusType.class,
-		SynonymRelationshipType.class,
-		HybridRelationshipType.class,
-		NameRelationshipType.class,
-		TaxonRelationshipType.class,
-		MarkerType.class,
-		AnnotationType.class,
-		NamedAreaType.class,
-		NamedAreaLevel.class,
-		Feature.class,
-		TdwgArea.class,
-		//NamedArea.class,
-		PresenceTerm.class,
-		AbsenceTerm.class,
-		Sex.class,
-		DerivationEventType.class,
-		PreservationMethod.class,
-		DeterminationModifier.class,
-		StatisticalMeasure.class,
-		RightsTerm.class,
-		NameTypeDesignationStatus.class
-	};
 	
 	public void initialize() {
 		Map<UUID,DefinedTermBase> terms = new HashMap<UUID,DefinedTermBase>();
 		
-		for(Class<? extends DefinedTermBase<?>> clazz : classesToInitialize) {
+//		for(Class<? extends DefinedTermBase<?>> clazz : classesToInitialize) {
+		for(VocabularyType vocabularyType : VocabularyType.values()) {
+			Class<? extends DefinedTermBase<?>> clazz = vocabularyType.getClazz();
 			TermVocabulary<?> voc  = termLoader.loadTerms(clazz, terms);
 			setDefinedTerms(clazz,voc);
 		}		

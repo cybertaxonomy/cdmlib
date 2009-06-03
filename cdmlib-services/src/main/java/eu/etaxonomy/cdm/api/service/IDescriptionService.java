@@ -28,7 +28,6 @@ import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
 import eu.etaxonomy.cdm.model.description.Scope;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
-import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
@@ -105,9 +104,16 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
 	public List<FeatureNode> getFeatureNodesAll(List<String> propertyPaths);
 	public List<Feature> getFeaturesAll(List<String> propertyPaths);
 	
-	
+	/**
+	 * 
+	 * @return
+	 * @deprecated use TermService#getVocabulary(VocabularyType) instead
+	 */
 	public TermVocabulary<Feature> getDefaultFeatureVocabulary();
 	//public TermVocabulary<Feature> getFeatureVocabulary();
+	/**
+	 * @deprecated use TermService#getVocabulary(VocabularyType) instead
+	 */
 	public TermVocabulary<Feature> getFeatureVocabulary(UUID uuid);
 
 	/**

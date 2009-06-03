@@ -24,10 +24,10 @@ import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
-import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
+import eu.etaxonomy.cdm.model.common.VocabularyType;
 import eu.etaxonomy.cdm.model.common.init.TermLoader;
 import eu.etaxonomy.cdm.persistence.dao.common.ITermVocabularyDao;
 
@@ -84,9 +84,11 @@ public class PersistentTermInitializer extends DefaultTermInitializer {
 			return;
 		} else {
 			Map<UUID,DefinedTermBase> terms = new HashMap<UUID,DefinedTermBase>();
-			logger.info("PersistentTermInitializer.omit == false, initializing " + classesToInitialize.length + " term classes");
+			logger.info("PersistentTermInitializer.omit == false, initializing " + VocabularyType.values().length + " term classes");
+			
 			TransactionStatus txStatus = transactionManager.getTransaction(txDefinition);
-			for(Class clazz : classesToInitialize) {
+			for(VocabularyType vocabularyType : VocabularyType.values()) {
+				Class<? extends DefinedTermBase<?>> clazz = vocabularyType.getClazz();
 				UUID vocabularyUuid = firstPass(clazz,terms);
 				secondPass(clazz,vocabularyUuid,terms);
 			}

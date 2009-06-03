@@ -15,16 +15,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-//import org.springframework.transaction.TransactionStatus;
-
 import eu.etaxonomy.cdm.api.service.config.ITaxonServiceConfigurator;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
-import eu.etaxonomy.cdm.model.common.TermVocabulary;
-import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
-import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
@@ -151,6 +146,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	/**
 	 * Returns TaxonRelationshipType vocabulary
 	 * @return
+	 * @deprecated use TermService#getVocabulary(VocabularyType) instead
 	 */
 	public OrderedTermVocabulary<TaxonRelationshipType> getTaxonRelationshipTypeVocabulary();
 

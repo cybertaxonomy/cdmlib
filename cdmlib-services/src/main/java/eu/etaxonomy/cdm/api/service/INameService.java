@@ -16,19 +16,25 @@ import java.util.Map;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.api.service.config.IIdentifiableEntityServiceConfigurator;
-import eu.etaxonomy.cdm.api.service.config.INameServiceConfigurator;
-import eu.etaxonomy.cdm.api.service.config.ITaxonServiceConfigurator;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
-import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
-import eu.etaxonomy.cdm.model.name.*;
+import eu.etaxonomy.cdm.model.name.BotanicalName;
+import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
+import eu.etaxonomy.cdm.model.name.HybridRelationship;
+import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
+import eu.etaxonomy.cdm.model.name.NameRelationship;
+import eu.etaxonomy.cdm.model.name.NameRelationshipType;
+import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
+import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
+import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
-import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 public interface INameService extends IIdentifiableEntityService<TaxonNameBase> {
@@ -107,30 +113,35 @@ public interface INameService extends IIdentifiableEntityService<TaxonNameBase> 
 	/**
 	 * Returns all Ranks
 	 * @return
+	 * @deprecated use TermService#getVocabulary(VocabularyType) instead
 	 */
 	public OrderedTermVocabulary<Rank> getRankVocabulary();
 	
 	/**
 	 * Returns all NomenclaturalStatusTypes
 	 * @return
+	 * @deprecated use TermService#getVocabulary(VocabularyType) instead
 	 */
 	public TermVocabulary<NomenclaturalStatusType> getStatusTypeVocabulary();
 	
 	/**
 	 * Returns TypeDesignationStatus vocabulary
 	 * @return
+	 * @deprecated use TermService#getVocabulary(VocabularyType) instead
 	 */
 	public TermVocabulary<SpecimenTypeDesignationStatus> getSpecimenTypeDesignationStatusVocabulary();
 		
 	/**
 	 * Returns TypeDesignationStatus ordered vocabulary
 	 * @return
+	 * @deprecated use TermService#getVocabulary(VocabularyType) instead
 	 */
 	public OrderedTermVocabulary<SpecimenTypeDesignationStatus> getSpecimenTypeDesignationVocabulary();
 
 	/**
 	 * Returns all NameRelationshipTypes
 	 * @return
+	 * @deprecated use TermService#getVocabulary(VocabularyType) instead
 	 */
 	public TermVocabulary<NameRelationshipType> getNameRelationshipTypeVocabulary();
 	

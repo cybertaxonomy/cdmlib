@@ -45,22 +45,35 @@ public interface ILocationService extends IService<DefinedTermBase> {
      * 
      * @param vocabularyType
      * @return
+     * @deprecated use TermService#getVocabulary(VocabularyType) instead
      */
     public OrderedTermVocabulary<NamedArea> getNamedAreaVocabulary(NamedAreaVocabularyType vocabularyType);
     
+    /**
+     * 
+     * @return
+     * @deprecated use TermService#getVocabulary(VocabularyType) instead
+     */
     public TermVocabulary<NamedAreaType> getNamedAreaTypeVocabulary();
     
+    /**
+     * 
+     * @return
+     * @deprecated use TermService#getVocabulary(VocabularyType) instead
+     */
     public OrderedTermVocabulary<NamedAreaLevel> getNamedAreaLevelVocabulary();
     
     /**
      * 
      * @return
+     * @deprecated use TermService#getVocabulary(VocabularyType) instead
      */
     public OrderedTermVocabulary<PresenceTerm> getPresenceTermVocabulary();
     
     /**
      * 
      * @return
+     * @deprecated use TermService#getVocabulary(VocabularyType) instead
      */
     public OrderedTermVocabulary<AbsenceTerm> getAbsenceTermVocabulary(); 
     
