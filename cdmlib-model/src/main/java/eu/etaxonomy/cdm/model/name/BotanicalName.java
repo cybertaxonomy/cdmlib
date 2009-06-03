@@ -91,7 +91,7 @@ public class BotanicalName extends NonViralName<BotanicalName> {
     @XmlElementWrapper(name = "HybridRelationships")
     @XmlElement(name = "HybridRelationship")
     @OneToMany(fetch = FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE_ORPHAN})
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE_ORPHAN})
 	private Set<HybridRelationship> hybridRelationships = new HashSet();
 
 	static private INonViralNameParser nameParser = new NonViralNameParserImpl();

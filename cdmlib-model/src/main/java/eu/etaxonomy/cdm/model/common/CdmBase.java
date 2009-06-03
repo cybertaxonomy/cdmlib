@@ -16,6 +16,7 @@ import java.lang.reflect.Method;
 import java.util.UUID;
 
 import javax.persistence.Basic;
+import javax.persistence.Column;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -34,6 +35,7 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.apache.log4j.Logger;
+import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
 import org.hibernate.search.annotations.DocumentId;
 import org.joda.time.DateTime;
@@ -83,6 +85,8 @@ public abstract class CdmBase implements Serializable, ICdmBase{
     @XmlJavaTypeAdapter(UUIDAdapter.class)
     @XmlID
 	@Type(type="uuidUserType")
+	@NaturalId
+	@Column(length=36)
 	protected UUID uuid;
 	
 	@XmlElement (name = "Created", type= String.class)

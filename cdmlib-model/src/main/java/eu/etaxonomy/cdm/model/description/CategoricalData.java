@@ -68,7 +68,7 @@ public class CategoricalData extends DescriptionElementBase {
 	@XmlElementWrapper(name = "States")
 	@XmlElement(name = "State")
 	@ManyToMany(fetch = FetchType.LAZY)
-	@Cascade({ CascadeType.SAVE_UPDATE })
+	@Cascade({ CascadeType.SAVE_UPDATE, CascadeType.MERGE })
 	private List<StateData> states = new ArrayList<StateData>();
 
 	

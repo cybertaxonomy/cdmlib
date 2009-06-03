@@ -75,7 +75,7 @@ public class TermVocabulary<T extends DefinedTermBase> extends TermBase implemen
     @XmlSchemaType(name = "IDREF")
     @OneToMany(mappedBy="vocabulary", fetch=FetchType.LAZY, targetEntity = DefinedTermBase.class)
 	@Type(type="DefinedTermBase")
-	@Cascade({CascadeType.SAVE_UPDATE})
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
 	protected Set<T> terms = getNewTermSet();
 	
 	public T findTermByUuid(UUID uuid){

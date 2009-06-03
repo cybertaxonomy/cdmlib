@@ -72,7 +72,7 @@ public class Media extends AnnotatableEntity {
     @XmlJavaTypeAdapter(MultilanguageTextAdapter.class)
     @OneToMany(fetch = FetchType.LAZY)
     @IndexedEmbedded
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.DELETE})
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE,CascadeType.DELETE})
 	private Map<Language,LanguageString> title = new HashMap<Language,LanguageString>();
 	
 	//creation date of the media (not of the record) 
@@ -88,7 +88,7 @@ public class Media extends AnnotatableEntity {
     @OneToMany(fetch = FetchType.LAZY)
     @IndexedEmbedded
     @JoinTable(name = "Media_Description")
-    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.DELETE})
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE,CascadeType.DELETE})
 	private Map<Language,LanguageString> description = new HashMap<Language,LanguageString>();
 	
 	//A single medium such as a picture can have multiple representations in files. 
@@ -96,14 +96,14 @@ public class Media extends AnnotatableEntity {
 	@XmlElementWrapper(name = "MediaRepresentations")
 	@XmlElement(name = "MediaRepresentation")
 	@OneToMany(mappedBy="media",fetch = FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE})
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
 	private Set<MediaRepresentation> representations = new HashSet<MediaRepresentation>();
 	
 	// FIXME should be OneToMany?
 	@XmlElementWrapper(name = "Rights")
 	@XmlElement(name = "Right")
 	@ManyToMany(fetch = FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE})
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
 	private Set<Rights> rights = new HashSet<Rights>();
 	
 	@XmlElement(name = "Artist")

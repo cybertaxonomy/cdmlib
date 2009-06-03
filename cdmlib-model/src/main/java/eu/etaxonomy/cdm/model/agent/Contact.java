@@ -94,7 +94,7 @@ public class Contact implements Serializable {
     @XmlElementWrapper(name = "Addresses")
     @XmlElement(name = "Address")
     @OneToMany(fetch = FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE_ORPHAN})
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE_ORPHAN})
 	protected Set<Address> addresses = new HashSet<Address>();
 	
 	

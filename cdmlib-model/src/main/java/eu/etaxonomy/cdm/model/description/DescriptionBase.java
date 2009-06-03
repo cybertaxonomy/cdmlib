@@ -94,7 +94,7 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
 	@XmlElementWrapper(name = "DescriptiveSystem")
 	@XmlElement(name = "Feature")
 	@ManyToMany(fetch = FetchType.LAZY)  //FIXME
-    @Cascade( { CascadeType.SAVE_UPDATE })
+    @Cascade( { CascadeType.SAVE_UPDATE, CascadeType.MERGE })
     @JoinTable(name = "DescriptionBase_Feature")
 	private Set<Feature> descriptiveSystem = new HashSet<Feature>();
 	
@@ -109,7 +109,7 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
         @XmlElement(name = "TextData", namespace = "http://etaxonomy.eu/cdm/model/description/1.0", type = TextData.class)
     })
     @OneToMany(fetch=FetchType.LAZY, mappedBy = "inDescription")
-	@Cascade( { CascadeType.SAVE_UPDATE })
+	@Cascade( { CascadeType.SAVE_UPDATE, CascadeType.MERGE })
 	private Set<DescriptionElementBase> elements = new HashSet<DescriptionElementBase>();
 
 	@XmlElement(name = "ImageGallery")
@@ -205,9 +205,6 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
 	 * @see    #addFeature(Feature)
 	 * @see    #removeFeature(Feature)
 	 */
-	@ManyToMany(fetch = FetchType.LAZY)  //FIXME
-	@Cascade( { CascadeType.SAVE_UPDATE })
-	@JoinTable(name = "DescriptionBase_Feature")
 	public Set<Feature> getDescriptiveSystem() {
 		return this.descriptiveSystem;
 	}

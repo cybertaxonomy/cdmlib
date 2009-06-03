@@ -86,7 +86,7 @@ public class TaxonNode  extends AnnotatableEntity {
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @OneToMany(mappedBy="parent", fetch=FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE})
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
 	private List<TaxonNode> childNodes = new ArrayList<TaxonNode>();
 	
 	@XmlElement(name = "reference")

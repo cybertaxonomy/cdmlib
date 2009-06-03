@@ -73,7 +73,7 @@ public class FeatureTree extends TermBase {
 	
 	@XmlElement(name = "Root")
 	@OneToOne(fetch = FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE})
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
 	private FeatureNode root;
 	
 	@XmlElement(name = "IsDescriptionSeparated")

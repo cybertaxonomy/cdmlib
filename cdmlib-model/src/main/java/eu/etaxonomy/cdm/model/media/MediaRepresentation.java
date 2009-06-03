@@ -87,7 +87,7 @@ public class MediaRepresentation extends VersionableEntity {
     @OneToMany (cascade = {javax.persistence.CascadeType.ALL}, fetch= FetchType.LAZY)
 	@IndexColumn(name="sortIndex", base = 0)
 	@JoinColumn (name = "representation_id",  nullable=false)
-	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE_ORPHAN})
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE_ORPHAN})
 	private List<MediaRepresentationPart> mediaRepresentationParts = new ArrayList<MediaRepresentationPart>();
 		
 	/**

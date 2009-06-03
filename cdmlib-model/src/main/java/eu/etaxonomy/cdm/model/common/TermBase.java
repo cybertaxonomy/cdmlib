@@ -46,7 +46,7 @@ public abstract class TermBase extends VersionableEntity {
 	@XmlElementWrapper(name = "Representations")
 	@XmlElement(name = "Representation")
     @OneToMany(fetch=FetchType.EAGER)
-	@Cascade( { CascadeType.SAVE_UPDATE, CascadeType.DELETE })
+	@Cascade( { CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE })
 	private Set<Representation> representations = new HashSet<Representation>();
 	
 	public TermBase(){

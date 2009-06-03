@@ -96,7 +96,7 @@ public class Person extends TeamOrPersonBase<Person> {
     @XmlElementWrapper(name = "InstitutionalMemberships")
     @XmlElement(name = "InstitutionalMembership")
     @OneToMany(fetch=FetchType.LAZY, mappedBy = "person")
-	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE})
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
 	protected Set<InstitutionalMembership> institutionalMemberships;
 	
     @XmlElementWrapper(name = "Keywords")

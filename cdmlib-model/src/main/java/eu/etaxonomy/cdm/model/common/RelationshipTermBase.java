@@ -64,7 +64,7 @@ public abstract class RelationshipTermBase<T extends RelationshipTermBase> exten
 	@XmlSchemaType(name = "IDREF")
 		@OneToMany(fetch = FetchType.LAZY)
 	@JoinTable(name="RelationshipTermBase_inverseRepresentation")
-	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE})
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
 	private Set<Representation> inverseRepresentations = new HashSet<Representation>();
 	
 	public RelationshipTermBase() {

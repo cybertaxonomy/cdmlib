@@ -101,26 +101,26 @@ implements ISourceable, IIdentifiableEntity, Comparable<IdentifiableEntity> {
     @XmlElementWrapper(name = "Rights")
     @XmlElement(name = "Rights")
     @OneToMany(fetch = FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE})
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
 	private Set<Rights> rights = new HashSet<Rights>();
     
     @XmlElementWrapper(name = "Credits")
     @XmlElement(name = "Credit")
     @IndexColumn(name="sortIndex", base = 0)
 	@OneToMany(fetch = FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE})
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
     private List<Credit> credits = new ArrayList<Credit>();
 	
     @XmlElementWrapper(name = "Extensions")
     @XmlElement(name = "Extension")
     @OneToMany(fetch = FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE})
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
 	private Set<Extension> extensions = new HashSet<Extension>();
 	
     @XmlElementWrapper(name = "Sources")
     @XmlElement(name = "OriginalSource")
     @OneToMany(fetch = FetchType.LAZY)		
-	@Cascade({CascadeType.SAVE_UPDATE})
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
 	private Set<OriginalSource> sources = new HashSet<OriginalSource>();
     
     @XmlTransient

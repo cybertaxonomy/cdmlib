@@ -60,7 +60,7 @@ public abstract class PublicationBase<S extends IReferenceBaseCacheStrategy> ext
     @OneToMany (cascade = {javax.persistence.CascadeType.ALL}, fetch= FetchType.LAZY)
 	@IndexColumn(name="sortIndex", base = 0)
 	@JoinColumn (name = "referenceBase_id")
-	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE_ORPHAN})
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE_ORPHAN})
 	private List<Publisher> publishers = new ArrayList<Publisher>();
 	
 	

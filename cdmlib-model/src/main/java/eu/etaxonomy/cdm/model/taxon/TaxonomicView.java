@@ -71,7 +71,7 @@ public class TaxonomicView extends IdentifiableEntity implements IReferencedEnti
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @OneToMany(mappedBy="taxonomicView", fetch=FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE})
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
 	private Set<TaxonNode> allNodes = new HashSet<TaxonNode>();
 
 	@XmlElementWrapper(name = "rootNodes")
@@ -79,7 +79,7 @@ public class TaxonomicView extends IdentifiableEntity implements IReferencedEnti
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @OneToMany(fetch=FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE})
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
 	private Set<TaxonNode> rootNodes = new HashSet<TaxonNode>();
 
 	@XmlElement(name = "reference")

@@ -51,7 +51,7 @@ public abstract class AnnotatableEntity extends VersionableEntity {
 	@XmlElementWrapper(name = "Annotations")
 	@XmlElement(name = "Annotation")
 	@OneToMany(fetch=FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE})
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
 	protected Set<Annotation> annotations = new HashSet<Annotation>();
 	
 	protected AnnotatableEntity() {
