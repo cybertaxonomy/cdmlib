@@ -38,12 +38,13 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.common.IUserDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
+import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 /**
  * @author a.mueller
  *
  */
-public class CdmEntityDaoBaseTest extends CdmIntegrationTest {
+public class CdmEntityDaoBaseTest extends CdmTransactionalIntegrationTest {
 	
 	private UUID uuid;
 	private TaxonBase cdmBase;
@@ -103,6 +104,33 @@ public class CdmEntityDaoBaseTest extends CdmIntegrationTest {
 		cdmEntityDaoBase.saveOrUpdate(cdmBase);
 	}
 	
+	/**
+	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmEntityDaoBase#saveOrUpdate(eu.etaxonomy.cdm.model.common.CdmBase)}.
+	 */
+	@Test
+	@DataSet("CdmEntityDaoBaseTest.xml")
+	@ExpectedDataSet
+	public void testSaveOrUpdateWithAuthentication() {
+		User user = userDao.findByUuid(UUID.fromString("dbac0f20-07f2-11de-8c30-0800200c9a66"));
+		assert user != null : "User cannot be null";
+		setAuthentication(user);
+		TaxonBase cdmBase = cdmEntityDaoBase.findByUuid(uuid);
+		cdmBase.setDoubtful(true);
+		cdmEntityDaoBase.saveOrUpdate(cdmBase);
+	}	
+	
+	/**
+	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmEntityDaoBase#saveOrUpdate(eu.etaxonomy.cdm.model.common.CdmBase)}.
+	 */
+	@Test
+	@DataSet("CdmEntityDaoBaseTest.xml")
+    @ExpectedDataSet
+	public void testSaveOrUpdateNewObjectWithAuthentication() {
+		User user = userDao.findByUuid(UUID.fromString("dbac0f20-07f2-11de-8c30-0800200c9a66"));
+		assert user != null : "User cannot be null";
+		setAuthentication(user);
+		cdmEntityDaoBase.saveOrUpdate(cdmBase);
+	}	
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmEntityDaoBase#save(eu.etaxonomy.cdm.model.common.CdmBase)}.
 	 */

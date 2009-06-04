@@ -54,6 +54,7 @@ public interface IOccurrenceDao extends IIdentifiableDao<SpecimenOrObservationBa
 	 * @param occurence the occurence associated with these determinations
 	 * @param pageSize The maximum number of determinations returned (can be null for all related determinations)
 	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
+	 * @param propertyPaths properties to initialize - see {@link BeanInitializer#initialize(Object, List)}
      * @return a List of determination instances
      */
 	public List<DeterminationEvent> getDeterminations(SpecimenOrObservationBase occurence, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
@@ -72,6 +73,7 @@ public interface IOccurrenceDao extends IIdentifiableDao<SpecimenOrObservationBa
 	 * @param occurence the occurence that was a source of these derivation events
 	 * @param pageSize The maximum number of derivation events returned (can be null for all related derivation events)
 	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
+	 * @param propertyPaths properties to initialize - see {@link BeanInitializer#initialize(Object, List)}
      * @return a List of derivation events
      */
 	public List<DerivationEvent> getDerivationEvents(SpecimenOrObservationBase occurence, Integer pageSize, Integer pageNumber, List<String> propertyPaths);

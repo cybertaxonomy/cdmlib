@@ -1477,6 +1477,8 @@ cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/common/CdmEntityDaoBaseTest.testDelete-result.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/common/CdmEntityDaoBaseTest.testSave-result.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/common/CdmEntityDaoBaseTest.testSaveOrUpdate-result.xml -text
+cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/common/CdmEntityDaoBaseTest.testSaveOrUpdateNewObjectWithAuthentication-result.xml -text
+cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/common/CdmEntityDaoBaseTest.testSaveOrUpdateWithAuthentication-result.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/common/CdmEntityDaoBaseTest.testSaveWithAuthentication-result.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/common/CdmEntityDaoBaseTest.testUpdate-result.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/common/CdmEntityDaoBaseTest.testUpdateWithAuthentication-result.xml -text

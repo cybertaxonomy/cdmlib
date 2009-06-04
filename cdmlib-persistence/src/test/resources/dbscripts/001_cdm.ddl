@@ -2,7 +2,7 @@
     create table Address (
         id integer not null,
         created timestamp,
-        uuid varchar(255),
+        uuid varchar(36),
         updated timestamp,
         locality varchar(255),
         location_errorradius integer,
@@ -16,7 +16,8 @@
         updatedby_id integer,
         country_id integer,
         location_referencesystem_id integer,
-        primary key (id)
+        primary key (id),
+        unique (uuid)
     );
 
     create table Address_AUD (
@@ -24,7 +25,7 @@
         REV integer not null,
         revtype tinyint,
         created timestamp,
-        uuid varchar(255),
+        uuid varchar(36),
         updated timestamp,
         locality varchar(255),
         location_errorradius integer,
@@ -45,7 +46,7 @@
         DTYPE varchar(31) not null,
         id integer not null,
         created timestamp,
-        uuid varchar(255),
+        uuid varchar(36),
         updated timestamp,
         lsid_authority varchar(255),
         lsid_lsid varchar(255),
@@ -67,7 +68,8 @@
         createdby_id integer,
         updatedby_id integer,
         ispartof_id integer,
-        primary key (id)
+        primary key (id),
+        unique (uuid)
     );
 
     create table AgentBase_AUD (
@@ -76,7 +78,7 @@
         REV integer not null,
         revtype tinyint,
         created timestamp,
-        uuid varchar(255),
+        uuid varchar(36),
         updated timestamp,
         lsid_authority varchar(255),
         lsid_lsid varchar(255),
@@ -87,17 +89,17 @@
         titleCache varchar(255),
         createdby_id integer,
         updatedby_id integer,
+        nomenclaturaltitle varchar(255),
         code varchar(255),
         name varchar(255),
         ispartof_id integer,
-        nomenclaturaltitle varchar(255),
-        protectednomenclaturaltitlecache bit,
         firstname varchar(255),
         lastname varchar(255),
         lifespan_end varchar(255),
         lifespan_start varchar(255),
         prefix varchar(255),
         suffix varchar(255),
+        protectednomenclaturaltitlecache bit,
         primary key (id, REV)
     );
 
@@ -307,7 +309,7 @@
     create table Annotation (
         id integer not null,
         created timestamp,
-        uuid varchar(255),
+        uuid varchar(36),
         updated timestamp,
         text longvarchar,
         annotatedObj_type varchar(255),
@@ -318,7 +320,8 @@
         language_id integer,
         annotationtype_id integer,
         commentator_id integer,
-        primary key (id)
+        primary key (id),
+        unique (uuid)
     );
 
     create table Annotation_AUD (
@@ -326,7 +329,7 @@
         REV integer not null,
         revtype tinyint,
         created timestamp,
-        uuid varchar(255),
+        uuid varchar(36),
         updated timestamp,
         text longvarchar,
         linkbackurl varbinary(255),
@@ -379,12 +382,13 @@
     create table CDM_VIEW (
         id integer not null,
         created timestamp,
-        uuid varchar(255),
+        uuid varchar(36),
         description varchar(255),
         name varchar(255),
         createdby_id integer,
         reference_id integer,
-        primary key (id)
+        primary key (id),
+        unique (uuid)
     );
 
     create table CDM_VIEW_CDM_VIEW (
@@ -397,7 +401,7 @@
     create table Collection (
         id integer not null,
         created timestamp,
-        uuid varchar(255),
+        uuid varchar(36),
         updated timestamp,
         lsid_authority varchar(255),
         lsid_lsid varchar(255),
@@ -414,7 +418,8 @@
         updatedby_id integer,
         institute_id integer,
         supercollection_id integer,
-        primary key (id)
+        primary key (id),
+        unique (uuid)
     );
 
     create table Collection_AUD (
@@ -422,7 +427,7 @@
         REV integer not null,
         revtype tinyint,
         created timestamp,
-        uuid varchar(255),
+        uuid varchar(36),
         updated timestamp,
         lsid_authority varchar(255),
         lsid_lsid varchar(255),
@@ -551,7 +556,7 @@
     create table Credit (
         id integer not null,
         created timestamp,
-        uuid varchar(255),
+        uuid varchar(36),
         updated timestamp,
         text longvarchar,
         abbreviatedtext varchar(255),
@@ -559,7 +564,8 @@
         updatedby_id integer,
         language_id integer,
         agent_id integer,
-        primary key (id)
+        primary key (id),
+        unique (uuid)
     );
 
     create table Credit_AUD (
@@ -567,7 +573,7 @@
         REV integer not null,
         revtype tinyint,
         created timestamp,
-        uuid varchar(255),
+        uuid varchar(36),
         updated timestamp,
         text longvarchar,
         abbreviatedtext varchar(255),
@@ -612,7 +618,7 @@
         DTYPE varchar(31) not null,
         id integer not null,
         created timestamp,
-        uuid varchar(255),
+        uuid varchar(36),
         updated timestamp,
         uri varchar(255),
         orderindex integer,
@@ -643,7 +649,8 @@
         pointapproximation_referencesystem_id integer,
         shape_id integer,
         type_id integer,
-        primary key (id)
+        primary key (id),
+        unique (uuid)
     );
 
     create table DefinedTermBase_AUD (
@@ -652,7 +659,7 @@
         REV integer not null,
         revtype tinyint,
         created timestamp,
-        uuid varchar(255),
+        uuid varchar(36),
         updated timestamp,
         uri varchar(255),
         createdby_id integer,
@@ -660,17 +667,9 @@
         kindof_id integer,
         partof_id integer,
         vocabulary_id integer,
-        orderindex integer,
         iso639_1 varchar(2),
         iso639_2 varchar(3),
-        supportscategoricaldata bit,
-        supportscommontaxonname bit,
-        supportsdistribution bit,
-        supportsindividualassociation bit,
-        supportsquantitativedata bit,
-        supportstaxoninteraction bit,
-        supportstextdata bit,
-        defaultcolor varchar(255),
+        orderindex integer,
         pointapproximation_errorradius integer,
         pointapproximation_latitude double,
         pointapproximation_longitude double,
@@ -681,8 +680,16 @@
         shape_id integer,
         type_id integer,
         iso3166_a2 varchar(2),
+        defaultcolor varchar(255),
         symmetric bit,
         transitive bit,
+        supportscategoricaldata bit,
+        supportscommontaxonname bit,
+        supportsdistribution bit,
+        supportsindividualassociation bit,
+        supportsquantitativedata bit,
+        supportstaxoninteraction bit,
+        supportstextdata bit,
         primary key (id, REV)
     );
 
@@ -805,7 +812,7 @@
     create table DerivationEvent (
         id integer not null,
         created timestamp,
-        uuid varchar(255),
+        uuid varchar(36),
         updated timestamp,
         description varchar(255),
         timeperiod_end varchar(255),
@@ -814,7 +821,8 @@
         updatedby_id integer,
         actor_id integer,
         type_id integer,
-        primary key (id)
+        primary key (id),
+        unique (uuid)
     );
 
     create table DerivationEvent_AUD (
@@ -822,7 +830,7 @@
         REV integer not null,
         revtype tinyint,
         created timestamp,
-        uuid varchar(255),
+        uuid varchar(36),
         updated timestamp,
         description varchar(255),
         timeperiod_end varchar(255),
@@ -868,7 +876,7 @@
         DTYPE varchar(31) not null,
         id integer not null,
         created timestamp,
-        uuid varchar(255),
+        uuid varchar(36),
         updated timestamp,
         lsid_authority varchar(255),
         lsid_lsid varchar(255),
@@ -882,7 +890,8 @@
         updatedby_id integer,
         taxon_fk integer,
         taxonName_fk integer,
-        primary key (id)
+        primary key (id),
+        unique (uuid)
     );
 
     create table DescriptionBase_AUD (
@@ -891,7 +900,7 @@
         REV integer not null,
         revtype tinyint,
         created timestamp,
-        uuid varchar(255),
+        uuid varchar(36),
         updated timestamp,
         lsid_authority varchar(255),
         lsid_lsid varchar(255),
@@ -1074,7 +1083,7 @@
         DTYPE varchar(31) not null,
         id integer not null,
         created timestamp,
-        uuid varchar(255),
+        uuid varchar(36),
         updated timestamp,
         citationmicroreference varchar(255),
         originalnamestring varchar(255),
@@ -1093,7 +1102,8 @@
         unit_id integer,
         taxon2_id integer,
         format_id integer,
-        primary key (id)
+        primary key (id),
+        unique (uuid)
     );
 
     create table DescriptionElementBase_AUD (
@@ -1102,7 +1112,7 @@
         REV integer not null,
         revtype tinyint,
         created timestamp,
-        uuid varchar(255),
+        uuid varchar(36),
         updated timestamp,
         citationmicroreference varchar(255),
         originalnamestring varchar(255),
@@ -1112,15 +1122,15 @@
         feature_id integer,
         indescription_id integer,
         nameusedinreference_id integer,
-        format_id integer,
         taxon2_id integer,
+        area_id integer,
+        status_id integer,
+        format_id integer,
+        name varchar(255),
+        language_id integer,
         unit_id integer,
         associatedspecimenorobservation_id integer,
         orderrelevant bit,
-        name varchar(255),
-        language_id integer,
-        area_id integer,
-        status_id integer,
         primary key (id, REV)
     );
 
@@ -1247,7 +1257,7 @@
     create table DeterminationEvent (
         id integer not null,
         created timestamp,
-        uuid varchar(255),
+        uuid varchar(36),
         updated timestamp,
         description varchar(255),
         timeperiod_end varchar(255),
@@ -1259,7 +1269,8 @@
         identifiedunit_id integer,
         modifier_id integer,
         taxon_id integer,
-        primary key (id)
+        primary key (id),
+        unique (uuid)
     );
 
     create table DeterminationEvent_AUD (
@@ -1267,7 +1278,7 @@
         REV integer not null,
         revtype tinyint,
         created timestamp,
-        uuid varchar(255),
+        uuid varchar(36),
         updated timestamp,
         description varchar(255),
         timeperiod_end varchar(255),
@@ -1329,7 +1340,7 @@
     create table Extension (
         id integer not null,
         created timestamp,
-        uuid varchar(255),
+        uuid varchar(36),
         updated timestamp,
         extendedObj_type varchar(255),
         extendedObj_id integer not null,
@@ -1337,7 +1348,8 @@
         createdby_id integer,
         updatedby_id integer,
         type_id integer,
-        primary key (id)
+        primary key (id),
+        unique (uuid)
     );
 
     create table Extension_AUD (
@@ -1345,7 +1357,7 @@
         REV integer not null,
         revtype tinyint,
         created timestamp,
-        uuid varchar(255),
+        uuid varchar(36),
         updated timestamp,
         value varchar(255),
         createdby_id integer,
@@ -1357,13 +1369,14 @@
     create table FeatureNode (
         id integer not null,
         created timestamp,
-        uuid varchar(255),
+        uuid varchar(36),
         updated timestamp,
         createdby_id integer,
         updatedby_id integer,
         feature_id integer,
         parent_fk integer,
-        primary key (id)
+        primary key (id),
+        unique (uuid)
     );
 
     create table FeatureNode_AUD (
@@ -1371,7 +1384,7 @@
         REV integer not null,
         revtype tinyint,
         created timestamp,
-        uuid varchar(255),
+        uuid varchar(36),
         updated timestamp,
         createdby_id integer,
         updatedby_id integer,
@@ -1383,14 +1396,15 @@
     create table FeatureTree (
         id integer not null,
         created timestamp,
-        uuid varchar(255),
+        uuid varchar(36),
         updated timestamp,
         uri varchar(255),
         descriptionseparated bit not null,
         createdby_id integer,
         updatedby_id integer,
         root_id integer,
-        primary key (id)
+        primary key (id),
+        unique (uuid)
     );
 
     create table FeatureTree_AUD (
@@ -1398,7 +1412,7 @@
         REV integer not null,
         revtype tinyint,
         created timestamp,
-        uuid varchar(255),
+        uuid varchar(36),
         updated timestamp,
         uri varchar(255),
         descriptionseparated bit,
@@ -1426,7 +1440,7 @@
     create table GatheringEvent (
         id integer not null,
         created timestamp,
-        uuid varchar(255),
+        uuid varchar(36),
         updated timestamp,
         description varchar(255),
         timeperiod_end varchar(255),
@@ -1444,7 +1458,8 @@
         actor_id integer,
         exactlocation_referencesystem_id integer,
         locality_id integer,
-        primary key (id)
+        primary key (id),
+        unique (uuid)
     );
 
     create table GatheringEvent_AUD (
@@ -1452,7 +1467,7 @@
         REV integer not null,
         revtype tinyint,
         created timestamp,
-        uuid varchar(255),
+        uuid varchar(36),
         updated timestamp,
         description varchar(255),
         timeperiod_end varchar(255),
@@ -1520,13 +1535,14 @@
     create table GenBankAccession (
         id integer not null,
         created timestamp,
-        uuid varchar(255),
+        uuid varchar(36),
         updated timestamp,
         accessionnumber varchar(255),
         uri varchar(255),
         createdby_id integer,
         updatedby_id integer,
-        primary key (id)
+        primary key (id),
+        unique (uuid)
     );
 
     create table GenBankAccession_AUD (
@@ -1534,7 +1550,7 @@
         REV integer not null,
         revtype tinyint,
         created timestamp,
-        uuid varchar(255),
+        uuid varchar(36),
         updated timestamp,
         accessionnumber varchar(255),
         uri varchar(255),
@@ -1546,21 +1562,22 @@
     create table GrantedAuthorityImpl (
         id integer not null,
         created timestamp,
-        uuid varchar(255),
+        uuid varchar(36),
         authority varchar(255),
         createdby_id integer,
         primary key (id),
-        unique (authority)
+        unique (uuid, authority)
     );
 
     create table HomotypicalGroup (
         id integer not null,
         created timestamp,
-        uuid varchar(255),
+        uuid varchar(36),
         updated timestamp,
         createdby_id integer,
         updatedby_id integer,
-        primary key (id)
+        primary key (id),
+        unique (uuid)
     );
 
     create table HomotypicalGroup_AUD (
@@ -1568,7 +1585,7 @@
         REV integer not null,
         revtype tinyint,
         created timestamp,
-        uuid varchar(255),
+        uuid varchar(36),
         updated timestamp,
         createdby_id integer,
         updatedby_id integer,
@@ -1608,7 +1625,7 @@
     create table HybridRelationship (
         id integer not null,
         created timestamp,
-        uuid varchar(255),
+        uuid varchar(36),
         updated timestamp,
         citationmicroreference varchar(255),
         originalnamestring varchar(255),
@@ -1620,7 +1637,8 @@
         relatedfrom_id integer,
         relatedto_id integer,
         type_id integer,
-        primary key (id)
+        primary key (id),
+        unique (uuid)
     );
 
     create table HybridRelationship_AUD (
@@ -1628,7 +1646,7 @@
         REV integer not null,
         revtype tinyint,
         created timestamp,
-        uuid varchar(255),
+        uuid varchar(36),
         updated timestamp,
         citationmicroreference varchar(255),
         originalnamestring varchar(255),
@@ -1707,7 +1725,7 @@
     create table InstitutionalMembership (
         id integer not null,
         created timestamp,
-        uuid varchar(255),
+        uuid varchar(36),
         updated timestamp,
         department varchar(255),
         period_end varchar(255),
@@ -1717,7 +1735,8 @@
         updatedby_id integer,
         institute_id integer,
         person_id integer,
-        primary key (id)
+        primary key (id),
+        unique (uuid)
     );
 
     create table InstitutionalMembership_AUD (
@@ -1725,7 +1744,7 @@
         REV integer not null,
         revtype tinyint,
         created timestamp,
-        uuid varchar(255),
+        uuid varchar(36),
         updated timestamp,
         department varchar(255),
         period_end varchar(255),
@@ -1741,7 +1760,7 @@
     create table LSIDAuthority (
         id integer not null,
         created timestamp,
-        uuid varchar(255),
+        uuid varchar(36),
         authority varchar(255),
         authoritywsdl longvarchar,
         port integer not null,
@@ -1749,7 +1768,7 @@
         url varchar(255),
         createdby_id integer,
         primary key (id),
-        unique (authority)
+        unique (uuid, authority)
     );
 
     create table LSIDAuthority_namespaces (
@@ -1762,13 +1781,14 @@
     create table LanguageString (
         id integer not null,
         created timestamp,
-        uuid varchar(255),
+        uuid varchar(36),
         updated timestamp,
         text longvarchar,
         createdby_id integer,
         updatedby_id integer,
         language_id integer,
-        primary key (id)
+        primary key (id),
+        unique (uuid)
     );
 
     create table LanguageString_AUD (
@@ -1776,7 +1796,7 @@
         REV integer not null,
         revtype tinyint,
         created timestamp,
-        uuid varchar(255),
+        uuid varchar(36),
         updated timestamp,
         text longvarchar,
         createdby_id integer,
@@ -1818,13 +1838,14 @@
     create table Locus (
         id integer not null,
         created timestamp,
-        uuid varchar(255),
+        uuid varchar(36),
         updated timestamp,
         description varchar(255),
         name varchar(255),
         createdby_id integer,
         updatedby_id integer,
-        primary key (id)
+        primary key (id),
+        unique (uuid)
     );
 
     create table Locus_AUD (
@@ -1832,7 +1853,7 @@
         REV integer not null,
         revtype tinyint,
         created timestamp,
-        uuid varchar(255),
+        uuid varchar(36),
         updated timestamp,
         description varchar(255),
         name varchar(255),
@@ -1844,7 +1865,7 @@
     create table Marker (
         id integer not null,
         created timestamp,
-        uuid varchar(255),
+        uuid varchar(36),
         updated timestamp,
         flag bit not null,
         markedObj_type varchar(255),
@@ -1852,7 +1873,8 @@
         createdby_id integer,
         updatedby_id integer,
         markertype_id integer,
-        primary key (id)
+        primary key (id),
+        unique (uuid)
     );
 
     create table Marker_AUD (
@@ -1860,7 +1882,7 @@
         REV integer not null,
         revtype tinyint,
         created timestamp,
-        uuid varchar(255),
+        uuid varchar(36),
         updated timestamp,
         flag bit,
         createdby_id integer,
@@ -1873,7 +1895,7 @@
         DTYPE varchar(31) not null,
         id integer not null,
         created timestamp,
-        uuid varchar(255),
+        uuid varchar(36),
         updated timestamp,
         mediacreated date,
         citationmicroreference varchar(255),
@@ -1881,27 +1903,29 @@
         updatedby_id integer,
         artist_id integer,
         citation_id integer,
-        primary key (id)
+        primary key (id),
+        unique (uuid)
     );
 
     create table MediaRepresentation (
         id integer not null,
         created timestamp,
-        uuid varchar(255),
+        uuid varchar(36),
         updated timestamp,
         mimetype varchar(255),
         suffix varchar(255),
         createdby_id integer,
         updatedby_id integer,
         media_id integer,
-        primary key (id)
+        primary key (id),
+        unique (uuid)
     );
 
     create table MediaRepresentationPart (
         DTYPE varchar(31) not null,
         id integer not null,
         created timestamp,
-        uuid varchar(255),
+        uuid varchar(36),
         updated timestamp,
         size integer,
         uri varchar(255),
@@ -1912,7 +1936,8 @@
         updatedby_id integer,
         representation_id integer not null,
         sortIndex integer,
-        primary key (id)
+        primary key (id),
+        unique (uuid)
     );
 
     create table MediaRepresentationPart_AUD (
@@ -1921,7 +1946,7 @@
         REV integer not null,
         revtype tinyint,
         created timestamp,
-        uuid varchar(255),
+        uuid varchar(36),
         updated timestamp,
         size integer,
         uri varchar(255),
@@ -1939,7 +1964,7 @@
         REV integer not null,
         revtype tinyint,
         created timestamp,
-        uuid varchar(255),
+        uuid varchar(36),
         updated timestamp,
         mimetype varchar(255),
         suffix varchar(255),
@@ -1964,7 +1989,7 @@
         REV integer not null,
         revtype tinyint,
         created timestamp,
-        uuid varchar(255),
+        uuid varchar(36),
         updated timestamp,
         mediacreated date,
         createdby_id integer,
@@ -2099,7 +2124,7 @@
     create table NameRelationship (
         id integer not null,
         created timestamp,
-        uuid varchar(255),
+        uuid varchar(36),
         updated timestamp,
         citationmicroreference varchar(255),
         originalnamestring varchar(255),
@@ -2111,7 +2136,8 @@
         relatedfrom_id integer,
         relatedto_id integer,
         type_id integer,
-        primary key (id)
+        primary key (id),
+        unique (uuid)
     );
 
     create table NameRelationship_AUD (
@@ -2119,7 +2145,7 @@
         REV integer not null,
         revtype tinyint,
         created timestamp,
-        uuid varchar(255),
+        uuid varchar(36),
         updated timestamp,
         citationmicroreference varchar(255),
         originalnamestring varchar(255),
@@ -2167,7 +2193,7 @@
     create table NomenclaturalStatus (
         id integer not null,
         created timestamp,
-        uuid varchar(255),
+        uuid varchar(36),
         updated timestamp,
         citationmicroreference varchar(255),
         originalnamestring varchar(255),
@@ -2176,7 +2202,8 @@
         updatedby_id integer,
         citation_id integer,
         type_id integer,
-        primary key (id)
+        primary key (id),
+        unique (uuid)
     );
 
     create table NomenclaturalStatus_AUD (
@@ -2184,7 +2211,7 @@
         REV integer not null,
         revtype tinyint,
         created timestamp,
-        uuid varchar(255),
+        uuid varchar(36),
         updated timestamp,
         citationmicroreference varchar(255),
         originalnamestring varchar(255),
@@ -2229,7 +2256,7 @@
     create table OriginalSource (
         id integer not null,
         created timestamp,
-        uuid varchar(255),
+        uuid varchar(36),
         updated timestamp,
         citationmicroreference varchar(255),
         originalnamestring varchar(255),
@@ -2240,7 +2267,8 @@
         createdby_id integer,
         updatedby_id integer,
         citation_id integer,
-        primary key (id)
+        primary key (id),
+        unique (uuid)
     );
 
     create table OriginalSource_AUD (
@@ -2248,7 +2276,7 @@
         REV integer not null,
         revtype tinyint,
         created timestamp,
-        uuid varchar(255),
+        uuid varchar(36),
         updated timestamp,
         citationmicroreference varchar(255),
         originalnamestring varchar(255),
@@ -2293,11 +2321,11 @@
     create table PermissionGroup (
         id integer not null,
         created timestamp,
-        uuid varchar(255),
+        uuid varchar(36),
         name varchar(255),
         createdby_id integer,
         primary key (id),
-        unique (name)
+        unique (uuid, name)
     );
 
     create table PermissionGroup_GrantedAuthorityImpl (
@@ -2332,13 +2360,14 @@
     create table Publisher (
         id integer not null,
         created timestamp,
-        uuid varchar(255),
+        uuid varchar(36),
         place varchar(255),
         publishername varchar(255),
         createdby_id integer,
         referenceBase_id integer,
         sortIndex integer,
-        primary key (id)
+        primary key (id),
+        unique (uuid)
     );
 
     create table Publisher_AUD (
@@ -2346,7 +2375,7 @@
         REV integer not null,
         revtype tinyint,
         created timestamp,
-        uuid varchar(255),
+        uuid varchar(36),
         place varchar(255),
         publishername varchar(255),
         createdby_id integer,
@@ -2357,7 +2386,7 @@
         DTYPE varchar(31) not null,
         id integer not null,
         created timestamp,
-        uuid varchar(255),
+        uuid varchar(36),
         updated timestamp,
         lsid_authority varchar(255),
         lsid_lsid varchar(255),
@@ -2409,7 +2438,8 @@
         inproceedings_id integer,
         institution_id integer,
         school_id integer,
-        primary key (id)
+        primary key (id),
+        unique (uuid)
     );
 
     create table ReferenceBase_AUD (
@@ -2418,7 +2448,7 @@
         REV integer not null,
         revtype tinyint,
         created timestamp,
-        uuid varchar(255),
+        uuid varchar(36),
         updated timestamp,
         lsid_authority varchar(255),
         lsid_lsid varchar(255),
@@ -2462,13 +2492,13 @@
         datepublished_end varchar(255),
         datepublished_start varchar(255),
         injournal_id integer,
-        school_id integer,
-        issn varchar(255),
-        institution_id integer,
         inbook_id integer,
         inproceedings_id integer,
+        institution_id integer,
+        issn varchar(255),
         seriespart varchar(255),
         inseries_id integer,
+        school_id integer,
         isbn varchar(255),
         primary key (id, REV)
     );
@@ -2597,7 +2627,7 @@
     create table Representation (
         id integer not null,
         created timestamp,
-        uuid varchar(255),
+        uuid varchar(36),
         updated timestamp,
         text longvarchar,
         abbreviatedlabel varchar(255),
@@ -2605,7 +2635,8 @@
         createdby_id integer,
         updatedby_id integer,
         language_id integer,
-        primary key (id)
+        primary key (id),
+        unique (uuid)
     );
 
     create table Representation_AUD (
@@ -2613,7 +2644,7 @@
         REV integer not null,
         revtype tinyint,
         created timestamp,
-        uuid varchar(255),
+        uuid varchar(36),
         updated timestamp,
         text longvarchar,
         abbreviatedlabel varchar(255),
@@ -2657,7 +2688,7 @@
     create table Rights (
         id integer not null,
         created timestamp,
-        uuid varchar(255),
+        uuid varchar(36),
         updated timestamp,
         text longvarchar,
         abbreviatedtext varchar(255),
@@ -2667,7 +2698,8 @@
         language_id integer,
         agent_id integer,
         type_id integer,
-        primary key (id)
+        primary key (id),
+        unique (uuid)
     );
 
     create table Rights_AUD (
@@ -2675,7 +2707,7 @@
         REV integer not null,
         revtype tinyint,
         created timestamp,
-        uuid varchar(255),
+        uuid varchar(36),
         updated timestamp,
         text longvarchar,
         abbreviatedtext varchar(255),
@@ -2721,7 +2753,7 @@
     create table Sequence (
         id integer not null,
         created timestamp,
-        uuid varchar(255),
+        uuid varchar(36),
         updated timestamp,
         lsid_authority varchar(255),
         lsid_lsid varchar(255),
@@ -2739,7 +2771,8 @@
         updatedby_id integer,
         locus_id integer,
         publishedin_id integer,
-        primary key (id)
+        primary key (id),
+        unique (uuid)
     );
 
     create table Sequence_AUD (
@@ -2747,7 +2780,7 @@
         REV integer not null,
         revtype tinyint,
         created timestamp,
-        uuid varchar(255),
+        uuid varchar(36),
         updated timestamp,
         lsid_authority varchar(255),
         lsid_lsid varchar(255),
@@ -2909,7 +2942,7 @@
         DTYPE varchar(31) not null,
         id integer not null,
         created timestamp,
-        uuid varchar(255),
+        uuid varchar(36),
         updated timestamp,
         lsid_authority varchar(255),
         lsid_lsid varchar(255),
@@ -2933,7 +2966,8 @@
         storedunder_id integer,
         preservation_id integer,
         gatheringevent_id integer,
-        primary key (id)
+        primary key (id),
+        unique (uuid)
     );
 
     create table SpecimenOrObservationBase_AUD (
@@ -2942,7 +2976,7 @@
         REV integer not null,
         revtype tinyint,
         created timestamp,
-        uuid varchar(255),
+        uuid varchar(36),
         updated timestamp,
         lsid_authority varchar(255),
         lsid_lsid varchar(255),
@@ -2956,9 +2990,6 @@
         updatedby_id integer,
         lifestage_id integer,
         sex_id integer,
-        fieldnotes varchar(255),
-        fieldnumber varchar(255),
-        gatheringevent_id integer,
         accessionnumber varchar(255),
         catalognumber varchar(255),
         collectorsnumber varchar(255),
@@ -2966,6 +2997,9 @@
         derivationevent_id integer,
         storedunder_id integer,
         preservation_id integer,
+        fieldnotes varchar(255),
+        fieldnumber varchar(255),
+        gatheringevent_id integer,
         primary key (id, REV)
     );
 
@@ -3124,12 +3158,13 @@
     create table StateData (
         id integer not null,
         created timestamp,
-        uuid varchar(255),
+        uuid varchar(36),
         updated timestamp,
         createdby_id integer,
         updatedby_id integer,
         state_id integer,
-        primary key (id)
+        primary key (id),
+        unique (uuid)
     );
 
     create table StateData_AUD (
@@ -3137,7 +3172,7 @@
         REV integer not null,
         revtype tinyint,
         created timestamp,
-        uuid varchar(255),
+        uuid varchar(36),
         updated timestamp,
         createdby_id integer,
         updatedby_id integer,
@@ -3180,13 +3215,14 @@
     create table StatisticalMeasurementValue (
         id integer not null,
         created timestamp,
-        uuid varchar(255),
+        uuid varchar(36),
         updated timestamp,
         value float not null,
         createdby_id integer,
         updatedby_id integer,
         type_id integer,
-        primary key (id)
+        primary key (id),
+        unique (uuid)
     );
 
     create table StatisticalMeasurementValue_AUD (
@@ -3194,7 +3230,7 @@
         REV integer not null,
         revtype tinyint,
         created timestamp,
-        uuid varchar(255),
+        uuid varchar(36),
         updated timestamp,
         value float,
         createdby_id integer,
@@ -3221,7 +3257,7 @@
     create table SynonymRelationship (
         id integer not null,
         created timestamp,
-        uuid varchar(255),
+        uuid varchar(36),
         updated timestamp,
         citationmicroreference varchar(255),
         originalnamestring varchar(255),
@@ -3234,7 +3270,8 @@
         relatedfrom_id integer,
         relatedto_id integer,
         type_id integer,
-        primary key (id)
+        primary key (id),
+        unique (uuid)
     );
 
     create table SynonymRelationship_AUD (
@@ -3242,7 +3279,7 @@
         REV integer not null,
         revtype tinyint,
         created timestamp,
-        uuid varchar(255),
+        uuid varchar(36),
         updated timestamp,
         citationmicroreference varchar(255),
         originalnamestring varchar(255),
@@ -3292,7 +3329,7 @@
         DTYPE varchar(31) not null,
         id integer not null,
         created timestamp,
-        uuid varchar(255),
+        uuid varchar(36),
         updated timestamp,
         lsid_authority varchar(255),
         lsid_lsid varchar(255),
@@ -3309,7 +3346,8 @@
         taxonName_fk integer,
         sec_id integer,
         taxonomicparentcache_id integer,
-        primary key (id)
+        primary key (id),
+        unique (uuid)
     );
 
     create table TaxonBase_AUD (
@@ -3318,7 +3356,7 @@
         REV integer not null,
         revtype tinyint,
         created timestamp,
-        uuid varchar(255),
+        uuid varchar(36),
         updated timestamp,
         lsid_authority varchar(255),
         lsid_lsid varchar(255),
@@ -3451,7 +3489,7 @@
         DTYPE varchar(31) not null,
         id integer not null,
         created timestamp,
-        uuid varchar(255),
+        uuid varchar(36),
         updated timestamp,
         lsid_authority varchar(255),
         lsid_lsid varchar(255),
@@ -3496,7 +3534,8 @@
         combinationauthorteam_id integer,
         exbasionymauthorteam_id integer,
         excombinationauthorteam_id integer,
-        primary key (id)
+        primary key (id),
+        unique (uuid)
     );
 
     create table TaxonNameBase_AUD (
@@ -3505,7 +3544,7 @@
         REV integer not null,
         revtype tinyint,
         created timestamp,
-        uuid varchar(255),
+        uuid varchar(36),
         updated timestamp,
         lsid_authority varchar(255),
         lsid_lsid varchar(255),
@@ -3538,18 +3577,18 @@
         combinationauthorteam_id integer,
         exbasionymauthorteam_id integer,
         excombinationauthorteam_id integer,
-        acronym varchar(255),
         nameapprobation varchar(255),
         subgenusauthorship varchar(255),
-        breed varchar(255),
-        originalpublicationyear integer,
-        publicationyear integer,
+        acronym varchar(255),
         anamorphic bit,
         binomhybrid bit,
         hybridformula bit,
         monomhybrid bit,
         trinomhybrid bit,
         cultivarname varchar(255),
+        breed varchar(255),
+        originalpublicationyear integer,
+        publicationyear integer,
         primary key (id, REV)
     );
 
@@ -3692,7 +3731,7 @@
     create table TaxonNode (
         id integer not null,
         created timestamp,
-        uuid varchar(255),
+        uuid varchar(36),
         updated timestamp,
         countchildren integer not null,
         microreferenceforparentchildrelation varchar(255),
@@ -3703,7 +3742,8 @@
         synonymtobeused_id integer,
         taxon_id integer,
         taxonomicview_id integer,
-        primary key (id)
+        primary key (id),
+        unique (uuid)
     );
 
     create table TaxonNode_AUD (
@@ -3711,7 +3751,7 @@
         REV integer not null,
         revtype tinyint,
         created timestamp,
-        uuid varchar(255),
+        uuid varchar(36),
         updated timestamp,
         countchildren integer,
         microreferenceforparentchildrelation varchar(255),
@@ -3758,7 +3798,7 @@
     create table TaxonRelationship (
         id integer not null,
         created timestamp,
-        uuid varchar(255),
+        uuid varchar(36),
         updated timestamp,
         citationmicroreference varchar(255),
         originalnamestring varchar(255),
@@ -3769,7 +3809,8 @@
         relatedfrom_id integer,
         relatedto_id integer,
         type_id integer,
-        primary key (id)
+        primary key (id),
+        unique (uuid)
     );
 
     create table TaxonRelationship_AUD (
@@ -3777,7 +3818,7 @@
         REV integer not null,
         revtype tinyint,
         created timestamp,
-        uuid varchar(255),
+        uuid varchar(36),
         updated timestamp,
         citationmicroreference varchar(255),
         originalnamestring varchar(255),
@@ -3824,7 +3865,7 @@
     create table TaxonomicView (
         id integer not null,
         created timestamp,
-        uuid varchar(255),
+        uuid varchar(36),
         updated timestamp,
         lsid_authority varchar(255),
         lsid_lsid varchar(255),
@@ -3838,7 +3879,8 @@
         updatedby_id integer,
         name_id integer,
         reference_id integer,
-        primary key (id)
+        primary key (id),
+        unique (uuid)
     );
 
     create table TaxonomicView_AUD (
@@ -3846,7 +3888,7 @@
         REV integer not null,
         revtype tinyint,
         created timestamp,
-        uuid varchar(255),
+        uuid varchar(36),
         updated timestamp,
         lsid_authority varchar(255),
         lsid_lsid varchar(255),
@@ -3974,13 +4016,14 @@
         DTYPE varchar(31) not null,
         id integer not null,
         created timestamp,
-        uuid varchar(255),
+        uuid varchar(36),
         updated timestamp,
         uri varchar(255),
         termsourceuri varchar(255),
         createdby_id integer,
         updatedby_id integer,
-        primary key (id)
+        primary key (id),
+        unique (uuid)
     );
 
     create table TermVocabulary_AUD (
@@ -3989,7 +4032,7 @@
         REV integer not null,
         revtype tinyint,
         created timestamp,
-        uuid varchar(255),
+        uuid varchar(36),
         updated timestamp,
         uri varchar(255),
         termsourceuri varchar(255),
@@ -4017,7 +4060,7 @@
         DTYPE varchar(31) not null,
         id integer not null,
         created timestamp,
-        uuid varchar(255),
+        uuid varchar(36),
         updated timestamp,
         citationmicroreference varchar(255),
         originalnamestring varchar(255),
@@ -4032,7 +4075,8 @@
         typestatus_id integer,
         typename_id integer,
         typespecimen_id integer,
-        primary key (id)
+        primary key (id),
+        unique (uuid)
     );
 
     create table TypeDesignationBase_AUD (
@@ -4041,7 +4085,7 @@
         REV integer not null,
         revtype tinyint,
         created timestamp,
-        uuid varchar(255),
+        uuid varchar(36),
         updated timestamp,
         citationmicroreference varchar(255),
         originalnamestring varchar(255),
@@ -4051,11 +4095,11 @@
         citation_id integer,
         homotypicalgroup_id integer,
         typestatus_id integer,
-        typespecimen_id integer,
         conservedtype bit,
         lectotype bit,
         rejectedtype bit,
         typename_id integer,
+        typespecimen_id integer,
         primary key (id, REV)
     );
 
@@ -4106,7 +4150,7 @@
     create table UserAccount (
         id integer not null,
         created timestamp,
-        uuid varchar(255),
+        uuid varchar(36),
         accountnonexpired bit not null,
         accountnonlocked bit not null,
         credentialsnonexpired bit not null,
@@ -4117,7 +4161,7 @@
         createdby_id integer,
         person_id integer,
         primary key (id),
-        unique (username)
+        unique (uuid, username)
     );
 
     create table UserAccount_AUD (
@@ -4125,7 +4169,7 @@
         REV integer not null,
         revtype tinyint,
         created timestamp,
-        uuid varchar(255),
+        uuid varchar(36),
         accountnonexpired bit,
         accountnonlocked bit,
         credentialsnonexpired bit,
@@ -7649,7 +7693,7 @@
         references AuditEvent;
 
     alter table TypeDesignationBase 
-        add constraint FK8AC9DCAE61B5CBCC 
+        add constraint FK8AC9DCAE9E3ED08 
         foreign key (typestatus_id) 
         references DefinedTermBase;
 

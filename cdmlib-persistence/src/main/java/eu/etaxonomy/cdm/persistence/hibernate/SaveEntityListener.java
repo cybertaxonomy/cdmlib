@@ -16,8 +16,7 @@ public class SaveEntityListener implements SaveOrUpdateEventListener {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(SaveEntityListener.class);
 
-	public void onSaveOrUpdate(SaveOrUpdateEvent event)
-			throws HibernateException {
+	public void onSaveOrUpdate(SaveOrUpdateEvent event)	throws HibernateException {
 		Object entity = event.getObject();
         if (entity != null){
             Class<?> entityClazz = entity.getClass();
