@@ -19,6 +19,7 @@ import java.util.UUID;
 public class FaunaEuropaeaTaxon {
 	
 	private UUID uuid;
+	private UUID nameUuid;
 	private int id;
 	private int parentId;
 	private int rankId;
@@ -104,6 +105,20 @@ public class FaunaEuropaeaTaxon {
 	 */
 	public void setUuid(UUID uuid) {
 		this.uuid = uuid;
+	}
+
+	/**
+	 * @return the nameUuid
+	 */
+	public UUID getNameUuid() {
+		return nameUuid;
+	}
+
+	/**
+	 * @param nameUuid the nameUuid to set
+	 */
+	public void setNameUuid(UUID nameUuid) {
+		this.nameUuid = nameUuid;
 	}
 
 }

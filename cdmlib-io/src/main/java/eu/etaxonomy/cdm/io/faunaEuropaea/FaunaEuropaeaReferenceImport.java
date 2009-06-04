@@ -97,16 +97,9 @@ public class FaunaEuropaeaReferenceImport extends FaunaEuropaeaImportBase {
 			Map<String, MapWrapper<? extends CdmBase>> stores) {				
 		
 		MapWrapper<TeamOrPersonBase> authorStore = (MapWrapper<TeamOrPersonBase>)stores.get(ICdmIO.TEAM_STORE);
-		MapWrapper<ReferenceBase> refStore = (MapWrapper<ReferenceBase>)stores.get(ICdmIO.NOMREF_STORE);
-		
-//		MapWrapper<ReferenceBase> refStore= new MapWrapper<ReferenceBase>(null);
-//		MapWrapper<ReferenceBase> nomRefStore= new MapWrapper<ReferenceBase>(null);
-		
-		//make not needed maps empty
-//		MapWrapper<TeamOrPersonBase<?>> authorStore = (MapWrapper<TeamOrPersonBase<?>>)stores.get(ICdmIO.TEAM_STORE);
-//		authorMap.makeEmpty();
-
-		
+		authorStore.makeEmpty();
+		MapWrapper<ReferenceBase> refStore = (MapWrapper<ReferenceBase>)stores.get(ICdmIO.REFERENCE_STORE);
+				
 		FaunaEuropaeaImportConfigurator fauEuConfig = (FaunaEuropaeaImportConfigurator)config;
 		Source source = fauEuConfig.getSource();
 		
@@ -189,13 +182,11 @@ public class FaunaEuropaeaReferenceImport extends FaunaEuropaeaImportBase {
 			
 			if(logger.isInfoEnabled()) { logger.info("End making references ..."); }
 			
-			return true;
-			
 		} catch (SQLException e) {
 			logger.error("SQLException:" +  e);
-			return false;
+			success = false;
 		}
-
+		return success;
 	}
 
 	
