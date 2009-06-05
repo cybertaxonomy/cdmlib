@@ -24,14 +24,6 @@ import eu.etaxonomy.cdm.strategy.StrategyBase;
 public class StrictReferenceBaseDefaultCacheStrategy<T extends StrictReferenceBase> extends StrategyBase implements IReferenceBaseCacheStrategy<T> {
 	private static final Logger logger = Logger.getLogger(StrictReferenceBaseDefaultCacheStrategy.class);
 	
-//	/**
-//	 * Factory method
-//	 * @return
-//	 */
-//	public static StrictReferenceBaseDefaultCacheStrategy NewInstance(){
-//		return new StrictReferenceBaseDefaultCacheStrategy();
-//	}
-	
 	/**
 	 * Constructor
 	 */

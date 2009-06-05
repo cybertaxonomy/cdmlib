@@ -633,18 +633,6 @@ uuidPersianGulf
 		this.iso3166_A2 = iso3166_A2;
 	}
 
-//	public TimePeriod getValidPeriod(){
-//		return this.validPeriod;
-//	}
-//
-//	/**
-//	 * 
-//	 * @param validPeriod    validPeriod
-//	 */
-//	public void setValidPeriod(TimePeriod validPeriod){
-//		this.validPeriod = validPeriod;
-//	}
-
 	@Override
 	public NamedArea readCsvLine(Class<NamedArea> termClass, List<String> csvLine, Map<UUID,DefinedTermBase> terms) {
 		try {

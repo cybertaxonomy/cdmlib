@@ -653,7 +653,7 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName>
 	 * @param datePublished
 	 */
 	private void handleBookSectionYear(BookSection bookSection, TimePeriod datePublished){
-		if (datePublished == null || bookSection == null){
+		if (datePublished == null || datePublished.getStart() == null || bookSection == null){
 			return;
 		}
 		if (datePublished.isPeriod() && bookSection.getInBook() != null){

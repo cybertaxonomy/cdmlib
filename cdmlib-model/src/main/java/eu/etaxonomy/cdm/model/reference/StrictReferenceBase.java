@@ -31,7 +31,6 @@ import org.hibernate.search.annotations.IndexedEmbedded;
 
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.strategy.cache.reference.IReferenceBaseCacheStrategy;
-import eu.etaxonomy.cdm.strategy.cache.reference.StrictReferenceBaseDefaultCacheStrategy;
 
 /**
  * This (abstract) class represents all different kind of references regardless
@@ -75,7 +74,7 @@ public abstract class StrictReferenceBase<S extends IReferenceBaseCacheStrategy>
 	@XmlElement(name ="DatePublished" )
 	@Embedded
 	@IndexedEmbedded
-	private TimePeriod datePublished;
+	private TimePeriod datePublished = TimePeriod.NewInstance();
 	
 	protected StrictReferenceBase(){
 		super();
@@ -136,10 +135,10 @@ public abstract class StrictReferenceBase<S extends IReferenceBaseCacheStrategy>
 	@Transient
 	@Override
 	public String getYear(){
-		if (this.getDatePublished() == null){
-			return null;
-		}else{
+		if (this.getDatePublished() != null && this.getDatePublished().getStart() != null){
 			return getDatePublished().getYear();
+		}else{
+			return null;
 		}
 	}
 	

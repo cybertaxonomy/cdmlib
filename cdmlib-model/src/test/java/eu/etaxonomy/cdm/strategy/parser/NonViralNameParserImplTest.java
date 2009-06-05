@@ -557,7 +557,7 @@ public class NonViralNameParserImplTest {
 		assertEquals(strBookSection2, nameBookSection2.getFullTitleCache());
 		assertEquals(-1, nameBookSection2.getProblemStarts()); 
 		assertEquals(-1, nameBookSection2.getProblemEnds());
-		assertNull(((BookSection)nameBookSection2.getNomenclaturalReference()).getDatePublished());
+		assertNull(((BookSection)nameBookSection2.getNomenclaturalReference()).getDatePublished().getStart());
 		assertEquals("1905-1907", ((BookSection)nameBookSection2.getNomenclaturalReference()).getInBook().getDatePublished().getYear());
 
 		
@@ -568,7 +568,7 @@ public class NonViralNameParserImplTest {
 		assertEquals(strBookSection, nameBookSection.getFullTitleCache());
 		assertEquals(-1, nameBookSection.getProblemStarts()); 
 		assertEquals(-1, nameBookSection.getProblemEnds());
-		assertNull(((BookSection)nameBookSection.getNomenclaturalReference()).getInBook().getDatePublished());
+		assertNull(((BookSection)nameBookSection.getNomenclaturalReference()).getInBook().getDatePublished().getStart());
 		assertEquals("1905", ((BookSection)nameBookSection.getNomenclaturalReference()).getDatePublished().getYear());
 
 	}

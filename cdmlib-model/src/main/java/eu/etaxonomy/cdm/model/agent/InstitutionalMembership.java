@@ -57,8 +57,7 @@ public class InstitutionalMembership extends VersionableEntity {
 	
 	/*Time period a person belonged to the institution*/
     @XmlElement(name = "Period")
-    //@XmlJavaTypeAdapter(IntervalAdapter.class)
-	private TimePeriod period;
+	private TimePeriod period = TimePeriod.NewInstance();
 	
 	//Department of the institution this person was working in
     @XmlElement(name = "Department")

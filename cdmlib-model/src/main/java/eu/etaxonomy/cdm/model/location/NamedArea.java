@@ -69,7 +69,7 @@ public class NamedArea extends OrderedTermBase<NamedArea> {
 	private static final Logger logger = Logger.getLogger(NamedArea.class);
 	
 	//description of time valid context of this area. e.g. year range
-	private TimePeriod validPeriod;
+	private TimePeriod validPeriod = TimePeriod.NewInstance();
 	
 	//Binary shape definition for user's defined area as polygon
 	@ManyToOne(fetch = FetchType.LAZY)

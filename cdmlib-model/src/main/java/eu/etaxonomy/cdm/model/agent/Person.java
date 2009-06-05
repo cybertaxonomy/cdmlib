@@ -91,7 +91,7 @@ public class Person extends TeamOrPersonBase<Person> {
 	
     @XmlElement(name = "Lifespan")
     @IndexedEmbedded
-	private TimePeriod lifespan;
+	private TimePeriod lifespan = TimePeriod.NewInstance();
 	
     @XmlElementWrapper(name = "InstitutionalMemberships")
     @XmlElement(name = "InstitutionalMembership")

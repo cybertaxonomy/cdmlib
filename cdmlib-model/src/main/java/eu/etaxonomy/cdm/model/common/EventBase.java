@@ -31,7 +31,7 @@ public abstract class EventBase extends AnnotatableEntity implements IEvent {
 	private static final Logger logger = Logger.getLogger(EventBase.class);
 
 	@XmlElement(name = "TimePeriod")
-	private TimePeriod timeperiod = new TimePeriod();
+	private TimePeriod timeperiod = TimePeriod.NewInstance();
 	
 	@XmlElement(name = "Actor")
 	@XmlIDREF

@@ -67,7 +67,7 @@ public class BookSectionDefaultCacheStrategy <T extends BookSection> extends Nom
 		Book inBook = bookSection.getInBook();
 		String result;
 		//use booksection's publication date if it exists
-		if (bookSection.getDatePublished() != null){
+		if (bookSection.getDatePublished() != null && bookSection.getDatePublished().getStart() != null){
 			BookDefaultCacheStrategy<Book> bookStrategy = BookDefaultCacheStrategy.NewInstance();
 			result =  bookStrategy.getNomRefTitleWithoutYearAndAuthor(inBook);
 			result += INomenclaturalReference.MICRO_REFERENCE_TOKEN;
