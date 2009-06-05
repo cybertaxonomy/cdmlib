@@ -38,31 +38,17 @@ public class CacheStrategyGenerator implements SaveOrUpdateEventListener {
         Object entity = event.getObject();
         if (entity != null){
             Class<?> entityClazz = entity.getClass();
-            
-            if (VersionableEntity.class.isAssignableFrom(entityClazz)) {
-				VersionableEntity versionableEntity = (VersionableEntity) entity;
-				if (versionableEntity.getId() == 0) {
-					versionableEntity.setCreated(new DateTime());
-					Authentication authentication = SecurityContextHolder
-							.getContext().getAuthentication();
-					if (authentication != null
-							&& authentication.getPrincipal() != null
-							&& authentication.getPrincipal() instanceof User) {
-						User user = (User) authentication.getPrincipal();
-						versionableEntity.setCreatedBy(user);
-					}
-				} else {
-					versionableEntity.setUpdated(new DateTime());
-					Authentication authentication = SecurityContextHolder
-							.getContext().getAuthentication();
-					if (authentication != null
-							&& authentication.getPrincipal() != null
-							&& authentication.getPrincipal() instanceof User) {
-						User user = (User) authentication.getPrincipal();
-						versionableEntity.setUpdatedBy(user);
-					}
-				}
-			}
+            if(ICdmBase.class.isAssignableFrom(entityClazz)) {
+	            ICdmBase cdmBase = (ICdmBase)entity;
+	            if(cdmBase.getId() == 0) {
+				    cdmBase.setCreated(new DateTime());
+				    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+				    if(authentication != null && authentication.getPrincipal() != null && authentication.getPrincipal() instanceof User) {
+				      User user = (User)authentication.getPrincipal();
+				      cdmBase.setCreatedBy(user);
+				    }
+	            }
+	          }
             
         	//title cache
         	if(IdentifiableEntity.class.isAssignableFrom(entityClazz)) {

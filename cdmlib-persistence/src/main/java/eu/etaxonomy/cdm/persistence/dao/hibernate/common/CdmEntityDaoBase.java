@@ -29,12 +29,17 @@ import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.envers.query.AuditQuery;
 import org.hibernate.search.FullTextQuery;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.DataAccessException;
+import org.springframework.security.Authentication;
+import org.springframework.security.context.SecurityContextHolder;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.User;
+import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
@@ -117,6 +122,15 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 			if (logger.isDebugEnabled()){logger.debug("dao saveOrUpdate start...");}
 			if (logger.isDebugEnabled()){logger.debug("transientObject(" + transientObject.getClass().getSimpleName() + ") ID:" + transientObject.getId() + ", UUID: " + transientObject.getUuid()) ;}
 			Session session = getSession();
+			if(transientObject.getId() != 0 && VersionableEntity.class.isAssignableFrom(transientObject.getClass())) {
+				VersionableEntity versionableEntity = (VersionableEntity)transientObject;
+				versionableEntity.setUpdated(new DateTime());
+				Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+				if(authentication != null && authentication.getPrincipal() != null && authentication.getPrincipal() instanceof User) {
+				  User user = (User)authentication.getPrincipal();
+				  versionableEntity.setUpdatedBy(user);
+				} 
+			}
 			session.saveOrUpdate(transientObject);
 			if (logger.isDebugEnabled()){logger.debug("dao saveOrUpdate end");}
 			return transientObject.getUuid();
