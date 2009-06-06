@@ -256,5 +256,19 @@ public class CdmUtils {
 		}
 		
 	}
-	
+
+	/**
+	 * Returns true if string is null, "" or string.trim() is ""
+	 * @param string
+	 * @return
+	 */
+	static public boolean isEmpty(String string){
+		if (string == null){
+			return true;
+		}
+		if ("".equals(string.trim())){
+			return true;
+		}
+		return false;
+	}
 }
