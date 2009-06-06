@@ -32,7 +32,6 @@ import org.hibernate.envers.Audited;
 @Audited
 public class ExtensionType extends DefinedTermBase<ExtensionType> {
 	private static final long serialVersionUID = -7761963794004133427L;
-	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ExtensionType.class);
 
 	public ExtensionType() {
@@ -54,7 +53,7 @@ public class ExtensionType extends DefinedTermBase<ExtensionType> {
 	@Override
 	protected void setDefaultTerms(TermVocabulary<ExtensionType> termVocabulary) {
 		// TODO Auto-generated method stub
-		
+		logger.warn("setDefaultTerms not yet implemented for ExtensionType");
 	}
 
 }
