@@ -7,7 +7,7 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package eu.etaxonomy.cdm.io.berlinModel;
+package eu.etaxonomy.cdm.io.berlinModel.in;
 
 import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.REF_ARTICLE;
 import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.REF_BOOK;
@@ -42,6 +42,8 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.io.berlinModel.CdmOneToManyMapper;
+import eu.etaxonomy.cdm.io.berlinModel.CdmStringMapper;
 import eu.etaxonomy.cdm.io.common.CdmAttributeMapperBase;
 import eu.etaxonomy.cdm.io.common.CdmIoMapping;
 import eu.etaxonomy.cdm.io.common.CdmSingleAttributeMapperBase;
@@ -55,7 +57,6 @@ import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
-import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.reference.Article;
 import eu.etaxonomy.cdm.model.reference.Book;
 import eu.etaxonomy.cdm.model.reference.BookSection;
@@ -121,64 +122,6 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 			"refSourceFk"
 	};
 	
-	
-	protected boolean checkObligatoryAttributes(IImportConfigurator config){
-		boolean result = true;
-		
-		try {
-			String strQuery = " SELECT Reference.* " +
-			    " FROM Reference " +
-//            	" INNER JOIN Reference ON Reference.RefId = RefDetail.RefFk " +
-			    " WHERE (1=0) ";
-			BerlinModelImportConfigurator bmiConfig = (BerlinModelImportConfigurator)config;
-			Source source = bmiConfig.getSource();
-			ResultSet rs = source.getResultSet(strQuery);
-			int colCount = rs.getMetaData().getColumnCount();
-			Set<String> existingAttributes = new HashSet<String>();
-			for (int c = 0; c < colCount ; c++){
-				existingAttributes.add(rs.getMetaData().getColumnLabel(c+1).toLowerCase());
-			}
-			Set<String> obligatoryAttributes = getObligatoryAttributes(true);
-			
-			obligatoryAttributes.removeAll(existingAttributes);
-			for (String attr : obligatoryAttributes){
-				logger.warn("Missing attribute: " + attr);
-			}
-			
-			//additional Attributes
-			obligatoryAttributes = getObligatoryAttributes(true);
-			
-			existingAttributes.removeAll(obligatoryAttributes);
-			for (String attr : existingAttributes){
-				logger.warn("Additional attribute: " + attr);
-			}
-		} catch (SQLException e) {
-			logger.error(e);
-			e.printStackTrace();
-			result = false;
-		}
-		return result;
-	}
-	
-	protected Set<String> getObligatoryAttributes(boolean lowerCase){
-		Set<String> result = new HashSet<String>();
-		result.addAll(Arrays.asList(unclearMappers));
-		result.addAll(Arrays.asList(createdAndNotesAttributes));
-		result.addAll(Arrays.asList(operationalAttributes));
-		CdmIoMapping mapping = new CdmIoMapping();
-		for (CdmAttributeMapperBase mapper : classMappers){
-			mapping.addMapper(mapper);
-		}
-		result.addAll(mapping.getSourceAttributes());
-		if (lowerCase){
-			Set<String> lowerCaseResult = new HashSet<String>();
-			for (String str : result){
-				if (str != null){lowerCaseResult.add(str.toLowerCase());}
-			}
-			result = lowerCaseResult;
-		}
-		return result;
-	}
 	
 	
 	//type to count the references nomReferences that have been created and saved
@@ -1163,18 +1106,63 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 	}
 	
 	
+	protected boolean checkObligatoryAttributes(IImportConfigurator config){
+		boolean result = true;
+		
+		try {
+			String strQuery = " SELECT Reference.* " +
+			    " FROM Reference " +
+//            	" INNER JOIN Reference ON Reference.RefId = RefDetail.RefFk " +
+			    " WHERE (1=0) ";
+			BerlinModelImportConfigurator bmiConfig = (BerlinModelImportConfigurator)config;
+			Source source = bmiConfig.getSource();
+			ResultSet rs = source.getResultSet(strQuery);
+			int colCount = rs.getMetaData().getColumnCount();
+			Set<String> existingAttributes = new HashSet<String>();
+			for (int c = 0; c < colCount ; c++){
+				existingAttributes.add(rs.getMetaData().getColumnLabel(c+1).toLowerCase());
+			}
+			Set<String> obligatoryAttributes = getObligatoryAttributes(true);
+			
+			obligatoryAttributes.removeAll(existingAttributes);
+			for (String attr : obligatoryAttributes){
+				logger.warn("Missing attribute: " + attr);
+			}
+			
+			//additional Attributes
+			obligatoryAttributes = getObligatoryAttributes(true);
+			
+			existingAttributes.removeAll(obligatoryAttributes);
+			for (String attr : existingAttributes){
+				logger.warn("Additional attribute: " + attr);
+			}
+		} catch (SQLException e) {
+			logger.error(e);
+			e.printStackTrace();
+			result = false;
+		}
+		return result;
+	}
 	
-	
-	
-//********************************** MAIN ************************************************
-
-	
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		TimePeriod timePeriod = ImportHelper.getDatePublished("1756 - 1783");
-		System.out.println(timePeriod.getYear());
+	protected Set<String> getObligatoryAttributes(boolean lowerCase){
+		Set<String> result = new HashSet<String>();
+		result.addAll(Arrays.asList(unclearMappers));
+		result.addAll(Arrays.asList(createdAndNotesAttributes));
+		result.addAll(Arrays.asList(operationalAttributes));
+		CdmIoMapping mapping = new CdmIoMapping();
+		for (CdmAttributeMapperBase mapper : classMappers){
+			mapping.addMapper(mapper);
+		}
+		result.addAll(mapping.getSourceAttributes());
+		if (lowerCase){
+			Set<String> lowerCaseResult = new HashSet<String>();
+			for (String str : result){
+				if (str != null){lowerCaseResult.add(str.toLowerCase());}
+			}
+			result = lowerCaseResult;
+		}
+		return result;
 	}
 
+	
 }
