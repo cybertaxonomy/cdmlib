@@ -42,7 +42,7 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
  * @version 1.0
  */
 @Component
-public class TcsRdfTaxonRelationsImport extends CdmIoBase<IImportConfigurator> implements ICdmIO<IImportConfigurator> {
+public class TcsRdfTaxonRelationsImport extends TcsRdfImportBase implements ICdmIO<IImportConfigurator> {
 	private static final Logger logger = Logger.getLogger(TcsRdfTaxonRelationsImport.class);
 
 	private static int modCount = 30000;
@@ -63,10 +63,10 @@ public class TcsRdfTaxonRelationsImport extends CdmIoBase<IImportConfigurator> i
 	}
 	
 	@Override
-	public boolean doInvoke(IImportConfigurator config, Map<String, MapWrapper<? extends CdmBase>> stores){ 
+	public boolean doInvoke(TcsRdfImportState state){ 
 	
-		MapWrapper<TaxonBase> taxonMap = (MapWrapper<TaxonBase>)stores.get(ICdmIO.TAXON_STORE);
-		MapWrapper<ReferenceBase> referenceMap = (MapWrapper<ReferenceBase>)stores.get(ICdmIO.REFERENCE_STORE);
+		MapWrapper<TaxonBase> taxonMap = (MapWrapper<TaxonBase>)state.getStore(ICdmIO.TAXON_STORE);
+		MapWrapper<ReferenceBase> referenceMap = (MapWrapper<ReferenceBase>)state.getStore(ICdmIO.REFERENCE_STORE);
 		logger.info("start makeTaxonRelationships ...");
 		boolean success =true;
 
@@ -75,9 +75,9 @@ public class TcsRdfTaxonRelationsImport extends CdmIoBase<IImportConfigurator> i
 		
 		Set<TaxonBase> taxonStore = new HashSet<TaxonBase>();
 		
-		TcsRdfImportConfigurator tcsConfig = (TcsRdfImportConfigurator)config;
-		Element root = tcsConfig.getSourceRoot();
-		Namespace taxonConceptNamespace = tcsConfig.getTcNamespace();
+		TcsRdfImportConfigurator config = state.getConfig();
+		Element root = config.getSourceRoot();
+		Namespace taxonConceptNamespace = config.getTcNamespace();
 
 		xmlElementName = "TaxonConcept";
 		elementNamespace = taxonConceptNamespace;
@@ -90,7 +90,7 @@ public class TcsRdfTaxonRelationsImport extends CdmIoBase<IImportConfigurator> i
 			
 			//TaxonConcept about
 			xmlElementName = "about";
-			elementNamespace = tcsConfig.getRdfNamespace();
+			elementNamespace = config.getRdfNamespace();
 			String strTaxonAbout = elTaxonConcept.getAttributeValue(xmlElementName, elementNamespace);
 			
 			TaxonBase aboutTaxon = taxonMap.get(strTaxonAbout);
@@ -110,7 +110,7 @@ public class TcsRdfTaxonRelationsImport extends CdmIoBase<IImportConfigurator> i
 				List<Element> elRelationships = elHasRelationship.getChildren(xmlElementName, elementNamespace);
 				
 				for (Element elRelationship: elRelationships){
-					makeRelationship(elRelationship, strTaxonAbout, taxonMap, tcsConfig, taxonStore);
+					makeRelationship(elRelationship, strTaxonAbout, taxonMap, config, taxonStore);
 				}//relationship
 			}//hasRelationships
 		}//elTaxonConcept

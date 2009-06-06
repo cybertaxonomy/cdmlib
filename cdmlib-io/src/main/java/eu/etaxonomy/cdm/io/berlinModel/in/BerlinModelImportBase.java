@@ -43,7 +43,7 @@ public abstract class BerlinModelImportBase extends CdmIoBase<IImportConfigurato
 		super();
 	}
 	
-	protected abstract boolean doInvoke(BerlinModelImportState<BerlinModelImportConfigurator> state);
+	protected abstract boolean doInvoke(BerlinModelImportState state);
 
 	
 	/* (non-Javadoc)
@@ -52,7 +52,7 @@ public abstract class BerlinModelImportBase extends CdmIoBase<IImportConfigurato
 	@Override
 	protected boolean doInvoke(IImportConfigurator config, 
 			Map<String, MapWrapper<? extends CdmBase>> stores){ 
-		BerlinModelImportState<BerlinModelImportConfigurator> state = ((BerlinModelImportConfigurator)config).getState();
+		BerlinModelImportState state = ((BerlinModelImportConfigurator)config).getState();
 		state.setConfig((BerlinModelImportConfigurator)config);
 		return doInvoke(state);
 	}

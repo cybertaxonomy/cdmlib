@@ -29,7 +29,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
  * @created 29.05.2008
  * @version 1.0
  */
-public class TcsRdfImportConfigurator extends ImportConfiguratorBase implements IImportConfigurator {
+public class TcsRdfImportConfigurator extends ImportConfiguratorBase<TcsRdfImportState> implements IImportConfigurator {
 	private static final Logger logger = Logger.getLogger(TcsRdfImportConfigurator.class);
 	
 	//rdfNamespace

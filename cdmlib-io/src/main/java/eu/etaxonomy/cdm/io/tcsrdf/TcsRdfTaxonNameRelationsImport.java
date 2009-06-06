@@ -35,7 +35,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
  * @version 1.0
  */
 @Component
-public class TcsRdfTaxonNameRelationsImport extends CdmIoBase<IImportConfigurator> implements ICdmIO<IImportConfigurator> {
+public class TcsRdfTaxonNameRelationsImport extends TcsRdfImportBase implements ICdmIO<IImportConfigurator> {
 	private static final Logger logger = Logger.getLogger(TcsRdfTaxonNameRelationsImport.class);
 
 	private static int modCount = 5000;
@@ -55,10 +55,10 @@ public class TcsRdfTaxonNameRelationsImport extends CdmIoBase<IImportConfigurato
 	}
 	
 	@Override
-	public boolean doInvoke(IImportConfigurator config, Map<String, MapWrapper<? extends CdmBase>> stores){
+	public boolean doInvoke(TcsRdfImportState state){
 		
-		MapWrapper<TaxonNameBase> taxonNameMap = (MapWrapper<TaxonNameBase>)stores.get(ICdmIO.TAXONNAME_STORE);
-		MapWrapper<ReferenceBase> referenceMap = (MapWrapper<ReferenceBase>)stores.get(ICdmIO.REFERENCE_STORE);
+		MapWrapper<TaxonNameBase> taxonNameMap = (MapWrapper<TaxonNameBase>)state.getStore(ICdmIO.TAXONNAME_STORE);
+		MapWrapper<ReferenceBase> referenceMap = (MapWrapper<ReferenceBase>)state.getStore(ICdmIO.REFERENCE_STORE);
 		
 		String tcsElementName;
 		Namespace tcsNamespace;
@@ -66,19 +66,19 @@ public class TcsRdfTaxonNameRelationsImport extends CdmIoBase<IImportConfigurato
 		String value;
 
 		Set<TaxonNameBase> nameStore = new HashSet<TaxonNameBase>();
-		TcsRdfImportConfigurator tcsConfig = (TcsRdfImportConfigurator)config;
-		Element source = tcsConfig.getSourceRoot();
+		TcsRdfImportConfigurator config = state.getConfig();
+		Element source = config.getSourceRoot();
 		
 		logger.info("start makeNameRelationships ...");
 		INameService nameService = getNameService();
 
 //		<tn:hasBasionym rdf:resource="palm_tn_14530"/>
 		
-		Element root = tcsConfig.getSourceRoot();
+		Element root = config.getSourceRoot();
 		boolean success =true;
 		
-		Namespace rdfNamespace = tcsConfig.getRdfNamespace();
-		Namespace taxonNameNamespace = tcsConfig.getTnNamespace();
+		Namespace rdfNamespace = config.getRdfNamespace();
+		Namespace taxonNameNamespace = config.getTnNamespace();
 		
 		List<Element> elTaxonNames = root.getChildren("TaxonName", taxonNameNamespace);
 		

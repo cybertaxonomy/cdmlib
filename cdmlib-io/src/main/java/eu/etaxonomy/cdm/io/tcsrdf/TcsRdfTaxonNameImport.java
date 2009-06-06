@@ -94,23 +94,23 @@ public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<I
 	};
 	
 	@Override
-	public boolean doInvoke(IImportConfigurator config, Map<String, MapWrapper<? extends CdmBase>> stores){
+	protected boolean doInvoke(TcsRdfImportState state){
 		
-		MapWrapper<TaxonNameBase> taxonNameMap = (MapWrapper<TaxonNameBase>)stores.get(ICdmIO.TAXONNAME_STORE);
-		MapWrapper<ReferenceBase> referenceMap = (MapWrapper<ReferenceBase>)stores.get(ICdmIO.REFERENCE_STORE);
-		MapWrapper<TeamOrPersonBase> authorMap = (MapWrapper<TeamOrPersonBase>)stores.get(ICdmIO.TEAM_STORE);
+		MapWrapper<TaxonNameBase> taxonNameMap = (MapWrapper<TaxonNameBase>)state.getStore(ICdmIO.TAXONNAME_STORE);
+		MapWrapper<ReferenceBase> referenceMap = (MapWrapper<ReferenceBase>)state.getStore(ICdmIO.REFERENCE_STORE);
+		MapWrapper<TeamOrPersonBase> authorMap = (MapWrapper<TeamOrPersonBase>)state.getStore(ICdmIO.TEAM_STORE);
 
 		String tcsElementName;
 		Namespace tcsNamespace;
 		String value;
 		
 		logger.info("start makeTaxonNames ...");
-		TcsRdfImportConfigurator tcsConfig = (TcsRdfImportConfigurator)config;
-		Element root = tcsConfig.getSourceRoot();
+		TcsRdfImportConfigurator config = state.getConfig();
+		Element root = config.getSourceRoot();
 		boolean success =true;
 		
-		Namespace rdfNamespace = tcsConfig.getRdfNamespace();
-		Namespace taxonNameNamespace = tcsConfig.getTnNamespace();
+		Namespace rdfNamespace = config.getRdfNamespace();
+		Namespace taxonNameNamespace = config.getTnNamespace();
 		
 		String idNamespace = "TaxonName";
 		
@@ -140,7 +140,7 @@ public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<I
 				//Reference
 				//TODO
 				tcsElementName = "publishedIn";
-				tcsNamespace = tcsConfig.getCommonNamespace();
+				tcsNamespace = config.getCommonNamespace();
 				value = (String)ImportHelper.getXmlInputValue(elTaxonName, tcsElementName, tcsNamespace);
 				if (value != null){
 					Generic nomRef = Generic.NewInstance(); //TODO

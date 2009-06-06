@@ -97,12 +97,12 @@ public class TcsRdfTaxonImport  extends TcsRdfImportBase implements ICdmIO<IImpo
 	
 	
 	@Override
-	public boolean doInvoke(IImportConfigurator config, Map<String, MapWrapper<? extends CdmBase>> stores){
+	protected boolean doInvoke(TcsRdfImportState state){
 		
-		MapWrapper<TaxonBase> taxonMap = (MapWrapper<TaxonBase>)stores.get(ICdmIO.TAXON_STORE);
-		MapWrapper<TaxonNameBase> taxonNameMap = (MapWrapper<TaxonNameBase>)stores.get(ICdmIO.TAXONNAME_STORE);
-		MapWrapper<ReferenceBase> referenceMap = (MapWrapper<ReferenceBase>)stores.get(ICdmIO.REFERENCE_STORE);
-		MapWrapper<ReferenceBase> nomRefMap = (MapWrapper<ReferenceBase>)stores.get(ICdmIO.NOMREF_STORE);
+		MapWrapper<TaxonBase> taxonMap = (MapWrapper<TaxonBase>)state.getStore(ICdmIO.TAXON_STORE);
+		MapWrapper<TaxonNameBase> taxonNameMap = (MapWrapper<TaxonNameBase>)state.getStore(ICdmIO.TAXONNAME_STORE);
+		MapWrapper<ReferenceBase> referenceMap = (MapWrapper<ReferenceBase>)state.getStore(ICdmIO.REFERENCE_STORE);
+		MapWrapper<ReferenceBase> nomRefMap = (MapWrapper<ReferenceBase>)state.getStore(ICdmIO.NOMREF_STORE);
 		
 		String xmlElementName;
 		String xmlAttributeName;
@@ -111,15 +111,15 @@ public class TcsRdfTaxonImport  extends TcsRdfImportBase implements ICdmIO<IImpo
 		
 		logger.info("start makeTaxa ...");
 		
-		TcsRdfImportConfigurator tcsConfig = (TcsRdfImportConfigurator)config;
-		Element root = tcsConfig.getSourceRoot();
+		TcsRdfImportConfigurator config = state.getConfig();
+		Element root = config.getSourceRoot();
 		boolean success =true;
 		
-		Namespace rdfNamespace = tcsConfig.getRdfNamespace();
+		Namespace rdfNamespace = config.getRdfNamespace();
 		
 		String idNamespace = "TaxonConcept";
 		xmlElementName = "TaxonConcept";
-		elementNamespace = tcsConfig.getTcNamespace();
+		elementNamespace = config.getTcNamespace();
 		List<Element> elTaxonConcepts = root.getChildren(xmlElementName, elementNamespace);
 
 		ITaxonService taxonService = getTaxonService();
@@ -134,7 +134,7 @@ public class TcsRdfTaxonImport  extends TcsRdfImportBase implements ICdmIO<IImpo
 			
 			//hasName
 			xmlElementName = "hasName";
-			elementNamespace = tcsConfig.getTcNamespace();
+			elementNamespace = config.getTcNamespace();
 			xmlAttributeName = "resource";
 			attributeNamespace = rdfNamespace;
 			String strNameResource= XmlHelp.getChildAttributeValue(elTaxonConcept, xmlElementName, elementNamespace, xmlAttributeName, attributeNamespace);
@@ -142,7 +142,7 @@ public class TcsRdfTaxonImport  extends TcsRdfImportBase implements ICdmIO<IImpo
 				
 			//accordingTo
 			xmlElementName = "accordingTo";
-			elementNamespace = tcsConfig.getTcNamespace();
+			elementNamespace = config.getTcNamespace();
 			xmlAttributeName = "resource";
 			attributeNamespace = rdfNamespace;
 			//String strAccordingTo = elTaxonConcept.getChildTextTrim(xmlElementName, elementNamespace);
@@ -161,7 +161,7 @@ public class TcsRdfTaxonImport  extends TcsRdfImportBase implements ICdmIO<IImpo
 			
 			//FIXME or synonym
 			TaxonBase taxonBase;
-			Namespace geoNamespace = tcsConfig.getGeoNamespace();
+			Namespace geoNamespace = config.getGeoNamespace();
 			if (hasIsSynonymRelation(elTaxonConcept, rdfNamespace)){
 				//Synonym
 				taxonBase = Synonym.NewInstance(taxonNameBase, sec);

@@ -139,7 +139,7 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doInvoke(eu.etaxonomy.cdm.io.common.IImportConfigurator, eu.etaxonomy.cdm.api.application.CdmApplicationController, java.util.Map)
 	 */
 	@Override
-	protected boolean doInvoke(BerlinModelImportState<BerlinModelImportConfigurator> state){
+	protected boolean doInvoke(BerlinModelImportState state){
 		boolean result = true;
 		
 		MapWrapper<TaxonBase> taxonMap = (MapWrapper<TaxonBase>)state.getStore(ICdmIO.TAXON_STORE);

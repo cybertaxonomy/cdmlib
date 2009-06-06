@@ -195,24 +195,21 @@ public class TcsRdfReferenceImport extends TcsRdfImportBase implements ICdmIO<II
 		return value;
 	}
 	
-	@Override
-	public boolean doInvoke(IImportConfigurator config,
-			Map<String, MapWrapper<? extends CdmBase>> stores){
+	protected boolean doInvoke(TcsRdfImportState state){
+		MapWrapper<ReferenceBase> referenceMap = (MapWrapper<ReferenceBase>)state.getStore(ICdmIO.REFERENCE_STORE);
+		MapWrapper<ReferenceBase> nomRefMap = (MapWrapper<ReferenceBase>)state.getStore(ICdmIO.NOMREF_STORE);
 		
-		MapWrapper<ReferenceBase> referenceMap = (MapWrapper<ReferenceBase>)stores.get(ICdmIO.REFERENCE_STORE);
-		MapWrapper<ReferenceBase> nomRefMap = (MapWrapper<ReferenceBase>)stores.get(ICdmIO.NOMREF_STORE);
-		
-		TcsRdfImportConfigurator tcsConfig = (TcsRdfImportConfigurator)config;
-		Element root = tcsConfig.getSourceRoot();
+		TcsRdfImportConfigurator config = state.getConfig();
+		Element root = config.getSourceRoot();
 		logger.info("start makeReferences ...");
 		
 		String tcsElementName;
 		Namespace tcsNamespace;
 		boolean success = true;
 		
-		Namespace rdfNamespace = tcsConfig.getRdfNamespace();
+		Namespace rdfNamespace = config.getRdfNamespace();
 		String prefix = "tpub";
-		Namespace publicationNamespace = tcsConfig.getPublicationNamespace();
+		Namespace publicationNamespace = config.getPublicationNamespace();
 
 		
 		String idNamespace = "PublicationCitation";
@@ -338,8 +335,9 @@ public class TcsRdfReferenceImport extends TcsRdfImportBase implements ICdmIO<II
 		//referenceService.saveReferenceAll(referenceMap.objects());
 		logger.info("end makeReferences ...");
 		return success;
+		
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)
 	 */

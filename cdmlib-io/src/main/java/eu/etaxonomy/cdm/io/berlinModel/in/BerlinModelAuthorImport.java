@@ -60,7 +60,7 @@ public class BerlinModelAuthorImport extends BerlinModelImportBase {
 		return result;
 	}
 	
-	protected boolean doInvoke(BerlinModelImportState<BerlinModelImportConfigurator> state){
+	protected boolean doInvoke(BerlinModelImportState state){
 		
 		MapWrapper<Person> personMap = (MapWrapper<Person>)state.getStore(ICdmIO.PERSON_STORE);
 		
@@ -166,18 +166,6 @@ public class BerlinModelAuthorImport extends BerlinModelImportBase {
 		
 	}
 	
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doInvoke(eu.etaxonomy.cdm.io.common.IImportConfigurator, eu.etaxonomy.cdm.api.application.CdmApplicationController, java.util.Map)
-	 */
-	@Override
-	protected boolean doInvoke(IImportConfigurator config, 
-			Map<String, MapWrapper<? extends CdmBase>> stores){ 
-		BerlinModelImportState<BerlinModelImportConfigurator> state = ((BerlinModelImportConfigurator)config).getState();
-		state.setConfig((BerlinModelImportConfigurator)config);
-		return doInvoke(state);
-		
-	}
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)

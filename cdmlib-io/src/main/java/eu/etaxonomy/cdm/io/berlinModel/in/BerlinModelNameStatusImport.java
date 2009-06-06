@@ -78,7 +78,7 @@ public class BerlinModelNameStatusImport extends BerlinModelImportBase {
 	}
 	
 	@Override
-	protected boolean doInvoke(BerlinModelImportState<BerlinModelImportConfigurator> state){
+	protected boolean doInvoke(BerlinModelImportState state){
 			
 		MapWrapper<TaxonNameBase> taxonNameMap = (MapWrapper<TaxonNameBase>)state.getStore(ICdmIO.TAXONNAME_STORE);
 		MapWrapper<ReferenceBase> referenceMap = (MapWrapper<ReferenceBase>)state.getStore(ICdmIO.REFERENCE_STORE);

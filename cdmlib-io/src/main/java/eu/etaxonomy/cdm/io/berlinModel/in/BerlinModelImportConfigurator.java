@@ -18,8 +18,6 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
-import eu.etaxonomy.cdm.io.berlinModel.out.BerlinModelExportConfigurator;
-import eu.etaxonomy.cdm.io.berlinModel.out.BerlinModelExportState;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
 import eu.etaxonomy.cdm.io.common.Source;
@@ -33,16 +31,13 @@ import eu.etaxonomy.cdm.model.taxon.Synonym;
  * @created 20.03.2008
  * @version 1.0
  */
-public class BerlinModelImportConfigurator extends ImportConfiguratorBase implements IImportConfigurator{
+public class BerlinModelImportConfigurator extends ImportConfiguratorBase<BerlinModelImportState> implements IImportConfigurator{
 	private static Logger logger = Logger.getLogger(BerlinModelImportConfigurator.class);
 
 	public static BerlinModelImportConfigurator NewInstance(Source berlinModelSource, ICdmDataSource destination){
 			return new BerlinModelImportConfigurator(berlinModelSource, destination);
 	}
 
-	private BerlinModelImportState<BerlinModelImportConfigurator> state;
-	
-	
 	private Set<Synonym> proParteSynonyms = new HashSet<Synonym>();
 	private Set<Synonym> partialSynonyms = new HashSet<Synonym>();
 	
@@ -202,22 +197,4 @@ public class BerlinModelImportConfigurator extends ImportConfiguratorBase implem
 		this.isIgnore0AuthorTeam = isIgnore0AuthorTeam;
 	}
 
-	/**
-	 * @return the state
-	 */
-	protected BerlinModelImportState<BerlinModelImportConfigurator> getState() {
-		return state;
-	}
-
-	/**
-	 * @param state the state to set
-	 */
-	protected void setState(
-			BerlinModelImportState<BerlinModelImportConfigurator> state) {
-		this.state = state;
-	}
-
-	
-	
-	
 }

@@ -56,7 +56,7 @@ public class BerlinModelAuthorTeamImport extends BerlinModelImportBase {
 		return result;
 	}
 	
-	protected boolean doInvoke(BerlinModelImportState<BerlinModelImportConfigurator> state){
+	protected boolean doInvoke(BerlinModelImportState state){
 		
 		MapWrapper<Person> personMap = (MapWrapper<Person>)state.getStore(ICdmIO.PERSON_STORE);
 		MapWrapper<AgentBase> teamMap = (MapWrapper<AgentBase>)state.getStore(ICdmIO.TEAM_STORE);

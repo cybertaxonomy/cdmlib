@@ -39,6 +39,7 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
  * @version 1.0
  */
 public final class TcsRdfTransformer {
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TcsRdfTransformer.class);
  
 

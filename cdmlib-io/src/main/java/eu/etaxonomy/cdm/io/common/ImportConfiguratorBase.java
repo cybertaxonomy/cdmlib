@@ -31,9 +31,12 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
  * @version 1.0
  */
 @Component
-public abstract class ImportConfiguratorBase extends IoConfiguratorBase implements IImportConfigurator{
+public abstract class ImportConfiguratorBase<STATE extends ImportState> extends IoConfiguratorBase implements IImportConfigurator{
 	private static final Logger logger = Logger.getLogger(ImportConfiguratorBase.class);
 
+	private STATE state;
+	
+	
 	//check
 	private CHECK check = CHECK.CHECK_AND_IMPORT;
 	
@@ -112,6 +115,20 @@ public abstract class ImportConfiguratorBase extends IoConfiguratorBase implemen
 	
 /* ****************** GETTER/SETTER **************************/	
 
+	/**
+	 * @return the state
+	 */
+	public STATE getState() {
+		return state;
+	}
+
+	/**
+	 * @param state the state to set
+	 */
+	public void setState(STATE state) {
+		this.state = state;
+	}
+	
 	public void setIoClassList(ICdmIO[] ioList){
 		this.ioList = ioList;
 	}

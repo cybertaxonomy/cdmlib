@@ -236,7 +236,7 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 	
 
 	@Override
-	protected boolean doInvoke(BerlinModelImportState<BerlinModelImportConfigurator> state){
+	protected boolean doInvoke(BerlinModelImportState state){
 		
 		String teamStore = ICdmIO.TEAM_STORE;
 		MapWrapper<? extends CdmBase> store = state.getStore(teamStore);
