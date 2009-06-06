@@ -136,24 +136,23 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doInvoke(eu.etaxonomy.cdm.io.common.IImportConfigurator, eu.etaxonomy.cdm.api.application.CdmApplicationController, java.util.Map)
 	 */
 	@Override
-	protected boolean doInvoke(IImportConfigurator config, 
-			Map<String, MapWrapper<? extends CdmBase>> stores){				
+	protected boolean doInvoke(BerlinModelImportState<BerlinModelImportConfigurator> state){				
 			
 		//make not needed maps empty
-		MapWrapper<TaxonNameBase> taxonNameMap = (MapWrapper<TaxonNameBase>)stores.get(ICdmIO.TAXONNAME_STORE);
+		MapWrapper<TaxonNameBase> taxonNameMap = (MapWrapper<TaxonNameBase>)state.getStore(ICdmIO.TAXONNAME_STORE);
 		taxonNameMap.makeEmpty();
 		
 		String strTeamStore = ICdmIO.TEAM_STORE;
-		MapWrapper<? extends CdmBase> map = stores.get(strTeamStore);
+		MapWrapper<? extends CdmBase> map = state.getStore(strTeamStore);
 		MapWrapper<TeamOrPersonBase> teamMap = (MapWrapper<TeamOrPersonBase>)map;
 		teamMap.makeEmpty();
 
-		MapWrapper<ReferenceBase> referenceMap = (MapWrapper<ReferenceBase>)stores.get(ICdmIO.REFERENCE_STORE);
-		MapWrapper<TaxonBase> taxonMap = (MapWrapper<TaxonBase>)stores.get(ICdmIO.TAXON_STORE);
+		MapWrapper<ReferenceBase> referenceMap = (MapWrapper<ReferenceBase>)state.getStore(ICdmIO.REFERENCE_STORE);
+		MapWrapper<TaxonBase> taxonMap = (MapWrapper<TaxonBase>)state.getStore(ICdmIO.TAXON_STORE);
 
 		Set<TaxonBase> taxonStore = new HashSet<TaxonBase>();
-		BerlinModelImportConfigurator bmiConfig = (BerlinModelImportConfigurator)config;
-		Source source = bmiConfig.getSource();
+		BerlinModelImportConfigurator config = state.getConfig();
+		Source source = config.getSource();
 		
 		logger.info("start makeTaxonRelationships ...");
 
@@ -216,7 +215,7 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 						if (relQualifierFk == TAX_REL_IS_SYNONYM_OF || 
 								relQualifierFk == TAX_REL_IS_HOMOTYPIC_SYNONYM_OF ||
 								relQualifierFk == TAX_REL_IS_HETEROTYPIC_SYNONYM_OF){
-							addProParteAndPartial(synRel, synonym, bmiConfig);
+							addProParteAndPartial(synRel, synonym, config);
 						}else if (relQualifierFk == TAX_REL_IS_PROPARTE_SYN_OF ||
 								relQualifierFk == TAX_REL_IS_PROPARTE_HOMOTYPIC_SYNONYM_OF ||
 								relQualifierFk == TAX_REL_IS_PROPARTE_HETEROTYPIC_SYNONYM_OF ){

@@ -79,15 +79,14 @@ public class BerlinModelNameFactsImport  extends BerlinModelImportBase  {
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doInvoke(eu.etaxonomy.cdm.io.common.IImportConfigurator, eu.etaxonomy.cdm.api.application.CdmApplicationController, java.util.Map)
 	 */
 	@Override
-	protected boolean doInvoke(IImportConfigurator config,
-			Map<String, MapWrapper<? extends CdmBase>> stores){
+	protected boolean doInvoke(BerlinModelImportState<BerlinModelImportConfigurator> state){
 		
-		MapWrapper<TaxonNameBase> taxonNameMap = (MapWrapper<TaxonNameBase>)stores.get(ICdmIO.TAXONNAME_STORE);
-		MapWrapper<ReferenceBase> referenceMap = (MapWrapper<ReferenceBase>)stores.get(ICdmIO.REFERENCE_STORE);
+		MapWrapper<TaxonNameBase> taxonNameMap = (MapWrapper<TaxonNameBase>)state.getStore(ICdmIO.TAXONNAME_STORE);
+		MapWrapper<ReferenceBase> referenceMap = (MapWrapper<ReferenceBase>)state.getStore(ICdmIO.REFERENCE_STORE);
 		
 		Set<TaxonNameBase> taxonNameStore = new HashSet<TaxonNameBase>();
-		BerlinModelImportConfigurator bmiConfig = (BerlinModelImportConfigurator)config;
-		Source source = bmiConfig.getSource();
+		BerlinModelImportConfigurator config = state.getConfig();
+		Source source = config.getSource();
 		
 		logger.info("start makeNameFacts ...");
 
@@ -103,7 +102,7 @@ public class BerlinModelNameFactsImport  extends BerlinModelImportBase  {
 
 			int i = 0;
 			//for each reference
-			while (rs.next() && (bmiConfig.getMaximumNumberOfNameFacts() == 0 || i < bmiConfig.getMaximumNumberOfNameFacts())){
+			while (rs.next() && (config.getMaximumNumberOfNameFacts() == 0 || i < config.getMaximumNumberOfNameFacts())){
 				
 				if ((i++ % modCount) == 0  && i!= 1 ){ logger.info("NameFacts handled: " + (i-1));}
 				
@@ -123,7 +122,7 @@ public class BerlinModelNameFactsImport  extends BerlinModelImportBase  {
 						//ReferenceBase ref = (ReferenceBase)taxonNameBase.getNomenclaturalReference();
 						//ref = Book.NewInstance();
 						try{
-							Media media = getMedia(nameFact, bmiConfig.getMediaUrl(), bmiConfig.getMediaPath());
+							Media media = getMedia(nameFact, config.getMediaUrl(), config.getMediaPath());
 							if (media.getRepresentations().size() > 0){
 								TaxonNameDescription description = TaxonNameDescription.NewInstance();
 								TextData protolog = TextData.NewInstance(Feature.PROTOLOG());
@@ -169,8 +168,8 @@ public class BerlinModelNameFactsImport  extends BerlinModelImportBase  {
 				}
 				//put
 			}
-			if (bmiConfig.getMaximumNumberOfNameFacts() != 0 && i >= bmiConfig.getMaximumNumberOfNameFacts() - 1){ 
-				logger.warn("ONLY " + bmiConfig.getMaximumNumberOfNameFacts() + " NAMEFACTS imported !!!" )
+			if (config.getMaximumNumberOfNameFacts() != 0 && i >= config.getMaximumNumberOfNameFacts() - 1){ 
+				logger.warn("ONLY " + config.getMaximumNumberOfNameFacts() + " NAMEFACTS imported !!!" )
 			;};
 			logger.info("Names to save: " + taxonNameStore.size());
 			getNameService().saveTaxonNameAll(taxonNameStore);	

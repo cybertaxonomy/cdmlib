@@ -97,8 +97,9 @@ public abstract class CdmIoBase<T extends IIoConfigurator> extends CdmApplicatio
 	protected abstract boolean doCheck(T config);
 
 
+
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.ICdmIO#invoke(eu.etaxonomy.cdm.io.common.IIoConfigurator, eu.etaxonomy.cdm.api.application.CdmApplicationController, java.util.Map)
+	 * @see eu.etaxonomy.cdm.io.common.ICdmIO#invoke(eu.etaxonomy.cdm.io.common.IIoConfigurator, java.util.Map)
 	 */
 	public boolean invoke(T config,
 //	public boolean invoke(IIoConfigurator config,

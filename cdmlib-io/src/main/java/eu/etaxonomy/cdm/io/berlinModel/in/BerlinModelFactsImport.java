@@ -139,22 +139,21 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doInvoke(eu.etaxonomy.cdm.io.common.IImportConfigurator, eu.etaxonomy.cdm.api.application.CdmApplicationController, java.util.Map)
 	 */
 	@Override
-	protected boolean doInvoke(IImportConfigurator config,
-			Map<String, MapWrapper<? extends CdmBase>> stores){
+	protected boolean doInvoke(BerlinModelImportState<BerlinModelImportConfigurator> state){
 		boolean result = true;
 		
-		MapWrapper<TaxonBase> taxonMap = (MapWrapper<TaxonBase>)stores.get(ICdmIO.TAXON_STORE);
-		MapWrapper<ReferenceBase> referenceMap = (MapWrapper<ReferenceBase>)stores.get(ICdmIO.REFERENCE_STORE);
-		MapWrapper<ReferenceBase> nomRefMap = (MapWrapper<ReferenceBase>)stores.get(ICdmIO.NOMREF_STORE);
+		MapWrapper<TaxonBase> taxonMap = (MapWrapper<TaxonBase>)state.getStore(ICdmIO.TAXON_STORE);
+		MapWrapper<ReferenceBase> referenceMap = (MapWrapper<ReferenceBase>)state.getStore(ICdmIO.REFERENCE_STORE);
+		MapWrapper<ReferenceBase> nomRefMap = (MapWrapper<ReferenceBase>)state.getStore(ICdmIO.NOMREF_STORE);
 		
 		Set<TaxonBase> taxonStore = new HashSet<TaxonBase>();
 		
-		BerlinModelImportConfigurator bmiConfig = (BerlinModelImportConfigurator)config;
-		Source source = bmiConfig.getSource();
+		BerlinModelImportConfigurator config = state.getConfig();
+		Source source = config.getSource();
 		
 		logger.info("start makeFacts ...");
 		
-		MapWrapper<Feature> featureMap = invokeFactCategories(bmiConfig);
+		MapWrapper<Feature> featureMap = invokeFactCategories(config);
 		
 		//for testing only
 		//TaxonBase taxonBase = Taxon.NewInstance(BotanicalName.NewInstance(null), null);
@@ -277,7 +276,7 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 						//factId, 
 						
 						//etc.
-						doCreatedUpdatedNotes(bmiConfig, textData, rs, "Fact");
+						doCreatedUpdatedNotes(config, textData, rs, "Fact");
 
 						
 						taxonStore.add(taxon);

@@ -16,15 +16,14 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.io.berlinModel.out.BerlinModelExportConfigurator;
+import eu.etaxonomy.cdm.io.berlinModel.out.BerlinModelExportState;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.io.common.Source;
-import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Person;
-import eu.etaxonomy.cdm.model.agent.Team;
-import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -61,17 +60,12 @@ public class BerlinModelAuthorImport extends BerlinModelImportBase {
 		return result;
 	}
 	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doInvoke(eu.etaxonomy.cdm.io.common.IImportConfigurator, eu.etaxonomy.cdm.api.application.CdmApplicationController, java.util.Map)
-	 */
-	@Override
-	protected boolean doInvoke(IImportConfigurator config, 
-			Map<String, MapWrapper<? extends CdmBase>> stores){ 
-
-		MapWrapper<Person> personMap = (MapWrapper<Person>)stores.get(ICdmIO.PERSON_STORE);
+	protected boolean doInvoke(BerlinModelImportState<BerlinModelImportConfigurator> state){
 		
-		BerlinModelImportConfigurator bmiConfig = (BerlinModelImportConfigurator)config;
-		Source source = bmiConfig.getSource();
+		MapWrapper<Person> personMap = (MapWrapper<Person>)state.getStore(ICdmIO.PERSON_STORE);
+		
+		BerlinModelImportConfigurator config = state.getConfig();
+		Source source = config.getSource();
 		String dbAttrName;
 		String cdmAttrName;
 
@@ -169,6 +163,20 @@ public class BerlinModelAuthorImport extends BerlinModelImportBase {
 
 		logger.info("end make "+pluralString+" ...");
 		return success;
+		
+	}
+	
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doInvoke(eu.etaxonomy.cdm.io.common.IImportConfigurator, eu.etaxonomy.cdm.api.application.CdmApplicationController, java.util.Map)
+	 */
+	@Override
+	protected boolean doInvoke(IImportConfigurator config, 
+			Map<String, MapWrapper<? extends CdmBase>> stores){ 
+		BerlinModelImportState<BerlinModelImportConfigurator> state = ((BerlinModelImportConfigurator)config).getState();
+		state.setConfig((BerlinModelImportConfigurator)config);
+		return doInvoke(state);
+		
 	}
 	
 	/* (non-Javadoc)

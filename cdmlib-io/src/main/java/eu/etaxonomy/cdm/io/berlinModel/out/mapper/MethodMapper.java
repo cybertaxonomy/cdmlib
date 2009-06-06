@@ -17,7 +17,7 @@ import java.sql.Types;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.berlinModel.out.BerlinModelExportBase;
-import eu.etaxonomy.cdm.io.berlinModel.out.DbExportState;
+import eu.etaxonomy.cdm.io.common.DbExportState;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**

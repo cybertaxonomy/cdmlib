@@ -69,17 +69,16 @@ public class BerlinModelTaxonNameImport extends BerlinModelImportBase {
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doInvoke(eu.etaxonomy.cdm.io.common.IImportConfigurator, eu.etaxonomy.cdm.api.application.CdmApplicationController, java.util.Map)
 	 */
 	@Override
-	protected boolean doInvoke(IImportConfigurator config, 
-			Map<String, MapWrapper<? extends CdmBase>> stores){				
+	protected boolean doInvoke(BerlinModelImportState<BerlinModelImportConfigurator> state){				
 			
-		MapWrapper<TaxonNameBase> taxonNameMap = (MapWrapper<TaxonNameBase>)stores.get(ICdmIO.TAXONNAME_STORE);
+		MapWrapper<TaxonNameBase> taxonNameMap = (MapWrapper<TaxonNameBase>)state.getStore(ICdmIO.TAXONNAME_STORE);
 		
 		String strTeamStore = ICdmIO.TEAM_STORE;
-		MapWrapper<? extends CdmBase> map = stores.get(strTeamStore);
+		MapWrapper<? extends CdmBase> map = state.getStore(strTeamStore);
 		MapWrapper<TeamOrPersonBase> teamMap = (MapWrapper<TeamOrPersonBase>)map;
 		
-		BerlinModelImportConfigurator bmiConfig = (BerlinModelImportConfigurator)config;
-		Source source = bmiConfig.getSource();
+		BerlinModelImportConfigurator config = state.getConfig();
+		Source source = config.getSource();
 		String dbAttrName;
 		String cdmAttrName;
 		boolean success = true ;
@@ -132,8 +131,8 @@ public class BerlinModelTaxonNameImport extends BerlinModelImportBase {
 					Rank rank = BerlinModelTransformer.rankId2Rank(rs, useUnknownRank);
 					
 					TaxonNameBase taxonNameBase;
-					if (bmiConfig.getNomenclaturalCode() != null){
-						taxonNameBase = bmiConfig.getNomenclaturalCode().getNewTaxonNameInstance(rank);
+					if (config.getNomenclaturalCode() != null){
+						taxonNameBase = config.getNomenclaturalCode().getNewTaxonNameInstance(rank);
 					}else{
 						taxonNameBase = NonViralName.NewInstance(rank);
 					}
@@ -177,10 +176,10 @@ public class BerlinModelTaxonNameImport extends BerlinModelImportBase {
 					success &= ImportHelper.addStringValue(rs, taxonNameBase, dbAttrName, cdmAttrName);
 
 					//nomRef
-					success &= makeNomenclaturalReference(bmiConfig, taxonNameBase, nameId, rs, stores);
+					success &= makeNomenclaturalReference(config, taxonNameBase, nameId, rs, state.getStores());
 
 					//created, notes
-					success &= doIdCreatedUpdatedNotes(bmiConfig, taxonNameBase, rs, nameId, namespace);
+					success &= doIdCreatedUpdatedNotes(config, taxonNameBase, rs, nameId, namespace);
 					
 					//Marker
 					boolean flag = true;
@@ -193,10 +192,10 @@ public class BerlinModelTaxonNameImport extends BerlinModelImportBase {
 						
 						//authorTeams
 						if (teamMap != null ){
-							nonViralName.setCombinationAuthorTeam(getAuthorTeam(teamMap, authorFk, nameId, bmiConfig));
-							nonViralName.setExCombinationAuthorTeam(getAuthorTeam(teamMap, exAuthorFk, nameId, bmiConfig));
-							nonViralName.setBasionymAuthorTeam(getAuthorTeam(teamMap, basAuthorFk, nameId, bmiConfig));
-							nonViralName.setExBasionymAuthorTeam(getAuthorTeam(teamMap, exBasAuthorFk, nameId, bmiConfig));
+							nonViralName.setCombinationAuthorTeam(getAuthorTeam(teamMap, authorFk, nameId, config));
+							nonViralName.setExCombinationAuthorTeam(getAuthorTeam(teamMap, exAuthorFk, nameId, config));
+							nonViralName.setBasionymAuthorTeam(getAuthorTeam(teamMap, basAuthorFk, nameId, config));
+							nonViralName.setExBasionymAuthorTeam(getAuthorTeam(teamMap, exBasAuthorFk, nameId, config));
 						}else{
 							logger.warn("TeamMap is null");
 						}

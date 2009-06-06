@@ -149,23 +149,22 @@ public class BerlinModelTaxonImport  extends BerlinModelImportBase  {
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doInvoke(eu.etaxonomy.cdm.io.common.IImportConfigurator, eu.etaxonomy.cdm.api.application.CdmApplicationController, java.util.Map)
 	 */
 	@Override
-	protected boolean doInvoke(IImportConfigurator config, 
-			Map<String, MapWrapper<? extends CdmBase>> stores){				
+	protected boolean doInvoke(BerlinModelImportState<BerlinModelImportConfigurator> state){				
 		
 		//make not needed maps empty
 		String teamStore = ICdmIO.TEAM_STORE;
-		MapWrapper<? extends CdmBase> store = stores.get(teamStore);
+		MapWrapper<? extends CdmBase> store = state.getStore(teamStore);
 		MapWrapper<TeamOrPersonBase> teamMap = (MapWrapper<TeamOrPersonBase>)store;
 		teamMap.makeEmpty();
 
 		
-		MapWrapper<TaxonNameBase<?,?>> taxonNameMap = (MapWrapper<TaxonNameBase<?,?>>)stores.get(ICdmIO.TAXONNAME_STORE);
-		MapWrapper<ReferenceBase> referenceMap = (MapWrapper<ReferenceBase>)stores.get(ICdmIO.REFERENCE_STORE);
-		MapWrapper<ReferenceBase> nomRefMap = (MapWrapper<ReferenceBase>)stores.get(ICdmIO.NOMREF_STORE);
-		MapWrapper<TaxonBase> taxonMap = (MapWrapper<TaxonBase>)stores.get(ICdmIO.TAXON_STORE);
+		MapWrapper<TaxonNameBase<?,?>> taxonNameMap = (MapWrapper<TaxonNameBase<?,?>>)state.getStore(ICdmIO.TAXONNAME_STORE);
+		MapWrapper<ReferenceBase> referenceMap = (MapWrapper<ReferenceBase>)state.getStore(ICdmIO.REFERENCE_STORE);
+		MapWrapper<ReferenceBase> nomRefMap = (MapWrapper<ReferenceBase>)state.getStore(ICdmIO.NOMREF_STORE);
+		MapWrapper<TaxonBase> taxonMap = (MapWrapper<TaxonBase>)state.getStore(ICdmIO.TAXON_STORE);
 		
-		BerlinModelImportConfigurator bmiConfig = (BerlinModelImportConfigurator)config;
-		Source source = bmiConfig.getSource();
+		BerlinModelImportConfigurator config = state.getConfig();
+		Source source = config.getSource();
 		
 		logger.info("start makeTaxa ...");
 		
@@ -232,10 +231,10 @@ public class BerlinModelTaxonImport  extends BerlinModelImportBase  {
 						synonym = Synonym.NewInstance(taxonName, reference);
 						taxonBase = synonym;
 						if (statusFk == T_STATUS_PRO_PARTE_SYN){
-							bmiConfig.addProParteSynonym(synonym);
+							config.addProParteSynonym(synonym);
 						}
 						if (statusFk == T_STATUS_PARTIAL_SYN){
-							bmiConfig.addPartialSynonym(synonym);
+							config.addPartialSynonym(synonym);
 						}
 					}else{
 						logger.warn("TaxonStatus " + statusFk + " not yet implemented. Taxon (RIdentifier = " + taxonId + ") left out.");
@@ -257,9 +256,9 @@ public class BerlinModelTaxonImport  extends BerlinModelImportBase  {
 					}
 					
 					//nameId
-					ImportHelper.setOriginalSource(taxonBase, bmiConfig.getSourceReference(), taxonId, namespace);
+					ImportHelper.setOriginalSource(taxonBase, config.getSourceReference(), taxonId, namespace);
 
-					doIdCreatedUpdatedNotes(bmiConfig, taxonBase, rs, taxonId, namespace);
+					doIdCreatedUpdatedNotes(config, taxonBase, rs, taxonId, namespace);
 					//TODO
 					//dbAttrName = "Detail";
 //					cdmAttrName = "Micro";

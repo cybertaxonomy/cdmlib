@@ -248,54 +248,14 @@ public class ImportHelper {
 	
 	
 	public static TimePeriod getDatePublished(String refYear){
-		if (true){
-			TimePeriod resultNew;
-			try {
-				resultNew = TimePeriod.parseString(refYear);
-			} catch (IllegalArgumentException e) {
-				logger.warn("RefYear could not be parsed: " + refYear);
-				resultNew = null;
-			}
-			return resultNew;
+		TimePeriod resultNew;
+		try {
+			resultNew = TimePeriod.parseString(refYear);
+		} catch (IllegalArgumentException e) {
+			logger.warn("RefYear could not be parsed: " + refYear);
+			resultNew = null;
 		}
-		
-		//FIXME until now only quick and dirty and wrong
-		if (refYear == null){
-			return null;
-		}
-		String[] years = refYear.split("-");
-		DateTime dtStart = null;
-		DateTime dtEnd = null;
-		
-		if (years.length > 2 || years.length <= 0){
-			logger.warn("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX getDatePublished");
-		}else {
-			dtStart = parseSingleDate(years[0]);
-			
-			if (years.length >= 2){
-				dtEnd = parseSingleDate(years[1]);
-			}
-		}
-		TimePeriod result = TimePeriod.NewInstance(dtStart, dtEnd);
-		return result;
-	}
-	
-	
-	private static DateTime parseSingleDate(String singleDateString){
-		//FIXME until now only quick and dirty and wrong
-		DateTime dt = new DateTime(9999, 12, 30, 0,0,0,0);
-		if (CdmUtils.isNumeric(singleDateString)){
-			try {
-				Integer year = Integer.valueOf(singleDateString.trim());
-				if (year > 1750 && year < 2050){
-					dt = dt.withYear(year);
-				}
-			} catch (NumberFormatException e) {
-				logger.debug("Not a Integer format in getCalendar()");
-			}
-		}
-		return dt;
-
+		return resultNew;
 	}
 
 	//************** EXPORT *******************/

@@ -12,6 +12,8 @@ package eu.etaxonomy.cdm.io.berlinModel.out;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.io.common.DbExportState;
+
 /**
  * @author a.mueller
  * @created 11.05.2009

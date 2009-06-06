@@ -15,7 +15,7 @@ import org.hibernate.Hibernate;
 import org.hsqldb.Types;
 
 import eu.etaxonomy.cdm.io.berlinModel.out.BerlinModelExportConfigurator;
-import eu.etaxonomy.cdm.io.berlinModel.out.DbExportState;
+import eu.etaxonomy.cdm.io.common.DbExportState;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**

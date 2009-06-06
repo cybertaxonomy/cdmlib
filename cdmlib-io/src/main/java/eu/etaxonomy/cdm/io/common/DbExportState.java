@@ -8,7 +8,7 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package eu.etaxonomy.cdm.io.berlinModel.out;
+package eu.etaxonomy.cdm.io.common;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,6 +16,7 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.io.berlinModel.out.BerlinModelExportConfigurator;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
@@ -23,6 +24,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * @created 11.05.2009
  * @version 1.0
  */
+//TODO make it CONFIG extends DBExportConfigurator
 public class DbExportState<CONFIG extends BerlinModelExportConfigurator> extends IoState<CONFIG> {
 	private static final Logger logger = Logger.getLogger(DbExportState.class);
 	

@@ -15,8 +15,8 @@ import java.sql.SQLException;
 import org.apache.log4j.Logger;
 import org.hsqldb.Types;
 
-import eu.etaxonomy.cdm.io.berlinModel.out.DbExportState;
 import eu.etaxonomy.cdm.io.berlinModel.out.BerlinModelExportConfigurator.IdType;
+import eu.etaxonomy.cdm.io.common.DbExportState;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**

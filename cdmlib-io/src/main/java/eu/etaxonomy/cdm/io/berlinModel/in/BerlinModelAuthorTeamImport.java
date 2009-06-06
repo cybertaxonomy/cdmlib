@@ -56,18 +56,13 @@ public class BerlinModelAuthorTeamImport extends BerlinModelImportBase {
 		return result;
 	}
 	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doInvoke(eu.etaxonomy.cdm.io.common.IImportConfigurator, eu.etaxonomy.cdm.api.application.CdmApplicationController, java.util.Map)
-	 */
-	@Override
-	protected boolean doInvoke(IImportConfigurator config, 
-			Map<String, MapWrapper<? extends CdmBase>> stores){ 
-
-		MapWrapper<AgentBase> teamMap = (MapWrapper<AgentBase>)stores.get(ICdmIO.TEAM_STORE);
-		MapWrapper<AgentBase> personMap = (MapWrapper<AgentBase>)stores.get(ICdmIO.PERSON_STORE);
+	protected boolean doInvoke(BerlinModelImportState<BerlinModelImportConfigurator> state){
 		
-		BerlinModelImportConfigurator bmiConfig = (BerlinModelImportConfigurator)config;
-		Source source = bmiConfig.getSource();
+		MapWrapper<Person> personMap = (MapWrapper<Person>)state.getStore(ICdmIO.PERSON_STORE);
+		MapWrapper<AgentBase> teamMap = (MapWrapper<AgentBase>)state.getStore(ICdmIO.TEAM_STORE);
+		
+		BerlinModelImportConfigurator config = state.getConfig();
+		Source source = config.getSource();
 		String dbAttrName;
 		String cdmAttrName;
 
@@ -99,7 +94,7 @@ public class BerlinModelAuthorTeamImport extends BerlinModelImportBase {
 				
 				//create Agent element
 				int teamId = rsTeam.getInt("AuthorTeamId");
-				if (teamId == 0 && bmiConfig.isIgnore0AuthorTeam()){
+				if (teamId == 0 && config.isIgnore0AuthorTeam()){
 					continue;
 				}
 				
@@ -118,7 +113,7 @@ public class BerlinModelAuthorTeamImport extends BerlinModelImportBase {
 				//preliminaryFlag
 				//title cache or nomenclaturalTitle?
 
-				makeSequence(team, teamId, rsSequence, stores);
+				makeSequence(team, teamId, rsSequence, state.getStores());
 				
 				//created, notes
 				doIdCreatedUpdatedNotes(config, team, rsTeam, teamId, namespace);
@@ -138,7 +133,7 @@ public class BerlinModelAuthorTeamImport extends BerlinModelImportBase {
 		personMap.makeEmpty();
 		return success;
 	}
-	
+		
 	private boolean makeSequence(Team team, int teamId, ResultSet rsSequence, Map<String, MapWrapper<? extends CdmBase>> stores){
 		MapWrapper<Person> personMap = (MapWrapper<Person>)stores.get(ICdmIO.PERSON_STORE);
 		try {

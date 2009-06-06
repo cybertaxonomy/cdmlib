@@ -113,15 +113,14 @@ public class BerlinModelOccurrenceImport  extends BerlinModelImportBase {
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doInvoke(eu.etaxonomy.cdm.io.common.IImportConfigurator, eu.etaxonomy.cdm.api.application.CdmApplicationController, java.util.Map)
 	 */
 	@Override
-	protected boolean doInvoke(IImportConfigurator config, 
-			Map<String, MapWrapper<? extends CdmBase>> stores){
+	protected boolean doInvoke(BerlinModelImportState<BerlinModelImportConfigurator> state){
 		
-		MapWrapper<TaxonBase> taxonMap = (MapWrapper<TaxonBase>)stores.get(ICdmIO.TAXON_STORE);
-		MapWrapper<ReferenceBase> referenceMap = (MapWrapper<ReferenceBase>)stores.get(ICdmIO.REFERENCE_STORE);
-		BerlinModelImportConfigurator bmiConfig = (BerlinModelImportConfigurator)config;
+		MapWrapper<TaxonBase> taxonMap = (MapWrapper<TaxonBase>)state.getStore(ICdmIO.TAXON_STORE);
+		MapWrapper<ReferenceBase> referenceMap = (MapWrapper<ReferenceBase>)state.getStore(ICdmIO.REFERENCE_STORE);
+		BerlinModelImportConfigurator config = state.getConfig();
+		Source source = config.getSource();
 		
 		Set<TaxonBase> taxonStore = new HashSet<TaxonBase>();
-		Source source = bmiConfig.getSource();
 		
 		logger.info("start make occurrences ...");
 		

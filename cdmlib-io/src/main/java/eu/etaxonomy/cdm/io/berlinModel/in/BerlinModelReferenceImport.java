@@ -236,21 +236,21 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 	
 
 	@Override
-	protected boolean doInvoke(IImportConfigurator config,
-			Map<String, MapWrapper<? extends CdmBase>> stores){
+	protected boolean doInvoke(BerlinModelImportState<BerlinModelImportConfigurator> state){
 		
 		String teamStore = ICdmIO.TEAM_STORE;
-		MapWrapper<? extends CdmBase> store = stores.get(teamStore);
+		MapWrapper<? extends CdmBase> store = state.getStore(teamStore);
 		MapWrapper<TeamOrPersonBase> teamMap = (MapWrapper<TeamOrPersonBase>)store;
 				
-		BerlinModelImportConfigurator bmiConfig = (BerlinModelImportConfigurator)config;
-		Source source = bmiConfig.getSource();
+		BerlinModelImportConfigurator config = state.getConfig();
+		Source source = config.getSource();
+		
 		boolean success = true;
 		MapWrapper<ReferenceBase> referenceStore= new MapWrapper<ReferenceBase>(null);
 		MapWrapper<ReferenceBase> nomRefStore= new MapWrapper<ReferenceBase>(null);
 		
 		//preliminary RefDetails  //TODO -> move to own class ?
-		doPreliminaryRefDetails(config, stores);
+		doPreliminaryRefDetails(config, state.getStores());
 		
 		logger.info("start makeReferences ...");
 		
@@ -283,13 +283,13 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 				return false;
 			}
 
-			if (bmiConfig.getDoReferences() == CONCEPT_REFERENCES){
+			if (config.getDoReferences() == CONCEPT_REFERENCES){
 				strQueryNoInRef += " AND ( Reference.refId IN ( SELECT ptRefFk FROM PTaxon) ) ";
 			}
 			
 			List<ResultSet> resultSetList = new ArrayList<ResultSet>();
 			resultSetList.add(source.getResultSet(strQueryNoInRef));
-			if (bmiConfig.getDoReferences() == ALL || bmiConfig.getDoReferences() == NOMENCLATURAL){
+			if (config.getDoReferences() == ALL || config.getDoReferences() == NOMENCLATURAL){
 				resultSetList.add(source.getResultSet(strQuery1InRef));
 				resultSetList.add(source.getResultSet(strQuery2InRef));
 			}
@@ -350,13 +350,13 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 						String refYear = (String)valueMap.get("refYear".toLowerCase());
 						
 						//refId, created, notes
-						doIdCreatedUpdatedNotes(bmiConfig, referenceBase, rs, refId, namespace );						
+						doIdCreatedUpdatedNotes(config, referenceBase, rs, refId, namespace );						
 						//refYear
 						referenceBase.setDatePublished(ImportHelper.getDatePublished(refYear)); 
 						
 						//
 						success &= makeNomAndBiblioReference(rs, refId, referenceBase, refCounter, 
-								referenceStore, nomRefStore, teamMap, stores );
+								referenceStore, nomRefStore, teamMap, state.getStores() );
 
 					} catch (Exception e) {
 						logger.warn("Reference with BM refId " + refId +  " threw Exception and could not be saved");
@@ -367,13 +367,13 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 				} // end resultSet
 				
 				//for the concept reference a fixed uuid may be needed -> change uuid
-				ReferenceBase sec = referenceStore.get(bmiConfig.getSourceSecId());
+				ReferenceBase sec = referenceStore.get(config.getSourceSecId());
 				if (sec == null){
-					sec = nomRefStore.get(bmiConfig.getSourceSecId());	
+					sec = nomRefStore.get(config.getSourceSecId());	
 				}
 				if (sec != null){
-					sec.setUuid(bmiConfig.getSecUuid());
-					logger.info("SecUuid changed to: " + bmiConfig.getSecUuid());
+					sec.setUuid(config.getSecUuid());
+					logger.info("SecUuid changed to: " + config.getSecUuid());
 				}
 				
 				//save and store in map
