@@ -31,8 +31,8 @@ public class DefaultTermInitializer implements ITermInitializer {
 		Map<UUID,DefinedTermBase> terms = new HashMap<UUID,DefinedTermBase>();
 		
 //		for(Class<? extends DefinedTermBase<?>> clazz : classesToInitialize) {
-		for(VocabularyType vocabularyType : VocabularyType.values()) {
-			Class<? extends DefinedTermBase<?>> clazz = vocabularyType.getClazz();
+		for(VocabularyEnum vocabularyEnum : VocabularyEnum.values()) {
+			Class<? extends DefinedTermBase<?>> clazz = vocabularyEnum.getClazz();
 			TermVocabulary<?> voc  = termLoader.loadTerms(clazz, terms);
 			setDefinedTerms(clazz,voc);
 		}		

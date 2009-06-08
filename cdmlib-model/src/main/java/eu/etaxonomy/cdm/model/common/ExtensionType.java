@@ -10,6 +10,10 @@
 package eu.etaxonomy.cdm.model.common;
 
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
 import javax.persistence.Entity;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -17,6 +21,8 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
+
+import eu.etaxonomy.cdm.model.location.TdwgArea;
 
 /**
  * Extension types similar to dynamically defined attributes. These are not data
@@ -34,6 +40,18 @@ public class ExtensionType extends DefinedTermBase<ExtensionType> {
 	private static final long serialVersionUID = -7761963794004133427L;
 	private static final Logger logger = Logger.getLogger(ExtensionType.class);
 
+	private static final UUID uuidXmlFragment = UUID.fromString("ea109c1c-e69b-4e6d-9079-1941b9ee2991");
+	private static final UUID uuidRdfFragment = UUID.fromString("f3684e25-dcad-4c1e-a5d8-16cddf1c4f5b");
+	private static final UUID uuidDoi = UUID.fromString("f079aacc-ab08-4cc4-90a0-6d3958fb0dbf");
+	private static final UUID uuid2ndNomRef = UUID.fromString("46a98bfa-f11a-47fe-a6c5-50c7e8289b3d");
+	private static final UUID uuid3rdHybridParent = UUID.fromString("5e552b24-5a2d-498d-a4f4-ccd8e5bc2bae");
+	private static final UUID uuidAreaOfInterest = UUID.fromString("cefa478e-604f-4db4-8afc-25e06c28ec69");
+	private static final UUID uuidNomStandard = UUID.fromString("4a6cbbe9-8d79-4d15-b316-2ff1adeff526");
+	private static final UUID uuidAbbreviation = UUID.fromString("5837e34e-b0f5-4736-8083-ff5eaecd8c43");
+	
+	
+	protected static Map<UUID, ExtensionType> termMap = null;		
+
 	public ExtensionType() {
 		super();
 	}
@@ -41,19 +59,58 @@ public class ExtensionType extends DefinedTermBase<ExtensionType> {
 		super(term, label, labelAbbrev);
 	}
 
+	protected static ExtensionType getTermByUuid(UUID uuid){
+		if (termMap == null){
+			DefaultTermInitializer vocabularyStore = new DefaultTermInitializer();
+			vocabularyStore.initialize();
+		}
+		return (ExtensionType)termMap.get(uuid);
+	}
 
+	
 	public static final ExtensionType XML_FRAGMENT(){
-		return null;
+		return getTermByUuid(uuidXmlFragment);
 	}
 
 	public static final ExtensionType RDF_FRAGMENT(){
-		return null;
+		return getTermByUuid(uuidRdfFragment);
 	}
+
+	public static final ExtensionType DOI(){
+		return getTermByUuid(uuidDoi);
+	}
+
+
+	public static final ExtensionType SECOND_NOM_REF(){
+		return getTermByUuid(uuid2ndNomRef);
+	}
+
+
+	public static final ExtensionType THIRD_HYBRID_PARENT(){
+		return getTermByUuid(uuid3rdHybridParent);
+	}
+	
+	public static final ExtensionType AREA_OF_INTREREST(){
+		return getTermByUuid(uuidAreaOfInterest);
+	}
+	
+	public static final ExtensionType NOMENCLATURAL_STANDARD(){
+		return getTermByUuid(uuidNomStandard);
+	}
+	
+	public static final ExtensionType ABBREVIATION(){
+		return getTermByUuid(uuidAbbreviation);
+	}
+	
+	
+	
 	
 	@Override
 	protected void setDefaultTerms(TermVocabulary<ExtensionType> termVocabulary) {
-		// TODO Auto-generated method stub
-		logger.warn("setDefaultTerms not yet implemented for ExtensionType");
+		termMap = new HashMap<UUID, ExtensionType>();
+		for (ExtensionType term : termVocabulary.getTerms()){
+			termMap.put(term.getUuid(), (ExtensionType)term);
+		}
 	}
 
 }

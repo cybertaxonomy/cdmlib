@@ -40,7 +40,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
  * @created 03.06.2009
  * @version 1.0
  */
-public enum VocabularyType {
+public enum VocabularyEnum {
 
 	Language("45ac7043-7f5e-4f37-92f2-3874aaaef2de", Language.class),
 	Continent("e72cbcb6-58f8-4201-9774-15d0c6abc128", Continent.class),
@@ -66,13 +66,13 @@ public enum VocabularyType {
 	DeterminationModifier("fe87ea8d-6e0a-4e5d-b0da-0ab8ea67ca77", DeterminationModifier.class),
 	StatisticalMeasure("066cc62e-7213-495e-a020-97a1233bc037", StatisticalMeasure.class),
 	RightsTerm("8627c526-73af-44d9-902c-11c1f11b60b4", RightsTerm.class),
-	NameTypeDesignationStatus("ab60e738-4d09-4c24-a1b3-9466b01f9f55", NameTypeDesignationStatus.class);
-
+	NameTypeDesignationStatus("ab60e738-4d09-4c24-a1b3-9466b01f9f55", NameTypeDesignationStatus.class),
+	ExtensionType("117cc307-5bd4-4b10-9b2f-2e14051b3b20",ExtensionType.class);
 	
 	private UUID uuid;
 	private Class<? extends DefinedTermBase<?>> clazz;
 	
-	private VocabularyType(String uuidString, Class<? extends DefinedTermBase<?>> clazz){
+	private VocabularyEnum(String uuidString, Class<? extends DefinedTermBase<?>> clazz){
 		this.uuid = UUID.fromString(uuidString);
 		this.clazz = clazz;
 	}

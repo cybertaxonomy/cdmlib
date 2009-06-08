@@ -178,7 +178,7 @@ implements ISourceable, IIdentifiableEntity, Comparable<IdentifiableEntity> {
 		//TODO truncation of title cache
 		if (titleCache != null && titleCache.length() > 254){
 			logger.warn("Truncation of title cache: " + this.toString() + "/" + titleCache);
-			titleCache = titleCache.substring(0, 249) + "...";
+			titleCache = titleCache.substring(0, 251) + "...";
 		}
 		this.titleCache = titleCache;
 		this.setProtectedTitleCache(protectCache);

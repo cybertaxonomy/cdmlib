@@ -72,13 +72,25 @@ public class Extension extends VersionableEntity implements Cloneable {
 	public static Extension NewInstance(){
 		return new Extension();
 	}
+
+	public static Extension NewInstance(IdentifiableEntity<?> extendedObject, String value){
+		Extension extension = new Extension();
+		extension.setExtendedObj(extendedObject);
+		extension.setValue(value);
+		return extension;
+	}
+	
+	public static Extension NewInstance(IdentifiableEntity<?> extendedObject, String value, ExtensionType extensionType){
+		Extension extension = NewInstance(extendedObject, value);
+		extension.setType(extensionType);
+		return extension;
+	}
 	
 	/**
 	 * TODO should not be private but throws error in persistence/io test
 	 * Constructor
 	 */
 	protected Extension(){
-		
 	}
 	
 	public IdentifiableEntity getExtendedObj() {
