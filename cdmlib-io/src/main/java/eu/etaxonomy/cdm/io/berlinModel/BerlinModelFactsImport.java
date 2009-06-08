@@ -30,6 +30,7 @@ import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
@@ -198,7 +199,32 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 					}
 					
 					//textData
-					TextData textData = TextData.NewInstance();
+					TextData textData = null;
+					boolean newTextData = true;
+
+					// For Cichorieae DB: If fact category is 31 (Systematics) and there is already a TextData 
+					// description element append the fact text to the existing TextData
+					// TODO: Text field shall become a blob
+					if(categoryFk == 31) {
+						Set<DescriptionElementBase> descriptionElements = taxonDescription.getElements();
+						for (DescriptionElementBase descriptionElement : descriptionElements) {
+							if (descriptionElement instanceof TextData) {
+								textData = (TextData)descriptionElement;
+								String factTextStr = textData.getText(Language.DEFAULT());
+								StringBuilder factText = new StringBuilder(factTextStr);
+								if (factTextStr.contains("\\r\\n")) {
+									factTextStr = factTextStr.replaceAll("\\r\\n","");
+								}
+								factText.append(fact);
+								fact = factText.toString();
+								newTextData = false;
+								break;
+							}
+						}
+					}
+					
+					if(newTextData == true)	{ textData = TextData.NewInstance(); }
+					
 					//TODO textData.putText(fact, bmiConfig.getFactLanguage());  //doesn't work because  bmiConfig.getFactLanguage() is not not a persistent Language Object
 					//throws  in thread "main" org.springframework.dao.InvalidDataAccessApiUsageException: object references an unsaved transient instance - save the transient instance before flushing: eu.etaxonomy.cdm.model.common.Language; nested exception is org.hibernate.TransientObjectException: object references an unsaved transient instance - save the transient instance before flushing: eu.etaxonomy.cdm.model.common.Language
 					
@@ -208,6 +234,7 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 						notes = notes.replaceAll("</OriginalName>", "");
 						fact = notes + ": " +  fact ;
 					}
+					
 					textData.putText(fact, Language.DEFAULT());
 					textData.setType(feature);
 					
