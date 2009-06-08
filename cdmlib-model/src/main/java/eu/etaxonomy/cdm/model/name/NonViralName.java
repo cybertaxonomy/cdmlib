@@ -643,7 +643,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 			return this.authorshipCache;			
 		}
 		// is title dirty, i.e. equal NULL?
-		if (authorshipCache == null){
+		if (authorshipCache == null ){
 			this.authorshipCache = generateAuthorship();
 		}else{
 			//TODO get is Dirty of authors
@@ -674,13 +674,18 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 	public void setAuthorshipCache(String authorshipCache, boolean protectedAuthorshipCache) {
 		this.authorshipCache = authorshipCache;
 		//TODO hibernate safe?
-		if (! this.isProtectedFullTitleCache()){
-			this.setFullTitleCache(null, false);
+		if (! this.isProtectedTitleCache()){
+			this.setTitleCache(null, false);
 		}
 		this.setProtectedAuthorshipCache(protectedAuthorshipCache);
 	}
 
-	
+	public void setTitleCache(String titleCache, boolean protectCache){
+		super.setTitleCache(titleCache, protectCache);
+		if (! this.isProtectedFullTitleCache()){
+			this.setFullTitleCache(null, false);
+		}
+	}
 	
 	/**
 	 * Returns the boolean value "false" since the components of <i>this</i> taxon name
