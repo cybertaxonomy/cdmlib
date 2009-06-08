@@ -26,7 +26,7 @@ public class Datasource {
 		System.out.println(lsDataSources);
 		CdmPersistentDataSource dataSource = lsDataSources.get(0);
 		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
-		CdmPersistentDataSource.save(dataSource.getName(), dbType, "192.168.2.10", "cdm_test_andreas", "edit", "wp5");
+		CdmPersistentDataSource.save(dataSource.getName(), dbType, "192.168.2.10", "cdm_test_andreas", "edit", "");
 		CdmApplicationController appCtr;
 		try {
 			appCtr = CdmApplicationController.NewInstance(dataSource);
