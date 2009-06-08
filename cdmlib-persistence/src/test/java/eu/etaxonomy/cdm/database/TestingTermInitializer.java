@@ -20,7 +20,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
-import eu.etaxonomy.cdm.model.common.VocabularyType;
+import eu.etaxonomy.cdm.model.common.VocabularyEnum;
 import eu.etaxonomy.cdm.test.integration.HsqldbDataTypeFactory;
 
 public class TestingTermInitializer extends PersistentTermInitializer {
@@ -69,7 +69,7 @@ public class TestingTermInitializer extends PersistentTermInitializer {
 		}
 		transactionManager.commit(txStatus);
 		
-		for(VocabularyType vocabularyType : VocabularyType.values()) {
+		for(VocabularyEnum vocabularyType : VocabularyEnum.values()) {
 			Class<? extends DefinedTermBase<?>> clazz = vocabularyType.getClazz();
 			UUID vocabularyUuid = vocabularyType.getUuid();
 			secondPass(clazz, vocabularyUuid,new HashMap<UUID,DefinedTermBase>());
