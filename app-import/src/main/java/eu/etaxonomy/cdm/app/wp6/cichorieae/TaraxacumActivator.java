@@ -10,6 +10,8 @@
 package eu.etaxonomy.cdm.app.wp6.cichorieae;
 
 import java.io.File;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
@@ -19,6 +21,7 @@ import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.app.berlinModelImport.BerlinModelSources;
 import eu.etaxonomy.cdm.app.berlinModelImport.TreeCreator;
 import eu.etaxonomy.cdm.app.common.CdmDestinations;
+import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.berlinModel.BerlinModelImportConfigurator;
@@ -52,7 +55,9 @@ public class TaraxacumActivator {
 	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_test_anahit();
 
 	org.h2.jdbc.JdbcSQLException h;
+	/* Taraxacum sec UUID in Taraxacum Berlin Model DB */
 	static final UUID secUuid = UUID.fromString("ba7120ce-4fab-49dc-aaa4-f36276426aa8");
+	//static final UUID secUuid = UUID.fromString("6924c75d-e0d0-4a6d-afb7-3dd8c71195ca");
 	static final int sourceSecId = 7700000;
 	
 	static final UUID featureTreeUuid = UUID.fromString("ab007336-d853-4f2f-a490-7c8232eafe7b");
@@ -185,25 +190,74 @@ public class TaraxacumActivator {
 		logger.info("End import from BerlinModel ("+ source.getDatabase() + ")...");
 	}
 	
+//	public void updateTaraxacumSec(CdmApplicationController app) {
+//		
+//	}
+	
 	public void mergeIntoCichorieae(CdmApplicationController app){
 		
 		String taraxTaraxacum = "9a7bced0-fa1a-432e-9cca-57b62219cde6";
 		String cichTaraxacum = "c946ac62-b6c6-493b-8ed9-278fa38b931a";
 		UUID taraxacumCichUUID = UUID.fromString(cichTaraxacum);
 		Taxon taraxacumInCich = (Taxon)app.getTaxonService().findByUuid(taraxacumCichUUID);
-		if (taraxacumInCich != null){
+		if (taraxacumInCich != null) {
 			logger.info("Merge Taraxacum");
 			Taxon parent = taraxacumInCich.getTaxonomicParent();
 			UUID taraxacumTaraxUUID = UUID.fromString(taraxTaraxacum);
 			Taxon taraxacumInTarax = (Taxon)app.getTaxonService().findByUuid(taraxacumTaraxUUID);
+			
 			//TODO reference
 			ReferenceBase citation = null;
-			String microcitation =null;
+			String microcitation = null;
 			parent.addTaxonomicChild(taraxacumInTarax, citation, microcitation);
 			app.getTaxonService().save(parent);
 			parent.removeTaxonomicChild(taraxacumInCich);
 			app.getTaxonService().delete(taraxacumInCich);
+			
+			// Replace sec ID of Taraxacum in Taraxacum DB by sec ID of Taraxacum in Cichorieae DB
+			//  = workaround to display Taraxacum Genus correctly in Data Portal Taxon Tree
+			// Currently only one sec ID can be specified in Data Portal
+			try {
+
+				int secIdTarax = 0;
+				int secIdCich = 0;
+				
+				String sqlString = 
+					" SELECT titleCache, sec_id FROM TaxonBase WHERE uuid = '" + taraxTaraxacum +  "'";
+
+				ResultSet rs = ((CdmDataSource)cdmDestination).executeQuery(sqlString);
+				while (rs.next()) {
+					secIdTarax = rs.getInt("sec_id");
+					if (logger.isInfoEnabled()) {
+						String titleCache = rs.getString("titleCache");
+						logger.info("secId of " + titleCache + " (" + taraxTaraxacum + ") in Taraxacum DB: " + secIdTarax);
+					}
+				}
+				
+				sqlString = 
+					" SELECT titleCache, sec_id FROM TaxonBase WHERE titleCache like 'Crepis%' ";
+
+				rs = ((CdmDataSource)cdmDestination).executeQuery(sqlString);
+				while (rs.next()) {
+					secIdCich = rs.getInt("sec_id");
+					if (logger.isInfoEnabled()) {
+						String titleCache = rs.getString("titleCache");
+						logger.info("secId of " + titleCache + " (" + cichTaraxacum + ") in Cichorieae DB: " + secIdCich);
+					}
+					if (secIdCich != 0) { break; }
+				}
+				
+				sqlString = 
+					" UPDATE TaxonBase SET sec_id = " + secIdCich + " WHERE sec_id = " + secIdTarax;
+
+				int result = ((CdmDataSource)cdmDestination).executeUpdate(sqlString);
+
+
+			} catch (SQLException e) {
+				logger.error("SQLException:" +  e);
+			}
 		}
+		
 	}
 	
 	public static void main(String[] args) {
