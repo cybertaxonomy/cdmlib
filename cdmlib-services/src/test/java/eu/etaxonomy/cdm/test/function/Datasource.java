@@ -54,7 +54,7 @@ public class Datasource {
 			String server = "LAPTOPHP";
 			String database = "cdmTest";
 			String username = "edit";
-			String password = "wp5";
+			String password = "";
 			
 			appCtr.getDatabaseService().saveDataSource("testSqlServer", dbType, server, database, username, password);
 			appCtr.getDatabaseService().connectToDatabase(dbType, server, database, username, password);
@@ -72,7 +72,7 @@ public class Datasource {
 		String server = "LAPTOPHP";
 		String database = "cdmTest";
 		String username = "edit";
-		String password = "wp5";
+		String password = "";
 		CdmPersistentDataSource ds = CdmPersistentDataSource.save("testSqlServer", databaseTypeEnum, server, database, username, password);
 		try {
 			CdmApplicationController appCtr = CdmApplicationController.NewInstance(ds);
@@ -93,7 +93,7 @@ public class Datasource {
 		String server = "LAPTOPHP";
 		String database = "cdmTest";
 		String username = "edit";
-		String password = "wp5";
+		String password = "";
 		CdmPersistentDataSource ds = CdmPersistentDataSource.save("testSqlServer", databaseTypeEnum, server, database, username, password);
 		try {
 			CdmApplicationController appCtr = CdmApplicationController.NewInstance(ds);
@@ -114,7 +114,7 @@ public class Datasource {
 		String server = "192.168.1.17";
 		String database = "cdm_test";
 		String username = "edit";
-		String password = "wp5";
+		String password = "";
 		CdmPersistentDataSource ds = CdmPersistentDataSource.save("PostgreTest", databaseTypeEnum, server, database, username, password);
 		try {
 			CdmApplicationController appCtr = CdmApplicationController.NewInstance(ds);
@@ -188,9 +188,10 @@ public class Datasource {
 	private boolean testH2(){
 		testLocalH2();
 		try{
-			DbSchemaValidation validation = DbSchemaValidation.VALIDATE;
+			DbSchemaValidation validation = DbSchemaValidation.CREATE;
 			ICdmDataSource ds = 
 				CdmDataSource.NewH2EmbeddedInstance("cdm", "sa", "");
+				//CdmDataSource.NewH2EmbeddedInstance("cdm", "sa", "");
 	//		ds =
 	//			 CdmPersistentDataSource.NewInstance("localH2");
 			CdmApplicationController appCtr = CdmApplicationController.NewInstance(ds, validation);
