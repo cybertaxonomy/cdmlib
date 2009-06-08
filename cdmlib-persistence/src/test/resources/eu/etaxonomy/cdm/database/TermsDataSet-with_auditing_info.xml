@@ -12876,7 +12876,8 @@
   <TERMVOCABULARY DTYPE="OrderedTermVocabulary" ID="23" CREATED="2009-01-28 17:07:06.0" UUID="fe87ea8d-6e0a-4e5d-b0da-0ab8ea67ca77" URI="" TERMSOURCEURI="eu.etaxonomy.cdm.model.occurrence.DeterminationModifier"/>
   <TERMVOCABULARY DTYPE="TermVocabulary" ID="24" CREATED="2009-01-28 17:07:06.0" UUID="066cc62e-7213-495e-a020-97a1233bc037" URI="" TERMSOURCEURI="eu.etaxonomy.cdm.model.description.StatisticalMeasure"/>
   <TERMVOCABULARY DTYPE="TermVocabulary" ID="25" CREATED="2009-01-28 17:07:06.0" UUID="8627c526-73af-44d9-902c-11c1f11b60b4" URI="" TERMSOURCEURI="eu.etaxonomy.cdm.model.media.RightsTerm"/>
-  <TermVocabulary DTYPE="OrderedTermVocabulary" ID="26" CREATED="2009-05-18 18:24:18.0" UUID="ab60e738-4d09-4c24-a1b3-9466b01f9f55" URI="" TERMSOURCEURI="eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus"/>
+  <TERMVOCABULARY DTYPE="OrderedTermVocabulary" ID="26" CREATED="2009-05-18 18:24:18.0" UUID="ab60e738-4d09-4c24-a1b3-9466b01f9f55" URI="" TERMSOURCEURI="eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus"/>
+  <TERMVOCABULARY DTYPE="TermVocabulary" ID="27" CREATED="2009-06-08 18:24:18.0" UUID="117cc307-5bd4-4b10-9b2f-2e14051b3b20" URI="" TERMSOURCEURI="eu.etaxonomy.cdm.model.name.ExtensionType"/>
   <TERMVOCABULARY_AUD DTYPE="TermVocabulary" ID="1" REV="1000" REVTYPE="0" CREATED="2009-01-28 17:07:03.0" UUID="45ac7043-7f5e-4f37-92f2-3874aaaef2de" URI="" TERMSOURCEURI="eu.etaxonomy.cdm.model.common.Language"/>
   <TERMVOCABULARY_AUD DTYPE="OrderedTermVocabulary" ID="2" REV="1001" REVTYPE="0" CREATED="2009-01-28 17:07:04.0" UUID="e72cbcb6-58f8-4201-9774-15d0c6abc128" URI="" TERMSOURCEURI="eu.etaxonomy.cdm.model.location.Continent"/>
   <TERMVOCABULARY_AUD DTYPE="OrderedTermVocabulary" ID="3" REV="1002" REVTYPE="0" CREATED="2009-01-28 17:07:04.0" UUID="006b1870-7347-4624-990f-e5ed78484a1a" URI="" TERMSOURCEURI="eu.etaxonomy.cdm.model.location.WaterbodyOrCountry"/>
@@ -12902,7 +12903,8 @@
   <TERMVOCABULARY_AUD DTYPE="OrderedTermVocabulary" ID="23" REV="1022" REVTYPE="0" CREATED="2009-01-28 17:07:06.0" UUID="fe87ea8d-6e0a-4e5d-b0da-0ab8ea67ca77" URI="" TERMSOURCEURI="eu.etaxonomy.cdm.model.occurrence.DeterminationModifier"/>
   <TERMVOCABULARY_AUD DTYPE="TermVocabulary" ID="24" REV="1023" REVTYPE="0" CREATED="2009-01-28 17:07:06.0" UUID="066cc62e-7213-495e-a020-97a1233bc037" URI="" TERMSOURCEURI="eu.etaxonomy.cdm.model.description.StatisticalMeasure"/>
   <TERMVOCABULARY_AUD DTYPE="TermVocabulary" ID="25" REV="1024" REVTYPE="0" CREATED="2009-01-28 17:07:06.0" UUID="8627c526-73af-44d9-902c-11c1f11b60b4" URI="" TERMSOURCEURI="eu.etaxonomy.cdm.model.media.RightsTerm"/>
-  <TermVocabulary_AUD DTYPE="OrderedTermVocabulary" ID="26" REV="1025" REVTYPE="0" CREATED="2009-05-18 18:24:18.0" UUID="ab60e738-4d09-4c24-a1b3-9466b01f9f55" URI="" TERMSOURCEURI="eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus"/>
+  <TERMVOCABULARY_AUD DTYPE="OrderedTermVocabulary" ID="26" REV="1025" REVTYPE="0" CREATED="2009-05-18 18:24:18.0" UUID="ab60e738-4d09-4c24-a1b3-9466b01f9f55" URI="" TERMSOURCEURI="eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus"/>
+  <TERMVOCABULARY_AUD DTYPE="TermVocabulary" ID="27" REV="1026" REVTYPE="0" CREATED="2009-06-08 18:24:18.0" UUID="117cc307-5bd4-4b10-9b2f-2e14051b3b20" URI="" TERMSOURCEURI="eu.etaxonomy.cdm.model.name.ExtensionType"/>
   <TERMVOCABULARY_REPRESENTATION TERMVOCABULARY_ID="1" REPRESENTATIONS_ID="1"/>
   <TERMVOCABULARY_REPRESENTATION TERMVOCABULARY_ID="2" REPRESENTATIONS_ID="487"/>
   <TERMVOCABULARY_REPRESENTATION TERMVOCABULARY_ID="3" REPRESENTATIONS_ID="497"/>
