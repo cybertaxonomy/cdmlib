@@ -25,7 +25,7 @@ import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.LanguageStringBase;
 import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
-import eu.etaxonomy.cdm.model.common.VocabularyType;
+import eu.etaxonomy.cdm.model.common.VocabularyEnum;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
@@ -49,7 +49,7 @@ public interface ITermService extends IService<DefinedTermBase> {
 
 	public TermVocabulary getVocabulary(UUID vocabularyUuid);
 	
-	public TermVocabulary getVocabulary(VocabularyType vocabularyType);
+	public TermVocabulary getVocabulary(VocabularyEnum vocabularyType);
 	
 	public Set<TermVocabulary> listVocabularies(Class termClass);
 

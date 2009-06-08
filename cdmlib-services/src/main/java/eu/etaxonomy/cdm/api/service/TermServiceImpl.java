@@ -34,7 +34,7 @@ import eu.etaxonomy.cdm.model.common.LanguageStringBase;
 import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
-import eu.etaxonomy.cdm.model.common.VocabularyType;
+import eu.etaxonomy.cdm.model.common.VocabularyEnum;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
@@ -102,7 +102,7 @@ public class TermServiceImpl extends ServiceBase<DefinedTermBase,IDefinedTermDao
 		return vocabulary;
 	}
 	
-	public TermVocabulary<? extends DefinedTermBase<?>> getVocabulary(VocabularyType vocabularyType){
+	public TermVocabulary<? extends DefinedTermBase<?>> getVocabulary(VocabularyEnum vocabularyType){
 		TermVocabulary<? extends DefinedTermBase<?>> vocabulary = getVocabulary(vocabularyType.getUuid());
 		return vocabulary;
 	}
