@@ -109,7 +109,7 @@ public class SpecimenTypeDesignationStatus extends TypeDesignationStatusBase<Spe
 	private static final UUID uuidIconotype = UUID.fromString("643513d0-32f5-46ba-840b-d9b9caf8160f");
 	private static final UUID uuidPhototype = UUID.fromString("b7807acc-f559-474e-ad4a-e7a41e085e34");
 	private static final UUID uuidUnspecific = UUID.fromString("230fd762-b143-49de-ac2e-744bcc48a63b");
-	private static final UUID uuidOriginalMaterial = UUID.fromString("230fd762-b143-49de-ac2e-744bcc48a63b");
+	private static final UUID uuidOriginalMaterial = UUID.fromString("49c96cae-6be6-401e-9b36-1bc12d9dc8f9");
 
 	
 	// ************* CONSTRUCTORS *************/	
