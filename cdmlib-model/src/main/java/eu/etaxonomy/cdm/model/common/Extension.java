@@ -72,17 +72,12 @@ public class Extension extends VersionableEntity implements Cloneable {
 	public static Extension NewInstance(){
 		return new Extension();
 	}
-
-	public static Extension NewInstance(IdentifiableEntity<?> extendedObject, String value){
-		Extension extension = new Extension();
-		extension.setExtendedObj(extendedObject);
-		extension.setValue(value);
-		return extension;
-	}
 	
 	public static Extension NewInstance(IdentifiableEntity<?> extendedObject, String value, ExtensionType extensionType){
-		Extension extension = NewInstance(extendedObject, value);
+		Extension extension = new Extension();
+		extension.setValue(value);
 		extension.setType(extensionType);
+		extendedObject.addExtension(extension);
 		return extension;
 	}
 	
@@ -96,7 +91,8 @@ public class Extension extends VersionableEntity implements Cloneable {
 	public IdentifiableEntity getExtendedObj() {
 		return extendedObj;
 	}
-	public void setExtendedObj(IdentifiableEntity extendedObj) {
+	//for hibernate use only
+	protected void setExtendedObj(IdentifiableEntity extendedObj) {
 		this.extendedObj = extendedObj;
 	}
 

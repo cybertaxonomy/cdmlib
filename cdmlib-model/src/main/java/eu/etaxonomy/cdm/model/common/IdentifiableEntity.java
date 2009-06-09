@@ -255,18 +255,28 @@ implements ISourceable, IIdentifiableEntity, Comparable<IdentifiableEntity> {
 	public Set<Extension> getExtensions(){
 		return this.extensions;
 	}
+
+	public void addExtension(String value, ExtensionType extensionType){
+		Extension.NewInstance(this, value, extensionType);
+	}
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#addExtension(eu.etaxonomy.cdm.model.common.Extension)
 	 */
 	public void addExtension(Extension extension){
-		this.extensions.add(extension);
+		if (extension != null){
+			extension.setExtendedObj(this);
+			this.extensions.add(extension);
+		}
 	}
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#removeExtension(eu.etaxonomy.cdm.model.common.Extension)
 	 */
 	public void removeExtension(Extension extension){
-		this.extensions.remove(extension);
+		if (extension != null){
+			extension.setExtendedObj(null);
+			this.extensions.remove(extension);
+		}
 	}
 
 	
