@@ -9,6 +9,7 @@
 
 package eu.etaxonomy.cdm.io.faunaEuropaea;
 
+import static eu.etaxonomy.cdm.io.faunaEuropaea.FaunaEuropaeaTransformer.A_AUCT;
 import static eu.etaxonomy.cdm.io.faunaEuropaea.FaunaEuropaeaTransformer.T_STATUS_ACCEPTED;
 import static eu.etaxonomy.cdm.io.faunaEuropaea.FaunaEuropaeaTransformer.T_STATUS_NOT_ACCEPTED;
 
@@ -145,15 +146,14 @@ public class FaunaEuropaeaTaxonImport extends FaunaEuropaeaImportBase  {
 			}
 			
 //			strQuery = 
-//				" SELECT Taxon.*, rank.*, TaxRefs.* " + 
-//				" FROM dbo.Taxon " +
-//				" INNER JOIN dbo.rank ON dbo.Taxon.TAX_RNK_ID = dbo.rank.rnk_id " +
-//				" INNER JOIN dbo.TaxRefs ON dbo.Taxon.TAX_ID = dbo.TaxRefs.trf_tax_id " +
+//				" SELECT Taxon.*, rank.* " + 
+//				" FROM dbo.Taxon INNER JOIN dbo.rank ON dbo.Taxon.TAX_RNK_ID = dbo.rank.rnk_id " +
 //				" WHERE (1=1)";
 
 			strQuery = 
-				" SELECT Taxon.*, rank.* " + 
+				" SELECT Taxon.*, rank.*, author.* " + 
 				" FROM dbo.Taxon INNER JOIN dbo.rank ON dbo.Taxon.TAX_RNK_ID = dbo.rank.rnk_id " +
+				" INNER JOIN dbo.author ON dbo.Taxon.TAX_AUT_ID = dbo.author.aut_id " +
 				" WHERE (1=1)";
 
 			rs = source.getResultSet(strQuery);
@@ -169,10 +169,16 @@ public class FaunaEuropaeaTaxonImport extends FaunaEuropaeaImportBase  {
 				}
 
 				int taxonId = rs.getInt("TAX_ID");
-				int parentId = rs.getInt("TAX_TAX_IDPARENT");
 				String taxonName = rs.getString("TAX_NAME");
-				int statusFk = rs.getInt("TAX_VALID");
-				int rankId = rs.getInt("rnk_id");
+				int rankId = rs.getInt("TAX_RNK_ID");
+				int parentId = rs.getInt("TAX_TAX_IDPARENT");
+				int familyId = rs.getInt("TAX_TAX_IDFAMILY");
+				int genusId = rs.getInt("TAX_TAX_IDGENUS");
+				int autId = rs.getInt("TAX_AUT_ID");
+				int status = rs.getInt("TAX_VALID");
+				int year = rs.getInt("TAX_YEAR");
+				int parenthesis = rs.getInt("TAX_PARENTHESIS");
+				String autName = rs.getString("aut_name");
 				Rank rank = null;
 				UUID taxonBaseUuid = UUID.randomUUID();
 
@@ -188,8 +194,14 @@ public class FaunaEuropaeaTaxonImport extends FaunaEuropaeaImportBase  {
 				ZoologicalName zooName = ZoologicalName.NewInstance(rank);
 //				zooName.setId(taxonId);
 				zooName.setNameCache(taxonName);
-//				zooName.setTitleCache(taxonName); // FIXME: Add the author
-//				zooName.setFullTitleCache(taxonName); // FIXME: Add author, reference, NC status
+				StringBuilder nameTitleCacheBuilder = new StringBuilder(taxonName);
+				nameTitleCacheBuilder.append(" ");
+				nameTitleCacheBuilder.append(autName);
+				nameTitleCacheBuilder.append(" ");
+				nameTitleCacheBuilder.append(year);
+				String nameTitleCache = nameTitleCacheBuilder.toString();
+				zooName.setTitleCache(nameTitleCache);
+				zooName.setFullTitleCache(nameTitleCache); // FIXME: reference, NC status
 
 				TaxonBase<?> taxonBase;
 				FaunaEuropaeaTaxon fauEuTaxon = new FaunaEuropaeaTaxon();
@@ -197,15 +209,15 @@ public class FaunaEuropaeaTaxonImport extends FaunaEuropaeaImportBase  {
 				Synonym synonym;
 				Taxon taxon;
 				try {
-//					logger.debug(statusFk);
-					if (statusFk == T_STATUS_ACCEPTED) {
+//					logger.debug(status);
+					if ((status == T_STATUS_ACCEPTED) || (autId == A_AUCT)) {
 						taxon = Taxon.NewInstance(zooName, reference);
 						taxonBase = taxon;
-					} else if (statusFk == T_STATUS_NOT_ACCEPTED) {
+					} else if ((status == T_STATUS_NOT_ACCEPTED) && (autId != A_AUCT)) {
 						synonym = Synonym.NewInstance(zooName, reference);
 						taxonBase = synonym;
 					} else {
-						logger.warn("Taxon status " + statusFk + " not yet implemented. Taxon (" + taxonId + ") ignored.");
+						logger.warn("Unknown taxon status " + status + ". Taxon (" + taxonId + ") ignored.");
 						continue;
 					}
 
@@ -320,8 +332,8 @@ public class FaunaEuropaeaTaxonImport extends FaunaEuropaeaImportBase  {
 					name.append(((ZoologicalName)taxonName).getNameCache());
 					String concatenatedName = name.toString();
 					zooName.setNameCache(concatenatedName);
-					zooName.setTitleCache(concatenatedName); // FIXME: Add author
-					zooName.setFullTitleCache(concatenatedName); // FIXME: Add author, reference, NC status
+					zooName.setTitleCache(concatenatedName);
+					zooName.setFullTitleCache(concatenatedName); // FIXME: reference, NC status
 					name.append(" sec. ");
 					name.append(fauEuConfig.getSourceReference().getTitleCache());
 					taxonBase.setTitleCache(name.toString()); // FIXME: Add author
@@ -389,7 +401,7 @@ public class FaunaEuropaeaTaxonImport extends FaunaEuropaeaImportBase  {
 			Collection<TaxonBase> taxonMapPart = taxonStore.objects(start, limit);
 			getTaxonService().saveTaxonAll(taxonMapPart);
 			taxonMapPart = null;
-			taxonStore.removeObjects(start, limit);
+//			taxonStore.removeObjects(start, limit);
 		}
 		
 		return success;

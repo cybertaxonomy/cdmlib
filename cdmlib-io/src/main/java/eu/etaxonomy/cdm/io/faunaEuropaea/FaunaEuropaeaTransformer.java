@@ -38,9 +38,12 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 public final class FaunaEuropaeaTransformer {
 	private static final Logger logger = Logger.getLogger(FaunaEuropaeaTransformer.class);
 	
-	//TaxonStatus
+	// TaxonStatus
 	public static final int T_STATUS_ACCEPTED = 1;
 	public static final int T_STATUS_NOT_ACCEPTED = 0;
+	
+	// Author
+	public static final int A_AUCT = 1;
 	
 	// Rank
 	public static final int R_KINGDOM = 1;
@@ -241,7 +244,7 @@ public final class FaunaEuropaeaTransformer {
 			else if (areaCode.equals("RU-RUW")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("RUW-OO");
 			else if (areaCode.equals("SE")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("SWE-OO");
 			else if (areaCode.equals("SI")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("YUG-SL");
-			else if (areaCode.equals("SK")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("CZE-SL");
+			else if (areaCode.equals("SK")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("CZE-SK");
 			else if (areaCode.equals("SM")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("ITA-SM");
 			else if (areaCode.equals("TR-TUE")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("TUE-OO");
 			else if (areaCode.equals("UA")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("UKR-UK");
