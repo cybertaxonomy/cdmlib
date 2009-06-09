@@ -91,8 +91,8 @@ public class Extension extends VersionableEntity implements Cloneable {
 	public IdentifiableEntity getExtendedObj() {
 		return extendedObj;
 	}
-	//for hibernate use only
-	protected void setExtendedObj(IdentifiableEntity extendedObj) {
+	//TODO make not public, but TaxonTaoHibernateImpl.delete has to be changed then
+	public void setExtendedObj(IdentifiableEntity extendedObj) {
 		this.extendedObj = extendedObj;
 	}
 

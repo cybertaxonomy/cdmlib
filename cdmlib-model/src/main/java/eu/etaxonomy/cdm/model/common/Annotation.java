@@ -117,8 +117,9 @@ public class Annotation extends LanguageStringBase implements Cloneable {
 	public AnnotatableEntity getAnnotatedObj() {
 		return annotatedObj;
 	}
+	//TODO make not public, but TaxonTaoHibernateImpl.delete has to be changed then
 	public void setAnnotatedObj(AnnotatableEntity newAnnotatedObj) {
-		this.annotatedObj = newAnnotatedObj;		
+		this.annotatedObj = newAnnotatedObj;
 	}
 
 	public AnnotationType getAnnotationType() {
