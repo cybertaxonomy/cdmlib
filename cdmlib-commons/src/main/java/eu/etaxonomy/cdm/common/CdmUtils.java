@@ -259,6 +259,7 @@ public class CdmUtils {
 
 	/**
 	 * Returns true if string is null, "" or string.trim() is ""
+	 * @see isNotEmpty(String string)
 	 * @param string
 	 * @return
 	 */
@@ -270,5 +271,16 @@ public class CdmUtils {
 			return true;
 		}
 		return false;
+	}
+	
+	/**
+	 * Returns false if string is null, "" or string.trim() is ""
+	 * Else true.
+	 * @see isEmpty(String string)
+	 * @param string
+	 * @return
+	 */
+	static public boolean isNotEmpty(String string){
+		return !isEmpty(string);
 	}
 }
