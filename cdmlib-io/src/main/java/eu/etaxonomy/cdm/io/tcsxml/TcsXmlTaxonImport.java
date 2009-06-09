@@ -117,12 +117,12 @@ public class TcsXmlTaxonImport  extends TcsXmlImportBase implements ICdmIO<IImpo
 	}
 	
 	@Override
-	public boolean doInvoke(IImportConfigurator config, Map<String, MapWrapper<? extends CdmBase>> stores){
+	public boolean doInvoke(TcsXmlImportState state){
 		
 		logger.info("start make TaxonConcepts ...");
-		MapWrapper<TaxonBase> taxonMap = (MapWrapper<TaxonBase>)stores.get(ICdmIO.TAXON_STORE);
-		MapWrapper<TaxonNameBase<?,?>> taxonNameMap = (MapWrapper<TaxonNameBase<?,?>>)stores.get(ICdmIO.TAXONNAME_STORE);
-		MapWrapper<ReferenceBase> referenceMap = (MapWrapper<ReferenceBase>)stores.get(ICdmIO.REFERENCE_STORE);
+		MapWrapper<TaxonBase> taxonMap = (MapWrapper<TaxonBase>)state.getStore(ICdmIO.TAXON_STORE);
+		MapWrapper<TaxonNameBase<?,?>> taxonNameMap = (MapWrapper<TaxonNameBase<?,?>>)state.getStore(ICdmIO.TAXONNAME_STORE);
+		MapWrapper<ReferenceBase> referenceMap = (MapWrapper<ReferenceBase>)state.getStore(ICdmIO.REFERENCE_STORE);
 		ITaxonService taxonService = getTaxonService();
 
 		ResultWrapper<Boolean> success = ResultWrapper.NewInstance(true);
@@ -130,9 +130,9 @@ public class TcsXmlTaxonImport  extends TcsXmlImportBase implements ICdmIO<IImpo
 		boolean obligatory;
 		String idNamespace = "TaxonConcept";
 
-		TcsXmlImportConfigurator tcsConfig = (TcsXmlImportConfigurator)config;
-		Element elDataSet = getDataSetElement(tcsConfig);
-		Namespace tcsNamespace = tcsConfig.getTcsXmlNamespace();
+		TcsXmlImportConfigurator config = state.getConfig();
+		Element elDataSet = getDataSetElement(config);
+		Namespace tcsNamespace = config.getTcsXmlNamespace();
 		
 		childName = "TaxonConcepts";
 		obligatory = false;

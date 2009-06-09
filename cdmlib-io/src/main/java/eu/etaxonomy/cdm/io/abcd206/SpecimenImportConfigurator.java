@@ -15,6 +15,7 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
+import eu.etaxonomy.cdm.io.abcd206.SpecimenImportState;
 import eu.etaxonomy.cdm.model.reference.Database;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
@@ -23,7 +24,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
  * @created 20.10.2008
  * @version 1.0
  */
-public class SpecimenImportConfigurator extends ImportConfiguratorBase implements IImportConfigurator {
+public class SpecimenImportConfigurator extends ImportConfiguratorBase<SpecimenImportState> implements IImportConfigurator {
 	private static final Logger logger = Logger.getLogger(SpecimenImportConfigurator.class);
 	private boolean doParsing = false;
 	private boolean reuseMetadata = false;

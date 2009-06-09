@@ -22,7 +22,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
  * @created 29.10.2008
  * @version 1.0
  */
-public class SpecimenImportConfigurator extends ImportConfiguratorBase implements IImportConfigurator {
+public class SpecimenImportConfigurator extends ImportConfiguratorBase<SpecimenImportState> implements IImportConfigurator {
 	private static final Logger logger = Logger.getLogger(SpecimenImportConfigurator.class);
 	private boolean doParsing = false;
 	private boolean reuseMetadata = false;
@@ -51,6 +51,7 @@ public class SpecimenImportConfigurator extends ImportConfiguratorBase implement
 		super();
 		setSource(url);
 		setDestination(destination);
+		setState(new SpecimenImportState());
 	}
 	
 

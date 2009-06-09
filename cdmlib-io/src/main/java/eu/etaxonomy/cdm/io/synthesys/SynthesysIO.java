@@ -26,7 +26,9 @@ import eu.etaxonomy.cdm.common.MediaMetaData.ImageMetaData;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
+import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.model.agent.Institution;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.ImageFile;
 import eu.etaxonomy.cdm.model.media.Media;
@@ -501,9 +503,19 @@ public class SynthesysIO  extends SpecimenIoBase  implements ICdmIO<IImportConfi
 	}
 
 
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doInvoke(eu.etaxonomy.cdm.io.common.IImportConfigurator, eu.etaxonomy.cdm.api.application.CdmApplicationController, java.util.Map)
+	 */
 	@Override
-	public boolean invoke(IImportConfigurator config, Map stores) {
-		invoke((SpecimenImportConfigurator)config);
+	protected boolean doInvoke(IImportConfigurator config, 
+			Map<String, MapWrapper<? extends CdmBase>> stores){ 
+		SpecimenImportState state = ((SpecimenImportConfigurator)config).getState();
+		state.setConfig((SpecimenImportConfigurator)config);
+		return doInvoke(state);
+	}
+	
+	public boolean doInvoke(SpecimenImportState state){
+		invoke(state.getConfig());
 		return false;
 	}
 

@@ -38,6 +38,8 @@ import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
+import eu.etaxonomy.cdm.io.abcd206.SpecimenImportConfigurator;
+import eu.etaxonomy.cdm.io.abcd206.SpecimenImportState;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -1320,22 +1322,37 @@ public class AbcdIO extends SpecimenIoBase implements ICdmIO<IImportConfigurator
 		}
 	}
 
-
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doInvoke(eu.etaxonomy.cdm.io.common.IImportConfigurator, eu.etaxonomy.cdm.api.application.CdmApplicationController, java.util.Map)
+	 */
 	@Override
-	protected boolean doInvoke(IImportConfigurator config,
-			Map<String, MapWrapper<? extends CdmBase>> stores) {
+	protected boolean doInvoke(IImportConfigurator config, 
+			Map<String, MapWrapper<? extends CdmBase>> stores){ 
+		SpecimenImportState state = ((SpecimenImportConfigurator)config).getState();
+		state.setConfig((SpecimenImportConfigurator)config);
+		return doInvoke(state);
+	}
+	
+	
+	
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.abcd206.SpecimenIoBase#doInvoke(eu.etaxonomy.cdm.io.abcd206.SpecimenImportState)
+	 */
+	@Override
+	public boolean doInvoke(SpecimenImportState state){
 		logger.info("INVOKE Specimen Import from ABCD2.06 XML File");
 		boolean result = true;
-		SpecimenImportConfigurator specimenImportConfig = (SpecimenImportConfigurator)config;
+		SpecimenImportConfigurator config = state.getConfig();
 		//AbcdIO test = new AbcdIO();
-		String sourceName = specimenImportConfig.getSource();
+		String sourceName = config.getSource();
 		NodeList unitsList = getUnitsNodeList(sourceName);
 		if (unitsList != null)
 		{
 			logger.info("nb units to insert: "+unitsList.getLength());
 			for (int i=0;i<unitsList.getLength();i++){
 				this.setUnitPropertiesXML((Element)unitsList.item(i));
-				result &= this.start(specimenImportConfig);
+				result &= this.start(config);
 				config.setDbSchemaValidation(DbSchemaValidation.UPDATE);
 				//compare the ABCD elements added in to the CDM and the unhandled ABCD elements
 				compareABCDtoCDM(sourceName,this.knownABCDelements);

@@ -15,6 +15,7 @@ import eu.etaxonomy.cdm.common.XmlHelp;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
+import eu.etaxonomy.cdm.io.tcsrdf.TcsRdfImportState;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
@@ -41,14 +42,9 @@ public class TcsXmlMetaDataImport extends TcsXmlImportBase implements ICdmIO<IIm
 	}
 		
 
-
-
-	
-
 	
 	@Override
-	public boolean doInvoke(IImportConfigurator config,
-			Map<String, MapWrapper<? extends CdmBase>> stores){
+	public boolean doInvoke(TcsXmlImportState state){
 		logger.info("start make MetaData ...");
 		boolean success = true;
 		String childName;
@@ -56,9 +52,9 @@ public class TcsXmlMetaDataImport extends TcsXmlImportBase implements ICdmIO<IIm
 		
 //		MapWrapper<ReferenceBase> referenceMap = (MapWrapper<ReferenceBase>)stores.get(ICdmIO.REFERENCE_STORE);
 		
-		TcsXmlImportConfigurator tcsConfig = (TcsXmlImportConfigurator)config;
-		Element elDataSet = getDataSetElement(tcsConfig);
-		Namespace tcsNamespace = tcsConfig.getTcsXmlNamespace();
+		TcsXmlImportConfigurator config = state.getConfig();
+		Element elDataSet = getDataSetElement(config);
+		Namespace tcsNamespace = config.getTcsXmlNamespace();
 		
 		DoubleResult<Element, Boolean> doubleResult;
 		childName = "MetaData";
@@ -80,7 +76,7 @@ public class TcsXmlMetaDataImport extends TcsXmlImportBase implements ICdmIO<IIm
 		success &= doubleResult.getSecondResult();
 		Element elMetaDataDetailed = doubleResult.getFirstResult();
 
-		success &= tcsConfig.getPlaceholderClass().makeMetaDataDetailed(tcsConfig, elMetaDataDetailed);
+		success &= config.getPlaceholderClass().makeMetaDataDetailed(config, elMetaDataDetailed);
 //		try {
 //			List<Object> args = Arrays.asList(tcsConfig, elMetaDataDetailed);
 //			tcsConfig.getFunctionMetaDataDetailed().invoke(this, args);

@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.io.berlinModel.in;
 
 import java.io.File;
+import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashSet;
@@ -37,6 +38,8 @@ public class BerlinModelImportConfigurator extends ImportConfiguratorBase<Berlin
 	public static BerlinModelImportConfigurator NewInstance(Source berlinModelSource, ICdmDataSource destination){
 			return new BerlinModelImportConfigurator(berlinModelSource, destination);
 	}
+	
+	private Method namerelationshipTypeMethod;
 
 	private Set<Synonym> proParteSynonyms = new HashSet<Synonym>();
 	private Set<Synonym> partialSynonyms = new HashSet<Synonym>();
@@ -75,6 +78,7 @@ public class BerlinModelImportConfigurator extends ImportConfiguratorBase<Berlin
 	   setNomenclaturalCode(NomenclaturalCode.ICBN); //default for Berlin Model
 	   setSource(berlinModelSource);
 	   setDestination(destination);
+	  // setState(new BerlinModelImportState());
 	}
 	
 	
@@ -197,4 +201,20 @@ public class BerlinModelImportConfigurator extends ImportConfiguratorBase<Berlin
 		this.isIgnore0AuthorTeam = isIgnore0AuthorTeam;
 	}
 
+	/**
+	 * @return the namerelationshipTypeMethod
+	 */
+	public Method getNamerelationshipTypeMethod() {
+		return namerelationshipTypeMethod;
+	}
+
+	/**
+	 * @param namerelationshipTypeMethod the namerelationshipTypeMethod to set
+	 */
+	public void setNamerelationshipTypeMethod(Method namerelationshipTypeMethod) {
+		this.namerelationshipTypeMethod = namerelationshipTypeMethod;
+	}
+
+	
+	
 }

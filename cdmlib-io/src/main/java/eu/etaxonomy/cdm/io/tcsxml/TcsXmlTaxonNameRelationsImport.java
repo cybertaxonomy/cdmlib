@@ -43,12 +43,12 @@ public class TcsXmlTaxonNameRelationsImport extends TcsXmlImportBase implements 
 	}
 	
 	@Override
-	public boolean doInvoke(IImportConfigurator config, Map<String, MapWrapper<? extends CdmBase>> stores){
+	public boolean doInvoke(TcsXmlImportState state){
 		
 		
 		logger.info("start make taxon name relations ...");
-		MapWrapper<TaxonNameBase<?,?>> taxonNameMap = (MapWrapper<TaxonNameBase<?,?>>)stores.get(ICdmIO.TAXONNAME_STORE);
-		MapWrapper<ReferenceBase> referenceMap = (MapWrapper<ReferenceBase>)stores.get(ICdmIO.REFERENCE_STORE);
+		MapWrapper<TaxonNameBase<?,?>> taxonNameMap = (MapWrapper<TaxonNameBase<?,?>>)state.getStore(ICdmIO.TAXONNAME_STORE);
+		MapWrapper<ReferenceBase> referenceMap = (MapWrapper<ReferenceBase>)state.getStore(ICdmIO.REFERENCE_STORE);
 
 		Set<TaxonNameBase> nameStore = new HashSet<TaxonNameBase>();
 
@@ -57,9 +57,9 @@ public class TcsXmlTaxonNameRelationsImport extends TcsXmlImportBase implements 
 		boolean obligatory;
 		String idNamespace = "TaxonName";
 
-		TcsXmlImportConfigurator tcsConfig = (TcsXmlImportConfigurator)config;
-		Element elDataSet = super. getDataSetElement(tcsConfig);
-		Namespace tcsNamespace = tcsConfig.getTcsXmlNamespace();
+		TcsXmlImportConfigurator config = state.getConfig();
+		Element elDataSet = super. getDataSetElement(config);
+		Namespace tcsNamespace = config.getTcsXmlNamespace();
 		
 		DoubleResult<Element, Boolean> doubleResult;
 		childName = "TaxonNames";
@@ -92,7 +92,7 @@ public class TcsXmlTaxonNameRelationsImport extends TcsXmlImportBase implements 
 				String id = elTaxonName.getAttributeValue("id");
 //				TaxonNameBase<?,?> fromName = taxonNameMap.get(id);
 				
-				makeNomenclaturalNoteType(tcsConfig, elBasionym, relType, taxonNameMap, nameStore, id, inverse);
+				makeNomenclaturalNoteType(config, elBasionym, relType, taxonNameMap, nameStore, id, inverse);
 			}// end Basionyms
 			
 			//SpellingCorrections
@@ -107,7 +107,7 @@ public class TcsXmlTaxonNameRelationsImport extends TcsXmlImportBase implements 
 				boolean inverse = true;
 				
 				String id = elTaxonName.getAttributeValue("id");
-				makeNomenclaturalNoteType(tcsConfig, elSpellingCorrection, relType, taxonNameMap, nameStore, id, inverse);
+				makeNomenclaturalNoteType(config, elSpellingCorrection, relType, taxonNameMap, nameStore, id, inverse);
 			}// end SpellingCorrections
 			
 			//LaterHomonymOf
@@ -121,7 +121,7 @@ public class TcsXmlTaxonNameRelationsImport extends TcsXmlImportBase implements 
 				boolean inverse = false;
 				
 				String id = elTaxonName.getAttributeValue("id");
-				makeNomenclaturalNoteType(tcsConfig, elLaterHomonym, relType, taxonNameMap, nameStore, id, inverse);
+				makeNomenclaturalNoteType(config, elLaterHomonym, relType, taxonNameMap, nameStore, id, inverse);
 			}// end LaterHomonymOf
 			
 			//ReplacementNameFor
@@ -135,7 +135,7 @@ public class TcsXmlTaxonNameRelationsImport extends TcsXmlImportBase implements 
 				boolean inverse = false;
 				
 				String id = elTaxonName.getAttributeValue("id");
-				makeNomenclaturalNoteType(tcsConfig, elReplacementNameFor, relType, taxonNameMap, nameStore, id, inverse);
+				makeNomenclaturalNoteType(config, elReplacementNameFor, relType, taxonNameMap, nameStore, id, inverse);
 			}// end ReplacementNameFor
 			
 			//ConservedAgainst
@@ -149,7 +149,7 @@ public class TcsXmlTaxonNameRelationsImport extends TcsXmlImportBase implements 
 				boolean inverse = false;
 				
 				String id = elTaxonName.getAttributeValue("id");
-				makeNomenclaturalNoteType(tcsConfig, elConservedAgainst, relType, taxonNameMap, nameStore, id, inverse);
+				makeNomenclaturalNoteType(config, elConservedAgainst, relType, taxonNameMap, nameStore, id, inverse);
 			}// end ConservedAgainst
 
 			

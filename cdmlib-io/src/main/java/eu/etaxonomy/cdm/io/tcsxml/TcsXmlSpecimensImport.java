@@ -60,19 +60,18 @@ public class TcsXmlSpecimensImport extends TcsXmlImportBase implements ICdmIO<II
 
 	
 	@Override
-	public boolean doInvoke(IImportConfigurator config,
-			Map<String, MapWrapper<? extends CdmBase>> stores){
+	public boolean doInvoke(TcsXmlImportState state){
 		logger.info("start make Specimens ...");
 		
-		MapWrapper<Specimen> specimenMap = (MapWrapper<Specimen>)stores.get(ICdmIO.SPECIMEN_STORE);
+		MapWrapper<Specimen> specimenMap = (MapWrapper<Specimen>)state.getStore(ICdmIO.SPECIMEN_STORE);
 
 		boolean success = true;
 		String childName;
 		boolean obligatory;
 
-		TcsXmlImportConfigurator tcsConfig = (TcsXmlImportConfigurator)config;
-		Element elDataSet = getDataSetElement(tcsConfig);
-		Namespace tcsNamespace = tcsConfig.getTcsXmlNamespace();
+		TcsXmlImportConfigurator config = state.getConfig();
+		Element elDataSet = getDataSetElement(config);
+		Namespace tcsNamespace = config.getTcsXmlNamespace();
 		
 		DoubleResult<Element, Boolean> doubleResult;
 		childName = "Specimens";

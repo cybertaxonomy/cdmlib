@@ -18,6 +18,7 @@ import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
+import eu.etaxonomy.cdm.io.tcsrdf.TcsRdfImportState;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.reference.Generic;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
@@ -62,20 +63,19 @@ public class TcsXmlPublicationsImport extends TcsXmlImportBase implements ICdmIO
 
 	
 	@Override
-	public boolean doInvoke(IImportConfigurator config,
-			Map<String, MapWrapper<? extends CdmBase>> stores){
+	public boolean doInvoke(TcsXmlImportState state){
 		
 		logger.info("start make Publications ...");
 		boolean success = true;
 		String childName;
 		boolean obligatory;
 	
-		MapWrapper<ReferenceBase> referenceMap = (MapWrapper<ReferenceBase>)stores.get(ICdmIO.REFERENCE_STORE);
+		MapWrapper<ReferenceBase> referenceMap = (MapWrapper<ReferenceBase>)state.getStore(ICdmIO.REFERENCE_STORE);
 		IReferenceService referenceService = getReferenceService();
 		
-		TcsXmlImportConfigurator tcsConfig = (TcsXmlImportConfigurator)config;
-		Element elDataSet = getDataSetElement(tcsConfig);
-		Namespace tcsNamespace = tcsConfig.getTcsXmlNamespace();
+		TcsXmlImportConfigurator config = state.getConfig();
+		Element elDataSet = getDataSetElement(config);
+		Namespace tcsNamespace = config.getTcsXmlNamespace();
 		
 		DoubleResult<Element, Boolean> doubleResult;
 		childName = "Publications";
@@ -112,7 +112,7 @@ public class TcsXmlPublicationsImport extends TcsXmlImportBase implements ICdmIO
 			success &= doubleResult.getSecondResult();
 			Element elPublicationDetailed = doubleResult.getFirstResult();
 
-			success &= tcsConfig.getPlaceholderClass().makePublicationDetailed(tcsConfig, elPublicationDetailed, reference);
+			success &= config.getPlaceholderClass().makePublicationDetailed(config, elPublicationDetailed, reference);
 			ImportHelper.setOriginalSource(reference, config.getSourceReference(), strId, idNamespace);
 			
 			referenceMap.put(strId, reference);

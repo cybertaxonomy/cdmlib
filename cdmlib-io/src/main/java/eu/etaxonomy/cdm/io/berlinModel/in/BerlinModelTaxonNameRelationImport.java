@@ -24,6 +24,8 @@ import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_REL_IS
 import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_REL_IS_TYPE_OF;
 import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_REL_TYPE_NOT_DESIGNATED;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashSet;
@@ -164,6 +166,17 @@ public class BerlinModelTaxonNameRelationImport extends BerlinModelImportBase {
 						}
 					}else {
 						//TODO
+						Method method = config.getNamerelationshipTypeMethod();
+						if (method != null){
+							try {
+								method.invoke(null, relQualifierFk, nameTo, nameFrom);
+							} catch (Exception e) {
+								logger.error(e.getMessage());
+								logger.warn("NameRelationship could not be imported");
+								return false;
+							} 
+						}
+						
 						logger.warn("NameRelationShipType " + relQualifierFk + " not yet implemented");
 					}
 					nameStore.add(nameFrom);

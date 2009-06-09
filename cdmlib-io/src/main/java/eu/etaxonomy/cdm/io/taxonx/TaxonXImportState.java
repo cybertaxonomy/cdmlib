@@ -8,7 +8,7 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package eu.etaxonomy.cdm.io.tcsrdf;
+package eu.etaxonomy.cdm.io.taxonx;
 
 import org.apache.log4j.Logger;
 
@@ -19,11 +19,11 @@ import eu.etaxonomy.cdm.io.common.ImportState;
  * @created 11.05.2009
  * @version 1.0
  */
-public class TcsRdfImportState extends ImportState<TcsRdfImportConfigurator>{
+public class TaxonXImportState extends ImportState<TaxonXImportConfigurator>{
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(TcsRdfImportState.class);
+	private static final Logger logger = Logger.getLogger(TaxonXImportState.class);
 
-	public TcsRdfImportState() {
+	public TaxonXImportState() {
 		super();
 	}
 }

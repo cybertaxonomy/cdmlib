@@ -83,6 +83,7 @@ public class TcsRdfImportConfigurator extends ImportConfiguratorBase<TcsRdfImpor
 		super();
 		setSource(url);
 		setDestination(destination);
+		setState(new TcsRdfImportState());
 	}
 	
 

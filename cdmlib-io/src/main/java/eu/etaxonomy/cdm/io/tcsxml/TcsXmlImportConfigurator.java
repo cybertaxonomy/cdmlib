@@ -18,7 +18,7 @@ import eu.etaxonomy.cdm.model.reference.Database;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
 @Component
-public class TcsXmlImportConfigurator extends ImportConfiguratorBase implements IImportConfigurator {
+public class TcsXmlImportConfigurator extends ImportConfiguratorBase<TcsXmlImportState> implements IImportConfigurator {
 
 	private static final Logger logger = Logger.getLogger(TcsXmlImportConfigurator.class);
 	
@@ -95,6 +95,7 @@ public class TcsXmlImportConfigurator extends ImportConfiguratorBase implements 
 		super();
 		setSource(url);
 		setDestination(destination);
+		setState(new TcsXmlImportState());
 	}
 	
 

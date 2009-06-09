@@ -57,13 +57,13 @@ public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdm
 	}
 	
 	@Override
-	public boolean doInvoke(IImportConfigurator config, Map<String, MapWrapper<? extends CdmBase>> stores){ 
+	public boolean doInvoke(TcsXmlImportState state){ 
 	
 		
 		logger.info("start make taxon relations ...");
-		MapWrapper<TaxonBase> taxonMap = (MapWrapper<TaxonBase>)stores.get(ICdmIO.TAXON_STORE);
-		MapWrapper<TaxonNameBase<?,?>> taxonNameMap = (MapWrapper<TaxonNameBase<?,?>>)stores.get(ICdmIO.TAXONNAME_STORE);
-		MapWrapper<ReferenceBase> referenceMap = (MapWrapper<ReferenceBase>)stores.get(ICdmIO.REFERENCE_STORE);
+		MapWrapper<TaxonBase> taxonMap = (MapWrapper<TaxonBase>)state.getStore(ICdmIO.TAXON_STORE);
+		MapWrapper<TaxonNameBase<?,?>> taxonNameMap = (MapWrapper<TaxonNameBase<?,?>>)state.getStore(ICdmIO.TAXONNAME_STORE);
+		MapWrapper<ReferenceBase> referenceMap = (MapWrapper<ReferenceBase>)state.getStore(ICdmIO.REFERENCE_STORE);
 
 		Set<TaxonBase> taxonStore = new HashSet<TaxonBase>();
 
@@ -72,9 +72,9 @@ public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdm
 		boolean obligatory;
 		String idNamespace = "TaxonRelation";
 
-		TcsXmlImportConfigurator tcsConfig = (TcsXmlImportConfigurator)config;
-		Element elDataSet = super.getDataSetElement(tcsConfig);
-		Namespace tcsNamespace = tcsConfig.getTcsXmlNamespace();
+		TcsXmlImportConfigurator config = state.getConfig();
+		Element elDataSet = super.getDataSetElement(config);
+		Namespace tcsNamespace = config.getTcsXmlNamespace();
 		
 		childName = "TaxonConcepts";
 		obligatory = false;
@@ -89,11 +89,11 @@ public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdm
 		//for each taxonConcept
 		for (Element elTaxonConcept : elTaxonConceptList){
 			if ((i++ % modCount) == 0){ logger.info("Taxa handled: " + (i-1));}
-			taxonRelCount += makeTaxonConcept(tcsConfig, taxonMap, taxonStore, elTaxonConcept, tcsNamespace, success);	
+			taxonRelCount += makeTaxonConcept(config, taxonMap, taxonStore, elTaxonConcept, tcsNamespace, success);	
 		}//elTaxonConcept
 	
 		//TaxonRelationshipAssertions
-		taxonRelCount += makeTaxonRelationshipAssertion(tcsConfig, taxonMap, referenceMap, taxonStore, elDataSet, tcsNamespace, success);	
+		taxonRelCount += makeTaxonRelationshipAssertion(config, taxonMap, referenceMap, taxonStore, elDataSet, tcsNamespace, success);	
 		
 		logger.info("Taxa to save: " + taxonStore.size());
 		getTaxonService().saveTaxonAll(taxonStore);

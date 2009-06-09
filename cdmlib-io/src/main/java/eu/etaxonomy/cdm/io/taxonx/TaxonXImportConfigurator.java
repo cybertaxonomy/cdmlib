@@ -29,7 +29,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
  * @created 29.07.2008
  * @version 1.0
  */
-public class TaxonXImportConfigurator extends ImportConfiguratorBase implements IImportConfigurator {
+public class TaxonXImportConfigurator extends ImportConfiguratorBase<TaxonXImportState> implements IImportConfigurator {
 	private static final Logger logger = Logger.getLogger(TaxonXImportConfigurator.class);
 	
 	private boolean findTaxonByName = false;
@@ -63,6 +63,7 @@ public class TaxonXImportConfigurator extends ImportConfiguratorBase implements 
 		super();
 		setSource(url);
 		setDestination(destination);
+		setState(new TaxonXImportState());
 	}
 	
 

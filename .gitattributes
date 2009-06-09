@@ -647,6 +647,7 @@ cdmlib-io/README.TXT -text
 cdmlib-io/pom.xml -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/abcd206/AbcdIO.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/abcd206/SpecimenImportConfigurator.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/abcd206/SpecimenImportState.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/abcd206/SpecimenIoBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/abcd206/UnitsGatheringArea.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/abcd206/UnitsGatheringEvent.java -text
@@ -728,6 +729,7 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/MultipleAttributeMapperBase.j
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/Source.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/SourceConnectionException.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/common/ExcelImportConfiguratorBase.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/common/ExcelImportState.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/common/ExcelImporterBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/distribution/DistributionImportConfigurator.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/distribution/DistributionImporter.java -text
@@ -764,6 +766,7 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/sdd/SDDExportConfigurator.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/sdd/SDDImportConfigurator.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/sdd/SDDIoBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/synthesys/SpecimenImportConfigurator.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/synthesys/SpecimenImportState.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/synthesys/SpecimenIoBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/synthesys/SynthesysIO.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/synthesys/UnitsGatheringArea.java -text
@@ -771,6 +774,7 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/synthesys/UnitsGatheringEvent.java -
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/taxonx/SimpleSpecimen.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/taxonx/TaxonXDescriptionImport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/taxonx/TaxonXImportConfigurator.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/taxonx/TaxonXImportState.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/taxonx/TaxonXNomenclatureImport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/taxonx/TaxonXTransformer.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/tcsrdf/CdmOneToManyXmlMapper.java -text
@@ -791,6 +795,7 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/tcsxml/DefaultTcsXmlPlaceholders.jav
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/tcsxml/ITcsXmlPlaceholderClass.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/tcsxml/TcsXmlImportBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/tcsxml/TcsXmlImportConfigurator.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/tcsxml/TcsXmlImportState.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/tcsxml/TcsXmlMetaDataImport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/tcsxml/TcsXmlPublicationsImport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/tcsxml/TcsXmlSpecimensImport.java -text

@@ -68,16 +68,25 @@ public class TaxonXNomenclatureImport extends CdmIoBase<IImportConfigurator> imp
 		return result;
 	}
 
-	public boolean doInvoke(IImportConfigurator config, Map<String, MapWrapper<? extends CdmBase>> stores){
-		logger.info("start make Nomenclature ...");
-		
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doInvoke(eu.etaxonomy.cdm.io.common.IImportConfigurator, eu.etaxonomy.cdm.api.application.CdmApplicationController, java.util.Map)
+	 */
+	@Override
+	protected boolean doInvoke(IImportConfigurator config, 
+			Map<String, MapWrapper<? extends CdmBase>> stores){ 
+		TaxonXImportState state = ((TaxonXImportConfigurator)config).getState();
+		state.setConfig((TaxonXImportConfigurator)config);
+		return doInvoke(state);
+	}
+	
+	public boolean doInvoke(TaxonXImportState state){		logger.info("start make Nomenclature ...");
 		TransactionStatus tx = startTransaction();
-		TaxonXImportConfigurator txConfig = (TaxonXImportConfigurator)config;
-		Element root = txConfig.getSourceRoot();
+		TaxonXImportConfigurator config = state.getConfig();
+		Element root = config.getSourceRoot();
 		Namespace nsTaxonx = root.getNamespace();
 		
 		//for testing only
-		Taxon taxon = getTaxon(txConfig);
+		Taxon taxon = getTaxon(config);
 		boolean isChanged = false;
 		
 		Element elTaxonBody = root.getChild("taxonxBody", nsTaxonx);
@@ -87,16 +96,16 @@ public class TaxonXNomenclatureImport extends CdmIoBase<IImportConfigurator> imp
 		//isChanged |= doCollectionEvent(txConfig, elNomenclature, nsTaxonx, taxon);
 		
 		if (taxon != null && taxon.getName() != null && elNomenclature != null){
-			isChanged |= doNomenclaturalType(txConfig, elNomenclature, nsTaxonx, taxon.getName());
+			isChanged |= doNomenclaturalType(config, elNomenclature, nsTaxonx, taxon.getName());
 			List<Element> elSynonymyList = new ArrayList<Element>();
 			elSynonymyList.addAll(elNomenclature.getChildren("synonomy", nsTaxonx));
 			elSynonymyList.addAll(elNomenclature.getChildren("synonymy", nsTaxonx)); //wrong spelling in TaxonX-Schema
 			for (Element elSynonymy : elSynonymyList){
 				String synonymName = elSynonymy.getChildTextTrim("name");
 				if (elSynonymy.getChild("type", nsTaxonx) != null || elSynonymy.getChild("type_loc", nsTaxonx) != null){
-					Synonym synonym = getSynonym(txConfig, taxon, synonymName);
+					Synonym synonym = getSynonym(config, taxon, synonymName);
 					if (synonym != null){
-						isChanged |= doNomenclaturalType(txConfig, elSynonymy, nsTaxonx, synonym.getName());
+						isChanged |= doNomenclaturalType(config, elSynonymy, nsTaxonx, synonym.getName());
 					}
 				}
 			}

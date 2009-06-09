@@ -31,6 +31,8 @@ import eu.etaxonomy.cdm.io.common.CdmIoBase;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
+import eu.etaxonomy.cdm.io.tcsrdf.TcsRdfImportConfigurator;
+import eu.etaxonomy.cdm.io.tcsrdf.TcsRdfImportState;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
@@ -77,7 +79,18 @@ public class TaxonXDescriptionImport extends CdmIoBase<IImportConfigurator> impl
 		return featureMap;
 	}
 	
-	public boolean doInvoke(IImportConfigurator config, Map<String, MapWrapper<? extends CdmBase>> stores){
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doInvoke(eu.etaxonomy.cdm.io.common.IImportConfigurator, eu.etaxonomy.cdm.api.application.CdmApplicationController, java.util.Map)
+	 */
+	@Override
+	protected boolean doInvoke(IImportConfigurator config, 
+			Map<String, MapWrapper<? extends CdmBase>> stores){ 
+		TaxonXImportState state = ((TaxonXImportConfigurator)config).getState();
+		state.setConfig((TaxonXImportConfigurator)config);
+		return doInvoke(state);
+	}
+	
+	public boolean doInvoke(TaxonXImportState state){
 		logger.debug("not yet fully implemented");
 		
 //		MapWrapper<TaxonBase> taxonMap = (MapWrapper<TaxonBase>)stores.get(ICdmIO.TAXON_STORE);//   (MapWrapper<TaxonBase>)(storeArray[0]);
@@ -93,7 +106,7 @@ public class TaxonXDescriptionImport extends CdmIoBase<IImportConfigurator> impl
 		
 		Set<TaxonBase> taxonStore = new HashSet<TaxonBase>();
 		
-		TaxonXImportConfigurator txConfig = (TaxonXImportConfigurator)config;
+		TaxonXImportConfigurator txConfig = state.getConfig();
 		Element root = txConfig.getSourceRoot();
 		Namespace nsTaxonx = root.getNamespace();
 		

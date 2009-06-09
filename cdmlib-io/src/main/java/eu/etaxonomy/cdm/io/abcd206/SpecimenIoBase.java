@@ -25,5 +25,6 @@ public abstract class SpecimenIoBase  extends CdmIoBase<IImportConfigurator> {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(SpecimenIoBase.class);
 
+	protected abstract boolean doInvoke(SpecimenImportState state);
 
 }

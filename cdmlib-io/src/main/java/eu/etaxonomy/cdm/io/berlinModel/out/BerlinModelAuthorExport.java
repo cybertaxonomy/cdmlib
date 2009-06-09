@@ -112,6 +112,8 @@ public class BerlinModelAuthorExport extends BerlinModelExportBase<Person> {
 	}
 	
 	protected boolean doDelete(BerlinModelExportConfigurator config){
+		
+		//TODO make more generic for all BerlinModelExport classes
 		String sql;
 		Source destination =  config.getDestination();
 		//RelPTaxon

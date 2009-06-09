@@ -10,23 +10,18 @@ package eu.etaxonomy.cdm.io.berlinModel.in;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
-import eu.etaxonomy.cdm.common.CdmUtils;
-import eu.etaxonomy.cdm.io.berlinModel.out.BerlinModelExportConfigurator;
-import eu.etaxonomy.cdm.io.berlinModel.out.BerlinModelExportState;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.model.agent.Person;
-import eu.etaxonomy.cdm.model.common.Annotation;
-import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.Extension;
+import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 
 
@@ -110,28 +105,17 @@ public class BerlinModelAuthorImport extends BerlinModelImportBase {
 					//dates = dates.replace("fl.", "");
 					//dates = dates.replace("c.", "");
 					dates.trim();
-					try {
-						TimePeriod lifespan = TimePeriod.parseString(dates);
-						author.setLifespan(lifespan);
-					} catch (IllegalArgumentException e) {
-						logger.warn("Lifespan could not be parsed: " + dates);
-						Annotation annotation = Annotation.NewInstance("Dates: " + dates,Language.DEFAULT());
-						author.addAnnotation(annotation);
-					}
+					TimePeriod lifespan = TimePeriod.parseString(dates);
+					author.setLifespan(lifespan);
 				}
 				
+//				//AreaOfInterest
 				String areaOfInterest = rs.getString("AreaOfInterest");
-				//AreaOfInterest
-				if (! CdmUtils.Nz(areaOfInterest).equals("")){
-					Annotation annotation = Annotation.NewInstance("Area of Interest: " + areaOfInterest,Language.DEFAULT());
-					author.addAnnotation(annotation);
-				}
+				Extension datesExtension = Extension.NewInstance(author, areaOfInterest, ExtensionType.AREA_OF_INTREREST());
+
 				//nomStandard
 				String nomStandard = rs.getString("NomStandard");
-				if (! CdmUtils.Nz(nomStandard).equals("")){
-					Annotation annotation = Annotation.NewInstance("NomStandard: " + nomStandard,Language.DEFAULT());
-					author.addAnnotation(annotation);
-				}
+				Extension nomStandardExtension = Extension.NewInstance(author, nomStandard, ExtensionType.NOMENCLATURAL_STANDARD());
 				
 				//initials
 				String initials = null;
@@ -142,10 +126,8 @@ public class BerlinModelAuthorImport extends BerlinModelImportBase {
 						break;
 					}
 				}
-				if (! CdmUtils.Nz(initials).equals("")){
-					Annotation annotation = Annotation.NewInstance("Initials: " + initials,Language.DEFAULT());
-					author.addAnnotation(annotation);
-				}
+				Extension initialsExtension = Extension.NewInstance(author, initials, ExtensionType.ABBREVIATION());
+
 
 				//created, notes
 				doIdCreatedUpdatedNotes(config, author, rs, authorId, namespace);
