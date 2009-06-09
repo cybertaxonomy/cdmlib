@@ -14,6 +14,7 @@ import java.sql.SQLException;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
@@ -102,8 +103,6 @@ public class BerlinModelAuthorImport extends BerlinModelImportBase {
 				
 				String dates = rs.getString("dates");
 				if (dates != null){
-					//dates = dates.replace("fl.", "");
-					//dates = dates.replace("c.", "");
 					dates.trim();
 					TimePeriod lifespan = TimePeriod.parseString(dates);
 					author.setLifespan(lifespan);
@@ -111,12 +110,15 @@ public class BerlinModelAuthorImport extends BerlinModelImportBase {
 				
 //				//AreaOfInterest
 				String areaOfInterest = rs.getString("AreaOfInterest");
-				Extension datesExtension = Extension.NewInstance(author, areaOfInterest, ExtensionType.AREA_OF_INTREREST());
+				if (CdmUtils.isNotEmpty(areaOfInterest)){
+					Extension datesExtension = Extension.NewInstance(author, areaOfInterest, ExtensionType.AREA_OF_INTREREST());
+				}
 
 				//nomStandard
 				String nomStandard = rs.getString("NomStandard");
-				Extension nomStandardExtension = Extension.NewInstance(author, nomStandard, ExtensionType.NOMENCLATURAL_STANDARD());
-				
+				if (CdmUtils.isNotEmpty(nomStandard)){
+					Extension nomStandardExtension = Extension.NewInstance(author, nomStandard, ExtensionType.NOMENCLATURAL_STANDARD());
+				}
 				//initials
 				String initials = null;
 				for (int j = 1; j <= rs.getMetaData().getColumnCount(); j++){
@@ -126,8 +128,9 @@ public class BerlinModelAuthorImport extends BerlinModelImportBase {
 						break;
 					}
 				}
-				Extension initialsExtension = Extension.NewInstance(author, initials, ExtensionType.ABBREVIATION());
-
+				if (CdmUtils.isNotEmpty(initials)){
+					Extension initialsExtension = Extension.NewInstance(author, initials, ExtensionType.ABBREVIATION());
+				}
 
 				//created, notes
 				doIdCreatedUpdatedNotes(config, author, rs, authorId, namespace);

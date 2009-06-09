@@ -175,9 +175,9 @@ public class BerlinModelTaxonNameRelationImport extends BerlinModelImportBase {
 								logger.warn("NameRelationship could not be imported");
 								return false;
 							} 
+						}else{
+							logger.warn("NameRelationShipType " + relQualifierFk + " not yet implemented");		
 						}
-						
-						logger.warn("NameRelationShipType " + relQualifierFk + " not yet implemented");
 					}
 					nameStore.add(nameFrom);
 					
