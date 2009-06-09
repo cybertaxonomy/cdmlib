@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.io.tcsxml;
 import org.apache.log4j.Logger;
 import org.jdom.Element;
 
+import eu.etaxonomy.cdm.io.tcsxml.in.TcsXmlImportConfigurator;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
 /**

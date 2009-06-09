@@ -1,7 +1,7 @@
 /**
  * 
  */
-package eu.etaxonomy.cdm.io.tcsxml;
+package eu.etaxonomy.cdm.io.tcsxml.in;
 
 import java.util.List;
 import java.util.Map;

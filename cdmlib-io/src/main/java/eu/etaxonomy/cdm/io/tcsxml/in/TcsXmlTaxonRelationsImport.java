@@ -1,7 +1,7 @@
 /**
  * 
  */
-package eu.etaxonomy.cdm.io.tcsxml;
+package eu.etaxonomy.cdm.io.tcsxml.in;
 
 import java.util.HashSet;
 import java.util.List;
@@ -18,6 +18,7 @@ import eu.etaxonomy.cdm.common.XmlHelp;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
+import eu.etaxonomy.cdm.io.tcsxml.TcsXmlTransformer;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
 import eu.etaxonomy.cdm.model.name.NonViralName;

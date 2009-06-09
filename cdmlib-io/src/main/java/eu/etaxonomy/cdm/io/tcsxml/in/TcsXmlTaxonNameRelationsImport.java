@@ -1,4 +1,4 @@
-package eu.etaxonomy.cdm.io.tcsxml;
+package eu.etaxonomy.cdm.io.tcsxml.in;
 
 import java.util.HashSet;
 import java.util.List;
