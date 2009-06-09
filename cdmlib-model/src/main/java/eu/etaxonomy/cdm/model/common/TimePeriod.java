@@ -11,6 +11,8 @@ package eu.etaxonomy.cdm.model.common;
 
 import java.io.Serializable;
 import java.util.Calendar;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.persistence.Embeddable;
 import javax.persistence.Transient;
@@ -46,7 +48,8 @@ import eu.etaxonomy.cdm.jaxb.PartialAdapter;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "TimePeriod", propOrder = {
     "start",
-    "end"
+    "end",
+    "freeText"
 })
 @XmlRootElement(name = "TimePeriod")
 @Embeddable
@@ -71,6 +74,10 @@ public class TimePeriod implements Cloneable, Serializable {
 	@FieldBridge(impl = PartialBridge.class)
 	private Partial end;
 
+	
+	@XmlElement(name = "FreeText")
+	private String freeText;
+	
 	
 	/**
 	 * Factory method
@@ -246,6 +253,22 @@ public class TimePeriod implements Cloneable, Serializable {
 		this.end = end;
 	}
 	
+	/**
+	 * @return the freeText
+	 */
+	protected String getFreeText() {
+		return freeText;
+	}
+
+
+	/**
+	 * @param freeText the freeText to set
+	 */
+	protected void setFreeText(String freeText) {
+		this.freeText = freeText;
+	}
+
+
 	@Transient
 	public String getYear(){
 		String result = "";
@@ -394,53 +417,87 @@ public class TimePeriod implements Cloneable, Serializable {
 	}
 	
 	
+	//patter for first year in string;
+	private static Pattern firstYearPattern =  Pattern.compile("\\d{4}");
+	//case "1806"[1807];
+	private static Pattern uncorrectYearPatter =  Pattern.compile("\"\\d{4}\"\\s*\\[\\d{4}\\]");
+	//case fl. 1806 or c. 1806 or fl. 1806?
+	private static Pattern prefixedYearPattern =  Pattern.compile("fl\\.\\s*\\d{4}\\??");
+	
 	public static TimePeriod parseString(String strPeriod) throws IllegalArgumentException{
 		//FIXME until now only quick and dirty and wrong
+		TimePeriod result = null;
 		if (strPeriod == null){
-			return null;
+			return result;
 		}
-		String[] years = strPeriod.split("-");
-		Partial dtStart = null;
-		Partial dtEnd = null;
+		strPeriod = strPeriod.trim();
+		result = TimePeriod.NewInstance();
+		result.setFreeText(strPeriod);
 		
-		if (years.length > 2 || years.length <= 0){
-			throw new IllegalArgumentException("More than 1 '-' in period String: " + strPeriod);
-		}else {
-			//start
-			if (! CdmUtils.Nz(years[0]).trim().equals("")){
-				dtStart = parseSingleDate(years[0]);
-			}
+		//case "1806"[1807];
+		if (uncorrectYearPatter.matcher(strPeriod).matches()){
+			String realYear = strPeriod.split("\\[")[1];
+			realYear = realYear.replace("]", "");
+			result.setStartYear(Integer.valueOf(realYear));
+		//case fl. 1806 or c. 1806 or fl. 1806?
+		}else if(prefixedYearPattern.matcher(strPeriod).matches()){
+			Matcher firstYearMatcher = firstYearPattern.matcher(strPeriod);
+			firstYearMatcher.find();
+			String firstYear = firstYearMatcher.group();
+			result.setStartYear(Integer.valueOf(firstYear));
+		}else{
+			String[] years = strPeriod.split("-");
+			Partial dtStart = null;
+			Partial dtEnd = null;
 			
-			//end
-			if (years.length >= 2 && ! CdmUtils.Nz(years[1]).trim().equals("")){
-				if (years[1].length()==2 && dtStart != null && dtStart.isSupported(DateTimeFieldType.year())){
-					years[1] = String.valueOf(dtStart.get(DateTimeFieldType.year())/100) + years[1];
+			if (years.length > 2 || years.length <= 0){
+				throw new IllegalArgumentException("More than 1 '-' in period String: " + strPeriod);
+			}else {
+				try {
+					//start
+					if (! CdmUtils.isEmpty(years[0])){
+						dtStart = parseSingleDate(years[0]);
+					}
+					
+					//end
+					if (years.length >= 2 && ! CdmUtils.isEmpty(years[1])){
+						if (years[1].length()==2 && dtStart != null && dtStart.isSupported(DateTimeFieldType.year())){
+							years[1] = String.valueOf(dtStart.get(DateTimeFieldType.year())/100) + years[1];
+						}
+						dtEnd = parseSingleDate(years[1]);
+					}
+					result = TimePeriod.NewInstance(dtStart, dtEnd);
+				} catch (IllegalArgumentException e) {
+					logger.warn(e.getMessage());
 				}
-				dtEnd = parseSingleDate(years[1]);
 			}
 		}
-		TimePeriod result = TimePeriod.NewInstance(dtStart, dtEnd);
 		return result;
 	}
 	
 	
-	protected static Partial parseSingleDate(String singleDateString){
-		//FIXME until now only quick and dirty and wrong
+	protected static Partial parseSingleDate(String singleDateString) throws IllegalArgumentException{
+		//FIXME until now only quick and dirty and incomplete
 		Partial partial =  new Partial();
 		if (CdmUtils.isNumeric(singleDateString)){
 			try {
 				Integer year = Integer.valueOf(singleDateString.trim());
-				if (year > 1750 && year < 2050){
+				if (year > 1750 && year < 2100){
 					partial = partial.with(yearType, year);
+				}else{
+					logger.warn("Not a valid taxonomic year: " + year + ". Year must be between 1750 and 2100");
 				}
 			} catch (NumberFormatException e) {
 				logger.debug("Not a Integer format in getCalendar()");
 				throw new IllegalArgumentException(e);
 			}
+		}else{
+			throw new IllegalArgumentException("Until now only years can be parsed as single dates. But date is: " + singleDateString);
 		}
 		return partial;
 
 	}
+	
 	
 	
 	private class TimePeriodPartialFormatter extends DateTimeFormatter{
@@ -479,10 +536,13 @@ public class TimePeriod implements Cloneable, Serializable {
 	public String toString(){
 		String result = null;
 		DateTimeFormatter formatter = new TimePeriodPartialFormatter();
-		
-		String strStart = start != null? start.toString(formatter): null;
-		String strEnd = end != null? end.toString(formatter): null;
-		result = CdmUtils.concat("-", strStart, strEnd);
+		if (! CdmUtils.isEmpty(this.getFreeText())){
+			result = this.getFreeText();
+		}else{
+			String strStart = start != null? start.toString(formatter): null;
+			String strEnd = end != null? end.toString(formatter): null;
+			result = CdmUtils.concat("-", strStart, strEnd);
+		}
 		return result;
 	}
 	

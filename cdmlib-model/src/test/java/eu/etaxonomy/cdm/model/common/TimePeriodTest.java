@@ -3,11 +3,14 @@
  */
 package eu.etaxonomy.cdm.model.common;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import junit.framework.Assert;
 
 import org.apache.log4j.Logger;
-import org.joda.time.DateTime;
 import org.joda.time.DateTimeFieldType;
 import org.joda.time.Partial;
 import org.junit.After;
@@ -377,6 +380,19 @@ public class TimePeriodTest {
 		Assert.assertEquals("1788", String.valueOf(tp1.getEndYear()));
 		assertNull(tp1.getEndMonth());
 		assertNull(tp1.getStartMonth());
+		//"1806"[1807]
+		String strCorrectedPeriod = "\"1806\"[1807]";
+		TimePeriod tpcorrected = TimePeriod.parseString(strCorrectedPeriod);
+		assertNotNull(tpcorrected);
+		Assert.assertEquals(strCorrectedPeriod, tpcorrected.getFreeText());
+		Assert.assertEquals("1807", tpcorrected.getYear());
+		
+		//fl. 1806
+		String strFlPeriod = "fl.  1806?";
+		TimePeriod tpFl = TimePeriod.parseString(strFlPeriod);
+		assertNotNull(tpFl);
+		Assert.assertEquals(strFlPeriod, tpFl.getFreeText());
+		Assert.assertEquals("1806", tpFl.getYear());
 	}
 	
 	@Test
