@@ -78,7 +78,7 @@ public class BerlinModelImportConfigurator extends ImportConfiguratorBase<Berlin
 	   setNomenclaturalCode(NomenclaturalCode.ICBN); //default for Berlin Model
 	   setSource(berlinModelSource);
 	   setDestination(destination);
-	  // setState(new BerlinModelImportState());
+	   setState(new BerlinModelImportState());
 	}
 	
 	
