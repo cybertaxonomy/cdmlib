@@ -12,32 +12,23 @@ package eu.etaxonomy.cdm.io.berlinModel.out;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
-import eu.etaxonomy.cdm.io.common.ExportConfiguratorBase;
+import eu.etaxonomy.cdm.io.common.DbExportConfiguratorBase;
 import eu.etaxonomy.cdm.io.common.IExportConfigurator;
 import eu.etaxonomy.cdm.io.common.Source;
-import eu.etaxonomy.cdm.model.reference.Database;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
 /**
  * @author a.mueller
  * @created 20.03.2008
  * @version 1.0
  */
-public class BerlinModelExportConfigurator extends ExportConfiguratorBase<Source> implements IExportConfigurator{
+public class BerlinModelExportConfigurator extends DbExportConfiguratorBase implements IExportConfigurator{
 	@SuppressWarnings("unused")
 	private static Logger logger = Logger.getLogger(BerlinModelExportConfigurator.class);
 
 	private boolean doAuthors;
 	private boolean doTaxonNames;
 	private BerlinModelExportState<BerlinModelExportConfigurator> state;
-	
-	public enum IdType{
-		CDM_ID,
-		ORIGINAL_SOURCE_ID,
-		MAX_ID
-	}
-	
-	private IdType idType = IdType.CDM_ID;
+
 	
 	public static BerlinModelExportConfigurator NewInstance(Source berlinModelDestination, ICdmDataSource source){
 			return new BerlinModelExportConfigurator(berlinModelDestination, source);
@@ -65,56 +56,12 @@ public class BerlinModelExportConfigurator extends ExportConfiguratorBase<Source
 	 * @param sourceReference
 	 * @param destination
 	 */
-	private BerlinModelExportConfigurator(Source berlinModelDestination, ICdmDataSource cdmSource) {
+	private BerlinModelExportConfigurator(Source destination, ICdmDataSource cdmSource) {
 	   super();
 //	   setNomenclaturalCode(NomenclaturalCode.ICBN); //default for Berlin Model
 	   setSource(cdmSource);
-	   setDestination(berlinModelDestination);
+	   setDestination(destination);
 	   setState(new BerlinModelExportState<BerlinModelExportConfigurator>());
-	}
-	
-	
-	public ICdmDataSource getSource() {
-		return (ICdmDataSource)super.getSource();
-	}
-	public void setSource(ICdmDataSource cdmSource) {
-		super.setSource(cdmSource);
-	}
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.tcsrdf.IImportConfigurator#getSourceReference()
-	 */
-	public ReferenceBase getSourceReference() {
-		if (sourceReference == null){
-			sourceReference =  Database.NewInstance();
-			if (getSource() != null){
-				sourceReference.setTitleCache(getSource().getDatabase());
-			}
-		}
-		return sourceReference;
-	}
-
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#getSourceNameString()
-	 */
-	public String getSourceNameString() {
-		if (this.getSource() == null){
-			return null;
-		}else{
-			return this.getSource().getDatabase();
-		}
-	}
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.IIoConfigurator#getDestinationNameString()
-	 */
-	public String getDestinationNameString() {
-		if (getSource() != null){
-			return getSource().getDatabase();
-		}else{
-			return null;
-		}
 	}
 	
 	public boolean isDoAuthors(){
@@ -139,19 +86,6 @@ public class BerlinModelExportConfigurator extends ExportConfiguratorBase<Source
 		this.doTaxonNames = doTaxonNames;
 	}
 
-	/**
-	 * @return the idType
-	 */
-	public IdType getIdType() {
-		return idType;
-	}
-
-	/**
-	 * @param idType the idType to set
-	 */
-	public void setIdType(IdType idType) {
-		this.idType = idType;
-	}
 
 	/**
 	 * @return the state

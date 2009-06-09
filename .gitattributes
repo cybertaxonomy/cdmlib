@@ -709,6 +709,7 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/CdmDefaultImport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/CdmIoBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/CdmIoMapping.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/CdmSingleAttributeMapperBase.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/DbExportConfiguratorBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/DbExportState.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/ExportConfiguratorBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/ICdmExport.java -text
@@ -728,6 +729,8 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/MapWrapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/MultipleAttributeMapperBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/Source.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/SourceConnectionException.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/XmlExportConfiguratorBase.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/XmlExportState.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/common/ExcelImportConfiguratorBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/common/ExcelImportState.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/common/ExcelImporterBase.java -text
@@ -804,6 +807,9 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/tcsxml/in/TcsXmlTaxonImport.java -te
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/tcsxml/in/TcsXmlTaxonNameImport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/tcsxml/in/TcsXmlTaxonNameRelationsImport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/tcsxml/in/TcsXmlTaxonRelationsImport.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/tcsxml/out/TcsXmlExportBase.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/tcsxml/out/TcsXmlExportConfigurator.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/tcsxml/out/TcsXmlExportState.java -text
 cdmlib-io/src/main/resources/CatalogManager.properties -text
 cdmlib-io/src/main/resources/catalog.xml -text
 cdmlib-io/src/main/resources/defaultIoApplicationContext.xml -text
