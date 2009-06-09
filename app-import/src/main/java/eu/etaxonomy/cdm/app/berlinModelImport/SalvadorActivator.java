@@ -9,6 +9,7 @@
 
 package eu.etaxonomy.cdm.app.berlinModelImport;
 
+import java.lang.reflect.Method;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
@@ -16,12 +17,14 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.app.common.CdmDestinations;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
-import eu.etaxonomy.cdm.io.berlinModel.BerlinModelImportConfigurator;
+import eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportConfigurator;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator.CHECK;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator.DO_REFERENCES;
 import eu.etaxonomy.cdm.io.common.CdmDefaultImport;
 import eu.etaxonomy.cdm.io.common.Source;
+import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
+import eu.etaxonomy.cdm.model.name.NonViralName;
 
 
 /**
@@ -47,6 +50,7 @@ public class SalvadorActivator {
 	static final UUID featureTreeUuid = UUID.fromString("ae9615b8-bc60-4ed0-ad96-897f9226d568");
 	static final Object[] featureKeyList = new Integer[]{302, 303, 306, 307, 309, 310, 311, 312, 350, 1500, 1800, 1900, 1950, 1980, 2000, 10299}; 
 	static boolean isIgnore0AuthorTeam = true;
+	static boolean doExport = false;
 	
 	//check - import
 	static final CHECK check = CHECK.CHECK_AND_IMPORT;
@@ -94,11 +98,7 @@ public class SalvadorActivator {
 //	static final boolean doOccurences = false;
 	
 	
-	
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
+	public boolean doImport(){
 		System.out.println("Start import from BerlinModel("+ berlinModelSource.getDatabase() + ") ...");
 		
 		//make BerlinModel Source
@@ -128,12 +128,48 @@ public class SalvadorActivator {
 		bmImportConfigurator.setCheck(check);
 		bmImportConfigurator.setIgnore0AuthorTeam(isIgnore0AuthorTeam);
 		
+		bmImportConfigurator.setNamerelationshipTypeMethod(getNameRelationshipTypeMethod());
+		
 		// invoke import
 		CdmDefaultImport<BerlinModelImportConfigurator> bmImport = new CdmDefaultImport<BerlinModelImportConfigurator>();
-		bmImport.invoke(bmImportConfigurator);
-
-		
+		boolean result = bmImport.invoke(bmImportConfigurator);
 		System.out.println("End import from BerlinModel ("+ source.getDatabase() + ")...");
+		return result;
+	}
+	
+	
+	/**
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		SalvadorActivator activator = new SalvadorActivator();
+		activator.doImport();
+		if (doExport == true){
+			SalvadorExport export = new SalvadorExport();
+			export.doExport();
+		}
+	}
+	
+	
+	private Method getNameRelationshipTypeMethod(){
+		String methodName = "handleNameRelationshipType";
+		try {
+			Method method = this.getClass().getDeclaredMethod(methodName, Integer.class, NonViralName.class, NonViralName.class);
+			method.setAccessible(true);
+			return method;
+		} catch (Exception e) {
+			logger.error("Problem creating Method: " + methodName);
+			return null;
+		}
+	}
+	
+	//used by BerlinModelImportConfigurator
+	private static boolean handleNameRelationshipType(Integer relQualifierFk, NonViralName nameTo, NonViralName nameFrom){
+		if (relQualifierFk == 72){
+			nameTo.getHomotypicalGroup().merge(nameFrom.getHomotypicalGroup());
+			return true;
+		}
+		return false;
 	}
 
 }

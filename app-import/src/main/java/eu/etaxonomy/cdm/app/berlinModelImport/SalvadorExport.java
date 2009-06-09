@@ -88,11 +88,7 @@ public class SalvadorExport {
 	static final boolean doOccurences = false;
 	
 	
-	
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
+	public boolean 	doExport(){
 		System.out.println("Start export to Berlin Model ("+ berlinModelDestination.getDatabase() + ") ...");
 		
 		//make BerlinModel Source
@@ -123,9 +119,20 @@ public class SalvadorExport {
 		
 		// invoke import
 		CdmDefaultExport<BerlinModelExportConfigurator> bmExport = new CdmDefaultExport<BerlinModelExportConfigurator>();
-		bmExport.invoke(bmExportConfigurator);
+		boolean result = bmExport.invoke(bmExportConfigurator);
 		
 		System.out.println("End export to BerlinModel ("+ destination.getDatabase() + ")...");
+		return result;
+	}
+	
+	
+	
+	/**
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		SalvadorExport ex = new SalvadorExport();
+		ex.doExport();
 	}
 
 }
