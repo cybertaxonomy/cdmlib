@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.io.berlinModel.out;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
@@ -22,7 +21,6 @@ import eu.etaxonomy.cdm.io.common.IExportConfigurator;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 
 /**
  * @author a.mueller
