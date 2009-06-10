@@ -359,11 +359,11 @@ public class HomotypicalGroup extends AnnotatableEntity {
 	 */
 	public List<Synonym> getSynonymsInGroup(ReferenceBase sec){
 		List<Synonym> result = new ArrayList();
-		for (TaxonNameBase<?, ?>n : this.getTypifiedNames()){
-			for (Synonym s:n.getSynonyms()){
-				if ( (s.getSec() == null && sec == null) ||
-						s.getSec().equals(sec)){
-					result.add(s);
+		for (TaxonNameBase<?, ?>name : this.getTypifiedNames()){
+			for (Synonym synonym : name.getSynonyms()){
+				if ( (synonym.getSec() == null && sec == null) ||
+						synonym.getSec() != null && synonym.getSec().equals(sec)){
+					result.add(synonym);
 				}
 			}
 		}
