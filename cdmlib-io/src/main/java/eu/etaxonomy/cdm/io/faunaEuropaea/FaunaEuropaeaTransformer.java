@@ -45,6 +45,9 @@ public final class FaunaEuropaeaTransformer {
 	// Author
 	public static final int A_AUCT = 1;
 	
+	// Parenthesis
+	public static final int P_PARENTHESIS = 1;
+	
 	// Rank
 	public static final int R_KINGDOM = 1;
 	public static final int R_SUBKINGDOM = 2;

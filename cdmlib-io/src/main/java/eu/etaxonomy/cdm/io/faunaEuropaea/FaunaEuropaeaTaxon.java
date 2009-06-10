@@ -24,7 +24,22 @@ public class FaunaEuropaeaTaxon {
 	private int parentId;
 	private int rankId;
 	private String scientificName;
+	private boolean parenthesis = false;
 	
+	/**
+	 * @return the parenthesis
+	 */
+	public boolean isParenthesis() {
+		return parenthesis;
+	}
+
+	/**
+	 * @param parenthesis the parenthesis to set
+	 */
+	public void setParenthesis(boolean parenthesis) {
+		this.parenthesis = parenthesis;
+	}
+
 	public FaunaEuropaeaTaxon() {
 		this.id = 0;
 		this.parentId = 0;
