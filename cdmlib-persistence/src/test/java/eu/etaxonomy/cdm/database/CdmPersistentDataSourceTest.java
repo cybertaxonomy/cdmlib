@@ -285,9 +285,10 @@ public class CdmPersistentDataSourceTest {
 
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.database.CdmPersistentDataSource#saveLocalHsqlDb(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)}.
+	 * @throws IOException 
 	 */
 	@Test
-	public void testSaveLocalHsqlDb() {
+	public void testSaveLocalHsqlDb() throws IOException {
 		String dataSourceString = "tmp";
 		assertFalse(CdmPersistentDataSource.exists(dataSourceString));
 		

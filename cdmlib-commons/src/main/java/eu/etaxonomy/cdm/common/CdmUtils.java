@@ -40,8 +40,14 @@ public class CdmUtils {
 	static String folderSeperator;
 
 	
-	public static String getHomeDir(){
-		return System.getProperty("user.home");
+	public static String getHomeDir() throws IOException{
+		String homeDirString = System.getenv("USERPROFILE") != null ? System.getenv("USERPROFILE") : System.getProperty("user.home");
+		
+		if( ! new File(homeDirString).canWrite()){
+			throw new IOException("Can not write to home directory. Assumed path is: " + homeDirString);
+		}
+		
+		return homeDirString;
 	}
 
 	/**

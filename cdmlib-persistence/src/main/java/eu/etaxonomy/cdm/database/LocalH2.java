@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.database;
 
 import java.io.File;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.DriverManager;
@@ -151,8 +152,13 @@ public class LocalH2 extends DriverManagerDataSource {
 	}
 	
 	private static final String getDefaultPath(){
-		//String path = System.getProperty("user.dir");
-		File path = CdmApplicationUtils.getWritableResourceDir();
+		File path;
+		try {
+			path = CdmApplicationUtils.getWritableResourceDir();
+		} catch (IOException e) {
+			logger.error(e);
+			throw new RuntimeException(e);
+		}
 		String subPath = File.separator + "h2" + File.separator + "LocalH2"; 
 		return  path + subPath;
 	}

@@ -1,5 +1,6 @@
 package eu.etaxonomy.cdm.test.function;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -180,7 +181,7 @@ public class Datasource {
 		}
 	}
 		
-	private boolean testWritableResourceDirectory(){
+	private boolean testWritableResourceDirectory() throws IOException{
 		CdmApplicationUtils.getWritableResourceDir();
 		return true;
 	}

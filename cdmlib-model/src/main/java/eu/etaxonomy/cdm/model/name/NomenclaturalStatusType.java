@@ -28,6 +28,7 @@ import org.hibernate.envers.Audited;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.OrderedTermBase;
+import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
@@ -842,4 +843,26 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 //		NomenclaturalStatusType.VALID = termVocabulary.findTermByUuid(NomenclaturalStatusType.uuidValid);
 		
 	}
+
+
+
+	/**
+	 * NomenclaturalStatusType should always be shown in latin, therefore the only existing representation
+	 * is the latin one. In case we pass in another Language to this method it will return a <code>null</code> representation.
+	 * 
+	 * In case the representation becomes null, we fall back to the latin representation.
+	 * 
+	 */
+	@Override
+	public Representation getRepresentation(Language lang) {
+		Representation representation = super.getRepresentation(lang);
+		
+		if(representation == null){
+			representation = super.getRepresentation(Language.LATIN());
+		}
+		
+		return representation; 
+	}
+	
+	
 }

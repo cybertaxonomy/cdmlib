@@ -18,6 +18,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Iterator;
@@ -633,8 +634,13 @@ public class CdmPersistentDataSource extends CdmDataSourceBase{
 	
 	// returns the directory containing the resources 
 	private static String getResourceDirectory(){
-		File f = CdmApplicationUtils.getWritableResourceDir();
-		return f.getPath();
+		try {
+			File f = CdmApplicationUtils.getWritableResourceDir();
+			return f.getPath();
+		} catch (IOException e) {
+			logger.error(e);
+			throw new RuntimeException(e);
+		}
 	}
 	
 	static private FileInputStream fileInputStream(File file){

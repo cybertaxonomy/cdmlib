@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.database;
 
 import java.io.File;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.DriverManager;
@@ -20,7 +21,6 @@ import org.apache.log4j.Logger;
 import org.hsqldb.Server;
 import org.springframework.jdbc.CannotGetJdbcConnectionException;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
-//import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationUtils;
 
@@ -206,10 +206,14 @@ public class LocalHsqldb extends DriverManagerDataSource {
 	}
 	
 	private static final String getDefaultPath(){
-		//String path = System.getProperty("user.dir");
-		File path = CdmApplicationUtils.getWritableResourceDir();
-		String subPath = File.separator + "hsqlDb" + File.separator + "LocalHsqldb"; 
-		return  path + subPath;
+		try {
+			File path = CdmApplicationUtils.getWritableResourceDir();
+			String subPath = File.separator + "hsqlDb" + File.separator + "LocalHsqldb"; 
+			return  path + subPath;
+		} catch (IOException e) {
+			logger.error(e);
+			throw new RuntimeException(e);
+		}
 	}
 
 	/**

@@ -35,8 +35,9 @@ public class CdmApplicationUtils {
 	 * Returns the directory path to the writable resources (cdm.datasources.xml and hsqldb databases).
 	 * (Resources must be copied to this directory, this is automatically done for the cdm.datasources.xml)
 	 * @return 
+	 * @throws IOException if resource dir is not writable
 	 */
-	public static File getWritableResourceDir(){
+	public static File getWritableResourceDir() throws IOException{
 		//compute only once
 		if (fileResourceDir == null){
 			//workaround to find out in which environment the library is executed
@@ -50,9 +51,7 @@ public class CdmApplicationUtils {
 			    if (file.exists()){
 					fileResourceDir = file.getParentFile();
 				}else{
-					//String subPath = File.separator + "cdmResources" ;
-					file = new File(System.getProperty("user.home") + File.separator + ".cdmLibrary" + File.separator + "writableResources" );
-					//file = new File(System.getProperty("user.dir") + subPath );  //does not work in plugin-environmen (uses eclipse installation directory)
+					file = new File(CdmUtils.getHomeDir() + File.separator + ".cdmLibrary" + File.separator + "writableResources" );
 					
 					file.mkdirs();
 					copyResources(file);
@@ -67,8 +66,7 @@ public class CdmApplicationUtils {
 	static private void copyResources(File directory){
 		copyResource(directory, CdmPersistentDataSource.DATASOURCE_FILE_NAME);
 	}
-	
-	
+
 	/**
 	 * Copies a file from the classpath resource (e.g. jar-File) to the resources directory in the file system (get
 	 * @param directory
@@ -90,6 +88,7 @@ public class CdmApplicationUtils {
 			}
 		} catch (IOException e) {
 			logger.error("File "  + resourceFileName + " + could not be created");
+			throw new RuntimeException(e);
 		}
 		return false;
 	}

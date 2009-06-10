@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.database.types;
 
 import java.io.File;
+import java.io.IOException;
 
 import org.apache.log4j.Logger;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
@@ -168,10 +169,14 @@ public class H2DatabaseType extends DatabaseTypeBase {
 	}
 	
 	private static final String getDefaultPath(){
-		//String path = System.getProperty("user.dir");
-		File path = CdmApplicationUtils.getWritableResourceDir();
-		String subPath = File.separator + "h2" + File.separator + "LocalH2"; 
-		return  path + subPath;
+		try{
+			File path = CdmApplicationUtils.getWritableResourceDir();
+			String subPath = File.separator + "h2" + File.separator + "LocalH2"; 
+			return  path + subPath;
+		}catch(IOException e){
+			logger.error(e);
+			throw new RuntimeException(e);
+		}
 	}
 
 

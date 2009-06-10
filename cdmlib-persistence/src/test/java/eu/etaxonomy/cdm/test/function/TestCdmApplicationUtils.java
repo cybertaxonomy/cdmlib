@@ -9,6 +9,8 @@
 
 package eu.etaxonomy.cdm.test.function;
 
+import java.io.IOException;
+
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationUtils;
@@ -22,7 +24,7 @@ public class TestCdmApplicationUtils {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TestCdmApplicationUtils.class);
 
-	private boolean testWritableResourceDirectory(){
+	private boolean testWritableResourceDirectory() throws IOException{
 		CdmApplicationUtils.getWritableResourceDir();
 		return true;
 	}
@@ -32,7 +34,11 @@ public class TestCdmApplicationUtils {
 	 */
 	public static void main(String[] args) {
 		TestCdmApplicationUtils me = new TestCdmApplicationUtils();
-		me.testWritableResourceDirectory();
-
+		try {
+			me.testWritableResourceDirectory();
+		} catch (IOException e) {
+			logger.error(e);
+			throw new RuntimeException(e);
+		}
 	}
 }
