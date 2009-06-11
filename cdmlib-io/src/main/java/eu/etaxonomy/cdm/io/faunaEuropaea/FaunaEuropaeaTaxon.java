@@ -24,6 +24,8 @@ public class FaunaEuropaeaTaxon {
 	private int parentId;
 	private int rankId;
 	private String scientificName;
+	private int year;
+	private String author;
 	private boolean parenthesis = false;
 	
 	/**
@@ -134,6 +136,34 @@ public class FaunaEuropaeaTaxon {
 	 */
 	public void setNameUuid(UUID nameUuid) {
 		this.nameUuid = nameUuid;
+	}
+
+	/**
+	 * @return the year
+	 */
+	public int getYear() {
+		return year;
+	}
+
+	/**
+	 * @param year the year to set
+	 */
+	public void setYear(int year) {
+		this.year = year;
+	}
+
+	/**
+	 * @return the author
+	 */
+	public String getAuthor() {
+		return author;
+	}
+
+	/**
+	 * @param author the author to set
+	 */
+	public void setAuthor(String author) {
+		this.author = author;
 	}
 
 }
