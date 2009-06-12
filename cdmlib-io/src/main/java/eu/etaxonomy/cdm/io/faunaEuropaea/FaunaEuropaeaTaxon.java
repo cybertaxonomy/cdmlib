@@ -27,6 +27,7 @@ public class FaunaEuropaeaTaxon {
 	private int year;
 	private String author;
 	private boolean parenthesis = false;
+	private boolean valid = false;
 	
 	/**
 	 * @return the parenthesis
@@ -164,6 +165,20 @@ public class FaunaEuropaeaTaxon {
 	 */
 	public void setAuthor(String author) {
 		this.author = author;
+	}
+
+	/**
+	 * @return the valid
+	 */
+	public boolean isValid() {
+		return valid;
+	}
+
+	/**
+	 * @param valid the valid to set
+	 */
+	public void setValid(boolean valid) {
+		this.valid = valid;
 	}
 
 }
