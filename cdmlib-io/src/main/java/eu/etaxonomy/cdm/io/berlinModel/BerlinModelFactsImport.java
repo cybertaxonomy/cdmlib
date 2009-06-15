@@ -202,19 +202,20 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 					TextData textData = null;
 					boolean newTextData = true;
 
-					// For Cichorieae DB: If fact category is 31 (Systematics) and there is already a TextData 
+					// For Cichorieae DB: If fact category is 31 (Systematics) and there is already a Systematics TextData 
 					// description element append the fact text to the existing TextData
-					// TODO: Text field shall become a blob
 					if(categoryFk == 31) {
 						Set<DescriptionElementBase> descriptionElements = taxonDescription.getElements();
 						for (DescriptionElementBase descriptionElement : descriptionElements) {
-							if (descriptionElement instanceof TextData) {
+							String featureString = descriptionElement.getFeature().getRepresentation(Language.DEFAULT()).getLabel();
+							if (descriptionElement instanceof TextData && featureString.equals("Systematics")) { // TODO: test
 								textData = (TextData)descriptionElement;
 								String factTextStr = textData.getText(Language.DEFAULT());
-								StringBuilder factText = new StringBuilder(factTextStr);
+								// FIXME: Removing newlines doesn't work
 								if (factTextStr.contains("\\r\\n")) {
 									factTextStr = factTextStr.replaceAll("\\r\\n","");
 								}
+								StringBuilder factText = new StringBuilder(factTextStr);
 								factText.append(fact);
 								fact = factText.toString();
 								newTextData = false;
