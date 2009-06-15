@@ -39,8 +39,10 @@ public class CacheStrategyGenerator implements SaveOrUpdateEventListener {
             if(ICdmBase.class.isAssignableFrom(entityClazz)) {
 	            ICdmBase cdmBase = (ICdmBase)entity;
 	            if(cdmBase.getId() == 0) {
-				    cdmBase.setCreated(new DateTime());
-				    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+				    if (cdmBase.getCreated() == null){
+				    	cdmBase.setCreated(new DateTime());
+					}
+	            	Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 				    if(authentication != null && authentication.getPrincipal() != null && authentication.getPrincipal() instanceof User) {
 				      User user = (User)authentication.getPrincipal();
 				      cdmBase.setCreatedBy(user);
