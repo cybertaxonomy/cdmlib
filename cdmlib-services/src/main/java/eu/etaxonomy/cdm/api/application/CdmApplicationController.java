@@ -42,6 +42,7 @@ import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.api.service.IService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
+import eu.etaxonomy.cdm.api.service.IUserService;
 import eu.etaxonomy.cdm.database.CdmPersistentDataSource;
 import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
@@ -332,6 +333,10 @@ public class CdmApplicationController {
 	
 	public final ILocationService getLocationService(){
 		return configuration.getLocationService();
+	}
+	
+	public final IUserService getUserService(){
+		return configuration.getUserService();
 	}
 	
 	public final IService<CdmBase> getMainService(){

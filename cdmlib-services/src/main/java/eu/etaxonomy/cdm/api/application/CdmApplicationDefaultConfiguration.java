@@ -32,6 +32,7 @@ import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.api.service.IService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
+import eu.etaxonomy.cdm.api.service.IUserService;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
@@ -78,6 +79,8 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
 	private ICommonService commonService;
 	@Autowired
 	private ILocationService locationService;
+	@Autowired
+	private IUserService userService;
 //	@Autowired
 	//@Qualifier("mainService")
 	private IService<CdmBase> mainService;
@@ -164,6 +167,13 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
 		return this.locationService;
 	}
 	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getUserService()
+	 */
+	public IUserService getUserService() {
+		return this.userService;
+	}
+
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getCommonService()
 	 */
