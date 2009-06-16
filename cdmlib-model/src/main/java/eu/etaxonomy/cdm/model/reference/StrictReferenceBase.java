@@ -65,9 +65,9 @@ public abstract class StrictReferenceBase<S extends IReferenceBaseCacheStrategy>
 	
 	//Title of the reference
 	@XmlElement(name ="Title" )
-	@Column(length=4096, name="title")
-	@Lob
-//	@Column(length=256, name="title")  //FIXME H2 has problem with clob (a.mueller)
+//	@Column(length=4096, name="title")
+//	@Lob
+	@Column(length=256, name="title")  //FIXME H2 has problem with clob (a.mueller)
 	@Field(index=Index.TOKENIZED)
 	private String title;
 	

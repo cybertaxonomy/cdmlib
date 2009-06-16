@@ -22,8 +22,6 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 
-import eu.etaxonomy.cdm.model.location.TdwgArea;
-
 /**
  * Extension types similar to dynamically defined attributes. These are not data
  * types, but rather content types like "DOI", "2nd nomenclatural reference", "3rd
@@ -38,6 +36,7 @@ import eu.etaxonomy.cdm.model.location.TdwgArea;
 @Audited
 public class ExtensionType extends DefinedTermBase<ExtensionType> {
 	private static final long serialVersionUID = -7761963794004133427L;
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ExtensionType.class);
 
 	private static final UUID uuidXmlFragment = UUID.fromString("ea109c1c-e69b-4e6d-9079-1941b9ee2991");
@@ -48,7 +47,8 @@ public class ExtensionType extends DefinedTermBase<ExtensionType> {
 	private static final UUID uuidAreaOfInterest = UUID.fromString("cefa478e-604f-4db4-8afc-25e06c28ec69");
 	private static final UUID uuidNomStandard = UUID.fromString("4a6cbbe9-8d79-4d15-b316-2ff1adeff526");
 	private static final UUID uuidAbbreviation = UUID.fromString("5837e34e-b0f5-4736-8083-ff5eaecd8c43");
-	
+	private static final UUID uuidOrder = UUID.fromString("ecb7770d-a295-49ee-a88f-e9e137a7cabb");
+	private static final UUID uuidInformalCategory = UUID.fromString("11bbc52f-a085-43d3-9f9b-cbe0d1eb9a91");
 	
 	protected static Map<UUID, ExtensionType> termMap = null;		
 
@@ -102,7 +102,13 @@ public class ExtensionType extends DefinedTermBase<ExtensionType> {
 		return getTermByUuid(uuidAbbreviation);
 	}
 	
+	public static final ExtensionType ORDER(){
+		return getTermByUuid(uuidOrder);
+	}
 	
+	public static final ExtensionType INFORMAL_CATEGORY(){
+		return getTermByUuid(uuidInformalCategory);
+	}
 	
 	
 	@Override
