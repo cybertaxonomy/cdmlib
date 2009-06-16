@@ -23,6 +23,8 @@ import eu.etaxonomy.cdm.strategy.StrategyBase;
  * @version 1.0
  */
 public abstract class NomRefDefaultCacheStrategyBase<T extends ReferenceBase> extends StrategyBase implements  INomenclaturalReferenceCacheStrategy<T>{
+	private static final long serialVersionUID = -725290113353165022L;
+
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(NomRefDefaultCacheStrategyBase.class);
 	

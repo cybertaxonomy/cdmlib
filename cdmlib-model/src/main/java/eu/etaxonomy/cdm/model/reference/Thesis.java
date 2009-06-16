@@ -13,6 +13,7 @@ package eu.etaxonomy.cdm.model.reference;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -30,8 +31,10 @@ import org.hibernate.search.annotations.IndexedEmbedded;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import eu.etaxonomy.cdm.model.agent.Institution;
+import eu.etaxonomy.cdm.strategy.cache.reference.INomenclaturalReferenceCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.reference.IReferenceBaseCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.reference.StrictReferenceBaseDefaultCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.reference.ThesisDefaultCacheStrategy;
 
 /**
  * This class represents thesis. A thesis is a document that presents the
@@ -55,7 +58,7 @@ import eu.etaxonomy.cdm.strategy.cache.reference.StrictReferenceBaseDefaultCache
 @Indexed(index = "eu.etaxonomy.cdm.model.reference.ReferenceBase")
 @Audited
 @Configurable
-public class Thesis extends PublicationBase<IReferenceBaseCacheStrategy<Thesis>> implements Cloneable{
+public class Thesis extends PublicationBase<INomenclaturalReferenceCacheStrategy<Thesis>> implements INomenclaturalReference, Cloneable{
 	
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(Thesis.class);
@@ -69,7 +72,7 @@ public class Thesis extends PublicationBase<IReferenceBaseCacheStrategy<Thesis>>
 	private Institution school;
 	
 	protected Thesis() {
-		this.cacheStrategy = new StrictReferenceBaseDefaultCacheStrategy<Thesis>();
+		this.cacheStrategy = ThesisDefaultCacheStrategy.NewInstance();
 	}
 
 	/** 
@@ -112,6 +115,31 @@ public class Thesis extends PublicationBase<IReferenceBaseCacheStrategy<Thesis>>
 	public void setSchool(Institution school){
 		this.school = school;
 	}
+	
+	/**
+	 * Returns a formatted string containing the entire citation used for
+	 * nomenclatural purposes based on <i>this</i> generic reference - including
+	 * (abbreviated) title but not authors - and on the given
+	 * details.
+	 * 
+	 * @param  microReference	the string with the details (generally pages)
+	 * 							within <i>this</i> generic reference
+	 * @return					the formatted string representing the
+	 * 							nomenclatural citation
+	 * @see  					#getCitation()
+	 */
+	@Transient
+	public String getNomenclaturalCitation(String microReference) {
+		if (cacheStrategy == null){
+			logger.warn("No CacheStrategy defined for "+ this.getClass() + ": " + this.getUuid());
+			return null;
+		}else{
+			return cacheStrategy.getNomenclaturalCitation(this,microReference);
+		}
+	}
+	
+	
+//************************************* CLONE ******************************************/	
 
 	
 	/** 

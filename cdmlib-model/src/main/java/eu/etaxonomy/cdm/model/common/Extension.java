@@ -14,6 +14,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -50,7 +51,8 @@ public class Extension extends VersionableEntity implements Cloneable {
 	private static final  Logger logger = Logger.getLogger(Extension.class);
 	
     @XmlElement(name = "Value")
-	private String value;
+	@Lob
+    private String value;
 	
     @XmlElement(name = "ExtensionType")
     @XmlIDREF

@@ -29,6 +29,7 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
+import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.NaturalId;
@@ -57,12 +58,17 @@ import eu.etaxonomy.cdm.model.agent.Person;
 @Audited
 @Table(name = "UserAccount")
 public class User extends CdmBase implements UserDetails {
-
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 6582191171369439163L;
-
+	@SuppressWarnings(value="unused")
+	private static final Logger logger = Logger.getLogger(User.class);
+	
+	public static User NewInstance(String username, String pwd){
+		User user = new User();
+		user.setUsername(username);
+		user.setPassword(pwd);
+		return user;
+	}
+	
 	@XmlElement(name = "Username")
 	@NaturalId
 	protected String username;

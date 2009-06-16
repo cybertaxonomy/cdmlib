@@ -1159,6 +1159,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/reference/IReferenceB
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/reference/JournalDefaultCacheStrategy.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/reference/NomRefDefaultCacheStrategyBase.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/reference/StrictReferenceBaseDefaultCacheStrategy.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/reference/ThesisDefaultCacheStrategy.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/exceptions/StringNotParsableException.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/exceptions/UnknownCdmTypeException.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/parser/INonViralNameParser.java -text
