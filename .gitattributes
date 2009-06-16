@@ -55,6 +55,7 @@ app-import/src/main/java/eu/etaxonomy/cdm/app/wp6/palmae/PalmaeImageActivator.ja
 app-import/src/main/java/eu/etaxonomy/cdm/app/wp6/palmae/PalmaeProtologueActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/wp6/palmae/PalmaeTaxonXImportActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/io/CichorieaeImageImport.java -text
+app-import/src/main/java/eu/etaxonomy/cdm/io/DipteraImageImport.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/io/PalmaeImageImport.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/io/PalmaeProtologueImport.java -text
 app-import/src/main/resources/Asteraceae[!!-~]Specimen[!!-~]Images[!!-~]Vienna.xls -text
