@@ -39,23 +39,23 @@ public class ReferenceDaoHibernateImplTest extends CdmIntegrationTest {
 	    genericUuid = UUID.fromString("bd4822b7-4b05-4eaf-be70-f113446c585e");
 	}
 	
-	@Test
-	public void testGetPublishers() {
-		Journal firstJournal = (Journal)referenceDao.findByUuid(firstJournalUuid);
-		assert firstJournal!= null : "journal must exist";
-		
-		List<Publisher> publishers = firstJournal.getPublishers();
-		
-		assertNotNull("getPublishers should return a list", publishers);
-		assertFalse("the list should not be empty", publishers.isEmpty());
-		assertEquals("getPublishers should return 4 Publisher instances",4,publishers.size());
-		assertEquals("first publisher should come first",firstPublisherName,publishers.get(0).getPublisherName());
-		assertEquals("second publisher should come second",secondPublisherName,publishers.get(1).getPublisherName());
-		assertEquals("third publisher should come third",thirdPublisherName,publishers.get(2).getPublisherName());
-		assertEquals("fourth publisher should come fourth",fourthPublisherName,publishers.get(3).getPublisherName());
-		
-		
-	}
+//	@Test
+//	public void testGetPublishers() {
+//		Journal firstJournal = (Journal)referenceDao.findByUuid(firstJournalUuid);
+//		assert firstJournal!= null : "journal must exist";
+//		
+//		List<Publisher> publishers = firstJournal.getPublishers();
+//		
+//		assertNotNull("getPublishers should return a list", publishers);
+//		assertFalse("the list should not be empty", publishers.isEmpty());
+//		assertEquals("getPublishers should return 4 Publisher instances",4,publishers.size());
+//		assertEquals("first publisher should come first",firstPublisherName,publishers.get(0).getPublisherName());
+//		assertEquals("second publisher should come second",secondPublisherName,publishers.get(1).getPublisherName());
+//		assertEquals("third publisher should come third",thirdPublisherName,publishers.get(2).getPublisherName());
+//		assertEquals("fourth publisher should come fourth",fourthPublisherName,publishers.get(3).getPublisherName());
+//		
+//		
+//	}
 
 
 }
