@@ -21,6 +21,7 @@ import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.io.common.IExportConfigurator.CHECK;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator.DO_REFERENCES;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
+import eu.etaxonomy.cdm.model.name.NonViralName;
 
 
 /**
@@ -121,10 +122,10 @@ public class SalvadorExport {
 		CdmDefaultExport<BerlinModelExportConfigurator> bmExport = new CdmDefaultExport<BerlinModelExportConfigurator>();
 		boolean result = bmExport.invoke(bmExportConfigurator);
 		
-		System.out.println("End export to BerlinModel ("+ destination.getDatabase() + ")...");
+		System.out.println("End export to BerlinModel ("+ destination.getDatabase() + ")..." + (result? "(successful)":"(with errors)"));
 		return result;
 	}
-	
+
 	
 	
 	/**
@@ -134,5 +135,8 @@ public class SalvadorExport {
 		SalvadorExport ex = new SalvadorExport();
 		ex.doExport();
 	}
+	
+	
+	
 
 }

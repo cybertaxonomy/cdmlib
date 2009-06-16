@@ -18,11 +18,11 @@ import eu.etaxonomy.cdm.app.common.CdmDestinations;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportConfigurator;
+import eu.etaxonomy.cdm.io.common.CdmDefaultImport;
+import eu.etaxonomy.cdm.io.common.IImportConfigurator;
+import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator.CHECK;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator.DO_REFERENCES;
-import eu.etaxonomy.cdm.io.common.CdmDefaultImport;
-import eu.etaxonomy.cdm.io.common.Source;
-import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 
@@ -37,7 +37,6 @@ import eu.etaxonomy.cdm.model.name.NonViralName;
  *
  */
 public class SalvadorActivator {
-	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(SalvadorActivator.class);
 
 	//database validation status (create, update, validate ...)
@@ -54,10 +53,13 @@ public class SalvadorActivator {
 	
 	//check - import
 	static final CHECK check = CHECK.CHECK_AND_IMPORT;
-
+	static final IImportConfigurator.EDITOR editor = IImportConfigurator.EDITOR.EDITOR_AS_EDITOR;
 
 	//NomeclaturalCode
 	static final NomenclaturalCode nomenclaturalCode  = NomenclaturalCode.ICBN;
+	
+	//ignore null
+	static final boolean ignoreNull = true;
 
 // ****************** ALL *****************************************
 	
@@ -77,6 +79,11 @@ public class SalvadorActivator {
 	static final boolean doRelTaxa = true;
 	static final boolean doFacts = true;
 	static final boolean doOccurences = false;
+	
+	//etc.
+	static final boolean doMarker = true;
+	static final boolean doUser = true;
+		
 
 // ************************ NONE **************************************** //
 	
@@ -85,7 +92,7 @@ public class SalvadorActivator {
 //	//references
 //	static final DO_REFERENCES doReferences =  DO_REFERENCES.NONE;
 //	//names
-//	static final boolean doTaxonNames = true;
+//	static final boolean doTaxonNames = false;
 //	static final boolean doRelNames = false;
 //	static final boolean doNameStatus = false;
 //	static final boolean doTypes = false;
@@ -94,8 +101,12 @@ public class SalvadorActivator {
 //	//taxa
 //	static final boolean doTaxa = true;
 //	static final boolean doRelTaxa = false;
-//	static final boolean doFacts = true;
+//	static final boolean doFacts = false;
 //	static final boolean doOccurences = false;
+//	
+//	//etc.
+//	static final boolean doMarker = true;
+//	static final boolean doUser = true;	
 	
 	
 	public boolean doImport(){
@@ -105,34 +116,41 @@ public class SalvadorActivator {
 		Source source = berlinModelSource;
 		ICdmDataSource destination = cdmDestination;
 		
-		BerlinModelImportConfigurator bmImportConfigurator = BerlinModelImportConfigurator.NewInstance(source,  destination);
+		BerlinModelImportConfigurator config = BerlinModelImportConfigurator.NewInstance(source,  destination);
 		
-		bmImportConfigurator.setSecUuid(secUuid);
-		bmImportConfigurator.setSourceSecId(sourceSecId);
-		bmImportConfigurator.setNomenclaturalCode(nomenclaturalCode);
+		config.setSecUuid(secUuid);
+		config.setSourceSecId(sourceSecId);
+		config.setNomenclaturalCode(nomenclaturalCode);
+		config.setIgnoreNull(ignoreNull);
+		
+		config.setDoAuthors(doAuthors);
+		config.setDoReferences(doReferences);
+		config.setDoTaxonNames(doTaxonNames);
+		config.setDoRelNames(doRelNames);
+		config.setDoNameStatus(doNameStatus);
+		config.setDoTypes(doTypes);
+		config.setDoNameFacts(doNameFacts);
+		
+		config.setDoTaxa(doTaxa);
+		config.setDoRelTaxa(doRelTaxa);
+		config.setDoFacts(doFacts);
+		config.setDoOccurrence(doOccurences);
+		
+		config.setDoMarker(doMarker);
+		config.setDoUser(doUser);
+		
+		config.setDbSchemaValidation(hbm2dll);
 
-		bmImportConfigurator.setDoAuthors(doAuthors);
-		bmImportConfigurator.setDoReferences(doReferences);
-		bmImportConfigurator.setDoTaxonNames(doTaxonNames);
-		bmImportConfigurator.setDoRelNames(doRelNames);
-		bmImportConfigurator.setDoNameStatus(doNameStatus);
-		bmImportConfigurator.setDoTypes(doTypes);
-		bmImportConfigurator.setDoNameFacts(doNameFacts);
+		config.setCheck(check);
+		config.setEditor(editor);
+		config.setIgnore0AuthorTeam(isIgnore0AuthorTeam);
 		
-		bmImportConfigurator.setDoTaxa(doTaxa);
-		bmImportConfigurator.setDoRelTaxa(doRelTaxa);
-		bmImportConfigurator.setDoFacts(doFacts);
-		bmImportConfigurator.setDoOccurrence(doOccurences);
-		bmImportConfigurator.setDbSchemaValidation(hbm2dll);
-
-		bmImportConfigurator.setCheck(check);
-		bmImportConfigurator.setIgnore0AuthorTeam(isIgnore0AuthorTeam);
-		
-		bmImportConfigurator.setNamerelationshipTypeMethod(getNameRelationshipTypeMethod());
+		config.setNamerelationshipTypeMethod(getHandleNameRelationshipTypeMethod());
+		config.setUserTransformationMethod(getTransformUsernameMethod());
 		
 		// invoke import
 		CdmDefaultImport<BerlinModelImportConfigurator> bmImport = new CdmDefaultImport<BerlinModelImportConfigurator>();
-		boolean result = bmImport.invoke(bmImportConfigurator);
+		boolean result = bmImport.invoke(config);
 		System.out.println("End import from BerlinModel ("+ source.getDatabase() + ")...");
 		return result;
 	}
@@ -149,9 +167,9 @@ public class SalvadorActivator {
 			export.doExport();
 		}
 	}
+
 	
-	
-	private Method getNameRelationshipTypeMethod(){
+	private Method getHandleNameRelationshipTypeMethod(){
 		String methodName = "handleNameRelationshipType";
 		try {
 			Method method = this.getClass().getDeclaredMethod(methodName, Integer.class, NonViralName.class, NonViralName.class);
@@ -162,14 +180,39 @@ public class SalvadorActivator {
 			return null;
 		}
 	}
-	
+
+
 	//used by BerlinModelImportConfigurator
+	@SuppressWarnings("unused")
 	private static boolean handleNameRelationshipType(Integer relQualifierFk, NonViralName nameTo, NonViralName nameFrom){
 		if (relQualifierFk == 72){
 			nameTo.getHomotypicalGroup().merge(nameFrom.getHomotypicalGroup());
 			return true;
 		}
 		return false;
+	}
+
+	private Method getTransformUsernameMethod(){
+		String methodName = "transformUsername";
+		try {
+			Method method = this.getClass().getDeclaredMethod(methodName, String.class);
+			method.setAccessible(true);
+			return method;
+		} catch (Exception e) {
+			logger.error("Problem creating Method: " + methodName);
+			return null;
+		}
+	}
+	
+	//used by BerlinModelImportConfigurator
+	@SuppressWarnings("unused")
+	private static String transformUsername(String nameToBeTransformed){
+		if ("W.G.Berendsohn".equals(nameToBeTransformed)){
+			return "wgb";
+		}else if("XXXXERWE".equals(nameToBeTransformed)){
+			return null;
+		}
+		return nameToBeTransformed;
 	}
 
 }
