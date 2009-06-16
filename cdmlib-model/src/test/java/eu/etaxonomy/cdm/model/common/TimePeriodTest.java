@@ -380,6 +380,12 @@ public class TimePeriodTest {
 		Assert.assertEquals("1788", String.valueOf(tp1.getEndYear()));
 		assertNull(tp1.getEndMonth());
 		assertNull(tp1.getStartMonth());
+		//unparsable
+		String strUnparsablePeriod = "wef 1809-78";
+		TimePeriod tpUnparsable = TimePeriod.parseString(strUnparsablePeriod);
+		assertNotNull(tpUnparsable);
+		Assert.assertEquals(strUnparsablePeriod, tpUnparsable.getFreeText());
+		
 		//"1806"[1807]
 		String strCorrectedPeriod = "\"1806\"[1807]";
 		TimePeriod tpcorrected = TimePeriod.parseString(strCorrectedPeriod);
@@ -387,12 +393,22 @@ public class TimePeriodTest {
 		Assert.assertEquals(strCorrectedPeriod, tpcorrected.getFreeText());
 		Assert.assertEquals("1807", tpcorrected.getYear());
 		
+		
 		//fl. 1806
 		String strFlPeriod = "fl.  1806?";
 		TimePeriod tpFl = TimePeriod.parseString(strFlPeriod);
 		assertNotNull(tpFl);
 		Assert.assertEquals(strFlPeriod, tpFl.getFreeText());
 		Assert.assertEquals("1806", tpFl.getYear());
+		
+		String strCPeriod = "c.  1806-1810";
+		TimePeriod tpC = TimePeriod.parseString(strCPeriod);
+		assertNotNull(tpC);
+		Assert.assertEquals(strCPeriod, tpC.getFreeText());
+		Assert.assertEquals(Integer.valueOf(1806), tpC.getStartYear());
+		Assert.assertEquals(Integer.valueOf(1810), tpC.getEndYear());
+		Assert.assertEquals("1806-1810", tpC.getYear());
+		
 	}
 	
 	@Test
