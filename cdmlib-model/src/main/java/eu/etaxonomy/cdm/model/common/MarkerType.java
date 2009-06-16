@@ -39,14 +39,27 @@ public class MarkerType extends DefinedTermBase<MarkerType> {
 	private static final UUID uuidToBeChecked = UUID.fromString("34204192-b41d-4857-a1d4-28992bef2a2a");
 	private static final UUID uuidIsDoubtful = UUID.fromString("b51325c8-05fe-421a-832b-d86fc249ef6e");
 	private static final UUID uuidComplete = UUID.fromString("b4b1b2ab-89a8-4ce6-8110-d60b8b1bc433");
+	private static final UUID uuidPublish = UUID.fromString("0522c2b3-b21c-400c-80fc-a251c3501dbc");
 	private static MarkerType IMPORTED;
 	private static MarkerType TO_BE_CHECKED;
 	private static MarkerType IS_DOUBTFUL;
 	private static MarkerType COMPLETE;
+	private static MarkerType PUBLISH;
+
+	protected static Map<UUID, MarkerType> termMap = null;		
 
 	public static MarkerType NewInstance(String term, String label, String labelAbbrev){
 		return new MarkerType(term, label, labelAbbrev);
 	}
+	
+	protected static MarkerType getTermByUuid(UUID uuid){
+		if (termMap == null){
+			DefaultTermInitializer vocabularyStore = new DefaultTermInitializer();
+			vocabularyStore.initialize();
+		}
+		return (MarkerType)termMap.get(uuid);
+	}
+
 	
 	/**
 	 * Constructor
@@ -68,27 +81,31 @@ public class MarkerType extends DefinedTermBase<MarkerType> {
 
 
 	public static final MarkerType IMPORTED(){
-		return IMPORTED;
+		return getTermByUuid(uuidImported);
 	}
 
 	public static final MarkerType TO_BE_CHECKED(){
-		return TO_BE_CHECKED;
+		return getTermByUuid(uuidToBeChecked);
 	}
 
 	public static final MarkerType IS_DOUBTFUL(){
-		return IS_DOUBTFUL;
+		return getTermByUuid(uuidIsDoubtful);
 	}
 
 	public static final MarkerType COMPLETE(){
-		return COMPLETE;
+		return getTermByUuid(uuidComplete);
 	}
 
+	public static final MarkerType PUBLISH(){
+		return getTermByUuid(uuidPublish);
+	}
+	
 	@Override
 	protected void setDefaultTerms(TermVocabulary<MarkerType> termVocabulary) {
-		MarkerType.COMPLETE = termVocabulary.findTermByUuid(MarkerType.uuidComplete);
-		MarkerType.IMPORTED = termVocabulary.findTermByUuid(MarkerType.uuidImported);
-		MarkerType.IS_DOUBTFUL = termVocabulary.findTermByUuid(MarkerType.uuidIsDoubtful);
-		MarkerType.TO_BE_CHECKED = termVocabulary.findTermByUuid(MarkerType.uuidToBeChecked);
+		termMap = new HashMap<UUID, MarkerType>();
+		for (MarkerType term : termVocabulary.getTerms()){
+			termMap.put(term.getUuid(), (MarkerType)term);
+		}
 	}
 
 }

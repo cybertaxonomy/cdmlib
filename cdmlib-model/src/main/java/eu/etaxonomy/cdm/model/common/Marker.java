@@ -14,6 +14,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -34,6 +35,7 @@ import org.hibernate.envers.NotAudited;
  * @version 1.0
  * @created 08-Nov-2007 13:06:33
  */
+
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Marker")
 @Entity
@@ -125,6 +127,15 @@ public class Marker extends VersionableEntity implements Cloneable{
 	}
 	public void setFlag(boolean flag){
 		this.flag = flag;
+	}
+	
+	/**
+	 * @see getFlag()
+	 * @return
+	 */
+	@Transient
+	public boolean getValue(){
+		return getFlag();
 	}
 	
 	
