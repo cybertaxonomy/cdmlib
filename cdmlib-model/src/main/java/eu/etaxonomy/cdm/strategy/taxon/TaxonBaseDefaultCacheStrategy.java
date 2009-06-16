@@ -26,7 +26,7 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase> extends Strategy
 				title += "???";
 			}
 		}else{
-			title = this.toString();
+			title = taxonBase.toString();
 		}
 		return title;
 	}
