@@ -25,6 +25,7 @@ import eu.etaxonomy.cdm.io.common.CdmDefaultImport;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator.CHECK;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator.DO_REFERENCES;
+import eu.etaxonomy.cdm.io.common.IImportConfigurator.EDITOR;
 import eu.etaxonomy.cdm.model.common.ISourceable;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.FeatureNode;
@@ -68,6 +69,9 @@ public class CichorieaeActivator {
 	//check - import
 	static final CHECK check = CHECK.CHECK_AND_IMPORT;
 
+	//editor - import
+	static final EDITOR editor = EDITOR.EDITOR_AS_EDITOR;
+	
 	//NomeclaturalCode
 	static final NomenclaturalCode nomenclaturalCode = NomenclaturalCode.ICBN;
 
@@ -93,13 +97,17 @@ public class CichorieaeActivator {
 	static final boolean doFacts = true;
 	static final boolean doOccurences = true;
 
+	//etc.
+	static final boolean doMarker = true;
+	static final boolean doUser = true;
+
 	
 // **************** SELECTED *********************
 
 //	//authors
 //	static final boolean doAuthors = false;
 //	//references
-//	static final DO_REFERENCES doReferences =  DO_REFERENCES.ALL;
+//	static final DO_REFERENCES doReferences =  DO_REFERENCES.NONE;
 //	//names
 //	static final boolean doTaxonNames = false;
 //	static final boolean doRelNames = false;
@@ -110,8 +118,13 @@ public class CichorieaeActivator {
 //	//taxa 
 //	static final boolean doTaxa = true;
 //	static final boolean doRelTaxa = false;
-//	static final boolean doFacts = true;
+//	static final boolean doFacts = false;
 //	static final boolean doOccurences = false;
+//	
+//	//etc.
+//	static final boolean doMarker = true;
+//	static final boolean doUser = true;
+	
 	
 	/**
 	 * @param args
@@ -143,6 +156,9 @@ public class CichorieaeActivator {
 		bmImportConfigurator.setDoRelTaxa(doRelTaxa);
 		bmImportConfigurator.setDoFacts(doFacts);
 		bmImportConfigurator.setDoOccurrence(doOccurences);
+		
+		bmImportConfigurator.setDoMarker(doMarker);
+		bmImportConfigurator.setDoUser(doUser);
 		bmImportConfigurator.setDbSchemaValidation(hbm2dll);
 
 		// mediaResourceLocations
@@ -158,6 +174,7 @@ public class CichorieaeActivator {
 		
 		
 		bmImportConfigurator.setCheck(check);
+		bmImportConfigurator.setEditor(editor);
 		
 		// invoke import
 		CdmDefaultImport<BerlinModelImportConfigurator> bmImport = new CdmDefaultImport<BerlinModelImportConfigurator>();
