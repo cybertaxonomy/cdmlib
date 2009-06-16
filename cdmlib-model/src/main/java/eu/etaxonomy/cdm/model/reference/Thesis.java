@@ -57,6 +57,7 @@ import eu.etaxonomy.cdm.strategy.cache.reference.StrictReferenceBaseDefaultCache
 @Configurable
 public class Thesis extends PublicationBase<IReferenceBaseCacheStrategy<Thesis>> implements Cloneable{
 	
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(Thesis.class);
 	
 	@XmlElement(name = "School")
