@@ -18,6 +18,7 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -25,6 +26,7 @@ import org.junit.Test;
  * @created 23.03.2009
  * @version 1.0
  */
+@Ignore
 public class PublicationBaseTest {
 	@SuppressWarnings("unused")
 	private static Logger logger = Logger.getLogger(PublicationBaseTest.class);
@@ -70,77 +72,77 @@ public class PublicationBaseTest {
 
 	
 	
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.reference.PublicationBase#addPublisher(java.lang.String, java.lang.String)}.
-	 */
-	@Test
-	public void testAddPublisherStringString() {
-		assertEquals("Publishers list must be empty", 0, publicationBase.getPublishers().size());
-		publicationBase.addPublisher(publisher1, place1);
-		assertEquals("Publishers list must contains exactly 1 entry", 1, publicationBase.getPublishers().size());
-		publicationBase.addPublisher(publisher2, place2);
-		assertEquals("Publishers list must contains exactly 2 entry", 2, publicationBase.getPublishers().size());
-		//List<Publisher> publishers = publicationBase.getPublishers();
-		assertEquals("First publisher must be publisher1", publisher1, publicationBase.getPublisher(0).getPublisherName());
-		assertEquals("Second publisher must be publisher2", publisher2, publicationBase.getPublisher(1).getPublisherName());
-		assertEquals("First publication place  must be place1", place1, publicationBase.getPublisher(0).getPlace());
-		assertEquals("Second publication place must be place2", place2, publicationBase.getPublisher(1).getPlace());
-	}
+//	/**
+//	 * Test method for {@link eu.etaxonomy.cdm.model.reference.PublicationBase#addPublisher(java.lang.String, java.lang.String)}.
+//	 */
+//	@Test
+//	public void testAddPublisherStringString() {
+//		assertEquals("Publishers list must be empty", 0, publicationBase.getPublishers().size());
+//		publicationBase.addPublisher(publisher1, place1);
+//		assertEquals("Publishers list must contains exactly 1 entry", 1, publicationBase.getPublishers().size());
+//		publicationBase.addPublisher(publisher2, place2);
+//		assertEquals("Publishers list must contains exactly 2 entry", 2, publicationBase.getPublishers().size());
+//		//List<Publisher> publishers = publicationBase.getPublishers();
+//		assertEquals("First publisher must be publisher1", publisher1, publicationBase.getPublisher(0).getPublisherName());
+//		assertEquals("Second publisher must be publisher2", publisher2, publicationBase.getPublisher(1).getPublisherName());
+//		assertEquals("First publication place  must be place1", place1, publicationBase.getPublisher(0).getPlace());
+//		assertEquals("Second publication place must be place2", place2, publicationBase.getPublisher(1).getPlace());
+//	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.reference.PublicationBase#addPublisher(java.lang.String, java.lang.String, int)}.
-	 */
-	@Test(expected=IndexOutOfBoundsException.class)
-	public void testAddPublisherStringStringInt() {
-		publicationBase.addPublisher(publisher1, place1);
-		publicationBase.addPublisher(publisher2, place2);
-		assertEquals("Publishers list must contains exactly 2 entry", 2, publicationBase.getPublishers().size());
-		String indexPublisher = "indexPublisher";
-		String indexPlace = "indexPlace";
-		publicationBase.addPublisher(indexPublisher, indexPlace, 1);
-		assertEquals("Publisher at position 1 (starting at 0) should be 'indexPublisher'", indexPublisher, publicationBase.getPublishers().get(1).getPublisherName());
-		publicationBase.addPublisher(indexPublisher, indexPlace, 5);
-	}
+//	/**
+//	 * Test method for {@link eu.etaxonomy.cdm.model.reference.PublicationBase#addPublisher(java.lang.String, java.lang.String, int)}.
+//	 */
+//	@Test(expected=IndexOutOfBoundsException.class)
+//	public void testAddPublisherStringStringInt() {
+//		publicationBase.addPublisher(publisher1, place1);
+//		publicationBase.addPublisher(publisher2, place2);
+//		assertEquals("Publishers list must contains exactly 2 entry", 2, publicationBase.getPublishers().size());
+//		String indexPublisher = "indexPublisher";
+//		String indexPlace = "indexPlace";
+//		publicationBase.addPublisher(indexPublisher, indexPlace, 1);
+//		assertEquals("Publisher at position 1 (starting at 0) should be 'indexPublisher'", indexPublisher, publicationBase.getPublishers().get(1).getPublisherName());
+//		publicationBase.addPublisher(indexPublisher, indexPlace, 5);
+//	}
 
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.reference.PublicationBase#getPublisher(java.lang.int}.
-	 */
-	@Test(expected=IndexOutOfBoundsException.class)
-	public void testGetPublisherInt() {
-		publicationBase.addPublisher(publisher1, place1);
-		publicationBase.addPublisher(publisher2, place2);
-		assertEquals("Publishers list must contains exactly 2 entry", 2, publicationBase.getPublishers().size());
-		assertEquals("First publisher must be publisher1", publisher1, publicationBase.getPublisher(0).getPublisherName());
-		publicationBase.getPublisher(2);
-		publicationBase.getPublisher(-1);
-	}
+//	/**
+//	 * Test method for {@link eu.etaxonomy.cdm.model.reference.PublicationBase#getPublisher(java.lang.int}.
+//	 */
+//	@Test(expected=IndexOutOfBoundsException.class)
+//	public void testGetPublisherInt() {
+//		publicationBase.addPublisher(publisher1, place1);
+//		publicationBase.addPublisher(publisher2, place2);
+//		assertEquals("Publishers list must contains exactly 2 entry", 2, publicationBase.getPublishers().size());
+//		assertEquals("First publisher must be publisher1", publisher1, publicationBase.getPublisher(0).getPublisherName());
+//		publicationBase.getPublisher(2);
+//		publicationBase.getPublisher(-1);
+//	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.reference.PublicationBase#removePublisher(eu.etaxonomy.cdm.model.reference.Publisher)}.
-	 */
-	@Test
-	public void testRemovePublisher() {
-		publicationBase.addPublisher(publisher1, place1);
-		publicationBase.addPublisher(publisher2, place2);
-		assertEquals("Publishers list must contains exactly 2 entry", 2, publicationBase.getPublishers().size());
-		publicationBase.removePublisher(publicationBase.getPublishers().get(0));
-		assertEquals("Publishers list must contains exactly 1 entry", 1, publicationBase.getPublishers().size());
-		List<Publisher> publishers = publicationBase.getPublishers();
-		assertEquals("Only publisher must be publisher2", publisher2, publishers.get(0).getPublisherName());
-		assertEquals("only publication place  must be place2", place2, publishers.get(0).getPlace());
-	}
+//	/**
+//	 * Test method for {@link eu.etaxonomy.cdm.model.reference.PublicationBase#removePublisher(eu.etaxonomy.cdm.model.reference.Publisher)}.
+//	 */
+//	@Test
+//	public void testRemovePublisher() {
+//		publicationBase.addPublisher(publisher1, place1);
+//		publicationBase.addPublisher(publisher2, place2);
+//		assertEquals("Publishers list must contains exactly 2 entry", 2, publicationBase.getPublishers().size());
+//		publicationBase.removePublisher(publicationBase.getPublishers().get(0));
+//		assertEquals("Publishers list must contains exactly 1 entry", 1, publicationBase.getPublishers().size());
+//		List<Publisher> publishers = publicationBase.getPublishers();
+//		assertEquals("Only publisher must be publisher2", publisher2, publishers.get(0).getPublisherName());
+//		assertEquals("only publication place  must be place2", place2, publishers.get(0).getPlace());
+//	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.reference.PublicationBase#clone()}.
-	 */
-	@Test
-	public void testClone() {
-		publicationBase.addPublisher(publisher1, place1);
-		publicationBase.addPublisher(publisher2, place2);
-		assertEquals("Publishers list must contains exactly 2 entry", 2, publicationBase.getPublishers().size());
-		CdDvd clone = (CdDvd)publicationBase.clone();
-		assertEquals("Publisher place must be equal in original publication and cloned publication", place1, clone.getPublisher(0).getPlace());
-		assertNotSame(place1, publicationBase.getPublisher(0), clone.getPublisher(0));	
-	}
+//	/**
+//	 * Test method for {@link eu.etaxonomy.cdm.model.reference.PublicationBase#clone()}.
+//	 */
+//	@Test
+//	public void testClone() {
+//		publicationBase.addPublisher(publisher1, place1);
+//		publicationBase.addPublisher(publisher2, place2);
+//		assertEquals("Publishers list must contains exactly 2 entry", 2, publicationBase.getPublishers().size());
+//		CdDvd clone = (CdDvd)publicationBase.clone();
+//		assertEquals("Publisher place must be equal in original publication and cloned publication", place1, clone.getPublisher(0).getPlace());
+//		assertNotSame(place1, publicationBase.getPublisher(0), clone.getPublisher(0));	
+//	}
 }

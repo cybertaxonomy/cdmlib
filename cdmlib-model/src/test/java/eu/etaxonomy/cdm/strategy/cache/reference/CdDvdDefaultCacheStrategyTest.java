@@ -41,7 +41,7 @@ public class CdDvdDefaultCacheStrategyTest {
 		cdDvd.setTitle(title);
 		publisher = "An ugly publisher";
 		place = "A beutiful place"; 
-		cdDvd.addPublisher(publisher, place);
+		//cdDvd.addPublisher(publisher, place);
 		publicationDate = TimePeriod.NewInstance(1999, 2001);
 		cdDvd.setDatePublished(publicationDate);
 		this.instance = CdDvdDefaultCacheStrategy.NewInstance();
