@@ -14,7 +14,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -26,7 +25,6 @@ import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.io.common.Source;
-import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
@@ -114,7 +112,7 @@ public class BerlinModelOccurrenceImport  extends BerlinModelImportBase {
 	 */
 	@Override
 	protected boolean doInvoke(BerlinModelImportState state){
-		
+		boolean success = true;
 		MapWrapper<TaxonBase> taxonMap = (MapWrapper<TaxonBase>)state.getStore(ICdmIO.TAXON_STORE);
 		MapWrapper<ReferenceBase> referenceMap = (MapWrapper<ReferenceBase>)state.getStore(ICdmIO.REFERENCE_STORE);
 		BerlinModelImportConfigurator config = state.getConfig();
@@ -158,7 +156,7 @@ public class BerlinModelOccurrenceImport  extends BerlinModelImportBase {
                     //status
                      PresenceAbsenceTermBase<?> status = null;
                      if (emStatusId != null){
-                                 status = BerlinModelTransformer.occStatus2PresenceAbsence(emStatusId);
+                    	 status = BerlinModelTransformer.occStatus2PresenceAbsence(emStatusId);
                      }
                      
                      //Create area list
@@ -190,13 +188,15 @@ public class BerlinModelOccurrenceImport  extends BerlinModelImportBase {
                             	   logger.debug("Distribution is duplicate");
                                }
 	                       	} else { 
-	                       		logger.warn("Distribution " + tdwgArea.toString() + " ignored"); 
+	                       		logger.warn("Distribution " + tdwgArea.toString() + " ignored");
+	                       		success = false;
 	                       	}
                      }
                      
                 } catch (UnknownCdmTypeException e) {
                      // TODO Auto-generated catch block
                      e.printStackTrace();
+                     success = false;
                 }
 
 //              TODO
@@ -209,8 +209,8 @@ public class BerlinModelOccurrenceImport  extends BerlinModelImportBase {
 			logger.info("Taxa to save: " + taxonStore.size());
 			getTaxonService().saveTaxonAll(taxonStore);	
 			
-			logger.info("end make occurrences ...");
-			return true;
+			logger.info("end make occurrences ..." + getSuccessString(success));
+			return success;
 		} catch (SQLException e) {
 			logger.error("SQLException:" +  e);
 			return false;

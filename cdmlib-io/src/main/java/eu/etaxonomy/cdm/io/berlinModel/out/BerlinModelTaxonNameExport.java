@@ -17,8 +17,11 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer;
+import eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelTaxonNameImport;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.CreatedAndNotesMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbBooleanMapper;
+import eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbExtensionMapper;
+import eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbMarkerMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbObjectMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbStringMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.IdMapper;
@@ -27,6 +30,8 @@ import eu.etaxonomy.cdm.io.berlinModel.out.mapper.RefDetailMapper;
 import eu.etaxonomy.cdm.io.common.IExportConfigurator;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.ExtensionType;
+import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
@@ -112,8 +117,12 @@ public class BerlinModelTaxonNameExport extends BerlinModelExportBase<TaxonNameB
 		mapping.addMapper(DbObjectMapper.NewInstance("nomenclaturalReference", "NomRefFk"));
 		mapping.addMapper(RefDetailMapper.NewInstance("nomenclaturalMicroReference","nomenclaturalReference", "NomRefDetailFk"));
 		mapping.addMapper(CreatedAndNotesMapper.NewInstance(false));
+		ExtensionType sourceAccExtensionType = (ExtensionType)getTermService().getTermByUuid(BerlinModelTaxonNameImport.SOURCE_ACC_UUID);
+		if (sourceAccExtensionType != null){
+			mapping.addMapper(DbExtensionMapper.NewInstance(sourceAccExtensionType, "Source_Acc"));
+		}
 		mapping.addCollectionMapping(getNomStatusMapping());
-		//Mapper(NomStatusMapper.NewInstance());
+		
 	
 		
 		//TODO
@@ -137,6 +146,7 @@ public class BerlinModelTaxonNameExport extends BerlinModelExportBase<TaxonNameB
 		mapping.addMapper(MethodMapper.NewInstance("NomStatusFk", this.getClass(), "getNomStatusFk", NomenclaturalStatus.class));
 		mapping.addMapper(DbObjectMapper.NewInstance("citation", "NomStatusRefFk"));
 		mapping.addMapper(RefDetailMapper.NewInstance("citationMicroReference","citation", "NomStatusRefDetailFk"));
+		mapping.addMapper(DbMarkerMapper.NewInstance(MarkerType.IS_DOUBTFUL(), "DoubtfulFlag", false));
 		mapping.addMapper(CreatedAndNotesMapper.NewInstance());
 
 		return mapping;
@@ -162,7 +172,7 @@ public class BerlinModelTaxonNameExport extends BerlinModelExportBase<TaxonNameB
 				//TODO rank = null or rank < genus and genusOrUninomial != null
 			}
 			commitTransaction(txStatus);
-			logger.info("end make " + pluralString+ " ...");
+			logger.info("end make " + pluralString+ " ..." + getSuccessString(success));
 			
 			return success;
 		}catch(SQLException e){

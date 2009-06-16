@@ -9,6 +9,8 @@
 
 package eu.etaxonomy.cdm.io.berlinModel.out;
 
+import java.lang.reflect.Method;
+
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
@@ -29,6 +31,7 @@ public class BerlinModelExportConfigurator extends DbExportConfiguratorBase impl
 	private boolean doTaxonNames;
 	private BerlinModelExportState<BerlinModelExportConfigurator> state;
 
+	private Method relNameQualifierMethod;
 	
 	public static BerlinModelExportConfigurator NewInstance(Source berlinModelDestination, ICdmDataSource source){
 			return new BerlinModelExportConfigurator(berlinModelDestination, source);
@@ -99,6 +102,20 @@ public class BerlinModelExportConfigurator extends DbExportConfiguratorBase impl
 	 */
 	public void setState(BerlinModelExportState<BerlinModelExportConfigurator> state) {
 		this.state = state;
+	}
+
+	/**
+	 * @return the relNameQualifierMethod
+	 */
+	public Method getRelNameQualifierMethod() {
+		return relNameQualifierMethod;
+	}
+
+	/**
+	 * @param relNameQualifierMethod the relNameQualifierMethod to set
+	 */
+	public void setRelNameQualifierMethod(Method relNameQualifierMethod) {
+		this.relNameQualifierMethod = relNameQualifierMethod;
 	}
 	
 	

@@ -20,7 +20,7 @@ import eu.etaxonomy.cdm.io.berlinModel.out.mapper.IDbExportMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.IdMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.IndexCounter;
 import eu.etaxonomy.cdm.io.common.CdmAttributeMapperBase;
-import eu.etaxonomy.cdm.io.common.DbExportState;
+import eu.etaxonomy.cdm.io.common.DbExportStateBase;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -71,13 +71,18 @@ public class CollectionExportMapping extends BerlinModelExportMapping {
 				this.sequenceMapper.reset();
 			}
 			for(CdmBase collectionObject : collection){
+				if (collectionObject == null){
+					logger.warn("Collection object was null");
+					result = false;
+					continue;
+				}
 				for (CdmAttributeMapperBase mapper : this.mapperList){
 					if (mapper == this.parentMapper){
 						parentMapper.invoke(parent);
 					}else if (mapper == this.sequenceMapper){
 						this.sequenceMapper.invoke(null);
 					}else if (mapper instanceof IDbExportMapper){
-						IDbExportMapper<DbExportState<?>> dbMapper = (IDbExportMapper)mapper;
+						IDbExportMapper<DbExportStateBase<?>> dbMapper = (IDbExportMapper)mapper;
 						try {
 							result &= dbMapper.invoke(collectionObject);
 						} catch (Exception e) {

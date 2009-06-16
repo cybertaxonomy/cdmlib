@@ -16,12 +16,12 @@ import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.T_STATUS_SY
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Map;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
@@ -29,7 +29,10 @@ import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.User;
+import eu.etaxonomy.cdm.model.common.Extension;
+import eu.etaxonomy.cdm.model.common.ExtensionType;
+import eu.etaxonomy.cdm.model.common.Marker;
+import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
@@ -46,6 +49,12 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 public class BerlinModelTaxonImport  extends BerlinModelImportBase  {
 	private static final Logger logger = Logger.getLogger(BerlinModelTaxonImport.class);
 
+	public static final UUID DETAIL_EXT_UUID = UUID.fromString("c3959b4f-d876-4b7a-a739-9260f4cafd1c");
+	public static final UUID APPENDED_TITLE_PHRASE = UUID.fromString("b121f3b6-89bb-48e1-a010-7d3148d2caba");
+	public static final UUID USE_NAME_CACHE = UUID.fromString("1b959a0d-230b-4b03-b7b6-2bd46056a22d");
+	
+	
+	
 	private int modCount = 10000;
 	
 	public BerlinModelTaxonImport(){
@@ -150,6 +159,7 @@ public class BerlinModelTaxonImport  extends BerlinModelImportBase  {
 	 */
 	@Override
 	protected boolean doInvoke(BerlinModelImportState state){				
+		boolean success = true;
 		
 		//make not needed maps empty
 		String teamStore = ICdmIO.TEAM_STORE;
@@ -213,9 +223,11 @@ public class BerlinModelTaxonImport  extends BerlinModelImportBase  {
 				if(! config.isIgnoreNull()){
 					if (taxonName == null ){
 						logger.warn("TaxonName belonging to taxon (RIdentifier = " + taxonId + ") could not be found in store. Taxon will not be transported");
+						success = false;
 						continue; //next taxon
 					}else if (reference == null ){
 						logger.warn("Reference belonging to taxon could not be found in store. Taxon will not be imported");
+						success = false;
 						continue; //next taxon
 					}
 				}
@@ -238,6 +250,7 @@ public class BerlinModelTaxonImport  extends BerlinModelImportBase  {
 						}
 					}else{
 						logger.warn("TaxonStatus " + statusFk + " not yet implemented. Taxon (RIdentifier = " + taxonId + ") left out.");
+						success = false;
 						continue;
 					}
 					if (uuid != null){
@@ -245,44 +258,61 @@ public class BerlinModelTaxonImport  extends BerlinModelImportBase  {
 					}
 					
 
-					
 					if (doubtful.equals("a")){
 						taxonBase.setDoubtful(false);
 					}else if(doubtful.equals("d")){
 						taxonBase.setDoubtful(true);
 					}else if(doubtful.equals("i")){
-						//TODO
-						logger.warn("Doubtful = i (inactivated) not yet implemented. Doubtful set to false");
+						taxonBase.setDoubtful(false);
+						logger.warn("Doubtful = i (inactivated) does not exist in CDM. Doubtful set to false");
 					}
 					
 					//nameId
 					ImportHelper.setOriginalSource(taxonBase, config.getSourceReference(), taxonId, namespace);
 
+					//detail
+					String detail = rs.getString("Detail");
+					if (CdmUtils.isNotEmpty(detail)){
+						ExtensionType detailExtensionType = getExtensionType(DETAIL_EXT_UUID, "micro reference","micro reference","micro ref.");
+						Extension.NewInstance(taxonBase, detail, detailExtensionType);
+					}
+					//idInSource
+					String idInSource = rs.getString("IdInSource");
+					if (CdmUtils.isNotEmpty(idInSource)){
+						ExtensionType detailExtensionType = getExtensionType(ID_IN_SOURCE_EXT_UUID, "Berlin Model IdInSource","Berlin Model IdInSource","BM source id");
+						Extension.NewInstance(taxonBase, idInSource, detailExtensionType);
+					}
+					//namePhrase
+					String namePhrase = rs.getString("NamePhrase");
+					if (CdmUtils.isNotEmpty(namePhrase)){
+						ExtensionType namePhraseExtensionType = getExtensionType(APPENDED_TITLE_PHRASE, "appended title phrase","appended title phrase","app. phrase");
+						Extension.NewInstance(taxonBase, namePhrase, namePhraseExtensionType);
+					}
+					//useNameCache
+					Boolean useNameCacheFlag = rs.getBoolean("UseNameCacheFlag");
+					if (useNameCacheFlag){
+						MarkerType useNameCacheMarkerType = getMarkerType(USE_NAME_CACHE, "appended title phrase","appended title phrase","app. phrase");
+						taxonBase.addMarker(Marker.NewInstance(useNameCacheMarkerType, useNameCacheFlag));
+					}
+					//publisheFlag
+					Boolean publishFlag = rs.getBoolean("PublishFlag");
+					taxonBase.addMarker(Marker.NewInstance(MarkerType.PUBLISH(), publishFlag));
+					//Notes
 					doIdCreatedUpdatedNotes(config, taxonBase, rs, taxonId, namespace);
-					//TODO
-					//dbAttrName = "Detail";
-//					cdmAttrName = "Micro";
-//					ImportHelper.addStringValue(rs, taxonBase, dbAttrName, cdmAttrName);
-					
-					//IdInSource
-					//NamePhrase
-					//UseNameCacheFlag
-					//PublishFlag
-					//
-					//ALL
 					
 					taxonMap.put(taxonId, taxonBase);
 				} catch (Exception e) {
 					logger.warn("An exception occurred when creating taxon with id " + taxonId + ". Taxon could not be saved.");
+					success = false;
 				}
 			}
 			//invokeRelations(source, cdmApp, deleteAll, taxonMap, referenceMap);
 			logger.info("saving "+i+" taxa ...");
 			getTaxonService().saveTaxonAll(taxonMap.objects());
 			
-			logger.info("end makeTaxa ...");
+			logger.info("end makeTaxa ..." + getSuccessString(success));
 			
-			return true;
+			return success;
 		} catch (SQLException e) {
 			logger.error("SQLException:" +  e);
 			return false;

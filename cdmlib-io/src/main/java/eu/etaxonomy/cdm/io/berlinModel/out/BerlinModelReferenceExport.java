@@ -141,7 +141,7 @@ public class BerlinModelReferenceExport extends BerlinModelExportBase<ReferenceB
 			}
 			
 			commitTransaction(txStatus);
-			logger.info("end make "+pluralString+" ...");
+			logger.info("end make "+pluralString+" ..." + getSuccessString(success));
 			
 			return success;
 		}catch(SQLException e){

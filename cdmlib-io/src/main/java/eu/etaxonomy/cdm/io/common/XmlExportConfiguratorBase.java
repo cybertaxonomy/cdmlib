@@ -14,6 +14,8 @@ import java.io.File;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
+import eu.etaxonomy.cdm.io.tcsxml.out.TcsXmlExportConfigurator;
+import eu.etaxonomy.cdm.io.tcsxml.out.TcsXmlExportState;
 
 /**
  * @author a.mueller
@@ -24,7 +26,15 @@ public abstract class XmlExportConfiguratorBase extends ExportConfiguratorBase<F
 	@SuppressWarnings("unused")
 	private static Logger logger = Logger.getLogger(XmlExportConfiguratorBase.class);
 
-//	private XmlExportState<XmlExportConfigurator> state;
+	//	private XmlExportState<XmlExportConfigurator> state;
+	
+	public enum IdType{
+		CDM_ID,
+		ORIGINAL_SOURCE_ID
+	}
+	
+	private IdType idType = IdType.CDM_ID;
+
 	
 	
 	/**
@@ -39,7 +49,33 @@ public abstract class XmlExportConfiguratorBase extends ExportConfiguratorBase<F
 //	   setState(new XmlExportState<XmlExportConfigurator>());
 	}
 	
-	
+
+	/**
+	 * @return the idType
+	 */
+	public IdType getIdType() {
+		return idType;
+	}
+
+	/**
+	 * @param idType the idType to set
+	 */
+	public void setIdType(IdType idType) {
+		this.idType = idType;
+	}
+
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.IIoConfigurator#getDestinationNameString()
+	 */
+	public String getDestinationNameString() {
+		if (getDestination() != null){
+			return getDestination().getName();
+		}else{
+			return "";
+		}
+	}
+
 
 //	/**
 //	 * @return the state

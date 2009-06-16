@@ -20,17 +20,21 @@ import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer;
+import eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelFactsImport;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.CreatedAndNotesMapper;
+import eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbIntegerAnnotationMapper;
+import eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbMarkerMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbObjectMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.IdMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.MethodMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.RefDetailMapper;
-import eu.etaxonomy.cdm.io.common.DbExportState;
+import eu.etaxonomy.cdm.io.common.DbExportStateBase;
 import eu.etaxonomy.cdm.io.common.IExportConfigurator;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
+import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
@@ -76,8 +80,8 @@ public class BerlinModelFactExport extends BerlinModelExportBase<TextData> {
 		String tableName = dbTableName;
 		BerlinModelExportMapping mapping = new BerlinModelExportMapping(tableName);
 		mapping.addMapper(IdMapper.NewInstance("FactId"));
-		mapping.addMapper(MethodMapper.NewInstance("PTNameFk", this.getClass(), "getPTNameFk", TextData.class, DbExportState.class));
-		mapping.addMapper(MethodMapper.NewInstance("PTRefFk", this.getClass(), "getPTRefFk", TextData.class, DbExportState.class));
+		mapping.addMapper(MethodMapper.NewInstance("PTNameFk", this.getClass(), "getPTNameFk", TextData.class, DbExportStateBase.class));
+		mapping.addMapper(MethodMapper.NewInstance("PTRefFk", this.getClass(), "getPTRefFk", TextData.class, DbExportStateBase.class));
 		mapping.addMapper(MethodMapper.NewInstance("Fact", this));
 		mapping.addMapper(MethodMapper.NewInstance("FactCategoryFk", this));
 		
@@ -85,14 +89,13 @@ public class BerlinModelFactExport extends BerlinModelExportBase<TextData> {
 		mapping.addMapper(RefDetailMapper.NewInstance("citationMicroReference","citation", "FactRefDetailFk"));
 		mapping.addMapper(DbObjectMapper.NewInstance("citation", "PTDesignationRefFk"));
 		mapping.addMapper(RefDetailMapper.NewInstance("citationMicroReference","citation", "PTDesignationRefDetailFk"));
+		mapping.addMapper(DbMarkerMapper.NewInstance(MarkerType.IS_DOUBTFUL(), "DoubtfulFlag", false));
+		mapping.addMapper(DbMarkerMapper.NewInstance(MarkerType.IS_DOUBTFUL(), "PublishFlag", true));
+		mapping.addMapper(DbIntegerAnnotationMapper.NewInstance(BerlinModelFactsImport.SEQUENCE_PREFIX, "Sequence", 999));
 		mapping.addMapper(CreatedAndNotesMapper.NewInstance());
-
+		
 		//TODO
 //	       designationRef
-//		       doubtful
-//				publish
-//		TextData t = null;
-//		t.get
 		return mapping;
 	}
 	
@@ -122,7 +125,7 @@ public class BerlinModelFactExport extends BerlinModelExportBase<TextData> {
 				}
 			}
 			commitTransaction(txStatus);
-			logger.info("end make " + pluralString + " ...");
+			logger.info("end make " + pluralString + " ..." + getSuccessString(success));
 			
 			return success;
 		}catch(SQLException e){
@@ -174,17 +177,17 @@ public class BerlinModelFactExport extends BerlinModelExportBase<TextData> {
 	
 	//called by MethodMapper
 	@SuppressWarnings("unused")
-	private static Integer getPTNameFk(TextData textData, DbExportState<?> state){
+	private static Integer getPTNameFk(TextData textData, DbExportStateBase<?> state){
 		return getObjectFk(textData, state, true);
 	}
 	
 	//called by MethodMapper
 	@SuppressWarnings("unused")
-	private static Integer getPTRefFk(TextData textData, DbExportState<?> state){
+	private static Integer getPTRefFk(TextData textData, DbExportStateBase<?> state){
 		return getObjectFk(textData, state, false);
 	}
 
-	private static Integer getObjectFk(TextData textData, DbExportState<?> state, boolean isName){
+	private static Integer getObjectFk(TextData textData, DbExportStateBase<?> state, boolean isName){
 		DescriptionBase<?> desc = textData.getInDescription();
 		if (desc.isInstanceOf(TaxonDescription.class)){
 			TaxonDescription taxonDesc = (TaxonDescription)desc;

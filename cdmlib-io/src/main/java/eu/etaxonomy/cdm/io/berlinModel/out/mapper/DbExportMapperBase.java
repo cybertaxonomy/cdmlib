@@ -14,7 +14,7 @@ import java.sql.PreparedStatement;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.io.common.DbExportState;
+import eu.etaxonomy.cdm.io.common.DbExportStateBase;
 
 /**
  * @author a.mueller
@@ -26,7 +26,7 @@ import eu.etaxonomy.cdm.io.common.DbExportState;
  * @created 12.05.2009
  * @version 1.0
  */
-public class DbExportMapperBase<STATE extends DbExportState<?>>  /*implements IDbExportMapper */{
+public class DbExportMapperBase<STATE extends DbExportStateBase<?>>  /*implements IDbExportMapper */{
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DbExportMapperBase.class);
 

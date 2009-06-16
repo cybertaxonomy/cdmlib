@@ -38,9 +38,12 @@ public class BerlinModelImportConfigurator extends ImportConfiguratorBase<Berlin
 	public static BerlinModelImportConfigurator NewInstance(Source berlinModelSource, ICdmDataSource destination){
 			return new BerlinModelImportConfigurator(berlinModelSource, destination);
 	}
+
 	
 	private Method namerelationshipTypeMethod;
-
+	private Method uuidForDefTermMethod;
+	private Method userTransformationMethod;
+	
 	private Set<Synonym> proParteSynonyms = new HashSet<Synonym>();
 	private Set<Synonym> partialSynonyms = new HashSet<Synonym>();
 	
@@ -52,6 +55,8 @@ public class BerlinModelImportConfigurator extends ImportConfiguratorBase<Berlin
 	
 	protected void makeIoClassList(){
 		ioClassList = new Class[]{
+				BerlinModelGeneralImport.class,
+				BerlinModelUserImport.class,
 				BerlinModelAuthorImport.class,
 				BerlinModelAuthorTeamImport.class
 				, BerlinModelReferenceImport.class
@@ -64,8 +69,9 @@ public class BerlinModelImportConfigurator extends ImportConfiguratorBase<Berlin
 				, BerlinModelTaxonRelationImport.class
 				, BerlinModelFactsImport.class
 				, BerlinModelOccurrenceImport.class
-		};
-		
+				, BerlinModelWebMarkerCategoryImport.class
+				, BerlinModelWebMarkerImport.class
+		};	
 	}
 	
 	/**
@@ -215,6 +221,35 @@ public class BerlinModelImportConfigurator extends ImportConfiguratorBase<Berlin
 		this.namerelationshipTypeMethod = namerelationshipTypeMethod;
 	}
 
+	/**
+	 * @return the uuidForDefTermMethod
+	 */
+	public Method getUuidForDefTermMethod() {
+		return uuidForDefTermMethod;
+	}
+
+	/**
+	 * @param uuidForDefTermMethod the uuidForDefTermMethod to set
+	 */
+	public void setUuidForDefTermMethod(Method uuidForDefTermMethod) {
+		this.uuidForDefTermMethod = uuidForDefTermMethod;
+	}
+
+	/**
+	 * @return the userTransformationMethod
+	 */
+	public Method getUserTransformationMethod() {
+		return userTransformationMethod;
+	}
+
+	/**
+	 * @param userTransformationMethod the userTransformationMethod to set
+	 */
+	public void setUserTransformationMethod(Method userTransformationMethod) {
+		this.userTransformationMethod = userTransformationMethod;
+	}
+
+	
 	
 	
 }

@@ -20,7 +20,7 @@ import org.joda.time.DateTime;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.CdmSingleAttributeMapperBase;
-import eu.etaxonomy.cdm.io.common.DbExportState;
+import eu.etaxonomy.cdm.io.common.DbExportStateBase;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -30,7 +30,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * @created 12.05.2009
  * @version 1.0
  */
-public abstract class DbSingleAttributeExportMapperBase<STATE extends DbExportState<?>> extends CdmSingleAttributeMapperBase implements IDbExportMapper<STATE>  {
+public abstract class DbSingleAttributeExportMapperBase<STATE extends DbExportStateBase<?>> extends CdmSingleAttributeMapperBase implements IDbExportMapper<STATE>  {
 	private static final Logger logger = Logger.getLogger(DbSingleAttributeExportMapperBase.class);
 	
 	private DbExportMapperBase<STATE> exportMapperHelper = new DbExportMapperBase<STATE>();

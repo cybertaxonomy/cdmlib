@@ -179,7 +179,8 @@ public class CdmApplicationAwareDefaultImport<T extends IImportConfigurator> imp
 		
 		
 		logger.info("End import from source '" + config.getSourceNameString() 
-				+ "' to destination '" + config.getDestinationNameString() + "'");
+				+ "' to destination '" + config.getDestinationNameString() + "'"+
+				(result? "(successful)":"(with errors)")) ;
 		return result;
 	}
 	

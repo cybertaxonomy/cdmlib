@@ -19,6 +19,7 @@ import org.springframework.stereotype.Component;
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
+import eu.etaxonomy.cdm.io.common.IImportConfigurator.EDITOR;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.Feature;
@@ -31,7 +32,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
  * @version 1.0
  */
 @Component
-public abstract class ImportConfiguratorBase<STATE extends ImportState> extends IoConfiguratorBase implements IImportConfigurator{
+public abstract class ImportConfiguratorBase<STATE extends ImportStateBase> extends IoConfiguratorBase implements IImportConfigurator{
 	private static final Logger logger = Logger.getLogger(ImportConfiguratorBase.class);
 
 	private STATE state;
@@ -39,6 +40,9 @@ public abstract class ImportConfiguratorBase<STATE extends ImportState> extends 
 	
 	//check
 	private CHECK check = CHECK.CHECK_AND_IMPORT;
+	
+	//editor
+	static EDITOR editor = EDITOR.EDITOR_AS_ANNOTATION;
 	
 	//TODO
 	private boolean deleteAll = false;
@@ -140,6 +144,9 @@ public abstract class ImportConfiguratorBase<STATE extends ImportState> extends 
 		return ioClassList;
 	}
 
+	/**
+	 * @param ioClassList
+	 */
 	public void setIoClassList(Class<ICdmIO>[] ioClassList){
 		this.ioClassList = ioClassList;
 	}
@@ -156,9 +163,7 @@ public abstract class ImportConfiguratorBase<STATE extends ImportState> extends 
 	public void setDeleteAll(boolean deleteAll) {
 		this.deleteAll = deleteAll;
 	}
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.tcsrdf.IImportConfigurator#isDoAuthors()
-	 */
+
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.tcsrdf.IImportConfigurator#getCheck()
@@ -168,13 +173,27 @@ public abstract class ImportConfiguratorBase<STATE extends ImportState> extends 
 	}
 	
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.tcsrdf.IImportConfigurator#setCheck(eu.etaxonomy.cdm.io.tcsrdf.TcsRdfImportConfigurator.CHECK)
+	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#setCheck(eu.etaxonomy.cdm.io.common.IImportConfigurator.CHECK)
 	 */
 	public void setCheck(CHECK check) {
 		this.check = check;
 	}
 	
 	
+	/**
+	 * @return the editor
+	 */
+	public EDITOR getEditor() {
+		return editor;
+	}
+
+	/**
+	 * @param editor the editor to set
+	 */
+	public void setEditor(EDITOR editor) {
+		ImportConfiguratorBase.editor = editor;
+	}
+
 	/**
 	 * If true, no errors occurs if objects are not found that should exist. This may
 	 * be needed e.g. when only subsets of the data are imported.

@@ -17,7 +17,6 @@ import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
-import eu.etaxonomy.cdm.io.common.ImportHelper;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
@@ -89,36 +88,39 @@ public class BerlinModelAuthorTeamImport extends BerlinModelImportBase {
 		//for each reference
 		try{
 			while (rsTeam.next()){
-				
-				if ((i++ % modCount ) == 0 && i!= 1 ){ logger.info(""+pluralString+" handled: " + (i-1));}
-				
-				//create Agent element
-				int teamId = rsTeam.getInt("AuthorTeamId");
-				if (teamId == 0 && config.isIgnore0AuthorTeam()){
-					continue;
+				try{
+					if ((i++ % modCount ) == 0 && i!= 1 ){ logger.info(""+pluralString+" handled: " + (i-1));}
+					
+					//create Agent element
+					int teamId = rsTeam.getInt("AuthorTeamId");
+					if (teamId == 0 && config.isIgnore0AuthorTeam()){
+						continue;
+					}
+					
+					Team team = Team.NewInstance();
+					
+					
+					Boolean preliminaryFlag = rsTeam.getBoolean("PreliminaryFlag");
+					String authorTeamCache = rsTeam.getString("AuthorTeamCache");
+					//String fullAuthorTeamCache = rsTeam.getString("FullAuthorTeamCache");
+					team.setTitleCache(authorTeamCache, preliminaryFlag);
+					team.setNomenclaturalTitle(authorTeamCache, preliminaryFlag);
+	
+					//TODO
+					//FullAuthorTeamCache
+					//title cache or nomenclaturalTitle?
+					
+					makeSequence(team, teamId, rsSequence, state.getStores());
+					
+					//created, notes
+					doIdCreatedUpdatedNotes(config, team, rsTeam, teamId, namespace);
+	
+					teamMap.put(teamId, team);
+				}catch(Exception ex){
+					logger.error(ex.getMessage());
+					ex.printStackTrace();
+					success = false;
 				}
-				
-				Team team = Team.NewInstance();
-				
-				dbAttrName = "AuthorTeamCache";
-				cdmAttrName = "nomenclaturalTitle";
-				success &= ImportHelper.addStringValue(rsTeam, team, dbAttrName, cdmAttrName);
-
-				dbAttrName = "AuthorTeamCache";
-				cdmAttrName = "titleCache";
-				success &= ImportHelper.addStringValue(rsTeam, team, dbAttrName, cdmAttrName);
-
-				//TODO
-				//FullAuthorTeamCache
-				//preliminaryFlag
-				//title cache or nomenclaturalTitle?
-
-				makeSequence(team, teamId, rsSequence, state.getStores());
-				
-				//created, notes
-				doIdCreatedUpdatedNotes(config, team, rsTeam, teamId, namespace);
-
-				teamMap.put(teamId, team);
 			} //while rs.hasNext()
 		} catch (SQLException e) {
 			logger.error("SQLException:" +  e);
@@ -129,7 +131,7 @@ public class BerlinModelAuthorTeamImport extends BerlinModelImportBase {
 		logger.info(i + " "+pluralString+" handled");
 		getAgentService().saveAgentAll(teamMap.objects());
 
-		logger.info("end make "+pluralString+" ...");
+		logger.info("end make "+pluralString+" ... " + getSuccessString(success));
 		personMap.makeEmpty();
 		return success;
 	}

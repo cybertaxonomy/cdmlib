@@ -35,7 +35,12 @@ public class IoConfiguratorBase {
 
 	//occurrence
 	private boolean doOccurrence = true;
+	
+	//etc
+	private boolean doMarker = true;
+	private boolean doUser = true;
 
+	
 	public DbSchemaValidation getDbSchemaValidation() {
 		return dbSchemaValidation;
 	}
@@ -171,5 +176,22 @@ public class IoConfiguratorBase {
 	 */
 	public void setDoOccurrence(boolean doOccurrence) {
 		this.doOccurrence = doOccurrence;
+	}
+
+	public boolean isDoMarker() {
+		return doMarker;
+	}
+
+	public void setDoMarker(boolean doMarker) {
+		this.doMarker = doMarker;
+	}
+	
+
+	public boolean isDoUser() {
+		return doUser;
+	}
+
+	public void setDoUser(boolean doUser) {
+		this.doUser = doUser;
 	}
 }

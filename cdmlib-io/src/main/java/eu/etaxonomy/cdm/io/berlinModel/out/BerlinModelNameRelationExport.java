@@ -8,6 +8,7 @@
 */
 package eu.etaxonomy.cdm.io.berlinModel.out;
 
+import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -76,9 +77,6 @@ public class BerlinModelNameRelationExport extends BerlinModelExportBase<Relatio
 		mapping.addMapper(RefDetailMapper.NewInstance("citationMicroReference","citation", "RefDetailFk"));
 		mapping.addMapper(CreatedAndNotesMapper.NewInstance());
 		
-//		NameRelationship r = null;
-//		r.getFromName()
-		
 		return mapping;
 	}
 	
@@ -103,7 +101,7 @@ public class BerlinModelNameRelationExport extends BerlinModelExportBase<Relatio
 				}
 			}
 			commitTransaction(txStatus);
-			logger.info("end make " + pluralString + " ...");
+			logger.info("end make " + pluralString + " ..." + getSuccessString(success));
 			return success;
 		}catch(SQLException e){
 			e.printStackTrace();
@@ -136,8 +134,17 @@ public class BerlinModelNameRelationExport extends BerlinModelExportBase<Relatio
 	
 	//called by MethodMapper
 	@SuppressWarnings("unused")
-	private static Integer getRelNameQualifierFk(RelationshipBase<?, ?, ?> rel){
-		return BerlinModelTransformer.nameRel2RelNameQualifierFk(rel);
+	private static Integer getRelNameQualifierFk(RelationshipBase<?, ?, ?> rel, BerlinModelExportConfigurator config) throws Exception {
+		if (config.getRelNameQualifierMethod() != null){
+			try {
+				return (Integer)config.getRelNameQualifierMethod().invoke(rel);
+			} catch (Exception e) {
+				logger.error(e.getMessage());
+				throw e;
+			}
+		}else{
+			return BerlinModelTransformer.nameRel2RelNameQualifierFk(rel);
+		}
 	}
 	
 	/* (non-Javadoc)

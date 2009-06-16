@@ -9,26 +9,6 @@
 
 package eu.etaxonomy.cdm.io.berlinModel.in;
 
-import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_ST_COMB_INVAL;
-import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_ST_NOM_ALTERN;
-import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_ST_NOM_AMBIG;
-import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_ST_NOM_CONFUS;
-import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_ST_NOM_CONS;
-import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_ST_NOM_CONS_PROP;
-import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_ST_NOM_DUB;
-import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_ST_NOM_ILLEG;
-import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_ST_NOM_INVAL;
-import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_ST_NOM_NOV;
-import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_ST_NOM_NUD;
-import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_ST_NOM_PROVIS;
-import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_ST_NOM_REJ;
-import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_ST_NOM_REJ_PROP;
-import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_ST_NOM_SUPERFL;
-import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_ST_NOM_UTIQUE_REJ;
-import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_ST_NOM_UTIQUE_REJ_PROP;
-import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_ST_ORTH_CONS;
-import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_ST_ORTH_CONS_PROP;
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashSet;
@@ -38,16 +18,19 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
+import eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
+import eu.etaxonomy.cdm.io.common.ImportHelper;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.io.common.Source;
-import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.Marker;
+import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
-import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
 /**
  * @author a.mueller
@@ -79,22 +62,27 @@ public class BerlinModelNameStatusImport extends BerlinModelImportBase {
 	
 	@Override
 	protected boolean doInvoke(BerlinModelImportState state){
-			
+		boolean success = true;	
+		String dbAttrName;
+		String cdmAttrName;
+		
 		MapWrapper<TaxonNameBase> taxonNameMap = (MapWrapper<TaxonNameBase>)state.getStore(ICdmIO.TAXONNAME_STORE);
 		MapWrapper<ReferenceBase> referenceMap = (MapWrapper<ReferenceBase>)state.getStore(ICdmIO.REFERENCE_STORE);
 				
 		Set<TaxonNameBase> nameStore = new HashSet<TaxonNameBase>();
 		BerlinModelImportConfigurator config = state.getConfig();
 		Source source = config.getSource();
-		
+
 		logger.info("start makeNameStatus ...");
 		
 		try {
 			//get data from database
 			String strQuery = 
-					" SELECT NomStatusRel.*, NomStatus.NomStatus " + 
+					" SELECT NomStatusRel.*, NomStatus.NomStatus, RefDetail.Details " + 
 					" FROM NomStatusRel INNER JOIN " +
                       	" NomStatus ON NomStatusRel.NomStatusFk = NomStatus.NomStatusId " +
+                      	" LEFT OUTER JOIN RefDetail ON NomStatusRel.NomStatusRefDetailFk = RefDetail.RefDetailId AND " + 
+                      	" NomStatusRel.NomStatusRefFk = RefDetail.RefFk " +
                     " WHERE (1=1)";
 			ResultSet rs = source.getResultSet(strQuery) ;
 			
@@ -107,79 +95,55 @@ public class BerlinModelNameStatusImport extends BerlinModelImportBase {
 				int nomStatusRelId;
 				try {
 					nomStatusRelId = rs.getInt("RIdentifier");
-				} catch (Exception e) {
+				} catch (Exception e) {  //RIdentifier does not exist in BM database
 					nomStatusRelId = -1;
 				}
 				int nomStatusFk = rs.getInt("NomStatusFk");
 				int nameId = rs.getInt("nameFk");
-				int refFk = rs.getInt("nomStatusRefFk");
-				int detailFk = rs.getInt("nomStatusRefDetailFk");
+				
+				boolean doubtful = rs.getBoolean("DoubtfulFlag");
+//				ReferenceBase citation = rs.getString("");
+//				String microcitation = null;
 				
 				TaxonNameBase taxonName = taxonNameMap.get(nameId);
-				
-				//TODO
-				ReferenceBase citation = null;
-				String microcitation = null;
 				//TODO doubtful
 				
 				if (taxonName != null ){
-					if (nomStatusFk == NAME_ST_NOM_INVAL){
-						//TODO references, mikroref, etc �berall
-						taxonName.addStatus(NomenclaturalStatus.NewInstance(NomenclaturalStatusType.INVALID()));
-					}else if (nomStatusFk == NAME_ST_NOM_ILLEG){
-						taxonName.addStatus(NomenclaturalStatus.NewInstance(NomenclaturalStatusType.ILLEGITIMATE()));
-					}else if (nomStatusFk == NAME_ST_NOM_NUD){
-						taxonName.addStatus(NomenclaturalStatus.NewInstance(NomenclaturalStatusType.NUDUM()));
-					}else if (nomStatusFk == NAME_ST_NOM_REJ){
-						taxonName.addStatus(NomenclaturalStatus.NewInstance(NomenclaturalStatusType.REJECTED()));
-					}else if (nomStatusFk == NAME_ST_NOM_REJ_PROP){
-						taxonName.addStatus(NomenclaturalStatus.NewInstance(NomenclaturalStatusType.REJECTED_PROP()));
-					}else if (nomStatusFk == NAME_ST_NOM_UTIQUE_REJ){
-						taxonName.addStatus(NomenclaturalStatus.NewInstance(NomenclaturalStatusType.UTIQUE_REJECTED()));
-					}else if (nomStatusFk == NAME_ST_NOM_UTIQUE_REJ_PROP){
-						taxonName.addStatus(NomenclaturalStatus.NewInstance(NomenclaturalStatusType.UTIQUE_REJECTED_PROP()));
-					}else if (nomStatusFk == NAME_ST_NOM_CONS){
-						taxonName.addStatus(NomenclaturalStatus.NewInstance(NomenclaturalStatusType.CONSERVED()));
-					}else if (nomStatusFk == NAME_ST_NOM_CONS_PROP){
-						taxonName.addStatus(NomenclaturalStatus.NewInstance(NomenclaturalStatusType.CONSERVED_PROP()));
-					}else if (nomStatusFk == NAME_ST_ORTH_CONS){
-						taxonName.addStatus(NomenclaturalStatus.NewInstance(NomenclaturalStatusType.ORTHOGRAPHY_CONSERVED()));
-					}else if (nomStatusFk == NAME_ST_ORTH_CONS_PROP){
-						taxonName.addStatus(NomenclaturalStatus.NewInstance(NomenclaturalStatusType.ORTHOGRAPHY_CONSERVED_PROP()));
-					}else if (nomStatusFk == NAME_ST_NOM_SUPERFL){
-						taxonName.addStatus(NomenclaturalStatus.NewInstance(NomenclaturalStatusType.SUPERFLUOUS()));
-					}else if (nomStatusFk == NAME_ST_NOM_AMBIG){
-						taxonName.addStatus(NomenclaturalStatus.NewInstance(NomenclaturalStatusType.AMBIGUOUS()));
-					}else if (nomStatusFk == NAME_ST_NOM_PROVIS){
-						taxonName.addStatus(NomenclaturalStatus.NewInstance(NomenclaturalStatusType.PROVISIONAL()));
-					}else if (nomStatusFk == NAME_ST_NOM_DUB){
-						taxonName.addStatus(NomenclaturalStatus.NewInstance(NomenclaturalStatusType.DOUBTFUL()));
-					}else if (nomStatusFk == NAME_ST_NOM_NOV){
-						taxonName.addStatus(NomenclaturalStatus.NewInstance(NomenclaturalStatusType.NOVUM()));
-					}else if (nomStatusFk == NAME_ST_NOM_CONFUS){
-						taxonName.addStatus(NomenclaturalStatus.NewInstance(NomenclaturalStatusType.CONFUSUM()));
-					}else if (nomStatusFk == NAME_ST_NOM_ALTERN){
-						taxonName.addStatus(NomenclaturalStatus.NewInstance(NomenclaturalStatusType.ALTERNATIVE()));
-					}else if (nomStatusFk == NAME_ST_COMB_INVAL){
-						taxonName.addStatus(NomenclaturalStatus.NewInstance(NomenclaturalStatusType.COMBINATION_INVALID()));
-					}else {
+					try{
+						NomenclaturalStatus nomStatus = BerlinModelTransformer.nomStatusFkToNomStatus(nomStatusFk);
+						
+						//reference
+						makeReference(config, nomStatus, nameId, rs, state.getStores());
+						
+						//Details
+						dbAttrName = "details";
+						cdmAttrName = "citationMicroReference";
+						success &= ImportHelper.addStringValue(rs, nomStatus, dbAttrName, cdmAttrName);
+						
+						//doubtful
+						if (doubtful){
+							nomStatus.addMarker(Marker.NewInstance(MarkerType.IS_DOUBTFUL(), true));
+						}
+						taxonName.addStatus(nomStatus);
+						nameStore.add(taxonName);
+					}catch (UnknownCdmTypeException e) {
 						//TODO
 						logger.warn("NomStatusType " + nomStatusFk + " not yet implemented");
+						success = false;
 					}
-					nameStore.add(taxonName);
 					//TODO
-					//Reference
 					//ID
 					//etc.
 				}else{
 					logger.warn("TaxonName for NomStatus (" + nomStatusRelId + ") does not exist in store");
+					success = false;
 				}
 			}
 			logger.info("TaxonNames to save: " + nameStore.size());
 			getNameService().saveTaxonNameAll(nameStore);
 			
-			logger.info("end makeNameStatus ...");
-			return true;
+			logger.info("end makeNameStatus ..." + getSuccessString(success));
+			return success;
 		} catch (SQLException e) {
 			logger.error("SQLException:" +  e);
 			return false;
@@ -187,22 +151,51 @@ public class BerlinModelNameStatusImport extends BerlinModelImportBase {
 
 	}
 	
-	private static TeamOrPersonBase getAuthorTeam(MapWrapper<TeamOrPersonBase> authorMap, Object teamIdObject, int nameId){
-		if (teamIdObject == null){
-			return null;
-		}else {
-			int teamId = (Integer)teamIdObject;
-			TeamOrPersonBase author = authorMap.get(teamId);
-			if (author == null){
-				//TODO
-				logger.warn("AuthorTeam (teamId = " + teamId + ") for TaxonName (nameId = " + nameId + ")"+
-				" was not found in authorTeam store. Relation was not set!!");
-				return null;
-			}else{
-				return author;
+	private boolean makeReference(IImportConfigurator config, NomenclaturalStatus nomStatus, 
+			int nameId, ResultSet rs, Map<String, MapWrapper<? extends CdmBase>> stores) 
+			throws SQLException{
+		
+		MapWrapper<ReferenceBase> referenceMap = (MapWrapper<ReferenceBase>)stores.get(ICdmIO.REFERENCE_STORE);
+		MapWrapper<ReferenceBase> nomRefMap = (MapWrapper<ReferenceBase>)stores.get(ICdmIO.NOMREF_STORE);
+		MapWrapper<ReferenceBase> refDetailMap = (MapWrapper<ReferenceBase>)stores.get(ICdmIO.REF_DETAIL_STORE);
+		MapWrapper<ReferenceBase> nomRefDetailMap = (MapWrapper<ReferenceBase>)stores.get(ICdmIO.NOMREF_DETAIL_STORE);
+		
+		Object nomRefFk = rs.getObject("NomStatusRefFk");
+		int nomRefDetailFk = rs.getInt("NomStatusRefDetailFk");
+		//TODO
+//		boolean refDetailPrelim = rs.getBoolean("RefDetailPrelim");
+		
+		boolean success = true;
+		//nomenclatural Reference
+		if (referenceMap != null){
+			if (nomRefFk != null){
+				int nomRefFkInt = (Integer)nomRefFk;
+				
+				//get ref
+				ReferenceBase ref = nomRefDetailMap.get(nomRefDetailFk);
+				if (ref == null){
+					ref = refDetailMap.get(nomRefDetailFk);
+				}	
+				if (ref == null){
+					ref = referenceMap.get(nomRefFkInt);
+				}
+				if (ref == null){
+					ref = nomRefMap.get(nomRefFkInt);
+				}									
+				
+				//setRef
+				if (ref == null ){
+					//TODO
+					if (! config.isIgnoreNull()){logger.warn("Reference (refFk = " + nomRefFkInt + ") for NomStatus of TaxonName (nameId = " + nameId + ")"+
+						" was not found in reference store. Nomenclatural reference was not set!!");}
+				}else{
+					nomStatus.setCitation(ref);
+				}
 			}
 		}
+		return success;
 	}
+
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)

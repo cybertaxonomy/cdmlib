@@ -13,14 +13,14 @@ package eu.etaxonomy.cdm.io.berlinModel.out.mapper;
 import org.apache.log4j.Logger;
 import org.hsqldb.Types;
 
-import eu.etaxonomy.cdm.io.common.DbExportState;
+import eu.etaxonomy.cdm.io.common.DbExportStateBase;
 
 /**
  * @author a.mueller
  * @created 12.05.2009
  * @version 1.0
  */
-public class DbClobMapper extends DbSingleAttributeExportMapperBase<DbExportState<?>> implements IDbExportMapper<DbExportState<?>> {
+public class DbClobMapper extends DbSingleAttributeExportMapperBase<DbExportStateBase<?>> implements IDbExportMapper<DbExportStateBase<?>> {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DbClobMapper.class);
 	

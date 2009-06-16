@@ -22,6 +22,12 @@ public interface IImportConfigurator extends IIoConfigurator {
 		CHECK_AND_IMPORT,
 	}
 	
+	public static enum EDITOR{
+		NO_EDITORS,  //leaves out createdBy and updatedBy information
+		EDITOR_AS_ANNOTATION,//save createdBy and updatedBy in annotations
+		EDITOR_AS_EDITOR, //save createdBy and updatedBy in createdBy and updatedBy
+	}
+	
 	public static enum DO_REFERENCES{
 		NONE,
 		NOMENCLATURAL,
@@ -60,6 +66,16 @@ public interface IImportConfigurator extends IIoConfigurator {
 	 */
 	public void setCheck(CHECK check);
 
+	/**
+	 * @return the editor 
+	 */
+	public EDITOR getEditor();
+
+	/**
+	 * @param editor sets the way how editing (created, updated) information is handled
+	 */
+	public void setEditor(EDITOR editor);
+	
 	/**
 	 * If true, no errors occurs if objects are not found that should exist. This may
 	 * be needed e.g. when only subsets of the data are imported.
@@ -103,6 +119,15 @@ public interface IImportConfigurator extends IIoConfigurator {
 	public boolean isDoFacts();
 
 	public void setDoFacts(boolean doFacts);
+	
+	public boolean isDoMarker();
+	
+	public void setDoMarker(boolean doMarker);
+
+	public void setDoUser(boolean doUser);
+	
+	public boolean isDoUser();
+
 
 	/**
 	 * @return the doOccurrence

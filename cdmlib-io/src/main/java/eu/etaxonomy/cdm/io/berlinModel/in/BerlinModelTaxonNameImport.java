@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.io.berlinModel.in;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Map;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
@@ -25,8 +26,8 @@ import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.Marker;
-import eu.etaxonomy.cdm.model.common.MarkerType;
+import eu.etaxonomy.cdm.model.common.Extension;
+import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.CultivarPlantName;
 import eu.etaxonomy.cdm.model.name.NonViralName;
@@ -46,6 +47,8 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 public class BerlinModelTaxonNameImport extends BerlinModelImportBase {
 	private static final Logger logger = Logger.getLogger(BerlinModelTaxonNameImport.class);
 
+	public static final UUID SOURCE_ACC_UUID = UUID.fromString("c3959b4f-d876-4b7a-a739-9260f4cafd1c");
+	
 	private static int modCount = 5000;
 
 	public BerlinModelTaxonNameImport(){
@@ -125,6 +128,8 @@ public class BerlinModelTaxonNameImport extends BerlinModelImportBase {
 				Object exAuthorFk = rs.getObject("ExAuthorTeamFk");
 				Object basAuthorFk = rs.getObject("BasAuthorTeamFk");
 				Object exBasAuthorFk = rs.getObject("ExBasAuthorTeamFk");
+				String strCultivarGroupName = rs.getString("CultivarGroupName");
+				String strCultivarName = rs.getString("CultivarName");
 				
 				try {
 					boolean useUnknownRank = true;
@@ -133,6 +138,12 @@ public class BerlinModelTaxonNameImport extends BerlinModelImportBase {
 					TaxonNameBase taxonNameBase;
 					if (config.getNomenclaturalCode() != null){
 						taxonNameBase = config.getNomenclaturalCode().getNewTaxonNameInstance(rank);
+						//check cultivar
+						if (taxonNameBase instanceof BotanicalName){
+							if (CdmUtils.isNotEmpty(strCultivarGroupName) && CdmUtils.isNotEmpty(strCultivarName)){
+								taxonNameBase = CultivarPlantName.NewInstance(rank);
+							}
+						}
 					}else{
 						taxonNameBase = NonViralName.NewInstance(rank);
 					}
@@ -140,6 +151,7 @@ public class BerlinModelTaxonNameImport extends BerlinModelImportBase {
 					if (rank == null){
 						//TODO rank should never be null or a more sophisticated algorithm has to be implemented for genus/supraGenericName
 						logger.warn("Rank is null. Genus epethiton was imported. May be wrong");
+						success = false;
 					}
 					if (rank != null && rank.isSupraGeneric()){
 						dbAttrName = "supraGenericName";
@@ -166,10 +178,6 @@ public class BerlinModelTaxonNameImport extends BerlinModelImportBase {
 					cdmAttrName = "appendedPhrase";
 					success &= ImportHelper.addStringValue(rs, taxonNameBase, dbAttrName, cdmAttrName);
 					
-					dbAttrName = "preliminaryFlag";
-					cdmAttrName = "XX" + "protectedTitleCache";
-					success &= ImportHelper.addBooleanValue(rs, taxonNameBase, dbAttrName, cdmAttrName);
-					
 					//Details
 					dbAttrName = "details";
 					cdmAttrName = "nomenclaturalMicroReference";
@@ -178,13 +186,15 @@ public class BerlinModelTaxonNameImport extends BerlinModelImportBase {
 					//nomRef
 					success &= makeNomenclaturalReference(config, taxonNameBase, nameId, rs, state.getStores());
 
+					//Source_Acc
+					String sourceAcc = rs.getString("Source_Acc");
+					if (CdmUtils.isNotEmpty(sourceAcc)){
+						ExtensionType sourceAccExtensionType = getExtensionType(SOURCE_ACC_UUID, "Source_Acc","Source_Acc","Source_Acc");
+						Extension datesExtension = Extension.NewInstance(taxonNameBase, sourceAcc, sourceAccExtensionType);
+					}
+					
 					//created, notes
 					success &= doIdCreatedUpdatedNotes(config, taxonNameBase, rs, nameId, namespace);
-					
-					//Marker
-					boolean flag = true;
-					Marker marker = Marker.NewInstance(MarkerType.TO_BE_CHECKED() ,flag);
-					taxonNameBase.addMarker(marker);
 
 					//NonViralName
 					if (taxonNameBase instanceof NonViralName){
@@ -198,9 +208,12 @@ public class BerlinModelTaxonNameImport extends BerlinModelImportBase {
 							nonViralName.setExBasionymAuthorTeam(getAuthorTeam(teamMap, exBasAuthorFk, nameId, config));
 						}else{
 							logger.warn("TeamMap is null");
+							success = false;
 						}
 					}//nonviralName
 
+
+					
 					//zoologicalName
 					if (taxonNameBase instanceof ZoologicalName){
 						ZoologicalName zooName = (ZoologicalName)taxonNameBase;
@@ -213,14 +226,18 @@ public class BerlinModelTaxonNameImport extends BerlinModelImportBase {
 						
 					}
 					
-					
-					//TODO
-					//Source_Acc
-					//OrthoProjection
-
-					//TODO
-					//preliminaryFlag see above
-					
+//					dbAttrName = "preliminaryFlag";
+					Boolean preliminaryFlag = rs.getBoolean("PreliminaryFlag");
+					if (preliminaryFlag == true){
+						//Computes all caches and sets 
+						taxonNameBase.setFullTitleCache(taxonNameBase.getFullTitleCache(), true);
+						taxonNameBase.setTitleCache(taxonNameBase.getTitleCache(), true);
+						if (taxonNameBase instanceof NonViralName){
+							NonViralName nvn = (NonViralName)taxonNameBase;
+							nvn.setNameCache(nvn.getNameCache(), true);
+							nvn.setAuthorshipCache(nvn.getAuthorshipCache(), true);
+						}
+					}
 					taxonNameMap.put(nameId, taxonNameBase);
 					
 				}
@@ -235,13 +252,13 @@ public class BerlinModelTaxonNameImport extends BerlinModelImportBase {
 			
 //			makeNameSpecificData(nameMap);
 
-			logger.info("end makeTaxonNames ...");
+			logger.info("end makeTaxonNames ..." + getSuccessString(success));
+			
 			return success;
 		} catch (SQLException e) {
 			logger.error("SQLException:" +  e);
 			return false;
 		}
-
 	}
 	
 	private boolean makeZoologialName(ResultSet rs, ZoologicalName zooName, int nameId) 
@@ -270,7 +287,7 @@ public class BerlinModelTaxonNameImport extends BerlinModelImportBase {
 		return success;
 	}
 	
-	private boolean makeBotanicalNamePart(ResultSet rs, BotanicalName botanicalName){
+	private boolean makeBotanicalNamePart(ResultSet rs, BotanicalName botanicalName)throws SQLException{
 		boolean success = true;
 		String dbAttrName;
 		String cdmAttrName;
@@ -291,10 +308,19 @@ public class BerlinModelTaxonNameImport extends BerlinModelImportBase {
 		cdmAttrName = "isTrinomHybrid";
 		success &= ImportHelper.addBooleanValue(rs, botanicalName, dbAttrName, cdmAttrName);
 
-		if (botanicalName instanceof CultivarPlantName){
-			//TODO
-			//CultivarGroupName
-			//CultivarName
+		try {
+			String strCultivarGroupName = rs.getString("CultivarGroupName");
+			String strCultivarName = rs.getString("CultivarName");
+			if (botanicalName instanceof CultivarPlantName){
+				CultivarPlantName cultivarName = (CultivarPlantName)botanicalName;
+				String concatCultivarName = CdmUtils.concat("-", strCultivarName, strCultivarGroupName);
+				if (CdmUtils.isNotEmpty(strCultivarGroupName) && CdmUtils.isNotEmpty(strCultivarName)){
+					logger.warn("CDM does not support cultivarGroupName and CultivarName together: " + concatCultivarName);
+				}
+				cultivarName.setCultivarName(strCultivarGroupName);
+			}
+		} catch (SQLException e) {
+			throw e;
 		}
 		return success;
 	}
@@ -332,12 +358,15 @@ public class BerlinModelTaxonNameImport extends BerlinModelImportBase {
 				//setNomRef
 				if (nomReference == null ){
 					//TODO
-					if (! config.isIgnoreNull()){logger.warn("Nomenclatural reference (nomRefFk = " + nomRefFkInt + ") for TaxonName (nameId = " + nameId + ")"+
-						" was not found in reference store. Nomenclatural reference was not set!!");}
-				}else if (! INomenclaturalReference.class.isAssignableFrom(nomReference.getClass())){
-					logger.error("Nomenclatural reference (nomRefFk = " + nomRefFkInt + ") for TaxonName (nameId = " + nameId + ")"+
-					" is not assignable from INomenclaturalReference. Relation was not set!! (Class = " + nomReference.getClass()+ ")");
+					if (! config.isIgnoreNull()){
+						logger.warn("Nomenclatural reference (nomRefFk = " + nomRefFkInt + ") for TaxonName (nameId = " + nameId + ")"+
+							" was not found in reference store. Nomenclatural reference was not set!!");
+					}
 				}else{
+					if (! INomenclaturalReference.class.isAssignableFrom(nomReference.getClass())){
+						logger.warn("Nomenclatural reference (nomRefFk = " + nomRefFkInt + ") for TaxonName (nameId = " + nameId + ")"+
+								" is not assignable from INomenclaturalReference. (Class = " + nomReference.getClass()+ ")");
+					}
 					nomReference.setNomenclaturallyRelevant(true);
 					taxonNameBase.setNomenclaturalReference(nomReference);
 				}

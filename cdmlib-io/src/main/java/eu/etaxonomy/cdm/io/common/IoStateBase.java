@@ -18,9 +18,9 @@ import org.apache.log4j.Logger;
  * @created 11.05.2009
  * @version 1.0
  */
-public class IoState<CONFIG extends IIoConfigurator> {
+public abstract class IoStateBase<CONFIG extends IIoConfigurator> {
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(IoState.class);
+	private static final Logger logger = Logger.getLogger(IoStateBase.class);
 	
 	CONFIG config;
 	
@@ -37,4 +37,7 @@ public class IoState<CONFIG extends IIoConfigurator> {
 	public void setConfig(CONFIG config) {
 		this.config = config;
 	}
+	
+	public abstract void initialize(CONFIG config);
+	
 }

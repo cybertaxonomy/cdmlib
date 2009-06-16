@@ -17,7 +17,7 @@ import java.sql.Types;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.berlinModel.out.BerlinModelExportBase;
-import eu.etaxonomy.cdm.io.common.DbExportState;
+import eu.etaxonomy.cdm.io.common.DbExportStateBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
@@ -25,7 +25,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * @created 12.05.2009
  * @version 1.0
  */
-public class MethodMapper extends DbSingleAttributeExportMapperBase<DbExportState<?>> implements IDbExportMapper<DbExportState<?>> {
+public class MethodMapper extends DbSingleAttributeExportMapperBase<DbExportStateBase<?>> implements IDbExportMapper<DbExportStateBase<?>> {
 	private static final Logger logger = Logger.getLogger(MethodMapper.class);
 	
 	private Method method;
@@ -84,7 +84,7 @@ public class MethodMapper extends DbSingleAttributeExportMapperBase<DbExportStat
 	@Override
 	protected Object getValue(CdmBase cdmBase) {
 		try{	
-			if (this.parameterTypes.length > 1 && parameterTypes[1].equals(DbExportState.class)){
+			if (this.parameterTypes.length > 1 && parameterTypes[1].equals(DbExportStateBase.class)){
 				return method.invoke(null, cdmBase, getState());
 			}else{
 				return method.invoke(null, cdmBase);

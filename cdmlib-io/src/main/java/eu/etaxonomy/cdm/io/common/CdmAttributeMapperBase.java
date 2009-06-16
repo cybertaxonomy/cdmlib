@@ -14,6 +14,8 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
+
 /**
  * @author a.mueller
  * @created 05.08.2008
@@ -30,5 +32,12 @@ public abstract class CdmAttributeMapperBase {
 	public abstract List<String> getSourceAttributeList();
 	
 	public abstract List<String> getDestinationAttributeList();
+	
+	public String toString(){
+		String[] a;
+		String sourceAtt = CdmUtils.concat(",", getSourceAttributeList().toArray(new String[1]));
+		String destAtt = CdmUtils.concat(",", getDestinationAttributeList().toArray(new String[1]));
+		return this.getClass().getSimpleName() +"[" + sourceAtt + "->" + destAtt + "]";
+	}
 	
 }

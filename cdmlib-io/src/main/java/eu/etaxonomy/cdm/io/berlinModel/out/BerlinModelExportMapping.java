@@ -21,7 +21,7 @@ import eu.etaxonomy.cdm.io.berlinModel.out.mapper.IDbExportMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.IndexCounter;
 import eu.etaxonomy.cdm.io.common.CdmAttributeMapperBase;
 import eu.etaxonomy.cdm.io.common.CdmIoMapping;
-import eu.etaxonomy.cdm.io.common.DbExportState;
+import eu.etaxonomy.cdm.io.common.DbExportStateBase;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
@@ -55,7 +55,7 @@ public class BerlinModelExportMapping extends CdmIoMapping {
 			
 			for (CdmAttributeMapperBase mapper : this.mapperList){
 				if (mapper instanceof IDbExportMapper){
-					IDbExportMapper<DbExportState<?>> dbMapper = (IDbExportMapper)mapper;
+					IDbExportMapper<DbExportStateBase<?>> dbMapper = (IDbExportMapper)mapper;
 					dbMapper.initialize(preparedStatement, index, state, dbTableName);
 				}else{
 					logger.warn("mapper is not of type " + IDbExportMapper.class.getSimpleName());
@@ -77,7 +77,7 @@ public class BerlinModelExportMapping extends CdmIoMapping {
 			boolean result = true;
 			for (CdmAttributeMapperBase mapper : this.mapperList){
 				if (mapper instanceof IDbExportMapper){
-					IDbExportMapper<DbExportState<?>> dbMapper = (IDbExportMapper)mapper;
+					IDbExportMapper<DbExportStateBase<?>> dbMapper = (IDbExportMapper)mapper;
 					try {
 						result &= dbMapper.invoke(cdmBase);
 					} catch (Exception e) {

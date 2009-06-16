@@ -15,38 +15,37 @@ import org.hsqldb.Types;
 
 import eu.etaxonomy.cdm.io.common.DbExportStateBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.TimePeriod;
+import eu.etaxonomy.cdm.model.common.User;
 
 /**
  * @author a.mueller
  * @created 12.05.2009
  * @version 1.0
  */
-public class DbTimePeriodMapper extends DbSingleAttributeExportMapperBase<DbExportStateBase<?>> implements IDbExportMapper<DbExportStateBase<?>> {
-	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(DbTimePeriodMapper.class);
+public class DbUserMapper extends DbSingleAttributeExportMapperBase<DbExportStateBase<?>> implements IDbExportMapper<DbExportStateBase<?>> {
+	private static final Logger logger = Logger.getLogger(DbUserMapper.class);
 	
-	public static DbTimePeriodMapper NewInstance(String cdmAttributeString, String dbAttributeString){
-		return new DbTimePeriodMapper(cdmAttributeString, dbAttributeString, null, true);
+	public static DbUserMapper NewInstance(String cdmAttributeString, String dbAttributeString){
+		return new DbUserMapper(cdmAttributeString, dbAttributeString, null, true);
 	}
 	
-	public static DbTimePeriodMapper NewFacultativeInstance(String cdmAttributeString, String dbAttributeString){
-		return new DbTimePeriodMapper(cdmAttributeString, dbAttributeString, null, false);
+	public static DbUserMapper NewFacultativeInstance(String cdmAttributeString, String dbAttributeString){
+		return new DbUserMapper(cdmAttributeString, dbAttributeString, null, false);
 	}
 
-	public static DbTimePeriodMapper NewInstance(String cdmAttributeString, String dbAttributeString, String defaultValue){
-		return new DbTimePeriodMapper(cdmAttributeString, dbAttributeString, defaultValue, false);
+	public static DbUserMapper NewInstance(String cdmAttributeString, String dbAttributeString, String defaultValue){
+		return new DbUserMapper(cdmAttributeString, dbAttributeString, defaultValue, false);
 	}
 	
-	public static DbTimePeriodMapper NewInstance(String cdmAttributeString, String dbAttributeString, String defaultValue, boolean obligatory){
-		return new DbTimePeriodMapper(cdmAttributeString, dbAttributeString, defaultValue, obligatory);
+	public static DbUserMapper NewInstance(String cdmAttributeString, String dbAttributeString, String defaultValue, boolean obligatory){
+		return new DbUserMapper(cdmAttributeString, dbAttributeString, defaultValue, obligatory);
 	}
 
 	/**
 	 * @param dbAttributeString
 	 * @param cdmAttributeString
 	 */
-	private DbTimePeriodMapper(String cdmAttributeString, String dbAttributeString, String defaultValue, boolean obligatory) {
+	private DbUserMapper(String cdmAttributeString, String dbAttributeString, String defaultValue, boolean obligatory) {
 		super(cdmAttributeString, dbAttributeString, defaultValue, obligatory);
 	}
 	
@@ -58,9 +57,9 @@ public class DbTimePeriodMapper extends DbSingleAttributeExportMapperBase<DbExpo
 	@Override
 	protected Object getValue(CdmBase cdmBase) {
 		String result = null;
-		TimePeriod timePeriod = (TimePeriod)super.getValue(cdmBase);
-		if (timePeriod != null){
-			result = timePeriod.toString();
+		User user = (User)super.getValue(cdmBase);
+		if (user != null){
+			result = user.getUsername();
 		}
 		return result;
 	}

@@ -17,14 +17,21 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer;
+import eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase;
+import eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelTaxonImport;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.CreatedAndNotesMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbBooleanMapper;
+import eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbExtensionMapper;
+import eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbIntegerExtensionMapper;
+import eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbMarkerMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbNullMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbObjectMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.MethodMapper;
 import eu.etaxonomy.cdm.io.common.IExportConfigurator;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.ExtensionType;
+import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 
@@ -64,20 +71,38 @@ public class BerlinModelTaxonExport extends BerlinModelExportBase<TaxonBase> {
 		BerlinModelExportMapping mapping = new BerlinModelExportMapping(tableName);
 		mapping.addMapper(DbObjectMapper.NewInstance("name", "PTNameFk"));
 		mapping.addMapper(DbObjectMapper.NewInstance("sec", "PTRefFk"));
-		mapping.addMapper(DbNullMapper.NewInstance("Detail", Types.VARCHAR));
 		mapping.addMapper(MethodMapper.NewInstance("StatusFk", this));
 		mapping.addMapper(DbBooleanMapper.NewInstance("isDoubtful", "DoubtfulFlag"));
+		//detail
+		ExtensionType detailExtensionType = (ExtensionType)getTermService().getTermByUuid(BerlinModelTaxonImport.DETAIL_EXT_UUID);
+		if (detailExtensionType != null){
+			mapping.addMapper(DbExtensionMapper.NewInstance(detailExtensionType, "Detail"));
+		}
+		//idInSource
+		ExtensionType idInSourceExtensionType = (ExtensionType)getTermService().getTermByUuid(BerlinModelImportBase.ID_IN_SOURCE_EXT_UUID);
+		if (idInSourceExtensionType != null){
+			mapping.addMapper(DbIntegerExtensionMapper.NewInstance(idInSourceExtensionType, "IdInSource"));
+		}
+		//namePhrase
+		ExtensionType namePhraseExtensionType = (ExtensionType)getTermService().getTermByUuid(BerlinModelTaxonImport.APPENDED_TITLE_PHRASE);
+		if (namePhraseExtensionType != null){
+			mapping.addMapper(DbExtensionMapper.NewInstance(namePhraseExtensionType, "NamePhrase"));
+		}
+		//useNameCacheFlag
+		MarkerType useNameCacheMarkerType = (MarkerType)getTermService().getTermByUuid(BerlinModelTaxonImport.USE_NAME_CACHE);
+		if (useNameCacheMarkerType != null){
+			mapping.addMapper(DbMarkerMapper.NewInstance(useNameCacheMarkerType, "UseNameCacheFlag"));
+		}
+		//publisheFlag
+		mapping.addMapper(DbMarkerMapper.NewInstance(MarkerType.PUBLISH(), "PublishFlag"));
+		
+		//notes
 		mapping.addMapper(CreatedAndNotesMapper.NewInstance());
 
 		//TODO
 //	        ,[RIdentifier]
-//		        ,[IdInSource]
 //		        ,ProParte etc.
-//		        ,[NamePhrase]
-//		        ,[UseNameCacheFlag]
-//		        ,[PublishFlag]
-//		TaxonBase<?> n = null;
-//		n.isDoubtful()
+
 		return mapping;
 	}
 	
@@ -100,7 +125,7 @@ public class BerlinModelTaxonExport extends BerlinModelExportBase<TaxonBase> {
 				success &= mapping.invoke(taxon);
 			}
 			commitTransaction(txStatus);
-			logger.info("end make " + pluralString + " ...");
+			logger.info("end make " + pluralString + " ..." + getSuccessString(success));
 			
 			return success;
 		}catch(SQLException e){

@@ -19,6 +19,7 @@ import eu.etaxonomy.cdm.api.service.IService;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
@@ -29,17 +30,18 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  * @created 11.05.2009
  * @version 1.0
  */
-public class ImportState<CONFIG extends ImportConfiguratorBase> extends IoState<CONFIG> {
+public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase> extends IoStateBase<CONFIG> {
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(ImportState.class);
+	private static final Logger logger = Logger.getLogger(ImportStateBase.class);
 	
 	//different type of stores that are used by the known imports
 	protected Map<String, MapWrapper<? extends CdmBase>> stores = new HashMap<String, MapWrapper<? extends CdmBase>>();
 	
 	protected IService<CdmBase> service = null;
 
-	public ImportState() {
+	public ImportStateBase() {
 		super();
+		stores.put(ICdmIO.USER_STORE, new MapWrapper<User>(service));
 		stores.put(ICdmIO.PERSON_STORE, new MapWrapper<Person>(service));
 		stores.put(ICdmIO.TEAM_STORE, new MapWrapper<TeamOrPersonBase<?>>(service));
 		stores.put(ICdmIO.REFERENCE_STORE, new MapWrapper<ReferenceBase>(service));

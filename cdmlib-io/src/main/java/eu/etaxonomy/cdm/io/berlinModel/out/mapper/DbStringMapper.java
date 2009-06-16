@@ -13,7 +13,7 @@ package eu.etaxonomy.cdm.io.berlinModel.out.mapper;
 import org.apache.log4j.Logger;
 import org.hsqldb.Types;
 
-import eu.etaxonomy.cdm.io.common.DbExportState;
+import eu.etaxonomy.cdm.io.common.DbExportStateBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
@@ -21,7 +21,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * @created 12.05.2009
  * @version 1.0
  */
-public class DbStringMapper extends DbSingleAttributeExportMapperBase<DbExportState<?>> implements IDbExportMapper<DbExportState<?>> {
+public class DbStringMapper extends DbSingleAttributeExportMapperBase<DbExportStateBase<?>> implements IDbExportMapper<DbExportStateBase<?>> {
 	private static final Logger logger = Logger.getLogger(DbStringMapper.class);
 	
 	public static DbStringMapper NewInstance(String cdmAttributeString, String dbAttributeString){

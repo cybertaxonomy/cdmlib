@@ -10,13 +10,8 @@
 
 package eu.etaxonomy.cdm.io.berlinModel.out.mapper;
 
-import java.sql.SQLException;
-
 import org.apache.log4j.Logger;
 import org.hsqldb.Types;
-
-import eu.etaxonomy.cdm.io.common.ImportHelper;
-import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
  * @author a.mueller
@@ -24,6 +19,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * @version 1.0
  */
 public class DbBooleanMapper extends DbSingleAttributeExportMapperBase implements IDbExportMapper {
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DbBooleanMapper.class);
 	
 	public static DbBooleanMapper NewInstance(String cdmAttributeString, String dbAttributeString){
@@ -50,38 +46,6 @@ public class DbBooleanMapper extends DbSingleAttributeExportMapperBase implement
 		super(cdmAttributeString, dbAttributeString, defaultValue, obligatory);
 	}
 	
-	
-//	/* (non-Javadoc)
-//	 * @see eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbExportMapperBase#doInvoke(eu.etaxonomy.cdm.model.common.CdmBase)
-//	 */
-//	@Override
-//	public boolean doInvoke(CdmBase cdmBase) throws SQLException{
-//		try {
-//			Boolean value = (Boolean)getValue(cdmBase);
-//			if (value == null){
-//				getPreparedStatement().setNull(getIndex(), Types.BOOLEAN);
-//			}else{
-//				getPreparedStatement().setBoolean(getIndex(), value);
-//			}
-//			return true;
-//		} catch (SQLException e) {
-//			logger.warn("SQL Exception: " + e.getLocalizedMessage());
-//			throw e;
-//		}
-//	}
-	
-
-//	/* (non-Javadoc)
-//	 * @see eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbSingleAttributeExportMapperBase#getValue()
-//	 */
-//	@Override
-//	protected Object getValue(CdmBase cdmBase) {
-//		boolean obligat = false;
-//		return (Boolean)ImportHelper.getValue(cdmBase, this.getSourceAttribute(), this.getTypeClass(), false, obligat);
-//	}
-	
-	
-
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbSingleAttributeExportMapperBase#getValueType()
 	 */

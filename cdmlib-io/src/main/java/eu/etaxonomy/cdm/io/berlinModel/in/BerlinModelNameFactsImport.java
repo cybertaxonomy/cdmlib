@@ -18,7 +18,6 @@ import java.net.URL;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -30,7 +29,6 @@ import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.io.common.Source;
-import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
@@ -80,7 +78,7 @@ public class BerlinModelNameFactsImport  extends BerlinModelImportBase  {
 	 */
 	@Override
 	protected boolean doInvoke(BerlinModelImportState state){
-		
+		boolean success = true;
 		MapWrapper<TaxonNameBase> taxonNameMap = (MapWrapper<TaxonNameBase>)state.getStore(ICdmIO.TAXONNAME_STORE);
 		MapWrapper<ReferenceBase> referenceMap = (MapWrapper<ReferenceBase>)state.getStore(ICdmIO.REFERENCE_STORE);
 		
@@ -132,6 +130,7 @@ public class BerlinModelNameFactsImport  extends BerlinModelImportBase  {
 							}//end NAME_FACT_PROTOLOGUE
 						}catch(NullPointerException e){
 							logger.warn("MediaUrl and/or MediaPath not set. Could not get protologue.");
+							success = false;
 						}						
 					}else if (category.equalsIgnoreCase(NAME_FACT_ALSO_PUBLISHED_IN)){
 						if (! nameFact.equals("")){
@@ -148,6 +147,7 @@ public class BerlinModelNameFactsImport  extends BerlinModelImportBase  {
 					}else {
 						//TODO
 						logger.warn("NameFactCategory '" + category + "' not yet implemented");
+						success = false;
 					}
 					
 					//TODO
@@ -165,6 +165,7 @@ public class BerlinModelNameFactsImport  extends BerlinModelImportBase  {
 				}else{
 					//TODO
 					logger.warn("TaxonName for NameFact " + nameFactId + " does not exist in store");
+					success = false;
 				}
 				//put
 			}
@@ -174,8 +175,8 @@ public class BerlinModelNameFactsImport  extends BerlinModelImportBase  {
 			logger.info("Names to save: " + taxonNameStore.size());
 			getNameService().saveTaxonNameAll(taxonNameStore);	
 			
-			logger.info("end makeNameFacts ...");
-			return true;
+			logger.info("end makeNameFacts ..." + getSuccessString(success));
+			return success;
 		} catch (SQLException e) {
 			logger.error("SQLException:" +  e);
 			return false;

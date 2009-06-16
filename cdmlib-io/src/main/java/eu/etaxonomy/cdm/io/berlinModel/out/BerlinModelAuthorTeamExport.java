@@ -107,7 +107,7 @@ public class BerlinModelAuthorTeamExport extends BerlinModelExportBase<Team> {
 			
 			commitTransaction(txStatus);
 			
-			logger.info("end make "+pluralString+"  ...");
+			logger.info("end make "+pluralString+"  ..." + getSuccessString(success));
 			return success;
 		}catch(SQLException e){
 			e.printStackTrace();

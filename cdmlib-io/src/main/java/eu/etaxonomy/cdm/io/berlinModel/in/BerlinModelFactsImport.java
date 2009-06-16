@@ -13,7 +13,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -25,8 +24,10 @@ import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.io.common.Source;
-import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.Marker;
+import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
@@ -45,6 +46,8 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 public class BerlinModelFactsImport  extends BerlinModelImportBase {
 	private static final Logger logger = Logger.getLogger(BerlinModelFactsImport.class);
 
+	public static final String SEQUENCE_PREFIX = "ORDER: ";
+	
 	private int modCount = 10000;
 	
 	public BerlinModelFactsImport(){
@@ -57,10 +60,9 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 	@Override
 	protected boolean doCheck(IImportConfigurator config){
 		boolean result = true;
-		logger.warn("Checking for Facts not yet implemented");
-		//result &= checkArticlesWithoutJournal(bmiConfig);
-		//result &= checkPartOfJournal(bmiConfig);
-		
+		BerlinModelImportConfigurator bmiConfig = (BerlinModelImportConfigurator)config;
+		logger.warn("Checking for Facts not yet fully implemented");
+		result &= checkDesignationRefsExist(bmiConfig);
 		return result;
 	}
 
@@ -78,11 +80,8 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 	
 	private MapWrapper<Feature> invokeFactCategories(BerlinModelImportConfigurator bmiConfig){
 		
-//		Map<Integer, Feature> featureMap = new HashMap<Integer, Feature>();
 		MapWrapper<Feature> result = bmiConfig.getFeatureMap();
-
 		Source source = bmiConfig.getSource();
-
 		
 		try {
 			//get data from database
@@ -155,10 +154,6 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 		
 		MapWrapper<Feature> featureMap = invokeFactCategories(config);
 		
-		//for testing only
-		//TaxonBase taxonBase = Taxon.NewInstance(BotanicalName.NewInstance(null), null);
-		
-		
 		try {
 			//get data from database
 			String strQuery = 
@@ -166,54 +161,42 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 					" FROM Fact " +
                       	" INNER JOIN PTaxon ON Fact.PTNameFk = PTaxon.PTNameFk AND Fact.PTRefFk = PTaxon.PTRefFk " +
                       	" LEFT OUTER JOIN RefDetail ON Fact.FactRefDetailFk = RefDetail.RefDetailId AND Fact.FactRefFk = RefDetail.RefFk " +
-                      	" WHERE (1=1)";
+                      	" WHERE (1=1)" + 
+                        " ORDER By Sequence";
 			ResultSet rs = source.getResultSet(strQuery) ;
 
 			int i = 0;
-			//for each reference
+			//for each fact
 			while (rs.next()){
 				try{
 					if ((i++ % modCount) == 0){ logger.info("Facts handled: " + (i-1));}
 					
-					//Map<String, Object> valueMap = getValueMap(rs);
-					
 					int factId = rs.getInt("factId");
-					
-					
 					Object taxonIdObj = rs.getObject("taxonId");
 					int taxonId = rs.getInt("taxonId");
 					Object factRefFkObj = rs.getObject("factRefFk");
 					int factRefFk = rs.getInt("factRefFk");
 					Object categoryFkObj = rs.getObject("factCategoryFk");
 					Integer categoryFk = rs.getInt("factCategoryFk");
-					
 					String details = rs.getString("Details");
-	//				int ptDesignationRefFk = rs.getInt("PTDesignationRefFk");
-	//				String ptDesignation details = rs.getInt("PTDesignationRefDetailFk");
 					String fact = CdmUtils.Nz(rs.getString("Fact"));
 					String notes = CdmUtils.Nz(rs.getString("notes"));
+					Boolean doubtfulFlag = rs.getBoolean("DoubtfulFlag");
+					Boolean publishFlag = rs.getBoolean("publishFlag");
 					
+					TaxonBase taxonBase = getTaxon(taxonMap, taxonIdObj, taxonId);
+					Feature feature = getFeature(featureMap, categoryFkObj, categoryFk) ;
 					
-					
-					TaxonBase taxonBase;
-					if (taxonIdObj != null){
-						taxonBase = taxonMap.get(taxonId);
+					if (taxonBase == null){
+						logger.warn("Taxon for Fact " + factId + " does not exist in store");
+						result = false;
 					}else{
-						taxonBase = null;
-					}
-					Feature feature;
-					if (categoryFkObj != null){
-						feature = featureMap.get(categoryFk); 
-					}else{
-						feature = null;
-					}
-					
-					if (taxonBase != null){
 						Taxon taxon;
 						if ( taxonBase instanceof Taxon ) {
 							taxon = (Taxon) taxonBase;
 						}else{
 							logger.warn("TaxonBase " + (taxonIdObj==null?"(null)":taxonIdObj) + " for Fact " + factId + " was not of type Taxon but: " + taxonBase.getClass().getSimpleName());
+							result = false;
 							continue;
 						}
 						
@@ -228,8 +211,6 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 						
 						//textData
 						TextData textData = TextData.NewInstance();
-						//TODO textData.putText(fact, bmiConfig.getFactLanguage());  //doesn't work because  bmiConfig.getFactLanguage() is not not a persistent Language Object
-						//throws  in thread "main" org.springframework.dao.InvalidDataAccessApiUsageException: object references an unsaved transient instance - save the transient instance before flushing: eu.etaxonomy.cdm.model.common.Language; nested exception is org.hibernate.TransientObjectException: object references an unsaved transient instance - save the transient instance before flushing: eu.etaxonomy.cdm.model.common.Language
 						
 						//for diptera database
 						if (categoryFk == 99 && notes.contains("<OriginalName>")){
@@ -237,6 +218,8 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 							notes = notes.replaceAll("</OriginalName>", "");
 							fact = notes + ": " +  fact ;
 						}
+						//TODO textData.putText(fact, bmiConfig.getFactLanguage());  //doesn't work because  bmiConfig.getFactLanguage() is not not a persistent Language Object
+						//throws  in thread "main" org.springframework.dao.InvalidDataAccessApiUsageException: object references an unsaved transient instance - save the transient instance before flushing: eu.etaxonomy.cdm.model.common.Language; nested exception is org.hibernate.TransientObjectException: object references an unsaved transient instance - save the transient instance before flushing: eu.etaxonomy.cdm.model.common.Language
 						textData.putText(fact, Language.DEFAULT());
 						textData.setType(feature);
 						
@@ -249,6 +232,7 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 							}
 							if (citation == null && (factRefFk != 0)){
 								logger.warn("Citation not found in referenceMap: " + factRefFk);
+								result = false;
 							}
 						}else{
 							citation = null;
@@ -258,9 +242,24 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 						textData.setCitation(citation);
 						textData.setCitationMicroReference(details);
 						taxonDescription.addElement(textData);
+						//doubtfulFlag
+						if (doubtfulFlag){
+							textData.addMarker(Marker.NewInstance(MarkerType.IS_DOUBTFUL(), true));
+						}
+						//publisheFlag
+						textData.addMarker(Marker.NewInstance(MarkerType.PUBLISH(), publishFlag));
+						//Sequence
+						Integer sequence = rs.getInt("Sequence");
+						if (sequence != null && sequence != 999){
+							String strSequence = String.valueOf(sequence);
+							strSequence = SEQUENCE_PREFIX + strSequence;
+							//TODO make it an Extension when possible
+							//Extension datesExtension = Extension.NewInstance(textData, strSequence, ExtensionType.ORDER());
+							Annotation annotation = Annotation.NewInstance(strSequence, Language.DEFAULT());
+							textData.addAnnotation(annotation);
+						}
 						
-						
-//						if (categoryFkObj == FACT_DESCRIPTION){
+						//						if (categoryFkObj == FACT_DESCRIPTION){
 //							//;
 //						}else if (categoryFkObj == FACT_OBSERVATION){
 //							//;
@@ -271,18 +270,16 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 //							//logger.warn("FactCategory " + categoryFk + " not yet implemented");
 //						}
 						
-						//TODO
-						//References
-						//factId, 
-						
-						//etc.
+						//notes
 						doCreatedUpdatedNotes(config, textData, rs, "Fact");
-
+						
+						//TODO
+						//Designation References -> unclear how to map to CDM
+						//factId -> OriginalSource for descriptionElements not yet implemented
+						//sequence -> textData is not an identifiable entity therefore extensions are not possible
+						//fact category better
 						
 						taxonStore.add(taxon);
-					}else{
-						//TODO
-						logger.warn("Taxon for Fact " + factId + " does not exist in store");
 					}
 				} catch (RuntimeException re){
 					logger.error("A runtime exception occurred during the facts import");
@@ -295,10 +292,53 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 			logger.info("Taxa to save: " + taxonStore.size());
 			getTaxonService().saveTaxonAll(taxonStore);	
 			
-			logger.info("end makeFacts ...");
+			logger.info("end makeFacts ..." + getSuccessString(result));
 			return result;
 		} catch (SQLException e) {
 			logger.error("SQLException:" +  e);
+			return false;
+		}
+
+	}
+	
+	private TaxonBase getTaxon(MapWrapper<TaxonBase> taxonMap, Object taxonIdObj, Integer taxonId){
+		if (taxonIdObj != null){
+			return taxonMap.get(taxonId);
+		}else{
+			return null;
+		}
+		
+	}
+	
+	private Feature getFeature(MapWrapper<Feature> featureMap, Object categoryFkObj, Integer categoryFk){
+		if (categoryFkObj != null){
+			return featureMap.get(categoryFk); 
+		}else{
+			return null;
+		}
+		
+	}
+	
+	private boolean checkDesignationRefsExist(BerlinModelImportConfigurator config){
+		try {
+			boolean result = true;
+			Source source = config.getSource();
+			String strQueryArticlesWithoutJournal = "SELECT Count(*) as n " +
+					" FROM Fact " +
+					" WHERE (NOT (PTDesignationRefFk IS NULL) ) OR " +
+                      " (NOT (PTDesignationRefDetailFk IS NULL) )";
+			ResultSet rs = source.getResultSet(strQueryArticlesWithoutJournal);
+			rs.next();
+			int count = rs.getInt("n");
+			if (count > 0){
+				System.out.println("========================================================");
+				logger.warn("There are "+count+" Facts with not empty designation references. Designation references are not imported.");
+				
+				System.out.println("========================================================");
+			}
+			return result;
+		} catch (SQLException e) {
+			e.printStackTrace();
 			return false;
 		}
 

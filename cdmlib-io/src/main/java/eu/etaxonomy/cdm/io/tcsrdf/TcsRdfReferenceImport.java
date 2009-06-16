@@ -92,14 +92,8 @@ public class TcsRdfReferenceImport extends TcsRdfImportBase implements ICdmIO<II
 	protected static IXmlMapper[] standardMappers = new IXmlMapper[]{
 		//new CdmTextElementMapper("edition", "edition"),
 		new CdmTextElementMapper("volume", "volume"),
-		new CdmOneToManyXmlMapper<PublicationBase, Publisher, CdmTextElementMapper>(
-				PublicationBase.class, 
-				Publisher.class,
-				"publisher",
-				new CdmTextElementMapper[]{
-					new CdmTextElementMapper("publisher", "publisher"),
-					new CdmTextElementMapper("placePublished", "placePublished")
-				}),
+		new CdmTextElementMapper("placePublished", "placePublished"),
+		new CdmTextElementMapper("publisher", "publisher"),
 		//new CdmTextElementMapper("isbn", "isbn"),
 		new CdmTextElementMapper("pages", "pages"),
 		//new CdmTextElementMapper("series", "series"),

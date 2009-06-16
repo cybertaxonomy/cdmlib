@@ -37,11 +37,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.io.berlinModel.CdmExtensionMapper;
 import eu.etaxonomy.cdm.io.berlinModel.CdmOneToManyMapper;
 import eu.etaxonomy.cdm.io.berlinModel.CdmStringMapper;
 import eu.etaxonomy.cdm.io.common.CdmAttributeMapperBase;
@@ -55,8 +57,10 @@ import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
+import eu.etaxonomy.cdm.model.common.OriginalSource;
 import eu.etaxonomy.cdm.model.reference.Article;
 import eu.etaxonomy.cdm.model.reference.Book;
 import eu.etaxonomy.cdm.model.reference.BookSection;
@@ -69,6 +73,7 @@ import eu.etaxonomy.cdm.model.reference.PublicationBase;
 import eu.etaxonomy.cdm.model.reference.Publisher;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.reference.StrictReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Thesis;
 import eu.etaxonomy.cdm.model.reference.WebPage;
 
 /**
@@ -80,31 +85,44 @@ import eu.etaxonomy.cdm.model.reference.WebPage;
 public class BerlinModelReferenceImport extends BerlinModelImportBase {
 	private static final Logger logger = Logger.getLogger(BerlinModelReferenceImport.class);
 
+	public static final UUID REF_DEPOSITED_AT_UUID = UUID.fromString("23ca88c7-ce73-41b2-8ca3-2cb22f013beb");
+	public static final UUID REF_SOURCE = UUID.fromString("d6432582-2216-4b08-b0db-76f6c1013141");
+	public static final UUID DATE_STRING_UUID = UUID.fromString("e4130eae-606e-4b0c-be4f-e93dc161be7d");
+	
 	private int modCount = 1000;
 	
 	public BerlinModelReferenceImport(){
 		super();
 	}
+
 	
+	
+	protected boolean initializeMappers(BerlinModelImportState state, String tableName){
+		for (CdmAttributeMapperBase mapper: classMappers){
+			if (mapper instanceof CdmExtensionMapper){
+				((CdmExtensionMapper)mapper).initialize(getTermService(), state, tableName);
+			}
+		}
+		return true;
+	}
 	
 	protected static CdmAttributeMapperBase[] classMappers = new CdmAttributeMapperBase[]{
 		new CdmStringMapper("edition", "edition"),
 		new CdmStringMapper("volume", "volume"),
-		new CdmOneToManyMapper<PublicationBase, Publisher, CdmSingleAttributeMapperBase>(
-				PublicationBase.class, 
-				Publisher.class,
-				"publisher",
-				new CdmSingleAttributeMapperBase[]{
-					new CdmStringMapper("publisher", "publisher"),
-					new CdmStringMapper("publicationTown", "placePublished")
-				}),
+		new CdmStringMapper("publisher", "publisher"),
+		new CdmStringMapper("publicationTown", "placePublished"),
+		new CdmStringMapper("isbn", "isbn"),
 		new CdmStringMapper("isbn", "isbn"),
 		new CdmStringMapper("pageString", "pages"),
 		new CdmStringMapper("series", "series"),
 		new CdmStringMapper("issn", "issn"),
-		new CdmStringMapper("url", "uri")
+		new CdmStringMapper("url", "uri"),
+		new CdmExtensionMapper("NomStandard", ExtensionType.NOMENCLATURAL_STANDARD()),
+		new CdmExtensionMapper("DateString", DATE_STRING_UUID, "Date String", "Date String", "dates"),
+		new CdmExtensionMapper("RefDepositedAt", REF_DEPOSITED_AT_UUID, "RefDepositedAt", "reference is deposited at", "at"),
+		new CdmExtensionMapper("RefSource", REF_SOURCE, "RefSource", "reference source", "source")
 	};
-	
+
 	
 	protected static String[] operationalAttributes = new String[]{
 		"refId", "refCache", "nomRefCache", "preliminaryFlag", "inRefFk", "title", "nomTitleAbbrev",
@@ -117,10 +135,11 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 	};
 	
 	protected static String[] unclearMappers = new String[]{
-			"dateString", "refYear", "nomStandard", 
-			"refDepositedAt", "isPaper", "exportDate", 
-			"refSourceFk"
+			"isPaper", "exportDate", 
 	};
+	
+	//TODO isPaper
+	//
 	
 	
 	
@@ -147,6 +166,7 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 		result &= checkJournalsWithSeries(bmiConfig);
 		result &= checkObligatoryAttributes(bmiConfig);
 		result &= checkPartOfWithVolume(bmiConfig);
+		result &= checkArticleWithEdition(bmiConfig);
 		
 		if (result == false ){System.out.println("========================================================");}
 		
@@ -213,11 +233,6 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 					genericReference.setDatePublished(ImportHelper.getDatePublished(refYear)); 
 					refCounter.referenceCount++;
 				}
-
-				
-				//TODO
-				//SecondarySources
-				//IdInSource
 			}
 			//save and store in map
 			logger.info("Save nomenclatural preliminary references (" + refCounter.nomRefCount + ")");
@@ -226,6 +241,10 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 			logger.info("Save bibliographical preliminary references (" + refCounter.referenceCount +")");
 			getReferenceService().saveReferenceAll(refDetailMap.objects());
 			
+			//TODO
+			//SecondarySources
+			//IdInSource
+
 		} catch (SQLException e) {
 			logger.error("SQLException:" +  e);
 			return false;
@@ -237,20 +256,20 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 
 	@Override
 	protected boolean doInvoke(BerlinModelImportState state){
-		
 		String teamStore = ICdmIO.TEAM_STORE;
 		MapWrapper<? extends CdmBase> store = state.getStore(teamStore);
-		MapWrapper<TeamOrPersonBase> teamMap = (MapWrapper<TeamOrPersonBase>)store;
-				
+		MapWrapper<ReferenceBase> referenceStore= new MapWrapper<ReferenceBase>(null);
+		MapWrapper<ReferenceBase> nomRefStore= new MapWrapper<ReferenceBase>(null);
+		
 		BerlinModelImportConfigurator config = state.getConfig();
 		Source source = config.getSource();
 		
 		boolean success = true;
-		MapWrapper<ReferenceBase> referenceStore= new MapWrapper<ReferenceBase>(null);
-		MapWrapper<ReferenceBase> nomRefStore= new MapWrapper<ReferenceBase>(null);
 		
 		//preliminary RefDetails  //TODO -> move to own class ?
 		doPreliminaryRefDetails(config, state.getStores());
+		
+		success &= initializeMappers(state, "Reference");
 		
 		logger.info("start makeReferences ...");
 		
@@ -259,10 +278,11 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 			String strQueryBase = 
 					" SELECT Reference.* , InReference.RefId as InRefId, InReference.RefCategoryFk as InRefCategoryFk,  " +
 						" InInReference.RefId as InInRefId, InInReference.RefCategoryFk as InInRefCategoryFk, " +
-						" InReference.InRefFk AS InRefInRefFk, InInReference.InRefFk AS InInRefInRefFk " +
+						" InReference.InRefFk AS InRefInRefFk, InInReference.InRefFk AS InInRefInRefFk, RefSource.RefSource " +
                     " FROM Reference AS InInReference " +
                     	" RIGHT OUTER JOIN Reference AS InReference ON InInReference.RefId = InReference.InRefFk " + 
                     	" RIGHT OUTER JOIN Reference ON InReference.RefId = dbo.Reference.InRefFk " + 
+                    	" LEFT OUTER JOIN RefSource ON Reference.RefSourceFk = RefSource.RefSourceId " +
 					" WHERE (1=1)  "; 
 				//strQueryBase += " AND Reference.refId = 1933 " ; //7000000
 			String strQueryNoInRef = strQueryBase + 
@@ -294,8 +314,6 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 				resultSetList.add(source.getResultSet(strQuery2InRef));
 			}
 			
-			String namespace = "Reference";
-			
 			int j = 0;
 			Iterator<ResultSet> resultSetListIterator =  resultSetList.listIterator();
 			//for each resultsetlist
@@ -306,68 +324,13 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 				ResultSet rs = resultSetListIterator.next();
 				//for each resultset
 				while (rs.next()){
-					
 					if ((i++ % modCount) == 0 && i!= 1 ){ logger.info("References handled: " + (i-1) + " in round " + j);}
-
-					Map<String, Object> valueMap = getValueMap(rs);
-					
-					Integer categoryFk = (Integer)valueMap.get("refCategoryFk".toLowerCase());
-					Integer refId = (Integer)valueMap.get("refId".toLowerCase());
-					
-					
-					StrictReferenceBase referenceBase;
-					try {
-						logger.debug("RefCategoryFk: " + categoryFk);
-						
-						if (categoryFk == REF_JOURNAL){
-							referenceBase = makeJournal(valueMap);
-						}else if(categoryFk == REF_BOOK){
-							referenceBase = makeBook(valueMap, referenceStore, nomRefStore);
-						}else if(categoryFk == REF_DATABASE){
-							referenceBase = makeDatabase(valueMap);
-						}else if(categoryFk == REF_INFORMAL){
-							referenceBase = makeInformal(valueMap);
-						}else if(categoryFk == REF_WEBSITE){
-							referenceBase = makeWebSite(valueMap);
-						}else if(categoryFk == REF_UNKNOWN){
-							referenceBase = makeUnknown(valueMap);
-						}else if(categoryFk == REF_PRINT_SERIES){
-							referenceBase = makePrintSeries(valueMap);
-						}else if(categoryFk == REF_CONFERENCE_PROCEEDINGS){
-							referenceBase = makeProceedings(valueMap);
-						}else if(categoryFk == REF_ARTICLE){
-							referenceBase = makeArticle(valueMap, referenceStore, nomRefStore);
-						}else if(categoryFk == REF_JOURNAL_VOLUME){
-							referenceBase = makeJournalVolume(valueMap);
-						}else if(categoryFk == REF_PART_OF_OTHER_TITLE){
-							referenceBase = makePartOfOtherTitle(valueMap, referenceStore, nomRefStore);
-						}else{
-							logger.warn("Unknown categoryFk (" + categoryFk + "). Create 'Generic instead'");
-							referenceBase = Generic.NewInstance();
-						}
-										
-						
-						String refYear = (String)valueMap.get("refYear".toLowerCase());
-						
-						//refId, created, notes
-						doIdCreatedUpdatedNotes(config, referenceBase, rs, refId, namespace );						
-						//refYear
-						referenceBase.setDatePublished(ImportHelper.getDatePublished(refYear)); 
-						
-						//
-						success &= makeNomAndBiblioReference(rs, refId, referenceBase, refCounter, 
-								referenceStore, nomRefStore, teamMap, state.getStores() );
-
-					} catch (Exception e) {
-						logger.warn("Reference with BM refId " + refId +  " threw Exception and could not be saved");
-						e.printStackTrace();
-						success = false;
-						return success;
-					}
+				
+					success &= makeSingleReferenceRecord(rs, state, referenceStore, nomRefStore, refCounter);
 				} // end resultSet
 				
 				//for the concept reference a fixed uuid may be needed -> change uuid
-				ReferenceBase sec = referenceStore.get(config.getSourceSecId());
+				ReferenceBase<?> sec = referenceStore.get(config.getSourceSecId());
 				if (sec == null){
 					sec = nomRefStore.get(config.getSourceSecId());	
 				}
@@ -384,7 +347,7 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 				j++;
 			}//end resultSetList	
 
-			logger.info("end makeReferences ...");
+			logger.info("end makeReferences ..." + getSuccessString(success));;
 			return success;
 		} catch (SQLException e) {
 			logger.error("SQLException:" +  e);
@@ -392,6 +355,86 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 		}
 	}
 	
+	
+	private boolean makeSingleReferenceRecord(ResultSet rs, BerlinModelImportState state, MapWrapper<ReferenceBase> referenceStore, MapWrapper<ReferenceBase> nomRefStore, RefCounter refCounter){
+		boolean success = true;
+		String namespace = "Reference";
+		String teamStore = ICdmIO.TEAM_STORE;
+		MapWrapper<? extends CdmBase> store = state.getStore(teamStore);
+		MapWrapper<TeamOrPersonBase> teamMap = (MapWrapper<TeamOrPersonBase>)store;
+		
+		Integer refId = null;
+		try {
+			Map<String, Object> valueMap = getValueMap(rs);
+			
+			Integer categoryFk = (Integer)valueMap.get("refCategoryFk".toLowerCase());
+			refId = (Integer)valueMap.get("refId".toLowerCase());
+			Boolean thesisFlag = (Boolean)valueMap.get("thesisFlag".toLowerCase());
+			
+			
+			StrictReferenceBase<?> referenceBase;
+			logger.debug("RefCategoryFk: " + categoryFk);
+			
+			if (thesisFlag){
+				referenceBase = makeThesis(valueMap);
+			}else if (categoryFk == REF_JOURNAL){
+				referenceBase = makeJournal(valueMap);
+			}else if(categoryFk == REF_BOOK){
+				referenceBase = makeBook(valueMap, referenceStore, nomRefStore);
+			}else if(categoryFk == REF_DATABASE){
+				referenceBase = makeDatabase(valueMap);
+			}else if(categoryFk == REF_INFORMAL){
+				referenceBase = makeInformal(valueMap);
+			}else if(categoryFk == REF_WEBSITE){
+				referenceBase = makeWebSite(valueMap);
+			}else if(categoryFk == REF_UNKNOWN){
+				referenceBase = makeUnknown(valueMap);
+			}else if(categoryFk == REF_PRINT_SERIES){
+				referenceBase = makePrintSeries(valueMap);
+			}else if(categoryFk == REF_CONFERENCE_PROCEEDINGS){
+				referenceBase = makeProceedings(valueMap);
+			}else if(categoryFk == REF_ARTICLE){
+				referenceBase = makeArticle(valueMap, referenceStore, nomRefStore);
+			}else if(categoryFk == REF_JOURNAL_VOLUME){
+				referenceBase = makeJournalVolume(valueMap);
+			}else if(categoryFk == REF_PART_OF_OTHER_TITLE){
+				referenceBase = makePartOfOtherTitle(valueMap, referenceStore, nomRefStore);
+			}else{
+				logger.warn("Unknown categoryFk (" + categoryFk + "). Create 'Generic instead'");
+				referenceBase = Generic.NewInstance();
+				success = false;
+			}
+							
+			//refId, created, notes
+			doIdCreatedUpdatedNotes(state.getConfig(), referenceBase, rs, refId, namespace );						
+			//refYear
+			String refYear = (String)valueMap.get("refYear".toLowerCase());
+			referenceBase.setDatePublished(ImportHelper.getDatePublished(refYear)); 
+			
+			//nom&BiblioReference
+			success &= makeNomAndBiblioReference(rs, refId, referenceBase, refCounter, 
+					referenceStore, nomRefStore, teamMap, state.getStores() );
+			
+			//idInSource
+			String idInSource = (String)valueMap.get("IdInSource".toLowerCase());
+			if (CdmUtils.isNotEmpty(idInSource)){
+				OriginalSource source = OriginalSource.NewInstance(idInSource);
+				source.setIdNamespace("import to Berlin Model");
+				referenceBase.addSource(source);
+			}
+			
+			//isPaper
+			if ((Boolean)valueMap.get("isPaper".toLowerCase())){
+				logger.warn("IsPaper is not yet implemented, but reference " +  refId + " is paper");
+			}
+
+		} catch (Exception e) {
+			logger.warn("Reference with BM refId '" + CdmUtils.Nz(refId) +  "' threw Exception and could not be saved");
+			e.printStackTrace();
+			success = false;
+		}
+		return success;
+	}
 
 	
 	private boolean makeNomAndBiblioReference(ResultSet rs, 
@@ -462,27 +505,18 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 		return true;
 		
 	}
-
 	
-	
-	private StrictReferenceBase makeArticle (Map<String, Object> valueMap, MapWrapper<ReferenceBase> referenceStore, MapWrapper<ReferenceBase> nomRefStore){
+	private StrictReferenceBase<?> makeArticle (Map<String, Object> valueMap, MapWrapper<ReferenceBase> referenceStore, MapWrapper<ReferenceBase> nomRefStore){
 		Article article = Article.NewInstance();
 		Object inRefFk = valueMap.get("inRefFk".toLowerCase());
 		Integer inRefCategoryFk = (Integer)valueMap.get("inRefCategoryFk".toLowerCase());
 		Integer refId = (Integer)valueMap.get("refId".toLowerCase());
-//		
-//		//FIXME pages
-//		String pages = (String)valueMap.get("pages".toLowerCase());
-//		String series = (String)valueMap.get("series".toLowerCase());
-//		String volume = (String)valueMap.get("volume".toLowerCase());
-//		String url = (String)valueMap.get("url".toLowerCase());
-		
 		
 		if (inRefFk != null){
 			if (inRefCategoryFk == REF_JOURNAL){
 				int inRefFkInt = (Integer)inRefFk;
 				if (nomRefStore.containsId(inRefFkInt) || referenceStore.containsId(inRefFkInt)){
-					ReferenceBase inJournal = nomRefStore.get(inRefFkInt);
+					ReferenceBase<?> inJournal = nomRefStore.get(inRefFkInt);
 					if (inJournal == null){
 						inJournal = referenceStore.get(inRefFkInt);
 						logger.info("inJournal (" + inRefFkInt + ") found in referenceStore instead of nomRefStore.");
@@ -493,11 +527,6 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 						" InReference relation could not be set");
 					}else if (Journal.class.isAssignableFrom(inJournal.getClass())){
 						article.setInJournal((Journal)inJournal);
-//						article.setPages(pages);
-//						article.setSeries(series);
-//						article.setVolume(volume);
-//						article.setUri(url);
-						//logger.info("InJournal success " + inRefFkInt);
 					}else{
 						logger.warn("InJournal is not of type journal but of type " + inJournal.getClass().getSimpleName() +
 							" Inreference relation could not be set");
@@ -515,8 +544,8 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 		return article;
 	}
 	
-	private StrictReferenceBase makePartOfOtherTitle (Map<String, Object> valueMap, MapWrapper<ReferenceBase> referenceStore, MapWrapper<ReferenceBase> nomRefStore){
-		StrictReferenceBase result;
+	private StrictReferenceBase<?> makePartOfOtherTitle (Map<String, Object> valueMap, MapWrapper<ReferenceBase> referenceStore, MapWrapper<ReferenceBase> nomRefStore){
+		StrictReferenceBase<?> result;
 		Object inRefFk = valueMap.get("inRefFk".toLowerCase());
 		Integer inRefCategoryFk = (Integer)valueMap.get("inRefCategoryFk".toLowerCase());
 		Integer refId = (Integer)valueMap.get("refId".toLowerCase());
@@ -528,7 +557,7 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 			if (inRefFk != null){
 				int inRefFkInt = (Integer)inRefFk;
 				if (nomRefStore.containsId(inRefFkInt) || referenceStore.containsId(inRefFkInt)){
-					ReferenceBase inBook = nomRefStore.get(inRefFkInt);
+					ReferenceBase<?> inBook = nomRefStore.get(inRefFkInt);
 					if (inBook == null){
 						inBook = referenceStore.get(inRefFkInt);
 						logger.info("inBook (" + inRefFkInt + ") found in referenceStore instead of nomRefStore.");
@@ -570,14 +599,14 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 		return result;
 	}
 	
-	private StrictReferenceBase makeWebSite(Map<String, Object> valueMap){
+	private StrictReferenceBase<?> makeWebSite(Map<String, Object> valueMap){
 		if (logger.isDebugEnabled()){logger.debug("RefType 'Website'");}
 		WebPage webPage = WebPage.NewInstance();
 		makeStandardMapper(valueMap, webPage); //placePublished, publisher
 		return webPage;
 	}
 	
-	private StrictReferenceBase makeUnknown(Map<String, Object> valueMap){
+	private StrictReferenceBase<?> makeUnknown(Map<String, Object> valueMap){
 		if (logger.isDebugEnabled()){logger.debug("RefType 'Unknown'");}
 		Generic generic = Generic.NewInstance();
 //		generic.setSeries(series);
@@ -585,22 +614,26 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 		return generic;
 	}
 
-	private StrictReferenceBase makeInformal(Map<String, Object> valueMap){
+	private StrictReferenceBase<?> makeInformal(Map<String, Object> valueMap){
 		if (logger.isDebugEnabled()){logger.debug("RefType 'Informal'");}
 		Generic generic =  Generic.NewInstance();
 //		informal.setSeries(series);
 		makeStandardMapper(valueMap, generic);//editor, pages, placePublished, publisher, series, volume
+		String informal = (String)valueMap.get("InformalRefCategory".toLowerCase());
+		if (CdmUtils.isNotEmpty(informal) ){
+			generic.addExtension(informal, ExtensionType.INFORMAL_CATEGORY());
+		}
 		return generic;
 	}
 	
-	private StrictReferenceBase makeDatabase(Map<String, Object> valueMap){
+	private StrictReferenceBase<?> makeDatabase(Map<String, Object> valueMap){
 		if (logger.isDebugEnabled()){logger.debug("RefType 'Database'");}
 		Database database =  Database.NewInstance();
 		makeStandardMapper(valueMap, database); //?
 		return database;
 	}
 	
-	private StrictReferenceBase makeJournal(Map<String, Object> valueMap){
+	private StrictReferenceBase<?> makeJournal(Map<String, Object> valueMap){
 		if (logger.isDebugEnabled()){logger.debug("RefType 'Journal'");}
 		Journal journal = Journal.NewInstance();
 		
@@ -615,7 +648,7 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 		return journal;
 	}
 	
-	private StrictReferenceBase makeBook(Map<String, Object> valueMap, MapWrapper<ReferenceBase> referenceStore, MapWrapper<ReferenceBase> nomRefStore){
+	private StrictReferenceBase<?> makeBook(Map<String, Object> valueMap, MapWrapper<ReferenceBase> referenceStore, MapWrapper<ReferenceBase> nomRefStore){
 		if (logger.isDebugEnabled()){logger.debug("RefType 'Book'");}
 		Book book = Book.NewInstance();
 		Integer refId = (Integer)valueMap.get("refId".toLowerCase());
@@ -645,7 +678,7 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 		if (inRefFk != null){
 			int inRefFkInt = (Integer)inRefFk;
 			if (nomRefStore.containsId(inRefFkInt) || referenceStore.containsId(inRefFkInt)){
-				ReferenceBase inSeries = nomRefStore.get(inRefFkInt);
+				ReferenceBase<?> inSeries = nomRefStore.get(inRefFkInt);
 				if (inSeries == null){
 					inSeries = referenceStore.get(inRefFkInt);
 					logger.info("inSeries (" + inRefFkInt + ") found in referenceStore instead of nomRefStore.");
@@ -676,21 +709,29 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 		
 	}
 	
-	private StrictReferenceBase makePrintSeries(Map<String, Object> valueMap){
+	private StrictReferenceBase<?> makePrintSeries(Map<String, Object> valueMap){
 		if (logger.isDebugEnabled()){logger.debug("RefType 'PrintSeries'");}
 		PrintSeries printSeries = PrintSeries.NewInstance();
 		makeStandardMapper(valueMap, printSeries, null);
 		return printSeries;
 	}
 	
-	private StrictReferenceBase makeProceedings(Map<String, Object> valueMap){
+	private StrictReferenceBase<?> makeProceedings(Map<String, Object> valueMap){
 		if (logger.isDebugEnabled()){logger.debug("RefType 'Proceedings'");}
 		Proceedings proceedings = Proceedings.NewInstance();
 		makeStandardMapper(valueMap, proceedings, null);	
 		return proceedings;
 	}
+
+	private StrictReferenceBase<?> makeThesis(Map<String, Object> valueMap){
+		if (logger.isDebugEnabled()){logger.debug("RefType 'Thesis'");}
+		Thesis thesis = Thesis.NewInstance();
+		makeStandardMapper(valueMap, thesis, null);	
+		return thesis;
+	}
+
 	
-	private StrictReferenceBase makeJournalVolume(Map<String, Object> valueMap){
+	private StrictReferenceBase<?> makeJournalVolume(Map<String, Object> valueMap){
 		if (logger.isDebugEnabled()){logger.debug("RefType 'JournalVolume'");}
 		//Proceedings proceedings = Proceedings.NewInstance();
 		Generic journalVolume = Generic.NewInstance();
@@ -699,7 +740,7 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 		return journalVolume;
 	}
 	
-	private boolean makeStandardMapper(Map<String, Object> valueMap, StrictReferenceBase ref){
+	private boolean makeStandardMapper(Map<String, Object> valueMap, StrictReferenceBase<?> ref){
 		return makeStandardMapper(valueMap, ref, null);
 	}
 
@@ -720,16 +761,20 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 	}
 	
 	private boolean makeStandardSingleMapper(Map<String, Object> valueMap, CdmBase cdmBase, CdmSingleAttributeMapperBase mapper, Set<String> omitAttributes){
+		boolean result = true;
 		if (omitAttributes == null){
 			omitAttributes = new HashSet<String>();
 		}
-		boolean result = true;
-		String sourceAttribute = mapper.getSourceAttributeList().get(0).toLowerCase();
-		Object value = valueMap.get(sourceAttribute);
-		if (value != null){
-			String destinationAttribute = mapper.getDestinationAttribute();
-			if (! omitAttributes.contains(destinationAttribute)){
-				result &= ImportHelper.addValue(value, cdmBase, destinationAttribute, mapper.getTypeClass(), OVERWRITE, OBLIGATORY);
+		if (mapper instanceof CdmExtensionMapper){
+			result &= ((CdmExtensionMapper)mapper).invoke(valueMap, cdmBase);
+		}else{
+			String sourceAttribute = mapper.getSourceAttributeList().get(0).toLowerCase();
+			Object value = valueMap.get(sourceAttribute);
+			if (value != null){
+				String destinationAttribute = mapper.getDestinationAttribute();
+				if (! omitAttributes.contains(destinationAttribute)){
+					result &= ImportHelper.addValue(value, cdmBase, destinationAttribute, mapper.getTypeClass(), OVERWRITE, OBLIGATORY);
+				}
 			}
 		}
 		return result;
@@ -748,7 +793,7 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 			String sourceAttribute = singleMapper.getSourceAttribute();
 			Object value = valueMap.get(sourceAttribute);
 			sourceValues.add(value);
-			Class clazz = singleMapper.getTypeClass();
+			Class<?> clazz = singleMapper.getTypeClass();
 			classes.add(clazz);
 		}
 		
@@ -762,8 +807,8 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 	}
 
 	
-	private static TeamOrPersonBase getAuthorTeam(String authorString, TeamOrPersonBase nomAuthor, boolean preferNomeclaturalAuthor){
-		TeamOrPersonBase result;
+	private static TeamOrPersonBase<?> getAuthorTeam(String authorString, TeamOrPersonBase<?> nomAuthor, boolean preferNomeclaturalAuthor){
+		TeamOrPersonBase<?> result;
 		if (preferNomeclaturalAuthor){
 			if (nomAuthor != null){
 				result = nomAuthor;
@@ -771,7 +816,7 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 				if (CdmUtils.Nz(authorString).equals("")){
 					result = null;
 				}else{
-					TeamOrPersonBase team = Team.NewInstance();
+					TeamOrPersonBase<?> team = Team.NewInstance();
 					//TODO which one to use??
 					team.setNomenclaturalTitle(authorString);
 					team.setTitleCache(authorString);
@@ -780,7 +825,7 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 			}
 		}else{ //prefer bibliographic
 			if (! CdmUtils.Nz(authorString).equals("")){
-				TeamOrPersonBase team = Team.NewInstance();
+				TeamOrPersonBase<?> team = Team.NewInstance();
 				//TODO which one to use??
 				team.setNomenclaturalTitle(authorString);
 				team.setTitleCache(authorString);
@@ -821,10 +866,10 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 					System.out.println("========================================================");
 				}
 				int refId = resulSetarticlesWithoutJournal.getInt("RefId");
-				int categoryFk = resulSetarticlesWithoutJournal.getInt("RefCategoryFk");
+				//int categoryFk = resulSetarticlesWithoutJournal.getInt("RefCategoryFk");
 				String cat = resulSetarticlesWithoutJournal.getString("RefCategoryAbbrev");
 				int inRefFk = resulSetarticlesWithoutJournal.getInt("InRefId");
-				int inRefCategoryFk = resulSetarticlesWithoutJournal.getInt("InRefCatFk");
+				//int inRefCategoryFk = resulSetarticlesWithoutJournal.getInt("InRefCatFk");
 				String inRefCat = resulSetarticlesWithoutJournal.getString("InRefCat");
 				String refCache = resulSetarticlesWithoutJournal.getString("RefCache");
 				String nomRefCache = resulSetarticlesWithoutJournal.getString("nomRefCache");
@@ -861,10 +906,10 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 					System.out.println("========================================================");
 				}
 				int refId = rs.getInt("RefId");
-				int categoryFk = rs.getInt("RefCategoryFk");
+				//int categoryFk = rs.getInt("RefCategoryFk");
 				String cat = rs.getString("RefCategoryAbbrev");
 				int inRefFk = rs.getInt("InRefId");
-				int inRefCategoryFk = rs.getInt("InRefCatFk");
+				//int inRefCategoryFk = rs.getInt("InRefCatFk");
 				String inRefCat = rs.getString("InRefCat");
 				String refCache = rs.getString("RefCache");
 				String nomRefCache = rs.getString("nomRefCache");
@@ -902,10 +947,10 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 					System.out.println("========================================================");
 				}
 				int refId = rs.getInt("RefId");
-				int categoryFk = rs.getInt("RefCategoryFk");
+				//int categoryFk = rs.getInt("RefCategoryFk");
 				String cat = rs.getString("RefCategoryAbbrev");
 				int inRefFk = rs.getInt("InRefId");
-				int inRefCategoryFk = rs.getInt("InRefCatFk");
+				//int inRefCategoryFk = rs.getInt("InRefCatFk");
 				String inRefCat = rs.getString("InRefCat");
 				String refCache = rs.getString("RefCache");
 				String nomRefCache = rs.getString("nomRefCache");
@@ -952,10 +997,10 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 					System.out.println("========================================================");
 				}
 				int refId = rs.getInt("RefId");
-				int categoryFk = rs.getInt("RefCategoryFk");
+				//int categoryFk = rs.getInt("RefCategoryFk");
 				String cat = rs.getString("RefCategoryAbbrev");
 				int inRefFk = rs.getInt("InRefId");
-				int inRefCategoryFk = rs.getInt("InRefCatFk");
+				//int inRefCategoryFk = rs.getInt("InRefCatFk");
 				String inRefCat = rs.getString("InRefCat");
 				String refCache = rs.getString("RefCache");
 				String nomRefCache = rs.getString("nomRefCache");
@@ -1001,10 +1046,10 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 					System.out.println("========================================================");
 				}
 				int refId = rs.getInt("RefId");
-				int categoryFk = rs.getInt("RefCategoryFk");
+				//int categoryFk = rs.getInt("RefCategoryFk");
 				String cat = rs.getString("RefCategoryAbbrev");
 				int inRefFk = rs.getInt("InRefId");
-				int inRefCategoryFk = rs.getInt("InRefCatFk");
+				//int inRefCategoryFk = rs.getInt("InRefCatFk");
 				String inRefCat = rs.getString("InRefCat");
 				String refCache = rs.getString("RefCache");
 				String nomRefCache = rs.getString("nomRefCache");
@@ -1048,7 +1093,7 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 					System.out.println("========================================================");
 				}
 				int refId = rs.getInt("RefId");
-				int categoryFk = rs.getInt("RefCategoryFk");
+				//int categoryFk = rs.getInt("RefCategoryFk");
 				String cat = rs.getString("RefCategoryAbbrev");
 				String nomRefCache = rs.getString("nomRefCache");
 				String refCache = rs.getString("refCache");
@@ -1073,27 +1118,40 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 		try {
 			boolean result = true;
 			Source source = bmiConfig.getSource();
-			String strQueryArticlesWithoutJournal = "SELECT * " +
-					" FROM Reference  INNER JOIN RefCategory ON Reference.RefCategoryFk = RefCategory.RefCategoryId " + 
-					" WHERE (RefCategoryFk = 2) AND (Volume IS NOT NULL) " ; 
+			String strQueryArticlesWithoutJournal = "SELECT Ref.RefId as refId, RefCategory.RefCategoryAbbrev as refCategoryAbbrev, Ref.nomRefCache as nomRefCache, Ref.refCache as refCache,Ref.volume as volume, Ref.Series as series, Ref.Edition as edition, Ref.title as title, Ref.nomTitleAbbrev as nomTitleAbbrev,InRef.RefCache as inRefRefCache, InRef.NomRefCache  as inRefNomRefCache, InRef.RefId as inRefId, InRef.Volume as inRefVol, InRef.Series as inRefSeries, InRef.Edition as inRefEdition" +
+					" FROM Reference AS Ref " + 
+					 	" INNER JOIN RefCategory ON Ref.RefCategoryFk = RefCategory.RefCategoryId " +
+					 	"  LEFT OUTER JOIN Reference AS InRef ON Ref.InRefFk = InRef.RefId " +
+					" WHERE (Ref.RefCategoryFk = 2) AND ((Ref.Volume IS NOT NULL) OR (Ref.Series IS NOT NULL) OR (Ref.Edition IS NOT NULL)) " ; 
 			ResultSet rs = source.getResultSet(strQueryArticlesWithoutJournal);
 			boolean firstRow = true;
 			while (rs.next()){
 				if (firstRow){
 					System.out.println("========================================================");
-					logger.warn("There are PartOfOtherTitles with volumes !");
+					logger.warn("There are PartOfOtherTitles with volumes, editions or series !");
 					System.out.println("========================================================");
 				}
-				int refId = rs.getInt("RefId");
-				String cat = rs.getString("RefCategoryAbbrev");
+				int refId = rs.getInt("refId");
+				String cat = rs.getString("refCategoryAbbrev");
 				String nomRefCache = rs.getString("nomRefCache");
 				String refCache = rs.getString("refCache");
 				String title = rs.getString("title");
 				String nomTitleAbbrev = rs.getString("nomTitleAbbrev");
+				String volume = rs.getString("volume");
+				String edition = rs.getString("edition");
+				String series = rs.getString("series");
+				String inRefRefCache = rs.getString("inRefRefCache");
+				String inRefNomRefCache = rs.getString("inRefNomRefCache");
+				int inRefId = rs.getInt("inRefId");
+				String inRefVolume = rs.getString("inRefVol");
+				String inRefSeries = rs.getString("inRefSeries");
+				String inRefEdition = rs.getString("inRefEdition");
 				
 				System.out.println("RefID:" + refId + "\n  cat: " + cat + 
 						"\n  refCache: " + refCache + "\n  nomRefCache: " + nomRefCache + 
-						"\n  title: " + title +  "\n  nomTitleAbbrev: " + nomTitleAbbrev +
+						"\n  title: " + title +  "\n  nomTitleAbbrev: " + nomTitleAbbrev + "\n  volume: " + volume + "\n  series: " + series +"\n  edition: " + edition +
+						"\n  inRef-ID:" + inRefId + "\n  inRef-cache: " + inRefRefCache +  
+						"\n  inRef-nomCache: " + inRefNomRefCache + "\n  inRef-volume: " + inRefVolume +"\n  inRef-series: " + inRefSeries +"\n  inRef-edition: " + inRefEdition +
 						"" );
 				result = firstRow = false;
 			}
@@ -1105,6 +1163,51 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 		}
 	}
 	
+	private static boolean checkArticleWithEdition(BerlinModelImportConfigurator bmiConfig){
+		try {
+			boolean result = true;
+			Source source = bmiConfig.getSource();
+			String strQueryArticlesWithoutJournal = "SELECT Ref.RefId as refId, RefCategory.RefCategoryAbbrev as refCategoryAbbrev, Ref.nomRefCache as nomRefCache, Ref.refCache as refCache,Ref.edition as edition, Ref.title as title, Ref.nomTitleAbbrev as nomTitleAbbrev,InRef.RefCache as inRefRefCache, InRef.NomRefCache  as inRefNomRefCache, InRef.RefId as inRefId, InRef.Edition as inRefEdition" +
+					" FROM Reference AS Ref " + 
+					 	" INNER JOIN RefCategory ON Ref.RefCategoryFk = RefCategory.RefCategoryId " +
+					 	"  LEFT OUTER JOIN Reference AS InRef ON Ref.InRefFk = InRef.RefId " +
+					" WHERE (Ref.RefCategoryFk = 1) AND (NOT (Ref.Edition IS NULL))  " +
+					" ORDER BY InRef.RefId "; 
+			ResultSet rs = source.getResultSet(strQueryArticlesWithoutJournal);
+			boolean firstRow = true;
+			while (rs.next()){
+				if (firstRow){
+					System.out.println("========================================================");
+					logger.warn("There are Articles with editions !");
+					System.out.println("========================================================");
+				}
+				int refId = rs.getInt("refId");
+				String cat = rs.getString("refCategoryAbbrev");
+				String nomRefCache = rs.getString("nomRefCache");
+				String refCache = rs.getString("refCache");
+				String title = rs.getString("title");
+				String nomTitleAbbrev = rs.getString("nomTitleAbbrev");
+				String edition = rs.getString("edition");
+				String inRefRefCache = rs.getString("inRefRefCache");
+				String inRefNomRefCache = rs.getString("inRefNomRefCache");
+				int inRefId = rs.getInt("inRefId");
+				String inRefEdition = rs.getString("inRefEdition");
+				
+				System.out.println("RefID:" + refId + "\n  cat: " + cat + 
+						"\n  refCache: " + refCache + "\n  nomRefCache: " + nomRefCache + 
+						"\n  title: " + title +  "\n  nomTitleAbbrev: " + nomTitleAbbrev + "\n  edition: " + edition + 
+						"\n  inRef-ID:" + inRefId + "\n  inRef-cache: " + inRefRefCache +  
+						"\n  inRef-nomCache: " + inRefNomRefCache + "\n  inRef-edition: " + inRefEdition +
+						"" );
+				result = firstRow = false;
+			}
+			
+			return result;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
 	
 	protected boolean checkObligatoryAttributes(IImportConfigurator config){
 		boolean result = true;
@@ -1164,5 +1267,47 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 		return result;
 	}
 
-	
+	protected boolean checkRefDetailUnimplementedAttributes(IImportConfigurator config){
+		boolean result = true;
+		
+		try {
+			String strQuery = " SELECT Count(*) as n" +
+			    " FROM RefDetail " +
+//            	" INNER JOIN Reference ON Reference.RefId = RefDetail.RefFk " +
+			    " WHERE SecondarySources is not NULL AND SecondarySources <> '' ";
+			BerlinModelImportConfigurator bmiConfig = (BerlinModelImportConfigurator)config;
+			Source source = bmiConfig.getSource();
+			ResultSet rs = source.getResultSet(strQuery);
+			
+			rs.next();
+			int count = rs.getInt("n");
+			if (count > 0){
+				System.out.println("========================================================");
+				logger.warn("There are "+ count + " RefDetails with SecondarySources <> NULL ! Secondary sources are not yet implemented for Berlin Model Import");
+				System.out.println("========================================================");
+				
+			}
+			strQuery = " SELECT Count(*) as n" +
+			    " FROM RefDetail " +
+//	            	" INNER JOIN Reference ON Reference.RefId = RefDetail.RefFk " +
+			    " WHERE IdInSource is not NULL AND IdInSource <> '' ";
+			rs = source.getResultSet(strQuery);
+			
+			rs.next();
+			count = rs.getInt("n");
+			if (count > 0){
+				System.out.println("========================================================");
+				logger.warn("There are "+ count + " RefDetails with IdInSource <> NULL ! IdInSource are not yet implemented for Berlin Model Import");
+				System.out.println("========================================================");
+				
+			}
+			
+		} catch (SQLException e) {
+			logger.error(e);
+			e.printStackTrace();
+			result = false;
+		}
+		return result;
+	}
+
 }

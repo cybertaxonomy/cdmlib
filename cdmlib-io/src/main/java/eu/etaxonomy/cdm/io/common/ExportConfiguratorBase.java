@@ -69,11 +69,12 @@ public abstract class ExportConfiguratorBase<DESTINATION extends Object> extends
 	 */
 //	@Override
 	public ReferenceBase getSourceReference() {
-		//TODO
+		//TODO //needed
 		if (this.sourceReference == null){
-			logger.warn("getSource Reference not yet fully implemented");
 			sourceReference = Database.NewInstance();
-			sourceReference.setTitleCache("Data export");
+			if (getSource() != null){
+				sourceReference.setTitleCache(getSource().getDatabase());
+			}
 		}
 		return sourceReference;
 	}

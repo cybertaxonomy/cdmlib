@@ -165,5 +165,15 @@ public abstract class CdmIoBase<T extends IIoConfigurator> extends CdmApplicatio
 		return result;
 	}
 	
+	
+	protected String getSuccessString(boolean success){
+		if (success){
+			return "with success";
+		}else{
+			return "with errors";
+		}
+	}
+
+	
 
 }

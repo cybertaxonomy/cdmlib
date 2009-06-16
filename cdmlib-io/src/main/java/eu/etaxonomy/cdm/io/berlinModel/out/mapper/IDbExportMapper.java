@@ -13,7 +13,7 @@ package eu.etaxonomy.cdm.io.berlinModel.out.mapper;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-import eu.etaxonomy.cdm.io.common.DbExportState;
+import eu.etaxonomy.cdm.io.common.DbExportStateBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
@@ -21,7 +21,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * @created 12.05.2009
  * @version 1.0
  */
-public interface IDbExportMapper<T extends DbExportState<?>> {
+public interface IDbExportMapper<T extends DbExportStateBase<?>> {
 
 //	public void initialize(PreparedStatement stmt, IndexCounter index);
 

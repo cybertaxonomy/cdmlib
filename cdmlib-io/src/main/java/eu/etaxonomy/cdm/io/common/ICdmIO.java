@@ -21,6 +21,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 
 public interface ICdmIO<T extends IIoConfigurator> {
 	
+	final String USER_STORE = "person";
 	final String PERSON_STORE = "person";
 	final String TEAM_STORE = "team";
 	final String REFERENCE_STORE = "reference";

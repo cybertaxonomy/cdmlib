@@ -12,18 +12,29 @@ package eu.etaxonomy.cdm.io.excel.common;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.io.common.ImportState;
+import eu.etaxonomy.cdm.io.common.ImportStateBase;
 
 /**
  * @author a.mueller
  * @created 11.05.2009
  * @version 1.0
  */
-public class ExcelImportState extends ImportState<ExcelImportConfiguratorBase>{
+public class ExcelImportState extends ImportStateBase<ExcelImportConfiguratorBase>{
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ExcelImportState.class);
 
+	
 	public ExcelImportState() {
 		super();
 	}
+	
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.IoStateBase#initialize(eu.etaxonomy.cdm.io.common.IoConfiguratorBase)
+	 */
+	@Override
+	public void initialize(ExcelImportConfiguratorBase config) {
+				
+	}
+
 }

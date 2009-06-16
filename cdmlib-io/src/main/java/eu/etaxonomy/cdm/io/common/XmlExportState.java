@@ -24,15 +24,24 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * @version 1.0
  */
 //TODO make it CONFIG extends DBExportConfigurator
-public class XmlExportState<CONFIG extends XmlExportConfiguratorBase> extends IoState<CONFIG> {
+public class XmlExportState<CONFIG extends XmlExportConfiguratorBase> extends IoStateBase<CONFIG> {
 	private static final Logger logger = Logger.getLogger(XmlExportState.class);
 	
-	Map<UUID, String> dbIdMap = new HashMap<UUID, String>();
+	Map<UUID, String> xmlIdMap = new HashMap<UUID, String>();
+
 	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.IoStateBase#initialize(eu.etaxonomy.cdm.io.common.IoConfiguratorBase)
+	 */
+	@Override
+	public void initialize(XmlExportConfiguratorBase config) {
+				
+	}
+
 	
 	public void putDbId(CdmBase cdmBase, String xmlId){
 		if (cdmBase != null){
-			dbIdMap.put(cdmBase.getUuid(), xmlId);
+			xmlIdMap.put(cdmBase.getUuid(), xmlId);
 		}else{
 			logger.warn("CdmBase was (null) and could not be added to xmlIdMap");
 		}
@@ -40,12 +49,13 @@ public class XmlExportState<CONFIG extends XmlExportConfiguratorBase> extends Io
 	
 	public String getDbId(CdmBase cdmBase){
 		if (cdmBase != null){
-			return dbIdMap.get(cdmBase.getUuid());
+			return xmlIdMap.get(cdmBase.getUuid());
 		}else{
 			logger.warn("CdmBase was (null). No entries in xmlIdMap available");
 			return null;
 		}
 	}
+
 	
 
 }

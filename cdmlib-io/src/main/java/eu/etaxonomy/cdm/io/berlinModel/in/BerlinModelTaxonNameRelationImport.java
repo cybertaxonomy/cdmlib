@@ -24,12 +24,10 @@ import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_REL_IS
 import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_REL_IS_TYPE_OF;
 import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_REL_TYPE_NOT_DESIGNATED;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -40,7 +38,6 @@ import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.io.common.Source;
-import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
@@ -81,9 +78,11 @@ public class BerlinModelTaxonNameRelationImport extends BerlinModelImportBase {
 	 */
 	@Override
 	protected boolean doInvoke(BerlinModelImportState state){				
-			
+		boolean success = true;	
 		MapWrapper<TaxonNameBase> taxonNameMap = (MapWrapper<TaxonNameBase>)state.getStore(ICdmIO.TAXONNAME_STORE);
 		MapWrapper<ReferenceBase> referenceMap = (MapWrapper<ReferenceBase>)state.getStore(ICdmIO.REFERENCE_STORE);
+		MapWrapper<ReferenceBase> nomRefMap = (MapWrapper<ReferenceBase>)state.getStore(ICdmIO.NOMREF_STORE);
+		MapWrapper<ReferenceBase> nomRefDetailMap = (MapWrapper<ReferenceBase>)state.getStore(ICdmIO.NOMREF_DETAIL_STORE);
 		
 		Set<TaxonNameBase> nameStore = new HashSet<TaxonNameBase>();
 		BerlinModelImportConfigurator config = state.getConfig();
@@ -118,10 +117,17 @@ public class BerlinModelTaxonNameRelationImport extends BerlinModelImportBase {
 				TaxonNameBase nameFrom = taxonNameMap.get(name1Id);
 				TaxonNameBase nameTo = taxonNameMap.get(name2Id);
 				
-				ReferenceBase citation = referenceMap.get(relRefFk);
+				ReferenceBase citation = nomRefDetailMap.get(relRefFk);
+				if (citation == null){
+					citation = referenceMap.get(relRefFk);
+				}
+				if (citation == null){
+					citation = nomRefMap.get(relRefFk);
+				}
+				
 				//TODO (preliminaryFlag = true testen
 				String microcitation = details;
-				String rule = null;  //TODO
+				String rule = null;  
 				
 				if (nameFrom != null && nameTo != null){
 					if (relQualifierFk == NAME_REL_IS_BASIONYM_FOR){
@@ -133,15 +139,15 @@ public class BerlinModelTaxonNameRelationImport extends BerlinModelImportBase {
 					}else if (relQualifierFk == NAME_REL_HAS_SAME_TYPE_AS){
 						nameTo.getHomotypicalGroup().merge(nameFrom.getHomotypicalGroup());//nameFrom.addRelationshipToName(nameTo, NameRelationshipType.REPLACED_SYNONYM(), rule) ;
 					}else if (relQualifierFk == NAME_REL_IS_TYPE_OF || relQualifierFk == NAME_REL_IS_REJECTED_TYPE_OF ||  relQualifierFk == NAME_REL_IS_CONSERVED_TYPE_OF || relQualifierFk == NAME_REL_IS_LECTOTYPE_OF || relQualifierFk == NAME_REL_TYPE_NOT_DESIGNATED ){
-						//TODO
-						String originalNameString = null;
 						boolean isRejectedType = (relQualifierFk == NAME_REL_IS_REJECTED_TYPE_OF);
 						boolean isConservedType = (relQualifierFk == NAME_REL_IS_CONSERVED_TYPE_OF);
 						boolean isLectoType = (relQualifierFk == NAME_REL_IS_LECTOTYPE_OF);
 						boolean isNotDesignated = (relQualifierFk == NAME_REL_TYPE_NOT_DESIGNATED);
 						
+						String originalNameString = null;
 						//TODO addToAllNames true or false?
-						nameTo.addNameTypeDesignation(nameFrom, citation, microcitation, originalNameString, isRejectedType, isConservedType, isLectoType, isNotDesignated, false);
+						boolean addToAllNames = false;
+						nameTo.addNameTypeDesignation(nameFrom, citation, microcitation, originalNameString, isRejectedType, isConservedType, isLectoType, isNotDesignated, addToAllNames);
 						
 					}else if (relQualifierFk == NAME_REL_IS_ORTHOGRAPHIC_VARIANT_OF){
 						nameFrom.addRelationshipToName(nameTo, NameRelationshipType.ORTHOGRAPHIC_VARIANT(), citation, microcitation, rule) ;
@@ -149,6 +155,7 @@ public class BerlinModelTaxonNameRelationImport extends BerlinModelImportBase {
 						//HybridRelationships
 						if (! (nameTo instanceof BotanicalName) || ! (nameFrom instanceof BotanicalName)){
 							logger.warn("HybridrelationshipNames ("+name1Id +"," + name2Id +") must be of type BotanicalName but are not");
+							success = false;
 						}
 						try {
 							HybridRelationshipType hybridRelType = BerlinModelTransformer.relNameId2HybridRel(relQualifierFk);
@@ -159,10 +166,9 @@ public class BerlinModelTaxonNameRelationImport extends BerlinModelImportBase {
 							//parent.addHybridChild(child, hybridRelType, rule);
 							logger.warn("HybridRelationships not yet implemented");
 							
-							//TODO reference
 						} catch (UnknownCdmTypeException e) {
-							//TODO
 							logger.warn(e);
+							success = false;
 						}
 					}else {
 						//TODO
@@ -173,10 +179,11 @@ public class BerlinModelTaxonNameRelationImport extends BerlinModelImportBase {
 							} catch (Exception e) {
 								logger.error(e.getMessage());
 								logger.warn("NameRelationship could not be imported");
-								return false;
+								success = false;
 							} 
 						}else{
-							logger.warn("NameRelationShipType " + relQualifierFk + " not yet implemented");		
+							logger.warn("NameRelationShipType " + relQualifierFk + " not yet implemented");
+							success = false;
 						}
 					}
 					nameStore.add(nameFrom);
@@ -192,13 +199,14 @@ public class BerlinModelTaxonNameRelationImport extends BerlinModelImportBase {
 					if (nameTo == null){
 						logger.warn("to TaxonNames for RelName (" + relNameId + ") does not exist in store");
 					}
+					success = false;
 				}
 			}
 			logger.info("TaxonName to save: " + nameStore.size());
 			getNameService().saveTaxonNameAll(nameStore);
 			
-			logger.info("end makeNameRelationships ...");
-			return true;
+			logger.info("end makeNameRelationships ..." + getSuccessString(success));
+			return success;
 		} catch (SQLException e) {
 			logger.error("SQLException:" +  e);
 			return false;

@@ -25,11 +25,10 @@ import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.model.common.Annotation;
-import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.media.ImageFile;
 import eu.etaxonomy.cdm.model.media.Media;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
@@ -135,10 +134,12 @@ public class BerlinModelTypesImport extends BerlinModelImportBase /*implements I
 
 					}catch (UnknownCdmTypeException e) {
 						logger.warn("TypeStatus '" + status + "' not yet implemented");
+						result = false;
 					}
 				}else{
 					//TODO
 					logger.warn("TaxonName for TypeDesignation " + typeDesignationId + " does not exist in store");
+					result = false;
 				}
 				//put
 			}
@@ -149,7 +150,7 @@ public class BerlinModelTypesImport extends BerlinModelImportBase /*implements I
 			logger.info("Names to save: " + taxonNameStore.size());
 			getNameService().saveTaxonNameAll(taxonNameStore);	
 			
-			logger.info("end makeTypes ...");
+			logger.info("end makeTypes ..." + getSuccessString(result));
 			return result;
 		} catch (SQLException e) {
 			logger.error("SQLException:" +  e);
@@ -159,6 +160,7 @@ public class BerlinModelTypesImport extends BerlinModelImportBase /*implements I
 	}
 	
 	private static boolean makeFigures(Map<Integer, Specimen> typeMap, Source source){
+		boolean success = true;
 		try {
 			//get data from database
 			String strQuery = 
@@ -205,7 +207,7 @@ public class BerlinModelTypesImport extends BerlinModelImportBase /*implements I
 			return false;
 		}
 			
-		return true;
+		return success;
 	}
 	
 	/* (non-Javadoc)

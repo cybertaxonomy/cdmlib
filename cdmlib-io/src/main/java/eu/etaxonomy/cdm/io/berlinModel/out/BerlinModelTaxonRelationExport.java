@@ -19,7 +19,7 @@ import eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.CreatedAndNotesMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbObjectMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.MethodMapper;
-import eu.etaxonomy.cdm.io.common.DbExportState;
+import eu.etaxonomy.cdm.io.common.DbExportStateBase;
 import eu.etaxonomy.cdm.io.common.IExportConfigurator;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -66,11 +66,11 @@ public class BerlinModelTaxonRelationExport extends BerlinModelExportBase<Relati
 		BerlinModelExportMapping mapping = new BerlinModelExportMapping(tableName);
 //		mapping.addMapper(IdMapper.NewInstance("RelPTaxonId"));  //is Identity column
 		
-		mapping.addMapper(MethodMapper.NewInstance("PTNameFk1", this.getClass(), "getPTNameFk1", standardMethodParameter, DbExportState.class));
-		mapping.addMapper(MethodMapper.NewInstance("PTRefFk1", this.getClass(), "getPTRefFk1", standardMethodParameter, DbExportState.class));
+		mapping.addMapper(MethodMapper.NewInstance("PTNameFk1", this.getClass(), "getPTNameFk1", standardMethodParameter, DbExportStateBase.class));
+		mapping.addMapper(MethodMapper.NewInstance("PTRefFk1", this.getClass(), "getPTRefFk1", standardMethodParameter, DbExportStateBase.class));
 		
-		mapping.addMapper(MethodMapper.NewInstance("PTNameFk2", this.getClass(), "getPTNameFk2", standardMethodParameter, DbExportState.class));
-		mapping.addMapper(MethodMapper.NewInstance("PTRefFk2", this.getClass(), "getPTRefFk2", standardMethodParameter, DbExportState.class));
+		mapping.addMapper(MethodMapper.NewInstance("PTNameFk2", this.getClass(), "getPTNameFk2", standardMethodParameter, DbExportStateBase.class));
+		mapping.addMapper(MethodMapper.NewInstance("PTRefFk2", this.getClass(), "getPTRefFk2", standardMethodParameter, DbExportStateBase.class));
 		
 		mapping.addMapper(MethodMapper.NewInstance("RelQualifierFk", this));
 		
@@ -102,7 +102,7 @@ public class BerlinModelTaxonRelationExport extends BerlinModelExportBase<Relati
 				}
 			}
 			commitTransaction(txStatus);
-			logger.info("end make " + pluralString + " ...");
+			logger.info("end make " + pluralString + " ..." + getSuccessString(success));
 			return success;
 		}catch(SQLException e){
 			e.printStackTrace();
@@ -140,26 +140,26 @@ public class BerlinModelTaxonRelationExport extends BerlinModelExportBase<Relati
 	}
 	
 	@SuppressWarnings("unused")
-	private static Integer getPTNameFk1(RelationshipBase<?, ?, ?> rel, DbExportState<?> state){
+	private static Integer getPTNameFk1(RelationshipBase<?, ?, ?> rel, DbExportStateBase<?> state){
 		return getObjectFk(rel, state, true, true);
 	}
 	
 	@SuppressWarnings("unused")
-	private static Integer getPTRefFk1(RelationshipBase<?, ?, ?> rel, DbExportState<?> state){
+	private static Integer getPTRefFk1(RelationshipBase<?, ?, ?> rel, DbExportStateBase<?> state){
 		return getObjectFk(rel, state, false, true);
 	}
 	
 	@SuppressWarnings("unused")
-	private static Integer getPTNameFk2(RelationshipBase<?, ?, ?> rel, DbExportState<?> state){
+	private static Integer getPTNameFk2(RelationshipBase<?, ?, ?> rel, DbExportStateBase<?> state){
 		return getObjectFk(rel, state, true, false);
 	}
 	
 	@SuppressWarnings("unused")
-	private static Integer getPTRefFk2(RelationshipBase<?, ?, ?> rel, DbExportState<?> state){
+	private static Integer getPTRefFk2(RelationshipBase<?, ?, ?> rel, DbExportStateBase<?> state){
 		return getObjectFk(rel, state, false, false);
 	}
 
-	private static Integer getObjectFk(RelationshipBase<?, ?, ?> rel, DbExportState<?> state, boolean isName, boolean isFrom){
+	private static Integer getObjectFk(RelationshipBase<?, ?, ?> rel, DbExportStateBase<?> state, boolean isName, boolean isFrom){
 		TaxonBase<?> taxon = null;
 		if (rel.isInstanceOf(TaxonRelationship.class)){
 			TaxonRelationship tr = (TaxonRelationship)rel;

@@ -9,6 +9,26 @@
 
 package eu.etaxonomy.cdm.io.berlinModel;
 
+import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_ST_COMB_INVAL;
+import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_ST_NOM_ALTERN;
+import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_ST_NOM_AMBIG;
+import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_ST_NOM_CONFUS;
+import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_ST_NOM_CONS;
+import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_ST_NOM_CONS_PROP;
+import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_ST_NOM_DUB;
+import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_ST_NOM_ILLEG;
+import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_ST_NOM_INVAL;
+import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_ST_NOM_NOV;
+import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_ST_NOM_NUD;
+import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_ST_NOM_PROVIS;
+import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_ST_NOM_REJ;
+import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_ST_NOM_REJ_PROP;
+import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_ST_NOM_SUPERFL;
+import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_ST_NOM_UTIQUE_REJ;
+import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_ST_NOM_UTIQUE_REJ_PROP;
+import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_ST_ORTH_CONS;
+import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_ST_ORTH_CONS_PROP;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -156,6 +176,52 @@ public final class BerlinModelTransformer {
 	public static int FACT_OBSERVATION = 9;
 	public static int FACT_DISTRIBUTION_EM = 10;
 	public static int FACT_DISTRIBUTION_WORLD = 11;
+	
+	
+	public static NomenclaturalStatus nomStatusFkToNomStatus(int nomStatusFk)  throws UnknownCdmTypeException{
+		if (nomStatusFk == NAME_ST_NOM_INVAL){
+			return NomenclaturalStatus.NewInstance(NomenclaturalStatusType.INVALID());
+		}else if (nomStatusFk == NAME_ST_NOM_ILLEG){
+			return NomenclaturalStatus.NewInstance(NomenclaturalStatusType.ILLEGITIMATE());
+		}else if (nomStatusFk == NAME_ST_NOM_NUD){
+			 return NomenclaturalStatus.NewInstance(NomenclaturalStatusType.NUDUM());
+		}else if (nomStatusFk == NAME_ST_NOM_REJ){
+			return NomenclaturalStatus.NewInstance(NomenclaturalStatusType.REJECTED());
+		}else if (nomStatusFk == NAME_ST_NOM_REJ_PROP){
+			return NomenclaturalStatus.NewInstance(NomenclaturalStatusType.REJECTED_PROP());
+		}else if (nomStatusFk == NAME_ST_NOM_UTIQUE_REJ){
+			return NomenclaturalStatus.NewInstance(NomenclaturalStatusType.UTIQUE_REJECTED());
+		}else if (nomStatusFk == NAME_ST_NOM_UTIQUE_REJ_PROP){
+			return NomenclaturalStatus.NewInstance(NomenclaturalStatusType.UTIQUE_REJECTED_PROP());
+		}else if (nomStatusFk == NAME_ST_NOM_CONS){
+			return NomenclaturalStatus.NewInstance(NomenclaturalStatusType.CONSERVED());
+		}else if (nomStatusFk == NAME_ST_NOM_CONS_PROP){
+			return NomenclaturalStatus.NewInstance(NomenclaturalStatusType.CONSERVED_PROP());
+		}else if (nomStatusFk == NAME_ST_ORTH_CONS){
+			return NomenclaturalStatus.NewInstance(NomenclaturalStatusType.ORTHOGRAPHY_CONSERVED());
+		}else if (nomStatusFk == NAME_ST_ORTH_CONS_PROP){
+			return NomenclaturalStatus.NewInstance(NomenclaturalStatusType.ORTHOGRAPHY_CONSERVED_PROP());
+		}else if (nomStatusFk == NAME_ST_NOM_SUPERFL){
+			return NomenclaturalStatus.NewInstance(NomenclaturalStatusType.SUPERFLUOUS());
+		}else if (nomStatusFk == NAME_ST_NOM_AMBIG){
+			return NomenclaturalStatus.NewInstance(NomenclaturalStatusType.AMBIGUOUS());
+		}else if (nomStatusFk == NAME_ST_NOM_PROVIS){
+			return NomenclaturalStatus.NewInstance(NomenclaturalStatusType.PROVISIONAL());
+		}else if (nomStatusFk == NAME_ST_NOM_DUB){
+			return NomenclaturalStatus.NewInstance(NomenclaturalStatusType.DOUBTFUL());
+		}else if (nomStatusFk == NAME_ST_NOM_NOV){
+			return NomenclaturalStatus.NewInstance(NomenclaturalStatusType.NOVUM());
+		}else if (nomStatusFk == NAME_ST_NOM_CONFUS){
+			return NomenclaturalStatus.NewInstance(NomenclaturalStatusType.CONFUSUM());
+		}else if (nomStatusFk == NAME_ST_NOM_ALTERN){
+			return NomenclaturalStatus.NewInstance(NomenclaturalStatusType.ALTERNATIVE());
+		}else if (nomStatusFk == NAME_ST_COMB_INVAL){
+			return NomenclaturalStatus.NewInstance(NomenclaturalStatusType.COMBINATION_INVALID());
+		}else {
+			throw new UnknownCdmTypeException("Unknown NomenclaturalStatus (id=" + Integer.valueOf(nomStatusFk).toString() + ")");
+		}
+	}
+	
 	
 	//TypeDesignation
 	public static SpecimenTypeDesignationStatus typeStatusId2TypeStatus (int typeStatusId)  throws UnknownCdmTypeException{
@@ -560,7 +626,6 @@ public final class BerlinModelTransformer {
 		
 		}else if (type.equals(NameRelationshipType.TREATED_AS_LATER_HOMONYM())) {return NAME_REL_IS_TREATED_AS_LATER_HOMONYM_OF;
 		}else if (type.equals(NameRelationshipType.ORTHOGRAPHIC_VARIANT())) {return NAME_REL_IS_ORTHOGRAPHIC_VARIANT_OF;
-//		}else if (type.equals(NameRelationshipType.())) {return NAME_REL_IS_ORTHOGRAPHIC_VARIANT_OF;
 		}else {
 			//TODO Exception
 			logger.warn("Relationship type not yet supported by Berlin Model export: "+ rel.getType());

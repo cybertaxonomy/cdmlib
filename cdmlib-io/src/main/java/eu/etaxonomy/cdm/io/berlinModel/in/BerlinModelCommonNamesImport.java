@@ -72,6 +72,7 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 		MapWrapper<ReferenceBase> referenceMap = (MapWrapper<ReferenceBase>)state.getStore(ICdmIO.REFERENCE_STORE);
 		BerlinModelImportConfigurator config = state.getConfig();
 		
+		boolean success = false;
 		if (true){
 			return false;
 		}
@@ -174,7 +175,7 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 			logger.info("Taxa to save: " + taxonStore.size());
 			getTaxonService().saveTaxonAll(taxonStore);	
 			
-			logger.info("end make occurrences ...");
+			logger.info("end make commonNames ..." + getSuccessString(success));
 			return true;
 		} catch (SQLException e) {
 			logger.error("SQLException:" +  e);

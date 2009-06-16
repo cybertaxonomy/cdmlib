@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.CreatedAndNotesMapper;
+import eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbExtensionMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbStringMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbTimePeriodMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.IdMapper;
@@ -24,6 +25,7 @@ import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.ExtensionType;
 
 
 /**
@@ -35,7 +37,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 public class BerlinModelAuthorExport extends BerlinModelExportBase<Person> {
 	private static final Logger logger = Logger.getLogger(BerlinModelAuthorExport.class);
 
-	private static int modCount = 1000;
+	private static int modCount = 5000;
 	private static final String dbTableName = "Author";
 	private static final String pluralString = "Authors";
 	private static final Class<? extends CdmBase> standardMethodParameter = Person.class;
@@ -64,13 +66,11 @@ public class BerlinModelAuthorExport extends BerlinModelExportBase<Person> {
 		mapping.addMapper(DbStringMapper.NewInstance("firstname", "FirstName"));
 		mapping.addMapper(DbStringMapper.NewInstance("lastname", "LastName"));
 		mapping.addMapper(DbTimePeriodMapper.NewInstance("lifespan", "Dates"));
-
-//TODO		
-//		mapping.addMapper(DbStringMapper.NewInstance("", "NomStandard"));
-//		mapping.addMapper(DbStringMapper.NewInstance("", "Kürzel"));
-//		mapping.addMapper(DbStringMapper.NewInstance("", "DraftKürz"));
-//		mapping.addMapper(DbStringMapper.NewInstance("", "Initials"));
-
+		mapping.addMapper(DbExtensionMapper.NewInstance(ExtensionType.NOMENCLATURAL_STANDARD(), "NomStandard"));
+		mapping.addMapper(DbExtensionMapper.NewInstance(ExtensionType.AREA_OF_INTREREST(), "AreaOfInterest"));
+		mapping.addMapper(DbExtensionMapper.NewInstance(ExtensionType.ABBREVIATION(), "Initials"));
+//		mapping.addMapper(DbExtensionMapper.NewInstance(ExtensionType.ABBREVIATION(),Kürzel")); //Initials used instead
+//		mapping.addMapper(DbExtensionMapper.NewInstance(ExtensionType.ABBREVIATION(), "DraftKürz")); //Initials used instead
 		mapping.addMapper(CreatedAndNotesMapper.NewInstance());
 		
 		return mapping;
@@ -102,7 +102,7 @@ public class BerlinModelAuthorExport extends BerlinModelExportBase<Person> {
 			}
 			
 			commitTransaction(txStatus);
-			logger.info("end make "+pluralString+"  ...");
+			logger.info("end make "+pluralString+"  ..." + getSuccessString(success));
 			return success;
 		}catch(SQLException e){
 			e.printStackTrace();

@@ -16,7 +16,7 @@ import java.sql.SQLException;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
-import eu.etaxonomy.cdm.io.common.DbExportState;
+import eu.etaxonomy.cdm.io.common.DbExportStateBase;
 import eu.etaxonomy.cdm.io.common.MultipleAttributeMapperBase;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.Annotation;
@@ -28,7 +28,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * @created 12.05.2009
  * @version 1.0
  */
-public class CreatedAndNotesMapper extends MultipleAttributeMapperBase<DbSingleAttributeExportMapperBase<DbExportState<?>>> implements IDbExportMapper<DbExportState<?>>{
+public class CreatedAndNotesMapper extends MultipleAttributeMapperBase<DbSingleAttributeExportMapperBase<DbExportStateBase<?>>> implements IDbExportMapper<DbExportStateBase<?>>{
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CreatedAndNotesMapper.class);
 	
@@ -46,11 +46,11 @@ public class CreatedAndNotesMapper extends MultipleAttributeMapperBase<DbSingleA
 	 * @param cdmAttributeString
 	 */
 	private CreatedAndNotesMapper(boolean withUpdate) {
-		singleMappers.add(DbStringMapper.NewInstance("createdBy", "Created_Who"));
+		singleMappers.add(DbUserMapper.NewInstance("createdBy", "Created_Who"));
 		singleMappers.add(DbDateMapper.NewInstance("created", "Created_When"));
 		singleMappers.add(MethodMapper.NewInstance("Notes", this.getClass(), "getNotes", AnnotatableEntity.class));
 		if (withUpdate){
-			singleMappers.add(DbStringMapper.NewInstance("updatedBy", "Updated_Who"));
+			singleMappers.add(DbUserMapper.NewInstance("updatedBy", "Updated_Who"));
 			singleMappers.add(DbDateMapper.NewInstance("updated", "Updated_When"));
 		}
 	}
@@ -59,8 +59,8 @@ public class CreatedAndNotesMapper extends MultipleAttributeMapperBase<DbSingleA
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.berlinModel.out.mapper.IDbExportMapper#initialize(java.sql.PreparedStatement, eu.etaxonomy.cdm.io.berlinModel.out.mapper.IndexCounter, eu.etaxonomy.cdm.io.berlinModel.out.DbExportState)
 	 */
-	public void initialize(PreparedStatement stmt, IndexCounter index, DbExportState<?> state, String tableName) {
-		for (DbSingleAttributeExportMapperBase<DbExportState<?>> mapper : singleMappers){
+	public void initialize(PreparedStatement stmt, IndexCounter index, DbExportStateBase<?> state, String tableName) {
+		for (DbSingleAttributeExportMapperBase<DbExportStateBase<?>> mapper : singleMappers){
 			mapper.initialize(stmt, index, state, tableName);
 		}	
 	}
@@ -71,7 +71,7 @@ public class CreatedAndNotesMapper extends MultipleAttributeMapperBase<DbSingleA
 	 */
 	public boolean invoke(CdmBase cdmBase) throws SQLException {
 		boolean result = true;
-		for (DbSingleAttributeExportMapperBase<DbExportState<?>> mapper : singleMappers){
+		for (DbSingleAttributeExportMapperBase<DbExportStateBase<?>> mapper : singleMappers){
 			result &= mapper.invoke(cdmBase);
 		}
 		return result;
@@ -84,7 +84,9 @@ public class CreatedAndNotesMapper extends MultipleAttributeMapperBase<DbSingleA
 		String separator = ";";
 		for (Annotation annotation :obj.getAnnotations()){
 			if (! AnnotationType.TECHNICAL().equals(annotation.getAnnotationType())){
-				result = CdmUtils.concat(separator, result, annotation.getText());
+				if (! ( annotation.getText() != null && annotation.getText().startsWith("ORDER:"))){  //TODO casus Salvador, should be stored in Extension ones extensions are also for annotatable entities
+					result = CdmUtils.concat(separator, result, annotation.getText());
+				}
 			}
 		}
 		return (result.trim().equals("")? null : result);

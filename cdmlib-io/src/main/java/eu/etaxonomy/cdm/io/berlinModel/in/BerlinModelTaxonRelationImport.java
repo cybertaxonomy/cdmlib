@@ -24,7 +24,6 @@ import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.TAX_REL_IS_
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -137,7 +136,7 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 	 */
 	@Override
 	protected boolean doInvoke(BerlinModelImportState state){				
-			
+		boolean success = true;
 		//make not needed maps empty
 		MapWrapper<TaxonNameBase> taxonNameMap = (MapWrapper<TaxonNameBase>)state.getStore(ICdmIO.TAXONNAME_STORE);
 		taxonNameMap.makeEmpty();
@@ -148,6 +147,8 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 		teamMap.makeEmpty();
 
 		MapWrapper<ReferenceBase> referenceMap = (MapWrapper<ReferenceBase>)state.getStore(ICdmIO.REFERENCE_STORE);
+		MapWrapper<ReferenceBase> nomRefMap = (MapWrapper<ReferenceBase>)state.getStore(ICdmIO.NOMREF_STORE);
+		MapWrapper<ReferenceBase> nomRefDetailMap = (MapWrapper<ReferenceBase>)state.getStore(ICdmIO.NOMREF_DETAIL_STORE);
 		MapWrapper<TaxonBase> taxonMap = (MapWrapper<TaxonBase>)state.getStore(ICdmIO.TAXON_STORE);
 
 		Set<TaxonBase> taxonStore = new HashSet<TaxonBase>();
@@ -184,18 +185,27 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 				TaxonBase taxon2 = taxonMap.get(taxon2Id);
 				
 				//TODO
-				ReferenceBase citation = null;
-				String microcitation = null;
+				ReferenceBase citation = nomRefDetailMap.get(relRefFk);
+				if (citation == null){
+					citation = referenceMap.get(relRefFk);
+				}
+				if (citation == null){
+					citation = nomRefMap.get(relRefFk);
+				}
+				
+				String microcitation = null; //does not exist in RelPTaxon
 
 				if (taxon2 != null && taxon1 != null){
 					if (!(taxon2 instanceof Taxon)){
 						logger.error("TaxonBase (ID = " + taxon2.getId()+ ", RIdentifier = " + taxon2Id + ") can't be casted to Taxon");
+						success = false;
 						continue;
 					}
 					Taxon toTaxon = (Taxon)taxon2;
 					if (isTaxonRelationship(relQualifierFk)){
 						if (!(taxon1 instanceof Taxon)){
 							logger.error("TaxonBase (ID = " + taxon1.getId()+ ", RIdentifier = " + taxon1Id + ") can't be casted to Taxon");
+							success = false;
 							continue;
 						}
 						Taxon fromTaxon = (Taxon)taxon1;
@@ -207,6 +217,7 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 					}else if (isSynonymRelationship(relQualifierFk)){
 						if (!(taxon1 instanceof Synonym)){
 							logger.error("Taxon (ID = " + taxon1.getId()+ ", RIdentifier = " + taxon1Id + ") can't be casted to Synonym");
+							success = false;
 							continue;
 						}
 						Synonym synonym = (Synonym)taxon1;
@@ -225,6 +236,7 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 								relQualifierFk == TAX_REL_IS_PARTIAL_HETEROTYPIC_SYNONYM_OF ){
 								synRel.setPartial(true);
 						}else{
+							success = false;
 							logger.warn("Proparte/Partial not yet implemented for TaxonRelationShipType " + relQualifierFk);
 						}
 					}else if (isConceptRelationship){
@@ -232,6 +244,7 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 						try {
 							TaxonRelationshipType relType = BerlinModelTransformer.taxonRelId2TaxonRelType(relQualifierFk, isInverse);	
 							if (! (taxon1 instanceof Taxon)){
+								success = false;
 								logger.error("TaxonBase (ID = " + taxon1.getId()+ ", RIdentifier = " + taxon1Id + ") can't be casted to Taxon");
 							}else{
 								Taxon fromTaxon = (Taxon)taxon1;
@@ -240,27 +253,28 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 						} catch (UnknownCdmTypeException e) {
 							//TODO other relationships
 							logger.warn("TaxonRelationShipType " + relQualifierFk + " (conceptRelationship) not yet implemented");
+							success = false;
 						}
 					}else {
 						//TODO
 						logger.warn("TaxonRelationShipType " + relQualifierFk + " not yet implemented");
+						success = false;
 					}
 					taxonStore.add(taxon2);
 					
 					//TODO
-					//Reference
-					//ID
 					//etc.
 				}else{
 					//TODO
 					logger.warn("Taxa for RelPTaxon " + relPTaxonId + " do not exist in store");
+					success = false;
 				}
 			}
 			logger.info("Taxa to save: " + taxonStore.size());
 			getTaxonService().saveTaxonAll(taxonStore);
 			
-			logger.info("end makeTaxonRelationships ...");
-			return true;
+			logger.info("end makeTaxonRelationships ..." + getSuccessString(success));
+			return success;
 		} catch (SQLException e) {
 			logger.error("SQLException:" +  e);
 			return false;
