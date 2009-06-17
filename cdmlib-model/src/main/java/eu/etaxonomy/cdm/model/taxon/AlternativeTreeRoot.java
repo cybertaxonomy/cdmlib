@@ -20,16 +20,16 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
  * @version 1.0
  */
 // Not in use yet
-public class AlternativeViewRoot extends TaxonNode {
+public class AlternativeTreeRoot extends TaxonNode {
 	private static final long serialVersionUID = 3194452473289639597L;
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(AlternativeViewRoot.class);
+	private static final Logger logger = Logger.getLogger(AlternativeTreeRoot.class);
 	
 	private TaxonNode replacedTaxonNode; 
 	
 	
-	protected AlternativeViewRoot(TaxonNode oldRoot, TaxonNode replacedTaxonNodeFromParentView, ReferenceBase reference, String microReference) {
-		super(oldRoot.getTaxon(), oldRoot.getTaxonomicView());
+	protected AlternativeTreeRoot(TaxonNode oldRoot, TaxonNode replacedTaxonNodeFromParentView, ReferenceBase reference, String microReference) {
+		super(oldRoot.getTaxon(), oldRoot.getTaxonomicTree());
 		this.setParent(replacedTaxonNodeFromParentView.getParent());
 		this.setReplacedTaxonNode(replacedTaxonNodeFromParentView);
 	//	this.childNodes = oldRoot.getChildNodes());

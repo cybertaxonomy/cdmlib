@@ -44,20 +44,20 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
  * @version 1.0
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "TaxonomicView", propOrder = {
+@XmlType(name = "TaxonomicTree", propOrder = {
     "name",
     "allNodes",
     "rootNodes",
     "reference",
     "microReference"
 })
-@XmlRootElement(name = "TaxonomicView")
+@XmlRootElement(name = "TaxonomicTree")
 @Entity
 @Audited
-public class TaxonomicView extends IdentifiableEntity implements IReferencedEntity{
+public class TaxonomicTree extends IdentifiableEntity implements IReferencedEntity{
 	private static final long serialVersionUID = -753804821474209635L;
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(TaxonomicView.class);
+	private static final Logger logger = Logger.getLogger(TaxonomicTree.class);
 	
 	@XmlElement(name = "name")
 	@XmlIDREF
@@ -70,7 +70,7 @@ public class TaxonomicView extends IdentifiableEntity implements IReferencedEnti
 	@XmlElement(name = "taxonNode")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
-    @OneToMany(mappedBy="taxonomicView", fetch=FetchType.LAZY)
+    @OneToMany(mappedBy="taxonomicTree", fetch=FetchType.LAZY)
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
 	private Set<TaxonNode> allNodes = new HashSet<TaxonNode>();
 
@@ -100,18 +100,18 @@ public class TaxonomicView extends IdentifiableEntity implements IReferencedEnti
 //	private AlternativeViewRoot alternativeViewRoot;
 	
 	
-	public static TaxonomicView NewInstance(String name){
+	public static TaxonomicTree NewInstance(String name){
 		return NewInstance(name, Language.DEFAULT());
 	}
 	
-	public static TaxonomicView NewInstance(String name, Language language){
-		TaxonomicView result =  new TaxonomicView();
+	public static TaxonomicTree NewInstance(String name, Language language){
+		TaxonomicTree result =  new TaxonomicTree();
 		LanguageString langName = LanguageString.NewInstance(name, language);
 		result.setName(langName);
 		return result;
 	}
 	
-	private TaxonomicView(){
+	private TaxonomicTree(){
 		super();
 	}
 	
@@ -153,27 +153,108 @@ public class TaxonomicView extends IdentifiableEntity implements IReferencedEnti
 //	}
 	
 
-	public boolean isTaxonInView(Taxon taxon){
-		if (taxon == null){
-			return false;
-		}
-		for (TaxonNode taxonNode: taxon.getTaxonNodes()){
-			if (taxonNode.getTaxonomicView().equals(this)){
-				return true;
-			}
-		}
-		return false;
+	/**
+	 * Checks if the given taxon is part of <b>this</b> tree.
+	 * @param taxon
+	 * @return
+	 */
+	public boolean isTaxonInTree(Taxon taxon){
+		return (getNode(taxon) != null);
 	}
 	
+	/**
+	 * Checks if the given taxon is part of <b>this</b> tree. If so the according TaxonNode is returned.
+	 * Otherwise null is returned.
+	 * @param taxon
+	 * @return
+	 */
+	public TaxonNode getNode(Taxon taxon){
+		if (taxon == null){
+			return null;
+		}
+		for (TaxonNode taxonNode: taxon.getTaxonNodes()){
+			if (taxonNode.getTaxonomicTree().equals(this)){
+				return taxonNode;
+			}
+		}
+		return null;
+	}
 	
+	/**
+	 * Checks if the given taxon is one of the root taxa in <b>this</b> tree.
+	 * @param taxon
+	 * @return
+	 */
+	public boolean isRootInTree(Taxon taxon){
+		return (getRootNode(taxon) != null);
+	}
+	
+	/**
+	 * Checks if the taxon is a root taxon in <b>this</b> tree and returns the according node if true.
+	 * Returns null otherwise.
+	 * @param taxon
+	 * @return
+	 */
+	public TaxonNode getRootNode(Taxon taxon){
+		if (taxon == null){
+			return null;
+		}
+		for (TaxonNode taxonNode: taxon.getTaxonNodes()){
+			if (taxonNode.getTaxonomicTree().equals(this)){
+				return taxonNode;
+			}
+		}
+		return null;
+	}
 
-	
-	
-//	public TaxonRelationship addChild(Taxon parent, Taxon child){
-//		
-//		parent.addTaxonomicChild(child, null, null);
-//	}
-	
+	/**
+	 * Relates two taxa as parent-child nodes within a taxonomic tree. If the taxa are not yet 
+	 * part of the tree they are added to it.
+	 * If they child taxon is a root still it is added as child and deleted from the rootNode set.
+	 * If the child is a child already an IllegalStateException is thrown because a child can have only 
+	 * one parent.
+	 * @param parent
+	 * @param child
+	 * @param citation
+	 * @param microCitation
+	 * @return
+	 * @throws IllegalStateException
+	 */
+	public boolean addParentChild (Taxon parent, Taxon child, ReferenceBase citation, String microCitation)
+			throws IllegalStateException{
+		try {
+			TaxonNode parentNode = this.getNode(parent);
+			TaxonNode childNode = this.getNode(child);
+			
+			//if child exists in tree and has a parent different to the parent taxon  throw exception
+			//no multiple parents are allowed in the tree
+			if (childNode != null && childNode.getParent() != null && ! childNode.getParent().getTaxon().equals(parent) ){
+				throw new IllegalStateException("The child taxon is already part of the tree but has an other parent taxon than the one than the parent to be added. Child: " + child.toString() + ", new parent:" + parent.toString() + ", old parent: " + childNode.getParent().getTaxon().toString()) ;
+			}
+			
+			//add parent node if not exist
+			if (parentNode == null){
+				//New Root
+				parentNode = this.addRoot(parent, null);
+			}
+			
+			if (childNode == null){
+				parentNode.addChild(child, citation, microCitation);
+			}else{
+				//child is still root
+				//TODO test if child is rootNode otherwise thrwo IllegalStateException
+				if (! this.isRootInTree(child)){
+					throw new IllegalStateException("Child is not a root but must be");
+				}
+				this.makeRootChildOfOtherNode(childNode, parentNode, citation, microCitation);
+			}
+		} catch (IllegalStateException e) {
+			throw e;
+		} catch (RuntimeException e){
+			throw e;
+		}
+		return true;
+	}
 	
 	
 

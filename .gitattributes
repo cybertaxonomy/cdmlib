@@ -1122,7 +1122,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/Thesis.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/WebPage.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/package-info.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/package.html -text
-cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/AlternativeViewRoot.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/AlternativeTreeRoot.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/Synonym.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/SynonymRelationship.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/SynonymRelationshipType.java -text
@@ -1132,7 +1132,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/TaxonComparator.java -te
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/TaxonNode.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/TaxonRelationship.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/TaxonRelationshipType.java -text
-cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/TaxonomicView.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/TaxonomicTree.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/package-info.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/package.html -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/view/AuditEvent.java -text
@@ -1260,7 +1260,7 @@ cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/taxon/TaxonBaseTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/taxon/TaxonComparatorTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/taxon/TaxonNodeTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/taxon/TaxonTest.java -text
-cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/taxon/TaxonomicViewTest.java -text
+cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/taxon/TaxonomicTreeTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/cache/name/BotanicNameCacheStrategyTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/cache/name/NonViralNameDefaultCacheStrategyTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/cache/name/ZoologicalNameCacheStrategyTest.java -text

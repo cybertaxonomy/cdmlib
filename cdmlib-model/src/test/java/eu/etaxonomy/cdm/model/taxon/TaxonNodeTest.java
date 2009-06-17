@@ -38,7 +38,7 @@ public class TaxonNodeTest {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TaxonNodeTest.class);
 	private static String viewName1;
-	private static TaxonomicView taxonomicView1;
+	private static TaxonomicTree taxonomicView1;
 	private static Taxon taxon1;
 	private static Taxon taxon2;
 	private static TaxonNameBase<?,?> taxonName1;
@@ -66,7 +66,7 @@ public class TaxonNodeTest {
 	@Before
 	public void setUp() throws Exception {
 		viewName1 = "Greuther, 1993";
-		taxonomicView1 = TaxonomicView.NewInstance(viewName1);
+		taxonomicView1 = TaxonomicTree.NewInstance(viewName1);
 		taxonName1 = BotanicalName.NewInstance(Rank.SPECIES());
 		taxonName1 = BotanicalName.NewInstance(Rank.SUBSPECIES());
 		ref1 = Journal.NewInstance();
@@ -88,15 +88,15 @@ public class TaxonNodeTest {
 
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.taxon.TaxonNode#NewInstance(eu.etaxonomy.cdm.model.taxon.Taxon, eu.etaxonomy.cdm.model.taxon.TaxonomicView)}.
+	 * Test method for {@link eu.etaxonomy.cdm.model.taxon.TaxonNode#NewInstance(eu.etaxonomy.cdm.model.taxon.Taxon, eu.etaxonomy.cdm.model.taxon.TaxonomicTree)}.
 	 */
 	@Test
 	public void testNewTaxonTaxonomicView() {
 		TaxonNode testNode = new TaxonNode(taxon1, taxonomicView1);
 		assertNotNull("test node should not be null", testNode);
 		assertEquals(taxon1,testNode.getTaxon());
-		assertEquals(taxonomicView1,testNode.getTaxonomicView());
-		assertTrue("taxon1 must become part of taxonomicView1", taxonomicView1.isTaxonInView(taxon1));
+		assertEquals(taxonomicView1,testNode.getTaxonomicTree());
+		assertTrue("taxon1 must become part of taxonomicView1", taxonomicView1.isTaxonInTree(taxon1));
 	}
 
 	/**

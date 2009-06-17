@@ -43,7 +43,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 @XmlType(name = "TaxonNode", propOrder = {
     "taxon",
     "parent",
-    "taxonomicView",
+    "taxonomicTree",
     "childNodes",
     "referenceForParentChildRelation",
     "microReferenceForParentChildRelation",
@@ -74,12 +74,12 @@ public class TaxonNode  extends AnnotatableEntity {
 	private TaxonNode parent;
 	
 	
-	@XmlElement(name = "taxonomicView")
+	@XmlElement(name = "taxonomicTree")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE})
-	private TaxonomicView taxonomicView;
+	private TaxonomicTree taxonomicTree;
 	
 	@XmlElementWrapper(name = "childNodes")
 	@XmlElement(name = "childNode")
@@ -117,10 +117,10 @@ public class TaxonNode  extends AnnotatableEntity {
 	}
 	
 	//to create nodes either use TaxonomicView.addRoot() or TaxonNode.addChild();
-	protected TaxonNode (Taxon taxon, TaxonomicView taxonomicView){
+	protected TaxonNode (Taxon taxon, TaxonomicTree taxonomicTree){
 		setTaxon(taxon);
-		setTaxonomicView(taxonomicView);
-		taxonomicView.addNode(this);
+		setTaxonomicView(taxonomicTree);
+		taxonomicTree.addNode(this);
 	}
 
 	
@@ -136,17 +136,17 @@ public class TaxonNode  extends AnnotatableEntity {
 	}	
 	
 	public TaxonNode addChild(Taxon taxon, ReferenceBase ref, String microReference, Synonym synonymUsed){
-		if (this.getTaxonomicView().isTaxonInView(taxon)){
+		if (this.getTaxonomicTree().isTaxonInTree(taxon)){
 			throw new IllegalArgumentException("Taxon may not be twice in a taxonomic view");
 		}
-		TaxonNode childNode = new TaxonNode(taxon, this.getTaxonomicView());
-		this.getTaxonomicView().addNode(childNode);
+		TaxonNode childNode = new TaxonNode(taxon, this.getTaxonomicTree());
+		this.getTaxonomicTree().addNode(childNode);
 		addChildNote(childNode, ref, microReference, synonymUsed);
 		return childNode;
 	}
 	
 	protected void addChildNote(TaxonNode childNode, ReferenceBase ref, String microReference, Synonym synonymUsed){
-		if (! childNode.getTaxonomicView().equals(this.getTaxonomicView())){
+		if (! childNode.getTaxonomicTree().equals(this.getTaxonomicTree())){
 			throw new IllegalArgumentException("addChildNote(): both nodes must be part of the same view");
 		}
 		childNode.setParent(this);
@@ -172,7 +172,7 @@ public class TaxonNode  extends AnnotatableEntity {
 				node.removeChild(grandChildNode);
 			}
 			result = childNodes.remove(node);
-			node.getTaxonomicView().removeNode(node);
+			node.getTaxonomicTree().removeNode(node);
 			this.countChildren--;
 			if (this.countChildren < 0){
 				throw new IllegalStateException("children count must not be negative ");
@@ -202,12 +202,12 @@ public class TaxonNode  extends AnnotatableEntity {
 	protected void setParent(TaxonNode parent) {
 		this.parent = parent;
 	}
-	public TaxonomicView getTaxonomicView() {
-		return taxonomicView;
+	public TaxonomicTree getTaxonomicTree() {
+		return taxonomicTree;
 	}
 	//invisible part of the bidirectional relationship, for public use TaxonomicView.addRoot() or TaxonNode.addChild()
-	protected void setTaxonomicView(TaxonomicView taxonomicView) {
-		this.taxonomicView = taxonomicView;
+	protected void setTaxonomicView(TaxonomicTree taxonomicTree) {
+		this.taxonomicTree = taxonomicTree;
 	}
 	public List<TaxonNode> getChildNodes() {
 		return childNodes;

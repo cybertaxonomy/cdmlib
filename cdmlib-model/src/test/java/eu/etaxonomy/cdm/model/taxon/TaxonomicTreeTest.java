@@ -32,12 +32,12 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
  * @created 01.04.2009
  * @version 1.0
  */
-public class TaxonomicViewTest {
+public class TaxonomicTreeTest {
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(TaxonomicViewTest.class);
+	private static final Logger logger = Logger.getLogger(TaxonomicTreeTest.class);
 
 	private static String viewName1;
-	private static TaxonomicView taxonomicView1;
+	private static TaxonomicTree taxonomicView1;
 	private static TaxonNode taxonNode1;
 	private static TaxonNode taxonNode2;
 	private static TaxonNode taxonNode3;
@@ -68,7 +68,7 @@ public class TaxonomicViewTest {
 	@Before
 	public void setUp() throws Exception {
 		viewName1 = "Greuther, 1993";
-		taxonomicView1 = TaxonomicView.NewInstance(viewName1);
+		taxonomicView1 = TaxonomicTree.NewInstance(viewName1);
 		taxonName1 = BotanicalName.NewInstance(Rank.SPECIES());
 		ref1 = Journal.NewInstance();
 		taxon1 = Taxon.NewInstance(taxonName1, ref1);
@@ -85,7 +85,7 @@ public class TaxonomicViewTest {
 //****************************** TESTS *****************************************/
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.taxon.TaxonomicView#addRoot(eu.etaxonomy.cdm.model.taxon.Taxon, eu.etaxonomy.cdm.model.reference.ReferenceBase, java.lang.String, eu.etaxonomy.cdm.model.taxon.Synonym)}.
+	 * Test method for {@link eu.etaxonomy.cdm.model.taxon.TaxonomicTree#addRoot(eu.etaxonomy.cdm.model.taxon.Taxon, eu.etaxonomy.cdm.model.reference.ReferenceBase, java.lang.String, eu.etaxonomy.cdm.model.taxon.Synonym)}.
 	 */
 	@Test
 	public void testAddRoot() {
@@ -114,20 +114,20 @@ public class TaxonomicViewTest {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.taxon.TaxonomicView#isTaxonInView(eu.etaxonomy.cdm.model.taxon.Taxon)}.
+	 * Test method for {@link eu.etaxonomy.cdm.model.taxon.TaxonomicTree#isTaxonInView(eu.etaxonomy.cdm.model.taxon.Taxon)}.
 	 */
 	@Test
 	public void testIsTaxonInView() {
 		taxonomicView1.addRoot(taxon1, null);
 		
-		assertTrue(taxonomicView1.isTaxonInView(taxon1));
+		assertTrue(taxonomicView1.isTaxonInTree(taxon1));
 		Taxon anyTaxon = Taxon.NewInstance(null, null);
-		assertFalse(taxonomicView1.isTaxonInView(anyTaxon));
+		assertFalse(taxonomicView1.isTaxonInTree(anyTaxon));
 	}
 	
 	
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.taxon.TaxonomicView#makeRootChildOfOtherNode(eu.etaxonomy.cdm.model.taxon.TaxonNode, eu.etaxonomy.cdm.model.taxon.TaxonNode, eu.etaxonomy.cdm.model.reference.ReferenceBase, java.util.String)}.
+	 * Test method for {@link eu.etaxonomy.cdm.model.taxon.TaxonomicTree#makeRootChildOfOtherNode(eu.etaxonomy.cdm.model.taxon.TaxonNode, eu.etaxonomy.cdm.model.taxon.TaxonNode, eu.etaxonomy.cdm.model.reference.ReferenceBase, java.util.String)}.
 	 */
 	@Test
 	public void testMakeRootChildOfOtherNode() {
@@ -155,11 +155,11 @@ public class TaxonomicViewTest {
 	}
 	
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.taxon.TaxonomicView#generateTitle()}.
+	 * Test method for {@link eu.etaxonomy.cdm.model.taxon.TaxonomicTree#generateTitle()}.
 	 */
 	@Test
 	public void testGenerateTitle() {
-		TaxonomicView taxonomicViewLocal = TaxonomicView.NewInstance(viewName1);
+		TaxonomicTree taxonomicViewLocal = TaxonomicTree.NewInstance(viewName1);
 		//Maybe changed if title cache is generated in a different way
 		assertEquals(viewName1, taxonomicViewLocal.getTitleCache());
 	}
