@@ -94,7 +94,7 @@ public abstract class AbstractBeanInitializer implements BeanInitializer{
 			} catch (InvocationTargetException e) {
 				logger.error("Cannot invoke property " + prop.getName() + " not found");
 			} catch (NoSuchMethodException e) {
-				logger.error("Property " + prop.getName() + " not found");
+				logger.warn("Property " + prop.getName() + " not found");
 			}
 		}
 		if(logger.isDebugEnabled()){
@@ -244,7 +244,7 @@ public abstract class AbstractBeanInitializer implements BeanInitializer{
 		} catch (InvocationTargetException e) {
 			logger.error("Cannot invoke property " + property + " not found");
 		} catch (NoSuchMethodException e) {
-			logger.error("Property " + property + " not found");
+			logger.warn("Property " + property + " not found");
 		}
 	}
 

@@ -61,8 +61,8 @@
         firstname varchar(255),
         lastname varchar(255),
         lifespan_end varchar(255),
+        lifespan_freetext varchar(255),
         lifespan_start varchar(255),
-        lifespan_freetext varchar(30),
         prefix varchar(255),
         suffix varchar(255),
         protectednomenclaturaltitlecache bit,
@@ -90,18 +90,18 @@
         titleCache varchar(255),
         createdby_id integer,
         updatedby_id integer,
-        nomenclaturaltitle varchar(255),
         code varchar(255),
         name varchar(255),
         ispartof_id integer,
+        nomenclaturaltitle varchar(255),
+        protectednomenclaturaltitlecache bit,
         firstname varchar(255),
         lastname varchar(255),
-        lifespan_end varchar(100),
-        lifespan_start varchar(100),
-        lifespan_freetext varchar(30),
+        lifespan_end varchar(255),
+        lifespan_freetext varchar(255),
+        lifespan_start varchar(255),
         prefix varchar(255),
         suffix varchar(255),
-        protectednomenclaturaltitlecache bit,
         primary key (id, REV)
     );
 
@@ -639,9 +639,9 @@
         pointapproximation_errorradius integer,
         pointapproximation_latitude double,
         pointapproximation_longitude double,
-        validperiod_end varchar(100),
-        validperiod_start varchar(100),
-        validperiod_freetext varchar(30),
+        validperiod_end varchar(255),
+        validperiod_freetext varchar(255),
+        validperiod_start varchar(255),
         iso3166_a2 varchar(2),
         createdby_id integer,
         updatedby_id integer,
@@ -676,17 +676,16 @@
         pointapproximation_errorradius integer,
         pointapproximation_latitude double,
         pointapproximation_longitude double,
-        validperiod_end varchar(100),
-        validperiod_start varchar(100),
-        validperiod_freetext varchar(30),
+        validperiod_end varchar(255),
+        validperiod_freetext varchar(255),
+        validperiod_start varchar(255),
         level_id integer,
         pointapproximation_referencesystem_id integer,
         shape_id integer,
         type_id integer,
-        iso3166_a2 varchar(2),
-        defaultcolor varchar(255),
         symmetric bit,
         transitive bit,
+        iso3166_a2 varchar(2),
         supportscategoricaldata bit,
         supportscommontaxonname bit,
         supportsdistribution bit,
@@ -694,6 +693,7 @@
         supportsquantitativedata bit,
         supportstaxoninteraction bit,
         supportstextdata bit,
+        defaultcolor varchar(255),
         primary key (id, REV)
     );
 
@@ -819,9 +819,9 @@
         uuid varchar(36),
         updated timestamp,
         description varchar(255),
-        timeperiod_end varchar(100),
-        timeperiod_start varchar(100),
-        timeperiod_freetext varchar(30),
+        timeperiod_end varchar(255),
+        timeperiod_freetext varchar(255),
+        timeperiod_start varchar(255),
         createdby_id integer,
         updatedby_id integer,
         actor_id integer,
@@ -838,9 +838,9 @@
         uuid varchar(36),
         updated timestamp,
         description varchar(255),
-        timeperiod_end varchar(100),
-        timeperiod_start varchar(100),
-        timeperiod_freetext varchar(30),
+        timeperiod_end varchar(255),
+        timeperiod_freetext varchar(255),
+        timeperiod_start varchar(255),
         createdby_id integer,
         updatedby_id integer,
         actor_id integer,
@@ -918,8 +918,8 @@
         imagegallery bit,
         createdby_id integer,
         updatedby_id integer,
-        taxon_fk integer,
         taxonName_fk integer,
+        taxon_fk integer,
         primary key (id, REV)
     );
 
@@ -1128,15 +1128,15 @@
         feature_id integer,
         indescription_id integer,
         nameusedinreference_id integer,
+        unit_id integer,
+        associatedspecimenorobservation_id integer,
         taxon2_id integer,
         area_id integer,
         status_id integer,
+        orderrelevant bit,
         format_id integer,
         name varchar(255),
         language_id integer,
-        unit_id integer,
-        associatedspecimenorobservation_id integer,
-        orderrelevant bit,
         primary key (id, REV)
     );
 
@@ -1190,15 +1190,17 @@
     create table DescriptionElementBase_Media (
         DescriptionElementBase_id integer not null,
         media_id integer not null,
-        primary key (DescriptionElementBase_id, media_id)
+        sortIndex integer not null,
+        primary key (DescriptionElementBase_id, sortIndex)
     );
 
     create table DescriptionElementBase_Media_AUD (
         REV integer not null,
         DescriptionElementBase_id integer not null,
         media_id integer not null,
+        sortIndex integer not null,
         revtype tinyint,
-        primary key (REV, DescriptionElementBase_id, media_id)
+        primary key (REV, DescriptionElementBase_id, media_id, sortIndex)
     );
 
     create table DescriptionElementBase_Modifier (
@@ -1266,9 +1268,9 @@
         uuid varchar(36),
         updated timestamp,
         description varchar(255),
-        timeperiod_end varchar(100),
-        timeperiod_start varchar(100),
-        timeperiod_freetext varchar(30),
+        timeperiod_end varchar(255),
+        timeperiod_freetext varchar(255),
+        timeperiod_start varchar(255),
         preferredflag bit not null,
         createdby_id integer,
         updatedby_id integer,
@@ -1289,8 +1291,8 @@
         updated timestamp,
         description varchar(255),
         timeperiod_end varchar(255),
+        timeperiod_freetext varchar(255),
         timeperiod_start varchar(255),
-        timeperiod_freetext varchar(30),
         preferredflag bit,
         createdby_id integer,
         updatedby_id integer,
@@ -1352,7 +1354,7 @@
         updated timestamp,
         extendedObj_type varchar(255),
         extendedObj_id integer not null,
-        value varchar(255),
+        value longvarchar,
         createdby_id integer,
         updatedby_id integer,
         type_id integer,
@@ -1367,7 +1369,7 @@
         created timestamp,
         uuid varchar(36),
         updated timestamp,
-        value varchar(255),
+        value longvarchar,
         createdby_id integer,
         updatedby_id integer,
         type_id integer,
@@ -1451,9 +1453,9 @@
         uuid varchar(36),
         updated timestamp,
         description varchar(255),
-        timeperiod_end varchar(100),
-        timeperiod_start varchar(100),
-        timeperiod_freetext varchar(30),
+        timeperiod_end varchar(255),
+        timeperiod_freetext varchar(255),
+        timeperiod_start varchar(255),
         absoluteelevation integer,
         absoluteelevationerror integer,
         collectingmethod varchar(255),
@@ -1479,9 +1481,9 @@
         uuid varchar(36),
         updated timestamp,
         description varchar(255),
-        timeperiod_end varchar(100),
-        timeperiod_start varchar(100),
-        timeperiod_freetext varchar(30),
+        timeperiod_end varchar(255),
+        timeperiod_freetext varchar(255),
+        timeperiod_start varchar(255),
         absoluteelevation integer,
         absoluteelevationerror integer,
         collectingmethod varchar(255),
@@ -1738,9 +1740,9 @@
         uuid varchar(36),
         updated timestamp,
         department varchar(255),
-        period_end varchar(100),
-        period_start varchar(100),
-        period_freetext varchar(30),
+        period_end varchar(255),
+        period_freetext varchar(255),
+        period_start varchar(255),
         role varchar(255),
         createdby_id integer,
         updatedby_id integer,
@@ -1758,9 +1760,9 @@
         uuid varchar(36),
         updated timestamp,
         department varchar(255),
-        period_end varchar(100),
-        period_start varchar(100),
-        period_freetext varchar(30),
+        period_end varchar(255),
+        period_freetext varchar(255),
+        period_start varchar(255),
         role varchar(255),
         createdby_id integer,
         updatedby_id integer,
@@ -1909,7 +1911,7 @@
         created timestamp,
         uuid varchar(36),
         updated timestamp,
-        mediacreated date,
+        mediacreated timestamp,
         citationmicroreference varchar(255),
         createdby_id integer,
         updatedby_id integer,
@@ -1965,9 +1967,9 @@
         createdby_id integer,
         updatedby_id integer,
         representation_id integer,
-        duration integer,
         height integer,
         width integer,
+        duration integer,
         primary key (id, REV)
     );
 
@@ -2003,7 +2005,7 @@
         created timestamp,
         uuid varchar(36),
         updated timestamp,
-        mediacreated date,
+        mediacreated timestamp,
         createdby_id integer,
         updatedby_id integer,
         artist_id integer,
@@ -2360,15 +2362,6 @@
         primary key (REV, person_fk, keyword_fk)
     );
 
-    create table PublicationBase_Publisher_AUD (
-        REV integer not null,
-        referenceBase_id integer not null,
-        id integer not null,
-        sortIndex integer not null,
-        revtype tinyint,
-        primary key (REV, referenceBase_id, id, sortIndex)
-    );
-
     create table Publisher (
         id integer not null,
         created timestamp,
@@ -2376,8 +2369,6 @@
         place varchar(255),
         publishername varchar(255),
         createdby_id integer,
-        referenceBase_id integer,
-        sortIndex integer,
         primary key (id),
         unique (uuid)
     );
@@ -2412,9 +2403,9 @@
         problemends integer not null,
         problemstarts integer not null,
         uri varchar(255),
-        datepublished_end varchar(100),
-        datepublished_start varchar(100),
-        datepublished_freetext varchar(30),
+        datepublished_end varchar(255),
+        datepublished_freetext varchar(255),
+        datepublished_start varchar(255),
         title longvarchar,
         pages varchar(255),
         series varchar(255),
@@ -2434,10 +2425,10 @@
         number varchar(255),
         organization varchar(255),
         publisher varchar(255),
-        placepublished varchar(255),
-		reporttype varchar(255),
+        reporttype varchar(255),
         school varchar(255),
         year varchar(255),
+        placepublished varchar(255),
         seriespart varchar(255),
         isbn varchar(255),
         issn varchar(255),
@@ -2479,12 +2470,27 @@
         createdby_id integer,
         updatedby_id integer,
         authorteam_id integer,
+        datepublished_end varchar(255),
+        datepublished_freetext varchar(255),
+        datepublished_start varchar(255),
+        title longvarchar,
+        pages varchar(255),
+        series varchar(255),
+        volume varchar(255),
+        injournal_id integer,
+        inproceedings_id integer,
+        inbook_id integer,
+        placepublished varchar(255),
+        publisher varchar(255),
+        editor varchar(255),
+        institution_id integer,
+        issn varchar(255),
+        school_id integer,
         address varchar(255),
         annote varchar(255),
         booktitle varchar(255),
         chapter varchar(255),
         edition varchar(255),
-        editor varchar(255),
         eprint varchar(255),
         howpublished varchar(255),
         institution varchar(255),
@@ -2493,28 +2499,13 @@
         note varchar(255),
         number varchar(255),
         organization varchar(255),
-        pages varchar(255),
-        publisher varchar(255),
-        placepublished varchar(255),
-		reporttype varchar(255),
+        reporttype varchar(255),
         school varchar(255),
-        series varchar(255),
-        title varchar(255),
-        volume varchar(255),
         year varchar(255),
         crossref_id integer,
         type_id integer,
-        datepublished_end varchar(255),
-        datepublished_start varchar(255),
-        datepublished_freetext varchar(30),
-        injournal_id integer,
-        inbook_id integer,
-        inproceedings_id integer,
-        institution_id integer,
-        issn varchar(255),
         seriespart varchar(255),
         inseries_id integer,
-        school_id integer,
         isbn varchar(255),
         primary key (id, REV)
     );
@@ -3012,10 +3003,10 @@
         collection_id integer,
         derivationevent_id integer,
         storedunder_id integer,
-        preservation_id integer,
         fieldnotes varchar(255),
         fieldnumber varchar(255),
         gatheringevent_id integer,
+        preservation_id integer,
         primary key (id, REV)
     );
 
@@ -3581,6 +3572,7 @@
         homotypicalgroup_id integer,
         nomenclaturalreference_id integer,
         rank_id integer,
+        acronym varchar(255),
         authorshipcache varchar(255),
         genusoruninomial varchar(255),
         infragenericepithet varchar(255),
@@ -3593,18 +3585,17 @@
         combinationauthorteam_id integer,
         exbasionymauthorteam_id integer,
         excombinationauthorteam_id integer,
-        nameapprobation varchar(255),
-        subgenusauthorship varchar(255),
-        acronym varchar(255),
+        breed varchar(255),
+        originalpublicationyear integer,
+        publicationyear integer,
         anamorphic bit,
         binomhybrid bit,
         hybridformula bit,
         monomhybrid bit,
         trinomhybrid bit,
         cultivarname varchar(255),
-        breed varchar(255),
-        originalpublicationyear integer,
-        publicationyear integer,
+        nameapprobation varchar(255),
+        subgenusauthorship varchar(255),
         primary key (id, REV)
     );
 
@@ -6248,20 +6239,10 @@
         foreign key (REV) 
         references AuditEvent;
 
-    alter table PublicationBase_Publisher_AUD 
-        add constraint FK5B9D3EB34869AAE 
-        foreign key (REV) 
-        references AuditEvent;
-
     alter table Publisher 
         add constraint FKCDB7C1DC4FF2DB2C 
         foreign key (createdby_id) 
         references UserAccount;
-
-    alter table Publisher 
-        add constraint FKCDB7C1DC5DEF25BB 
-        foreign key (referenceBase_id) 
-        references ReferenceBase;
 
     alter table Publisher_AUD 
         add constraint FKC637A1AD34869AAE 
