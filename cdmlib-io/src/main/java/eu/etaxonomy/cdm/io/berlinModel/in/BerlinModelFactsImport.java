@@ -29,6 +29,7 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
+import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
@@ -209,9 +210,36 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 							taxon.addDescription(taxonDescription);
 						}
 						
-						//textData
-						TextData textData = TextData.NewInstance();
 						
+						//textData
+						TextData textData = null;
+						boolean newTextData = true;
+
+						// For Cichorieae DB: If fact category is 31 (Systematics) and there is already a Systematics TextData 
+						// description element append the fact text to the existing TextData
+						if(categoryFk == 31) {
+							Set<DescriptionElementBase> descriptionElements = taxonDescription.getElements();
+							for (DescriptionElementBase descriptionElement : descriptionElements) {
+								String featureString = descriptionElement.getFeature().getRepresentation(Language.DEFAULT()).getLabel();
+								if (descriptionElement instanceof TextData && featureString.equals("Systematics")) { // TODO: test
+									textData = (TextData)descriptionElement;
+									String factTextStr = textData.getText(Language.DEFAULT());
+									// FIXME: Removing newlines doesn't work
+									if (factTextStr.contains("\\r\\n")) {
+										factTextStr = factTextStr.replaceAll("\\r\\n","");
+									}
+									StringBuilder factText = new StringBuilder(factTextStr);
+									factText.append(fact);
+									fact = factText.toString();
+									newTextData = false;
+									break;
+								}
+							}
+						}
+						
+						if(newTextData == true)	{ textData = TextData.NewInstance(); }
+
+
 						//for diptera database
 						if (categoryFk == 99 && notes.contains("<OriginalName>")){
 							notes = notes.replaceAll("<OriginalName>", "");
