@@ -28,7 +28,22 @@ public class FaunaEuropaeaTaxon {
 	private String author;
 	private boolean parenthesis = false;
 	private boolean valid = false;
+	private boolean nameComplete = false;
 	
+	/**
+	 * @return the nameComplete
+	 */
+	public boolean isNameComplete() {
+		return nameComplete;
+	}
+
+	/**
+	 * @param nameComplete the nameComplete to set
+	 */
+	public void setNameComplete(boolean nameComplete) {
+		this.nameComplete = nameComplete;
+	}
+
 	/**
 	 * @return the parenthesis
 	 */

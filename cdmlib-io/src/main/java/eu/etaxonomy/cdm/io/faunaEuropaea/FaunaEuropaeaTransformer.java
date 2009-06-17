@@ -38,6 +38,9 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 public final class FaunaEuropaeaTransformer {
 	private static final Logger logger = Logger.getLogger(FaunaEuropaeaTransformer.class);
 	
+	// Query
+	public static final int Q_NO_RESTRICTION = -1;
+	
 	// TaxonStatus
 	public static final int T_STATUS_ACCEPTED = 1;
 	public static final int T_STATUS_NOT_ACCEPTED = 0;
