@@ -46,10 +46,12 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
+import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
 import eu.etaxonomy.cdm.persistence.dao.common.IOrderedTermVocabularyDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
+import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonomicTreeDao;
 import eu.etaxonomy.cdm.persistence.fetch.CdmFetch;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.persistence.query.SelectMode;
@@ -62,6 +64,8 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
 	@Autowired
 	private ITaxonNameDao nameDao;
+	@Autowired
+	private ITaxonomicTreeDao taxonTreeDao;
 //	@Autowired
 //	@Qualifier("nonViralNameDaoHibernateImpl")
 //	private INonViralNameDao nonViralNameDao;
@@ -78,10 +82,16 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		if (logger.isDebugEnabled()) { logger.debug("Load TaxonService Bean"); }
 	}
 	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#getTaxonByUuid(java.util.UUID)
+	 */
 	public TaxonBase getTaxonByUuid(UUID uuid) {
 		return super.findByUuid(uuid);
 	}
 
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#saveTaxon(eu.etaxonomy.cdm.model.taxon.TaxonBase)
+	 */
 	@Transactional(readOnly = false)
 	public UUID saveTaxon(TaxonBase taxon) {
 		return super.saveCdmObject(taxon);
@@ -89,17 +99,22 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
 	//@Transactional(readOnly = false)
 	public UUID saveTaxon(TaxonBase taxon, TransactionStatus txStatus) {
-		
 		//return super.saveCdmObject(taxon, txStatus);
 		return super.saveCdmObject(taxon);
 	}
 	
 	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#saveTaxonAll(java.util.Collection)
+	 */
 	@Transactional(readOnly = false)
 	public Map<UUID, ? extends TaxonBase> saveTaxonAll(Collection<? extends TaxonBase> taxonCollection){
 		return saveCdmObjectAll(taxonCollection);
 	}
 
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#removeTaxon(eu.etaxonomy.cdm.model.taxon.TaxonBase)
+	 */
 	@Transactional(readOnly = false)
 	public UUID removeTaxon(TaxonBase taxon) {
 		return super.removeCdmObject(taxon);
@@ -109,18 +124,50 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		return dao.getTaxaByName(name, sec);
 	}
 
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#getAllTaxonBases(int, int)
+	 */
 	public List<TaxonBase> getAllTaxonBases(int limit, int start){
 		return dao.list(limit, start);
 	}
 
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#getAllTaxa(int, int)
+	 */
 	public List<Taxon> getAllTaxa(int limit, int start){
 		return dao.getAllTaxa(limit, start);
 	}
 	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#getAllSynonyms(int, int)
+	 */
 	public List<Synonym> getAllSynonyms(int limit, int start) {
 		return dao.getAllSynonyms(limit, start);
 	}
+
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#getAllTaxonomicTrees(int, int)
+	 */
+	public List<TaxonomicTree> getAllTaxonomicTrees(int limit, int start) {
+		return taxonTreeDao.list(limit, start);
+	}	
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#getTaxonomicTreeByUuid(java.util.UUID)
+	 */
+	public TaxonomicTree getTaxonomicTreeByUuid(UUID uuid){
+		return taxonTreeDao.findByUuid(uuid);
+	}
 	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#saveTaxonomicTree(eu.etaxonomy.cdm.model.taxon.TaxonomicTree)
+	 */
+	@Transactional(readOnly = false)
+	public UUID saveTaxonomicTree(TaxonomicTree tree){
+		return taxonTreeDao.saveOrUpdate(tree);
+	}
+
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#getRootTaxa(eu.etaxonomy.cdm.model.reference.ReferenceBase)
 	 */
@@ -137,7 +184,6 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		}
 		return dao.getRootTaxa(sec, cdmFetch, onlyWithChildren, false);
 	}
-
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#getRootTaxa(eu.etaxonomy.cdm.model.reference.ReferenceBase, boolean, boolean)

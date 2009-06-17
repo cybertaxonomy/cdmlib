@@ -29,6 +29,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
+import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
 import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
 import eu.etaxonomy.cdm.persistence.fetch.CdmFetch;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
@@ -93,12 +94,38 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	 */
 	public abstract List<TaxonBase> getAllTaxonBases(int limit, int start);
 	
+	
+	/**
+	 * Computes all taxonomic trees.
+	 * FIXME candidate for harmonization
+	 * @param limit
+	 * @param start
+	 * @return
+	 */
+	public List<TaxonomicTree> getAllTaxonomicTrees(int limit, int start);
+
+	
+	/**
+	 * Returns a taxonomic tree by it's uuid.
+	 * @param uuid
+	 * @return
+	 */
+	public TaxonomicTree getTaxonomicTreeByUuid(UUID uuid);
+	
+	/**
+	 * Returns a taxonomic tree by it's uuid.
+	 * @param uuid
+	 * @return
+	 */
+	public UUID saveTaxonomicTree(TaxonomicTree tree);
+	
 	/**
 	 * Computes all Taxon instances that do not have a taxonomic parent and has at least one child.
 	 * @param sec The concept reference that the taxon belongs to
 	 * @return The List<Taxon> of root taxa.
 	 */
-	public abstract List<Taxon> getRootTaxa(ReferenceBase sec);
+	public List<Taxon> getRootTaxa(ReferenceBase sec);
+	
 
 	/**
 	 * Computes all Taxon instances that do not have a taxonomic parent.
