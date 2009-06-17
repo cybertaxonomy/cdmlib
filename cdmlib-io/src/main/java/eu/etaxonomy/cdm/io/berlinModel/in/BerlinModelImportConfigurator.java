@@ -44,6 +44,8 @@ public class BerlinModelImportConfigurator extends ImportConfiguratorBase<Berlin
 	private Method uuidForDefTermMethod;
 	private Method userTransformationMethod;
 	
+	private boolean useTaxonomicTree = false;
+	
 	private Set<Synonym> proParteSynonyms = new HashSet<Synonym>();
 	private Set<Synonym> partialSynonyms = new HashSet<Synonym>();
 	
@@ -247,6 +249,20 @@ public class BerlinModelImportConfigurator extends ImportConfiguratorBase<Berlin
 	 */
 	public void setUserTransformationMethod(Method userTransformationMethod) {
 		this.userTransformationMethod = userTransformationMethod;
+	}
+
+	/**
+	 * @return the useTaxonomicTree
+	 */
+	public boolean isUseTaxonomicTree() {
+		return useTaxonomicTree;
+	}
+
+	/**
+	 * @param useTaxonomicTree the useTaxonomicTree to set
+	 */
+	public void setUseTaxonomicTree(boolean useTaxonomicTree) {
+		this.useTaxonomicTree = useTaxonomicTree;
 	}
 
 	

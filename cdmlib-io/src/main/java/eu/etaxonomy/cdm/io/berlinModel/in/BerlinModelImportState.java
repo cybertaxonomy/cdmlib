@@ -19,6 +19,8 @@ import eu.etaxonomy.cdm.io.common.ImportStateBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.User;
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
 
 /**
  * @author a.mueller
@@ -30,6 +32,7 @@ public class BerlinModelImportState extends ImportStateBase<BerlinModelImportCon
 	private static final Logger logger = Logger.getLogger(BerlinModelImportState.class);
 
 	Map<String, DefinedTermBase> dbCdmDefTermMap = new HashMap<String, DefinedTermBase>();
+	Map<ReferenceBase,TaxonomicTree> treeMap = new HashMap<ReferenceBase,TaxonomicTree>();
 	
 	Map<String, User> usernameMap = new HashMap<String, User>();
 	/* (non-Javadoc)
@@ -66,4 +69,20 @@ public class BerlinModelImportState extends ImportStateBase<BerlinModelImportCon
 		usernameMap.put(username, user);
 	}
 
+	/**
+	 * @return the treeMap
+	 */
+	public TaxonomicTree getTree(ReferenceBase ref) {
+		return treeMap.get(ref);
+	}
+
+	/**
+	 * @param treeMap the treeMap to set
+	 */
+	public void putTree(ReferenceBase ref, TaxonomicTree tree) {
+		if (tree != null){
+			this.treeMap.put(ref, tree);
+		}
+	}
+    
 }

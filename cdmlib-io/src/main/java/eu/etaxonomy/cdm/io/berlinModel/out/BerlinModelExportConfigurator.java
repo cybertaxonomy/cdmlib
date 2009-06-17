@@ -103,21 +103,21 @@ public class BerlinModelExportConfigurator extends DbExportConfiguratorBase impl
 	public void setState(BerlinModelExportState<BerlinModelExportConfigurator> state) {
 		this.state = state;
 	}
-
-	/**
-	 * @return the relNameQualifierMethod
-	 */
-	public Method getRelNameQualifierMethod() {
-		return relNameQualifierMethod;
-	}
-
-	/**
-	 * @param relNameQualifierMethod the relNameQualifierMethod to set
-	 */
-	public void setRelNameQualifierMethod(Method relNameQualifierMethod) {
-		this.relNameQualifierMethod = relNameQualifierMethod;
-	}
-	
+//
+//	/**
+//	 * @return the relNameQualifierMethod
+//	 */
+//	public Method getRelNameQualifierMethod() {
+//		return relNameQualifierMethod;
+//	}
+//
+//	/**
+//	 * @param relNameQualifierMethod the relNameQualifierMethod to set
+//	 */
+//	public void setRelNameQualifierMethod(Method relNameQualifierMethod) {
+//		this.relNameQualifierMethod = relNameQualifierMethod;
+//	}
+//	
 	
 
 	

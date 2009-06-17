@@ -132,20 +132,20 @@ public class BerlinModelNameRelationExport extends BerlinModelExportBase<Relatio
 		return ! ((BerlinModelExportConfigurator)config).isDoTaxonNames();
 	}
 	
-	//called by MethodMapper
-	@SuppressWarnings("unused")
-	private static Integer getRelNameQualifierFk(RelationshipBase<?, ?, ?> rel, BerlinModelExportConfigurator config) throws Exception {
-		if (config.getRelNameQualifierMethod() != null){
-			try {
-				return (Integer)config.getRelNameQualifierMethod().invoke(rel);
-			} catch (Exception e) {
-				logger.error(e.getMessage());
-				throw e;
-			}
-		}else{
-			return BerlinModelTransformer.nameRel2RelNameQualifierFk(rel);
-		}
-	}
+//	//called by MethodMapper
+//	@SuppressWarnings("unused")
+//	private static Integer getRelNameQualifierFk(RelationshipBase<?, ?, ?> rel, BerlinModelExportConfigurator config) throws Exception {
+//		if (config.getRelNameQualifierMethod() != null){
+//			try {
+//				return (Integer)config.getRelNameQualifierMethod().invoke(rel);
+//			} catch (Exception e) {
+//				logger.error(e.getMessage());
+//				throw e;
+//			}
+//		}else{
+//			return BerlinModelTransformer.nameRel2RelNameQualifierFk(rel);
+//		}
+//	}
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.berlinModel.out.BerlinModelExportBase#getStandardMethodParameter()

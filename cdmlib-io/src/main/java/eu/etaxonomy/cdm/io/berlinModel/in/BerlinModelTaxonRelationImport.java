@@ -25,6 +25,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
@@ -39,12 +40,14 @@ import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.StrictReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
+import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
 /**
@@ -129,6 +132,52 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 	}
 	
 
+	private boolean makeTaxonomicTrees(BerlinModelImportState state) throws SQLException{
+		MapWrapper<ReferenceBase> referenceMap = (MapWrapper<ReferenceBase>)state.getStore(ICdmIO.REFERENCE_STORE);
+		MapWrapper<ReferenceBase> nomRefMap = (MapWrapper<ReferenceBase>)state.getStore(ICdmIO.NOMREF_STORE);
+		Source source = state.getConfig().getSource();
+
+		logger.info("start makeTaxonomicTree ...");
+		
+		String strQuery = "SELECT PTaxon.PTRefFk " + 
+						" FROM RelPTaxon INNER JOIN " + 
+						" PTaxon AS PTaxon ON RelPTaxon.PTNameFk2 = PTaxon.PTNameFk AND RelPTaxon.PTRefFk2 = PTaxon.PTRefFk " +
+						" WHERE (RelPTaxon.RelQualifierFk = 1) " + 
+						" GROUP BY PTaxon.PTRefFk ";
+		ResultSet rs = source.getResultSet(strQuery) ;
+		int i = 0;
+		//for each reference
+		try {
+			while (rs.next()){
+				
+				if ((i++ % modCount) == 0 && i!= 1 ){ logger.info("RelPTaxa handled: " + (i-1));}
+				
+				int ptRefFk = rs.getInt("PTRefFk");
+				
+				StrictReferenceBase ref = (StrictReferenceBase)referenceMap.get(ptRefFk);
+				if (ref == null){
+					ref = (StrictReferenceBase)nomRefMap.get(ptRefFk);
+				}
+				//FIXME treeName
+				String treeName = "TaxonTree - No Name";
+				if (ref != null){
+					treeName = ref.getTitleCache();
+				}
+				TaxonomicTree tree = TaxonomicTree.NewInstance(treeName);
+				tree.setReference(ref);
+				
+				UUID uuid = getTaxonService().saveTaxonomicTree(tree);
+				state.putTree(ref, tree);
+			}
+		} catch (SQLException e) {
+			logger.error("Error in BerlinModleTaxonRelationImport.makeTaxonomicTrees: " + e.getMessage());
+			throw e;
+		}
+		logger.info("end makeTaxonomicTree ...");
+
+		return true;
+	}
+	
 	
 
 	/* (non-Javadoc)
@@ -155,9 +204,14 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 		BerlinModelImportConfigurator config = state.getConfig();
 		Source source = config.getSource();
 		
-		logger.info("start makeTaxonRelationships ...");
-
 		try {
+			if (config.isUseTaxonomicTree()){
+				success &= makeTaxonomicTrees(state);
+			}
+		
+		
+			logger.info("start makeTaxonRelationships ...");
+
 			//get data from database
 			String strQuery = 
 					" SELECT RelPTaxon.*, FromTaxon.RIdentifier as taxon1Id, ToTaxon.RIdentifier as taxon2Id, q.is_concept_relation " + 
@@ -210,7 +264,7 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 						}
 						Taxon fromTaxon = (Taxon)taxon1;
 						if (relQualifierFk == TAX_REL_IS_INCLUDED_IN){
-							toTaxon.addTaxonomicChild(fromTaxon, citation, microcitation);
+							makeTaxonomicallyIncluded(state, fromTaxon, toTaxon, citation, microcitation);
 						}else if (relQualifierFk == TAX_REL_IS_MISAPPLIED_NAME_OF){
 							toTaxon.addMisappliedName(fromTaxon, citation, microcitation);
 						}
@@ -336,6 +390,20 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 		}
 		if (bmiConfig.isProParteSynonym(synonym)){
 			synRel.setProParte(true);
+		}
+	}
+	
+	private boolean makeTaxonomicallyIncluded(BerlinModelImportState state, Taxon child, Taxon parent, ReferenceBase citation, String microCitation){
+		if (state.getConfig().isUseTaxonomicTree() == false){
+			parent.addTaxonomicChild(child, citation, microCitation);
+			return true;
+		}else{
+			ReferenceBase toRef = parent.getSec();
+			TaxonomicTree tree = state.getTree(toRef);
+			if (tree == null){
+				throw new IllegalStateException("Tree for ToTaxon reference does not exist.");
+			}
+			return tree.addParentChild(parent, child, citation, microCitation);
 		}
 	}
 	
