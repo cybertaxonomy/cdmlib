@@ -1,5 +1,6 @@
 package eu.etaxonomy.cdm.model.media;
 
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -20,9 +21,6 @@ public interface IMediaEntity extends IMediaDocumented{
 	 */
 	
 	public abstract Set<Media> getMedia();
-
-	//also to be implemented by the implementing class
-	//protected void setMedia(Set<Media> media); 
 	
 	/**
 	 * Adds a media to this object

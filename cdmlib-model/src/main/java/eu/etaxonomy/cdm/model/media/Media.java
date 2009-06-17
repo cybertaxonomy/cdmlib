@@ -9,6 +9,7 @@
 
 package eu.etaxonomy.cdm.model.media;
 
+import eu.etaxonomy.cdm.jaxb.DateTimeAdapter;
 import eu.etaxonomy.cdm.jaxb.MultilanguageTextAdapter;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
@@ -20,9 +21,11 @@ import eu.etaxonomy.cdm.model.common.MultilanguageText;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
+import org.joda.time.DateTime;
 
 import java.util.*;
 import javax.persistence.*;
@@ -76,10 +79,11 @@ public class Media extends AnnotatableEntity {
 	private Map<Language,LanguageString> title = new HashMap<Language,LanguageString>();
 	
 	//creation date of the media (not of the record) 
-	// FIXME Surely this should be a DateTime, not a Calender
-	@XmlElement(name = "MediaCreated")
-	@Temporal(TemporalType.DATE)
-	private Calendar mediaCreated;
+	@XmlElement(name = "MediaCreated", type= String.class)
+	@XmlJavaTypeAdapter(DateTimeAdapter.class)
+	@Type(type="dateTimeUserType")
+	@Basic(fetch = FetchType.LAZY)
+	private DateTime mediaCreated;
 	
 	 // TODO once hibernate annotations support custom collection type
 	// private MultilanguageText description = new MultilanguageText();
@@ -183,11 +187,11 @@ public class Media extends AnnotatableEntity {
 		this.title.remove(language);
 	}
 
-	public Calendar getMediaCreated(){
+	public DateTime getMediaCreated(){
 		return this.mediaCreated;
 	}
 	
-	public void setMediaCreated(Calendar mediaCreated){
+	public void setMediaCreated(DateTime mediaCreated){
 		this.mediaCreated = mediaCreated;
 	}
 

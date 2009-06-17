@@ -1,5 +1,6 @@
 package eu.etaxonomy.cdm.model.media;
 
+import java.util.List;
 import java.util.Set;
 
 

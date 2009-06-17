@@ -14,6 +14,7 @@ import java.util.Calendar;
 
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
+import org.joda.time.DateTime;
 
 import eu.etaxonomy.cdm.common.MediaMetaData.ImageMetaData;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
@@ -75,7 +76,7 @@ public class ImageFile extends MediaRepresentationPart {
 	 * @param width the width of the image file
 	 * @return
 	 */
-	public static Media NewMediaInstance(Calendar mediaCreated, AgentBase artist, String uri, String mimeType, String suffix, Integer size, Integer height, Integer width){
+	public static Media NewMediaInstance(DateTime mediaCreated, AgentBase artist, String uri, String mimeType, String suffix, Integer size, Integer height, Integer width){
 		Media media = Media.NewInstance();
 		media.setMediaCreated(mediaCreated);
 		media.setArtist(artist);

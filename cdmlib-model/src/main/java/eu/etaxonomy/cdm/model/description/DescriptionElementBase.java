@@ -10,8 +10,10 @@
 package eu.etaxonomy.cdm.model.description;
 
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -36,6 +38,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.IndexColumn;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
@@ -82,7 +85,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 @Entity
 @Audited
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
-public abstract class DescriptionElementBase extends ReferencedEntityBase implements IMediaEntity {
+public abstract class DescriptionElementBase extends ReferencedEntityBase {
 	private static final long serialVersionUID = 5000910777835755905L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DescriptionElementBase.class);
@@ -114,8 +117,9 @@ public abstract class DescriptionElementBase extends ReferencedEntityBase implem
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToMany(fetch = FetchType.LAZY)
+    @IndexColumn(name="sortIndex", base = 0)
 	@Cascade({CascadeType.SAVE_UPDATE})
-	private Set<Media> media = new HashSet<Media>();
+	private List<Media> media = new ArrayList<Media>();
 	
 	@XmlElement(name = "InDescription")
 	@XmlIDREF
@@ -160,7 +164,7 @@ public abstract class DescriptionElementBase extends ReferencedEntityBase implem
 	 * Returns the set of {@link Media media} (that is pictures, movies,
 	 * recorded sounds ...) <i>this</i> description element is based on.
 	 */
-	public Set<Media> getMedia(){
+	public List<Media> getMedia(){
 		return this.media;
 	}
 
