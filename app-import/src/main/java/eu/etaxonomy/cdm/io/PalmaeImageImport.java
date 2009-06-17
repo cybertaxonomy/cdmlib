@@ -27,6 +27,7 @@ import org.springframework.stereotype.Component;
 import eu.etaxonomy.cdm.app.images.AbstractImageImporter;
 import eu.etaxonomy.cdm.app.images.ImageImportConfigurator;
 import eu.etaxonomy.cdm.common.MediaMetaData.ImageMetaData;
+import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.media.ImageFile;
@@ -148,6 +149,8 @@ public class PalmaeImageImport extends AbstractImageImporter {
 						
 						feature.addMedia(media);
 						
+						feature.setType(Feature.IMAGE());
+
 						TaxonDescription description = TaxonDescription.NewInstance(taxon);
 						
 						description.addElement(feature);
