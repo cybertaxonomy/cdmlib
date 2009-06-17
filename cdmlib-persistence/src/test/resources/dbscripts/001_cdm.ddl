@@ -3748,7 +3748,7 @@
         referenceforparentchildrelation_id integer,
         synonymtobeused_id integer,
         taxon_id integer,
-        taxonomicview_id integer,
+        taxonomictree_id integer,
         primary key (id),
         unique (uuid)
     );
@@ -3768,7 +3768,7 @@
         referenceforparentchildrelation_id integer,
         synonymtobeused_id integer,
         taxon_id integer,
-        taxonomicview_id integer,
+        taxonomictree_id integer,
         primary key (id, REV)
     );
 
@@ -3869,7 +3869,7 @@
         primary key (REV, TaxonRelationship_id, markers_id)
     );
 
-    create table TaxonomicView (
+    create table TaxonomicTree (
         id integer not null,
         created timestamp,
         uuid varchar(36),
@@ -3890,7 +3890,7 @@
         unique (uuid)
     );
 
-    create table TaxonomicView_AUD (
+    create table TaxonomicTree_AUD (
         id integer not null,
         REV integer not null,
         revtype tinyint,
@@ -3912,111 +3912,111 @@
         primary key (id, REV)
     );
 
-    create table TaxonomicView_Annotation (
-        TaxonomicView_id integer not null,
+    create table TaxonomicTree_Annotation (
+        TaxonomicTree_id integer not null,
         annotations_id integer not null,
-        primary key (TaxonomicView_id, annotations_id),
+        primary key (TaxonomicTree_id, annotations_id),
         unique (annotations_id)
     );
 
-    create table TaxonomicView_Annotation_AUD (
+    create table TaxonomicTree_Annotation_AUD (
         REV integer not null,
-        TaxonomicView_id integer not null,
+        TaxonomicTree_id integer not null,
         annotations_id integer not null,
         revtype tinyint,
-        primary key (REV, TaxonomicView_id, annotations_id)
+        primary key (REV, TaxonomicTree_id, annotations_id)
     );
 
-    create table TaxonomicView_Credit (
-        TaxonomicView_id integer not null,
+    create table TaxonomicTree_Credit (
+        TaxonomicTree_id integer not null,
         credits_id integer not null,
         sortIndex integer not null,
-        primary key (TaxonomicView_id, sortIndex),
+        primary key (TaxonomicTree_id, sortIndex),
         unique (credits_id)
     );
 
-    create table TaxonomicView_Credit_AUD (
+    create table TaxonomicTree_Credit_AUD (
         REV integer not null,
-        TaxonomicView_id integer not null,
+        TaxonomicTree_id integer not null,
         credits_id integer not null,
         sortIndex integer not null,
         revtype tinyint,
-        primary key (REV, TaxonomicView_id, credits_id, sortIndex)
+        primary key (REV, TaxonomicTree_id, credits_id, sortIndex)
     );
 
-    create table TaxonomicView_Extension (
-        TaxonomicView_id integer not null,
+    create table TaxonomicTree_Extension (
+        TaxonomicTree_id integer not null,
         extensions_id integer not null,
-        primary key (TaxonomicView_id, extensions_id),
+        primary key (TaxonomicTree_id, extensions_id),
         unique (extensions_id)
     );
 
-    create table TaxonomicView_Extension_AUD (
+    create table TaxonomicTree_Extension_AUD (
         REV integer not null,
-        TaxonomicView_id integer not null,
+        TaxonomicTree_id integer not null,
         extensions_id integer not null,
         revtype tinyint,
-        primary key (REV, TaxonomicView_id, extensions_id)
+        primary key (REV, TaxonomicTree_id, extensions_id)
     );
 
-    create table TaxonomicView_Marker (
-        TaxonomicView_id integer not null,
+    create table TaxonomicTree_Marker (
+        TaxonomicTree_id integer not null,
         markers_id integer not null,
-        primary key (TaxonomicView_id, markers_id),
+        primary key (TaxonomicTree_id, markers_id),
         unique (markers_id)
     );
 
-    create table TaxonomicView_Marker_AUD (
+    create table TaxonomicTree_Marker_AUD (
         REV integer not null,
-        TaxonomicView_id integer not null,
+        TaxonomicTree_id integer not null,
         markers_id integer not null,
         revtype tinyint,
-        primary key (REV, TaxonomicView_id, markers_id)
+        primary key (REV, TaxonomicTree_id, markers_id)
     );
 
-    create table TaxonomicView_OriginalSource (
-        TaxonomicView_id integer not null,
+    create table TaxonomicTree_OriginalSource (
+        TaxonomicTree_id integer not null,
         sources_id integer not null,
-        primary key (TaxonomicView_id, sources_id),
+        primary key (TaxonomicTree_id, sources_id),
         unique (sources_id)
     );
 
-    create table TaxonomicView_OriginalSource_AUD (
+    create table TaxonomicTree_OriginalSource_AUD (
         REV integer not null,
-        TaxonomicView_id integer not null,
+        TaxonomicTree_id integer not null,
         sources_id integer not null,
         revtype tinyint,
-        primary key (REV, TaxonomicView_id, sources_id)
+        primary key (REV, TaxonomicTree_id, sources_id)
     );
 
-    create table TaxonomicView_Rights (
-        TaxonomicView_id integer not null,
+    create table TaxonomicTree_Rights (
+        TaxonomicTree_id integer not null,
         rights_id integer not null,
-        primary key (TaxonomicView_id, rights_id),
+        primary key (TaxonomicTree_id, rights_id),
         unique (rights_id)
     );
 
-    create table TaxonomicView_Rights_AUD (
+    create table TaxonomicTree_Rights_AUD (
         REV integer not null,
-        TaxonomicView_id integer not null,
+        TaxonomicTree_id integer not null,
         rights_id integer not null,
         revtype tinyint,
-        primary key (REV, TaxonomicView_id, rights_id)
+        primary key (REV, TaxonomicTree_id, rights_id)
     );
 
-    create table TaxonomicView_TaxonNode (
-        TaxonomicView_id integer not null,
+    create table TaxonomicTree_TaxonNode (
+        TaxonomicTree_id integer not null,
         rootnodes_id integer not null,
-        primary key (TaxonomicView_id, rootnodes_id),
+        primary key (TaxonomicTree_id, rootnodes_id),
         unique (rootnodes_id)
     );
 
-    create table TaxonomicView_TaxonNode_AUD (
+    create table TaxonomicTree_TaxonNode_AUD (
         REV integer not null,
-        TaxonomicView_id integer not null,
+        TaxonomicTree_id integer not null,
         rootnodes_id integer not null,
         revtype tinyint,
-        primary key (REV, TaxonomicView_id, rootnodes_id)
+        primary key (REV, TaxonomicTree_id, rootnodes_id)
     );
 
     create table TermVocabulary (
@@ -7411,8 +7411,8 @@
 
     alter table TaxonNode 
         add constraint FK924F5BCCD019B239 
-        foreign key (taxonomicview_id) 
-        references TaxonomicView;
+        foreign key (taxonomictree_id) 
+        references TaxonomicTree;
 
     alter table TaxonNode 
         add constraint FK924F5BCC215EDF26 
@@ -7529,132 +7529,132 @@
         foreign key (REV) 
         references AuditEvent;
 
-    alter table TaxonomicView 
+    alter table TaxonomicTree 
         add constraint FKE333A2E7765B124B 
         foreign key (reference_id) 
         references ReferenceBase;
 
-    alter table TaxonomicView 
+    alter table TaxonomicTree 
         add constraint FKE333A2E74FF2DB2C 
         foreign key (createdby_id) 
         references UserAccount;
 
-    alter table TaxonomicView 
+    alter table TaxonomicTree 
         add constraint FKE333A2E777E2F09E 
         foreign key (name_id) 
         references LanguageString;
 
-    alter table TaxonomicView 
+    alter table TaxonomicTree 
         add constraint FKE333A2E7BC5DA539 
         foreign key (updatedby_id) 
         references UserAccount;
 
-    alter table TaxonomicView_AUD 
+    alter table TaxonomicTree_AUD 
         add constraint FK976053834869AAE 
         foreign key (REV) 
         references AuditEvent;
 
-    alter table TaxonomicView_Annotation 
+    alter table TaxonomicTree_Annotation 
         add constraint FKE5DF73A7D019B239 
-        foreign key (TaxonomicView_id) 
-        references TaxonomicView;
+        foreign key (TaxonomicTree_id) 
+        references TaxonomicTree;
 
-    alter table TaxonomicView_Annotation 
+    alter table TaxonomicTree_Annotation 
         add constraint FKE5DF73A71E403E0B 
         foreign key (annotations_id) 
         references Annotation;
 
-    alter table TaxonomicView_Annotation_AUD 
+    alter table TaxonomicTree_Annotation_AUD 
         add constraint FK3C4B75F834869AAE 
         foreign key (REV) 
         references AuditEvent;
 
-    alter table TaxonomicView_Credit 
+    alter table TaxonomicTree_Credit 
         add constraint FK23C2F71D019B239 
-        foreign key (TaxonomicView_id) 
-        references TaxonomicView;
+        foreign key (TaxonomicTree_id) 
+        references TaxonomicTree;
 
-    alter table TaxonomicView_Credit 
+    alter table TaxonomicTree_Credit 
         add constraint FK23C2F7132D1B9F 
         foreign key (credits_id) 
         references Credit;
 
-    alter table TaxonomicView_Credit_AUD 
+    alter table TaxonomicTree_Credit_AUD 
         add constraint FK20F13CC234869AAE 
         foreign key (REV) 
         references AuditEvent;
 
-    alter table TaxonomicView_Extension 
+    alter table TaxonomicTree_Extension 
         add constraint FKCD1EA4C7927DE9DF 
         foreign key (extensions_id) 
         references Extension;
 
-    alter table TaxonomicView_Extension 
+    alter table TaxonomicTree_Extension 
         add constraint FKCD1EA4C7D019B239 
-        foreign key (TaxonomicView_id) 
-        references TaxonomicView;
+        foreign key (TaxonomicTree_id) 
+        references TaxonomicTree;
 
-    alter table TaxonomicView_Extension_AUD 
+    alter table TaxonomicTree_Extension_AUD 
         add constraint FK204D171834869AAE 
         foreign key (REV) 
         references AuditEvent;
 
-    alter table TaxonomicView_Marker 
+    alter table TaxonomicTree_Marker 
         add constraint FK126318B2D019B239 
-        foreign key (TaxonomicView_id) 
-        references TaxonomicView;
+        foreign key (TaxonomicTree_id) 
+        references TaxonomicTree;
 
-    alter table TaxonomicView_Marker 
+    alter table TaxonomicTree_Marker 
         add constraint FK126318B2777265A1 
         foreign key (markers_id) 
         references Marker;
 
-    alter table TaxonomicView_Marker_AUD 
+    alter table TaxonomicTree_Marker_AUD 
         add constraint FK850F9D8334869AAE 
         foreign key (REV) 
         references AuditEvent;
 
-    alter table TaxonomicView_OriginalSource 
+    alter table TaxonomicTree_OriginalSource 
         add constraint FK447A09C43BAB2414 
         foreign key (sources_id) 
         references OriginalSource;
 
-    alter table TaxonomicView_OriginalSource 
+    alter table TaxonomicTree_OriginalSource 
         add constraint FK447A09C4D019B239 
-        foreign key (TaxonomicView_id) 
-        references TaxonomicView;
+        foreign key (TaxonomicTree_id) 
+        references TaxonomicTree;
 
-    alter table TaxonomicView_OriginalSource_AUD 
+    alter table TaxonomicTree_OriginalSource_AUD 
         add constraint FK143B59534869AAE 
         foreign key (REV) 
         references AuditEvent;
 
-    alter table TaxonomicView_Rights 
+    alter table TaxonomicTree_Rights 
         add constraint FK1B57064FD019B239 
-        foreign key (TaxonomicView_id) 
-        references TaxonomicView;
+        foreign key (TaxonomicTree_id) 
+        references TaxonomicTree;
 
-    alter table TaxonomicView_Rights 
+    alter table TaxonomicTree_Rights 
         add constraint FK1B57064FC13F7B21 
         foreign key (rights_id) 
         references Rights;
 
-    alter table TaxonomicView_Rights_AUD 
+    alter table TaxonomicTree_Rights_AUD 
         add constraint FKF0E974A034869AAE 
         foreign key (REV) 
         references AuditEvent;
 
-    alter table TaxonomicView_TaxonNode 
+    alter table TaxonomicTree_TaxonNode 
         add constraint FKC7EC474D019B239 
-        foreign key (TaxonomicView_id) 
-        references TaxonomicView;
+        foreign key (TaxonomicTree_id) 
+        references TaxonomicTree;
 
-    alter table TaxonomicView_TaxonNode 
+    alter table TaxonomicTree_TaxonNode 
         add constraint FKC7EC47418929176 
         foreign key (rootnodes_id) 
         references TaxonNode;
 
-    alter table TaxonomicView_TaxonNode_AUD 
+    alter table TaxonomicTree_TaxonNode_AUD 
         add constraint FK6E0B984534869AAE 
         foreign key (REV) 
         references AuditEvent;

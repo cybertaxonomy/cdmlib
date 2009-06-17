@@ -423,6 +423,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 		taxonDao.delete(taxon);
 		setComplete();
 		endTransaction();
+		//try {printDataSet(new FileOutputStream("test.xml"));} catch(Exception e) { } 
 	}
 	
 	@Test

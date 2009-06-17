@@ -38,6 +38,10 @@ public class ReferenceDaoHibernateImplTest extends CdmIntegrationTest {
 	    firstJournalUuid = UUID.fromString("ad4322b7-4b05-48af-be70-f113e46c545e");
 	    genericUuid = UUID.fromString("bd4822b7-4b05-4eaf-be70-f113446c585e");
 	}
+
+	@Test
+	public void testDummy() {
+	}
 	
 	@Test
 	public void testGetPublishers() {
