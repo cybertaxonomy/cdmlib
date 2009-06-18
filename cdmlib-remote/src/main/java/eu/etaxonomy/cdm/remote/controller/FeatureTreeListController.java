@@ -39,8 +39,11 @@ import eu.etaxonomy.cdm.persistence.dao.common.IAnnotatableDao;
  * @date 24.03.2009
  */
 
-@Controller
-@RequestMapping(value = {"/*/featuretree/", "/*/featuretree/*"})
+//@Controller
+@Deprecated
+@RequestMapping(value = {"/*/featuretree/", 
+		//"/*/featuretree/*"
+		})
 public class FeatureTreeListController extends BaseController<DescriptionBase, IDescriptionService>
 {
 
@@ -51,10 +54,10 @@ public class FeatureTreeListController extends BaseController<DescriptionBase, I
 					"root.children.feature.representations",
 				});
 
-	public FeatureTreeListController(){
-		super();
-		setUuidParameterPattern("^/(?:[^/]+)/featuretree/([^/?#&\\.]+).*");
-	}
+//	public FeatureTreeListController(){
+//		super();
+//		setUuidParameterPattern("^/(?:[^/]+)/featuretree/([^/?#&\\.]+).*");
+//	}
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.remote.controller.GenericController#setService(eu.etaxonomy.cdm.api.service.IService)

@@ -16,6 +16,6 @@ import java.util.UUID;
 public class UUIDPropertyEditor extends PropertyEditorSupport  {
 
 	public void setAsText(String text) {
-			setValue(UUID.fromString(text));	    	
+			setValue(UUID.fromString(text));  	
 	}
 }

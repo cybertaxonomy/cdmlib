@@ -26,6 +26,8 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.remote.dto.TagEnum;
 import eu.etaxonomy.cdm.remote.dto.TaggedText;
+import eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.name.NameCacheStrategyBase;
 
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
@@ -45,6 +47,11 @@ public class TaxonNameBaseBeanProcessor extends AbstractCdmBeanProcessor<TaxonNa
 	@Override
 	public List<String> getIgnorePropNames() {
 		return Arrays.asList(new String[]{
+				// ignore nameRelations to avoid LazyLoadingExceptions coming 
+				// from NameRelationshipBeanProcessor.secondStep() in which 
+				// the transient field fromName is added to the serialization
+				"relationsFromThisName",
+				"relationsToThisName"
 		});
 	}
 
@@ -56,7 +63,7 @@ public class TaxonNameBaseBeanProcessor extends AbstractCdmBeanProcessor<TaxonNa
 		if(logger.isDebugEnabled()){
 			logger.debug("processing second step" + bean);
 		}
-		json.element("taggedTitle", getTaggedName(bean), jsonConfig);
+		json.element("taggedName", getTaggedName(bean), jsonConfig);
 		return json;
 	}
 	
@@ -66,7 +73,7 @@ public class TaxonNameBaseBeanProcessor extends AbstractCdmBeanProcessor<TaxonNa
 	 * @param taxonNameBase
 	 * @return
 	 */
-	public static List<TaggedText> getTaggedName(TaxonNameBase taxonNameBase){
+	public static List<TaggedText> getTaggedName(TaxonNameBase<TaxonNameBase, INameCacheStrategy<TaxonNameBase>> taxonNameBase){
 		
 		List<TaggedText> tags = new ArrayList<TaggedText>();
 		

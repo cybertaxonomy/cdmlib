@@ -1,6 +1,5 @@
 package eu.etaxonomy.cdm.remote.l10n;
 
-import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.List;

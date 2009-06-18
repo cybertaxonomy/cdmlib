@@ -41,7 +41,7 @@ import eu.etaxonomy.cdm.persistence.dao.common.IAnnotatableDao;
  */
 
 @Controller
-@RequestMapping(value = {"/*/taxon/*","/*/taxon/*/annotation"})
+@RequestMapping(value = {"/*/taxon/*","/*/taxon/*/*", "/*/taxon/*/annotation"})
 public class TaxonController extends AnnotatableController<TaxonBase, ITaxonService>
 {
 	public static final Logger logger = Logger.getLogger(TaxonController.class);
@@ -61,7 +61,7 @@ public class TaxonController extends AnnotatableController<TaxonBase, ITaxonServ
 		this.service = service;
 	}
 	
-	@RequestMapping(value = "/*/taxon/*/accepted/", method = RequestMethod.GET)
+	@RequestMapping(value = "/*/taxon/*/accepted", method = RequestMethod.GET)
 	public Set<TaxonBase> getAccepted(
 			@RequestParam(value = "page", required = false) Integer page,
 			@RequestParam(value = "pageSize", required = false) Integer pageSize,
@@ -73,9 +73,10 @@ public class TaxonController extends AnnotatableController<TaxonBase, ITaxonServ
 			//the taxon already is accepted
 			//FIXME take the current view into account once views are implemented!!!
 			resultset.add((Taxon)tb);
+		} else {
+			Synonym syn = (Synonym)tb;
+			resultset.addAll(syn.getAcceptedTaxa());
 		}
-		Synonym syn = (Synonym)tb;
-		resultset.addAll(syn.getAcceptedTaxa());
 		return resultset;
 	}
 		

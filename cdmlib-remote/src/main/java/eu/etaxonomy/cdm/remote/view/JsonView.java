@@ -84,7 +84,9 @@ public class JsonView extends BaseView implements View{
 //		}else if(dto instanceof Class){
 //			StringBuffer jsonStr = new StringBuffer().append("{\"name\":\"").append(((Class)dto).getName()).append("\", \"simpleName\": \"").append(((Class)dto).getSimpleName()).append("\"}");
 //			jsonObj = JSONObject.fromObject(jsonStr);
-		}else{
+		}else if(entity instanceof String){
+			jsonObj = JSONObject.fromObject("{\"String\":\""+entity+"\"}");
+		} else {
 			jsonObj = JSONObject.fromObject(entity, jsonConfig);
 		}
 		

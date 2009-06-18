@@ -63,7 +63,7 @@ public class TextDataBeanProcessor extends AbstractCdmBeanProcessor<TextData> {
 		TextData textdata = (TextData)bean;
 		LanguageString languageString;
 		List<Language> languages = LocaleContext.getLanguages();
-			
+
 		languageString = textdata.getPreferredLanguageString(languages);
 		if(languageString != null){
 			json.element("multilanguageText_L10n", languageString, jsonConfig);
@@ -71,7 +71,6 @@ public class TextDataBeanProcessor extends AbstractCdmBeanProcessor<TextData> {
 		if(!replaceMultilanguageText){
 			json.element("multilanguageText", textdata.getMultilanguageText(), jsonConfig);
 		}
-		
 		return json;
 	}
 	

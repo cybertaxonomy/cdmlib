@@ -64,7 +64,7 @@ public class ReferencePortalController extends BaseController<ReferenceBase, IRe
 		
 		ReferenceBase rb;
 		try {
-			UUID uuid = readValueUuid(request);
+			UUID uuid = readValueUuid(request, null);
 			Assert.notNull(uuid, HttpStatusMessage.UUID_NOT_FOUND.toString());
 			
 			rb = service.load(uuid, REFERENCE_INIT_STRATEGY);

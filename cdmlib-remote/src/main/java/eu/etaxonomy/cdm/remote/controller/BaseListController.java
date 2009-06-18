@@ -23,7 +23,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 public abstract class BaseListController <T extends CdmBase, SERVICE extends IService<T>> extends AbstractListController<T, SERVICE> {
 
 	public static final Integer DEFAULT_PAGESIZE = 20;
-	public static final Integer DEFAULT_PAGE = 1;
+	public static final Integer DEFAULT_PAGE = 0;
 	
 	@RequestMapping(method = RequestMethod.GET)
 	public Pager<T> doGet(

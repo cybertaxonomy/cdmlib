@@ -58,7 +58,8 @@ public class TaxonomyController extends AbstractListController<TaxonBase, ITaxon
 	private static final List<String> TAXON_INIT_STRATEGY = Arrays.asList(new String[]{
 			"sec", 
 			"relationsToThisTaxon.toTaxon.$",
-			//"name.rank.$",
+			"relationsToThisTaxon.toTaxon.name.taggedName",
+			"name.rank.$",
 			"name.rank.representations",
 			"name.nomenclaturalReference.authorTeam.*"
 			});

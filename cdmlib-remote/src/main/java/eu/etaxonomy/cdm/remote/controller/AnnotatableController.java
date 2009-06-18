@@ -47,7 +47,7 @@ public abstract class AnnotatableController<T extends AnnotatableEntity, SERVICE
 		
 		T annotatableEntity;
 		try {
-			UUID uuid = readValueUuid(request);
+			UUID uuid = readValueUuid(request, null);
 			Assert.notNull(uuid, HttpStatusMessage.UUID_NOT_FOUND.toString());
 			
 			annotatableEntity = service.findByUuid(uuid);
@@ -57,7 +57,7 @@ public abstract class AnnotatableController<T extends AnnotatableEntity, SERVICE
 			return null;
 		}
 		
-		Pager<Annotation> annotations = service.getAnnotations(annotatableEntity, null, null, 0);
+		Pager<Annotation> annotations = service.getAnnotations(annotatableEntity, null, null, 0, null, null);
 		return annotations;
 	}
 

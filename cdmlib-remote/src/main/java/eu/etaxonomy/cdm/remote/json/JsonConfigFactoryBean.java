@@ -36,7 +36,11 @@ public class JsonConfigFactoryBean implements FactoryBean {
 	
 	private CycleDetectionStrategy cycleDetectionStrategy = CycleDetectionStrategy.LENIENT;
 	
-	private boolean ignoreJPATransient = false;
+	/**
+	 * Default is true, to avoid LayzyLoadingExceptions. See
+	 * {@link #setIgnoreJPATransient(boolean)}
+	 */
+	private boolean ignoreJPATransient = true;
 	
 	private Map<Class,JsonBeanProcessor> jsonBeanProcessors = new HashMap<Class,JsonBeanProcessor>();
 	private List<PropertyFilter> jsonPropertyFilters = new ArrayList<PropertyFilter>();
@@ -50,6 +54,20 @@ public class JsonConfigFactoryBean implements FactoryBean {
 		this.cycleDetectionStrategy = cycleDetectionStrategy;
 	}
 	
+	/**
+	 * Default is true, to avoid LayzyLoadingExceptions.
+	 * <p>
+	 * 
+	 * @deprecated Transient getters which are just an alias for another getter
+	 *             are directly returning the the HibernateProxy. However if the
+	 *             return is a collection assembled by an algorithm it is not
+	 *             easily possible finding out if the list elements are
+	 *             initialized. Thus it is <b>NOT RECOMMENDED</b> using this
+	 *             property.
+	 * 
+	 * @param ignoreJPATransient
+	 */
+	@Deprecated
 	public void setIgnoreJPATransient(boolean ignoreJPATransient) {
 		this.ignoreJPATransient = ignoreJPATransient;
 	}

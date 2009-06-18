@@ -74,10 +74,16 @@ public abstract class BaseController<T extends CdmBase, SERVICE extends IService
 	}
 
 	
-	protected UUID readValueUuid(HttpServletRequest request) {
+	protected UUID readValueUuid(HttpServletRequest request, String pattern) {
 		String path = request.getServletPath();
 		if(path != null) {
-			Matcher uuidMatcher = uuidParameterPattern.matcher(path);
+			Matcher uuidMatcher;
+			if(pattern != null){
+				Pattern suppliedPattern = Pattern.compile(pattern);
+				uuidMatcher = suppliedPattern.matcher(path);
+			} else {
+				uuidMatcher = uuidParameterPattern.matcher(path);				
+			}
 			if(uuidMatcher.matches() && uuidMatcher.groupCount() > 0){
 				try {
 					UUID uuid = UUID.fromString(uuidMatcher.group(1));
@@ -104,7 +110,7 @@ public abstract class BaseController<T extends CdmBase, SERVICE extends IService
 			List<String> initStrategy, Class<CDM_BASE> clazz) throws IOException {
 		T obj = null;
 		try {
-			UUID uuid = readValueUuid(request);
+			UUID uuid = readValueUuid(request, null);
 			Assert.notNull(uuid, HttpStatusMessage.UUID_MISSING.toString());
 			
 			if(initStrategy != null){

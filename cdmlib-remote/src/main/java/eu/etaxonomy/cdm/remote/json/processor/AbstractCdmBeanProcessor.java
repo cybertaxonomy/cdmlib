@@ -58,7 +58,7 @@ public abstract class AbstractCdmBeanProcessor<T extends CdmBase> implements Jso
 		PropertyFilter jsonPropertyFilter = jsonConfig.getJsonPropertyFilter();
 		for(PropertyDescriptor prop: props){
 			String key = prop.getName();
-			if(getIgnorePropNames().contains(key) || exclusions.contains(key)){
+			if(getIgnorePropNames() != null && getIgnorePropNames().contains(key) || exclusions.contains(key)){
 				if(logger.isDebugEnabled()){
 					logger.debug("skipping excluded property " + key);
 				}

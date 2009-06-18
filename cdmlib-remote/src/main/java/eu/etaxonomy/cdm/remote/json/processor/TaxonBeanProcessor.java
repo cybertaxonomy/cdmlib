@@ -39,7 +39,7 @@ public class TaxonBeanProcessor extends AbstractCdmBeanProcessor<Taxon> {
 	@Override
 	public List<String> getIgnorePropNames() {
 		return Arrays.asList(new String[]{
-				"taxonomicParent" //TODO put in json-config ignore list
+				"taxonomicParent", //TODO put in json-config ignore list ?
 		});
 	}
 
@@ -48,22 +48,6 @@ public class TaxonBeanProcessor extends AbstractCdmBeanProcessor<Taxon> {
 	 */
 	@Override
 	public JSONObject processBeanSecondStep(Taxon bean, JSONObject json, JsonConfig jsonConfig) {
-//		if(logger.isDebugEnabled()){
-//			logger.debug("processing second step" + bean);
-//		}
-//		
-//		if(Hibernate.isInitialized(bean.getName()) && Hibernate.isInitialized(bean.getName().getHomotypicalGroup())){
-//			
-//			json.element("homotypicSynonyms", bean.getHomotypicSynonymsByHomotypicGroup(), jsonConfig);
-//			
-//			List<HomotypicalGroup> hsgl = bean.getHeterotypicSynonymyGroups();
-//			List<List<Synonym>> heterotypicSynonymyGroups = new ArrayList<List<Synonym>>(hsgl.size());
-//			for(HomotypicalGroup hsg : hsgl){
-//				heterotypicSynonymyGroups.add(hsg.getSynonymsInGroup(bean.getSec()));
-//			}
-//			
-//			json.element("heterotypicSynonymyGroups", heterotypicSynonymyGroups, jsonConfig);
-//		}
 		return json;
 	}
 	

@@ -11,7 +11,9 @@
 package eu.etaxonomy.cdm.remote.controller;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -23,8 +25,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import eu.etaxonomy.cdm.api.service.AnnotatableServiceBase;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
+import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
+import eu.etaxonomy.cdm.model.description.FeatureTree;
+import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.common.IAnnotatableDao;
 
 /**
@@ -33,14 +39,24 @@ import eu.etaxonomy.cdm.persistence.dao.common.IAnnotatableDao;
  */
 
 @Controller
-@RequestMapping(value = {"/*/description/*","/*/description/annotation/*"})
+@RequestMapping(value = {"/*/description/*","/*/description/annotation/*", "/*/featuretree/*"})
 public class DescriptionController extends AnnotatableController<DescriptionBase, IDescriptionService>
 {
 
 	public DescriptionController(){
 		super();
-		setUuidParameterPattern("^/(?:[^/]+)/description/([^/?#&\\.]+).*");
+		setUuidParameterPattern("^/(?:[^/]+)/(?:[^/]+)/([^/?#&\\.]+).*");
 	}
+	
+	private static final List<String> FEATURETREE_INIT_STRATEGY = Arrays.asList(
+			new String[]{
+				"representations",
+				"root.feature.representations",
+				"root.children.feature.representations",
+				//TODO implement recursive INIT_STRATEGY for children e.g: 
+				//     "root.children{<children;limit=0}.feature.representations",
+			});
+	
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.remote.controller.GenericController#setService(eu.etaxonomy.cdm.api.service.IService)
@@ -49,6 +65,18 @@ public class DescriptionController extends AnnotatableController<DescriptionBase
 	@Override
 	public void setService(IDescriptionService service) {
 		this.service = service;
+	}
+	
+	@RequestMapping(
+			value = {"/*/featuretree/*"},
+			method = RequestMethod.GET)
+	public FeatureTree doGetFeatureTree(HttpServletRequest request, HttpServletResponse response)throws IOException {
+		UUID featureTreeUuid = readValueUuid(request, null);
+		FeatureTree featureTree = service.loadFeatureTree(featureTreeUuid, FEATURETREE_INIT_STRATEGY);
+		if(featureTree == null){
+			HttpStatusMessage.UUID_NOT_FOUND.send(response);
+		}
+		return featureTree;
 	}
 
 }
