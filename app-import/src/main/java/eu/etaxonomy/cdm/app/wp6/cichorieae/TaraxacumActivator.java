@@ -251,6 +251,9 @@ public class TaraxacumActivator {
 					" UPDATE TaxonBase SET sec_id = " + secIdCich + " WHERE sec_id = " + secIdTarax;
 
 				int result = ((CdmDataSource)cdmDestination).executeUpdate(sqlString);
+				if (logger.isInfoEnabled()) {
+					logger.info("Update result = " + result);
+				}
 
 
 			} catch (SQLException e) {
