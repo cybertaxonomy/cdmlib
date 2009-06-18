@@ -100,7 +100,7 @@ public abstract class TermBase extends VersionableEntity {
 	 * are specified by the parameter languages, which receives a list of
 	 * Language instances in the order of preference. If no representation in
 	 * any preferred languages is found the method falls back to return the
-	 * Representation in Language.DEFAULT() and if nessecary further falls back
+	 * Representation in Language.DEFAULT() and if necessary further falls back
 	 * to return the first element found if any.
 	 * 
 	 * TODO think about this fall-back strategy & 

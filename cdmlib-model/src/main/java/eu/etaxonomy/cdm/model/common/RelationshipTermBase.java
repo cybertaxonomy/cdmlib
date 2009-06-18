@@ -1,6 +1,7 @@
 package eu.etaxonomy.cdm.model.common;
 
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -26,6 +27,7 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 
+import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
@@ -122,6 +124,43 @@ public abstract class RelationshipTermBase<T extends RelationshipTermBase> exten
 			}
 		}
 		return result;
+	}
+	
+	/**
+	 * Returns the InverseRepresentation in the preferred language. Preferred languages
+	 * are specified by the parameter languages, which receives a list of
+	 * Language instances in the order of preference. If no representation in
+	 * any preferred languages is found the method falls back to return the
+	 * Representation in Language.DEFAULT() and if necessary further falls back
+	 * to return the first element found if any.
+	 * 
+	 * TODO think about this fall-back strategy & 
+	 * see also {@link TextData#getPreferredLanguageString(List)}
+	 * see also {@link TermBase#getPreferredRepresentation(List)}
+	 * 
+	 * @param languages
+	 * @return
+	 */
+	public Representation getPreferredInverseRepresentation(List<Language> languages) {
+		Representation repr = null;
+		if(languages != null){
+			for(Language language : languages) {
+				repr = getInverseRepresentation(language); 
+				if(repr != null){
+					return repr;
+				}
+			}
+		}
+		if(repr == null){
+			repr = getInverseRepresentation(Language.DEFAULT());
+		}
+		if(repr == null){
+			Iterator<Representation> it = getInverseRepresentations().iterator();
+			if(it.hasNext()){
+				repr = getInverseRepresentations().iterator().next();
+			}
+		}
+		return repr;
 	}
 	
 	/*

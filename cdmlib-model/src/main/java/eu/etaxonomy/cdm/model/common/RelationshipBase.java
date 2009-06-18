@@ -36,6 +36,15 @@ public abstract class RelationshipBase<FROM extends IRelated, TO extends IRelate
 	@XmlAttribute(name = "isDoubtful")
 	private boolean doubtful;
 	
+	/**
+	 * enumeration and String representation of the <code>relatedFrom</code> and
+	 * <code>relatedTo</code> bean propertys. Intended to be used in the
+	 * persistence layer only.
+	 */
+	public enum Direction {
+		relatedFrom, relatedTo
+	}
+	
 	protected RelationshipBase(){
 		super();
 	}

@@ -11,12 +11,17 @@ package eu.etaxonomy.cdm.model.description;
 
 import static org.junit.Assert.*;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -117,6 +122,19 @@ public class TextDataTest {
 		assertNotNull(textDataLeer.getMultilanguageText());
 //		assertNull(textDataLeer.getMultilanguageText().getText(Language.DEFAULT()));
 		assertEquals(0, textDataLeer.getMultilanguageText().size());
+	}
+	
+	/**
+	 * This test reproduces a bug in java runtime. 
+	 * The HashMap used to implement the MultilanguageText fails in jre1.6_11 b03 win32 to 
+	 * to find existing Language keys. 
+	 * FIXME this test fails to reproduce the bug -> integration test needed?
+	 */
+	@Test
+	public void testPreferredLanguageString() {
+		//FIXME move to integration test: List<Language> languages = termService.getLanguagesByLocale(locales.elements());
+		List<Language> preferredLanguages = Arrays.asList(new Language[]{Language.DEFAULT()});
+		assertNotNull(textData1.getPreferredLanguageString(preferredLanguages));
 	}
 	
 	/**
