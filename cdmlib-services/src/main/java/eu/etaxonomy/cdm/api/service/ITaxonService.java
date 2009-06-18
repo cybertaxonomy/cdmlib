@@ -183,7 +183,21 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	public Synonym makeTaxonSynonym (Taxon oldTaxon, Taxon newAcceptedTaxon, SynonymRelationshipType synonymType, ReferenceBase citation, String citationMicroReference);
 	
 	/**
-	 * Returns the TaxonRelationships (of where relationship.type == type, if this arguement is supplied) 
+	 * Returns the TaxonRelationships (of where relationship.type == type, if this argument is supplied) 
+	 * where the supplied taxon is relatedTo.
+	 * 
+	 * @param taxon The taxon that is relatedTo
+	 * @param type The type of TaxonRelationship (can be null)
+	 * @param pageSize The maximum number of relationships returned (can be null for all relationships)
+	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
+	 * @param orderHints Properties to order by
+	 * @param propertyPaths Properties to initialize in the returned entities, following the syntax described in {@link BeanInitializer#initialize(Object, List)}
+	 * @return a List of TaxonRelationship instances
+	 */
+	public List<TaxonRelationship> listToTaxonRelationships(Taxon taxon, TaxonRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+	
+	/**
+	 * Returns the TaxonRelationships (of where relationship.type == type, if this argument is supplied) 
 	 * where the supplied taxon is relatedTo.
 	 * 
 	 * @param taxon The taxon that is relatedTo
@@ -194,10 +208,38 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	 * @param propertyPaths Properties to initialize in the returned entities, following the syntax described in {@link BeanInitializer#initialize(Object, List)}
 	 * @return a Pager of TaxonRelationship instances
 	 */
-	public Pager<TaxonRelationship> getRelatedTaxa(Taxon taxon, TaxonRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+	public Pager<TaxonRelationship> pageToTaxonRelationships(Taxon taxon, TaxonRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 	
 	/**
-	 * Returns the SynonymRelationships (of where relationship.type == type, if this arguement is supplied) 
+	 * Returns the TaxonRelationships (of where relationship.type == type, if this argument is supplied) 
+	 * where the supplied taxon is relatedFrom.
+	 * 
+	 * @param taxon The taxon that is relatedFrom
+	 * @param type The type of TaxonRelationship (can be null)
+	 * @param pageSize The maximum number of relationships returned (can be null for all relationships)
+	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
+	 * @param orderHints Properties to order by
+	 * @param propertyPaths Properties to initialize in the returned entities, following the syntax described in {@link BeanInitializer#initialize(Object, List)}
+	 * @return a List of TaxonRelationship instances
+	 */
+	public List<TaxonRelationship> listFromTaxonRelationships(Taxon taxon, TaxonRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+	
+	/**
+	 * Returns the TaxonRelationships (of where relationship.type == type, if this argument is supplied) 
+	 * where the supplied taxon is relatedFrom.
+	 * 
+	 * @param taxon The taxon that is relatedFrom
+	 * @param type The type of TaxonRelationship (can be null)
+	 * @param pageSize The maximum number of relationships returned (can be null for all relationships)
+	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
+	 * @param orderHints Properties to order by
+	 * @param propertyPaths Properties to initialize in the returned entities, following the syntax described in {@link BeanInitializer#initialize(Object, List)}
+	 * @return a Pager of TaxonRelationship instances
+	 */
+	public Pager<TaxonRelationship> pageFromTaxonRelationships(Taxon taxon, TaxonRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+	
+	/**
+	 * Returns the SynonymRelationships (of where relationship.type == type, if this argument is supplied) 
 	 * where the supplied taxon is relatedTo.
 	 * 
 	 * @param taxon The taxon that is relatedTo

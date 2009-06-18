@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
@@ -155,6 +156,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
 		return homotypicalGroupDao.list(limit, start);
 	}
 	
+	@Deprecated
 	public List<RelationshipBase> getAllRelationships(int limit, int start){
 		return dao.getAllRelationships(limit, start);
 	}
@@ -234,16 +236,36 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
 		
 		return new DefaultPagerImpl<HybridRelationship>(pageNumber, numberOfResults, pageSize, results);
 	}
-
-	public Pager<NameRelationship> getRelatedNames(TaxonNameBase name,NameRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
-        Integer numberOfResults = dao.countRelatedNames(name, type);
+	
+	public List<NameRelationship> listFromNameRelationships(TaxonNameBase name, NameRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+		Integer numberOfResults = dao.countNameRelationships(name, NameRelationship.Direction.relatedFrom, type);
 		
 		List<NameRelationship> results = new ArrayList<NameRelationship>();
 		if(numberOfResults > 0) { // no point checking again
-			results = dao.getRelatedNames(name, type, pageSize, pageNumber,orderHints,propertyPaths); 
+			results = dao.getNameRelationships(name, NameRelationship.Direction.relatedFrom, type, pageSize, pageNumber, orderHints, propertyPaths); 
 		}
+		return results;
+	}
+
+	public Pager<NameRelationship> pageFromNameRelationships(TaxonNameBase name, NameRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+		List<NameRelationship> results = listFromNameRelationships(name, type, pageSize, pageNumber, orderHints, propertyPaths);
+		return new DefaultPagerImpl<NameRelationship>(pageNumber, results.size(), pageSize, results);
+	}
+	
+	public List<NameRelationship> listToNameRelationships(TaxonNameBase name, NameRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+
+		Integer numberOfResults = dao.countNameRelationships(name, NameRelationship.Direction.relatedTo, type);
 		
-		return new DefaultPagerImpl<NameRelationship>(pageNumber, numberOfResults, pageSize, results);
+		List<NameRelationship> results = new ArrayList<NameRelationship>();
+		if(numberOfResults > 0) { // no point checking again
+			results = dao.getNameRelationships(name, NameRelationship.Direction.relatedTo, type, pageSize, pageNumber, orderHints, propertyPaths); 
+		}
+		return results;
+	}
+	
+	public Pager<NameRelationship> pageToNameRelationships(TaxonNameBase name, NameRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+		List<NameRelationship> results = listToNameRelationships(name, type, pageSize, pageNumber, orderHints, propertyPaths);
+		return new DefaultPagerImpl<NameRelationship>(pageNumber, results.size(), pageSize, results);
 	}
 
 	

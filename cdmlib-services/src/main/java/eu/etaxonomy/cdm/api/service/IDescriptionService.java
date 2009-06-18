@@ -32,6 +32,7 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
@@ -184,6 +185,7 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
 	 * @param description The description which these description elements belong to (can be null to count all description elements)
 	 * @param features Restrict the results to those description elements which are scoped by one of the Features passed (can be null or empty)
 	 * @param type The type of description
+	 * @param class 
 	 * @param pageSize The maximum number of description elements returned (can be null for all description elements)
 	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
 	 * @param propertyPaths Properties to initialize in the returned entities, following the syntax described in {@link BeanInitializer#initialize(Object, List)}

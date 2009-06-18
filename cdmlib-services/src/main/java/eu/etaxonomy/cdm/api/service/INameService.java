@@ -13,6 +13,7 @@ package eu.etaxonomy.cdm.api.service;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.api.service.config.IIdentifiableEntityServiceConfigurator;
@@ -108,6 +109,7 @@ public interface INameService extends IIdentifiableEntityService<TaxonNameBase> 
 
     public List<HomotypicalGroup> getAllHomotypicalGroups(int limit, int start);
 
+	@Deprecated
     public List<RelationshipBase> getAllRelationships(int limit, int start);
     
 	/**
@@ -146,10 +148,10 @@ public interface INameService extends IIdentifiableEntityService<TaxonNameBase> 
 	public TermVocabulary<NameRelationshipType> getNameRelationshipTypeVocabulary();
 	
 	/**
-	 * Return a List of relationships related to this name, optionally filtered 
+	 * Return a List of relationships in which this name is related to another name, optionally filtered 
 	 * by relationship type
 	 * 
-	 * @param name the name
+	 * @param name the name on the <i>"from side"</i> of the relationship
 	 * @param type the relationship type (or null to return all relationships) 
 	 * @param pageSize The maximum number of relationships returned (can be null for all relationships)
 	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
@@ -157,7 +159,50 @@ public interface INameService extends IIdentifiableEntityService<TaxonNameBase> 
 	 * @param propertyPaths properties to initialize - see {@link BeanInitializer#initialize(Object, List)}
 	 * @return a Pager of NameRelationship instances
 	 */
-	public Pager<NameRelationship> getRelatedNames(TaxonNameBase name,  NameRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+	public List<NameRelationship> listFromNameRelationships(TaxonNameBase name,  NameRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+	
+	/**
+	 * Return a List of relationships in which this name is related to another name, optionally filtered 
+	 * by relationship type
+	 * 
+	 * @param name the name on the <i>"from side"</i> of the relationship
+	 * @param type the relationship type (or null to return all relationships) 
+	 * @param pageSize The maximum number of relationships returned (can be null for all relationships)
+	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
+	 * @param orderHints may be null
+	 * @param propertyPaths properties to initialize - see {@link BeanInitializer#initialize(Object, List)}
+	 * @return a Pager of NameRelationship instances
+	 */
+	public Pager<NameRelationship> pageFromNameRelationships(TaxonNameBase name,  NameRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+	
+	/**
+	 * Return a List of relationships in which another name is related to this name, optionally filtered 
+	 * by relationship type
+	 * 
+	 * @param name the name on the <i>"to side"</i> of the relationship 
+	 * @param type the relationship type (or null to return all relationships) 
+	 * @param pageSize The maximum number of relationships returned (can be null for all relationships)
+	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
+	 * @param orderHints may be null
+	 * @param propertyPaths properties to initialize - see {@link BeanInitializer#initialize(Object, List)}
+	 * @return a Pager of NameRelationship instances
+	 */
+	public List<NameRelationship> listToNameRelationships(TaxonNameBase name,  NameRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+	
+	/**
+	 * Return a List of relationships in which another name is related to this name, optionally filtered 
+	 * by relationship type
+	 * 
+	 * @param name the name on the <i>"to side"</i> of the relationship 
+	 * @param type the relationship type (or null to return all relationships) 
+	 * @param pageSize The maximum number of relationships returned (can be null for all relationships)
+	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
+	 * @param orderHints may be null
+	 * @param propertyPaths properties to initialize - see {@link BeanInitializer#initialize(Object, List)}
+	 * @return a Pager of NameRelationship instances
+	 */
+	public Pager<NameRelationship> pageToNameRelationships(TaxonNameBase name,  NameRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+	
 	
 	/**
 	 * Return a List of hybrids related to this name, optionally filtered 

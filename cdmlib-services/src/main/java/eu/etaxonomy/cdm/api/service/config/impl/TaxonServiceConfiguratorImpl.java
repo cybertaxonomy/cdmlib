@@ -11,6 +11,8 @@
 
 package eu.etaxonomy.cdm.api.service.config.impl;
 
+import java.util.List;
+
 import eu.etaxonomy.cdm.api.service.config.ITaxonServiceConfigurator;
 import eu.etaxonomy.cdm.api.service.config.IdentifiableServiceConfiguratorBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
@@ -30,6 +32,8 @@ implements ITaxonServiceConfigurator {
 	private boolean doNamesWithoutTaxa = false;
 	private String searchString;
 	private ReferenceBase sec = null;
+	private List<String> taxonPropertyPath;
+	private List<String> commonNamePropertyPath;
 	
 	public static TaxonServiceConfiguratorImpl NewInstance() {
 		return new TaxonServiceConfiguratorImpl();
@@ -99,7 +103,24 @@ implements ITaxonServiceConfigurator {
 		return sec;
 	}
 	
-	public void setReferenceBase(ReferenceBase sec) {
+	public void setSec(ReferenceBase sec) {
 		this.sec = sec;
 	}
+
+	public List<String> getTaxonPropertyPath() {
+		return taxonPropertyPath;
+	}
+
+	public void setTaxonPropertyPath(List<String> taxonPropertyPath) {
+		this.taxonPropertyPath = taxonPropertyPath;
+	}
+
+	public List<String> getCommonNamePropertyPath() {
+		return commonNamePropertyPath;
+	}
+
+	public void setCommonNamePropertyPath(List<String> commonNamePropertyPath) {
+		this.commonNamePropertyPath = commonNamePropertyPath;
+	}
+	
 }

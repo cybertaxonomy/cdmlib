@@ -46,6 +46,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
+import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
 import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
 import eu.etaxonomy.cdm.persistence.dao.common.IOrderedTermVocabularyDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
@@ -73,6 +74,8 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 	private IOrderedTermVocabularyDao orderedVocabularyDao;
 	@Autowired
 	private IDescriptionDao descriptionDao;
+	@Autowired
+	private BeanInitializer defaultBeanInitializer;
 
 	
 	/**
@@ -338,15 +341,34 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		return new DefaultPagerImpl<TaxonBase>(pageNumber, numberOfResults, pageSize, results);
 	}
 
-	public Pager<TaxonRelationship> getRelatedTaxa(Taxon taxon,	TaxonRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
-        Integer numberOfResults = dao.countRelatedTaxa(taxon, type);
+	public List<TaxonRelationship> listToTaxonRelationships(Taxon taxon, TaxonRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths){
+		Integer numberOfResults = dao.countTaxonRelationships(taxon, type, TaxonRelationship.Direction.relatedTo);
 		
 		List<TaxonRelationship> results = new ArrayList<TaxonRelationship>();
 		if(numberOfResults > 0) { // no point checking again
-			results = dao.getRelatedTaxa(taxon, type, pageSize, pageNumber, orderHints, propertyPaths); 
+			results = dao.getTaxonRelationships(taxon, type, pageSize, pageNumber, orderHints, propertyPaths, TaxonRelationship.Direction.relatedTo); 
 		}
+		return results;
+	}
+	
+	public Pager<TaxonRelationship> pageToTaxonRelationships(Taxon taxon, TaxonRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+		List<TaxonRelationship> results = listToTaxonRelationships(taxon, type, pageSize, pageNumber, orderHints, propertyPaths); 
+		return new DefaultPagerImpl<TaxonRelationship>(pageNumber, results.size(), pageSize, results);
+	}
+	
+	public List<TaxonRelationship> listFromTaxonRelationships(Taxon taxon, TaxonRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths){
+		Integer numberOfResults = dao.countTaxonRelationships(taxon, type, TaxonRelationship.Direction.relatedFrom);
 		
-		return new DefaultPagerImpl<TaxonRelationship>(pageNumber, numberOfResults, pageSize, results);
+		List<TaxonRelationship> results = new ArrayList<TaxonRelationship>();
+		if(numberOfResults > 0) { // no point checking again
+			results = dao.getTaxonRelationships(taxon, type, pageSize, pageNumber, orderHints, propertyPaths, TaxonRelationship.Direction.relatedFrom); 
+		}
+		return results;
+	}
+	
+	public Pager<TaxonRelationship> pageFromTaxonRelationships(Taxon taxon, TaxonRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+		List<TaxonRelationship> results = listToTaxonRelationships(taxon, type, pageSize, pageNumber, orderHints, propertyPaths); 
+		return new DefaultPagerImpl<TaxonRelationship>(pageNumber, results.size(), pageSize, results);
 	}
 
 	public Pager<SynonymRelationship> getSynonyms(Taxon taxon,	SynonymRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
@@ -400,7 +422,8 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		if (configurator.isDoTaxa() && configurator.isDoSynonyms()) {
 			taxa = dao.getTaxaByName(configurator.getSearchString(), 
 					configurator.getMatchMode(), SelectMode.ALL, configurator.getSec(),
-						configurator.getPageSize(), configurator.getPageNumber());
+						configurator.getPageSize(), configurator.getPageNumber(), 
+						configurator.getTaxonPropertyPath());
 			numberTaxaResults = 
 				dao.countTaxaByName(configurator.getSearchString(), 
 						configurator.getMatchMode(), SelectMode.ALL, configurator.getSec());
@@ -408,7 +431,8 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		} else if(configurator.isDoTaxa()) {
 			taxa = dao.getTaxaByName(configurator.getSearchString(), 
 					configurator.getMatchMode(), SelectMode.TAXA, configurator.getSec(),
-					configurator.getPageSize(), configurator.getPageNumber());
+					configurator.getPageSize(), configurator.getPageNumber(), 
+					configurator.getTaxonPropertyPath());
 			numberTaxaResults = 
 				dao.countTaxaByName(configurator.getSearchString(), 
 						configurator.getMatchMode(), SelectMode.TAXA, configurator.getSec());
@@ -416,7 +440,8 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		} else if (configurator.isDoSynonyms()) {
 			taxa = dao.getTaxaByName(configurator.getSearchString(), 
 					configurator.getMatchMode(), SelectMode.SYNONYMS, configurator.getSec(),
-					configurator.getPageSize(), configurator.getPageNumber());
+					configurator.getPageSize(), configurator.getPageNumber(), 
+					configurator.getTaxonPropertyPath());
 			numberTaxaResults = 
 				dao.countTaxaByName(configurator.getSearchString(), 
 						configurator.getMatchMode(), SelectMode.SYNONYMS, configurator.getSec());
@@ -424,7 +449,9 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
 		if (logger.isDebugEnabled()) { logger.debug(numberTaxaResults + " matching taxa counted"); }
 		
-		results.addAll(taxa);
+		if(taxa != null){
+			results.addAll(taxa);
+		}
 		
 		numberOfResults += numberTaxaResults;
 		
@@ -434,7 +461,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             int numberNameResults = 0;
 			List<? extends TaxonNameBase<?,?>> names = 
 				nameDao.findByName(configurator.getSearchString(), configurator.getMatchMode(), 
-						configurator.getPageSize(), configurator.getPageNumber(), null);
+						configurator.getPageSize(), configurator.getPageNumber(), null, null);
 			if (logger.isDebugEnabled()) { logger.debug(names.size() + " matching name(s) found"); }
 			if (names.size() > 0) {
 				for (TaxonNameBase<?,?> taxonName : names) {
@@ -449,7 +476,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		}
 		
 		// Taxa from common names
-		
+		// FIXME the matching common names also must be returned
 		if (configurator.isDoTaxaByCommonNames()) {
 			int numberCommonNameResults = 0;
 			List<CommonTaxonName> commonTaxonNames = 
@@ -465,6 +492,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 						Taxon taxon = taxonDescription.getTaxon();
 						taxon = HibernateProxyHelper.deproxy(taxon, Taxon.class);
 						if (!results.contains(taxon) && !taxon.isMisappliedName()) {
+							defaultBeanInitializer.initialize(taxon, configurator.getTaxonPropertyPath());
 							results.add(taxon);
 							numberCommonNameResults++;
 						}

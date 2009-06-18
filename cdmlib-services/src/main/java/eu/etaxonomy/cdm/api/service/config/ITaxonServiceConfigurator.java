@@ -10,6 +10,8 @@
 
 package eu.etaxonomy.cdm.api.service.config;
 
+import java.util.List;
+
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 
@@ -46,7 +48,7 @@ public interface ITaxonServiceConfigurator {
 
 	public ReferenceBase getSec();
 	
-	public void setReferenceBase(ReferenceBase sec);
+	public void setSec(ReferenceBase sec);
 	
 	public Integer getPageSize();
 
@@ -55,4 +57,12 @@ public interface ITaxonServiceConfigurator {
 	public Integer getPageNumber();
 	
 	public void setPageNumber(Integer pageNumber);
+	
+	public List<String> getTaxonPropertyPath();
+
+	public void setTaxonPropertyPath(List<String> taxonPropertyPath);
+
+	public List<String> getCommonNamePropertyPath();
+
+	public void setCommonNamePropertyPath(List<String> commonNamePropertyPath);
 }

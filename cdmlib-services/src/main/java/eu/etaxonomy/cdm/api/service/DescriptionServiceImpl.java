@@ -40,6 +40,7 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.common.ITermVocabularyDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionElementDao;
@@ -228,16 +229,18 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
 		return dao.countDescriptions(type, hasImages, hasText, feature);
 	}
 
-	public <TYPE extends DescriptionElementBase> Pager<TYPE> getDescriptionElements(DescriptionBase description, Set<Feature> features,	Class<TYPE> type, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
-        Integer numberOfResults = dao.countDescriptionElements(description, features, type);
-		
+	public <TYPE extends DescriptionElementBase> Pager<TYPE> getDescriptionElements(DescriptionBase description,
+			Set<Feature> features, Class<TYPE> type, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
+		Integer numberOfResults = dao.countDescriptionElements(description, features, type);
+
 		List<TYPE> results = new ArrayList<TYPE>();
-		if(numberOfResults > 0) { // no point checking again
-			results = dao.getDescriptionElements(description, features, type, pageSize, pageNumber, propertyPaths); 
+		if (numberOfResults > 0) { // no point checking again
+			results = dao.getDescriptionElements(description, features, type, pageSize, pageNumber, propertyPaths);
 		}
-		
+
 		return new DefaultPagerImpl<TYPE>(pageNumber, numberOfResults, pageSize, results);
 	}
+	
 
 	public Pager<Media> getMedia(DescriptionElementBase descriptionElement,	Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
         Integer numberOfResults = descriptionElementDao.countMedia(descriptionElement);
