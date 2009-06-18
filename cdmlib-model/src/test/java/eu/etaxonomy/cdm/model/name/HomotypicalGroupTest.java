@@ -1,0 +1,115 @@
+// $Id$
+/**
+* Copyright (C) 2007 EDIT
+* European Distributed Institute of Taxonomy 
+* http://www.e-taxonomy.eu
+* 
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
+
+package eu.etaxonomy.cdm.model.name;
+
+
+import java.util.Set;
+
+import org.apache.log4j.Logger;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
+import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
+
+
+/**
+ * @author a.mueller
+ * @created 18.06.2009
+ * @version 1.0
+ */
+public class HomotypicalGroupTest {
+	private static final Logger logger = Logger.getLogger(HomotypicalGroupTest.class);
+
+	private static HomotypicalGroup group1;
+	private static HomotypicalGroup group2;
+	private static TaxonNameBase name1;
+	private static TaxonNameBase name2;
+	private static TaxonNameBase name3;
+	private static TaxonNameBase name4;
+	
+	
+	/**
+	 * @throws java.lang.Exception
+	 */
+	@BeforeClass
+	public static void setUpBeforeClass() throws Exception {
+		new DefaultTermInitializer().initialize();
+	}
+
+	/**
+	 * @throws java.lang.Exception
+	 */
+	@AfterClass
+	public static void tearDownAfterClass() throws Exception {
+	}
+
+	/**
+	 * @throws java.lang.Exception
+	 */
+	@Before
+	public void setUp() throws Exception {
+		name1 = BotanicalName.NewInstance(Rank.SPECIES());
+		name2 = BotanicalName.NewInstance(Rank.GENUS());
+		name3 = BotanicalName.NewInstance(Rank.SUBSPECIES());
+		name4 = BotanicalName.NewInstance(Rank.VARIETY());
+	}
+
+	/**
+	 * @throws java.lang.Exception
+	 */
+	@After
+	public void tearDown() throws Exception {
+	}
+	
+//*********************** TESTS ***********************************************/
+	
+	@Test
+	public void testGetBasionyms() {
+		name1.addBasionym(name2);
+		Set<TaxonNameBase> basionyms =  name1.getHomotypicalGroup().getBasionyms();
+		Assert.assertNotNull("Basionym set should not be null", basionyms);
+		Assert.assertEquals("Number of basionyms should be 1", 1, basionyms.size());
+		name3.addBasionym(name2);
+		basionyms =  name2.getHomotypicalGroup().getBasionyms();
+		Assert.assertEquals("Number of basionyms should be 1", 1, basionyms.size());
+		Assert.assertEquals("", name2, basionyms.iterator().next());
+		name3.addBasionym(name4);
+		basionyms =  name2.getHomotypicalGroup().getBasionyms();
+		Assert.assertEquals("Number of basionyms should be 2", 2, basionyms.size());
+//		Assert.assertEquals("", name2, basionyms.iterator().next());
+		
+	}
+	
+	@Test
+	public void testGetReplacedSynonym() {
+		name3.addReplacedSynonym(name4, null, null, null);
+		Set<TaxonNameBase> replacedSyn =  name3.getHomotypicalGroup().getReplacedSynonym();
+		Assert.assertNotNull("Replaced synonym set should not be null", replacedSyn);
+		Assert.assertEquals("Number of replaced synonym should be 1", 1, replacedSyn.size());
+	}
+	
+	@Test
+	public void testGetBasionymAndReplacedSynonymRelations(){
+		name1.addBasionym(name2);
+		name3.addBasionym(name2);
+		name4.addReplacedSynonym(name2, null, null, null);
+		Set<NameRelationship> rels = name2.getHomotypicalGroup().getBasionymAndReplacedSynonymRelations();
+		Assert.assertEquals("Number of relations should be 3", 3, rels.size());
+		
+	}
+	
+	
+	
+}

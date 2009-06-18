@@ -370,4 +370,88 @@ public class HomotypicalGroup extends AnnotatableEntity {
 		Collections.sort(result, new TaxonComparator());
 		return result;
 	}
+
+	
+	
+	
+	/**
+	 * Returns all taxon names in the homotypical group that have a 'is_basionym_for' (zool.: 'is_original_combination_for') relationship.
+	 * @return
+	 */
+	public Set<TaxonNameBase> getBasionyms(){
+		Set<NameRelationship> set = getBasionymOrReplacedSynonymRelations(true, false);
+		Set<TaxonNameBase> result = new HashSet<TaxonNameBase>();
+		for (NameRelationship nameRelationship : set){
+			result.add(nameRelationship.getFromName());
+		}
+		return result;
+	}
+
+	/**
+	 * Returns all taxon names in the homotypical group that have a 'is_replaced_synonym_for' relationship.
+	 * @return
+	 */
+	public Set<TaxonNameBase> getReplacedSynonym(){
+		Set<NameRelationship> set = getBasionymOrReplacedSynonymRelations(false, true);
+		Set<TaxonNameBase> result = new HashSet<TaxonNameBase>();
+		for (NameRelationship nameRelationship : set){
+			result.add(nameRelationship.getFromName());
+		}
+		return result;
+	}
+	
+	/**
+	 * Returns the name relationships that represent either a basionym (original combination) relationship or
+	 * a replaced synonym relationship.  
+	 * @return
+	 */
+	public Set<NameRelationship> getBasionymAndReplacedSynonymRelations(){
+		return getBasionymOrReplacedSynonymRelations(true, true);
+	}
+	
+	private Set<NameRelationship> getBasionymOrReplacedSynonymRelations(boolean doBasionym, boolean doReplacedSynonym){
+		Set<NameRelationship> result = new HashSet<NameRelationship>(); 
+		Set<TaxonNameBase> names = this.getTypifiedNames();
+		if (names.size() > 1){
+			for (TaxonNameBase name : names){
+				Set nameRels = name.getNameRelations();
+				//TODO make getNameRelations generic
+				for (Object obj : nameRels){
+					NameRelationship nameRel = (NameRelationship)obj;
+					NameRelationshipType type = nameRel.getType();
+					if ( type.isBasionymRelation() && doBasionym){
+						if (testRelatedNameInThisGroup(nameRel)){
+							result.add(nameRel);
+						}else{
+							logger.warn("Name has basionym relation to a name that is not in the same homotypical group");
+						}
+					}else if (type.isReplacedSynonymRelation() && doReplacedSynonym)  {
+						if (testRelatedNameInThisGroup(nameRel)){
+							result.add(nameRel);
+						}else{
+							logger.warn("Name has replaced synonym relation to a name that is not in the same homotypical group");
+						}
+					}
+				}
+			}
+		}
+		return result;
+	}
+	
+	private boolean testRelatedNameInThisGroup(NameRelationship nameRel){
+		TaxonNameBase toName = nameRel.getToName();
+		return (this.getTypifiedNames().contains(toName));
+	}
+	
+	private boolean isBasionymOrRepSynRel(NameRelationshipType relType){
+		if (relType == null){
+			throw new IllegalArgumentException("NameRelationshipType should never be null");
+		}else if (relType.equals(NameRelationshipType.BASIONYM())) {
+			return true;
+		}else if (relType.equals(NameRelationshipType.REPLACED_SYNONYM())){
+			return true;
+		}else{
+			return false;
+		}
+	}
 }

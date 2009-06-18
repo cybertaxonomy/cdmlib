@@ -47,6 +47,7 @@ import eu.etaxonomy.cdm.model.common.IReferencedEntity;
 import eu.etaxonomy.cdm.model.common.IRelated;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
+import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
@@ -337,11 +338,31 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 	 * @see    				  #addNameRelationship(NameRelationship)
 	 */
 	public void addRelationshipToName(TaxonNameBase toName, NameRelationshipType type, String ruleConsidered){
-		NameRelationship rel = new NameRelationship(toName, this, type, ruleConsidered);
+		addRelationshipToName(toName, type, null, null, ruleConsidered);
+		//		NameRelationship rel = new NameRelationship(toName, this, type, ruleConsidered);
 	}
 	
-	public void addRelationshipToName(TaxonNameBase toName, NameRelationshipType type, ReferenceBase citation, String microCitation, String ruleConsidered){
+	/**
+	 * Creates a new {@link NameRelationship#NameRelationship(TaxonNameBase, TaxonNameBase, NameRelationshipType, String) name relationship} from <i>this</i> taxon name to another taxon name
+	 * and adds it both to the set of {@link #getRelationsFromThisName() relations from <i>this</i> taxon name} and
+	 * to the set of {@link #getRelationsToThisName() relations to the other taxon name}.
+	 * 
+	 * @param toName		  the taxon name of the target for this new name relationship
+	 * @param type			  the type of this new name relationship
+	 * @param ruleConsidered  the string which specifies the rule on which this name relationship is based
+	 * @see    				  #getRelationsToThisName()
+	 * @see    				  #getNameRelations()
+	 * @see    				  #addRelationshipFromName(TaxonNameBase, NameRelationshipType, String)
+	 * @see    				  #addNameRelationship(NameRelationship)
+	 */
+public void addRelationshipToName(TaxonNameBase toName, NameRelationshipType type, ReferenceBase citation, String microCitation, String ruleConsidered){
+		if (toName == null){
+			throw new NullPointerException("Null is not allowed as name for a name relationship");
+		}
 		NameRelationship rel = new NameRelationship(toName, this, type, citation, microCitation, ruleConsidered);
+//		if (type.isBasionymRelation() || type.isReplacedSynonymRelation()){
+//			this.getHomotypicalGroup().merge(toName.getHomotypicalGroup());
+//		}
 	}
 	
 	/**
@@ -352,16 +373,34 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 	 * @param fromName		  the taxon name of the source for this new name relationship
 	 * @param type			  the type of this new name relationship
 	 * @param ruleConsidered  the string which specifies the rule on which this name relationship is based
+	 * @param citation		  the reference in which this relation was described
+	 * @param microCitation	  the reference detail for this relation (e.g. page) 
 	 * @see    				  #getRelationsFromThisName()
 	 * @see    				  #getNameRelations()
 	 * @see    				  #addRelationshipToName(TaxonNameBase, NameRelationshipType, String)
 	 * @see    				  #addNameRelationship(NameRelationship)
 	 */
 	public void addRelationshipFromName(TaxonNameBase fromName, NameRelationshipType type, String ruleConsidered){
-		NameRelationship rel = new NameRelationship(this, fromName, type, ruleConsidered);
+		fromName.addRelationshipToName(this, type, null, null, ruleConsidered);
+//		NameRelationship rel = new NameRelationship(this, fromName, type, ruleConsidered);
 	}
+	/**
+	 * Creates a new {@link NameRelationship#NameRelationship(TaxonNameBase, TaxonNameBase, NameRelationshipType, String) name relationship} from another taxon name to <i>this</i> taxon name
+	 * and adds it both to the set of {@link #getRelationsToThisName() relations to <i>this</i> taxon name} and
+	 * to the set of {@link #getRelationsFromThisName() relations from the other taxon name}.
+	 * 
+	 * @param fromName		  the taxon name of the source for this new name relationship
+	 * @param type			  the type of this new name relationship
+	 * @param ruleConsidered  the string which specifies the rule on which this name relationship is based
+	 * @param citation		  the reference in which this relation was described
+	 * @param microCitation	  the reference detail for this relation (e.g. page) 
+	 * @see    				  #getRelationsFromThisName()
+	 * @see    				  #getNameRelations()
+	 * @see    				  #addRelationshipToName(TaxonNameBase, NameRelationshipType, String)
+	 * @see    				  #addNameRelationship(NameRelationship)
+	 */
 	public void addRelationshipFromName(TaxonNameBase fromName, NameRelationshipType type, ReferenceBase citation, String microCitation, String ruleConsidered){
-		NameRelationship rel = new NameRelationship(this, fromName, type, citation, microCitation, ruleConsidered);
+		fromName.addRelationshipToName(this, type, citation, microCitation, ruleConsidered);
 	}
 
 	/**
@@ -382,7 +421,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 		}else if(rel!=null && rel.getFromName().equals(this)){
 			this.relationsFromThisName.add(rel);			
 		}else{
-			//TODO: raise error???
+			throw new RuntimeException("NameRelationship is either null or the relationship does not reference this name");
 		}
 	}
 	/** 
@@ -456,17 +495,15 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 	public void addRelationship(RelationshipBase relation) {
 		if (relation instanceof NameRelationship){
 			addNameRelationship((NameRelationship)relation);
-			if (relation.getType() != null && 
-						( relation.getType().equals(NameRelationshipType.BASIONYM()) ||
-						  relation.getType().equals(NameRelationshipType.REPLACED_SYNONYM()) 
-						 )){
+			NameRelationshipType type = (NameRelationshipType)relation.getType();
+			if (type != null && ( type.isBasionymRelation() || type.isReplacedSynonymRelation() ) ){
 				TaxonNameBase fromName = ((NameRelationship)relation).getFromName();
 				TaxonNameBase toName = ((NameRelationship)relation).getToName();
 				fromName.getHomotypicalGroup().merge(toName.getHomotypicalGroup());
 			}		
 		}else{
 			logger.warn("Relationship not of type NameRelationship!");
-			//TODO exception handling
+			throw new IllegalArgumentException("Relationship not of type NameRelationship");
 		}
 	}
 
@@ -597,6 +634,25 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 	public void addBasionym(T basionym, ReferenceBase citation, String microcitation, String ruleConsidered){
 		if (basionym != null){
 			basionym.addRelationshipToName(this, NameRelationshipType.BASIONYM(), citation, microcitation, ruleConsidered);
+		}
+	}
+	
+	/**
+	 * Assigns a taxon name as {@link NameRelationshipType#REPLACED_SYNONYM() replaced synonym} of <i>this</i> taxon name
+	 * and keeps the nomenclatural rule considered for it. The replaced synonym
+	 * {@link NameRelationship relationship} will be added to <i>this</i> taxon name and to the replaced synonym.
+	 * The {@link HomotypicalGroup homotypical groups} of <i>this</i> taxon name and of the replaced synonym
+	 * will be {@link HomotypicalGroup#merge(HomotypicalGroup) merged}.
+	 * 
+	 * @param  basionym			the taxon name to be set as the basionym of <i>this</i> taxon name
+	 * @param  ruleConsidered	the string identifying the nomenclatural rule
+	 * @see  					#getBasionym()
+	 * @see  					#addBasionym(TaxonNameBase)
+	 */
+	//TODO: Check if true: The replaced synonym cannot have itself a replaced synonym (?).
+	public void addReplacedSynonym(T replacedSynonym, ReferenceBase citation, String microcitation, String ruleConsidered){
+		if (replacedSynonym != null){
+			replacedSynonym.addRelationshipToName(this, NameRelationshipType.REPLACED_SYNONYM(), citation, microcitation, ruleConsidered);
 		}
 	}
 	

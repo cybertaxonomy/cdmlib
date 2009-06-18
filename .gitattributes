@@ -1249,6 +1249,7 @@ cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/description/PresenceAbsenceTer
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/description/TextDataTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/location/TdwgAreaTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/name/BotanicalNameTest.java -text
+cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/name/HomotypicalGroupTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/name/NameTypeDesignationStatusTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/name/NameTypeDesignationTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/name/NomenclaturalStatusTypeTest.java -text
