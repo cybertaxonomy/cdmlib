@@ -15,6 +15,7 @@ import java.util.UUID;
 import org.hibernate.criterion.Criterion;
 
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
+import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
@@ -102,10 +103,11 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
 	 * @param selectMode
 	 * @param pageSize
 	 * @param pageNumber
+	 * @param propertyPaths TODO
 	 * @return list of found taxa
 	 */
 	public List<TaxonBase> getTaxaByName(String queryString, MatchMode matchMode, SelectMode selectMode,
-			ReferenceBase sec, Integer pageSize, Integer pageNumber);
+			ReferenceBase sec, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 
 	/**
 	 * @param queryString
@@ -224,28 +226,52 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
 	public int countMatchesByName(String queryString, MatchMode matchMode, boolean onlyAcccepted, List<Criterion> criteria);
 	
 	/**
-	 * Returns a count of the TaxonRelationships (of where relationship.type == type,
-	 *  if this arguement is supplied) where the supplied taxon is relatedFrom.
+	 * Returns a count of the TaxonRelationships (of where relationship.type ==
+	 * type, if this argument is supplied) where the supplied taxon either is
+	 * relatedFrom or relatedTo depending on the <code>direction</code>
+	 * parameter.
 	 * 
-	 * @param taxon The taxon that is relatedFrom
-	 * @param type The type of TaxonRelationship (can be null)
+	 * @param taxon
+	 *            The taxon that is relatedFrom
+	 * @param type
+	 *            The type of TaxonRelationship (can be null)
+	 * @param direction
+	 *            specifies the direction of the relationship
 	 * @return the number of TaxonRelationship instances
 	 */
-	public int countRelatedTaxa(Taxon taxon, TaxonRelationshipType type);
+	public int countTaxonRelationships(Taxon taxon, TaxonRelationshipType type,
+			Direction direction);
 	
 	/**
-	 * Returns the TaxonRelationships (of where relationship.type == type, if this arguement is supplied) 
-	 * where the supplied taxon is relatedTo.
+	 * Returns the TaxonRelationships (of where relationship.type == type, if
+	 * this argument is supplied) where the supplied taxon either is
+	 * relatedFrom or relatedTo depending on the <code>direction</code>
+	 * parameter.
 	 * 
-	 * @param taxon The taxon that is relatedTo
-	 * @param type The type of TaxonRelationship (can be null)
-	 * @param pageSize The maximum number of relationships returned (can be null for all relationships)
-	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
-	 * @param orderHints Properties to order by
-	 * @param propertyPaths Properties to initialize in the returned entities, following the syntax described in {@link BeanInitializer#initialize(Object, List)}
+	 * @param taxon
+	 *            The taxon that is relatedTo
+	 * @param type
+	 *            The type of TaxonRelationship (can be null)
+	 * @param pageSize
+	 *            The maximum number of relationships returned (can be null for
+	 *            all relationships)
+	 * @param pageNumber
+	 *            The offset (in pageSize chunks) from the start of the result
+	 *            set (0 - based)
+	 * @param orderHints
+	 *            Properties to order by
+	 * @param propertyPaths
+	 *            Properties to initialize in the returned entities, following
+	 *            the syntax described in
+	 *            {@link BeanInitializer#initialize(Object, List)}
+	 * @param direction
+	 *            specifies the direction of the relationship
 	 * @return a List of TaxonRelationship instances
 	 */
-	public List<TaxonRelationship> getRelatedTaxa(Taxon taxon, TaxonRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+	public List<TaxonRelationship> getTaxonRelationships(Taxon taxon,
+			TaxonRelationshipType type, Integer pageSize, Integer pageNumber,
+			List<OrderHint> orderHints, List<String> propertyPaths,
+			Direction direction);
 	
 	/**
 	 * Returns a count of the SynonymRelationships (of where relationship.type == type,

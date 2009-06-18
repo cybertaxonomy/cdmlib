@@ -45,6 +45,7 @@ import eu.etaxonomy.cdm.model.common.Extension;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.OriginalSource;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
+import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.media.Rights;
@@ -206,7 +207,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 	public List<TaxonBase> getTaxaByName(String queryString, MatchMode matchMode, SelectMode selectMode,
 			Integer pageSize, Integer pageNumber) {
 		
-		return getTaxaByName(queryString, matchMode, selectMode, null, pageSize, pageNumber);
+		return getTaxaByName(queryString, matchMode, selectMode, null, pageSize, pageNumber, null);
 	}
 	
 	public List<TaxonBase> getTaxaByName(String queryString, MatchMode matchMode, 
@@ -221,7 +222,8 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 	
 	
 	public List<TaxonBase> getTaxaByName(String queryString, MatchMode matchMode, SelectMode selectMode,
-			ReferenceBase sec, Integer pageSize, Integer pageNumber) {
+			ReferenceBase sec, Integer pageSize, Integer pageNumber, 
+			List<String> propertyPaths) {
 
 		Criteria criteria = null;
 		Class<?> clazz = selectMode.criteria();
@@ -253,6 +255,8 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		}
 
 		List<TaxonBase> results = criteria.list();
+		
+		defaultBeanInitializer.initializeAll(results, propertyPaths);
 		return results;
 		
 	}
@@ -515,24 +519,23 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		return result;
 	}
 
-	public int countRelatedTaxa(Taxon taxon, TaxonRelationshipType type) {
+	public int countTaxonRelationships(Taxon taxon, TaxonRelationshipType type, Direction direction) {
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
 		    Query query = null;
 		
 		    if(type == null) {
-			    query = getSession().createQuery("select count(taxonRelationship) from TaxonRelationship taxonRelationship where taxonRelationship.relatedTo = :relatedTo");
+			    query = getSession().createQuery("select count(taxonRelationship) from TaxonRelationship taxonRelationship where taxonRelationship."+direction+" = :relatedTaxon");
 		    } else {
-			    query = getSession().createQuery("select count(taxonRelationship) from TaxonRelationship taxonRelationship where taxonRelationship.relatedTo = :relatedTo and taxonRelationship.type = :type");
+			    query = getSession().createQuery("select count(taxonRelationship) from TaxonRelationship taxonRelationship where taxonRelationship."+direction+" = :relatedTaxon and taxonRelationship.type = :type");
 			    query.setParameter("type",type);
 		    }
-		
-		    query.setParameter("relatedTo", taxon);
+		    query.setParameter("relatedTaxon", taxon);
 		
 		    return ((Long)query.uniqueResult()).intValue();
 		} else {
 			AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(TaxonRelationship.class,auditEvent.getRevisionNumber());
-			query.add(AuditEntity.relatedId("relatedTo").eq(taxon.getId()));
+			query.add(AuditEntity.relatedId(direction.toString()).eq(taxon.getId()));
 			query.addProjection(AuditEntity.id().count("id"));
 			
 			if(type != null) {
@@ -714,7 +717,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		return (List<TaxonBase>)criteria.list();
 	}
 
-	public List<TaxonRelationship> getRelatedTaxa(Taxon taxon,	TaxonRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+	public List<TaxonRelationship> getTaxonRelationships(Taxon taxon,	TaxonRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths, Direction direction) {
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
 			Criteria criteria = getSession().createCriteria(TaxonRelationship.class);

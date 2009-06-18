@@ -35,23 +35,29 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 public interface ITaxonNameDao extends IIdentifiableDao<TaxonNameBase> {
 
 	/**
-	 * Return a count of names related to this name, optionally filtered by
-	 * relationship type
+	 * Return a count of names related to or from this name, optionally filtered
+	 * by relationship type. The direction of the relationships taken in to account is depending on
+	 * the <code>direction</code> parameter.
 	 * 
 	 * @param name
 	 *            the name
+	 * @param direction
+	 *            specifies the direction of the relationship
 	 * @param type
 	 *            the relationship type (or null to return all relationships)
 	 * @return a count of NameRelationship instances
 	 */
-	public int countRelatedNames(TaxonNameBase name, NameRelationshipType type);
+	public int countNameRelationships(TaxonNameBase name, NameRelationship.Direction direction, NameRelationshipType type);
 
 	/**
-	 * Return a List of relationships related to this name, optionally filtered
-	 * by relationship type
+	 * Return a List of relationships related to or from this name, optionally filtered
+	 * by relationship type. The direction of the relationships taken in to account is depending on
+	 * the <code>direction</code> parameter.
 	 * 
 	 * @param name
 	 *            the name
+	 * @param direction
+	 *            specifies the direction of the relationship
 	 * @param type
 	 *            the relationship type (or null to return all relationships)
 	 * @param pageSize
@@ -64,7 +70,7 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonNameBase> {
 	 * @param propertyPaths properties to initialize - see {@link BeanInitializer#initialize(Object, List)}
 	 * @return a List of NameRelationship instances
 	 */
-	public List<NameRelationship> getRelatedNames(TaxonNameBase name,  NameRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+	public List<NameRelationship> getNameRelationships(TaxonNameBase name,  NameRelationship.Direction direction, NameRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 	
 	/**
 	 * Return a count of hybrids related to this name, optionally filtered by
@@ -225,11 +231,12 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonNameBase> {
 	 * @param pageSize
 	 * @param pageNumber
 	 * @param criteria
+	 * @param propertyPaths TODO
 	 * @return
 	 */
 	public List<? extends TaxonNameBase<?, ?>> findByName(String queryString,
 			MatchMode matchmode, Integer pageSize, Integer pageNumber,
-			List<Criterion> criteria);
+			List<Criterion> criteria, List<String> propertyPaths);
 	
 	
 	/**

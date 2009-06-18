@@ -187,21 +187,22 @@ extends IdentifiableDaoBase<TaxonNameBase> implements ITaxonNameDao {
 		}
 	}
 
-	public int countRelatedNames(TaxonNameBase name, NameRelationshipType type) {
+	public int countNameRelationships(TaxonNameBase name, NameRelationship.Direction direction, NameRelationshipType type) {
+		
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
 			Query query = null;
 			if(type == null) {
-				query = getSession().createQuery("select count(relation) from NameRelationship relation where relation.relatedFrom = :name");
+				query = getSession().createQuery("select count(relation) from NameRelationship relation where relation." + direction +" = :name");
 			} else {
-				query = getSession().createQuery("select count(relation) from NameRelationship relation where relation.relatedFrom = :name and relation.type = :type");
+				query = getSession().createQuery("select count(relation) from NameRelationship relation where relation." + direction +" = :name and relation.type = :type");
 				query.setParameter("type", type);
 			}
 			query.setParameter("name",name);
 			return ((Long)query.uniqueResult()).intValue();
 		} else {
 			AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(NameRelationship.class,auditEvent.getRevisionNumber());
-			query.add(AuditEntity.relatedId("relatedFrom").eq(name.getId()));
+			query.add(AuditEntity.relatedId(direction.toString()).eq(name.getId()));
 			query.addProjection(AuditEntity.id().count("id"));
 
 			if(type != null) {
@@ -283,11 +284,14 @@ extends IdentifiableDaoBase<TaxonNameBase> implements ITaxonNameDao {
 		}
 	}
 
-	public List<NameRelationship> getRelatedNames(TaxonNameBase name, NameRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+	public List<NameRelationship> getNameRelationships(TaxonNameBase name, NameRelationship.Direction direction, 
+			NameRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, 
+			List<String> propertyPaths) {
+		
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
 			Criteria criteria = getSession().createCriteria(NameRelationship.class);
-			criteria.add(Restrictions.eq("relatedFrom", name));
+			criteria.add(Restrictions.eq(direction.toString(), name));
 			if(type != null) {
 				criteria.add(Restrictions.eq("type", type));
 			}
@@ -307,7 +311,7 @@ extends IdentifiableDaoBase<TaxonNameBase> implements ITaxonNameDao {
 			return results;
 		} else {
 			AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(NameRelationship.class,auditEvent.getRevisionNumber());
-			query.add(AuditEntity.relatedId("relatedFrom").eq(name.getId()));
+			query.add(AuditEntity.relatedId(direction.toString()).eq(name.getId()));
 
 			if(type != null) {
 				query.add(AuditEntity.relatedId("type").eq(type.getId()));
@@ -495,7 +499,7 @@ extends IdentifiableDaoBase<TaxonNameBase> implements ITaxonNameDao {
 	}
 
 	public List<? extends TaxonNameBase<?,?>> findByName(String queryString, 
-			MatchMode matchmode, Integer pageSize, Integer pageNumber, List<Criterion> criteria) {
+			MatchMode matchmode, Integer pageSize, Integer pageNumber, List<Criterion> criteria, List<String> propertyPaths) {
 
 		Criteria crit = getSession().createCriteria(type);
 		if (matchmode == MatchMode.EXACT) {
@@ -518,6 +522,8 @@ extends IdentifiableDaoBase<TaxonNameBase> implements ITaxonNameDao {
 		}
 
 		List<? extends TaxonNameBase<?,?>> results = crit.list();
+		defaultBeanInitializer.initializeAll(results, propertyPaths);
+		
 		return results;
 	}
 	
@@ -537,7 +543,7 @@ extends IdentifiableDaoBase<TaxonNameBase> implements ITaxonNameDao {
 	public Integer countByName(String queryString, 
 			MatchMode matchmode, List<Criterion> criteria) {
 		//TODO improve performance
-		List<? extends TaxonNameBase<?,?>> results = findByName(queryString, matchmode, null, null, criteria);
+		List<? extends TaxonNameBase<?,?>> results = findByName(queryString, matchmode, null, null, criteria, null);
 		return results.size();
 		
 	}

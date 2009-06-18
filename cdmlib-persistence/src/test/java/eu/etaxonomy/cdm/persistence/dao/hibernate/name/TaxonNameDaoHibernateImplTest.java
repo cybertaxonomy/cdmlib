@@ -33,12 +33,14 @@ public class TaxonNameDaoHibernateImplTest extends CdmIntegrationTest {
 	private UUID cryptocoryneGriffithiiUuid;
 	private UUID acherontiaUuid;
 	private UUID acherontiaLachesisUuid;
+	private UUID atroposUuid;
 	
 	@Before
 	public void setUp() {
 		cryptocoryneGriffithiiUuid = UUID.fromString("497a9955-5c5a-4f2b-b08c-2135d336d633");
 	    acherontiaUuid = UUID.fromString("c2cab2ad-3e3a-47b8-8aa8-d9e1c0857647");
 	    acherontiaLachesisUuid = UUID.fromString("7969821b-a2cf-4d01-95ec-6a5ed0ca3f69");
+	    atroposUuid = UUID.fromString("27004fcc-14d4-47d4-a3e1-75750fdb5b79");
 	}
 	
 	@Test
@@ -64,25 +66,43 @@ public class TaxonNameDaoHibernateImplTest extends CdmIntegrationTest {
 	}
 	
 	@Test
-	public void testGetRelatedNames() {
+	public void testGetNameRelationships() {
 		TaxonNameBase acherontia = taxonNameDao.findByUuid(acherontiaUuid);
 		assert acherontia != null : "name must exist";
 		
-		List<NameRelationship> result = taxonNameDao.getRelatedNames(acherontia, null, null, null,null,null);
+		List<NameRelationship> result = taxonNameDao.getNameRelationships(acherontia, NameRelationship.Direction.relatedFrom, null, null,null,null, null);
 		
 		assertNotNull("getRelatedNames should return a list",result);
 		assertFalse("the list should not be empty", result.isEmpty());
 		assertEquals("getRelatedNames should return 1 NameRelationship instance",1,result.size());
+		
+		// testing inverted direction
+		TaxonNameBase atropos = taxonNameDao.findByUuid(atroposUuid);
+		assert atropos != null : "name must exist";
+		
+		result = taxonNameDao.getNameRelationships(atropos, NameRelationship.Direction.relatedTo, null, null,null,null, null);
+		
+		assertNotNull("getRelatedNames should return a list",result);
+		assertFalse("the list should not be empty", result.isEmpty());
+		assertEquals("getRelatedNames should return 2 NameRelationship instance",2,result.size());
 	}
 	
 	@Test
-	public void testCountRelatedNames() {
+	public void testCountNameRelationships() {
 		TaxonNameBase acherontia = taxonNameDao.findByUuid(acherontiaUuid);
 		assert acherontia != null : "name must exist";
 		
-		int count = taxonNameDao.countRelatedNames(acherontia, null);
+		int count = taxonNameDao.countNameRelationships(acherontia, NameRelationship.Direction.relatedFrom, null);
 		
 		assertEquals("countRelatedNames should return 1",1,count);
+		
+		// testing inverted direction
+		TaxonNameBase atropos = taxonNameDao.findByUuid(atroposUuid);
+		assert atropos != null : "name must exist";
+		
+		count = taxonNameDao.countNameRelationships(atropos, NameRelationship.Direction.relatedTo, null);
+		
+		assertEquals("countRelatedNames should return 2",2,count);
 	}
 
 	@Test
