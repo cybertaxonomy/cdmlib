@@ -23,7 +23,7 @@ public class FaunaEuropaeaTaxon {
 	private int id;
 	private int parentId;
 	private int rankId;
-	private String scientificName;
+	private String localName;
 	private int year;
 	private String author;
 	private boolean parenthesis = false;
@@ -70,7 +70,7 @@ public class FaunaEuropaeaTaxon {
 	
 	public FaunaEuropaeaTaxon(String scientificName, int parentId, String reference) {
 		this.parentId = parentId;
-		this.scientificName = scientificName;
+		this.localName = scientificName;
 	}
 	
 	/**
@@ -88,14 +88,14 @@ public class FaunaEuropaeaTaxon {
 	/**
 	 * @return the name
 	 */
-	public String getScientificName() {
-		return scientificName;
+	public String getLocalName() {
+		return localName;
 	}
 	/**
 	 * @param name the name to set
 	 */
-	public void setScientificName(String scientificName) {
-		this.scientificName = scientificName;
+	public void setLocalName(String scientificName) {
+		this.localName = scientificName;
 	}
 
 	/**
