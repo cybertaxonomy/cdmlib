@@ -31,6 +31,7 @@ import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.io.common.Source;
+import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -60,8 +61,6 @@ public class FaunaEuropaeaReferenceImport extends FaunaEuropaeaImportBase {
 	/* Max number of references to be saved with one service call */
 	private int limit = 20000; // TODO: Make configurable
 	
-	public FaunaEuropaeaReferenceImport() {
-	}
 		
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doCheck(eu.etaxonomy.cdm.io.common.IImportConfigurator)
@@ -132,19 +131,20 @@ public class FaunaEuropaeaReferenceImport extends FaunaEuropaeaImportBase {
 				}
 				
 				int refId = rs.getInt("ref_id");
-				//String author = rs.getString("ref_author");
+				String refAuthor = rs.getString("ref_author");
 				String year = rs.getString("ref_year");
 				String title = rs.getString("ref_title");
-				String ref_author = rs.getString("ref_author");
 				String refSource = rs.getString("ref_source");
-//				int authorId = rs.getInt("aut_id");
 				
 				StrictReferenceBase<?> reference = null;
+				TeamOrPersonBase<Team> author = null;
 				
 				try {
 					reference = Generic.NewInstance();
 					reference.setTitleCache(title);
 					reference.setDatePublished(ImportHelper.getDatePublished(year));
+					author = Team.NewInstance();
+					author.setTitleCache(refAuthor);
 					
 					// FIXME: author.aut_name and Reference.ref_author don't match
 //					if (authorStore != null) {
@@ -155,6 +155,9 @@ public class FaunaEuropaeaReferenceImport extends FaunaEuropaeaImportBase {
 //					}
 										
 					ImportHelper.setOriginalSource(reference, fauEuConfig.getSourceReference(), refId, namespace);
+					ImportHelper.setOriginalSource(author, fauEuConfig.getSourceReference(), refId, namespace);
+					
+					// Create reference
 					
 					if (!refStore.containsId(refId)) {
 						if (reference == null) {
@@ -162,12 +165,28 @@ public class FaunaEuropaeaReferenceImport extends FaunaEuropaeaImportBase {
 						}
 						refStore.put(refId, reference);
 						if (logger.isDebugEnabled()) { 
-							logger.debug("Stored reference (" + refId + ") " + ref_author); 
+							logger.debug("Stored reference (" + refId + ") " + refAuthor); 
 						}
 					} else {
 						logger.warn("Not imported reference with duplicated ref_id (" + refId + 
-								") " + ref_author);
+								") " + refAuthor);
 					}
+					
+					// Create authors
+					
+					if (!authorStore.containsId(refId)) {
+						if (refAuthor == null) {
+							logger.warn("Reference author is null");
+						}
+						authorStore.put(refId, author);
+						if (logger.isDebugEnabled()) { 
+							logger.debug("Stored author (" + refId + ") " + refAuthor); 
+						}
+					} else {
+						logger.warn("Not imported author with duplicated aut_id (" + refId + 
+								") " + refAuthor);
+					}
+					
 					
 				} catch (Exception e) {
 					logger.warn("An exception occurred when creating reference with id " + refId + 
@@ -177,8 +196,9 @@ public class FaunaEuropaeaReferenceImport extends FaunaEuropaeaImportBase {
 			
 			if(logger.isInfoEnabled()) { logger.info("Saving references ..."); }
 			
-			// save references
+			// save authors and references
 			getReferenceService().saveReferenceAll(refStore.objects());
+			getAgentService().saveAgentAll(authorStore.objects());
 			
 			if(logger.isInfoEnabled()) { logger.info("End making references ..."); }
 			

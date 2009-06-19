@@ -64,7 +64,7 @@ public class FaunaEuropaeaTaxonImport extends FaunaEuropaeaImportBase  {
 	private static final Logger logger = Logger.getLogger(FaunaEuropaeaTaxonImport.class);
 
 	/* Max number of taxa to retrieve (for test purposes) */
-	private int maxTaxa = 5000;
+	private int maxTaxa = 0;
 	/* Max number of taxa to be saved with one service call */
 	private int limit = 10000; // TODO: Make configurable
 	/* Interval for progress info message when retrieving taxa */
@@ -172,8 +172,8 @@ public class FaunaEuropaeaTaxonImport extends FaunaEuropaeaImportBase  {
 				" WHERE (1=1)" +
 				validClause;
 
-			if (logger.isInfoEnabled()) {
-				logger.info("Query: " + strQuery);
+			if (logger.isDebugEnabled()) {
+				logger.debug("Query: " + strQuery);
 			}
 			rs = source.getResultSet(strQuery);
 			
@@ -298,10 +298,10 @@ public class FaunaEuropaeaTaxonImport extends FaunaEuropaeaImportBase  {
 			TaxonBase<?> taxonBase = taxonStore.get(id);
 			FaunaEuropaeaTaxon fauEuTaxon = fauEuTaxonMap.get(id);
 			
-			if (logger.isInfoEnabled()) { logger.info("Taxon # " + id); }
+			if (logger.isDebugEnabled()) { logger.debug("Taxon # " + id); }
 			String nameString = calculateTaxonName(fauEuTaxon, taxonBase, taxonStore, fauEuTaxonMap);
 //			String nameString = calculateTaxonName(fauEuTaxon, taxonBase, taxonStore);
-			setTaxonName(nameString, fauEuTaxon, taxonBase);
+			setTaxonName(nameString, fauEuTaxon, taxonBase, fauEuConfig);
 			
 		}
 		return success;	
@@ -317,34 +317,6 @@ public class FaunaEuropaeaTaxonImport extends FaunaEuropaeaImportBase  {
 			subString = nameString.substring(0, index);
 		}
 		return subString;
-		
-//		String[] tokens = nameString.split("[\\s]+");
-//		StringBuilder stringBuilder = 
-//		int len = tokens.length - 1;
-//		for (int i = 0; i < len - 1; i++) {
-//		 String lastToken = tokens[len];
-//		}
-//		return lastToken;
-	}
-	
-	
-	/* Remove last part of name */
-	private String exchangeEpithet(String nameString) {
-		
-		String subString = nameString;
-		int index = nameString.lastIndexOf(" ");
-		if (index > 0) {
-			subString = nameString.substring(0, index);
-		}
-		return subString;
-		
-//		String[] tokens = nameString.split("[\\s]+");
-//		StringBuilder stringBuilder = 
-//		int len = tokens.length - 1;
-//		for (int i = 0; i < len - 1; i++) {
-//		 String lastToken = tokens[len];
-//		}
-//		return lastToken;
 	}
 	
 	
@@ -476,8 +448,8 @@ public class FaunaEuropaeaTaxonImport extends FaunaEuropaeaImportBase  {
 				parentConcatStringBuilder.append(concatString);
 				parentConcatString = parentConcatStringBuilder.toString();
 
-				if (logger.isInfoEnabled()) { 
-					logger.info("Concatenated name: " + parentConcatString); 
+				if (logger.isDebugEnabled()) { 
+					logger.debug("Concatenated name: " + parentConcatString); 
 				}
 			} else {
 				logger.warn("Parent uuid of " + parentId + " is null");
@@ -523,8 +495,8 @@ public class FaunaEuropaeaTaxonImport extends FaunaEuropaeaImportBase  {
 
 		int rank = fauEuTaxon.getRankId();
 		
-		if(logger.isInfoEnabled()) { 
-			logger.info("Local taxon name (rank = " + rank + "): " + localString); 
+		if(logger.isDebugEnabled()) { 
+			logger.debug("Local taxon name (rank = " + rank + "): " + localString); 
 		}
 		
 		callCount = 0;
@@ -536,7 +508,7 @@ public class FaunaEuropaeaTaxonImport extends FaunaEuropaeaImportBase  {
 	
 	/* Build taxon name */
 	private boolean setTaxonName(String concatString, FaunaEuropaeaTaxon fauEuTaxon,
-			TaxonBase<?> taxonBase) {
+			TaxonBase<?> taxonBase, FaunaEuropaeaImportConfigurator fauEuConfig) {
 
 		boolean success = true;
 		
@@ -547,14 +519,17 @@ public class FaunaEuropaeaTaxonImport extends FaunaEuropaeaImportBase  {
 		String titleCache = buildNameTitleCache(concatString, fauEuTaxon);
 		zooName.setTitleCache(titleCache);
 		zooName.setFullTitleCache(titleCache); // TODO: Add reference, NC status
+		
+		ImportHelper.setOriginalSource(taxonName, fauEuConfig.getSourceReference(), 
+				fauEuTaxon.getId(), "TaxonName");
 
 		// Set the complete scientific name in FaunaEuropaeaTaxon,
 		// including parent(s) parts.
 //		fauEuTaxon.setScientificName(concatString);
 		fauEuTaxon.setNameComplete(true);
 
-		if (logger.isInfoEnabled()) { 
-			logger.info("Name stored: " + concatString); 
+		if (logger.isDebugEnabled()) { 
+			logger.debug("Name stored: " + concatString); 
 		}
 		return success;
 	}
