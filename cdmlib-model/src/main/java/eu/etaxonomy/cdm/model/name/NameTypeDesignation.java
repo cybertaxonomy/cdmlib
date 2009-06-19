@@ -115,6 +115,33 @@ implements ITypeDesignation {
 	 * @see							TypeDesignationBase#isNotDesignated()
 	 * @see							TaxonNameBase#addNameTypeDesignation(TaxonNameBase, ReferenceBase, String, String, boolean, boolean, boolean, boolean, boolean)
 	 */
+	protected NameTypeDesignation(TaxonNameBase typeName, NameTypeDesignationStatus status,
+			ReferenceBase citation, String citationMicroReference, String originalNameString) {
+		super(citation, citationMicroReference, originalNameString);
+		this.setTypeName(typeName);
+		this.setTypeStatus(status);
+	}
+
+	/**
+	 * Class constructor: creates a new name type designation instance
+	 * (including its {@link eu.etaxonomy.cdm.model.reference.ReferenceBase reference source} and eventually
+	 * the taxon name string originally used by this reference when establishing
+	 * the former designation).
+	 * 
+	 * @param typeName				the taxon name used as a type 
+	 * @param citation				the reference source for the new designation
+	 * @param citationMicroReference	the string with the details describing the exact localisation within the reference
+	 * @param originalNameString	the taxon name string used originally in the reference source for the new designation
+	 * @param isRejectedType		the boolean flag indicating whether the competent authorities rejected
+	 * 								<i>this</i> name type designation
+	 * @param isConservedType		the boolean flag indicating whether the competent authorities conserved
+	 * 								<i>this</i> name type designation
+	 * @param isNotDesignated		the boolean flag indicating whether there is no name type at all for 
+	 * 								<i>this</i> name type designation
+	 * @see							#NameTypeDesignation()
+	 * @see							TypeDesignationBase#isNotDesignated()
+	 * @see							TaxonNameBase#addNameTypeDesignation(TaxonNameBase, ReferenceBase, String, String, boolean, boolean, boolean, boolean, boolean)
+	 */
 	protected NameTypeDesignation(TaxonNameBase typeName, ReferenceBase citation, String citationMicroReference,
 			String originalNameString, boolean rejectedType, boolean conservedType, boolean lectoType, boolean isNotDesignated) {
 		super(citation, citationMicroReference, originalNameString, isNotDesignated);

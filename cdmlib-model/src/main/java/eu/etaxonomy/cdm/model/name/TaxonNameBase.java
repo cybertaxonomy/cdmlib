@@ -897,6 +897,31 @@ public void addRelationshipToName(TaxonNameBase toName, NameRelationshipType typ
 		addTypeDesignation(nameTypeDesignation, addToAllHomotypicNames);
 	}
 	
+	/** 
+	 * Creates and adds a new {@link NameTypeDesignation name type designation}
+	 * to <i>this</i> taxon name's set of type designations.
+	 *
+	 * @param  typeSpecies				the taxon name to be used as type of <i>this</i> taxon name
+	 * @param  citation					the reference for this new designation
+	 * @param  citationMicroReference	the string with the details (generally pages) within the reference
+	 * @param  originalNameString		the taxon name string used in the reference to assert this designation
+	 * @param  status                   the name type designation status
+	 * @param  addToAllHomotypicNames	the boolean indicating whether the name type designation should be
+	 * 									added to all taxon names of the homotypical group this taxon name belongs to
+	 * @see 			  				#getNameTypeDesignations()
+	 * @see 			  				NameTypeDesignation
+	 * @see 			  				TypeDesignationBase#isNotDesignated()
+	 */
+	public void addNameTypeDesignation(TaxonNameBase typeSpecies, 
+				ReferenceBase citation, 
+				String citationMicroReference, 
+				String originalNameString,
+				NameTypeDesignationStatus status,
+				boolean addToAllHomotypicNames) {
+		NameTypeDesignation nameTypeDesignation = new NameTypeDesignation(typeSpecies, status, citation, citationMicroReference, originalNameString);
+		addTypeDesignation(nameTypeDesignation, addToAllHomotypicNames);
+	}
+	
 //*********************** SPECIMEN TYPE DESIGNATION *********************************************//	
 	
 	/** 

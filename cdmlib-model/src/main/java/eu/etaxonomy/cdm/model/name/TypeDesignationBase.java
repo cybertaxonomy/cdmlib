@@ -104,6 +104,23 @@ public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase> e
 	 * @param citation				the reference source for the new designation
 	 * @param citationMicroReference	the string with the details describing the exact localisation within the reference
 	 * @param originalNameString	the taxon name string used originally in the reference source for the new designation
+	 * @see							#TypeDesignationBase()
+	 * @see							#isNotDesignated()
+	 * @see							TaxonNameBase#getTypeDesignations()
+	 */
+	protected TypeDesignationBase(ReferenceBase citation, String citationMicroReference, String originalNameString) {
+		this(citation, citationMicroReference, originalNameString, false);
+	}
+
+	/**
+	 * Class constructor: creates a new type designation
+	 * (including its {@link ReferenceBase reference source} and eventually
+	 * the taxon name string originally used by this reference when establishing
+	 * the former designation).
+	 * 
+	 * @param citation				the reference source for the new designation
+	 * @param citationMicroReference	the string with the details describing the exact localisation within the reference
+	 * @param originalNameString	the taxon name string used originally in the reference source for the new designation
 	 * @param isNotDesignated		the boolean flag indicating whether there is no type at all for 
 	 * 								<i>this</i> type designation
 	 * @see							#TypeDesignationBase()
