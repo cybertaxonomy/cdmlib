@@ -30,6 +30,7 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.ResultWrapper;
 import eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
@@ -160,7 +161,7 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 				}
 				//FIXME treeName
 				String treeName = "TaxonTree - No Name";
-				if (ref != null){
+				if (ref != null && CdmUtils.isNotEmpty(ref.getTitleCache())){
 					treeName = ref.getTitleCache();
 				}
 				TaxonomicTree tree = TaxonomicTree.NewInstance(treeName);

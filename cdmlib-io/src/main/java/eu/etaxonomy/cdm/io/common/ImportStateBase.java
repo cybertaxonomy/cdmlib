@@ -24,6 +24,7 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
 
 /**
  * @author a.mueller
@@ -33,6 +34,9 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase> extends IoStateBase<CONFIG> {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ImportStateBase.class);
+	
+	Map<ReferenceBase,TaxonomicTree> treeMap = new HashMap<ReferenceBase,TaxonomicTree>();
+
 	
 	//different type of stores that are used by the known imports
 	protected Map<String, MapWrapper<? extends CdmBase>> stores = new HashMap<String, MapWrapper<? extends CdmBase>>();
@@ -72,6 +76,21 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase> ext
  		return (MapWrapper<? extends CdmBase>) stores.get(storeLabel);
  	}
 	
-	
+
+	/**
+	 * @return the treeMap
+	 */
+	public TaxonomicTree getTree(ReferenceBase ref) {
+		return treeMap.get(ref);
+	}
+
+	/**
+	 * @param treeMap the treeMap to set
+	 */
+	public void putTree(ReferenceBase ref, TaxonomicTree tree) {
+		if (tree != null){
+			this.treeMap.put(ref, tree);
+		}
+	}
 	
 }

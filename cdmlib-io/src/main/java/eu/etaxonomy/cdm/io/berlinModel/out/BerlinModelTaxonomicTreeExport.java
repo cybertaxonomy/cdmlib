@@ -27,6 +27,7 @@ import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
+import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
 
 
 /**
@@ -35,16 +36,16 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
  * @version 1.0
  */
 @Component
-public class BerlinModelTaxonRelationExport extends BerlinModelExportBase<RelationshipBase> {
-	private static final Logger logger = Logger.getLogger(BerlinModelTaxonRelationExport.class);
+public class BerlinModelTaxonomicTreeExport extends BerlinModelExportBase<RelationshipBase> {
+	private static final Logger logger = Logger.getLogger(BerlinModelTaxonomicTreeExport.class);
 
 	private static int modCount = 1000;
 	private static final String dbTableName = "RelPTaxon";
-	private static final String pluralString = "TaxonRelationships";
+	private static final String pluralString = "TaxonomicTrees";
 	private static final Class<? extends CdmBase> standardMethodParameter = RelationshipBase.class;
 
 
-	public BerlinModelTaxonRelationExport(){
+	public BerlinModelTaxonomicTreeExport(){
 		super();
 	}
 	
@@ -89,16 +90,16 @@ public class BerlinModelTaxonRelationExport extends BerlinModelExportBase<Relati
 			
 			TransactionStatus txStatus = startTransaction(true);
 			
-			List<RelationshipBase> list = getTaxonService().getAllRelationships(100000000, 0);
+			List<TaxonomicTree> list = getTaxonService().getAllTaxonomicTrees(10000000,0);
 			
 			BerlinModelExportMapping mapping = getMapping();
 			mapping.initialize(state);
 			
 			int count = 0;
-			for (RelationshipBase<?,?,?> rel : list){
-				if (rel.isInstanceOf(TaxonRelationship.class) || rel.isInstanceOf(SynonymRelationship.class)){
+			for (TaxonomicTree tree : list){
+				if (true){
 					doCount(count++, modCount, pluralString);
-					success &= mapping.invoke(rel);
+					success &= mapping.invoke(tree);
 				}
 			}
 			commitTransaction(txStatus);
@@ -130,7 +131,7 @@ public class BerlinModelTaxonRelationExport extends BerlinModelExportBase<Relati
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)
 	 */
 	protected boolean isIgnore(IExportConfigurator config){
-		return ! ((BerlinModelExportConfigurator)config).isDoTaxa();
+		return ! ((BerlinModelExportConfigurator)config).isDoTaxonNames();
 	}
 	
 	//called by MethodMapper

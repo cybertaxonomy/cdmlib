@@ -693,6 +693,7 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/out/BerlinModelReference
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/out/BerlinModelTaxonExport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/out/BerlinModelTaxonNameExport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/out/BerlinModelTaxonRelationExport.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/out/BerlinModelTaxonomicTreeExport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/out/CollectionExportMapping.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/out/mapper/CreatedAndNotesMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/out/mapper/DbAnnotationMapper.java -text

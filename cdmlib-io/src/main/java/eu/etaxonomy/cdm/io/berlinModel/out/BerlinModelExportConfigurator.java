@@ -32,6 +32,8 @@ public class BerlinModelExportConfigurator extends DbExportConfiguratorBase impl
 	private BerlinModelExportState<BerlinModelExportConfigurator> state;
 
 	private Method relNameQualifierMethod;
+	//ID for the isHomotypic relationship in RelName, if not exist null
+	private Integer isHomotypicId = null;
 	
 	public static BerlinModelExportConfigurator NewInstance(Source berlinModelDestination, ICdmDataSource source){
 			return new BerlinModelExportConfigurator(berlinModelDestination, source);
@@ -103,6 +105,23 @@ public class BerlinModelExportConfigurator extends DbExportConfiguratorBase impl
 	public void setState(BerlinModelExportState<BerlinModelExportConfigurator> state) {
 		this.state = state;
 	}
+
+	/**
+	 * @return the isHomotypicId
+	 */
+	public Integer getIsHomotypicId() {
+		return isHomotypicId;
+	}
+
+	/**
+	 * @param isHomotypicId the isHomotypicId to set
+	 */
+	public void setIsHomotypicId(Integer isHomotypicId) {
+		this.isHomotypicId = isHomotypicId;
+	}
+	
+	
+	
 //
 //	/**
 //	 * @return the relNameQualifierMethod

@@ -152,7 +152,10 @@ public class BerlinModelExportMapping extends CdmIoMapping {
 		this.preparedStatement = preparedStatement;
 	}
 	
-	
+	protected List<CdmAttributeMapperBase> getAttributeMapperList(){
+		List<CdmAttributeMapperBase> list = this.mapperList;
+		return list;
+	}
 	
 	
 }

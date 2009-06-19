@@ -154,6 +154,14 @@ public abstract class ExportConfiguratorBase<DESTINATION extends Object> extends
 	}
 	
 	
+	
+	/**
+	 * @param cdmApp the cdmApp to set
+	 */
+	public void setCdmAppController(CdmApplicationController cdmApp) {
+		this.cdmApp = cdmApp;
+	}
+
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.tcsrdf.IImportConfigurator#isValid()
 	 */

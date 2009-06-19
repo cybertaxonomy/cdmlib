@@ -6,6 +6,8 @@
 
 package eu.etaxonomy.cdm.io.common;
 
+import org.apache.log4j.Logger;
+
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator.DO_REFERENCES;
 
@@ -14,7 +16,11 @@ import eu.etaxonomy.cdm.io.common.IImportConfigurator.DO_REFERENCES;
  * @created 16.11.2008
  */
 public class IoConfiguratorBase {
+	private static final Logger logger = Logger.getLogger(IoConfiguratorBase.class);
 
+	//im-/export uses TaxonomicTree for is_taxonomically_included_in relationships
+	private boolean useTaxonomicTree = false;
+	
 //	protected Class<ICdmIO>[] ioClassList;
 	private DbSchemaValidation dbSchemaValidation = DbSchemaValidation.VALIDATE;
 	
@@ -193,5 +199,20 @@ public class IoConfiguratorBase {
 
 	public void setDoUser(boolean doUser) {
 		this.doUser = doUser;
+	}
+	
+
+	/**
+	 * @return the useTaxonomicTree
+	 */
+	public boolean isUseTaxonomicTree() {
+		return useTaxonomicTree;
+	}
+
+	/**
+	 * @param useTaxonomicTree the useTaxonomicTree to set
+	 */
+	public void setUseTaxonomicTree(boolean useTaxonomicTree) {
+		this.useTaxonomicTree = useTaxonomicTree;
 	}
 }

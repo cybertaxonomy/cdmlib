@@ -156,7 +156,7 @@ public class BerlinModelFactExport extends BerlinModelExportBase<TextData> {
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)
 	 */
 	protected boolean isIgnore(IExportConfigurator config){
-		return ! ((BerlinModelExportConfigurator)config).isDoTaxonNames();
+		return ! ((BerlinModelExportConfigurator)config).isDoFacts();
 	}
 	
 	//called by MethodMapper

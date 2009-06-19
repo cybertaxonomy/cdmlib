@@ -9,8 +9,13 @@
 package eu.etaxonomy.cdm.io.berlinModel.out;
 
 import java.lang.reflect.InvocationTargetException;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
@@ -22,12 +27,17 @@ import eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbObjectMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.IdMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.MethodMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.RefDetailMapper;
+import eu.etaxonomy.cdm.io.common.CdmAttributeMapperBase;
 import eu.etaxonomy.cdm.io.common.IExportConfigurator;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
+import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.HybridRelationship;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
+import eu.etaxonomy.cdm.model.name.NameRelationshipType;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
 
 /**
@@ -101,6 +111,9 @@ public class BerlinModelNameRelationExport extends BerlinModelExportBase<Relatio
 				}
 			}
 			commitTransaction(txStatus);
+			
+			success &= makeIsHomotypicRelation(state, mapping);
+			
 			logger.info("end make " + pluralString + " ..." + getSuccessString(success));
 			return success;
 		}catch(SQLException e){
@@ -110,6 +123,79 @@ public class BerlinModelNameRelationExport extends BerlinModelExportBase<Relatio
 		}
 	}
 
+	
+	private boolean makeIsHomotypicRelation(BerlinModelExportState<?> state, BerlinModelExportMapping mapping){
+		boolean success = true ;
+		try{
+			Integer homotypicId = state.getConfig().getIsHomotypicId();
+			if (homotypicId == null){
+				return success;
+			}
+			logger.info("start make IsHomotypicRelations ...");
+			
+			TransactionStatus txStatus = startTransaction(true);
+			
+			List<HomotypicalGroup> list = getNameService().getAllHomotypicalGroups(100000000, 0);
+			
+			int count = 0;
+			modCount = 1000;
+			Set<NameRelationship> basionymNameRels = new HashSet<NameRelationship>(); 
+			for (HomotypicalGroup homoGroup : list){
+				doCount(count++, modCount, "homotypical groups");
+				Set<TaxonNameBase> allNames = homoGroup.getTypifiedNames();
+				if (allNames.size() > 1){
+					Set<TaxonNameBase> readyNames = new HashSet<TaxonNameBase>();
+					Set<TaxonNameBase> unrelateds = homoGroup.getUnrelatedNames();
+					for (TaxonNameBase unrelated : unrelateds){
+						for (TaxonNameBase oneOfAllNames: allNames){
+							if(!unrelated.equals(oneOfAllNames) && ! readyNames.contains(oneOfAllNames)){
+								success &= invokeIsHomotypic(state, mapping, unrelated, oneOfAllNames, null, null);
+							}
+						}
+						readyNames.add(unrelated);
+					}
+				}
+			}
+			commitTransaction(txStatus);
+			
+			logger.info("end make homotypical groups ... " +  getSuccessString(success));
+			return success;
+		}catch(SQLException e){
+			logger.error(e.getMessage());
+			e.printStackTrace();
+			return false;
+		}	
+	}
+	
+	private boolean invokeIsHomotypic(BerlinModelExportState<?> state, BerlinModelExportMapping mapping, TaxonNameBase fromName, TaxonNameBase toName, ReferenceBase refId, String microCitation) throws SQLException{
+		try{
+			logger.info(fromName.getTitleCache() + "->" + toName.getTitleCache());
+			String maxQuery = " SELECT max(relNameId) as max FROM relName ";
+			ResultSet rs = state.getConfig().getDestination().getResultSet(maxQuery);
+			int maxId = 1;
+			if (rs.next()){
+				maxId = rs.getInt("max") + 1;
+			}
+			int fromNameId = state.getDbId(fromName);
+			int toNameId = state.getDbId(toName);
+			int catId = state.getConfig().getIsHomotypicId();
+			String query = "INSERT INTO relName (relNameId, nameFk1, nameFk2, RelNameQualifierFk) " + 
+				" VALUES ("+maxId+","+fromNameId+","+toNameId+","+catId+")";
+			int ui = state.getConfig().getDestination().getConnection().createStatement().executeUpdate(query);
+		}catch(SQLException e){
+			throw e;
+		}
+		return true;
+	}
+
+	private Set<TaxonNameBase> getAllRelatedNames(Set<NameRelationship> rels){
+		Set<TaxonNameBase> result = new HashSet<TaxonNameBase>();
+		for (NameRelationship rel : rels){
+			result.add(rel.getFromName());
+			result.add(rel.getToName());
+		}
+		return result;
+	}
 	
 	protected boolean doDelete(BerlinModelExportState<BerlinModelExportConfigurator> state){
 		BerlinModelExportConfigurator bmeConfig = state.getConfig();
@@ -132,9 +218,9 @@ public class BerlinModelNameRelationExport extends BerlinModelExportBase<Relatio
 		return ! ((BerlinModelExportConfigurator)config).isDoTaxonNames();
 	}
 	
-//	//called by MethodMapper
-//	@SuppressWarnings("unused")
-//	private static Integer getRelNameQualifierFk(RelationshipBase<?, ?, ?> rel, BerlinModelExportConfigurator config) throws Exception {
+	//called by MethodMapper
+	@SuppressWarnings("unused")
+	private static Integer getRelNameQualifierFk(RelationshipBase<?, ?, ?> rel) throws Exception {
 //		if (config.getRelNameQualifierMethod() != null){
 //			try {
 //				return (Integer)config.getRelNameQualifierMethod().invoke(rel);
@@ -143,9 +229,9 @@ public class BerlinModelNameRelationExport extends BerlinModelExportBase<Relatio
 //				throw e;
 //			}
 //		}else{
-//			return BerlinModelTransformer.nameRel2RelNameQualifierFk(rel);
+			return BerlinModelTransformer.nameRel2RelNameQualifierFk(rel);
 //		}
-//	}
+	}
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.berlinModel.out.BerlinModelExportBase#getStandardMethodParameter()
