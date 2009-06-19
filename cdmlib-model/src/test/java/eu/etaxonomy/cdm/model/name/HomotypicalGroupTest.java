@@ -109,7 +109,17 @@ public class HomotypicalGroupTest {
 		Assert.assertEquals("Number of relations should be 3", 3, rels.size());
 		
 	}
-	
+
+	@Test
+	public void testGetUnrelatedNames(){
+		name1.addBasionym(name2);
+		name4.addReplacedSynonym(name2, null, null, null);
+		Set<TaxonNameBase> unrelatedNames = name2.getHomotypicalGroup().getUnrelatedNames();
+		Assert.assertEquals("Number of unrelatedNames should be 0", 0, unrelatedNames.size());
+		name1.getHomotypicalGroup().merge(name3.getHomotypicalGroup());
+		unrelatedNames = name2.getHomotypicalGroup().getUnrelatedNames();
+		Assert.assertEquals("Number of unrelatedNames should be 1", 1, unrelatedNames.size());
+	}
 	
 	
 }

@@ -371,13 +371,62 @@ public class HomotypicalGroup extends AnnotatableEntity {
 		return result;
 	}
 
+
+	
+	/**
+	 * Returns all taxon names in the homotypical group that do not have an 'is_basionym_for' (zool.: 'is_original_combination_for') 
+	 * or a replaced synonym relationship.
+	 * @return
+	 */
+	@Transient
+	public Set<TaxonNameBase> getUnrelatedNames(){
+		Set<NameRelationship> set = getBasionymOrReplacedSynonymRelations(true, true);
+		Set<TaxonNameBase> result = new HashSet<TaxonNameBase>();
+		result.addAll(this.getTypifiedNames());
+		for (NameRelationship nameRelationship : set){
+			result.remove(nameRelationship.getFromName());
+			result.remove(nameRelationship.getToName());
+		}
+		return result;
+	}	
+	
+	/**
+	 * Returns all taxon names in the homotypical group that are new combinations (have a basionym/original combination 
+	 * or a replaced synonym).
+	 * @return
+	 */
+	@Transient
+	public Set<TaxonNameBase> getNewCombinations(){
+		Set<NameRelationship> set = getBasionymOrReplacedSynonymRelations(true, true);
+		Set<TaxonNameBase> result = new HashSet<TaxonNameBase>();
+		for (NameRelationship nameRelationship : set){
+			result.add(nameRelationship.getToName());
+		}
+		return result;
+	}	
+
 	
 	
+	/**
+	 * Returns all taxon names in the homotypical group that have an 'is_basionym_for' (zool.: 'is_original_combination_for') 
+	 * or a replaced synonym relationship.
+	 * @return
+	 */
+	@Transient
+	public Set<TaxonNameBase> getBasionymsOrReplacedSynonyms(){
+		Set<NameRelationship> set = getBasionymOrReplacedSynonymRelations(true, true);
+		Set<TaxonNameBase> result = new HashSet<TaxonNameBase>();
+		for (NameRelationship nameRelationship : set){
+			result.add(nameRelationship.getFromName());
+		}
+		return result;
+	}	
 	
 	/**
 	 * Returns all taxon names in the homotypical group that have a 'is_basionym_for' (zool.: 'is_original_combination_for') relationship.
 	 * @return
 	 */
+	@Transient
 	public Set<TaxonNameBase> getBasionyms(){
 		Set<NameRelationship> set = getBasionymOrReplacedSynonymRelations(true, false);
 		Set<TaxonNameBase> result = new HashSet<TaxonNameBase>();
@@ -391,6 +440,7 @@ public class HomotypicalGroup extends AnnotatableEntity {
 	 * Returns all taxon names in the homotypical group that have a 'is_replaced_synonym_for' relationship.
 	 * @return
 	 */
+	@Transient
 	public Set<TaxonNameBase> getReplacedSynonym(){
 		Set<NameRelationship> set = getBasionymOrReplacedSynonymRelations(false, true);
 		Set<TaxonNameBase> result = new HashSet<TaxonNameBase>();
@@ -405,10 +455,12 @@ public class HomotypicalGroup extends AnnotatableEntity {
 	 * a replaced synonym relationship.  
 	 * @return
 	 */
+	@Transient
 	public Set<NameRelationship> getBasionymAndReplacedSynonymRelations(){
 		return getBasionymOrReplacedSynonymRelations(true, true);
 	}
 	
+	@Transient
 	private Set<NameRelationship> getBasionymOrReplacedSynonymRelations(boolean doBasionym, boolean doReplacedSynonym){
 		Set<NameRelationship> result = new HashSet<NameRelationship>(); 
 		Set<TaxonNameBase> names = this.getTypifiedNames();
