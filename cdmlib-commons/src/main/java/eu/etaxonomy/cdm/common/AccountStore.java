@@ -13,6 +13,7 @@ package eu.etaxonomy.cdm.common;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
@@ -83,6 +84,8 @@ public class AccountStore {
 			outStream = new FileOutputStream(accountsFile);
 			accounts.store(outStream, "");
 			outStream.close();
+		} catch (FileNotFoundException e) {
+			logger.error("File " + accountsFile.toString() + " not found", e);
 		} catch (IOException e) {
 			logger.error("Unable to write properties", e);
 		}
