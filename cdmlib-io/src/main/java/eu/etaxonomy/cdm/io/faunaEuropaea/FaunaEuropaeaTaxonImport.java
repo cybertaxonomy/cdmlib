@@ -49,6 +49,7 @@ import eu.etaxonomy.cdm.model.reference.PublicationBase;
 import eu.etaxonomy.cdm.model.reference.Publisher;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
+import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
@@ -64,7 +65,7 @@ public class FaunaEuropaeaTaxonImport extends FaunaEuropaeaImportBase  {
 	private static final Logger logger = Logger.getLogger(FaunaEuropaeaTaxonImport.class);
 
 	/* Max number of taxa to retrieve (for test purposes) */
-	private int maxTaxa = 0;
+	private int maxTaxa = 5000;
 	/* Max number of taxa to be saved with one service call */
 	private int limit = 10000; // TODO: Make configurable
 	/* Interval for progress info message when retrieving taxa */
@@ -296,13 +297,13 @@ public class FaunaEuropaeaTaxonImport extends FaunaEuropaeaImportBase  {
 		for (int id : taxonStore.keySet())
 		{
 			TaxonBase<?> taxonBase = taxonStore.get(id);
+			TaxonNameBase<?,?> taxonName = taxonBase.getName();
 			FaunaEuropaeaTaxon fauEuTaxon = fauEuTaxonMap.get(id);
 			
 			if (logger.isDebugEnabled()) { logger.debug("Taxon # " + id); }
-			String nameString = calculateTaxonName(fauEuTaxon, taxonBase, taxonStore, fauEuTaxonMap);
-//			String nameString = calculateTaxonName(fauEuTaxon, taxonBase, taxonStore);
+			String nameString = calculateTaxonName(fauEuTaxon, taxonBase, taxonName, taxonStore, fauEuTaxonMap);
+			createRelationships(fauEuTaxon, taxonBase, taxonName, fauEuTaxonMap);
 			setTaxonName(nameString, fauEuTaxon, taxonBase, fauEuConfig);
-			
 		}
 		return success;	
 	}
@@ -363,7 +364,29 @@ public class FaunaEuropaeaTaxonImport extends FaunaEuropaeaImportBase  {
 		}
 		return result;
 	}
-			
+
+	private boolean createRelationships(FaunaEuropaeaTaxon fauEuTaxon,
+			TaxonBase<?> taxonBase, TaxonNameBase<?,?> taxonName,
+			Map<Integer, FaunaEuropaeaTaxon> fauEuTaxonMap) {
+		
+		boolean success = true;
+		
+		if (!fauEuTaxon.isValid()) {
+
+			try {
+
+				Taxon taxon = taxonBase.deproxy(taxonBase, Taxon.class);
+				Synonym synonym = Synonym.NewInstance(taxonName, null); // TODO: sec
+				taxon.addSynonym(synonym, SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF());
+
+			} catch (Exception e) {
+
+			}
+		}
+		
+		return success;
+		
+	}
 			
 	/* Build parent's taxon name */
 	private String buildParentName(int originalTaxonRank, String concatString, FaunaEuropaeaTaxon fauEuTaxon,
@@ -402,9 +425,9 @@ public class FaunaEuropaeaTaxonImport extends FaunaEuropaeaImportBase  {
 //				if(parentName != null) {
 //				parentString = ((ZoologicalName)parentName).getNameCache();
 
-
 				parentString = parent.getLocalName();
-
+				
+				
 //				if (fauEuTaxon.isValid()) {
 //				parentString = parent.getLocalName();
 //				} else {
@@ -478,7 +501,7 @@ public class FaunaEuropaeaTaxonImport extends FaunaEuropaeaImportBase  {
 	
 	/* Build taxon's concatenated name string */
 	private String calculateTaxonName(FaunaEuropaeaTaxon fauEuTaxon,
-			TaxonBase<?> taxonBase, MapWrapper<TaxonBase> taxonStore,
+			TaxonBase<?> taxonBase, TaxonNameBase<?,?>taxonName, MapWrapper<TaxonBase> taxonStore,
 			Map<Integer, FaunaEuropaeaTaxon> fauEuTaxonMap) {
 
 		/* Local name string */
@@ -486,7 +509,7 @@ public class FaunaEuropaeaTaxonImport extends FaunaEuropaeaImportBase  {
 		/* Concatenated parent's name string */
 		String parentString = "";
 		
-		TaxonNameBase<?,?> taxonName = taxonBase.getName();
+//		TaxonNameBase<?,?> taxonName = taxonBase.getName();
 		ZoologicalName zooName = (ZoologicalName)taxonName;
 
 		if (zooName != null) {
