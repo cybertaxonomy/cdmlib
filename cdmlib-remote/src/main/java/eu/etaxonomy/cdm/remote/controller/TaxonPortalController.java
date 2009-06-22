@@ -16,7 +16,13 @@ import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -39,11 +45,17 @@ import eu.etaxonomy.cdm.api.service.config.ITaxonServiceConfigurator;
 import eu.etaxonomy.cdm.api.service.config.impl.TaxonServiceConfiguratorImpl;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
+import eu.etaxonomy.cdm.model.media.ImageFile;
+import eu.etaxonomy.cdm.model.media.Media;
+import eu.etaxonomy.cdm.model.media.MediaRepresentation;
+import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
+import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
@@ -58,7 +70,7 @@ import eu.etaxonomy.cdm.remote.editor.UUIDPropertyEditor;
  */
 
 @Controller
-@RequestMapping(value = {"/*/portal/taxon/*", "/*/portal/taxon/*/*", "/*/portal/name/*/*"})
+@RequestMapping(value = {"/*/portal/taxon/*", "/*/portal/taxon/*/*", "/*/portal/name/*/*", "/*/portal/taxon/*/media/*/*"})
 public class TaxonPortalController extends BaseController<TaxonBase, ITaxonService>
 {
 	public static final Logger logger = Logger.getLogger(TaxonPortalController.class);
@@ -289,14 +301,155 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 			value = {"/*/portal/taxon/*/descriptions"},
 			method = RequestMethod.GET)
 	public List<TaxonDescription> doGetDescriptions(HttpServletRequest request, HttpServletResponse response)throws IOException {
-		TaxonBase tb = getCdmBase(request, response, null, Taxon.class);
-		if(tb instanceof Taxon){
-		Pager<TaxonDescription> p = descriptionService.getTaxonDescriptions((Taxon)tb, null, null, null, null, TAXONDESCRIPTION_INIT_STRATEGY);
-			return p.getRecords();
-		} else {
-			response.sendError(HttpServletResponse.SC_NOT_FOUND, "invalid type; Taxon expected but " + tb.getClass().getSimpleName() + " found.");
-			return null;
+		Taxon t = getCdmBase(request, response, null, Taxon.class);
+		Pager<TaxonDescription> p = descriptionService.getTaxonDescriptions(t, null, null, null, null, TAXONDESCRIPTION_INIT_STRATEGY);
+		return p.getRecords();
+	}
+
+	/**
+	 * Usage &#x002F;*&#x002F;portal&#x002F;name&#x002F;{taxon
+	 * uuid}&#x002F;media&#x002F;{mime type
+	 * list}&#x002F;{size}[,[widthOrDuration}][,{height}]&#x002F;
+	 * 
+	 * Whereas
+	 * <ul>
+	 * <li><b>{mime type list}</b>: a comma separated list of mime types, in the
+	 * order of preference. The forward slashes contained in the mime types must
+	 * be replaced by a colon. Regular expressions can be used. Each media
+	 * associated with this given taxon is being searched whereas the first
+	 * matching mime type matching a representation always rules.</li>
+	 * <li><b>{size},{widthOrDuration},{height}</b>: <i>not jet implemented</i>
+	 * valid values are an integer or the asterisk '*' as a wildcard</li>
+	 * </ul>
+	 * 
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws IOException
+	 */
+	@RequestMapping(
+		value = {"/*/portal/taxon/*/media/*/*"},
+		method = RequestMethod.GET)
+	public List<Media> doGetMedia(HttpServletRequest request, HttpServletResponse response)throws IOException {
+		Taxon t = getCdmBase(request, response, null, Taxon.class);
+		Pager<TaxonDescription> p = descriptionService.getTaxonDescriptions(t, null, null, null, null, TAXONDESCRIPTION_INIT_STRATEGY);
+		
+		// pars the media and quality parameters
+		
+		
+		// collect all media of the given taxon
+		boolean limitToGalleries = false;
+		List<Media> taxonMedia = new ArrayList<Media>();
+		for(TaxonDescription desc : p.getRecords()){
+			if(!limitToGalleries || desc.isImageGallery()){
+				for(DescriptionElementBase element : desc.getElements()){
+					for(Media media : element.getMedia()){
+						taxonMedia.add(media);
+					}
+				}
+			}
 		}
+		
+		// find best matching representations of each media
+		String path = request.getServletPath();
+		String[] pathTokens = path.split("/");
+		String[] mimeTypes = pathTokens[6].split(",");
+		String[] sizeTokens = pathTokens[7].split(",");
+		Integer widthOrDuration = null;
+		Integer height = null;
+		Integer size = null;
+		
+		for(int i=0; i<mimeTypes.length; i++){
+			mimeTypes[i] = mimeTypes[i].replace(':', '/');
+		}
+		
+		if(sizeTokens.length > 0){
+			try {
+				size = Integer.valueOf(sizeTokens[0]);
+			} catch (NumberFormatException nfe) {
+				/* IGNORE */
+			}
+		}
+		if(sizeTokens.length > 1){
+			try {
+				widthOrDuration = Integer.valueOf(sizeTokens[1]);
+			} catch (NumberFormatException nfe) {
+				/* IGNORE */
+			}
+		}
+		if(sizeTokens.length > 2){
+			try {
+				height = Integer.valueOf(sizeTokens[2]);
+			} catch (NumberFormatException nfe) {
+				/* IGNORE */
+			}
+		}
+		
+		List<Media> returnMedia = new ArrayList<Media>(taxonMedia.size());
+		for(Media media : taxonMedia){
+			SortedMap<String, MediaRepresentation> prefRepresentations = orderMediaRepresentations(media, mimeTypes, size, widthOrDuration, height);
+			try {
+				// take first one and remove all other representations
+				MediaRepresentation prefOne = prefRepresentations.get(prefRepresentations.firstKey());
+				for (MediaRepresentation representation : media.getRepresentations()) {
+					if (representation != prefOne) {
+						media.removeRepresentation(representation);
+					}
+				}
+				returnMedia.add(media);
+			} catch (NoSuchElementException nse) {
+				/* IGNORE */
+			}
+		}
+		
+		return returnMedia;
+	}
+
+	/**
+	 * @param media
+	 * @param mimeTypeRegexes
+	 * @param size
+	 * @param widthOrDuration
+	 * @param height
+	 * @return
+	 * 
+	 * TODO move into a media utils class
+	 * TODO implement the quality filter  
+	 */
+	private SortedMap<String, MediaRepresentation> orderMediaRepresentations(Media media, String[] mimeTypeRegexes,
+			Integer size, Integer widthOrDuration, Integer height) {
+
+		SortedMap<String, MediaRepresentation> prefRepr = new TreeMap<String, MediaRepresentation>();
+		for (String mimeTypeRegex : mimeTypeRegexes) {
+			// getRepresentationByMimeType
+			Pattern mimeTypePattern = Pattern.compile(mimeTypeRegex);
+			int representationCnt = 0;
+			for (MediaRepresentation representation : media.getRepresentations()) {
+				Matcher mather = mimeTypePattern.matcher(representation.getMimeType());
+				if (mather.matches()) {
+					int dwa = 0;
+
+					/* TODO the quality filter part is being skipped 
+					 * // look for representation with the best matching parts
+					for (MediaRepresentationPart part : representation.getParts()) {
+						if (part instanceof ImageFile) {
+							ImageFile image = (ImageFile) part;
+							int dw = image.getWidth() * image.getHeight() - height * widthOrDuration;
+							if (dw < 0) {
+								dw *= -1;
+							}
+							dwa += dw;
+						}
+						dwa = (representation.getParts().size() > 0 ? dwa / representation.getParts().size() : 0);
+					}*/
+					prefRepr.put((dwa + representationCnt++) + '_' + representation.getMimeType(), representation);
+										
+					// preferred mime type found => end loop
+					break;
+				}
+			}
+		}
+		return prefRepr;
 	}
 	
 //	@RequestMapping(

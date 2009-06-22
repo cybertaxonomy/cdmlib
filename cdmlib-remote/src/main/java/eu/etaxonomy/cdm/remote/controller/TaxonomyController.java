@@ -41,6 +41,7 @@ import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
 import eu.etaxonomy.cdm.remote.editor.RankPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.UUIDPropertyEditor;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
@@ -96,6 +97,7 @@ public class TaxonomyController extends AbstractListController<TaxonBase, ITaxon
 	private ITaxonService service;
 	
 	private IReferenceService referenceService;
+
 	
 	private Pattern parameterPattern = Pattern.compile("^/(?:[^/]+)/taxonomy/([^?#&\\.]+).*");
 
@@ -276,6 +278,7 @@ public class TaxonomyController extends AbstractListController<TaxonBase, ITaxon
 						}
 					} catch (UnknownCdmTypeException e) {
 						logger.error(e);
+						break; // RUDE & CLUMSY (if rank is not jet in bloodyRankLabel)
 					}
 				}
 				pathToRoot.add(parentTaxon);
