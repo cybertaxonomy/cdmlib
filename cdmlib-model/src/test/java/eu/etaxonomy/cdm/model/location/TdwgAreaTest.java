@@ -9,23 +9,18 @@
 
 package eu.etaxonomy.cdm.model.location;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.Map;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
-import eu.etaxonomy.cdm.model.common.Language;
 
 /**
  * @author a.mueller
