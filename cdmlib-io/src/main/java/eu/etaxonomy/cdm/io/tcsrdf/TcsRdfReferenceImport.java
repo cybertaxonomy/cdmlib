@@ -34,6 +34,7 @@ import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.IXmlMapper;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
+import eu.etaxonomy.cdm.io.common.ImportStateBase;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
@@ -56,7 +57,7 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
  * @version 1.0
  */
 @Component
-public class TcsRdfReferenceImport extends TcsRdfImportBase implements ICdmIO<IImportConfigurator> {
+public class TcsRdfReferenceImport extends TcsRdfImportBase implements ICdmIO<TcsRdfImportState> {
 	private static final Logger logger = Logger.getLogger(TcsRdfReferenceImport.class);
 
 	private static int modCount = 1000;
@@ -66,9 +67,9 @@ public class TcsRdfReferenceImport extends TcsRdfImportBase implements ICdmIO<II
 	}
 	
 	@Override
-	public boolean doCheck(IImportConfigurator config){
+	public boolean doCheck(TcsRdfImportState state){
 		boolean result = true;
-		result &= checkArticlesWithoutJournal(config);
+		result &= checkArticlesWithoutJournal(state.getConfig());
 		//result &= checkPartOfJournal(config);
 		
 		return result;
@@ -335,8 +336,8 @@ public class TcsRdfReferenceImport extends TcsRdfImportBase implements ICdmIO<II
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)
 	 */
-	protected boolean isIgnore(IImportConfigurator config){
-		return (config.getDoReferences() == IImportConfigurator.DO_REFERENCES.NONE);
+	protected boolean isIgnore(TcsRdfImportState state){
+		return (state.getConfig().getDoReferences() == IImportConfigurator.DO_REFERENCES.NONE);
 	}
 	
 }

@@ -39,13 +39,14 @@ public class BerlinModelImportState extends ImportStateBase<BerlinModelImportCon
 	 */
 	@Override
 	public void initialize(BerlinModelImportConfigurator config) {
+//		super(config);
 		String tableName = "WebMarkerCategory_";
 		//webMarkerCategory
 		dbCdmDefTermMap.put(tableName + 1, MarkerType.COMPLETE());
 	}
 
-	public BerlinModelImportState() {
-		super();
+	public BerlinModelImportState(BerlinModelImportConfigurator config) {
+		super(config);
 	}
 
 	public Map<String, DefinedTermBase> getDbCdmDefinedTermMap(){

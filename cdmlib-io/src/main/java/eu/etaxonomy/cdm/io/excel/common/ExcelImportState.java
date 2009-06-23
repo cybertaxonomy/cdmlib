@@ -24,17 +24,17 @@ public class ExcelImportState extends ImportStateBase<ExcelImportConfiguratorBas
 	private static final Logger logger = Logger.getLogger(ExcelImportState.class);
 
 	
-	public ExcelImportState() {
-		super();
+	public ExcelImportState(ExcelImportConfiguratorBase config) {
+		super(config);
 	}
 	
 	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.IoStateBase#initialize(eu.etaxonomy.cdm.io.common.IoConfiguratorBase)
-	 */
-	@Override
-	public void initialize(ExcelImportConfiguratorBase config) {
-				
-	}
+//	/* (non-Javadoc)
+//	 * @see eu.etaxonomy.cdm.io.common.IoStateBase#initialize(eu.etaxonomy.cdm.io.common.IoConfiguratorBase)
+//	 */
+//	@Override
+//	public void initialize(ExcelImportConfiguratorBase config) {
+//				
+//	}
 
 }

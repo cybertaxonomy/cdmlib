@@ -41,7 +41,7 @@ public class SDDDescriptionIOTest extends CdmTransactionalIntegrationTest {
 	@SpringBeanByType
 	INameService nameService;
 	
-	private IImportConfigurator configurator;
+	private SDDImportConfigurator configurator;
 	
 	@Before
 	public void setUp() {
@@ -57,7 +57,7 @@ public class SDDDescriptionIOTest extends CdmTransactionalIntegrationTest {
 	
 	@Test
 	public void testDoInvoke() {
-		sddDescriptionIo.doInvoke(configurator, null);
+		sddDescriptionIo.doInvoke(new SDDImportState(configurator));
 		this.setComplete();
 		this.endTransaction();
 		assertEquals("Number of TaxonNames should be 1", 1, nameService.count());

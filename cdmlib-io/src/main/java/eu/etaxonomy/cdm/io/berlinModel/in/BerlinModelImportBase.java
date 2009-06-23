@@ -23,10 +23,12 @@ import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.io.common.CdmImportBase;
 import eu.etaxonomy.cdm.io.common.CdmIoBase;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
+import eu.etaxonomy.cdm.io.common.ImportStateBase;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator.EDITOR;
@@ -45,7 +47,7 @@ import eu.etaxonomy.cdm.model.common.User;
  * @created 20.03.2008
  * @version 1.0
  */
-public abstract class BerlinModelImportBase extends CdmIoBase<IImportConfigurator> implements ICdmIO<IImportConfigurator> {
+public abstract class BerlinModelImportBase extends CdmImportBase<BerlinModelImportConfigurator, BerlinModelImportState> implements ICdmIO<BerlinModelImportState> {
 	private static final Logger logger = Logger.getLogger(BerlinModelImportBase.class);
 	
 	public static final UUID ID_IN_SOURCE_EXT_UUID = UUID.fromString("23dac094-e793-40a4-bad9-649fc4fcfd44");
@@ -57,31 +59,32 @@ public abstract class BerlinModelImportBase extends CdmIoBase<IImportConfigurato
 	protected abstract boolean doInvoke(BerlinModelImportState state);
 
 	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doInvoke(eu.etaxonomy.cdm.io.common.IImportConfigurator, eu.etaxonomy.cdm.api.application.CdmApplicationController, java.util.Map)
-	 */
-	@Override
-	protected boolean doInvoke(IImportConfigurator config, 
-			Map<String, MapWrapper<? extends CdmBase>> stores){ 
-		BerlinModelImportState state = ((BerlinModelImportConfigurator)config).getState();
-		state.setConfig((BerlinModelImportConfigurator)config);
-		return doInvoke(state);
-	}
+//	/* (non-Javadoc)
+//	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doInvoke(eu.etaxonomy.cdm.io.common.IImportConfigurator, eu.etaxonomy.cdm.api.application.CdmApplicationController, java.util.Map)
+//	 */
+//	@Override
+//	protected boolean doInvoke(IImportConfigurator config, 
+//			Map<String, MapWrapper<? extends CdmBase>> stores){ 
+//		BerlinModelImportState state = ((BerlinModelImportConfigurator)config).getState();
+//		state.setConfig((BerlinModelImportConfigurator)config);
+//		return doInvoke(state);
+//	}
 	
-	protected boolean doIdCreatedUpdatedNotes(BerlinModelImportConfigurator bmiConfig, IdentifiableEntity identifiableEntity, ResultSet rs, long id, String namespace)
+	protected boolean doIdCreatedUpdatedNotes(BerlinModelImportState state, IdentifiableEntity identifiableEntity, ResultSet rs, long id, String namespace)
 			throws SQLException{
 		boolean success = true;
 		//id
-		success &= ImportHelper.setOriginalSource(identifiableEntity, bmiConfig.getSourceReference(), id, namespace);
+		success &= ImportHelper.setOriginalSource(identifiableEntity, state.getConfig().getSourceReference(), id, namespace);
 		//createdUpdateNotes
-		success &= doCreatedUpdatedNotes(bmiConfig, identifiableEntity, rs, namespace);
+		success &= doCreatedUpdatedNotes(state, identifiableEntity, rs, namespace);
 		return success;
 	}
 	
 	
-	protected boolean doCreatedUpdatedNotes(BerlinModelImportConfigurator config, AnnotatableEntity annotatableEntity, ResultSet rs, String namespace)
+	protected boolean doCreatedUpdatedNotes(BerlinModelImportState state, AnnotatableEntity annotatableEntity, ResultSet rs, String namespace)
 			throws SQLException{
 
+		BerlinModelImportConfigurator config = state.getConfig();
 		Object createdWhen = rs.getObject("Created_When");
 		String createdWho = rs.getString("Created_Who");
 		Object updatedWhen = null;
@@ -109,8 +112,8 @@ public abstract class BerlinModelImportBase extends CdmIoBase<IImportConfigurato
 			annotation.setAnnotationType(AnnotationType.TECHNICAL());
 			annotatableEntity.addAnnotation(annotation);
 		}else if (config.getEditor().equals(EDITOR.EDITOR_AS_EDITOR)){
-			User creator = getUser(createdWho, config.getState());
-			User updator = getUser(updatedWho, config.getState());
+			User creator = getUser(createdWho, state);
+			User updator = getUser(updatedWho, state);
 			DateTime created = getDateTime(createdWhen);
 			DateTime updated = getDateTime(updatedWhen);
 			annotatableEntity.setCreatedBy(creator);

@@ -14,6 +14,7 @@ import eu.etaxonomy.cdm.common.XmlHelp;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
+import eu.etaxonomy.cdm.io.common.ImportStateBase;
 import eu.etaxonomy.cdm.io.tcsxml.DefaultTcsXmlPlaceholders;
 import eu.etaxonomy.cdm.io.tcsxml.ITcsXmlPlaceholderClass;
 import eu.etaxonomy.cdm.model.reference.Database;
@@ -97,9 +98,16 @@ public class TcsXmlImportConfigurator extends ImportConfiguratorBase<TcsXmlImpor
 		super();
 		setSource(url);
 		setDestination(destination);
-		setState(new TcsXmlImportState());
 	}
 	
+	
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#getNewState()
+	 */
+	public TcsXmlImportState getNewState() {
+		return new TcsXmlImportState(this);
+	}
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.ImportConfiguratorBase#getSource()

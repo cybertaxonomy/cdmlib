@@ -23,6 +23,7 @@ import org.springframework.transaction.TransactionStatus;
 import eu.etaxonomy.cdm.io.common.CdmIoBase;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
+import eu.etaxonomy.cdm.io.common.ImportStateBase;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -47,7 +48,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  * @version 1.0
  */
 @Component
-public class JaxbImport extends CdmIoBase<IImportConfigurator> implements ICdmIO<IImportConfigurator> {
+public class JaxbImport extends CdmIoBase<JaxbImportState> implements ICdmIO<JaxbImportState> {
 
 	private static final Logger logger = Logger.getLogger(JaxbImport.class);
 	private CdmDocumentBuilder cdmDocumentBuilder = null;
@@ -58,15 +59,18 @@ public class JaxbImport extends CdmIoBase<IImportConfigurator> implements ICdmIO
      * @param config
      * @param stores (not used)
      */
-	@Override
-	protected boolean doInvoke(IImportConfigurator config,
-			Map<String, MapWrapper<? extends CdmBase>> stores) {
-		
+//	@Override
+//	protected boolean doInvoke(IImportConfigurator config,
+//			Map<String, MapWrapper<? extends CdmBase>> stores) {
+		@Override
+		protected boolean doInvoke(JaxbImportState state) {
+			
+		state.getConfig();
 		boolean success = true;
         URI uri = null;
-		JaxbImportConfigurator jaxbImpConfig = (JaxbImportConfigurator)config;
+		JaxbImportConfigurator jaxbImpConfig = (JaxbImportConfigurator)state.getConfig();
     	
-    	String urlFileName = (String)config.getSource();
+    	String urlFileName = (String)jaxbImpConfig.getSource();
 		logger.debug("urlFileName: " + urlFileName);
     	try {
     		uri = new URI(urlFileName);
@@ -343,7 +347,7 @@ public class JaxbImport extends CdmIoBase<IImportConfigurator> implements ICdmIO
 
 	
 	@Override
-	protected boolean doCheck(IImportConfigurator config) {
+	protected boolean doCheck(JaxbImportState state) {
 		boolean result = true;
 		logger.warn("No check implemented for Jaxb import");
 		return result;
@@ -351,7 +355,7 @@ public class JaxbImport extends CdmIoBase<IImportConfigurator> implements ICdmIO
 	
 
 	@Override
-	protected boolean isIgnore(IImportConfigurator config) {
+	protected boolean isIgnore(JaxbImportState state) {
 		return false;
 	}
 }

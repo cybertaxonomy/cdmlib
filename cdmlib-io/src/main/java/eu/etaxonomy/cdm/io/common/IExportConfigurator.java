@@ -6,7 +6,7 @@
 
 package eu.etaxonomy.cdm.io.common;
 
-import eu.etaxonomy.cdm.database.ICdmDataSource;;
+import eu.etaxonomy.cdm.database.ICdmDataSource;
 
 
 /**
@@ -14,7 +14,7 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;;
  * @created 16.11.2008
  * @version 1.0
  */
-public interface IExportConfigurator extends IIoConfigurator {
+public interface IExportConfigurator<STATE extends ExportStateBase> extends IIoConfigurator {
 
 	public static enum CHECK{
 		CHECK_ONLY,
@@ -45,5 +45,12 @@ public interface IExportConfigurator extends IIoConfigurator {
 	public ICdmDataSource getSource();
 
 	public void setSource(ICdmDataSource source);
+	
+	/**
+	 * Factory method. Creates a new state for the export type and adds this coniguration to it.
+	 * @return 
+	 */
+	public STATE getNewState();
+	
 	
 }

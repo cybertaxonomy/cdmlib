@@ -43,14 +43,14 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  * @version 1.0
  */
 @Component
-public class JaxbExport extends CdmIoBase<IExportConfigurator> implements ICdmIO<IExportConfigurator> {
+public class JaxbExport extends CdmIoBase<JaxbExportState> implements ICdmIO<JaxbExportState> {
 
 	private static final Logger logger = Logger.getLogger(JaxbExport.class);
 	private CdmDocumentBuilder cdmDocumentBuilder = null;
 
-	/**
-	 * 
-	 */
+//	/**
+//	 * 
+//	 */
 //	public JaxbExport() {
 //		super();
 //		this.ioName = this.getClass().getSimpleName();
@@ -64,11 +64,13 @@ public class JaxbExport extends CdmIoBase<IExportConfigurator> implements ICdmIO
 	 * @param dbname
 	 * @param filename
 	 */
+//	@Override
+//	protected boolean doInvoke(IExportConfigurator config,
+//			Map<String, MapWrapper<? extends CdmBase>> stores) {
 	@Override
-	protected boolean doInvoke(IExportConfigurator config,
-			Map<String, MapWrapper<? extends CdmBase>> stores) {
-
-		JaxbExportConfigurator jaxbExpConfig = (JaxbExportConfigurator)config;
+	protected boolean doInvoke(JaxbExportState state) {
+		
+		JaxbExportConfigurator jaxbExpConfig = (JaxbExportConfigurator)state.getConfig();
 		String dbname = jaxbExpConfig.getSource().getName();
     	String fileName = jaxbExpConfig.getDestination();
 		logger.info("Serializing DB " + dbname + " to file " + fileName);
@@ -82,7 +84,7 @@ public class JaxbExport extends CdmIoBase<IExportConfigurator> implements ICdmIO
 		try {
 			logger.info("Retrieving data from DB");
 
-			retrieveData(config, dataSet);
+			retrieveData(jaxbExpConfig, dataSet);
 
 		} catch (Exception e) {
 			logger.error("Error retrieving data");
@@ -231,7 +233,7 @@ public class JaxbExport extends CdmIoBase<IExportConfigurator> implements ICdmIO
 
 
 	@Override
-	protected boolean doCheck(IExportConfigurator config) {
+	protected boolean doCheck(JaxbExportState state) {
 		boolean result = true;
 		logger.warn("No check implemented for Jaxb export");
 		return result;
@@ -239,7 +241,7 @@ public class JaxbExport extends CdmIoBase<IExportConfigurator> implements ICdmIO
 
 
 	@Override
-	protected boolean isIgnore(IExportConfigurator config) {
+	protected boolean isIgnore(JaxbExportState state) {
 		return false;
 	}
 	

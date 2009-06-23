@@ -23,16 +23,16 @@ public class SpecimenImportState extends ImportStateBase<SpecimenImportConfigura
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(SpecimenImportState.class);
 
-	public SpecimenImportState() {
-		super();
+	public SpecimenImportState(SpecimenImportConfigurator config) {
+		super(config);
 	}
 	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.IoStateBase#initialize(eu.etaxonomy.cdm.io.common.IoConfiguratorBase)
-	 */
-	@Override
-	public void initialize(SpecimenImportConfigurator config) {
-				
-	}
+//	/* (non-Javadoc)
+//	 * @see eu.etaxonomy.cdm.io.common.IoStateBase#initialize(eu.etaxonomy.cdm.io.common.IoConfiguratorBase)
+//	 */
+//	@Override
+//	public void initialize(SpecimenImportConfigurator config) {
+////		super(config);		
+//	}
 
 }

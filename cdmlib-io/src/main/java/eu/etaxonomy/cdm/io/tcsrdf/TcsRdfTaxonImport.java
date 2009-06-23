@@ -51,7 +51,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  * @version 1.0
  */
 @Component
-public class TcsRdfTaxonImport  extends TcsRdfImportBase implements ICdmIO<IImportConfigurator> {
+public class TcsRdfTaxonImport  extends TcsRdfImportBase implements ICdmIO<TcsRdfImportState> {
 	private static final Logger logger = Logger.getLogger(TcsRdfTaxonImport.class);
 
 	private static int modCount = 30000;
@@ -62,7 +62,7 @@ public class TcsRdfTaxonImport  extends TcsRdfImportBase implements ICdmIO<IImpo
 	
 	
 	@Override
-	public boolean doCheck(IImportConfigurator config){
+	public boolean doCheck(TcsRdfImportState state){
 		boolean result = true;
 		logger.warn("Checking for Taxa not yet implemented");
 		//result &= checkArticlesWithoutJournal(bmiConfig);
@@ -244,8 +244,8 @@ public class TcsRdfTaxonImport  extends TcsRdfImportBase implements ICdmIO<IImpo
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)
 	 */
-	protected boolean isIgnore(IImportConfigurator config){
-		return ! config.isDoTaxa();
+	protected boolean isIgnore(TcsRdfImportState state){
+		return ! state.getConfig().isDoTaxa();
 	}
 
 

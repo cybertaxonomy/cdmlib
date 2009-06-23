@@ -29,6 +29,7 @@ import eu.etaxonomy.cdm.io.common.CdmIoBase;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.IXmlMapper;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
+import eu.etaxonomy.cdm.io.common.ImportStateBase;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
@@ -37,7 +38,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * @created 04.08.2008
  * @version 1.0
  */
-public abstract class TcsRdfImportBase  extends CdmIoBase<IImportConfigurator> {
+public abstract class TcsRdfImportBase  extends CdmIoBase<TcsRdfImportState> {
 	private static final Logger logger = Logger.getLogger(TcsRdfImportBase.class);
 
 	protected static Namespace nsTcom = Namespace.getNamespace("http://rs.tdwg.org/ontology/voc/Common#");
@@ -50,17 +51,16 @@ public abstract class TcsRdfImportBase  extends CdmIoBase<IImportConfigurator> {
 	
 	protected abstract boolean doInvoke(TcsRdfImportState state);
 
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doInvoke(eu.etaxonomy.cdm.io.common.IImportConfigurator, eu.etaxonomy.cdm.api.application.CdmApplicationController, java.util.Map)
-	 */
-	@Override
-	protected boolean doInvoke(IImportConfigurator config, 
-			Map<String, MapWrapper<? extends CdmBase>> stores){ 
-		TcsRdfImportState state = ((TcsRdfImportConfigurator)config).getState();
-		state.setConfig((TcsRdfImportConfigurator)config);
-		return doInvoke(state);
-	}
+//	/* (non-Javadoc)
+//	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doInvoke(eu.etaxonomy.cdm.io.common.IImportConfigurator, eu.etaxonomy.cdm.api.application.CdmApplicationController, java.util.Map)
+//	 */
+//	@Override
+//	protected boolean doInvoke(IImportConfigurator config, 
+//			Map<String, MapWrapper<? extends CdmBase>> stores){ 
+//		TcsRdfImportState state = ((TcsRdfImportConfigurator)config).getState();
+//		state.setConfig((TcsRdfImportConfigurator)config);
+//		return doInvoke(state);
+//	}
 	
 	protected boolean makeStandardMapper(Element parentElement, CdmBase ref, Set<String> omitAttributes, CdmSingleAttributeXmlMapperBase[] classMappers){
 		if (omitAttributes == null){

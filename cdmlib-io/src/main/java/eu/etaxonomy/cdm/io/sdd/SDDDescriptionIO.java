@@ -34,6 +34,7 @@ import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.common.MediaMetaData.ImageMetaData;
+import eu.etaxonomy.cdm.io.common.CdmIoBase;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
@@ -83,7 +84,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
  * @version 1.0
  */
 @Component("sddDescriptionIO")
-public class SDDDescriptionIO extends SDDIoBase implements ICdmIO<IImportConfigurator> {
+public class SDDDescriptionIO extends CdmIoBase<SDDImportState> implements ICdmIO<SDDImportState> {
 	private static final Logger logger = Logger.getLogger(SDDDescriptionIO.class);
 
 	private static int modCount = 1000;
@@ -128,17 +129,19 @@ public class SDDDescriptionIO extends SDDIoBase implements ICdmIO<IImportConfigu
 	}
 
 	@Override
-	public boolean doCheck(IImportConfigurator config){
+	public boolean doCheck(SDDImportState state){
 		boolean result = true;
 		logger.warn("No check implemented for SDD");
 		return result;
 	}
 
-	@Override
-	public boolean doInvoke(IImportConfigurator config, Map<String, MapWrapper<? extends CdmBase>> stores){
+//	@Override
+//	public boolean doInvoke(IImportConfigurator config, Map<String, MapWrapper<? extends CdmBase>> stores){
+		@Override
+		public boolean doInvoke(SDDImportState state){
 
 		TransactionStatus ts = startTransaction();
-		SDDImportConfigurator sddConfig = (SDDImportConfigurator)config;
+		SDDImportConfigurator sddConfig = state.getConfig();
 
 		logger.info("start Datasets ...");
 		// <Datasets xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://rs.tdwg.org/UBIF/2006/" xsi:schemaLocation="http://rs.tdwg.org/UBIF/2006/ ../SDD.xsd">
@@ -166,7 +169,7 @@ public class SDDDescriptionIO extends SDDIoBase implements ICdmIO<IImportConfigu
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)
 	 */
-	protected boolean isIgnore(IImportConfigurator config){
+	protected boolean isIgnore(SDDImportState state){
 		return false;
 	}
 

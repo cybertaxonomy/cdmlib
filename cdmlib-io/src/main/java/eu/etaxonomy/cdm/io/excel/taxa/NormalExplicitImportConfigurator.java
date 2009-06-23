@@ -15,7 +15,9 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
+import eu.etaxonomy.cdm.io.common.ImportStateBase;
 import eu.etaxonomy.cdm.io.excel.common.ExcelImportConfiguratorBase;
+import eu.etaxonomy.cdm.io.excel.common.ExcelImportState;
 import eu.etaxonomy.cdm.model.reference.Database;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
@@ -47,6 +49,15 @@ public class NormalExplicitImportConfigurator extends ExcelImportConfiguratorBas
 		setDbSchemaValidation(DbSchemaValidation.CREATE);
 	}
 	
+	
+	
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#getNewState()
+	 */
+	public ExcelImportState getNewState() {
+		return new ExcelImportState(this);
+	}
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.ImportConfiguratorBase#getSource()

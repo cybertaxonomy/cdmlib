@@ -51,7 +51,7 @@ public class BerlinModelNameStatusImport extends BerlinModelImportBase {
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doCheck(eu.etaxonomy.cdm.io.common.IImportConfigurator)
 	 */
 	@Override
-	protected boolean doCheck(IImportConfigurator bmiConfig){
+	protected boolean doCheck(BerlinModelImportState state){
 		boolean result = true;
 		logger.warn("Checking for NomenclaturalStatus not yet implemented");
 		//result &= checkArticlesWithoutJournal(bmiConfig);
@@ -200,8 +200,8 @@ public class BerlinModelNameStatusImport extends BerlinModelImportBase {
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)
 	 */
-	protected boolean isIgnore(IImportConfigurator config){
-		return ! config.isDoNameStatus();
+	protected boolean isIgnore(BerlinModelImportState state){
+		return ! state.getConfig().isDoNameStatus();
 	}
 
 }

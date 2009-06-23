@@ -59,7 +59,7 @@ public class BerlinModelReferenceExport extends BerlinModelExportBase<ReferenceB
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doCheck(eu.etaxonomy.cdm.io.common.IImportConfigurator)
 	 */
 	@Override
-	protected boolean doCheck(IExportConfigurator config){
+	protected boolean doCheck(BerlinModelExportState state){
 		boolean result = true;
 		logger.warn("Checking for Authors not yet implemented");
 		//result &= checkArticlesWithoutJournal(bmiConfig);
@@ -111,7 +111,7 @@ public class BerlinModelReferenceExport extends BerlinModelExportBase<ReferenceB
 		return mapping;
 	}
 	
-	protected boolean doInvoke(BerlinModelExportState<BerlinModelExportConfigurator> state){
+	protected boolean doInvoke(BerlinModelExportState state){
 		try{
 			logger.info("start make "+pluralString+" ...");
 			boolean success = true ;
@@ -152,7 +152,7 @@ public class BerlinModelReferenceExport extends BerlinModelExportBase<ReferenceB
 		}
 	}
 
-	protected boolean invokeInRef(ReferenceBase ref, BerlinModelExportState<BerlinModelExportConfigurator> state, PreparedStatement stmt) {
+	protected boolean invokeInRef(ReferenceBase ref, BerlinModelExportState state, PreparedStatement stmt) {
 		if (ref == null){
 			return true;
 		}else{
@@ -192,7 +192,7 @@ public class BerlinModelReferenceExport extends BerlinModelExportBase<ReferenceB
 		
 	}
 	
-	protected boolean doDelete(BerlinModelExportState<BerlinModelExportConfigurator> state){
+	protected boolean doDelete(BerlinModelExportState state){
 		BerlinModelExportConfigurator bmeConfig = state.getConfig();
 		
 		String sql;
@@ -213,8 +213,8 @@ public class BerlinModelReferenceExport extends BerlinModelExportBase<ReferenceB
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)
 	 */
-	protected boolean isIgnore(IExportConfigurator config){
-		if (((BerlinModelExportConfigurator)config).getDoReferences().equals(DO_REFERENCES.ALL)){
+	protected boolean isIgnore(BerlinModelExportState state){
+		if (state.getConfig().getDoReferences().equals(DO_REFERENCES.ALL)){
 			return false;
 		}else{
 			return true;

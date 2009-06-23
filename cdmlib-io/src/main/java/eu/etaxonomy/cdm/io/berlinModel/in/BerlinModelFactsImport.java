@@ -59,9 +59,9 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doCheck(eu.etaxonomy.cdm.io.common.IImportConfigurator)
 	 */
 	@Override
-	protected boolean doCheck(IImportConfigurator config){
+	protected boolean doCheck(BerlinModelImportState state){
 		boolean result = true;
-		BerlinModelImportConfigurator bmiConfig = (BerlinModelImportConfigurator)config;
+		BerlinModelImportConfigurator bmiConfig = state.getConfig();
 		logger.warn("Checking for Facts not yet fully implemented");
 		result &= checkDesignationRefsExist(bmiConfig);
 		return result;
@@ -299,7 +299,7 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 //						}
 						
 						//notes
-						doCreatedUpdatedNotes(config, textData, rs, "Fact");
+						doCreatedUpdatedNotes(state, textData, rs, "Fact");
 						
 						//TODO
 						//Designation References -> unclear how to map to CDM
@@ -375,8 +375,8 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)
 	 */
-	protected boolean isIgnore(IImportConfigurator config){
-		return ! config.isDoFacts();
+	protected boolean isIgnore(BerlinModelImportState state){
+		return ! state.getConfig().isDoFacts();
 	}
 
 }

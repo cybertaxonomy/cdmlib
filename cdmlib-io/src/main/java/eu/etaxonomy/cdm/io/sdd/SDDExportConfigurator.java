@@ -14,16 +14,16 @@ import java.io.File;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
-import eu.etaxonomy.cdm.io.common.ExportConfiguratorBase;
+import eu.etaxonomy.cdm.io.common.ExportStateBase;
 import eu.etaxonomy.cdm.io.common.IExportConfigurator;
-import eu.etaxonomy.cdm.io.sdd.SDDCdmExporter;
+import eu.etaxonomy.cdm.io.common.XmlExportConfiguratorBase;
 
 /**
  * @author h.fradin (from a.babadshanjan JaxbExportConfigurator)
  * @created 09.12.2008
  * @version 1.0
  */
-public class SDDExportConfigurator extends ExportConfiguratorBase implements IExportConfigurator {
+public class SDDExportConfigurator extends XmlExportConfiguratorBase implements IExportConfigurator {
 	
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(SDDExportConfigurator.class);
@@ -160,24 +160,26 @@ public class SDDExportConfigurator extends ExportConfiguratorBase implements IEx
 	 * @param destination
 	 */
 	private SDDExportConfigurator(ICdmDataSource source, String url) {
-		super();
-		setDestination(url);
-		setSource(source);
+		super(new File(url), source);
+//		setDestination(url);
+//		setSource(source);
 	}
 	
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.ImportConfiguratorBase#getSource()
 	 */
-	public String getDestination() {
-		return (String) super.getDestination();
+	public File getDestination() {
+		File file = super.getDestination();
+		return file;
+//		return super.getDestination();
 	}
 
 	
 	/**
 	 * @param file
 	 */
-	public void setDestination(String fileName) {
+	public void setDestination(File fileName) {
 		super.setDestination(fileName);
 	}
 	
@@ -191,6 +193,14 @@ public class SDDExportConfigurator extends ExportConfiguratorBase implements IEx
 		} else {
 			return this.getDestination().toString();
 		}
+	}
+
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.IExportConfigurator#getNewState()
+	 */
+	public ExportStateBase getNewState() {
+		return new SDDExportState(this);
 	}
 	
 		

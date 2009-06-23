@@ -37,7 +37,7 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
  *
  */
 @Component
-public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdmIO<IImportConfigurator> {
+public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdmIO<TcsXmlImportState> {
 	private static final Logger logger = Logger.getLogger(TcsXmlTaxonRelationsImport.class);
 
 	private static int modCount = 30000;
@@ -47,7 +47,7 @@ public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdm
 	}
 	
 	@Override
-	public boolean doCheck(IImportConfigurator config){
+	public boolean doCheck(TcsXmlImportState state){
 		boolean result = true;
 		logger.warn("Checking for TaxonRelations not yet implemented");
 		logger.warn("Creation of homotypic relations is still problematic");
@@ -360,8 +360,8 @@ public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdm
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)
 	 */
-	protected boolean isIgnore(IImportConfigurator config){
-		return ! config.isDoRelTaxa();
+	protected boolean isIgnore(TcsXmlImportState state){
+		return ! state.getConfig().isDoRelTaxa();
 	}
 	
 }

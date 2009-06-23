@@ -15,7 +15,6 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -26,9 +25,7 @@ import eu.etaxonomy.cdm.io.common.CdmIoBase;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IExportConfigurator;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
-import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
-import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
@@ -44,7 +41,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  * @versoin 1.0
  */
 @Component("sddCdmExporter")
-public class SDDCdmExporter extends CdmIoBase<IExportConfigurator> implements ICdmIO<IExportConfigurator> {
+public class SDDCdmExporter extends CdmIoBase<SDDExportState> implements ICdmIO<SDDExportState> {
 // public class JaxbExport extends CdmIoBase implements ICdmIoExport {
 // TODO: public class JaxbExport extends CdmIoBase implements ICdmIO {
 
@@ -71,10 +68,11 @@ public class SDDCdmExporter extends CdmIoBase<IExportConfigurator> implements IC
 	 * @param filename
 	 */
 	@Override
-	protected boolean doInvoke(IExportConfigurator config,
-			Map<String, MapWrapper<? extends CdmBase>> stores) {
-
-		SDDExportConfigurator sddExpConfig = (SDDExportConfigurator)config;
+	protected boolean doInvoke(SDDExportState state){
+//		protected boolean doInvoke(IExportConfigurator config,
+//		Map<String, MapWrapper<? extends CdmBase>> stores) {
+	
+		SDDExportConfigurator sddExpConfig = state.getConfig();
 		String dbname = sddExpConfig.getSource().getName();
     	String fileName = sddExpConfig.getDestinationNameString();
 		logger.info("Serializing DB " + dbname + " to file " + fileName);
@@ -90,7 +88,7 @@ public class SDDCdmExporter extends CdmIoBase<IExportConfigurator> implements IC
 		try {
 			logger.info("Retrieving data from DB");
 
-			retrieveData(config, dataSet);
+			retrieveData(sddExpConfig, dataSet);
 
 		} catch (Exception e) {
 			logger.error("Error retrieving data");
@@ -252,7 +250,7 @@ public class SDDCdmExporter extends CdmIoBase<IExportConfigurator> implements IC
 
 
 	@Override
-	protected boolean doCheck(IExportConfigurator config) {
+	protected boolean doCheck(SDDExportState state) {
 		boolean result = true;
 		logger.warn("No check implemented for Jaxb export");
 		return result;
@@ -260,7 +258,7 @@ public class SDDCdmExporter extends CdmIoBase<IExportConfigurator> implements IC
 
 
 	@Override
-	protected boolean isIgnore(IExportConfigurator config) {
+	protected boolean isIgnore(SDDExportState state) {
 		return false;
 	}
 	

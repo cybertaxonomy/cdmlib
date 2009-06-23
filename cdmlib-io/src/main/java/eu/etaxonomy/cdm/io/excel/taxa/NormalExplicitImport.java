@@ -19,6 +19,7 @@ import org.springframework.stereotype.Component;
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
+import eu.etaxonomy.cdm.io.excel.common.ExcelImportState;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
@@ -44,7 +45,7 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 	private static final Logger logger = Logger.getLogger(NormalExplicitImport.class);
 	
 	@Override
-	protected boolean isIgnore(IImportConfigurator config) {
+	protected boolean isIgnore(ExcelImportState state) {
 		return false;
 	}
 	
@@ -61,6 +62,17 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 		return intValue;
 	}
 	
+	
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doCheck(eu.etaxonomy.cdm.io.common.IoStateBase)
+	 */
+	@Override
+	protected boolean doCheck(ExcelImportState state) {
+		logger.warn("DoCheck not yet implemented for NormalExplicitImport");
+		return true;
+	}
+
 	@Override
     protected boolean analyzeRecord(HashMap<String, String> record) {
 		

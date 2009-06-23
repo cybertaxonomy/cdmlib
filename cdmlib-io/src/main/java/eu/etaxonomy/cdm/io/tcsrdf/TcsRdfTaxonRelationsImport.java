@@ -11,28 +11,29 @@ package eu.etaxonomy.cdm.io.tcsrdf;
 
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.jdom.Element;
 import org.jdom.Namespace;
 import org.springframework.stereotype.Component;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.XmlHelp;
-import eu.etaxonomy.cdm.io.common.CdmIoBase;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
-import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.StrictReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
+import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
 
@@ -42,7 +43,7 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
  * @version 1.0
  */
 @Component
-public class TcsRdfTaxonRelationsImport extends TcsRdfImportBase implements ICdmIO<IImportConfigurator> {
+public class TcsRdfTaxonRelationsImport extends TcsRdfImportBase implements ICdmIO<TcsRdfImportState> {
 	private static final Logger logger = Logger.getLogger(TcsRdfTaxonRelationsImport.class);
 
 	private static int modCount = 30000;
@@ -52,7 +53,7 @@ public class TcsRdfTaxonRelationsImport extends TcsRdfImportBase implements ICdm
 	}
 	
 	@Override
-	public boolean doCheck(IImportConfigurator config){
+	public boolean doCheck(TcsRdfImportState state){
 		boolean result = true;
 		logger.warn("Checking for TaxonRelations not yet implemented");
 		logger.warn("Creation of homotypic relations is still problematic");
@@ -110,7 +111,7 @@ public class TcsRdfTaxonRelationsImport extends TcsRdfImportBase implements ICdm
 				List<Element> elRelationships = elHasRelationship.getChildren(xmlElementName, elementNamespace);
 				
 				for (Element elRelationship: elRelationships){
-					makeRelationship(elRelationship, strTaxonAbout, taxonMap, config, taxonStore);
+					makeRelationship(elRelationship, strTaxonAbout, taxonMap, state, taxonStore);
 				}//relationship
 			}//hasRelationships
 		}//elTaxonConcept
@@ -126,13 +127,14 @@ public class TcsRdfTaxonRelationsImport extends TcsRdfImportBase implements ICdm
 				Element elRelationship, 
 				String strTaxonAbout,
 				MapWrapper<TaxonBase> taxonMap,
-				TcsRdfImportConfigurator tcsConfig,
+				TcsRdfImportState state,
 				Set<TaxonBase> taxonStore){
 		boolean result = true;
 		String xmlElementName;
 		String xmlAttributeName;
 		Namespace elementNamespace;
 		Namespace attributeNamespace;
+		TcsRdfImportConfigurator tcsConfig = state.getConfig();
 		//relationship
 		xmlElementName = "relationshipCategory";
 		elementNamespace = tcsConfig.getTcNamespace();
@@ -167,35 +169,9 @@ public class TcsRdfTaxonRelationsImport extends TcsRdfImportBase implements ICdm
 					ReferenceBase citation = null;
 					String microReference = null;
 					if (relType instanceof SynonymRelationshipType){
-						SynonymRelationshipType synRelType = (SynonymRelationshipType)relType;
-						if (! (fromTaxon instanceof Synonym )){
-							logger.warn("TaxonBase fromTaxon is not of Type 'Synonym'. Relationship is not added.");
-							result = false;
-						}else{
-							Synonym synonym = (Synonym)fromTaxon;
-							TaxonNameBase synName = synonym.getName();
-							TaxonNameBase accName = taxonTo.getName();
-							if (synName != null && accName != null && synName.isHomotypic(accName)
-										&& ( synRelType.equals(SynonymRelationshipType.SYNONYM_OF()))){
-								synRelType = SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF(); 
-							}
-							if (! relationExists(taxonTo, synonym, synRelType)){
-								taxonTo.addSynonym(synonym, synRelType,  citation, microReference);	
-							}else{
-								//TODO citation, microReference
-								//TODO different synRelTypes -> warning
-								result = false;
-							}
-						}
+						result &= makeSynRelType((SynonymRelationshipType)relType, taxonTo, fromTaxon, citation, microReference);
 					}else if (relType instanceof TaxonRelationshipType){
-						TaxonRelationshipType taxRelType = (TaxonRelationshipType)relType;
-						if (! (fromTaxon instanceof Taxon )){
-							logger.warn("TaxonBase fromTaxon " + strTaxonAbout + "is not of Type 'Taxon'. Relationship is not added.");
-							result = false;
-						}else{
-							Taxon taxonFrom = (Taxon)fromTaxon;
-							taxonFrom.addTaxonRelation(taxonTo, taxRelType, citation, microReference);
-						}
+						makeTaxonRelType((TaxonRelationshipType)relType, state, taxonTo, fromTaxon, strTaxonAbout , citation, microReference);
 					}else{
 						logger.warn("Unknown Relationshiptype");
 						result = false;
@@ -220,6 +196,70 @@ public class TcsRdfTaxonRelationsImport extends TcsRdfImportBase implements ICdm
 		return result;
 	}
 	
+	
+	private boolean makeSynRelType(SynonymRelationshipType synRelType, Taxon taxonTo, TaxonBase fromTaxon, ReferenceBase citation, String microReference){
+		boolean success = true;
+		if (! (fromTaxon instanceof Synonym )){
+			logger.warn("TaxonBase fromTaxon is not of Type 'Synonym'. Relationship is not added.");
+			success = false;
+		}else{
+			Synonym synonym = (Synonym)fromTaxon;
+			TaxonNameBase synName = synonym.getName();
+			TaxonNameBase accName = taxonTo.getName();
+			if (synName != null && accName != null && synName.isHomotypic(accName)
+						&& ( synRelType.equals(SynonymRelationshipType.SYNONYM_OF()))){
+				synRelType = SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF(); 
+			}
+			if (! relationExists(taxonTo, synonym, synRelType)){
+				taxonTo.addSynonym(synonym, synRelType,  citation, microReference);	
+			}else{
+				//TODO citation, microReference
+				//TODO different synRelTypes -> warning
+				success = false;
+			}
+		}
+		return success;
+	}
+	
+	private boolean makeTaxonRelType(TaxonRelationshipType relType, TcsRdfImportState state, Taxon taxonTo, TaxonBase fromTaxon, String strTaxonAbout, ReferenceBase citation, String microReference){
+		boolean success = true;
+		if (! (fromTaxon instanceof Taxon )){
+			logger.warn("TaxonBase fromTaxon " + strTaxonAbout + " is not of Type 'Taxon'. Relationship is not added.");
+			success = false;
+		}else{
+			Taxon taxonFrom = (Taxon)fromTaxon;
+			if (state.getConfig().isUseTaxonomicTree() && relType.equals(TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN())){
+				success &= makeTaxonomicallyIncluded(state, taxonTo, taxonFrom, citation, microReference);
+			}else{
+				taxonFrom.addTaxonRelation(taxonTo, relType, citation, microReference);
+			}
+		}
+		return success;
+	}
+	
+	private boolean makeTaxonomicallyIncluded(TcsRdfImportState state, Taxon toTaxon, Taxon fromTaxon, ReferenceBase citation, String microCitation){
+		ReferenceBase sec = toTaxon.getSec();
+		TaxonomicTree tree = state.getTree(sec);
+		if (tree == null){
+			tree = makeTree(state, sec);
+		}
+		tree.addParentChild(toTaxon, fromTaxon, citation, microCitation);
+		return true;
+	}
+	
+	private TaxonomicTree makeTree(TcsRdfImportState state, ReferenceBase ref){
+		//FIXME treeName
+		String treeName = "TaxonTree - No Name";
+		if (ref != null && CdmUtils.isNotEmpty(ref.getTitleCache())){
+			treeName = ref.getTitleCache();
+		}
+		TaxonomicTree tree = TaxonomicTree.NewInstance(treeName);
+		tree.setReference(ref);
+		
+		getTaxonService().saveTaxonomicTree(tree);
+		state.putTree(ref, tree);
+		return tree;
+	}
 	
 	
 	private boolean relationExists(Taxon taxonTo, Synonym synonym, SynonymRelationshipType synRelType){
@@ -263,8 +303,8 @@ public class TcsRdfTaxonRelationsImport extends TcsRdfImportBase implements ICdm
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)
 	 */
-	protected boolean isIgnore(IImportConfigurator config){
-		return ! config.isDoRelTaxa();
+	protected boolean isIgnore(TcsRdfImportState state){
+		return ! state.getConfig().isDoRelTaxa();
 	}
 	
 }

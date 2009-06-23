@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -22,10 +21,8 @@ import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.common.ResultWrapper;
 import eu.etaxonomy.cdm.common.XmlHelp;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
-import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
-import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NonViralName;
@@ -43,7 +40,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  *
  */
 @Component
-public class TcsXmlTaxonImport  extends TcsXmlImportBase implements ICdmIO<IImportConfigurator> {
+public class TcsXmlTaxonImport  extends TcsXmlImportBase implements ICdmIO<TcsXmlImportState> {
 	private static final Logger logger = Logger.getLogger(TcsXmlTaxonImport.class);
 
 	private static int modCount = 30000;
@@ -54,7 +51,7 @@ public class TcsXmlTaxonImport  extends TcsXmlImportBase implements ICdmIO<IImpo
 	
 	
 	@Override
-	public boolean doCheck(IImportConfigurator config){
+	public boolean doCheck(TcsXmlImportState state){
 		boolean result = true;
 		logger.warn("Checking for Taxa not yet implemented");
 		//result &= checkArticlesWithoutJournal(bmiConfig);
@@ -343,8 +340,8 @@ public class TcsXmlTaxonImport  extends TcsXmlImportBase implements ICdmIO<IImpo
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)
 	 */
-	protected boolean isIgnore(IImportConfigurator config){
-		return ! config.isDoTaxa();
+	protected boolean isIgnore(TcsXmlImportState state){
+		return ! state.getConfig().isDoTaxa();
 	}
 
 

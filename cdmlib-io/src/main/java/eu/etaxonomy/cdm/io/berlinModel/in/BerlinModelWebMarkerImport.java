@@ -50,7 +50,7 @@ public class BerlinModelWebMarkerImport extends BerlinModelImportBase {
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doCheck(eu.etaxonomy.cdm.io.common.IImportConfigurator)
 	 */
 	@Override
-	protected boolean doCheck(IImportConfigurator config){
+	protected boolean doCheck(BerlinModelImportState state){
 		boolean result = true;
 		logger.warn("Checking for "+pluralString+" not yet implemented");
 		//result &= checkArticlesWithoutJournal(bmiConfig);
@@ -140,9 +140,8 @@ public class BerlinModelWebMarkerImport extends BerlinModelImportBase {
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)
 	 */
-	protected boolean isIgnore(IImportConfigurator config){
-		BerlinModelImportConfigurator bmiConfig = (BerlinModelImportConfigurator)config;
-		return ! bmiConfig.isDoMarker();
+	protected boolean isIgnore(BerlinModelImportState state){
+		return ! state.getConfig().isDoMarker();
 	}
 
 }

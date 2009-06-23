@@ -44,7 +44,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
  * @created 04.08.2008
  * @version 1.0
  */
-public abstract class TcsXmlImportBase  extends CdmIoBase<IImportConfigurator> {
+public abstract class TcsXmlImportBase  extends CdmIoBase<TcsXmlImportState> {
 	private static final Logger logger = Logger.getLogger(TcsXmlImportBase.class);
 
 	protected static Namespace nsTcom = Namespace.getNamespace("http://rs.tdwg.org/ontology/voc/Common#");
@@ -58,16 +58,16 @@ public abstract class TcsXmlImportBase  extends CdmIoBase<IImportConfigurator> {
 	protected abstract boolean doInvoke(TcsXmlImportState state);
 
 	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doInvoke(eu.etaxonomy.cdm.io.common.IImportConfigurator, eu.etaxonomy.cdm.api.application.CdmApplicationController, java.util.Map)
-	 */
-	@Override
-	protected boolean doInvoke(IImportConfigurator config, 
-			Map<String, MapWrapper<? extends CdmBase>> stores){ 
-		TcsXmlImportState state = ((TcsXmlImportConfigurator)config).getState();
-		state.setConfig((TcsXmlImportConfigurator)config);
-		return doInvoke(state);
-	}
+//	/* (non-Javadoc)
+//	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doInvoke(eu.etaxonomy.cdm.io.common.IImportConfigurator, eu.etaxonomy.cdm.api.application.CdmApplicationController, java.util.Map)
+//	 */
+//	@Override
+//	protected boolean doInvoke(IImportConfigurator config, 
+//			Map<String, MapWrapper<? extends CdmBase>> stores){ 
+//		TcsXmlImportState state = ((TcsXmlImportConfigurator)config).getState();
+//		state.setConfig((TcsXmlImportConfigurator)config);
+//		return doInvoke(state);
+//	}
 	
 	
 	protected boolean makeStandardMapper(Element parentElement, CdmBase ref, Set<String> omitAttributes, CdmSingleAttributeXmlMapperBase[] classMappers){

@@ -38,6 +38,12 @@ public abstract class IoStateBase<CONFIG extends IIoConfigurator> {
 		this.config = config;
 	}
 	
-	public abstract void initialize(CONFIG config);
+	/**
+	 * @param config
+	 */
+	//TODO config not necessary ones it it implemented in constructor for Imports too.
+	public void initialize(CONFIG config){
+		this.config = config;
+	}
 	
 }

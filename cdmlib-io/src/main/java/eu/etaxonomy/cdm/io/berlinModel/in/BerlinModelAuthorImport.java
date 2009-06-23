@@ -18,6 +18,7 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
+import eu.etaxonomy.cdm.io.common.ImportStateBase;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.model.agent.Person;
@@ -43,11 +44,19 @@ public class BerlinModelAuthorImport extends BerlinModelImportBase {
 		super();
 	}
 	
+	
+	
+	
+
+
+
+
+
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doCheck(eu.etaxonomy.cdm.io.common.IImportConfigurator)
 	 */
 	@Override
-	protected boolean doCheck(IImportConfigurator config){
+	protected boolean doCheck(BerlinModelImportState state){
 		boolean result = true;
 		logger.warn("Checking for "+pluralString+" not yet implemented");
 		//result &= checkArticlesWithoutJournal(bmiConfig);
@@ -133,7 +142,7 @@ public class BerlinModelAuthorImport extends BerlinModelImportBase {
 					}
 	
 					//created, notes
-					doIdCreatedUpdatedNotes(config, author, rs, authorId, namespace);
+					doIdCreatedUpdatedNotes(state, author, rs, authorId, namespace);
 	
 					personMap.put(authorId, author);
 				}catch(Exception ex){
@@ -160,8 +169,8 @@ public class BerlinModelAuthorImport extends BerlinModelImportBase {
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)
 	 */
-	protected boolean isIgnore(IImportConfigurator config){
-		return ! config.isDoAuthors();
+	protected boolean isIgnore(BerlinModelImportState state){
+		return ! state.getConfig().isDoAuthors();
 	}
 
 }

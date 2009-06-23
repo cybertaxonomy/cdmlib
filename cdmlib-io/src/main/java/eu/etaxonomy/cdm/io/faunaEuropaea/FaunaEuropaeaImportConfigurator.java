@@ -13,6 +13,7 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportConfigurator;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
+import eu.etaxonomy.cdm.io.common.ImportStateBase;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.reference.Database;
@@ -23,7 +24,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
  * @created 08.05.2009
  * @version 1.0
  */
-public class FaunaEuropaeaImportConfigurator extends ImportConfiguratorBase implements IImportConfigurator {
+public class FaunaEuropaeaImportConfigurator extends ImportConfiguratorBase<FaunaEuropeaImportState> implements IImportConfigurator {
 
 	private static final Logger logger = Logger.getLogger(FaunaEuropaeaImportConfigurator.class);
 	
@@ -88,5 +89,14 @@ public class FaunaEuropaeaImportConfigurator extends ImportConfiguratorBase impl
 			return this.getSource().toString();
 		}
 	}
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#getNewState()
+	 */
+	public FaunaEuropeaImportState getNewState() {
+		return new FaunaEuropeaImportState(this);
+	}
+	
+	
 	
 }

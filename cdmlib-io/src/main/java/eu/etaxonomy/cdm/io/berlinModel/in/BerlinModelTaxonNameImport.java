@@ -59,7 +59,7 @@ public class BerlinModelTaxonNameImport extends BerlinModelImportBase {
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doCheck(eu.etaxonomy.cdm.io.common.IImportConfigurator)
 	 */
 	@Override
-	protected boolean doCheck(IImportConfigurator config){
+	protected boolean doCheck(BerlinModelImportState state){
 		boolean result = true;
 		logger.warn("Checking for TaxonNames not yet implemented");
 		//result &= checkArticlesWithoutJournal(bmiConfig);
@@ -194,7 +194,7 @@ public class BerlinModelTaxonNameImport extends BerlinModelImportBase {
 					}
 					
 					//created, notes
-					success &= doIdCreatedUpdatedNotes(config, taxonNameBase, rs, nameId, namespace);
+					success &= doIdCreatedUpdatedNotes(state, taxonNameBase, rs, nameId, namespace);
 
 					//NonViralName
 					if (taxonNameBase instanceof NonViralName){
@@ -395,8 +395,8 @@ public class BerlinModelTaxonNameImport extends BerlinModelImportBase {
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)
 	 */
-	protected boolean isIgnore(IImportConfigurator config){
-		return ! config.isDoTaxonNames();
+	protected boolean isIgnore(BerlinModelImportState state){
+		return ! state.getConfig().isDoTaxonNames();
 	}
 
 	

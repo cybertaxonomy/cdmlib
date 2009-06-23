@@ -10,57 +10,38 @@
 package eu.etaxonomy.cdm.io.synthesys;
 
 
-import java.util.Map;
-
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.CdmIoBase;
-import eu.etaxonomy.cdm.io.common.IImportConfigurator;
-import eu.etaxonomy.cdm.io.common.MapWrapper;
-import eu.etaxonomy.cdm.io.taxonx.TaxonXImportConfigurator;
-import eu.etaxonomy.cdm.io.taxonx.TaxonXImportState;
-import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
  * @author p.kelbert
  * @created 29.10.2008
  * @version 1.0
  */
-public class SpecimenIoBase extends CdmIoBase<IImportConfigurator> {
+public abstract class SpecimenIoBase extends CdmIoBase<SpecimenImportState> {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(SpecimenIoBase.class);
 
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doCheck(eu.etaxonomy.cdm.io.common.IoStateBase)
+	 */
 	@Override
-	protected boolean doCheck(IImportConfigurator config) {
+	protected boolean doCheck(SpecimenImportState state) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doInvoke(eu.etaxonomy.cdm.io.common.IImportConfigurator, eu.etaxonomy.cdm.api.application.CdmApplicationController, java.util.Map)
+	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doInvoke(eu.etaxonomy.cdm.io.common.IoStateBase)
 	 */
 	@Override
-	protected boolean doInvoke(IImportConfigurator config, 
-			Map<String, MapWrapper<? extends CdmBase>> stores){ 
-		SpecimenImportState state = ((SpecimenImportConfigurator)config).getState();
-		state.setConfig((SpecimenImportConfigurator)config);
-		return doInvoke(state);
-	}
-	
-	public boolean doInvoke(SpecimenImportState state){
+	protected boolean doInvoke(SpecimenImportState state) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
-	protected boolean isIgnore(IImportConfigurator config) {
-		// TODO Auto-generated method stub
-		return false;
-	}
 
-	public boolean invoke(IImportConfigurator config, Map stores) {
-		// TODO Auto-generated method stub
-		return false;
-	}
+
 
 }

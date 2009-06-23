@@ -23,17 +23,17 @@ public class TcsRdfImportState extends ImportStateBase<TcsRdfImportConfigurator>
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TcsRdfImportState.class);
 
-	public TcsRdfImportState() {
-		super();
+	public TcsRdfImportState(TcsRdfImportConfigurator config) {
+		super(config);
 	}
 	
 	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.IoStateBase#initialize(eu.etaxonomy.cdm.io.common.IoConfiguratorBase)
-	 */
-	@Override
-	public void initialize(TcsRdfImportConfigurator config) {
-				
-	}
+//	/* (non-Javadoc)
+//	 * @see eu.etaxonomy.cdm.io.common.IoStateBase#initialize(eu.etaxonomy.cdm.io.common.IoConfiguratorBase)
+//	 */
+//	@Override
+//	public void initialize(TcsRdfImportConfigurator config) {
+//				
+//	}
 
 }

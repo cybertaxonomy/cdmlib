@@ -59,7 +59,7 @@ public class BerlinModelTaxonNameExport extends BerlinModelExportBase<TaxonNameB
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doCheck(eu.etaxonomy.cdm.io.common.IImportConfigurator)
 	 */
 	@Override
-	protected boolean doCheck(IExportConfigurator config){
+	protected boolean doCheck(BerlinModelExportState state){
 		boolean result = true;
 		logger.warn("Checking for " + pluralString + " not yet fully implemented");
 		List<TaxonNameBase> list = getObjectList();
@@ -152,7 +152,7 @@ public class BerlinModelTaxonNameExport extends BerlinModelExportBase<TaxonNameB
 		return mapping;
 	}
 	
-	protected boolean doInvoke(BerlinModelExportState<BerlinModelExportConfigurator> state){
+	protected boolean doInvoke(BerlinModelExportState state){
 		try{
 			logger.info("start make "+pluralString+" ...");
 			boolean success = true ;
@@ -188,7 +188,7 @@ public class BerlinModelTaxonNameExport extends BerlinModelExportBase<TaxonNameB
 	}
 
 	
-	protected boolean doDelete(BerlinModelExportState<BerlinModelExportConfigurator> state){
+	protected boolean doDelete(BerlinModelExportState state){
 		BerlinModelExportConfigurator bmeConfig = state.getConfig();
 		
 		String sql;
@@ -229,8 +229,8 @@ public class BerlinModelTaxonNameExport extends BerlinModelExportBase<TaxonNameB
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)
 	 */
-	protected boolean isIgnore(IExportConfigurator config){
-		return ! ((BerlinModelExportConfigurator)config).isDoTaxonNames();
+	protected boolean isIgnore(BerlinModelExportState state){
+		return ! state.getConfig().isDoTaxonNames();
 	}
 	
 	//called by MethodMapper

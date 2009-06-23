@@ -23,16 +23,16 @@ public class TcsXmlImportState extends ImportStateBase<TcsXmlImportConfigurator>
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TcsXmlImportState.class);
 
-	public TcsXmlImportState() {
-		super();
+	public TcsXmlImportState(TcsXmlImportConfigurator config) {
+		super(config);
 	}
 	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.IoStateBase#initialize(eu.etaxonomy.cdm.io.common.IoConfiguratorBase)
-	 */
-	@Override
-	public void initialize(TcsXmlImportConfigurator config) {
-				
-	}
+//	/* (non-Javadoc)
+//	 * @see eu.etaxonomy.cdm.io.common.IoStateBase#initialize(eu.etaxonomy.cdm.io.common.IoConfiguratorBase)
+//	 */
+//	@Override
+//	public void initialize(TcsXmlImportConfigurator config) {
+//				
+//	}
 
 }

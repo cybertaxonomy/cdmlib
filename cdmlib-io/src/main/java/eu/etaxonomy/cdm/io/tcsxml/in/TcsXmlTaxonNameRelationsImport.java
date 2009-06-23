@@ -23,7 +23,7 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
 @Component
-public class TcsXmlTaxonNameRelationsImport extends TcsXmlImportBase implements ICdmIO<IImportConfigurator> {
+public class TcsXmlTaxonNameRelationsImport extends TcsXmlImportBase implements ICdmIO<TcsXmlImportState> {
 	private static final Logger logger = Logger.getLogger(TcsXmlTaxonNameRelationsImport.class);
 
 	private static int modCount = 5000;
@@ -33,7 +33,7 @@ public class TcsXmlTaxonNameRelationsImport extends TcsXmlImportBase implements 
 	}
 	
 	@Override
-	public boolean doCheck(IImportConfigurator config){
+	public boolean doCheck(TcsXmlImportState state){
 		boolean result = true;
 		logger.warn("Checking for TaxonNameRelations not yet implemented");
 		//result &= checkArticlesWithoutJournal(tcsConfig);
@@ -253,8 +253,8 @@ public class TcsXmlTaxonNameRelationsImport extends TcsXmlImportBase implements 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)
 	 */
-	protected boolean isIgnore(IImportConfigurator config){
-		return ! config.isDoRelNames();
+	protected boolean isIgnore(TcsXmlImportState state){
+		return ! state.getConfig().isDoRelNames();
 	}
 
 }

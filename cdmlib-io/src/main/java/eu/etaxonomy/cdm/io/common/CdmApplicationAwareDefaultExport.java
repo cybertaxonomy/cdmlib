@@ -18,9 +18,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
-import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.service.IService;
-import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
@@ -29,13 +27,15 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 /**
+ * This class is an default exporter class that is a spring bean and therefore it knows all other IO classes that are beans
+ * 
  * @author a.mueller
  * @created 20.06.2008
  * @version 1.0
  */
 
 @Component("defaultExport")
-public class CdmApplicationAwareDefaultExport<T extends IExportConfigurator> implements ICdmExport<T>, ApplicationContextAware {
+public class CdmApplicationAwareDefaultExport<T extends IExportConfigurator> implements ICdmExporter<T>, ApplicationContextAware {
 	private static final Logger logger = Logger.getLogger(CdmApplicationAwareDefaultExport.class);
 
 	protected ApplicationContext applicationContext;
@@ -48,7 +48,9 @@ public class CdmApplicationAwareDefaultExport<T extends IExportConfigurator> imp
 		this.applicationContext = applicationContext;
 	}
 
+//	DbExportStateBase<T> state;
 
+	
 	//Constants
 	final boolean OBLIGATORY = true; 
 	final boolean FACULTATIVE = false; 
@@ -100,13 +102,16 @@ public class CdmApplicationAwareDefaultExport<T extends IExportConfigurator> imp
 			return false;
 		}
 		
+		ExportStateBase state = config.getNewState();
+		state.initialize(config);
+		
 		//do check for each class
-		for (Class<ICdmIO> ioClass: config.getIoClassList()){
+		for (Class<ICdmExport> ioClass: config.getIoClassList()){
 			try {
 				String ioBeanName = getComponentBeanName(ioClass);
-				ICdmIO<S> cdmIo = (ICdmIO<S>)applicationContext.getBean(ioBeanName, ICdmIO.class);
+				ICdmExport cdmIo = (ICdmExport)applicationContext.getBean(ioBeanName, ICdmIO.class);
 				if (cdmIo != null){
-					result &= cdmIo.check(config);
+					result &= cdmIo.check(state);
 				}else{
 					logger.error("cdmIO for class " + (ioClass == null ? "(null)" : ioClass.getSimpleName()) + " was null");
 					result = false;
@@ -128,7 +133,7 @@ public class CdmApplicationAwareDefaultExport<T extends IExportConfigurator> imp
 	/**
 	 * Executes the whole 
 	 */
-	protected <S extends IExportConfigurator>  boolean doExport(S config){
+	protected <CONFIG extends IExportConfigurator>  boolean doExport(CONFIG config){
 		boolean result = true;
 		//validate
 		if (config == null){
@@ -142,13 +147,17 @@ public class CdmApplicationAwareDefaultExport<T extends IExportConfigurator> imp
 		System.out.println("Start export from source '" + config.getSourceNameString() 
 				+ "' to destination '" + config.getDestinationNameString() + "'");
 		
+		ExportStateBase state = config.getNewState();
+		state.initialize(config);
+		
 		//do invoke for each class
-		for (Class<ICdmIO> ioClass: config.getIoClassList()){
+		for (Class<ICdmExport> ioClass: config.getIoClassList()){
 			try {
 				String ioBeanName = getComponentBeanName(ioClass);
-				ICdmIO<S> cdmIo = (ICdmIO<S>)applicationContext.getBean(ioBeanName, ICdmIO.class);
+				ICdmExport cdmIo = (ICdmExport)applicationContext.getBean(ioBeanName, ICdmIO.class);
 				if (cdmIo != null){
-					result &= cdmIo.invoke(config, stores);
+					//result &= cdmIo.invoke(config, stores);
+					result &= cdmIo.invoke(state);
 //					IoState<S> state = null;
 //					result &= cdmIo.invoke(state);
 				}else{
@@ -187,7 +196,7 @@ public class CdmApplicationAwareDefaultExport<T extends IExportConfigurator> imp
 		return result;
 	}
 	
-	private String getComponentBeanName(Class<ICdmIO> ioClass){
+	private String getComponentBeanName(Class<ICdmExport> ioClass){
 		Component component = ioClass.getAnnotation(Component.class);
 		String ioBean = component.value();
 		if ("".equals(ioBean)){

@@ -19,7 +19,6 @@ import org.springframework.stereotype.Component;
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
-import eu.etaxonomy.cdm.io.common.IImportConfigurator.EDITOR;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.Feature;
@@ -98,8 +97,9 @@ public abstract class ImportConfiguratorBase<STATE extends ImportStateBase> exte
 	}
 	
 
+
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.tcsrdf.IImportConfigurator#isValid()
+	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#isValid()
 	 */
 	public boolean isValid(){
 		boolean result = true;
@@ -119,19 +119,19 @@ public abstract class ImportConfiguratorBase<STATE extends ImportStateBase> exte
 	
 /* ****************** GETTER/SETTER **************************/	
 
-	/**
-	 * @return the state
-	 */
-	public STATE getState() {
-		return state;
-	}
-
-	/**
-	 * @param state the state to set
-	 */
-	public void setState(STATE state) {
-		this.state = state;
-	}
+//	/**
+//	 * @return the state
+//	 */
+//	public STATE getState() {
+//		return state;
+//	}
+//
+//	/**
+//	 * @param state the state to set
+//	 */
+//	public void setState(STATE state) {
+//		this.state = state;
+//	}
 	
 	public void setIoClassList(ICdmIO[] ioList){
 		this.ioList = ioList;

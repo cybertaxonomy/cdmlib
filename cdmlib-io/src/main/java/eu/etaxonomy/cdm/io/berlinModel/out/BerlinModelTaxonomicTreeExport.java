@@ -53,7 +53,7 @@ public class BerlinModelTaxonomicTreeExport extends BerlinModelExportBase<Relati
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doCheck(eu.etaxonomy.cdm.io.common.IImportConfigurator)
 	 */
 	@Override
-	protected boolean doCheck(IExportConfigurator config){
+	protected boolean doCheck(BerlinModelExportState state){
 		boolean result = true;
 		logger.warn("Checking for " + pluralString + " not yet implemented");
 		//result &= checkArticlesWithoutJournal(bmiConfig);
@@ -82,7 +82,7 @@ public class BerlinModelTaxonomicTreeExport extends BerlinModelExportBase<Relati
 		return mapping;
 	}
 	
-	protected boolean doInvoke(BerlinModelExportState<BerlinModelExportConfigurator> state){
+	protected boolean doInvoke(BerlinModelExportState state){
 		try{
 			logger.info("start make " + pluralString + " ...");
 			boolean success = true ;
@@ -113,7 +113,7 @@ public class BerlinModelTaxonomicTreeExport extends BerlinModelExportBase<Relati
 	}
 
 	
-	protected boolean doDelete(BerlinModelExportState<BerlinModelExportConfigurator> state){
+	protected boolean doDelete(BerlinModelExportState state){
 		BerlinModelExportConfigurator bmeConfig = state.getConfig();
 		
 		String sql;
@@ -130,8 +130,8 @@ public class BerlinModelTaxonomicTreeExport extends BerlinModelExportBase<Relati
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)
 	 */
-	protected boolean isIgnore(IExportConfigurator config){
-		return ! ((BerlinModelExportConfigurator)config).isDoTaxonNames();
+	protected boolean isIgnore(BerlinModelExportState state){
+		return ! state.getConfig().isDoTaxonNames();
 	}
 	
 	//called by MethodMapper

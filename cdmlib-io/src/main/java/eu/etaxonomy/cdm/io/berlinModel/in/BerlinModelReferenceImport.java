@@ -155,9 +155,9 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doCheck(eu.etaxonomy.cdm.io.common.IImportConfigurator)
 	 */
 	@Override
-	protected boolean doCheck(IImportConfigurator config){
+	protected boolean doCheck(BerlinModelImportState state){
 		boolean result = true;
-		BerlinModelImportConfigurator bmiConfig = (BerlinModelImportConfigurator)config;
+		BerlinModelImportConfigurator bmiConfig = state.getConfig();
 		result &= checkArticlesWithoutJournal(bmiConfig);
 		result &= checkPartOfJournal(bmiConfig);
 		result &= checkPartOfUnresolved(bmiConfig);
@@ -176,8 +176,9 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 		
 
 	
-	private boolean doPreliminaryRefDetails(IImportConfigurator config, Map<String, MapWrapper<? extends CdmBase>> stores){
+	private boolean doPreliminaryRefDetails(BerlinModelImportState state, Map<String, MapWrapper<? extends CdmBase>> stores){
 		
+		IImportConfigurator config = state.getConfig(); 
 		MapWrapper<TeamOrPersonBase> teamMap = (MapWrapper<TeamOrPersonBase>)stores.get(ICdmIO.TEAM_STORE);
 		MapWrapper<ReferenceBase> refDetailMap = (MapWrapper<ReferenceBase>)stores.get(ICdmIO.REF_DETAIL_STORE);
 		MapWrapper<ReferenceBase> nomRefDetailMap = (MapWrapper<ReferenceBase>)stores.get(ICdmIO.NOMREF_DETAIL_STORE);
@@ -213,7 +214,7 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 					genericReference.setTitleCache(fullNomRefCache);
 					nomRefDetailMap.put(refDetailId, genericReference);
 					//refId, created, notes
-					doIdCreatedUpdatedNotes(bmiConfig, genericReference, rs, refDetailId, namespace );						
+					doIdCreatedUpdatedNotes(state, genericReference, rs, refDetailId, namespace );						
 					//year
 					genericReference.setDatePublished(ImportHelper.getDatePublished(refYear)); 
 					refCounter.nomRefCount++;
@@ -228,7 +229,7 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 					refDetailMap.put(refDetailId, genericReference);
 					
 					//refId, created, notes
-					doIdCreatedUpdatedNotes(bmiConfig, genericReference, rs, refDetailId, namespace );						
+					doIdCreatedUpdatedNotes(state, genericReference, rs, refDetailId, namespace );						
 					//year
 					genericReference.setDatePublished(ImportHelper.getDatePublished(refYear)); 
 					refCounter.referenceCount++;
@@ -267,7 +268,7 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 		boolean success = true;
 		
 		//preliminary RefDetails  //TODO -> move to own class ?
-		doPreliminaryRefDetails(config, state.getStores());
+		doPreliminaryRefDetails(state, state.getStores());
 		
 		success &= initializeMappers(state, "Reference");
 		
@@ -406,7 +407,7 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 			}
 							
 			//refId, created, notes
-			doIdCreatedUpdatedNotes(state.getConfig(), referenceBase, rs, refId, namespace );						
+			doIdCreatedUpdatedNotes(state, referenceBase, rs, refId, namespace );						
 			//refYear
 			String refYear = (String)valueMap.get("refYear".toLowerCase());
 			referenceBase.setDatePublished(ImportHelper.getDatePublished(refYear)); 
@@ -842,8 +843,8 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)
 	 */
-	protected boolean isIgnore(IImportConfigurator config){
-		return (config.getDoReferences() == IImportConfigurator.DO_REFERENCES.NONE);
+	protected boolean isIgnore(BerlinModelImportState state){
+		return (state.getConfig().getDoReferences() == IImportConfigurator.DO_REFERENCES.NONE);
 	}
 
 	

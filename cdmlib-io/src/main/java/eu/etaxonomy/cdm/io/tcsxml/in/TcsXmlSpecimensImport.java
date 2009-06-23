@@ -4,7 +4,6 @@
 package eu.etaxonomy.cdm.io.tcsxml.in;
 
 import java.util.List;
-import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.jdom.Element;
@@ -17,7 +16,6 @@ import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.model.agent.Institution;
-import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
 
@@ -26,7 +24,7 @@ import eu.etaxonomy.cdm.model.occurrence.Specimen;
  *
  */
 @Component
-public class TcsXmlSpecimensImport extends TcsXmlImportBase implements ICdmIO<IImportConfigurator> {
+public class TcsXmlSpecimensImport extends TcsXmlImportBase implements ICdmIO<TcsXmlImportState> {
 	private static final Logger logger = Logger.getLogger(TcsXmlSpecimensImport.class);
 
 	private static int modCount = 1000;
@@ -36,7 +34,7 @@ public class TcsXmlSpecimensImport extends TcsXmlImportBase implements ICdmIO<II
 	}
 	
 	@Override
-	public boolean doCheck(IImportConfigurator config){
+	public boolean doCheck(TcsXmlImportState config){
 		boolean result = true;
 		//result &= checkArticlesWithoutJournal(config);
 		//result &= checkPartOfJournal(config);
@@ -245,8 +243,8 @@ public class TcsXmlSpecimensImport extends TcsXmlImportBase implements ICdmIO<II
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)
 	 */
-	protected boolean isIgnore(IImportConfigurator config){
-		TcsXmlImportConfigurator tcsConfig = (TcsXmlImportConfigurator)config;
+	protected boolean isIgnore(TcsXmlImportState state){
+		TcsXmlImportConfigurator tcsConfig = state.getConfig();
 		return (! tcsConfig.isDoSpecimen());
 	}
 	

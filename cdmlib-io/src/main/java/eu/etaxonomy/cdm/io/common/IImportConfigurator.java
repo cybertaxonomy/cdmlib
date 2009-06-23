@@ -36,6 +36,12 @@ public interface IImportConfigurator extends IIoConfigurator {
 	}
 	
 	public boolean isValid();
+	
+	/**
+	 * Factory method. Creates a new state for the import type and adds this coniguration to it.
+	 * @return 
+	 */
+	public <STATE extends ImportStateBase> STATE getNewState();
 
 	/* ****************** GETTER/SETTER **************************/
 	public boolean isDeleteAll();

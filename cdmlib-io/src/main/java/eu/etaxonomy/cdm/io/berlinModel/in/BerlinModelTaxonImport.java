@@ -65,9 +65,9 @@ public class BerlinModelTaxonImport  extends BerlinModelImportBase  {
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doCheck(eu.etaxonomy.cdm.io.common.IImportConfigurator)
 	 */
 	@Override
-	protected boolean doCheck(IImportConfigurator config){
+	protected boolean doCheck(BerlinModelImportState state){
 		boolean result = true;
-		BerlinModelImportConfigurator bmiConfig = (BerlinModelImportConfigurator)config;
+		BerlinModelImportConfigurator bmiConfig = state.getConfig();
 		logger.warn("Checking for Taxa not yet fully implemented");
 		result &= checkTaxonStatus(bmiConfig);
 		result &= checkInactivated(bmiConfig);
@@ -298,7 +298,7 @@ public class BerlinModelTaxonImport  extends BerlinModelImportBase  {
 					Boolean publishFlag = rs.getBoolean("PublishFlag");
 					taxonBase.addMarker(Marker.NewInstance(MarkerType.PUBLISH(), publishFlag));
 					//Notes
-					doIdCreatedUpdatedNotes(config, taxonBase, rs, taxonId, namespace);
+					doIdCreatedUpdatedNotes(state, taxonBase, rs, taxonId, namespace);
 					
 					taxonMap.put(taxonId, taxonBase);
 				} catch (Exception e) {
@@ -325,8 +325,8 @@ public class BerlinModelTaxonImport  extends BerlinModelImportBase  {
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)
 	 */
-	protected boolean isIgnore(IImportConfigurator config){
-		return ! config.isDoTaxa();
+	protected boolean isIgnore(BerlinModelImportState state){
+		return ! state.getConfig().isDoTaxa();
 	}
 
 }

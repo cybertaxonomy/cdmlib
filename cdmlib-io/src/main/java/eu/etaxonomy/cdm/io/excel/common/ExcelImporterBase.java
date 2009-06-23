@@ -30,7 +30,7 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
  * @created 17.12.2008
  * @version 1.0
  */
-public abstract class ExcelImporterBase extends CdmIoBase<IImportConfigurator> {
+public abstract class ExcelImporterBase extends CdmIoBase<ExcelImportState> {
 	private static final Logger logger = Logger.getLogger(ExcelImporterBase.class);
 
 	protected static final String SCIENTIFIC_NAME_COLUMN = "ScientificName";
@@ -47,14 +47,15 @@ public abstract class ExcelImporterBase extends CdmIoBase<IImportConfigurator> {
      * @param stores (not used)
      */
 	@Override
-	protected boolean doInvoke(IImportConfigurator config,
-			Map<String, MapWrapper<? extends CdmBase>> stores) {
+//	protected boolean doInvoke(IImportConfigurator config,
+//			Map<String, MapWrapper<? extends CdmBase>> stores) {
+	protected boolean doInvoke(ExcelImportState state){
 		
 		boolean success = false;
 		
     	logger.debug("Importing excel data");
     	
-    	configurator = (ExcelImportConfiguratorBase) config;
+    	configurator = state.getConfig();
     	
 		NomenclaturalCode nc = getConfigurator().getNomenclaturalCode();
 		if (nc == null) {
@@ -63,9 +64,9 @@ public abstract class ExcelImporterBase extends CdmIoBase<IImportConfigurator> {
 		}
 		// read and save all rows of the excel worksheet
     	try {
-			recordList = ExcelUtils.parseXLS((String)config.getSource());
+			recordList = ExcelUtils.parseXLS((String)state.getConfig().getSource());
 		} catch (FileNotFoundException e1) {
-			logger.error("File not found: " + (String)config.getSource());
+			logger.error("File not found: " + (String)state.getConfig().getSource());
 			return false;
 		}
     	
@@ -94,7 +95,7 @@ public abstract class ExcelImporterBase extends CdmIoBase<IImportConfigurator> {
 	}
 
 	@Override
-	protected boolean doCheck(IImportConfigurator config) {
+	protected boolean doCheck(ExcelImportState state) {
 		boolean result = true;
 		logger.warn("No check implemented for Excel import");
 		return result;

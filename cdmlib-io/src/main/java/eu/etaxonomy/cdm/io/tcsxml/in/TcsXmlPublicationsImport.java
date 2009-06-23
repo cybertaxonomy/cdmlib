@@ -28,7 +28,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
  *
  */
 @Component
-public class TcsXmlPublicationsImport extends TcsXmlImportBase implements ICdmIO<IImportConfigurator> {
+public class TcsXmlPublicationsImport extends TcsXmlImportBase implements ICdmIO<TcsXmlImportState> {
 	private static final Logger logger = Logger.getLogger(TcsXmlPublicationsImport.class);
 
 	private static int modCount = 1000;
@@ -38,9 +38,9 @@ public class TcsXmlPublicationsImport extends TcsXmlImportBase implements ICdmIO
 	}
 	
 	@Override
-	public boolean doCheck(IImportConfigurator config){
+	public boolean doCheck(TcsXmlImportState state){
 		boolean result = true;
-		result &= checkArticlesWithoutJournal(config);
+		result &= checkArticlesWithoutJournal(state.getConfig());
 		//result &= checkPartOfJournal(config);
 		
 		return result;
@@ -132,8 +132,8 @@ public class TcsXmlPublicationsImport extends TcsXmlImportBase implements ICdmIO
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)
 	 */
-	protected boolean isIgnore(IImportConfigurator config){
-		return (config.getDoReferences() == IImportConfigurator.DO_REFERENCES.NONE);
+	protected boolean isIgnore(TcsXmlImportState state){
+		return (state.getConfig().getDoReferences() == IImportConfigurator.DO_REFERENCES.NONE);
 	}
 	
 }

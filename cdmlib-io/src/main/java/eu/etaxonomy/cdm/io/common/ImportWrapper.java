@@ -32,7 +32,7 @@ public class ImportWrapper {
 	
 	private String label;
 	
-	private Class<? extends ICdmImport> importClass = CdmApplicationAwareDefaultImport.class;
+	private Class<? extends ICdmImporter> importClass = CdmApplicationAwareDefaultImport.class;
 	
 	private IImportConfigurator configuration;
 	
@@ -51,7 +51,7 @@ public class ImportWrapper {
 	
 	public static ImportWrapper Abcd206WrapperInstance(){
 		String label = "ABCD 2.06";
-		Class<? extends ICdmImport> clazz = CdmApplicationAwareDefaultImport.class;
+		Class<? extends ICdmImporter> clazz = CdmApplicationAwareDefaultImport.class;
 		IImportConfigurator config = SpecimenImportConfigurator.NewInstance(null, null);
 		ImportWrapper wrapper = new ImportWrapper();
 		wrapper.setLabel(label);
@@ -63,7 +63,7 @@ public class ImportWrapper {
 	
 	public static ImportWrapper TcsXml101WrapperInstance(){
 		String label = "TcsXML 1.1";
-		Class<? extends ICdmImport> clazz = CdmApplicationAwareDefaultImport.class;
+		Class<? extends ICdmImporter> clazz = CdmApplicationAwareDefaultImport.class;
 		IImportConfigurator config = TcsXmlImportConfigurator.NewInstance(null, null);
 		ImportWrapper wrapper = new ImportWrapper();
 		wrapper.setLabel(label);
@@ -75,7 +75,7 @@ public class ImportWrapper {
 	
 	public static ImportWrapper Jaxb10WrapperInstance(){
 		String label = "CDM 1.0 XML";
-		Class<? extends ICdmImport> clazz = CdmApplicationAwareDefaultImport.class;
+		Class<? extends ICdmImporter> clazz = CdmApplicationAwareDefaultImport.class;
 		IImportConfigurator config = JaxbImportConfigurator.NewInstance(null, null);
 		ImportWrapper wrapper = new ImportWrapper();
 		wrapper.setLabel(label);
@@ -157,14 +157,14 @@ public class ImportWrapper {
 	/**
 	 * @return the ioClazz
 	 */
-	public Class<? extends ICdmImport> getImportClass() {
+	public Class<? extends ICdmImporter> getImportClass() {
 		return importClass;
 	}
 
 	/**
 	 * @param ioClazz the ioClazz to set
 	 */
-	public void setImportClass(Class<? extends ICdmImport> importClass) {
+	public void setImportClass(Class<? extends ICdmImporter> importClass) {
 		this.importClass = importClass;
 	}
 	

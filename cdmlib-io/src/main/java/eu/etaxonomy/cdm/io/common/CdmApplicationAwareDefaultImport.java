@@ -19,6 +19,7 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.api.service.IService;
+import eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportState;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -34,7 +35,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  */
 
 @Component("defaultImport")
-public class CdmApplicationAwareDefaultImport<T extends IImportConfigurator> implements ICdmImport<T>, ApplicationContextAware {
+public class CdmApplicationAwareDefaultImport<T extends IImportConfigurator> implements ICdmImporter<T>, ApplicationContextAware {
 	private static final Logger logger = Logger.getLogger(CdmApplicationAwareDefaultImport.class);
 
 	protected ApplicationContext applicationContext;
@@ -59,6 +60,8 @@ public class CdmApplicationAwareDefaultImport<T extends IImportConfigurator> imp
 	Map<String, MapWrapper<? extends CdmBase>> stores = new HashMap<String, MapWrapper<? extends CdmBase>>();
 
 	public CdmApplicationAwareDefaultImport(){
+		
+		
 		stores.put(ICdmIO.PERSON_STORE, new MapWrapper<Person>(service));
 		stores.put(ICdmIO.TEAM_STORE, new MapWrapper<TeamOrPersonBase<?>>(service));
 		stores.put(ICdmIO.REFERENCE_STORE, new MapWrapper<ReferenceBase>(service));
@@ -99,13 +102,16 @@ public class CdmApplicationAwareDefaultImport<T extends IImportConfigurator> imp
 			return false;
 		}
 		
+		ImportStateBase state = config.getNewState();
+		state.initialize(config);
+		
 		//do check for each class
 		for (Class<ICdmIO> ioClass: config.getIoClassList()){
 			try {
 				String ioBeanName = getComponentBeanName(ioClass);
-				ICdmIO<S> cdmIo = (ICdmIO<S>)applicationContext.getBean(ioBeanName, ICdmIO.class);
+				ICdmIO cdmIo = (ICdmIO)applicationContext.getBean(ioBeanName, ICdmIO.class);
 				if (cdmIo != null){
-					result &= cdmIo.check(config);
+					result &= cdmIo.check(state);
 				}else{
 					logger.error("cdmIO was null");
 					result = false;
@@ -141,13 +147,18 @@ public class CdmApplicationAwareDefaultImport<T extends IImportConfigurator> imp
 		ReferenceBase sourceReference = config.getSourceReference();
 		logger.info("Start import from Source '"+ config.getSourceNameString() + "' to destination '" + config.getDestinationNameString() + "'");
 		
+		ImportStateBase state = config.getNewState();
+		state.initialize(config);
+
+		
 		//do invoke for each class
 		for (Class<ICdmIO> ioClass: config.getIoClassList()){
 			try {
 				String ioBeanName = getComponentBeanName(ioClass);
-				ICdmIO<S> cdmIo = (ICdmIO<S>)applicationContext.getBean(ioBeanName, ICdmIO.class);
+				ICdmIO cdmIo = (ICdmIO)applicationContext.getBean(ioBeanName, ICdmIO.class);
 				if (cdmIo != null){
-					result &= cdmIo.invoke(config, stores);
+//					result &= cdmIo.invoke(config, stores);
+					result &= cdmIo.invoke(state);
 				}else{
 					logger.error("cdmIO was null");
 					result = false;

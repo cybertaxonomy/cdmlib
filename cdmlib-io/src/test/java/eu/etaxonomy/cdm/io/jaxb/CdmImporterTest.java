@@ -33,7 +33,7 @@ public class CdmImporterTest  extends CdmTransactionalIntegrationTest{
 	@SpringBeanByType
 	JaxbImport jaxbImport;
 	
-	private IImportConfigurator configurator;
+	private JaxbImportConfigurator configurator;
 	
 	@Before
 	public void setUp() {
@@ -51,7 +51,7 @@ public class CdmImporterTest  extends CdmTransactionalIntegrationTest{
 	@Test
 	@DataSet
 	public void testImport() throws Exception {
-		jaxbImport.doInvoke(configurator, null);
+		jaxbImport.doInvoke(new JaxbImportState(configurator));
 		testExpectedDataSet(this.getClass().getResourceAsStream("/eu/etaxonomy/cdm/io/jaxb/CdmImporterTest.testImport-result.xml"));
 	}
 

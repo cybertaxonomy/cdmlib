@@ -13,27 +13,32 @@ package eu.etaxonomy.cdm.io.berlinModel.out;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.DbExportStateBase;
-import eu.etaxonomy.cdm.io.common.IoConfiguratorBase;
 
 /**
  * @author a.mueller
  * @created 11.05.2009
  * @version 1.0
  */
-public class BerlinModelExportState<CONFIG extends BerlinModelExportConfigurator> extends DbExportStateBase<CONFIG>{
+public class BerlinModelExportState extends DbExportStateBase<BerlinModelExportConfigurator>{
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(BerlinModelExportState.class);
-	
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.IoStateBase#initialize(eu.etaxonomy.cdm.io.common.IoConfiguratorBase)
-	 */
-	@Override
-	public void initialize(BerlinModelExportConfigurator config) {
-				
-	}
 
 	
+	
+//	/* (non-Javadoc)
+//	 * @see eu.etaxonomy.cdm.io.common.IoStateBase#initialize(eu.etaxonomy.cdm.io.common.IIoConfigurator)
+//	 */
+//	@Override
+//	public void initialize(BerlinModelExportConfigurator config) {
+//				
+//	}
+
+	
+	public BerlinModelExportState(BerlinModelExportConfigurator config) {
+		super(config);
+	}
+
+
 	private Integer nextRefDetailId = null;
 	private Integer nextFactCategoryId = null;
 	

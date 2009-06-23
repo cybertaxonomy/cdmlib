@@ -13,7 +13,6 @@ package eu.etaxonomy.cdm.io.abcd206;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.CdmIoBase;
-import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 
 
 /**
@@ -21,7 +20,7 @@ import eu.etaxonomy.cdm.io.common.IImportConfigurator;
  * @created 20.10.2008
  * @version 1.0
  */
-public abstract class SpecimenIoBase  extends CdmIoBase<IImportConfigurator> {
+public abstract class SpecimenIoBase  extends CdmIoBase<SpecimenImportState> {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(SpecimenIoBase.class);
 

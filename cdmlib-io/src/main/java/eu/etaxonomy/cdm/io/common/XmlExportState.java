@@ -23,22 +23,25 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * @created 11.05.2009
  * @version 1.0
  */
-//TODO make it CONFIG extends DBExportConfigurator
-public class XmlExportState<CONFIG extends XmlExportConfiguratorBase> extends IoStateBase<CONFIG> {
+public class XmlExportState<CONFIG extends XmlExportConfiguratorBase> extends ExportStateBase<CONFIG> {
 	private static final Logger logger = Logger.getLogger(XmlExportState.class);
-	
-	Map<UUID, String> xmlIdMap = new HashMap<UUID, String>();
+
+	private Map<UUID, String> xmlIdMap = new HashMap<UUID, String>();
 
 	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.IoStateBase#initialize(eu.etaxonomy.cdm.io.common.IoConfiguratorBase)
-	 */
-	@Override
-	public void initialize(XmlExportConfiguratorBase config) {
-				
+//	/* (non-Javadoc)
+//	 * @see eu.etaxonomy.cdm.io.common.IoStateBase#initialize(eu.etaxonomy.cdm.io.common.IoConfiguratorBase)
+//	 */
+//	@Override
+//	public void initialize(XmlExportConfiguratorBase config) {
+//				
+//	}
+
+	
+	public XmlExportState(CONFIG config) {
+		super(config);
 	}
 
-	
 	public void putDbId(CdmBase cdmBase, String xmlId){
 		if (cdmBase != null){
 			xmlIdMap.put(cdmBase.getUuid(), xmlId);

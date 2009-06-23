@@ -7,10 +7,14 @@
 package eu.etaxonomy.cdm.io.common;
 
 /**
+ * 
  * @author a.babadshanjan
  * @created 17.11.2008
  */
-public interface ICdmExport<T extends IExportConfigurator> {
+public interface ICdmExporter<T extends IExportConfigurator> {
 
-	public abstract boolean invoke(T tcsiConfig);
+	public abstract boolean invoke(T config);
+	
+	
+	
 }

@@ -13,6 +13,7 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.ExportConfiguratorBase;
+import eu.etaxonomy.cdm.io.common.ExportStateBase;
 import eu.etaxonomy.cdm.io.common.IExportConfigurator;
 
 /**
@@ -46,6 +47,15 @@ public class JaxbExportConfigurator extends ExportConfiguratorBase implements IE
 	private boolean doTypeDesignations = true;
 	
 	
+	
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.IExportConfigurator#getNewState()
+	 */
+	public JaxbExportState getNewState() {
+		return new JaxbExportState(this);
+	}
+
 	public int getMaxRows() {
 		return maxRows;
 	}

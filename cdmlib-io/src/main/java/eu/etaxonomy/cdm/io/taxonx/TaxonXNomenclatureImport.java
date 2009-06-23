@@ -48,7 +48,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  * @version 1.0
  */
 @Component
-public class TaxonXNomenclatureImport extends CdmIoBase<IImportConfigurator> implements ICdmIO<IImportConfigurator> {
+public class TaxonXNomenclatureImport extends CdmIoBase<TaxonXImportState> implements ICdmIO<TaxonXImportState> {
 	private static final Logger logger = Logger.getLogger(TaxonXNomenclatureImport.class);
 
 	@SuppressWarnings("unused")
@@ -58,8 +58,7 @@ public class TaxonXNomenclatureImport extends CdmIoBase<IImportConfigurator> imp
 		super();
 	}
 	
-	public boolean doCheck(IImportConfigurator config){
-		
+	public boolean doCheck(TaxonXImportState state){
 		boolean result = true;
 		logger.warn("Checking for Types not yet implemented");
 		//result &= checkArticlesWithoutJournal(bmiConfig);
@@ -68,16 +67,16 @@ public class TaxonXNomenclatureImport extends CdmIoBase<IImportConfigurator> imp
 		return result;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doInvoke(eu.etaxonomy.cdm.io.common.IImportConfigurator, eu.etaxonomy.cdm.api.application.CdmApplicationController, java.util.Map)
-	 */
-	@Override
-	protected boolean doInvoke(IImportConfigurator config, 
-			Map<String, MapWrapper<? extends CdmBase>> stores){ 
-		TaxonXImportState state = ((TaxonXImportConfigurator)config).getState();
-		state.setConfig((TaxonXImportConfigurator)config);
-		return doInvoke(state);
-	}
+//	/* (non-Javadoc)
+//	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doInvoke(eu.etaxonomy.cdm.io.common.IImportConfigurator, eu.etaxonomy.cdm.api.application.CdmApplicationController, java.util.Map)
+//	 */
+//	@Override
+//	protected boolean doInvoke(IImportConfigurator config, 
+//			Map<String, MapWrapper<? extends CdmBase>> stores){ 
+//		TaxonXImportState state = ((TaxonXImportConfigurator)config).getState();
+//		state.setConfig((TaxonXImportConfigurator)config);
+//		return doInvoke(state);
+//	}
 	
 	public boolean doInvoke(TaxonXImportState state){		logger.info("start make Nomenclature ...");
 		TransactionStatus tx = startTransaction();
@@ -155,8 +154,8 @@ public class TaxonXNomenclatureImport extends CdmIoBase<IImportConfigurator> imp
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)
 	 */
-	protected boolean isIgnore(IImportConfigurator config){
-		return ! config.isDoFacts();
+	protected boolean isIgnore(TaxonXImportState state){
+		return ! state.getConfig().isDoFacts();
 	}
 
 	/**

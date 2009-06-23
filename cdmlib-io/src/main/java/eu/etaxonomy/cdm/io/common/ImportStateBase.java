@@ -35,16 +35,10 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase> ext
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ImportStateBase.class);
 	
-	Map<ReferenceBase,TaxonomicTree> treeMap = new HashMap<ReferenceBase,TaxonomicTree>();
+	private Map<ReferenceBase,TaxonomicTree> treeMap = new HashMap<ReferenceBase,TaxonomicTree>();
 
-	
-	//different type of stores that are used by the known imports
-	protected Map<String, MapWrapper<? extends CdmBase>> stores = new HashMap<String, MapWrapper<? extends CdmBase>>();
-	
-	protected IService<CdmBase> service = null;
-
-	public ImportStateBase() {
-		super();
+	protected ImportStateBase(CONFIG config){
+		this.config = config;
 		stores.put(ICdmIO.USER_STORE, new MapWrapper<User>(service));
 		stores.put(ICdmIO.PERSON_STORE, new MapWrapper<Person>(service));
 		stores.put(ICdmIO.TEAM_STORE, new MapWrapper<TeamOrPersonBase<?>>(service));
@@ -56,6 +50,11 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase> ext
 		stores.put(ICdmIO.TAXON_STORE, new MapWrapper<TaxonBase>(service));
 		stores.put(ICdmIO.SPECIMEN_STORE, new MapWrapper<Specimen>(service));
 	}
+	
+	//different type of stores that are used by the known imports
+	protected Map<String, MapWrapper<? extends CdmBase>> stores = new HashMap<String, MapWrapper<? extends CdmBase>>();
+	
+	protected IService<CdmBase> service = null;
 
 	/**
 	 * @return the stores

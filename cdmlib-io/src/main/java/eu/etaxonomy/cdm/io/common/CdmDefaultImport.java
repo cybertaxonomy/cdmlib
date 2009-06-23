@@ -21,10 +21,9 @@ import eu.etaxonomy.cdm.model.common.init.TermNotFoundException;
  * @created 29.01.2009
  * @version 1.0
  */
-public class CdmDefaultImport<T extends IImportConfigurator> implements ICdmImport<T> {
+public class CdmDefaultImport<T extends IImportConfigurator> extends CdmDefaultIOBase<IImportConfigurator> implements ICdmImporter<T> {
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CdmDefaultImport.class);
-	
-	private CdmApplicationController cdmApp = null;
 	
 	public boolean invoke(T config){
 		ICdmDataSource destination = config.getDestination();
@@ -38,21 +37,9 @@ public class CdmDefaultImport<T extends IImportConfigurator> implements ICdmImpo
 		if (startApplicationController(config, destination, omitTermLoading, createNew) == false){
 			return false;
 		}else{
-			CdmApplicationAwareDefaultImport<?> defaultImport = (CdmApplicationAwareDefaultImport<?>)cdmApp.applicationContext.getBean("defaultImport");
+			CdmApplicationAwareDefaultImport<?> defaultImport = (CdmApplicationAwareDefaultImport<?>)getCdmAppController().applicationContext.getBean("defaultImport");
 			return defaultImport.invoke(config);
 		}
-	}
-
-	/**
-	 * Starts the CdmApplicationController if not yet started
-	 * @param config Configuration
-	 * @param destination destination
-	 * @return false if start not successful
-	 */
-	public boolean startController(IImportConfigurator config, ICdmDataSource destination){
-		boolean omitTermLoading = false;
-		boolean createNew = false;
-		return startApplicationController(config, destination, omitTermLoading, createNew);
 	}
 	
 	/**
@@ -82,23 +69,27 @@ public class CdmDefaultImport<T extends IImportConfigurator> implements ICdmImpo
 			return false;
 		}
 	}
-	
-	
+
 	/**
-	 * Returns the {@link CdmApplicationController}. This is null if invoke() has not been called yet and if the controller
-	 * has not been set manually by setCdmApp() yet. 
-	 * @return the cdmApp
+	 * Starts the CdmApplicationController if not yet started
+	 * @param config Configuration
+	 * @param destination destination
+	 * @return false if start not successful
 	 */
-	public CdmApplicationController getCdmApp() {
-		return cdmApp;
+	public boolean startController(IImportConfigurator config, ICdmDataSource destination){
+		boolean omitTermLoading = false;
+		boolean createNew = false;
+		return startApplicationController(config, destination, omitTermLoading, createNew);
 	}
-
-
+	
+	
 	/**
-	 * @param cdmApp the cdmApp to set
+	 * For downwards compatibility.
+	 * @return
 	 */
-	public void setCdmApp(CdmApplicationController cdmApp) {
-		this.cdmApp = cdmApp;
+	@Deprecated
+	public CdmApplicationController getCdmApp(){
+		return getCdmAppController();
 	}
 	
 	

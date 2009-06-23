@@ -23,17 +23,17 @@ public class TaxonXImportState extends ImportStateBase<TaxonXImportConfigurator>
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TaxonXImportState.class);
 
-	public TaxonXImportState() {
-		super();
+	public TaxonXImportState(TaxonXImportConfigurator config) {
+		super(config);
 	}
 	
 	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.IoStateBase#initialize(eu.etaxonomy.cdm.io.common.IoConfiguratorBase)
-	 */
-	@Override
-	public void initialize(TaxonXImportConfigurator config) {
-				
-	}
+//	/* (non-Javadoc)
+//	 * @see eu.etaxonomy.cdm.io.common.IoStateBase#initialize(eu.etaxonomy.cdm.io.common.IoConfiguratorBase)
+//	 */
+//	@Override
+//	public void initialize(TaxonXImportConfigurator config) {
+//				
+//	}
 
 }

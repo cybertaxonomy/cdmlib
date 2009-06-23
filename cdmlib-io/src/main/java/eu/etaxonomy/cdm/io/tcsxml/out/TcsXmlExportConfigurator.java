@@ -14,6 +14,7 @@ import java.io.File;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
+import eu.etaxonomy.cdm.io.common.ExportStateBase;
 import eu.etaxonomy.cdm.io.common.IExportConfigurator;
 import eu.etaxonomy.cdm.io.common.XmlExportConfiguratorBase;
 
@@ -54,7 +55,6 @@ public class TcsXmlExportConfigurator extends XmlExportConfiguratorBase implemen
 	 */
 	private TcsXmlExportConfigurator(File destination, ICdmDataSource cdmSource) {
 	   super(destination, cdmSource);
-	   setState(new TcsXmlExportState<TcsXmlExportConfigurator>());
 	}
 
 	
@@ -92,6 +92,13 @@ public class TcsXmlExportConfigurator extends XmlExportConfiguratorBase implemen
 	 */
 	public void setState(TcsXmlExportState<TcsXmlExportConfigurator> state) {
 		this.state = state;
+	}
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.IExportConfigurator#getNewState()
+	 */
+	public ExportStateBase getNewState() {
+		return new TcsXmlExportState(this);
 	}
 	
 	

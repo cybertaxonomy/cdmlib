@@ -27,6 +27,7 @@ import eu.etaxonomy.cdm.io.common.CdmIoBase;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
+import eu.etaxonomy.cdm.io.excel.common.ExcelImportState;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Distribution;
@@ -45,7 +46,7 @@ import eu.etaxonomy.cdm.persistence.query.MatchMode;
  * @version 1.0
  */
 @Component
-public class DistributionImporter extends CdmIoBase<IImportConfigurator> implements ICdmIO<IImportConfigurator> {
+public class DistributionImport extends CdmIoBase<ExcelImportState> implements ICdmIO<ExcelImportState> {
 
     /* used */
     private static final String EDIT_NAME_COLUMN = "EDIT";
@@ -63,23 +64,22 @@ public class DistributionImporter extends CdmIoBase<IImportConfigurator> impleme
 //    private static final String PAGE_NUMBER_COLUMN = "Page";
 //    private static final String INFO_COLUMN = "Info";
     
-	private static final Logger logger = Logger.getLogger(DistributionImporter.class);
+	private static final Logger logger = Logger.getLogger(DistributionImport.class);
 	
 	// Stores already processed descriptions
 	Map<Taxon, TaxonDescription> myDescriptions = new HashMap<Taxon, TaxonDescription>();
 
 	@Override
-	protected boolean doInvoke(IImportConfigurator config,
-			Map<String, MapWrapper<? extends CdmBase>> stores) {
+	protected boolean doInvoke(ExcelImportState state) {
 		
 		if (logger.isDebugEnabled()) { logger.debug("Importing distribution data"); }
     	
 		// read and save all rows of the excel worksheet
 		ArrayList<HashMap<String, String>> recordList;
     	try{
-    		recordList = ExcelUtils.parseXLS(config.getSourceNameString());
+    		recordList = ExcelUtils.parseXLS(state.getConfig().getSourceNameString());
 		} catch (FileNotFoundException e1) {
-			logger.error("File not found: " + (String)config.getSource());
+			logger.error("File not found: " + (String)state.getConfig().getSource());
 			return false;
 		}
     	if (recordList != null) {
@@ -268,7 +268,7 @@ public class DistributionImporter extends CdmIoBase<IImportConfigurator> impleme
     
     
 	@Override
-	protected boolean doCheck(IImportConfigurator config) {
+	protected boolean doCheck(ExcelImportState state) {
 		boolean result = true;
 		logger.warn("No check implemented for distribution data import");
 		return result;
@@ -276,7 +276,7 @@ public class DistributionImporter extends CdmIoBase<IImportConfigurator> impleme
 	
 
 	@Override
-	protected boolean isIgnore(IImportConfigurator config) {
+	protected boolean isIgnore(ExcelImportState state) {
 		return false;
 	}
 

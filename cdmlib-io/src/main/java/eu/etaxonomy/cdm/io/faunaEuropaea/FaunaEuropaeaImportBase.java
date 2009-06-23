@@ -32,7 +32,7 @@ import eu.etaxonomy.cdm.model.common.Language;
  * @created 11.05.2009
  * @version 1.0
  */
-public abstract class FaunaEuropaeaImportBase extends CdmIoBase<IImportConfigurator> implements ICdmIO<IImportConfigurator> {
+public abstract class FaunaEuropaeaImportBase extends CdmIoBase<FaunaEuropeaImportState> implements ICdmIO<FaunaEuropeaImportState> {
 	private static final Logger logger = Logger.getLogger(FaunaEuropaeaImportBase.class);
 	
 	public FaunaEuropaeaImportBase() {

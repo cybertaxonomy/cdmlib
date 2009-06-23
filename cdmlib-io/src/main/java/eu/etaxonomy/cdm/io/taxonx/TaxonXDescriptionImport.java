@@ -50,7 +50,7 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
  * @version 1.0
  */
 @Component
-public class TaxonXDescriptionImport extends CdmIoBase<IImportConfigurator> implements ICdmIO<IImportConfigurator> {
+public class TaxonXDescriptionImport extends CdmIoBase<TaxonXImportState> implements ICdmIO<TaxonXImportState> {
 	private static final Logger logger = Logger.getLogger(TaxonXDescriptionImport.class);
 
 	private static int modCount = 10000;
@@ -59,8 +59,7 @@ public class TaxonXDescriptionImport extends CdmIoBase<IImportConfigurator> impl
 		super();
 	}
 	
-	public boolean doCheck(IImportConfigurator config){
-		
+	public boolean doCheck(TaxonXImportState state){
 		boolean result = true;
 		logger.warn("Checking for Facts not yet implemented");
 		//result &= checkArticlesWithoutJournal(bmiConfig);
@@ -79,16 +78,16 @@ public class TaxonXDescriptionImport extends CdmIoBase<IImportConfigurator> impl
 		return featureMap;
 	}
 	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doInvoke(eu.etaxonomy.cdm.io.common.IImportConfigurator, eu.etaxonomy.cdm.api.application.CdmApplicationController, java.util.Map)
-	 */
-	@Override
-	protected boolean doInvoke(IImportConfigurator config, 
-			Map<String, MapWrapper<? extends CdmBase>> stores){ 
-		TaxonXImportState state = ((TaxonXImportConfigurator)config).getState();
-		state.setConfig((TaxonXImportConfigurator)config);
-		return doInvoke(state);
-	}
+//	/* (non-Javadoc)
+//	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doInvoke(eu.etaxonomy.cdm.io.common.IImportConfigurator, eu.etaxonomy.cdm.api.application.CdmApplicationController, java.util.Map)
+//	 */
+//	@Override
+//	protected boolean doInvoke(IImportConfigurator config, 
+//			Map<String, MapWrapper<? extends CdmBase>> stores){ 
+//		TaxonXImportState state = ((TaxonXImportConfigurator)config).getState();
+//		state.setConfig((TaxonXImportConfigurator)config);
+//		return doInvoke(state);
+//	}
 	
 	public boolean doInvoke(TaxonXImportState state){
 		logger.debug("not yet fully implemented");
@@ -195,8 +194,8 @@ public class TaxonXDescriptionImport extends CdmIoBase<IImportConfigurator> impl
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)
 	 */
-	protected boolean isIgnore(IImportConfigurator config){
-		return ! config.isDoFacts();
+	protected boolean isIgnore(TaxonXImportState state){
+		return ! state.getConfig().isDoFacts();
 	}
 	
 	private String getBracketSourceName(TaxonXImportConfigurator config){

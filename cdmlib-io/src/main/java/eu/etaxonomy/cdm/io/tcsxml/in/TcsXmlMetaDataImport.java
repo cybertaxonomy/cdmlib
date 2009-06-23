@@ -23,7 +23,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  *
  */
 @Component
-public class TcsXmlMetaDataImport extends TcsXmlImportBase implements ICdmIO<IImportConfigurator> {
+public class TcsXmlMetaDataImport extends TcsXmlImportBase implements ICdmIO<TcsXmlImportState> {
 	private static final Logger logger = Logger.getLogger(TcsXmlMetaDataImport.class);
 
 	private static int modCount = 1000;
@@ -33,7 +33,7 @@ public class TcsXmlMetaDataImport extends TcsXmlImportBase implements ICdmIO<IIm
 	}
 	
 	@Override
-	public boolean doCheck(IImportConfigurator config){
+	public boolean doCheck(TcsXmlImportState state){
 		boolean result = true;
 		//result &= checkArticlesWithoutJournal(config);
 		//result &= checkPartOfJournal(config);
@@ -99,8 +99,8 @@ public class TcsXmlMetaDataImport extends TcsXmlImportBase implements ICdmIO<IIm
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)
 	 */
-	protected boolean isIgnore(IImportConfigurator config){
-		TcsXmlImportConfigurator tcsConfig = (TcsXmlImportConfigurator)config;
+	protected boolean isIgnore(TcsXmlImportState state){
+		TcsXmlImportConfigurator tcsConfig = state.getConfig();
 		return (! tcsConfig.isDoMetaData());
 	}
 	

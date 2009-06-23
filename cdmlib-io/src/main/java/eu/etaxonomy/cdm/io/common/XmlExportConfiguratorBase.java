@@ -14,8 +14,6 @@ import java.io.File;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
-import eu.etaxonomy.cdm.io.tcsxml.out.TcsXmlExportConfigurator;
-import eu.etaxonomy.cdm.io.tcsxml.out.TcsXmlExportState;
 
 /**
  * @author a.mueller

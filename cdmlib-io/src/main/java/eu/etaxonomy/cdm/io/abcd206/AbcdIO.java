@@ -76,7 +76,7 @@ import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
  * @version 1.0
  */
 @Component
-public class AbcdIO extends SpecimenIoBase implements ICdmIO<IImportConfigurator> {
+public class AbcdIO extends SpecimenIoBase implements ICdmIO<SpecimenImportState> {
 	private static final Logger logger = Logger.getLogger(AbcdIO.class);
 
 	protected String fullScientificNameString;
@@ -115,7 +115,7 @@ public class AbcdIO extends SpecimenIoBase implements ICdmIO<IImportConfigurator
 
 	
 	@Override
-	protected boolean doCheck(IImportConfigurator config) {
+	protected boolean doCheck(SpecimenImportState state) {
 		logger.warn("Checking not yet implemented for AbcdIO.class");
 		return true;
 	}
@@ -1322,16 +1322,16 @@ public class AbcdIO extends SpecimenIoBase implements ICdmIO<IImportConfigurator
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doInvoke(eu.etaxonomy.cdm.io.common.IImportConfigurator, eu.etaxonomy.cdm.api.application.CdmApplicationController, java.util.Map)
-	 */
-	@Override
-	protected boolean doInvoke(IImportConfigurator config, 
-			Map<String, MapWrapper<? extends CdmBase>> stores){ 
-		SpecimenImportState state = ((SpecimenImportConfigurator)config).getState();
-		state.setConfig((SpecimenImportConfigurator)config);
-		return doInvoke(state);
-	}
+//	/* (non-Javadoc)
+//	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doInvoke(eu.etaxonomy.cdm.io.common.IImportConfigurator, eu.etaxonomy.cdm.api.application.CdmApplicationController, java.util.Map)
+//	 */
+//	@Override
+//	protected boolean doInvoke(IImportConfigurator config, 
+//			Map<String, MapWrapper<? extends CdmBase>> stores){ 
+//		SpecimenImportState state = ((SpecimenImportConfigurator)config).getState();
+//		state.setConfig((SpecimenImportConfigurator)config);
+//		return doInvoke(state);
+//	}
 	
 	
 	
@@ -1374,7 +1374,7 @@ public class AbcdIO extends SpecimenIoBase implements ICdmIO<IImportConfigurator
 
 
 	@Override
-	protected boolean isIgnore(IImportConfigurator config) {
+	protected boolean isIgnore(SpecimenImportState state) {
 		//return ! config.isDoNameFacts();
 		return false;
 	}

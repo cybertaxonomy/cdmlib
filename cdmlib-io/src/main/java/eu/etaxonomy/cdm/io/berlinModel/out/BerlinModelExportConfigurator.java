@@ -15,6 +15,7 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.DbExportConfiguratorBase;
+import eu.etaxonomy.cdm.io.common.ExportStateBase;
 import eu.etaxonomy.cdm.io.common.IExportConfigurator;
 import eu.etaxonomy.cdm.io.common.Source;
 
@@ -29,7 +30,7 @@ public class BerlinModelExportConfigurator extends DbExportConfiguratorBase impl
 
 	private boolean doAuthors;
 	private boolean doTaxonNames;
-	private BerlinModelExportState<BerlinModelExportConfigurator> state;
+	private BerlinModelExportState state;
 
 	private Method relNameQualifierMethod;
 	//ID for the isHomotypic relationship in RelName, if not exist null
@@ -63,10 +64,9 @@ public class BerlinModelExportConfigurator extends DbExportConfiguratorBase impl
 	 */
 	private BerlinModelExportConfigurator(Source destination, ICdmDataSource cdmSource) {
 	   super();
-//	   setNomenclaturalCode(NomenclaturalCode.ICBN); //default for Berlin Model
 	   setSource(cdmSource);
 	   setDestination(destination);
-	   setState(new BerlinModelExportState<BerlinModelExportConfigurator>());
+//	   setState((BerlinModelExportState)getNewState());
 	}
 	
 	public boolean isDoAuthors(){
@@ -91,20 +91,20 @@ public class BerlinModelExportConfigurator extends DbExportConfiguratorBase impl
 		this.doTaxonNames = doTaxonNames;
 	}
 
-
-	/**
-	 * @return the state
-	 */
-	public BerlinModelExportState<BerlinModelExportConfigurator> getState() {
-		return state;
-	}
-
-	/**
-	 * @param state the state to set
-	 */
-	public void setState(BerlinModelExportState<BerlinModelExportConfigurator> state) {
-		this.state = state;
-	}
+//
+//	/**
+//	 * @return the state
+//	 */
+//	public BerlinModelExportState getState() {
+//		return state;
+//	}
+//
+//	/**
+//	 * @param state the state to set
+//	 */
+//	public void setState(BerlinModelExportState state) {
+//		this.state = state;
+//	}
 
 	/**
 	 * @return the isHomotypicId
@@ -119,24 +119,14 @@ public class BerlinModelExportConfigurator extends DbExportConfiguratorBase impl
 	public void setIsHomotypicId(Integer isHomotypicId) {
 		this.isHomotypicId = isHomotypicId;
 	}
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.IExportConfigurator#getNewState()
+	 */
+	public ExportStateBase getNewState() {
+		return new BerlinModelExportState(this);
+	}
 	
-	
-	
-//
-//	/**
-//	 * @return the relNameQualifierMethod
-//	 */
-//	public Method getRelNameQualifierMethod() {
-//		return relNameQualifierMethod;
-//	}
-//
-//	/**
-//	 * @param relNameQualifierMethod the relNameQualifierMethod to set
-//	 */
-//	public void setRelNameQualifierMethod(Method relNameQualifierMethod) {
-//		this.relNameQualifierMethod = relNameQualifierMethod;
-//	}
-//	
 	
 
 	

@@ -8,6 +8,7 @@ package eu.etaxonomy.cdm.io.common;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator.DO_REFERENCES;
 
@@ -15,7 +16,7 @@ import eu.etaxonomy.cdm.io.common.IImportConfigurator.DO_REFERENCES;
  * @author a.babadshanjan
  * @created 16.11.2008
  */
-public class IoConfiguratorBase {
+public abstract class IoConfiguratorBase implements IIoConfigurator{
 	private static final Logger logger = Logger.getLogger(IoConfiguratorBase.class);
 
 	//im-/export uses TaxonomicTree for is_taxonomically_included_in relationships
@@ -23,6 +24,8 @@ public class IoConfiguratorBase {
 	
 //	protected Class<ICdmIO>[] ioClassList;
 	private DbSchemaValidation dbSchemaValidation = DbSchemaValidation.VALIDATE;
+	
+	private CdmApplicationController cdmApp = null;
 	
 	private boolean doAuthors = true;
 	//references
@@ -53,6 +56,17 @@ public class IoConfiguratorBase {
 
 	public void setDbSchemaValidation(DbSchemaValidation dbSchemaValidation) {
 		this.dbSchemaValidation = dbSchemaValidation;
+	}
+	
+	public CdmApplicationController getCdmAppController(){
+		return this.cdmApp;
+	}
+	
+	/**
+	 * @param cdmApp the cdmApp to set
+	 */
+	public void setCdmAppController(CdmApplicationController cdmApp) {
+		this.cdmApp = cdmApp;
 	}
 	
 	public boolean isDoAuthors() {

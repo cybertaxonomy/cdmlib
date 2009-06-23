@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.io.common;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.hibernate.SessionFactory;
@@ -29,11 +28,26 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * @created 01.07.2008
  * @version 1.0
  */
-public abstract class CdmIoBase<T extends IIoConfigurator> extends CdmApplicationDefaultConfiguration implements ICdmIO<T> {
+public abstract class CdmIoBase<STATE extends IoStateBase> extends CdmApplicationDefaultConfiguration implements ICdmIO<STATE> {
 	private static Logger logger = Logger.getLogger(CdmIoBase.class);
 
 	protected String ioName = null;
 
+	protected abstract boolean doInvoke(STATE state);
+
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.ICdmExport#invoke(eu.etaxonomy.cdm.io.common.ExportStateBase)
+	 */
+	public boolean invoke(STATE state) {
+		if (isIgnore( state)){
+			logger.warn("No invoke for " + ioName + " (ignored)");
+			return true;
+		}else{
+			return doInvoke(state);
+		}
+	}
+	
 	@Autowired
 	SessionFactory sessionFactory;
 	
@@ -85,36 +99,22 @@ public abstract class CdmIoBase<T extends IIoConfigurator> extends CdmApplicatio
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.ICdmIO#check(eu.etaxonomy.cdm.io.common.IIoConfigurator)
 	 */
-	public boolean check(T config) {
-		if (isIgnore(config)){
+	public boolean check(STATE state) {
+		if (isIgnore(state)){
 			logger.warn("No check for " + ioName + " (ignored)");
 			return true;
 		}else{
-			return doCheck(config);
+			return doCheck(state);
 		}
 	}
 	
-	protected abstract boolean doCheck(T config);
+	protected abstract boolean doCheck(STATE state);
 
-
+	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.ICdmIO#invoke(eu.etaxonomy.cdm.io.common.IIoConfigurator, java.util.Map)
 	 */
-	public boolean invoke(T config,
-			Map<String, MapWrapper<? extends CdmBase>> stores) {
-		if (isIgnore(config)){
-			logger.warn("No invoke for " + ioName + " (ignored)");
-			return true;
-		}else{
-			return doInvoke(config, stores);
-		}
-	}
-	
-//	/* (non-Javadoc)
-//	 * @see eu.etaxonomy.cdm.io.common.ICdmIO#invoke(eu.etaxonomy.cdm.io.common.IIoConfigurator, eu.etaxonomy.cdm.api.application.CdmApplicationController, java.util.Map)
-//	 */
 //	public boolean invoke(T config,
-////	public boolean invoke(IIoConfigurator config,
 //			Map<String, MapWrapper<? extends CdmBase>> stores) {
 //		if (isIgnore(config)){
 //			logger.warn("No invoke for " + ioName + " (ignored)");
@@ -124,10 +124,8 @@ public abstract class CdmIoBase<T extends IIoConfigurator> extends CdmApplicatio
 //		}
 //	}
 	
-	
-	
-	protected abstract boolean doInvoke(T config,
-			Map<String, MapWrapper<? extends CdmBase>> stores);
+//	protected abstract boolean doInvoke(T config,
+//			Map<String, MapWrapper<? extends CdmBase>> stores);
 
 	
 	/**
@@ -136,7 +134,7 @@ public abstract class CdmIoBase<T extends IIoConfigurator> extends CdmApplicatio
 	 * @param config
 	 * @return
 	 */
-	protected abstract boolean isIgnore(T config);
+	protected abstract boolean isIgnore(STATE state);
 
 	protected <T extends CdmBase> T getInstance(Class<? extends T> clazz){
 		T result = null;

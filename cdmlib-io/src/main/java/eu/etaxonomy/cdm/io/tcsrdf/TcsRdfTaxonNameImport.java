@@ -45,7 +45,7 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
  * @version 1.0
  */
 @Component
-public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<IImportConfigurator> {
+public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<TcsRdfImportState> {
 	private static final Logger logger = Logger.getLogger(TcsRdfTaxonNameImport.class);
 
 	private static int modCount = 5000;
@@ -55,7 +55,7 @@ public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<I
 	}
 
 	@Override
-	public boolean doCheck(IImportConfigurator config){
+	public boolean doCheck(TcsRdfImportState config){
 		boolean result = true;
 		logger.warn("BasionymRelations not yet implemented");
 		logger.warn("Checking for TaxonNames not yet implemented");
@@ -255,8 +255,8 @@ public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<I
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)
 	 */
-	protected boolean isIgnore(IImportConfigurator config){
-		return ! config.isDoTaxonNames();
+	protected boolean isIgnore(TcsRdfImportState state){
+		return ! state.getConfig().isDoTaxonNames();
 	}
 
 }

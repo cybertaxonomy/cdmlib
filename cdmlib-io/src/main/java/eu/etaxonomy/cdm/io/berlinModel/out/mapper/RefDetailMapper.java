@@ -29,7 +29,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
  * @created 12.05.2009
  * @version 1.0
  */
-public class RefDetailMapper extends DbSingleAttributeExportMapperBase<BerlinModelExportState<?>> implements IDbExportMapper<BerlinModelExportState<?>>{
+public class RefDetailMapper extends DbSingleAttributeExportMapperBase<BerlinModelExportState> implements IDbExportMapper<BerlinModelExportState>{
 	private static final Logger logger = Logger.getLogger(RefDetailMapper.class);
 	
 	private String cdmRefAttributeString; 
@@ -59,7 +59,7 @@ public class RefDetailMapper extends DbSingleAttributeExportMapperBase<BerlinMod
 	 * @see eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbSingleAttributeExportMapperBase#initialize(java.sql.PreparedStatement, eu.etaxonomy.cdm.io.berlinModel.out.mapper.IndexCounter, eu.etaxonomy.cdm.io.berlinModel.out.DbExportState)
 	 */
 	@Override
-	public void initialize(PreparedStatement stmt, IndexCounter index,BerlinModelExportState<?> state, String tableName) {
+	public void initialize(PreparedStatement stmt, IndexCounter index,BerlinModelExportState state, String tableName) {
 		super.initialize(stmt, index, state, tableName);
 		String inRefSql = "INSERT INTO RefDetail (RefDetailId, RefFk , " + 
 	 		" FullRefCache, FullNomRefCache, PreliminaryFlag , Details , " +

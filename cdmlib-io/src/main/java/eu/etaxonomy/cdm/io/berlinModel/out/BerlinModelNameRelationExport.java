@@ -8,11 +8,8 @@
 */
 package eu.etaxonomy.cdm.io.berlinModel.out;
 
-import java.lang.reflect.InvocationTargetException;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Types;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -27,15 +24,12 @@ import eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbObjectMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.IdMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.MethodMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.RefDetailMapper;
-import eu.etaxonomy.cdm.io.common.CdmAttributeMapperBase;
-import eu.etaxonomy.cdm.io.common.IExportConfigurator;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.HybridRelationship;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
-import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
@@ -63,7 +57,7 @@ public class BerlinModelNameRelationExport extends BerlinModelExportBase<Relatio
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doCheck(eu.etaxonomy.cdm.io.common.IImportConfigurator)
 	 */
 	@Override
-	protected boolean doCheck(IExportConfigurator config){
+	protected boolean doCheck(BerlinModelExportState state){
 		boolean result = true;
 		logger.warn("Checking for " + pluralString + " not yet implemented");
 		//result &= checkArticlesWithoutJournal(bmiConfig);
@@ -90,7 +84,7 @@ public class BerlinModelNameRelationExport extends BerlinModelExportBase<Relatio
 		return mapping;
 	}
 	
-	protected boolean doInvoke(BerlinModelExportState<BerlinModelExportConfigurator> state){
+	protected boolean doInvoke(BerlinModelExportState state){
 		try{
 			logger.info("start make " + pluralString + " ...");
 			boolean success = true ;
@@ -124,7 +118,7 @@ public class BerlinModelNameRelationExport extends BerlinModelExportBase<Relatio
 	}
 
 	
-	private boolean makeIsHomotypicRelation(BerlinModelExportState<?> state, BerlinModelExportMapping mapping){
+	private boolean makeIsHomotypicRelation(BerlinModelExportState state, BerlinModelExportMapping mapping){
 		boolean success = true ;
 		try{
 			Integer homotypicId = state.getConfig().getIsHomotypicId();
@@ -167,7 +161,7 @@ public class BerlinModelNameRelationExport extends BerlinModelExportBase<Relatio
 		}	
 	}
 	
-	private boolean invokeIsHomotypic(BerlinModelExportState<?> state, BerlinModelExportMapping mapping, TaxonNameBase fromName, TaxonNameBase toName, ReferenceBase refId, String microCitation) throws SQLException{
+	private boolean invokeIsHomotypic(BerlinModelExportState state, BerlinModelExportMapping mapping, TaxonNameBase fromName, TaxonNameBase toName, ReferenceBase refId, String microCitation) throws SQLException{
 		try{
 			logger.info(fromName.getTitleCache() + "->" + toName.getTitleCache());
 			String maxQuery = " SELECT max(relNameId) as max FROM relName ";
@@ -197,7 +191,7 @@ public class BerlinModelNameRelationExport extends BerlinModelExportBase<Relatio
 		return result;
 	}
 	
-	protected boolean doDelete(BerlinModelExportState<BerlinModelExportConfigurator> state){
+	protected boolean doDelete(BerlinModelExportState state){
 		BerlinModelExportConfigurator bmeConfig = state.getConfig();
 		
 		String sql;
@@ -214,8 +208,8 @@ public class BerlinModelNameRelationExport extends BerlinModelExportBase<Relatio
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)
 	 */
-	protected boolean isIgnore(IExportConfigurator config){
-		return ! ((BerlinModelExportConfigurator)config).isDoTaxonNames();
+	protected boolean isIgnore(BerlinModelExportState state){
+		return ! state.getConfig().isDoTaxonNames();
 	}
 	
 	//called by MethodMapper

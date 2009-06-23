@@ -66,9 +66,9 @@ public class FaunaEuropaeaReferenceImport extends FaunaEuropaeaImportBase {
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doCheck(eu.etaxonomy.cdm.io.common.IImportConfigurator)
 	 */
 	@Override
-	protected boolean doCheck(IImportConfigurator config) {
+	protected boolean doCheck(FaunaEuropeaImportState state) {
 		boolean result = true;
-		FaunaEuropaeaImportConfigurator fauEuConfig = (FaunaEuropaeaImportConfigurator)config;
+		FaunaEuropaeaImportConfigurator fauEuConfig = state.getConfig();
 		logger.warn("Checking for Taxa not yet fully implemented");
 		result &= checkReferenceStatus(fauEuConfig);
 		
@@ -92,14 +92,14 @@ public class FaunaEuropaeaReferenceImport extends FaunaEuropaeaImportBase {
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doInvoke(eu.etaxonomy.cdm.io.common.IImportConfigurator, eu.etaxonomy.cdm.api.application.CdmApplicationController, java.util.Map)
 	 */
 	@Override
-	protected boolean doInvoke(IImportConfigurator config, 
-			Map<String, MapWrapper<? extends CdmBase>> stores) {				
+	protected boolean doInvoke(FaunaEuropeaImportState state) {				
 		
+		Map<String, MapWrapper<? extends CdmBase>> stores = state.getStores();
 		MapWrapper<TeamOrPersonBase> authorStore = (MapWrapper<TeamOrPersonBase>)stores.get(ICdmIO.TEAM_STORE);
 		authorStore.makeEmpty();
 		MapWrapper<ReferenceBase> refStore = (MapWrapper<ReferenceBase>)stores.get(ICdmIO.REFERENCE_STORE);
 				
-		FaunaEuropaeaImportConfigurator fauEuConfig = (FaunaEuropaeaImportConfigurator)config;
+		FaunaEuropaeaImportConfigurator fauEuConfig = state.getConfig();
 		Source source = fauEuConfig.getSource();
 		
 		String namespace = "Reference";
@@ -213,8 +213,8 @@ public class FaunaEuropaeaReferenceImport extends FaunaEuropaeaImportBase {
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)
 	 */
-	protected boolean isIgnore(IImportConfigurator config){
-		return (config.getDoReferences() == IImportConfigurator.DO_REFERENCES.NONE);
+	protected boolean isIgnore(FaunaEuropeaImportState state){
+		return (state.getConfig().getDoReferences() == IImportConfigurator.DO_REFERENCES.NONE);
 	}
 
 }

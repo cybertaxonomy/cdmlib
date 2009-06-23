@@ -42,7 +42,7 @@ public class BerlinModelExportMapping extends CdmIoMapping {
 		this.dbTableName = tableName;
 	}
 	
-	public boolean initialize(BerlinModelExportState<?> state) throws SQLException{
+	public boolean initialize(BerlinModelExportState state) throws SQLException{
 		BerlinModelExportConfigurator bmeConfig = (BerlinModelExportConfigurator)state.getConfig();
 		Source db = bmeConfig.getDestination();
 		

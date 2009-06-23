@@ -16,7 +16,6 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.io.berlinModel.out.BerlinModelExportConfigurator;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
@@ -24,13 +23,16 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * @created 11.05.2009
  * @version 1.0
  */
-//TODO make it CONFIG extends DBExportConfigurator
-public abstract class DbExportStateBase<CONFIG extends BerlinModelExportConfigurator> extends IoStateBase<CONFIG> {
+public abstract class DbExportStateBase<CONFIG extends DbExportConfiguratorBase> extends ExportStateBase<CONFIG> {
 	private static final Logger logger = Logger.getLogger(DbExportStateBase.class);
 	
 	Map<UUID, Integer> dbIdMap = new HashMap<UUID, Integer>();
 	
 	
+	public DbExportStateBase(CONFIG config) {
+		super(config);
+	}
+
 	public void putDbId(CdmBase cdmBase, int dbId){
 		if (cdmBase != null){
 			dbIdMap.put(cdmBase.getUuid(), dbId);

@@ -14,7 +14,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.Hibernate;
 import org.hsqldb.Types;
 
-import eu.etaxonomy.cdm.io.berlinModel.out.BerlinModelExportConfigurator;
+import eu.etaxonomy.cdm.io.common.DbExportConfiguratorBase;
 import eu.etaxonomy.cdm.io.common.DbExportStateBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
@@ -59,8 +59,9 @@ public class DbObjectMapper extends DbSingleAttributeExportMapperBase<DbExportSt
 	
 
 	protected Integer getId(CdmBase cdmBase){
-		BerlinModelExportConfigurator config = getState().getConfig();
-		if (false && config.getIdType() == BerlinModelExportConfigurator.IdType.CDM_ID){
+		DbExportStateBase<?> state = getState();
+		DbExportConfiguratorBase config = state.getConfig();
+		if (false && config.getIdType() == DbExportConfiguratorBase.IdType.CDM_ID){
 			return cdmBase.getId();
 		}else{
 			Integer id = getState().getDbId(cdmBase);

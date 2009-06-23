@@ -15,9 +15,8 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.io.common.CdmIoBase;
-import eu.etaxonomy.cdm.io.common.ICdmIO;
-import eu.etaxonomy.cdm.io.common.IExportConfigurator;
+import eu.etaxonomy.cdm.io.common.CdmExportBase;
+import eu.etaxonomy.cdm.io.common.ICdmExport;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -26,26 +25,26 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * @author a.mueller
  * @created 20.03.2008
  * @version 1.0
+ * <IExportConfigurator>
  */
-public abstract class BerlinModelExportBase<T extends CdmBase> extends CdmIoBase<IExportConfigurator> implements ICdmIO<IExportConfigurator> {
+public abstract class BerlinModelExportBase<T extends CdmBase> extends CdmExportBase<BerlinModelExportConfigurator, BerlinModelExportState> implements ICdmExport<BerlinModelExportConfigurator, BerlinModelExportState> {
 	private static final Logger logger = Logger.getLogger(BerlinModelExportBase.class);
 	
 	public BerlinModelExportBase() {
 		super();
 	}
 	
-	protected abstract boolean doInvoke(BerlinModelExportState<BerlinModelExportConfigurator> state);
+//	protected abstract boolean doInvoke(BerlinModelExportState<BerlinModelExportConfigurator> state);
 	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doInvoke(eu.etaxonomy.cdm.io.common.IImportConfigurator, eu.etaxonomy.cdm.api.application.CdmApplicationController, java.util.Map)
-	 */
-	@Override
-	protected boolean doInvoke(IExportConfigurator config, 
-			Map<String, MapWrapper<? extends CdmBase>> stores){ 
-		BerlinModelExportState<BerlinModelExportConfigurator> state = ((BerlinModelExportConfigurator)config).getState();
-		state.setConfig((BerlinModelExportConfigurator)config);
-		return doInvoke(state);
-	}
+//	/* (non-Javadoc)
+//	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doInvoke(eu.etaxonomy.cdm.io.common.IImportConfigurator, eu.etaxonomy.cdm.api.application.CdmApplicationController, java.util.Map)
+//	 */
+//	protected boolean doInvoke(BerlinModelExportConfigurator config, 
+//			Map<String, MapWrapper<? extends CdmBase>> stores){ 
+//		BerlinModelExportState state = ((BerlinModelExportConfigurator)config).getState();
+//		state.setConfig((BerlinModelExportConfigurator)config);
+//		return doInvoke(state);
+//	}
 	
 	protected boolean checkSqlServerColumnExists(Source source, String tableName, String columnName){
 		String strQuery = "SELECT  Count(t.id) as n " +

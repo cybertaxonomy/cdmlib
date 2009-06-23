@@ -81,9 +81,9 @@ public class FaunaEuropaeaTaxonImport extends FaunaEuropaeaImportBase  {
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doCheck(eu.etaxonomy.cdm.io.common.IImportConfigurator)
 	 */
 	@Override
-	protected boolean doCheck(IImportConfigurator config) {
+	protected boolean doCheck(FaunaEuropeaImportState state) {
 		boolean result = true;
-		FaunaEuropaeaImportConfigurator fauEuConfig = (FaunaEuropaeaImportConfigurator)config;
+		FaunaEuropaeaImportConfigurator fauEuConfig = state.getConfig();
 		logger.warn("Checking for Taxa not yet fully implemented");
 		result &= checkTaxonStatus(fauEuConfig);
 		
@@ -93,8 +93,8 @@ public class FaunaEuropaeaTaxonImport extends FaunaEuropaeaImportBase  {
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)
 	 */
-	protected boolean isIgnore(IImportConfigurator config) {
-		return !config.isDoTaxa();
+	protected boolean isIgnore(FaunaEuropeaImportState state) {
+		return ! state.getConfig().isDoTaxa();
 	}
 
 	private boolean checkTaxonStatus(FaunaEuropaeaImportConfigurator fauEuConfig) {
@@ -114,12 +114,12 @@ public class FaunaEuropaeaTaxonImport extends FaunaEuropaeaImportBase  {
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doInvoke(eu.etaxonomy.cdm.io.common.IImportConfigurator, eu.etaxonomy.cdm.api.application.CdmApplicationController, java.util.Map)
 	 */
 	@Override
-	protected boolean doInvoke(IImportConfigurator config, 
-			Map<String, MapWrapper<? extends CdmBase>> stores) {				
+	protected boolean doInvoke(FaunaEuropeaImportState state) {				
 		
+		Map<String, MapWrapper<? extends CdmBase>> stores = state.getStores();
 		MapWrapper<TaxonNameBase<?,?>> taxonNamesStore = (MapWrapper<TaxonNameBase<?,?>>)stores.get(ICdmIO.TAXONNAME_STORE);
 //		Map<Integer, FaunaEuropaeaTaxon> fauEuTaxonMap = new HashMap();
-		FaunaEuropaeaImportConfigurator fauEuConfig = (FaunaEuropaeaImportConfigurator)config;
+		FaunaEuropaeaImportConfigurator fauEuConfig = state.getConfig();
 		boolean success = true;
 		
 		if(logger.isInfoEnabled()) { logger.info("Start making taxa..."); }

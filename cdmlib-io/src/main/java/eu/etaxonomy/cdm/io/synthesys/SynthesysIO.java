@@ -55,7 +55,7 @@ import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
  * @version 1.0
  */
 @Component
-public class SynthesysIO  extends SpecimenIoBase  implements ICdmIO<IImportConfigurator> {
+public class SynthesysIO  extends SpecimenIoBase  implements ICdmIO<SpecimenImportState> {
 
 	private static final Logger logger = Logger.getLogger(SynthesysIO.class);
 
@@ -503,19 +503,28 @@ public class SynthesysIO  extends SpecimenIoBase  implements ICdmIO<IImportConfi
 	}
 
 
+//	/* (non-Javadoc)
+//	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doInvoke(eu.etaxonomy.cdm.io.common.IImportConfigurator, eu.etaxonomy.cdm.api.application.CdmApplicationController, java.util.Map)
+//	 */
+//	@Override
+//	protected boolean doInvoke(IImportConfigurator config, 
+//			Map<String, MapWrapper<? extends CdmBase>> stores){ 
+//		SpecimenImportState state = ((SpecimenImportConfigurator)config).getState();
+//		state.setConfig((SpecimenImportConfigurator)config);
+//		return doInvoke(state);
+//	}
+	
+//	public boolean doInvoke(SpecimenImportState state){
+//		invoke(state.getConfig());
+//		return false;
+//	}
+
+
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doInvoke(eu.etaxonomy.cdm.io.common.IImportConfigurator, eu.etaxonomy.cdm.api.application.CdmApplicationController, java.util.Map)
+	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IoStateBase)
 	 */
 	@Override
-	protected boolean doInvoke(IImportConfigurator config, 
-			Map<String, MapWrapper<? extends CdmBase>> stores){ 
-		SpecimenImportState state = ((SpecimenImportConfigurator)config).getState();
-		state.setConfig((SpecimenImportConfigurator)config);
-		return doInvoke(state);
-	}
-	
-	public boolean doInvoke(SpecimenImportState state){
-		invoke(state.getConfig());
+	protected boolean isIgnore(SpecimenImportState state) {
 		return false;
 	}
 

@@ -6,28 +6,14 @@
 
 package eu.etaxonomy.cdm.io.common;
 
+import eu.etaxonomy.cdm.api.application.CdmApplicationController;
+
 /**
  * @author a.babadshanjan
  * @created 13.11.2008
  */
 public interface IIoConfigurator {
 
-//	public static enum CHECK{
-//		CHECK_ONLY,
-//		IMPORT_WITHOUT_CHECK,
-//		CHECK_AND_IMPORT,
-//	}
-//	
-//	public static enum DO_REFERENCES{
-//		NONE,
-//		NOMENCLATURAL,
-//		CONCEPT_REFERENCES,
-//		ALL
-//	}
-//	
-//	public abstract CHECK getCheck();
-	
-	
 	/**
 	 * A String representation of the used source may it be a source to be imported (e.g. "BerlinModel Cichorieae Database")
 	 * or a source to be exported (e.g. "CDM Cichorieae Database")
@@ -42,5 +28,19 @@ public interface IIoConfigurator {
 	 * @return
 	 */
 	public String getDestinationNameString();
+	
+	
+	/**
+	 * Returns the CdmApplicationController
+	 * @return
+	 */
+	public CdmApplicationController getCdmAppController();
+
+	
+	/**
+	 * Sets the CdmApplicationController
+	 * @param cdmApp the cdmApp to set
+	 */
+	public void setCdmAppController(CdmApplicationController cdmApp);
 	
 }

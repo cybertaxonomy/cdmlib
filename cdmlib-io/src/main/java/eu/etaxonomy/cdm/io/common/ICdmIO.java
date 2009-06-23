@@ -9,9 +9,6 @@
 
 package eu.etaxonomy.cdm.io.common;
 
-import java.util.Map;
-
-import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
  * @author a.mueller
@@ -19,7 +16,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * @version 1.0
  */
 
-public interface ICdmIO<T extends IIoConfigurator> {
+public interface ICdmIO<STATE extends IoStateBase> {
 	
 	final String USER_STORE = "person";
 	final String PERSON_STORE = "person";
@@ -33,9 +30,11 @@ public interface ICdmIO<T extends IIoConfigurator> {
 	final String FEATURE_STORE = "feature";
 	final String SPECIMEN_STORE = "specimen";
 	
-	public boolean check(T config);
+	public boolean check(STATE state);
 	
-	public boolean invoke(T config, Map<String, MapWrapper<? extends CdmBase>> stores);
+//	public boolean invoke(T config, Map<String, MapWrapper<? extends CdmBase>> stores);
+	
+	public abstract boolean invoke(STATE state);
 	
 //	public boolean invoke(IoState<T> state);
 	

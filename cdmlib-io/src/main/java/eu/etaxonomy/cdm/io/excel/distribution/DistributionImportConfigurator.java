@@ -12,6 +12,9 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
+import eu.etaxonomy.cdm.io.common.ImportStateBase;
+import eu.etaxonomy.cdm.io.excel.common.ExcelImportConfiguratorBase;
+import eu.etaxonomy.cdm.io.excel.common.ExcelImportState;
 import eu.etaxonomy.cdm.model.reference.Database;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
@@ -20,14 +23,14 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
  * @created 10.11.2008
  * @version 1.0
  */
-public class DistributionImportConfigurator extends ImportConfiguratorBase implements IImportConfigurator {
+public class DistributionImportConfigurator extends ExcelImportConfiguratorBase implements IImportConfigurator {
 
 	private static final Logger logger = Logger.getLogger(DistributionImportConfigurator.class);
 	
 	@SuppressWarnings("unchecked")
 	protected void makeIoClassList() {
 		ioClassList = new Class[] {
-				DistributionImporter.class
+				DistributionImport.class
 		};
 	};
 	
@@ -42,10 +45,18 @@ public class DistributionImportConfigurator extends ImportConfiguratorBase imple
 	 * @param destination
 	 */
 	private DistributionImportConfigurator(String url, ICdmDataSource destination) {
-		setSource(url);
-		setDestination(destination);
+		super(url, destination);
 	}
 	
+	
+	
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#getNewState()
+	 */
+	public ExcelImportState getNewState() {
+		return new ExcelImportState(this);
+	}
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.ImportConfiguratorBase#getSource()

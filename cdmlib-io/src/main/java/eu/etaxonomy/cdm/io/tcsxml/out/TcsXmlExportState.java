@@ -23,5 +23,9 @@ public class TcsXmlExportState<CONFIG extends TcsXmlExportConfigurator> extends 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TcsXmlExportState.class);
 
+	public TcsXmlExportState(CONFIG config) {
+		super(config);
+	}
+
 
 }

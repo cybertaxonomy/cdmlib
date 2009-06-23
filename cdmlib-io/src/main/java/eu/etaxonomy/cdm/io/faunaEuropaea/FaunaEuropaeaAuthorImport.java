@@ -46,7 +46,7 @@ public class FaunaEuropaeaAuthorImport extends FaunaEuropaeaImportBase {
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doCheck(eu.etaxonomy.cdm.io.common.IImportConfigurator)
 	 */
 	@Override
-	protected boolean doCheck(IImportConfigurator config){
+	protected boolean doCheck(FaunaEuropeaImportState state){
 		boolean result = true;
 		logger.warn("No checking for Authors not implemented");
 		
@@ -57,12 +57,11 @@ public class FaunaEuropaeaAuthorImport extends FaunaEuropaeaImportBase {
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doInvoke(eu.etaxonomy.cdm.io.common.IImportConfigurator, eu.etaxonomy.cdm.api.application.CdmApplicationController, java.util.Map)
 	 */
 	@Override
-	protected boolean doInvoke(IImportConfigurator config, 
-			Map<String, MapWrapper<? extends CdmBase>> stores){ 
-
+	protected boolean doInvoke(FaunaEuropeaImportState state){ 
+		Map<String, MapWrapper<? extends CdmBase>> stores = state.getStores();
 		MapWrapper<TeamOrPersonBase> authorStore = (MapWrapper<TeamOrPersonBase>)stores.get(ICdmIO.TEAM_STORE);
 		
-		FaunaEuropaeaImportConfigurator fauEuConfig = (FaunaEuropaeaImportConfigurator)config;
+		FaunaEuropaeaImportConfigurator fauEuConfig = state.getConfig();
 		Source source = fauEuConfig.getSource();
 		
 		String namespace = "AuthorTeam";
@@ -133,8 +132,8 @@ public class FaunaEuropaeaAuthorImport extends FaunaEuropaeaImportBase {
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)
 	 */
-	protected boolean isIgnore(IImportConfigurator config){
-		return !config.isDoAuthors();
+	protected boolean isIgnore(FaunaEuropeaImportState state){
+		return ! state.getConfig().isDoAuthors();
 	}
 
 }

@@ -29,7 +29,6 @@ public abstract class ExcelImportConfiguratorBase extends ImportConfiguratorBase
 		super();
 		setSource(url);
 		setDestination(destination);
-		setState(new ExcelImportState());
 	}
 	
 

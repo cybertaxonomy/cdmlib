@@ -67,7 +67,7 @@ public class BerlinModelFactExport extends BerlinModelExportBase<TextData> {
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doCheck(eu.etaxonomy.cdm.io.common.IImportConfigurator)
 	 */
 	@Override
-	protected boolean doCheck(IExportConfigurator config){
+	protected boolean doCheck(BerlinModelExportState state){
 		boolean result = true;
 		logger.warn("Checking for " + pluralString + " not yet implemented");
 		//result &= checkArticlesWithoutJournal(bmiConfig);
@@ -99,7 +99,7 @@ public class BerlinModelFactExport extends BerlinModelExportBase<TextData> {
 		return mapping;
 	}
 	
-	protected boolean doInvoke(BerlinModelExportState<BerlinModelExportConfigurator> state){
+	protected boolean doInvoke(BerlinModelExportState state){
 		try{
 			logger.info("start make " + pluralString + " ...");
 			boolean success = true ;
@@ -138,7 +138,7 @@ public class BerlinModelFactExport extends BerlinModelExportBase<TextData> {
 	
 
 	
-	protected boolean doDelete(BerlinModelExportState<BerlinModelExportConfigurator> state){
+	protected boolean doDelete(BerlinModelExportState state){
 		BerlinModelExportConfigurator bmeConfig = state.getConfig();
 		
 		String sql;
@@ -155,8 +155,8 @@ public class BerlinModelFactExport extends BerlinModelExportBase<TextData> {
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)
 	 */
-	protected boolean isIgnore(IExportConfigurator config){
-		return ! ((BerlinModelExportConfigurator)config).isDoFacts();
+	protected boolean isIgnore(BerlinModelExportState state){
+		return ! state.getConfig().isDoFacts();
 	}
 	
 	//called by MethodMapper

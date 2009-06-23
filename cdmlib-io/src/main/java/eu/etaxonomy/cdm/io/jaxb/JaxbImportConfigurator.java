@@ -46,6 +46,16 @@ public class JaxbImportConfigurator extends ImportConfiguratorBase implements II
 	private boolean doHomotypicalGroups = true;
 	private boolean doTypeDesignations = true;
 
+	
+	
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#getNewState()
+	 */
+	public JaxbImportState getNewState() {
+		return new JaxbImportState(this);
+	}
+
 	public int getMaxRows() {
 		return maxRows;
 	}
