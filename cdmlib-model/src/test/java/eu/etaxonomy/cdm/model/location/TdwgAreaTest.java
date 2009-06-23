@@ -28,6 +28,7 @@ import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
  * @version 1.0
  */
 public class TdwgAreaTest {
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TdwgAreaTest.class);
 
 	/**
