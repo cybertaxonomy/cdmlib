@@ -17,6 +17,7 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -26,6 +27,7 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
 
 /**
@@ -213,10 +215,11 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 		String titleCache = getTitleCache(nonViralName);
 		
 		String microReference = nonViralName.getNomenclaturalMicroReference();
-		INomenclaturalReference ref = (INomenclaturalReference)nonViralName.getNomenclaturalReference();
+		ReferenceBase<?> ref = nonViralName.getNomenclaturalReference();
 		String referenceBaseCache = null;
 		if (ref != null){
-			referenceBaseCache = ref.getNomenclaturalCitation(microReference);
+			INomenclaturalReference nomRef = HibernateProxyHelper.deproxy(ref, INomenclaturalReference.class);
+			referenceBaseCache = nomRef.getNomenclaturalCitation(microReference);
 		}
 		
 		//make nomenclatural status

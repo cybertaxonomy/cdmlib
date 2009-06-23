@@ -10,6 +10,7 @@
 
 package eu.etaxonomy.cdm.api.application;
 
+import org.springframework.security.providers.ProviderManager;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import eu.etaxonomy.cdm.api.conversation.ConversationHolder;
@@ -107,6 +108,13 @@ public interface ICdmApplicationConfiguration {
 	 * @return
 	 */
 	public PlatformTransactionManager getTransactionManager();
+	
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public ProviderManager getAuthenticationManager();
 	
 	/**
 	 * @return

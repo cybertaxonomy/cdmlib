@@ -49,19 +49,20 @@ abstract class CdmDataSourceBase implements ICdmDataSource {
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.database.ICdmDataSource#testConnection()
 	 */
-	public boolean testConnection() {
+	public boolean testConnection() throws Exception {
 
-		try {
-			Connection mConn = getConnection();
-			if (mConn != null){
-				return true;
-			}else{
-				return false;
-			}
-		} catch (Exception e) {
-			logger.warn(e.getMessage());
+		IDatabaseType dbType = getDatabaseType().getDatabaseType();
+		String classString = dbType.getClassString();
+		Class.forName(classString);
+		
+		String mUrl = dbType.getConnectionString(this);
+		Connection mConn = DriverManager.getConnection(mUrl, getUsername(), getPassword());
+		if (mConn != null){
+			return true;
+		}else{
 			return false;
 		}
+
 	}
 
 	

@@ -36,7 +36,12 @@ public class Datasource {
 		defaultDataSource = CdmPersistentDataSource.save(
 				"mysql_cichorieae", DatabaseTypeEnum.MySQL, server, "cdm_edit_cichorieae", port, username, pwd);
 
-		logger.warn("Connect: " + defaultDataSource.testConnection());
+		
+		try {
+			logger.warn("Connect: " + defaultDataSource.testConnection());
+		} catch (Exception e) {
+			logger.warn("Could not connect", e);
+		}
 		
 		
 		

@@ -27,6 +27,7 @@ import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
@@ -43,11 +44,25 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	public abstract TaxonBase getTaxonByUuid(UUID uuid);
 	
 	/**
+	 * 
+	 * @param uuid
+	 * @return
+	 */
+	public abstract TaxonNode getTaxonNodeByUuid(UUID uuid);
+	
+	/**
 	 * FIXME candidate for harmonization? 
 	 * save a taxon and return its UUID
 	 */
 	public abstract UUID saveTaxon(TaxonBase taxon);
 
+	/**
+	 * 
+	 * @param taxonNode
+	 * @return
+	 */
+	public abstract UUID saveTaxonNode(TaxonNode taxonNode);
+	
 	/**
 	 * FIXME candidate for harmonization?
 	 *  save a taxon and return its UUID
@@ -60,6 +75,12 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	 */
 	public abstract Map<UUID, ? extends TaxonBase> saveTaxonAll(Collection<? extends TaxonBase> taxonCollection);
 
+	/**
+	 * 
+	 * @param taxonNodeCollection
+	 * @return
+	 */
+	public abstract Map<UUID, TaxonNode> saveTaxonNodeAll(Collection<TaxonNode> taxonNodeCollection);
 	
 	/**
 	 * FIXME candidate for harmonization?
@@ -183,6 +204,16 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	public Synonym makeTaxonSynonym (Taxon oldTaxon, Taxon newAcceptedTaxon, SynonymRelationshipType synonymType, ReferenceBase citation, String citationMicroReference);
 	
 	/**
+	 * Sets the synonyms name as the accepted taxons name. Deletes the synonym from the accepted taxon synonym list
+	 * and attaches a new synonym created with the former name of the accepted taxon 
+	 * 
+	 * @param synonym 
+	 * @param acceptedTaxon
+	 * @param synonymRelationshipType the relationship type the newly created synonym will have. Defaults to SYNONYM_OF
+	 */
+	public void makeSynonymAcceptedTaxon(Synonym synonym, Taxon acceptedTaxon, SynonymRelationshipType synonymRelationshipType );
+	
+	/**
 	 * Returns the TaxonRelationships (of where relationship.type == type, if this argument is supplied) 
 	 * where the supplied taxon is relatedTo.
 	 * 
@@ -195,9 +226,9 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	 * @return a List of TaxonRelationship instances
 	 */
 	public List<TaxonRelationship> listToTaxonRelationships(Taxon taxon, TaxonRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
-	
+		
 	/**
-	 * Returns the TaxonRelationships (of where relationship.type == type, if this argument is supplied) 
+	 * Returns the TaxonRelationships (of where relationship.type == type, if this arguement is supplied) 
 	 * where the supplied taxon is relatedTo.
 	 * 
 	 * @param taxon The taxon that is relatedTo

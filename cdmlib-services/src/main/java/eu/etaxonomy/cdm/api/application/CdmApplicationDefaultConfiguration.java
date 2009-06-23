@@ -16,6 +16,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate3.HibernateTransactionManager;
+import org.springframework.security.providers.ProviderManager;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.PlatformTransactionManager;
 
@@ -79,8 +80,6 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
 	private ICommonService commonService;
 	@Autowired
 	private ILocationService locationService;
-	@Autowired
-	private IUserService userService;
 //	@Autowired
 	//@Qualifier("mainService")
 	private IService<CdmBase> mainService;
@@ -88,6 +87,10 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
 	private SessionFactory sessionFactory;
 	@Autowired
 	private DataSource dataSource;
+	@Autowired
+	private ProviderManager authenticationManager;
+	@Autowired
+	private IUserService userService;
 
 	
 	/**
@@ -188,12 +191,25 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
 		return this.transactionManager;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getAuthenticationManager()
+	 */
+	public ProviderManager getAuthenticationManager() {
+		return this.authenticationManager;
+	}
+
+	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#NewConversation()
 	 */
 	public ConversationHolder NewConversation() {
 		// TODO make this a prototype
 		return new ConversationHolder(dataSource, sessionFactory, transactionManager);
-	}	
+	}
+
+
+
+	
 	
 }

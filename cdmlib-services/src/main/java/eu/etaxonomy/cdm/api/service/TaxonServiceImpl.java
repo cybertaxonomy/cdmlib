@@ -44,6 +44,7 @@ import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
@@ -52,6 +53,7 @@ import eu.etaxonomy.cdm.persistence.dao.common.IOrderedTermVocabularyDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
+import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonomicTreeDao;
 import eu.etaxonomy.cdm.persistence.fetch.CdmFetch;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
@@ -67,6 +69,8 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 	private ITaxonNameDao nameDao;
 	@Autowired
 	private ITaxonomicTreeDao taxonTreeDao;
+	@Autowired
+	private ITaxonNodeDao taxonNodeDao;
 //	@Autowired
 //	@Qualifier("nonViralNameDaoHibernateImpl")
 //	private INonViralNameDao nonViralNameDao;
@@ -91,6 +95,14 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 	public TaxonBase getTaxonByUuid(UUID uuid) {
 		return super.findByUuid(uuid);
 	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#getTaxonNodeByUuid(java.util.UUID)
+	 */
+	public TaxonNode getTaxonNodeByUuid(UUID uuid) {
+		return taxonNodeDao.findByUuid(uuid);
+	}
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#saveTaxon(eu.etaxonomy.cdm.model.taxon.TaxonBase)
@@ -98,6 +110,15 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 	@Transactional(readOnly = false)
 	public UUID saveTaxon(TaxonBase taxon) {
 		return super.saveCdmObject(taxon);
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#saveTaxonNode(eu.etaxonomy.cdm.model.taxon.TaxonNode)
+	 */
+	@Transactional(readOnly = false)
+	public UUID saveTaxonNode(TaxonNode taxonNode) {
+		return taxonNodeDao.save(taxonNode);
 	}
 
 	//@Transactional(readOnly = false)
@@ -113,6 +134,11 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 	@Transactional(readOnly = false)
 	public Map<UUID, ? extends TaxonBase> saveTaxonAll(Collection<? extends TaxonBase> taxonCollection){
 		return saveCdmObjectAll(taxonCollection);
+	}
+	
+	public Map<UUID, TaxonNode> saveTaxonNodeAll(
+			Collection<TaxonNode> taxonNodeCollection) {
+		return taxonNodeDao.saveAll(taxonNodeCollection);
 	}
 
 	/* (non-Javadoc)
@@ -307,6 +333,30 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		return synRel.getSynonym();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#swapSynonymWithAcceptedTaxon(eu.etaxonomy.cdm.model.taxon.Synonym)
+	 */
+	@Transactional(readOnly = false)
+	public void makeSynonymAcceptedTaxon(Synonym synonym, Taxon acceptedTaxon, SynonymRelationshipType synonymRelationshipType){
+		
+		// create a new synonym with the old acceptedName
+		TaxonNameBase oldAcceptedTaxonName = acceptedTaxon.getName();
+		
+		// remove synonym from oldAcceptedTaxon
+		acceptedTaxon.removeSynonym(synonym);
+		
+		// make synonym name the accepted taxons name
+		TaxonNameBase newAcceptedTaxonName = synonym.getName();
+		acceptedTaxon.setName(newAcceptedTaxonName);
+		
+		// add the new synonym to the acceptedTaxon
+		if(synonymRelationshipType == null){
+			synonymRelationshipType = SynonymRelationshipType.SYNONYM_OF();
+		}
+		
+		acceptedTaxon.addSynonymName(oldAcceptedTaxonName, synonymRelationshipType);
+	}
 
 	public void generateTitleCache() {
 		generateTitleCache(true);
@@ -507,6 +557,13 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		Collections.sort(results);
 		return new DefaultPagerImpl<IdentifiableEntity>
 			(configurator.getPageNumber(), numberOfResults, configurator.getPageSize(), results);
+	}
+
+	public <TYPE extends TaxonBase> Pager<TYPE> list(Class<TYPE> type,
+			Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
+			List<String> propertyPaths) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

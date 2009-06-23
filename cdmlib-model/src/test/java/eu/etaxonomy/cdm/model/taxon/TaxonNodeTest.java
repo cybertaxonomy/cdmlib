@@ -196,4 +196,23 @@ public class TaxonNodeTest {
 		
 	}
 	
+	@Test
+	public void testRemove(){
+		TaxonNode root = taxonomicView1.addRoot(taxon1, null);
+		assertEquals("Number of all nodes in view should be 1", 1, taxonomicView1.getAllNodes().size());
+		
+		
+		TaxonNode childNode = root.addChild(taxon2);
+		assertEquals("Count of children must be 1", 1, root.getCountChildren());
+		
+		childNode.remove();
+		assertEquals("Count of children must be 0", 0, root.getCountChildren());
+		
+		
+		root.remove();
+		assertEquals("Number of all nodes in view should be 0", 0, taxonomicView1.getAllNodes().size());
+		
+		
+	}
+	
 }

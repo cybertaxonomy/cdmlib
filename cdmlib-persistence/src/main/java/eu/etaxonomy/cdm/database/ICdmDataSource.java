@@ -77,8 +77,9 @@ public interface ICdmDataSource {
 	/**
 	 * Tests, if a database connection can be established.
 	 * @return true if test was successful, false otherwise
+	 * @throws Exception 
 	 */
-	public boolean testConnection();
+	public boolean testConnection() throws Exception;
 	
 	public String getUsername();
 	

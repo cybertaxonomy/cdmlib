@@ -141,7 +141,7 @@ public class TdwgAreaTest {
 		DefaultTermInitializer initializer = new DefaultTermInitializer();
 		initializer.initialize();
 		NamedArea saoTome = TdwgArea.getTermByUuid(UUID.fromString("c64e07cc-0a58-44b3-ac91-c216d1b91c1f"));
-		assertEquals("Utf8 error", "São Tomé", saoTome.getLabel());
+		assertEquals("Utf8 error", "S\u00E3o Tom\u00E9", saoTome.getLabel());
 		
 	}	
 }

@@ -10,9 +10,15 @@
     <bean id="authenticationManager" class="org.springframework.security.providers.ProviderManager">
         <property name="providers">
             <list>
-                <bean class="org.springframework.security.providers.TestingAuthenticationProvider"/>
+                <ref local="daoAuthenticationProvider"/>
             </list>
         </property>
+    </bean>
+    
+    <bean id="daoAuthenticationProvider" class="org.springframework.security.providers.dao.DaoAuthenticationProvider">
+        <property name="userDetailsService" ref="userService"/>
+        <property name="saltSource" ref="saltSource"/>
+        <property name="passwordEncoder" ref="passwordEncoder"/>
     </bean>
     
     <bean id="passwordEncoder" class="org.springframework.security.providers.encoding.Md5PasswordEncoder"/>

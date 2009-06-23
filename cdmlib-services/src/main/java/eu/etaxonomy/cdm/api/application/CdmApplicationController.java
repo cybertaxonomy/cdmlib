@@ -23,6 +23,7 @@ import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
+import org.springframework.security.providers.ProviderManager;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
@@ -126,17 +127,19 @@ public class CdmApplicationController {
 	 * @param dbSchemaValidation
 	 * @param omitTermLoading
 	 */
-	private CdmApplicationController(Resource applicationContextResource, ICdmDataSource dataSource, DbSchemaValidation dbSchemaValidation, boolean omitTermLoading) 
-	throws DataSourceNotFoundException, TermNotFoundException{
+	private CdmApplicationController(Resource applicationContextResource, ICdmDataSource dataSource, DbSchemaValidation dbSchemaValidation, boolean omitTermLoading){
 		logger.info("Start CdmApplicationController with datasource: " + dataSource.getName());
 		if (applicationContextResource != null){
 			this.applicationContextResource = applicationContextResource;
 		}else{
 			this.applicationContextResource = new ClassPathResource(DEFAULT_APPLICATION_CONTEXT_RESOURCE);
 		}
-		if (setNewDataSource(dataSource, dbSchemaValidation, omitTermLoading) == false){
-			throw new DataSourceNotFoundException("Wrong datasource: " + dataSource );
-		}
+		
+		setNewDataSource(dataSource, dbSchemaValidation, omitTermLoading);
+		
+//		if (setNewDataSource(dataSource, dbSchemaValidation, omitTermLoading) == false){
+//			throw new DataSourceNotFoundException("Wrong datasource: " + dataSource );
+//		}
 	}
 		
 	
@@ -144,7 +147,7 @@ public class CdmApplicationController {
 	 * Sets the application context to a new spring ApplicationContext by using the according data source and initializes the Controller.
 	 * @param dataSource
 	 */
-	private boolean setNewDataSource(ICdmDataSource dataSource, DbSchemaValidation dbSchemaValidation, boolean omitTermLoading) throws TermNotFoundException {
+	private boolean setNewDataSource(ICdmDataSource dataSource, DbSchemaValidation dbSchemaValidation, boolean omitTermLoading){
 		if (dbSchemaValidation == null){
 			dbSchemaValidation = defaultDbSchemaValidation;
 		}
@@ -152,7 +155,7 @@ public class CdmApplicationController {
 
 
 		GenericApplicationContext appContext;
-		try {
+//		try {
 			appContext = new EclipseRcpSaveGenericApplicationContext();
 			
 			BeanDefinition datasourceBean = dataSource.getDatasourceBean();
@@ -174,19 +177,19 @@ public class CdmApplicationController {
 			appContext.refresh();
 			appContext.start();
 			
-		} catch (BeanCreationException e) {
-			// create new schema
-			if (dbSchemaValidation == DbSchemaValidation.VALIDATE) {
-				logger.error("ApplicationContext could not be created. " +
-					" Maybe your database schema is not up-to-date, " +
-					" but there might be other BeanCreation problems too." +
-					" Try to run CdmApplicationController with dbSchemaValidation.CREATE or dbSchemaValidation.UPDATE option. ");
-			} else {
-				logger.error("BeanCreationException (CdmApplicationController startet with " + dbSchemaValidation.toString() + " option.");
-			}
-			e.printStackTrace();
-			return false;
-		}
+//		} catch (BeanCreationException e) {
+//			// create new schema
+//			if (dbSchemaValidation == DbSchemaValidation.VALIDATE) {
+//				logger.error("ApplicationContext could not be created. " +
+//					" Maybe your database schema is not up-to-date, " +
+//					" but there might be other BeanCreation problems too." +
+//					" Try to run CdmApplicationController with dbSchemaValidation.CREATE or dbSchemaValidation.UPDATE option. ");
+//			} else {
+//				logger.error("BeanCreationException (CdmApplicationController started with " + dbSchemaValidation.toString() + " option.");
+//			}
+//			e.printStackTrace();
+//			throw e;
+//		}
 		setApplicationContext(appContext);
 		return true;
 	}
@@ -211,7 +214,7 @@ public class CdmApplicationController {
 	 * Changes the ApplicationContext to the new dataSource
 	 * @param dataSource
 	 */
-	public boolean changeDataSource(ICdmDataSource dataSource) throws TermNotFoundException {
+	public boolean changeDataSource(ICdmDataSource dataSource){
 		//logger.info("Change datasource to : " + dataSource);
 		return setNewDataSource(dataSource, DbSchemaValidation.VALIDATE, false);
 	}
@@ -221,7 +224,7 @@ public class CdmApplicationController {
 	 * @param dataSource
 	 * @param dbSchemaValidation
 	 */
-	public boolean changeDataSource(ICdmDataSource dataSource, DbSchemaValidation dbSchemaValidation)  throws TermNotFoundException {
+	public boolean changeDataSource(ICdmDataSource dataSource, DbSchemaValidation dbSchemaValidation){
 		//logger.info("Change datasource to : " + dataSource);
 		return setNewDataSource(dataSource, dbSchemaValidation, false);
 	}
@@ -232,8 +235,7 @@ public class CdmApplicationController {
 	 * @param dbSchemaValidation
 	 * @param omitTermLoading
 	 */
-	public boolean changeDataSource(ICdmDataSource dataSource, DbSchemaValidation dbSchemaValidation, boolean omitTermLoading)  
-	throws TermNotFoundException {
+	public boolean changeDataSource(ICdmDataSource dataSource, DbSchemaValidation dbSchemaValidation, boolean omitTermLoading){
 		logger.info("Change datasource to : " + dataSource);
 		return setNewDataSource(dataSource, dbSchemaValidation, omitTermLoading);
 	}
@@ -346,6 +348,11 @@ public class CdmApplicationController {
 	public final ConversationHolder NewConversation(){
 		//return (ConversationHolder)applicationContext.getBean("conversationHolder");
 		return configuration.NewConversation();
+	}
+	
+	
+	public final ProviderManager getAuthenticationManager(){
+		return configuration.getAuthenticationManager();
 	}
 	
 	

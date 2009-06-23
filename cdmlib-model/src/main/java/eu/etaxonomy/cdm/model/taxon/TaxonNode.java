@@ -11,7 +11,9 @@
 package eu.etaxonomy.cdm.model.taxon;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -120,7 +122,6 @@ public class TaxonNode  extends AnnotatableEntity {
 	protected TaxonNode (Taxon taxon, TaxonomicTree taxonomicTree){
 		setTaxon(taxon);
 		setTaxonomicView(taxonomicTree);
-		taxonomicTree.addNode(this);
 	}
 
 	
@@ -140,7 +141,6 @@ public class TaxonNode  extends AnnotatableEntity {
 			throw new IllegalArgumentException("Taxon may not be twice in a taxonomic view");
 		}
 		TaxonNode childNode = new TaxonNode(taxon, this.getTaxonomicTree());
-		this.getTaxonomicTree().addNode(childNode);
 		addChildNote(childNode, ref, microReference, synonymUsed);
 		return childNode;
 	}
@@ -157,9 +157,8 @@ public class TaxonNode  extends AnnotatableEntity {
 		childNode.setSynonymToBeUsed(synonymUsed);
 	}
 	
-	
 	/**
-	 * This removes recursivly all child from this node and from this taxonomic view.
+	 * This removes recursively all child nodes from this node and from this taxonomic view.
 	 * TODO remove orphan nodes completely 
 	 * 
 	 * @param node
@@ -172,7 +171,6 @@ public class TaxonNode  extends AnnotatableEntity {
 				node.removeChild(grandChildNode);
 			}
 			result = childNodes.remove(node);
-			node.getTaxonomicTree().removeNode(node);
 			this.countChildren--;
 			if (this.countChildren < 0){
 				throw new IllegalStateException("children count must not be negative ");
@@ -184,6 +182,19 @@ public class TaxonNode  extends AnnotatableEntity {
 		}
 		return result;
 	}	
+	
+	/**
+	 * Remove this taxonNode From its taxonomic view.
+	 * 
+	 * @return true on success
+	 */
+	public boolean remove(){
+		if(isRootNode()){
+			return taxonomicTree.removeRoot(this);
+		}else{
+			return getParent().removeChild(this);
+		}		
+	}
 	
 //*********** GETTER / SETTER ***********************************/
 	
@@ -212,6 +223,24 @@ public class TaxonNode  extends AnnotatableEntity {
 	public List<TaxonNode> getChildNodes() {
 		return childNodes;
 	}
+	
+	/**
+	 * Returns a set containing this node and all nodes that are descendants of this node
+	 * 
+	 * @return 
+	 */
+	protected Set<TaxonNode> getAllNodes(){
+		Set<TaxonNode> nodeSet = new HashSet<TaxonNode>();
+		
+		nodeSet.add(this);
+		
+		for(TaxonNode childNode : getChildNodes()){
+			nodeSet.addAll(childNode.getAllNodes());
+		}		
+		
+		return nodeSet;
+	}
+	
 //	protected void setChildNodes(List<TaxonNode> childNodes) {
 //		this.childNodes = childNodes;
 //	}
@@ -248,5 +277,22 @@ public class TaxonNode  extends AnnotatableEntity {
 		this.synonymToBeUsed = synonymToBeUsed;
 	}
 	
+	/**
+	 * Whether this TaxonNode is a root node
+	 * @return
+	 */
+	public boolean isRootNode(){
+		return getParent() == null;
+	}
+	
+	/**
+	 * Whether this TaxonNode is a descendant of the given TaxonNode
+	 * 
+	 * @param possibleParent
+	 * @return true if this is a descendant
+	 */
+	public boolean isDescendant(TaxonNode possibleParent){
+		return possibleParent.getAllNodes().contains(this);
+	}
 
 }

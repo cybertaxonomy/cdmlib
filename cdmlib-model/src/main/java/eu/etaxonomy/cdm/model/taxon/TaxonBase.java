@@ -174,7 +174,7 @@ public abstract class TaxonBase<S extends IIdentifiableEntityCacheStrategy> exte
 	/* 
 	 * @see #getName
 	 */
-	protected void setName(TaxonNameBase name) {
+	public void setName(TaxonNameBase name) {
 		this.name = name;
 	}
 	

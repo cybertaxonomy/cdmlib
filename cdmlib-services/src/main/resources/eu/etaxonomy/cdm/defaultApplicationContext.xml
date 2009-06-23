@@ -9,14 +9,14 @@
     http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd">
 
     <import resource="classpath:/eu/etaxonomy/cdm/services.xml"/> 
-<!-- <import resource="classpath:/eu/etaxonomy/cdm/defaultSecurityContext.xml"/> -->
+	<import resource="classpath:/eu/etaxonomy/cdm/defaultSecurityContext.xml"/>
  <!-- <import resource="classpath:/eu/etaxonomy/cdm/spelling.xml"/> -->
 
 	
 	<!-- includes service beans e.g. in eu/etaxonomy/cdm/api -->
-	<context:component-scan base-package="eu/etaxonomy/cdm/api/service">
-	 <!-- 	<context:exclude-filter type="regex" expression="eu\.etaxonomy\.cdm\.api\.service\.UserService"/> -->
-    </context:component-scan>
+	<context:component-scan base-package="eu/etaxonomy/cdm/api/service"/>
+<!--	 	<context:exclude-filter type="regex" expression="eu\.etaxonomy\.cdm\.api\.service\.UserService"/>-->
+<!--    </context:component-scan>-->
 	<context:component-scan base-package="eu/etaxonomy/cdm/api/application"/>
 	
 	<bean id="conversationHolder" class="eu.etaxonomy.cdm.api.conversation.ConversationHolder" scope="prototype"/>

@@ -72,6 +72,7 @@ public class TaxonomicTree extends IdentifiableEntity implements IReferencedEnti
     @XmlSchemaType(name = "IDREF")
     @OneToMany(mappedBy="taxonomicTree", fetch=FetchType.LAZY)
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
+    @Deprecated // FIXME remove this. A set containing all nodes of the tree is a major performance killer, especially when it is not really in use
 	private Set<TaxonNode> allNodes = new HashSet<TaxonNode>();
 
 	@XmlElementWrapper(name = "rootNodes")
@@ -111,7 +112,7 @@ public class TaxonomicTree extends IdentifiableEntity implements IReferencedEnti
 		return result;
 	}
 	
-	private TaxonomicTree(){
+	protected TaxonomicTree(){
 		super();
 	}
 	
@@ -127,6 +128,14 @@ public class TaxonomicTree extends IdentifiableEntity implements IReferencedEnti
 //		newRoot.setMicroReferenceForParentChildRelation(microReference);
 		newRoot.setSynonymToBeUsed(synonymUsed);
 		return newRoot;
+	}
+	
+	public boolean removeRoot(TaxonNode node){
+		if(node.isRootNode()){
+			return rootNodes.remove(node);
+		}
+		
+		return false;
 	}
 	
 	public void makeRootChildOfOtherNode(TaxonNode root, TaxonNode otherNode, ReferenceBase ref, String microReference)
@@ -270,21 +279,24 @@ public class TaxonomicTree extends IdentifiableEntity implements IReferencedEnti
 		this.name = name;
 	}
 
+	/**
+	 * Returns a set containing all nodes in this taxonomic tree.
+	 * 
+	 * Caution: Use this method with care. It can be very time and resource consuming and might
+	 * run into OutOfMemoryExceptions for big trees. 
+	 * 
+	 * @return
+	 */
 	public Set<TaxonNode> getAllNodes() {
+		Set<TaxonNode> allNodes = new HashSet<TaxonNode>();
+		
+		for(TaxonNode rootNode : getRootNodes()){
+			allNodes.addAll(rootNode.getAllNodes());
+		}
+		
 		return allNodes;
-	}
-	//for bidirectional use only
-	protected boolean addNode(TaxonNode taxonNode){
-		return allNodes.add(taxonNode);
-	}
-	//for bidirectional use only
-	protected boolean removeNode(TaxonNode taxonNode){
-		return allNodes.remove(taxonNode);
-	}
-	public void setAllNodes(Set<TaxonNode> allNodes) {
-		this.allNodes = allNodes;
-	}
-
+	}	
+	
 	public Set<TaxonNode> getRootNodes() {
 		return rootNodes;
 	}
