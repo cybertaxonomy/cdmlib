@@ -2,6 +2,7 @@
 <classpath>
 	<classpathentry kind="src" output="target/test-classes" path="src/test/java"/>
 	<classpathentry kind="src" path="src/main/java"/>
+	<classpathentry exported="true" kind="lib" path="jdbc-1.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="spring-agent-2.5.6.jar"/>
 	<classpathentry exported="true" kind="lib" path="spring-aspects-2.5.6.jar"/>
 	<classpathentry exported="true" kind="lib" path="aspectjtools-1.6.3.jar"/>
@@ -48,9 +49,6 @@
 	<classpathentry exported="true" kind="lib" path="jtds-1.2.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="postgresql-8.2-504.jdbc4.jar"/>
 	<classpathentry exported="true" kind="lib" path="jdom-1.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="msbase-2000.3.jar"/>
-	<classpathentry exported="true" kind="lib" path="mssqlserver-2000.3.jar"/>
-	<classpathentry exported="true" kind="lib" path="msutil-2000.3.jar"/>
 	<classpathentry exported="true" kind="lib" path="opencsv-1.8.jar"/>
 	<classpathentry exported="true" kind="lib" path="antlr-2.7.6.jar"/>
 	<classpathentry exported="true" kind="lib" path="asm-attrs.jar"/>

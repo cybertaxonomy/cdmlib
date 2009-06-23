@@ -1944,6 +1944,7 @@ eclipse-plugin/javassist.jar -text
 eclipse-plugin/jaxb-api.jar -text
 eclipse-plugin/jaxb-impl-2.0-sources.jar -text
 eclipse-plugin/jaxb-impl-2.0.jar -text
+eclipse-plugin/jdbc-1.2.jar -text
 eclipse-plugin/jdbc2_0-stdext.jar -text
 eclipse-plugin/jdom-1.0.jar -text
 eclipse-plugin/joda-time-1.5-sources.jar -text
