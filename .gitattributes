@@ -14,6 +14,7 @@ app-import/src/main/java/eu/etaxonomy/cdm/app/berlinModelImport/SalvadorExport.j
 app-import/src/main/java/eu/etaxonomy/cdm/app/berlinModelImport/TreeCreator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/common/CdmDestinations.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/common/ImportUtils.java -text
+app-import/src/main/java/eu/etaxonomy/cdm/app/excelImport/distribution/CichorieaeDistributionActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/excelImport/taxa/NormalExplicitActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/faunaEuropaea/FaunaEuropaeaActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/faunaEuropaea/FaunaEuropaeaSources.java -text
@@ -45,7 +46,6 @@ app-import/src/main/java/eu/etaxonomy/cdm/app/util/TestDatabase.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/util/TestTransaction.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/viennaImport/ViennaActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/wp6/cichorieae/CichorieaeActivator.java -text
-app-import/src/main/java/eu/etaxonomy/cdm/app/wp6/cichorieae/CichorieaeDistributionActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/wp6/cichorieae/CichorieaeImageActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/wp6/cichorieae/TaraxacumActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/wp6/diptera/DipteraActivator.java -text

@@ -7,7 +7,7 @@
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
 
-package eu.etaxonomy.cdm.app.wp6.cichorieae;
+package eu.etaxonomy.cdm.app.excelImport.distribution;
 
 import org.apache.log4j.Logger;
 
