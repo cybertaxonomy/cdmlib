@@ -19,7 +19,6 @@ import eu.etaxonomy.cdm.io.berlinModel.out.mapper.CreatedAndNotesMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbBooleanMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.IdMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.MethodMapper;
-import eu.etaxonomy.cdm.io.common.IExportConfigurator;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Team;

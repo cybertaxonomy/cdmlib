@@ -51,6 +51,7 @@ public class BerlinModelExportConfigurator extends DbExportConfiguratorBase impl
 //				, BerlinModelTypesImport.class
 				, BerlinModelTaxonExport.class
 				, BerlinModelTaxonRelationExport.class
+				, BerlinModelTaxonomicTreeExport.class
 				, BerlinModelFactExport.class
 //				, BerlinModelOccurrenceImport.class
 		};
@@ -90,21 +91,6 @@ public class BerlinModelExportConfigurator extends DbExportConfiguratorBase impl
 	public void setDoTaxonNames(boolean doTaxonNames) {
 		this.doTaxonNames = doTaxonNames;
 	}
-
-//
-//	/**
-//	 * @return the state
-//	 */
-//	public BerlinModelExportState getState() {
-//		return state;
-//	}
-//
-//	/**
-//	 * @param state the state to set
-//	 */
-//	public void setState(BerlinModelExportState state) {
-//		this.state = state;
-//	}
 
 	/**
 	 * @return the isHomotypicId

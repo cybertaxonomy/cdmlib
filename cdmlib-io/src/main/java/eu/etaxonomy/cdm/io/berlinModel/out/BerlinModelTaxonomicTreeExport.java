@@ -9,24 +9,22 @@
 package eu.etaxonomy.cdm.io.berlinModel.out;
 
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
-import eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.CreatedAndNotesMapper;
+import eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbConstantMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbObjectMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.MethodMapper;
 import eu.etaxonomy.cdm.io.common.DbExportStateBase;
-import eu.etaxonomy.cdm.io.common.IExportConfigurator;
-import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
-import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
-import eu.etaxonomy.cdm.model.taxon.TaxonBase;
-import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
 
 
@@ -41,8 +39,8 @@ public class BerlinModelTaxonomicTreeExport extends BerlinModelExportBase<Relati
 
 	private static int modCount = 1000;
 	private static final String dbTableName = "RelPTaxon";
-	private static final String pluralString = "TaxonomicTrees";
-	private static final Class<? extends CdmBase> standardMethodParameter = RelationshipBase.class;
+	private static final String pluralString = "TaxonNodes";
+	private static final Class<? extends CdmBase> standardMethodParameter = TaxonNode.class;
 
 
 	public BerlinModelTaxonomicTreeExport(){
@@ -73,9 +71,9 @@ public class BerlinModelTaxonomicTreeExport extends BerlinModelExportBase<Relati
 		mapping.addMapper(MethodMapper.NewInstance("PTNameFk2", this.getClass(), "getPTNameFk2", standardMethodParameter, DbExportStateBase.class));
 		mapping.addMapper(MethodMapper.NewInstance("PTRefFk2", this.getClass(), "getPTRefFk2", standardMethodParameter, DbExportStateBase.class));
 		
-		mapping.addMapper(MethodMapper.NewInstance("RelQualifierFk", this));
+		mapping.addMapper(DbConstantMapper.NewInstance("RelQualifierFk", Types.INTEGER, 1));
 		
-		mapping.addMapper(DbObjectMapper.NewInstance("citation", "RelRefFk"));
+		mapping.addMapper(DbObjectMapper.NewInstance("referenceForParentChildRelation", "RelRefFk"));
 //		mapping.addMapper(RefDetailMapper.NewInstance("citationMicroReference","citation", "FactRefDetailFk"));
 		mapping.addMapper(CreatedAndNotesMapper.NewInstance());
 
@@ -83,6 +81,10 @@ public class BerlinModelTaxonomicTreeExport extends BerlinModelExportBase<Relati
 	}
 	
 	protected boolean doInvoke(BerlinModelExportState state){
+		if (state.getConfig().isUseTaxonomicTree() == false){
+			return true;
+		}
+		
 		try{
 			logger.info("start make " + pluralString + " ...");
 			boolean success = true ;
@@ -97,9 +99,13 @@ public class BerlinModelTaxonomicTreeExport extends BerlinModelExportBase<Relati
 			
 			int count = 0;
 			for (TaxonomicTree tree : list){
-				if (true){
-					doCount(count++, modCount, pluralString);
-					success &= mapping.invoke(tree);
+				for (TaxonNode node : tree.getAllNodes()){
+					if (node.getParent() == null){
+						continue;
+					}else{
+						doCount(count++, modCount, pluralString);
+						success &= mapping.invoke(node);
+					}
 				}
 			}
 			commitTransaction(txStatus);
@@ -116,12 +122,13 @@ public class BerlinModelTaxonomicTreeExport extends BerlinModelExportBase<Relati
 	protected boolean doDelete(BerlinModelExportState state){
 		BerlinModelExportConfigurator bmeConfig = state.getConfig();
 		
-		String sql;
-		Source destination =  bmeConfig.getDestination();
-		//RelPTaxon
-		sql = "DELETE FROM RelPTaxon";
-		destination.setQuery(sql);
-		destination.update(sql);
+		//already deleted in BerlinModelTaxonRelationExport
+//		String sql;
+//		Source destination =  bmeConfig.getDestination();
+//		//RelPTaxon
+//		sql = "DELETE FROM RelPTaxon ";
+//		destination.setQuery(sql);
+//		destination.update(sql);
 
 		return true;
 	}
@@ -135,45 +142,34 @@ public class BerlinModelTaxonomicTreeExport extends BerlinModelExportBase<Relati
 	}
 	
 	//called by MethodMapper
+	
 	@SuppressWarnings("unused")
-	private static Integer getRelQualifierFk(RelationshipBase<?, ?, ?> rel){
-		return BerlinModelTransformer.taxRelation2relPtQualifierFk(rel);
+	private static Integer getPTNameFk1(TaxonNode node, DbExportStateBase<?> state){
+		return getObjectFk(node, state, true, true);
 	}
 	
 	@SuppressWarnings("unused")
-	private static Integer getPTNameFk1(RelationshipBase<?, ?, ?> rel, DbExportStateBase<?> state){
-		return getObjectFk(rel, state, true, true);
+	private static Integer getPTRefFk1(TaxonNode node, DbExportStateBase<?> state){
+		return getObjectFk(node, state, false, true);
 	}
 	
 	@SuppressWarnings("unused")
-	private static Integer getPTRefFk1(RelationshipBase<?, ?, ?> rel, DbExportStateBase<?> state){
-		return getObjectFk(rel, state, false, true);
+	private static Integer getPTNameFk2(TaxonNode node, DbExportStateBase<?> state){
+		return getObjectFk(node, state, true, false);
 	}
 	
 	@SuppressWarnings("unused")
-	private static Integer getPTNameFk2(RelationshipBase<?, ?, ?> rel, DbExportStateBase<?> state){
-		return getObjectFk(rel, state, true, false);
-	}
-	
-	@SuppressWarnings("unused")
-	private static Integer getPTRefFk2(RelationshipBase<?, ?, ?> rel, DbExportStateBase<?> state){
-		return getObjectFk(rel, state, false, false);
+	private static Integer getPTRefFk2(TaxonNode node, DbExportStateBase<?> state){
+		return getObjectFk(node, state, false, false);
 	}
 
-	private static Integer getObjectFk(RelationshipBase<?, ?, ?> rel, DbExportStateBase<?> state, boolean isName, boolean isFrom){
-		TaxonBase<?> taxon = null;
-		if (rel.isInstanceOf(TaxonRelationship.class)){
-			TaxonRelationship tr = (TaxonRelationship)rel;
-			taxon = (isFrom) ? tr.getFromTaxon():  tr.getToTaxon();
-		}else if (rel.isInstanceOf(SynonymRelationship.class)){
-			SynonymRelationship sr = (SynonymRelationship)rel;
-			taxon = (isFrom) ? sr.getSynonym() : sr.getAcceptedTaxon();
-		}
+	private static Integer getObjectFk(TaxonNode node, DbExportStateBase<?> state, boolean isName, boolean isFrom){
+		Taxon taxon = (isFrom) ? node.getTaxon():  node.getParent().getTaxon();
 		if (taxon != null){
 			CdmBase cdmBase = (isName) ? taxon.getName(): taxon.getSec();
 			return state.getDbId(cdmBase);
 		}
-		logger.warn("No taxon found for relationship: " + rel.toString());
+		logger.warn("No taxon or parent taxon found for taxon node: " + node.toString());
 		return null;
 	}
 	

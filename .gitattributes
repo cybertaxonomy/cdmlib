@@ -700,6 +700,7 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/out/mapper/CreatedAndNot
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/out/mapper/DbAnnotationMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/out/mapper/DbBooleanMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/out/mapper/DbClobMapper.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/out/mapper/DbConstantMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/out/mapper/DbDateMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/out/mapper/DbExportMapperBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/out/mapper/DbExtensionMapper.java -text
