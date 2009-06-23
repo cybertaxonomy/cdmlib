@@ -11,9 +11,7 @@ package eu.etaxonomy.cdm.ext;
 
 import java.awt.Color;
 import java.util.Map;
-import java.util.Set;
 
-import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
