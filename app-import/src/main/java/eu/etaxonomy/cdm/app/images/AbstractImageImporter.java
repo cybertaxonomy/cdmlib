@@ -9,8 +9,6 @@
 
 package eu.etaxonomy.cdm.app.images;
 
-import java.util.Map;
-
 import org.apache.log4j.Logger;
 import org.springframework.transaction.TransactionStatus;
 
@@ -20,8 +18,6 @@ import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.io.common.CdmIoBase;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
-import eu.etaxonomy.cdm.io.common.MapWrapper;
-import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
  * 
@@ -29,7 +25,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * @created 11.11.2008
  * @version 1.0
  */
-public abstract class AbstractImageImporter extends CdmIoBase<ImageImportConfigurator> implements ICdmIO<ImageImportConfigurator> {
+public abstract class AbstractImageImporter extends CdmIoBase<ImageImportState> implements ICdmIO<ImageImportState> {
 	private static final Logger logger = Logger.getLogger(AbstractImageImporter.class);
 	
 	protected CdmApplicationController appCtr;
@@ -43,7 +39,7 @@ public abstract class AbstractImageImporter extends CdmIoBase<ImageImportConfigu
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doInvoke(eu.etaxonomy.cdm.io.common.IImportConfigurator, java.util.Map)
 	 */
 	@Override
-	public boolean doInvoke(ImageImportConfigurator config, Map<String, MapWrapper<? extends CdmBase>> stores) {
+	public boolean doInvoke(ImageImportState state) {
 		//cdmApp = config.getCdmAppController();
 		//if (config instanceof ImageImportConfigurator){
 		
@@ -52,7 +48,7 @@ public abstract class AbstractImageImporter extends CdmIoBase<ImageImportConfigu
 		taxonService = getTaxonService();
 		referenceService = getReferenceService();
 
-		boolean result = invokeImageImport(config);
+		boolean result = invokeImageImport(state.getConfig());
 		
 		commitTransaction(status);
 		
@@ -72,7 +68,7 @@ public abstract class AbstractImageImporter extends CdmIoBase<ImageImportConfigu
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doCheck(eu.etaxonomy.cdm.io.common.IImportConfigurator)
 	 */
 	@Override
-	protected boolean doCheck(ImageImportConfigurator config) {
+	protected boolean doCheck(ImageImportState state) {
 		boolean result = true;
 		logger.warn("No check implemented for distribution data import");
 		return result;
@@ -83,7 +79,7 @@ public abstract class AbstractImageImporter extends CdmIoBase<ImageImportConfigu
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)
 	 */
 	@Override
-	protected boolean isIgnore(ImageImportConfigurator config) {
+	protected boolean isIgnore(ImageImportState state) {
 		return false;
 	}
 

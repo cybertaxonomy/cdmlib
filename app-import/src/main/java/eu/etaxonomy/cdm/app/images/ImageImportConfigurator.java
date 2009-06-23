@@ -97,4 +97,11 @@ public class ImageImportConfigurator extends ImportConfiguratorBase implements I
 	public String getSourceNameString() {
 		return "Image file " + getSource();
 	}
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#getNewState()
+	 */
+	public ImageImportState getNewState() {
+		return new ImageImportState(this);
+	}
 }

@@ -13,15 +13,19 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.app.common.CdmDestinations;
+import eu.etaxonomy.cdm.database.CdmDataSource;
+import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
+import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.berlinModel.out.BerlinModelExportConfigurator;
 import eu.etaxonomy.cdm.io.common.CdmDefaultExport;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.io.common.IExportConfigurator.CHECK;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator.DO_REFERENCES;
+import eu.etaxonomy.cdm.model.common.init.TermNotFoundException;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
-import eu.etaxonomy.cdm.model.name.NonViralName;
 
 
 /**
@@ -38,6 +42,7 @@ public class SalvadorExport {
 	static final ICdmDataSource cdmSource = CdmDestinations.localH2Salvador();
 	static final UUID secUuid = UUID.fromString("d03ef02a-f226-4cb1-bdb4-f6c154f08a34");
 	static final int sourceSecId = 7331;
+	static final int isHomotypicId = 72;
 	
 //	static final UUID featureTreeUuid = UUID.fromString("ae9615b8-bc60-4ed0-ad96-897f9226d568");
 //	static final Object[] featureKeyList = new Integer[]{302, 303, 306, 307, 309, 310, 311, 312, 350, 1500, 1800, 1900, 1950, 1980, 2000, 10299}; 
@@ -47,47 +52,47 @@ public class SalvadorExport {
 
 
 	//NomeclaturalCode
-	static final NomenclaturalCode nomenclaturalCode  = null ;//NomenclaturalCode.ICBN();
+	static final NomenclaturalCode nomenclaturalCode  = NomenclaturalCode.ICBN;
 
 // ****************** ALL *****************************************
 	
+	//authors
+	static final boolean doAuthors = true;
+	//references
+	static final DO_REFERENCES doReferences =  DO_REFERENCES.ALL;
+	//names
+	static final boolean doTaxonNames = true;
+	static final boolean doRelNames = true;
+	static final boolean doNameStatus = true;
+	static final boolean doTypes = false;  //Types do not exist in El_Salvador DB
+	static final boolean doNameFacts = false;  //Name Facts do not exist in El_Salvador DB
+	
+	//taxa
+	static final boolean doTaxa = true;
+	static final boolean doRelTaxa = true;
+	static final boolean doFacts = true;
+	static final boolean doOccurences = false;
+
+// ************************ NONE **************************************** //
+	
 //	//authors
-//	static final boolean doAuthors = true;
+//	static final boolean doAuthors = false;
+//	static final boolean doAuthorTeams = false;
 //	//references
 //	static final DO_REFERENCES doReferences =  DO_REFERENCES.ALL;
 //	//names
 //	static final boolean doTaxonNames = true;
 //	static final boolean doRelNames = true;
-//	static final boolean doNameStatus = true;
-//	static final boolean doTypes = false;  //Types do not exist in El_Salvador DB
-//	static final boolean doNameFacts = false;  //Name Facts do not exist in El_Salvador DB
+//	static final boolean doNameStatus = false;
+//	static final boolean doTypes = false;
+//	static final boolean doNameFacts = false;
 //	
 //	//taxa
-//	static final boolean doTaxa = true;
-//	static final boolean doRelTaxa = true;
-//	static final boolean doFacts = true;
+//	static final boolean doTaxa = false;
+//	static final boolean doRelTaxa = false;
+//	static final boolean doFacts = false;
 //	static final boolean doOccurences = false;
-
-// ************************ NONE **************************************** //
-	
-	//authors
-	static final boolean doAuthors = true;
-	static final boolean doAuthorTeams = true;
-	//references
-	static final DO_REFERENCES doReferences =  DO_REFERENCES.NONE;
-	//names
-	static final boolean doTaxonNames = true;
-	static final boolean doRelNames = false;
-	static final boolean doNameStatus = false;
-	static final boolean doTypes = false;
-	static final boolean doNameFacts = false;
-	
-	//taxa
-	static final boolean doTaxa = false;
-	static final boolean doRelTaxa = false;
-	static final boolean doFacts = true;
-	static final boolean doOccurences = false;
-	
+//	
 	
 	public boolean 	doExport(){
 		System.out.println("Start export to Berlin Model ("+ berlinModelDestination.getDatabase() + ") ...");
@@ -115,9 +120,20 @@ public class SalvadorExport {
 		bmExportConfigurator.setDoRelTaxa(doRelTaxa);
 		bmExportConfigurator.setDoFacts(doFacts);
 		bmExportConfigurator.setDoOccurrence(doOccurences);
-		
+		bmExportConfigurator.setIsHomotypicId(isHomotypicId);
 		bmExportConfigurator.setCheck(check);
 		
+//		try {
+//			ICdmDataSource ds = CdmDataSource.NewH2EmbeddedInstance("test", "sa", "");
+//			CdmApplicationController cdmApp = CdmApplicationController.NewInstance(ds, DbSchemaValidation.CREATE);
+//			bmExportConfigurator.setCdmAppController(cdmApp);
+//		} catch (DataSourceNotFoundException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (TermNotFoundException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 		// invoke import
 		CdmDefaultExport<BerlinModelExportConfigurator> bmExport = new CdmDefaultExport<BerlinModelExportConfigurator>();
 		boolean result = bmExport.invoke(bmExportConfigurator);

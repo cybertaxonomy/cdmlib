@@ -171,7 +171,7 @@ public class TaraxacumActivator {
 		bmImport.invoke(bmImportConfigurator);
 		
 		if (bmImportConfigurator.getCheck().equals(CHECK.CHECK_AND_IMPORT)  || bmImportConfigurator.getCheck().equals(CHECK.IMPORT_WITHOUT_CHECK)    ){
-			CdmApplicationController app = bmImport.getCdmApp();
+			CdmApplicationController app = bmImport.getCdmAppController();
 			TransactionStatus tx = app.startTransaction();
 			//make feature tree
 			FeatureTree tree = TreeCreator.flatTree(featureTreeUuid, bmImportConfigurator.getFeatureMap(), featureKeyList);

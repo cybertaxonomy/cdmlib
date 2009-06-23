@@ -48,8 +48,9 @@ public class SalvadorActivator {
 	
 	static final UUID featureTreeUuid = UUID.fromString("ae9615b8-bc60-4ed0-ad96-897f9226d568");
 	static final Object[] featureKeyList = new Integer[]{302, 303, 306, 307, 309, 310, 311, 312, 350, 1500, 1800, 1900, 1950, 1980, 2000, 10299}; 
-	static boolean isIgnore0AuthorTeam = true;
-	static boolean doExport = false;
+	static boolean isIgnore0AuthorTeam = true;  //special case for Salvador. 
+	static boolean doExport = true;
+	static boolean useTaxonomicTree = false;
 	
 	//check - import
 	static final CHECK check = CHECK.CHECK_AND_IMPORT;
@@ -78,10 +79,10 @@ public class SalvadorActivator {
 	static final boolean doTaxa = true;
 	static final boolean doRelTaxa = true;
 	static final boolean doFacts = true;
-	static final boolean doOccurences = false;
+	static final boolean doOccurences = false; //Occurrences do not exist in El_Salvador DB
 	
 	//etc.
-	static final boolean doMarker = true;
+	static final boolean doMarker = false;
 	static final boolean doUser = true;
 		
 
@@ -90,7 +91,7 @@ public class SalvadorActivator {
 //	//authors
 //	static final boolean doAuthors = false;
 //	//references
-//	static final DO_REFERENCES doReferences =  DO_REFERENCES.NONE;
+//	static final DO_REFERENCES doReferences =  DO_REFERENCES.CONCEPT_REFERENCES;
 //	//names
 //	static final boolean doTaxonNames = false;
 //	static final boolean doRelNames = false;
@@ -100,13 +101,13 @@ public class SalvadorActivator {
 //	
 //	//taxa
 //	static final boolean doTaxa = true;
-//	static final boolean doRelTaxa = false;
+//	static final boolean doRelTaxa = true;
 //	static final boolean doFacts = false;
 //	static final boolean doOccurences = false;
 //	
 //	//etc.
-//	static final boolean doMarker = true;
-//	static final boolean doUser = true;	
+//	static final boolean doMarker = false;
+//	static final boolean doUser = false;	
 	
 	
 	public boolean doImport(){
@@ -144,6 +145,7 @@ public class SalvadorActivator {
 		config.setCheck(check);
 		config.setEditor(editor);
 		config.setIgnore0AuthorTeam(isIgnore0AuthorTeam);
+		config.setUseTaxonomicTree(useTaxonomicTree);
 		
 		config.setNamerelationshipTypeMethod(getHandleNameRelationshipTypeMethod());
 		config.setUserTransformationMethod(getTransformUsernameMethod());
@@ -207,10 +209,12 @@ public class SalvadorActivator {
 	//used by BerlinModelImportConfigurator
 	@SuppressWarnings("unused")
 	private static String transformUsername(String nameToBeTransformed){
-		if ("W.G.Berendsohn".equals(nameToBeTransformed)){
-			return "wgb";
-		}else if("XXXXERWE".equals(nameToBeTransformed)){
+		if (nameToBeTransformed == null){
 			return null;
+		}else if ("W.G.Berendsohn".equals(nameToBeTransformed)){
+			return "wgb";
+		}else if(nameToBeTransformed.startsWith("fs") || nameToBeTransformed.equals("BGBM\\fs")){
+			return "Frank Specht";
 		}
 		return nameToBeTransformed;
 	}

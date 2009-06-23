@@ -87,9 +87,9 @@ public class PalmaeTaxonXImportActivator {
 			String originalSourceId = file.getName();
 			originalSourceId =originalSourceId.replace(".xml", "");
 			config.setOriginalSourceId(originalSourceId);
-			TransactionStatus tx = cdmImport.getCdmApp().startTransaction();
+			TransactionStatus tx = cdmImport.getCdmAppController().startTransaction();
 			success &= cdmImport.invoke(config);
-			cdmImport.getCdmApp().commitTransaction(tx);		
+			cdmImport.getCdmAppController().commitTransaction(tx);		
 			return success;			
 		} catch (MalformedURLException e) {
 			logger.warn(e);

@@ -181,7 +181,7 @@ public class CichorieaeActivator {
 		bmImport.invoke(bmImportConfigurator);
 		
 		if (doFacts && bmImportConfigurator.getCheck().equals(CHECK.CHECK_AND_IMPORT)  || bmImportConfigurator.getCheck().equals(CHECK.IMPORT_WITHOUT_CHECK)    ){
-			CdmApplicationController app = bmImport.getCdmApp();
+			CdmApplicationController app = bmImport.getCdmAppController();
 			ISourceable obj = app.getCommonService().getSourcedObjectByIdInSource(ZoologicalName.class, "1000027", null);
 			logger.info(obj);
 			

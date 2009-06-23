@@ -103,7 +103,7 @@ public class PalmaeActivator {
 		
 		//make feature tree
 		logger.info("Make feature tree");
-		CdmApplicationController app = tcsImport.getCdmApp();
+		CdmApplicationController app = tcsImport.getCdmAppController();
 		
 		FeatureTree tree = getFeatureTree();
 		app.getDescriptionService().saveFeatureTree(tree);

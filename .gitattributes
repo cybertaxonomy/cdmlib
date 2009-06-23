@@ -19,6 +19,7 @@ app-import/src/main/java/eu/etaxonomy/cdm/app/faunaEuropaea/FaunaEuropaeaActivat
 app-import/src/main/java/eu/etaxonomy/cdm/app/faunaEuropaea/FaunaEuropaeaSources.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/images/AbstractImageImporter.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/images/ImageImportConfigurator.java -text
+app-import/src/main/java/eu/etaxonomy/cdm/app/images/ImageImportState.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/jaxb/CdmDiffActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/jaxb/CdmExportImportActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/sdd/CicadActivator.java -text
