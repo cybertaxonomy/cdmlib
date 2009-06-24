@@ -1,4 +1,4 @@
-﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 <taxonxHeader>
 <mods:mods>
 <mods:titleInfo><mods:title>Genera Palmarum. The evolution and classification of palms</mods:title></mods:titleInfo>
@@ -14,24 +14,24 @@
 <name>Phytelephas</name>
 <author>Ruiz and Pavon</author>
 <citation>Syst. Veg. Fl. Peruv. Chil.: 299(l798).</citation>
-<type>Lectotype; Phytelephas macrocarpa; Ruiz and Pavon</type>
+<type>Lectotype; Phytelephas macrocarpa; Ruiz &amp; Pav.</type>
 <synonymy>
 <name>Elephantusia</name>
 <author>Willd.</author>
 <bibref>Willd., Sp. pl. 4(2): 890, 1156 (1806).</bibref>
-<type>Type; Elephantusia macrocarpa; (Ruiz and Pavon) Willd.</type>
+<type>Type; Elephantusia macrocarpa; (Ruiz &amp; Pav.) Willd.</type>
 </synonymy>
 <synonymy>
 <name>Yarina</name>
 <author>O.F. Cook</author>
 <bibref>O.F. Cook, J. Wash. Acad. Sci. 17: 223 (1927).</bibref>
-<type>Type; Yarina microcarpa; (Ruiz and Pav.) O.F. Cook</type>
+<type>Type; Yarina microcarpa; (Ruiz &amp; Pav.) O.F.Cook</type>
 </synonymy>
 <synonymy>
 <name>Palandra</name>
 <author>O.F. Cook</author>
 <bibref>O.F. Cook, J. Wash. Acad. Sci. 17: 228 (1927).</bibref>
-<type>Type; Palandra aequatorialis; (Spruce) O.F. Cook</type>
+<type>Type; Palandra aequatorialis; (Spruce) O.F.Cook</type>
 </synonymy>
 </nomenclature>
 <div type="etymology"><p>phyt — plant, elephas — elephant, in reference to its use as a source of vegetable ivory.</p></div>

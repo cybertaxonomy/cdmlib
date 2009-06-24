@@ -1,4 +1,4 @@
-﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 <taxonxHeader>
 <mods:mods>
 <mods:titleInfo><mods:title>Genera Palmarum. The evolution and classification of palms</mods:title></mods:titleInfo>
@@ -14,18 +14,18 @@
 <name>Pritchardia</name>
 <author>Seem. and H. Wendl. ex H. Wendl.</author> 
 <citation>Bonplandia 10: 197 (1862)</citation>
-<type>Type; Pritchardia pacifica; Seem. and H.  Wendl. ex H. Wendl.</type>
+<type>Type; Pritchardia pacifica; Seem. &amp; H.Wendl.</type>
 <synonymy>
 <name>Eupritchardia</name>
 <author>Kuntze</author>
 <bibref>Kuntze, Revis. gen. pl. 3(3): 323 (1898).</bibref>
-<type>Type; Eupritchardia pacifica; (Seem. and H. Wendl. ex H. Wendl.) Kuntze</type>
+<type>Type; Eupritchardia pacifica; (Seem. &amp; H.Wendl.) Kuntze</type>
 </synonymy>
 <synonymy>
 <name>Styloma</name>
 <author>O.F. Cook</author>
 <bibref>O.F. Cook, J. Wash. Acad. Sci. 5: 241 (1915).</bibref>
-<type>Type; Styloma pacifica; (Seem. and H. Wendl. ex H. Wendl.) O.F. Cook</type>
+<type>Type; Styloma pacifica; (Seem. &amp; H.Wendl.) O.F.Cook</type>
 </synonymy>
 </nomenclature>
 <div type="etymology"><p>Honors William T. Pritchard, one-time British Consul in the Fiji Islands.</p></div>

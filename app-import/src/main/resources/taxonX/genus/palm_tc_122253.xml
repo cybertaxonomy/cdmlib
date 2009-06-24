@@ -1,4 +1,4 @@
-﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 <taxonxHeader>
 <mods:mods>
 <mods:titleInfo><mods:title>Genera Palmarum. The evolution and classification of palms</mods:title></mods:titleInfo>
@@ -19,7 +19,7 @@
 <name>Lepidococcus</name>
 <author>H. Wendl. and Drude ex A.D. Hawkes</author>
 <bibref>H. Wendl. and Drude ex A.D. Hawkes, Arq. Bot. Estado São Paulo ser. 2, 2: 173 (1952) (non Lepidococca Turcz. 1848).</bibref>
-<type>Type; Lepidococcus aculeatus; (Kunth) H. Wendl. and Drude ex A.D. Hawkes</type>
+<type>Type; Lepidococcus aculeatus; (Kunth) H.Wendl. &amp; Drude</type>
 </synonymy>
 </nomenclature>
 <div type="etymology"><p>Combining the generic name Mauritia with the diminutive ending — ella.</p></div>

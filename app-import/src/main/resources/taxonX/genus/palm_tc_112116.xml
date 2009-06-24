@@ -1,4 +1,4 @@
-﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 <taxonxHeader>
 <mods:mods>
 <mods:titleInfo><mods:title>Genera Palmarum. The evolution and classification of palms</mods:title></mods:titleInfo>
@@ -14,7 +14,7 @@
 <name>Licuala</name>
 <author>Thunb.</author> 
 <citation>Kong. Vetensk. Acad. Nya Handl. 3: 286(1782).</citation> 
-<type>Type; Licuala spinosa; Thunb.</type>
+<type>Type; Licuala spinosa; Wurmb</type>
 <synonymy>
 <name>Pericycla</name>
 <author>Blume</author>
@@ -25,7 +25,7 @@
 <name>Dammera</name>
 <author>Lauterb. and K. Schum. in K. Schum. and Lauterb.</author>
 <bibref>Lauterb. and K. Schum. in K. Schum. and Lauterb., Fl. Schutzgeb. Südsee 201 (1900 [‘1901’]).</bibref>
-<type>Lectotype; Dammera ramosa; Lauterb. and K. Schum.</type>
+<type>Lectotype; Dammera ramosa; K.Schum. &amp; Lauterb.</type>
 </synonymy>
 </nomenclature>
 <div type="etymology"><p>Latinization of the vernacular name, leko wala, supposedly used for Licuala spinosa in Makassar, Sulawesi.</p></div>

@@ -1,4 +1,4 @@
-﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 <taxonxHeader>
 <mods:mods>
 <mods:titleInfo><mods:title>Genera Palmarum. The evolution and classification of palms</mods:title></mods:titleInfo>
@@ -14,12 +14,12 @@
 <name>Rhopalostylis</name>
 <author>H. Wendl. and Drude</author> 
 <citation>Linnaea 39: 180, 234(1875).</citation>
-<type>Type; Rhopalostylis baueri; (Hook.f. ex Lem.) H. Wendl. and Drude</type>
+<type>Type; Rhopalostylis baueri; (Hook.f.) H.Wendl. &amp; Drude</type>
 <synonymy>
 <name>Eora</name>
 <author>O.F. Cook</author>
 <bibref>O.F. Cook, J. Heredity 18: 409 (1927).</bibref>
-<type>Type; Eora sapida; (H. Wendl. and Drude) O.F. Cook</type>
+<type>Type; Eora sapida; (Sol. ex G.Forst.) O.F.Cook</type>
 </synonymy>
 </nomenclature>
 <div type="etymology"><p>Rhopalon — club, stylis — column or pillar, but botanically the style, referring to the shape of the pistillode in the staminate flower.</p></div>

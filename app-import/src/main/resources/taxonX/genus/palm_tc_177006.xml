@@ -1,4 +1,4 @@
-﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 <taxonxHeader>
 <mods:mods>
 <mods:titleInfo><mods:title>Genera Palmarum. The evolution and classification of palms</mods:title></mods:titleInfo>
@@ -14,18 +14,18 @@
 <name>Ravenea</name>
 <author>Bouché ex H. Wendl. in Hook.f.</author> 
 <citation>Bot. Mag. 110: t6776 (1884).</citation>
-<type>Type; Ravenea hildebrandtii; Bouché ex H. Wendl.</type>
+<type>Type; Ravenea hildebrandtii; H.Wendl. ex C.D.Bouché</type>
 <synonymy>
 <name>Ranevea</name>
 <author>L.H. Bailey</author>
 <bibref>L.H. Bailey, Cycl. Amer. hort. 1497 (1902).</bibref>
-<type>Type; Ravenea hildebrandtii; Bouché ex H. Wendl.</type>
+<type>Type; Ravenea hildebrandtii; H.Wendl. ex C.D.Bouché</type>
 </synonymy>
 <synonymy>
 <name>Louvelia</name>
 <author>Jum. and H. Perrier</author>
 <bibref>Jum. and H. Perrier, Compt. Rend. Hebd. Séances Acad. Sci. 155: 411 (1912).</bibref>
-<type>Type; Louvelia madagascariensis; Jum. and H. Perrier.</type>
+<type>Type; Louvelia madagascariensis; Jum. &amp; H.Perrier</type>
 </synonymy>
 </nomenclature>
 <div type="etymology"><p>Named for Louis Ravené, a 19th century official in Berlin.</p></div>

@@ -1,4 +1,4 @@
-﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 <taxonxHeader>
 <mods:mods>
 <mods:titleInfo><mods:title>Genera Palmarum. The evolution and classification of palms</mods:title></mods:titleInfo>
@@ -14,7 +14,7 @@
 <name>Hydriastele</name>
 <author>H. Wendl. and Drude</author> 
 <citation>Linnaea 39: 180, 208 (1875).</citation>
-<type>Type; Hydriastele wendlandiana; (F. Muell.) H. Wendl. and Drude</type>
+<type>Type; Hydriastele wendlandiana; (F.Muell.) H.Wendl. &amp; Drude</type>
 <synonymy>
 <name>Adelonenga</name>
 <author>Hook.f. in Benth. and Hook.f.</author>
@@ -25,7 +25,7 @@
 <name>Gronophyllum</name>
 <author>Scheff.</author>
 <bibref>Scheff., Ann. Jard. Bot. Buitenzorg 1: 135 (1876).</bibref>
-<type>Type; Gronophyllum microcarpa; Scheff.</type>
+<type>Type; Gronophyllum microcarpum; Scheff.</type>
 </synonymy>
 <synonymy>
 <name>Gulubia</name>

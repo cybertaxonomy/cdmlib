@@ -1,4 +1,4 @@
-﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 <taxonxHeader>
 <mods:mods>
 <mods:titleInfo><mods:title>Genera Palmarum. The evolution and classification of palms</mods:title></mods:titleInfo>
@@ -14,12 +14,12 @@
 <name>Basselinia</name>
  <author>Vieill.</author> 
 <citation>Bull. Soc. Lin. Normandie sere. 2. 6: 230(1873).</citation>
-<type>Lectotype; Basselinia gracilis; (Brongn. and Gris) Vieill. </type>
+<type>Lectotype; Basselinia gracilis; (Brongn. &amp; Gris) Vieill.</type>
 <synonymy>
 <name>Microkentia</name>
 <author>H. Wendl. ex Hook.f. in Benth. and Hook.f.</author>
 <bibref>H. Wendl. ex Hook.f. in Benth. and Hook.f., Gen. pl. 3: 895 (1883).</bibref>
-<type>Lectotype; Microkentia gracilis; (Brongn.and Gris) Hook.f. ex Salomon</type>
+<type>Lectotype; Microkentia gracilis; (Brongn. &amp; Gris) Hook.f. ex Salomon</type>
 </synonymy>
 <synonymy>
 <name>Nephrocarpus</name>
@@ -31,7 +31,7 @@
 <name>Alloschmidia</name>
 <author>H.E. Moore</author>
 <bibref>H.E. Moore, Gentes Herbarum 11: 293 (1978).</bibref>
-<type>Type; Alloschmidia glabrata; (Becc.) H.E. Moore</type>
+<type>Type; Alloschmidia glabrata; (Becc.) H.E.Moore</type>
 </synonymy>
 </nomenclature>
 <div type="etymology"><p>Honors French fuller and poet Olivier Basselin (ca. 1400–1450).</p></div>

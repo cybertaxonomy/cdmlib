@@ -1,4 +1,4 @@
-﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 <taxonxHeader>
 <mods:mods>
 <mods:titleInfo><mods:title>Genera Palmarum. The evolution and classification of palms</mods:title></mods:titleInfo>
@@ -14,7 +14,7 @@
 <name>Laccosperma</name>
 <author>(G. Mann and H. Wendl.) Drude</author>
 <citation>Bot. Zeit. 35:632, 635 (1877).</citation>
-<type>Type; Laccosperma opacum; (G. Mann and H. Wendl.) Drude</type>
+<type>Type; Laccosperma opacum; Drude</type>
 <synonymy>
 <name>Calamus subgenus Laccosperma</name>
 <author>G. Mann and H. Wendl.</author> 
@@ -24,7 +24,7 @@
 <name>Ancistrophyllum</name>
 <author>(G. Mann and H. Wendl.) H. Wendl. (non Göpp. 1841) in Kerch.</author>
 <bibref>(G. Mann and H. Wendl.) H. Wendl. (non Göpp. 1841) in Kerch., Les Palmiers: 230 (1878).</bibref>
-<type>Type; Ancistrophyllum secundiflorum; (P. Beauv.) H. Wendl.</type>
+<type>Type; Ancistrophyllum secundiflorum; (P.Beauv.) G.Mann &amp; H.Wendl.</type>
 </synonymy>
 <synonymy>
 <name>Calamus subgenus Ancistrophyllum</name>
@@ -45,7 +45,7 @@
 <name>Neoancistrophyllum</name>
 <author>Rauschert</author>
 <bibref>Rauschert, Taxon 31: 557 (1982).</bibref>
-<type>Type; Neoancistrophyllum secundiflorum; (P. Beauv.) Rauschert</type>
+<type>Type; Neoancistrophyllum secundiflorum; (P.Beauv.) Rauschert</type>
 </synonymy>
 </nomenclature>
 <div type="etymology"><p>Laccos — hole or pit, sperma — seed, referring to the deeply pitted seeds of some of the species.</p></div>

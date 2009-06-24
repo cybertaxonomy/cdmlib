@@ -1,4 +1,4 @@
-﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 <taxonxHeader>
 <mods:mods>
 <mods:titleInfo><mods:title>Genera Palmarum. The evolution and classification of palms</mods:title></mods:titleInfo>
@@ -14,7 +14,7 @@
 <name>Orania</name>
 <author>Zipp. in Blume</author>
 <citation>Alg. Konst-Lett.-Bode 1: 297(1829).</citation>
-<type>Type; Orania regalis; Zipp.</type>
+<type>Type; Orania regalis; Zipp. ex Blume</type>
 <synonymy>
 <name>Arausiaca</name>
 <author>Blume</author>
@@ -37,7 +37,7 @@
 <name>Halmoorea</name>
 <author>J. Dransf. and N.W. Uhl</author>
 <bibref>J. Dransf. and N.W. Uhl, Principes 28(4): 164 (1984).</bibref>
-<type>Type; Halmoorea trispatha; J. Dransf. and N.W. Uhl</type>
+<type>Type; Halmoorea trispatha; J.Dransf. &amp; N.W.Uhl</type>
 </synonymy>
 </nomenclature>
 <div type="etymology"><p>Commemorates F.G.L. Willem van Nassau, Prince of Orange (Oranje) and Crown Prince of the Netherlands (1792–1849).</p></div>

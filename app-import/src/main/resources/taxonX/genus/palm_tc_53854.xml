@@ -1,4 +1,4 @@
-﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 <taxonxHeader>
 <mods:mods>
 <mods:titleInfo><mods:title>Genera Palmarum. The evolution and classification of palms</mods:title></mods:titleInfo>
@@ -14,18 +14,18 @@
 <name>Cyphophoenix</name>
 <author>H. Wendl. ex Hook.f. in Benth. and J.D. Hook.f.</author> 
 <citation>Gen. pl. 3: 893 (1883).</citation>
-<type>Lectotype; Kentia elegans; Brongn.</type>
+<type>Lectotype; Kentia elegans; Brongn. &amp; Gris</type>
 <synonymy>
 <name>Campecarpus</name>
 <author>H. Wendl. ex Becc.</author>
 <bibref>H. Wendl. ex Becc., Palme Nuova Caledonia 28 (1920); and Webbia 5: 96 (1921).</bibref>
-<type>Type; Campecarpus fulcitus; (Brongn.) H. Wendl. ex Becc.</type>
+<type>Type; Campecarpus fulcitus; (Brongn.) H.Wendl. ex Becc.</type>
 </synonymy>
 <synonymy>
 <name>Veillonia</name>
 <author>H.E. Moore</author>
 <bibref>H.E. Moore, Gentes Herb. 11: 299 (1978).</bibref>
-<type>Type; Veillonia alba; H.E. Moore</type>
+<type>Type; Veillonia alba; H.E.Moore</type>
 </synonymy>
 </nomenclature>
 <div type="etymology"><p>Kyphos — bent, humped, phoenix — a general name for a palm, perhaps in reference to the prominent terminal stigmatic remains in the fruit.</p></div>

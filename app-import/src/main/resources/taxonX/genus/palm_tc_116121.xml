@@ -1,4 +1,4 @@
-﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 <taxonxHeader>
 <mods:mods>
 <mods:titleInfo><mods:title>Genera Palmarum. The evolution and classification of palms</mods:title></mods:titleInfo>
@@ -25,7 +25,7 @@
 <name>Microcoelum</name>
 <author></author>
 <bibref>Burret and Potztal, Willdenowia 1: 387 (1956).</bibref>
-<type>Lectotype: Microcoelum martianum; (Glaz. ex Drude) Burret and Potztal</type>
+<type>Lectotype; Microcoelum martianum; (Glaz. ex Drude) Burret &amp; Potztal</type>
 </synonymy>
 </nomenclature>
 <div type="etymology"><p>Lyton — loosened, caryon — nut, referring to the way that the fruit coat splits away from the endocarp at maturity.</p></div>

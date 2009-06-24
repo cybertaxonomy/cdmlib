@@ -1,4 +1,4 @@
-﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 <taxonxHeader>
 <mods:mods>
 <mods:titleInfo><mods:title>Genera Palmarum. The evolution and classification of palms</mods:title></mods:titleInfo>
@@ -14,12 +14,12 @@
 <name>Archontophoenix</name>
 <author>H. Wendl. and Drude</author> 
 <citation>Linnaea 39: 182,211 (1875).</citation>
-<type>Lectotype; Archontophoenix alexandrae; (F. v. Mueller) H.Wendl. and Drude</type>
+<type>Lectotype; Archontophoenix alexandrae; (F.Muell.) H.Wendl. &amp; Drude</type>
 <synonymy>
 <name>Loroma</name>
 <author>O.F. Cook</author>
 <bibref>O.F. Cook, J. Wash. Acad. Sci. 5: 117 (1915).</bibref>
-<type>Type; Loroma amethystina; O.F. Cook</type>
+<type>Type; Loroma amethystina; O.F.Cook</type>
 </synonymy>
 </nomenclature>
 <div type="etymology"><p>Archon — chief, ruler, phoenix — date palm or palm in general, named for its regal stature and appearance.</p></div>

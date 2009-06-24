@@ -1,4 +1,4 @@
-﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 <taxonxHeader>
 <mods:mods>
 <mods:titleInfo><mods:title>Genera Palmarum. The evolution and classification of palms</mods:title></mods:titleInfo>
@@ -14,7 +14,7 @@
 <name>Johannesteijsmannia</name>
 <author>H.E. Moore</author> 
 <citation>Principes 5: 116 (1961).</citation>
-<type>Type; Johannesteijsmannia altifrons; (Rchb.f. and Zoll.) H.E. Moore (Teysmanniaaltifrons Rchb.f. and Zoll.)</type>
+<type>Type; Johannesteijsmannia altifrons; (Rchb.f. &amp; Zoll.) H.E.Moore</type>
 <synonymy>
 <name>Teysmannia</name>
 <author>Rchb.f. and Zoll. in Zoll.</author>

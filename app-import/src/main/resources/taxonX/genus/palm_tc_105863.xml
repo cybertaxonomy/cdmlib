@@ -1,4 +1,4 @@
-﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 <taxonxHeader>
 <mods:mods>
 <mods:titleInfo><mods:title>Genera Palmarum. The evolution and classification of palms</mods:title></mods:titleInfo>
@@ -14,12 +14,12 @@
 <name>Kentiopsis</name>
 <author>Brongn.</author>
 <citation>Compt. Rend. Hebd. Séances Acad.Sci. 77: 398 (1873).</citation>
-<type>Lectotype; Kentiopsis oliviformis; (Brongn. andGris) Brongn.</type>
+<type>Lectotype; Kentiopsis oliviformis; (Brongn. &amp; Gris) Brongn.</type>
 <synonymy>
 <name>Mackeea</name>
 <author>H.E. Moore</author>
 <bibref>H.E. Moore, Gentes Herb. 11: 304 (1978).</bibref>
-<type>Type; Mackeea. magnifica; H.E. Moore.</type>
+<type>Type; Mackeea magnifica; H.E.Moore</type>
 </synonymy>
 </nomenclature>
 <div type="etymology"><p>Derived from the generic name Kentia, named for William Kent (1779–1827), one-time curator of the botanic gardens at Buitenzorg, Java (now Kebun Raya Bogor) with opsis — resembling, from a presumed resemblance to Kentia Blume.</p></div>

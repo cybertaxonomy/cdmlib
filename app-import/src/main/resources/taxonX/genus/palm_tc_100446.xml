@@ -1,4 +1,4 @@
-﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 <taxonxHeader>
 <mods:mods>
 <mods:titleInfo><mods:title>Genera Palmarum. The evolution and classification of palms</mods:title></mods:titleInfo>
@@ -14,19 +14,18 @@
 <name>Howea</name>
 <author>Becc.</author> 
 <citation>Malesia 1: 66 (1877)</citation>
-<type>Lectotype; Howea belmoreana; (C. Moore and F. Muell.) Becc.</type>
+<type>Lectotype; Howea belmoreana; (C.Moore &amp; F.Muell.) Becc.</type>
 <type_loc></type_loc>
 <synonymy>
 <name>Grisebachia</name>
 <author>Drude and H. Wendl.</author>
 <bibref>Drude and H. Wendl., Nachr. Königl. Ges. Wiss. Georg-Augusts-Univ. 1875: 55 (1875) (non Klotzsch 1838).</bibref>
-<type>Lectotype; Grisebachia belmoreana; (C. Moore and F. Muell.) Drude and H. Wendl.</type>
+<type>Lectotype; Grisebachia belmoreana; (C.Moore &amp; F.Muell.) H.Wendl. &amp; Drude</type>
 </synonymy>
 <synonymy>
 <name>Denea</name>
 <author>O.F. Cook</author>
 <bibref>O.F. Cook, J. Wash. Acad. Sci.16: 395 (1926).</bibref>
-<type>Type; Denea forsteriana; (F. Muell.) O.F. Cook</type>
 </synonymy>
 </nomenclature>
 <div type="etymology"><p>Derived from Lord Howe Island, which in turn commemorates Admiral Lord Richard Howe (1726–1799).</p></div>
