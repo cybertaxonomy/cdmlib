@@ -47,6 +47,7 @@ public final class FaunaEuropaeaTransformer {
 	
 	// Author
 	public static final int A_AUCT = 1;
+	public static final String A_AUCTNAME = "auct.";
 	
 	// Parenthesis
 	public static final int P_PARENTHESIS = 1;
