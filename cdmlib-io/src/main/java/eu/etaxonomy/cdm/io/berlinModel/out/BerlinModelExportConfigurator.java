@@ -28,10 +28,6 @@ public class BerlinModelExportConfigurator extends DbExportConfiguratorBase impl
 	@SuppressWarnings("unused")
 	private static Logger logger = Logger.getLogger(BerlinModelExportConfigurator.class);
 
-	private boolean doAuthors;
-	private boolean doTaxonNames;
-	private BerlinModelExportState state;
-
 	private Method relNameQualifierMethod;
 	//ID for the isHomotypic relationship in RelName, if not exist null
 	private Integer isHomotypicId = null;
@@ -70,28 +66,6 @@ public class BerlinModelExportConfigurator extends DbExportConfiguratorBase impl
 //	   setState((BerlinModelExportState)getNewState());
 	}
 	
-	public boolean isDoAuthors(){
-		return doAuthors;
-	}
-
-	public void setDoAuthors(boolean doAuthors){
-		this.doAuthors = doAuthors;
-	}
-
-	/**
-	 * @return the doTaxonNames
-	 */
-	public boolean isDoTaxonNames() {
-		return doTaxonNames;
-	}
-
-	/**
-	 * @param doTaxonNames the doTaxonNames to set
-	 */
-	public void setDoTaxonNames(boolean doTaxonNames) {
-		this.doTaxonNames = doTaxonNames;
-	}
-
 	/**
 	 * @return the isHomotypicId
 	 */
