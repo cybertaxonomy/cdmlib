@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.naming.NameParser;
+
 import org.apache.log4j.Logger;
 import org.jdom.Element;
 import org.jdom.Namespace;
@@ -23,23 +25,25 @@ import org.springframework.transaction.TransactionStatus;
 import eu.etaxonomy.cdm.api.service.ICommonService;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
+import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.common.CdmUtils;
-import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.io.common.CdmIoBase;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
-import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.NonViralName;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 
 
 /**
@@ -67,18 +71,8 @@ public class TaxonXNomenclatureImport extends CdmIoBase<TaxonXImportState> imple
 		return result;
 	}
 
-//	/* (non-Javadoc)
-//	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doInvoke(eu.etaxonomy.cdm.io.common.IImportConfigurator, eu.etaxonomy.cdm.api.application.CdmApplicationController, java.util.Map)
-//	 */
-//	@Override
-//	protected boolean doInvoke(IImportConfigurator config, 
-//			Map<String, MapWrapper<? extends CdmBase>> stores){ 
-//		TaxonXImportState state = ((TaxonXImportConfigurator)config).getState();
-//		state.setConfig((TaxonXImportConfigurator)config);
-//		return doInvoke(state);
-//	}
-	
-	public boolean doInvoke(TaxonXImportState state){		logger.info("start make Nomenclature ...");
+	public boolean doInvoke(TaxonXImportState state){		
+		logger.info("start make Nomenclature ...");
 		TransactionStatus tx = startTransaction();
 		TaxonXImportConfigurator config = state.getConfig();
 		Element root = config.getSourceRoot();
@@ -155,7 +149,7 @@ public class TaxonXNomenclatureImport extends CdmIoBase<TaxonXImportState> imple
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)
 	 */
 	protected boolean isIgnore(TaxonXImportState state){
-		return ! state.getConfig().isDoFacts();
+		return ! state.getConfig().isDoTypes();
 	}
 
 	/**
@@ -168,6 +162,7 @@ public class TaxonXNomenclatureImport extends CdmIoBase<TaxonXImportState> imple
 	 * @return
 	 */
 	private boolean doNomenclaturalType(TaxonXImportConfigurator config, Element elNomenclature, Namespace nsTaxonx, TaxonNameBase taxonName){
+		boolean success = true;
 		if (taxonName == null){
 			logger.warn("taxonName is null");
 			return false;
@@ -182,37 +177,49 @@ public class TaxonXNomenclatureImport extends CdmIoBase<TaxonXImportState> imple
 		Element elTypeLoc = elNomenclature.getChild("type_loc", nsTaxonx);
 
 		if (elType != null || elTypeLoc != null){
-			ReferenceBase citation = null;
-			String citationMicroReference = null;
-			String originalNameString = null;
-			boolean isNotDesignated = true;
-			boolean addToAllHomotypicNames = true;
 			unlazyTypeDesignation(config, taxonName);
 	
+			if (taxonName.isInfraGeneric() || taxonName.isSupraGeneric() || taxonName.isGenus()){
+				success &= doNameType(elType, taxonName, config);
+			}else{
+				success &= doSpecimenType(config, elType, elTypeLoc, taxonName);
+				
 			
-			SimpleSpecimen simpleSpecimen = SimpleSpecimen.NewInstance();
-			//elType
-			if (elType != null){
-				doElType(elType, simpleSpecimen, config);
-			}//elType
-			
-			//typeLoc
-			HashMap<Specimen, SpecimenTypeDesignationStatus> typeLocMap = null; 
-			if (elTypeLoc != null){
-				typeLocMap = doElTypeLoc(elTypeLoc, simpleSpecimen, taxonName, config);
 			}
-			if (typeLocMap != null && typeLocMap.size() >0){
-				for (Specimen specimen : typeLocMap.keySet()){
-					SpecimenTypeDesignationStatus status = typeLocMap.get(specimen);
-					taxonName.addSpecimenTypeDesignation(specimen, status, citation, citationMicroReference, originalNameString, isNotDesignated, addToAllHomotypicNames);
-				}
-			}else{ // no type_loc
-				SpecimenTypeDesignationStatus status = null;
-				taxonName.addSpecimenTypeDesignation(simpleSpecimen.getSpecimen(), status, citation, citationMicroReference, originalNameString, isNotDesignated, addToAllHomotypicNames);
-			}
-			return true;
+			return success;
 		}
 		return false;
+	}
+
+	
+	private boolean doSpecimenType(TaxonXImportConfigurator config, Element elType, Element elTypeLoc, TaxonNameBase taxonName){
+		ReferenceBase citation = null;
+		String citationMicroReference = null;
+		String originalNameString = null;
+		boolean isNotDesignated = true;
+		boolean addToAllHomotypicNames = true;
+		
+		SimpleSpecimen simpleSpecimen = SimpleSpecimen.NewInstance();
+		//elType
+		if (elType != null){
+			doElType(elType, simpleSpecimen, config);
+		}//elType
+		
+		//typeLoc
+		HashMap<Specimen, SpecimenTypeDesignationStatus> typeLocMap = null; 
+		if (elTypeLoc != null){
+			typeLocMap = doElTypeLoc(elTypeLoc, simpleSpecimen, taxonName, config);
+		}
+		if (typeLocMap != null && typeLocMap.size() >0){
+			for (Specimen specimen : typeLocMap.keySet()){
+				SpecimenTypeDesignationStatus status = typeLocMap.get(specimen);
+				taxonName.addSpecimenTypeDesignation(specimen, status, citation, citationMicroReference, originalNameString, isNotDesignated, addToAllHomotypicNames);
+			}
+		}else{ // no type_loc
+			SpecimenTypeDesignationStatus status = null;
+			taxonName.addSpecimenTypeDesignation(simpleSpecimen.getSpecimen(), status, citation, citationMicroReference, originalNameString, isNotDesignated, addToAllHomotypicNames);
+		}
+		return true;
 	}
 
 	private boolean doElType(Element elType, SimpleSpecimen simpleSpecimen, TaxonXImportConfigurator config){
@@ -249,6 +256,125 @@ public class TaxonXNomenclatureImport extends CdmIoBase<TaxonXImportState> imple
 			String title = CdmUtils.concat(" ", new String[]{strLocality, strCollector, strCollectorNumber});
 			simpleSpecimen.setTitleCache(title);
 		}
+		return true;
+	}
+	
+	private boolean doNameType(Element elType, TaxonNameBase taxonName, TaxonXImportConfigurator config){
+		boolean success = true;
+		//type
+		String text = elType.getTextNormalize();
+		logger.info("Type: " + text);
+		if (text.endsWith(";")){
+			text = text + " ";
+		}
+		String[] type = text.split(";");
+		if (type.length != 3 ){
+			if (text.equals("")){
+				logger.info("<nomenclature><type> is empty: " + getBracketSourceName(config));
+			}else{
+				logger.warn("<nomenclature><type> is of unsupported format: " + elType.getTextNormalize() + getBracketSourceName(config));
+			}
+			success = false;
+		}else{
+			String statusStr = type[0].trim();
+			String taxonNameStr = type[1].trim();
+			String authorStr = type[2].trim();
+			NameTypeDesignationStatus status = getNameTypeStatus(statusStr);
+			if (status == null){
+				logger.warn("<nomenclature><type> is of unsupported format: " + elType.getTextNormalize() + getBracketSourceName(config));
+				success = false;
+			}else{
+//				TaxonNameBase childType = getChildrenNameType(taxonName, taxonNameStr, authorStr);
+//				if (childType != null){
+//					return doNameTypeDesignation(taxonName, childType, status);
+//				}else{
+					String[] epis = taxonNameStr.split(" ");
+					String uninomial = epis[0].trim();
+					String specEpi = epis[1].trim();
+					
+					Pager<TaxonNameBase> nameTypes = getNameService().searchNames(uninomial, null, specEpi, null, Rank.SPECIES(), null, null);
+					
+					List<NonViralName> result = new ArrayList<NonViralName>();
+					for (TaxonNameBase nt : nameTypes.getRecords()){
+						NonViralName nameType = CdmBase.deproxy(nt, NonViralName.class);
+						if (compareAuthorship(nameType, authorStr)){
+							result.add(nameType);
+							success &= doNameTypeDesignation(taxonName, nameType, status);
+						}else{
+							success = success;
+						}
+					}
+					if (result.size() > 1){
+						logger.warn("More than 1 name matches: " + text);
+						success = false;
+					}else if (result.size() == 0){
+						logger.warn("No name matches: " + text + "(" + config.getSourceNameString() + ")");
+						success = false;
+					}
+//				}
+			}
+		}
+		return success;
+	}
+	
+	
+	private TaxonNameBase getChildrenNameType(TaxonNameBase name, String typeStr, String authorStr){
+		TaxonNameBase result = null;
+		Set<TaxonBase> list = name.getTaxonBases();
+		for (TaxonBase taxonBase : list){
+			Taxon taxon;
+			if (taxonBase.isInstanceOf(Taxon.class)){
+				taxon = CdmBase.deproxy(taxonBase, Taxon.class);
+			}else{
+				Synonym syn = CdmBase.deproxy(taxonBase, Synonym.class);
+				taxon = syn.getAcceptedTaxa().iterator().next();
+			}
+			Set<Taxon> children = taxon.getTaxonomicChildren();
+			for (Taxon child: children){
+				NonViralName childName = (CdmBase.deproxy(child.getName(), NonViralName.class));
+				if (childName.getNameCache().equals(typeStr)){
+					if (compareAuthorship(childName, authorStr)){
+						return childName;
+					}
+				}
+			}
+		}
+		return result;
+	}
+	
+	private boolean compareAuthorship(NonViralName typeName, String authorStr){
+		 boolean result = false;
+		 authorStr = authorStr.replaceAll("\\s+and\\s+", "&");
+		 authorStr = authorStr.replaceAll("\\s*", "");
+		 authorStr = authorStr.replaceAll("\\.$", "");
+		 String typeCache = typeName.getAuthorshipCache().replaceAll("\\s*", "");
+		 typeCache = typeCache.replaceAll("\\.$", "");
+		 if (authorStr.equals(typeCache)){
+			 return true;
+		 }else{
+			 logger.warn("   Authors different: " + authorStr + " <-> " + typeCache);
+		 }
+		 return result;
+	}
+	
+	private NameTypeDesignationStatus getNameTypeStatus(String statusString){
+		if (statusString.trim().equals("Type")){
+			return NameTypeDesignationStatus.ORIGINAL_DESIGNATION();
+		}else if (statusString.trim().equals("Lectotype")){
+			return NameTypeDesignationStatus.PRESENT_DESIGNATION();
+		}else{
+			logger.warn("Status not recognized: " + statusString);
+			return null;
+		}
+	}
+	
+	private boolean doNameTypeDesignation(TaxonNameBase name, TaxonNameBase type, NameTypeDesignationStatus status){
+		ReferenceBase citation = null;
+		String citationMicroReference = null;
+		String originalNameString = null;
+		boolean addToAllHomotypicNames = true;
+		
+		name.addNameTypeDesignation(type, citation, citationMicroReference, originalNameString, status, addToAllHomotypicNames);
 		return true;
 	}
 	
