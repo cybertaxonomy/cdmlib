@@ -52,6 +52,8 @@ public class DipteraActivator {
 	static final UUID featureTreeUuid = UUID.fromString("ae9615b8-bc60-4ed0-ad96-897f9226d568");
 	static final Object[] featureKeyList = new Integer[]{1,4,5,10,11,12,13,99}; 
 	
+	static boolean useTaxonomicTree = true;
+	
 	//check - import
 	static final CHECK check = CHECK.CHECK_AND_IMPORT;
 
@@ -132,6 +134,7 @@ public class DipteraActivator {
 		bmImportConfigurator.setDoNameStatus(doNameStatus);
 		bmImportConfigurator.setDoTypes(doTypes);
 		bmImportConfigurator.setDoNameFacts(doNameFacts);
+		bmImportConfigurator.setUseTaxonomicTree(useTaxonomicTree);
 		
 		bmImportConfigurator.setDoTaxa(doTaxa);
 		bmImportConfigurator.setDoRelTaxa(doRelTaxa);
