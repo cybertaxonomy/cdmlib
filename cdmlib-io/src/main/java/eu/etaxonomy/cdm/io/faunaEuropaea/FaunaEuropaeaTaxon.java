@@ -22,6 +22,7 @@ public class FaunaEuropaeaTaxon {
 	private UUID nameUuid;
 	private int id;
 	private int parentId;
+	private int originalGenusId;
 	private int rankId;
 	private String localName;
 	private int year;
@@ -194,6 +195,20 @@ public class FaunaEuropaeaTaxon {
 	 */
 	public void setValid(boolean valid) {
 		this.valid = valid;
+	}
+
+	/**
+	 * @return the originalGenusId
+	 */
+	public int getOriginalGenusId() {
+		return originalGenusId;
+	}
+
+	/**
+	 * @param originalGenusId the originalGenusId to set
+	 */
+	public void setOriginalGenusId(int originalGenusId) {
+		this.originalGenusId = originalGenusId;
 	}
 
 }

@@ -24,7 +24,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
  * @created 08.05.2009
  * @version 1.0
  */
-public class FaunaEuropaeaImportConfigurator extends ImportConfiguratorBase<FaunaEuropeaImportState> implements IImportConfigurator {
+public class FaunaEuropaeaImportConfigurator extends ImportConfiguratorBase<FaunaEuropaeaImportState> implements IImportConfigurator {
 
 	private static final Logger logger = Logger.getLogger(FaunaEuropaeaImportConfigurator.class);
 	
@@ -93,8 +93,8 @@ public class FaunaEuropaeaImportConfigurator extends ImportConfiguratorBase<Faun
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#getNewState()
 	 */
-	public FaunaEuropeaImportState getNewState() {
-		return new FaunaEuropeaImportState(this);
+	public FaunaEuropaeaImportState getNewState() {
+		return new FaunaEuropaeaImportState(this);
 	}
 	
 	

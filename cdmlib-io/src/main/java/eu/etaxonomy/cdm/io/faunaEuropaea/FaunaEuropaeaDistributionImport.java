@@ -60,7 +60,7 @@ public class FaunaEuropaeaDistributionImport  extends FaunaEuropaeaImportBase {
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doCheck(eu.etaxonomy.cdm.io.common.IImportConfigurator)
 	 */
 	@Override
-	protected boolean doCheck(FaunaEuropeaImportState state) {
+	protected boolean doCheck(FaunaEuropaeaImportState state) {
 		boolean result = true;
 		FaunaEuropaeaImportConfigurator fauEuConfig = state.getConfig();
 		logger.warn("Checking for Distributions not yet fully implemented");
@@ -86,7 +86,7 @@ public class FaunaEuropaeaDistributionImport  extends FaunaEuropaeaImportBase {
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doInvoke(eu.etaxonomy.cdm.io.common.IImportConfigurator, eu.etaxonomy.cdm.api.application.CdmApplicationController, java.util.Map)
 	 */
 	@Override
-	protected boolean doInvoke(FaunaEuropeaImportState state) {	
+	protected boolean doInvoke(FaunaEuropaeaImportState state) {	
 		
 		Map<String, MapWrapper<? extends CdmBase>> stores = state.getStores();
 		MapWrapper<TaxonBase> taxonStore = (MapWrapper<TaxonBase>)stores.get(ICdmIO.TAXON_STORE);
@@ -194,7 +194,7 @@ public class FaunaEuropaeaDistributionImport  extends FaunaEuropaeaImportBase {
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)
 	 */
-	protected boolean isIgnore(FaunaEuropeaImportState state){
-		return (state.getConfig().getDoReferences() == IImportConfigurator.DO_REFERENCES.NONE);
+	protected boolean isIgnore(FaunaEuropaeaImportState state){
+		return !state.getConfig().isDoOccurrence();
 	}
 }

@@ -19,12 +19,12 @@ import eu.etaxonomy.cdm.io.common.ImportStateBase;
  * @created 11.05.2009
  * @version 1.0
  */
-public class FaunaEuropeaImportState extends ImportStateBase<FaunaEuropaeaImportConfigurator>{
+public class FaunaEuropaeaImportState extends ImportStateBase<FaunaEuropaeaImportConfigurator>{
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(FaunaEuropeaImportState.class);
+	private static final Logger logger = Logger.getLogger(FaunaEuropaeaImportState.class);
 
 	
-	public FaunaEuropeaImportState(FaunaEuropaeaImportConfigurator config) {
+	public FaunaEuropaeaImportState(FaunaEuropaeaImportConfigurator config) {
 		super(config);
 	}
 	
