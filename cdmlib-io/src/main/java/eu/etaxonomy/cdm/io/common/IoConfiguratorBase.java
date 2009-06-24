@@ -20,7 +20,7 @@ public abstract class IoConfiguratorBase implements IIoConfigurator{
 	private static final Logger logger = Logger.getLogger(IoConfiguratorBase.class);
 
 	//im-/export uses TaxonomicTree for is_taxonomically_included_in relationships
-	private boolean useTaxonomicTree = false;
+	private boolean useTaxonomicTree = true;
 	
 //	protected Class<ICdmIO>[] ioClassList;
 	private DbSchemaValidation dbSchemaValidation = DbSchemaValidation.VALIDATE;
