@@ -9,8 +9,6 @@
 
 package eu.etaxonomy.cdm.io.berlinModel.out;
 
-import java.lang.reflect.Method;
-
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
@@ -28,7 +26,6 @@ public class BerlinModelExportConfigurator extends DbExportConfiguratorBase impl
 	@SuppressWarnings("unused")
 	private static Logger logger = Logger.getLogger(BerlinModelExportConfigurator.class);
 
-	private Method relNameQualifierMethod;
 	//ID for the isHomotypic relationship in RelName, if not exist null
 	private Integer isHomotypicId = null;
 	
