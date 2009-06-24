@@ -26,6 +26,7 @@ import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.service.ICommonService;
+import eu.etaxonomy.cdm.api.service.TermServiceImpl;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.CdmIoBase;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
@@ -35,6 +36,8 @@ import eu.etaxonomy.cdm.io.tcsrdf.TcsRdfImportConfigurator;
 import eu.etaxonomy.cdm.io.tcsrdf.TcsRdfImportState;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.TermVocabulary;
+import eu.etaxonomy.cdm.model.common.VocabularyEnum;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
@@ -129,24 +132,38 @@ public class TaxonXDescriptionImport extends CdmIoBase<TaxonXImportState> implem
 		for (Element div : elDivs){
 			Attribute attrType = div.getAttribute("type", nsTaxonx);
 			String strType = attrType.getValue();
+			Feature feature = null;
 			try {
-				Feature feature = TaxonXTransformer.descriptionType2feature(strType);
-				String text = getText(div);
-				if (!"".equals(CdmUtils.Nz(text).trim())){
-					// FIXME hibernate throws an exception when a string is longer than approx. 4000 chars.
-					// for now we truncate any description text to 4000 characters.
-					if(text.length() > 4000){
-						text = text.substring(0, 3900) + "... [text truncated]";
-						logger.warn("FIXME - Truncation of text occurred.");
-					}
-					
-					DescriptionElementBase descriptionElement = TextData.NewInstance(text, Language.ENGLISH(), null);
-					descriptionElement.setFeature(feature);
-					description.addElement(descriptionElement);
-				}
+				feature = TaxonXTransformer.descriptionType2feature(strType);
 			} catch (UnknownCdmTypeException e) {
-				logger.warn(e.getMessage() + getBracketSourceName(txConfig));
+				TermVocabulary<Feature> featureVoc = Feature.BIOLOGY_ECOLOGY().getVocabulary();
+				for (Feature oneFeature : featureVoc.getTerms()){
+					if (strType.equals(oneFeature.getLabel()) || strType.equals(oneFeature.getRepresentation(Language.DEFAULT() ).getText() )){
+						feature = oneFeature;
+					}
+				}
+				
+				if (feature == null){
+					feature = Feature.NewInstance(strType, strType, null);
+					featureVoc.addTerm(feature);
+					getTermService().save(feature);
+					logger.warn(e.getMessage() + ". Feature was added to the feature vocabulary. " + getBracketSourceName(txConfig));
+				}
 			}
+			String text = getText(div);
+			if (!"".equals(CdmUtils.Nz(text).trim())){
+				// FIXME hibernate throws an exception when a string is longer than approx. 4000 chars.
+				// for now we truncate any description text to 4000 characters.
+				if(text.length() > 4000){
+					text = text.substring(0, 3900) + "... [text truncated]";
+					logger.warn("FIXME - Truncation of text occurred.");
+				}
+				
+				DescriptionElementBase descriptionElement = TextData.NewInstance(text, Language.ENGLISH(), null);
+				descriptionElement.setFeature(feature);
+				description.addElement(descriptionElement);
+			}
+
 		}
 		if (description.size() >0){
 			taxon.addDescription(description);
