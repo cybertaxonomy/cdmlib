@@ -50,7 +50,7 @@ public class SalvadorActivator {
 	static final Object[] featureKeyList = new Integer[]{302, 303, 306, 307, 309, 310, 311, 312, 350, 1500, 1800, 1900, 1950, 1980, 2000, 10299}; 
 	static boolean isIgnore0AuthorTeam = true;  //special case for Salvador. 
 	static boolean doExport = true;
-	static boolean useTaxonomicTree = false;
+	static boolean useTaxonomicTree = true;
 	
 	//check - import
 	static final CHECK check = CHECK.CHECK_AND_IMPORT;

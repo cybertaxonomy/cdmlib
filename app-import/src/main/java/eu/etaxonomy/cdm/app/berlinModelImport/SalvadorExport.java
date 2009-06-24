@@ -13,18 +13,13 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.app.common.CdmDestinations;
-import eu.etaxonomy.cdm.database.CdmDataSource;
-import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
-import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.berlinModel.out.BerlinModelExportConfigurator;
 import eu.etaxonomy.cdm.io.common.CdmDefaultExport;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.io.common.IExportConfigurator.CHECK;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator.DO_REFERENCES;
-import eu.etaxonomy.cdm.model.common.init.TermNotFoundException;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 
 
@@ -43,6 +38,7 @@ public class SalvadorExport {
 	static final UUID secUuid = UUID.fromString("d03ef02a-f226-4cb1-bdb4-f6c154f08a34");
 	static final int sourceSecId = 7331;
 	static final int isHomotypicId = 72;
+	static boolean useTaxonomicTree = true;
 	
 //	static final UUID featureTreeUuid = UUID.fromString("ae9615b8-bc60-4ed0-ad96-897f9226d568");
 //	static final Object[] featureKeyList = new Integer[]{302, 303, 306, 307, 309, 310, 311, 312, 350, 1500, 1800, 1900, 1950, 1980, 2000, 10299}; 
@@ -71,7 +67,7 @@ public class SalvadorExport {
 	static final boolean doTaxa = true;
 	static final boolean doRelTaxa = true;
 	static final boolean doFacts = true;
-	static final boolean doOccurences = false;
+	static final boolean doOccurences = false; //occurrences do not exist in Salvador
 
 // ************************ NONE **************************************** //
 	
@@ -122,18 +118,8 @@ public class SalvadorExport {
 		bmExportConfigurator.setDoOccurrence(doOccurences);
 		bmExportConfigurator.setIsHomotypicId(isHomotypicId);
 		bmExportConfigurator.setCheck(check);
-		
-//		try {
-//			ICdmDataSource ds = CdmDataSource.NewH2EmbeddedInstance("test", "sa", "");
-//			CdmApplicationController cdmApp = CdmApplicationController.NewInstance(ds, DbSchemaValidation.CREATE);
-//			bmExportConfigurator.setCdmAppController(cdmApp);
-//		} catch (DataSourceNotFoundException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} catch (TermNotFoundException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
+		bmExportConfigurator.setUseTaxonomicTree(useTaxonomicTree);
+
 		// invoke import
 		CdmDefaultExport<BerlinModelExportConfigurator> bmExport = new CdmDefaultExport<BerlinModelExportConfigurator>();
 		boolean result = bmExport.invoke(bmExportConfigurator);
