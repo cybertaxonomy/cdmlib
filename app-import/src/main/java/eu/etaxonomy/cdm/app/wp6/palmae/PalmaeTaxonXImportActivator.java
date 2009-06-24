@@ -37,7 +37,8 @@ public class PalmaeTaxonXImportActivator {
 	//database validation status (create, update, validate ...)
 	static DbSchemaValidation hbm2dll = DbSchemaValidation.UPDATE;
 	//static final String tcsSource = TcsSources.taxonX_local();
-	static File source  = TcsSources.taxonX_localDir();
+	//static File source  = TcsSources.taxonX_localDir();
+	static File source  = new File("target/classes/taxonX/genus");
 	static ICdmDataSource cdmDestination = CdmDestinations.localH2Palmae();
 	
 	static UUID secUuid = UUID.fromString("5f32b8af-0c97-48ac-8d33-6099ed68c625");
@@ -45,7 +46,9 @@ public class PalmaeTaxonXImportActivator {
 	//check - import
 	static CHECK check = CHECK.IMPORT_WITHOUT_CHECK;
 	
-	static boolean doDescriptions = true;
+	static boolean doDescriptions = false;
+	static boolean doNomenclature = true;
+	
 	
 	public boolean runImport(){
 		boolean success = true;
@@ -59,6 +62,7 @@ public class PalmaeTaxonXImportActivator {
 		taxonXImportConfigurator.setSecUuid(secUuid);
 		
 		taxonXImportConfigurator.setDoFacts(doDescriptions);
+		taxonXImportConfigurator.setDoTypes(doNomenclature);
 		
 		taxonXImportConfigurator.setCheck(check);
 		taxonXImportConfigurator.setDbSchemaValidation(hbm2dll);
