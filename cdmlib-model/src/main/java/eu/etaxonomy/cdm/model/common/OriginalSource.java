@@ -20,7 +20,6 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
@@ -32,7 +31,10 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
 /**
  * Other names/labels/titles (abreviated or not) for the same object (person,
- * reference, source, etc.)
+ * reference, source, etc.).
+ * It can also be used to store the id, namespace/tablename from an import source into CDM.
+ * E.g. when importing SDD data here you may store the filename and the id used in the SDD file here.
+ * 
  * @author m.doering
  * @version 1.0
  * @created 08-Nov-2007 13:06:22

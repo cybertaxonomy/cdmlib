@@ -121,5 +121,47 @@ public class HomotypicalGroupTest {
 		Assert.assertEquals("Number of unrelatedNames should be 1", 1, unrelatedNames.size());
 	}
 	
+	@Test
+	public void testSetGroupBasionym(){
+	
+		name1.mergeHomotypicGroups(name2);
+		name1.mergeHomotypicGroups(name3);
+		name2.mergeHomotypicGroups(name4);
+		
+		name3.getHomotypicalGroup().setGroupBasionym(name1);
+		
+		Assert.assertEquals(1, name2.getBasionyms().size());
+		Assert.assertEquals(1, name3.getBasionyms().size());
+		Assert.assertEquals(1, name4.getBasionyms().size());
+		Assert.assertEquals(name1, name4.getBasionym());
+	}
+
+	@Test
+	public void testRemoveGroupBasionym(){
+		
+		name1.mergeHomotypicGroups(name2);
+		name1.mergeHomotypicGroups(name3);
+		name2.mergeHomotypicGroups(name4);
+		
+		HomotypicalGroup hg = name3.getHomotypicalGroup();
+		hg.setGroupBasionym(name1);
+		
+		Assert.assertEquals(1, name2.getBasionyms().size());
+		Assert.assertEquals(1, name3.getBasionyms().size());
+		Assert.assertEquals(1, name4.getBasionyms().size());
+		Assert.assertEquals(name1, name4.getBasionym());
+		Assert.assertEquals(1, hg.getBasionyms().size());
+
+		hg.removeGroupBasionym(name1);
+		Assert.assertEquals(0, hg.getBasionyms().size());
+
+		Assert.assertEquals(0, name2.getBasionyms().size());
+		Assert.assertEquals(0, name3.getBasionyms().size());
+		Assert.assertEquals(0, name4.getBasionyms().size());
+		Assert.assertEquals(null, name4.getBasionym());
+
+	}
+	
+	
 	
 }

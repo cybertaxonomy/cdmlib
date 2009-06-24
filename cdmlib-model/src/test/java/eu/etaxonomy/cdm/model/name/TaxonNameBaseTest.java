@@ -16,6 +16,7 @@ import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
+import junit.framework.Assert;
 
 import org.apache.log4j.Logger;
 import org.junit.Before;
@@ -74,7 +75,6 @@ public class TaxonNameBaseTest {
 		public String generateFullTitle(){return null;}
 		@Override
 		public String generateTitle() {
-			// TODO Auto-generated method stub
 			return null;
 		};
 	}
@@ -82,17 +82,10 @@ public class TaxonNameBaseTest {
 	
 /** *************************  TESTS ******************************************************/
 	
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.name.TaxonNameBase#generateTitle()}.
-	 */
-	@Test
-	public void testGenerateTitle() {
-		logger.warn("not yet implemented");
-	}
 
 	@Test
 	public void testGenerateFullTitle() {
-		logger.warn("not yet implemented");
+		//abstract
 	}
 	
 	/**
@@ -252,16 +245,6 @@ public class TaxonNameBaseTest {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.name.TaxonNameBase#setStatus(java.util.Set)}.
-	 */
-	@Test
-	public void testSetStatus() {
-		//is protected
-		logger.warn("not yet implemented");
-	}
-
-
-	/**
 	 * Test method for {@link eu.etaxonomy.cdm.model.name.TaxonNameBase#isOriginalCombination()}.
 	 */
 	@Test
@@ -274,7 +257,18 @@ public class TaxonNameBaseTest {
 	 */
 	@Test
 	public void testGetBasionym() {
-		logger.warn("not yet implemented");
+		TaxonNameBase name1 = BotanicalName.NewInstance(null);
+		TaxonNameBase basionym1 = BotanicalName.NewInstance(null);
+		TaxonNameBase basionym2 = BotanicalName.NewInstance(null);
+		
+		Assert.assertEquals(null, name1.getBasionym());	
+		name1.addBasionym(basionym1);
+		Assert.assertEquals(basionym1, name1.getBasionym());
+		name1.addBasionym(basionym2);
+		TaxonNameBase oneOfThebasionyms = name1.getBasionym();
+		Assert.assertTrue(oneOfThebasionyms == basionym1 || oneOfThebasionyms == basionym2 );
+		name1.removeBasionyms();
+		Assert.assertEquals(null, name1.getBasionym());	
 	}
 
 	/**
@@ -298,13 +292,6 @@ public class TaxonNameBaseTest {
 		logger.warn("not yet implemented");
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.name.TaxonNameBase#removeBasionym()}.
-	 */
-	@Test
-	public void testRemoveBasionym() {
-		logger.warn("not yet implemented");
-	}
 
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.model.name.TaxonNameBase#getCacheStrategy()}.
@@ -327,22 +314,20 @@ public class TaxonNameBaseTest {
 	 */
 	@Test
 	public void testGetRank() {
-		logger.warn("not yet implemented");
-	}
-
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.name.TaxonNameBase#setRank(eu.etaxonomy.cdm.model.name.Rank)}.
-	 */
-	@Test
-	public void testSetRank() {
-		logger.warn("not yet implemented");
+		TaxonNameBase name1 = BotanicalName.NewInstance(null);
+		assertNull("Rank shall be null", name1.getRank());
+		name1.setRank(Rank.SPECIES());
+		assertNotNull("Rank shall not be null", name1.getRank());
+		name1.setRank(null);
+		assertNull("Rank shall be null", name1.getRank());
+		
 	}
 
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.model.name.TaxonNameBase#getNomenclaturalReference()}.
 	 */
 	@Test
-	public void testGetNomenclaturalReference() {
+	public void testGetSetNomenclaturalReference() {
 		INomenclaturalReference nr = (INomenclaturalReference) nameBase1.getNomenclaturalReference();
 		assertNull("Nomenclatural Reference shall be null", nr);
 		nameBase1.setNomenclaturalReference(Generic.NewInstance());
@@ -351,67 +336,45 @@ public class TaxonNameBaseTest {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.name.TaxonNameBase#setNomenclaturalReference(eu.etaxonomy.cdm.model.reference.INomenclaturalReference)}.
-	 */
-	@Test
-	public void testSetNomenclaturalReference() {
-		logger.warn("not yet implemented");
-	}
-
-	/**
 	 * Test method for {@link eu.etaxonomy.cdm.model.name.TaxonNameBase#getAppendedPhrase()}.
 	 */
 	@Test
 	public void testGetAppendedPhrase() {
-		logger.warn("not yet implemented");
-	}
-
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.name.TaxonNameBase#setAppendedPhrase(java.lang.String)}.
-	 */
-	@Test
-	public void testSetAppendedPhrase() {
-		logger.warn("not yet implemented");
+		TaxonNameBase name1 = BotanicalName.NewInstance(null);
+		String appPhrase = "appPhrase";
+		Assert.assertNull(name1.getAppendedPhrase());
+		name1.setAppendedPhrase(appPhrase);
+		Assert.assertSame(appPhrase, name1.getAppendedPhrase());
+		name1.setAppendedPhrase(null);
+		Assert.assertNull(name1.getAppendedPhrase());
 	}
 
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.model.name.TaxonNameBase#getNomenclaturalMicroReference()}.
 	 */
 	@Test
-	public void testGetNomenclaturalMicroReference() {
-		logger.warn("not yet implemented");
-	}
-
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.name.TaxonNameBase#setNomenclaturalMicroReference(java.lang.String)}.
-	 */
-	@Test
-	public void testSetNomenclaturalMicroReference() {
-		logger.warn("not yet implemented");
+	public void testGetSetNomenclaturalMicroReference() {
+		TaxonNameBase name1 = BotanicalName.NewInstance(null);
+		String microRef = "micro";
+		Assert.assertNull(name1.getNomenclaturalMicroReference());
+		name1.setNomenclaturalMicroReference(microRef);
+		Assert.assertSame(microRef, name1.getNomenclaturalMicroReference());
+		name1.setNomenclaturalMicroReference(null);
+		Assert.assertNull(name1.getNomenclaturalMicroReference());
 	}
 
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.model.name.TaxonNameBase#getHasProblem()}.
 	 */
 	@Test
-	public void testGetHasProblem() {
-		logger.warn("not yet implemented");
-	}
-
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.name.TaxonNameBase#setHasProblem(boolean)}.
-	 */
-	@Test
-	public void testSetHasProblem() {
-		logger.warn("not yet implemented");
-	}
-
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.name.TaxonNameBase#hasProblem()}.
-	 */
-	@Test
-	public void testHasProblem() {
-		logger.warn("not yet implemented");
+	public void testGetSetHasProblem() {
+		TaxonNameBase name1 = BotanicalName.NewInstance(null);
+		name1.setHasProblem(false);
+		Assert.assertFalse(name1.hasProblem());
+		name1.setHasProblem(true);
+		Assert.assertTrue(name1.hasProblem());
+		name1.setHasProblem(false);
+		Assert.assertFalse(name1.getHasProblem());
 	}
 
 	/**
@@ -591,13 +554,136 @@ public class TaxonNameBaseTest {
 	public void testGetSynonyms() {
 		logger.warn("not yet implemented");
 	}
+	
+	@Test
+	public void testMergeHomotypicGroups() {
+		TaxonNameBase name1 = BotanicalName.NewInstance(null);
+		TaxonNameBase name2 = BotanicalName.NewInstance(null);
+		TaxonNameBase name3 = BotanicalName.NewInstance(null);
+		TaxonNameBase name4 = BotanicalName.NewInstance(null);
+		
+		Assert.assertFalse(name1.getHomotypicalGroup().equals(name2.getHomotypicalGroup()));
+		int numberOfTypifiedNames = name1.getHomotypicalGroup().getTypifiedNames().size();
+		Assert.assertEquals(1, numberOfTypifiedNames);
+		
+		name1.mergeHomotypicGroups(name2);
+		Assert.assertEquals(name1.getHomotypicalGroup(), name2.getHomotypicalGroup());
+		Assert.assertSame(name1.getHomotypicalGroup(), name2.getHomotypicalGroup());
+		numberOfTypifiedNames = name1.getHomotypicalGroup().getTypifiedNames().size();
+		Assert.assertEquals(2, numberOfTypifiedNames);
+		numberOfTypifiedNames = name2.getHomotypicalGroup().getTypifiedNames().size();
+		Assert.assertEquals(2, numberOfTypifiedNames);
+		Assert.assertTrue(name1.getHomotypicalGroup().getTypifiedNames().contains(name2));
+		Assert.assertTrue(name2.getHomotypicalGroup().getTypifiedNames().contains(name1));
+
+		name3.mergeHomotypicGroups(name2);
+		Assert.assertEquals(name1.getHomotypicalGroup(), name3.getHomotypicalGroup());
+		Assert.assertSame(name1.getHomotypicalGroup(), name3.getHomotypicalGroup());
+		numberOfTypifiedNames = name1.getHomotypicalGroup().getTypifiedNames().size();
+		Assert.assertEquals(3, numberOfTypifiedNames);
+		numberOfTypifiedNames = name2.getHomotypicalGroup().getTypifiedNames().size();
+		Assert.assertEquals(3, numberOfTypifiedNames);
+		numberOfTypifiedNames = name3.getHomotypicalGroup().getTypifiedNames().size();
+		Assert.assertEquals(3, numberOfTypifiedNames);
+		Assert.assertTrue(name1.getHomotypicalGroup().getTypifiedNames().contains(name2));
+		Assert.assertTrue(name2.getHomotypicalGroup().getTypifiedNames().contains(name1));
+		Assert.assertTrue(name1.getHomotypicalGroup().getTypifiedNames().contains(name3));
+		Assert.assertTrue(name3.getHomotypicalGroup().getTypifiedNames().contains(name1));
+		Assert.assertTrue(name2.getHomotypicalGroup().getTypifiedNames().contains(name3));
+		Assert.assertTrue(name3.getHomotypicalGroup().getTypifiedNames().contains(name2));
+
+		
+	}
+	
+	
+	@Test
+	public void testIsBasionymFor() {
+		TaxonNameBase name1 = BotanicalName.NewInstance(null);
+		TaxonNameBase name2 = BotanicalName.NewInstance(null);
+		TaxonNameBase name3 = BotanicalName.NewInstance(null);
+		TaxonNameBase name4 = BotanicalName.NewInstance(null);
+		
+		Assert.assertFalse(name2.isBasionymFor(name1));
+		Assert.assertFalse(name1.isBasionymFor(name2));
+		name1.addBasionym(name2);
+		Assert.assertTrue(name2.isBasionymFor(name1));
+		Assert.assertFalse(name1.isBasionymFor(name2));
+	}
 
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.model.name.TaxonNameBase#isHomotypic(eu.etaxonomy.cdm.model.name.TaxonNameBase)}.
 	 */
 	@Test
 	public void testIsHomotypic() {
-		logger.warn("not yet implemented");
+		TaxonNameBase name1 = BotanicalName.NewInstance(null);
+		TaxonNameBase name2 = BotanicalName.NewInstance(null);
+		TaxonNameBase name3 = BotanicalName.NewInstance(null);
+		TaxonNameBase name4 = BotanicalName.NewInstance(null);
+		name1.mergeHomotypicGroups(name2);
+		name2.mergeHomotypicGroups(name4);
+		
+		Assert.assertTrue(name1.isHomotypic(name4));
+		Assert.assertTrue(name4.isHomotypic(name1));
+		Assert.assertFalse(name1.isHomotypic(name3));
+		Assert.assertFalse(name3.isHomotypic(name1));
+		Assert.assertTrue(name2.isHomotypic(name1));
+		
+	}
+
+	@Test
+	public void testMakeGroupsBasionym(){
+		TaxonNameBase name1 = BotanicalName.NewInstance(null);
+		TaxonNameBase name2 = BotanicalName.NewInstance(null);
+		TaxonNameBase name3 = BotanicalName.NewInstance(null);
+		TaxonNameBase name4 = BotanicalName.NewInstance(null);
+		
+		name1.mergeHomotypicGroups(name2);
+		name1.mergeHomotypicGroups(name3);
+		name2.mergeHomotypicGroups(name4);
+		
+		name1.makeGroupsBasionym();
+		
+		Assert.assertEquals(1, name2.getBasionyms().size());
+		Assert.assertEquals(1, name3.getBasionyms().size());
+		Assert.assertEquals(1, name4.getBasionyms().size());
+		Assert.assertEquals(name1, name4.getBasionym());
+		
+	}
+	
+	@Test
+	public void testIsGroupsBasionym(){
+		TaxonNameBase name1 = BotanicalName.NewInstance(null);
+		TaxonNameBase name2 = BotanicalName.NewInstance(null);
+		TaxonNameBase name3 = BotanicalName.NewInstance(null);
+		TaxonNameBase name4 = BotanicalName.NewInstance(null);
+		
+		Assert.assertFalse(name1.isGroupsBasionym());
+		
+		name1.mergeHomotypicGroups(name2);
+		name2.mergeHomotypicGroups(name4);
+		
+		name1.makeGroupsBasionym();
+		
+		Assert.assertTrue(name1.isGroupsBasionym());
+		Assert.assertFalse(name2.isGroupsBasionym());
+		name1.mergeHomotypicGroups(name3);
+		Assert.assertFalse(name1.isGroupsBasionym());	
+	}
+	
+	
+	
+	@Test
+	public void testRemoveBasionyms(){
+		TaxonNameBase name1 = BotanicalName.NewInstance(null);
+		TaxonNameBase basionym = BotanicalName.NewInstance(null);
+		TaxonNameBase name3 = BotanicalName.NewInstance(null);
+		
+		name1.addBasionym(basionym);
+		Assert.assertEquals(1, name1.getBasionyms().size());
+		name1.addBasionym(name3);
+		Assert.assertEquals(2, name1.getBasionyms().size());
+		name1.removeBasionyms();
+		Assert.assertEquals(0, name1.getBasionyms().size());	
 	}
 
 	/**
