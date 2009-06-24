@@ -32,6 +32,7 @@ import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.MarkerType;
+import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 
@@ -72,7 +73,7 @@ public class BerlinModelTaxonExport extends BerlinModelExportBase<TaxonBase> {
 		mapping.addMapper(DbObjectMapper.NewInstance("name", "PTNameFk"));
 		mapping.addMapper(DbObjectMapper.NewInstance("sec", "PTRefFk"));
 		mapping.addMapper(MethodMapper.NewInstance("StatusFk", this));
-		mapping.addMapper(DbBooleanMapper.NewInstance("isDoubtful", "DoubtfulFlag"));
+		mapping.addMapper(MethodMapper.NewInstance("DoubtfulFlag", this) );
 		//detail
 		ExtensionType detailExtensionType = (ExtensionType)getTermService().getTermByUuid(BerlinModelTaxonImport.DETAIL_EXT_UUID);
 		if (detailExtensionType != null){
@@ -91,10 +92,10 @@ public class BerlinModelTaxonExport extends BerlinModelExportBase<TaxonBase> {
 		//useNameCacheFlag
 		MarkerType useNameCacheMarkerType = (MarkerType)getTermService().getTermByUuid(BerlinModelTaxonImport.USE_NAME_CACHE);
 		if (useNameCacheMarkerType != null){
-			mapping.addMapper(DbMarkerMapper.NewInstance(useNameCacheMarkerType, "UseNameCacheFlag"));
+			mapping.addMapper(DbMarkerMapper.NewInstance(useNameCacheMarkerType, "UseNameCacheFlag", false));
 		}
 		//publisheFlag
-		mapping.addMapper(DbMarkerMapper.NewInstance(MarkerType.PUBLISH(), "PublishFlag"));
+		mapping.addMapper(DbMarkerMapper.NewInstance(MarkerType.PUBLISH(), "PublishFlag", true));
 		
 		//notes
 		mapping.addMapper(CreatedAndNotesMapper.NewInstance());
@@ -171,6 +172,15 @@ public class BerlinModelTaxonExport extends BerlinModelExportBase<TaxonBase> {
 	@SuppressWarnings("unused")
 	private static Integer getStatusFk(TaxonBase<?> taxon){
 		return BerlinModelTransformer.taxonBase2statusFk(taxon);
+	}
+	
+	@SuppressWarnings("unused")
+	private static String getDoubtfulFlag(TaxonBase<?> taxon){
+		if (taxon.isDoubtful()){
+			return "d";
+		}else{
+			return "a";
+		}
 	}
 	
 	/* (non-Javadoc)
