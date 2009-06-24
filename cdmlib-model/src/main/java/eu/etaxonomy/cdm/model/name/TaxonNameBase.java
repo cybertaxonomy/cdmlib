@@ -47,7 +47,6 @@ import eu.etaxonomy.cdm.model.common.IReferencedEntity;
 import eu.etaxonomy.cdm.model.common.IRelated;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
-import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
@@ -456,31 +455,19 @@ public void addRelationshipToName(TaxonNameBase toName, NameRelationshipType typ
 		this.relationsFromThisName.remove(nameRelation);
 	}
 		
-	public void removeTaxonName(TaxonNameBase taxonName) {
+	public void removeRelationToTaxonName(TaxonNameBase toTaxonName) {
 		Set<NameRelationship> nameRelationships = new HashSet<NameRelationship>();
 //		nameRelationships.addAll(this.getNameRelations());
 		nameRelationships.addAll(this.getRelationsFromThisName());
 		nameRelationships.addAll(this.getRelationsToThisName());
 		for(NameRelationship nameRelationship : nameRelationships) {
 			// remove name relationship from this side 
-			if (nameRelationship.getFromName().equals(this) && nameRelationship.getToName().equals(taxonName)) {
-				this.removeNameRelation(nameRelationship);
+			if (nameRelationship.getFromName().equals(this) && nameRelationship.getToName().equals(toTaxonName)) {
+				this.removeNameRelationship(nameRelationship);
 			}
 		}
 	}
-	
-	public void removeNameRelation(NameRelationship nameRelation) {
-		nameRelation.setToName(null);
-	
-		TaxonNameBase name = nameRelation.getFromName();
-		if (name != null){
-			nameRelation.setFromName(null);
-			name.removeNameRelation(nameRelation);
-		}
-		this.relationsToThisName.remove(nameRelation);
-		this.relationsFromThisName.remove(nameRelation);
-	}
-	
+
 	
 	/**
 	 * Does exactly the same as the addNameRelationship method provided that
@@ -499,7 +486,7 @@ public void addRelationshipToName(TaxonNameBase toName, NameRelationshipType typ
 			if (type != null && ( type.isBasionymRelation() || type.isReplacedSynonymRelation() ) ){
 				TaxonNameBase fromName = ((NameRelationship)relation).getFromName();
 				TaxonNameBase toName = ((NameRelationship)relation).getToName();
-				fromName.getHomotypicalGroup().merge(toName.getHomotypicalGroup());
+				fromName.mergeHomotypicGroups(toName);
 			}		
 		}else{
 			logger.warn("Relationship not of type NameRelationship!");
@@ -583,8 +570,8 @@ public void addRelationshipToName(TaxonNameBase toName, NameRelationshipType typ
 	public boolean isOriginalCombination(){
 		Set<NameRelationship> relationsFromThisName = this.getRelationsFromThisName();
 		for (NameRelationship relation : relationsFromThisName) {
-			if (relation.getType().equals(NameRelationshipType.BASIONYM()) ||
-					relation.getType().equals(NameRelationshipType.REPLACED_SYNONYM())) {
+			if (relation.getType().isBasionymRelation() ||
+					relation.getType().isReplacedSynonymRelation()) {
 				return true;
 			}
 		}
@@ -597,13 +584,41 @@ public void addRelationshipToName(TaxonNameBase toName, NameRelationshipType typ
 	 * For instance <i>Pinus abies</i> L. was published by Linnaeus and the botanist
 	 * Karsten transferred later <i>this</i> taxon to the genus Picea. Therefore,
 	 * <i>Pinus abies</i> L. is the basionym of the new combination <i>Picea abies</i> (L.) H. Karst.
+	 * 
+	 * If more than one basionym exists one is choosen at radom.
+	 * 
+	 * If no basionym exists null is returned.
 	 */
 	@Transient
-	public T getBasionym(){
-		//TODO: pick the right name relationships...
-		logger.warn("get Basionym not yet implemented");
-		return null;
+	public TaxonNameBase getBasionym(){
+		Set<TaxonNameBase> basionyms = getBasionyms();
+		if (basionyms.size() == 0){
+			return null;
+		}else{
+			return basionyms.iterator().next();
+		}
 	}
+	
+	/**
+	 * Returns the set of taxon names which are the {@link NameRelationshipType#BASIONYM() basionyms} of <i>this</i> taxon name.
+	 * The basionym of a taxon name is its epithet-bringing synonym.
+	 * For instance <i>Pinus abies</i> L. was published by Linnaeus and the botanist
+	 * Karsten transferred later <i>this</i> taxon to the genus Picea. Therefore,
+	 * <i>Pinus abies</i> L. is the basionym of the new combination <i>Picea abies</i> (L.) H. Karst.
+	 */
+	@Transient
+	public Set<TaxonNameBase> getBasionyms(){
+		Set<TaxonNameBase> result = new HashSet<TaxonNameBase>();
+		Set<NameRelationship> rels = this.getRelationsToThisName();
+		for (NameRelationship rel : rels){
+			if (rel.getType().isBasionymRelation()){
+				TaxonNameBase basionym = rel.getFromName();
+				result.add(basionym);
+			}
+		}
+		return result;
+	}
+	
 	/**
 	 * Assigns a taxon name as {@link NameRelationshipType#BASIONYM() basionym} of <i>this</i> taxon name.
 	 * The basionym {@link NameRelationship relationship} will be added to <i>this</i> taxon name
@@ -665,9 +680,19 @@ public void addRelationshipToName(TaxonNameBase toName, NameRelationshipType typ
 	 * @see   #getBasionym()
 	 * @see   #addBasionym(TaxonNameBase)
 	 */
-	public void removeBasionym(){
-		//TODO implement
-		logger.warn("not yet implemented");
+	public void removeBasionyms(){
+		Set<NameRelationship> removeRelations = new HashSet<NameRelationship>();
+		for (NameRelationship nameRelation : this.getRelationsToThisName()){
+			if (nameRelation.getType().isBasionymRelation()){
+				removeRelations.add(nameRelation);
+			}
+		}
+		// Removing relations from a set through which we are iterating causes a
+		// ConcurrentModificationException. Therefore, we delete the targeted
+		// relations in a second step.
+		for (NameRelationship relation : removeRelations){
+			this.removeNameRelationship(relation);
+		}
 	}
 	
 	/** 
@@ -1010,6 +1035,8 @@ public void addRelationshipToName(TaxonNameBase toName, NameRelationshipType typ
 	protected void setHomotypicalGroup(HomotypicalGroup homotypicalGroup) {
 		this.homotypicalGroup = homotypicalGroup;
 	}
+	
+	
 
 // *************************************************************************//
 	
@@ -1200,7 +1227,15 @@ public void addRelationshipToName(TaxonNameBase toName, NameRelationshipType typ
 		descriptions.remove(description);
 	}
 	
-// ***********
+// *********** HOMOTYPIC GROUP METHODS **************************************************
+
+	@Transient
+	public void mergeHomotypicGroups(TaxonNameBase name){
+		this.getHomotypicalGroup().merge(name.getHomotypicalGroup());
+		//HomotypicalGroup thatGroup = name.homotypicalGroup;
+		name.setHomotypicalGroup(this.homotypicalGroup);
+	}
+	
 	/**
 	 * Returns the boolean value indicating whether a given taxon name belongs
 	 * to the same {@link HomotypicalGroup homotypical group} as <i>this</i> taxon name (true)
@@ -1225,6 +1260,70 @@ public void addRelationshipToName(TaxonNameBase toName, NameRelationshipType typ
 		}
 		return false;
 	}
+	
+	
+    /**
+     * Checks whether name is a basionym for ALL names
+     * in its homotypical group.
+     * Returns <code>false</code> if there are no other names in the group
+     * @param name
+     * @return
+     */  
+	@Transient
+	public boolean isGroupsBasionym() {
+		Set<TaxonNameBase> typifiedNames = homotypicalGroup.getTypifiedNames();
+		
+		// Check whether there are any other names in the group
+	    if (typifiedNames.size() == 1) {
+	            return false;
+	    }
+	   
+	    boolean isBasionymToAll = true;
+	                   
+	    for (TaxonNameBase taxonName : typifiedNames) {
+	            if (!taxonName.equals(this)) {
+	                    if (! isBasionymFor(taxonName)) {
+	                            return false;
+	                    }
+	            }
+	    }
+	    return true;            
+	}
+	
+    /**
+     * Checks whether a basionym relationship exists between fromName and toName.
+     *
+     * @param fromName
+     * @param toName
+     * @return
+     */
+	@Transient
+	public boolean isBasionymFor(TaxonNameBase newCombinationName) {
+            Set<NameRelationship> relations = newCombinationName.getRelationsToThisName();
+            for (NameRelationship relation : relations) {
+                    if (relation.getType().equals(NameRelationshipType.BASIONYM()) &&
+                                    relation.getFromName().equals(this)) {
+                            return true;
+                    }
+            }
+            return false;
+    }
+    
+    /**
+     * Creates a basionym relationship to all other names in this names homotypical
+     * group.
+     * 
+     * @see HomotypicalGroup.setGroupBasionym(TaxonNameBase basionymName)
+
+     */
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.name.HomotypicalGroup#setGroupBasionym(TaxonNameBase)
+	 */
+	@Transient
+	public void makeGroupsBasionym() {
+        this.homotypicalGroup.setGroupBasionym(this);
+    }
+	
 	
 //*********  Rank comparison shortcuts   ********************//
 	/**

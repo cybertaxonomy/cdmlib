@@ -372,6 +372,63 @@ public class HomotypicalGroup extends AnnotatableEntity {
 	}
 
 
+    /**
+     * Creates a basionym relationship to all other names in this names homotypical
+     * group. 
+     * 
+     * @see HomotypicalGroup.setGroupBasionym(TaxonNameBase basionymName)
+     *
+     * @param basionymName
+     * @throws IllegalArgumentException if basionymName is not member in this homotypical group
+     */
+	public void setGroupBasionym(TaxonNameBase basionymName) throws IllegalArgumentException{
+    	setGroupBasionym(basionymName, null, null, null);
+    }	
+    
+	public void setGroupBasionym(TaxonNameBase basionymName, ReferenceBase citation, String microCitation, String ruleConsidered) 
+    			throws IllegalArgumentException {
+    	if (! typifiedNames.contains(basionymName)){
+        	throw new IllegalArgumentException("Name to be set as basionym/original combination must be part of the homotypical group but is not");
+        }
+        if (typifiedNames.size() < 2){return;}
+//        
+    	//Add new relations
+        for (TaxonNameBase name : typifiedNames) {
+    		if (!name.equals(basionymName)) {
+		    	name.addRelationshipFromName(basionymName, NameRelationshipType.BASIONYM(), citation, microCitation, ruleConsidered);
+			}
+    	}
+    }
+    
+    /**
+     * Removes all basionym relationships between basionymName and any other name 
+     * in its homotypic group
+     *
+     * @param basionymName
+     */
+     public static void removeGroupBasionym(TaxonNameBase basionymName) {
+    	 HomotypicalGroup homotypicalGroup = basionymName.getHomotypicalGroup();
+         Set<NameRelationship> relations = basionymName.getRelationsFromThisName();
+         Set<NameRelationship> removeRelations = new HashSet<NameRelationship>();
+        
+         for (NameRelationship relation : relations) {
+                
+                 // If this is a basionym relation, and toName is in the homotypical group,
+                 //      remove the relationship.
+                 if (relation.getType().isBasionymRelation() &&
+                                 relation.getToName().getHomotypicalGroup().equals(homotypicalGroup)) {
+                         removeRelations.add(relation);
+                 }
+         }
+         
+          // Removing relations from a set through which we are iterating causes a
+          //      ConcurrentModificationException. Therefore, we delete the targeted
+          //      relations in a second step.
+          for (NameRelationship relation : removeRelations) {
+                  basionymName.removeNameRelationship(relation);
+          }
+     }
+	
 	
 	/**
 	 * Returns all taxon names in the homotypical group that do not have an 'is_basionym_for' (zool.: 'is_original_combination_for') 
@@ -460,6 +517,14 @@ public class HomotypicalGroup extends AnnotatableEntity {
 		return getBasionymOrReplacedSynonymRelations(true, true);
 	}
 	
+	/**
+	 * Computes all basionym and replaced synonym relationships between names in this group.
+	 * If <code>doBasionym</code> is <code>false</code> basionym relationships are excluded.
+	 * If <code>doReplacedSynonym</code> is <code>false</code> replaced synonym relationships are excluded.
+	 * @param doBasionym
+	 * @param doReplacedSynonym
+	 * @return
+	 */
 	@Transient
 	private Set<NameRelationship> getBasionymOrReplacedSynonymRelations(boolean doBasionym, boolean doReplacedSynonym){
 		Set<NameRelationship> result = new HashSet<NameRelationship>(); 
