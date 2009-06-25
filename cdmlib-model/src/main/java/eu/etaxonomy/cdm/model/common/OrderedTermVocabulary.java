@@ -52,7 +52,8 @@ public class OrderedTermVocabulary<T extends OrderedTermBase> extends TermVocabu
 		return new TreeSet<T>();
 	}
 	
-	public SortedSet<T> getOrderedTerms(T otb) {
+	@Transient
+	public SortedSet<T> getOrderedTerms() {
 		SortedSet<T> result = getSortedSetOfTerms();
 		return result;
 	}

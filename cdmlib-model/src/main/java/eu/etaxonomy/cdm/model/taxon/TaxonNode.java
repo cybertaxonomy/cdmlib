@@ -19,6 +19,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -89,7 +90,7 @@ public class TaxonNode  extends AnnotatableEntity {
     @XmlSchemaType(name = "IDREF")
     @OneToMany(mappedBy="parent", fetch=FetchType.LAZY)
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
-	private List<TaxonNode> childNodes = new ArrayList<TaxonNode>();
+	private Set<TaxonNode> childNodes = new HashSet<TaxonNode>();
 	
 	@XmlElement(name = "reference")
 	@XmlIDREF
@@ -220,7 +221,7 @@ public class TaxonNode  extends AnnotatableEntity {
 	protected void setTaxonomicView(TaxonomicTree taxonomicTree) {
 		this.taxonomicTree = taxonomicTree;
 	}
-	public List<TaxonNode> getChildNodes() {
+	public Set<TaxonNode> getChildNodes() {
 		return childNodes;
 	}
 	
@@ -282,7 +283,7 @@ public class TaxonNode  extends AnnotatableEntity {
 	 * @return
 	 */
 	public boolean isRootNode(){
-		return getParent() == null;
+		return parent == null;
 	}
 	
 	/**
@@ -291,6 +292,7 @@ public class TaxonNode  extends AnnotatableEntity {
 	 * @param possibleParent
 	 * @return true if this is a descendant
 	 */
+	@Transient
 	public boolean isDescendant(TaxonNode possibleParent){
 		return possibleParent.getAllNodes().contains(this);
 	}

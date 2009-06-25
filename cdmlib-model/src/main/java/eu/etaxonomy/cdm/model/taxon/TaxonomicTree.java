@@ -10,7 +10,9 @@
 
 package eu.etaxonomy.cdm.model.taxon;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Entity;
@@ -18,6 +20,7 @@ import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -36,6 +39,7 @@ import eu.etaxonomy.cdm.model.common.IReferencedEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
+import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
 /**
@@ -308,7 +312,7 @@ public class TaxonomicTree extends IdentifiableEntity implements IReferencedEnti
 	}
 	
 	
-
+	@Transient
 	public ReferenceBase getCitation() {
 		return reference;
 	}
@@ -329,6 +333,7 @@ public class TaxonomicTree extends IdentifiableEntity implements IReferencedEnti
 	 * 
 	 * @return
 	 */
+	@Transient
 	@Deprecated
 	public Set<TaxonNode> getAllNodes() {
 		Set<TaxonNode> allNodes = new HashSet<TaxonNode>();
@@ -381,6 +386,45 @@ public class TaxonomicTree extends IdentifiableEntity implements IReferencedEnti
 
 	public int compareTo(Object o) {
 		return 0;
+	}
+	
+	/**
+	 * Returns all TaxonNodes of the tree for a given Rank.
+	 * If a branch does not contain a TaxonNode with a TaxonName at the given
+	 * Rank the node associated with the next lower Rank is taken as root node.
+	 * If the <code>rank</code> is null the absolute root nodes will be returned.
+	 * 
+	 * @param rank may be null
+	 * @return
+	 */
+	public List<TaxonNode> getRankSpecificRootNodes(Rank rank) {
+		List<TaxonNode> baseNodes = new ArrayList<TaxonNode>();
+		if(rank != null){
+			findNodesForRank(rank, getRootNodes(), baseNodes);
+		} else {
+			baseNodes.addAll(getRootNodes());
+		}
+		return baseNodes;
+	}
+
+	/**
+	 * findRankSpecificRootNodes
+	 * @param rank
+	 * @param nodeSet
+	 * @param rootNodes
+	 */
+	private List<TaxonNode> findNodesForRank(Rank rank, Set<TaxonNode> nodeSet, List<TaxonNode> rootNodes) {
+		for(TaxonNode node : nodeSet){
+			Rank thisRank = node.getTaxon().getName().getRank();
+			if(thisRank.isHigher(rank)){
+				// iterate deeper into tree
+				rootNodes.addAll(findNodesForRank(rank, node.getChildNodes(), rootNodes));
+			} else {
+				// gotsha! It is a base node of this level
+				rootNodes.add(node);
+			}
+		}
+		return rootNodes;
 	}
 
 }
