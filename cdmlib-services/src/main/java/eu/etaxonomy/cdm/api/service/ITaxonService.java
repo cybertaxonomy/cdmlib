@@ -203,6 +203,14 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	public UUID saveTaxonomicTree(TaxonomicTree tree);
 	
 	/**
+	 * Remove the taxonomic tree from the persitence context
+	 * 
+	 * @param taxonomicTree
+	 * @return
+	 */
+	public UUID removeTaxonomicTree(TaxonomicTree taxonomicTree);
+	
+	/**
 	 * Computes all Taxon instances that do not have a taxonomic parent and has at least one child.
 	 * @param sec The concept reference that the taxon belongs to
 	 * @return The List<Taxon> of root taxa.

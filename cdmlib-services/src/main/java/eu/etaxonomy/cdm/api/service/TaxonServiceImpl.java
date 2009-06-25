@@ -18,12 +18,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
-import org.hibernate.Criteria;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.TransactionStatus;
@@ -51,8 +48,8 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
-import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
 import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
+import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.common.IOrderedTermVocabularyDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
@@ -62,7 +59,6 @@ import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonomicTreeDao;
 import eu.etaxonomy.cdm.persistence.fetch.CdmFetch;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.persistence.query.SelectMode;
-import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
 
 @Service
@@ -265,6 +261,15 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 	 */
 	public TaxonomicTree getTaxonomicTreeByUuid(UUID uuid){
 		return taxonTreeDao.findByUuid(uuid);
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#removeTaxonomicTree(java.util.UUID)
+	 */
+	@Transactional(readOnly = false)
+	public UUID removeTaxonomicTree(TaxonomicTree taxonomicTree) {
+		return taxonTreeDao.delete(taxonomicTree);
 	}
 	
 	/* (non-Javadoc)
