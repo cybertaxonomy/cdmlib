@@ -2,7 +2,7 @@ package eu.etaxonomy.cdm.io.common;
 
 /*
  * Created on 14.05.2005
- * @author Andreas Müller
+ * @author Andreas Mï¿½ller
  * Updated 20.08.2006
  */
 
@@ -11,6 +11,8 @@ import java.sql.*;
 import java.io.*;
 
 import org.apache.log4j.Logger;
+
+import eu.etaxonomy.cdm.database.ICdmDataSource;
 
 
 /**
@@ -57,6 +59,7 @@ public class Source {
     private static String urlOracle = "jdbc:oracle:thin:@:1243:";
     private static String urlDataDirectSQLServer = "jdbc:datadirect:sqlserver://";
     private static String urlODBC = "jdbc:odbc:";
+    // FIXME this default is not acceptable
     private static String urlDefault = "jdbc:microsoft:sqlserver://LAPI:1433;DatabaseName=studienarbeit;SelectMethod=direct";
     
     
@@ -66,7 +69,7 @@ public class Source {
     private String mQuery;
     private String mUrl = null;
     private String mDb = null; 
-    private int mPort = 1433; //default port TODO 2 derzeit nur für SQLServer, müsste auch für andere Datenbanken umgesetzt werden
+    private int mPort = 1433; //default port TODO 2 derzeit nur fï¿½r SQLServer, mï¿½sste auch fï¿½r andere Datenbanken umgesetzt werden
     private String mDbms = null;
     private String mServer = null;
     private boolean isCursor;
@@ -129,6 +132,20 @@ public class Source {
         if (port != -1){
         	this.setPort(port);
         };
+    }
+    
+    /**
+     * Creates a source with parameters of a ICdmDataSource instance
+     * 
+     * @param cdmDataSource
+     */
+    public Source(ICdmDataSource cdmDataSource){
+    	mDbms = cdmDataSource.getDatabaseType().getName();
+        mServer = cdmDataSource.getServer();
+        mDb = cdmDataSource.getDatabase();
+        mPwd = cdmDataSource.getPassword();
+        mUserName = cdmDataSource.getUsername();
+        this.setPort(cdmDataSource.getPort());
     }
     
 //********************* METHODS *****************************************************/
@@ -230,7 +247,7 @@ public class Source {
 			this.connExist = true;
 			return true;
 		}catch (SQLException e){
-            logger.error("Probleme beim Öffnen der Datenbank !!!\n" + 
+            logger.error("Probleme beim ï¿½ffnen der Datenbank !!!\n" + 
                     "URL: " + mUrl  + "\n" +
                     "Exception: " + e);
             throw new SourceConnectionException ();
