@@ -21,8 +21,8 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
-import eu.etaxonomy.cdm.io.common.CdmIoBase;
-import eu.etaxonomy.cdm.io.common.ICdmIO;
+import eu.etaxonomy.cdm.io.common.CdmExportBase;
+import eu.etaxonomy.cdm.io.common.ICdmExport;
 import eu.etaxonomy.cdm.io.common.IExportConfigurator;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
@@ -41,7 +41,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  * @versoin 1.0
  */
 @Component("sddCdmExporter")
-public class SDDCdmExporter extends CdmIoBase<SDDExportState> implements ICdmIO<SDDExportState> {
+public class SDDCdmExporter extends CdmExportBase<SDDExportConfigurator, SDDExportState> implements ICdmExport<SDDExportConfigurator, SDDExportState> {
 // public class JaxbExport extends CdmIoBase implements ICdmIoExport {
 // TODO: public class JaxbExport extends CdmIoBase implements ICdmIO {
 
