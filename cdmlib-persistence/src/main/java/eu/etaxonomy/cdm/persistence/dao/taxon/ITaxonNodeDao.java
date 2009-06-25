@@ -18,5 +18,4 @@ import eu.etaxonomy.cdm.persistence.dao.common.IAnnotatableDao;
  */
 public interface ITaxonNodeDao extends IAnnotatableDao<TaxonNode> {
 	
-	
 }

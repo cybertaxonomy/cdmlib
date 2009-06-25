@@ -70,7 +70,9 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonNameBase> {
 	 * @param propertyPaths properties to initialize - see {@link BeanInitializer#initialize(Object, List)}
 	 * @return a List of NameRelationship instances
 	 */
-	public List<NameRelationship> getNameRelationships(TaxonNameBase name,  NameRelationship.Direction direction, NameRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+	public List<NameRelationship> getNameRelationships(TaxonNameBase name, NameRelationship.Direction direction,
+			NameRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
+			List<String> propertyPaths);
 	
 	/**
 	 * Return a count of hybrids related to this name, optionally filtered by

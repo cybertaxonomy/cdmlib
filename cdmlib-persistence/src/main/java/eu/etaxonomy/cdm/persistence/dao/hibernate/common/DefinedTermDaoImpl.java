@@ -53,11 +53,17 @@ public class DefinedTermDaoImpl extends VersionableDaoBase<DefinedTermBase> impl
 		super(DefinedTermBase.class);
 	}
 
+	/** 
+	 * Searches by Label
+	 * @see eu.etaxonomy.cdm.persistence.dao.common.ITitledDao#findByTitle(java.lang.String)
+	 */
 	public List<DefinedTermBase> findByTitle(String queryString) {
 		return findByTitle(queryString, null);
 	}
 	
-	/* (non-Javadoc)
+
+	/** 
+	 * Searches by Label
 	 * @see eu.etaxonomy.cdm.persistence.dao.common.ITitledDao#findByTitle(java.lang.String, eu.etaxonomy.cdm.model.common.CdmBase)
 	 */
 	public List<DefinedTermBase> findByTitle(String queryString, CdmBase sessionObject) {
@@ -72,6 +78,9 @@ public class DefinedTermDaoImpl extends VersionableDaoBase<DefinedTermBase> impl
 
 	}
 
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.persistence.dao.common.ITitledDao#findByTitleAndClass(java.lang.String, java.lang.Class)
+	 */
 	public List<DefinedTermBase> findByTitleAndClass(String queryString, Class<DefinedTermBase> clazz) {
 		checkNotInPriorView("DefinedTermDaoImpl.findByTitleAndClass(String queryString, Class<DefinedTermBase> clazz)");
 		Session session = getSession();
