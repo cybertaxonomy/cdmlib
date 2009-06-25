@@ -252,13 +252,15 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
 		return new DefaultPagerImpl<NameRelationship>(pageNumber, results.size(), pageSize, results);
 	}
 	
-	public List<NameRelationship> listToNameRelationships(TaxonNameBase name, NameRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+	public List<NameRelationship> listToNameRelationships(TaxonNameBase name, NameRelationshipType type,
+			Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
 
 		Integer numberOfResults = dao.countNameRelationships(name, NameRelationship.Direction.relatedTo, type);
-		
+
 		List<NameRelationship> results = new ArrayList<NameRelationship>();
-		if(numberOfResults > 0) { // no point checking again
-			results = dao.getNameRelationships(name, NameRelationship.Direction.relatedTo, type, pageSize, pageNumber, orderHints, propertyPaths); 
+		if (numberOfResults > 0) { // no point checking again
+			results = dao.getNameRelationships(name, NameRelationship.Direction.relatedTo, type, pageSize, pageNumber,
+				orderHints, propertyPaths);
 		}
 		return results;
 	}

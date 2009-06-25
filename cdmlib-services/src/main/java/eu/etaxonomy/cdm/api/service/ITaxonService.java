@@ -51,6 +51,42 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	public abstract TaxonNode getTaxonNodeByUuid(UUID uuid);
 	
 	/**
+	 * @param taxon
+	 * @param taxonomicTree
+	 * @param propertyPath
+	 * @return
+	 */
+	public TaxonNode loadTaxonNodeByTaxon(Taxon taxon, UUID taxonomicTreeUuid, List<String> propertyPaths);
+	
+	/**
+	 * @param taxonNode
+	 * @param baseRank specifies the root level of the taxonomic tree, may be null. 
+	 *        Nodes of this rank or in case this rank does not exist in the current branch the next lower rank is taken as root node.
+	  * @param propertyPaths the initialization strategy for the returned TaxonNode instances.
+	 * @return the path of nodes from the root node to the node of the specified taxon. 
+	 */
+	public List<TaxonNode> loadTreeBranchTo(TaxonNode taxonNode, Rank baseRank, List<String> propertyPaths);
+	
+	/**
+	 * @param taxon
+	 * @param taxonomicTree the taxonomic tree to be used
+	 * @param baseRank specifies the root level of the taxonomic tree, may be null. 
+	 *        Nodes of this rank or in case this rank does not exist in the current branch the next lower rank is taken as root node.
+	 * @param propertyPaths the initialization strategy for the returned TaxonNode instances.
+	 * @return the path of nodes from the root node to the node of the specified taxon. 
+	 */
+	public List<TaxonNode> loadTreeBranchToTaxon(Taxon taxon, TaxonomicTree taxonomicTree, Rank baseRank, List<String> propertyPaths);
+	
+	/**
+	 * @param taxon
+	 * @param taxonomicTree
+	 * @param propertyPaths
+	 * @return
+	 */
+	public List<TaxonNode> loadChildNodesOfTaxon(Taxon taxon, TaxonomicTree taxonomicTree, List<String> propertyPaths);
+	
+	
+	/**
 	 * FIXME candidate for harmonization? 
 	 * save a taxon and return its UUID
 	 */
@@ -122,9 +158,35 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	 * @param limit
 	 * @param start
 	 * @return
+	 * @deprecated use {#listTaxonomicTrees} instead
 	 */
+	@Deprecated
 	public List<TaxonomicTree> getAllTaxonomicTrees(int limit, int start);
 
+	/**
+	 * @param limit
+	 * @param start
+	 * @param orderHints
+	 * @param propertyPaths
+	 * @return
+	 */
+	public List<TaxonomicTree> listTaxonomicTrees(Integer limit, Integer start, List<OrderHint> orderHints,
+			List<String> propertyPaths);
+	
+	
+	/**
+	 * Loads all TaxonNodes of the specified tree for a given Rank.
+	 * If a branch does not contain a TaxonNode with a TaxonName at the given
+	 * Rank the node associated with the next lower Rank is taken as root node.
+	 * If the <code>rank</code> is null the absolute root nodes will be returned.
+	 *
+	 * @param taxonomicTree
+	 * @param rank may be null
+	 * @param propertyPaths
+	 * @return
+	 */
+	public List<TaxonNode> loadRankSpecificRootNodes(TaxonomicTree taxonomicTree, Rank rank, List<String> propertyPaths);
+	
 	
 	/**
 	 * Returns a taxonomic tree by it's uuid.

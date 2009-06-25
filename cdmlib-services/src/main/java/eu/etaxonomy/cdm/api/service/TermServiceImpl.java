@@ -40,11 +40,13 @@ import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
 import eu.etaxonomy.cdm.model.location.TdwgArea;
 import eu.etaxonomy.cdm.model.media.Media;
+import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ILanguageStringBaseDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ILanguageStringDao;
 import eu.etaxonomy.cdm.persistence.dao.common.IRepresentationDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ITermVocabularyDao;
+import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 @Service
 @Transactional(readOnly = true)
@@ -102,6 +104,12 @@ public class TermServiceImpl extends ServiceBase<DefinedTermBase,IDefinedTermDao
 		return vocabulary;
 	}
 	
+	public TermVocabulary loadVocabulary(UUID vocabularyUuid, List<String> propertyPaths) {
+		TermVocabulary<? extends DefinedTermBase<?>> vocabulary = (TermVocabulary) vocabularyDao.load(vocabularyUuid,
+			propertyPaths);
+		return vocabulary;
+	}
+	
 	public TermVocabulary<? extends DefinedTermBase<?>> getVocabulary(VocabularyEnum vocabularyType){
 		TermVocabulary<? extends DefinedTermBase<?>> vocabulary = getVocabulary(vocabularyType.getUuid());
 		return vocabulary;
@@ -117,6 +125,21 @@ public class TermServiceImpl extends ServiceBase<DefinedTermBase,IDefinedTermDao
 
 	public List<TermVocabulary<DefinedTermBase>> getAllTermVocabularies(int limit, int start) {
 		return vocabularyDao.list(limit, start);
+	}
+	
+	public List<TermVocabulary<DefinedTermBase>> listTermVocabularies(Integer limit, Integer start, List<OrderHint> orderHints,
+		List<String> propertyPaths){
+		return vocabularyDao.list(limit, start, orderHints, propertyPaths);
+	}
+
+	public Pager<TermVocabulary<DefinedTermBase>> pageTermVocabularies(Integer pageSize, Integer pageNumber,
+			List<OrderHint> orderHints, List<String> propertyPaths) {
+
+		List<TermVocabulary<DefinedTermBase>> vocabs = vocabularyDao.list(pageSize, pageNumber * pageSize, orderHints,
+			propertyPaths);
+		Pager<TermVocabulary<DefinedTermBase>> pager = new DefaultPagerImpl<TermVocabulary<DefinedTermBase>>(
+			pageNumber, vocabs.size(), pageSize, vocabs);
+		return pager;
 	}
 	
 	/* (non-Javadoc)

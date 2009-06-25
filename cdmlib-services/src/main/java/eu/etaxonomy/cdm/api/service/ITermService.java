@@ -31,6 +31,7 @@ import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
+import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 public interface ITermService extends IService<DefinedTermBase> {
 
@@ -48,6 +49,9 @@ public interface ITermService extends IService<DefinedTermBase> {
 	public List<DefinedTermBase> getAllDefinedTerms(int limit, int start);
 
 	public TermVocabulary getVocabulary(UUID vocabularyUuid);
+	
+	public TermVocabulary loadVocabulary(UUID vocabularyUuid, List<String> propertyPaths);
+
 	
 	public TermVocabulary getVocabulary(VocabularyEnum vocabularyType);
 	
@@ -75,7 +79,14 @@ public interface ITermService extends IService<DefinedTermBase> {
 	 */
 	public Map<UUID, DefinedTermBase> saveTermsAll(Collection<? extends DefinedTermBase> termBaseCollection);
 
+	@Deprecated
 	public List<TermVocabulary<DefinedTermBase>> getAllTermVocabularies(int limit, int start);
+	
+	public List<TermVocabulary<DefinedTermBase>> listTermVocabularies(Integer limit, Integer start, List<OrderHint> orderHints,
+			List<String> propertyPaths);
+	
+	public Pager<TermVocabulary<DefinedTermBase>> pageTermVocabularies(Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
+		List<String> propertyPaths);
 
 	public Map<UUID, TermVocabulary<DefinedTermBase>> 
 	       saveTermVocabulariesAll(Collection<TermVocabulary<DefinedTermBase>> termVocabularies);

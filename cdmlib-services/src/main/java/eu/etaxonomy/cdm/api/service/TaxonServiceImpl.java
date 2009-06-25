@@ -13,13 +13,17 @@ package eu.etaxonomy.cdm.api.service;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
+import org.hibernate.Criteria;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.TransactionStatus;
@@ -58,6 +62,7 @@ import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonomicTreeDao;
 import eu.etaxonomy.cdm.persistence.fetch.CdmFetch;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.persistence.query.SelectMode;
+import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
 
 @Service
@@ -80,6 +85,12 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 	private IDescriptionDao descriptionDao;
 	@Autowired
 	private BeanInitializer defaultBeanInitializer;
+	
+	private Comparator<? super TaxonNode> taxonNodeComparator;
+	@Autowired
+	public void setTaxonNodeComparator(ITaxonNodeComparator<? super TaxonNode> taxonNodeComparator){
+		this.taxonNodeComparator = (Comparator<? super TaxonNode>) taxonNodeComparator;
+	}
 
 	
 	/**
@@ -102,6 +113,67 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 	 */
 	public TaxonNode getTaxonNodeByUuid(UUID uuid) {
 		return taxonNodeDao.findByUuid(uuid);
+	}
+	
+	public TaxonNode loadTaxonNodeByTaxon(Taxon taxon, UUID taxonomicTreeUuid, List<String> propertyPaths){
+		TaxonomicTree tree = taxonTreeDao.load(taxonomicTreeUuid);
+		TaxonNode node = tree.getNode(taxon);
+		defaultBeanInitializer.initialize(node, propertyPaths);
+		return node;
+	}
+	
+	public List<TaxonNode> loadRankSpecificRootNodes(TaxonomicTree taxonomicTree, Rank rank, List<String> propertyPaths){
+		TaxonomicTree tree = taxonTreeDao.load(taxonomicTree.getUuid());
+		
+		List<TaxonNode> rootNodes = tree.getRankSpecificRootNodes(rank);
+		//sort nodes by TaxonName
+		
+		Collections.sort(rootNodes, taxonNodeComparator);
+		
+		// initialize all nodes
+		defaultBeanInitializer.initializeAll(rootNodes, propertyPaths);
+		
+		return rootNodes;
+	}
+	
+	public List<TaxonNode> loadTreeBranchTo(TaxonNode taxonNode, Rank baseRank, List<String> propertyPaths){
+		
+		TaxonNode thisNode = taxonNodeDao.load(taxonNode.getUuid(), propertyPaths);
+		List<TaxonNode> pathToRoot = new ArrayList<TaxonNode>();
+		pathToRoot.add(thisNode);
+		
+		TaxonNode parentNode = thisNode.getParent();
+		while(parentNode != null){
+			Rank parentNodeRank = parentNode.getTaxon().getName().getRank();
+			if(baseRank != null && baseRank.isLower(parentNodeRank)){
+				break;
+			}
+			pathToRoot.add(parentNode);
+			parentNode = parentNode.getParent();
+		}
+		
+		// initialize and invert order of nodes in list
+		defaultBeanInitializer.initializeAll(pathToRoot, propertyPaths);
+		Collections.reverse(pathToRoot);
+		
+		return pathToRoot;
+	}
+	
+	public List<TaxonNode> loadTreeBranchToTaxon(Taxon taxon, TaxonomicTree taxonomicTree, Rank baseRank, List<String> propertyPaths){
+		TaxonomicTree tree = taxonTreeDao.load(taxonomicTree.getUuid());
+		taxon = (Taxon)dao.load(taxon.getUuid());
+		TaxonNode node = tree.getNode(taxon);
+		return loadTreeBranchTo(node, baseRank, propertyPaths);
+	}
+	
+	public List<TaxonNode> loadChildNodesOfTaxon(Taxon taxon, TaxonomicTree taxonomicTree, List<String> propertyPaths){
+		TaxonomicTree tree = taxonTreeDao.load(taxonomicTree.getUuid());
+		taxon = (Taxon)dao.load(taxon.getUuid());
+		List<TaxonNode> childNodes = new ArrayList<TaxonNode>();
+		childNodes.addAll(tree.getNode(taxon).getChildNodes());
+		Collections.sort(childNodes, taxonNodeComparator);
+		defaultBeanInitializer.initializeAll(childNodes, propertyPaths);
+		return childNodes;
 	}
 
 	/* (non-Javadoc)
@@ -177,9 +249,15 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#getAllTaxonomicTrees(int, int)
+	 * 
 	 */
+	@Deprecated
 	public List<TaxonomicTree> getAllTaxonomicTrees(int limit, int start) {
 		return taxonTreeDao.list(limit, start);
+	}
+	
+	public List<TaxonomicTree> listTaxonomicTrees(Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
+		return taxonTreeDao.list(limit, start, orderHints, propertyPaths);
 	}	
 
 	/* (non-Javadoc)
