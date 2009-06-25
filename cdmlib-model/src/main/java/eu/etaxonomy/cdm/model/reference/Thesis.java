@@ -60,7 +60,6 @@ import eu.etaxonomy.cdm.strategy.cache.reference.ThesisDefaultCacheStrategy;
 @Configurable
 public class Thesis extends PublicationBase<INomenclaturalReferenceCacheStrategy<Thesis>> implements INomenclaturalReference, Cloneable{
 	
-	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(Thesis.class);
 	
 	@XmlElement(name = "School")
