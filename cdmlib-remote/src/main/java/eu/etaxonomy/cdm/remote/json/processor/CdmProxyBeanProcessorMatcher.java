@@ -61,7 +61,6 @@ public class CdmProxyBeanProcessorMatcher extends JsonBeanProcessorMatcher {
 		if (TaxonRelationship.class.isAssignableFrom(target)) {
 			return DEFAULT.getMatch(TaxonRelationship.class, set);
 		}
-		
 		return DEFAULT.getMatch(target, set);
 	}
 	

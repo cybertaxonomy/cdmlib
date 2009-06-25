@@ -22,12 +22,20 @@
     <bean name="htmlView" class="eu.etaxonomy.cdm.remote.view.HtmlView"/>
     
     <!-- taxonomy service -->
-    <bean name="**/taxonomy.xml **/taxonomy/*.xml **/taxonomy/**/*.xml" class="eu.etaxonomy.cdm.remote.view.JsonView">
+<!--    <bean name="**/taxonomy.xml **/taxonomy/*.xml **/taxonomy/**/*.xml" class="eu.etaxonomy.cdm.remote.view.JsonView">-->
+<!--        <property name="type" value="XML" />-->
+<!--          <property name="xsl" value="humane.xsl" />  -->
+<!--        <property name="jsonConfig" ref="jsonConfigTaxonomy" />-->
+<!--    </bean>-->
+<!--    <bean name="**/taxonomy.json **/taxonomy/*.json **/taxonomy/**/*.json" class="eu.etaxonomy.cdm.remote.view.JsonView">-->
+<!--        <property name="jsonConfig" ref="jsonConfigTaxonomy" />-->
+<!--    </bean>-->
+    <bean name="**/taxontree.xml **/taxontree/*.xml **/taxontree/**/*.xml" class="eu.etaxonomy.cdm.remote.view.JsonView">
         <property name="type" value="XML" />
         <!--  <property name="xsl" value="humane.xsl" />  -->
         <property name="jsonConfig" ref="jsonConfigTaxonomy" />
     </bean>
-    <bean name="**/taxonomy.json **/taxonomy/*.json **/taxonomy/**/*.json" class="eu.etaxonomy.cdm.remote.view.JsonView">
+    <bean name="**/taxontree.json **/taxontree/*.json **/taxontree/**/*.json" class="eu.etaxonomy.cdm.remote.view.JsonView">
         <property name="jsonConfig" ref="jsonConfigTaxonomy" />
     </bean>
     

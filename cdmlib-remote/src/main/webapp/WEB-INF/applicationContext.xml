@@ -8,33 +8,18 @@
     http://www.springframework.org/schema/tx   http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
     ">
 	
-	 <!-- include services application context and override default settings for the PersistentTermInitializer -->
-     <import resource="classpath:/eu/etaxonomy/cdm/services.xml"/> 
+	 <!-- include default application context and customization -->
+     <import resource="classpath:/eu/etaxonomy/cdm/defaultApplicationContext.xml"/>  
      <bean id="persistentTermInitializer" class="eu.etaxonomy.cdm.database.PersistentTermInitializer">
      	<property name="omit" value="false" />
      </bean>
-     
-     <!-- 
-     <import resource="classpath:/eu/etaxonomy/cdm/defaultSecurityContext.xml"/>  
-     <import resource="classpath:/eu/etaxonomy/cdm/spelling.xml"/>
-     -->
+    <context:component-scan base-package="eu/etaxonomy/cdm/ext" />
  
-  	<!-- Overwrites the component-scan in services.xml -->
-    <!-- includes service beans e.g. in eu/etaxonomy/cdm/api -->
-	<context:component-scan base-package="eu/etaxonomy/cdm/api/service">
-	 	<context:exclude-filter type="regex" expression="eu\.etaxonomy\.cdm\.api\.service\.UserService"/>
-    </context:component-scan>
-	<context:component-scan base-package="eu/etaxonomy/cdm/api/application"/>
-
-	<!-- TODO move to io
-	<context:component-scan base-package="eu/etaxonomy/cdm/io"/>
-	 -->
-    
     <!-- enable the configuration of transactional behavior based on annotations -->
     <tx:annotation-driven transaction-manager="transactionManager"/>
     
     <!-- import additional beans into the root context -->
-    <import resource="applicationContext.views.xml"/> 
+    <import resource="applicationContext.views.xml"/>
 
 	<!--  load usenames and passwords from properties file and import datasource bean configurations -->
     <context:property-placeholder location="file:${user.home}/.cdmLibrary/cdmserver.properties"/>

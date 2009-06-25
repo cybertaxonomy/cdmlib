@@ -20,9 +20,11 @@ import org.apache.log4j.Logger;
 import org.hibernate.Hibernate;
 
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
 import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.common.TermBase;
+import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.remote.l10n.LocaleContext;
 
 /**
@@ -33,7 +35,10 @@ public class TermBaseBeanProcessor extends AbstractCdmBeanProcessor<TermBase> {
 
 	public static final Logger logger = Logger.getLogger(TermBaseBeanProcessor.class);
 
-	private static final List<String> IGNORE_LIST = Arrays.asList(new String[]{"representations","inversRepresentations" });
+	private static final List<String> IGNORE_LIST = Arrays.asList(new String[] { 
+			"representations",
+			"inversRepresentations",
+			"terms"});
 
 	private boolean replaceRepresentations = false;
 	
@@ -58,6 +63,19 @@ public class TermBaseBeanProcessor extends AbstractCdmBeanProcessor<TermBase> {
 	 */
 	@Override
 	public JSONObject processBeanSecondStep(TermBase term, JSONObject json,	JsonConfig jsonConfig) {
+		
+		// handle OrderedTermVocabulary
+		if(OrderedTermVocabulary.class.isAssignableFrom(term.getClass())){
+			OrderedTermVocabulary otv = (OrderedTermVocabulary)term;
+			if(Hibernate.isInitialized(otv.getTerms())){
+				json.element("terms", otv.getOrderedTerms(), jsonConfig);
+			}
+		} else if(TermVocabulary.class.isAssignableFrom(term.getClass())) {
+			TermVocabulary tv = (TermVocabulary)term;
+			if(Hibernate.isInitialized(tv.getTerms())){
+				json.element("terms", tv.getTerms(), jsonConfig);
+			}
+		}
 		
 		List<Language> languages = LocaleContext.getLanguages();
 		

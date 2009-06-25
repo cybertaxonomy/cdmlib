@@ -38,7 +38,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * @param <SERVICE>
  */
 
-public abstract class BaseController<T extends CdmBase, SERVICE extends IService<T>> {
+public abstract class BaseController<T extends CdmBase, SERVICE extends IService<T>> extends AbstractController {
 	
 	public static final Logger logger = Logger.getLogger(BaseController.class);
 	
@@ -46,15 +46,10 @@ public abstract class BaseController<T extends CdmBase, SERVICE extends IService
 	
 	protected SERVICE service;
 	
-	protected Pattern uuidParameterPattern = null;
 	
 	protected List<String> initializationStrategy = null;
 
 	public abstract void setService(SERVICE service);
-	
-	protected void setUuidParameterPattern(String pattern){
-		uuidParameterPattern = Pattern.compile(pattern);
-	}
 	
 	public void setInitializationStrategy(List<String> initializationStrategy) {
 		this.initializationStrategy = initializationStrategy;
@@ -72,32 +67,6 @@ public abstract class BaseController<T extends CdmBase, SERVICE extends IService
 		T obj = (T) getCdmBase(request, response, initializationStrategy, CdmBase.class);
 		return obj;
 	}
-
-	
-	protected UUID readValueUuid(HttpServletRequest request, String pattern) {
-		String path = request.getServletPath();
-		if(path != null) {
-			Matcher uuidMatcher;
-			if(pattern != null){
-				Pattern suppliedPattern = Pattern.compile(pattern);
-				uuidMatcher = suppliedPattern.matcher(path);
-			} else {
-				uuidMatcher = uuidParameterPattern.matcher(path);				
-			}
-			if(uuidMatcher.matches() && uuidMatcher.groupCount() > 0){
-				try {
-					UUID uuid = UUID.fromString(uuidMatcher.group(1));
-					return uuid;
-				} catch (Exception e) {
-					throw new IllegalArgumentException(HttpStatusMessage.UUID_INVALID.toString());
-				}
-			} else {
-				throw new IllegalArgumentException(HttpStatusMessage.UUID_MISSING.toString());
-			}
-		}
-		return null;
-	}
-	
 
 	/**
 	 * @param request
