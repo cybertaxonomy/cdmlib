@@ -74,9 +74,21 @@ public class TaxonServiceImplTest extends CdmIntegrationTest {
 		TaxonBase actualTaxon = service.getTaxonByUuid(uuid);
 		assertNull(actualTaxon);
 	}
+	
+	/**
+	 * Test method for
+	 * {@link eu.etaxonomy.cdm.api.service.TaxonServiceImpl#loadTreeBranchTo(eu.etaxonomy.cdm.model.taxon.TaxonNode, eu.etaxonomy.cdm.model.name.Rank, java.util.List)}
+	 * .
+	 */
+	@Test
+	public final void loadTreeBranchTo() {
+		logger.warn("Not yet implemented"); // TODO
+	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.api.service.TaxonServiceImpl#searchTaxaByName(java.lang.String, eu.etaxonomy.cdm.model.reference.ReferenceBase)}.
+	 * Test method for
+	 * {@link eu.etaxonomy.cdm.api.service.TaxonServiceImpl#searchTaxaByName(java.lang.String, eu.etaxonomy.cdm.model.reference.ReferenceBase)}
+	 * .
 	 */
 	@Test
 	public final void testSearchTaxaByName() {
@@ -84,7 +96,9 @@ public class TaxonServiceImplTest extends CdmIntegrationTest {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.api.service.TaxonServiceImpl#getRootTaxa(eu.etaxonomy.cdm.model.reference.ReferenceBase)}.
+	 * Test method for
+	 * {@link eu.etaxonomy.cdm.api.service.TaxonServiceImpl#getRootTaxa(eu.etaxonomy.cdm.model.reference.ReferenceBase)}
+	 * .
 	 */
 	@Test
 	public final void testGetRootTaxa() {
