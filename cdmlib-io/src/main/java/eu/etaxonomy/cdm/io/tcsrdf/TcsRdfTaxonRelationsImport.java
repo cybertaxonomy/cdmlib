@@ -87,33 +87,39 @@ public class TcsRdfTaxonRelationsImport extends TcsRdfImportBase implements ICdm
 		int i = 0;
 		//for each taxonConcept
 		for (Element elTaxonConcept : elTaxonConcepts){
-			if ((i++ % modCount) == 0){ logger.info("Taxa handled: " + (i-1));}
-			
-			//TaxonConcept about
-			xmlElementName = "about";
-			elementNamespace = config.getRdfNamespace();
-			String strTaxonAbout = elTaxonConcept.getAttributeValue(xmlElementName, elementNamespace);
-			
-			TaxonBase aboutTaxon = taxonMap.get(strTaxonAbout);
-			
-			if (aboutTaxon instanceof Taxon){
-				makeHomotypicSynonymRelations((Taxon)aboutTaxon);
-			}
-			
-			xmlElementName = "hasRelationship";
-			elementNamespace = taxonConceptNamespace;
-			List<Element> elHasRelationships = elTaxonConcept.getChildren(xmlElementName, elementNamespace);
-			
-			
-			for (Element elHasRelationship: elHasRelationships){
-				xmlElementName = "relationship";
-				elementNamespace = taxonConceptNamespace;
-				List<Element> elRelationships = elHasRelationship.getChildren(xmlElementName, elementNamespace);
+			try {
+				if ((i++ % modCount) == 0){ logger.info("Taxa handled: " + (i-1));}
 				
-				for (Element elRelationship: elRelationships){
-					makeRelationship(elRelationship, strTaxonAbout, taxonMap, state, taxonStore);
-				}//relationship
-			}//hasRelationships
+				//TaxonConcept about
+				xmlElementName = "about";
+				elementNamespace = config.getRdfNamespace();
+				String strTaxonAbout = elTaxonConcept.getAttributeValue(xmlElementName, elementNamespace);
+				
+				TaxonBase aboutTaxon = taxonMap.get(strTaxonAbout);
+				
+				if (aboutTaxon instanceof Taxon){
+					success &= makeHomotypicSynonymRelations((Taxon)aboutTaxon);
+				}
+				
+				xmlElementName = "hasRelationship";
+				elementNamespace = taxonConceptNamespace;
+				List<Element> elHasRelationships = elTaxonConcept.getChildren(xmlElementName, elementNamespace);
+				
+				
+				for (Element elHasRelationship: elHasRelationships){
+					xmlElementName = "relationship";
+					elementNamespace = taxonConceptNamespace;
+					List<Element> elRelationships = elHasRelationship.getChildren(xmlElementName, elementNamespace);
+					
+					for (Element elRelationship: elRelationships){
+						success &= 	makeRelationship(elRelationship, strTaxonAbout, taxonMap, state, taxonStore);
+					}//relationship
+				}//hasRelationships
+			} catch (Exception e) {
+				e.printStackTrace();
+				logger.error("Error. Taxon relationship could not be imported");
+				success = false;
+			}
 		}//elTaxonConcept
 		logger.info("Taxa to save: " + taxonStore.size());
 		getTaxonService().saveTaxonAll(taxonStore);
@@ -129,7 +135,7 @@ public class TcsRdfTaxonRelationsImport extends TcsRdfImportBase implements ICdm
 				MapWrapper<TaxonBase> taxonMap,
 				TcsRdfImportState state,
 				Set<TaxonBase> taxonStore){
-		boolean result = true;
+		boolean success = true;
 		String xmlElementName;
 		String xmlAttributeName;
 		Namespace elementNamespace;
@@ -163,18 +169,18 @@ public class TcsRdfTaxonRelationsImport extends TcsRdfImportBase implements ICdm
 				//Create relationship
 				if (! (toTaxon instanceof Taxon)){
 					logger.warn("TaxonBase toTaxon is not of Type 'Taxon'. Relationship is not added.");
-					result = false;
+					success = false;
 				}else{
 					Taxon taxonTo = (Taxon)toTaxon;
 					ReferenceBase citation = null;
 					String microReference = null;
 					if (relType instanceof SynonymRelationshipType){
-						result &= makeSynRelType((SynonymRelationshipType)relType, taxonTo, fromTaxon, citation, microReference);
+						success &= makeSynRelType((SynonymRelationshipType)relType, taxonTo, fromTaxon, citation, microReference);
 					}else if (relType instanceof TaxonRelationshipType){
-						makeTaxonRelType((TaxonRelationshipType)relType, state, taxonTo, fromTaxon, strTaxonAbout , citation, microReference);
+						success &= makeTaxonRelType((TaxonRelationshipType)relType, state, taxonTo, fromTaxon, strTaxonAbout , citation, microReference);
 					}else{
 						logger.warn("Unknown Relationshiptype");
-						result = false;
+						success = false;
 					}
 					taxonStore.add(toTaxon);
 				}
@@ -185,7 +191,7 @@ public class TcsRdfTaxonRelationsImport extends TcsRdfImportBase implements ICdm
 				if (fromTaxon == null){
 					logger.warn("fromTaxon (" + strTaxonAbout + ") could not be found in taxonMap. Relationship was not added to CDM");
 				}
-				result = false;
+				success = false;
 			}
 			
 		} catch (UnknownCdmTypeException e) {
@@ -193,7 +199,7 @@ public class TcsRdfTaxonRelationsImport extends TcsRdfImportBase implements ICdm
 			logger.warn("tc:relationshipCategory " + strRelCategory + " not yet implemented");
 			return false;
 		}
-		return result;
+		return success;
 	}
 	
 	
@@ -238,29 +244,15 @@ public class TcsRdfTaxonRelationsImport extends TcsRdfImportBase implements ICdm
 	}
 	
 	private boolean makeTaxonomicallyIncluded(TcsRdfImportState state, Taxon toTaxon, Taxon fromTaxon, ReferenceBase citation, String microCitation){
+		boolean success = true;
 		ReferenceBase sec = toTaxon.getSec();
 		TaxonomicTree tree = state.getTree(sec);
 		if (tree == null){
 			tree = makeTree(state, sec);
 		}
-		tree.addParentChild(toTaxon, fromTaxon, citation, microCitation);
-		return true;
+		success = tree.addParentChild(toTaxon, fromTaxon, citation, microCitation);
+		return success;
 	}
-	
-	private TaxonomicTree makeTree(TcsRdfImportState state, ReferenceBase ref){
-		//FIXME treeName
-		String treeName = "TaxonTree - No Name";
-		if (ref != null && CdmUtils.isNotEmpty(ref.getTitleCache())){
-			treeName = ref.getTitleCache();
-		}
-		TaxonomicTree tree = TaxonomicTree.NewInstance(treeName);
-		tree.setReference(ref);
-		
-		getTaxonService().saveTaxonomicTree(tree);
-		state.putTree(ref, tree);
-		return tree;
-	}
-	
 	
 	private boolean relationExists(Taxon taxonTo, Synonym synonym, SynonymRelationshipType synRelType){
 		if (synonym == null){

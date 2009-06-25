@@ -25,6 +25,7 @@ import org.jdom.Element;
 import org.jdom.Namespace;
 import org.jdom.Text;
 
+import eu.etaxonomy.cdm.io.common.CdmImportBase;
 import eu.etaxonomy.cdm.io.common.CdmIoBase;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.IXmlMapper;
@@ -38,7 +39,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * @created 04.08.2008
  * @version 1.0
  */
-public abstract class TcsRdfImportBase  extends CdmIoBase<TcsRdfImportState> {
+public abstract class TcsRdfImportBase  extends CdmImportBase<TcsRdfImportConfigurator, TcsRdfImportState> {
 	private static final Logger logger = Logger.getLogger(TcsRdfImportBase.class);
 
 	protected static Namespace nsTcom = Namespace.getNamespace("http://rs.tdwg.org/ontology/voc/Common#");

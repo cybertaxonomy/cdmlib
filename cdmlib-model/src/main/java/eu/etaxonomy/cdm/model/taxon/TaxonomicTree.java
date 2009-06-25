@@ -56,7 +56,6 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 @Audited
 public class TaxonomicTree extends IdentifiableEntity implements IReferencedEntity{
 	private static final long serialVersionUID = -753804821474209635L;
-	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TaxonomicTree.class);
 	
 	@XmlElement(name = "name")
@@ -66,14 +65,14 @@ public class TaxonomicTree extends IdentifiableEntity implements IReferencedEnti
 	@Cascade({CascadeType.SAVE_UPDATE})
 	private LanguageString name;
 	
-	@XmlElementWrapper(name = "allNodes")
-	@XmlElement(name = "taxonNode")
-    @XmlIDREF
-    @XmlSchemaType(name = "IDREF")
-    @OneToMany(mappedBy="taxonomicTree", fetch=FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
-    @Deprecated // FIXME remove this. A set containing all nodes of the tree is a major performance killer, especially when it is not really in use
-	private Set<TaxonNode> allNodes = new HashSet<TaxonNode>();
+//	@XmlElementWrapper(name = "allNodes")
+//	@XmlElement(name = "taxonNode")
+//    @XmlIDREF
+//    @XmlSchemaType(name = "IDREF")
+//    @OneToMany(mappedBy="taxonomicTree", fetch=FetchType.LAZY)
+//    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
+//    @Deprecated // FIXME remove this. A set containing all nodes of the tree is a major performance killer, especially when it is not really in use
+//	private Set<TaxonNode> allNodes = new HashSet<TaxonNode>();
 
 	@XmlElementWrapper(name = "rootNodes")
 	@XmlElement(name = "rootNode")
@@ -118,6 +117,12 @@ public class TaxonomicTree extends IdentifiableEntity implements IReferencedEnti
 	
 	
 	
+	/**
+	 * Adds a taxon to the taxonomic tree and makes it one of the root nodes.
+	 * @param taxon
+	 * @param synonymUsed
+	 * @return
+	 */
 	public TaxonNode addRoot(Taxon taxon, Synonym synonymUsed){
 		TaxonNode newRoot = new TaxonNode(taxon, this);
 		rootNodes.add(newRoot);
@@ -133,27 +138,34 @@ public class TaxonomicTree extends IdentifiableEntity implements IReferencedEnti
 		if(node.isRootNode()){
 			return rootNodes.remove(node);
 		}
-		
 		return false;
 	}
 	
+	/**
+	 * Appends an existing root node to another node of this tree. The existing root node becomes 
+	 * an ordinary node.
+	 * @param root
+	 * @param otherNode
+	 * @param ref
+	 * @param microReference
+	 * @throws IllegalArgumentException
+	 */
 	public void makeRootChildOfOtherNode(TaxonNode root, TaxonNode otherNode, ReferenceBase ref, String microReference)
 				throws IllegalArgumentException{
 		if (otherNode == null){
 			throw new NullPointerException("other node must not be null");
 		}
 		if (! getRootNodes().contains(root)){
-			throw new IllegalArgumentException("root node to be added as child must already be root node within this view");
+			throw new IllegalArgumentException("root node to be added as child must already be root node within this tree");
 		}
-		if (! getAllNodes().contains(otherNode)){
-			throw new IllegalArgumentException("root node to be added as child must already be root node within this view");
+		if (otherNode.getTaxonomicTree() == null || ! otherNode.getTaxonomicTree().equals(this)){
+			throw new IllegalArgumentException("other node must already be node within this tree");
 		}
 		if (otherNode.equals(root)){
 			throw new IllegalArgumentException("root node and other node must not be the same");
 		}
 		otherNode.addChildNote(root, ref, microReference, null);
 		getRootNodes().remove(root);
-		getAllNodes().add(root);
 	}
 	
 //	public void makeThisNodePartOfOtherView(TaxonNode oldRoot, TaxonNode replacedNodeInOtherView, ReferenceBase reference, String microReference){
@@ -209,24 +221,48 @@ public class TaxonomicTree extends IdentifiableEntity implements IReferencedEnti
 		}
 		for (TaxonNode taxonNode: taxon.getTaxonNodes()){
 			if (taxonNode.getTaxonomicTree().equals(this)){
-				return taxonNode;
+				if (this.getRootNodes().contains(taxonNode)){
+					if (taxonNode.getParent() != null){
+						logger.warn("A root node should not have parent");
+					}
+					return taxonNode;
+				}
 			}
 		}
 		return null;
 	}
 
+	private boolean handleCitationOverwrite(TaxonNode childNode, ReferenceBase citation, String microCitation){
+		if (citation != null){
+			if (childNode.getReferenceForParentChildRelation() != null && ! childNode.getReferenceForParentChildRelation().equals(citation)){
+				logger.warn("ReferenceForParentChildRelation will be overwritten");
+			}
+			childNode.setReferenceForParentChildRelation(citation);
+		}
+		if (microCitation != null){
+			if (childNode.getMicroReferenceForParentChildRelation() != null && ! childNode.getMicroReferenceForParentChildRelation().equals(microCitation)){
+				logger.warn("MicroReferenceForParentChildRelation will be overwritten");
+			}
+			childNode.setMicroReferenceForParentChildRelation(microCitation);
+		}
+		return true;
+	}
+	
+	
 	/**
-	 * Relates two taxa as parent-child nodes within a taxonomic tree. If the taxa are not yet 
-	 * part of the tree they are added to it.
-	 * If they child taxon is a root still it is added as child and deleted from the rootNode set.
-	 * If the child is a child already an IllegalStateException is thrown because a child can have only 
-	 * one parent.
+	 * Relates two taxa as parent-child nodes within a taxonomic tree. <BR>
+	 * If the taxa are not yet part of the tree they are added to it.<Br>
+	 * If the child taxon is a root still it is added as child and deleted from the rootNode set.<Br>
+	 * If the child is a child of another parent already an IllegalStateException is thrown because a child can have only 
+	 * one parent. <Br>
+	 * If the parent-child relationship between these two taxa already exists nothing is changed. Only 
+	 * citation and microcitation are overwritten by the new values if these values are not null.
 	 * @param parent
 	 * @param child
 	 * @param citation
 	 * @param microCitation
 	 * @return
-	 * @throws IllegalStateException
+	 * @throws IllegalStateException If the child is a child of another parent already
 	 */
 	public boolean addParentChild (Taxon parent, Taxon child, ReferenceBase citation, String microCitation)
 			throws IllegalStateException{
@@ -234,18 +270,25 @@ public class TaxonomicTree extends IdentifiableEntity implements IReferencedEnti
 			TaxonNode parentNode = this.getNode(parent);
 			TaxonNode childNode = this.getNode(child);
 			
-			//if child exists in tree and has a parent different to the parent taxon  throw exception
+			//if child exists in tree and has a parent 
 			//no multiple parents are allowed in the tree
-			if (childNode != null && childNode.getParent() != null && ! childNode.getParent().getTaxon().equals(parent) ){
-				throw new IllegalStateException("The child taxon is already part of the tree but has an other parent taxon than the one than the parent to be added. Child: " + child.toString() + ", new parent:" + parent.toString() + ", old parent: " + childNode.getParent().getTaxon().toString()) ;
+			if (childNode != null && childNode.getParent() != null){
+				//...different to the parent taxon  throw exception
+				if (! childNode.getParent().getTaxon().equals(parent) ){
+					throw new IllegalStateException("The child taxon is already part of the tree but has an other parent taxon than the one than the parent to be added. Child: " + child.toString() + ", new parent:" + parent.toString() + ", old parent: " + childNode.getParent().getTaxon().toString()) ;
+				//... same as the parent taxon do nothing but overwriting citation and microCitation
+				}else{
+					handleCitationOverwrite(childNode, citation, microCitation);
+					return true;
+				}
 			}
 			
 			//add parent node if not exist
 			if (parentNode == null){
-				//New Root
 				parentNode = this.addRoot(parent, null);
 			}
 			
+			//add child if not exists
 			if (childNode == null){
 				parentNode.addChild(child, citation, microCitation);
 			}else{
@@ -286,6 +329,7 @@ public class TaxonomicTree extends IdentifiableEntity implements IReferencedEnti
 	 * 
 	 * @return
 	 */
+	@Deprecated
 	public Set<TaxonNode> getAllNodes() {
 		Set<TaxonNode> allNodes = new HashSet<TaxonNode>();
 		

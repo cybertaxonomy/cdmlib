@@ -14,6 +14,8 @@ import static org.junit.Assert.*;
 
 import java.util.Set;
 
+import junit.framework.Assert;
+
 import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -24,6 +26,7 @@ import org.junit.Test;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.model.reference.Journal;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
@@ -44,7 +47,9 @@ public class TaxonomicTreeTest {
 	private static Taxon taxon1;
 	private static Taxon taxon2;
 	private static TaxonNameBase<?,?> taxonName1;
+	private static TaxonNameBase<?,?> taxonName2;
 	private static ReferenceBase ref1;
+	private static ReferenceBase ref2;
 	
 	
 	
@@ -70,8 +75,12 @@ public class TaxonomicTreeTest {
 		viewName1 = "Greuther, 1993";
 		taxonomicView1 = TaxonomicTree.NewInstance(viewName1);
 		taxonName1 = BotanicalName.NewInstance(Rank.SPECIES());
+		taxonName1 = ZoologicalName.NewInstance(Rank.SPECIES());
 		ref1 = Journal.NewInstance();
+		ref2 = Journal.NewInstance();
 		taxon1 = Taxon.NewInstance(taxonName1, ref1);
+		taxon2 = Taxon.NewInstance(taxonName2, ref2);
+		
 		//taxonNode1 = new TaxonNode(taxon1, taxonomicView1);
 	}
 
@@ -93,6 +102,9 @@ public class TaxonomicTreeTest {
 		Synonym synonym = Synonym.NewInstance(synonymName, ref1);
 		TaxonNode taxonNode1 = taxonomicView1.addRoot(taxon1, synonym);
 		
+		
+		
+		
 		//test root node
 		Set<TaxonNode> rootNodes = taxonomicView1.getRootNodes();
 		assertFalse("List of root nodes should not be empty", rootNodes.isEmpty());
@@ -111,13 +123,14 @@ public class TaxonomicTreeTest {
 		TaxonNode anyNode = allNodes.iterator().next();
 		assertSame("Taxon for TaxonNode should be the same added to the view", taxon1, anyNode.getTaxon());
 		assertSame("TaxonNode should be the same added to the view", taxonNode1, anyNode);
+				
 	}
 
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.model.taxon.TaxonomicTree#isTaxonInView(eu.etaxonomy.cdm.model.taxon.Taxon)}.
 	 */
 	@Test
-	public void testIsTaxonInView() {
+	public void testIsTaxonInTree() {
 		taxonomicView1.addRoot(taxon1, null);
 		
 		assertTrue(taxonomicView1.isTaxonInTree(taxon1));
@@ -154,6 +167,66 @@ public class TaxonomicTreeTest {
 		
 	}
 	
+	@Test
+	public void testIsRootInTree() {
+		TaxonNode root = taxonomicView1.addRoot(taxon1, null);
+		
+		assertTrue(taxonomicView1.isTaxonInTree(taxon1));
+		assertTrue(taxonomicView1.isRootInTree(taxon1));
+		Taxon anyTaxon = Taxon.NewInstance(null, null);
+		assertFalse(taxonomicView1.isTaxonInTree(anyTaxon));
+		assertFalse(taxonomicView1.isRootInTree(anyTaxon));
+		Taxon child = Taxon.NewInstance(null, null);
+		root.addChild(child);
+		assertTrue(taxonomicView1.isTaxonInTree(child));
+		assertFalse(taxonomicView1.isRootInTree(child));
+	}
+	
+	@Test
+	public void testGetRootNode() {
+		TaxonNode root = taxonomicView1.addRoot(taxon1, null);
+		
+		assertEquals(root, taxonomicView1.getRootNode(taxon1));
+		Taxon anyTaxon = Taxon.NewInstance(null, null);
+		assertFalse(taxonomicView1.isTaxonInTree(anyTaxon));
+		assertNull(taxonomicView1.getRootNode(anyTaxon));
+		Taxon child = Taxon.NewInstance(null, null);
+		root.addChild(child);
+		assertTrue(taxonomicView1.isTaxonInTree(child));
+		assertNull(taxonomicView1.getRootNode(child));
+	}
+	
+	@Test
+	public void testAddParentChild() {
+
+		TaxonNameBase<?,?> synonymName = BotanicalName.NewInstance(Rank.SPECIES());
+		Synonym synonym = Synonym.NewInstance(synonymName, ref1);
+		TaxonNode rootNode = taxonomicView1.addRoot(taxon1, synonym);
+		Assert.assertEquals(0,rootNode.getChildNodes().size());
+		
+		//add child to existing root
+		taxonomicView1.addParentChild(taxon1, taxon2, ref1, "Micro1");
+		Assert.assertTrue(taxonomicView1.isTaxonInTree(taxon2));
+		Assert.assertFalse(taxonomicView1.isRootInTree(taxon2));
+		Assert.assertEquals(1,rootNode.getChildNodes().size());
+		TaxonNode childNode = rootNode.getChildNodes().iterator().next();
+		Assert.assertEquals(taxon2, childNode.getTaxon());
+		
+		//relationship already exists
+		taxonomicView1.addParentChild(taxon1, taxon2, ref2, "Micro2");
+		Assert.assertTrue(taxonomicView1.isTaxonInTree(taxon2));
+		Assert.assertFalse(taxonomicView1.isRootInTree(taxon2));
+		Assert.assertEquals(2, taxonomicView1.getAllNodes().size());
+		Assert.assertEquals(1,rootNode.getChildNodes().size());
+		childNode = rootNode.getChildNodes().iterator().next();
+		Assert.assertEquals(taxon2, childNode.getTaxon());
+		Assert.assertEquals(ref2, childNode.getReferenceForParentChildRelation());
+		Assert.assertEquals("Micro2", childNode.getMicroReferenceForParentChildRelation());
+		
+		logger.info("testAddParentChild not yet fully implemented");
+
+	}
+
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.model.taxon.TaxonomicTree#generateTitle()}.
 	 */

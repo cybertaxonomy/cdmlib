@@ -9,6 +9,7 @@
 
 package eu.etaxonomy.cdm.app.wp6.palmae;
 
+import java.io.File;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
@@ -17,6 +18,7 @@ import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.app.common.CdmDestinations;
 import eu.etaxonomy.cdm.app.images.ImageImportConfigurator;
 import eu.etaxonomy.cdm.app.tcs.TcsSources;
+import eu.etaxonomy.cdm.app.wp6.palmae.config.PalmaeProtologueImportConfigurator;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.PalmaeImageImport;
@@ -51,7 +53,8 @@ public class PalmaeActivator {
 	//should the taxonX import run as well?
 	static final boolean includeTaxonX = true;
 	static final boolean includeImages = true;
-	static final boolean includeProtologue = true;
+	static final boolean includeExcelProtologue = true;
+	static final boolean includeMediaProtologue = true;
 	
 	//check - import
 	static final CHECK check = CHECK.IMPORT_WITHOUT_CHECK;
@@ -171,7 +174,7 @@ public class PalmaeActivator {
 			System.out.println("End importing images ...");
 		}
 
-		if (includeProtologue){
+		if (includeExcelProtologue){
 			System.out.println("Start importing protologues ...");
 			ImageImportConfigurator imageConfigurator = ImageImportConfigurator.NewInstance(
 					PalmaeProtologueActivator.sourceFile, cdmDestination, PalmaeProtologueImport.class);
@@ -179,6 +182,23 @@ public class PalmaeActivator {
 			
 			CdmDefaultImport<IImportConfigurator> imageImporter = new CdmDefaultImport<IImportConfigurator>();
 			imageImporter.invoke(imageConfigurator);
+			System.out.println("End importing protologues ...");
+		}
+		if (includeMediaProtologue){
+			System.out.println("Start importing protologues from \\\\media...");
+			String protologueSource = "\\\\media\\EditWP6\\palmae\\protologe";
+			File source = new File (protologueSource);
+
+			PalmaeProtologueImportConfigurator protologConfig = PalmaeProtologueImportConfigurator.NewInstance(protologueSource, cdmDestination);
+			CdmDefaultImport<IImportConfigurator> cdmImport = new CdmDefaultImport<IImportConfigurator>();
+			
+			//protologConfig.setDoFacts(doDescriptions);
+			protologConfig.setCheck(check);
+			protologConfig.setDbSchemaValidation(hbm2dll);
+
+			protologConfig.setSource(source);
+			success &= cdmImport.invoke(protologConfig);
+
 			System.out.println("End importing protologues ...");
 		}
 		
