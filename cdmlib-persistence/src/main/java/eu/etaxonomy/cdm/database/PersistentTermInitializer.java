@@ -102,19 +102,19 @@ public class PersistentTermInitializer extends DefaultTermInitializer {
 	 * 
 	 * @param clazz the <code>Class</code> of the vocabulary
 	 * @param vocabularyUuid the <code>UUID</code> of the vocabulary
-	 * @param termsa <code>Map</code> containing all already 
+	 * @param terms a <code>Map</code> containing all already 
 	 * 						 loaded terms with their <code>UUID</code> as key
 	 */
 	protected void secondPass(Class clazz, UUID vocabularyUuid, Map<UUID,DefinedTermBase> terms) {
-		logger.info("Loading vocabulary for class " + clazz.getSimpleName() + " with uuid " + vocabularyUuid );
+		logger.info("Initializing vocabulary for class " + clazz.getSimpleName() + " with uuid " + vocabularyUuid );
 		
 		TermVocabulary persistedVocabulary = vocabularyDao.findByUuid(vocabularyUuid);
 		
 		if (persistedVocabulary != null){
-			for(Object obj : persistedVocabulary.getTerms()) {
-				DefinedTermBase d = (DefinedTermBase)obj;
-				Hibernate.initialize(d.getRepresentations());
-				terms.put(d.getUuid(), d);			
+			for(Object object : persistedVocabulary.getTerms()) {
+				DefinedTermBase definedTermBase = (DefinedTermBase) object;
+				Hibernate.initialize(definedTermBase.getRepresentations());
+				terms.put(definedTermBase.getUuid(), definedTermBase);			
 			}
 		}else{
 			logger.error("Persisted Vocabulary does not exist in database: " + vocabularyUuid);

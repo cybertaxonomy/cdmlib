@@ -117,7 +117,7 @@ public class TaxonNodeTest {
 		assertEquals("Synonym should be syn1", syn1, child.getSynonymToBeUsed());
 		
 		//test parent properties
-		List<TaxonNode> childList = root.getChildNodes();
+		Set<TaxonNode> childList = root.getChildNodes();
 		assertFalse("parent child list must not be empty",childList.isEmpty());
 		assertEquals("size of child list be 1", 1, childList.size());
 		assertSame("taxa must be the same", taxon2, childList.iterator().next().getTaxon());
@@ -173,7 +173,7 @@ public class TaxonNodeTest {
 		
 		TaxonNode child = root.addChild(taxon2, ref2, "p33", syn1);
 		
-		List<TaxonNode> childList = root.getChildNodes();
+		Set<TaxonNode> childList = root.getChildNodes();
 		assertFalse("parent child list must not be empty",childList.isEmpty());
 		assertEquals("size of child list be 1", 1, childList.size());
 		assertSame("child must be in child list", child, childList.iterator().next());

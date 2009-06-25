@@ -139,10 +139,20 @@ public class TaxonomicTree extends IdentifiableEntity implements IReferencedEnti
 	}
 	
 	public boolean removeRoot(TaxonNode node){
+		boolean result = false;
 		if(node.isRootNode()){
-			return rootNodes.remove(node);
+
+			for (TaxonNode childNode : node.getChildNodes()){
+				node.removeChild(childNode);
+			}
+			result = rootNodes.remove(node);
+
+			node.getTaxon().removeTaxonNode(node);
+			node.setParent(null);
+			node.setTaxonomicView(null);
+			node.setTaxon(null);			
 		}
-		return false;
+		return result;
 	}
 	
 	/**

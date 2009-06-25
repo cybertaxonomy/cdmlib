@@ -10,9 +10,7 @@
 
 package eu.etaxonomy.cdm.model.taxon;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Entity;
@@ -289,6 +287,9 @@ public class TaxonNode  extends AnnotatableEntity {
 	/**
 	 * Whether this TaxonNode is a descendant of the given TaxonNode
 	 * 
+	 * Caution: use this method with care on big branches. -> performance and memory hungry
+	 * TODO implement more efficiently without generating the set of descendants first
+	 * 
 	 * @param possibleParent
 	 * @return true if this is a descendant
 	 */
@@ -296,5 +297,10 @@ public class TaxonNode  extends AnnotatableEntity {
 	public boolean isDescendant(TaxonNode possibleParent){
 		return possibleParent.getAllNodes().contains(this);
 	}
+	
+	public boolean hasChildNodes(){
+		return childNodes.size() > 0;
+	}
+	
 
 }
