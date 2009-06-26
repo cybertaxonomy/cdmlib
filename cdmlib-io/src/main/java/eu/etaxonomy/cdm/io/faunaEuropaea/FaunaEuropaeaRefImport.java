@@ -61,9 +61,12 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 public class FaunaEuropaeaRefImport extends FaunaEuropaeaImportBase {
 	private static final Logger logger = Logger.getLogger(FaunaEuropaeaRefImport.class);
 
-	private int modCount = 10000;
-	/* Max number of references to be saved with one service call */
+	/* Max number of taxa to be saved with one service call */
 	private int limit = 20000; // TODO: Make configurable
+	/* Max number of taxa to be saved with one service call */
+	private int modCount = 10000;
+	/* Highest taxon index in the FauEu database */
+	private int highestTaxonIndex = 0;
 	
 		
 	/* (non-Javadoc)
@@ -226,7 +229,8 @@ public class FaunaEuropaeaRefImport extends FaunaEuropaeaImportBase {
 			if(logger.isInfoEnabled()) { logger.info("Saving references ..."); }
 			
 			// save taxa, references, and authors
-			getTaxonService().saveTaxonAll(taxonStore.objects());
+			success = saveTaxa(stores, highestTaxonIndex, limit);
+//			getTaxonService().saveTaxonAll(taxonStore.objects());
 //			getReferenceService().saveReferenceAll(refStore.objects());
 //			getAgentService().saveAgentAll(authorStore.objects());
 			

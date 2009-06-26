@@ -31,10 +31,11 @@ public class FaunaEuropaeaImportConfigurator extends ImportConfiguratorBase<Faun
 	@SuppressWarnings("unchecked")
 	protected void makeIoClassList() {
 		ioClassList = new Class[] {
-//				FaunaEuropaeaAuthorImport.class,
+				FaunaEuropaeaAuthorImport.class,
 //				FaunaEuropaeaReferenceImport.class,
 //				FaunaEuropaeaTaxonNameImport.class
-				FaunaEuropaeaTaxonImport.class
+				FaunaEuropaeaTaxonImport.class,
+				FaunaEuropaeaRefImport.class
 //				FaunaEuropaeaDistributionImport.class
 		};
 	};
@@ -73,7 +74,7 @@ public class FaunaEuropaeaImportConfigurator extends ImportConfiguratorBase<Faun
 		if (this.sourceReference == null){
 			logger.warn("getSource Reference not yet fully implemented");
 			sourceReference = Database.NewInstance();
-			sourceReference.setTitleCache("Fauna Europaea data import");
+			sourceReference.setTitleCache("Fauna Europaea database");
 		}
 		return sourceReference;
 	}
