@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.model.reference;
 
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
@@ -105,6 +106,7 @@ public class BibtexReference extends ReferenceBase<INomenclaturalReferenceCacheS
 	
 	@XmlElement(name = "Title")
 	@Field(index=Index.TOKENIZED)
+	@Column(name="bibtextitle")
 	private String title;
 	
 	@XmlElement(name = "Series")
