@@ -42,7 +42,13 @@ public abstract class FaunaEuropaeaImportBase extends CdmImportBase<FaunaEuropae
 implements ICdmImport<FaunaEuropaeaImportConfigurator,FaunaEuropaeaImportState> {
 	private static final Logger logger = Logger.getLogger(FaunaEuropaeaImportBase.class);
 	
-	/* Highest taxon index in the FauEu database */
+//	/* Max number of taxa to retrieve (for test purposes) */
+//	protected static final int maxTaxa = 1000;
+//	/* Max number of taxa to be saved with one service call */
+//	protected int limit = 20000; // TODO: Make configurable
+//	/* Interval for progress info message when retrieving taxa */
+//	protected static final int modCount = 10000;
+//	/* Highest taxon index in the FauEu database */
 //	protected int highestTaxonIndex = 0;
 	
 	protected boolean resultSetHasColumn(ResultSet rs, String columnName){

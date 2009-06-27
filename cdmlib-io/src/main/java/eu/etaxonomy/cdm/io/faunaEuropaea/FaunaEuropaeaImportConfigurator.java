@@ -32,10 +32,8 @@ public class FaunaEuropaeaImportConfigurator extends ImportConfiguratorBase<Faun
 	protected void makeIoClassList() {
 		ioClassList = new Class[] {
 				FaunaEuropaeaAuthorImport.class,
-//				FaunaEuropaeaReferenceImport.class,
-//				FaunaEuropaeaTaxonNameImport.class
-				FaunaEuropaeaTaxonImport.class,
-				FaunaEuropaeaRefImport.class
+				FaunaEuropaeaTaxonImport.class
+//				FaunaEuropaeaRefImport.class
 //				FaunaEuropaeaDistributionImport.class
 		};
 	};

@@ -61,9 +61,11 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 public class FaunaEuropaeaRefImport extends FaunaEuropaeaImportBase {
 	private static final Logger logger = Logger.getLogger(FaunaEuropaeaRefImport.class);
 
+	/* Max number of taxa to retrieve (for test purposes) */
+	private int maxTaxa = 0;
 	/* Max number of taxa to be saved with one service call */
 	private int limit = 20000; // TODO: Make configurable
-	/* Max number of taxa to be saved with one service call */
+	/* Interval for progress info message when retrieving taxa */
 	private int modCount = 10000;
 	/* Highest taxon index in the FauEu database */
 	private int highestTaxonIndex = 0;
@@ -117,12 +119,21 @@ public class FaunaEuropaeaRefImport extends FaunaEuropaeaImportBase {
 		
 		try {
 			String strQuery = 
+				" SELECT MAX(TAX_ID) AS TAX_ID FROM dbo.Taxon ";
+			
+			ResultSet rs = source.getResultSet(strQuery);
+			while (rs.next()) {
+				int maxTaxonId = rs.getInt("TAX_ID");
+				highestTaxonIndex = maxTaxonId;
+			}
+
+			strQuery = 
 				" SELECT Reference.*, TaxRefs.* " + 
                 " FROM Reference INNER JOIN TaxRefs ON Reference.ref_id = TaxRefs.trf_ref_id " +
                 " WHERE (1=1)" + 
                 " ORDER BY TaxRefs.trf_tax_id";
 			
-			ResultSet rs = source.getResultSet(strQuery) ;
+			rs = source.getResultSet(strQuery) ;
 			
 			int i = 0;
 			while (rs.next()) {
@@ -165,13 +176,16 @@ public class FaunaEuropaeaRefImport extends FaunaEuropaeaImportBase {
 							logger.debug("Stored reference (" + refId + ") " + refAuthor); 
 						}
 					} else {
-						logger.warn("Not imported reference with duplicated ref_id (" + refId + 
-								") " + refAuthor);
+						if (logger.isDebugEnabled()) { 
+							logger.debug("Not imported reference with duplicated ref_id (" + refId + 
+									") " + refAuthor);
+						}
+						continue;
 					}
 					
 					// Create authors
 					
-					if (!authorStore.containsId(refId)) {
+					if (!authorStore.containsId(refId)) { // TODO: Don't insert identical author names
 						if (refAuthor == null) {
 							logger.warn("Reference author is null");
 						}
@@ -180,8 +194,10 @@ public class FaunaEuropaeaRefImport extends FaunaEuropaeaImportBase {
 							logger.debug("Stored author (" + refId + ") " + refAuthor); 
 						}
 					} else {
-						logger.warn("Not imported author with duplicated aut_id (" + refId + 
-								") " + refAuthor);
+						if (logger.isDebugEnabled()) { 
+							logger.debug("Not imported author with duplicated aut_id (" + refId + 
+									") " + refAuthor);
+						}
 					}
 					
 				} catch (Exception e) {
@@ -194,6 +210,8 @@ public class FaunaEuropaeaRefImport extends FaunaEuropaeaImportBase {
 
 					Taxon taxon;
 					TaxonBase taxonBase = taxonStore.get(taxonId);
+//					TaxonBase taxonBase = taxonStore.get(taxonId);
+					if (taxonBase == null) { continue; }
 					boolean isSynonym = taxonBase.isInstanceOf(Synonym.class);
 					if (isSynonym){
 						Synonym syn = CdmBase.deproxy(taxonBase, Synonym.class);
@@ -218,10 +236,12 @@ public class FaunaEuropaeaRefImport extends FaunaEuropaeaImportBase {
 					}
 					textData.setCitation(reference);
 					textData.setCitationMicroReference(page);
+					taxonDescription.addElement(textData);
 
 				} catch (Exception e) {
 					logger.warn("An exception occurred when creating description for reference " + refId + 
 					". Taxon description could not be saved.");
+					e.printStackTrace();
 				}
 				
 			}
@@ -230,9 +250,8 @@ public class FaunaEuropaeaRefImport extends FaunaEuropaeaImportBase {
 			
 			// save taxa, references, and authors
 			success = saveTaxa(stores, highestTaxonIndex, limit);
-//			getTaxonService().saveTaxonAll(taxonStore.objects());
-//			getReferenceService().saveReferenceAll(refStore.objects());
-//			getAgentService().saveAgentAll(authorStore.objects());
+			getReferenceService().saveReferenceAll(refStore.objects());
+			getAgentService().saveAgentAll(authorStore.objects());
 			
 			if(logger.isInfoEnabled()) { logger.info("End making references ..."); }
 			
