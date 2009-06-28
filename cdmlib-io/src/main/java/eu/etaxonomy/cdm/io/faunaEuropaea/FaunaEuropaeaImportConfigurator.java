@@ -28,10 +28,12 @@ public class FaunaEuropaeaImportConfigurator extends ImportConfiguratorBase<Faun
 
 	private static final Logger logger = Logger.getLogger(FaunaEuropaeaImportConfigurator.class);
 	
+	protected ReferenceBase auctReference;
+	
 	@SuppressWarnings("unchecked")
 	protected void makeIoClassList() {
 		ioClassList = new Class[] {
-				FaunaEuropaeaAuthorImport.class,
+//				FaunaEuropaeaAuthorImport.class,
 				FaunaEuropaeaTaxonImport.class
 //				FaunaEuropaeaRefImport.class
 //				FaunaEuropaeaDistributionImport.class
@@ -77,6 +79,18 @@ public class FaunaEuropaeaImportConfigurator extends ImportConfiguratorBase<Faun
 		return sourceReference;
 	}
 
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.ImportConfiguratorBase#getSourceReference()
+	 */
+	public ReferenceBase getAuctReference() {
+		//TODO
+		if (auctReference == null){
+			auctReference = Database.NewInstance();
+			sourceReference.setTitleCache("auct.");
+		}
+		return auctReference;
+	}
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#getSourceNameString()

@@ -46,6 +46,8 @@ import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.io.tcsxml.in.TcsXmlImportState;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.ISourceable;
+import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.OriginalSource;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
@@ -70,6 +72,8 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
  */
 @Component
 public class FaunaEuropaeaTaxonImport extends FaunaEuropaeaImportBase  {
+	
+	public static final String OS_NAMESPACE_TAXON = "Taxon";
 	private static final Logger logger = Logger.getLogger(FaunaEuropaeaTaxonImport.class);
 
 	/* Max number of taxa to retrieve (for test purposes) */
@@ -130,13 +134,13 @@ public class FaunaEuropaeaTaxonImport extends FaunaEuropaeaImportBase  {
 		
 		if(logger.isInfoEnabled()) { logger.info("Start making taxa..."); }
 		
-//		TransactionStatus txStatus = startTransaction();
+		TransactionStatus txStatus = startTransaction();
 		
 		success = retrieveTaxa(state, fauEuTaxonMap, Q_NO_RESTRICTION);
-		success = processTaxa(state);
+//		success = processTaxa(state);
 		success = processTaxaFromDatabase(state, fauEuTaxonMap);
 		
-//		commitTransaction(txStatus);
+		commitTransaction(txStatus);
 		
 		logger.info("End making taxa...");
 		return success;
@@ -157,7 +161,6 @@ public class FaunaEuropaeaTaxonImport extends FaunaEuropaeaImportBase  {
 		if(logger.isInfoEnabled()) { logger.info("Start making taxa..."); }
 		
 		success = retrieveTaxa(state, fauEuTaxonMap, Q_NO_RESTRICTION);
-//		success = retrieveTaxa(fauEuConfig, stores, fauEuTaxonMap, Q_NO_RESTRICTION);
 		success = processTaxaSecondPass(state, fauEuTaxonMap);
 		success = saveTaxa(stores, highestTaxonIndex, limit);
 //		success = saveTaxa(stores);
@@ -165,7 +168,9 @@ public class FaunaEuropaeaTaxonImport extends FaunaEuropaeaImportBase  {
 		logger.info("End making taxa...");
 		return success;
 	}
+
 	
+	/** Retrieve tax from FauEu DB and build FauEuTaxonMap only */
 	private boolean retrieveTaxa(FaunaEuropaeaImportState state,
 			Map<Integer, FaunaEuropaeaTaxon> fauEuTaxonMap, int valid) {
 
@@ -176,7 +181,219 @@ public class FaunaEuropaeaTaxonImport extends FaunaEuropaeaImportBase  {
 		MapWrapper<TeamOrPersonBase> authorStore = (MapWrapper<TeamOrPersonBase>)stores.get(ICdmIO.TEAM_STORE);
 
 		Source source = fauEuConfig.getSource();
-		String namespace = "Taxon";
+//		String namespace = "Taxon";
+		int i = 0;
+		boolean success = true;
+
+		try {
+			
+			String strQuery = 
+				" SELECT MAX(TAX_ID) AS TAX_ID FROM dbo.Taxon ";
+			
+			ResultSet rs = source.getResultSet(strQuery);
+			while (rs.next()) {
+				int maxTaxonId = rs.getInt("TAX_ID");
+				highestTaxonIndex = maxTaxonId;
+			}
+			
+            String top = "";
+			if (maxTaxa > 0) {
+				top = "TOP " + maxTaxa;
+			}
+			
+			String validClause = "";
+			if (valid == T_STATUS_ACCEPTED || valid == T_STATUS_NOT_ACCEPTED) {
+				validClause = " AND " + " TAX_VALID = " + valid;
+			}
+			
+			strQuery = 
+				" SELECT " + top + " Taxon.*, rank.*, author.* " + 
+				" FROM dbo.Taxon " +
+				" LEFT OUTER JOIN dbo.author ON dbo.Taxon.TAX_AUT_ID = dbo.author.aut_id " +
+				" LEFT OUTER JOIN dbo.rank ON dbo.Taxon.TAX_RNK_ID = dbo.rank.rnk_id " +
+				" WHERE (1=1)" +
+				validClause;
+
+			if (logger.isDebugEnabled()) {
+				logger.debug("Query: " + strQuery);
+			}
+			rs = source.getResultSet(strQuery);
+			
+			while (rs.next()) {
+
+				if ((i++ % modCount) == 0 && i != 1 ) { 
+					if(logger.isInfoEnabled()) {
+						logger.info("Taxa retrieved: " + (i-1)); 
+					}
+				}
+
+				int taxonId = rs.getInt("TAX_ID");
+				String localName = rs.getString("TAX_NAME");
+				int rankId = rs.getInt("TAX_RNK_ID");
+				int parentId = rs.getInt("TAX_TAX_IDPARENT");
+				int familyId = rs.getInt("TAX_TAX_IDFAMILY");
+				int originalGenusId = rs.getInt("TAX_TAX_IDGENUS");
+				int autId = rs.getInt("TAX_AUT_ID");
+				int status = rs.getInt("TAX_VALID");
+				int year = rs.getInt("TAX_YEAR");
+				int parenthesis = rs.getInt("TAX_PARENTHESIS");
+				String autName = rs.getString("aut_name");
+				Rank rank = null;
+//				UUID taxonBaseUuid = UUID.randomUUID();
+
+				FaunaEuropaeaTaxon fauEuTaxon = new FaunaEuropaeaTaxon();
+//				fauEuTaxon.setUuid(taxonBaseUuid);
+				fauEuTaxon.setLocalName(localName);
+				fauEuTaxon.setParentId(parentId);
+				fauEuTaxon.setOriginalGenusId(originalGenusId);
+				fauEuTaxon.setId(taxonId);
+				fauEuTaxon.setRankId(rankId);
+				fauEuTaxon.setYear(year);
+				fauEuTaxon.setAuthor(autName);
+				if (parenthesis == P_PARENTHESIS) {
+					fauEuTaxon.setParenthesis(true);
+				} else {
+					fauEuTaxon.setParenthesis(false);
+				}
+				if (status == T_STATUS_ACCEPTED) {
+					fauEuTaxon.setValid(true);
+				} else {
+					fauEuTaxon.setValid(false);
+				}
+
+				try {
+					rank = FaunaEuropaeaTransformer.rankId2Rank(rs, false);
+				} catch (UnknownCdmTypeException e) {
+					logger.warn("Taxon (" + taxonId + ") has unknown rank (" + rankId + ") and could not be saved.");
+					continue;
+				} catch (NullPointerException e) {
+					logger.warn("Taxon (" + taxonId + ") has rank null and can not be saved.");
+					continue;
+				}
+				
+				try {
+				
+//				ReferenceBase<?> sourceReference = fauEuConfig.getSourceReference();
+//				ReferenceBase<?> auctReference = fauEuConfig.getAuctReference();
+//
+//				ZoologicalName zooName = ZoologicalName.NewInstance(rank);
+//                // set local name cache
+//				zooName.setNameCache(localName);
+//				
+//				TaxonBase<?> taxonBase;
+//
+//				Synonym synonym;
+//				Taxon taxon;
+//				try {
+//					if ((status == T_STATUS_ACCEPTED) || (autId == A_AUCT)) { // taxon
+//						if (autId == A_AUCT) { // misapplied name
+//							taxon = Taxon.NewInstance(zooName, auctReference);
+//							if (logger.isDebugEnabled()) {
+//								logger.debug("Misapplied name created (" + taxonId + ")");
+//							}
+//						} else { // regular taxon
+//							taxon = Taxon.NewInstance(zooName, sourceReference);
+//							if (logger.isDebugEnabled()) {
+//								logger.debug("Taxon created (" + taxonId + ")");
+//							}
+//							
+//							if (fauEuTaxon.isParenthesis() && (fauEuTaxon.getOriginalGenusId() != 0)
+//									&& (fauEuTaxon.getParentId() != fauEuTaxon.getOriginalGenusId())) {
+//
+//								// create basionym
+//								TeamOrPersonBase<?> author = authorStore.get(autId);
+//								ZoologicalName basionym = ZoologicalName.NewInstance(rank);
+//								basionym.setNameCache(localName);
+//								basionym.setCombinationAuthorTeam(author);
+//								basionym.setPublicationYear(year);
+//								zooName.addBasionym(basionym, sourceReference, null, null);
+//								zooName.setBasionymAuthorTeam(author);
+//								if (logger.isDebugEnabled()) {
+//									logger.debug("Basionym created (" + taxonId + ")");
+//								}
+//
+//								// create homotypic synonym
+//								Synonym homotypicSynonym = Synonym.NewInstance(basionym, sourceReference);
+//								taxon.addSynonym(homotypicSynonym, SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF(), 
+//										sourceReference, null);
+//								if (logger.isDebugEnabled()) {
+//									logger.debug("Homotypic synonym created (" + taxonId + ")");
+//								}
+//								
+//							}
+//							
+//						}
+//						taxonBase = taxon;
+//					} else if ((status == T_STATUS_NOT_ACCEPTED) && (autId != A_AUCT)) { // synonym
+//						synonym = Synonym.NewInstance(zooName, sourceReference);
+//						if (logger.isDebugEnabled()) {
+//							logger.debug("Synonym created (" + taxonId + ")");
+//						}
+//						taxonBase = synonym;
+//					} else {
+//						logger.warn("Unknown taxon status " + status + ". Taxon (" + taxonId + ") ignored.");
+//						continue;
+//					}
+//
+//					taxonBase.setUuid(taxonBaseUuid);
+//					
+//					ImportHelper.setOriginalSource(taxonBase, fauEuConfig.getSourceReference(), taxonId, namespace);
+//					
+					
+//					if (!taxonStore.containsId(taxonId)) {
+//						if (taxonBase == null) {
+//							if (logger.isDebugEnabled()) { 
+//								logger.debug("Taxon base is null. Taxon (" + taxonId + ") ignored.");
+//							}
+//							continue;
+//						}
+						
+				if (!fauEuTaxonMap.containsKey(taxonId)) {
+					if (fauEuTaxon == null) {
+						if (logger.isDebugEnabled()) { 
+							logger.debug("Taxon base is null. Taxon (" + taxonId + ") ignored.");
+						}
+						continue;
+					}
+
+							
+//						taxonStore.put(taxonId, taxonBase);
+						
+						fauEuTaxonMap.put(taxonId, fauEuTaxon);
+						
+//						if (logger.isDebugEnabled()) { 
+//							logger.debug("Stored taxon base (" + taxonId + ") " + localName); 
+//						}
+					} else {
+						logger.warn("Not imported taxon base with duplicated TAX_ID (" + taxonId + 
+								") " + localName);
+					}
+				} catch (Exception e) {
+					logger.warn("An exception occurred when creating taxon base with id " + taxonId + 
+					". Taxon base could not be saved.");
+				}
+			}
+		} catch (SQLException e) {
+			logger.error("SQLException:" +  e);
+			success = false;
+		}
+
+		return success;
+	}
+
+	
+	/** Retrieve tax from FauEu DB, build TaxonStore andFauEuTaxonMap */
+	private boolean retrieveTaxa_(FaunaEuropaeaImportState state,
+			Map<Integer, FaunaEuropaeaTaxon> fauEuTaxonMap, int valid) {
+
+		Map<String, MapWrapper<? extends CdmBase>> stores = state.getStores();
+		MapWrapper<TaxonBase> taxonStore = (MapWrapper<TaxonBase>)stores.get(ICdmIO.TAXON_STORE);
+		FaunaEuropaeaImportConfigurator fauEuConfig = state.getConfig();
+		ReferenceBase<?> sourceRef = fauEuConfig.getSourceReference();
+		MapWrapper<TeamOrPersonBase> authorStore = (MapWrapper<TeamOrPersonBase>)stores.get(ICdmIO.TEAM_STORE);
+
+		Source source = fauEuConfig.getSource();
+//		String namespace = "Taxon";
 		int i = 0;
 		boolean success = true;
 
@@ -267,8 +484,7 @@ public class FaunaEuropaeaTaxonImport extends FaunaEuropaeaImportBase  {
 				}
 				
 				ReferenceBase<?> sourceReference = fauEuConfig.getSourceReference();
-				ReferenceBase<?> auctReference = Generic.NewInstance();
-				auctReference.setTitleCache("auct.");
+				ReferenceBase<?> auctReference = fauEuConfig.getAuctReference();
 
 				ZoologicalName zooName = ZoologicalName.NewInstance(rank);
                 // set local name cache
@@ -331,7 +547,7 @@ public class FaunaEuropaeaTaxonImport extends FaunaEuropaeaImportBase  {
 
 					taxonBase.setUuid(taxonBaseUuid);
 					
-					ImportHelper.setOriginalSource(taxonBase, fauEuConfig.getSourceReference(), taxonId, namespace);
+					ImportHelper.setOriginalSource(taxonBase, fauEuConfig.getSourceReference(), taxonId, OS_NAMESPACE_TAXON);
 					
 					
 					if (!taxonStore.containsId(taxonId)) {
@@ -362,7 +578,7 @@ public class FaunaEuropaeaTaxonImport extends FaunaEuropaeaImportBase  {
 
 		return success;
 	}
-
+	
 	
 //	private boolean createAdditionalObjects(FaunaEuropaeaTaxon fauEuTaxon,
 //			TaxonBase<?> taxonBase, ZoologicalName zooName,
@@ -409,8 +625,8 @@ public class FaunaEuropaeaTaxonImport extends FaunaEuropaeaImportBase  {
 			FaunaEuropaeaTaxon fauEuTaxon = fauEuTaxonMap.get(id);
 			
 			if (logger.isDebugEnabled()) { logger.debug("Taxon # " + id); }
-			String nameString = calculateTaxonName(fauEuTaxon, taxonBase, taxonName, taxonStore, fauEuTaxonMap);
-			createRelationships_(fauEuTaxon, taxonBase, taxonName, fauEuTaxonMap, state);
+			String nameString = calculateTaxonName_(fauEuTaxon, taxonBase, taxonName, taxonStore, fauEuTaxonMap);
+			createRelationships__(fauEuTaxon, taxonBase, taxonName, fauEuTaxonMap, state);
 			setTaxonName(nameString, fauEuTaxon, taxonBase, fauEuConfig);
 		}
 		return success;	
@@ -438,8 +654,8 @@ public class FaunaEuropaeaTaxonImport extends FaunaEuropaeaImportBase  {
 			FaunaEuropaeaTaxon fauEuTaxon = fauEuTaxonMap.get(id);
 			
 			if (logger.isDebugEnabled()) { logger.debug("Taxon # " + id); }
-			String nameString = calculateTaxonName(fauEuTaxon, taxonBase, taxonName, taxonStore, fauEuTaxonMap);
-			createRelationships_(fauEuTaxon, taxonBase, taxonName, fauEuTaxonMap, state);
+			String nameString = calculateTaxonName_(fauEuTaxon, taxonBase, taxonName, taxonStore, fauEuTaxonMap);
+			createRelationships__(fauEuTaxon, taxonBase, taxonName, fauEuTaxonMap, state);
 			setTaxonName(nameString, fauEuTaxon, taxonBase, fauEuConfig);
 		}
 		return success;	
@@ -540,7 +756,140 @@ public class FaunaEuropaeaTaxonImport extends FaunaEuropaeaImportBase  {
 	}
 
 	
+	/** Creates relationships if taxon bases are retrieved in chunks from CDM DB */
 	private boolean createRelationships(FaunaEuropaeaTaxon fauEuTaxon,
+			TaxonBase<?> taxonBase, TaxonNameBase<?,?> taxonName, List<TaxonBase> taxonBases,
+			Map<Integer, FaunaEuropaeaTaxon> fauEuTaxonMap, FaunaEuropaeaImportState state) {
+		
+		int parentId = fauEuTaxon.getParentId();
+		int taxonId = fauEuTaxon.getId();
+		FaunaEuropaeaTaxon parentFauEuTaxon = fauEuTaxonMap.get(parentId);
+		if (parentFauEuTaxon == null) {
+			if (logger.isInfoEnabled()) {
+				logger.info("Parent taxon is null (" + parentId + ")");
+			}
+			return false;
+		}
+//		UUID parentUuid = parentFauEuTaxon.getUuid();
+		Map<String, MapWrapper<? extends CdmBase>> stores = state.getStores();
+		MapWrapper<TaxonBase> parentTaxonStore = (MapWrapper<TaxonBase>)stores.get(ICdmIO.TAXON_STORE);
+		ReferenceBase<?> sourceRef = state.getConfig().getSourceReference();
+
+		TaxonBase<?> parentTaxonBase = null;
+		
+//		for (TaxonBase<?> potentialParentTaxon : taxonBases) {
+//			if(potentialParentTaxon.getUuid().equals(parentUuid)) {
+//				parentTaxonBase = potentialParentTaxon;
+//				break;
+//			}
+//		}
+//		if (parentTaxonBase == null) { 
+//			parentTaxonBase = getTaxonService().getTaxonByUuid(parentUuid); 
+//		}
+		
+		// TODO: Copy parents from taxonBases to parentTaxonStore
+		
+		if (parentTaxonStore.containsId(parentId)) {
+			parentTaxonBase = parentTaxonStore.get(parentId);
+			if (logger.isInfoEnabled()) {
+				logger.info("Parent (" + parentId + ") found in parent taxon store");
+			}
+//		} else {
+//			for (TaxonBase<?> potentialParentTaxon : taxonBases) {
+//				if(potentialParentTaxon.getId() == parentId) {
+//					parentTaxonBase = potentialParentTaxon;
+//					if (logger.isInfoEnabled()) {
+//						logger.info("Parent (" + parentId + ") found in taxon base list");
+//					}
+//					break;
+//				}
+//			}
+		}
+		if (parentTaxonBase == null) {
+			ISourceable sourceable = 
+				getCommonService().getSourcedObjectByIdInSource(TaxonBase.class, Integer.toString(parentId), OS_NAMESPACE_TAXON);
+			parentTaxonBase = ((IdentifiableEntity)sourceable).deproxy(sourceable, TaxonBase.class);
+			if (logger.isInfoEnabled()) {
+				logger.info("Parent (" + parentId + ") retrieved from DB via original source id");
+			}
+		}
+		
+		if (!parentTaxonStore.containsId(parentId)) {
+			parentTaxonStore.put(parentId, parentTaxonBase);
+		}
+
+
+		
+		Taxon parentTaxon = parentTaxonBase.deproxy(parentTaxonBase, Taxon.class);
+
+		boolean success = true;
+		
+		if (!fauEuTaxon.isValid()) { // FauEu Synonym
+
+//			if (fauEuTaxon.getAuthor() != null && fauEuTaxon.getAuthor().equals("A_AUCT_NAME")) {
+//				try {
+//					// add misapplied name relationship from this taxon to parent
+//					Taxon taxon = taxonBase.deproxy(taxonBase, Taxon.class);
+//					taxon.addMisappliedName(parentTaxon, sourceRef, null);
+//					if (logger.isDebugEnabled()) {
+//						logger.debug("Misapplied name created " + taxon.getUuid());
+//					}
+//
+//				} catch (Exception e) {
+//					logger.error("Error creating misapplied name relationship for taxon (" + 
+//							parentId + ")");
+//				}
+//			}
+//			
+//			else if((fauEuTaxon.getAuthor() == null) 
+//					|| (fauEuTaxon.getAuthor() != null && !fauEuTaxon.getAuthor().equals("A_AUCT_NAME"))) {
+//				try {
+//					// add this synonym as heterotypic synonym to parent
+//					Synonym synonym = taxonBase.deproxy(taxonBase, Synonym.class);
+//					parentTaxon.addSynonym(synonym, SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF());
+//					if (logger.isDebugEnabled()) {
+//						logger.debug("Heterotypic synonym created " + synonym.getUuid());
+//					}
+//
+//				} catch (Exception e) {
+//					logger.error("Error creating heterotypic synonym for taxon (" + parentId + ")");
+////					e.printStackTrace();
+//				}
+//			}
+			
+		} else if (fauEuTaxon.isValid()) { // FauEu Taxon
+			Taxon taxon = taxonBase.deproxy(taxonBase, Taxon.class);
+
+			try {
+				// add this taxon as child to parent
+				if (parentTaxon != null) {
+					makeTaxonomicallyIncluded(state, parentTaxon, taxon, sourceRef, null);
+					if (logger.isDebugEnabled()) {
+						logger.debug("Parent-child (" + parentId + "-" + taxonId + 
+						") relationship created");
+					}
+				}
+
+			} catch (Exception e) {
+				logger.error("Error creating taxonomically included relationship Parent-child (" + 
+						parentId + "-" + taxonId + ")");
+			}
+			
+			// TODO: build name and title caches of additional created objects
+			// (basionyms, homotypic synonyms)
+			
+//			if (fauEuTaxon.isParenthesis() && (fauEuTaxon.getOriginalGenusId() != 0)
+//					&& (fauEuTaxon.getParentId() != fauEuTaxon.getOriginalGenusId())) {
+//			calculateTaxonName(fauEuTaxon, true, taxonBase, taxonName, taxonStore, fauEuTaxonMap);
+//			}
+			
+		}
+		
+		return success;
+	}
+
+	/** Creates relationships for existing taxon store in memory */
+	private boolean createRelationships_(FaunaEuropaeaTaxon fauEuTaxon,
 			TaxonBase<?> taxonBase, TaxonNameBase<?,?> taxonName, List<TaxonBase> taxonBases,
 			Map<Integer, FaunaEuropaeaTaxon> fauEuTaxonMap, FaunaEuropaeaImportState state) {
 		
@@ -639,7 +988,7 @@ public class FaunaEuropaeaTaxonImport extends FaunaEuropaeaImportBase  {
 	}
 
 	
-	private boolean createRelationships_(FaunaEuropaeaTaxon fauEuTaxon,
+	private boolean createRelationships__(FaunaEuropaeaTaxon fauEuTaxon,
 			TaxonBase<?> taxonBase, TaxonNameBase<?,?> taxonName,
 			Map<Integer, FaunaEuropaeaTaxon> fauEuTaxonMap, FaunaEuropaeaImportState state) {
 		
@@ -729,8 +1078,97 @@ public class FaunaEuropaeaTaxonImport extends FaunaEuropaeaImportBase  {
 	}
 
 	
-	/* Build parent's taxon name */
-	private String buildParentName(int maxCalls, String concatString, FaunaEuropaeaTaxon fauEuTaxon,
+	/* Build parent's taxon name for taxa directly imported from FauEu DB 
+	 * and additionally created taxa and names */
+	private String buildParentName(int maxCalls, String concatString, boolean useOriginalGenus, 
+			FaunaEuropaeaTaxon fauEuTaxon, MapWrapper<TaxonBase> taxonStore) {
+
+		callCount++;
+		if (logger.isDebugEnabled()) { 
+			logger.debug("Call counter: " + callCount);
+		}
+
+		/* Concatenated name string of parent */
+		String parentConcatString = concatString;
+
+		StringBuilder parentConcatStringBuilder = new StringBuilder();
+		/* Local name of parent */
+		String parentString = null;
+
+		int parentId = fauEuTaxon.getParentId();
+		int rankId = fauEuTaxon.getRankId();
+		FaunaEuropaeaTaxon parent = fauEuTaxonMap.get(parentId);
+
+		if (parent == null) {
+			if (logger.isDebugEnabled()) {
+				logger.debug("Parent of taxon (" + fauEuTaxon.getId() + ") is null");
+			}
+			return parentConcatString;
+		}
+		if (logger.isDebugEnabled()) { 
+			logger.debug("Concat string: " + concatString); 
+		}
+
+		if ((rankId == R_SPECIES || rankId == R_SUBSPECIES) || (rankId == R_SUBGENUS && callCount > 1)) { 
+			UUID parentUuid = parent.getUuid();
+			if (parentUuid != null) { 
+					
+				parentString = parent.getLocalName();
+				
+				if (logger.isDebugEnabled()) { 
+					logger.debug("Parent string: " + parentString); 
+				}
+				if (!fauEuTaxon.isValid()) {
+//					parentString = exchangeEpithet(parentString);
+					parentString = "";
+					if (logger.isDebugEnabled()) { 
+						logger.debug("Emptied synonym's parent string"); 
+					}
+				}
+				
+				if (parent.getRankId() == R_SUBGENUS) {
+					parentConcatStringBuilder.append("(");
+				}
+				
+//				if (parent.getOriginalGenusId() != 0) {
+//					originalGenusId = parent.getOriginalGenusId();
+//				}
+				
+				parentConcatStringBuilder.append(parentString);
+
+				if (parent.getRankId() == R_SUBGENUS) {
+					parentConcatStringBuilder.append(")");
+				}
+				parentConcatStringBuilder.append(" ");
+				parentConcatStringBuilder.append(concatString);
+				parentConcatString = parentConcatStringBuilder.toString();
+
+				if (logger.isDebugEnabled()) { 
+					logger.debug("Concatenated name: " + parentConcatString); 
+				}
+			} else {
+				logger.warn("Parent uuid of " + parentId + " is null");
+			}
+
+		} else { // Higher ranks
+			if (logger.isDebugEnabled()) { 
+				logger.debug("Name complete for taxon rank (" + rankId + ")");
+			}
+			return parentConcatString;
+		}
+
+		if (callCount <= maxCalls) {
+			if ((rankId == R_SPECIES || rankId == R_SUBSPECIES) || (rankId == R_SUBGENUS && callCount > 1)) { 
+				parentConcatString = buildParentName(maxCalls, parentConcatString, true, parent, taxonStore);
+			}
+		}
+
+		return parentConcatString;
+	}
+		
+	
+	/* Build parent's taxon name for taxa directly imported from FauEu DB*/
+	private String buildParentName_(int maxCalls, String concatString, FaunaEuropaeaTaxon fauEuTaxon,
 //	private String buildParentName(int originalTaxonRank, String concatString, FaunaEuropaeaTaxon fauEuTaxon,
 			MapWrapper<TaxonBase> taxonStore) {
 
@@ -840,17 +1278,18 @@ public class FaunaEuropaeaTaxonImport extends FaunaEuropaeaImportBase  {
 //		}
 		if (callCount <= maxCalls) {
 			if ((rankId == R_SPECIES || rankId == R_SUBSPECIES) || (rankId == R_SUBGENUS && callCount > 1)) { 
-				parentConcatString = buildParentName(maxCalls, parentConcatString, parent, taxonStore);
+				parentConcatString = buildParentName_(maxCalls, parentConcatString, parent, taxonStore);
 //				parentConcatString = buildParentName(originalTaxonRank, parentConcatString, parent, taxonStore);
 			}
 		}
 
 		return parentConcatString;
 	}
-		
 	
-	/* Build taxon's concatenated name string */
-	private String calculateTaxonName(FaunaEuropaeaTaxon fauEuTaxon,
+		
+	/* Build taxon's concatenated name string for taxa directly imported from FauEU DB 
+	 * and additionally created taxa */
+	private String calculateTaxonName(FaunaEuropaeaTaxon fauEuTaxon, boolean useOriginalGenus,
 			TaxonBase<?> taxonBase, TaxonNameBase<?,?>taxonName, MapWrapper<TaxonBase> taxonStore,
 			Map<Integer, FaunaEuropaeaTaxon> fauEuTaxonMap) {
 
@@ -877,7 +1316,42 @@ public class FaunaEuropaeaTaxonImport extends FaunaEuropaeaImportBase  {
 		if (logger.isDebugEnabled()) { 
 			logger.debug("Max calls: " + maxCalls);
 		}
-		parentString = buildParentName(maxCalls, localString, fauEuTaxon, taxonStore);
+		parentString = buildParentName(maxCalls, localString, useOriginalGenus, fauEuTaxon, taxonStore);
+//		parentString = buildParentName(rank, localString, fauEuTaxon, taxonStore);
+		parentString = (String) CdmUtils.removeDuplicateWhitespace(parentString.trim());
+		return parentString;
+	}
+	
+	
+	/* Build taxon's concatenated name string for taxa directly imported from FauEU DB */
+	private String calculateTaxonName_(FaunaEuropaeaTaxon fauEuTaxon,
+			TaxonBase<?> taxonBase, TaxonNameBase<?,?>taxonName, MapWrapper<TaxonBase> taxonStore,
+			Map<Integer, FaunaEuropaeaTaxon> fauEuTaxonMap) {
+
+		/* Local name string */
+		String localString = "";
+		/* Concatenated parent's name string */
+		String parentString = "";
+		
+//		TaxonNameBase<?,?> taxonName = taxonBase.getName();
+		ZoologicalName zooName = (ZoologicalName)taxonName;
+
+		if (zooName != null) {
+			localString = zooName.getNameCache();
+		}
+
+		int rank = fauEuTaxon.getRankId();
+		
+		if(logger.isDebugEnabled()) { 
+			logger.debug("Local taxon name (rank = " + rank + "): " + localString); 
+		}
+		
+		callCount = 0;
+		int maxCalls = maxCallsPerRank(rank);
+		if (logger.isDebugEnabled()) { 
+			logger.debug("Max calls: " + maxCalls);
+		}
+		parentString = buildParentName(maxCalls, localString, false, fauEuTaxon, taxonStore);
 //		parentString = buildParentName(rank, localString, fauEuTaxon, taxonStore);
 		parentString = (String) CdmUtils.removeDuplicateWhitespace(parentString.trim());
 		return parentString;
@@ -961,44 +1435,49 @@ public class FaunaEuropaeaTaxonImport extends FaunaEuropaeaImportBase  {
 //    		TransactionStatus txStatus = startTransaction();
     		
 			List<TaxonBase> taxonBases = getTaxonService().getAllTaxonBases(limit, start);
+			if(logger.isInfoEnabled()) { 
+				logger.info(taxonBases.size() +  " taxa retrieved from CDM DB"); 
+			}
 
 			for (TaxonBase taxonBase : taxonBases) {
 
 				TaxonNameBase<?,?> taxonName = taxonBase.getName();
 
-				Set set = taxonBase.getSources();
-				Object[] array = set.toArray();
-				if (array.length == 0) { continue; } // Don't need to handle additionally created elements
-				OriginalSource os = (OriginalSource) taxonBase.getSources().toArray()[0];
-				String taxonBaseIdStr = os.getIdInSource();
-				int taxonBaseId = Integer.parseInt(taxonBaseIdStr);
-				FaunaEuropaeaTaxon fauEuTaxon = fauEuTaxonMap.get(taxonBaseId); 
+				FaunaEuropaeaTaxon fauEuTaxon = findFauEuTaxonByOriginalSourceId(taxonBase, fauEuTaxonMap);
+				
 
 				if (logger.isDebugEnabled()) { 
-					logger.debug("Taxon # " + taxonBaseId); 
-//					logger.debug(taxonBase.getUuid());
-//					logger.debug(fauEuTaxon.getUuid());
+					logger.debug("Taxon # " + fauEuTaxon.getId()); 
 				}
 				createRelationships(fauEuTaxon, taxonBase, taxonName, taxonBases, fauEuTaxonMap, state);
 			}
 
-			
-
 			getTaxonService().saveTaxonAll(taxonBases);
 			taxonBases = null;
-			
-//    		commitTransaction(txStatus);
-
-
-//			Collection<TaxonBase> taxonMapPart = taxonStore.objects(start, limit);
-//			getTaxonService().saveTaxonAll(taxonMapPart);
-//			taxonMapPart = null;
-			//taxonStore.removeObjects(start, limit);
+			// empty parent taxon store
+//			Map<String, MapWrapper<? extends CdmBase>> stores = state.getStores();
+//			MapWrapper<TaxonBase> parentTaxonStore = (MapWrapper<TaxonBase>)stores.get(ICdmIO.TAXON_STORE);
+//			parentTaxonStore.makeEmpty();
 		}
 		return success;
 	}
 
-		
+
+	private FaunaEuropaeaTaxon findFauEuTaxonByOriginalSourceId(TaxonBase<?> taxonBase, 
+			Map<Integer, FaunaEuropaeaTaxon> fauEuTaxonMap) {
+
+		Set set = taxonBase.getSources();
+		Object[] array = set.toArray();
+		if (array.length == 0) { return null; }
+		OriginalSource os = (OriginalSource) taxonBase.getSources().toArray()[0];
+		String taxonBaseIdStr = os.getIdInSource();
+		int taxonBaseId = Integer.parseInt(taxonBaseIdStr);
+		FaunaEuropaeaTaxon fauEuTaxon = fauEuTaxonMap.get(taxonBaseId); 
+
+		return fauEuTaxon;
+	}
+
+	
 	private boolean processTaxa(FaunaEuropaeaImportState state) {
 
 		if(logger.isInfoEnabled()) { logger.info("Processing taxa first pass..."); }
@@ -1052,15 +1531,17 @@ public class FaunaEuropaeaTaxonImport extends FaunaEuropaeaImportBase  {
 
 				TaxonNameBase<?,?> taxonName = taxonBase.getName();
 
-				OriginalSource os = (OriginalSource) taxonBase.getSources().toArray()[0];
-				String taxonBaseIdStr = os.getIdInSource();
-				int taxonBaseId = Integer.parseInt(taxonBaseIdStr);
-				FaunaEuropaeaTaxon fauEuTaxon = fauEuTaxonMap.get(taxonBaseId); 
+//				OriginalSource os = (OriginalSource) taxonBase.getSources().toArray()[0];
+//				String taxonBaseIdStr = os.getIdInSource();
+//				int taxonBaseId = Integer.parseInt(taxonBaseIdStr);
+//				FaunaEuropaeaTaxon fauEuTaxon = fauEuTaxonMap.get(taxonBaseId); 
+				
+				FaunaEuropaeaTaxon fauEuTaxon = findFauEuTaxonByOriginalSourceId(taxonBase, fauEuTaxonMap);
 
 				if (logger.isDebugEnabled()) { 
-					logger.debug("Taxon # " + taxonBaseId); 
+					logger.debug("Taxon # " + fauEuTaxon.getId()); 
 				}
-				String nameString = calculateTaxonName(fauEuTaxon, taxonBase, taxonName, taxonStore, fauEuTaxonMap);
+				String nameString = calculateTaxonName(fauEuTaxon, false, taxonBase, taxonName, taxonStore, fauEuTaxonMap);
 				setTaxonName(nameString, fauEuTaxon, taxonBase, fauEuConfig);
 
 			}
