@@ -79,7 +79,8 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
 	@XmlElementWrapper(name = "Descriptions")
 	@XmlElement(name = "Description")
 	@ManyToMany(fetch = FetchType.LAZY,mappedBy="describedSpecimenOrObservations",targetEntity=DescriptionBase.class)
-	private Set<SpecimenDescription> descriptions = new HashSet<SpecimenDescription>();
+	@Cascade(CascadeType.SAVE_UPDATE)
+	private Set<DescriptionBase> descriptions = new HashSet<DescriptionBase>();
 	
 	@XmlElementWrapper(name = "Determinations")
 	@XmlElement(name = "Determination")
@@ -124,22 +125,36 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
 		super();
 	}
 	
-	public Set<SpecimenDescription> getDescriptions() {
+	public Set<DescriptionBase> getDescriptions() {
 		return this.descriptions;
 	}
 
-	public void addDescription(SpecimenDescription description) {
+	/**
+	 * Adds a new description to this specimen or observation
+	 * @param description
+	 */
+	public void addDescription(DescriptionBase description) {
 		this.descriptions.add(description);
-		Method method = ReflectionUtils.findMethod(SpecimenDescription.class, "addDescribedSpecimenOrObservations", new Class[] {SpecimenOrObservationBase.class});
-		ReflectionUtils.makeAccessible(method);
-		ReflectionUtils.invokeMethod(method, description, new Object[] {this});
+		if (! description.getDescribedSpecimenOrObservations().contains(this)){
+			description.addDescribedSpecimenOrObservation(this);
+		}
+//		Method method = ReflectionUtils.findMethod(SpecimenDescription.class, "addDescribedSpecimenOrObservation", new Class[] {SpecimenOrObservationBase.class});
+//		ReflectionUtils.makeAccessible(method);
+//		ReflectionUtils.invokeMethod(method, description, new Object[] {this});
 	}
 	
-	public void removeDescription(SpecimenDescription description) {
+	/**
+	 * Removes a specimen from a description (removes a description from this specimen)
+	 * @param description
+	 */
+	public void removeDescription(DescriptionBase description) {
 		this.descriptions.remove(description);
-		Method method = ReflectionUtils.findMethod(SpecimenDescription.class, "removeDescribedSpecimenOrObservations", new Class[] {SpecimenOrObservationBase.class});
-		ReflectionUtils.makeAccessible(method);
-		ReflectionUtils.invokeMethod(method, description, new Object[] {this});
+		if (description.getDescribedSpecimenOrObservations().contains(this)){
+			description.removeDescribedSpecimenOrObservation(this);
+		}
+//		Method method = ReflectionUtils.findMethod(SpecimenDescription.class, "removeDescribedSpecimenOrObservations", new Class[] {SpecimenOrObservationBase.class});
+//		ReflectionUtils.makeAccessible(method);
+//		ReflectionUtils.invokeMethod(method, description, new Object[] {this});
 	}
 	
 	public Set<DerivationEvent> getDerivationEvents() {
