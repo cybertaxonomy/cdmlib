@@ -1,9 +1,18 @@
 package eu.etaxonomy.cdm.test.function;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
+import org.hibernate.Criteria;
+import org.hibernate.Query;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.impl.SessionFactoryImpl;
+import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.application.CdmApplicationUtils;
@@ -15,8 +24,18 @@ import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.init.TermNotFoundException;
+import eu.etaxonomy.cdm.model.description.Distribution;
+import eu.etaxonomy.cdm.model.description.PresenceTerm;
+import eu.etaxonomy.cdm.model.description.TaxonDescription;
+import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.location.TdwgArea;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.reference.Generic;
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.StrictReferenceBase;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
 
 public class Datasource {
 	private static final Logger logger = Logger.getLogger(Datasource.class);
@@ -163,8 +182,54 @@ public class Datasource {
 //				 CdmPersistentDataSource.NewInstance("localH2");
 			CdmApplicationController appCtr = CdmApplicationController.NewInstance(ds, validation);
 			try {
-				List l = appCtr.getNameService().getAllNames(5, 1);
-				System.out.println(l);
+				BotanicalName name = BotanicalName.NewInstance(null);
+				String nameCache = "testName";
+				name.setNameCache(nameCache);
+				name.setTitleCache(nameCache);
+				ReferenceBase ref = Generic.NewInstance();
+				ref.setTitleCache("mySec");
+				Taxon taxon = Taxon.NewInstance(name, ref);
+				TaxonDescription description = TaxonDescription.NewInstance();
+				taxon.addDescription(description);
+				NamedArea area1 = TdwgArea.getAreaByTdwgAbbreviation("GER");
+				Distribution distribution = Distribution.NewInstance(area1, PresenceTerm.PRESENT());
+				description.addElement(distribution);
+				
+				List<Distribution> distrList = new ArrayList<Distribution>();
+				distrList.add(distribution);
+				List<NamedArea> areaList = new ArrayList<NamedArea>();
+				areaList.add(area1);
+				
+			//	distribution.getInDescription().get
+				appCtr.getTaxonService().save(taxon);
+
+				System.out.println(taxon.getDescriptions().size());
+				
+				TransactionStatus txStatus = appCtr.startTransaction();
+				
+				Session session = appCtr.getSessionFactory().getCurrentSession();
+				
+				//String hqlQuery = "from DescriptionBase d join d.elements  as e " 
+//				String hqlQuery = "from Taxon t join t.descriptions  as d "+
+//				 " inner join d.elements e on e member of d "
+//				+
+//				"";//" where e.area = :namedArea " ; 
+				String hqlQuery = "Select t from Distribution e join e.inDescription d join d.taxon t join t.name n "+
+					" WHERE e.area in (:namedArea) AND n.nameCache = :nameCache ";				
+				Query query = session.createQuery(hqlQuery);
+ 				
+ 				//query.setEntity("namedArea", area1);
+ 				query.setParameter("nameCache", nameCache);
+ 				query.setParameterList("namedArea", areaList);
+				List resultList = query.list();
+				//List list = appCtr.getCommonService().getHqlResult(hqlQuery);
+				
+				for (Object o:resultList){
+					System.out.println(o);
+				}
+				appCtr.commitTransaction(txStatus);
+				
+				//System.out.println(l);
 				//Agent agent = new Agent();
 				//appCtr.getAgentService().saveAgent(agent);
 				appCtr.close();
@@ -188,6 +253,7 @@ public class Datasource {
 
 	private boolean testH2(){
 		testLocalH2();
+		if (true)return true;
 		try{
 			DbSchemaValidation validation = DbSchemaValidation.CREATE;
 			ICdmDataSource ds = 
@@ -197,6 +263,31 @@ public class Datasource {
 	//			 CdmPersistentDataSource.NewInstance("localH2");
 			CdmApplicationController appCtr = CdmApplicationController.NewInstance(ds, validation);
 			try {
+				StrictReferenceBase ref = Generic.NewInstance();
+				ref.setTitle("SdfEWsddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd" +
+						   "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd" +
+						   "dwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww" +
+						   "ddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd");
+				appCtr.getReferenceService().save(ref);
+				
+				SessionFactoryImpl sf = (SessionFactoryImpl)appCtr.getSessionFactory();
+				//sf.get
+				Session session;
+				//session.get
+				Map cmd = sf.getAllClassMetadata();
+				for (Object o: cmd.keySet()){
+					Object value = cmd.get(o);
+					try {
+						Class.forName((String)value);
+					} catch (ClassNotFoundException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					System.out.println(value);
+				}
+				
+				TaxonNameBase name = BotanicalName.NewInstance(null);
+				UUID uuid = appCtr.getNameService().saveOrUpdate(name);
 				List l = appCtr.getNameService().getAllNames(5, 1);
 				System.out.println(l);
 				//Agent agent = new Agent();

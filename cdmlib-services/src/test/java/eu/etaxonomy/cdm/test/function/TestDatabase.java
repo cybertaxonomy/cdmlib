@@ -8,6 +8,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
+import org.hibernate.mapping.Column;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
@@ -54,6 +55,8 @@ public class TestDatabase {
 	
 	public void testNewDatabaseConnection(){
 		try {
+			
+			Column coL;
 			boolean omitTermLoading = false;
 			Resource applicationContextResource = new ClassPathResource(CdmApplicationController.DEFAULT_APPLICATION_CONTEXT_RESOURCE);
 			CdmPersistentDataSource dataSource = CdmPersistentDataSource.NewDefaultInstance();
