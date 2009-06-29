@@ -9,6 +9,8 @@
 
 package eu.etaxonomy.cdm.persistence.dao.common;
 
+import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.dao.DataAccessException;
@@ -25,4 +27,40 @@ public interface ICdmGenericDao {
 	
 	public UUID delete(CdmBase persistentObject) throws DataAccessException;
 	
+	/**
+	 * Returns a CdmBase object of class <code>clazz</code> that has a property with name
+	 * <code>propertyName</code> that references the CdmBase object <code>referencedCdmBase</code>.
+	 * @param clazz
+	 * @param propertyName
+	 * @param value
+	 * @return
+	 */
+	public List<CdmBase> getCdmBasesByFieldAndClass(Class clazz, String propertyName, CdmBase referencedCdmBase);
+	
+	/**
+	 * Returns ...
+	 * @param thisClass
+	 * @param otherClazz
+	 * @param propertyName
+	 * @param referencedCdmBase
+	 * @return
+	 */
+	public List<CdmBase> getCdmBasesWithItemInCollection(Class itemClass, Class clazz, String propertyName, CdmBase item);
+	
+	/**
+	 * Returns all CDM classes. If includeAbstractClasses is false the abstract classes
+	 * will not be in the resultset.
+	 * @param includeAbstractClasses
+	 * @return
+	 */
+	public Set<Class<? extends CdmBase>> getAllCdmClasses(boolean includeAbstractClasses);
+	
+	
+	/**
+	 * Returns the result of an hql query
+	 * TODO implement parameters
+	 * @param hqlQuery
+	 * @return
+	 */
+	public List getHqlResult(String hqlQuery);
 }
