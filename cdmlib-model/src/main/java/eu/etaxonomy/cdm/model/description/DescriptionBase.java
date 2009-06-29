@@ -82,6 +82,7 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
 	@XmlIDREF
 	@XmlSchemaType(name="IDREF")
 	@ManyToMany(fetch = FetchType.LAZY)
+	@Cascade(CascadeType.SAVE_UPDATE)
 	private Set<SpecimenOrObservationBase> describedSpecimenOrObservations = new HashSet<SpecimenOrObservationBase>();
 	
 	@XmlElementWrapper(name = "DescriptionSources")
@@ -141,9 +142,12 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
 	 * @see    	   								#getDescribedSpecimenOrObservations()
 	 * @see    	   								SpecimenOrObservationBase#addDescription(DescriptionBase)
 	 */
-	public void addDescribedSpecimenOrObservations(SpecimenOrObservationBase describedSpecimenOrObservation) {
+	public void addDescribedSpecimenOrObservation(SpecimenOrObservationBase describedSpecimenOrObservation) {
 		logger.debug("addDescribedSpecimenOrObservations");
 		this.describedSpecimenOrObservations.add(describedSpecimenOrObservation);
+		if (! describedSpecimenOrObservation.getDescriptions().contains(this)){
+			describedSpecimenOrObservation.addDescription(this);
+		}
 	}
 	
 	/** 
@@ -158,8 +162,11 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
 	 * @see     		  						#addDescribedSpecimenOrObservations(SpecimenOrObservationBase)
 	 * @see     		  						SpecimenOrObservationBase#removeDescription(DescriptionBase)
 	 */
-	public void removeDescribedSpecimenOrObservations(SpecimenOrObservationBase describedSpecimenOrObservation) {
+	public void removeDescribedSpecimenOrObservation(SpecimenOrObservationBase describedSpecimenOrObservation) {
 		this.describedSpecimenOrObservations.remove(describedSpecimenOrObservation);
+		if (describedSpecimenOrObservation.getDescriptions().contains(this)){
+			describedSpecimenOrObservation.removeDescription(this);
+		}
 	}
 
 	/**
