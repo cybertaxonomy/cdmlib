@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.CdmImportBase;
@@ -156,10 +157,15 @@ implements ICdmImport<FaunaEuropaeaImportConfigurator,FaunaEuropaeaImportState> 
 				if(logger.isInfoEnabled()) { logger.info("n = " + n + ", limit = " + limit); }
 			}
 
+    		TransactionStatus txStatus = startTransaction();
+    		
 			Collection<TaxonBase> taxonMapPart = taxonStore.objects(start, limit);
 			getTaxonService().saveTaxonAll(taxonMapPart);
 			taxonMapPart = null;
 			//taxonStore.removeObjects(start, limit);
+			
+			commitTransaction(txStatus);
+
 		}
 		
 		return success;

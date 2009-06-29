@@ -33,8 +33,10 @@ public class FaunaEuropaeaImportConfigurator extends ImportConfiguratorBase<Faun
 	@SuppressWarnings("unchecked")
 	protected void makeIoClassList() {
 		ioClassList = new Class[] {
-//				FaunaEuropaeaAuthorImport.class,
-				FaunaEuropaeaTaxonImport.class
+//				FaunaEuropaeaAuthorImport.class
+				FaunaEuropaeaNameImport.class,
+//				FaunaEuropaeaTaxImport.class
+				FaunaEuropaeaRelationshipImport.class
 //				FaunaEuropaeaRefImport.class
 //				FaunaEuropaeaDistributionImport.class
 		};

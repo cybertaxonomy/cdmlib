@@ -25,6 +25,7 @@ public class FaunaEuropaeaTaxon {
 	private int originalGenusId;
 	private int rankId;
 	private String localName;
+	private String originalGenusName = "";
 	private int year;
 	private String author;
 	private boolean parenthesis = false;
@@ -209,6 +210,20 @@ public class FaunaEuropaeaTaxon {
 	 */
 	public void setOriginalGenusId(int originalGenusId) {
 		this.originalGenusId = originalGenusId;
+	}
+
+	/**
+	 * @return the originalGenusName
+	 */
+	public String getOriginalGenusName() {
+		return originalGenusName;
+	}
+
+	/**
+	 * @param originalGenusName the originalGenusName to set
+	 */
+	public void setOriginalGenusName(String originalGenusName) {
+		this.originalGenusName = originalGenusName;
 	}
 
 }
