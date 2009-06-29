@@ -34,8 +34,10 @@ import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.common.MediaMetaData.ImageMetaData;
+import eu.etaxonomy.cdm.io.common.CdmImportBase;
 import eu.etaxonomy.cdm.io.common.CdmIoBase;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
+import eu.etaxonomy.cdm.io.common.ICdmImport;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
@@ -84,7 +86,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
  * @version 1.0
  */
 @Component("sddDescriptionIO")
-public class SDDDescriptionIO extends CdmIoBase<SDDImportState> implements ICdmIO<SDDImportState> {
+public class SDDDescriptionIO extends CdmImportBase<SDDImportConfigurator, SDDImportState> implements ICdmImport<SDDImportConfigurator, SDDImportState> {
 	private static final Logger logger = Logger.getLogger(SDDDescriptionIO.class);
 
 	private static int modCount = 1000;
