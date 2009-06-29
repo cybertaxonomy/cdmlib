@@ -366,6 +366,10 @@ public class CdmApplicationController {
 		sf.getCurrentSession().flush();
 	}
 	
+	public SessionFactory getSessionFactory(){
+		return (SessionFactory)applicationContext.getBean("sessionFactory");
+	}
+	
 	public TransactionStatus startTransaction() {
 		
 		return startTransaction(false);
