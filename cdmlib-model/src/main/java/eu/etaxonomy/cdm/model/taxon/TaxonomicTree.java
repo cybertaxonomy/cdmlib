@@ -50,7 +50,6 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "TaxonomicTree", propOrder = {
     "name",
-    "allNodes",
     "rootNodes",
     "reference",
     "microReference"
