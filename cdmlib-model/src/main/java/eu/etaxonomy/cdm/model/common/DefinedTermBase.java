@@ -120,7 +120,7 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
 	@XmlTransient
 	@ManyToOne(fetch = FetchType.LAZY, targetEntity = DefinedTermBase.class)
 	@Cascade(CascadeType.SAVE_UPDATE)
-	private T partOf;
+	protected T partOf;
 	
 	/**
 	 * FIXME - Hibernate retuns this as a collection of CGLibProxy$$DefinedTermBase objects 

@@ -20,6 +20,7 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -196,17 +197,23 @@ public class NamedArea extends OrderedTermBase<NamedArea> {
 	@XmlIDREF
     @XmlSchemaType(name = "IDREF")
 	public NamedArea getPartOf(){
-		Object area = super.getPartOf();
+		/* 
+		 * Object area = super.getPartOf();
 		
 		if(!(area instanceof NamedArea)){
 			area = HibernateProxyHelper.deproxy(area, NamedArea.class);
 		}
 		
 		return (NamedArea) area;
+		
+		TODO workaround replaced by field 
+		     the partOf getter and setter seem to be superfluous, can the be removed?
+		*/
+		return partOf;
 	}
 	
 	public void setPartOf(NamedArea partOf){
-		super.setPartOf(partOf);
+		this.partOf = partOf;
 	}
 	
 	@XmlElementWrapper(name = "Generalizations", namespace = "http://etaxonomy.eu/cdm/model/common/1.0")
