@@ -46,7 +46,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 public class DipteraDistributionParser {
 	private static final Logger logger = Logger.getLogger(DipteraDistributionParser.class);
 	
-	private static ICdmDataSource cdmDestination = CdmDestinations.localH2();
+	private static ICdmDataSource cdmDestination = CdmDestinations.localH2Diptera();
 	
 	
 	final static String epiSplitter = "(\\s+|\\[|\\]|\\(|\\))"; //( ' '+| '(' | ')'| '[' | ']' )
@@ -147,6 +147,12 @@ public class DipteraDistributionParser {
 							unrekognizedStrings.add(word);
 							countSkip = 0;
 						}else{
+							if (word.equals("Netherlands")){
+								if ( countSkip < 0 && words[i + 1].startsWith("Antilles")){
+									word = "Netherlands Antilles";
+									countSkip=2;
+								}
+							}
 							PresenceAbsenceTermBase<?> term = PresenceTerm.PRESENT();
 							if (isDoubleArea(word)){
 								NamedArea[] doubleArea = getDoubleArea(word);
@@ -242,6 +248,8 @@ public class DipteraDistributionParser {
 		word = word.replace("former Yugoslavia", "Yugoslavia");
 		word = word.replace("former Czechoslovakia", "Czechoslovakia");
 		word = word.replace("Rhodesia", "Zimbabwe");
+		word = word.replace("The Gambia", "Gambia, The");
+
 		if (!word.contains("El Salvador")){
 			word = word.replace("Salvador", "El Salvador");	
 		}
@@ -253,7 +261,9 @@ public class DipteraDistributionParser {
 		//word = word.replace("Quebec", "Qu+®bec");
 		//word = word.replace("Quebec", "Qu├®bec");
 		
-		word = word.replace("Gambia", "Gambia, The");
+		if (!word.contains("Gambia, The")){
+			word = word.replace("Gambia", "Gambia, The");
+		}
 		word = word.replace("Mariana Is.", "Marianas");
 		word = word.replace("Kenia", "Kenya");
 		word = word.replace("Central Africa", "Central African Republic");
@@ -268,9 +278,13 @@ public class DipteraDistributionParser {
 		word = word.replace("former USSR: South European territory", "South European Russia");
 		word = word.replace("former USSR: Soviet Middle Asia", "Middle Asia");
 		
+		word = word.replace("St Kitts-Nevis", "St.Kitts-Nevis");
+		
 		word = word.replace("oceanian islands", "Pacific");
 		word = word.replace("Ussuri region", "Primorye");
 		word = word.replace("Galapagos Is.", "Galápagos");
+		word = word.replace("Tarapacá", "Tarapaca");
+		word = word.replace("Reunion", "Réunion");
 		if (! word.contains("Is.")){
 			word = word.replace("Galapagos", "Galápagos");
 		}
@@ -309,6 +323,7 @@ public class DipteraDistributionParser {
 			word = word.replace("Cape Province", "Cape Provinces");
 		}
 		word = word.replace("Eastern Cape Provinces", "Eastern Cape Province");
+		word = word.replace("Western Cape Provinces", "Western Cape Province");
 		if (! word.contains("Barbuda")){
 			word = word.replace("Antigua", "Antigua-Barbuda");
 		}
@@ -331,7 +346,9 @@ public class DipteraDistributionParser {
 		word = word.replace("Santos São Paulo", "São Paulo");
 		word = word.replace("Transvaal", "Northern Provinces");
 		word = word.replace("Tucumán", "Tucuman");
-		
+//		if (!word.contains("Netherlands")){
+//			
+//		}
 		
 //		unknownAreas.add("Baltic amber");  
 //		unknownAreas.add("Arabia"); 
