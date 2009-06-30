@@ -127,7 +127,7 @@ public class FaunaEuropaeaTaxonImport extends FaunaEuropaeaImportBase  {
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doInvoke(eu.etaxonomy.cdm.io.common.IImportConfigurator, eu.etaxonomy.cdm.api.application.CdmApplicationController, java.util.Map)
 	 */
-	protected boolean doInvokeAlternate(FaunaEuropaeaImportState state) {				
+	protected boolean doInvoke(FaunaEuropaeaImportState state) {				
 		
 		boolean success = true;
 		
@@ -146,7 +146,7 @@ public class FaunaEuropaeaTaxonImport extends FaunaEuropaeaImportBase  {
 	}
 
 
-	protected boolean doInvoke(FaunaEuropaeaImportState state) {				
+	protected boolean doInvokeAlter(FaunaEuropaeaImportState state) {				
 		
 		Map<String, MapWrapper<? extends CdmBase>> stores = state.getStores();
 		MapWrapper<TaxonBase<?>> taxonStore = (MapWrapper<TaxonBase<?>>)stores.get(ICdmIO.TAXON_STORE);
@@ -1407,7 +1407,7 @@ public class FaunaEuropaeaTaxonImport extends FaunaEuropaeaImportBase  {
 				if(logger.isInfoEnabled()) { logger.info("n = " + n + " limit = " + limit); }
 			}
 
-//    		TransactionStatus txStatus = startTransaction();
+    		TransactionStatus txStatus = startTransaction();
     		
 			List<TaxonBase> taxonBases = getTaxonService().getAllTaxonBases(limit, start);
 			if(logger.isInfoEnabled()) { 
@@ -1429,6 +1429,9 @@ public class FaunaEuropaeaTaxonImport extends FaunaEuropaeaImportBase  {
 
 			getTaxonService().saveTaxonAll(taxonBases);
 			taxonBases = null;
+			
+			commitTransaction(txStatus);
+			
 			// empty parent taxon store
 //			Map<String, MapWrapper<? extends CdmBase>> stores = state.getStores();
 //			MapWrapper<TaxonBase> parentTaxonStore = (MapWrapper<TaxonBase>)stores.get(ICdmIO.TAXON_STORE);

@@ -30,13 +30,32 @@ public class FaunaEuropaeaImportConfigurator extends ImportConfiguratorBase<Faun
 	
 	protected ReferenceBase auctReference;
 	
+	private boolean doBasionyms = true;
+	private boolean doTaxonomicallyIncluded = true;
+	private boolean doMisappliedNames = true;
+	private boolean doHeterotypicSynonyms = true;
+	
+//	@SuppressWarnings("unchecked")
+//	protected void makeIoClassList() {
+//		ioClassList = new Class[] {
+//				FaunaEuropaeaAuthorImport.class
+//				FaunaEuropaeaNameImport.class,
+//				FaunaEuropaeaTaxImport.class
+//				FaunaEuropaeaRelationshipImport.class
+//	            FaunaEuropaeaRefImport.class
+////			FaunaEuropaeaDistributionImport.class
+//		};
+//	};
+	
 	@SuppressWarnings("unchecked")
 	protected void makeIoClassList() {
 		ioClassList = new Class[] {
 //				FaunaEuropaeaAuthorImport.class
-				FaunaEuropaeaNameImport.class,
+//				FaunaEuropaeaNameImport.class,
 //				FaunaEuropaeaTaxImport.class
-				FaunaEuropaeaRelationshipImport.class
+//				FaunaEuropaeaTaxonImport.class
+				FaunaEuropaeaRelTaxonIncludeImport.class
+//				FaunaEuropaeaRelationshipImport.class
 //				FaunaEuropaeaRefImport.class
 //				FaunaEuropaeaDistributionImport.class
 		};
@@ -110,6 +129,62 @@ public class FaunaEuropaeaImportConfigurator extends ImportConfiguratorBase<Faun
 	 */
 	public FaunaEuropaeaImportState getNewState() {
 		return new FaunaEuropaeaImportState(this);
+	}
+
+	/**
+	 * @return the doBasionyms
+	 */
+	public boolean isDoBasionyms() {
+		return doBasionyms;
+	}
+
+	/**
+	 * @param doBasionyms the doBasionyms to set
+	 */
+	public void setDoBasionyms(boolean doBasionyms) {
+		this.doBasionyms = doBasionyms;
+	}
+
+	/**
+	 * @return the doTaxonomicallyIncluded
+	 */
+	public boolean isDoTaxonomicallyIncluded() {
+		return doTaxonomicallyIncluded;
+	}
+
+	/**
+	 * @param doTaxonomicallyIncluded the doTaxonomicallyIncluded to set
+	 */
+	public void setDoTaxonomicallyIncluded(boolean doTaxonomicallyIncluded) {
+		this.doTaxonomicallyIncluded = doTaxonomicallyIncluded;
+	}
+
+	/**
+	 * @return the doMisappliedNames
+	 */
+	public boolean isDoMisappliedNames() {
+		return doMisappliedNames;
+	}
+
+	/**
+	 * @param doMisappliedNames the doMisappliedNames to set
+	 */
+	public void setDoMisappliedNames(boolean doMisappliedNames) {
+		this.doMisappliedNames = doMisappliedNames;
+	}
+
+	/**
+	 * @return the doHeterotypicSynonyms
+	 */
+	public boolean isDoHeterotypicSynonyms() {
+		return doHeterotypicSynonyms;
+	}
+
+	/**
+	 * @param doHeterotypicSynonyms the doHeterotypicSynonyms to set
+	 */
+	public void setDoHeterotypicSynonyms(boolean doHeterotypicSynonyms) {
+		this.doHeterotypicSynonyms = doHeterotypicSynonyms;
 	}
 	
 	

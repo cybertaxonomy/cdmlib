@@ -788,36 +788,36 @@ public class FaunaEuropaeaRelationshipImport extends FaunaEuropaeaImportBase  {
 		
 		if (!fauEuTaxon.isValid()) { // FauEu Synonym
 
-//			if (fauEuTaxon.getAuthor() != null && fauEuTaxon.getAuthor().equals("A_AUCT_NAME")) {
-//				try {
-//					// add misapplied name relationship from this taxon to parent
-//					Taxon taxon = taxonBase.deproxy(taxonBase, Taxon.class);
-//					taxon.addMisappliedName(parentTaxon, sourceRef, null);
-//					if (logger.isInfoEnabled()) {
-//						logger.info("Misapplied name created " + taxon.getUuid());
-//					}
-//
-//				} catch (Exception e) {
-//					logger.error("Error creating misapplied name relationship for taxon (" + 
-//							parentId + ")");
-//				}
-//			}
-//			
-//			else if((fauEuTaxon.getAuthor() == null) 
-//					|| (fauEuTaxon.getAuthor() != null && !fauEuTaxon.getAuthor().equals("A_AUCT_NAME"))) {
-//				try {
-//					// add this synonym as heterotypic synonym to parent
-//					Synonym synonym = taxonBase.deproxy(taxonBase, Synonym.class);
-//					parentTaxon.addSynonym(synonym, SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF());
-//					if (logger.isDebugEnabled()) {
-//						logger.debug("Heterotypic synonym created " + synonym.getUuid());
-//					}
-//
-//				} catch (Exception e) {
-//					logger.error("Error creating heterotypic synonym for taxon (" + parentId + ")");
-////					e.printStackTrace();
-//				}
-//			}
+			if (fauEuTaxon.getAuthor() != null && fauEuTaxon.getAuthor().equals("A_AUCT_NAME")) {
+				try {
+					// add misapplied name relationship from this taxon to parent
+					Taxon taxon = taxonBase.deproxy(taxonBase, Taxon.class);
+					taxon.addMisappliedName(parentTaxon, sourceRef, null);
+					if (logger.isInfoEnabled()) {
+						logger.info("Misapplied name created " + taxon.getUuid());
+					}
+
+				} catch (Exception e) {
+					logger.error("Error creating misapplied name relationship for taxon (" + 
+							parentId + ")");
+				}
+			}
+			
+			else if((fauEuTaxon.getAuthor() == null) 
+					|| (fauEuTaxon.getAuthor() != null && !fauEuTaxon.getAuthor().equals("A_AUCT_NAME"))) {
+				try {
+					// add this synonym as heterotypic synonym to parent
+					Synonym synonym = taxonBase.deproxy(taxonBase, Synonym.class);
+					parentTaxon.addSynonym(synonym, SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF());
+					if (logger.isDebugEnabled()) {
+						logger.debug("Heterotypic synonym created " + synonym.getUuid());
+					}
+
+				} catch (Exception e) {
+					logger.error("Error creating heterotypic synonym for taxon (" + parentId + ")");
+//					e.printStackTrace();
+				}
+			}
 			
 		} else if (fauEuTaxon.isValid()) { // FauEu Taxon
 			Taxon taxon = taxonBase.deproxy(taxonBase, Taxon.class);
