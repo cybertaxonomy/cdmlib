@@ -77,6 +77,8 @@ public class CichorieaeActivator {
 
 	//ignore null
 	static final boolean ignoreNull = true;
+	
+	static boolean useTaxonomicTree = true;
 
 
 // **************** ALL *********************	
@@ -89,7 +91,7 @@ public class CichorieaeActivator {
 	static final boolean doRelNames = true;
 	static final boolean doNameStatus = true;
 	static final boolean doTypes = true;
-	static final boolean doNameFacts = false;
+	static final boolean doNameFacts = true;
 	
 	//taxa
 	static final boolean doTaxa = true;
@@ -151,6 +153,7 @@ public class CichorieaeActivator {
 		bmImportConfigurator.setDoNameStatus(doNameStatus);
 		bmImportConfigurator.setDoTypes(doTypes);
 		bmImportConfigurator.setDoNameFacts(doNameFacts);
+		bmImportConfigurator.setUseTaxonomicTree(useTaxonomicTree);
 		
 		bmImportConfigurator.setDoTaxa(doTaxa);
 		bmImportConfigurator.setDoRelTaxa(doRelTaxa);

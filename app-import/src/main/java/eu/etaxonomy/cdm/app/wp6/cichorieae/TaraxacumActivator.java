@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.app.wp6.cichorieae;
 import java.io.File;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
@@ -35,6 +36,8 @@ import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
 
 
 /**
@@ -52,7 +55,7 @@ public class TaraxacumActivator {
 	//database validation status (create, update, validate ...)
 	static DbSchemaValidation hbm2dll = DbSchemaValidation.UPDATE;
 	static final Source berlinModelSource = BerlinModelSources.EDIT_Taraxacum();
-	static final ICdmDataSource cdmDestination = CdmDestinations.localH2();
+	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_import_cichorieae();
 
 	org.h2.jdbc.JdbcSQLException h;
 	static final UUID secUuid = UUID.fromString("ba7120ce-4fab-49dc-aaa4-f36276426aa8");
@@ -196,63 +199,23 @@ public class TaraxacumActivator {
 		if (taraxacumInCich != null) {
 			logger.info("Merge Taraxacum");
 			Taxon parent = taraxacumInCich.getTaxonomicParent();
+			Set<TaxonNode> parentNodes = parent.getTaxonNodes();
+			if(parentNodes.size() != 1){
+				throw new RuntimeException("Exactly one Taxon Node expected, but found " + parentNodes.size());
+			}
+			TaxonNode parentNode = parentNodes.iterator().next();
 			UUID taraxacumTaraxUUID = UUID.fromString(taraxTaraxacum);
 			Taxon taraxacumInTarax = (Taxon)app.getTaxonService().findByUuid(taraxacumTaraxUUID);
-			
+	
 			//TODO reference
 			ReferenceBase citation = null;
 			String microcitation = null;
-			parent.addTaxonomicChild(taraxacumInTarax, citation, microcitation);
+			parentNode.addChild(taraxacumInTarax, citation, microcitation);
 			app.getTaxonService().save(parent);
-			parent.removeTaxonomicChild(taraxacumInCich);
+			TaxonNode taraxacumInCichNode = parentNode.getTaxonomicTree().getNode(taraxacumInCich);
+			parentNode.removeChild(taraxacumInCichNode);
 			app.getTaxonService().delete(taraxacumInCich);
-			
-			// Replace sec ID of Taraxacum in Taraxacum DB by sec ID of Taraxacum in Cichorieae DB
-			//  = workaround to display Taraxacum Genus correctly in Data Portal Taxon Tree
-			// Currently only one sec ID can be specified in Data Portal
-			try {
-
-				int secIdTarax = 0;
-				int secIdCich = 0;
-				
-				String sqlString = 
-					" SELECT titleCache, sec_id FROM TaxonBase WHERE uuid = '" + taraxTaraxacum +  "'";
-
-				ResultSet rs = ((CdmDataSource)cdmDestination).executeQuery(sqlString);
-				while (rs.next()) {
-					secIdTarax = rs.getInt("sec_id");
-					if (logger.isInfoEnabled()) {
-						String titleCache = rs.getString("titleCache");
-						logger.info("secId of " + titleCache + " (" + taraxTaraxacum + ") in Taraxacum DB: " + secIdTarax);
-					}
-				}
-				
-				sqlString = 
-					" SELECT titleCache, sec_id FROM TaxonBase WHERE titleCache like 'Crepis%' ";
-
-				rs = ((CdmDataSource)cdmDestination).executeQuery(sqlString);
-				while (rs.next()) {
-					secIdCich = rs.getInt("sec_id");
-					if (logger.isInfoEnabled()) {
-						String titleCache = rs.getString("titleCache");
-						logger.info("secId of " + titleCache + " (" + cichTaraxacum + ") in Cichorieae DB: " + secIdCich);
-					}
-					if (secIdCich != 0) { break; }
-				}
-				
-				sqlString = 
-					" UPDATE TaxonBase SET sec_id = " + secIdCich + " WHERE sec_id = " + secIdTarax;
-
-				int result = ((CdmDataSource)cdmDestination).executeUpdate(sqlString);
-				if (logger.isInfoEnabled()) {
-					logger.info("Update result = " + result);
-				}
-
-			} catch (SQLException e) {
-				logger.error("SQLException:" +  e);
-			}
 		}
-		
 	}
 	
 	public static void main(String[] args) {

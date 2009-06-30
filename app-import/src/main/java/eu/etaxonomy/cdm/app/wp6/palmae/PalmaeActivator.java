@@ -57,7 +57,9 @@ public class PalmaeActivator {
 	static final boolean includeMediaProtologue = true;
 	
 	//check - import
-	static final CHECK check = CHECK.IMPORT_WITHOUT_CHECK;
+	static final CHECK check = CHECK.CHECK_AND_IMPORT;
+	
+	static boolean useTaxonomicTree = true;
 	
 	//authors
 	static final boolean doAuthors = true;
@@ -71,7 +73,6 @@ public class PalmaeActivator {
 	static final boolean doTaxa = true;
 	static final boolean doRelTaxa = true;
 	static final boolean doFacts = true;
-	
 
 	
 	private boolean doImport(){
@@ -95,6 +96,7 @@ public class PalmaeActivator {
 		tcsImportConfigurator.setDoTaxa(doTaxa);
 		tcsImportConfigurator.setDoRelTaxa(doRelTaxa);
 		tcsImportConfigurator.setDoFacts(doFacts);
+		tcsImportConfigurator.setUseTaxonomicTree(useTaxonomicTree);
 		
 		tcsImportConfigurator.setCheck(check);
 		tcsImportConfigurator.setDbSchemaValidation(hbm2dll);

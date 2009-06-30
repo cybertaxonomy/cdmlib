@@ -80,7 +80,7 @@ public class DipteraActivator {
 	static final boolean doTaxa = true;
 	static final boolean doRelTaxa = true;
 	static final boolean doFacts = true;
-	static final boolean doOccurences = false;
+	static final boolean doOccurences = true;
 	
 	//etc.
 	static final boolean doMarker = true;
