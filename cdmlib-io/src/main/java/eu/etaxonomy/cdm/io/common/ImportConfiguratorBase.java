@@ -34,9 +34,6 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 public abstract class ImportConfiguratorBase<STATE extends ImportStateBase> extends IoConfiguratorBase implements IImportConfigurator{
 	private static final Logger logger = Logger.getLogger(ImportConfiguratorBase.class);
 
-	private STATE state;
-	
-	
 	//check
 	private CHECK check = CHECK.CHECK_AND_IMPORT;
 	
@@ -107,10 +104,10 @@ public abstract class ImportConfiguratorBase<STATE extends ImportStateBase> exte
 			logger.warn("Connection to BerlinModel could not be established");
 			result = false;
 		}
-//		if (destination == null){
-//			logger.warn("Connection to Cdm could not be established");
-//			result = false;
-//		}
+		if (destination == null ){
+			logger.warn("Connection to Cdm could not be established");
+			result = false;
+		}
 		
 		return result;
 	}

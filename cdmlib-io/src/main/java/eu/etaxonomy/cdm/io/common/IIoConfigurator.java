@@ -7,6 +7,7 @@
 package eu.etaxonomy.cdm.io.common;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
+import eu.etaxonomy.cdm.database.DbSchemaValidation;
 
 /**
  * @author a.babadshanjan
@@ -42,5 +43,21 @@ public interface IIoConfigurator {
 	 * @param cdmApp the cdmApp to set
 	 */
 	public void setCdmAppController(CdmApplicationController cdmApp);
+
+	/**
+	 * Get the way how the CDM schema is validated
+	 * @see eu.etaxonomy.cdm.database.DbSchemaValidation
+	 * @return
+	 */
+	public DbSchemaValidation getDbSchemaValidation();
+
+	/**
+	 * Get the way how the CDM schema is validated
+	 * For exports values that delete the source (CREATE, CREATE_DROP) are not allowed and may throw an 
+	 * Exception in the further run
+	 * @see eu.etaxonomy.cdm.database.DbSchemaValidation
+	 * @param dbSchemaValidation
+	 */
+	public void setDbSchemaValidation(DbSchemaValidation dbSchemaValidation);
 	
 }

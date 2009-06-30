@@ -33,13 +33,19 @@ public class CdmDefaultIOBase<T extends IIoConfigurator>  {
 	 * @param createNew
 	 * @return
 	 */
-	protected boolean startApplicationController(IIoConfigurator config, ICdmDataSource source, boolean omitTermLoading, boolean createNew){
+	protected boolean startApplicationController(IIoConfigurator config, ICdmDataSource cdmSource, boolean omitTermLoading, boolean createNew){
 		if (config.getCdmAppController() != null){
 			this.cdmApp = config.getCdmAppController(); 
 		}
+		DbSchemaValidation schemaValidation = config.getDbSchemaValidation();
+		if ( this instanceof CdmDefaultExport){
+			if (schemaValidation.equals(DbSchemaValidation.CREATE)|| schemaValidation.equals(DbSchemaValidation.CREATE_DROP)  ){
+				throw new IllegalArgumentException("The export may not run with DbSchemaValidation.CREATE or DbSchemaValidation.CREATE_DROP as this value deletes the source database");
+			}
+		}
 		try {
 			if ( createNew == true || cdmApp == null){
-				cdmApp = CdmApplicationController.NewInstance(source, DbSchemaValidation.VALIDATE);
+				cdmApp = CdmApplicationController.NewInstance(cdmSource, schemaValidation, omitTermLoading);
 				if (cdmApp != null){
 					return true;
 				}else{

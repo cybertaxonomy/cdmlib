@@ -17,6 +17,7 @@ import eu.etaxonomy.cdm.io.common.IImportConfigurator.DO_REFERENCES;
  * @created 16.11.2008
  */
 public abstract class IoConfiguratorBase implements IIoConfigurator{
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(IoConfiguratorBase.class);
 
 	//im-/export uses TaxonomicTree for is_taxonomically_included_in relationships
@@ -50,10 +51,16 @@ public abstract class IoConfiguratorBase implements IIoConfigurator{
 	private boolean doUser = true;
 
 	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.IIoConfigurator#getDbSchemaValidation()
+	 */
 	public DbSchemaValidation getDbSchemaValidation() {
 		return dbSchemaValidation;
 	}
 
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.IIoConfigurator#setDbSchemaValidation(eu.etaxonomy.cdm.database.DbSchemaValidation)
+	 */
 	public void setDbSchemaValidation(DbSchemaValidation dbSchemaValidation) {
 		this.dbSchemaValidation = dbSchemaValidation;
 	}

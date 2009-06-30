@@ -8,6 +8,7 @@ package eu.etaxonomy.cdm.io.common;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.IExportConfigurator.CHECK;
 import eu.etaxonomy.cdm.model.reference.Database;
@@ -22,7 +23,7 @@ public abstract class ExportConfiguratorBase<DESTINATION extends Object> extends
 	private static final Logger logger = Logger.getLogger(ExportConfiguratorBase.class);
 
 	private CHECK check = CHECK.EXPORT_WITHOUT_CHECK;
-
+	
 	private ICdmDataSource source;
 	private DESTINATION destination;
 	protected ReferenceBase sourceReference;
@@ -58,6 +59,8 @@ public abstract class ExportConfiguratorBase<DESTINATION extends Object> extends
 	public void setDestination(DESTINATION destination) {
 		this.destination = destination;
 	}
+	
+	
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.ImportConfiguratorBase#getSourceReference()
@@ -149,10 +152,8 @@ public abstract class ExportConfiguratorBase<DESTINATION extends Object> extends
 //	}
 	
 	
-
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.tcsrdf.IImportConfigurator#isValid()
+	/**
+	 * @return
 	 */
 	public boolean isValid(){
 		boolean result = true;

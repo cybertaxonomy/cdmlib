@@ -42,33 +42,36 @@ public class CdmDefaultImport<T extends IImportConfigurator> extends CdmDefaultI
 		}
 	}
 	
-	/**
-	 * Creates a new {@link CdmApplicationController} if it does not exist yet or if createNew is <ocde>true</code>
-	 * @param config
-	 * @param destination
-	 * @param omitTermLoading
-	 * @param createNew
-	 * @return
-	 */
-	private boolean startApplicationController(IImportConfigurator config, ICdmDataSource destination, boolean omitTermLoading, boolean createNew){
-		try {
-			if ( createNew == true || cdmApp == null){
-				cdmApp = CdmApplicationController.NewInstance(destination, config.getDbSchemaValidation(), omitTermLoading);
-				if (cdmApp != null){
-					return true;
-				}else{
-					return false;
-				}
-			}
-			return true;
-		} catch (DataSourceNotFoundException  e) {
-			logger.error("could not connect to destination database");
-			return false;
-		}catch (TermNotFoundException e) {
-			logger.error("could not find needed term in destination datasource");
-			return false;
-		}
-	}
+//	/**
+//	 * Creates a new {@link CdmApplicationController} if it does not exist yet or if createNew is <ocde>true</code>
+//	 * @param config
+//	 * @param destination
+//	 * @param omitTermLoading
+//	 * @param createNew
+//	 * @return
+//	 */
+//	private boolean startApplicationController(IImportConfigurator config, ICdmDataSource destination, boolean omitTermLoading, boolean createNew){
+//		if (config.getCdmAppController() != null){
+//			this.cdmApp = config.getCdmAppController(); 
+//		}
+//		try {
+//			if ( createNew == true || cdmApp == null){
+//				cdmApp = CdmApplicationController.NewInstance(destination, config.getDbSchemaValidation(), omitTermLoading);
+//				if (cdmApp != null){
+//					return true;
+//				}else{
+//					return false;
+//				}
+//			}
+//			return true;
+//		} catch (DataSourceNotFoundException  e) {
+//			logger.error("could not connect to destination database");
+//			return false;
+//		}catch (TermNotFoundException e) {
+//			logger.error("could not find needed term in destination datasource");
+//			return false;
+//		}
+//	}
 
 	/**
 	 * Starts the CdmApplicationController if not yet started
@@ -84,7 +87,7 @@ public class CdmDefaultImport<T extends IImportConfigurator> extends CdmDefaultI
 	
 	
 	/**
-	 * For downwards compatibility.
+	 * For downwards compatibility only.
 	 * @return
 	 */
 	@Deprecated
