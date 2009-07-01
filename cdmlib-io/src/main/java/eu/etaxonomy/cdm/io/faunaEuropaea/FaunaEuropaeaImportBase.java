@@ -137,14 +137,16 @@ implements ICdmImport<FaunaEuropaeaImportConfigurator,FaunaEuropaeaImportState> 
 					+ ", n = " + n); 
 		}
 
-		// save taxa in chunks of <=limit
+		// save taxa in blocks of <=limit
 		
 		for (int j = 1; j <= n + 1; j++)
 		{
 			int offset = j - 1;
 			int start = offset * limit;
 
-			if(logger.isInfoEnabled()) { logger.info("Saving taxa: " + start + " - " + (start + limit - 1)); }
+			if(logger.isInfoEnabled()) { 
+				logger.info("Saving taxa: " + start + " - " + (start + limit - 1)); 
+			}
 
 			if(logger.isInfoEnabled()) { 
 				logger.info("index = " + j 
@@ -154,7 +156,9 @@ implements ICdmImport<FaunaEuropaeaImportConfigurator,FaunaEuropaeaImportState> 
 			
 			if (j == n + 1) {
 				limit = nbrOfTaxa - n * limit;
-				if(logger.isInfoEnabled()) { logger.info("n = " + n + ", limit = " + limit); }
+				if(logger.isInfoEnabled()) { 
+					logger.info("n = " + n + ", limit = " + limit); 
+				}
 			}
 
     		TransactionStatus txStatus = startTransaction();
@@ -162,7 +166,7 @@ implements ICdmImport<FaunaEuropaeaImportConfigurator,FaunaEuropaeaImportState> 
 			Collection<TaxonBase> taxonMapPart = taxonStore.objects(start, limit);
 			getTaxonService().saveTaxonAll(taxonMapPart);
 			taxonMapPart = null;
-			//taxonStore.removeObjects(start, limit);
+			taxonStore.removeObjects(start, limit);
 			
 			commitTransaction(txStatus);
 

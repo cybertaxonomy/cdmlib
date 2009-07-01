@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.io.faunaEuropaea;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
@@ -32,6 +33,8 @@ public class FaunaEuropaeaImportState extends ImportStateBase<FaunaEuropaeaImpor
 	}
 	
 	private Map<Integer, FaunaEuropaeaTaxon> fauEuTaxonMap = new HashMap();
+	private Map<UUID, UUID> childParentMap = new HashMap();
+	
 	/* Highest taxon index in the FauEu database */
 	private int highestTaxonIndex = 0;
 
@@ -62,6 +65,20 @@ public class FaunaEuropaeaImportState extends ImportStateBase<FaunaEuropaeaImpor
 	 */
 	public void setFauEuTaxonMap(Map<Integer, FaunaEuropaeaTaxon> fauEuTaxonMap) {
 		this.fauEuTaxonMap = fauEuTaxonMap;
+	}
+
+	/**
+	 * @return the childParentMap
+	 */
+	public Map<UUID, UUID> getChildParentMap() {
+		return childParentMap;
+	}
+
+	/**
+	 * @param childParentMap the childParentMap to set
+	 */
+	public void setChildParentMap(Map<UUID, UUID> childParentMap) {
+		this.childParentMap = childParentMap;
 	}
 	
 //	/* (non-Javadoc)

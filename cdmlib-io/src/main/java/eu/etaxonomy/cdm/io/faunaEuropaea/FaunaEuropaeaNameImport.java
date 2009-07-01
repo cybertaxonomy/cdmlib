@@ -78,7 +78,7 @@ public class FaunaEuropaeaNameImport extends FaunaEuropaeaImportBase  {
 	private static final Logger logger = Logger.getLogger(FaunaEuropaeaNameImport.class);
 
 	/* Max number of taxa to retrieve (for test purposes) */
-	private int maxTaxa = 5000;
+	private int maxTaxa = 20000;
 	/* Max number of taxa to be saved in CDM DB with one service call */
 	private int limit = 1000; // TODO: Make configurable
 	/* Max number of taxa to be retrieved from CDM DB with one service call */
@@ -155,8 +155,8 @@ public class FaunaEuropaeaNameImport extends FaunaEuropaeaImportBase  {
 		
 		Map<String, MapWrapper<? extends CdmBase>> stores = state.getStores();
 		Map<Integer, FaunaEuropaeaTaxon> fauEuTaxonMap = state.getFauEuTaxonMap();
-		int highestTaxonIndex = state.getHighestTaxonIndex();
-		FaunaEuropaeaImportConfigurator fauEuConfig = state.getConfig();
+//		int highestTaxonIndex = state.getHighestTaxonIndex();
+//		FaunaEuropaeaImportConfigurator fauEuConfig = state.getConfig();
 		boolean success = true;
 		
 		if(logger.isInfoEnabled()) { logger.info("Start making taxa..."); }
@@ -165,7 +165,7 @@ public class FaunaEuropaeaNameImport extends FaunaEuropaeaImportBase  {
 		
 		success = retrieveTaxa2TaxonStore(state, fauEuTaxonMap, Q_NO_RESTRICTION);
 		success = processTaxaSecondPass(state, fauEuTaxonMap);
-		success = saveTaxa(stores, highestTaxonIndex, limit);
+		success = saveTaxa(stores, state.getHighestTaxonIndex(), limit);
 		
 		commitTransaction(txStatus);
 		
@@ -245,7 +245,7 @@ public class FaunaEuropaeaNameImport extends FaunaEuropaeaImportBase  {
 				String autName = rs.getString("aut_name");
 				Rank rank = null;
 				UUID taxonBaseUuid = null;
-				if (resultSetHasColumn(rs,"UUID")){
+				if (resultSetHasColumn(rs, "UUID")){
 					taxonBaseUuid = UUID.fromString(rs.getString("UUID"));
 				} else {
 					taxonBaseUuid = UUID.randomUUID();
