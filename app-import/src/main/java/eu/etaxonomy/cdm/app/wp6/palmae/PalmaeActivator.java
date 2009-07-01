@@ -196,7 +196,7 @@ public class PalmaeActivator {
 			
 			//protologConfig.setDoFacts(doDescriptions);
 			protologConfig.setCheck(check);
-			protologConfig.setDbSchemaValidation(hbm2dll);
+			protologConfig.setDbSchemaValidation(DbSchemaValidation.UPDATE);
 
 			protologConfig.setSource(source);
 			success &= cdmImport.invoke(protologConfig);
