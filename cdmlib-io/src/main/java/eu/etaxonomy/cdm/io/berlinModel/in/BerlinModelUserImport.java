@@ -94,6 +94,12 @@ public class BerlinModelUserImport extends BerlinModelImportBase {
 					Person person = Person.NewInstance();
 					user.setPerson(person);
 					
+					/* 
+					 * this is a crucial call, otherwise the password will not be set correctly
+					 * and the whole authenticataion will not work 
+					 */
+					getUserService().createUser(user);
+					
 					dbAttrName = "RealName";
 					cdmAttrName = "TitleCache";
 					success &= ImportHelper.addStringValue(rs, person, dbAttrName, cdmAttrName);

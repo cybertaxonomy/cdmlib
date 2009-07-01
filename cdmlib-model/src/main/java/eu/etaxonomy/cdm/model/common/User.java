@@ -66,6 +66,12 @@ public class User extends CdmBase implements UserDetails {
 		User user = new User();
 		user.setUsername(username);
 		user.setPassword(pwd);
+		
+		user.setAccountNonExpired(true);
+		user.setAccountNonLocked(true);
+		user.setCredentialsNonExpired(true);
+		user.setEnabled(true);
+		
 		return user;
 	}
 	
