@@ -712,6 +712,7 @@ protected void importCharacters(Element elDataset, Namespace sddNamespace, SDDIm
 				// </Representation>
 
 				Feature categoricalCharacter = Feature.NewInstance();
+				categoricalCharacter.setKindOf(Feature.DESCRIPTION());
 				importRepresentation(elCategoricalCharacter, sddNamespace, categoricalCharacter, idCC, sddConfig);
 
 				categoricalCharacter.setSupportsCategoricalData(true);
@@ -770,6 +771,7 @@ protected void importCharacters(Element elDataset, Namespace sddNamespace, SDDIm
 				//  <Label>Leaf length</Label>
 				// </Representation>
 				Feature quantitativeCharacter = Feature.NewInstance();
+				quantitativeCharacter.setKindOf(Feature.DESCRIPTION());
 				importRepresentation(elQuantitativeCharacter, sddNamespace, quantitativeCharacter, idQC, sddConfig);
 
 				quantitativeCharacter.setSupportsQuantitativeData(true);
@@ -838,6 +840,7 @@ protected void importCharacters(Element elDataset, Namespace sddNamespace, SDDIm
 				//  <Label xml:lang="en">Leaf features not covered by other characters</Label>
 				// </Representation>
 				Feature textCharacter = Feature.NewInstance();
+				textCharacter.setKindOf(Feature.DESCRIPTION());
 				importRepresentation(elTextCharacter, sddNamespace, textCharacter, idTC, sddConfig);
 
 				textCharacter.setSupportsTextData(true);
@@ -1286,6 +1289,7 @@ protected void importDescriptiveConcepts(Element elDataset, Namespace sddNamespa
 			if (!id.equals("")) {
 				fn = FeatureNode.NewInstance();
 				Feature feature = Feature.NewInstance();
+				feature.setKindOf(Feature.DESCRIPTION());
 				//	 <Representation>
 				//       <Label>Body</Label>
 				importRepresentation(elDescriptiveConcept, sddNamespace, feature, id, sddConfig);
@@ -1340,6 +1344,9 @@ protected void importCharacterTrees(Element elDataset, Namespace sddNamespace, S
 						isgroups = true;
 					}
 				}
+				
+				// only treats the case of flat groups containing characters
+				// should also be added: dependencies between characters, 
 				
 				if ((label.contains("group")) || (isgroups)) {
 					
