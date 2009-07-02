@@ -155,7 +155,7 @@ public class FaunaEuropaeaRelTaxonIncludeImport extends FaunaEuropaeaImportBase 
 		
 		TransactionStatus txStatus = startTransaction();
 
-		success = retrieveUuids(state);
+		success = retrieveChildParentUuidMap(state);
 		success = createRelationships(state);
 		
 		commitTransaction(txStatus);
@@ -165,8 +165,8 @@ public class FaunaEuropaeaRelTaxonIncludeImport extends FaunaEuropaeaImportBase 
 	}
 
 	
-	/** Retrieve child-parent uuid map from CDM DB*/
-	private boolean retrieveUuids(FaunaEuropaeaImportState state) {
+	/** Retrieve child-parent uuid map from CDM DB */
+	private boolean retrieveChildParentUuidMap(FaunaEuropaeaImportState state) {
 
 		Map<UUID, UUID> childParentMap = state.getChildParentMap();
 		Map<String, MapWrapper<? extends CdmBase>> stores = state.getStores();
@@ -183,10 +183,10 @@ public class FaunaEuropaeaRelTaxonIncludeImport extends FaunaEuropaeaImportBase 
 				" SELECT dbo.Taxon.UUID AS ChildUuid, Parent.UUID AS ParentUuid " +
 				" FROM dbo.Taxon INNER JOIN dbo.Taxon AS Parent " +
 				" ON dbo.Taxon.TAX_TAX_IDPARENT = Parent.TAX_ID " +
-				" WHERE (dbo.Taxon.TAX_VALID <> 0) ";
+				" WHERE (dbo.Taxon.TAX_VALID <> 0) AND (dbo.Taxon.TAX_AUT_ID <> " + A_AUCT + ")";
 
-			if (logger.isDebugEnabled()) {
-				logger.debug("Query: " + strQuery);
+			if (logger.isInfoEnabled()) {
+				logger.info("Query: " + strQuery);
 			}
 
 			ResultSet rs = source.getResultSet(strQuery);
