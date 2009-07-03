@@ -129,6 +129,29 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
 			throw new AccessDeniedException("Can't change password as no Authentication object found in context for current user.");
 		}		
 	}
+	
+	@Transactional(readOnly=false)
+	public void changePasswordForUser(String username, String newPassword) {
+		Assert.hasText(username);
+		Assert.hasText(newPassword);
+		
+		try {
+		    User user = dao.findUserByUsername(username);
+		    if(user == null) {
+				throw new UsernameNotFoundException(username);
+			}
+		    
+            Object salt = this.saltSource.getSalt(user);
+			
+			String password = passwordEncoder.encodePassword(newPassword, salt);
+			((User)user).setPassword(password);
+			
+			dao.update((User)user);
+			userCache.removeUserFromCache(user.getUsername());
+		} catch(NonUniqueResultException nure) {
+			throw new IncorrectResultSizeDataAccessException("More than one user found with name '" + username + "'", 1);
+		}
+	}
 
 	@Transactional(readOnly=false)
 	public void createUser(UserDetails user) {
