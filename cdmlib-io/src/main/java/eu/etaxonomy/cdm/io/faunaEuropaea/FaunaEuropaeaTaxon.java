@@ -27,23 +27,23 @@ public class FaunaEuropaeaTaxon {
 	private String localName;
 	private String originalGenusName = "";
 	private int year;
-	private String author;
+	private int authorId;
+	private String authorName;
 	private boolean parenthesis = false;
 	private boolean valid = false;
-	private boolean nameComplete = false;
 	
 	/**
-	 * @return the nameComplete
+	 * @return the authorName
 	 */
-	public boolean isNameComplete() {
-		return nameComplete;
+	public String getAuthorName() {
+		return authorName;
 	}
 
 	/**
-	 * @param nameComplete the nameComplete to set
+	 * @param authorName the authorName to set
 	 */
-	public void setNameComplete(boolean nameComplete) {
-		this.nameComplete = nameComplete;
+	public void setAuthorName(String authorName) {
+		this.authorName = authorName;
 	}
 
 	/**
@@ -174,14 +174,14 @@ public class FaunaEuropaeaTaxon {
 	 * @return the author
 	 */
 	public String getAuthor() {
-		return author;
+		return authorName;
 	}
 
 	/**
 	 * @param author the author to set
 	 */
 	public void setAuthor(String author) {
-		this.author = author;
+		this.authorName = author;
 	}
 
 	/**
@@ -224,6 +224,20 @@ public class FaunaEuropaeaTaxon {
 	 */
 	public void setOriginalGenusName(String originalGenusName) {
 		this.originalGenusName = originalGenusName;
+	}
+
+	/**
+	 * @return the authorId
+	 */
+	public int getAuthorId() {
+		return authorId;
+	}
+
+	/**
+	 * @param authorId the authorId to set
+	 */
+	public void setAuthorId(int authorId) {
+		this.authorId = authorId;
 	}
 
 }

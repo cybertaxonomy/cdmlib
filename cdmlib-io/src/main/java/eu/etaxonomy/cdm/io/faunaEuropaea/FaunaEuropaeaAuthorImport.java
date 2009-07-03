@@ -39,8 +39,6 @@ public class FaunaEuropaeaAuthorImport extends FaunaEuropaeaImportBase {
 
 	private static int modCount = 1000;
 
-	public FaunaEuropaeaAuthorImport(){
-	}
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doCheck(eu.etaxonomy.cdm.io.common.IImportConfigurator)

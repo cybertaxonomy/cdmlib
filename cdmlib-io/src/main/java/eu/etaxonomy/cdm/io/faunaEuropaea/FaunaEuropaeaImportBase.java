@@ -166,7 +166,7 @@ implements ICdmImport<FaunaEuropaeaImportConfigurator,FaunaEuropaeaImportState> 
 			Collection<TaxonBase> taxonMapPart = taxonStore.objects(start, limit);
 			getTaxonService().saveTaxonAll(taxonMapPart);
 			taxonMapPart = null;
-			taxonStore.removeObjects(start, limit);
+//			taxonStore.removeObjects(start, limit);
 			
 //			commitTransaction(txStatus);
 

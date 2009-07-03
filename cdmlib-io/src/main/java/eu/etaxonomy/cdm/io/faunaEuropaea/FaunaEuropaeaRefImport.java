@@ -68,7 +68,7 @@ public class FaunaEuropaeaRefImport extends FaunaEuropaeaImportBase {
 	/* Interval for progress info message when retrieving taxa */
 	private int modCount = 10000;
 	/* Highest taxon index in the FauEu database */
-	private int highestTaxonIndex = 0;
+//	private int highestTaxonIndex = 0;
 	
 		
 	/* (non-Javadoc)
@@ -124,7 +124,7 @@ public class FaunaEuropaeaRefImport extends FaunaEuropaeaImportBase {
 			ResultSet rs = source.getResultSet(strQuery);
 			while (rs.next()) {
 				int maxTaxonId = rs.getInt("TAX_ID");
-				highestTaxonIndex = maxTaxonId;
+//				highestTaxonIndex = maxTaxonId;
 			}
 
 			strQuery = 
@@ -249,7 +249,7 @@ public class FaunaEuropaeaRefImport extends FaunaEuropaeaImportBase {
 			if(logger.isInfoEnabled()) { logger.info("Saving references ..."); }
 			
 			// save taxa, references, and authors
-			success = saveTaxa(stores, highestTaxonIndex, limit);
+			success = saveTaxa(stores, state.getHighestTaxonIndex(), limit);
 			getReferenceService().saveReferenceAll(refStore.objects());
 			getAgentService().saveAgentAll(authorStore.objects());
 			

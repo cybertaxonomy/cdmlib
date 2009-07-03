@@ -1354,7 +1354,7 @@ public class FaunaEuropaeaTaxonImport extends FaunaEuropaeaImportBase  {
 		// Set the complete scientific name in FaunaEuropaeaTaxon,
 		// including parent(s) parts.
 //		fauEuTaxon.setScientificName(concatString);
-		fauEuTaxon.setNameComplete(true);
+//		fauEuTaxon.setNameComplete(true);
 
 		if (logger.isDebugEnabled()) { 
 			logger.debug("Name stored: " + concatString); 

@@ -35,29 +35,15 @@ public class FaunaEuropaeaImportConfigurator extends ImportConfiguratorBase<Faun
 	private boolean doMisappliedNames = true;
 	private boolean doHeterotypicSynonyms = true;
 	
-//	@SuppressWarnings("unchecked")
-//	protected void makeIoClassList() {
-//		ioClassList = new Class[] {
-//				FaunaEuropaeaAuthorImport.class
-//				FaunaEuropaeaNameImport.class,
-//				FaunaEuropaeaTaxImport.class
-//				FaunaEuropaeaRelationshipImport.class
-//	            FaunaEuropaeaRefImport.class
-////			FaunaEuropaeaDistributionImport.class
-//		};
-//	};
-	
 	@SuppressWarnings("unchecked")
 	protected void makeIoClassList() {
 		ioClassList = new Class[] {
-//				FaunaEuropaeaAuthorImport.class
-				FaunaEuropaeaNameImport.class
-//				FaunaEuropaeaTaxImport.class
-//				FaunaEuropaeaTaxonImport.class
+				FaunaEuropaeaAuthorImport.class,
+				FaunaEuropaeaNameImport.class,
+				FaunaEuropaeaRelShipImport.class,
 //				FaunaEuropaeaRelTaxonIncludeImport.class
-//				FaunaEuropaeaRelationshipImport.class
-//				FaunaEuropaeaRefImport.class
-//				FaunaEuropaeaDistributionImport.class
+				FaunaEuropaeaRefImport.class,
+				FaunaEuropaeaDistributionImport.class
 		};
 	};
 	

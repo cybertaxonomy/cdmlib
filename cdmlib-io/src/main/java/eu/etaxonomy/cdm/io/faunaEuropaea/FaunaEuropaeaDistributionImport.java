@@ -172,13 +172,15 @@ public class FaunaEuropaeaDistributionImport  extends FaunaEuropaeaImportBase {
 				} catch (Exception e) {
 					logger.warn("An exception occurred when creating distribution with id " + disId + 
 					". Reference could not be saved.");
+					e.printStackTrace();
 				}
 			}
 			
 			if(logger.isInfoEnabled()) { logger.info("Saving distributions ..."); }
 			
+			success = saveTaxa(stores, state.getHighestTaxonIndex(), limit);
 			// save taxa
-			getTaxonService().saveTaxonAll(taxonMap);
+//			getTaxonService().saveTaxonAll(taxonMap);
 			
 			if(logger.isInfoEnabled()) { logger.info("End making distributions..."); }
 			
