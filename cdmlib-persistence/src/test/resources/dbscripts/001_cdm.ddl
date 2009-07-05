@@ -90,11 +90,7 @@
         titleCache varchar(255),
         createdby_id integer,
         updatedby_id integer,
-        code varchar(255),
-        name varchar(255),
-        ispartof_id integer,
         nomenclaturaltitle varchar(255),
-        protectednomenclaturaltitlecache bit,
         firstname varchar(255),
         lastname varchar(255),
         lifespan_end varchar(255),
@@ -102,6 +98,10 @@
         lifespan_start varchar(255),
         prefix varchar(255),
         suffix varchar(255),
+        protectednomenclaturaltitlecache bit,
+        code varchar(255),
+        name varchar(255),
+        ispartof_id integer,
         primary key (id, REV)
     );
 
@@ -672,7 +672,17 @@
         vocabulary_id integer,
         iso639_1 varchar(2),
         iso639_2 varchar(3),
+        supportscategoricaldata bit,
+        supportscommontaxonname bit,
+        supportsdistribution bit,
+        supportsindividualassociation bit,
+        supportsquantitativedata bit,
+        supportstaxoninteraction bit,
+        supportstextdata bit,
         orderindex integer,
+        defaultcolor varchar(255),
+        symmetric bit,
+        transitive bit,
         pointapproximation_errorradius integer,
         pointapproximation_latitude double,
         pointapproximation_longitude double,
@@ -683,17 +693,7 @@
         pointapproximation_referencesystem_id integer,
         shape_id integer,
         type_id integer,
-        symmetric bit,
-        transitive bit,
         iso3166_a2 varchar(2),
-        supportscategoricaldata bit,
-        supportscommontaxonname bit,
-        supportsdistribution bit,
-        supportsindividualassociation bit,
-        supportsquantitativedata bit,
-        supportstaxoninteraction bit,
-        supportstextdata bit,
-        defaultcolor varchar(255),
         primary key (id, REV)
     );
 
@@ -918,8 +918,8 @@
         imagegallery bit,
         createdby_id integer,
         updatedby_id integer,
-        taxonName_fk integer,
         taxon_fk integer,
+        taxonName_fk integer,
         primary key (id, REV)
     );
 
@@ -1128,15 +1128,15 @@
         feature_id integer,
         indescription_id integer,
         nameusedinreference_id integer,
+        name varchar(255),
+        language_id integer,
         unit_id integer,
         associatedspecimenorobservation_id integer,
-        taxon2_id integer,
         area_id integer,
         status_id integer,
         orderrelevant bit,
+        taxon2_id integer,
         format_id integer,
-        name varchar(255),
-        language_id integer,
         primary key (id, REV)
     );
 
@@ -1967,9 +1967,9 @@
         createdby_id integer,
         updatedby_id integer,
         representation_id integer,
+        duration integer,
         height integer,
         width integer,
-        duration integer,
         primary key (id, REV)
     );
 
@@ -2407,8 +2407,7 @@
         datepublished_freetext varchar(255),
         datepublished_start varchar(255),
         title longvarchar,
-        bibtextitle varchar(255),
-		pages varchar(255),
+        pages varchar(255),
         series varchar(255),
         volume varchar(255),
         address varchar(255),
@@ -2428,6 +2427,7 @@
         publisher varchar(255),
         reporttype varchar(255),
         school varchar(255),
+        bibtextitle varchar(255),
         year varchar(255),
         placepublished varchar(255),
         seriespart varchar(255),
@@ -2475,24 +2475,12 @@
         datepublished_freetext varchar(255),
         datepublished_start varchar(255),
         title longvarchar,
-        bibtextitle varchar(255),
-		pages varchar(255),
-        series varchar(255),
-        volume varchar(255),
-        injournal_id integer,
-        inproceedings_id integer,
-        inbook_id integer,
-        placepublished varchar(255),
-        publisher varchar(255),
-        editor varchar(255),
-        institution_id integer,
-        issn varchar(255),
-        school_id integer,
         address varchar(255),
         annote varchar(255),
         booktitle varchar(255),
         chapter varchar(255),
         edition varchar(255),
+        editor varchar(255),
         eprint varchar(255),
         howpublished varchar(255),
         institution varchar(255),
@@ -2501,14 +2489,26 @@
         note varchar(255),
         number varchar(255),
         organization varchar(255),
+        pages varchar(255),
+        publisher varchar(255),
         reporttype varchar(255),
         school varchar(255),
+        series varchar(255),
+        bibtextitle varchar(255),
+        volume varchar(255),
         year varchar(255),
         crossref_id integer,
         type_id integer,
+        injournal_id integer,
+        inproceedings_id integer,
+        inbook_id integer,
+        placepublished varchar(255),
+        issn varchar(255),
+        school_id integer,
         seriespart varchar(255),
         inseries_id integer,
         isbn varchar(255),
+        institution_id integer,
         primary key (id, REV)
     );
 
@@ -3587,15 +3587,15 @@
         combinationauthorteam_id integer,
         exbasionymauthorteam_id integer,
         excombinationauthorteam_id integer,
-        breed varchar(255),
-        originalpublicationyear integer,
-        publicationyear integer,
         anamorphic bit,
         binomhybrid bit,
         hybridformula bit,
         monomhybrid bit,
         trinomhybrid bit,
         cultivarname varchar(255),
+        breed varchar(255),
+        originalpublicationyear integer,
+        publicationyear integer,
         nameapprobation varchar(255),
         subgenusauthorship varchar(255),
         primary key (id, REV)
@@ -7402,6 +7402,11 @@
         references UserAccount;
 
     alter table TaxonNode 
+        add constraint FK924F5BCC759FE399 
+        foreign key (taxonomictree_id) 
+        references TaxonomicTree;
+
+    alter table TaxonNode 
         add constraint FK924F5BCCDE9A3E39 
         foreign key (taxon_id) 
         references TaxonBase;
@@ -7410,11 +7415,6 @@
         add constraint FK924F5BCCCC05993E 
         foreign key (synonymtobeused_id) 
         references TaxonBase;
-
-    alter table TaxonNode 
-        add constraint FK924F5BCCD019B239 
-        foreign key (taxonomictree_id) 
-        references TaxonomicTree;
 
     alter table TaxonNode 
         add constraint FK924F5BCC215EDF26 
@@ -7532,132 +7532,132 @@
         references AuditEvent;
 
     alter table TaxonomicTree 
-        add constraint FKE333A2E7765B124B 
+        add constraint FKE332DBE0765B124B 
         foreign key (reference_id) 
         references ReferenceBase;
 
     alter table TaxonomicTree 
-        add constraint FKE333A2E74FF2DB2C 
+        add constraint FKE332DBE04FF2DB2C 
         foreign key (createdby_id) 
         references UserAccount;
 
     alter table TaxonomicTree 
-        add constraint FKE333A2E777E2F09E 
+        add constraint FKE332DBE077E2F09E 
         foreign key (name_id) 
         references LanguageString;
 
     alter table TaxonomicTree 
-        add constraint FKE333A2E7BC5DA539 
+        add constraint FKE332DBE0BC5DA539 
         foreign key (updatedby_id) 
         references UserAccount;
 
     alter table TaxonomicTree_AUD 
-        add constraint FK976053834869AAE 
+        add constraint FK14CE19B134869AAE 
         foreign key (REV) 
         references AuditEvent;
 
     alter table TaxonomicTree_Annotation 
-        add constraint FKE5DF73A7D019B239 
+        add constraint FK9877150E759FE399 
         foreign key (TaxonomicTree_id) 
         references TaxonomicTree;
 
     alter table TaxonomicTree_Annotation 
-        add constraint FKE5DF73A71E403E0B 
+        add constraint FK9877150E1E403E0B 
         foreign key (annotations_id) 
         references Annotation;
 
     alter table TaxonomicTree_Annotation_AUD 
-        add constraint FK3C4B75F834869AAE 
+        add constraint FKADD60BDF34869AAE 
         foreign key (REV) 
         references AuditEvent;
 
     alter table TaxonomicTree_Credit 
-        add constraint FK23C2F71D019B239 
+        add constraint FK21329C58759FE399 
         foreign key (TaxonomicTree_id) 
         references TaxonomicTree;
 
     alter table TaxonomicTree_Credit 
-        add constraint FK23C2F7132D1B9F 
+        add constraint FK21329C5832D1B9F 
         foreign key (credits_id) 
         references Credit;
 
     alter table TaxonomicTree_Credit_AUD 
-        add constraint FK20F13CC234869AAE 
+        add constraint FKD388DE2934869AAE 
         foreign key (REV) 
         references AuditEvent;
 
     alter table TaxonomicTree_Extension 
-        add constraint FKCD1EA4C7927DE9DF 
+        add constraint FKF3E9BA80927DE9DF 
         foreign key (extensions_id) 
         references Extension;
 
     alter table TaxonomicTree_Extension 
-        add constraint FKCD1EA4C7D019B239 
+        add constraint FKF3E9BA80759FE399 
         foreign key (TaxonomicTree_id) 
         references TaxonomicTree;
 
     alter table TaxonomicTree_Extension_AUD 
-        add constraint FK204D171834869AAE 
+        add constraint FK1BB4A85134869AAE 
         foreign key (REV) 
         references AuditEvent;
 
     alter table TaxonomicTree_Marker 
-        add constraint FK126318B2D019B239 
+        add constraint FK31598599759FE399 
         foreign key (TaxonomicTree_id) 
         references TaxonomicTree;
 
     alter table TaxonomicTree_Marker 
-        add constraint FK126318B2777265A1 
+        add constraint FK31598599777265A1 
         foreign key (markers_id) 
         references Marker;
 
     alter table TaxonomicTree_Marker_AUD 
-        add constraint FK850F9D8334869AAE 
+        add constraint FK37A73EEA34869AAE 
         foreign key (REV) 
         references AuditEvent;
 
     alter table TaxonomicTree_OriginalSource 
-        add constraint FK447A09C43BAB2414 
+        add constraint FKB6049FAB3BAB2414 
         foreign key (sources_id) 
         references OriginalSource;
 
     alter table TaxonomicTree_OriginalSource 
-        add constraint FK447A09C4D019B239 
+        add constraint FKB6049FAB759FE399 
         foreign key (TaxonomicTree_id) 
         references TaxonomicTree;
 
     alter table TaxonomicTree_OriginalSource_AUD 
-        add constraint FK143B59534869AAE 
+        add constraint FKDE32FFFC34869AAE 
         foreign key (REV) 
         references AuditEvent;
 
     alter table TaxonomicTree_Rights 
-        add constraint FK1B57064FD019B239 
+        add constraint FK3A4D7336759FE399 
         foreign key (TaxonomicTree_id) 
         references TaxonomicTree;
 
     alter table TaxonomicTree_Rights 
-        add constraint FK1B57064FC13F7B21 
+        add constraint FK3A4D7336C13F7B21 
         foreign key (rights_id) 
         references Rights;
 
     alter table TaxonomicTree_Rights_AUD 
-        add constraint FKF0E974A034869AAE 
+        add constraint FKA381160734869AAE 
         foreign key (REV) 
         references AuditEvent;
 
     alter table TaxonomicTree_TaxonNode 
-        add constraint FKC7EC474D019B239 
+        add constraint FK3349DA2D759FE399 
         foreign key (TaxonomicTree_id) 
         references TaxonomicTree;
 
     alter table TaxonomicTree_TaxonNode 
-        add constraint FKC7EC47418929176 
+        add constraint FK3349DA2D18929176 
         foreign key (rootnodes_id) 
         references TaxonNode;
 
     alter table TaxonomicTree_TaxonNode_AUD 
-        add constraint FK6E0B984534869AAE 
+        add constraint FK6973297E34869AAE 
         foreign key (REV) 
         references AuditEvent;
 

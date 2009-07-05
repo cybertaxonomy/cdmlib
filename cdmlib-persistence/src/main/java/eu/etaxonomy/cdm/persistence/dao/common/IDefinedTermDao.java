@@ -43,6 +43,10 @@ public interface IDefinedTermDao extends IVersionableDao<DefinedTermBase>, ITitl
 	
 	public <TYPE extends DefinedTermBase> List<TYPE> getDefinedTermByRepresentationText(String text, Class<TYPE> clazz );
 	
+	public <TYPE extends DefinedTermBase> List<TYPE> getDefinedTermByRepresentationText(String text, Class<TYPE> clazz, Integer pageSize,Integer  pageNumber);
+	
+	public int countDefinedTermByRepresentationText(String text, Class<? extends DefinedTermBase> clazz);
+	
     /**
      * Returns a List of Media that represent a given DefinedTerm instance
      * 

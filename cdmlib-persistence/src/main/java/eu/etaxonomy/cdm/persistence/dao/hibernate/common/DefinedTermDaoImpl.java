@@ -122,8 +122,46 @@ public class DefinedTermDaoImpl extends VersionableDaoBase<DefinedTermBase> impl
 	}
 	
 	public <T extends DefinedTermBase> List<T> getDefinedTermByRepresentationText(String text, Class<T> clazz ) {
-		Query query = getSession().createQuery("from "+ clazz.getName()+" as wc where wc.representations.text like '"+text+"'"); 
-		return (List<T>) query.list();
+		return getDefinedTermByRepresentationText(text,clazz,null,null);
+	}
+	
+	public <T extends DefinedTermBase> List<T> getDefinedTermByRepresentationText(String text, Class<T> clazz, Integer pageSize,Integer  pageNumber) {
+		checkNotInPriorView("DefinedTermDaoImpl.getDefinedTermByRepresentationText(String text, Class<T> clazz, Integer pageSize,Integer  pageNumber)");		
+		
+		Criteria criteria = null;
+		if(clazz == null) {
+			criteria = getSession().createCriteria(type);
+		} else {
+			criteria = getSession().createCriteria(clazz);
+		}
+		
+		criteria.createAlias("representations", "r").add(Restrictions.like("r.text", text));
+		
+		if(pageSize != null) {
+			criteria.setMaxResults(pageSize);
+		    if(pageNumber != null) {
+		    	criteria.setFirstResult(pageNumber * pageSize);
+		    }
+		}
+		
+		return (List<T>) criteria.list();
+	}
+	
+public int countDefinedTermByRepresentationText(String text, Class<? extends DefinedTermBase> clazz) {
+	    checkNotInPriorView("DefinedTermDaoImpl.countDefinedTermByRepresentationText(String text, Class<? extends DefinedTermBase> clazz)");		
+		Criteria criteria = null;
+		if(clazz == null) {
+			criteria = getSession().createCriteria(type);
+		} else {
+			criteria = getSession().createCriteria(clazz);
+		}
+		
+		criteria.createAlias("representations", "r").add(Restrictions.like("r.text", text));
+
+		
+		 criteria.setProjection(Projections.rowCount());
+			
+		 return (Integer)criteria.uniqueResult();
 	}
 	
 	/* (non-Javadoc)
