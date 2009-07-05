@@ -485,8 +485,13 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 	}
 	
 	public Pager<TaxonRelationship> pageToTaxonRelationships(Taxon taxon, TaxonRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
-		List<TaxonRelationship> results = listToTaxonRelationships(taxon, type, pageSize, pageNumber, orderHints, propertyPaths); 
-		return new DefaultPagerImpl<TaxonRelationship>(pageNumber, results.size(), pageSize, results);
+        Integer numberOfResults = dao.countTaxonRelationships(taxon, type, TaxonRelationship.Direction.relatedTo);
+		
+		List<TaxonRelationship> results = new ArrayList<TaxonRelationship>();
+		if(numberOfResults > 0) { // no point checking again
+			results = dao.getTaxonRelationships(taxon, type, pageSize, pageNumber, orderHints, propertyPaths, TaxonRelationship.Direction.relatedTo); 
+		}
+		return new DefaultPagerImpl<TaxonRelationship>(pageNumber, numberOfResults, pageSize, results);
 	}
 	
 	public List<TaxonRelationship> listFromTaxonRelationships(Taxon taxon, TaxonRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths){
@@ -500,8 +505,13 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 	}
 	
 	public Pager<TaxonRelationship> pageFromTaxonRelationships(Taxon taxon, TaxonRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
-		List<TaxonRelationship> results = listToTaxonRelationships(taxon, type, pageSize, pageNumber, orderHints, propertyPaths); 
-		return new DefaultPagerImpl<TaxonRelationship>(pageNumber, results.size(), pageSize, results);
+        Integer numberOfResults = dao.countTaxonRelationships(taxon, type, TaxonRelationship.Direction.relatedFrom);
+		
+		List<TaxonRelationship> results = new ArrayList<TaxonRelationship>();
+		if(numberOfResults > 0) { // no point checking again
+			results = dao.getTaxonRelationships(taxon, type, pageSize, pageNumber, orderHints, propertyPaths, TaxonRelationship.Direction.relatedFrom); 
+		}
+		return new DefaultPagerImpl<TaxonRelationship>(pageNumber, numberOfResults, pageSize, results);
 	}
 
 	public Pager<SynonymRelationship> getSynonyms(Taxon taxon,	SynonymRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {

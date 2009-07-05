@@ -248,8 +248,13 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
 	}
 
 	public Pager<NameRelationship> pageFromNameRelationships(TaxonNameBase name, NameRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
-		List<NameRelationship> results = listFromNameRelationships(name, type, pageSize, pageNumber, orderHints, propertyPaths);
-		return new DefaultPagerImpl<NameRelationship>(pageNumber, results.size(), pageSize, results);
+        Integer numberOfResults = dao.countNameRelationships(name, NameRelationship.Direction.relatedFrom, type);
+		
+		List<NameRelationship> results = new ArrayList<NameRelationship>();
+		if(numberOfResults > 0) { // no point checking again
+			results = dao.getNameRelationships(name, NameRelationship.Direction.relatedFrom, type, pageSize, pageNumber, orderHints, propertyPaths); 
+		}
+		return new DefaultPagerImpl<NameRelationship>(pageNumber, numberOfResults, pageSize, results);
 	}
 	
 	public List<NameRelationship> listToNameRelationships(TaxonNameBase name, NameRelationshipType type,
@@ -266,8 +271,15 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
 	}
 	
 	public Pager<NameRelationship> pageToNameRelationships(TaxonNameBase name, NameRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
-		List<NameRelationship> results = listToNameRelationships(name, type, pageSize, pageNumber, orderHints, propertyPaths);
-		return new DefaultPagerImpl<NameRelationship>(pageNumber, results.size(), pageSize, results);
+		Integer numberOfResults = dao.countNameRelationships(name, NameRelationship.Direction.relatedTo, type);
+
+		List<NameRelationship> results = new ArrayList<NameRelationship>();
+		if (numberOfResults > 0) { // no point checking again
+			results = dao.getNameRelationships(name, NameRelationship.Direction.relatedTo, type, pageSize, pageNumber,
+				orderHints, propertyPaths);
+		}
+
+		return new DefaultPagerImpl<NameRelationship>(pageNumber, numberOfResults, pageSize, results);
 	}
 
 	

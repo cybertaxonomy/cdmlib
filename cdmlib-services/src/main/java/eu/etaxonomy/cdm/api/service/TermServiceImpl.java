@@ -272,7 +272,15 @@ public class TermServiceImpl extends ServiceBase<DefinedTermBase,IDefinedTermDao
 		
 		return new DefaultPagerImpl<NamedArea>(pageNumber, numberOfResults, pageSize, results);
 	}
-	
-	
-	
+
+	public <T extends DefinedTermBase> Pager<T> findByRepresentationText(String label, Class<T> clazz, Integer pageSize, Integer pageNumber) {
+        Integer numberOfResults = dao.countDefinedTermByRepresentationText(label,clazz);
+		
+		List<T> results = new ArrayList<T>();
+		if(numberOfResults > 0) { // no point checking again
+			results = dao.getDefinedTermByRepresentationText(label, clazz, pageSize, pageNumber);
+		}
+		
+		return new DefaultPagerImpl<T>(pageNumber, numberOfResults, pageSize, results);
+	}	
 }

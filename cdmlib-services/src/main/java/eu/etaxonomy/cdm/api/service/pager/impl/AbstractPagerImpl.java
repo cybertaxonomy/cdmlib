@@ -37,12 +37,30 @@ public abstract class AbstractPagerImpl<T> implements Pager<T>, Serializable {
 	protected List<T> records;
 	protected String suggestion;
 	protected ArrayList<Integer> indices;
+	protected Integer pageSize;
 
+	/**
+	 * Constructor
+	 * 
+	 * @param currentIndex the page of this result set (0-based), can be null 
+	 * @param count the total number of results available for this query
+	 * @param pageSize The size of pages (can be null if all results should be returned if available)
+	 * @param records A list of objects in this page (can be empty if there were no results)
+	 * @param suggestion a suggested query that would improve the search (only applicable for free-text / lucene queries)
+	 */
 	public AbstractPagerImpl(Integer currentIndex, Integer count, Integer pageSize, List<T> records, String suggestion) {
 		this(currentIndex,count,pageSize,records);
 		this.suggestion = suggestion;
 	}
 	
+	/**
+	 * Constructor
+	 * 
+	 * @param currentIndex the page of this result set (0-based), can be null 
+	 * @param count the total number of results available for this query
+	 * @param pageSize The size of pages (can be null if all results should be returned if available)
+	 * @param records A list of objects in this page (can be empty if there were no results)
+	 */
 	public AbstractPagerImpl(Integer currentIndex, Integer count, Integer pageSize, List<T> records) {
         if(currentIndex != null) {
 		    this.currentIndex = currentIndex;
@@ -50,7 +68,8 @@ public abstract class AbstractPagerImpl<T> implements Pager<T>, Serializable {
         	this.currentIndex = 0;
         }
 		
-		pageNumbers = new HashMap<Integer,String>();
+        this.pageSize = pageSize;
+		this.pageNumbers = new HashMap<Integer,String>();
 		indices = new ArrayList<Integer>();
 		if(count == 0) {
 			pagesAvailable = 1;
@@ -185,6 +204,10 @@ public abstract class AbstractPagerImpl<T> implements Pager<T>, Serializable {
 
 	public String getSuggestion() {
 		return suggestion;
+	}
+
+	public Integer getPageSize() {
+		return pageSize;
 	}
 
 }
