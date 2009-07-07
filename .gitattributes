@@ -1,6 +1,7 @@
 * text=auto !eol
 /INSTALL.TXT -text
 /LICENSE.TXT -text
+app-import/build.xml -text
 app-import/pom.xml -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/abcdImport/SpecimenImport.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/abcdImport/SynthesysCacheActivator.java -text
