@@ -1380,11 +1380,11 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/reference/JournalDefa
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/reference/NomRefDefaultCacheStrategyBase.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/reference/StrictReferenceBaseDefaultCacheStrategy.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/reference/ThesisDefaultCacheStrategy.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/taxon/TaxonBaseDefaultCacheStrategy.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/exceptions/StringNotParsableException.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/exceptions/UnknownCdmTypeException.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/parser/INonViralNameParser.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/parser/NonViralNameParserImpl.java -text
-cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/taxon/TaxonBaseDefaultCacheStrategy.java -text
 cdmlib-model/src/main/resources/log4j.properties -text
 cdmlib-model/src/main/resources/terms/AbsenceTerm.csv -text
 cdmlib-model/src/main/resources/terms/AnnotationType.csv -text

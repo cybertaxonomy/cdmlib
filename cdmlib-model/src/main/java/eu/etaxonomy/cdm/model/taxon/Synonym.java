@@ -20,7 +20,7 @@ import eu.etaxonomy.cdm.model.common.IRelated;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
-import eu.etaxonomy.cdm.strategy.taxon.TaxonBaseDefaultCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.taxon.TaxonBaseDefaultCacheStrategy;
 
 import java.util.*;
 

@@ -17,7 +17,7 @@ import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
-import eu.etaxonomy.cdm.strategy.taxon.TaxonBaseDefaultCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.taxon.TaxonBaseDefaultCacheStrategy;
 
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
