@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.remote.controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -27,6 +28,9 @@ import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
+import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
+import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
  * @author a.kohlbecker
@@ -34,8 +38,8 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
  *
  */
 @Controller
-@RequestMapping(value = {"/*/term/", "/*/term/?*"})
-public class TermListConroller extends BaseListController<DefinedTermBase, ITermService> {
+@RequestMapping(value = {"/*/term/", "/*/term/?*", "/*/term/?*/*"})
+public class TermListController extends BaseListController<DefinedTermBase, ITermService> {
 	
 	private static final List<String> VOCABULARY_LIST_INIT_STRATEGY = Arrays.asList(new String []{
 			"representations"
@@ -75,6 +79,29 @@ public class TermListConroller extends BaseListController<DefinedTermBase, ITerm
 		UUID uuid = readValueUuid(request, "^/(?:[^/]+)/term/([^/?#&\\.]+).*");
 		TermVocabulary<DefinedTermBase> vocab = service.loadVocabulary(uuid, VOCABULARY_INIT_STRATEGY);
 		return vocab;
+	}
+	
+	@RequestMapping(method = RequestMethod.GET,
+		value = "/*/term/tdwg/*")
+	public List<NamedArea> doGetTdwgLevel(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		
+		
+		String path = request.getServletPath();
+		String[] pathTokens = path.split("/");
+		String levelStr = pathTokens[4];
+		if(levelStr.indexOf('.') > -1){
+			levelStr = levelStr.substring(0, levelStr.indexOf('.'));
+		}
+		Integer levelId = Integer.valueOf(levelStr);
+		NamedAreaLevel level = null;
+		switch(levelId){
+			case 1: level = NamedAreaLevel.TDWG_LEVEL1(); break;
+			case 2: level = NamedAreaLevel.TDWG_LEVEL2(); break;
+			case 3: level = NamedAreaLevel.TDWG_LEVEL3(); break;
+			case 4: level = NamedAreaLevel.TDWG_LEVEL4(); break;
+		}
+		Pager<NamedArea> p = service.list(level, null, null, null, null, null);
+		return p.getRecords();
 	}
 
 	

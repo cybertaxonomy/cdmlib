@@ -48,6 +48,7 @@ public class TaxonNodeBeanProcessor extends CycleSetAcess implements JsonBeanPro
 		json.element("uuid", node.getTaxon().getUuid(), jsonConfig);
 		json.element("secUuid", node.getTaxon().getSec().getUuid(), jsonConfig);
 		json.element("taxonomicChildrenCount", node.getCountChildren(), jsonConfig);
+		json.element("rankLabel", node.getTaxon().getName().getRank().getLabel(), jsonConfig);
 		
 		return json;
 	}

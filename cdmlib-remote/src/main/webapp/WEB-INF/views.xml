@@ -19,7 +19,6 @@
     <bean name="**/*.json" class="eu.etaxonomy.cdm.remote.view.JsonView">
     	<property name="jsonConfig" ref="jsonConfig" />
     </bean>
-    <bean name="htmlView" class="eu.etaxonomy.cdm.remote.view.HtmlView"/>
     
     <!-- taxonomy service -->
 <!--    <bean name="**/taxonomy.xml **/taxonomy/*.xml **/taxonomy/**/*.xml" class="eu.etaxonomy.cdm.remote.view.JsonView">-->
@@ -48,4 +47,5 @@
     <bean name="**/portal/*.json **/portal/**/*.json" class="eu.etaxonomy.cdm.remote.view.JsonView">
         <property name="jsonConfig" ref="jsonConfigPortal" />
     </bean>
+
 </beans>

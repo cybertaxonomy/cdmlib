@@ -44,6 +44,7 @@ public class TaxonomyNodeBeanProcessor extends CycleSetAcess implements JsonBean
 		json.element("titleCache", taxon.getName().getTitleCache(), jsonConfig);
 		List<TaggedText> taggedTitle = TaxonNameBaseBeanProcessor.getTaggedName(taxon.getName());
 		json.element("taggedTitle", taggedTitle, jsonConfig);
+		json.element("rankLabel", taxon.getName().getRank().getLabel(), jsonConfig);
 		json.element("uuid", taxon.getUuid(), jsonConfig);
 		json.element("secUuid", taxon.getSec().getUuid(), jsonConfig);
 		json.element("taxonomicChildrenCount", taxon.getTaxonomicChildrenCount(), jsonConfig);

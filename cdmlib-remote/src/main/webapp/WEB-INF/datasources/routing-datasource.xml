@@ -10,9 +10,6 @@
     
     <bean id="dataSource"  lazy-init="true" class="eu.etaxonomy.cdm.database.UpdatableRoutingDataSource">
     	<!--  The property beanDefinitionFile defaults to "datasources.xml" in {USER_HOME}./cdmLibrary -->
-    	<property name="beanDefinitionFile" value="datasources-test21.xml" />
-    	<!-- 
-    	 -->
     	<!--  The property defaultDatasourceName defaults to "empty_default" 
     	<property name="defaultDatasourceName" value="cichorieae" />
     	-->
@@ -24,11 +21,12 @@
         class="org.springframework.beans.factory.config.PropertiesFactoryBean">
         <property name="properties">
             <props>
-                <prop key="hibernate.hbm2ddl.auto">validate</prop>
+                <prop key="hibernate.hbm2ddl.auto">update</prop>
                 <prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
                 <prop key="hibernate.cache.provider_class">org.hibernate.cache.NoCacheProvider</prop>
                 <prop key="hibernate.show_sql">false</prop>
                 <prop key="hibernate.format_sql">false</prop>
+                <prop key="hibernate.search.default.indexBase">${user.home}/.cdmLibrary/</prop>
             </props>
         </property>
     </bean>

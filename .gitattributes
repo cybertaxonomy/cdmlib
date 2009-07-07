@@ -1773,6 +1773,7 @@ cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/FeatureListContro
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/FeatureTreeListController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/FeatureTreeListPortalController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/HttpStatusMessage.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/ManagementController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/MediaController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/MediaListController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/NameController.java -text
@@ -1788,7 +1789,7 @@ cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/TaxonListControll
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/TaxonPortalController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/TaxonPortalListController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/TaxonomicTreeController.java -text
-cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/TermListConroller.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/TermListController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/interceptor/ContentNegociationHandlerInterceptor.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/interceptor/DatasourceContextHandlerInterceptor.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/interceptor/LocaleContextHandlerInterceptor.java -text
@@ -1861,6 +1862,7 @@ cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/tdwg/voc/TaxonRelationsh
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/tdwg/voc/Team.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/editor/LSIDAuthorityPropertyEditor.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/editor/LSIDPropertyEditor.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/editor/NamedAreaPropertyEditor.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/editor/RankPropertyEditor.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/editor/UUIDPropertyEditor.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/exception/CdmExceptionResolver.java -text
@@ -1891,7 +1893,6 @@ cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/l10n/LocaleContext.java -tex
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/service/AuthorityController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/service/CdmObjectNonExisting.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/service/DataController.java -text
-cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/service/ManagementController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/service/MetadataController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/service/Utils.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/view/BaseView.java -text
@@ -1912,12 +1913,7 @@ cdmlib-remote/src/main/resources/spy.properties -text
 cdmlib-remote/src/main/webapp/WEB-INF/applicationContext.views.xml -text
 cdmlib-remote/src/main/webapp/WEB-INF/applicationContext.xml -text
 cdmlib-remote/src/main/webapp/WEB-INF/cdmrest-servlet.xml -text
-cdmlib-remote/src/main/webapp/WEB-INF/datasources/datasources-bgbm24-import.xml -text
 cdmlib-remote/src/main/webapp/WEB-INF/datasources/datasources-local.xml -text
-cdmlib-remote/src/main/webapp/WEB-INF/datasources/datasources-wp7virtual-import.xml -text
-cdmlib-remote/src/main/webapp/WEB-INF/datasources/datasources-wp7virtual-production-A.xml -text
-cdmlib-remote/src/main/webapp/WEB-INF/datasources/datasources-wp7virtual-production-B.xml -text
-cdmlib-remote/src/main/webapp/WEB-INF/datasources/empty-default-datasource-wp7virtual.xml -text
 cdmlib-remote/src/main/webapp/WEB-INF/datasources/empty-default-datasource.xml -text
 cdmlib-remote/src/main/webapp/WEB-INF/datasources/p6spy.xml -text
 cdmlib-remote/src/main/webapp/WEB-INF/datasources/routing-datasource.xml -text
@@ -1926,7 +1922,8 @@ cdmlib-remote/src/main/webapp/WEB-INF/views.xml -text
 cdmlib-remote/src/main/webapp/WEB-INF/web.xml -text
 cdmlib-remote/src/main/webapp/favicon.ico -text svneol=unset#unset
 cdmlib-remote/src/main/webapp/index.jsp -text
-cdmlib-remote/src/main/webapp/jsp/error.jsp -text
+cdmlib-remote/src/main/webapp/jsp/datasources/list.jsp -text
+cdmlib-remote/src/main/webapp/jsp/index.jsp -text
 cdmlib-remote/src/main/webapp/robots.txt -text
 cdmlib-remote/src/site/site.xml -text
 cdmlib-remote/src/test/java/eu/etaxonomy/cdm/remote/dto/assembler/lsid/AssemblerTest.java -text

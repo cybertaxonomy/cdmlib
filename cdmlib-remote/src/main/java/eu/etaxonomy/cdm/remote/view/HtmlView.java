@@ -9,7 +9,10 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.web.servlet.View;
 
-public class HtmlView implements View {
+import eu.etaxonomy.cdm.remote.view.JsonView.Type;
+
+public class HtmlView implements View{
+
 
 	public String getContentType() {
 		return "text/html";

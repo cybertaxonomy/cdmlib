@@ -15,8 +15,6 @@ import java.beans.PropertyEditorSupport;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
-
-
 public class RankPropertyEditor extends PropertyEditorSupport {
 	
 	public void setAsText(String name) {

@@ -225,6 +225,10 @@ public class TaxonomicTreeController extends AbstractListController<TaxonBase, I
 		}
 		
 		TaxonomicTree tree = readTreeByUuid(uriParams.get(0));
+		if(tree == null){
+			response.sendError(500, "The specified instance identified by " + uriParams.get(0) + " is not a taxonomicTree");
+			return null;
+		}
 		Rank rank = readRankByUuid(uriParams.get(0));
 		//TODO rank is being ignored
 		try {

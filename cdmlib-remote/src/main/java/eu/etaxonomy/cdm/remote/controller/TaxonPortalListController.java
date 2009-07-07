@@ -25,6 +25,7 @@ import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 
 /**
@@ -52,14 +53,14 @@ public class TaxonPortalListController extends BaseListController<TaxonBase, ITa
 	}
 	
 	@RequestMapping(method = RequestMethod.GET)
-	public Pager<IdentifiableEntity> doFind(
+	public Pager<IdentifiableEntity> doFind( //FIXME duplicate method see TaxonPortalController.doFind()
 			@RequestParam(value = "page", required = false) Integer page,
 			@RequestParam(value = "pageSize", required = false) Integer pageSize,
 			@RequestParam(value = "q", required = false) String query,
 			@RequestParam(value = "doTaxa", required = false) Boolean doTaxa,
 			@RequestParam(value = "doSynonyms", required = false) Boolean doSynonyms,
 			@RequestParam(value = "doNamesWithoutTaxa", required = false) Boolean doNamesWithoutTaxa,
-			@RequestParam(value = "secUuid", required = false) UUID secUuid) {
+			@RequestParam(value = "treeUuid", required = false) UUID treeUuid) {
 		
 		if(page == null){ page = DEFAULT_PAGE;}
 		if(pageSize == null){ pageSize = DEFAULT_PAGESIZE;}
@@ -72,9 +73,9 @@ public class TaxonPortalListController extends BaseListController<TaxonBase, ITa
 		config.setDoSynonyms(doSynonyms);
 		config.setDoNamesWithoutTaxa(doNamesWithoutTaxa);
 		config.setMatchMode(MatchMode.BEGINNING);
-		if(secUuid != null){
-			ReferenceBase sec = referenceService.findByUuid(secUuid);
-			config.setSec(sec);
+		if(treeUuid != null){
+			TaxonomicTree taxonomicTree = service.getTaxonomicTreeByUuid(treeUuid);
+			config.setTaxonomicTree(taxonomicTree);
 		}
 			
 		return (Pager<IdentifiableEntity>) service.findTaxaAndNames(config);

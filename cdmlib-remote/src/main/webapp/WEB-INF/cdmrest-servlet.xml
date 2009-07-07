@@ -32,8 +32,10 @@
         <property name="defaultExtension" value="xml"/>
     </bean>
     
-    <!--  first we try to find the controller using the simpleurlmapping, then the classname
-          this follows the principal of "convention over configuration" -->   
+    <!--  
+    	first we try to find the controller using the simpleurlmapping, then the classname
+         this follows the principal of "convention over configuration" 
+    -->   
     <bean class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping">
         <property name="order" value="1" />
         <property name="interceptors">
@@ -52,8 +54,19 @@
     </bean>
     
     <bean id="viewResolverJsp"  class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-        <property name="prefix" value="/jsp/"/>
+        <property name="prefix" value="/manager/"/>
         <property name="suffix" value=".jsp"/>
     </bean>
-
+    
+    <!--  
+    	Security 
+    -->
+<!--    <bean id="basicProcessingFilter" class="org.springframework.security.ui.basicauth.BasicProcessingFilter">-->
+<!--		<property name="authenticationManager"><ref bean="authenticationManager"/></property>-->
+<!--		<property name="authenticationEntryPoint"><ref bean="authenticationEntryPoint"/></property>-->
+<!--	</bean>-->
+<!--	<bean id="authenticationEntryPoint" class="org.springframework.security.ui.basicauth.BasicProcessingFilterEntryPoint">-->
+<!--		<property name="realmName"><value>Name Of Your Realm</value></property>-->
+<!--	</bean>-->
+    
 </beans>

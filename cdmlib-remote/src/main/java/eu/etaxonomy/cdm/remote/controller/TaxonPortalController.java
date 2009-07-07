@@ -17,6 +17,7 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.UUID;
@@ -48,6 +49,7 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
+import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.ImageFile;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
@@ -61,7 +63,9 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
+import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
+import eu.etaxonomy.cdm.remote.editor.NamedAreaPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.UUIDPropertyEditor;
 
 /**
@@ -197,6 +201,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 	@InitBinder
     public void initBinder(WebDataBinder binder) {
 		binder.registerCustomEditor(UUID.class, new UUIDPropertyEditor());
+		binder.registerCustomEditor(NamedArea.class, new NamedAreaPropertyEditor());
 	}
 	
 	
@@ -208,15 +213,17 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 	}
 	
 	@RequestMapping(method = RequestMethod.GET,
-			value = {"/*/portal/taxon/find"}) //TODO map to path /*/portal/taxon/ 
+			value = {"/*/portal/taxon/find"}) //TODO map to path /*/portal/taxon/
+			//FIXME duplicate method see TaxonPortalListController.doFind() : TaxonPortalListController is disabled!
 	public Pager<IdentifiableEntity> doFind(
-			@RequestParam(value = "q", required = false) String query,
+			@RequestParam(value = "query", required = false) String query,
 			@RequestParam(value = "page", required = false) Integer page,
 			@RequestParam(value = "pageSize", required = false) Integer pageSize,
 			@RequestParam(value = "doTaxa", required = false) Boolean doTaxa,
 			@RequestParam(value = "doSynonyms", required = false) Boolean doSynonyms,
 			@RequestParam(value = "doTaxaByCommonNames", required = false) Boolean doTaxaByCommonNames,
-			@RequestParam(value = "secUuid", required = false) UUID secUuid) throws IOException {
+			@RequestParam(value = "area", required = false) Set<NamedArea> areas,
+			@RequestParam(value = "treeUuid", required = false) UUID treeUuid) throws IOException {
 		
 		if(page == null){ page = BaseListController.DEFAULT_PAGE;}
 		if(pageSize == null){ pageSize = BaseListController.DEFAULT_PAGESIZE;}
@@ -230,9 +237,10 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 		config.setDoTaxaByCommonNames(doTaxaByCommonNames != null ? doTaxaByCommonNames : Boolean.FALSE );
 		config.setMatchMode(MatchMode.BEGINNING);
 		config.setTaxonPropertyPath(SIMPLE_TAXON_INIT_STRATEGY);
-		if(secUuid != null){
-			ReferenceBase sec = referenceService.findByUuid(secUuid);
-			config.setSec(sec);
+		config.setNamedAreas(areas);
+		if(treeUuid != null){
+			TaxonomicTree taxonomicTree = service.getTaxonomicTreeByUuid(treeUuid);
+			config.setTaxonomicTree(taxonomicTree);
 		}
 			
 		return (Pager<IdentifiableEntity>) service.findTaxaAndNames(config);
