@@ -24,6 +24,7 @@ import eu.etaxonomy.cdm.model.location.NamedAreaType;
 import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
+import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 
 public interface IDefinedTermDao extends IVersionableDao<DefinedTermBase>, ITitledDao<DefinedTermBase>{
@@ -76,6 +77,18 @@ public interface IDefinedTermDao extends IVersionableDao<DefinedTermBase>, ITitl
 	 * @return a List of named areas
 	 */
 	public List<NamedArea> list(NamedAreaLevel level, NamedAreaType type, Integer pageSize, Integer pageNumber);
+	
+	/**
+	 * @param level
+	 * @param type
+	 * @param pageSize
+	 * @param pageNumber
+	 * @param orderHints
+	 * @param propertyPaths
+	 * @return
+	 */
+	public List<NamedArea> list(NamedAreaLevel level, NamedAreaType type, Integer pageSize, Integer pageNumber,  List<OrderHint> orderHints, List<String> propertyPaths);
+	
 	
 	/**
 	 * Returns a count of NamedArea instances (optionally filtered by type or level)

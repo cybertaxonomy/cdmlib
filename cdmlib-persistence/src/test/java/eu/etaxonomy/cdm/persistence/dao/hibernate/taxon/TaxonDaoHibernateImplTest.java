@@ -9,7 +9,9 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import org.hibernate.Hibernate;
@@ -21,10 +23,12 @@ import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.dbunit.annotation.ExpectedDataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
+import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -35,12 +39,12 @@ import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.model.view.AuditEventRecord;
 import eu.etaxonomy.cdm.model.view.context.AuditEventContextHolder;
 import eu.etaxonomy.cdm.persistence.dao.common.AuditEventSort;
+import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
 import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.fetch.CdmFetch;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
-import eu.etaxonomy.cdm.persistence.query.SelectMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
@@ -57,6 +61,9 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 	@SpringBeanByType	
 	private IReferenceDao referenceDao;
 	
+	@SpringBeanByType
+	IDefinedTermDao definedTermDao;
+	
 	private UUID uuid;
 	private UUID sphingidae;
 	private UUID acherontia;
@@ -64,6 +71,10 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 	private UUID acherontiaLachesis;
 	private AuditEvent previousAuditEvent;
 	private AuditEvent mostRecentAuditEvent;
+
+	private UUID northernAmericaUuid;
+	private UUID southernAmericaUuid;
+	private UUID antarcticaUuid;
 
 	@Before
 	public void setUp() {
@@ -79,6 +90,10 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 		mostRecentAuditEvent.setRevisionNumber(1026);
 		mostRecentAuditEvent.setUuid(UUID.fromString("afe8e761-8545-497b-9134-6a6791fc0b0d"));
 		AuditEventContextHolder.clearContext(); // By default we're in the current view (i.e. view == null)
+		
+		northernAmericaUuid = UUID.fromString("2757e726-d897-4546-93bd-7951d203bf6f");
+		southernAmericaUuid = UUID.fromString("6310b3ba-96f4-4855-bb5b-326e7af188ea");
+		antarcticaUuid = UUID.fromString("791b3aa0-54dd-4bed-9b68-56b4680aad0c");
 	}
 	
 	@After
@@ -186,16 +201,43 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 //		assertEquals(results.get(4).getTitleCache(), "Abies alba Michx. sec. ???");
 //		assertEquals(results.get(5).getTitleCache(), "Abies alba Mill. sec. ???");
 
-		results = taxonDao.getTaxaByName("A", MatchMode.BEGINNING, 
-				true, null, null);
+		results = taxonDao.getTaxaByName("A", MatchMode.BEGINNING, true, null, null);
 		assertNotNull("getTaxaByName should return a List", results);
 		assertTrue(results.size() == 9);
 
-		results = taxonDao.getTaxaByName("Aus", MatchMode.EXACT, 
-				true, null, null);
+		results = taxonDao.getTaxaByName("Aus", MatchMode.EXACT, true, null, null);
 		assertNotNull("getTaxaByName should return a List", results);
 		assertEquals("Results list should contain one entity",1,results.size());
 	}	
+	
+	/**
+	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.taxon.TaxonDaoHibernateImpl#getTaxaByName(java.lang.String, eu.etaxonomy.cdm.model.reference.ReferenceBase)}
+	 * restricting the search by a set of Areas.
+	 */
+	@SuppressWarnings("unchecked")
+	@Test
+	@DataSet("TaxonDaoHibernateImplTest.testGetTaxaByNameAndArea.xml")
+	public void testGetTaxaByNameAndArea() {
+		
+		Set<NamedArea> namedAreas = new HashSet<NamedArea>();
+		namedAreas.add((NamedArea)definedTermDao.load(northernAmericaUuid));
+//		namedAreas.add((NamedArea)definedTermDao.load(southernAmericaUuid));
+//		namedAreas.add((NamedArea)definedTermDao.load(antarcticaUuid));
+		
+		// searching for a taxon: Rethera
+		List<TaxonBase> results = taxonDao.getTaxaByName(Taxon.class, "Rethera", MatchMode.BEGINNING, null, namedAreas,
+			null, null, null);
+		assertNotNull("getTaxaByName should return a List", results);
+		assertTrue("expected to find one taxon but found "+results.size(), results.size() == 1);
+		
+		// searching for a synonym: Atropos Agassiz
+		//TODO implement
+//		results = taxonDao.getTaxaByName("Atropos Agassiz", MatchMode.BEGINNING, SelectMode.SYNONYMS, null, namedAreas,
+//			null, null, null);
+//		assertNotNull("getTaxaByName should return a List", results);
+//		assertTrue("expected to find one taxon but found "+results.size(), results.size() == 1);
+		
+	}
 
 	
 	@Test
@@ -231,19 +273,18 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 	@Test
 	@DataSet
 	public void testCountTaxaByName() {
-		int numberOfTaxa = taxonDao.countTaxaByName("A*", MatchMode.BEGINNING, true);
+		long numberOfTaxa = taxonDao.countTaxaByName(Taxon.class, "A*", MatchMode.BEGINNING, null, null);
 		assertEquals(numberOfTaxa, 9);
-		numberOfTaxa = taxonDao.countTaxaByName("A*", MatchMode.BEGINNING, SelectMode.TAXA);
+		numberOfTaxa = taxonDao.countTaxaByName(Taxon.class, "A*", MatchMode.BEGINNING, null, null);
 		assertEquals(numberOfTaxa, 9);
-		numberOfTaxa = taxonDao.countTaxaByName("A*", MatchMode.BEGINNING, false);
+		numberOfTaxa = taxonDao.countTaxaByName(Synonym.class, "A*", MatchMode.BEGINNING, null, null);
 		assertEquals(numberOfTaxa, 3);
-		numberOfTaxa = taxonDao.countTaxaByName("A*", MatchMode.BEGINNING, SelectMode.SYNONYMS);
-		assertEquals(numberOfTaxa, 3);
-		numberOfTaxa = taxonDao.countTaxaByName("A*", MatchMode.BEGINNING, SelectMode.ALL);
+		numberOfTaxa = taxonDao.countTaxaByName(TaxonBase.class, "A*", MatchMode.BEGINNING, null, null);
 		assertEquals(numberOfTaxa, 12);
-		ReferenceBase reference = referenceDao.findByUuid(UUID.fromString("596b1325-be50-4b0a-9aa2-3ecd610215f2"));
-		numberOfTaxa = taxonDao.countTaxaByName("A*", MatchMode.BEGINNING, SelectMode.ALL, reference);
-		assertEquals(numberOfTaxa, 2);
+//	FIXME implement test for search in specific taxontree 		
+//		ReferenceBase reference = referenceDao.findByUuid(UUID.fromString("596b1325-be50-4b0a-9aa2-3ecd610215f2"));
+//		numberOfTaxa = taxonDao.countTaxaByName("A*", MatchMode.BEGINNING, SelectMode.ALL, null, null);
+//		assertEquals(numberOfTaxa, 2);
 	}
 	
 	@Test

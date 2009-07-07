@@ -143,7 +143,7 @@ public class PersistentTermInitializer extends DefaultTermInitializer {
 		}
 
 		TermVocabulary loadedVocabulary  = termLoader.loadTerms((Class<? extends DefinedTermBase>)clazz, terms);
-		
+
 		UUID vocabularyUuid = loadedVocabulary.getUuid();
 		
 		

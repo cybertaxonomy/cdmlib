@@ -10,9 +10,12 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.taxon;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.UUID;
@@ -26,7 +29,6 @@ import org.hibernate.FetchMode;
 import org.hibernate.Hibernate;
 import org.hibernate.Query;
 import org.hibernate.criterion.Criterion;
-import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.envers.query.AuditEntity;
@@ -48,6 +50,7 @@ import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
+import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
@@ -66,7 +69,6 @@ import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.fetch.CdmFetch;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
-import eu.etaxonomy.cdm.persistence.query.SelectMode;
 
 
 /**
@@ -78,7 +80,6 @@ import eu.etaxonomy.cdm.persistence.query.SelectMode;
 @Qualifier("taxonDaoHibernateImpl")
 public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implements ITaxonDao {	
 	private AlternativeSpellingSuggestionParser<TaxonBase> alternativeSpellingSuggestionParser;
-	
 	
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TaxonDaoHibernateImpl.class);
@@ -95,8 +96,9 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 	
 	@Autowired(required = false)   //TODO switched of because it caused problems when starting CdmApplicationController
 	public void setAlternativeSpellingSuggestionParser(AlternativeSpellingSuggestionParser<TaxonBase> alternativeSpellingSuggestionParser) {
-		this.alternativeSpellingSuggestionParser = alternativeSpellingSuggestionParser;
+		this.alternativeSpellingSuggestionParser = alternativeSpellingSuggestionParser; 
 	}
+	
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#getRootTaxa(eu.etaxonomy.cdm.model.reference.ReferenceBase)
@@ -204,117 +206,166 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		return (List<TaxonBase>)criteria.list();
 	}
 
-	public List<TaxonBase> getTaxaByName(String queryString, MatchMode matchMode, SelectMode selectMode,
+	public List<TaxonBase> getTaxaByName(Class<? extends TaxonBase> clazz, String queryString, MatchMode matchMode,
 			Integer pageSize, Integer pageNumber) {
 		
-		return getTaxaByName(queryString, matchMode, selectMode, null, pageSize, pageNumber, null);
+		return null; // getTaxaByName(selectMode, queryString, matchMode, null, null, pageSize, pageNumber, null);
 	}
 	
 	public List<TaxonBase> getTaxaByName(String queryString, MatchMode matchMode, 
 			Boolean accepted, Integer pageSize, Integer pageNumber) {
 		
 		if (accepted == true) {
-			return getTaxaByName(queryString, matchMode, SelectMode.TAXA, pageSize, pageNumber);
+			return getTaxaByName(Taxon.class, queryString, matchMode, pageSize, pageNumber);
 		} else {
-			return getTaxaByName(queryString, matchMode, SelectMode.SYNONYMS, pageSize, pageNumber);
+			return getTaxaByName(Synonym.class, queryString, matchMode, pageSize, pageNumber);
 		}
 	}
 	
 	
-	public List<TaxonBase> getTaxaByName(String queryString, MatchMode matchMode, SelectMode selectMode,
-			ReferenceBase sec, Integer pageSize, Integer pageNumber, 
-			List<String> propertyPaths) {
+	public List<TaxonBase> getTaxaByName(Class<? extends TaxonBase> clazz, String queryString, MatchMode matchMode,
+			ReferenceBase sec, Set<NamedArea> namedAreas, Integer pageSize, 
+			Integer pageNumber, List<String> propertyPaths) {
+				
+		
+		boolean doCount = false;
+		
+		Query query = prepareTaxaByName(clazz, queryString, matchMode, namedAreas, pageSize, pageNumber, doCount);
 
-		Criteria criteria = null;
-		Class<?> clazz = selectMode.criteria();
-		criteria = getSession().createCriteria(clazz);
-		
-		criteria.setFetchMode( "name", FetchMode.JOIN );
-		criteria.createAlias("name", "name");
-		
-		if (queryString != null) {
-			String hqlQueryString = matchMode.queryStringFrom(queryString);
-			if (matchMode == MatchMode.EXACT) {
-				criteria.add(Restrictions.eq("name.nameCache", hqlQueryString));
-			} else {
-				criteria.add(Restrictions.ilike("name.nameCache", hqlQueryString));
-			}
-		}
-		
-		if (sec != null && sec.getId() != 0) {
-			criteria.add(Restrictions.eq("sec", sec ) );
-		}
-		
-		criteria.addOrder(Order.asc("name.nameCache"));
-		 
-		if(pageSize != null) {
-			criteria.setMaxResults(pageSize);
-			if(pageNumber != null) {
-				criteria.setFirstResult(pageNumber * pageSize);
-			}
-		}
-
-		List<TaxonBase> results = criteria.list();
+		List<TaxonBase> results = query.list();
 		
 		defaultBeanInitializer.initializeAll(results, propertyPaths);
+		
 		return results;
 		
 	}
+
+	/**
+	 * @param clazz
+	 * @param queryString
+	 * @param matchMode
+	 * @param namedAreas
+	 * @param pageSize
+	 * @param pageNumber
+	 * @param doCount
+	 * @return
+	 * 
+	 * FIXME implement taxontree restriction & implement test: see {@link TaxonDaoHibernateImplTest#testCountTaxaByName()}
+	 */
+	private Query prepareTaxaByName(Class<? extends TaxonBase> clazz, String queryString, MatchMode matchMode,
+			Set<NamedArea> namedAreas, Integer pageSize, Integer pageNumber, boolean doCount) {
 	
-	public Integer countTaxaByName(String queryString, MatchMode matchMode, SelectMode selectMode) {
 		
-		return countTaxaByName(queryString, matchMode, selectMode, null);
-	}
+		//TODO ? checkNotInPriorView("TaxonDaoHibernateImpl.countTaxaByName(String queryString, Boolean accepted, ReferenceBase sec)");
 
-	public Integer countTaxaByName(String queryString, 
-			MatchMode matchMode, SelectMode selectMode, ReferenceBase sec) {
-
-		Criteria criteria = null;
-		Class<?> clazz = selectMode.criteria();
-		criteria = getSession().createCriteria(clazz);
-
-		criteria.setFetchMode( "name", FetchMode.JOIN );
-		criteria.createAlias("name", "name");
-
-		if (queryString != null) {
-			String hqlQueryString = matchMode.queryStringFrom(queryString);
-			if (matchMode == MatchMode.EXACT) {
-				criteria.add(Restrictions.eq("name.nameCache", hqlQueryString));
+		String hqlQueryString = matchMode.queryStringFrom(queryString);
+		
+		String matchOperator;
+		if (matchMode == MatchMode.EXACT) {
+			matchOperator = "=";
+		} else {
+			matchOperator = "like";
+		}
+		
+		String selectWhat = (doCount ? "count(distinct t)": "distinct t");
+		
+		String hql = "";
+		Set<NamedArea> areasExpanded = new HashSet<NamedArea>();
+		if(namedAreas != null && namedAreas.size() > 0){
+			// expand areas
+			List<NamedArea> childAreas;
+			Query areaQuery = getSession().createQuery("select childArea from NamedArea as childArea left join childArea.partOf as parentArea where parentArea = :area");
+			expandNamedAreas(namedAreas, areasExpanded, areaQuery);
+			
+			if(clazz.equals(Taxon.class)){
+				hql = "select " + selectWhat + " from Distribution e join e.inDescription d join d.taxon t join t.name n "+
+					" where e.area in (:namedAreas) AND n.nameCache " + matchOperator + " :queryString";   
 			} else {
-				criteria.add(Restrictions.ilike("name.nameCache", hqlQueryString));
+				//FIXME implement
+				logger.warn("find synonyms by area not jet implemented");
+				hql = "select " + selectWhat + " from Distribution e join e.inDescription d join d.taxon t join t.name n "+
+					" where e.area in (:namedAreas) AND n.nameCache " + matchOperator + " :queryString";   
+			}
+		} else {
+			hql = "select " + selectWhat + " from " + clazz.getSimpleName() + " t" 
+			+ " where t.name.nameCache " + matchOperator + " :queryString";
+		}
+		
+		if(!doCount){
+			hql += " order by t.titleCache"; //" order by t.name.nameCache";
+		}
+		
+		Query query = getSession().createQuery(hql);
+		
+		query.setParameter("queryString", hqlQueryString);
+		if(areasExpanded.size() > 0){
+			query.setParameterList("namedAreas", areasExpanded);
+		}
+		
+		if(pageSize != null &&  !doCount) {
+			query.setMaxResults(pageSize);
+			if(pageNumber != null) {
+				query.setFirstResult(pageNumber * pageSize);
 			}
 		}
-
-		if (sec != null && sec.getId() != 0) {
-			criteria.add(Restrictions.eq("sec", sec ) );
-		}
-
-		criteria.setProjection(Projections.projectionList().add(Projections.rowCount()));
-		return (Integer)criteria.uniqueResult();
-
+		return query;
 	}
 	
-	public Integer countTaxaByName(String queryString, MatchMode matchMode, Boolean accepted) {
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#countTaxaByName(java.lang.String, eu.etaxonomy.cdm.persistence.query.MatchMode, eu.etaxonomy.cdm.persistence.query.SelectMode, eu.etaxonomy.cdm.model.reference.ReferenceBase, java.util.Set)
+	 */
+	public long countTaxaByName(Class<? extends TaxonBase> clazz, String queryString, MatchMode matchMode,
+		ReferenceBase sec, Set<NamedArea> namedAreas) {
 		
-		Criteria criteria = null;
-		if (accepted == true) {
-			criteria = getSession().createCriteria(Taxon.class);
-		} else {
-			criteria = getSession().createCriteria(Synonym.class);
-		}
-
-		criteria.setFetchMode( "name", FetchMode.JOIN );
-		criteria.createAlias("name", "name");
+		boolean doCount = true;
+		Query query = prepareTaxaByName(clazz, queryString, matchMode, namedAreas, null, null, doCount); // ####
+		Object result = query.uniqueResult();
+		return (Long) result;
 		
-		if (matchMode == MatchMode.EXACT) {
-			criteria.add(Restrictions.eq("name.nameCache", matchMode.queryStringFrom(queryString)));
-		} else {
-			criteria.add(Restrictions.ilike("name.nameCache", matchMode.queryStringFrom(queryString)));
-		}
-		
-		criteria.setProjection(Projections.projectionList().add(Projections.rowCount()));
-		return (Integer)criteria.uniqueResult();
 	}
+
+	/**
+	 * @param namedAreas
+	 * @param areasExpanded
+	 * @param areaQuery
+	 */
+	private void expandNamedAreas(Collection<NamedArea> namedAreas, Set<NamedArea> areasExpanded, Query areaQuery) {
+		List<NamedArea> childAreas;
+		for(NamedArea a : namedAreas){
+			areasExpanded.add(a);
+			areaQuery.setParameter("area", a);
+			childAreas = areaQuery.list();
+			if(childAreas.size() > 0){
+				areasExpanded.addAll(childAreas);
+				expandNamedAreas(childAreas, areasExpanded, areaQuery);
+			}
+		}
+	}
+	
+//	/* (non-Javadoc)
+//	 * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#countTaxaByName(java.lang.String, eu.etaxonomy.cdm.persistence.query.MatchMode, eu.etaxonomy.cdm.persistence.query.SelectMode)
+//	 */
+//	public Integer countTaxaByName(String queryString, MatchMode matchMode, SelectMode selectMode) {		
+//		return countTaxaByName(queryString, matchMode, selectMode, null);
+//	}
+
+//	/* (non-Javadoc)
+//	 * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#countTaxaByName(java.lang.String, eu.etaxonomy.cdm.persistence.query.MatchMode, eu.etaxonomy.cdm.persistence.query.SelectMode, eu.etaxonomy.cdm.model.reference.ReferenceBase)
+//	 */
+//	public Integer countTaxaByName(String queryString, 
+//			MatchMode matchMode, SelectMode selectMode, ReferenceBase sec) {
+//
+//		Long count = countTaxaByName(queryString, matchMode, selectMode, sec, null);
+//		return count.intValue();
+//
+//	}
+	
+//	public Integer countTaxaByName(String queryString, MatchMode matchMode, Boolean accepted) {
+//		
+//		SelectMode selectMode = (accepted ? SelectMode.TAXA : SelectMode.SYNONYMS);
+//		Long count = countTaxaByName(queryString, matchMode, selectMode, null, null);
+//		return count.intValue();
+//	}
 	
 
 	public List<TaxonBase> getAllTaxonBases(Integer pagesize, Integer page) {
@@ -598,34 +649,15 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		}
 	}
 	
-	public int countTaxaByName(String queryString, Boolean accepted, ReferenceBase sec) {
-		checkNotInPriorView("TaxonDaoHibernateImpl.countTaxaByName(String queryString, Boolean accepted, ReferenceBase sec)");
-		Criteria criteria = null;
-		
-		if (accepted == true) {
-			criteria = getSession().createCriteria(Taxon.class);
-		} else {
-			criteria = getSession().createCriteria(Synonym.class);
-		}
-		
-		criteria.setFetchMode( "name", FetchMode.JOIN );
-		criteria.createAlias("name", "name");
+//	public int countTaxaByName(String queryString, Boolean accepted, ReferenceBase sec) {
+//		
+//		SelectMode selectMode = (accepted ? SelectMode.TAXA : SelectMode.SYNONYMS);
+//		Long count = countTaxaByName(queryString, MatchMode.ANYWHERE, selectMode , sec, null);
+//		
+//		return count.intValue();
+//	}
 
-		if (sec != null){
-			if(sec.getId() == 0){
-				getSession().save(sec);
-			}
-			criteria.add(Restrictions.eq("sec", sec ) );
-		}
-		if (queryString != null) {
-			criteria.add(Restrictions.ilike("name.nameCache", queryString));
-		}
-		criteria.setProjection(Projections.projectionList().add(Projections.rowCount()));
-		
-		return (Integer)criteria.uniqueResult();
-	}
-
-	public int countTaxaByName(Class<? extends TaxonBase> clazz, String genusOrUninomial,	String infraGenericEpithet, String specificEpithet,	String infraSpecificEpithet, Rank rank) {
+	public int countTaxaByName(Class<? extends TaxonBase> clazz, String genusOrUninomial, String infraGenericEpithet, String specificEpithet,	String infraSpecificEpithet, Rank rank) {
 		checkNotInPriorView("TaxonDaoHibernateImpl.countTaxaByName(Boolean accepted, String genusOrUninomial,	String infraGenericEpithet, String specificEpithet,	String infraSpecificEpithet, Rank rank)");
         Criteria criteria = null;
 		

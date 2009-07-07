@@ -10,12 +10,13 @@
 package eu.etaxonomy.cdm.persistence.dao.taxon;
 
 import java.util.List;
-import java.util.UUID;
+import java.util.Set;
 
 import org.hibernate.criterion.Criterion;
 
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
+import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
@@ -32,7 +33,6 @@ import eu.etaxonomy.cdm.persistence.dao.common.ITitledDao;
 import eu.etaxonomy.cdm.persistence.fetch.CdmFetch;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
-import eu.etaxonomy.cdm.persistence.query.SelectMode;
 
 /**
  * @author a.mueller
@@ -40,28 +40,28 @@ import eu.etaxonomy.cdm.persistence.query.SelectMode;
  */
 public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<TaxonBase>, ISearchableDao<TaxonBase> {
 	
-	/**
-	 * Returns a count of TaxonBase instances (or Taxon instances, if accepted == true, or Synonym instance, if accepted == false) 
-	 * where the taxonBase.name.nameCache property matches the String queryString
-	 * 
-	 * @param queryString
-	 * @param accepted
-	 * @param sec
-	 * @return a count of the matching taxa
-	 */
-	public int countTaxaByName(String queryString, Boolean accepted, ReferenceBase sec);
+//	/**
+//	 * Returns a count of TaxonBase instances (or Taxon instances, if accepted == true, or Synonym instance, if accepted == false) 
+//	 * where the taxonBase.name.nameCache property matches the String queryString
+//	 * 
+//	 * @param queryString
+//	 * @param accepted
+//	 * @param sec
+//	 * @return a count of the matching taxa
+//	 */
+//	public int countTaxaByName(String queryString, Boolean accepted, ReferenceBase sec);
 
-	/**
-	 * Returns a count of TaxonBase instances where the
-	 * taxon.name properties match the parameters passed.
-	 * 
-	 * @param queryString search string
-	 * @param matchMode way how search string shall be matched: exact, beginning, or anywhere
-	 * @param selectMode either all taxon bases, or all taxa, or all synonyms
-	 * @param sec reference
-	 */ 
-	public Integer countTaxaByName(String queryString, 
-			MatchMode matchMode, SelectMode selectMode, ReferenceBase sec);
+//	/**
+//	 * Returns a count of TaxonBase instances where the
+//	 * taxon.name properties match the parameters passed.
+//	 * 
+//	 * @param queryString search string
+//	 * @param matchMode way how search string shall be matched: exact, beginning, or anywhere
+//	 * @param selectMode either all taxon bases, or all taxa, or all synonyms
+//	 * @param sec reference
+//	 */ 
+//	public Integer countTaxaByName(String queryString, 
+//			MatchMode matchMode, SelectMode selectMode, ReferenceBase sec);
 
 	/** 
 	 * Returns a list of TaxonBase instances where the taxon.titleCache property matches the name parameter, 
@@ -98,35 +98,51 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
 	/** 
 	 * Returns a list of TaxonBase instances (or Taxon instances, if accepted == true, or Synonym instance, if accepted == false) 
 	 * where the taxonBase.name.nameCache property matches the String queryString.
+	 * @param clazz
 	 * @param queryString
 	 * @param matchMode
-	 * @param selectMode
+	 * @param namedAreas TODO
 	 * @param pageSize
 	 * @param pageNumber
 	 * @param propertyPaths TODO
 	 * @return list of found taxa
 	 */
-	public List<TaxonBase> getTaxaByName(String queryString, MatchMode matchMode, SelectMode selectMode,
-			ReferenceBase sec, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
+	public List<TaxonBase> getTaxaByName(Class<? extends TaxonBase> clazz, String queryString, MatchMode matchMode,
+			ReferenceBase sec, Set<NamedArea> namedAreas, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 
 	/**
+	 * @param clazz
 	 * @param queryString
 	 * @param matchMode
-	 * @param accepted
+	 * @param sec
+	 * @param namedAreas
+	 * @param pageSize
+	 * @param pageNumber
+	 * @param propertyPaths
 	 * @return
 	 */
-	public Integer countTaxaByName(String queryString, MatchMode matchMode, 
-			Boolean accepted);
+	public long countTaxaByName(Class<? extends TaxonBase> clazz, String queryString, MatchMode matchMode,
+			
+			ReferenceBase sec, Set<NamedArea> namedAreas);
+	
+//	/**
+//	 * @param queryString
+//	 * @param matchMode
+//	 * @param accepted
+//	 * @return
+//	 */
+//	public Integer countTaxaByName(String queryString, MatchMode matchMode, 
+//			Boolean accepted);
 		
-	/**
-	 * Returns a count of TaxonBase instances where the
-	 * taxon.name properties match the parameters passed.
-	 * 
-	 * @param queryString search string
-	 * @param matchMode way how search string shall be matched: exact, beginning, or anywhere
-	 * @param selectModel all taxon base, taxa, or synonyms
-	 */ 
-	public Integer countTaxaByName(String queryString, MatchMode matchMode, SelectMode selectMode);
+//	/**
+//	 * Returns a count of TaxonBase instances where the
+//	 * taxon.name properties match the parameters passed.
+//	 * 
+//	 * @param queryString search string
+//	 * @param matchMode way how search string shall be matched: exact, beginning, or anywhere
+//	 * @param selectModel all taxon base, taxa, or synonyms
+//	 */ 
+//	public Integer countTaxaByName(String queryString, MatchMode matchMode, SelectMode selectMode);
 
 	/**
 	 * Computes all Taxon instances that do not have a taxonomic parent and has at least one child.

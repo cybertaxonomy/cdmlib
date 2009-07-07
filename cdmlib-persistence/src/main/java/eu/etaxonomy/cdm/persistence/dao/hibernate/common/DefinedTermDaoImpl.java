@@ -39,6 +39,7 @@ import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
+import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
  * @author a.kohlbecker
@@ -260,6 +261,9 @@ public int countDefinedTermByRepresentationText(String text, Class<? extends Def
 		return (List<Media>)query.list();
 	}
 
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao#list(eu.etaxonomy.cdm.model.location.NamedAreaLevel, eu.etaxonomy.cdm.model.location.NamedAreaType, java.lang.Integer, java.lang.Integer)
+	 */
 	public List<NamedArea> list(NamedAreaLevel level, NamedAreaType type, Integer pageSize, Integer pageNumber) {
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
@@ -295,6 +299,53 @@ public int countDefinedTermByRepresentationText(String text, Class<? extends Def
 		    return (List<NamedArea>)query.getResultList();
 		}
 	}
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao#list(eu.etaxonomy.cdm.model.location.NamedAreaLevel, eu.etaxonomy.cdm.model.location.NamedAreaType, java.lang.Integer, java.lang.Integer, java.util.List, java.util.List)
+	 */
+	public List<NamedArea> list(NamedAreaLevel level, NamedAreaType type, Integer pageSize, Integer pageNumber,
+			List<OrderHint> orderHints, List<String> propertyPaths) {
+		
+		List<NamedArea> result;
+		
+		AuditEvent auditEvent = getAuditEventFromContext();
+		if (auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
+			Criteria criteria = getSession().createCriteria(NamedArea.class);
+
+			if (level != null) {
+				criteria.add(Restrictions.eq("level", level));
+			}
+			if (type != null) {
+				criteria.add(Restrictions.eq("type", type));
+			}
+			if(orderHints != null){
+				addOrder(criteria,orderHints);
+			}
+			if (pageSize != null) {
+				criteria.setMaxResults(pageSize);
+				if (pageNumber != null) {
+					criteria.setFirstResult(pageNumber * pageSize);
+				}
+			}
+			
+			result = criteria.list();
+		} else {
+			AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(NamedArea.class,
+				auditEvent.getRevisionNumber());
+			if (level != null) {
+				query.add(AuditEntity.relatedId("level").eq(level.getId()));
+			}
+			if (type != null) {
+				query.add(AuditEntity.relatedId("type").eq(type.getId()));
+			}
+			result =  query.getResultList();
+		}
+		
+		defaultBeanInitializer.initializeAll(result, propertyPaths);
+		
+		return result;
+	}
+	
 
 	public <T extends DefinedTermBase> int countGeneralizationOf(T kindOf) {
 		AuditEvent auditEvent = getAuditEventFromContext();

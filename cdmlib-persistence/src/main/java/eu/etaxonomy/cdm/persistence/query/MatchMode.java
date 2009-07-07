@@ -19,6 +19,9 @@ public enum MatchMode {
 	ANYWHERE;
 	
 	public String queryStringFrom(String queryString){
+		if(queryString == null){
+			return "";
+		}
 		queryString = queryString.replace('*', '%');
 		switch(this){	
 			case BEGINNING:
