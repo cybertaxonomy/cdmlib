@@ -50,6 +50,7 @@ import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
+import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.common.init.TermNotFoundException;
 
 
@@ -177,20 +178,25 @@ public class CdmApplicationController {
 			appContext.refresh();
 			appContext.start();
 			
-//		} catch (BeanCreationException e) {
-//			// create new schema
-//			if (dbSchemaValidation == DbSchemaValidation.VALIDATE) {
-//				logger.error("ApplicationContext could not be created. " +
-//					" Maybe your database schema is not up-to-date, " +
-//					" but there might be other BeanCreation problems too." +
-//					" Try to run CdmApplicationController with dbSchemaValidation.CREATE or dbSchemaValidation.UPDATE option. ");
-//			} else {
-//				logger.error("BeanCreationException (CdmApplicationController started with " + dbSchemaValidation.toString() + " option.");
-//			}
-//			e.printStackTrace();
-//			throw e;
-//		}
+
+			
+			
+	//		} catch (BeanCreationException e) {
+	//			// create new schema
+	//			if (dbSchemaValidation == DbSchemaValidation.VALIDATE) {
+	//				logger.error("ApplicationContext could not be created. " +
+	//					" Maybe your database schema is not up-to-date, " +
+	//					" but there might be other BeanCreation problems too." +
+	//					" Try to run CdmApplicationController with dbSchemaValidation.CREATE or dbSchemaValidation.UPDATE option. ");
+	//			} else {
+	//				logger.error("BeanCreationException (CdmApplicationController started with " + dbSchemaValidation.toString() + " option.");
+	//			}
+	//			e.printStackTrace();
+	//			throw e;
+	//		}
 		setApplicationContext(appContext);
+		User firstUser = User.NewInstance("admin", "0000");
+		getUserService().save(firstUser);
 		return true;
 	}
 	
