@@ -58,7 +58,6 @@ import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonomicTreeDao;
 import eu.etaxonomy.cdm.persistence.fetch.CdmFetch;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
-import eu.etaxonomy.cdm.persistence.query.SelectMode;
 
 
 @Service
@@ -132,6 +131,9 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		return rootNodes;
 	}
 	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#loadTreeBranchTo(eu.etaxonomy.cdm.model.taxon.TaxonNode, eu.etaxonomy.cdm.model.name.Rank, java.util.List)
+	 */
 	public List<TaxonNode> loadTreeBranchTo(TaxonNode taxonNode, Rank baseRank, List<String> propertyPaths){
 		
 		TaxonNode thisNode = taxonNodeDao.load(taxonNode.getUuid(), propertyPaths);
@@ -141,6 +143,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		TaxonNode parentNode = thisNode.getParent();
 		while(parentNode != null){
 			Rank parentNodeRank = parentNode.getTaxon().getName().getRank();
+			// stop if the next parent is higher than the baseRank
 			if(baseRank != null && baseRank.isLower(parentNodeRank)){
 				break;
 			}
@@ -159,6 +162,10 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		TaxonomicTree tree = taxonTreeDao.load(taxonomicTree.getUuid());
 		taxon = (Taxon)dao.load(taxon.getUuid());
 		TaxonNode node = tree.getNode(taxon);
+		if(node == null){
+			logger.warn("The specified tacon is not found in the given tree.");
+			return null;
+		}
 		return loadTreeBranchTo(node, baseRank, propertyPaths);
 	}
 	
@@ -560,34 +567,37 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
 		// Taxa and synonyms
 		
-		int numberTaxaResults = 0;
+		Long numberTaxaResults = 0L;
 		
 		if (configurator.isDoTaxa() && configurator.isDoSynonyms()) {
-			taxa = dao.getTaxaByName(configurator.getSearchString(), 
-					configurator.getMatchMode(), SelectMode.ALL, configurator.getSec(),
-						configurator.getPageSize(), configurator.getPageNumber(), 
-						configurator.getTaxonPropertyPath());
+			taxa = dao.getTaxaByName(TaxonBase.class, 
+					configurator.getSearchString(), configurator.getMatchMode(), configurator.getSec(),
+					configurator.getNamedAreas(), configurator.getPageSize(), 
+						configurator.getPageNumber(), configurator.getTaxonPropertyPath());
 			numberTaxaResults = 
-				dao.countTaxaByName(configurator.getSearchString(), 
-						configurator.getMatchMode(), SelectMode.ALL, configurator.getSec());
+				dao.countTaxaByName(TaxonBase.class, 
+						configurator.getSearchString(), configurator.getMatchMode(), configurator.getSec(),
+						configurator.getNamedAreas());
 			
 		} else if(configurator.isDoTaxa()) {
-			taxa = dao.getTaxaByName(configurator.getSearchString(), 
-					configurator.getMatchMode(), SelectMode.TAXA, configurator.getSec(),
-					configurator.getPageSize(), configurator.getPageNumber(), 
-					configurator.getTaxonPropertyPath());
+			taxa = dao.getTaxaByName(Taxon.class, 
+					configurator.getSearchString(), configurator.getMatchMode(), configurator.getSec(),
+					configurator.getNamedAreas(), configurator.getPageSize(), 
+					configurator.getPageNumber(), configurator.getTaxonPropertyPath());
 			numberTaxaResults = 
-				dao.countTaxaByName(configurator.getSearchString(), 
-						configurator.getMatchMode(), SelectMode.TAXA, configurator.getSec());
+				dao.countTaxaByName(Taxon.class, 
+						configurator.getSearchString(), configurator.getMatchMode(), configurator.getSec(),
+						configurator.getNamedAreas());
 			
 		} else if (configurator.isDoSynonyms()) {
-			taxa = dao.getTaxaByName(configurator.getSearchString(), 
-					configurator.getMatchMode(), SelectMode.SYNONYMS, configurator.getSec(),
-					configurator.getPageSize(), configurator.getPageNumber(), 
-					configurator.getTaxonPropertyPath());
+			taxa = dao.getTaxaByName(Synonym.class,
+					configurator.getSearchString(), configurator.getMatchMode(), configurator.getSec(),
+					configurator.getNamedAreas(), configurator.getPageSize(), 
+					configurator.getPageNumber(), configurator.getTaxonPropertyPath());
 			numberTaxaResults = 
-				dao.countTaxaByName(configurator.getSearchString(), 
-						configurator.getMatchMode(), SelectMode.SYNONYMS, configurator.getSec());
+				dao.countTaxaByName(Synonym.class, 
+						configurator.getSearchString(), configurator.getMatchMode(), configurator.getSec(),
+						configurator.getNamedAreas());
 		}
 
 		if (logger.isDebugEnabled()) { logger.debug(numberTaxaResults + " matching taxa counted"); }
@@ -602,6 +612,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		
 		if (configurator.isDoNamesWithoutTaxa()) {
             int numberNameResults = 0;
+            //FIXME implement search by area
 			List<? extends TaxonNameBase<?,?>> names = 
 				nameDao.findByName(configurator.getSearchString(), configurator.getMatchMode(), 
 						configurator.getPageSize(), configurator.getPageNumber(), null, null);
@@ -620,6 +631,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		
 		// Taxa from common names
 		// FIXME the matching common names also must be returned
+		// FIXME implement search by area
 		if (configurator.isDoTaxaByCommonNames()) {
 			int numberCommonNameResults = 0;
 			List<CommonTaxonName> commonTaxonNames = 

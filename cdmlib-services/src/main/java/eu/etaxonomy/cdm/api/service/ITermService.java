@@ -127,7 +127,7 @@ public interface ITermService extends IService<DefinedTermBase> {
 	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
 	 * @return a Pager of named areas
 	 */
-	public Pager<NamedArea> list(NamedAreaLevel level, NamedAreaType type, Integer pageSize, Integer pageNumber);
+	public Pager<NamedArea> list(NamedAreaLevel level, NamedAreaType type, Integer pageSize, Integer pageNumber,  List<OrderHint> orderHints, List<String> propertyPaths);
 	
 	/**
 	 * Return a paged list of terms which are specializations of a given definedTerm

@@ -11,8 +11,11 @@
 package eu.etaxonomy.cdm.api.service.config;
 
 import java.util.List;
+import java.util.Set;
 
+import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 
 /**
@@ -46,9 +49,9 @@ public interface ITaxonServiceConfigurator {
 
 	public void setMatchMode(MatchMode matchMode);
 
-	public ReferenceBase getSec();
+	public TaxonomicTree getTaxonomicTree();
 	
-	public void setSec(ReferenceBase sec);
+	public void setTaxonomicTree(TaxonomicTree taxonomicTree);
 	
 	public Integer getPageSize();
 
@@ -58,6 +61,10 @@ public interface ITaxonServiceConfigurator {
 	
 	public void setPageNumber(Integer pageNumber);
 	
+	public Set<NamedArea> getNamedAreas();
+
+	public void setNamedAreas(Set<NamedArea> areas);
+	
 	public List<String> getTaxonPropertyPath();
 
 	public void setTaxonPropertyPath(List<String> taxonPropertyPath);
@@ -65,4 +72,9 @@ public interface ITaxonServiceConfigurator {
 	public List<String> getCommonNamePropertyPath();
 
 	public void setCommonNamePropertyPath(List<String> commonNamePropertyPath);
+	
+	@Deprecated
+	public ReferenceBase getSec();
+	@Deprecated
+	public void setSec(ReferenceBase sec);
 }

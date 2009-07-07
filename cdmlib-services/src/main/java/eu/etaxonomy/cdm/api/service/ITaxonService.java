@@ -60,22 +60,36 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	
 	/**
 	 * @param taxonNode
-	 * @param baseRank specifies the root level of the taxonomic tree, may be null. 
-	 *        Nodes of this rank or in case this rank does not exist in the current branch the next lower rank is taken as root node.
-	  * @param propertyPaths the initialization strategy for the returned TaxonNode instances.
-	 * @return the path of nodes from the root node to the node of the specified taxon. 
+	 * @param baseRank
+	 *            specifies the root level of the taxonomic tree, may be null.
+	 *            Nodes of this rank or in case this rank does not exist in the
+	 *            current branch the next lower rank is taken as root node for
+	 *            this rank henceforth called the <b>base node</b>.
+	 * @param propertyPaths
+	 *            the initialization strategy for the returned TaxonNode
+	 *            instances.
+	 * @return the path of nodes from the <b>base node</b> to the node of the
+	 *         specified taxon.
 	 */
 	public List<TaxonNode> loadTreeBranchTo(TaxonNode taxonNode, Rank baseRank, List<String> propertyPaths);
-	
+
 	/**
 	 * @param taxon
-	 * @param taxonomicTree the taxonomic tree to be used
-	 * @param baseRank specifies the root level of the taxonomic tree, may be null. 
-	 *        Nodes of this rank or in case this rank does not exist in the current branch the next lower rank is taken as root node.
-	 * @param propertyPaths the initialization strategy for the returned TaxonNode instances.
-	 * @return the path of nodes from the root node to the node of the specified taxon. 
+	 * @param taxonomicTree
+	 *            the taxonomic tree to be used
+	 * @param baseRank
+	 *            specifies the root level of the taxonomic tree, may be null.
+	 *            Nodes of this rank or in case this rank does not exist in the
+	 *            current branch the next lower rank is taken as as root node for
+	 *            this rank henceforth called the <b>base node</b>.
+	 * @param propertyPaths
+	 *            the initialization strategy for the returned TaxonNode
+	 *            instances.
+	 * @return the path of nodes from the <b>base node</b> to the node of the specified
+	 *         taxon.
 	 */
-	public List<TaxonNode> loadTreeBranchToTaxon(Taxon taxon, TaxonomicTree taxonomicTree, Rank baseRank, List<String> propertyPaths);
+	public List<TaxonNode> loadTreeBranchToTaxon(Taxon taxon, TaxonomicTree taxonomicTree, Rank baseRank,
+			List<String> propertyPaths);
 	
 	/**
 	 * @param taxon

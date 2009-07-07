@@ -12,10 +12,13 @@
 package eu.etaxonomy.cdm.api.service.config.impl;
 
 import java.util.List;
+import java.util.Set;
 
 import eu.etaxonomy.cdm.api.service.config.ITaxonServiceConfigurator;
 import eu.etaxonomy.cdm.api.service.config.IdentifiableServiceConfiguratorBase;
+import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 
 /**
@@ -32,8 +35,10 @@ implements ITaxonServiceConfigurator {
 	private boolean doNamesWithoutTaxa = false;
 	private String searchString;
 	private ReferenceBase sec = null;
+	private TaxonomicTree taxonomicTree = null;
 	private List<String> taxonPropertyPath;
 	private List<String> commonNamePropertyPath;
+	private Set<NamedArea> namedAreas;
 	
 	public static TaxonServiceConfiguratorImpl NewInstance() {
 		return new TaxonServiceConfiguratorImpl();
@@ -106,6 +111,14 @@ implements ITaxonServiceConfigurator {
 	public void setSec(ReferenceBase sec) {
 		this.sec = sec;
 	}
+	
+	public TaxonomicTree getTaxonomicTree() {
+		return taxonomicTree;
+	}
+	
+	public void setTaxonomicTree(TaxonomicTree taxonomicTree) {
+		this.taxonomicTree = taxonomicTree;
+	}
 
 	public List<String> getTaxonPropertyPath() {
 		return taxonPropertyPath;
@@ -121,6 +134,20 @@ implements ITaxonServiceConfigurator {
 
 	public void setCommonNamePropertyPath(List<String> commonNamePropertyPath) {
 		this.commonNamePropertyPath = commonNamePropertyPath;
+	}
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.service.config.ITaxonServiceConfigurator#getAreas()
+	 */
+	public Set<NamedArea> getNamedAreas() {
+		return namedAreas;
+	}
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.service.config.ITaxonServiceConfigurator#setAreas(java.util.List)
+	 */
+	public void setNamedAreas(Set<NamedArea> namedAreas) {
+		this.namedAreas = namedAreas;
 	}
 	
 }
