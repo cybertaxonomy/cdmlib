@@ -9,6 +9,10 @@
 
 package eu.etaxonomy.cdm.database.types;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 
 
@@ -87,5 +91,31 @@ public class SqlServer2005DatabaseType extends DatabaseTypeBase {
     public SqlServer2005DatabaseType() {
     	init (typeName, classString, urlString, defaultPort,  hibernateDialect );
 	}
+    
+    
+    /**
+     * Deletes all foreign keys between tables in a sql server database.
+     * This make deleting tables easier.
+     * @param sqlServerDataSource
+     * @return
+     * @throws SQLException
+     */
+    public boolean deleteForeignKeys(CdmDataSource sqlServerDataSource) throws SQLException{
+    	String sql = "SELECT name, id FROM sys.sysobjects WHERE (xtype = 'U')"; //all tables
+		ResultSet rs = sqlServerDataSource.executeQuery(sql);
+		while (rs.next()){
+			String tableName = rs.getString("name");
+			long tableId = rs.getLong("id");
+			sql = "SELECT name FROM sys.sysobjects WHERE xtype='F' and parent_obj = " +  tableId;//get foreignkeys
+			ResultSet rsFk = sqlServerDataSource.executeQuery(sql);
+			while (rsFk.next()){
+				String fk = rsFk.getString("name");
+				sql = " ALTER TABLE "+tableName+" DROP CONSTRAINT "+fk + "";
+				sqlServerDataSource.executeUpdate(sql);
+			}
+			
+		}
+		return true;
+    }
 
 }

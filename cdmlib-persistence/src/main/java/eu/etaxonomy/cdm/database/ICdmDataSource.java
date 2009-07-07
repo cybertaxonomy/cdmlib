@@ -9,6 +9,8 @@
 
 package eu.etaxonomy.cdm.database;
 
+import java.sql.ResultSet;
+
 import org.hibernate.cache.CacheProvider;
 import org.springframework.beans.factory.config.BeanDefinition;
 
@@ -85,6 +87,19 @@ public interface ICdmDataSource {
 	
 	public String getPassword();
 	
+	 /**
+     * Executes a query and returns the ResultSet.
+     * @return ResultSet for the query.
+     */
+	public ResultSet executeQuery (String query);
+	
+    /**
+     * Executes an update
+     * @return return code
+     */
+	public int executeUpdate (String sqlUpdate);
+
+
 	
 //
 //	public void setFilePath(String filePath);
