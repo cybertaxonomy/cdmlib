@@ -10,8 +10,8 @@ import org.junit.Test;
 import org.springframework.security.Authentication;
 import org.springframework.security.AuthenticationManager;
 import org.springframework.security.GrantedAuthority;
+import org.springframework.security.context.SecurityContextHolder;
 import org.springframework.security.providers.UsernamePasswordAuthenticationToken;
-import org.springframework.security.userdetails.UserDetails;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
@@ -76,13 +76,14 @@ public class UserServiceImplTest extends CdmIntegrationTest {
 		String password = "password";
 		User user = User.NewInstance(username, password);
 		
-		userService.createUser(user);
+		userService.save(user);
+		
+//		userService.createUser(user);
 		
 		
 		
 		UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(username, password);
 		
 		authenticationManager.authenticate(token);
-		
 	}
 }

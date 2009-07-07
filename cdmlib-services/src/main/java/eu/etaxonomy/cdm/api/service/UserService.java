@@ -315,7 +315,19 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
 	
 	@Transactional(readOnly=false)
 	public UUID save(User user) {
-		return dao.save(user);
+		if(user.getId() == 0 || dao.load(user.getUuid()) == null){
+			createUser(user);
+		}
+		updateUser(user);
+		
+		return user.getUuid(); 
+//		return dao.save(user);
+	}
+
+	@Override
+	public UUID update(User user) {
+		updateUser(user);
+		return user.getUuid(); 
 	}
 
 	@Transactional(readOnly=false)
