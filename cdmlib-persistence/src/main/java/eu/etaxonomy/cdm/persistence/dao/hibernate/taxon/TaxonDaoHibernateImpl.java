@@ -209,7 +209,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 	public List<TaxonBase> getTaxaByName(Class<? extends TaxonBase> clazz, String queryString, MatchMode matchMode,
 			Integer pageSize, Integer pageNumber) {
 		
-		return null; // getTaxaByName(selectMode, queryString, matchMode, null, null, pageSize, pageNumber, null);
+		return getTaxaByName(clazz, queryString, matchMode, null, null, pageSize, pageNumber, null);
 	}
 	
 	public List<TaxonBase> getTaxaByName(String queryString, MatchMode matchMode, 
@@ -318,7 +318,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		ReferenceBase sec, Set<NamedArea> namedAreas) {
 		
 		boolean doCount = true;
-		Query query = prepareTaxaByName(clazz, queryString, matchMode, namedAreas, null, null, doCount); // ####
+		Query query = prepareTaxaByName(clazz, queryString, matchMode, namedAreas, null, null, doCount);
 		Object result = query.uniqueResult();
 		return (Long) result;
 		
