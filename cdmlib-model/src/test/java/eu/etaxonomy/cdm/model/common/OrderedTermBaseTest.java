@@ -28,7 +28,7 @@ public class OrderedTermBaseTest extends EntityTestBase {
 	private OrderedTermBase otb2;
 	private OrderedTermBase otb3;
 	private OrderedTermBase otb4;
-	
+		
 	@BeforeClass
 	public static void setUpBeforeClass() {
 		DefaultTermInitializer vocabularyStore = new DefaultTermInitializer();
@@ -79,18 +79,24 @@ public class OrderedTermBaseTest extends EntityTestBase {
 		//TODO assertEquals("term", otb2.getD);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
 	public final void testCompareTo() {
 		int comp = otb1.compareTo(otb2);
-		assertTrue( comp > 0  );
-		assertTrue(otb1.compareTo(otb1) == 0  );
-		assertTrue(otb2.compareTo(otb3) == 0  );
-		assertTrue(otb3.compareTo(otb1) < 0  );
+		assertTrue("expected:  1 > 4", comp > 0  );
+		assertTrue("expected:  1 = 1", otb1.compareTo(otb1) == 0  );
+		assertTrue("expected:  4 = 4", otb2.compareTo(otb3) == 0  );
+		assertTrue("expected:  5 < 1", otb3.compareTo(otb1) < 0  );
+		
+		Rank genus = Rank.GENUS();
+		Rank species = Rank.SPECIES();
+		Rank kingdom = Rank.KINGDOM();
+		Rank family = Rank.FAMILY();
 	
-		comp = Rank.GENUS().compareTo(Rank.SPECIES());
+		comp = genus.compareTo(species);
 		assertTrue( comp > 0  );
-		assertTrue(Rank.GENUS().compareTo(Rank.GENUS()) == 0  );
-		assertTrue(Rank.FAMILY().compareTo(Rank.KINGDOM()) < 0  );
+		assertTrue(genus.compareTo(genus) == 0  );
+		assertTrue(family.compareTo(kingdom) < 0  );
 	}
 	
 

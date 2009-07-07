@@ -417,17 +417,23 @@ public class TaxonomicTree extends IdentifiableEntity implements IReferencedEnti
 	}
 
 	/**
-	 * findRankSpecificRootNodes
-	 * @param rank
+	 * Walks the tree returning all nodes of exactly the given <code>rank</code>
+	 * or the next lower rank if an exact match by rank is not possible.
+	 * 
+	 * @param baseRank
+	 *            the rank to return nodes for
 	 * @param nodeSet
+	 *            the set of nodes to search in
 	 * @param rootNodes
+	 *            a List to put the found nodes in
+	 * @return the <code>rootNodes</code> List given as parameter
 	 */
-	private List<TaxonNode> findNodesForRank(Rank rank, Set<TaxonNode> nodeSet, List<TaxonNode> rootNodes) {
+	private List<TaxonNode> findNodesForRank(Rank baseRank, Set<TaxonNode> nodeSet, List<TaxonNode> rootNodes) {
 		for(TaxonNode node : nodeSet){
 			Rank thisRank = node.getTaxon().getName().getRank();
-			if(thisRank.isHigher(rank)){
-				// iterate deeper into tree
-				rootNodes.addAll(findNodesForRank(rank, node.getChildNodes(), rootNodes));
+			if(thisRank.isHigher(baseRank)){
+				// if the current rank still is higher than the given baseRank iterate deeper into tree
+				findNodesForRank(baseRank, node.getChildNodes(), rootNodes);
 			} else {
 				// gotsha! It is a base node of this level
 				rootNodes.add(node);

@@ -69,8 +69,13 @@ public abstract class OrderedTermBase<T extends OrderedTermBase> extends Defined
 		super(term, label, labelAbbrev);
 	}	
 	
-	/* (non-Javadoc)
-	 * @see java.lang.Comparable#compareTo(java.lang.Object)
+	/**
+	 * Compares this OrderedTermBase with the specified OrderedTermBase for
+	 * order. Returns a negative integer, zero, or a positive integer as the
+	 * orderId of this object is greater than, equal to, or less than the
+	 * specified object. This Integer copmare logic of this method is the
+	 * <b>inverse logic</b> of the the one implemented in
+	 * {@link java.lang.Comparable#compareTo(java.lang.Object)}
 	 */
 	public int compareTo(T orderedTerm) {
 		int orderThat;
