@@ -195,8 +195,10 @@ public class CdmApplicationController {
 	//			throw e;
 	//		}
 		setApplicationContext(appContext);
-		User firstUser = User.NewInstance("admin", "0000");
-		getUserService().save(firstUser);
+		if (dbSchemaValidation == DbSchemaValidation.CREATE || dbSchemaValidation == DbSchemaValidation.CREATE_DROP){
+			User firstUser = User.NewInstance("admin", "0000");
+			getUserService().save(firstUser);
+		}
 		return true;
 	}
 	
