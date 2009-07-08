@@ -34,9 +34,9 @@ public class FaunaEuropaeaImportConfigurator extends ImportConfiguratorBase<Faun
 	private boolean doHeterotypicSynonyms = true;
 	
 	/* Max number of taxa to be saved with one service call */
-	private int limitSave = 1000;
+	private int limitSave = 2000;
 	private int maxTaxon = 306000;
-	private boolean useTransactions = false;
+	private boolean useTransactions = true;
 	private ReferenceBase<?> auctReference;
 	
 	@SuppressWarnings("unchecked")
