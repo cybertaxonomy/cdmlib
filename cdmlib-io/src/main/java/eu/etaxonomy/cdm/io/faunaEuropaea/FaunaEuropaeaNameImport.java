@@ -63,7 +63,7 @@ public class FaunaEuropaeaNameImport extends FaunaEuropaeaImportBase  {
 	private static final Logger logger = Logger.getLogger(FaunaEuropaeaNameImport.class);
 
 	/* Max number of taxa to retrieve (for test purposes) */
-	private int maxTaxa = 5000;
+	private int maxTaxa = 0;
 	/* Interval for progress info message when retrieving taxa */
 	private int modCount = 10000;
 	
