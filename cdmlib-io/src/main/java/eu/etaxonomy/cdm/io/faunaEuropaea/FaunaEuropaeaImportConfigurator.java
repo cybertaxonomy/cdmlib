@@ -42,7 +42,7 @@ public class FaunaEuropaeaImportConfigurator extends ImportConfiguratorBase<Faun
 	@SuppressWarnings("unchecked")
 	protected void makeIoClassList() {
 		ioClassList = new Class[] {
-				FaunaEuropaeaAuthorImport.class,
+//				FaunaEuropaeaAuthorImport.class,
 				FaunaEuropaeaNameImport.class,
 				FaunaEuropaeaRelShipImport.class,
 				FaunaEuropaeaRefImport.class,

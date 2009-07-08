@@ -19,6 +19,7 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
@@ -90,6 +91,7 @@ public class FaunaEuropaeaDistributionImport  extends FaunaEuropaeaImportBase {
 		
 		Map<String, MapWrapper<? extends CdmBase>> stores = state.getStores();
 		MapWrapper<TaxonBase> taxonStore = (MapWrapper<TaxonBase>)stores.get(ICdmIO.TAXON_STORE);
+		TransactionStatus txStatus = null;
 		
 		//make not needed maps empty
 //		MapWrapper<TeamOrPersonBase<?>> authorStore = (MapWrapper<TeamOrPersonBase<?>>)stores.get(ICdmIO.TEAM_STORE);
@@ -178,9 +180,15 @@ public class FaunaEuropaeaDistributionImport  extends FaunaEuropaeaImportBase {
 			
 			if(logger.isInfoEnabled()) { logger.info("Saving distributions ..."); }
 			
+			if (state.getConfig().isUseTransactions()) {
+				txStatus = startTransaction();
+			}
+
 			success = saveTaxa(state, state.getHighestTaxonIndex(), state.getConfig().getLimitSave());
-			// save taxa
-//			getTaxonService().saveTaxonAll(taxonMap);
+			
+			if (state.getConfig().isUseTransactions()) {
+				commitTransaction(txStatus);
+			}
 			
 			if(logger.isInfoEnabled()) { logger.info("End making distributions..."); }
 			

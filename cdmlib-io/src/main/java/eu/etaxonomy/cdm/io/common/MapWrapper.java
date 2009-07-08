@@ -126,7 +126,6 @@ public class MapWrapper<T extends CdmBase> {
 		int index = 0;
 		
 		for (int i = 0; i < limit; i++) {
-//		for (int i = start; i < limit; i++) {
 			
 			int j = start + i;
 			
@@ -138,7 +137,6 @@ public class MapWrapper<T extends CdmBase> {
 				if (logger.isDebugEnabled()) { logger.debug("Object (" + j + ") is null"); }
 			}
 		}
-//		return (Collection<T>)internalMap.values();
 		return (Collection<T>)internalPartMap.values();
 	}
 	

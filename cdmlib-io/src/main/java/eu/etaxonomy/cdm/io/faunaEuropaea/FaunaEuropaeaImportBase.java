@@ -163,7 +163,6 @@ implements ICdmImport<FaunaEuropaeaImportConfigurator,FaunaEuropaeaImportState> 
 				}
 			}
 
-    		txStatus = startTransaction();
 			if (state.getConfig().isUseTransactions()) {
 				txStatus = startTransaction();
 			}

@@ -21,6 +21,7 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.io.berlinModel.CdmOneToManyMapper;
 import eu.etaxonomy.cdm.io.berlinModel.CdmStringMapper;
@@ -61,14 +62,8 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 public class FaunaEuropaeaRefImport extends FaunaEuropaeaImportBase {
 	private static final Logger logger = Logger.getLogger(FaunaEuropaeaRefImport.class);
 
-	/* Max number of taxa to retrieve (for test purposes) */
-	private int maxTaxa = 0;
-	/* Max number of taxa to be saved with one service call */
-	private int limit = 20000; // TODO: Make configurable
 	/* Interval for progress info message when retrieving taxa */
 	private int modCount = 10000;
-	/* Highest taxon index in the FauEu database */
-//	private int highestTaxonIndex = 0;
 	
 		
 	/* (non-Javadoc)
@@ -105,9 +100,9 @@ public class FaunaEuropaeaRefImport extends FaunaEuropaeaImportBase {
 		
 		Map<String, MapWrapper<? extends CdmBase>> stores = state.getStores();
 		MapWrapper<TeamOrPersonBase> authorStore = (MapWrapper<TeamOrPersonBase>)stores.get(ICdmIO.TEAM_STORE);
-		authorStore.makeEmpty();
 		MapWrapper<TaxonBase> taxonStore = (MapWrapper<TaxonBase>)stores.get(ICdmIO.TAXON_STORE);
 		MapWrapper<ReferenceBase> refStore = (MapWrapper<ReferenceBase>)stores.get(ICdmIO.REFERENCE_STORE);
+		TransactionStatus txStatus = null;
 				
 		FaunaEuropaeaImportConfigurator fauEuConfig = state.getConfig();
 		Source source = fauEuConfig.getSource();
@@ -248,11 +243,19 @@ public class FaunaEuropaeaRefImport extends FaunaEuropaeaImportBase {
 			
 			if(logger.isInfoEnabled()) { logger.info("Saving references ..."); }
 			
+			if (state.getConfig().isUseTransactions()) {
+				txStatus = startTransaction();
+			}
+
 			// save taxa, references, and authors
 			success = saveTaxa(state, state.getHighestTaxonIndex(), state.getConfig().getLimitSave());
 			getReferenceService().saveReferenceAll(refStore.objects());
 			getAgentService().saveAgentAll(authorStore.objects());
 			
+			if (state.getConfig().isUseTransactions()) {
+				commitTransaction(txStatus);
+			}
+
 			if(logger.isInfoEnabled()) { logger.info("End making references ..."); }
 			
 		} catch (SQLException e) {

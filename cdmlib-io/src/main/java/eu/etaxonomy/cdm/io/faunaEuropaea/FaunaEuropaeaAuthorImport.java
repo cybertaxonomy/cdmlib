@@ -14,6 +14,7 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
@@ -58,6 +59,7 @@ public class FaunaEuropaeaAuthorImport extends FaunaEuropaeaImportBase {
 	protected boolean doInvoke(FaunaEuropaeaImportState state){ 
 		Map<String, MapWrapper<? extends CdmBase>> stores = state.getStores();
 		MapWrapper<TeamOrPersonBase> authorStore = (MapWrapper<TeamOrPersonBase>)stores.get(ICdmIO.TEAM_STORE);
+		TransactionStatus txStatus = null;
 		
 		FaunaEuropaeaImportConfigurator fauEuConfig = state.getConfig();
 		Source source = fauEuConfig.getSource();
@@ -114,9 +116,17 @@ public class FaunaEuropaeaAuthorImport extends FaunaEuropaeaImportBase {
 			
 			if(logger.isInfoEnabled()) { logger.info("Saving authors ..."); }
 
+			if (state.getConfig().isUseTransactions()) {
+				txStatus = startTransaction();
+			}
+			
 			// save authors
 			getAgentService().saveAgentAll(authorStore.objects());
 
+			if (state.getConfig().isUseTransactions()) {
+				commitTransaction(txStatus);
+			}
+			
 			if(logger.isInfoEnabled()) { logger.info("End making authors ..."); }
 
 			return true;

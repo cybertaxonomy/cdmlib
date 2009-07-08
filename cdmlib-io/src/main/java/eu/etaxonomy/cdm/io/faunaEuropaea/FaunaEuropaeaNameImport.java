@@ -609,19 +609,19 @@ public class FaunaEuropaeaNameImport extends FaunaEuropaeaImportBase  {
 	
 	
 	/* Build name title cache */
-	private String buildNameTitleCache(String nameString, FaunaEuropaeaTaxon fauEuTaxon) {
+	private String buildNameTitleCache(String nameString, boolean useOriginalGenus, FaunaEuropaeaTaxon fauEuTaxon) {
 		
 		StringBuilder titleCacheStringBuilder = new StringBuilder(nameString);
 		int year = fauEuTaxon.getYear();
 		if (year != 0) { // TODO: Ignore authors like xp, xf, etc?
 			titleCacheStringBuilder.append(" ");
-			if (fauEuTaxon.isParenthesis() == true) {
+			if ((fauEuTaxon.isParenthesis() == true) && !useOriginalGenus) {
 				titleCacheStringBuilder.append("(");
 			}
 			titleCacheStringBuilder.append(fauEuTaxon.getAuthor());
 			titleCacheStringBuilder.append(" ");
 			titleCacheStringBuilder.append(year);
-			if (fauEuTaxon.isParenthesis() == true) {
+			if ((fauEuTaxon.isParenthesis() == true) && !useOriginalGenus) {
 				titleCacheStringBuilder.append(")");
 			}
 		}
@@ -656,6 +656,8 @@ public class FaunaEuropaeaNameImport extends FaunaEuropaeaImportBase  {
 		
 		if(useOriginalGenus == true) {
 			stringBuilder.append(originalGenusName);
+			genusOrUninomial.delete(0, genusOrUninomial.length());
+			genusOrUninomial.append(originalGenusName);
 		} else {
 			stringBuilder.append(genusOrUninomial);
 		}
@@ -673,7 +675,8 @@ public class FaunaEuropaeaNameImport extends FaunaEuropaeaImportBase  {
 		
 		stringBuilder.append(genusPart(originalGenusName, useOriginalGenus, genusOrUninomial));
 
-		if (useOriginalGenus) {
+		if (useOriginalGenus == true) {
+			infraGenericEpithet.delete(0, infraGenericEpithet.length());
 			stringBuilder.append(" ");
 			return stringBuilder.toString();
 		}
@@ -689,6 +692,117 @@ public class FaunaEuropaeaNameImport extends FaunaEuropaeaImportBase  {
 	
 	/** Build species and subspecies names */
 	private String buildLowerTaxonName(StringBuilder originalGenus, boolean useOriginalGenus,
+			StringBuilder genusOrUninomial, StringBuilder infraGenericEpithet, 
+			StringBuilder specificEpithet, StringBuilder infraSpecificEpithet,
+			FaunaEuropaeaTaxon fauEuTaxon, Map<Integer, FaunaEuropaeaTaxon> fauEuTaxonMap) {
+		
+		StringBuilder nameCacheStringBuilder = new StringBuilder();
+
+		int rank = fauEuTaxon.getRankId();
+		int parentId = fauEuTaxon.getParentId();
+		FaunaEuropaeaTaxon parent = fauEuTaxonMap.get(parentId);
+		int grandParentId = parent.getParentId();
+		FaunaEuropaeaTaxon grandParent = fauEuTaxonMap.get(grandParentId);
+		int greatGrandParentId = grandParent.getParentId();
+		FaunaEuropaeaTaxon greatGrandParent = fauEuTaxonMap.get(greatGrandParentId);
+
+		
+		if (fauEuTaxon.isValid()) { // Taxon
+			
+			if (rank == R_SPECIES) {
+
+				if(parent.getRankId() == R_SUBGENUS) {
+
+					String genusSubGenusPart = genusSubGenusPart(originalGenus, useOriginalGenus, 
+							genusOrUninomial.append(grandParent.getLocalName()), 
+							infraGenericEpithet.append(parent.getLocalName()));
+					nameCacheStringBuilder.append(genusSubGenusPart);
+
+				} else if(parent.getRankId() == R_GENUS) {
+
+					String genusPart = genusPart(originalGenus, useOriginalGenus, 
+							genusOrUninomial.append(parent.getLocalName()));
+					nameCacheStringBuilder.append(genusPart);
+				}
+				nameCacheStringBuilder.append(fauEuTaxon.getLocalName());
+				specificEpithet.append(fauEuTaxon.getLocalName());
+
+			} else if (rank == R_SUBSPECIES) {
+
+				if(grandParent.getRankId() == R_SUBGENUS) {
+
+					String genusSubGenusPart = genusSubGenusPart(originalGenus, useOriginalGenus, 
+							genusOrUninomial.append(greatGrandParent.getLocalName()), 
+							infraGenericEpithet.append(grandParent.getLocalName()));
+					nameCacheStringBuilder.append(genusSubGenusPart);
+
+				} else if (grandParent.getRankId() == R_GENUS) {
+
+					String genusPart = genusPart(originalGenus, useOriginalGenus, 
+							genusOrUninomial.append(grandParent.getLocalName()));
+					nameCacheStringBuilder.append(genusPart);
+
+				}
+				nameCacheStringBuilder.append(parent.getLocalName());
+				nameCacheStringBuilder.append(" ");
+				nameCacheStringBuilder.append(fauEuTaxon.getLocalName());
+				specificEpithet.append(parent.getLocalName());
+				infraSpecificEpithet.append(fauEuTaxon.getLocalName());
+			}
+		} else { // Synonym
+			
+			if (rank == R_SPECIES) {
+
+				if(grandParent.getRankId() == R_SUBGENUS) {
+					
+					String genusSubGenusPart = genusSubGenusPart(originalGenus, useOriginalGenus, 
+							genusOrUninomial.append(greatGrandParent.getLocalName()), 
+							infraGenericEpithet.append(grandParent.getLocalName()));
+					nameCacheStringBuilder.append(genusSubGenusPart);
+
+				} else if (grandParent.getRankId() == R_GENUS) {
+					
+					String genusPart = genusPart(originalGenus, useOriginalGenus, 
+							genusOrUninomial.append(grandParent.getLocalName()));
+					nameCacheStringBuilder.append(genusPart);
+
+				}
+
+			} else if (rank == R_SUBSPECIES) {
+				
+				int greatGreatGrandParentId = grandParent.getParentId();
+				FaunaEuropaeaTaxon greatGreatGrandParent = fauEuTaxonMap.get(greatGreatGrandParentId);
+				
+				if(greatGrandParent.getRankId() == R_SUBGENUS) {
+					
+					String genusSubGenusPart = genusSubGenusPart(originalGenus, useOriginalGenus, 
+							genusOrUninomial.append(greatGreatGrandParent.getLocalName()), 
+							infraGenericEpithet.append(greatGrandParent.getLocalName()));
+					nameCacheStringBuilder.append(genusSubGenusPart);
+					
+				} else if (greatGrandParent.getRankId() == R_GENUS) {
+					
+					String genusPart = genusPart(originalGenus, useOriginalGenus, 
+							genusOrUninomial.append(greatGreatGrandParent.getLocalName()));
+					nameCacheStringBuilder.append(genusPart);
+				}
+				
+				nameCacheStringBuilder.append(grandParent.getLocalName());
+				nameCacheStringBuilder.append(" ");
+				specificEpithet.append(grandParent.getLocalName());
+			}
+			
+			nameCacheStringBuilder.append(fauEuTaxon.getLocalName());
+			infraSpecificEpithet.append(fauEuTaxon.getLocalName());
+			
+		}
+		
+		return nameCacheStringBuilder.toString();
+	}
+	
+	
+	/** Build species and subspecies names */
+	private String buildLowerTaxonName_(StringBuilder originalGenus, boolean useOriginalGenus,
 			StringBuilder genusOrUninomial, StringBuilder infraGenericEpithet, 
 			StringBuilder specificEpithet, StringBuilder infraSpecificEpithet,
 			FaunaEuropaeaTaxon fauEuTaxon, Map<Integer, FaunaEuropaeaTaxon> fauEuTaxonMap) {
@@ -824,41 +938,25 @@ public class FaunaEuropaeaNameImport extends FaunaEuropaeaImportBase  {
 		if (rank < R_SPECIES) {
 
 			completeString = localString;
-			genusOrUninomial.append(localString);
+			if (rank == R_SUBGENUS) {
+				infraGenericEpithet.append(localString);
+			} else {
+				genusOrUninomial.append(localString);
+			}
 			
 		} else {
 
 			taxonBase = taxonBase.deproxy(taxonBase, TaxonBase.class);
 
-			// for the homotypic synonyms / basionyms build the name with the original genus
-//			if (taxonBase.isInstanceOf(Synonym.class)) {
-//
-//				Synonym synonym = (Synonym)taxonBase;
-//				Set<SynonymRelationship> relships = synonym.getSynonymRelations();
-//				if (relships != null && relships.size() > 0) {
-//					SynonymRelationship relship = (SynonymRelationship)relships.toArray()[0];
-//					if (relship.equals(SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF())) {
-//						completeString = 
-//							buildLowerTaxonName(originalGenus, true,
-//									genusOrUninomial, infraGenericEpithet, specificEpithet, infraSpecificEpithet,
-//									fauEuTaxon, fauEuTaxonMap);
-//					}
-//				}
-//			}
-
-//			if (completeString.equals("")) {
-			
 			completeString = 
 				buildLowerTaxonName(originalGenus, useOriginalGenus,
 						genusOrUninomial, infraGenericEpithet, specificEpithet, infraSpecificEpithet,
 						fauEuTaxon, fauEuTaxonMap);
 			
-//			}
-
 			completeString = (String) CdmUtils.removeDuplicateWhitespace(completeString.trim());
 
 		}
-		setCompleteTaxonName(completeString, 
+		setCompleteTaxonName(completeString, useOriginalGenus,
 				genusOrUninomial.toString(), infraGenericEpithet.toString(), 
 				specificEpithet.toString(), infraSpecificEpithet.toString(),
 				fauEuTaxon, taxonBase, fauEuConfig);
@@ -867,7 +965,7 @@ public class FaunaEuropaeaNameImport extends FaunaEuropaeaImportBase  {
 	
 	
 	/** Sets name parts and caches */
-	private boolean setCompleteTaxonName(String concatString, 
+	private boolean setCompleteTaxonName(String concatString, boolean useOriginalGenus,
 			String genusOrUninomial, String infraGenericEpithet, String specificEpithet, String infraSpecificEpithet, 
 			FaunaEuropaeaTaxon fauEuTaxon, TaxonBase<?> taxonBase, FaunaEuropaeaImportConfigurator fauEuConfig) {
 
@@ -902,7 +1000,7 @@ public class FaunaEuropaeaNameImport extends FaunaEuropaeaImportBase  {
 		}
 
 		zooName.setNameCache(concatString);
-		String titleCache = buildNameTitleCache(concatString, fauEuTaxon);
+		String titleCache = buildNameTitleCache(concatString, useOriginalGenus, fauEuTaxon);
 		zooName.setTitleCache(titleCache);
 		//titleCache = buildNameFullTitleCache(concatString, fauEuConfig);
 		zooName.setFullTitleCache(titleCache); // TODO: Add reference, NC status
