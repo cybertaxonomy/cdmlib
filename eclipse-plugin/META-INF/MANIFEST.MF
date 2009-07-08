@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: CDM Library Plug-in
 Bundle-SymbolicName: eu.etaxonomy.cdmLibrary;singleton:=true
-Bundle-Version: 2.1.0.v20090625-1925
+Bundle-Version: 2.1.0.v20090708-1900
 Bundle-ClassPath: antlr-2.7.6.jar,
  asm-attrs.jar,
  asm.jar,
@@ -44,7 +44,6 @@ Bundle-ClassPath: antlr-2.7.6.jar,
  spring-orm-2.5.jar,
  spring-test-2.5.jar,
  spring-tx-2.5.jar,
- h2-1.0.73.jar,
  joda-time-1.5.jar,
  joda-time-hibernate-1.0.jar,
  sanselan-0.94-incubator.jar,
@@ -82,7 +81,10 @@ Bundle-ClassPath: antlr-2.7.6.jar,
  aspectjtools-1.6.3.jar,
  spring-aspects-2.5.6.jar,
  spring-agent-2.5.6.jar,
- jdbc-1.2.jar
+ jdbc-1.2.jar,
+ org.apache.commons.codec-1.3.0.jar,
+ h2-1.1.115.jar,
+ commons-lang-2.4.jar
 Export-Package: eu.etaxonomy.cdm,
  eu.etaxonomy.cdm.api.application,
  eu.etaxonomy.cdm.api.application.eclipse,
