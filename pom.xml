@@ -316,6 +316,64 @@
 					<downloadJavadocs>true</downloadJavadocs>	
 				</configuration>
 			</plugin>
+                  <plugin>
+				<groupId>com.agilejava.docbkx</groupId>
+				<artifactId>docbkx-maven-plugin</artifactId>
+				<version>2.0.10-SNAPSHOT</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>generate-html</goal>
+							<goal>generate-pdf</goal>
+						</goals>
+						<phase>pre-site</phase>
+					</execution>
+				</executions>
+				<dependencies>
+					<dependency>
+						<groupId>org.docbook</groupId>
+						<artifactId>docbook-xml</artifactId>
+						<version>4.4</version>
+						<scope>runtime</scope>
+					</dependency>
+				</dependencies>
+				<configuration>
+					<includes>ReferenceDocumentation.xml</includes>
+					<chunkedOutput>true</chunkedOutput>
+					<htmlStylesheet>resources/css/html.css</htmlStylesheet>
+					<xincludeSupported>true</xincludeSupported>
+					<!--<htmlCustomization>src/docbkx/resources/xsl/html_chunk.xsl</htmlCustomization>-->
+                              <!-- if anyone can get the xsl-fo customization to work properly, then by all 
+                                   means use it
+                                <foCustomization>src/docbkx/resources/xsl/fopdf.xsl</foCustomization>
+                              -->
+					<entities>
+						<entity>
+							<name>version</name>
+							<value>${pom.version}</value>
+						</entity>
+					</entities>
+                              <!--We want the final documentation and the required resources to end up in 
+                                  the right place-->
+					<postProcess>
+						<copy todir="target/site/reference">
+							<fileset dir="target/docbkx">
+								<include name="**/*.html" />
+								<include name="**/*.pdf" />
+							</fileset>
+						</copy>
+						<copy todir="target/site/reference/html">
+							<fileset dir="src/docbkx">
+								<include name="**/*.css" />
+								<include name="**/*.png" />
+								<include name="**/*.gif" />
+								<include name="**/*.jpg" />
+							</fileset>
+						</copy>
+					</postProcess>
+				</configuration>
+			</plugin>
+
 		</plugins>
 		<!--  -->
 		<extensions>

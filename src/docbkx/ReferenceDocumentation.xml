@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<book version="5.0"
+      xsi:schemaLocation="http://docbook.org/ns/docbook http://docbook.org/xml/5.0/xsd/docbook.xsd"
+      xml:id="cdm-reference-guide" xmlns="http://docbook.org/ns/docbook"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns:xs="http://www.w3.org/2001/XMLSchema"
+      xmlns:xlink="http://www.w3.org/1999/xlink"
+      xmlns:xi="http://www.w3.org/2001/XInclude"
+      xmlns:ns5="http://www.w3.org/1999/xhtml"
+      xmlns:ns4="http://www.w3.org/2000/svg"
+      xmlns:ns3="http://www.w3.org/1998/Math/MathML"
+      xmlns:ns="http://docbook.org/ns/docbook">
+  <bookinfo>
+    <title>EDIT Common Data Model Library</title>
+
+    <subtitle>Reference Documentation (Work in Progress)</subtitle>
+
+    <corpauthor>
+      <inlinegraphic fileref="./resources/images/logo.png" />
+    </corpauthor>
+
+    <!-- Please add your names here -->
+
+    <authorgroup>
+      <author>
+        <personname>Ben Clark</personname>
+      </author>
+    </authorgroup>
+
+    <releaseinfo>2.1</releaseinfo>
+
+    <copyright>
+      <year>2009</year>
+
+      <holder>EDIT - European Distributed Institute of Taxonomy -
+      http://www.e-taxonomy.eu</holder>
+    </copyright>
+
+    <legalnotice>
+      <para>The contents of this file are subject to the Mozilla Public
+      License Version 1.1. See LICENSE.TXT at the top of this package for the
+      full license terms.</para>
+    </legalnotice>
+  </bookinfo>
+
+  <toc />
+
+  <preface id="preface">
+    <title>Preface</title>
+
+    <para>EDIT's Internet Platform for Cybertaxonomy is a distributed
+    computing platform that helps taxonomists do revisionary taxonomy and
+    taxonomic field work efficiently and expediently via the web. At the core
+    of the platform lies a common data model to enable interoperability
+    between the different components. The model describes all the commonly
+    used data that is dealt with in the platform, and therefore covers
+    taxonomic names and concepts; literature references; authors; (type)
+    specimen; structured descriptive data; molecular data; related (binary)
+    files such as images or compiled keys; controlled vocabularies and terms;
+    and species related content of any kind like economic use or conservation
+    status.</para>
+
+    <para xlink:href="">The Internet Platform for Cybertaxonomy consists of
+    interoperable but independent platform components. Platform components can
+    take the form of software applications (desktop or web-based) for human
+    users or (web) services. The platform as envisioned does not have a single
+    user interface or website; rather, it is a collection of interacting
+    components which may be combined and assembled according to the task in
+    hand. To facilitate the development of core CDM Applications such as the
+    CDM Community Server, the CDM Dataportals, and the Taxonomic Editor, an
+    implementation of the CDM has been created in the java programming
+    language. In addition to CDM model classes being modelled as
+    plain-old-java-objects (<link
+    xlink:href="http://en.wikipedia.org/wiki/Plain_Old_Java_Object">pojo's</link>),
+    a set of java components has been created that provide common services
+    across all java applications using the CDM. In addition to serving as the
+    basis of core components of the Internet Platform for Cyberplatform, they
+    also allow the development of other applications using the CDM.</para>
+
+    <para>The CDM Library, as it is known, consists of four major modules that
+    can be used by any java application based on the CDM. These libraries are
+    used as the foundation of the Taxonomic Editor and the CDM Community
+    Server. In addition, the CDM Community Server is documented here, as the
+    components can be re-purposed or extended by other web applications based
+    on the CDM.</para>
+  </preface>
+
+  <part>
+    <title>Common Data Model</title>
+
+    <partintro>
+      <para>Description of the model classes and their use:</para>
+    </partintro>
+
+    <!--<xi:include href="base-classes.xml" />-->
+
+    <!--<xi:include href="annotation-and-markers.xml" />-->
+
+    <!--<xi:include href="extensions.xml" />-->
+
+    <!--<xi:include href="identifiable-entities.xml" />-->
+
+    <!--<xi:include href="validation.xml" />-->
+  </part>
+
+  <part>
+    <title>Persistence Layer</title>
+
+    <partintro>
+      <para>This part discusses the persistence layer in detail:</para>
+    </partintro>
+
+    <!--<xi:include href="basic-persistence.xml" />-->
+
+    <!--<xi:include href="listing-sorting-initializing.xml" />-->
+
+    <!--<xi:include href="versioning.xml" />-->
+
+    <!--<xi:include href="free-text-search.xml" />-->
+  </part>
+
+  <part>
+    <title>API Methods</title>
+
+    <partintro>
+      <para>This part discusses the service layer:</para>
+    </partintro>
+
+    <!--<xi:include href="service.xml" />-->
+
+    <!--<xi:include href="paging-resultsets.xml" />-->
+
+    <!--<xi:include href="application-controller.xml" />-->
+
+    <!--<xi:include href="transactions.xml" />-->
+
+    <!--<xi:include href="guid-resolution.xml" />-->
+
+    <!--<xi:include href="security.xml" />-->
+  </part>
+
+  <part>
+    <title>CDM Input / Output Layer</title>
+
+    <partintro>
+      <para>This part describes the input output routines:</para>
+    </partintro>
+
+    <!--<xi:include href="base-io-usage.xml" />-->
+
+    <!--<xi:include href="cdm-xml-input-output.xml" />-->
+
+    <!--<xi:include href="abcd-input-output.xml" />-->
+
+    <!--<xi:include href="berlinmodel-input-output.xml" />-->
+
+    <!--<xi:include href="excel-input-output.xml" />-->
+
+    <!--<xi:include href="sdd-input-output.xml" />-->
+
+    <!--<xi:include href="taxonx-input-output.xml" />-->
+
+    <!--<xi:include href="tcsrdf-input-output.xml" />-->
+
+    <!--<xi:include href="tcsxml-input-output.xml" />-->
+  </part>
+
+  <part>
+    <title>CDM Server</title>
+
+    <partintro>
+      <para>This part describes the cdm-server application:</para>
+    </partintro>
+
+    <!--<xi:include href="cdm-server.xml" />-->
+
+    <!--<xi:include href="instalation.xml" />-->
+
+    <!--<xi:include href="configuration.xml" />-->
+  </part>
+</book>

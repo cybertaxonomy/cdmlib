@@ -2328,6 +2328,13 @@ pluginTesterApplication/src/plugintesterapplication/View.java -text
 pluginTesterApplication/src/test/testClass.java -text
 /pom.xml -text
 /settings.xml -text
+src/docbkx/ReferenceDocumentation.xml -text
+src/docbkx/base-classes.xml -text
+src/docbkx/resources/css/html.css -text
+src/docbkx/resources/images/logo.png -text
+src/docbkx/resources/xsl/cdmlib.xsl -text
+src/docbkx/resources/xsl/fopdf.xsl -text
+src/docbkx/resources/xsl/html_chunk.xsl -text
 src/site/resources/images/logos/logo_edit.png -text
 src/site/resources/images/logos/logo_edit2.png -text
 src/site/site.xml -text
