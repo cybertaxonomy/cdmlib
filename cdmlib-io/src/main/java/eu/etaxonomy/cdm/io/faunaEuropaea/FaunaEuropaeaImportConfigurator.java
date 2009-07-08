@@ -28,12 +28,16 @@ public class FaunaEuropaeaImportConfigurator extends ImportConfiguratorBase<Faun
 
 	private static final Logger logger = Logger.getLogger(FaunaEuropaeaImportConfigurator.class);
 	
-	protected ReferenceBase auctReference;
-	
 	private boolean doBasionyms = true;
 	private boolean doTaxonomicallyIncluded = true;
 	private boolean doMisappliedNames = true;
 	private boolean doHeterotypicSynonyms = true;
+	
+	/* Max number of taxa to be saved with one service call */
+	private int limitSave = 1000;
+	private int maxTaxon = 306000;
+	private boolean useTransactions = false;
+	private ReferenceBase<?> auctReference;
 	
 	@SuppressWarnings("unchecked")
 	protected void makeIoClassList() {
@@ -41,11 +45,22 @@ public class FaunaEuropaeaImportConfigurator extends ImportConfiguratorBase<Faun
 				FaunaEuropaeaAuthorImport.class,
 				FaunaEuropaeaNameImport.class,
 				FaunaEuropaeaRelShipImport.class,
-//				FaunaEuropaeaRelTaxonIncludeImport.class
 				FaunaEuropaeaRefImport.class,
 				FaunaEuropaeaDistributionImport.class
 		};
 	};
+	
+//	@SuppressWarnings("unchecked")
+//	protected void makeIoClassList() {
+//		ioClassList = new Class[] {
+//				FaunaEuropaeaAuthorImport.class,
+//				FaunaEuropaeaNameImport.class,
+//				FaunaEuropaeaRelShipImport.class,
+//				FaunaEuropaeaRelTaxonIncludeImport.class,
+//				FaunaEuropaeaRefImport.class,
+//				FaunaEuropaeaDistributionImport.class
+//		};
+//	};
 	
 	public static FaunaEuropaeaImportConfigurator NewInstance(Source source, ICdmDataSource destination){
 		return new FaunaEuropaeaImportConfigurator(source, destination);
@@ -76,7 +91,7 @@ public class FaunaEuropaeaImportConfigurator extends ImportConfiguratorBase<Faun
 	 * @see eu.etaxonomy.cdm.io.common.ImportConfiguratorBase#getSourceReference()
 	 */
 	@Override
-	public ReferenceBase getSourceReference() {
+	public ReferenceBase<?> getSourceReference() {
 		//TODO
 		if (this.sourceReference == null){
 			logger.warn("getSource Reference not yet fully implemented");
@@ -90,7 +105,7 @@ public class FaunaEuropaeaImportConfigurator extends ImportConfiguratorBase<Faun
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.ImportConfiguratorBase#getSourceReference()
 	 */
-	public ReferenceBase getAuctReference() {
+	public ReferenceBase<?> getAuctReference() {
 		//TODO
 		if (auctReference == null){
 			auctReference = Database.NewInstance();
@@ -171,6 +186,55 @@ public class FaunaEuropaeaImportConfigurator extends ImportConfiguratorBase<Faun
 	 */
 	public void setDoHeterotypicSynonyms(boolean doHeterotypicSynonyms) {
 		this.doHeterotypicSynonyms = doHeterotypicSynonyms;
+	}
+
+	/**
+	 * @return the useTransactions
+	 */
+	public boolean isUseTransactions() {
+		return useTransactions;
+	}
+
+	/**
+	 * @param useTransactions the useTransactions to set
+	 */
+	public void setUseTransactions(boolean useTransactions) {
+		this.useTransactions = useTransactions;
+	}
+
+	/**
+	 * @param auctReference the auctReference to set
+	 */
+	public void setAuctReference(ReferenceBase<?> auctReference) {
+		this.auctReference = auctReference;
+	}
+
+	/**
+	 * @return the limitSave
+	 */
+	public int getLimitSave() {
+		return limitSave;
+	}
+
+	/**
+	 * @param limitSave the limitSave to set
+	 */
+	public void setLimitSave(int limitSave) {
+		this.limitSave = limitSave;
+	}
+
+	/**
+	 * @return the maxTaxon
+	 */
+	public int getMaxTaxon() {
+		return maxTaxon;
+	}
+
+	/**
+	 * @param maxTaxon the maxTaxon to set
+	 */
+	public void setMaxTaxon(int maxTaxon) {
+		this.maxTaxon = maxTaxon;
 	}
 	
 	

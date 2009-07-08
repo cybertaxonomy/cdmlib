@@ -36,24 +36,24 @@ public class FaunaEuropaeaImportState extends ImportStateBase<FaunaEuropaeaImpor
 	private Map<UUID, UUID> childParentMap = new HashMap();
 	
 	/* Highest taxon index in the FauEu database */
-	private int highestTaxonIndex = 0;
+	private int highestTaxonIndex = 305755;
 	/* Max number of taxa to be saved with one service call */
-	private int limit = 20000;
+//	private int limit = 20000;
 
 
-	/**
-	 * @return the limit
-	 */
-	public int getLimit() {
-		return limit;
-	}
-
-	/**
-	 * @param limit the limit to set
-	 */
-	public void setLimit(int limit) {
-		this.limit = limit;
-	}
+//	/**
+//	 * @return the limit
+//	 */
+//	public int getLimit() {
+//		return limit;
+//	}
+//
+//	/**
+//	 * @param limit the limit to set
+//	 */
+//	public void setLimit(int limit) {
+//		this.limit = limit;
+//	}
 
 	/**
 	 * @return the highestTaxonIndex

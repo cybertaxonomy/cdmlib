@@ -140,7 +140,7 @@ public class FaunaEuropaeaRelShipImport extends FaunaEuropaeaImportBase  {
 		if(logger.isInfoEnabled()) { logger.info("Start making taxa..."); }
 		
 		success = processTaxa(state, fauEuTaxonMap);
-		success = saveTaxa(stores, state.getHighestTaxonIndex(), limit);
+		success = saveTaxa(state, state.getHighestTaxonIndex(), state.getConfig().getLimitSave());
 		
 		logger.info("End making taxa...");
 		return success;

@@ -124,7 +124,7 @@ public class FaunaEuropaeaDistributionImport  extends FaunaEuropaeaImportBase {
 				
 				int disId = rs.getInt("dis_id");
 				int taxonId = rs.getInt("dis_tax_id");
-				int occStatusId = rs.getInt("ara_id");
+				int occStatusId = rs.getInt("dis_present");
 				
 				TaxonBase<?> taxonBase = taxonStore.get(taxonId);
 				
@@ -178,7 +178,7 @@ public class FaunaEuropaeaDistributionImport  extends FaunaEuropaeaImportBase {
 			
 			if(logger.isInfoEnabled()) { logger.info("Saving distributions ..."); }
 			
-			success = saveTaxa(stores, state.getHighestTaxonIndex(), limit);
+			success = saveTaxa(state, state.getHighestTaxonIndex(), state.getConfig().getLimitSave());
 			// save taxa
 //			getTaxonService().saveTaxonAll(taxonMap);
 			

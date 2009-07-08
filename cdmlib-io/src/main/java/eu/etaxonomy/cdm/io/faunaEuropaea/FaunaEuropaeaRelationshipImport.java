@@ -140,7 +140,7 @@ public class FaunaEuropaeaRelationshipImport extends FaunaEuropaeaImportBase  {
 		TransactionStatus txStatus = startTransaction();
 		
 		success = processTaxaSecondPass(state, fauEuTaxonMap);
-		success = saveTaxa(stores, highestTaxonIndex, limit);
+		success = saveTaxa(state, highestTaxonIndex, state.getConfig().getLimitSave());
 		
 		commitTransaction(txStatus);
 		
@@ -168,7 +168,7 @@ public class FaunaEuropaeaRelationshipImport extends FaunaEuropaeaImportBase  {
 		
 		success = retrieveTaxa2TaxonStore(state, fauEuTaxonMap, Q_NO_RESTRICTION);
 		success = processTaxaSecondPass(state, fauEuTaxonMap);
-		success = saveTaxa(stores, highestTaxonIndex, limit);
+		success = saveTaxa(state, highestTaxonIndex, state.getConfig().getLimitSave());
 		
 		logger.info("End making taxa...");
 		return success;

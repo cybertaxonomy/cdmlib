@@ -249,7 +249,7 @@ public class FaunaEuropaeaRefImport extends FaunaEuropaeaImportBase {
 			if(logger.isInfoEnabled()) { logger.info("Saving references ..."); }
 			
 			// save taxa, references, and authors
-			success = saveTaxa(stores, state.getHighestTaxonIndex(), limit);
+			success = saveTaxa(state, state.getHighestTaxonIndex(), state.getConfig().getLimitSave());
 			getReferenceService().saveReferenceAll(refStore.objects());
 			getAgentService().saveAgentAll(authorStore.objects());
 			

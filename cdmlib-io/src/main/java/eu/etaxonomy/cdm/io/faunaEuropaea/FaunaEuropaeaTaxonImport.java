@@ -161,7 +161,7 @@ public class FaunaEuropaeaTaxonImport extends FaunaEuropaeaImportBase  {
 		
 		success = retrieveTaxa(state, fauEuTaxonMap, Q_NO_RESTRICTION);
 		success = processTaxaSecondPass(state, fauEuTaxonMap);
-		success = saveTaxa(stores, highestTaxonIndex, limit);
+		success = saveTaxa(state, highestTaxonIndex, state.getConfig().getLimitSave());
 //		success = saveTaxa(stores);
 		
 		logger.info("End making taxa...");

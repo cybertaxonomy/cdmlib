@@ -18,6 +18,7 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.common.ResultWrapper;
+import eu.etaxonomy.cdm.model.description.AbsenceTerm;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
 import eu.etaxonomy.cdm.model.description.PresenceTerm;
@@ -78,7 +79,19 @@ public final class FaunaEuropaeaTransformer {
 	
 	private static Map<String, String> tdwgAreas = null;
 
-	public static PresenceAbsenceTermBase<?> occStatus2PresenceAbsence (int occStatusId)  throws UnknownCdmTypeException{
+	public static PresenceAbsenceTermBase<?> occStatus2PresenceAbsence(int occStatusId)  throws UnknownCdmTypeException{
+		switch (occStatusId){
+			case 0: return AbsenceTerm.ABSENT();
+			case 2: return PresenceTerm.INTRODUCED();
+			case 1: return PresenceTerm.NATIVE();
+			default: {
+				throw new UnknownCdmTypeException("Unknown presence status (id=" + Integer.valueOf(occStatusId).toString() + ")");
+			}
+		}
+	}
+
+	
+	public static PresenceAbsenceTermBase<?> occStatus2PresenceAbsence_ (int occStatusId)  throws UnknownCdmTypeException{
 		switch (occStatusId){
 			case 0: return null;
 			case 110: return PresenceTerm.CULTIVATED_REPORTED_IN_ERROR();
@@ -178,7 +191,7 @@ public final class FaunaEuropaeaTransformer {
 			String areaCode = rs.getString("ara_code");
 			int extraLimital = rs.getInt("ara_extralimital");
 			
-			//TODO: Verify mappings with comments. Are those the best matches?
+			//TODO: Verify mappings with comments. Those don't map to TDWG areas.
 			
 			if (areaCode.equals("AD")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("SPA-AN");
 			else if (areaCode.equals("AFR")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("24"); // Afro-tropical region - Northeast Tropical Africa
@@ -196,7 +209,7 @@ public final class FaunaEuropaeaTransformer {
 			else if (areaCode.equals("DK-DEN")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("DEN-OO");
 			else if (areaCode.equals("DK-FOR")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("FOR-OO");
 			else if (areaCode.equals("EE")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("BLT-ES");
-			else if (areaCode.equals("EPA")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("Palaearctic");
+			else if (areaCode.equals("EPA")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("3");   // Palaearctic - Asia-Temperate
 			else if (areaCode.equals("ES-BAL")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("BLT-ES");
 			else if (areaCode.equals("ES-CNY")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("CNY-OO");
 			else if (areaCode.equals("ES-SPA")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("SPA-SP");
@@ -227,13 +240,13 @@ public final class FaunaEuropaeaTransformer {
 			else if (areaCode.equals("MD")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("UKR-MO");
 			else if (areaCode.equals("MK")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("YUG-MA");
 			else if (areaCode.equals("MT")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("SIC-MA");
-			else if (areaCode.equals("NAF")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("20"); // North Africa - Northern Africa
+			else if (areaCode.equals("NAF")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("20");   // North Africa - Northern Africa
 			else if (areaCode.equals("NEA")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("7");	// Nearctic region - Northern America
-			else if (areaCode.equals("NEO")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("8"); // Neotropical region - Southern America
+			else if (areaCode.equals("NEO")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("8");    // Neotropical region - Southern America
 			else if (areaCode.equals("NL")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("NET-OO");
 			else if (areaCode.equals("NO-NOR")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("NOR-OO");
 			else if (areaCode.equals("NO-SVA")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("SVA-OO");
-			else if (areaCode.equals("NRE")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("34"); // Near East - Western Asia
+			else if (areaCode.equals("NRE")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("34");   // Near East - Western Asia
 			else if (areaCode.equals("ORR")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("35");	// Oriental region - Arabian Peninsula
 			else if (areaCode.equals("PL")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("POL-OO");
 			else if (areaCode.equals("PT-AZO")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("AZO-OO");

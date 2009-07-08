@@ -112,10 +112,12 @@ implements ICdmImport<FaunaEuropaeaImportConfigurator,FaunaEuropaeaImportState> 
 	}
 	
 
-	protected boolean saveTaxa(Map<String, MapWrapper<? extends CdmBase>> stores,
+	protected boolean saveTaxa(FaunaEuropaeaImportState state,
 			int highestTaxonIndex, int limit) {
 
+		Map<String, MapWrapper<? extends CdmBase>> stores = state.getStores();
 		MapWrapper<TaxonBase> taxonStore = (MapWrapper<TaxonBase>)stores.get(ICdmIO.TAXON_STORE);
+		TransactionStatus txStatus = null;
 
 		int n = 0;
 		int nbrOfTaxa = highestTaxonIndex;
@@ -161,14 +163,19 @@ implements ICdmImport<FaunaEuropaeaImportConfigurator,FaunaEuropaeaImportState> 
 				}
 			}
 
-//    		TransactionStatus txStatus = startTransaction();
+    		txStatus = startTransaction();
+			if (state.getConfig().isUseTransactions()) {
+				txStatus = startTransaction();
+			}
     		
 			Collection<TaxonBase> taxonMapPart = taxonStore.objects(start, limit);
 			getTaxonService().saveTaxonAll(taxonMapPart);
 			taxonMapPart = null;
 //			taxonStore.removeObjects(start, limit);
 			
-//			commitTransaction(txStatus);
+			if (state.getConfig().isUseTransactions()) {
+				commitTransaction(txStatus);
+			}
 
 		}
 		
