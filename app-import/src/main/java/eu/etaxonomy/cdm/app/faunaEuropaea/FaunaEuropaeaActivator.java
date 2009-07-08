@@ -14,10 +14,10 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.app.common.CdmDestinations;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
-import eu.etaxonomy.cdm.io.common.CdmDefaultImport;
-import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator.CHECK;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator.DO_REFERENCES;
+import eu.etaxonomy.cdm.io.common.CdmDefaultImport;
+import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.io.faunaEuropaea.FaunaEuropaeaImportConfigurator;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 
@@ -33,17 +33,24 @@ public class FaunaEuropaeaActivator {
 	
 	static final CHECK check = CHECK.IMPORT_WITHOUT_CHECK;
 	static DbSchemaValidation dbSchemaValidation = DbSchemaValidation.CREATE;
+//	static DbSchemaValidation dbSchemaValidation = DbSchemaValidation.VALIDATE;
+//	static DbSchemaValidation dbSchemaValidation = DbSchemaValidation.UPDATE;
 	static final NomenclaturalCode nomenclaturalCode  = NomenclaturalCode.ICZN;
 
 // ****************** ALL *****************************************
 	
 	static final boolean doAuthors = true;
-	static final DO_REFERENCES doReferences =  DO_REFERENCES.ALL;
 	static final boolean doTaxa = true;
-	static final boolean doSynonyms = true;
-	static final boolean doRelTaxa = true;
+	static final DO_REFERENCES doReferences =  DO_REFERENCES.ALL;
 	static final boolean doDistributions = true;
+	
+	static final boolean doBasionyms = true;
+	static final boolean doTaxonomicallyIncluded = true;
+	static final boolean doMisappliedNames = true;
+	static final boolean doHeterotypicSynonyms = true;
 
+	static final boolean useTransactions = true;
+	
 // ************************ NONE **************************************** //
 		
 //	static final boolean doAuthors = false;
@@ -65,17 +72,20 @@ public class FaunaEuropaeaActivator {
 		FaunaEuropaeaImportConfigurator fauEuImportConfigurator = 
 			FaunaEuropaeaImportConfigurator.NewInstance(faunaEuropaeaSource,  destination);
 		
+		fauEuImportConfigurator.setDbSchemaValidation(dbSchemaValidation);
 		fauEuImportConfigurator.setNomenclaturalCode(nomenclaturalCode);
+		fauEuImportConfigurator.setCheck(check);
 
 		fauEuImportConfigurator.setDoAuthors(doAuthors);
-		fauEuImportConfigurator.setDoReferences(doReferences);
 		fauEuImportConfigurator.setDoTaxa(doTaxa);
-		fauEuImportConfigurator.setDoRelTaxa(doRelTaxa);
+		fauEuImportConfigurator.setDoReferences(doReferences);
 		fauEuImportConfigurator.setDoOccurrence(doDistributions);
-		fauEuImportConfigurator.setDbSchemaValidation(dbSchemaValidation);
+		fauEuImportConfigurator.setDoTaxonomicallyIncluded(doTaxonomicallyIncluded);
+		fauEuImportConfigurator.setDoBasionyms(doBasionyms);
+		fauEuImportConfigurator.setDoMisappliedNames(doMisappliedNames);
+		fauEuImportConfigurator.setDoHeterotypicSynonyms(doHeterotypicSynonyms);
+		fauEuImportConfigurator.setUseTransactions(useTransactions);
 
-		fauEuImportConfigurator.setCheck(check);
-		
 		// invoke import
 		CdmDefaultImport<FaunaEuropaeaImportConfigurator> fauEuImport = 
 			new CdmDefaultImport<FaunaEuropaeaImportConfigurator>();
