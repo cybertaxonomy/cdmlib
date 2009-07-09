@@ -18,7 +18,7 @@ import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
 
 /**
  * A simple RoutingDataSource.
- * Bean definitions must set the key of the default datasource to "empty_default" 
+ * Bean definitions must set the key of the default datasource to "default" 
  * This String is defined in the contant <code>DEFAULT_DATASOURCE_KEY</code> and will
  * be used when the RoutingDataSource is beeing updated with a new <code>Map</code> 
  * of data sources.
@@ -28,10 +28,10 @@ import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
    &lt;bean id="dataSource"  lazy-init="true" class="eu.etaxonomy.cdm.remote.service.BasepathRoutingDataSource"&gt;
     	&lt;property name="targetDataSources"&gt;
 	      &lt;map key-type="java.lang.String"&gt;
-	         &lt;entry key="empty_default" value-ref="empty_defaultDataSource"/&gt;
+	         &lt;entry key="default" value-ref="defaultDataSource"/&gt;
 	      &lt;/map&gt;
    		&lt;/property&gt;
-   		&lt;property name="defaultTargetDataSource" ref="empty_defaultDataSource"/&gt;
+   		&lt;property name="defaultTargetDataSource" ref="defaultDataSource"/&gt;
    &lt;/bean&gt;
    </pre>
  * 
@@ -45,7 +45,7 @@ public class UpdatableRoutingDataSource extends AbstractRoutingDataSource {
 	
 	private static String userdefinedBeanDefinitionFile = null;
 	
-	private String defaultDatasourceName = "empty_default";
+	private String defaultDatasourceName = "default";
 
 	@Override
 	protected Object determineCurrentLookupKey() {

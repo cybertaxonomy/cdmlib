@@ -35,6 +35,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
+import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.model.view.AuditEventRecord;
 import eu.etaxonomy.cdm.model.view.context.AuditEventContextHolder;
@@ -42,6 +43,7 @@ import eu.etaxonomy.cdm.persistence.dao.common.AuditEventSort;
 import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
 import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
+import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonomicTreeDao;
 import eu.etaxonomy.cdm.persistence.fetch.CdmFetch;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
@@ -59,6 +61,9 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 	private ITaxonDao taxonDao;
 	
 	@SpringBeanByType	
+	private ITaxonomicTreeDao taxonomicTreeDao;
+	
+	@SpringBeanByType	
 	private IReferenceDao referenceDao;
 	
 	@SpringBeanByType
@@ -68,6 +73,10 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 	private UUID sphingidae;
 	private UUID acherontia;
 	private UUID mimas;
+	private UUID rethera;
+	private UUID retheraSecCdmtest;
+	private UUID atroposAgassiz; 
+	private UUID atroposLeach;
 	private UUID acherontiaLachesis;
 	private AuditEvent previousAuditEvent;
 	private AuditEvent mostRecentAuditEvent;
@@ -76,12 +85,21 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 	private UUID southernAmericaUuid;
 	private UUID antarcticaUuid;
 
+	private UUID taxonomicTreeUuid;
+	
+
 	@Before
 	public void setUp() {
 		uuid = UUID.fromString("496b1325-be50-4b0a-9aa2-3ecd610215f2");
 		sphingidae = UUID.fromString("54e767ee-894e-4540-a758-f906ecb4e2d9");
 		acherontia = UUID.fromString("c5cc8674-4242-49a4-aada-72d63194f5fa");
 		acherontiaLachesis = UUID.fromString("b04cc9cb-2b4a-4cc4-a94a-3c93a2158b06");
+		atroposAgassiz = UUID.fromString("d75b2e3d-7394-4ada-b6a5-93175b8751c1");
+		atroposLeach =  UUID.fromString("3da4ab34-6c50-4586-801e-732615899b07");
+		rethera = UUID.fromString("a9f42927-e507-4fda-9629-62073a908aae");
+		retheraSecCdmtest = UUID.fromString("a9f42927-e507-433a-9629-62073a908aae");
+		
+		
 		mimas = UUID.fromString("900052b7-b69c-4e26-a8f0-01c215214c40");
 		previousAuditEvent = new AuditEvent();
 		previousAuditEvent.setRevisionNumber(1025);
@@ -94,6 +112,8 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 		northernAmericaUuid = UUID.fromString("2757e726-d897-4546-93bd-7951d203bf6f");
 		southernAmericaUuid = UUID.fromString("6310b3ba-96f4-4855-bb5b-326e7af188ea");
 		antarcticaUuid = UUID.fromString("791b3aa0-54dd-4bed-9b68-56b4680aad0c");
+		
+		taxonomicTreeUuid = UUID.fromString("aeee7448-5298-4991-b724-8d5b75a0a7a9");
 	}
 	
 	@After
@@ -112,58 +132,60 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 	}
 	
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.taxon.TaxonDaoHibernateImpl#getRootTaxa(eu.etaxonomy.cdm.model.reference.ReferenceBase)}.
+	 * Test method for
+	 * {@link eu.etaxonomy.cdm.persistence.dao.hibernate.taxon.TaxonDaoHibernateImpl#getRootTaxa(eu.etaxonomy.cdm.model.reference.ReferenceBase)}
+	 * .
 	 */
 	@Test
 	@DataSet
-	public void testGetRootTaxa() { 
+	public void testGetRootTaxa() {
 		ReferenceBase sec1 = referenceDao.findById(1);
 		assert sec1 != null : "sec1 must exist";
 		ReferenceBase sec2 = referenceDao.findById(2);
 		assert sec2 != null : "sec2 must exist";
-		
+
 		List<Taxon> rootTaxa = taxonDao.getRootTaxa(sec1);
-		assertNotNull("getRootTaxa should return a List",rootTaxa);
-		assertFalse("The list should not be empty",rootTaxa.isEmpty());
-		assertEquals("There should be one root taxon",1, rootTaxa.size());
-		
+		assertNotNull("getRootTaxa should return a List", rootTaxa);
+		assertFalse("The list should not be empty", rootTaxa.isEmpty());
+		assertEquals("There should be one root taxon", 1, rootTaxa.size());
+
 		rootTaxa = taxonDao.getRootTaxa(sec1, CdmFetch.FETCH_CHILDTAXA(), true, false);
-		assertNotNull("getRootTaxa should return a List",rootTaxa);
-		assertFalse("The list should not be empty",rootTaxa.isEmpty());
-		assertEquals("There should be one root taxon",1, rootTaxa.size());
-		
+		assertNotNull("getRootTaxa should return a List", rootTaxa);
+		assertFalse("The list should not be empty", rootTaxa.isEmpty());
+		assertEquals("There should be one root taxon", 1, rootTaxa.size());
+
 		rootTaxa = taxonDao.getRootTaxa(Rank.GENUS(), sec1, CdmFetch.FETCH_CHILDTAXA(), true, false, null);
-		assertNotNull("getRootTaxa should return a List",rootTaxa);
-		assertFalse("The list should not be empty",rootTaxa.isEmpty());
-		assertEquals("There should be one root taxon",1, rootTaxa.size());
-		
+		assertNotNull("getRootTaxa should return a List", rootTaxa);
+		assertFalse("The list should not be empty", rootTaxa.isEmpty());
+		assertEquals("There should be one root taxon", 1, rootTaxa.size());
+
 		rootTaxa = taxonDao.getRootTaxa(Rank.FAMILY(), sec2, CdmFetch.FETCH_CHILDTAXA(), true, false, null);
 		if (logger.isDebugEnabled()) {
-		logger.debug("Root taxa rank Family (" + rootTaxa.size() + "):");
-		for (Taxon taxon: rootTaxa) {
-			logger.debug(taxon.getTitleCache());
+			logger.debug("Root taxa rank Family (" + rootTaxa.size() + "):");
+			for (Taxon taxon : rootTaxa) {
+				logger.debug(taxon.getTitleCache());
+			}
 		}
-	}
-		assertEquals("There should be one root taxon rank Family",1, rootTaxa.size());
+		assertEquals("There should be one root taxon rank Family", 1, rootTaxa.size());
 		rootTaxa = taxonDao.getRootTaxa(Rank.GENUS(), sec2, CdmFetch.FETCH_CHILDTAXA(), true, false, null);
-		assertNotNull("getRootTaxa should return a List",rootTaxa);
-		assertFalse("The list should not be empty",rootTaxa.isEmpty());
+		assertNotNull("getRootTaxa should return a List", rootTaxa);
+		assertFalse("The list should not be empty", rootTaxa.isEmpty());
 		if (logger.isDebugEnabled()) {
-		logger.debug("Root taxa rank Genus (" + rootTaxa.size() + "):");
-		for (Taxon taxon: rootTaxa) {
-			logger.debug(taxon.getTitleCache());
+			logger.debug("Root taxa rank Genus (" + rootTaxa.size() + "):");
+			for (Taxon taxon : rootTaxa) {
+				logger.debug(taxon.getTitleCache());
+			}
 		}
-	}
-		assertEquals("There should be 22 root taxa rank Genus",22, rootTaxa.size());
-		
+		assertEquals("There should be 22 root taxa rank Genus", 22, rootTaxa.size());
+
 		rootTaxa = taxonDao.getRootTaxa(Rank.SPECIES(), sec2, CdmFetch.FETCH_CHILDTAXA(), true, false, null);
 		if (logger.isDebugEnabled()) {
-		logger.debug("Root taxa rank Species (" + rootTaxa.size() + "):");
-		for (Taxon taxon: rootTaxa) {
-			logger.debug(taxon.getTitleCache());
+			logger.debug("Root taxa rank Species (" + rootTaxa.size() + "):");
+			for (Taxon taxon : rootTaxa) {
+				logger.debug(taxon.getTitleCache());
+			}
 		}
-	}
-		assertEquals("There should be 4 root taxa rank Species",3, rootTaxa.size());
+		assertEquals("There should be 4 root taxa rank Species", 3, rootTaxa.size());
 	}
 	
 	/**
@@ -223,20 +245,44 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 		namedAreas.add((NamedArea)definedTermDao.load(northernAmericaUuid));
 //		namedAreas.add((NamedArea)definedTermDao.load(southernAmericaUuid));
 //		namedAreas.add((NamedArea)definedTermDao.load(antarcticaUuid));
+
+		TaxonomicTree taxonmicTree = taxonomicTreeDao.findByUuid(taxonomicTreeUuid);
 		
-		// searching for a taxon: Rethera
-		List<TaxonBase> results = taxonDao.getTaxaByName(Taxon.class, "Rethera", MatchMode.BEGINNING, null, namedAreas,
+		// prepare some synonym relation ships for some tests
+		Synonym synAtroposAgassiz = (Synonym)taxonDao.findByUuid(atroposAgassiz);
+		Taxon taxonRethera = (Taxon)taxonDao.findByUuid(rethera);
+		taxonRethera.addSynonym(synAtroposAgassiz, SynonymRelationshipType.SYNONYM_OF());
+		
+		Synonym synAtroposLeach = (Synonym)taxonDao.findByUuid(atroposLeach);
+		Taxon taxonRetheraSecCdmtest = (Taxon)taxonDao.findByUuid(retheraSecCdmtest);
+		taxonRetheraSecCdmtest.addSynonym(synAtroposLeach, SynonymRelationshipType.SYNONYM_OF());
+		
+		// 1. searching for a taxon (Rethera)
+		List<TaxonBase> results = taxonDao.getTaxaByName(Taxon.class, "Rethera", null, MatchMode.BEGINNING, namedAreas,
+			null, null, null);
+		assertNotNull("getTaxaByName should return a List", results);
+		assertTrue("expected to find two taxa but found "+results.size(), results.size() == 2);
+		
+		// 2. searching for a taxon (Rethera) contained in a specific taxonomicTree
+		results = taxonDao.getTaxaByName(Taxon.class, "Rethera", taxonmicTree, MatchMode.BEGINNING, namedAreas,
 			null, null, null);
 		assertNotNull("getTaxaByName should return a List", results);
 		assertTrue("expected to find one taxon but found "+results.size(), results.size() == 1);
 		
-		// searching for a synonym: Atropos Agassiz
-		//TODO implement
-//		results = taxonDao.getTaxaByName("Atropos Agassiz", MatchMode.BEGINNING, SelectMode.SYNONYMS, null, namedAreas,
-//			null, null, null);
-//		assertNotNull("getTaxaByName should return a List", results);
-//		assertTrue("expected to find one taxon but found "+results.size(), results.size() == 1);
+
+		// 3. searching for Synonyms
+		results = taxonDao.getTaxaByName(Synonym.class, "Atropo", null, MatchMode.BEGINNING, namedAreas,
+			null, null, null);
+		assertNotNull("getTaxaByName should return a List", results);
+		assertTrue("expected to find two taxa but found "+results.size(), results.size() == 2);
 		
+		
+		// 4. searching for a Synonyms ans Taxa
+		//   create a synonym relationship first
+		results = taxonDao.getTaxaByName(TaxonBase.class, "A", null, MatchMode.BEGINNING, namedAreas,
+			null, null, null);
+		assertNotNull("getTaxaByName should return a List", results);
+		assertTrue("expected to find two taxa but found "+results.size(), results.size() == 7);
 	}
 
 	
@@ -273,13 +319,13 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 	@Test
 	@DataSet
 	public void testCountTaxaByName() {
-		long numberOfTaxa = taxonDao.countTaxaByName(Taxon.class, "A*", MatchMode.BEGINNING, null, null);
+		long numberOfTaxa = taxonDao.countTaxaByName(Taxon.class, "A*", null, MatchMode.BEGINNING, null);
 		assertEquals(numberOfTaxa, 9);
-		numberOfTaxa = taxonDao.countTaxaByName(Taxon.class, "A*", MatchMode.BEGINNING, null, null);
+		numberOfTaxa = taxonDao.countTaxaByName(Taxon.class, "A*", null, MatchMode.BEGINNING, null);
 		assertEquals(numberOfTaxa, 9);
-		numberOfTaxa = taxonDao.countTaxaByName(Synonym.class, "A*", MatchMode.BEGINNING, null, null);
+		numberOfTaxa = taxonDao.countTaxaByName(Synonym.class, "A*", null, MatchMode.BEGINNING, null);
 		assertEquals(numberOfTaxa, 3);
-		numberOfTaxa = taxonDao.countTaxaByName(TaxonBase.class, "A*", MatchMode.BEGINNING, null, null);
+		numberOfTaxa = taxonDao.countTaxaByName(TaxonBase.class, "A*", null, MatchMode.BEGINNING, null);
 		assertEquals(numberOfTaxa, 12);
 //	FIXME implement test for search in specific taxontree 		
 //		ReferenceBase reference = referenceDao.findByUuid(UUID.fromString("596b1325-be50-4b0a-9aa2-3ecd610215f2"));

@@ -26,6 +26,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
+import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
 import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ISearchableDao;
@@ -100,6 +101,7 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
 	 * where the taxonBase.name.nameCache property matches the String queryString.
 	 * @param clazz
 	 * @param queryString
+	 * @param taxonomicTree TODO
 	 * @param matchMode
 	 * @param namedAreas TODO
 	 * @param pageSize
@@ -107,23 +109,23 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
 	 * @param propertyPaths TODO
 	 * @return list of found taxa
 	 */
-	public List<TaxonBase> getTaxaByName(Class<? extends TaxonBase> clazz, String queryString, MatchMode matchMode,
-			ReferenceBase sec, Set<NamedArea> namedAreas, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
+	public List<TaxonBase> getTaxaByName(Class<? extends TaxonBase> clazz, String queryString, TaxonomicTree taxonomicTree,
+			MatchMode matchMode, Set<NamedArea> namedAreas, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 
 	/**
 	 * @param clazz
 	 * @param queryString
+	 * @param taxonomicTree TODO
 	 * @param matchMode
-	 * @param sec
 	 * @param namedAreas
 	 * @param pageSize
 	 * @param pageNumber
 	 * @param propertyPaths
 	 * @return
 	 */
-	public long countTaxaByName(Class<? extends TaxonBase> clazz, String queryString, MatchMode matchMode,
+	public long countTaxaByName(Class<? extends TaxonBase> clazz, String queryString, TaxonomicTree taxonomicTree,
 			
-			ReferenceBase sec, Set<NamedArea> namedAreas);
+			MatchMode matchMode, Set<NamedArea> namedAreas);
 	
 //	/**
 //	 * @param queryString

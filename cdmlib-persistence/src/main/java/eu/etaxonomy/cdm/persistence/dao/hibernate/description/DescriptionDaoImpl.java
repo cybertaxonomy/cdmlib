@@ -204,7 +204,9 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
 		}
 	}
 
-	public <TYPE extends DescriptionElementBase> List<TYPE> getDescriptionElements(DescriptionBase description, Set<Feature> features,	Class<TYPE> clazz, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
+	public <TYPE extends DescriptionElementBase> List<TYPE> getDescriptionElements(DescriptionBase description, Set<Feature> features,	
+		Class<TYPE> clazz, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
+
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
             Criteria criteria = null;

@@ -92,7 +92,7 @@ public abstract class AbstractBeanInitializer implements BeanInitializer{
 			} catch (IllegalAccessException e) {
 				logger.error("Illegal access on property " + prop.getName());
 			} catch (InvocationTargetException e) {
-				logger.error("Cannot invoke property " + prop.getName() + " not found");
+				logger.info("Cannot invoke property " + prop.getName() + " not found");
 			} catch (NoSuchMethodException e) {
 				logger.info("Property " + prop.getName() + " not found");
 			}

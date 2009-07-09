@@ -61,6 +61,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
+import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.persistence.dao.QueryParseException;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.AlternativeSpellingSuggestionParser;
@@ -209,7 +210,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 	public List<TaxonBase> getTaxaByName(Class<? extends TaxonBase> clazz, String queryString, MatchMode matchMode,
 			Integer pageSize, Integer pageNumber) {
 		
-		return getTaxaByName(clazz, queryString, matchMode, null, null, pageSize, pageNumber, null);
+		return getTaxaByName(clazz, queryString, null, matchMode, null, pageSize, pageNumber, null);
 	}
 	
 	public List<TaxonBase> getTaxaByName(String queryString, MatchMode matchMode, 
@@ -223,19 +224,14 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 	}
 	
 	
-	public List<TaxonBase> getTaxaByName(Class<? extends TaxonBase> clazz, String queryString, MatchMode matchMode,
-			ReferenceBase sec, Set<NamedArea> namedAreas, Integer pageSize, 
+	public List<TaxonBase> getTaxaByName(Class<? extends TaxonBase> clazz, String queryString, TaxonomicTree taxonomicTree,
+			MatchMode matchMode, Set<NamedArea> namedAreas, Integer pageSize, 
 			Integer pageNumber, List<String> propertyPaths) {
 				
-		
 		boolean doCount = false;
-		
-		Query query = prepareTaxaByName(clazz, queryString, matchMode, namedAreas, pageSize, pageNumber, doCount);
-
+		Query query = prepareTaxaByName(clazz, queryString, taxonomicTree, matchMode, namedAreas, pageSize, pageNumber, doCount);
 		List<TaxonBase> results = query.list();
-		
 		defaultBeanInitializer.initializeAll(results, propertyPaths);
-		
 		return results;
 		
 	}
@@ -243,6 +239,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 	/**
 	 * @param clazz
 	 * @param queryString
+	 * @param taxonomicTree TODO
 	 * @param matchMode
 	 * @param namedAreas
 	 * @param pageSize
@@ -252,10 +249,9 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 	 * 
 	 * FIXME implement taxontree restriction & implement test: see {@link TaxonDaoHibernateImplTest#testCountTaxaByName()}
 	 */
-	private Query prepareTaxaByName(Class<? extends TaxonBase> clazz, String queryString, MatchMode matchMode,
-			Set<NamedArea> namedAreas, Integer pageSize, Integer pageNumber, boolean doCount) {
-	
-		
+	private Query prepareTaxaByName(Class<? extends TaxonBase> clazz, String queryString, TaxonomicTree taxonomicTree,
+			MatchMode matchMode, Set<NamedArea> namedAreas, Integer pageSize, Integer pageNumber, boolean doCount) {
+
 		//TODO ? checkNotInPriorView("TaxonDaoHibernateImpl.countTaxaByName(String queryString, Boolean accepted, ReferenceBase sec)");
 
 		String hqlQueryString = matchMode.queryStringFrom(queryString);
@@ -267,28 +263,87 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 			matchOperator = "like";
 		}
 		
-		String selectWhat = (doCount ? "count(distinct t)": "distinct t");
+		String selectWhat = (doCount ? "count(t)": "t");
 		
 		String hql = "";
 		Set<NamedArea> areasExpanded = new HashSet<NamedArea>();
 		if(namedAreas != null && namedAreas.size() > 0){
-			// expand areas
+			// expand areas and restrict by distribution area
 			List<NamedArea> childAreas;
 			Query areaQuery = getSession().createQuery("select childArea from NamedArea as childArea left join childArea.partOf as parentArea where parentArea = :area");
 			expandNamedAreas(namedAreas, areasExpanded, areaQuery);
 			
-			if(clazz.equals(Taxon.class)){
-				hql = "select " + selectWhat + " from Distribution e join e.inDescription d join d.taxon t join t.name n "+
-					" where e.area in (:namedAreas) AND n.nameCache " + matchOperator + " :queryString";   
+			String taxonSubselect = null;
+			String synonymSubselect = null;
+			
+			if(taxonomicTree != null){
+					
+				taxonSubselect = "select t from Distribution e" +
+					" join e.inDescription d" +
+					" join d.taxon t" +
+					" join t.name n " +
+					" join t.taxonNodes as tn "+
+					" where e.area in (:namedAreas)" +
+					" AND tn.taxonomicTree = :taxonomicTree" +
+					" AND n.nameCache " + matchOperator + " :queryString";
+					
+				synonymSubselect = "select s from" +
+					" Distribution e" +
+					" join e.inDescription d" +
+					" join d.taxon t" + // the taxa
+					" join t.taxonNodes as tn "+
+					" join t.synonymRelations sr" +
+					" join sr.relatedFrom s" + // the synonyms
+					" join s.name sn"+ 
+					" where e.area in (:namedAreas)" +
+					" AND tn.taxonomicTree = :taxonomicTree" +
+					" AND sn.nameCache " + matchOperator + " :queryString";
+					
 			} else {
-				//FIXME implement
-				logger.warn("find synonyms by area not jet implemented");
-				hql = "select " + selectWhat + " from Distribution e join e.inDescription d join d.taxon t join t.name n "+
-					" where e.area in (:namedAreas) AND n.nameCache " + matchOperator + " :queryString";   
+				
+				taxonSubselect = "select t from Distribution e" +
+					" join e.inDescription d" +
+					" join d.taxon t" +
+					" join t.name n "+
+					" where e.area in (:namedAreas)" +
+					" AND n.nameCache " + matchOperator + " :queryString";
+				
+				synonymSubselect = "select s from" +
+					" Distribution e" +
+					" join e.inDescription d" +
+					" join d.taxon t" + // the taxa
+					" join t.synonymRelations sr" +
+					" join sr.relatedFrom s" + // the synonyms
+					" join s.name sn"+ 
+					" where e.area in (:namedAreas)" +
+					" AND sn.nameCache " + matchOperator + " :queryString";
 			}
+				
+			if(clazz.equals(Taxon.class)){
+				// find Taxa
+				hql = "select " + selectWhat + " from " + clazz.getSimpleName() + " t" 
+					+ " where t in (" + taxonSubselect + ")";		
+			} else if(clazz.equals(Synonym.class)){
+				// find synonyms
+				hql = "select " + selectWhat + " from " + clazz.getSimpleName() + " t" 
+					+ " where t in (" + synonymSubselect + ")";		
+			} else {
+				// find taxa and synonyms
+				hql = "select " + selectWhat + " from " + clazz.getSimpleName() + " t" 
+				+ " where t in (" + taxonSubselect + ") OR t in (" + synonymSubselect + ")";
+			}
+			// END - expand areas and restrict by distribution area
 		} else {
-			hql = "select " + selectWhat + " from " + clazz.getSimpleName() + " t" 
-			+ " where t.name.nameCache " + matchOperator + " :queryString";
+			// no restriction by distribution area   
+			if(taxonomicTree != null){
+				hql = "select " + selectWhat + " from TaxonNode as tn" +
+						" join tn.taxon as t" +
+						" where t.name.nameCache " + matchOperator + " :queryString" +
+						" AND tn.taxonomicTree = :taxonomicTree";				
+			} else {
+				hql = "select " + selectWhat + " from " + clazz.getSimpleName() + " t" 
+				+ " where t.name.nameCache " + matchOperator + " :queryString";				
+			}
 		}
 		
 		if(!doCount){
@@ -302,23 +357,28 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 			query.setParameterList("namedAreas", areasExpanded);
 		}
 		
+		if(taxonomicTree != null){
+			query.setParameter("taxonomicTree", taxonomicTree);
+		}
+
 		if(pageSize != null &&  !doCount) {
 			query.setMaxResults(pageSize);
 			if(pageNumber != null) {
 				query.setFirstResult(pageNumber * pageSize);
 			}
 		}
+		
 		return query;
 	}
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#countTaxaByName(java.lang.String, eu.etaxonomy.cdm.persistence.query.MatchMode, eu.etaxonomy.cdm.persistence.query.SelectMode, eu.etaxonomy.cdm.model.reference.ReferenceBase, java.util.Set)
 	 */
-	public long countTaxaByName(Class<? extends TaxonBase> clazz, String queryString, MatchMode matchMode,
-		ReferenceBase sec, Set<NamedArea> namedAreas) {
+	public long countTaxaByName(Class<? extends TaxonBase> clazz, String queryString, TaxonomicTree taxonomicTree,
+		MatchMode matchMode, Set<NamedArea> namedAreas) {
 		
 		boolean doCount = true;
-		Query query = prepareTaxaByName(clazz, queryString, matchMode, namedAreas, null, null, doCount);
+		Query query = prepareTaxaByName(clazz, queryString, taxonomicTree, matchMode, namedAreas, null, null, doCount);
 		Object result = query.uniqueResult();
 		return (Long) result;
 		
