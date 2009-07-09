@@ -656,38 +656,28 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		List<TaxonBase> taxa = null; 
 
 		// Taxa and synonyms
+		long numberTaxaResults = 0L;
 		
-		Long numberTaxaResults = 0L;
-		
+		Class<? extends TaxonBase> clazz = null;
 		if (configurator.isDoTaxa() && configurator.isDoSynonyms()) {
-			taxa = dao.getTaxaByName(TaxonBase.class, 
-					configurator.getSearchString(), configurator.getMatchMode(), configurator.getSec(),
-					configurator.getNamedAreas(), configurator.getPageSize(), 
-						configurator.getPageNumber(), configurator.getTaxonPropertyPath());
-			numberTaxaResults = 
-				dao.countTaxaByName(TaxonBase.class, 
-						configurator.getSearchString(), configurator.getMatchMode(), configurator.getSec(),
-						configurator.getNamedAreas());
-			
+			clazz = TaxonBase.class;
 		} else if(configurator.isDoTaxa()) {
-			taxa = dao.getTaxaByName(Taxon.class, 
-					configurator.getSearchString(), configurator.getMatchMode(), configurator.getSec(),
-					configurator.getNamedAreas(), configurator.getPageSize(), 
-					configurator.getPageNumber(), configurator.getTaxonPropertyPath());
-			numberTaxaResults = 
-				dao.countTaxaByName(Taxon.class, 
-						configurator.getSearchString(), configurator.getMatchMode(), configurator.getSec(),
-						configurator.getNamedAreas());
-			
+			clazz = TaxonBase.class;
 		} else if (configurator.isDoSynonyms()) {
-			taxa = dao.getTaxaByName(Synonym.class,
-					configurator.getSearchString(), configurator.getMatchMode(), configurator.getSec(),
+			clazz = TaxonBase.class;
+		}
+		
+		if(clazz != null){
+			numberTaxaResults = 
+				dao.countTaxaByName(clazz, 
+					configurator.getSearchString(), configurator.getTaxonomicTree(), configurator.getMatchMode(),
+					configurator.getNamedAreas());
+			if(numberTaxaResults > configurator.getPageSize() * configurator.getPageNumber()){ // no point checking again if less results
+				taxa = dao.getTaxaByName(clazz, 
+					configurator.getSearchString(), configurator.getTaxonomicTree(), configurator.getMatchMode(),
 					configurator.getNamedAreas(), configurator.getPageSize(), 
 					configurator.getPageNumber(), configurator.getTaxonPropertyPath());
-			numberTaxaResults = 
-				dao.countTaxaByName(Synonym.class, 
-						configurator.getSearchString(), configurator.getMatchMode(), configurator.getSec(),
-						configurator.getNamedAreas());
+			}
 		}
 
 		if (logger.isDebugEnabled()) { logger.debug(numberTaxaResults + " matching taxa counted"); }
