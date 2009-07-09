@@ -60,39 +60,172 @@
     and species related content of any kind like economic use or conservation
     status.</para>
 
-    <para xlink:href="">The Internet Platform for Cybertaxonomy consists of
-    interoperable but independent platform components. Platform components can
-    take the form of software applications (desktop or web-based) for human
-    users or (web) services. The platform as envisioned does not have a single
-    user interface or website; rather, it is a collection of interacting
-    components which may be combined and assembled according to the task in
-    hand. To facilitate the development of core CDM Applications such as the
-    CDM Community Server, the CDM Dataportals, and the Taxonomic Editor, an
-    implementation of the CDM has been created in the java programming
-    language. In addition to CDM model classes being modelled as
+    <para>The cyberplatform consists of interoperable but independent
+    components. Platform components can take the form of software applications
+    (desktop or web-based) for human users or (web) services intended to be
+    used by other software applications. The platform as envisioned does not
+    have a single user interface or website; rather, it is a collection of
+    interacting components which may be combined and assembled according to
+    the task in hand. To facilitate the development of core CDM Applications
+    such as the CDM Community Server, the CDM Dataportals, and the Taxonomic
+    Editor, an implementation of the CDM has been created in the java
+    programming language. In addition to CDM model classes being modelled as
     plain-old-java-objects (<link
     xlink:href="http://en.wikipedia.org/wiki/Plain_Old_Java_Object">pojo's</link>),
     a set of java components has been created that provide common services
     across all java applications using the CDM. In addition to serving as the
     basis of core components of the Internet Platform for Cyberplatform, they
-    also allow the development of other applications using the CDM.</para>
+    also allow the development of other applications using the CDM by
+    providing basic functionality that can be extended for a particular
+    purpose.</para>
 
     <para>The CDM Library, as it is known, consists of four major modules that
     can be used by any java application based on the CDM. These libraries are
     used as the foundation of the Taxonomic Editor and the CDM Community
-    Server. In addition, the CDM Community Server is documented here, as the
-    components can be re-purposed or extended by other web applications based
-    on the CDM.</para>
+    Server. In addition a web application (the CDM Community Server) is
+    documented here, as its components can be re-purposed or extended by other
+    web applications based on the CDM.</para>
+
+    <figure>
+      <mediaobject>
+        <imageobject role="html">
+          <imagedata fileref="resources/images/cdmlib-arch3.png" format="png" />
+        </imageobject>
+
+        <imageobject role="fo">
+          <imagedata contentwidth="160mm"
+                     fileref="resources/images/cdmlib-arch3.png" format="png"
+                     scalefit="1" />
+        </imageobject>
+
+        <caption>The overall architecture of the EDIT Internet platform for
+        Cybertaxonomy, showing the core components of the CDM Java Library,
+        and their use by desktop (Taxonomic Editor) and web-based (CDM
+        Dataportal, CATE) applications.</caption>
+      </mediaobject>
+    </figure>
   </preface>
 
   <part>
     <title>Common Data Model</title>
 
     <partintro>
-      <para>Description of the model classes and their use:</para>
+      <para>The Common Data Model (CDM) is the domain model for the core EDIT
+      cyberplatform components. The CDM is primarily based on the <link
+      linkend="???"
+      xlink:href="http://wiki.tdwg.org/twiki/bin/view/TAG/LsidVocs">TDWG
+      Ontology</link> and in most cases there is concordance with relevant
+      TDWG standards such as <link linkend="???"
+      xlink:href="http://www.tdwg.org/standards/117/">Taxon Concept Transfer
+      Schema (TCS)</link>, <link linkend="???"
+      xlink:href="http://www.tdwg.org/standards/117/">Structured Descriptive
+      Data (SDD)</link> and <link linkend="???"
+      xlink:href="http://www.tdwg.org/standards/115/">Access to Biological
+      Collections Data (ABCD)</link>.</para>
+
+      <para>The CDM differs from the TDWG standards in its purpose: it is
+      intended to serve as the basis of software applications in the
+      cyberplatform (e.g. the taxonomic editor, the CDM Dataportals) rather
+      than being a standard for data exchange between any resource containing
+      biodiversity information. Whilst it is certainly possible to exchange
+      data as CDM domain objects serialized as XML or JSON (the CDM Server and
+      the CDM Dataportals do this), the common data model is not intended to
+      replace existing TDWG standards as a general purpose exchange standard.
+      It is possible to convert data held in a CDM store into a relevant TDWG
+      standard for exchange and in some cases this may be the desired route
+      for data held in the CDM (e.g. for exchange with an application that is
+      not part of the cyberplatform, but which is capable of understanding
+      data in a TDWG standard).</para>
+
+      <para>Thus the CDM is intended for use as</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>A domain model for applications, particularly those that
+          enable taxonomists to do revisionary taxonomy and taxonomic field
+          work</para>
+        </listitem>
+
+        <listitem>
+          <para>A standard for exchange between applications that are part of
+          the EDIT Internet Platform for Cybertaxonomy</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>In terms of scope, the CDM covers information core to the vision
+      of the cyberplatform i.e. descriptive and revisionary taxonomy,
+      including taxonomic fieldwork :-</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Taxonomic names and nomenclature, typification</para>
+        </listitem>
+
+        <listitem>
+          <para>Taxonomic concepts and relationships between accepted names
+          and synonyms, including the placement of the same taxonomic concept
+          in different taxonomic hierarchies.</para>
+        </listitem>
+
+        <listitem>
+          <para>Specimens and Observations of individual organisms, their
+          collection, location, processing and taxonomic determination.</para>
+        </listitem>
+
+        <listitem>
+          <para>Structured and unstructured information about names, taxa, and
+          specimens.</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>In addition to this core area, the CDM covers some related domains
+      that are important:-</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Literature</para>
+        </listitem>
+
+        <listitem>
+          <para>People, teams of people and institutions in various roles
+          (i.e. as authors, collectors, artists, rights holders etc)</para>
+        </listitem>
+
+        <listitem>
+          <para>Media (images, video and audio files, plus more
+          taxonomy-specific media such as phylogenies and compiled
+          keys)</para>
+        </listitem>
+
+        <listitem>
+          <para>Molecular data, such as DNA sequences and loci</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>As you might expect, there are also a number of data entities
+      representing controlled vocabularies, identity of users (and their roles
+      and permissions), and ancillary data common to all major classes such as
+      multilingual text content, annotations and markers.</para>
+
+      <figure>
+        <title>A UML Package diagram showing the CDM packages and their
+        members.</title>
+
+        <mediaobject>
+          <imageobject role="html">
+            <imagedata fileref="resources/images/ModelOverview20.gif" />
+          </imageobject>
+
+          <imageobject role="fo">
+            <imagedata contentwidth="160mm"
+                       fileref="resources/images/ModelOverview20.gif"
+                       scalefit="1" />
+          </imageobject>
+        </mediaobject>
+      </figure>
     </partintro>
 
-    <!--<xi:include href="base-classes.xml" />-->
+    <xi:include href="base-classes.xml" />
 
     <!--<xi:include href="annotation-and-markers.xml" />-->
 
@@ -107,10 +240,112 @@
     <title>Persistence Layer</title>
 
     <partintro>
-      <para>This part discusses the persistence layer in detail:</para>
+      <para>Even the most basic of taxonomic applications have a requirement
+      for users to be able to save the information that they create. In
+      addition, a common component of taxonomic applications is the use of a
+      database to provide users with the ability to filter or search their
+      data in one way or another. Some applications will require more advanced
+      functionality, such as auditing or versioning of data. All of this logic
+      is contained in the persistence layer, providing clean separation
+      between data access and more taxonomy-centric business logic in the
+      service layer.</para>
+
+      <para>Persistence is not a simple problem to solve, especially in
+      application developed in Object-Oriented languages, with large amounts
+      of data, or with many users accessing data at the same time. The CDM
+      Library uses the <link
+      xlink:href="http://www.hibernate.org">Hibernate</link> object/relational
+      persistence and query service as the basis of its persistence layer.
+      Several member projects of the Hibernate stable, including <link
+      xlink:href="http://annotations.hibernate.org">Hibernate
+      Annotations</link>, <link linkend="???"
+      xlink:href="http://search.hibernate.org">Hibernate Search</link> and
+      <link linkend="???">Hibernate Envers</link> (part of Hibernate Core)
+      provide the basis of the more advanced persistence-related functionality
+      in the CDM Library. As a consequence some of the behaviour of the CDM
+      Library is constrained by the underlying ORM technology. The advantage
+      of using an ORM is that the same software can be used with multiple
+      database systems with (almost) no changes to the application. Currently
+      the CDM Library has been tested with (version numbers &amp; platforms in
+      brackets)</para>
+
+      <!--I don't know how many of these have been tested, on which platforms, but it would be good to include some measure of which platform / database combinations 
+have been used and how, so that potential users can evaluate the technology. In an ideal world, we would pick some databases as "supported" and ensure that
+the test suite runs on that platform / db combination (i.e. you don't release until the tests pass). For the others, we still might want to say: "We tested 
+the CDM on this platform and it seemed to work".-->
+
+      <itemizedlist>
+        <listitem>
+          <para>IBM <link
+          xlink:href="http://www.ibm.com/software/data/db2/">DB2</link></para>
+        </listitem>
+
+        <listitem>
+          <para><link xlink:href="???">H2</link> (default local database used
+          by the Taxonomic Editor, 1.0.73)</para>
+        </listitem>
+
+        <listitem>
+          <para>
+            <link xlink:href="http://hsqldb.org">HSQLDB</link>
+          </para>
+        </listitem>
+
+        <listitem>
+          <para><link xlink:href="http://www.mysql.com">MySQL</link> (4.1.20:
+          linux; 5.1.32: windows)</para>
+        </listitem>
+
+        <listitem>
+          <para>
+            <link xlink:href="???">ODBC</link>
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+            <link
+            xlink:href="http://www.oracle.com/database/index.html">Oracle
+            Database 11<emphasis>g</emphasis></link>
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+            <link xlink:href="http://www.postgresql.org/">PostgreSQL</link>
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+            <link xlink:href="???">Microsoft SQL Server 2000</link>
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+            <link linkend="???"
+            xlink:href="http://www.microsoft.com/sqlserver/2005/">Microsoft
+            SQL Server 2005</link>
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+            <link linkend="???" xlink:href="http://www.sybase.co.uk/">Sybase
+            Advantage Database Server</link>
+          </para>
+        </listitem>
+      </itemizedlist>
+
+      <para>In theory, application developers should not need to use the
+      persistence layer directly, but should instead use the <link
+      linkend="api">API</link>, which provides a <emphasis>facade</emphasis>
+      over the persistence layer and extra business logic that most
+      applications using the CDM will require.</para>
     </partintro>
 
-    <!--<xi:include href="basic-persistence.xml" />-->
+    <xi:include href="basic-persistence.xml" />
 
     <!--<xi:include href="listing-sorting-initializing.xml" />-->
 
@@ -119,7 +354,7 @@
     <!--<xi:include href="free-text-search.xml" />-->
   </part>
 
-  <part>
+  <part xml:id="api">
     <title>API Methods</title>
 
     <partintro>

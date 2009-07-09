@@ -2333,7 +2333,10 @@ pluginTesterApplication/src/test/testClass.java -text
 /settings.xml -text
 src/docbkx/ReferenceDocumentation.xml -text
 src/docbkx/base-classes.xml -text
+src/docbkx/basic-persistence.xml -text
 src/docbkx/resources/css/html.css -text
+src/docbkx/resources/images/ModelOverview20.gif -text
+src/docbkx/resources/images/cdmlib-arch3.png -text
 src/docbkx/resources/images/logo.png -text
 src/docbkx/resources/xsl/cdmlib.xsl -text
 src/docbkx/resources/xsl/fopdf.xsl -text

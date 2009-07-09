@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter version="5.0" xml:id="basic-persistence"
+         xmlns="http://docbook.org/ns/docbook"
+         xmlns:ns5="http://www.w3.org/1999/xhtml"
+         xmlns:ns4="http://www.w3.org/2000/svg"
+         xmlns:ns3="http://www.w3.org/1998/Math/MathML"
+         xmlns:ns2="http://www.w3.org/1999/xlink"
+         xmlns:ns="http://docbook.org/ns/docbook">
+  <info>
+    <title>Basic Persistence</title>
+  </info>
+
+  <section>
+    <para>The persistence layer of the CDM primarily consists of a set of
+    <emphasis>data access objects (DAOs)</emphasis>. These DAOs are
+    generically typed, and form a hierachy that </para>
+  </section>
+</chapter>
