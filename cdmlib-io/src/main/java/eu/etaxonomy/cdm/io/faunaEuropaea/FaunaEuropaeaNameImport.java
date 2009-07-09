@@ -701,6 +701,13 @@ public class FaunaEuropaeaNameImport extends FaunaEuropaeaImportBase  {
 		int rank = fauEuTaxon.getRankId();
 		int parentId = fauEuTaxon.getParentId();
 		FaunaEuropaeaTaxon parent = fauEuTaxonMap.get(parentId);
+		if (parent == null) {
+			nameCacheStringBuilder.append(fauEuTaxon.getLocalName());
+			if (logger.isInfoEnabled()) {
+				logger.info("Parent of (" + fauEuTaxon.getId() + " is null");
+			}
+			return nameCacheStringBuilder.toString();
+		}
 		int grandParentId = parent.getParentId();
 		FaunaEuropaeaTaxon grandParent = fauEuTaxonMap.get(grandParentId);
 		int greatGrandParentId = grandParent.getParentId();

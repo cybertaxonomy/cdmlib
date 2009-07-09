@@ -81,7 +81,7 @@ public class FaunaEuropaeaAuthorImport extends FaunaEuropaeaImportBase {
 
 				if ((i++ % modCount) == 0 && i!= 1 ) { 
 					if(logger.isInfoEnabled()) {
-						logger.info("Authors handled: " + (i-1)); 
+						logger.info("Authors retrieved: " + (i-1)); 
 					}
 				}
 
