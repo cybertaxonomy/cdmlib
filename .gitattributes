@@ -1916,6 +1916,10 @@ cdmlib-remote/src/main/webapp/WEB-INF/applicationContext.xml -text
 cdmlib-remote/src/main/webapp/WEB-INF/cdmrest-servlet.xml -text
 cdmlib-remote/src/main/webapp/WEB-INF/datasources/datasources-local.xml -text
 cdmlib-remote/src/main/webapp/WEB-INF/datasources/empty-default-datasource.xml -text
+cdmlib-remote/src/main/webapp/WEB-INF/datasources/example.cdmlibrary/datasources-set-A.xml -text
+cdmlib-remote/src/main/webapp/WEB-INF/datasources/example.cdmlibrary/datasources-set-B.xml -text
+cdmlib-remote/src/main/webapp/WEB-INF/datasources/example.cdmlibrary/use-A-set.sh -text
+cdmlib-remote/src/main/webapp/WEB-INF/datasources/example.cdmlibrary/use-B-set.sh -text
 cdmlib-remote/src/main/webapp/WEB-INF/datasources/p6spy.xml -text
 cdmlib-remote/src/main/webapp/WEB-INF/datasources/routing-datasource.xml -text
 cdmlib-remote/src/main/webapp/WEB-INF/jsonConfigurations.xml -text
