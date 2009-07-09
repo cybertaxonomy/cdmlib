@@ -67,62 +67,97 @@ public class TermServiceImpl extends ServiceBase<DefinedTermBase,IDefinedTermDao
 		this.vocabularyDao = vocabularyDao;
 	}
 	
-	/* (non-Javadoc)
+	/**
+	 *  (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.ITermService#getTermByUri(java.lang.String)
+	 * FIXME Candidate for harmonization
+	 * rename -> getByUri
 	 */
 	public DefinedTermBase getTermByUri(String uri) {
 		//FIXME transformation from URI to UUID
 		return dao.findByUri(uri);
 	}
 	
-	/* FIXME candidate for harmonization(non-Javadoc)
+	/**
+	 *  (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.ITermService#getTermByUuid(java.util.UUID)
+	 * FIXME candidate for harmonization
 	 */
 	public DefinedTermBase getTermByUuid(UUID uuid) {
 		return dao.findByUuid(uuid);  
 	}
 	
+	/**
+	 * FIXME candidate for harmonization
+	 * list
+	 */
 	public List<DefinedTermBase> getAllDefinedTerms(int limit, int start){
 		return dao.list(limit, start);
 	}
 
+	/**
+	 * FIXME candidate for harmonization
+	 * save
+	 */
 	@Transactional(readOnly = false)
 	public UUID saveTerm(DefinedTermBase termBase) {
 		return super.saveCdmObject(termBase);
 	}
 	
+	/**
+	 * FIXME candidate for harmonization
+	 * save(Set<DefinedTermBase> terms)
+	 */
 	@Transactional(readOnly = false)
 	public Map<UUID, DefinedTermBase> saveTermsAll(Collection<? extends DefinedTermBase> termBaseCollection){
 		return saveCdmObjectAll(termBaseCollection);
 	}
 
-	/* (non-Javadoc)
+	/**
+	 *  (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.ITermService#getVocabulary(java.util.UUID)
+	 * FIXME candidate for harmonization
+	 * vocabuaryService.find
 	 */
 	public TermVocabulary<? extends DefinedTermBase<?>> getVocabulary(UUID vocabularyUuid) {
 		TermVocabulary<? extends DefinedTermBase<?>> vocabulary = (TermVocabulary) vocabularyDao.findByUuid(vocabularyUuid);
 		return vocabulary;
 	}
 	
+	/**
+	 * FIXME candidate for harmonization
+	 * vocabularyService.load
+	 */
 	public TermVocabulary loadVocabulary(UUID vocabularyUuid, List<String> propertyPaths) {
 		TermVocabulary<? extends DefinedTermBase<?>> vocabulary = (TermVocabulary) vocabularyDao.load(vocabularyUuid,
 			propertyPaths);
 		return vocabulary;
 	}
 	
+	/**
+	 * FIXME candidate for harmonization
+	 * move to vocabularyService
+	 */
 	public TermVocabulary<? extends DefinedTermBase<?>> getVocabulary(VocabularyEnum vocabularyType){
 		TermVocabulary<? extends DefinedTermBase<?>> vocabulary = getVocabulary(vocabularyType.getUuid());
 		return vocabulary;
 	}
 	
-	/* (non-Javadoc)
+	/**
+	 *  (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.ITermService#listVocabularies(java.lang.Class)
+	 * FIXME candidate for harmonization
+	 * vocabularyService.list
 	 */
 	public Set<TermVocabulary> listVocabularies(Class termClass) {
 		logger.error("Method not implemented yet");
 		return null;
 	}
 
+	/**
+	 * FIXME candidate for harmonization
+	 * vocabularyService.list
+	 */
 	public List<TermVocabulary<DefinedTermBase>> getAllTermVocabularies(int limit, int start) {
 		return vocabularyDao.list(limit, start);
 	}
@@ -132,6 +167,10 @@ public class TermServiceImpl extends ServiceBase<DefinedTermBase,IDefinedTermDao
 		return vocabularyDao.list(limit, start, orderHints, propertyPaths);
 	}
 
+	/**
+	 * FIXME candidate for harmonization
+	 * vocabularyService.page
+	 */
 	public Pager<TermVocabulary<DefinedTermBase>> pageTermVocabularies(Integer pageSize, Integer pageNumber,
 			List<OrderHint> orderHints, List<String> propertyPaths) {
 
@@ -142,8 +181,11 @@ public class TermServiceImpl extends ServiceBase<DefinedTermBase,IDefinedTermDao
 		return pager;
 	}
 	
-	/* (non-Javadoc)
+	/** 
+	 * (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.ITermService#getLanguageVocabulary()
+	 * FIXME candidate for harmonization
+	 * is this the same as getVocabulary(VocabularyEnum.Language)
 	 */
 	public TermVocabulary<Language> getLanguageVocabulary() {
 		String uuidString = "45ac7043-7f5e-4f37-92f2-3874aaaef2de";
@@ -153,6 +195,10 @@ public class TermServiceImpl extends ServiceBase<DefinedTermBase,IDefinedTermDao
 		return languageVocabulary;
 	}
 	
+	/**
+	 * FIXME candidate for harmonization
+	 * vocabularyService.save(Set<TermVocabulary> vocabularies)
+	 */
 	public Map<UUID, TermVocabulary<DefinedTermBase>> 
     saveTermVocabulariesAll(Collection<TermVocabulary<DefinedTermBase>> termVocabularies) {
 		return vocabularyDao.saveAll(termVocabularies);
@@ -162,29 +208,55 @@ public class TermServiceImpl extends ServiceBase<DefinedTermBase,IDefinedTermDao
 		return vocabularyDao.save(termVocabulary);
 	}
 
+	/**
+	 * FIXME candidate for harmonization
+	 * remove redundant code
+	 */
 //	@Transactional(readOnly = false)
 //	public Map<UUID, Representation> saveRepresentationsAll(Collection<Representation> representations){
 //		return representationDao.saveAll(representations);
 //	}
 
+	/**
+	 * FIXME candidate for harmonization
+	 * this code is not used, remove it
+	 */
 	@Transactional(readOnly = false)
 	public Map<UUID, LanguageStringBase> saveLanguageDataAll(Collection<LanguageStringBase> languageData) {
 		return languageStringBaseDao.saveAll(languageData);
 	}
 	
+	/**
+	 * FIXME candidate for harmonization
+	 * Given that representations are owned by TermBase, this method is redundant
+	 * @param representations
+	 * @return
+	 */
 	@Transactional(readOnly = false)
 	public Map<UUID, Representation> saveRepresentationAll(Collection<Representation> representations) {
 		return representationDao.saveAll(representations);
 	}
 	
+	/**
+ 	 * FIXME candidate for harmonization
+	 * Given that representations are owned by TermBase, this method is redundant
+	 */
 	public List<Representation> getAllRepresentations(int limit, int start){
 		return representationDao.list(limit, start);
 	}
-	
+
+	/**
+ 	 * FIXME candidate for harmonization
+	 * Given that languageStrings are owned by other objects, this method is redundant
+	 */
 	public List<LanguageString> getAllLanguageStrings(int limit, int start) {
 		return languageStringDao.list(limit, start);
 	}
 	
+	/**
+ 	 * FIXME candidate for harmonization
+	 * Given that languageStrings are owned by other objects, this method is redundant
+	 */
 	public Map<UUID, LanguageStringBase> 
 	       saveLanguageStringBasesAll(Collection<LanguageStringBase> languageStringBases) {
 		return languageStringBaseDao.saveAll(languageStringBases);
@@ -198,6 +270,10 @@ public class TermServiceImpl extends ServiceBase<DefinedTermBase,IDefinedTermDao
 		return dao.getLanguagesByLocale(locales);
 	}
 	
+	/**
+ 	 * FIXME candidate for harmonization
+	 * Given that languageStrings are owned by other objects, this method is redundant
+	 */
 	@Transactional(readOnly = false)
 	public UUID saveLanguageData(
 			LanguageStringBase languageData) {
@@ -209,7 +285,8 @@ public class TermServiceImpl extends ServiceBase<DefinedTermBase,IDefinedTermDao
 		this.dao = dao;
 	}
 
-	/* (non-Javadoc)
+	/**
+	 *  (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.ITermService#getAreaByTdwgAbbreviation(java.lang.String)
 	 */
 	public NamedArea getAreaByTdwgAbbreviation(String tdwgAbbreviation) {

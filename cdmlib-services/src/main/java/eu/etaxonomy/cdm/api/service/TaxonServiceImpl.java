@@ -71,6 +71,11 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 	private ITaxonomicTreeDao taxonTreeDao;
 	@Autowired
 	private ITaxonNodeDao taxonNodeDao;
+	
+	/**
+	 * FIXME Candidate for harmonization
+	 * remove commented out dao
+	 */
 //	@Autowired
 //	@Qualifier("nonViralNameDaoHibernateImpl")
 //	private INonViralNameDao nonViralNameDao;
@@ -95,28 +100,39 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		if (logger.isDebugEnabled()) { logger.debug("Load TaxonService Bean"); }
 	}
 	
-	/* (non-Javadoc)
+	/**
+	 * FIXME Candidate for harmonization
+	 * find
+	 *  (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#getTaxonByUuid(java.util.UUID)
 	 */
 	public TaxonBase getTaxonByUuid(UUID uuid) {
 		return super.findByUuid(uuid);
 	}
 	
-	/*
+	/**
+	 * FIXME Candidate for harmonization
+	 * move to taxonTreeService
 	 * (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#getTaxonNodeByUuid(java.util.UUID)
 	 */
 	public TaxonNode getTaxonNodeByUuid(UUID uuid) {
 		return taxonNodeDao.findByUuid(uuid);
 	}
-	
+	/**
+	 * FIXME Candidate for harmonization
+	 * move to taxonTreeService
+	 */
 	public TaxonNode loadTaxonNodeByTaxon(Taxon taxon, UUID taxonomicTreeUuid, List<String> propertyPaths){
 		TaxonomicTree tree = taxonTreeDao.load(taxonomicTreeUuid);
 		TaxonNode node = tree.getNode(taxon);
 		defaultBeanInitializer.initialize(node, propertyPaths);
 		return node;
 	}
-	
+	/**
+	 * FIXME Candidate for harmonization
+	 * move to taxonTreeService 
+	 */
 	public List<TaxonNode> loadRankSpecificRootNodes(TaxonomicTree taxonomicTree, Rank rank, List<String> propertyPaths){
 		TaxonomicTree tree = taxonTreeDao.load(taxonomicTree.getUuid());
 		
@@ -131,8 +147,11 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		return rootNodes;
 	}
 	
-	/* (non-Javadoc)
+	/**
+     * (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#loadTreeBranchTo(eu.etaxonomy.cdm.model.taxon.TaxonNode, eu.etaxonomy.cdm.model.name.Rank, java.util.List)
+	 * FIXME Candidate for harmonization
+	 * move to taxonTreeService
 	 */
 	public List<TaxonNode> loadTreeBranchTo(TaxonNode taxonNode, Rank baseRank, List<String> propertyPaths){
 		
@@ -158,6 +177,10 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		return pathToRoot;
 	}
 	
+	/**
+	 * FIXME Candidate for harmonization
+	 * move to taxonTreeService
+	 */
 	public List<TaxonNode> loadTreeBranchToTaxon(Taxon taxon, TaxonomicTree taxonomicTree, Rank baseRank, List<String> propertyPaths){
 		TaxonomicTree tree = taxonTreeDao.load(taxonomicTree.getUuid());
 		taxon = (Taxon)dao.load(taxon.getUuid());
@@ -169,6 +192,10 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		return loadTreeBranchTo(node, baseRank, propertyPaths);
 	}
 	
+	/**
+	 * FIXME Candidate for harmonization
+	 * move to taxonTreeService
+	 */
 	public List<TaxonNode> loadChildNodesOfTaxon(Taxon taxon, TaxonomicTree taxonomicTree, List<String> propertyPaths){
 		TaxonomicTree tree = taxonTreeDao.load(taxonomicTree.getUuid());
 		taxon = (Taxon)dao.load(taxon.getUuid());
@@ -179,7 +206,10 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		return childNodes;
 	}
 
-	/* (non-Javadoc)
+	/**
+	 * FIXME Candidate for harmonization
+	 * save
+	 * (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#saveTaxon(eu.etaxonomy.cdm.model.taxon.TaxonBase)
 	 */
 	@Transactional(readOnly = false)
@@ -187,7 +217,9 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		return super.saveCdmObject(taxon);
 	}
 	
-	/*
+	/**
+	 * FIXME Candidate for harmonization
+	 * move to taxonTreeService
 	 * (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#saveTaxonNode(eu.etaxonomy.cdm.model.taxon.TaxonNode)
 	 */
@@ -196,6 +228,13 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		return taxonNodeDao.save(taxonNode);
 	}
 
+	/**
+	 * FIXME Candidate for harmonization
+	 * this method seems redundant, remove
+	 * @param taxon
+	 * @param txStatus
+	 * @return
+	 */
 	//@Transactional(readOnly = false)
 	public UUID saveTaxon(TaxonBase taxon, TransactionStatus txStatus) {
 		//return super.saveCdmObject(taxon, txStatus);
@@ -203,7 +242,10 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 	}
 	
 	
-	/* (non-Javadoc)
+	/**
+	 * FIXME Candidate for harmonization
+	 * save(Set<Taxon> taxa)
+	 *  (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#saveTaxonAll(java.util.Collection)
 	 */
 	@Transactional(readOnly = false)
@@ -211,12 +253,19 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		return saveCdmObjectAll(taxonCollection);
 	}
 	
+	/**
+	 * FIXME Candidate for harmonization
+	 * move to taxonTreeService
+	 */
 	public Map<UUID, TaxonNode> saveTaxonNodeAll(
 			Collection<TaxonNode> taxonNodeCollection) {
 		return taxonNodeDao.saveAll(taxonNodeCollection);
 	}
 
-	/* (non-Javadoc)
+	/**
+	 * FIXME Candidate for harmonization
+	 * delete
+	 *  (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#removeTaxon(eu.etaxonomy.cdm.model.taxon.TaxonBase)
 	 */
 	@Transactional(readOnly = false)
@@ -224,25 +273,38 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		return super.removeCdmObject(taxon);
 	}
 
+	/**
+	 * FIXME Candidate for harmonization
+	 * rename searchByName ? 
+	 */
 	public List<TaxonBase> searchTaxaByName(String name, ReferenceBase sec) {
 		return dao.getTaxaByName(name, sec);
 	}
 
-	/* (non-Javadoc)
+	/**
+	 * FIXME Candidate for harmonization
+	 * list
+	 * (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#getAllTaxonBases(int, int)
 	 */
 	public List<TaxonBase> getAllTaxonBases(int limit, int start){
 		return dao.list(limit, start);
 	}
 
-	/* (non-Javadoc)
+	/**
+	 * FIXME Candidate for harmonization
+	 * list
+	 *  (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#getAllTaxa(int, int)
 	 */
 	public List<Taxon> getAllTaxa(int limit, int start){
 		return dao.getAllTaxa(limit, start);
 	}
 	
-	/* (non-Javadoc)
+	/**
+	 * FIXME Candidate for harmonization
+	 * list(Synonym.class, ...)
+	 *  (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#getAllSynonyms(int, int)
 	 */
 	public List<Synonym> getAllSynonyms(int limit, int start) {
@@ -250,7 +312,10 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 	}
 
 
-	/* (non-Javadoc)
+	/**
+	 * FIXME Candidate for harmonization
+	 * move to taxonTreeService
+	 *  (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#getAllTaxonomicTrees(int, int)
 	 * 
 	 */
@@ -259,18 +324,27 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		return taxonTreeDao.list(limit, start);
 	}
 	
+	/**
+	 * FIXME Candidate for harmonization
+	 * taxonTreeService.list
+	 */
 	public List<TaxonomicTree> listTaxonomicTrees(Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
 		return taxonTreeDao.list(limit, start, orderHints, propertyPaths);
 	}	
 
-	/* (non-Javadoc)
+	/**
+	 * FIXME Candidate for harmonization
+	 * taxonTreeService.find
+	 *  (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#getTaxonomicTreeByUuid(java.util.UUID)
 	 */
 	public TaxonomicTree getTaxonomicTreeByUuid(UUID uuid){
 		return taxonTreeDao.findByUuid(uuid);
 	}
 	
-	/*
+	/**
+	 * FIXME Candidate for harmonization
+	 * taxonTreeService.delete
 	 * (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#removeTaxonomicTree(java.util.UUID)
 	 */
@@ -279,7 +353,10 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		return taxonTreeDao.delete(taxonomicTree);
 	}
 	
-	/* (non-Javadoc)
+	/**
+	 * FIXME Candidate for harmonization
+	 * taxonTreeService.save
+	 *  (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#saveTaxonomicTree(eu.etaxonomy.cdm.model.taxon.TaxonomicTree)
 	 */
 	@Transactional(readOnly = false)
@@ -287,14 +364,20 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		return taxonTreeDao.saveOrUpdate(tree);
 	}
 
-	/* (non-Javadoc)
+	/**
+	 * FIXME Candidate for harmonization
+	 * merge with getRootTaxa(ReferenceBase sec, ..., ...)
+	 *  (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#getRootTaxa(eu.etaxonomy.cdm.model.reference.ReferenceBase)
 	 */
 	public List<Taxon> getRootTaxa(ReferenceBase sec){
 		return getRootTaxa(sec, CdmFetch.FETCH_CHILDTAXA(), true);
 	}
 
-	/* (non-Javadoc)
+	/**
+	 * FIXME Candidate for harmonization
+	 * merge with getRootTaxa(ReferenceBase sec, ..., ...)
+	 *  (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#getRootTaxa(eu.etaxonomy.cdm.model.reference.ReferenceBase, boolean)
 	 */
 	public List<Taxon> getRootTaxa(ReferenceBase sec, CdmFetch cdmFetch, boolean onlyWithChildren) {
@@ -304,7 +387,10 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		return dao.getRootTaxa(sec, cdmFetch, onlyWithChildren, false);
 	}
 	
-	/* (non-Javadoc)
+	/**
+ 	 * FIXME Candidate for harmonization
+	 * merge with getRootTaxa(ReferenceBase sec, ..., ...)
+	 *  (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#getRootTaxa(eu.etaxonomy.cdm.model.reference.ReferenceBase, boolean, boolean)
 	 */
 	public List<Taxon> getRootTaxa(ReferenceBase sec, boolean onlyWithChildren,
@@ -324,6 +410,10 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		return dao.getAllRelationships(limit, start);
 	}
 	
+	/**
+	 * FIXME Candidate for harmonization
+	 * is this the same as termService.getVocabulary(VocabularyEnum.TaxonRelationshipType) ? 
+	 */
 	public OrderedTermVocabulary<TaxonRelationshipType> getTaxonRelationshipTypeVocabulary() {
 		
 		String taxonRelTypeVocabularyId = "15db0cf7-7afc-4a86-a7d4-221c73b0c9ac";
@@ -664,9 +754,11 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 			(configurator.getPageNumber(), numberOfResults, configurator.getPageSize(), results);
 	}
 
-	public <TYPE extends TaxonBase> Pager<TYPE> list(Class<TYPE> type,
-			Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
-			List<String> propertyPaths) {
+	/**
+	 * FIXME Candidate for harmonization
+	 * remove, clearly this method is never used
+	 */
+	public <TYPE extends TaxonBase> Pager<TYPE> list(Class<TYPE> type,	Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,	List<String> propertyPaths) {
 		// TODO Auto-generated method stub
 		return null;
 	}

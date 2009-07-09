@@ -44,11 +44,19 @@ public class ReferenceServiceImpl extends IdentifiableServiceBase<ReferenceBase,
 	public ReferenceServiceImpl(){
 		if (logger.isDebugEnabled()) { logger.debug("Load ReferenceService Bean"); }
 	}
-	
+
+	/**
+	 * FIXME Candidate for harmonization
+	 * find
+	 */
 	public ReferenceBase getReferenceByUuid(UUID uuid) {
 		return super.getCdmObjectByUuid(uuid); 
 	}
 
+	/**
+	 * FIXME Candidate for harmonization
+	 * getByTitle?
+	 */
 	public List<ReferenceBase> getReferencesByTitle(String title) {
 		return super.findCdmObjectsByTitle(title);
 	}
@@ -57,17 +65,28 @@ public class ReferenceServiceImpl extends IdentifiableServiceBase<ReferenceBase,
 		return super.findCdmObjectsByTitle(title, clazz);
 	}
 	
+	/**
+	 * FIXME Candidate for harmonization
+	 * save
+	 */
 	@Transactional(readOnly = false)
 	public UUID saveReference(ReferenceBase reference) {
 		return super.saveCdmObject(reference);
 	}
 
+	/**
+	 * FIXME Candidate for harmonization
+	 * save(Set<Reference> references)
+	 */
 	@Transactional(readOnly = false)
 	public Map<UUID, ReferenceBase> saveReferenceAll(Collection<ReferenceBase> referenceCollection){
 		return saveCdmObjectAll(referenceCollection);
 	}
 
-	/* (non-Javadoc)
+	/**
+	 * FIXME Candidate for harmonization
+	 * list()
+	 *  (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.IReferenceService#getAllReferences(int, int)
 	 */
 	@Deprecated
@@ -75,7 +94,10 @@ public class ReferenceServiceImpl extends IdentifiableServiceBase<ReferenceBase,
 			return dao.list(limit, start);
 	}
 	
-	/* (non-Javadoc)
+	/**
+	 * FIXME Candidate for harmonization
+	 * list
+	 *  (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.IReferenceService#getAllReferences(java.lang.Integer, java.lang.Integer)
 	 */
 	public Pager<ReferenceBase> getAllReferences(Integer pageSize, Integer pageNumber, List<OrderHint> orderHints) {
@@ -89,6 +111,10 @@ public class ReferenceServiceImpl extends IdentifiableServiceBase<ReferenceBase,
 		return new DefaultPagerImpl<ReferenceBase>(pageNumber, numberOfResults, pageSize, results);
 	}
 
+	/**
+	 * FIXME Candidate for harmonization
+	 * list
+	 */
 	public Pager<ReferenceBase> getAllReferences(Integer pageSize, Integer pageNumber) {
 		return getAllReferences(pageSize, pageNumber, null);
 	}

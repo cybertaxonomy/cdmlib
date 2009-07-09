@@ -60,7 +60,15 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 				config.getMatchMode(), 0, -1, null);
 		// TODO: Implement parameters pageSize, pageNumber, and criteria
 	}
-	
+	/**
+	 * FIXME Candidate for harmonization
+	 * Given that this method is strongly typed, and generic, could we not simply expose it as
+	 * List<T> findByTitle(String title) as it is somewhat less cumbersome. Admittedly, I don't 
+	 * understand what is going on with the configurators etc. so maybe there is a good reason for
+	 * the design of this method. 
+	 * @param title
+	 * @return
+	 */
 	protected List<T> findCdmObjectsByTitle(String title){
 		return ((IIdentifiableDao)dao).findByTitle(title);
 	}

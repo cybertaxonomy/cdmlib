@@ -58,7 +58,10 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 		logger.debug("Load OccurrenceService Bean");
 	}
 	
-	/* (non-Javadoc)
+	/**
+	 * FIXME Candidate for harmonization
+	 * list
+	 *  (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.IOccurrenceService#getAllspecimenOrObservationBases(int, int)
 	 */
 	public List<SpecimenOrObservationBase> getAllSpecimenOrObservationBases(
@@ -66,7 +69,10 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 		return dao.list(limit, start);
 	}
 
-	/* (non-Javadoc)
+	/**
+	 * FIXME Candidate for harmonization
+	 * save(Set<SpecimenOrObservationBase> specimens)
+	 *  (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.IOccurrenceService#saveSpecimenOrObservationBaseAll(java.util.Collection)
 	 */
 	@Transactional(readOnly = false)
@@ -75,7 +81,10 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 		return saveCdmObjectAll(specimenOrObservationBaseCollection);
 	}
 
-	
+	/**
+	 * FIXME Candidate for harmonization
+	 * save
+	 */
 	@Transactional(readOnly = false)
 	public UUID saveSpecimenOrObservationBase(
 			SpecimenOrObservationBase specimenOrObservationBase) {
@@ -90,11 +99,19 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 		logger.warn("Not yet implemented");
 	}
 
+	/**
+	 * FIXME Candidate for harmonization
+	 * move to termService
+	 */
 	public WaterbodyOrCountry getCountryByIso(String iso639) {
 		return this.definedTermDao.getCountryByIso(iso639);
 		
 	}
 
+	/**
+	 * FIXME Candidate for harmonization
+	 * move to termService
+	 */
 	public List<WaterbodyOrCountry> getWaterbodyOrCountryByName(String name) {
 		List<? extends DefinedTermBase> terms = this.definedTermDao.getDefinedTermByRepresentationText(name, WaterbodyOrCountry.class);
 		List<WaterbodyOrCountry> countries = new ArrayList<WaterbodyOrCountry>();
@@ -104,6 +121,10 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 		return countries;
 	}
 	
+	/**
+	 * FIXME Candidate for harmonization
+	 * move to collectionService
+	 */
 	public List<eu.etaxonomy.cdm.model.occurrence.Collection> searchCollectionByCode(String code) {
 		return this.collectionDao.getCollectionByCode(code);
 	}
@@ -146,6 +167,10 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 		return new DefaultPagerImpl<Media>(pageNumber, numberOfResults, pageSize, results);
 	}
 
+	/**
+	 * FIXME Candidate for harmonization
+	 * collectionService.save
+	 */
 	public UUID saveCollection(eu.etaxonomy.cdm.model.occurrence.Collection collection) {
 		return collectionDao.save(collection);
 	}

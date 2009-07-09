@@ -55,21 +55,36 @@ public class AgentServiceImpl extends IdentifiableServiceBase<AgentBase,IAgentDa
 		return super.findCdmObjectsByTitle(title);
 	}
 
+	/**
+	 * FIXME Candidate for harmonization
+	 * find
+	 */
 	public AgentBase getAgentByUuid(UUID uuid) {
 		return dao.findByUuid(uuid);
 	}
 
+	/**
+	 * FIXME Candidate for harmonization
+	 * save
+	 */
 	@Transactional(readOnly=false)
 	public UUID saveAgent(AgentBase agent) {
 		return super.saveCdmObject(agent);
 	}
 	
+	/**
+	 * FIXME Candidate for harmonization
+	 * save
+	 */
 	@Transactional(readOnly = false)
 	public Map<UUID, AgentBase> saveAgentAll(Collection<? extends AgentBase> agentCollection){
 		return saveCdmObjectAll(agentCollection);
 	}
 
-	
+	/**
+	 * FIXME Candidate for harmonization
+	 * list
+	 */
 	public List<AgentBase> getAllAgents(int limit, int start){
 		return dao.list(limit, start);
 	}

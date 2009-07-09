@@ -45,6 +45,10 @@ public class MediaServiceImpl extends AnnotatableServiceBase<Media,IMediaDao> im
 	@Autowired
 	private IMediaRepresentationPartDao mediaRepresentationPartDao;	
 	
+	/**
+	 * FIXME Candidate for harmonization
+	 * save(Set<Media> media)
+	 */
 	@Transactional(readOnly = false)
 	public Map<UUID, Media> saveMediaAll(Collection<Media> mediaCollection){
 		return saveCdmObjectAll(mediaCollection);
@@ -52,14 +56,28 @@ public class MediaServiceImpl extends AnnotatableServiceBase<Media,IMediaDao> im
 //		return mediaDao.saveAll(mediaCollection);
 	}
 
+	/**
+	 * FIXME Candidate for harmonization
+	 * list(...)
+	 */
 	public List<Media> getAllMedia(int limit, int start){
 		return dao.list(limit, start);
 	}
 
+	/**
+	 * FIXME Candidate for harmonization
+	 * this method is not used in the cdm library - do we need it, given that MediaRepresentations are wholly part of their 
+	 * parent (i.e. one-to-many and bidirectional connection)?
+	 */
 	public List<MediaRepresentation> getAllMediaRepresentations(int limit, int start){
 		return mediaRepresentationDao.list(limit, start);
 	}
 
+	/**
+	 * FIXME Candidate for harmonization
+	 * this method is not used in the cdm library - do we need it, given that MediaRepresentationParts are wholly part of their 
+	 * parent (i.e. one-to-many and bidirectional connection)?
+	 */
 	public List<MediaRepresentationPart> getAllMediaRepresentationParts(int limit, int start){
 		return mediaRepresentationPartDao.list(limit, start);
 	}

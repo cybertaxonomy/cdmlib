@@ -51,20 +51,38 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
 		this.appContext = appContext;
 	}
 
+	/**
+	 * FIXME Candidate for harmonization
+	 * find
+	 * @param uuid
+	 * @return
+	 */
 	public T getCdmObjectByUuid(UUID uuid) {
 		return dao.findByUuid(uuid);
 	}
 	
+	/**
+	 * FIXME Candidate for harmonization
+	 * the generic method arguments are a bit meaningless as 
+	 * we're not typing the results. this should be changed to
+	 * 	 public int count(Class<? extends T> clazz)
+	 * where clazz can be null, to count all instances of type T
+	 */
 	public <TYPE extends T> int count(Class<TYPE> clazz) {
 		return dao.count(clazz);
 	}
 	
+	/**
+	 * FIXME Candidate for harmonization
+	 * merge with the above
+	 */
 	public int count() {
 		return dao.count();
 	}
 
 	/**
-	 * FIXME harmonise with saveOrUpdate
+	 * FIXME Candidate for harmonization
+	 * saveOrUpdate
 	 * @param cdmObj
 	 * @return
 	 */
@@ -76,7 +94,7 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
 	
 
 	/**
-	 * FIXME harmonise with saveOrUpdate
+	 * FIXME Candidate for harmonization
 	 * @param cdmObj
 	 * @return
 	 */
@@ -88,7 +106,8 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
 	}
 	
 	/**
-	 * FIXME harmonise with saveAll
+	 * FIXME Candidate for harmonization
+	 * save(Set<T> ts)
 	 * @param <S>
 	 * @param cdmObjCollection
 	 * @return
@@ -134,6 +153,10 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
 		return dao.exists(uuid);
 	}
 
+	/**
+	 * FIXME Candidate for harmonization
+	 * rename find
+	 */
 	public T findByUuid(UUID uuid) {
 		return dao.findByUuid(uuid);
 	}
@@ -146,18 +169,37 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
 		return dao.load(uuid, propertyPaths);
 	}
 
+	/**
+	 * FIXME Candidate for harmonization
+	 * should be single method
+	 * List<T> list(Class<? extends T> type, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths)
+	 */
 	public <TYPE extends T> List<TYPE> list(Class<TYPE> type, int limit,int start) {
 		return dao.list(type, limit, start);
 	}
 	
+	/**
+	 * FIXME Candidate for harmonization
+	 * remove
+	 */
 	public Pager<T> list(Integer pageSize, Integer pageNumber){
 		return list(pageSize, pageNumber, null);
 	}
 	
+	/**
+	 * FIXME Candidate for harmonization
+	 * should be single method
+	 * Pager<T> page(Class<? extends T> type, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths)
+	 */
 	public Pager<T> list(Integer pageSize, Integer pageNumber, List<OrderHint> orderHints){
 		return list(pageSize,pageNumber,orderHints,null);
 	}
 	
+	/**
+	 * FIXME Candidate for harmonization
+	 * should be single method
+	 * Pager<T> page(Class<? extends T> type, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths)
+	 */
 	public Pager<T> list(Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths){
 		Integer numberOfResults = dao.count();
 		List<T> results = new ArrayList<T>();
@@ -169,6 +211,11 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
 		return new DefaultPagerImpl<T>(pageNumber, numberOfResults, pageSize, results);
 	}
 	
+	/**
+	 * FIXME Candidate for harmonization
+	 * should be single method
+	 * Pager<T> page(Class<? extends T> type, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths)
+	 */
 	public <TYPE extends T> Pager<TYPE> list(Class<TYPE> type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths){
 		Integer numberOfResults = dao.count(type);
 		List<TYPE> results = new ArrayList<TYPE>();
@@ -190,6 +237,10 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
 		return dao.merge(newInstance);
 	}
 	
+	/**
+	 * FIXME Candidate for harmonization
+	 * rename -> save
+	 */
 	@Transactional(readOnly = false)
 	public Map<UUID, T> saveAll(Collection<T> newInstances) {
 		return dao.saveAll(newInstances);
@@ -210,7 +261,8 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
 	}
 	
 	/**
-	 * FIXME harmonise with delete()
+	 * FIXME Candidate for harmonization
+	 * delete
 	 * @param cdmObj
 	 * @return
 	 */
@@ -220,10 +272,21 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
 		return dao.delete(cdmObj);
 	}
 
+	/**
+	 * FIXME Candidate for harmonization
+	 * should be single method
+	 * List<T> list(Class<? extends T> type, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths)
+	 */
 	public List<T> list(int limit, int start) {
 		return dao.list(limit, start);
 	}
 
+	/**
+	 * FIXME Candidate for harmonization
+	 * is this method used, and if so, should it be exposed in the service layer?
+	 * it seems a bit incongruous that we use an ORM to hide the fact that there is a 
+	 * database, then expose a method that talks about "rows" . . .
+	 */
 	public List<T> rows(String tableName, int limit, int start) {
 		return dao.rows(tableName, limit, start);
 	}

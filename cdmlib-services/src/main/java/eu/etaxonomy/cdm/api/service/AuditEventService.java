@@ -42,6 +42,7 @@ public class AuditEventService implements IAuditEventService {
 		return dao.findById(id);
 	}
 
+	// FIXME Rename -> find
 	public AuditEvent findByUuid(UUID uuid) {
 		return dao.findByUuid(uuid);
 	}

@@ -24,6 +24,10 @@ import eu.etaxonomy.cdm.persistence.dao.common.IVersionableDao;
 @Transactional(readOnly = true)
 public abstract class VersionableServiceBase<T extends VersionableEntity, DAO extends IVersionableDao<T>> extends ServiceBase<T,DAO> implements IVersionableService<T> {
 
+	 /**
+ 	 * FIXME candidate for harmonization
+	 * rename pageAuditEvents
+	 */
 	public Pager<AuditEventRecord<T>> getAuditEvents(T t, Integer pageSize,	Integer pageNumber, AuditEventSort sort) {
 		Integer numberOfResults = dao.countAuditEvents(t, sort);
 			

@@ -151,17 +151,27 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
 	public List<TypeDesignationBase> getAllTypeDesignations(int limit, int start){
 		return typeDesignationDao.getAllTypeDesignations(limit, start);
 	}
- 	
+ 	 /**
+	 * FIXME Candidate for harmonization
+	 * homotypicalGroupService.list
+	 */
 	public List<HomotypicalGroup> getAllHomotypicalGroups(int limit, int start){
 		return homotypicalGroupDao.list(limit, start);
 	}
 	
+	/**
+	 * FIXME Candidate for harmonization
+	 * remove
+	 */
 	@Deprecated
 	public List<RelationshipBase> getAllRelationships(int limit, int start){
 		return dao.getAllRelationships(limit, start);
 	}
 	
-	/* (non-Javadoc)
+	/**
+	 * FIXME Candidate for harmonization
+	 * is this the same as termService.getVocabulary(VocabularyEnum.Rank) 
+	 * (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.INameService#getRankVocabulary()
 	 */
 	public OrderedTermVocabulary<Rank> getRankVocabulary() {
@@ -172,7 +182,10 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
 		return rankVocabulary;
 	}
 
-	/* (non-Javadoc)
+	/**
+ 	 * FIXME Candidate for harmonization
+	 * is this the same as termService.getVocabulary(VocabularyEnum.NameRelationshipType) 
+	 *  (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.INameService#getNameRelationshipTypeVocabulary()
 	 */
 	public TermVocabulary<NameRelationshipType> getNameRelationshipTypeVocabulary() {
@@ -183,7 +196,10 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
 		return nameRelTypeVocabulary;
 	}
 
-	/* (non-Javadoc)
+	/**
+ 	 * FIXME Candidate for harmonization
+	 * is this the same as termService.getVocabulary(VocabularyEnum.StatusType) 
+	 * (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.INameService#getStatusTypeVocabulary()
 	 */
 	public TermVocabulary<NomenclaturalStatusType> getStatusTypeVocabulary() {
@@ -194,7 +210,10 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
 		return nomStatusTypeVocabulary;
 	}
 
-	/* (non-Javadoc)
+	/**
+ 	 * FIXME Candidate for harmonization
+	 * is this the same as termService.getVocabulary(VocabularyEnum.SpecimenTypeDesignationStatus) 
+	 *  (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.INameService#getTypeDesignationStatusVocabulary()
 	 */
 	public TermVocabulary<SpecimenTypeDesignationStatus> getSpecimenTypeDesignationStatusVocabulary() {
@@ -205,7 +224,11 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
 		return typeDesigStatusVocabulary;
 	}
 	
-	/* (non-Javadoc)
+	/**
+  	 * FIXME Candidate for harmonization
+	 * is this the same as termService.getVocabulary(VocabularyEnum.SpecimenTypeDesignationStatus)
+	 * and also seems to duplicate the above method, differing only in the DAO used and the return type 
+	 * (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.INameService#getTypeDesignationStatusVocabulary()
 	 */
 	public OrderedTermVocabulary<SpecimenTypeDesignationStatus> getSpecimenTypeDesignationVocabulary() {
@@ -299,7 +322,11 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
 		
 		return new DefaultPagerImpl<TypeDesignationBase>(pageNumber, numberOfResults, pageSize, results);
 	}
-
+	
+    /**
+     * FIXME Candidate for harmonization
+	 * rename search
+     */
 	public Pager<TaxonNameBase> searchNames(String uninomial,String infraGenericEpithet, String specificEpithet, String infraspecificEpithet, Rank rank, Integer pageSize,	Integer pageNumber) {
         Integer numberOfResults = dao.countNames(uninomial, infraGenericEpithet, specificEpithet, infraspecificEpithet, rank);
 		

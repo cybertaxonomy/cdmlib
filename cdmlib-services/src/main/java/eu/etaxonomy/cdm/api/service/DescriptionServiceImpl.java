@@ -108,6 +108,7 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.IDescriptionService#getDescriptionBaseByUuid(java.util.UUID)
 	 * FIXME Candidate for harmonization
+	 * find
 	 */
 	public DescriptionBase getDescriptionBaseByUuid(UUID uuid) {
 		return super.getCdmObjectByUuid(uuid);
@@ -116,12 +117,19 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.IDescriptionService#saveDescription(eu.etaxonomy.cdm.model.description.DescriptionBase)
 	 * FIXME Candidate for harmonization
+	 * save
 	 */
 	@Transactional(readOnly = false)
 	public UUID saveDescription(DescriptionBase description) {
 		return super.saveCdmObject(description);
 	}
 
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.service.IDescriptionService#saveDescription(eu.etaxonomy.cdm.model.description.DescriptionBase)
+	 * FIXME Candidate for harmonization
+	 * Given that statistcal measurement values are wholy owned by their parent QuantitativeData, do we need this method? could we not 
+	 * save / update statistical measurement values as part of descriptionElementService.update or descriptionElementService.save?
+	 */
 	@Transactional(readOnly = false)
 	public UUID saveStatisticalMeasurementValue(StatisticalMeasurementValue statisticalMeasurementValue) {
 		return statisticalMeasurementValueDao.saveOrUpdate(statisticalMeasurementValue);
@@ -136,12 +144,22 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.IDescriptionService#saveFeatureTree(eu.etaxonomy.cdm.model.description.FeatureTree)
+	 * FIXME Candidate for harmonization
+	 * featureTreeService.save
 	 */
 	@Transactional(readOnly = false)
 	public UUID saveFeatureTree(FeatureTree tree) {
 		return featureTreeDao.saveOrUpdate(tree);
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.service.IDescriptionService#saveFeatureDataAll(java.util.Collection)
+	 * FIXME Candidate for harmonization 
+	 * remove
+	 * featureTreeService.save(FeatureTree f) and this cascades to child nodes or does this not work?
+	 * CDM Xml now only has a list of FeatureTrees, and calls saveFeatureTreeAll(featureTrees);
+	 */
 	@Transactional(readOnly = false)
 	public void saveFeatureDataAll(Collection<VersionableEntity> featureData) {
 
@@ -162,16 +180,28 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
 		if (nodes.size() > 0) { saveFeatureNodeAll(nodes); }
 	}
 	
+	/**
+	 * FIXME Candidate for harmonization 
+	 * featureTreeService.save(Set<FeatureTree> featureTrees)
+	 */
 	@Transactional(readOnly = false)
 	public Map<UUID, FeatureTree> saveFeatureTreeAll(Collection<FeatureTree> trees) {
 		return featureTreeDao.saveAll(trees);
 	}
 
+	/**
+	 * FIXME Candidate for harmonization
+	 * is this needed? 
+	 */
 	@Transactional(readOnly = false)
 	public Map<UUID, FeatureNode> saveFeatureNodeAll(Collection<FeatureNode> trees) {
 		return featureNodeDao.saveAll(trees);
 	}
 
+	/**
+	 * FIXME Candidate for harmonization
+	 * vocabularyService.find(UUID uuid)
+	 */
 	public TermVocabulary<Feature> getFeatureVocabulary(UUID uuid){
 		TermVocabulary<Feature> featureVocabulary;
 		try {
@@ -198,24 +228,51 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
 		return getFeatureVocabulary(featureUuid);
 	}
 
+	/**
+	 * FIXME Candidate for harmonization
+	 * featureTreeService.list()
+	 * @return
+	 */
 	public List<FeatureTree> getFeatureTreesAll() {
 		return featureTreeDao.list();
 	}
 	
+	/**
+	 * FIXME Candidate for harmonization
+	 * is this needed?
+	 */
 	public List<FeatureNode> getFeatureNodesAll() {
 		return featureNodeDao.list();
 	}
 	
+	/**
+	 * FIXME Candidate for harmonization
+	 * termService.list(Feature.class, null,null,...)
+	 */
 	public List<Feature> getFeaturesAll() {
 		return featureDao.list();
 	}
 	
+	/**
+	 * FIXME Candidate for harmonization
+	 * featureTreeService.list
+	 */
 	public List<FeatureTree> getFeatureTreesAll(List<String> propertyPaths){
 		return featureTreeDao.list(null, null, null, propertyPaths);
 	}
+	
+	/**
+	 * FIXME Candidate for harmonization
+	 * is this needed?
+	 */
 	public List<FeatureNode> getFeatureNodesAll(List<String> propertyPaths){
 		return featureNodeDao.list(null, null, null, propertyPaths);
 	}
+	
+	/**
+	 * FIXME Candidate for harmonization
+	 * termService.list
+	 */
 	public List<Feature> getFeaturesAll(List<String> propertyPaths){
 		return featureDao.list(null, null, null, propertyPaths);
 	}
@@ -225,10 +282,18 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
 		this.dao = dao;
 	}
 
+	/**
+	 * FIXME Candidate for harmonization
+	 * rename -> count
+	 */
 	public <TYPE extends DescriptionBase> int countDescriptions(Class<TYPE> type, Boolean hasImages, Boolean hasText,Set<Feature> feature) {
 		return dao.countDescriptions(type, hasImages, hasText, feature);
 	}
 
+	/**
+	 * FIXME Candidate for harmonization
+	 * rename -> getElements
+	 */
 	public <TYPE extends DescriptionElementBase> Pager<TYPE> getDescriptionElements(DescriptionBase description,
 			Set<Feature> features, Class<TYPE> type, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
 		Integer numberOfResults = dao.countDescriptionElements(description, features, type);
@@ -275,6 +340,10 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
 		return new DefaultPagerImpl<TaxonNameDescription>(pageNumber, numberOfResults, pageSize, results);
 	}
 
+	/**
+	 * FIXME Candidate for harmonization
+	 * rename list
+	 */
 	public <TYPE extends DescriptionBase> Pager<TYPE> listDescriptions(Class<TYPE> type, Boolean hasImages, Boolean hasText, Set<Feature> feature, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
         Integer numberOfResults = dao.countDescriptions(type, hasImages, hasText, feature);
 		
@@ -286,6 +355,10 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
 		return new DefaultPagerImpl<TYPE>(pageNumber, numberOfResults, pageSize, results);
 	}
 
+	/**
+	 * FIXME Candidate for harmonization
+	 * Rename: searchByDistribution
+	 */
 	public Pager<TaxonDescription> searchDescriptionByDistribution(Set<NamedArea> namedAreas, PresenceAbsenceTermBase presence,	Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
         Integer numberOfResults = dao.countDescriptionByDistribution(namedAreas, presence);
 		
@@ -297,6 +370,10 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
 		return new DefaultPagerImpl<TaxonDescription>(pageNumber, numberOfResults, pageSize, results);
 	}
 
+	/**
+	 * FIXME Candidate for harmonization
+	 * move: descriptionElementService.search
+	 */
 	public Pager<DescriptionElementBase> search(Class<? extends DescriptionElementBase> clazz, String queryString, Integer pageSize,	Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
         Integer numberOfResults = descriptionElementDao.count(clazz,queryString);
 		
@@ -308,29 +385,59 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
 		return new DefaultPagerImpl<DescriptionElementBase>(pageNumber, numberOfResults, pageSize, results);
 	}
 
+	/**
+	 * FIXME Candidate for harmonization
+	 * featureTreeService.find
+	 */
 	public FeatureTree getFeatureTreeByUuid(UUID uuid) {
 		return featureTreeDao.findByUuid(uuid);
 	}
 
+	/**
+	 * FIXME Candidate for harmonization
+	 * descriptionElementService.find
+	 */
 	public DescriptionElementBase getDescriptionElementByUuid(UUID uuid) {
 		return descriptionElementDao.findByUuid(uuid);
 	}	
 
+	/**
+	 * FIXME Candidate for harmonization
+	 * is this needed? yes, I think it is, because there is no way to recursively
+	 * initialize feature trees and all of their children otherwise
+	 */
 	public FeatureNode loadFeatureNode(UUID uuid, List<String> propertyPaths) {
 		return featureNodeDao.load(uuid, propertyPaths);
 	}
 
+	/**
+	 * FIXME Candidate for harmonization
+	 * featureTreeService.load
+	 */
 	public FeatureTree loadFeatureTree(UUID uuid, List<String> propertyPaths) {
 		return featureTreeDao.load(uuid, propertyPaths);
 	}
+	
+	/**
+	 * FIXME Candidate for harmonization
+	 * descriptionElementService.load
+	 */
 	public DescriptionElementBase loadDescriptionElement(UUID uuid,	List<String> propertyPaths) {
 		return descriptionElementDao.load(uuid, propertyPaths);
 	}
 
+    /**
+     * FIXME Candidate for harmonization
+     * descriptionElementService.save
+     */
 	public UUID saveDescriptionElement(DescriptionElementBase descriptionElement) {
 		return descriptionElementDao.save(descriptionElement);
 	}
-	
+
+    /**
+     * FIXME Candidate for harmonization
+     * descriptionElementService.delete
+     */
 	public UUID deleteDescriptionElement(DescriptionElementBase descriptionElement) {
 		return descriptionElementDao.delete(descriptionElement);
 	}
