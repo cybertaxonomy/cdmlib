@@ -53,7 +53,7 @@ public class EditGeoServiceUtilities {
 	 * @param bbox The maps bounding box (e.g. "-180,-90,180,90" for the whole world)
 	 * @param layer The layer that is responsible for background borders and colors. Use the name for the layer.
 	 * If null 'earth' is taken as default. 
-	 * @return
+	 * @return the parameter string or an empty string if the <code>distributions</code> set was null or empty.
 	 */
 	@Transient
 	public static String getEditGeoServiceUrlParameterString(
@@ -76,7 +76,9 @@ public class EditGeoServiceUtilities {
 		int borderWidth = 1;
 		
 		
-		
+		if(distributions == null || distributions.size() == 0){
+			return "";
+		}
 		if (presenceAbsenceTermColors == null) {
 			//presenceAbsenceTermColors = new HashMap<PresenceAbsenceTermBase<?>, Color>();
 			presenceAbsenceTermColors = makeDefaultColorMap();
@@ -167,11 +169,15 @@ public class EditGeoServiceUtilities {
 			i++;
 		}
 		
-		areaStyle = "as=" + areaStyle.substring(1); //remove first |
-		
+		if(areaStyle.length() > 0){
+			areaStyle = "as=" + areaStyle.substring(1); //remove first |
+		}
+		boolean separateLevels = false; //FIXME as parameter
 		//areaData
 		areaData = "";
 		boolean isFirstLayer = true;
+		Map<String, String> resultMap = new HashMap<String, String>();
+		
 		for (String layerString : layerMap.keySet()){
 			//Set<Distribution> layerDistributions = layerData.get(layerIndex);
 			//int distributionListIndex = 1;
@@ -190,13 +196,18 @@ public class EditGeoServiceUtilities {
 				}
 				isFirstStyle = false;
 			}
-			isFirstLayer = false;
+			isFirstLayer = separateLevels;
+			if(separateLevels){
+				//result per level
+				result = CdmUtils.concat("&", new String[] {layer, "ad=" + areaData.substring(0), areaStyle, bbox, ms});
+				resultMap.put(layerString, result);
+			}
 		}
 		
 		areaData = "ad=" + areaData.substring(0); //remove first |
 		
 		//result
-		result += CdmUtils.concat("&", new String[] {layer, areaData, areaStyle, bbox, ms});
+		result = CdmUtils.concat("&", new String[] {layer, areaData, areaStyle, bbox, ms});
 		if (logger.isDebugEnabled()){logger.debug("getEditGeoServiceUrlParameterString end");}
 		
 		return result;
@@ -205,6 +216,7 @@ public class EditGeoServiceUtilities {
 	private static Map<PresenceAbsenceTermBase<?>,Color> makeDefaultColorMap(){
 		Map<PresenceAbsenceTermBase<?>,Color> result = new HashMap<PresenceAbsenceTermBase<?>, Color>();
 		try {
+			result.put(PresenceTerm.PRESENT(), Color.decode("0x4daf4a"));
 			result.put(PresenceTerm.NATIVE(), Color.decode("0x4daf4a"));
 			result.put(PresenceTerm.NATIVE_DOUBTFULLY_NATIVE(), Color.decode("0x377eb8"));
 			result.put(PresenceTerm.CULTIVATED(), Color.decode("0x984ea3"));
@@ -261,14 +273,15 @@ public class EditGeoServiceUtilities {
 		return "unknown";
 	}
 	
-	private static void addDistributionToMap(Distribution distribution, Map<Integer, Set<Distribution>> styleMap, List<PresenceAbsenceTermBase<?>> statusList){
+	private static void addDistributionToMap(Distribution distribution, Map<Integer, Set<Distribution>> styleMap,
+			List<PresenceAbsenceTermBase<?>> statusList) {
 		PresenceAbsenceTermBase<?> status = distribution.getStatus();
-		if(status == null) {
+		if (status == null) {
 			status = defaultStatus;
 		}
 		int style = statusList.indexOf(status);
 		Set<Distribution> distributionSet = styleMap.get(style);
-		if (distributionSet == null){
+		if (distributionSet == null) {
 			distributionSet = new HashSet<Distribution>();
 			styleMap.put(style, distributionSet);
 		}

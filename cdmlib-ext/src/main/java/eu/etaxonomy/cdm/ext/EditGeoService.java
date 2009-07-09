@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +25,7 @@ import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
 
 /**
@@ -35,14 +37,18 @@ import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
 @Transactional(readOnly=true)
 public class EditGeoService implements IEditGeoService{
 	
+	public static final Logger logger = Logger.getLogger(EditGeoService.class);
+	
 	@Autowired
 	private IDescriptionDao dao;
-	
-	private static final Set<Feature> distributionFeature;
+	@Autowired
+	private IDefinedTermDao termDao;
 
-	static {
-		distributionFeature = new HashSet<Feature>();
-		distributionFeature.add(Feature.DISTRIBUTION());
+	private Set<Feature> getDistributionFeatures() {
+		Set<Feature> distributionFeature = new HashSet<Feature>();
+		Feature feature = (Feature) termDao.findByUuid(Feature.DISTRIBUTION().getUuid());
+		distributionFeature.add(feature);
+		return distributionFeature;
 	}
 
 	/* (non-Javadoc)
@@ -57,11 +63,11 @@ public class EditGeoService implements IEditGeoService{
 		Set<Distribution> distCollection = new HashSet<Distribution>();
 		// get descriptions elements for each description
 		for (TaxonDescription td : taxonDescriptions) {
-			List<Distribution> dists = dao.getDescriptionElements(td, distributionFeature,
-				Distribution.class, null, null, null);
+			List<Distribution> dists = dao.getDescriptionElements(td, getDistributionFeatures(), Distribution.class, null, null, null);
 			distCollection.addAll(dists);
 		}
 		// generate the uri parameter string
+		
 		String uriParams = EditGeoServiceUtilities.getEditGeoServiceUrlParameterString(distCollection,
 			presenceAbsenceTermColors, 0, 0, null, "tdwg4");
 
