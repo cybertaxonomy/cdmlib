@@ -9,24 +9,14 @@
 
 package eu.etaxonomy.cdm.model.reference;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
-import org.hibernate.annotations.IndexColumn;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
 
