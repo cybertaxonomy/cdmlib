@@ -1788,7 +1788,6 @@ cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/ReferencePortalCo
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/TaxonController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/TaxonListController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/TaxonPortalController.java -text
-cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/TaxonPortalListController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/TaxonomicTreeController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/TermListController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/interceptor/ContentNegociationHandlerInterceptor.java -text

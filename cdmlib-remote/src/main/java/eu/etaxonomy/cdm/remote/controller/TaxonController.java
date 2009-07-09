@@ -66,7 +66,7 @@ public class TaxonController extends AnnotatableController<TaxonBase, ITaxonServ
 			@RequestParam(value = "page", required = false) Integer page,
 			@RequestParam(value = "pageSize", required = false) Integer pageSize,
 			HttpServletRequest request, HttpServletResponse response) throws IOException {
-		
+		logger.info("getAccepted() " + request.getServletPath());
 		TaxonBase tb = doGet(request, response);
 		HashSet<TaxonBase> resultset = new HashSet<TaxonBase>();
 		if(tb instanceof Taxon){

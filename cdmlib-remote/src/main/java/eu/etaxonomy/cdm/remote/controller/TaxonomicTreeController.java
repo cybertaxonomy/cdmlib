@@ -169,11 +169,11 @@ public class TaxonomicTreeController extends AbstractListController<TaxonBase, I
 	
 	
 	
-	@RequestMapping(
-		value = {"/*/taxontree"}, 
-		method = RequestMethod.GET)
-		public List<TaxonomicTree> getTaxonomicTrees(HttpServletRequest request, HttpServletResponse response) throws IOException {
-			return service.listTaxonomicTrees(null, null, null, TAXONTREE_INIT_STRATEGY);
+	@RequestMapping(value = { "/*/taxontree" }, method = RequestMethod.GET)
+	public List<TaxonomicTree> getTaxonomicTrees(HttpServletRequest request, HttpServletResponse response)
+			throws IOException {
+		logger.info("getTaxonomicTrees()");
+		return service.listTaxonomicTrees(null, null, null, TAXONTREE_INIT_STRATEGY);
 	}
 	
 	
@@ -186,7 +186,7 @@ public class TaxonomicTreeController extends AbstractListController<TaxonBase, I
 			value = {"/*/taxontree/?*"},
 			method = RequestMethod.GET)
 	public List<TaxonNode> getRootTaxa(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		
+		logger.info("getRootTaxa()");
 		List<String> uriParams = readUriParameters(request);
 		TaxonomicTree tree = null;
 		Rank rank = null;
@@ -217,7 +217,7 @@ public class TaxonomicTreeController extends AbstractListController<TaxonBase, I
 			value = {"/*/taxontree/*/?*", "/*/taxontree/*/**/?*"}, 
 			method = RequestMethod.GET)
 	public List<TaxonNode> getChildTaxa(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		
+		logger.info("getChildTaxa()");
 		List<String> uriParams = readUriParameters(request);
 		if(uriParams.size() <= 1){
 			response.sendError(400, "At least two uuid parameters expected but found " + uriParams.size());
@@ -251,7 +251,7 @@ public class TaxonomicTreeController extends AbstractListController<TaxonBase, I
 			value = {"/*/taxontree/*/*/path", "/*/taxontree/*/**/*/path"}, 
 			method = RequestMethod.GET)
 	public List<TaxonNode> getPathToRoot(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		
+		logger.info("getPathToRoot()");
 		List<Taxon> pathToRoot = new ArrayList<Taxon>();
 		List<String> uriParams = readUriParameters(request);
 		if(uriParams.size() <= 1){

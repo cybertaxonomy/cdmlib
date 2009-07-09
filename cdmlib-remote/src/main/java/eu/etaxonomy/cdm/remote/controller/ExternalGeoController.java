@@ -16,6 +16,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,6 +37,8 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 @Controller
 @RequestMapping(value = { "/*/geo/map/distribution/*" })
 public class ExternalGeoController extends BaseController<TaxonBase, ITaxonService> {
+	
+	public static final Logger logger = Logger.getLogger(ExternalGeoController.class);
 
 	@Autowired
 	private IEditGeoService geoservice;
@@ -62,6 +65,7 @@ public class ExternalGeoController extends BaseController<TaxonBase, ITaxonServi
 	public ModelAndView doGetDistributionMapUriParams(HttpServletRequest request, HttpServletResponse response)
 			throws IOException {
 		
+		logger.info("doGetDistributionMapUriParams() " + request.getServletPath());
 		ModelAndView mv = new ModelAndView();
 		// get the descriptions for the taxon
 		Taxon taxon = getCdmBase(request, response, null, Taxon.class);

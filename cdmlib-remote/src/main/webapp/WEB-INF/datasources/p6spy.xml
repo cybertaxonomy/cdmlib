@@ -8,7 +8,16 @@
     http://www.springframework.org/schema/tx   http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
     ">
 
-    
+    <!-- 
+		see also /cdmlib-remote/src/main/resources/spy.properties in which P6Spy is configured 
+		important properities are:
+			realdriver=com.mysql.jdbc.Driver
+			log4j.logger.p6spy=INFO,STDOUT
+			log4j.logger.p6spy=INFO, SQLPROFILER_CLIENT
+			log4j.appender.SQLPROFILER_CLIENT.RemoteHost = 
+			
+		you can use sqlprofiler as SQLPROFILER_CLIENT
+	-->
     <bean id="dataSource"  lazy-init="true" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="com.p6spy.engine.spy.P6SpyDriver"/>
     	<property name="username" value="${local.usr}"/>

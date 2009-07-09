@@ -10,7 +10,8 @@
     
     <bean id="dataSource"  lazy-init="true" class="eu.etaxonomy.cdm.database.UpdatableRoutingDataSource">
     	<!--  The property beanDefinitionFile defaults to "datasources.xml" in {USER_HOME}./cdmLibrary -->
-    	<!--  The property defaultDatasourceName defaults to "empty_default" 
+    	<!--  The property defaultDatasourceName defaults to "default" 
+    	<property name="beanDefinitionFile" value="datasources-p6spy.xml" />
     	<property name="defaultDatasourceName" value="cichorieae" />
     	-->
     </bean>
