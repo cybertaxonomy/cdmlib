@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.persistence.dao.common;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.dao.DataAccessException;
@@ -168,6 +169,13 @@ public interface ICdmEntityDao<T extends CdmBase> {
 	public T findByUuid(UUID Uuid) throws DataAccessException;
 	
 	/**
+	 * @param uuidSet
+	 * @return
+	 * @throws DataAccessException
+	 */
+	public List<T> findByUuid(Set<UUID> uuidSet) throws DataAccessException;
+	
+	/**
 	 * Finds the cdm entity specified by the <code>uuid</code> parameter and
 	 * initializes all its *ToOne relations.
 	 * 
@@ -189,6 +197,15 @@ public interface ICdmEntityDao<T extends CdmBase> {
 	 * @return
 	 */
 	public T load(UUID uuid, List<String> propertyPaths);
+	
+	
+	/**
+	 * @param uuidSet
+	 * @param propertyPaths
+	 * @return
+	 * @throws DataAccessException
+	 */
+	public List<T> load(Set<UUID> uuidSet, List<String> propertyPaths) throws DataAccessException;
 	
 	/**
 	 * @param uuid

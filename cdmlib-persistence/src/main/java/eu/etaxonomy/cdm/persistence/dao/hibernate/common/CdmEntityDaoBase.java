@@ -11,9 +11,11 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.common;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
@@ -188,6 +190,15 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 		}
 	}
 	
+	public List<T> findByUuid(Set<UUID> uuidSet) throws DataAccessException {
+		Session session = getSession();
+		String hql = "from " + type.getSimpleName() + " type where type.uuid in ( :uuidSet )" ;
+		Query query = session.createQuery(hql);
+		query.setParameterList("uuidSet", uuidSet);
+		List<T> results = query.list();
+		return results;			
+	}
+	
 	public T load(UUID uuid) {
 		T bean = findByUuid(uuid);
 		if(bean == null) 
@@ -206,6 +217,12 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 		defaultBeanInitializer.initialize(bean, propertyPaths);
 		
 		return bean;
+	}
+	
+	public List<T> load(Set<UUID> uuidSet, List<String> propertyPaths) throws DataAccessException{
+		List<T> list = findByUuid(uuidSet);
+		defaultBeanInitializer.initializeAll(list, propertyPaths);
+		return list;
 	}
 	
 	public Boolean exists(UUID uuid) {
