@@ -29,15 +29,17 @@ public class FaunaEuropaeaActivator {
 	private static final Logger logger = Logger.getLogger(FaunaEuropaeaActivator.class);
 
 	static final Source faunaEuropaeaSource = FaunaEuropaeaSources.faunEu();
-	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_test_anahit2();
+	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_test_anahit();
 	
 	static final CHECK check = CHECK.IMPORT_WITHOUT_CHECK;
-	static DbSchemaValidation dbSchemaValidation = DbSchemaValidation.CREATE;
+//	static DbSchemaValidation dbSchemaValidation = DbSchemaValidation.CREATE;
 //	static DbSchemaValidation dbSchemaValidation = DbSchemaValidation.VALIDATE;
-//	static DbSchemaValidation dbSchemaValidation = DbSchemaValidation.UPDATE;
+	static DbSchemaValidation dbSchemaValidation = DbSchemaValidation.UPDATE;
 	static final NomenclaturalCode nomenclaturalCode  = NomenclaturalCode.ICZN;
 
 // ****************** ALL *****************************************
+	
+	static final int limitSave = 1000;
 	
 	static final boolean doAuthors = true;
 	static final boolean doTaxa = true;
@@ -85,6 +87,7 @@ public class FaunaEuropaeaActivator {
 		fauEuImportConfigurator.setDoMisappliedNames(doMisappliedNames);
 		fauEuImportConfigurator.setDoHeterotypicSynonyms(doHeterotypicSynonyms);
 		fauEuImportConfigurator.setUseTransactions(useTransactions);
+		fauEuImportConfigurator.setLimitSave(limitSave);
 
 		// invoke import
 		CdmDefaultImport<FaunaEuropaeaImportConfigurator> fauEuImport = 
