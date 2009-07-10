@@ -16,12 +16,14 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.dao.DataAccessException;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -159,6 +161,10 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
 	 */
 	public T findByUuid(UUID uuid) {
 		return dao.findByUuid(uuid);
+	}
+	
+	public List<T> findByUuid(Set<UUID> uuidSet) {
+		return dao.findByUuid(uuidSet);
 	}
 	
 	public T load(UUID uuid) {

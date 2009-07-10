@@ -14,6 +14,7 @@ package eu.etaxonomy.cdm.api.service;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.transaction.annotation.Propagation;
@@ -205,6 +206,15 @@ public interface IService<T extends CdmBase>{
 	 */
 	public T findByUuid(UUID uuid);
 	
+	/**
+	 * Return a list of persisted entities that match the unique identifier
+	 * set supplied as an argument
+	 * 
+	 * @param uuidSet the set of unique identifiers of the entities required
+	 * @return a list of entities of type <T>
+	 */
+	public List<T> findByUuid(Set<UUID> uuidSet);
+
 	/**
 	 * Finds the cdm entity specified by the <code>uuid</code> parameter and
 	 * initializes all its *ToOne relations.
