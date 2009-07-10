@@ -205,7 +205,6 @@ public class FaunaEuropaeaRefImport extends FaunaEuropaeaImportBase {
 
 					Taxon taxon;
 					TaxonBase taxonBase = taxonStore.get(taxonId);
-//					TaxonBase taxonBase = taxonStore.get(taxonId);
 					if (taxonBase == null) { continue; }
 					boolean isSynonym = taxonBase.isInstanceOf(Synonym.class);
 					if (isSynonym){

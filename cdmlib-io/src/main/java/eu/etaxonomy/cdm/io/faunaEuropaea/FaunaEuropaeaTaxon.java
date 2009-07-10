@@ -19,7 +19,7 @@ import java.util.UUID;
 public class FaunaEuropaeaTaxon {
 	
 	private UUID uuid;
-	private UUID nameUuid;
+//	private UUID nameUuid;
 	private int id;
 	private int parentId;
 	private int originalGenusId;
@@ -27,7 +27,7 @@ public class FaunaEuropaeaTaxon {
 	private String localName;
 	private String originalGenusName = "";
 	private int year;
-	private int authorId;
+//	private int authorId;
 	private String authorName;
 	private boolean parenthesis = false;
 	private boolean valid = false;
@@ -142,19 +142,19 @@ public class FaunaEuropaeaTaxon {
 		this.uuid = uuid;
 	}
 
-	/**
-	 * @return the nameUuid
-	 */
-	public UUID getNameUuid() {
-		return nameUuid;
-	}
-
-	/**
-	 * @param nameUuid the nameUuid to set
-	 */
-	public void setNameUuid(UUID nameUuid) {
-		this.nameUuid = nameUuid;
-	}
+//	/**
+//	 * @return the nameUuid
+//	 */
+//	public UUID getNameUuid() {
+//		return nameUuid;
+//	}
+//
+//	/**
+//	 * @param nameUuid the nameUuid to set
+//	 */
+//	public void setNameUuid(UUID nameUuid) {
+//		this.nameUuid = nameUuid;
+//	}
 
 	/**
 	 * @return the year
@@ -226,18 +226,18 @@ public class FaunaEuropaeaTaxon {
 		this.originalGenusName = originalGenusName;
 	}
 
-	/**
-	 * @return the authorId
-	 */
-	public int getAuthorId() {
-		return authorId;
-	}
-
-	/**
-	 * @param authorId the authorId to set
-	 */
-	public void setAuthorId(int authorId) {
-		this.authorId = authorId;
-	}
+//	/**
+//	 * @return the authorId
+//	 */
+//	public int getAuthorId() {
+//		return authorId;
+//	}
+//
+//	/**
+//	 * @param authorId the authorId to set
+//	 */
+//	public void setAuthorId(int authorId) {
+//		this.authorId = authorId;
+//	}
 
 }

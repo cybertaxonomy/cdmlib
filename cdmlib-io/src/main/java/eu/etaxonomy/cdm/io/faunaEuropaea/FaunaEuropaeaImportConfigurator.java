@@ -34,21 +34,10 @@ public class FaunaEuropaeaImportConfigurator extends ImportConfiguratorBase<Faun
 	private boolean doHeterotypicSynonyms = true;
 	
 	/* Max number of taxa to be saved with one service call */
-	private int limitSave = 2000;
+	private int limitSave = 1000;
 	private int maxTaxon = 306000;
 	private boolean useTransactions = true;
 	private ReferenceBase<?> auctReference;
-	
-	@SuppressWarnings("unchecked")
-	protected void makeIoClassList() {
-		ioClassList = new Class[] {
-				FaunaEuropaeaAuthorImport.class,
-				FaunaEuropaeaNameImport.class,
-				FaunaEuropaeaRelShipImport.class,
-				FaunaEuropaeaRefImport.class,
-				FaunaEuropaeaDistributionImport.class
-		};
-	};
 	
 //	@SuppressWarnings("unchecked")
 //	protected void makeIoClassList() {
@@ -56,11 +45,22 @@ public class FaunaEuropaeaImportConfigurator extends ImportConfiguratorBase<Faun
 //				FaunaEuropaeaAuthorImport.class,
 //				FaunaEuropaeaNameImport.class,
 //				FaunaEuropaeaRelShipImport.class,
-//				FaunaEuropaeaRelTaxonIncludeImport.class,
 //				FaunaEuropaeaRefImport.class,
 //				FaunaEuropaeaDistributionImport.class
 //		};
 //	};
+	
+	@SuppressWarnings("unchecked")
+	protected void makeIoClassList() {
+		ioClassList = new Class[] {
+//				FaunaEuropaeaAuthorImport.class,
+//				FaunaEuropaeaNameImport.class,
+//				FaunaEuropaeaRelShipImport.class,
+				FaunaEuropaeaRelTaxonIncludeImport.class,
+//				FaunaEuropaeaRefImport.class,
+//				FaunaEuropaeaDistributionImport.class
+		};
+	};
 	
 	public static FaunaEuropaeaImportConfigurator NewInstance(Source source, ICdmDataSource destination){
 		return new FaunaEuropaeaImportConfigurator(source, destination);
@@ -109,7 +109,7 @@ public class FaunaEuropaeaImportConfigurator extends ImportConfiguratorBase<Faun
 		//TODO
 		if (auctReference == null){
 			auctReference = Database.NewInstance();
-			sourceReference.setTitleCache("auct.");
+			auctReference.setTitleCache("auct.");
 		}
 		return auctReference;
 	}

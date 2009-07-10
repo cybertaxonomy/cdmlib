@@ -195,7 +195,7 @@ public class FaunaEuropaeaRelTaxonIncludeImport extends FaunaEuropaeaImportBase 
 				
 				if ((i++ % modCount) == 0 && i != 1 ) { 
 					if(logger.isInfoEnabled()) {
-						logger.info("Taxa retrieved: " + (i-1)); 
+						logger.info("Parent-child mappings retrieved: " + (i-1)); 
 					}
 				}
 
@@ -479,8 +479,9 @@ public class FaunaEuropaeaRelTaxonIncludeImport extends FaunaEuropaeaImportBase 
 
 	
 	/** Creates parent-child relationships.
-	 * Parent-child pairs are retrieved via UUID from CDM DB */
-	private boolean createRelationships(FaunaEuropaeaImportState state) {
+	 * Single Parent-child pairs are retrieved via findByUUID(UUID) from CDM DB 
+	 * This takes inacceptable long time. */
+	private boolean createRelationships_(FaunaEuropaeaImportState state) {
 
 		Map<String, MapWrapper<? extends CdmBase>> stores = state.getStores();
 		MapWrapper<TaxonBase> taxonStore = (MapWrapper<TaxonBase>)stores.get(ICdmIO.TAXON_STORE);
@@ -549,7 +550,7 @@ public class FaunaEuropaeaRelTaxonIncludeImport extends FaunaEuropaeaImportBase 
 						logger.trace("Child find called (" + childUuid + ")");
 					}
 					Taxon parentTaxon = parent.deproxy(parent, Taxon.class);
-					Taxon childTaxon = parent.deproxy(child, Taxon.class);
+					Taxon childTaxon = child.deproxy(child, Taxon.class);
 
 					if (childTaxon != null && parentTaxon != null) {
 						
@@ -602,7 +603,164 @@ public class FaunaEuropaeaRelTaxonIncludeImport extends FaunaEuropaeaImportBase 
 	}
 			
 			
+	/** Creates parent-child relationships.
+	 * Parent-child pairs are retrieved in blocks via findByUUID(Set<UUID>) from CDM DB 
+	 * This takes about 2min for a block of 5000.*/
+	private boolean createRelationships(FaunaEuropaeaImportState state) {
+
+		Map<String, MapWrapper<? extends CdmBase>> stores = state.getStores();
+		MapWrapper<TaxonBase> taxonStore = (MapWrapper<TaxonBase>)stores.get(ICdmIO.TAXON_STORE);
+		taxonStore.makeEmpty();
+		Map<UUID, UUID> childParentUuidMap = state.getChildParentMap();
+		ReferenceBase<?> sourceRef = state.getConfig().getSourceReference();
+
+		int upperBorder = childParentUuidMap.size();
+		int nbrOfBlocks = 0;
+
+		boolean success = true;
+
+		if (upperBorder < limit) {             // TODO: test with critical values
+			limit = upperBorder;
+		} else {
+			nbrOfBlocks = upperBorder / limit;
+		}
+
+		if(logger.isInfoEnabled()) { 
+			logger.info("number of child-parent pairs = " + upperBorder 
+					+ ", limit = " + limit
+					+ ", number of blocks = " + nbrOfBlocks); 
+		}
+
+		for (int j = 1; j <= nbrOfBlocks + 1; j++) {
+			int offset = j - 1;
+			int start = offset * limit;
+
+			if(logger.isInfoEnabled()) { logger.info("Processing child-parent pairs: " + start + " - " + (start + limit - 1)); }
+
+			if(logger.isInfoEnabled()) { 
+				logger.info("index = " + j 
+						+ ", offset = " + offset
+						+ ", start = " + start); 
+			}
+
+			if (j == nbrOfBlocks + 1) {
+				limit = upperBorder - nbrOfBlocks * limit;
+				if(logger.isInfoEnabled()) { logger.info("number of blocks = " + nbrOfBlocks + " limit = " + limit); }
+			}
+
+			TransactionStatus txStatus = startTransaction();
+
+			Map<UUID, UUID> childParentPartUuidMap = partMap(limit, childParentUuidMap);
+			Set<TaxonBase> childSet = new HashSet<TaxonBase>(limit);
 			
+			Set<UUID> childKeysSet = childParentPartUuidMap.keySet();
+			Set<UUID> parentValuesSet = new HashSet<UUID>(childParentPartUuidMap.values());
+			
+			List<TaxonBase> children = getTaxonService().findByUuid(childKeysSet);
+			List<TaxonBase> parents = getTaxonService().findByUuid(parentValuesSet);
+			
+			if (logger.isTraceEnabled()) {
+				for (UUID uuid : childKeysSet) {
+					logger.trace("child uuid query: " + uuid);
+				}
+			}
+			if (logger.isTraceEnabled()) {
+				for (UUID uuid : parentValuesSet) {
+					logger.trace("parent uuid query: " + uuid);
+				}
+			}
+			if (logger.isTraceEnabled()) {
+				for (TaxonBase tb : children) {
+					logger.trace("child uuid result: " + tb.getUuid());
+				}
+			}
+			if (logger.isTraceEnabled()) {
+				for (TaxonBase tb : parents) {
+					logger.trace("parent uuid result: " + tb.getUuid());
+				}
+			}
+
+			UUID mappedParentUuid = null;
+			UUID parentUuid = null;
+			UUID childUuid = null;
+
+			for (TaxonBase child : children) {
+
+				try {
+					Taxon childTaxon = child.deproxy(child, Taxon.class);
+					childUuid = childTaxon.getUuid();
+					mappedParentUuid = childParentPartUuidMap.get(childUuid);
+					TaxonBase parent = null;
+					
+					for (TaxonBase potentialParent : parents ) {
+						parentUuid = potentialParent.getUuid();
+						if(parentUuid.equals(mappedParentUuid)) {
+							parent = potentialParent;
+							if (logger.isDebugEnabled()) {
+								logger.debug("Parent (" + parentUuid + ") found for child (" + childUuid + ")");
+							}
+							break;
+						}
+					}
+					
+					Taxon parentTaxon = parent.deproxy(parent, Taxon.class);
+					
+					if (childTaxon != null && parentTaxon != null) {
+						
+						makeTaxonomicallyIncluded(state, parentTaxon, childTaxon, sourceRef, null);
+						
+						if (logger.isDebugEnabled()) {
+							logger.debug("Parent-child (" + parentUuid + "-" + childUuid + 
+							") relationship created");
+						}
+						if (!childSet.contains(childTaxon)) {
+							
+							childSet.add(childTaxon);
+							
+							if (logger.isTraceEnabled()) {
+								logger.trace("Child taxon (" + childUuid + ") added to Set");
+							}
+							
+						} else {
+							if (logger.isDebugEnabled()) {
+								logger.debug("Duplicated child taxon (" + childUuid + ")");
+							}
+						}
+					} else {
+						if (logger.isDebugEnabled()) {
+							logger.debug("Parent(" + parentUuid + ") or child (" + childUuid + " is null");
+						}
+					}
+					
+					if (childTaxon != null && !childSet.contains(childTaxon)) {
+						childSet.add(childTaxon);
+						if (logger.isDebugEnabled()) {
+							logger.debug("Child taxon (" + childUuid + ") added to Set");
+						}
+					} else {
+						if (logger.isDebugEnabled()) {
+							logger.debug("Duplicated child taxon (" + childUuid + ")");
+						}
+					}
+					
+				} catch (Exception e) {
+					logger.error("Error creating taxonomically included relationship parent-child (" + 
+							parentUuid + "-" + childUuid + ")");
+				}
+
+			}
+			getTaxonService().saveTaxonAll(childSet);
+			commitTransaction(txStatus);
+			parentValuesSet = null;
+			childSet = null;
+			childParentPartUuidMap = null;
+			children = null;
+			parents = null;
+		}
+		return success;
+	}
+
+	
 	/** Creates parent-child relationships.
 	 * Taxon bases are retrieved in blocks from CDM DB.
 	 * Parent is retrieved from CDM DB via original source id if not found in current block.
