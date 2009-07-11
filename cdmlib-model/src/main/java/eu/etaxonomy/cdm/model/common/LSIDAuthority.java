@@ -20,7 +20,6 @@ import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
-import org.hibernate.envers.Audited;
 
 import com.ibm.lsid.MalformedLSIDException;
 
