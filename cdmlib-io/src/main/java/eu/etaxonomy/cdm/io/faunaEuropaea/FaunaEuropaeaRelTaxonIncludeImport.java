@@ -149,6 +149,12 @@ public class FaunaEuropaeaRelTaxonIncludeImport extends FaunaEuropaeaImportBase 
 	
 	protected boolean doInvoke(FaunaEuropaeaImportState state) {				
 		
+		Map<String, MapWrapper<? extends CdmBase>> stores = state.getStores();
+		MapWrapper<TaxonBase> taxonStore = (MapWrapper<TaxonBase>)stores.get(ICdmIO.TAXON_STORE);
+		taxonStore.makeEmpty();
+		MapWrapper<TeamOrPersonBase> authorStore = (MapWrapper<TeamOrPersonBase>)stores.get(ICdmIO.TEAM_STORE);
+		authorStore.makeEmpty();
+		
 		boolean success = true;
 		
 		if(logger.isInfoEnabled()) { logger.info("Start making taxa..."); }
@@ -608,9 +614,6 @@ public class FaunaEuropaeaRelTaxonIncludeImport extends FaunaEuropaeaImportBase 
 	 * This takes about 2min for a block of 5000.*/
 	private boolean createRelationships(FaunaEuropaeaImportState state) {
 
-		Map<String, MapWrapper<? extends CdmBase>> stores = state.getStores();
-		MapWrapper<TaxonBase> taxonStore = (MapWrapper<TaxonBase>)stores.get(ICdmIO.TAXON_STORE);
-		taxonStore.makeEmpty();
 		Map<UUID, UUID> childParentUuidMap = state.getChildParentMap();
 		ReferenceBase<?> sourceRef = state.getConfig().getSourceReference();
 

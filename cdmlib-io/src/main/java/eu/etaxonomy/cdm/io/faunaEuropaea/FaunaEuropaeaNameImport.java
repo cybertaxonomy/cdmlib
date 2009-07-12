@@ -432,36 +432,6 @@ public class FaunaEuropaeaNameImport extends FaunaEuropaeaImportBase  {
 							if (logger.isDebugEnabled()) {
 								logger.debug("Taxon created (" + taxonId + ")");
 							}
-
-//							if (fauEuConfig.isDoBasionyms()) {
-//								if (fauEuTaxon.isParenthesis() && (fauEuTaxon.getOriginalGenusId() != 0)
-//										&& (fauEuTaxon.getParentId() != fauEuTaxon.getOriginalGenusId())) {
-//
-//									// create basionym
-//									ZoologicalName basionym = ZoologicalName.NewInstance(rank);
-//									basionym.setNameCache(localName);
-//									basionym.setCombinationAuthorTeam(author);
-//									basionym.setPublicationYear(year);
-//									zooName.addBasionym(basionym, sourceReference, null, null);
-//									zooName.setBasionymAuthorTeam(author);
-//									if (logger.isDebugEnabled()) {
-//										logger.debug("Basionym created (" + taxonId + ")");
-//									}
-//
-//									// create homotypic synonym
-//									Synonym homotypicSynonym = Synonym.NewInstance(basionym, sourceReference);
-////									SynonymRelationship synRel = 
-////										taxon.addSynonym(homotypicSynonym, SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF(), 
-////												sourceReference, null);
-////									homotypicSynonym.addRelationship(synRel);
-//									taxon.addHomotypicSynonym(homotypicSynonym, sourceReference, null);
-//									if (logger.isDebugEnabled()) {
-//										logger.debug("Homotypic synonym created (" + taxonId + ")");
-//									}
-//
-//								}
-//							}
-							
 						}
 						taxonBase = taxon;
 					} else if ((status == T_STATUS_NOT_ACCEPTED) && (autId != A_AUCT)) { // synonym
@@ -704,7 +674,7 @@ public class FaunaEuropaeaNameImport extends FaunaEuropaeaImportBase  {
 		if (parent == null) {
 			nameCacheStringBuilder.append(fauEuTaxon.getLocalName());
 			if (logger.isInfoEnabled()) {
-				logger.info("Parent of (" + fauEuTaxon.getId() + " is null");
+				logger.info("Parent of (" + fauEuTaxon.getId() + ") is null");
 			}
 			return nameCacheStringBuilder.toString();
 		}
