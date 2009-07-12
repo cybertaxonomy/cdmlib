@@ -29,7 +29,7 @@ public class FaunaEuropaeaActivator {
 	private static final Logger logger = Logger.getLogger(FaunaEuropaeaActivator.class);
 
 	static final Source faunaEuropaeaSource = FaunaEuropaeaSources.faunEu();
-	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_test_anahit();
+	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_test_jaxb();
 	
 	static final CHECK check = CHECK.IMPORT_WITHOUT_CHECK;
 //	static DbSchemaValidation dbSchemaValidation = DbSchemaValidation.CREATE;
@@ -46,7 +46,7 @@ public class FaunaEuropaeaActivator {
 	static final DO_REFERENCES doReferences =  DO_REFERENCES.ALL;
 	static final boolean doDistributions = true;
 	
-	static final boolean doBasionyms = true;
+	static final boolean doBasionyms = false;
 	static final boolean doTaxonomicallyIncluded = true;
 	static final boolean doMisappliedNames = true;
 	static final boolean doHeterotypicSynonyms = true;
