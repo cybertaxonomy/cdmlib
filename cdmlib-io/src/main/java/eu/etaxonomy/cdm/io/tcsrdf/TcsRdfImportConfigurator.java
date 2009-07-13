@@ -21,7 +21,6 @@ import eu.etaxonomy.cdm.common.XmlHelp;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
-import eu.etaxonomy.cdm.io.common.ImportStateBase;
 import eu.etaxonomy.cdm.model.reference.Database;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
@@ -33,18 +32,21 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 public class TcsRdfImportConfigurator extends ImportConfiguratorBase<TcsRdfImportState> implements IImportConfigurator {
 	private static final Logger logger = Logger.getLogger(TcsRdfImportConfigurator.class);
 	
+	//if false references in this rdf file are not published in the bibliography list
+	private boolean isPublishReferences = true;
+	
 	//rdfNamespace
-	Namespace rdfNamespace;
+	private Namespace rdfNamespace;
 	//TaxonConcept namespace
-	Namespace tcNamespace;
+	private Namespace tcNamespace;
 	//TaxonName namespace
-	Namespace tnNamespace;
+	private Namespace tnNamespace;
 	//TDWG common namespace
-	Namespace commonNamespace;
+	private Namespace commonNamespace;
 	//TDWG geoNamespace
-	Namespace geoNamespace;
+	private Namespace geoNamespace;
 	//publicationNamespace
-	Namespace publicationNamespace;
+	private Namespace publicationNamespace;
 	
 //TODO	
 	protected static Namespace nsTcom = Namespace.getNamespace("http://rs.tdwg.org/ontology/voc/Common#");
@@ -219,6 +221,23 @@ public class TcsRdfImportConfigurator extends ImportConfiguratorBase<TcsRdfImpor
 
 	public void setPublicationNamespace(Namespace publicationNamespace) {
 		this.publicationNamespace = publicationNamespace;
+	}
+	
+	
+
+	/**
+	 * if false references in this rdf file are not published in the bibliography list
+	 * @return the isPublishReferences
+	 */
+	public boolean isPublishReferences() {
+		return isPublishReferences;
+	}
+
+	/**
+	 * @param isPublishReferences the isPublishReferences to set
+	 */
+	public void setPublishReferences(boolean isPublishReferences) {
+		this.isPublishReferences = isPublishReferences;
 	}
 
 	/* (non-Javadoc)

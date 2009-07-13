@@ -39,6 +39,8 @@ import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.Marker;
+import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.reference.Article;
 import eu.etaxonomy.cdm.model.reference.Book;
@@ -299,7 +301,10 @@ public class TcsRdfReferenceImport extends TcsRdfImportBase implements ICdmIO<Tc
 				
 				
 				checkAdditionalContents(elPublicationCitation, standardMappers, operationalMappers, unclearMappers);
-
+				
+				if (state.getConfig().isPublishReferences()){
+					ref.addMarker(Marker.NewInstance(MarkerType.PUBLISH(), false));
+				}
 				
 				//ImportHelper.setOriginalSource(nameBase, tcsConfig.getSourceReference(), nameId);
 				
