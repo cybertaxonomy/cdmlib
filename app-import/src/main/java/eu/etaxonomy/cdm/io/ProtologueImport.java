@@ -20,6 +20,7 @@ import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.api.service.ICommonService;
 import eu.etaxonomy.cdm.app.wp6.palmae.config.PalmaeProtologueImportConfigurator;
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.CdmIoBase;
 import eu.etaxonomy.cdm.io.common.DefaultImportState;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
@@ -118,7 +119,7 @@ public class ProtologueImport extends CdmIoBase<DefaultImportState<PalmaeProtolo
 //			nameDescription = new TaxonNameDescription();
 //		}
 		try{
-			Media media = getMedia(state);
+			Media media = getMedia(state, file);
 			if (media.getRepresentations().size() > 0){
 				TaxonNameDescription description = TaxonNameDescription.NewInstance();
 				TextData protolog = TextData.NewInstance(Feature.PROTOLOG());
@@ -136,13 +137,13 @@ public class ProtologueImport extends CdmIoBase<DefaultImportState<PalmaeProtolo
 		
 	}
 	
-	private Media getMedia(DefaultImportState<PalmaeProtologueImportConfigurator> state){
+	private Media getMedia(DefaultImportState<PalmaeProtologueImportConfigurator> state, File file){
 		try {
-			File file = (File)state.getConfig().getSource();
+			//File file = (File)state.getConfig().getSource();
 			String url = file.toURI().toURL().toString();
 			String mimeTypePdf = "application/pdf"; 
 			String suffixPdf = "pdf"; 
-			String urlStringPdf = url; 
+			String urlStringPdf = state.getConfig().getUrlString() + "/" + file.getName(); 
 			Integer size = null;
 			
 			if (file.exists()){  

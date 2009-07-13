@@ -30,10 +30,13 @@ public class PalmaeProtologueImportConfigurator extends	ImportConfiguratorBase<D
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(PalmaeProtologueImportConfigurator.class);
 
-	public static PalmaeProtologueImportConfigurator NewInstance(String source, ICdmDataSource datasource){
+	private String urlString = null; 
+	
+	public static PalmaeProtologueImportConfigurator NewInstance(String source, ICdmDataSource datasource, String urlString){
 		PalmaeProtologueImportConfigurator result = new PalmaeProtologueImportConfigurator();
 		result.setSource(source);
 		result.setDestination(datasource);
+		result.setUrlString(urlString);
 		return result;
 	}
 	
@@ -96,6 +99,22 @@ public class PalmaeProtologueImportConfigurator extends	ImportConfiguratorBase<D
 	public void setOriginalSourceTaxonNamespace(String originalSourceTaxonNamespace) {
 		this.originalSourceTaxonNamespace = originalSourceTaxonNamespace;
 	}
+
+	/**
+	 * @return the urlString
+	 */
+	public String getUrlString() {
+		return urlString;
+	}
+
+	/**
+	 * @param urlString the urlString to set
+	 */
+	public void setUrlString(String urlString) {
+		this.urlString = urlString;
+	}
+	
+	
 	
 	
 }

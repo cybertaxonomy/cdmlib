@@ -49,8 +49,9 @@ public class PalmaeActivator {
 		
 	static final UUID secUuid = UUID.fromString("5f32b8af-0c97-48ac-8d33-6099ed68c625");
 	static final String sourceSecId = "palm_pub_ed_999999";
+	static final boolean pubishReferencesInBibliography = false;
 	
-	//should the taxonX import run as well?
+	//should the other imports run as well?
 	static final boolean includeTaxonX = true;
 	static final boolean includeImages = true;
 	static final boolean includeExcelProtologue = true;
@@ -97,6 +98,7 @@ public class PalmaeActivator {
 		tcsImportConfigurator.setDoRelTaxa(doRelTaxa);
 		tcsImportConfigurator.setDoFacts(doFacts);
 		tcsImportConfigurator.setUseTaxonomicTree(useTaxonomicTree);
+		tcsImportConfigurator.setPublishReferences(pubishReferencesInBibliography);
 		
 		tcsImportConfigurator.setCheck(check);
 		tcsImportConfigurator.setDbSchemaValidation(hbm2dll);
@@ -189,9 +191,10 @@ public class PalmaeActivator {
 		if (includeMediaProtologue){
 			System.out.println("Start importing protologues from \\\\media...");
 			String protologueSource = "\\\\media\\EditWP6\\palmae\\protologe";
+			String urlString = "http://wp5.e-taxonomy.eu/media/palmae/protologe/";
 			File source = new File (protologueSource);
 
-			PalmaeProtologueImportConfigurator protologConfig = PalmaeProtologueImportConfigurator.NewInstance(protologueSource, cdmDestination);
+			PalmaeProtologueImportConfigurator protologConfig = PalmaeProtologueImportConfigurator.NewInstance(protologueSource, cdmDestination, urlString);
 			CdmDefaultImport<IImportConfigurator> cdmImport = new CdmDefaultImport<IImportConfigurator>();
 			
 			//protologConfig.setDoFacts(doDescriptions);

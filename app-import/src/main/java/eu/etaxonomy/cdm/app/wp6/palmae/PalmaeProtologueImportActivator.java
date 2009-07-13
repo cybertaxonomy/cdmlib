@@ -35,6 +35,9 @@ public class PalmaeProtologueImportActivator {
 	static DbSchemaValidation hbm2dll = DbSchemaValidation.UPDATE;
 	
 	static final String protologueSource = "\\\\media\\EditWP6\\palmae\\protologe";
+	private static final String urlString = "http://wp5.e-taxonomy.eu/media/palmae/protologe/";
+	
+	
 	//static File source  = TcsSources.taxonX_localDir();
 	static File source = new File ("\\\\media\\EditWP6\\palmae\\protologe");
 	static ICdmDataSource cdmDestination = CdmDestinations.localH2Palmae();
@@ -51,7 +54,7 @@ public class PalmaeProtologueImportActivator {
 		//make destination
 		ICdmDataSource destination = cdmDestination;
 		
-		PalmaeProtologueImportConfigurator protologConfig = PalmaeProtologueImportConfigurator.NewInstance(protologueSource, destination);
+		PalmaeProtologueImportConfigurator protologConfig = PalmaeProtologueImportConfigurator.NewInstance(protologueSource, destination, urlString);
 		// invoke import
 		CdmDefaultImport<IImportConfigurator> cdmImport = new CdmDefaultImport<IImportConfigurator>();
 		
