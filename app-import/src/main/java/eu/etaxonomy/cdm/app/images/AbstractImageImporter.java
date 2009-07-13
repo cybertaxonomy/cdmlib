@@ -70,7 +70,7 @@ public abstract class AbstractImageImporter extends CdmIoBase<ImageImportState> 
 	@Override
 	protected boolean doCheck(ImageImportState state) {
 		boolean result = true;
-		logger.warn("No check implemented for distribution data import");
+		logger.warn("No check implemented for abstract image import");
 		return result;
 	}
 
