@@ -280,6 +280,8 @@ public class TaxonXNomenclatureImport extends CdmIoBase<TaxonXImportState> imple
 			String taxonNameStr = type[1].trim();
 			String authorStr = type[2].trim();
 			NameTypeDesignationStatus status = getNameTypeStatus(statusStr);
+			boolean isLectoType = getIsLectoType(statusStr);
+			
 			if (status == null){
 				logger.warn("<nomenclature><type> is of unsupported format: " + elType.getTextNormalize() + getBracketSourceName(config));
 				success = false;
@@ -299,7 +301,7 @@ public class TaxonXNomenclatureImport extends CdmIoBase<TaxonXImportState> imple
 						NonViralName nameType = CdmBase.deproxy(nt, NonViralName.class);
 						if (compareAuthorship(nameType, authorStr)){
 							result.add(nameType);
-							success &= doNameTypeDesignation(taxonName, nameType, status);
+							success &= doNameTypeDesignation(taxonName, nameType, status, isLectoType);
 						}else{
 							success = success;
 						}
@@ -358,23 +360,38 @@ public class TaxonXNomenclatureImport extends CdmIoBase<TaxonXImportState> imple
 	}
 	
 	private NameTypeDesignationStatus getNameTypeStatus(String statusString){
+		//FIXME the status for Lectotype and ordinary (not further defined type) do not exist yet
+		if (true){
+			return null;
+		}
 		if (statusString.trim().equals("Type")){
 			return NameTypeDesignationStatus.ORIGINAL_DESIGNATION();
 		}else if (statusString.trim().equals("Lectotype")){
-			return NameTypeDesignationStatus.PRESENT_DESIGNATION();
+			return NameTypeDesignationStatus.NOT_APPLICABLE();
 		}else{
 			logger.warn("Status not recognized: " + statusString);
 			return null;
 		}
 	}
+
+	private boolean getIsLectoType(String statusString){
+		//FIXME may be deleted once getNameTypeStatus works finde
+		if (statusString.trim().equals("Lectotype")){
+			return true;
+		}else{
+			return false;
+		}
+	}
+
 	
-	private boolean doNameTypeDesignation(TaxonNameBase name, TaxonNameBase type, NameTypeDesignationStatus status){
+	private boolean doNameTypeDesignation(TaxonNameBase name, TaxonNameBase type, NameTypeDesignationStatus status, boolean isLectoType){
 		ReferenceBase citation = null;
 		String citationMicroReference = null;
 		String originalNameString = null;
 		boolean addToAllHomotypicNames = true;
 		
-		name.addNameTypeDesignation(type, citation, citationMicroReference, originalNameString, status, addToAllHomotypicNames);
+//		name.addNameTypeDesignation(type, citation, citationMicroReference, originalNameString, status, addToAllHomotypicNames);
+		name.addNameTypeDesignation(type, citation, citationMicroReference, originalNameString, false, false, isLectoType, false, addToAllHomotypicNames);
 		return true;
 	}
 	
