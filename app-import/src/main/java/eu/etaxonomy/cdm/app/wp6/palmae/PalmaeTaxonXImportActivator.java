@@ -18,7 +18,6 @@ import org.apache.log4j.Logger;
 import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.app.common.CdmDestinations;
-import eu.etaxonomy.cdm.app.tcs.TcsSources;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.CdmDefaultImport;
@@ -71,13 +70,23 @@ public class PalmaeTaxonXImportActivator {
 				
 		//new Test().invoke(tcsImportConfigurator);
 		if (source.isDirectory()){
-			for (File file : source.listFiles() ){
-				if (file.isFile()){
-					success &= importFile(cdmImport, taxonXImportConfigurator, file);
-				}
-			}	
+			makeDirectory(cdmImport, taxonXImportConfigurator, source);
 		}else{
 			success &= importFile(cdmImport, taxonXImportConfigurator, source);
+		}
+		return success;
+	}
+	
+	private boolean makeDirectory(CdmDefaultImport<IImportConfigurator> cdmImport, TaxonXImportConfigurator taxonXImportConfigurator, File source){
+		boolean success = true;
+		for (File file : source.listFiles() ){
+			if (file.isFile()){
+				success &= importFile(cdmImport, taxonXImportConfigurator, file);
+			}else{
+				if (! file.getName().startsWith(".")){
+					makeDirectory(cdmImport, taxonXImportConfigurator, file);
+				}
+			}
 		}
 		return success;
 	}
