@@ -154,6 +154,7 @@
       <mapping class="eu.etaxonomy.cdm.model.reference.PrintSeries"/>
       <mapping class="eu.etaxonomy.cdm.model.reference.Proceedings"/>
       <mapping class="eu.etaxonomy.cdm.model.reference.ReferenceBase"/>
+<!--      <mapping class="eu.etaxonomy.cdm.model.reference.ReferenceIdentity"/>-->
       <mapping class="eu.etaxonomy.cdm.model.reference.Publisher"/>
       <mapping class="eu.etaxonomy.cdm.model.reference.Report"/>
       <mapping class="eu.etaxonomy.cdm.model.reference.SectionBase"/>
