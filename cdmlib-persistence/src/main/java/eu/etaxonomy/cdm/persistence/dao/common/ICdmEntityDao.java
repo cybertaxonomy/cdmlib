@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import org.hibernate.Session;
 import org.springframework.dao.DataAccessException;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -48,7 +49,11 @@ public interface ICdmEntityDao<T extends CdmBase> {
 	
 	public UUID merge(T transientObject) throws DataAccessException;
 	
-	public Map<UUID, T> saveAll(Collection<T> cdmObjCollection) throws DataAccessException;
+	public void clear() throws DataAccessException;
+		
+	public Session getSession() throws DataAccessException;
+
+		public Map<UUID, T> saveAll(Collection<T> cdmObjCollection) throws DataAccessException;
 
 	/**
 	 * @param transientObject
