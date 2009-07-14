@@ -10,6 +10,8 @@
 package eu.etaxonomy.cdm.model.reference;
 
 
+import java.util.Set;
+
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
@@ -23,7 +25,6 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
@@ -70,12 +71,7 @@ import eu.etaxonomy.cdm.strategy.cache.reference.IReferenceBaseCacheStrategy;
 @Audited
 @Table(appliesTo="ReferenceBase", indexes = { @Index(name = "ReferenceBaseTitleCacheIndex", columnNames = { "titleCache" }) })
 public abstract class ReferenceBase<S extends IReferenceBaseCacheStrategy> extends IdentifiableMediaEntity<S> implements IParsable{
-	
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -2034764545042691295L;
-
 	private static final Logger logger = Logger.getLogger(ReferenceBase.class);
 	
 	//URIs like DOIs, LSIDs or Handles for this reference
@@ -96,6 +92,15 @@ public abstract class ReferenceBase<S extends IReferenceBaseCacheStrategy> exten
 	@Cascade(CascadeType.SAVE_UPDATE)
 	private TeamOrPersonBase authorTeam;
 
+//	@XmlElement(name = "ReferenceIdentity")
+//	@XmlIDREF
+//	@XmlSchemaType(name = "IDREF")
+//	@ManyToOne(fetch = FetchType.LAZY)
+//	//@IndexedEmbedded
+//	@Cascade(CascadeType.SAVE_UPDATE)
+//	@Transient
+//	private ReferenceIdentity referenceIdentity;
+	
 	//this flag will be set to true if the parseName method was unable to successfully parse the name
 	@XmlAttribute
 	private boolean hasProblem = false;
@@ -233,6 +238,8 @@ public abstract class ReferenceBase<S extends IReferenceBaseCacheStrategy> exten
 		this.problemEnds = end;
 	}
 	
+	
+	
 	/**
 	 * Generates, according to the {@link eu.etaxonomy.cdm.strategy.strategy.cache.reference.IReferenceBaseCacheStrategy cache strategy}
 	 * assigned to <i>this</i> reference, a string that identifies <i>this</i>
@@ -260,6 +267,29 @@ public abstract class ReferenceBase<S extends IReferenceBaseCacheStrategy> exten
 //**************************** CLONE *********************************/
 
 
+//	/**
+//	 * Returns the reference identity object
+//	 * @return the referenceIdentity
+//	 */
+//	public ReferenceIdentity getReferenceIdentity() {
+//		return referenceIdentity;
+//	}
+//
+//	/**
+//	 * For bidirectional use only
+//	 * @param referenceIdentity the referenceIdentity to set
+//	 */
+//	protected void setReferenceIdentity(ReferenceIdentity referenceIdentity) {
+//		this.referenceIdentity = referenceIdentity;
+//	}
+//	
+//	/**
+//	 * Returns the set of all identical references. Same as getReferenceIdentity().getReferences()
+//	 * @return
+//	 */
+//	public Set<ReferenceBase> identicalReferences(){
+//		return referenceIdentity.getReferences();
+//	}
 	/** 
 	 * Clones <i>this</i> reference. This is a shortcut that enables to create
 	 * a new instance that differs only slightly from <i>this</i> reference by
