@@ -20,6 +20,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
+import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -241,6 +242,15 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
 	@Transactional(readOnly = false)
 	public UUID merge(T newInstance) {
 		return dao.merge(newInstance);
+	}
+	
+//	@Transactional(readOnly = false)
+	public void clear() {
+		dao.clear();
+	}
+	
+	public Session getSession() {
+		return dao.getSession();
 	}
 	
 	/**

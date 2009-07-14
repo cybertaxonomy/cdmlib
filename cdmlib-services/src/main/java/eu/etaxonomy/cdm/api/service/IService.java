@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import org.hibernate.Session;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -163,6 +164,17 @@ public interface IService<T extends CdmBase>{
 	 */
 	@Transactional(readOnly=false)
 	public UUID merge(T transientObject);
+	
+	/**
+	 * Copy the state of the given object onto the persistent object with the same identifier.
+	 * 
+	 * @param transientObject the entity to be merged
+	 * @return The unique identifier of the persisted entity
+	 */
+//	@Transactional(readOnly=false)
+	public void clear();
+	
+	public Session getSession();
 	
 	/**
 	 * Save a collection containing new entities (persists the entities)
