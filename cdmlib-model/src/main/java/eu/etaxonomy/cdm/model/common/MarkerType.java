@@ -40,11 +40,7 @@ public class MarkerType extends DefinedTermBase<MarkerType> {
 	private static final UUID uuidIsDoubtful = UUID.fromString("b51325c8-05fe-421a-832b-d86fc249ef6e");
 	private static final UUID uuidComplete = UUID.fromString("b4b1b2ab-89a8-4ce6-8110-d60b8b1bc433");
 	private static final UUID uuidPublish = UUID.fromString("0522c2b3-b21c-400c-80fc-a251c3501dbc");
-	private static MarkerType IMPORTED;
-	private static MarkerType TO_BE_CHECKED;
-	private static MarkerType IS_DOUBTFUL;
-	private static MarkerType COMPLETE;
-	private static MarkerType PUBLISH;
+	private static final UUID uuidInBibliography = UUID.fromString("2cdb492e-3b8b-4784-8c26-25159835231d");
 
 	protected static Map<UUID, MarkerType> termMap = null;		
 
@@ -98,6 +94,10 @@ public class MarkerType extends DefinedTermBase<MarkerType> {
 
 	public static final MarkerType PUBLISH(){
 		return getTermByUuid(uuidPublish);
+	}
+	
+	public static final MarkerType IN_BIBLIOGRAPHY(){
+		return getTermByUuid(uuidInBibliography);
 	}
 	
 	@Override
