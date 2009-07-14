@@ -20,7 +20,6 @@ import eu.etaxonomy.cdm.common.XmlHelp;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
-import eu.etaxonomy.cdm.io.common.ImportStateBase;
 import eu.etaxonomy.cdm.model.reference.Database;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
@@ -33,12 +32,16 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 public class TaxonXImportConfigurator extends ImportConfiguratorBase<TaxonXImportState> implements IImportConfigurator {
 	private static final Logger logger = Logger.getLogger(TaxonXImportConfigurator.class);
 	
+	private boolean doMods = true;
+
+
 	private boolean findTaxonByName = false;
 	private String originalSourceTaxonNamespace = "TaxonConcept";
 	private String originalSourceId;
 	
 	protected void makeIoClassList(){
 		ioClassList = new Class[]{
+				TaxonXModsImport.class,
 				TaxonXDescriptionImport.class
 				, TaxonXNomenclatureImport.class
 //				, new TaxonXDescriptionImport(config.isDoFacts())
@@ -146,6 +149,21 @@ public class TaxonXImportConfigurator extends ImportConfiguratorBase<TaxonXImpor
 
 	public void setOriginalSourceId(String originalSourceId) {
 		this.originalSourceId = originalSourceId;
+	}
+	
+	
+	/**
+	 * @return the doMods
+	 */
+	public boolean isDoMods() {
+		return doMods;
+	}
+
+	/**
+	 * @param doMods the doMods to set
+	 */
+	public void setDoMods(boolean doMods) {
+		this.doMods = doMods;
 	}
 	
 }

@@ -282,10 +282,10 @@ public class TaxonXNomenclatureImport extends CdmIoBase<TaxonXImportState> imple
 			NameTypeDesignationStatus status = getNameTypeStatus(statusStr);
 			boolean isLectoType = getIsLectoType(statusStr);
 			
-			if (status == null){
-				logger.warn("<nomenclature><type> is of unsupported format: " + elType.getTextNormalize() + getBracketSourceName(config));
-				success = false;
-			}else{
+//			if (status == null){
+//				logger.warn("<nomenclature><type> is of unsupported format: " + elType.getTextNormalize() + getBracketSourceName(config));
+//				success = false;
+//			}else{
 //				TaxonNameBase childType = getChildrenNameType(taxonName, taxonNameStr, authorStr);
 //				if (childType != null){
 //					return doNameTypeDesignation(taxonName, childType, status);
@@ -314,7 +314,7 @@ public class TaxonXNomenclatureImport extends CdmIoBase<TaxonXImportState> imple
 						success = false;
 					}
 //				}
-			}
+//			}
 		}
 		return success;
 	}

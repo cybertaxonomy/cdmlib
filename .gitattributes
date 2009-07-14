@@ -1002,6 +1002,7 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/taxonx/SimpleSpecimen.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/taxonx/TaxonXDescriptionImport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/taxonx/TaxonXImportConfigurator.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/taxonx/TaxonXImportState.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/taxonx/TaxonXModsImport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/taxonx/TaxonXNomenclatureImport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/taxonx/TaxonXTransformer.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/tcsrdf/CdmOneToManyXmlMapper.java -text

@@ -26,22 +26,17 @@ import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.service.ICommonService;
-import eu.etaxonomy.cdm.api.service.TermServiceImpl;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.CdmIoBase;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
-import eu.etaxonomy.cdm.io.common.MapWrapper;
-import eu.etaxonomy.cdm.io.tcsrdf.TcsRdfImportConfigurator;
-import eu.etaxonomy.cdm.io.tcsrdf.TcsRdfImportState;
-import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
-import eu.etaxonomy.cdm.model.common.VocabularyEnum;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
+import eu.etaxonomy.cdm.model.reference.StrictReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
@@ -56,8 +51,6 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 public class TaxonXDescriptionImport extends CdmIoBase<TaxonXImportState> implements ICdmIO<TaxonXImportState> {
 	private static final Logger logger = Logger.getLogger(TaxonXDescriptionImport.class);
 
-	private static int modCount = 10000;
-
 	public TaxonXDescriptionImport(){
 		super();
 	}
@@ -66,7 +59,6 @@ public class TaxonXDescriptionImport extends CdmIoBase<TaxonXImportState> implem
 		boolean result = true;
 		logger.warn("Checking for Facts not yet implemented");
 		//result &= checkArticlesWithoutJournal(bmiConfig);
-		//result &= checkPartOfJournal(bmiConfig);
 		
 		return result;
 	}
@@ -81,32 +73,20 @@ public class TaxonXDescriptionImport extends CdmIoBase<TaxonXImportState> implem
 		return featureMap;
 	}
 	
-//	/* (non-Javadoc)
-//	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doInvoke(eu.etaxonomy.cdm.io.common.IImportConfigurator, eu.etaxonomy.cdm.api.application.CdmApplicationController, java.util.Map)
-//	 */
-//	@Override
-//	protected boolean doInvoke(IImportConfigurator config, 
-//			Map<String, MapWrapper<? extends CdmBase>> stores){ 
-//		TaxonXImportState state = ((TaxonXImportConfigurator)config).getState();
-//		state.setConfig((TaxonXImportConfigurator)config);
-//		return doInvoke(state);
-//	}
+	private String getDescriptionTitle(TaxonXImportState state){
+		String result = "Untitled";
+		StrictReferenceBase<?> ref = state.getModsReference();
+		if (ref != null){
+			result = ref.getTitle();
+			if ( CdmUtils.isEmpty(result)){
+				result = ref.getTitleCache();
+			}
+		}
+		return result;
+	}
 	
 	public boolean doInvoke(TaxonXImportState state){
 		logger.debug("not yet fully implemented");
-		
-//		MapWrapper<TaxonBase> taxonMap = (MapWrapper<TaxonBase>)stores.get(ICdmIO.TAXON_STORE);//   (MapWrapper<TaxonBase>)(storeArray[0]);
-//		MapWrapper<ReferenceBase> referenceMap = (MapWrapper<ReferenceBase>)stores.get(ICdmIO.REFERENCE_STORE);
-//		MapWrapper<ReferenceBase> nomRefMap = (MapWrapper<ReferenceBase>)stores.get(ICdmIO.NOMREF_STORE);
-//		MapWrapper<Feature> featureMap = (MapWrapper<Feature>)stores.get(ICdmIO.FEATURE_STORE);
-			
-		//	invokeFactCategories(config, cdmApp);
-		
-		//make features
-		//Map<Integer, Feature> featureMap = 
-		//fillFactCategories(config, cdmApp);
-		
-		Set<TaxonBase> taxonStore = new HashSet<TaxonBase>();
 		
 		TaxonXImportConfigurator txConfig = state.getConfig();
 		Element root = txConfig.getSourceRoot();
@@ -123,8 +103,9 @@ public class TaxonXDescriptionImport extends CdmIoBase<TaxonXImportState> implem
 			logger.warn("Taxon could not be found");
 			return false;
 		}
-		unlazyDescription(txConfig, taxon);
+		//unlazyDescription(txConfig, taxon);
 		TaxonDescription description = TaxonDescription.NewInstance();
+		description.setTitleCache(getDescriptionTitle(state));
 		
 		Element elTaxonBody = root.getChild("taxonxBody", nsTaxonx);
 		Element elTreatment = elTaxonBody.getChild("treatment", nsTaxonx);
@@ -136,19 +117,7 @@ public class TaxonXDescriptionImport extends CdmIoBase<TaxonXImportState> implem
 			try {
 				feature = TaxonXTransformer.descriptionType2feature(strType);
 			} catch (UnknownCdmTypeException e) {
-				TermVocabulary<Feature> featureVoc = Feature.BIOLOGY_ECOLOGY().getVocabulary();
-				for (Feature oneFeature : featureVoc.getTerms()){
-					if (strType.equals(oneFeature.getLabel()) || strType.equals(oneFeature.getRepresentation(Language.DEFAULT() ).getText() )){
-						feature = oneFeature;
-					}
-				}
-				
-				if (feature == null){
-					feature = Feature.NewInstance(strType, strType, null);
-					featureVoc.addTerm(feature);
-					getTermService().save(feature);
-					logger.warn(e.getMessage() + ". Feature was added to the feature vocabulary. " + getBracketSourceName(txConfig));
-				}
+				feature = handleFeatureException(strType, e, txConfig);
 			}
 			String text = getText(div);
 			if (!"".equals(CdmUtils.Nz(text).trim())){
@@ -162,6 +131,9 @@ public class TaxonXDescriptionImport extends CdmIoBase<TaxonXImportState> implem
 				DescriptionElementBase descriptionElement = TextData.NewInstance(text, Language.ENGLISH(), null);
 				descriptionElement.setFeature(feature);
 				description.addElement(descriptionElement);
+				
+				//add reference
+				descriptionElement.setCitation(state.getModsReference());
 			}
 
 		}
@@ -171,6 +143,25 @@ public class TaxonXDescriptionImport extends CdmIoBase<TaxonXImportState> implem
 		}
 		return true;
 	}
+	
+	private Feature handleFeatureException(String strType, UnknownCdmTypeException e, TaxonXImportConfigurator txConfig){
+		Feature feature = null;
+		TermVocabulary<Feature> featureVoc = Feature.BIOLOGY_ECOLOGY().getVocabulary();
+		for (Feature oneFeature : featureVoc.getTerms()){
+			if (strType.equals(oneFeature.getLabel()) || strType.equals(oneFeature.getRepresentation(Language.DEFAULT() ).getText() )){
+				feature = oneFeature;
+			}
+		}
+		
+		if (feature == null){
+			feature = Feature.NewInstance(strType, strType, null);
+			featureVoc.addTerm(feature);
+			getTermService().save(feature);
+			logger.warn(e.getMessage() + ". Feature was added to the feature vocabulary. " + getBracketSourceName(txConfig));
+		}
+		return feature;
+	}
+	
 	
 	private String getText(Element div){
 		String result = "";
@@ -187,7 +178,6 @@ public class TaxonXDescriptionImport extends CdmIoBase<TaxonXImportState> implem
 	private Taxon getTaxon(TaxonXImportConfigurator config){
 		Taxon result;
 //		result =  Taxon.NewInstance(BotanicalName.NewInstance(null), null);
-		//ICommonService commonService = config.getCdmAppController().getCommonService();
 		ICommonService commonService = getCommonService();
 		
 		String originalSourceId = config.getOriginalSourceId();
