@@ -13,6 +13,30 @@
   <section>
     <para>The persistence layer of the CDM primarily consists of a set of
     <emphasis>data access objects (DAOs)</emphasis>. These DAOs are
-    generically typed, and form a hierachy that </para>
+    generically typed, and form a hierachy that reflects the inheritance of the data entities that they provide access too. The root DAO implements <interfacename>ICdmEntityDao</interfacename>.</para>
+
+    <table xml:id="icdmentitydao-methods" frame='all'>
+      <title><interfacename>ICdmEntityDao</interfacename> methods</title>
+      <tgroup cols='2' align='left' colsep='1' rowsep='1'>
+        <colspec colname='c1'/>
+        <colspec colname='c2'/>
+        <thead>
+          <row>
+            <entry>Method</entry>
+            <entry>Description</entry>
+          </row>
+        </thead>
+        <tbody>
+          <row>
+            <entry><methodsynopsis><type>UUID</type><methodname>saveOrUpdate</methodname><methodparam><type>T</type><parameter>newEntity</parameter></methodparam></methodsynopsis></entry>
+	    <entry><para>Makes a new object persistent, or persists the state of a transient object.</para></entry>
+          </row>
+          <row>
+            <entry><methodname>save</methodname></entry>
+	    <entry><para>Makes a new object persistent.</para></entry>
+          </row>
+        </tbody>
+      </tgroup>
+    </table>
   </section>
 </chapter>

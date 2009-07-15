@@ -227,13 +227,38 @@
 
     <xi:include href="base-classes.xml" />
 
-    <!--<xi:include href="annotation-and-markers.xml" />-->
+    <xi:include href="annotation-and-markers.xml" />
 
     <!--<xi:include href="extensions.xml" />-->
 
-    <!--<xi:include href="identifiable-entities.xml" />-->
+    <xi:include href="identifiable-entities.xml" />
 
+    <!--
+      ben: I think that some explaination of how the CDM deals with core
+      data classes, would be really useful here. In some cases, we're still
+      trying to understand how it should work and in that case it might
+      still be useful to have a straw-man that people can disagree with or
+      improve.
+      -->
+
+    <!--<xi:include href="taxonomic-names.xml" />-->
+
+    <!--<xi:include href="taxonomic-concepts.xml" />-->
+ 
+    <!--<xi:include href="specimens-and-observations.xml" />-->
+
+    <!--<xi:include href="descriptive-data.xml" />-->
+
+    <!--<xi:include href="terms-and-vocabularies.xml" />-->
+
+    <!-- ben: We'll need to touch on _where_ these external files live . . .-->
+    <!--<xi:include href="media.xml" />-->
+
+    <!-- ben: I'll include something about validation once I start 
+              work on the validation framework next month
+      --> 
     <!--<xi:include href="validation.xml" />-->
+    
   </part>
 
   <part>
@@ -258,9 +283,8 @@
       persistence and query service as the basis of its persistence layer.
       Several member projects of the Hibernate stable, including <link
       xlink:href="http://annotations.hibernate.org">Hibernate
-      Annotations</link>, <link linkend="???"
-      xlink:href="http://search.hibernate.org">Hibernate Search</link> and
-      <link linkend="???">Hibernate Envers</link> (part of Hibernate Core)
+      Annotations</link>, <link xlink:href="http://search.hibernate.org">Hibernate Search</link> and
+      <link linkend="http://jboss.org/envers/">Hibernate Envers</link> (part of Hibernate Core)
       provide the basis of the more advanced persistence-related functionality
       in the CDM Library. As a consequence some of the behaviour of the CDM
       Library is constrained by the underlying ORM technology. The advantage
