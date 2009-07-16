@@ -143,7 +143,7 @@ public class ProtologueImport extends CdmIoBase<DefaultImportState<PalmaeProtolo
 			String url = file.toURI().toURL().toString();
 			String mimeTypePdf = "application/pdf"; 
 			String suffixPdf = "pdf"; 
-			String urlStringPdf = state.getConfig().getUrlString() + "/" + file.getName(); 
+			String urlStringPdf = state.getConfig().getUrlString() + file.getName(); 
 			Integer size = null;
 			
 			if (file.exists()){  

@@ -47,6 +47,7 @@ public class PalmaeTaxonXImportActivator {
 	
 	static boolean doDescriptions = true;
 	static boolean doNomenclature = true;
+	static boolean doMods = true;
 	
 	
 	public boolean runImport(){
@@ -62,6 +63,7 @@ public class PalmaeTaxonXImportActivator {
 		
 		taxonXImportConfigurator.setDoFacts(doDescriptions);
 		taxonXImportConfigurator.setDoTypes(doNomenclature);
+		taxonXImportConfigurator.setDoMods(doMods);
 		
 		taxonXImportConfigurator.setCheck(check);
 		taxonXImportConfigurator.setDbSchemaValidation(hbm2dll);
