@@ -25,7 +25,7 @@ import eu.etaxonomy.cdm.persistence.dao.common.IAnnotatableDao;
  */
 
 @Controller
-@RequestMapping(value = {"/*/media/*","/*/media/annotation/*"})
+@RequestMapping(value = {"/*/media/*","/*/media/*/annotation"})
 public class MediaController extends AnnotatableController<Media, IMediaService>
 {
 

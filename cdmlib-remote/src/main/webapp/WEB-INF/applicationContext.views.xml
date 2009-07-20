@@ -28,7 +28,7 @@
     <bean  name="taxonNodeByNameComparator" class="eu.etaxonomy.cdm.api.service.TaxonNodeByNameComparator">
     	<property name="substitutionRules">
     		<map>
-    			<entry key=".*?(sp\.|ssp\.|spp\.|n\.).*" value="_" />
+    			<entry key=".*?(sp\.|ssp\.|spp\.|n\.|Nomina dubia|Incertae sedis|Nomina excludenda).*" value="_" />
     		</map>
     	</property>
     </bean>

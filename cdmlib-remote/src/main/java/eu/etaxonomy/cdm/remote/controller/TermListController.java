@@ -23,10 +23,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
 
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
+import eu.etaxonomy.cdm.model.common.OrderedTermBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
@@ -38,11 +40,15 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
  *
  */
 @Controller
-@RequestMapping(value = {"/*/term/", "/*/term/?*", "/*/term/?*/*"})
+@RequestMapping(value = {"/*/term/", "/*/term/?*", "/*/term/?*/*", "/*/term/*/compareTo/?*"})
 public class TermListController extends BaseListController<DefinedTermBase, ITermService> {
 	
 	private static final List<String> VOCABULARY_LIST_INIT_STRATEGY = Arrays.asList(new String []{
 			"representations"
+	});
+	
+	private static final List<String> TERM_COMPARE_INIT_STRATEGY = Arrays.asList(new String []{
+			"vocabulary"
 	});
 	
 	private static final List<String> VOCABULARY_INIT_STRATEGY = Arrays.asList(new String []{
@@ -82,9 +88,29 @@ public class TermListController extends BaseListController<DefinedTermBase, ITer
 	}
 	
 	@RequestMapping(method = RequestMethod.GET,
+		value = "/*/term/*/compareTo/?*")
+	public ModelAndView doCompare(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		ModelAndView mv = new ModelAndView();
+		UUID uuidThis = readValueUuid(request, "^/(?:[^/]+)/term/([^/?#&\\.]+).*");
+		UUID uuidThat = readValueUuid(request, "^/(?:[^/]+)/term/(?:[^/]+)/compareTo/([^/?#&\\.]+).*");
+		DefinedTermBase thisTerm = service.loadTerm(uuidThis, TERM_COMPARE_INIT_STRATEGY);
+		DefinedTermBase thatTerm = service.loadTerm(uuidThat, TERM_COMPARE_INIT_STRATEGY);
+		if(thisTerm.getVocabulary().equals(thatTerm.getVocabulary())){
+			if(OrderedTermBase.class.isAssignableFrom(thisTerm.getClass())){
+				Integer result = ((OrderedTermBase)thisTerm).compareTo((OrderedTermBase)thatTerm);
+				mv.addObject(result);
+				return mv;
+			}
+			response.sendError(400, "Only ordered term types can be compared");
+			return mv;
+		}
+		response.sendError(400, "Terms of different vocabuaries can not be compared");
+		return mv;
+	}
+	
+	@RequestMapping(method = RequestMethod.GET,
 		value = "/*/term/tdwg/*")
 	public List<NamedArea> doGetTdwgLevel(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		
 		
 		String path = request.getServletPath();
 		String[] pathTokens = path.split("/");

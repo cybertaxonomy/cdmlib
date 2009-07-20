@@ -43,7 +43,7 @@ import eu.etaxonomy.cdm.persistence.dao.common.IAnnotatableDao;
  */
 
 @Controller
-@RequestMapping(value = {"/*/name/*", "/*/name/*/*", "/*/name/annotation/*"})
+@RequestMapping(value = {"/*/name/*", "/*/name/*/*", "/*/name/*/annotation"})
 public class NameController extends AnnotatableController<TaxonNameBase, INameService>
 {
 	

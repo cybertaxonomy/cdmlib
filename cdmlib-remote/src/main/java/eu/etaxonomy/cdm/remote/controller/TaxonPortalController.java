@@ -127,6 +127,9 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 			"synonymRelations.$",
 			"synonymRelations.synonym.$",
 			"synonymRelations.synonym.name.taggedName",
+			"synonymRelations.synonym.name.nomenclaturalReference.inBook.authorTeam",
+			"synonymRelations.synonym.name.nomenclaturalReference.inJournal",
+			"synonymRelations.synonym.name.nomenclaturalReference.inProceedings",
 			"synonymRelations.synonym.name.homotypicalGroup.typifiedNames.$",
 			"synonymRelations.synonym.name.homotypicalGroup.typifiedNames.name.taggedName",
 			"synonymRelations.synonym.name.homotypicalGroup.typifiedNames.taxonBases.$",
@@ -135,8 +138,10 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 			"name.homotypicalGroup.$",
 			"name.homotypicalGroup.typifiedNames.$",
 			"name.homotypicalGroup.typifiedNames.name.taggedName",
+			
 			"name.homotypicalGroup.typifiedNames.taxonBases.$",
 			"name.homotypicalGroup.typifiedNames.taxonBases.name.taggedName"
+			
 	});
 	
 	private static final List<String> TAXONRELATIONSHIP_INIT_STRATEGY = Arrays.asList(new String []{
@@ -276,7 +281,13 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 			HttpServletRequest request, HttpServletResponse response) throws IOException {
 		
 		logger.info("getAccepted() " + request.getServletPath());
-		TaxonBase tb = doGet(request, response);
+		
+		UUID uuid = readValueUuid(request, null);
+		TaxonBase tb = service.load(uuid, SYNONYMY_INIT_STRATEGY);
+		if(tb == null){
+			response.sendError(HttpServletResponse.SC_NOT_FOUND, "A taxon with the uuid " + uuid + " does not exist");
+			return null;
+		}
 		HashSet<TaxonBase> resultset = new HashSet<TaxonBase>();
 		if(tb instanceof Taxon){
 			//the taxon already is accepted
@@ -284,7 +295,10 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 			resultset.add((Taxon)tb);
 		} else {
 			Synonym syn = (Synonym)tb;
-			resultset.addAll(syn.getAcceptedTaxa());
+			for(TaxonBase accepted : syn.getAcceptedTaxa()){
+				accepted = service.load(accepted.getUuid(), SIMPLE_TAXON_INIT_STRATEGY);
+				resultset.add(accepted);
+			}
 		}
 		return resultset;
 	}

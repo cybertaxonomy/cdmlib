@@ -39,7 +39,7 @@ import eu.etaxonomy.cdm.persistence.dao.common.IAnnotatableDao;
  */
 
 @Controller
-@RequestMapping(value = {"/*/description/*","/*/description/annotation/*", "/*/featuretree/*"})
+@RequestMapping(value = {"/*/description/*","/*/description/*/annotation", "/*/featuretree/*"})
 public class DescriptionController extends AnnotatableController<DescriptionBase, IDescriptionService>
 {
 

@@ -57,9 +57,7 @@ public class JsonView extends BaseView implements View{
 	}
 
 	public void setJsonConfig(JsonConfig jsonConfig) {
-		
 			this.jsonConfig = jsonConfig;
-		
 	}
 	
 	public String getContentType() {
@@ -86,6 +84,8 @@ public class JsonView extends BaseView implements View{
 //			jsonObj = JSONObject.fromObject(jsonStr);
 		}else if(entity instanceof String){
 			jsonObj = JSONObject.fromObject("{\"String\":\""+entity+"\"}");
+		} else if(entity instanceof Integer){
+			jsonObj = JSONObject.fromObject("{\"Integer\":\""+((Integer)entity).intValue()+"\"}");
 		} else {
 			jsonObj = JSONObject.fromObject(entity, jsonConfig);
 		}
