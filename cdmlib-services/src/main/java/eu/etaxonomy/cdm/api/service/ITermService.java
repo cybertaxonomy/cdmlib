@@ -39,6 +39,8 @@ public interface ITermService extends IService<DefinedTermBase> {
 
 	// FIXME candidate for harmonization?
 	public DefinedTermBase getTermByUuid(UUID uuid);
+	
+	public DefinedTermBase loadTerm(UUID uuid, List<String> propertyPaths);
 
 	/**
 	 * FIXME candidate for harmonization?

@@ -87,6 +87,10 @@ public class TermServiceImpl extends ServiceBase<DefinedTermBase,IDefinedTermDao
 		return dao.findByUuid(uuid);  
 	}
 	
+	public DefinedTermBase loadTerm(UUID uuid, List<String> propertyPaths){
+		return dao.load(uuid, propertyPaths); 
+	}
+	
 	/**
 	 * FIXME candidate for harmonization
 	 * list

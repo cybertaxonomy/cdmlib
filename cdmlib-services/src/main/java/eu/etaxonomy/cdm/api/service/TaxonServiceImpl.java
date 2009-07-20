@@ -662,9 +662,9 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		if (configurator.isDoTaxa() && configurator.isDoSynonyms()) {
 			clazz = TaxonBase.class;
 		} else if(configurator.isDoTaxa()) {
-			clazz = TaxonBase.class;
+			clazz = Taxon.class;
 		} else if (configurator.isDoSynonyms()) {
-			clazz = TaxonBase.class;
+			clazz = Synonym.class;
 		}
 		
 		if(clazz != null){
