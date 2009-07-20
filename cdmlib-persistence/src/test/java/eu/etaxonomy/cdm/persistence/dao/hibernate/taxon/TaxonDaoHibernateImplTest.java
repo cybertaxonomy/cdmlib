@@ -276,8 +276,14 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 		assertNotNull("getTaxaByName should return a List", results);
 		assertTrue("expected to find two taxa but found "+results.size(), results.size() == 2);
 		
+		// 4. searching for Synonyms
+		results = taxonDao.getTaxaByName(Synonym.class, "Atropo", null, MatchMode.BEGINNING, null,
+			null, null, null);
+		assertNotNull("getTaxaByName should return a List", results);
+		assertTrue("expected to find two taxa but found "+results.size(), results.size() == 2);
 		
-		// 4. searching for a Synonyms ans Taxa
+		
+		// 5. searching for a Synonyms and Taxa
 		//   create a synonym relationship first
 		results = taxonDao.getTaxaByName(TaxonBase.class, "A", null, MatchMode.BEGINNING, namedAreas,
 			null, null, null);

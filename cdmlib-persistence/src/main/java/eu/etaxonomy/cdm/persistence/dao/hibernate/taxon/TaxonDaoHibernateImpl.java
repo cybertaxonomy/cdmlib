@@ -272,21 +272,27 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 			List<NamedArea> childAreas;
 			Query areaQuery = getSession().createQuery("select childArea from NamedArea as childArea left join childArea.partOf as parentArea where parentArea = :area");
 			expandNamedAreas(namedAreas, areasExpanded, areaQuery);
+		}
+		boolean doAreaRestriction = areasExpanded.size() > 0;
+		
+		String taxonSubselect = null;
+		String synonymSubselect = null;
+		
+		if(taxonomicTree != null){
 			
-			String taxonSubselect = null;
-			String synonymSubselect = null;
-			
-			if(taxonomicTree != null){
-					
-				taxonSubselect = "select t from Distribution e" +
+			if(doAreaRestriction){
+				
+				taxonSubselect = "select t from" +
+					" Distribution e" +
 					" join e.inDescription d" +
 					" join d.taxon t" +
 					" join t.name n " +
 					" join t.taxonNodes as tn "+
-					" where e.area in (:namedAreas)" +
-					" AND tn.taxonomicTree = :taxonomicTree" +
+					" where" +
+					" e.area in (:namedAreas) AND" +
+					" tn.taxonomicTree = :taxonomicTree" +
 					" AND n.nameCache " + matchOperator + " :queryString";
-					
+				
 				synonymSubselect = "select s from" +
 					" Distribution e" +
 					" join e.inDescription d" +
@@ -295,18 +301,43 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 					" join t.synonymRelations sr" +
 					" join sr.relatedFrom s" + // the synonyms
 					" join s.name sn"+ 
-					" where e.area in (:namedAreas)" +
-					" AND tn.taxonomicTree = :taxonomicTree" +
+					" where" +
+					" e.area in (:namedAreas) AND" +
+					" tn.taxonomicTree = :taxonomicTree" +
 					" AND sn.nameCache " + matchOperator + " :queryString";
-					
+				
 			} else {
 				
-				taxonSubselect = "select t from Distribution e" +
+				taxonSubselect = "select t from" +
+					" Taxon t" +
+					" join t.name n " +
+					" join t.taxonNodes as tn "+
+					" where" +
+					" tn.taxonomicTree = :taxonomicTree" +
+					" AND n.nameCache " + matchOperator + " :queryString";
+				
+				synonymSubselect = "select s from" +
+					" Taxon t" + // the taxa
+					" join t.taxonNodes as tn "+
+					" join t.synonymRelations sr" +
+					" join sr.relatedFrom s" + // the synonyms
+					" join s.name sn"+ 
+					" where" +
+					" tn.taxonomicTree = :taxonomicTree" +
+					" AND sn.nameCache " + matchOperator + " :queryString";
+			}	
+		} else {
+			
+			if(doAreaRestriction){
+				
+				taxonSubselect = "select t from " +
+					" Distribution e" +
 					" join e.inDescription d" +
 					" join d.taxon t" +
 					" join t.name n "+
-					" where e.area in (:namedAreas)" +
-					" AND n.nameCache " + matchOperator + " :queryString";
+					" where" +
+					(doAreaRestriction ? " e.area in (:namedAreas) AND" : "") +
+					" n.nameCache " + matchOperator + " :queryString";
 				
 				synonymSubselect = "select s from" +
 					" Distribution e" +
@@ -315,35 +346,40 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 					" join t.synonymRelations sr" +
 					" join sr.relatedFrom s" + // the synonyms
 					" join s.name sn"+ 
-					" where e.area in (:namedAreas)" +
-					" AND sn.nameCache " + matchOperator + " :queryString";
-			}
+					" where" +
+					(doAreaRestriction ? " e.area in (:namedAreas) AND" : "") +
+					" sn.nameCache " + matchOperator + " :queryString";
 				
-			if(clazz.equals(Taxon.class)){
-				// find Taxa
-				hql = "select " + selectWhat + " from " + clazz.getSimpleName() + " t" 
-					+ " where t in (" + taxonSubselect + ")";		
-			} else if(clazz.equals(Synonym.class)){
-				// find synonyms
-				hql = "select " + selectWhat + " from " + clazz.getSimpleName() + " t" 
-					+ " where t in (" + synonymSubselect + ")";		
 			} else {
-				// find taxa and synonyms
-				hql = "select " + selectWhat + " from " + clazz.getSimpleName() + " t" 
-				+ " where t in (" + taxonSubselect + ") OR t in (" + synonymSubselect + ")";
+				
+				taxonSubselect = "select t from " +
+					" Taxon t" +
+					" join t.name n "+
+					" where" +
+					" n.nameCache " + matchOperator + " :queryString";
+
+				synonymSubselect = "select s from" +
+					" Taxon t" + // the taxa
+					" join t.synonymRelations sr" +
+					" join sr.relatedFrom s" + // the synonyms
+					" join s.name sn"+ 
+					" where" +
+					" sn.nameCache " + matchOperator + " :queryString";
 			}
-			// END - expand areas and restrict by distribution area
+		}
+			
+		if(clazz.equals(Taxon.class)){
+			// find Taxa
+			hql = "select " + selectWhat + " from " + clazz.getSimpleName() + " t" 
+				+ " where t in (" + taxonSubselect + ")";		
+		} else if(clazz.equals(Synonym.class)){
+			// find synonyms
+			hql = "select " + selectWhat + " from " + clazz.getSimpleName() + " t" 
+				+ " where t in (" + synonymSubselect + ")";		
 		} else {
-			// no restriction by distribution area   
-			if(taxonomicTree != null){
-				hql = "select " + selectWhat + " from TaxonNode as tn" +
-						" join tn.taxon as t" +
-						" where t.name.nameCache " + matchOperator + " :queryString" +
-						" AND tn.taxonomicTree = :taxonomicTree";				
-			} else {
-				hql = "select " + selectWhat + " from " + clazz.getSimpleName() + " t" 
-				+ " where t.name.nameCache " + matchOperator + " :queryString";				
-			}
+			// find taxa and synonyms
+			hql = "select " + selectWhat + " from " + clazz.getSimpleName() + " t" 
+			+ " where t in (" + taxonSubselect + ") OR t in (" + synonymSubselect + ")";
 		}
 		
 		if(!doCount){
@@ -353,7 +389,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		Query query = getSession().createQuery(hql);
 		
 		query.setParameter("queryString", hqlQueryString);
-		if(areasExpanded.size() > 0){
+		if(doAreaRestriction){
 			query.setParameterList("namedAreas", areasExpanded);
 		}
 		
