@@ -73,7 +73,7 @@ public abstract class OrderedTermBase<T extends OrderedTermBase> extends Defined
 	 * Compares this OrderedTermBase with the specified OrderedTermBase for
 	 * order. Returns a negative integer, zero, or a positive integer as the
 	 * orderId of this object is greater than, equal to, or less than the
-	 * specified object. This Integer copmare logic of this method is the
+	 * specified object. This Integer compare logic of this method is the
 	 * <b>inverse logic</b> of the the one implemented in
 	 * {@link java.lang.Comparable#compareTo(java.lang.Object)}
 	 */
