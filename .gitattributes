@@ -1862,7 +1862,6 @@ cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/view/JsonView.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/view/PatternViewResolver.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/view/RdfView.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/view/WsdlView.java -text
-cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/view/XmlView.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/remote/dto/rdf/Rdf.java -text
 cdmlib-remote/src/main/java/net/sf/json/CycleSetAcess.java -text
 cdmlib-remote/src/main/resources/eu/etaxonomy/cdm/remote.xml -text
