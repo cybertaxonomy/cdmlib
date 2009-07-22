@@ -12,9 +12,7 @@ package eu.etaxonomy.cdm.remote.controller;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.UUID;
 import java.util.regex.Matcher;
@@ -31,9 +29,9 @@ import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
+import eu.etaxonomy.cdm.database.UpdatableRoutingDataSource;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -45,8 +43,18 @@ import eu.etaxonomy.cdm.remote.editor.UUIDPropertyEditor;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
 /**
+ * The TaxonomicTreeController class is a Spring MVC Controller.
+ * <p>
+ * The syntax of the mapped service URIs contains the the {datasource-name} path element.
+ * The available {datasource-name}s are defined in a configuration file which
+ * is loaded by the {@link UpdatableRoutingDataSource}. If the
+ * UpdatableRoutingDataSource is not being used in the actual application
+ * context any arbitrary {datasource-name} may be used.
+ * <p>
  * @author a.kohlbecker
  * @date 20.03.2009
+ * 
+ * TODO this controller should be a portal controller!!
  */
 @Controller
 public class TaxonomicTreeController extends AbstractListController<TaxonBase, ITaxonService> {
@@ -61,27 +69,12 @@ public class TaxonomicTreeController extends AbstractListController<TaxonBase, I
 			"taxon.name.taggedName",
 			});
 	
-	
-	//TODO get rid of the bloodyRankLabelMap ------ can be deleted once the FIXME in getPathToRoot is solved
-	private static Hashtable<String, String> bloodyRankLabelMap = new Hashtable<String, String>();	
-	static{
-		bloodyRankLabelMap.put("Subfamily", "Subfamilia");
-		bloodyRankLabelMap.put("Family", "Familia");
-		bloodyRankLabelMap.put("Suborder", "Subordo");
-		bloodyRankLabelMap.put("Order", "Ordo");
-		
-	}
-	// --------------------------------------------
 
 	public static final Logger logger = Logger.getLogger(TaxonomicTreeController.class);
 
 	private ITaxonService service;
 	
-	
 	private ITermService termService;
-	
-	private IReferenceService referenceService;
-
 	
 	private Pattern parameterPattern = Pattern.compile("^/(?:[^/]+)/taxontree/([^?#&\\.]+).*");
 
@@ -94,11 +87,7 @@ public class TaxonomicTreeController extends AbstractListController<TaxonBase, I
 	public void setTermService(ITermService termService) {
 		this.termService = termService;
 	}
-	
-	@Autowired
-	public void setReferenceService(IReferenceService referenceService) {
-		this.referenceService = referenceService;
-	}
+
 	
 	@InitBinder
     public void initBinder(WebDataBinder binder) {
@@ -106,69 +95,18 @@ public class TaxonomicTreeController extends AbstractListController<TaxonBase, I
 		binder.registerCustomEditor(Rank.class, new RankPropertyEditor());
 	}
 	
+	
 	/**
-	 * @param uuid
-	 * @param rank
+	 * Lists all available {@link TaxonomicTree}s.
+	 * <p>
+	 * URI: &#x002F;{datasource-name}&#x002F;taxontree
+	 * 
 	 * @param request
 	 * @param response
-	 * @return
-	 * @throws IOException 
+	 * @return a list of {@link TaxonomicTree}s initialized by
+	 *         the {@link #TAXONTREE_INIT_STRATEGY}
+	 * @throws IOException
 	 */
-//	@RequestMapping(
-//			value = {"/*/taxontree/"},
-//			params = {"uuid"},
-//			method = RequestMethod.GET)
-//	public String findTaxon(
-//			@RequestParam(value = "uuid", required = true) UUID uuid,
-//			@RequestParam(value = "rankUuid", required = false) UUID rankUuid,
-//			@RequestParam(value = "viewUuid", required = false) UUID viewUuid,
-//			HttpServletRequest request, HttpServletResponse response) throws IOException {
-//		
-//		String msg404 = rank != null ? "Taxon not found within rank "+ rank.getLabel() : "Taxon not found.";
-//		
-//		TaxonBase tb = service.load(uuid, TAXON_INIT_STRATEGY);
-//				
-//		if(tb != null && Taxon.class.isAssignableFrom(tb.getClass())){			
-//			Taxon t = (Taxon)tb;
-//			String relPath = "";
-//			String basePath = FilenameUtils.removeExtension(request.getServletPath()); 
-//			basePath += "/" + t.getSec().getUuid().toString();
-//			if(rank != null){
-//				basePath += "," + rank.getLabel();
-//			}
-//			
-//			// compose path of parent uuids
-//			Taxon taxon = t;
-//			while( taxon != null && (rank == null || taxon.getName().getRank() == null || taxon.getName().getRank().compareTo(rank) <= 0) ) {
-//				relPath = "/" + taxon.getUuid().toString() + relPath;
-//				taxon  = taxon.getTaxonomicParent();
-//				if(taxon != null){
-//					taxon = (Taxon)service.load(taxon.getUuid(), TAXON_INIT_STRATEGY);
-//				}
-//			};
-//			
-//			if(relPath.length() > 0){
-//				URI redirectUri;
-//				try {
-//					redirectUri = relativeToFullUri(request, basePath + relPath);
-//					if(logger.isInfoEnabled()){
-//						logger.info("redirecting to " + redirectUri);
-//					}
-//					response.sendRedirect(redirectUri.toString());
-//					return "";
-//				} catch (URISyntaxException e) {
-//					logger.error(e.getMessage(), e);
-//				}
-//			}
-//		} else {
-//			msg404 = "The taxon is not accepted";
-//		}
-//		response.sendError(HttpServletResponse.SC_NOT_FOUND, msg404);
-//		return "";
-//	}
-	
-	
-	
 	@RequestMapping(value = { "/*/taxontree" }, method = RequestMethod.GET)
 	public List<TaxonomicTree> getTaxonomicTrees(HttpServletRequest request, HttpServletResponse response)
 			throws IOException {
@@ -178,9 +116,24 @@ public class TaxonomicTreeController extends AbstractListController<TaxonBase, I
 	
 	
 	/**
-	 * &#x002F;*&#x002F;taxontree&#x002F;{viewUuid},{rankUuid}&#x002F;
+	 * Lists all {@link TaxonNode}s of the specified {@link TaxonomicTree} for
+	 * a given {@link Rank}. If a branch does not contain a TaxonNode with a TaxonName
+	 * at the given Rank the node associated with the next lower Rank is taken
+	 * as root node. If the rank is null the absolute root nodes will be
+	 * returned.
+	 * <p>
+	 * URI: &#x002F;{datasource-name}&#x002F;taxontree&#x002F;{tree-uuid},{rank-uuid}
+	 * <p>
+     * <b>URI elements:</b>
+     * <ul>
+     * <li><b>{tree-uuid}</b> identifies the {@link TaxonomicTree} by its UUID.
+     * <li><b>{rank-uuid}</b> identifies the {@link Rank} by its UUID. May be left out.
+     * </ul>
+	 * 
+	 * @param response
 	 * @param request
-	 * @return
+	 * @return a List of {@link TaxonNode} entities initialized by
+	 *         the {@link #NODE_INIT_STRATEGY}
 	 */
 	@RequestMapping(
 			value = {"/*/taxontree/?*"},
@@ -209,9 +162,23 @@ public class TaxonomicTreeController extends AbstractListController<TaxonBase, I
 
 
 	/**
+	 * Lists all child-{@link TaxonNode}s of the specified {@link Taxon} in the {@link TaxonomicTree}. The
+	 * a given {@link Rank} is ignored in this method but for consistency reasons it has been allowed to included it into the URI. 
+	 * <p>
+	 * URI: &#x002F;{datasource-name}&#x002F;taxontree&#x002F;{tree-uuid},{rank-
+	 * uuid}&#x002F;{taxon-uuid}
+	 * <p>
+     * <b>URI elements:</b>
+     * <ul>
+     * <li><b>{tree-uuid}</b> identifies the {@link TaxonomicTree} by its UUID - <i>required</i>.
+     * <li><b>{rank-uuid}</b> identifies the {@link Rank} but is is ignored.
+     * <li><b>{taxon-uuid}</b> identifies the {@link Taxon} by its UUID. - <i>required</i>.
+     * </ul>
+	 * 
+	 * @param response
 	 * @param request
-	 * @return
-	 * @throws IOException 
+	 * @return a List of {@link TaxonNode} entities initialized by
+	 *         the {@link #NODE_INIT_STRATEGY}
 	 */
 	@RequestMapping(
 			value = {"/*/taxontree/*/?*", "/*/taxontree/*/**/?*"}, 
@@ -243,16 +210,28 @@ public class TaxonomicTreeController extends AbstractListController<TaxonBase, I
 	}
 	
 	/**
+	 * Provides path of {@link TaxonNode}s from the base node to the node of the specified taxon.
+	 * <p>
+	 * URI: &#x002F;{datasource-name}&#x002F;taxontree&#x002F;{tree-uuid},{rank-uuid}&#x002F;{taxon-uuid}&#x002F;path
+	 * <p>
+     * <b>URI elements:</b>
+     * <ul>
+     * <li><b>{tree-uuid}</b> identifies the {@link TaxonomicTree} by its UUID - <i>required</i>.
+     * <li><b>{rank-uuid}</b> identifies the {@link Rank} but is is ignored.
+     * <li><b>{taxon-uuid}</b> identifies the {@link Taxon} by its UUID. - <i>required</i>.
+     * </ul>
+	 * 
+	 * @param response
 	 * @param request
-	 * @return
-	 * @throws IOException 
+	 * @return a List of {@link TaxonNode} entities initialized by
+	 *         the {@link #NODE_INIT_STRATEGY}
 	 */
 	@RequestMapping(
 			value = {"/*/taxontree/*/*/path", "/*/taxontree/*/**/*/path"}, 
 			method = RequestMethod.GET)
 	public List<TaxonNode> getPathToRoot(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		logger.info("getPathToRoot()");
-		List<Taxon> pathToRoot = new ArrayList<Taxon>();
+
 		List<String> uriParams = readUriParameters(request);
 		if(uriParams.size() <= 1){
 			response.sendError(400, "At least two uuid parameters expected but found " + uriParams.size());
@@ -269,8 +248,11 @@ public class TaxonomicTreeController extends AbstractListController<TaxonBase, I
 	
 	/**
 	 * reads  <code>{secuuid},{rank label}/..</code> from <code>/{database key}/taxonomy/{secuuid},{rank label}/..<code>
+	 * 
 	 * @param request
+	 * @param response
 	 * @return
+	 * @throws IOException
 	 */
 	protected List<String> readUriParameters(HttpServletRequest request) {
 		
@@ -286,11 +268,13 @@ public class TaxonomicTreeController extends AbstractListController<TaxonBase, I
 		return parameters;
 	}
 	
+
 	/**
-	 * @param string
+	 * @param paramStr
 	 * @return
+	 * @throws IllegalArgumentException
 	 */
-	private Rank readRankByLabel(String paramStr) throws IllegalArgumentException{
+	protected Rank readRankByLabel(String paramStr) throws IllegalArgumentException{
 		int pos;
 		if((pos = paramStr.indexOf(',')) > 0){
 			String rankLabel = paramStr.substring(pos + 1);
@@ -303,6 +287,11 @@ public class TaxonomicTreeController extends AbstractListController<TaxonBase, I
 		return null;
 	}
 	
+	/**
+	 * @param paramStr
+	 * @return
+	 * @throws IllegalArgumentException
+	 */
 	private Rank readRankByUuid(String paramStr) throws IllegalArgumentException{
 		int pos;
 		if((pos = paramStr.indexOf(',')) > 0){
@@ -348,6 +337,12 @@ public class TaxonomicTreeController extends AbstractListController<TaxonBase, I
 		}
 	}
 	
+	/**
+	 * @param request
+	 * @param relativePath
+	 * @return
+	 * @throws URISyntaxException
+	 */
 	private URI relativeToFullUri(HttpServletRequest request,
 			String relativePath) throws URISyntaxException {
 			return new URI(

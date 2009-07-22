@@ -27,6 +27,8 @@ import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.Feature;
 
 /**
+ * TODO write controller documentation
+ * 
  * @author a.kohlbecker
  * @date 24.03.2009
  */
@@ -60,6 +62,14 @@ public class FeatureListController extends BaseController<DescriptionBase, IDesc
 	}
 	
 	
+	/**
+	 * TODO write controller method documentation
+	 * 
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws IOException
+	 */
 	@RequestMapping(method = RequestMethod.GET)
 	public List<Feature> doGetFeatures(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		

@@ -9,6 +9,8 @@
 */
 package eu.etaxonomy.cdm.remote.controller;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -22,7 +24,10 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class AbstractController {
 	
-
+	protected static final List<String> DEFAULT_INIT_STRATEGY = Arrays.asList(new String []{
+			"$"
+	});
+	
 	protected Pattern uuidParameterPattern = null;
 	
 	protected void setUuidParameterPattern(String pattern){

@@ -14,12 +14,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import eu.etaxonomy.cdm.api.service.AnnotatableServiceBase;
 import eu.etaxonomy.cdm.api.service.IMediaService;
 import eu.etaxonomy.cdm.model.media.Media;
-import eu.etaxonomy.cdm.persistence.dao.common.IAnnotatableDao;
 
 /**
+ * TODO write controller documentation
+ * 
  * @author a.kohlbecker
  * @date 24.03.2009
  */

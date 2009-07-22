@@ -1773,8 +1773,6 @@ cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/DescriptionContro
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/DescriptionListController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/ExternalGeoController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/FeatureListController.java -text
-cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/FeatureTreeListController.java -text
-cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/FeatureTreeListPortalController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/HttpStatusMessage.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/ManagementController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/MediaController.java -text
@@ -1786,7 +1784,6 @@ cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/OccurrenceControl
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/OccurrenceListController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/ReferenceController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/ReferenceListController.java -text
-cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/ReferencePortalController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/TaxonController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/TaxonListController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/TaxonPortalController.java -text
@@ -1821,6 +1818,7 @@ cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/tdwg/voc/TaxonConcept.ja
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/tdwg/voc/TaxonName.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/tdwg/voc/TaxonRelationshipTerm.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/tdwg/voc/Team.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/editor/ClassPropertyEditor.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/editor/LSIDAuthorityPropertyEditor.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/editor/LSIDPropertyEditor.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/editor/NamedAreaPropertyEditor.java -text

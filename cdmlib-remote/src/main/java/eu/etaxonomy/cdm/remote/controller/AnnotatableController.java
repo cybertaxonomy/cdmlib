@@ -11,25 +11,21 @@
 package eu.etaxonomy.cdm.remote.controller;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.ModelAndView;
 
-import eu.etaxonomy.cdm.api.service.AnnotatableServiceBase;
 import eu.etaxonomy.cdm.api.service.IAnnotatableService;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.Annotation;
-import eu.etaxonomy.cdm.model.common.MarkerType;
-import eu.etaxonomy.cdm.persistence.dao.common.IAnnotatableDao;
 
 /**
  * based on org.cateproject.controller.common
@@ -40,8 +36,11 @@ import eu.etaxonomy.cdm.persistence.dao.common.IAnnotatableDao;
  * @param <DAO>
  */
 public abstract class AnnotatableController<T extends AnnotatableEntity, SERVICE extends IAnnotatableService<T>> extends BaseController<T,SERVICE> {
-
 	
+	protected static final List<String> ANNOTATION_INIT_STRATEGY = Arrays.asList(new String []{
+			"$"
+	});
+
 	@RequestMapping(value = "/*/*/*/annotation", method = RequestMethod.GET)
 	public Pager<Annotation> getAnnotations(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		
@@ -57,7 +56,7 @@ public abstract class AnnotatableController<T extends AnnotatableEntity, SERVICE
 			return null;
 		}
 		
-		Pager<Annotation> annotations = service.getAnnotations(annotatableEntity, null, null, 0, null, null);
+		Pager<Annotation> annotations = service.getAnnotations(annotatableEntity, null, null, 0, null, ANNOTATION_INIT_STRATEGY);
 		return annotations;
 	}
 

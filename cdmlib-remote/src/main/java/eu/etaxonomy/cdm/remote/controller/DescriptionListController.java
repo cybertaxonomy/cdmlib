@@ -26,6 +26,8 @@ import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
 
 /**
+ * TODO write controller documentation
+ * 
  * @author a.kohlbecker
  * @date 24.03.2009
  */

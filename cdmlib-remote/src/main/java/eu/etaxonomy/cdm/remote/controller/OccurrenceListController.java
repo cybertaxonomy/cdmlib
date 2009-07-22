@@ -17,6 +17,8 @@ import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 
 /**
+ * TODO write controller documentation
+ * 
  * @author a.kohlbecker
  * @date 24.03.2009
  */

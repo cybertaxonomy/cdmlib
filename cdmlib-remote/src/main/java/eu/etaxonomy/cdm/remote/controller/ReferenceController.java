@@ -24,16 +24,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
-import eu.etaxonomy.cdm.api.service.AnnotatableServiceBase;
 import eu.etaxonomy.cdm.api.service.IReferenceService;
-import eu.etaxonomy.cdm.api.service.pager.Pager;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
-import eu.etaxonomy.cdm.persistence.dao.common.IAnnotatableDao;
 
 /**
+ * TODO write controller documentation
+ * 
  * @author a.kohlbecker
  * @date 24.03.2009
  */
@@ -67,6 +64,14 @@ public class ReferenceController extends AnnotatableController<ReferenceBase, IR
 		this.service = service;
 	}
 	
+	/**
+	 * TODO write controller documentation
+	 * 
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws IOException
+	 */
 	@RequestMapping(
 		value = {"/*/reference/*/nomenclaturalCitation/*"},
 		method = RequestMethod.GET)

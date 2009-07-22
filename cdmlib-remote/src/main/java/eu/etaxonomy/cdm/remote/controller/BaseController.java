@@ -11,11 +11,8 @@
 package eu.etaxonomy.cdm.remote.controller;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -47,7 +44,7 @@ public abstract class BaseController<T extends CdmBase, SERVICE extends IService
 	protected SERVICE service;
 	
 	
-	protected List<String> initializationStrategy = null;
+	protected List<String> initializationStrategy = DEFAULT_INIT_STRATEGY;
 
 	public abstract void setService(SERVICE service);
 	
@@ -82,10 +79,11 @@ public abstract class BaseController<T extends CdmBase, SERVICE extends IService
 			UUID uuid = readValueUuid(request, null);
 			Assert.notNull(uuid, HttpStatusMessage.UUID_MISSING.toString());
 			
-			if(initStrategy != null){
-				obj = service.load(uuid, initStrategy);
-			} else {				
+			if(initStrategy == null){
+				// may be null is set to null via the setter
 				obj = service.findByUuid(uuid);
+			} else {				
+				obj = service.load(uuid, initStrategy);
 			}
 			Assert.notNull(obj, HttpStatusMessage.UUID_NOT_FOUND.toString());
 			

@@ -34,6 +34,8 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.common.IAnnotatableDao;
 
 /**
+ * TODO write controller documentation
+ * 
  * @author a.kohlbecker
  * @date 24.03.2009
  */
@@ -67,6 +69,14 @@ public class DescriptionController extends AnnotatableController<DescriptionBase
 		this.service = service;
 	}
 	
+	/**
+	 * TODO write controller method documentation
+	 * 
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws IOException
+	 */
 	@RequestMapping(
 			value = {"/*/featuretree/*"},
 			method = RequestMethod.GET)

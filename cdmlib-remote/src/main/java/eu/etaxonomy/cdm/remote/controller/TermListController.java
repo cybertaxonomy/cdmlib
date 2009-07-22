@@ -10,7 +10,6 @@
 package eu.etaxonomy.cdm.remote.controller;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -32,9 +31,10 @@ import eu.etaxonomy.cdm.model.common.OrderedTermBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
-import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
+ * TODO write controller documentation
+ * 
  * @author a.kohlbecker
  * @date 23.06.2009
  *
@@ -66,6 +66,13 @@ public class TermListController extends BaseListController<DefinedTermBase, ITer
 		this.service = service;
 	}
 	
+	/**
+	 * TODO write controller method documentation
+	 * 
+	 * @param page
+	 * @param pageSize
+	 * @return
+	 */
 	@SuppressWarnings("unchecked")
 	@RequestMapping(method = RequestMethod.GET,
 		value = "/*/term/")
@@ -73,12 +80,20 @@ public class TermListController extends BaseListController<DefinedTermBase, ITer
 			@RequestParam(value = "page", required = false) Integer page,
 			@RequestParam(value = "pageSize", required = false) Integer pageSize) {
 		
-		if(page == null){ page = DEFAULT_PAGE;}
+		if(page == null){ page = DEFAULT_PAGE_NUMBER;}
 		if(pageSize == null){ pageSize = DEFAULT_PAGESIZE;}
 		
 		return (Pager<TermVocabulary<DefinedTermBase>>) service.pageTermVocabularies(pageSize, page, null, VOCABULARY_LIST_INIT_STRATEGY);
 	}
 	
+	/**
+	 * TODO write controller method documentation
+	 * 
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws IOException
+	 */
 	@RequestMapping(method = RequestMethod.GET,
 		value = "/*/term/?*")
 	public TermVocabulary<DefinedTermBase> doGetTerms(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -87,6 +102,14 @@ public class TermListController extends BaseListController<DefinedTermBase, ITer
 		return vocab;
 	}
 	
+	/**
+	 * TODO write controller method documentation
+	 * 
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws IOException
+	 */
 	@RequestMapping(method = RequestMethod.GET,
 		value = "/*/term/*/compareTo/?*")
 	public ModelAndView doCompare(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -108,6 +131,14 @@ public class TermListController extends BaseListController<DefinedTermBase, ITer
 		return mv;
 	}
 	
+	/**
+	 * TODO write controller method documentation
+	 * 
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws IOException
+	 */
 	@RequestMapping(method = RequestMethod.GET,
 		value = "/*/term/tdwg/*")
 	public List<NamedArea> doGetTdwgLevel(HttpServletRequest request, HttpServletResponse response) throws IOException {

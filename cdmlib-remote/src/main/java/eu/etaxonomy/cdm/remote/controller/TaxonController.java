@@ -12,7 +12,6 @@ package eu.etaxonomy.cdm.remote.controller;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -26,20 +25,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import eu.etaxonomy.cdm.api.service.AnnotatableServiceBase;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
-import eu.etaxonomy.cdm.api.service.pager.Pager;
-import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
-import eu.etaxonomy.cdm.persistence.dao.common.IAnnotatableDao;
 
 /**
+ * TODO write controller documentation
+ * 
  * @author a.kohlbecker
+ * @date 20.07.2009
  *
  */
-
 @Controller
 @RequestMapping(value = {"/*/taxon/*","/*/taxon/*/*", "/*/taxon/*/annotation"})
 public class TaxonController extends AnnotatableController<TaxonBase, ITaxonService>
@@ -61,11 +58,22 @@ public class TaxonController extends AnnotatableController<TaxonBase, ITaxonServ
 		this.service = service;
 	}
 	
+
+	/**
+	 * Get the set of accepted {@link Taxon} entities for a given
+	 * {@link TaxonBase} entity identified by the <code>{taxon-uuid}</code>.
+	 * <p>
+	 * URI: <b>&#x002F;{datasource-name}&#x002F;taxon&#x002F;{taxon-uuid}&#x002F;accepted</b>
+	 * 
+	 * @param request
+	 * @param response
+	 * @return a set on a list of {@link Taxon} entities which are initialized
+	 *         using the following initialization strategy:
+	 *         {@link #DEFAULT_INIT_STRATEGY}
+	 * @throws IOException
+	 */
 	@RequestMapping(value = "/*/taxon/*/accepted", method = RequestMethod.GET)
-	public Set<TaxonBase> getAccepted(
-			@RequestParam(value = "page", required = false) Integer page,
-			@RequestParam(value = "pageSize", required = false) Integer pageSize,
-			HttpServletRequest request, HttpServletResponse response) throws IOException {
+	public Set<TaxonBase> getAccepted(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		logger.info("getAccepted() " + request.getServletPath());
 		TaxonBase tb = doGet(request, response);
 		HashSet<TaxonBase> resultset = new HashSet<TaxonBase>();
@@ -76,6 +84,7 @@ public class TaxonController extends AnnotatableController<TaxonBase, ITaxonServ
 		} else {
 			Synonym syn = (Synonym)tb;
 			resultset.addAll(syn.getAcceptedTaxa());
+			//TODO init Synonyms
 		}
 		return resultset;
 	}

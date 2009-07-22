@@ -24,12 +24,22 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import eu.etaxonomy.cdm.api.service.ITaxonService;
+import eu.etaxonomy.cdm.database.UpdatableRoutingDataSource;
 import eu.etaxonomy.cdm.ext.IEditGeoService;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
+import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 /**
+ * The ExternalGeoController class is a Spring MVC Controller.
+ * <p>
+ * The syntax of the mapped service URIs contains the the {datasource-name} path element.
+ * The available {datasource-name}s are defined in a configuration file which
+ * is loaded by the {@link UpdatableRoutingDataSource}. If the
+ * UpdatableRoutingDataSource is not being used in the actual application
+ * context any arbitrary {datasource-name} may be used.
+ * <p> 
  * @author a.kohlbecker
  * @date 18.06.2009
  * 
@@ -61,6 +71,19 @@ public class ExternalGeoController extends BaseController<TaxonBase, ITaxonServi
 		this.service = service;
 	}
 
+	/**
+	 * Assembles and returns URI parameter Strings for the EDIT Map Service. The distribution areas for the  
+	 * {@link Taxon} instance identified by the <code>{taxon-uuid}</code> are found and are translated into 
+	 * an valid URI parameter String. Higher level distribiution areas are expanded in order to include all 
+	 * nested sub-areas. 
+	 * <p>
+	 * URI: <b>&#x002F;{datasource-name}&#x002F;geo&#x002F;map&#x002F;distribution&#x002F;{taxon-uuid}</b>
+	 * 
+	 * @param request
+	 * @param response
+	 * @return URI parameter Strings for the EDIT Map Service
+	 * @throws IOException TODO write controller method documentation
+	 */
 	@RequestMapping(value = { "/*/geo/map/distribution/*" }, method = RequestMethod.GET)
 	public ModelAndView doGetDistributionMapUriParams(HttpServletRequest request, HttpServletResponse response)
 			throws IOException {

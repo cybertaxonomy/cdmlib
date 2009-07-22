@@ -23,13 +23,30 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
-import eu.etaxonomy.cdm.api.service.AnnotatableServiceBase;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
+import eu.etaxonomy.cdm.database.UpdatableRoutingDataSource;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.persistence.dao.common.IAnnotatableDao;
+import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 
 /**
+ * The NamePortalController class is a Spring MVC Controller.
+ * <p>
+ * The syntax of the mapped service URIs contains the the {datasource-name} path element.
+ * The available {datasource-name}s are defined in a configuration file which
+ * is loaded by the {@link UpdatableRoutingDataSource}. If the
+ * UpdatableRoutingDataSource is not being used in the actual application
+ * context any arbitrary {datasource-name} may be used.
+ * <p>
+ * Methods mapped at type level, inherited from super classes ({@link BaseController}):
+ * <blockquote>
+ * URI: <b>&#x002F;{datasource-name}&#x002F;portal&#x002F;name&#x002F;{name-uuid}</b>
+ * 
+ * Get the {@link TaxonNameBase} instance identified by the <code>{name-uuid}</code>.
+ * The returned TaxonNameBase is initialized by
+ * the following strategy: -- NONE --
+ * </blockquote>
+ * 
  * @author a.kohlbecker
  * @date 24.03.2009
  */
@@ -62,6 +79,19 @@ public class NamePortalController extends BaseController<TaxonNameBase, INameSer
 		this.service = service;
 	}
 
+	/**
+     * Get the list of {@link TypeDesignationBase}s of the 
+	 * {@link TaxonNameBase} instance identified by the <code>{name-uuid}</code>.
+	 * <p>
+	 * URI: <b>&#x002F;{datasource-name}&#x002F;portal&#x002F;name&#x002F;{name-uuid}&#x002F;typeDesignations</b>
+	 * 
+	 * @param request
+	 * @param response
+	 * @return a List of {@link TypeDesignationBase} entities which are initialized
+	 *         using the following initialization strategy:
+	 *         {@link #TYPE_INIT_STRATEGY}
+	 * @throws IOException
+	 */
 	@RequestMapping(
 			value = {"/*/portal/name/*/typedesignations"},
 			method = RequestMethod.GET)

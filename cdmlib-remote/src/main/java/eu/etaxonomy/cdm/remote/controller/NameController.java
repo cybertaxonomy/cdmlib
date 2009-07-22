@@ -12,32 +12,25 @@ package eu.etaxonomy.cdm.remote.controller;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Hashtable;
 import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.servlet.ModelAndView;
 
-import eu.etaxonomy.cdm.api.service.AnnotatableServiceBase;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
-import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
-import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
-import eu.etaxonomy.cdm.persistence.dao.common.IAnnotatableDao;
 
 /**
+ * TODO write controller documentation
+ * 
  * @author a.kohlbecker
  * @date 24.03.2009
  */
@@ -68,6 +61,18 @@ public class NameController extends AnnotatableController<TaxonNameBase, INameSe
 		this.service = service;
 	}
 	
+	/**
+     * Get the list of {@link TypeDesignationBase}s of the 
+	 * {@link TaxonNameBase} instance identified by the <code>{name-uuid}</code>.
+	 * <p>
+	 * URI: <b>&#x002F;{datasource-name}&#x002F;name&#x002F;{name-uuid}&#x002F;typeDesignations</b>
+	 * 
+	 * @param request
+	 * @param response
+	 * @return a List of {@link TypeDesignationBase} entities which are initialized
+	 *         using the {@link #TYPEDESIGNATION_INIT_STRATEGY}
+	 * @throws IOException
+	 */
 	@RequestMapping(
 			value = {"/*/name/*/typeDesignations"},
 			method = RequestMethod.GET)
