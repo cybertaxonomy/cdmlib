@@ -513,7 +513,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 	 * Get the {@link Media} attached to the {@link Taxon} instance 
 	 * identified by the <code>{taxon-uuid}</code>.
 	 * 
-	 * Usage &#x002F;{datasource-name}&#x002F;portal&#x002F;name&#x002F;{taxon-
+	 * Usage &#x002F;{datasource-name}&#x002F;portal&#x002F;taxon&#x002F;{taxon-
 	 * uuid}&#x002F;media&#x002F;{mime type
 	 * list}&#x002F;{size}[,[widthOrDuration}][,{height}]&#x002F;
 	 * 

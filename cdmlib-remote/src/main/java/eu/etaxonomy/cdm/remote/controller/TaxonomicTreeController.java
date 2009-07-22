@@ -76,7 +76,7 @@ public class TaxonomicTreeController extends AbstractListController<TaxonBase, I
 	
 	private ITermService termService;
 	
-	private Pattern parameterPattern = Pattern.compile("^/(?:[^/]+)/taxontree/([^?#&\\.]+).*");
+	private Pattern parameterPattern = Pattern.compile("^/(?:[^/]+)/portal/taxontree/([^?#&\\.]+).*");
 
 	@Autowired
 	public void setService(ITaxonService service) {
@@ -99,7 +99,7 @@ public class TaxonomicTreeController extends AbstractListController<TaxonBase, I
 	/**
 	 * Lists all available {@link TaxonomicTree}s.
 	 * <p>
-	 * URI: &#x002F;{datasource-name}&#x002F;taxontree
+	 * URI: <b>&#x002F;{datasource-name}&#x002F;portal&#x002F;taxontree</b>
 	 * 
 	 * @param request
 	 * @param response
@@ -107,7 +107,7 @@ public class TaxonomicTreeController extends AbstractListController<TaxonBase, I
 	 *         the {@link #TAXONTREE_INIT_STRATEGY}
 	 * @throws IOException
 	 */
-	@RequestMapping(value = { "/*/taxontree" }, method = RequestMethod.GET)
+	@RequestMapping(value = { "/*/portal/taxontree" }, method = RequestMethod.GET)
 	public List<TaxonomicTree> getTaxonomicTrees(HttpServletRequest request, HttpServletResponse response)
 			throws IOException {
 		logger.info("getTaxonomicTrees()");
@@ -122,7 +122,7 @@ public class TaxonomicTreeController extends AbstractListController<TaxonBase, I
 	 * as root node. If the rank is null the absolute root nodes will be
 	 * returned.
 	 * <p>
-	 * URI: &#x002F;{datasource-name}&#x002F;taxontree&#x002F;{tree-uuid},{rank-uuid}
+	 * URI: <b>&#x002F;{datasource-name}&#x002F;portal&#x002F;taxontree&#x002F;{tree-uuid},{rank-uuid}</b>
 	 * <p>
      * <b>URI elements:</b>
      * <ul>
@@ -136,7 +136,7 @@ public class TaxonomicTreeController extends AbstractListController<TaxonBase, I
 	 *         the {@link #NODE_INIT_STRATEGY}
 	 */
 	@RequestMapping(
-			value = {"/*/taxontree/?*"},
+			value = {"/*/portal/taxontree/?*"},
 			method = RequestMethod.GET)
 	public List<TaxonNode> getRootTaxa(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		logger.info("getRootTaxa()");
@@ -165,8 +165,7 @@ public class TaxonomicTreeController extends AbstractListController<TaxonBase, I
 	 * Lists all child-{@link TaxonNode}s of the specified {@link Taxon} in the {@link TaxonomicTree}. The
 	 * a given {@link Rank} is ignored in this method but for consistency reasons it has been allowed to included it into the URI. 
 	 * <p>
-	 * URI: &#x002F;{datasource-name}&#x002F;taxontree&#x002F;{tree-uuid},{rank-
-	 * uuid}&#x002F;{taxon-uuid}
+	 * URI: <b>&#x002F;{datasource-name}&#x002F;portal&#x002F;taxontree&#x002F;{tree-uuid},{rank-uuid}&#x002F;{taxon-uuid}</b>
 	 * <p>
      * <b>URI elements:</b>
      * <ul>
@@ -181,7 +180,7 @@ public class TaxonomicTreeController extends AbstractListController<TaxonBase, I
 	 *         the {@link #NODE_INIT_STRATEGY}
 	 */
 	@RequestMapping(
-			value = {"/*/taxontree/*/?*", "/*/taxontree/*/**/?*"}, 
+			value = {"/*/portal/taxontree/*/?*", "/*/portal/taxontree/*/**/?*"}, 
 			method = RequestMethod.GET)
 	public List<TaxonNode> getChildTaxa(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		logger.info("getChildTaxa()");
@@ -212,7 +211,7 @@ public class TaxonomicTreeController extends AbstractListController<TaxonBase, I
 	/**
 	 * Provides path of {@link TaxonNode}s from the base node to the node of the specified taxon.
 	 * <p>
-	 * URI: &#x002F;{datasource-name}&#x002F;taxontree&#x002F;{tree-uuid},{rank-uuid}&#x002F;{taxon-uuid}&#x002F;path
+	 * URI:<b>&#x002F;{datasource-name}&#x002F;portal&#x002F;taxontree&#x002F;{tree-uuid},{rank-uuid}&#x002F;{taxon-uuid}&#x002F;path</b>
 	 * <p>
      * <b>URI elements:</b>
      * <ul>
@@ -227,7 +226,7 @@ public class TaxonomicTreeController extends AbstractListController<TaxonBase, I
 	 *         the {@link #NODE_INIT_STRATEGY}
 	 */
 	@RequestMapping(
-			value = {"/*/taxontree/*/*/path", "/*/taxontree/*/**/*/path"}, 
+			value = {"/*/portal/taxontree/*/*/path", "/*/portal/taxontree/*/**/*/path"}, 
 			method = RequestMethod.GET)
 	public List<TaxonNode> getPathToRoot(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		logger.info("getPathToRoot()");
