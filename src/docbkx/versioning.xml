@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter version="5.0" xml:id="versioning"
+         xmlns="http://docbook.org/ns/docbook"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:ns5="http://www.w3.org/1999/xhtml"
+         xmlns:ns4="http://www.w3.org/2000/svg"
+         xmlns:ns3="http://www.w3.org/1998/Math/MathML"
+         xmlns:ns="http://docbook.org/ns/docbook">
+  <info>
+    <title>Versioning</title>
+  </info>
+
+  <section>
+    <para>A significant use-case that the CDM aims to support is that of
+    web-based or networked nomenclators, taxonomic treatments, and other
+    applications that serve authoritative, dynamic data for (re-)use by
+    taxonomists and other software applications. As an example, a CDM store
+    containing a web-based monograph or revision of a particular plant or
+    animal family might be referenced by other taxonomists, or other taxonomic
+    databases that deal with the same taxa. To allow applications to record
+    and resolve changes to data over time, for example, to allow users or
+    client applications to determine how a taxonomic classification or species
+    page has been altered since they last accessed that information, the CDM
+    has a fine-grained versioning functionality that records changes to
+    objects and their relationships, and allows the prior state of the dataset
+    to be reconstructed.</para>
+
+    <para>The CDM uses <link
+    xlink:href="http://www.jboss.org/envers/">hibernate-envers</link>, a
+    versioning / auditing library that is part of the hibernate core library.
+    The versioning functionality is limited by the features that envers
+    provides. Envers stores changes to entities on a per-transaction basis.
+    Consequently, it is not possible to resolve changes that take place within
+    the same transaction. Each transaction results in the creation of an
+    <classname>AuditEvent</classname> object that provides metadata about the
+    audit event and also allows the state of the database at that point to be
+    reconstructed (because an <classname>AuditEvent</classname> represents a
+    point in time across the entire database, rather than on a per-object
+    basis). To learn more about envers and the way that it versions data,
+    check out the presentation given by its creator, Adam Warski <link
+    xlink:href="http://jboss.org/file-access/default/members/envers/downloads/presentations/envers_devoxx.pdf">here</link>.</para>
+
+    <para>Versioning is enabled by default, and calls to methods like
+    <methodname>save</methodname>, <methodname>update</methodname>, and
+    <methodname>delete</methodname>, will automatically result in data being
+    versioned. Application developers only need to be aware of the existence
+    of versioning when reading data, and only then if they wish to retrieve an
+    object in its prior state. If applications wish to retrieve objects from
+    the current state of the database, they do not need to perform any
+    additional operations. <methodname /></para>
+
+    <para>Because versions of objects are related to a global
+    <classname>AuditEvent</classname>, and because applications may call
+    several service layer methods when retrieving data for presentation in a
+    particular view, the CDM stores the <classname>AuditEvent</classname> in
+    the static field of an object called
+    <classname>AuditEventContextHolder</classname>, allowing the CDM and any
+    application code to discover which particular
+    <classname>AuditEvent</classname> a view relates to without needing to
+    pass the <classname>AuditEvent</classname> explicitly as a method
+    parameter (this pattern is borrows from the
+    <classname>SecurityContext</classname> class in Spring-Security).</para>
+
+    <para>To query the CDM at a particular <classname>AuditEvent</classname>,
+    applications need to place the <classname>AuditEvent</classname> in to the
+    <classname>AuditEventContextHolder</classname> and then call DAO methods
+    as usual.</para>
+
+    <programlisting>// This would retrieve the current version of the taxon with a matching uuid.
+Taxon taxon = taxonDao.find(uuid);
+
+// Set the audit event you're interested in
+AuditEventContextHolder.<emphasis>getContext</emphasis>().setAuditEvent(auditEvent);
+
+// This method call now retrieves the taxon with a matching uuid at the audit event in context
+// or null if the taxon did not exist at that point.
+Taxon taxon = taxonDao.find(uuid);
+
+// Now clear the context
+AuditEventContextHolder.<emphasis>clearContext</emphasis>();
+
+// Further calls to the persistence layer will return the most recent objects
+</programlisting>
+
+    <para>Not all DAO methods are available in non-current contexts, either
+    because they require certain methods that Envers doesn't currently support
+    (such as case-insensitive string comparison), or are across relationships
+    - currently envers does not support queries that place restrictions on
+    related entities. In some cases this will be addressed in future releases
+    of envers, and the CDM will incorporate these new releases as they occur.
+    Some methods rely on the free-text-search functionality provided by
+    hibernate search. Because hibernate search (and apache Lucene) are based
+    on an optimized set of index files that reflect the current state of the
+    database, it is not possible to search these indices at prior events. It
+    is unlikely that the free-text-search functionality will ever be available
+    in non-current contexts. If an application calls such a method in a
+    non-current context, an
+    <exceptionname>OperationNotSupportedInPriorViewException</exceptionname>
+    is thrown, giving applications an operation to recover.</para>
+
+    <para>Objects retrieved in prior contexts can be initialized using the
+    <parameter>propertyPaths</parameter> parameter, or (if the transaction is
+    still open) by calling accessor methods in domain objects directly (just
+    as you would with normal hibernate-managed entities).</para>
+
+    <para>In addition to being able to retrieve objects at a given state, the
+    DAOs implement the <interfacename>IVersionableDao</interfacename>
+    interface that offers five specific methods for working with versioned
+    objects.</para>
+
+    <table frame="all" xml:id="iversionabledao-methods">
+      <title><interfacename>IVersionableDao</interfacename> methods</title>
+
+      <tgroup align="left" cols="2" colsep="1" rowsep="1">
+        <colspec colname="c1" />
+
+        <colspec colname="c2" />
+
+        <thead>
+          <row>
+            <entry>Method</entry>
+
+            <entry>Description</entry>
+          </row>
+        </thead>
+
+        <tbody>
+          <row>
+            <entry>
+              <methodsynopsis>
+                <type>List&lt;AuditEventRecord&lt;T&gt;&gt;</type>
+
+                <methodname>getAuditEvents</methodname>
+
+                <methodparam>
+                  <type>T</type>
+
+                  <parameter>t</parameter>
+                </methodparam>
+
+                <methodparam>
+                  <type>Integer</type>
+
+                  <parameter>limit</parameter>
+                </methodparam>
+
+                <methodparam>
+                  <type>Integer</type>
+
+                  <parameter>start</parameter>
+                </methodparam>
+
+                <methodparam>
+                  <type>AuditEventSort</type>
+
+                  <parameter>sort</parameter>
+                </methodparam>
+
+                <methodparam>
+                  <type>List&lt;String&gt;</type>
+
+                  <parameter>propertyPaths</parameter>
+                </methodparam>
+              </methodsynopsis>
+            </entry>
+
+            <entry>
+              <para>Returns a list of audit events (in order) which affected
+              the state of an entity t. The events returned either start at
+              the <classname>AuditEvent</classname> in context and go forward
+              in time (<parameter>AuditEventSort.FORWARDS</parameter>) or
+              backwards in time
+              (<parameter>AuditEventSort.BACKWARDS</parameter>). If the
+              <classname>AuditEventContext</classname> is set to null, or to
+              <parameter>AuditEvent.CURRENT_VIEW</parameter>, then all
+              relevant AuditEvents are returned.</para>
+            </entry>
+          </row>
+
+          <row>
+            <entry>
+              <methodsynopsis>
+                <type>int</type>
+
+                <methodname>countAuditEvents</methodname>
+
+                <methodparam>
+                  <type>T</type>
+
+                  <parameter>t</parameter>
+                </methodparam>
+
+                <methodparam>
+                  <type>AuditEventSort</type>
+
+                  <parameter>sort</parameter>
+                </methodparam>
+              </methodsynopsis>
+            </entry>
+
+            <entry>
+              <para>Returns a count of audit events which affected the state
+              of an entity t.</para>
+            </entry>
+          </row>
+
+          <row>
+            <entry>
+              <methodsynopsis>
+                <type>AuditEventRecord&lt;T&gt;</type>
+
+                <methodname>getNextAuditEvent</methodname>
+
+                <methodparam>
+                  <type>T</type>
+
+                  <parameter>t</parameter>
+                </methodparam>
+              </methodsynopsis>
+            </entry>
+
+            <entry>
+              <para>A convenience method which returns a record of the next
+              (relative to the audit event in context).</para>
+            </entry>
+          </row>
+
+          <row>
+            <entry>
+              <methodsynopsis>
+                <type>AuditEventRecord&lt;T&gt;</type>
+
+                <methodname>getPreviousAuditEvent</methodname>
+
+                <methodparam>
+                  <type>T</type>
+
+                  <parameter>t</parameter>
+                </methodparam>
+              </methodsynopsis>
+            </entry>
+
+            <entry>
+              <para>A convenience method which returns a record of the
+              previous (relative to the audit event in context).</para>
+            </entry>
+          </row>
+
+          <row>
+            <entry>
+              <methodsynopsis>
+                <type>boolean</type>
+
+                <methodname>existed</methodname>
+
+                <methodparam>
+                  <type>UUID</type>
+
+                  <parameter>uuid</parameter>
+                </methodparam>
+              </methodsynopsis>
+            </entry>
+
+            <entry>
+              <para>Returns true if an object with uuid matching the one
+              supplied either currently exists, or existed previously and has
+              been deleted from the current view.</para>
+            </entry>
+          </row>
+        </tbody>
+      </tgroup>
+    </table>
+  </section>
+</chapter>

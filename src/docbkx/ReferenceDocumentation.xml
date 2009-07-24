@@ -73,11 +73,10 @@
     plain-old-java-objects (<link
     xlink:href="http://en.wikipedia.org/wiki/Plain_Old_Java_Object">pojo's</link>),
     a set of java components has been created that provide common services
-    across all java applications using the CDM. In addition to serving as the
-    basis of core components of the Internet Platform for Cyberplatform, they
-    also allow the development of other applications using the CDM by
-    providing basic functionality that can be extended for a particular
-    purpose.</para>
+    across all java applications using the CDM. They serve as the basis of
+    core components of the Internet Platform for Cyberplatform and also allow
+    the development of other applications using the CDM by providing basic
+    functionality that can be extended for a particular purpose.</para>
 
     <para>The CDM Library, as it is known, consists of four major modules that
     can be used by any java application based on the CDM. These libraries are
@@ -87,6 +86,8 @@
     web applications based on the CDM.</para>
 
     <figure>
+      <title>An overview of the main CDM Components</title>
+
       <mediaobject>
         <imageobject role="html">
           <imagedata fileref="resources/images/cdmlib-arch3.png" format="png" />
@@ -104,7 +105,135 @@
         Dataportal, CATE) applications.</caption>
       </mediaobject>
     </figure>
+
+    <para>This reference documentation is aimed at anyone who would like to
+    understand the software components that make up the core of the
+    cyberplatform: the CDM Java Library and the CDM Server application. More
+    generic information about the applications that make up the cyberplatform,
+    information for end-users of specific applications, and information on the
+    EDIT project itself are beyond the scope of this document. More
+    information about EDIT can be found on the <link linkend="???">EDIT
+    website</link>, and more information on the specific software applications
+    produced by EDIT can be found on the <link linkend="???">Work Package 5
+    website</link>.</para>
   </preface>
+
+  <part>
+    <title>Getting Started</title>
+
+    <partintro>
+      <para>This part of the reference documentation aims to provide simple
+      step-by-step instructions to enable application developers to start
+      using the CDM Java Library in their java application. To do this, we
+      will create a small toy application. The CDM Java Library is packaged
+      and published using the Apache Maven software project managment and
+      comprehension tool. To make life easier, we'll use maven to create our
+      application too. Assuming that Maven (2.0.x+) installed, we begin by
+      creating a new maven application (substituting the group id, artifact
+      id, and version of our application):</para>
+
+      <screen>mvn archetype:create -DgroupId=<emphasis>org.myproject</emphasis> -DartifactId=<emphasis>myapp</emphasis> -Dversion=<emphasis>1.0</emphasis></screen>
+
+      <para>The next step is to add the EDIT maven repository to your maven
+      <emphasis>project object model</emphasis> or <emphasis>pom</emphasis>
+      file, thus:</para>
+
+      <programlisting>. . .
+&lt;repositories&gt;
+  &lt;repository&gt;
+    &lt;id&gt;EditRepository&lt;/id&gt;
+    &lt;url&gt;http://wp5.e-taxonomy.eu/cdmlib/mavenrepo/&lt;/url&gt;
+  &lt;/repository&gt;
+&lt;/repositories&gt;
+&lt;/project&gt;</programlisting>
+
+      <para>We also need to add the specific dependency that we would like our
+      project to include.</para>
+
+      <programlisting>. . .
+&lt;dependencies&gt;
+    &lt;dependency&gt;
+      &lt;groupId&gt;eu.etaxonomy&lt;/groupId&gt;
+      &lt;artifactId&gt;cdmlib-services&lt;/artifactId&gt;
+      &lt;version&gt;1.1.1&lt;/version&gt;<!--ben: We will need to change this to reflect the new release once it is available-->
+    &lt;/dependency&gt;
+  &lt;/dependencies&gt;
+&lt;repositories&gt;
+. . .</programlisting>
+
+      <para>In most cases, application developers will wish to include the
+      cdmlib services (which include the data model and persistence layer
+      too). In some cases, developers might wish to use components from the
+      <package>cdmlib-io</package> and <package>cdmlib-remote</package>
+      packages too. New releases of the CDM Java Library are published in the
+      EDIT Maven Repository, and maven will download and use these artifacts
+      automatically if you change the version number of the dependency
+      specified in your pom file.</para>
+
+      <para>All that remains is to set up the cdmlib services within the
+      application context. The CDM Java Library is uses the Spring Framework
+      to manage its components. Whilst it is not mandatory to wire the CDM
+      services and DAOs using Spring, it is certainly easier to configure your
+      application this way. A minimal applicationContext.xml (placed in
+      <filename>src/main/resources</filename>) file might look like
+      this:</para>
+
+      <programlisting>&lt;import resource="classpath:/eu/etaxonomy/cdm/services.xml" /&gt;
+
+&lt;bean id="dataSource" 
+  lazy-init="true"
+  class="eu.etaxonomy.cdm.database.LocalHsqldb" 	
+  init-method="init"
+  destroy-method="destroy"&gt;
+  &lt;property name="driverClassName" value="org.hsqldb.jdbcDriver"/&gt;
+  &lt;property name="username" value="sa"/&gt;
+  &lt;property name="password" value=""/&gt;
+  &lt;property name="startServer" value="true"/&gt;
+  &lt;property name="silent" value="true"/&gt;
+&lt;/bean&gt;
+    
+&lt;bean id="hibernateProperties" 
+  class="org.springframework.beans.factory.config.PropertiesFactoryBean"&gt;
+  &lt;property name="properties"&gt;
+    &lt;props&gt;
+      &lt;prop key="hibernate.hbm2ddl.auto"&gt;create-drop&lt;/prop&gt;
+      &lt;prop key="hibernate.dialect"&gt;org.hibernate.dialect.HSQLDialect&lt;/prop&gt;
+      &lt;prop key="hibernate.cache.provider_class"&gt;org.hibernate.cache.NoCacheProvider&lt;/prop&gt;
+    &lt;/props&gt;
+  &lt;/property&gt;
+&lt;/bean&gt;</programlisting>
+
+      <para>The first element imports the cdmlib service definitions. The two
+      other beans supply a data source and a properties object that the CDM
+      library uses to configure the hibernate session factory and connect to
+      the database. In this case, we're using an in-memory HSQL database, but
+      the CDM can be used with many other databases. The only thing left to do
+      is to start using the CDM services. In real applications, CDM services
+      may well be autowired into components using Spring or another dependency
+      injection mechanism. To keep this example simple, we'll initialize the
+      application context and obtain a service programatically.</para>
+
+      <programlisting>ApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
+
+INameService nameService = (INameService)context.getBean("nameServiceImpl");
+
+BotanicalName botanicalName = BotanicalName.NewInstance(Rank.SPECIES());
+botanicalName.setGenusOrUninomial("Arum");
+botanicalName.setSpecificEpithet("maculatum");
+UUID uuid = nameService.saveTaxonName(botanicalName);<!--ben: Again, this example reflects the 1.1.1 release, and will need to be changed slightly once the new release is available-->
+
+System.out.println("Saved \'Arum maculatum\' under uuid " + uuid.toString());</programlisting>
+
+      <para>In this simple example, we've covered the basics of using the CDM
+      Java Library. We created a simple maven project, and added the
+      repository and a single dependency to our pom file. We then created a
+      simple application context that used the default CDM configuration, and
+      specified a couple of objects that allowed the CDM to connect to a
+      database. Finally we initialized these services by loading the
+      application context, and then retrieved a specific service, and used it
+      to persist a new taxonomic name.</para>
+    </partintro>
+  </part>
 
   <part>
     <title>Common Data Model</title>
@@ -244,7 +373,7 @@
     <!--<xi:include href="taxonomic-names.xml" />-->
 
     <!--<xi:include href="taxonomic-concepts.xml" />-->
- 
+
     <!--<xi:include href="specimens-and-observations.xml" />-->
 
     <!--<xi:include href="descriptive-data.xml" />-->
@@ -252,13 +381,14 @@
     <!--<xi:include href="terms-and-vocabularies.xml" />-->
 
     <!-- ben: We'll need to touch on _where_ these external files live . . .-->
+
     <!--<xi:include href="media.xml" />-->
 
     <!-- ben: I'll include something about validation once I start 
               work on the validation framework next month
-      --> 
+      -->
+
     <!--<xi:include href="validation.xml" />-->
-    
   </part>
 
   <part>
@@ -283,15 +413,16 @@
       persistence and query service as the basis of its persistence layer.
       Several member projects of the Hibernate stable, including <link
       xlink:href="http://annotations.hibernate.org">Hibernate
-      Annotations</link>, <link xlink:href="http://search.hibernate.org">Hibernate Search</link> and
-      <link linkend="http://jboss.org/envers/">Hibernate Envers</link> (part of Hibernate Core)
-      provide the basis of the more advanced persistence-related functionality
-      in the CDM Library. As a consequence some of the behaviour of the CDM
-      Library is constrained by the underlying ORM technology. The advantage
-      of using an ORM is that the same software can be used with multiple
-      database systems with (almost) no changes to the application. Currently
-      the CDM Library has been tested with (version numbers &amp; platforms in
-      brackets)</para>
+      Annotations</link>, <link
+      xlink:href="http://search.hibernate.org">Hibernate Search</link> and
+      <link linkend="http://jboss.org/envers/">Hibernate Envers</link> (part
+      of Hibernate Core) provide the basis of the more advanced
+      persistence-related functionality in the CDM Library. As a consequence
+      some of the behaviour of the CDM Library is constrained by the
+      underlying ORM technology. The advantage of using an ORM is that the
+      same software can be used with multiple database systems with (almost)
+      no changes to the application. Currently the CDM Library has been tested
+      with (version numbers &amp; platforms in brackets)</para>
 
       <!--I don't know how many of these have been tested, on which platforms, but it would be good to include some measure of which platform / database combinations 
 have been used and how, so that potential users can evaluate the technology. In an ideal world, we would pick some databases as "supported" and ensure that
@@ -371,31 +502,31 @@ the CDM on this platform and it seemed to work".-->
 
     <xi:include href="basic-persistence.xml" />
 
-    <!--<xi:include href="listing-sorting-initializing.xml" />-->
+    <xi:include href="versioning.xml" />
 
-    <!--<xi:include href="versioning.xml" />-->
-
-    <!--<xi:include href="free-text-search.xml" />-->
+    <xi:include href="free-text-search.xml" />
   </part>
 
   <part xml:id="api">
     <title>API Methods</title>
 
     <partintro>
-      <para>This part discusses the service layer:</para>
+      <para>Apart from the Common Data Model classes themselves, the CDM
+      Service layer contains the components most likely to be used directly by
+      applications based upon the CDM Java Library. This layer contains a set
+      of basic service objects that can be used as a facade over the
+      persistence logic.</para>
     </partintro>
 
-    <!--<xi:include href="service.xml" />-->
-
-    <!--<xi:include href="paging-resultsets.xml" />-->
+    <xi:include href="service.xml" />
 
     <!--<xi:include href="application-controller.xml" />-->
 
     <!--<xi:include href="transactions.xml" />-->
 
-    <!--<xi:include href="guid-resolution.xml" />-->
+    <xi:include href="guid-resolution.xml" />
 
-    <!--<xi:include href="security.xml" />-->
+    <xi:include href="security.xml" />
   </part>
 
   <part>

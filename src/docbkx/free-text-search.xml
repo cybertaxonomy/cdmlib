@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter version="5.0" xml:id="free-text-search"
+         xmlns="http://docbook.org/ns/docbook"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:ns5="http://www.w3.org/1999/xhtml"
+         xmlns:ns4="http://www.w3.org/2000/svg"
+         xmlns:ns3="http://www.w3.org/1998/Math/MathML"
+         xmlns:ns="http://docbook.org/ns/docbook">
+  <info>
+    <title>Free Text Search</title>
+  </info>
+
+  <section>
+    <para>The CDM supports high-performance free-text ("google-like")
+    searching of the data that it stores. It uses the hibernate-search library
+    to integrate the popular apache Lucene search software into the CDM. The
+    persistence layer includes hibernate-search integration by default, so
+    objects are added to the lucene index when applications
+    <methodname>save</methodname> entities, and the indices are updated when
+    applications <methodname>update</methodname> or
+    <methodname>delete</methodname> objects. All fields are converted to
+    lowercase during indexing, and queries are converted to lowercase during
+    parsing. Several properties are indexed per object type, and it is
+    possible to search individual fields or combinations of fields. The basic
+    syntax used for free text queries is described on the <link xlink:href="http://lucene.apache.org/java/2_4_1/queryparsersyntax.html">lucene
+    website</link>.</para>
+
+    <para>All classes have a default field that is searched when a field is
+    not specified. In the case of classes that extend
+    <classname>IdentifiableEntity</classname> the
+    <parameter>titleCache</parameter> field is used. By default, query strings
+    are broken into individual terms and objects are returned that match any
+    of the terms (e.g. <emphasis>Acherontia atropos</emphasis>). To return
+    objects that match all terms, in any order, the an AND operator can be
+    used (e.g. <emphasis>Acherontia AND atropos</emphasis>). By enclosing
+    individual terms in double quotes, you can specify that terms must appear
+    in a certain order (e.g. <emphasis>"Acherontia atropos"</emphasis>).
+    </para>
+
+    <para>To search a specific property, prepend the name of the property,
+    followed by a colon to the query (e.g. <emphasis>nameCache:"Acherontia
+    atropos"</emphasis>). Properties of related entities can be searched too,
+    provided that they have been indexed, using java-beans-like dot-notation.
+    For example, to return all references written by Schott you could use
+    <emphasis>authorTeam.titleCache:Schott</emphasis>, and to return all
+    publications written in the 1940's you could use either
+    <emphasis>datePublished.start:194*</emphasis> or
+    <emphasis>datePublished.start:[1940* TO 1949*]</emphasis> (to specify a
+    range).</para>
+  </section>
+</chapter>

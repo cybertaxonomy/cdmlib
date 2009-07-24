@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter version="5.0" xml:id="security" xmlns="http://docbook.org/ns/docbook"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:ns5="http://www.w3.org/1999/xhtml"
+         xmlns:ns4="http://www.w3.org/2000/svg"
+         xmlns:ns3="http://www.w3.org/1998/Math/MathML"
+         xmlns:ns="http://docbook.org/ns/docbook">
+  <info>
+    <title>Security and Identity within the CDM Library</title>
+  </info>
+
+  <section>
+    <para>The CDM Library uses the Spring Security sub-project as the basis of
+    its security implementation. The best place to get information on using
+    Spring Security is the <link
+    xlink:href="http://static.springsource.org/spring-security/site/index.html">project
+    website</link>.</para>
+
+    <para>Spring Security is based around a non-intrusive and non-invasive
+    architecture that can be configured as needed by a particular application.
+    The CDM Java Library does not have any restricted or protected methods by
+    default - it is likely that each application based on the CDM will wish to
+    protect services in a different way. The CDM service layer does provide a
+    number of classes that make it straightforward to set up.</para>
+
+    <para>In addition to providing generic components for authentication and
+    authorization, Spring Security provides a number of components that can be
+    used by web applications. Details on authentication and authorization
+    concepts applied to web applications can be found in the documentation for
+    the <package>cdmlib-remote</package> package.</para>
+
+    <section>
+      <info>
+        <title>Identity</title>
+      </info>
+
+      <para>Identity in Spring Security is based around the
+      <interfacename>UserDetails</interfacename> interface, that provides
+      access to the principal's username, password, granted authorities and
+      other details. The CDM provides the <classname>User</classname> class
+      that implements this interface. In addition, it provides implementations
+      of the <interfacename>GrantedAuthority</interfacename> and a
+      <classname>Group</classname> class to allow group authorities
+      (permissions that belong to a group of individuals rather than belonging
+      to a single <classname>User</classname>). Creation of new user accounts,
+      manipulation of account details, permissions, and group membership is
+      achieved through an implementation of
+      <interfacename>IUserService</interfacename> provided by the
+      library.</para>
+
+      <para>The CDM provides some basic auditing functionality by storing the
+      user account and timestamp each time an object is modified (and a
+      transaction is comitted). The user details are retrieved from the
+      <classname>SecurityContextHolder</classname> provided by Spring
+      Security. If authentication is set up (see below) and the user is logged
+      in, then this data will be present automatically in the
+      <classname>SecurityContext</classname>. In the case of applications that
+      do not use Spring Security, the <classname>User</classname> object must
+      be placed into the <classname>SecurityContext</classname> explicitly for
+      the user details to be recorded in this way.</para>
+    </section>
+
+    <section>
+      <info>
+        <title>Authentication</title>
+      </info>
+
+      <para>To enable authentication within your application, a small number
+      of additional beans need to be added to the application context, thus
+      (note the use of the <emphasis>security</emphasis> spring-security
+      namespace):</para>
+
+      <programlisting>&lt;security:authentication-manager alias="authenticationManager"/&gt;
+   
+&lt;bean id="daoAuthenticationProvider" class="org.springframework.security.providers.dao.DaoAuthenticationProvider"&gt;
+  &lt;security:custom-authentication-provider/&gt;
+  &lt;property name="userDetailsService" ref="userService"/&gt;
+  &lt;property name="saltSource" ref="saltSource"/&gt;
+  &lt;property name="passwordEncoder" ref="passwordEncoder"/&gt;
+&lt;/bean&gt;
+    
+&lt;bean id="passwordEncoder" class="org.springframework.security.providers.encoding.Md5PasswordEncoder"/&gt;
+    
+&lt;bean id="saltSource" class="org.springframework.security.providers.dao.salt.ReflectionSaltSource"&gt;
+  &lt;property name="userPropertyToUse" value="getUsername"/&gt;
+&lt;/bean&gt;</programlisting>
+
+      <para>In the case of web applications, application developers will
+      probably want to authenticate users transparently, using the servlet
+      filter provided by spring security. For desktop applications, you can
+      also authenticate a user programatically:</para>
+
+      <programlisting>UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken("<emphasis>username</emphasis>","<emphasis>password</emphasis>");
+authenticationManager.authenticate(token);</programlisting>
+    </section>
+
+    <section>
+      <info>
+        <title>Authorization</title>
+      </info>
+
+      <para>As with authentication, web applications based upon the CDM may
+      find the standard methods provided by Spring Security or protecting URLs
+      to be sufficient in most cases. To protect service methods, or to secure
+      desktop applications, developers can also use global method security by
+      specifying a pointcut expression that matches the service and method
+      that they wish to protect, and a granted authority that is allowed to
+      access the method thus:</para>
+
+      <programlisting>&lt;security:global-method-security&gt;
+  &lt;security:protect-pointcut expression="execution(* eu.etaxonomy.cdm.api.service.UserService.changePasswordForUser(..))" access="ROLE_ADMINISTRATE"/&gt;
+&lt;/security:global-method-security&gt;</programlisting>
+    </section>
+  </section>
+</chapter>
