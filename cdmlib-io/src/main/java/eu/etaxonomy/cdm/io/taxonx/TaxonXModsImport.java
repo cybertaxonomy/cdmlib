@@ -17,19 +17,18 @@ import org.jdom.Element;
 import org.jdom.Namespace;
 import org.jdom.Text;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.TransactionStatus;
 
-import eu.etaxonomy.cdm.api.service.ICommonService;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.CdmIoBase;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.model.common.Marker;
+import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.reference.Generic;
 import eu.etaxonomy.cdm.model.reference.PublicationBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.reference.StrictReferenceBase;
-import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 
 /**
@@ -80,8 +79,15 @@ public class TaxonXModsImport extends CdmIoBase<TaxonXImportState> implements IC
 				Element elOriginInfo = elMods.getChild("originInfo", nsMods);
 				success &= makeOriginInfo(elOriginInfo, ref);
 				
+				//publish
+				if (state.getConfig().isPublishReferences()){
+					boolean publish = false;
+					ref.addMarker(Marker.NewInstance(MarkerType.IN_BIBLIOGRAPHY(), publish));
+				}
+				
 				//save
 				state.setModsReference(ref);
+				
 			}
 		}
 

@@ -32,7 +32,11 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 public class TaxonXImportConfigurator extends ImportConfiguratorBase<TaxonXImportState> implements IImportConfigurator {
 	private static final Logger logger = Logger.getLogger(TaxonXImportConfigurator.class);
 	
+	//if true the information in the mods part (taxonxHeader)
 	private boolean doMods = true;
+	
+	//if false references in this rdf file are not published in the bibliography list
+	private boolean isPublishReferences = true;
 
 
 	private boolean findTaxonByName = false;
@@ -164,6 +168,20 @@ public class TaxonXImportConfigurator extends ImportConfiguratorBase<TaxonXImpor
 	 */
 	public void setDoMods(boolean doMods) {
 		this.doMods = doMods;
+	}
+
+	/**
+	 * @return the isPublishReferences
+	 */
+	public boolean isPublishReferences() {
+		return isPublishReferences;
+	}
+
+	/**
+	 * @param isPublishReferences the isPublishReferences to set
+	 */
+	public void setPublishReferences(boolean isPublishReferences) {
+		this.isPublishReferences = isPublishReferences;
 	}
 	
 }
