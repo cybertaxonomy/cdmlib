@@ -42,14 +42,16 @@ public class SalvadorActivator {
 	//database validation status (create, update, validate ...)
 	static DbSchemaValidation hbm2dll = DbSchemaValidation.CREATE;
 	static final Source berlinModelSource = BerlinModelSources.El_Salvador_Local();
-	static final ICdmDataSource cdmDestination = CdmDestinations.localH2Salvador();
+//	static final Source berlinModelSource = BerlinModelDestinations.El_Salvador_Andreas();
+	static final ICdmDataSource cdmDestination = CdmDestinations.localH2();
+	static final UUID treeUuid = UUID.fromString("b010c84d-6049-45f4-9f13-c065101eaa26");
 	static final UUID secUuid = UUID.fromString("d03ef02a-f226-4cb1-bdb4-f6c154f08a34");
 	static final int sourceSecId = 7331;
 	
 	static final UUID featureTreeUuid = UUID.fromString("ae9615b8-bc60-4ed0-ad96-897f9226d568");
 	static final Object[] featureKeyList = new Integer[]{302, 303, 306, 307, 309, 310, 311, 312, 350, 1500, 1800, 1900, 1950, 1980, 2000, 10299}; 
 	static boolean isIgnore0AuthorTeam = true;  //special case for Salvador. 
-	static boolean doExport = true;
+	static boolean doExport = false;
 	static boolean useTaxonomicTree = true;
 	
 	//check - import
@@ -82,7 +84,7 @@ public class SalvadorActivator {
 	static final boolean doOccurences = false; //Occurrences do not exist in El_Salvador DB
 	
 	//etc.
-	static final boolean doMarker = false;
+	static final boolean doMarker = true;
 	static final boolean doUser = true;
 		
 
@@ -119,6 +121,7 @@ public class SalvadorActivator {
 		
 		BerlinModelImportConfigurator config = BerlinModelImportConfigurator.NewInstance(source,  destination);
 		
+		config.setTreeUuid(treeUuid);
 		config.setSecUuid(secUuid);
 		config.setSourceSecId(sourceSecId);
 		config.setNomenclaturalCode(nomenclaturalCode);

@@ -43,10 +43,11 @@ public class PalmaeActivator {
 	//database validation status (create, update, validate ...)
 	static DbSchemaValidation hbm2dll = DbSchemaValidation.CREATE;
 	static final String tcsSource = TcsSources.arecaceae_local();
-	static final ICdmDataSource cdmDestination = CdmDestinations.localH2Palmae();
+	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_edit_palmae_preview_A();
 
 	static final UUID featureTreeUuid = UUID.fromString("72ccce05-7cc8-4dab-8e47-bf3f5fd848a0");
 		
+	static final UUID treeUuid = UUID.fromString("1adb71d4-cce6-45e1-b578-e668778d9ec6");
 	static final UUID secUuid = UUID.fromString("5f32b8af-0c97-48ac-8d33-6099ed68c625");
 	static final String sourceSecId = "palm_pub_ed_999999";
 	static final boolean pubishReferencesInBibliography = false;
@@ -86,6 +87,7 @@ public class PalmaeActivator {
 		
 		TcsRdfImportConfigurator tcsImportConfigurator = TcsRdfImportConfigurator.NewInstance(source,  destination);
 		
+		tcsImportConfigurator.setTreeUuid(treeUuid);
 		tcsImportConfigurator.setSecUuid(secUuid);
 		tcsImportConfigurator.setSourceSecId(sourceSecId);
 		
@@ -211,7 +213,6 @@ public class PalmaeActivator {
 			System.out.println("Start importing taxonX ...");
 			PalmaeTaxonXImportActivator taxonXimporter = new PalmaeTaxonXImportActivator();
 			PalmaeTaxonXImportActivator.cdmDestination = cdmDestination;
-			PalmaeTaxonXImportActivator.secUuid = secUuid;
 			success &= taxonXimporter.runImport();
 			System.out.println("End importing taxonX ...");
 		}

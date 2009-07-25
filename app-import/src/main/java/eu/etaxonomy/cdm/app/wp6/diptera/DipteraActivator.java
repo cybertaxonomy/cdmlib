@@ -48,6 +48,7 @@ public class DipteraActivator {
 	static final Source berlinModelSource = BerlinModelSources.EDIT_Diptera();
 	static final ICdmDataSource cdmDestination = CdmDestinations.localH2Diptera();
 	static final UUID secUuid = UUID.fromString("06fd671f-1226-4e3b-beca-1959b3b32e20");
+	static final UUID treeUuid = UUID.fromString("1e3093f6-c761-4e96-8065-2c1334ddd0c1");
 	static final int sourceSecId = 1000000;
 	static final UUID featureTreeUuid = UUID.fromString("ae9615b8-bc60-4ed0-ad96-897f9226d568");
 	static final Object[] featureKeyList = new Integer[]{1,4,5,10,11,12,13,99}; 
@@ -122,7 +123,7 @@ public class DipteraActivator {
 		
 		BerlinModelImportConfigurator bmImportConfigurator = BerlinModelImportConfigurator.NewInstance(source,  destination);
 		
-		bmImportConfigurator.setSecUuid(secUuid);
+		bmImportConfigurator.setTreeUuid(treeUuid);
 		bmImportConfigurator.setSourceSecId(sourceSecId);
 		bmImportConfigurator.setNomenclaturalCode(nomenclaturalCode);
 

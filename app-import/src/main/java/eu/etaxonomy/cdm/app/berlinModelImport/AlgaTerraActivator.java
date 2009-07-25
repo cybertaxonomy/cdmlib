@@ -41,7 +41,7 @@ public class AlgaTerraActivator {
 	static DbSchemaValidation hbm2dll = DbSchemaValidation.CREATE;
 	static final Source berlinModelSource = BerlinModelSources.AlgaTerra();
 	static final ICdmDataSource cdmDestination = CdmDestinations.localH2();
-	static final UUID secUuid = UUID.fromString("d03ef02a-f226-4cb1-bdb4-f6c154f08a34");
+	static final UUID treeUuid = UUID.fromString("d03ef02a-f226-4cb1-bdb4-f6c154f08a34");
 	static final int sourceSecId = 7331;
 	
 	static final UUID featureTreeUuid = UUID.fromString("ae9615b8-bc60-4ed0-ad96-897f9226d568");
@@ -106,7 +106,7 @@ public class AlgaTerraActivator {
 		
 		BerlinModelImportConfigurator bmImportConfigurator = BerlinModelImportConfigurator.NewInstance(source,  destination);
 		
-		bmImportConfigurator.setSecUuid(secUuid);
+		bmImportConfigurator.setTreeUuid(treeUuid);
 		bmImportConfigurator.setSourceSecId(sourceSecId);
 		bmImportConfigurator.setNomenclaturalCode(nomenclaturalCode);
 

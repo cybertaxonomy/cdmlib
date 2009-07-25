@@ -36,7 +36,7 @@ public class PalmaeImageActivator  {
 	private static final ICdmDataSource cdmDestination = CdmDestinations.localH2();
 	
 	// set the webserver path to the images
-	private static final String urlString = "http://wp5.e-taxonomy.eu/media/palmae/images/";
+	private static final String urlString = "http://wp5.e-taxonomy.eu/media/palmae/photos/";
 	
 	static final UUID secUuid = UUID.fromString("5f32b8af-0c97-48ac-8d33-6099ed68c625");
 

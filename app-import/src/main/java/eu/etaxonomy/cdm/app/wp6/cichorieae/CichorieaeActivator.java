@@ -51,7 +51,7 @@ public class CichorieaeActivator {
 	static final Source berlinModelSource = BerlinModelSources.EDIT_CICHORIEAE();
 	static final ICdmDataSource cdmDestination = CdmDestinations.localH2Cichorieae();
 
-	static final UUID secUuid = UUID.fromString("6924c75d-e0d0-4a6d-afb7-3dd8c71195ca");
+	static final UUID treeUuid = UUID.fromString("e7c02b5f-70b1-4569-8f6c-9fa26e3c5395");
 	static final int sourceSecId = 7800000;
 	
 	static final UUID featureTreeUuid = UUID.fromString("ae9615b8-bc60-4ed0-ad96-897f9226d568");
@@ -140,7 +140,7 @@ public class CichorieaeActivator {
 		
 		BerlinModelImportConfigurator bmImportConfigurator = BerlinModelImportConfigurator.NewInstance(source,  destination);
 		
-		bmImportConfigurator.setSecUuid(secUuid);
+		bmImportConfigurator.setTreeUuid(treeUuid);
 		bmImportConfigurator.setSourceSecId(sourceSecId);
 		
 		bmImportConfigurator.setNomenclaturalCode(nomenclaturalCode);

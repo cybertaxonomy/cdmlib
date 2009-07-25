@@ -38,7 +38,7 @@ public class TcsXmlTestActivator {
 //	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_test_andreasM2();
 	static final ICdmDataSource cdmDestination = CdmDestinations.localH2();
 
-	static final UUID secUuid = UUID.fromString("00000000-0c97-48ac-8d33-6099ed68c625");
+	static final UUID treeUuid = UUID.fromString("00000000-0c97-48ac-8d33-6099ed68c625");
 	static final String sourceSecId = "XXX";
 	
 	//check - import
@@ -66,7 +66,7 @@ public class TcsXmlTestActivator {
 		
 		TcsXmlImportConfigurator tcsImportConfigurator = TcsXmlImportConfigurator.NewInstance(source,  destination);
 		
-		tcsImportConfigurator.setSecUuid(secUuid);
+		tcsImportConfigurator.setTreeUuid(treeUuid);
 		tcsImportConfigurator.setSourceSecId(sourceSecId);
 		
 		tcsImportConfigurator.setDoMetaData(doMetaData);

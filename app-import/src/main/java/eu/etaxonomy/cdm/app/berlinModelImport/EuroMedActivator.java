@@ -41,7 +41,7 @@ public class EuroMedActivator {
 	static DbSchemaValidation hbm2dll = DbSchemaValidation.CREATE;
 	static final Source berlinModelSource = BerlinModelSources.euroMed();
 	static final ICdmDataSource cdmDestination = CdmDestinations.localH2();
-	static final UUID secUuid = UUID.fromString("2ea816f8-20cf-4e8f-b52d-dc46d69f89e1");
+	static final UUID treeUuid = UUID.fromString("2ea816f8-20cf-4e8f-b52d-dc46d69f89e1");
 	static final int sourceSecId = 1000000;
 	
 	//check - import
@@ -99,7 +99,7 @@ public class EuroMedActivator {
 		
 		BerlinModelImportConfigurator bmImportConfigurator = BerlinModelImportConfigurator.NewInstance(source,  destination);
 		
-		bmImportConfigurator.setSecUuid(secUuid);
+		bmImportConfigurator.setTreeUuid(treeUuid);
 		bmImportConfigurator.setSourceSecId(sourceSecId);
 		bmImportConfigurator.setNomenclaturalCode(nomenclaturalCode);
 

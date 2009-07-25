@@ -41,7 +41,6 @@ public class CichorieaeImageActivator  {
 	public static void main (String[] cowabunga){
 		ImageImportConfigurator imageConfigurator = ImageImportConfigurator.NewInstance(
 				sourceFile, cdmDestination, CichorieaeImageImport.class);
-		imageConfigurator.setSecUuid(secUuid);
 		
 		CdmDefaultImport<IImportConfigurator> importer = new CdmDefaultImport<IImportConfigurator>();
 		importer.invoke(imageConfigurator);

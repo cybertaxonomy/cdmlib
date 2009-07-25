@@ -58,7 +58,7 @@ public class TaraxacumActivator {
 	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_import_cichorieae();
 
 	org.h2.jdbc.JdbcSQLException h;
-	static final UUID secUuid = UUID.fromString("ba7120ce-4fab-49dc-aaa4-f36276426aa8");
+	static final UUID treeUuid = UUID.fromString("ba7120ce-4fab-49dc-aaa4-f36276426aa8");
 	static final int sourceSecId = 7700000;
 	
 	static final UUID featureTreeUuid = UUID.fromString("ab007336-d853-4f2f-a490-7c8232eafe7b");
@@ -135,7 +135,7 @@ public class TaraxacumActivator {
 		
 		BerlinModelImportConfigurator bmImportConfigurator = BerlinModelImportConfigurator.NewInstance(source,  destination);
 		
-		bmImportConfigurator.setSecUuid(secUuid);
+//		bmImportConfigurator.setSecUuid(secUuid);
 		bmImportConfigurator.setSourceSecId(sourceSecId);
 		
 		bmImportConfigurator.setNomenclaturalCode(nomenclaturalCode);
