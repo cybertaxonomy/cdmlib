@@ -333,21 +333,22 @@ public class CdmDestinations {
 		return makeDestination(cdmServer, cdmDB, -1, cdmUserName, null);
 	}
 	
-	public static ICdmDataSource cdm_edit_palmae_177(){
+	public static ICdmDataSource cdm_edit_palmae_preview_B(){
 		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
-		String cdmServer = "87.106.88.177";
-		String cdmDB = "cdm_edit_palmae"; 
+		String cdmServer = "127.0.0.1";
+		String cdmDB = "cdm_edit_palmae_b"; 
 		String cdmUserName = "edit";
-		return makeDestination(cdmServer, cdmDB, 80, cdmUserName, null);
+		int port = 13306;
+		return makeDestination(cdmServer, cdmDB, port, cdmUserName, null);
 	}
-		
-	public static ICdmDataSource cdm_edit_editortest(){
+	public static ICdmDataSource cdm_edit_palmae_preview_A(){
 		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
-		String cdmServer = "87.106.88.177";
-		String cdmDB = "cdm_edit_editortest"; 
+		String cdmServer = "127.0.0.1";
+		String cdmDB = "cdm_edit_palmae_a"; 
 		String cdmUserName = "edit";
-		return makeDestination(cdmServer, cdmDB, 80, cdmUserName, null);
-	}
+		int port = 13306;
+		return makeDestination(cdmServer, cdmDB, port, cdmUserName, null);
+	}		
 	
 	public static ICdmDataSource cdm_v1_palmae(){
 		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
@@ -396,6 +397,15 @@ public class CdmDestinations {
 		String cdmUserName = "edit";
 		return makeDestination(cdmServer, cdmDB, -1, cdmUserName, null);
 	}
+	
+	public static ICdmDataSource cdm_salvador_production() {
+		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
+		String cdmServer = "192.168.2.10";
+		String cdmDB = "salvador_cdm"; 
+		String cdmUserName = "salvador";
+		return makeDestination(cdmServer, cdmDB, -1, cdmUserName, null);
+	}
+	
 	
 //	public static ICdmDataSource LAPTOP_HP(){
 //		DatabaseTypeEnum dbType = DatabaseTypeEnum.SqlServer2005;
