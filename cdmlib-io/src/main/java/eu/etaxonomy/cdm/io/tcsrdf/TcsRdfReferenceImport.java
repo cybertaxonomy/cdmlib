@@ -303,7 +303,7 @@ public class TcsRdfReferenceImport extends TcsRdfImportBase implements ICdmIO<Tc
 				checkAdditionalContents(elPublicationCitation, standardMappers, operationalMappers, unclearMappers);
 				
 				if (state.getConfig().isPublishReferences()){
-					ref.addMarker(Marker.NewInstance(MarkerType.PUBLISH(), false));
+					ref.addMarker(Marker.NewInstance(MarkerType.IN_BIBLIOGRAPHY(), false));
 				}
 				
 				//ImportHelper.setOriginalSource(nameBase, tcsConfig.getSourceReference(), nameId);
@@ -324,7 +324,6 @@ public class TcsRdfReferenceImport extends TcsRdfImportBase implements ICdmIO<Tc
 			sec.setUuid(config.getSecUuid());
 			logger.info("concept reference uuid changed to: " + config.getSecUuid());
 		}
-		
 		
 		//save and store in map
 		logger.info("Save nomenclatural references (" + nomRefCount + ")");
