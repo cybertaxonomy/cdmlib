@@ -35,7 +35,7 @@ public class PalmaeProtologueImportActivator {
 	static DbSchemaValidation hbm2dll = DbSchemaValidation.UPDATE;
 	
 	static final String protologueSource = "\\\\media\\EditWP6\\palmae\\protologe";
-	private static final String urlString = "http://wp5.e-taxonomy.eu/dataportal/cichorieae/media/palmae/protologe/";
+	private static final String urlString = "http://wp5.e-taxonomy.eu/media/palmae/protologe/";
 	
 	
 	//static File source  = TcsSources.taxonX_localDir();
