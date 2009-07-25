@@ -25,7 +25,6 @@ import eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbStringMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbTimePeriodMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.IdMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.MethodMapper;
-import eu.etaxonomy.cdm.io.common.IExportConfigurator;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator.DO_REFERENCES;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -35,6 +34,7 @@ import eu.etaxonomy.cdm.model.reference.InProceedings;
 import eu.etaxonomy.cdm.model.reference.PrintedUnitBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.reference.StrictReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Thesis;
 
 
 /**
@@ -61,7 +61,7 @@ public class BerlinModelReferenceExport extends BerlinModelExportBase<ReferenceB
 	@Override
 	protected boolean doCheck(BerlinModelExportState state){
 		boolean result = true;
-		logger.warn("Checking for Authors not yet implemented");
+		logger.warn("Checking for References not yet implemented");
 		//result &= checkArticlesWithoutJournal(bmiConfig);
 		//result &= checkPartOfJournal(bmiConfig);
 		
@@ -81,7 +81,12 @@ public class BerlinModelReferenceExport extends BerlinModelExportBase<ReferenceB
 		mapping.addMapper(MethodMapper.NewInstance("RefAuthorString", this));
 		
 		mapping.addMapper(DbStringMapper.NewInstance("title", "Title"));
-		mapping.addMapper(DbStringMapper.NewInstance("title", "NomTitleAbbrev"));
+//		mapping.addMapper(MethodMapper.NewInstance("Title", this));
+
+//		mapping.addMapper(DbStringMapper.NewInstance("title", "NomTitleAbbrev"));
+		mapping.addMapper(MethodMapper.NewInstance("NomTitleAbbrev", this));
+		
+		
 		
 		mapping.addMapper(DbStringMapper.NewFacultativeInstance("edition", "Edition"));
 		mapping.addMapper(DbStringMapper.NewFacultativeInstance("volume", "Volume"));
@@ -89,23 +94,20 @@ public class BerlinModelReferenceExport extends BerlinModelExportBase<ReferenceB
 		mapping.addMapper(DbStringMapper.NewFacultativeInstance("pages", "PageString"));
 		mapping.addMapper(DbStringMapper.NewFacultativeInstance("isbn", "ISBN"));
 		mapping.addMapper(DbStringMapper.NewFacultativeInstance("issn", "ISSN"));
+		mapping.addMapper(DbStringMapper.NewFacultativeInstance("publisher", "Publisher"));
+		mapping.addMapper(DbStringMapper.NewFacultativeInstance("placePublished", "PublicationTown"));
 		mapping.addMapper(DbTimePeriodMapper.NewInstance("datePublished", "RefYear"));
+		mapping.addMapper(MethodMapper.NewInstance("ThesisFlag", this));
 		
 		mapping.addMapper(CreatedAndNotesMapper.NewInstance());
           
 //		        ,[Series] ??
-//		        ,[DateString]
 //		        ,[URL]
 //		        ,[ExportDate]
-//		        ,[PublicationTown]
-//		        ,[Publisher]
-//		        ,[ThesisFlag]
-//		        ,[RefDepositedAt]
 //		        ,[InformalRefCategory]
 //		        ,[IsPaper]
 //		        ,[RefSourceFk]
-//		        ,[IdInSource]
-//		        ,[NomStandard]
+//		        ,[IdInSource] 
 		
 		       
 		return mapping;
@@ -246,6 +248,28 @@ public class BerlinModelReferenceExport extends BerlinModelExportBase<ReferenceB
 			return null;
 		}
 	}
+
+//	//called by MethodMapper
+//	@SuppressWarnings("unused")
+//	private static String getTtile(StrictReferenceBase<?> ref){
+////		if (ref.isProtectedTitleCache()){
+////			return ref.getTitleCache();
+////		}else{
+////			return null;
+////		}
+//	}
+
+	//called by MethodMapper
+	@SuppressWarnings("unused")
+	private static String getNomRefTitle(StrictReferenceBase<?> ref){
+		if (ref.isNomenclaturallyRelevant()){
+			return ref.getTitle();
+		}else{
+			return null;
+		}
+	}
+
+	
 	
 	//called by MethodMapper
 	@SuppressWarnings("unused")
@@ -267,7 +291,16 @@ public class BerlinModelReferenceExport extends BerlinModelExportBase<ReferenceB
 			return false;
 		}
 	}
-	
+
+	//called by MethodMapper
+	@SuppressWarnings("unused")
+	private static Boolean getThesisFlag(StrictReferenceBase<?> ref){
+		if (ref.isInstanceOf(Thesis.class)){
+			return true;
+		}else{
+			return false;
+		}
+	}
 	
 
 	/* (non-Javadoc)
