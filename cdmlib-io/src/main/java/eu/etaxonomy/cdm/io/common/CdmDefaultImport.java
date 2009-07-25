@@ -12,9 +12,7 @@ package eu.etaxonomy.cdm.io.common;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
-import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
-import eu.etaxonomy.cdm.model.common.init.TermNotFoundException;
 
 /**
  * @author a.mueller
