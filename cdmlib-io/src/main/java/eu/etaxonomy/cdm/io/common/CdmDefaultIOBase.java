@@ -54,10 +54,10 @@ public class CdmDefaultIOBase<T extends IIoConfigurator>  {
 			}
 			return true;
 		} catch (DataSourceNotFoundException  e) {
-			logger.error("could not connect to source CDM database");
+			logger.error("could not connect to CDM database");
 			return false;
 		}catch (TermNotFoundException e) {
-			logger.error("could not find needed term in destination datasource");
+			logger.error("could not find required term in CDM database");
 			return false;
 		}
 	}
