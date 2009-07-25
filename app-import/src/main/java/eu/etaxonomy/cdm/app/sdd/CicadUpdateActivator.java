@@ -9,8 +9,6 @@
 
 package eu.etaxonomy.cdm.app.sdd;
 
-import java.util.UUID;
-
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.app.common.CdmDestinations;
@@ -27,6 +25,7 @@ import eu.etaxonomy.cdm.io.sdd.SDDImportConfigurator;
  * @version 1.0
  */
 public class CicadUpdateActivator {
+	@SuppressWarnings("unused")
 	private static Logger logger = Logger.getLogger(CicadUpdateActivator.class);
 
 	//database validation status (create, update, validate ...)
@@ -36,7 +35,6 @@ public class CicadUpdateActivator {
 
 	//	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_portal_test_localhost();
 
-	static final UUID secUuid = UUID.fromString("e3eba460-5055-4fb6-a6a3-89ddc7077002");
 	static final String sourceSecId = "Cicad_pub_ed_999999";
 
 	//check - import
@@ -68,7 +66,6 @@ public class CicadUpdateActivator {
 
 		SDDImportConfigurator sddImportConfigurator = SDDImportConfigurator.NewInstance(source,  destination);
 
-		sddImportConfigurator.setSecUuid(secUuid);
 		sddImportConfigurator.setSourceSecId(sourceSecId);
 
 		sddImportConfigurator.setDoAuthors(doAuthors);

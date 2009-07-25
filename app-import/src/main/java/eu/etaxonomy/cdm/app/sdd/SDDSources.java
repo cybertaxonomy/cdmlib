@@ -10,7 +10,6 @@
 package eu.etaxonomy.cdm.app.sdd;
 
 import java.net.URL;
-import java.util.Properties;
 
 import org.apache.log4j.Logger;
 
@@ -20,6 +19,7 @@ import org.apache.log4j.Logger;
  * @version 1.0
  */
 public class SDDSources {
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(SDDSources.class);
 	
 	public static String viola_local(){

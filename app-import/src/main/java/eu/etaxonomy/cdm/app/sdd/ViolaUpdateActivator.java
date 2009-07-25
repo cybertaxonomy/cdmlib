@@ -9,8 +9,6 @@
 
 package eu.etaxonomy.cdm.app.sdd;
 
-import java.util.UUID;
-
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.app.common.CdmDestinations;
@@ -27,6 +25,7 @@ import eu.etaxonomy.cdm.io.sdd.SDDImportConfigurator;
  * @version 1.0
  */
 public class ViolaUpdateActivator {
+	@SuppressWarnings("unused")
 	private static Logger logger = Logger.getLogger(ViolaUpdateActivator.class);
 
 	//database validation status (create, update, validate ...)
@@ -38,7 +37,6 @@ public class ViolaUpdateActivator {
 
 	//	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_portal_test_localhost();
 
-	static final UUID secUuid = UUID.fromString("fc98e890-e487-4664-ac9b-8a60fda6244c");
 	static final String sourceSecId = "viola_pub_ed_999999";
 
 	//check - import
@@ -70,7 +68,6 @@ public class ViolaUpdateActivator {
 
 		SDDImportConfigurator sddImportConfigurator = SDDImportConfigurator.NewInstance(source,  destination);
 
-		sddImportConfigurator.setSecUuid(secUuid);
 		sddImportConfigurator.setSourceSecId(sourceSecId);
 
 		sddImportConfigurator.setDoAuthors(doAuthors);
