@@ -55,6 +55,7 @@ import eu.etaxonomy.cdm.persistence.dao.name.IHomotypicalGroupDao;
 import eu.etaxonomy.cdm.persistence.dao.name.INomenclaturalStatusDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITypeDesignationDao;
+import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 
@@ -88,6 +89,11 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
 	
 	public List getNamesByName(String name){
 		return super.findCdmObjectsByTitle(name);
+	}
+	
+	public List<NonViralName> getNamesByNameCache(String nameCache){
+		List result = dao.findByName(nameCache, MatchMode.EXACT, null, null, null, null);
+		return result;
 	}
 	
 	public List getNamesByName(String name, CdmBase sessionObject){

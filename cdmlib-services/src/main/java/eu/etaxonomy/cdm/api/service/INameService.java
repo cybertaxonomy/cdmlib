@@ -31,6 +31,7 @@ import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
+import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
@@ -84,6 +85,13 @@ public interface INameService extends IIdentifiableEntityService<TaxonNameBase> 
 	 * @return
 	 */
 	public List<TaxonNameBase> getNamesByName(String name);
+	
+	/**
+	 * Returns all NonViralNames with a name cache that matches the given string
+	 * @param name
+	 * @return
+	 */
+	public List<NonViralName> getNamesByNameCache(String nameCache);
 
 	/**
 	 * @param name
