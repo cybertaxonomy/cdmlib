@@ -40,8 +40,6 @@ public class PalmaeTaxonXImportActivator {
 	static File source  = new File("target/classes/taxonX");
 	static ICdmDataSource cdmDestination = CdmDestinations.localH2Palmae();
 	
-	static UUID secUuid = UUID.fromString("5f32b8af-0c97-48ac-8d33-6099ed68c625");
-	
 	//check - import
 	static CHECK check = CHECK.IMPORT_WITHOUT_CHECK;
 	
@@ -58,8 +56,6 @@ public class PalmaeTaxonXImportActivator {
 		TaxonXImportConfigurator taxonXImportConfigurator = TaxonXImportConfigurator.NewInstance("", destination);
 		// invoke import
 		CdmDefaultImport<IImportConfigurator> cdmImport = new CdmDefaultImport<IImportConfigurator>();
-		
-		taxonXImportConfigurator.setSecUuid(secUuid);
 		
 		taxonXImportConfigurator.setDoFacts(doDescriptions);
 		taxonXImportConfigurator.setDoTypes(doNomenclature);
