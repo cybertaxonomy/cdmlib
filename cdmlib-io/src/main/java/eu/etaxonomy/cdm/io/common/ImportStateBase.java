@@ -92,4 +92,7 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase> ext
 		}
 	}
 	
+	public int countTrees(){
+		return treeMap.size();
+	}
 }
