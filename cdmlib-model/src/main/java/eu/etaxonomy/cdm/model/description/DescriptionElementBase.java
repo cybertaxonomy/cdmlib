@@ -129,6 +129,7 @@ public abstract class DescriptionElementBase extends ReferencedEntityBase {
 	@IndexedEmbedded
     private DescriptionBase inDescription;
 	
+	//TODO can this be handled together with ReferencedEntityBase.originalNameString??
 	@XmlElement(name = "nameUsedInReference")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
