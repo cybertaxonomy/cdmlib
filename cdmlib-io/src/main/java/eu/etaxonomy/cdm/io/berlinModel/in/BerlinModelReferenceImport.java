@@ -329,7 +329,7 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 				
 					success &= makeSingleReferenceRecord(rs, state, referenceStore, nomRefStore, refCounter);
 				} // end resultSet
-				
+								
 				//for the concept reference a fixed uuid may be needed -> change uuid
 				ReferenceBase<?> sec = referenceStore.get(config.getSourceSecId());
 				if (sec == null){
@@ -463,7 +463,7 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 		
 		boolean hasNomRef = false;
 		//is Nomenclatural Reference
-		if ( (! CdmUtils.Nz(nomRefCache).equals("") && isPreliminary) || (! CdmUtils.Nz(nomTitleAbbrev).equals("") && ! isPreliminary) ){
+		if ( (CdmUtils.isNotEmpty(nomRefCache) && isPreliminary) || (CdmUtils.isNotEmpty(nomTitleAbbrev) && ! isPreliminary) ){
 			referenceBase.setTitle(nomTitleAbbrev);
 			TeamOrPersonBase<?> author = getAuthorTeam(refAuthorString , nomAuthor, true);
 			referenceBase.setAuthorTeam(author);
@@ -484,7 +484,9 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 			refCounter.nomRefCount++;
 		}
 		//is bibliographical Reference
-		if ((! CdmUtils.Nz(refCache).equals("") && isPreliminary) || (! CdmUtils.Nz(title).equals("") && ! isPreliminary) || hasNomRef == false){
+		if ((CdmUtils.isNotEmpty(refCache) && isPreliminary && ! refCache.equalsIgnoreCase(nomRefCache)) 
+				|| (CdmUtils.isNotEmpty(title) && ! isPreliminary && ! title.equalsIgnoreCase(nomTitleAbbrev)) 
+				|| hasNomRef == false){
 			if (hasNomRef){
 				referenceBase = (StrictReferenceBase)referenceBase.clone();
 			}

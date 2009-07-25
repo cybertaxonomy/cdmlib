@@ -30,6 +30,12 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
  * @created 20.06.2008
  * @version 1.0
  */
+/**
+ * @author a.mueller
+ * @created 25.07.2009
+ * @version 1.0
+ * @param <STATE>
+ */
 @Component
 public abstract class ImportConfiguratorBase<STATE extends ImportStateBase> extends IoConfiguratorBase implements IImportConfigurator{
 	private static final Logger logger = Logger.getLogger(ImportConfiguratorBase.class);
@@ -52,6 +58,7 @@ public abstract class ImportConfiguratorBase<STATE extends ImportStateBase> exte
 	private MapWrapper<Feature> featureMap = new MapWrapper<Feature>(null);
 	
 	//uuid of concept reference
+	private UUID  treeUuid = UUID.randomUUID();
 	private UUID  secUuid = UUID.randomUUID();
 	private Object sourceSecId = -1;
 	
@@ -293,17 +300,24 @@ public abstract class ImportConfiguratorBase<STATE extends ImportStateBase> exte
 	}
 
 
-	/**
-	 * @return the secUuid
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#getTreeUuid()
+	 */
+	public UUID getTreeUuid() {
+		return treeUuid;
+	}
+
+
+	public void setTreeUuid(UUID treeUuid) {
+		this.treeUuid = treeUuid;
+	}
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#getSecUuid()
 	 */
 	public UUID getSecUuid() {
 		return secUuid;
 	}
-
-
-	/**
-	 * @param secUuid the secUuid to set
-	 */
 	public void setSecUuid(UUID secUuid) {
 		this.secUuid = secUuid;
 	}

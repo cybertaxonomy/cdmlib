@@ -32,6 +32,12 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		TaxonomicTree tree = TaxonomicTree.NewInstance(treeName);
 		tree.setReference(ref);
 		
+
+		// use defined uuid for first tree
+		CONFIG config = (CONFIG)state.getConfig();
+		if (state.countTrees() < 1 ){
+			tree.setUuid(config.getTreeUuid());
+		}
 		getTaxonService().saveTaxonomicTree(tree);
 		state.putTree(ref, tree);
 		return tree;
