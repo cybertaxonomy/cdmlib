@@ -109,21 +109,24 @@ public class BerlinModelTaxonNameRelationImport extends BerlinModelImportBase {
 				int relNameId = rs.getInt("RelNameId");
 				int name1Id = rs.getInt("name1Id");
 				int name2Id = rs.getInt("name2Id");
-				int relRefFk = rs.getInt("refFk");
+				Object relRefFk = rs.getObject("refFk");
 				String details = rs.getString("details");
 				int relQualifierFk = rs.getInt("relNameQualifierFk");
 				
 				TaxonNameBase nameFrom = taxonNameMap.get(name1Id);
 				TaxonNameBase nameTo = taxonNameMap.get(name2Id);
 				
-				ReferenceBase citation = nomRefDetailMap.get(relRefFk);
-				if (citation == null){
-					citation = referenceMap.get(relRefFk);
-				}
-				if (citation == null){
-					citation = nomRefMap.get(relRefFk);
-				}
 				
+				ReferenceBase<?> citation = null;
+				if (relRefFk != null){
+					nomRefDetailMap.get(relRefFk);
+					if (citation == null){
+						citation = referenceMap.get(relRefFk);
+					}
+					if (citation == null){
+						citation = nomRefMap.get(relRefFk);
+					}
+				}
 				//TODO (preliminaryFlag = true testen
 				String microcitation = details;
 				String rule = null;  

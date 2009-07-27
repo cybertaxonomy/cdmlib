@@ -68,6 +68,8 @@ public class BerlinModelTypesImport extends BerlinModelImportBase /*implements I
 		
 		MapWrapper<TaxonNameBase> taxonNameMap = (MapWrapper<TaxonNameBase>)state.getStore(ICdmIO.TAXONNAME_STORE);
 		MapWrapper<ReferenceBase> referenceMap = (MapWrapper<ReferenceBase>)state.getStore(ICdmIO.REFERENCE_STORE);
+		MapWrapper<ReferenceBase> nomRefMap = (MapWrapper<ReferenceBase>)state.getStore(ICdmIO.NOMREF_STORE);
+		MapWrapper<ReferenceBase> nomRefDetailMap = (MapWrapper<ReferenceBase>)state.getStore(ICdmIO.NOMREF_DETAIL_STORE);
 		
 		boolean result = true;
 		Set<TaxonNameBase> taxonNameStore = new HashSet<TaxonNameBase>();
@@ -96,7 +98,7 @@ public class BerlinModelTypesImport extends BerlinModelImportBase /*implements I
 				int typeDesignationId = rs.getInt("typeDesignationId");
 				int nameId = rs.getInt("nameFk");
 				int typeStatusFk = rs.getInt("typeStatusFk");
-				int refFk = rs.getInt("refFk");
+				Object refFk = rs.getObject("refFk");
 				String refDetail = rs.getString("refDetail");
 				String status = rs.getString("Status");
 				String typePhrase = rs.getString("typePhrase");
@@ -116,7 +118,16 @@ public class BerlinModelTypesImport extends BerlinModelImportBase /*implements I
 				if (taxonNameBase != null){
 					try{
 						SpecimenTypeDesignationStatus typeDesignationStatus = BerlinModelTransformer.typeStatusId2TypeStatus(typeStatusFk);
-						ReferenceBase citation = referenceMap.get(refFk);
+						ReferenceBase<?> citation = null;
+						if (refFk != null){
+							nomRefDetailMap.get(refFk);
+							if (citation == null){
+								citation = referenceMap.get(refFk);
+							}
+							if (citation == null){
+								citation = nomRefMap.get(refFk);
+							}
+						}
 						
 						Specimen specimen = Specimen.NewInstance();
 						specimen.setTitleCache(typePhrase);
