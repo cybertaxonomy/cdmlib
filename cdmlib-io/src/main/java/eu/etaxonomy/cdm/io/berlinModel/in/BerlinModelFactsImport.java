@@ -21,7 +21,6 @@ import org.springframework.stereotype.Component;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
-import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.model.common.Annotation;
@@ -165,7 +164,8 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
                       	" WHERE (1=1)" + 
                         " ORDER By Sequence";
 			ResultSet rs = source.getResultSet(strQuery) ;
-
+			ReferenceBase<?> sourceRef = state.getConfig().getSourceReference();
+			
 			int i = 0;
 			//for each fact
 			while (rs.next()){
@@ -207,6 +207,7 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 							taxonDescription = descriptionSet.iterator().next(); 
 						}else{
 							taxonDescription = TaxonDescription.NewInstance();
+							taxonDescription.setTitleCache(sourceRef == null ? null:sourceRef.getTitleCache());
 							taxon.addDescription(taxonDescription);
 						}
 						
