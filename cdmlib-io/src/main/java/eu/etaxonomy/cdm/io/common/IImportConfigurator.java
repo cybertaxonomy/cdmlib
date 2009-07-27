@@ -159,6 +159,16 @@ public interface IImportConfigurator extends IIoConfigurator {
 	public void setDbSchemaValidation(
 			DbSchemaValidation dbSchemaValidation);
 
+	/**
+	 * The reference that represents the source. E.g. if the import source is a database
+	 * the returned reference should be of type eu.etaxonomy.cdm.model.reference.Database and 
+	 * should represent the according database.
+	 * If the import comes from a file (e.g. XML) the returned value should best represent the 
+	 * source of this file (e.g. if the source of an XML file is a certain database this database
+	 * should be mentioned as the source. Otherwise a eu.etaxonomy.cdm.model.reference.Generic 
+	 * reference with the name of the XML file should be returned value
+	 * @return
+	 */
 	public ReferenceBase getSourceReference();
 
 	
