@@ -9,6 +9,7 @@
 
 package eu.etaxonomy.cdm.app.wp6.diptera;
 
+import java.lang.reflect.Method;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
@@ -17,9 +18,12 @@ import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.app.berlinModelImport.BerlinModelSources;
 import eu.etaxonomy.cdm.app.berlinModelImport.TreeCreator;
 import eu.etaxonomy.cdm.app.common.CdmDestinations;
+import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.common.DoubleResult;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportConfigurator;
+import eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportState;
 import eu.etaxonomy.cdm.io.common.CdmDefaultImport;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator.CHECK;
@@ -28,7 +32,9 @@ import eu.etaxonomy.cdm.io.common.IImportConfigurator.EDITOR;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.FeatureNode;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
+import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
 
 /**
@@ -41,7 +47,6 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
  *
  */
 public class DipteraActivator {
-	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DipteraActivator.class);
 
 	//database validation status (create, update, validate ...)
@@ -83,7 +88,7 @@ public class DipteraActivator {
 	static final boolean doTaxa = true;
 	static final boolean doRelTaxa = true;
 	static final boolean doFacts = true;
-	static final boolean doOccurences = true;
+	static final boolean doOccurences = false; //There are no occurrence data in diptera
 	
 	//etc.
 	static final boolean doMarker = true;
@@ -147,6 +152,13 @@ public class DipteraActivator {
 		bmImportConfigurator.setDoMarker(doMarker);
 		bmImportConfigurator.setDoUser(doUser);
 		bmImportConfigurator.setEditor(editor);
+		try {
+			Method nameTypeDesignationStatusMethod = DipteraActivator.class.getDeclaredMethod("nameTypeDesignationStatueMethod", String.class);
+			bmImportConfigurator.setNameTypeDesignationStatusMethod(nameTypeDesignationStatusMethod);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return;
+		}
 		
 		bmImportConfigurator.setDbSchemaValidation(hbm2dll);
 
@@ -178,4 +190,27 @@ public class DipteraActivator {
 		System.out.println("End import from BerlinModel ("+ source.getDatabase() + ")...");
 	}
 
+	private static NameTypeDesignationStatus nameTypeDesignationStatueMethod(String note){
+		if (CdmUtils.isEmpty(note)){
+			return null;
+		}
+		note = note.trim();
+		if (note.equalsIgnoreCase("aut.") || note.equalsIgnoreCase("automatic")){
+			return NameTypeDesignationStatus.AUTOMATIC();
+		}else if (note.equalsIgnoreCase("subs. mon.") ){
+			return NameTypeDesignationStatus.SUBSEQUENT_MONOTYPY();
+		}else if (note.startsWith("mon.") ){
+			return NameTypeDesignationStatus.MONOTYPY();
+		}else if (note.startsWith("orig. des") ){
+			return NameTypeDesignationStatus.ORIGINAL_DESIGNATION();
+		}else if (note.startsWith("des") ){
+			return NameTypeDesignationStatus.SUBSEQUENT_DESIGNATION();
+		}else{
+			logger.warn("NameTypeDesignationStatus could not be defined for: " + note);
+			return null;
+		}
+		
+		
+	}
+	
 }
