@@ -24,6 +24,7 @@ import eu.etaxonomy.cdm.io.common.CdmDefaultImport;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator.CHECK;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator.DO_REFERENCES;
+import eu.etaxonomy.cdm.io.common.IImportConfigurator.EDITOR;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.FeatureNode;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
@@ -54,7 +55,8 @@ public class DipteraActivator {
 	static final Object[] featureKeyList = new Integer[]{1,4,5,10,11,12,13,99}; 
 	
 	static boolean useTaxonomicTree = true;
-	
+	//editor - import
+	static final EDITOR editor = EDITOR.EDITOR_AS_EDITOR;
 	//check - import
 	static final CHECK check = CHECK.CHECK_AND_IMPORT;
 
@@ -144,6 +146,7 @@ public class DipteraActivator {
 		
 		bmImportConfigurator.setDoMarker(doMarker);
 		bmImportConfigurator.setDoUser(doUser);
+		bmImportConfigurator.setEditor(editor);
 		
 		bmImportConfigurator.setDbSchemaValidation(hbm2dll);
 
