@@ -14,10 +14,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.impl.SessionFactoryImpl;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.agent.Address;
@@ -175,6 +178,7 @@ import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
 
 @Repository
 public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdmGenericDao{
+	private static final Logger logger = Logger.getLogger(CdmGenericDaoImpl.class);
 
 	public CdmGenericDaoImpl() {
 		super(CdmBase.class);
@@ -208,171 +212,33 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 	 * @see eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao#getAllCdmClasses(boolean)
 	 */
 	public Set<Class<? extends CdmBase>> getAllCdmClasses(boolean includeAbstractClasses){
-		
-		Class[] result2 = {
-				Address.class,
-				AgentBase.class,
-				Contact.class, 
-				Institution.class, 
-				InstitutionalMembership.class, 
-				InstitutionType.class, 
-				Person.class, 
-				Team.class, 
-				TeamOrPersonBase.class, 
-				Annotation.class, 
-				AnnotationType.class, 
-				Credit.class,
-				DefinedTermBase.class, 
-				Extension.class, 
-				ExtensionType.class, 
-				Figure.class, 
-				GrantedAuthorityImpl.class, 
-				Group.class, 
-				Keyword.class, 
-				Language.class, 
-				LanguageString.class, 
-				LSID.class, 
-				LSIDAuthority.class, 
-				Marker.class, 
-				MarkerType.class, 
-				OrderedTermBase.class, 
-				OrderedTermVocabulary.class, 
-				OriginalSource.class, 
-				RelationshipTermBase.class, 
-				Representation.class, 
-				TermVocabulary.class, 
-				User.class, 
-				
-				AbsenceTerm.class, 
-				CategoricalData.class, 
-				CommonTaxonName.class, 
-				DescriptionBase.class, 
-				DescriptionElementBase.class, 
-				Distribution.class, 
-				Feature.class, 
-				FeatureNode.class, 
-				FeatureTree.class, 
-				IdentificationKey.class, 
-				IndividualsAssociation.class, 
-				MeasurementUnit.class, 
-				Modifier.class, 
-				PresenceAbsenceTermBase.class, 
-				PresenceTerm.class, 
-				QuantitativeData.class, 
-				Scope.class, 
-				Sex.class, 
-				SpecimenDescription.class, 
-				Stage.class, 
-				State.class, 
-				StateData.class, 
-				StatisticalMeasure.class, 
-				StatisticalMeasurementValue.class, 
-				TaxonDescription.class, 
-				TaxonInteraction.class, 
-				TaxonNameDescription.class, 
-				TextData.class, 
-				TextFormat.class, 
-				Continent.class, 
-				NamedArea.class, 
-				NamedAreaLevel.class, 
-				NamedAreaType.class, 
-				ReferenceSystem.class, 
-				Point.class, 
-				TdwgArea.class, 
-				WaterbodyOrCountry.class, 
-				AudioFile.class, 
-				ImageFile.class, 
-				Media.class, 
-				MediaRepresentation.class, 
-				MediaRepresentationPart.class, 
-				MovieFile.class, 
-				ReferencedMedia.class, 
-				Rights.class, 
-				RightsTerm.class, 
-				DnaSample.class, 
-				GenBankAccession.class, 
-				Locus.class, 
-				PhylogeneticTree.class, 
-				Sequence.class, 
-				BacterialName.class, 
-				BotanicalName.class, 
-				CultivarPlantName.class, 
-				HomotypicalGroup.class, 
-				HybridRelationship.class, 
-				HybridRelationshipType.class, 
-				NameRelationship.class, 
-				NameRelationshipType.class, 
-				NameTypeDesignation.class, 
-				NameTypeDesignationStatus.class, 
-				NomenclaturalCode.class, 
-				NomenclaturalStatus.class, 
-				NomenclaturalStatusType.class, 
-				NonViralName.class, 
-				Rank.class, 
-				SpecimenTypeDesignation.class, 
-				SpecimenTypeDesignationStatus.class, 
-				TaxonNameBase.class, 
-				TypeDesignationBase.class, 
-				ViralName.class, 
-				ZoologicalName.class, 
-				Collection.class, 
-				DerivationEvent.class, 
-				DerivationEventType.class, 
-				DerivedUnit.class, 
-				DerivedUnitBase.class, 
-				DeterminationEvent.class, 
-				DeterminationModifier.class, 
-				FieldObservation.class, 
-				Fossil.class, 
-				GatheringEvent.class, 
-				LivingBeing.class, 
-				Observation.class, 
-				PreservationMethod.class, 
-				Specimen.class, 
-				SpecimenOrObservationBase.class, 
-				Article.class, 
-				BibtexEntryType.class, 
-				BibtexReference.class, 
-				Book.class, 
-				BookSection.class, 
-				CdDvd.class, 
-				Database.class, 
-				Generic.class, 
-				InProceedings.class, 
-				Journal.class, 
-				Map.class, 
-				Patent.class, 
-				PersonalCommunication.class, 
-				PrintedUnitBase.class, 
-				PrintSeries.class, 
-				Proceedings.class, 
-				ReferenceBase.class, 
-				Publisher.class, 
-				Report.class, 
-				SectionBase.class, 
-				StrictReferenceBase.class, 
-				Thesis.class, 
-				WebPage.class, 
-				Synonym.class, 
-				SynonymRelationship.class, 
-				SynonymRelationshipType.class, 
-				Taxon.class, 
-				TaxonBase.class, 
-				TaxonNode.class, 
-				TaxonomicTree.class, 
-				TaxonRelationship.class, 
-				TaxonRelationshipType.class 
-		}	;	
-		
 		Set<Class<? extends CdmBase>> result = new HashSet<Class<? extends CdmBase>>();
-		for (Class clazz : result2){
-			boolean isAbstractClass = Modifier.isAbstract(clazz.getModifiers());
-			if (! isAbstractClass || includeAbstractClasses){
-				result.add(clazz);
+		
+		SessionFactory sessionFactory = getSession().getSessionFactory();
+		java.util.Map allClassMetadata = sessionFactory.getAllClassMetadata();
+		java.util.Collection keys = allClassMetadata.keySet();
+		for (Object oKey : keys){
+			if (oKey instanceof String){
+				String strKey = (String)oKey;
+				if (! strKey.endsWith("_AUD")){
+					try {
+						Class clazz = Class.forName(strKey);
+						boolean isAbstractClass = Modifier.isAbstract(clazz.getModifiers());
+						if (! isAbstractClass || includeAbstractClasses){
+							result.add(clazz);
+						}
+					} catch (ClassNotFoundException e) {
+						logger.warn("Class not found: " + strKey);
+					}
+				}
+			}else{
+				logger.warn("key is not of type String: " +  oKey);
 			}
 		}
 		return result;
 	}
+	
+	
 	
 
 	public List getHqlResult(String hqlQuery){
