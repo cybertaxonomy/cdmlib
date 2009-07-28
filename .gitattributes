@@ -1732,6 +1732,7 @@ cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/common/CdmEntityDaoBaseTest.testUpdate-result.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/common/CdmEntityDaoBaseTest.testUpdateWithAuthentication-result.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/common/CdmEntityDaoBaseTest.xml -text
+cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/common/CdmGenericDaoImplTest.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/common/DefinedTermDaoImplTest.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/common/IdentifiableDaoBaseTest.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/common/TermVocabularyDaoImplTest.xml -text

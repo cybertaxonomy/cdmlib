@@ -9,11 +9,16 @@
 
 package eu.etaxonomy.cdm.persistence.dao.hibernate.common;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
@@ -21,165 +26,45 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.impl.SessionFactoryImpl;
+import org.hibernate.metadata.ClassMetadata;
+import org.hibernate.type.AnyType;
+import org.hibernate.type.BooleanType;
+import org.hibernate.type.CollectionType;
+import org.hibernate.type.ComponentType;
+import org.hibernate.type.DoubleType;
+import org.hibernate.type.EntityType;
+import org.hibernate.type.FloatType;
+import org.hibernate.type.IntegerType;
+import org.hibernate.type.LongType;
+import org.hibernate.type.SerializableType;
+import org.hibernate.type.StringClobType;
+import org.hibernate.type.StringType;
+import org.hibernate.type.Type;
+import org.joda.time.contrib.hibernate.PersistentDateTime;
 import org.springframework.stereotype.Repository;
 
-import eu.etaxonomy.cdm.model.agent.Address;
-import eu.etaxonomy.cdm.model.agent.AgentBase;
-import eu.etaxonomy.cdm.model.agent.Contact;
-import eu.etaxonomy.cdm.model.agent.Institution;
-import eu.etaxonomy.cdm.model.agent.InstitutionType;
-import eu.etaxonomy.cdm.model.agent.InstitutionalMembership;
-import eu.etaxonomy.cdm.model.agent.Person;
-import eu.etaxonomy.cdm.model.agent.Team;
-import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
-import eu.etaxonomy.cdm.model.common.Annotation;
-import eu.etaxonomy.cdm.model.common.AnnotationType;
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.Credit;
-import eu.etaxonomy.cdm.model.common.DefinedTermBase;
-import eu.etaxonomy.cdm.model.common.Extension;
-import eu.etaxonomy.cdm.model.common.ExtensionType;
-import eu.etaxonomy.cdm.model.common.Figure;
-import eu.etaxonomy.cdm.model.common.GrantedAuthorityImpl;
-import eu.etaxonomy.cdm.model.common.Group;
-import eu.etaxonomy.cdm.model.common.Keyword;
-import eu.etaxonomy.cdm.model.common.LSID;
-import eu.etaxonomy.cdm.model.common.LSIDAuthority;
-import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.LanguageString;
-import eu.etaxonomy.cdm.model.common.Marker;
-import eu.etaxonomy.cdm.model.common.MarkerType;
-import eu.etaxonomy.cdm.model.common.OrderedTermBase;
-import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
-import eu.etaxonomy.cdm.model.common.OriginalSource;
-import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
-import eu.etaxonomy.cdm.model.common.Representation;
-import eu.etaxonomy.cdm.model.common.TermVocabulary;
-import eu.etaxonomy.cdm.model.common.User;
-import eu.etaxonomy.cdm.model.description.AbsenceTerm;
-import eu.etaxonomy.cdm.model.description.CategoricalData;
-import eu.etaxonomy.cdm.model.description.CommonTaxonName;
-import eu.etaxonomy.cdm.model.description.DescriptionBase;
-import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
-import eu.etaxonomy.cdm.model.description.Distribution;
-import eu.etaxonomy.cdm.model.description.Feature;
-import eu.etaxonomy.cdm.model.description.FeatureNode;
-import eu.etaxonomy.cdm.model.description.FeatureTree;
-import eu.etaxonomy.cdm.model.description.IdentificationKey;
-import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
-import eu.etaxonomy.cdm.model.description.MeasurementUnit;
-import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
-import eu.etaxonomy.cdm.model.description.PresenceTerm;
-import eu.etaxonomy.cdm.model.description.QuantitativeData;
-import eu.etaxonomy.cdm.model.description.Scope;
-import eu.etaxonomy.cdm.model.description.Sex;
-import eu.etaxonomy.cdm.model.description.SpecimenDescription;
-import eu.etaxonomy.cdm.model.description.Stage;
-import eu.etaxonomy.cdm.model.description.State;
-import eu.etaxonomy.cdm.model.description.StateData;
-import eu.etaxonomy.cdm.model.description.StatisticalMeasure;
-import eu.etaxonomy.cdm.model.description.StatisticalMeasurementValue;
-import eu.etaxonomy.cdm.model.description.TaxonDescription;
-import eu.etaxonomy.cdm.model.description.TaxonInteraction;
-import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
-import eu.etaxonomy.cdm.model.description.TextData;
-import eu.etaxonomy.cdm.model.description.TextFormat;
-import eu.etaxonomy.cdm.model.location.Continent;
-import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
-import eu.etaxonomy.cdm.model.location.NamedAreaType;
-import eu.etaxonomy.cdm.model.location.Point;
-import eu.etaxonomy.cdm.model.location.ReferenceSystem;
-import eu.etaxonomy.cdm.model.location.TdwgArea;
-import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
-import eu.etaxonomy.cdm.model.media.AudioFile;
-import eu.etaxonomy.cdm.model.media.ImageFile;
-import eu.etaxonomy.cdm.model.media.Media;
-import eu.etaxonomy.cdm.model.media.MediaRepresentation;
-import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
-import eu.etaxonomy.cdm.model.media.MovieFile;
-import eu.etaxonomy.cdm.model.media.ReferencedMedia;
-import eu.etaxonomy.cdm.model.media.Rights;
-import eu.etaxonomy.cdm.model.media.RightsTerm;
-import eu.etaxonomy.cdm.model.molecular.DnaSample;
-import eu.etaxonomy.cdm.model.molecular.GenBankAccession;
-import eu.etaxonomy.cdm.model.molecular.Locus;
-import eu.etaxonomy.cdm.model.molecular.PhylogeneticTree;
-import eu.etaxonomy.cdm.model.molecular.Sequence;
-import eu.etaxonomy.cdm.model.name.BacterialName;
-import eu.etaxonomy.cdm.model.name.BotanicalName;
-import eu.etaxonomy.cdm.model.name.CultivarPlantName;
-import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
-import eu.etaxonomy.cdm.model.name.HybridRelationship;
-import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
-import eu.etaxonomy.cdm.model.name.NameRelationship;
-import eu.etaxonomy.cdm.model.name.NameRelationshipType;
-import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
-import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
-import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
-import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
-import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
-import eu.etaxonomy.cdm.model.name.NonViralName;
-import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
-import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
-import eu.etaxonomy.cdm.model.name.ViralName;
-import eu.etaxonomy.cdm.model.name.ZoologicalName;
-import eu.etaxonomy.cdm.model.occurrence.Collection;
-import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
-import eu.etaxonomy.cdm.model.occurrence.DerivationEventType;
-import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
-import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
-import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
-import eu.etaxonomy.cdm.model.occurrence.DeterminationModifier;
-import eu.etaxonomy.cdm.model.occurrence.FieldObservation;
-import eu.etaxonomy.cdm.model.occurrence.Fossil;
-import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
-import eu.etaxonomy.cdm.model.occurrence.LivingBeing;
-import eu.etaxonomy.cdm.model.occurrence.Observation;
-import eu.etaxonomy.cdm.model.occurrence.PreservationMethod;
-import eu.etaxonomy.cdm.model.occurrence.Specimen;
-import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
-import eu.etaxonomy.cdm.model.reference.Article;
-import eu.etaxonomy.cdm.model.reference.BibtexEntryType;
-import eu.etaxonomy.cdm.model.reference.BibtexReference;
-import eu.etaxonomy.cdm.model.reference.Book;
-import eu.etaxonomy.cdm.model.reference.BookSection;
-import eu.etaxonomy.cdm.model.reference.CdDvd;
-import eu.etaxonomy.cdm.model.reference.Database;
-import eu.etaxonomy.cdm.model.reference.Generic;
-import eu.etaxonomy.cdm.model.reference.InProceedings;
-import eu.etaxonomy.cdm.model.reference.Journal;
-import eu.etaxonomy.cdm.model.reference.Map;
-import eu.etaxonomy.cdm.model.reference.Patent;
-import eu.etaxonomy.cdm.model.reference.PersonalCommunication;
-import eu.etaxonomy.cdm.model.reference.PrintSeries;
-import eu.etaxonomy.cdm.model.reference.PrintedUnitBase;
-import eu.etaxonomy.cdm.model.reference.Proceedings;
-import eu.etaxonomy.cdm.model.reference.Publisher;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
-import eu.etaxonomy.cdm.model.reference.Report;
-import eu.etaxonomy.cdm.model.reference.SectionBase;
-import eu.etaxonomy.cdm.model.reference.StrictReferenceBase;
-import eu.etaxonomy.cdm.model.reference.Thesis;
-import eu.etaxonomy.cdm.model.reference.WebPage;
-import eu.etaxonomy.cdm.model.taxon.Synonym;
-import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
-import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
-import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.model.taxon.TaxonBase;
-import eu.etaxonomy.cdm.model.taxon.TaxonNode;
-import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
-import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
-import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
+import eu.etaxonomy.cdm.model.common.PartialUserType;
+import eu.etaxonomy.cdm.model.common.UUIDUserType;
+import eu.etaxonomy.cdm.model.common.WSDLDefinitionUserType;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
 
 @Repository
 public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdmGenericDao{
 	private static final Logger logger = Logger.getLogger(CdmGenericDaoImpl.class);
 
+	
+	private Set<Class<? extends CdmBase>> allCdmClasses = null;
+	private Map<Class<? extends CdmBase>, Set<ReferenceHolder>> referenceMap = new HashMap<Class<? extends CdmBase>, Set<ReferenceHolder>>();
+	
+	private class ReferenceHolder{
+		String propertyName;
+		Class<? extends CdmBase> otherClass;
+		Class<? extends CdmBase> itemClass;
+	}
+
+	
 	public CdmGenericDaoImpl() {
 		super(CdmBase.class);
 	}
@@ -187,6 +72,7 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao#getCdmBasesByFieldAndClass(java.lang.Class, java.lang.String, eu.etaxonomy.cdm.model.common.CdmBase)
 	 */
+	
 	public List<CdmBase> getCdmBasesByFieldAndClass(Class clazz, String propertyName, CdmBase referencedCdmBase){
 		Session session = super.getSession();
 		Criteria criteria = session.createCriteria(clazz);
@@ -215,8 +101,8 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 		Set<Class<? extends CdmBase>> result = new HashSet<Class<? extends CdmBase>>();
 		
 		SessionFactory sessionFactory = getSession().getSessionFactory();
-		java.util.Map allClassMetadata = sessionFactory.getAllClassMetadata();
-		java.util.Collection keys = allClassMetadata.keySet();
+		Map<?,?> allClassMetadata = sessionFactory.getAllClassMetadata();
+		Collection<?> keys = allClassMetadata.keySet();
 		for (Object oKey : keys){
 			if (oKey instanceof String){
 				String strKey = (String)oKey;
@@ -239,7 +125,201 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 	}
 	
 	
+
 	
+	public Set<CdmBase> getReferencingObjects(CdmBase referencedCdmBase){
+		Set<CdmBase> result = new HashSet<CdmBase>();
+		try {
+			referencedCdmBase = (CdmBase)HibernateProxyHelper.deproxy(referencedCdmBase);
+			Class<? extends CdmBase> referencedClass = referencedCdmBase.getClass();
+			
+			Set<ReferenceHolder> holderSet = referenceMap.get(referencedClass);
+			if (holderSet == null){
+				holderSet = makeHolderSet(referencedClass);
+				referenceMap.put(referencedClass, holderSet);
+			}
+			for (ReferenceHolder refHolder: holderSet){
+				handleReferenceHolder(referencedCdmBase, result, refHolder);
+			}
+			return result;	
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new RuntimeException(e);
+		}
+		
+	}
+
+	/**
+	 * @param referencedCdmBase
+	 * @param result
+	 * @param refHolder
+	 */
+	private void handleReferenceHolder(CdmBase referencedCdmBase,
+			Set<CdmBase> result, ReferenceHolder refHolder) {
+		boolean isCollection = (refHolder.itemClass != null);
+		if (isCollection){
+			result.addAll(getCdmBasesWithItemInCollection(refHolder.itemClass, refHolder.otherClass, refHolder.propertyName, referencedCdmBase));
+		}else{
+			result.addAll(getCdmBasesByFieldAndClass(refHolder.otherClass, refHolder.propertyName, referencedCdmBase));
+		}
+	}
+
+	
+	/**
+	 * @param referencedClass
+	 * @return
+	 * @throws NoSuchFieldException 
+	 * @throws ClassNotFoundException 
+	 */
+	private Set<ReferenceHolder> makeHolderSet(Class referencedClass) throws ClassNotFoundException, NoSuchFieldException {
+		Set<ReferenceHolder> result = new HashSet<ReferenceHolder>();
+		
+		//init
+		if (allCdmClasses == null){
+			allCdmClasses = getAllCdmClasses(false); //findAllCdmClasses();
+		}
+		//referencedCdmBase = (CdmBase)HibernateProxyHelper.deproxy(referencedCdmBase);
+		SessionFactory sessionFactory = getSession().getSessionFactory();
+		
+		
+		for (Class<? extends CdmBase> cdmClass : allCdmClasses){
+			ClassMetadata classMetadata = sessionFactory.getClassMetadata(cdmClass);
+			Type[] propertyTypes = classMetadata.getPropertyTypes();
+			int propertyNr = 0;
+			for (Type propertyType: propertyTypes){
+				String propertyName = classMetadata.getPropertyNames()[propertyNr];
+				makePropertyType(result, referencedClass, sessionFactory, cdmClass, propertyType, propertyName, false);
+				propertyNr++;
+			}
+			
+		}
+		return result;
+	}
+
+	/**
+	 * @param referencedCdmBase
+	 * @param result
+	 * @param referencedClass
+	 * @param sessionFactory
+	 * @param cdmClass
+	 * @param propertyType
+	 * @param propertyName
+	 * @throws ClassNotFoundException
+	 * @throws NoSuchFieldException
+	 */
+	private void makePropertyType(
+//			CdmBase referencedCdmBase,
+			Set<ReferenceHolder> result,
+			Class referencedClass,
+			SessionFactory sessionFactory, Class<? extends CdmBase> cdmClass,
+			Type propertyType, String propertyName, boolean isCollection)
+				throws ClassNotFoundException, NoSuchFieldException {
+		
+		
+		if (propertyType.isEntityType()){
+			EntityType entityType = (EntityType)propertyType;
+			String associatedEntityName = entityType.getAssociatedEntityName();
+			Class entityClass = Class.forName(associatedEntityName);
+			if (entityClass.isInterface()){
+				System.out.println("So ein interface");
+			}
+			if (entityClass.isAssignableFrom(referencedClass)){
+				makeSingleProperty(referencedClass, entityClass, propertyName, cdmClass, result, isCollection);
+			}
+		}else if (propertyType.isCollectionType()){
+			CollectionType collectionType = (CollectionType)propertyType;
+			//String role = collectionType.getRole();
+			Type elType = collectionType.getElementType((SessionFactoryImpl)sessionFactory);
+			makePropertyType(result, referencedClass, sessionFactory, cdmClass, elType, propertyName, true);
+		}else if (propertyType.isAnyType()){
+			AnyType anyType = (AnyType)propertyType;
+			Field field = cdmClass.getDeclaredField(propertyName);
+			Class returnType = field.getType();
+			if (returnType.isInterface()){
+				System.out.println("So ein interface");
+			}
+			if (returnType.isAssignableFrom(referencedClass)){
+				makeSingleProperty(referencedClass, returnType, propertyName, cdmClass, result, isCollection);
+			}
+		}else if (propertyType.isComponentType()){
+			ComponentType componentType = (ComponentType)propertyType;
+			Type[] subTypes = componentType.getSubtypes();
+//			Field field = cdmClass.getDeclaredField(propertyName);
+//			Class returnType = field.getType();
+			int propertyNr = 0;
+			for (Type subType: subTypes){
+				String subPropertyName = componentType.getPropertyNames()[propertyNr];
+				if (!isNoDoType(subType)){
+					logger.warn("SubType not yet handled: " + subType);
+				}
+//				handlePropertyType(referencedCdmBase, result, referencedClass, 
+//						sessionFactory, cdmClass, subType, subPropertyName, isCollection);
+				propertyNr++;
+			}
+		}else if (isNoDoType(propertyType)){
+			//do nothing
+		}else{
+			logger.warn("propertyType not yet handled: " + propertyType.getName());
+		}
+		//OLD: 
+				//		if (! type.isInterface()){
+		//		if (referencedClass.isAssignableFrom(type)|| 
+		//				type.isAssignableFrom(referencedClass) && CdmBase.class.isAssignableFrom(type)){
+		//			handleSingleClass(referencedClass, type, field, cdmClass, result, referencedCdmBase, false);
+		//		}
+		//	//interface
+		//	}else if (type.isAssignableFrom(referencedClass)){
+		//			handleSingleClass(referencedClass, type, field, cdmClass, result, referencedCdmBase, false);
+
+	}
+	
+	private boolean makeSingleProperty(Class itemClass, Class type, String propertyName, Class cdmClass, Set<ReferenceHolder> result,/*CdmBase item,*/ boolean isCollection){
+			String fieldName = StringUtils.rightPad(propertyName, 30);
+			String className = StringUtils.rightPad(cdmClass.getSimpleName(), 30);
+			String returnTypeName = StringUtils.rightPad(type.getSimpleName(), 30);
+			
+//			System.out.println(fieldName +   "\t\t" + className + "\t\t" + returnTypeName);
+			ReferenceHolder refHolder = new ReferenceHolder();
+			refHolder.propertyName = propertyName;
+			refHolder.otherClass = cdmClass;
+			refHolder.itemClass = (isCollection ? itemClass : null) ;
+			result.add(refHolder);
+		return true;
+	}
+
+	/**
+	 * @param propertyType
+	 * @return
+	 */
+	private boolean isNoDoType(Type propertyType) {
+		boolean result = false;
+		Class[] classes = new Class[]{
+				PersistentDateTime.class, 
+				WSDLDefinitionUserType.class,
+				UUIDUserType.class, 
+				PartialUserType.class,
+				StringType.class,
+				BooleanType.class, 
+				IntegerType.class, 
+				StringClobType.class,
+				LongType.class,
+				FloatType.class,
+				SerializableType.class,
+				DoubleType.class
+				};
+		Set<String> classNames = new HashSet<String>();
+		for (Class clazz: classes){
+			classNames.add(clazz.getCanonicalName());
+			if (clazz == propertyType.getClass()){
+				return true;
+			}
+		}
+		String propertyTypeClassName = propertyType.getName();
+		if (classNames.contains(propertyTypeClassName)){
+			return true;
+		}
+		return result;
+	}
 
 	public List getHqlResult(String hqlQuery){
 		Query query = getSession().createQuery(hqlQuery);

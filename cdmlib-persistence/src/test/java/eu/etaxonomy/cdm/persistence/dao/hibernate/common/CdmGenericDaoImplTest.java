@@ -10,14 +10,13 @@
 
 package eu.etaxonomy.cdm.persistence.dao.hibernate.common;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
-import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.junit.After;
@@ -26,11 +25,11 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.model.agent.Address;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
-import eu.etaxonomy.cdm.model.agent.Contact;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.InstitutionType;
 import eu.etaxonomy.cdm.model.agent.InstitutionalMembership;
@@ -48,7 +47,6 @@ import eu.etaxonomy.cdm.model.common.Figure;
 import eu.etaxonomy.cdm.model.common.GrantedAuthorityImpl;
 import eu.etaxonomy.cdm.model.common.Group;
 import eu.etaxonomy.cdm.model.common.Keyword;
-import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.common.LSIDAuthority;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
@@ -93,7 +91,6 @@ import eu.etaxonomy.cdm.model.location.Continent;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
-import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.location.ReferenceSystem;
 import eu.etaxonomy.cdm.model.location.TdwgArea;
 import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
@@ -121,7 +118,6 @@ import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
-import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.NonViralName;
@@ -181,6 +177,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
+import eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
@@ -190,11 +187,16 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
  * @version 1.0
  */
 public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
-	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CdmGenericDaoImplTest.class);
 	
 	@SpringBeanByType
 	private ICdmGenericDao cdmGenericDao;
+	
+	@SpringBeanByType
+	private ITaxonDao taxonDao;
+	
+	@SpringBeanByType
+	private IOccurrenceDao occurrenceDao;
 	
 	/**
 	 * @throws java.lang.Exception
@@ -414,12 +416,12 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 		boolean includeAbstractClasses = true;
 		Set<Class<? extends CdmBase>> foundClasses = cdmGenericDao.getAllCdmClasses(includeAbstractClasses);
 		
-//for debugging only		
-//		for (Class existingClass : existingClassesList){
-//			if (! foundClasses.contains(existingClass)){
-//				logger.warn("Class not found: " + existingClass.getCanonicalName());
-//			}
-//		}
+		//for debugging only		
+		//		for (Class existingClass : existingClassesList){
+		//			if (! foundClasses.contains(existingClass)){
+		//				logger.warn("Class not found: " + existingClass.getCanonicalName());
+		//			}
+		//		}
 		
 		//All classes must be found
 		Assert.assertTrue("all classes must be found by getAllCdmClasses() method", foundClasses.containsAll(existingClassesList));
@@ -438,6 +440,86 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 		Assert.assertFalse("Abstract class " + abstractClassToTest.getName() + " may not be in set ", noAbstractClasses.contains(abstractClassToTest));
 	}
 
+	/**
+	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmGenericDaoImpl#getReferencingObjects(CdmBase)}.
+	 */
+	@Test
+	public void testGetReferencingObjectsCdmBase() {
+		BotanicalName name = BotanicalName.NewInstance(Rank.SPECIES());
+		name.setTitleCache("A name");
+		ReferenceBase ref1 = Article.NewInstance();
+		Taxon taxon = Taxon.NewInstance(name, ref1);
+		Person author = Person.NewInstance();
+		author.setTitleCache("Author");
+		ref1.addAnnotation(Annotation.NewInstance("A1", Language.DEFAULT()));
+		ref1.setAuthorTeam(author);
+		name.setBasionymAuthorTeam(author);
+		
+		name.setNomenclaturalReference(ref1);
+		
+		taxonDao.save(taxon);
+//		UUID uuid = UUID.fromString("613980ac-9bd5-43b9-a374-d71e1794688f");
+//		ReferenceBase ref1 = referenceService.findByUuid(uuid);
+		
+	
+		Set<CdmBase> referencedObjects = cdmGenericDao.getReferencingObjects(ref1);
+		System.out.println("############## RESULT ###################");
+		for (CdmBase obj: referencedObjects){
+			System.out.println("Object: " + obj.getClass().getSimpleName() + " - " + obj);
+		}
+		assertEquals(3, referencedObjects.size());
+		System.out.println("############## ENDE ###################");
+		
+//		UUID uuidAuthor = UUID.fromString("4ce66544-a5a3-4601-ab0b-1f0a1338327b");
+//		AgentBase author = agentService.findByUuid(uuidAuthor);
+		
+		referencedObjects = cdmGenericDao.getReferencingObjects(author);
+		System.out.println("############## RESULT ###################");
+		for (CdmBase obj: referencedObjects){
+			System.out.println("Object: " + obj.getClass().getSimpleName() + " - " + obj);
+		}
+		assertEquals(2, referencedObjects.size());
+		System.out.println("############## ENDE ###################");
+	}
+	
+	/**
+	 * 2nd test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmGenericDaoImpl#getReferencingObjects(CdmBase)}.
+	 * 
+	 */
+	@Test
+	@DataSet
+	public final void testGetReferencingObjects2() {
+//		SpecimenDescription desc1 = SpecimenDescription.NewInstance();
+//		desc1.setTitleCache("desc1");
+//		SpecimenDescription desc2 = SpecimenDescription.NewInstance();
+//		desc2.setTitleCache("desc2");
+//		
+//		SpecimenOrObservationBase spec1 = Specimen.NewInstance();
+//		
+//		desc1.addDescribedSpecimenOrObservation(spec1);
+//		//Taxon taxon = Taxon.NewInstance(taxonNameBase, sec)
+//		spec1.addDescription(desc2);
+//		
+//		occurrenceService.save(spec1);
+		
+		UUID uuidSpec = UUID.fromString("41539e9c-3764-4f14-9712-2d07d00c8e4c");
+		SpecimenOrObservationBase spec1 = occurrenceDao.findByUuid(uuidSpec);
+		
+	
+		Set<CdmBase> referencedObjects = cdmGenericDao.getReferencingObjects(spec1);
+		System.out.println("############## RESULT ###################");
+		for (CdmBase obj: referencedObjects){
+			System.out.println("Object: " + obj.getClass().getSimpleName() + " - " + obj);
+		}
+		assertEquals(2, referencedObjects.size());
+		System.out.println("############## ENDE ###################");
+		
+		
+		
+
+	}
+	
+	
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmGenericDaoImpl#getHqlResult(java.lang.String)}.
 	 */

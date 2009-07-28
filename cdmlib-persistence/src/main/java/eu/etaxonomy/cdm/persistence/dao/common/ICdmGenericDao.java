@@ -55,6 +55,16 @@ public interface ICdmGenericDao {
 	 */
 	public Set<Class<? extends CdmBase>> getAllCdmClasses(boolean includeAbstractClasses);
 	
+	/**
+	 * Returns all CdmBase objects that reference the referencedCdmBase.
+	 * For example, if referencedCdmBase is an agent it may return all taxon names
+	 * that have this person as an author but also all books, articles, etc. that have 
+	 * this person as an author
+	 * @param referencedCdmBase
+	 * @return
+	 */
+	public Set<CdmBase> getReferencingObjects(CdmBase referencedCdmBase);
+	
 	
 	/**
 	 * Returns the result of an hql query
