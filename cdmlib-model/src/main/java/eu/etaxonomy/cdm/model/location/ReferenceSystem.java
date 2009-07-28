@@ -79,7 +79,7 @@ public class ReferenceSystem extends DefinedTermBase<ReferenceSystem> {
 	protected void setDefaultTerms(
 			TermVocabulary<ReferenceSystem> termVocabulary) {
 		// TODO Auto-generated method stub
-		
+		logger.warn("Not yet implemented");
 	}
 
 }
