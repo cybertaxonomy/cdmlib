@@ -7,6 +7,8 @@ import org.apache.log4j.Logger;
 
 
 public abstract class StrategyBase implements IStrategy, Serializable {
+	private static final long serialVersionUID = -274791080847215663L;
+
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(StrategyBase.class);
 	
