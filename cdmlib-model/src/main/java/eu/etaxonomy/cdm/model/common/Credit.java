@@ -35,7 +35,7 @@ import eu.etaxonomy.cdm.model.agent.AgentBase;
 @XmlType(name = "Credit")
 @Entity
 @Audited
-public class Credit extends LanguageStringBase {
+public class Credit extends LanguageStringBase implements Cloneable{
 	private static final long serialVersionUID = 5763391127298427701L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(Credit.class);
@@ -106,6 +106,18 @@ public class Credit extends LanguageStringBase {
 	public void setAbbreviatedText(String abbreviatedText) {
 		this.abbreviatedText = abbreviatedText;
 	}
+
+//************************* CLONE **************************/
 	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#clone()
+	 */
+	@Override
+	public Object clone() throws CloneNotSupportedException{
+		Credit result = (Credit)super.clone();
+		//no changes to: agent
+		return result;
+	}
+
 	
 }
