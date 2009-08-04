@@ -48,7 +48,7 @@ import eu.etaxonomy.cdm.model.common.LanguageStringBase;
 @XmlRootElement(name = "Rights")
 @Entity
 @Audited
-public class Rights extends LanguageStringBase {
+public class Rights extends LanguageStringBase implements Cloneable{
 	private static final long serialVersionUID = 4920749849951432284L;
 	private static final Logger logger = Logger.getLogger(Rights.class);
 	
@@ -135,5 +135,18 @@ public class Rights extends LanguageStringBase {
 	
 	public void setAgent(AgentBase agent) {
 		this.agent = agent;
+	}
+	
+//************************* CLONE **************************/
+	
+	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#clone()
+	 */
+	@Override
+	public Object clone() throws CloneNotSupportedException{
+		Rights result = (Rights)super.clone();
+		//no changes to: type, agent
+		return result;
 	}
 }
