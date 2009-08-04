@@ -1,0 +1,390 @@
+// $Id$
+/**
+* Copyright (C) 2007 EDIT
+* European Distributed Institute of Taxonomy 
+* http://www.e-taxonomy.eu
+* 
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
+
+package eu.etaxonomy.cdm.strategy.merge;
+
+import static org.junit.Assert.*;
+
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
+
+import org.apache.log4j.Logger;
+import org.joda.time.DateTime;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
+import eu.etaxonomy.cdm.model.agent.Institution;
+import eu.etaxonomy.cdm.model.agent.Person;
+import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.model.common.Annotation;
+import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
+import eu.etaxonomy.cdm.model.common.LSID;
+import eu.etaxonomy.cdm.model.common.TimePeriod;
+import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
+import eu.etaxonomy.cdm.model.name.BotanicalName;
+import eu.etaxonomy.cdm.model.name.NameRelationship;
+import eu.etaxonomy.cdm.model.name.NameRelationshipType;
+import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
+import eu.etaxonomy.cdm.model.occurrence.Specimen;
+import eu.etaxonomy.cdm.model.reference.Book;
+import eu.etaxonomy.cdm.model.reference.PrintSeries;
+import eu.etaxonomy.cdm.model.reference.Thesis;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.strategy.cache.name.INonViralNameCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.reference.INomenclaturalReferenceCacheStrategy;
+
+/**
+ * @author a.mueller
+ * @created 03.08.2009
+ * @version 1.0
+ */
+public class DefaultMergeStrategyTest {
+	@SuppressWarnings("unused")
+	private static final Logger logger = Logger.getLogger(DefaultMergeStrategyTest.class);
+
+	private DefaultMergeStrategy bookMergeStrategy;
+	private Book book1;
+	private String editionString1 ="Ed.1";
+	private String volumeString1 ="Vol.1";
+	private Team team1;
+	private PrintSeries printSeries1;
+	private Annotation annotation1;
+	private String title1 = "Title1";
+	private TimePeriod datePublished1 = TimePeriod.NewInstance(2000);
+	private boolean hasProblem1 = true;
+	private LSID lsid1;
+	
+	private Book book2;
+	private String editionString2 ="Ed.2";
+	private String volumeString2 ="Vol.2";
+	private Team team2;
+	private PrintSeries printSeries2;
+	private Annotation annotation2;
+	private String annotationString2;
+	private String title2 = "Title2";
+	private DateTime created2 = new DateTime(1999, 3, 1, 0, 0, 0, 0);
+	private TimePeriod datePublished2 = TimePeriod.NewInstance(2002);
+	private boolean hasProblem2 = true;
+	private LSID lsid2;
+	
+	
+	private Book book3;
+	
+	/**
+	 * @throws java.lang.Exception
+	 */
+	@BeforeClass
+	public static void setUpBeforeClass() throws Exception {
+		DefaultTermInitializer termInitializer = new DefaultTermInitializer();
+		termInitializer.initialize();
+	}
+
+	/**
+	 * @throws java.lang.Exception
+	 */
+	@AfterClass
+	public static void tearDownAfterClass() throws Exception {
+	}
+
+	/**
+	 * @throws java.lang.Exception
+	 */
+	@Before
+	public void setUp() throws Exception {
+		bookMergeStrategy = DefaultMergeStrategy.NewInstance(Book.class);
+		team1 = Team.NewInstance();
+		team1.setTitleCache("Team1");
+		team2 = Team.NewInstance();
+		team2.setTitleCache("Team2");
+		printSeries1 = PrintSeries.NewInstance("Series1");
+		printSeries2 = PrintSeries.NewInstance("Series2");
+		annotation1 = Annotation.NewInstance("Annotation1", null);
+		annotationString2 = "Annotation2";
+		annotation2 = Annotation.NewInstance(annotationString2, null);
+		
+		book1 = Book.NewInstance();
+		book1.setAuthorTeam(team1);
+		book1.setTitle(title1);
+		book1.setEdition(editionString1);
+		book1.setVolume(volumeString1);
+		book1.setInSeries(printSeries1);
+		book1.addAnnotation(annotation1);
+		book1.setDatePublished(datePublished1);
+		book1.setHasProblem(hasProblem1);
+		lsid1 = new LSID("authority1", "namespace1", "object1", "revision1");
+		book1.setLsid(lsid1);
+		book1.setNomenclaturallyRelevant(false);
+		
+		book2 = Book.NewInstance();
+		book2.setAuthorTeam(team2);
+		book2.setTitle(title2);
+		book2.setEdition(editionString2);
+		book2.setVolume(volumeString2);
+		book2.setInSeries(printSeries2);
+		book2.addAnnotation(annotation2);
+		book2.setCreated(created2);
+		book2.setDatePublished(datePublished2);
+		book2.setHasProblem(hasProblem2);
+		lsid2 = new LSID("authority2", "namespace2", "object2", "revision2");
+		book2.setLsid(lsid2);
+		book2.setNomenclaturallyRelevant(true);
+		
+	}
+
+	/**
+	 * @throws java.lang.Exception
+	 */
+	@After
+	public void tearDown() throws Exception {
+	}
+
+//********************* TEST *********************************************/	
+	
+	/**
+	 * Test method for {@link eu.etaxonomy.cdm.strategy.merge.DefaultMergeStrategy#NewInstance(java.lang.Class)}.
+	 */
+	@Test
+	public void testNewInstance() {
+		Assert.assertNotNull(bookMergeStrategy);
+		Assert.assertEquals(Book.class, bookMergeStrategy.getMergeClass());
+	}
+
+	/**
+	 * Test method for {@link eu.etaxonomy.cdm.strategy.merge.DefaultMergeStrategy#getMergeMode(java.lang.String)}.
+	 */
+	@Test
+	public void testGetMergeMode() {
+		Assert.assertEquals("Merge mode for title should be MergeMode.FIRST", MergeMode.FIRST, bookMergeStrategy.getMergeMode("title"));
+	}
+
+	/**
+	 * Test method for {@link eu.etaxonomy.cdm.strategy.merge.DefaultMergeStrategy#getMergeMode(java.lang.String)}.
+	 */
+	@Test
+	public void testGetSetMergeMode() {
+		//legal value
+		try {
+			bookMergeStrategy.setMergeMode("edition", MergeMode.SECOND);
+			Assert.assertEquals("Merge mode for edition should be", MergeMode.SECOND, bookMergeStrategy.getMergeMode("edition"));
+		} catch (MergeException e1) {
+			Assert.fail();
+		}
+		//illegalValue
+		try {
+			bookMergeStrategy.setMergeMode("xxx", MergeMode.SECOND);
+			Assert.fail("A property name must exist, otherwise an exception must be thrown");
+		} catch (Exception e) {
+			//ok
+		}
+		//illegalValue
+		try {
+			bookMergeStrategy.setMergeMode("cacheStrategy", MergeMode.SECOND);
+			Assert.fail("CacheStrategy is transient and therefore not a legal merge parameter");
+		} catch (Exception e) {
+			//ok
+		}
+		//illegalValue
+		try {
+			bookMergeStrategy.setMergeMode("id", MergeMode.SECOND);
+			Assert.fail("Identifier merge mode must always be MergeMode.FIRST");
+		} catch (Exception e) {
+			//ok
+		}
+		//illegalValue
+		try {
+			bookMergeStrategy.setMergeMode("uuid", MergeMode.SECOND);
+			Assert.fail("Identifier merge mode must always be MergeMode.FIRST");
+		} catch (Exception e) {
+			//ok
+		}
+		
+		
+	}
+
+	
+	/**
+	 * Test method for {@link eu.etaxonomy.cdm.strategy.merge.DefaultMergeStrategy#invoke(eu.etaxonomy.cdm.strategy.merge.IMergable, eu.etaxonomy.cdm.strategy.merge.IMergable)}.
+	 * @throws MergeException 
+	 */
+	@Test
+	public void testInvokeReferences() throws MergeException {
+		INomenclaturalReferenceCacheStrategy<Book> cacheStrategy1 = book1.getCacheStrategy();
+		int id = book1.getId();
+		UUID uuid = book1.getUuid();
+		try {
+			bookMergeStrategy.setMergeMode("edition", MergeMode.SECOND);
+			bookMergeStrategy.setMergeMode("volume", MergeMode.NULL);
+			bookMergeStrategy.setMergeMode("authorTeam", MergeMode.SECOND);
+			bookMergeStrategy.setMergeMode("created", MergeMode.SECOND);
+			bookMergeStrategy.setMergeMode("updated",MergeMode.NULL);
+			bookMergeStrategy.setMergeMode("datePublished", MergeMode.SECOND);
+			bookMergeStrategy.setMergeMode("hasProblem", MergeMode.SECOND);
+			bookMergeStrategy.setMergeMode("inSeries", MergeMode.SECOND);
+			bookMergeStrategy.setMergeMode("lsid", MergeMode.SECOND);
+			
+			bookMergeStrategy.invoke(book1, book2);
+		} catch (MergeException e) {
+			throw e;
+			//Assert.fail("An unexpected merge exception occurred: " + e.getMessage() + ";" + e.getCause().getMessage());
+		}
+		Assert.assertEquals("Title should stay the same", title1, book1.getTitle());
+		Assert.assertEquals("Edition should become edition 2", editionString2, book1.getEdition());
+		Assert.assertNull("Volume should be null", book1.getVolume());
+		
+		//Boolean
+		Assert.assertEquals("Has problem must be hasProblem2", hasProblem2, book1.hasProblem());
+		Assert.assertEquals("nomenclaturally relevant must have value true (AND semantics)", true, book1.isNomenclaturallyRelevant() );
+		
+		
+		//CdmBase
+		Assert.assertSame("AuthorTeam must be the one of book2", team2, book1.getAuthorTeam());
+		Assert.assertSame("In Series must be the one of book2", printSeries2, book1.getInSeries());
+		
+		//Transient
+		Assert.assertSame("Cache strategy is transient and shouldn't change therefore", cacheStrategy1, book1.getCacheStrategy());
+		
+		
+		//UserType
+		Assert.assertSame("Created must be created2", created2, book1.getCreated());
+		//TODO updated should have the actual date if any value has changed
+		Assert.assertSame("Created must be created2", null, book1.getUpdated());
+		Assert.assertSame("Created must be datePublsihed2", datePublished2, book1.getDatePublished());
+		//TODO this may not be correct
+		Assert.assertSame("LSID must be LSID2", lsid2, book1.getLsid());
+		
+
+		//TODO
+		//	book1.setProblemEnds(end);
+		//	book1.setProtectedTitleCache(protectedTitleCache);
+		
+		//annotations -> ADD_CLONE
+		Assert.assertEquals("Annotations should contain annotations of both books", 2, book1.getAnnotations().size());
+		boolean cloneExists = false;
+		for (Annotation annotation : book1.getAnnotations()){
+			if (annotation == this.annotation2){
+				//Hibernate will not persist the exact same object. Probably this is a bug (the according row in the 
+				//M:M table is not deleted and a unique constraints does not allow adding 2 rows with the same annotation_id
+				//This test can be changed once this bug does not exist anymore 
+				Assert.fail("Book1 should contain a clone of annotation2 but contains annotation2 itself");
+			}else if (annotationString2.equals(annotation.getText())){
+				cloneExists = true;
+			}
+		}
+		Assert.assertTrue("Book1 should contain a clone of annotation2", cloneExists);
+	//	Assert.assertEquals("Annotations from book2 should be deleted", 0, book2.getAnnotations().size());
+		
+		//identifier
+		Assert.assertSame("Identifier must never be changed", id, book1.getId());
+		Assert.assertSame("Identifier must never be changed", uuid, book1.getUuid());
+		
+		//Test Thesis
+		Institution school1 = Institution.NewInstance();
+		Institution school2 = Institution.NewInstance();
+		
+		Thesis thesis1 = Thesis.NewInstance(school1);
+		Thesis thesis2 = Thesis.NewInstance(school2);
+		DefaultMergeStrategy thesisStrategy = DefaultMergeStrategy.NewInstance(Thesis.class);
+		
+		thesisStrategy.setMergeMode("school", MergeMode.SECOND);
+		thesisStrategy.invoke(thesis1, thesis2);
+		Assert.assertSame("school must be school2", school2, thesis1.getSchool());	
+	}
+	
+	
+	/**
+	 * Test method for {@link eu.etaxonomy.cdm.strategy.merge.DefaultMergeStrategy#invoke(eu.etaxonomy.cdm.strategy.merge.IMergable, eu.etaxonomy.cdm.strategy.merge.IMergable)}.
+	 * @throws MergeException 
+	 */
+	@Test
+	public void testInvokeTxonNames() throws MergeException {
+		IMergeStrategy botNameMergeStrategy = DefaultMergeStrategy.NewInstance(BotanicalName.class);
+		BotanicalName botName1 = BotanicalName.NewInstance(Rank.SPECIES());
+		BotanicalName botName2 = BotanicalName.NewInstance(Rank.SPECIES());
+		BotanicalName botName3 = BotanicalName.NewInstance(Rank.SPECIES());
+		
+		botName1.setGenusOrUninomial("Genus1");
+		botName1.setSpecificEpithet("species1");
+		botName1.setAnamorphic(true);
+		
+		botName2.setGenusOrUninomial("Genus2");
+		botName2.setSpecificEpithet("species2");
+		botName2.setAnamorphic(false);
+		
+		//name relations
+		botName2.addBasionym(botName3, book1, "p.22", null);
+		Specimen specimen1 = Specimen.NewInstance();
+		botName2.addSpecimenTypeDesignation(specimen1, SpecimenTypeDesignationStatus.HOLOTYPE(), book2, "p.56", "originalNameString", false, true);
+		
+		//descriptions
+		TaxonNameDescription description1 = TaxonNameDescription.NewInstance();
+		botName1.addDescription(description1);
+		TaxonNameDescription description2 = TaxonNameDescription.NewInstance();
+		botName2.addDescription(description2);
+		
+		//authors
+		Team team1 = Team.NewInstance();
+		Team team2 = Team.NewInstance();
+		Person person1 = Person.NewInstance();
+		botName1.setCombinationAuthorTeam(team1);
+		botName2.setCombinationAuthorTeam(team2);
+		
+		//taxa
+		TaxonBase taxon1= Taxon.NewInstance(botName1, book1);
+		TaxonBase taxon2= Taxon.NewInstance(botName2, book2);
+		
+		try {
+			botNameMergeStrategy.setMergeMode("combinationAuthorTeam", MergeMode.SECOND);
+			botNameMergeStrategy.setMergeMode("anamorphic", MergeMode.AND);
+			
+			botNameMergeStrategy.invoke(botName1, botName2);
+		} catch (MergeException e) {
+			throw e;
+			//Assert.fail("An unexpected merge exception occurred: " + e.getMessage() + ";" + e.getCause().getMessage());
+		}
+
+		//Boolean
+		Assert.assertEquals("Is anamorphic must be false", true && false, botName1.isAnamorphic());
+		
+		//NameRelations
+		Set<NameRelationship> toRelations = botName1.getRelationsToThisName();
+		Set<NameRelationship> basionymRelations = new HashSet<NameRelationship>();
+		for (NameRelationship toRelation : toRelations){
+			if (toRelation.getType().equals(NameRelationshipType.BASIONYM())){
+				basionymRelations.add(toRelation);
+			}
+		}
+		Assert.assertEquals("Number of basionyms must be 1", 1, basionymRelations.size());
+		Assert.assertEquals("Basionym must have same reference", book1, basionymRelations.iterator().next().getCitation());
+		//TODO merge relation if matches() = true
+		
+		//Types
+		Assert.assertEquals("Number of specimen type designations must be 1", 1, botName1.getSpecimenTypeDesignations().size());
+		//TODO add to all names etc.
+		
+		//Description
+		Assert.assertEquals("Number of descriptions must be 2", 2, botName1.getDescriptions().size());
+		
+		//AuthorTeams
+		Assert.assertEquals("Combination author must be combination author 2", team2, botName1.getCombinationAuthorTeam());
+		
+		//Taxa
+		Assert.assertEquals("TaxonName of taxon1 must be name1", botName1, taxon1.getName());
+		Assert.assertEquals("TaxonName of taxon2 must be name1", botName1, taxon2.getName());
+		
+	}
+	
+}

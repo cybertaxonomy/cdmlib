@@ -65,7 +65,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 @Indexed
 @Audited
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
-public class Media extends AnnotatableEntity {
+public class Media extends AnnotatableEntity implements Cloneable {
 	private static final long serialVersionUID = -1927421567263473658L;
 	private static final Logger logger = Logger.getLogger(Media.class);
 
@@ -209,5 +209,18 @@ public class Media extends AnnotatableEntity {
 	
 	public void removeDescription(Language language){
 		this.description.remove(language);
+	}
+	
+//************************* CLONE **************************/
+	
+	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#clone()
+	 */
+	@Override
+	public Object clone() throws CloneNotSupportedException{
+		Media result = (Media)super.clone();
+		//no changes to: type, agent
+		return result;
 	}
 }
