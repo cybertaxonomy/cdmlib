@@ -10,17 +10,21 @@
 package eu.etaxonomy.cdm.model.location;
 
 
-import eu.etaxonomy.cdm.model.common.DefinedTermBase;
-import eu.etaxonomy.cdm.model.common.TermVocabulary;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
-import org.apache.log4j.Logger;
-import org.hibernate.envers.Audited;
-
-import javax.persistence.*;
+import javax.persistence.Entity;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+
+import org.apache.log4j.Logger;
+import org.hibernate.envers.Audited;
+
+import eu.etaxonomy.cdm.model.common.DefinedTermBase;
+import eu.etaxonomy.cdm.model.common.TermVocabulary;
 
 /**
  * Reference systems for coordinates also according to OGC (Open Geographical
@@ -37,8 +41,13 @@ import javax.xml.bind.annotation.XmlType;
 @Audited
 public class ReferenceSystem extends DefinedTermBase<ReferenceSystem> {
 	private static final long serialVersionUID = 2704455299046749175L;
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ReferenceSystem.class);
 
+	protected static Map<UUID, ReferenceSystem> termMap = null;		
+
+	private static final UUID uuidWGS84 = UUID.fromString("63f4dd55-00fa-49e7-96fd-2b7059a1c1ee");
+	
 	/**
 	 * Factory method
 	 * @return
@@ -58,28 +67,35 @@ public class ReferenceSystem extends DefinedTermBase<ReferenceSystem> {
 	/**
 	 * Constructor
 	 */
-	private ReferenceSystem() {
-		super();
+	public ReferenceSystem() {
 	}
-
+	
 	/**
 	 * Constructor
 	 */
-	public ReferenceSystem(String term, String label, String labelAbbrev) {
+	private ReferenceSystem(String term, String label, String labelAbbrev) {
 		super(term, label, labelAbbrev);
 	}
 
 
+	protected static ReferenceSystem getTermByUuid(UUID uuid){
+		if (termMap == null){
+			return null;
+		}else{
+			return (ReferenceSystem)termMap.get(uuid);
+		}
+	}
+	
 	public static final ReferenceSystem WGS84(){
-		logger.warn("not yet implemented");
-		return null;
+		return getTermByUuid(uuidWGS84);
 	}
 
 	@Override
-	protected void setDefaultTerms(
-			TermVocabulary<ReferenceSystem> termVocabulary) {
-		// TODO Auto-generated method stub
-		logger.warn("Not yet implemented");
+	protected void setDefaultTerms(TermVocabulary<ReferenceSystem> termVocabulary){
+		termMap = new HashMap<UUID, ReferenceSystem>();
+		for (ReferenceSystem term : termVocabulary.getTerms()){
+			termMap.put(term.getUuid(), (ReferenceSystem)term);  //TODO casting
+		}
 	}
 
 }

@@ -44,5 +44,17 @@ public interface IMergeStrategy {
 	 */
 	public <T extends IMergable> Set<ICdmBase> invoke(T mergeFirst, T mergeSecond) throws MergeException;
 
+	/**
+	 * Merges mergeSecond into mergeFirst.
+	 * Returns a set of CdmBases that became orphant during the merge process and
+	 * therefore must be deleted from a persistent context.
+	 * @param <T>
+	 * @param mergeFirst
+	 * @param mergeSecond
+	 * @param clonedObjects a set of objects that needed to be cloned during merge. 
+	 * This set will be filled during merge and should preferably be empty at the beginning 
+	 * @throws MergeException
+	 */
+	public <T extends IMergable> Set<ICdmBase> invoke(T mergeFirst, T mergeSecond, Set<ICdmBase> clonedObjects) throws MergeException;
 
 }

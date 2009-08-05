@@ -32,6 +32,7 @@ import org.joda.time.DateTime;
 
 import sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl;
 import sun.reflect.generics.reflectiveObjects.TypeVariableImpl;
+import eu.etaxonomy.cdm.model.agent.Contact;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ICdmBase;
 import eu.etaxonomy.cdm.model.common.IRelated;
@@ -161,11 +162,18 @@ public class DefaultMergeStrategy extends StrategyBase implements IMergeStrategy
 		
 	}
 
+	public <T extends IMergable> Set<ICdmBase> invoke(T mergeFirst, T mergeSecond) throws MergeException {
+		return this.invoke(mergeFirst, mergeSecond, null);
+	}
+	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.strategy.merge.IMergeStragegy#invoke(eu.etaxonomy.cdm.strategy.merge.IMergable, eu.etaxonomy.cdm.strategy.merge.IMergable)
 	 */
-	public <T extends IMergable> Set<ICdmBase> invoke(T mergeFirst, T mergeSecond) throws MergeException {
+	public <T extends IMergable> Set<ICdmBase> invoke(T mergeFirst, T mergeSecond, Set<ICdmBase> clonedObjects) throws MergeException {
 		Set<ICdmBase> deleteSet = new HashSet<ICdmBase>();
+		if (clonedObjects == null){
+			clonedObjects = new HashSet<ICdmBase>();
+		}
 		deleteSet.add(mergeSecond);
 		try {
  			for (Field field : mergeFields.values()){
@@ -177,7 +185,7 @@ public class DefaultMergeStrategy extends StrategyBase implements IMergeStrategy
 				}else if (fieldType == String.class ){
 					mergeStringField(mergeFirst, mergeSecond, field);
 				}else if (isCollection(fieldType)){
-					mergeCollectionField(mergeFirst, mergeSecond, field, deleteSet);
+					mergeCollectionField(mergeFirst, mergeSecond, field, deleteSet, clonedObjects);
 				}else if(isUserType(fieldType)){
 					mergeUserTypeField(mergeFirst, mergeSecond, field);
 				}else if(isSingleCdmBaseObject(fieldType)){
@@ -245,30 +253,49 @@ public class DefaultMergeStrategy extends StrategyBase implements IMergeStrategy
 		String propertyName = field.getName();
 		Class<?> fieldType = field.getType();
 		MergeMode mergeMode =  this.getMergeMode(propertyName);
-		if (mergeMode != MergeMode.FIRST){
+		if (mergeMode == MergeMode.MERGE){
+			Method mergeMethod = getMergeMethod(fieldType);
+			Object firstObject = field.get(mergeFirst);
+			if (firstObject == null){
+				firstObject = fieldType.newInstance();
+			}
+			Object secondObject = field.get(mergeSecond);
+			mergeMethod.invoke(firstObject, secondObject);
+		}else if (mergeMode != MergeMode.FIRST){
 			Object value = getMergeValue(mergeFirst, mergeSecond, field);
 			field.set(mergeFirst, value);
 		}
 		System.out.println(propertyName + ": " + mergeMode + ", " + fieldType.getName());
-		
 	}
 	
+	/**
+	 * @return
+	 * @throws NoSuchMethodException 
+	 * @throws SecurityException 
+	 */
+	private Method getMergeMethod(Class<?> fieldType) throws SecurityException, NoSuchMethodException {
+		Method mergeMethod = fieldType.getDeclaredMethod("merge", fieldType);
+		return mergeMethod;
+	}
+
+
+
 	/**
 	 * @throws Exception 
 	 * 
 	 */
-	private <T extends IMergable> void mergeCollectionField(T mergeFirst, T mergeSecond, Field field, Set<ICdmBase> deleteSet) throws Exception {
+	private <T extends IMergable> void mergeCollectionField(T mergeFirst, T mergeSecond, Field field, Set<ICdmBase> deleteSet, Set<ICdmBase> clonedObjects) throws Exception {
 		String propertyName = field.getName();
 		Class<?> fieldType = field.getType();
 		MergeMode mergeMode =  this.getMergeMode(propertyName);
 		if (mergeMode != MergeMode.FIRST){
-			mergeCollectionFieldNoFirst(mergeFirst, mergeSecond, field, mergeMode, deleteSet);
+			mergeCollectionFieldNoFirst(mergeFirst, mergeSecond, field, mergeMode, deleteSet, clonedObjects);
 		}
 		System.out.println(propertyName + ": " + mergeMode + ", " + fieldType.getName());
 		
 	}
 
-	private <T extends IMergable> void mergeCollectionFieldNoFirst(T mergeFirst, T mergeSecond, Field field, MergeMode mergeMode, Set<ICdmBase> deleteSet) throws Exception{
+	private <T extends IMergable> void mergeCollectionFieldNoFirst(T mergeFirst, T mergeSecond, Field field, MergeMode mergeMode, Set<ICdmBase> deleteSet, Set<ICdmBase> clonedObjects) throws Exception{
 		Class<?> fieldType = field.getType();
 		if (mergeMode == MergeMode.ADD || mergeMode == MergeMode.ADD_CLONE){
 			//FIXME
@@ -282,9 +309,12 @@ public class DefaultMergeStrategy extends StrategyBase implements IMergeStrategy
 					Object objectToAdd; 
 					if (mergeMode == MergeMode.ADD){
 						objectToAdd = obj;
-					}else{
+					}else if(mergeMode == MergeMode.ADD_CLONE){
 						Method cloneMethod = obj.getClass().getDeclaredMethod("clone");
 						objectToAdd = cloneMethod.invoke(obj);
+						clonedObjects.add(obj);
+					}else{
+						throw new MergeException("Unknown collection merge mode: " + mergeMode);
 					}
 					addMethod.invoke(mergeFirst, objectToAdd);
 					removeList.add(obj);
@@ -465,7 +495,8 @@ public class DefaultMergeStrategy extends StrategyBase implements IMergeStrategy
 	private boolean isUserType(Class<?> fieldType) {
 		if (	fieldType == TimePeriod.class ||
 				fieldType == DateTime.class ||
-				fieldType == LSID.class
+				fieldType == LSID.class ||
+				fieldType == Contact.class
 			){
 			return true;
 		}else{
