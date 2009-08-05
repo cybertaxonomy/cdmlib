@@ -20,6 +20,7 @@ import eu.etaxonomy.cdm.model.description.StatisticalMeasure;
 import eu.etaxonomy.cdm.model.location.Continent;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
+import eu.etaxonomy.cdm.model.location.ReferenceSystem;
 import eu.etaxonomy.cdm.model.location.TdwgArea;
 import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
 import eu.etaxonomy.cdm.model.media.RightsTerm;
@@ -67,7 +68,10 @@ public enum VocabularyEnum {
 	StatisticalMeasure("066cc62e-7213-495e-a020-97a1233bc037", StatisticalMeasure.class),
 	RightsTerm("8627c526-73af-44d9-902c-11c1f11b60b4", RightsTerm.class),
 	NameTypeDesignationStatus("ab60e738-4d09-4c24-a1b3-9466b01f9f55", NameTypeDesignationStatus.class),
-	ExtensionType("117cc307-5bd4-4b10-9b2f-2e14051b3b20",ExtensionType.class);
+	ExtensionType("117cc307-5bd4-4b10-9b2f-2e14051b3b20",ExtensionType.class),
+	ReferenceSystem("ec6376e5-0c9c-4f5c-848b-b288e6c17a86",ReferenceSystem.class)
+	;
+	
 	
 	private UUID uuid;
 	private Class<? extends DefinedTermBase<?>> clazz;
