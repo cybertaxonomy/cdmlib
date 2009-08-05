@@ -72,6 +72,7 @@ public class MediaTest {
 		media1.addDescription(languageString1);
 		media1.addDescription("media1Desc2", Language.GERMAN());
 		mediaRepresentation1 = MediaRepresentation.NewInstance();
+		mediaRepresentation1.setMimeType("MimeType1");
 		media1.addRepresentation(mediaRepresentation1);
 		rights1 = Rights.NewInstance();
 		media1.addRights(rights1);
@@ -101,10 +102,12 @@ public class MediaTest {
 			Assert.assertTrue("Clone must have a default language description", mediaClone.getDescription().containsKey(Language.DEFAULT()));
 			Assert.assertSame("Description1 must be the same", languageString1, mediaClone.getDescription().get(Language.DEFAULT()) );
 			Assert.assertTrue("Clone must have a german description", mediaClone.getDescription().containsKey(Language.GERMAN()));
-			Assert.assertEquals("German description must be media1Desc2", germanDescription, mediaClone.getDescription().get(Language.GERMAN()).getText() );
+			Assert.assertEquals("German description must equal media1Desc2", germanDescription, mediaClone.getDescription().get(Language.GERMAN()).getText() );
 			
 			Assert.assertEquals("Media created year must be 2002", 2002, mediaClone.getMediaCreated().getYear());
-			Assert.assertTrue("Representations must contain mediaRepresentation1", mediaClone.getRepresentations().contains(mediaRepresentation1));
+			Assert.assertEquals("Number of media representations must be 1", 1, mediaClone.getRepresentations().size());
+			Assert.assertNotSame("Only media representation must not be mediaRepresentation1", mediaRepresentation1, mediaClone.getRepresentations().iterator().next());
+			Assert.assertEquals("Only meda representation must have same MimeType as mediaRepresentation1", mediaRepresentation1.getMimeType(), mediaClone.getRepresentations().iterator().next().getMimeType());
 			Assert.assertTrue("Rights must contain rights1", mediaClone.getRights().contains(rights1));
 		
 			Assert.assertTrue("Clone must have a default language title", mediaClone.getTitle().containsKey(Language.DEFAULT()));

@@ -11,6 +11,8 @@ package eu.etaxonomy.cdm.model.media;
 
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 import javax.persistence.Entity;
@@ -36,6 +38,8 @@ import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.IndexColumn;
 import org.hibernate.envers.Audited;
 
+import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 
 /**
@@ -59,7 +63,7 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
 @Entity
 @Audited
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
-public class MediaRepresentation extends VersionableEntity {
+public class MediaRepresentation extends VersionableEntity implements Cloneable{
 	private static final long serialVersionUID = -1520078266008619806L;
 	private static final Logger logger = Logger.getLogger(MediaRepresentation.class);
 	
@@ -175,6 +179,26 @@ public class MediaRepresentation extends VersionableEntity {
 		}
 	}
 	
+//************************* CLONE **************************/
+		/* (non-Javadoc)
+	 * @see java.lang.Object#clone()
+	 */
+	@Override
+	public Object clone() throws CloneNotSupportedException{
+		MediaRepresentation result = (MediaRepresentation)super.clone();
+
+		//media representations
+		result.mediaRepresentationParts = new ArrayList<MediaRepresentationPart>();
+		for (MediaRepresentationPart mediaRepresentationPart: this.mediaRepresentationParts){
+			result.mediaRepresentationParts.add((MediaRepresentationPart)mediaRepresentationPart.clone());
+		}
+		//media
+		//this.getMedia().addRepresentation(result);
+		this.setMedia(null);
+		
+		//no changes to: mimeType, suffix
+		return result;
+	}	
 	
 	
 

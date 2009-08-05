@@ -220,7 +220,27 @@ public class Media extends AnnotatableEntity implements Cloneable {
 	@Override
 	public Object clone() throws CloneNotSupportedException{
 		Media result = (Media)super.clone();
-		//no changes to: type, agent
+		//description
+		result.description = new HashMap<Language, LanguageString>();
+		for (Language language: this.description.keySet()){
+			result.description.put(language, this.description.get(language));
+		}
+		//title
+		result.title = new HashMap<Language, LanguageString>();
+		for (Language language: this.title.keySet()){
+			result.title.put(language, this.title.get(language));
+		}
+		//media representations
+		result.representations = new HashSet<MediaRepresentation>();
+		for (MediaRepresentation mediaRepresentation: this.representations){
+			result.representations.add((MediaRepresentation)mediaRepresentation.clone());
+		}
+		//rights
+		result.rights = new HashSet<Rights>();
+		for (Rights rights: this.rights){
+			result.rights.add((Rights)rights);
+		}
+		//no changes to: artist
 		return result;
 	}
 }

@@ -9,6 +9,8 @@
 
 package eu.etaxonomy.cdm.model.media;
 
+import java.util.ArrayList;
+
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
@@ -45,7 +47,7 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
   })
 @Entity
 @Audited
-public class MediaRepresentationPart extends VersionableEntity {
+public class MediaRepresentationPart extends VersionableEntity implements Cloneable{
 	private static final long serialVersionUID = -1674422508643785796L;
 	private static final Logger logger = Logger.getLogger(MediaRepresentationPart.class);
 
@@ -133,5 +135,21 @@ public class MediaRepresentationPart extends VersionableEntity {
 	public void setSize(Integer size) {
 		this.size = size;
 	}
+	
+//************************* CLONE **************************/
+		/* (non-Javadoc)
+	 * @see java.lang.Object#clone()
+	 */
+	@Override
+	public Object clone() throws CloneNotSupportedException{
+		MediaRepresentationPart result = (MediaRepresentationPart)super.clone();
 
+		//media representation
+		result.setMediaRepresentation(null);
+		
+		//no changes to: size, ure
+		return result;
+	}
+
+	
 }
