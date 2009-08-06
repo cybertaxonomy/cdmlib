@@ -25,6 +25,9 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
+import eu.etaxonomy.cdm.strategy.merge.Merge;
+import eu.etaxonomy.cdm.strategy.merge.MergeMode;
+
 /**
  * Abstract superclass implementing human annotations and machine markers to be assigned to CDM objects.
  * @author m.doering
@@ -45,13 +48,15 @@ public abstract class AnnotatableEntity extends VersionableEntity {
 	@XmlElementWrapper(name = "Markers")
 	@XmlElement(name = "Marker")
 	@OneToMany(fetch=FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE})
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
+	@Merge(MergeMode.ADD_CLONE)
 	protected Set<Marker> markers = new HashSet<Marker>();
 	
 	@XmlElementWrapper(name = "Annotations")
 	@XmlElement(name = "Annotation")
 	@OneToMany(fetch=FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
+	@Merge(MergeMode.ADD_CLONE)
 	protected Set<Annotation> annotations = new HashSet<Annotation>();
 	
 	protected AnnotatableEntity() {
@@ -121,5 +126,5 @@ public abstract class AnnotatableEntity extends VersionableEntity {
 		
 		//no changes to: -
 		return result;
-	}	
+	}
 }

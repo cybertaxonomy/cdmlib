@@ -18,7 +18,6 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
@@ -41,6 +40,7 @@ import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
 @XmlRootElement(name = "Point")
 @Embeddable
 public class Point implements Cloneable, Serializable {
+	private static final long serialVersionUID = 531030660792800636L;
 	private static final Logger logger = Logger.getLogger(Point.class);
 	
 	//TODO was Float but H2 threw errors
@@ -66,6 +66,19 @@ public class Point implements Cloneable, Serializable {
 	 */
 	public static Point NewInstance(){
 		return new Point();
+	}
+	
+	/**
+	 * Factory method
+	 * @return
+	 */
+	public static Point NewInstance(Double longitude, Double latitude, ReferenceSystem referenceSystem, Integer errorRadius){
+		Point result = new Point();
+		result.setLongitude(longitude);
+		result.setLatitude(latitude);
+		result.setReferenceSystem(referenceSystem);
+		result.setErrorRadius(errorRadius);
+		return result;
 	}
 	
 	/**

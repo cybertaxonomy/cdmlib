@@ -1327,6 +1327,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/Proceedings.java -te
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/PublicationBase.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/Publisher.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/ReferenceBase.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/ReferenceIdentity.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/Report.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/SectionBase.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/StrictReferenceBase.java -text

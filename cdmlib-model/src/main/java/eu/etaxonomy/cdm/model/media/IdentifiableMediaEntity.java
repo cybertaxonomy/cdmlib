@@ -20,6 +20,8 @@ import org.hibernate.annotations.CascadeType;
 
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
+import eu.etaxonomy.cdm.strategy.merge.Merge;
+import eu.etaxonomy.cdm.strategy.merge.MergeMode;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "IdentifiableMediaEntity", propOrder = {
@@ -38,6 +40,8 @@ public abstract class IdentifiableMediaEntity<S extends IIdentifiableEntityCache
     @XmlSchemaType(name = "IDREF")
     @ManyToMany(fetch = FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE})
+	//TODO
+	@Merge(MergeMode.ADD_CLONE)
 	private Set<Media> media = new HashSet<Media>();
 	
 	

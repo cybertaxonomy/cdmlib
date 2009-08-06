@@ -32,6 +32,11 @@ import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.CollectionOfElements;
 import org.hibernate.envers.Audited;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.model.location.Point;
+import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
+import eu.etaxonomy.cdm.strategy.merge.MergeException;
+
 /**
  * The class for information on how to approach a {@link Person person} or an {@link Institution institution}.
  * It includes telecommunication data and an electronic as well as
@@ -59,15 +64,80 @@ import org.hibernate.envers.Audited;
 @Audited
 public class Contact implements Serializable {
 	private static final long serialVersionUID = -1851305307069277625L;
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(Contact.class);
 	
+	
+	public static Contact NewInstance() {
+		return new Contact();
+	}
 
+	/**
+	 * Creates a new contact
+	 * @param street
+	 * @param postcode
+	 * @param locality
+	 * @param country
+	 * @param pobox
+	 * @param region
+	 * @param email
+	 * @param faxNumber
+	 * @param phoneNumber
+	 * @param url
+	 * @param location
+	 * @return
+	 */
+	public static Contact NewInstance(String street, String postcode, String locality, 
+			WaterbodyOrCountry country, String pobox, String region, 
+			String email, String faxNumber, String phoneNumber, String url, Point location) {
+		Contact result = new Contact();
+		if (country != null || CdmUtils.isNotEmpty(locality) || CdmUtils.isNotEmpty(pobox) || CdmUtils.isNotEmpty(postcode) || 
+				CdmUtils.isNotEmpty(region) || CdmUtils.isNotEmpty(street) ){
+			Address newAddress = Address.NewInstance(country, locality, pobox, postcode, region, street, location);
+			result.addresses.add(newAddress);
+		}
+		if (email != null){
+			result.emailAddresses.add(email);
+		}
+		if (faxNumber != null){
+			result.faxNumbers.add(faxNumber);
+		}
+		if (phoneNumber != null){
+			result.phoneNumbers.add(phoneNumber);
+		}
+		if (url != null){
+			result.urls.add(url);
+		}
+		return result;
+	}
+
+	
+	public static Contact NewInstance(Set<Address> addresses, List<String> emailAdresses,
+			List<String> faxNumbers, List<String> phoneNumbers, List<String> urls) {
+		Contact result = new Contact();
+		if (addresses != null){
+			result.addresses = addresses;
+		}
+		if (emailAdresses != null){
+			result.emailAddresses = emailAdresses;
+		}
+		if (faxNumbers != null){
+			result.faxNumbers = faxNumbers;
+		}
+		if (phoneNumbers != null){
+			result.phoneNumbers = phoneNumbers;
+		}
+		if (urls != null){
+			result.urls = urls;
+		}
+		return result;
+	}
+
+	
 	/** 
 	 * Class constructor.
 	 */
 	public Contact() {
-		super();
-		logger.debug("Constructor call");
 	}
 
 	@XmlElementWrapper(name = "EmailAddresses")
@@ -98,6 +168,31 @@ public class Contact implements Serializable {
 	protected Set<Address> addresses = new HashSet<Address>();
 	
 	
+	public void merge(Contact contact2) throws MergeException{
+		if (contact2 != null){
+			mergeList(this.getEmailAddresses(), contact2.getEmailAddresses());
+			mergeList(this.getFaxNumbers(), contact2.getFaxNumbers());
+			mergeList(this.getPhoneNumbers(), contact2.getPhoneNumbers());
+			mergeList(this.getUrls(), contact2.getUrls());
+			for (Address address : contact2.getAddresses()){
+				try {
+					this.addresses.add((Address)address.clone());
+				} catch (CloneNotSupportedException e) {
+					throw new MergeException("Address must implement Cloneable");
+				}		
+			}
+		}
+	}
+	
+	private void mergeList(List list1, List list2){
+		for (Object obj2 : list2){
+			if (! list1.contains(obj2)){
+				list1.add(obj2);
+			}
+		}
+	}
+    
+    
 	/** 
 	 * Returns the set of postal {@link Address addresses} belonging to <i>this</i> contact. 
 	 * A {@link Person person} or an {@link Institution institution} cannot have more than one contact,
@@ -121,6 +216,12 @@ public class Contact implements Serializable {
 		if (address != null){
 			addresses.add(address);
 		}
+	}
+	
+	public void addAddress(String street, String postcode, String locality, 
+			WaterbodyOrCountry country, String pobox, String region, Point location){
+		Address newAddress = Address.NewInstance(country, locality, pobox, postcode, region, street, location);
+		addresses.add(newAddress);
 	}
 	
 	/** 
@@ -233,4 +334,6 @@ public class Contact implements Serializable {
 	public void removeFaxNumber(String faxNumber){
 		faxNumbers.remove(faxNumber);
 	}
+
+	
 }

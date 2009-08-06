@@ -10,8 +10,6 @@
 package eu.etaxonomy.cdm.model.reference;
 
 
-import java.util.Set;
-
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
@@ -41,6 +39,8 @@ import eu.etaxonomy.cdm.model.common.IParsable;
 import eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.strategy.cache.reference.IReferenceBaseCacheStrategy;
+import eu.etaxonomy.cdm.strategy.merge.Merge;
+import eu.etaxonomy.cdm.strategy.merge.MergeMode;
 
 /**
  * The upmost (abstract) class for references (information sources). Its two
@@ -82,6 +82,7 @@ public abstract class ReferenceBase<S extends IReferenceBaseCacheStrategy> exten
 	//flag to subselect only references that could be useful for nomenclatural citations. If a reference is used as a
 	//nomenclatural reference in a name this flag should be automatically set
 	@XmlElement(name = "IsNomenclaturallyRelevant")
+	@Merge(MergeMode.OR)
 	private boolean nomenclaturallyRelevant;
 	
 	@XmlElement(name = "AuthorTeam")
@@ -304,5 +305,5 @@ public abstract class ReferenceBase<S extends IReferenceBaseCacheStrategy> exten
 		//no changes to: authorTeam, hasProblem, nomenclaturallyRelevant, uri
 		return result;
 	}
-	
+
 }

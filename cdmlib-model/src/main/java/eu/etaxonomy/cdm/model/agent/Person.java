@@ -97,7 +97,7 @@ public class Person extends TeamOrPersonBase<Person> {
     @XmlElement(name = "InstitutionalMembership")
     @OneToMany(fetch=FetchType.LAZY, mappedBy = "person")
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
-	protected Set<InstitutionalMembership> institutionalMemberships;
+	protected Set<InstitutionalMembership> institutionalMemberships = new HashSet<InstitutionalMembership>();
 	
     @XmlElementWrapper(name = "Keywords")
     @XmlElement(name = "Keyword")
@@ -175,6 +175,15 @@ public class Person extends TeamOrPersonBase<Person> {
 		return this.institutionalMemberships;
 	}
 
+	protected void addInstitutionalMembership(InstitutionalMembership ims){
+		this.institutionalMemberships.add(ims);
+		if (ims.getPerson() != this){
+			logger.warn("Institutional membership's person has to be changed for adding it to person: " + this);
+			ims.getPerson().removeInstitutionalMembership(ims);
+			ims.setPerson(this);
+			
+		}
+	}
 	
 	/** 
 	 * Adds a new {@link InstitutionalMembership membership} of <i>this</i> person in an {@link Institution institution}
@@ -190,10 +199,7 @@ public class Person extends TeamOrPersonBase<Person> {
 	 * @see 			    InstitutionalMembership#InstitutionalMembership(Institution, Person, TimePeriod, String, String)
 	 */
 	public void addInstitutionalMembership(Institution institution, TimePeriod period, String department, String role){
-		//TODO to be implemented?
-		logger.warn("not yet fully implemented?");
-		InstitutionalMembership ims = new InstitutionalMembership(institution, this, period, department, role);
-		institutionalMemberships.add(ims);
+		new InstitutionalMembership(institution, this, period, department, role);
 	}
 	
 	/** 
@@ -205,8 +211,6 @@ public class Person extends TeamOrPersonBase<Person> {
 	 * @see     	#getInstitutionalMemberships()
 	 */
 	public void removeInstitutionalMembership(InstitutionalMembership ims){
-		//TODO to be implemented?
-		logger.warn("not yet fully implemented?");
 		ims.setInstitute(null);
 		ims.setPerson(null);
 		this.institutionalMemberships.remove(ims);

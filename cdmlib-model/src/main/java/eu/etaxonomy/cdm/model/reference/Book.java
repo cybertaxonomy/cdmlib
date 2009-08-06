@@ -16,7 +16,6 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
@@ -54,7 +53,7 @@ import eu.etaxonomy.cdm.strategy.cache.reference.INomenclaturalReferenceCacheStr
 @Audited
 @Configurable
 public class Book extends PrintedUnitBase<INomenclaturalReferenceCacheStrategy<Book>> implements INomenclaturalReference, Cloneable {
-	@SuppressWarnings("unused")
+	private static final long serialVersionUID = 2703962996516519037L;
 	private static final Logger logger = Logger.getLogger(Book.class);
 	
     @XmlElement(name = "Edition")
@@ -201,7 +200,7 @@ public class Book extends PrintedUnitBase<INomenclaturalReferenceCacheStrategy<B
 	 * @see java.lang.Object#clone()
 	 */
 	@Override
-	public Book clone(){
+	public Object clone(){
 		Book result = (Book)super.clone();
 		result.cacheStrategy = BookDefaultCacheStrategy.NewInstance();
 		//no changes to: edition, isbn

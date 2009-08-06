@@ -330,9 +330,9 @@ public class DefaultMergeStrategy extends StrategyBase implements IMergeStrategy
 			}
 		}else if (mergeMode == MergeMode.RELATION){
 			if (Set.class.isAssignableFrom(fieldType) || List.class.isAssignableFrom(fieldType)){
-				Collection<RelationshipBase> secondCollection = (Collection<RelationshipBase>)field.get(mergeSecond);
+				Collection<RelationshipBase<?,?,?>> secondCollection = (Collection<RelationshipBase<?,?,?>>)field.get(mergeSecond);
 				List<ICdmBase> removeList = new ArrayList<ICdmBase>();
-				for (RelationshipBase relation : secondCollection){
+				for (RelationshipBase<?,?,?> relation : secondCollection){
 					Method relatedFromMethod = RelationshipBase.class.getDeclaredMethod("getRelatedFrom");
 					relatedFromMethod.setAccessible(true);
 					Object relatedFrom = relatedFromMethod.invoke(relation);
@@ -373,7 +373,7 @@ public class DefaultMergeStrategy extends StrategyBase implements IMergeStrategy
 		return getAddMethod(field, false);
 	}
 	
-	private Method getAddMethod(Field field, boolean remove) throws MergeException{
+	public static Method getAddMethod(Field field, boolean remove) throws MergeException{
 		Method result;
 		Class parameterClass = getCollectionType(field);
 		String fieldName = field.getName();
@@ -579,7 +579,7 @@ public class DefaultMergeStrategy extends StrategyBase implements IMergeStrategy
 	}
 
 	
-	private Class getCollectionType(Field field) throws MergeException{
+	private static Class getCollectionType(Field field) throws MergeException{
 		Type genericType = (ParameterizedTypeImpl)field.getGenericType();
 		if (genericType instanceof ParameterizedTypeImpl){
 			ParameterizedTypeImpl paraType = (ParameterizedTypeImpl)genericType;

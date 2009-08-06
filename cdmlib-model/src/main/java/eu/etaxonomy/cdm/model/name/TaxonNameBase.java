@@ -46,7 +46,6 @@ import eu.etaxonomy.cdm.model.common.IParsable;
 import eu.etaxonomy.cdm.model.common.IReferencedEntity;
 import eu.etaxonomy.cdm.model.common.IRelated;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
-import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
@@ -57,6 +56,8 @@ import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy;
+import eu.etaxonomy.cdm.strategy.merge.Merge;
+import eu.etaxonomy.cdm.strategy.merge.MergeMode;
 
 /**
  * The upmost (abstract) class for scientific taxon names regardless of any
@@ -154,6 +155,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
     @OneToMany(mappedBy="relatedFrom", fetch= FetchType.LAZY)
 	//TODO @Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE_ORPHAN}) => DELETE_ORPHAN does not work ( org.hibernate.HibernateException: Don't change the reference to a collection with cascade="all-delete-orphan": eu.etaxonomy.cdm.model.name.TaxonNameBase.relationsFromThisName)
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
+	@Merge(MergeMode.RELATION)
 	private Set<NameRelationship> relationsFromThisName = new HashSet<NameRelationship>();
 
     @XmlElementWrapper(name = "RelationsToThisName")
@@ -162,6 +164,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
     @XmlSchemaType(name = "IDREF")
     @OneToMany(mappedBy="relatedTo", fetch= FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
+	@Merge(MergeMode.RELATION)
 	private Set<NameRelationship> relationsToThisName = new HashSet<NameRelationship>();
 
     @XmlElementWrapper(name = "NomenclaturalStatuses")
@@ -993,6 +996,11 @@ public void addRelationshipToName(TaxonNameBase toName, NameRelationshipType typ
 				boolean addToAllHomotypicNames) {
 		SpecimenTypeDesignation specimenTypeDesignation = new SpecimenTypeDesignation(typeSpecimen, status, citation, citationMicroReference, originalNameString, isNotDesignated);
 		addTypeDesignation(specimenTypeDesignation, addToAllHomotypicNames);
+	}
+	
+	//used by merge strategy
+	private boolean addTypeDesignation(TypeDesignationBase typeDesignation){
+		return addTypeDesignation(typeDesignation, true);
 	}
 	
 	private boolean addTypeDesignation(TypeDesignationBase typeDesignation, boolean addToAllNames){

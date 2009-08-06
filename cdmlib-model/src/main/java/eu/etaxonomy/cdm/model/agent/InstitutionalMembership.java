@@ -87,13 +87,14 @@ public class InstitutionalMembership extends VersionableEntity {
 		return mship;
 	}
 
-	public InstitutionalMembership() {
+	protected InstitutionalMembership() {
 		super();
 	}
 
 	/** 
 	 * Class constructor using an {@link Institution institution}, a {@link Person person}, a {@link common.TimePeriod time period},
 	 * a department name string and a role string.
+	 * Adds this membership to the persons memberships.
 	 *
 	 * @param  institute   the institution in which the person is a member
 	 * @param  person      the person who is a member of the institution
@@ -114,6 +115,7 @@ public class InstitutionalMembership extends VersionableEntity {
 		this.role = role;
 		this.institute = institute;
 		this.person = person;
+		person.addInstitutionalMembership(this);
 	}
 	
 	/** 

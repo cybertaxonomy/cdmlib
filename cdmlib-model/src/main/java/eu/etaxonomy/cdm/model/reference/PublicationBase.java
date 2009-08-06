@@ -42,6 +42,8 @@ import eu.etaxonomy.cdm.strategy.cache.reference.IReferenceBaseCacheStrategy;
 @Indexed(index = "eu.etaxonomy.cdm.model.reference.ReferenceBase")
 @Audited
 public abstract class PublicationBase<S extends IReferenceBaseCacheStrategy> extends StrictReferenceBase<S> {
+	private static final long serialVersionUID = -3050853696708743386L;
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(PublicationBase.class);
 
 //	@XmlElementWrapper(name = "Publishers")
@@ -130,5 +132,4 @@ public abstract class PublicationBase<S extends IReferenceBaseCacheStrategy> ext
 		//No changes: - 
 		return result;
 	}
-
 }

@@ -54,12 +54,39 @@ import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
 @XmlRootElement(name = "Address")
 @Entity
 @Audited
-public class Address extends VersionableEntity {
+public class Address extends VersionableEntity implements Cloneable{
 	private static final long serialVersionUID = 682106303069088972L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(Address.class);
 	
-    @XmlElement(name = "POBox")
+	public static Address NewInstance(){
+		return new Address();
+	}
+	
+    public static Address NewInstance(WaterbodyOrCountry country,
+			String locality, String pobox, String postcode,
+			String region, String street, Point location) {
+		return new Address(country, locality, location, pobox, postcode,
+				region, street);
+	}
+
+    private Address(){
+    	
+    }
+    
+	private Address(WaterbodyOrCountry country, String locality, Point location,
+			String pobox, String postcode, String region, String street) {
+		super();
+		this.country = country;
+		this.locality = locality;
+		this.location = location;
+		this.pobox = pobox;
+		this.postcode = postcode;
+		this.region = region;
+		this.street = street;
+	}
+
+	@XmlElement(name = "POBox")
 	private String pobox;
     
     @XmlElement(name = "Street")
@@ -199,5 +226,24 @@ public class Address extends VersionableEntity {
 	public void setRegion(String region){
 		this.region = region;
 	}
+	
+//************************ CLONE ************************ //
+	/** 
+	 * Clones this Address.
+	 * Set fields for nextVersion, previousVersion, updated, updatedBy and createdBy are set to <tt>null</tt>
+	 * The id is set to 0.
+	 * The uuid is created new.
+	 * The createdWhen is set to the current date.
+	 * @see java.lang.Object#clone()
+	 */
+	@Override
+	public Object clone() throws CloneNotSupportedException{
+		Address result = (Address)super.clone();
+		
+		//no changes to: -
+		return result;
+	}
+
+	
 
 }

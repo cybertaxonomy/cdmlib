@@ -9,6 +9,7 @@
 
 package eu.etaxonomy.cdm.model.location;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -40,6 +41,8 @@ public class Continent extends NamedArea {
 	private static final long serialVersionUID = 4650684072484353151L;
 	private static final Logger logger = Logger.getLogger(Continent.class);
 
+	protected static Map<UUID, NamedArea> termMap = null;		
+
 	private static final UUID uuidEurope = UUID.fromString("3b69f979-408c-4080-b573-0ad78a315610");
 	private static final UUID uuidAfrica = UUID.fromString("c204c529-d8d2-458f-b939-96f0ebd2cbe8");
 	private static final UUID uuidAsiaTemperate = UUID.fromString("7f4f4f89-3b4c-475d-929f-144109bd8457");
@@ -49,15 +52,6 @@ public class Continent extends NamedArea {
 	private static final UUID uuidAustralasia = UUID.fromString("a2afdb9a-04a0-434c-9e75-d07dbeb86526");
 	private static final UUID uuidPacific = UUID.fromString("c57adcff-5213-45f0-a5f0-97a9f5c0f1fe");
 	private static final UUID uuidAntarctica = UUID.fromString("71fd9ab7-9b07-4eb6-8e54-c519aff56728");
-	private static Continent PACIFIC;
-	private static Continent AUSTRALASIA;
-	private static Continent SOUTH_AMERICA;
-	private static Continent ANTARCTICA;
-	private static Continent NORTH_AMERICA;
-	private static Continent ASIA_TROPICAL;
-	private static Continent ASIA_TEMPERATE;
-	private static Continent AFRICA;
-	private static Continent EUROPE;
 
 	/**
 	 * Factory method
@@ -82,44 +76,54 @@ public class Continent extends NamedArea {
 	public Continent() {
 		super();
 	}
-	public Continent(String term, String label, String labelAbbrev) {
+	
+	private Continent(String term, String label, String labelAbbrev) {
 		super(term, label, labelAbbrev);
 	}
+	
+	protected static Continent getTermByUuid(UUID uuid){
+		if (termMap == null){
+			return null;
+		}else{
+			return (Continent)termMap.get(uuid);
+		}
+	}
+
 
 	public static final Continent EUROPE(){
-		return EUROPE;
+		return getTermByUuid(uuidEurope);
 	}
 
 	public static final Continent AFRICA(){
-		return AFRICA;
+		return getTermByUuid(uuidAfrica);
 	}
 
 	public static final Continent ASIA_TEMPERATE(){
-		return ASIA_TEMPERATE;
+		return getTermByUuid(uuidAsiaTemperate);
 	}
 
 	public static final Continent ASIA_TROPICAL(){
-		return ASIA_TROPICAL;
+		return getTermByUuid(uuidAsiaTropical);
 	}
 
 	public static final Continent NORTH_AMERICA(){
-		return NORTH_AMERICA;
+		return getTermByUuid(uuidNAmerica);
 	}
 
 	public static final Continent ANTARCTICA(){
-		return ANTARCTICA;
+		return getTermByUuid(uuidAntarctica);
 	}
 
 	public static final Continent SOUTH_AMERICA(){
-		return SOUTH_AMERICA;
+		return getTermByUuid(uuidSAmerica);
 	}
 
 	public static final Continent AUSTRALASIA(){
-		return AUSTRALASIA;
+		return getTermByUuid(uuidAustralasia);
 	}
 	
 	public static final Continent PACIFIC(){
-		return PACIFIC;
+		return getTermByUuid(uuidPacific);
 	}
 	@Override
 	public NamedArea readCsvLine(Class<NamedArea> termClass, List<String> csvLine, Map<UUID,DefinedTermBase> terms) {
@@ -138,15 +142,10 @@ public class Continent extends NamedArea {
 	
 	@Override
 	protected void setDefaultTerms(TermVocabulary<NamedArea> termVocabulary) {
-		Continent.AFRICA = (Continent)termVocabulary.findTermByUuid(Continent.uuidAfrica);
-		Continent.ANTARCTICA = (Continent)termVocabulary.findTermByUuid(Continent.uuidAntarctica);
-		Continent.ASIA_TEMPERATE = (Continent)termVocabulary.findTermByUuid(Continent.uuidAsiaTemperate);
-		Continent.ASIA_TROPICAL = (Continent)termVocabulary.findTermByUuid(Continent.uuidAsiaTropical);
-		Continent.AUSTRALASIA = (Continent)termVocabulary.findTermByUuid(Continent.uuidAustralasia);
-		Continent.EUROPE = (Continent)termVocabulary.findTermByUuid(Continent.uuidEurope);
-		Continent.NORTH_AMERICA = (Continent)termVocabulary.findTermByUuid(Continent.uuidNAmerica);
-		Continent.PACIFIC = (Continent)termVocabulary.findTermByUuid(Continent.uuidPacific);
-		Continent.SOUTH_AMERICA = (Continent)termVocabulary.findTermByUuid(Continent.uuidSAmerica);
+		termMap = new HashMap<UUID, NamedArea>();
+		for (NamedArea term : termVocabulary.getTerms()){
+			termMap.put(term.getUuid(), (NamedArea)term);  //TODO casting
+		}
 	}
 
 }

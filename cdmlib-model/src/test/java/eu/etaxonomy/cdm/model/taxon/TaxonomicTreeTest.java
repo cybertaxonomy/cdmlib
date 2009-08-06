@@ -12,10 +12,21 @@ package eu.etaxonomy.cdm.model.taxon;
 
 import static org.junit.Assert.*;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.lang.reflect.TypeVariable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import junit.framework.Assert;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -23,10 +34,15 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import eu.etaxonomy.cdm.model.agent.Person;
+import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
+import eu.etaxonomy.cdm.model.reference.Article;
+import eu.etaxonomy.cdm.model.reference.Book;
 import eu.etaxonomy.cdm.model.reference.Journal;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
@@ -36,7 +52,6 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
  * @version 1.0
  */
 public class TaxonomicTreeTest {
-	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TaxonomicTreeTest.class);
 
 	private static String viewName1;
@@ -235,6 +250,141 @@ public class TaxonomicTreeTest {
 		TaxonomicTree taxonomicViewLocal = TaxonomicTree.NewInstance(viewName1);
 		//Maybe changed if title cache is generated in a different way
 		assertEquals(viewName1, taxonomicViewLocal.getTitleCache());
+	}
+	
+	/**
+	 * Test method for {@link eu.etaxonomy.cdm.model.taxon.TaxonomicTree#generateTitle()}.
+	 */
+	@Test
+	public void play() {
+			
+			CdmBase referencedCdmBase = Person.NewInstance();
+			Set<Class<? extends CdmBase>> allCdmClasses = findAllCdmClasses();
+			
+			Class referencedClass = referencedCdmBase.getClass();
+			Set<CdmBase> result = new HashSet<CdmBase>();
+			System.out.println("Referenced Class: " + referencedClass.getName());
+			
+			
+			for (Class<? extends CdmBase> cdmClass : allCdmClasses){
+				Set<Field> fields = getFields(cdmClass);
+				for (Field field: fields){
+					Class<?> type = field.getType();
+					if (! type.isInterface()){
+						if (referencedClass.isAssignableFrom(type)|| 
+								type.isAssignableFrom(referencedClass) && CdmBase.class.isAssignableFrom(type)){
+							handleSingleClass(referencedClass, type, field, cdmClass, result, referencedCdmBase);
+						}
+					}else{  //interface
+						if (type.isAssignableFrom(referencedClass)){
+							handleSingleClass(referencedClass, type, field, cdmClass, result, referencedCdmBase);
+						}
+					}
+//					Class[] interfaces = referencedClass.getInterfaces();
+//					for (Class interfaze: interfaces){
+//						if (interfaze == type){
+////						if(interfaze.isAssignableFrom(returnType)){
+//						}
+//					}
+					
+					
+				}	
+			}
+			return ;
+//			find(cdmClass, )
+			
+		}
+		
+		private boolean handleSingleClass(Class classToBeSearchedFor, Class type, Field field, Class cdmClass, Set<CdmBase> result,CdmBase value){
+			if (! Modifier.isStatic(field.getModifiers())){
+				String methodName = StringUtils.rightPad(field.getName(), 30);
+				String className = StringUtils.rightPad(cdmClass.getSimpleName(), 30);
+				String returnTypeName = StringUtils.rightPad(type.getSimpleName(), 30);
+				
+				System.out.println(methodName +   "\t\t" + className + "\t\t" + returnTypeName);
+//				result_old.add(method);
+				result.addAll(getCdmBasesByFieldAndClass(field, cdmClass, value));
+			}
+			return true;
+		}
+		
+		private Set<Field> getFields(Class clazz){
+			Set<Field> result = new HashSet<Field>();
+			for (Field field: clazz.getDeclaredFields()){
+				if (!Modifier.isStatic(field.getModifiers())){
+					result.add(field);	
+				}
+			}
+			Class superclass = clazz.getSuperclass();
+			if (CdmBase.class.isAssignableFrom(superclass)){
+				result.addAll(getFields(superclass));
+			}
+			return result;
+		}
+		
+		private Set<CdmBase> getCdmBasesByFieldAndClass(Field field, Class clazz, CdmBase value){
+			//FIXME make not dummy but use dao
+			Set<CdmBase> result = new HashSet<CdmBase>();
+			
+			//genericDao.getCdmBasesByFieldAndClass(clazz, field.getName(), value);
+			
+			
+			BotanicalName name = BotanicalName.NewInstance(Rank.GENUS());
+			name.setTitleCache("A dummy name");
+			result.add(name);
+			ReferenceBase ref = Book.NewInstance();
+			ref.setTitleCache("A dummy book");
+			result.add(ref);
+			
+			return result;
+		}
+	private Set<Class<? extends CdmBase>> findAllCdmClasses(){
+		
+		
+		//init
+		Set<Class<? extends CdmBase>> allCdmClasses = new HashSet<Class<? extends CdmBase>>();
+		allCdmClasses.add(TaxonBase.class);
+		allCdmClasses.add(BotanicalName.class);
+		
+		int count;
+		do{
+			count = allCdmClasses.size();
+			Set<Class<? extends CdmBase>> iteratorSet = new HashSet<Class<? extends CdmBase>>();
+			iteratorSet.addAll(allCdmClasses);
+			for (Class<? extends CdmBase> cdmClass : iteratorSet){
+				Method[] methods = cdmClass.getMethods();
+				for (Method method: methods){
+					Class<?> returnType = method.getReturnType();
+					handleClass(allCdmClasses,returnType);
+					Class<?>[] params = method.getParameterTypes();
+					for (Class paramClass : params){
+						handleClass(allCdmClasses, paramClass);
+					}
+				}	
+			}
+		}while (allCdmClasses.size() > count);
+		boolean withAbstract = false;
+		if (! withAbstract){
+			Iterator<Class<? extends CdmBase>> iterator = allCdmClasses.iterator();
+			while (iterator.hasNext()){
+				Class clazz = iterator.next();
+				if (Modifier.isAbstract(clazz.getModifiers())){
+					iterator.remove();
+				}
+			}
+		}
+		return allCdmClasses;
+	}
+	
+	private void handleClass(Set<Class<? extends CdmBase>> allCdmClasses, Class returnType){
+		if (CdmBase.class.isAssignableFrom(returnType)){
+			if (! allCdmClasses.contains(returnType)){
+				//System.out.println(returnType.getSimpleName());
+				allCdmClasses.add((Class)returnType);
+				Class superClass = returnType.getSuperclass();
+				handleClass(allCdmClasses, superClass);
+			}
+		}
 	}
 
 }

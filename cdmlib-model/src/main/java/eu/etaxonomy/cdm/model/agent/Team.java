@@ -34,6 +34,7 @@ import org.hibernate.search.annotations.Indexed;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import eu.etaxonomy.cdm.strategy.cache.agent.TeamDefaultCacheStrategy;
+import eu.etaxonomy.cdm.strategy.merge.IMergable;
 
 /**
  * This class represents teams of {@link Person persons}. A team exists either for itself
@@ -64,7 +65,7 @@ import eu.etaxonomy.cdm.strategy.cache.agent.TeamDefaultCacheStrategy;
 @Indexed(index = "eu.etaxonomy.cdm.model.agent.AgentBase")
 @Audited
 @Configurable
-public class Team extends TeamOrPersonBase<Team> {
+public class Team extends TeamOrPersonBase<Team> implements IMergable{
 	private static final long serialVersionUID = 97640416905934622L;
 	public static final Logger logger = Logger.getLogger(Team.class);
 	

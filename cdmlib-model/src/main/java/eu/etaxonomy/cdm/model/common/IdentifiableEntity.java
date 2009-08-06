@@ -41,11 +41,15 @@ import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.hibernate.StripHtmlBridge;
 import eu.etaxonomy.cdm.jaxb.FormattedTextAdapter;
 import eu.etaxonomy.cdm.jaxb.LSIDAdapter;
+import eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity;
 import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
+import eu.etaxonomy.cdm.strategy.merge.IMergeStrategy;
+import eu.etaxonomy.cdm.strategy.merge.Merge;
+import eu.etaxonomy.cdm.strategy.merge.MergeMode;
 
 /**
  * Superclass for the primary CDM classes that can be referenced from outside via LSIDs and contain a simple generated title string as a label for human reading.
@@ -102,6 +106,8 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
     @XmlElement(name = "Rights")
     @OneToMany(fetch = FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
+	//TODO
+	@Merge(MergeMode.ADD_CLONE)
 	private Set<Rights> rights = new HashSet<Rights>();
     
     @XmlElementWrapper(name = "Credits")
@@ -109,18 +115,22 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
     @IndexColumn(name="sortIndex", base = 0)
 	@OneToMany(fetch = FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
-    private List<Credit> credits = new ArrayList<Credit>();
+    //TODO
+	@Merge(MergeMode.ADD_CLONE)
+	private List<Credit> credits = new ArrayList<Credit>();
 	
     @XmlElementWrapper(name = "Extensions")
     @XmlElement(name = "Extension")
     @OneToMany(fetch = FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
+	@Merge(MergeMode.ADD_CLONE)
 	private Set<Extension> extensions = new HashSet<Extension>();
 	
     @XmlElementWrapper(name = "Sources")
     @XmlElement(name = "OriginalSource")
     @OneToMany(fetch = FetchType.LAZY)		
-	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
+	@Merge(MergeMode.ADD_CLONE)
 	private Set<OriginalSource> sources = new HashSet<OriginalSource>();
     
     @XmlTransient
@@ -403,7 +413,34 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 		 
 		 return result;
 	 }
-	 
+
+		/**
+		 * Returns the {@link eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy cache strategy} used to generate
+		 * several strings corresponding to <i>this</i> identifiable entity
+		 * (in particular taxon name caches and author strings).
+		 * 
+		 * @return  the cache strategy used for <i>this</i> identifiable entity
+		 * @see     eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy
+		 */
+		public S getCacheStrategy() {
+			return this.cacheStrategy;
+		}
+		/** 
+		 * @see 	#getCacheStrategy()
+		 */
+		
+		public void setCacheStrategy(S cacheStrategy) {
+			this.cacheStrategy = cacheStrategy;
+		}
+		
+		public String generateTitle() {
+			if (cacheStrategy == null){
+				logger.warn("No CacheStrategy defined for "+ this.getClass() + ": " + this.getUuid());
+				return null;
+			}else{
+				return cacheStrategy.getTitleCache(this);
+			}
+		}
 	 
 //****************** CLONE ************************************************/
 	 
@@ -447,31 +484,5 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 		return result;
 	}
 	
-	/**
-	 * Returns the {@link eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy cache strategy} used to generate
-	 * several strings corresponding to <i>this</i> identifiable entity
-	 * (in particular taxon name caches and author strings).
-	 * 
-	 * @return  the cache strategy used for <i>this</i> identifiable entity
-	 * @see     eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy
-	 */
-	public S getCacheStrategy() {
-		return this.cacheStrategy;
-	}
-	/** 
-	 * @see 	#getCacheStrategy()
-	 */
-	
-	public void setCacheStrategy(S cacheStrategy) {
-		this.cacheStrategy = cacheStrategy;
-	}
-	
-	public String generateTitle() {
-		if (cacheStrategy == null){
-			logger.warn("No CacheStrategy defined for "+ this.getClass() + ": " + this.getUuid());
-			return null;
-		}else{
-			return cacheStrategy.getTitleCache(this);
-		}
-	}
+
 }
