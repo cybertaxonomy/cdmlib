@@ -71,6 +71,8 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 	private ITaxonomicTreeDao taxonTreeDao;
 	@Autowired
 	private ITaxonNodeDao taxonNodeDao;
+	@Autowired
+	private ITaxonDao taxonDao;
 	
 	/**
 	 * FIXME Candidate for harmonization
@@ -752,5 +754,14 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#getUuidAndTitleCacheOfAcceptedTaxa(eu.etaxonomy.cdm.model.taxon.TaxonomicTree)
+	 */
+	public Map<UUID, String> getUuidAndTitleCacheOfAcceptedTaxa() {
+		return taxonDao.getUuidAndTitleCacheOfAcceptedTaxa();
+	}
+
 
 }

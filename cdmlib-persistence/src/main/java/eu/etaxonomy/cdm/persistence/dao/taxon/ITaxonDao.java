@@ -10,7 +10,9 @@
 package eu.etaxonomy.cdm.persistence.dao.taxon;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import org.hibernate.criterion.Criterion;
 
@@ -346,5 +348,9 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
 	 */
 	public List<TaxonBase> findTaxaByName(Class<? extends TaxonBase> clazz, String uninomial, String infragenericEpithet, String specificEpithet, String infraspecificEpithet, Rank rank, Integer pageSize, Integer pageNumber);
 	
-	
+	/**
+	 * 
+	 * @return
+	 */
+	public Map<UUID, String> getUuidAndTitleCacheOfAcceptedTaxa();
 }

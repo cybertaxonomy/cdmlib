@@ -411,4 +411,12 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	 * @return
 	 */
 	public Pager<IdentifiableEntity> findTaxaAndNames(ITaxonServiceConfigurator configurator);
+	
+	/**
+	 * Returns a map that holds uuid, titleCache pairs of all accepted taxa for a given taxonomic tree
+	 * 
+	 * @return 
+	 * 			a <code>Map</code> containing uuid and titleCache of accepted taxa
+	 */
+	public Map<UUID, String> getUuidAndTitleCacheOfAcceptedTaxa();
 }

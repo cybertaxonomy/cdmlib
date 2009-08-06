@@ -12,9 +12,11 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -28,6 +30,7 @@ import org.hibernate.Criteria;
 import org.hibernate.FetchMode;
 import org.hibernate.Hibernate;
 import org.hibernate.Query;
+import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
@@ -1042,5 +1045,63 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 			}
 		}
 		return alternativeQueryString;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#getUuidAndTitleCacheOfAcceptedTaxa(eu.etaxonomy.cdm.model.taxon.TaxonomicTree)
+	 */
+	public Map<UUID, String> getUuidAndTitleCacheOfAcceptedTaxa() {
+
+		
+		String queryString = "select uuid, titlecache from taxonbase where dtype = 'Taxon'";
+		
+		List<Object[]> result = getSession().createSQLQuery(queryString).list();
+				
+		if(result.size() == 0){
+			return null;
+		}else{
+			Map<UUID, String> map = new HashMap<UUID, String>(result.size()); 
+			
+			for (Object object : result){
+				
+				Object[] objectArray = (Object[]) object;
+				
+				UUID uuid = UUID.fromString((String) objectArray[0]);
+				String titleCache = (String) objectArray[1];
+				
+				map.put(uuid, titleCache);
+			}
+			
+			return map;	
+		}
+	}
+	
+	
+	public class UuidAndTitleCacheOfAcceptedTaxon{
+		UUID uuid;
+		
+		String titleCache;
+
+		public UuidAndTitleCacheOfAcceptedTaxon(UUID uuid, String titleCache){
+			this.uuid = uuid;
+			this.titleCache = titleCache;
+		}
+		
+		public UUID getUuid() {
+			return uuid;
+		}
+
+		public void setUuid(UUID uuid) {
+			this.uuid = uuid;
+		}
+
+		public String getTitleCache() {
+			return titleCache;
+		}
+
+		public void setTitleCache(String titleCache) {
+			this.titleCache = titleCache;
+		}
 	}
 }

@@ -740,4 +740,10 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     	assert taxon != null : "taxon cannot be null";
     	assertEquals("countRelatedTaxa should return 0 in the current view",0, taxonDao.countTaxonRelationships(taxon,TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN(), TaxonRelationship.Direction.relatedTo));
     }
+    
+    @Test
+    @DataSet
+	public final void testGetUuidAndTitleCacheOfAcceptedTaxa(){
+		assertNotNull(taxonDao.getUuidAndTitleCacheOfAcceptedTaxa());
+	}
 }
