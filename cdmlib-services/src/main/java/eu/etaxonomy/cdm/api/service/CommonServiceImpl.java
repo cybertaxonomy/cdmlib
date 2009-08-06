@@ -10,39 +10,32 @@
 
 package eu.etaxonomy.cdm.api.service;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.GenericDeclaration;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.lang.reflect.Type;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl;
-import sun.reflect.generics.reflectiveObjects.TypeVariableImpl;
-import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
+import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ISourceable;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.OriginalSource;
-import eu.etaxonomy.cdm.model.name.BotanicalName;
-import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
 import eu.etaxonomy.cdm.persistence.dao.common.IOriginalSourceDao;
+import eu.etaxonomy.cdm.persistence.query.OrderHint;
+import eu.etaxonomy.cdm.strategy.merge.DefaultMergeStrategy;
+import eu.etaxonomy.cdm.strategy.merge.IMergable;
+import eu.etaxonomy.cdm.strategy.merge.IMergeStrategy;
+import eu.etaxonomy.cdm.strategy.merge.MergeException;
 
 
 @Service
 @Transactional(readOnly = true)
 public class CommonServiceImpl extends ServiceBase<OriginalSource,IOriginalSourceDao> implements ICommonService {
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CommonServiceImpl.class);
 	
 	@Autowired
@@ -201,5 +194,26 @@ public class CommonServiceImpl extends ServiceBase<OriginalSource,IOriginalSourc
 	public List getHqlResult(String hqlQuery){
 		return genericDao.getHqlResult(hqlQuery);
 	}
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.service.ICommonService#merge(eu.etaxonomy.cdm.strategy.merge.IMergable, eu.etaxonomy.cdm.strategy.merge.IMergable, eu.etaxonomy.cdm.strategy.merge.IMergeStragegy)
+	 */
+	public <T extends IMergable> void merge(T mergeFirst, T mergeSecond, IMergeStrategy mergeStrategy) throws MergeException {
+		if (mergeStrategy == null){
+			mergeStrategy = DefaultMergeStrategy.NewInstance(((CdmBase)mergeFirst).getClass());
+		}
+		genericDao.merge((CdmBase)mergeFirst, (CdmBase)mergeSecond, mergeStrategy);
+	}
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.service.IService#list(java.lang.Class, java.lang.Integer, java.lang.Integer, java.util.List, java.util.List)
+	 */
+	public <TYPE extends OriginalSource> Pager<TYPE> list(Class<TYPE> type,
+			Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
+			List<String> propertyPaths) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 	
 }

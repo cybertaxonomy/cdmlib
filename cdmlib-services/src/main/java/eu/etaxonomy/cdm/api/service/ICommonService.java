@@ -16,6 +16,9 @@ import java.util.Set;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ISourceable;
 import eu.etaxonomy.cdm.model.common.OriginalSource;
+import eu.etaxonomy.cdm.strategy.merge.IMergable;
+import eu.etaxonomy.cdm.strategy.merge.IMergeStrategy;
+import eu.etaxonomy.cdm.strategy.merge.MergeException;
 
 
 public interface ICommonService extends IService<OriginalSource>{
@@ -39,6 +42,17 @@ public interface ICommonService extends IService<OriginalSource>{
 	 * @return
 	 */
 	public Set<CdmBase> getReferencingObjects(CdmBase referencedCdmBase);
+	
+	/**
+	 * Merges mergeSecond into mergeFirst. All references to mergeSecond will be replaced by references
+	 * to merge first. If no merge strategy is defined (null), the DefaultMergeStrategy will be taken as default.
+	 * @param <T>
+	 * @param mergeFirst
+	 * @param mergeSecond
+	 * @param mergeStrategy
+	 * @throws MergeException
+	 */
+	public <T extends IMergable> void   merge(T mergeFirst, T mergeSecond, IMergeStrategy mergeStrategy) throws MergeException;
 	
 	public List getHqlResult(String hqlQuery);
 
