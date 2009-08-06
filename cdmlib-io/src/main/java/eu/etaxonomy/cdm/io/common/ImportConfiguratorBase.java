@@ -111,10 +111,11 @@ public abstract class ImportConfiguratorBase<STATE extends ImportStateBase> exte
 			logger.warn("Connection to BerlinModel could not be established");
 			result = false;
 		}
-		if (destination == null ){
-			logger.warn("Connection to Cdm could not be established");
-			result = false;
-		}
+//Not valid any more as the importer may already have a destination		
+//		if (destination == null ){
+//			logger.warn("Connection to Cdm could not be established");
+//			result = false;
+//		}
 		
 		return result;
 	}
