@@ -292,7 +292,7 @@ public final class BerlinModelTransformer {
 			case 340: return PresenceTerm.NATIVE_DOUBTFULLY_NATIVE();
 			case 350: return PresenceTerm.NATIVE();
 			case 999: {
-					logger.warn("endemic for EM can not be transformed in legal status");
+					logger.info("endemic for EM can not be transformed in legal status. Used 'PRESENT' instead");
 					//TODO preliminary
 					return PresenceTerm.PRESENT();
 				}
