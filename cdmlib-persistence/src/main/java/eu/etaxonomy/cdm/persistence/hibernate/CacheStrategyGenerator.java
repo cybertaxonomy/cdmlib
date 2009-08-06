@@ -17,10 +17,12 @@ import org.joda.time.DateTime;
 import org.springframework.security.Authentication;
 import org.springframework.security.context.SecurityContextHolder;
 
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ICdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.name.NonViralName;
+import eu.etaxonomy.cdm.persistence.dao.hibernate.HibernateProxyHelperExtended;
 
 /**
  * @author a.mueller
@@ -38,16 +40,17 @@ public class CacheStrategyGenerator implements SaveOrUpdateEventListener {
             Class<?> entityClazz = entity.getClass();
             if(ICdmBase.class.isAssignableFrom(entityClazz)) {
 	            ICdmBase cdmBase = (ICdmBase)entity;
-	            if(cdmBase.getId() == 0) {
+            	cdmBase = (ICdmBase)HibernateProxyHelperExtended.getProxyTarget(cdmBase);  //needed for debugging of integration tests that are in error by mistake 
+            	if(cdmBase.getId() == 0) {
 				    if (cdmBase.getCreated() == null){
 				    	cdmBase.setCreated(new DateTime());
 					}
-	            	Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+					Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 				    if(authentication != null && authentication.getPrincipal() != null && authentication.getPrincipal() instanceof User) {
 				      User user = (User)authentication.getPrincipal();
 				      cdmBase.setCreatedBy(user);
 				    }
-	            }
+				}
 	          }
             
         	//title cache

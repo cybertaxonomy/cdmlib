@@ -16,6 +16,8 @@ import java.util.UUID;
 import org.springframework.dao.DataAccessException;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.strategy.merge.IMergeStrategy;
+import eu.etaxonomy.cdm.strategy.merge.MergeException;
 
 public interface ICdmGenericDao {
 
@@ -65,6 +67,23 @@ public interface ICdmGenericDao {
 	 */
 	public Set<CdmBase> getReferencingObjects(CdmBase referencedCdmBase);
 	
+	/**
+	 * Merges cdmBase2 into cdmBase2 and rearranges all reference to cdmBase2 by letting them point to
+	 * cdmBase1. If the merge strategy is not defined (<code>null</code>)  the default merge strategy is taken instead.
+	 * @param <T>  
+	 * @param cdmBase1
+	 * @param cdmBase2
+	 * @param mergeStrategy
+	 * @throws IllegalArgumentException
+	 * @throws NullPointerException
+	 * @throws MergeException 
+	 */
+	public <T extends CdmBase> void   merge(T cdmBase1, T cdmBase2, IMergeStrategy mergeStrategy) throws MergeException;
+	
+	//TODO remove
+	public void test();
+	//for testing
+	public <T extends CdmBase> T find(Class<T> clazz, int id);
 	
 	/**
 	 * Returns the result of an hql query

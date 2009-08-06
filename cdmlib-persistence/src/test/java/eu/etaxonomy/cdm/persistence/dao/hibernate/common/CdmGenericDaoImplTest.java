@@ -24,12 +24,14 @@ import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.model.agent.Address;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
+import eu.etaxonomy.cdm.model.agent.Contact;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.InstitutionType;
 import eu.etaxonomy.cdm.model.agent.InstitutionalMembership;
@@ -58,6 +60,7 @@ import eu.etaxonomy.cdm.model.common.OriginalSource;
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
 import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
+import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.description.AbsenceTerm;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
@@ -91,6 +94,7 @@ import eu.etaxonomy.cdm.model.location.Continent;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
+import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.location.ReferenceSystem;
 import eu.etaxonomy.cdm.model.location.TdwgArea;
 import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
@@ -176,9 +180,14 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
+import eu.etaxonomy.cdm.persistence.dao.agent.IAgentDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
+import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
+import eu.etaxonomy.cdm.strategy.merge.DefaultMergeStrategy;
+import eu.etaxonomy.cdm.strategy.merge.IMergeStrategy;
+import eu.etaxonomy.cdm.strategy.merge.MergeException;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 /**
@@ -197,6 +206,14 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 	
 	@SpringBeanByType
 	private IOccurrenceDao occurrenceDao;
+
+	
+	@SpringBeanByType
+	private ITaxonNameDao nameDao;
+
+	@SpringBeanByType
+	private IAgentDao agentDao;
+	
 	
 	/**
 	 * @throws java.lang.Exception
@@ -227,6 +244,78 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 	}
 
 // ***************** TESTS **************************************************	
+	
+	@Test
+	@Ignore
+	public void testDelete(){
+		ReferenceBase ref1 = Book.NewInstance();
+		ReferenceBase ref2 = Book.NewInstance();
+		Annotation annotation = Annotation.NewInstance("Anno1", null);
+		ref1.addAnnotation(annotation);
+		cdmGenericDao.saveOrUpdate(ref1);
+		cdmGenericDao.saveOrUpdate(ref2);
+		taxonDao.flush();
+		try {
+			cdmGenericDao.merge(ref2, ref1, null);
+			taxonDao.flush();
+		} catch (MergeException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		//cdmGenericDao.delete(ref1);
+		taxonDao.flush();
+		System.out.println("OK");
+		//Assert.fail("Failed for testing");
+	}
+	
+	/**
+	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmGenericDaoImpl#merge(CdmBase, CdmBase)}.
+	 * @throws MergeException 
+	 */
+	@Test
+	@Ignore
+	public void testDelete2() throws MergeException {
+		BotanicalName name1 = BotanicalName.NewInstance(Rank.SPECIES());
+		name1.setTitleCache("BotanicalName1");
+		
+		BotanicalName name2 = BotanicalName.NewInstance(Rank.SPECIES());
+		name2.setTitleCache("BotanicalName2");
+		
+		ReferenceBase article1 = Article.NewInstance();
+		ReferenceBase article2 = Article.NewInstance();
+		
+		
+		name1.setNomenclaturalReference(article1);
+		name2.setNomenclaturalReference(article2);
+		
+		
+		Taxon taxon1 = Taxon.NewInstance(name1, article1);
+		
+//		Person author = Person.NewInstance();
+//		author.setTitleCache("Author");
+		Annotation annotation1 = Annotation.NewInstance("A1", Language.DEFAULT());
+		Annotation annotation2 = Annotation.NewInstance("A2", Language.DEFAULT());
+		
+		article1.addAnnotation(annotation1);
+		article2.addAnnotation(annotation2);
+		
+		nameDao.save(name1);
+		nameDao.save(name2);
+		cdmGenericDao.saveOrUpdate(article2);
+		
+		taxonDao.save(taxon1);
+
+		//unidircetional reference to the merged object should be redirected
+		cdmGenericDao.merge(article1, article2, null);
+		Assert.assertEquals("Name2 must have article 1 as new nomRef", article1 ,name2.getNomenclaturalReference());
+		//TODO microCitations!! -> warning	
+		
+		//Annotations
+		Assert.assertEquals("Annotation number should be 2 (1 from each of the merged objects)", 2, article1.getAnnotations().size());
+	}
+
+	
+	
 	
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmGenericDaoImpl#CdmGenericDaoImpl()}.
@@ -506,19 +595,337 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 		SpecimenOrObservationBase spec1 = occurrenceDao.findByUuid(uuidSpec);
 		
 	
-		Set<CdmBase> referencedObjects = cdmGenericDao.getReferencingObjects(spec1);
+		Set<CdmBase> referencingObjects = cdmGenericDao.getReferencingObjects(spec1);
 		System.out.println("############## RESULT ###################");
-		for (CdmBase obj: referencedObjects){
+		for (CdmBase obj: referencingObjects){
 			System.out.println("Object: " + obj.getClass().getSimpleName() + " - " + obj);
 		}
-		assertEquals(2, referencedObjects.size());
 		System.out.println("############## ENDE ###################");
-		
-		
-		
+		assertEquals("Number of referencing objects must be 2.", 2, referencingObjects.size());
 
 	}
 	
+	/**
+	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmGenericDaoImpl#merge(CdmBase, CdmBase)}.
+	 * @throws MergeException 
+	 */
+	@Test
+	@Ignore
+	public void testMergeCdmBaseReferenceAndIdentifiable() throws MergeException {
+		cdmGenericDao.test();
+		
+		
+		BotanicalName name1 = BotanicalName.NewInstance(Rank.SPECIES());
+		name1.setTitleCache("BotanicalName1");
+		
+		BotanicalName name2 = BotanicalName.NewInstance(Rank.SPECIES());
+		name2.setTitleCache("BotanicalName2");
+		
+		ZoologicalName zooName1 = ZoologicalName.NewInstance(Rank.SPECIES());
+		name1.setTitleCache("ZoologicalName1");
+
+		ReferenceBase article1 = Article.NewInstance();
+		ReferenceBase article2 = Article.NewInstance();
+		
+		
+		name1.setNomenclaturalReference(article1);
+		name2.setNomenclaturalReference(article2);
+		
+		
+		Taxon taxon1 = Taxon.NewInstance(name1, article1);
+		Taxon taxon2 = Taxon.NewInstance(name2, article2);
+		
+		
+//		Person author = Person.NewInstance();
+//		author.setTitleCache("Author");
+		Annotation annotation1 = Annotation.NewInstance("A1", Language.DEFAULT());
+		Annotation annotation2 = Annotation.NewInstance("A2", Language.DEFAULT());
+		
+		article1.addAnnotation(annotation1);
+		article2.addAnnotation(annotation2);
+		
+		Marker marker1 = Marker.NewInstance(MarkerType.COMPLETE(), false);
+		Marker marker2 = Marker.NewInstance(MarkerType.IMPORTED(), false);
+		
+		article1.addMarker(marker1);
+		article2.addMarker(marker2);
+
+		Rights rights1 = Rights.NewInstance();
+		Rights rights2 = Rights.NewInstance();
+		
+		article1.addRights(rights1);
+		article2.addRights(rights2);
+
+		
+		Credit credit1 = Credit.NewInstance(Team.NewInstance(), "credit1");
+		Credit credit2 = Credit.NewInstance(Team.NewInstance(), "credit2");
+		
+		article1.addCredit(credit1);
+		article2.addCredit(credit2);
+
+		Extension extension1 = Extension.NewInstance();
+		Extension extension2 = Extension.NewInstance();
+		
+		article1.addExtension(extension1);
+		article2.addExtension(extension2);
+		
+		OriginalSource source1 = OriginalSource.NewInstance();
+		OriginalSource source2 = OriginalSource.NewInstance();
+		
+		article1.addSource(source1);
+		article2.addSource(source2);
+
+		Media media1 = Media.NewInstance();
+		Media media2 = Media.NewInstance();
+		
+		article1.addMedia(media1);
+		article2.addMedia(media2);
+		
+//		ref1.setAuthorTeam(author);
+//		name1.setBasionymAuthorTeam(author);
+		
+		name1.setNomenclaturalReference(article1);
+
+		nameDao.save(name1);
+		nameDao.save(name2);
+		nameDao.save(zooName1);
+		
+		TaxonDescription taxDesc = TaxonDescription.NewInstance(taxon1);
+		taxDesc.setTitleCache("taxDesc");
+		taxDesc.addDescriptionSource(article2);
+
+		taxonDao.save(taxon1);
+
+		//unidircetional reference to the merged object should be redirected
+		cdmGenericDao.merge(article1, article2, null);
+		Assert.assertEquals("Name2 must have article 1 as new nomRef", article1 ,name2.getNomenclaturalReference());
+		//TODO microCitations!! -> warning	
+		
+		//Annotations
+		Assert.assertEquals("Annotation number should be 2 (1 from each of the merged objects)", 2, article1.getAnnotations().size());
+		
+		//Marker
+		Assert.assertEquals("Marker number should be 2 (1 from each of the merged objects)", 2, article1.getMarkers().size());
+
+		//Rights
+		Assert.assertEquals("Rights number should be 2 (1 from each of the merged objects)", 2, article1.getRights().size());
+		
+		//Credits
+		Assert.assertEquals("Credits number should be 2 (1 from each of the merged objects)", 2, article1.getCredits().size());
+		
+		//Extensions
+		Assert.assertEquals("Extensions number should be 2 (1 from each of the merged objects)", 2, article1.getExtensions().size());
+
+		//Sources
+		Assert.assertEquals("Sources number should be 2 (1 from each of the merged objects)", 2, article1.getSources().size());
+
+		//Media
+		Assert.assertEquals("Media number should be 2 (1 from each of the merged objects)", 2, article1.getMedia().size());
+
+		//Description sources
+		Assert.assertEquals("Number of sources for taxon description must be 1", 1, taxDesc.getDescriptionSources().size());
+		Assert.assertTrue("Taxon description must have article1 as source", taxDesc.getDescriptionSources().contains(article1));
+	
+		//test exceptions
+		testMergeExceptions(name1, name2, taxon1, zooName1);
+
+		
+		//TO BE IMPLEMENTED 
+		Assert.assertTrue("Rights2 must be contained in the rights", article1.getRights().contains(rights2));
+		Assert.assertTrue("Credits2 must be contained in the credits", article1.getCredits().contains(credit2));
+		Assert.assertTrue("Media2 must be contained in the media", article1.getMedia().contains(media2));
+	
+	}
+	
+	/**
+	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmGenericDaoImpl#merge(CdmBase, CdmBase)}.
+	 * @throws MergeException 
+	 */
+	@Test
+	@Ignore
+	public void testMergeTaxonNameAndTaxon() throws MergeException {
+		BotanicalName name1 = BotanicalName.NewInstance(Rank.SPECIES());
+		name1.setTitleCache("BotanicalName1");
+		
+		BotanicalName name2 = BotanicalName.NewInstance(Rank.SPECIES());
+		name2.setTitleCache("BotanicalName2");
+
+		BotanicalName name3 = BotanicalName.NewInstance(Rank.SPECIES());
+		name3.setTitleCache("BotanicalName3");
+		
+		ReferenceBase database = Database.NewInstance();
+		
+		Taxon taxon1 = Taxon.NewInstance(name1, database);
+		Taxon taxon2 = Taxon.NewInstance(name2, database);
+		Taxon taxon3 = Taxon.NewInstance(name3, database);
+
+		taxonDao.save(taxon1);
+		taxonDao.save(taxon2);
+		taxonDao.save(taxon3);
+
+		cdmGenericDao.merge(name1, name2, null);
+		Assert.assertEquals("Name1 must have 2 taxa attached now.", 2 ,name1.getTaxonBases().size());
+		Assert.assertEquals("Taxon2 must have name1 as new name.", name1 ,taxon2.getName());
+	
+//TODO		
+//		cdmGenericDao.merge(taxon1, taxon3, null);
+//		Assert.assertEquals("Name1 must have 3 taxa attached now.", 3 ,name1.getTaxonBases().size());
+		
+		
+	}
+	
+	/**
+	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmGenericDaoImpl#merge(CdmBase, CdmBase)}.
+	 * @throws MergeException 
+	 */
+	@Test
+	public void testMergeAuthors() throws MergeException {
+		
+		BotanicalName name1 = BotanicalName.NewInstance(Rank.SPECIES());
+		name1.setTitleCache("BotanicalName1");
+		
+		BotanicalName name2 = BotanicalName.NewInstance(Rank.SPECIES());
+		name2.setTitleCache("BotanicalName2");
+
+		Book book1 = Book.NewInstance();
+		Book book2 = Book.NewInstance();
+		
+		Team team1 = Team.NewInstance();
+		Team team2 = Team.NewInstance();
+		Team team3 = Team.NewInstance();
+		team1.setTitleCache("team1");
+		team2.setTitleCache("team2");
+		team3.setTitleCache("team3");
+		
+		Person person1 = Person.NewTitledInstance("person1");
+		Person person2 = Person.NewTitledInstance("person2");
+		Person person3 = Person.NewTitledInstance("person3");
+		
+		team1.setNomenclaturalTitle("T.1");
+		String street1 = "Strasse1";
+		team1.setContact(Contact.NewInstance(street1, "12345", "Berlin", WaterbodyOrCountry.ARGENTINA_ARGENTINE_REPUBLIC(),"pobox" , "Region", "a@b.de", "f12345", "+49-30-123456", "www.abc.de", Point.NewInstance(2.4, 3.2, ReferenceSystem.WGS84(), 3)));
+		team2.setContact(Contact.NewInstance("Street2", null, "London", null, null, null, null, "874599873", null, null, null));
+		String street3 = "Street3";
+		team2.addAddress(street3, null, null, null, null, null, Point.NewInstance(1.1, 2.2, null, 4));
+		String emailAddress1 = "Email1";
+		team1.addEmailAddress(emailAddress1);
+		
+		team2.addTeamMember(person1);
+		team2.addTeamMember(person2);
+		String emailAddress2 = "Email2";
+		team2.addEmailAddress(emailAddress2);
+		
+		team3.addTeamMember(person3);
+		team3.addEmailAddress("emailAddress3");
+		
+		book1.setAuthorTeam(team2);
+		book2.setAuthorTeam(team3);
+		
+		Credit credit1 = Credit.NewInstance(team3, "credit1");
+		book2.addCredit(credit1);
+		
+		agentDao.save(team1);
+		agentDao.save(team2);
+		agentDao.save(team3);
+		cdmGenericDao.save(book1);
+		cdmGenericDao.save(book2);
+				
+		cdmGenericDao.merge(team2, team3, null);
+		
+		Assert.assertSame("Author of book1 must be team2.", team2, book1.getAuthorTeam());
+		Assert.assertSame("Author of book2 must be team2.", team2, book2.getAuthorTeam());
+		Assert.assertSame("Agent of credit1 must be team2.", team2, credit1.getAgent());
+
+		Assert.assertEquals("Team2 must have 3 persons as members.",3, team2.getTeamMembers().size());
+		Assert.assertTrue("Team2 must have person3 as new member.", team2.getTeamMembers().contains(person3));
+		Assert.assertSame("Team2 must have person3 as third member.",person3, team2.getTeamMembers().get(2));
+		
+		
+		//Contact 
+		cdmGenericDao.merge(team2, team1, null);
+		Contact team2Contact = team2.getContact();
+		Assert.assertNotNull("team2Contact must not be null", team2Contact);
+		Assert.assertNotNull("Addresses must not be null", team2Contact.getAddresses());
+		Assert.assertEquals("Number of addresses must be 3", 3, team2Contact.getAddresses().size());
+		Assert.assertEquals("Number of email addresses must be 4", 4, team2Contact.getEmailAddresses().size());
+		
+		boolean street1Exists = false;
+		boolean street3Exists = false;
+		boolean country1Exists = false;
+		for  (Address address : team2Contact.getAddresses()){
+			if (street1.equals(address.getStreet())){
+				street1Exists = true;
+			}
+			if (street3.equals(address.getStreet())){
+				street3Exists = true;
+			}
+			if (WaterbodyOrCountry.ARGENTINA_ARGENTINE_REPUBLIC() == address.getCountry()){
+				country1Exists = true;
+			}
+		}
+		Assert.assertTrue("Street1 must be one of the streets in team2's addresses", street1Exists);
+		Assert.assertTrue("Street3 must be one of the streets in team2's addressesss", street3Exists);
+		Assert.assertTrue("Argentina must be one of the countries in team2's addresses", country1Exists);
+		
+		//Person
+		Institution institution1 = Institution.NewInstance();
+		institution1.setTitleCache("inst1");
+		Institution institution2 = Institution.NewInstance();
+		institution2.setTitleCache("inst2");
+		
+		TimePeriod period1 = TimePeriod.NewInstance(2002, 2004);
+		TimePeriod period2 = TimePeriod.NewInstance(2004, 2006);
+		
+		person1.addInstitutionalMembership(institution1, period1, "departement1", "role1");
+		person2.addInstitutionalMembership(institution2, period2, "departement2", "role2");
+		
+		Keyword keyword1 = Keyword.NewInstance("K1", "K1", "K1");
+		person1.addKeyword(keyword1);
+		
+		Keyword keyword2 = Keyword.NewInstance("K2", "K2", "K2");
+		person2.addKeyword(keyword2);
+
+		IMergeStrategy personMergeStrategy = DefaultMergeStrategy.NewInstance(Person.class);
+		personMergeStrategy.invoke(person1, person2);
+		
+		Assert.assertEquals("Number of institutional memberships must be 2", 2, person1.getInstitutionalMemberships().size());
+		Assert.assertEquals("Number of keywords must be 2", 2, person1.getKeywords().size());
+		for (InstitutionalMembership institutionalMembership : person1.getInstitutionalMemberships()){
+			Assert.assertSame("Person of institutional memebership must be person1", person1, institutionalMembership.getPerson());
+		}
+		
+	}
+	
+	private void testMergeExceptions(CdmBase name1, CdmBase name2, CdmBase taxon,CdmBase zooName1) throws MergeException{
+		//
+		try {
+			cdmGenericDao.merge(name1, null, null);
+			Assert.fail("Merging of 2 objects one or both of them null must throw an exception");
+		} catch (MergeException e) {
+			Assert.assertTrue("Merging of 2 objects of different types must throw an exception", true);
+		}
+		//
+		try {
+			cdmGenericDao.merge(null, name1, null);
+			Assert.fail("Merging of 2 objects one or both of them null must throw an exception");
+		} catch (NullPointerException e) {
+			Assert.assertTrue("Merging of 2 objects of different types must throw an exception", true);
+		}
+		//exceptions to be thrown
+		try {
+			cdmGenericDao.merge(name1, taxon, null);
+			Assert.fail("Merging of 2 objects of different types must throw an exception");
+		} catch (MergeException e) {
+			Assert.assertTrue("Merging of 2 objects of different types must throw an exception", true);
+		}
+		//next exception
+		try {
+			cdmGenericDao.merge(name1, zooName1, null);
+			Assert.fail("Merging of 2 objects of different types must throw an exception");
+		} catch (MergeException e) {
+			Assert.assertTrue("Merging of 2 objects of different types must throw an exception", true);
+		}
+	}
 	
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmGenericDaoImpl#getHqlResult(java.lang.String)}.

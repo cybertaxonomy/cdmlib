@@ -23,6 +23,9 @@ import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.dbunit.annotation.ExpectedDataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
+import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
+import eu.etaxonomy.cdm.model.description.Distribution;
+import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -274,13 +277,27 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 		results = taxonDao.getTaxaByName(Synonym.class, "Atropo", null, MatchMode.BEGINNING, namedAreas,
 			null, null, null);
 		assertNotNull("getTaxaByName should return a List", results);
-		assertTrue("expected to find two taxa but found "+results.size(), results.size() == 2);
+		for (TaxonBase taxonbase: results){
+			Synonym synonym =  (Synonym)taxonbase;
+			System.out.println(synonym.getClass() + ", " + synonym);
+			Set<TaxonDescription> descriptions = synonym.getAcceptedTaxa().iterator().next().getDescriptions();
+			for (TaxonDescription taxDesc:descriptions){
+				for (DescriptionElementBase elem : taxDesc.getElements()){
+					if (elem.isInstanceOf(Distribution.class)){
+						NamedArea area = ((Distribution)elem).getArea();
+						System.out.println(area);
+						
+					}
+				}
+			}
+		}
+		assertTrue("expected to find two taxa but found "+results.size(), results.size() == 3);
 		
 		// 4. searching for Synonyms
 		results = taxonDao.getTaxaByName(Synonym.class, "Atropo", null, MatchMode.BEGINNING, null,
 			null, null, null);
 		assertNotNull("getTaxaByName should return a List", results);
-		assertTrue("expected to find two taxa but found "+results.size(), results.size() == 2);
+		assertTrue("expected to find two taxa but found "+results.size(), results.size() == 3);
 		
 		
 		// 5. searching for a Synonyms and Taxa
@@ -288,7 +305,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 		results = taxonDao.getTaxaByName(TaxonBase.class, "A", null, MatchMode.BEGINNING, namedAreas,
 			null, null, null);
 		assertNotNull("getTaxaByName should return a List", results);
-		assertTrue("expected to find two taxa but found "+results.size(), results.size() == 7);
+		assertTrue("expected to find two taxa but found "+results.size(), results.size() == 8);
 	}
 
 	
