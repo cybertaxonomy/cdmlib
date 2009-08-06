@@ -44,6 +44,7 @@ public class BerlinModelImportConfigurator extends ImportConfiguratorBase<Berlin
 	private Method namerelationshipTypeMethod;
 	private Method uuidForDefTermMethod;
 	private Method userTransformationMethod;
+	private Method nameTypeDesignationStatusMethod;
 	
 	private Set<Synonym> proParteSynonyms = new HashSet<Synonym>();
 	private Set<Synonym> partialSynonyms = new HashSet<Synonym>();
@@ -258,6 +259,24 @@ public class BerlinModelImportConfigurator extends ImportConfiguratorBase<Berlin
 	 */
 	public void setUserTransformationMethod(Method userTransformationMethod) {
 		this.userTransformationMethod = userTransformationMethod;
+	}
+
+
+
+	/**
+	 * @return the nameTypeDesignationStatusMethod
+	 */
+	public Method getNameTypeDesignationStatusMethod() {
+		return nameTypeDesignationStatusMethod;
+	}
+
+
+	/**
+	 * @param nameTypeDesignationStatusMethod the nameTypeDesignationStatusMethod to set
+	 */
+	public void setNameTypeDesignationStatusMethod(
+			Method nameTypeDesignationStatusMethod) {
+		this.nameTypeDesignationStatusMethod = nameTypeDesignationStatusMethod;
 	}
 	
 }

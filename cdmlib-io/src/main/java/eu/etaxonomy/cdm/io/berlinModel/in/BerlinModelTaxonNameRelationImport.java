@@ -24,6 +24,7 @@ import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_REL_IS
 import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_REL_IS_TYPE_OF;
 import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.NAME_REL_TYPE_NOT_DESIGNATED;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -40,6 +41,7 @@ import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
+import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
@@ -112,6 +114,7 @@ public class BerlinModelTaxonNameRelationImport extends BerlinModelImportBase {
 				Object relRefFk = rs.getObject("refFk");
 				String details = rs.getString("details");
 				int relQualifierFk = rs.getInt("relNameQualifierFk");
+				String notes = rs.getString("notes");
 				
 				TaxonNameBase nameFrom = taxonNameMap.get(name1Id);
 				TaxonNameBase nameTo = taxonNameMap.get(name2Id);
@@ -149,7 +152,19 @@ public class BerlinModelTaxonNameRelationImport extends BerlinModelImportBase {
 						String originalNameString = null;
 						//TODO addToAllNames true or false?
 						boolean addToAllNames = false;
-						nameTo.addNameTypeDesignation(nameFrom, citation, microcitation, originalNameString, isRejectedType, isConservedType, isLectoType, isNotDesignated, addToAllNames);
+						if (config.getNameTypeDesignationStatusMethod() != null){
+							Method method = config.getNameTypeDesignationStatusMethod();
+							method.setAccessible(true);
+							NameTypeDesignationStatus status;
+							try {
+								status = (NameTypeDesignationStatus)method.invoke(null, notes);
+								nameTo.addNameTypeDesignation(nameFrom, citation, microcitation, originalNameString, status, addToAllNames);
+							} catch (Exception e) {
+								throw new RuntimeException(e);
+							}
+						}else{
+							nameTo.addNameTypeDesignation(nameFrom, citation, microcitation, originalNameString, isRejectedType, isConservedType, isLectoType, isNotDesignated, addToAllNames);
+						}
 						
 					}else if (relQualifierFk == NAME_REL_IS_ORTHOGRAPHIC_VARIANT_OF){
 						nameFrom.addRelationshipToName(nameTo, NameRelationshipType.ORTHOGRAPHIC_VARIANT(), citation, microcitation, rule) ;
