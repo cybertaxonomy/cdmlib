@@ -159,7 +159,6 @@ public class DefaultMergeStrategy extends StrategyBase implements IMergeStrategy
 				throw new MergeException("Identifier must always have merge mode MergeMode.FIRST");
 			}
 		}
-		
 	}
 
 	public <T extends IMergable> Set<ICdmBase> invoke(T mergeFirst, T mergeSecond) throws MergeException {
@@ -448,61 +447,6 @@ public class DefaultMergeStrategy extends StrategyBase implements IMergeStrategy
 			return false;
 		}
 	}
-	
-	/**
-	 * @param fieldType
-	 * @return
-	 */
-	private boolean isPrimitive(Class<?> fieldType) {
-		if (fieldType.isPrimitive()){
-			return true;
-		}else{
-			return false;
-		}
-	}
-
-	/**
-	 * @param fieldType
-	 * @return
-	 */
-	private boolean isSingleCdmBaseObject(Class<?> fieldType) {
-		if (CdmBase.class.isAssignableFrom(fieldType)){
-			return true;
-		}else{
-			return false;
-		}
-	}
-
-
-
-	/**
-	 * @param fieldType
-	 * @return
-	 */
-	private boolean isCollection(Class<?> fieldType) {
-		if (Collection.class.isAssignableFrom(fieldType) ){
-			return true;
-		}else{
-			return false;
-		}
-	}
-
-
-	/**
-	 * @param fieldType
-	 * @return
-	 */
-	private boolean isUserType(Class<?> fieldType) {
-		if (	fieldType == TimePeriod.class ||
-				fieldType == DateTime.class ||
-				fieldType == LSID.class ||
-				fieldType == Contact.class
-			){
-			return true;
-		}else{
-			return false;
-		}
-	}
 
 
 	/**
@@ -534,48 +478,6 @@ public class DefaultMergeStrategy extends StrategyBase implements IMergeStrategy
 		} catch (IllegalArgumentException e) {
 			throw new Exception(e);
 		}
-	}
-
-	/**
-	 * Computes all fields recursively
-	 * @param clazz
-	 * @return
-	 */
-	protected Map<String, Field> getAllNonStaticNonTransientFields(Class clazz, boolean includeStatic, boolean includeTransient, boolean makeAccessible) {
-		Map<String, Field> result = new HashMap<String, Field>();
-		//exclude static
-		for (Field field: clazz.getDeclaredFields()){
-			if (includeStatic || ! Modifier.isStatic(field.getModifiers())){
-				if (includeTransient || ! isTransient(field)){
-					field.setAccessible(makeAccessible);
-					result.put(field.getName(), field);
-				}
-			}
-		}
-		
-		//include superclass fields
-		Class superclass = clazz.getSuperclass();
-		if (CdmBase.class.isAssignableFrom(superclass)){
-			result.putAll(getAllNonStaticNonTransientFields(superclass, includeStatic, includeTransient, makeAccessible));
-		}
-		return result;
-	}
-
-
-
-	/**
-	 * Returns true, if field has an annotation of type javax.persistence.Annotation
-	 * @param field
-	 * @return
-	 */
-	private boolean isTransient(Field field) {
-		for (Annotation annotation : field.getAnnotations()){
-			//if (Transient.class.isAssignableFrom(annotation.annotationType())){
-			if (annotation.annotationType() == Transient.class){
-				return true;
-			}
-		}
-		return false;
 	}
 
 	

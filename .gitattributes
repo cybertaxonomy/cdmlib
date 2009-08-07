@@ -1387,6 +1387,12 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/reference/ThesisDefau
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/taxon/TaxonBaseDefaultCacheStrategy.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/exceptions/StringNotParsableException.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/exceptions/UnknownCdmTypeException.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/match/DefaultMatchStrategy.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/match/IMatchStrategy.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/match/IMatchable.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/match/Match.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/match/MatchException.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/match/MatchMode.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/merge/DefaultMergeStrategy.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/merge/IMergable.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/merge/IMergeStrategy.java -text
@@ -1487,6 +1493,7 @@ cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/cache/name/BotanicNameCache
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/cache/name/NonViralNameDefaultCacheStrategyTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/cache/name/ZoologicalNameCacheStrategyTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/cache/reference/CdDvdDefaultCacheStrategyTest.java -text
+cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/match/DefaultMatchStrategyTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/merge/DefaultMergeStrategyTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/parser/NonViralNameParserImplTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/test/function/TestFullReferenceParser.java -text
