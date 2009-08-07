@@ -280,6 +280,22 @@ public class CdmUtils {
 	}
 	
 	/**
+	 * Tests if two objects are equal or both null. Otherwise returns false
+	 * @param obj1
+	 * @param obj2
+	 * @return
+	 */
+	public static boolean nullSafeEqual(Object obj1, Object obj2) {
+		if (obj1 == null && obj2 == null){
+			return true;
+		}
+		if (obj1 == null && obj2 != null){
+			return false;
+		}
+		return (obj1.equals(obj2));
+	}
+	
+	/**
 	 * Returns false if string is null, "" or string.trim() is ""
 	 * Else true.
 	 * @see isEmpty(String string)
