@@ -219,6 +219,7 @@ public class DefaultMatchStrategyTest {
 	 * @throws MatchException 
 	 */
 	@Test
+	@Ignore
 	public void testInvokeReferences_Old() throws MatchException {
 		INomenclaturalReferenceCacheStrategy<Book> cacheStrategy1 = book1.getCacheStrategy();
 		int id = book1.getId();
@@ -394,6 +395,7 @@ public class DefaultMatchStrategyTest {
 	 * @throws MatchException 
 	 */
 	@Test
+	@Ignore
 	public void testInvokeAgents() throws MatchException {
 		IMatchStrategy teamMatchStrategy = DefaultMatchStrategy.NewInstance(Team.class);
 		
