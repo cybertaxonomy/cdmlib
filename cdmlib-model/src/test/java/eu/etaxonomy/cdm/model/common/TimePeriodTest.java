@@ -168,7 +168,8 @@ public class TimePeriodTest {
 	 */
 	@Test
 	public void testTimePeriod() {
-		logger.warn("Not yet implemented");
+		TimePeriod tp = new TimePeriod();
+		Assert.assertNotNull("Time period must be created",tp);
 	}
 
 	/**
@@ -207,31 +208,24 @@ public class TimePeriodTest {
 	 */
 	@Test
 	public void testGetStart() {
-		logger.warn("Not yet implemented");
+		TimePeriod tp = new TimePeriod();
+		Partial start = new Partial(DateTimeFieldType.year(), 1999);
+		tp.setStart(start);
+		Assert.assertEquals("Start year should be 1999", Integer.valueOf(1999), tp.getStartYear());
+		Assert.assertEquals("Start should be 'start'", start, tp.getStart());
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.common.TimePeriod#setStart(org.joda.time.Partial)}.
-	 */
-	@Test
-	public void testSetStart() {
-		logger.warn("Not yet implemented");
-	}
 
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.model.common.TimePeriod#getEnd()}.
 	 */
 	@Test
 	public void testGetEnd() {
-		logger.warn("Not yet implemented");
-	}
-
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.common.TimePeriod#setEnd(org.joda.time.Partial)}.
-	 */
-	@Test
-	public void testSetEnd() {
-		logger.warn("Not yet implemented");
+		TimePeriod tp = new TimePeriod();
+		Partial end = new Partial(DateTimeFieldType.year(), 1999);
+		tp.setEnd(end);
+		Assert.assertEquals("End year should be 1999", Integer.valueOf(1999), tp.getEndYear());
+		Assert.assertEquals("End should be 'end'", end, tp.getEnd());
 	}
 
 	/**
@@ -239,104 +233,14 @@ public class TimePeriodTest {
 	 */
 	@Test
 	public void testGetYear() {
-		logger.warn("Not yet implemented");
+		TimePeriod tp = new TimePeriod();
+		tp.setStartYear(1999);
+		Assert.assertEquals("Year should be 1999", "1999", tp.getYear());
+		tp.setEndYear(2002);
+		Assert.assertEquals("Year should be 1999-2002", "1999-2002", tp.getYear());
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.common.TimePeriod#getStartYear()}.
-	 */
-	@Test
-	public void testGetStartYear() {
-		logger.warn("Not yet implemented");
-	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.common.TimePeriod#getStartMonth()}.
-	 */
-	@Test
-	public void testGetStartMonth() {
-		logger.warn("Not yet implemented");
-	}
-
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.common.TimePeriod#getStartDay()}.
-	 */
-	@Test
-	public void testGetStartDay() {
-		logger.warn("Not yet implemented");
-	}
-
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.common.TimePeriod#getEndYear()}.
-	 */
-	@Test
-	public void testGetEndYear() {
-		logger.warn("Not yet implemented");
-	}
-
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.common.TimePeriod#getEndMonth()}.
-	 */
-	@Test
-	public void testGetEndMonth() {
-		logger.warn("Not yet implemented");
-	}
-
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.common.TimePeriod#getEndDay()}.
-	 */
-	@Test
-	public void testGetEndDay() {
-		logger.warn("Not yet implemented");
-	}
-
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.common.TimePeriod#setStartYear(java.lang.Integer)}.
-	 */
-	@Test
-	public void testSetStartYear() {
-		logger.warn("Not yet implemented");
-	}
-
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.common.TimePeriod#setStartMonth(java.lang.Integer)}.
-	 */
-	@Test
-	public void testSetStartMonth() {
-		logger.warn("Not yet implemented");
-	}
-
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.common.TimePeriod#setStartDay(java.lang.Integer)}.
-	 */
-	@Test
-	public void testSetStartDay() {
-		logger.warn("Not yet implemented");
-	}
-
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.common.TimePeriod#setEndYear(java.lang.Integer)}.
-	 */
-	@Test
-	public void testSetEndYear() {
-		logger.warn("Not yet implemented");
-	}
-
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.common.TimePeriod#setEndMonth(java.lang.Integer)}.
-	 */
-	@Test
-	public void testSetEndMonth() {
-		logger.warn("Not yet implemented");
-	}
-
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.common.TimePeriod#setEndDay(java.lang.Integer)}.
-	 */
-	@Test
-	public void testSetEndDay() {
-		logger.warn("Not yet implemented");
-	}
 	
 	@Test
 	public void testParseSingleDateString() {
@@ -428,7 +332,80 @@ public class TimePeriodTest {
 	 */
 	@Test
 	public void testClone() {
-		logger.warn("Not yet implemented");
+		Integer startYear = 1788;
+		Integer startMonth = 6;
+		Integer startDay = 25;
+		Integer endDay = 21;
+		Integer endMonth = 12;
+		Integer endYear = 1799;
+		String freeText = "A free period";
+		TimePeriod tp1 = TimePeriod.NewInstance(startYear,endYear);
+		tp1.setStartDay(startDay);
+		tp1.setStartMonth(startMonth);
+		tp1.setEndDay(endDay);
+		tp1.setEndMonth(endMonth);
+		tp1.setFreeText(freeText);
+		TimePeriod tpClone = (TimePeriod)tp1.clone();
+		Assert.assertEquals("Start year must be 1788.", startYear, tpClone.getStartYear());
+		Assert.assertEquals("Start month must be 6.", startMonth, tpClone.getStartMonth());
+		Assert.assertEquals("Start day must be 25.", startDay, tpClone.getStartDay());
+		Assert.assertEquals("End year must be 1799.", endYear, tpClone.getEndYear());
+		Assert.assertEquals("End month must be 12.", endMonth, tpClone.getEndMonth());
+		Assert.assertEquals("End day must be 21.", endDay, tpClone.getEndDay());
+		Assert.assertEquals("Cloned time period must be equal to originial", tp1, tpClone);
 	}
 
+	/**
+	 * Test method for {@link eu.etaxonomy.cdm.model.common.TimePeriod#clone()}.
+	 */
+	@Test
+	public void testEquals() {
+		Integer startYear = 1788;
+		Integer startMonth = 6;
+		Integer startDay = 25;
+		Integer endDay = 21;
+		Integer endMonth = 12;
+		Integer endYear = 1799;
+		String freeText = "A free period";
+		
+		TimePeriod tp1 = TimePeriod.NewInstance(startYear);
+		TimePeriod tpClone = (TimePeriod)tp1.clone();
+		Assert.assertEquals("Cloned time period must be equal to originial", tp1, tpClone);
+		
+		tp1.setStartMonth(startMonth);
+		Assert.assertFalse("Cloned time period must not be equal to originial", tp1.equals(tpClone));
+		tpClone = (TimePeriod)tp1.clone();
+		Assert.assertEquals("Cloned time period must be equal to originial", tp1, tpClone);
+		
+
+		tp1.setEndYear(endYear);
+		Assert.assertFalse("Cloned time period must not be equal to originial", tp1.equals(tpClone));
+		tpClone = (TimePeriod)tp1.clone();
+		Assert.assertEquals("Cloned time period must be equal to originial", tp1, tpClone);
+
+		tp1.setEndDay(endDay);
+		Assert.assertFalse("Cloned time period must not be equal to originial", tp1.equals(tpClone));
+		tpClone = (TimePeriod)tp1.clone();
+		Assert.assertEquals("Cloned time period must be equal to originial", tp1, tpClone);
+		
+		tp1.setFreeText(freeText);
+		Assert.assertFalse("Cloned time period must not be equal to originial", tp1.equals(tpClone));
+		tpClone = (TimePeriod)tp1.clone();
+		Assert.assertEquals("Cloned time period must be equal to originial", tp1, tpClone);
+
+		tp1 = TimePeriod.NewInstance();
+		Assert.assertFalse("Cloned time period must not be equal to originial", tp1.equals(tpClone));
+		TimePeriod tp2 = TimePeriod.NewInstance();
+		Assert.assertEquals("Empty time periods must be equal", tp1, tp2);
+
+		tp1.setFreeText(freeText);
+		Assert.assertFalse("Tp2 must not be equal to originial", tp1.equals(tp2));
+		tp2.setFreeText("jldskjlfi");
+		Assert.assertFalse("Tp2 must not be equal to originial", tp1.equals(tpClone));
+		tp2.setFreeText(freeText);
+		Assert.assertEquals("Tp2 must be equal", tp1, tp2);
+	}
+
+	
+	
 }

@@ -557,8 +557,51 @@ public class TimePeriod implements Cloneable, Serializable {
 		return result;
 	}
 	
+//*********** EQUALS **********************************/	
+	
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null){
+			return false;
+		}
+		if (! (obj instanceof TimePeriod)){
+			return false;
+		}
+		TimePeriod that = (TimePeriod)obj;
+		
+		if (! CdmUtils.nullSafeEqual(this.start, that.start)){
+			return false;
+		}
+		if (! CdmUtils.nullSafeEqual(this.end, that.end)){
+			return false;
+		}
+		if (! CdmUtils.nullSafeEqual(this.freeText, that.freeText)){
+			return false;
+		}
+		return true;
+	}
+	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		int hashCode = 7;
+		hashCode = 29*hashCode +  
+					(start== null? 33: start.hashCode()) + 
+					(end== null? 39: end.hashCode()) + 
+					(freeText== null? 41: freeText.hashCode()); 
+		return super.hashCode();
+	}	
+	
+	
 //*********** CLONE **********************************/	
 	
+
 	/* (non-Javadoc)
 	 * @see java.lang.Object#clone()
 	 */
@@ -567,12 +610,14 @@ public class TimePeriod implements Cloneable, Serializable {
 		try {
 			TimePeriod result = (TimePeriod)super.clone();
 			result.setStart(this.start);   //DateTime is immutable
-			result.setEnd(this.end);				
+			result.setEnd(this.end);	
+			result.setFreeText(this.freeText);
 			return result;
 		} catch (CloneNotSupportedException e) {
 			logger.warn("Clone not supported exception. Should never occurr !!");
 			return null;
 		}
 	}
+
 	
 }
