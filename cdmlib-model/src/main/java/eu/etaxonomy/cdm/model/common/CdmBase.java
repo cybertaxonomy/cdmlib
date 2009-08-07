@@ -43,6 +43,8 @@ import org.joda.time.DateTime;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.jaxb.DateTimeAdapter;
 import eu.etaxonomy.cdm.jaxb.UUIDAdapter;
+import eu.etaxonomy.cdm.strategy.match.Match;
+import eu.etaxonomy.cdm.strategy.match.MatchMode;
 
 
 
@@ -79,6 +81,7 @@ public abstract class CdmBase implements Serializable, ICdmBase{
 	@Id
 	@GeneratedValue(generator = "system-increment")
 	@DocumentId
+	@Match(MatchMode.IGNORE)
 	private int id;
     
 	@XmlAttribute(required = true)
@@ -87,6 +90,7 @@ public abstract class CdmBase implements Serializable, ICdmBase{
 	@Type(type="uuidUserType")
 	@NaturalId
 	@Column(length=36)
+	@Match(MatchMode.IGNORE)
 	protected UUID uuid;
 	
 	@XmlElement (name = "Created", type= String.class)
