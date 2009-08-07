@@ -31,6 +31,7 @@ import org.hibernate.search.annotations.IndexedEmbedded;
 
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.strategy.cache.reference.IReferenceBaseCacheStrategy;
+import eu.etaxonomy.cdm.strategy.match.IMatchable;
 import eu.etaxonomy.cdm.strategy.merge.IMergable;
 
 /**
@@ -60,7 +61,7 @@ import eu.etaxonomy.cdm.strategy.merge.IMergable;
 @Indexed(index = "eu.etaxonomy.cdm.model.reference.ReferenceBase")
 @Audited
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
-public abstract class StrictReferenceBase<S extends IReferenceBaseCacheStrategy> extends ReferenceBase<S> implements IMergable{
+public abstract class StrictReferenceBase<S extends IReferenceBaseCacheStrategy> extends ReferenceBase<S> implements IMergable, IMatchable {
 	private static final long serialVersionUID = 1951644614905249231L;
 	private static final Logger logger = Logger.getLogger(StrictReferenceBase.class);
 	
