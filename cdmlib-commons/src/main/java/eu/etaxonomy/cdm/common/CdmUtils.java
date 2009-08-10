@@ -15,15 +15,19 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import org.apache.log4j.Logger;
 
 /**
@@ -305,4 +309,47 @@ public class CdmUtils {
 	static public boolean isNotEmpty(String string){
 		return !isEmpty(string);
 	}
+	
+
+	/**
+	 * Computes all fields recursively
+	 * @param clazz
+	 * @return
+	 */
+	public static Map<String, Field> getAllFields(Class clazz, Class highestClass, boolean includeStatic, boolean includeTransient, boolean makeAccessible) {
+		Map<String, Field> result = new HashMap<String, Field>();
+		//exclude static
+		for (Field field: clazz.getDeclaredFields()){
+			if (includeStatic || ! Modifier.isStatic(field.getModifiers())){
+				if (includeTransient || ! isTransient(field)){
+					field.setAccessible(makeAccessible);
+					result.put(field.getName(), field);
+				}
+			}
+		}
+		
+		//include superclass fields
+		Class superclass = clazz.getSuperclass();
+		if (superclass != null && highestClass.isAssignableFrom(superclass)){
+			result.putAll(getAllFields(superclass, highestClass, includeStatic, includeTransient, makeAccessible));
+		}
+		return result;
+	}
+	
+
+	/**
+	 * Returns true, if field has an annotation of type javax.persistence.Annotation
+	 * @param field
+	 * @return
+	 */
+	protected static boolean isTransient(Field field) {
+		for (Annotation annotation : field.getAnnotations()){
+			//if (Transient.class.isAssignableFrom(annotation.annotationType())){
+			if (annotation.annotationType().getSimpleName().equals("Transient")){
+				return true;
+			}
+		}
+		return false;
+	}
+
 }
