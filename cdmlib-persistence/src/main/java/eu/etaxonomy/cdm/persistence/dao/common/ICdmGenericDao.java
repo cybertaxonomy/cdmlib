@@ -16,6 +16,9 @@ import java.util.UUID;
 import org.springframework.dao.DataAccessException;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.strategy.match.IMatchStrategy;
+import eu.etaxonomy.cdm.strategy.match.IMatchable;
+import eu.etaxonomy.cdm.strategy.match.MatchException;
 import eu.etaxonomy.cdm.strategy.merge.IMergeStrategy;
 import eu.etaxonomy.cdm.strategy.merge.MergeException;
 
@@ -79,6 +82,17 @@ public interface ICdmGenericDao {
 	 * @throws MergeException 
 	 */
 	public <T extends CdmBase> void   merge(T cdmBase1, T cdmBase2, IMergeStrategy mergeStrategy) throws MergeException;
+	
+	/**
+	 * Returns a List of matching persistent objects according to the match strategy
+	 * @param <T>
+	 * @param objectToMatch
+	 * @param matchStrategy
+	 * @return
+	 * @throws MatchException 
+	 */
+	public <T extends IMatchable> List<T> findMatching(T objectToMatch, IMatchStrategy matchStrategy) throws MatchException; 
+	
 	
 	//TODO remove
 	public void test();

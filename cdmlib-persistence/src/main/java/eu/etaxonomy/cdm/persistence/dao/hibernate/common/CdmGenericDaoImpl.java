@@ -32,7 +32,10 @@ import org.hibernate.MappingException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.LogicalExpression;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.criterion.SimpleExpression;
 import org.hibernate.impl.SessionFactoryImpl;
 import org.hibernate.impl.SessionImpl;
 import org.hibernate.metadata.ClassMetadata;
@@ -58,6 +61,7 @@ import org.hibernate.type.Type;
 import org.joda.time.contrib.hibernate.PersistentDateTime;
 import org.springframework.stereotype.Repository;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.Annotation;
@@ -67,12 +71,20 @@ import eu.etaxonomy.cdm.model.common.ICdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.PartialUserType;
+import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.common.UUIDUserType;
 import eu.etaxonomy.cdm.model.common.WSDLDefinitionUserType;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
+import eu.etaxonomy.cdm.strategy.match.DefaultMatchStrategy;
+import eu.etaxonomy.cdm.strategy.match.FieldMatcher;
+import eu.etaxonomy.cdm.strategy.match.IMatchStrategy;
+import eu.etaxonomy.cdm.strategy.match.IMatchable;
+import eu.etaxonomy.cdm.strategy.match.MatchException;
+import eu.etaxonomy.cdm.strategy.match.MatchMode;
+import eu.etaxonomy.cdm.strategy.match.Matching;
 import eu.etaxonomy.cdm.strategy.merge.DefaultMergeStrategy;
 import eu.etaxonomy.cdm.strategy.merge.IMergable;
 import eu.etaxonomy.cdm.strategy.merge.IMergeStrategy;
@@ -850,7 +862,108 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 		//session = getSession().getSessionFactory().getCurrentSession();
 		return (T)session.get(clazz, id);
 	}
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao#findMatching(eu.etaxonomy.cdm.strategy.match.IMatchable, eu.etaxonomy.cdm.strategy.match.IMatchStrategy)
+	 */
+	public <T extends IMatchable> List<T> findMatching(T objectToMatch,
+			IMatchStrategy matchStrategy) throws MatchException {
+		try {
+			List<T> result = new ArrayList<T>();
+			if(objectToMatch == null){
+				return result;
+			}
+			if (matchStrategy == null){
+				matchStrategy = DefaultMatchStrategy.NewInstance(objectToMatch.getClass());
+			}
+			result.addAll(findMatchingNullSafe(objectToMatch, matchStrategy));
+			return result;
+		} catch (IllegalArgumentException e) {
+			throw new MatchException(e);
+		} catch (IllegalAccessException e) {
+			throw new MatchException(e);
+		}
+	}
 	
+	public <T extends IMatchable> List<T> findMatchingNullSafe(T objectToMatch,	IMatchStrategy matchStrategy) throws IllegalArgumentException, IllegalAccessException, MatchException {
+		List<T> result = new ArrayList<T>();
+		Session session = getSession();
+		Class matchClass = objectToMatch.getClass();
+		ClassMetadata classMetaData = session.getSessionFactory().getClassMetadata(matchClass.getCanonicalName());
+		Criteria criteria = session.createCriteria(matchClass);
+		Matching matching = matchStrategy.getMatching();
+		boolean noMatch = false;
+		for (FieldMatcher fieldMatcher : matching.getFieldMatchers()){
+			String propertyName = fieldMatcher.getPropertyName();
+			Type propertyType = classMetaData.getPropertyType(propertyName);
+			Object value = fieldMatcher.getField().get(objectToMatch);
+			MatchMode matchMode = fieldMatcher.getMatchMode();
+			if (! matchMode.isIgnore(value) ){
+				
+				if (propertyType.isComponentType()){
+					if (value == null){
+						
+					}else{
+						Class<?> componentClass = fieldMatcher.getField().getType();
+						Map<String, Field> fields = CdmUtils.getAllFields(componentClass, Object.class, false, false, true);
+						for (String fieldName : fields.keySet()){
+							String restrictionPath = propertyName +"."+fieldName;
+							Object componentValue = fields.get(fieldName).get(value);
+							//TODO diffentiate matchMode
+							createCriterion(criteria, restrictionPath, componentValue, matchMode);
+						}
+					}
+				}else{
+					if (matchMode.isRequired() && value == null){
+						noMatch = true;
+						break;
+					}else if (matchMode.isEqual()){
+						createCriterion(criteria, propertyName, value, matchMode);
+					}else if (matchMode.isMatch()){
+						logger.warn("Unhandled match mode: " + matchMode + ", value: " + (value==null?"null":value));
+					}else{
+						logger.warn("Unhandled match mode: " + matchMode + ", value: " + (value==null?"null":value));
+					}
+				}
+			}
+		}
+		System.out.println(criteria);
+		session.flush();
+		if (noMatch == false){
+			List<T> matchCandidates = criteria.list();
+			matchCandidates.remove(objectToMatch);
+			for (T matchCandidate : matchCandidates ){
+				if (matchStrategy.invoke(objectToMatch, matchCandidate)){
+					result.add(matchCandidate);
+				}else{
+					logger.warn("Match candidate did not match: " + matchCandidate);
+				}
+			}
+		}
+		return result;
+	}
+
+	/**
+	 * @param criteria
+	 * @param propertyName
+	 * @param value
+	 * @param matchMode
+	 * @throws MatchException
+	 */
+	private void createCriterion(Criteria criteria, String propertyName,
+			Object value, MatchMode matchMode) throws MatchException {
+		Criterion finalRestriction = null;
+		Criterion equalRestriction = Restrictions.eq(propertyName, value);
+		Criterion nullRestriction = Restrictions.isNull(propertyName);
+		if (matchMode.requiresSecondValue(value)){
+			finalRestriction = equalRestriction;
+		}else if (matchMode.requiresSecondNull(value) ){
+			finalRestriction = nullRestriction;
+		}else{
+			finalRestriction = Restrictions.or(equalRestriction, nullRestriction);
+		}
+		criteria.add(finalRestriction);
+	}
 	
 }
 

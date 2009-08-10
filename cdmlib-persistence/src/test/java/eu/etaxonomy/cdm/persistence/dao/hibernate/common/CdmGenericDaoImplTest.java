@@ -185,6 +185,9 @@ import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
+import eu.etaxonomy.cdm.strategy.match.DefaultMatchStrategy;
+import eu.etaxonomy.cdm.strategy.match.IMatchStrategy;
+import eu.etaxonomy.cdm.strategy.match.MatchException;
 import eu.etaxonomy.cdm.strategy.merge.DefaultMergeStrategy;
 import eu.etaxonomy.cdm.strategy.merge.IMergeStrategy;
 import eu.etaxonomy.cdm.strategy.merge.MergeException;
@@ -926,6 +929,55 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 			Assert.assertTrue("Merging of 2 objects of different types must throw an exception", true);
 		}
 	}
+	
+	@Test
+	public void findMatching(){
+		Book book1 = Book.NewInstance();
+		Book book2 = Book.NewInstance();
+		Book book3 = Book.NewInstance();
+		Book book4 = Book.NewInstance();
+		
+		String title1 = "title1";
+		String title2 = "title2";
+		book1.setTitle(title1);
+		book2.setTitle(title2);
+		book3.setTitle(title1);
+		
+		cdmGenericDao.saveOrUpdate(book1);
+		cdmGenericDao.saveOrUpdate(book2);
+		cdmGenericDao.saveOrUpdate(book3);
+		
+		IMatchStrategy matchStrategy = DefaultMatchStrategy.NewInstance(Book.class);
+		
+		try {
+			List<Book> matchResult = cdmGenericDao.findMatching(book3, matchStrategy);
+			Assert.assertNotNull("Resultlist must not be null", matchResult);
+			Assert.assertEquals("Resultlist must have 1 entries", 1, matchResult.size());
+			Assert.assertSame("Resultlist entry must be book 1", book1, matchResult.get(0));
+			
+			book1.setDatePublished(TimePeriod.NewInstance(1999, 2002));
+			matchResult = cdmGenericDao.findMatching(book3, matchStrategy);
+			Assert.assertTrue("Resultlist must have no entries", matchResult.isEmpty());
+			
+			book3.setDatePublished(TimePeriod.NewInstance(1999));
+			matchResult = cdmGenericDao.findMatching(book3, matchStrategy);
+			Assert.assertTrue("Resultlist must have no entries", matchResult.isEmpty());
+
+			book3.setDatePublished(TimePeriod.NewInstance(1999,2002));
+			matchResult = cdmGenericDao.findMatching(book3, matchStrategy);
+			Assert.assertEquals("Resultlist must have 1 entries", 1, matchResult.size());
+			Assert.assertSame("Resultlist entry must be book 1", book1, matchResult.get(0));
+			
+			
+		} catch (MatchException e) {
+			Assert.fail("Find match must not throw Exception");
+		}
+		
+		book3.setTitle(title1);
+		
+		
+	}
+	
 	
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmGenericDaoImpl#getHqlResult(java.lang.String)}.
