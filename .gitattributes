@@ -1388,11 +1388,14 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/taxon/TaxonBaseDefaul
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/exceptions/StringNotParsableException.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/exceptions/UnknownCdmTypeException.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/match/DefaultMatchStrategy.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/match/FieldMatcher.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/match/GroupMatcher.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/match/IMatchStrategy.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/match/IMatchable.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/match/Match.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/match/MatchException.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/match/MatchMode.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/match/Matching.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/merge/DefaultMergeStrategy.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/merge/IMergable.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/merge/IMergeStrategy.java -text

@@ -12,19 +12,14 @@ package eu.etaxonomy.cdm.strategy.match;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.strategy.StrategyBase;
-import eu.etaxonomy.cdm.strategy.merge.DefaultMergeStrategy;
-import eu.etaxonomy.cdm.strategy.merge.IMergable;
-import eu.etaxonomy.cdm.strategy.merge.Merge;
-import eu.etaxonomy.cdm.strategy.merge.MergeException;
-import eu.etaxonomy.cdm.strategy.merge.MergeMode;
 
 /**
  * @author a.mueller
@@ -37,6 +32,36 @@ public class DefaultMatchStrategy extends StrategyBase implements IMatchStrategy
 	private static final Logger logger = Logger.getLogger(DefaultMatchStrategy.class);
 
 	final static UUID uuid = UUID.fromString("69467b70-07ec-43a6-b779-3ec8d013837b");
+	
+	public static DefaultMatchStrategy NewInstance(Class<? extends IMatchable> matchClazz){
+		return new DefaultMatchStrategy(matchClazz);
+	}
+	
+//	protected Map<String, MatchMode> matchModeMap = new HashMap<String, MatchMode>();
+	protected MatchMode defaultMatchMode = MatchMode.EQUAL;
+	protected MatchMode defaultCollectionMatchMode = MatchMode.IGNORE;
+	protected MatchMode defaultMatchMatchMode = MatchMode.MATCH;
+	
+	protected Class<? extends IMatchable> matchClass;
+	protected Map<String, Field> matchFields;
+	protected Matching matching = new Matching();
+	
+	protected DefaultMatchStrategy(Class<? extends IMatchable> matchClazz) {
+		super();
+		if (matchClazz == null){
+			throw new IllegalArgumentException("Match class must not be null");
+		}
+		this.matchClass = matchClazz;
+		initMapping();
+	}
+	
+	/**
+	 * @return the merge class
+	 */
+	public Class<? extends IMatchable> getMatchClass() {
+		return matchClass;
+	}
+
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.strategy.StrategyBase#getUuid()
 	 */
@@ -45,43 +70,21 @@ public class DefaultMatchStrategy extends StrategyBase implements IMatchStrategy
 		return uuid;
 	}
 	
-	/**
-	 * @return the merge class
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.strategy.match.IMatchStrategy#getMatching()
 	 */
-	public Class<? extends CdmBase> getMatchClass() {
-		return matchClass;
+	public Matching getMatching() {
+		return matching;
 	}
-	
-//	abstract protected UUID getUuid();
-	
-	public static DefaultMatchStrategy NewInstance(Class<? extends CdmBase> matchClazz){
-		return new DefaultMatchStrategy(matchClazz);
-	}
-	
-	protected Map<String, MatchMode> matchModeMap = new HashMap<String, MatchMode>();
-	protected MatchMode defaultMatchMode = MatchMode.EQUAL;
-	protected MatchMode defaultCollectionMatchMode = MatchMode.IGNORE;
-	
-	protected Class<? extends CdmBase> matchClass;
-	protected Map<String, Field> matchFields;
-	
-	protected DefaultMatchStrategy(Class<? extends CdmBase> matchClazz) {
-		super();
-		if (matchClazz == null){
-			throw new IllegalArgumentException("Match class must not be null");
-		}
-		this.matchClass = matchClazz;
-		initMatchModeMap();
-	}
-	
+
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.strategy.match.IMatchStrategy#setMatchMode(java.lang.String, eu.etaxonomy.cdm.strategy.match.MatchMode)
 	 */
 	public void setMatchMode(String propertyName, MatchMode matchMode)
 			throws MatchException {
 		if (matchFields.containsKey(propertyName)){
-			//checkIdentifier(propertyName, matchMode);
-			matchModeMap.put(propertyName, matchMode);
+			FieldMatcher fieldMatcher = FieldMatcher.NewInstance(matchFields.get(propertyName), matchMode);
+			matching.setFieldMatcher(fieldMatcher);
 		}else{
 			throw new MatchException("The class " + matchClass.getName() + " does not contain a field named " + propertyName);
 		}
@@ -91,17 +94,8 @@ public class DefaultMatchStrategy extends StrategyBase implements IMatchStrategy
 	 * @see eu.etaxonomy.cdm.strategy.match.IMatchStrategy#getMatchMode(java.lang.String)
 	 */
 	public MatchMode getMatchMode(String propertyName) {
-		MatchMode result = matchModeMap.get(propertyName);
-		if (result == null){
-			Field field = matchFields.get(propertyName);
-			if (isCollection(field.getType())){
-				return defaultCollectionMatchMode;
-			}else{
-				return defaultMatchMode;
-			}
-		}else{
-			return result;
-		}
+		FieldMatcher fieldMatcher = matching.getFieldMatcher(propertyName);
+		return fieldMatcher.getMatchMode();
 	}
 
 	/* (non-Javadoc)
@@ -117,22 +111,23 @@ public class DefaultMatchStrategy extends StrategyBase implements IMatchStrategy
 		}else{
 			//matchFirst != matchSecond != null
 			try {
-	 			for (Field field : matchFields.values()){
+	 			for (FieldMatcher fieldMatcher : matching.getFieldMatchers()){
+					Field field = fieldMatcher.getField();
 					Class<?> fieldType = field.getType();
 					if (isPrimitive(fieldType)){
-						result &= matchPrimitiveField(matchFirst, matchSecond, field);
+						result &= matchPrimitiveField(matchFirst, matchSecond, fieldMatcher);
 					}else if (fieldType == String.class ){
-						result &= matchPrimitiveField(matchFirst, matchSecond, field);
+						result &= matchPrimitiveField(matchFirst, matchSecond, fieldMatcher);
 					}else if(isUserType(fieldType)){
-						result &= matchPrimitiveField(matchFirst, matchSecond, field);
+						result &= matchPrimitiveField(matchFirst, matchSecond, fieldMatcher);
 					}else if(fieldType == UUID.class){
-						result &= matchPrimitiveField(matchFirst, matchSecond, field);
+						result &= matchPrimitiveField(matchFirst, matchSecond, fieldMatcher);
 					}else if(isSingleCdmBaseObject(fieldType)){
-						result &= matchPrimitiveField(matchFirst, matchSecond, field);
+						result &= matchPrimitiveField(matchFirst, matchSecond, fieldMatcher);
 					}else if (isCollection(fieldType)){
-						result &= matchCollectionField(matchFirst, matchSecond, field);
+						result &= matchCollectionField(matchFirst, matchSecond, fieldMatcher);
 					}else if(fieldType.isInterface()){
-						result &= matchInterfaceField(matchFirst, matchSecond, field);
+						result &= matchPrimitiveField(matchFirst, matchSecond, fieldMatcher);
 					}else{
 						throw new RuntimeException("Unknown Object type for matching: " + fieldType);
 					}
@@ -150,47 +145,42 @@ public class DefaultMatchStrategy extends StrategyBase implements IMatchStrategy
 	 * @throws Exception 
 	 * 
 	 */
-	private <T extends IMatchable> boolean matchPrimitiveField(T mergeFirst, T mergeSecond, Field field) throws Exception {
-		String propertyName = field.getName();
-		Class<?> fieldType = field.getType();
-		MatchMode matchMode =  this.getMatchMode(propertyName);
-		
-		Object value1 = field.get(mergeFirst);
-		Object value2 = field.get(mergeSecond);
-		boolean result = matchMode.matches(value1, value2);
-		System.out.println(propertyName + ": " + matchMode + ", " + fieldType.getName()+ ": " + result);
+	private <T extends IMatchable> boolean matchPrimitiveField(T mergeFirst, T mergeSecond, FieldMatcher fieldMatcher) throws Exception {
+		String propertyName = fieldMatcher.getPropertyName();
+		Field field = fieldMatcher.getField();
+		Object value1 = checkEmpty(field.get(mergeFirst));
+		Object value2 = checkEmpty(field.get(mergeSecond));
+		IMatchStrategy matchStrategy = fieldMatcher.getMatchStrategy();
+		boolean result = fieldMatcher.getMatchMode().matches(value1, value2, matchStrategy);
+		System.out.println(propertyName + ": " + fieldMatcher.getMatchMode() + ", " + field.getType().getName()+ ": " + result);
 		return result;
+	}
+
+	/**
+	 * @param object
+	 * @return
+	 */
+	private Object checkEmpty(Object object) {
+		if (object instanceof String){
+			if (CdmUtils.isEmpty((String)object)){
+				return null;
+			}
+		}
+		return object;
 	}
 
 	/**
 	 * @throws Exception 
 	 * 
 	 */
-	private <T extends IMatchable> boolean matchCollectionField(T mergeFirst, T mergeSecond, Field field) throws Exception {
-		String propertyName = field.getName();
-		Class<?> fieldType = field.getType();
-		MatchMode matchMode =  this.getMatchMode(propertyName);
-		
+	private <T extends IMatchable> boolean matchCollectionField(T mergeFirst, T mergeSecond, FieldMatcher fieldMatcher) throws Exception {
+		String propertyName = fieldMatcher.getPropertyName();
+		Field field = fieldMatcher.getField();
 		Object value1 = field.get(mergeFirst);
 		Object value2 = field.get(mergeSecond);
-		boolean result = matchMode.matches(value1, value2);
-		System.out.println(propertyName + ": " + matchMode + ", " + fieldType.getName());
-		return result;
-	}
-
-	/**
-	 * @throws Exception 
-	 * 
-	 */
-	private <T extends IMatchable> boolean matchInterfaceField(T mergeFirst, T mergeSecond, Field field) throws Exception {
-		String propertyName = field.getName();
-		Class<?> fieldType = field.getType();
-		MatchMode matchMode =  this.getMatchMode(propertyName);
-		
-		Object value1 = field.get(mergeFirst);
-		Object value2 = field.get(mergeSecond);
-		boolean result = matchMode.matches(value1, value2);
-		System.out.println(propertyName + ": " + matchMode + ", " + fieldType.getName());
+		IMatchStrategy matchStrategy = fieldMatcher.getMatchStrategy();
+		boolean result = fieldMatcher.getMatchMode().matches(value1, value2, matchStrategy);
+		System.out.println(propertyName + ": " + fieldMatcher.getMatchMode() + ", " + field.getType().getName()+ ": " + result);
 		return result;
 	}
 	
@@ -198,26 +188,44 @@ public class DefaultMatchStrategy extends StrategyBase implements IMatchStrategy
 	/**
 	 * 
 	 */
-	private void initMatchModeMap() {
+	private void initMapping() {
 		boolean includeStatic = false;
 		boolean includeTransient = false;
 		boolean makeAccessible = true;
-		this.matchFields = getAllNonStaticNonTransientFields(matchClass, includeStatic, includeTransient, makeAccessible);
+		matchFields = CdmUtils.getAllFields(matchClass, CdmBase.class, includeStatic, includeTransient, makeAccessible);
 		for (Field field: matchFields.values()){
 			MatchMode matchMode = null;
+			IMatchStrategy matchStrategy = null;
 			for (Annotation annotation : field.getAnnotations()){
 				if (annotation.annotationType() == Match.class){
-					matchMode = ((Match)annotation).value();
+					Match match = ((Match)annotation);
+					matchMode = match.value();
+					//Class strat = match.matchStrategy();
+					Class<CdmBase> fieldType = (Class<CdmBase>)field.getType();
+					matching.setFieldMatcher(FieldMatcher.NewInstance(field, matchMode));
 				}
 			}
+			Class fieldType = field.getType();
 			if (matchMode == null){
-				if (isCollection(field.getType())){
+				if (isCollection(fieldType)){
 					matchMode = defaultCollectionMatchMode;
+					matching.setFieldMatcher(FieldMatcher.NewInstance(field, matchMode));
+				}else if (isSingleCdmBaseObject(fieldType)){
+					if (IMatchable.class.isAssignableFrom(fieldType)){
+						matchMode = defaultMatchMatchMode;
+						if (matchStrategy == null){
+							matchStrategy = DefaultMatchStrategy.NewInstance(fieldType);
+						}
+						matching.setFieldMatcher(FieldMatcher.NewInstance(field, matchMode, matchStrategy));
+					}else{
+						matchMode = defaultMatchMode;
+						matching.setFieldMatcher(FieldMatcher.NewInstance(field, matchMode));
+					}
 				}else{
 					matchMode = defaultMatchMode;
+					matching.setFieldMatcher(FieldMatcher.NewInstance(field, matchMode));
 				}	
 			}
-			matchModeMap.put(field.getName(), matchMode);
 		}
 	}
 

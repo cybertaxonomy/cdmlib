@@ -116,6 +116,7 @@ public class DefaultMatchStrategyTest {
 		team2 = Team.NewInstance();
 		team2.setTitleCache("Team2");
 		printSeries1 = PrintSeries.NewInstance("Series1");
+		printSeries1.setTitle("print series");
 		printSeries2 = PrintSeries.NewInstance("Series2");
 		annotation1 = Annotation.NewInstance("Annotation1", null);
 		annotationString2 = "Annotation2";
@@ -173,7 +174,8 @@ public class DefaultMatchStrategyTest {
 	 */
 	@Test
 	public void testGetMatchMode() {
-		Assert.assertEquals("Match mode for title should be MatchMode.EQUAL", MatchMode.EQUAL, bookMatchStrategy.getMatchMode("title"));
+		Assert.assertEquals("Match mode for isbn should be MatchMode.EQUAL_", MatchMode.EQUAL, bookMatchStrategy.getMatchMode("isbn"));
+		Assert.assertEquals("Match mode for title should be MatchMode.EQUAL", MatchMode.EQUAL_REQUIRED, bookMatchStrategy.getMatchMode("title"));
 	}
 
 	/**
@@ -211,6 +213,29 @@ public class DefaultMatchStrategyTest {
 		
 		Book bookClone = (Book)book1.clone();
 		Assert.assertTrue("Cloned book should match", bookMatchStrategy.invoke(book1, bookClone));
+		bookClone.setInSeries(printSeries2);
+		Assert.assertFalse("Cloned book with differing print series should not match", bookMatchStrategy.invoke(book1, bookClone));
+		PrintSeries seriesClone = printSeries1.clone();
+		bookClone.setInSeries(seriesClone);
+		Assert.assertTrue("Cloned book with cloned bookSeries should match", bookMatchStrategy.invoke(book1, bookClone));
+		seriesClone.setTitle("Another title");
+		Assert.assertFalse("Cloned book should not match with differing series title", bookMatchStrategy.invoke(book1, bookClone));
+		bookClone.setInSeries(printSeries1);
+		Assert.assertTrue("Original printSeries should match", bookMatchStrategy.invoke(book1, bookClone));
+		
+		Book bookTitle1 = Book.NewInstance();
+		Book bookTitle2 = Book.NewInstance();
+		Assert.assertFalse("Books without title should not match", bookMatchStrategy.invoke(bookTitle1, bookTitle2));
+		String title = "Any title";
+		bookTitle1.setTitle(title);
+		bookTitle2.setTitle(title);
+		Assert.assertTrue("Books with same title (not empty) should match", bookMatchStrategy.invoke(bookTitle1, bookTitle2));
+		bookTitle1.setTitle("");
+		bookTitle2.setTitle("");
+		Assert.assertFalse("Books with empty title should not match", bookMatchStrategy.invoke(bookTitle1, bookTitle2));
+		
+		
+
 		
 	}
 	
@@ -314,7 +339,7 @@ public class DefaultMatchStrategyTest {
 	@Test
 	@Ignore
 	public void testInvokeTxonNames() throws MatchException {
-		IMatchStrategy botNameMatchStrategy = DefaultMatchStrategy.NewInstance(BotanicalName.class);
+//		IMatchStrategy botNameMatchStrategy = DefaultMatchStrategy.NewInstance(BotanicalName.class);
 		BotanicalName botName1 = BotanicalName.NewInstance(Rank.SPECIES());
 		BotanicalName botName2 = BotanicalName.NewInstance(Rank.SPECIES());
 		BotanicalName botName3 = BotanicalName.NewInstance(Rank.SPECIES());
@@ -349,15 +374,15 @@ public class DefaultMatchStrategyTest {
 		TaxonBase taxon1= Taxon.NewInstance(botName1, book1);
 		TaxonBase taxon2= Taxon.NewInstance(botName2, book2);
 		
-		try {
-			botNameMatchStrategy.setMatchMode("combinationAuthorTeam", MatchMode.EQUAL_REQUIRED);
-			botNameMatchStrategy.setMatchMode("anamorphic", MatchMode.EQUAL_OR_ONE_NULL);
+//		try {
+		//	botNameMatchStrategy.setMatchMode("combinationAuthorTeam", MatchMode.EQUAL_REQUIRED);
+		//	botNameMatchStrategy.setMatchMode("anamorphic", MatchMode.EQUAL_OR_ONE_NULL);
 			
 //			botNameMatchStrategy.invoke(botName1, botName2);
-		} catch (MatchException e) {
-			throw e;
-			//Assert.fail("An unexpected match exception occurred: " + e.getMessage() + ";" + e.getCause().getMessage());
-		}
+//		} catch (MatchException e) {
+//			throw e;
+//			//Assert.fail("An unexpected match exception occurred: " + e.getMessage() + ";" + e.getCause().getMessage());
+//		}
 
 		//Boolean
 		Assert.assertEquals("Is anamorphic must be false", true && false, botName1.isAnamorphic());
@@ -397,7 +422,7 @@ public class DefaultMatchStrategyTest {
 	@Test
 	@Ignore
 	public void testInvokeAgents() throws MatchException {
-		IMatchStrategy teamMatchStrategy = DefaultMatchStrategy.NewInstance(Team.class);
+	//	IMatchStrategy teamMatchStrategy = DefaultMatchStrategy.NewInstance(Team.class);
 		
 		Team team1 = Team.NewInstance();
 		Team team2 = Team.NewInstance();
@@ -475,7 +500,7 @@ public class DefaultMatchStrategyTest {
 		Keyword keyword2 = Keyword.NewInstance("K2", "K2", "K2");
 		person2.addKeyword(keyword2);
 
-		IMatchStrategy personMatchStrategy = DefaultMatchStrategy.NewInstance(Person.class);
+//		IMatchStrategy personMatchStrategy = DefaultMatchStrategy.NewInstance(Person.class);
 //		personMatchStrategy.invoke(person1, person2);
 		
 		Assert.assertEquals("Number of institutional memberships must be 2", 2, person1.getInstitutionalMemberships().size());

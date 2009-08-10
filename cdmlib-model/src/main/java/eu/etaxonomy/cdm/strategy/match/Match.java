@@ -16,6 +16,8 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+import eu.etaxonomy.cdm.strategy.merge.Merge;
+
 /**
  * @author a.mueller
  * @created 03.08.2009
@@ -25,5 +27,7 @@ import java.lang.annotation.Target;
 @Retention(RUNTIME)
 public @interface Match {
 	MatchMode value();
+	
+//	IMatchStrategy matchStrategy();
 	
 }

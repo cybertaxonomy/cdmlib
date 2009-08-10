@@ -97,13 +97,15 @@ public abstract class CdmBase implements Serializable, ICdmBase{
 	@XmlJavaTypeAdapter(DateTimeAdapter.class)
 	@Type(type="dateTimeUserType")
 	@Basic(fetch = FetchType.LAZY)
+	@Match(MatchMode.IGNORE)
 	private DateTime created;
 	
 	@XmlElement (name = "CreatedBy")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch=FetchType.LAZY)
-    private User createdBy;
+    @Match(MatchMode.IGNORE)
+	private User createdBy;
 
 	/**
 	 * Class constructor assigning a unique UUID and creation date.

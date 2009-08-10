@@ -26,6 +26,8 @@ import org.hibernate.annotations.Type;
 import org.joda.time.DateTime;
 
 import eu.etaxonomy.cdm.jaxb.DateTimeAdapter;
+import eu.etaxonomy.cdm.strategy.match.Match;
+import eu.etaxonomy.cdm.strategy.match.MatchMode;
 
 /**
  * The class keeps track of versions via a full linked list to different version objects, or a simple updated/updatedBy property in the same object.
@@ -57,12 +59,14 @@ public abstract class VersionableEntity extends CdmBase {
 	@XmlJavaTypeAdapter(DateTimeAdapter.class)
 	@Type(type="dateTimeUserType")
 	@Basic(fetch = FetchType.LAZY)
+	@Match(MatchMode.IGNORE)
 	private DateTime updated;
 	
 	@XmlElement(name = "UpdatedBy")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch=FetchType.LAZY)
+	@Match(MatchMode.IGNORE)
 	private User updatedBy;
 
 	public User getUpdatedBy(){

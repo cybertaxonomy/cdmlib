@@ -32,47 +32,8 @@ public abstract class StrategyBase implements IStrategy, Serializable {
 	protected StrategyBase(){
 	}
 
-
-	/**
-	 * Computes all fields recursively
-	 * @param clazz
-	 * @return
-	 */
-	protected static Map<String, Field> getAllNonStaticNonTransientFields(Class clazz, boolean includeStatic, boolean includeTransient, boolean makeAccessible) {
-		Map<String, Field> result = new HashMap<String, Field>();
-		//exclude static
-		for (Field field: clazz.getDeclaredFields()){
-			if (includeStatic || ! Modifier.isStatic(field.getModifiers())){
-				if (includeTransient || ! isTransient(field)){
-					field.setAccessible(makeAccessible);
-					result.put(field.getName(), field);
-				}
-			}
-		}
-		
-		//include superclass fields
-		Class superclass = clazz.getSuperclass();
-		if (CdmBase.class.isAssignableFrom(superclass)){
-			result.putAll(getAllNonStaticNonTransientFields(superclass, includeStatic, includeTransient, makeAccessible));
-		}
-		return result;
-	}
 	
 
-	/**
-	 * Returns true, if field has an annotation of type javax.persistence.Annotation
-	 * @param field
-	 * @return
-	 */
-	protected static boolean isTransient(Field field) {
-		for (Annotation annotation : field.getAnnotations()){
-			//if (Transient.class.isAssignableFrom(annotation.annotationType())){
-			if (annotation.annotationType() == Transient.class){
-				return true;
-			}
-		}
-		return false;
-	}
 
 	/**
 	 * @param fieldType
@@ -125,4 +86,6 @@ public abstract class StrategyBase implements IStrategy, Serializable {
 			return false;
 		}
 	}
+	
+	
 }

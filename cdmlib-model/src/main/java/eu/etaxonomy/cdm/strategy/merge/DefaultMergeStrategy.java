@@ -32,6 +32,7 @@ import org.joda.time.DateTime;
 
 import sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl;
 import sun.reflect.generics.reflectiveObjects.TypeVariableImpl;
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.agent.Contact;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ICdmBase;
@@ -71,7 +72,7 @@ public class DefaultMergeStrategy extends StrategyBase implements IMergeStrategy
 		boolean includeStatic = false;
 		boolean includeTransient = false;
 		boolean makeAccessible = true;
-		this.mergeFields = getAllNonStaticNonTransientFields(mergeClazz, includeStatic, includeTransient, makeAccessible);
+		this.mergeFields = CdmUtils.getAllFields(mergeClass, CdmBase.class, includeStatic, includeTransient, makeAccessible);
 		initMergeModeMap();
 	}
 
@@ -215,7 +216,6 @@ public class DefaultMergeStrategy extends StrategyBase implements IMergeStrategy
 		System.out.println(propertyName + ": " + mergeMode + ", " + field.getType().getName());
 		
 	}
-	
 	
 	/**
 	 * @throws Exception 

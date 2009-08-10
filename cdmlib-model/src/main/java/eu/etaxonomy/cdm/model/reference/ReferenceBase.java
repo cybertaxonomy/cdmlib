@@ -39,6 +39,8 @@ import eu.etaxonomy.cdm.model.common.IParsable;
 import eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.strategy.cache.reference.IReferenceBaseCacheStrategy;
+import eu.etaxonomy.cdm.strategy.match.Match;
+import eu.etaxonomy.cdm.strategy.match.MatchMode;
 import eu.etaxonomy.cdm.strategy.merge.Merge;
 import eu.etaxonomy.cdm.strategy.merge.MergeMode;
 
@@ -104,12 +106,15 @@ public abstract class ReferenceBase<S extends IReferenceBaseCacheStrategy> exten
 	
 	//this flag will be set to true if the parseName method was unable to successfully parse the name
 	@XmlAttribute
+    @Match(MatchMode.IGNORE)
 	private boolean hasProblem = false;
 	
 	@XmlAttribute
+    @Match(MatchMode.IGNORE)
     private int problemStarts = -1;
     
     @XmlAttribute
+    @Match(MatchMode.IGNORE)
     private int problemEnds = -1;
 	
 	/**

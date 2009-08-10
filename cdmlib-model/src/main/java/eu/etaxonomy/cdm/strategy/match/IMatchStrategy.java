@@ -38,4 +38,10 @@ public interface IMatchStrategy {
 	 */
 	public <T extends IMatchable> boolean invoke(T matchFirst, T matchSecond) throws MatchException;
 
+	
+	/**
+	 * Returns the Matching of this match strategy
+	 * @return
+	 */
+	public Matching getMatching();
 }

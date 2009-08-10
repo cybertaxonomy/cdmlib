@@ -32,6 +32,8 @@ import org.hibernate.search.annotations.IndexedEmbedded;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.strategy.cache.reference.IReferenceBaseCacheStrategy;
 import eu.etaxonomy.cdm.strategy.match.IMatchable;
+import eu.etaxonomy.cdm.strategy.match.Match;
+import eu.etaxonomy.cdm.strategy.match.MatchMode;
 import eu.etaxonomy.cdm.strategy.merge.IMergable;
 
 /**
@@ -70,6 +72,7 @@ public abstract class StrictReferenceBase<S extends IReferenceBaseCacheStrategy>
 	@Column(length=4096, name="title")
 	@Lob
 	@Field(index=Index.TOKENIZED)
+	@Match(MatchMode.EQUAL_REQUIRED)
 	private String title;
 	
 	//The date range assigned to the reference. ISO Date range like. Flexible, year can be left out, etc
