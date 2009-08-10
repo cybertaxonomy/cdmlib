@@ -16,6 +16,9 @@ import java.util.Set;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ISourceable;
 import eu.etaxonomy.cdm.model.common.OriginalSource;
+import eu.etaxonomy.cdm.strategy.match.IMatchStrategy;
+import eu.etaxonomy.cdm.strategy.match.IMatchable;
+import eu.etaxonomy.cdm.strategy.match.MatchException;
 import eu.etaxonomy.cdm.strategy.merge.IMergable;
 import eu.etaxonomy.cdm.strategy.merge.IMergeStrategy;
 import eu.etaxonomy.cdm.strategy.merge.MergeException;
@@ -53,6 +56,18 @@ public interface ICommonService extends IService<OriginalSource>{
 	 * @throws MergeException
 	 */
 	public <T extends IMergable> void   merge(T mergeFirst, T mergeSecond, IMergeStrategy mergeStrategy) throws MergeException;
+	
+	/**
+	 * Returns all objects that match the object to match according to the given match strategy.
+	 * If no match strategy is defined the default match strategy is taken.
+	 * @param <T>
+	 * @param objectToMatch
+	 * @param matchStrategy
+	 * @return
+	 * @throws MatchException
+	 */
+	public <T extends IMatchable> List<T> findMatching(T objectToMatch, IMatchStrategy matchStrategy) throws MatchException;
+		
 	
 	public List getHqlResult(String hqlQuery);
 

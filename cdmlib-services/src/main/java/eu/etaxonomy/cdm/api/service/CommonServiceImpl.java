@@ -26,6 +26,10 @@ import eu.etaxonomy.cdm.model.common.OriginalSource;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
 import eu.etaxonomy.cdm.persistence.dao.common.IOriginalSourceDao;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
+import eu.etaxonomy.cdm.strategy.match.DefaultMatchStrategy;
+import eu.etaxonomy.cdm.strategy.match.IMatchStrategy;
+import eu.etaxonomy.cdm.strategy.match.IMatchable;
+import eu.etaxonomy.cdm.strategy.match.MatchException;
 import eu.etaxonomy.cdm.strategy.merge.DefaultMergeStrategy;
 import eu.etaxonomy.cdm.strategy.merge.IMergable;
 import eu.etaxonomy.cdm.strategy.merge.IMergeStrategy;
@@ -205,13 +209,23 @@ public class CommonServiceImpl extends ServiceBase<OriginalSource,IOriginalSourc
 		genericDao.merge((CdmBase)mergeFirst, (CdmBase)mergeSecond, mergeStrategy);
 	}
 
+
+	public <T extends IMatchable> List<T> findMatching(T objectToMatch, IMatchStrategy matchStrategy) throws MatchException {
+		if (matchStrategy == null){
+			matchStrategy = DefaultMatchStrategy.NewInstance(((objectToMatch).getClass()));
+		}
+		return genericDao.findMatching(objectToMatch, matchStrategy);
+	}
+	
+	
+	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.IService#list(java.lang.Class, java.lang.Integer, java.lang.Integer, java.util.List, java.util.List)
 	 */
 	public <TYPE extends OriginalSource> Pager<TYPE> list(Class<TYPE> type,
 			Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
 			List<String> propertyPaths) {
-		// TODO Auto-generated method stub
+		logger.warn("Not yet implemented");
 		return null;
 	}
 
