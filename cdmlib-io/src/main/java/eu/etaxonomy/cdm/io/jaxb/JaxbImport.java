@@ -80,14 +80,14 @@ public class JaxbImport extends CdmIoBase<JaxbImportState> implements ICdmIO<Jax
 			return false;
     	}
 
-		logger.info("Deserializing file " + urlFileName + " to DB " ); //+ dbname
+		logger.info("Deserializing " + urlFileName + " to DB " ); //+ dbname
 
 		DataSet dataSet = new DataSet();
 		
         // unmarshalling XML file
 		try {
 			cdmDocumentBuilder = new CdmDocumentBuilder();
-			logger.info("Unmarshalling file: " + urlFileName);
+			logger.info("Unmarshalling " + urlFileName);
 			File file = new File(uri);
 			logger.debug("Absolute path: " + file.getAbsolutePath());
 			dataSet = cdmDocumentBuilder.unmarshal(DataSet.class, file);
@@ -98,7 +98,7 @@ public class JaxbImport extends CdmIoBase<JaxbImportState> implements ICdmIO<Jax
 		} 
 		
 		// save data in DB
-		logger.info("Saving data to DB: " ); //+ dbname
+		logger.info("Saving data to DB... "); //+ dbname
 		success = saveData(jaxbImpConfig, dataSet);
 		
 		return success;
