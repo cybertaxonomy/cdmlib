@@ -316,22 +316,24 @@ public class CdmUtils {
 	 * @param clazz
 	 * @return
 	 */
-	public static Map<String, Field> getAllFields(Class clazz, Class highestClass, boolean includeStatic, boolean includeTransient, boolean makeAccessible) {
+	public static Map<String, Field> getAllFields(Class clazz, Class highestClass, boolean includeStatic, boolean includeTransient, boolean makeAccessible, boolean includeHighestClass) {
 		Map<String, Field> result = new HashMap<String, Field>();
-		//exclude static
-		for (Field field: clazz.getDeclaredFields()){
-			if (includeStatic || ! Modifier.isStatic(field.getModifiers())){
-				if (includeTransient || ! isTransient(field)){
-					field.setAccessible(makeAccessible);
-					result.put(field.getName(), field);
+		if ( highestClass.isAssignableFrom(clazz) && (clazz != highestClass || includeHighestClass)){
+			//exclude static
+			for (Field field: clazz.getDeclaredFields()){
+				if (includeStatic || ! Modifier.isStatic(field.getModifiers())){
+					if (includeTransient || ! isTransient(field)){
+						field.setAccessible(makeAccessible);
+						result.put(field.getName(), field);
+					}
 				}
 			}
-		}
-		
-		//include superclass fields
-		Class superclass = clazz.getSuperclass();
-		if (superclass != null && highestClass.isAssignableFrom(superclass)){
-			result.putAll(getAllFields(superclass, highestClass, includeStatic, includeTransient, makeAccessible));
+			
+			//include superclass fields
+			Class superclass = clazz.getSuperclass();
+			if (superclass != null){
+				result.putAll(getAllFields(superclass, highestClass, includeStatic, includeTransient, makeAccessible, includeHighestClass));
+			}
 		}
 		return result;
 	}
