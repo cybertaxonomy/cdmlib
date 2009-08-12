@@ -72,6 +72,9 @@ public enum MatchMode {
 			logger.warn("Match objects are not of type IMatchable");
 			return matchesEqualRequired(obj1, obj2);
 		}else{
+			if (matchStrategy == null){
+				matchStrategy = DefaultMatchStrategy.NewInstance((Class<? extends IMatchable>) obj1.getClass());
+			}
 			return matchStrategy.invoke((IMatchable)obj1, (IMatchable)obj2);
 		}
 	}

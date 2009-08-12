@@ -310,7 +310,6 @@ public class DefaultMatchStrategyTest {
 	 * @throws MatchException 
 	 */
 	@Test
-	@Ignore
 	public void testInvokeTaxonNames() throws MatchException {
 		matchStrategy = DefaultMatchStrategy.NewInstance(BotanicalName.class);
 		
@@ -330,69 +329,30 @@ public class DefaultMatchStrategyTest {
 		
 		botName1.setAnamorphic(true);
 		botName2.setAnamorphic(false);
+		Assert.assertFalse("Similar names with differing boolean marker values should not match", matchStrategy.invoke(botName1, botName2));
+		botName2.setAnamorphic(true);
+		Assert.assertTrue("Similar names with same boolean marker values should match", matchStrategy.invoke(botName1, botName2));
 		
 		
 		
-		//name relations
-		botName2.addBasionym(botName3, book1, "p.22", null);
-		Specimen specimen1 = Specimen.NewInstance();
-		botName2.addSpecimenTypeDesignation(specimen1, SpecimenTypeDesignationStatus.HOLOTYPE(), book2, "p.56", "originalNameString", false, true);
-		
-		//descriptions
-		TaxonNameDescription description1 = TaxonNameDescription.NewInstance();
-		botName1.addDescription(description1);
-		TaxonNameDescription description2 = TaxonNameDescription.NewInstance();
-		botName2.addDescription(description2);
+//		//name relations
+//		botName2.addBasionym(botName3, book1, "p.22", null);
+//		Specimen specimen1 = Specimen.NewInstance();
+//		botName2.addSpecimenTypeDesignation(specimen1, SpecimenTypeDesignationStatus.HOLOTYPE(), book2, "p.56", "originalNameString", false, true);
+//		
+//		//descriptions
+//		TaxonNameDescription description1 = TaxonNameDescription.NewInstance();
+//		botName1.addDescription(description1);
+//		TaxonNameDescription description2 = TaxonNameDescription.NewInstance();
+//		botName2.addDescription(description2);
 		
 		//authors
 		Team team1 = Team.NewInstance();
 		Team team2 = Team.NewInstance();
-		Person person1 = Person.NewInstance();
 		botName1.setCombinationAuthorTeam(team1);
 		botName2.setCombinationAuthorTeam(team2);
-		
-		//taxa
-		TaxonBase taxon1= Taxon.NewInstance(botName1, book1);
-		TaxonBase taxon2= Taxon.NewInstance(botName2, book2);
-		
-//		try {
-		//	botNameMatchStrategy.setMatchMode("combinationAuthorTeam", MatchMode.EQUAL_REQUIRED);
-		//	botNameMatchStrategy.setMatchMode("anamorphic", MatchMode.EQUAL_OR_ONE_NULL);
-			
-//			botNameMatchStrategy.invoke(botName1, botName2);
-//		} catch (MatchException e) {
-//			throw e;
-//			//Assert.fail("An unexpected match exception occurred: " + e.getMessage() + ";" + e.getCause().getMessage());
-//		}
-
-		//Boolean
-		Assert.assertEquals("Is anamorphic must be false", true && false, botName1.isAnamorphic());
-		
-		//NameRelations
-		Set<NameRelationship> toRelations = botName1.getRelationsToThisName();
-		Set<NameRelationship> basionymRelations = new HashSet<NameRelationship>();
-		for (NameRelationship toRelation : toRelations){
-			if (toRelation.getType().equals(NameRelationshipType.BASIONYM())){
-				basionymRelations.add(toRelation);
-			}
-		}
-		Assert.assertEquals("Number of basionyms must be 1", 1, basionymRelations.size());
-		Assert.assertEquals("Basionym must have same reference", book1, basionymRelations.iterator().next().getCitation());
-		//TODO match relation if matches() = true
-		
-		//Types
-		Assert.assertEquals("Number of specimen type designations must be 1", 1, botName1.getSpecimenTypeDesignations().size());
-		//TODO add to all names etc.
-		
-		//Description
-		Assert.assertEquals("Number of descriptions must be 2", 2, botName1.getDescriptions().size());
-		
-		//AuthorTeams
-		Assert.assertEquals("Combination author must be combination author 2", team2, botName1.getCombinationAuthorTeam());
-		
-		//Taxa
-		Assert.assertEquals("TaxonName of taxon1 must be name1", botName1, taxon1.getName());
-		Assert.assertEquals("TaxonName of taxon2 must be name1", botName1, taxon2.getName());
+		Assert.assertTrue("Similar teams should match", DefaultMatchStrategy.NewInstance(Team.class).invoke(team1, team2));
+		Assert.assertTrue("Similar names with matching authors should match", matchStrategy.invoke(botName1, botName2));
 		
 	}
 	

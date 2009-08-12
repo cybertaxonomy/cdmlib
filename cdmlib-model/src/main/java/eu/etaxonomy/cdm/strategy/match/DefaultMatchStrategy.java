@@ -374,6 +374,10 @@ public class DefaultMatchStrategy extends StrategyBase implements IMatchStrategy
 			if (isCollection(fieldType)){
 				matchMode = defaultCollectionMatchMode;
 				matching.setFieldMatcher(FieldMatcher.NewInstance(field, matchMode), temporary);
+			}else if (fieldType.isInterface()){
+				//TODO could be handled more sophisticated
+				matchMode = defaultMatchMatchMode;
+				matching.setFieldMatcher(FieldMatcher.NewInstance(field, matchMode, matchStrategy), temporary);
 			}else if (isSingleCdmBaseObject(fieldType)){
 				if (IMatchable.class.isAssignableFrom(fieldType)){
 					matchMode = defaultMatchMatchMode;
