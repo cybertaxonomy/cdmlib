@@ -968,9 +968,54 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 			Assert.assertEquals("Resultlist must have 1 entries", 1, matchResult.size());
 			Assert.assertSame("Resultlist entry must be book 1", book1, matchResult.get(0));
 			
+			//BookSection
+			BookSection section1 = BookSection.NewInstance(book1, null, "SecTitle", "22-33");
+			BookSection section2 = BookSection.NewInstance(book2, null, "SecTitle", "22-33");
+			BookSection section3 = BookSection.NewInstance(book1, null, "SecTitle", "22-33");
+			cdmGenericDao.saveOrUpdate(section1);
+			cdmGenericDao.saveOrUpdate(section2);
+			cdmGenericDao.saveOrUpdate(section3);
 			
+			List<BookSection> sectionResult = cdmGenericDao.findMatching(section3, null);
+			Assert.assertEquals("Resultlist must have 1 entries", 1, sectionResult.size());
+			Assert.assertSame("Resultlist entry must be section1", section1, sectionResult.get(0));
+			section2.setInBook(book2 = (Book)book1.clone());
+			cdmGenericDao.saveOrUpdate(book2);
+			cdmGenericDao.saveOrUpdate(book1);
+			
+			matchResult = cdmGenericDao.findMatching(book3, matchStrategy);
+			Assert.assertEquals("Resultlist must have 2 entries", 2, matchResult.size());
+			sectionResult = cdmGenericDao.findMatching(section3, null);
+			Assert.assertEquals("Resultlist must have 1 entries", 2, sectionResult.size());
+			
+			
+			Person person1 = Person.NewTitledInstance("person");
+			Person person2 = Person.NewTitledInstance("person");
+			Person person3 = Person.NewTitledInstance("person");
+			
+			person1.setPrefix("pre1");
+			person2.setPrefix("pre2");
+			person3.setPrefix("pre3");
+			
+			book1.setAuthorTeam(person1);
+			book2.setAuthorTeam(person1);
+			book3.setAuthorTeam(person1);
+			matchResult = cdmGenericDao.findMatching(book3, matchStrategy);
+			Assert.assertEquals("Resultlist must have 2 entries", 2, matchResult.size());
+			
+			book2.setAuthorTeam(person2);
+			book3.setAuthorTeam(person3);
+			matchResult = cdmGenericDao.findMatching(book3, null);
+			Assert.assertEquals("Resultlist must have no entries", 0, matchResult.size());
+			
+			person3.setPrefix("pre1");
+			matchResult = cdmGenericDao.findMatching(book3, null);
+			Assert.assertEquals("Resultlist must have 1 entry", 1, matchResult.size());
+			Assert.assertSame("Resultlist entry must be book 1", book1, matchResult.get(0));
+
 		} catch (MatchException e) {
-			Assert.fail("Find match must not throw Exception");
+			Assert.fail("Find match must not throw Exception: " + e.getMessage());
+			e.printStackTrace();
 		}
 		
 		book3.setTitle(title1);
