@@ -310,6 +310,7 @@ public class DefaultMatchStrategyTest {
 	 * @throws MatchException 
 	 */
 	@Test
+	@Ignore
 	public void testInvokeTaxonNames() throws MatchException {
 		matchStrategy = DefaultMatchStrategy.NewInstance(BotanicalName.class);
 		
