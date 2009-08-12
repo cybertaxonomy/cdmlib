@@ -29,6 +29,9 @@ import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
 import eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
+import eu.etaxonomy.cdm.strategy.match.IMatchable;
+import eu.etaxonomy.cdm.strategy.match.Match;
+import eu.etaxonomy.cdm.strategy.match.MatchMode;
 import eu.etaxonomy.cdm.strategy.merge.IMergable;
 import eu.etaxonomy.cdm.strategy.merge.Merge;
 import eu.etaxonomy.cdm.strategy.merge.MergeMode;
@@ -51,7 +54,7 @@ import eu.etaxonomy.cdm.strategy.merge.MergeMode;
 @Entity
 @Audited
 @Table(appliesTo="AgentBase", indexes = { @Index(name = "agentTitleCacheIndex", columnNames = { "titleCache" }) })
-public abstract class AgentBase<S extends IIdentifiableEntityCacheStrategy> extends IdentifiableMediaEntity<S> implements IMergable{
+public abstract class AgentBase<S extends IIdentifiableEntityCacheStrategy> extends IdentifiableMediaEntity<S> implements IMergable, IMatchable{
 	private static final long serialVersionUID = 7732768617469448829L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(AgentBase.class);
@@ -59,6 +62,7 @@ public abstract class AgentBase<S extends IIdentifiableEntityCacheStrategy> exte
 	@XmlElement(name = "Contact")
     @Embedded
     @Merge(MergeMode.MERGE)
+    @Match(MatchMode.IGNORE)
     private Contact contact;
 	
 	/** 

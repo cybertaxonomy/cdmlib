@@ -41,13 +41,13 @@ import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.hibernate.StripHtmlBridge;
 import eu.etaxonomy.cdm.jaxb.FormattedTextAdapter;
 import eu.etaxonomy.cdm.jaxb.LSIDAdapter;
-import eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity;
 import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
-import eu.etaxonomy.cdm.strategy.merge.IMergeStrategy;
+import eu.etaxonomy.cdm.strategy.match.Match;
+import eu.etaxonomy.cdm.strategy.match.MatchMode;
 import eu.etaxonomy.cdm.strategy.merge.Merge;
 import eu.etaxonomy.cdm.strategy.merge.MergeMode;
 
@@ -96,6 +96,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 	     	 @Field(name = "titleCache_forSort", index = org.hibernate.search.annotations.Index.UN_TOKENIZED)
 	})
 	@FieldBridge(impl=StripHtmlBridge.class)
+	@Match(MatchMode.IGNORE)
 	private String titleCache;
 	
 	//if true titleCache will not be automatically generated/updated
@@ -470,7 +471,15 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
         for(Rights rights : this.rights) {
         	result.addRights(rights);
         }
+
 		
+		//Rights
+		result.credits = new ArrayList<Credit>();
+        for(Credit credit : this.credits) {
+        	result.addCredit(credit);
+        }
+
+        
 		//result.setLsid(lsid);
 		//result.setTitleCache(titleCache); 
 		//result.setProtectedTitleCache(protectedTitleCache);  //must be after setTitleCache
@@ -479,7 +488,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 		
 		//empty titleCache
 		if (! protectedTitleCache){
-			titleCache = null;
+			result.titleCache = null;
 		}
 		return result;
 	}

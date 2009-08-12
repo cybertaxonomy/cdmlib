@@ -27,11 +27,21 @@ public class Matching {
 	private static final Logger logger = Logger.getLogger(Matching.class);
 	
 	private SortedMap<String, FieldMatcher> fieldMatchers = new TreeMap<String, FieldMatcher>();
+	private SortedMap<String, FieldMatcher> tmpFieldMatchers = new TreeMap<String, FieldMatcher>();
 	private List<GroupMatcher> groupMatchers = new ArrayList<GroupMatcher>();
 	
-	
+
 	public Matching setFieldMatcher(FieldMatcher fieldMatcher){
-		fieldMatchers.put(fieldMatcher.getPropertyName(), fieldMatcher);
+		return setFieldMatcher(fieldMatcher, false);
+	}
+	
+	public Matching setFieldMatcher(FieldMatcher fieldMatcher,boolean temporary){
+		String propertyName = fieldMatcher.getPropertyName();
+		if (temporary && ! fieldMatchers.containsKey(propertyName)){
+			tmpFieldMatchers.put(propertyName, fieldMatcher);	
+		}else{
+			fieldMatchers.put(propertyName, fieldMatcher);
+		}
 		return this;
 	}
 
@@ -43,10 +53,15 @@ public class Matching {
 	/**
 	 * @return the fieldMatchers
 	 */
-	public List<FieldMatcher> getFieldMatchers() {
+	public List<FieldMatcher> getFieldMatchers(boolean includeTemporary) {
 		List<FieldMatcher> result = new ArrayList<FieldMatcher>();
 		for (FieldMatcher fieldMatcher : fieldMatchers.values()){
 			result.add(fieldMatcher);
+		}
+		if (includeTemporary){
+			for (FieldMatcher fieldMatcher : tmpFieldMatchers.values()){
+				result.add(fieldMatcher);
+			}	
 		}
 		return result;
 	}
@@ -69,7 +84,9 @@ public class Matching {
 		return groupMatchers;
 	}
 
-	
+	public void deleteTemporaryMatchers(){
+		tmpFieldMatchers = new TreeMap<String, FieldMatcher>();
+	}
 	
 	
 }

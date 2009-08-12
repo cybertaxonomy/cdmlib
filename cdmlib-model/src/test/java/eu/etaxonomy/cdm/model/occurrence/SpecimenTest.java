@@ -23,6 +23,7 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.ibm.lsid.MalformedLSIDException;
@@ -123,7 +124,7 @@ public class SpecimenTest {
 		Specimen nextVersion = Specimen.NewInstance();
 		Specimen previousVersion = Specimen.NewInstance();
 		PreservationMethod preservation = PreservationMethod.NewInstance();
-		boolean protectedTitleCache = false;
+		boolean protectedTitleCache = true;
 		Sex sex = Sex.FEMALE();
 		TaxonNameBase<?, ?> storedUnder = BotanicalName.NewInstance(Rank.GENUS());
 		String titleCache = "title";

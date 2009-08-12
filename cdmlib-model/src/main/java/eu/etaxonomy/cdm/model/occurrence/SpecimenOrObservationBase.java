@@ -204,6 +204,7 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
 	
 	@Override
 	public String generateTitle(){
+		logger.warn("Generate title for specimen not yet implemented");
 		return "";
 	}
 	

@@ -10,13 +10,18 @@
 package eu.etaxonomy.cdm.model.name;
 
 
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
@@ -36,10 +41,13 @@ import org.springframework.beans.factory.annotation.Configurable;
 
 import eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
+import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.strategy.cache.name.INonViralNameCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.name.NonViralNameDefaultCacheStrategy;
+import eu.etaxonomy.cdm.strategy.match.Match;
+import eu.etaxonomy.cdm.strategy.match.MatchMode;
 
 /**
  * The taxon name class for all non viral taxa. Parenthetical authorship is derived
@@ -88,8 +96,12 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
     })
 	private String nameCache;
 	
+	@XmlElement(name = "ProtectedNameCache")
+	protected boolean protectedNameCache;
+	
 	@XmlElement(name = "GenusOrUninomial")
 	@Field(index=Index.TOKENIZED)
+	@Match(MatchMode.EQUAL_REQUIRED)
 	private String genusOrUninomial;
 	
 	@XmlElement(name = "InfraGenericEpithet")
@@ -138,14 +150,19 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 	
 	@XmlElement(name = "AuthorshipCache")
 	@Field(index=Index.TOKENIZED)
+	@Match(MatchMode.IGNORE)
 	private String authorshipCache;
 	
 	@XmlElement(name = "ProtectedAuthorshipCache")
 	protected boolean protectedAuthorshipCache;
-	
-	@XmlElement(name = "ProtectedNameCache")
-	protected boolean protectedNameCache;
 
+    @XmlElementWrapper(name = "HybridRelationships")
+    @XmlElement(name = "HybridRelationship")
+    @OneToMany(fetch = FetchType.LAZY)
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE_ORPHAN})
+	private Set<HybridRelationship> hybridRelationships = new HashSet<HybridRelationship>();
+
+	
 //    @XmlTransient
 //    @Transient
 //	protected INonViralNameCacheStrategy cacheStrategy;
@@ -755,8 +772,127 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 			}
 		}
 	}
+	
+	
+	/** 
+	 * Returns the set of all {@link HybridRelationship hybrid relationships}
+	 * in which <i>this</i> botanical taxon name is involved. Any botanical taxon name
+	 * (even itself a hybrid taxon name) can be a parent of another hybrid
+	 * taxon name.
+	 *  
+	 * @see    #getParentRelationships()
+	 * @see    #getChildRelationships()
+	 * @see    #addHybridRelationship(HybridRelationship)
+	 * @see    #addRelationship(RelationshipBase)
+	 */
+	public Set<HybridRelationship> getHybridRelationships() {
+		return hybridRelationships;
+	}
+
+	/**
+	 * Adds the given {@link HybridRelationship hybrid relationship} to the set
+	 * of {@link #getHybridRelationships() hybrid relationships} of both botanical taxon names
+	 * involved in this hybrid relationship. One of both botanical taxon names
+	 * must be <i>this</i> botanical taxon name otherwise no addition will be carried
+	 * out. The {@link eu.etaxonomy.cdm.model.common.RelationshipBase#getRelatedTo() child botanical taxon name}
+	 * must be a hybrid, which means that one of its four hybrid flags must be set.
+	 * 
+	 * @param relationship  the hybrid relationship to be added
+	 * @see    				#isHybridFormula()
+	 * @see    				#isMonomHybrid()
+	 * @see    				#isBinomHybrid()
+	 * @see    				#isTrinomHybrid()
+	 * @see    				#getHybridRelationships()
+	 * @see    				#getParentRelationships()
+	 * @see    				#getChildRelationships()
+	 * @see    				#addRelationship(RelationshipBase)
+	 */
+	protected void addHybridRelationship(HybridRelationship relationship) {
+		this.hybridRelationships.add(relationship);
+	}
 
 	
+	/**
+	 * Creates a new {@link HybridRelationship#HybridRelationship(BotanicalName, BotanicalName, HybridRelationshipType, String) hybrid relationship} 
+	 * to <i>this</i> botanical name. A HybridRelationship may be of type
+	 * "is first/second parent" or "is male/female parent". By invoking this
+	 * method <i>this</i> botanical name becomes a hybrid child of the parent
+	 * botanical name.
+	 * 
+	 * @param parentName	  the botanical name of the parent for this new hybrid name relationship
+	 * @param type			  the type of this new name relationship
+	 * @param ruleConsidered  the string which specifies the rule on which this name relationship is based
+	 * @see    				  #addHybridChild(BotanicalName, HybridRelationshipType,String )
+	 * @see    				  #getRelationsToThisName()
+	 * @see    				  #getNameRelations()
+	 * @see    				  #addRelationshipFromName(TaxonNameBase, NameRelationshipType, String)
+	 * @see    				  #addNameRelationship(NameRelationship)
+	 */
+	public void addHybridParent(NonViralName parentName, HybridRelationshipType type, String ruleConsidered){
+		HybridRelationship rel = new HybridRelationship(this, parentName, type, ruleConsidered);
+	}
 	
+	/**
+	 * Creates a new {@link HybridRelationship#HybridRelationship(BotanicalName, BotanicalName, HybridRelationshipType, String) hybrid relationship} 
+	 * to <i>this</i> botanical name. A HybridRelationship may be of type
+	 * "is first/second parent" or "is male/female parent". By invoking this
+	 * method <i>this</i> botanical name becomes a parent of the hybrid child
+	 * botanical name.
+	 * 
+	 * @param childName		  the botanical name of the child for this new hybrid name relationship
+	 * @param type			  the type of this new name relationship
+	 * @param ruleConsidered  the string which specifies the rule on which this name relationship is based
+	 * @see    				  #addHybridParent(BotanicalName, HybridRelationshipType,String )
+	 * @see    				  #getRelationsToThisName()
+	 * @see    				  #getNameRelations()
+	 * @see    				  #addRelationshipFromName(TaxonNameBase, NameRelationshipType, String)
+	 * @see    				  #addNameRelationship(NameRelationship)
+	 */
+	public void addHybridChild(NonViralName childName, HybridRelationshipType type, String ruleConsidered){
+		HybridRelationship rel = new HybridRelationship(childName, this, type, ruleConsidered);
+	}
+	
+	
+	/** 
+	 * Removes one {@link HybridRelationship hybrid relationship} from the set of
+	 * {@link #getHybridRelationships() hybrid relationships} in which <i>this</i> botanical taxon name
+	 * is involved. The hybrid relationship will also be removed from the set
+	 * belonging to the second botanical taxon name involved. 
+	 *
+	 * @param  relationship  the hybrid relationship which should be deleted from the corresponding sets
+	 * @see    				 #getHybridRelationships()
+	 */
+	public void removeHybridRelationship(HybridRelationship relationship) {
+		//TODO
+		logger.warn("Birelationship not yet implemented");
+		this.hybridRelationships.remove(relationship);
+	}
+
+	
+	/** 
+	 * Returns the set of all {@link HybridRelationship hybrid relationships}
+	 * in which <i>this</i> botanical taxon name is involved as a {@link common.RelationshipBase#getRelatedFrom() parent}.
+	 *  
+	 * @see    #getHybridRelationships()
+	 * @see    #getChildRelationships()
+	 * @see    HybridRelationshipType
+	 */
+	public Set<HybridRelationship> getParentRelationships() {
+		// FIXME: filter relations
+		return hybridRelationships;
+	}
+
+	/** 
+	 * Returns the set of all {@link HybridRelationship hybrid relationships}
+	 * in which <i>this</i> botanical taxon name is involved as a {@link common.RelationshipBase#getRelatedTo() child}.
+	 *  
+	 * @see    #getHybridRelationships()
+	 * @see    #getParentRelationships()
+	 * @see    HybridRelationshipType
+	 */
+	public Set<HybridRelationship> getChildRelationships() {
+		// FIXME: filter relations
+		return hybridRelationships;
+	}
 
 }

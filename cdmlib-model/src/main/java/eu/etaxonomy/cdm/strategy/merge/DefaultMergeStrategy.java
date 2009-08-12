@@ -72,7 +72,7 @@ public class DefaultMergeStrategy extends StrategyBase implements IMergeStrategy
 		boolean includeStatic = false;
 		boolean includeTransient = false;
 		boolean makeAccessible = true;
-		this.mergeFields = CdmUtils.getAllFields(mergeClass, CdmBase.class, includeStatic, includeTransient, makeAccessible);
+		this.mergeFields = CdmUtils.getAllFields(mergeClass, CdmBase.class, includeStatic, includeTransient, makeAccessible, true);
 		initMergeModeMap();
 	}
 

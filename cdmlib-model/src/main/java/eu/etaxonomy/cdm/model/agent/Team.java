@@ -34,6 +34,9 @@ import org.hibernate.search.annotations.Indexed;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import eu.etaxonomy.cdm.strategy.cache.agent.TeamDefaultCacheStrategy;
+import eu.etaxonomy.cdm.strategy.match.IMatchable;
+import eu.etaxonomy.cdm.strategy.match.MatchMode;
+import eu.etaxonomy.cdm.strategy.match.Match;
 import eu.etaxonomy.cdm.strategy.merge.IMergable;
 
 /**
@@ -65,7 +68,7 @@ import eu.etaxonomy.cdm.strategy.merge.IMergable;
 @Indexed(index = "eu.etaxonomy.cdm.model.agent.AgentBase")
 @Audited
 @Configurable
-public class Team extends TeamOrPersonBase<Team> implements IMergable{
+public class Team extends TeamOrPersonBase<Team> {
 	private static final long serialVersionUID = 97640416905934622L;
 	public static final Logger logger = Logger.getLogger(Team.class);
 	
@@ -81,6 +84,7 @@ public class Team extends TeamOrPersonBase<Team> implements IMergable{
     @IndexColumn(name="sortIndex", base = 0)
 	@ManyToMany(fetch = FetchType.LAZY)
 	@Cascade(CascadeType.SAVE_UPDATE)
+	@Match(MatchMode.MATCH)
 	private List<Person> teamMembers = new ArrayList<Person>();
 	
 	

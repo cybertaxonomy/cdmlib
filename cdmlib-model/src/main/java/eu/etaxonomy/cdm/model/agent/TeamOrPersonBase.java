@@ -23,6 +23,7 @@ import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
 
 import eu.etaxonomy.cdm.strategy.cache.agent.INomenclaturalAuthorCacheStrategy;
+import eu.etaxonomy.cdm.strategy.match.IMatchable;
 
 
 /**

@@ -46,6 +46,7 @@ import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
 import eu.etaxonomy.cdm.model.reference.Book;
+import eu.etaxonomy.cdm.model.reference.BookSection;
 import eu.etaxonomy.cdm.model.reference.PrintSeries;
 import eu.etaxonomy.cdm.model.reference.Thesis;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -61,7 +62,7 @@ public class DefaultMatchStrategyTest {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DefaultMatchStrategyTest.class);
 
-	private DefaultMatchStrategy bookMatchStrategy;
+	private DefaultMatchStrategy matchStrategy;
 	private Book book1;
 	private String editionString1 ="Ed.1";
 	private String volumeString1 ="Vol.1";
@@ -110,7 +111,7 @@ public class DefaultMatchStrategyTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
-		bookMatchStrategy = DefaultMatchStrategy.NewInstance(Book.class);
+		
 		team1 = Team.NewInstance();
 		team1.setTitleCache("Team1");
 		team2 = Team.NewInstance();
@@ -165,8 +166,9 @@ public class DefaultMatchStrategyTest {
 	 */
 	@Test
 	public void testNewInstance() {
-		Assert.assertNotNull(bookMatchStrategy);
-		Assert.assertEquals(Book.class, bookMatchStrategy.getMatchClass());
+		matchStrategy = DefaultMatchStrategy.NewInstance(Book.class);
+		Assert.assertNotNull(matchStrategy);
+		Assert.assertEquals(Book.class, matchStrategy.getMatchClass());
 	}
 
 	/**
@@ -174,8 +176,9 @@ public class DefaultMatchStrategyTest {
 	 */
 	@Test
 	public void testGetMatchMode() {
-		Assert.assertEquals("Match mode for isbn should be MatchMode.EQUAL_", MatchMode.EQUAL, bookMatchStrategy.getMatchMode("isbn"));
-		Assert.assertEquals("Match mode for title should be MatchMode.EQUAL", MatchMode.EQUAL_REQUIRED, bookMatchStrategy.getMatchMode("title"));
+		matchStrategy = DefaultMatchStrategy.NewInstance(Book.class);
+		Assert.assertEquals("Match mode for isbn should be MatchMode.EQUAL_", MatchMode.EQUAL, matchStrategy.getMatchMode("isbn"));
+		Assert.assertEquals("Match mode for title should be MatchMode.EQUAL", MatchMode.EQUAL_REQUIRED, matchStrategy.getMatchMode("title"));
 	}
 
 	/**
@@ -185,21 +188,22 @@ public class DefaultMatchStrategyTest {
 	public void testGetSetMatchMode() {
 		//legal value
 		try {
-			bookMatchStrategy.setMatchMode("edition", MatchMode.EQUAL_REQUIRED);
-			Assert.assertEquals("Match mode for edition should be", MatchMode.EQUAL_REQUIRED, bookMatchStrategy.getMatchMode("edition"));
+			matchStrategy = DefaultMatchStrategy.NewInstance(Book.class);
+			matchStrategy.setMatchMode("edition", MatchMode.EQUAL_REQUIRED);
+			Assert.assertEquals("Match mode for edition should be", MatchMode.EQUAL_REQUIRED, matchStrategy.getMatchMode("edition"));
 		} catch (MatchException e1) {
 			Assert.fail();
 		}
 		//illegalValue
 		try {
-			bookMatchStrategy.setMatchMode("xxx", MatchMode.EQUAL_REQUIRED);
+			matchStrategy.setMatchMode("xxx", MatchMode.EQUAL_REQUIRED);
 			Assert.fail("A property name must exist, otherwise an exception must be thrown");
 		} catch (Exception e) {
 			//ok
 		}
 		//illegalValue
 		try {
-			bookMatchStrategy.setMatchMode("cacheStrategy", MatchMode.EQUAL_REQUIRED);
+			matchStrategy.setMatchMode("cacheStrategy", MatchMode.EQUAL_REQUIRED);
 			Assert.fail("CacheStrategy is transient and therefore not a legal match parameter");
 		} catch (Exception e) {
 			//ok
@@ -209,126 +213,95 @@ public class DefaultMatchStrategyTest {
 	
 	@Test
 	public void testInvokeReferences() throws MatchException {
-		Assert.assertTrue("Same object should always match", bookMatchStrategy.invoke(book1, book1));
+		matchStrategy = DefaultMatchStrategy.NewInstance(Book.class);
+		Assert.assertTrue("Same object should always match", matchStrategy.invoke(book1, book1));
 		
 		Book bookClone = (Book)book1.clone();
-		Assert.assertTrue("Cloned book should match", bookMatchStrategy.invoke(book1, bookClone));
+		Assert.assertTrue("Cloned book should match", matchStrategy.invoke(book1, bookClone));
+		bookClone.setTitle("Any title");
+		Assert.assertFalse("Books with differing titles should not match", matchStrategy.invoke(book1, bookClone));
+		String originalTitle = book1.getTitle();
+		bookClone.setTitle(originalTitle);
+		Assert.assertTrue("Cloned book should match", matchStrategy.invoke(book1, bookClone));
+		book1.setTitle(null);
+		bookClone.setTitle(null);
+		Assert.assertFalse("Books with no title should not match", matchStrategy.invoke(book1, bookClone));
+		book1.setTitle(originalTitle);
+		bookClone.setTitle(originalTitle);
+		
+		
 		bookClone.setInSeries(printSeries2);
-		Assert.assertFalse("Cloned book with differing print series should not match", bookMatchStrategy.invoke(book1, bookClone));
+		Assert.assertFalse("Cloned book with differing print series should not match", matchStrategy.invoke(book1, bookClone));
 		PrintSeries seriesClone = printSeries1.clone();
 		bookClone.setInSeries(seriesClone);
-		Assert.assertTrue("Cloned book with cloned bookSeries should match", bookMatchStrategy.invoke(book1, bookClone));
+		Assert.assertTrue("Cloned book with cloned bookSeries should match", matchStrategy.invoke(book1, bookClone));
 		seriesClone.setTitle("Another title");
-		Assert.assertFalse("Cloned book should not match with differing series title", bookMatchStrategy.invoke(book1, bookClone));
+		Assert.assertFalse("Cloned book should not match with differing series title", matchStrategy.invoke(book1, bookClone));
 		bookClone.setInSeries(printSeries1);
-		Assert.assertTrue("Original printSeries should match", bookMatchStrategy.invoke(book1, bookClone));
+		Assert.assertTrue("Original printSeries should match", matchStrategy.invoke(book1, bookClone));
 		
 		Book bookTitle1 = Book.NewInstance();
 		Book bookTitle2 = Book.NewInstance();
-		Assert.assertFalse("Books without title should not match", bookMatchStrategy.invoke(bookTitle1, bookTitle2));
+		Assert.assertFalse("Books without title should not match", matchStrategy.invoke(bookTitle1, bookTitle2));
 		String title = "Any title";
 		bookTitle1.setTitle(title);
 		bookTitle2.setTitle(title);
-		Assert.assertTrue("Books with same title (not empty) should match", bookMatchStrategy.invoke(bookTitle1, bookTitle2));
+		Assert.assertTrue("Books with same title (not empty) should match", matchStrategy.invoke(bookTitle1, bookTitle2));
 		bookTitle1.setTitle("");
 		bookTitle2.setTitle("");
-		Assert.assertFalse("Books with empty title should not match", bookMatchStrategy.invoke(bookTitle1, bookTitle2));
+		Assert.assertFalse("Books with empty title should not match", matchStrategy.invoke(bookTitle1, bookTitle2));
 		
-		
+		//Time period
+		bookTitle1.setTitle(title);
+		bookTitle2.setTitle(title);
+		bookTitle1.setDatePublished(TimePeriod.NewInstance(1999, 2002));
+		Assert.assertFalse("Books with differing publication dates should not match", matchStrategy.invoke(bookTitle1, bookTitle2));
+		bookTitle2.setDatePublished(TimePeriod.NewInstance(1998));
+		Assert.assertFalse("Books with differing publication dates should not match", matchStrategy.invoke(bookTitle1, bookTitle2));
+		bookTitle2.setDatePublished(TimePeriod.NewInstance(1999));
+		Assert.assertFalse("Books with differing publication dates should not match", matchStrategy.invoke(bookTitle1, bookTitle2));
+		bookTitle2.setDatePublished(TimePeriod.NewInstance(1999, 2002));
+		Assert.assertTrue("Books with same publication dates should match", matchStrategy.invoke(bookTitle1, bookTitle2));
 
+		//BookSection
+		BookSection section1 = BookSection.NewInstance(bookTitle1, null, "SecTitle", "22-33");
+		BookSection section2 = BookSection.NewInstance(bookTitle1, null, "SecTitle", "22-33");
+		IMatchStrategy bookSectionMatchStrategy = DefaultMatchStrategy.NewInstance(BookSection.class);
+		Assert.assertTrue("Equal BookSections should match", bookSectionMatchStrategy.invoke(section1, section2));
+		section2.setInBook(bookTitle2);
+		Assert.assertTrue("Matching books should result in matching book sections", bookSectionMatchStrategy.invoke(section1, section2));
+		bookTitle2.setPages("xx");
+		Assert.assertFalse("Sections with differing books should not match", bookSectionMatchStrategy.invoke(section1, section2));
+		//restore
+		bookTitle2.setPages(null);
+		Assert.assertTrue("Matching books should result in matching book sections", bookSectionMatchStrategy.invoke(section1, section2));
+		printSeries2.setTitle("A new series title");
+		IMatchStrategy printSeriesMatchStrategy = DefaultMatchStrategy.NewInstance(PrintSeries.class);
+		Assert.assertFalse("Print series with differing titles should not match", printSeriesMatchStrategy.invoke(printSeries1, printSeries2));
+		bookTitle1.setInSeries(printSeries1);
+		bookTitle2.setInSeries(printSeries2);
+		Assert.assertFalse("Books with not matching in series should not match", matchStrategy.invoke(bookTitle1, bookTitle2));
+		Assert.assertFalse("Sections with differing print series should not match", bookSectionMatchStrategy.invoke(section1, section2));
 		
-	}
-	
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.strategy.match.DefaultMatchStrategy#invoke(eu.etaxonomy.cdm.strategy.match.IMergable, eu.etaxonomy.cdm.strategy.match.IMergable)}.
-	 * @throws MatchException 
-	 */
-	@Test
-	@Ignore
-	public void testInvokeReferences_Old() throws MatchException {
-		INomenclaturalReferenceCacheStrategy<Book> cacheStrategy1 = book1.getCacheStrategy();
-		int id = book1.getId();
-		UUID uuid = book1.getUuid();
+		//authorTeam
+		Person person1 = Person.NewTitledInstance("person");
+		Person person2 = Person.NewTitledInstance("person");
 		
-		Assert.assertTrue("Same object should always match", bookMatchStrategy.invoke(book1, book1));
+		person1.setPrefix("pre1");
+		person2.setPrefix("pre2");
 		
-		try {
-			bookMatchStrategy.setMatchMode("edition", MatchMode.EQUAL_REQUIRED);
-			bookMatchStrategy.setMatchMode("volume", MatchMode.IGNORE);
-			bookMatchStrategy.setMatchMode("authorTeam", MatchMode.EQUAL_REQUIRED);
-			bookMatchStrategy.setMatchMode("created", MatchMode.EQUAL_REQUIRED);
-			bookMatchStrategy.setMatchMode("updated",MatchMode.IGNORE);
-			bookMatchStrategy.setMatchMode("datePublished", MatchMode.EQUAL_REQUIRED);
-			bookMatchStrategy.setMatchMode("hasProblem", MatchMode.EQUAL_REQUIRED);
-			bookMatchStrategy.setMatchMode("inSeries", MatchMode.EQUAL_REQUIRED);
-			bookMatchStrategy.setMatchMode("lsid", MatchMode.EQUAL_REQUIRED);
-			
-			bookMatchStrategy.invoke(book1, book2);
-		} catch (MatchException e) {
-			throw e;
-			//Assert.fail("An unexpected match exception occurred: " + e.getMessage() + ";" + e.getCause().getMessage());
-		}
-		Assert.assertEquals("Title should stay the same", title1, book1.getTitle());
-		Assert.assertEquals("Edition should become edition 2", editionString2, book1.getEdition());
-		Assert.assertNull("Volume should be null", book1.getVolume());
+		book2 = (Book)book1.clone();
+		Assert.assertTrue("Equal books should match", matchStrategy.invoke(book1, book2));
 		
-		//Boolean
-		Assert.assertEquals("Has problem must be hasProblem2", hasProblem2, book1.hasProblem());
-		Assert.assertEquals("nomenclaturally relevant must have value true (AND semantics)", true, book1.isNomenclaturallyRelevant() );
+		book1.setAuthorTeam(person1);
+		book2.setAuthorTeam(person1);
+		Assert.assertTrue("Books with same author should match", matchStrategy.invoke(book1, book2));
 		
+		book2.setAuthorTeam(person2);
+		Assert.assertFalse("Books with different authors should not match", matchStrategy.invoke(book1, book2));
 		
-		//CdmBase
-		Assert.assertSame("AuthorTeam must be the one of book2", team2, book1.getAuthorTeam());
-		Assert.assertSame("In Series must be the one of book2", printSeries2, book1.getInSeries());
-		
-		//Transient
-		Assert.assertSame("Cache strategy is transient and shouldn't change therefore", cacheStrategy1, book1.getCacheStrategy());
-		
-		
-		//UserType
-		Assert.assertSame("Created must be created2", created2, book1.getCreated());
-		//TODO updated should have the actual date if any value has changed
-		Assert.assertSame("Created must be created2", null, book1.getUpdated());
-		Assert.assertSame("Created must be datePublsihed2", datePublished2, book1.getDatePublished());
-		//TODO this may not be correct
-		Assert.assertSame("LSID must be LSID2", lsid2, book1.getLsid());
-		
-
-		//TODO
-		//	book1.setProblemEnds(end);
-		//	book1.setProtectedTitleCache(protectedTitleCache);
-		
-		//annotations -> ADD_CLONE
-		Assert.assertEquals("Annotations should contain annotations of both books", 2, book1.getAnnotations().size());
-		boolean cloneExists = false;
-		for (Annotation annotation : book1.getAnnotations()){
-			if (annotation == this.annotation2){
-				//Hibernate will not persist the exact same object. Probably this is a bug (the according row in the 
-				//M:M table is not deleted and a unique constraints does not allow adding 2 rows with the same annotation_id
-				//This test can be changed once this bug does not exist anymore 
-				Assert.fail("Book1 should contain a clone of annotation2 but contains annotation2 itself");
-			}else if (annotationString2.equals(annotation.getText())){
-				cloneExists = true;
-			}
-		}
-		Assert.assertTrue("Book1 should contain a clone of annotation2", cloneExists);
-	//	Assert.assertEquals("Annotations from book2 should be deleted", 0, book2.getAnnotations().size());
-		
-		//identifier
-		Assert.assertSame("Identifier must never be changed", id, book1.getId());
-		Assert.assertSame("Identifier must never be changed", uuid, book1.getUuid());
-		
-		//Test Thesis
-		Institution school1 = Institution.NewInstance();
-		Institution school2 = Institution.NewInstance();
-		
-		Thesis thesis1 = Thesis.NewInstance(school1);
-		Thesis thesis2 = Thesis.NewInstance(school2);
-		DefaultMatchStrategy thesisStrategy = DefaultMatchStrategy.NewInstance(Thesis.class);
-		
-		thesisStrategy.setMatchMode("school", MatchMode.EQUAL_REQUIRED);
-		thesisStrategy.invoke(thesis1, thesis2);
-		Assert.assertSame("school must be school2", school2, thesis1.getSchool());	
+		person2.setPrefix("pre1");
+		Assert.assertTrue("Books with matching authors should not match", matchStrategy.invoke(book1, book2));		
 	}
 	
 	
@@ -337,20 +310,27 @@ public class DefaultMatchStrategyTest {
 	 * @throws MatchException 
 	 */
 	@Test
-	@Ignore
-	public void testInvokeTxonNames() throws MatchException {
-//		IMatchStrategy botNameMatchStrategy = DefaultMatchStrategy.NewInstance(BotanicalName.class);
+	public void testInvokeTaxonNames() throws MatchException {
+		matchStrategy = DefaultMatchStrategy.NewInstance(BotanicalName.class);
+		
 		BotanicalName botName1 = BotanicalName.NewInstance(Rank.SPECIES());
 		BotanicalName botName2 = BotanicalName.NewInstance(Rank.SPECIES());
 		BotanicalName botName3 = BotanicalName.NewInstance(Rank.SPECIES());
+	
+		Assert.assertFalse("Names without title should not match", matchStrategy.invoke(botName1, botName2));
 		
 		botName1.setGenusOrUninomial("Genus1");
 		botName1.setSpecificEpithet("species1");
-		botName1.setAnamorphic(true);
 		
-		botName2.setGenusOrUninomial("Genus2");
-		botName2.setSpecificEpithet("species2");
+		botName2.setGenusOrUninomial("Genus1");
+		botName2.setSpecificEpithet("species1");
+		Assert.assertTrue("Similar names with titles set should match", matchStrategy.invoke(botName1, botName2));
+		
+		
+		botName1.setAnamorphic(true);
 		botName2.setAnamorphic(false);
+		
+		
 		
 		//name relations
 		botName2.addBasionym(botName3, book1, "p.22", null);
@@ -416,99 +396,56 @@ public class DefaultMatchStrategyTest {
 	}
 	
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.strategy.match.DefaultMatchStrategy#invoke(eu.etaxonomy.cdm.strategy.match.IMergable, eu.etaxonomy.cdm.strategy.match.IMergable)}.
+	 * Test method for {@link eu.etaxonomy.cdm.strategy.match.DefaultMatchStrategy#invoke(IMatchable, IMatchable), eu.etaxonomy.cdm.strategy.match.IMatchable)}.
 	 * @throws MatchException 
 	 */
 	@Test
-	@Ignore
 	public void testInvokeAgents() throws MatchException {
-	//	IMatchStrategy teamMatchStrategy = DefaultMatchStrategy.NewInstance(Team.class);
+		IMatchStrategy matchStrategy = DefaultMatchStrategy.NewInstance(Team.class);
 		
 		Team team1 = Team.NewInstance();
 		Team team2 = Team.NewInstance();
 		Team team3 = Team.NewInstance();
 		
-		Person person1 = Person.NewTitledInstance("person1");
-		Person person2 = Person.NewTitledInstance("person2");
-		Person person3 = Person.NewTitledInstance("person3");
+		Assert.assertTrue("Teams should match", matchStrategy.invoke(team1, team2));
+		Assert.assertTrue("Teams should match", matchStrategy.invoke(team1, team3));
 		
-		team1.setTitleCache("Team1");
-		team1.setNomenclaturalTitle("T.1");
 		String street1 = "Strasse1";
 		team1.setContact(Contact.NewInstance(street1, "12345", "Berlin", WaterbodyOrCountry.ARGENTINA_ARGENTINE_REPUBLIC(),"pobox" , "Region", "a@b.de", "f12345", "+49-30-123456", "www.abc.de", Point.NewInstance(2.4, 3.2, ReferenceSystem.WGS84(), 3)));
 		team2.setContact(Contact.NewInstance("Street2", null, "London", null, null, null, null, "874599873", null, null, null));
-		String street3 = "Street3";
-		team2.addAddress(street3, null, null, null, null, null, Point.NewInstance(1.1, 2.2, null, 4));
-		String emailAddress1 = "Email1";
-		team1.addEmailAddress(emailAddress1);
+		Assert.assertTrue("Contacts should be ignoredin default match strategy", matchStrategy.invoke(team1, team2));
 		
-		team2.addTeamMember(person1);
-		team2.addTeamMember(person2);
-		String emailAddress2 = "Email2";
-		team2.addEmailAddress(emailAddress2);
+		team1.setNomenclaturalTitle("nomTitle1");
+		team2.setNomenclaturalTitle("nomTitle2");
+		Assert.assertFalse("Agents with differing nomenclatural titles should not match", matchStrategy.invoke(team1, team2));
+		//restore
+		team2.setNomenclaturalTitle("nomTitle1");
+		Assert.assertTrue("Agents with equal nomenclatural titles should match", matchStrategy.invoke(team1, team2));
 		
-		team3.addTeamMember(person3);
-		team3.addEmailAddress("emailAddress3");
 		
-	//	teamMatchStrategy.invoke(team2, team3);
-		
-		Assert.assertEquals("Team2 must have 3 persons as members",3, team2.getTeamMembers().size());
-		Assert.assertTrue("Team2 must have person3 as new member", team2.getTeamMembers().contains(person3));
-		Assert.assertSame("Team2 must have person3 as third member",person3, team2.getTeamMembers().get(2));
-		
-		//Contact 
-//		teamMatchStrategy.invoke(team2, team1);
-		Contact team2Contact = team2.getContact();
-		Assert.assertNotNull("team2Contact must not be null", team2Contact);
-		Assert.assertNotNull("Addresses must not be null", team2Contact.getAddresses());
-		Assert.assertEquals("Number of addresses must be 3", 3, team2Contact.getAddresses().size());
-		Assert.assertEquals("Number of email addresses must be 4", 4, team2Contact.getEmailAddresses().size());
-		
-		boolean street1Exists = false;
-		boolean street3Exists = false;
-		boolean country1Exists = false;
-		for  (Address address : team2Contact.getAddresses()){
-			if (street1.equals(address.getStreet())){
-				street1Exists = true;
-			}
-			if (street3.equals(address.getStreet())){
-				street3Exists = true;
-			}
-			if (WaterbodyOrCountry.ARGENTINA_ARGENTINE_REPUBLIC() == address.getCountry()){
-				country1Exists = true;
-			}
-		}
-		Assert.assertTrue("Street1 must be one of the streets in team2's addresses", street1Exists);
-		Assert.assertTrue("Street3 must be one of the streets in team2's addressesss", street3Exists);
-		Assert.assertTrue("Argentina must be one of the countries in team2's addresses", country1Exists);
-		
-		//Person
-		Institution institution1 = Institution.NewInstance();
-		institution1.setTitleCache("inst1");
-		Institution institution2 = Institution.NewInstance();
-		institution2.setTitleCache("inst2");
-		
-		TimePeriod period1 = TimePeriod.NewInstance(2002, 2004);
-		TimePeriod period2 = TimePeriod.NewInstance(2004, 2006);
-		
-		person1.addInstitutionalMembership(institution1, period1, "departement1", "role1");
-		person2.addInstitutionalMembership(institution2, period2, "departement2", "role2");
-		
-		Keyword keyword1 = Keyword.NewInstance("K1", "K1", "K1");
-		person1.addKeyword(keyword1);
-		
-		Keyword keyword2 = Keyword.NewInstance("K2", "K2", "K2");
-		person2.addKeyword(keyword2);
+		Person person1 = Person.NewTitledInstance("person1");
+		Person person2 = Person.NewTitledInstance("person2");
+		Person person3 = Person.NewTitledInstance("person3");
 
-//		IMatchStrategy personMatchStrategy = DefaultMatchStrategy.NewInstance(Person.class);
-//		personMatchStrategy.invoke(person1, person2);
+		team1.addTeamMember(person1);
+		team2.addTeamMember(person1);
+		Assert.assertTrue("Teams with same team members should match", matchStrategy.invoke(team1, team2));
 		
-		Assert.assertEquals("Number of institutional memberships must be 2", 2, person1.getInstitutionalMemberships().size());
-		Assert.assertEquals("Number of keywords must be 2", 2, person1.getKeywords().size());
-		for (InstitutionalMembership institutionalMembership : person1.getInstitutionalMemberships()){
-			Assert.assertSame("Person of institutional memebership must be person1", person1, institutionalMembership.getPerson());
-		}
-		
+		team1.addTeamMember(person2);
+		Assert.assertFalse("Teams with differing team members should not match", matchStrategy.invoke(team1, team2));
+		team2.addTeamMember(person2);
+		Assert.assertTrue("Teams with same team members should match", matchStrategy.invoke(team1, team2));
+		team2.removeTeamMember(person2);
+		person3.setPrefix("pre3");
+		team2.addTeamMember(person3);
+		Assert.assertFalse("Teams with differing team members should not match", matchStrategy.invoke(team1, team2));
+		person3.setTitleCache(person2.getTitleCache());
+		person2.setPrefix("pre3");
+		Assert.assertTrue("Teams with matching members in right order should match", matchStrategy.invoke(team1, team2));
+		team2.removeTeamMember(person1);
+		team2.addTeamMember(person1);
+		Assert.assertFalse("Teams with matching members in wrong order should not match", matchStrategy.invoke(team1, team2));
+	
 	}
 	
 }

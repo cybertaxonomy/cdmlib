@@ -55,8 +55,9 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 })
 @Entity
 @Audited
-public class HybridRelationship extends RelationshipBase<BotanicalName, BotanicalName, HybridRelationshipType> {
+public class HybridRelationship extends RelationshipBase<NonViralName, NonViralName, HybridRelationshipType> {
   
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(HybridRelationship.class);
 	
 	//The nomenclatural code rule considered. The article/note/recommendation in the code in question that is commented on in
@@ -69,14 +70,14 @@ public class HybridRelationship extends RelationshipBase<BotanicalName, Botanica
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch=FetchType.LAZY)
     @Cascade(CascadeType.SAVE_UPDATE)
-	private BotanicalName relatedFrom;
+	private NonViralName relatedFrom;
 
 	@XmlElement(name = "RelatedTo")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch=FetchType.LAZY)
     @Cascade(CascadeType.SAVE_UPDATE)
-	private BotanicalName relatedTo;
+	private NonViralName relatedTo;
 	
     @XmlElement(name = "Type")
     @XmlIDREF
@@ -104,7 +105,7 @@ public class HybridRelationship extends RelationshipBase<BotanicalName, Botanica
 	 * @see						#HybridRelationship(BotanicalName, BotanicalName, HybridRelationshipType, ReferenceBase, String, String)
 	 * @see						BotanicalName#addHybridRelationship(HybridRelationship)
 	 */
-	protected HybridRelationship(BotanicalName hybridName, BotanicalName parentName, HybridRelationshipType type, String ruleConsidered) {
+	protected HybridRelationship(NonViralName hybridName, NonViralName parentName, HybridRelationshipType type, String ruleConsidered) {
 		this(hybridName, parentName, type, null, null, ruleConsidered);
 	}
 	
@@ -122,7 +123,7 @@ public class HybridRelationship extends RelationshipBase<BotanicalName, Botanica
 	 * @see							#HybridRelationship(BotanicalName, BotanicalName, HybridRelationshipType, String)
 	 * @see							BotanicalName#addHybridRelationship(HybridRelationship)
 	 */
-	protected HybridRelationship(BotanicalName  hybridName, BotanicalName parentName, HybridRelationshipType type, ReferenceBase citation, String citationMicroReference, String ruleConsidered) {
+	protected HybridRelationship(NonViralName  hybridName, NonViralName parentName, HybridRelationshipType type, ReferenceBase citation, String citationMicroReference, String ruleConsidered) {
 		super(parentName, hybridName, type, citation, citationMicroReference);
 		this.setRuleConsidered(ruleConsidered);
 	}	
@@ -137,13 +138,13 @@ public class HybridRelationship extends RelationshipBase<BotanicalName, Botanica
 	 * @see   eu.etaxonomy.cdm.model.common.RelationshipBase#getRelatedFrom()
 	 */
 	@Transient
-	public BotanicalName getParentName(){
+	public NonViralName getParentName(){
 		return this.getRelatedFrom();
 	}
 	/**
 	 * @see  #getParentName()
 	 */
-	public void setParentName(BotanicalName parentName){
+	public void setParentName(NonViralName parentName){
 		this.setRelatedFrom(parentName);
 	}
 
@@ -155,13 +156,13 @@ public class HybridRelationship extends RelationshipBase<BotanicalName, Botanica
 	 * @see   eu.etaxonomy.cdm.model.common.RelationshipBase#getRelatedTo()
 	 */
 	@Transient
-	public BotanicalName getHybridName(){
+	public NonViralName getHybridName(){
 		return this.getRelatedTo();
 	}
 	/**
 	 * @see  #getHybridName()
 	 */
-	public void setHybridName(BotanicalName hybridName){
+	public void setHybridName(NonViralName hybridName){
 		this.setRelatedTo(hybridName);
 	}
 
@@ -181,11 +182,11 @@ public class HybridRelationship extends RelationshipBase<BotanicalName, Botanica
 		this.ruleConsidered = ruleConsidered;
 	}
 
-	protected BotanicalName getRelatedFrom() {
+	protected NonViralName getRelatedFrom() {
 		return relatedFrom;
 	}
 
-	protected BotanicalName getRelatedTo() {
+	protected NonViralName getRelatedTo() {
 		return relatedTo;
 	}
 
@@ -193,11 +194,11 @@ public class HybridRelationship extends RelationshipBase<BotanicalName, Botanica
 		return type;
 	}
 
-	protected void setRelatedFrom(BotanicalName relatedFrom) {
+	protected void setRelatedFrom(NonViralName relatedFrom) {
 		this.relatedFrom = relatedFrom;
 	}
 
-	protected void setRelatedTo(BotanicalName relatedTo) {
+	protected void setRelatedTo(NonViralName relatedTo) {
 		this.relatedTo = relatedTo;
 	}
 

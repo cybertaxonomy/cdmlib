@@ -10,6 +10,8 @@
 
 package eu.etaxonomy.cdm.strategy.match;
 
+import org.apache.log4j.Logger;
+
 
 /**
  * Enumeration for matching modes.
@@ -28,6 +30,7 @@ public enum MatchMode {
 	MATCH_OR_SECOND_NULL,
 	MATCH			//matches if parameter mach (parameters must implement IMatchable)
 	;
+	private static final Logger logger = Logger.getLogger(MatchMode.class);
 
 	public boolean matches(Object obj1, Object obj2, IMatchStrategy matchStrategy) throws MatchException{
 		if (this == EQUAL_REQUIRED){
@@ -66,6 +69,7 @@ public enum MatchMode {
 		if (obj1 == null || obj2 == null ){
 			return false;
 		}else if (! (obj1 instanceof IMatchable  && obj2 instanceof IMatchable) ){
+			logger.warn("Match objects are not of type IMatchable");
 			return matchesEqualRequired(obj1, obj2);
 		}else{
 			return matchStrategy.invoke((IMatchable)obj1, (IMatchable)obj2);
