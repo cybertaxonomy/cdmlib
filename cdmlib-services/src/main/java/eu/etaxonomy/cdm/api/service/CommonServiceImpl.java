@@ -39,7 +39,6 @@ import eu.etaxonomy.cdm.strategy.merge.MergeException;
 @Service
 @Transactional(readOnly = true)
 public class CommonServiceImpl extends ServiceBase<OriginalSource,IOriginalSourceDao> implements ICommonService {
-	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CommonServiceImpl.class);
 	
 	@Autowired
