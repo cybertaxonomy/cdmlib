@@ -89,12 +89,6 @@ cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/PUBLIC.xsd
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/dataset.xsd
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/integrationTest.xml
 cdmlib-services/target
-eclipse-feature-sources/.classpath
-eclipse-feature-sources/.project
-eclipse-plugin-sources/.classpath
-eclipse-plugin-sources/.project
-eclipse-plugin-sources/.settings
-eclipse-plugin-sources/target
 eclipse-plugin/.settings
 eclipse-plugin/cdmlib-*.jar
 eclipse-plugin/cdmlib-*.zip
