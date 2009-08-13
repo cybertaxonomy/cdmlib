@@ -1,79 +1,83 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" output="target/test-classes" path="src/test/java"/>
-	<classpathentry kind="src" path="src/main/java"/>
-	<classpathentry exported="true" kind="lib" path="commons-lang-2.4.jar"/>
-	<classpathentry exported="true" kind="lib" path="h2-1.1.115.jar"/>
-	<classpathentry exported="true" kind="lib" path="org.apache.commons.codec-1.3.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="jdbc-1.2.jar"/>
-	<classpathentry exported="true" kind="lib" path="spring-agent-2.5.6.jar"/>
-	<classpathentry exported="true" kind="lib" path="spring-aspects-2.5.6.jar"/>
-	<classpathentry exported="true" kind="lib" path="aspectjtools-1.6.3.jar"/>
-	<classpathentry exported="true" kind="lib" path="aspectjweaver-1.6.3.jar"/>
-	<classpathentry exported="true" kind="lib" path="aspectjrt-1.6.3.jar"/>
-	<classpathentry exported="true" kind="lib" path="cdmlib-persistence-2.1-tests.jar"/>
-	<classpathentry exported="true" kind="lib" path="hibernate-validator-3.1.0.GA.jar"/>
-	<classpathentry exported="true" kind="lib" path="commons-collections-3.2.jar"/>
-	<classpathentry exported="true" kind="lib" path="wsdl4j-1.6.1.jar"/>
-	<classpathentry exported="true" kind="lib" path="lsid-client-1.1.2.jar"/>
-	<classpathentry exported="true" kind="lib" path="lsid-server-1.1.2.jar"/>
-	<classpathentry exported="true" kind="lib" path="slf4j-api-1.5.2.jar"/>
-	<classpathentry exported="true" kind="lib" path="slf4j-log4j12-1.5.2.jar"/>
-	<classpathentry exported="true" kind="lib" path="hibernate-search-3.1.0.GA.jar"/>
-	<classpathentry exported="true" kind="lib" path="hibernate-annotations-3.4.0-SNAPSHOT.jar"/>
-	<classpathentry exported="true" kind="lib" path="cdmlib-services-2.1.jar"/>
-	<classpathentry exported="true" kind="lib" path="cdmlib-persistence-2.1.jar"/>
-	<classpathentry exported="true" kind="lib" path="cdmlib-model-2.1.jar"/>
-	<classpathentry exported="true" kind="lib" path="cdmlib-io-2.1.jar"/>
-	<classpathentry exported="true" kind="lib" path="cdmlib-ext-2.1.jar"/>
-	<classpathentry exported="true" kind="lib" path="cdmlib-commons-2.1.jar"/>
-	<classpathentry exported="true" kind="lib" path="jsr250-api-1.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="spring-security-core-2.0.4-tests.jar"/>
-	<classpathentry exported="true" kind="lib" path="aspectjweaver-1.5.4.jar"/>
-	<classpathentry exported="true" kind="lib" path="lucene-core-2.4.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="lucene-spellchecker-2.4.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="spring-2.5.6.jar"/>
-	<classpathentry exported="true" kind="lib" path="spring-aop-2.5.6.jar"/>
-	<classpathentry exported="true" kind="lib" path="spring-beans-2.5.6.jar"/>
-	<classpathentry exported="true" kind="lib" path="spring-context-2.5.6.jar"/>
-	<classpathentry exported="true" kind="lib" path="spring-core-2.5.6.jar"/>
-	<classpathentry exported="true" kind="lib" path="spring-jdbc-2.5.6.jar"/>
-	<classpathentry exported="true" kind="lib" path="spring-modules-lucene-0.8a.jar"/>
-	<classpathentry exported="true" kind="lib" path="spring-orm-2.5.6.jar"/>
-	<classpathentry exported="true" kind="lib" path="spring-test-2.5.6.jar"/>
-	<classpathentry exported="true" kind="lib" path="spring-web-2.5.6.jar"/>
-	<classpathentry exported="true" kind="lib" path="spring-webmvc-2.5.6.jar"/>
-	<classpathentry exported="true" kind="lib" path="poi-3.1-FINAL.jar"/>
-	<classpathentry exported="true" kind="lib" path="spring-security-core-2.0.4.jar"/>
-	<classpathentry exported="true" kind="lib" path="sanselan-0.94-incubator.jar"/>
-	<classpathentry exported="true" kind="lib" path="joda-time-hibernate-1.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="joda-time-1.5.jar"/>
-	<classpathentry exported="true" kind="lib" path="jtds-1.2.2.jar"/>
-	<classpathentry exported="true" kind="lib" path="postgresql-8.2-504.jdbc4.jar"/>
-	<classpathentry exported="true" kind="lib" path="jdom-1.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="opencsv-1.8.jar"/>
-	<classpathentry exported="true" kind="lib" path="antlr-2.7.6.jar"/>
-	<classpathentry exported="true" kind="lib" path="asm-attrs.jar"/>
-	<classpathentry exported="true" kind="lib" path="asm.jar"/>
-	<classpathentry exported="true" kind="lib" path="cglib-2.1.3.jar"/>
-	<classpathentry exported="true" kind="lib" path="commons-logging-1.0.4.jar"/>
-	<classpathentry exported="true" kind="lib" path="dom4j-1.6.1.jar"/>
-	<classpathentry exported="true" kind="lib" path="ehcache-1.2.3.jar"/>
-	<classpathentry exported="true" kind="lib" path="ejb3-persistence.jar"/>
-	<classpathentry exported="true" kind="lib" path="javassist.jar"/>
-	<classpathentry exported="true" kind="lib" path="jdbc2_0-stdext.jar"/>
-	<classpathentry exported="true" kind="lib" path="jta.jar"/>
-	<classpathentry exported="true" kind="lib" path="junit-4.4.jar"/>
-	<classpathentry exported="true" kind="lib" path="log4j-1.2.14.jar"/>
-	<classpathentry exported="true" kind="lib" path="mysql-connector-java-3.1.14-bin.jar"/>
-	<classpathentry exported="true" kind="lib" path="xml-apis.jar"/>
-	<classpathentry exported="true" kind="lib" path="hsqldb.jar"/>
-	<classpathentry exported="true" kind="lib" path="jaxb-api.jar"/>
-	<classpathentry exported="true" kind="lib" path="jaxb-impl-2.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="xercesImpl.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry exported="true" kind="con" path="org.eclipse.ajdt.core.ASPECTJRT_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
-	<classpathentry kind="lib" path="aopalliance-1.0.jar"/>
+	<classpathentry kind="src" output="target/classes" path="src/main/java"/>
+	<classpathentry kind="src" output="target/test-classes" path="src/test/java"/>
+	<classpathentry exported="true" kind="lib" path="antlr-2.7.6.jar" sourcepath="eclipse-pluginsrc.zip"/>
+	<classpathentry exported="true" kind="lib" path="asm-attrs.jar" sourcepath="eclipse-pluginsrc.zip"/>
+	<classpathentry exported="true" kind="lib" path="asm.jar" sourcepath="eclipse-pluginsrc.zip"/>
+	<classpathentry exported="true" kind="lib" path="cglib-2.1.3.jar" sourcepath="eclipse-pluginsrc.zip"/>
+	<classpathentry exported="true" kind="lib" path="commons-collections-3.2.jar" sourcepath="commons-collections-3.2src.zip"/>
+	<classpathentry exported="true" kind="lib" path="commons-logging-1.0.4.jar" sourcepath="eclipse-pluginsrc.zip"/>
+	<classpathentry exported="true" kind="lib" path="dom4j-1.6.1.jar" sourcepath="eclipse-pluginsrc.zip"/>
+	<classpathentry exported="true" kind="lib" path="ehcache-1.2.3.jar" sourcepath="eclipse-pluginsrc.zip"/>
+	<classpathentry exported="true" kind="lib" path="ejb3-persistence.jar" sourcepath="eclipse-pluginsrc.zip"/>
+	<classpathentry exported="true" kind="lib" path="hibernate-annotations-3.4.0-SNAPSHOT.jar" sourcepath="hibernate-annotations-3.4.0-SNAPSHOTsrc.zip"/>
+	<classpathentry exported="true" kind="lib" path="hibernate-commons-annotations-3.4.0-SNAPSHOT.jar" sourcepath="hibernate-commons-annotations-3.4.0-SNAPSHOTsrc.zip"/>
+	<classpathentry exported="true" kind="lib" path="hibernate-core-3.4.0-SNAPSHOT.jar" sourcepath="hibernate-core-3.4.0-SNAPSHOTsrc.zip"/>
+	<classpathentry exported="true" kind="lib" path="hibernate-envers-3.4.0-SNAPSHOT.jar" sourcepath="hibernate-envers-3.4.0-SNAPSHOTsrc.zip"/>
+	<classpathentry exported="true" kind="lib" path="hibernate-search-3.1.0.GA.jar" sourcepath="hibernate-search-3.1.0.GAsrc.zip"/>
+	<classpathentry exported="true" kind="lib" path="hibernate-tools-3.2.0.ga.jar" sourcepath="eclipse-pluginsrc.zip"/>
+	<classpathentry exported="true" kind="lib" path="slf4j-api-1.5.2.jar" sourcepath="slf4j-api-1.5.2src.zip"/>
+	<classpathentry exported="true" kind="lib" path="slf4j-log4j12-1.5.2.jar" sourcepath="slf4j-log4j12-1.5.2src.zip"/>
+	<classpathentry exported="true" kind="lib" path="javassist.jar" sourcepath="eclipse-pluginsrc.zip"/>
+	<classpathentry exported="true" kind="lib" path="jdbc2_0-stdext.jar" sourcepath="eclipse-pluginsrc.zip"/>
+	<classpathentry exported="true" kind="lib" path="jta.jar" sourcepath="eclipse-pluginsrc.zip"/>
+	<classpathentry exported="true" kind="lib" path="junit-4.4.jar" sourcepath="eclipse-pluginsrc.zip"/>
+	<classpathentry exported="true" kind="lib" path="log4j-1.2.14.jar" sourcepath="log4j-1.2.14src.zip"/>
+	<classpathentry exported="true" kind="lib" path="mysql-connector-java-3.1.14-bin.jar" sourcepath="eclipse-pluginsrc.zip"/>
+	<classpathentry exported="true" kind="lib" path="xml-apis.jar" sourcepath="eclipse-pluginsrc.zip"/>
+	<classpathentry exported="true" kind="lib" path="xercesImpl.jar" sourcepath="eclipse-pluginsrc.zip"/>
+	<classpathentry exported="true" kind="lib" path="hsqldb.jar" sourcepath="eclipse-pluginsrc.zip"/>
+	<classpathentry exported="true" kind="lib" path="jaxb-api.jar" sourcepath="eclipse-pluginsrc.zip"/>
+	<classpathentry exported="true" kind="lib" path="jaxb-impl-2.0.jar" sourcepath="jaxb-impl-2.0src.zip"/>
+	<classpathentry exported="true" kind="lib" path="jdom-1.0.jar" sourcepath="eclipse-pluginsrc.zip"/>
+	<classpathentry exported="true" kind="lib" path="opencsv-1.8.jar" sourcepath="eclipse-pluginsrc.zip"/>
+	<classpathentry exported="true" kind="lib" path="jtds-1.2.2.jar" sourcepath="eclipse-pluginsrc.zip"/>
+	<classpathentry exported="true" kind="lib" path="postgresql-8.2-504.jdbc4.jar" sourcepath="eclipse-pluginsrc.zip"/>
+	<classpathentry exported="true" kind="lib" path="aopalliance-1.0.jar" sourcepath="eclipse-pluginsrc.zip"/>
+	<classpathentry exported="true" kind="lib" path="spring-beans-2.5.jar" sourcepath="spring-beans-2.5src.zip"/>
+	<classpathentry exported="true" kind="lib" path="joda-time-1.5.jar" sourcepath="joda-time-1.5src.zip"/>
+	<classpathentry exported="true" kind="lib" path="joda-time-hibernate-1.0.jar" sourcepath="eclipse-pluginsrc.zip"/>
+	<classpathentry exported="true" kind="lib" path="sanselan-0.94-incubator.jar" sourcepath="eclipse-pluginsrc.zip"/>
+	<classpathentry exported="true" kind="lib" path="poi-3.1-FINAL.jar" sourcepath="eclipse-pluginsrc.zip"/>
+	<classpathentry exported="true" kind="lib" path="spring-security-core-2.0.4.jar" sourcepath="spring-security-core-2.0.4src.zip"/>
+	<classpathentry exported="true" kind="lib" path="aspectjweaver-1.5.4.jar" sourcepath="eclipse-pluginsrc.zip"/>
+	<classpathentry exported="true" kind="lib" path="lucene-core-2.4.0.jar" sourcepath="lucene-core-2.4.0src.zip"/>
+	<classpathentry exported="true" kind="lib" path="lucene-spellchecker-2.4.0.jar" sourcepath="lucene-spellchecker-2.4.0src.zip"/>
+	<classpathentry exported="true" kind="lib" path="lsid-client-1.1.2.jar" sourcepath="eclipse-pluginsrc.zip"/>
+	<classpathentry exported="true" kind="lib" path="lsid-server-1.1.2.jar" sourcepath="eclipse-pluginsrc.zip"/>
+	<classpathentry exported="true" kind="lib" path="wsdl4j-1.6.1.jar" sourcepath="wsdl4j-1.6.1src.zip"/>
+	<classpathentry exported="true" kind="lib" path="spring-2.5.6.jar" sourcepath="spring-2.5.6src.zip"/>
+	<classpathentry exported="true" kind="lib" path="spring-aop-2.5.6.jar" sourcepath="spring-aop-2.5.6src.zip"/>
+	<classpathentry exported="true" kind="lib" path="spring-beans-2.5.6.jar" sourcepath="spring-beans-2.5.6src.zip"/>
+	<classpathentry exported="true" kind="lib" path="spring-context-2.5.6.jar" sourcepath="spring-context-2.5.6src.zip"/>
+	<classpathentry exported="true" kind="lib" path="spring-core-2.5.6.jar" sourcepath="spring-core-2.5.6src.zip"/>
+	<classpathentry exported="true" kind="lib" path="spring-jdbc-2.5.6.jar" sourcepath="spring-jdbc-2.5.6src.zip"/>
+	<classpathentry exported="true" kind="lib" path="spring-modules-lucene-0.8a.jar" sourcepath="spring-modules-lucene-0.8asrc.zip"/>
+	<classpathentry exported="true" kind="lib" path="spring-orm-2.5.6.jar" sourcepath="spring-orm-2.5.6src.zip"/>
+	<classpathentry exported="true" kind="lib" path="spring-test-2.5.6.jar" sourcepath="spring-test-2.5.6src.zip"/>
+	<classpathentry exported="true" kind="lib" path="spring-web-2.5.6.jar" sourcepath="spring-web-2.5.6src.zip"/>
+	<classpathentry exported="true" kind="lib" path="spring-webmvc-2.5.6.jar" sourcepath="spring-webmvc-2.5.6src.zip"/>
+	<classpathentry exported="true" kind="lib" path="unitils-1.0.jar" sourcepath="unitils-1.0src.zip"/>
+	<classpathentry exported="true" kind="lib" path="jsr250-api-1.0.jar" sourcepath="jsr250-api-1.0src.zip"/>
+	<classpathentry exported="true" kind="lib" path="cdmlib-commons-2.1.jar" sourcepath="cdmlib-commons-2.1src.zip"/>
+	<classpathentry exported="true" kind="lib" path="cdmlib-ext-2.1.jar" sourcepath="cdmlib-ext-2.1src.zip"/>
+	<classpathentry exported="true" kind="lib" path="cdmlib-io-2.1.jar" sourcepath="cdmlib-io-2.1src.zip"/>
+	<classpathentry exported="true" kind="lib" path="cdmlib-model-2.1.jar" sourcepath="cdmlib-model-2.1src.zip"/>
+	<classpathentry exported="true" kind="lib" path="cdmlib-persistence-2.1.jar" sourcepath="cdmlib-persistence-2.1src.zip"/>
+	<classpathentry exported="true" kind="lib" path="cdmlib-services-2.1.jar" sourcepath="cdmlib-services-2.1src.zip"/>
+	<classpathentry exported="true" kind="lib" path="cdmlib-persistence-2.1-tests.jar" sourcepath="eclipse-pluginsrc.zip"/>
+	<classpathentry exported="true" kind="lib" path="hibernate-validator-3.1.0.GA.jar" sourcepath="eclipse-pluginsrc.zip"/>
+	<classpathentry exported="true" kind="lib" path="aspectjrt-1.6.3.jar" sourcepath="eclipse-pluginsrc.zip"/>
+	<classpathentry exported="true" kind="lib" path="aspectjweaver-1.6.3.jar" sourcepath="eclipse-pluginsrc.zip"/>
+	<classpathentry exported="true" kind="lib" path="aspectjtools-1.6.3.jar" sourcepath="eclipse-pluginsrc.zip"/>
+	<classpathentry exported="true" kind="lib" path="spring-aspects-2.5.6.jar" sourcepath="spring-aspects-2.5.6src.zip"/>
+	<classpathentry exported="true" kind="lib" path="spring-agent-2.5.6.jar" sourcepath="spring-agent-2.5.6src.zip"/>
+	<classpathentry exported="true" kind="lib" path="jdbc-1.2.jar" sourcepath="eclipse-pluginsrc.zip"/>
+	<classpathentry exported="true" kind="lib" path="org.apache.commons.codec-1.3.0.jar" sourcepath="eclipse-pluginsrc.zip"/>
+	<classpathentry exported="true" kind="lib" path="h2-1.1.115.jar" sourcepath="eclipse-pluginsrc.zip"/>
+	<classpathentry exported="true" kind="lib" path="commons-lang-2.4.jar" sourcepath="eclipse-pluginsrc.zip"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

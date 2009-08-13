@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="eu.etaxonomy.cdmlib"
-      label="CDM Library"
+      id="eu.etaxonomy.cdmlib.source"
+      label="CDM Library Source"
       version="2.1.0.qualifier"
       provider-name="EDIT">
 
@@ -31,7 +31,7 @@ under the License.
    </url>
 
    <plugin
-         id="eu.etaxonomy.cdmlib"
+         id="eu.etaxonomy.cdmlib.source"
          download-size="0"
          install-size="0"
          version="0.0.0"/>

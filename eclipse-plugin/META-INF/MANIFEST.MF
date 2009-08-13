@@ -1,8 +1,8 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: CDM Library Plug-in
-Bundle-SymbolicName: eu.etaxonomy.cdmLibrary;singleton:=true
-Bundle-Version: 2.1.0.v20090807-1911
+Bundle-SymbolicName: eu.etaxonomy.cdmlib;singleton:=true
+Bundle-Version: 2.1.0.qualifier
 Bundle-ClassPath: antlr-2.7.6.jar,
  asm-attrs.jar,
  asm.jar,
