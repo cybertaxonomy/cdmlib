@@ -416,6 +416,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 	 * FIXME Candidate for harmonization
 	 * is this the same as termService.getVocabulary(VocabularyEnum.TaxonRelationshipType) ? 
 	 */
+	@Deprecated
 	public OrderedTermVocabulary<TaxonRelationshipType> getTaxonRelationshipTypeVocabulary() {
 		
 		String taxonRelTypeVocabularyId = "15db0cf7-7afc-4a86-a7d4-221c73b0c9ac";
@@ -429,22 +430,22 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#makeTaxonSynonym(eu.etaxonomy.cdm.model.taxon.Taxon, eu.etaxonomy.cdm.model.taxon.Taxon)
 	 */
 	@Transactional(readOnly = false)
-	public Synonym makeTaxonSynonym(Taxon oldTaxon, Taxon newAcceptedTaxon, SynonymRelationshipType synonymType, ReferenceBase citation, String citationMicroReference) {
+	public Synonym makeTaxonSynonym(Taxon oldTaxon, Taxon newAcceptedTaxon, SynonymRelationshipType synonymRelationshipType, ReferenceBase citation, String citationMicroReference) {
 		if (oldTaxon == null || newAcceptedTaxon == null || oldTaxon.getName() == null){
-			return null;
+			throw new IllegalArgumentException();
 		}
 		
 		// Move oldTaxon to newTaxon
 		TaxonNameBase<?,?> synonymName = oldTaxon.getName();
-		if (synonymType == null){
+		if (synonymRelationshipType == null){
 			if (synonymName.isHomotypic(newAcceptedTaxon.getName())){
-				synonymType = SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF();
+				synonymRelationshipType = SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF();
 			}else{
 				//TODO synonymType 
-				synonymType = SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF();
+				synonymRelationshipType = SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF();
 			}
 		}
-		SynonymRelationship synRel = newAcceptedTaxon.addSynonymName(synonymName, synonymType, citation, citationMicroReference);
+		SynonymRelationship synRel = newAcceptedTaxon.addSynonymName(synonymName, synonymRelationshipType, citation, citationMicroReference);
 		
 		//Move Synonym Relations to new Taxon
 		for(SynonymRelationship synRelation : oldTaxon.getSynonymRelations()){

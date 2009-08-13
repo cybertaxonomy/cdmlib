@@ -113,4 +113,8 @@ public class TaxonServiceImplTest extends CdmIntegrationTest {
 		
 		printDataSet(System.out);
 	}
+	
+	public final void testMakeTaxonSynonym() {
+		
+	}
 }

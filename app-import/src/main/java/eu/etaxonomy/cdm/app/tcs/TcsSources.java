@@ -71,5 +71,14 @@ public class TcsSources {
 		
 	}	
 	
+	public static String tcsXmlTest_local2(){
+		//		tcsXmlTest.xml
+		URL url = new SDDSources().getClass().getResource("/TcsXmlImportConfiguratorTest-input.xml");
+		String sourceUrl = url.toString();
+		return sourceUrl;
+		
+	}	
+	
+
 	
 }

@@ -16,7 +16,6 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.ProtologueImport;
-import eu.etaxonomy.cdm.io.common.DefaultImportState;
 import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
 import eu.etaxonomy.cdm.model.reference.Database;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;

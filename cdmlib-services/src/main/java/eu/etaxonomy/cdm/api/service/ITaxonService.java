@@ -285,6 +285,22 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	/** */
 	public abstract List<TaxonBase> searchTaxaByName(String name, ReferenceBase sec);
 		
+	/**
+	 * Changes an accepted taxon to a synonym of another taxon. 
+	 * 
+	 * @param oldTaxon
+	 * 				the accepted taxon that will be changed into a synonym
+	 * @param newAcceptedTaxon
+	 * 				the accepted taxon, the old taxon will become a synonym of
+	 * @param synonymType
+	 * 				<code>SynonymRelationshipType</code> to indicate wether hetero or homotypic
+	 * @param citation
+	 * 				the reference for this assumption
+	 * @param citationMicroReference
+	 * 				the micro citation
+	 * @return
+	 * 				the newly created synonym
+	 */
 	public Synonym makeTaxonSynonym (Taxon oldTaxon, Taxon newAcceptedTaxon, SynonymRelationshipType synonymType, ReferenceBase citation, String citationMicroReference);
 	
 	/**

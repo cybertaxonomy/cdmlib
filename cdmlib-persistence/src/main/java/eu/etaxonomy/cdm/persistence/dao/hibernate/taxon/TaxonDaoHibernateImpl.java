@@ -1054,7 +1054,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 	public Map<UUID, String> getUuidAndTitleCacheOfAcceptedTaxa() {
 
 		
-		String queryString = "select uuid, titlecache from taxonbase where dtype = 'Taxon'";
+		String queryString = "SELECT uuid, titleCache FROM TaxonBase WHERE DTYPE = 'Taxon'";
 		
 		List<Object[]> result = getSession().createSQLQuery(queryString).list();
 				
