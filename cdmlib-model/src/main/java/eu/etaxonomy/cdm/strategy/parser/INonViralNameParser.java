@@ -95,23 +95,32 @@ public interface INonViralNameParser<T extends TaxonNameBase> extends IStrategy 
 	/**
 	 * Parses a String (fullReference) assuming that it represents a taxonomic name, it's reference,
 	 * and it's nomenclatural status.<BR>
-	 * (1) Status: First the last part of the string is checked if it represents a nomenclatural status (e.g. nom. inval.).
-	 * If so, this part of the string is separated and the according status is added to the name.<BR>
-	 * (2) <B>Name:</B> The starting part of the remaining string is checked if it represent a name according to the rules 
-	 * of the underlying nomenclatural code.<BR> 
-	 * (2a) Non-atomized Name: If the name can not be parsed the title cache as well as the full
+	 * <ol>
+	 * 		<li><strong>Status:</strong> First the last part of the string is checked if it represents a nomenclatural status (e.g. nom. inval.).
+	 * If so, this part of the string is separated and the according status is added to the name.</li>
+	 * 		<li><strong>Name:</strong> The starting part of the remaining string is checked if it represent a name according to the rules 
+	 * of the underlying nomenclatural code.</li> 
+	 * 		<li>
+	 * 			<ol>
+	 * 				<li>Non-atomized Name: If the name can not be parsed the title cache as well as the full
 	 * title cache of the name is filled and the hasProblem flag is set to <code>true</code>. The same applies
 	 * if the name can be parsed but is followed by a not empty String that does not start with a 
-	 * reference separator ("," of " in ").<BR>
-	 * (2b) Atomized name: Otherwise the name part is separated and parsed. The according name attributes are set and 
-	 * the name's protectedTitleCache flag is set to <code>false</code>. <BR>
-	 * (3) Reference: From the remaining string the reference separator is separated.
-	 * The remaining string is parsed for beeing a valid (according to the parsers rules) reference String.<BR>
-	 * (3a) If the reference part could not be parsed, the references title cache is set by the remaining string and the 
-	 * references protected title cache is set to <code>true</code>.
-	 * (3b) If the reference could be parsed the reference is separated and parsed. The according reference attributes are
+	 * reference separator ("," of " in ").</li>
+	 * 				<li>Atomized name: Otherwise the name part is separated and parsed. The according name attributes are set and 
+	 * the name's protectedTitleCache flag is set to <code>false</code>.</li>
+	 * 			</ol>
+	 *		</li>
+	 * 		<li><strong>Reference:</strong> From the remaining string the reference separator is separated.
+	 * The remaining string is parsed for beeing a valid (according to the parsers rules) reference String.
+	 * 			<ol>
+	 * 				<li>If the reference part could not be parsed, the references title cache is set by the remaining string and the 
+	 * references protected title cache is set to <code>true</code>.</li>
+	 * 				<li>If the reference could be parsed the reference is separated and parsed. The according reference attributes are
 	 * set and the reference's protectedTitleCache flag as well as the hasProblem flag is set to <code>false</code>.
-	 * Then, and only then, the name's hasProblem flag is set to <code>false</code>.  
+	 * Then, and only then, the name's hasProblem flag is set to <code>false</code>.</li>
+	 * 			</ol>
+	 * 		</li>
+	 * </ol>
 	 * 
 	 * @param nameToBeFilled
 	 * @param fullReference the string containing the scientific name with authorship, year, reference etc.
