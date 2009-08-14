@@ -28,6 +28,7 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Indexed;
 
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
@@ -45,6 +46,7 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 })
 @XmlRootElement(name = "DnaSample")
 @Entity
+@Indexed(index = "eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase")
 @Audited
 public class DnaSample extends Specimen implements Cloneable {
 	private static final long serialVersionUID = -2978411330023671805L;

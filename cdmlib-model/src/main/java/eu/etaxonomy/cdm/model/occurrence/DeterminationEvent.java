@@ -32,6 +32,8 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.IndexedEmbedded;
 import org.joda.time.Partial;
 
 import eu.etaxonomy.cdm.model.agent.AgentBase;
@@ -54,6 +56,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 })
 @XmlRootElement(name = "DeterminationEvent")
 @Entity
+@Indexed
 @Audited
 public class DeterminationEvent extends EventBase {
 	private static final Logger logger = Logger.getLogger(DeterminationEvent.class);
@@ -69,6 +72,7 @@ public class DeterminationEvent extends EventBase {
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
+	@IndexedEmbedded
     @Cascade(CascadeType.SAVE_UPDATE)
     private Taxon taxon;
 	

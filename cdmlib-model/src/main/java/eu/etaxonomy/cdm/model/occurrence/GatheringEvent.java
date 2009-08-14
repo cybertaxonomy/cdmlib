@@ -31,6 +31,10 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Index;
+import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.IndexedEmbedded;
 import org.joda.time.Partial;
 
 import eu.etaxonomy.cdm.model.agent.AgentBase;
@@ -59,6 +63,7 @@ import eu.etaxonomy.cdm.model.location.Point;
 @XmlRootElement(name = "GatheringEvent")
 @Entity
 @Audited
+@Indexed
 public class GatheringEvent extends EventBase implements Cloneable{
 	
 	static Logger logger = Logger.getLogger(GatheringEvent.class);
@@ -66,6 +71,7 @@ public class GatheringEvent extends EventBase implements Cloneable{
 	@XmlElement(name = "Locality")
 	@OneToOne(fetch = FetchType.LAZY)
 	@Cascade({CascadeType.ALL,CascadeType.DELETE_ORPHAN})
+	@IndexedEmbedded
 	private LanguageString locality;
 	
 	@XmlElement(name = "ExactLocation")
@@ -79,21 +85,26 @@ public class GatheringEvent extends EventBase implements Cloneable{
 	private Set<NamedArea> collectingAreas = new HashSet<NamedArea>();
 	
 	@XmlElement(name = "CollectingMethod")
+	@Field(index=Index.TOKENIZED)
 	private String collectingMethod;
 	
 	// meter above/below sea level of the surface
 	@XmlElement(name = "AbsoluteElevation")
+	@Field(index=Index.UN_TOKENIZED)
 	private Integer absoluteElevation;
 	
 	@XmlElement(name = "AbsoluteElevationError")
+	@Field(index=Index.UN_TOKENIZED)
 	private Integer absoluteElevationError;
 	
 	// distance in meter from the ground surface when collecting. E.g. 10m below the ground or 10m above the ground/bottom of a lake or 20m up in the canope 
 	@XmlElement(name = "DistanceToGround")
+	@Field(index=Index.UN_TOKENIZED)
 	private Integer distanceToGround;
 	
 	// distance in meters to lake or sea surface. Similar to distanceToGround use negative integers for distance *below* the surface, ie under water 
 	@XmlElement(name = "DistanceToWaterSurface")
+	@Field(index=Index.UN_TOKENIZED)
 	private Integer distanceToWaterSurface;
 
 	/**

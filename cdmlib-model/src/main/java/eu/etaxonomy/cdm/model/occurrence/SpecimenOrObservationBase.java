@@ -39,6 +39,8 @@ import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Index;
 import org.hibernate.annotations.Table;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.IndexedEmbedded;
 import org.springframework.util.ReflectionUtils;
 
 import eu.etaxonomy.cdm.jaxb.MultilanguageTextAdapter;
@@ -86,6 +88,7 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
 	@XmlElement(name = "Determination")
 	@OneToMany(mappedBy="identifiedUnit")
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
+	@IndexedEmbedded(depth = 2)
 	private Set<DeterminationEvent> determinations = new HashSet<DeterminationEvent>();
 	
 	@XmlElement(name = "Sex")
@@ -101,6 +104,7 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
 	private Stage lifeStage;
 	
 	@XmlElement(name = "IndividualCount")
+	@Field(index=org.hibernate.search.annotations.Index.UN_TOKENIZED)
 	private Integer individualCount;
 	
 	// the verbatim description of this occurrence. Free text usable when no atomised data is available.
@@ -108,6 +112,7 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
 	@XmlElement(name = "Description")
 	@XmlJavaTypeAdapter(MultilanguageTextAdapter.class)
 	@OneToMany(fetch = FetchType.LAZY)
+	@IndexedEmbedded
 	protected Map<Language,LanguageString> description = new HashMap<Language,LanguageString>();
 	
 	// events that created derivedUnits from this unit

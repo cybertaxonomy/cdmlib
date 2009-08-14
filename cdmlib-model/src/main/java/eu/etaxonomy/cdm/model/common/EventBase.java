@@ -14,6 +14,9 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Index;
+import org.hibernate.search.annotations.IndexedEmbedded;
 
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 
@@ -37,10 +40,12 @@ public abstract class EventBase extends AnnotatableEntity implements IEvent {
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
+	@IndexedEmbedded
 	@Cascade(CascadeType.SAVE_UPDATE)
 	private AgentBase actor;
 	
 	@XmlElement(name = "Description")
+	@Field(index=Index.TOKENIZED)
 	private String description;
 	
 	

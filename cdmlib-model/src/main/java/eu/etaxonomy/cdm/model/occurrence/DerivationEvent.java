@@ -30,6 +30,8 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.IndexedEmbedded;
 
 import eu.etaxonomy.cdm.model.common.EventBase;
 
@@ -41,6 +43,7 @@ import eu.etaxonomy.cdm.model.common.EventBase;
 })
 @XmlRootElement(name = "DerivationEvent")
 @Entity
+@Indexed
 @Audited
 public class DerivationEvent extends EventBase implements Cloneable{
 	
@@ -51,6 +54,7 @@ public class DerivationEvent extends EventBase implements Cloneable{
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@ManyToMany(fetch = FetchType.LAZY,mappedBy="derivationEvents")
+	@IndexedEmbedded(depth = 3)
 	protected Set<SpecimenOrObservationBase> originals = new HashSet<SpecimenOrObservationBase>();
 	
 	@XmlElementWrapper(name = "Derivatives")

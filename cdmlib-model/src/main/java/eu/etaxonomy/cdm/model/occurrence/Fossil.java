@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.model.occurrence;
 
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Indexed;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import javax.persistence.*;
@@ -29,6 +30,7 @@ import javax.xml.bind.annotation.XmlType;
 })
 @XmlRootElement(name = "Fossil")
 @Entity
+@Indexed(index = "eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase")
 @Audited
 @Configurable
 public class Fossil extends Specimen implements Cloneable{

@@ -27,6 +27,9 @@ import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Index;
 import org.hibernate.annotations.Table;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.IndexedEmbedded;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import eu.etaxonomy.cdm.model.agent.Institution;
@@ -50,6 +53,7 @@ import eu.etaxonomy.cdm.strategy.cache.common.IdentifiableEntityDefaultCacheStra
 })
 @XmlRootElement(name = "Collection")
 @Entity
+@Indexed
 @Audited
 @Configurable
 @Table(appliesTo="Collection", indexes = { @Index(name = "collectionTitleCacheIndex", columnNames = { "titleCache" }) })
@@ -62,15 +66,19 @@ public class Collection extends IdentifiableMediaEntity<IIdentifiableEntityCache
 	private static final Logger logger = Logger.getLogger(Collection.class);
 	
 	@XmlElement(name = "Code")
+	@Field(index=org.hibernate.search.annotations.Index.UN_TOKENIZED)
 	private String code;
 	
 	@XmlElement(name = "CodeStandard")
+	@Field(index=org.hibernate.search.annotations.Index.UN_TOKENIZED)
 	private String codeStandard;
 	
 	@XmlElement(name = "Name")
+	@Field(index=org.hibernate.search.annotations.Index.TOKENIZED)
 	private String name;
-	
+
 	@XmlElement(name = "TownOrLocation")
+	@Field(index=org.hibernate.search.annotations.Index.TOKENIZED)
 	private String townOrLocation;
 	
 	@XmlElement(name = "Institution")
@@ -78,6 +86,7 @@ public class Collection extends IdentifiableMediaEntity<IIdentifiableEntityCache
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
 	@Cascade(CascadeType.SAVE_UPDATE)
+	@IndexedEmbedded
 	private Institution institute;
 	
 	@XmlElement(name = "SuperCollection")

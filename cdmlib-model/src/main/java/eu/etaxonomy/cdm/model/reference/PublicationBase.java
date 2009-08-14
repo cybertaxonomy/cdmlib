@@ -34,8 +34,7 @@ import eu.etaxonomy.cdm.strategy.cache.reference.IReferenceBaseCacheStrategy;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "PublicationBase", propOrder = {
     "publisher",
-    "placePublished",
-    
+    "placePublished"
 })
 @XmlRootElement(name = "PublicationBase")
 @Entity
@@ -45,15 +44,6 @@ public abstract class PublicationBase<S extends IReferenceBaseCacheStrategy> ext
 	private static final long serialVersionUID = -3050853696708743386L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(PublicationBase.class);
-
-//	@XmlElementWrapper(name = "Publishers")
-//	@XmlElement(name = "Publisher")
-//    @OneToMany (cascade = {javax.persistence.CascadeType.ALL}, fetch= FetchType.LAZY)
-//	@IndexColumn(name="sortIndex", base = 0)
-//	@JoinColumn (name = "referenceBase_id")
-//	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE_ORPHAN})
-//	private List<Publisher> publishers = new ArrayList<Publisher>();
-	
 	
 	@XmlElement(name = "Publisher")
 	private String publisher;
@@ -117,18 +107,6 @@ public abstract class PublicationBase<S extends IReferenceBaseCacheStrategy> ext
 	@Override
 	public Object clone() {
 		PublicationBase result = (PublicationBase)super.clone();
-		//Publisher
-//		result.publishers = new ArrayList<Publisher>();
-//		for (Publisher publisher : this.publishers ){
-//			Publisher newPublisher;
-//			try {
-//				newPublisher = (Publisher)publisher.clone();
-//			} catch (CloneNotSupportedException e) {
-//				//Publisher implements Cloneable therefore this should not be reached
-//				throw new RuntimeException("Publisher does not implement Cloneable");
-//			}
-//			result.addPublisher(newPublisher.getPublisherName(), newPublisher.getPlace());
-//		}
 		//No changes: - 
 		return result;
 	}

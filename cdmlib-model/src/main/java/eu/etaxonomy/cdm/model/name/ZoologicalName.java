@@ -19,6 +19,8 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
 import org.springframework.beans.factory.annotation.Configurable;
 
@@ -60,12 +62,15 @@ public class ZoologicalName extends NonViralName<ZoologicalName> {
 
 	//Name of the breed of an animal
 	@XmlElement(name = "Breed")
+	@Field(index=Index.TOKENIZED)
 	private String breed;
 	
 	@XmlElement(name = "PublicationYear")
+	@Field(index=Index.UN_TOKENIZED)
 	private Integer publicationYear;
 	
 	@XmlElement(name = "OriginalPublicationYear")
+	@Field(index=Index.UN_TOKENIZED)
 	private Integer originalPublicationYear;
 
 	static private INonViralNameParser nameParser = new NonViralNameParserImpl();

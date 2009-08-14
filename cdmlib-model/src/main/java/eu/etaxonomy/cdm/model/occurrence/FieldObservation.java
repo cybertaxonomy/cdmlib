@@ -28,6 +28,10 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Index;
+import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.IndexedEmbedded;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
@@ -48,15 +52,18 @@ import eu.etaxonomy.cdm.strategy.cache.common.IdentifiableEntityDefaultCacheStra
 })
 @XmlRootElement(name = "FieldObservation")
 @Entity
+@Indexed(index = "eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase")
 @Audited
 @Configurable
 public class FieldObservation extends SpecimenOrObservationBase<IIdentifiableEntityCacheStrategy<FieldObservation>> implements Cloneable{
 	private static final Logger logger = Logger.getLogger(FieldObservation.class);
 
 	@XmlElement(name = "FieldNumber")
+	@Field(index=Index.TOKENIZED)
 	private String fieldNumber;
 	
 	@XmlElement(name = "FieldNotes")
+	@Field(index=Index.TOKENIZED)
 	private String fieldNotes;
 	
 	@XmlElement(name = "GatheringEvent")
@@ -64,6 +71,7 @@ public class FieldObservation extends SpecimenOrObservationBase<IIdentifiableEnt
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
     @Cascade( { CascadeType.SAVE_UPDATE })
+    @IndexedEmbedded(depth = 2)
 	private GatheringEvent gatheringEvent;
 
 	/**

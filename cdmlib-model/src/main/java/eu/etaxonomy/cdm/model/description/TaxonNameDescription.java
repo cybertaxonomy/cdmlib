@@ -30,6 +30,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.common.IdentifiableEntityDefaultCacheStrategy;
 
@@ -64,6 +65,19 @@ public class TaxonNameDescription extends DescriptionBase<IIdentifiableEntityCac
 	@Cascade(CascadeType.SAVE_UPDATE)
 	private TaxonNameBase<?,?> taxonName;
 
+	/**
+	 * Creates a new taxon name description instance for the given {@link TaxonNameBase name}.
+	 * The new taxon name description will be also added to the {@link TaxonNameBase#getDescriptions() set of descriptions}
+	 * assigned to the given name.
+	 * 
+	 * @see	#NewInstance()
+	 */
+	public static TaxonNameDescription NewInstance(TaxonNameBase name){
+		TaxonNameDescription description = new TaxonNameDescription();
+		name.addDescription(description);
+		return description;
+	}
+	
 	/**
 	 * Class constructor: creates a new empty taxon name description instance.
 	 */

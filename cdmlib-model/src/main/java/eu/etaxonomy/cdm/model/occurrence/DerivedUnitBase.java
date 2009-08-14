@@ -26,6 +26,10 @@ import javax.xml.bind.annotation.XmlType;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Index;
+import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.IndexedEmbedded;
 
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
@@ -50,6 +54,7 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 })
 @XmlRootElement(name = "DerivedUnitBase")
 @Entity
+@Indexed(index = "eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase")
 @Audited
 public abstract class DerivedUnitBase<S extends IIdentifiableEntityCacheStrategy> extends SpecimenOrObservationBase<S> implements Cloneable{
 
@@ -58,15 +63,19 @@ public abstract class DerivedUnitBase<S extends IIdentifiableEntityCacheStrategy
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
 	@Cascade(CascadeType.SAVE_UPDATE)
+	@IndexedEmbedded
 	private Collection collection;
 
 	@XmlElement(name = "CatalogNumber")
+	@Field(index=Index.UN_TOKENIZED)
 	private String catalogNumber;
 	
 	@XmlElement(name = "AccessionNumber")
+	@Field(index=Index.UN_TOKENIZED)
 	private String accessionNumber;
 	
 	@XmlElement(name = "CollectorsNumber")
+	@Field(index=Index.UN_TOKENIZED)
 	private String collectorsNumber;
 	
 	@XmlElement(name = "StoredUnder")
@@ -74,6 +83,7 @@ public abstract class DerivedUnitBase<S extends IIdentifiableEntityCacheStrategy
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
 	@Cascade(CascadeType.SAVE_UPDATE)
+	@IndexedEmbedded
 	private TaxonNameBase storedUnder;
 	
 	@XmlElement(name = "DerivedFrom")
@@ -81,6 +91,7 @@ public abstract class DerivedUnitBase<S extends IIdentifiableEntityCacheStrategy
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
 	@Cascade(CascadeType.SAVE_UPDATE)
+	@IndexedEmbedded(depth = 4)
 	private DerivationEvent derivationEvent;
 
 	/**

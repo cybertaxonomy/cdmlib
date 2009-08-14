@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.model.occurrence;
 
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Indexed;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
@@ -32,6 +33,7 @@ import javax.xml.bind.annotation.XmlType;
 })
 @XmlRootElement(name = "LivingBeing")
 @Entity
+@Indexed(index = "eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase")
 @Audited
 @Configurable
 public class LivingBeing extends DerivedUnitBase<IIdentifiableEntityCacheStrategy<LivingBeing>> implements Cloneable {
