@@ -23,6 +23,7 @@ import java.util.Set;
 
 import javax.naming.NamingException;
 import javax.naming.Reference;
+import javax.persistence.JoinTable;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.UnhandledException;
@@ -33,10 +34,9 @@ import org.hibernate.MappingException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.CriteriaSpecification;
 import org.hibernate.criterion.Criterion;
-import org.hibernate.criterion.LogicalExpression;
 import org.hibernate.criterion.Restrictions;
-import org.hibernate.criterion.SimpleExpression;
 import org.hibernate.impl.SessionFactoryImpl;
 import org.hibernate.impl.SessionImpl;
 import org.hibernate.metadata.ClassMetadata;
@@ -64,6 +64,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.common.DoubleResult;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.Annotation;
@@ -73,13 +74,13 @@ import eu.etaxonomy.cdm.model.common.ICdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.PartialUserType;
-import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.common.UUIDUserType;
 import eu.etaxonomy.cdm.model.common.WSDLDefinitionUserType;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
+import eu.etaxonomy.cdm.strategy.match.CacheMatcher;
 import eu.etaxonomy.cdm.strategy.match.DefaultMatchStrategy;
 import eu.etaxonomy.cdm.strategy.match.FieldMatcher;
 import eu.etaxonomy.cdm.strategy.match.IMatchStrategy;
@@ -925,16 +926,50 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 			Criteria criteria) throws IllegalAccessException, MatchException {
 		Matching matching = matchStrategy.getMatching();
 		boolean noMatch = false;
+		Map<String, List<MatchMode>> replaceMatchers = new HashMap<String, List<MatchMode>>();
+		for (CacheMatcher cacheMatcher: matching.getCacheMatchers()){
+			boolean cacheProtected = (Boolean)cacheMatcher.getProtectedField(matching).get(objectToMatch);
+			if (cacheProtected == true){
+				String cacheValue = (String)cacheMatcher.getField().get(objectToMatch);
+				if (CdmUtils.isEmpty(cacheValue)){
+					return true;  //no match
+				}else{
+					criteria.add(Restrictions.eq(cacheMatcher.getPropertyName(), cacheValue));
+					criteria.add(Restrictions.eq(cacheMatcher.getProtectedPropertyName(), cacheProtected));
+					
+					List<DoubleResult<String, MatchMode>> replacementModes = cacheMatcher.getReplaceMatchModes(matching);
+					for (DoubleResult<String, MatchMode> replacementMode: replacementModes ){
+						String propertyName = replacementMode.getFirstResult();
+						List<MatchMode> replaceMatcherList = replaceMatchers.get(propertyName);
+						if (replaceMatcherList == null){
+							replaceMatcherList = new ArrayList<MatchMode>();
+							replaceMatchers.put(propertyName, replaceMatcherList);
+						}
+						replaceMatcherList.add(replacementMode.getSecondResult());
+					}
+
+				}
+			}
+		}
 		for (FieldMatcher fieldMatcher : matching.getFieldMatchers(false)){
 			String propertyName = fieldMatcher.getPropertyName();
 			Type propertyType = classMetaData.getPropertyType(propertyName);
 			Object value = fieldMatcher.getField().get(objectToMatch);
-			MatchMode matchMode = fieldMatcher.getMatchMode();
-			if (! matchMode.isIgnore(value) ){
+			List<MatchMode> matchModes= new ArrayList<MatchMode>();
+			matchModes.add(fieldMatcher.getMatchMode());
+			if (replaceMatchers.get(propertyName) != null){
+				matchModes.addAll(replaceMatchers.get(propertyName));
+			}
+			
+			boolean isIgnore = false;
+			for (MatchMode matchMode : matchModes){
+				isIgnore |= matchMode.isIgnore(value);
+			}
+			if (! isIgnore ){
 				if (propertyType.isComponentType()){
-					matchComponentType(criteria, fieldMatcher, propertyName, value, matchMode);
+					matchComponentType(criteria, fieldMatcher, propertyName, value, matchModes);
 				}else{
-					noMatch = matchNonComponentType(criteria, fieldMatcher, propertyName, value, matchMode);
+					noMatch = matchNonComponentType(criteria, fieldMatcher, propertyName, value, matchModes, propertyType);
 				}
 			}
 			if (noMatch){
@@ -955,9 +990,10 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 	 */
 	private void matchComponentType(Criteria criteria,
 			FieldMatcher fieldMatcher, String propertyName, Object value,
-			MatchMode matchMode) throws MatchException, IllegalAccessException {
+			List<MatchMode> matchModes) throws MatchException, IllegalAccessException {
 		if (value == null){
-			if (matchMode.requiresSecondNull(value)){
+			boolean requiresSecondNull = requiresSecondNull(matchModes, value);
+			if (requiresSecondNull){
 				criteria.add(Restrictions.isNull(propertyName));
 			}else{
 				//TODO 
@@ -971,37 +1007,45 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 				String restrictionPath = propertyName +"."+fieldName;
 				Object componentValue = fields.get(fieldName).get(value);
 				//TODO diffentiate matchMode
-				createCriterion(criteria, restrictionPath, componentValue, matchMode);
+				createCriterion(criteria, restrictionPath, componentValue, matchModes);
 			}
 		}
 	}
 
 	private boolean matchNonComponentType(Criteria criteria,
 			FieldMatcher fieldMatcher, String propertyName, Object value,
-			MatchMode matchMode) throws HibernateException, DataAccessException, MatchException, IllegalAccessException{
+			List<MatchMode> matchModes, Type propertyType) throws HibernateException, DataAccessException, MatchException, IllegalAccessException{
 		boolean noMatch = false;
-		if (matchMode.isRequired() && value == null){
+		if (isRequired(matchModes) && value == null){
 			noMatch = true;
 			return noMatch;
-		}else if (matchMode.requiresSecondNull(value)){
+		}else if (requiresSecondNull(matchModes,value)){
 			criteria.add(Restrictions.isNull(propertyName));
-		}else if (matchMode.isEqual()){
-			createCriterion(criteria, propertyName, value, matchMode);
-		}else if (matchMode.isMatch()){
-			if (! matchMode.requiresSecondValue(value)){
-				criteria.add(Restrictions.isNull(propertyName));
-			}
-			Criteria matchCriteria = criteria.createCriteria(propertyName).add(Restrictions.isNotNull("id"));
-			Class matchClass = value.getClass();
-			if (IMatchable.class.isAssignableFrom(matchClass)){
-				IMatchStrategy valueMatchStrategy = DefaultMatchStrategy.NewInstance((Class<IMatchable>)matchClass);
-				ClassMetadata valueClassMetaData = getSession().getSessionFactory().getClassMetadata(matchClass.getCanonicalName());;
-				noMatch = makeCriteria(value, valueMatchStrategy, valueClassMetaData, matchCriteria); 
-			}else{
-				logger.warn("match class is not IMatchable");
-			}
 		}else{
-			logger.warn("Unhandled match mode: " + matchMode + ", value: " + (value==null?"null":value));
+			if (isMatch(matchModes)){
+				if (propertyType.isCollectionType()){
+					//TODO collection not yet handled for match	
+				}else{
+					int joinType = CriteriaSpecification.INNER_JOIN;
+					if (! requiresSecondValue(matchModes,value)){
+						joinType = CriteriaSpecification.LEFT_JOIN;
+					}
+					Criteria matchCriteria = criteria.createCriteria(propertyName, joinType).add(Restrictions.isNotNull("id"));
+					Class matchClass = value.getClass();
+					if (IMatchable.class.isAssignableFrom(matchClass)){
+						IMatchStrategy valueMatchStrategy = DefaultMatchStrategy.NewInstance((Class<IMatchable>)matchClass);
+						ClassMetadata valueClassMetaData = getSession().getSessionFactory().getClassMetadata(matchClass.getCanonicalName());;
+						noMatch = makeCriteria(value, valueMatchStrategy, valueClassMetaData, matchCriteria); 
+					}else{
+						logger.error("Class to match (" + matchClass + ") is not of type IMatchable");
+						throw new MatchException("Class to match (" + matchClass + ") is not of type IMatchable");
+					}
+				}
+			}else if (isEqual(matchModes)){
+				createCriterion(criteria, propertyName, value, matchModes);
+			}else {
+				logger.warn("Unhandled match mode: " + matchModes + ", value: " + (value==null?"null":value));
+			}
 		}
 		return noMatch;
 	}
@@ -1014,19 +1058,93 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 	 * @throws MatchException
 	 */
 	private void createCriterion(Criteria criteria, String propertyName,
-			Object value, MatchMode matchMode) throws MatchException {
+			Object value, List<MatchMode> matchModes) throws MatchException {
 		Criterion finalRestriction = null;
 		Criterion equalRestriction = Restrictions.eq(propertyName, value);
 		Criterion nullRestriction = Restrictions.isNull(propertyName);
-		if (matchMode.requiresSecondValue(value)){
+		if (this.requiresSecondValue(matchModes, value)){
 			finalRestriction = equalRestriction;
-		}else if (matchMode.requiresSecondNull(value) ){
+		}else if (requiresSecondNull(matchModes, value) ){
 			finalRestriction = nullRestriction;
 		}else{
 			finalRestriction = Restrictions.or(equalRestriction, nullRestriction);
 		}
+		//return finalRestriction;
 		criteria.add(finalRestriction);
 	}
+	
+	/**
+	 * @param matchModes
+	 * @param value
+	 * @return
+	 * @throws MatchException 
+	 */
+	private boolean requiresSecondNull(List<MatchMode> matchModes, Object value) throws MatchException {
+		boolean result = true;
+		for (MatchMode matchMode: matchModes){
+			result &= matchMode.requiresSecondNull(value);
+		}
+		return result;
+	}
+	
+	/**
+	 * @param matchModes
+	 * @param value
+	 * @return
+	 * @throws MatchException 
+	 */
+	private boolean requiresSecondValue(List<MatchMode> matchModes, Object value) throws MatchException {
+		boolean result = true;
+		for (MatchMode matchMode: matchModes){
+			result &= matchMode.requiresSecondValue(value);
+		}
+		return result;
+	}
+	
+	/**
+	 * @param matchModes
+	 * @param value
+	 * @return
+	 * @throws MatchException 
+	 */
+	private boolean isRequired(List<MatchMode> matchModes) throws MatchException {
+		boolean result = true;
+		for (MatchMode matchMode: matchModes){
+			result &= matchMode.isRequired();
+		}
+		return result;
+	}
+	
+	/**
+	 * Returns true if at least one match mode is of typ MATCH_XXX
+	 * @param matchModes
+	 * @param value
+	 * @return
+	 * @throws MatchException 
+	 */
+	private boolean isMatch(List<MatchMode> matchModes) throws MatchException {
+		boolean result = false;
+		for (MatchMode matchMode: matchModes){
+			result |= matchMode.isMatch();
+		}
+		return result;
+	}
+
+	/**
+	 * Returns true if at least one match mode is of typ EQUAL_XXX
+	 * @param matchModes
+	 * @param value
+	 * @return
+	 * @throws MatchException 
+	 */
+	private boolean isEqual(List<MatchMode> matchModes) throws MatchException {
+		boolean result = false;
+		for (MatchMode matchMode: matchModes){
+			result |= matchMode.isEqual();
+		}
+		return result;
+	}
+
 	
 }
 

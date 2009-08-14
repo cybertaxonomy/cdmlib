@@ -49,6 +49,7 @@ import eu.etaxonomy.cdm.model.common.Figure;
 import eu.etaxonomy.cdm.model.common.GrantedAuthorityImpl;
 import eu.etaxonomy.cdm.model.common.Group;
 import eu.etaxonomy.cdm.model.common.Keyword;
+import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.common.LSIDAuthority;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
@@ -1017,12 +1018,112 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 			Assert.fail("Find match must not throw Exception: " + e.getMessage());
 			e.printStackTrace();
 		}
-		
-		book3.setTitle(title1);
-		
-		
+
 	}
 	
+	
+	@Test
+	public void findMatchingCache(){
+		Book book1 = Book.NewInstance();
+		Team team1 = Team.NewInstance();
+		Team team2 = Team.NewInstance();
+		team1.setTitleCache("Team1");
+		team2.setTitleCache("Team1");
+		
+		book1.setTitle("Title1");
+		book1.setEdition("Edition1");
+		book1.setAuthorTeam(team1);
+		
+		
+		Book book2 = (Book)book1.clone();
+		Book book3 = (Book)book1.clone();
+		
+//		Assert.assertTrue("Cloned book should match", matchStrategy.invoke(book1, bookClone));
+//		book1.setTitleCache("cache1");
+//		Assert.assertFalse("Cached book should not match", matchStrategy.invoke(book1, bookClone));
+//		
+//		bookClone.setTitleCache("cache1");
+//		Assert.assertTrue("Cached book with same cache should match", matchStrategy.invoke(book1, bookClone));
+//			
+//		bookClone.setTitleCache("cache2");
+//		Assert.assertFalse("Cached book with differings caches should not match", matchStrategy.invoke(book1, bookClone));
+//		bookClone.setTitleCache("cache1"); //restore
+//		
+//		bookClone.setEdition(null);
+//		Assert.assertTrue("Cached book with a defined and a null edition should match", matchStrategy.invoke(book1, bookClone));
+
+		cdmGenericDao.saveOrUpdate(book1);
+		cdmGenericDao.saveOrUpdate(book2);
+		cdmGenericDao.saveOrUpdate(book3);
+		cdmGenericDao.saveOrUpdate(team1);
+		cdmGenericDao.saveOrUpdate(team2);
+		
+		
+		IMatchStrategy matchStrategy = DefaultMatchStrategy.NewInstance(Book.class);
+		
+		try {
+			List<Book> matchResult = cdmGenericDao.findMatching(book3, matchStrategy);
+			Assert.assertNotNull("Resultlist must not be null", matchResult);
+			Assert.assertEquals("Resultlist must have 2 entries", 2, matchResult.size());
+			Assert.assertTrue("Resultlist must contain book 1", matchResult.contains(book1));
+			Assert.assertTrue("Resultlist must contain book 2", matchResult.contains(book2));
+			
+			book1.setTitleCache("cache1");
+			matchResult = cdmGenericDao.findMatching(book3, matchStrategy);
+			Assert.assertEquals("Resultlist must have 1 entries", 1, matchResult.size());
+			Assert.assertTrue("Resultlist must contain book 2", matchResult.contains(book2));
+			
+			book2.setTitleCache("cache2", false);
+			matchResult = cdmGenericDao.findMatching(book3, matchStrategy);
+			Assert.assertEquals("Resultlist must have 1 entries", 1, matchResult.size());
+			Assert.assertTrue("Resultlist must contain book 2", matchResult.contains(book2));
+			
+			book2.setEdition(null);
+			matchResult = cdmGenericDao.findMatching(book3, matchStrategy);
+			Assert.assertEquals("Resultlist must have 0 entries", 0, matchResult.size());
+			
+			book3.setTitleCache("cache1");
+			matchResult = cdmGenericDao.findMatching(book3, matchStrategy);
+			Assert.assertEquals("Resultlist must have 1 entries", 1, matchResult.size());
+			Assert.assertTrue("Resultlist must contain book 1", matchResult.contains(book1));
+			
+			IMatchStrategy teamMatcher = DefaultMatchStrategy.NewInstance(Team.class);
+			boolean teamsMatch = teamMatcher.invoke(team1, team2);
+			Assert.assertTrue("Team1 and team2 should match" ,teamsMatch);
+			
+			book3.setAuthorTeam(team2);
+			matchResult = cdmGenericDao.findMatching(book3, matchStrategy);
+			Assert.assertEquals("Resultlist must have 1 entries", 1, matchResult.size());
+			Assert.assertTrue("Resultlist must contain book 1", matchResult.contains(book1));
+
+			book3.setAuthorTeam(null);
+			matchResult = cdmGenericDao.findMatching(book3, matchStrategy);
+			Assert.assertEquals("Resultlist must have 1 entries", 1, matchResult.size());
+			Assert.assertTrue("Resultlist must contain book 1", matchResult.contains(book1));
+			
+			book2.setTitleCache(book3.getTitleCache());
+			matchResult = cdmGenericDao.findMatching(book3, matchStrategy);
+			Assert.assertEquals("Resultlist must have 2 entries", 2, matchResult.size());
+			Assert.assertTrue("Resultlist must contain book 1", matchResult.contains(book1));
+			Assert.assertTrue("Resultlist must contain book 2", matchResult.contains(book2));
+			
+			team2.setTitleCache("team2");
+			teamsMatch = teamMatcher.invoke(team1, team2);
+			Assert.assertFalse("Team1 and team2 should not match" ,teamsMatch);
+			
+			book3.setAuthorTeam(team1);
+			book2.setAuthorTeam(team2);
+			matchResult = cdmGenericDao.findMatching(book3, matchStrategy);
+			Assert.assertEquals("Resultlist must have 1 entries", 1, matchResult.size());
+			Assert.assertTrue("Resultlist must contain book 1", matchResult.contains(book1));
+			
+			
+		} catch (MatchException e) {
+			Assert.fail("Find match must not throw Exception: " + e.getMessage());
+			e.printStackTrace();
+		}
+
+	}
 	
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmGenericDaoImpl#getHqlResult(java.lang.String)}.
