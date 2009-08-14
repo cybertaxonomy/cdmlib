@@ -34,14 +34,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
-import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.GrantedAuthorityImpl;
 import eu.etaxonomy.cdm.model.common.Group;
 import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.persistence.dao.common.IGrantedAuthorityDao;
 import eu.etaxonomy.cdm.persistence.dao.common.IGroupDao;
 import eu.etaxonomy.cdm.persistence.dao.common.IUserDao;
-import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 @Service
 @Transactional(readOnly=true)
@@ -338,9 +336,5 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
 	@Transactional(readOnly=false)
 	public UUID saveGroup(Group group) {
 		return groupDao.save(group);
-	}
-
-	public <TYPE extends User> Pager<TYPE> list(Class<TYPE> type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,	List<String> propertyPaths) {
-		return null;
 	}
 } 

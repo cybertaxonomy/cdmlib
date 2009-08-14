@@ -36,6 +36,7 @@ import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
@@ -253,7 +254,26 @@ public interface INameService extends IIdentifiableEntityService<TaxonNameBase> 
 	 * @param rank
 	 * @param pageSize The maximum number of names returned (can be null for all names)
 	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
+	 * @param orderHints may be null
+	 * @param propertyPaths properties to initialize - see {@link BeanInitializer#initialize(Object, List)}
 	 * @return a Pager of TaxonNameBase instances
 	 */
-	public Pager<TaxonNameBase> searchNames(String uninomial, String infraGenericEpithet, String specificEpithet, String infraspecificEpithet, Rank rank, Integer pageSize, Integer pageNumber);
+	public Pager<TaxonNameBase> searchNames(String uninomial, String infraGenericEpithet, String specificEpithet, String infraspecificEpithet, Rank rank, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+	
+	/**
+	 * Returns a Paged List of TaxonNameBase instances where the default field matches the String queryString (as interpreted by the Lucene QueryParser)
+	 * 
+	 * @param clazz filter the results by class (or pass null to return all TaxonNameBase instances)
+	 * @param queryString
+	 * @param pageSize The maximum number of taxa returned (can be null for all matching taxa)
+	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
+	 * @param orderHints
+	 *            Supports path like <code>orderHints.propertyNames</code> which
+	 *            include *-to-one properties like createdBy.username or
+	 *            authorTeam.persistentTitleCache
+	 * @param propertyPaths properties to be initialized
+	 * @return a Pager TaxonNameBase instances
+	 * @see <a href="http://lucene.apache.org/java/2_4_0/queryparsersyntax.html">Apache Lucene - Query Parser Syntax</a>
+	 */
+	public Pager<TaxonNameBase> search(Class<? extends TaxonNameBase> clazz, String queryString, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 }

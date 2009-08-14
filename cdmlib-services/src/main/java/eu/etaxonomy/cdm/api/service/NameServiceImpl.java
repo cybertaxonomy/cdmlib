@@ -48,6 +48,7 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.common.IOrderedTermVocabularyDao;
 import eu.etaxonomy.cdm.persistence.dao.common.IReferencedEntityDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ITermVocabularyDao;
@@ -333,15 +334,26 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
      * FIXME Candidate for harmonization
 	 * rename search
      */
-	public Pager<TaxonNameBase> searchNames(String uninomial,String infraGenericEpithet, String specificEpithet, String infraspecificEpithet, Rank rank, Integer pageSize,	Integer pageNumber) {
+	public Pager<TaxonNameBase> searchNames(String uninomial,String infraGenericEpithet, String specificEpithet, String infraspecificEpithet, Rank rank, Integer pageSize,	Integer pageNumber, List<OrderHint> orderHints,
+			List<String> propertyPaths) {
         Integer numberOfResults = dao.countNames(uninomial, infraGenericEpithet, specificEpithet, infraspecificEpithet, rank);
 		
 		List<TaxonNameBase> results = new ArrayList<TaxonNameBase>();
 		if(numberOfResults > 0) { // no point checking again
-			results = dao.searchNames(uninomial, infraGenericEpithet, specificEpithet, infraspecificEpithet, rank, pageSize, pageNumber); 
+			results = dao.searchNames(uninomial, infraGenericEpithet, specificEpithet, infraspecificEpithet, rank, pageSize, pageNumber, orderHints, propertyPaths); 
 		}
 		
 		return new DefaultPagerImpl<TaxonNameBase>(pageNumber, numberOfResults, pageSize, results);
 	}
-
+	
+	public Pager<TaxonNameBase> search(Class<? extends TaxonNameBase> clazz, String queryString, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+        Integer numberOfResults = dao.count(clazz,queryString);
+		
+		List<TaxonNameBase> results = new ArrayList<TaxonNameBase>();
+		if(numberOfResults > 0) { // no point checking again
+			results = dao.search(clazz,queryString, pageSize, pageNumber, orderHints, propertyPaths); 
+		}
+		
+		return new DefaultPagerImpl<TaxonNameBase>(pageNumber, numberOfResults, pageSize, results);
+	}
 }

@@ -19,6 +19,7 @@ import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
+import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
  * @author a.babadshanjan
@@ -88,4 +89,6 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
      * @return a Pager of derivation events
      */
 	public Pager<DerivationEvent> getDerivationEvents(SpecimenOrObservationBase occurence, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
+	
+	public Pager<SpecimenOrObservationBase> search(Class<? extends SpecimenOrObservationBase> clazz, String query, Integer pageSize,Integer pageNumber, List<OrderHint> orderHints,List<String> propertyPaths);
 }

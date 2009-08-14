@@ -26,7 +26,7 @@ public class ServiceImpl extends ServiceBase<CdmBase, ICdmEntityDao<CdmBase>> im
 	private static final Logger logger = Logger.getLogger(ServiceImpl.class);
 	
 	//@Autowired
-	@Qualifier("mainDao")
+	//@Qualifier("mainDao")
 	protected ICdmEntityDao<CdmBase> mainDao;
 	
 	//@Autowired

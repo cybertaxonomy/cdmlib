@@ -33,6 +33,7 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
 import eu.etaxonomy.cdm.persistence.dao.occurrence.ICollectionDao;
 import eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao;
+import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
  * @author a.babadshanjan
@@ -174,5 +175,15 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 	public UUID saveCollection(eu.etaxonomy.cdm.model.occurrence.Collection collection) {
 		return collectionDao.save(collection);
 	}
-	
+
+	public Pager<SpecimenOrObservationBase> search(Class<? extends SpecimenOrObservationBase> clazz, String queryString, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+        Integer numberOfResults = dao.count(clazz,queryString);
+		
+		List<SpecimenOrObservationBase> results = new ArrayList<SpecimenOrObservationBase>();
+		if(numberOfResults > 0) { // no point checking again
+			results = dao.search(clazz,queryString, pageSize, pageNumber, orderHints, propertyPaths); 
+		}
+		
+		return new DefaultPagerImpl<SpecimenOrObservationBase>(pageNumber, numberOfResults, pageSize, results);
+	}	
 }
