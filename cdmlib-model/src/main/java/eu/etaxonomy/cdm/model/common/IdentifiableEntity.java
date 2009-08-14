@@ -48,6 +48,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 import eu.etaxonomy.cdm.strategy.match.Match;
 import eu.etaxonomy.cdm.strategy.match.MatchMode;
+import eu.etaxonomy.cdm.strategy.match.Match.ReplaceMode;
 import eu.etaxonomy.cdm.strategy.merge.Merge;
 import eu.etaxonomy.cdm.strategy.merge.MergeMode;
 
@@ -96,7 +97,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 	     	 @Field(name = "titleCache_forSort", index = org.hibernate.search.annotations.Index.UN_TOKENIZED)
 	})
 	@FieldBridge(impl=StripHtmlBridge.class)
-	@Match(MatchMode.IGNORE)
+	@Match(value=MatchMode.CACHE, cacheReplaceMode=ReplaceMode.ALL)
 	private String titleCache;
 	
 	//if true titleCache will not be automatically generated/updated

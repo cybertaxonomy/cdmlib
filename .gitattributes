@@ -1387,8 +1387,10 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/reference/ThesisDefau
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/taxon/TaxonBaseDefaultCacheStrategy.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/exceptions/StringNotParsableException.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/exceptions/UnknownCdmTypeException.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/match/CacheMatcher.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/match/DefaultMatchStrategy.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/match/FieldMatcher.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/match/FieldMatcherBase.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/match/GroupMatcher.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/match/IMatchStrategy.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/match/IMatchable.java -text

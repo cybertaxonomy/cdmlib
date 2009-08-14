@@ -19,13 +19,10 @@ import org.apache.log4j.Logger;
  * @created 07.08.2009
  * @version 1.0
  */
-public class FieldMatcher {
+public class FieldMatcher extends FieldMatcherBase{
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(FieldMatcher.class);
 	
-	private String propertyName ; 
-	private Field field;
-	private MatchMode matchMode;
 	private IMatchStrategy matchStrategy;
 	
 	public static FieldMatcher NewInstance(Field field, MatchMode matchMode, IMatchStrategy matchStrategy){
@@ -37,54 +34,8 @@ public class FieldMatcher {
 	}
 	
 	private FieldMatcher (String propertyname, Field field, MatchMode matchMode, IMatchStrategy matchStrategy){
-		this.propertyName = propertyname;
-		this.field = field;
+		super(propertyname, field, matchMode);
 		this.matchStrategy = matchStrategy;
-		this.matchMode = matchMode;
-	}
-
-	/**
-	 * @return the propertyName
-	 */
-	public String getPropertyName() {
-		return propertyName;
-	}
-
-	/**
-	 * @param propertyName the propertyName to set
-	 */
-	public void setPropertyName(String propertyName) {
-		this.propertyName = propertyName;
-	}
-
-	/**
-	 * @return the field
-	 */
-	public Field getField() {
-		return field;
-	}
-
-	/**
-	 * @param field the field to set
-	 */
-	public void setField(Field field) {
-		this.field = field;
-	}
-
-	
-	
-	/**
-	 * @return the matchMode
-	 */
-	public MatchMode getMatchMode() {
-		return matchMode;
-	}
-
-	/**
-	 * @param matchMode the matchMode to set
-	 */
-	public void setMatchMode(MatchMode matchMode) {
-		this.matchMode = matchMode;
 	}
 
 	/**
@@ -100,14 +51,6 @@ public class FieldMatcher {
 	public void setMatchStrategy(IMatchStrategy matchStrategy) {
 		this.matchStrategy = matchStrategy;
 	}
-	
-	@Override
-	public String toString(){
-		if (propertyName == null || matchMode == null){
-			return super.toString();
-		}
-		return "[" + propertyName + "->" + matchMode.toString() +"]";
-	}
-	
+
 	
 }

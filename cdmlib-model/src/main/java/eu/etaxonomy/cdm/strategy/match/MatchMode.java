@@ -12,6 +12,8 @@ package eu.etaxonomy.cdm.strategy.match;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
+
 
 /**
  * Enumeration for matching modes.
@@ -28,7 +30,8 @@ public enum MatchMode {
 	MATCH_REQUIRED,
 	MATCH_OR_ONE_NULL,
 	MATCH_OR_SECOND_NULL,
-	MATCH			//matches if parameter mach (parameters must implement IMatchable)
+	MATCH,//matches if parameter mach (parameters must implement IMatchable)
+	CACHE
 	;
 	private static final Logger logger = Logger.getLogger(MatchMode.class);
 
@@ -51,7 +54,9 @@ public enum MatchMode {
 			return matchesMatchOrOneNull(obj1, obj2, matchStrategy);
 		}else if(this == MATCH_OR_SECOND_NULL){
 			return matchesMatchOrSecondNull(obj1, obj2, matchStrategy);
-		} else {
+		}else if(this == CACHE){
+			return matchesEqualRequired(obj1, obj2) && CdmUtils.isNotEmpty((String)obj1);
+		}else {
 			throw new MatchException("Match mode not handled yet: " + this);
 		}
 	}

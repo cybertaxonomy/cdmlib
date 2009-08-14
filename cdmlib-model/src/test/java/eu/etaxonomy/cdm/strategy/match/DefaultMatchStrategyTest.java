@@ -10,10 +10,6 @@
 
 package eu.etaxonomy.cdm.strategy.match;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
-
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 import org.junit.After;
@@ -21,37 +17,23 @@ import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
-import eu.etaxonomy.cdm.model.agent.Address;
 import eu.etaxonomy.cdm.model.agent.Contact;
-import eu.etaxonomy.cdm.model.agent.Institution;
-import eu.etaxonomy.cdm.model.agent.InstitutionalMembership;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
-import eu.etaxonomy.cdm.model.common.Keyword;
 import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
-import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.location.ReferenceSystem;
 import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
-import eu.etaxonomy.cdm.model.name.NameRelationship;
-import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
-import eu.etaxonomy.cdm.model.occurrence.Specimen;
 import eu.etaxonomy.cdm.model.reference.Book;
 import eu.etaxonomy.cdm.model.reference.BookSection;
 import eu.etaxonomy.cdm.model.reference.PrintSeries;
-import eu.etaxonomy.cdm.model.reference.Thesis;
-import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.model.taxon.TaxonBase;
-import eu.etaxonomy.cdm.strategy.cache.reference.INomenclaturalReferenceCacheStrategy;
 
 /**
  * @author a.mueller
@@ -210,6 +192,45 @@ public class DefaultMatchStrategyTest {
 		}
 	}
 
+	@Test
+	public void testInvokeCache() throws MatchException {
+		matchStrategy = DefaultMatchStrategy.NewInstance(Book.class);
+		Assert.assertTrue("Same object should always match", matchStrategy.invoke(book1, book1));
+		
+		Book bookClone = (Book)book1.clone();
+		Assert.assertTrue("Cloned book should match", matchStrategy.invoke(book1, bookClone));
+		book1.setTitleCache("cache1");
+		Assert.assertFalse("Cached book should not match", matchStrategy.invoke(book1, bookClone));
+		
+		bookClone.setTitleCache("cache1");
+		Assert.assertTrue("Cached book with same cache should match", matchStrategy.invoke(book1, bookClone));
+			
+		bookClone.setTitleCache("cache2");
+		Assert.assertFalse("Cached book with differings caches should not match", matchStrategy.invoke(book1, bookClone));
+		bookClone.setTitleCache("cache1"); //restore
+		
+		bookClone.setEdition(null);
+		Assert.assertTrue("Cached book with a defined and a null edition should match", matchStrategy.invoke(book1, bookClone));
+
+		matchStrategy = DefaultMatchStrategy.NewInstance(BotanicalName.class);
+		BotanicalName botName1 = BotanicalName.NewInstance(Rank.GENUS());
+		BotanicalName botName2 = BotanicalName.NewInstance(Rank.GENUS());
+		Assert.assertNotNull("Rank should not be null", botName1.getRank());
+		
+		botName1.setGenusOrUninomial("Genus1");
+		botName2.setGenusOrUninomial("Genus1");
+		Assert.assertTrue("Names with equal genus should match", matchStrategy.invoke(botName1, botName2));
+		
+		botName1.setCombinationAuthorTeam(team1);
+		botName2.setCombinationAuthorTeam(null);
+		Assert.assertFalse("Names one having an author the other one not should not match", matchStrategy.invoke(botName1, botName2));
+		
+		botName1.setAuthorshipCache("authorCache1");
+		botName2.setAuthorshipCache("authorCache1");
+		Assert.assertTrue("Names with cached authors should match", matchStrategy.invoke(botName1, botName2));
+		
+	}
+	
 	
 	@Test
 	public void testInvokeReferences() throws MatchException {

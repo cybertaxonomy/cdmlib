@@ -25,7 +25,6 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
@@ -48,6 +47,7 @@ import eu.etaxonomy.cdm.strategy.cache.name.INonViralNameCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.name.NonViralNameDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.match.Match;
 import eu.etaxonomy.cdm.strategy.match.MatchMode;
+import eu.etaxonomy.cdm.strategy.match.Match.ReplaceMode;
 
 /**
  * The taxon name class for all non viral taxa. Parenthetical authorship is derived
@@ -150,7 +150,8 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 	
 	@XmlElement(name = "AuthorshipCache")
 	@Field(index=Index.TOKENIZED)
-	@Match(MatchMode.IGNORE)
+	@Match(value=MatchMode.CACHE, cacheReplaceMode=ReplaceMode.DEFINED, 
+			cacheReplacedProperties={"combinationAuthorTeam", "basionymAuthorTeam", "exCombinationAuthorTeam", "exBasionymAuthorTeam"} )
 	private String authorshipCache;
 	
 	@XmlElement(name = "ProtectedAuthorshipCache")

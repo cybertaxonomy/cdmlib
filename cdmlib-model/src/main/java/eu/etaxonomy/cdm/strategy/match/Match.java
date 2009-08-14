@@ -16,8 +16,6 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import eu.etaxonomy.cdm.strategy.merge.Merge;
-
 /**
  * @author a.mueller
  * @created 03.08.2009
@@ -28,6 +26,16 @@ import eu.etaxonomy.cdm.strategy.merge.Merge;
 public @interface Match {
 	MatchMode value();
 	
+	ReplaceMode cacheReplaceMode() default ReplaceMode.ALL;
+	MatchMode replaceMatchMode() default MatchMode.EQUAL_OR_ONE_NULL; 
+	String[] cacheReplacedProperties() default {};
+	
+	public enum ReplaceMode{
+		ALL,  //Selects all properties
+		NONE,  //Selects no properties
+		DEFINED,  //sel
+		DEFINED_REVERSE
+	}
 //	IMatchStrategy matchStrategy();
 	
 }

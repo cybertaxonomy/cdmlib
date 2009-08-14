@@ -28,7 +28,7 @@ public class Matching {
 	
 	private SortedMap<String, FieldMatcher> fieldMatchers = new TreeMap<String, FieldMatcher>();
 	private SortedMap<String, FieldMatcher> tmpFieldMatchers = new TreeMap<String, FieldMatcher>();
-	private List<GroupMatcher> groupMatchers = new ArrayList<GroupMatcher>();
+	private List<CacheMatcher> cacheMatchers = new ArrayList<CacheMatcher>();
 	
 
 	public Matching setFieldMatcher(FieldMatcher fieldMatcher){
@@ -45,8 +45,8 @@ public class Matching {
 		return this;
 	}
 
-	public Matching addGroupMatcher(GroupMatcher groupMatcher){
-		groupMatchers.add(groupMatcher);
+	public Matching addCacheMatcher(CacheMatcher cacheMatcher){
+		cacheMatchers.add(cacheMatcher);
 		return this;
 	}
 
@@ -80,8 +80,8 @@ public class Matching {
 	/**
 	 * @return the groupMatchers
 	 */
-	public List<GroupMatcher> getGroupMatchers() {
-		return groupMatchers;
+	public List<CacheMatcher> getCacheMatchers() {
+		return cacheMatchers;
 	}
 
 	public void deleteTemporaryMatchers(){
