@@ -22,6 +22,7 @@ public class UserDaoImpl extends CdmEntityDaoBase<User> implements IUserDao {
 		User user = (User)query.uniqueResult(); // username is a @NaturalId
 		
 		if(user != null) {
+			Hibernate.initialize(user.getPerson());
 			Hibernate.initialize(user.getGrantedAuthorities());
 			for(Group group : user.getGroups()) {
 				Hibernate.initialize(group.getGrantedAuthorities());

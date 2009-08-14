@@ -131,9 +131,16 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
 		}
 	}
 
-	public <TYPE extends DescriptionBase> int countDescriptions(Class<TYPE> type, Boolean hasImages, Boolean hasText, Set<Feature> features) {
+	public <TYPE extends DescriptionBase> int countDescriptions(Class<TYPE> clazz, Boolean hasImages, Boolean hasText, Set<Feature> features) {
 		checkNotInPriorView("DescriptionDaoImpl.countDescriptions(Class<TYPE> type, Boolean hasImages, Boolean hasText, Set<Feature> features)");
-		Criteria inner = getSession().createCriteria(type);
+		Criteria inner = null;
+		
+		if(clazz == null) {
+			inner = getSession().createCriteria(type);
+		} else {
+			inner = getSession().createCriteria(clazz);
+		}
+		
 		Criteria elementsCriteria = inner.createCriteria("elements");
 		if(hasText != null) {
 			if(hasText) {
@@ -413,9 +420,16 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
 	 * 
 	 * outer.add(Subqueries.propertyIn("id", inner));
 	 */
-	public <TYPE extends DescriptionBase> List<TYPE> listDescriptions(Class<TYPE> type, Boolean hasImages, Boolean hasText,	Set<Feature> features, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+	public <TYPE extends DescriptionBase> List<TYPE> listDescriptions(Class<TYPE> clazz, Boolean hasImages, Boolean hasText,	Set<Feature> features, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
 		checkNotInPriorView("DescriptionDaoImpl.listDescriptions(Class<TYPE> type, Boolean hasImages, Boolean hasText,	Set<Feature> features, Integer pageSize, Integer pageNumber)");
-		Criteria inner = getSession().createCriteria(type);
+		Criteria inner = null;
+		
+		if(clazz == null) {
+			inner = getSession().createCriteria(type);
+		} else {
+			inner = getSession().createCriteria(clazz);
+		}
+		
 		Criteria elementsCriteria = inner.createCriteria("elements");
 		if(hasText != null) {
 			if(hasText) {
@@ -470,7 +484,14 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
 			}
 		}
 		
-		Criteria outer = getSession().createCriteria(type);
+		Criteria outer = null;
+		
+		if(clazz == null) {
+			outer = getSession().createCriteria(type);
+		} else {
+			outer = getSession().createCriteria(clazz);
+		}
+		
 		outer.add(Restrictions.in("id", resultIds));
 		addOrder(outer, orderHints);
 		
