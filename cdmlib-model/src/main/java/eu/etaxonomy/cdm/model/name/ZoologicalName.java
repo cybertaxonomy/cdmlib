@@ -52,13 +52,9 @@ import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 @Audited
 @Configurable
 public class ZoologicalName extends NonViralName<ZoologicalName> {
-	
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 845745609734814484L;
-
-	static Logger logger = Logger.getLogger(ZoologicalName.class);
+	@SuppressWarnings("unused")
+	private static final Logger logger = Logger.getLogger(ZoologicalName.class);
 
 	//Name of the breed of an animal
 	@XmlElement(name = "Breed")
