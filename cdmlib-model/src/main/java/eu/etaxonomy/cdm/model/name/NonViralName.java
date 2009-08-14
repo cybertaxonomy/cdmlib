@@ -79,7 +79,8 @@ import eu.etaxonomy.cdm.strategy.match.Match.ReplaceMode;
     "exBasionymAuthorTeam",
     "authorshipCache",
     "protectedAuthorshipCache",
-    "protectedNameCache"
+    "protectedNameCache",
+    "hybridRelationships"
 })
 @XmlRootElement(name = "NonViralName")
 @Entity

@@ -26,6 +26,7 @@ import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.strategy.cache.name.BotanicNameDefaultCacheStrategy;
+import eu.etaxonomy.cdm.strategy.match.IMatchable;
 import eu.etaxonomy.cdm.strategy.parser.INonViralNameParser;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 
@@ -44,8 +45,7 @@ import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
     "monomHybrid",
     "binomHybrid",
     "trinomHybrid",
-    "anamorphic",
-    "hybridRelationships"
+    "anamorphic"
 })
 @XmlRootElement(name = "BotanicalName")
 @Entity
