@@ -53,7 +53,7 @@ import eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy;
 @Audited
 @Configurable
 public class ViralName extends TaxonNameBase<ViralName, INameCacheStrategy<ViralName>>  {
-	
+	private static final long serialVersionUID = 4516625507432071817L;
 	private static final Logger logger = Logger.getLogger(ViralName.class);
 
 //    @XmlTransient

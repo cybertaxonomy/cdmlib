@@ -45,13 +45,9 @@ import org.springframework.beans.factory.annotation.Configurable;
 @Audited
 @Configurable
 public class BacterialName extends NonViralName<BacterialName> {
-	
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -7641841279209976443L;
-
-	static Logger logger = Logger.getLogger(BacterialName.class);
+	@SuppressWarnings("unused")
+	private static final Logger logger = Logger.getLogger(BacterialName.class);
 
 	//Author team and year of the subgenus name
 	@XmlElement(name = "SubGenusAuthorship")

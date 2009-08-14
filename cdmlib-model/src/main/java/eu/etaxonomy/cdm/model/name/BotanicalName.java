@@ -53,7 +53,7 @@ import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 @Indexed(index = "eu.etaxonomy.cdm.model.name.TaxonNameBase")
 @Audited
 @Configurable
-public class BotanicalName extends NonViralName<BotanicalName> /*implements IMergable*/ implements IMatchable{
+public class BotanicalName extends NonViralName<BotanicalName> /*implements IMergable*/ {
 	private static final long serialVersionUID = 6818651572463497727L;
 	private static final Logger logger = Logger.getLogger(BotanicalName.class);
 	
