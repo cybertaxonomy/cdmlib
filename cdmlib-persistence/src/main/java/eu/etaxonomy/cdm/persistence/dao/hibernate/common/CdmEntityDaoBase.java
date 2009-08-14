@@ -248,10 +248,14 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 	
 	public <TYPE extends T> int count(Class<TYPE> clazz) {
 		Session session = getSession();
-		Criteria crit = session.createCriteria(clazz);
-		crit.setProjection(Projections.projectionList().add(Projections.rowCount()));
-		Integer nbrRows = (Integer) crit.uniqueResult();
-		return nbrRows.intValue();
+		Criteria criteria = null;
+		if(clazz == null) {
+			criteria = session.createCriteria(type);
+		} else {
+		    criteria = session.createCriteria(clazz);
+		}
+		criteria.setProjection(Projections.projectionList().add(Projections.rowCount()));
+		return (Integer) criteria.uniqueResult();
 	}
 
 	public List<T> list(Integer limit, Integer start) {
@@ -320,16 +324,22 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 		return results;
 	}
 
-	public <TYPE extends T> List<TYPE> list(Class<TYPE> type, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
-		Criteria crit = getSession().createCriteria(type); 
+	public <TYPE extends T> List<TYPE> list(Class<TYPE> clazz, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
+		Criteria criteria = null;
+		if(clazz == null) {
+			criteria = getSession().createCriteria(type); 
+		} else {
+		    criteria = getSession().createCriteria(clazz);	
+		} 
+		
 		if(limit != null) {
-		    crit.setFirstResult(start);
-		    crit.setMaxResults(limit);
+			criteria.setFirstResult(start);
+			criteria.setMaxResults(limit);
 		}
 		
-		addOrder(crit,orderHints);
+		addOrder(criteria,orderHints);
 		
-		List<TYPE> results = (List<TYPE>)crit.list();
+		List<TYPE> results = (List<TYPE>)criteria.list();
 		defaultBeanInitializer.initializeAll(results, propertyPaths);
 		return results; 
 	}

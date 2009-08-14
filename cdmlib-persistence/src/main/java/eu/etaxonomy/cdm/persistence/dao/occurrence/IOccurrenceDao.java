@@ -14,12 +14,13 @@ import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
+import eu.etaxonomy.cdm.persistence.dao.common.ISearchableDao;
 
 /**
  * @author a.babadshanjan
  * @created 01.09.2008
  */
-public interface IOccurrenceDao extends IIdentifiableDao<SpecimenOrObservationBase> {
+public interface IOccurrenceDao extends IIdentifiableDao<SpecimenOrObservationBase>, ISearchableDao<SpecimenOrObservationBase> {
 	
 	/**
      * Returns a count of Media that are associated with a given occurence

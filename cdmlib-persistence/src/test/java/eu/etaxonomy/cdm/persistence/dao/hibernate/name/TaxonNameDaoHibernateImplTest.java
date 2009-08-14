@@ -129,7 +129,7 @@ public class TaxonNameDaoHibernateImplTest extends CdmIntegrationTest {
 	
 	@Test
 	public void testSearchNames() {
-		List<TaxonNameBase> result = taxonNameDao.searchNames("Atropos", null, null, null, Rank.GENUS(), null, null);
+		List<TaxonNameBase> result = taxonNameDao.searchNames("Atropos", null, null, null, Rank.GENUS(), null, null, null, null);
 		
 		assertNotNull("searcNames should return a list",result);
 		assertFalse("the list should not be empty", result.isEmpty());

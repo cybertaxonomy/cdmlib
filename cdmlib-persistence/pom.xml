@@ -189,6 +189,10 @@
         <artifactId>commons-beanutils</artifactId>
         <version>1.7.0</version>
      </dependency> 
+     <dependency>
+		      <groupId>commons-lang</groupId>
+		      <artifactId>commons-lang</artifactId>
+     </dependency>
   	<dependency>
   		<groupId>org.springmodules</groupId>
   		<artifactId>spring-modules-lucene</artifactId>

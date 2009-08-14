@@ -3,6 +3,7 @@ package eu.etaxonomy.cdm.persistence.dao.common;
 import java.util.List;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 public interface ISearchableDao<T extends CdmBase> {
@@ -44,7 +45,7 @@ public interface ISearchableDao<T extends CdmBase> {
 	public String suggestQuery(String string);
 	
 	/**
-	 * Removes all TaxonBase entities from the index
+	 * Removes all entities of type T from the index
 	 */
 	public void purgeIndex();
 

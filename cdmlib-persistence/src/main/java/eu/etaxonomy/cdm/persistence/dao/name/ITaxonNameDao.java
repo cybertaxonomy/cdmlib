@@ -25,6 +25,7 @@ import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
 import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
+import eu.etaxonomy.cdm.persistence.dao.common.ISearchableDao;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
@@ -32,7 +33,7 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
  * @author a.mueller
  * 
  */
-public interface ITaxonNameDao extends IIdentifiableDao<TaxonNameBase> {
+public interface ITaxonNameDao extends IIdentifiableDao<TaxonNameBase>, ISearchableDao<TaxonNameBase> {
 
 	/**
 	 * Return a count of names related to or from this name, optionally filtered
@@ -172,12 +173,14 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonNameBase> {
 	 * @param pageNumber
 	 *            The offset (in pageSize chunks) from the start of the result
 	 *            set (0 - based)
+	 * @param propertyPaths 
+	 * @param orderHints 
 	 * @return a List of TaxonNameBase instances
 	 */
 	public List<TaxonNameBase> searchNames(String uninomial,
 			String infraGenericEpithet, String specificEpithet,
 			String infraspecificEpithet, Rank rank, Integer pageSize,
-			Integer pageNumber);
+			Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
 	/**
 	 * Returns a count of TaxonNameBase instances that match the properties
