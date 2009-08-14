@@ -26,7 +26,6 @@ import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.strategy.cache.name.BotanicNameDefaultCacheStrategy;
-import eu.etaxonomy.cdm.strategy.match.IMatchable;
 import eu.etaxonomy.cdm.strategy.parser.INonViralNameParser;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 
@@ -55,6 +54,7 @@ import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 @Configurable
 public class BotanicalName extends NonViralName<BotanicalName> /*implements IMergable*/ {
 	private static final long serialVersionUID = 6818651572463497727L;
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(BotanicalName.class);
 	
 	//if set: this name is a hybrid formula (a hybrid that does not have an own name) and no other hybrid flags may be set. A

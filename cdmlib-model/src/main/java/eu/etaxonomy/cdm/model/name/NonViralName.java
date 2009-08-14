@@ -87,13 +87,15 @@ import eu.etaxonomy.cdm.strategy.match.Match.ReplaceMode;
 @Audited
 @Configurable
 public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonViralNameCacheStrategy> {
-	
+	private static final long serialVersionUID = 4441110073881088033L;
 	private static final Logger logger = Logger.getLogger(NonViralName.class);
 	
 	@XmlElement(name = "NameCache")
 	@Fields({@Field(index = org.hibernate.search.annotations.Index.TOKENIZED),
     	 @Field(name = "nameCache_forSort", index = org.hibernate.search.annotations.Index.UN_TOKENIZED)
     })
+	@Match(value=MatchMode.CACHE, cacheReplaceMode=ReplaceMode.DEFINED, 
+			cacheReplacedProperties={"genusOrUninomial", "infraGenericEpithet", "specificEpithet", "infraSpecificEpithet"} )
 	private String nameCache;
 	
 	@XmlElement(name = "ProtectedNameCache")

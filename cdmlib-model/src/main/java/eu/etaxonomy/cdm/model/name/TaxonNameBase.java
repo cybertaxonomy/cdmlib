@@ -59,6 +59,7 @@ import eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy;
 import eu.etaxonomy.cdm.strategy.match.IMatchable;
 import eu.etaxonomy.cdm.strategy.match.Match;
 import eu.etaxonomy.cdm.strategy.match.MatchMode;
+import eu.etaxonomy.cdm.strategy.match.Match.ReplaceMode;
 import eu.etaxonomy.cdm.strategy.merge.Merge;
 import eu.etaxonomy.cdm.strategy.merge.MergeMode;
 
@@ -107,6 +108,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 
 	@XmlElement(name = "FullTitleCache")
 	@Column(length=330, name="fullTitleCache")
+	@Match(value=MatchMode.CACHE, cacheReplaceMode=ReplaceMode.ALL)
 	private String fullTitleCache;
 	
 	//if true titleCache will not be automatically generated/updated
