@@ -9,17 +9,14 @@
 
 package eu.etaxonomy.cdm.model.description;
 
-import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.media.Media;
-import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
-import eu.etaxonomy.cdm.model.taxon.Taxon;
-import org.apache.log4j.Logger;
-import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.Indexed;
+import java.util.HashSet;
+import java.util.Set;
 
-import java.util.*;
-
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -27,8 +24,17 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
+
+import org.apache.log4j.Logger;
+import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Indexed;
+
+import eu.etaxonomy.cdm.model.common.Representation;
+import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.media.Media;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 /**
  * The class representing single-access fixed dichotomous or polytomous authored
@@ -43,19 +49,22 @@ import javax.xml.bind.annotation.XmlType;
  */
 
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "IdentificationKey", propOrder = {
+@XmlType(name = "MediaKey", propOrder = {
     "coveredTaxa",
     "taxonomicScope",
-    "geoScopes"
+    "geographicalScope",
+    "scopeRestrictions",
+    "keyRepresentations"
 })
-@XmlRootElement(name = "IdentificationKey")
+@XmlRootElement(name = "MediaKey")
 @Entity
 @Indexed(index = "eu.etaxonomy.cdm.model.media.Media")
 @Audited
-public class IdentificationKey extends Media {
+public class MediaKey extends Media implements IIdentificationKey{
+
 	private static final long serialVersionUID = -29095811051894471L;
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(IdentificationKey.class);
+	private static final Logger logger = Logger.getLogger(MediaKey.class);
 	
 	@XmlElementWrapper(name = "CoveredTaxa")
 	@XmlElement(name = "CoveredTaxon")
@@ -64,12 +73,12 @@ public class IdentificationKey extends Media {
 	@ManyToMany(fetch = FetchType.LAZY)
 	private Set<Taxon> coveredTaxa = new HashSet<Taxon>();
 	
-	@XmlElementWrapper( name = "GeoScopes")
-	@XmlElement( name = "GeoScope")
+	@XmlElementWrapper( name = "GeographicalScope")
+	@XmlElement( name = "Area")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@ManyToMany(fetch = FetchType.LAZY)
-	private Set<NamedArea> geoScopes = new HashSet<NamedArea>();
+	private Set<NamedArea> geographicalScope = new HashSet<NamedArea>();
 	
 	@XmlElementWrapper(name = "TaxonomicScope")
 	@XmlElement(name = "Taxon")
@@ -77,24 +86,38 @@ public class IdentificationKey extends Media {
 	@XmlSchemaType(name = "IDREF")
 	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(
-	        name="IdentificationKey_Taxon",
-	        joinColumns=@JoinColumn(name="identificationKey_fk"),
+	        name="MediaKey_Taxon",
+	        joinColumns=@JoinColumn(name="mediaKey_fk"),
 	        inverseJoinColumns=@JoinColumn(name="taxon_fk")
 	)
 	private Set<Taxon> taxonomicScope = new HashSet<Taxon>();
 	
+	@XmlElementWrapper( name = "ScopeRestrictions")
+	@XmlElement( name = "Restriction")
+	@XmlIDREF
+	@XmlSchemaType(name = "IDREF")
+	@ManyToMany(fetch = FetchType.LAZY)
+	private Set<Scope> scopeRestrictions = new HashSet<Scope>();
+	
+	@XmlElementWrapper( name = "KeyRepresentations")
+	@XmlElement( name = "KeyRepresentation")
+	@XmlIDREF
+	@XmlSchemaType(name = "IDREF")
+	@ManyToMany(fetch = FetchType.LAZY)
+	private Set<Representation> keyRepresentations = new HashSet<Representation>();
+	
 	/** 
 	 * Class constructor: creates a new empty identification key instance.
 	 */
-	protected IdentificationKey() {
+	protected MediaKey() {
 		super();
 	}
 	
 	/** 
 	 * Creates a new empty identification key instance.
 	 */
-	public static IdentificationKey NewInstance(){
-		return new IdentificationKey();
+	public static MediaKey NewInstance(){
+		return new MediaKey();
 	}
 
 	
@@ -139,8 +162,8 @@ public class IdentificationKey extends Media {
 	 * Returns the set of {@link NamedArea named areas} indicating the geospatial
 	 * data where <i>this</i> identification key is valid.
 	 */
-	public Set<NamedArea> getGeoScopes() {
-		return geoScopes;
+	public Set<NamedArea> getGeographicalScope() {
+		return geographicalScope;
 	}
 	
 	/**
@@ -150,8 +173,8 @@ public class IdentificationKey extends Media {
 	 * @param	geoScope	the named area to be added to <i>this</i> identification key
 	 * @see    	   		 	#getGeoScopes()
 	 */
-	public void addGeoScope(NamedArea geoScope) {
-		this.geoScopes.add(geoScope);
+	public void addGeographicalScope(NamedArea geoScope) {
+		this.geographicalScope.add(geoScope);
 	}
 	/** 
 	 * Removes one element from the set of {@link #getGeoScopes() geogspatial scopes}
@@ -161,8 +184,8 @@ public class IdentificationKey extends Media {
 	 * @see     			#getGeoScopes()
 	 * @see     			#addGeoScope(NamedArea)
 	 */
-	public void removeGeoScope(NamedArea geoScope) {
-		this.geoScopes.remove(geoScope);
+	public void removeGeographicalScope(NamedArea geoScope) {
+		this.geographicalScope.remove(geoScope);
 	}
 
 	/** 
@@ -195,4 +218,67 @@ public class IdentificationKey extends Media {
 	public void removeTaxonomicScope(Taxon taxon) {
 		this.taxonomicScope.remove(taxon);
 	}
+	
+	/** 
+	 * Returns the set of {@link Representation key representations} corresponding to
+	 * <i>this</i> identification key 
+	 */
+	public Set<Representation> getKeyRepresentations() {
+		return keyRepresentations;
+	}
+	
+	/**
+	 * Adds a {@link Representation key representation} to the set of {@link #getKeyRepresentations() key representations}
+	 * corresponding to <i>this</i> identification key.
+	 * 
+	 * @param	keyRepresentation	the key representation to be added to <i>this</i> identification key
+	 * @see    	   		#getKeyRepresentations()
+	 */
+	public void addKeyRepresentation(Representation keyRepresentation) {
+		this.keyRepresentations.add(keyRepresentation);
+	}
+	
+	/** 
+	 * Removes one element from the set of {@link #getKeyRepresentations() key representations}
+	 * corresponding to <i>this</i> identification key.
+	 *
+	 * @param	keyRepresentation	the key representation which should be removed
+	 * @see     		#getKeyRepresentations()
+	 * @see     		#addKeyRepresentation(Representation)
+	 */
+	public void removeKeyRepresentation(Representation keyRepresentation) {
+		this.keyRepresentations.remove(keyRepresentation);
+	}
+	
+	/** 
+	 * Returns the set of {@link Scope scope restrictions} corresponding to
+	 * <i>this</i> identification key 
+	 */
+	public Set<Scope> getScopeRestrictions() {
+		return scopeRestrictions;
+	}
+	
+	/**
+	 * Adds a {@link Scope scope restriction} to the set of {@link #getScopeRestrictions() scope restrictions}
+	 * corresponding to <i>this</i> identification key.
+	 * 
+	 * @param	scopeRestriction	the scope restriction to be added to <i>this</i> identification key
+	 * @see    	   		#getScopeRestrictions()
+	 */
+	public void addScopeRestriction(Scope scopeRestriction) {
+		this.scopeRestrictions.add(scopeRestriction);
+	}
+	
+	/** 
+	 * Removes one element from the set of {@link #getScopeRestrictions() scope restrictions}
+	 * corresponding to <i>this</i> identification key.
+	 *
+	 * @param	scopeRestriction	the scope restriction which should be removed
+	 * @see     		#getScopeRestrictions()
+	 * @see     		#addScopeRestriction(Scope)
+	 */
+	public void removeScopeRestriction(Scope scopeRestriction) {
+		this.scopeRestrictions.remove(scopeRestriction);
+	}
+	
 }

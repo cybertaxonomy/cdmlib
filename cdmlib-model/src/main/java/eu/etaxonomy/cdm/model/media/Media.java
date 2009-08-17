@@ -13,6 +13,7 @@ import eu.etaxonomy.cdm.jaxb.DateTimeAdapter;
 import eu.etaxonomy.cdm.jaxb.MultilanguageTextAdapter;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
+import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IMultiLanguageText;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
@@ -65,7 +66,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 @Indexed
 @Audited
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
-public class Media extends AnnotatableEntity implements Cloneable {
+public class Media extends IdentifiableEntity implements Cloneable {
 	private static final long serialVersionUID = -1927421567263473658L;
 	private static final Logger logger = Logger.getLogger(Media.class);
 
@@ -102,13 +103,6 @@ public class Media extends AnnotatableEntity implements Cloneable {
 	@OneToMany(mappedBy="media",fetch = FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
 	private Set<MediaRepresentation> representations = new HashSet<MediaRepresentation>();
-	
-	// FIXME should be OneToMany?
-	@XmlElementWrapper(name = "Rights")
-	@XmlElement(name = "Right")
-	@ManyToMany(fetch = FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
-	private Set<Rights> rights = new HashSet<Rights>();
 	
 	@XmlElement(name = "Artist")
 	@XmlIDREF
@@ -161,18 +155,6 @@ public class Media extends AnnotatableEntity implements Cloneable {
 	
 	public void setArtist(AgentBase artist){
 		this.artist = artist;
-	}
-
-	public Set<Rights> getRights(){
-		return this.rights;
-	}
-	
-	public void addRights(Rights rights){
-		this.rights.add(rights);
-	}
-	
-	public void removeRights(Rights rights){
-		this.rights.remove(rights);
 	}
 
 	public Map<Language,LanguageString> getTitle(){
@@ -235,12 +217,12 @@ public class Media extends AnnotatableEntity implements Cloneable {
 		for (MediaRepresentation mediaRepresentation: this.representations){
 			result.representations.add((MediaRepresentation)mediaRepresentation.clone());
 		}
-		//rights
-		result.rights = new HashSet<Rights>();
-		for (Rights rights: this.rights){
-			result.rights.add((Rights)rights);
-		}
 		//no changes to: artist
 		return result;
 	}
+	
+	public int compareTo(Object o) {
+		return 0;
+	}
+	
 }

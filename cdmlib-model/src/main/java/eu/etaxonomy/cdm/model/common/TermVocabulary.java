@@ -179,4 +179,7 @@ public class TermVocabulary<T extends DefinedTermBase> extends TermBase implemen
 		return this;
 	}
     
+	public int compareTo(Object o) {
+		return 0;
+	}
 }

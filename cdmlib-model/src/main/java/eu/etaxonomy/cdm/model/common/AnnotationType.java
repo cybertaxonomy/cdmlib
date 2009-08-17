@@ -77,4 +77,8 @@ public class AnnotationType extends DefinedTermBase<AnnotationType> {
 		AnnotationType.TECHNICAL = termVocabulary.findTermByUuid(uuidTechnical);
 		AnnotationType.EDITORIAL = termVocabulary.findTermByUuid(uuidEditorial);	
 	}
+	
+	public int compareTo(Object o) {
+		return 0;
+	}
 }

@@ -35,7 +35,7 @@ import eu.etaxonomy.cdm.model.description.TextData;
 	FeatureTree.class
 })
 @MappedSuperclass
-public abstract class TermBase extends VersionableEntity {
+public abstract class TermBase extends IdentifiableEntity {
 	private static final long serialVersionUID = 1471561531632115822L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TermBase.class);

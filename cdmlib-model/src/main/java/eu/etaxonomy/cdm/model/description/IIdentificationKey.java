@@ -11,9 +11,9 @@
 package eu.etaxonomy.cdm.model.description;
 
 import java.util.Set;
-
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.common.Representation;
 
 /**
  * @author a.mueller
@@ -22,6 +22,13 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
  */
 public interface IIdentificationKey {
 	    public Set<NamedArea> getGeographicalScope();
+	    public void addGeographicalScope(NamedArea geographicalScope);
+	    public void removeGeographicalScope(NamedArea geographicalScope);
 	    public Set<Taxon> getTaxonomicScope();
-	    public Set<Scope> getScope();
+	    public void addTaxonomicScope(Taxon taxon);
+	    public void removeTaxonomicScope(Taxon taxon);
+	    public Set<Scope> getScopeRestrictions();
+	    public Set<Taxon> getCoveredTaxa();
+	    public void addCoveredTaxon(Taxon taxon);
+	    public void removeCoveredTaxon(Taxon taxon);
 }

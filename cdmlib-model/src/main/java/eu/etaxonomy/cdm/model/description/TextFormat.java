@@ -94,4 +94,8 @@ public class TextFormat extends DefinedTermBase<TextFormat> {
 		// TODO Auto-generated method stub
 		
 	}
+	
+	public int compareTo(Object o) {
+		return 0;
+	}
 }

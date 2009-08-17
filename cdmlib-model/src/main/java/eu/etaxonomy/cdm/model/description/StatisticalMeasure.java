@@ -141,4 +141,8 @@ public class StatisticalMeasure extends DefinedTermBase<StatisticalMeasure> {
 		StatisticalMeasure.TYPICAL_UPPER_BOUNDARY = termVocabulary.findTermByUuid(StatisticalMeasure.uuidTypicalUpperBoundary);
 		StatisticalMeasure.VARIANCE = termVocabulary.findTermByUuid(StatisticalMeasure.uuidVariance);
 	}
+	
+	public int compareTo(Object o) {
+		return 0;
+	}
 }

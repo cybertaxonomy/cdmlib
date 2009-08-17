@@ -1,20 +1,23 @@
 /**
-* Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
-* http://www.e-taxonomy.eu
-* 
-* The contents of this file are subject to the Mozilla Public License Version 1.1
-* See LICENSE.TXT at the top of this package for the full license terms.
-*/
+ * Copyright (C) 2007 EDIT
+ * European Distributed Institute of Taxonomy 
+ * http://www.e-taxonomy.eu
+ * 
+ * The contents of this file are subject to the Mozilla Public License Version 1.1
+ * See LICENSE.TXT at the top of this package for the full license terms.
+ */
 
 package eu.etaxonomy.cdm.model.description;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
@@ -32,7 +35,10 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 
+import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
+import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 /**
  * The class for tree nodes within a {@link FeatureTree feature tree} structure.
@@ -50,9 +56,13 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
 @SuppressWarnings("serial")
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "FeatureNode", propOrder = {
-	"feature",
-    "parent",
-    "children"
+		"feature",
+		"parent",
+		"children",
+		"onlyApplicableIf",
+		"inapplicableIf",
+		"questions",
+		"taxon"
 })
 @XmlRootElement(name = "FeatureNode")
 @Entity
@@ -80,6 +90,35 @@ public class FeatureNode extends VersionableEntity {
     @OneToMany(fetch = FetchType.LAZY,mappedBy="parent")
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
 	private List<FeatureNode> children = new ArrayList<FeatureNode>();
+
+	@XmlElementWrapper(name = "OnlyApplicableIf")
+	@XmlElement(name = "OnlyApplicableIf")
+	@XmlIDREF
+	@XmlSchemaType(name="IDREF")
+	@ManyToMany(fetch = FetchType.LAZY)
+	@Cascade(CascadeType.SAVE_UPDATE)
+	private Set<State> onlyApplicableIf = new HashSet<State>();
+
+	@XmlElementWrapper(name = "InapplicableIf")
+	@XmlElement(name = "InapplicableIf")
+	@XmlIDREF
+	@XmlSchemaType(name="IDREF")
+	@ManyToMany(fetch = FetchType.LAZY)
+	@Cascade(CascadeType.SAVE_UPDATE)
+	private Set<State> inapplicableIf = new HashSet<State>();
+
+	@XmlElementWrapper(name = "Questions")
+	@XmlElement(name = "Question")
+    @OneToMany(fetch=FetchType.EAGER)
+	@Cascade( { CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE })
+	private Set<Representation> questions = new HashSet<Representation>();
+
+	@XmlElement(name = "Taxon")
+	@XmlIDREF
+	@XmlSchemaType(name = "IDREF")
+	@ManyToOne(fetch = FetchType.LAZY)
+	@Cascade(CascadeType.SAVE_UPDATE)
+	private Taxon taxon;
 	
 	/** 
 	 * Class constructor: creates a new empty feature node instance.
@@ -87,7 +126,7 @@ public class FeatureNode extends VersionableEntity {
 	protected FeatureNode() {
 		super();
 	}
-	
+
 	/** 
 	 * Creates a new empty feature node instance.
 	 * 
@@ -109,8 +148,8 @@ public class FeatureNode extends VersionableEntity {
 		result.setFeature(feature);
 		return result;
 	}
-	
-//** ********************** FEATURE ******************************/
+
+	//** ********************** FEATURE ******************************/
 
 	/** 
 	 * Returns the {@link Feature feature} <i>this</i> feature node is based on.
@@ -233,7 +272,6 @@ public class FeatureNode extends VersionableEntity {
 			child.setParent(child);
 		}
 	}
-	
 
 	/** 
 	 * Returns the feature node placed at the given (childIndex + 1) position
@@ -288,7 +326,143 @@ public class FeatureNode extends VersionableEntity {
 	public boolean isLeaf() {
 		return children.size() < 1;
 	}
+
+	/**
+	 * Returns the set of {@link State states} implying rendering the
+	 * concerned {@link Feature feature} applicable.
+	 * If at least one state is present in this set, in a given description
+	 * the {@link Feature feature} in <i>this</i> feature node is inapplicable
+	 * unless any of the listed controlling states is present in the parent
+	 * {@link Feature feature} description element {@link CategoricalData
+	 * categoricalData}.
+	 * This attribute is not equivalent to onlyApplicableIf in SDD as it is
+	 * attached directly to the child feature rather than the parent, which
+	 * allow having different applicable states for each child feature.
+	 * 
+	 * @see    #addApplicableState(State)
+	 * @see    #removeApplicableState(State)
+	 */
+	public Set<State> getOnlyApplicableIf() {
+		return onlyApplicableIf;
+	}
+
+	/**
+	 * Adds an existing {@link State applicable state} to the set of
+	 * {@link #getOnlyApplicableIf() applicable states} described in
+	 * <i>this</i> feature node.<BR>
+	 * 
+	 * @param applicableState	the applicable state to be added to <i>this</i> feature node
+	 * @see    	   								#getApplicableState()
+	 */
+	public void addApplicableState(State applicableState) {
+		logger.debug("addApplicableState");
+		this.onlyApplicableIf.add(applicableState);
+	}
+
+	/** 
+	 * Removes one element from the set of
+	 * {@link #getOnlyApplicableIf() applicable states} described in
+	 * <i>this</i> feature node.<BR>
+	 *
+	 * @param  applicableState   the applicable state which should be removed
+	 * @see    	   								#getApplicableState()
+	 * @see     		  						#addApplicableState(State)
+	 */
+	public void removeApplicableState(State applicableState) {
+		this.onlyApplicableIf.remove(applicableState);
+	}
+
+	/**
+	 * Returns the set of {@link State states} implying rendering the
+	 * concerned {@link Feature feature} inapplicable.
+	 * If at least one {@link State inapplicable state} is defined in the set,
+	 * in a given description the {@link Feature feature} attribute of
+	 * <i>this</i> feature node is inapplicable when any of the listed
+	 * controlling states is present.
+	 * This attribute is not equivalent to inapplicableIf in SDD as it is
+	 * attached directly to the child feature rather than the parent, which
+	 * allow having different inapplicability rules for each child feature.
+	 * 
+	 * @see    #addInapplicableState(State)
+	 * @see    #removeInapplicableState(State)
+	 */
+	public Set<State> getInapplicableIf() {
+		return inapplicableIf;
+	}
+
+	/**
+	 * Adds an existing {@link State inapplicable state} to the set of
+	 * {@link #getInapplicableIf() inapplicable states} described in
+	 * <i>this</i> feature node.<BR>
+	 * 
+	 * @param inapplicableState	the inapplicable state to be added to <i>this</i> feature node
+	 * @see    	   								#getInapplicableState()
+	 */
+	public void addInapplicableState(State inapplicableState) {
+		logger.debug("addInapplicableState");
+		this.inapplicableIf.add(inapplicableState);
+	}
+
+	/** 
+	 * Removes one element from the set of
+	 * {@link #getInapplicableIf() inapplicable states} described in
+	 * <i>this</i> feature node.<BR>
+	 *
+	 * @param  inapplicableState   the inapplicable state which should be removed
+	 * @see    	   								#getInapplicableState()
+	 * @see     		  						#addInapplicableState(State)
+	 */
+	public void removeInapplicableState(State inapplicableState) {
+		this.inapplicableIf.remove(inapplicableState);
+	}
 	
+	//** ********************** QUESTIONS ******************************/
+
+	/** 
+	 * Returns the {@link Representation question} formulation that
+	 * corresponds to <i>this</i> feature node and the corresponding
+	 * {@link Feature feature} in case it is part of a 
+	 * {@link PolytomousKey polytomous key}.
+	 */
+	public Set<Representation> getQuestions() {
+		return this.questions;
+	}
+
+	public void addQuestion(Representation question) {
+		this.questions.add(question);
+	}
+
+	public void removeQuestion(Representation question) {
+		this.questions.remove(question);
+	}
+
+	public Representation getQuestion(Language lang) {
+		for (Representation question : questions){
+			Language reprLanguage = question.getLanguage();
+			if (reprLanguage != null && reprLanguage.equals(lang)){
+				return question;
+			}
+		}
+		return null;
+	}
 	
+	//** ********************** TAXON ******************************/
 	
+	/** 
+	 * Returns the {@link Taxon taxon} <i>this</i> terminal node is
+	 * associated with.
+	 */
+	public Taxon getTaxon() {
+		return taxon;
+	}
+
+	/**
+	 * Assigns the given taxon to <i>this</i> feature node.
+	 * 
+	 * @param	taxon	the taxon to be set 
+	 * @see				#getTaxon() 
+	 */
+	protected void setTaxon(Taxon taxon) {
+		this.taxon = taxon;
+	}
 }

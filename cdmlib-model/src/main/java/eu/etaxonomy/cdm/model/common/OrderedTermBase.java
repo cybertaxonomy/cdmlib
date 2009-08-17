@@ -53,7 +53,7 @@ import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 })
 @Entity
 @Audited
-public abstract class OrderedTermBase<T extends OrderedTermBase> extends DefinedTermBase<T> implements Comparable<T> {
+public abstract class OrderedTermBase<T extends OrderedTermBase> extends DefinedTermBase<T> {
 	private static final long serialVersionUID = 8000797926720467399L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(OrderedTermBase.class);
@@ -93,6 +93,10 @@ public abstract class OrderedTermBase<T extends OrderedTermBase> extends Defined
 		}else {
 			return 0;
 		}
+	}
+	
+	public int compareTo(Object o) {
+		return 0;
 	}
 	
 	/**

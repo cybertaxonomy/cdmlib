@@ -48,7 +48,7 @@ import eu.etaxonomy.cdm.model.common.TermBase;
  * nothing in common with the possible hierarchical structure of features
  * depending on their grade of precision.  
  *  
- * @see		IdentificationKey
+ * @see		MediaKey
  * @author  m.doering
  * @version 1.0
  * @created 08-Nov-2007 13:06:16
@@ -191,5 +191,8 @@ public class FeatureTree extends TermBase {
 		result.addAll(root.getChildren());
 		return result;
 	}
-
+	
+	public int compareTo(Object o) {
+		return 0;
+	}
 }

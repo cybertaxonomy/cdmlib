@@ -277,4 +277,8 @@ public class BibtexEntryType extends DefinedTermBase<BibtexEntryType> {
 		
 	}
 
+	public int compareTo(Object o) {
+		return 0;
+	}
+	
 }

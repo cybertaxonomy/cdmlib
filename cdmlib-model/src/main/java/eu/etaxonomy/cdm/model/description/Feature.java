@@ -876,5 +876,7 @@ public class Feature extends DefinedTermBase<Feature> {
 		Feature.USES = termVocabulary.findTermByUuid(Feature.uuidUses);
 	}
 
-
+	public int compareTo(Object o) {
+		return 0;
+	}
 }

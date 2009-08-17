@@ -99,4 +99,8 @@ public class RightsTerm extends DefinedTermBase<RightsTerm> {
 		RightsTerm.LICENSE = termVocabulary.findTermByUuid(RightsTerm.uuidLicense);		
 	}
 
+	public int compareTo(Object o) {
+		return 0;
+	}
+	
 }

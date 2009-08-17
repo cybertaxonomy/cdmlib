@@ -118,4 +118,9 @@ public class DerivationEventType extends DefinedTermBase<DerivationEventType> {
 		DerivationEventType.TISSUE_SAMPLING = termVocabulary.findTermByUuid(DerivationEventType.uuidTissueSampling);
 		DerivationEventType.VEGETATIVE_PROPAGATION = termVocabulary.findTermByUuid(DerivationEventType.uuidVegetativPropagation);
 	}
+	
+	public int compareTo(Object o) {
+		return 0;
+	}
+	
 }

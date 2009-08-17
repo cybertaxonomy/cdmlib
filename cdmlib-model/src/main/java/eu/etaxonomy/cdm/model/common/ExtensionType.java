@@ -119,4 +119,7 @@ public class ExtensionType extends DefinedTermBase<ExtensionType> {
 		}
 	}
 
+	public int compareTo(Object o) {
+		return 0;
+	}
 }

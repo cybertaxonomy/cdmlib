@@ -71,4 +71,8 @@ public class PreservationMethod extends DefinedTermBase<PreservationMethod> {
 		
 	}
 
+	public int compareTo(Object o) {
+		return 0;
+	}
+	
 }
