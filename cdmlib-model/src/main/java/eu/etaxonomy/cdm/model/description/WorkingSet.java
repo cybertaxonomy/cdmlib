@@ -62,7 +62,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 @Entity
 @Audited
 
-public class WorkingSet<S extends DescriptionBase> extends AnnotatableEntity {
+public class WorkingSet extends AnnotatableEntity {
 	private static final long serialVersionUID = 3256448866757415686L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(WorkingSet.class);
@@ -86,7 +86,7 @@ public class WorkingSet<S extends DescriptionBase> extends AnnotatableEntity {
     @XmlSchemaType(name = "IDREF")
     @ManyToMany(fetch = FetchType.LAZY)
 	@Cascade(CascadeType.SAVE_UPDATE)
-	private Set<S> descriptions = new HashSet<S>();
+	private Set<DescriptionBase> descriptions = new HashSet<DescriptionBase>();
 	
 	/** 
 	 * Class constructor: creates a new empty working set instance.
@@ -222,10 +222,10 @@ public class WorkingSet<S extends DescriptionBase> extends AnnotatableEntity {
 	 * Returns the {@link DescriptionBase descriptions} of
 	 * <i>this</i> working set.
 	 * 
-	 * @see    #addDescription(S)
-	 * @see    #removeDescription(S)
+	 * @see    #addDescription(DescriptionBase)
+	 * @see    #removeDescription(DescriptionBase)
 	 */
-	public Set<S> getDescriptions() {
+	public Set<DescriptionBase> getDescriptions() {
 		return descriptions;
 	}
 	
@@ -236,9 +236,9 @@ public class WorkingSet<S extends DescriptionBase> extends AnnotatableEntity {
 	 * 
 	 * @param description	the description to be added to <i>this</i> working set
 	 * @see    	   								#getDescriptions()
-	 * @see    	   								WorkingSet#addDescription(S)
+	 * @see    	   								WorkingSet#addDescription(DescriptionBase)
 	 */
-	public void addDescription(S description) {
+	public void addDescription(DescriptionBase description) {
 		logger.debug("addDescription");
 		this.descriptions.add(description);
 	}
@@ -249,10 +249,10 @@ public class WorkingSet<S extends DescriptionBase> extends AnnotatableEntity {
 	 *
 	 * @param  description   the description which should be removed
 	 * @see     		  						#getDescriptions()
-	 * @see     		  						#addDescription(S)
-	 * @see     		  						WorkingSet#removeDescription(S)
+	 * @see     		  						#addDescription(DescriptionBase)
+	 * @see     		  						WorkingSet#removeDescription(DescriptionBase)
 	 */
-	public void removeDescription(S description) {
+	public void removeDescription(DescriptionBase description) {
 		this.descriptions.remove(description);
 	}
 	
