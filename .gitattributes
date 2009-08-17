@@ -1944,6 +1944,7 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/AgentServiceImpl.java
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/AnnotatableServiceBase.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/AnnotationService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/AuditEventService.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/CollectionServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/CommonServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/DatabaseServiceHibernateImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/DescriptionServiceImpl.java -text
@@ -1951,6 +1952,7 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IAgentService.java -t
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IAnnotatableService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IAnnotationService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IAuditEventService.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/ICollectionService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/ICommonService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IDatabaseService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IDescriptionService.java -text

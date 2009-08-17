@@ -265,7 +265,7 @@ public interface INameService extends IIdentifiableEntityService<TaxonNameBase> 
 	 * 
 	 * @param clazz filter the results by class (or pass null to return all TaxonNameBase instances)
 	 * @param queryString
-	 * @param pageSize The maximum number of taxa returned (can be null for all matching taxa)
+	 * @param pageSize The maximum number of names returned (can be null for all matching names)
 	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
 	 * @param orderHints
 	 *            Supports path like <code>orderHints.propertyNames</code> which
