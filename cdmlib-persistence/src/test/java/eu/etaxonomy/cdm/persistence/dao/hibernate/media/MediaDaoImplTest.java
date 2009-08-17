@@ -27,7 +27,7 @@ import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringApplicationContext;
 import org.unitils.spring.annotation.SpringBeanByType;
 
-import eu.etaxonomy.cdm.model.description.IdentificationKey;
+import eu.etaxonomy.cdm.model.description.MediaKey;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
@@ -65,26 +65,26 @@ public class MediaDaoImplTest extends CdmIntegrationTest {
 	}
 	
 	@Test
-	public void testCountIdentificationKeys() {
-		int numberOfIdentificationKeys = mediaDao.countIdentificationKeys(null,null);
+	public void testCountMediaKeys() {
+		int numberOfMediaKeys = mediaDao.countMediaKeys(null,null);
 		
-		assertEquals("countIdentificationKeys should return 3",3,numberOfIdentificationKeys);
+		assertEquals("countMediaKeys should return 3",3,numberOfMediaKeys);
 	}
 	
 	@Test
-	public void testGetIdentificationKeys() {
+	public void testGetMediaKeys() {
 		List<String> propertyPaths = new ArrayList<String>();
 		propertyPaths.add("title");
-		List<IdentificationKey> keys = mediaDao.getIdentificationKeys(null, null, null, null,propertyPaths);
+		List<MediaKey> keys = mediaDao.getMediaKeys(null, null, null, null,propertyPaths);
 		
-		assertNotNull("getIdentificationKeys should return a List",keys);
+		assertNotNull("getMediaKeys should return a List",keys);
 		assertFalse("The list should not be empty",keys.isEmpty());
-		assertEquals("The list should contain 3 IdentificationKey instances",3, keys.size());
+		assertEquals("The list should contain 3 MediaKey instances",3, keys.size());
 		assertTrue("Media.title should have been initialized",Hibernate.isInitialized(keys.get(0).getTitle()));
 	}
 	
 	@Test
-	public void testCountIdentificationKeysWithScope() {
+	public void testCountMediaKeysWithScope() {
 		NamedArea europe = (NamedArea)definedTermDao.findByUuid(europeUuid);
 		NamedArea africa = (NamedArea)definedTermDao.findByUuid(africaUuid);
 		Taxon sphingidae = (Taxon)taxonDao.findByUuid(sphingidaeUuid);
@@ -96,13 +96,13 @@ public class MediaDaoImplTest extends CdmIntegrationTest {
 		geoScopes.add(africa);
 		taxonomicScope.add(sphingidae);
 		
-		int numberOfIdentificationKeys = mediaDao.countIdentificationKeys(taxonomicScope,geoScopes);
+		int numberOfMediaKeys = mediaDao.countMediaKeys(taxonomicScope,geoScopes);
 		
-		assertEquals("countIdentificationKeys should return 1",1,numberOfIdentificationKeys);
+		assertEquals("countMediaKeys should return 1",1,numberOfMediaKeys);
 	}
 	
 	@Test
-	public void testGetIdentificationKeysWithScope() {
+	public void testGetMediaKeysWithScope() {
 		List<String> propertyPaths = new ArrayList<String>();
 		propertyPaths.add("title");
 		NamedArea europe = (NamedArea)definedTermDao.findByUuid(europeUuid);
@@ -116,11 +116,11 @@ public class MediaDaoImplTest extends CdmIntegrationTest {
 		geoScopes.add(africa);
 		taxonomicScope.add(sphingidae);
 		
-		List<IdentificationKey> keys = mediaDao.getIdentificationKeys(taxonomicScope,geoScopes, null, null,propertyPaths);
+		List<MediaKey> keys = mediaDao.getMediaKeys(taxonomicScope,geoScopes, null, null,propertyPaths);
 		
-		assertNotNull("getIdentificationKeys should return a List",keys);
+		assertNotNull("getMediaKeys should return a List",keys);
 		assertFalse("The list should not be empty",keys.isEmpty());
-		assertEquals("The list should contain 1 IdentificationKey instance",1, keys.size());
+		assertEquals("The list should contain 1 MediaKey instance",1, keys.size());
 		assertTrue("Media.title should have been initialized",Hibernate.isInitialized(keys.get(0).getTitle()));
 	}
 	

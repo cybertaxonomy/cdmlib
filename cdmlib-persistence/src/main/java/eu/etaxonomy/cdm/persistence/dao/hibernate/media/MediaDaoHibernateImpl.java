@@ -27,7 +27,7 @@ import org.hibernate.search.SearchFactory;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.agent.AgentBase;
-import eu.etaxonomy.cdm.model.description.IdentificationKey;
+import eu.etaxonomy.cdm.model.description.MediaKey;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.Rights;
@@ -54,14 +54,14 @@ public class MediaDaoHibernateImpl extends AnnotatableDaoImpl<Media> implements 
 		super(Media.class);
 		indexedClasses = new Class[3];
 		indexedClasses[0] = Media.class;
-		indexedClasses[1] = IdentificationKey.class;
+		indexedClasses[1] = MediaKey.class;
 		indexedClasses[2] = PhylogeneticTree.class;
 	}
 
-	public int countIdentificationKeys(Set<Taxon> taxonomicScope,	Set<NamedArea> geoScopes) {
+	public int countMediaKeys(Set<Taxon> taxonomicScope,	Set<NamedArea> geoScopes) {
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
-			Criteria criteria = getSession().createCriteria(IdentificationKey.class);
+			Criteria criteria = getSession().createCriteria(MediaKey.class);
 			
 			if(taxonomicScope != null && !taxonomicScope.isEmpty()) {
 				Set<Integer> taxonomicScopeIds = new HashSet<Integer>();
@@ -84,19 +84,19 @@ public class MediaDaoHibernateImpl extends AnnotatableDaoImpl<Media> implements 
 			return (Integer)criteria.uniqueResult();
 		} else {
 			if((taxonomicScope == null || taxonomicScope.isEmpty()) && (geoScopes == null || geoScopes.isEmpty())) {
-				AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(IdentificationKey.class,auditEvent.getRevisionNumber());
+				AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(MediaKey.class,auditEvent.getRevisionNumber());
 				query.addProjection(AuditEntity.id().count("id"));
 				return ((Long)query.getSingleResult()).intValue();
 			} else {
-				throw new OperationNotSupportedInPriorViewException("countIdentificationKeys(Set<Taxon> taxonomicScope,	Set<NamedArea> geoScopes)");
+				throw new OperationNotSupportedInPriorViewException("countMediaKeys(Set<Taxon> taxonomicScope,	Set<NamedArea> geoScopes)");
 			}
 		}
 	}
 
-	public List<IdentificationKey> getIdentificationKeys(Set<Taxon> taxonomicScope, Set<NamedArea> geoScopes, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
+	public List<MediaKey> getMediaKeys(Set<Taxon> taxonomicScope, Set<NamedArea> geoScopes, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
-			Criteria inner = getSession().createCriteria(IdentificationKey.class);
+			Criteria inner = getSession().createCriteria(MediaKey.class);
 
 			if(taxonomicScope != null && !taxonomicScope.isEmpty()) {
 				Set<Integer> taxonomicScopeIds = new HashSet<Integer>();
@@ -116,7 +116,7 @@ public class MediaDaoHibernateImpl extends AnnotatableDaoImpl<Media> implements 
 
 			inner.setProjection(Projections.distinct(Projections.id()));
 
-			Criteria criteria = getSession().createCriteria(IdentificationKey.class);
+			Criteria criteria = getSession().createCriteria(MediaKey.class);
 			criteria.add(Restrictions.in("id", (List<Integer>)inner.list()));
 
 			if(pageSize != null) {
@@ -126,14 +126,14 @@ public class MediaDaoHibernateImpl extends AnnotatableDaoImpl<Media> implements 
 				}
 			}
 
-			List<IdentificationKey> results = (List<IdentificationKey>)criteria.list();
+			List<MediaKey> results = (List<MediaKey>)criteria.list();
 
 			defaultBeanInitializer.initializeAll(results, propertyPaths);
 
 			return results;
 		} else {
 			if((taxonomicScope == null || taxonomicScope.isEmpty()) && (geoScopes == null || geoScopes.isEmpty())) {
-				AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(IdentificationKey.class,auditEvent.getRevisionNumber());
+				AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(MediaKey.class,auditEvent.getRevisionNumber());
 				
 				if(pageSize != null) {
 			        query.setMaxResults(pageSize);
@@ -143,11 +143,11 @@ public class MediaDaoHibernateImpl extends AnnotatableDaoImpl<Media> implements 
 			    	    query.setFirstResult(0);
 			        }
 			    }
-				List<IdentificationKey> results = (List<IdentificationKey>)query.getResultList();
+				List<MediaKey> results = (List<MediaKey>)query.getResultList();
 				defaultBeanInitializer.initializeAll(results, propertyPaths);
 				return results;
 			} else {
-				throw new OperationNotSupportedInPriorViewException("getIdentificationKeys(Set<Taxon> taxonomicScope, Set<NamedArea> geoScopes, Integer pageSize, Integer pageNumber, List<String> propertyPaths)");
+				throw new OperationNotSupportedInPriorViewException("getMediaKeys(Set<Taxon> taxonomicScope, Set<NamedArea> geoScopes, Integer pageSize, Integer pageNumber, List<String> propertyPaths)");
 			}
 		}
 	}

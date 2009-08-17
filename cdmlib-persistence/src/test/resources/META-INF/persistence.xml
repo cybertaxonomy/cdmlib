@@ -46,7 +46,7 @@
         <class>eu.etaxonomy.cdm.model.description.Feature</class>
         <class>eu.etaxonomy.cdm.model.description.FeatureNode</class>
         <class>eu.etaxonomy.cdm.model.description.FeatureTree</class>
-        <class>eu.etaxonomy.cdm.model.description.IdentificationKey</class>
+        <class>eu.etaxonomy.cdm.model.description.MediaKey</class>
         <class>eu.etaxonomy.cdm.model.description.IndividualsAssociation</class>
         <class>eu.etaxonomy.cdm.model.description.MeasurementUnit</class>
         <class>eu.etaxonomy.cdm.model.description.Modifier</class>

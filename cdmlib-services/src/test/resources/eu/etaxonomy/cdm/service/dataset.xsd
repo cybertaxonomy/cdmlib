@@ -116,7 +116,7 @@
 				<xsd:element name="TAXONBASE_MARKER" type="dflt:TAXONBASE_MARKER__type" />
 				<xsd:element name="CDM_VIEW_CDM_VIEW" type="dflt:CDM_VIEW_CDM_VIEW__type" />
 				<xsd:element name="DESCRIPTIONELEMENTBASE_STATISTICALMEASUREMENTVALUE_AUD" type="dflt:DESCRIPTIONELEMENTBASE_STATISTICALMEASUREMENTVALUE_AUD__type" />
-				<xsd:element name="IDENTIFICATIONKEY_TAXON_AUD" type="dflt:IDENTIFICATIONKEY_TAXON_AUD__type" />
+				<xsd:element name="MEDIAKEY_TAXON_AUD" type="dflt:MEDIAKEY_TAXON_AUD__type" />
 				<xsd:element name="TERMVOCABULARY" type="dflt:TERMVOCABULARY__type" />
 				<xsd:element name="DESCRIPTIONBASE_ORIGINALSOURCE_AUD" type="dflt:DESCRIPTIONBASE_ORIGINALSOURCE_AUD__type" />
 				<xsd:element name="DERIVATIONEVENT_MARKER" type="dflt:DERIVATIONEVENT_MARKER__type" />
@@ -282,7 +282,7 @@
 				<xsd:element name="DESCRIPTIONELEMENTBASE_MODIFYINGTEXT" type="dflt:DESCRIPTIONELEMENTBASE_MODIFYINGTEXT__type" />
 				<xsd:element name="AGENT_RIGHTS_AUD" type="dflt:AGENT_RIGHTS_AUD__type" />
 				<xsd:element name="SPECIMENOROBSERVATIONBASE_ANNOTATION" type="dflt:SPECIMENOROBSERVATIONBASE_ANNOTATION__type" />
-				<xsd:element name="IDENTIFICATIONKEY_TAXON" type="dflt:IDENTIFICATIONKEY_TAXON__type" />
+				<xsd:element name="MEDIAKEY_TAXON" type="dflt:MEDIAKEY_TAXON__type" />
 				<xsd:element name="USER_GRANTEDAUTHORITYIMPL" type="dflt:USER_GRANTEDAUTHORITYIMPL__type" />
 				<xsd:element name="SPECIMENOROBSERVATIONBASE_DERIVATIONEVENT_AUD" type="dflt:SPECIMENOROBSERVATIONBASE_DERIVATIONEVENT_AUD__type" />
 				<xsd:element name="RIGHTS_ANNOTATION" type="dflt:RIGHTS_ANNOTATION__type" />

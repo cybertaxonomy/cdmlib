@@ -112,7 +112,7 @@
 	<xsd:element name="TAXONBASE_MARKER" type="TAXONBASE_MARKER__type" />
 	<xsd:element name="CDM_VIEW_CDM_VIEW" type="CDM_VIEW_CDM_VIEW__type" />
 	<xsd:element name="DESCRIPTIONELEMENTBASE_STATISTICALMEASUREMENTVALUE_AUD" type="DESCRIPTIONELEMENTBASE_STATISTICALMEASUREMENTVALUE_AUD__type" />
-	<xsd:element name="IDENTIFICATIONKEY_TAXON_AUD" type="IDENTIFICATIONKEY_TAXON_AUD__type" />
+	<xsd:element name="MEDIAKEY_TAXON_AUD" type="MEDIAKEY_TAXON_AUD__type" />
 	<xsd:element name="TERMVOCABULARY" type="TERMVOCABULARY__type" />
 	<xsd:element name="DESCRIPTIONBASE_ORIGINALSOURCE_AUD" type="DESCRIPTIONBASE_ORIGINALSOURCE_AUD__type" />
 	<xsd:element name="DERIVATIONEVENT_MARKER" type="DERIVATIONEVENT_MARKER__type" />
@@ -278,7 +278,7 @@
 	<xsd:element name="DESCRIPTIONELEMENTBASE_MODIFYINGTEXT" type="DESCRIPTIONELEMENTBASE_MODIFYINGTEXT__type" />
 	<xsd:element name="AGENT_RIGHTS_AUD" type="AGENT_RIGHTS_AUD__type" />
 	<xsd:element name="SPECIMENOROBSERVATIONBASE_ANNOTATION" type="SPECIMENOROBSERVATIONBASE_ANNOTATION__type" />
-	<xsd:element name="IDENTIFICATIONKEY_TAXON" type="IDENTIFICATIONKEY_TAXON__type" />
+	<xsd:element name="MEDIAKEY_TAXON" type="MEDIAKEY_TAXON__type" />
 	<xsd:element name="USER_GRANTEDAUTHORITYIMPL" type="USER_GRANTEDAUTHORITYIMPL__type" />
 	<xsd:element name="SPECIMENOROBSERVATIONBASE_DERIVATIONEVENT_AUD" type="SPECIMENOROBSERVATIONBASE_DERIVATIONEVENT_AUD__type" />
 	<xsd:element name="RIGHTS_ANNOTATION" type="RIGHTS_ANNOTATION__type" />
@@ -1311,10 +1311,10 @@
 		<xsd:attribute name="DESCRIPTIONELEMENTBASE_ID" use="optional" />
 		<xsd:attribute name="REV" use="optional" />
 	</xsd:complexType>
-	<xsd:complexType name="IDENTIFICATIONKEY_TAXON_AUD__type">
+	<xsd:complexType name="MEDIAKEY_TAXON_AUD__type">
 		<xsd:attribute name="REVTYPE" use="optional" />
 		<xsd:attribute name="TAXON_FK" use="optional" />
-		<xsd:attribute name="IDENTIFICATIONKEY_FK" use="optional" />
+		<xsd:attribute name="MEDIAKEY_FK" use="optional" />
 		<xsd:attribute name="REV" use="optional" />
 	</xsd:complexType>
 	<xsd:complexType name="TERMVOCABULARY__type">
@@ -2688,9 +2688,9 @@
 		<xsd:attribute name="ANNOTATIONS_ID" use="optional" />
 		<xsd:attribute name="SPECIMENOROBSERVATIONBASE_ID" use="optional" />
 	</xsd:complexType>
-	<xsd:complexType name="IDENTIFICATIONKEY_TAXON__type">
+	<xsd:complexType name="MEDIAKEY_TAXON__type">
 		<xsd:attribute name="TAXON_FK" use="optional" />
-		<xsd:attribute name="IDENTIFICATIONKEY_FK" use="optional" />
+		<xsd:attribute name="MEDIAKEY_FK" use="optional" />
 	</xsd:complexType>
 	<xsd:complexType name="USER_GRANTEDAUTHORITYIMPL__type">
 		<xsd:attribute name="GRANTEDAUTHORITIES_ID" use="optional" />

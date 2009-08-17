@@ -23,7 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
-import eu.etaxonomy.cdm.model.description.IdentificationKey;
+import eu.etaxonomy.cdm.model.description.MediaKey;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
@@ -87,15 +87,15 @@ public class MediaServiceImpl extends AnnotatableServiceBase<Media,IMediaDao> im
 		this.dao = dao;
 	}
 
-	public Pager<IdentificationKey> getIdentificationKeys(Set<Taxon> taxonomicScope, Set<NamedArea> geoScopes, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
-        Integer numberOfResults = dao.countIdentificationKeys(taxonomicScope, geoScopes);
+	public Pager<MediaKey> getMediaKeys(Set<Taxon> taxonomicScope, Set<NamedArea> geoScopes, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
+        Integer numberOfResults = dao.countMediaKeys(taxonomicScope, geoScopes);
 		
-		List<IdentificationKey> results = new ArrayList<IdentificationKey>();
+		List<MediaKey> results = new ArrayList<MediaKey>();
 		if(numberOfResults > 0) { // no point checking again
-			results = dao.getIdentificationKeys(taxonomicScope, geoScopes, pageSize, pageNumber, propertyPaths); 
+			results = dao.getMediaKeys(taxonomicScope, geoScopes, pageSize, pageNumber, propertyPaths); 
 		}
 		
-		return new DefaultPagerImpl<IdentificationKey>(pageNumber, numberOfResults, pageSize, results);
+		return new DefaultPagerImpl<MediaKey>(pageNumber, numberOfResults, pageSize, results);
 	}
 	
 	public Pager<Rights> getRights(Media t, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {

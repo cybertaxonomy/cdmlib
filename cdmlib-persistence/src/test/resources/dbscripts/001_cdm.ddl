@@ -1703,18 +1703,18 @@
         primary key (REV, HybridRelationship_id, markers_id)
     );
 
-    create table IdentificationKey_Taxon (
-        identificationKey_fk integer not null,
+    create table MediaKey_Taxon (
+        mediaKey_fk integer not null,
         taxon_fk integer not null,
-        primary key (identificationKey_fk, taxon_fk)
+        primary key (mediaKey_fk, taxon_fk)
     );
 
-    create table IdentificationKey_Taxon_AUD (
+    create table MediaKey_Taxon_AUD (
         REV integer not null,
-        identificationKey_fk integer not null,
+        mediaKey_fk integer not null,
         taxon_fk integer not null,
         revtype tinyint,
-        primary key (REV, identificationKey_fk, taxon_fk)
+        primary key (REV, mediaKey_fk, taxon_fk)
     );
 
     create table IndividualAssociation_LanguageString (
@@ -5686,17 +5686,17 @@
         foreign key (REV) 
         references AuditEvent;
 
-    alter table IdentificationKey_Taxon 
+    alter table MediaKey_Taxon 
         add constraint FKD847ADDC996CD055 
-        foreign key (identificationKey_fk) 
+        foreign key (mediaKey_fk) 
         references Media;
 
-    alter table IdentificationKey_Taxon 
+    alter table MediaKey_Taxon 
         add constraint FKD847ADDCDE9A3DE3 
         foreign key (taxon_fk) 
         references TaxonBase;
 
-    alter table IdentificationKey_Taxon_AUD 
+    alter table MediaKey_Taxon_AUD 
         add constraint FKEEF18DAD34869AAE 
         foreign key (REV) 
         references AuditEvent;

@@ -72,7 +72,7 @@ import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.FeatureNode;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
-import eu.etaxonomy.cdm.model.description.IdentificationKey;
+import eu.etaxonomy.cdm.model.description.MediaKey;
 import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
 import eu.etaxonomy.cdm.model.description.MeasurementUnit;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
@@ -391,7 +391,7 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 				Feature.class, 
 				FeatureNode.class, 
 				FeatureTree.class, 
-				IdentificationKey.class, 
+				MediaKey.class, 
 				IndividualsAssociation.class, 
 				MeasurementUnit.class, 
 				PresenceAbsenceTermBase.class, 
