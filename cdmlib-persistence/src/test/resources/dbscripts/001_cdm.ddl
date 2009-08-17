@@ -620,7 +620,9 @@
         DTYPE varchar(31) not null,
         id integer not null,
         created timestamp,
-        uuid varchar(36),
+        protectedtitlecache bit not null,
+        titleCache varchar(255),
+		uuid varchar(36),
         updated timestamp,
         uri varchar(255),
         orderindex integer,
@@ -657,9 +659,6 @@
         lsid_namespace varchar(255),
         lsid_object varchar(255),
         lsid_revision varchar(255),
-		protectedtitlecache bit not null,
-        titleCache varchar(255),
-
 		primary key (id),
         unique (uuid)
     );
@@ -670,7 +669,9 @@
         REV integer not null,
         revtype tinyint,
         created timestamp,
-        uuid varchar(36),
+        protectedtitlecache bit not null,
+        titleCache varchar(255),
+		uuid varchar(36),
         updated timestamp,
         uri varchar(255),
         createdby_id integer,
@@ -707,8 +708,6 @@
         lsid_namespace varchar(255),
         lsid_object varchar(255),
         lsid_revision varchar(255),
-		protectedtitlecache bit not null,
-        titleCache varchar(255),
 		primary key (id, REV)
     );
 
@@ -4243,13 +4242,13 @@
         termsourceuri varchar(255),
         createdby_id integer,
         updatedby_id integer,
-       	lsid_authority varchar(255),
+       	protectedtitlecache bit not null,
+        titlecache varchar(255),
+		lsid_authority varchar(255),
         lsid_lsid varchar(255),
         lsid_namespace varchar(255),
         lsid_object varchar(255),
         lsid_revision varchar(255),
-		protectedtitlecache bit not null,
-        titleCache varchar(255),
 		primary key (id),
         unique (uuid)
     );
@@ -4266,15 +4265,14 @@
         termsourceuri varchar(255),
         createdby_id integer,
         updatedby_id integer,
-	    lsid_authority varchar(255),
+	    protectedtitlecache bit not null,
+        titlecache varchar(255),
+        lsid_authority varchar(255),
         lsid_lsid varchar(255),
         lsid_namespace varchar(255),
         lsid_object varchar(255),
         lsid_revision varchar(255),
-		protectedtitlecache bit not null,
-        titleCache varchar(255),
-        
-        primary key (id, REV)
+		primary key (id, REV)
     );
 
     create table TermVocabulary_Representation (
