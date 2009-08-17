@@ -87,7 +87,7 @@ public class MultiAccessKey extends WorkingSet implements IIdentificationKey{
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@ManyToMany(fetch = FetchType.LAZY)
-	@JoinTable(name="PolytomousKey_NamedArea")
+	@JoinTable(name="MultiAccessKey_NamedArea")
 	private Set<NamedArea> geographicalScope = new HashSet<NamedArea>();
 	
 	@XmlElementWrapper( name = "ScopeRestrictions")
@@ -95,7 +95,7 @@ public class MultiAccessKey extends WorkingSet implements IIdentificationKey{
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@ManyToMany(fetch = FetchType.LAZY)
-	@JoinTable(name="PolytomousKey_Scope")
+	@JoinTable(name="MultiAccessKey_Scope")
 	private Set<Scope> scopeRestrictions = new HashSet<Scope>();
 	
 	/** 
