@@ -76,7 +76,7 @@ import eu.etaxonomy.cdm.strategy.merge.MergeMode;
 })
 @MappedSuperclass
 public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrategy> extends AnnotatableEntity 
-		implements ISourceable, IIdentifiableEntity, Comparable<IdentifiableEntity> {
+		implements ISourceable, IIdentifiableEntity /*, Comparable<IdentifiableEntity> */{
 	private static final long serialVersionUID = -5610995424730659058L;
 	private static final Logger logger = Logger.getLogger(IdentifiableEntity.class);
 

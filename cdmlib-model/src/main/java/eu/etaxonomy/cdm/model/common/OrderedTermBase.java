@@ -9,6 +9,7 @@
 
 package eu.etaxonomy.cdm.model.common;
 
+import java.util.Comparator;
 import java.util.Set;
 
 import javax.persistence.Entity;
@@ -53,7 +54,7 @@ import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 })
 @Entity
 @Audited
-public abstract class OrderedTermBase<T extends OrderedTermBase> extends DefinedTermBase<T> {
+public abstract class OrderedTermBase<T extends OrderedTermBase> extends DefinedTermBase<T> implements Comparable<T> {
 	private static final long serialVersionUID = 8000797926720467399L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(OrderedTermBase.class);
@@ -95,9 +96,13 @@ public abstract class OrderedTermBase<T extends OrderedTermBase> extends Defined
 		}
 	}
 	
-	public int compareTo(Object o) {
-		return 0;
-	}
+//	public int compareTo(IdentifiableEntity o) {
+//		if (o instanceof OrderedTermBase){
+//			return compareTo((OrderedTermBase)o);
+//		}else{
+//			return super.compareTo(o);
+//		}
+//	}
 	
 	/**
 	 * If this term is lower than the parameter term, true is returned, else false.
