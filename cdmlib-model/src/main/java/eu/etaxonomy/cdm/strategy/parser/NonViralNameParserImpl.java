@@ -344,6 +344,11 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName>
 	    if (ref != null && ref.getHasProblem()){
 	    	nameToBeFilled.setHasProblem(true);
 	    }
+	    
+	    ReferenceBase<?> nomRef;
+		if ( (nomRef = nameToBeFilled.getNomenclaturalReference()) != null ){
+			nomRef.setAuthorTeam((TeamOrPersonBase)nameToBeFilled.getCombinationAuthorTeam());
+		}
 	}
 	
 	//TODO make it an Array of status
@@ -665,7 +670,7 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName>
 	
 	
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.strategy.ITaxonNameParser#parseSubGenericFullName(java.lang.String)
+	 * @see eu.etaxonomy.cdm.strategy.parser.INonViralNameParser#parseFullName(java.lang.String)
 	 */
 	public NonViralName parseFullName(String fullNameString){
 		return parseFullName(fullNameString, null, null);

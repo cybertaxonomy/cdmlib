@@ -38,7 +38,6 @@ import eu.etaxonomy.cdm.model.reference.Book;
 import eu.etaxonomy.cdm.model.reference.BookSection;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.Journal;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.reference.StrictReferenceBase;
 
 /**
@@ -306,6 +305,7 @@ public class NonViralNameParserImplTest {
 		assertFullRefStandard(name1);
 		assertTrue(name1.getNomenclaturalReference() instanceof Book);
 		assertEquals(fullReference, name1.getFullTitleCache());
+		assertTrue("Name author and reference author should be the same", name1.getCombinationAuthorTeam() == name1.getNomenclaturalReference().getAuthorTeam());
 		
 		//Book Section
 		fullReference = "Abies alba Mill. in Otto, Sp. Pl. 4(6): 455. 1987";
@@ -323,6 +323,7 @@ public class NonViralNameParserImplTest {
 		assertEquals("Otto, Sp. Pl. 4(6)", inBook.getTitleCache());
 		assertEquals("Sp. Pl.", inBook.getTitle());
 		assertEquals("4(6)", inBook.getVolume());
+		assertTrue("Name author and reference author should be the same", name2.getCombinationAuthorTeam() == name2.getNomenclaturalReference().getAuthorTeam());
 		
 		//Article
 		fullReference = "Abies alba Mill. in Sp. Pl. 4(6): 455. 1987";
@@ -339,6 +340,7 @@ public class NonViralNameParserImplTest {
 		assertEquals("Sp. Pl.", journal.getTitleCache());
 		assertEquals("Sp. Pl.", journal.getTitle());
 		assertEquals("4(6)", article.getVolume());
+		assertTrue("Name author and reference author should be the same", name3.getCombinationAuthorTeam() == name3.getNomenclaturalReference().getAuthorTeam());
 		
 		//SoftArticle - having "," on position > 4
 		String journalTitle = "Bull. Soc. Bot.France. Louis., Roi";
