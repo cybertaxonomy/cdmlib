@@ -64,7 +64,6 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 
 public class WorkingSet extends AnnotatableEntity {
 	private static final long serialVersionUID = 3256448866757415686L;
-	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(WorkingSet.class);
 	
 	@XmlElementWrapper(name = "Representations")
