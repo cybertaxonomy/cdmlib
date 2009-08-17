@@ -84,8 +84,6 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 @Qualifier("taxonDaoHibernateImpl")
 public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implements ITaxonDao {	
 	private AlternativeSpellingSuggestionParser<TaxonBase> alternativeSpellingSuggestionParser;
-	
-	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TaxonDaoHibernateImpl.class);
 		
 	private String defaultField = "name.titleCache";
