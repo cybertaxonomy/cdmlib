@@ -217,9 +217,6 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 	}
 
 	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#getCredits()
-	 */
 	public List<Credit> getCredits() {
 		return this.credits;		
 	}

@@ -17,6 +17,7 @@ import java.util.Set;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -97,6 +98,7 @@ public class FeatureNode extends VersionableEntity {
 	@XmlSchemaType(name="IDREF")
 	@ManyToMany(fetch = FetchType.LAZY)
 	@Cascade(CascadeType.SAVE_UPDATE)
+	@JoinTable(name="FeatureNode_DefinedTermBase_OnlyApplicable")
 	private Set<State> onlyApplicableIf = new HashSet<State>();
 
 	@XmlElementWrapper(name = "InapplicableIf")
@@ -105,6 +107,7 @@ public class FeatureNode extends VersionableEntity {
 	@XmlSchemaType(name="IDREF")
 	@ManyToMany(fetch = FetchType.LAZY)
 	@Cascade(CascadeType.SAVE_UPDATE)
+	@JoinTable(name="FeatureNode_DefinedTermBase_InapplicableIf")
 	private Set<State> inapplicableIf = new HashSet<State>();
 
 	@XmlElementWrapper(name = "Questions")

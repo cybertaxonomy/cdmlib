@@ -88,6 +88,7 @@ public class PolytomousKey extends FeatureTree implements IIdentificationKey{
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@ManyToMany(fetch = FetchType.LAZY)
+	@JoinTable(name="PolytomousKey_NamedArea")
 	private Set<NamedArea> geographicalScope = new HashSet<NamedArea>();
 	
 	@XmlElementWrapper( name = "ScopeRestrictions")
@@ -95,6 +96,7 @@ public class PolytomousKey extends FeatureTree implements IIdentificationKey{
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@ManyToMany(fetch = FetchType.LAZY)
+	@JoinTable(name="PolytomousKey_Scope")
 	private Set<Scope> scopeRestrictions = new HashSet<Scope>();
 	
 	/** 
