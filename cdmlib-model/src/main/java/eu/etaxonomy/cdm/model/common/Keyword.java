@@ -55,7 +55,6 @@ public class Keyword extends OrderedTermBase<Keyword> {
 	@Override
 	protected void setDefaultTerms(TermVocabulary<Keyword> termVocabulary) {
 		// TODO Auto-generated method stub
-		
 	}
 
 }
