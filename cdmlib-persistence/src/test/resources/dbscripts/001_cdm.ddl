@@ -1761,20 +1761,6 @@
         primary key (REV, HybridRelationship_id, markers_id)
     );
 
-    create table MediaKey_Taxon (
-        mediaKey_fk integer not null,
-        taxon_fk integer not null,
-        primary key (mediaKey_fk, taxon_fk)
-    );
-
-    create table MediaKey_Taxon_AUD (
-        REV integer not null,
-        mediaKey_fk integer not null,
-        taxon_fk integer not null,
-        revtype tinyint,
-        primary key (REV, mediaKey_fk, taxon_fk)
-    );
-
     create table IndividualAssociation_LanguageString (
         DescriptionElementBase_id integer not null,
         description_id integer not null,
@@ -1977,6 +1963,62 @@
         citation_id integer,
         primary key (id),
         unique (uuid)
+    );
+
+    create table MediaKey_CoveredTaxon (
+        mediaKey_fk integer not null,
+        coveredTaxon_fk integer not null,
+        primary key (mediaKey_fk, coveredTaxon_fk)
+    );
+
+    create table MediaKey_CoveredTaxon_AUD (
+        REV integer not null,
+        mediaKey_fk integer not null,
+        coveredTaxon_fk integer not null,
+        revtype tinyint,
+        primary key (REV, mediaKey_fk, coveredTaxon_fk)
+    );
+
+    create table MediaKey_NamedArea (
+        MediaKey_id integer not null,
+        geographicalScope_id integer not null,
+        primary key (MediaKey_id, geographicalScope_id)
+    );
+
+    create table MediaKey_NamedArea_AUD (
+        REV integer not null,
+        MediaKey_id integer not null,
+        geographicalScope_id integer not null,
+        revtype tinyint,
+        primary key (REV, MediaKey_id, geographicalScope_id)
+    );
+
+	create table MediaKey_Scope (
+        MediaKey_id integer not null,
+        scopes_id integer not null,
+        primary key (MediaKey_id, scopes_id)
+    );
+
+    create table MediaKey_Scope_AUD (
+        REV integer not null,
+        MediaKey_id integer not null,
+        scopes_id integer not null,
+        revtype tinyint,
+        primary key (REV, MediaKey_id, scopes_id)
+    );
+
+    create table MediaKey_Taxon (
+        mediaKey_fk integer not null,
+        taxon_fk integer not null,
+        primary key (mediaKey_fk, taxon_fk)
+    );
+
+    create table MediaKey_Taxon_AUD (
+        REV integer not null,
+        mediaKey_fk integer not null,
+        taxon_fk integer not null,
+        revtype tinyint,
+        primary key (REV, mediaKey_fk, taxon_fk)
     );
 
     create table MediaRepresentation (
@@ -2191,6 +2233,62 @@
         coveredtaxa_id integer not null,
         revtype tinyint,
         primary key (REV, Media_id, coveredtaxa_id)
+    );
+
+    create table MultiAccessKey_CoveredTaxon (
+        multiAccessKey_fk integer not null,
+        coveredTaxon_fk integer not null,
+        primary key (multiAccessKey_fk, coveredTaxon_fk)
+    );
+
+    create table MultiAccessKey_CoveredTaxon_AUD (
+        REV integer not null,
+        multiAccessKey_fk integer not null,
+        coveredTaxon_fk integer not null,
+        revtype tinyint,
+        primary key (REV, multiAccessKey_fk, coveredTaxon_fk)
+    );
+
+    create table MultiAccessKey_NamedArea (
+        MultiAccessKey_id integer not null,
+        geographicalScope_id integer not null,
+        primary key (MultiAccessKey_id, geographicalScope_id)
+    );
+
+    create table MultiAccessKey_NamedArea_AUD (
+        REV integer not null,
+        MultiAccessKey_id integer not null,
+        geographicalScope_id integer not null,
+        revtype tinyint,
+        primary key (REV, MultiAccessKey_id, geographicalScope_id)
+    );
+
+    create table MultiAccessKey_Scope (
+        MultiAccessKey_id integer not null,
+        scopes_id integer not null,
+        primary key (MultiAccessKey_id, scopes_id)
+    );
+
+    create table MultiAccessKey_Scope_AUD (
+        REV integer not null,
+        MultiAccessKey_id integer not null,
+        scopes_id integer not null,
+        revtype tinyint,
+        primary key (REV, MultiAccessKey_id, scopes_id)
+    );
+
+    create table MultiAccessKey_Taxon (
+        multiAccessKey_fk integer not null,
+        taxon_fk integer not null,
+        primary key (multiAccessKey_fk, taxon_fk)
+    );
+
+    create table MultiAccessKey_Taxon_AUD (
+        REV integer not null,
+        multiAccessKey_fk integer not null,
+        taxon_fk integer not null,
+        revtype tinyint,
+        primary key (REV, multiAccessKey_fk, taxon_fk)
     );
 
     create table NameRelationship (
@@ -2418,6 +2516,62 @@
         keyword_fk integer not null,
         revtype tinyint,
         primary key (REV, person_fk, keyword_fk)
+    );
+
+    create table PolytomousKey_CoveredTaxon (
+        polytomousKey_fk integer not null,
+        coveredTaxon_fk integer not null,
+        primary key (polytomousKey_fk, coveredTaxon_fk)
+    );
+
+    create table PolytomousKey_CoveredTaxon_AUD (
+        REV integer not null,
+        polytomousKey_fk integer not null,
+        coveredTaxon_fk integer not null,
+        revtype tinyint,
+        primary key (REV, polytomousKey_fk, coveredTaxon_fk)
+    );
+
+    create table PolytomousKey_NamedArea (
+        PolytomousKey_id integer not null,
+        geographicalScope_id integer not null,
+        primary key (PolytomousKey_id, geographicalScope_id)
+    );
+
+    create table PolytomousKey_NamedArea_AUD (
+        REV integer not null,
+        PolytomousKey_id integer not null,
+        geographicalScope_id integer not null,
+        revtype tinyint,
+        primary key (REV, PolytomousKey_id, geographicalScope_id)
+    );
+
+    create table PolytomousKey_Scope (
+        PolytomousKey_id integer not null,
+        scopes_id integer not null,
+        primary key (PolytomousKey_id, scopes_id)
+    );
+
+    create table PolytomousKey_Scope_AUD (
+        REV integer not null,
+        PolytomousKey_id integer not null,
+        scopes_id integer not null,
+        revtype tinyint,
+        primary key (REV, PolytomousKey_id, scopes_id)
+    );
+
+    create table PolytomousKey_Taxon (
+        polytomousKey_fk integer not null,
+        taxon_fk integer not null,
+        primary key (polytomousKey_fk, taxon_fk)
+    );
+
+    create table PolytomousKey_Taxon_AUD (
+        REV integer not null,
+        polytomousKey_fk integer not null,
+        taxon_fk integer not null,
+        revtype tinyint,
+        primary key (REV, polytomousKey_fk, taxon_fk)
     );
 
     create table Publisher (
@@ -4275,6 +4429,88 @@
         primary key (members_id, groups_id)
     );
 
+	create table WorkingSet (
+        id integer not null,
+        created timestamp,
+        uuid varchar(36),
+        updated timestamp,
+        createdby_id integer,
+        updatedby_id integer,
+		featuretree_id integer,
+        primary key (id),
+        unique (uuid)
+    );
+
+	create table WorkingSet_AUD (
+        id integer not null,
+        REV integer not null,
+        revtype tinyint,
+        created timestamp,
+        uuid varchar(36),
+        updated timestamp,
+        createdby_id integer,
+        updatedby_id integer,
+        primary key (id, REV)
+    );
+
+    create table WorkingSet_Annotation (
+        WorkingSet_id integer not null,
+        annotations_id integer not null,
+        primary key (WorkingSet_id, annotations_id),
+        unique (annotations_id)
+    );
+
+    create table WorkingSet_Annotation_AUD (
+        REV integer not null,
+        WorkingSet_id integer not null,
+        annotations_id integer not null,
+        revtype tinyint,
+        primary key (REV, WorkingSet_id, annotations_id)
+    );
+
+    create table WorkingSet_Description (
+        WorkingSet_id integer not null,
+        descriptions_id integer not null,
+        primary key (WorkingSet_id, descriptions_id)
+    );
+
+    create table WorkingSet_Description_AUD (
+        REV integer not null,
+        WorkingSet_id integer not null,
+        descriptions_id integer not null,
+        revtype tinyint,
+        primary key (REV, WorkingSet_id, descriptions_id)
+    );
+
+    create table WorkingSet_Marker (
+        WorkingSet_id integer not null,
+        markers_id integer not null,
+        primary key (WorkingSet_id, markers_id),
+        unique (markers_id)
+    );
+
+    create table WorkingSet_Marker_AUD (
+        REV integer not null,
+        WorkingSet_id integer not null,
+        markers_id integer not null,
+        revtype tinyint,
+        primary key (REV, WorkingSet_id, markers_id)
+    );
+
+    create table WorkingSet_Representation (
+        WorkingSet_id integer not null,
+        representations_id integer not null,
+        primary key (WorkingSet_id, representations_id),
+    );
+
+    create table WorkingSet_Representation_AUD (
+        REV integer not null,
+        WorkingSet_id integer not null,
+        representations_id integer not null,
+        revtype tinyint,
+        primary key (REV, WorkingSet_id, representations_id)
+    );
+
     alter table Address 
         add constraint FK1ED033D4132A2FE8 
         foreign key (location_referencesystem_id) 
@@ -5804,21 +6040,6 @@
         foreign key (REV) 
         references AuditEvent;
 
-    alter table MediaKey_Taxon 
-        add constraint FKD847ADDC996CD055 
-        foreign key (mediaKey_fk) 
-        references Media;
-
-    alter table MediaKey_Taxon 
-        add constraint FKD847ADDCDE9A3DE3 
-        foreign key (taxon_fk) 
-        references TaxonBase;
-
-    alter table MediaKey_Taxon_AUD 
-        add constraint FKEEF18DAD34869AAE 
-        foreign key (REV) 
-        references AuditEvent;
-
     alter table IndividualAssociation_LanguageString 
         add constraint FKB5C75EC02BEBA58D 
         foreign key (description_id) 
@@ -5978,6 +6199,66 @@
         add constraint FK46C7FC4BC5DA539 
         foreign key (updatedby_id) 
         references UserAccount;
+
+    alter table MediaKey_CoveredTaxon 
+        add constraint FKBE4F76E1FC8AD42E 
+        foreign key (mediaKey_fk) 
+        references Media;
+
+    alter table MediaKey_CoveredTaxon 
+        add constraint FK6372785CAB2B4887 
+        foreign key (coveredTaxon_fk)
+        references TaxonBase;
+
+    alter table MediaKey_CoveredTaxon_AUD 
+        add constraint FK9A0937D364102306 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table MediaKey_NamedArea 
+        add constraint FK4772422A418A4BEA 
+        foreign key (MediaKey_id) 
+        references Media;
+
+    alter table MediaKey_NamedArea 
+        add constraint FK9D6E084E1488D69B 
+        foreign key (geographicalScope_id) 
+        references DefinedTermBase;
+
+    alter table MediaKey_NamedArea_AUD 
+        add constraint FKFD1BFD072BF24734
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table MediaKey_Scope 
+        add constraint FK695D7D7CAC474615 
+        foreign key (MediaKey_id) 
+        references Media;
+
+    alter table MediaKey_Scope 
+        add constraint FK929093690989677E 
+        foreign key (scopes_id) 
+        references DefinedTermBase;
+
+    alter table MediaKey_Scope_AUD 
+        add constraint FKD3482100963E4F27 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table MediaKey_Taxon 
+        add constraint FKD847ADDC996CD055 
+        foreign key (mediaKey_fk) 
+        references Media;
+
+    alter table MediaKey_Taxon 
+        add constraint FKD847ADDCDE9A3DE3 
+        foreign key (taxon_fk) 
+        references TaxonBase;
+
+    alter table MediaKey_Taxon_AUD 
+        add constraint FKEEF18DAD34869AAE 
+        foreign key (REV) 
+        references AuditEvent;
 
     alter table MediaRepresentation 
         add constraint FK1966BDB14FF2DB2C 
@@ -6156,6 +6437,66 @@
 
     alter table Media_TaxonBase_AUD 
         add constraint FK857187B134869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+	alter table MultiAccessKey_CoveredTaxon 
+        add constraint FK07E64A1DC70F4783 
+        foreign key (multiAccessKey_fk) 
+        references WorkingSet;
+
+    alter table MultiAccessKey_CoveredTaxon 
+        add constraint FK92B0DBED084C3C5B 
+        foreign key (coveredTaxon_fk) 
+        references TaxonBase;
+
+    alter table MultiAccessKey_CoveredTaxon 
+        add constraint FKDADAF88E80A84FD9 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table MultiAccessKey_NamedArea 
+        add constraint FKAF013B940D5D706C 
+        foreign key (MultiAccessKey_id) 
+        references WorkingSet;
+
+    alter table MultiAccessKey_NamedArea 
+        add constraint FK77BA7CF6C9414251 
+        foreign key (geographicalScope_id) 
+        references DefinedTermBase;
+
+    alter table MultiAccessKey_NamedArea_AUD 
+        add constraint FKA2B6A079E8BB88A8
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table MultiAccessKey_Scope 
+        add constraint FKADA27AED3CEB215D 
+        foreign key (MultiAccessKey_id) 
+        references WorkingSet;
+
+    alter table MultiAccessKey_Scope 
+        add constraint FKBF2CF785CAFA4BF1 
+        foreign key (scopes_id) 
+        references DefinedTermBase;
+
+    alter table MultiAccessKey_Scope_AUD 
+        add constraint FKAD7EE9D434424A3E 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table MultiAccessKey_Taxon 
+        add constraint FKAE92842CCDAF4814 
+        foreign key (multiAccessKey_fk) 
+        references WorkingSet;
+
+    alter table MultiAccessKey_Taxon 
+        add constraint FKB29E6E958FD00045 
+        foreign key (taxon_fk) 
+        references TaxonBase;
+
+    alter table MultiAccessKey_Taxon 
+        add constraint FKCF87B36E0D444C92 
         foreign key (REV) 
         references AuditEvent;
 
@@ -6356,6 +6697,66 @@
 
     alter table Person_Keyword_AUD 
         add constraint FK6D8C355034869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+	alter table PolytomousKey_CoveredTaxon 
+        add constraint FK5D10620561FE4E83 
+        foreign key (polytomousKey_fk) 
+        references FeatureTree;
+
+    alter table PolytomousKey_CoveredTaxon 
+        add constraint FKB92FB32E5339CF05 
+        foreign key (coveredTaxon_fk) 
+        references TaxonBase;
+
+    alter table PolytomousKey_CoveredTaxon 
+        add constraint FKF6E40B9726674EEE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table PolytomousKey_NamedArea 
+        add constraint FKB3A8962EBDE6AA88 
+        foreign key (PolytomousKey_id) 
+        references FeatureTree;
+
+    alter table PolytomousKey_NamedArea 
+        add constraint FK7A13F2876AE348D0 
+        foreign key (geographicalScope_id) 
+        references DefinedTermBase;
+
+    alter table PolytomousKey_NamedArea_AUD 
+        add constraint FKBF68307E4381DFEC
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table PolytomousKey_Scope 
+        add constraint FKC0AA0A4F46A84CA5 
+        foreign key (PolytomousKey_id) 
+        references FeatureTree;
+
+    alter table PolytomousKey_Scope 
+        add constraint FK95F6137239A78EF4 
+        foreign key (scopes_id) 
+        references DefinedTermBase;
+
+    alter table PolytomousKey_Scope_AUD 
+        add constraint FK0633BFB0336E464B 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table PolytomousKey_Taxon 
+        add constraint FK94EBDAF65411052A 
+        foreign key (polytomousKey_fk) 
+        references FeatureTree;
+
+    alter table PolytomousKey_Taxon 
+        add constraint FK890257C0688940C2 
+        foreign key (taxon_fk) 
+        references TaxonBase;
+
+    alter table PolytomousKey_Taxon 
+        add constraint FKBFA78228E203A5BA 
         foreign key (REV) 
         references AuditEvent;
 
@@ -7928,3 +8329,83 @@
         add constraint FK812DE753887E3D12 
         foreign key (members_id) 
         references UserAccount;
+
+    alter table WorkingSet 
+        add constraint FK3D97251AE8674895
+        foreign key (createdby_id) 
+        references UserAccount;
+
+    alter table WorkingSet 
+        add constraint FKB560D6752955A269 
+        foreign key (updatedby_id) 
+        references UserAccount;
+
+    alter table WorkingSet 
+        add constraint FK5C25999459ED47B6 
+        foreign key (featuretree_id) 
+        references FeatureTree;
+
+    alter table WorkingSet_AUD 
+        add constraint FK452241C27EB44531 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table WorkingSet_Annotation 
+        add constraint FK452241C27EB44531 
+        foreign key (WorkingSet_id) 
+        references WorkingSet;
+
+    alter table WorkingSet_Annotation 
+        add constraint FK9C00430B8AE3E865 
+        foreign key (annotations_id) 
+        references Annotation;
+
+    alter table WorkingSet_Annotation_AUD 
+        add constraint FK40A98663572842A9 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table WorkingSet_Description 
+        add constraint FKBB6D628B395A4270 
+        foreign key (WorkingSet_id) 
+        references WorkingSet;
+
+    alter table WorkingSet_Description 
+        add constraint FKB01DE32DB12B1943 
+        foreign key (descriptions_id) 
+        references DescriptionBase;
+
+    alter table WorkingSet_Description_AUD 
+        add constraint FKB5A750A1A4954373 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table WorkingSet_Marker 
+        add constraint FK938EC0B9389C7245 
+        foreign key (WorkingSet_id) 
+        references WorkingSet;
+
+    alter table WorkingSet_Marker 
+        add constraint FKABE4B8B9CA124754 
+        foreign key (markers_id) 
+        references Marker;
+
+    alter table WorkingSet_Marker_AUD 
+        add constraint FKB2C1FCE16DBA9AE1 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table WorkingSet_Representation 
+        add constraint FKFA26F637653B4624 
+        foreign key (WorkingSet_id) 
+        references WorkingSet;
+
+    alter table WorkingSet_Representation 
+        add constraint FKACFF57D9CFC69DD6 
+        foreign key (representations_id) 
+        references Representation;
+
+    alter table WorkingSet_Representation_AUD 
+        add constraint FK7E60CCADC8324B87 
+        foreign key (REV) 
+        references AuditEvent;
