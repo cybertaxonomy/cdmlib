@@ -652,7 +652,15 @@
         pointapproximation_referencesystem_id integer,
         shape_id integer,
         type_id integer,
-        primary key (id),
+        lsid_authority varchar(255),
+        lsid_lsid varchar(255),
+        lsid_namespace varchar(255),
+        lsid_object varchar(255),
+        lsid_revision varchar(255),
+		protectedtitlecache bit not null,
+        titleCache varchar(255),
+
+		primary key (id),
         unique (uuid)
     );
 
@@ -694,7 +702,14 @@
         shape_id integer,
         type_id integer,
         iso3166_a2 varchar(2),
-        primary key (id, REV)
+        lsid_authority varchar(255),
+        lsid_lsid varchar(255),
+        lsid_namespace varchar(255),
+        lsid_object varchar(255),
+        lsid_revision varchar(255),
+		protectedtitlecache bit not null,
+        titleCache varchar(255),
+		primary key (id, REV)
     );
 
     create table DefinedTermBase_Continent (
@@ -4031,7 +4046,14 @@
         termsourceuri varchar(255),
         createdby_id integer,
         updatedby_id integer,
-        primary key (id),
+       	lsid_authority varchar(255),
+        lsid_lsid varchar(255),
+        lsid_namespace varchar(255),
+        lsid_object varchar(255),
+        lsid_revision varchar(255),
+		protectedtitlecache bit not null,
+        titleCache varchar(255),
+		primary key (id),
         unique (uuid)
     );
 
@@ -4047,6 +4069,14 @@
         termsourceuri varchar(255),
         createdby_id integer,
         updatedby_id integer,
+	    lsid_authority varchar(255),
+        lsid_lsid varchar(255),
+        lsid_namespace varchar(255),
+        lsid_object varchar(255),
+        lsid_revision varchar(255),
+		protectedtitlecache bit not null,
+        titleCache varchar(255),
+        
         primary key (id, REV)
     );
 
