@@ -1449,7 +1449,7 @@
 	create table FeatureNode_Question (
         FeatureNode_id integer not null,
         questions_id integer not null,
-        primary key (FeatureNode_id, questions_id),
+        primary key (FeatureNode_id, questions_id)
     );
 
     create table FeatureNode_Question_AUD (
@@ -4498,7 +4498,7 @@
     create table WorkingSet_Representation (
         WorkingSet_id integer not null,
         representations_id integer not null,
-        primary key (WorkingSet_id, representations_id),
+        primary key (WorkingSet_id, representations_id)
     );
 
     create table WorkingSet_Representation_AUD (
@@ -5753,7 +5753,7 @@
         foreign key (REV) 
         references AuditEvent;
 
-	alter table FeatureNode_DefinedTermBase_OnlyApplicable 
+/*	alter table FeatureNode_DefinedTermBase_OnlyApplicable 
         add constraint FKBF6E4BB4F1E5455D
         foreign key (FeatureNode_id) 
         references FeatureNode;
@@ -5782,19 +5782,19 @@
         add constraint FK8A2DE6f1C856AE80 
         foreign key (REV) 
         references AuditEvent;
-
+*/
 	alter table FeatureNode_Question 
-        add constraint 9B1410F03C6A411A
+        add constraint FK9B1410F03C6A411A
         foreign key (FeatureNode_id) 
         references FeatureNode;
 
     alter table FeatureNode_Question 
-        add constraint 8D2234F48AF8471C
+        add constraint FK8D2234F48AF8471C
         foreign key (questions_id) 
         references Representation;
 
     alter table FeatureNode_Question_AUD 
-        add constraint 72595A8589344fD6 
+        add constraint FK72595A8589344fD6 
         foreign key (REV) 
         references AuditEvent;
 
@@ -6448,7 +6448,7 @@
         foreign key (coveredTaxon_fk) 
         references TaxonBase;
 
-    alter table MultiAccessKey_CoveredTaxon 
+    alter table MultiAccessKey_CoveredTaxon_AUD 
         add constraint FKDADAF88E80A84FD9 
         foreign key (REV) 
         references AuditEvent;
@@ -6493,7 +6493,7 @@
         foreign key (taxon_fk) 
         references TaxonBase;
 
-    alter table MultiAccessKey_Taxon 
+    alter table MultiAccessKey_Taxon_AUD 
         add constraint FKCF87B36E0D444C92 
         foreign key (REV) 
         references AuditEvent;
@@ -6708,7 +6708,7 @@
         foreign key (coveredTaxon_fk) 
         references TaxonBase;
 
-    alter table PolytomousKey_CoveredTaxon 
+    alter table PolytomousKey_CoveredTaxon_AUD 
         add constraint FKF6E40B9726674EEE 
         foreign key (REV) 
         references AuditEvent;
@@ -6753,7 +6753,7 @@
         foreign key (taxon_fk) 
         references TaxonBase;
 
-    alter table PolytomousKey_Taxon 
+    alter table PolytomousKey_Taxon_AUD
         add constraint FKBFA78228E203A5BA 
         foreign key (REV) 
         references AuditEvent;
@@ -8349,7 +8349,7 @@
         references AuditEvent;
 
     alter table WorkingSet_Annotation 
-        add constraint FK452241C27EB44531 
+        add constraint FK852341C27EB64531 
         foreign key (WorkingSet_id) 
         references WorkingSet;
 
