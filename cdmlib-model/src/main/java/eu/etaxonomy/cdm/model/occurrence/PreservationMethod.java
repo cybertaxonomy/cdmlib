@@ -33,6 +33,8 @@ import javax.xml.bind.annotation.XmlType;
 @Entity
 @Audited
 public class PreservationMethod extends DefinedTermBase<PreservationMethod> {
+	private static final long serialVersionUID = -6597303767771121540L;
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(PreservationMethod.class);
 	
 	/**
@@ -69,10 +71,6 @@ public class PreservationMethod extends DefinedTermBase<PreservationMethod> {
 	protected void setDefaultTerms(TermVocabulary<PreservationMethod> termVocabulary) {
 		// TODO Auto-generated method stub
 		
-	}
-
-	public int compareTo(Object o) {
-		return 0;
 	}
 	
 }

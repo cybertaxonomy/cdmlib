@@ -90,8 +90,5 @@ public class MeasurementUnit extends DefinedTermBase<MeasurementUnit> {
 		// TODO Auto-generated method stub
 		
 	}
-	
-	public int compareTo(Object o) {
-		return 0;
-	}
+
 }

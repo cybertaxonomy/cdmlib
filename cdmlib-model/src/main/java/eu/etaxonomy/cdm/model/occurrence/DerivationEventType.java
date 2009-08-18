@@ -20,6 +20,8 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
 @Entity
 @Audited
 public class DerivationEventType extends DefinedTermBase<DerivationEventType> {
+	private static final long serialVersionUID = 6895093454763415279L;
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DerivationEventType.class);
 
 	private static final UUID uuidDuplicate = UUID.fromString("8f54c7cc-eb5e-4652-a6e4-3a4ba429b327");
@@ -117,10 +119,6 @@ public class DerivationEventType extends DefinedTermBase<DerivationEventType> {
 		DerivationEventType.SEXUAL_REPRODUCTION = termVocabulary.findTermByUuid(DerivationEventType.uuidSexualReproduction);
 		DerivationEventType.TISSUE_SAMPLING = termVocabulary.findTermByUuid(DerivationEventType.uuidTissueSampling);
 		DerivationEventType.VEGETATIVE_PROPAGATION = termVocabulary.findTermByUuid(DerivationEventType.uuidVegetativPropagation);
-	}
-	
-	public int compareTo(Object o) {
-		return 0;
 	}
 	
 }

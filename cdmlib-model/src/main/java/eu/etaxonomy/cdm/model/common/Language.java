@@ -298,8 +298,4 @@ public class Language extends DefinedTermBase<Language> {
 		}
 	}
 	
-	public int compareTo(Object o) {
-		return 0;
-	}
-	
 }

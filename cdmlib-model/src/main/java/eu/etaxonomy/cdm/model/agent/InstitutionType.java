@@ -72,7 +72,4 @@ public class InstitutionType extends DefinedTermBase<InstitutionType> {
 		
 	}
 
-	public int compareTo(Object o) {
-		return 0;
-	}
 }

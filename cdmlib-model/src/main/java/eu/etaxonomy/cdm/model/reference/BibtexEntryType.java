@@ -42,9 +42,6 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
 @Entity
 @Audited
 public class BibtexEntryType extends DefinedTermBase<BibtexEntryType> {
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1603469685147239870L;
 	private static final Logger logger = Logger.getLogger(BibtexEntryType.class);
 
@@ -275,10 +272,6 @@ public class BibtexEntryType extends DefinedTermBase<BibtexEntryType> {
 			TermVocabulary<BibtexEntryType> termVocabulary) {
 		// TODO Auto-generated method stub
 		
-	}
-
-	public int compareTo(Object o) {
-		return 0;
 	}
 	
 }

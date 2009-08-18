@@ -98,7 +98,4 @@ public class ReferenceSystem extends DefinedTermBase<ReferenceSystem> {
 		}
 	}
 
-	public int compareTo(Object o) {
-		return 0;
-	}
 }

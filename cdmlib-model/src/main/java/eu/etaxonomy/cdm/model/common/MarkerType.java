@@ -108,7 +108,4 @@ public class MarkerType extends DefinedTermBase<MarkerType> {
 		}
 	}
 
-	public int compareTo(Object o) {
-		return 0;
-	}
 }

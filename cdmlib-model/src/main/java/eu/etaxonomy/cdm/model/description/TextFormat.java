@@ -95,7 +95,4 @@ public class TextFormat extends DefinedTermBase<TextFormat> {
 		
 	}
 	
-	public int compareTo(Object o) {
-		return 0;
-	}
 }

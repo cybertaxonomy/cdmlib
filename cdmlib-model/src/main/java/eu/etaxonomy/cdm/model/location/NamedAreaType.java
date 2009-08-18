@@ -87,7 +87,4 @@ public class NamedAreaType extends DefinedTermBase<NamedAreaType> {
 		NamedAreaType.NATURAL_AREA = termVocabulary.findTermByUuid(NamedAreaType.uuidNaturalArea);
 	}
 	
-	public int compareTo(Object o) {
-		return 0;
-	}
 }
