@@ -251,7 +251,8 @@
 		      <plugin>
 		        <artifactId>maven-surefire-plugin</artifactId>
 		        <configuration>
-		          <includes>
+		          <argLine>-Xmx512M</argLine>
+				  <includes>
 		            <include>**/*Test.java</include>
 		          </includes>
 	        	<systemProperties>
@@ -271,6 +272,7 @@
 	        			<name>hibernate.connection.password</name>
 	        			<value>${hibernate.connection.password}</value>
 	        		</property>
+					
 	        	</systemProperties>
 	         </configuration>
   	        </plugin>
@@ -894,6 +896,11 @@
             <dependency>
               <groupId>org.hibernate</groupId>
               <artifactId>hibernate-ehcache</artifactId>
+              <version>3.4.0-SNAPSHOT</version>
+            </dependency>
+			<dependency>
+              <groupId>org.hibernate</groupId>
+              <artifactId>hibernate-parent</artifactId>
               <version>3.4.0-SNAPSHOT</version>
             </dependency>
 			<dependency>
