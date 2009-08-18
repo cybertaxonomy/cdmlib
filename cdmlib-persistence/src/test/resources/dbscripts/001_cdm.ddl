@@ -754,6 +754,22 @@
         primary key (REV, DefinedTermBase_id, media_id)
     );
 
+	create table DefinedTermBase_OriginalSource(
+	    DefinedTermBase_id integer not null,
+        originalSource_id integer not null,
+        primary key (DefinedTermBase_id, originalSource_id),
+        unique (originalSource_id)
+    );
+
+    create table DefinedTermBase_OriginalSource_AUD (
+        REV integer not null,
+        DefinedTermBase_id integer not null,
+        originalSource_id integer not null,
+        revtype tinyint,
+        primary key (REV, DefinedTermBase_id, originalSource_id)
+    );
+	
+
     create table DefinedTermBase_RecommendedModifierEnumeration (
         DefinedTermBase_id integer not null,
         recommendedmodifierenumeration_id integer not null,
@@ -1960,9 +1976,42 @@
         updatedby_id integer,
         artist_id integer,
         citation_id integer,
+        lsid_authority varchar(255),
+        lsid_lsid varchar(255),
+        lsid_namespace varchar(255),
+        lsid_object varchar(255),
+        lsid_revision varchar(255),
+        protectedtitlecache bit not null,
+        titleCache varchar(255),
         primary key (id),
         unique (uuid)
     );
+
+    create table Media_AUD (
+        DTYPE varchar(31) not null,
+        REV integer not null,
+        revtype tinyint,
+        id integer not null,
+        created timestamp,
+        uuid varchar(36),
+        updated timestamp,
+        mediacreated timestamp,
+        citationmicroreference varchar(255),
+        createdby_id integer,
+        updatedby_id integer,
+        artist_id integer,
+        citation_id integer,
+        lsid_authority varchar(255),
+        lsid_lsid varchar(255),
+        lsid_namespace varchar(255),
+        lsid_object varchar(255),
+        lsid_revision varchar(255),
+        protectedtitlecache bit not null,
+        titleCache varchar(255),
+        primary key (id),
+        unique (uuid)
+    );
+
 
     create table MediaKey_CoveredTaxon (
         mediaKey_fk integer not null,
@@ -2096,24 +2145,7 @@
         primary key (REV, representation_id, id, sortIndex)
     );
 
-    create table Media_AUD (
-        DTYPE varchar(31) not null,
-        id integer not null,
-        REV integer not null,
-        revtype tinyint,
-        created timestamp,
-        uuid varchar(36),
-        updated timestamp,
-        mediacreated timestamp,
-        createdby_id integer,
-        updatedby_id integer,
-        artist_id integer,
-        citationmicroreference varchar(255),
-        citation_id integer,
-        primary key (id, REV)
-    );
-
-    create table Media_Annotation (
+	create table Media_Annotation (
         Media_id integer not null,
         annotations_id integer not null,
         primary key (Media_id, annotations_id),
