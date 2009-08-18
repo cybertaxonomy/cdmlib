@@ -725,7 +725,50 @@
         primary key (REV, DefinedTermBase_id, continents_id)
     );
 
-    create table DefinedTermBase_MeasurementUnit (
+    create table DefinedTermBase_Annotation(
+        DefinedTermBase_id integer not null,
+        annotations_id integer not null,
+        primary key (DefinedTermBase_id, annotations_id)
+    );
+
+    create table DefinedTermBase_Annotation_AUD (
+        REV integer not null,
+        DefinedTermBase_id integer not null,
+        annotations_id integer not null,
+        revtype tinyint,
+        primary key (REV, DefinedTermBase_id, annotations_id)
+    );
+
+
+    create table DefinedTermBase_Extension (
+        DefinedTermBase_id integer not null,
+        extensions_id integer not null,
+        primary key (DefinedTermBase_id, extensions_id)
+    );
+
+    create table DefinedTermBase_Extension_AUD (
+        REV integer not null,
+        DefinedTermBase_id integer not null,
+        extensions_id integer not null,
+        revtype tinyint,
+        primary key (REV, DefinedTermBase_id, extensions_id)
+    );
+
+    create table DefinedTermBase_Marker(
+        DefinedTermBase_id integer not null,
+        markers_id integer not null,
+        primary key (DefinedTermBase_id, markers_id)
+    );
+
+    create table DefinedTermBase_Marker_AUD (
+        REV integer not null,
+        DefinedTermBase_id integer not null,
+        markers_id integer not null,
+        revtype tinyint,
+        primary key (REV, DefinedTermBase_id, markers_id)
+    );
+
+create table DefinedTermBase_MeasurementUnit (
         DefinedTermBase_id integer not null,
         recommendedmeasurementunits_id integer not null,
         primary key (DefinedTermBase_id, recommendedmeasurementunits_id)
@@ -756,17 +799,17 @@
 
 	create table DefinedTermBase_OriginalSource(
 	    DefinedTermBase_id integer not null,
-        originalSource_id integer not null,
-        primary key (DefinedTermBase_id, originalSource_id),
-        unique (originalSource_id)
+        sources_id integer not null,
+        primary key (DefinedTermBase_id, sources_id),
+        unique (sources_id)
     );
 
     create table DefinedTermBase_OriginalSource_AUD (
         REV integer not null,
         DefinedTermBase_id integer not null,
-        originalSource_id integer not null,
+        sources_id integer not null,
         revtype tinyint,
-        primary key (REV, DefinedTermBase_id, originalSource_id)
+        primary key (REV, DefinedTermBase_id, sources_id)
     );
 	
 
@@ -800,7 +843,21 @@
         primary key (REV, DefinedTermBase_id, representations_id)
     );
 
-    create table DefinedTermBase_StatisticalMeasure (
+    create table DefinedTermBase_Rights (
+        DefinedTermBase_id integer not null,
+        rights_id integer not null,
+        primary key (DefinedTermBase_id, rights_id)
+    );
+
+    create table DefinedTermBase_Rights_AUD (
+        REV integer not null,
+        DefinedTermBase_id integer not null,
+        rights_id integer not null,
+        revtype tinyint,
+        primary key (REV, DefinedTermBase_id, rights_id)
+    );
+
+	create table DefinedTermBase_StatisticalMeasure (
         DefinedTermBase_id integer not null,
         recommendedstatisticalmeasures_id integer not null,
         primary key (DefinedTermBase_id, recommendedstatisticalmeasures_id)
@@ -838,12 +895,12 @@
     create table DefinedTermBase_WaterbodyOrCountry_AUD (
         REV integer not null,
         DefinedTermBase_id integer not null,
-        waterbodiesorcountries_id integer not null,
+        rights_id integer not null,
         revtype tinyint,
-        primary key (REV, DefinedTermBase_id, waterbodiesorcountries_id)
+        primary key (REV, DefinedTermBase_id, rights_id)
     );
 
-    create table DerivationEvent (
+	create table DerivationEvent (
         id integer not null,
         created timestamp,
         uuid varchar(36),
@@ -5095,6 +5152,21 @@
         foreign key (REV) 
         references AuditEvent;
 
+    alter table DefinedTermBase_Annotation 
+        add constraint FK5FC907ABC5DB4054 
+        foreign key (DefinedTermBase_id) 
+        references DefinedTermBase;
+
+    alter table DefinedTermBase_Annotation 
+        add constraint FK2FC108AEC6529597 
+        foreign key (annotations_id) 
+        references Media;
+
+    alter table DefinedTermBase_Annotation_AUD 
+        add constraint FKAD9AC8FA34569AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
     alter table DefinedTermBase_Continent 
         add constraint FK45F60AFBE8CE10AA 
         foreign key (DefinedTermBase_id) 
@@ -5107,6 +5179,36 @@
 
     alter table DefinedTermBase_Continent_AUD 
         add constraint FKF5DE434C34869AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table DefinedTermBase_Extension 
+        add constraint FK2FC907ABC0DB4954 
+        foreign key (DefinedTermBase_id) 
+        references DefinedTermBase;
+
+    alter table DefinedTermBase_Extension 
+        add constraint FK1FC908ABC6C29595 
+        foreign key (extensions_id) 
+        references Media;
+
+    alter table DefinedTermBase_Extension_AUD 
+        add constraint FKED9AC8FA34269AAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+    alter table DefinedTermBase_Marker 
+        add constraint FK3FC907AB15DB4054 
+        foreign key (DefinedTermBase_id) 
+        references DefinedTermBase;
+
+    alter table DefinedTermBase_Marker 
+        add constraint FK4FC108AEC7529597 
+        foreign key (markers_id) 
+        references Media;
+
+    alter table DefinedTermBase_Marker_AUD 
+        add constraint FK8D9CC8FA34369AAE 
         foreign key (REV) 
         references AuditEvent;
 
@@ -5214,6 +5316,23 @@
         add constraint FKD5996FE434869AAE 
         foreign key (REV) 
         references AuditEvent;
+
+    alter table DefinedTermBase_Rights 
+        add constraint FK6AA4393EE5C0F9C 
+        foreign key (DefinedTermBase_id) 
+        references DefinedTermBase;
+
+    alter table DefinedTermBase_Rights 
+        add constraint FK9BF43931803B037 
+        foreign key (rights_id) 
+        references DefinedTermBase;
+
+    alter table DefinedTermBase_Rights_AUD 
+        add constraint FKB5096AE434869EAE 
+        foreign key (REV) 
+        references AuditEvent;
+
+
 
     alter table DerivationEvent 
         add constraint FK426BC034FF2DB2C 
