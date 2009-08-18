@@ -2073,6 +2073,13 @@
         primary key (mediaKey_fk, coveredTaxon_fk)
     );
 
+    create table MediaKey_CoveredTaxon_AUD (
+        REV integer not null,
+        mediaKey_fk integer not null,
+        coveredTaxon_fk integer not null,
+        revtype tinyint,
+        primary key (REV, mediaKey_fk, coveredTaxon_fk)
+    );
 
     create table MediaKey_NamedArea (
         media_id integer not null,
@@ -2114,14 +2121,6 @@
         taxon_fk integer not null,
         revtype tinyint,
         primary key (REV, mediaKey_fk, taxon_fk)
-    );
-
-    create table MediaKey_CoveredTaxon_AUD (
-        REV integer not null,
-        mediaKey_fk integer not null,
-        coveredTaxon_fk integer not null,
-        revtype tinyint,
-        primary key (REV, mediaKey_fk, coveredTaxon_fk)
     );
 
     create table MediaRepresentation (
