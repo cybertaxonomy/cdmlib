@@ -895,9 +895,9 @@ create table DefinedTermBase_MeasurementUnit (
     create table DefinedTermBase_WaterbodyOrCountry_AUD (
         REV integer not null,
         DefinedTermBase_id integer not null,
-        rights_id integer not null,
+        waterbodiesorcountries_id integer not null,
         revtype tinyint,
-        primary key (REV, DefinedTermBase_id, rights_id)
+        primary key (REV, DefinedTermBase_id, waterbodiesorcountries_id)
     );
 
 	create table DerivationEvent (
@@ -2085,17 +2085,17 @@ create table DefinedTermBase_MeasurementUnit (
     );
 
     create table MediaKey_NamedArea (
-        MediaKey_id integer not null,
+        media_id integer not null,
         geographicalScope_id integer not null,
-        primary key (MediaKey_id, geographicalScope_id)
+        primary key (media_id, geographicalScope_id)
     );
 
     create table MediaKey_NamedArea_AUD (
         REV integer not null,
-        MediaKey_id integer not null,
+        media_id integer not null,
         geographicalScope_id integer not null,
         revtype tinyint,
-        primary key (REV, MediaKey_id, geographicalScope_id)
+        primary key (REV, media_id, geographicalScope_id)
     );
 
 	create table MediaKey_Scope (
@@ -6366,7 +6366,7 @@ create table DefinedTermBase_MeasurementUnit (
 
     alter table MediaKey_NamedArea 
         add constraint FK4772422A418A4BEA 
-        foreign key (MediaKey_id) 
+        foreign key (media_id) 
         references Media;
 
     alter table MediaKey_NamedArea 

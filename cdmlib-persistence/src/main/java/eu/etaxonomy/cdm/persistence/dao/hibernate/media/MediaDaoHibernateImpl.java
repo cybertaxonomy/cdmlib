@@ -76,7 +76,7 @@ public class MediaDaoHibernateImpl extends AnnotatableDaoImpl<Media> implements 
 				for(NamedArea n : geoScopes) {
 					geoScopeIds.add(n.getId());
 				}
-				criteria.createCriteria("geoScopes").add(Restrictions.in("id", geoScopeIds));
+				criteria.createCriteria("geographicalScope").add(Restrictions.in("id", geoScopeIds));
 			}
 			
 			criteria.setProjection(Projections.countDistinct("id"));
@@ -111,7 +111,7 @@ public class MediaDaoHibernateImpl extends AnnotatableDaoImpl<Media> implements 
 				for(NamedArea n : geoScopes) {
 					geoScopeIds.add(n.getId());
 				}
-				inner.createCriteria("geoScopes").add(Restrictions.in("id", geoScopeIds));
+				inner.createCriteria("geographicalScope").add(Restrictions.in("id", geoScopeIds));
 			}
 
 			inner.setProjection(Projections.distinct(Projections.id()));
