@@ -2219,16 +2219,16 @@ create table DefinedTermBase_MeasurementUnit (
 
     create table Media_DefinedTermBase (
         Media_id integer not null,
-        geoscopes_id integer not null,
-        primary key (Media_id, geoscopes_id)
+        geographicalScope_id integer not null,
+        primary key (Media_id, geographicalScope_id)
     );
 
     create table Media_DefinedTermBase_AUD (
         REV integer not null,
         Media_id integer not null,
-        geoscopes_id integer not null,
+        geographicalScope_id integer not null,
         revtype tinyint,
-        primary key (REV, Media_id, geoscopes_id)
+        primary key (REV, Media_id, geographicalScope_id)
     );
 
     create table Media_Description (
@@ -5160,7 +5160,7 @@ create table DefinedTermBase_MeasurementUnit (
     alter table DefinedTermBase_Annotation 
         add constraint FK2FC108AEC6529597 
         foreign key (annotations_id) 
-        references Media;
+        references Annotation;
 
     alter table DefinedTermBase_Annotation_AUD 
         add constraint FKAD9AC8FA34569AAE 
@@ -5190,7 +5190,7 @@ create table DefinedTermBase_MeasurementUnit (
     alter table DefinedTermBase_Extension 
         add constraint FK1FC908ABC6C29595 
         foreign key (extensions_id) 
-        references Media;
+        references Extension;
 
     alter table DefinedTermBase_Extension_AUD 
         add constraint FKED9AC8FA34269AAE 
@@ -5205,7 +5205,7 @@ create table DefinedTermBase_MeasurementUnit (
     alter table DefinedTermBase_Marker 
         add constraint FK4FC108AEC7529597 
         foreign key (markers_id) 
-        references Media;
+        references Marker;
 
     alter table DefinedTermBase_Marker_AUD 
         add constraint FK8D9CC8FA34369AAE 
@@ -5325,7 +5325,7 @@ create table DefinedTermBase_MeasurementUnit (
     alter table DefinedTermBase_Rights 
         add constraint FK9BF43931803B037 
         foreign key (rights_id) 
-        references DefinedTermBase;
+        references Rights;
 
     alter table DefinedTermBase_Rights_AUD 
         add constraint FKB5096AE434869EAE 
@@ -6481,7 +6481,7 @@ create table DefinedTermBase_MeasurementUnit (
 
     alter table Media_DefinedTermBase 
         add constraint FK96F1D7EB86D04E74 
-        foreign key (geoscopes_id) 
+        foreign key (geographicalScope_id) 
         references DefinedTermBase;
 
     alter table Media_DefinedTermBase_AUD 
