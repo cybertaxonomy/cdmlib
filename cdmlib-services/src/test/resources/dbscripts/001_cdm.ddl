@@ -659,8 +659,6 @@
         lsid_namespace varchar(255),
         lsid_object varchar(255),
         lsid_revision varchar(255),
-		protectedtitlecache bit not null,
-        titleCache varchar(255),
 		primary key (id),
         unique (uuid)
     );
@@ -710,9 +708,7 @@
         lsid_namespace varchar(255),
         lsid_object varchar(255),
         lsid_revision varchar(255),
-		protectedtitlecache bit not null,
-        titleCache varchar(255),
- 		primary key (id, REV)
+		primary key (id, REV)
     );
 
     create table DefinedTermBase_Continent (
@@ -1524,7 +1520,7 @@
 	create table FeatureNode_Question (
         FeatureNode_id integer not null,
         questions_id integer not null,
-        primary key (FeatureNode_id, questions_id),
+        primary key (FeatureNode_id, questions_id)
     );
 
     create table FeatureNode_Question_AUD (
@@ -2071,6 +2067,41 @@
         unique (uuid)
     );
 
+    create table MediaKey_CoveredTaxon (
+        mediaKey_fk integer not null,
+        coveredTaxon_fk integer not null,
+        primary key (mediaKey_fk, coveredTaxon_fk)
+    );
+
+
+    create table MediaKey_NamedArea (
+        media_id integer not null,
+        geographicalScope_id integer not null,
+        primary key (media_id, geographicalScope_id)
+    );
+
+    create table MediaKey_NamedArea_AUD (
+        REV integer not null,
+        media_id integer not null,
+        geographicalScope_id integer not null,
+        revtype tinyint,
+        primary key (REV, media_id, geographicalScope_id)
+    );
+
+	create table MediaKey_Scope (
+        MediaKey_id integer not null,
+        scopes_id integer not null,
+        primary key (MediaKey_id, scopes_id)
+    );
+
+    create table MediaKey_Scope_AUD (
+        REV integer not null,
+        MediaKey_id integer not null,
+        scopes_id integer not null,
+        revtype tinyint,
+        primary key (REV, MediaKey_id, scopes_id)
+    );
+
     create table MediaKey_Taxon (
         mediaKey_fk integer not null,
         taxon_fk integer not null,
@@ -2083,6 +2114,14 @@
         taxon_fk integer not null,
         revtype tinyint,
         primary key (REV, mediaKey_fk, taxon_fk)
+    );
+
+    create table MediaKey_CoveredTaxon_AUD (
+        REV integer not null,
+        mediaKey_fk integer not null,
+        coveredTaxon_fk integer not null,
+        revtype tinyint,
+        primary key (REV, mediaKey_fk, coveredTaxon_fk)
     );
 
     create table MediaRepresentation (
@@ -5839,51 +5878,6 @@
         foreign key (REV) 
         references AuditEvent;
 
-	alter table FeatureNode_DefinedTermBase_OnlyApplicable 
-        add constraint FKBF6E4BB4F1E5455D
-        foreign key (FeatureNode_id) 
-        references FeatureNode;
-
-    alter table FeatureNode_DefinedTermBase_OnlyApplicable 
-        add constraint FKB1BC50ACADE229F4 
-        foreign key (OnlyApplicable_id) 
-        references State;
-
-    alter table FeatureNode_DefinedTermBase_OnlyApplicable_AUD 
-        add constraint FK0141BD2D37AB4CA4 
-        foreign key (REV) 
-        references AuditEvent;
-
-	alter table FeatureNode_DefinedTermBase_InapplicableIf 
-        add constraint FK8B4B3E615715620D
-        foreign key (FeatureNode_id) 
-        references FeatureNode;
-
-    alter table FeatureNode_DefinedTermBase_InapplicableIf 
-        add constraint FK404AA63485F94D6E
-        foreign key (InapplicableIf_id) 
-        references State;
-
-    alter table FeatureNode_DefinedTermBase_InapplicableIf_AUD 
-        add constraint FK8A2DE6f1C856AE80 
-        foreign key (REV) 
-        references AuditEvent;
-
-	alter table FeatureNode_Question 
-        add constraint 9B1410F03C6A411A
-        foreign key (FeatureNode_id) 
-        references FeatureNode;
-
-    alter table FeatureNode_Question 
-        add constraint 8D2234F48AF8471C
-        foreign key (questions_id) 
-        references Representation;
-
-    alter table FeatureNode_Question_AUD 
-        add constraint 72595A8589344fD6 
-        foreign key (REV) 
-        references AuditEvent;
-
 /*	alter table FeatureNode_DefinedTermBase_OnlyApplicable 
         add constraint FKBF6E4BB4F1E5455D
         foreign key (FeatureNode_id) 
@@ -6346,7 +6340,7 @@
 
     alter table MediaKey_NamedArea 
         add constraint FK4772422A418A4BEA 
-        foreign key (MediaKey_id) 
+        foreign key (media_id) 
         references Media;
 
     alter table MediaKey_NamedArea 

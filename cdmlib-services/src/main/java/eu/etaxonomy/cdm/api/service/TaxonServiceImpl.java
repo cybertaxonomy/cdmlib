@@ -742,7 +742,9 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 			} 
 		}
 		
-		Collections.sort(results);
+		//FIXME does not work any more after model change
+		logger.warn("Sort does currently not work on identifiable entities due to model changes (duplicated implementation of the Comparable interface).");
+		//Collections.sort(results);
 		return new DefaultPagerImpl<IdentifiableEntity>
 			(configurator.getPageNumber(), numberOfResults, configurator.getPageSize(), results);
 	}
@@ -752,7 +754,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 	 * remove, clearly this method is never used
 	 */
 	public <TYPE extends TaxonBase> Pager<TYPE> list(Class<TYPE> type,	Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,	List<String> propertyPaths) {
-		// TODO Auto-generated method stub
+		logger.warn("Pager<TYPE> list(xxx) method not yet implemented");
 		return null;
 	}
 
