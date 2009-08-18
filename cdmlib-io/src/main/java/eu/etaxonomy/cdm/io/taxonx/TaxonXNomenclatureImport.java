@@ -294,7 +294,7 @@ public class TaxonXNomenclatureImport extends CdmIoBase<TaxonXImportState> imple
 					String uninomial = epis[0].trim();
 					String specEpi = epis[1].trim();
 					
-					Pager<TaxonNameBase> nameTypes = getNameService().searchNames(uninomial, null, specEpi, null, Rank.SPECIES(), null, null);
+					Pager<TaxonNameBase> nameTypes = getNameService().searchNames(uninomial, null, specEpi, null, Rank.SPECIES(), null, null, null, null);
 					
 					List<NonViralName> result = new ArrayList<NonViralName>();
 					for (TaxonNameBase nt : nameTypes.getRecords()){
