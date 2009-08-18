@@ -61,7 +61,6 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 @Indexed(index = "eu.etaxonomy.cdm.model.media.Media")
 @Audited
 public class MediaKey extends Media implements IIdentificationKey{
-
 	private static final long serialVersionUID = -29095811051894471L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(MediaKey.class);
