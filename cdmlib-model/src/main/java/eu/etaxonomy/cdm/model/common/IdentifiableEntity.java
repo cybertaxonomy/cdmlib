@@ -434,8 +434,8 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 		
 		public String generateTitle() {
 			if (cacheStrategy == null){
-				logger.warn("No CacheStrategy defined for "+ this.getClass() + ": " + this.getUuid());
-				return null;
+				//logger.warn("No CacheStrategy defined for "+ this.getClass() + ": " + this.getUuid());
+				return this.getClass() + ": " + this.getUuid();
 			}else{
 				return cacheStrategy.getTitleCache(this);
 			}
