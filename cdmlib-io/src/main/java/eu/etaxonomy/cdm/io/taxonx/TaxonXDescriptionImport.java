@@ -123,8 +123,8 @@ public class TaxonXDescriptionImport extends CdmIoBase<TaxonXImportState> implem
 			if (!"".equals(CdmUtils.Nz(text).trim())){
 				// FIXME hibernate throws an exception when a string is longer than approx. 4000 chars.
 				// for now we truncate any description text to 4000 characters.
-				if(text.length() > 4000){
-					text = text.substring(0, 3900) + "... [text truncated]";
+				if(text.length() > 65500){
+					text = text.substring(0, 65500) + "... [text truncated]";
 					logger.warn("FIXME - Truncation of text occurred.");
 				}
 				

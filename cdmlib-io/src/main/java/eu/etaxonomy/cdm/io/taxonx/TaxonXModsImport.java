@@ -21,6 +21,7 @@ import org.springframework.stereotype.Component;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.CdmIoBase;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
+import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
@@ -71,7 +72,11 @@ public class TaxonXModsImport extends CdmIoBase<TaxonXImportState> implements IC
 				StrictReferenceBase<?> ref = Generic.NewInstance();
 				//TitleInfo
 				Element elTitleInfo = elMods.getChild("titleInfo", nsMods);
-				success &= makeTitleInfo(elTitleInfo, ref);
+				if (elTitleInfo != null){
+					success &= makeTitleInfo(elTitleInfo, ref);
+				}else{
+					logger.warn("TitleInfo element is missing in " + state.getConfig().getSource());
+				}
 				//mods name
 				Element elModsName = elMods.getChild("name", nsMods);
 				success &= makeModsName(elModsName, ref);
@@ -159,19 +164,56 @@ public class TaxonXModsImport extends CdmIoBase<TaxonXImportState> implements IC
 	 * @param elModsName
 	 * @param ref
 	 */
+	//TODO
+	//THIS implementation is against the mods semantics but supports the current
+	//format for palmae taxonX files
+	//The later has to be changed and this part has to be adapted
 	private boolean makeModsName(Element elModsName, ReferenceBase<?> ref) {
+		int UNPARSED = 0;
+		int PARSED = 1;
 		Namespace nsMods = elModsName.getNamespace();
 		List<Content> contentList = elModsName.getContent();
+		Team authorTeam = Team.NewInstance();
 		
 		//name
-		Element elNamePart = elModsName.getChild("namePart", nsMods);
-		if (elNamePart != null){
-			String namePart = elNamePart.getTextNormalize();
-			contentList.remove(elNamePart);
-			Team authorTeam = Team.NewInstance();
-			authorTeam.setTitleCache(namePart);
-			ref.setAuthorTeam(authorTeam);
+		List<Element> elNameParts = elModsName.getChildren("namePart", nsMods);
+		int mode = UNPARSED;
+		if (elNameParts.size() > 0){
+			if (elNameParts.get(0).getAttributes().size() > 0){
+				mode = PARSED;
+			}
 		}
+		
+		if (mode == 0){
+			Element elNamePart = elNameParts.get(0); 
+			if (elNamePart != null){
+				String namePart = elNamePart.getTextNormalize();
+				contentList.remove(elNamePart);
+				authorTeam.setTitleCache(namePart);
+			}
+			if (elNameParts.size()> 1){
+				logger.warn("Multiple nameparts of unexpected type");
+			}
+		}else{
+			
+			Person lastTeamMember = Person.NewInstance();
+			List<Element> tmpNamePartList = new ArrayList<Element>();
+			tmpNamePartList.addAll(elNameParts);
+			for (Element elNamePart: tmpNamePartList){
+				if (elNamePart.getAttributeValue("type").equals("family")){
+					lastTeamMember = Person.NewInstance();
+					authorTeam.addTeamMember(lastTeamMember);
+					lastTeamMember.setLastname(elNamePart.getTextNormalize());
+				}else if (elNamePart.getAttributeValue("type").equals("given")){
+					lastTeamMember.setFirstname(elNamePart.getTextNormalize());
+				}else{
+					logger.warn("Unsupport name part type");
+				}
+				contentList.remove(elNamePart);
+			}
+		}
+		ref.setAuthorTeam(authorTeam);
+		
 		removeEmptyContent(contentList);
 		for (Content o: contentList){
 			logger.warn(o + " (in mods:name) not yet implemented for mods import");
