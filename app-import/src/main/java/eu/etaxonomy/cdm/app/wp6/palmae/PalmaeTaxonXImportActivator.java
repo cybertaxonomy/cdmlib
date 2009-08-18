@@ -12,7 +12,6 @@ package eu.etaxonomy.cdm.app.wp6.palmae;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.springframework.transaction.TransactionStatus;
