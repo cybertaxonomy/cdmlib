@@ -267,7 +267,7 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 			String associatedEntityName = entityType.getAssociatedEntityName();
 			Class entityClass = Class.forName(associatedEntityName);
 			if (entityClass.isInterface()){
-				System.out.println("So ein interface");
+				System.out.println("There is an interface");
 			}
 			if (entityClass.isAssignableFrom(referencedClass)){
 				makeSingleProperty(referencedClass, entityClass, propertyName, cdmClass, result, isCollection);
@@ -282,7 +282,7 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 			Field field = cdmClass.getDeclaredField(propertyName);
 			Class returnType = field.getType();
 			if (returnType.isInterface()){
-				System.out.println("So ein interface");
+				System.out.println("There is an interface");
 			}
 			if (returnType.isAssignableFrom(referencedClass)){
 				makeSingleProperty(referencedClass, returnType, propertyName, cdmClass, result, isCollection);
