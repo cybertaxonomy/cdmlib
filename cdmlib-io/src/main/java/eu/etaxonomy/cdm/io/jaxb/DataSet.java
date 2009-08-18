@@ -46,7 +46,7 @@ import eu.etaxonomy.cdm.model.description.AbsenceTerm;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.FeatureNode;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
-import eu.etaxonomy.cdm.model.description.IdentificationKey;
+import eu.etaxonomy.cdm.model.description.MediaKey;
 import eu.etaxonomy.cdm.model.description.MeasurementUnit;
 import eu.etaxonomy.cdm.model.description.Modifier;
 import eu.etaxonomy.cdm.model.description.PresenceTerm;
@@ -277,7 +277,7 @@ public class DataSet {
     @XmlElementWrapper(name = "Media")
     @XmlElements({
       @XmlElement(name = "Media", namespace = "http://etaxonomy.eu/cdm/model/media/1.0", type = Media.class),
-      @XmlElement(name = "IdentificationKey", namespace = "http://etaxonomy.eu/cdm/model/description/1.0", type = IdentificationKey.class)
+      @XmlElement(name = "MediaKey", namespace = "http://etaxonomy.eu/cdm/model/description/1.0", type = MediaKey.class)
     })
     protected List<Media> media = new ArrayList<Media>();
     

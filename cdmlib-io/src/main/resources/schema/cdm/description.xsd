@@ -49,7 +49,7 @@
 
   <xs:element name="IndividualsAssociation" type="description:IndividualsAssociation"/>
   
-  <xs:element name="IdentificationKey" type="description:IdentificationKey"/>
+  <xs:element name="MediaKey" type="description:MediaKey"/>
 
   <xs:element name="MeasurementUnit" type="description:MeasurementUnit"/>
 
@@ -87,7 +87,7 @@
 
   <xs:element name="TextFormat" type="description:TextFormat"/>
   
-  <xs:complexType name="IdentificationKey">
+  <xs:complexType name="MediaKey">
     <xs:complexContent>
       <xs:extension base="media:Media">
         <xs:sequence>
