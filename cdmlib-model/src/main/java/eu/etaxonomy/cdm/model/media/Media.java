@@ -65,7 +65,6 @@ import eu.etaxonomy.cdm.model.common.LanguageString;
     "mediaCreated",
     "description",
     "representations",
-    "rights",
     "artist"
 })
 @XmlRootElement(name = "Media")
