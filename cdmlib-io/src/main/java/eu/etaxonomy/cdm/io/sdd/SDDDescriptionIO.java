@@ -106,7 +106,7 @@ public class SDDDescriptionIO extends CdmImportBase<SDDImportConfigurator, SDDIm
 	private Map<String,TaxonDescription> taxonDescriptions = new HashMap<String,TaxonDescription>();
 	private Map<String,NonViralName> taxonNameBases = new HashMap<String,NonViralName>();
 	private Map<String,MeasurementUnit> units = new HashMap<String,MeasurementUnit>();
-	
+
 	private Set<AnnotationType> annotationTypes = new HashSet<AnnotationType>();
 	private Set<Feature> featureSet = new HashSet<Feature>();
 
@@ -137,10 +137,10 @@ public class SDDDescriptionIO extends CdmImportBase<SDDImportConfigurator, SDDIm
 		return result;
 	}
 
-//	@Override
-//	public boolean doInvoke(IImportConfigurator config, Map<String, MapWrapper<? extends CdmBase>> stores){
-		@Override
-		public boolean doInvoke(SDDImportState state){
+	//	@Override
+	//	public boolean doInvoke(IImportConfigurator config, Map<String, MapWrapper<? extends CdmBase>> stores){
+	@Override
+	public boolean doInvoke(SDDImportState state){
 
 		TransactionStatus ts = startTransaction();
 		SDDImportConfigurator sddConfig = state.getConfig();
@@ -277,41 +277,7 @@ public class SDDDescriptionIO extends CdmImportBase<SDDImportConfigurator, SDDIm
 			langLabDet.put(language, labDet);
 		}
 
-		if (ve instanceof IdentifiableEntity) {
-			IdentifiableEntity ie = (IdentifiableEntity) ve;
-			List<String> labDet = null;
-			
-			if (ve instanceof TaxonNameBase) {
-				if (langLabDet.keySet().contains(getTermService().getLanguageByIso("la"))) {
-					labDet = langLabDet.get(getTermService().getLanguageByIso("la"));
-				} else if (langLabDet.keySet().contains(datasetLanguage)) {
-					labDet = langLabDet.get(datasetLanguage);
-					logger.info("TaxonName " + (String)ImportHelper.getXmlInputValue(elRepresentation, "Label",sddNamespace) + " is not specified as a latin name.");
-				} else {
-					labDet = langLabDet.get(langLabDet.keySet().iterator().next());
-					logger.info("TaxonName " + (String)ImportHelper.getXmlInputValue(elRepresentation, "Label",sddNamespace) + " is not specified as a latin name.");
-				}
-			} else {
-				labDet = langLabDet.get(langLabDet.keySet().iterator().next());
-			}
-			
-			ie.setTitleCache(labDet.get(0));
-
-			if (labDet.size()>1) {
-				Annotation annotation = null;
-				if (labDet.get(1) != null) {
-					if (labDet.get(2) != null) {
-						annotation = Annotation.NewInstance(labDet.get(2) + " - " + labDet.get(1), datasetLanguage);
-					} else {
-						annotation = Annotation.NewInstance(labDet.get(1), datasetLanguage);
-					}
-				}
-				ie.addAnnotation(annotation);
-			}
-
-			ve = ie;
-
-		} else if (ve instanceof TermBase) {
+		if (ve instanceof TermBase) {
 			TermBase tb = (TermBase) ve;
 
 			for (Iterator<Language> l = langLabDet.keySet().iterator() ; l.hasNext() ;){
@@ -341,6 +307,40 @@ public class SDDDescriptionIO extends CdmImportBase<SDDImportConfigurator, SDDIm
 				}
 				ve = m;
 			}
+
+		} else if (ve instanceof IdentifiableEntity) {
+			IdentifiableEntity ie = (IdentifiableEntity) ve;
+			List<String> labDet = null;
+
+			if (ve instanceof TaxonNameBase) {
+				if (langLabDet.keySet().contains(getTermService().getLanguageByIso("la"))) {
+					labDet = langLabDet.get(getTermService().getLanguageByIso("la"));
+				} else if (langLabDet.keySet().contains(datasetLanguage)) {
+					labDet = langLabDet.get(datasetLanguage);
+					logger.info("TaxonName " + (String)ImportHelper.getXmlInputValue(elRepresentation, "Label",sddNamespace) + " is not specified as a latin name.");
+				} else {
+					labDet = langLabDet.get(langLabDet.keySet().iterator().next());
+					logger.info("TaxonName " + (String)ImportHelper.getXmlInputValue(elRepresentation, "Label",sddNamespace) + " is not specified as a latin name.");
+				}
+			} else {
+				labDet = langLabDet.get(langLabDet.keySet().iterator().next());
+			}
+
+			ie.setTitleCache(labDet.get(0));
+
+			if (labDet.size()>1) {
+				Annotation annotation = null;
+				if (labDet.get(1) != null) {
+					if (labDet.get(2) != null) {
+						annotation = Annotation.NewInstance(labDet.get(2) + " - " + labDet.get(1), datasetLanguage);
+					} else {
+						annotation = Annotation.NewInstance(labDet.get(1), datasetLanguage);
+					}
+				}
+				ie.addAnnotation(annotation);
+			}
+
+			ve = ie;
 
 		}
 
@@ -438,8 +438,8 @@ public class SDDDescriptionIO extends CdmImportBase<SDDImportConfigurator, SDDIm
 				ed = editor.next();
 			}
 			// TODO updatedBy refactored to use a user account, so setting a person is no longer applicable
-//			sec.setUpdatedBy(ed);
-//			sourceReference.setUpdatedBy(ed);
+			//			sec.setUpdatedBy(ed);
+			//			sourceReference.setUpdatedBy(ed);
 		}
 
 		if (copyright != null) {
@@ -469,935 +469,935 @@ public class SDDDescriptionIO extends CdmImportBase<SDDImportConfigurator, SDDIm
 
 		//saving of all imported data into the CDM db
 		ITermService termService = getTermService();
-	for (Iterator<StateData> k = stateDatas.values().iterator() ; k.hasNext() ;){
-		StateData sd = k.next();
-		termService.saveTerm(sd.getState()); 
-	}
-	for (Iterator<Feature> k = features.values().iterator() ; k.hasNext() ;){
-		Feature feature = k.next();
-		termService.saveTerm(feature); 
-	}
-	if (units != null) {
-		for (Iterator<MeasurementUnit> k = units.values().iterator() ; k.hasNext() ;){
-			MeasurementUnit unit = k.next();
-			if (unit != null) {
-				termService.saveTerm(unit); 
+		for (Iterator<StateData> k = stateDatas.values().iterator() ; k.hasNext() ;){
+			StateData sd = k.next();
+			termService.saveTerm(sd.getState()); 
+		}
+		for (Iterator<Feature> k = features.values().iterator() ; k.hasNext() ;){
+			Feature feature = k.next();
+			termService.saveTerm(feature); 
+		}
+		if (units != null) {
+			for (Iterator<MeasurementUnit> k = units.values().iterator() ; k.hasNext() ;){
+				MeasurementUnit unit = k.next();
+				if (unit != null) {
+					termService.saveTerm(unit); 
+				}
 			}
 		}
-	}
-	for (Iterator<StatisticalMeasure> k = statisticalMeasures.iterator() ; k.hasNext() ;) {
-		StatisticalMeasure sm = k.next();
-		termService.saveTerm(sm); 
-	}
-	
-	for (Iterator<AnnotationType> at = annotationTypes.iterator() ; at.hasNext() ;) {
-		AnnotationType annotationType = at.next();
-		termService.saveTerm(annotationType); 
-	}
-
-	IReferenceService referenceService = getReferenceService();
-	// referenceService.saveReference(sourceReference); 
-	for (Iterator<ReferenceBase> k = publications.values().iterator() ; k.hasNext() ;){
-		Article publication = (Article) k.next();
-		referenceService.saveReference(publication); 
-	}
-
-	IAgentService agentService = getAgentService();
-	for (Iterator<Person> p = authors.values().iterator() ; p.hasNext() ;) {
-		Person person = p.next();
-		agentService.saveAgent(person);
-	}
-	
-	for (Iterator<Person> p = editors.values().iterator() ; p.hasNext() ;) {
-		Person person = p.next();
-		agentService.saveAgent(person);
-	}
-	
-	// Returns a CdmApplicationController created by the values of this configuration.
-	IDescriptionService descriptionService = getDescriptionService();
-	
-	for (Iterator<TaxonDescription> k = taxonDescriptions.values().iterator() ; k.hasNext() ;){
-		TaxonDescription taxonDescription = k.next();
-		// Persists a Description
-		descriptionService.saveDescription(taxonDescription); 
-	}
-
-//	descriptionService.saveFeatureNodeAll(featureNodes.values());
-	
-	for (Iterator<FeatureTree> k = featureTrees.iterator() ; k.hasNext() ;) {
-		FeatureTree tree = k.next();
-		descriptionService.saveFeatureTree(tree);
-	}
-
-}
-
-// imports the default language of the dataset
-protected void importDatasetLanguage(Element elDataset, SDDImportConfigurator sddConfig){
-	String nameLang = elDataset.getAttributeValue("lang",xmlNamespace);
-
-	if (!nameLang.equals("")) {
-		String iso = nameLang.substring(0, 2);
-		datasetLanguage = getTermService().getLanguageByIso(iso);
-	} else {
-		datasetLanguage = Language.ENGLISH();
-	}
-	if (datasetLanguage == null) {
-		datasetLanguage = Language.ENGLISH();
-	}
-}
-
-// imports the revision data associated with the Dataset (authors, modifications)
-protected void importRevisionData(Element elDataset, Namespace sddNamespace){
-	// <RevisionData>
-	logger.info("start RevisionData ...");
-	Element elRevisionData = elDataset.getChild("RevisionData",sddNamespace);
-
-	// <Creators>
-	Element elCreators = elRevisionData.getChild("Creators",sddNamespace);
-
-	// <Agent role="aut" ref="a1"/>
-	List<Element> listAgents = elCreators.getChildren("Agent", sddNamespace);
-
-	int j = 0;
-	//for each Agent
-	for (Element elAgent : listAgents){
-
-		String role = elAgent.getAttributeValue("role");
-		String ref = elAgent.getAttributeValue("ref");
-		if (role.equals("aut")) {
-			if(!ref.equals("")) {
-				authors.put(ref, null);
-			}
-		}
-		if (role.equals("edt")) {
-			if(!ref.equals("")) {
-				editors.put(ref, null);
-			}
+		for (Iterator<StatisticalMeasure> k = statisticalMeasures.iterator() ; k.hasNext() ;) {
+			StatisticalMeasure sm = k.next();
+			termService.saveTerm(sm); 
 		}
 
-		if ((++j % modCount) == 0){ logger.info("Agents handled: " + j);}
+		for (Iterator<AnnotationType> at = annotationTypes.iterator() ; at.hasNext() ;) {
+			AnnotationType annotationType = at.next();
+			termService.saveTerm(annotationType); 
+		}
+
+		IReferenceService referenceService = getReferenceService();
+		// referenceService.saveReference(sourceReference); 
+		for (Iterator<ReferenceBase> k = publications.values().iterator() ; k.hasNext() ;){
+			Article publication = (Article) k.next();
+			referenceService.saveReference(publication); 
+		}
+
+		IAgentService agentService = getAgentService();
+		for (Iterator<Person> p = authors.values().iterator() ; p.hasNext() ;) {
+			Person person = p.next();
+			agentService.saveAgent(person);
+		}
+
+		for (Iterator<Person> p = editors.values().iterator() ; p.hasNext() ;) {
+			Person person = p.next();
+			agentService.saveAgent(person);
+		}
+
+		// Returns a CdmApplicationController created by the values of this configuration.
+		IDescriptionService descriptionService = getDescriptionService();
+
+		for (Iterator<TaxonDescription> k = taxonDescriptions.values().iterator() ; k.hasNext() ;){
+			TaxonDescription taxonDescription = k.next();
+			// Persists a Description
+			descriptionService.saveDescription(taxonDescription); 
+		}
+
+		//	descriptionService.saveFeatureNodeAll(featureNodes.values());
+
+		for (Iterator<FeatureTree> k = featureTrees.iterator() ; k.hasNext() ;) {
+			FeatureTree tree = k.next();
+			descriptionService.saveFeatureTree(tree);
+		}
 
 	}
 
-	// <DateModified>2006-04-08T00:00:00</DateModified>
-	String stringDateModified = (String)ImportHelper.getXmlInputValue(elRevisionData, "DateModified",sddNamespace);
+	// imports the default language of the dataset
+	protected void importDatasetLanguage(Element elDataset, SDDImportConfigurator sddConfig){
+		String nameLang = elDataset.getAttributeValue("lang",xmlNamespace);
 
-	if (stringDateModified != null) {
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss");
-		Date d = null;
-		try {
-			d = sdf.parse(stringDateModified);
-		} catch(Exception e) {
-			System.err.println("Exception :");
-			e.printStackTrace();
+		if (!nameLang.equals("")) {
+			String iso = nameLang.substring(0, 2);
+			datasetLanguage = getTermService().getLanguageByIso(iso);
+		} else {
+			datasetLanguage = Language.ENGLISH();
 		}
-
-		DateTime updated = null;
-		if (d != null) {
-			updated = new DateTime(d);
-			sourceReference.setUpdated(updated);
-			sec.setUpdated(updated);
+		if (datasetLanguage == null) {
+			datasetLanguage = Language.ENGLISH();
 		}
 	}
-}
 
-// imports ipr statements associated with a dataset
-protected void importIPRStatements(Element elDataset, Namespace sddNamespace, SDDImportConfigurator sddConfig){
-	// <IPRStatements>
-	logger.info("start IPRStatements ...");
-	Element elIPRStatements = elDataset.getChild("IPRStatements",sddNamespace);
-	// <IPRStatement role="Copyright">
-	if (elIPRStatements != null) {
-		List<Element> listIPRStatements = elIPRStatements.getChildren("IPRStatement", sddNamespace);
+	// imports the revision data associated with the Dataset (authors, modifications)
+	protected void importRevisionData(Element elDataset, Namespace sddNamespace){
+		// <RevisionData>
+		logger.info("start RevisionData ...");
+		Element elRevisionData = elDataset.getChild("RevisionData",sddNamespace);
+
+		// <Creators>
+		Element elCreators = elRevisionData.getChild("Creators",sddNamespace);
+
+		// <Agent role="aut" ref="a1"/>
+		List<Element> listAgents = elCreators.getChildren("Agent", sddNamespace);
+
 		int j = 0;
-		//for each IPRStatement
+		//for each Agent
+		for (Element elAgent : listAgents){
 
-		for (Element elIPRStatement : listIPRStatements){
-
-			String role = elIPRStatement.getAttributeValue("role");
-			// <Label xml:lang="en-au">(c) 2003-2006 Centre for Occasional Botany.</Label>
-			Element elLabel = elIPRStatement.getChild("Label",sddNamespace);
-			String lang = "";
-			if (elLabel != null) {
-				lang = elLabel.getAttributeValue("lang",xmlNamespace);
+			String role = elAgent.getAttributeValue("role");
+			String ref = elAgent.getAttributeValue("ref");
+			if (role.equals("aut")) {
+				if(!ref.equals("")) {
+					authors.put(ref, null);
+				}
 			}
-			String label = (String)ImportHelper.getXmlInputValue(elIPRStatement, "Label",sddNamespace);
+			if (role.equals("edt")) {
+				if(!ref.equals("")) {
+					editors.put(ref, null);
+				}
+			}
 
-			if (role.equals("Copyright")) {
-				Language iprLanguage = null;
-				if (lang != null) {
-					if (!lang.equals("")) {
-						iprLanguage = getTermService().getLanguageByIso(lang.substring(0, 2));
-						//iprLanguage = datasetLanguage;
-					} else {
+			if ((++j % modCount) == 0){ logger.info("Agents handled: " + j);}
+
+		}
+
+		// <DateModified>2006-04-08T00:00:00</DateModified>
+		String stringDateModified = (String)ImportHelper.getXmlInputValue(elRevisionData, "DateModified",sddNamespace);
+
+		if (stringDateModified != null) {
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss");
+			Date d = null;
+			try {
+				d = sdf.parse(stringDateModified);
+			} catch(Exception e) {
+				System.err.println("Exception :");
+				e.printStackTrace();
+			}
+
+			DateTime updated = null;
+			if (d != null) {
+				updated = new DateTime(d);
+				sourceReference.setUpdated(updated);
+				sec.setUpdated(updated);
+			}
+		}
+	}
+
+	// imports ipr statements associated with a dataset
+	protected void importIPRStatements(Element elDataset, Namespace sddNamespace, SDDImportConfigurator sddConfig){
+		// <IPRStatements>
+		logger.info("start IPRStatements ...");
+		Element elIPRStatements = elDataset.getChild("IPRStatements",sddNamespace);
+		// <IPRStatement role="Copyright">
+		if (elIPRStatements != null) {
+			List<Element> listIPRStatements = elIPRStatements.getChildren("IPRStatement", sddNamespace);
+			int j = 0;
+			//for each IPRStatement
+
+			for (Element elIPRStatement : listIPRStatements){
+
+				String role = elIPRStatement.getAttributeValue("role");
+				// <Label xml:lang="en-au">(c) 2003-2006 Centre for Occasional Botany.</Label>
+				Element elLabel = elIPRStatement.getChild("Label",sddNamespace);
+				String lang = "";
+				if (elLabel != null) {
+					lang = elLabel.getAttributeValue("lang",xmlNamespace);
+				}
+				String label = (String)ImportHelper.getXmlInputValue(elIPRStatement, "Label",sddNamespace);
+
+				if (role.equals("Copyright")) {
+					Language iprLanguage = null;
+					if (lang != null) {
+						if (!lang.equals("")) {
+							iprLanguage = getTermService().getLanguageByIso(lang.substring(0, 2));
+							//iprLanguage = datasetLanguage;
+						} else {
+							iprLanguage = datasetLanguage;
+						}
+					}
+					if (iprLanguage == null) {
 						iprLanguage = datasetLanguage;
 					}
+					copyright = Rights.NewInstance(label, iprLanguage);
 				}
-				if (iprLanguage == null) {
-					iprLanguage = datasetLanguage;
+
+				if (copyright != null) {
+					sourceReference.addRights(copyright);
+					sec.addRights(copyright);
 				}
-				copyright = Rights.NewInstance(label, iprLanguage);
+
+				if ((++j % modCount) == 0){ logger.info("IPRStatements handled: " + j);}
+
 			}
-
-			if (copyright != null) {
-				sourceReference.addRights(copyright);
-				sec.addRights(copyright);
-			}
-
-			if ((++j % modCount) == 0){ logger.info("IPRStatements handled: " + j);}
-
 		}
 	}
-}
 
-// imports the taxon names
-protected void importTaxonNames(Element elDataset, Namespace sddNamespace, SDDImportConfigurator sddConfig){
-	// <TaxonNames>
-	logger.info("start TaxonNames ...");
-	Element elTaxonNames = elDataset.getChild("TaxonNames",sddNamespace);
-	// <TaxonName id="t1" uri="urn:lsid:authority:namespace:my-own-id">
-	if (elTaxonNames != null) {
-		List<Element> listTaxonNames = elTaxonNames.getChildren("TaxonName", sddNamespace);
-		int j = 0;
-		//for each TaxonName
-		for (Element elTaxonName : listTaxonNames){
+	// imports the taxon names
+	protected void importTaxonNames(Element elDataset, Namespace sddNamespace, SDDImportConfigurator sddConfig){
+		// <TaxonNames>
+		logger.info("start TaxonNames ...");
+		Element elTaxonNames = elDataset.getChild("TaxonNames",sddNamespace);
+		// <TaxonName id="t1" uri="urn:lsid:authority:namespace:my-own-id">
+		if (elTaxonNames != null) {
+			List<Element> listTaxonNames = elTaxonNames.getChildren("TaxonName", sddNamespace);
+			int j = 0;
+			//for each TaxonName
+			for (Element elTaxonName : listTaxonNames){
 
-			String id = elTaxonName.getAttributeValue("id");
-			String uri = elTaxonName.getAttributeValue("uri");
+				String id = elTaxonName.getAttributeValue("id");
+				String uri = elTaxonName.getAttributeValue("uri");
 
-			NonViralName tnb = null;
-			if (!id.equals("")) {
-				tnb = NonViralName.NewInstance(null);
-				OriginalSource source = null;
-				if (uri != null) {
-					if (!uri.equals("")) {
-						source = OriginalSource.NewInstance(id, "TaxonName", Generic.NewInstance(), uri);
+				NonViralName tnb = null;
+				if (!id.equals("")) {
+					tnb = NonViralName.NewInstance(null);
+					OriginalSource source = null;
+					if (uri != null) {
+						if (!uri.equals("")) {
+							source = OriginalSource.NewInstance(id, "TaxonName", Generic.NewInstance(), uri);
+						}
+					} else {
+						source = OriginalSource.NewInstance(id, "TaxonName");
 					}
-				} else {
-					source = OriginalSource.NewInstance(id, "TaxonName");
+					tnb.addSource(source);
+					taxonNameBases.put(id,tnb);
 				}
-				tnb.addSource(source);
-				taxonNameBases.put(id,tnb);
+
+				// <Representation>
+				// <Label xml:lang="la">Viola hederacea Labill.</Label>
+				importRepresentation(elTaxonName, sddNamespace, tnb, id, sddConfig);
+
+				if ((++j % modCount) == 0){ logger.info("TaxonNames handled: " + j);}
+
 			}
-
-			// <Representation>
-			// <Label xml:lang="la">Viola hederacea Labill.</Label>
-			importRepresentation(elTaxonName, sddNamespace, tnb, id, sddConfig);
-
-			if ((++j % modCount) == 0){ logger.info("TaxonNames handled: " + j);}
-
 		}
 	}
-}
 
-// imports the representation (label, detail, lang) of a particular SDD element
-protected void importCharacters(Element elDataset, Namespace sddNamespace, SDDImportConfigurator sddConfig, boolean success){
-	// <Characters>
-	logger.info("start Characters ...");
-	Element elCharacters = elDataset.getChild("Characters", sddNamespace);
+	// imports the representation (label, detail, lang) of a particular SDD element
+	protected void importCharacters(Element elDataset, Namespace sddNamespace, SDDImportConfigurator sddConfig, boolean success){
+		// <Characters>
+		logger.info("start Characters ...");
+		Element elCharacters = elDataset.getChild("Characters", sddNamespace);
 
-	// <CategoricalCharacter id="c1">
-	if (elCharacters != null) {
-		List<Element> elCategoricalCharacters = elCharacters.getChildren("CategoricalCharacter", sddNamespace);
-		int j = 0;
-		//for each CategoricalCharacter
-		for (Element elCategoricalCharacter : elCategoricalCharacters){
+		// <CategoricalCharacter id="c1">
+		if (elCharacters != null) {
+			List<Element> elCategoricalCharacters = elCharacters.getChildren("CategoricalCharacter", sddNamespace);
+			int j = 0;
+			//for each CategoricalCharacter
+			for (Element elCategoricalCharacter : elCategoricalCharacters){
 
-			try {
+				try {
 
-				String idCC = elCategoricalCharacter.getAttributeValue("id");
+					String idCC = elCategoricalCharacter.getAttributeValue("id");
 
-				// <Representation>
-				//  <Label> Leaf complexity</Label>
-				// </Representation>
-
-				Feature categoricalCharacter = Feature.NewInstance();
-				categoricalCharacter.setKindOf(Feature.DESCRIPTION());
-				importRepresentation(elCategoricalCharacter, sddNamespace, categoricalCharacter, idCC, sddConfig);
-
-				categoricalCharacter.setSupportsCategoricalData(true);
-
-				// <States>
-				Element elStates = elCategoricalCharacter.getChild("States",sddNamespace);
-
-				// <StateDefinition id="s1">
-				List<Element> elStateDefinitions = elStates.getChildren("StateDefinition",sddNamespace);
-				TermVocabulary<State> termVocabularyState = new TermVocabulary<State>();
-
-				int k = 0;
-				//for each StateDefinition
-				for (Element elStateDefinition : elStateDefinitions){
-
-					if ((++k % modCount) == 0){ logger.info("StateDefinitions handled: " + (k-1));}
-
-					String idSD = elStateDefinition.getAttributeValue("id");
 					// <Representation>
-					//  <Label>Simple</Label>
-					//  <MediaObject ref="ib" role="Primary"/>
+					//  <Label> Leaf complexity</Label>
 					// </Representation>
-					State state = State.NewInstance();
-					importRepresentation(elStateDefinition, sddNamespace, state, idSD, sddConfig);
 
-					StateData stateData = StateData.NewInstance();
-					stateData.setState(state);
-					termVocabularyState.addTerm(state);
-					stateDatas.put(idSD,stateData);
+					Feature categoricalCharacter = Feature.NewInstance();
+					categoricalCharacter.setKindOf(Feature.DESCRIPTION());
+					importRepresentation(elCategoricalCharacter, sddNamespace, categoricalCharacter, idCC, sddConfig);
+
+					categoricalCharacter.setSupportsCategoricalData(true);
+
+					// <States>
+					Element elStates = elCategoricalCharacter.getChild("States",sddNamespace);
+
+					// <StateDefinition id="s1">
+					List<Element> elStateDefinitions = elStates.getChildren("StateDefinition",sddNamespace);
+					TermVocabulary<State> termVocabularyState = new TermVocabulary<State>();
+
+					int k = 0;
+					//for each StateDefinition
+					for (Element elStateDefinition : elStateDefinitions){
+
+						if ((++k % modCount) == 0){ logger.info("StateDefinitions handled: " + (k-1));}
+
+						String idSD = elStateDefinition.getAttributeValue("id");
+						// <Representation>
+						//  <Label>Simple</Label>
+						//  <MediaObject ref="ib" role="Primary"/>
+						// </Representation>
+						State state = State.NewInstance();
+						importRepresentation(elStateDefinition, sddNamespace, state, idSD, sddConfig);
+
+						StateData stateData = StateData.NewInstance();
+						stateData.setState(state);
+						termVocabularyState.addTerm(state);
+						stateDatas.put(idSD,stateData);
+					}
+
+					categoricalCharacter.addSupportedCategoricalEnumeration(termVocabularyState);
+					features.put(idCC, categoricalCharacter);
+
+				} catch (Exception e) {
+					//FIXME
+					logger.warn("Import of CategoricalCharacter " + j + " failed.");
+					success = false; 
 				}
 
-				categoricalCharacter.addSupportedCategoricalEnumeration(termVocabularyState);
-				features.put(idCC, categoricalCharacter);
+				if ((++j % modCount) == 0){ logger.info("CategoricalCharacters handled: " + j);}
 
-			} catch (Exception e) {
-				//FIXME
-				logger.warn("Import of CategoricalCharacter " + j + " failed.");
-				success = false; 
 			}
 
-			if ((++j % modCount) == 0){ logger.info("CategoricalCharacters handled: " + j);}
+			// <QuantitativeCharacter id="c2">
+			List<Element> elQuantitativeCharacters = elCharacters.getChildren("QuantitativeCharacter", sddNamespace);
+			j = 0;
+			//for each QuantitativeCharacter
+			for (Element elQuantitativeCharacter : elQuantitativeCharacters){
 
-		}
+				try {
 
-		// <QuantitativeCharacter id="c2">
-		List<Element> elQuantitativeCharacters = elCharacters.getChildren("QuantitativeCharacter", sddNamespace);
-		j = 0;
-		//for each QuantitativeCharacter
-		for (Element elQuantitativeCharacter : elQuantitativeCharacters){
+					String idQC = elQuantitativeCharacter.getAttributeValue("id");
 
-			try {
+					// <Representation>
+					//  <Label>Leaf length</Label>
+					// </Representation>
+					Feature quantitativeCharacter = Feature.NewInstance();
+					quantitativeCharacter.setKindOf(Feature.DESCRIPTION());
+					importRepresentation(elQuantitativeCharacter, sddNamespace, quantitativeCharacter, idQC, sddConfig);
 
-				String idQC = elQuantitativeCharacter.getAttributeValue("id");
+					quantitativeCharacter.setSupportsQuantitativeData(true);
 
-				// <Representation>
-				//  <Label>Leaf length</Label>
-				// </Representation>
-				Feature quantitativeCharacter = Feature.NewInstance();
-				quantitativeCharacter.setKindOf(Feature.DESCRIPTION());
-				importRepresentation(elQuantitativeCharacter, sddNamespace, quantitativeCharacter, idQC, sddConfig);
+					// <MeasurementUnit>
+					//  <Label role="Abbrev">m</Label>
+					// </MeasurementUnit>
+					Element elMeasurementUnit = elQuantitativeCharacter.getChild("MeasurementUnit",sddNamespace);
+					String label = "";
+					String role = "";
+					if (elMeasurementUnit != null) {
+						Element elLabel = elMeasurementUnit.getChild("Label",sddNamespace);
+						role = elLabel.getAttributeValue("role");
+						label = (String)ImportHelper.getXmlInputValue(elMeasurementUnit, "Label",sddNamespace);
+					}
 
-				quantitativeCharacter.setSupportsQuantitativeData(true);
-
-				// <MeasurementUnit>
-				//  <Label role="Abbrev">m</Label>
-				// </MeasurementUnit>
-				Element elMeasurementUnit = elQuantitativeCharacter.getChild("MeasurementUnit",sddNamespace);
-				String label = "";
-				String role = "";
-				if (elMeasurementUnit != null) {
-					Element elLabel = elMeasurementUnit.getChild("Label",sddNamespace);
-					role = elLabel.getAttributeValue("role");
-					label = (String)ImportHelper.getXmlInputValue(elMeasurementUnit, "Label",sddNamespace);
-				}
-
-				MeasurementUnit unit = null;
-				if (!label.equals("")){
-					if (role != null) {
-						if (role.equals("Abbrev")){
+					MeasurementUnit unit = null;
+					if (!label.equals("")){
+						if (role != null) {
+							if (role.equals("Abbrev")){
+								unit = MeasurementUnit.NewInstance(label,label,label);
+							}
+						} else {
 							unit = MeasurementUnit.NewInstance(label,label,label);
 						}
-					} else {
-						unit = MeasurementUnit.NewInstance(label,label,label);
 					}
-				}
 
-				if (unit != null) {
-					units.put(idQC, unit);
-				}
-
-				//<Default>
-				//  <MeasurementUnitPrefix>milli</MeasurementUnitPrefix>
-				//</Default>
-				Element elDefault = elQuantitativeCharacter.getChild("Default",sddNamespace);
-				if (elDefault != null) {
-					String measurementUnitPrefix = (String)ImportHelper.getXmlInputValue(elDefault, "MeasurementUnitPrefix",sddNamespace);
-					if (!measurementUnitPrefix.equals("")){
-						defaultUnitPrefixes.put(idQC, measurementUnitPrefix);
+					if (unit != null) {
+						units.put(idQC, unit);
 					}
+
+					//<Default>
+					//  <MeasurementUnitPrefix>milli</MeasurementUnitPrefix>
+					//</Default>
+					Element elDefault = elQuantitativeCharacter.getChild("Default",sddNamespace);
+					if (elDefault != null) {
+						String measurementUnitPrefix = (String)ImportHelper.getXmlInputValue(elDefault, "MeasurementUnitPrefix",sddNamespace);
+						if (!measurementUnitPrefix.equals("")){
+							defaultUnitPrefixes.put(idQC, measurementUnitPrefix);
+						}
+					}
+
+					features.put(idQC, quantitativeCharacter);
+
+				} catch (Exception e) {
+					//FIXME
+					logger.warn("Import of QuantitativeCharacter " + j + " failed.");
+					success = false; 
 				}
 
-				features.put(idQC, quantitativeCharacter);
+				if ((++j % modCount) == 0){ logger.info("QuantitativeCharacters handled: " + j);}
 
-			} catch (Exception e) {
-				//FIXME
-				logger.warn("Import of QuantitativeCharacter " + j + " failed.");
-				success = false; 
 			}
 
-			if ((++j % modCount) == 0){ logger.info("QuantitativeCharacters handled: " + j);}
+			// <TextCharacter id="c3">
+			List<Element> elTextCharacters = elCharacters.getChildren("TextCharacter", sddNamespace);
+			j = 0;
+			//for each TextCharacter
+			for (Element elTextCharacter : elTextCharacters){
+
+				try {
+
+					String idTC = elTextCharacter.getAttributeValue("id");
+
+					// <Representation>
+					//  <Label xml:lang="en">Leaf features not covered by other characters</Label>
+					// </Representation>
+					Feature textCharacter = Feature.NewInstance();
+					textCharacter.setKindOf(Feature.DESCRIPTION());
+					importRepresentation(elTextCharacter, sddNamespace, textCharacter, idTC, sddConfig);
+
+					textCharacter.setSupportsTextData(true);
+
+					features.put(idTC, textCharacter);
+
+				} catch (Exception e) {
+					//FIXME
+					logger.warn("Import of TextCharacter " + j + " failed.");
+					success = false; 
+				}
+
+				if ((++j % modCount) == 0){ logger.info("TextCharacters handled: " + j);}
+
+			}
 
 		}
 
-		// <TextCharacter id="c3">
-		List<Element> elTextCharacters = elCharacters.getChildren("TextCharacter", sddNamespace);
-		j = 0;
-		//for each TextCharacter
-		for (Element elTextCharacter : elTextCharacters){
-
-			try {
-
-				String idTC = elTextCharacter.getAttributeValue("id");
-
-				// <Representation>
-				//  <Label xml:lang="en">Leaf features not covered by other characters</Label>
-				// </Representation>
-				Feature textCharacter = Feature.NewInstance();
-				textCharacter.setKindOf(Feature.DESCRIPTION());
-				importRepresentation(elTextCharacter, sddNamespace, textCharacter, idTC, sddConfig);
-
-				textCharacter.setSupportsTextData(true);
-
-				features.put(idTC, textCharacter);
-
-			} catch (Exception e) {
-				//FIXME
-				logger.warn("Import of TextCharacter " + j + " failed.");
-				success = false; 
-			}
-
-			if ((++j % modCount) == 0){ logger.info("TextCharacters handled: " + j);}
-
+		for (Iterator<Feature> f = features.values().iterator() ; f.hasNext() ;){
+			featureSet.add(f.next());
 		}
 
 	}
-	
-	for (Iterator<Feature> f = features.values().iterator() ; f.hasNext() ;){
-		featureSet.add(f.next());
+
+	// imports the descriptions of taxa (specimens TODO)
+	protected void importCodedDescriptions(Element elDataset, Namespace sddNamespace, SDDImportConfigurator sddConfig, boolean success){
+		// <CodedDescriptions>
+		logger.info("start CodedDescriptions ...");
+		Element elCodedDescriptions = elDataset.getChild("CodedDescriptions",sddNamespace);
+
+		// <CodedDescription id="D101">
+
+		if (elCodedDescriptions != null) {
+			List<Element> listCodedDescriptions = elCodedDescriptions.getChildren("CodedDescription", sddNamespace);
+			int j = 0;
+			//for each CodedDescription
+
+			for (Element elCodedDescription : listCodedDescriptions){
+
+				try {
+
+					String idCD = elCodedDescription.getAttributeValue("id");
+
+					// <Representation>
+					//  <Label>&lt;i&gt;Viola hederacea&lt;/i&gt; Labill. as revised by R. Morris April 8, 2006</Label>
+					// </Representation>
+					TaxonDescription taxonDescription = TaxonDescription.NewInstance();
+					importRepresentation(elCodedDescription, sddNamespace, taxonDescription, idCD, sddConfig);
+
+					// <Scope>
+					//  <TaxonName ref="t1"/>
+					//  <Citation ref="p1" location="p. 30"/>
+					// </Scope>
+					Element elScope = elCodedDescription.getChild("Scope",sddNamespace);
+					String ref = "";
+					Taxon taxon = null;
+					if (elScope != null) {
+						Element elTaxonName = elScope.getChild("TaxonName",sddNamespace);
+						ref = elTaxonName.getAttributeValue("ref");
+
+						NonViralName taxonNameBase = taxonNameBases.get(ref);
+						taxon = Taxon.NewInstance(taxonNameBase, sec);
+					}
+
+					String refCitation = "";
+					String location = "";
+
+					if (elScope != null) {
+						Element elCitation = elScope.getChild("Citation",sddNamespace);
+						if (elCitation != null) {
+							refCitation = elCitation.getAttributeValue("ref");
+							location = elCitation.getAttributeValue("location");
+						}
+					}
+
+					// <SummaryData>
+					Element elSummaryData = elCodedDescription.getChild("SummaryData",sddNamespace);
+
+					if (elSummaryData != null) {
+
+						// <Categorical ref="c4">
+						List<Element> elCategoricals = elSummaryData.getChildren("Categorical", sddNamespace);
+						int k = 0;
+						//for each Categorical
+						for (Element elCategorical : elCategoricals){
+							if ((++k % modCount) == 0){ logger.info("Categorical handled: " + (k-1));}
+							ref = elCategorical.getAttributeValue("ref");
+							Feature feature = features.get(ref);
+							CategoricalData categoricalData = CategoricalData.NewInstance();
+							categoricalData.setFeature(feature);
+
+							// <State ref="s3"/>
+							List<Element> elStates = elCategorical.getChildren("State", sddNamespace);
+							int l = 0;
+							//for each State
+							for (Element elState : elStates){
+								if ((++l % modCount) == 0){ logger.info("States handled: " + (l-1));}
+								ref = elState.getAttributeValue("ref");
+								StateData stateData = stateDatas.get(ref);
+								categoricalData.addState(stateData);
+							}
+							taxonDescription.addElement(categoricalData);
+						}
+
+						// <Quantitative ref="c2">
+						List<Element> elQuantitatives = elSummaryData.getChildren("Quantitative", sddNamespace);
+						k = 0;
+						//for each Quantitative
+						for (Element elQuantitative : elQuantitatives){
+							if ((++k % modCount) == 0){ logger.info("Quantitative handled: " + (k-1));}
+							ref = elQuantitative.getAttributeValue("ref");
+							Feature feature = features.get(ref);
+							QuantitativeData quantitativeData = QuantitativeData.NewInstance();
+							quantitativeData.setFeature(feature);
+
+							MeasurementUnit unit = units.get(ref);
+							String prefix = defaultUnitPrefixes.get(ref);
+							if (unit != null) {
+								String u = unit.getLabel();
+								if (prefix != null) {
+									u = prefix + u;
+								}
+								unit.setLabel(u);
+								quantitativeData.setUnit(unit);
+							}
+
+							// <Measure type="Min" value="2.3"/>
+							List<Element> elMeasures = elQuantitative.getChildren("Measure", sddNamespace);
+							int l = 0;
+							//for each State
+							for (Element elMeasure : elMeasures){
+								if ((++l % modCount) == 0){ logger.info("States handled: " + (l-1));}
+								String type = elMeasure.getAttributeValue("type");
+								String value = elMeasure.getAttributeValue("value");
+								float v = Float.parseFloat(value);
+								StatisticalMeasure t = null;
+								if (type.equals("Min")) {
+									t = StatisticalMeasure.MIN();
+								} else if (type.equals("Mean")) {
+									t = StatisticalMeasure.AVERAGE();
+								} else if (type.equals("Max")) {
+									t = StatisticalMeasure.MAX();
+								} else if (type.equals("SD")) {
+									// Create a new StatisticalMeasure for standard deviation
+									t = StatisticalMeasure.STANDARD_DEVIATION();
+								} else if (type.equals("N")) {
+									t = StatisticalMeasure.SAMPLE_SIZE();
+								} else {
+									t = StatisticalMeasure.NewInstance(type,type,type);
+									statisticalMeasures.add(t);
+								}
+
+								StatisticalMeasurementValue statisticalValue = StatisticalMeasurementValue.NewInstance();
+								statisticalValue.setValue(v);
+								statisticalValue.setType(t);
+								quantitativeData.addStatisticalValue(statisticalValue);
+								featureData.add(statisticalValue);
+							}
+							taxonDescription.addElement(quantitativeData);
+						}
+
+						// <TextChar ref="c3">
+						List<Element> elTextChars = elSummaryData.getChildren("TextChar", sddNamespace);
+						k = 0;
+						//for each TextChar
+						for (Element elTextChar : elTextChars){
+							if ((++k % modCount) == 0){ logger.info("TextChar handled: " + (k-1));}
+							ref = elTextChar.getAttributeValue("ref");
+							Feature feature = features.get(ref);
+							TextData textData = TextData.NewInstance();
+							textData.setFeature(feature);
+
+							// <Content>Free form text</Content>
+							String content = (String)ImportHelper.getXmlInputValue(elTextChar, "Content",sddNamespace);
+							textData.putText(content, datasetLanguage);
+							taxonDescription.addElement(textData);
+						}
+
+					}
+
+					if (taxon != null) {
+						taxon.addDescription(taxonDescription);
+					}
+
+					if (!refCitation.equals("")){
+						citations.put(idCD,refCitation);
+					}
+
+					if (!location.equals("")){
+						locations.put(idCD, location);
+					}
+
+					taxonDescription.setDescriptiveSystem(featureSet);
+
+					taxonDescriptions.put(idCD, taxonDescription);
+
+				} catch (Exception e) {
+					//FIXME
+					logger.warn("Import of CodedDescription " + j + " failed.");
+					success = false; 
+				}
+
+				if ((++j % modCount) == 0){ logger.info("CodedDescriptions handled: " + j);}
+
+			}
+
+		}
 	}
-	
-}
 
-// imports the descriptions of taxa (specimens TODO)
-protected void importCodedDescriptions(Element elDataset, Namespace sddNamespace, SDDImportConfigurator sddConfig, boolean success){
-	// <CodedDescriptions>
-	logger.info("start CodedDescriptions ...");
-	Element elCodedDescriptions = elDataset.getChild("CodedDescriptions",sddNamespace);
+	// imports the persons associated with the dataset creation, modification, related publications
+	protected void importAgents(Element elDataset, Namespace sddNamespace, SDDImportConfigurator sddConfig, boolean success){
+		// <Agents>
+		logger.info("start Agents ...");
+		Element elAgents = elDataset.getChild("Agents",sddNamespace);
 
-	// <CodedDescription id="D101">
-
-	if (elCodedDescriptions != null) {
-		List<Element> listCodedDescriptions = elCodedDescriptions.getChildren("CodedDescription", sddNamespace);
+		// <Agent id="a1">
+		List <Element> listAgents = elAgents.getChildren("Agent", sddNamespace);
 		int j = 0;
-		//for each CodedDescription
-
-		for (Element elCodedDescription : listCodedDescriptions){
+		//for each Agent
+		for (Element elAgent : listAgents){
 
 			try {
 
-				String idCD = elCodedDescription.getAttributeValue("id");
+				String idA = elAgent.getAttributeValue("id");
 
-				// <Representation>
-				//  <Label>&lt;i&gt;Viola hederacea&lt;/i&gt; Labill. as revised by R. Morris April 8, 2006</Label>
-				// </Representation>
-				TaxonDescription taxonDescription = TaxonDescription.NewInstance();
-				importRepresentation(elCodedDescription, sddNamespace, taxonDescription, idCD, sddConfig);
+				//  <Representation>
+				//   <Label>Kevin Thiele</Label>
+				//   <Detail role="Description">Ali Baba is also known as r.a.m.</Detail>
+				//  </Representation>
+				Person person = Person.NewInstance();
+				importRepresentation(elAgent, sddNamespace, person, idA, sddConfig);
+				person.addSource(OriginalSource.NewInstance(idA, "Agent"));
 
-				// <Scope>
-				//  <TaxonName ref="t1"/>
-				//  <Citation ref="p1" location="p. 30"/>
-				// </Scope>
-				Element elScope = elCodedDescription.getChild("Scope",sddNamespace);
-				String ref = "";
-				Taxon taxon = null;
-				if (elScope != null) {
-					Element elTaxonName = elScope.getChild("TaxonName",sddNamespace);
-					ref = elTaxonName.getAttributeValue("ref");
+				// <Links>
+				Element elLinks = elAgent.getChild("Links",sddNamespace);
 
-					NonViralName taxonNameBase = taxonNameBases.get(ref);
-					taxon = Taxon.NewInstance(taxonNameBase, sec);
-				}
+				if (elLinks != null) {
 
-				String refCitation = "";
-				String location = "";
-
-				if (elScope != null) {
-					Element elCitation = elScope.getChild("Citation",sddNamespace);
-					if (elCitation != null) {
-						refCitation = elCitation.getAttributeValue("ref");
-						location = elCitation.getAttributeValue("location");
-					}
-				}
-
-				// <SummaryData>
-				Element elSummaryData = elCodedDescription.getChild("SummaryData",sddNamespace);
-
-				if (elSummaryData != null) {
-
-					// <Categorical ref="c4">
-					List<Element> elCategoricals = elSummaryData.getChildren("Categorical", sddNamespace);
+					//  <Link rel="Alternate" href="http://www.diversitycampus.net/people/hagedorn"/>
+					List<Element> listLinks = elLinks.getChildren("Link", sddNamespace);
 					int k = 0;
-					//for each Categorical
-					for (Element elCategorical : elCategoricals){
-						if ((++k % modCount) == 0){ logger.info("Categorical handled: " + (k-1));}
-						ref = elCategorical.getAttributeValue("ref");
-						Feature feature = features.get(ref);
-						CategoricalData categoricalData = CategoricalData.NewInstance();
-						categoricalData.setFeature(feature);
+					//for each Link
+					for (Element elLink : listLinks){
 
-						// <State ref="s3"/>
-						List<Element> elStates = elCategorical.getChildren("State", sddNamespace);
-						int l = 0;
-						//for each State
-						for (Element elState : elStates){
-							if ((++l % modCount) == 0){ logger.info("States handled: " + (l-1));}
-							ref = elState.getAttributeValue("ref");
-							StateData stateData = stateDatas.get(ref);
-							categoricalData.addState(stateData);
-						}
-						taxonDescription.addElement(categoricalData);
-					}
+						try {
 
-					// <Quantitative ref="c2">
-					List<Element> elQuantitatives = elSummaryData.getChildren("Quantitative", sddNamespace);
-					k = 0;
-					//for each Quantitative
-					for (Element elQuantitative : elQuantitatives){
-						if ((++k % modCount) == 0){ logger.info("Quantitative handled: " + (k-1));}
-						ref = elQuantitative.getAttributeValue("ref");
-						Feature feature = features.get(ref);
-						QuantitativeData quantitativeData = QuantitativeData.NewInstance();
-						quantitativeData.setFeature(feature);
+							String rel = elLink.getAttributeValue("rel");
+							String href = elLink.getAttributeValue("href");
 
-						MeasurementUnit unit = units.get(ref);
-						String prefix = defaultUnitPrefixes.get(ref);
-						if (unit != null) {
-							String u = unit.getLabel();
-							if (prefix != null) {
-								u = prefix + u;
-							}
-							unit.setLabel(u);
-							quantitativeData.setUnit(unit);
+							Media link = Media.NewInstance();
+							MediaRepresentation mr = MediaRepresentation.NewInstance();
+							mr.addRepresentationPart(MediaRepresentationPart.NewInstance(href, null));
+							link.addRepresentation(mr);
+							person.addMedia(link);
+
+						} catch (Exception e) {
+							//FIXME
+							logger.warn("Import of Link " + k + " failed.");
+							success = false; 
 						}
 
-						// <Measure type="Min" value="2.3"/>
-						List<Element> elMeasures = elQuantitative.getChildren("Measure", sddNamespace);
-						int l = 0;
-						//for each State
-						for (Element elMeasure : elMeasures){
-							if ((++l % modCount) == 0){ logger.info("States handled: " + (l-1));}
-							String type = elMeasure.getAttributeValue("type");
-							String value = elMeasure.getAttributeValue("value");
-							float v = Float.parseFloat(value);
-							StatisticalMeasure t = null;
-							if (type.equals("Min")) {
-								t = StatisticalMeasure.MIN();
-							} else if (type.equals("Mean")) {
-								t = StatisticalMeasure.AVERAGE();
-							} else if (type.equals("Max")) {
-								t = StatisticalMeasure.MAX();
-							} else if (type.equals("SD")) {
-								// Create a new StatisticalMeasure for standard deviation
-								t = StatisticalMeasure.STANDARD_DEVIATION();
-							} else if (type.equals("N")) {
-								t = StatisticalMeasure.SAMPLE_SIZE();
-							} else {
-								t = StatisticalMeasure.NewInstance(type,type,type);
-								statisticalMeasures.add(t);
-							}
+						if ((++k % modCount) == 0){ logger.info("Links handled: " + k);}
 
-							StatisticalMeasurementValue statisticalValue = StatisticalMeasurementValue.NewInstance();
-							statisticalValue.setValue(v);
-							statisticalValue.setType(t);
-							quantitativeData.addStatisticalValue(statisticalValue);
-							featureData.add(statisticalValue);
-						}
-						taxonDescription.addElement(quantitativeData);
 					}
-
-					// <TextChar ref="c3">
-					List<Element> elTextChars = elSummaryData.getChildren("TextChar", sddNamespace);
-					k = 0;
-					//for each TextChar
-					for (Element elTextChar : elTextChars){
-						if ((++k % modCount) == 0){ logger.info("TextChar handled: " + (k-1));}
-						ref = elTextChar.getAttributeValue("ref");
-						Feature feature = features.get(ref);
-						TextData textData = TextData.NewInstance();
-						textData.setFeature(feature);
-
-						// <Content>Free form text</Content>
-						String content = (String)ImportHelper.getXmlInputValue(elTextChar, "Content",sddNamespace);
-						textData.putText(content, datasetLanguage);
-						taxonDescription.addElement(textData);
-					}
-
+				}
+				if (authors.containsKey(idA)) {
+					authors.put(idA,person);
 				}
 
-				if (taxon != null) {
-					taxon.addDescription(taxonDescription);
+				if (editors.containsKey(idA)) {
+					editors.put(idA, person);
 				}
-
-				if (!refCitation.equals("")){
-					citations.put(idCD,refCitation);
-				}
-
-				if (!location.equals("")){
-					locations.put(idCD, location);
-				}
-				
-				taxonDescription.setDescriptiveSystem(featureSet);
-				
-				taxonDescriptions.put(idCD, taxonDescription);
 
 			} catch (Exception e) {
 				//FIXME
-				logger.warn("Import of CodedDescription " + j + " failed.");
+				logger.warn("Import of Agent " + j + " failed.");
 				success = false; 
 			}
 
-			if ((++j % modCount) == 0){ logger.info("CodedDescriptions handled: " + j);}
+			if ((++j % modCount) == 0){ logger.info("Agents handled: " + j);}
 
 		}
-
 	}
-}
 
-// imports the persons associated with the dataset creation, modification, related publications
-protected void importAgents(Element elDataset, Namespace sddNamespace, SDDImportConfigurator sddConfig, boolean success){
-	// <Agents>
-	logger.info("start Agents ...");
-	Element elAgents = elDataset.getChild("Agents",sddNamespace);
+	// imports publications related with the data set
+	protected void importPublications(Element elDataset, Namespace sddNamespace, SDDImportConfigurator sddConfig, boolean success){
+		// <Publications>
+		logger.info("start Publications ...");
+		Element elPublications = elDataset.getChild("Publications",sddNamespace);
 
-	// <Agent id="a1">
-	List <Element> listAgents = elAgents.getChildren("Agent", sddNamespace);
-	int j = 0;
-	//for each Agent
-	for (Element elAgent : listAgents){
+		if (elPublications != null) {
+			// <Publication id="p1">
+			List<Element> listPublications = elPublications.getChildren("Publication", sddNamespace);
+			int j = 0;
+			//for each Publication
+			for (Element elPublication : listPublications){
 
-		try {
+				try {
 
-			String idA = elAgent.getAttributeValue("id");
+					String idP = elPublication.getAttributeValue("id");
 
-			//  <Representation>
-			//   <Label>Kevin Thiele</Label>
-			//   <Detail role="Description">Ali Baba is also known as r.a.m.</Detail>
-			//  </Representation>
-			Person person = Person.NewInstance();
-			importRepresentation(elAgent, sddNamespace, person, idA, sddConfig);
-			person.addSource(OriginalSource.NewInstance(idA, "Agent"));
+					//  <Representation>
+					//   <Label>Sample Citation</Label>
+					//  </Representation>
+					Article publication = Article.NewInstance();
+					importRepresentation(elPublication, sddNamespace, publication, idP, sddConfig);
 
-			// <Links>
-			Element elLinks = elAgent.getChild("Links",sddNamespace);
+					publications.put(idP,publication);
 
-			if (elLinks != null) {
-
-				//  <Link rel="Alternate" href="http://www.diversitycampus.net/people/hagedorn"/>
-				List<Element> listLinks = elLinks.getChildren("Link", sddNamespace);
-				int k = 0;
-				//for each Link
-				for (Element elLink : listLinks){
-
-					try {
-
-						String rel = elLink.getAttributeValue("rel");
-						String href = elLink.getAttributeValue("href");
-
-						Media link = Media.NewInstance();
-						MediaRepresentation mr = MediaRepresentation.NewInstance();
-						mr.addRepresentationPart(MediaRepresentationPart.NewInstance(href, null));
-						link.addRepresentation(mr);
-						person.addMedia(link);
-
-					} catch (Exception e) {
-						//FIXME
-						logger.warn("Import of Link " + k + " failed.");
-						success = false; 
-					}
-
-					if ((++k % modCount) == 0){ logger.info("Links handled: " + k);}
-
+				} catch (Exception e) {
+					//FIXME
+					logger.warn("Import of Publication " + j + " failed.");
+					success = false; 
 				}
+
+				if ((++j % modCount) == 0){ logger.info("Publications handled: " + j);}
+
 			}
-			if (authors.containsKey(idA)) {
-				authors.put(idA,person);
-			}
-
-			if (editors.containsKey(idA)) {
-				editors.put(idA, person);
-			}
-
-		} catch (Exception e) {
-			//FIXME
-			logger.warn("Import of Agent " + j + " failed.");
-			success = false; 
-		}
-
-		if ((++j % modCount) == 0){ logger.info("Agents handled: " + j);}
-
-	}
-}
-
-// imports publications related with the data set
-protected void importPublications(Element elDataset, Namespace sddNamespace, SDDImportConfigurator sddConfig, boolean success){
-	// <Publications>
-	logger.info("start Publications ...");
-	Element elPublications = elDataset.getChild("Publications",sddNamespace);
-
-	if (elPublications != null) {
-		// <Publication id="p1">
-		List<Element> listPublications = elPublications.getChildren("Publication", sddNamespace);
-		int j = 0;
-		//for each Publication
-		for (Element elPublication : listPublications){
-
-			try {
-
-				String idP = elPublication.getAttributeValue("id");
-
-				//  <Representation>
-				//   <Label>Sample Citation</Label>
-				//  </Representation>
-				Article publication = Article.NewInstance();
-				importRepresentation(elPublication, sddNamespace, publication, idP, sddConfig);
-
-				publications.put(idP,publication);
-
-			} catch (Exception e) {
-				//FIXME
-				logger.warn("Import of Publication " + j + " failed.");
-				success = false; 
-			}
-
-			if ((++j % modCount) == 0){ logger.info("Publications handled: " + j);}
-
 		}
 	}
-}
 
-// imports media objects such as images
-protected void importMediaObjects(Element elDataset, Namespace sddNamespace, SDDImportConfigurator sddConfig, boolean success){
-	// <MediaObjects>
-	logger.info("start MediaObjects ...");
-	Element elMediaObjects = elDataset.getChild("MediaObjects",sddNamespace);
+	// imports media objects such as images
+	protected void importMediaObjects(Element elDataset, Namespace sddNamespace, SDDImportConfigurator sddConfig, boolean success){
+		// <MediaObjects>
+		logger.info("start MediaObjects ...");
+		Element elMediaObjects = elDataset.getChild("MediaObjects",sddNamespace);
 
-	if (elMediaObjects != null) {
-		// <MediaObject id="m1">
-		List<Element> listMediaObjects = elMediaObjects.getChildren("MediaObject", sddNamespace);
-		int j = 0;
-		//for each Publication
-		for (Element elMO : listMediaObjects){
+		if (elMediaObjects != null) {
+			// <MediaObject id="m1">
+			List<Element> listMediaObjects = elMediaObjects.getChildren("MediaObject", sddNamespace);
+			int j = 0;
+			//for each Publication
+			for (Element elMO : listMediaObjects){
 
-			String id = "";
+				String id = "";
 
-			try {
+				try {
 
-				String idMO = elMO.getAttributeValue("id");
-				id = idMO;
+					String idMO = elMO.getAttributeValue("id");
+					id = idMO;
 
-				//  <Representation>
-				//   <Label>Image description, e.g. to be used for alt-attribute in html.</Label>
-				//  </Representation>
-				Media media = Media.NewInstance();
-				importRepresentation(elMO, sddNamespace, media, idMO, sddConfig);
+					//  <Representation>
+					//   <Label>Image description, e.g. to be used for alt-attribute in html.</Label>
+					//  </Representation>
+					Media media = Media.NewInstance();
+					importRepresentation(elMO, sddNamespace, media, idMO, sddConfig);
 
-				// <Type>Image</Type>
-				// <Source href="http://test.edu/test.jpg"/>
-				String type = (String)ImportHelper.getXmlInputValue(elMO,"Type",sddNamespace);
+					// <Type>Image</Type>
+					// <Source href="http://test.edu/test.jpg"/>
+					String type = (String)ImportHelper.getXmlInputValue(elMO,"Type",sddNamespace);
 
-				if ((type != null) && (type.equals("Image"))) {
-					Element elSource = elMO.getChild("Source",sddNamespace);
-					String href = elSource.getAttributeValue("href");
+					if ((type != null) && (type.equals("Image"))) {
+						Element elSource = elMO.getChild("Source",sddNamespace);
+						String href = elSource.getAttributeValue("href");
 
-					ImageMetaData imageMetaData = new ImageMetaData();
-					ImageFile image = null;
+						ImageMetaData imageMetaData = new ImageMetaData();
+						ImageFile image = null;
 
-					if (href.substring(0,7).equals("http://")) {
-						try{
-							URL url = new URL(href);
-							imageMetaData.readFrom(url);
-							image = ImageFile.NewInstance(url.toString(), null, imageMetaData);
-						} catch (MalformedURLException e) {
-							logger.error("Malformed URL", e);
+						if (href.substring(0,7).equals("http://")) {
+							try{
+								URL url = new URL(href);
+								imageMetaData.readFrom(url);
+								image = ImageFile.NewInstance(url.toString(), null, imageMetaData);
+							} catch (MalformedURLException e) {
+								logger.error("Malformed URL", e);
+							}
+						} else {
+							String sns = sddConfig.getSourceNameString();
+							File f = new File(sns);
+							File parent = f.getParentFile();
+							String fi = parent.toString() + File.separator + href;
+							File file = new File(fi);
+							imageMetaData.readFrom(file);
+							image = ImageFile.NewInstance(file.toString(), null, imageMetaData);
 						}
-					} else {
-						String sns = sddConfig.getSourceNameString();
-						File f = new File(sns);
-						File parent = f.getParentFile();
-						String fi = parent.toString() + File.separator + href;
-						File file = new File(fi);
-						imageMetaData.readFrom(file);
-						image = ImageFile.NewInstance(file.toString(), null, imageMetaData);
-					}
 
-					MediaRepresentation representation = MediaRepresentation.NewInstance(imageMetaData.getMimeType(), null);
-					representation.addRepresentationPart(image);
+						MediaRepresentation representation = MediaRepresentation.NewInstance(imageMetaData.getMimeType(), null);
+						representation.addRepresentationPart(image);
 
-					media.addRepresentation(representation);
+						media.addRepresentation(representation);
 
-					ArrayList<CdmBase> lcb = (ArrayList<CdmBase>) mediaObject_ListCdmBase.get(idMO);
-					if (lcb != null) {
-						for (int k = 0; k < lcb.size(); k++) {
-							if (lcb.get(k) instanceof DefinedTermBase) {
-								DefinedTermBase dtb = (DefinedTermBase) lcb.get(k);
-								// if (lcb.get(0) instanceof DefinedTermBase) {
-								// DefinedTermBase dtb = (DefinedTermBase) lcb.get(0);
-								//									if (dtb!=null) {
-								//										if (k == 0) {
-								dtb.addMedia(media);
-								//										} else {
-								//											Media me = (Media) media.clone();
-								//											dtb.addMedia(me);
-								//										}
-								//									}
-							} else if (lcb.get(k) instanceof ReferenceBase) {
-								ReferenceBase rb = (ReferenceBase) lcb.get(k);
-								//} else if (lcb.get(0) instanceof ReferenceBase) {
-								//ReferenceBase rb = (ReferenceBase) lcb.get(0);
-								// rb.setTitleCache(label);
-								//									if (rb!=null) {
-								//										if (k == 0) {
-								rb.addMedia(media);
-								//										} else {
-								//											Media me = (Media) media.clone();
-								//											rb.addMedia(me);
-								//										}
-								//									}
+						ArrayList<CdmBase> lcb = (ArrayList<CdmBase>) mediaObject_ListCdmBase.get(idMO);
+						if (lcb != null) {
+							for (int k = 0; k < lcb.size(); k++) {
+								if (lcb.get(k) instanceof DefinedTermBase) {
+									DefinedTermBase dtb = (DefinedTermBase) lcb.get(k);
+									// if (lcb.get(0) instanceof DefinedTermBase) {
+									// DefinedTermBase dtb = (DefinedTermBase) lcb.get(0);
+									//									if (dtb!=null) {
+									//										if (k == 0) {
+									dtb.addMedia(media);
+									//										} else {
+									//											Media me = (Media) media.clone();
+									//											dtb.addMedia(me);
+									//										}
+									//									}
+								} else if (lcb.get(k) instanceof ReferenceBase) {
+									ReferenceBase rb = (ReferenceBase) lcb.get(k);
+									//} else if (lcb.get(0) instanceof ReferenceBase) {
+									//ReferenceBase rb = (ReferenceBase) lcb.get(0);
+									// rb.setTitleCache(label);
+									//									if (rb!=null) {
+									//										if (k == 0) {
+									rb.addMedia(media);
+									//										} else {
+									//											Media me = (Media) media.clone();
+									//											rb.addMedia(me);
+									//										}
+									//									}
+								}
 							}
 						}
 					}
+
+				} catch (Exception e) {
+					//FIXME
+					logger.warn("Could not attached MediaObject " + j + "(SDD: " + id + ") to several objects.");
+					success = false; 
 				}
 
-			} catch (Exception e) {
-				//FIXME
-				logger.warn("Could not attached MediaObject " + j + "(SDD: " + id + ") to several objects.");
-				success = false; 
-			}
+				if ((++j % modCount) == 0){ logger.info("MediaObjects handled: " + j);
 
-			if ((++j % modCount) == 0){ logger.info("MediaObjects handled: " + j);
+				}
+			}
+		}
+	}
+
+	// imports the <DescriptiveConcepts> block
+	protected void importDescriptiveConcepts(Element elDataset, Namespace sddNamespace, SDDImportConfigurator sddConfig){
+		// <DescriptiveConcepts>
+		logger.info("start DescriptiveConcepts ...");
+		Element elDescriptiveConcepts = elDataset.getChild("DescriptiveConcepts",sddNamespace);
+		// <DescriptiveConcept id="b">
+		if (elDescriptiveConcepts != null) {
+			List<Element> listDescriptiveConcepts = elDescriptiveConcepts.getChildren("DescriptiveConcept", sddNamespace);
+			int j = 0;
+			//for each DescriptiveConcept
+			int g = 1;
+			for (Element elDescriptiveConcept : listDescriptiveConcepts){
+
+				String id = elDescriptiveConcept.getAttributeValue("id");
+				String uri = elDescriptiveConcept.getAttributeValue("uri");
+
+				FeatureNode fn = null;
+
+				if (!id.equals("")) {
+					fn = FeatureNode.NewInstance();
+					Feature feature = Feature.NewInstance();
+					feature.setKindOf(Feature.DESCRIPTION());
+					//	 <Representation>
+					//       <Label>Body</Label>
+					importRepresentation(elDescriptiveConcept, sddNamespace, feature, id, sddConfig);
+					features.put("g" + g, feature);
+					g++;
+					fn.setFeature(feature);
+
+					//	TODO if an OriginalSource can be attached to a FeatureNode or a Feature		
+					//					OriginalSource source = null;
+					//					if (uri != null) {
+					//						if (!uri.equals("")) {
+					//							source = OriginalSource.NewInstance(id, "DescriptiveConcept", Generic.NewInstance(), uri);
+					//						}
+					//					} else {
+					//						source = OriginalSource.NewInstance(id, "DescriptiveConcept");
+					//					}
+					//					fn.addSource(source);
+
+					featureNodes.put(id,fn);
+				}
+
+				if ((++j % modCount) == 0){ logger.info("DescriptiveConcepts handled: " + j);}
 
 			}
 		}
 	}
-}
 
-// imports the <DescriptiveConcepts> block
-protected void importDescriptiveConcepts(Element elDataset, Namespace sddNamespace, SDDImportConfigurator sddConfig){
-	// <DescriptiveConcepts>
-	logger.info("start DescriptiveConcepts ...");
-	Element elDescriptiveConcepts = elDataset.getChild("DescriptiveConcepts",sddNamespace);
-	// <DescriptiveConcept id="b">
-	if (elDescriptiveConcepts != null) {
-		List<Element> listDescriptiveConcepts = elDescriptiveConcepts.getChildren("DescriptiveConcept", sddNamespace);
-		int j = 0;
-		//for each DescriptiveConcept
-		int g = 1;
-		for (Element elDescriptiveConcept : listDescriptiveConcepts){
+	// imports the descriptions of taxa (specimens TODO)
+	protected void importCharacterTrees(Element elDataset, Namespace sddNamespace, SDDImportConfigurator sddConfig, boolean success){
+		// <CharacterTrees>
+		logger.info("start CharacterTrees ...");
+		Element elCharacterTrees = elDataset.getChild("CharacterTrees",sddNamespace);
 
-			String id = elDescriptiveConcept.getAttributeValue("id");
-			String uri = elDescriptiveConcept.getAttributeValue("uri");
+		// <CharacterTree>
 
-			FeatureNode fn = null;
-			
-			if (!id.equals("")) {
-				fn = FeatureNode.NewInstance();
-				Feature feature = Feature.NewInstance();
-				feature.setKindOf(Feature.DESCRIPTION());
-				//	 <Representation>
-				//       <Label>Body</Label>
-				importRepresentation(elDescriptiveConcept, sddNamespace, feature, id, sddConfig);
-				features.put("g" + g, feature);
-				g++;
-				fn.setFeature(feature);
+		if (elCharacterTrees != null) {
+			List<Element> listCharacterTrees = elCharacterTrees.getChildren("CharacterTree", sddNamespace);
+			int j = 0;
+			//for each CharacterTree
 
-				//	TODO if an OriginalSource can be attached to a FeatureNode or a Feature		
-				//					OriginalSource source = null;
-				//					if (uri != null) {
-				//						if (!uri.equals("")) {
-				//							source = OriginalSource.NewInstance(id, "DescriptiveConcept", Generic.NewInstance(), uri);
-				//						}
-				//					} else {
-				//						source = OriginalSource.NewInstance(id, "DescriptiveConcept");
-				//					}
-				//					fn.addSource(source);
+			for (Element elCharacterTree : listCharacterTrees){
 
-				featureNodes.put(id,fn);
-			}
+				try {
+					Element elRepresentation = elCharacterTree.getChild("Representation",sddNamespace);
+					String label = (String)ImportHelper.getXmlInputValue(elRepresentation,"Label",sddNamespace);
+					Element elDesignedFor = elCharacterTree.getChild("DesignedFor",sddNamespace);
+					List<Element> listRoles = elDesignedFor.getChildren("Role",sddNamespace);
+					boolean isgroups = false;
 
-			if ((++j % modCount) == 0){ logger.info("DescriptiveConcepts handled: " + j);}
-
-		}
-	}
-}
-
-// imports the descriptions of taxa (specimens TODO)
-protected void importCharacterTrees(Element elDataset, Namespace sddNamespace, SDDImportConfigurator sddConfig, boolean success){
-	// <CharacterTrees>
-	logger.info("start CharacterTrees ...");
-	Element elCharacterTrees = elDataset.getChild("CharacterTrees",sddNamespace);
-
-	// <CharacterTree>
-
-	if (elCharacterTrees != null) {
-		List<Element> listCharacterTrees = elCharacterTrees.getChildren("CharacterTree", sddNamespace);
-		int j = 0;
-		//for each CharacterTree
-
-		for (Element elCharacterTree : listCharacterTrees){
-
-			try {
-				Element elRepresentation = elCharacterTree.getChild("Representation",sddNamespace);
-				String label = (String)ImportHelper.getXmlInputValue(elRepresentation,"Label",sddNamespace);
-				Element elDesignedFor = elCharacterTree.getChild("DesignedFor",sddNamespace);
-				List<Element> listRoles = elDesignedFor.getChildren("Role",sddNamespace);
-				boolean isgroups = false;
-
-				for (Element elRole : listRoles){
-					if (elRole.getText().equals("Filtering")) {
-						isgroups = true;
-					}
-				}
-				
-				// only treats the case of flat groups containing characters
-				// should also be added: dependencies between characters, 
-				
-				if ((label.contains("group")) || (isgroups)) {
-					
-					FeatureTree groups =  FeatureTree.NewInstance();
-					importRepresentation(elCharacterTree, sddNamespace, groups, "", sddConfig);
-					FeatureNode root = groups.getRoot();
-					
-					Element elNodes = elCharacterTree.getChild("Nodes", sddNamespace);
-					List<Element> listNodes = elNodes.getChildren("Node", sddNamespace);
-					for (Element elNode : listNodes){
-						String idN = elNode.getAttributeValue("id");
-						FeatureNode fn = null;
-						if (!idN.equals("")) {
-							Element elDescriptiveConcept = elNode.getChild("DescriptiveConcept", sddNamespace);
-							String refDC = elDescriptiveConcept.getAttributeValue("ref");
-							fn = featureNodes.get(refDC);
-							root.addChild(fn);
+					for (Element elRole : listRoles){
+						if (elRole.getText().equals("Filtering")) {
+							isgroups = true;
 						}
-						nodes.put(idN, fn);
 					}
-					
-					List<Element> listCharNodes = elNodes.getChildren("CharNode", sddNamespace);
-					for (Element elCharNode : listCharNodes){
-						Element elParent = elCharNode.getChild("Parent", sddNamespace);
-						String refP = elParent.getAttributeValue("ref");
-						Element elCharacter = elCharNode.getChild("Character", sddNamespace);
-						String refC = elCharacter.getAttributeValue("ref");
-						FeatureNode fn = FeatureNode.NewInstance();
-						if (!refP.equals("")) {
-							FeatureNode parent = nodes.get(refP);
-							parent.addChild(fn);
-							Feature character = features.get(refC);
-							fn.setFeature(character);
-							// if method setParent() in FeatureNode becomes visible
-							// fn.setParent(parent);
+
+					// only treats the case of flat groups containing characters
+					// should also be added: dependencies between characters, 
+
+					if ((label.contains("group")) || (isgroups)) {
+
+						FeatureTree groups =  FeatureTree.NewInstance();
+						importRepresentation(elCharacterTree, sddNamespace, groups, "", sddConfig);
+						FeatureNode root = groups.getRoot();
+
+						Element elNodes = elCharacterTree.getChild("Nodes", sddNamespace);
+						List<Element> listNodes = elNodes.getChildren("Node", sddNamespace);
+						for (Element elNode : listNodes){
+							String idN = elNode.getAttributeValue("id");
+							FeatureNode fn = null;
+							if (!idN.equals("")) {
+								Element elDescriptiveConcept = elNode.getChild("DescriptiveConcept", sddNamespace);
+								String refDC = elDescriptiveConcept.getAttributeValue("ref");
+								fn = featureNodes.get(refDC);
+								root.addChild(fn);
+							}
+							nodes.put(idN, fn);
 						}
-						nodes.put(refC, fn);
+
+						List<Element> listCharNodes = elNodes.getChildren("CharNode", sddNamespace);
+						for (Element elCharNode : listCharNodes){
+							Element elParent = elCharNode.getChild("Parent", sddNamespace);
+							String refP = elParent.getAttributeValue("ref");
+							Element elCharacter = elCharNode.getChild("Character", sddNamespace);
+							String refC = elCharacter.getAttributeValue("ref");
+							FeatureNode fn = FeatureNode.NewInstance();
+							if (!refP.equals("")) {
+								FeatureNode parent = nodes.get(refP);
+								parent.addChild(fn);
+								Feature character = features.get(refC);
+								fn.setFeature(character);
+								// if method setParent() in FeatureNode becomes visible
+								// fn.setParent(parent);
+							}
+							nodes.put(refC, fn);
+						}
+						featureTrees.add(groups);
 					}
-					featureTrees.add(groups);
+
+				} catch (Exception e) {
+					//FIXME
+					logger.warn("Import of Character tree " + j + " failed.");
+					success = false; 
 				}
 
-			} catch (Exception e) {
-				//FIXME
-				logger.warn("Import of Character tree " + j + " failed.");
-				success = false; 
+				if ((++j % modCount) == 0){ logger.info("CharacterTrees handled: " + j);}
+
 			}
 
-			if ((++j % modCount) == 0){ logger.info("CharacterTrees handled: " + j);}
-
 		}
-
 	}
-}
 }
