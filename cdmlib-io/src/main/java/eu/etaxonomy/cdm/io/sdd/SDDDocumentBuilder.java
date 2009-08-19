@@ -1,11 +1,11 @@
 /**
-* Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
-* http://www.e-taxonomy.eu
-* 
-* The contents of this file are subject to the Mozilla Public License Version 1.1
-* See LICENSE.TXT at the top of this package for the full license terms.
-*/
+ * Copyright (C) 2007 EDIT
+ * European Distributed Institute of Taxonomy 
+ * http://www.e-taxonomy.eu
+ * 
+ * The contents of this file are subject to the Mozilla Public License Version 1.1
+ * See LICENSE.TXT at the top of this package for the full license terms.
+ */
 
 package eu.etaxonomy.cdm.io.sdd;
 
@@ -156,7 +156,7 @@ public class SDDDocumentBuilder {
 	private String TEXT_CHARACTER = "TextCharacter";
 	private String TYPE = "Type";
 	private String URI = "uri";
-	
+
 	private Language defaultLanguage = Language.DEFAULT();
 
 	private static final Logger logger = Logger.getLogger(SDDDocumentBuilder.class);
@@ -448,7 +448,7 @@ public class SDDDocumentBuilder {
 
 			DateTime c = database.getUpdated();
 			DateTimeFormatter fmt = ISODateTimeFormat.dateTime();
-		
+
 			String date = fmt.print(c);
 			dateModified.appendChild(document.createTextNode(date));
 
@@ -500,16 +500,16 @@ public class SDDDocumentBuilder {
 
 		// authors
 		TeamOrPersonBase authors = database.getAuthorTeam();
-//		TeamOrPersonBase editors = database.getUpdatedBy();
+		//		TeamOrPersonBase editors = database.getUpdatedBy();
 
 		if ((authors != null)) { // || (editors != null)) {
 			ElementImpl creators = new ElementImpl(document, CREATORS);
 			if (authors != null) {
 				buildRefAgent(creators, authors, "aut");
 			}
-//			if (editors != null) {
-//				buildRefAgent(creators, editors, "edt");
-//			}
+			//			if (editors != null) {
+			//				buildRefAgent(creators, editors, "edt");
+			//			}
 			revisionData.appendChild(creators);
 		}
 
@@ -664,18 +664,24 @@ public class SDDDocumentBuilder {
 		//			create <Representation> element
 		ElementImpl representation = new ElementImpl(document, REPRESENTATION);
 		element.appendChild(representation);
-		String label = ((Representation) tb.getRepresentations().toArray()[0]).getLabel();
-		buildLabel(representation, label);
 
-		String detailText = tb.getDescription();
+		Set<Representation> representations = tb.getRepresentations();
+		if (representations != null) {
+			if (!representations.isEmpty()) {
+				String label = ((Representation) representations.toArray()[0]).getLabel();
+				buildLabel(representation, label);
+				String detailText = tb.getDescription();
 
-		if (detailText != null && !detailText.equals("")) {
-			if (!detailText.equals(label)) {
-				ElementImpl detail = new ElementImpl(document, DETAIL);
-				detail.appendChild(document.createTextNode(detailText));
-				representation.appendChild(detail);
+				if (detailText != null && !detailText.equals("")) {
+					if (!detailText.equals(label)) {
+						ElementImpl detail = new ElementImpl(document, DETAIL);
+						detail.appendChild(document.createTextNode(detailText));
+						representation.appendChild(detail);
+					}
+				}
+
 			}
-		}
+		}		
 
 		if (tb instanceof DefinedTermBase) {
 			DefinedTermBase dtb = (DefinedTermBase) tb;
@@ -846,15 +852,15 @@ public class SDDDocumentBuilder {
 	 * Builds Quantitative associated with a SummaryData
 	 */
 	public void buildQuantitative(ElementImpl element, QuantitativeData quantitativeData) throws ParseException {
-	
-//		<Quantitative ref="c2">
-//        <Measure type="Min" value="2.3"></Measure>
-//        <Measure type="Mean" value="5.1"/>
-//        <Measure type="Max" value="7.9"/>
-//        <Measure type="SD" value="1.3"/>
-//        <Measure type="N" value="20"/>
-//      </Quantitative>
-	
+
+		//		<Quantitative ref="c2">
+		//        <Measure type="Min" value="2.3"></Measure>
+		//        <Measure type="Mean" value="5.1"/>
+		//        <Measure type="Max" value="7.9"/>
+		//        <Measure type="SD" value="1.3"/>
+		//        <Measure type="N" value="20"/>
+		//      </Quantitative>
+
 		ElementImpl quantitative = new ElementImpl(document, QUANTITATIVE);
 		Feature feature = quantitativeData.getFeature();
 		buildReference(feature, characters, REF, quantitative, "c", charactersCount);
@@ -867,74 +873,74 @@ public class SDDDocumentBuilder {
 	}
 
 	/**
-		 * Builds Measure associated with a Quantitative
-		 */
-		public void buildMeasure(ElementImpl element, StatisticalMeasurementValue statisticalValue) throws ParseException {
-		
-	//		<Quantitative ref="c2">
-	//        <Measure type="Min" value="2.3"></Measure>
-	//        <Measure type="Mean" value="5.1"/>
-	//        <Measure type="Max" value="7.9"/>
-	//        <Measure type="SD" value="1.3"/>
-	//        <Measure type="N" value="20"/>
-	//      </Quantitative>
-		
-			ElementImpl measure = new ElementImpl(document, MEASURE);
-			StatisticalMeasure type = statisticalValue.getType();
-			String label = type.getLabel();
-			if (label.equals("Average")) {
-				measure.setAttribute("type", "Mean");
-			} else if (label.equals("StandardDeviation")) {
-				measure.setAttribute("type", "SD");
-			} else if (label.equals("SampleSize")) {
-				measure.setAttribute("type", "N");
-			} else {
-				measure.setAttribute("type", label);
-			}
-			float value = statisticalValue.getValue();
-			measure.setAttribute("value", String.valueOf(value));
-			element.appendChild(measure);
+	 * Builds Measure associated with a Quantitative
+	 */
+	public void buildMeasure(ElementImpl element, StatisticalMeasurementValue statisticalValue) throws ParseException {
+
+		//		<Quantitative ref="c2">
+		//        <Measure type="Min" value="2.3"></Measure>
+		//        <Measure type="Mean" value="5.1"/>
+		//        <Measure type="Max" value="7.9"/>
+		//        <Measure type="SD" value="1.3"/>
+		//        <Measure type="N" value="20"/>
+		//      </Quantitative>
+
+		ElementImpl measure = new ElementImpl(document, MEASURE);
+		StatisticalMeasure type = statisticalValue.getType();
+		String label = type.getLabel();
+		if (label.equals("Average")) {
+			measure.setAttribute("type", "Mean");
+		} else if (label.equals("StandardDeviation")) {
+			measure.setAttribute("type", "SD");
+		} else if (label.equals("SampleSize")) {
+			measure.setAttribute("type", "N");
+		} else {
+			measure.setAttribute("type", label);
 		}
+		float value = statisticalValue.getValue();
+		measure.setAttribute("value", String.valueOf(value));
+		element.appendChild(measure);
+	}
 
 	/**
-		 * Builds TextChar associated with a SummaryData
-		 */
-		public void buildTextChar(ElementImpl element, TextData textData) throws ParseException {
-		
-//			<TextChar ref="c3">
-//            <Content>Free form text</Content>
-//          </TextChar>
-		
-			ElementImpl textChar = new ElementImpl(document, TEXT_CHAR);
-			Feature feature = textData.getFeature();
-			buildReference(feature, characters, REF, textChar, "c", charactersCount);
-			Map<Language,LanguageString> multilanguageText = textData.getMultilanguageText();
-			for (Iterator<Language> l = multilanguageText.keySet().iterator() ; l.hasNext() ;){
-				Language language = l.next();
-				LanguageString languageString = multilanguageText.get(language);
-				buildContent(textChar,languageString);
-			}
-			element.appendChild(textChar);
+	 * Builds TextChar associated with a SummaryData
+	 */
+	public void buildTextChar(ElementImpl element, TextData textData) throws ParseException {
+
+		//			<TextChar ref="c3">
+		//            <Content>Free form text</Content>
+		//          </TextChar>
+
+		ElementImpl textChar = new ElementImpl(document, TEXT_CHAR);
+		Feature feature = textData.getFeature();
+		buildReference(feature, characters, REF, textChar, "c", charactersCount);
+		Map<Language,LanguageString> multilanguageText = textData.getMultilanguageText();
+		for (Iterator<Language> l = multilanguageText.keySet().iterator() ; l.hasNext() ;){
+			Language language = l.next();
+			LanguageString languageString = multilanguageText.get(language);
+			buildContent(textChar,languageString);
 		}
+		element.appendChild(textChar);
+	}
 
 	/**
-			 * Builds Content associated with a TextChar
-			 */
-			public void buildContent(ElementImpl element, LanguageString languageString) throws ParseException {
-			
-	//			<TextChar ref="c3">
-	//            <Content>Free form text</Content>
-	//          </TextChar>
-			
-				ElementImpl content = new ElementImpl(document, CONTENT);
-				Language language = languageString.getLanguage();
-				String text = languageString.getText();
-				if (!language.getIso639_1().equals(defaultLanguage.getIso639_1())) {
-					content.setAttribute("xml:lang", language.getIso639_1());
-				}
-				content.setTextContent(text);
-				element.appendChild(content);
-			}
+	 * Builds Content associated with a TextChar
+	 */
+	public void buildContent(ElementImpl element, LanguageString languageString) throws ParseException {
+
+		//			<TextChar ref="c3">
+		//            <Content>Free form text</Content>
+		//          </TextChar>
+
+		ElementImpl content = new ElementImpl(document, CONTENT);
+		Language language = languageString.getLanguage();
+		String text = languageString.getText();
+		if (!language.getIso639_1().equals(defaultLanguage.getIso639_1())) {
+			content.setAttribute("xml:lang", language.getIso639_1());
+		}
+		content.setTextContent(text);
+		element.appendChild(content);
+	}
 
 
 	//	/**
