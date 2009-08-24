@@ -1082,6 +1082,10 @@ cdmlib-io/src/test/resources/dbscripts/001_cdm.ddl -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/applicationContext-test.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/abcd206/SpecimenImportConfiguratorTest-input.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/dataset.dtd -text
+cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/excel/taxa/DenormalExplicit.xls -text
+cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/excel/taxa/DenormalImplied.xls -text
+cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/excel/taxa/NormalExplicit.xls -text
+cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/excel/taxa/NormalImplied.xls -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/jaxb/AgentsTest.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/jaxb/AnnotationTest.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/jaxb/CdmDocumentBuilderTest-agents.xml -text
