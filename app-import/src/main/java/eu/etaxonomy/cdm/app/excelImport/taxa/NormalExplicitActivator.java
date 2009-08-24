@@ -26,7 +26,7 @@ public class NormalExplicitActivator {
 
 	private static final String dbName = "cdm_test_anahit";
 	private static String fileName = 
-		new String( System.getProperty("user.home") + "\\Eigene Dateien\\archive\\dbImport\\gbif_test\\NormalExplicit.xls");
+		new String("C:\\workspace\\cdmlib_2.1\\cdmlib-io\\src\\test\\resources\\eu\\etaxonomy\\cdm\\io\\excel\\taxa\\NormalExplicit.xls");
 	
 	private static final ICdmDataSource destinationDb = TestDatabase.CDM_DB(dbName);
     private static final Logger logger = Logger.getLogger(NormalExplicitActivator.class);
