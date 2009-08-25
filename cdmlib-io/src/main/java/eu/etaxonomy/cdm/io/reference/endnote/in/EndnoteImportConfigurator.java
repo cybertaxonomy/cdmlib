@@ -16,9 +16,7 @@ import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
 import eu.etaxonomy.cdm.io.common.ImportStateBase;
 import eu.etaxonomy.cdm.io.tcsxml.DefaultTcsXmlPlaceholders;
-import eu.etaxonomy.cdm.io.tcsxml.DefaultEndnotePlaceholders;
 import eu.etaxonomy.cdm.io.tcsxml.ITcsXmlPlaceholderClass;
-import eu.etaxonomy.cdm.io.tcsxml.IEndnotePlaceholderClass;
 import eu.etaxonomy.cdm.model.reference.Database;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
@@ -206,7 +204,7 @@ public class EndnoteImportConfigurator extends ImportConfiguratorBase<EndnoteImp
 	 */
 	public IEndnotePlaceholderClass getPlaceholderClass() {
 		if (placeholderClass == null){
-			placeholderClass = new DefaultEndnotePlaceholders();
+			placeholderClass = new IEndnotePlaceholderClass();
 		}
 		return placeholderClass;
 	}

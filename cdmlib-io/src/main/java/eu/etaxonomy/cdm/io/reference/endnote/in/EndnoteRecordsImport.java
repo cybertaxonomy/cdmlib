@@ -242,6 +242,7 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 			doubleResult =  XmlHelp.getSingleChildElement(elRecord, childName, tcsNamespace, obligatory);
 			success &= doubleResult.getSecondResult();
 			Element elContributors = doubleResult.getFirstResult();
+			StringBuilder authorBilder = new StringBuilder();
 			if (elContributors != null) {
 				childName = "authors";
 				obligatory = false;
@@ -278,13 +279,14 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 							String strFont = elStyle.getAttributeValue("font");
 							String strSize = elStyle.getAttributeValue("size");
 							String author_style =  elStyle.getTextNormalize();
-							 
+							authorBilder.append(author_style + " ");
+							authorBilder.toString();
 							reference.setAuthorTeam(authorTeam);
-						    authorTeam.setNomenclaturalTitle(author_style);						  
+						    authorTeam.setNomenclaturalTitle(authorBilder.toString());						  
 					}
 				}
 			}	
-			/**	logger.info("start make secondary-authors ...");
+				logger.info("start make secondary-authors ...");
 				childName = "secondary-authors";
 				obligatory = false;
 				doubleResult =  XmlHelp.getSingleChildElement(elContributors, childName, tcsNamespace, obligatory);
@@ -317,9 +319,18 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 							String strFace_secondary = elStyle_secondary.getAttributeValue("face");
 							String strFont_secondary = elStyle_secondary.getAttributeValue("font");
 							String strSize_secondary = elStyle_secondary.getAttributeValue("size");
+							String  secondary_author=  elStyle_secondary.getTextNormalize();
+							authorBilder.append(" " + secondary_author);
+							authorBilder.toString();
+							
+							if (bookSection != null) {
+								reference.setAuthorTeam(authorTeam);
+								authorTeam.setNomenclaturalTitle(authorBilder.toString());
+							}
 						}
 					}
 				}
+				/**
 				logger.info("start make tertiary-authors ...");
 				childName = "tertiary-authors";
 				obligatory = false;
@@ -523,14 +534,14 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 							title_new.toString();
 							
 							if (strName_reftype.equals("Article")) {
-								article.setTitle(title_new.toString());
-								reference= article;
+								journal.setTitle(title_new.toString());
+								reference= journal;
 							}else if (strName_reftype.equals("Book")) {
 								book.setTitle(title_new.toString());
 								reference= book;
 							}else if (strName_reftype.equals("Book Section")){
-								bookSection.setTitle(title_new.toString());
-								reference= bookSection;
+								book.setTitle(title_new.toString());
+								reference= book;
 							}else if (strName_reftype.equalsIgnoreCase("Patent")) {
 								patent.setTitle(title_new.toString());
 								reference= patent;
@@ -559,8 +570,8 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 								printSeries.setTitle(title_new.toString());
 								reference=printSeries;
 							}else if (strName_reftype.equals("Journal Article")){
-								article.setTitle(title_new.toString());
-								reference= article;
+								journal.setTitle(title_new.toString());
+								reference= journal;
 							}else if (strName_reftype.equalsIgnoreCase("Conference Proceedings")){
 								proceedings.setTitle(title_new.toString());
 								reference.setTitle(title);
@@ -573,7 +584,7 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 						}
 					}
 				}
-			/**
+			
 				childName = "secondary-title";
 				obligatory = false;
 				doubleResult =  XmlHelp.getSingleChildElement(elTitles, childName, tcsNamespace, obligatory);
@@ -590,12 +601,28 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 						String strFace_Secondary_title = elStyle_Secondary_title.getAttributeValue("face");
 						String strFont_Secondary_title = elStyle_Secondary_title.getAttributeValue("font");
 						String strSize_Secondary_title = elStyle_Secondary_title.getAttributeValue("size");
+						String strName_reftype = elRef_type.getAttributeValue("name");
+						String secondary_title = elStyle_Secondary_title.getTextNormalize();
 						
-						//reference.setTitle(elStyle_Secondary_title.getText());
-						//referenceMap.put(elStyle_Secondary_title, reference);
+						if (strName_reftype.equals("Book Section")) {
+							bookSection.setTitle(secondary_title);
+							reference= bookSection;
+						} else if (strName_reftype.equals("Article")){
+							article.setTitle(secondary_title);
+							reference= article;
+						}else if (strName_reftype.equals("Journal Article")){
+							article.setTitle(secondary_title);
+							reference= article;
+						}else {
+							logger.warn("The type was not found...");
+							generic.setTitle(secondary_title);
+							reference = generic;
+							success = false; 
+						}						
 					}
 				}
 				
+				/**
 				childName = "tertiary-title";
 				obligatory = false;
 				doubleResult =  XmlHelp.getSingleChildElement(elTitles, childName, tcsNamespace, obligatory);
@@ -704,19 +731,14 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 			    	 //logger.info(periodical);
 			    	if (strName_reftype.equals("Journal Article")){
 			    		 
-			    		Map<String, Journal> map = new HashMap<String, Journal>();
-			    		map.put(periodical, journal);
-			    		
-			    		
-			    		
-			    		Journal gibtEsschon = map.get(periodical);
-			    		
-			    		
+			    		//Map<String, Journal> map = new HashMap<String, Journal>();
+			    		//map.put(periodical, journal);	    		
+			    		//Journal gibtEsschon = map.get(periodical);		    		
 			    		
 			    		if (periodical != null) {	    			 
 			    			article.setInJournal(journal);
 			    			journal.setTitleCache(periodical);
-			    			reference = journal;
+			    			reference = article;
 			    		 }
 			    	}
 			    	else {
@@ -782,7 +804,6 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 			*/
 			}
 			
-			
 			logger.info("start make pages ...");
 			childName = "pages";
 			obligatory = false;
@@ -811,7 +832,7 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 					reference= article;
 				}else if (strName_reftype.equals("Article")){
 					article.setPages(page);	 
-					reference= article;
+					reference= article;		
 				}else if (strName_reftype.equals("Book")){
 					book.setPages(page);	 
 					reference= book;
@@ -856,9 +877,10 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 					book.setVolume(volume);
 					reference= book;
 				}else if (strName_reftype.equals("Book Section")){
-					 if (printedUnitBase != null) {
-						 printedUnitBase.setVolume(volume);
-						 reference= printedUnitBase;
+					 if (volume != null) {
+						 bookSection.setInBook(book);
+						 book.setVolume(volume);
+						 reference= bookSection;
 					 }
 				}else if (strName_reftype.equalsIgnoreCase("Conference Proceedings")){
 					proceedings.setVolume(volume);
@@ -969,7 +991,11 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 				if (strName_reftype.equals("Book")) {
 					book.setEdition(edition);
 					reference= book;
-				} else {
+				}else if (strName_reftype.equals("Book Section")) {
+					bookSection.setInBook(book);
+					book.setEdition(edition);
+					reference=bookSection; 
+				}else {
 					logger.warn("The type was not found...");
 					success = false;
 				}
@@ -1186,9 +1212,10 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 					book.setPublisher(publisher);	 
 					reference= book;
 				}else if (strName_reftype.equals("Book Section")){
-					if (publicationBase != null) {
-						publicationBase.setPublisher(publisher);
-						reference= publicationBase;
+					if (publisher != null) {
+						bookSection.setInBook(book);
+						book.setPublisher(publisher);
+						reference= bookSection;
 					}
 				}else if (strName_reftype.equals("Thesis")){
 					thesis.setPublisher(publisher);
@@ -1209,8 +1236,11 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 					journal.setPublisher(publisher);
 					reference= journal;
 				}else if (strName_reftype.equalsIgnoreCase("Journal Article")){
-					journal.setPublisher(publisher);
-					reference= journal;
+					if (publisher != null) {
+						article.setInJournal(journal);
+						journal.setPublisher(publisher);
+						reference= article;
+					}
 				} else {
 					logger.warn("The type was not found...");
 					generic.setPublisher(publisher);
@@ -1266,9 +1296,6 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 					book.setIsbn(elStyle_Isbn.getTextNormalize());
 					reference= book;
 				}else if (strName_reftype.equals("Journal")){
-					journal.setIssn(elStyle_Isbn.getTextNormalize());
-					reference= journal;
-				}else if (strName_reftype.equals("Journal Article")){
 					journal.setIssn(elStyle_Isbn.getTextNormalize());
 					reference= journal;
 				}else {
@@ -1387,7 +1414,7 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 				String strFont_Label = elStyle_Label.getAttributeValue("font");
 				String strSize_Label = elStyle_Label.getAttributeValue("size");
 			}
-			*/
+			
 			
 			// I did't found...
 	     	logger.info("start make image ...");
@@ -1767,7 +1794,7 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 				//reference.setCreated(created);
 				//referenceMap.put(elStyle_Access_date, reference);
 			}
-			**/
+			
 			
 			//It does’t use as element in example
 			logger.info("start make modified-date ...");
@@ -1928,8 +1955,6 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 		
 		logger.info(i + " Records handled. Saving ...");
 		referenceService.saveAll(referenceMap.objects());
-		//java.util.Collection<Team> col = authorMap.objects();
-
 		logger.info("end make Records ...");
 		return success;
 	}	

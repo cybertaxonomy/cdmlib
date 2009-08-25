@@ -987,6 +987,7 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/reference/endnote/in/EndNoteImportBa
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/reference/endnote/in/EndnoteImportConfigurator.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/reference/endnote/in/EndnoteImportState.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/reference/endnote/in/EndnoteRecordsImport.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/reference/endnote/in/IEndnotePlaceholderClass.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/sdd/SDDCdmExporter.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/sdd/SDDDataSet.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/sdd/SDDDescriptionIO.java -text
@@ -1023,7 +1024,6 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/tcsrdf/TcsRdfTaxonNameRelationsImpor
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/tcsrdf/TcsRdfTaxonRelationsImport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/tcsrdf/TcsRdfTransformer.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/tcsxml/DefaultTcsXmlPlaceholders.java -text
-cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/tcsxml/IEndnotePlaceholderClass.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/tcsxml/ITcsXmlPlaceholderClass.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/tcsxml/TcsXmlTransformer.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/tcsxml/in/CdmTcsXmlImport.java -text

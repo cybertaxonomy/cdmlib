@@ -7,11 +7,13 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package eu.etaxonomy.cdm.io.tcsxml;
+package eu.etaxonomy.cdm.io.reference.endnote.in;
 
 import org.apache.log4j.Logger;
 import org.jdom.Element;
 
+import eu.etaxonomy.cdm.io.tcsxml.DefaultTcsXmlPlaceholders;
+import eu.etaxonomy.cdm.io.tcsxml.ITcsXmlPlaceholderClass;
 import eu.etaxonomy.cdm.io.tcsxml.in.TcsXmlImportConfigurator;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
