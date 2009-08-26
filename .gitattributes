@@ -1798,6 +1798,9 @@ cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/CdmPostD
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/ICdmPostDataChangeObserver.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/SaveEntityListener.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/UpdateEntityListener.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/query/GroupByCount.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/query/GroupByDate.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/query/Grouping.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/query/MatchMode.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/query/OrderHint.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/view/IAuditEventDao.java -text

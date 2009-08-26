@@ -26,8 +26,11 @@ import org.hibernate.HibernateException;
 import org.hibernate.NonUniqueObjectException;
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Order;
+import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Property;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.envers.query.AuditQuery;
 import org.hibernate.search.FullTextQuery;
@@ -44,6 +47,7 @@ import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
+import eu.etaxonomy.cdm.persistence.query.Grouping;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 
@@ -261,6 +265,90 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 	public List<T> list(Integer limit, Integer start) {
 		return list(limit, start, null); 
 	}
+	
+	public List<Object[]> group(Class<? extends T> clazz,Integer limit, Integer start, List<Grouping> groups, List<String> propertyPaths) {
+		
+		Criteria criteria = null;
+		if(clazz == null){
+			criteria = getSession().createCriteria(type);
+		} else {
+			criteria = getSession().createCriteria(clazz);
+		}
+		
+		addGroups(criteria,groups);
+		
+		if(limit != null) {
+			criteria.setFirstResult(start);
+			criteria.setMaxResults(limit);
+		}
+		
+		List<Object[]> result = (List<Object[]>)criteria.list();
+		
+		if(propertyPaths != null && !propertyPaths.isEmpty()) {
+		  for(Object[] objects : result) {
+			defaultBeanInitializer.initialize(objects[0], propertyPaths);
+		  }
+		}
+		
+		return result;		
+	}
+	
+	protected void countGroups(DetachedCriteria criteria,List<Grouping> groups) {
+		if(groups != null){
+
+
+			Map<String,String> aliases = new HashMap<String,String>();
+
+			for(Grouping grouping : groups) {
+				if(grouping.getAssociatedObj() != null) {
+					String alias = null;
+					if((alias = aliases.get(grouping.getAssociatedObj())) == null) {
+						alias = grouping.getAssociatedObjectAlias();
+						aliases.put(grouping.getAssociatedObj(), alias);
+						criteria.createAlias(grouping.getAssociatedObj(),alias);
+					}
+				}
+			}
+
+			ProjectionList projectionList = Projections.projectionList();
+
+			for(Grouping grouping : groups) {
+				grouping.addProjection(projectionList);
+			}
+			criteria.setProjection(projectionList);
+		}
+	}  
+	
+	protected void addGroups(Criteria criteria,List<Grouping> groups) {
+		if(groups != null){
+
+
+			Map<String,String> aliases = new HashMap<String,String>();
+
+			for(Grouping grouping : groups) {
+				if(grouping.getAssociatedObj() != null) {
+					String alias = null;
+					if((alias = aliases.get(grouping.getAssociatedObj())) == null) {
+						alias = grouping.getAssociatedObjectAlias();
+						aliases.put(grouping.getAssociatedObj(), alias);
+						criteria.createAlias(grouping.getAssociatedObj(),alias);
+					}
+				}
+			}
+
+			ProjectionList projectionList = Projections.projectionList();
+
+			for(Grouping grouping : groups) {
+				grouping.addProjection(projectionList);
+			}
+			criteria.setProjection(projectionList);
+			
+			for(Grouping grouping : groups) {
+				grouping.addOrder(criteria);
+
+			}
+		}
+	}  
 	
 	protected void addOrder(Criteria criteria, List<OrderHint> orderHints) {
 		if(orderHints != null){

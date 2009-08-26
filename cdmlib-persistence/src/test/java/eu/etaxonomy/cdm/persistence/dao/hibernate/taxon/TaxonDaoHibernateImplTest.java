@@ -48,6 +48,9 @@ import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonomicTreeDao;
 import eu.etaxonomy.cdm.persistence.fetch.CdmFetch;
+import eu.etaxonomy.cdm.persistence.query.GroupByCount;
+import eu.etaxonomy.cdm.persistence.query.GroupByDate;
+import eu.etaxonomy.cdm.persistence.query.Grouping;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
@@ -740,6 +743,45 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     	assert taxon != null : "taxon cannot be null";
     	assertEquals("countRelatedTaxa should return 0 in the current view",0, taxonDao.countTaxonRelationships(taxon,TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN(), TaxonRelationship.Direction.relatedTo));
     }
+    
+	@Test
+	@DataSet
+	public void testGroupTaxa() { 
+		List<Grouping> groups = new ArrayList<Grouping>();
+		groups.add(new GroupByCount("count",SortOrder.DESCENDING));
+		groups.add(new Grouping("name.genusOrUninomial", "genus", "n", SortOrder.ASCENDING));
+		List<Object[]> results = taxonDao.group(null, null, null, groups,null);
+		System.out.println("count\tname.genuOrUninomial");
+		for(Object[] result : results) {
+			System.out.println(result[0] + "\t" + result[1]);
+		}
+	}
+	
+	@Test
+	@DataSet
+	public void testGroupTaxaByClass() { 
+		List<Grouping> groups = new ArrayList<Grouping>();
+		groups.add(new GroupByCount("count",SortOrder.DESCENDING));
+		groups.add(new Grouping("class", "class",null, SortOrder.ASCENDING));
+		List<Object[]> results = taxonDao.group(null, null, null, groups,null);
+		System.out.println("count\tclass");
+		for(Object[] result : results) {
+			System.out.println(result[0] + "\t" + result[1]);
+		}
+	}
+	
+	@Test
+	@DataSet
+	public void testGroupByDateTaxa() { 
+		List<Grouping> groups = new ArrayList<Grouping>();
+		groups.add(new GroupByCount("count",null));
+		groups.add(new GroupByDate("created", "dateGroup", SortOrder.ASCENDING, GroupByDate.Resolution.MONTH));
+		List<Object[]> results = taxonDao.group(null, null, null, groups,null);
+		System.out.println("count\tyear\tmonth");
+		for(Object[] result : results) {
+			System.out.println(result[0] + "\t" + result[1] + "\t" + result[2]);
+		}
+	}
     
     @Test
     @DataSet
