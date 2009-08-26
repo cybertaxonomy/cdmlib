@@ -33,7 +33,7 @@ public class PalmaeImageActivator  {
 	private static final Logger logger = Logger.getLogger(PalmaeImageActivator.class);
 	
 	public static final File sourceFolder = new File("//Media/EditWP6/palmae/photos");
-	private static final ICdmDataSource cdmDestination = CdmDestinations.localH2();
+	private static final ICdmDataSource cdmDestination = CdmDestinations.localH2Palmae();
 	
 	// set the webserver path to the images
 	private static final String urlString = "http://wp5.e-taxonomy.eu/media/palmae/photos/";

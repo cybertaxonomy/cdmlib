@@ -13,8 +13,8 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.apache.sanselan.ImageReadException;
@@ -71,9 +71,9 @@ public class PalmaeImageImport extends AbstractImageImporter {
 		try {
 			metadata = Sanselan.getMetadata(imageFile);
 		} catch (ImageReadException e) {
-			logger.error("Error reading image", e);
+			logger.error("Error reading image" + " in " + imageFile.getName(), e);
 		} catch (IOException e) {
-			logger.error("Error reading file", e);
+			logger.error("Error reading file"  + " in " + imageFile.getName(), e);
 		}
 		
 		if(metadata instanceof JpegImageMetadata){
@@ -85,13 +85,18 @@ public class PalmaeImageImport extends AbstractImageImporter {
 					logger.info("File: " + imageFile.getName() + ". ObjectName string is: " + item.getText());
 					String[] objectNameSplit = item.getText().split(";");
 					
-					name = objectNameSplit[1];
+					try {
+						name = objectNameSplit[1].trim();
+					} catch (ArrayIndexOutOfBoundsException e) {
+						logger.warn("ObjectNameSplit has no second part: " + item.getText() + " in " + imageFile.getName());
+						//throw e;
+					}
 				}				
 			}
 		}
 		
 		
-		return name.trim();
+		return name;
 	}
 
 	protected boolean invokeImageImport (ImageImportConfigurator config){
@@ -107,13 +112,17 @@ public class PalmaeImageImport extends AbstractImageImporter {
 					
 					ReferenceBase sec = referenceService.getReferenceByUuid(config.getSecUuid());
 
-					List<TaxonBase> taxa = taxonService.searchTaxaByName(taxonName, sec);			
-					
+					List<TaxonBase> taxa = new ArrayList<TaxonBase>();
+					if (taxonName != null){
+						taxa = taxonService.searchTaxaByName(taxonName, sec);			
+					}else{
+						logger.error("TaxonName is null "  + " in " + file.getName());
+					}
 					if(taxa.size() == 0){
-						logger.warn("no taxon with this name found: " + taxonName);
+						logger.warn("no taxon with this name found: " + taxonName + " in " + file.getName());
 					}else if(taxa.size() > 1){
 						logger.error(taxa);
-						logger.error("multiple taxa with this name found: " + taxonName);
+						logger.error("multiple taxa with this name found: " + taxonName + " in " + file.getName());
 					}else{
 						Taxon taxon = (Taxon) taxa.get(0);
 						
