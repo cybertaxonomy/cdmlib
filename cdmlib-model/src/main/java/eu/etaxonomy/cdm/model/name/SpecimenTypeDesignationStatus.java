@@ -257,6 +257,7 @@ public class SpecimenTypeDesignationStatus extends TypeDesignationStatusBase<Spe
 	 * {@link eu.etaxonomy.cdm.model.occurrence.Specimen specimen} cited in the 
 	 * protologue of the type-bringing {@link TaxonNameBase taxon name} which is 
 	 * a duplicate of a {@link eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus#SYNTYPE() syntype}.
+	 * See also article 9.10 of the ICBN
 	 * 
 	 * @see	#HOLOTYPE()
 	 */
