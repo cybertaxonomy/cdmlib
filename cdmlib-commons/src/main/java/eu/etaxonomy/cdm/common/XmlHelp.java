@@ -296,4 +296,20 @@ public class XmlHelp {
 		return childElement;
 	}	
 
+	static public List<Element> getMultipleChildElement(Element parentElement, String childName, Namespace nsChild, boolean obligatory){
+		
+		if (parentElement == null){
+			logger.warn("Parent element is null");
+			return null;
+		}
+		
+		List<Element> elList = getChildren(parentElement, childName.trim(), nsChild);
+		
+		if (elList.size() == 0){
+			logger.info("There is no '" + childName + "' element");
+			return null;
+		}
+		return elList;
+	}	
+	
 }
