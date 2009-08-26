@@ -579,7 +579,7 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 								reference= article;
 							}else if (strName_reftype.equalsIgnoreCase("Conference Proceedings")){
 								proceedings.setTitle(title_new.toString());
-								reference.setTitle(title);
+								reference=proceedings;
 							}else {
 								logger.warn("The type was not found...");
 								generic.setTitle(title_new.toString());
@@ -621,6 +621,9 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 						}else if (strName_reftype.equals("Book")){
 							book.setTitle(secondary_title);
 							reference=book;
+						}else if (strName_reftype.equalsIgnoreCase("Conference Proceedings")){
+							proceedings.setTitleCache(secondary_title);
+							reference=proceedings;
 						}else {
 							logger.warn("The type was not found...");
 							generic.setTitle(secondary_title);
