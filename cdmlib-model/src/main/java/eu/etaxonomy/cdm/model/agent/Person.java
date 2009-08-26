@@ -40,6 +40,8 @@ import org.springframework.beans.factory.annotation.Configurable;
 import eu.etaxonomy.cdm.model.common.Keyword;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.strategy.cache.agent.PersonDefaultCacheStrategy;
+import eu.etaxonomy.cdm.strategy.match.Match;
+import eu.etaxonomy.cdm.strategy.match.MatchMode;
 
 /**
  * This class represents human beings, living or dead.<BR>
@@ -98,6 +100,7 @@ public class Person extends TeamOrPersonBase<Person>{
 	
     @XmlElement(name = "Lifespan")
     @IndexedEmbedded
+    @Match(value=MatchMode.EQUAL_OR_ONE_NULL)
 	private TimePeriod lifespan = TimePeriod.NewInstance();
 	
     @XmlElementWrapper(name = "InstitutionalMemberships")

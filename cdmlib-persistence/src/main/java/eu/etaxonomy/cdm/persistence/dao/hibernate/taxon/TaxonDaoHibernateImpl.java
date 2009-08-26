@@ -1049,10 +1049,11 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 	 * (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#getUuidAndTitleCacheOfAcceptedTaxa(eu.etaxonomy.cdm.model.taxon.TaxonomicTree)
 	 */
-	public Map<UUID, String> getUuidAndTitleCacheOfAcceptedTaxa() {
+	public Map<UUID, String> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByTaxonomicTree(TaxonomicTree taxonomicTree) {
 
+		int taxonomicTreeId = taxonomicTree.getId();
 		
-		String queryString = "SELECT uuid, titleCache FROM TaxonBase WHERE DTYPE = 'Taxon'";
+		String queryString = "SELECT nodes.uuid, taxa.titleCache FROM TaxonNode AS nodes LEFT JOIN TaxonBase AS taxa ON nodes.taxon_id = taxa.id WHERE taxa.DTYPE = 'Taxon' AND nodes.taxonomictree_id = " + taxonomicTreeId;
 		
 		List<Object[]> result = getSession().createSQLQuery(queryString).list();
 				

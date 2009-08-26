@@ -431,8 +431,10 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	/**
 	 * Returns a map that holds uuid, titleCache pairs of all accepted taxa for a given taxonomic tree
 	 * 
+	 * @param taxonomicTree
+	 * 			the taxonomic tree to look for taxa in
 	 * @return 
 	 * 			a <code>Map</code> containing uuid and titleCache of accepted taxa
 	 */
-	public Map<UUID, String> getUuidAndTitleCacheOfAcceptedTaxa();
+	public Map<UUID, String> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByTaxonomicTree(TaxonomicTree taxonomicTree);
 }

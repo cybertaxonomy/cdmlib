@@ -9,7 +9,9 @@
 package eu.etaxonomy.cdm.persistence.dao.hibernate.reference;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.apache.lucene.analysis.SimpleAnalyzer;
@@ -195,5 +197,28 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<ReferenceBase
 		throw new UnsupportedOperationException("suggestQuery is not supported for ReferenceBase");
 	}
 
+	public java.util.Map<UUID, String> getUuidAndTitleCacheOfReferences(){
+		String queryString = "SELECT uuid, titleCache FROM ReferenceBase";
+		
+		List<Object[]> result = getSession().createSQLQuery(queryString).list();
+				
+		if(result.size() == 0){
+			return null;
+		}else{
+			java.util.Map<UUID, String> map = new HashMap<UUID, String>(result.size()); 
+			
+			for (Object object : result){
+				
+				Object[] objectArray = (Object[]) object;
+				
+				UUID uuid = UUID.fromString((String) objectArray[0]);
+				String titleCache = (String) objectArray[1];
+				
+				map.put(uuid, titleCache);
+			}
+			
+			return map;	
+		}
+	}
 	
 }

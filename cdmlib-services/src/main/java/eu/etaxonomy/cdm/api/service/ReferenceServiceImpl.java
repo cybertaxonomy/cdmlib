@@ -140,4 +140,16 @@ public class ReferenceServiceImpl extends IdentifiableServiceBase<ReferenceBase,
 		
 		return new DefaultPagerImpl<ReferenceBase>(pageNumber, numberOfResults, pageSize, results);
 	}
+
+	public Map<UUID, String> getUuidAndTitleCacheOfReferences() {
+		
+		return dao.getUuidAndTitleCacheOfReferences();
+	}
+
+	public <TYPE extends ReferenceBase> Pager<TYPE> list(Class<TYPE> type,
+			Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
+			List<String> propertyPaths) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

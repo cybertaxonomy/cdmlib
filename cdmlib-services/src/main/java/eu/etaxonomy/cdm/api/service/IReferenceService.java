@@ -99,4 +99,12 @@ public interface IReferenceService extends IIdentifiableEntityService<ReferenceB
 	 */
 	public Pager<ReferenceBase> search(Class<? extends ReferenceBase> clazz, String queryString, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 	
+	/**
+	 * Returns a map that holds uuid, titleCache pairs of all references in the current database
+	 * 
+	 * @return 
+	 * 			a <code>Map</code> containing uuid and titleCache of references
+	 */
+	public Map<UUID, String> getUuidAndTitleCacheOfReferences();
+	
 }

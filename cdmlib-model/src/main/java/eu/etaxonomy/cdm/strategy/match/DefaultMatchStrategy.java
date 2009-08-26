@@ -29,6 +29,7 @@ import sun.reflect.generics.reflectiveObjects.TypeVariableImpl;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.DoubleResult;
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.strategy.StrategyBase;
 import eu.etaxonomy.cdm.strategy.match.Match.ReplaceMode;
@@ -297,7 +298,7 @@ public class DefaultMatchStrategy extends StrategyBase implements IMatchStrategy
 				return null;
 			}
 		}
-		return object;
+		return HibernateProxyHelper.deproxy(object);
 	}
 
 	/**

@@ -63,7 +63,7 @@ import eu.etaxonomy.cdm.strategy.merge.IMergable;
 @Indexed(index = "eu.etaxonomy.cdm.model.reference.ReferenceBase")
 @Audited
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
-public abstract class StrictReferenceBase<S extends IReferenceBaseCacheStrategy> extends ReferenceBase<S> implements IMergable, IMatchable {
+public abstract class StrictReferenceBase<S extends IReferenceBaseCacheStrategy> extends ReferenceBase<S> {
 	private static final long serialVersionUID = 1951644614905249231L;
 	private static final Logger logger = Logger.getLogger(StrictReferenceBase.class);
 	

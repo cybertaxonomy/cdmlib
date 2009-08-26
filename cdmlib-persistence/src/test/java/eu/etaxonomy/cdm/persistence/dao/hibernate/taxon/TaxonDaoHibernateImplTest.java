@@ -743,7 +743,8 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     
     @Test
     @DataSet
-	public final void testGetUuidAndTitleCacheOfAcceptedTaxa(){
-		assertNotNull(taxonDao.getUuidAndTitleCacheOfAcceptedTaxa());
+	public final void testGetTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByTaxonomicTree(){
+    	TaxonomicTree taxonomicTree = taxonomicTreeDao.findByUuid(taxonomicTreeUuid);
+		assertNotNull(taxonDao.getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByTaxonomicTree(taxonomicTree));
 	}
 }

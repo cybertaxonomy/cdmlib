@@ -494,7 +494,7 @@ public class TaxonXNomenclatureImport extends CdmIoBase<TaxonXImportState> imple
 		
 		Specimen originalSpecimen = simpleSpecimen.getSpecimen();
 		
-		//TODO special character ?, †, ! 
+		//TODO special character ?, ï¿½, ! 
 		
 		for (String typeLocStatus : typeLocStatusList){
 			typeLocStatus = typeLocStatus.trim();

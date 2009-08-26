@@ -352,5 +352,5 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
 	 * 
 	 * @return
 	 */
-	public Map<UUID, String> getUuidAndTitleCacheOfAcceptedTaxa();
+	public Map<UUID, String> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByTaxonomicTree(TaxonomicTree taxonomicTree);
 }

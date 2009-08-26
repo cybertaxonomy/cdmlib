@@ -197,19 +197,30 @@ public class NamedArea extends OrderedTermBase<NamedArea> {
 	@XmlIDREF
     @XmlSchemaType(name = "IDREF")
 	public NamedArea getPartOf(){
-		/* 
-		 * Object area = super.getPartOf();
+		return partOf;
+	}
+	
+	/**
+	 * FIXME this method is a workaround for a casting problem in the getPartOf implementation
+	 * 
+	 * the partOf instance variable is typically a proxy object of type DefinedTermBase, thus
+	 * does not coincide with the return value of NamedArea and a ClassCastException is thrown.
+	 * 
+	 * It is not clear why this only occurs in the editor and not in the webservice where the same
+	 * method gets called and should lead to the same results.
+	 * 
+	 * Seems to be a bigger problem although its origin is buggy behaviour of the javassist implementation.
+	 */
+	@Deprecated
+	@Transient
+	public NamedArea getPartOfWorkaround(){
+		Object area = super.getPartOf();
 		
 		if(!(area instanceof NamedArea)){
 			area = HibernateProxyHelper.deproxy(area, NamedArea.class);
 		}
 		
 		return (NamedArea) area;
-		
-		TODO workaround replaced by field 
-		     the partOf getter and setter seem to be superfluous, can the be removed?
-		*/
-		return partOf;
 	}
 	
 	public void setPartOf(NamedArea partOf){

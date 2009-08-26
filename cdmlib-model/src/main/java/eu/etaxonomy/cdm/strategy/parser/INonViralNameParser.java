@@ -122,10 +122,14 @@ public interface INonViralNameParser<T extends TaxonNameBase> extends IStrategy 
 	 * 		</li>
 	 * </ol>
 	 * 
-	 * @param nameToBeFilled
-	 * @param fullReference the string containing the scientific name with authorship, year, reference etc.
+	 * @param nameToBeFilled 
+	 * 				an existing name object
+	 * @param fullReference 
+	 * 				the string containing the scientific name with authorship, year, reference etc.
 	 * @param rank
-	 * @param makeEmpty
+	 * @param makeEmpty 
+	 * 				if this parameter is set to true, the name objects will nulled. All information 
+	 * 				formerly attached to this name will be lost.
 	 */
 	public void parseReferencedName(T nameToBeFilled, String fullReference, Rank rank, boolean makeEmpty);
 	
