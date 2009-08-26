@@ -75,20 +75,20 @@ public abstract class TaxonExcelImporterBase extends ExcelImporterBase {
 		VernacularName("VernacularName"),
 		Language("Language");
 		
-	private String head;
-	private String value;
-
-	Columns(String head) {
-		this.head = head;
-	}
+		private String head;
+		private String value;
 	
-	public String head() {
-		return this.head;
-	}
-
-	public String value() {
-		return this.value;
-	}
+		Columns(String head) {
+			this.head = head;
+		}
+		
+		public String head() {
+			return this.head;
+		}
+	
+		public String value() {
+			return this.value;
+		}
 	}
 	
 
