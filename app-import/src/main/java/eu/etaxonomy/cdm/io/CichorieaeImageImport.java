@@ -16,6 +16,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
@@ -35,6 +36,7 @@ import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
 
 /**
  * @author n.hoffmann
@@ -123,6 +125,9 @@ public class CichorieaeImageImport extends AbstractImageImporter {
 	 */
 	protected boolean invokeImageImport (ImageImportConfigurator config){
 		File source = (File)config.getSource();
+		UUID treeUuid = config.getTreeUuid();
+		TaxonomicTree tree = taxonService.getTaxonomicTreeByUuid(treeUuid);
+		
 		if (source.isDirectory()){
 			for (File file : source.listFiles() ){
 				if (file.isFile()){
@@ -166,12 +171,28 @@ public class CichorieaeImageImport extends AbstractImageImporter {
 					
 					List<TaxonBase> taxa = taxonService.searchTaxaByName(taxonName, config.getSourceReference());			
 					
+					Taxon taxon = null;
+					
 					if(taxa.size() == 0){
 						logger.warn("no taxon with this name found: " + taxonName);
-					}else if(taxa.size() > 1){
-						logger.warn("multiple taxa with this name found: " + taxonName);
-					}else{
-						Taxon taxon = (Taxon) taxa.get(0);
+					}
+					
+					else {
+						if(taxa.size() > 1) {
+							if (logger.isDebugEnabled()) {
+								logger.debug("multiple taxa with this name found: " + taxonName);
+							}
+							for (TaxonBase taxonBase : taxa) {
+								Taxon tax = (Taxon)taxonBase;
+								if (tree.isTaxonInTree(tax)) {
+									taxon = tax;
+									break;
+								}
+							}
+
+						} else {
+							taxon = (Taxon) taxa.get(0);
+						}
 						taxonService.saveTaxon(taxon);
 						TextData feature = TextData.NewInstance();
 						logger.info("Importing image for taxon: " + taxa);
@@ -181,7 +202,7 @@ public class CichorieaeImageImport extends AbstractImageImporter {
 							String urlString = urlPrefix + name;
 							logger.info(urlString);
 							URL url = new URL(urlString);
-							
+
 							imageMetaData.readFrom(url);
 							ImageFile image = ImageFile.NewInstance(url.toString(), null, imageMetaData);
 							MediaRepresentation representation = MediaRepresentation.NewInstance(imageMetaData.getMimeType(), null);
@@ -190,15 +211,15 @@ public class CichorieaeImageImport extends AbstractImageImporter {
 							media.addRepresentation(representation);
 							feature.addMedia(media);
 							feature.putText(taxonName, Language.ENGLISH());
-							
+
 							feature.setType(Feature.IMAGE());
 							TaxonDescription description = TaxonDescription.NewInstance(taxon);
 							description.addElement(feature);
-							
+
 						} catch (MalformedURLException e) {
 							logger.error("Malformed URL", e);
 						}
-					}				
+					}
 				}else{
 					logger.warn("File is not a file (but a directory?): " + file.getName());
 				}

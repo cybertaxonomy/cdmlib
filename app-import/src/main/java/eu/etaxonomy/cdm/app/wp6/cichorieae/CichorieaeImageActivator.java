@@ -33,14 +33,17 @@ public class CichorieaeImageActivator  {
 	
 	private static final File sourceFile  = new File("\\\\media\\editwp6\\photos");
 //	private static final File sourceFile = new File("src/main/resources/images/images_cich.xls");
-	private static final ICdmDataSource cdmDestination = CdmDestinations.localH2Cichorieae();
+	private static final ICdmDataSource cdmDestination = CdmDestinations.cdm_test_anahit2();
 //	private static final ICdmDataSource cdmDestination = CdmDestinations.cdm_import_cichorieae();
 	
 	static final UUID secUuid = UUID.fromString("6924c75d-e0d0-4a6d-afb7-3dd8c71195ca");
+	static final UUID treeUuid = UUID.fromString("00db28a7-50e1-4abc-86ec-b2a8ce870de9");
 	
 	public static void main (String[] cowabunga){
 		ImageImportConfigurator imageConfigurator = ImageImportConfigurator.NewInstance(
 				sourceFile, cdmDestination, CichorieaeImageImport.class);
+		imageConfigurator.setSecUuid(secUuid);
+		imageConfigurator.setTreeUuid(treeUuid);
 		
 		CdmDefaultImport<IImportConfigurator> importer = new CdmDefaultImport<IImportConfigurator>();
 		importer.invoke(imageConfigurator);
