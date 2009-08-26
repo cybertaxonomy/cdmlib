@@ -550,10 +550,10 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 							title_new.toString();
 							
 							if (strName_reftype.equals("Article")) {
-								map_journal.put(title_new.toString(), journal);
-								Journal give_journal = map_journal.get(title_new.toString());
-								give_journal.setTitle(title_new.toString());
-								reference=give_journal;
+								map_article.put(title_new.toString(), article);
+								Article give_article = map_article.get(title_new.toString());
+								give_article.setTitle(title_new.toString());
+								reference=give_article;
 								//article.setTitle(title_new.toString());
 								//reference= article;
 							}else if (strName_reftype.equals("Book")) {
@@ -630,10 +630,10 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 								//printSeries.setTitle(title_new.toString());
 								//reference=printSeries;
 							}else if (strName_reftype.equals("Journal Article")){
-								map_journal.put(title_new.toString(), journal);
-								Journal give_journal = map_journal.get(title_new.toString());
-								give_journal.setTitle(title_new.toString());
-								reference=give_journal;
+								map_article.put(title_new.toString(), article);
+								Article give_article = map_article.get(title_new.toString());
+								give_article.setTitle(title_new.toString());
+								reference=give_article;
 								//article.setTitle(title_new.toString());
 								//reference= article;
 							}else if (strName_reftype.equalsIgnoreCase("Conference Proceedings")){
