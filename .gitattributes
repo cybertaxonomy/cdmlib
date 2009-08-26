@@ -1231,6 +1231,7 @@ cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/dataset.dtd -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/excel/taxa/DenormalExplicit.xls -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/excel/taxa/DenormalImplied.xls -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/excel/taxa/NormalExplicit.xls -text
+cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/excel/taxa/NormalExplicitTest-input.xls -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/excel/taxa/NormalImplied.xls -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/jaxb/AgentsTest.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/jaxb/AnnotationTest.xml -text
