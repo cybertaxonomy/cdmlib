@@ -75,8 +75,11 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 		boolean obligatory;
 		
 		MapWrapper<Team> authorMap = (MapWrapper<Team>)state.getStore(ICdmIO.TEAM_STORE);
-		MapWrapper<ReferenceBase> referenceMap =  (MapWrapper<ReferenceBase>)state.getStore(ICdmIO.REFERENCE_STORE);
+		MapWrapper<ReferenceBase> referenceMap = (MapWrapper<ReferenceBase>)state.getStore(ICdmIO.REFERENCE_STORE);
 		
+		//Map<String, Journal> map_journal = new HashMap<String, Journal>();
+		//Map<String, Book> map_book = new HashMap<String, Book>();
+		 
 		IReferenceService referenceService = getReferenceService();
 		
 		EndnoteImportConfigurator config = state.getConfig();
@@ -279,10 +282,11 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 							String strFont = elStyle.getAttributeValue("font");
 							String strSize = elStyle.getAttributeValue("size");
 							String author_style =  elStyle.getTextNormalize();
+							
 							authorBilder.append(author_style + " ");
 							authorBilder.toString();
 							reference.setAuthorTeam(authorTeam);
-						    authorTeam.setNomenclaturalTitle(authorBilder.toString());						  
+						    authorTeam.setTitleCache(authorBilder.toString());						  
 					}
 				}
 			}	
@@ -320,12 +324,13 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 							String strFont_secondary = elStyle_secondary.getAttributeValue("font");
 							String strSize_secondary = elStyle_secondary.getAttributeValue("size");
 							String  secondary_author=  elStyle_secondary.getTextNormalize();
+							
 							authorBilder.append(" " + secondary_author);
 							authorBilder.toString();
 							
 							if (bookSection != null) {
 								reference.setAuthorTeam(authorTeam);
-								authorTeam.setNomenclaturalTitle(authorBilder.toString());
+								authorTeam.setNomenclaturalTitle(secondary_author);
 							}
 						}
 					}
@@ -534,8 +539,8 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 							title_new.toString();
 							
 							if (strName_reftype.equals("Article")) {
-								journal.setTitle(title_new.toString());
-								reference= journal;
+								article.setTitle(title_new.toString());
+								reference= article;
 							}else if (strName_reftype.equals("Book")) {
 								book.setTitle(title_new.toString());
 								reference= book;
@@ -570,8 +575,8 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 								printSeries.setTitle(title_new.toString());
 								reference=printSeries;
 							}else if (strName_reftype.equals("Journal Article")){
-								journal.setTitle(title_new.toString());
-								reference= journal;
+								article.setTitle(title_new.toString());
+								reference= article;
 							}else if (strName_reftype.equalsIgnoreCase("Conference Proceedings")){
 								proceedings.setTitle(title_new.toString());
 								reference.setTitle(title);
@@ -608,11 +613,14 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 							bookSection.setTitle(secondary_title);
 							reference= bookSection;
 						} else if (strName_reftype.equals("Article")){
-							article.setTitle(secondary_title);
-							reference= article;
+							journal.setTitle(secondary_title);
+							reference= journal;
 						}else if (strName_reftype.equals("Journal Article")){
-							article.setTitle(secondary_title);
-							reference= article;
+							journal.setTitle(secondary_title);
+							reference= journal;
+						}else if (strName_reftype.equals("Book")){
+							book.setTitle(secondary_title);
+							reference=book;
 						}else {
 							logger.warn("The type was not found...");
 							generic.setTitle(secondary_title);
@@ -826,6 +834,9 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 			
 				String strName_reftype = elRef_type.getAttributeValue("name");
 				String page = elStyle_Pages.getTextNormalize();
+				
+				//map.put(periodical, journal);	    		
+	    		//Journal gibtEsschon = map.get(periodical);
 				
 				if (strName_reftype.equals("Journal Article")) {
 					article.setPages(page);
