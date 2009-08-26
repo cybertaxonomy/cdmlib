@@ -354,7 +354,7 @@ public class TaxonXNomenclatureImport extends CdmIoBase<TaxonXImportState> imple
 		 if (authorStr.equals(typeCache)){
 			 return true;
 		 }else{
-			 logger.warn("   Authors different: " + authorStr + " <-> " + typeCache);
+			 logger.info("   Authors different: " + authorStr + " <-> " + typeCache);
 		 }
 		 return result;
 	}
@@ -364,11 +364,18 @@ public class TaxonXNomenclatureImport extends CdmIoBase<TaxonXImportState> imple
 		if (true){
 			return null;
 		}
-		if (statusString.trim().equals("Type")){
+		if (statusString.trim().equalsIgnoreCase("Type")){
 			return NameTypeDesignationStatus.ORIGINAL_DESIGNATION();
-		}else if (statusString.trim().equals("Lectotype")){
+		}else if (statusString.trim().equalsIgnoreCase("Lectotype")){
 			return NameTypeDesignationStatus.NOT_APPLICABLE();
-		}else{
+		}else if (statusString.trim().equalsIgnoreCase("Holotype")){
+			logger.warn("Holotype does not yet exist in CDM");
+			return NameTypeDesignationStatus.NOT_APPLICABLE();
+		}else if (statusString.trim().equalsIgnoreCase("paratype")){
+			logger.warn("paratype does not yet exist in CDM");
+			return NameTypeDesignationStatus.NOT_APPLICABLE();
+		}
+		else{
 			logger.warn("Status not recognized: " + statusString);
 			return null;
 		}
@@ -530,13 +537,25 @@ public class TaxonXNomenclatureImport extends CdmIoBase<TaxonXImportState> imple
 	private static Map<String, SpecimenTypeDesignationStatus> statusMap;
 	private static void fillTypeStatusMap(){
 		statusMap = new HashMap<String, SpecimenTypeDesignationStatus>();
+		statusMap.put("epitype", SpecimenTypeDesignationStatus.EPITYPE());
 		statusMap.put("holotype", SpecimenTypeDesignationStatus.HOLOTYPE());
+		statusMap.put("iconotype", SpecimenTypeDesignationStatus.ICONOTYPE());
 		statusMap.put("isotype", SpecimenTypeDesignationStatus.ISOTYPE());
+		statusMap.put("isoneotype", SpecimenTypeDesignationStatus.ISONEOTYPE());
+		statusMap.put("isosyntype", SpecimenTypeDesignationStatus.ISOSYNTYPE());
+		statusMap.put("isolectotype", SpecimenTypeDesignationStatus.ISOLECTOTYPE());
 		statusMap.put("lectotype", SpecimenTypeDesignationStatus.LECTOTYPE());
 		statusMap.put("syntype", SpecimenTypeDesignationStatus.SYNTYPE());
-		statusMap.put("isolectotype", SpecimenTypeDesignationStatus.ISOLECTOTYPE());
+		statusMap.put("paratype", SpecimenTypeDesignationStatus.PARATYPE());
+		statusMap.put("neotype", SpecimenTypeDesignationStatus.NEOTYPE());
+		statusMap.put("isoepitype", SpecimenTypeDesignationStatus.ISOEPITYPE());
+		statusMap.put("originalmaterial", SpecimenTypeDesignationStatus.ORIGINAL_MATERIAL());
+		statusMap.put("paralectotype", SpecimenTypeDesignationStatus.PARALECTOTYPE());
+		statusMap.put("paraneotype", SpecimenTypeDesignationStatus.PARANEOTYPE());
+		statusMap.put("phototype", SpecimenTypeDesignationStatus.PHOTOTYPE());
+		statusMap.put("secondsteplectotype", SpecimenTypeDesignationStatus.SECOND_STEP_LECTOTYPE());
+		statusMap.put("secondstepneotype", SpecimenTypeDesignationStatus.SECOND_STEP_NEOTYPE());
 		statusMap.put("type", null);
-		//TODO to be continued
 	}
 	
 	
