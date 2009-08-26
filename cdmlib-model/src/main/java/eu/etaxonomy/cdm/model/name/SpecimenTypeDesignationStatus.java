@@ -91,6 +91,10 @@ public class SpecimenTypeDesignationStatus extends TypeDesignationStatusBase<Spe
 	
 	private static SpecimenTypeDesignationStatus ORIGINAL_MATERIAL;
 	
+	private static SpecimenTypeDesignationStatus ISOSYNTYPE;
+	
+	
+	
 	private static final UUID uuidHolotype = UUID.fromString("a407dbc7-e60c-46ff-be11-eddf4c5a970d");
 	private static final UUID uuidLectotype = UUID.fromString("05002d46-083e-4b27-8731-2e7c28a8825c");
 	private static final UUID uuidNeotype = UUID.fromString("26e13359-8f77-4e40-a85a-56c01782fce0");
@@ -109,6 +113,7 @@ public class SpecimenTypeDesignationStatus extends TypeDesignationStatusBase<Spe
 	private static final UUID uuidPhototype = UUID.fromString("b7807acc-f559-474e-ad4a-e7a41e085e34");
 	private static final UUID uuidUnspecific = UUID.fromString("230fd762-b143-49de-ac2e-744bcc48a63b");
 	private static final UUID uuidOriginalMaterial = UUID.fromString("49c96cae-6be6-401e-9b36-1bc12d9dc8f9");
+	private static final UUID uuidIsosyntype = UUID.fromString("052a5ff0-8e9a-4355-b24f-5e4bb6071f44");
 
 	
 	// ************* CONSTRUCTORS *************/	
@@ -226,7 +231,7 @@ public class SpecimenTypeDesignationStatus extends TypeDesignationStatusBase<Spe
 	}
 
 	/**
-	 * Returns the "isotype" designation status. An isotype is any duplicate of
+	 * Returns the "isotype" designation status. </BR>An isotype is any duplicate of
 	 * the holotype; it is always a {@link eu.etaxonomy.cdm.model.occurrence.Specimen specimen}.
 	 * 
 	 * @see	#HOLOTYPE()
@@ -236,7 +241,7 @@ public class SpecimenTypeDesignationStatus extends TypeDesignationStatusBase<Spe
 	}
 
 	/**
-	 * Returns the "syntype" designation status. A syntype is any one of two or
+	 * Returns the "syntype" designation status. </BR>A syntype is any one of two or
 	 * more {@link eu.etaxonomy.cdm.model.occurrence.Specimen specimens} cited in the {@link TaxonNameBase#getNomenclaturalReference() protologue} of the
 	 * "type-bringing" {@link TaxonNameBase taxon name} when no holotype was designated,
 	 * or any one of two or more specimens simultaneously designated as types.
@@ -246,9 +251,18 @@ public class SpecimenTypeDesignationStatus extends TypeDesignationStatusBase<Spe
 	public static final SpecimenTypeDesignationStatus SYNTYPE(){
 		return SYNTYPE;
 	}
+	
+	/**
+	 * Returns the "isosyntype" designation status. </BR>A isosyntype is ...TODO
+	 * 
+	 * @see	#HOLOTYPE()
+	 */
+	public static final SpecimenTypeDesignationStatus ISOSYNTYPE(){
+		return ISOSYNTYPE;
+	}
 
 	/**
-	 * Returns the "paratype" designation status. A paratype is a {@link eu.etaxonomy.cdm.model.occurrence.Specimen specimen}
+	 * Returns the "paratype" designation status. </BR>A paratype is a {@link eu.etaxonomy.cdm.model.occurrence.Specimen specimen}
 	 * cited in the {@link TaxonNameBase#getNomenclaturalReference() protologue} of the "type-bringing"
 	 * {@link TaxonNameBase taxon name} that is neither the holotype nor an isotype,
 	 * nor one of the syntypes if two or more specimens were simultaneously
@@ -263,7 +277,8 @@ public class SpecimenTypeDesignationStatus extends TypeDesignationStatusBase<Spe
 	}
 
 	/**
-	 * Returns the "isolectotype" designation status. An isolectotype is any
+	 * Returns the "isolectotype" designation status. </BR>
+	 * An isolectotype is any
 	 * duplicate of the lectotype; it is always a {@link eu.etaxonomy.cdm.model.occurrence.Specimen specimen}.
 	 * 
 	 * @see	#LECTOTYPE()
@@ -273,7 +288,8 @@ public class SpecimenTypeDesignationStatus extends TypeDesignationStatusBase<Spe
 	}
 
 	/**
-	 * Returns the "isoneotype" designation status. An isoneotype is any
+	 * Returns the "isoneotype" designation status. </BR>
+	 * An isoneotype is any
 	 * duplicate of the neotype; it is always a {@link eu.etaxonomy.cdm.model.occurrence.Specimen specimen}.
 	 * 
 	 * @see	#NEOTYPE()
@@ -282,7 +298,8 @@ public class SpecimenTypeDesignationStatus extends TypeDesignationStatusBase<Spe
 		return ISONEOTYPE;
 	}
 	/**
-	 * Returns the "paraneotype" designation status. A paraneotype is a {@link eu.etaxonomy.cdm.model.occurrence.Specimen specimen},
+	 * Returns the "paraneotype" designation status. </BR>
+	 * A paraneotype is a {@link eu.etaxonomy.cdm.model.occurrence.Specimen specimen},
 	 * cited when selecting a neotype, other than the neotype itself. Also
 	 * called "neoparatype" in zoology.
 	 * 
@@ -293,8 +310,8 @@ public class SpecimenTypeDesignationStatus extends TypeDesignationStatusBase<Spe
 	}
 
 	/**
-	 * Returns the "second step lectotype" designation status. A second step
-	 * lectotype is a {@link eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase specimen or illustration}, designated as lectotype
+	 * Returns the "second step lectotype" designation status. </BR>
+	 * A second step lectotype is a {@link eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase specimen or illustration}, designated as lectotype
 	 * in order to substitute another already existing lectotype.
 	 * 
 	 * @see	#LECTOTYPE()
@@ -304,8 +321,8 @@ public class SpecimenTypeDesignationStatus extends TypeDesignationStatusBase<Spe
 	}
 
 	/**
-	 * Returns the "second step neotype" designation status. A second step
-	 * neotype is a {@link eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase specimen or illustration}, designated as neotype
+	 * Returns the "second step neotype" designation status. </BR>
+	 * A second step neotype is a {@link eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase specimen or illustration}, designated as neotype
 	 * in order to substitute another already existing neotype.
 	 * 
 	 * @see	#LECTOTYPE()
@@ -315,8 +332,8 @@ public class SpecimenTypeDesignationStatus extends TypeDesignationStatusBase<Spe
 	}
 
 	/**
-	 * Returns the "paralectotype" designation status. A paralectotype is a
-	 * {@link eu.etaxonomy.cdm.model.occurrence.Specimen specimen}, cited when designating a lectotype, other than
+	 * Returns the "paralectotype" designation status. </BR>
+	 * A paralectotype is a {@link eu.etaxonomy.cdm.model.occurrence.Specimen specimen}, cited when designating a lectotype, other than
 	 * the lectotype itself. Also called "lectoparatype" in zoology.
 	 * 
 	 * @see	#LECTOTYPE()
@@ -395,8 +412,9 @@ public class SpecimenTypeDesignationStatus extends TypeDesignationStatusBase<Spe
 		SpecimenTypeDesignationStatus.SECOND_STEP_LECTOTYPE= termVocabulary.findTermByUuid(SpecimenTypeDesignationStatus.uuidSecondStepLectotype);
 		SpecimenTypeDesignationStatus.SECOND_STEP_NEOTYPE = termVocabulary.findTermByUuid(SpecimenTypeDesignationStatus.uuidSecondStepNeotype);
 		SpecimenTypeDesignationStatus.SYNTYPE = termVocabulary.findTermByUuid(SpecimenTypeDesignationStatus.uuidSyntype);		
+		SpecimenTypeDesignationStatus.ISOSYNTYPE = termVocabulary.findTermByUuid(SpecimenTypeDesignationStatus.uuidIsosyntype);
 		SpecimenTypeDesignationStatus.UNSPECIFIC = termVocabulary.findTermByUuid(SpecimenTypeDesignationStatus.uuidUnspecific);		
-		SpecimenTypeDesignationStatus.ORIGINAL_MATERIAL = termVocabulary.findTermByUuid(SpecimenTypeDesignationStatus.uuidOriginalMaterial);		
+		SpecimenTypeDesignationStatus.ORIGINAL_MATERIAL = termVocabulary.findTermByUuid(SpecimenTypeDesignationStatus.uuidOriginalMaterial);
 	}
 
 }
