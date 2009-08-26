@@ -1,0 +1,45 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>Genera Palmarum. The evolution and classification of palms</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Uhl</mods:namePart>
+<mods:namePart type="given">N.</mods:namePart>
+<mods:namePart type="family">Asmussen</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+<mods:namePart type="family">Harley</mods:namePart>
+<mods:namePart type="given">M.</mods:namePart>
+<mods:namePart type="family">Lewis</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>2008</mods:dateIssued><mods:publisher>Kew Publishing, Royal Botanic Gardens Kew</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="genus">
+<div type="diagnosis"><p>Slender clustering climbing palms, found in South Thailand, Malay Peninsula, Borneo, Sumatra and Java, immediately distinguished by the single large bract (the prophyll) that covers the entire inflorescence and opens by two apical slits.</p></div>
+<nomenclature>
+<name>Ceratolobus</name>
+<author>Blume in J.J. Roemer and J.A. Schultes</author> 
+<citation>Syst. Veg. 7: 1334 (1830).</citation>
+<type>Type; Ceratolobus glaucescens; Blume</type>
+</nomenclature>
+<div type="etymology"><p>Keras — horn, lobos — pod, referring to the shape of the inflorescence bract (prophyll).</p></div>
+<div type="description"><p>Slender to moderate, clustered, spiny, climbing, pleonanthic, dioecious, rattan palms. Stem eventually becoming bare, with long internodes and conspicuous nodal scars, white mucilage sometimes exuding from cut surfaces. Leaves of mature climbing stems cirrate, pinnate; leaf sheath tubular, armed with spines and/or spicules, frequently organised into whorls, and often with abundant indumentum; knee present, sometimes rather weakly developed; ocrea inconspicuous; flagellum absent; petiole present or absent, if present, flat adaxially, rounded abaxially, armed with spines and sometimes with spicules; cirrus and distal part of rachis armed with regular groups of grapnel spines on the abaxial surface; leaflets relatively few, linear to lanceolate and entire, or rhomboid and praemorse, concolourous or discolourous, regularly arranged or grouped; emerging leaf pink-tinged. Inflorescences axillary but adnate to the internode and sheath of the following leaf, sessile and erect or pendulous on a long slender, unarmed or spiny peduncle, the whole inflorescence much shorter than the leaves; staminate inflorescence branching to 3 orders, pistillate to 2 orders, prophyll persistent, membranous to subwoody, flattened-tubular with lateral wings and a terminal beak, entirely enclosing the inflorescence, opening at anthesis by 2 narrow, lateral slits in the beak, this remaining the only access to the flowers during anthesis and young fruiting stage, prophyll unarmed or rarely armed with scattered spines, frequently bearing caducous indumentum, prophyll often splitting longitudinally in fruit, very rarely falling completely, staminate and pistillate inflorescences indistinguishable without splitting the prophyll; peduncular bracts absent; rachis bracts inconspicuous, tubular, with triangular limbs, each (and the prophyll) subtending a first-order branch, usually adnate to the axis for a short distance above the bract node. Staminate flowers borne singly, subdistichously, rather distant from each other, each subtended by a membranous triangular bract and a 2-keeled, prophyllar bracteole, the latter ± forming a cushion beneath the flower; calyx tubular, with 3 short triangular lobes; petals 3, boat-shaped, valvate, briefly joined basally; stamens 6, borne at the base of the corolla, filaments short, fleshy, anthers linear, latrorse; pistillode trifid, minute. Pollen ellipsoidal, bi-symmetric; apertures equatorially disulcate; ectexine tectate or semi-tectate, finely or coarsely perforate, or foveolate-reticulate, aperture margins similar or finer; infratectum columellate; longest axis 22–30 µm [3/6]. Pistillate flowers borne with a sterile staminate flower and 2 similar 2-keeled prophyllar bracteoles, in a cup formed by the subtending bract. Sterile staminate flower like the fertile but usually rather distorted by close packing and with empty anthers and borne on a short to long stalk. Pistillate flowers larger than the staminate; calyx tubular, with 3 short, triangular lobes; corolla partially divided into 3, valvate, triangular lobes; staminodes 6, epipetalous, flattened; gynoecium incompletely trilocular, triovulate, globose, or ellipsoidal, covered in scales, stigmas 3, fleshy, recurved, borne on a short style, ovule basally attached, anatropous. Fruit l-seeded, globose to ellipsoidal, stigmatic remains apical, epicarp covered in vertical rows of reflexed scales, mesocarp becoming thin and papery as fruit ripens, endocarp not differentiated. Seed attached basally, globose to ellipsoidal, with thin or thick, sour or sweet sarcotesta and homogeneous or ruminate endosperm; embryo basal. Germination adjacent-ligular; eophyll with 4–6 praemorse or entire, crowded leaflets displayed in a fan. Cytology: 2n = 26.</p></div>
+<div type="distribution"><p>Six species confined to the perhumid areas of the Sunda Shelf (Malay Peninsula [2], Sumatra [4], Borneo [3], Java [2]). </p></div>
+<div type="anatomy"><p>Leaf (Tomlinson 1961), root (Seubert 1996a). </p></div>
+<div type="relationships"><p>Ceratolobus is strongly supported as monophyletic (Baker et al. 2000c). For relationships, see Calamus. </p></div>
+<div type="uses"><p>Species of Ceratolobus appear to have weak, not durable canes and for this reason are scarcely ever utilised. </p></div>
+<div type="taxonomic accounts"><p>Dransfield (1979b). </p></div>
+<div type="fossil record"><p>No generic records found. </p></div>
+<div type="discussion"><p>Ceratolobus has the most reduced inflorescence of all the Calaminae, having only one major bract, the prophyll, which remains closed around the inflorescence, but splitting and sometimes falling in fruit. The presence of knees on the leaf sheaths allows those species with rhomboid leaflets to be distinguished in the sterile state from Korthalsia, but without inflorescences, the remaining species (C. subangulatus) cannot be separated easily from Calamus and Daemonorops. </p></div>
+<div type="vernacular"><p>Rattan, rotan. </p></div>
+<div type="biology_ecology"><p>All species are found in lowland and hill tropical rain forest and do not occur above 1000 m altitude; all are usually confined to dipterocarp forest but Ceratolobus subangulatus also occurs in heath forest in Sarawak, where it is the most conspicuous rattan in some facies. The pollination ecology of the extraordinary closed inflorescence deserves further study. </p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

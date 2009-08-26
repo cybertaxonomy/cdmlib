@@ -2,7 +2,10 @@
 <taxonxHeader>
 <mods:mods>
 <mods:titleInfo><mods:title>A Manual of the Rattans of Andaman and Nicobar Islands</mods:title></mods:titleInfo>
-<mods:name><mods:namePart>Renuka, C.</mods:namePart></mods:name>
+<mods:name>
+<mods:namePart type="family">Renuka</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+</mods:name>
 <mods:originInfo><mods:dateIssued>1995</mods:dateIssued>
 <mods:publisher>Kerala Forest Research Institute, India</mods:publisher>
 </mods:originInfo>

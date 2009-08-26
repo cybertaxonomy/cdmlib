@@ -1,0 +1,45 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>Genera Palmarum. The evolution and classification of palms</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Uhl</mods:namePart>
+<mods:namePart type="given">N.</mods:namePart>
+<mods:namePart type="family">Asmussen</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+<mods:namePart type="family">Harley</mods:namePart>
+<mods:namePart type="given">M.</mods:namePart>
+<mods:namePart type="family">Lewis</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>2008</mods:dateIssued><mods:publisher>Kew Publishing, Royal Botanic Gardens Kew</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="genus">
+<div type="diagnosis"><p>Small to moderate, solitary pinnate-leaved palm, endemic to New Guinea, with crownshaft and praemorse leaflets, the leaflets conspicuously 3-pronged; the fruit has a deeply grooved endocarp; the seed has homogeneous endosperm.</p></div>
+<nomenclature>
+<name>Brassiophoenix</name>
+<author>Burret</author>
+<citation>Notizbl. Bot. Gart. Berlin-Dahlem 12: 345 (1935).</citation>
+<type>Type; Brassiophoenix drymophloeoides; Burret</type>
+</nomenclature>
+<div type="etymology"><p>Commemorates botanist, Leonard J. Brass (1900–1971), prolific collector in New Guinea, by combining his name with phoenix — a general name for a palm.</p></div>
+<div type="description"><p>Small to moderate, solitary, unarmed, pleonanthic, monoecious palms. Stem slender, erect, ringed with leaf scars, light grey to brown. Leaves pinnate, spreading to erect; sheath forming a crownshaft, sometimes bearing a triangular appendage opposite the petiole, glaucous or densely white tomentose and minutely dotted; petiole very short, slender, deeply channelled adaxially, rounded abaxially, densely white tomentose, minutely brown-dotted, and bearing dark curly ramenta; rachis slender, adaxially ridged in the centre, rounded abaxially, densely covered in dark or red-brown tattered scales; leaflets single-fold, wedge-shaped, apically trilobed, the centre lobe much prolonged, all lobes toothed, basally bearing dark chaffy scales as the rachis, glaucous abaxially, midrib and marginal ribs large, transverse veinlets not evident. Inflorescences infrafoliar, branched to 2(–3) orders basally, densely dark or white-woolly tomentose throughout; peduncle short, dorsiventrally flattened; prophyll tubular, short, 2-keeled laterally, splitting apically; peduncular bract twice as long as the prophyll, tubular, exserted at maturity, 1 or 2 additional incomplete, ribbon-like or triangular to elongate peduncular bracts present; rachis longer than the peduncle bearing very short, spirally arranged bracts subtending branches and rachillae; rachillae rather short, thick in the middle, bearing very short, spirally arranged bracts subtending triads of flowers nearly throughout the rachillae, triads distant, staminate flowers projecting laterally, much wider than the rachillae; floral bracteoles 3, the first small, pointed, the second 2 large, rounded. Staminate flowers bullet-shaped in bud; sepals 3, distinct, short, rounded, imbricate, gibbous basally, edges toothed; petals 3, distinct, ovate, valvate, thick, tapering to a blunt point; stamens numerous (ca. 100–230), inserted on a conical receptacle, filaments long, slender, anthers elongate, basifixed, latrorse, connective tanniniferous, prolonged basally between the anthers; pistillode small, conical, sometimes with a short terete neck. Pollen ellipsoidal asymmetric; aperture a distal sulcus; ectexine tectate, perforate, or perforate-rugulate, aperture margin similar or slightly finer; infratectum columellate; longest axis ranging from 31–56 µm [2/2]. Pistillate flowers ovoid; sepals 3, distinct, thickened dorsally, broadly imbricate, bearing large scales, margins split irregularly; petals 3, distinct, about twice as long as the sepals at anthesis, otherwise like the sepals, tips thick, shortly valvate; staminodes joined basally into a shallow ring bearing short 3-lobed projections; gynoecium ovoid, unilocular, uniovulate, style not differentiated, stigma 3-lobed, fleshy, papillose, reflexed at anthesis, ovule laterally attached, pendulous, form unknown. Fruit ellipsoidal, tapered at both ends, wrinkled and ridged when dry, pale yellow-orange or red at maturity, stigmatic remains apical; epicarp with short, single, oblique fibrous bundles and interspersed brachysclereids, mesocarp fleshy, endocarp hard, thick, ridged. Seed laterally attached, irregular with 5 ridges, pointed distally, hilum elongate, raphe branches curved, somewhat anastomosing, endosperm homogeneous; embryo basal. Germination adjacent-ligular; eophyll bifid, tips toothed. Cytology: 2n = 32.</p></div>
+<div type="distribution"><p>Two species in New Guinea.</p></div>
+<div type="anatomy"><p>Root (Seubert 1998a, 1998b) and fruit (Essig 1977).</p></div>
+<div type="relationships"><p>Brassiophoenix is a moderately supportedmonophyletic group (Lewis et al. in prep.) that is resolved,again with moderate support, as sister to Ptychococcus(Asmussen et al. 2006, Norup et al. 2006, Baker et al. inreview, in prep., Lewis et al. in prep.).</p></div>
+<div type="uses"><p>Handsome ornamentals.</p></div>
+<div type="taxonomic accounts"><p>Zona and Essig (1999).</p></div>
+<div type="fossil record"><p>No generic records found.</p></div>
+<div type="discussion"><p>Distinguished from other genera of Ptychospermatinaeby the three-pronged leaflets and by the basifixed antherswith the connective basally enlarged. The endocarp is hard, as in Ptychococcus, but lacks unsheathed vascular bundles and is thus distinct anatomically (Essig 1977). In leaf form, Brassiophoenix seems closest to Drymophloeus, but it resembles Ptychosperma in inflorescence structure and Ptychococcus in fruit, and therefore represents a different combination of characters within the subtribe. </p></div>
+<div type="vernacular"><p>Common names unknown.</p></div>
+<div type="biology_ecology"><p>Both species are inhabitants of mixed lowland rain forest.</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

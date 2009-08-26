@@ -4,7 +4,10 @@
 <mods:titleInfo>
 <mods:title>Calamus bousigonii</mods:title>
 </mods:titleInfo>
-<mods:name><mods:namePart>John Dransfield</mods:namePart></mods:name>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
 <mods:originInfo>
 <mods:publisher>Kew Bulletin, Vol. 55, No. 3, pp. 711-716</mods:publisher>
 <mods:dateIssued>2000</mods:dateIssued>

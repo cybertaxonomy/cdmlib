@@ -1,0 +1,44 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>A monographic study of the subfamily Phytelephantoideae (Arecaceae)</mods:title>
+</mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Barfod</mods:namePart>
+<mods:namePart type="given">A.S.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Opera Botanica 105: 1-73</mods:publisher>
+<mods:dateIssued>1991</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Ammandra decasperma</name>
+<author>O.F.Cook</author>
+<citation>J. Wash. Acad. Sci. 17: 220 (1927)</citation>
+<type>Colombia. Valle del Cauca: Buenaventura, 26 May 1926 (&#9794;); Cook and Baker; 153</type>
+<type_loc>Holotype US</type_loc>
+<synonymy>
+<name>Phytelephas decasperma</name>
+<author>(Cook) Dahlgren</author>
+<bibref>(Cook) Dahlgren, Field Mus. Nat. Hist., Bot. Ser. 14: 231, 1936.</bibref>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>Cabecita (Spanish); anta (Que-chua); tagua de monte (Spanish).</p></div>
+<div type="diagnosis"><p></p></div>
+<div type="description"><p></p></div>
+<div type="distribution"><p>Pacific Colombia from Valle del Cauca to Choco and Antioquia.</p></div>
+<div type="biology_ecology"><p>Flowering probably occurs throughout the year peaking during the wettest season from November to January. A locally common species occurring scattered in undisturbed, perhumid forest types.</p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p>Similar to A. dasyneura except as follows: surface of staminate peduncle pulveraceous, splitting in transverse striae upon drying; staminate receptacle conspicuously edged by mutual pressure, stamens 300-500, scattered, less than 1 mm long; filament 0.1-0.2 mm long; anther rounded, about 0.5 mm long and usually without connective.</p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

@@ -1,0 +1,43 @@
+<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>A Synopsis of the Rattans (Arecaceae: Calamoideae) of Laos and Neighbouring Parts of Indochina</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Evans</mods:namePart>
+<mods:namePart type="given">T.</mods:namePart>
+<mods:namePart type="family">Sengdala</mods:namePart>
+<mods:namePart type="given">K.</mods:namePart>
+<mods:namePart type="family">Thammavong</mods:namePart>
+<mods:namePart type="given">B.</mods:namePart>
+<mods:namePart type="family">Viengkham</mods:namePart>
+<mods:namePart type="given">O.V.</mods:namePart>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>2002</mods:dateIssued>
+<mods:publisher>Kew Bulletin, Vol. 57, No. 1 (2002), pp. 1-84</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Calamus bousigonii subsp. bousigonii</name>
+<author>Becc.</author>
+<citation>Rec. Bot. Surv. India 2: 209 (1902)</citation>
+<type>Vietnam; Pierre; 4836</type>
+<type_loc>Holotype P</type_loc>
+<bibref>Evans et al. Rattans Lao PDR: 35 (2001)</bibref>
+</nomenclature>
+<div type="distribution"><p>Thailand (South-east), Vietnam (Cochinchina and South Annam) and Cambodia. This subspecies is an Indochinese endemic but the species also occurs in Peninsular Thailand and possibly northern Peninsular Malaysia (Saw L. G., pers. comm. 2000).</p></div>
+<div type="materials_examined"><p>See Dransfield (2000).</p></div>
+<div type="biology_ecology"><p>Evergreen forest. Up to 700 m in Vietnam and 1000 m in Cambodia.</p></div>
+<div type="discussion"><p>Dransfield (2000) described populations from Peninsular Thailand as subsp. smitinandiiJ. Dransf. and also gave detailed information about the nominate form.</p></div>
+<div type="vernacular"><p>wai huadio (Thailand), phdav arech (Cambodia).</p></div>
+<div type="uses"><p>Not recorded.</p></div>
+<div type="conservation"><p>Unknown. The population in Peninsular Thailand is probably not threatened.</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>
+

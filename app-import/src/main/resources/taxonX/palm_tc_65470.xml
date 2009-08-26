@@ -4,7 +4,12 @@
 <mods:titleInfo>
 <mods:title>Nomenclatural note - correcting errors in Palms of Madagascar</mods:title>
 </mods:titleInfo>
-<mods:name><mods:namePart>John Dransfield and Rafaël Govaerts</mods:namePart></mods:name>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Govaerts</mods:namePart>
+<mods:namePart type="given">R.</mods:namePart>
+</mods:name>
 <mods:originInfo>
 <mods:publisher>Palms, 50(4): 184</mods:publisher>
 <mods:dateIssued>2006</mods:dateIssued>

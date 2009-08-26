@@ -1,0 +1,41 @@
+<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>A Monograph of the Genus Rhopaloblaste (Arecaceae)</mods:title>
+</mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Banka</mods:namePart>
+<mods:namePart type="given">R.</mods:namePart>
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Kew Bulletin, Vol. 59, No. 1, pp. 47-60</mods:publisher>
+<mods:dateIssued>2004</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Rhopaloblaste elegans</name>
+<author>H. E. Moore</author>
+<citation>Principes 10: 94 (1966)</citation>
+<type>Solomon Islands, Guadalcanal, Honiara, March 1964; Moore et al.; 9310 (BSIP 4085)</type>
+<type_loc>Holotype BH; isotypes BSIP, K!</type_loc>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>Dai'e, Fai Dai (Kwara'ae), Auki (Angariru).</p></div>
+<div type="diagnosis"><p></p></div>
+<div type="description"><p>Moderately robust solitary mid-canopy palm bearing up to 10 - 14 leaves in the crown, with a mass of short, stout adventitous roots present at the stem base. Stem to 12 m tall or more, 15 - 20 cm diam.; surface grey- brown, becoming light grey distally, with chocolate- brown scales on new internodes, leaf scars prominent. Leaf sheath 60 - 70 cm long, light green with dense indumentum of brownish white scales; crownshaft 60 - 80 cm long, 20 - 25 cm wide; petiole short, 5 - 8 cm long, green, concave on adaxial surface, rounded on the abaxial surface; rachis 3 - 3.5 m long, with dense indumentum of shiny brownish black scales and deciduous white tomentum on the adaxial and abaxial surfaces; leaflets 70 - 76 each side of rachis, borne 3 - 5 cm apart, in one plane, semi-spreading, middle leaflet 64 - 68 x 2.7 - 3.4 cm, linear, tapering acutely and bifid at the apex, adaxial surface green, stiff, papery with prominent veins, abaxial surface pale green, with twisted, reddish brown ramenta present along abaxial surface of the mid-veins, dense black membranous scales as on rachis on adaxial surface of mid-veins near base of the pinnae, less dense on the abaxial surface. Inflorescence 30 - 45 cm long, branched to 2 orders, primary branches 15 - 16, up to 40 cm long, basal pair of primary branches strongly recurved; prophyll 35 - 40 x 5 - 6 cm, brown-silky- tomentose; peduncle 6 - 8 cm long, 6 - 7 cm diam., orange-green basally and then green distally; rachillae slender, 30 - 35 cm long, 3.2 - 3.9 mm diam., dull green. Staminate flower slightly assymmetric, 6 - 7 mm long, 4 - 4.5 mm in diam. at anthesis; sepals 2 - 2.5 x 3 - 3.5 mm, rounded; petals 5 - 6 x 3 - 3.5 mm, broadly elliptic; stamens 4.5 - 5 mm long, filaments 2 - 2.5 mm long, connate at the base, anthers 3.6 - 3.8 mm long, 0.9 - 1 mm diam.; pistillode ovoid-conical, 2.5 - 3.2 mm long, 1 - 1.2 mm in wide at the base. Pistillate flower 5 - 5.8 mm long, 4 - 4.3 mm diam. at anthesis; sepals 3 - 3.3 x 5 - 5.5 mm; petals 3.5 - 4 x 2.5 - 3 mm, broadly elliptic; staminodes 4, lobes 0.9 - 1 x 0.8 - 0.9 mm, united at the base; gynoecium 3.5 - 4 mm long, 2.8 - 3.5 mm diam., ovoid. Fruit 25 - 26 mm long, 20 - 23 mm diam., globose, yellowish green to orange when immature, with cupule of persistent perianth 4.5 - 5 mm long. Seed 17 - 21 mm long, 18 - 20 mm diam., globose, brownish, with conspicuous impression over hilum; testa brown.</p></div>
+<div type="distribution"><p>Restricted to the Solomon Islands from Choiseul and St Isabel to Guadalcanal.</p></div>
+<div type="biology_ecology"><p>In gulley forests between ridges on poor coral and limestone soil, associated with Pometia at an altitude of up to 150 m.</p></div>
+<div type="conservation"><p>Data deficient. While the relatively wide distribution of R. elegans in the Solomon Islands suggests that the category "Least Concern" may be appropriate, we know too little about the distribution of this species and the threats that it might face to make an assessment at this stage.</p></div>
+<div type="uses"><p>Not known.</p></div>
+<div type="discussion"><p>R. elegans is easily distinguished from other species by its large globose fruits, slender fruit- bearing rachillae and inflorescences branched to two orders.</p></div>
+<div type="materials_examined"><p>SOLOMON ISLANDS. Guadalcanal: N coast, vicinity of Honiara, March 1964, Moore et al. 9310 (BSIP 4085) (BH, BSIP, K!, type); Tamboko, 1989, Henderson 70 (K!); Behind Lengakiki ridge, Jan. 1963, Whitmore BSIP 1284 (BSIP, K!, LAE!). St Isabel: SE of Paehena Pt., Dec. 1965, W Beer's Collectors BSIP 7090 (K!, BSIP, LAE!). Choiseul: 3 miles inland from Liulu village, April 1964, Whitmore BSIP 4097 (K!, LAE!). CULTIVATED. Sri Lanka, Peradeniya, Royal Botanic Gardens, July 1986, Rutherford &amp; Bandara R 137 (K!).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

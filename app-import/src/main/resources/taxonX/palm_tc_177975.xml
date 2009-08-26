@@ -1,0 +1,49 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>A Revision of Rhapis, the Lady Palms</mods:title>
+</mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Hastings</mods:namePart>
+<mods:namePart type="given">L.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Palms 47(2) 62-78</mods:publisher>
+<mods:dateIssued>2003</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Rhapis subtilis</name>
+<author>Becc.</author>
+<citation>Webbia 3: 227. 1910</citation>
+<bibref>Becc., Bull. Mus. Hist. Nat. Paris, 17(3): 157. 1911</bibref>
+<bibref>Gagnep., in Lecomte Fl. Gén. Indo-Chine, 6(8): 997. 1937</bibref>
+<type>Laos, Lakon, Mekong valley; Thorell; 3099</type>
+<type_loc>Holotype P</type_loc>
+<synonymy>
+<name>Rhapis siamensis</name>
+<author>Hodel</author>
+<bibref>Hodel, Palm J. 136: 19–20. 1997</bibref>
+<type>Thailand, Phattalung; Hodel &amp; Vatcharakorn; 1652</type>
+<type_loc>Holotype BK</type_loc>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="diagnosis"><p></p></div>
+<div type="description"><p>Stems to 3 m tall, with sheaths (6)8–20 (25) mm diam., without (3)4–15 mm. Leaf sheath often with coarse, flattened outer immature fibers obscuring finer inner ones producing a diagonallined mesh, mature inner and outer fibers of similar thickness producing a squared open, often fine mesh, ligule sometimes remaining intact at maturity; petiole to 0.9–3 mm wide, often bearing minute brown papillae along the margin, sometimes only at the base or apex; blade with Vshaped or semi-circular outline, variable in size, sometimes with a conspicuous palman, segments 2–11, folds 7–25, to 380 mm long, sides curved, apices sometimes cucculate, oblique, sometimes truncate, with dentate secondary splitting, primary splits to within 1.5–168 mm of the blade base, brown papillae along the ribs, mostly adaxially and at the base, rather thin-textured, abaxial and adaxial surfaces similar in colour, pale green, transverse veinlets very conspicuous. Inflorescence, the male and female similar in general appearance, branching to 1 or 2 orders; peduncle relatively long, to 220 mm, glabrous; prophyll tubular, overlapping the first rachis bract, relatively thin-textured, pale-brown to reddish-brown, inner surface usually dull, occasionally shiny (Thorell 30599), outer surfaces dull, mostly glabrous, tomentose sometimes on edges and keels; rachis bracts 1–2, similar in appearance to the prophyll, overlapping the base of the next bract; rachis overall length 65–280(340) mm, ca. 2.3 mm diam., increasing up to 4 mm; rachillae few, to 34–238 mm long, 0.5–1.6 mm diam., male rachillae shorter than female, glabrous, pale brown. Flowers, relatively well spaced on the rachillae, large, coriaceous. Male flowers ovoid to 6.1 × 4.0 mm; calyx to 2.5 mm, lobes to 0.7mm with irregular margin, sometimes darkly pigmented; corolla marked with faint vertical lines of darker pigment, with acute lobes, narrowed into a receptacularstalk to 1.8 mm; filaments, shorter row to 1.5 mm, longer row to 2.0 mm, broad, to 0.5 mm diam., keeled; pistillode present. Female flowers, cylindrical to 5.5 × 3.2 mm, often conspicuously banded; calyx to 2.2 mm with a pale basal rim, lobes to 0.9 mm with a dark, irregular margin; corolla with vertical markings sometimes less distinct than in the male, with acute triangular, black or black-based beak like lobes, with a receptacular-stalk to 2 mm, 3 carpels developing; staminodes present. Fruit to 9.5 × 9.5 mm, 1–3 borne on a short receptacular-stalk to 2 mm, epicarp shiny translucent, minutely papillose, with conspicuous black lenticels.</p></div>
+<div type="distribution"><p>Thailand, Laos, Sumatra.</p></div>
+<div type="biology_ecology"><p>Habitat. Limestone slopes, evergreen forest, 40–200m.</p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p>This species of Rhapis has a relatively fine leaf sheath and prominent cross veins on the leaf segments, and rachis bracts usually with little or no tomentum. The flowers are well spaced on few pale coloured, smooth textured rachillae. It differs from other species in only having first or second order branching in the inflorescence, large coriaceous flowers conspicuously banded with pigment when mature, with vertical lines of pigment on the corolla producing a ribbed appearance and irregularly toothed calyx. The fruit is described as white or whitish on specimen labels.
+The conspicuous black lenticels on the fruit are often concentrated in the apical half, this is very obvious in L. McKamey s.n. 1984 (K). The large number of specimens seen enabled assessment of the variation in size within this species, from specimens with 2–4, short segments through to specimens with up to 11, relatively long segments. This variation was found to be continuous without distinct subgroups. The largest specimens occur in the peninsular of Thailand and include D.R. Hodel &amp; P. &amp; R. Vatcharakorn 1652, described as a new species in 1997 but which in fact represents the extreme end of the range of variation of R. subtilis. The smallest specimens come from Northeast Thailand and just over the boarder in Laos. The Sumatran specimens overlap with the smaller ones from Peninsula Thailand. </p></div>
+<div type="materials_examined"><p>Representative specimens. THAILAND: Nakhon Ratachasima, Kerr 8148 male, female (BM, K); Trang, Huay Nod, Khao Nam Prai, J. Dransfield JD 5447 male (K), J. Dransfield &amp; C. Bhoonab JD 5448 female (K), Nam Tai Ch. Charoenphol, K. Larsen &amp; E. Warncke 3663 (K); Huay Nod. G. Smith &amp; W. Sumawong GC 85 male (K); Phatthalung, D.R. Hodel &amp; P. &amp; R. Vatcharakorn 1652 (BK, not seen), Kerr 15354 female, 19291 male, female (BM, K); Prachuap, Kerr 10896 female (BM, K), T. Smitland 8519 (K, L); Songkhla, Hat Yai, G. Smith &amp; W. Sumawong GC 110 (K) male, GC 145 male (K); Pran, Ban Pak Tawan, A. Marcan 2634 female (BM, K). Chantaburi, Kao Wong, W. Sumawong 15797- 2 female (K), Phetchaburi, Kaeng Krachan, A.S. Barford, W. Ueachirakan, T. Burholt, S. Barrow 45205 female (K), Parnell, Pendry, Jebb &amp; Thirawat Boonthavikoon 95-498 female (K). LAOS: Mekong valley, Thakhek (Lakon), Dr. Thorel 3099 (P holotype, FI isotype). SUMATRA: Aceh, Lhok’nga, D. Agranoff &amp; W. Fickling s.n. 1984 (K), O. Maessen s.n. 1986 female (K). CULTIVATED: Hongkong, N.J. Brigham s.n. (no date but before 1927 - det label) (A); Thailand, Trang, Muang, Khao Chong Botanic Garden (from Kao Nam Prai), G. Smith &amp; W. Sumawong GC 93 female (K), G. Dear 13/86 (K); USA, California, Pine Island Nursery, L. McKamey s.n. male, female 1984 (K). </p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

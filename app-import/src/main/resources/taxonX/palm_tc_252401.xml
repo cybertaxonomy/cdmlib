@@ -4,7 +4,12 @@
 <mods:titleInfo>
 <mods:title>A spectacular new species of Licuala (Arecaceae, Coryphoideae) from New Guinea</mods:title>
 </mods:titleInfo>
-<mods:name><mods:namePart>Roy Banka and Anders S. Barfod</mods:namePart></mods:name>
+<mods:name>
+<mods:namePart type="family">Banka</mods:namePart>
+<mods:namePart type="given">R.</mods:namePart>
+<mods:namePart type="family">Barfod</mods:namePart>
+<mods:namePart type="given">A.S</mods:namePart>
+</mods:name>
 <mods:originInfo>
 <mods:publisher>Kew Bulletin, Vol. 59, No. 1, pp. 73-75</mods:publisher>
 <mods:dateIssued>2004</mods:dateIssued>
@@ -17,7 +22,7 @@
 <name>Licuala longispadix</name>
 <author>Banka and Barfod</author>
 <citation>Kew Bull. 59: 73 (2004)</citation>
-<type>Papua New Guinea, Sandaun Province, Vanimo subdistr., Pual River; Barfod, Banka abd Kjcer; AB508</type>
+<type>Papua New Guinea, Sandaun Province, Vanimo subdistr., Pual River; Barfod, Banka and Kjcer; AB508</type>
 <type_loc>Holotypus AAU!; isotypi LAE!, BRI!</type_loc>
 </nomenclature>
 <div type="introduction"><p>Introduction Licuala Wurmb. is the most speciose genus of the coryphoid palms in New Guinea. The genus is under revision as part of the Palms of New Guinea (PONG) project and so far 27 species have been recorded within the political borders of the Indonesian Province of West Papua and Papua New Guinea. In 1999, J. Wiakabu of the PNG Forest Research Institute and J. Worimbangu of the PNG Forest Authority in Lae collected an aberrant species of Licuala in the Green River District, Amanab subdistrict, Sandaun Province. The specimen was presented to us at the LAE herbarium and the collectors mentioned that it had a very long, pendent inflorescence that reached the forest floor. From the height of the palm indicated on the label we deduced that the inflorescence was at least 4 m long, the longest ever recorded in the genus. During one of the field campaigns organised within the framework of the PONG project we recollected the species at Pual River near Vanimo in the Sandaun Province.</p></div>

@@ -1,13 +1,22 @@
 ﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 <taxonxHeader>
 <mods:mods>
-<mods:titleInfo>
-<mods:title>Four new species of Calamus (Arecaceae: Caiamoideae) from Laos and Thailand</mods:title>
-</mods:titleInfo>
-<mods:name><mods:namePart>Tom Evans, Khamphone Sengdala, Oulathong V. Viengkham, Banxa Thammavong and John Dransfield</mods:namePart></mods:name>
+<mods:titleInfo><mods:title>A Synopsis of the Rattans (Arecaceae: Calamoideae) of Laos and Neighbouring Parts of Indochina</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Evans</mods:namePart>
+<mods:namePart type="given">T.</mods:namePart>
+<mods:namePart type="family">Sengdala</mods:namePart>
+<mods:namePart type="given">K.</mods:namePart>
+<mods:namePart type="family">Thammavong</mods:namePart>
+<mods:namePart type="given">B.</mods:namePart>
+<mods:namePart type="family">Viengkham</mods:namePart>
+<mods:namePart type="given">O.V.</mods:namePart>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
 <mods:originInfo>
-<mods:publisher>Kew Bulletin, Vol. 55, No. 4, pp. 929-940</mods:publisher>
-<mods:dateIssued>2000</mods:dateIssued>
+<mods:dateIssued>2002</mods:dateIssued>
+<mods:publisher>Kew Bulletin, Vol. 57, No. 1 (2002), pp. 1-84</mods:publisher>
 </mods:originInfo>
 </mods:mods>
 </taxonxHeader>
@@ -15,23 +24,25 @@
 <treatment rank="species">
 <nomenclature>
 <name>Calamus bimaniferus</name>
-<author>T Evans, K. Sengdala, O. V Viengkham, B. Thammavong and J. Dransf</author>
-<citation>Kew Bull. 55: 936 (2000)</citation>
-<type>Laos, Khamphone; Sengdala; 368</type>
-<type_loc>Holotypus K; isotypus FRCL</type_loc>
+<author>T Evans et al.</author> 
+<citation>Kew Bull. 55: 936 (2000);</citation>
+<type>Laos, Khammouan Province; Khamphone; 368</type>
+<type_loc>Holotype K; isotype FRCL</type_loc>
+<bibref>Evans et al., Rattans Lao PDR: 48 (2001)</bibref>
+<synonymy>
+<name>Calamus javensis</name>
+<author>auct., non Blume</author>
+<bibref>auct., non Blume, Sounthone &amp; Sengkhamyong in Rao &amp; Rao (1997: 81)</bibref>
+</synonymy>
 </nomenclature>
-<div type="introduction"><p></p></div>
-<div type="etymology"><p></p></div>
-<div type="vernacular"><p>Wai hangnou, wai hangnou noy, wai keekai and re itch.</p></div>
-<div type="diagnosis"><p>a ceteris speciiebus Indochinensis praesentia flagelli et cirri vestigialis bene recedit, C. insigni Griff. et speciebus affinibus Peninsulae Malayanae simulans, C. penicillato Roxb. simillima sed cirri vestigiale spinis aciculiformibus differt.</p></div>
-<div type="description"><p>Slender, clustering, scrambling, flagellate and usually subcirrate rattan to at least 3 m. Stem without sheath c. 3 - 4 mm diam., with sheath c. 5 - 10 mm. Leaf 0.3 - 0.5 m long, usually continued into a rudimentary cirrus reaching an additional 5 - 15 cm, sheath green with patches of brown indumentum, spines few (or wholly absent, Sounthone Ketphanh 7), scattered, green-based with dark tips, 1 - 7 mm, base slightly swollen, tip acicular and horizontal or slightly deflexed, ocrea tiny, unarmed, marcescent; knee present, petiole of upper leaves 8 - 15 cm, adaxially flat or with slight longitudinal ridges, sometimes with one or two recurved spines, abaxially rounded, rachis acutely bifaced and unarmed adaxially, abaxially rounded and bearing scattered short, recurved, dark-tipped spines; leaflets lanceolate, 10 - 15 x 1.5 - 2.6 cm, 4 - 6 on each side, mostly approximate in pairs but with the basal ones often solitary, if cirrus absent, rachis usually ends with a single, reduced, isolated, asymmetrical leaflet with the main costa strongly clawed abaxially but rarely ends in a symmetrical pair of leaflets connate about 30%, adaxially 3 prominent naked costae, abaxially 3- 5 sub-prominent naked costae, leaflet margins naked or with a few small remote bristles, transverse veinlets prominent, numerous, sinuous, sometimes interrupted. Inflorescences short, more or less erect, lacking a terminal flagellum, 20 - 70 cm long, with red indumentum; primary bracts entire, slightly inflated, armed with a few small prickles, ending in an apiculate limb. Male inflorescences with c. 5 partial inflorescences; rachillae straight or slightly curved, up to 3 cm long, inserted in or arising just outside the mouths of the tertiary bracts, flower scars along one side c. 3 mm distant. Female inflorescences branched to two or occasionally three orders; partial inflorescences up to 9 cm, often less, inserted or exserted from the primary bracts; secondary bracts slightly inflated at the mouth, unarmed, entire, ending in an apiculate limb; rachillae up to 3 cm, relatively robust, zig-zag, rachilla bracts tightly sheathing, unarmed, sometimes with an apicular limb; involucrophore exserted from rachilla bract or at the mouth, arising perpendicular to the axis, involucre shallowly cupular, flower scars 3 - 4 mm distant. Fruiting perianth conspicuously pedicellate. Fruit only seen immature, spherical, at least 8 mm diam. with an abrupt beak, the scales greenish in life with a brown submarginal band and narrow pale margin.</p></div>
-<div type="distribution"><p>Laos in Khammouan, Savannakhet and Attapu Provinces</p></div>
-<div type="biology_ecology"><p>In semi-evergreen forest, sometimes degraded, at 160 - 530 m.</p></div>
-<div type="conservation"><p></p></div>
-<div type="uses"><p></p></div>
-<div type="discussion"><p>The species is named for the presence of both cirrus and flagellum at each non-flowering node. These can fancifully be considered the two 'hands' of the plant, and indeed in the Lao language they are both called 'meu go' or 'grasping hands'. This species seems quite widespread in central and southern Laos and is probably of little conservation concern because it flowers when the stems are short, has a clustering habit and, although it is reportedly used for local handicrafts is probably too short to be valuable in trade. Ban Malua, cited in the localities above, is incorrectly marked on the standard 1:100 000 maps of Laos as B. Maloy.
-</p></div>
-<div type="materials_examined"><p>LAOS. Phon Nong Na, Ban Malua, Nakay Distr., Khammouan Province, 17040'13" 105'24'41", 8 March 1999, fr. Khamphone Sengdala 368 (isotype FRCL, holotype K), stam. Khamphone Sengdala 369, fr. Khamphone Sengdala 370 (FRCL, K); Ban Kabout, Thakhek Distr., Khammouan Province, 17025' 104052', 160 m, 20 May 1993, ster. Khampiou 42 (FRCL, K); Phou Lapheung, Tasaeng Nong, Nong Distr., Savannakhet Province, 5 April 1992, ster. Sounthone Ketphanh 7 (FRCL, K); Phou Lekfay, Ban Tatkoum, Sanxay Distr., 14053'26" 107006'49", 14 May 1999, fr. Khamphone Sengdala 396, stam. Khamphone Sengdala 397 (FRCL, K)</p></div>
+<div type="distribution"><p>Indochinese endemic. Laos (Central and South).</p></div>
+<div type="materials_examined"><p>See Evans et al. (2000).</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="discussion"><p></p></div>
+<div type="vernacular"><p>wai hangnou, wai hangnounoi, wai keekai (Lao Loum), re itch (Alak).</p></div>
+<div type="uses"><p>Suitable for handicrafts.</p></div>
+<div type="conservation"><p>Probably of limited concern because the species is not heavily harvested, is not solitary-stemmed and is already fertile when only 2 - 3 m long, and thus before harvesting is likely to occur.</p></div>
 </treatment>
 </taxonxBody>
 </taxonx>
+

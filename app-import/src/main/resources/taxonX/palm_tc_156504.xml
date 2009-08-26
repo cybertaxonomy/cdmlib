@@ -1,0 +1,81 @@
+<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>Systematic Notes on Pinanga (Palmae) in Borneo</mods:title>
+</mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Kew Bulletin, Vol. 34, No. 4, pp. 769-788</mods:publisher>
+<mods:dateIssued>1980</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Pinanga salicifolia</name>
+<author>Blume</author>
+<citation>Rumphia 2: 93 (1843)</citation>
+<type>; Müller; s.n.</type>
+<type_loc>Type L</type_loc>
+<bibref>Scheff., Natuurk. Tijdschr. Ned. Ind. 32: 179 (1873)</bibref>
+<bibref>Scheff., Ann. Jard. Bot. Buitenzorg 1: 151 (1876)</bibref>
+<bibref>H. Wendl. in Kerch., Palm.: 253 (1878)</bibref>
+<bibref>Becc. in Malesia 3: 132 (1886)</bibref>
+<bibref>Merrill, Bibl. Enum. Bornean Plants: 85 (1921)</bibref>
+<synonymy>
+<name>Seaforthia salicifolia</name>
+<author>(Blume) Mart.</author>
+<bibref>(Blume) Mart., Hist. Nat. Palm. 3: 313 (1853)</bibref>
+</synonymy>
+<synonymy>
+<name>Ptychosperma salicifolia</name>
+<author>(Blume) Miquel</author>
+<bibref>(Blume) Miquel, Fl. Ind. Bat. 3: 28 (1855)</bibref>
+<bibref>(Blume) Miquel, De Palm. Arc. Ind. 23 (1868)</bibref>
+</synonymy>
+<synonymy>
+<name>Pinanga canina</name>
+<author>Becc.</author>
+<bibref>Becc., Malesia 3: 135 (1886)</bibref>
+</synonymy>
+<synonymy>
+<name>Pinanga canina f. major</name>
+<author>Becc.</author>
+<bibref>Becc., Malesia 3: 136 (1886)</bibref>
+<type>; Beccari; PB 2713</type>
+<type_loc>Holotype FI</type_loc>
+</synonymy>
+<synonymy>
+<name>Pinanga canina f. intermedia</name>
+<author>Becc.</author>
+<bibref>Becc., Malesia 3: 136 (1886)</bibref>
+<type>; Beccari; PB 2920</type>
+<type_loc>Holotype FI</type_loc>
+</synonymy>
+<synonymy>
+<name>Pinanga canina f. minor</name>
+<author>Becc.</author>
+<bibref>Becc., Malesia 3: 136 (1886)</bibref>
+<type>; Beccari; PB 1585</type>
+<type_loc>Holotype FI</type_loc>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="diagnosis"><p></p></div>
+<div type="description"><p></p></div>
+<div type="distribution"><p></p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p>Blume based his description of Pinanga salicifolia on three fronds collected by George Müller on the river Karang Intang in South Borneo, preserved in Leiden. The fronds have an appearance very distinctive within Pinanga; each frond consists of a densely grey and brown indumentose rachis bearing 22-24 regularly arranged short narrow sigmoid leaflets. The leaflets are all unicostate except for one of the lowermost which bears two costae, and the terminal leaflet pair which is compound and bears 2-3 ribs on each side; the leaflets have a distinctive coloration, being dark, almost chocolate- coloured on the adaxial surface and dull brown on the abaxial surface. The leaf sheaths in the type specimen are densely grey indumentose. Later Teysmann collected similar but larger fronds of the same taxon on Mt Penein in West Borneo; his collection consists of 3 fronds (known to me), labelled Ptychosperma salicifolia Mart., in Leiden. He also managed to introduce the species into cultivation in Buitenzorg; a young plant presum- ably of this stock in Buitenzorg was sent via Wardian case to Kew in 1881 but was dead on arrival. Fortunately the dead plant was preserved in the herbarium and it matches Teysmann's fronds from Borneo. Scheffer (1876) illustrates one frond of Pinanga salicifolia in the same plate as that illustrating P. malaiana and Areca glandiformis. As Scheffer does not describe any repro- ductive features we may assume that all the reproductive features in the plate, apart from those obviously separated into Fig. 3 which belong to A. glandiformis, belong to P. malaiana; they do in fact fit P. malaiana. The frond illustrated again matches the herbarium material collected by Teysmann. Scheffer (L.c.) also refers Pinanga tenella (H. Wendl.) Scheff. as a synonym of P. salicifolia, in this following Miquel (in De Palmis Archipelagi Indici). Neither Miquel nor Scheffer appears to have seen the holotype of Wendland's P. tenella. Wendland based his species on a collection by Thomas Lobb on the banks of the river at Bungul in North Borneo (now Sabah), the specimen being preserved at Kew. Lobb's collection has a frond superficially similar to those of P. salicifolia, but, on close examination, quite different in texture and colour, and lacking the distinctive scales and hairs of the latter species. I believe therefore that two quite distinct species are represented by the names P. salicifolia and P. tenella. Beccari (1886) made a revision of all the species of Pinanga described at that date, including in his paper many new species collected for the first time by him on his travels in South East Asia. Beccari preferred to regard P. salicifolia and P. tenella as distinct species, but he also appears not to have seen the fertile holotype of P. tenella in Kew, though describing the infruc- tescence and fruit. Among the new species described by Beccari are three taxa, P. rivularis, P. calamifrons and P. calamifrons var. tenuissima all based on material of curious fine-leafleted palmlets growing on rocks by rivers in Borneo. He suggests that P. tenella may be related to these extraordinary rheophyte taxa (see under P. tenella). Beccari also described Pinanga canina with 3 forms all from near Kuching or on G. Matang in Sarawak. The plant, named by Beccari P. canina, is a widespread and distinctive palm characteristic of well-drained semi- podsolized soils in the lowlands and hills, habitats such as steep ridge tops or the edges of 'kerangas' forest where mor humus builds up on the soil surface, and more rarely in waterlogged soils in peat swamp forest, but in the last habitat the palm tends to occur on mounds. P. canina is a variable plant; in particular, the lamina may be divided into uni- to 10-costate leaflets. The inflorescence usually has 2-7 rachillae. The fruit is very dis- tinctive, being long and very narrow and curved. Indumentum on the leaf sheaths, petioles and rachides is distinctive, consisting of grey inflated hairs borne on brown scale-like bases, and rich brown narrow hairs, the indumen- tum thus identical to that of P. salicifolia. Furthermore the leaflets dry chocolate-coloured above, and dull brown below, and bear similar minute hairs and scales, and are similar in texture to those of P. salicifolia. However most significant of all is a curious dimorphism of foliage, apparently not known to Beccari and rarely represented in herbarium collections, though very striking in the field. In most populations the leaves of mature erect stems bear few (3-6) broad sigmoid leaflets; at the base of the stem grow sucker shoots which bear leaves carrying numerous small unicostate leaflets exactly like those of the type of P. salicifolia. Seedlings also bear this finely pinnate fern-like foliage. Rarely populations exist where the adult fronds bear uni- to bi-costate leaflets. The broad-leafleted populations match Beccari's types in Florence. I have no doubt that the type of P. salicifolia represents sucker shoot or seedling leaves of the taxon known to Beccari and later botanists as P. canina. Pinanga salicifolia is hence the correct name for this remarkable taxon. I have observed such a wide range in size and dissection of leaves that I do not believe it possible to recognize distinct taxa within the species, so have disregarded Beccari's 'formas'. Pinanga salicifolia is thus a common Bornean palm; outside Borneo, in Sumatra and Malaya, can be found taxa of Pinanga which are obviously closely related to P. salicifolia. In Sumatra I have collected a slender under- growth Pinanga on a steep podsolized ridge top with Agathis at 900 m altitude between Sg. Penuh and Tapan (Dransfield &amp; Mogea JD 4108); it has leaves with mostly unicostate leaflets similar to those of P. salicifolia but the infruc- tescence is unbranched and the fruit only slightly curved. In Malaya there are three taxa known as P. paradoxa (Griff.) Scheff., P. subintegra Ridley and P. beccariana Furtado which have some of the characters of P. salicifolia. There is much confusion over the identity of P. paradoxa; plants from the type locality (Mt Ophir in Johore) have dimorphic foliage as in P. salicifolia, but the inflorescence is unbranched. P. beccariana is a slender undergrowth palmlet with unicostate leaflets and unbranched inflorescence; the Sumatran plant described above could well fit within P. beccariana. P. subintegra is a very small clustering palmlet with entire leaves or with laminae divided irregularly to give very few broad leaflets; it too has an unbranched inflorescence. Variation in these three taxa may overlap and I have not had sufficient material at my disposal to work out the relationship of the Malayan taxa with P. salicifolia. Although it is unsatisfactory to leave these problems unsolved, expedience demands a name for the Bornean taxon; I have no hesitation in using P. salicefolia in the knowledge that none of the names used for the Malayan taxa predates it. It is to be hoped that the relationships with P. paradoxa can soon be elucidated.</p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

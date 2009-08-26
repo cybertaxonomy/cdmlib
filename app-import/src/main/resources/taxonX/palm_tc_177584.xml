@@ -1,0 +1,46 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>Genera Palmarum. The evolution and classification of palms</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Uhl</mods:namePart>
+<mods:namePart type="given">N.</mods:namePart>
+<mods:namePart type="family">Asmussen</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+<mods:namePart type="family">Harley</mods:namePart>
+<mods:namePart type="given">M.</mods:namePart>
+<mods:namePart type="family">Lewis</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>2008</mods:dateIssued><mods:publisher>Kew Publishing, Royal Botanic Gardens Kew</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="genus">
+<div type="diagnosis"><p>Erect or shortly climbing palm of Borneo; sheaths, petioles and rachis are densely armed, the sheaths lacking a knee and a cirrus absent; inflorescences are interfoliar and pendulous, all bracts net-like.</p></div>
+<nomenclature>
+<name>Retispatha</name>
+<author>J. Dransf.</author> 
+<citation>Kew Bull. 34(3): 529 (1979c).</citation>
+<type>Type; Retispatha dumetosa; J. Dransf.</type>
+</nomenclature>
+<div type="etymology"><p>Rete — network, spatha — bract, in reference to the net-like inflorescence bracts.</p></div>
+<div type="description"><p>Moderate, clustered, erect or briefly climbing, spiny, pleonanthic, dioecious, rattan palm. Stem eventually becoming bare, relatively robust, with conspicuous nodal scars and relatively short internodes, short bulbil-like shoots sometimes present at the nodes in the lower part of the stem, adventitious roots also abundant at lower nodes. Leaves without cirrus, pinnate; sheath tubular, densely armed with slender spines in whorls and partial whorls, and dense indumentum; ocrea absent; knee absent; flagellum absent; petiole well developed, channelled adaxially, armed with abundant lateral and abaxial groups of spines; rachis armed with reflexed grapnel spines in groups of up to 5, and bearing abundant indumentum; leaflets numerous, regularly arranged, single-fold, linear, armed along margins and main veins with bristles, midribs prominent, transverse veinlets conspicuous. Inflorescences axillary, but adnate to the internode and leaf sheath of the following leaf, erect at first, becoming pendulous, staminate and pistillate superficially similar, branched to 3 orders in staminate, to 1 (rarely 2) orders in pistillate; prophyll large, tubular in proximal 1/2, splitting and tattering distally, densely covered with black spines in partial whorls; peduncular bracts absent; rachis bracts similar to the prophyll; first-order branches becoming pendulous at anthesis, bearing distichous, imbricate, unarmed bracts, tubular in proximal 2/3, with a triangular limb, composed of close criss-cross fibres producing a fine network, each net-like bract subtending and partially or wholly enclosing in the staminate inflorescence a catkin-like condensed branching system; each second-order branch subtended by a triangular, membranous, ciliate-margined tubular bract; third-order branchlets (rachillae) bearing membranous ciliate-margined tubular bracts, each subtending a 2-keeled ciliate-margined, tubular bracteole and a single staminate flower. Staminate flowers very small, ± symmetrical; calyx tubular with 3, triangular lobes tipped with hairs; corolla about twice as long as the calyx in bud, tubular only at the very base, lobes 3, striate, valvate, at anthesis the receptacle elongating, the corolla then appearing tubular in the basal 1/3; stamens 6, free from the corolla in bud, becoming briefly epipetalous, filaments briefly connate laterally, anthers oblong to ovate, dorsifixed near the base, latrorse; pistillode trifid, very small. Pollen ellipsoidal, bi-symmetric; apertures equatorially disulcate; ectexine tectate, perforate-rugulate with supratectal, often vertically ridged spines, aperture margins similar; infratectum columellate; longest axis 19–24 µm [1/1]. Pistillate inflorescences sometimes with 1 major branch near the base, the rachillae borne on the axis and on this major branch, or more frequently the rachillae borne on the main axis only; rachillae subtended by distichous, imbricate, net-like bracts as in the staminate inflorescence, rachillae usually concealed by the bracts, bearing up to ca. 20 distichous, tubular, ciliate-margined bracts, each enclosing a 2-keeled prophyllar bracteole, a tubular, second bracteole and 1 pistillate flower; sterile staminate flowers lacking (see notes). Pistillate flowers much larger than the staminate; calyx tubular, with 3 short triangular, valvate lobes, splitting after fertilization; corolla tubular, slightly shorter than the calyx, with 3 short valvate lobes, also splitting further; staminodes 6, briefly epipetalous, filaments connate laterally to form a short tube, empty anthers flattened; gynoecium incompletely trilocular, triovulate, ovoid, scaly, stigmas 3, conspicuous, reflexed, fleshy, borne on a non-scaly style, ovule basally attached, anatropous. Fruit 1-seeded, partially concealed by the net-like bracts, ovoid to slightly obpyriform, beaked, stigmatic remains apical; epicarp with neat vertical rows of reflexed scales, mesocarp thin, endocarp not differentiated. Seed basally attached with thin sweet sarcotesta, endosperm obscurely angled, homogeneous; embryo basal. Germination adjacent-ligular; eophyll pinnate with ca. 4 ciliate-hairy leaflets on each side of the rachis. Cytology not studied.</p></div>
+<div type="distribution"><p>A single species endemic to Borneo, where it is has been recorded from scattered localities throughout the island. </p></div>
+<div type="anatomy"><p>Not studied. </p></div>
+<div type="relationships"><p>For relationships, see Calamus. </p></div>
+<div type="uses"><p>No local uses have been recorded. </p></div>
+<div type="taxonomic accounts"><p>Dransfield (1979c). </p></div>
+<div type="fossil record"><p>No generic records found. </p></div>
+<div type="discussion"><p>Retispatha is distinguished by the extraordinary net-like bracts that subtend the flowering branches and by the lack of both cirrus and flagellum. Although the pistillate rachillae lack the sterile staminate flowers usual in the Calaminae, the affinities of Retispatha seem to be with Calamus rather than with the Plectocomiinae. Marion Sheehan, in preparing the plate, discovered a single sterile staminate flower borne with an apparently abortive pistillate flower at the very tip of one pistillate rachilla. We have been unable to find any trace of another sterile staminate flower. This single sterile staminate flower can be regarded as an unusual occurrence that confirms the affinity with the Calaminae. The cane of Retispatha is remarkably heavy and stiff. As a juvenile, it can stand as a small erect tree. </p></div>
+<div type="vernacular"><p>Wi tebu bruang (Malay, the bear’s sugar-cane). </p></div>
+<div type="biology_ecology"><p>Retispatha dumetosa forms thickets on hillslopes and valley bottoms in hill Dipterocarp forest. It is absent from montane and heath forest and although its habitat is widespread, it is a rare palm. </p></div>
+<div type="conservation"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

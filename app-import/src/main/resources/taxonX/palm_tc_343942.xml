@@ -2,7 +2,13 @@
 	<taxonxHeader>
 		<mods:mods>
 		<mods:titleInfo><mods:title>A new species of Daemonorops (Arecaceae) from Sekundur Forest, North Sumatra</mods:title></mods:titleInfo>
-		<mods:name><mods:namePart>Himmah Rustiami and Zumaidar</mods:namePart></mods:name>
+		<mods:name><mods:namePart>Himmah  and </mods:namePart></mods:name>	
+<mods:name>
+<mods:namePart type="family">Rustiami</mods:namePart>
+<mods:namePart type="given">H.</mods:namePart>
+<mods:namePart type="family">Zumaidar</mods:namePart>
+<mods:namePart type="given"></mods:namePart>
+</mods:name>	
 		<mods:originInfo>
 			<mods:dateIssued>1995</mods:dateIssued>
 			<mods:publisher>Floribunda 2(7)198-200</mods:publisher>
@@ -13,7 +19,7 @@
 		<treatment rank="species">
 			<nomenclature>
 				<name>Daemonorops sekundurensis</name>
-				<author>Rustiami &amp; Zumaidar</author>
+				<author>Rustiami and Zumaidar</author>
 				<citation>Floribunda 2: 198 (2005)</citation>
 				<type>Zumaidar 21, North Sumatra, Sekundur forest, Aras Napal;; </type>
 				<type_loc>Holotype BO</type_loc>			

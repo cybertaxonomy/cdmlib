@@ -1,0 +1,52 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>Genera Palmarum. The evolution and classification of palms</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Uhl</mods:namePart>
+<mods:namePart type="given">N.</mods:namePart>
+<mods:namePart type="family">Asmussen</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+<mods:namePart type="family">Harley</mods:namePart>
+<mods:namePart type="given">M.</mods:namePart>
+<mods:namePart type="family">Lewis</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>2008</mods:dateIssued><mods:publisher>Kew Publishing, Royal Botanic Gardens Kew</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="genus">
+<div type="diagnosis"><p>Small to moderate, solitary hermaphroditic fan palms found in Caribbean islands and neighbouring coastal mainland; leaf sheaths fibrous, petiole bases deeply split at base; flowers and fruit stalked; fruit very small, white, the seed smooth.</p></div>
+<nomenclature>
+<name>Thrinax</name>
+<author>L.f. ex Sw.</author> 
+<citation>Prodr. 4: 57 (1788).</citation>
+<type>Type; Thrinax parviflora; Sw.</type>
+<synonymy>
+<name>Porothrinax</name>
+<author>H.Wendl. ex Griseb.</author>
+<bibref>H.Wendl. ex Griseb., Cat. Pl. Cub.: 221 (1866).</bibref>
+<type>Type; Porothrinax pumilio; H. Wendl. ex Griseb.</type>
+</synonymy>
+</nomenclature>
+<div type="etymology"><p>Thrinax — a trident, thought to be a reference to sharply pointed divided tips of the leaf segments.</p></div>
+<div type="description"><p>Small to moderate, solitary, unarmed, pleonanthic, hermaphroditic palms. Stem erect, columnar, smooth or fibrous, tan or grey, obscurely ringed with leaf scars, usually with a basal mass of fibrous roots. Leaves induplicate, palmate, often irregular; sheath becoming split both opposite the petiole and abaxially to emit the inflorescence, disintegrating into irregular fibres, covered in thick, deciduous tomentum, margins fibrous; petiole long, slender, rounded to shallowly ridged both adaxially and abaxially, margins rather sharp; adaxial hastula prominent, long pointed, frequently inrolled, short and blunt at high elevations, abaxial hastula less conspicuous, rounded or triangular, lacking or very small at high elevations; blade fan-shaped, often irregularly folded segments united basally 1/2 their length or less, lanceolate, pointed and usually bifid apically, glabrous adaxially, abaxially variously scaly, sometimes white, midrib and marginal ribs conspicuous, transverse veinlets evident. Inflorescences interfoliar, slender, erect to arching, branched to 2 orders, primary branches pendulous; peduncle moderate, rather slender, round in cross-section; prophyll short, tubular, 2-keeled, pointed, opening distally, tomentose; peduncular bracts several (ca. 4), like the prophyll but lacking keels, overlapping and very closely sheathing the peduncle; rachis longer than the peduncle, slender, tapering, bearing spirally arranged, long, tubular, pointed distally and obliquely open primary bracts subtending first-order branches; first-order branches each with a short basal bare portion, bearing a 2-keeled, bifid prophyll and spirally arranged, narrow, triangular bracts subtending rachillae; rachillae slender, rather short, stiff, bearing spirally arranged, small triangular bracts subtending solitary flowers, bracteoles apparently lacking. Flowers borne on conspicuous stalks; perianth a single cupule with 6 lobes or teeth; stamens mostly 6–12 (5–15), filaments very slender, sometimes partly united basally, anthers elongate, dorsifixed near the base, emarginate apically, latrorse; gynoecium consisting of 1 carpel, unilocular, uniovulate, ovule basally attached, erect, campylotropous but tilted so that the micropyle faces the upper dorsal wall of the locule, and with a basal aril. Pollen ellipsoidal, less frequently oblate triangular, with slight to obvious asymmetry; aperture a distal sulcus, less frequently a trichotomosulcus; ectexine tectate, perforate, or perforate-rugulate, aperture margin similar or slightly finer; infratectum columellate; longest axis 24–46 µm [2/3]. Fruit very small, white at maturity, stigmatic remains apical, perianth often persistent; epicarp smooth when fresh, sometimes drying pebbled, mesocarp thin, mealy, endocarp very thin, papery. Seed depressed-globose, smooth, hilum round, impressed, forming a basal intrusion, raphe branches deeply impressed forming peripheral ruminations, otherwise endosperm homogeneous; embryo lateral to subapical. Germination remote-tubular; eophyll narrow, lanceolate. Cytology: 2n = 36.</p></div>
+<div type="distribution"><p>Three species; of which two, Thrinax parviflora and T. excelsa, are endemic to Jamaica. Thrinax radiata also occurs in Jamaica but is widely distributed in littoral habitats of Atlantic Honduras, Belize, Mexico and the northern Caribbean. </p></div>
+<div type="anatomy"><p>Leaf (Read 1975), roots (Seubert 1997), floral (Morrow 1965, Uhl and Moore 1971), fruit (Murray 1973, Reddy and Kulkarni 1982, Essig 1999); correlations of floral anatomy and wind pollination suggested by Uhl and Moore (1977a). </p></div>
+<div type="relationships"><p>Thrinax is monophyletic with high support and resolved as sister to a clade of Schippia and Cryosophila with low support (Roncal et al. 2008). </p></div>
+<div type="uses"><p>Leaves are used for thatch, fibre for basketry, and other purposes. The heart of some species is eaten. </p></div>
+<div type="taxonomic accounts"><p>Read (1975). </p></div>
+<div type="fossil record"><p>Fossil leaves that have been compared with those of Thrinax include T. eocenica from the Middle Eocene of southeastern North America (Claiborne flora) (Berry 1914b, 1924); and Palaeothrinax mantelli from the Lower-Middle Oligocene of the Isle of Wight (UK) (Bembridge flora) (Reid and Chandler 1926). From the Lower Eocene London Clay flora, Khin Sein (1961) described dispersed, irregularly rounded monosulate pollen as T. tranquillus. It is not possible to comment further than to say that the pollen grain is a typical small asymmetric monosulcate palm, a type frequent in Coryphoideae, including Thrinax, and also in Arecoideae. </p></div>
+<div type="discussion"><p>Distinctive in the split petiole bases and stalked flowersand fruit.</p></div>
+<div type="vernacular"><p>Thatch palms, Key palms. </p></div>
+<div type="biology_ecology"><p>Each of the three species in Jamaica is confined to one habitat: T. parviflora to dry evergreen woodland or thicket, T. excelsa to lower montane rain forest, and T. radiata, which thrives under exposure to salt-laden winds, to littoral woodland or thicket. </p></div>
+<div type="conservation"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

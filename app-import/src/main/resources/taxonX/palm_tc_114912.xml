@@ -4,7 +4,12 @@
 <mods:titleInfo>
 <mods:title>Wissmannia (Palmae) reduced to Livistona</mods:title>
 </mods:titleInfo>
-<mods:name><mods:namePart>John Dransfield and Natalie W. Uhl</mods:namePart></mods:name>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Uhl</mods:namePart>
+<mods:namePart type="given">N.W</mods:namePart>
+</mods:name>
 <mods:originInfo>
 <mods:publisher>Kew Bulletin, Vol. 38, No. 2, pp. 199-200</mods:publisher>
 <mods:dateIssued>1983</mods:dateIssued>

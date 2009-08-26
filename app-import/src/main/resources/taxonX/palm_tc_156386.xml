@@ -4,7 +4,10 @@
 <mods:titleInfo>
 <mods:title>Systematic Notes on Pinanga (Palmae) in Borneo</mods:title>
 </mods:titleInfo>
-<mods:name><mods:namePart>John Dransfield</mods:namePart></mods:name>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
 <mods:originInfo>
 <mods:publisher>Kew Bulletin, Vol. 34, No. 4, pp. 769-788</mods:publisher>
 <mods:dateIssued>1980</mods:dateIssued>

@@ -2,8 +2,14 @@
 <taxonxHeader>
 <mods:mods>
 <mods:titleInfo><mods:title>The Rattans of Sarawak</mods:title></mods:titleInfo>
-<mods:name><mods:namePart>Dransfiled </mods:namePart></mods:name>
-<mods:originInfo><mods:dateIssued>1992</mods:dateIssued></mods:originInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>1992</mods:dateIssued>
+<mods:publisher>Forest Department Sarawak, Malaysia and Royal Botanic Gardens, Kew, UK</mods:publisher>
+</mods:originInfo>
 </mods:mods>
 </taxonxHeader>
 <taxonxBody>

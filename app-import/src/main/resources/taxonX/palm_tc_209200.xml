@@ -1,0 +1,58 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>Genera Palmarum. The evolution and classification of palms</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Uhl</mods:namePart>
+<mods:namePart type="given">N.</mods:namePart>
+<mods:namePart type="family">Asmussen</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+<mods:namePart type="family">Harley</mods:namePart>
+<mods:namePart type="given">M.</mods:namePart>
+<mods:namePart type="family">Lewis</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>2008</mods:dateIssued><mods:publisher>Kew Publishing, Royal Botanic Gardens Kew</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="genus">
+<div type="diagnosis"><p>Solitary or clustering hermaphroditic fan palms of warm temperate parts of eastern South America; the leaf sheaths end in fibre spines and the unspecialised trimerous flowers have stamens greatly exceeding the petals in length.</p></div>
+<nomenclature>
+<name>Trithrinax</name>
+<author>Mart.</author> 
+<citation>Hist. nat. palm. 2: 149 (1837).</citation> Type: 
+<type>Type; Trithrinax brasiliensis; Mart.</type>
+<synonymy>
+<name>Diodosperma</name>
+<author>H. Wendl.</author>
+<bibref>H. Wendl., Bot. Zeit. 36: 118 (1878).</bibref>
+<type>Type; Diodosperma burity; H. Wendl.</type>
+</synonymy>
+<synonymy>
+<name>Chamaethrinax</name>
+<author>H. Wendl. ex R. Pfister.</author>
+<bibref>H. Wendl. ex R. Pfister., Beitr. Verg. Anat. Sabaleenblatter: 19 (1891) (invalid name).</bibref>
+<type>Type; Chamaethrinax hookeriana; H. Wendl. ex R. Pfister</type>
+</synonymy>
+</nomenclature>
+<div type="etymology"><p>Combines tri — three, with the generic name Thrinax, but why is not explained.</p></div>
+<div type="description"><p>Moderate, solitary or sometimes clustering, armed, pleonanthic, hermaphroditic palms. Stem erect, clothed with persistent, fibrous, sometimes spiny leaf sheaths, eventually becoming bare, rough, and longitudinally striate. Leaves induplicate, palmate, marcescent; sheath tubular, drying into a fibrous, often ± woody network, the upper fibres becoming stout rigid spines; petiole adaxially shallowly channelled or rounded, abaxially rounded, the margins entire, sharp; adaxial hastula triangular or deltoid usually with a definite point, abaxial hastula similar, often smaller; blade fan-shaped to nearly circular, not or only slightly costapalmate, nearly regularly divided beyond the middle (Trithrinax biflabellata divided centrally, almost to the base) into numerous single-fold, stiff segments with shallowly to deeply bifid, apiculate to sharp tips, adaxially glabrous, abaxially lightly waxy and tomentose, midribs more prominent abaxially, other veins numerous, small, transverse veinlets not evident. Inflorescences solitary, interfoliar, rather short to moderate, robust, curved, creamy-white when young, branched to 3 orders; peduncle short; prophyll and 2(–3) peduncular bracts similar, inflated, tubular at base, expanded and split along one side, slightly keeled dorsally toward the apex, with short solid tips, glabrous or densely but irregularly tomentose; rachis longer than the peduncle; rachis bracts like peduncular bracts but becoming smaller, absent distally, each subtending a first-order branch; first-order branches adnate to the rachis and often to the tubular base of the next higher bract, stout, curved, bearing chartaceous, small, triangular bracts subtending rachillae; rachillae spirally arranged, ± equal in length, much shorter than first-order branches, bearing small elongate triangular bracts each subtending a flower. Flowers spirally arranged, solitary on short stalks, slightly asymmetrical; sepals 3, very shortly united basally, ovate; petals 3, ± twice as long as the sepals, ovate, imbricate, fleshy, acute; stamens 6, exserted, filaments distinct, twice as long as the petals, slender, tapering, anthers linear oblong, versatile, latrorse; carpels 3, distinct, ovarian part obovoid, attenuate to a tubular, short to long, erect or recurved style with apical stigma, ovule basal, hemianatropous, with aril. Pollen grains ellipsoidal, with slight to obvious asymmetry; aperture a distal sulcus; ectexine tectate, finely perforate, perforate and micro-channelled, or perforate-rugulate, aperture margin slightly finer or psilate; infratectum columellate; longest axis 25–45 µm [2/3]. Fruit 1-seeded, white, globose, stigmatic scar apical, abortive carpels basal; epicarp smooth, mesocarp fleshy, endocarp thin, papery. Seed becoming free, globose, hilum circular, basal with ascending branches, endosperm homogeneous with deeply intruded seed coat below the raphe; embryo lateral, opposite the raphe. Germination remote-tubular (Chavez 2003); eophyll simple. Cytology: 2n = 36.</p></div>
+<div type="distribution"><p>Three species in Bolivia, western tropical and southern Brazil, Paraguay, Uruguay and Argentina. </p></div>
+<div type="anatomy"><p>Leaf (Tomlinson 1961), roots (Seubert 1997), floral (de Magnano 1973, Morrow 1965). </p></div>
+<div type="relationships"><p>The monophyly of Trithrinax has not been tested. Baker et al. (in review) find moderate support for a sister relationship between Trithrinax and Chelyocarpus. </p></div>
+<div type="uses"><p>Stems are used in construction and leaves as thatch. The leaf sheaths have been used as filters. The fruit are eaten fresh or fermented and the seed can be a source of oil. Trithrinax campestris is a much sought-after ornamental (Gibbons 2001). </p></div>
+<div type="taxonomic accounts"><p>A new treatment is needed. See Beccari (1931) and Henderson et al. (1995). </p></div>
+<div type="fossil record"><p>From amber deposits in the northern Dominican Republic, 13 hermaphroditic palm flowers have been described as Trithrinax dominicana (Poinar 2002a); the age of the amber is estimated to be somewhere between mid Eocene and mid Miocene. </p></div>
+<div type="discussion"><p>Species in cultivation are notably resistant to cold and drought. </p></div>
+<div type="vernacular"><p>Caranday, for other local names see Glassman (1972). </p></div>
+<div type="biology_ecology"><p>Trithrinax schizophylla is reported from sandy marshes and along river banks. The other species occur in dry areas. </p></div>
+<div type="conservation"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

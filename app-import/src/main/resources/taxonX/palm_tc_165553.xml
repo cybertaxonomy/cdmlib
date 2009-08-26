@@ -1,0 +1,72 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>A review of the genus Pritchardia</mods:title>
+</mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Hodel</mods:namePart>
+<mods:namePart type="given">D.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Palms 51(4) Special Supplement S-1-53</mods:publisher>
+<mods:dateIssued>2007</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Pritchardia maideniana</name>
+<author>Becc.</author>
+<citation>Webbia 4: 213. 1913</citation>
+<type>Cult. Royal Botanic Gardens, Sydney, Australia (dated 1912); Boorman; s. n.</type>
+<type_loc>Lectotype FI (photo!)</type_loc>
+<synonymy>
+<name>Styloma maideniana</name>
+<author>(Becc.) O. F. Cook</author>
+<bibref>(Becc.) O. F. Cook, J. Wash. Acad. Sci. 5: 241. 1915</bibref>
+</synonymy>
+<synonymy>
+<name>Pritchardia affinis</name>
+<author>Becc.</author>
+<bibref>Becc., Mem. Bernice P. Bishop Mus. 8: 37. 1921</bibref>
+<type>Kealia, S. Kona, Hawaii, Hawaii; Rock; 12796</type>
+<type_loc>Holotype FI; isotype BISH!</type_loc>
+</synonymy>
+<synonymy>
+<name>Pritchardia affinis var. gracilis</name>
+<author>Becc.</author>
+<bibref>Becc., Mem. Bernice P. Bishop Mus. 8: 40. 1921</bibref>
+<type>Kiholo Bay, N. Kona, Hawaii, Hawaii; Rock; 12797</type>
+<type_loc>Holotype FI; isotype BISH!</type_loc>
+</synonymy>
+<synonymy>
+<name>Pritchardia affinis var. holaphila</name>
+<author>Becc.</author>
+<bibref>Becc., Mem. Bernice P. Bishop Mus. 8: 39. 1921</bibref>
+<type>Kalapana, Puna, Hawaii, Hawaii; Rock; 12795</type>
+<type_loc>Holotype FI; isotype BISH!</type_loc>
+</synonymy>
+<synonymy>
+<name>Pritchardia affinis var. rhopalocarpa</name>
+<author>Becc.</author>
+<bibref>Becc., Mem. Bernice P. Bishop Mus. 8: 40. 1921</bibref>
+<type>Napoopoo, Kealakekua Bay, S. Kona, Hawaii, Hawaii; Rock; 12779</type>
+<type_loc>Holotype FI; isotype BISH!</type_loc>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="diagnosis"><p></p></div>
+<div type="description"><p>To 10 m tall; dead, persistent leaves often forming a skirt, proximal margins of petiole with a few to moderate hair-like fibers; leaf blade diamond-shaped in outline and strongly folded from lateral compression, divided 1/2, slightly waxy-glaucous, abaxial surface incompletely covered with scattered lepidia, segment tips mostly stiff, occasionally drooping; inflorescences composed of 1-5 panicles, shorter than to equaling petioles in flower and fruit, panicles branched to 2 orders, rachillae glabrous; fruits 12-23 x 12-23 mm, globose. </p></div>
+<div type="distribution"><p>Grouped around brackish water ponds near sea level to scattered or grouped in dry to moist forest, Kona, Kau and Puna, Hawaii, to 700 m elevation. The range of Pritchardia maideniana encompasses an area with a long history of intense human activity; thus, it is difficult to determine which individuals or populations, if any, are truly wild and which are remnants of cultivated plants.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p>Beccari (1913) based Pritchardia maideniana on two unnumbered collections that. J. Boorman had made from one or two cultivated plants, purportedly of Hawaiian origin, in the Royal Botanic Gardens, Sydney, Australia, and that J. Maiden had forwarded to Beccari in 1911 and 1912 (one is dated 1911 and the other is dated 1912). Because it is more complete, I have selected Boorman's 1912 collection at FI as the lectotype. I have examined photographs of the types at FI, the (or one of the) original living plant(s) growing in the Royal Botanic Gardens in Sydney from which the types were collected, and living plants in Hawaii grown from seeds from the Australian plant, and I can find no differences between Pritchardia maideniana and Pritchardia a(finis. The latter is synonymized here. Pritchardia maideniana is distinguished by its cuneate (diamond-shaped in outline) leaf blades (the result of conspicuous lateral folding, somewhat like that of an accordion) incompletely covered abaxially with lepidia, and inflorescences shorter than or equaling petioles in flower and fruit. It is similar to P. hillebrandii, but the latter differs in the rounder leaf blades with a distinctive and conspicuous glaucous covering. </p></div>
+<div type="materials_examined"><p>U.S.A. Hawaii. Hawaii. N. Kona: S. of Aanaehoomalu at Kaloapoa, Hodel 125 (PTBG); Kiholo Bay, Hodel 126, 127 (PTBG), Rock 12797 (BISH). S. Kona: S. of Kailua-Kona, Degener 9723 (BISH); Kaohe, Rock 17347 (BISH); Kealakekua Bay, Rock 12780, 12798 (BISH), Napoopoo, Rock 12779 (BISH); Kealia, Rock 12796 (BISH); Hookena, Wood 8913 (PTBG); Milolii, Hodel 165, 166 (PTBG). Kau: Punaluu, Hodel 145, 167, 172 (PTBG), Wood 8912 (PTBG). Puna: Kalapana, Rock 12795 (BISH). CULT. Australia. New 50uth Wales: Royal Botanic Gardens, Sydney, Boorman s. n., 1912 (FI), Boorman s. n., 1911 (FI). USA. Hawaii: Kamoa State Historical Park, Holualoa, Com s. n., 6 Sept. 1985 (BlSH). Oahu: Honolulu, Rock 12000, 12001, 12003, 12006 (BlSH); Bishop Museum, [mada 2001-47 (BISH); Foster Garden, Anonymous s. n., 17 Aug. 1962 (BISH); University of Hawaii, Krajina 620210230 (BISH); Waimea Valley Audubon Center, 76s1088, Zona 1000 (HAW), 88s140, Zona 1035 (HAW). Maui: Kahanu Garden, Hana, Wood 209 (PTBG). Kauai: National Tropical Botanical Garden ex Palani junction, N. Kona, Hawaii, O'Rourke 6 (PTBG). </p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

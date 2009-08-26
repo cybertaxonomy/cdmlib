@@ -1,0 +1,46 @@
+<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>Genera Palmarum. The evolution and classification of palms</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Uhl</mods:namePart>
+<mods:namePart type="given">N.</mods:namePart>
+<mods:namePart type="family">Asmussen</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+<mods:namePart type="family">Harley</mods:namePart>
+<mods:namePart type="given">M.</mods:namePart>
+<mods:namePart type="family">Lewis</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>2008</mods:dateIssued><mods:publisher>Kew Publishing, Royal Botanic Gardens Kew</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="genus">
+<div type="diagnosis"><p>Clustering ± stemless dioecious or polygamous fan palm of southeastern USA, immediately distinguished by the sharp leaf sheath spines and the leaf blade divided into segments between the folds; inflorescences short, hidden among the sheath spines.</p></div>
+<nomenclature>
+<name>Rhapidophyllum</name>
+<author>H. Wendl. and Drude in Drude</author> 
+<citation>Bot. Zeit. 34: 803 (1876).</citation>
+<type>Type; Rhapidophyllum hystrix; (Fraser ex Thouin) H.Wendl. &amp; Drude</type>
+</nomenclature>
+<div type="etymology"><p>Combines the palm generic name Rhapis with phyllon — leaf, perhaps in allusion to the similarity in leaf splitting in the two genera.</p></div>
+<div type="description"><p>Small to moderate, clustering, armed, pleonanthic, dioecious, polygamodioecious or rarely monoecious palm. Stem very short, decumbent or erect, upper 3/4 or more covered with needle-like spines and fibres, basally becoming bare, ringed with leaf scars. Leaves induplicate, shortly costapalmate, marcescent; sheath persistent, soft-fibrous with protruding elongate, stout, needle-like spines; petiole adaxially flat, abaxially rounded, the margins entire, sharp, rough; adaxial hastula very short, triangular to truncate, rounded, membranous, abaxial hastula lacking; blade very shortly costapalmate, narrow basally, divided between the folds nearly to the base into linear, mostly 2–4-veined, ± stiff segments, each composed of part of 1 adaxial and 1 abaxial fold and having 2 large ribs, 1 near a margin, tips ± rounded, shortly bifid, adaxial surface with small deciduous scales and wax, abaxial surface with white-waxy small brown scales, sometimes both surfaces glaucous, transverse veinlets inconspicuous. Inflorescences interfoliar, staminate and pistillate similar but pistillate stouter (polygamous not seen), very short, scarcely or not exserted from the leaf sheaths, usually once-branched, rarely unbranched; peduncle short; prophyll laterally 2-keeled, inflated, chartaceous, opening distally; peduncular bracts 4–6, short, slightly inflated, tubular at the base, splitting apically, rachis about equalling the peduncle at maturity in pistillate inflorescences, longer in staminate inflorescences, bearing spirally arranged, very small, narrow, elongate bracts subtending rachillae; rachillae short, bearing similar but smaller bracts, each subtending 2–4 small flowers in only slightly elevated cincinni. Staminate flowers globose, predominantly in clusters of 3; sepals 3, distinct to slightly connate at the base, deltoid; petals 3, distinct, fleshy, imbricate, ovate, acute; stamens 6, filaments distinct, slender, slightly exceeding the petals, anthers linear-oblong, dorsifixed near the base, latrorse; pistillodes 3, minute, resembling the carpels. Pollen ellipsoidal, with slight to obvious asymmetry; aperture a distal sulcus; ectexine tectate, coarsely perforate, aperture margin finely perforate; infratectum columellate; longest axis 23–29 µm [1/1]. Pistillate flowers similar to the staminate, predominantly paired; perianth as in the staminate; sterile stamens 6, shorter than the fertile; carpels 3, distinct, follicular, basally tomentose, styles short, recurved, terminating in punctiform stigmas, ovule erect, basal, hemianatropous. Fruit globose to globose-ovoid, covered with deciduous hairs, brownish, slightly flattened on ventral surface with ventrally eccentric, apical stigmatic scar; epicarp drying in a scale-like pattern, mesocarp thin, fleshy, sweet, endocarp cartilaginous. Seed narrowly ovoid to elliptical, laterally attached, becoming free from endocarp, hilum basal, raphe ventral, prominent, unbranched, endosperm homogeneous, seed coat somewhat thickened and intruded below the raphe; embryo lateral opposite the raphe. Germination remote-ligular (Chavez 2003); eophyll simple, lanceolate, tip truncate. Cytology: 2n = 36.</p></div>
+<div type="distribution"><p>One species in southeastern USA. </p></div>
+<div type="anatomy"><p>Leaf (Tomlinson 1961), roots (Seubert 1997), floral (Morrow 1965), fruit (Murray 1973). </p></div>
+<div type="relationships"><p>The genus appears to be related to Guihaia, Maxburretia and Rhapis, but its exact position with respect to these genera is unclear. Baker et al. (in review) place Rhapidophyllum as sister to a clade of Guihaia, Maxburretia and Rhapis with low support. Asmussen et al. (2006) place the genus as sister to a clade of Maxburretia and Rhapis with low support. Uhl et al. (1995) resolve it as sister to a clade of Guihaia and Rhapis. There is also moderate support for a sister relationship between Rhapidophyllum and Rhapis (Asmussen and Chase 2001). </p></div>
+<div type="uses"><p>Cultivated as a cold-tolerant ornamental. Cutting of crowns for decoration during the late 19th and early 20th century decimated many populations and some exploitation by nurseries continues. </p></div>
+<div type="taxonomic accounts"><p>Shuey and Wunderlin (1977), Small (1923) and Zona (1997). </p></div>
+<div type="fossil record"><p>A study of the Middle Eocene Princeton chert of British Columbia, Canada (Erwin and Stockey 1991) shows palm vegetative organs to be the most common elements: five stems up to 9cm wide with attached petiole bases and roots, plus numerous additional isolated petioles, midribs and laminae. A comparison with extant palms suggests that fossil stem and leaf anatomy is most similar to two coryphoid genera, Rhapidophyllum and Brahea. </p></div>
+<div type="discussion"><p>Rhapidophyllum hystrix is considered a relict genus (Shuey and Wunderlin 1977).</p></div>
+<div type="vernacular"><p>Needle palm. </p></div>
+<div type="biology_ecology"><p>Rhapidophyllum hystrix is found in low, moist to wet areas with rich humus, calcareous clay, or sandy soils in woods and swamps. It may occur in limestone sinks and shaded pinelands. It will thrive in well-drained sites in the sun if sufficient moisture is provided. Rhapidophyllum grows very slowly in the wild, presumably because of low light conditions. Growth is accelerated when adequate light is provided but the long period (four to six years) taken to grow a mature plant from seed has discouraged its cultivation. Reproduction also occurs by suckering. The lower end of the stem decays as the palm grows; the rotting often separates suckers from the main plant but also tends to eliminate anchoring roots, causing the trunk to lean. During development, flowers and seeds are well protected by the sheath spines. It is unclear how seeds are dispersed and they often germinate close to their parent, where seedlings have little chance of survival. The spines are so conspicuous that Rhapidophyllum has been called the ‘vegetable porcupine’ (Small 1923). Pollination appears to be primarily by an undescribed species of Notolomus (Curculionidae). Beetles are attracted to both staminate and pistillate flowers by a musky odor and feed on pollen and flower parts. The species seems self-compatible, although pollinator visits have not been completely deciphered (Shuey and Wunderlin 1977). </p></div>
+<div type="conservation"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

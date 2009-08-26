@@ -1,0 +1,46 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>Genera Palmarum. The evolution and classification of palms</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Uhl</mods:namePart>
+<mods:namePart type="given">N.</mods:namePart>
+<mods:namePart type="family">Asmussen</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+<mods:namePart type="family">Harley</mods:namePart>
+<mods:namePart type="given">M.</mods:namePart>
+<mods:namePart type="family">Lewis</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>2008</mods:dateIssued><mods:publisher>Kew Publishing, Royal Botanic Gardens Kew</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="genus">
+<div type="diagnosis"><p>Moderate solitary spiny pinnate-leaved palm endemic to Seychelles; the leaf sheaths do not form a crownshaft and the inflorescences have long peduncles; the seed is kidney-shaped.</p></div>
+<nomenclature>
+<name>Nephrosperma</name>
+<author>Balf.f. in Baker</author> 
+<citation>Fl. Mauritius 386 (1877).</citation>
+<type>Type; Nephrosperma van-houtteanum; (H. Wendl. ex Van Houtte) Balf.f.</type>
+</nomenclature>
+<div type="etymology"><p>Nephros — kidney, sperma — seed, in reference to the shape of the seed.</p></div>
+<div type="description"><p>Moderate, solitary, spiny when young, unarmed or only very sparsely armed when mature, pleonanthic, monoecious palm. Stem erect, becoming bare, conspicuously ringed with leaf scars, unarmed. Leaves pinnate, neatly abscising; sheaths tubular, becoming open, not forming a well-defined crownshaft, densely tomentose, bearing abundant, black spines in juveniles, ± unarmed or very sparsely armed in mature individuals, sheath margin irregularly ligule-like, tattering; petiole well developed, adaxially channelled, abaxially rounded, bearing white indumentum and scattered scales, and few bristles near the base; rachis curved; leaflets rather regularly arranged, neatly curved, distant, composed usually of 2–3 folds, acute or acuminate, adaxially glabrous, abaxially with numerous, minute, dot-like scales and abundant ramenta along the adaxial ribs, transverse veinlets obscure; expanding leaf flushed red. Inflorescences solitary, interfoliar, branching to 1 order only, protandrous; peduncle very long (± 1/2 the length of the leaves or more), erect at first, becoming curved, winged at the base, ± oval in cross-section, unarmed, scaly; prophyll inserted near the base of the peduncle, persistent, coriaceous, tubular, 2-keeled, the wings tending to be irregularly split or toothed, splitting apically for a short distance, covered with rather dense scales and scattered white wax, armed with short weak bristles and spines or rarely unarmed; peduncular bract, inserted a short distance from the prophyll, elongate, with a conspicuous long beak, tubular at first, then splitting along its length, deciduous, scaly and spiny as the prophyll; rachis shorter than the peduncle, scaly, bearing rather lax, spirally arranged rachillae; rachis bracts minute; rachillae scaly, with a pronounced swelling and bare section at the base, very long, spreading, slender, bearing distant, spirally arranged, superficial triads throughout, except at the tip where bearing solitary or paired staminate flowers; floral bracteoles minute. Staminate flowers symmetrical; sepals 3, distinct, imbricate, rounded, irregularly splitting, keeled; petals about 3–4 times as long as the sepals, 3, distinct, valvate, ± boat-shaped; stamens ca. 40–50, filaments elongate, anthers very small, rounded, with a broad connective, not versatile, latrorse; pistillode ovoid, conspicuous, minutely but clearly trifid at its tip. Pollen ellipsoidal asymmetric, occasionally elongate or pyriform; aperture a distal sulcus; ectexine tectate, finely perforate-rugulate, aperture margin similar; infratectum columellate; longest axis 35–43 µm [1/1]. Pistillate flowers globular; sepals 3, distinct, imbricate, low, ± rounded, thick, tending to split irregularly; petals 3, distinct, imbricate, ± rounded, with short triangular, valvate tips; staminodes 6, small, tooth-like; gynoecium ± obpyriform, unilocular, uniovulate, with minute apical stigmas, ovule laterally attached, form unknown. Fruit relatively small, spherical to somewhat kidney-shaped, red, perianth whorls persistent, stigmatic remains lateral; epicarp shiny, smooth, mesocarp thinly fleshy with a layer of slender fibres next to the endocarp, endocarp very thin, cartilaginous, with a thin, ± rounded operculum. Seed ±globose, somewhat kidney-shaped, attached laterally near the base, with an oblong hilum, raphe branches distant, slightly embedded in the endosperm, endosperm deeply ruminate; embryo basal. Germination adjacent-ligular; eophyll bifid. Cytology: 2n = 32.</p></div>
+<div type="distribution"><p>One species confined to the Seychelles Islands; elsewhere widely cultivated.</p></div>
+<div type="anatomy"><p>Leaf (Tomlinson 1961), root (Seubert 1998a,1998b) and fruit (Essig et al. 2001). </p></div>
+<div type="relationships"><p>Nephrosperma is resolved as sister toPhoenicophorium with high support (Lewis and Doyle 2002, Looet al. 2006, Norup et al. 2006, Baker et al. in review, in prep.).</p></div>
+<div type="uses"><p>Not recorded apart from its use as an ornamental.</p></div>
+<div type="taxonomic accounts"><p>Bailey (1942).</p></div>
+<div type="fossil record"><p>No generic records found.</p></div>
+<div type="discussion"><p>The staminate flowers are distinctive because of thelarge number of stamens (40–50) and the large pistillode.</p></div>
+<div type="vernacular"><p>Latanier millepattes. </p></div>
+<div type="biology_ecology"><p>A lowlands pecies, not occurring above 500 m altitude, growing on rocky slopes; also found in some secondary forest types.</p></div>
+<div type="conservation"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

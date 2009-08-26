@@ -4,7 +4,10 @@
 <mods:titleInfo>
 <mods:title>The Genus Metasocratea (Palmae)</mods:title>
 </mods:titleInfo>
-<mods:name><mods:namePart>Rodrigo Bernal-Gonzalez</mods:namePart></mods:name>
+<mods:name>
+<mods:namePart type="family">Bernal-Gonzalez</mods:namePart>
+<mods:namePart type="given">R.</mods:namePart>
+</mods:name>
 <mods:originInfo>
 <mods:publisher>Kew Bulletin, Vol. 41, No. 1, pp. 151-152</mods:publisher>
 <mods:dateIssued>1986</mods:dateIssued>

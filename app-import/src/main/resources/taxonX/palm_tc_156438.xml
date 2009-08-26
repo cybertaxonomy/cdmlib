@@ -1,0 +1,44 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>Pinanga in Java and Bali</mods:title>
+</mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Witono</mods:namePart>
+<mods:namePart type="given">J.R.</mods:namePart>
+<mods:namePart type="family">Mogea</mods:namePart>
+<mods:namePart type="given">J.P.</mods:namePart>
+<mods:namePart type="family">Somadikarta</mods:namePart>
+<mods:namePart type="given">S.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Palms 46(4) 193-202</mods:publisher>
+<mods:dateIssued>2002</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Pinanga javana</name>
+<author>Blume</author>
+<citation>Bull. Sci. Phys. Nat. Neerl. 1: 65. 1838</citation>
+<bibref>Blume, Rumphia 2: 81. 1839</bibref>
+<type>Java; Blume; s.n.</type>
+<type_loc>Holotypus L!</type_loc>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>Pinang hanyawar, pinangpanyawar (West Java), palem barong (East Java), pinang jawa.</p></div>
+<div type="diagnosis"><p></p></div>
+<div type="description"><p>Robust, solitary palm. Stem erect, 4-10 m tall, 10-15 cm diam., internodes to 10-30 cm, stem surface green brownish, smooth, slightly fissured longitudinally. Crownshaft elongate, 150-200 cm long, 25 cm diam., swollen, purplish brown, with brown scales. Leaves 10 in crown, pinnate; whole leaf (including leaf-sheath, petiole, and rachis) 250-300 cm with silvery indumentum on petiole and rachis, very massive; leaf-sheath to 100 cm; petiole to 30 cm, concave adaxially, convex abaxially; rachis 3 cm diam.; leaflets 10-15 on each side of rachis, regularly arranged, slightly arcuate, elongate linear-lanceolate, falcate-sigmoid, equidistant, basal leaflets 65-95 x 1-6 cm, ribs 1-3, middle leaflets 70-115 x 2.7 cm, ribs 1-3, apical leaflets 19-55 x 1.5-7.5 cm, ribs 2-7. Inflorescence infrafoliar, hand-like, spreading pendulous, 40-50 cm long, peduncle erect at base, flattened, 9-16 cm long, 0.8-1.5 cm thick; prophyll not known; rachillae 8-13, arranged distichously alternate, at the base 23-35 cm with 19-21 triads, at the apex 18-27 cm with 15-17 triads, peduncle, rachis, and rachillae green when young, pinkish red with age. Triads distichous, alternate. Pistillate flower (calyx and corolla) cream, ovary green; calyx cup-shaped, sepals 3, imbricate, broadly orbicular, 6-8 x 4-4.5 mm, smooth, thick at the middle, thin at side, with ciliate margins, apex mucronate; corolla with 3 cucullate rounded ciliate petals, 4-6 x 3-4 mm, apex mucronate-obtuse. Fruit ovoid to ellipsoid, 20-26 x 11-14 mm, pale pinkish yellow when young, when ripe turning dark red then black, pericarp densely fibrous, endocarp thin, membranous. Seed ovoid to ellipsoid, 18-21 x 10-13 mm, deeply ruminate.</p></div>
+<div type="distribution"><p>Endemic to Java, now confined to the mountains of West Java. This species was recorded on Mt. Slamet (Central Java) (Whitten et al. 1994) but was not found when we searched for it in 1999. Specimens collected by Backer in 1914 from Mt. Wills and by Kobus from Mt. Tengger indicate that it once grew in East Java; however, during field observation in 1998, no P. javana was found in either locality. It is possible that this species is extinct (extirpated) at these locations.</p></div>
+<div type="biology_ecology"><p>Occurring on very steep hillsides in moist lower montane forest and damp montane forest in deep soil at altitudes of 800-1,700 m above sea level, but not on ridgetops.</p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p>Dransfield collected P. iavana in 1973 on Mt. Pulasari, Mandalawangi, West Java, where this species is abundant in summit mossy forest at altitude 800 m asl. In its morphology, P. javana is quite different from P. coronata. It is a robust palm, always solitary, and the arrangement of the rachillae is always alternate and distichous. On the other hand, P. coronata is a small and clustered palm, and the arrangement of its rachillae is always spiral. The distribution of these species is also different. Pinanga javana is very restricted, found only in lower montane forest (800-1,700 m asl) in West and East Java, while P. coronata is more widespread, and is found from Sumatra, Java, to Lesser Sunda Islands, from sea level to montane forest.</p></div>
+<div type="materials_examined"><p>JAVA. West Java. Mandalawangi, Mt. Pulasari, Apr 1974, Dransfield JD4185 (BO); Bogor, Mt. Salak, Apr 1971, Dransfield JD1358 (BO); Mt. Salak, Jul 1971 Dransfield JD1758 (BO); Cibodas, Oct 1970, Dmnsfield JD9S1 (BO); East Java. Kediri, Mt. Wills, Feb 1914, Backer 11491 (BO); Mt. Tengger, Kobus 204 (BO).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

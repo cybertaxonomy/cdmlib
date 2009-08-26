@@ -4,7 +4,10 @@
 <mods:titleInfo>
 <mods:title>Two new species of Daemonorops (Arecaceae) from Vietnam</mods:title>
 </mods:titleInfo>
-<mods:name><mods:namePart>John Dransfield</mods:namePart></mods:name>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
 <mods:originInfo>
 <mods:publisher>Kew Bulletin, Vol. 56, No. 3, pp. 661-667</mods:publisher>
 <mods:dateIssued>2001</mods:dateIssued>

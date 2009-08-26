@@ -4,7 +4,10 @@
 <mods:titleInfo>
 <mods:title>Dypsis turkii</mods:title>
 </mods:titleInfo>
-<mods:name><mods:namePart>John Dransfield</mods:namePart></mods:name>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
 <mods:originInfo>
 <mods:publisher>Palms 47(1): 26-30</mods:publisher>
 <mods:dateIssued>2003</mods:dateIssued>

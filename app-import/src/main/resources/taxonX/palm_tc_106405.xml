@@ -1,0 +1,39 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>Guide to Philippine Flora and Fauna. Vol. IV.</mods:title>
+</mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">de Guzman</mods:namePart>
+<mods:namePart type="given">E.D.</mods:namePart>
+<mods:namePart type="family">Fernando</mods:namePart>
+<mods:namePart type="given">E.S.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Natural resources Management Center, Minstry of Natural Resources and university of Phillipines</mods:publisher>
+<mods:dateIssued>1986</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Korthalsia scaphigeroides</name>
+<author>Becc.</author>
+<citation>Philipp. J. Sci., C 4: 619 (1909)</citation>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>Ant Palm (Engl.); Kaporigid (Pil.).</p></div>
+<div type="diagnosis"><p></p></div>
+<div type="description"><p>Rather slender, the sheathed stem apparently 15-18 mm in diameter. Ochrea elongate-elliptic, ventricose 9 to 10 cm long, 2 cm broad, thinly coriaceous, armed with small scattered, short, rigid prickles. Leaves with a slender biconvex, flattened petiolar part, about 20 cm long, 4 mm broad, with rather obtuse and smooth edges, armed claws, rachis in the intermediate portion armed almost regularly with ternate claws, leaflets distinctly ansate, narrowly rhomboid-cuneate, broadest above their middle, 15 to 20 cm long, 4 to 5 cm broad, rather accurately praemorse-dentate in the upper margins and produced at the summit into an acuminate point, green above, white beneath, with about 7 primary costae. Spadix unknown. The leaf-sheaths of this palm is interestingly inhabited by colonies of ants. The seeds, so far, is the means of its propagation.</p></div>
+<div type="distribution"><p>Mindanao (Agusan, Surigao, Zamboanga), Basilan. Endemic.</p></div>
+<div type="biology_ecology"><p>Growing in primary forests at low altitudes.</p></div>
+<div type="conservation"><p>Indeterminate.</p></div>
+<div type="uses"><p>It can be used as those of Daemonorops and Calamus in furniture and basket making.</p></div>
+<div type="discussion"><p></p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

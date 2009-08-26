@@ -1,0 +1,46 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>Genera Palmarum. The evolution and classification of palms</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Uhl</mods:namePart>
+<mods:namePart type="given">N.</mods:namePart>
+<mods:namePart type="family">Asmussen</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+<mods:namePart type="family">Harley</mods:namePart>
+<mods:namePart type="given">M.</mods:namePart>
+<mods:namePart type="family">Lewis</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>2008</mods:dateIssued><mods:publisher>Kew Publishing, Royal Botanic Gardens Kew</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="genus">
+<div type="diagnosis"><p>Spectacular moderate solitary spiny stilt-rooted palm endemic to Seychelles, lacking a crownshaft and with ± undivided leaves with praemorse margins; inflorescnces have long peduncles.</p></div>
+<nomenclature>
+<name>Verschaffeltia</name>
+<author>H. Wendl.</author>
+<citation>Ill. Hort. 12 (misc.): 5 (1865).</citation>
+<type>Type; Verschaffeltia splendida; H. Wendl.</type>
+</nomenclature>
+<div type="etymology"><p>Commemorates Ambroise Colette Alexandre Verschaffelt (1825–1886), Belgian nurseryman and founder of the horticultural journal L’Illustration Horticole.</p></div>
+<div type="description"><p>Moderate, solitary, spiny when young, becoming less spiny at maturity, pleonanthic, monoecious palm. Stem erect, becoming bare, conspicuously ringed with leaf scars, the juvenile very densely armed with long black spines, the adult more sparsely armed with rings of reflexed spines, the base of the trunk supported on a cone of robust stilt roots. Leaves large, neatly abscising, bifid, pinnately ribbed and lobed, irregularly split into approximate several-fold leaflets; sheath becoming open, not forming a crownshaft, very densely black-spiny in juveniles, unarmed in adults, the margins irregularly ligule-like; petiole short, glabrous, heavily armed as is the rachis in juveniles, unarmed in adults, adaxially deeply grooved, abaxially rounded; blade unsplit in juveniles, irregularly split in adults, the margins deeply lobed to up to 1/2 the blade depth into reduplicate segments, the segment tips irregularly praemorse, blade adaxially glabrous, abaxially with sparse, minute, dot-like scales and conspicuous, large, tattered ramenta along adaxial ribs, transverse veinlets obscure. Inflorescences solitary, interfoliar, branching to 2 (rarely 3) orders proximally, 1 order distally, protandrous; peduncle elongate, ±rounded in cross-section, densely tomentose like other inflorescence axes, winged at the base; prophyll inserted some distance from the base of the peduncle, very large, ± persistent, coriaceous, tubular, 2-keeled, the keels tending to become irregularly split or toothed, apically splitting to almost 1/2 the length, unarmed, bearing scattered scales; peduncular bract 1, inserted some distance above the prophyll, deciduous, similar to the prophyll but thinner and not 2-keeled; rachis shorter than the peduncle; rachis bracts minute, triangular, inconspicuous; first-order branches numerous, with a swollen base and short bare section; rachillae numerous, spreading, flexuous or rigid, somewhat sinuous, bearing spirally arranged superficial triads except at the very tip where bearing solitary or paired staminate flowers. Staminate flowers small, globular symmetrical; sepals 3, distinct, imbricate, rounded; petals 3, distinct, ±broadly triangular, valvate, ±twice as long as sepals; stamens 6, filaments distinct, ± fleshy, rather short, anthers rounded, medifixed, ± versatile, latrorse; pistillode large, truncate, 3-angled, trifid, about as long as the petals. Pollen ellipsoidal asymmetric; aperture a distal sulcus; ectexine tectate, perforate-rugulate, aperture margin similar or slightly finer; infratectum columellate; longest axis 41–47 µm [1/1]. Pistillate flowers larger than the staminate, ± globular; sepals 3, distinct, imbricate, ± broad, rounded, irregularly splitting; petals 3, distinct, broad, rounded, imbricate, with very short, triangular, valvate tips; staminodes 6, with flattened, ribbon-like filaments and wide, flattened tips; gynoecium ovoid, unilocular, uniovulate, stigmas 3, short, reflexed, ovule laterally attached, ?hemianatropous. Fruit 1-seeded, moderate, spherical, brownish green, perianth whorls persistent, stigmatic remains basal; epicarp smooth, roughened when dry, mesocarp with a crustose layer just below the epicarp, and relatively thin flesh beneath, fibres sparse attached to endocarp, endocarp thin, cartilaginous, bearing conspicuous, irregular flanges and ridges, and a rounded basal operculum. Seed conforming to the endocarp shape, conspicuously ridged when immature, slightly ridged at maturity, basally attached with rounded hilum, raphe branches sparse, anastomosing, endosperm deeply ruminate, with a small central hollow; embryo basal. Germination adjacent-ligular; eophyll bifid, spiny. Cytology: 2n = 36.</p></div>
+<div type="distribution"><p>A single species confined to the islands of Mahé, Silhouette and Praslin in the Seychelles; widespread in cultivation. </p></div>
+<div type="anatomy"><p>Leaf, root (Tomlinson 1961), root (Seubert 1998a, 1998b) and fruit (Essig et al. 2001). </p></div>
+<div type="relationships"><p>There is strong support for a sister relationship between Verschaffeltia and Roscheria (Lewis and Doyle 2002, Lewis 2002, Loo et al. 2006, Norup et al. 2006, Baker et al. in review, in prep.). </p></div>
+<div type="uses"><p>Trunks have been used in house construction. The genus is also widespread in cultivation as an ornamental. </p></div>
+<div type="taxonomic accounts"><p>Bailey (1942). </p></div>
+<div type="fossil record"><p>No generic records found. </p></div>
+<div type="discussion"><p>Verschaffeltia is distinguished by a nearly undivided leaf with praemorse margins and by large fruits that have a ridged endocarp. </p></div>
+<div type="vernacular"><p>Latanier latte. </p></div>
+<div type="biology_ecology"><p>Verschaffeltia splendida grows in relic forest on slopes between 300 and 600 m above sea level; more rarely, it occurs in river valleys below 300 m altitude. It seems to be confined to steep hillsides and precipitous ravines, where it usually occurs as solitary individuals, rarely in colonies. </p></div>
+<div type="conservation"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

@@ -1,0 +1,45 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>Genera Palmarum. The evolution and classification of palms</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Uhl</mods:namePart>
+<mods:namePart type="given">N.</mods:namePart>
+<mods:namePart type="family">Asmussen</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+<mods:namePart type="family">Harley</mods:namePart>
+<mods:namePart type="given">M.</mods:namePart>
+<mods:namePart type="family">Lewis</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>2008</mods:dateIssued><mods:publisher>Kew Publishing, Royal Botanic Gardens Kew</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="genus">
+<div type="diagnosis"><p>Tall solitary very spiny pinnate-leaved palms, native to the Mascarene Islands, with conspicuous crownshafts and seed with homogeneous endosperm.</p></div>
+<nomenclature>
+<name>Acanthophoenix</name>
+<author>H. Wendl.</author> 
+<citation>Fl. Serres Jard. Eur. 16: 181 (1867).</citation>
+<type>Lectotype; Acanthophoenix rubra; (Bory) H. Wendl.</type>
+</nomenclature>
+<div type="etymology"><p>Akanthos — spine, phoenix — a general name for a palm, referring to the abundant spines.</p></div>
+<div type="description"><p>Robust, solitary, spiny, pleonanthic, monoecious palms. Stem erect, usually unarmed, rarely spiny on new growth, conspicuously ringed with leaf scars, slightly swollen at the base. Leaves pinnate, neatly abscising; sheaths tubular, forming a well-defined crownshaft, bearing abundant tomentum and black, rather fragile spines, rarely very sparsely armed, ligule absent; petiole rather short, adaxially flattened or shallowly channelled, abaxially rounded, tomentose or glabrous, ± unarmed to densely armed with black spines, especially in juveniles; rachis glabrous or scaly, tomentose or bearing ramenta; leaflets elongate, single-fold, acute, regularly arranged, ± pendulous, with white wax abaxially, adaxially usually armed with slender, bulbous-based bristles along the midrib near the base, rarely also armed abaxially, abaxially bearing minute dot-like scales and conspicuous ramenta along the main vein near the insertion, sometimes with white wax, transverse veinlets obscure. Inflorescences solitary, infrafoliar, protandrous, erect in bud, branching to 2 orders near the base, to 1 order distally; peduncle short, winged at the base, tomentose to becoming glabrous, unarmed or armed with flat, dark brown, straight or sinuous spines; prophyll inserted near the base of the peduncle, tubular, elliptic, briefly beaked, 2-keeled, completely enclosing the inflorescence in bud, unarmed or rarely spiny, glabrous or tomentose, splitting along one face, deciduous; peduncular bract 1, inserted just above and similar to the prophyll but less conspicuously 2-keeled, also caducous; rachis much longer than the peduncle, rachis bracts very inconspicuous, low, triangular, glabrous to tomentose, often spiny; first-order branches spirally arranged, rather distant; rachillae ivory-white to reddish at anthesis, becoming green in fruit, elongate, pendulous, sinuous, bearing very inconspicuous to prominent, spirally arranged, triangular bracts, each subtending a triad throughout the rachilla length except at the very tip where subtending solitary or paired staminate flowers; floral bracteoles low, very inconspicuous. Staminate flowers often briefly pedicellate, asymmetrical, white, cream-coloured to red; sepals 3, distinct or briefly connate, imbricate, short, acute, ± keeled; petals 3, basally ± briefly connate, valvate, 3–4 times as long as the sepals, ± elliptic, fleshy; stamens (4–)6–12, exserted at anthesis, filaments slender to wide, elongate, often coiled in bud but not inflexed, anthers dorsifixed, linear, basally sagittate, versatile, latrorse; pistillode ± ovoid, short, briefly to deeply trifid. Pollen ellipsoidal bi-symmetric; aperture a distal sulcus; ectexine tectate, psilate-foveolate, aperture margin similar or slightly finer; infratectum columellate; longest axis 35–45 µm [1/1]. Pistillate flowers ± ovoid; sepals 3, distinct, imbricate, broad, rounded; petals 3, distinct, imbricate except for the minute, valvate, triangular tips; staminodes 6–9, tooth-like or absent; gynoecium unilocular, uniovulate, ovoid, stigmas broad, ovule large pendulous, campylotropous. Fruit borne with persistent perianth whorls, ellipsoidal to subglobose, black at maturity, with lateral to subapical stigmatic remains; epicarp smooth or slightly pebbled when dry, mesocarp with tanniniferous parenchyma overlying a shell of short sclereids, external to a layer of tanniniferous parenchyma with included thin, flat, longitudinal fibres, endocarp thin, crustaceous, fragile, with circular basal operculum. Seed attached laterally near the base, hilum circular, raphe branches ascending and anastomosing, endosperm homogeneous; embryo basal. Germination adjacent-ligular; eophyll bifid or pinnate. Cytology: 2n = 32.</p></div>
+<div type="distribution"><p>Three species confined to Mauritius and Réunion, once common, now exceedingly rare in the wild; elsewhere cultivated, but not very common.</p></div>
+<div type="anatomy"><p>Fruit (Essig et al. 2001).</p></div>
+<div type="relationships"><p>For relationships, see Oncosperma.</p></div>
+<div type="uses"><p>The cabbage is eaten, this being responsible for the near extinction of this palm.</p></div>
+<div type="taxonomic accounts"><p>Moore and Guého (1984) and Ludwig(2006).</p></div>
+<div type="fossil record"><p>No generic records found.</p></div>
+<div type="discussion"><p>Ludwig's recent paper has clarified much of the confusion in the erstwhile recognised single species, Acanthophoenix crinita, by demonstrating the presence of good morphological characters for separating three species.</p></div>
+<div type="vernacular"><p>Palmiste rouge.</p></div>
+<div type="biology_ecology"><p>Acanthophoenix rubra grows at altitudes less than 600 m, A. rousselii occurs in drier forest at less than 850 m, while A. crinita occurs at higher elevations in montane forest. All wild populations are very small and disturbed.</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

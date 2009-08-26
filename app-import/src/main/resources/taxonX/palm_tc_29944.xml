@@ -1,13 +1,22 @@
 ﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 <taxonxHeader>
 <mods:mods>
-<mods:titleInfo>
-<mods:title>Four new species of Calamus (Arecaceae: Caiamoideae) from Laos and Thailand</mods:title>
-</mods:titleInfo>
-<mods:name><mods:namePart>Tom Evans, Khamphone Sengdala, Oulathong V. Viengkham, Banxa Thammavong and John Dransfield</mods:namePart></mods:name>
+<mods:titleInfo><mods:title>A Synopsis of the Rattans (Arecaceae: Calamoideae) of Laos and Neighbouring Parts of Indochina</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Evans</mods:namePart>
+<mods:namePart type="given">T.</mods:namePart>
+<mods:namePart type="family">Sengdala</mods:namePart>
+<mods:namePart type="given">K.</mods:namePart>
+<mods:namePart type="family">Thammavong</mods:namePart>
+<mods:namePart type="given">B.</mods:namePart>
+<mods:namePart type="family">Viengkham</mods:namePart>
+<mods:namePart type="given">O.V.</mods:namePart>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
 <mods:originInfo>
-<mods:publisher>Kew Bulletin, Vol. 55, No. 4, pp. 929-940</mods:publisher>
-<mods:dateIssued>2000</mods:dateIssued>
+<mods:dateIssued>2002</mods:dateIssued>
+<mods:publisher>Kew Bulletin, Vol. 57, No. 1 (2002), pp. 1-84</mods:publisher>
 </mods:originInfo>
 </mods:mods>
 </taxonxHeader>
@@ -15,22 +24,20 @@
 <treatment rank="species">
 <nomenclature>
 <name>Calamus solitarius</name>
-<author>T Evans, K. Sengdala, O. V Viengkham, B. Thammavong and J. Dransf.</author>
+<author>T. Evans et al.</author> 
 <citation>Kew Bull. 55: 932 (2000)</citation>
-<type>Laos; Oulathong V Viengkham; 240</type>
-<type_loc>Holotypus K; isotypus FRCL</type_loc>
+<type>Laos, Bolikhamxay Province; Oulathong; 240</type>
+<type_loc>Holotype K; isotype FRCL</type_loc>
+<bibref>Evans et al., Rattans Lao PDR: 40 (2001)</bibref>
 </nomenclature>
-<div type="introduction"><p></p></div>
-<div type="etymology"><p></p></div>
-<div type="vernacular"><p>Wai thork (=wai tork), wai yong, wai hak yong and wai savang, the first name in both Thailand and Laos.</p></div>
-<div type="diagnosis"><p>C. tetradactylo Hance, C. cambojensis Becc. et C. paucifloro T. Evans et al. affinis sed habitu solitario, altescandenti inflorescentiis partialibus multolongioribus differt.</p></div>
-<div type="description"><p>Slender, solitary, climbing, flagellate rattan often over 30 m, reportedly sometimes exceeding 100 m. Rarely fertile when less than 15 m long. Stem without sheath 4 - 10 mm diam., with sheath 6 - 15 mm, the larger stems usually those in bright sunlight. Leaf ecirrate, 0.5 - 1 m long, sheath light or dark green with scattered dark or light indumentum, spines numerous to few or sometimes almost absent (especially on sheaths in deep shade), solitary, scattered, acicular with very slightly swollen base, green, of various sizes up to 20 mm long, more or less horizontal, ocrea tiny, unarmed, marcescent; knee prominent, petiole of upper leaves 2 - 10 cm long, abaxially rounded and armed with scattered spines with slightly swollen bases, adaxially flat and unarmed or with scattered prickles, rachis adaxially unarmed, becoming acutely bifaced distally, rounded abaxially and armed with scattered dark-tipped claws; leaflets lanceolate, up to 32 x 4.5 cm (on some plants no larger than 15 x 3.5 cm), 9 - 14 per side, strongly grouped in pairs (or rarely 3s), the pairs usually opposite one another, basal leaflet on each side sometimes solitary, terminal leaflets in a group of four, the inner pair joined for 20 - 60% of their length, adaxial midrib and two other costae prominent, two other costae sometimes sub-prominent, usually naked but the central one occasionally with a few bristles distally, abaxially one or no costae prominent, several others sub-prominent, all naked, leaflet margins naked or rarely with a few scattered bristles, transverse veinlets quite conspicuous, sinuous, moderately interrupted. Inflorescences slender, flagelliform, 1.3 - 5.0 m long excluding terminal flagellum, pendulous, those on stems flowering for the first time usually short with short partial inflorescences; those on more mature stems much larger in all their parts. Male inflorescences with primary bracts tightly sheathing, armed with scattered claws, entire at the mouth with a short acute limb; partial inflorescences long, basal one (40) 60 - 100 (135) cm, inserted deep within the primary bracts or exserted by several centimetres; secondary bracts unarmed, long and tightly sheathing, ending in a short acute limb; secondary branches borne at the mouth of the secondary bract or well outside, occasionally exceeding 20 cm long, tertiary bracts unarmed, tightly sheathing with a slight apiculate limb; rachillae slightly exserted, slender, up to 4 cm long, with many very small rachilla bracts at 1.5 mm intervals. Female inflorescences similar in size and appearance of primary and secondary bracts; rachillae slightly exserted from secondary bracts, up to 4 cm long (rarely to 12 cm), much stouter than male, often strongly recurved, even arching back across the branch; rachilla bracts tightly sheathing, at 3.5 mm intervals, with an acute limb bent back by the involucrophore; involucre facing out at an obtuse angle to the rachilla, subdiscoid and sometimes slightly pedicellate, placed just above the mouth of the rachilla bract, fruiting perianth strongly pedicellate. Fruit only seen immature, when spherical with an abrupt beak, the scales green with red-brown scale margins. </p></div>
-<div type="distribution"><p>Laos, in Bolikhamxay and Khammouane Provinces in evergreen or semi-evergreen forest, including areas with much bamboo, at 200 - 580 m and (historically) Thailand in Nong Khai Province at 200 m. We have also seen a specimen of this species collected by J. F. Maxwell in Feuang Distr., Vientiane Province but have yet to make a detailed comparative examination.</p></div>
-<div type="biology_ecology"><p></p></div>
-<div type="conservation"><p></p></div>
-<div type="uses"><p></p></div>
-<div type="discussion"><p>This species is usually easily distinguished in life from C. tetradactylus Hance, C. cambojensis Becc. and C. pauciflorus T. Evans et al. by its high-climbing, solitary habit. Herbarium material without this information can be more difficult, especially if the reduced terminal partial inflorescences or inflorescences from young stems have been collected. In Pakkading Distr., Bolikhamxay Province, C. solitarius is widely sympatric with a plant we consider to be Calamus tetradactylus Hance (specimens Oulathong V Viengkham 207, 208 and 209 in FRCL and K). At this site they are easily separated on the basis of consistent differences in the leaves and leaflets, even when habit and inflorescences are not seen. This lends support to the conclusion that these are two distinct taxa. Calamus solitarius is one of the premier quality small-diameter canes in Laos but its solitary habit precludes resprouting and it is likely to be vulnerable to over- harvesting. Houay Say, cited in the localities above, is wrongly marked on the standard 1:100 000 maps of Laos as H. Kay.</p></div>
-<div type="materials_examined"><p>LAOS. Near Tat Say waterfall, Ban Hatkhai, Thaphabaat Distr., Bolikhamxay Province, 18°27'15" 103°09'00", 10 April 1998, ster. Khamphone Sengdala 137 (FRCL, K); headwaters of Houay Say, Thaphabaat Distr., Bolikhamxay Province, 18°29'12" 103°06'56", 16 Dec. 1998, stam. Khamphone Sengdala 312, pist. Khamphone Sengdala 313, stam. Khamphone Sengdala 316, fr. Khamphone Sengdala 317 (all FRCL, K); E of Ban Vangkor, Khamkeut Distr., Bolikhamxay Province, 18°09'20", 105°04'30'", 15 March 1999, stam. Khamphone Sengdala 390 (FRCL, K). Houay Basong, near mouth of Houay Nyanyoung [not Nanyoung as stated on label], Ban Naphong, Pakkading Distr., Bolikhamxay Province, 18°18'10" 104°23'40", 6 April 1999, pist. T Evans 45 (FRCL, K); headwaters of Houay Sair, Ban Naphong, Pakkading Distr., Bolikhamxay Province, 18°07'50" 104°23'30", 11 May 2000, fr. Oulathong V Viengkham 240 (isotype FRCL, holotype K); Phou Tamor, Ban Laokha, Hinboun Distr., Khammouan Province, 17°54'12" 104°24'46", 27 Aug. 1999, stam. Khamphone Sengdala 445, stam. Khamphone Sengdala 446, ster. Khamphone Sengdala 447 (all FRCL, K). THAILAND. Chaiyaburi, Nong Khai Province, 21 Feb. 1924, fr. A. Kerr 8534 (K, BK).</p></div>
+<div type="distribution"><p>Indochinese endemic. Thailand (North-east) and Laos (Central).</p></div>
+<div type="materials_examined"><p>See Evans et al. (2000), plus LAOS (CENTRAI,): Vientiane Province, Hin Heup Distr., 0.5 km W of Khon Phouk village, along Huay Saen stream, off Nam Lik R., 22 Aug. 1999, (stam.), Maxwell,J. F 99 - 151 (CMU, DONG).</p></div>
+<div type="biology_ecology"><p>Evergreen forest at 200 - 600 m in Laos and at 200 m in Thailand.</p></div>
+<div type="discussion"><p>In life typical C. solitarius is easily identified by its high climbing, solitary habit and enormously long inflorescences and partial inflorescences. We could detect no differences from C. tetradactylus in rachilla or fruit structure, which suggests to us that these two species are very closely related. The identification of herbarium material presents some difficulties because habit is rarely recorded and plants of C. solitarius flowering for the first time (e.g. Khamphone 312) may produce rather depauperate inflorescences similar in dimensions to those of C. tetradactylus. This is best overcome by taking careful notes when collecting. The usually unbristled leaf margins of C. solitarius are a useful identification clue but not a diagnostic field character because occasional bristles are present in the available material and this feature is notably variable in other species in the region (for example, marginal bristles are absent from C. tetradactylus in central Laos). As discussed under C. dioicus, the inflorescence part of Poilane 5042 may well come from C. solitarius. Accepting this would represent such a major range extension that we prefer to await unambiguous material.</p></div>
+<div type="vernacular"><p>wai thork, wai yong, wai hakyong, wai savang, wai noi (Laos), wai thork (Thailand).</p></div>
+<div type="uses"><p>The cane is of high quality and is widely traded. Shoot edible but small.</p></div>
+<div type="conservation"><p>Of high conservation concern. It is currently known from a limited range, within which it is the preferred small-diameter cane for harvesting. Regeneration is likely to be poor since the plant is single-stemmed. Although still abundant in some areas, declines are apparent and over-harvesting is a strong possibility.</p></div>
 </treatment>
 </taxonxBody>
 </taxonx>
+

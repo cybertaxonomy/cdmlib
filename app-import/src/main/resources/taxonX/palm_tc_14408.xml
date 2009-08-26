@@ -1,0 +1,51 @@
+<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>Genera Palmarum. The evolution and classification of palms</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Uhl</mods:namePart>
+<mods:namePart type="given">N.</mods:namePart>
+<mods:namePart type="family">Asmussen</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+<mods:namePart type="family">Harley</mods:namePart>
+<mods:namePart type="given">M.</mods:namePart>
+<mods:namePart type="family">Lewis</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>2008</mods:dateIssued><mods:publisher>Kew Publishing, Royal Botanic Gardens Kew</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="genus">
+<div type="diagnosis"><p>Solitary pinnate-leaved tree palms from Australia, with acute leaflets and highly branched inflorescences.</p></div>
+<nomenclature>
+<name>Archontophoenix</name>
+<author>H. Wendl. and Drude</author> 
+<citation>Linnaea 39: 182,211 (1875).</citation>
+<type>Lectotype; Archontophoenix alexandrae; (F.Muell.) H.Wendl. &amp; Drude</type>
+<synonymy>
+<name>Loroma</name>
+<author>O.F. Cook</author>
+<bibref>O.F. Cook, J. Wash. Acad. Sci. 5: 117 (1915).</bibref>
+<type>Type; Loroma amethystina; O.F.Cook</type>
+</synonymy>
+</nomenclature>
+<div type="etymology"><p>Archon — chief, ruler, phoenix — date palm or palm in general, named for its regal stature and appearance.</p></div>
+<div type="description"><p>Moderate to tall, solitary, unarmed, pleonanthic, monoecious palms. Stem columnar, graceful, rather slender, slightly or strongly swollen basally, leaf scars obscure or prominent, often raised, distant or close. Leaves pinnate, erect or spreading, sometimes twisted about 90 degrees basally; sheaths tubular, forming a prominent crownshaft, thick, leathery, green, rusty-brown or purplish-red, often somewhat swollen basally; petiole short, grooved adaxially, rounded abaxially; rachis very long, similar to the petiole near the base, becoming flat adaxially and grooved laterally, scaly and minutely brown-dotted; leaflets lanceolate, elongate, tips irregularly pointed, single-fold, green or whitish abaxially due to very small silvery scales, ramenta large, dark-brown, often twisted or divided, medifixed or basifixed, present or lacking abaxially along the midrib, the midrib and large veins prominently or obscurely brown-dotted, midrib and several pairs of veins prominent abaxially, transverse veinlets not apparent. Inflorescences infrafoliar, erect in bud, becoming horizontal or drooping, with pendulous branches, branched to 3(–4) orders, protandrous; peduncle very short, stout; prophyll tubular, elongate, somewhat dorsiventrally flattened, 2-keeled laterally, briefly beaked, rather thin; peduncular bract like the prophyll but not keeled, prophyll and peduncular bract caducous; rachis moderate, tapering; rachis bracts low, ± ruffled to prominent, sharply pointed; rachillae somewhat divaricate and pendulous, bearing spirally arranged, rather thick, basally cupular, low and rounded or short pointed bracts subtending triads of flowers nearly throughout the rachillae, a few paired and solitary staminate flowers present distally; floral bracteoles low, rounded. Flowers pale lavender to purplish or cream to yellow. Staminate flowers asymmetrical, borne lateral to the pistillate in the triads; sepals 3, distinct, imbricate, broadly ovate, keeled, tips pointed; petals 3, distinct, ca. 5 times as long as the sepals, narrowly ovate, grooved adaxially, tips thicker, pointed; stamens ca. 12–14 (8 or 9–24 according to Hooker [1883] and Bailey [1935a], filaments short, awl-shaped, erect apically in bud, anthers elongate, linear, dorsifixed near the middle, erect in bud, later versatile, bifid basally, pointed to slightly emarginate distally, latrorse, the connective elongate, tanniniferous; pistillode more than half as long to as long as the stamens, trifid or cylindrical. Pollen ellipsoidal or elongate, with slight or obvious asymmetry; aperture a distal sulcus; ectexine tectate, finely perforate-rugulate, aperture margin slightly finer than main tectum; infratectum columellate; longest axis 43–65 µm [2/6]. Pistillate flowers symmetrical, ovoid; sepals 3, distinct, broadly imbricate, tips briefly pointed; petals 3, distinct, imbricate except for prominent valvate tips; staminodes 3 or 4, tooth-like, borne on one side of the gynoecium; gynoecium irregularly ovoid, unilocular, uniovulate, style indistinct, stigmas 3, recurved, ovule laterally attached, form unknown. Fruit globose to ellipsoidal, pink to red, stigmatic remains apical; epicarp smooth, mesocarp thin, soft, fleshy with flattened, conspicuously branched and interlocking, longitudinal fibres, endocarp thin, smooth, fragile, not operculate. Seed ellipsoidal to globose, basally attached, hilum basal, elongate, raphe branches numerous, anastomosing, endosperm ruminate; embryo basal. Germination adjacent-ligular; eophyll bifid. Cytology: 2n = 32.</p></div>
+<div type="distribution"><p>Six species of eastern Australia from the southern coast of New South Wales to the northern coast of Queensland. </p></div>
+<div type="anatomy"><p>Leaf (Tomlinson 1961), root (Seubert 1998a, 1998b), and fruit (Essig and Hernandez 2002). </p></div>
+<div type="relationships"><p>Archontophoenix is resolved as monophyletic (Pintaud 1999a) and is moderately supported as sister to a clade comprising Actinokentia, Kentiopsis and Chambeyronia (Norup et al. 2006). </p></div>
+<div type="taxonomic accounts"><p>Dowe and Hodel (1994). </p></div>
+<div type="fossil record"><p>No generic records found. </p></div>
+<div type="uses"><p>Grown commercially as ornamentals in many warm-temperate and tropical regions.</p></div>
+<div type="discussion"><p>Distinctive in having pendulous rachillae, an elongatepistillode and ruminate endosperm.</p></div>
+<div type="vernacular"><p>Alexander palm, King palm (Archontophoenix alexandrae); piccabean palm, bangalow palm (A. cunninghamiana).</p></div>
+<div type="biology_ecology"><p>Occurring in forest in warm-temperate to tropical regions at sea level to elevations of about 1200 m, often in wet gullies, on stream banks or edges of swamps on various soils.</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

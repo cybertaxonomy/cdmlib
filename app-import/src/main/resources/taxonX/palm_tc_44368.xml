@@ -1,0 +1,64 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>Genera Palmarum. The evolution and classification of palms</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Uhl</mods:namePart>
+<mods:namePart type="given">N.</mods:namePart>
+<mods:namePart type="family">Asmussen</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+<mods:namePart type="family">Harley</mods:namePart>
+<mods:namePart type="given">M.</mods:namePart>
+<mods:namePart type="family">Lewis</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>2008</mods:dateIssued><mods:publisher>Kew Publishing, Royal Botanic Gardens Kew</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="genus">
+<div type="diagnosis"><p>Small to moderate, solitary or clustering hermaphroditic fan palms occurring widely in the Caribbean, particularly diverse on Cuba; leaf sheaths very varied, fibrous, sometimes spectacularly so, or even spiny, petiole bases not split; fruit usually purplish black at maturity, rarely pink or white, the seed deeply grooved.</p></div>
+<nomenclature>
+<name>Coccothrinax</name>
+<author>Sarg.</author> 
+<citation>Bot. Gaz. 27: 87 (1899).</citation>
+<type>Type; Coccothrinax jucunda; Sarg.</type>
+<synonymy>
+<name>Haitiella</name>
+<author>L.H. Bailey</author>
+<bibref>L.H. Bailey, Contrib. Gray Herb. 165: 7 (1947).</bibref>
+<type>Type; Haitiella ekmanii; (Burret) L.H. Bailey</type>
+</synonymy>
+<synonymy>
+<name>Thrincoma</name>
+<author>O.F. Cook</author>
+<bibref>O.F. Cook, Bull. Torrey Bot. Club 28: 539 (1901).</bibref>
+<type>Type; Thrincoma alta; O.F. Cook</type>
+</synonymy>
+<synonymy>
+<name>Thringis</name>
+<author>O.F. Cook</author>
+<bibref>O.F. Cook, Bull. Torrey Bot. Club 28: 544 (1901).</bibref>
+<type>Lectotype; Thringis latifrons; O.F. Cook</type>
+</synonymy>
+</nomenclature>
+<div type="etymology"><p>Derivation not explained but presumably from coccus — a berry, and the palm generic name Thrinax.</p></div>
+<div type="description"><p>Small to moderate, solitary or clustered, unarmed or partly armed, pleonanthic, hermaphroditic palms. Stem slender, at first covered with fibrous leaf sheaths, then with a regular fibrous network or masses of long slender fibres or stout spines, eventually becoming bare, and closely ringed with narrow leaf scars. Leaves induplicate, palmate, ascending to spreading, marcescent; sheath sometimes long persistent and disintegrating into a regular fibrous network or masses of long slender fibres, or becoming ± spiny, covered with dense, deciduous tomentum (?always); petiole long, slender, flat to ridged adaxially, rounded abaxially, densely tomentose or glabrous; hastula prominent adaxially, triangular to ± rounded, absent or a very narrow ridge abaxially; blade fan-shaped, irregularly folded when large, divided to about the middle into long, rather narrow, pointed segments, tips usually bifid, glabrous adaxially, silvery, punctate, with hairs or glabrous abaxially; midribs prominent, lateral ribs sometimes conspicuous, transverse veinlets evident or inconspicuous on one or both surfaces. Inflorescences shorter than the leaves, slender, branched to 2 orders; peduncle rather short, slender; prophyll tubular, 2-keeled, pointed, opening apically; peduncular bracts several, like the prophyll but lacking keels, closely sheathing and overlapping; rachis longer than the peduncle, slender, bearing spirally arranged, tubular, overlapping, pointed bracts subtending rachillae; rachillae rather short, slender, bearing very small, spirally arranged, thin, pointed bracts (?bracts appear to be borne on the floral stalk where seen), each subtending a flower. Flowers solitary, sessile(?) or usually pedicellate; perianth broadly and shallowly cup-shaped with several (5–9) short points; stamens 9 (6–13), filaments slender, flat, shortly connate basally, not inflexed at the apex, anthers oblong or sometimes sagittate, dorsifixed near the base, latrorse, apically acute to briefly bifid; gynoecium of 1 carpel, unilocular, uniovulate, globose basally, attenuate in a long style terminating in a cup-like, ± laterally compressed stigma, ovule basal, erect, nearly orthotropous. Pollen ellipsoidal, with slight to obvious asymmetry, aperture a distal sulcus; ectexine tectate, perforate, or perforate-rugulate, aperture margin similar; infratectum columellate; longest axis 31–44 µm [3/50]. Fruit globose, purplish-black at maturity, rarely pink or white, stigmatic remains apical; epicarp smooth or rough, mesocarp thin or somewhat fleshy with flat, slender, anastomosing fibres next to the membranous endocarp. Seed globose, attached basally, deeply grooved, hilum rounded, basal, endosperm homogeneous except for grooves; embryo apical or subapical. Germination remote-tubular; eophyll entire, very narrow. Cytology: 2n = 36.</p></div>
+<div type="distribution"><p>About 50 species occurring from Florida south to Colombia, mostly on islands of the West Indies, with the greatest diversity (about 34 species) in Cuba.</p></div>
+<div type="anatomy"><p>Leaf (Tomlinson 1961) for Coccothrinax barbadensis and C. argentea but identification questioned, roots (Seubert 1997), floral (Uhl and Moore 1977a), fruit (Murray 1973). </p></div>
+<div type="relationships"><p>Coccothrinax is resolved as monophyletic with high support within a clade that also includes Hemithrinax and Leucothrinax (Roncal et al. 2008). </p></div>
+<div type="uses"><p>Used for thatch and for making brooms, also grown as ornamentals. </p></div>
+<div type="taxonomic accounts"><p>A new treatment is much needed. See Bailey and Moore (1949), Leon (1939, 1946), Muñiz and Borhidi (1982), Quero (1980) and Read (1980). </p></div>
+<div type="fossil record"><p>No generic records found. </p></div>
+<div type="discussion"><p>O.F. Cook published the generic names Antia, Beata and Pithodes, based on species of Coccothrinax, in the National Horticultural Magazine Volume 20. The names appear without Latin descriptions and postdate 1935, and are thus invalid and lacking any botanical standing. 
+</p></div>
+<div type="vernacular"><p>Broom, silver, and thatch palms</p></div>
+<div type="biology_ecology"><p>Restricted to limestone or serpentine rocks, usually in dry and often exposed highlands, sometimes in valleys and on coasts. </p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

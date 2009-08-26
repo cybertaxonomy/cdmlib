@@ -4,7 +4,10 @@
 <mods:titleInfo>
 <mods:title>Two unusual Calamus species from New Guinea</mods:title>
 </mods:titleInfo>
-<mods:name><mods:namePart>William J. Baker</mods:namePart></mods:name>
+<mods:name>
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+</mods:name>
 <mods:originInfo>
 <mods:publisher>Kew Bull. 57: 719-724</mods:publisher>
 <mods:dateIssued>2002</mods:dateIssued>

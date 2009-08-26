@@ -1,0 +1,48 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>A Monograph of the Genus Rhopaloblaste (Arecaceae)</mods:title>
+</mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Banka</mods:namePart>
+<mods:namePart type="given">R.</mods:namePart>
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Kew Bulletin, Vol. 59, No. 1, pp. 47-60</mods:publisher>
+<mods:dateIssued>2004</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Rhopaloblaste ledermanniana</name>
+<author>Becc.</author>
+<citation>Bot. Jahrb. Syst. 58: 451 (1923)</citation>
+<type>Papua New Guinea, East Sepik Province, April River, Sept. 1912; Ledermann; 8708</type>
+<type_loc>Neotype K!; syntypes B†</type_loc>
+<synonymy>
+<name>Rhopaloblaste brassii</name>
+<author>H. E. Moore</author>
+<bibref>H. E. Moore, Principes 14: 81 (1970)</bibref>
+<type>Indonesia, Papua, Idenburg River, March 1939; Brass; 13305</type>
+<type_loc>Holotype A; isotypes L!, BRI, BM!</type_loc>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>Mimini (Yamur dialect, Etna Bay), Imbetor, Kasira (both Wandammen), Kuwehleh (Orne dialect, Aitape), Saku (Mianmin dialect, Telefomin), Koah (Nomad). Black Palm (Papua New Guinea).</p></div>
+<div type="diagnosis"><p></p></div>
+<div type="description"><p>Moderately robust, mid-storey, solitary palm bearing up to 11 leaves in the crown. Stem to 15 m tall, 8 - 10(- 15) cm diam., surface slightly rough with longitudinal grooves, dark olive-green, becoming brownish black with age, leaf scars prominent, internodes 6 - 8 cm. Leaf sheath 62 - 70(- 100) cm long, with dense greyish brown lepidote tomentum; crownshaft 62 - 130 cm long, c. 9 - 12 cm wide; petiole 15 - 20 cm long, concave on adaxial surface, greyish brown; rachis 2 - 3.8 m long, with blackish membranous scales on the adaxial surface; leaflets 59 - 90 each side of rachis, borne 2.5 - 4 cm apart, in one plane, semi-pendulous, middle leaflets 64 - 75 x 2.3 - 2.5 cm, linear, tapering acutely and bifid at the apex, discolorous, with twisted, medifixed or basifixed ramenta on abaxial surface of mid-veins, membranous scales as on rachis on adaxial surface of mid-veins near base of leaflets. Inflorescence 64 - 95 cm long, with a spread of 1.2 - 1.5 m, divaricate, branched to 4 or very rarely 5 orders, primary branches c. 18, 50 - 70 cm long, basal pair of primary branches strongly recurved; prophyll 26 - 37 cm long, 6 - 9 cm wide, with greyish brown, silky tomentum; peduncle 1.5 - 4 cm long, 4 - 6 cm diam., green with scattered reddish brown indumentum; rachillae slender, 17 - 36 cm long, 2 - 2.9 mm in diameter, greenish. Staminate flower 5 - 6 mm long, 3 - 4 mm diam. at anthesis; sepals 2 - 2.3 x 2.3 - 2.5 mm, rounded, striated near the margins; petals 3.6 - 4 x 2 - 2.2 mm, elliptic, glabrous; stamens 6, 5.3 - 5.6 mm long, filaments 3 - 3.5 mm long, connate at the base, anthers 2.1 - 2.5 mm long, 0.6 - 0.8 mm wide, elliptic, medifixed; pistillode conical, 3.2 - 3.5 mm long, 1 - 1.1 mm diam. at base. Pistillate flower 2 - 3 mm long, 3 - 3.5 mm diam., borne throughout the rachillae; sepals 1.4 - 1.5 mm long, 2.4 - 2.5 mm wide, rounded; petals 2.7 - 2.8 mm long, 1.5 - 1.8 mm diam., rounded with short triangular tips; staminodes 4, lobes 0.4 - 0.5 mm long, 0.4 - 0.5 mm wide at the base, acute at the apex; gynoecium 2.8 - 3 mm long, 1.9 - 2.1 mm diam., ovoid. Fruit 15.5 - 21 mm long, 9.5 - 12 mm diam., ovoid-ellipsoid, yellowish green when immature, becoming orange- red in maturity, with cupule of persistent perianth 5 - 6 mm long. Seed 10 - 12 mm long, 8 - 10 mm diam., ellipsoid-ovoid, testa black.</p></div>
+<div type="distribution"><p>From Waigeo Island, through west New Guinea as far as Sandaun and Western Provinces of Papua New Guinea.</p></div>
+<div type="biology_ecology"><p>Primary rain forest with sparse undergrowth on ridges and gentle slopes, sometimes also occurring on alluvial flats near streams, from 50 to 900 m above sea level.</p></div>
+<div type="conservation"><p>Least concern. Rhopaloblaste ledermanniana is under no threat in West Papua as it has a wide distribution there. It is however restricted to the north-western and central-western part of Papua New Guinea, and does not extend towards the eastern most part of Papua New Guinea. The species may become threatened in Papua New Guinea if heavily disturbed in its limited, localised distribution there.</p></div>
+<div type="uses"><p>The hard, outer part of the stem is used for making floorboards, bows and arrow tips. The shoot apex is eaten in Mianmin (Papua New Guinea) and Wasior (West Papua).</p></div>
+<div type="discussion"><p>Rhopaloblaste ledermanniana can be distinguished by its small ovoid-ellipsoid fruits, by its slender rachillae and by the inflorescence branching to four or sometimes five orders. Rhopaloblaste ledermanniana was first described by Beccari, based on two Ledermann collections (9718 and 8648) from the April River (April Flusse). Both of these specimens were held in Berlin and have been destroyed. Beccari's protologue was published posthumously in Botanische Jahrbficher, edited by Lauterbach (1923). After the description of the new species Lauterbach added a note that a third specimen (Ledermann 8708), we assume in Berlin, also from the April River, had been annotated by Beccari as Rhopaloblaste ledermanniana. The specimen seen by Lauterbach was also destroyed, but a duplicate of this collection is still extant in Kew and is an obvious choice as the neotype of the species. Examination of this fragmentary material has allowed us to include R. brassii in the synonymy of R. ledermanniana. Moore (1970) described Rhopaloblaste brassii as a new species because he could not equate this taxon with any existing type material and he had not seen the Kew fragment of Ledermann 8708.</p></div>
+<div type="materials_examined"><p>Sorong Regency: Waigeo Island, Yesner village, Bemsuri area, June 1997, Heatubun 123 (K!, MAN); N Misool island, around Wavari village 10 km SW of Limelas village, Jan. 2002, Wanggai 1 (BO, K!, LAE, MAN). Manokwari Regency: Wasior Distr., Wosimi R., Sikama R., 3 km SE of Senderawoi village, Feb. 2000, Barrow 128 (BO, K!, LAE!, L!, MAN); Dotir village, 11 km N of Wasior Subdistr., Feb. 2000, Maturbongs 650 (AAU, BRI, K!, LAE, MAN); Bintuni Subdistr., Trail between Saengga and Tanah Merah villages, Feb. 2002, Maturbongs 711 (BO, K!, LAE, MAN); Bintuni Subdistr., close to Tanah Merah village, Feb. 2002, Maturbongs 715 (BO, K!, LAE, MAN). Fakfak Regency: Kaimana Distr., Kroy village, Nov. 2000 Mehen 15 (AAU, CANB, K!, MAN); Etna Subdistr., Yamur, km 45 P.T. Kaltim Hutama Logging Road, Jan. 2001, Maturbongs et al. 665 (BO, K!, MAN). Timika Regency: Timika, Road from mile 21 to Port, Feb. 1998, Heatubun et al. 191 (BH, BO, K!, L!, MAN). Jayapura Regency: Dozai Village, Cyclops Mts Nature Reserve, Sept. 1998, Maturbongs &amp; Wally 578 (BO, FTG, MAN, K! L); Dozai-Dafonsero, N of Dozai, Baimoengoen Creek Camp, Cyclops Mts, Aug. 1961, Royen &amp; Sleumer 6373 (K!, L!); Bernhard Camp, Idenburg R., March 1939, Brass 13305 (A, L!, BRI, BM!, type), April 1939, Brass 13809 (A, BRI, L!,); Bernhard Bivak, Aug. 1938, Dress 495 (L!). PAPUA NEW GUINEA. Sandaun Province: Telefomin Subdistr., Prospect Creek, Tributary of Frieda R., June 1969, Henty &amp; Foreman NGF 42610 (BRI, CANB, L!, LAE!); Carpentaria Exploration Co., Frieda R. Camp, April 1978, Essig &amp; Young LAE 74044 (LAE!), Essig &amp; Young LAE 74047 (L!, LAE!, BH); West of Fiak Airstrip, March 1992, Frodin et al. 2604 (K!); On ridge between Dimaten Creek &amp; Ser river in Donner Mts S of Hak valley airstrip, Oct. 1993, Morren 3047 (K!); Aitape Subdistr., Near Wantipi village, Bliri R., Aug. 1961, Darbyshire &amp; Hoogland 8373 (K!, LAE!, CANB, BRI, L!). East Sepik Province: April R., Sept. 1912, Ledermann 8708 (K!, type); Angoram, Upper Karawari R., Oct. 1968, Darnchurch NGF 113 (L!). Western Province: Kiunga Subdistr., Kiunga- Rumginae Rd., 5 km N of Kiunga, Sept. 1972, Streimann &amp; Lelean NGF 34165 (L!, LAE!); Kiunga, Sept. 1972, Streimann &amp; Lelean NGF 18362 (L!, LAE!, BH); 2 miles N of Kiunga, Upper Fly R., Sept. 1967, Pullen 7301 (BH, CANB, K!, LAE!, L!); Palmer R., 2 miles below junction of Black R., June 1936, Brass 7135 &amp; 7135A (LAE!, BRI, photo LAE!). Nomad Subdistr., S of Nomad, April 1978, Essig &amp; Young LAE 74032 (L!, LAE!)</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

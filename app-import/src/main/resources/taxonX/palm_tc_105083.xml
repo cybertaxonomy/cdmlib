@@ -1,0 +1,51 @@
+<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>Genera Palmarum. The evolution and classification of palms</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Uhl</mods:namePart>
+<mods:namePart type="given">N.</mods:namePart>
+<mods:namePart type="family">Asmussen</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+<mods:namePart type="family">Harley</mods:namePart>
+<mods:namePart type="given">M.</mods:namePart>
+<mods:namePart type="family">Lewis</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>2008</mods:dateIssued><mods:publisher>Kew Publishing, Royal Botanic Gardens Kew</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="genus">
+<div type="diagnosis"><p>Spectacular stemless or short-stemmed hermaphroditic palms of the forest undergrowth in South Thailand, Peninsular Malaysia, Sumatra and Borneo, instantly recognisable by the large diamond-shaped undivided leaf; fruits are corky warted.</p></div>
+<nomenclature>
+<name>Johannesteijsmannia</name>
+<author>H.E. Moore</author> 
+<citation>Principes 5: 116 (1961).</citation>
+<type>Type; Johannesteijsmannia altifrons; (Rchb.f. &amp; Zoll.) H.E.Moore</type>
+<synonymy>
+<name>Teysmannia</name>
+<author>Rchb.f. and Zoll. in Zoll.</author>
+<bibref>Rchb.f. and Zoll. in Zoll., Linnaea 28: 657 (1858 [‘1856’]) (non Teysmannia Miq. [1857]).</bibref>
+</synonymy>
+</nomenclature>
+<div type="etymology"><p>Named for Johannes Elias Teijsmann (1808–1882), Dutch gardener and botanist at the Buitenzorg Botanical Garden, Java (now Kebun Raya Indonesia, Bogor).</p></div>
+<div type="description"><p>Moderate, solitary, armed, acaulescent or short-trunked, pleonanthic, hermaphroditic palms. Stem very short, decumbent, or erect, ringed with close leaf scars. Leaves large, entire, diamond-shaped, subpinnately ribbed, marcescent; sheath tubular at first, later drying and disintegrating into an interwoven mass of fibres; petiole well developed, ± triangular in cross-section, adaxially flattened, armed along the margins with small, sharp teeth, caducous tomentum present on very young petioles; adaxial hastula present on developing leaves, oblique, disappearing before leaf expansion; costa extending almost to the leaf apex, more prominent abaxially than adaxially; blade subpinnately ribbed, glabrous or the abaxial surface densely covered with white indumentum, lower margins thickened, armed with teeth like the petiole, the upper margins alternately notched, notches short along abaxial ribs, long along adaxial ribs, giving margins an irregularly stepped appearance, and perhaps representing highly reduced induplicate leaflets, midrib raised abaxially, transverse veinlets conspicuous. Inflorescences interfoliar, short, usually partly obscured by leaf litter, branching to 1–5 orders; peduncle well developed, usually curved, tomentose; prophyll tubular, ± inflated, 2-keeled, usually densely tomentose; peduncular bracts conspicuous, up to 7 in number, cream at first, later cinnamon-brown, tubular, ± inflated, distichous in origin but all and the prophyll splitting along the side nearest the ground, allowing the inflorescence to curve; rachis shorter than the peduncle, the branches subtended by minute triangular bracts, the branches tending to form a condensed mass; rachillae 3–6, very thick, or very numerous and slender, glabrous or tomentose, bearing spirally arranged, minute, apiculate bracts subtending flowers, the flowers solitary or in groups of 2–4 arranged in a cincinnus with minute bracteoles, on a short tubercle, or ± sessile. Flowers cream-coloured, strongly scented; calyx cup-shaped with 3 low, glabrous, triangular lobes; corolla divided to 2/3 or almost to the base into 3 thin or very thick, fleshy, triangular, glabrous, sometimes densely papillose, valvate lobes; stamens 6, epipetalous, filaments very broad, fleshy, angled, connate basally to form an androecial ring, abruptedly narrowed to short, very slender, distinct tips, anthers minute, rounded, introrse; gynoecium tricarpellate, the carpels distinct at the base, united by their tips in a common slender elongate style, stigma dot-like, ovule basally attached, anatropous. Pollen ellipsoidal, bi-symmetric or slightly asymmetric; aperture a distal sulcus; ectexine tectate, scabrate, finely perforate, or perforate; aperture margin similar; infratectum columellate; longest axis 20–32 µm [4/4]. Fruit rounded, usually developing from 1 carpel, but sometimes 2 or 3 carpels developing, the fruit then 2 or 3-lobed; epidermis of fruit dying early in development, the mesocarp then cracking to produce thick, corky, pyramidal warts at maturity, chestnut brown in colour, endocarp moderately thick, crustaceous. Seed basally attached, endosperm homogeneous, but penetrated by a convoluted mass of seed coat at the base; embryo lateral. Germination remote-tubular; eophyll simple, plicate, minutely dentate at the tip. Cytology: 2n = 34.</p></div>
+<div type="distribution"><p>Four species, one widespread but very local in south Thailand, West Malaysia, Sumatra, and the western part of Borneo, the other three endemic to West Malaysia, where they are also very local. </p></div>
+<div type="anatomy"><p>Leaf (Tomlinson 1961), roots (Seubert 1997),floral (Morrow 1965). </p></div>
+<div type="relationships"><p>Preliminary analyses show that Johannesteijsmanniais monophyletic (Look 2007). The genus is placed as sister toLicuala (Uhl et al. 1995) or as sister to Pholidocarpus with lowsupport (Asmussen et al. 2006, Baker et al. in review).</p></div>
+<div type="uses"><p>Leaves are used for thatch and shelters.</p></div>
+<div type="taxonomic accounts"><p>Dransfield (1972b).</p></div>
+<div type="fossil record"><p>No generic records found.</p></div>
+<div type="discussion"><p>Distinguished by the striking diamond-shaped leavesand the structure of the inflorescence. Similar to Licuala butdiffering in inflorescence and leaf shape, and in hooked teethon the lower margins of the leaf blade. </p></div>
+<div type="vernacular"><p>Daun payung. </p></div>
+<div type="biology_ecology"><p>These magnificent palms are plants of the undergrowth of primary rain forest, and seem very intolerant of disturbance; in Sarawak Johannesteijsmannia altifrons appears confined to some facies of ‘kerangas’ (heath forest); elsewhere, it seems less restricted but avoids wet valley bottom soils. Johannesteijsmannia magnifica and J. lanceolata are plants of hillslopes and J. perakensis is a plant ofhillslopes and ridgetops. The distribution is remarkably disjunct,species being absent from apparently suitable forest.</p></div>
+<div type="conservation"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

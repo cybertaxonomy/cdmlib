@@ -2,7 +2,10 @@
 <taxonxHeader>
 <mods:mods>
 <mods:titleInfo><mods:title>The Rattans of Brunei Darussalam</mods:title></mods:titleInfo>
-<mods:name><mods:namePart>Dransfiled, J.</mods:namePart></mods:name>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
 <mods:originInfo><mods:dateIssued>1997</mods:dateIssued>
 <mods:publisher>Ministry of Industry and primary Resources, Brunei Darussalam</mods:publisher>
 </mods:originInfo>

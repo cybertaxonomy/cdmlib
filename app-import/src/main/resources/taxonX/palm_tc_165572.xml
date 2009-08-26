@@ -1,0 +1,39 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>A review of the genus Pritchardia</mods:title>
+</mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Hodel</mods:namePart>
+<mods:namePart type="given">D.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Palms 51(4) Special Supplement S-1-53</mods:publisher>
+<mods:dateIssued>2007</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Pritchardia viscosa</name>
+<author>Rock</author>
+<citation>Mem. Bernice P. Bishop Mus. 8: 66. 1921</citation>
+<type>Kahiliwai Valley, Kauai, Hawaii; Rock; 17295</type>
+<type_loc>Holotype BISH!; isotypes Fl, GH</type_loc>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="diagnosis"><p></p></div>
+<div type="description"><p>To 10 m tall; proximal margins of petiole with only a few fibers; leaf blade flat, divided 1/3, abaxial surface completely covered with lepidia, appearing silvery grayish white, segment tips stiff; inflorescences composed of 1-5 panicles, shorter than petioles in flower and fruit, panicle branched to 2 orders, rachillae clothed with scurfy indumentum in flower, glabrous or nearly so in fruit, rachillae and flowers viscous; fruits 19-40 x 12-21 mm, ellipsoid to obovoid.</p></div>
+<div type="distribution"><p>Wet forest on the northeastern slope of the Waialeale massif and the Makaleha Mountains, Kauai, 600-800 m elevation. This species is very rare; only a few plants are known. </p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p>Its leaf blades completely covered abaxially with lepidia, inflorescences shorter than the petioles, and especially the viscous panicles and flowers, which alone are diagnostic, readily distinguish Pritchardia viscosa. </p></div>
+<div type="materials_examined"><p>U.S.A. Hawaii. Kauai: Power Line Trail, Flynn 3545 (PTBG); Kahiliwai Valley, Rock 17295 (BISH).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

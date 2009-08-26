@@ -1,0 +1,73 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>A review of the genus Pritchardia</mods:title>
+</mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Hodel</mods:namePart>
+<mods:namePart type="given">D.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Palms 51(4) Special Supplement S-1-53</mods:publisher>
+<mods:dateIssued>2007</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Pritchardia lanigera</name>
+<author>Becc.</author>
+<citation>Malesia 3: 298. 1889 (1890)</citation>
+<type>Kohala Mountains, Hawaii, Hawaii; Lydgate; s. n.</type>
+<type_loc>Holotype B (destroyed, photo at FI!); isotype FI (photo of fragment!).</type_loc>
+<synonymy>
+<name>Washingtonia lanigera</name>
+<author>(Becc.) Kuntze</author>
+<bibref>(Becc.) Kuntze, Revis. Gen. PI. 2: 737. 1891</bibref>
+</synonymy>
+<synonymy>
+<name>Eupritchardia lanigera</name>
+<author>(Becc.) Kuntze</author>
+<bibref>(Becc.) Kuntze, Revis. Gen. PI. 3(2): 323. 1898</bibref>
+</synonymy>
+<synonymy>
+<name>Styloma lanigera</name>
+<author>(Becc.) O. F. Cook</author>
+<bibref>(Becc.) O. F. Cook, J. Wash. Acad. Sci. 5: 241. 1915</bibref>
+</synonymy>
+<synonymy>
+<name>Pritchardia eriostachya</name>
+<author>Beec.</author>
+<bibref>Beec., Webbia 4: 232. 1913</bibref>
+<type>Naalehu, Hawaii, Hawaii; Rock; 10004</type>
+<type_loc>Holotype FI; isotypes BISH!, GH</type_loc>
+</synonymy>
+<synonymy>
+<name>Styloma eriostachya</name>
+<author>(Becc.) O. F. Cook</author>
+<bibref>(Becc.) O. F. Cook, J. Wash. Acad. Sci. 5: 241. 1915</bibref>
+</synonymy>
+<synonymy>
+<name>Pritchardia montis-kea</name>
+<author>Rock</author>
+<bibref>Rock, Mem. Bernice P. Bishop Mus. 8: 65. 1921</bibref>
+<type>Mana, Hawaii, Hawaii; Rock; 17348</type>
+<type_loc>Holotype BISH!; isotype GH</type_loc>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="diagnosis"><p></p></div>
+<div type="description"><p>To 15 m tall; proximal margins of petiole with moderate fibers; leaf blade slightly undulate to nearly flat, divided 2/5-1/2, abaxial surface incompleteiy covered with scattered iepidia, segment tips stiff; inflorescences composed of 1-3 panicles, equaling or exceeding petioles in flower, exceeding petioles but shorter than leaf blades in fruit, panicles branched to 2 orders, rachiUae permanently clothed with dense, reddish brown, cottony or woolly indumentum; fruits 35-55 x 30-40 mm, globose to ellipsoid.</p></div>
+<div type="distribution"><p>Wet forest in the Kohala Mountains, northern and eastern slopes of Mauna Kea, and on the southeastern slope of Mauna Loa, Hawaii, SOG-1400 m elevation.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p>Pritchardia lanigera is distinguished by its leaf blades incompletely covered abaxially with lepidia, inflorescences equaling or exceeding the petioles in flower and exceeding the petioles but shorter than the leaf blades in fruit, and the rachillae permanently clothed in cottony to woolly indumentum. It is similar to P. woodii but the latter differs in its rachillae clothed with felt-like rather than cottony or woolly indumentum. Although Beccari (1890) and Beccari and Rock (1921) stated that Lydgate collected the type, photographs at FI of the destroyed holotype at B show it to have only Hillebrand's name on it. Lydgate frequently collected for or with Hillebrand, though, and it is likely that Hillebrand, who sent his original set of specimens to B, would have put his own name on specimens even if Lydgate had collected them.</p></div>
+<div type="materials_examined"><p>U.S.A. Hawaii. Hawaii. Kohala Mountains: Hillebrand 5. n. (BISH); Lydgate s. n. (FI); above Awini, Rock 8820 (BISH); above Waimea, Rock 17349 (BISH); between Waimanu and Kawainui, Wood 4651 (BISH, PTBG); Waimanu, Perlman 16406 (PTBG), Wood 7611 (PTBG). Mauna Kea: below Mana, Rock 17348 (BlSH). Kau: above Naalehu, Hodel 154 (PTBG), Rock s. n., January 1912, Rock s. n., March 1918 (BISH), Rock 10004 (BISH). CULT. U.S.A. Hawaii. Oahu: Waimea Valley Audubon Center, 76585, Zona 1002 (HAW). </p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

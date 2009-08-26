@@ -1,0 +1,99 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>Genera Palmarum. The evolution and classification of palms</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Uhl</mods:namePart>
+<mods:namePart type="given">N.</mods:namePart>
+<mods:namePart type="family">Asmussen</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+<mods:namePart type="family">Harley</mods:namePart>
+<mods:namePart type="given">M.</mods:namePart>
+<mods:namePart type="family">Lewis</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>2008</mods:dateIssued><mods:publisher>Kew Publishing, Royal Botanic Gardens Kew</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="genus">
+<div type="diagnosis"><p>Solitary, small to massive pinnate-leaved palms native to Central to South America and the Caribbean, with fibrous leaf sheaths, often huge leaves, and with inflorescences that are either staminate or pistillate or carry flowers of both sexes, all on the same plant; fruit is generally large with very thick endocarp, 1–3 or more seeded.</p></div>
+<nomenclature>
+<name>Attalea</name>
+<author>Kunth in Humb.</author>
+<citation>Bonpl. and Kunth , Nov. gen. sp. 1:folio edition 248; quarto edition 309 (1816)</citation>
+<type>Type; Attalea amygdalina; Kunth.</type>
+<synonymy>
+<name>Maximiliana</name>
+<author>Mart.</author>
+<bibref>Mart., Palm. fam. 20 (1824)</bibref>
+<type>Type; Maximiliana martiana; H.Karst.</type>
+</synonymy>
+<synonymy>
+<name>Lithocarpos</name>
+<author>Ant. Targ. Tozz.</author>
+<bibref>Ant. Targ. Tozz., Mem. Mat. Fis. Soc. Ital. Sci. Modena, Pt. Mem. Fis. 20(2): 312 (1833 [non Blume 1825–1826])</bibref>
+<type>Type; Lithocarpos cocciformis; O.Targ.Tozz. ex Steud.</type>
+</synonymy>
+<synonymy>
+<name>Orbignya</name>
+<author>Mart. ex Endl.</author>
+<bibref>Mart. ex Endl., Gen. pl. 257 (1837).</bibref>
+<type>Type; Orbignya phalerata; Mart.</type>
+</synonymy>
+<synonymy>
+<name>Scheelea</name>
+<author>H. Karst.</author>
+<bibref>H. Karst., Linnaea 28: 264 (1857) (‘1856’).</bibref>
+<type>Lectotype; Scheelea regia; H.Karst.</type>
+</synonymy>
+<synonymy>
+<name>Englerophoenix</name>
+<author>Kuntze</author>
+<bibref>Kuntze, Revis. gen. pl. 2: 728 (1891).</bibref>
+<type>Type; Englerophoenix regia; (Mart.) Kuntze</type>
+</synonymy>
+<synonymy>
+<name>Pindarea</name>
+<author>Barb. Rodr.</author>
+<bibref>Barb. Rodr., Pl. jard. Rio de Janeiro 5 (1895) (‘1896’).</bibref>
+<type>Type; Pindarea concinna; Barb.Rodr.</type>
+</synonymy>
+<synonymy>
+<name>Parascheelea</name>
+<author>Dugand</author>
+<bibref>Dugand, Caldasia 1(1): 10 (1940).</bibref>
+<type>Type; Parascheelea anchistropetala; Dugand</type>
+</synonymy>
+<synonymy>
+<name>Sarinia</name>
+<author>O.F. Cook</author>
+<bibref>O.F. Cook, Natl. Hort. Mag. 21: 78, 84 (1942).</bibref>
+<type>Type; Sarinia funifera; (Mart.) O.F.Cook</type>
+</synonymy>
+<synonymy>
+<name>Ynesa</name>
+<author>O.F. Cook</author>
+<bibref>O.F. Cook, Natl. Hort. Mag. 21: 71, 72, 84 (1942).</bibref>
+<type>Type; Ynesa colenda; O.F.Cook</type>
+</synonymy>
+</nomenclature>
+<div type="etymology"><p>Commemorates Attalus III Philometor, King of Pergamum in Asia Minor, 138–133 BC, who in his later life was interested in medicinal plants.</p></div>
+<div type="description"><p>Small to massive, solitary, acaulescent or erect, unarmed, pleonanthic, monoecious palms. Stem subterranean to tall, usually becoming bare, obliquely marked with leaf scars. Leaves massive, pinnate, marcescent; sheath thick, finely or coarsely fibrous (in Attalea funifera producing piassava); petiole lacking or short to elongate, adaxially channelled, abaxially rounded, variously tomentose, rachis adaxially channelled near the base, distally angled, abaxially rounded or flattened, abaxially variously tomentose; leaflets inserted on the lateral faces or in shallow grooves; leaflets numerous, linear-lanceolate, single-fold, regularly arranged or in clusters of 2–5, irregularly lobed at the tips, caducous scales abundant along the leaflet margins exposed in the sword leaf, midrib prominent, other longitudinal veins rather indistinct, transverse veinlets abundant, conspicuous. Inflorescences solitary, interfoliar, ± erect or becoming pendulous, entirely staminate, entirely pistillate, or with flowers of both sexes, branched to 1 order or branches short and flowers appearing ± sessile on the main axis; peduncle short to long; prophyll obscured by leaf sheaths and not known, peduncular bract tubular, entirely enclosing the inflorescence in bud with a short to long solid beak, splitting abaxially, expanding and usually becoming cowl-like, thick and woody, abaxially deeply grooved, adaxially glabrous, abaxially densely tomentose, long persistent, subsequent peduncular bracts small, incomplete, triangular, ± coriaceous; rachis shorter or longer than the peduncle, bearing spirally or unilaterally arranged rachillae, each subtended by a short triangular bract; staminate rachillae with a short to long basal bare portion, above which bearing paired or solitary flowers, spirally arranged (rarely) or in 2 rows on one side, glabrous or floccose-tomentose, bisexual rachillae of two types, either similar to the staminate but bearing a few basal pistillate flowers or bearing 1 to several triads with a short slender apical portion bearing fertile or sterile staminate flowers, in the putative pistillate rachillae lacking all trace of staminate flowers at maturity. Staminate flowers asymmetrical; sepals 3, distinct, triangular, very small, sometimes slightly imbricate basally; petals 3, distinct, much longer than the sepals, ovate-triangular, acute, valvate, or terete and scarcely valvate, or terete basally and distally expanded into a triangular ± valvate limb; stamens 3–75, usually much shorter, rarely much longer than the petals, filaments slender, short to long, anthers ± straight to twisted and coiled, dorsifixed or rarely medifixed, sometimes sagittate basally, introrse or latrose; pistillode minute or absent. Pollen ellipsoidal, usually with either slight or obvious asymmetry, occasionally pyriform, trichotomosulcate pollen also present; aperture a distal sulcus or trichotomosulcus; ectexine tectate, finely to coarsely perforate, finely to coarsely perforate and micro-channelled, or perforate-rugulate or, unusually, tectate gemmate, aperture margin slightly finer; infratectum columellate; longest axis 32–85 µm [17/71]. Pistillate flowers very much larger than the staminate, generally ovoid; sepals 3, distinct, ± triangular, broadly imbricate, leathery; petals 3, distinct, rounded or ± triangular with triangular tips, glabrous or tomentose; staminodal ring large, coriaceous, tomentose; gynoecium of 3–several connate carpels, ovoid or obpyriform, style tapering, stigmatic lobes equal in number to the carpels, linear, reflexed at anthesis, ovules 1 per carpel, basal, form unknown. Fruit ± ovoid, sometimes asymmetrical, 1–several seeded, with a short to moderate beak and apical stigmatic remains, perianth and staminodal ring persistent and enlarging; epicarp minutely grooved, bearing scales, mesocarp usually fleshy and fibrous, endocarp very thick, stony, smooth without or closely grooved, often with included fibres, the pores subbasal, deeply impressed, ?always. Seed ellipsoidal or laterally somewhat flattened, basally attached with fine anastomosing raphe bundles, endosperm homogeneous, solid (?always); embryo basal. Germination remote-tubular; eophyll entire, lanceolate. Cytology: 2n = 32.</p></div>
+<div type="distribution"><p>About 69 species occurring from Mexico southwards to Bolivia and Peru.</p></div>
+<div type="anatomy"><p>Leaf (Tomlinson 1961, Glassman 1999), root (Seubert 1998a, 1998b), gynoecium (Uhl and Moore 1971). </p></div>
+<div type="relationships"><p>Attalea is monophyletic with high support (Hahn 2002b, Gunn 2004). The genus is resolved as sister to a clade of Lytocaryum and a subclade of Syagrus with moderate support (Gunn 2004) or as sister to Lytocaryum with low support (Baker et al. in review).</p></div>
+<div type="uses"><p>These are palms with a multiplicity of uses, the most important being as a source of oil. For medicinal uses, see Plotkin and Balick (1984).</p></div>
+<div type="taxonomic accounts"><p>Glassman (1999) and Zona (2002b). </p></div>
+<div type="fossil record"><p>A palm endocarp from the Upper Eocene of southeast North America (Florida), Attalea gunteri, is reported by Berry (1929). A fruit, Attaleinites gen. nov., is reported from the Oligocene of Hungary (Tuzson 1913). Attalea-like pollen (Graham 1976) is also reported from the Upper Miocene of Mexico (Paraje Solo flora, Veracruz). </p></div>
+<div type="discussion"><p>Opinion is divided as to both the number of genera and species. Glassman (1999) recognises four genera, Attalea, Scheelea, Orbignya and Maximiliana. These four genera were also recognised in the first edition of Genera Palmarum. As the palms have become better known in the field and more herbarium material has accumulated, the characters of the staminate flowers used to differentiate the genera seem increasingly unreliable. Intermediate conditions occur (which Glassman [1999] attributes to intergeneric hybridisation) and the form of the staminate flower seems not be correlated with any other varying characters. Henderson (1995) and Henderson et al. (1995) included all genera in Attalea, arguing convincingly that the previously recognised genera are untenable. This broad generic approach is followed here. At the species level, Glassman (1999) recognises 66 species whereas Henderson et al. (1995) recognise 29. There is clearly scope for more detailed revisionary taxonomic work before a clear understanding of the species limits is reached. Attalea crassispatha from Haiti was used by O.F. Cook as the basis of his invalidly published genus Bornoa (Cook 1939a). He also published the invalid names Temenia (Cook 1939a) and Ethnora (Cook 1940), both for Attalea maripa, and Heptantra, for Attalea speciosa (Cook 1939a). Three intergeneric hybrid names have been published: Markleya Bondar (Arch. Jard. Bot. Rio de Janeiro 15: 50 [1957]) for a hybrid between Orbignya phalerata and Maximiliana maripa; Maximbignya Glassman (Illinois Biol. Monogr. 59: 199 [1999]) as an explicit hybrid name (Maximbignya dahlgreniana [Bondar] Glassman); and Attabignya Balick (A.B. Anderson and Med.-Costa, Brittonia 39: 27 [1987]) for a hybrid between Attalea compta and Orbignya oleifera (namely Attabignya minarum Balick et al.). With the subsuming of all genera in Attalea, new combinations for these hybrids in Attalea were published by Zona (2002b). Blue-throated Macaws (Ara glaucogularis) feed on the mesocarp of Attalea phalerata fruit (Yamashita and de Barros 1997).</p></div>
+<div type="vernacular"><p>For common names see Glassman (1999).</p></div>
+<div type="biology_ecology"><p>Occurring in a wide range of habitats from tropical rain forest to dry 'campo rupestre' and 'cerrado'.</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

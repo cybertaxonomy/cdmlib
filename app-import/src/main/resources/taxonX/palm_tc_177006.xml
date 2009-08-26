@@ -1,0 +1,58 @@
+<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>Genera Palmarum. The evolution and classification of palms</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Uhl</mods:namePart>
+<mods:namePart type="given">N.</mods:namePart>
+<mods:namePart type="family">Asmussen</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+<mods:namePart type="family">Harley</mods:namePart>
+<mods:namePart type="given">M.</mods:namePart>
+<mods:namePart type="family">Lewis</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>2008</mods:dateIssued><mods:publisher>Kew Publishing, Royal Botanic Gardens Kew</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="genus">
+<div type="diagnosis"><p>Dioecious pinnate-leaved palms of Madagascar and the Comores, distinguishable by the combination of incomplete prophyll, staminodes bearing rudimentary anthers and the fruit with subapical or apical stigmatic remains.</p></div>
+<nomenclature>
+<name>Ravenea</name>
+<author>Bouché ex H. Wendl. in Hook.f.</author> 
+<citation>Bot. Mag. 110: t6776 (1884).</citation>
+<type>Type; Ravenea hildebrandtii; H.Wendl. ex C.D.Bouché</type>
+<synonymy>
+<name>Ranevea</name>
+<author>L.H. Bailey</author>
+<bibref>L.H. Bailey, Cycl. Amer. hort. 1497 (1902).</bibref>
+<type>Type; Ravenea hildebrandtii; H.Wendl. ex C.D.Bouché</type>
+</synonymy>
+<synonymy>
+<name>Louvelia</name>
+<author>Jum. and H. Perrier</author>
+<bibref>Jum. and H. Perrier, Compt. Rend. Hebd. Séances Acad. Sci. 155: 411 (1912).</bibref>
+<type>Type; Louvelia madagascariensis; Jum. &amp; H.Perrier</type>
+</synonymy>
+</nomenclature>
+<div type="etymology"><p>Named for Louis Ravené, a 19th century official in Berlin.</p></div>
+<div type="description"><p>Solitary, slender to robust, unarmed, dioecious, pleonanthic palms. Stem erect, rarely very short, very rarely branching dichotomously, often tall, becoming bare, sometimes swollen at the base, conspicuously ringed with leaf scars or not. Leaves few to numerous, reduplicately pinnate, often upward pointing, abscising neatly or marcescent, crownshaft absent; sheaths soon disintegrating opposite the petiole into fine or coarse fibres, densely tomentose; petiole very short to moderately long, adaxially flattened or channelled, abaxially rounded, usually densely tomentose; rachis flattened adaxially, triangular abaxially, sometimes channelled laterally; leaflets numerous, single-fold, usually stiff, elongate, acute or acuminate, the proximal few sometimes very short and slender, abaxially frequently with small narrowly elliptic ramenta, rarely densely covered with white indumentum abaxially, midribs more prominent adaxially, transverse veinlets evident or not. Inflorescences interfoliar, 1 or several within a single prophyll in a leaf axil, usually large, sometimes highly condensed and hidden among the sheaths, the staminate and pistillate superficially similar but the staminate more slender, branched to 1–2 orders; peduncle slender to robust, very short to elongate, ± circular in cross-section distally, usually scaly or tomentose; prophyll short, 2-keeled, incomplete; peduncular bracts tubular, 3–5, 2 usually short, apically open and tattered, the 2 or more distal bracts narrow lanceolate, as long as and enclosing the inflorescence in bud, splitting longitudinally, all bracts persistent, always densely scaly or tomentose abaxially, membranous, coriaceous, or almost woody; rachis usually shorter than the peduncle, bearing spirally arranged, usually numerous, first-order branches, the first-order bracts very small, acute or long acuminate, usually adnate to the subtended branch; proximal first-order branches, subdigitately branched or unbranched, the distal unbranched; rachillae very short to elongate, usually stiff, slender, sometimes eventually pendulous, the staminate shorter and more slender than the pistillate, slightly zigzag, sparsely to densely scaly, bearing spirally arranged, rather lax peg-like floral stalks, each subtended by a minute, narrow triangular rachilla bract, usually adnate to the stalk. Flowers more crowded and somewhat grouped distally, congenitally open. Staminate flowers ± symmetrical; sepals 3, triangular, connate in the basal 1/3, adnate to the floral stalk, to the base of the stamen filaments and to the petal bases; petals 3, broadly ovate, distinct or rarely connate basally, fleshy; stamens 6, sometimes inserted in 2 series, filaments slender, short, basally expanded, shortly adnate to sepals and petals, rarely connate in an androecial ring; anthers straight or somewhat twisted, ± sagittate, latrorse. Pollen spheroidal, aperture a distal pore; ectexine tectate, scabrate-perforate with supratectal spines or, rarely, semi-tectate, foveolate-reticulate, pore margin similar to main tectum, or a slightly raised psilate annulus; longest axis 24–35 µm [9/17]. Pistillate flowers with sepals and petals similar to staminate; staminodes 6, broadly triangular with sterile anthers; gynoecium ovoid, tricarpellate, carpels connate, trilocular, triovulate, stigmas 3, fleshy, recurved, ovules pendulous, hemianatropous. Fruit 1–3 seeded globose to ellipsoid when 1-seeded, slightly lobed when more than 1 seed develops, yellow, orange or red, more rarely brown, purple or black, stigmatic remains subbasal, lateral, or subapical; epicarp smooth or minutely pebbled, mesocarp fleshy, endocarp thin. Seeds, globose, hemispherical or representing a third of a sphere, hilum basal, raphe branches indistinct, endosperm homogeneous; embryo basal. Germination adjacent-ligular or remote-ligular; eophyll bifid or pinnate. Cytology: 2n = 30, 32.</p></div>
+<div type="distribution"><p>Eighteen species, sixteen endemic to Madagascar, two in the Comoro Islands. Recent collecting by commercial seed collectors suggests the presence of several undescribed taxa, including a small species in the Comoros with immensely long peduncles that reach the ground. </p></div>
+<div type="anatomy"><p>Vegetative (Tomlinson 1969), root (Seubert 1996b) and floral (Uhl 1969b). </p></div>
+<div type="relationships"><p>Ravenea is monophyletic with high support (Trénel et al. 2007). Two possible placements of Ravenea have been resolved: first, as sister to Oraniopsis with moderate support (Asmussen et al. 2006, Baker et al. in review) and, second, as sister to a clade of Oraniopsis, Ceroxylon and Juania (Uhl et al. 1995, Trénel et al. 2007). </p></div>
+<div type="uses"><p>The trunk of Ravenea madagascariensis is very hard and flexible and is used in various ways; that of R. robustior has abundant pith, is rich in starch, and is used as a source of sago. The ‘cabbage’ of most species is edible but may be bitter. Trunks of R. musicalis are sometimes hollowed out to make canoes. Many species are widely traded as ornamentals, the most significant being R. rivularis (Majesty palm). </p></div>
+<div type="taxonomic accounts"><p>Beentje (1994) and Dransfield and Beentje (1995b). </p></div>
+<div type="fossil record"><p>No generic records found. </p></div>
+<div type="discussion"><p>Ravenea is the most diverse genus in the tribe, in numbers of species, in ecological adaptation and in vegetative characters. Louvelia, previously recognised as distinct, was included by Beentje (1994) in synonymy, as the characters used to separate the genus were shown to be unreliable. </p></div>
+<div type="vernacular"><p>For Malagasy local names, see Dransfield and Beentje (1995b). </p></div>
+<div type="biology_ecology"><p>Occurring in tropical rain forest from sea level to 2000 m, including mossy montane forest, one species (Ravenea xerophila) in spiny forest in the driest area of Madagascar, another (R. musicalis) growing in flowing water and starting its life as a submerged aquatic. Often gregarious, the rain-forest species sometimes grow in full light. </p></div>
+<div type="conservation"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

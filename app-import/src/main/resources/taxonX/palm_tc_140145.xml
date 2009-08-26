@@ -4,7 +4,10 @@
 <mods:titleInfo>
 <mods:title>Tropical African Plants: XXVII</mods:title>
 </mods:titleInfo>
-<mods:name><mods:namePart>J. Hutchinson</mods:namePart></mods:name>
+<mods:name>
+<mods:namePart type="family">Hutchinson</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
 <mods:originInfo>
 <mods:publisher>Kew Bulletin, Vol. 17, No. 1, pp. 161-181</mods:publisher>
 <mods:dateIssued>1963</mods:dateIssued>

@@ -1,0 +1,46 @@
+<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>Genera Palmarum. The evolution and classification of palms</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Uhl</mods:namePart>
+<mods:namePart type="given">N.</mods:namePart>
+<mods:namePart type="family">Asmussen</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+<mods:namePart type="family">Harley</mods:namePart>
+<mods:namePart type="given">M.</mods:namePart>
+<mods:namePart type="family">Lewis</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>2008</mods:dateIssued><mods:publisher>Kew Publishing, Royal Botanic Gardens Kew</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="genus">
+<div type="diagnosis"><p>Small to moderate, solitary hermaphroditic fan palms endemic to the northern Caribbean; leaf sheaths fibrous, petiole bases deeply split at base; flowers and fruit sessile; fruit very small, white, the seed smooth.</p></div>
+<nomenclature>
+<name>Leucothrinax</name>
+<author>C.E. Lewis and Zona</author> 
+<citation>Palms 52: 87 (2008).</citation>
+<type>Type; Leucothrinax morrisii; (H.Wendl.) C.Lewis &amp; Zona</type>
+</nomenclature>
+<div type="etymology"><p>Combining leucon — white, with the palm generic name Thrinax, in reference to the whitish colour of the leaves.</p></div>
+<div type="description"><p>Small to moderate, solitary, unarmed, pleonanthic, hermaphroditic palm. Stem erect, columnar, smooth, grey, obscurely ringed with leaf scars, usually with a basal mass of fibrous roots. Leaves induplicate, palmate; sheath becoming split both opposite the petiole and abaxially to emit the inflorescence, disintegrating into a network of irregular fibres, covered in thick, deciduous tomentum, margins fibrous; petiole long, slender, rounded to shallowly ridged both adaxially and abaxially, densely covered with caduceus white indumentum, margins rather sharp; adaxial hastula prominent, rounded to triangular, densely covered in caducous hairs, abaxial hastula very short, apically membranous and disintegrating; blade fan-shaped, with irregularly folded segments, not held in the same plane, split apically to ca. 1/2 their length or more into lanceolate, pointed and usually bifid segments, glabrous adaxially, abaxially covered in white wax and bearing minute punctiform scales, midrib and marginal ribs conspicuous, transverse veinlets evident. Inflorescences interfoliar, slender, erect to arching, equalling or exceeding the leaves, branched to 2 orders, primary branches pendulous; peduncle moderate, rather slender, round in cross-section; prophyll short, tubular, 2-keeled, pointed, opening distally, tomentose; peduncular bracts several (ca. 3), like the prophyll but lacking keels, overlapping and very closely sheathing the peduncle; rachis longer than the peduncle, slender, tapering, bearing spirally arranged, long, tubular, pointed distally and obliquely open primary bracts subtending first-order branches; first-order branches each with a short to long basal bare portion, bearing a 2-keeled, bifid prophyll and spirally arranged, narrow, triangular bracts subtending rachillae; rachillae slender, rather short, stiff, bearing spirally arranged, small triangular bracts subtending solitary flowers, bracteoles apparently lacking. Flowers ± sessile; perianth a single cupule with 6 lobes or teeth; stamens mostly 6, filaments basally broadly connate in a ring equalling the perianth, free portion very slender, anthers elongate, dorsifixed near the base, emarginate apically, latrorse; gynoecium consisting of 1 carpel, unilocular, uniovulate, ovule basally attached, erect, campylotropous but tilted so that the micropyle faces the upper dorsal wall of the locule, and with a basal aril. Pollen ellipsoidal with slight to obvious asymmetry; aperture a distal sulcus; ectexine tectate, finely perforate, aperture margin similar; infratectum columellate; longest axis 21–31 µm [1/1]. Fruit very small, white at maturity, stigmatic remains apical, perianth persistent; epicarp smooth when fresh, mesocarp thin, endocarp very thin, papery. Seed depressed-globose, smooth, hilum round, impressed, forming a basal intrusion, raphe branches scarcely impressed, endosperm homogeneous; embryo subapical. Germination remote-tubular; eophyll narrow, lanceolate. Cytology: 2n = 36.</p></div>
+<div type="distribution"><p>A single species occurring in the northern part of the Caribbean as far east as the Virgin Islands and Anguilla.</p></div>
+<div type="anatomy"><p>Leaf anatomy (Read 1975); floral anatomy (Morrow 1965, Uhl and Moore 1971); correlations of floral anatomy and wind pollination suggested by Uhl and Moore (1977a). </p></div>
+<div type="relationships"><p>Leucothrinax is resolved as sister to Hemithrinaxwith moderate support (Asmussen et al. 2006, Baker et al. inreview).</p></div>
+<div type="uses"><p>Leaves are used for making brooms. Widely cultivated in Florida.</p></div>
+<div type="taxonomic accounts"><p>Lewis and Zona (2008).</p></div>
+<div type="fossil record"><p>No generic records found.</p></div>
+<div type="discussion"><p>O.F. Cook published the name Simpsonia O.F. Cook,Science n.s. 85: 332–333 (1937b). This name, based onThrinax microcarpa, is invalid as it was published without Latindescription. </p></div>
+<div type="vernacular"><p>Brittle thatch, Keys thatch palm</p></div>
+<div type="biology_ecology"><p>Occurring on coralline sands and limestone near the sea. </p></div>
+<div type="conservation"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

@@ -1,0 +1,43 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>A Synopsis of the Rattans (Arecaceae: Calamoideae) of Laos and Neighbouring Parts of Indochina</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Evans</mods:namePart>
+<mods:namePart type="given">T.</mods:namePart>
+<mods:namePart type="family">Sengdala</mods:namePart>
+<mods:namePart type="given">K.</mods:namePart>
+<mods:namePart type="family">Thammavong</mods:namePart>
+<mods:namePart type="given">B.</mods:namePart>
+<mods:namePart type="family">Viengkham</mods:namePart>
+<mods:namePart type="given">O.V.</mods:namePart>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>2002</mods:dateIssued>
+<mods:publisher>Kew Bulletin, Vol. 57, No. 1 (2002), pp. 1-84</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Calamus oxycarpus</name>
+<author>Becc.</author>
+<citation>Ann. Roy. Bot. Gard. (Calcutta) 11 (1) (Suppl.): 138 (1913)</citation>
+<bibref>Evans et al., Rattans Lao PDR: 21 (2001)</bibref>
+<type>China, Guizhou; Cavalerie; 1263 and 2204</type>
+<type_loc>Syntypes FI-B</type_loc>
+</nomenclature>
+<div type="distribution"><p>China (South Yunnan and South-east China).</p></div>
+<div type="materials_examined"><p>EXAMINED. CHINA (SOUTH YUNNAN): Mengtse, undated, (fr.), Henry, A. 10475 (K). (SOUTH-EAST CHINA): Guizhou, undated, (fr.), Cavalerie 1263 (FI-B) and undated, (stam.), Cavalerie 2204 (FI-B).</p></div>
+<div type="biology_ecology"><p>Unknown.</p></div>
+<div type="discussion"><p>JD examined the syntypes some years previously but they could not be relocated on a visit to FI in December 2000 so no lectotype is chosen here. If a lectotype had to be chosen it should be Cavalerie 1263, since Beccari rested his diagnosis mainly on the fruit. The Henry specimen in K is clearly stated to be a 'long climber' whereas C. oxycarpus is erect. We can offer no explanation for this. The material of C. oxycarpus held at KUN (collector's names and localities not translated, specimen numbers 15190, 51568, 18971 and 18972) is a reasonably good match for the specimen at K. Leaflet width seems to vary greatly - in the Kew material and several of the Chinese specimens it is only 1.5 - 2 cm, in others (including the types) it is 3.5 - 4 cm. This feature requires careful study of living plants to determine whether it represents a varietal difference (as proposed in an unpublished manuscript by Wang [1997]) or variation between leaves or individuals. Three infertile specimens determined as Calamus macrorhynchus Burret are held at KUN (collector names and localities not translated, collector numbers 9617, 10198 and 22125). We examined these and found that they cannot be distinguished from other material there named Calamus oxycarpus. The protologue of C. macrorhynchus (Burret 1937) does not state any clear differences from C. oxycarpus and few differences are given by Pei et al. (1991), but we have not examined the type specimen (probably held at IBSC) and so cannot confidently state that they are the same.</p></div>
+<div type="vernacular"><p>None recorded.</p></div>
+<div type="uses"><p>None recorded.</p></div>
+<div type="conservation"><p>Unknown.</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>
+

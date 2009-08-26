@@ -4,7 +4,12 @@
 <mods:titleInfo>
 <mods:title>A synopsis of the genus Hydriastele (Arecaceae)</mods:title>
 </mods:titleInfo>
-<mods:name><mods:namePart>William J. Baker and Adrian H. B. Loo</mods:namePart></mods:name>
+<mods:name>
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+<mods:namePart type="family">Loo</mods:namePart>
+<mods:namePart type="given">A.H.B.</mods:namePart>
+</mods:name>
 <mods:originInfo>
 <mods:publisher>Kew Bulletin, Vol. 59, No. 1, pp. 61-68</mods:publisher>
 <mods:dateIssued>2004</mods:dateIssued>

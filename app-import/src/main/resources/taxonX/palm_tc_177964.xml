@@ -1,0 +1,48 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>A Revision of Rhapis, the Lady Palms</mods:title>
+</mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Hastings</mods:namePart>
+<mods:namePart type="given">L.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Palms 47(2) 62-78</mods:publisher>
+<mods:dateIssued>2003</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Rhapis micrantha</name>
+<author>Blume</author>
+<citation>Rumphia, 2: 54. 1836</citation>
+<bibref>Mart., Hist. Nat. Palm, 3: 254. 1850</bibref>
+<bibref>Becc., Ann. Roy. Bot. Gard., Calcutta 13: 247. 1931</bibref>
+<type>Japan; C.P. Thunberg; s.n.</type>
+<type_loc>Type L</type_loc>
+<synonymy>
+<name>Rhapis javanica</name>
+<author>Blume</author>
+<bibref>Blume, Rumphia 2: 56. 1836</bibref>
+<type>Java; Blume; s.n.</type>
+<type_loc>Type L</type_loc>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="diagnosis"><p></p></div>
+<div type="description"><p>Stems to 6 m tall, with sheaths 18–40 mm diam., without 15–28 mm. Leaf sheath closely sheathing the stem, fibers narrow, outer and inner fibers of similar thickness, producing a squared mesh, ligule remaining intact at maturity; petiole to 4 mm wide, sometimes minutely scabrid; blade with semi-circular to lunulate outline, with a conspicuous palman, segments 7–20, folds 16–36, to 440 mm long, sides slightly curved, apices oblique with irregular secondary splitting, primary splits to within 19-105 mm of the blade base, with tomentum at the base, brown papillae along the ribs, mostly adaxially, ribs scabrid, thick in texture, adaxial and abaxial surfaces similar in colour. Inflorescence, male and female similar in appearance, branching to 3 orders; prophyll tubular, overlapping the base of the first rachis bract, medium thickness, pale brown with areas of greenish brown, mostly glabrous with patches of tomentum on the outer surface edges; rachis bracts 3(–4), sometimes with a distal incomplete rachis bract, similar in appearance to the prophyll, overlapping the base of the next bract; rachis overall length to 410 mm, to 10 mm diam., rachillae 8–165 mm long, slender 0.2–1.2 mm diam., dark brown with rusty tomentum. Flowers 1.0–3.5 mm apart, large. Male flowers sometimes paired, long, obtriangular to 6.6 × 2.8 mm; calyx to 1.8 mm, minutely papillate usually with tomentum on the apices of the lobes, lobes shallow to 0.5 mm with regular margins; corolla narrowing gradually into a receptacular-stalk to 1.9 mm; filaments, shorter row to 3.2 mm, longer to 3.8 mm, to 0.4 mm diam. Female flowers to 4.4 × 2.5 mm; calyx to 2.3 mm, tomentose, lobes to 1 mm with regular margin and acute apices; corolla clavate, distinctly narrowed to 1.5 mm in diam., with a receptacular-stalk to 2.5 mm; staminodes present. Fruit unavailable.</p></div>
+<div type="distribution"><p>South China, Sichuan; South Japan, South Kyushu Island.</p></div>
+<div type="biology_ecology"><p>Habitat. Forest, 100–1000 m.</p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p>In his revision of Rhapis, Beccari (1931) based his description of the flowers of this species on an old collection (s.n. 1884) taken from a clump at Kew; thus he must have considered it to be typical R. humilis. This clump is still extant at Kew (accession no 1973–12600). Rhapis humilis can be distinguished from R. excelsa by the leaf sheaths with intact ligule and neat fibers, closely sheathing the stem; blade semi- circular in outline, segments tapering at the apex with less regular secondary splitting, palman more conspicuous; inflorescence with rachis bracts usually glabrous and rachis with tomentum; calyx usually with tomentum and stamens with more slender filaments. Four rachis bracts were recorded in one specimen. Mt Omei is a Buddhist retreat, and so the specimens from this locality may have been cultivated. </p></div>
+<div type="materials_examined"><p>Representative specimens. SOUTH CHINA: Guangxi, Lungchow, HB Morse 380 (K); Sichuan, Mt. Omei, C.L. Chow 6249 female (A); W.P. Fang 12533 (A). JAPAN: C.P. Thunberg s.n. (L); South Kyushu, Kirishma-Omuta National Park, E.H. Wilson s.n. 1917 (A); C.P. Thunberg sheet number 24385 (U, photo). CULTIVATED: Java, Blume s.n. no date (L ); UK, Kew, Royal Botanic Gardens, Kew, s.n. 1884 male (K), s.n. 1858 male (K), L.H. Fitt 31 male (K), W. Baker et al. 1151 male (K). </p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

@@ -1,0 +1,45 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>Genera Palmarum. The evolution and classification of palms</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Uhl</mods:namePart>
+<mods:namePart type="given">N.</mods:namePart>
+<mods:namePart type="family">Asmussen</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+<mods:namePart type="family">Harley</mods:namePart>
+<mods:namePart type="given">M.</mods:namePart>
+<mods:namePart type="family">Lewis</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>2008</mods:dateIssued><mods:publisher>Kew Publishing, Royal Botanic Gardens Kew</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="genus">
+<div type="diagnosis"><p>Elegant, moderate to tall, solitary pinnate-leaved palm, native to Northern Territory, Australia, with crownshaft and praemorse leaflets, the leaf rachis gracefully arching; the fruit has a distinctive network of black fibres next to the endocarp; the seed has homogeneous endosperm.</p></div>
+<nomenclature>
+<name>Carpentaria</name>
+<author>Becc.</author> 
+<citation>Ann. Jard. Bot. Buitenzorg 2: 128 (1885).</citation>
+<type>Type; Carpentaria acuminata; (H. Wendl. and Drude) Becc.</type>
+</nomenclature>
+<div type="etymology"><p>Named from the Gulf of Carpentaria in northern Australia where Carpentaria acuminata is endemic.</p></div>
+<div type="description"><p>Moderate or tall, solitary, unarmed, pleonanthic, monoecious palm. Stem erect, moderate, smooth, grey, ringed with leaf scars. Leaves pinnate, arching or drooping, tips becoming pendulous; sheath forming a prominent crownshaft; petiole very short, deeply channelled adaxially, rounded abaxially, covered with small brown scales; rachis channelled basally to ridged; leaflets abaxially shallowly convex, ± clustered basally, opposite to subopposite distally, long, narrow, lanceolate, tips oblique to truncate, praemorse, often with 2–4 longer prongs, the proximal sometimes tapering to a single or double point, adaxially lightly tomentose, abaxially covered with small brown-centred scales, midrib the only prominent nerve on both surfaces, larger abaxially, transverse veinlets not apparent. Inflorescences infrafoliar, horizontal, appearing rather large, branched to 3 orders basally, to 2–1 orders distally; peduncle very short, stout, flattened, bearing deciduous brown tomentum; prophyll tubular (not seen), caducous; peduncular bract tubular, caducous, shortly beaked, splitting abaxially, adaxially glabrous, abaxially densely to lightly covered in stellate brown scales, scar of 1 incomplete peduncular bract present; rachis much longer than the peduncle, elongate, tapering, bearing many (more than 20) ± angled first-order branches, each subtended by a very small, ridge-like bract; rachillae rather short, slender, spreading, bearing spirally arranged, distant triads of flowers for 2/3 their length and paired to solitary staminate flowers distally; floral bracteoles large, low, rounded. Staminate flowers lateral to the pistillate, symmetrical, ovoid; sepals 3, distinct, broadly imbricate, irregularly rounded, somewhat gibbous; petals 3, distinct, rather broadly ovate, valvate, evenly thickened, adaxially grooved; stamens ca. 33, filaments erect in bud, short, awl-shaped, anthers oblong-elliptical, bifid basally, emarginate apically, dorsifixed near the base, latrorse, connective broad, tanniniferous; pistillode bottle-shaped, as long as the stamens in bud. Pollen ellipsoidal asymmetric; aperture a distal sulcus; ectexine tectate, perforate and micro-chanelled, aperture margin slightly finer than main tectum; infratectum columellate; longest axis ranging from 39–53 µm; post-meiotic tetrads tetrahedral [1/1]. Pistillate flowers ovoid; sepals 3, distinct, imbricate, rounded, margins variously split; petals 3, distinct, broadly ovate and imbricate, tips thick, valvate, opening briefly apically to expose the stigmas at anthesis; staminodes 3, tooth-like, bifid apically; gynoecium asymmetrical, ovoid with a bulge on one side, unilocular, uniovulate, stigmas 3, fleshy, recurved at anthesis, ovule very large, laterally attached, form unknown. Fruit ovoid when fresh, red at maturity, stigmatic remains apical, perianth persistent; epicarp smooth, becoming wrinkled when dry, mesocarp fleshy over a layer of broad, flat fibres anastomosing distally and closely appressed to the endocarp, endocarp thin, glass-like. Seed attached laterally, ovoid, ± pointed, round in cross-section, hilum elongate, raphe branches anastomosing, endosperm homogeneous; embryo basal. Germination adjacent-ligular; eophyll bifid. Cytology: 2n = 32.</p></div>
+<div type="distribution"><p>One species in Northern Territory, Australia.</p></div>
+<div type="anatomy"><p>Root (Seubert 1998a, 1998b) and fruit (Essig 1977). </p></div>
+<div type="relationships"><p>A sister relationship between Carpentaria and Wodyetia is moderately to highly supported by several studies (Asmussen et al. 2006, Norup et al. 2006, Baker et al. in review, in prep., Lewis et al. in prep.) </p></div>
+<div type="uses"><p>A handsome ornamental but requires humid tropical or subtropical conditions. Widely planted in northeastern Australia and southern Florida in parks and along streets. </p></div>
+<div type="taxonomic accounts"><p>Beccari (1885). </p></div>
+<div type="fossil record"><p>No generic records found. </p></div>
+<div type="discussion"><p>Differs from Veitchia, which has a similar habit, in having thinner and narrower lanceolate leaflets, which are often four-pointed and lacking ramenta on their midribs, and in having only one series of fibres in the mesocarp. </p></div>
+<div type="vernacular"><p>Carpentaria palm. </p></div>
+<div type="biology_ecology"><p>Found in rain forest along banks of streams at low elevations, usually near brackish water estuaries. </p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

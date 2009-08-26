@@ -1,0 +1,58 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>Genera Palmarum. The evolution and classification of palms</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Uhl</mods:namePart>
+<mods:namePart type="given">N.</mods:namePart>
+<mods:namePart type="family">Asmussen</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+<mods:namePart type="family">Harley</mods:namePart>
+<mods:namePart type="given">M.</mods:namePart>
+<mods:namePart type="family">Lewis</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>2008</mods:dateIssued><mods:publisher>Kew Publishing, Royal Botanic Gardens Kew</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="genus">
+<div type="diagnosis"><p>Small acaulescent or moderate erect palms native to eastern South America, with spicate inflorescences; the staminate flowers are very densely packed and with 6 to over 100 stamens, fruit tending to be rather irregularly shaped because of close-packing.</p></div>
+<nomenclature>
+<name>Allagoptera</name>
+<author>Nees in M.A.P. Wied-Neuwied</author> 
+<citation>Reise Bras. 2: 335 (1821).</citation>
+<type>Type; Allagoptera pumila; Nees</type>
+<synonymy>
+<name>Diplothemium</name>
+<author> Mart.</author>
+<bibref> Mart., Palm. fam. 20 (1824).</bibref>
+<type>Lectotype; Diplothemium maritimum; Mart.</type>
+</synonymy>
+<synonymy>
+<name>Polyandrococos</name>
+<author>Barb. Rodr.</author>
+<bibref>Barb. Rodr., Contr. Jard. Bot. Rio de Janeiro 1: 7 (1901).</bibref>
+<type>Lectotype; Polyandrococos caudescens; (Mart.) Barb. Rodr.</type>
+</synonymy>
+</nomenclature>
+<div type="etymology"><p>Allage — other, different, pteron — wing, perhaps referring to the leaflets held in different planes in Allagoptera arenaria.</p></div>
+<div type="description"><p>Small, moderate or tall, acaulescent or erect, solitary or clustered, armed or unarmed, pleonanthic, monoecious palms. Stem erect, or very short and subterranean, occasionally branching dichotomously, rough and closely ringed with leaf scars. Leaves pinnate, marcescent; sheath short to long, tubular but splitting adaxially when young, becoming woody or soft fibrous, slightly expanded at the base to the petiole, sometimes finely striate and covered with whitish, rusty spotted tomentum; petiole short to long, slender to robust, deeply channelled adaxially, rounded abaxially, margins smooth or roughly toothed to spiny, tomentose abaxially like the sheath; rachis arched or straight, adaxially channelled, distally flattened, abaxially rounded, or triangular in cross-section, glabrous or scaly; leaflets single-fold, inserted regularly or in groups, long, narrow, tapering, pointed, or 2-lobed and split apically, a midrib evident on both surfaces, large scales present or absent abaxially along the midrib, glabrous or glaucous throughout, or silvery beneath, transverse veinlets apparent adaxially. Inflorescences solitary, interfoliar, erect or pendulous, unbranched; peduncle short to very long, circular in cross-section; prophyll tubular, thin, dorsiventrally flattened, 2-keeled laterally, glabrous or scaly, becoming fibrous, opening apically; peduncular bract 1, long, basally slender, sometimes appearing stalked, inflated above, tapering to a beak, woody, ± plicate, splitting abaxially; rachis bearing close triads throughout the lower 1/2 or more of its length and pairs of staminate flowers distally, staminate flowers shed early, leaving a long, bare, pointed tip on the rachis at pistillate anthesis, bracts subtending triads ovate, pointed, those subtending staminate flower pairs with longer pointed tips, bracts adnate laterally to the rachis and to the bases of adjacent bracts, forming a curved depression surrounding the flower pairs, floral bracteoles inconspicuous. Staminate flowers large, asymmetrical, ovoid to obovoid, angled, those of the triads sometimes borne on long, ± flat pedicels curved around the pistillate flower, distal, paired staminate flowers sessile; sepals 3, narrow, connate basally for ca. 1/4 their length, widely separated, pointed, keeled, margins entire or crenate; petals 3, distinct, irregular, angled, triangular, valvate, slightly–4 times longer than the sepals, the tips thickened; stamens 6–ca. 100, filaments awl-shaped, ± united at the base, erect, sometimes flexible and variously bent and curved, anthers somewhat irregular, short to elongate, curved but not twisted, dorsifixed near the base of a prominent connective or toward the middle, sometimes versatile, latrorse or introrse; pistillode lacking or slender, conical, ca. 1/2 as long as the stamens. Pollen ellipsoidal, may be elongate and/or pyriform, usually with either slight or obvious asymmetry; aperture a distal sulcus; ectexine tectate, finely perforate, or perforate-rugulate, aperture margin may be slightly finer; infratectum columellate; longest axis 20–50 µm; post-meiotic tetrads tetrahedral, rarely tetragonal or rhomboidal [4/5]. Pistillate flowers smaller or slightly larger than the staminate, globose; sepals 3, distinct, broadly imbricate, tips valvate in bud; petals 3, distinct, about as long as the sepals, broadly imbricate, tips valvate; staminodes connate in a low, shallowly lobed cupule; gynoecium ovoid or obovoid, trilocular, triovulate, stigmas narrow, recurved between the petal apices at anthesis, ovules laterally attached, anatropous. Fruit obovoid, angled by mutual pressure, greenish-yellow or brown, usually 1-seeded, stigmatic remains represented by an apical knob, perianth enlarged and persistent; epicarp glabrous or with woolly scales, mesocarp fibrous and fleshy, endocarp hard but relatively thin, or thick and bony, smooth, with 3 pores near the base, internally with 3, broad, shining lines. Seed obovoid or elongate, basally attached, hilum small, raphe wide with large curved and small anastomosing branches, endosperm hard, with or without a central hollow, homogeneous or shallowly ruminate; embryo basal to subbasal. Germination remote-tubular; eophyll entire or briefly bifid. Cytology: 2n = 32.</p></div>
+<div type="distribution"><p>Five species in Brazil and Paraguay.</p></div>
+<div type="anatomy"><p>Leaf (Moraes 1996a), root (Seubert 1998a, 1998b), stamen development (Uhl 1988). </p></div>
+<div type="relationships"><p>Allagoptera is monophyletic with high support (Gunn 2004). The genus is resolved as sister to a clade of Attalea, Lytocaryum and Syagrus with low support by Baker et al. (in review) and sister to Cocos and Attalea with low support by Hahn (2002b). </p></div>
+<div type="uses"><p></p></div>
+<div type="taxonomic accounts"><p>Moraes (1996a). </p></div>
+<div type="fossil record"><p>No generic records found. </p></div>
+<div type="discussion"><p>Easily recognisable by the striking spicate inflorescence bearing closely appressed pistillate flowers basally and staminate flowers distally. The large unbranched inflorescence of Allagoptera caudescens at anthesis entirely covered by stamens has a striking resemblance to that of some species of Phytelephas, though there is no relationship.</p></div>
+<div type="vernacular"><p>For common names, see Glassman (1972).</p></div>
+<div type="biology_ecology"><p>In loose sand on beaches, on dunes, in open tree and scrub woodland, among rocks on sandstone hills, in dry grassy or shrubby vegetation zones (cerrado) or in open areas in the mountains.</p></div>
+<div type="conservation"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

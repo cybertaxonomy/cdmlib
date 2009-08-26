@@ -1,0 +1,44 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>The grassy Butia: Two new species and a new combination</mods:title>
+</mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Noblick</mods:namePart>
+<mods:namePart type="given">L.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Palms 50(4) 167-178</mods:publisher>
+<mods:dateIssued>2006</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Butia leptospatha</name>
+<author>(Burret) Noblick</author>
+<citation>Palms 50: 169 (2006)</citation>
+<type>Brazil, Mato Grosso, Boliche Seco, Campo Grande; Archer &amp; Gehrt; 3915</type>
+<type_loc>Holotype SP-36429; isotype US</type_loc>
+<synonymy>
+<name>Syagrus leptospatha</name>
+<author>Burret</author>
+<bibref>Burret, Notizbl. Bot. Gart. Berlin Dahlem 15:105. 1940.</bibref>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="diagnosis"><p></p></div>
+<div type="description"><p></p></div>
+<div type="distribution"><p></p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p>Syagrus leptospatha was discovered in 1936, described by Burret (1940) and not recollected again until 58 years later in 1994 (Pedro Juan Caballero, Paraguay). Glassman (1987) wrote that it was “probably extinct.” Today, its former habitat is dominated and threatened by soybean cultivation. Phylogenetic character analyses of the Attaleinae show that Syagrus leptospatha aligns closely with Butia species (Noblick unpublished), rather than with other Syagrus. Butia leptospatha differs from Syagrus by having no noticeable deep grooves in its onion skin-like, paper-thin bracts. Its leaf anatomy as illustrated in Glassman (1987) shows vascular bundles on both the adaxial and abaxial surface as in other Butia (Syagrus species have vascular bundles only on the abaxial surface). Butia leptospatha, B. campicola (Barb. Rodr.) Noblick and B. exospadix have dark purple fruit, are acaulescent, have spicate inflorescences, have long peduncles that (usually) project the inflorescence in fruit above the peduncular bract (sometimes substantially so) and have the narrow grass-like leaflets. Based on its smooth peduncular bracts, its leaf anatomy, the phylogenetic analyses and its similarity to two other Butia species, I am here in transferring Syagrus leptospatha to Butia. </p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

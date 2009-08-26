@@ -4,7 +4,12 @@
 <mods:titleInfo>
 <mods:title>A Monograph of the Genus Rhopaloblaste (Arecaceae)</mods:title>
 </mods:titleInfo>
-<mods:name><mods:namePart>Roy Banka and William J. Baker</mods:namePart></mods:name>
+<mods:name>
+<mods:namePart type="family">Banka</mods:namePart>
+<mods:namePart type="given">R.</mods:namePart>
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+</mods:name>
 <mods:originInfo>
 <mods:publisher>Kew Bulletin, Vol. 59, No. 1, pp. 47-60</mods:publisher>
 <mods:dateIssued>2004</mods:dateIssued>

@@ -1,0 +1,39 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>A review of the genus Pritchardia</mods:title>
+</mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Hodel</mods:namePart>
+<mods:namePart type="given">D.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Palms 51(4) Special Supplement S-1-53</mods:publisher>
+<mods:dateIssued>2007</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Pritchardia waialealeana</name>
+<author>Read</author>
+<citation>Principes 32: 135. 1988</citation>
+<type>Power Line Trail, Kauai, Hawaii; Lorence; 8446</type>
+<type_loc>Neotype  PTBG!; isoneotype K</type_loc>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="diagnosis"><p></p></div>
+<div type="description"><p>To 20 m tall; proximal margins of petiole with only a few fibers; leaf blade slightly undulate, divided 2/5, abaxial surface incompletely covered with scattered lepidia and mostly lacking cottony indumentum on folds at base, segment tips drooping to occasionally stiff; inflorescences composed of 1-3 panicles, shorter than or equaling petioles in flower and fruit, panicles branched to 3 orders, rachillae glabrous; fruits (immature) 20 x 15 mm, ellipsoid. </p></div>
+<div type="distribution"><p>Wet forest below the Waialeale massif in east central Kauai, 500-750 m elevation.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p>Pritchardia waialealeana is difficult to distinguish from P. glabrata and P. remota. All three share the undulate leaf blades incompletely covered abaxially with lepidia and with drooping segment tips, inflorescences shorter than or equaling the petioles with panicles branched to three orders, glabrous rachillae, and small fruits. However, both P. glabrata and P. remota differ in the folds on the abaxial surface of their leaf blades clothed with thick, cottony or mealy indumentum and the more or less rounded fruits. A search failed to reveal any of Read's designated type material (Read 87-211) at US, BISH, HLA (HAW), BH, or PTBG; thus, I have designated Lorence 8446 from the type locality as the neotype. A photograph of Pritchardia waialealeana is erroneously captioned P. hardy; in Beccari and Rock (1921, PI. XIII A).</p></div>
+<div type="materials_examined"><p>U.S.A. Hawaii. Kauai: Power Line Trail, Bishop 1279 (HAW), Lorence 8446 (PTBG), Wood 227, 228 (PTBG); Makaleha Mountains, Wood 7305 (PTBG). </p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

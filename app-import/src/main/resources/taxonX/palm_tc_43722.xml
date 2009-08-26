@@ -1,0 +1,63 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>Genera Palmarum. The evolution and classification of palms</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Uhl</mods:namePart>
+<mods:namePart type="given">N.</mods:namePart>
+<mods:namePart type="family">Asmussen</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+<mods:namePart type="family">Harley</mods:namePart>
+<mods:namePart type="given">M.</mods:namePart>
+<mods:namePart type="family">Lewis</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>2008</mods:dateIssued><mods:publisher>Kew Publishing, Royal Botanic Gardens Kew</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="genus">
+<div type="diagnosis"><p>Elegant tall pinnate-leaved palms of the western Pacific Islands with conspicuous crownshafts and inflorescences with short bulbous peduncles.</p></div>
+<nomenclature>
+<name>Clinostigma</name>
+<author>H. Wendl.</author> 
+<citation>Bonplandia 10: 196 (1862).</citation>
+<type>Type; Clinostigma samoense; H. Wendl.</type>
+<synonymy>
+<name>Exorrhiza</name>
+<author></author>
+<bibref>Becc., Ann. Jard. Bot. Buitenzorg 2: 128 (1885).</bibref>
+<type>Type; Exorrhiza wendlandiana; Becc.</type>
+</synonymy>
+<synonymy>
+<name>Bentinckiopsis</name>
+<author></author>
+<bibref>Becc., Palme Nuova Caledonia 45 (1920); and Webbia 5: 113 (1921).</bibref>
+<type>Lectotype; Bentinckiopsis carolinensis; (Becc.) Becc.</type>
+</synonymy>
+<synonymy>
+<name>Clinostigmopsis</name>
+<author></author>
+<bibref>Becc. in Martelli, Atti Soc. Tosc. Sci. Nat. Pisa Mem. 44: 161 (1934).</bibref>
+<type>Lectotype; Clinostigmopsis thurstonii; (Becc.) Becc.</type>
+</synonymy>
+</nomenclature>
+<div type="etymology"><p>Klinein — to bend, stigma — mark or, in botany, the point of the gynoecium that receives pollen, perhaps referring to the eccentrically apical stigmatic remains in the fruit.</p></div>
+<div type="description"><p>Tall, robust, solitary, unarmed, pleonanthic, monoecious palms. Stem erect, often longitudinally fissured, densely and conspicuously ringed with leaf scars, new internodes glaucous, sometimes with prominent prickly stilt roots. Leaves pinnate; sheaths tubular, forming a prominent crownshaft, ± glaucous; petiole mostly short, concave adaxially, rounded abaxially, glaucous; rachis flat adaxially, rounded abaxially, glaucous when young; leaflets single-fold, regularly arranged, ± arched to pendulous from the rachis, with a prominent elevated midrib and 1–2 secondary ribs on each side above, all the veins rather densely covered abaxially with minute, pale-margined, brown-centred, membranous scales and often with large ramenta on the midrib below, margins nearly parallel, tapering gradually to an acuminate apex, this often frayed and bifid in age. Inflorescences infrafoliar, branched to 3 orders basally, to 2–1 orders distally, or to 1 order only; peduncle short, wide, flat, glaucous, frequently becoming swollen; prophyll tubular, thin, 2-keeled, completely encircling the peduncle, enclosing the thin, beaked peduncular bract; both caducous; rachis longer than the peduncle, tapering, glaucous when young, bearing spirally arranged, conspicuous, pointed bracts each subtending a first-order branch; first-order branches with a short bare portion basally, bearing very small pointed, spirally arranged bracts subtending rachillae; rachillae long, very slender, bearing rather close, spirally arranged acute bracts subtending triads of flowers nearly throughout or only in the lower 1/3 to 1/2, staminate flowers paired or solitary toward the apex, the axis somewhat impressed above the triad; floral bracteoles unequal in size, the third largest, often exceeding the triad bract. Staminate flowers markedly asymmetrical, one ebracteolate, the other subtended by a low spreading bracteole; sepals 3, distinct, basally imbricate, acute, laterally compressed and dorsally keeled toward the base; petals 3, distinct, valvate, asymmetrical, acute, prominently lined centrally but the margins ± veinless and pale when dry; stamens 6, filaments distinct, awl-shaped, equal, or those opposite the sepals inserted lower than those opposite the petals, the filaments inflexed at the apex in bud, the anthers versatile at anthesis, acute to emarginate or deeply bifid at the apex, equally or unequally bifid at the base; pistillode short, broadly conical, trifid. Pollen grains ellipsoidal asymmetric, occasionally oblate triangular; aperture a distal sulcus, less frequently a trichotomosulcus; ectexine tectate, perforate, perforate and micro-channelled or finely perforate-rugulate, aperture margin similar or slightly finer; infratectum columellate; longest axis 38–60 µm [6/13]. Pistillate flowers symmetrical, ovoid; sepals 3, distinct, ±boat-shaped, broadly imbricate; petals 3, distinct, slightly longer than the sepals, broadly imbricate with very briefly valvate apices; staminodes (5–)6, membranous, tooth-like; gynoecium ovoid, unilocular, uniovulate, with 3, short, recurved stigmas, the ovule laterally or apically attached, form unknown. Fruit ovoid to ellipsoidal and terete to laterally compressed, red when mature, the stigmatic remains eccentrically apical to lateral or rarely basal; epicarp smooth but often drying granulose-wrinkled over fibres, mesocarp with prominent, sometimes greatly thickened (Clinostigma ponapense), longitudinal fibres and a thin layer of red sclerosomes (C. exorrhizum) over a thin, crustaceous, fragile endocarp, this neither angled nor sculptured except for a thickened apical cap opposite the hilum, tapered downward to a narrow operculum opposite the embryo. Seed obovoid to ellipsoidal, sometimes somewhat compressed laterally, hilum rounded to elongate, basal or extending along one side of the seed, raphe branches few, unbranched or loosely anastomosing; endosperm homogeneous; embryo basal. Germination adjacent-ligular; eophyll bifid or entire. Cytology: 2n = 32.</p></div>
+<div type="distribution"><p>About 11 species from the Bonin and Caroline Islands to Samoa, Fiji Islands, Vanuatu (Banks Group), the Solomon Islands and New Ireland.</p></div>
+<div type="anatomy"><p>Fruit (Essig et al. 1999).</p></div>
+<div type="relationships"><p>Clinostigma is a strongly supported monophyletic genus (Baker et al. in prep.). Clinostigma resolves as sister to Cyrtostachys with moderate support in several studies (Lewis and Doyle 2002, Norup et al. 2006, Baker et al. in prep.), but also as sister to Bentinckia with moderate support elsewhere (Baker et al. in review). </p></div>
+<div type="uses"><p>Split stems are used for house building. All species are very elegant and would make fine ornamentals. </p></div>
+<div type="taxonomic accounts"><p>Moore (1969b, 1979) and Dransfield (1982a). 
+</p></div>
+<div type="vernacular"><p>Niuniu (Fiji).</p></div>
+<div type="biology_ecology"><p>The species are found in montane rain forest, usually in dense forests on crests and ridges; Clinostigma harlandii is not known below 1000 m and is almost perpetually in clouds or mist.</p></div>
+<div type="conservation"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

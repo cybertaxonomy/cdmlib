@@ -4,7 +4,12 @@
 <mods:titleInfo>
 <mods:title>The white powder Dypsis: a new species from cultivation</mods:title>
 </mods:titleInfo>
-<mods:name><mods:namePart>Donald Hodel and Jeff Marcus</mods:namePart></mods:name>
+<mods:name>
+<mods:namePart type="family">Hodel</mods:namePart>
+<mods:namePart type="given">D.</mods:namePart>
+<mods:namePart type="family">Marcus</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
 <mods:originInfo>
 <mods:publisher>Palms, 48(2):90-93</mods:publisher>
 <mods:dateIssued>2004</mods:dateIssued>

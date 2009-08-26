@@ -1,0 +1,46 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>Genera Palmarum. The evolution and classification of palms</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Uhl</mods:namePart>
+<mods:namePart type="given">N.</mods:namePart>
+<mods:namePart type="family">Asmussen</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+<mods:namePart type="family">Harley</mods:namePart>
+<mods:namePart type="given">M.</mods:namePart>
+<mods:namePart type="family">Lewis</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>2008</mods:dateIssued><mods:publisher>Kew Publishing, Royal Botanic Gardens Kew</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="genus">
+<div type="diagnosis"><p>The forest coconut — solitary pinnate-leaved tree palm from northeastern Madagascar, the staminate flowers have 12–13 stamens and the fruit has large grooved endocarps with irregular protruberances on the inside that penetrate the homogenous endosperm.</p></div>
+<nomenclature>
+<name>Voanioala</name>
+<author>J. Dransf.</author> 
+<citation>Kew Bull. 44: 192 (1989).</citation>
+<type>Type; Voanioala gerardii; J. Dransf.</type>
+</nomenclature>
+<div type="etymology"><p>Derived from the Malagasy vernacular voanioala meaning forest coconut.</p></div>
+<div type="description"><p>Solitary, unarmed, pleonanthic monoecious palms. Stem erect, very conspicuously stepped and ringed with oblique leaf scars. Leaves pinnate, cleanly abscising; leaf-sheath tubular at first, fibrous, apparently soon disintegrating to leave a massive elongate rectangular leaf base, forming an apparent petiole with sparsely fibrous margins; true petiole absent; rachis rectangular in cross-section in the mid-leaf region; leaflets numerous, regularly arranged, scarcely pendulous, coriaceous, concolorous, unevenly bilobed at the tip, adaxially glabrous apart from bands of caducous chocolate-coloured scales on areas exposed in the sword leaf, abaxially bearing scattered ramenta near the base of the midrib, transverse veinlets obscure, but surface of leaflet minutely transversely striate, thin white wax present on both surfaces. Inflorescence solitary, apparently protandrous, branching to 1 order; prophyll tubular, 2-keeled, fibrous, remaining hidden among the leaf bases; peduncular bract bright green and strictly tubular until shortly before anthesis, then splitting longitudinally, flattening and becoming somewhat cowl-like, abaxially deeply and longitudinally grooved, bearing scattered brown scales on the ridges between the grooves, adaxially smooth, glabrous, pale cream-coloured; peduncle ± circular in cross-section; rachis bearing spirally arranged rachillae, each subtended by a small triangular bract; rachillae numerous, most with a basal bare portion. Staminate flowers asymmetrical, broadly or narrowly triangular in outline; sepals 3, distinct, slightly to strongly imbricate at the base, triangular, acute to acuminate, membranous, glabrous; petals 3, distinct, unequal, valvate, glabrous, thinly coriaceous except at the thick angular tips, broadly and irregularly triangular-ovate, with acute or acuminate tips, abaxially smooth, adaxially marked with the impressions of the stamens and papillose near the thick tips; stamens 12(–13), filaments subulate, very short to moderate in length, anthers basifixed, basally sagittate, apiculate at the tips, latrorse; pistillode absent. Pollen bisymmetric, ellipsoidal, or less frequently oblate triangular; aperture a distal sulcus or trichotomosulcus; ectexine intectate, finely granular interspersed with larger psilate gemmae, separate or arranged in a loosely reticulate pattern, aperture margin with small gemmae arranged linearly; longest axis of ellipsoid grains 55–65 µm, trichotomosulcate grains 49–52 µm; post-meiotic tetrads tetrahedral [1/1]. Pistillate flowers only known as buds, much larger than the staminate, irregularly triangular; sepals 3, distinct, unequal, strongly imbricate, broadly ovate with triangular keeled tips, coriaceous, glabrous, the margins minutely toothed; petals 3, distinct, longer than the sepals, basally irregularly imbricate, conspicuously valvate at the triangular tips, abaxially with scaly indumentum towards the apex, adaxially strongly papillose towards the tip; staminodal ring high with 9 irregular triangular teeth, 0.1–0.5 mm; gynoecium syncarpous, tricarpellate, triovulate, stigmas 3, angled, papillose and scaly, ovules anatropous. Immature fruit green covered with dense chestnut-brown scaly indumentum. Mature fruit 1-seeded, somewhat irregularly ellipsoid, tipped with a short beak and stigmatic remains; epicarp purplish-brown, densely covered with brown scaly indumentum; mesocarp with an outer fibrous zone just below the epicarp, and an inner fleshy zone; endocarp ± ellipsoid, apically pointed, basally truncate, very heavily thickened, pale brown when fresh, becoming grey with age, deeply grooved without, with numerous embedded fibres and lacunae, and with irregular rounded intrusions, penetrating the central cavity, basally with 3 very deep intrusions, each with a pore. Seed irregularly ellipsoid, filling the endocarp cavity, laterally attached with a narrow irregular hilum, endosperm homogeneous but irregularly intruded by the endocarp protuberances, very hard, white, with a narrow irregular central lacuna; embryo basal, top-shaped, positioned opposite an endocarp pore. Germination remote-tubular; eophyll entire, lanceolate. Cytology: 2n = 550–606 ± 3.</p></div>
+<div type="distribution"><p>A single species endemic to Madagascar.</p></div>
+<div type="anatomy"><p>Root (Seubert 1998a, 1998b).</p></div>
+<div type="relationships"><p>Voanioala is sister to a clade of NeotropicalAttaleinae and Cocos with moderate support (Hahn 2002b,Asmussen et al. 2006, Baker et al. in review).</p></div>
+<div type="uses"><p>Sometimes cut for palm hearts.</p></div>
+<div type="taxonomic accounts"><p>Dransfield (1989) and Dransfield andBeentje (1995b).</p></div>
+<div type="fossil record"><p>No generic records found. </p></div>
+<div type="discussion"><p>A highly endangered palm, surviving in very lownumbers in the forested interior of the Masoala Peninsula andneighbouring parts of the eastern rain forests. The large,heavily sclerified endocarps accumulate beneath the parenttrees and there appears to be little or no effective dispersal.The polyploid chromosome number is the highest in themonocotyledons (550–660 ± 3).</p></div>
+<div type="vernacular"><p>Voanio-ala (forest coconut, Betsimisaraka dialect). </p></div>
+<div type="biology_ecology"><p>Found in primary forest rich in palms and pandansin swampy valley bottoms and on gentle slopes at ca. 400 m.</p></div>
+<div type="conservation"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

@@ -1,0 +1,52 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>Genera Palmarum. The evolution and classification of palms</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Uhl</mods:namePart>
+<mods:namePart type="given">N.</mods:namePart>
+<mods:namePart type="family">Asmussen</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+<mods:namePart type="family">Harley</mods:namePart>
+<mods:namePart type="given">M.</mods:namePart>
+<mods:namePart type="family">Lewis</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>2008</mods:dateIssued><mods:publisher>Kew Publishing, Royal Botanic Gardens Kew</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="genus">
+<div type="diagnosis"><p>Mostly tall (one species diminutive) pinnate-leaved tree palms from Malay Peninsula and Nicobar Islands, and the Moluccas, New Guniea and the Solomon islands, with distinctive rachillae that are coiled like intestines before emergence and with dark reddish-brown hairs along midrib.</p></div>
+<nomenclature>
+<name>Rhopaloblaste</name>
+<author>Scheff.</author> 
+<citation>Ann. Jard. Bot. Buitenzorg 1: 137(1876).</citation>
+<type>Type; Rhopaloblaste hexandra; Scheff.</type>
+<synonymy>
+<name>Ptychoraphis</name>
+<author>Beccari</author>
+<bibref>Beccari, Ann. Jard. Bot. Buitenzorg 2: 90 (1885).</bibref>
+<type>Type; Ptychoraphis singaporensis; (Becc.) Becc.</type>
+</synonymy>
+</nomenclature>
+<div type="etymology"><p>Rhopalon — club, blaste — bud, referring to the large club-shaped embryo.</p></div>
+<div type="description"><p>Small to large, solitary or clustered, unarmed, pleonanthic, monoecious palms. Stem short or tall, often enlarged at the base but uniform and moderate to slender above, clearly ringed with leaf scars, brown or grey. Leaves pinnate; sheaths tubular, forming a crownshaft, crownshaft sometimes obscured by dead leaves, ± densely covered with deciduous tomentum; petiole short to elongate, channelled adaxially, rounded abaxially; rachis rounded abaxially, angled above towards the apex, the sheath, lower surface of petiole and rachis usually densely covered with peltate scales with tattered interlocking margins, the upper surface of petiole and rachis usually with basifixed, twisted, entire or tattered, membranous scales persisting about the bases of the leaflets and where protected elsewhere; leaflets spreading or pendulous, with a pulvinus at the base, linear, acutely to acuminately and obliquely bifid apically, the midrib and one or more secondary ribs on each side prominent abaxially, minutely brown-dotted and at least the midrib with prominent dull brown, basifixed or medifixed, twisted, membranous scales basally or throughout, transverse veinlets not evident. Inflorescences borne below the leaves, branched to 3 orders basally, fewer orders distally, peduncle short; the prophyll 2-keeled, tubular, enclosing the similar peduncular bract, both usually ± tomentose at least when young, and caducous; rachis short to prominent but as long as or longer than the peduncle; basal branches usually abruptly divaricate, spreading at an angle of about 90° to the rachis (in Rhopaloblaste singaporensis often at an acute angle); bracts subtending the branches often prominent, pointed, rachilla bracts prominent or not, subtending triads nearly throughout; bracteoles surrounding the pistillate flower subequal or unequal, prominent and sepal-like. Staminate flowers symmetrical or nearly so at anthesis but in bud the outer sepal prominent and largely enfolding the remainder of the perianth; sepals 3, distinct, broadly imbricate at anthesis, rounded, ± gibbous and keeled dorsally; petals 3, distinct, valvate; stamens 6–9, the filaments very briefly connate basally or ± distinct, strap-shaped, narrowed and prominently inflexed at the apex in bud, the anthers narrowly elliptic in outline, medifixed, emarginate apically and basally, the connective prominent the entire length of the anther, latrorse; pistillode conical to columnar and ± angled, the apex briefly 3-lobed and sometimes somewhat expanded. Pollen ellipsoidal asymmetric; aperture a distal sulcus; ectexine tectate, finely to coarsely perforate and micro-channelled, aperture margin similar or slightly finer; infratectum columellate; longest axis 30–51 µm [4/6]. Pistillate flowers broader than high in bud and with the outer sepal usually enfolding the remainder of the perianth as in the staminate; sepals 3, distinct, broadly imbricate, rounded; petals 3, distinct, broadly imbricate basally, the short valvate apices erect and scarcely exceeding the sepals at anthesis but the petals in fruit generally nearly twice as long as the sepals; staminodes mostly 6, obtuse, ± deltoid, membranous, often united in pairs or irregularly united or united in a membranous, lobed ring; gynoecium irregularly ovoid, unilocular, uniovulate, stigmas erect to recurved between the valvate apices of the petals at anthesis, the ovule (in R. ceramica) hemianatropous, broader laterally, attached adaxially (in the ventral angle) and pendulous from the top of the locule. Fruit ovoid or ellipsoidal to subglobose, orange-yellow to red at maturity, with apical stigmatic remains; epicarp smooth, mesocarp lacking fibre sclereids or tannin cells, with flattened longitudinal fibres in one or usually more than one layer against the yellowish, fragile endocarp, this impressed over the hilum and with a round basal operculum. Seed brown, with a lightly to deeply impressed hilum along the adaxial side, raphe branches anastomosing, endosperm deeply ruminate; embryo basal, large. Germination adjacent-ligular, eophyll finely pinnate. Cytology: 2n = 32.</p></div>
+<div type="distribution"><p>Six species in the Nicobar Islands, Malay Peninsula and Singapore, the Moluccas, New Guineaand Solomon Islands. </p></div>
+<div type="anatomy"><p>Leaf (Tomlinson 1961), root (Seubert 1998a,1998b) and fruit (Essig et al. 1999). </p></div>
+<div type="relationships"><p>Rhopaloblaste is a robustly supportedmonophyletic genus (Norup et al. 2006). The genus has beenresolved as sister to Dictyosperma with moderate support(Norup et al. 2006, Baker et al. in review, in prep.).</p></div>
+<div type="uses"><p>Widely grown as ornamentals.</p></div>
+<div type="taxonomic accounts"><p>Banka and Baker (2004).</p></div>
+<div type="fossil record"><p>No generic records found.</p></div>
+<div type="discussion"><p>Few collections have been made from the wild andmore are desirable. The distribution pattern is unusual.</p></div>
+<div type="vernacular"><p>Kerinting (Rhopaloblaste singaporensis). </p></div>
+<div type="biology_ecology"><p>All species inhabit rain forests at relatively low elevations.</p></div>
+<div type="conservation"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

@@ -1,0 +1,39 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>A review of the genus Pritchardia</mods:title>
+</mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Hodel</mods:namePart>
+<mods:namePart type="given">D.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Palms 51(4) Special Supplement S-1-53</mods:publisher>
+<mods:dateIssued>2007</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Pritchardia flynnii</name>
+<author>Lorence &amp; Gemmill</author>
+<citation>Novon 14: 185. 2004</citation>
+<type>Kahili Ridge, Kauai, Hawaii; Lorence; 8451</type>
+<type_loc>Holotype PTBG!; isotypes MO, US</type_loc>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="diagnosis"><p></p></div>
+<div type="description"><p>To 5 m tall: proximal margins of petiole with few fibers; leaf blade undulate, divided 1/4-1/2, abaxial surface completely covered with lepidia or nearly so, appearing silvery grayish white, segment tips stiff; inflorescences composed of 1 panicle, shorter than or equaling petioles in flower, equaling petioles or equaling leaf blades in fruit, panicles branched to 2 or 3 orders, rachillae clothed with dense, felt-like indumentum in flower, glabrous or with feltlike hairs in fruit; fruits 25-35 x 18-23 mm, ellipsoid to ovoid.</p></div>
+<div type="distribution"><p>Wet forest on the eastern and southeastern slope of the Waialeale massif and Kahili ridge, Kauai, 500-1000 m elevation.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p>Pritchardia flynnii is distinguished by its undulate leaf blades completely covered abaxially with lepidia, rachillae clothed with dense, felt-like indumentuffi, and small fruits. I interpret P. flynnii more narrowly than did Lorence and Gemmill in their original 2004 description. I refer collections from the Power Line Trail (formerly known as the Pole Line Trail) and the Makaleha Mountains to P. perlmanii, which differs in its flat leaf blade and glabrous rachillae, while they included these in P. flynnii.</p></div>
+<div type="materials_examined"><p>U.S.A. Hawaii. Kauai: ridge S. from Mt. Kahili, Cilapin 57 (PTBG), Flynn 9496 (PTBG), Lorence 8451 (PTBG); Wahiawa Stream and Mountains, Flynn 2932 (PTBG), Lorence 6655, 8385 (PTBG), Wood 237, 238, 239, 7466 (PTBG); between Waialeale and Kawaikini, "lBlue Hole" Lorence 5400, Wood 345 (PTBG).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

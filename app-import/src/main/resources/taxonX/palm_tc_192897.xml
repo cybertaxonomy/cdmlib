@@ -1,0 +1,46 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>Genera Palmarum. The evolution and classification of palms</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Uhl</mods:namePart>
+<mods:namePart type="given">N.</mods:namePart>
+<mods:namePart type="family">Asmussen</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+<mods:namePart type="family">Harley</mods:namePart>
+<mods:namePart type="given">M.</mods:namePart>
+<mods:namePart type="family">Lewis</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>2008</mods:dateIssued><mods:publisher>Kew Publishing, Royal Botanic Gardens Kew</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="genus">
+<div type="diagnosis"><p>Moderate, solitary pinnate-leaved palm, native to Samoa, with crownshaft, praemorse leaflets and distinctive elongate peduncle.</p></div>
+<nomenclature>
+<name>Solfia</name>
+<author>Rech.</author> 
+<citation>Repert. Spec. Nov. Regni Veg. 4: 232 (1907).</citation>
+<type>Type; Solfia samoensis; Rech.</type>
+</nomenclature>
+<div type="etymology"><p>Commemorates Wilhelm Solf (1862–1936), one-time governor of German Samoa.</p></div>
+<div type="description"><p>Moderate solitary, unarmed, pleonanthic, monoecious palms. Stem erect, slender, ringed with rather widely spaced leaf scars. Leaves pinnate, arching slightly, few in crown; sheath rather thick, forming a slender crownshaft, glabrous adaxially, abaxially densely covered with whitish tomentum and small grey-brown scales; petiole relatively short, slender, adaxially channelled near base, rounded distally, abaxially rounded, covered with grey scales; rachis long, slender, adaxially often sharply pointed or ridged and rounded, abaxially rounded, densely covered with grey scales or tomentum; leaflets held in one plane, regularly arranged, single-fold, lanceolate, distal pair small and narrow, leaflets distally oblique, raggedly praemorse, adaxially glabrous except for a few scales near bases of major veins, abaxially covered with small scales on veins, ramenta lacking, midvein and a pair of large veins along or close to the margins prominent, margins densely covered with caducous tomentum and scales, transverse veinlets not evident. Inflorescences infrafoliar, branched to 3 orders, protandrous; peduncle relatively slender, elongate, elliptical in cross-section; prophyll apparently tardily deciduous, tubular, slender, dorsiventally flattened, with 2, narrow, lateral keels, pointed, splitting apically and for a short distance abaxially to release the peduncular bract, abaxially densely covered with multibranched or grey scales; peduncular bract marcescent, tubular, slender, much longer than the peduncle, with a long rather flat, pointed tip, densely covered with scales as the prophyll; rachis shorter to slightly longer than the peduncle, angled, tapering, bearing spirally arranged branches; rachis bracts low, rounded; rachillae slender, tapering, bearing spirally arranged triads of flowers basally, and pairs of a pistillate and one staminate, or a single staminate flower distally; floral bracteoles low, rounded or truncate. Staminate flowers bullet-shaped; sepals 3, distinct, imbricate, irregularly but strongly keeled, margins thin, variously notched; petals 3, distinct, ovate, valvate, evenly thickened, adaxially grooved, abaxially striate when dry, reflexed at anthesis; stamens numerous, ca. 35–37, filaments slender, awl-shaped, anthers elongate, sagittate basally, uneven, sometimes divided apically, medifixed, versatile, latrorse; pistillode absent in some flowers or ovoid attenuate as long as the stamens, usually shortly trifid apically. Pollen ellipsoidal asymmetric; aperture a distal sulcus; ectexine tectate, psilate-scabrate and finely perforate, aperture margin similar; infratectum columellate; longest axis ranging from 58–73 µm [1/1]. Pistillate flowers broadly ovoid; sepals 3, distinct, imbricate, hooded, edges minutely toothed or variously notched; petals 3, twice as long as the sepals in late bud, distinct, ovate, imbricate, lateral margins shortly fringed, tips thick, valvate; staminodes 3, shortly joined basally, wide, truncate and bifid or uneven distally; gynoecium symmetrical, ovoid, tapering distally, unilocular, uniovulate, stigmas 3, recurved, ovule attached laterally or pendulous from the top of the locule, form unknown. Fruit ovoid, red at maturity, stigmatic remains eccentrically apical; epicarp thin, smooth, becoming wrinkled and somewhat pebbled when dry, mesocarp fleshy, fibrous, with stinging crystals, major fibres conspicuous adherent to the endocarp, endocarp terete, straw-coloured. Seed ovoid, surface smooth, hilum apical, raphe much branched, endosperm homogeneous; embryo basal. Germination adjacent-ligular; eophyll bifid. Cytology: 2n = 32.</p></div>
+<div type="distribution"><p>One species endemic to Samoa.</p></div>
+<div type="anatomy"><p>Not studied. </p></div>
+<div type="relationships"><p>Norup et al. (2006), Baker et al. (in review)and Lewis et al. (in prep.) found high support for a sisterrelationship between Solfia and Balaka.</p></div>
+<div type="uses"><p>Not recorded.</p></div>
+<div type="taxonomic accounts"><p>Rechinger (1907).</p></div>
+<div type="fossil record"><p>No generic records found.</p></div>
+<div type="discussion"><p>The slender elongate peduncle is distinctive.</p></div>
+<div type="vernacular"><p>Not recorded.</p></div>
+<div type="biology_ecology"><p>Occurring in montane forest.</p></div>
+<div type="conservation"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

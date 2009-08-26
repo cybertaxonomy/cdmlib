@@ -1,0 +1,55 @@
+<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>A Monograph of Phoenix L. (Palmae: Coryphoideae)</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Barrow</mods:namePart>
+<mods:namePart type="given">S.C.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>1998</mods:dateIssued>
+<mods:publisher>Kew Bulletin, Vol. 53, No. 3 (1998), pp. 513-575</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Phoenix loureiroi var. loureiroi</name>
+<author>Kunth</author>
+<citation>Enum. P1. 3: 257 (1841)</citation>
+<synonymy>
+<name>Phoenix humilis var. hanceana</name>
+<author>Becc.</author>
+<bibref>Becc., Malesia: 379, 392 (1890)</bibref>
+<type>Beccari (1890) notes the specimen from Hong Kong, 1853 - 56 (pist.); Wright; 507</type>
+<type_loc>Type K!, LE</type_loc>
+</synonymy>
+<synonymy>
+<name>Phoenix hanceana var. formosana</name>
+<author>Becc.</author>
+<bibref>Becc., Philipp. J. Sci. 3: 339 (1908)</bibref>
+<bibref>Hui-Lin, Fl. Taiwan 5: 791, pl. 1524, 1525 (1978)</bibref>
+</synonymy>
+<synonymy>
+<name>Phoenix hanceana var. philippinensis</name>
+<author>Becc.</author>
+<bibref>Becc., Philipp. J. Sci. 3: 339 – 342</bibref>
+<type>Batanes Is., Sabtang Island, June 1907 (pist.); Finix (Bur. Sci.); 3744.</type>
+<type_loc>Type FI-B!</type_loc>
+</synonymy>
+<synonymy>
+<name>Phoenix pusilla</name>
+<author>Lour. (non Gaertn.)</author>
+<bibref>Lour. (non Gaertn.), Fl. Cochinchina: 614 (1790), nom. Illegit</bibref>
+</synonymy>
+</nomenclature>
+<div type="diagnosis"><p>Distinguished from R loureiri var. humilis by the presence of a continuous strip of sclerotic, tannin-filled cells along leaflet margin and discontinuous patches of such cells in the abaxial midrib region.</p></div>
+<div type="biology_ecology"><p>In Thailand P. loureiri var. loureiri is found extensively on grassy or rocky slopes or in open areas under dry dipterocarp forest up to 500 m altitude, often but by no means exclusively on limestone soil. At higher altitude it is found on sandy soil in pine forest undergrowth up to 1700 m. The species is increasingly common, almost weedy, in the undergrowth of pine plantations. Phoenix loureiri var. loureiri is rare in Peninsular Thailand. Populations are known only from Trang province near the Malaysian border, growing in grasslands with intense human access, often on old termite mounds along the borders of neglected rice-paddy. </p></div>
+<div type="materials_examined"><p>CAMBODIA. Mount Kuang Repen, Pierre 4832 (lectotype FI-B!); Stung-Treng, Choul 2154 (K!). CHINA. Canton and Macao, Jan. 1837 (pist.), Gaudichaud 53 (P!); Simao mts, 1899 (stam.), Henry 12924 (CAL!, FI-B!, K!). Hainan: Na-ta, 1 Nov. 1921 (pist.), McClure 8038 (BM!, E!, K!, P!); Vo Lau to Na-ta, 1935 (pist.), Linsley Gressit 978 (BM!, E!). HONG KONG. Clearwater Bay, 31 May 1970 (stam., pist.), Shiu Ying Hu 10354 (K!); Tai Mo Shan, N.T., 150 m alt., 16 March 1995 (pist.), Baker &amp; Utteridge BU9 (K!). MYANMAR. Pegu, 6 March 1871 (pist.), Kurz 3317 (BM!, CAL!); Maymyo plateau, 22 April 1913 (pist.), Lace 6165 (DD!, K!); Mindat, 16 March 1956 (stam.), Kingdon-Ward 21800 (BM!). PHILIPPINES. Batanes Is., Sabtang Island, June 1907 (pist.), Fenix (Bur. Sci.) 3744. (FI-B!); Mt Iraya, 11 May 1984, Fernando 403, 404 (K!). TAIWAN. Takao-san, 5 June 1912 (pist.), Price 585 (K!); Nan- Wan Heng-Chun, Pingtung County, 18 Dec. 1994 (stam., pist.), Chu 2 (K!). THAILAND. Kanchanaburi Prov., 10 km along road from Thing Pha Phum to Tripagodas, 8 Jan. 1994, Barrow &amp; Wongprasert 7, 8, 9 (BKF!, K!); Chiang Mai Prov., Doi Inthanon, Vachiratharn Waterfall, 11 Jan. 1994, Barrow &amp; Phuma 10, 11, 12 (BKF!, K!); Trang Prov., Thung Kai Forest Research Station, 22 Jan. 1994, Barrow &amp; Tingnga 29, 30 (BKF!, K!). VIETNAM. Near Nha-Trang, 10 March 1922 (pist.), Poilane 2792 (P!); 25 June 1923 (ster.), Poilane 5932 (P!); Da Nang (Tourane), May -July 1927 (ster.), Clemens 4348 (K!); Central Annam, 25Jan. 1930 (ster.), Magalon s.n. (P!).</p></div>
+<div type="vernacular"><p>Thailand. Peng [e.g., Barrow 1 (K)]. Philippines. Voyavoy (Phoenix palm), suot, vakol (coat made from leaflets of Phoenix) (Ivatan), [Greuzo &amp; Fernando (1985)].</p></div>
+<div type="discussion"><p>Phoenix was first recorded in Indochina as P. pusilla by Loureiro (1790), who described a short palm from Hue in Vietnam. Unfortunately, the name P. pusilla had previously been used by Gaertner (1788) to describe a small palm of Sri Lanka and therefore P. pusilla Lour. is illegitimate. Kunth (1841) later described a palm from Vietnam as P. loureiri Kunth. The similarity between P. loureiri of Indochina and P. humilis of India was acknowledged by Beccari (1890), who included the former as one of five varieties of the latter in his monograph of the genus. This treatment was adopted by Beccari &amp; Hooker (1892 - 93) and Blatter (1926). The name P. humilis (Royle 1840) was taken as the specific epithet, rather than P. loureiri, due to its earlier appearence in the literature, although it was not formerly described until 1890. The International Code of Botanical Nomenclature (Greuter et al. 1994) states that it is the date of description of a name that determines validity, and therefore P. loureiri (1841) must take precedence over P. humilis Royle ex Becc. (1890). This decision was reached by Moore (1963a) who accepted P. loureiri as a wide-ranging species including all varieties of P. humilis as defined by Beccari (1890, 1908). The type variety includes those Phoenix palms of Indochina and the Far East formerly referred to by Beccari (1890, 1908) as P. humilis var. loureiri and var. hanceana.</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>
+

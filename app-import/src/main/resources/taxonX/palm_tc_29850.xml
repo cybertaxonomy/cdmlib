@@ -2,7 +2,10 @@
 <taxonxHeader>
 <mods:mods>
 <mods:titleInfo><mods:title>Rattans of the Western Ghats. A Taxonomic Manual.</mods:title></mods:titleInfo>
-<mods:name><mods:namePart>Renuka, C.</mods:namePart></mods:name>
+<mods:name>
+<mods:namePart type="family">Renuka</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+</mods:name>
 <mods:originInfo>
 <mods:dateIssued>1992</mods:dateIssued>
 <mods:publisher>Kerala Forest Research Institute</mods:publisher>

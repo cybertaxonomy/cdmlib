@@ -4,7 +4,12 @@
 <mods:titleInfo>
 <mods:title>A new species of Calamus (Palmae) from Java</mods:title>
 </mods:titleInfo>
-<mods:name><mods:namePart>Joko Witono and John Dransfield</mods:namePart></mods:name>
+<mods:name>
+<mods:namePart type="family">Witono</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
 <mods:originInfo>
 <mods:publisher>Kew Bulletin, Vol. 53, No. 3, pp. 747-751</mods:publisher>
 <mods:dateIssued>1998</mods:dateIssued>

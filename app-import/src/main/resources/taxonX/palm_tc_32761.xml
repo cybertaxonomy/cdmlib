@@ -1,0 +1,58 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>Genera Palmarum. The evolution and classification of palms</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Uhl</mods:namePart>
+<mods:namePart type="given">N.</mods:namePart>
+<mods:namePart type="family">Asmussen</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+<mods:namePart type="family">Harley</mods:namePart>
+<mods:namePart type="given">M.</mods:namePart>
+<mods:namePart type="family">Lewis</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>2008</mods:dateIssued><mods:publisher>Kew Publishing, Royal Botanic Gardens Kew</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="genus">
+<div type="diagnosis"><p>Erect pinnate-leaved tree palms from the Caribbean, distinctive in the inflorescence with many rachillae radiating from the tip of the peduncle and inflated staminodal tube in the pistillate flower.</p></div>
+<nomenclature>
+<name>Calyptronoma</name>
+<author>Griseb.</author> 
+<citation>Fl. Brit. W. I. 518 (1864).</citation>
+<type>Type; Calyptronoma swartzii; Griseb.</type>
+<synonymy>
+<name>Cocops</name>
+<author>O.F. Cook</author>
+<bibref>O.F. Cook, Bull. Torrey Bot. Club 28: 568 (1901).</bibref>
+<type>Type; Cocops rivalis; O.F. Cook</type>
+</synonymy>
+<synonymy>
+<name>Calyptrogyne subgenus Calyptronoma</name>
+<author>(Griseb.) Wess. Boer.</author>
+<bibref>(Griseb.) Wess. Boer., Verh. Kon. Ned. Akad. Wetensch., Afd. Natuurk., Tweede Sect. 1968.</bibref>
+</synonymy>
+</nomenclature>
+<div type="etymology"><p>Kalyptra — a lid, nomos — that which is in habitual use, referring to the upper part of the corolla in the pistillate flower that is pushed off like a lid or cap.</p></div>
+<div type="description"><p>Moderate, solitary, unarmed, pleonanthic, monoecious palms. Stem stout, erect, becoming bare, irregularly ringed with leaf scars. Leaves pinnate, erect or ±horizontal, arching, marcescent; sheath becoming open opposite the petiole, not forming a crownshaft, expanded and thicker basally, margins fibrous, both surfaces covered with waxy, caducous tomentum, thinner adaxially; petiole relatively short, deeply grooved adaxially, rounded abaxially; rachis adaxially grooved near the base, flat and laterally channelled distally; leaflets narrow, lanceolate, wider at the middle, tapering to a pointed tip, single-fold, adaxial surface lightly waxy, abaxial surface with thin waxy tomentum and scales along the midrib, midrib and 2 pairs of lateral ribs more evident abaxially, transverse veinlets not evident. Inflorescences solitary, interfoliar, becoming infrafoliar, erect at first, pendulous later, branched to 1(–4) orders, protandrous; peduncle stout, elongate, elliptic in cross-section; prophyll tubular, dorsiventrally flattened, with 2, rather wide, lateral keels, pointed, splitting apically and ventrally, woody, lightly waxy, tomentose, inserted at the base of the peduncle; peduncular bract tubular, pointed, stiff, thinner than the prophyll, lightly waxy and tomentose, inserted about halfway along the peduncle, often shed before the prophyll leaving a ruffled scar, subsequent peduncular bracts few, short, spirally inserted; rachis ca. 2/3 as long as the peduncle; rachis bracts short, wide and irregularly notched to pointed, ovate distally; lower branches with a short bare portion, then branched 1(–2) times into rachillae; rachillae moderate, rather short and crowded, bearing rows of partly sunken, short, rounded bracts, each subtending a triad of flowers borne in a pit; floral bracteoles 3, the first bracteole narrow elongate, the second short, wide, truncate, the third short, pointed. Staminate flowers lateral and outside of the pistillate flower in the pit; sepals 3, distinct, unequal, long, narrow, ± keeled, rounded or pointed distally, imbricate basally, chaffy; petals 3, adnate basally to the receptacle, connate for 2/3 their length in a tube, tips valvate; stamens 6, filaments fleshy, connate and adnate to the receptacle for 2/3 their length, the receptacle elongating at anthesis, forming a stalk-like base to the androecium, the androecium hence far-exserted distally, the filaments terete, anthers sagittate, dorsifixed near the base, introrse, versatile and horizontal at anthesis, connective tanniniferous; pistillode 3-lobed with minute tips or lacking. Pollen ellipsoidal, usually with either slight or obvious asymmetry; aperture a distal sulcus; ectexine tectate, perforate, perforate-rugulate or rugulate-insulate, aperture margin slightly finer or psilate; longest axis 24–49 µm. Post-meiotic tetrads tetrahedral [3/3]. Pistillate flowers asymmetrically triangular in bud; sepals 3, distinct, imbricate, narrow, briefly keeled, pointed, margins irregular; petals 3, connate in a tube with short valvate apices, upper 1/4 shed as a circumscissile cap; staminodes completely connate, urn-shaped, inflated above the corolla tube at anthesis, white, membranous, exserted, pushing off the corolla cap, the apex briefly 6-toothed; gynoecium trilocular, triovulate, ± 3-angled, adaxial side longest, style long, cylindrical, stigmatic lobes 3, short, linear, ovule large, anatropous. Fruit ovoid, 1-seeded, stigmatic remains basal; epicarp smooth, granular when dry, mesocarp fleshy with stout fibres anastomosing distally, one large fibre conspicuous, endocarp thin, colourless, tough, with a circular operculum over the embryo. Seed globose-ellipsoidal, raphe unbranched, encircling the seed, hilum short, basal, endosperm homogeneous; embryo basal. Germination adjacent-ligular; eophyll bifid. Cytology: 2n = 28.</p></div>
+<div type="distribution"><p>Three species in the Greater Antilles. </p></div>
+<div type="anatomy"><p>Leaf (Wessels Boer 1968, Tomlinson 1961), root (Seubert 1998a, 1998b), and flower (Stauffer and Endress 2003). </p></div>
+<div type="relationships"><p>Unpublished morphological data resolve Calyptronoma as monophyletic (Asmussen et al. unpublished), whereas nuclear DNA data resolve Calyptronoma as paraphyletic with respect to Calyptrogyne with moderate support (Roncal et al. 2005). Calyptronoma is resolved in a clade with Calyptrogyne with moderate to high support (Asmussen 1999b, Roncal et al. 2005, Asmussen et al. 2006, unpublished, Baker et al. in review). Despite the dense species sampling carried out by Roncal et al. (2005) and Asmussen et al. (unpublished), more species and characters should be sampled to clarify relationships in this group. </p></div>
+<div type="uses"><p>The leaves resemble those of the coconut but have shorter leaflets, much used for thatch. </p></div>
+<div type="taxonomic accounts"><p>Wessels Boer (1968) and Zona (1995). </p></div>
+<div type="fossil record"><p>No generic records found.  </p></div>
+<div type="discussion"><p>Calyptronoma is most closely related to Calyptrogyne. It is morphologically an unusual and striking genus because of its large size and pistillate flower with a dehiscent petal cap and staminodal body. Additional figures: Fig. 2.8h. 
+</p></div>
+<div type="vernacular"><p>Manac palm, long thatch. </p></div>
+<div type="biology_ecology"><p>In swamps, near the ocean and beside streams, and in wet places in the mountains. </p></div>
+<div type="conservation"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

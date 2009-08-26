@@ -1,0 +1,51 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>A Synopsis of the Rattans (Arecaceae: Calamoideae) of Laos and Neighbouring Parts of Indochina</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Evans</mods:namePart>
+<mods:namePart type="given">T.</mods:namePart>
+<mods:namePart type="family">Sengdala</mods:namePart>
+<mods:namePart type="given">K.</mods:namePart>
+<mods:namePart type="family">Thammavong</mods:namePart>
+<mods:namePart type="given">B.</mods:namePart>
+<mods:namePart type="family">Viengkham</mods:namePart>
+<mods:namePart type="given">O.V.</mods:namePart>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>2002</mods:dateIssued>
+<mods:publisher>Kew Bulletin, Vol. 57, No. 1 (2002), pp. 1-84</mods:publisher>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Calamus harmandii</name>
+<author>Pierre ex Becc.</author> 
+<citation>Rec. Bot. Surv. India 2: 216 (1902)</citation>
+<type>Laos, Attapeu; Harmand; 1198 (3359 in Herb. Pierre) </type>
+<type_loc>Holotype FI-B; isotype P, photograph in K.</type_loc>
+<bibref>Dransfield, Kew Bull. 39 (4): 797 (1984)</bibref>
+<bibref>Evans et al., Rattans Lao PDR: 20 (2001)</bibref>
+<synonymy>
+<name>Zalacella harmandii</name>
+<author>(Pierre ex Becc.) Becc.</author>
+<bibref>(Pierre ex Becc.) Becc., Ann. Roy. Bot. Gard. (Calcutta) 11 (1): 496 (1908)</bibref>
+<bibref>Magalon, Contr. Palm. Indoch. 155 (1930)</bibref>
+<bibref>Gagnep. &amp; Conrard in Gagnep. (ed.), Fl. Indo-Chine 6:1005 (1937)</bibref>
+</synonymy>
+</nomenclature>
+<div type="distribution"><p>Indochinese endemic, known only from the type locality.</p></div>
+<div type="materials_examined"><p>LAOS (SOUTH): Attapeu Province, Sanxay Distr., Ban Tatkoum, Phou Lekfay, 14 May 1999, (stam.), Khamphone KP 398 (FRCL, K) and (fr.),Khamphone KP 400 (FRCL, K); Attapeu Basin, Phou Lekfay (60 km ENE d'Attopeu), March 1877 (pist.), Harmand, J. 1198 (=Pierre 3359) (FI-B, P and K [photograph]).</p></div>
+<div type="biology_ecology"><p>Evergreen forest at 150 - 200 m.</p></div>
+<div type="discussion"><p>Beccari (1908) placed the locality in Cochinchina but this, and his spelling of it, were in error. The rediscovery of this species was described by Evans (2000). Unconfirmed reports of the species from North Thailand (Evans 2000) are now known to refer to Calamus erectus.</p></div>
+<div type="vernacular"><p>nya seui (Lao Loum), yeu mo (Alak).</p></div>
+<div type="uses"><p>Fruits edible.</p></div>
+<div type="conservation"><p>The species is currently of conservation concern because it is known from only one site. The locality adjoins a very extensive area of forests at similar altitudes, exploration of which may reveal that it is more abundant. The only threat known at present is forest clearance.</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>
+

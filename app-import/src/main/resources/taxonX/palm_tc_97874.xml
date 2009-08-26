@@ -1,0 +1,45 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>Genera Palmarum. The evolution and classification of palms</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Uhl</mods:namePart>
+<mods:namePart type="given">N.</mods:namePart>
+<mods:namePart type="family">Asmussen</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+<mods:namePart type="family">Harley</mods:namePart>
+<mods:namePart type="given">M.</mods:namePart>
+<mods:namePart type="family">Lewis</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>2008</mods:dateIssued><mods:publisher>Kew Publishing, Royal Botanic Gardens Kew</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="genus">
+<div type="diagnosis"><p>Moderate, solitary pinnate-leaved palm endemic to Lord Howe Island, with a conspicuous white crownshaft.</p></div>
+<nomenclature>
+<name>Hedyscepe</name>
+<author>H. Wendl. and Drude</author> 
+<citation>Linnaea 39: 178, 203 (1875).</citation>
+<type>Type; Hedyscepe canterburyana; (C. Moore and F. Muell.) H. Wendl. and Drude</type>
+</nomenclature>
+<div type="etymology"><p>Hedys — pleasant, skepe — shade, in allusion to its local name, umbrella palm.</p></div>
+<div type="description"><p>Solitary, moderate, unarmed, pleonanthic, monoecious palm. Stem rather stout, conspicuously ringed with narrow, raised, whitish leaf scars. Leaves pinnate, stiff, arching; sheath forming a prominent crownshaft, thick, striate, densely covered with white wax and scattered small brown scales; petiole very short, stout, adaxially grooved, abaxially rounded; leaflets subopposite, rather short, lanceolate, pointed, proximal and distal leaflets distinctly narrower and shorter, stiff, ±erect, single-fold, adaxially glabrous, abaxially tomentose along the margins and scaly along the ribs on both surfaces, midrib and 3 pairs of veins raised adaxially, transverse veinlets not evident. Inflorescences solitary, infrafoliar, ?protandrous, branched to 1(–3) orders; peduncle short, ± flat, stout, horizontal; prophyll tubular, dorsiventally flattened, pointed but not tapering, with 2 flat lateral keels, chartaceous, deciduous; peduncular bract like the prophyll but not keeled, also caducous; ca. 3 wide ridge-like bracts above the peduncular bract; rachis rather short but longer than the peduncle, bearing low, pointed, spirally arranged bracts subtending rachillae; rachillae divaricate, stout, bearing triads of flowers nearly throughout, distally with a few pairs and single staminate flowers; floral bracteoles, low, pointed. Staminate flowers asymmetrical; sepals 3, distinct, slightly imbricate and bulbous or connate basally, narrow, elongate, widely separated, tapering distally, keeled; petals 3, distinct, variously angled, valvate; stamens 9–10 (–12 according to J.D. Hooker [1883]) in 2 series, antesepalous stamens solitary, antepetalous stamens paired, filaments awl-shaped, markedly inflexed at the apex in bud, anthers erect in bud, large, variously curved, linear, emarginate apically, bifid basally, latrorse, connective elongate, tanniniferous; pistillode with a rounded ovarian part and long terete style about as high as the stamens. Pollen grains ellipsoidal, slight asymmetry; aperture a distal sulcus; ectexine tectate, perforate, aperture margin similar; infratectum columellate; longest axis ranging from 55–60 µm [1/1]. Pistillate flowers symmetrical, ovoid; sepals 3, distinct, imbricate, rounded; petals 3, distinct, imbricate with briefly valvate apices; staminodes 3, small, tooth-like, (?)borne on one side of the gynoecium; gynoecium unilocular, uniovulate, ovoid with 3 recurved stigmas, ovule laterally attached, form unknown. Fruit broadly ellipsoidal, deep dull red when ripe, stigmatic remains apical; epicarp smooth, mesocarp with a prominent layer of longitudinal, slender fibres over parenchyma and dispersed tannin cells and flat, long fibres adherent to the endocarp, endocarp crustaceous, thin, fragile, not operculate. Seed laterally attached by a broad elongate hilum, raphe branches numerous, anastomosing, endosperm homogeneous; embryo basal. Germination adjacent-ligular; eophyll bifid. Cytology not studied.</p></div>
+<div type="distribution"><p>One species endemic to LordHowe Island. </p></div>
+<div type="anatomy"><p>Root (Seubert 1998a, 1998b) and fruit (Essig andHernandez 2002). </p></div>
+<div type="relationships"><p>For relationships, see Rhopalostylidinae.</p></div>
+<div type="uses"><p>Occasionally cultivated.</p></div>
+<div type="taxonomic accounts"><p>Green (1994).</p></div>
+<div type="fossil record"><p>No generic records found.</p></div>
+<div type="discussion"><p>Closely related to Rhopalostylis. Differs in having triadsnearly throughout the rachillae, more than six stamens and apistillode with a rounded ovarian base. Also differs in beingprotandrous, Rhopalostylis being protogynous.</p></div>
+<div type="vernacular"><p>Big mountain palm, canterbury umbrella palm. </p></div>
+<div type="biology_ecology"><p>Found on high cliffs above the sea, mostcommon on the more exposed ridges at 600–750 m elevation.</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

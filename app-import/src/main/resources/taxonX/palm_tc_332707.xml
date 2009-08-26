@@ -4,7 +4,14 @@
 <mods:titleInfo>
 <mods:title>Dypsis robusta, a large new palm from cultivation</mods:title>
 </mods:titleInfo>
-<mods:name><mods:namePart>Donald Hodel, Jeff Marcus and John Dransfield</mods:namePart></mods:name>
+<mods:name>
+<mods:namePart type="family">Hodel</mods:namePart>
+<mods:namePart type="given">D.</mods:namePart>
+<mods:namePart type="family">Marcus</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
 <mods:originInfo>
 <mods:publisher>Palms 49(3): 128-130</mods:publisher>
 <mods:dateIssued>2005</mods:dateIssued>

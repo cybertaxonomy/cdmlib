@@ -1,0 +1,45 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>Genera Palmarum. The evolution and classification of palms</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Uhl</mods:namePart>
+<mods:namePart type="given">N.</mods:namePart>
+<mods:namePart type="family">Asmussen</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+<mods:namePart type="family">Harley</mods:namePart>
+<mods:namePart type="given">M.</mods:namePart>
+<mods:namePart type="family">Lewis</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>2008</mods:dateIssued><mods:publisher>Kew Publishing, Royal Botanic Gardens Kew</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="genus">
+<div type="diagnosis"><p>Moderate, solitary pinnate-leaved palm, native to karst limestone of Palawan and neighbouring islands in the Philippines and Malaysia, with crownshaft, praemorse leaflets and ruminate endosperm.</p></div>
+<nomenclature>
+<name>Adonidia</name>
+<author>Becc.</author> 
+<citation>Philipp. J. Sci., 14: 329 (1919).</citation>
+<type>Type; Adonidia merrillii; (Becc.) Becc.</type>
+</nomenclature>
+<div type="etymology"><p>Derivation not explained by author but probably from Adonis, handsome youth of Greek mythology whose blood stained the flowers of Adonis (Ranunculaceae); perhaps Beccari called the palm Adonidia in reference to the bright red fruit.</p></div>
+<div type="description"><p>Moderate solitary, unarmed, pleonanthic, monoecious palms. Stem moderate, ringed with close leaf scars, becoming longitudinally striate, grey. Leaves pinnate, strongly curved; sheaths forming a prominent crownshaft, covered with deciduous grey tomentum and scattered dark scales, two short triangular auricles present at base of petiole; petiole short, adaxially channelled, abaxially rounded, densely covered with deciduous tomentum at least basally; rachis elongate, flat to ridged adaxially, rounded abaxially, tomentose; leaflets regularly arranged, but diverging in slightly different planes, strongly curved and rather irregularly bent near the tip, single-fold, tapered from middle to base and usually to the apex, apically oblique, truncate, acute, or acuminate and variously toothed, the upper margin usually longest, midrib and marginal veins prominent, midrib bearing ramenta abaxially near the base, otherwise abaxial surface covered in minute brown scales, transverse veinlets not evident. Inflorescences infrafoliar, branched to 3–4 orders basally, fewer orders distally, branches tomentose when newly emerged; peduncle very short, stout, dorsiventrally compressed; prophyll and peduncular bract caducous, prophyll tubular, rather thin, 2-keeled laterally; peduncular bract like the prophyll but lacking keels, briefly beaked, scar of an incomplete peduncular bract usually present; rachis longer than the peduncle, tapering, stiff, bearing very short bracts subtending branches and rachillae; rachillae rather short and slender, slightly flexuous, bearing spirally, or distally subdistichous triads throughout at least half their length, distally flower clusters of paired or solitary staminate flowers; floral bracteoles very small inconspicuous, short, rounded, margins notched. Staminate flowers bullet-shaped; sepals 3, distinct, imbricate, rounded, ± hooded; petals 3, slightly asymmetrical to symmetrical, valvate, more than twice as long as the sepals; stamens numerous, 45–50, filaments awl-shaped, long, slender, not inflexed apically, anthers linear, dorsifixed, the bases deeply sagittate, bifid or acute apically, latrorse; pistillode attenuate from a bulbous base, as long as the stamens, usually bifid or trifid apically. Pollen ellipsoidal asymmetric; aperture a distal sulcus; ectexine tectate, perforate and microchanelled, aperture margin similar; infratectum columellate; longest axis 48–58 µm [1/1]. Pistillate flowers ovoid; sepals 3, distinct, thick, imbricate, margins notched; petals 3, distinct, broadly imbricate, only slightly longer than the sepals, apices shortly valvate, margins notched; staminodes 6, tooth-like, variously connate; gynoecium irregularly ovoid, unilocular, uniovulate, style thick, stigmas 3, sessile, recurved at anthesis, ovule large, laterally attached, form unknown. Fruit ovoid, beaked, red at maturity, perianth whorls enlarged, persistent, stigmatic remains apical; epicarp thin, sometimes appearing minutely pebbled when dry, mesocarp yellowish, thin-fleshy, with 3–5 layers of slender to large fibres and ground tissue sclerified near the endocarp, endocarp thin, almost glass-like, fragile. Seed ovoid, truncate basally, pointed apically, attached laterally, hilum elongate, raphe branches descending from the apex and sides, simple, forked, or branched and much anastomosed, endosperm ruminate; embryo basal. Germination adjacent-ligular; eophyll bifid. Cytology: 2n = 32.</p></div>
+<div type="distribution"><p>One species confined to the northern part of Palawan and its offshore islands (Philippines)and the coast of Sabah.</p></div>
+<div type="anatomy"><p>Leaf (Tomlinson 1961) and fruit (Essig 1977). </p></div>
+<div type="relationships"><p>Adonidia is moderately supported as sister to aclade of Solfia, Balaka and Veitchia (Norup et al. 2006, Baker etal. in review, Lewis et al. in prep.).</p></div>
+<div type="uses"><p>Very widely planted throughout the tropics and subtropics.</p></div>
+<div type="taxonomic accounts"><p>Beccari (1919).</p></div>
+<div type="fossil record"><p>No generic records found.</p></div>
+<div type="discussion"><p>This represents a remarkable outlier of thePtychospermatinae at the edge of Sundaland.</p></div>
+<div type="vernacular"><p>Manila palm, Christmas palm</p></div>
+<div type="biology_ecology"><p>Adonidia merrillii grows on karstlimestone cliffs.</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

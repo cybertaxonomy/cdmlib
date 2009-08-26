@@ -1,0 +1,45 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>Genera Palmarum. The evolution and classification of palms</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Uhl</mods:namePart>
+<mods:namePart type="given">N.</mods:namePart>
+<mods:namePart type="family">Asmussen</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+<mods:namePart type="family">Harley</mods:namePart>
+<mods:namePart type="given">M.</mods:namePart>
+<mods:namePart type="family">Lewis</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>2008</mods:dateIssued><mods:publisher>Kew Publishing, Royal Botanic Gardens Kew</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="genus">
+<div type="diagnosis"><p>Tall solitary tree palm of New Guinea and the Solomon Islands with slender crownshaft, strongly arching leaves and highly branched inflorescence bearing large fruit with deeply ruminate endosperm.</p></div>
+<nomenclature>
+<name>Actinorhytis</name>
+<author>H. Wendl. and Drude</author> 
+<citation>Linnaea 39: 184 (1875).</citation>
+<type>Type; Actinorhytis calapparia; (Blume) H. Wendl. and Drude ex Scheff.</type>
+</nomenclature>
+<div type="etymology"><p>Aktis — ray, rhytis — wrinkle or fold, referring to the radiating ruminations in the endosperm.</p></div>
+<div type="description"><p>Tall, solitary, unarmed, pleonanthic, monoecious tree palms. Stem erect, bare, conspicuously marked with leaf scars, with a large mass of roots at the base. Leaves pinnate, arching, neatly abscising; sheaths tubular, forming a long, slender, well-defined crownshaft, bearing scattered caducous scales, the mouth with a short ligule; petiole very short in mature individuals (long in juveniles), adaxially channelled or flattened, abaxially rounded, densely caducously tomentose; rachis conspicuously down-curved toward the tip; leaflets very numerous, close, regularly arranged, single-fold, acute, acuminate or briefly bifid, the margins thickened, adaxially glabrous, abaxially with minute dot-like scales and conspicuous ramenta along the midrib, transverse veinlets obscure. Inflorescences infrafoliar, erect in bud, becoming horizontal or pendulous, branching to 3 orders proximally, to 1 order distally, protandrous; peduncle short, winged at the very base, grossly swollen just above the base in the centre, caducously tomentose; prophyll inserted near the base of the peduncle, tubular, beaked, 2-keeled, entirely enclosing the inflorescence in bud, sparsely scaly, splitting abaxially, deciduous; peduncular bract, inserted just above the prophyll, similar to the prophyll but scarcely 2-winged, deciduous; subsequent bracts low, triangular, inconspicuous; rachis longer than the peduncle, ± elliptic in cross-section, bearing relatively few, large, spirally arranged first-order branches, with conspicuous, bare, proximal portions; rachillae rather stiff, elongate, bearing spirally arranged triads in the proximal 1/2 to 2/3, and paired or solitary staminate flowers distally, or rarely, bearing only staminate flowers; rachilla bracts low, rounded, quite conspicuous, tending to form very shallow pits; floral bracteoles sepal-like. Staminate flowers asymmetrical in bud; sepals 3, distinct, imbricate, ± triangular-tipped, keeled; petals 3, distinct, ± ovate, valvate, ± 2–3 times as long as the sepals; stamens 24–33 or more, exserted at anthesis, filaments slender, elongate, inflexed at the tip, anthers medifixed, narrow oblong, ± versatile, latrorse; pistillode columnar, ± as long as the stamens in bud, shorter when stamens exserted. Pollen ellipsoidal asymmetric, occasionally elongate; aperture a distal sulcus; ectexine tectate, perforate-rugulate, aperture margin similar or slightly finer; infratectum columellate; longest axis 33–50 µm [1/1]. Pistillate flowers globular, at anthesis much larger than the staminate; sepals 3, distinct, imbricate, rounded; petals 3, ±twice as long as the sepals, distinct, broadly imbricate with conspicuous, triangular, valvate tips; staminodes 3, narrow triangular, flattened; gynoecium ovoid to obovoid, unilocular, uniovulate, stigmas 3, large, fleshy, recurved, ovule laterally attached near the apex of the locule, hemianatropous. Fruit very large, ovoid, ± beaked, green turning red at maturity, perianth whorls persistent, stigmatic remains apical; epicarp smooth, mesocarp with thin flesh and abundant anastomosing fibres adhering to the endocarp, endocarp closely adhering to the seed, thin, ± bony. Seed globose, with lateral, longitudinal hilum, endosperm deeply ruminate, with a central, irregular hollow; embryo basal. Germination adjacent-ligular; eophyll bifid. Cytology not studied.</p></div>
+<div type="distribution"><p>A single species, Actinorhytis calapparia, native to New Guinea and the Solomon Islands, now widespread as an ornamental or ceremonial plant in Southeast Asia.</p></div>
+<div type="anatomy"><p>Leaf (Tomlinson 1961), root (Seubert 1998a, 1998b) and fruit (Essig et al. 1999). </p></div>
+<div type="relationships"><p>Moderate support for the placement of Actinorhytis as sister to all other Archontophoenicinae has been recovered in one study (Baker et al. in prep.), and other accounts yield compatible relationships (Lewis and Doyle 2002, Baker et al. in review). </p></div>
+<div type="uses"><p>Actinorhytis calapparia is widely planted in Southeast Asia and Malesia; it is very decorative, but the main reason for its cultivation by villagers is as a magic or medicinal plant. The seed may also be chewed as a betel substitute. </p></div>
+<div type="taxonomic accounts"><p>Two species have been described but have recently been shown to be conspecific (Wanggai, pers. comm.). </p></div>
+<div type="fossil record"><p>A fossil seed from the Upper Eocene of Hungary with a ruminate endosperm has been described as Actinorhytis eocaenica (Rásky 1956), but it lacks the central hollow and distinctive radiating ruminations of the modern genus. This fossil seems likely to be a palm, but its equation with the modern genus Actinorhytis is highly suspect. Asymmetric monosulcate pollen with a distinctive irregularly columellate infratectum, Palmaepollenites sp., from the Middle Eocene of Central Java (Nanggulan Formation) is compared with pollen of Actinorhytis and with pollen of Cyphosperma, Cyphophoenix and Moratia (= Cyphokentia) (Harley and Morley 1995). </p></div>
+<div type="discussion"><p>This is a large palm with arching leaves, a very slender crownshaft, conical masses of roots at the base of the trunk and large, widely spreading inflorescences below the leaves. These characters and the large fruits, the largest in the subtribe, are distinctive. </p></div>
+<div type="vernacular"><p>Pinang penawar, pinang mawar.</p></div>
+<div type="biology_ecology"><p>In the wild, it grows in lowland tropical rain forest at altitudes up to about 1000 m above sea level.</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

@@ -4,7 +4,12 @@
 <mods:titleInfo>
 <mods:title>Calamus longipinna (Arecaceae: Calamoideae) and its relatives in New Guinea</mods:title>
 </mods:titleInfo>
-<mods:name><mods:namePart>William J. Baker and John Dransfield</mods:namePart></mods:name>
+<mods:name>
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
 <mods:originInfo>
 <mods:publisher>Kew Bull. 57: 853-866</mods:publisher>
 <mods:dateIssued>2002</mods:dateIssued>

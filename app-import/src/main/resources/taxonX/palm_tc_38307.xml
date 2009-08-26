@@ -1,0 +1,47 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>Genera Palmarum. The evolution and classification of palms</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Uhl</mods:namePart>
+<mods:namePart type="given">N.</mods:namePart>
+<mods:namePart type="family">Asmussen</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+<mods:namePart type="family">Harley</mods:namePart>
+<mods:namePart type="given">M.</mods:namePart>
+<mods:namePart type="family">Lewis</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>2008</mods:dateIssued><mods:publisher>Kew Publishing, Royal Botanic Gardens Kew</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="genus">
+<div type="diagnosis"><p>Moderate pinnate-leaved tree palms from New Caledonia with broad leathery-textured leaflets and relatively large frut.</p></div>
+<nomenclature>
+<name>Chambeyronia</name>
+<author>Vieill.</author> 
+<citation>Bull. Soc. Linn. Normandie, ser. 2. 6: 229 (1873).</citation>
+<type>Lectotype; Chambeyronia macrocarpa; (Brongn.) Vieill. ex Becc.</type>
+</nomenclature>
+<div type="etymology"><p>Named for Charles-Marie-Léon Chambeyron (1827–1891), French naval officer and hydrographer, who mapped much of the coast of New Caledonia and assisted Vieillard in the exploration of the island.</p></div>
+<div type="description"><p>Moderate, solitary, unarmed, pleonanthic, monoecious palms. Stem erect, ringed with leaf scars, enlarged at the base but roots not prominent. Leaves regularly pinnate, curved, spreading, often red when first exposed; sheath tubular, forming a prominent crownshaft, with or without a shallow notch opposite the petiole, glabrous adaxially, lightly or densely covered in scales abaxially; petiole channelled adaxially, rounded abaxially, with scattered small brown scales; leaflets acute to acuminate, single-fold, wide, waxy or glabrous adaxially, small brown scales scattered abaxially, midrib and marginal ribs large, transverse veinlets obscure or evident. Inflorescences infrafoliar, protandrous, branched to 2(–3) orders basally, to 1 order distally; peduncle very short; prophyll tubular, completely encircling the peduncle and enclosing the peduncular bract, caducous, dorsiventrally flattened, with 2 wide lateral keels, chartaceous, glabrous adaxially, lightly or densely scaly abaxially; peduncular bract lacking keels and thinner, with a more definite beak, otherwise like the prophyll; rachis longer than the peduncle bearing spirally arranged, low, or prominent pointed, bracts subtending branches or rachillae; rachillae rather stout, tapering, sinuous, lightly or densely scaly; rachilla bracts prominent, spreading or ascending, spirally arranged, subtending triads of flowers basally and paired or solitary staminate flowers distally, the triads rather distant, sometimes appearing as though impressed in the axis; bracteoles surrounding the pistillate flower unequal, not sepal-like, the larger one shorter or exceeding the triad bract. Staminate flowers asymmetrical to subsymmetrical; sepals 3, distinct, acute to long pointed; petals 3, distinct, valvate, asymmetrical, angled, and strongly nerved to nearly symmetrical and smooth when dry; stamens 19–55, filaments awl-shaped, briefly inflexed, anthers erect in bud, linear, dorsifixed, bifid basally, emarginate apically, latrorse, the connective elongate; pistillode lacking. Pollen grains ellipsoidal, slight or obvious asymmetry; aperture a distal sulcus; ectexine tectate, perforate-rugulate, aperture margin similar; infratectum columellate; longest axis ranging from 45–75 µm [2/2]. Pistillate flowers symmetrical; sepals 3, distinct, broadly imbricate, acute; petals 3, distinct, broadly imbricate with prominently valvate apices; staminodes 3, small, tooth-like, borne at one side of the gynoecium; gynoecium with 3 spreading stigmas, unilocular, uniovulate, ovule laterally attached, hemianatropous. Fruit subglobose to ovoid, with apical stigmatic remains; epicarp smooth, underlain by a mesocarp of oblique, short, pale sclereids over parenchyma with dispersed tannin cells and stout, flat, longitudinal, anastomosing fibres adherent to the endocarp, endocarp thin, fragile, not operculate. Seed attached by an elongate lateral hilum, raphe branches numerous, anastomosing, endosperm homogeneous; embryo basal. Germination adjacent-ligular; eophyll bifid. Cytology: 2n = 32.</p></div>
+<div type="distribution"><p>Two species in New Caledonia.</p></div>
+<div type="anatomy"><p>Leaf (Uhl and Martens 1980), root (Seubert 1998a,1998b), and fruit (Essig and Hernandez 2002). </p></div>
+<div type="relationships"><p>Pintaud (1999a) found that Chambeyronia isparaphyletic with respect to Actinokentia, but there is low support for these relationships. Furthermore, they are notcongruent with moderately supported relationships recovered elsewhere, which place the genus as sister to a clade of Actinokentia and Kentiopsis (Baker et al. in review). </p></div>
+<div type="uses"><p>Chambeyronia macrocarpa is probably the most widely cultivated New Caledonian palm.</p></div>
+<div type="taxonomic accounts"><p>Moore and Uhl (1984) and Hodel and Pintaud (1998). </p></div>
+<div type="fossil record"><p>No generic records found. </p></div>
+<div type="discussion"><p>In leaf anatomy, Chambeyronia macrocarpa is distinguished from other members of the Archontophoenicinae in New Caledonia by a large fibrous strand of ca. 15 cells between each two vascular bundles. 
+Chambeyronia lepidota is the only species of the Archontophoenicinae to have thick cuticles on both upper and lower leaf surfaces, and these are perhaps associated with its more exposed habitat. Chambeyronia macrocarpa is very
+variable in the wild.</p></div>
+<div type="vernacular"><p>Common names unknown.</p></div>
+<div type="biology_ecology"><p>Chambeyronia macrocarpa is found in wet forest or gallery forestnearly throughout New Caledonia, whereas C. lepidota occurson schistose soils only in the north-eastern part of the island.</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

@@ -1,0 +1,46 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>Genera Palmarum. The evolution and classification of palms</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Uhl</mods:namePart>
+<mods:namePart type="given">N.</mods:namePart>
+<mods:namePart type="family">Asmussen</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+<mods:namePart type="family">Harley</mods:namePart>
+<mods:namePart type="given">M.</mods:namePart>
+<mods:namePart type="family">Lewis</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>2008</mods:dateIssued><mods:publisher>Kew Publishing, Royal Botanic Gardens Kew</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="genus">
+<div type="diagnosis"><p>The Royal Palms — spectacular majestic solitary pinnate-leaved palms from the Craibbean islands and neighbouring parts of North, Central and South America; crownshaft is very conspicuous and the inflorescence branched to at least 4 orders with rather stiff spreading rachillae.</p></div>
+<nomenclature>
+<name>Roystonea</name>
+<author>O.F. Cook</author> 
+<citation>Science, ser. 2. 12: 479 (1900).</citation>
+<type>Type; Roystonea regia; (Kunth) O.F. Cook</type>
+</nomenclature>
+<div type="etymology"><p>Commemorates the American engineer, General Roy Stone (1836–1905).</p></div>
+<div type="description"><p>Tall, stout, solitary, unarmed, pleonanthic, monoecious palms. Stem columnar, variously tapered or swollen, tan, grey, or white, ringed by prominent or obscure leaf scars. Leaves pinnate; sheath tubular, large, forming a prominent crownshaft; petiole relatively short, channelled adaxially, rounded abaxially; leaflets narrow, elongate, tapering to a point, single-fold, held in one plane or variously inserted, crowded or in groups, rather thin, midrib only or midrib and other longitudinal veins raised abaxially, hairs frequent and scales prominent along the midrib, transverse veinlets evident abaxially. Inflorescences infrafoliar, massive, branched to 3(–4) orders; peduncle very short, stout; prophyll tubular, elongate, strongly 2-keeled laterally, truncate, leathery, green, splitting apically; peduncular bract 2 to 3 times as long as the prophyll, terete, pointed, glabrous, leathery, green, splitting longitudinally; rachis much longer than the peduncle, bearing small, pointed, spirally inserted bracts; rachillae very long, slender and pendulous or short, stout and variously divaricate, straight or undulate, white when first exposed due to copious free scales; rachilla bracts spirally arranged, small, membranous, tapered, subtending widely spaced triads of flowers proximally and paired or solitary staminate flowers distally; floral bracteoles small, thin, membranous. Staminate flowers nearly symmetrical, larger than the pistillate buds at anthesis; sepals 3, distinct, triangular, imbricate, very short; petals 3, distinct, ovate, valvate, about 10 times the length of the sepals, tips thickened; stamens 6–12, filaments awl-shaped, erect in bud; anthers elongate, versatile, sagittate basally, dorsifixed near the middle, latrorse, connective tanniniferous; pistillode subglobose or trifid. Pollen grains ellipsoidal, occasionally oblate triangular, with slight or obvious asymmetry; aperture a distal sulcus, occasionally a trichotomosulcus; ectexine tectate, finely or coarsely perforate or perforate-rugulate, aperture margin slightly finer than main tectum; infratectum columellate; longest axis 61–66 µm [4/10]. Pistillate flowers nearly conical to shortly ovoid; sepals 3, distinct, very short, broadly imbricate, rounded; petals 3, ovate, connate about 1/2 their length, valvate distally, more than twice as long as the sepals; staminodes 6, connate in a 6-lobed cupule adnate to the corolla basally; gynoecium subglobose, unilocular, uniovulate, style not distinct, stigmas 3, recurved, ovule laterally attached, form unknown. Fruit obovoid to oblong-ellipsoidal or subglobose, stigmatic remains nearly basal, perianth persistent; epicarp smooth, thin, mesocarp of pale parenchyma over a layer of thin, flat, anastomosing fibres next to the endocarp, endocarp thin, horny, fragile, somewhat operculate at the base, roughened and often ± adherent to the seed adaxially. Seed ellipsoidal, brown, hilum large, circular, lateral, raphe branches fine, radiating from the hilum, endosperm homogeneous; embryo nearly basal. Germination adjacent-ligular; eophyll entire. Cytology: 2n = 36, 38.</p></div>
+<div type="distribution"><p>Ten species found throughout the islands of the Caribbean and bordering continental areas such as Florida, Mexico, eastern Central America, and northern South America. </p></div>
+<div type="anatomy"><p>Leaf (Tomlinson 1961), root (Seubert 1998a, 1998b).</p></div>
+<div type="relationships"><p>Roystonea is monophyletic with high support (Baker et al. in review). For interspecific relationships, see Zona (1996). For sister-group relationships, see tribe Roystoneeae. </p></div>
+<div type="uses"><p>Roystonea species are among the most elegant of the large palms and are widely cultivated in both hemispheres. Fruits are high in oil content and are used as pig food. The ‘cabbage’ of R. oleracea is edible. </p></div>
+<div type="taxonomic accounts"><p>Zona (1996). </p></div>
+<div type="fossil record"><p>From the Indian Deccan Intertrappean, Maharashtra State (although the age span of these volcanic deposits is controversial, see Chapter 5), stem tissue from an almost complete stem trunk, Palmoxylon kamalan Rode, is considered to resemble that of Roystonea regia closely (Kulkarni and Mahabalé 1971). However, comparisons of palm stem wood or root to generic level should always be viewed with caution. Two flowers from Dominican amber, one staminate and one pistillate, estimated to be somewhere between mid-Eocene and mid-Miocene, are compared with Roystonea flowers (Poinar 2002b). This author notes, however, that the calyx in both flowers is too large to match the flowers with any extant species of the genus. </p></div>
+<div type="discussion"><p>See subtribe.</p></div>
+<div type="vernacular"><p>Royal palms, mountain cabbage palm (Roystonea altissima). </p></div>
+<div type="biology_ecology"><p>Primarily palms of the lowlands. Some species are thought to be indicators of good soil conditions. Most of their original habitats are now cleared for agriculture.</p></div>
+<div type="conservation"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

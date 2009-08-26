@@ -1,0 +1,39 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>A Revision of Pseudophoenix</mods:title>
+</mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Zona</mods:namePart>
+<mods:namePart type="given">S.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Palms 46(1) 19-38</mods:publisher>
+<mods:dateIssued>2002</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Pseudophoenix ekmanii</name>
+<author>Burret</author>
+<citation>Sv. Vet. Akad. Handl. ser. 3: 19, t. 3A. 1929</citation>
+<type>Dominican Republic, Barahona; Ekman; H-7055</type>
+<type_loc>Holotype S!; isotypes IJ!, K!, NY!, US!</type_loc>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="diagnosis"><p></p></div>
+<div type="description"><p>Stem 5–6 m tall, strongly ventricose, most slender above the swelling, ca. 60 cm dbh, with prominent brown leaf scars and waxy white internodes when young, gray when mature. Leaves ca. 12 in the crown, spreading (mature) or ascending (juvenile); leaf ca. 2–3 m long; sheath ca. 35 cm long, green with silvery gray scales near the apex; petiole absent; rachis ca. 161 cm long, often with brown scales along its margin; number of leaf segments per one side of the rachis not known; middle leaf segment 31.0–39.5 cm long, 1.7–2.3 cm wide, lanceolate with an acuminate tip, gray-green, densely glaucous on both sides, ramenta present on the abaxial surface of the midvein at the base of the leaf segment. Inflorescence erect, ascending or arching, branched to 3 orders, ca. 154 cm long; peduncle not extending far beyond the leaf sheaths, glabrous; prophyll not seen; inner bract not seen; rachillae 5.9–8.0 cm long and 0.8–0.9 mm diam., divaricating. Flower pseudopedicel 7.2–7.6 mm long, 0.4–0.5 mm diam., green to glaucous; calyx a shallow triangular cupule, 3.5–3.8 mm diam., green to glaucous, margins hyaline; petals ovate, ca. 7.0 mm long and 3.7 mm wide, green, glaucous abaxially, spreading, with ca. 13 major veins; filaments 1.3–1.7 mm long, briefly connate, anthers ovoid, ca. 2.8 mm long, ca. 1.5 mm wide, yellow; gynoecium and pistillode not seen. Fruit 11.8–14.3 mm long, 11.7–13.2 mm diam. (in single-seeded fruits); endocarp 11.7–13.2 mm long, 11.1–12.6 mm diam., ca. 0.2 mm thick. Seed 6.8–7.1 mm long, 8.5–9.4 mm diam.</p></div>
+<div type="distribution"><p></p></div>
+<div type="biology_ecology"><p>Pseudophoenix ekmanii occurs at low elevations in the Parque Nacional Jaragua and Isla Beata. The vegetation in classified by Hager and Zanoni (1993) as Barahona Peninsula Dry Forest, and the substrate is limestone with little or no overlying soil. The region receives 630–800 mm of precipitation per year and has a distinct dry season from December to May (Hager &amp; Zanoni 1993). </p></div>
+<div type="conservation"><p>Although virtually the entire population of Pseudophoenix ekmanii occurs in a national park, the palm is still harvested for its sweet sap which is fermented into alcohol. Decapitated juveniles attest to the activities of sap poachers. In addition, seed harvesting, if excessive, may threaten the reproductive health of the population. </p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p>This poorly known species is perhaps the most beautiful of all the Pseudophoenix. As juveniles, the trunks are waxy white with brown nodes and the leaves are gray and stiff. At maturity, the stems become strongly ventricose to bottle-shaped. They are striking palms. Pseudophoenix ekmanii resembles P. vinifera, in that they both have strongly ventricose trunks. Unlike that of P. vinifera, the trunk of P. ekmanii has waxy white internodes when young. Pseudophoenix ekmanii has a divaricating inflorescence and smaller fruits (&lt;13.2 mm diam.), whereas the inflorescence of P. vinifera has distally directed branches and the fruits are larger (16.2–22.2 mm diam.). At any stage, P. ekmanii is easily distinguished from any other species by its absence of a petiole, that is to say, there is no obvious petiole between the sheathing leaf base and the leafy rachis. Read (1968) reported that the stamen filaments are short (less than 1.5 mm long), but his observation was made from immature flower buds. The filament length reported here is based on the persistent filaments of the immature fruits of Zanoni et al. 36100. </p></div>
+<div type="materials_examined"><p>DOMINICAN REPUBLIC. Pedernales: Barahona, Ekman H-7055 (S, IJ, K, NY, US); 7 km S of Los Tres Charcos and ca. 7–8 additional km (by animal) toward Playa Blanca, Zanoni, Mejía &amp; Pimentel 36100 (NY); Isla Beata, Loomis 94 (US). CULTIVATED. USA. Florida: Miami-Dade Co., Coral Gables, Fairchild Tropical Garden, 97-336, Zona 785 (FTG). </p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

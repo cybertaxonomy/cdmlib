@@ -4,7 +4,10 @@
 <mods:titleInfo>
 <mods:title>The genus Heterospathe (Palmae: Arecoideae) in the Philippines</mods:title>
 </mods:titleInfo>
-<mods:name><mods:namePart>Edwino S. Fernando</mods:namePart></mods:name>
+<mods:name>
+<mods:namePart type="family">Fernando</mods:namePart>
+<mods:namePart type="given">E.S.</mods:namePart>
+</mods:name>
 <mods:originInfo>
 <mods:publisher>Kew Bulletin, Vol. 45, No. 2, pp. 219-234</mods:publisher>
 <mods:dateIssued>1990</mods:dateIssued>

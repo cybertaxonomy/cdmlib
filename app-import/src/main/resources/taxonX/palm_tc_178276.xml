@@ -1,0 +1,51 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>A Monograph of the Genus Rhopaloblaste (Arecaceae)</mods:title>
+</mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Banka</mods:namePart>
+<mods:namePart type="given">R.</mods:namePart>
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Kew Bulletin, Vol. 59, No. 1, pp. 47-60</mods:publisher>
+<mods:dateIssued>2004</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Rhopaloblaste augusta</name>
+<author>(Kurz) H. E. Moore</author>
+<citation>Principes 14: 79 (1970)</citation>
+<type>India, Nicobar Islands, Camorta (Kamorta), Feb. 1875; Kurz; s.n.</type>
+<type_loc>Holotype CAL; isotype K!</type_loc>
+<synonymy>
+<name>Areca augusta </name>
+<author>Kurz</author>
+<bibref>Kurz, J. Bot. 13: 331 (1875)</bibref>
+</synonymy>
+<synonymy>
+<name>Ptychoraphis augusta</name>
+<author>(Kurz) Becc.</author>
+<bibref>(Kurz) Becc., Ann. Jard. Bot. Buitenzorg 2: 90 (1885)</bibref>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>Not known.</p></div>
+<div type="diagnosis"><p></p></div>
+<div type="description"><p>Robust, mid-storey, solitary palm bearing up to 11 leaves in the crown. Stem to 25 m tall, 20 - 30 cm diam., surface brown, becoming grey with age, leaf scars conspicuous. Leaf sheath 48 - 60 cm long, greyish brown, lepidote tomentose; crownshaft 50 - 61 cm long, 30 - 40 cm diam.; petiole short, 8 - 10 cm long, concave on adaxial and rounded abaxially; rachis 2 - 4 m long, with dense interlocking pale whitish brown scales on the abaxial surface especially when young, but becoming brownish black with age, less dense whitish brown scales on the adaxial surface; leaflets 90 - 100 each side of rachis, borne 3.5 - 4 cm apart, in one plane, pendulous, middle leaflet 60 - 70 x 2 - 3 cm, sublinear, acuminate, tapering acutely and bifid at the apex, discolorous, with sparse ramenta present along the mid-veins of the pinnae on the abaxial surface, and with rusty dark brown membranous scales on the adaxial surface, persisting at the base of the pinnae. Inflorescence 40 - 60 cm long, branched to 3 orders, primary branches 14 - 16, 45 - 56 cm long, basal pair of primary branches strongly recurved; prophyll 40 - 45 cm long, with sparse greyish brown scales; peduncle 4 - 5 cm long; rachillae moderately slender, 36 - 43 cm long, 2.9 - 3.8 mm diam., dull greenish brown. Staminate flower symmetric, 6 - 6.8 mm long, 4 -4.8 mm diam.; sepals 2.5 - 3 x 2.6 - 2.8 mm, strongly imbricate, rounded; petals 4 - 4.5 x 3 - 3.5 mm, broadly elliptic; stamens 3.2 - 3.5 mm long, filaments 2 - 2.1 mm long, connate at the base, anthers 3 - 3.2 mm long, 0.8 - 1 mm diam.; pistillode conical, 4.3 - 4.5 mm long, 1 - 1.1 mm diam. at the base. Pistillate flower 4 - 4.1 mm long, 3.8 - 4 mm diam., borne throughout the rachillae; sepals 3.5 - 3.8 x 3 - 3.5 mm, rounded, margin on the apex serrate; petals 3.6 - 4 x 2.8 - 3 mm, broadly elliptic; staminodes 4, lobes 0.8 -1 x 0.9 - 1 mm, acute at the apex; gynoecium 2.8 - 3.1 mm long, 1.2 - 1.5 mm diam., ovoid. Fruit 22 - 26 mm long, 10 - 14 mm diam., elongate ellipsoid, orange to red when ripe; cupule of persistent perianth 7 - 8 mm long. Seed 17 - 20 mm long, 9 - 11 mm diam., elongate-ellipsoid, brownish, with a conspicuous impression over the hilum; testa brown.</p></div>
+<div type="distribution"><p>Known only from the Nicobar Islands, being more common in the northern islands according to Kurz (1875). Now cultivated quite widely throughout South East Asia and elsewhere.</p></div>
+<div type="biology_ecology"><p>Lowland rain forest.</p></div>
+<div type="conservation"><p>Data deficient.</p></div>
+<div type="uses"><p>Of all the species of Rhopaloblaste, R. augusta is perhaps the most widely grown species for ornamental purposes.</p></div>
+<div type="discussion"><p>NICOBAR ISLANDS. Camorta [Kamorta]: Feb. 1875, Kurz s.n. (CAL, K!, type). Car Nicobar: Near Headquarters, Nov. 1975, Nair 2294 (L!). CULTIVATED. Indonesia, Java, Bogor Botanic Gardens, May 1936, Furtado SFN 30946 (BH, K!).</p></div>
+<div type="materials_examined"><p>R. augusta is distinct in its medium-sized, elongate, ellipsoid fruits, moderately slender fruit- bearing rachillae and inflorescences branched to three orders. It is a promising ornamental species, grown in botanical gardens for its bright fruits and attractive foliage.</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

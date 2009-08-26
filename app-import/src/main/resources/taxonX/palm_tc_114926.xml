@@ -4,7 +4,10 @@
 <mods:titleInfo>
 <mods:title>A dwarf Livistona (Palmae) from Borneo</mods:title>
 </mods:titleInfo>
-<mods:name><mods:namePart>J. Dransfield</mods:namePart></mods:name>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
 <mods:originInfo>
 <mods:publisher>Kew Bulletin, Vol. 31, No. 4, pp. 759-762</mods:publisher>
 <mods:dateIssued>1977</mods:dateIssued>

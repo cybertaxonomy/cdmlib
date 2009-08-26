@@ -1,0 +1,52 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>Genera Palmarum. The evolution and classification of palms</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Uhl</mods:namePart>
+<mods:namePart type="given">N.</mods:namePart>
+<mods:namePart type="family">Asmussen</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+<mods:namePart type="family">Harley</mods:namePart>
+<mods:namePart type="given">M.</mods:namePart>
+<mods:namePart type="family">Lewis</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>2008</mods:dateIssued><mods:publisher>Kew Publishing, Royal Botanic Gardens Kew</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="genus">
+<div type="diagnosis"><p>Massive stately solitary palms of South America, with robust erect stems and huge palmate leaves with segments of equal width; inflorescences are robust and the staminate rachillae catkin-like, each rachilla bract subtending a pair of staminate flowers.</p></div>
+<nomenclature>
+<name>Mauritia</name>
+<author>L.f.</author> 
+<citation>Suppl. Pl. 70, 454 (1782).</citation>
+<type>Type; Mauritia flexuosa; L.f.</type>
+<synonymy>
+<name>Orophoma</name>
+<author>Spruce</author>
+<bibref>Spruce, J. Linn. Soc., Bot. 11: 93 (1869 [‘1871’]).</bibref>
+<type>Type; Mauritia carana; Wallace ex Archer</type>
+</synonymy>
+</nomenclature>
+<div type="etymology"><p>Commemorating Count Johan Mauritz van Nassau-Siegen (1604–1679), once governor of the Netherlands West India Company in Brazil.</p></div>
+<div type="description"><p>Massive, solitary, unarmed, pleonanthic, dioecious, tree palms. Stem erect, partly obscured by marcescent leaf sheaths above, becoming bare basally, cortex hard, pith soft. Leaves large, reduplicate, briefly costapalmate; sheath tubular at first, splitting opposite the petiole, the margins sometimes bearing coarse fibres; petiole conspicuous, adaxially channelled near the base, otherwise circular in cross-section, smooth, unarmed; blade bearing a low crest adaxially at the base, abaxially with a low ridge; blade orbicular, divided along abaxial folds almost to the insertion into numerous crowded single-fold segments, very shortly bifid at their tips, midribs prominent, transverse veinlets not conspicuous. Inflorescences solitary, interfoliar, the staminate and pistillate superficially similar; prophyll short, tubular, 2-keeled, with 2 short triangular lobes, striate; peduncle shorter than the rachis, elliptical in cross-section, bearing numerous overlapping distichous, tubular, striate, peduncular bracts, each with a short, triangular, dorsal limb and a shallow point on opposite side; rachis bracts numerous, completely sheathing the branches, distichous, as the peduncular, each subtending a ± pendulous or spreading first-order branch; the first-order branch bearing a short, 2-keeled, striate, tubular prophyll, and 1–few empty distichous bracts, subsequent bracts tubular, flaring, short, each subtending a very short or moderate, straight or recurved rachilla; staminate rachilla catkin-like, bearing a basal, tubular, 2-keeled prophyll and crowded, spirally inserted bracts, each subtending a pair of staminate flowers, each flower bearing a basal 2-keeled bracteole; pistillate rachilla very short, not catkin-like, bearing a basal, tubular, 2-keeled prophyll, and subdistichous, ± explanate bracts, each subtending a solitary pistillate flower with a flattened, 2-keeled bracteole, and often also bearing a minute spathulate, second bracteole, with 2 minute flanges on its abaxial surface. Staminate flowers with calyx tubular, shortly 3-lobed, often densely scaly; petals 3, elongate, much exceeding the calyx, valvate, coriaceous, joined briefly at the base; stamens 6, the filaments ± free, thick, ± angled, elongate, anthers elongate, basifixed, latrorse; pistillode minute. Pollen spheroidal, symmetric; aperture either a large distal pore or a short sulcus; ectexine intectate, very finely clavate, interspersed with bottle-shaped spines set in, and loosely connected to, cavities in a wide foot layer bulging strongly inwards beneath each spine, the inner face of the foot layer finely lamellate, aperture margins similar; longest axis 54–65 µm [1/2]. Pistillate flowers larger than the staminate; calyx tubular, striate, shortly 3-lobed, often densely scaly; corolla tubular in the basal 1/3 – 1/2, with 3 valvate, elongate lobes distally; staminodes 6, connate laterally by their flattened broad filaments and adnate to the corolla at the mouth of the tube; gynoecium trilocular, triovulate, ± rounded, covered in vertical rows of reflexed scales, style short, conical, stigmas 3, ovules anatropous, basally attached. Fruit ± rounded, very large, usually 1-seeded, with apical stigmatic remains; epicarp covered in many neat vertical rows of reddish-brown, reflexed scales, mesocarp rather thick, fleshy, endocarp not differentiated. Seed rounded, attached near the base, apically with a blunt beak, testa thin, endosperm homogeneous; embryo basal. Germination adjacent-ligular; eophyll with a pair of divergent leaflets (?always). Cytology: 2n = 30.</p></div>
+<div type="distribution"><p>Two species distributed in wetter parts of Trinidad, Colombia, Ecuador, Peru, Venezuela, Guyana, Surinam, French Guiana and Brazil.</p></div>
+<div type="anatomy"><p>Leaf, petiole, stem (Tomlinson 1961), root (Seubert 1996a), stegmata (Killmann and Hong 1989). </p></div>
+<div type="relationships"><p>The monophyly of Mauritia has not been tested. For relationships, see Lepidocaryum. </p></div>
+<div type="uses"><p>The buriti palms are immensely useful. They may be a source of oil and starch, wine, timber, cork, fibre for weaving and tying, and palm hearts. </p></div>
+<div type="taxonomic accounts"><p>Henderson (1995), Henderson et al. (1995). </p></div>
+<div type="fossil record"><p>Large (49–68 µm long axis) monosulcate finely clavate pollen grains with distinctive inset spines, subtended by a swelling of the foot layer — Mauritiidites (nov. gen. van Hoeken-Klinkenberg 1964,  syn. Monocolpites franciscoi van der Hammen 1956) — are recorded in the Upper Cretaceous to Lower Tertiary of West Africa: Nigeria (Hoeken-Klinkenberg 1964; Jan Du Chêne 1978). Also in Babajide Salami (1985) where, although the pollen grain is smaller, the spines are not clearly inset, possibly Lepidocaryum but aperture type not described. Mauritiidites is also described from the Upper Cretaceous of Somalia (Schrank 1994). However, the record from the Zinguinchor borehole (Middle Eocene to Lower Miocene) in Senegal (Médus 1975) shows a narrow columellate infratectum that is not present in Mauritia (intectate) and, furthermore, the spines are not characteristic for Mauritia. In Saudi Arabia, Srivastava and Binda (1991) describe pollen that closely resembles Mauritia from the Lower Eocene Shumaysi Formation. In a survey of subsurface Miocene sediments from the east coast of southern India, Ramanujam et al. (1986) include spiny pollen bearing some resemblance to Mauritiidites but it is not conclusive. In northwestern South America, there are a number of Palaeocene and Eocene records for Mauritiidites, especially from Colombia (Sole de Porta 1961; van der Hammen and Garcia de Mutis 1966 — in this paper, the larger grain(s) are rather more convincing than the smaller ones; González-Guzmán 1967 — pollen not described but illustration shows an asymmetric, thick-walled grain very reminiscent of Attalea in all respects excepting the presence of sparse spinulae; Schuler and Doubinger 1970; Jaramillo and Dilcher 2001 — an excellent record, the sunken spines with underlying bulges in the foot layer clearly visible). There is also a convincing record from Venezuela (Lorente 1986). A Pleistocene core from Central Brazil, representing 28,000 years, traces the demise and re-appearance of a Mauritia palm swamp (Ferraz-Vicentini and Salgado-Labouriau 1996). Rull (1998) provides an overview of biogeographical and evolutionary considerations for Mauritia that is based on the pollen evidence. </p></div>
+<div type="discussion"><p>Mauritia and Mauritiella have been combined (Balick 1981) but there are consistent differences in flower clusters and habits. In Mauritiella, pistillate flowers are borne on short branches and staminate flowers are solitary, whereas in Mauritia, pistillate flowers are borne singly or on very short branches and staminate flowers are in pairs. Species of Mauritia are solitary with unarmed stems, and species of Mauritiella clustering with spiny stems.</p></div>
+<div type="vernacular"><p>Mauritia palms, moriche palms, buriti. </p></div>
+<div type="biology_ecology"><p>Occurring often in vast natural stands in periodically inundated areas in the lowlands.</p></div>
+<div type="conservation"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

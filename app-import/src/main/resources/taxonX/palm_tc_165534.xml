@@ -1,0 +1,39 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>A review of the genus Pritchardia</mods:title>
+</mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Hodel</mods:namePart>
+<mods:namePart type="given">D.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Palms 51(4) Special Supplement S-1-53</mods:publisher>
+<mods:dateIssued>2007</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Pritchardia forbesiana</name>
+<author>Rock</author>
+<citation>Mem. Bernice P. Bishop Mus. 8: 52. 1921</citation>
+<type>Honokohau, Mauna Eke, Maui (W. Maui), Hawaii; Forbes; 472</type>
+<type_loc>Holotype BISH!; isotype FI</type_loc>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="diagnosis"><p></p></div>
+<div type="description"><p>To 10 m tall; proximal margins of petiole with abundant fibers; leaf blade undulate, divided 1/3, abaxial surface incompletely covered with scattered lepidia, segment tips stiff to drooping; inflorescences composed of 1-4 panicles, shorter than to equaling petioles in flower and fruit, panicles branched to 2 orders, rachillae glabrous to clothed with scurfy indumentum in flower, glabrous in fruit; fruits 40-45 x 32-35 mm, ellipsoid. </p></div>
+<div type="distribution"><p>Wet forest on northeastern and eastern slopes and valleys of the Puu Kukui massif, West Maui and far eastern Molokai,300-1300 m elevation.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p>Pritchardia forbesiana, one of four Hawaiian species that is recorded from more than one island, is distinguished by its petiole margins with an abundance of conspicuous fibers proximally, leaf blades incompletely covered abaxially with lepidia and with drooping segment tips, inflorescences shorter than or equaling the petioles, and large fruits. On Molokai P. forbesiana occurs with or near P. lowreyana but the latter differs in its longer inflorescences that in fruit equal the leaf blade.</p></div>
+<div type="materials_examined"><p>U.S.A. Hawaii. Maui (W. Maui): Honanana Stream, Oppenheimer 50201 (BISH); just below Mt. Eke, Degener 9711 (BISH), Forbes 472 (BISH); beyond Haelaau Cabin on Puu Kukui Trail, Annable 3815 (BlSH), Bishop 1137 (HAW); Poohahoahoa Stream; Wagner 5842 (BISH); Kahakuloa, Wood 3161 (PTBG); Waihee, Wood 7409 (PTBG). CULT. U.S.A. Hawaii. Oahu: Waimea Valley Audubon Center, 855422, ex N. shore of Molokai, Hodel 2013 (BISH), 795567, ex N. of Halawa Valley, Molokai, Hodel 2014 (BISH).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

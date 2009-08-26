@@ -1,0 +1,61 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>A review of the genus Pritchardia</mods:title>
+</mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Hodel</mods:namePart>
+<mods:namePart type="given">D.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Palms 51(4) Special Supplement S-1-53</mods:publisher>
+<mods:dateIssued>2007</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Pritchardia remota</name>
+<author>Becc.</author>
+<citation>Malesia 3: 294. 1890</citation>
+<type>Cult., Honolulu, Oahu, Hawaii; Hillebrand; s. n.</type>
+<type_loc>Holotype K (photo!)</type_loc>
+<synonymy>
+<name>Washingtonia remota</name>
+<author>(Becc.) Kuntze</author>
+<bibref>(Becc.) Kuntze, Revis. Gen. PI. 2: 737. 1891.</bibref>
+</synonymy>
+<synonymy>
+<name>Eupritchardia remota</name>
+<author>(Kuntze) Kuntze</author>
+<bibref>(Kuntze) Kuntze, Revis, Gen. PI. 3(2): 323. 1898</bibref>
+</synonymy>
+<synonymy>
+<name>Styloma remota</name>
+<author>(Becc.) O. F. Cook</author>
+<bibref>(Becc.) O. F. Cook, ]. Wash. Acad. Sci. 5: 241. 1915</bibref>
+</synonymy>
+<synonymy>
+<name>Pritchardia aylmer-robinsonii</name>
+<author>H. St. John</author>
+<bibref>H. St. John, Pacific Sci. 13: 163. 1959</bibref>
+<type>Mokollia Valley, Niihau Island, Hawaii; St. John; 22813</type>
+<type_loc>Holotype BISH!</type_loc>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="diagnosis"><p></p></div>
+<div type="description"><p>To 10 m tall; proximal margins of petiole moderately fibrous; leaf blade strongly undulate, slightly waxy glaucous, divided 2/5-3/5, abaxial surface incompletely covered with scattered lepidia, segment tips drooping; inflorescences composed of 1-5 panicles, shorter than to equaling petioles in flower and fruit, panicles branched to 3 orders, rachillae glabrous; fruits 18-20 x 18 or 19 mm, globose.</p></div>
+<div type="distribution"><p>Dry forest at the base of basalt cliffs, Nihoa and Niihau (Leeward Hawaiian Islands), 75-250 m elevation.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p>Pritchardia remota is another of the fOUf Hawaiian species that is recorded from more than one island. It is difficult to distinguish from P. glabrata and P. waialealeana. All three share the undulate leaf blades incompletely covered abaxially with lepidia and with drooping segment tips, inflorescences shorter than or equaling the petioles with panicles branched to three orders, glabrous rachilJae, and small fruits. However P. glabrata differs in its leaf blades lacking the glaucous covering while P. waialealeana differs in the cottony hairs or mealy indumentum lacking on the abaxial folds of its leaf blades and the longerthan- wide fruits. Also, leaf blades of P. remota have a somewhat coarse and heavy-looking appearance. I am unable to find significant differences between Pritchardia remota and P. aylmer-robinsonii after examining the types and cultivated living plants from the type localities of both species. Some cultivated plants of P. remota have distinctive orange flowers yet photographs taken by Derral Herbst at the type locality on Nihoa show the flowers to be yellow. Beccari initially based Pritchardia remota on a portion of an inflorescence that Hillebrand had collected from a plant cultivated on the grounds of lolani Palace in Honolulu that a Dr. Rooke had procured from Nihoa Island in 1858. Beccari (Beccari &amp; Rock 1921) later expanded the description from material that Brown had collected on Nihoa in 1911 and that Rock had forwarded to Beccari. There is another Hillebrand collection at K, which is complete and contains leaves and inflorescences, that Beccari may have also used to expand the description. </p></div>
+<div type="materials_examined"><p>U.S.A. Hawaii. Nihoa: Brown s. n., 1911 (BISH), Brown 10347 (BISH, FI [photo]), Christophersen 9a (BISH), Cooke s. n., June 1923 (BISH); Valley 2 &amp; S, Callm 72 (BISH); E. Valley, Lang 2412 (HAW), 2440 (BISH, HAW); W. Valley, Long 2443 (BISH, HAW). Niihau: Brawn 1430 (BISH); Kiekie, St. fohn 23657 (BISH); Mokouia Valley, 51. fohn 22813 (BISH). CULT. U.S.A. Hawaii. Oahu: Honolulu, Hillebrand s. n. (K [photo]), Rock 12004 (BISH); Jolani Palace, Hillebrand s. n. (K); Oahu College, Punahou, Rock 12011 (BJSH); Foster Garden, Potter s. n., 7 Feb. 19S8 (BJSH). Kauai: Kekaha, 24.9 mile marker, Wood 249 (PTBG); National Tropical Botanical Garden, NTBG 950198.001, Chapin 59 (PTBG), ex W. Palm Valley, Nihoa, O'Rollrke 4 (PTBG). </p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

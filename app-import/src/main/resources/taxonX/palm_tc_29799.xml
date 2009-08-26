@@ -2,7 +2,10 @@
 <taxonxHeader>
 <mods:mods>
 <mods:titleInfo><mods:title>A Manual of the rattans of the Malay peninsula</mods:title></mods:titleInfo>
-<mods:name><mods:namePart>Dransfiled </mods:namePart></mods:name>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
 <mods:originInfo><mods:dateIssued>1979</mods:dateIssued></mods:originInfo>
 </mods:mods>
 </taxonxHeader>

@@ -1,0 +1,58 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>Genera Palmarum. The evolution and classification of palms</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Uhl</mods:namePart>
+<mods:namePart type="given">N.</mods:namePart>
+<mods:namePart type="family">Asmussen</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+<mods:namePart type="family">Harley</mods:namePart>
+<mods:namePart type="given">M.</mods:namePart>
+<mods:namePart type="family">Lewis</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>2008</mods:dateIssued><mods:publisher>Kew Publishing, Royal Botanic Gardens Kew</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="genus">
+<div type="diagnosis"><p>Moderate to massive usually solitary hermaphroditic fan palms, native to Cuba, where there is a great radiation of species, and to Hispaniola and South America; the highly branched inflorescence usually has rachillae with completely tubular bracts and the endosperm is ruminate.</p></div>
+<nomenclature>
+<name>Copernicia</name>
+<author>Mart. ex Endl.</author> 
+<citation>Gen. pl. 253 (1837).</citation>
+<type>Type; Copernicia cerifera; (Arruda) Mart.</type>
+<synonymy>
+<name>Arrudaria</name>
+<author>Macedo</author>
+<bibref>Macedo, Notice palm. Carnauba 5 (1867).</bibref>
+<type>Type; Arrudaria cerifera; (Arruda) Macedo</type>
+</synonymy>
+<synonymy>
+<name>Coryphomia</name>
+<author>Rojas Acosta</author>
+<bibref>Rojas Acosta, Bull. Acad. Intern. Géogr. Bot. 28: 158 (1918).</bibref>
+<type>Type; Coryphomia tectorum; Rojas</type>
+</synonymy>
+</nomenclature>
+<div type="etymology"><p>Commemorates the Polish astronomer, Nicolaus Copernicus (1473–1543).</p></div>
+<div type="description"><p>Moderate to tall, solitary (rarely clustered), slow-growing, armed, pleonanthic, hermaphroditic palms. Stems covered with persistent leaf sheaths for part or all their length, sometimes becoming bare with age, the naked portion roughened and often with close, rough, ± evident leaf scars, basally expanded or not (Copernicia berteroana). Leaves induplicate, palmate to shortly costapalmate; sheath fibrous, petiole lacking or very short to elongate, channelled or flattened adaxially, rounded abaxially, the margins armed with stout teeth; adaxial hastula short to very long, coriaceous, triangular, unarmed or spinose margined or erose, sometimes persisting after the lamina has disintegrated, abaxial hastula absent; blade wedge-shaped or orbicular, divided 1/4 to 1/3 to the base into single-fold pointed segments, outermost bifid at the apex, segments often spiny margined, thick, very stiff, major ribs with caducous tomentum, midribs prominent abaxially, transverse veinlets not evident. Inflorescences interfoliar, often exceeding the leaves, frequently densely tomentose, branched to 6 orders; peduncle elongate, narrow, elliptic in cross-section; prophyll tubular; peduncular bracts 0–1, apparently 2-winged, irregularly split apically; rachis about as long as or longer than the peduncle; rachis bracts tubular, closely sheathing, first-order branches each bearing a prophyll, subsequent bracts tubular, tightly sheathing, split apically, gradually reduced and lacking on rachillae or present and conspicuous through to the flowers, usually densely tomentose; rachillae of medium length to very short, stout or slender, often recurved, bearing spirally inserted, membranous bracts, each subtending a solitary flower or groups of 2–4 flowers, distant or very crowded, the group and each flower subtended by a membranous bracteole. Flowers with 3 sepals united in a thick-based, 3-lobed cup, lobes usually acute; corolla tubular below with 3 thick-tipped, valvate lobes, prominently pocketed and furrowed within; stamens 6, united by their broad filament bases into a cupule, borne at the mouth of the corolla tube, distinct filament lobes abruptly narrowed to short slender tips, these not inflexed in bud, antesepalous lobes sometimes larger than antepetalous ones, anthers usually small, ovate or oblong, dorsifixed near their bases, latrorse; carpels 3, follicular, distinct basally, styles wide basally, tapering, connate, stigma dot-like, ovule erect, basal, anatropous. Pollen ellipsoidal, with slight to obvious asymmetry; aperture a distal sulcus; ectexine tectate, finely perforate, perforate and micro-channelled, or perforate-rugulate, aperture margin slightly finer; infratectum columellate; longest axis 24–38 µm; post-meiotic tetrads usually tetrahedral, occasionally tetragonal or, rarely, rhomboidal [5/21]. Fruit ovoid or spherical, usually developing from 1 carpel, carpellary remains basal, stigmatic remains apical; epicarp smooth, drying minutely roughened, mesocarp slightly fleshy with longitudinally anastomosing fibres, endocarp moderately thick, crustaceous. Seed ovoid or globose, basally attached, with large ovate basal hilum, raphe indistinct, narrow, branching, endosperm deeply ruminate; embryo subbasal. Germination remote-tubular; eophyll entire, lanceolate. Cytology: 2n = 36.</p></div>
+<div type="distribution"><p>Twenty-one species, three in South America, two in Hispaniola, the remainder in Cuba and several described naturally occurring hybrids.</p></div>
+<div type="anatomy"><p>Leaf (Tomlinson 1961), roots (Seubert 1997), flower (Morrow 1965). </p></div>
+<div type="relationships"><p>The monophyly of Copernicia has not been tested. Uhl et al. (1995) and Baker et al. (in review) found it to be sister to Pritchardia. However, Asmussen et al. (2006) resolved the genus as sister to the Livistoninae with low support. </p></div>
+<div type="uses"><p>Copernicia prunifera is of great economic importance as the source of high quality carnauba wax (Johnson 1985). Other parts of all species are also used locally as leaves for thatching, stems for building, and fibres for brushes and rope. Starch from stems and fruits is edible; seedlings are used for fodder. </p></div>
+<div type="taxonomic accounts"><p>Dahlgren and Glassman (1961, 1963). </p></div>
+<div type="fossil record"><p>Monocolpate pollen from the Lower Miocene of Poland (Macko 1957) has been compared to Copernicia pollen, but the pollen is of too general a coryphoid type to be conclusive. See also entry for Serenoa. </p></div>
+<div type="discussion"><p>There is considerable diversity in the genus, especially in Cuba. The very large hastulae of some species, e.g., Copernicia macroglossa, are most remarkable but their functional significance, if any, has yet to be explained. Another unusual feature is the presence in some species of completely tubular rachilla bracts subtending the flower clusters. Some of the largest species, such as C. baileyana, make most imposing ornamentals but these are notoriously slow growing. </p></div>
+<div type="vernacular"><p>Carnauba (Copernicia prunifera), petticoat palm (C. macroglossa), caranda palms. </p></div>
+<div type="biology_ecology"><p>In the Caribbean, the species occur in savannahs or woodlands in the lowlands in relatively dry situations. The South American species occur in pure natural stands. Copernicia prunifera is found in vast natural stands in Brazil and grows in areas prone to seasonal flooding. </p></div>
+<div type="conservation"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

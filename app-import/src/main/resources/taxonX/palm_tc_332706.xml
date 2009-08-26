@@ -4,7 +4,12 @@
 <mods:titleInfo>
 <mods:title>Dypsis delicatula</mods:title>
 </mods:titleInfo>
-<mods:name><mods:namePart>Adam Britt and John Dransfield</mods:namePart></mods:name>
+<mods:name>
+<mods:namePart type="family">Britt</mods:namePart>
+<mods:namePart type="given">A.</mods:namePart>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
 <mods:originInfo>
 <mods:publisher>Palms 49(1): 40-44</mods:publisher>
 <mods:dateIssued>2005</mods:dateIssued>

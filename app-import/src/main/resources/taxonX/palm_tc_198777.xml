@@ -1,0 +1,98 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>Genera Palmarum. The evolution and classification of palms</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Uhl</mods:namePart>
+<mods:namePart type="given">N.</mods:namePart>
+<mods:namePart type="family">Asmussen</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+<mods:namePart type="family">Harley</mods:namePart>
+<mods:namePart type="given">M.</mods:namePart>
+<mods:namePart type="family">Lewis</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>2008</mods:dateIssued><mods:publisher>Kew Publishing, Royal Botanic Gardens Kew</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="genus">
+<div type="diagnosis"><p>Extremely variable genus native to the Caribbean (one species) and South America, where it is particularly abundant in drier areas; leaflets are concolourous and the mesocarp does not split.</p></div>
+<nomenclature>
+<name>Syagrus</name>
+<author>Mart.</author> 
+<citation>Palm. fam. 18 (1824).</citation>
+<type>Type; Syagrus cocoides; Mart.</type>
+<synonymy>
+<name>Langsdorffia</name>
+<author>Raddi</author>
+<bibref>Raddi, Mem. Mat. Fis. Soc. Ital. Sci. 18(2): 345 (1820) (illegitimate name) (non Mart. 1818, Balanophoraceae).</bibref>
+<type>Type; Langsdorffia pseudococos; Raddi</type>
+</synonymy>
+<synonymy>
+<name>Platenia</name>
+<author>H. Karst.</author>
+<bibref>H. Karst., Linnaea 28: 250 (1856).</bibref>
+<type>Type; Platenia chiragua; H.Karst.</type>
+</synonymy>
+<synonymy>
+<name>Cocos subgenus Arecastrum</name>
+<author>Drude in Mart.</author>
+<bibref>Drude in Mart., Fl. bras. 3 (2): 402 (1881). </bibref>
+</synonymy>
+<synonymy>
+<name>Barbosa</name>
+<author>Becc.</author>
+<bibref>Becc., Malpighia 1: 349, 352 (1887).</bibref>
+<type>Type; Barbosa pseudococos; Becc.</type> 
+</synonymy>
+<synonymy>
+<name>Rhyticocos</name>
+<author>Becc.</author>
+<bibref>Becc., Malpighia 1: 350, 353 (1887).</bibref>
+<type>Type; Rhyticocos amara; (Jacq.) Becc.</type> 
+</synonymy>
+<synonymy>
+<name>Arikuryroba</name>
+<author></author>
+<bibref>Barb. Rodr., Pl. jard. Rio de Janeiro 1: 5 (1891).</bibref>
+<type>Type; Arikuryroba capanemae; Barb.Rodr.</type>
+</synonymy>
+<synonymy>
+<name>Arikury</name>
+<author>Becc.</author>
+<bibref>Becc., Agric. Colon. 10: 445 (1916). Superfluous substitute name.</bibref>
+</synonymy>
+<synonymy>
+<name>Arecastrum</name>
+<author>(Drude) Becc.</author>
+<bibref>(Drude) Becc., Agric. Coloniale 10: 446 (1916).</bibref>
+<type>Type; Arecastrum romanzoffianum; (Cham.) Becc.</type> 
+</synonymy>
+<synonymy>
+<name>Chrysallidosperma</name>
+<author></author>
+<bibref>H.E. Moore, Principes 7: 109 (1963).</bibref>
+<type>Type; Chrysallidosperma smithii; H.E.Moore</type>
+</synonymy>
+</nomenclature>
+<div type="etymology"><p>Syagrus — the name of a kind of palm tree in Latin, apparently used by Pliny, but certainly not for members of this New World genus.</p></div>
+<div type="description"><p>Small to tall, solitary or clustered, rarely forking below ground (Syagrus cearensis), unarmed or armed, pleonanthic, monoecious palms. Stem very short, subterranean to erect and tall, rarely stolon-like, sometimes swollen basally, distally obscured by leaf-base remains, becoming bare, sometimes striate, and marked with inconspicuous or raised or impressed, oblique or circular conspicuous leaf scars. Leaves reduplicately pinnate, spirally arranged or, in S. coronata, ± even, scars circular, arranged in 5 ranks, marcescent or neatly abscising; sheath disintegrating into an interwoven mass of fibres, the fibres slender to robust and flattened, rarely flattened and spine-like; petiole very short to long, adaxially channelled or flattened, abaxially rounded or angled, the margins smooth or bearing short caducous fibres, and rarely also bearing coarse spine-like fibres, surfaces variously glabrous, tomentose or scaly, sometimes waxy; rachis straight or curved, short to long, variously scaly, tomentose or glabrous; leaflets single-fold, few to very numerous, regularly or irregularly arranged, held in one or several planes, linear, moderately wide to very narrow, stiff or curved, the tips acute, acuminate or obtuse, symmetrical and shallowly bifid or asymmetrical; blade adaxially glabrous or with sparse scales or hairs, sometimes waxy, abaxially usually with conspicuous ramenta along the main vein, very rarely also with dense grey indumentum, transverse veinlets often conspicuous. Inflorescences solitary, interfoliar, rarely spicate, usually branching to 1 order, ?protandrous, much shorter than the leaves; peduncle ± elliptic in cross-section, short to long, glabrous or variously hairy or scaly; prophyll usually mostly concealed within the leaf sheaths, tubular, flattened, 2-keeled, splitting at the tip, becoming fibrous and disintegrating with age; peduncular bract persistent, much longer than the prophyll, usually inserted just above the prophyll, tubular, enclosing the inflorescence until shortly before anthesis, very rarely shorter than the expanded inflorescence, often ± spindle-shaped before splitting longitudinally along the abaxial face for most of its length, then expanding and becoming cowl-like, beaked, usually ± woody, rarely thinly coriaceous or papery, glabrous or glaucous or pubescent, longitudinally grooved; rachis usually shorter than the peduncle or nearly equal (S. coronata), glabrous or hairy, bearing spirally arranged rachillae, each subtended by a short, triangular, usually coriaceous bract; rachillae few to numerous, short or elongate, slender, straight or often twisted in bud, frequently zigzag, glabrous or sparsely tomentose, bearing spirally arranged triads proximally, paired or solitary staminate flowers distally, or rarely, the distal-most rachillae bearing only staminate flowers; flower groups usually sessile, subtended by usually inconspicuous bracts; floral bracteoles minute. Staminate flowers usually ± asymmetrical; sepals 3, ± triangular, distinct and imbricate or briefly connate, rarely connate in a stalk-like base; petals 3, distinct, valvate, ± thinly coriaceous or fleshy, much longer than the sepals, variously lanceolate, oblong, or ovate with acute tips, glabrous, tomentose, scaly or dotted; stamens 6, filaments distinct, or very briefly connate, relatively short, ±fleshy, anthers elongate, dorsifixed near the base or medifixed and ± versatile, introrse or latrorse; pistillode minute, trifid or absent. Pollen ellipsoidal, frequently elongate and/or pyriform, usually with either slight or obvious asymmetry; aperture a distal sulcus; ectexine tectate, finely perforate, perforate and micro-channelled, perforate-rugulate, rugulate-verrucate or reticulate, aperture margin similar; infratectum columellate; longest axis 36–56 µm; post-meiotic tetrads tetrahedral [11/31]. Pistillate flowers slightly smaller to very much larger than the staminate flowers; sepals 3, distinct, broadly imbricate, triangular to ovate, acute or obtuse, fleshy to coriaceous, sometimes tomentose or scaly; petals 3, distinct, slightly shorter to slightly longer the than the sepals, triangular or ovate, broadly imbricate at the base, with minute to moderately large and conspicuous valvate tips; staminodal ring membranous, low, ± 6-toothed, occasionally apparently absent; gynoecium columnar to conical or ovoid, trilocular, triovulate, glabrous or tomentose to scaly, the stigmas 3, reflexed, fleshy, ovules laterally attached to the central wall of the locules, ?anatropous. Fruit small to relatively large, 1–(rarely 2-)seeded, spherical, ovoid, or ellipsoidal, variously green, brown, yellow, or reddish, sometimes beaked, the perianth segments and staminodal ring persistent and sometimes enlarging as a cupule at the fruit base; epicarp smooth or longitudinally striate, glabrous or hairy, mesocarp fleshy or dry, with abundant longitudinal fibres, endocarp thick, woody, with 3(4) basal or subbasal pores, sometimes beaked, sometimes with 3 longitudinal ridges, rarely with 3 irregular vertical bands of minute pores, endocarp cavity irregular or more usually circular, rarely triangular in cross-section, with 3, conspicuous, vertical lines, very rarely with a curved lateral protrusion into the seed (S. romanzoffiana). Seed conforming to the shape of the endocarp cavity, subbasally attached, endosperm homogeneous or ruminate, sometimes with a central cavity; embryo basal or subbasal opposite one of the endocarp pores. Germination adjacent-ligular or remote tubular; eophyll entire. Cytology: 2n = 32.</p></div>
+<div type="distribution"><p>Thirty-one species recorded in South America from Venezuela southwards to Argentina, with the greatest number of species in Brazil; one species in the Lesser Antilles. </p></div>
+<div type="anatomy"><p>Leaf (Tomlinson 1961, Glassman 1987, Roth 1990), root (Seubert 1998a, 1998b), fruit (Reddy and Kulkarni 1985). </p></div>
+<div type="relationships"><p>Syagrus is resolved as polyphyletic by Gunn (2004). For a preliminary assessment of relationships, see Gunn (2004). A detailed species-level phylogeny of Attaleinae is required to circumscribe a monophyletic Syagrus. </p></div>
+<div type="uses"><p>Leaves of many species are used as thatch, those of S. coronata also yield wax. The mesocarp of S. oleracea and S. coronata is edible, and the endosperm of S. cocoides and S. coronata can be used as a source of palm oil. The wood is also useful. For medicinal uses, see Plotkin and Balick (1984). Many species are cultivated as ornamentals. </p></div>
+<div type="taxonomic accounts"><p>Glassman (1987) and Noblick (2004a, 2004b). </p></div>
+<div type="fossil record"><p>Two small palm endocarps (Maury 1930) that are included in Palmocarpon luisii, from the Maastrichtian of Brazil, State of Parahyba do Norte (Rio Gramame), are compared with members of the Cocoseae. One is described as being about the size and form of the living Cocos datel (sic.) “but more deformed” (Cocos datil Drude and Griseb. = Syagrus romanzoffiana [Cham.] Glassman; see Govaerts and Dransfield 2005), these are almost certainly not cocosoid in origin and probably not from palms at all. </p></div>
+<div type="discussion"><p>Several genera earlier recognised as distinct because of their ruminate endosperm were included in Syagrus in the first edition of Genera Palmarum; this circumscription of the genus is followed here. The basis for including the genera is the extraordinary variability of Syagrus itself and the unreliability of the endosperm character for separating genera elsewhere in the family. Thus, S. vagans and S. ruschiana approach Arikuryroba, S. inajai differs from Chrysallidosperma smithii only in a few minor characters and in the endosperm. The connate petals of Rhyticocos referred to by Read (1979) have not been found on our specimens, and the palm is otherwise rather like S. sancona but with a large ruminate endosperm. Barbosa pseudococos is very similar in flower and fruit characters to S. stratinicola. Gunn (2004), in her preliminary phylogenetic analysis of Cocoseae, recovered trees that suggested Syagrus to be polyphyletic. However, she sampled just three species of Syagrus, and these were all at one time included in segregate genera. More work is needed. </p></div>
+<div type="vernacular"><p>Syagrus palms, licury palm (Syagrus coronata), Queen palm (S. romanzoffiana). </p></div>
+<div type="biology_ecology"><p>Most species are confined to dry or semi-arid areas; these include all of the acaulescent species. A few, usually tree-like species are restricted to mesic and tropical rain forest. The acaulescent species are conspicuous components of several Brazilian arid vegetation types such as ‘cerrado’ and ‘campo rupestre’. </p></div>
+<div type="conservation"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

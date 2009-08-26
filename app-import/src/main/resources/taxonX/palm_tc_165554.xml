@@ -1,0 +1,126 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>A review of the genus Pritchardia</mods:title>
+</mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Hodel</mods:namePart>
+<mods:namePart type="given">D.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Palms 51(4) Special Supplement S-1-53</mods:publisher>
+<mods:dateIssued>2007</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Pritchardia martii</name>
+<author>(Gaudich.) H. Wendl.</author>
+<citation>Bonplandia 10: 199. 1862</citation>
+<type>Oahu, Hawaii; Gaudichaud; s. n</type>
+<type_loc>Lectotype P (photo!); isolectotypes G (photo!), K (photo!)</type_loc>
+<synonymy>
+<name>Livistona martii</name>
+<author>Gaudich.</author>
+<bibref>Gaudich., Voy. Bonite, Bot.: t. 58, 59. 1842</bibref>
+</synonymy>
+<synonymy>
+<name>Washingtonia martii</name>
+<author>(Gaudich.) Kuntze</author>
+<bibref>(Gaudich.) Kuntze, Revis. Gen. PI. 2: 737. 1891</bibref>
+</synonymy>
+<synonymy>
+<name>Eupritchardia martii</name>
+<author>(Gaudich.) Kuntze</author>
+<bibref>(Gaudich.) Kuntze, Revis. Gen. PI. 3(2): 323. 1898</bibref>
+</synonymy>
+<synonymy>
+<name>Styloma martii</name>
+<author>(Gaudich.) O. F. Cook</author>
+<bibref>(Gaudich.) O. F. Cook, J. Wash. Acad. Sci. 5: 241. 1915</bibref>
+</synonymy>
+<synonymy>
+<name>Livistona gaudichaudii</name>
+<author>Mart.</author>
+<bibref>Mart., Hist. Nat. Palm. 3 (ed. 2): 242. 1849</bibref>
+<type>Oahu, Hawaii; Gaudichaud; s. n.</type>
+<type_loc>Holotype G (photo!); isotypes FI (fragment, photo!)</type_loc>
+</synonymy>
+<synonymy>
+<name>Pritchardia gaudichaudii</name>
+<author>(Mart.) H. Wendl.</author>
+<bibref>(Mart.) H. Wendl., Bonplandia 10: 199. 1862</bibref>
+</synonymy>
+<synonymy>
+<name>Washingtonia gaudichaudii</name>
+<author>(Mart.) Kuntze</author>
+<bibref>(Mart.) Kuntze, Revis. Gen. PI. 2: 737. 1891</bibref>
+</synonymy>
+<synonymy>
+<name>Eupritchardia gaudichaudii</name>
+<author>(Mart.) Kuntze</author>
+<bibref>(Mart.) Kuntze, Revis. Gen. PI. 3(2): 323. 1898</bibref>
+</synonymy>
+<synonymy>
+<name>Styloma gaudichaudii</name>
+<author>(Mart.) O. F. Cook</author>
+<bibref>(Mart.) O. F. Cook, J. Wash. Acad. Sci. 5: 241. 1915</bibref>
+</synonymy>
+<synonymy>
+<name>Pritchardia rockiana</name>
+<author>Becc.</author>
+<bibref>Becc., Webbia 4: 228. 1913</bibref>
+<type>Punaluu, Oahu, Hawaii; Rock; 8822</type>
+<type_loc>Holotype BISH!; isotype GH</type_loc>
+</synonymy>
+<synonymy>
+<name>Styloma rockiana</name>
+<author>(Becc.) O. F. Cook</author>
+<bibref>(Becc.) O. F. Cook, J. Wash. Acad. Sci. 5: 241. 1915</bibref>
+</synonymy>
+<synonymy>
+<name>Pritchardia kahanae</name>
+<author>Rock &amp; Caum</author>
+<bibref>Rock &amp; Caum, Mem. Bernice P. Bishop Mus. 8: 75. 1921</bibref>
+<type>Kahana Valley, Oahu, Hawaii; Rock (ex Caum); 18001</type>
+<type_loc>Holotype BISH!</type_loc>
+</synonymy>
+<synonymy>
+<name>Pritchardia martioides</name>
+<author>Rock &amp; Caum</author>
+<bibref>Rock &amp; Caum, Mem. Bernice P. Bishop Mus. 8: 76. 1921</bibref>
+<type>Puu Kaaumakua, Oahu, Hawaii; Rock (ex Caum); 18000</type>
+<type_loc>Holotype BISH!</type_loc>
+</synonymy>
+<synonymy>
+<name>Pritchardia kamapuaana</name>
+<author>Caum</author>
+<bibref>Caum, Occas. Pap. Bernice P. Bishop Mus. 9(5): 10. 1930</bibref>
+<type>Hauula-Kaluanui Ridge, Oahu, Hawaii; Caum; 151</type>
+<type_loc>Holotype BISH; isotype BH</type_loc>
+</synonymy>
+<synonymy>
+<name>Pritchardia macdanielsii</name>
+<author>Caum</author>
+<bibref>Caum, Occas. Pap. Bernice P. Bishop Mus. 9(5): 10. 1930</bibref>
+<type>Hauula-Kaluanui Ridge, Oahu, Hawaii; MacDaniels; 168</type>
+<type_loc>Holotype BISH!; isotype BH</type_loc>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="diagnosis"><p></p></div>
+<div type="description"><p>To 10 m tall; proximal margins of petiole with irregularly shaped, papery ligules or wings or only a few (to rarely moderate) fibers; leaf blade slightly undulate to nearly flat, divided 1/4-1/2, abaxial surface completely covered with lepidia and appearing silvery grayish white to sometimes tinged with brown, segment tips stiff; inflorescences composed of 1-4 panicles, shorter than petioles in flower and fruit to exceeding petioles or leaf blades in flower and greatly exceeding leaf blades in fruit, panicles branched to 2 orders, rachillae clothed with dense, felt-like indumentum or glabrous; fruits 40-50 x 25-40 mm, eiiipsoid to globose to ovoid. </p></div>
+<div type="distribution"><p>Moist to wet forests in valleys and on exposed ridges and cliffs, Koolau Mountains and southern Waianae Mountains, Oahu, 300-800 m elevatIon.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p>Pritchardia martii can be distinguished by its petioles with irregularly shaped, papery ligules or wings or only a few fibers proximaiiy; leaf blades completeiy covered abaxiaiiy with lepidia; rachiiiae glabrous or with felt-like indumentum; and large fruits. Pritchardia arecina is similar but differs in its petioles with an abundance fibers proximaiiy. Although poorly documented, the identities of Pritchardia martii and P. gaudichaudii are, nonetheless, inextricably linked and critical to establishing taxonomic and nomenclatural order among the Hawaiian taxa, because they are the oldest names in the genus. Gaudichaud coiiected the original material of both during the voyage of the Bonite in Hawaii in October, 1836. The original material of Livistona martii consists of a small, perhaps juvenile leaf and old inflorescence without fruits at P and similar leaves at G and K. The material at P bears a label stating "Gaudichaud lles Sandwich" but has no date although St. John annotated the leaf in 1954 with the date "1836." The material at G and Kbear labels stating "lies Sandwich M. Gaudichaud 1839," with the date most likely being in error because Gaudichaud was not in Hawaii that year. Gaudichaud's original illustration and accompanying explanation (Voy. Bonite, Bot.: t. 58, 59. 1842.), obviously based on the specimens (although they are not cited), formally establish Livistona martii, yet they are hardly diagnostic and reveal little if anything about the nature of the species. In the first description of L. martii, however, Martius (1849) described the leaf as "subtus densegriseotomentoso- furfuraceis" in apparent reference to I the abaxialleafbiade surface being completely covered with lepidia. This critically diagnostic character, while not apparent in Gaudichaud's illustration, is present on the leaf at G, or at 5-28 ieast once was (patches of It apparently have fallen away with time). Where it is present it forms a solid cover (Fred Stauffer, pers. comm.). Because Gaudichaud's illustrations and specimens share equal ranking as original material, I have selected the Gaudichaud specimen at P as the lectotype and the specimens at G and Kas isolectotypes. Beccari (1890) contended that, based on voyage information in the log of the Bonite, Gaudichaud probably collected the original material of Pritchardia mardi and P. gaudichaudii on Oahu. If so, Gaudlchaud most likely collected them in the Koolau Mountains. The Koolau range is easily accessible from Honolulu, the major port and city on Oahu where the Bonite would have likely docked, and where Gaudicahud disembarked and spent time exploring. There are no collections from the Koolau range that have scattered lepidia incompletely covering the abaxial leaf blade surface; all collections have lepidia completely covering the blade surface. Beccari (1890) determined that, based on Gaudichaud's concept, Pritchardia martii was a larger plant with larger leaf biade segments and the abaxial surface most likely completely covered with lepidia while P. gaudichaudii was a smaller plant with smaller segments and the abaxial surface with scattered lepidia. Beccari felt that P. gaudichaudii was common in the vicinity of Honolulu and P. martH, while proving to be somewhat elusive, most certainly would eventuaily be found also on Oahu. Indeed, Beccari (Beccari &amp; Rock 1921), after examining specimens that Rock had sent him from the Koolau range near Honolulu, described the abaxial leaf blade surface as "very densely clothed wIth an appressed felt or tomentum," thus concurring with MarHus and identifying this palm as P. martii. Martios (1849) named and described the second species, Livistona gaudichaudii, based on Gaudicahaud's 1836 coilections. It is unclear if Martius segregated out a portion of the original L. martii material that he had examined and felt was different or if the material was separate from the original. Martius distinguished L. gaudichaudii from L. martii primarily on the number of leaf blade segments, an extremely variable character of little or no merit. The type of Livistona gaudichaudii at G consists of a small, perhaps juvenile leaf with the label "Isles Sandwich M. Gaudichaud 1836", and is quite similar in size, shape and presentation to the leaves of L. martii at P, G and K. Like that of L. martii, the abaxial leaf blade surface of L. galldichalldii at G is completely covered with lepidia, or at least at one time was. Where it is present, it forms a solid cover (Fred Stauffer, pers. comm.). Beccari (Beccari &amp; Rock 1921) surprisingly changed his mind about the origin of Pritchardia gaudichaudii, saying he could now identify this species with material that Rock had collected on the cliffs of Waialeia above Kalaupapa on Molokai, despite the fact that the log of the Bonite did not mention landing on Molokal. Beccari alleged that Rock had also seen this species on the rock islets off the north coast of Molokai but was unable to collect it there. Beccari explained how he had decided that the origin of P. galldichalldii was now Molokai rather than Oahu, as he had contended in his 1890 account. He stated, "That this Molokai palm is really one of the two collected by Gaudichaud in the Hawaiian Islands is extremely probable, in consideration of the fact that clumps of it are plainly visible from the sea, and very likely had been noticed by naturalists of the Bonite". He attempted to bolster his conclusion by stating, "But the best argument for the identification of Pr. Galldichalldii with the palm of the cliff of Molokai, rests on the perfect correspondence of the nature of the indument that covers the lower surface of the leaves of the type specimens of Pr. Gaudichaudii with that covering those collected by Rock." I feel that Beccari misinterpreted the type material of Pritchardia gaudichaudii. He did not say he saw the material at G and, if he had, it may be that he interpreted the patchy nature of the lepidia on the abaxial leaf blade surface to mean it was incompletely covered. Or, perhaps he had seen additional, different material, now lost or destroyed, that was juvenile in nature. This character (the extent of lepidia completely covering the abaxial leaf blade surface) is a function of time and age for species that possess it. It is lacking or incompletely covers abaxial leaf blade surfaces of juvenile plants; complete coverage of the blade surface, if it is to occur, develops only on older plants. Beccari also felt that the palms on the islets were the same as those on the cliffs of Molokai proper. He surmised, probably correctly, that the islets were likely once connected to Molokai. Perhaps more significantly for him, though, he stated that fruits purportedly collected by Spencer (here Beccari erroneously attributes the collector to Lydgate) on these islets, which Beccari illustrated in his 1890 account, matched perfectly with Rock's material. That Pritchardia gaudichaudii grew on these islets is highly unlikely, though, because Huelo and Mokapa islets have been recently and thoroughly explored and only P. hillebralldii has been collected there. Spencer's collections probably came from the Molokai sea cliffs or valleys, not the offshore islets. Nonetheless, Beccari and Rock (1921) placed Pritchardia gaudichaudii primarily on the windward sea cliffs and valley walls of eastern Molokai from Waialeia to Wailau valleys although they noted it also occurred on the ridges and flat areas just above and inland. There it grew with P. lowreyana, which was distinct in its "larger, ovate, conically pointed fruit, and in the different aspect of the lower surface of the leaf-blade, which is dotted with a quite different form of lepidia." In summary, it is clear that the name Pritchardia martii is best applied to material from the Koolau Range on Oahu, which like the type, has lepidia completely covering the abaxial leaf blade surface. The name P. goudichaudii is also best applied to material from the Koolau range on Oahu and, thus, is a synonym of P. mami because only one species (albeit a highly variable one) occurs there near downtown or the historic section of Honolulu. Gaudichaud most likely collected on this By far the most variable species of the genus, Pritchardia martii displays an astonishing and frustrating range of characters from one end of the Koolau Mountains to the other. Individuals clinging to the windward cliffs are typically dwarfed and stunted with much reduced, compact crowns of small leaves (Back Cover) while a short distance away, just lee of the Koolau crest and in protected valleys or swales where soU is better and deeper and moisture more constant, individuals are robust and tall with fuller, more expansive crowns of large leaves. The two forms could easily be mistaken as two, distinct species. Inflorescences range from shorter than the petioles to greatly exceeding the leaf blades. I had hoped to be able to segregate out these forms of P. martii with exceptionally long inflorescences, which occur primarily at the northwestern and southeastern ends of the Koolau range, but the existence of intermediate forms precluded me from doing so. The Koolau range is also where P. martii forms its famous vertical, line-like colonies that can extend for 100 meters or more down the neariy sheer windward cliffs. The inclusion of the famous outlier in the southern Waianae Mountains, consisting of two somewhat stunted and spindly yet reproductive individuals posed precariously at the top of a basalt cliff and one juvenile in the rocky rubble below, within Pritchardia martii is bound to be controversial. Many people feel this population, discovered in the 1980s, should be formally described and named, if for no other reason than to give it formai recognition so it can be officially assessed and assigned the appropriate conservation status. However, it easily falls within the range of variability encompassed by P. martii in the Koolau Mountains to the west. island and all material from the Koolau range has lepidia completely covering the abaxial leaf blade surface (like the type) while no collections from Molokai have this character. The name P. gaudichaudii has been erroneously applied to material in cultivation of P. lowreyalla, which is from Molokai. The Waianae population may not have always been so isolated. Before the arrival of humans in Hawaii, moist forest covered the great, sweeping Leilehua plain, which extends westward from the Koolau range to connect with the Waianae range. Fossil evidence shows that Pritchardia once inhabited this intermountain plain, at least along its southern fringes. It is likely that the P. martii in the Koolau range extended throughout the moist forest of the Leilehua plain and even up into the Waianae range. As human activity and/or natural events destroyed the forest on the Leilehua plain, the Waianae population of P. martii was cut off and isolated from the Koolau populations. </p></div>
+<div type="materials_examined"><p>U.S.A. Hawaii. Oahu. Koolau Mountains: Gaudichaud s. n. (P; G, K); t. 58, 59, Voy. Bonite, Bot. (1842); Gaudichaud s. n. (G, FI); Pearsall s. n., 25 April 1948 (BISH); Aiea, Takeuchi 236 (BlSH); Anahulu Trail, Degener 10466 (BISH); Halawa Ridge, Degener 10467 (BlSH); Halawa Valley, Woodward 3 (BISH); Halawa-Heeia Divide, Haiku, SI. fohn 20435 (BISH); Hauula-Kaiuanul Ridge, Caum 151 (BISH), MacDaniels 168 (BISH); Kahana Valley, Rock (ex Caum) 18001 (BISH); Kahana, Waikane-Schofield Trail, Fosberg 8771,12179, 12253 (BISH), St. fohn 10180 (BISH); Kaluanui, Meebold s. n., May 1932 (BlSH), St. fohn 10110, S-32 10589, 10590, 10591 (BISH); Kamapuaa Summit, Degener 10468 (BISH); Kawailoa, Bryan 871 (BISH); Kawailoa trailhead at Kuhuku Cabin, Warshauer 597 (BISH); Kipapa Gulch, Waipio, Fosberg 9750, 9789 (BISH), Cowan 96, 97 (BISH); Kipapa-Waiahole Crest, Grant 7231 (BISH); Kipapau, Wood 7571 (PTBG); Koloa, Takeuchi 2940 (BISH, HAW); Koolauloa and Waialua, Wood 232,233 (PTBG); Kuliouou-Niu Ridge, Obata 87-452 (BISH); Kullouou, Wood 2613 (PTBG), Zschokke 1282 (BISH); Laie, Takeuchi 2616 (BlSH); Laie-Malaekahana Ridge, Fosberg 9437 (BISH), St. fohn 11559 (BISH); Moanalua, Bishop 1249 (HAW), Rock s. n.,1916 (BISH), Swezey 17350 (BISH); Mt. Olympus, Forbes 2556 (BISH), Rock s. n., Oct. 1912, 12539 (BISH), Swezey s. n., 3 Oct. 1921 (BISH); Niu Valley, Hillebrand s. n. (BlSH); Poamoho Trail Summit, Fosberg 13325 (BISH); Punaluu, Halemano Gulch, Bryan 1500 (BISH); PunaluuKaipaupau, Forbes s. n., 3 May 1909 (BISH); Punaluu Mountains, Degener 9719 (BlSH), Forbes s. n., 14 Nov. 1908 (BISH), Rock 8822 (BISH), Rock s. n., 31 Oct. 1914 (BISH), Selling 3644 (BISH), St. fohn 10592, lOS93, 10954, 10595 (BISH); Pupukea-Kahaluu Trail, Degener 9718 (BISH); Puu Kaaumakua, Rock (ex Caum) 18000 (BISH); Puu Konahuanul, Bishop 1675 (HAW), Degener 9714 (BISH); Puu KonahuanuiMt. Olympus, Forbes 1645, 2256 (BlSH), MacDaniefs 120 (BlSH); Waiahole Ditch Trail, Meebold s. n., June 1932 (BISH); Waiahole Valley, Rock 17251 (BISH), Takeuchi 2240 (BISH); Waikane-Kahana Divide, Takeuchi 2041 (BISH, HAW); Waikane-Schofield Trail, Warshauer 993 (BISH); Wailupe Valley, Hatheway 515 (BISH), Rock s. n., Jan. 1915, Rock 10361 (BISH), Swezey s. n. (BISH); Waiomao, Takeuchi 2611 (BISH); Wiliwilinui Ridge, 51. John 22686 (BISH). Waianae Mountains: Palikea, Palawai, Hodel 2006 (BISH), Perlman 5400, 5673 (BISH, PTBG), Wood 1209 (PTBG). CULT. U.S.A. Hawaii. Oahu: Lyon Arboretum, Little 31256 (BISH), Zona 999 (HAW); Wahiawa Botanical Garden, HBG 73.0014, Annable 3635 (BISH); Waimea Valley Audubon Center, 84p324, Zona 1007 (HAW). </p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

@@ -1,0 +1,43 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>Pinanga in Java and Bali</mods:title>
+</mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Witono</mods:namePart>
+<mods:namePart type="given">J.R.</mods:namePart>
+<mods:namePart type="family">Mogea</mods:namePart>
+<mods:namePart type="given">J.P.</mods:namePart>
+<mods:namePart type="family">Somadikarta</mods:namePart>
+<mods:namePart type="given">S.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Palms 46(4) 193-202</mods:publisher>
+<mods:dateIssued>2002</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Pinanga arinasae</name>
+<author>Witono</author>
+<citation>Palms 46: 194 (2002)</citation>
+<type>Indonesia. Bali, Bedugul, Bukit Tapak, 1973; Dransfield et al.; JD3512</type>
+<type_loc>Holotypus BO; isotypi BH, K, L</type_loc>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p>This handsome "pinang" is named for Mr. I.B.K. Arinasa who assisted us in the field.</p></div>
+<div type="vernacular"><p>Nyabah, jabah or pinang jawa.</p></div>
+<div type="diagnosis"><p>P. javanae affinis sed caudice solitario, vaginis foliorum sublepidotis, frondibus pinnatisectis, segmentis utroque latere 35-45 linearo-lanceolatis acuminatis, inflorescentiis lepidotis et verruculosis, ramis (20-30) spiralibus, fructibus obovoideis</p></div>
+<div type="description"><p>Robust, solitary palm. Stem erect, 12-15 cm diam., 10-12 m tall, medium brown to gray brownish; internodes 10-25 cm, scars to 3 cm. Crownshaft slightly swollen, 130-180 cm long, 14.0-17.5 cm diam., yellow when young and purplish green when adult, covered with silvery indumentum. Leaves 7-10 in the crown, pinnate, whole leaf 250-330 x 240 cm; leaf-sheath to 110 cm, inside white and smooth, petiole 16-40 cm, deeply oblique, convex abaxially, silvery indumentose below; rachis to 215 cm, silvery indumentose below, concave then flattened adaxially, convex abaxially, terete near the apex; leaflets 35-45 on each side of rachis, entire, regularly arranged, linear to lanceolate, basal leaflets 50-58 x 1.0-1.8 cm, ribs 2, middle leaflets 90-120 x 4-5 cm, ribs 2, apical leaflets 30-48 x 0.6-3 cm, ribs 2-4, indumentose on lower ribs, the surfaces discolorous, upper dark green, lower pale green when fresh, on drying becoming pale brown on lower surface and dark brown on upper surface. Inflorescence infrafoliar, arcuate, eventually pendulous, branched to one order only, silvery indumentose at the base and verruculose, 50-55 cm long, base very stiff; prophyll pale yellow distally and greenish yellow near base when fresh, brownish yellow when dry, papery, smooth, 37 x 8 cm; peduncle erect, flattened, 11-18 x 1.6-2.5 cm, rachis 18-27 x 1 cm, rachillae 20-30, spirally arranged on the rachis; rachillae bearing 16-28 triads on each side, basal rachillae longer than apical rachillae. Staminate flowers sessile, calyx with 3 subulate sepals, 7 x 3.5 mm; corolla with 3 petals, longer than sepals, ovate, 10 x 6 mm; stamens 45-68, pale yellow, 2-4 x 0.3-0.5 mm. Pistillate flowers sessile; calyx cup-shaped, pale yellow, 4 mm diam. with 3 triangular imbricate orbicular sepals, lobes 5.5-6 x 4 mm, ciliate at margins, striate, apex mucronate; corolla with 3 cucullate free rounded, orbicular, ciliate pale yellow petals, similar to sepals in size, striate, apex mucronate-obtuse; ovary rounded, 3x2 mm. Fruit obovoid, 12-17 x 8-12 mm. Young fruit green, mature fruit red blackish. Seed obovoid, deeply ruminate.</p></div>
+<div type="distribution"><p>Endemic to Bali at Bukit Tapak near Eka Karya Botanic Garden. We did not find this species in nearby Bukit Lesung and Bukit Pohen. A long time ago, P. arinasae was probably present there, but the habitat is now highly degraded.</p></div>
+<div type="biology_ecology"><p>Occurring on a very steep hill slope on rocky outcrops in Casuarina and Engelhardtia forest at altitudes of 1100-1400 m above sea level.</p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>A highly ornamental palm, popular with local people near the botanic garden. Young fruits are used as a substitute for betel nut (Areca catechu), young leaves (cabbage or umbut) can be eaten. Stems are used for traditional cremation ceremonies ("ngaben"), and leaf-sheaths are used for making a "cukup" (a Balinese umbrella).</p></div>
+<div type="discussion"><p>Pinanga arinasae is closely related to the single-stemmed P. javana from Java, P. insignis from the Philippines and to P. punicea from Papua and Maluku. The major differences between P. arinasae and the above mentioned species are presented.The major differences between Pinanga arinasae and closely related species. Data from Scheffer (1876), Beccari (1907) and Moore and Fosberg (1956). Outer surface of crownshaft. P. arinasae covered with silvery indumentum. P. insignis covered in appressed radiate scales of a chestnut brown color. P. punicea covered in brown scaly indumentum. Width of leaves. P. arinasae to 240 cm. P. insignis to 150 cm. P. punicea 160-200 cm. Length of petiole. P. arinasae16-40 cm. P. insignis very short or obsolete. P. punicea 80cm. Apical leaflets. P. arinasae 2-4 ribs. P. insignis 10 ribs. P. punicea 6-7 ribs. Inflorescence. P. arinasae 50-55 cm. P. insignis 100cm. P. punicea 50-60 cm. Length of rachillae. P. arinasae 22-32 cm. P. insignis 40-50 cm . P. punicea 16-27 cm. Arrangement of fruit on rachillae. P. arinasae distichous. P. insignis distichous. P. punicea spiral. Fruit. P. arinasae obovoid (1.2-1.7 cm long by 0.8-1.2 cm diam.). P. insignis ovoid (2.4-2.5 cm long by 1.3-1.4 cm diam.).P. punicea ellipsoid (1.7 cm long by 0.9 cm diam.).</p></div>
+<div type="materials_examined"><p>BALI. Bukit Tapak, Apr 1973, Dransfield JD3S12 (Holotype BO); sterile, Mar 1992 Afriastini 163 (BO); seedling, May 1998 Witono 74 (BO); flower, May 1998 Witono 75 (BO).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

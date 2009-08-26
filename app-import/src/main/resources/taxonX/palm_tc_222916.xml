@@ -4,7 +4,10 @@
 <mods:titleInfo>
 <mods:title>A new species of Calamus (Arecaceae: Calamoideae) from north-east Thailand</mods:title>
 </mods:titleInfo>
-<mods:name><mods:namePart>Tom D. Evans</mods:namePart></mods:name>
+<mods:name>
+<mods:namePart type="family">Evans</mods:namePart>
+<mods:namePart type="given">T.D</mods:namePart>
+</mods:name>
 <mods:originInfo>
 <mods:publisher>Kew Bulletin, Vol. 57, No. 1, pp. 85-90</mods:publisher>
 <mods:dateIssued>2002</mods:dateIssued>

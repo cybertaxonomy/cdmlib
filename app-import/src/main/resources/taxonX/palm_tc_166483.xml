@@ -1,0 +1,64 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>A Revision of Pseudophoenix</mods:title>
+</mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Zona</mods:namePart>
+<mods:namePart type="given">S.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Palms 46(1) 19-38</mods:publisher>
+<mods:dateIssued>2002</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Pseudophoenix vinifera</name>
+<author>(Mart.) Becc.</author>
+<citation>Pomona Coll. Jour. Econ. Bot. 2: 268. 1912</citation>
+<synonymy>
+<name>Euterpe vinifera</name>
+<author>Martius</author>
+<bibref>Martius, Hist. Nat. Palm. 1: t. ZII, F. 18, 19. 1845</bibref>
+</synonymy>
+<synonymy>
+<name>Cocos vinifera</name>
+<author>Mart.</author>
+<bibref>Mart., Hist. Nat. Palm. 3: 324. 1853</bibref>
+</synonymy>
+<synonymy>
+<name>Gaussia vinifera</name>
+<author>(Mart.) H. Wendl.</author>
+<bibref>(Mart.) H. Wendl. in Kerchove, Palm. 245. 1878</bibref>
+</synonymy>
+<synonymy>
+<name>Aeria vinifera</name>
+<author>(Mart.) O.F.Cook</author>
+<bibref>(Mart.) O.F.Cook, Jour. Washington Acad. Sci. 13: 399. 1923</bibref>
+</synonymy>
+<synonymy>
+<name>Pseudophoenix insignis</name>
+<author>O.F.Cook</author>
+<bibref>O.F.Cook, Jour. Washington Acad. Sci. 13: 400. 1923.</bibref>
+<type>Haiti, Dept. de L’Artibonite, Passe Reine; Cook; 28</type>
+<type_loc>Holotype US!; type (fragment) BH!</type_loc>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="diagnosis"><p></p></div>
+<div type="description"><p>Stem 5–15 m tall, strongly ventricose, most slender above the swelling, gray, with prominent leaf scars when young. Leaves ca. 24 in the crown, spreading; leaf 2–3 m long; sheath 34–49 cm long, green with silvery gray scales near the apex; petiole 11–30 cm long; rachis 270 cm long, often with brown scales along its margin; leaf segments 115–131 per one side of the rachis; middle leaf segment 53–83 cm long, 1.7–3.1 cm wide, lanceolate with an acuminate tip, gray-green, glaucous abaxially, glaucous to glossy adaxially, ramenta present on the abaxial surface of the midvein at the base of the leaf segment. Inflorescence erect, ascending or arching, branched to 2 or 3 orders, ca. 125 cm long; peduncle down-curved, extending well beyond the leaf bases, glabrous; prophyll 102–156 cm long, ca. 8 cm wide, bearing dark brown scales along both edges (keels); inner bract ca. 50 cm long, bearing dark brown scales along both edges; rachillae 12.0–19.5 cm long and 1.5–2.6 mm diam., directed toward the apex of the inflorescence. Flower pseudopedicel (0.8–)2.5–4.4 mm long, 0.8–1.5 mm diam., green to glaucous; calyx a shallow triangular cupule, 3.1–5.9 mm diam., green to glaucous, margins hyaline; petals ovate, 6.4–8.9 mm long, 4.6–5.8 mm wide, green, glaucous abaxially, spreading, with ca. 24 major veins; filaments 4.2–5.1 mm long, basally connate forming a short staminal tube, anthers ovoid, 5.1–6.1 mm long, 2.4–2.9 mm wide, yellow; gynoecium (in bisexual flowers) 4.4–6.1 mm long, 2.5–3.7 mm diam. (pistillode in staminate flowers smaller), green. Fruit 17.6–23.7 mm long, 16.2–20.2 mm diam. (in single-seeded fruits); endocarp 15.2–16.9 mm long, 13.9–16.0 mm diam., 0.2–0.4 mm thick. Seed 11.1–14.7 mm long, 10.6–14.5 mm diam.</p></div>
+<div type="distribution"><p>In Haiti, P. vinifera survives in only two populations: between Poteau and Passe Reine (Dep. de l’Artibonite) and near Source Matelas (Dep. de l’Ouest) (Henderson et al. 1990). In the Dominican Republic, scattered palms are seen in the southern part (Provs. Azua and Barahona), but nowhere are populations large.</p></div>
+<div type="biology_ecology"><p>Pseudophoenix vinifera occurs in dry forest, at 300–400 m elevation, in Haiti and the southwestern Dominican Republic.</p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>In the past, this species was much exploited for the sweet sap that was fermented into “wine” (hence the epithet “vinifera”). The palm is still occasionally used for this purpose, but past exploitation has so diminished populations that the practice seems to have diminished as well. Pseudophoenix vinifera makes a striking ornamental palm and is occasionally cultivated by collectors and botanic gardens.</p></div>
+<div type="discussion"><p>Pseudophoenix vinifera is distinguished from its congeners by its strongly bottle-shaped stem at maturity, its distally directed rachillae and its triangular calyx. In gross appearance, it most closely resembles P. ekmanii, but in aspects of the inflorescence, flower and fruit, it resembles P. lediniana.</p></div>
+<div type="materials_examined"><p>DOMINICAN REPUBLIC. Azua: NE of Azua, between Azua and Estebania, 18°28’N 70°40’W, alt. 300 m, Zanoni, Ramírez, &amp; Peláez 15371 (NY); Barahona: El Jimi de Maygi, near Naranja, 7 km from Cabral on road to Polo, 18°11.535’N 71°14.631’W, Zona et al. 739 (FTG); near Barahona, Bailey 276 (BH); 1 mi W of Barahona, dry thickets, Liogier 13607 (GH, IJ, NY); Independencia: hillside of Loma Grande, in Arroyo de Río Las Damas, 5.7 km from Puerto Escondido on road to Duverge, 18°20.5’N 71°32’W, alt. 350 m, Zanoni &amp; Pimentel 26455 (NY); 2 km N from Puerto Escondito, on road to Duverge, 18°22’N 71°32’W, alt. 425 m, Gentry &amp; Mejía 50807 (FTG, NY). HAITI. Locality unknown, van Sterson s.n. (K); Anonymous s.n. (FI); Artibonite: mountains 2–4 miles NE of Poteaux, 500 m elev., Read 277 (BH); Passe Reine, Cook s.n. (US); Between Gonaïves and Ennery, Cook 28 (US; frag &amp; photo: BH); Poteaux, Bailey 146 (BH); Centre: Morne Cabrit, elev. 2000 ft., Cook s.n. (US); Nord-Ouest: Valleé des Frois-Rivières, Port-de-Paix, Bassin Bleu, Ekman H3977 (S); Ouest: ca. 2 mi S of Cabaret, Read 276 (BH); Fond Chaleur, near Etang Saumatre, Henderson &amp; Aubry 1184 (NY); 3 km N of Source Matelas, Zanoni, Mejía &amp; Pimentel 33602 (NY); Ciment d’Haiti, along coastal road from Portau- Prince to St. Marc, Henderson, Aubry &amp; Vaval 1039 (NY); Croix-des-Bronquets, Morne-à-Cabrits, elev. ca. 400 m, Ekman H5496 (A, K, NY, S), Ekman &amp; Barker 5496 (EHH, photo BH); 15 mi N of Portau- Prince, Read 211 (BH). CULTIVATED. DOMINICAN REPUBLIC. Province unknown: Arenoso near Santiago, Bailey 311 (BH); Distrito Nacional: Santo Domingo, Parque Eriquillo, Zanoni et al. 11409 (NY); USA. Florida: Miami- Dade Co., Coral Gables, Fairchild Tropical Garden, 96-1416, Zona 776 (FTG); Miami, Montgomery Botanical Center, 91-444A, Zona s.n. (FTG), Baker 1002 (FTG); Miami, USDA Plant Introduction Station, Read 1397 (BH, FTG). </p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

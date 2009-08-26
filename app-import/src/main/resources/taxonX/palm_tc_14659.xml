@@ -1,0 +1,70 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>Genera Palmarum. The evolution and classification of palms</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Uhl</mods:namePart>
+<mods:namePart type="given">N.</mods:namePart>
+<mods:namePart type="family">Asmussen</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+<mods:namePart type="family">Harley</mods:namePart>
+<mods:namePart type="given">M.</mods:namePart>
+<mods:namePart type="family">Lewis</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>2008</mods:dateIssued><mods:publisher>Kew Publishing, Royal Botanic Gardens Kew</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="genus">
+<div type="diagnosis"><p>Dwarf to massive, solitary or clustered monoecious or rarely dioecious pinnate-leaved palms from mainland Asia to New Guinea and Australia, distinctive in the induplicate leaflets with praemorse tips, flowers borne in triads and free sepals in the staminate flower. Flowering is usually basipetal hapaxanthic; however, a few pleonanthic species are known.</p></div>
+<nomenclature>
+<name>Arenga</name>
+<author>Labill. in DC.</author> 
+<citation>Bull. Sci. Soc. Philom. Paris 2: 162(1800)</citation>
+<type>Type; Arenga saccharifera; Labill. ex DC.</type>
+<synonymy>
+<name>Saguerus</name>
+<author>Steck</author>
+<bibref>Steck, Sagu 15 (1757)</bibref>
+<type>Type; Saguerus pinnatus; Wurmb</type>
+</synonymy>
+<synonymy>
+<name>Gomutus</name>
+<author>Correa</author>
+<bibref>Correa, Ann. Mus. Nat. Hist. Nat. 9: 288 (1807)</bibref>
+<type>Type; Gomutus rumphii; Corrêa</type>
+</synonymy>
+<synonymy>
+<name>Blancoa</name>
+<author>Blume</author>
+<bibref>Blume, Rumphia 2: 128 (1843 [‘1848’]) (non Lindl. 1840).</bibref>
+<type>Type; Caryota tremula; Blanco</type>
+</synonymy>
+<synonymy>
+<name>Didymosperma</name>
+<author>H. Wendl. and Drude ex Hook.f.</author>
+<bibref>H. Wendl. and Drude ex Hook.f. in Benth. and Hook.f., Gen. pl. 3: 917 (1883).</bibref>
+<type>Lectotype; Didymosperma porphyrocarpum; (Blume ex Mart.) H. Wendl. and Drude ex Hook.f. </type>
+</synonymy>
+</nomenclature>
+<div type="etymology"><p>Derived from aren, the Javanese vernacular name for the sugar palm, Arenga pinnata.</p></div>
+<div type="description"><p>Dwarf to large, solitary or clustered, unarmed or lightly armed, pleonanthic or hapaxanthic, monoecious or very rarely apparently dioecious, acaulescent, shrubby or tree palms. Stem with congested or elongate internodes, usually obscured by persistent fibrous leaf bases and sheaths, more rarely becoming bare, conspicuously ringed with scars. Leaves flabellate and induplicately ribbed (rarely) or induplicately imparipinnate, marcescent, or rarely abscising under their own weight; sheath covered in a great variety of tomentum, scales and hairs, often extended beyond the petiole to form a ligule, eventually disintegrating into a mass of black fibres, some of which are very robust and almost spine-like; petiole usually well developed, slender to very robust, channelled or ridged (Arenga undulatifolia) at base adaxially, rounded abaxially, usually covered with a variety of indumentum; rachis rounded to angled adaxially, rounded to flat abaxially; leaflets single-fold (except for the terminal flabellum), regularly arranged or grouped and held in several planes, or deeply lobed and wavy, often with 1 or 2 basal auricles, the distal margins praemorse, with small sharp teeth, sometimes with a short to long, laterally compressed, basal stalk, the veins parallel to the fold, or diverging from the base, or ± pinnately arranged along the fold, adaxial surface of blade glabrescent, margins sometimes spiny, abaxial surface usually densely covered in pale indumentum with or without scattered bands of dark brown scales, midribs prominent abaxially, transverse veinlets scarcely visible. Inflorescences interfoliar, sometimes infrafoliar, often bursting through the leaf sheaths, produced in an acropetal sequence in pleonanthic species, in a basipetal sequence in hapaxanthic species, the distal-most inflorescences usually subtended by greatly reduced leaves, bisexual, or unisexual by sterilisation of triad components, where unisexual the pistillate tending to be distal to the staminate, the pistillate sometimes very much larger than the staminate, the staminate or bisexual inflorescences sometimes multiple, otherwise solitary, rarely spicate (A. retroflorescens), usually branched to 1–2 orders; peduncle very short to well developed, slender to massive, bearing a generally rather inconspicuous, basal, 2-keeled prophyll and several conspicuous, spirally arranged, peduncular bracts, soon splitting adaxially, the bract limb ± triangular, the abaxial surface usually densely covered with indumentum; rachis shorter or longer than the peduncle; rachis bracts inconspicuous, triangular; rachillae erect or pendulous, distant or crowded, very slender to extremely massive, frequently tomentose, bearing a loose to dense spiral of triads, subtended by inconspicuous low bracts. Staminate flowers in bisexual inflorescences opening before the pistillate; staminate flowers with sepals 3, rounded, imbricate, coriaceous, distinct, or joined very briefly at the base; corolla tubular at the very base, with 3 ovate to oblong triangular-tipped, coriaceous, valvate lobes; stamens rarely as few as 6–9, usually many more than 15, filaments short, anthers elongate, latrorse, connective sometimes prolonged into a point; pistillode absent. Pollen ellipsoidal, ± bi-symmetric; aperture a distal sulcus; ectexine intectate, usually spiny, spines attached to smooth upper surface of foot layer, in some species spines more numerous along aperture margin, less frequently densely clavate, apices of clavae spinulose; longest axis 27–36 µm; post-meiotic tetrads tetrahedral [13/20]. Pistillate flowers usually globose, sometimes massive; sepals 3, distinct, rounded, coriaceous, imbricate; petals 3, connate in the basal ca. 1/2, valvate, triangular distally; staminodes 3–0 (?sometimes more, also reported as fertile, then flower pseudohermaphroditic); ovary globose, trilocular, stigmas 2–3, low, fertile locules 2–3, septal glands present basally and opening at the ovary surface, ovules inserted adaxially at the base, hemianatropous. Fruit globose to ellipsoidal, often somewhat angled, 1–3 seeded with apical stigmatic remains; epicarp smooth, dull to brightly coloured, mesocarp fleshy, filled with abundant, irritant needle crystals, endocarp not differentiated. Seeds basally attached, smooth, endosperm homogeneous; embryo lateral. Germination remote-tubular; eophyll ovate to elliptic with erose margin or bifid with rhombic, divergent segments. Cytology: 2n = 32 (64 in one tetraploid).</p></div>
+<div type="distribution"><p>About 20 species ranging from India, South China, Ryukyus and Taiwan, through Southeast Asia, Malesia including Christmas Island (Indian Ocean) to north Australia, the greatest diversity occurring on the Sunda Shelf. </p></div>
+<div type="anatomy"><p>Leaf (Tomlinson 1961), root (Seubert 1998a). Two characters distinctive in leaf anatomy: hairs with a basal cylinder of sclerotic cells surrounding 1–3 thin-walled cells and guard cells with transverse ridges on the cutinised ledges. Stegmata (Killmann and Hong 1989). Gynoecium with a basal septal nectary opening by pores on its upper surface, a vascular cylinder for each carpel evident in the gynoecial base, and raphides and tannin abundant around the locules (Uhl and Moore 1971). </p></div>
+<div type="relationships"><p>In the two studies that tested the monophyly of Arenga, the genus is resolved as monophyletic with strong support (Asmussen et al. 2006) or moderate support (Bayton 2005). Both studies find strong support for a sister relationship between Arenga and Wallichia, as do Baker et al. (in review). uses of A. pinnata are legion; it is widely cultivated as a source </p></div>
+<div type="uses"><p>The more slender forest undergrowth species are scarcely used but the larger species are among the most important economic plants of Southeast Asia and Malesia. The uses of A. pinnata are legion; it is widely cultivated as a source of sugar, wine, fibre, thatch, sago, and many other products (Miller 1964). Other large species are often used in similar ways. Special mention may be made of A. microcarpa as a source of sago in some parts of the Moluccas; this seems to be a palm with considerable potential.</p></div>
+<div type="taxonomic accounts"><p>The genus has been monographed by J.P. Mogea; an account has yet to be published. See also Dransfield and Mogea (1984) and Mogea (2004). </p></div>
+<div type="fossil record"><p>In India a peduncle, Palmostroboxylon arengoidum, from the Deccan Intertrappean of Madhya Pradesh (although the age span of these volcanic deposits is controversial, see Chapter 5) is considered by Ambwani (1984) to resemble Arenga closely. A seed (Iriartea collazoënsis) recorded from the Middle Oligocene of Puerto Rico is considered to resemble closely those of Arenga or Iriartea (Hollick 1928). The earliest fossil pollen of Arenga is from the Lower Miocene of Borneo (Muller 1972, 1979). In India, Venkatachala and Kar (1969) recovered spinose monosulcate pollen grains, Couperipollis kutchensis, from the Eocene sediments of Kutch (Gujarat State). Lakhanpal (1970) later suggested that these pollen grains most probably represent Arenga. However, the pollen illustrated is not Arenga-like and the comparison was rejected by Muller (1981). The genus Arengapollenites was published by Kar (1985) to include, “oval, spinose and monocolpate grains where the spines arearranged on the margins alternating to close to the colpus likea crocodile jaw.” This genus is known from the LowerEocene, Naredi Formation (Kar 1985), and from the lignitesof the Cambay and Kutch Basins (Kar and Bhattacharya 1992).The pollen illustrated closely resembles spiny Arenga pollen.Couperipollis was subsequently re-designated as a new genus,Neocouperipollis (Kar and Kumar 1986).</p></div>
+<div type="discussion"><p>Within this relatively small genus, there is anastonishing range of form and flowering behaviour.
+</p></div>
+<div type="vernacular"><p>Sugar palm (Arenga pinnata and several other species), black fibre, gomute, aren, enau and kabang (A. pinnata).</p></div>
+<div type="biology_ecology"><p>Most species are plants of primary forest in the lowlands and hills of the perhumid tropics; a few species are tall tree palms that grow gregariously and, with their massive leaf litter, must have a pronounced effect on forest dynamics. The smaller species, formerly included in the genus Didymosperma, are forest undergrowth palmlets.</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

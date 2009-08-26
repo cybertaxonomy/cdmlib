@@ -2,8 +2,16 @@
 <taxonxHeader>
 <mods:mods>
 <mods:titleInfo><mods:title>Palms of Madagascar</mods:title></mods:titleInfo>
-<mods:name><mods:namePart>Dransfield and Beentje </mods:namePart></mods:name>
-<mods:originInfo><mods:dateIssued>1995</mods:dateIssued></mods:originInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Beentje</mods:namePart>
+<mods:namePart type="given">H.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>1995</mods:dateIssued>
+<mods:publisher>Royal Botanic Gardens, Kew and The International Palm Society</mods:publisher>
+</mods:originInfo>
 </mods:mods>
 </taxonxHeader>
 <taxonxBody>

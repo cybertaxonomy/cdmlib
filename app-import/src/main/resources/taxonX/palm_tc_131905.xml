@@ -5,7 +5,10 @@
 <mods:title>A Reassessment of the Genera Plectocomiopsis, Myrialepis and Bejaudia (Palmae:
 Lepidocaryoideae)</mods:title>
 </mods:titleInfo>
-<mods:name><mods:namePart>John Dransfield</mods:namePart></mods:name>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
 <mods:originInfo>
 <mods:publisher>Kew Bulletin, Vol. 37, No. 2, pp. 237-254</mods:publisher>
 <mods:dateIssued>1982</mods:dateIssued>

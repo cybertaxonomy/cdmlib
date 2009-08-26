@@ -1,0 +1,58 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>Genera Palmarum. The evolution and classification of palms</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Uhl</mods:namePart>
+<mods:namePart type="given">N.</mods:namePart>
+<mods:namePart type="family">Asmussen</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+<mods:namePart type="family">Harley</mods:namePart>
+<mods:namePart type="given">M.</mods:namePart>
+<mods:namePart type="family">Lewis</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>2008</mods:dateIssued><mods:publisher>Kew Publishing, Royal Botanic Gardens Kew</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="genus">
+<div type="diagnosis"><p>The Andean wax palms are dioecious pinnate-leaved palms of the Andes; trunks often immensely tall, with thick wax; prophyll incomplete, petals united basally; stamens 6–15; stigmatic remains subbasal.</p></div>
+<nomenclature>
+<name>Ceroxylon</name>
+<author>Bonpl. ex DC.</author> 
+<citation>Bull. Sci. Soc. Philom. Paris 3:239 (1804).</citation>
+<type>Type; Ceroxylon alpinum; Bonpl. ex DC.</type>
+<synonymy>
+<name>Klopstockia</name>
+<author>H. Karst.</author>
+<bibref>H. Karst., Linnaea 28: 251 (1856).</bibref>
+<type>Lectotype; Klopstockia cerifera; H.Karst.</type>
+</synonymy>
+<synonymy>
+<name>Beethovenia</name>
+<author>Engel</author>
+<bibref>Engel, Linnaea 33: 677 (1865).</bibref>
+<type>Type; Beethovenia cerifera; Engl.</type>
+</synonymy>
+</nomenclature>
+<div type="etymology"><p>keros — wax, xylon — wood, referring to the thick white wax on the trunks.</p></div>
+<div type="description"><p>Tall to very tall, solitary, unarmed, pleonanthic, dioecious palms. Stems smooth, usually waxy, with prominent leaf scars. Leaves moderate to large, reduplicately pinnate, neatly abscising; sheath splitting opposite the petiole at maturity, usually not forming a crownshaft, leathery; petiole channeled adaxially, rounded abaxially; rachis adaxially flat to angled, glabrous, abaxially rounded, silvery-grey tomentose; leaflets acute, single-fold, evenly spaced or clustered, usually glossy adaxially, often waxy or tomentose-scaly abaxially, midrib conspicuous, larger adaxially, no other veins evident. Inflorescences interfoliar, solitary in the leaf axil, branched to 3–4 orders; peduncle elongate; prophyll tubular, 2-keeled, flattened, open apically, incompletely encircling the peduncle abaxially; peduncular bracts several (ca. 5–7), inserted near the base of the peduncle, the lower early in development, borne singly along the rachillae, pedicellate. ones open apically, the upper 3–4 terete, beaked, completely enclosing Staminate flowers with 3 sepals connate in a low, acutely or acuminately the inflorescence in bud, splitting abaxially at anthesis, the uppermost lobed cupule; petals 3, fleshy, acute or acuminate, briefly connate basally sometimes reduced and inserted higher than the others, prophyll and with each other and with the bases of antesepalous stamen filaments, peduncular bracts with indumentum or scales; rachis bracts small, open; separate above at anthesis; stamens 6–15(–17), filaments awl-shaped, not rachillae usually flexuous or zigzag, often short, the pistillate usually inflexed at the apex in bud, anthers basifixed, bifid basally, bifid to acute shorter than the staminate, glabrous or with indumentum, bearing small, or pointed apically; pistillode minute, conic, usually minutely trifid. pointed bracts subtending the flowers. Flowers ebracteolate, open from Pollen ellipsoidal or oblate triangular, asymmetric; aperture a distal sulcus or trichotomosulcus; ectexine tectate or semi-tectate, finely rugulate-reticulate, coarsely reticulate or gemmate-reticulate (muri comprise rows of gemmae), aperture margin similar or slightly finer; infratectum columellate; longest axis ranging from 32–46 µm [5/11]. Pistillate flowers similar to the staminate but staminodes usually smaller with halberd-shaped or sagittate abortive anthers; gynoecium ovoid, trilocular, triovulate, but 2 ovules usually aborting, stigmas 3, recurved at anthesis, ovules pendulous, hemianatropous. Fruit red, orange-red, or orange to purplish-black at maturity, globose, normally 1-seeded, stigmatic remains lateral near the base; epicarp smooth or minutely roughened, mesocarp fleshy with few fibres, endocarp thin, not adherent to seed. Seed globose, hilum basal, round, raphe branches obscure, ascending from the hilum, endosperm homogenous; embryo lateral near the base. Germination adjacent-ligular; eophyll elliptic or narrowly lanceolate. Cytology: 2n = 36.</p></div>
+<div type="distribution"><p>Eleven species occurring at high elevations in the Andes from Venezuela through Colombia, Ecuador, and Peru to Bolivia. </p></div>
+<div type="anatomy"><p>Leaf (Tomlinson 1961, Roth 1990), root (Seubert 1996b), floral (Uhl 1969b) and stamen development (Uhl and Moore 1980). </p></div>
+<div type="relationships"><p>Ceroxylon is strongly supported as monophyletic (Trénel et al. 2007) and resolved as sister to Juania with high support (Uhl et al. 1995, Asmussen et al. 2006, Trénel et al. 2007, Baker et al. in review). For interspecies relationships, see Trénel et al. (2007). </p></div>
+<div type="uses"><p>Stems provide wax for candles and matches; fruit are used for cattle food. Over-exploitation of young fronds for Christian religious ceremonies has seriously endangered some species. Several species have become prized but slow-growing ornamentals. </p></div>
+<div type="taxonomic accounts"><p>Burret (1929), Moore and Anderson (1976), Galeano-Garces and Bernal-Gonzalez (1982) and Galeano (1995). </p></div>
+<div type="fossil record"><p>Ramanujam (1987) compares a collection of Paravuripollis from the Lower to Middle Miocene of Kerala with Ceroxylon (or Oncosperma); however, the fossils appear to be more or less zonasulcate and clavate, and closer to the pollen of a number of species of Korthalsia rather than to the monosulcate, reticulate pollen of Ceroxylon. See also entries for Korthalsia and Pseudophoenix. </p></div>
+<div type="discussion"><p>The wax palms are a spectacular feature of Andean montane forest. Identification of species, particularly in the herbarium, is often difficult because there is rather little variation in vegetative and reproductive characters. The morphology and anatomy (Uhl 1969b) of the flowers of Juania, Ravenea, and Ceroxylon are very similar. The development of polyandry in Ceroxylon is different from that in other subfamilies (Uhl and Moore 1980). </p></div>
+<div type="vernacular"><p>Andean wax palms. </p></div>
+<div type="biology_ecology"><p>Species of Ceroxylon are some of the tallest palms. They occur in premontane to low and high montane forest often among clouds for most of the time. Today trees are frequently left standing in fields where the forest has been cleared. Ceroxylon parvifrons occurs at elevations in excess of 3500 m above sea level, the palm species with the highest elevational occurrence (Borchsenius and Skov 1997). </p></div>
+<div type="conservation"><p>All species are endangered (Moore 1977).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

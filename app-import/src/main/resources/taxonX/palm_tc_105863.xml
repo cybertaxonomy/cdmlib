@@ -1,0 +1,52 @@
+<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>Genera Palmarum. The evolution and classification of palms</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Uhl</mods:namePart>
+<mods:namePart type="given">N.</mods:namePart>
+<mods:namePart type="family">Asmussen</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+<mods:namePart type="family">Harley</mods:namePart>
+<mods:namePart type="given">M.</mods:namePart>
+<mods:namePart type="family">Lewis</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>2008</mods:dateIssued><mods:publisher>Kew Publishing, Royal Botanic Gardens Kew</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="genus">
+<div type="diagnosis"><p>Tall pinnate-leaved palms from New Caledonia with broom-like inflorescences.</p></div>
+<nomenclature>
+<name>Kentiopsis</name>
+<author>Brongn.</author>
+<citation>Compt. Rend. Hebd. Séances Acad.Sci. 77: 398 (1873).</citation>
+<type>Lectotype; Kentiopsis oliviformis; (Brongn. &amp; Gris) Brongn.</type>
+<synonymy>
+<name>Mackeea</name>
+<author>H.E. Moore</author>
+<bibref>H.E. Moore, Gentes Herb. 11: 304 (1978).</bibref>
+<type>Type; Mackeea magnifica; H.E.Moore</type>
+</synonymy>
+</nomenclature>
+<div type="etymology"><p>Derived from the generic name Kentia, named for William Kent (1779–1827), one-time curator of the botanic gardens at Buitenzorg, Java (now Kebun Raya Bogor) with opsis — resembling, from a presumed resemblance to Kentia Blume.</p></div>
+<div type="description"><p>Solitary, tall, unarmed, pleonanthic, monoecious palms. Stem erect, thick basally, grey, ringed with ± somewhat prominent, rather close leaf scars and with exposed roots at the base. Leaves pinnate, erect or spreading, neatly abscising; sheaths forming a prominent crownshaft; petiole channelled adaxially, rounded abaxially; leaflets regularly arranged, lanceolate, acute to acuminate, single-fold, adaxially glabrous and with wax, abaxially densely covered with small punctiform scales and abundant ramenta along ribs, midrib prominent, marginal ribs second in size to midrib, numerous secondary ribs conspicuous abaxially, transverse veinlets not evident. Inflorescences infrafoliar, branched to (2)–3–(4) orders basally, 1–2 orders distally, protandrous; peduncle very short, variously tomentose; prophyll and peduncular bract caducous, prophyll completely encircling the peduncle and enclosing the peduncular bract, briefly beaked, flat, keeled laterally, rather thin, chartaceous, both surfaces densely covered in whitish deciduous tomentum; peduncular bract like the prophyll but lacking keels; rachis elongate, longer than the peduncle, bearing spirally arranged, low, rounded, ± ruffled bracts subtending the branches and rachillae; rachillae rather slender to stout, about equal in length, straight or curved, usually glabrous, bearing spirally arranged prominent, rounded, lip-like bracts subtending flowers borne in triads of 2 staminate and a pistillate nearly throughout the rachillae, a few paired or solitary staminate flowers present distally; bracteoles surrounding the pistillate flower low, unequal, rounded, not sepal-like. Staminate flowers symmetrical or somewhat asymmetrical; sepals 3, distinct, ± deltoid, ± acute, imbricate basally, scarcely higher than wide; petals 3, valvate, angled, acute; stamens 11–38, shorter than, equalling or exceeding the petals, filaments erect at the apex in bud, anthers erect in bud, linear, dorsifixed, emarginate apically, bifid basally, latrorse, the connective elongate; pistillode nearly as high as the stamens (lacking, according to Beccari), with an attenuate, sometimes briefly trifid apex. Pollen ellipsoidal or oblate triangular, slight or obvious asymmetry; aperture a distal sulcus or trichotomosulcus; ectexine tectate, perforate or perforate-rugulate, aperture margin similar or slightly finer; infratectum columellate; longest axis ranging from 39–52 µm [1/4]. Pistillate flowers symmetrical; sepals 3, distinct, broadly imbricate; petals 3, distinct, broadly imbricate with valvate apices; staminodes 3, small, tooth-like, borne at one side of the gynoecium, or 6 and connate in a ring; gynoecium pseudomonomerous, with 3 prominent, recurved stigmas, unilocular, uniovulate, ovule pendulous. Fruit ellipsoidal, red or purplish at maturity with apical or subapical stigmatic remains; epicarp smooth, drying minutely pebbled, mesocarp consisting of a shell of pale, short, ellipsoidal sclereids over pale parenchyma with a few included longitudinal fibres and at maturity a layer of tannin cells adjacent to flat, anastomosing fibres adherent to the endocarp, endocarp thin, fragile, not operculate. Seed ellipsoid or pyriform, attached by an elongate hilum, the raphe branches numerous, anastomosing, endosperm homogeneous; embryo basal. Germination adjacent-ligular; eophyll bifid, seedlings sometimes displaying saxophone growth, sometimes with distichous leaves. Cytology: 2n = 32</p></div>
+<div type="distribution"><p>Four species in New Caledonia. </p></div>
+<div type="anatomy"><p>Leaf (Uhl and Martens 1980), root (Seubert 1998a,1998b) and fruit (Essig and Hernandez 2002). </p></div>
+<div type="relationships"><p>The monophyly of Kentiopsis has been resolvedwith low to moderate support (Baker et al. 1999a, Pintaud1999a, Asmussen et al. 2000). The genus has been placed as sisterto Actinokentia (Baker et al. in review) or alternatively as sister toa clade of Chambeyronia and Actinokentia (Pintaud 1999a).</p></div>
+<div type="uses"><p>Several of the species are becoming widespread in cultivation. </p></div>
+<div type="taxonomic accounts"><p>Pintaud and Hodel (1998a).</p></div>
+<div type="fossil record"><p>No generic records found.</p></div>
+<div type="discussion"><p>Kentiopsis is distinct from other members of theArchontophoenicinae in its asymmetrical staminate flowerswith angled petals and markedly unequal bracteolessurrounding the pistillate flower. </p></div>
+<div type="vernacular"><p>No common names recorded.</p></div>
+<div type="biology_ecology"><p>One species, Kentiopsis pyriformis, is found on ultramafic rock while the other three are found on schistose rocks. Kentiopsis oliviformis grows in forest transitional to semihumid forest and K. piersoniorum grows on exposed wet shrubby vegetation onmontane ridges. All four species tend to grow gregariously, forming spectacular colonies. Kentiopsis magnifica is the tallest and stateliest palm in New Caledonia. For further details, seePintaud and Hodel (1998).</p></div>
+<div type="conservation"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

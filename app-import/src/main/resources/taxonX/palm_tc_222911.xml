@@ -4,7 +4,16 @@
 <mods:titleInfo>
 <mods:title>A revision of the Calamus aruensis (Arecaceae) complex in New Guinea and the Pacific</mods:title>
 </mods:titleInfo>
-<mods:name><mods:namePart>William J. Baker, Ross P. Bayton, John Dransfield1 &amp; Rudi A. Maturbongs</mods:namePart></mods:name>
+<mods:name>
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+<mods:namePart type="family">Bayton</mods:namePart>
+<mods:namePart type="given">R.P</mods:namePart>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Maturbongs</mods:namePart>
+<mods:namePart type="given">R.A</mods:namePart>
+</mods:name>
 <mods:originInfo>
 <mods:publisher>Kew Bulletin 58: 351-370</mods:publisher>
 <mods:dateIssued>2003</mods:dateIssued>

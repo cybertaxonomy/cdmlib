@@ -1,0 +1,52 @@
+<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>Genera Palmarum. The evolution and classification of palms</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Uhl</mods:namePart>
+<mods:namePart type="given">N.</mods:namePart>
+<mods:namePart type="family">Asmussen</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+<mods:namePart type="family">Harley</mods:namePart>
+<mods:namePart type="given">M.</mods:namePart>
+<mods:namePart type="family">Lewis</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>2008</mods:dateIssued><mods:publisher>Kew Publishing, Royal Botanic Gardens Kew</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="genus">
+<div type="diagnosis"><p>Elegant feather-duster pinnate-leaved palms native to New Zealand, Norfolk Island, Raoul Island and the Chatham Islands, with rather stiff leaves and bulbous crownshafts.</p></div>
+<nomenclature>
+<name>Rhopalostylis</name>
+<author>H. Wendl. and Drude</author> 
+<citation>Linnaea 39: 180, 234(1875).</citation>
+<type>Type; Rhopalostylis baueri; (Hook.f.) H.Wendl. &amp; Drude</type>
+<synonymy>
+<name>Eora</name>
+<author>O.F. Cook</author>
+<bibref>O.F. Cook, J. Heredity 18: 409 (1927).</bibref>
+<type>Type; Eora sapida; (Sol. ex G.Forst.) O.F.Cook</type>
+</synonymy>
+</nomenclature>
+<div type="etymology"><p>Rhopalon — club, stylis — column or pillar, but botanically the style, referring to the shape of the pistillode in the staminate flower.</p></div>
+<div type="description"><p>Moderate to tall, solitary, unarmed, pleonanthic, monoecious palms. Stem erect, smooth, green to grey, closely ringed with prominent leaf scars, sometimes enlarged and bearing exposed roots at the base. Leaves pinnate, ascending and erect or somewhat arched, often twisted; sheath forming a prominent, rather short and somewhat bulbous crownshaft, enlarged basally or ± straight, sheath with definite diagonal nerves, and small brown scales; petiole very short, channelled adaxially, rounded abaxially; rachis like the petiole proximally, becoming channelled laterally and ridged adaxially, densely covered with small to medium brown scales; leaflets subopposite, forward pointing, stiff, lanceolate, tapering, often curved distally, single-fold, adaxially glabrous, abaxially and marginally somewhat tomentose, large scales present along the midrib, midrib evident adaxially, midrib and 1 pair of veins near the margins raised abaxially, transverse veinlets not evident. Inflorescence infrafoliar, spreading, ± pendulous in fruit, branched to 3 orders; peduncle very short, dorsiventrally flattened, stout; prophyll tubular, elongate, rather short and broad, with 2 flat, lateral keels, broadly pointed distally, thin, papery, deciduous; peduncular bract like the prophyll but not keeled, deciduous with the prophyll; rachis longer than the peduncle, stout, tapering, bearing spirally arranged, sometimes prominent bracts, bracts basally wide, tapering to a point, subtending rachillae; rachillae divaricate, short, stout, with or without a short bare portion, bearing triads of flowers basally and paired to solitary staminate flowers on a short distal portion; rachilla bracts pointed, thick, striate, semicircular, tightly enclosing the lower half of the pistillate flower; floral bracteoles short, pointed. Staminate flowers asymmetrical, borne laterally and somewhat distally to the pistillate; sepals 3, distinct, briefly imbricate basally, narrow, tapering, somewhat keeled; petals 3, distinct, only slightly or markedly longer than the sepals, curved, adaxially grooved, tips thick, pointed; stamens 6, filaments markedly inflexed in bud, terete, joined briefly basally, anthers erect in bud, linear, dorsifixed near the middle, emarginate apically, bifid basally, latrorse, connective elongate, tanniniferous; pistillode slender, cylindrical, about as long as the stamens. Pollen ellipsoidal or pyriform, less frequently oblate triangular, slight or obvious asymmetry; aperture a distal sulcus, less frequently a trichotomosulcus; ectexine tectate, perforate, aperture margin similar; infratectum columellate; longest axis ranging from 55–73 µm [2/3]. Pistillate flowers symmetrical, ovoid; sepals 3, distinct, imbricate, truncate with a central point; petals 3, distinct, broadly imbricate basally with prominent valvate apices; staminodes lacking or tooth-like; gynoecium ellipsoidal, unilocular, uniovulate, style not distinct, stigmas 3, recurved, conspicuous, ovule very large, laterally attached, form unknown. Fruit globose or ellipsoidal, red when ripe, stigmatic remains apical, perianth persistent, spreading; epicarp smooth, mesocarp with a thin layer of sclereids and many flat, longitudinal fibres adherent to the endocarp, endocarp thin, fragile, not operculate, white or ± tan coloured. Seed ellipsoidal or globose, laterally attached by an elongate, rather wide, tapering hilum, raphe branches few or numerous, moderate to fine, anastomosing, endosperm homogeneous; embryo basal, often exactly so. Germination adjacent-ligular; eophyll bifid. Cytology: 2n = 32.</p></div>
+<div type="distribution"><p>Variously considered as three species or two species, one with two varieties; distributed in New Zealand, Chatham Islands, Norfolk Island and Kermadec Islands. </p></div>
+<div type="anatomy"><p>Root (Seubert 1998a, 1998b), leaf (Tomlinson 1961) and fruit (Essig and Hernandez 2002). </p></div>
+<div type="relationships"><p>The monophyly of Rhopalostylis has not been tested. For relationships, see Rhopalostylidinae. </p></div>
+<div type="uses"><p>Used extensively by the Maoris for thatch and basket weaving. The terminal bud is edible. The palms are striking ornamentals in suitably moist climates. </p></div>
+<div type="taxonomic accounts"><p>Bailey (1935b). </p></div>
+<div type="fossil record"><p>In New Zealand (North Island), pollen of Rhopalostylis (R. sapida) occurs from the Lower Miocene to Recent where it is described as rare but easily recognisable (Couper 1953). Cocos has similar pollen (see entry for Cocos). </p></div>
+<div type="discussion"><p>Very similar and closely related to Hedyscepe; see notes under Hedyscepe. </p></div>
+<div type="vernacular"><p>Nikau palm (Rhopalostylis sapida), norfolk palm (R. baueri). </p></div>
+<div type="biology_ecology"><p>Chiefly in dense lowland forests, usually not far from the sea in a mild, warm-temperate climate with abundant moisture. </p></div>
+<div type="conservation"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

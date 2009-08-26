@@ -1,0 +1,62 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>Genera Palmarum. The evolution and classification of palms</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Uhl</mods:namePart>
+<mods:namePart type="given">N.</mods:namePart>
+<mods:namePart type="family">Asmussen</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+<mods:namePart type="family">Harley</mods:namePart>
+<mods:namePart type="given">M.</mods:namePart>
+<mods:namePart type="family">Lewis</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>2008</mods:dateIssued><mods:publisher>Kew Publishing, Royal Botanic Gardens Kew</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="genus">
+<div type="diagnosis"><p>Moderate solitary or clustered dioecious fan palms, usually in the drier parts of Africa and Arabia, with outliers in western India and possibly Sri Lanka, rarely in rain forest areas, often with dichotomously branched stems, distinctive in the very spiny petioles and often irregularly shaped fruit with smooth endocarp and homogeneous endosperm.</p></div>
+<nomenclature>
+<name>Hyphaene</name>
+<author>Gaertn.</author> 
+<citation>Fruct. sem. pl.1: 28 (1788).</citation> Type: 
+<type>Type; Hyphaene coriacea; Gaertn.</type>
+<synonymy>
+<name>Cucifera</name>
+<author>Delile</author>
+<bibref>Delile, Descr. Egypte, Hist. nat. 1: 53 (1809).</bibref>
+<type>Type; Cucifera thebaica; (L.) Delile</type>
+</synonymy>
+<synonymy>
+<name>Douma</name>
+<author>Poir. in Duhamel</author>
+<bibref>Poir. in Duhamel, Traité arbr. arbust. (ed. 2) 4: 47 (1809).</bibref>
+<type>Type; Douma thebaica; (L.) Poir.</type>
+</synonymy>
+<synonymy>
+<name>Doma</name>
+<author>Poir. in Lam.</author>
+<bibref>Poir. in Lam., Tabl. encycl. 4: t900 (1819)</bibref>
+</synonymy>
+</nomenclature>
+<div type="etymology"><p>Hyphaino – entwine, in reference to the fibres in the fruit wall.</p></div>
+<div type="description"><p>Dwarf to large, solitary or clustered, spiny, pleonanthic, dioecious, acaulescent, creeping, shrubby or tree palms. Stem closely ringed with slightly raised leaf scars, usually branching several times by equal forking (dichotomy), rarely unbranched, and then sometimes the trunk ventricose; trunk surface in juveniles with a lattice of old leaf bases, later becoming bare. Leaves induplicate, costapalmate, marcescent, later abscising under their own weight; sheath soon becoming open, densely tomentose, later with a conspicuous triangular cleft below the petiole, margins fibrous; petiole robust, covered in caducous indumentum, adaxially channelled, abaxially rounded, the margins armed with robust, triangular, reflexed or upward pointing spines; adaxial hastula well developed, often asymmetrical, abaxial hastula absent; blade divided to about 1/3 its length along the adaxial ribs into single-fold segments, these further shallowly divided along the abaxial ribs; interfold filaments often conspicuous; blade surfaces frequently glaucous with abundant wax, and also bearing minute dot-like scales and caducous indumentum, particularly along the ribs, midrib prominent, longitudinal veins close, transverse veinlets inconspicuous. Inflorescences interfoliar, the staminate and pistillate basically similar, though the pistillate more robust and with fewer branches; peduncle bearing a basal, 2-keeled, tubular prophyll and usually 2 empty, tubular peduncular bracts with triangular limbs, bearing abundant caducous indumentum when young; rachis longer than the peduncle; rachis bracts like the peduncular but each subtending a first-order branch; first-order branches basally bare, semicircular in cross-section, ±included in the subtending bract, terminating, in the staminate inflorescence, in a group of 1–6 or rarely more rachillae, each subtended by a low bract, in the pistillate inflorescence terminating in 1–3 rachillae; rachillae catkin-like, bearing a tight spiral of rounded, densely hairy, striate bracts, connate laterally and partially adnate to the axis to produce pits, densely filled with a pile of hairs. Staminate flowers borne in a cincinnus of 3 flowers, embedded in the hairs, one flower emerging at a time, each bearing a small membranous bracteole; calyx tubular at the base with 3 elongate hooded, membranous lobes; corolla with a conspicuous stalk-like base almost as large as the calyx lobes, bearing at its tip 3 ovate, hooded, valvate, striate lobes; stamens 6, borne at the base of the lobes, the filaments ± connate at their swollen bases, tapering above, anthers medifixed, versatile, latrorse to introrse; pistillode minute, 3-lobed. Pollen ellipsoidal, bi-symmetric; aperture a distal sulcus; ectexine tectate, finely perforate-rugulate, with psilate supratectal gemmae, aperture margin similar but with fewer gemmae; infratectum columellate; longest axis 30–44 µm; post-meiotic tetrads usually tetrahedral, sometimes tetragonal or, rarely, rhomboidal [4/10]. Pistillate flowers borne singly with a bracteole in each pit, on a short densely hairy pedicel, the pedicel sometimes considerably elongating after fertilisation; sepals 3, distinct, rounded, imbricate, ± membranous, striate; petals 3, similar to sepals; staminodial ring epipetalous, 6-toothed, the teeth bearing sagittate, flattened, empty anthers; gynoecium globose, tricarpellate, triovulate, stigmas 3, short, septal nectaries present, opening by pores distally, ovules orthotropous, attached adaxially at the base of each carpel. Fruit borne on enlarged pedicel with persistent perianth segments, normally developing from 1 carpel, rarely 2 or 3, the fruit then 2- or 3-lobed, with basal stigmatic remains, the whole fruit very variable in shape, shouldered, distally expanded, usually asymmetrical, rarely ovoid or spherical; epicarp smooth, dull or shining, often pitted with lenticels, coloured various shades of brown, mesocarp fibrous, often aromatic, dry but sweet, endocarp well developed, hard, stony. Seed basally attached, endosperm homogeneous with a central hollow; embryo apical opposite a thinner area of the endocarp. Germination remote-tubular; eophyll simple, lanceolate, plicate. Cytology: 2n = 36.</p></div>
+<div type="distribution"><p>Numerous names have been published, but there are probably only about eight species distributed in the drier parts of Africa southwards to Natal, Madagascar, the Red Sea and the coasts of the Gulf of Eilat, Arabia, and western India. One species recorded for Sri Lanka may be an introduction. </p></div>
+<div type="anatomy"><p>Leaf (Tomlinson 1961), root (Seubert 1997). </p></div>
+<div type="relationships"><p>Hyphaene is a highly supported monophyletic group (Bayton 2005). The genus is sister to Medemia with moderate to high support (Bayton 2005, Asmussen et al. 2006). </p></div>
+<div type="uses"><p>The doum palms are locally very important, particularly to subsistence farmers. The leaves are used for thatch and as a source of fibre for plaiting. The apex is often semi-destructively tapped to make palm wine. Wood can be used. The fruits provide an edible mesocarp and an endosperm, edible when young, but formerly used when mature as a source of vegetable ivory. All fallen parts of the palms are used as fuel. </p></div>
+<div type="taxonomic accounts"><p>Beccari (1924) and Dransfield (1986). </p></div>
+<div type="fossil record"><p>From the Upper Oligocene of Ethiopia (Chilga) a spiny petiole, Hyphaene kappelmanii, and an incomplete spiny petiole, Hyphaene sp., have been recovered (Pan et al. 2006). From the Indian Deccan Intertrappean of Maharashtra State (although the age span of these volcanic deposits is controversial, see Chapter 5) a petrified palm petiole, Palmocaulon hyphaenoides, is described by Shete and Kulkarni (1980); it shows many similarities to petioles of H. indica (= H. dichotoma). Endocarps supposed to be from the earliest Cretaceous (Aptian) of Egypt are compared to Hyphaene by Vaudois-Miéja and Lejal-Nicol (1987), although one endocarp (fig. 8 in that publication) looks notably Hyphaene-like. An Aptian age for the formation in which these fossils were found is questionable; it is probably much younger (Late Cretaceous) and further research on this matter is needed (Schrank 1992, pers. comm.). These fossils cannot be accepted as the earliest unequivocal palm fossils. From the Indian Deccan Intertrappean, fruit (Hyphaenocarpon indicum) is described by Bande et al. (1982). Gemmate pollen from the Neogene Cauvery Basin of southern India is published as a new species of Gemmamonocolpites: G. hyphaenoides (Ramanujam et al. 2001); unfortunately, the pollen is not illustrated or formally described so a critical appraisal is not possible. </p></div>
+<div type="discussion"><p>Distinguished by the elongate costapalmate leaf, which is often silvery, by the lack of an abaxial hastula, by petiolar spines, and by the frequent presence of dichotomous branching, long, more or less slender inflorescences, and distinctive brown fruits. </p></div>
+<div type="vernacular"><p>Doum palms. </p></div>
+<div type="biology_ecology"><p>Hyphaene species tend to grow in arid or semiarid areas, in habitats where ground water is near the surface, e.g., along seasonal water-courses, coastal sand dunes and flats, and oases. In east Africa, H. compressa can be found inland at altitudes up to 1400 m above sea level. One species, H. guineensis, is found in coastal habitats in Gabon in areas with high rainfall. All species seem to be used by man; thus their distribution has been much influenced by destructive harvesting and accidental or deliberate planting. Elephants and baboons, among other wild animals, are responsible for seed dispersal. Bees have been observed visiting the flowers. </p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

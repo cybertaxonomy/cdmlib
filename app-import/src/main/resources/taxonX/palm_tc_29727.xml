@@ -1,13 +1,22 @@
 ﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 <taxonxHeader>
 <mods:mods>
-<mods:titleInfo>
-<mods:title>A new species of Calamus (Arecaceae: Calamoideae) from Vietnam</mods:title>
-</mods:titleInfo>
-<mods:name><mods:namePart>Tom Evans and Tran Phuong Anh</mods:namePart></mods:name>
+<mods:titleInfo><mods:title>A Synopsis of the Rattans (Arecaceae: Calamoideae) of Laos and Neighbouring Parts of Indochina</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Evans</mods:namePart>
+<mods:namePart type="given">T.</mods:namePart>
+<mods:namePart type="family">Sengdala</mods:namePart>
+<mods:namePart type="given">K.</mods:namePart>
+<mods:namePart type="family">Thammavong</mods:namePart>
+<mods:namePart type="given">B.</mods:namePart>
+<mods:namePart type="family">Viengkham</mods:namePart>
+<mods:namePart type="given">O.V.</mods:namePart>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
 <mods:originInfo>
-<mods:publisher>Kew Bulletin, Vol. 56, No. 3, pp. 731-735</mods:publisher>
-<mods:dateIssued>2001</mods:dateIssued>
+<mods:dateIssued>2002</mods:dateIssued>
+<mods:publisher>Kew Bulletin, Vol. 57, No. 1 (2002), pp. 1-84</mods:publisher>
 </mods:originInfo>
 </mods:mods>
 </taxonxHeader>
@@ -15,28 +24,29 @@
 <treatment rank="species">
 <nomenclature>
 <name>Calamus modestus</name>
-<author>T.Evans and T.P.Anh</author>
-<citation>Kew Bull. 56: 731 (2001)</citation>
+<author>T Evans &amp; T P Anh</author> 
+<citation>Kew Bull. 56(3): 731 (2001)</citation>
 <type>Vietnam, Kontum; Averyanov et al.; VH 1624</type>
-<type_loc>Holotypus K; isotypi LE, HN</type_loc>
+<type_loc>Holotype K; isotypes LE, HN</type_loc>
 <synonymy>
 <name>Calamus radulosus</name>
-<author>sensu Magalon</author>
-<bibref>sensu Magalon, Contr. Palm. Indoch. 88 (1930) (pro parte, vide infra), non. Becc.</bibref>
+<author>auct. non. Becc.</author>
+<bibref>auct. non. Becc., Magalon, Contr. Etud. Palmiers Indoch. 88 (1930) (in part).</bibref>
+</synonymy>
+<synonymy>
+<name>Calamus sp. A</name>
+<author>Evans et al.</author>
+<bibref>Evans et al., Rattans Lao PDR: 21 (2001)</bibref>
 </synonymy>
 </nomenclature>
-<div type="introduction"><p></p></div>
-<div type="etymology"><p></p></div>
-<div type="vernacular"><p></p></div>
-<div type="diagnosis"><p>a C. harmandii foliolis valde aggregatis, spinis vaginae folii et rachidis seriatim dispositis et laminaribus, inflorescentiis brevioribus multo congestioribus et rachillis recurvatis bracteis pilis non obscuratis differt; a C. erecto et C. arborescenti statura multo minore, foliolis aggregatis, spinis diversis et fructibus parvis conicis endospermio homogeneo differt; a C. dongnaiense foliolis multo minoribus inflorescentia erecta brevi inermi rachillis multo brevioribus recedit; a C. oxycarpo foliolis concoloribus inflorescentia erecta brevi in 2 ordines ramificanti, rachillis recurvatis et fructibus minoribus ut videtur differt; a C. rhabdoclado habitu erecto, flagello carenti, inflorescentia brevi erecta, rachillis masculis multo crassioribus, rachillis femineis brevioribus et fructibus conicis differt.</p></div>
-<div type="description"><p>Slender, erect, ecirrate, eflagellate rattan up to 4 m tall, often less than 0.5 m. Stem without sheath 11 - 12 mm diam., with sheath 19 - 21 mm. Leaves 0.8 - 1 m in total length, sheaths crowded and overlapping, tubular for only 1 - 2 cm, distally split but the two margins then overlapping for 2 - 3 cm before diverging, thinly covered with pale brown or whitish indumentum, the sheath surface itself patterned with longitudinal furrows corresponding to the positions of the spines during their development, spines laminar, elastic, glossy black, up to 2.5 cm long but often shorter, mostly arranged in parallel, curved, ± horizontal rows, the spaces between rows unarmed, ocrea forming a fibrous, lacerate collar up to 3 cm long around the spear leaf, armed as the sheath and inconspicuous amongst the crowded petiole bases; knee absent, petiole on upper leaves 35 - 45 cm, slender, ± rounded with a slight channel adaxially, armed all around with spines like the sheath, these quite numerous proximally and leaving furrows as on the sheath, becoming very sparse distally, rachis becoming acutely bifaced adaxially, very slender and almost unarmed; leaflets linear-lanceolate, 23 - 27 on each side, up to 24 x 1 cm, arranged in groups of 2 - 5 on each side of the rachis, the groups 6 - 8 cm apart proximally, becoming closer together distally and eventually becoming sub-regular or regular, the terminal pair free at the base, neighbouring leaflets slightly divaricate but all angled ± away from the stem, lacking indumentum but slightly paler green abaxially, central costa conspicuous adaxially, this and two other veins bearing many short black bristles, abaxially with no conspicuous costa and no bristles, leaflet margins with many pale-based dark-brown bristles, transverse veinlets quite widely spaced, sinuous, sometimes interrupted. Male inflorescences erect, branched to two orders, 20 - 36 cm long, unarmed, the axis only 2 - 3 mm diam.; prophyll approximately half the length of the inflorescence, this and the other primary bracts tightly sheathing at the base, deeply lacerate at the mouth, sometimes exceeding the base of the primary branches, covered in thick beige indumentum; partial inflorescences up to 10 cm, appressed, the secondary bracts truncate, quite loosely sheathing, exceeding the base of the rachilla and thus splitting or tattering; rachillae up to 3 cm long, the distal ones shorter, strongly recurved whilst flowers still in bud, the rachilla bracts short and broadly funnel-shaped, clearly zoned when dry with a dark brown base and paler, cinnamon margin, the mouth 3.5 - 4 mm wide, the flowers along one side at 3.5 mm intervals, angled outwards and distally at about 450, involucre almost wholly inserted, flowers in available material in bud, only 2 mm long. Female inflorescences as the male except 18 - 52 cm long, the axis up to 4 mm diam., rachillae to 2.5 cm, rachilla bracts tattering later, involucrophore epedicellate, that and the involucre inserted within the rachilla bract, immature flowers in bud 3.5 mm long with calyx 3 mm, shallowly lobed to about 20% of its length. Fruiting perianth explanate. Fruit elongate-ovoid, 14 - 15 x 6 mm, widest about 40% above the base and from there forming a long, even, conical beak, epicarp scales in about 20 vertical rows, orange-brown with an irregular, erose, dark brown tip, fine, dark brown submarginal lines and chaffy, pale-brown margins, unchannelled; seed 7 x 2 mm, unevenly cylindrical with pointed ends, endosperm homogeneous.
-</p></div>
-<div type="distribution"><p>Vietnam (central Annam) in Kontum, Thua-Thien - Hue and (probably) Quang Nam - Da Nang provinces.</p></div>
-<div type="biology_ecology"><p>Very common, reportedly 'sometimes dominant' at 1100 - 1200 and 1900 - 2000 m in primary evergreen forest on north- or north-west facing slopes. FLOWERING. Half-grown flowers in bud, November. USES. The 'fresh young leaves' (possibly the cabbage?) are reportedly eaten by local people.</p></div>
-<div type="conservation"><p></p></div>
-<div type="uses"><p></p></div>
-<div type="discussion"><p>Magalon's specimen is clearly referable to C. modestus and his (1930) published description fits it in many ways but overall appears to be a composite of two or more species. For example, he describes a plant which is clustering and up to 1 m tall or sometimes solitary and up to 3 m tall, but then describes in detail a flagellum 5 - 6 m long (certainly not shown by this material and incompatible with the erect habit). This means we cannot be sure that his detailed notes on distribution refer only to this species. Magalon (1930) also suggests that the species is hapaxanthic, which would represent the only instance of this life-history in the genus. However, we believe he was mistaken since the K material contains the distal 10 - 15 internodes of two stems, each with an entire uppermost leaf still attached, and in contrast to the situation in all hapaxanthic rattans these leaves are not grossly reduced in size prior to flowering. The taxonomic affinities of this species in relation to the scheme given by Beccari (1908) are not clear. Its general appearance and some details suggest a dwarfed, erect C. rhabdocladus, another species whose position is not clear under Beccari's system. C. modestus should also be sought in south-eastern Laos.</p></div>
-<div type="materials_examined"><p>VIETNAM (CENTRAL ANNAM): Kontum Province, Dak Gley Distr., 14 Nov. 1995, (pist.), Averyanov et al. VH 1624 (holotype K; isotypes LE, HN); Kontum Province, Ngoc Linh mountain system on the slope leading up to Ngoc Gua peak, (ster.), 9 April 1995, Averyanov et. al. VH 1251 (K, LE, HN); Thua Thien - Hue Province, Hue, undated, (stam., pist. and fr.), Magalon 5 (P); ?Quang Nam - Da Nang Province, near summit of Mount Bani, 25 km from Da Nang ['Tourane'], May -July 1927, (stam.), Clemens, J. and M. S. 4282 (K, BM).</p></div>
+<div type="distribution"><p>Indochinese endemic, Vietnam (Central Annam).</p></div>
+<div type="materials_examined"><p>See Evans &amp; Anh (2001)</p></div>
+<div type="biology_ecology"><p>Evergreen forest, 1200 - 2000 m.</p></div>
+<div type="discussion"><p>See Evans &amp; Anh (2001) for a discussion of Magalon's C. radulosus.</p></div>
+<div type="vernacular"><p>None recorded.</p></div>
+<div type="uses"><p>Young leaf edible (possibly referring to the shoot).</p></div>
+<div type="conservation"><p>Unknown.</p></div>
 </treatment>
 </taxonxBody>
 </taxonx>
+

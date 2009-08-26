@@ -1,0 +1,43 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>A Revision of Rhapis, the Lady Palms</mods:title>
+</mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Hastings</mods:namePart>
+<mods:namePart type="given">L.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Palms 47(2) 62-78</mods:publisher>
+<mods:dateIssued>2003</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Rhapis micrantha</name>
+<author>Becc.</author>
+<citation>Webbia 3: 220. 1910</citation>
+<bibref>Becc., Webbia 5 (la): 60. 1920</bibref>
+<bibref>Becc., Bull. Mus. Hist. Nat. Paris, 17(3): 157. 1911</bibref>
+<bibref>Becc., Ann. Roy. Bot. Gard., Calcutta 13, 249. 1931</bibref>
+<bibref>Gagnep., in Lecomte, Fl. Gén. Indo-Chine 6(8): 996. 1937</bibref>
+<type>Vietnam, Dong Ban mountains Kien Khe, staminate component; R.P. Bon; 2345</type>
+<type_loc>Lectotype P; isolectotype FI</type_loc>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="diagnosis"><p></p></div>
+<div type="description"><p>Stems to 1–2 m tall, with sheaths 17–18 mm diam., without sheaths 8–9 mm. Leaf sheath tightly sheathing the stem producing a neatly flattened appearance with coarse flattened outer fibers and finer inner ones at maturity, producing a diagonal lined mesh, ligule not remaining intact at maturity; petiole to 2.5 mm wide, margin smooth or sometimes minutely scabrid; blade with wide V-shaped almost semicircular outline, without a conspicuous palman, segments 5–7, folds 17–21, to 220 mm long, sides curved, tapering slightly towards base and apex, apices sometimes cucculate, usually oblique, with regular secondary splitting, primary splits to within 3–5 mm of the blade base, adaxial ribs smooth, abaxial surface of blade noticeably paler than adaxial. Inflorescence, male branching to 2 orders, female to 3; prophyll similar to rachis bracts; rachis bracts 3, sometimes with a distal incomplete rachis bract, bracts tubular more expanded in male than in female, overlapping the base of the next bract, reddish brown, darker at the base, in the male with tomentum on the outer surface, in the female with tomentum on the outer surface at the distal end only; rachis overall length to 190 mm, 4–5 mm diam., rachillae 16–60 mm long, 0.5–0.8 mm diam., in the male with tomentum, sparser on the rachillae, in the female glabrous. Male flowers to 3.8 × 2.4 mm; calyx to 1.6 mm, lobes to 0.8 mm, margin regular or irregular; corolla sometimes without a receptacular-stalk or with a short receptacular-stalk to 0.8 mm; filaments, shorter row to 1.6 mm, longer row to 2 mm, to 0.2 mm diam.; pistillode present. Female flowers, only immature available, small, globose to 2.2 × 2.3 mm; calyx to 1.5 mm, lobes to 1 mm, margin regular; corolla with a receptacular-stalk to 0.9 mm; staminodes present. Fruit not seen. </p></div>
+<div type="distribution"><p>Laos, Vietnam.</p></div>
+<div type="biology_ecology"><p>Habitat. Mountainous regions.</p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p>This species can be recognized by the few segments that split close to the blade base and the inflorescence bracts and rachis on the male specimens with tomentum, contrasting with the glabrous rachis and almost completely glabrous bracts on the female inflorescence. Fruit is said to be white when fresh (Beccari 1910). The male inflorescences examined had more rachillae than the female ones giving a more dense appearance. This species most closely resembles R. excelsa; it differs from it in having a neat leaf sheath, tightly sheathing the stem, with coarse outer, slightly flattened fibers and finer inner ones at maturity, smooth adaxial segment ribs, not being brown papillate, segments tapering at both ends, all segments splitting closer to the blade base, male rachis and bracts with much tomentum and PALMS Hastings: Revision of Rhapis Volume 47(2) 2003 69 stamens being broad but not keeled. There were no mature female flowers or fruits available for study, but those on Bon 2345 (FI) are described by Beccari (1910,1931) as “flowers prolonged at the base [drawing (1931) indicates 5 mm long and 2 mm wide], into a long columnar solid base, upon which rest the carpels” with fruit 8–9 mm diam. This long receptacular-stalk contrasts with the short receptacular-stalk (to 2 mm) of R. excelsa. An illustration of the flowers of R. P. Bon 2345 (P) and a photograph of the whole specimen were published in Beccari (1931), and so this specimen was chosen by the author as lectotype. Recollection of this species from Vietnam and Laos, especially of female plants, is necessary to gain a better understanding of its delimitation. </p></div>
+<div type="materials_examined"><p>Representative specimens. LAOS: Dr. M. Spire 5929 male (P). VIETNAM: Dong Ban Mountains, Kien Kha, R.P. Bon 2045 (P), 2345 male (P, FI), U. Martelli photo probably of 2345 (Ann. Roy. Bot. Gard., Calcutta 13 plate 55), 2545 (P, FI). </p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

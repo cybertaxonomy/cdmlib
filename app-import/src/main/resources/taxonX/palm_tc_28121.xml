@@ -1,0 +1,52 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>Genera Palmarum. The evolution and classification of palms</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Uhl</mods:namePart>
+<mods:namePart type="given">N.</mods:namePart>
+<mods:namePart type="family">Asmussen</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+<mods:namePart type="family">Harley</mods:namePart>
+<mods:namePart type="given">M.</mods:namePart>
+<mods:namePart type="family">Lewis</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>2008</mods:dateIssued><mods:publisher>Kew Publishing, Royal Botanic Gardens Kew</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="genus">
+<div type="diagnosis"><p>Moderate to large solitary pinnate-leaved palms from rain forest in New Caledonia, with infrafoliar inflorescences with incomplete prophylls, and fruit with irregularly sculptured endocarp.</p></div>
+<nomenclature>
+<name>Burretiokentia</name>
+<author>Pic. Serm. in Becc. and Pic. Serm.</author> 
+<citation>Webbia 11:122 (1955).</citation>
+<type>Type; Burretiokentia vieillardii; (Brongn. and Gris) Pic. Serm.</type>
+<synonymy>
+<name>Rhynchocarpa</name>
+<author>Beccari</author>
+<bibref>Beccari, Palme Nuova Caledonia 37 (1920); and Webbia 5: 105 (1921) (non Schrad. ex Endl (1839).</bibref>
+<type>Type; Rhynchocarpa vieillardii; (Brongn. and Gris) Becc.</type>
+</synonymy>
+</nomenclature>
+<div type="etymology"><p>Honoring German palm botanist Karl Ewald Maximilian Burret (1883–1964) by combining his name with the generic name Kentia, named for William Kent (1779–1827), one-time curator of the botanic gardens at Buitenzorg, Java (now Kebun Raya Bogor).</p></div>
+<div type="description"><p>Moderate to large, solitary, slender, unarmed, pleonanthic, monoecious palms. Stem erect with prominent nodal scars, green or brown, often slightly expanded basally, prickly adventitious roots sometimes present. Leaves regularly pinnate, spreading; sheaths tubular, usually forming a prominent crownshaft, more rarely split opposite the petiole, covered with scales or tomentum, obliquely lined; petiole short, shallowly channelled adaxially, rounded abaxially, margins sharp, densely scaly or minutely dotted; rachis angled adaxially, rounded abaxially, scaly or minutely dotted on both surfaces; leaflets stiff, acute, single-fold, 1(–2) lateral veins on each side prominent adaxially, the midrib and numerous veins prominent abaxially, densely scaly when young, becoming dotted in age, ramenta usually abundant along ribs, transverse veinlets not evident. Inflorescences infrafoliar, branched to 1(–2) orders, protandrous; peduncle short; prophyll incompletely encircling the peduncle at insertion, open abaxially, caducous; peduncular bract thin, inserted close to and not much exceeding the prophyll, completely enclosing the inflorescence in bud, also caducous; rachis angled, longer than the peduncle, bearing low bracts subtending glabrous to densely tomentose branches and rachillae; rachillae appearing rather stout, arching and spreading, bearing spirally arranged, low, rounded, somewhat spreading bracts subtending triads in the lower 1/2–2/3 of each rachilla and paired or solitary staminate flowers distally; bracteoles surrounding the pistillate flower prominent, nearly equal, sepal-like, exceeding the subtending bract. Staminate flowers not at all or slightly to markedly asymmetrical, often developing well before the pistillate buds or these abortive and the inflorescence wholly staminate; sepals 3, distinct, imbricate, rounded, and the outer usually keeled dorsally; petals 3, distinct, valvate, about twice as long as the sepals, drying lined; stamens 6, filaments flattened, of uniform width or tapered distally from a broad base, inflexed at the apex in bud, anthers dorsifixed, briefly bifid at the apex, bifid nearly 1/2 their length basally, the connective dark, each locule with a central sterile connective-like area marked with included raphides; pistillode ca. 1/2 as long as the stamens or a little more to equalling them in bud, trilobed, sometimes deeply so, not much expanded at apex. Pollen ellipsoidal asymmetric; aperture a distal sulcus; ectexine tectate, psilate and sparsely perforate, aperture margin similar; infratectum columellate; longest axis 43–65 µm [2/2]. Pistillate flowers shorter than the staminate; sepals 3, distinct, broadly imbricate; petals 3, distinct, not much longer than the sepals, imbricate except for the briefly valvate apices; staminodes 3, tooth-like, borne at one side of the gynoecium; gynoecium unilocular, uniovulate, ovoid, stigmas 3, recurved, ovule pendulous, hemianatropous. Fruit globose to ellipsoidal, green when immature, becoming red at maturity, smooth when fresh, pebbled and usually irregularly shouldered and angled when dry, the stigmatic remains apical or eccentrically apical; epicarp thin, mesocarp with a dense layer of elongate, oblique sclereids over a densely tanniniferous layer and a few flat, longitudinal fibres against the endocarp, endocarp irregularly sculptured, with an adaxial keel and an abaxial groove between lateral ridges, operculum basal, rounded. Seed irregular, sculptured like the endocarp, hilum linear, lateral, endosperm homogeneous; embryo basal. Germination adjacent-ligular; eophyll bifid. Cytology not studied.</p></div>
+<div type="distribution"><p>Five species in New Caledonia.</p></div>
+<div type="anatomy"><p>Leaf (Uhl and Martens, 1980), root (Seubert 1998a, 1998b), and fruit (Essig et al. 1999). </p></div>
+<div type="relationships"><p>Burretiokentia is moderately supported as monophyletic (Baker et al. in prep.). Intrageneric relationships have been explored by Pintaud (1999b). DNA sequence data provide weak evidence that the genus is nested within Cyphophoenix (Baker et al. in prep.), while morphological evidence places it as sister to Cyphophoenix (Pintaud 1999b). </p></div>
+<div type="uses"><p>Not recorded.</p></div>
+<div type="taxonomic accounts"><p>Moore and Uhl (1984) and Pintaud and Hodel (1998b). </p></div>
+<div type="fossil record"><p>Thick-walled monosulcate pollen with a distinctive narrow infratectum, Palmaepollenites kutchensis, from the Middle Eocene of Central Java (Nanggulan Formation) is compared with pollen of Burretiokentia and Basselinia and with that of the coryphoid genus Pritchardia (Harley and Morley 1995). </p></div>
+<div type="discussion"><p>Distinguished by an incomplete prophyll and strikingly sculptured endocarp. Burretiokentia vieillardii is one of the most common palms in New Caledonia; the prominently ringed glossy, green or brown stems are conspicuous. In leaf anatomy, Burretiokentia is like Cyphokentia and Basselinia in having single adaxial and abaxial hypodermal layers. In Burretiokentia, adaxial hypodermal cells are very large, twice as long and four to five times as wide as the epidermal cells (Uhl and Martens 1980). </p></div>
+<div type="vernacular"><p>Not recorded.</p></div>
+<div type="biology_ecology"><p>Burretiokentia vieillardii is widely distributed from south-east to north-east New Caledonia in moist forest on serpentine or schists, B. hapala occurs in wet forests or gallery forest on calcareous and schistose soils from 50–400 m in northern New Caledonia, B. dumasii occurs on ultramafic rock at 600 m in west central New Caledonia, B. grandiflora is restricted to ultramafic rock at 200–900 m in south-east New Caledonia and B. koghiensis is found only on the Mt Koghi massif on ultramafic rock at 500–600 m.</p></div>
+<div type="conservation"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

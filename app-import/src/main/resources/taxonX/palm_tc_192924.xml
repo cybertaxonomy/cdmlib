@@ -1,0 +1,53 @@
+<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>A Monograph of Sommieria (Arecaceae)</mods:title>
+</mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Heatubun</mods:namePart>
+<mods:namePart type="given">Ch.D.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Kew Bulletin, Vol. 57, No. 3, pp. 599-611</mods:publisher>
+<mods:dateIssued>2002</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Sommieria leucophylla</name>
+<author>Becc.</author>
+<citation>Malesia 1: 67 (1877)</citation>
+<type>Indonesia, Papua Province, Manokwari, Andai, 1872; Beccari; PP607</type>
+<type_loc>Holotype FI, BH! photo; isotype K!</type_loc>
+<synonymy>
+<name>Sommieria elegans</name>
+<author>Becc.</author>
+<bibref>Becc., Malesia 1: 68 (1877).</bibref>
+<type>Indonesia, Papua Province, Sorong, Ramoi, June 1872; Beccari; PP425</type>
+<type_loc>Holotype FI, BH! photo; isotype K!</type_loc>
+</synonymy> 
+<synonymy>
+<name>Sommieria affinis</name>
+<author>Becc.</author>
+<bibref>Becc., Bot. Jahrb. Syst. 52: 37 (1914).</bibref>
+<type>Indonesia, Papua Province, Mamberamo river, Naumoni, 1910; Moszkowski; 319</type>
+<type_loc>Holotype Bt, FI! photo, BH! photo</type_loc>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>INDONESIA (Papua Province): Mbebmega (Hatam), Som (Biak language in Waigeo island) also used for Licuala sp. PAPUA NEW GUINEA (Sandaun Province): Man (Bewani).</p></div>
+<div type="diagnosis"><p></p></div>
+<div type="description"><p>Solitary palm, slender, acaulescent to 3 m high. Stem 3 - 4 cm diam., internodes short, to 1 cm, leaves up to 40 in crown, without crownshaft. Leaves 92 - 180 x 12 - 30 cm; petiole 10 - 38.5 cm long, 4 - 16 mm wide and 3 - 8 mm thick at base, flat to channelled adaxially, rounded abaxially; sheaths 7 - 30 - 1 - 6.5 cm; rachis 40 - 115 cm long; spacing between segments 4 - 10 cm, 17 - 20 main veins in simple-bifid leaves, divided leaves with 9 - 10 main veins in bifid part and 4 - 6 main veins in basal segment. Inflorescence interfoliar, up to 160 cm long at anthesis; prophyll 16 - 46 x 1 - 2.5 cm, persistent; peduncle up to 136 cm long; peduncular bract 80 - 245 x 13 - 25 mm, 10 - 30 mm spacing to first rachillae; rachillae less than 20, branching to 1 order (sometimes branching to 2 orders at first rachillae), 11 - 27 cm long, 1 - 10 mm spacing between first to two rachillae. Staminate flowers c. 2.5 mm diam.; sepals 1 - 1.5 x 2 - 2.5 mm, imbricate, semiorbicular to reniform, cream to light brown; petals 1.5- 2 x 2- 2.7 mm, ovate-triangular, cream to light brown; stamens 6; anthers 0.75 - 1 mm long; filaments 1.5 - 2 x 0.3 - 0.5 mm, inflexed in bud, sometimes twisted; pistillode 0.75 - 1 x 0.5 mm. Pistillate flowers 2.5 - 3 mm diam.; sepals c. 2 x c. 2.5 mm, semi orbicular to reniform, cream to light brown; petals c. 2.5 x c. 3 mm, triangular, cream to light brown; staminodes 0.5 - 0.75 x c. 0.25 mm at the base. Fruits spherical to ellipsoidal, 1-seeded, 9 - 15 x 8 - 15 mm, corky-warty, dark brown and bright pink when ripe, fleshy and juicy. Seeds 5 - 9 x 5 - 8 x 4 - 7 mm, spherical to ellipsoidal; endosperm homogenous; embryo sub-basal.</p></div>
+<div type="distribution"><p></p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p>Beccari (1877, 1914) differentiated S. leucophylla from S. elegans on the colour of the leaves, leaf segmentation and the size of the inflorescence (more 'robust' in S. elegans) and then he differentiated S. affinis from S. leucophylla by its smaller size and by the fronds being doubly-toothed at the tips. Moore made an unpublished key in 1956 to separate the three species. In this key, Sommieria elegans is separated from the two other species based on leaves being large, long-petioled, dull but not pale below, and S. affinis from S. leucophylla based on the tips of the segments. Morphological plasticity that occurs in Sommieria displays gradual and often overlapping variation and this has influenced the species concept used in this revision, which is broader than that used by earlier authors. The narrow species concept used in the genus reflects limited information obtained from single collections. No disjunctions in variation occur that would allow the consistent separation of three species in Sommieria as recognised by Beccari and followed by other authors (e.g. Ferrero &amp; Dowe 1994); the distinguishing characters used are almost all vegetative characters that, now that we have a good number of specimens, can be seen to display a wide range of variation. The shape and size of the fruits and seeds varies greatly within individuals and populations. Because of this, fruit and seed shape and size is not considered to be of value in the delimitation of species. Ferrero (1997) proposed new forms of S. affinis and S. leucophylla (without providing formal names), after looking at pictures and photographs and speculating that S. elegans is very different by being larger in all its dimensions (size of leaves, thickness of stem, length of peduncle, etc.). The decision in this study to recognise one species only, is based on detailed examination of all available herbarium specimens and careful observation in the field.</p></div>
+<div type="materials_examined"><p>EXAMINED. INDONESIA. Papua Province. Manokwari Regency, Manokwari Distr.: Andai, 1872, Beccari PP607 (holotype FI; BH! (photo), isotype K!); Hutan Umbui (Andai road to Prafi), Aug. 1995, Dransfield 7535 (K!, AAU!, MAN!); April 1994, Sands 6219 (K!, BO, MAN!, FTG); April 1994, Mogea 6214 (K!, BO, MAN!); June 1997, Heatubun 162 (MAN!); May 2001, Heatubun 348 (K!). Merdey Distr.: Merdey, Aug. 1998, Wally 842 (K!, MAN!). Wasior Distr.: Wosimi R., Sikama R., 3 km of Sendrawoi village, Feb. 2000, Barrow 130 (K!, L, BO, MAN!); Dusner village, Sermunut ridge, Feb. 2000, Heatubun 324 (K!, L!, BO!, AAU!, BRI!, MAN!). Sorong Regency: Sorong, Ramoi, June 1872, Beccari PP425 (K!, BH! photo, FI); Klasaman, Taman Wisata km-14, June 1997, Heatubun 150 (MAN!); Sept. 1995, Maturbongs 274 (K!, MAN!); Nov. 1997, Wally 467 (K!, MAN!); Aimas, SP-IV, Makbalim forest, June 1997, Heatubun 151 (K!, MAN!). Teminabuan Distr.: Sembewin forest area, path to Sayal village, April 1996, Heatubun 08 (MAN!). Waigeo Island: Yensner village, Mamiai forest area, June 1997, Heatubun 96 (K!, MAN!); Waifoi village, June 1997, Wally 705 (K!, MAN!). Nabire Regency: Nabire, Samabusa, Feb. 2001, Heatubun 346 (K!, MAN!); Heatubun 347 (K!, MAN!); Dalman R., March 1940, Kanehira &amp; Hatusima 12137 (BO!, L). Timika Regency: Timika, Kuala Kencana, Feb. 1998, Heatubun 196 (K!, L!, BH!, BO!, MAN!). Jayapura Regency: Mamberamo R., Naumoni, 1910, Moszkowski 319 (Bt, BH! photo, FI! Photos); Mamberamo R., Aug. 1920, Lam 965 (L!, BO!); Sept. 1920, Lam 1181 (K!, L, BO!); Sarmi, West Tor R., Sewan village, May 1993, McDonald &amp; Ismail 3743 (A, BO!). PAPUA NEW GUINEA. Sandaun Province: Ituly village, Nov. 1996, Barford 404 (K!, AAU, LAE, MAN!). Vanimo: Bewani, February 1990, Wiakabu et al. Lae 73741 (A, K!, L, BRI, LAE, CANB); March 2000, Barford et al. 486 (K!, AAU!, BRI, LAE, CANB). Pagei, Jan. 1975, White P/1 (BH! photo, LAE). CULTIVATED. Royal Botanic Gardens, Kew, Palm House, May 1998, Cultivated 1992-3477 (K!).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

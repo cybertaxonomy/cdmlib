@@ -1,0 +1,46 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>Genera Palmarum. The evolution and classification of palms</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Uhl</mods:namePart>
+<mods:namePart type="given">N.</mods:namePart>
+<mods:namePart type="family">Asmussen</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+<mods:namePart type="family">Harley</mods:namePart>
+<mods:namePart type="given">M.</mods:namePart>
+<mods:namePart type="family">Lewis</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>2008</mods:dateIssued><mods:publisher>Kew Publishing, Royal Botanic Gardens Kew</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="genus">
+<div type="diagnosis"><p>Short or acaulescent pinnate-leaved palms endemic to the rain forests of Queensland, Australia; distinctive in the spicate inflorescences and staminate flowers with 9–12 stamens.</p></div>
+<nomenclature>
+<name>Laccospadix</name>
+<author>Drude and H. Wendl.</author>
+<citation>Nachr. Königl. Ges. Wiss. Georg-Augusts-Univ. 1875: 59 (1875).</citation>
+<type>Type; Laccospadix australasicus; H. Wendl. and Drude.</type>
+</nomenclature>
+<div type="etymology"><p>Lakkos — pit, spadix — branch or frond, but in botany, inflorescence, referring to the spicate inflorescence with pits.</p></div>
+<div type="description"><p>Small to moderate, solitary or clustering, unarmed, pleonanthic, monoecious palm. Stem erect, becoming bare, conspicuously ringed with leaf scars. Leaves pinnate, marcescent; sheaths soon splitting opposite the petiole, bearing scattered scales, the margins becoming fibrous; petiole long, adaxially channelled, abaxially rounded, bearing scattered scales; rachis curved, scaly like the petiole; leaflets numerous, single-fold, conspicuously plicate, acute or acuminate, adaxially and abaxially with minute scattered scales, abaxially with conspicuous ramenta along the main ribs, transverse veinlets not visible. Inflorescences solitary, interfoliar, protandrous, unbranched; peduncle winged at the base, erect, elongate, bearing scattered caducous scales; prophyll inserted at the base of the peduncle, flattened, tubular, 2-winged, ± included within the leaf sheaths, tending to disintegrate into fibres apically; peduncular bract 1, inserted near the tip of the peduncle, enclosing the spike in bud, splitting longitudinally, deciduous at anthesis; rachis ± equalling the peduncle, pendulous, bearing a slightly spiralled series of prominent, rounded bracts forming the lower lips of the floral pits; floral pits enclosing triads except at the apex where enclosing paired or solitary staminate flowers only, flowers exserted one at a time; floral bracteoles 3, ± sepal-like. Staminate flowers borne on very short flattened pedicels, ± symmetrical; sepals 3, distinct, keeled, ± chaffy, with irregular margins; petals 3, ± twice as long as the sepals, distinct, triangular-ovate, valvate, marked within by anther impressions; stamens 9–12, erect, filaments very short, anthers ± elongate, basifixed, latrorse; pistillode minute, trifid. Pollen ellipsoidal, asymmetric; aperture a distal sulcus; ectexine tectate, finely perforate-rugulate, or finely granular-rugulate, especially on proximal face, aperture margin finely perforate-rugulate; infratectum columellate; longest axis 36–42 µm [1/1]. Pistillate flowers ± globular; sepals 3, distinct, ± chaffy, with irregular margins; petals similar to but longer than sepals, distinct, broadly imbricate except at the valvate, triangular tip; staminodes 3, small, ± triangular; gynoecium unilocular, uniovulate, ovoid-ellipsoidal, tipped with 3, short, recurved stigmas, ovule attached laterally near the base, campylotropous. Fruit ellipsoidal when fresh, red at maturity, perianth whorls persistent, the stigmatic scar apical; epicarp smooth, mesocarp thin, fleshy, overlying stout longitudinal fibres, endocarp thin, adherent to seed. Seed laterally attached with short oblong hilum, the raphe ± extending the length of the seed, the raphe branches anastomosing, endosperm deeply ruminate; embryo basal. Germination adjacent-ligular; eophyll bifid. Cytology: 2n = 32.</p></div>
+<div type="distribution"><p>One variable species widespread in tropical rain forest in northeastern Queensland, Australia.</p></div>
+<div type="anatomy"><p>Root (Seubert 1998a, 1998b) and fruit (Essig 2002). </p></div>
+<div type="relationships"><p>For relationships, see Linospadix.</p></div>
+<div type="uses"><p>Sometimes cultivated as an ornamental.</p></div>
+<div type="taxonomic accounts"><p>There is no recent publishedassessment of infraspecific variation.</p></div>
+<div type="fossil record"><p>No generic records found.</p></div>
+<div type="discussion"><p>A very attractive palm because of the long spikes ofred fruits.</p></div>
+<div type="vernacular"><p>Atherton palm. </p></div>
+<div type="biology_ecology"><p>Occurring in shaded, humid rain forest on mountain rangesand table lands at altitudes of 800–1400 m above sea-level.</p></div>
+<div type="conservation"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

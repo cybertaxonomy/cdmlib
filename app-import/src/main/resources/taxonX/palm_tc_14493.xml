@@ -1,0 +1,63 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>Genera Palmarum. The evolution and classification of palms</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Uhl</mods:namePart>
+<mods:namePart type="given">N.</mods:namePart>
+<mods:namePart type="family">Asmussen</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+<mods:namePart type="family">Harley</mods:namePart>
+<mods:namePart type="given">M.</mods:namePart>
+<mods:namePart type="family">Lewis</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>2008</mods:dateIssued><mods:publisher>Kew Publishing, Royal Botanic Gardens Kew</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="genus">
+<div type="diagnosis"><p>The betel-nut palm and its relatives; acaulescent, or erect, diminutive or robust palms of Southeast Asia to West Pacific, with crownshafts, with entire or lobed leaflet tips and a single large bract in the inflorescence, the pistillate flowers borne only at the rachilla bases and with basal hilum on the seed.</p></div>
+<nomenclature>
+<name>Areca</name>
+<author>L.</author> 
+<citation>Sp. pl. 1189 (1753).</citation>
+<type>Type; Areca catechu; L.</type>
+<synonymy>
+<name>Mischophloeus</name>
+<author>Scheff.</author>
+<bibref>Scheff., Ann. Jard. Bot. Buitenzorg 1: 115, 134 (1876).</bibref>
+<type>Type; Mischophloeus paniculatus; (Miq.) Scheff.</type>
+</synonymy>
+<synonymy>
+<name>Gigliolia</name>
+<author>Becc.</author>
+<bibref>Becc., Malesia 1: 171 (1877). (non Barb. Rodr.).</bibref>
+<type>Lectotype; Gigliolia insignis; Becc.</type>
+</synonymy>
+<synonymy>
+<name>Pichisermollia</name>
+<author>H.C. Monteiro</author>
+<bibref>H.C. Monteiro, Rodriguesia 41: 198 (1976).</bibref>
+<type>Type; Pichisermollia insignis; (Becc.) H.C.Monteiro</type>
+</synonymy>
+</nomenclature>
+<div type="etymology"><p>Said to be derived from a vernacular name used in Malabar, India.</p></div>
+<div type="description"><p>Very small to moderate, solitary or clustered, acaulescent to erect, unarmed, pleonanthic, monoecious palms. Stem slender to moderate, occasionally stilt-rooted, internodes very short to elongate, leaf scars often conspicuous. Leaves undivided and pinnately ribbed, with or without an apical notch, or pinnate; sheaths forming a well-defined crownshaft with leaves neatly abscising, or rarely crownshaft not well developed when leaves marcescent or the sheaths partly open; petiole present or absent, adaxially channelled or rounded, abaxially rounded, glabrous or variously indumentose; leaflets regularly or irregularly arranged, 1–several fold, acute, acuminate or lobed, the lobes corresponding to the folds, the apical pair almost always lobed, held in one plane, very rarely (Areca insignis) with a basal auricle reflexed across the rachis, blade variously scaly or hairy, transverse veinlets obscure. Inflorescences erect or pendulous, mostly infrafoliar, rarely interfoliar in acaulescent species with marcescent leaves, in one species sometimes bursting through marcescent leaf sheaths (A. jugahpunya), branched to 3 orders basally, fewer orders distally, very rarely spicate, protandrous (or very rarely recorded as protogynous); peduncle very short to long; prophyll thin, membranous, enclosing the inflorescence in bud, quickly splitting and falling, other bracts very inconspicuous; rachis shorter or longer than the peduncle; rachillae glabrous or variously indumentose; rachilla bracts minute; triads confined to the proximal part of the main axis, or to the proximal part of each order of branching, or rarely to a subdistal part of the main axis only; rachillae otherwise bearing solitary or paired staminate flowers arranged spirally, distichously, or in 2 approximate rows on one side of the rachilla, the rachilla tips sometimes devoid of flowers. Staminate flowers frequently minute, sessile, or with a stalk formed from the receptacle; calyx with 3 distinct, slightly imbricate, triangular sepals, or cupular with 3 triangular lobes; corolla with 3 triangular, valvate petals, rarely briefly connate at the base, much longer than the sepals; stamens free or briefly epipetalous, 3, 6, 9 or up to 30 or more, filaments short to elongate, anthers linear or sinuous, sometimes very irregular, latrorse or rarely opening by apical pores; pistillode present and conspicuous as a trifid column as long as the stamens, or minute, or often absent. Pollen usually ellipsoidal, symmetric or slightly asymmetric, less frequently oblate triangular or oblate spheroidal; aperture a distal sulcus, in some species an extended sulcus, trichotomosulcus, or incomplete, presumed equatorial zonasulcus, rarely brevi or monoporate, or triporate; ectexine tectate or semi-tectate, finely to coarsely perforate, foveolate or finely reticulate, occasionally with very narrow muri, occasionally perforate-rugulate, aperture margin similar or slightly finer; infratectum columellate; longest axis 25–58 µm; post-meiotic tetrads tetrahedral, rarely tetragonal or rhomboidal [35/48]. Pistillate flowers sessile, usually much larger than the staminate, ± globular; sepals 3, distinct, imbricate; petals similar to the sepals, 3, distinct, sometimes valvate at the very tip, otherwise imbricate; staminodes 3–9 or absent; gynoecium unilocular, uniovulate, globose to ovoid, stigmas 3, fleshy, triangular, ± reflexed at anthesis, ovule anatropous or campylotropous, basally attached. Rachilla distal to pistillate flowers drying after anthesis, portions bearing fruit sometimes becoming brightly coloured. Fruit globose, ovoid, or spindle-shaped, often brightly coloured, rarely dull brown or green, stigmatic remains apical; epicarp smooth, shiny or dull, mesocarp thin to moderately thick, fleshy or fibrous, endocarp composed of robust longitudinal fibres, usually closely appressed to the seed, becoming free at the basal end or not. Seed conforming to the fruit shape or slightly hollowed at the base, with basal hilum and raphe branches anastomosing, endosperm deeply ruminate; embryo basal. Germination adjacent-ligular; eophyll bifid or rarely entire with a minute apical cleft. Cytology: 2n = 32.</p></div>
+<div type="distribution"><p>About 47 species, distributed from India and south China through Malesia to New Guinea and the Solomon Islands.</p></div>
+<div type="anatomy"><p>Leaf, stem, root (Tomlinson 1961), root (Seubert 1998a, 1998b), gynoecium (Uhl and Moore 1971), stegmata (Killmann and Hong 1989), and fruit (Essig and Young 1979). </p></div>
+<div type="relationships"><p>Areca is a strongly supported monophyletic group, though sampling in available phylogenies is limited (Loo et al. 2006). The genus is highly supported as sister to a clade comprising Nenga and Pinanga (Loo et al. 2006). The same relationships are recovered in other studies (Norup et al. 2006, Baker et al. in review, in prep.). </p></div>
+<div type="uses"><p>Areca catechu is economically important and widely cultivated, sometimes on a plantation scale. The endosperm is  chewed with leaves or inflorescences of Piper betle L., lime and other ingredients; it contains the alkaloid arecaine, which acts as a mild narcotic. An estimated 200–400 million people use betel nut in this way, making it the fourth most widly “abused” substance after nicotine, alcohol and caffeine (Gupta and Warnakulasuriya 2002, Norton 1998). The fruit are also used as a source of tannin in dyeing, medicinally, and rarely, as toothbrushes. The apex is edible and the flowers often used as ceremonial decoration. The leaf sheath may be utilised in making containers, and other species may serve as substitutes in betel-chewing. Several species are cultivated as ornamentals. </p></div>
+<div type="taxonomic accounts"><p>Furtado (1933) and Dransfield (1984a). </p></div>
+<div type="fossil record"><p>There are a few records of reticulate monosulcate pollen from the Maastrichtian of Cameroon that have been compared with Areca: Retimonocolpites pluribaculatus nov. sp. (Salard-Cheboldaeff 1978), Arecipites lusaticus and A. convexus (Salard-Cheboldaeff 1979); A. convexus is closely similar to the pollen of Areca catechu. Muller (1981) suggested that R. pluribaculatus (reticulate pollen with ca. 45–50 µm long axis) is close to the reticulate monosulcate pollen of Areca ipot and shares a similar size range; the affinity of this fossil pollen with a species of Areca, a genus that includes a number of species that have reticulate pollen, certainly cannot be ruled out. As a general comment it, is noted that the name Arecipites is widely used for small more-or-less symmetric monosulcate palm-like dispersed fossil pollen; its use for Areca-like fossil pollen is exceptional.</p></div>
+<div type="discussion"><p>As circumscribed here, Areca is a remarkably variable genus that has very distinctive sections. The variation in Borneo is particularly noteworthy.</p></div>
+<div type="vernacular"><p>Betel nut palm, pinang, bunga, jambe.</p></div>
+<div type="biology_ecology"><p>Most species are small to moderate palms of the undergrowth of tropical rain forest. Areca catechu, the betel nut, is very widespread as a crop plant and seems to tolerate open conditions. Some species of Areca have very narrow ecological limits; for example, A. rheophytica is confined to the banks of fast-flowing streams on ultramafic rock in Sabah, Borneo. Areca triandra is a polymorphic species occurring from India to Borneo. Some of the entities within this complex taxon have rather precise habitat requirements.</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

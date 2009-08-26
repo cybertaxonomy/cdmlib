@@ -4,7 +4,10 @@
 <mods:titleInfo>
 <mods:title>A new species of Daemonorops section Piptospatha (Arecaceae) from Siberut Island, West Sumatra</mods:title>
 </mods:titleInfo>
-<mods:name><mods:namePart>Himmah Rustiami</mods:namePart></mods:name>
+<mods:name>
+<mods:namePart type="family">Rustiami</mods:namePart>
+<mods:namePart type="given">H.</mods:namePart>
+</mods:name>
 <mods:originInfo>
 <mods:publisher>Kew Bulletin, Vol. 57, No. 3, pp. 729-733</mods:publisher>
 <mods:dateIssued>2002</mods:dateIssued>

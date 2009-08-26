@@ -4,7 +4,10 @@
 <mods:titleInfo>
 <mods:title>Notes on Pinanga (Palmae) in Sarawak</mods:title>
 </mods:titleInfo>
-<mods:name><mods:namePart>John Dransfield</mods:namePart></mods:name>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
 <mods:originInfo>
 <mods:publisher>Kew Bulletin, Vol. 46, No. 4, pp. 691-698</mods:publisher>
 <mods:dateIssued>1991</mods:dateIssued>

@@ -2,11 +2,14 @@
 <taxonxHeader>
 <mods:mods>
 <mods:titleInfo>
-<mods:title>A monogrpah of Ceratolobus (Palmae)</mods:title>
+<mods:title>A monograph of Ceratolobus (Palmae)</mods:title>
 </mods:titleInfo>
-<mods:name><mods:namePart>John Dransfield</mods:namePart></mods:name>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
 <mods:originInfo>
-<mods:publisher>Kew Bulletin, Vol. 34, No. 1, pp. 1-33+ii</mods:publisher>
+<mods:publisher>Kew Bulletin, Vol. 34, No. 1, pp. 1-33</mods:publisher>
 <mods:dateIssued>1979</mods:dateIssued>
 </mods:originInfo>
 </mods:mods>

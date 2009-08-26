@@ -1,0 +1,64 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>Genera Palmarum. The evolution and classification of palms</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Uhl</mods:namePart>
+<mods:namePart type="given">N.</mods:namePart>
+<mods:namePart type="family">Asmussen</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+<mods:namePart type="family">Harley</mods:namePart>
+<mods:namePart type="given">M.</mods:namePart>
+<mods:namePart type="family">Lewis</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>2008</mods:dateIssued><mods:publisher>Kew Publishing, Royal Botanic Gardens Kew</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="genus">
+<div type="diagnosis"><p>Extremely spiny pinnate-leaved palms from Central and South America, distinctive in the marked separation of pistillate flowers from the staminate part of the rachilla.</p></div>
+<nomenclature>
+<name>Astrocaryum</name>
+<author>G.Mey.</author> 
+<citation>Prim. fl. esseq. 265 (1818)</citation>
+<type>Type; Astrocaryum aculeatum; G.Mey.</type>
+<synonymy>
+<name>Avoira </name>
+<author>Giseke</author>
+<bibref>Giseke, Praelectiones in Ordines Naturales Plantarum 38, 53 (1792) (name rejected in favour of Astrocaryum)</bibref>
+<type>Lectotype; Avoira vulgaris; Giseke</type>
+</synonymy>
+<synonymy>
+<name>Hexopetion</name>
+<author>Burret</author>
+<bibref>Burret, Notizbl. Bot. Gart. Berlin-Dahlem 12: 156 (1934)</bibref>
+<type>Type; Hexopetion mexicanum; (Liebm. ex Mart.) Burret</type> 
+</synonymy>
+<synonymy>
+<name>Toxophoenix</name>
+<author>Schott</author>
+<bibref>Schott in Schreibers, Nachr. österr. Naturf. Bras. 2 (Anhang): 12 (1822).</bibref>
+ <type>Type; Toxophoenix aculeatissima; Schott</type>
+</synonymy>
+</nomenclature>
+<div type="etymology"><p>Astron — star, karyon — nut, referring to the star-like pattern of fibres around the endocarp pores.</p></div>
+<div type="description"><p>Moderate to robust, solitary or clustered, sometimes acaulescent, spiny, pleonanthic, monoecious palms. Stem very short to tall, often slender, obscured by leaf bases, or becoming bare and conspicuously ringed with leaf scars, often armed with fierce spines pointing in several directions, sometimes losing spines with age. Leaves few to numerous, regularly or irregularly pinnate, neatly abscising or marcesent; sheath splitting opposite the petiole, usually fiercely armed with large and small spines, and frequently bearing abundant indumentum; petiole very short to long, adaxially channelled near the base, distally ± flattened or angled, abaxially rounded, bearing abundant spines of varying length and dense indumentum; rachis usually much longer than the petiole, adaxially ± angled, abaxially rounded, usually densely armed and tomentose like the petiole; leaflets numerous and single-fold (or rarely few and composed of many folds), regularly arranged or grouped, and usually fanned within the groups, the whole leaf then appearing plumose, sometimes ± secondarily plicate, linear, acute, usually dark green and shiny adaxially, abaxially almost always with abundant white indumentum, the leaflet margins often conspicuously armed with short spines or bristles; transverse veinlets conspicuous or obscure. Inflorescences solitary, interfoliar, erect at first, becoming pendulous, ?protandrous, branching to 1 order; peduncle usually elongate, ± circular in cross-section, often heavily armed with spines, sometimes with spines confined only to the area just below the bract insertion, the surface frequently densely covered in indumentum; prophyll ±membranous, tubular, 2-keeled, unarmed (?always), ±included within the leaf sheaths, soon tattering; peduncular bract much exceeding the prophyll, tubular, beaked, enclosing the rachillae in bud, splitting longitudinally along the abaxial face, arched over the rachillae, persistent or eroding, usually densely tomentose and heavily armed with spines, rarely unarmed; rachis shorter than the peduncle (often very much so) often armed as the peduncle, bearing numerous spirally arranged, crowded rachillae, each subtended by a narrow triangular bract; rachillae complex, elongate, with or without an armed or unarmed basal bare portion above which bearing a single triad or 2–5 distant triads, with or without a slender bare portion distal to the triads, distal to which the rachillae appearing cylindrical, catkin-like and bearing densely packed staminate flowers in pairs or singly, immersed in pits; rachilla bracts ± acute, forming lower lip of pits, floral bracteoles very small, sometimes partially connate with rachilla bract; after anthesis, staminate portions of the rachillae eroding away, in those species with solitary triads, the fruit then borne in a close-packed ‘spike’ or head, in those with several triads the fruit more loosely arranged. Staminate flowers small, ± symmetrical; sepals 3, very small, ± triangular, ?sometimes basally connate; petals 3, much exceeding the sepals, valvate, boat-shaped, connate basally and adnate to the receptacle; stamens (3–)6(–12, fide Wessels Boer 1965), filaments epipetalous, short, inflexed in bud, anthers ± rectangular or linear, dorsifixed, versatile, latrorse; pistillode present and trifid or absent. Pollen ellipsoidal, or oblate-triangular, usually with slight asymmetry; aperture a distal sulcus or trichotomosulcus; ectexine tectate, finely perforate-psilate or coarsely perforate, perforations closely or widely spaced or, perforate and micro-channelled and rugulate, aperture margin may be slightly finer; infratectum columellate; longest axis 41–78 µm [11/36]. Pistillate flower very much larger than the staminate; calyx urn-shaped or cup-shaped, truncate or shallowly 3-lobed, sometimes bearing numerous short spicules, usually densely tomentose; corolla not, briefly, or considerably exceeding, and similar to the calyx, or composed of 3 imbricate triangular lobes, connate basally; staminodes 6, epipetalous near the base of the corolla, connate into a low membranous ring or tooth-like; gynoecium varied in shape, trilocular, triovulate, the 3 large fleshy erect, or head-like, reflexed stigmas borne on a beak, protruding through the mouth of the corolla tube, sometimes bearing short spines and/or tomentum, ovule ?orthotropous, laterally attached. Fruit 1(–2)-seeded with apical stigmatic remains, beaked, spherical, top-shaped, prismatic, or ovoid, often brightly coloured, brown, yellowish or orange-red, calyx and corolla persistent, enlarged and irregularly splitting; epicarp spiny or unarmed, tomentose or glabrous, mesocarp relatively thin, fleshy or dry and starchy, and fibrous, sometimes with the epicarp irregularly splitting and spreading to expose the endocarp, endocarp thick, stony, with numerous flattened, black longitudinal fibres on the surface, conspicuously radiating from the 3 subterminal pores. Seed irregularly globular, basally attached, hilum circular, raphe branches anastomosing, endosperm homogeneous, usually hollow; embryo subapical, opposite one of the endocarp pores. Germination adjacent-ligular; eophyll bifid, usually bristly. Cytology: 2n = 30.</p></div>
+<div type="distribution"><p>About 36 accepted species distributed from Mexico southwards to Brazil and Bolivia; absent from the West Indies except Trinidad.</p></div>
+<div type="anatomy"><p>Leaf (Tomlinson 1961, Beerling and Kelly 1996), root (Seubert 1998a, 1998b).</p></div>
+<div type="relationships"><p>Published evidence indicates that Astrocaryum is monophyletic with moderate support (Gunn 2004; for relationships, see Acrocomia). However, preliminary phylogenetic studies based on molecular data (Pintaud, pers. comm.) suggest that Astrocaryum, as currently delimited, may not be monophyletic. The problem could be addressed, at least in part, by removing two taxa, Astrocaryum mexicanum and A. alatum, which are sister to each other and tend to resolve elsewhere in the Bactridinae. Astrocaryum mexicanum was separated by Burret as the basis of a new genus, Hexopetion, because the staminodes are free as opposed to being cupuliform as in the rest of Astrocaryum. The staminodes in A. alatum form a cupuliform ring, however, so this character seems of no value in separating Hexopetion from Astrocaryum. The one gross morphological character shared by the two species is the fact that the staminate flowers occur directly above the single pistillate flower at the base of the rachillae, whereas in Astrocaryum there is a bare portion immediately distal to the pistillate flowers. There is also a single anatomical difference: the perivascular sclerified sheath in the leaf midrib is continuous in A. alatum and A. mexicanum whereas it is discontinuous in all other species of Astrocaryum examined. Insufficient evidence has been presented to date to warrant the recognition of Hexopetion. A thorough study of relationships across the Bactridinae is required before further changes in Bactridinae can be justified. </p></div>
+<div type="uses"><p>For local uses, see Glassman (1972) and Balick (1985). The epidermis and hypodermis of the sword leaf of Astrocaryum vulgare provide an important fibre used by Amerindians in manufacturing mats, hats, hammocks, fishing lines and nets. The mesocarp of some species is eaten by humans or fed to cattle. The kernel of A. vulgare produces a fine oil, which is excellent for eating or soap making. Fruits of A. murumuru and A. aculeatum have also been used as a source of oil, and the ‘cabbage’ of many species is utilised. </p></div>
+<div type="taxonomic accounts"><p>See Henderson et al. (1995). Numerous papers by Kahn and his associates have appeared in recent years, elucidating species and species complexes, but a modern synthesis of the whole genus is yet to be produced. See also, Kahn and Second (1999). </p></div>
+<div type="fossil record"><p>Fruits from the Middle Oligocene of Puerto Rico, Palmocarpon cetera, are compared with Cocos and Astrocaryum, although there is insufficient detail to make a very satisfactory comparison (Hollick 1928). From the Middle Eocene of northwestern Peru, Berry (1926a) described palm endocarps, Astrocaryum olsoni, with a size range of 3.75 – 5.25 cm long • 2.5 – 3.75 cm wide; they have a fibrous outer layer, and  a 2–3 mm thick inner layer; their interior is filled with calcified structureless material. From the lower Cenomanian of France (Argonne), Fliche (1896) describes Astrocaryum astrocaryopsis and, also from the upper Cenomanien, Astrocaryopsis sp. from the Sainte Menhould area (Fliche 1894). Astrocaryum-like pollen (Graham 1976) is reported from the Upper Miocene of Mexico (Paraje Solo flora, Veracruz). Van der Hammen and Garcia de Mutis (1966) suggest that the “natural relationship” of the zonasulcate Proxapertites (described by the authors as having, “a very large, variable, ± irregular, aperture”) is Astrocaryum acaule, but this is unlikely because this species has mono- or trichotomosulcate pollen. </p></div>
+<div type="discussion"><p>Astrocaryum mexicanum has been the subject of detailed long-term demographic and reproductive biological studies led by Sarukhan (e.g., Búrquez et al. 1987). </p></div>
+<div type="vernacular"><p>Tucuma. For common names, see Pesce (1941, translation 1985).</p></div>
+<div type="biology_ecology"><p>Ecologically, the genus is very varied: some species are undergrowth palms of primary lowland forest; others are light-demanding and occur in secondary forest or forest margins (e.g., riverbanks). In Surinam, Astrocaryum vulgare is particularly frequent in white sand savannah. Most species seem to be confined to the lowlands. </p></div>
+<div type="conservation"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

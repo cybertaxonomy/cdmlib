@@ -1,0 +1,59 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>Genera Palmarum. The evolution and classification of palms</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Uhl</mods:namePart>
+<mods:namePart type="given">N.</mods:namePart>
+<mods:namePart type="family">Asmussen</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+<mods:namePart type="family">Harley</mods:namePart>
+<mods:namePart type="given">M.</mods:namePart>
+<mods:namePart type="family">Lewis</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>2008</mods:dateIssued><mods:publisher>Kew Publishing, Royal Botanic Gardens Kew</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="genus">
+<div type="diagnosis"><p>Solitary pinnate-leaved palms from South and Central America and humid Tropical Africa, including the African oil palm of commerce, distinctive in fibre spines and spines formed from leaflet midribs at the base of the leaf, and highly condensed unisexual inflorescences borne among the leaf bases, both male and female borne on the same tree.</p></div>
+<nomenclature>
+<name>Elaeis</name>
+<author>Jacq.</author> 
+<citation>Select. stirp. amer. hist. 280 (1763).</citation>
+<type>Type; Elaeis guineensis; Jacq.</type>
+<synonymy>
+<name>Corozo</name>
+<author>Jacq. ex Giseke</author>
+<bibref>Jacq. ex Giseke, Prael. ord. nat. pl. 42, 92 (1792).</bibref>
+<type>Lectotype; Corozo oleifera; (Kunth) L.H. Bailey</type>
+</synonymy>
+<synonymy>
+<name>Alfonsia</name>
+<author>Kunth in Humboldt, Bonpland and Kunth</author>
+<bibref>Kunth in Humboldt, Bonpland and Kunth, Nov. gen. sp. pl. 1: folio edition 245; quarto edition 306 (1816).</bibref>
+<type>Type; Alfonsia oleifera; Kunth</type>
+</synonymy>
+</nomenclature>
+<div type="etymology"><p>Elaia — olive tree, olive, referring to the oil of the oil palm.</p></div>
+<div type="description"><p>Moderate to robust, solitary, short to tall, armed, pleonanthic, monoecious palms. Stem procumbent or erect, bearing persistent leaf bases, eventually becoming bare, the internodes short, leaf scars wide, oblique. Leaves many in the crown, pinnate, withering and not abscising neatly except in tall-trunked individuals; sheath tubular at first, later disintegrating into an interwoven mass of fibres, those fibres attached to the base of the petiole remaining as regularly spaced, broad, flattened spines; petiole conspicuous, adaxially channelled, abaxially angled, bearing caducous tomentum, the margins armed with regularly spaced fibre spines, distally (strictly speaking the proximal part of the rachis) with margins armed with short, triangular, bulbous-based spines representing the pulvini and midribs of the proximal few vestigial leaflets, the blades of which soon disintegrate on leaf expansion; rachis curving or straight, adaxially angled, abaxially curved or flattened; leaflets numerous, single-fold, regularly arranged or slightly grouped and held in different planes, giving the whole leaf a plumose appearance, linear, gradually tapering to acute tips, sometimes with bands of caducous scales, midribs prominent, transverse veinlets very short, inconspicuous. Inflorescences interfoliar, solitary, short and condensed, unisexual (except as monstrosities), usually several adjacent axils producing inflorescences of one sex followed by several producing the other sex, branching to 1 order; peduncle short, ± elliptic in cross-section; prophyll short, tubular and flattened, 2-keeled, tomentose, included within the subtending leaf sheath, thick, traversed by numerous, thick, longitudinal  fibres, disintegrating distally into a mass of fibres, the larger fibres spine-like; first peduncular bract inserted some distance from the prophyll, tubular, fibrous, thinner than the prophyll, distally disintegrating into a fibrous mass, and splitting longitudinally, subsequent peduncular bracts small, not sheathing, narrow triangular, with sharp tips, striate; rachis shorter than, ± equalling, or slightly longer than the peduncle, tomentose, bearing numerous, spirally arranged, narrow triangular, membranous to coriaceous, acute bracts, each subtending a rachilla; staminate rachillae ± cylindrical, catkin-like, often somewhat angled due to close packing, tomentose, densely floriferous except at the ± spine-like tip where bare of flowers and bracts, the flowers solitary, borne in deep, spirally arranged pits, pistillate rachillae more massive than the staminate, bearing fewer flowers, the tips prolonged into a woody spine, each rachilla proximally bearing lax, ± superficial or only partially sunken, spirally arranged membranous rachilla bracts; bracts short, acute, or prolonged into a straight or flexuous spine-like tip, each subtending a solitary flower. Staminate flowers small, only slightly protruding from the pits at anthesis; sepals 3, distinct, unequal, ± rectangular, membranous, the edges not meeting in bud, abaxially keeled; petals 3, distinct, ± ovate, ± equalling the sepals, valvate, very thin; stamens 6, exserted at anthesis, filaments broad, fleshy, united laterally to form a tube, with 6 short, distinct, reflexed, abruptly narrowed tips, anthers ± rectangular, ± versatile, introrse; pistillode columnar, trifid, slightly shorter than the staminal tube. Pollen either ellipsoidal, slight to obvious asymmetry (Elaeis oleifera), or oblate triangular (E. guineensis); aperture a distal sulcus or trichotomosulcus; ectexine perforate scabrate or perforate rugulate, aperture margin (ellipsoid pollen) similar, aperture margin (trichotomosulcate pollen) broad and psilate or psilate-perforate; infratectum columellate; longest axis ranges from 31–39 µm [2/2]. Pistillate flowers much larger than the staminate, borne with 2 acute or spine-tipped bracteoles; sepals 3, distinct, imbricate, rather thin; petals 3, distinct, imbricate, rather thin; staminodal ring low, 6-pointed, tanniniferous; gynoecium columnar to ovoid, trilocular, triovulate, stigmas 3, fleshy, reflexed, ± 3-angled, ovules orthotropous, attached centrally. Fruit 1–(rarely more)-seeded, ± ovoid but basally angled by close packing, variously orange or yellow, overlain with deep violet or black in exposed parts, apically beaked, stigmatic remains apical; epicarp smooth, mesocarp thick, fleshy, oily, fibrous, endocarp black, woody and very hard, variously ovoid, flattened or angled, with 3 apical pores. Seed basally attached with coarse, reticulate raphe branches, endosperm homogeneous, with or without a central cavity; embryo ± apical, opposite a pore. Germination adjacent-ligular; eophyll entire, lanceolate. Cytology: 2n = 32.</p></div>
+<div type="distribution"><p>Two species. Elaeis guineensis is native to the more humid areas of tropical Africa, possibly introduced in Madagascar, now widely cultivated throughout the humid tropics as the most productive perennial oil crop, and frequently naturalised. </p></div>
+<div type="anatomy"><p>Leaf (Tomlinson 1961), phloem (Parthasarathy 1980), root (Seubert 1998a, 1998b), stegmata (Killmann and Hong 1989) and gynoecium (Uhl and Moore 1971). </p></div>
+<div type="relationships"><p>Elaeis is monophyletic with high support (Gunn 2004). For relationships, see subtribe Elaeidinae. </p></div>
+<div type="uses"><p>Elaeis guineensis is the most important commercial oil-producing plant in the tropics, and is used locally as a source of wine, thatch and building materials. Even waste endocarp has been used as road metalling. For further details, see Hartley (1988), and for references, Johnson (1983b). </p></div>
+<div type="taxonomic accounts"><p>Beccari (1914b) and Zeven (1967). </p></div>
+<div type="fossil record"><p>An endocarp from the Middle Oligocene of Puerto Rico, Palmocarpon rabellii, is cautiously compared both with the endocarp of Elaeis guineensis and, due to evidence of pores, with Copernicia cerifera (Hollick 1928). In fact, the endocarps of these two palms are very dissimilar; clearly this record should be reassessed. Pollen from the Zinguinchor borehole (Middle Eocene to Lower Miocene) of Senegal shows notable similarity to that of E. guineensis (Médus 1975). Ergo (1997) describes seeds of Elaeis from the Upper Micene of Uganda. </p></div>
+<div type="discussion"><p>Elaeis is notable as one of only two genera of the Cocoseae present in Africa and also for its distribution on either side of the Atlantic. See further notes under Barcella. 
+Elaeis guineensis is the focus of ongoing evolutionary development research (Adam et al. 2005, Adam et al. 2006, Adam et al. 2007, Jouannic et al. 2005)</p></div>
+<div type="vernacular"><p>African oil palm (Elaeis guineensis), American oil palm (E. oleifera). </p></div>
+<div type="biology_ecology"><p>In the wild, it occurs on the margins of humid forest and along watercourses in drier areas. Elaeis oleifera is native to central and northern South America, and is frequent on poorly drained, sandy soils and in savannas. In Costa Rica, it is found in palm swamp and some mangrove communities (Allen 1956). </p></div>
+<div type="conservation"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

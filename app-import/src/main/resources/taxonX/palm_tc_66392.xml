@@ -1,0 +1,50 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>Genera Palmarum. The evolution and classification of palms</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Uhl</mods:namePart>
+<mods:namePart type="given">N.</mods:namePart>
+<mods:namePart type="family">Asmussen</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+<mods:namePart type="family">Harley</mods:namePart>
+<mods:namePart type="given">M.</mods:namePart>
+<mods:namePart type="family">Lewis</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>2008</mods:dateIssued><mods:publisher>Kew Publishing, Royal Botanic Gardens Kew</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="genus">
+<div type="diagnosis"><p>Acaulescent, clustering palm forming dense thickets, in swamps in Southeast Asia and West Malesia; the sheaths and petiole are densely armed with long spines; flowering is hapaxanthic; the fruit has a sarcotesta that is difficult to separate from the rest of the seed.</p></div>
+<nomenclature>
+<name>Eleiodoxa</name>
+<author>(Becc.) Burret</author>
+<citation>Notizbl. Bot. Gart. Berlin-Dahlem 15: 733 (1942).</citation>
+<type>Lectotype; Eleiodoxa conferta; (Griff.) Burret</type>
+<synonymy>
+<name>Salacca section Eleiodoxa</name>
+<author>Becc.</author>
+<bibref>Becc., Ann. Roy. Bot. Gard. (Calcutta) 12(2): 71 (1918).</bibref>
+</synonymy>
+</nomenclature>
+<div type="etymology"><p>Eleio — swamp, doxa — glory, referring to the habitat.</p></div>
+<div type="description"><p>Moderate, acaulescent, clustering, armed, hapaxanthic, dioecious palm. Stem subterranean with short internodes, bearing strictly axillary sucker shoots. Leaves robust, pinnate, marcescent; sheath splitting opposite the petiole, unarmed at the extreme base, otherwise armed with neat partial whorls of robust spines and abundant caducous scales, the sheath mouth bearing a tattering ligule-like structure; petiole well developed, channelled adaxially in proximal part, rounded abaxially, circular in cross-section distally, armed with neat, somewhat oblique, partial whorls of slender, rigid spines; rachis armed as the petiole, but more sparsely so; leaflets single-fold, linear-lanceolate, regularly arranged, the apical pair slender, very rarely partly united to the penultimate pair, the margins armed with short spines, surfaces similar in colour, transverse veinlets distinct. Inflorescences aggregated into a terminal compound inflorescence, held erect at ground level between the leaf bases, the staminate and pistillate superficially similar; first-order branches of the compound inflorescence (i.e., the axillary inflorescences) each subtended by a highly reduced leaf or tattering bract, and bearing an empty, short, tubular, 2-keeled prophyll, quickly tattering, and short, tubular, tattering bracts with triangular limbs, each subtending a robust, erect, cylindrical, catkin-like rachilla; rachilla bearing a basal, 2-keeled, tubular prophyll and a few empty bracts at the base and at the very tip, otherwise bearing a tight spiral of imbricate, laterally adnate, low triangular-tipped bracts, each enclosing a dyad of flowers, comprising in the staminate inflorescence, 2 staminate flowers, and in the pistillate, 1 sterile staminate and 1 fertile pistillate flower, each flower bearing a prophyllar bracteole and surrounded by a dense pile of hairs. Staminate flowers pinkish-tinged at anthesis; calyx cupular, striate, with 3 triangular lobes; corolla tubular at the base, split to about 4/5 its length into 3 triangular, valvate petals; stamens 6, borne at the mouth of the corolla tube, filaments fleshy, elongate, abruptly contracted and inflexed at the tip, anthers elongate, introrse; pistillode absent. Pollen ellipsoidal, bi-symmetric; apertures subequatorial diporate; ectexine tectate, coarsely perforate, aperture margins similar; infratectum columellate; longest axis 24–27 µm [1/1]. Sterile staminate flowers like the fertile but with fleshier filaments, not abruptly contracted, and with empty anthers. Pistillate flowers superficially similar to the staminate but larger, the corolla tubular in the basal ca. 1/3; staminodes 6, borne at the mouth of the corolla tube, filaments closely appressed to the corolla, empty anthers somewhat sagittate; gynoecium tricarpellate, triovulate, globose, covered in reflexed scales, stigmas 3, reflexed, sinuous, in bud compressed into a pyramid, locules incomplete, ovules basally attached, anatropous. Fruit almost always 1-seeded, stylar remains apical; epicarp covered in neat vertical rows of reflexed scales, mesocarp somewhat spongy, endocarp not differentiated. Seed ± rounded, sarcotesta thick, sour, closely adhering to the inner integument and difficult to separate from it due to the presence of short radiating fibres, endosperm homogeneous, ± disc-like or very broadly oblate, with large, wide pit at the apex; embryo basal or lateral due to distortion of the fruit. Germination adjacent-ligular; eophyll bifid with narrow, entire lobes. Cytology not studied.</p></div>
+<div type="distribution"><p>Although five names have beenpublished, there appears to be only one widespread species, known from South Thailand, Sumatra, Malay Peninsula, and Borneo. </p></div>
+<div type="anatomy"><p>Not studied.</p></div>
+<div type="relationships"><p>Eleiodoxa is strongly supported as sister toSalacca (Baker et al. 2000a, 2000b).</p></div>
+<div type="uses"><p>Leaves areoccasionally used for temporary thatching. The extremely soursarcotesta is used throughout the range of the palm as asubstitute for tamarind in cooking and with sugar is sometimesmade into a sweetmeat.</p></div>
+<div type="taxonomic accounts"><p>Beccari (1918), Burret (1942).</p></div>
+<div type="fossil record"><p>No generic records found.</p></div>
+<div type="discussion"><p>See Salacca.</p></div>
+<div type="vernacular"><p>Kelubi or asam paya. </p></div>
+<div type="biology_ecology"><p>Eleiodoxa conferta is a highly characteristic, gregarious, undergrowth palm of lowland fresh water swamps, beingparticularly abundant in facies of peat swamp forest where acertain amount of water movement occurs.</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

@@ -4,7 +4,10 @@
 <mods:titleInfo>
 <mods:title>New species and records of Iguanura (Palmae) from Sarawak and Thailand</mods:title>
 </mods:titleInfo>
-<mods:name><mods:namePart>Ruth Kiew</mods:namePart></mods:name>
+<mods:name>
+<mods:namePart type="family">Kiew</mods:namePart>
+<mods:namePart type="given">R.</mods:namePart>
+</mods:name>
 <mods:originInfo>
 <mods:publisher>Kew Bulletin, Vol. 34, No. 1, pp. 143-145</mods:publisher>
 <mods:dateIssued>1979</mods:dateIssued>

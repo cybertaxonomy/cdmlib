@@ -1,0 +1,46 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>The lost palm of Fiji – a resolution of Goniocladus and a preliminary cladistic analysis of Physokentia</mods:title>
+</mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Fuller</mods:namePart>
+<mods:namePart type="given">D.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Pages 203-213 in Andrew Henderson and Finn Borchsenius (eds.). Evolution, variation and classification of palms. Memoirs of The New York Botanical Garden. Vol 83.</mods:publisher>
+<mods:dateIssued>1999</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Physokentia thurstonii</name>
+<author>(Becc.) Becc.</author>
+<citation>Martelli, Atti Soc. Tosc. Sci. Nat. Mem. 44: 154. 1934</citation>
+<type>Taveuni, 17 Apr 1882; Thurston; s.n</type>
+<type_loc>Holotype K!</type_loc>
+<synonymy>
+<name>Goniosperma vitiense</name>
+<author>Burret</author>
+<bibref>Burret, Occas. Pap. Bishop Mus. 11(4): 11. 1935</bibref>
+<type>Fiji, Vanua Levu, Cakaud-rove, Mt. Mariko, 600-866 m, dense forest, 14 Nov 1933; Smith; 417</type>
+<type_loc>holotype BISH!; isotype GH, US!</type_loc>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p>Named after Sir John Thurston, who collected the type specimen (consisting only of fruits). Thurston was Colonial Secretary and Governor of Fiji in the 1880s, and Thurston Gardens in Suva is named after him.</p></div>
+<div type="vernacular"><p>niu niu</p></div>
+<div type="diagnosis"><p>The leaves are reportedly used in "a decoction to treat heart trouble" (Cambie &amp;amp; Ash, 1994).</p></div>
+<div type="description"><p>Trunk erect, to 7 m tall, 10 cm diam., green with prominent leaf scars, with brown stilt roots. Leaves pinnate, 8-10 in crown, spreading, forming an olive to dark-green crownshaft to 55 cm long with brown floccose scales; petiole to 40 cm long; pinnae 25-30 per side, 20-70 X 3-8 cm; margins decurved; minor ribs visible below. Inflorescence infrafoliar, to 50 cm long, branched to two orders; rachillae stiff, white in flower becoming green in fruit; triads spirally arranged on rachillae, on the proximal half only of rachillae; staminate flowers to 6 mm high, pinkish white in color; stamens 6; pistillode angled; pistillate flowers 4.5 mm high, with narrow membranous bracteoles. Fruit subglobose, to 2.5 cm long, 2.1 cm diam., black at maturity, with apical stigmatic remains; endocarp with four sharp ridges, two lateral and an upper and lower keel. Seed similar to fruit in shape (subglobose), to 1.7 X 1.3 cm, with thick ra-phe branches radiating from the upper keel. Eophyll unknown.</p></div>
+<div type="distribution"><p>Fiji, endemic to Taveuni and Vanua Levu.</p></div>
+<div type="biology_ecology"><p>In rain forest at 250-1000 m, but usually found in montane forests above 500 m. Known to fruit and flower April-May.</p></div>
+<div type="conservation"><p>A proper assessment of the numbers of P. thurstonii in the wild needs to be undertaken, but on the basis of collection records and current threats presented by commercial logging in associated habitats, this taxon should also be considered rare. Dick Phillips (pers. comm.) has had no success cultivating this species in Fiji, and I have no information regarding cultivation of P. thurstonii outside of Fiji.</p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p></p></div>
+<div type="materials_examined"><p>Additional specimens examined: Fiji: Taveuni: By stream on steep slopes below crest of mtn. on trail from Somosomo to crater lake, 23 Apr 1964, Moore &amp; Koroiv-eibau 9353 (BH, SUVA); track to lake, 500-600 ft, 5 Jun 1974 (Koroiveibau &amp; Alfred) Fiji Dept. Agr. L26191, (SUVA). Vanua Levu: Bua: Mt. Seatura, very common, 27 May 1965, (Koroiveibau) Fiji Dept. Agr. 15165 (BISH, SUVA); above Driti Village, on ridge top of Mt. Korotu-nibogi, lower slopes of Mt. Seatura, 250 m, 14 May 1995, McClatchey &amp; Fuller 1105/197 (FTC, SUVA). Cakaudrove Province: Ridges and ravines on upper slopes of Mt. Mariko on trail from Bucalevu Village to summit, 2000-2800 ft, 17 Apr 1964, Moore 9347 (BH, SUVA); track to Mt. Nasorolevu, 2200 ft, 27 Nov 1969, (Koroiveibau &amp; Vo-donaivalu) Fiji Dept. Agr. 17132 (SUVA). Macauta: Above Nakoroutari, side of logging rd., on ridge above Matani Creek, 1100 ft, 13 May 1995, McClatchey &amp; Fuller 1102/192 (FTG, SUVA); along Raciba rd. heading to Mt. So-rolevu, E 179°24.773'S, 16°36.765'E, 600 m, 17 May 1995, McClatchey &amp; Fuller 1116/209 (FTG, SUVA).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

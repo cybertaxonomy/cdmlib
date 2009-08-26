@@ -4,7 +4,10 @@
 <mods:titleInfo>
 <mods:title>Two new species of rattan (Palmae: Calamoideae) from the forests of West and Central Africa</mods:title>
 </mods:titleInfo>
-<mods:name><mods:namePart>Terry C. H. Sunderland</mods:namePart></mods:name>
+<mods:name>
+<mods:namePart type="family">Sunderland</mods:namePart>
+<mods:namePart type="given">T.C.H</mods:namePart>
+</mods:name>
 <mods:originInfo>
 <mods:publisher>Kew Bulletin, Vol. 58, No. 4, pp. 987-990</mods:publisher>
 <mods:dateIssued>2003</mods:dateIssued>

@@ -1,0 +1,79 @@
+<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>A Revision of Rhapis, the Lady Palms</mods:title>
+</mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Hastings</mods:namePart>
+<mods:namePart type="given">L.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Palms 47(2) 62-78</mods:publisher>
+<mods:dateIssued>2003</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Rhapis excelsa</name>
+<author>(Thunb.) A. Henry in Rehder</author>
+<citation>J. Arnold Arb. 11: 153. 1930</citation>
+<type>; C.P. Thunberg; sheet no. 24386</type>
+<type_loc>Lectotype UPS; type (photo) K</type_loc>
+<synonymy>
+<name>Chamaerops excelsa</name>
+<author>Thunb.</author>
+<bibref>Thunb., Fl. Jap. 130. 1784</bibref>
+</synonymy>
+<synonymy>
+<name>Trachycarpus excelsus</name>
+<author>(Thunb.) H. Wendl.</author>
+<bibref>(Thunb.) H. Wendl., in J. Gay, Bull. Soc. Bot. France 8: 429–430. 1861</bibref>
+</synonymy>
+<synonymy>
+<name>Rhapis flabelliformis</name>
+<author>L’Hérit ex Aiton</author>
+<bibref>L’Hérit ex Aiton, Hortus Kewensis 3: 473. 1789;</bibref>
+<bibref>Mart., Hist. Nat. Palm. 3: 253, 254. 1838</bibref>
+<bibref>Becc., Ann. Roy. Bot. Gard., Calcutta 13: 244. 1931</bibref>
+<type>; C.P. Thunberg; sheet no. 24386</type>
+<type_loc>Lectotype UPS; type (photo) K</type_loc>
+</synonymy>
+<synonymy>
+<name>Rhapis major</name>
+<author>Blume</author>
+<bibref>Blume, Rumphia 2: 55–56. 1836</bibref>
+<type>; Blume; s.n.</type>
+<type_loc>Type L</type_loc>
+</synonymy>
+<synonymy>
+<name>Rhapis kwamwonzick</name>
+<author>Siebold ex Linden</author>
+<bibref>Siebold (Chamaerops Kwanwortzick Hort.), in Linden, Illustration Horticole 34: 39. 1887</bibref>
+</synonymy>
+<synonymy>
+<name>Rhapis divaricata</name>
+<author>Gagnep.</author>
+<bibref>Gagnep., in Humbert, Not. Syst. 6(3): 158. 1937</bibref>
+<bibref>Gagnep., in Lecomte, Fl. Gén. Indo-Chine, 6(8): 996. 1937</bibref>
+<type>; Chevalier; 37823</type>
+<type_loc>Type P</type_loc>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="diagnosis"><p></p></div>
+<div type="description"><p>Stems to 2.5 m tall, with sheaths 15–21 mm diam., without sheaths 8–12 mm. Leaf sheath loosely sheathing the stem, usually with outer and inner fibers of similar thickness, producing a squared mesh, some young sheaths with flatter, coarser outer fibers and tomentum, ligule not remaining intact at maturity; petiole to 4 mm wide, margin often smooth, rarely minutely scabrid, often bearing brown papillae; blade with V-shaped or semi-circular outline, variable in size, often with a conspicuous palman, segments (1)4–13, folds 11–25, to 375 mm long, broad, relatively straightsided, narrowing slightly at base and apex, apices sometimes cucculate, usually truncate, with regular dentate secondary splitting, primary splits to within 2.5–61 mm of the blade base, sometimes with brown papillae at the base and along the ribs, sometimes scabrid along the adaxial ribs, thick in texture, adaxial and abaxial surfaces similar in colour, often with a yellow tinge, adaxial occasionally darker, transverse veinlets conspicuous. Inflorescence, male and female similar in general appearance, branching to 2 or 3 orders; prophyll tubular, overlapping the base of the first rachis bract, relatively thin in texture, reddish brown, sometimes darker at the base, inner surface smooth, outer surface with tomentum often only at the distal end; rachis bracts 2(–3), sometimes with a distal incomplete rachis bract, similar in appearance to prophyll; rachis overall length to 260 mm, 4–8 mm diam., rachillae 7.5–110 mm long, 0.8–1.9 mm diam., usually glabrous, pale brown, sometimes with small patches of caducous tomentum. Flowers densely packed on the rachillae. Male flowers globose when young, elongating when mature to 5.2 × 3.8 mm; calyx to 2.8 mm, lobes to 2 mm, usually with a regular margin; corolla sometimes narrowed into a short receptacular-stalk to 1 mm; filaments, shorter row to 2.2 mm, longer row to 2.5 mm, broad, to 0.4 mm, with adaxial keel, triangular in cross section; pistillode sometimes present. Female flowers to 3.6 × 3.2 mm; calyx to 2.3 mm; corolla with a receptacular-stalk to 1.1 mm; staminodes present. Fruit sometimes with 3 carpels developing, often only one reaching maturity, to 8–10 × 8 mm, borne on a short receptacular-stalk to 2 mm, epicarp shiny translucent, minutely papillose, with conspicuous black lenticels.</p></div>
+<div type="distribution"><p>China, Yunnan; South Central China, Hainan; South East China, Guangdon, Fujian, Hongkong; Japan.</p></div>
+<div type="biology_ecology"><p>Habitat. woods, 3080 ft (939 m); river valley; wooded mountain side.</p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p>Two specimens [Malay Peninsula, plant house in a tub s.n. 1929 (K) and Kew, Royal Botanic Gardens, Kew s.n. 1856 (K)] have flowers that appear female but have well developed anthers and may be hermaphrodite. Rhapis excelsa differs from R. humilis in having outer leaf sheaths loosely sheathing the stem, ligule not remaining intact at maturity producing many detached fibers; blade varying from both semi-circular to V-shaped in outline, thicker in texture and a paler, more yellow-green in colour in dried specimens, often with fewer segments, segments straighter sided with truncate apices and more regular dentate secondary splitting, palman less conspicuous. While individual differences in the vegetative characters are difficult to pinpoint between R. excelsa and R. humilis, when all the vegetative characters are taken as a whole the leaves can be distinguished easily. Inflorescence characters are more noticeably different. Rhapis excelsa differs in having glabrous rachis and rachillae at maturity, tomentum often present on the bracts and stamens with broader keeled filaments; not more than three rachis bracts were recorded, while four were recorded for R. humilis. Rhapis excelsa may be of Chinese and Japanese origin, as suggested by the herbarium specimens, or from China introduced to Japan and from there to the West. The long history of cultivation probably accounts for the selection of many variants within the species including dwarfism and variegation. The nomenclatural and taxonomic history of R. excelsa is inextricably linked with that of R. humilis and so these aspects of the two species are discussed together here. The type specimen of R. excelsa is Thunberg’s Chamaerops excelsa which comprises two sheets in the Thunberg collection at Upsala, Sweden – collection number 24385, consisting of a leaf and partial inflorescence, and 24386, comprising a single leaf. Good close-up photographs enabled the author critically to examine the type. The type is a mixed collection and thus lectotypification is necessary. Sheet 24385 matches the widely accepted application of the name R. humilis, while 24386 matches R. excelsa. In order to maintain nomenclatural stability for these two very widely grown horticultural plants, I have selected Thunberg sheet number 24386 (U) to represent the type of R. excelsa. This mixed collection type specimen has bedevilled the taxonomy from the very beginning (Beccari referred to “Un grande imbroglio di nomenclatura”) and has been responsible for much of the past confusion between these two species. A short description is given for the name Rhapis flabelliformis L’Hérit ex Aiton in Aiton, Hort. Kew 1(3): 473. 1789. It includes the name Chamaerops excelsa Thunb. in synonymy, which was published five years earlier and following modern nomenclatural rules the correct name for the taxon is therefore Rhapis excelsa (Thunb.) A. Henry, resulting in the name Rhapis flabelliformis being superfluous and the type specimen for it being Thunberg sheet number 24386 (U), the type of Rhapis excelsa. For full details of Rhapis flabelliformis L’Hérit ex Aiton see Text Box. The species epithet for Rhapis Kwamwonzick Siebold has several different spellings in the literature but Kwamwonzick is the only one that is validly published. It does not appear to be represented by a type specimen; however, the description and illustration match R. excelsa. 
+A short description is given for the name Rhapis flabelliformis L’Hérit ex Aiton in Aiton, Hort. Kew 1(3): 473. 1789. It includes a reference to a plate of the species: L’ Hérit., Stirp. nov., 2. Plate 100, which has not been located, despite thorough searching through the copies of L’ Héritier’s Stirpes Novae in the libraries at Kew (K), the Linnean Society (LINN), the Natural History Museum, London (BM) and the New York Botanic Garden (NY). In each of the copies in these libraries plate 100 is Solanum xanthocarpum, and R. flabelliformis does not appear in the book. In the BM copy of Hortus Kewensis “[ined]” has been added next to the R. flabelliformis reference, and it could be that the author in Aiton was basing his statement on unpublished material that was later not included (Judith Magee, librarian, pers. comm.). L’ Héritier did not finish Stirpes Novae due to misfortune during the French Revolution; he had planned to issue two volumes (Bucheim 1966). The author of Rhapis flabelliformis in Aiton (1789) may have seen the unpublished plate which subsequently may have been separated from the other loose plates (later some of these were collected together) during the distribution of L’ Héritier’s estate after he was murdered in 1800 (Stafleu &amp; Cowan 1981). Aiton’s Hortus Kewensis (1789) was written by Solander and continued by Dryander, both scholar librarians employed by Joseph Banks (Stearn W. T. pers. comm.; Carter 1988). The Solander boxes at BM contain the detailed descriptions of all the species described in Aiton (W. T. Stearn pers. comm.). Solander’s description of R. flabelliformis (Pages 317–321, Solander boxes BM) was located and when translated from the Latin indicates that the specimen on which R. flabelliformis was based was collected from a plant growing in Dr. James Gordon’s garden at Mile End, London, in 1776. This specimen is at the Natural History Museum (BM) and has been identified by the author as R. excelsa. </p></div>
+<div type="materials_examined"><p>Representative specimens. CHINA: Herb Forsyth s.n. 1835 male (K); Yunnan, Henry 10173 (K); SOUTH CENTRAL CHINA: Hainan, I.P. Yuk Shing L.U. 18346 (K); SOUTH EAST CHINA: Guangdong, T.M. Tsui 249 immature probably male (A, K); Fujian (Nantai Island) Tang Chung–Chang 4258 male (A); Hongkong Urquhart sn 1861 (K), Happy Valley woods, Wilford 1301 female (in fruit) (K, A) JAPAN: Nagasaki Lgt Fakmouti s.n. 1928 male (L); C.P. Thunberg sheet 24386 (UPS, photo K,). CULTIVATED: Blume s.n. no date (type of R. major Bl.) (L); Australia, Queensland, Brisbane Botanic Garden, M. Strong Clemens 42997 male (A); N. Goom s.n. 1844 (L.); Bermuda, Pembroke, E.A. Manuel 973 (A); France, Jardin de Cels s.n. 1819 male, s.n. 1821 male (K); Germany, Frankfurt, A.S. Rehder s.n. 1886 male and female with well developed anthers (A); Hongkong Botanic Garden, C. Ford 566 male (K); s.n. 1895 female in fruit (K), Shiu Ying Hu, 12934 1973 female in fruit (K); India, Chitpur, Adzar J.S.Gamble 17612 male (K), Herb. Hort. Bot. Calc. s.n. 1891 male (K), Madras A.G. Bourne s.n. 1900 (K); North Vietnam, Son Tay, Aug. Chevalier 37823 female (P), Hanoi Botanic Garden, herb. Ch. d’Alleizette 7706 1909 male (L); Malay Peninsula, plant house in a tub s.n. 1929 female or hermaphrodite (K); South East China, Fujian, (Nantai Island) H.H Chung 2709 male (A, K); Sri Lanka, Bot.Gard., Peradeniya, S. Rutherford &amp; M.M.P. Bandard R-75 (K); Taiwan, Jih-ching Liao 10637 (L); UK, Herb J. Gay, Dr Gordon s.n. 1776 (BM), Kew, Royal Botanic Gardens, Kew s.n. 1856 male and female or hermaphrodite (K), Acc. no. 1987-2573, s.n. 1998 (K). </p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

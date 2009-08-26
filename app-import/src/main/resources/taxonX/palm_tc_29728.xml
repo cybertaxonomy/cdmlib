@@ -4,7 +4,10 @@
 <mods:titleInfo>
 <mods:title>Calamus mogeae (Arecaceae), a bizarre new species from Sumatra</mods:title>
 </mods:titleInfo>
-<mods:name><mods:namePart>John Drandsfield</mods:namePart></mods:name>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
 <mods:originInfo>
 <mods:publisher>Kew Bulletin, Vol. 55, No. 3, pp. 717-719</mods:publisher>
 <mods:dateIssued>2000</mods:dateIssued>

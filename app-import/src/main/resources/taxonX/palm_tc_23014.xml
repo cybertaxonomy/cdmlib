@@ -2,7 +2,12 @@
 	<taxonxHeader>
 		<mods:mods>
 		<mods:titleInfo><mods:title>The Palms of Madagascar</mods:title></mods:titleInfo>
-		<mods:name><mods:namePart>Dransfield, J and Beentje, H.</mods:namePart></mods:name>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Beentje</mods:namePart>
+<mods:namePart type="given">H.</mods:namePart>
+</mods:name>
 		<mods:originInfo>
 			<mods:dateIssued>1995</mods:dateIssued>
 			<mods:publisher>Royal Botanic Gardens, Kew and The International Palm Society</mods:publisher>

@@ -1,0 +1,50 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>Genera Palmarum. The evolution and classification of palms</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Uhl</mods:namePart>
+<mods:namePart type="given">N.</mods:namePart>
+<mods:namePart type="family">Asmussen</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+<mods:namePart type="family">Harley</mods:namePart>
+<mods:namePart type="given">M.</mods:namePart>
+<mods:namePart type="family">Lewis</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>2008</mods:dateIssued><mods:publisher>Kew Publishing, Royal Botanic Gardens Kew</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="genus">
+<div type="diagnosis"><p>Clustering, high-climbing, pinnate-leaved rattan palms of humid Equatorial West and Central Africa; sheaths are always unarmed; pleonanthic and hermaphroditic, the flowers are borne in pairs and are distinctive in the almost inflated fleshy to leathery tubular calyx and corolla.</p></div>
+<nomenclature>
+<name>Eremospatha</name>
+<author>(G. Mann and H. Wendl.) H. Wendl. in Kerch.</author>
+<citation>Palmiers 244 (1878).</citation>
+<type>Lectotype; Eremospatha hookeri; (G. Mann and H.Wendl.) H. Wendl.</type>
+<synonymy>
+<name>Calamus subgenus Eremospatha </name>
+<author>G. Mann and H. Wendl.</author> 
+<bibref>G. Mann and H. Wendl., Trans. Linn. Soc. London 24: 433 (1864).</bibref>
+</synonymy>
+</nomenclature>
+<div type="etymology"><p>Eremos — destitute of, spatha — bract, referring to the lack of conspicuous bracts in the inflorescence.</p></div>
+<div type="description"><p>Clustered (?always), spiny, high-climbing, pleonanthic, hermaphroditic rattan palms. Stem eventually becoming bare, with long internodes, usually circular in cross-section, sometimes obscurely 3-angled, juvenile stem apparently much more slender than the adult, sucker shoots apparently axillary. Leaves pinnate, bifid in juveniles, with a terminal cirrus; sheath strictly tubular, unarmed, longitudinally striate, sometimes with a thin caducous cover of indumentum; ocrea conspicuous, tightly sheathing, neatly truncate (?always); knee present in mature climbing stems, but rather inconspicuous; petiole present in juvenile stems, absent in mature climbing stems; rachis usually armed with reflexed spines, and sometimes bearing caducous indumentum; cirrus bearing neat pairs (rarely not paired) of reflexed acanthophylls, sometimes also with scattered reflexed spines; leaflets few to numerous, single-fold except, rarely, in juvenile leaves where lamina undivided, praemorse or abruptly narrowed to a pointed tip, or entire, linear to rhomboid, usually somewhat plicate, regularly arranged, variously indumentose, sometimes white tomentose beneath, usually armed along the thickened margins with conspicuous robust, distally pointing or reflexed spines, transverse veinlets moderately conspicuous; proximal few leaflets on each side of the rachis frequently very much smaller than the rest, strap-like, heavily armed along margins, and reflexed across the sheathed stem. Inflorescence arching outward, branched to 1 order, branches horizontal, peduncle enclosed within the leaf sheath and emerging from its mouth, flattened, not adnate to the internode, the surface usually minutely papillose; bracts throughout the inflorescence very inconspicuous; prophyll absent?; peduncular bracts absent; rachis much longer than the peduncle; rachis bracts low, triangular, striate, ± opposite or alternate, often united to form an incomplete sheathing collar; rachillae adnate to the inflorescence axis a short distance above the bract, either opposite (in which case subtended by a double bract) or alternate (in which case subtended by a single triangular bract), distal rachillae always alternate, distichous, rachillae minutely papillose, bearing ± distichous, minute, triangular, incomplete bracts, each subtending a pair of equal flowers without bracteoles. Flowers pale in colour, very fragrant; calyx thick, coriaceous, very shallowly 3-lobed distally, obscurely veined, minutely papillose; corolla very thick, coriaceous, divided at the apex to 1/4 to 1/3 its length into 3 short, triangular, valvate lobes, remaining approximate even at anthesis, the lobes then separating slightly; stamens 6, united into a massive, fleshy, epipetalous ring, ± occluding the mouth of the flower, clasping the gynoecium, free filaments angled, very short, anthers enclosed within the flower, ± medifixed, very short, somewhat sagittate, latrorse; gynoecium tricarpellate, triovulate, rounded, covered in reflexed scales, tipped by a columnar or tapered, ± 3-angled style, apically with 3 stigmatic angles, ovule basally attached, anatropous. Pollen ellipsoidal, bi-symmetric; aperture an extended distal sulcus; ectexine tectate, coarsely perforate, or rugulate-reticulate, aperture margin usually much finer; infratectum columellate; longest axis 32–63 µm [4/10]. Fruit 1–3 seeded, stigmatic remains minute, apical, perianth whorls persistent; epicarp covered in vertical rows of reddish-brown reflexed scales with fringed margins, mesocarp apparently fleshy at maturity, endocarp not differentiated. Seed subbasally attached, from the shape of 1/3 of a sphere to hemispherical or ellipsoidal depending on the number of seeds developing, sometimes slightly lobed or grooved, with a conspicuous abaxial ridge opposite the embryo, seed coat thin, scarcely fleshy, endosperm homogeneous; embryo lateral. Germination adjacent-ligular; eophyll bifid. Cytology not studied.</p></div>
+<div type="distribution"><p>Ten species confined to humid rain forest of West Africa, the Congo Basin, and eastward to Tanzania. </p></div>
+<div type="anatomy"><p>Leaf, stem (Tomlinson 1961), root (Seubert 1996a), floral (Uhl and Moore 1973). </p></div>
+<div type="relationships"><p>The monophyly of Eremospatha has not been tested. Eremospatha is resolved as sister to Laccosperma with moderate support (Baker et al. 2000a, 2000b, Asmussen et al. 2006).</p></div>
+<div type="uses"><p>Stems are used as a source of cane.</p></div>
+<div type="taxonomic accounts"><p>Sunderland (2001, 2007).</p></div>
+<div type="fossil record"><p>A single incomplete leaflet with a single spine near the acute, robust base (Eremospatha chilgaensis [Pan et al. 2006]) is described from the Oligocene Guang River flora of Chilga Woreda, Ethiopia. After comparison with morphologically similar leaf bases in subtribes Ancistrophyllinae and Raphiinae, the authors conclude that this fossil bears notable similarity to Eremospatha. </p></div>
+<div type="discussion"><p>The flowers of Eremospatha are remarkable for the thickness of the corolla tube and the small gaps between their short lobes; the androecial tube is also thick, fibrous, and extensively vascularised (Uhl and Moore 1973). The flowers are very like those of Plectocomiopsis, but this similarity is a parallel development. Although the dyad of two hermaphroditic flowers in Eremospatha is similar to that of Laccosperma, the two genera are otherwise rather different. Eremospatha is pleonanthic and has only minute rachilla bracts; Laccosperma is hapaxanthic and rachilla bracts are conspicuous. </p></div>
+<div type="vernacular"><p>Common names numerous (Sunderland 2001, 2007). </p></div>
+<div type="biology_ecology"><p>Apparently most abundant in rain forest on swampy soils.</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

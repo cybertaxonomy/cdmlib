@@ -4,7 +4,12 @@
 <mods:titleInfo>
 <mods:title>Calamus suaveolens — a new rattan from Sulawesi</mods:title>
 </mods:titleInfo>
-<mods:name><mods:namePart>William J. Baker &amp; John Dransfield</mods:namePart></mods:name>
+<mods:name>
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+</mods:name>
 <mods:originInfo>
 <mods:publisher>Kew Bulletin 59: 69-71</mods:publisher>
 <mods:dateIssued>2004</mods:dateIssued>

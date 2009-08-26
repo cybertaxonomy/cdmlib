@@ -1,0 +1,45 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>Genera Palmarum. The evolution and classification of palms</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Uhl</mods:namePart>
+<mods:namePart type="given">N.</mods:namePart>
+<mods:namePart type="family">Asmussen</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+<mods:namePart type="family">Harley</mods:namePart>
+<mods:namePart type="given">M.</mods:namePart>
+<mods:namePart type="family">Lewis</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>2008</mods:dateIssued><mods:publisher>Kew Publishing, Royal Botanic Gardens Kew</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="genus">
+<div type="diagnosis"><p>Handsome solitary spiny pinnate-leaved palms, native to the Seychelles,with conspicuous crownshafts and seed with homogeneous endosperm.</p></div>
+<nomenclature>
+<name>Deckenia</name>
+<author>H. Wendl. ex Seem.</author> 
+<citation>Gard. Chron 1870: 561(1870).</citation>
+<type>Type; Deckenia nobilis; H. Wendl. ex Seem.</type>
+</nomenclature>
+<div type="etymology"><p>Commemorates Baron Karl Klaus von der Decken (1833–1865), explorer, who was one of the first Europeans to climb Mt Kilimanjaro.</p></div>
+<div type="description"><p>Robust, solitary, spiny, pleonanthic, monoecious palm. Stem erect, tall,spiny when juvenile, becoming distally unarmed at maturity,conspicuously ringed with leaf scars, slightly swollen at the base, withabundant adventitious roots. Leaves pinnate, neatly abscising; sheathstubular, forming a well-defined crownshaft, densely spiny when young,unarmed or minutely roughened near the petiole at maturity, denselywhite-tomentose; petiole relatively short, flattened or channelled adaxially,abaxially rounded, bearing abundant, caducous, shaggy hairs, also spiny injuveniles; rachis robust, gradually tapering, hairy and, in juveniles, spinylike the petiole; leaflets numerous, all single-fold, regularly arranged, ratherstiff, elongate, acuminate, somewhat plicate, adaxially bearing caducoustomentum when young, abaxially densely covered with minute, dot-likescales and abundant, conspicuous ramenta along the major longitudinalveins, transverse veinlets obscure. Inflorescences solitary, infrafoliar, erect inbud, branching to 2 orders at the base, to 1 order distally, protandrous;peduncle relatively short, winged at the base, elliptic in cross-section,glabrous; prophyll inserted just above the base of the peduncle, tubular,elliptic, very briefly beaked, 2-keeled, splitting along one face, caducous,usually very densely armed with erect, rather soft, short to long, golden-coloured spines; peduncular bract very similar to the prophyll, but lessprominently 2-keeled, also caducous; rachis longer than the peduncle, itand its branches twisted in bud, becoming straight, rachis and peduncleremaining erect, the branches becoming pendulous; first-order branchesnumerous, rather crowded, spirally arranged; rachillae numerous, elongate,pendulous, flexuous, bearing rather crowded, spirally arranged, superficialtriads throughout their length except at the extreme tips. Staminate flowers ± globular, open early in development; sepals 3, narrow, triangular, keeled, joined briefly at the base; petals 3, triangular, sometimes briefly connate in a somewhat stalk-like base; stamens 6–9, filaments very short and broad, adnate to the petals, anthers medifixed, tightly recurved and/or twisted, latrorse; pistillode columnar longer than the petals, trifid, very conspicuous at first, becoming less conspicuous at anthesis. Pollen ellipsoidal bi-symmetric, occasionally lozenge-shaped; aperture a distal sulcus; ectexine semitectate, coarsely angular striate clavae, separated or coalesced into short or long horizontal elements, aperture margin similar; infratectum columellate; longest axis 27–34 µm [1/1]. Pistillate flowers globular; sepals 3, distinct, rounded, imbricate; petals 3, distinct, rounded, imbricate, with minute, triangular, valvate tips; staminodes 6, minute, tooth-like; gynoecium globular or ovoid, unilocular, uniovulate, stigmas 3, reflexed, ovule laterally attached, ?hemianatropous. Fruit relatively small, narrowly ovoid, black at maturity, perianth whorls persistent, the stigmatic remains conspicuous as an eccentric, basally rounded pad; epicarp smooth, drying longitudinally ridged, mesocarp thin, with few, large, longitudinal fibres corresponding to the ridges when dry, endocarp thin, cartilaginous, with a basal circular operculum. Seed very narrowly ovoid, basally attached, with a small circular hilum, and sparse raphe branches only rarely anastomosing, endosperm homogeneous; embryo basal. Germination adjacent ligular; eophyll bifid. Cytology not known.</p></div>
+<div type="distribution"><p>One species confined to the Seychelles Islands. </p></div>
+<div type="anatomy"><p>Leaf, petiole, root (Tomlinson 1961) and fruit (Essig et al. 2001). </p></div>
+<div type="relationships"><p>For relationships, see Oncosperma. </p></div>
+<div type="uses"><p>The cabbage is eaten and the leaf sheaths used for making containers. </p></div>
+<div type="taxonomic accounts"><p>Bailey (1942). </p></div>
+<div type="fossil record"><p>No generic records found. </p></div>
+<div type="discussion"><p>The staminate flowers are unusual in opening early in development and in their globular shape, also in more-or-less connate petals with adnate stamen filaments and curved or twisted anthers. </p></div>
+<div type="vernacular"><p>Cabbage palm, palmiste. </p></div>
+<div type="biology_ecology"><p>Deckenia nobilis occurs at altitudes from sea level to nearly 600 m, but grows gregariously mostly on knolls and ridges at about 300 m altitude; its massive litter prevents regeneration and there is usually no undergrowth under dense stands. </p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

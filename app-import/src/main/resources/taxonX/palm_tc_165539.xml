@@ -1,0 +1,46 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>A review of the genus Pritchardia</mods:title>
+</mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Hodel</mods:namePart>
+<mods:namePart type="given">D.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Palms 51(4) Special Supplement S-1-53</mods:publisher>
+<mods:dateIssued>2007</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Pritchardia hardyi</name>
+<author>Rock</author>
+<citation>Mem. Bernice P. Bishop Mus. 8: 61. 1921</citation>
+<type>Power Line Trail, Kauai, Hawaii; Rock; 17296</type>
+<type_loc>Holotype BISH!; isotypes F1, GH</type_loc>
+<synonymy>
+<name>Pritchardia weissichiana</name>
+<author>Rock</author>
+<bibref>Rock, Occas. Pap. Bernice P. Bishop Mus. 23: 62. 1962</bibref>
+<type>Power Line Trail, Kauai, Hawaii, 19 Jan. 1962; Rock; s. n.</type>
+<type_loc>Holotype BISH!</type_loc>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="diagnosis"><p></p></div>
+<div type="description"><p>To 10 m tall; proximal margins of petiole with only a few fibers; leaf blade flat, divided 1/2, abaxial surface completely covered with lepidia and appearing silvery grayish white, segment lips stiff; inflorescences composed of 2-5 panicles, equaling or exceeding leaf blades in flower, greatly exceeding leaf biades in fruit, panicles branched to 2 or 3 orders, rachillae clothed with dense, felt-iike indumentum or glabrous; fruits 20-35 x 15-16 mm, ellipsoid to obovoid. </p></div>
+<div type="distribution"><p>Wet forest beiow the Waialeale massif near and along the Power Line Trail in east central Kauai, 500-750 m elevation</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p>Pritchardia hardyi is distinctive in its leaf blades completely covered abaxially with lepidia, inflorescences equaling to exceeding the leaf blades in flowers and exceeding them in fruit, and small fruits. It is similar to P. viscosa but the latter differs in its viscous panicles and inflorescences shorter than the petioles. The photograph of P. hardyi in Beccari and Rock (1921, PI. XlII A) actually depicts P. waialealeana. </p></div>
+<div type="materials_examined"><p>U.S.A. Hawaii. Kauai: Power Line Trail, Bishop 1280 (HAW), Herbst 2851 (HAW), Read 87-206,87-207,87-208,87210 (PTBG), Rock 17296 (BISH), Rock s. n. 19 Jan. 1962 (BISH), Wood 229,230,231 (PTBG); ridge between Kahili and Kawaikini, Wood 3509 (PTBG); Kahili, Bishop 1275 (HAW); loil headwaters, Wood 7963, 7966, 7966-A (PTBG). CULT. U.S.A. Hawaii. Oahu: Wahiawa Botanical Garden, HBG 67.492, Wiser 87-28 I (PTBG). </p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

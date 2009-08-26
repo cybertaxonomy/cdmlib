@@ -1,0 +1,58 @@
+<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo><mods:title>Genera Palmarum. The evolution and classification of palms</mods:title></mods:titleInfo>
+<mods:name>
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<mods:namePart type="family">Uhl</mods:namePart>
+<mods:namePart type="given">N.</mods:namePart>
+<mods:namePart type="family">Asmussen</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+<mods:namePart type="family">Harley</mods:namePart>
+<mods:namePart type="given">M.</mods:namePart>
+<mods:namePart type="family">Lewis</mods:namePart>
+<mods:namePart type="given">C.</mods:namePart>
+</mods:name>
+<mods:originInfo>
+<mods:dateIssued>2008</mods:dateIssued><mods:publisher>Kew Publishing, Royal Botanic Gardens Kew</mods:publisher></mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="genus">
+<div type="diagnosis"><p>Moderate solitary pinnate-leaved palms from rain forest in New Caledonia, one species with spectacular stilt-roots, all with infrafoliar inflorescences with incomplete prophylls, and fruit with smooth or irregularly sculptured endocarp.</p></div>
+<nomenclature>
+<name>Cyphophoenix</name>
+<author>H. Wendl. ex Hook.f. in Benth. and J.D. Hook.f.</author> 
+<citation>Gen. pl. 3: 893 (1883).</citation>
+<type>Lectotype; Kentia elegans; Brongn. &amp; Gris</type>
+<synonymy>
+<name>Campecarpus</name>
+<author>H. Wendl. ex Becc.</author>
+<bibref>H. Wendl. ex Becc., Palme Nuova Caledonia 28 (1920); and Webbia 5: 96 (1921).</bibref>
+<type>Type; Campecarpus fulcitus; (Brongn.) H.Wendl. ex Becc.</type>
+</synonymy>
+<synonymy>
+<name>Veillonia</name>
+<author>H.E. Moore</author>
+<bibref>H.E. Moore, Gentes Herb. 11: 299 (1978).</bibref>
+<type>Type; Veillonia alba; H.E.Moore</type>
+</synonymy>
+</nomenclature>
+<div type="etymology"><p>Kyphos — bent, humped, phoenix — a general name for a palm, perhaps in reference to the prominent terminal stigmatic remains in the fruit.</p></div>
+<div type="description"><p>Moderate, solitary, unarmed, pleonanthic, monoecious palms. Stems erect, prominently ringed, smooth, yellowish, green or grey, sometimes enlarged at the base, sometimes with a very conspicuous cone of long stilt roots or with exposed adventitious roots. Leaves regularly pinnate, straight or arched, spreading or erect; sheaths forming a sometimes prominently and diagonally ribbed, somewhat inflated crownshaft, covered outside and inside with pale, grey, brown or red tomentum and persistent or deciduous scales, or white waxy; petiole short to elongate, channelled adaxially, rounded abaxially, tomentose to glabrous adaxially, with tomentum and scales abaxially; rachis flat to angled adaxially with broad margins basally, becoming nearly deltoid in section apically, rounded abaxially, minutely dotted adaxially, tomentose and scaly abaxially; leaflets single-fold, coriaceous when dry, obliquely acute to acuminate or rarely briefly bifid, margins not thickened, abaxially with medifixed ramenta with tattered and twisted margins, prominent toward the base on the midrib, sometimes present throughout and sometimes on two lateral veins, with or without small brown scales, midrib prominent and elevated adaxially, secondary veins scarcely prominent, transverse veinlets not evident. Inflorescences infrafoliar, stiffly branched to 1 or 2(–3) orders basally, fewer orders distally, protandrous; peduncle short, ± dorsiventrally compressed, sometimes white-waxy; prophyll incompletely encircling the peduncle, open abaxially, 2-keeled laterally, tomentose, sometimes splitting into 2 halves, rather thin, sometimes white-waxy, caducous; peduncular bract completely encircling the peduncle and enclosing the inflorescence in bud, slightly exceeding the prophyll, sometimes ± woody, also caducous and tomentose; rachis much exceeding the peduncle, angled, minutely striate when dry, bearing spirally arranged, low rounded or acute bracts subtending several divaricate branches, the lower ones with a prominent bare base; rachillae long, curved, often pendulous, slender or stout, bearing prominent, rounded or acute, lip-like bracts subtending triads in the lower 1/3–2/3of each rachilla, and paired or solitary staminate flowers distally; bracteoles about the pistillate flower prominent, marginally imbricate, 1/2 the length of the sepals. Staminate flowers symmetrical, borne on very short, strap-like pedicels in triads, but ± sessile in the distal pairs; sepals 3, distinct, imbricate, broadly rounded or becoming crenulate apically, keeled dorsally and ± compressed laterally toward the base; petals 3, distinct, about twice as long as the sepals, valvate, scarcely acute at apex, ± lined when dry; stamens 6, filaments distinct, awl-shaped, the slender apex inflexed in bud, anthers versatile at anthesis, emarginate apically, bifid ca. 1/2 their length basally, basifixed but appearing dorsifixed; pistillode shorter or longer than stamens, narrowly pyramidal or nearly columnar, angled and grooved, at least when dry, very briefly 3-lobed at apex. Pollen ellipsoidal asymmetric, less frequently oblate triangular; aperture a distal sulcus, occasionally a trichotomosulcus; ectexine tectate, psilate-perforate, perforate and micro-channelled, aperture margin similar or slightly finer; infratectum columellate; longest axis 47–60 µm [4/4]. Pistillate flowers larger than the staminate, symmetrical; sepals 3, distinct, broadly imbricate and rounded, nearly as high as the petals; petals 3, distinct, longer than the sepals, strongly imbricate except for the very briefly valvate or subvalvate apices; staminodes 3, distinct, awl-shaped, flat; gynoecium ovoid when fresh, unilocular, uniovulate, stigmas 3, recurved, short, the ovule pendulous, probably hemianatropous. Fruit ovoid, oblong-ellipsoidal or eccentrically ovoid, sometimes slightly curved at tip, yellow with black tip at maturity to dull brownish red, stigmatic remains apical or eccentrically apical; epicarp smooth, sometimes drying densely pebbled over a layer of short, pale, obliquely oriented fibres, mesocarp ± dry or fleshy, with numerous slender, elongate, red tannin cells intermixed with the fibres and beneath the fibres against the endocarp, endocarp thin, crustaceous, fragile, oblong-ellipsoidal, circular in cross-section, or with a longitudinal ridge on one side, or highly sculptured with an adaxial ridge and basal operculum framed by lateral, ± flat areas, and with 2 lateral and 2 abaxial irregular crests and a dorsal groove, operculum circular, basal. Seed oblong-ellipsoidal, circular in cross-section, or sculptured like the endocarp, hilum obovoid or elongate, apical, tapered toward the base, raphe branches weakly or strongly anastomosing, endosperm homogeneous; embryo basal. Germination adjacent-ligular; eophyll bifid. Cytology not studied.</p></div>
+<div type="distribution"><p>Four species, three in New Caledonia and one in the adjacent Loyalty Islands. </p></div>
+<div type="anatomy"><p>Leaf (Uhl and Martens 1980), root (Seubert 1998a, 1998b), and fruit (Essig et al. 1999). </p></div>
+<div type="relationships"><p>The monophyly of Cyphophoenix is resolved in two studies, but with low support (Pintaud 1999b, Baker et al. in review). One study suggests that the genus is not monophyletic, but this resolution is also poorly supported (Baker et al. in prep.). The precise relationships of the genus within the Basseliniinae are unclear. </p></div>
+<div type="uses"><p>Unknown.</p></div>
+<div type="taxonomic accounts"><p>Moore and Uhl (1984), Hodel and Pintaud (1998), Pintaud and Baker (2008). </p></div>
+<div type="fossil record"><p>Asymmetric monosulcate pollen with a distinctive irregularly columellate infratectum, Palmaepollenites sp., from the Middle Eocene of Central Java (Nanggulan Formation) is compared with pollen of Cyphophoenix as well as with that of Cyphosperma, Actinorhytis and Moratia (= Cyphokentia) (Harley and Morley 1995). </p></div>
+<div type="discussion"><p>Cyphophoenix elegans and C. nucele, are each confined to a particular edaphic situation and the two are separated by a long distance. Seed of C. nucele has been introduced into cultivation in the United States, where it may be expected to do especially well on the coral rocks of southern Florida. Cyphophoenix has the following distinctive features of leaf anatomy: vascular bundles in uneven rows, many small vascular bundles present, and lower bundle sheaths crescentic and wider than upper sheaths. It is the only genus in New Caledonia, having two-layered upper and lower hypodermal layers (Uhl and Martens 1980). </p></div>
+<div type="vernacular"><p>Unknown.</p></div>
+<div type="biology_ecology"><p>Cyphophoenix elegans and C. alba occur in forest on schistose rocks in northeastern New Caledonia. Cyphophoenix fulcita grows in New Caledonia in wet forest on serpentine rocks, often occurring perched on rocks on its stilt roots; C. nucele is restricted to the raised coral of Lifou Island.</p></div>
+<div type="conservation"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

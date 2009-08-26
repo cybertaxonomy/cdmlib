@@ -4,7 +4,10 @@
 <mods:titleInfo>
 <mods:title>New Species of Pinanga (Palmae : Arecoideae) from Luzon Island, Philippines</mods:title>
 </mods:titleInfo>
-<mods:name><mods:namePart>Edwino S. Fernando</mods:namePart></mods:name>
+<mods:name>
+<mods:namePart type="family">Fernando</mods:namePart>
+<mods:namePart type="given">E.S.</mods:namePart>
+</mods:name>
 <mods:originInfo>
 <mods:publisher>Kew Bulletin, Vol. 49, No. 4, pp. 775-784</mods:publisher>
 <mods:dateIssued>1994</mods:dateIssued>
