@@ -96,6 +96,7 @@ public class PalmaeTaxonXImportActivator {
 			config.setSource(url.toString());
 			String originalSourceId = file.getName();
 			originalSourceId =originalSourceId.replace(".xml", "");
+			logger.info(originalSourceId);
 			config.setOriginalSourceId(originalSourceId);
 			TransactionStatus tx = cdmImport.getCdmAppController().startTransaction();
 			success &= cdmImport.invoke(config);
