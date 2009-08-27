@@ -98,7 +98,7 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 		Element elXml = getXmlElement(config);
 		Namespace tcsNamespace = config.getEndnoteNamespace();
 		
-		//logger.info("start make Records-Element ...");
+		logger.info("start make Records-Element ...");
 		DoubleResult<Element, Boolean> doubleResult;	
 		 
 		childName = "records";
@@ -108,7 +108,7 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 		success &= doubleResult.getSecondResult();
 		elRecords.getAttributes();
 
-		//logger.info("start make Record-Elementen ...");
+		logger.info("start make Record-Elementen ...");
 	    String tcsElementName = "record";
 		String idNamespace = "record";
 		List<Element> elRecordList = (List<Element>)elRecords.getChildren(tcsElementName, tcsNamespace);
@@ -145,7 +145,7 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 			Institution school = Institution.NewInstance();
 			Team authorTeam = Team.NewInstance();		 
 			
-		//	logger.info("start make database ...");
+			logger.info("start make database ...");
 			childName = "database";
 			obligatory = false;
 			doubleResult = XmlHelp.getSingleChildElement(elRecord, childName, tcsNamespace, obligatory);
@@ -158,7 +158,7 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 				String strPath = elDatabase.getAttributeValue("path");
 			}
 				
-			//logger.info("start make source-app ...");
+			logger.info("start make source-app ...");
 			childName = "source-app";
 			obligatory = false;
 			doubleResult =  XmlHelp.getSingleChildElement(elRecord, childName, tcsNamespace, obligatory);
@@ -170,7 +170,7 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 				String strVersion = elSource_app.getAttributeValue("version");
 			}
 		
-			//logger.info("start make rec-number ...");
+			logger.info("start make rec-number ...");
 			childName = "rec-number";
 			obligatory = false;
 			doubleResult =  XmlHelp.getSingleChildElement(elRecord, childName, tcsNamespace, obligatory);
@@ -187,7 +187,7 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 				success = false;
 			}
 			 	
-			//logger.info("start make foreign-keys ...");
+			logger.info("start make foreign-keys ...");
 			childName = "foreign-keys";
 			obligatory = false;
 			doubleResult =  XmlHelp.getSingleChildElement(elRecord, childName, tcsNamespace, obligatory);
@@ -205,7 +205,7 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 				}
 			}
 			
-			//logger.info("start make ref-type ...");
+			logger.info("start make ref-type ...");
 			childName = "ref-type";
 			obligatory = false;
 			doubleResult =  XmlHelp.getSingleChildElement(elRecord, childName, tcsNamespace, obligatory);
@@ -251,7 +251,7 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 				}		 			
 			}
 			
-			//logger.info("start make contributors ...");
+			logger.info("start make contributors ...");
 			childName = "contributors";
 			obligatory = false;
 			doubleResult =  XmlHelp.getSingleChildElement(elRecord, childName, tcsNamespace, obligatory);
@@ -302,7 +302,7 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 					}
 				}
 			}	
-				//logger.info("start make secondary-authors ...");
+				logger.info("start make secondary-authors ...");
 				childName = "secondary-authors";
 				obligatory = false;
 				doubleResult =  XmlHelp.getSingleChildElement(elContributors, childName, tcsNamespace, obligatory);
@@ -460,7 +460,7 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 				*/
 			}
 			 
-			//logger.info("start make auth-address ...");
+			logger.info("start make auth-address ...");
 			childName = "auth-address";
 			obligatory = false;
 			doubleResult =  XmlHelp.getSingleChildElement(elRecord, childName, tcsNamespace, obligatory);
@@ -489,7 +489,7 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 			}
 			
 			
-			//logger.info("start make auth-affilation ...");
+			logger.info("start make auth-affilation ...");
 			childName = "auth-affiliaton";
 			obligatory = false;
 			doubleResult =  XmlHelp.getSingleChildElement(elRecord, childName, tcsNamespace, obligatory);
@@ -511,7 +511,7 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 				reference.addExtension(affilation, ExtensionType.AREA_OF_INTREREST());
 			}
 				
-			//logger.info("start make titles ...");
+			logger.info("start make titles ...");
 			childName = "titles";
 			obligatory = false;
 			doubleResult =  XmlHelp.getSingleChildElement(elRecord, childName, tcsNamespace, obligatory);
@@ -554,103 +554,74 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 								Article give_article = map_article.get(title_new.toString());
 								give_article.setTitle(title_new.toString());
 								reference=give_article;
-								//article.setTitle(title_new.toString());
-								//reference= article;
 							}else if (strName_reftype.equals("Book")) {
 								map_book.put(title_new.toString(), book);
 								Book give_book = map_book.get(title_new.toString());
 								give_book.setTitle(title_new.toString());
 								reference=give_book;
-								//book.setTitle(title_new.toString());
-								//reference= book;
 							}else if (strName_reftype.equals("Book Section")){
 								map_book_section.put(title_new.toString(), bookSection);
 								BookSection give_book_section = map_book_section.get(title_new.toString());
 								give_book_section.setTitle(title_new.toString());
 								reference=give_book_section;
-								//book.setTitle(title_new.toString());
-								//reference= book;
 							}else if (strName_reftype.equalsIgnoreCase("Patent")) {
 								map_patent.put(title_new.toString(), patent);
 								Patent give_patent = map_patent.get(title_new.toString());
 								give_patent.setTitle(title_new.toString());
 								reference=give_patent;
-								//patent.setTitle(title_new.toString());
-								//reference= patent;
 							}else if (strName_reftype.equalsIgnoreCase("Personal Communication")){
 								personalCommunication.setTitle(title_new.toString());
 								reference=personalCommunication;
 							}else if (strName_reftype.equalsIgnoreCase("Journal")) {
 								map_journal.put(title_new.toString(), journal);
 								Journal give_journal = map_journal.get(title_new.toString());
-								give_journal.setPlacePublished(title_new.toString());
+								give_journal.setTitle(title_new.toString());
 								reference=give_journal;
-								//journal.setTitle(title_new.toString());
-								//reference=journal;
 							}else if (strName_reftype.equalsIgnoreCase("CdDvd")) {
 								map_cdDvd.put(title_new.toString(), cdDvd);
 								CdDvd give_cdDvd = map_cdDvd.get(title_new.toString());
-								give_cdDvd.setPlacePublished(title_new.toString());
+								give_cdDvd.setTitle(title_new.toString());
 								reference=give_cdDvd;
-								//cdDvd.setTitle(title_new.toString());
-								//reference=cdDvd;
 							}else if (strName_reftype.equalsIgnoreCase("Database")) {
 								map_database.put(title_new.toString(), database);
 								Database give_database = map_database.get(title_new.toString());
-								give_database.setPlacePublished(title_new.toString());
+								give_database.setTitle(title_new.toString());
 								reference=give_database;
-								//database.setTitle(title_new.toString());
-								//reference= database;
 							}else if (strName_reftype.equalsIgnoreCase("WebPage")) {
 								map_webPage.put(title_new.toString(), webPage);
 								WebPage give_webPage = map_webPage.get(title_new.toString());
-								give_webPage.setPlacePublished(title_new.toString());
+								give_webPage.setTitle(title_new.toString());
 								reference=give_webPage;
-								//webPage.setTitle(title_new.toString());
-								//reference=database;
 							}else if (strName_reftype.equalsIgnoreCase("Report")) {
 								map_report.put(title_new.toString(), report);
 								Report give_report = map_report.get(title_new.toString());
-								give_report.setPlacePublished(title_new.toString());
+								give_report.setTitle(title_new.toString());
 								reference=give_report;
-								//report.setTitle(title_new.toString());
-								//reference=report;
 							}else if (strName_reftype.equalsIgnoreCase("Thesis")) {
 								map_thesis.put(title_new.toString(), thesis);
 								Thesis give_thesis = map_thesis.get(title_new.toString());
-								give_thesis.setPlacePublished(title_new.toString());
+								give_thesis.setTitle(title_new.toString());
 								reference=give_thesis;
-								//thesis.setTitle(title_new.toString());
-								//reference= thesis;
 							}else if (strName_reftype.equalsIgnoreCase("Print Series")){
 								map_printSeries.put(title_new.toString(), printSeries);
 								PrintSeries give_printSeries = map_printSeries.get(title_new.toString());
-								give_printSeries.setPlacePublished(title_new.toString());
-								reference=give_printSeries;
-								//printSeries.setTitle(title_new.toString());
-								//reference=printSeries;
+								give_printSeries.setTitle(title_new.toString());
 							}else if (strName_reftype.equals("Journal Article")){
 								map_article.put(title_new.toString(), article);
 								Article give_article = map_article.get(title_new.toString());
 								give_article.setTitle(title_new.toString());
 								reference=give_article;
-								//article.setTitle(title_new.toString());
-								//reference= article;
 							}else if (strName_reftype.equalsIgnoreCase("Conference Proceedings")){
 								map_proceedings.put(title_new.toString(), proceedings);
 								Proceedings give_proceedings = map_proceedings.get(title_new.toString());
 								give_proceedings.setTitle(title_new.toString());
 								reference=give_proceedings;
-								//proceedings.setTitle(title_new.toString());
-								//reference=proceedings;
 							}else {
 								logger.warn("The type was not found...");
 								map_generic.put(title_new.toString(), generic);
 								Generic give_generic = map_generic.get(title_new.toString());
 								give_generic.setTitle(title_new.toString());
 								reference=give_generic;
-								//generic.setTitle(title_new.toString());
-								//reference = generic;
 								success = false; 
 							}		 
 						}
@@ -803,7 +774,7 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 			*/
 			}
 		 
-			//logger.info("start make periodical ...");
+			logger.info("start make periodical ...");
 			childName = "periodical";
 			obligatory = false;
 			doubleResult =  XmlHelp.getSingleChildElement(elRecord, childName, tcsNamespace, obligatory);
@@ -831,30 +802,34 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 			    	String strName_reftype = elRef_type.getAttributeValue("name");
 			    	String periodical = elStyle_Full_title.getTextNormalize();
 			    	
-			    	if (strName_reftype.equals("Journal Article")){
-			    		 
-			    		//map.put(periodical, journal);	    		
-			    		//Journal gibtEsschon = map.get(periodical);		    		
+			    	if (strName_reftype.equals("Journal Article")){		    		
 			    		
-			    		if (periodical != null) {	    			 
-			    			
+			    		if (periodical != null) {	    			 	
 							Journal give_journal = map_journal.get(periodical);
 							if (give_journal!= null) {
-								article.setInJournal(give_journal);		 
+								article.setInJournal(give_journal);	
+								give_journal.setTitle(periodical);
 							} else {
 								article.setInJournal(journal);		 
 								map_journal.put(periodical, journal);
-								
+								journal.setTitle(periodical);
 							}
-							//journal.setTitleCache(give_article.toString());
-							 
-							//logger.info(give_article);
-							logger.info(journal);
-							logger.info(article);
 							reference=article;
 			    		}
-			    	}
-			    	else {
+			    	} else if (strName_reftype.equals("Book Section")){
+			    		if (periodical != null) {
+			    			Book give_book =map_book.get(periodical);
+			    			if (give_book!= null) {
+			    				bookSection.setInBook(give_book);
+			    				give_book.setTitle(periodical);
+			    			} else {
+			    				bookSection.setInBook(book);
+			    				map_book.put(periodical, book);
+			    				book.setTitle(periodical);
+			    			}
+			    			reference=bookSection;
+			    		}
+			    	}else {
 						logger.warn("The type was not found...");
 						success = false;
 					}		 	
@@ -917,7 +892,7 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 			*/
 			}
 			
-			//logger.info("start make pages ...");
+			logger.info("start make pages ...");
 			childName = "pages";
 			obligatory = false;
 			doubleResult =  XmlHelp.getSingleChildElement(elRecord, childName, tcsNamespace, obligatory);
@@ -945,49 +920,37 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 					Article give_article = map_article.get(page);
 					give_article.setPages(page);
 					reference = give_article;
-					//article.setPages(page);
-					//reference= article;
 				}else if (strName_reftype.equals("Article")){
 					map_article.put(page, article);
 					Article give_article = map_article.get(page);
 					give_article.setPages(page);
-					reference = give_article;
-					//article.setPages(page);	 
-					//reference= article;		
+					reference = give_article;		
 				}else if (strName_reftype.equals("Book")){
 					map_book.put(page, book);
 					Book give_book = map_book.get(page);
 					give_book.setPages(page);
 					reference=give_book; 
-					//book.setPages(page);	 
-					//reference= book;
 				}else if (strName_reftype.equals("Book Section")){
 					map_book_section.put(page, bookSection);
 					BookSection give_book_section = map_book_section.get(page);
 					give_book_section.setPages(page);
 					reference=give_book_section;
-					//bookSection.setPages(page);
-					//reference= bookSection;
 				}else if (strName_reftype.equalsIgnoreCase("Conference Proceedings")){
 					map_proceedings.put(page, proceedings);
 					Proceedings give_proceedings = map_proceedings.get(page);
 					give_proceedings.setPages(page);
-					reference=give_proceedings;
-					//proceedings.setPages(page);
-					//reference= proceedings;	
+					reference=give_proceedings;	
 				} else {
 					logger.warn("The type was not found...");
 					map_generic.put(page, generic);
 					Generic give_generic  = map_generic.get(page);
 					give_generic.setPages(page);
 					reference =give_generic; 
-					//generic.setPages(page);				
-					//reference= generic;
 					success = false;			
 				}		 	
 			}
 			
-			//logger.info("start make volume ...");
+			logger.info("start make volume ...");
 			childName = "volume";
 			obligatory = false;
 			doubleResult =  XmlHelp.getSingleChildElement(elRecord, childName, tcsNamespace, obligatory);
@@ -1012,8 +975,6 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 					Article give_article = map_article.get(volume);
 					give_article.setVolume(volume);
 					reference = give_article;
-					//article.setVolume(volume);
-					//reference= article;
 				}else if (strName_reftype.equals("Article")){
 					map_article.put(volume, article);
 					Article give_article = map_article.get(volume);
@@ -1024,8 +985,6 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 					Book give_book = map_book.get(volume);
 					give_book.setVolume(volume);
 					reference=give_book; 
-					//book.setVolume(volume);
-					//reference= book;
 				}else if (strName_reftype.equals("Book Section")){
 					 if (volume != null) {
 						 bookSection.setInBook(book);
@@ -1037,21 +996,17 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 					Proceedings give_proceedings = map_proceedings.get(volume);
 					give_proceedings.setVolume(volume);
 					reference=give_proceedings;
-					//proceedings.setVolume(volume);
-					//reference= proceedings;
 				}else{	
 					logger.warn("The type was not found...");
 					map_generic.put(volume, generic);
 					Generic give_generic  = map_generic.get(volume);
 					give_generic.setVolume(volume);
 					reference =give_generic; 
-					//generic.setVolume(volume);
-					//reference= generic;
 					success = true;
 				}		 	
 			}
 			 
-			//logger.info("start make number ...");
+			logger.info("start make number ...");
 			childName = "number"; // In CDM it's "Series"
 			obligatory = false;
 			doubleResult =  XmlHelp.getSingleChildElement(elRecord, childName, tcsNamespace, obligatory);
@@ -1077,23 +1032,17 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 					Article give_article = map_article.get(number);
 					give_article.setSeries(number);
 					reference = give_article;
-					//article.setSeries(number);
-					//reference= article;
 				}else if (strName_reftype.equals("Article")){
 					map_article.put(number, article);
 					Article give_article = map_article.get(number);
 					give_article.setSeries(number);
 					reference = give_article;
-					//article.setSeries(number);
-					//reference= article;
 				}else {			 
 					logger.warn("The type was not found...");
 					map_generic.put(number, generic);
 					Generic give_generic  = map_generic.get(number);
 					give_generic.setSeries(number);
 					reference =give_generic;
-					//generic.setSeries(number);
-					//reference= generic;
 					success = false;
 				}		 		
 			}
@@ -1138,7 +1087,7 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 			}
 			*/
 			
-			//logger.info("start make edition ...");
+			logger.info("start make edition ...");
 			childName = "edition";
 			obligatory = false;
 			doubleResult =  XmlHelp.getSingleChildElement(elRecord, childName, tcsNamespace, obligatory);
@@ -1163,8 +1112,6 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 					Book give_book = map_book.get(edition);
 					give_book.setEdition(edition);
 					reference=give_book; 
-					//book.setEdition(edition);
-					//reference= book;
 				}else if (strName_reftype.equals("Book Section")) {
 					bookSection.setInBook(book);
 					book.setEdition(edition);
@@ -1273,7 +1220,7 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 					
 				}
 					
-				//logger.info("start make pub-dates ...");	 
+				logger.info("start make pub-dates ...");	 
 				childName = "pub-dates";  //deadline - the name in Endnote Programm
 				obligatory = false;
 				doubleResult =  XmlHelp.getSingleChildElement(elDates, childName, tcsNamespace, obligatory);
@@ -1304,7 +1251,7 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 				}
 			}
 			
-			//logger.info("start make pub-location ...");
+			logger.info("start make pub-location ...");
 		 	childName = "pub-location"; // activity location - the name in Endnote Programm
 		 	obligatory = false;
 		 	doubleResult =  XmlHelp.getSingleChildElement(elRecord, childName, tcsNamespace, obligatory);
@@ -1330,70 +1277,52 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 					Report give_report = map_report.get(place);
 					give_report.setPlacePublished(place);
 					reference=give_report;
-					//report.setPlacePublished(place);
-					//reference= report;
 				}else if (strName_reftype.equals("Book")){
 					map_book.put(place, book);
 					Book give_book = map_book.get(place);
 					give_book.setPlacePublished(place);
 					reference=give_book;
-					//book.setPlacePublished(place);	 
-					//reference= book;
 				}else if (strName_reftype.equals("Thesis")){
 					map_thesis.put(place, thesis);
 					Thesis give_thesis = map_thesis.get(place);
 					give_thesis.setPlacePublished(place);
 					reference=give_thesis;
-					//thesis.setPlacePublished(place);
-					//reference= thesis;
 				}else if (strName_reftype.equalsIgnoreCase("Conference Proceedings")){
 					map_proceedings.put(place, proceedings);
 					Proceedings give_proceedings = map_proceedings.get(place);
 					give_proceedings.setPlacePublished(place);
 					reference=give_proceedings;
-					//proceedings.setPlacePublished(place);
-					//reference= proceedings;
 				}else if (strName_reftype.equalsIgnoreCase("Database")){
 					map_database.put(place, database);
 					Database give_database = map_database.get(place);
 					give_database.setPlacePublished(place);
 					reference=give_database;
-					//database.setPlacePublished(place);
-					//reference= database;
 				}else if (strName_reftype.equalsIgnoreCase("CdDvd")){
 					map_cdDvd.put(place, cdDvd);
 					CdDvd give_cdDvd = map_cdDvd.get(place);
 					give_cdDvd.setPlacePublished(place);
 					reference=give_cdDvd;
-					//cdDvd.setPlacePublished(place);
-					//reference= cdDvd;
 				}else if (strName_reftype.equalsIgnoreCase("Print Series")){
 					map_printSeries.put(place, printSeries);
 					PrintSeries give_printSeries = map_printSeries.get(place);
 					give_printSeries.setPlacePublished(place);
 					reference=give_printSeries;
-					//printSeries.setPlacePublished(place);
-					//reference= printSeries;
 				}else if (strName_reftype.equalsIgnoreCase("Journal")){
 					map_journal.put(place, journal);
 					Journal give_journal = map_journal.get(place);
 					give_journal.setPlacePublished(place);
-					reference=give_journal;
-					//journal.setPlacePublished(place);
-					//reference= journal;			
+					reference=give_journal;			
 				} else {
 					logger.warn("The type was not found...");
 					map_generic.put(place, generic);
 					Generic give_generic = map_generic.get(place);
 					give_generic.setPlacePublished(place);
 					reference=give_generic;
-					//generic.setPlacePublished(place);
-					//reference= generic;
 					success = false;
 				}		 	
 		 	}
 		 	 
-			//logger.info("start make publisher ...");
+			logger.info("start make publisher ...");
 			childName = "publisher";
 			obligatory = false;
 			doubleResult =  XmlHelp.getSingleChildElement(elRecord, childName, tcsNamespace, obligatory);
@@ -1419,15 +1348,11 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 					Report give_report = map_report.get(publisher);
 					give_report.setPublisher(publisher);
 					reference=give_report;
-					//report.setPublisher(publisher);
-					//reference= report;
 				}else if (strName_reftype.equals("Book")){
 					map_book.put(publisher, book);
 					Book give_book = map_book.get(publisher);
 					give_book.setPublisher(publisher);
 					reference=give_book;
-					//book.setPublisher(publisher);	 
-					//reference= book;
 				}else if (strName_reftype.equals("Book Section")){
 					if (publisher != null) {
 						bookSection.setInBook(book);
@@ -1439,43 +1364,31 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 					Thesis give_thesis = map_thesis.get(publisher);
 					give_thesis.setPublisher(publisher);
 					reference=give_thesis;
-					//thesis.setPublisher(publisher);
-					//reference= thesis;
 				}else if (strName_reftype.equalsIgnoreCase("Conference Proceedings")){
 					map_proceedings.put(publisher, proceedings);
 					Proceedings give_proceedings = map_proceedings.get(publisher);
 					give_proceedings.setPublisher(publisher);
 					reference=give_proceedings;
-					//proceedings.setPublisher(publisher);
-					//reference= proceedings;
 				}else if (strName_reftype.equalsIgnoreCase("Database")){
 					map_database.put(publisher, database);
 					Database give_database = map_database.get(publisher);
 					give_database.setPublisher(publisher);
 					reference=give_database;
-					//database.setPublisher(publisher);
-					//reference= database;
 				}else if (strName_reftype.equalsIgnoreCase("CdDvd")){
 					map_cdDvd.put(publisher, cdDvd);
 					CdDvd give_cdDvd = map_cdDvd.get(publisher);
 					give_cdDvd.setPublisher(publisher);
 					reference=give_cdDvd;
-					//cdDvd.setPublisher(publisher);
-					//reference= cdDvd;
 				}else if (strName_reftype.equalsIgnoreCase("Print Series")){
 					map_printSeries.put(publisher, printSeries);
 					PrintSeries give_printSeries = map_printSeries.get(publisher);
 					give_printSeries.setPublisher(publisher);
 					reference=give_printSeries;
-					//printSeries.setPublisher(publisher);
-					//reference= printSeries;
 				}else if (strName_reftype.equalsIgnoreCase("Journal")){
 					map_journal.put(publisher, journal);
 					Journal give_journal = map_journal.get(publisher);
 					give_journal.setPublisher(publisher);
 					reference=give_journal;
-					//journal.setPublisher(publisher);
-					//reference= journal;
 				}else if (strName_reftype.equalsIgnoreCase("Journal Article")){
 					if (publisher != null) {
 						article.setInJournal(journal);
@@ -1488,8 +1401,7 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 					Generic give_generic = map_generic.get(publisher);
 					give_generic.setPublisher(publisher);
 					reference=give_generic;
-					//generic.setPublisher(publisher);
-					//reference= generic;
+
 					success = false;
 				}		 	
 			}
@@ -1515,7 +1427,7 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 			}
 			*/
 		
-			//logger.info("start make ISBN/ISNN ...");
+			logger.info("start make ISBN/ISNN ...");
 			childName = "isbn";
 			obligatory = false;
 			doubleResult =  XmlHelp.getSingleChildElement(elRecord, childName, tcsNamespace, obligatory);
@@ -1542,15 +1454,11 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 					Book give_book = map_book.get(page);
 					give_book.setIsbn(page);
 					reference=give_book; 
-					//book.setIsbn(elStyle_Isbn.getTextNormalize());
-					//reference= book;
 				}else if (strName_reftype.equals("Journal")){
 					map_journal.put(page, journal);
 					Journal give_journal = map_journal.get(page);
 					give_journal.setIssn(page);
 					reference=give_journal;
-					//journal.setIssn(elStyle_Isbn.getTextNormalize());
-					//reference= journal;
 				}else {
 					logger.warn("The type was not found...");
 					success = false;
@@ -1597,7 +1505,7 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 			}
 			*/
 			
-			//logger.info("start make electronic-resource-num ...");
+			logger.info("start make electronic-resource-num ...");
 			childName = "electronic-resource-num";  //DOI - the name in Endnote Programm
 			obligatory = false;
 			doubleResult =  XmlHelp.getSingleChildElement(elRecord, childName, tcsNamespace, obligatory);
@@ -1619,7 +1527,7 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 				reference.addExtension(dOI, ExtensionType.DOI());
 			}
 			
-			//logger.info("start make abstract ...");
+			logger.info("start make abstract ...");
 			childName = "abstract";
 			obligatory = false;
 			doubleResult =  XmlHelp.getSingleChildElement(elRecord, childName, tcsNamespace, obligatory);
@@ -1870,7 +1778,7 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 			}
 			
 			
-			//logger.info("start make urls ...");
+			logger.info("start make urls ...");
 			childName = "urls";
 			obligatory = false;
 			doubleResult =  XmlHelp.getSingleChildElement(elRecord, childName, tcsNamespace, obligatory);
