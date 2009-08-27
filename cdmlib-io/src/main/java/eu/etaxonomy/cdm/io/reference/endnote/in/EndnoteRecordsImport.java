@@ -627,7 +627,7 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 						}
 					}
 				}
-			/**
+			
 				childName = "secondary-title";
 				obligatory = false;
 				doubleResult =  XmlHelp.getSingleChildElement(elTitles, childName, tcsNamespace, obligatory);
@@ -647,49 +647,25 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 						String strName_reftype = elRef_type.getAttributeValue("name");
 						String secondary_title = elStyle_Secondary_title.getTextNormalize();
 						 
-						if (strName_reftype.equals("Book Section")) {
-							map_book_section.put(secondary_title, bookSection);
-							BookSection give_book_section = map_book_section.get(secondary_title);
-							give_book_section.setTitle(secondary_title);
-							reference=give_book_section;
-							//bookSection.setTitle(secondary_title);
-							//reference= bookSection;
-						} else if (strName_reftype.equals("Article")){
-							map_journal.put(secondary_title, journal);
-							Journal give_journal = map_journal.get(secondary_title);
-							give_journal.setTitle(secondary_title);
-							reference=give_journal;
-							//journal.setTitle(secondary_title);
-							//reference= journal;
-						}else if (strName_reftype.equals("Journal Article")){
-							map_journal.put(secondary_title, journal);
-							Journal give_journal = map_journal.get(secondary_title);
-							give_journal.setTitle(secondary_title);
-							reference=give_journal;
-							//journal.setTitle(secondary_title);
-							//reference= journal;
-						}else if (strName_reftype.equals("Book")){
-							map_book.put(secondary_title, book);
-							Book give_book = map_book.get(secondary_title);
-							give_book.setTitle(secondary_title);
-							reference=give_book;
-							//book.setTitle(secondary_title);
-							//reference=book;
-						}else if (strName_reftype.equalsIgnoreCase("Conference Proceedings")){
-							map_proceedings.put(secondary_title, proceedings);
-							Proceedings give_proceedings = map_proceedings.get(secondary_title);
-							give_proceedings.setTitle(secondary_title);
-							reference=give_proceedings;
-							//proceedings.setTitleCache(secondary_title);
-							//reference=proceedings;
-						}else {
+						if (strName_reftype.equals("Book Section")){
+				    		if (secondary_title != null) {
+				    			Book give_book =map_book.get(secondary_title);
+				    			if (give_book!= null) {
+				    				bookSection.setInBook(give_book);
+				    				give_book.setTitle(secondary_title);
+				    			} else {
+				    				bookSection.setInBook(book);
+				    				map_book.put(secondary_title, book);
+				    				book.setTitle(secondary_title);
+				    			}
+				    			reference=bookSection;
+				    		}
+				    	}else {
 							logger.warn("The type was not found...");
 							map_generic.put(secondary_title, generic);
 							Generic give_generic = map_generic.get(secondary_title);
 							give_generic.setTitle(secondary_title);
 							reference=give_generic;
-							//generic.setTitle(secondary_title);
-							//reference = generic;
 							success = false; 
 						}						
 					}
