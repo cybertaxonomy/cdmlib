@@ -2127,15 +2127,4 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 		EndnoteImportConfigurator tcsConfig = state.getConfig();
 		return (! tcsConfig.isDoRecords());
 	}
-	
-	public static void main (String [] args)
-	{
-		Map <String, String> staff = new HashMap<String, String>();
-		staff.put("123", "Journal");
-		staff.put("1", "Journal");
-		staff.put("2", "Journal");
-		staff.put("3", "Journal");
-		staff.put("123", "Journal");
-		System.out.println(staff);
-	}
 }
