@@ -98,7 +98,7 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 		Element elXml = getXmlElement(config);
 		Namespace tcsNamespace = config.getEndnoteNamespace();
 		
-		logger.info("start make Records-Element ...");
+		//logger.info("start make Records-Element ...");
 		DoubleResult<Element, Boolean> doubleResult;	
 		 
 		childName = "records";
@@ -108,7 +108,7 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 		success &= doubleResult.getSecondResult();
 		elRecords.getAttributes();
 
-		logger.info("start make Record-Elementen ...");
+		//logger.info("start make Record-Elementen ...");
 	    String tcsElementName = "record";
 		String idNamespace = "record";
 		List<Element> elRecordList = (List<Element>)elRecords.getChildren(tcsElementName, tcsNamespace);
@@ -145,7 +145,7 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 			Institution school = Institution.NewInstance();
 			Team authorTeam = Team.NewInstance();		 
 			
-			logger.info("start make database ...");
+		//	logger.info("start make database ...");
 			childName = "database";
 			obligatory = false;
 			doubleResult = XmlHelp.getSingleChildElement(elRecord, childName, tcsNamespace, obligatory);
@@ -158,7 +158,7 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 				String strPath = elDatabase.getAttributeValue("path");
 			}
 				
-			logger.info("start make source-app ...");
+			//logger.info("start make source-app ...");
 			childName = "source-app";
 			obligatory = false;
 			doubleResult =  XmlHelp.getSingleChildElement(elRecord, childName, tcsNamespace, obligatory);
@@ -170,7 +170,7 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 				String strVersion = elSource_app.getAttributeValue("version");
 			}
 		
-			logger.info("start make rec-number ...");
+			//logger.info("start make rec-number ...");
 			childName = "rec-number";
 			obligatory = false;
 			doubleResult =  XmlHelp.getSingleChildElement(elRecord, childName, tcsNamespace, obligatory);
@@ -187,7 +187,7 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 				success = false;
 			}
 			 	
-			logger.info("start make foreign-keys ...");
+			//logger.info("start make foreign-keys ...");
 			childName = "foreign-keys";
 			obligatory = false;
 			doubleResult =  XmlHelp.getSingleChildElement(elRecord, childName, tcsNamespace, obligatory);
@@ -205,7 +205,7 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 				}
 			}
 			
-			logger.info("start make ref-type ...");
+			//logger.info("start make ref-type ...");
 			childName = "ref-type";
 			obligatory = false;
 			doubleResult =  XmlHelp.getSingleChildElement(elRecord, childName, tcsNamespace, obligatory);
@@ -251,7 +251,7 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 				}		 			
 			}
 			
-			logger.info("start make contributors ...");
+			//logger.info("start make contributors ...");
 			childName = "contributors";
 			obligatory = false;
 			doubleResult =  XmlHelp.getSingleChildElement(elRecord, childName, tcsNamespace, obligatory);
@@ -302,7 +302,7 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 					}
 				}
 			}	
-				logger.info("start make secondary-authors ...");
+				//logger.info("start make secondary-authors ...");
 				childName = "secondary-authors";
 				obligatory = false;
 				doubleResult =  XmlHelp.getSingleChildElement(elContributors, childName, tcsNamespace, obligatory);
@@ -460,7 +460,7 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 				*/
 			}
 			 
-			logger.info("start make auth-address ...");
+			//logger.info("start make auth-address ...");
 			childName = "auth-address";
 			obligatory = false;
 			doubleResult =  XmlHelp.getSingleChildElement(elRecord, childName, tcsNamespace, obligatory);
@@ -489,7 +489,7 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 			}
 			
 			
-			logger.info("start make auth-affilation ...");
+			//logger.info("start make auth-affilation ...");
 			childName = "auth-affiliaton";
 			obligatory = false;
 			doubleResult =  XmlHelp.getSingleChildElement(elRecord, childName, tcsNamespace, obligatory);
@@ -511,7 +511,7 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 				reference.addExtension(affilation, ExtensionType.AREA_OF_INTREREST());
 			}
 				
-			logger.info("start make titles ...");
+			//logger.info("start make titles ...");
 			childName = "titles";
 			obligatory = false;
 			doubleResult =  XmlHelp.getSingleChildElement(elRecord, childName, tcsNamespace, obligatory);
@@ -656,7 +656,7 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 						}
 					}
 				}
-			
+			/**
 				childName = "secondary-title";
 				obligatory = false;
 				doubleResult =  XmlHelp.getSingleChildElement(elTitles, childName, tcsNamespace, obligatory);
@@ -803,7 +803,7 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 			*/
 			}
 		 
-			logger.info("start make periodical ...");
+			//logger.info("start make periodical ...");
 			childName = "periodical";
 			obligatory = false;
 			doubleResult =  XmlHelp.getSingleChildElement(elRecord, childName, tcsNamespace, obligatory);
@@ -830,18 +830,29 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 			    	
 			    	String strName_reftype = elRef_type.getAttributeValue("name");
 			    	String periodical = elStyle_Full_title.getTextNormalize();
-			    	 //logger.info(periodical);
+			    	
 			    	if (strName_reftype.equals("Journal Article")){
 			    		 
-			    		//Map<String, Journal> map = new HashMap<String, Journal>();
 			    		//map.put(periodical, journal);	    		
 			    		//Journal gibtEsschon = map.get(periodical);		    		
 			    		
 			    		if (periodical != null) {	    			 
-			    			article.setInJournal(journal);
-			    			journal.setTitleCache(periodical);
-			    			reference = article;
-			    		 }
+			    			
+							Journal give_journal = map_journal.get(periodical);
+							if (give_journal!= null) {
+								article.setInJournal(give_journal);		 
+							} else {
+								article.setInJournal(journal);		 
+								map_journal.put(periodical, journal);
+								
+							}
+							//journal.setTitleCache(give_article.toString());
+							 
+							//logger.info(give_article);
+							logger.info(journal);
+							logger.info(article);
+							reference=article;
+			    		}
 			    	}
 			    	else {
 						logger.warn("The type was not found...");
@@ -906,7 +917,7 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 			*/
 			}
 			
-			logger.info("start make pages ...");
+			//logger.info("start make pages ...");
 			childName = "pages";
 			obligatory = false;
 			doubleResult =  XmlHelp.getSingleChildElement(elRecord, childName, tcsNamespace, obligatory);
@@ -976,7 +987,7 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 				}		 	
 			}
 			
-			logger.info("start make volume ...");
+			//logger.info("start make volume ...");
 			childName = "volume";
 			obligatory = false;
 			doubleResult =  XmlHelp.getSingleChildElement(elRecord, childName, tcsNamespace, obligatory);
@@ -1017,10 +1028,6 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 					//reference= book;
 				}else if (strName_reftype.equals("Book Section")){
 					 if (volume != null) {
-						 //map_book_section.put(volume, bookSection);
-						 //Book give_book = map_book.get(volume);
-						 //give_book.setVolume(volume);
-						 //reference=give_book;
 						 bookSection.setInBook(book);
 						 book.setVolume(volume);
 						 reference= bookSection;
@@ -1044,7 +1051,7 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 				}		 	
 			}
 			 
-			logger.info("start make number ...");
+			//logger.info("start make number ...");
 			childName = "number"; // In CDM it's "Series"
 			obligatory = false;
 			doubleResult =  XmlHelp.getSingleChildElement(elRecord, childName, tcsNamespace, obligatory);
@@ -1131,7 +1138,7 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 			}
 			*/
 			
-			logger.info("start make edition ...");
+			//logger.info("start make edition ...");
 			childName = "edition";
 			obligatory = false;
 			doubleResult =  XmlHelp.getSingleChildElement(elRecord, childName, tcsNamespace, obligatory);
@@ -1266,7 +1273,7 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 					
 				}
 					
-				logger.info("start make pub-dates ...");	 
+				//logger.info("start make pub-dates ...");	 
 				childName = "pub-dates";  //deadline - the name in Endnote Programm
 				obligatory = false;
 				doubleResult =  XmlHelp.getSingleChildElement(elDates, childName, tcsNamespace, obligatory);
@@ -1297,7 +1304,7 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 				}
 			}
 			
-			logger.info("start make pub-location ...");
+			//logger.info("start make pub-location ...");
 		 	childName = "pub-location"; // activity location - the name in Endnote Programm
 		 	obligatory = false;
 		 	doubleResult =  XmlHelp.getSingleChildElement(elRecord, childName, tcsNamespace, obligatory);
@@ -1386,7 +1393,7 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 				}		 	
 		 	}
 		 	 
-			logger.info("start make publisher ...");
+			//logger.info("start make publisher ...");
 			childName = "publisher";
 			obligatory = false;
 			doubleResult =  XmlHelp.getSingleChildElement(elRecord, childName, tcsNamespace, obligatory);
@@ -1508,7 +1515,7 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 			}
 			*/
 		
-			logger.info("start make ISBN/ISNN ...");
+			//logger.info("start make ISBN/ISNN ...");
 			childName = "isbn";
 			obligatory = false;
 			doubleResult =  XmlHelp.getSingleChildElement(elRecord, childName, tcsNamespace, obligatory);
@@ -1590,7 +1597,7 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 			}
 			*/
 			
-			logger.info("start make electronic-resource-num ...");
+			//logger.info("start make electronic-resource-num ...");
 			childName = "electronic-resource-num";  //DOI - the name in Endnote Programm
 			obligatory = false;
 			doubleResult =  XmlHelp.getSingleChildElement(elRecord, childName, tcsNamespace, obligatory);
@@ -1612,7 +1619,7 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 				reference.addExtension(dOI, ExtensionType.DOI());
 			}
 			
-			logger.info("start make abstract ...");
+			//logger.info("start make abstract ...");
 			childName = "abstract";
 			obligatory = false;
 			doubleResult =  XmlHelp.getSingleChildElement(elRecord, childName, tcsNamespace, obligatory);
@@ -1863,7 +1870,7 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 			}
 			
 			
-			logger.info("start make urls ...");
+			//logger.info("start make urls ...");
 			childName = "urls";
 			obligatory = false;
 			doubleResult =  XmlHelp.getSingleChildElement(elRecord, childName, tcsNamespace, obligatory);
@@ -2213,4 +2220,14 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 		return (! tcsConfig.isDoRecords());
 	}
 	
+	public static void main (String [] args)
+	{
+		Map <String, String> staff = new HashMap<String, String>();
+		staff.put("123", "Journal");
+		staff.put("1", "Journal");
+		staff.put("2", "Journal");
+		staff.put("3", "Journal");
+		staff.put("123", "Journal");
+		System.out.println(staff);
+	}
 }
