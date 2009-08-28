@@ -76,6 +76,15 @@ public class CdmDataSource extends CdmDataSourceBase {
 		CdmDataSource dataSource = new CdmDataSource(DatabaseTypeEnum.H2, null, database, port, username, password, null, mode);
 		return dataSource;
 	}
+	
+	/** in work */
+	static public CdmDataSource  NewH2EmbeddedInstance(String database, String username, String password, String filePath){
+		//FIXME in work
+		int port = -1;
+		H2Mode mode = H2Mode.EMBEDDED;
+		CdmDataSource dataSource = new CdmDataSource(DatabaseTypeEnum.H2, null, database, port, username, password, filePath, mode);
+		return dataSource;
+	}
 
 	/** in work */
 	static public CdmDataSource  NewH2InMemoryInstance(){

@@ -30,6 +30,13 @@ public class SDDSources {
 		
 	}
 	
+	public static String SDDImport_local(String filePath){
+		//		any SDD XML file
+		String sourceUrl = "file:" + filePath;
+		return sourceUrl;
+		
+	}
+	
 	public static String LIAS_local(){
 		//		SDD XML example from http://wiki.tdwg.org/twiki/bin/view/SDD/RealWorldExamples_SDD1dot1
 		//String sourceUrl = "file:C:/Documents and Settings/lis/Mes documents/SDD/SDD bis/SDD1.1/SDD1.1/examples/LIAS_Main.sdd11/LIAS_Main.sdd11.xml";

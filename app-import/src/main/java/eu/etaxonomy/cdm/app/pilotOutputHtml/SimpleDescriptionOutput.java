@@ -4,28 +4,29 @@
  * http://www.e-taxonomy.eu
  */
 
-package eu.etaxonomy.cdm.app.sdd;
+package eu.etaxonomy.cdm.app.pilotOutputHtml;
 
 import java.io.File;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.app.sdd.ViolaExportActivator;
 import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.CdmDefaultExport;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator.DO_REFERENCES;
-import eu.etaxonomy.cdm.io.sdd.SDDExportConfigurator;
+import eu.etaxonomy.cdm.io.pilotOutputHtml.PilotOutputExportConfigurator;
 
 /**
  * @author h.fradin (from a.babadshanjan eu.etaxonomy.cdm.app.jaxb.CdmExportImportActivator)
  * @created 09.12.2008
  */
-public class ViolaExportActivator {
+public class SimpleDescriptionOutput {
 
 	/* SerializeFrom DB **/
 	private static final String sourceDbName = "cdm";
-	private static final String destinationFileName = "ViolaFromCDM.xml";
+	private static final String destinationFileName = "ViolaFromCDMhtml.xml";
 	private static final String destinationFolder = "C:/Documents and Settings/lis/Mes documents/EDIT/CDM/exports SDD";
 	//private static final String destinationFolder = "C:/tmp/viola/exports_SDD";
 
@@ -47,9 +48,6 @@ public class ViolaExportActivator {
 
 	private static final Logger logger = Logger.getLogger(ViolaExportActivator.class);
 
-	private static final ICdmDataSource sourceDb = ViolaExportActivator.CDM_DB(sourceDbName);
-	private static final File destinationFile = new File(destinationFolder + File.separator + destinationFileName);
-
 	private static boolean doAgents = true;
 	private static boolean doAgentData = true;
 	private static boolean doLanguageData = true;
@@ -68,40 +66,45 @@ public class ViolaExportActivator {
 	private static boolean doTermVocabularies = true;
 	private static boolean doHomotypicalGroups = true;
 
-	private void invokeExport() {
+	// 3 arguments: name of the CDM database, name of the destination file, path for the destination file
+	private void invokeExport(String[] args) {
 		
-		SDDExportConfigurator sddExportConfigurator = 
-			SDDExportConfigurator.NewInstance(sourceDb, destinationFileName, destinationFolder);
+//		PilotOutputExportConfigurator htmlExportConfigurator = 
+//			PilotOutputExportConfigurator.NewInstance(sourceDb, destinationFileName, destinationFolder);
+		ICdmDataSource sourceDb = ViolaExportActivator.CDM_DB(args[0]);
+		PilotOutputExportConfigurator htmlExportConfigurator = 
+			PilotOutputExportConfigurator.NewInstance(sourceDb, args[1], args[2]);
 		
-		CdmDefaultExport<SDDExportConfigurator> sddExport = 
-			new CdmDefaultExport<SDDExportConfigurator>();
+		CdmDefaultExport<PilotOutputExportConfigurator> htmlExport = 
+			new CdmDefaultExport<PilotOutputExportConfigurator>();
 		
-		sddExportConfigurator.setSource(sourceDb);
-		sddExportConfigurator.setDestination(destinationFile);
-		sddExportConfigurator.setDbSchemaValidation(DbSchemaValidation.VALIDATE);
+		htmlExportConfigurator.setSource(sourceDb);
+		File destinationFile = new File(args[2] + File.separator + args[1]);
+		htmlExportConfigurator.setDestination(destinationFile);
+		htmlExportConfigurator.setDbSchemaValidation(DbSchemaValidation.VALIDATE);
 
-		sddExportConfigurator.setMaxRows(NUMBER_ROWS_TO_RETRIEVE);
+		htmlExportConfigurator.setMaxRows(NUMBER_ROWS_TO_RETRIEVE);
 
-		sddExportConfigurator.setDoAuthors(doAgents);
-		sddExportConfigurator.setDoAgentData(doAgentData);
-		sddExportConfigurator.setDoLanguageData(doLanguageData);
-		sddExportConfigurator.setDoFeatureData(doFeatureData);
-		sddExportConfigurator.setDoDescriptions(doDescriptions);
-		sddExportConfigurator.setDoMedia(doMedia);
-		sddExportConfigurator.setDoOccurrence(doOccurrences);
-		sddExportConfigurator.setDoReferences(doReferences);
-		sddExportConfigurator.setDoReferencedEntities(doReferencedEntities);
-		sddExportConfigurator.setDoRelTaxa(doRelationships);
-		sddExportConfigurator.setDoSynonyms(doSynonyms);
-		sddExportConfigurator.setDoTaxonNames(doTaxonNames);
-		sddExportConfigurator.setDoTaxa(doTaxa);
-		sddExportConfigurator.setDoTerms(doTerms);
-		sddExportConfigurator.setDoTermVocabularies(doTermVocabularies);
-		sddExportConfigurator.setDoHomotypicalGroups(doHomotypicalGroups);
+		htmlExportConfigurator.setDoAuthors(doAgents);
+		htmlExportConfigurator.setDoAgentData(doAgentData);
+		htmlExportConfigurator.setDoLanguageData(doLanguageData);
+		htmlExportConfigurator.setDoFeatureData(doFeatureData);
+		htmlExportConfigurator.setDoDescriptions(doDescriptions);
+		htmlExportConfigurator.setDoMedia(doMedia);
+		htmlExportConfigurator.setDoOccurrence(doOccurrences);
+		htmlExportConfigurator.setDoReferences(doReferences);
+		htmlExportConfigurator.setDoReferencedEntities(doReferencedEntities);
+		htmlExportConfigurator.setDoRelTaxa(doRelationships);
+		htmlExportConfigurator.setDoSynonyms(doSynonyms);
+		htmlExportConfigurator.setDoTaxonNames(doTaxonNames);
+		htmlExportConfigurator.setDoTaxa(doTaxa);
+		htmlExportConfigurator.setDoTerms(doTerms);
+		htmlExportConfigurator.setDoTermVocabularies(doTermVocabularies);
+		htmlExportConfigurator.setDoHomotypicalGroups(doHomotypicalGroups);
 
 		// invoke export
-		logger.debug("Invoking SDD export");
-		sddExport.invoke(sddExportConfigurator);
+		logger.debug("Invoking SimpleDescriptionOutput export");
+		htmlExport.invoke(htmlExportConfigurator);
 
 	}
 
@@ -110,13 +113,13 @@ public class ViolaExportActivator {
 	 */
 	public static void main(String[] args) {
 
-		ViolaExportActivator vea = new ViolaExportActivator();
+		SimpleDescriptionOutput sdo = new SimpleDescriptionOutput();
 
 //		CdmApplicationController appCtr = null;
 //		appCtr = sc.initDb(sourceDb);
 //		sc.loadTestData(appCtr);
 		
-		vea.invokeExport();
+		sdo.invokeExport(args);
 
 	}
 

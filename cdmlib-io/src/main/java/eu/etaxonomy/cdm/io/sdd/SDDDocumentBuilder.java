@@ -88,11 +88,13 @@ public class SDDDocumentBuilder {
 	private Map<Person,String> agents = new HashMap<Person,String>();
 	private Map<TaxonNameBase,String> taxonNames = new HashMap<TaxonNameBase,String>();
 	private Map<Feature,String> characters = new HashMap<Feature,String>();
+	private Map<TaxonDescription,String> codedDescriptions = new HashMap<TaxonDescription,String>();
 	private Map<Media,String> medias = new HashMap<Media,String>();
 	private Map<State,String> states = new HashMap<State,String>();
 	private Map<Article, String> articles = new HashMap<Article, String>();
 	private int agentsCount = 0;
 	private int articlesCount = 0;
+	private int codedDescriptionsCount = 0;
 	private int taxonNamesCount = 0;
 	private int charactersCount = 0;
 	private int mediasCount = 0;
@@ -714,6 +716,7 @@ public class SDDDocumentBuilder {
 				for (Iterator<TaxonDescription> td = descriptions.iterator() ; td.hasNext() ;){
 					TaxonDescription taxonDescription = td.next();
 					ElementImpl elCodedDescription = new ElementImpl(document, CODED_DESCRIPTION);
+					codedDescriptionsCount = buildReference(taxonDescription, codedDescriptions, ID, elCodedDescription, "D", codedDescriptionsCount);
 					buildRepresentation(elCodedDescription, taxonDescription);
 					buildScope(elCodedDescription, taxonDescription);
 					buildSummaryData(elCodedDescription, taxonDescription);
@@ -942,7 +945,6 @@ public class SDDDocumentBuilder {
 		element.appendChild(content);
 	}
 
-
 	//	/**
 	//	 * Build Hashtables with the references for the different elements that build the dataset, 
 	//	 * and that are then used in the different building elements methods
@@ -1122,7 +1124,5 @@ public class SDDDocumentBuilder {
 	//		}
 	//
 	//	}
-
+	
 }
-
-

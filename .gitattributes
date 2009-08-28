@@ -24,6 +24,8 @@ app-import/src/main/java/eu/etaxonomy/cdm/app/images/ImageImportConfigurator.jav
 app-import/src/main/java/eu/etaxonomy/cdm/app/images/ImageImportState.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/jaxb/CdmDiffActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/jaxb/CdmExportImportActivator.java -text
+app-import/src/main/java/eu/etaxonomy/cdm/app/pilotOutputHtml/SimpleDescriptionOutput.java -text
+app-import/src/main/java/eu/etaxonomy/cdm/app/sdd/AnthuriumActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/sdd/CicadActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/sdd/CicadUpdateActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/sdd/ErythroneuraActivator.java -text
@@ -32,6 +34,7 @@ app-import/src/main/java/eu/etaxonomy/cdm/app/sdd/FreshwaterAquaticInsectsActiva
 app-import/src/main/java/eu/etaxonomy/cdm/app/sdd/FreshwaterAquaticInsectsUpdateActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/sdd/LIASActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/sdd/LIASUpdateActivator.java -text
+app-import/src/main/java/eu/etaxonomy/cdm/app/sdd/SDDImportActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/sdd/SDDSources.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/sdd/ValRosandraFRIDAKeyActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/sdd/ValRosandraFRIDAKeyUpdateActivator.java -text
@@ -75,6 +78,7 @@ app-import/src/main/resources/images/palmae/KPALM00000073.jpg -text
 app-import/src/main/resources/images/protologue_links_palmae.xls -text
 app-import/src/main/resources/log4j.properties -text
 app-import/src/main/resources/sdd/Cicad.sdd11.xml -text
+app-import/src/main/resources/sdd/Cicad2.sdd11.xml -text
 app-import/src/main/resources/sdd/Erythroneura.sdd11.xml -text
 app-import/src/main/resources/sdd/LIAS_Main.sdd11.xml -text
 app-import/src/main/resources/sdd/SDD-Test-Simple.xml -text
@@ -1123,6 +1127,11 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/jaxb/JaxbImportState.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/jaxb/LsInputImpl.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/jaxb/WarningTolerantValidationEventHandler.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/jaxb/package-info.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/pilotOutputHtml/PilotOutputDescriptionExporter.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/pilotOutputHtml/PilotOutputDocumentBuilder.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/pilotOutputHtml/PilotOutputExportConfigurator.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/pilotOutputHtml/PilotOutputExportState.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/pilotOutputHtml/PilotOutputExporter.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/reference/endnote/in/EndNoteImportBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/reference/endnote/in/EndnoteImportConfigurator.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/reference/endnote/in/EndnoteImportState.java -text
