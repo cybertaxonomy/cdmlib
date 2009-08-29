@@ -1,5 +1,8 @@
 /**
  * This is EndNote import format
+ * 
+ * EndNote is a commercial reference management software package, 
+ * used to manage bibliographies and references when writing essays and articles.
  */
 package eu.etaxonomy.cdm.io.reference.endnote.in;
 
