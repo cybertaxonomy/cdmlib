@@ -70,13 +70,11 @@ public class BibtexEntryTypeTest {
 //****************** TESTS *******************************************************/	
 	
 	@Test
-	public void testDummyValue(){
-		UUID uuidDummy = UUID.fromString("5870e82f-eaa0-4e93-9592-51998fd65c0b");
-		BibtexEntryType dummy = BibtexEntryType.getTermByUuid(uuidDummy);
-		Assert.notNull(dummy, "Dummy value must not be null");
-		assertEquals("Wrong label for dummy BibtexEntryType type", "bibtex_entry_type_dummy", dummy.getRepresentation(Language.ENGLISH()).getLabel());
-		assertEquals("Wrong abbreviated label for dummy BibtexEntryType type", "b", dummy.getRepresentation(Language.ENGLISH()).getAbbreviatedLabel());
-		assertEquals("Wrong text for dummy BibtexEntryType type", "betdummy", dummy.getRepresentation(Language.ENGLISH()).getText());
+	public void testBookletValue(){
+		UUID uuidBooklet = UUID.fromString("5870e82f-eaa0-4e93-9592-51998fd65c0b");
+		BibtexEntryType booklet = BibtexEntryType.getTermByUuid(uuidBooklet);
+		Assert.notNull(booklet, "Booklet type must not be null");
+		assertEquals("Wrong label for Booklet type", "Booklet", booklet.getRepresentation(Language.ENGLISH()).getLabel());
 	}
 	
 }

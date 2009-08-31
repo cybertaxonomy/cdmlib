@@ -53,6 +53,21 @@ public class BibtexEntryType extends DefinedTermBase<BibtexEntryType> {
 	private static final long serialVersionUID = 1603469685147239870L;
 	private static final Logger logger = Logger.getLogger(BibtexEntryType.class);
 
+	private static final UUID uuidArticle = UUID.fromString("41fa81b3-40bf-4836-836b-db058cc34a98");
+	private static final UUID uuidBook = UUID.fromString("af45af89-198e-425a-8dac-43b4f967062f");
+	private static final UUID uuidBooklet = UUID.fromString("5870e82f-eaa0-4e93-9592-51998fd65c0b");
+	private static final UUID uuidConference = UUID.fromString("c3eecba0-6946-4a01-81cc-f4e6b0d4bba5");
+	private static final UUID uuidInBook = UUID.fromString("c51d8750-bf8f-4c24-83b3-5e3dcbfe69d6");
+	private static final UUID uuidInCollection = UUID.fromString("0b0b526a-aca4-4797-89b4-cc6621b289ef");
+	private static final UUID uuidInProceedings = UUID.fromString("f7dd5244-4578-4d5a-832e-218e4583a0ba");
+	private static final UUID uuidManual = UUID.fromString("a4cc1915-c2b5-4119-984b-5fe3aeb50e4b");
+	private static final UUID uuidMasterThesis = UUID.fromString("72a51d0b-6bb3-4a7e-8d7c-6ec17d287ad3");
+	private static final UUID uuidMisc = UUID.fromString("eeaa8711-28f2-4a9b-99a4-644dd99375b4");
+	private static final UUID uuidPhdThesis = UUID.fromString("6d0fcc2f-7aa1-4e53-b4b7-a3712776e78d");
+	private static final UUID uuidProceedings = UUID.fromString("aad4bf47-6b8d-496e-b302-71926f4ef643");
+	private static final UUID uuidTechReport = UUID.fromString("5ac0aec5-116d-4a54-be5a-5ea58177c365");
+	private static final UUID uuidUnpublished = UUID.fromString("8d06ec29-e138-4e9e-9fc0-5b484c423e53");
+
 	protected static Map<UUID, BibtexEntryType> termMap = null;	
 	
 	// ************* CONSTRUCTORS *************/	
@@ -117,7 +132,7 @@ public class BibtexEntryType extends DefinedTermBase<BibtexEntryType> {
 	 * {@link StrictReferenceBase StrictReferenceBase}.
 	 */
 	public static final BibtexEntryType ARTICLE(){
-		return null;
+		return getTermByUuid(uuidArticle);
 	}
 
 	/**
@@ -129,7 +144,7 @@ public class BibtexEntryType extends DefinedTermBase<BibtexEntryType> {
 	 * {@link StrictReferenceBase StrictReferenceBase}.
 	 */
 	public static final BibtexEntryType BOOK(){
-		return null;
+		return getTermByUuid(uuidBook);
 	}
 
 	/**
@@ -141,7 +156,7 @@ public class BibtexEntryType extends DefinedTermBase<BibtexEntryType> {
 	 * {@link StrictReferenceBase StrictReferenceBase}.
 	 */
 	public static final BibtexEntryType BOOKLET(){
-		return null;
+		return getTermByUuid(uuidBooklet);
 	}
 
 	/**
@@ -154,7 +169,7 @@ public class BibtexEntryType extends DefinedTermBase<BibtexEntryType> {
 	 * {@link StrictReferenceBase StrictReferenceBase}.
 	 */
 	public static final BibtexEntryType INBOOK(){
-		return null;
+		return getTermByUuid(uuidInBook);
 	}
 
 	/**
@@ -166,7 +181,7 @@ public class BibtexEntryType extends DefinedTermBase<BibtexEntryType> {
 	 * {@link StrictReferenceBase StrictReferenceBase}.
 	 */
 	public static final BibtexEntryType INCOLLECTION(){
-		return null;
+		return getTermByUuid(uuidInCollection);
 	}
 
 	/**
@@ -177,7 +192,7 @@ public class BibtexEntryType extends DefinedTermBase<BibtexEntryType> {
 	 * {@link StrictReferenceBase StrictReferenceBase}.
 	 */
 	public static final BibtexEntryType PROCEEDINGS(){
-		return null;
+		return getTermByUuid(uuidProceedings);
 	}
 
 	/**
@@ -191,7 +206,7 @@ public class BibtexEntryType extends DefinedTermBase<BibtexEntryType> {
 	 * @see	#CONFERENCE()
 	 */
 	public static final BibtexEntryType INPROCEEDINGS(){
-		return null;
+		return getTermByUuid(uuidInProceedings);
 	}
 
 	/**
@@ -204,7 +219,7 @@ public class BibtexEntryType extends DefinedTermBase<BibtexEntryType> {
 	 * @see	#INPROCEEDINGS()
 	 */
 	public static final BibtexEntryType CONFERENCE(){
-		return null;
+		return getTermByUuid(uuidConference);
 	}
 
 	/**
@@ -215,7 +230,7 @@ public class BibtexEntryType extends DefinedTermBase<BibtexEntryType> {
 	 * {@link StrictReferenceBase StrictReferenceBase}.
 	 */
 	public static final BibtexEntryType MANUAL(){
-		return null;
+		return getTermByUuid(uuidManual);
 	}
 
 	/**
@@ -226,7 +241,7 @@ public class BibtexEntryType extends DefinedTermBase<BibtexEntryType> {
 	 * {@link StrictReferenceBase StrictReferenceBase}.
 	 */
 	public static final BibtexEntryType MASTERTHESIS(){
-		return null;
+		return getTermByUuid(uuidMasterThesis);
 	}
 
 	/**
@@ -237,7 +252,7 @@ public class BibtexEntryType extends DefinedTermBase<BibtexEntryType> {
 	 * {@link StrictReferenceBase StrictReferenceBase}.
 	 */
 	public static final BibtexEntryType PHDTHESIS(){
-		return null;
+		return getTermByUuid(uuidPhdThesis);
 	}
 
 	/**
@@ -249,7 +264,7 @@ public class BibtexEntryType extends DefinedTermBase<BibtexEntryType> {
 	 * {@link StrictReferenceBase StrictReferenceBase}.
 	 */
 	public static final BibtexEntryType TECHREPORT(){
-		return null;
+		return getTermByUuid(uuidTechReport);
 	}
 
 	/**
@@ -261,7 +276,7 @@ public class BibtexEntryType extends DefinedTermBase<BibtexEntryType> {
 	 * {@link StrictReferenceBase StrictReferenceBase}.
 	 */
 	public static final BibtexEntryType UNPUBLISHED(){
-		return null;
+		return getTermByUuid(uuidUnpublished);
 	}
 
 	/**
@@ -272,7 +287,7 @@ public class BibtexEntryType extends DefinedTermBase<BibtexEntryType> {
 	 * {@link StrictReferenceBase StrictReferenceBase}.
 	 */
 	public static final BibtexEntryType MISC(){
-		return null;
+		return getTermByUuid(uuidMisc);
 	}
 
 	protected static BibtexEntryType getTermByUuid(UUID uuid){
