@@ -586,6 +586,7 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 	 * @see    	   			#getTaxonomicParent()
 	 * @see    	   			#getTaxonomicChildrenCount()
 	 */
+	@Deprecated  //use TaxonNode instead
 	public void addTaxonomicChild(Taxon child, ReferenceBase citation, String microcitation){
 		if (child == null){
 			throw new NullPointerException("Child Taxon is 'null'");
