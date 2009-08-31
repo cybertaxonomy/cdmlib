@@ -162,6 +162,7 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 		if (nonViralName == null){
 			return null;
 		}
+		
 		String result = "";
 		//Autonym
 		if (isAutonym(nonViralName)){
@@ -269,7 +270,9 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 		String result;
 		Rank rank = nonViralName.getRank();
 		
-		if (rank == null){
+		if (nonViralName.isProtectedNameCache()){
+			result = nonViralName.getNameCache();
+		}else if (rank == null){
 			result = getRanklessNameCache(nonViralName);
 		}else if (rank.isInfraSpecific()){
 			result = getInfraSpeciesNameCache(nonViralName);

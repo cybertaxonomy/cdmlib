@@ -115,7 +115,10 @@ public class NonViralNameDefaultCacheStrategyTest {
 	 */
 	@Test
 	public void testGetNameCache() {
-		logger.warn("Not yet implemented");
+		assertEquals("Species Name should be Abies alba", speciesNameString, speciesName.getNameCache());
+		speciesName.setNameCache("Any species");
+		assertEquals("Species Name should be Any species", "Any species", speciesName.getNameCache());
+		assertEquals("Species Name should be Any species", "Any species", speciesName.getTitleCache());
 	}
 
 	/**
