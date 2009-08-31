@@ -9,6 +9,7 @@
 
 package eu.etaxonomy.cdm.model.location;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -36,6 +37,7 @@ import org.hibernate.envers.Audited;
 import au.com.bytecode.opencsv.CSVWriter;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.TermVocabulary;
 
 /**
  * +/- current ISO codes. year given with each entry
@@ -72,6 +74,8 @@ public class WaterbodyOrCountry extends NamedArea {
 	@JoinTable(name="DefinedTermBase_Continent")
 	private Set<Continent> continents = new HashSet<Continent>();
 	
+	protected static Map<UUID, NamedArea> termMap = null;		
+
 	private static final UUID uuidAfghanistan = UUID.fromString("974ce01a-5bce-4be8-b728-a46869354960");
 	private static final UUID uuidAlbaniaPeoplesSocialistRepublicof = UUID.fromString("238a6a93-8857-4fd6-af9e-6437c90817ac");
 	private static final UUID uuidAlgeriaPeoplesDemocraticRepublicof = UUID.fromString("a14b38ac-e963-4c1a-85c2-de1f17f8c72a");
@@ -599,7 +603,6 @@ uuidPersianGulf
 	}
 	
 	public WaterbodyOrCountry() {
-		super();
 	}
 	public WaterbodyOrCountry(String term, String label, String labelAbbrev) {
 		super(term, label, labelAbbrev);
@@ -670,4 +673,12 @@ uuidPersianGulf
 		line[5] = this.getContinents().toString();
 		writer.writeNext(line);
 	}	
+
+	@Override
+	protected void setDefaultTerms(TermVocabulary<NamedArea> termVocabulary) {
+		termMap = new HashMap<UUID, NamedArea>();
+		for (NamedArea term : termVocabulary.getTerms()){
+			termMap.put(term.getUuid(), (NamedArea)term);  //TODO casting
+		}
+	}
 }

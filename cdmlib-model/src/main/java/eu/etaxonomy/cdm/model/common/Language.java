@@ -92,10 +92,8 @@ public class Language extends DefinedTermBase<Language> {
 	private String iso639_2;
 	
 	public Language() {
-		super();
 	}
 	public Language(UUID uuid) {
-		super();
 		this.setUuid(uuid);
 	}
 	public Language(String iso639_1, String iso639_2, String englishLabel, String frenchLabel) throws Exception {
@@ -116,7 +114,6 @@ public class Language extends DefinedTermBase<Language> {
 		this.addRepresentation(new Representation(textFrench, label, labelAbbrev, Language.FRENCH()));
 	}
 	public Language(String text, String label, String labelAbbrev, Language lang) {
-		super();
 		this.addRepresentation(new Representation(text,label,labelAbbrev, lang));
 	}
 	public Language(String label, String text, String labelAbbrev) {

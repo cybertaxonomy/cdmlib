@@ -76,7 +76,6 @@ public class AbsenceTerm extends PresenceAbsenceTermBase<AbsenceTerm> {
 	 * @see #AbsenceTerm(String, String, String)
 	 */
 	public AbsenceTerm() {
-		super();
 	}
 
 	/** 

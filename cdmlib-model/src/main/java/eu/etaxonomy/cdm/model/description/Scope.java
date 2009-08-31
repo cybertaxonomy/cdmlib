@@ -10,6 +10,10 @@
 package eu.etaxonomy.cdm.model.description;
 
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
 import javax.persistence.Entity;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -19,8 +23,10 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 
+import eu.etaxonomy.cdm.model.common.Keyword;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
+import eu.etaxonomy.cdm.model.occurrence.DeterminationModifier;
 
 /**
  * The class representing restrictions for the validity of
@@ -41,6 +47,8 @@ public class Scope extends Modifier {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(Scope.class);
 	
+	protected static Map<UUID, Scope> termMap = null;
+	
 	// ************* CONSTRUCTORS *************/	
 
 	/** 
@@ -48,8 +56,7 @@ public class Scope extends Modifier {
 	 * 
 	 * @see #Scope(String, String, String)
 	 */
-	protected Scope() {
-		super();
+	public Scope() {
 	}
 
 	/** 
@@ -95,5 +102,10 @@ public class Scope extends Modifier {
 	}
 	
 	@Override
-	protected void setDefaultTerms(TermVocabulary<Modifier> termVocabulary) {}
+	protected void setDefaultTerms(TermVocabulary<Modifier> termVocabulary) {
+		termMap = new HashMap<UUID, Scope>();
+		for (Modifier term : termVocabulary.getTerms()){
+			termMap.put(term.getUuid(), (Scope)term);  //TODO casting
+		}
+	}
 }

@@ -23,6 +23,7 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 
+import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 
@@ -80,10 +81,10 @@ public class ReferenceSystem extends DefinedTermBase<ReferenceSystem> {
 
 	protected static ReferenceSystem getTermByUuid(UUID uuid){
 		if (termMap == null){
-			return null;
-		}else{
-			return (ReferenceSystem)termMap.get(uuid);
+			DefaultTermInitializer vocabularyStore = new DefaultTermInitializer();
+			vocabularyStore.initialize();
 		}
+		return (ReferenceSystem)termMap.get(uuid);
 	}
 	
 	public static final ReferenceSystem WGS84(){
@@ -94,7 +95,7 @@ public class ReferenceSystem extends DefinedTermBase<ReferenceSystem> {
 	protected void setDefaultTerms(TermVocabulary<ReferenceSystem> termVocabulary){
 		termMap = new HashMap<UUID, ReferenceSystem>();
 		for (ReferenceSystem term : termVocabulary.getTerms()){
-			termMap.put(term.getUuid(), (ReferenceSystem)term);  //TODO casting
+			termMap.put(term.getUuid(), term); 
 		}
 	}
 

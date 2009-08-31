@@ -9,19 +9,16 @@
 
 package eu.etaxonomy.cdm.model.name;
 
-import java.util.UUID;
-
 import javax.persistence.Entity;
-import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.common.OrderedTermBase;
-import eu.etaxonomy.cdm.model.common.TermVocabulary;
 
 /**
  * The class representing status (categories) of {@link SpecimenTypeDesignation specimen type designations}
@@ -48,6 +45,10 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "TypeDesignationStatusBase")
+@XmlSeeAlso({
+	NameTypeDesignationStatus.class,
+	SpecimenTypeDesignationStatus.class
+})
 @Entity
 @Audited
 public abstract class TypeDesignationStatusBase<T extends TypeDesignationStatusBase<?>> extends OrderedTermBase<T> {

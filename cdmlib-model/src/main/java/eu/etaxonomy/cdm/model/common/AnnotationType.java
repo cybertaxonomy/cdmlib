@@ -53,7 +53,6 @@ public class AnnotationType extends DefinedTermBase<AnnotationType> {
 	 * @param label
 	 */
 	public AnnotationType() {
-		super();
 	}
 	
 	/**

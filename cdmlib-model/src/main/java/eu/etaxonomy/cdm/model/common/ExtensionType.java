@@ -53,7 +53,6 @@ public class ExtensionType extends DefinedTermBase<ExtensionType> {
 	protected static Map<UUID, ExtensionType> termMap = null;		
 
 	public ExtensionType() {
-		super();
 	}
 	public ExtensionType(String term, String label, String labelAbbrev) {
 		super(term, label, labelAbbrev);
@@ -115,7 +114,7 @@ public class ExtensionType extends DefinedTermBase<ExtensionType> {
 	protected void setDefaultTerms(TermVocabulary<ExtensionType> termVocabulary) {
 		termMap = new HashMap<UUID, ExtensionType>();
 		for (ExtensionType term : termVocabulary.getTerms()){
-			termMap.put(term.getUuid(), (ExtensionType)term);
+			termMap.put(term.getUuid(), term);
 		}
 	}
 

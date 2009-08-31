@@ -188,7 +188,6 @@ public class Feature extends DefinedTermBase<Feature> {
 	 * @see #Feature(String, String, String)
 	 */
 	public Feature() {
-		super();
 	}
 	
 	/** 

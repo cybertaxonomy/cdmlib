@@ -67,7 +67,6 @@ public abstract class PresenceAbsenceTermBase<T extends PresenceAbsenceTermBase<
 	 * @see #PresenceAbsenceTermBase(String, String, String)
 	 */
 	protected PresenceAbsenceTermBase() {
-		super();
 	}
 
 	/** 

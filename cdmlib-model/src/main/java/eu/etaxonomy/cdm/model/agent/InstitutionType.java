@@ -9,6 +9,10 @@
 
 package eu.etaxonomy.cdm.model.agent;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
 import javax.persistence.Entity;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -17,8 +21,10 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 
+import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
+import eu.etaxonomy.cdm.model.reference.BibtexEntryType;
 
 /**
  * Represents an element of a controlled {@link eu.etaxonomy.cdm.model.common.TermVocabulary vocabulary} for different kinds of institutions.
@@ -38,6 +44,8 @@ public class InstitutionType extends DefinedTermBase<InstitutionType> {
 	private static final long serialVersionUID = 8714866112728127219L;
 	public static final Logger logger = Logger.getLogger(InstitutionType.class);
 
+	protected static Map<UUID, InstitutionType> termMap = null;	
+	
 	// ************* CONSTRUCTORS *************/	
 	/** 
 	 * Class constructor: creates a new empty institution type.
@@ -45,8 +53,6 @@ public class InstitutionType extends DefinedTermBase<InstitutionType> {
 	 * @see #InstitutionType(String, String, String)
 	 */
 	public InstitutionType() {
-		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	/** 
@@ -63,13 +69,21 @@ public class InstitutionType extends DefinedTermBase<InstitutionType> {
 	 */
 	public InstitutionType(String term, String label, String labelAbbrev) {
 		super(term, label, labelAbbrev);
-		// TODO Auto-generated constructor stub
+	}
+
+	protected static InstitutionType getTermByUuid(UUID uuid){
+		if (termMap == null){
+			DefaultTermInitializer vocabularyStore = new DefaultTermInitializer();
+			vocabularyStore.initialize();
+		}
+		return (InstitutionType)termMap.get(uuid);
 	}
 
 	@Override
-	protected void setDefaultTerms(TermVocabulary<InstitutionType> termVocabulary) {
-		// TODO Auto-generated method stub
-		
+	protected void setDefaultTerms(TermVocabulary<InstitutionType> termVocabulary){
+		termMap = new HashMap<UUID, InstitutionType>();
+		for (InstitutionType term : termVocabulary.getTerms()){
+			termMap.put(term.getUuid(), term); 
+		}
 	}
-
 }

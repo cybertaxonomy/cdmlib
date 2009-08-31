@@ -57,7 +57,6 @@ public class Sex extends Scope {
 	 * @see #Sex(String, String, String)
 	 */
 	public Sex() {
-		super();
 	}
 
 	/** 

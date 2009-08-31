@@ -120,7 +120,6 @@ public class TaxonRelationshipType extends RelationshipTermBase<TaxonRelationshi
 	 * @see 	#TaxonRelationshipType(String, String, String, boolean, boolean)
 	 */
 	public TaxonRelationshipType() {
-		super();
 	}
 	/** 
 	 * Class constructor: creates an additional taxon relationship type

@@ -10,9 +10,14 @@
 package eu.etaxonomy.cdm.model.description;
 
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.OrderedTermBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
+import eu.etaxonomy.cdm.model.location.NamedArea;
 
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
@@ -47,13 +52,14 @@ public class Modifier extends OrderedTermBase<Modifier> {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(Modifier.class);
 	
+	protected static Map<UUID, Modifier> termMap = null;
+	
 	/** 
 	 * Class constructor: creates a new empty modifier instance.
 	 * 
 	 * @see #Modifier(String, String, String)
 	 */
-	protected Modifier(){
-		super();
+	public Modifier(){
 	}
 	
 
@@ -84,7 +90,10 @@ public class Modifier extends OrderedTermBase<Modifier> {
 
 	@Override
 	protected void setDefaultTerms(TermVocabulary<Modifier> termVocabulary) {
-		// TODO Auto-generated method stub
-		
+		termMap = new HashMap<UUID, Modifier>();
+		for (Modifier term : termVocabulary.getTerms()){
+			termMap.put(term.getUuid(), term);
+		}
 	}
+	
 }

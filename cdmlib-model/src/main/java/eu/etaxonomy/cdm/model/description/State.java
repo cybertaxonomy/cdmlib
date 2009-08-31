@@ -10,6 +10,10 @@
 package eu.etaxonomy.cdm.model.description;
 
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
 import javax.persistence.Entity;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -19,6 +23,7 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 
+import eu.etaxonomy.cdm.model.common.Keyword;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.OrderedTermBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
@@ -42,6 +47,8 @@ public class State extends OrderedTermBase<State> {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(State.class);
 
+	protected static Map<UUID, State> termMap = null;	
+	
 	// ************* CONSTRUCTORS *************/	
 	/** 
 	 * Class constructor: creates a new empty state.
@@ -49,7 +56,6 @@ public class State extends OrderedTermBase<State> {
 	 * @see #State(String, String, String)
 	 */
 	public State() {
-		super();
 	}
 
 	/** 
@@ -93,10 +99,11 @@ public class State extends OrderedTermBase<State> {
 	}
 
 	@Override
-	protected void setDefaultTerms(TermVocabulary<State> termVocabulary) {
-		// TODO Auto-generated method stub
-		
+	protected void setDefaultTerms(TermVocabulary<State> termVocabulary){
+		termMap = new HashMap<UUID, State>();
+		for (State term : termVocabulary.getTerms()){
+			termMap.put(term.getUuid(), term); 
+		}
 	}
-	
 
 }

@@ -1,5 +1,7 @@
 package eu.etaxonomy.cdm.model.occurrence;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.persistence.Entity;
@@ -13,6 +15,8 @@ import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.description.Modifier;
+import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.location.TdwgArea;
 
 /**
  * modifier for a determination.
@@ -30,6 +34,7 @@ public class DeterminationModifier extends Modifier {
 
 	private static final UUID uuidUnknown = UUID.fromString("00000000-0000-0000-0000-000000000000");
 
+	protected static Map<UUID, DeterminationModifier> termMap = null;		
 	
 	/**
 	 * Factory method
@@ -52,7 +57,6 @@ public class DeterminationModifier extends Modifier {
 	 * Constructor
 	 */
 	public DeterminationModifier() {
-		super();
 	}
 
 	
@@ -64,5 +68,10 @@ public class DeterminationModifier extends Modifier {
 	}
 	
 	@Override
-	protected void setDefaultTerms(TermVocabulary<Modifier> termVocabulary) {}
+	protected void setDefaultTerms(TermVocabulary<Modifier> termVocabulary) {
+		termMap = new HashMap<UUID, DeterminationModifier>();
+		for (Modifier term : termVocabulary.getTerms()){
+			termMap.put(term.getUuid(), (DeterminationModifier)term);  //TODO casting
+		}
+	}
 }

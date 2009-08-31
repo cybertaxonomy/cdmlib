@@ -68,7 +68,6 @@ public class StatisticalMeasure extends DefinedTermBase<StatisticalMeasure> {
 	 * @see #StatisticalMeasure(String, String, String)
 	 */
 	public StatisticalMeasure() {
-		super();
 	}
 	public StatisticalMeasure(String term, String label, String labelAbbrev) {
 		super(term, label, labelAbbrev);

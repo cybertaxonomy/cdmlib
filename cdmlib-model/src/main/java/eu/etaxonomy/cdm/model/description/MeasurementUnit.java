@@ -10,6 +10,10 @@
 package eu.etaxonomy.cdm.model.description;
 
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
@@ -41,13 +45,14 @@ public class MeasurementUnit extends DefinedTermBase<MeasurementUnit> {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(MeasurementUnit.class);
 	
+	protected static Map<UUID, MeasurementUnit> termMap = null;		
+
 	/** 
 	 * Class constructor: creates a new empty measurement unit instance.
 	 * 
 	 * @see #MeasurementUnit(String, String, String)
 	 */
-	protected MeasurementUnit(){
-		super();
+	public MeasurementUnit(){
 	}
 
 	/** 
@@ -87,8 +92,11 @@ public class MeasurementUnit extends DefinedTermBase<MeasurementUnit> {
 
 	@Override
 	protected void setDefaultTerms(TermVocabulary<MeasurementUnit> termVocabulary) {
-		// TODO Auto-generated method stub
-		
+		termMap = new HashMap<UUID, MeasurementUnit>();
+		for (MeasurementUnit term : termVocabulary.getTerms()) {
+			termMap.put(term.getUuid(), term); 
+		}
 	}
+		
 
 }

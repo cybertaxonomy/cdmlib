@@ -9,6 +9,10 @@
 
 package eu.etaxonomy.cdm.model.occurrence;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 
@@ -37,6 +41,8 @@ public class PreservationMethod extends DefinedTermBase<PreservationMethod> {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(PreservationMethod.class);
 	
+	protected static Map<UUID, PreservationMethod> termMap = null;
+	
 	/**
 	 * Factory method
 	 * @return
@@ -49,7 +55,6 @@ public class PreservationMethod extends DefinedTermBase<PreservationMethod> {
 	 * Constructor
 	 */
 	public PreservationMethod() {
-		super();
 	}
 	
 	/**
@@ -68,9 +73,10 @@ public class PreservationMethod extends DefinedTermBase<PreservationMethod> {
 	}
 
 	@Override
-	protected void setDefaultTerms(TermVocabulary<PreservationMethod> termVocabulary) {
-		// TODO Auto-generated method stub
-		
+	protected void setDefaultTerms(TermVocabulary<PreservationMethod> termVocabulary){
+		termMap = new HashMap<UUID, PreservationMethod>();
+		for (PreservationMethod term : termVocabulary.getTerms()){
+			termMap.put(term.getUuid(), term); 
+		}
 	}
-	
 }

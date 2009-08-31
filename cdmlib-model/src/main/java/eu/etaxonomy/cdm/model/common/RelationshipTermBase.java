@@ -70,7 +70,6 @@ public abstract class RelationshipTermBase<T extends RelationshipTermBase> exten
 	private Set<Representation> inverseRepresentations = new HashSet<Representation>();
 	
 	public RelationshipTermBase() {
-		super();
 	}
 	public RelationshipTermBase(String term, String label, String labelAbbrev, boolean symmetric, boolean transitive) {
 		super(term, label, labelAbbrev);

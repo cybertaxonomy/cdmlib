@@ -93,7 +93,6 @@ public class PresenceTerm extends PresenceAbsenceTermBase<PresenceTerm> {
 	 * @see #PresenceTerm(String, String, String)
 	 */
 	public PresenceTerm() {
-		super();
 	}
 
 	/** 

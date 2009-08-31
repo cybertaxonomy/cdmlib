@@ -77,7 +77,6 @@ public class HybridRelationshipType extends RelationshipTermBase<HybridRelations
 	 * @see 	#HybridRelationshipType(String, String, String)
 	 */
 	public HybridRelationshipType() {
-		super();
 	}
 	/** 
 	 * Class constructor: creates an additional hybrid relationship type

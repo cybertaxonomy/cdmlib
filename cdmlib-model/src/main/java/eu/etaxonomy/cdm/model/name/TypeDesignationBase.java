@@ -23,6 +23,7 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
@@ -53,6 +54,10 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
     "homotypicalGroup",
     "notDesignated",
     "typeStatus"
+})
+@XmlSeeAlso({
+	NameTypeDesignation.class,
+	SpecimenTypeDesignation.class
 })
 @Entity
 @Audited

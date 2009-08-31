@@ -9,6 +9,7 @@
 
 package eu.etaxonomy.cdm.model.location;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -69,6 +70,8 @@ public class NamedArea extends OrderedTermBase<NamedArea> {
 	private static final long serialVersionUID = 6248434369557403036L;
 	private static final Logger logger = Logger.getLogger(NamedArea.class);
 	
+	protected static Map<UUID, NamedArea> termMap = null;		
+
 	//description of time valid context of this area. e.g. year range
 	private TimePeriod validPeriod = TimePeriod.NewInstance();
 	
@@ -110,7 +113,6 @@ public class NamedArea extends OrderedTermBase<NamedArea> {
 	 * Constructor
 	 */
 	public NamedArea() {
-		super();
 	}
 	
 	public NamedArea(String term, String label, String labelAbbrev) {
@@ -279,7 +281,9 @@ public class NamedArea extends OrderedTermBase<NamedArea> {
 	
 	@Override
 	protected void setDefaultTerms(TermVocabulary<NamedArea> termVocabulary) {
-		// TODO Auto-generated method stub
-		
+		termMap = new HashMap<UUID, NamedArea>();
+		for (NamedArea term : termVocabulary.getTerms()){
+			termMap.put(term.getUuid(), term);
+		}
 	}
 }

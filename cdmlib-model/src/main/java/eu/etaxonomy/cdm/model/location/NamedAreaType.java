@@ -64,7 +64,6 @@ public class NamedAreaType extends DefinedTermBase<NamedAreaType> {
 	}
 	
 	public NamedAreaType(){
-		super();
 	}	
 	
 	/**

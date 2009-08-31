@@ -62,7 +62,6 @@ public class RightsTerm extends DefinedTermBase<RightsTerm> {
 	 * Default Constructor
 	 */
 	public RightsTerm() {
-		super();
 	}
 
 	/**

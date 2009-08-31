@@ -63,7 +63,6 @@ public class MarkerType extends DefinedTermBase<MarkerType> {
 	 * @param label
 	 */
 	public MarkerType() {
-		super();
 	}
 	
 	/**

@@ -80,7 +80,6 @@ public class NamedAreaLevel extends OrderedTermBase<NamedAreaLevel> {
 	 * Constructor
 	 */
 	public NamedAreaLevel() {
-		super();
 	}
 
 	protected NamedAreaLevel(String term, String label, String labelAbbrev) {

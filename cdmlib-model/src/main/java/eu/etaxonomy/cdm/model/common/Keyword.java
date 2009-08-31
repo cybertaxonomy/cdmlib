@@ -10,6 +10,10 @@
 package eu.etaxonomy.cdm.model.common;
 
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
 import javax.persistence.Entity;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -33,6 +37,8 @@ public class Keyword extends OrderedTermBase<Keyword> {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(Keyword.class);
 
+	protected static Map<UUID, Keyword> termMap = null;		
+	
 	public static Keyword NewInstance(){
 		return new Keyword();
 	}
@@ -44,7 +50,6 @@ public class Keyword extends OrderedTermBase<Keyword> {
 
 	
 	public Keyword() {
-		super();
 	}
 
 	public Keyword(String term, String label, String labelAbbrev) {
@@ -53,8 +58,11 @@ public class Keyword extends OrderedTermBase<Keyword> {
 
 
 	@Override
-	protected void setDefaultTerms(TermVocabulary<Keyword> termVocabulary) {
-		// TODO Auto-generated method stub
+	protected void setDefaultTerms(TermVocabulary<Keyword> termVocabulary){
+		termMap = new HashMap<UUID, Keyword>();
+		for (Keyword term : termVocabulary.getTerms()){
+			termMap.put(term.getUuid(), term); 
+		}
 	}
 
 }

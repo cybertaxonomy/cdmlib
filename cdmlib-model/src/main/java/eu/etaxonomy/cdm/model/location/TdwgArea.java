@@ -130,7 +130,7 @@ public class TdwgArea extends NamedArea {
 		termMap = new HashMap<UUID, TdwgArea>();
 		for (NamedArea term : termVocabulary.getTerms()){
 			termMap.put(term.getUuid(), (TdwgArea)term);  //TODO casting
-			addTdwgArea((NamedArea)term);
+			addTdwgArea(term);
 		}
 	}
 	

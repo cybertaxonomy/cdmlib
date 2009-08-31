@@ -10,6 +10,10 @@
 package eu.etaxonomy.cdm.model.reference;
 
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
 import javax.persistence.Entity;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -19,7 +23,11 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 
+import eu.etaxonomy.cdm.model.agent.InstitutionType;
+import eu.etaxonomy.cdm.model.common.AnnotationType;
+import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
+import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 
 /**
@@ -45,6 +53,7 @@ public class BibtexEntryType extends DefinedTermBase<BibtexEntryType> {
 	private static final long serialVersionUID = 1603469685147239870L;
 	private static final Logger logger = Logger.getLogger(BibtexEntryType.class);
 
+	protected static Map<UUID, BibtexEntryType> termMap = null;	
 	
 	// ************* CONSTRUCTORS *************/	
 	/** 
@@ -52,8 +61,7 @@ public class BibtexEntryType extends DefinedTermBase<BibtexEntryType> {
 	 * 
 	 * @see 	#BibtexEntryType(String, String, String)
 	 */
-	protected BibtexEntryType() {
-		super();
+	public BibtexEntryType() {
 	}
 
 	/** 
@@ -267,11 +275,19 @@ public class BibtexEntryType extends DefinedTermBase<BibtexEntryType> {
 		return null;
 	}
 
-	@Override
-	protected void setDefaultTerms(
-			TermVocabulary<BibtexEntryType> termVocabulary) {
-		// TODO Auto-generated method stub
-		
+	protected static BibtexEntryType getTermByUuid(UUID uuid){
+		if (termMap == null){
+			DefaultTermInitializer vocabularyStore = new DefaultTermInitializer();
+			vocabularyStore.initialize();
+		}
+		return (BibtexEntryType)termMap.get(uuid);
 	}
 	
-}
+	protected void setDefaultTerms(TermVocabulary<BibtexEntryType> termVocabulary){
+		termMap = new HashMap<UUID, BibtexEntryType>();
+		for (BibtexEntryType term : termVocabulary.getTerms()){
+			termMap.put(term.getUuid(), term); 
+		}
+	}
+	
+	}

@@ -41,7 +41,7 @@ public class Continent extends NamedArea {
 	private static final long serialVersionUID = 4650684072484353151L;
 	private static final Logger logger = Logger.getLogger(Continent.class);
 
-	protected static Map<UUID, NamedArea> termMap = null;		
+	protected static Map<UUID, Continent> termMap = null;		
 
 	private static final UUID uuidEurope = UUID.fromString("3b69f979-408c-4080-b573-0ad78a315610");
 	private static final UUID uuidAfrica = UUID.fromString("c204c529-d8d2-458f-b939-96f0ebd2cbe8");
@@ -74,7 +74,6 @@ public class Continent extends NamedArea {
 	 * Constructor
 	 */
 	public Continent() {
-		super();
 	}
 	
 	private Continent(String term, String label, String labelAbbrev) {
@@ -142,9 +141,9 @@ public class Continent extends NamedArea {
 	
 	@Override
 	protected void setDefaultTerms(TermVocabulary<NamedArea> termVocabulary) {
-		termMap = new HashMap<UUID, NamedArea>();
+		termMap = new HashMap<UUID, Continent>();
 		for (NamedArea term : termVocabulary.getTerms()){
-			termMap.put(term.getUuid(), (NamedArea)term);  //TODO casting
+			termMap.put(term.getUuid(), (Continent)term);  //TODO casting
 		}
 	}
 

@@ -98,7 +98,6 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	 * @see 	#NameRelationshipType(String, String, String, boolean, boolean)
 	 */
 	public NameRelationshipType() {
-		super();
 	}
 	
 	/** 

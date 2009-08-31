@@ -12,12 +12,20 @@ package eu.etaxonomy.cdm.model.common;
 
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.model.agent.InstitutionType;
 import eu.etaxonomy.cdm.model.description.AbsenceTerm;
 import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.description.MeasurementUnit;
+import eu.etaxonomy.cdm.model.description.Modifier;
 import eu.etaxonomy.cdm.model.description.PresenceTerm;
+import eu.etaxonomy.cdm.model.description.Scope;
 import eu.etaxonomy.cdm.model.description.Sex;
+import eu.etaxonomy.cdm.model.description.Stage;
+import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.StatisticalMeasure;
+import eu.etaxonomy.cdm.model.description.TextFormat;
 import eu.etaxonomy.cdm.model.location.Continent;
+import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
 import eu.etaxonomy.cdm.model.location.ReferenceSystem;
@@ -33,6 +41,7 @@ import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEventType;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationModifier;
 import eu.etaxonomy.cdm.model.occurrence.PreservationMethod;
+import eu.etaxonomy.cdm.model.reference.BibtexEntryType;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 
@@ -69,7 +78,17 @@ public enum VocabularyEnum {
 	RightsTerm("8627c526-73af-44d9-902c-11c1f11b60b4", RightsTerm.class),
 	NameTypeDesignationStatus("ab60e738-4d09-4c24-a1b3-9466b01f9f55", NameTypeDesignationStatus.class),
 	ExtensionType("117cc307-5bd4-4b10-9b2f-2e14051b3b20",ExtensionType.class),
-	ReferenceSystem("ec6376e5-0c9c-4f5c-848b-b288e6c17a86",ReferenceSystem.class)
+	ReferenceSystem("ec6376e5-0c9c-4f5c-848b-b288e6c17a86",ReferenceSystem.class),
+	BibtexEntryType("dd72a0b2-2159-4657-a8e6-0210c332e2ed", BibtexEntryType.class),
+	InstitutionType("29ad808b-3126-4274-be81-4561e7afc76f", InstitutionType.class),
+	Keyword("332634b2-8ab5-43f8-ae78-f466e9dae1f3", Keyword.class),
+	MeasurementUnit("3b82c375-66bb-4636-be74-dc9cd087292a", MeasurementUnit.class),
+	Scope("109bf76d-6f55-43d5-9ec5-6115d9490faa", Scope.class),
+	Stage("4d475bea-c3ae-4494-be16-6796f22fabac", Stage.class),
+	State("ceb65a53-c6cf-42bb-862f-daca7f2fc11d", State.class),
+	TextFormat("ac3926d2-5f6b-45a5-9cf9-be2a5a43f9b3", TextFormat.class),
+//	NamedArea("57c25420-ae94-4848-9513-2aff9bdb502c", NamedArea.class),
+	Modifier("b9434774-4931-4f1e-99cb-40a3ecd61777", Modifier.class)
 	;
 	
 	

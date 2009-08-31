@@ -72,10 +72,8 @@ public class DerivationEventType extends DefinedTermBase<DerivationEventType> {
 	 * Constructor
 	 */
 	public DerivationEventType() {
-		super();
 	}
 
-	
 	
 	/**
 	 * Constructor

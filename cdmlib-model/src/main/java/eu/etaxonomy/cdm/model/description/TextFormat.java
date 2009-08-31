@@ -10,6 +10,10 @@
 package eu.etaxonomy.cdm.model.description;
 
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
 import javax.persistence.Entity;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -40,14 +44,15 @@ public class TextFormat extends DefinedTermBase<TextFormat> {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TextFormat.class);
 	
+	protected static Map<UUID, TextFormat> termMap = null;
+	
 	// ************* CONSTRUCTORS *************/	
 	/** 
 	 * Class constructor: creates a new empty text format instance.
 	 * 
 	 * @see 	#TextFormat(String, String, String, boolean, boolean)
 	 */
-	protected TextFormat() {
-		super();
+	public TextFormat() {
 	}
 
 	/** 
@@ -90,9 +95,11 @@ public class TextFormat extends DefinedTermBase<TextFormat> {
 	}
 
 	@Override
-	protected void setDefaultTerms(TermVocabulary<TextFormat> termVocabulary) {
-		// TODO Auto-generated method stub
-		
+	protected void setDefaultTerms(TermVocabulary<TextFormat> termVocabulary){
+		termMap = new HashMap<UUID, TextFormat>();
+		for (TextFormat term : termVocabulary.getTerms()){
+			termMap.put(term.getUuid(), term); 
+		}
 	}
 	
 }

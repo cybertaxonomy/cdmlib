@@ -9,10 +9,15 @@
 
 package eu.etaxonomy.cdm.model.description;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 
 import javax.persistence.*;
@@ -42,14 +47,15 @@ public class Stage extends Scope {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(Stage.class);
 
+	private static Map<UUID, Stage> termMap = null;
+	
 	// ************* CONSTRUCTORS *************/	
 	/** 
 	 * Class constructor: creates a new empty life stage instance.
 	 * 
 	 * @see #Stage(String, String, String)
 	 */
-	protected Stage(){
-		super();
+	public Stage(){
 	}
 
 	/** 
@@ -92,4 +98,11 @@ public class Stage extends Scope {
 		return new Stage(term, label, labelAbbrev);
 	}
 	
+	@Override
+	protected void setDefaultTerms(TermVocabulary<Modifier> termVocabulary) {
+		termMap = new HashMap<UUID, Stage>();
+		for (Modifier term : termVocabulary.getTerms()){
+			termMap.put(term.getUuid(), (Stage)term);  //TODO casting
+		}
+	}
 }
