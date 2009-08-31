@@ -48,6 +48,7 @@ import javax.persistence.*;
 @Entity
 @Audited
 public class Rank extends OrderedTermBase<Rank> {
+	private static final long serialVersionUID = -8648081681348758485L;
 	private static final Logger logger = Logger.getLogger(Rank.class);
 	
 	private static final UUID uuidEmpire = UUID.fromString("ac470211-1586-4b24-95ca-1038050b618d");
@@ -636,8 +637,7 @@ public class Rank extends OrderedTermBase<Rank> {
 		}else if (rankName.equalsIgnoreCase("Series")){ return Rank.SERIES();
 		}else if (rankName.equalsIgnoreCase("Subseries")){ return Rank.SUBSERIES();
 		}else if (rankName.equalsIgnoreCase("Aggregate")){ return Rank.SPECIESAGGREGATE();
-		//TODO
-		//}else if (rankName.equalsIgnoreCase("Speciesgroup")){ return Rank.SPECIESGROUP();
+		}else if (rankName.equalsIgnoreCase("Speciesgroup")){ return Rank.SPECIESGROUP();
 		}else if (rankName.equalsIgnoreCase("Species")){ return Rank.SPECIES();
 		}else if (rankName.equalsIgnoreCase("Subspecies")){ return Rank.SUBSPECIES();
 		}else if (rankName.equalsIgnoreCase("Convarietas")){ return Rank.CONVAR();
