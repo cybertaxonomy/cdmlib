@@ -166,9 +166,15 @@ public class TaxonNode  extends AnnotatableEntity {
 	public boolean removeChild(TaxonNode node){
 		boolean result = false;
 		if (node != null){
-			for (TaxonNode grandChildNode : node.getChildNodes()){
-				node.removeChild(grandChildNode);
-			}
+			// two iterations because of ConcurrentModificationErrors
+            Set<TaxonNode> removeNodes = new HashSet<TaxonNode>(); 
+            for (TaxonNode grandChildNode : node.getChildNodes()) { 
+                    removeNodes.add(grandChildNode); 
+            } 
+            for (TaxonNode childNode : removeNodes) { 
+                    childNode.removeChild(node); 
+            } 
+            
 			result = childNodes.remove(node);
 			this.countChildren--;
 			if (this.countChildren < 0){
