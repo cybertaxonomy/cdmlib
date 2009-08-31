@@ -89,6 +89,7 @@ public class Rank extends OrderedTermBase<Rank> {
 	private static final UUID uuidSeries = UUID.fromString("d7381ecf-48f8-429b-9c54-f461656978cd");
 	private static final UUID uuidSubseries = UUID.fromString("80c9a263-f4db-4a13-b6c2-b7fec1aa1200");
 	private static final UUID uuidSpeciesAggregate = UUID.fromString("1ecae058-4217-4f75-9c27-6d8ba099ac7a");
+	private static final UUID uuidSpeciesGroup = UUID.fromString("d1988a11-292b-46fa-8fb7-bc64ea6d8fc6");
 	private static final UUID uuidInfragenericTaxon = UUID.fromString("41bcc6ac-37d3-4fd4-bb80-3cc5b04298b9");
 	private static final UUID uuidSpecies = UUID.fromString("b301f787-f319-4ccc-a10f-b4ed3b99a86d");
 	private static final UUID uuidSubspecificAggregate = UUID.fromString("72c248b9-027d-4402-b375-dd4f0850c9ad");
@@ -137,6 +138,7 @@ public class Rank extends OrderedTermBase<Rank> {
 	private static Rank SPECIES;
 	private static Rank INFRAGENERICTAXON;
 	private static Rank SPECIESAGGREGATE;
+	private static Rank SPECIESGROUP;
 	private static Rank SUBSERIES;
 	private static Rank SERIES;
 	private static Rank SUBSECTION;
@@ -319,6 +321,9 @@ public class Rank extends OrderedTermBase<Rank> {
 	public static final Rank SPECIESAGGREGATE(){
 	  return SPECIESAGGREGATE;
 	}
+	public static final Rank SPECIESGROUP(){
+	  return SPECIESGROUP;
+	}
 	public static final Rank INFRAGENERICTAXON(){
 	  return INFRAGENERICTAXON;
 	}
@@ -432,6 +437,17 @@ public class Rank extends OrderedTermBase<Rank> {
 		return (this.isLower(Rank.GENUS()) && this.isHigher(Rank.SPECIES()));
 	}
 
+	/**
+	 * Returns true if this rank indicates a rank that aggregates species
+	 * like species aggregates or species groups, false otherwise. This methods 
+	 * currently returns false for all user defined ranks.
+	 * @return
+	 */
+	@Transient
+	public boolean isSpeciesAggregate(){
+		return (this.equals(Rank.SPECIESAGGREGATE) || this.equals(Rank.SPECIESGROUP()));
+	}	
+	
 	/**
 	 * Returns the boolean value indicating whether <i>this</i> rank is the species
 	 * rank (true) or not (false). Returns false if <i>this</i> rank is null.
@@ -586,7 +602,7 @@ public class Rank extends OrderedTermBase<Rank> {
 	public static Rank getRankByName(String rankName)throws UnknownCdmTypeException{
 		return getRankByName(rankName, false);
 	}
-
+	
 
 	/**
 	 * Returns the rank identified through a name.
@@ -690,6 +706,30 @@ public class Rank extends OrderedTermBase<Rank> {
 			return "xxx.";
 		}
 	}
+	
+	public String getInfraGenericMarker() throws UnknownCdmTypeException{
+		if (! this.isInfraGeneric()){
+			throw new IllegalStateException("An infrageneric marker is only available for a infrageneric rank but was asked for rank: " + this.toString());
+		}else if (this.equals(Rank.SUBGENUS())){
+			return "subg.";
+		}else if (this.equals(Rank.INFRAGENUS())){
+			return "infrag.";  //??
+		}else if (this.equals(Rank.SECTION())){ 
+			return "sect.";
+		}else if (this.equals(Rank.SUBSECTION())){
+			return "subsect.";
+		}else if (this.equals(Rank.SERIES())){
+			return "ser.";
+		}else if (this.equals(Rank.SUBSERIES())){
+			return "subser.";
+		}else if (this.equals(Rank.SPECIESAGGREGATE())){
+			return "aggr.";
+		}else if (this.equals(Rank.SPECIESGROUP())){
+			return "group";
+		}else {
+			throw new UnknownCdmTypeException("Abbreviation for rank unknown: " + this.toString());
+		}
+	}
 
 	@Override
 	protected void setDefaultTerms(TermVocabulary<Rank> termVocabulary) {
@@ -728,6 +768,7 @@ public class Rank extends OrderedTermBase<Rank> {
 		Rank.SPECIALFORM = termVocabulary.findTermByUuid(Rank.uuidSpecialForm);
 		Rank.SPECIES = termVocabulary.findTermByUuid(Rank.uuidSpecies);
 		Rank.SPECIESAGGREGATE = termVocabulary.findTermByUuid(Rank.uuidSpeciesAggregate);
+		Rank.SPECIESGROUP = termVocabulary.findTermByUuid(Rank.uuidSpeciesGroup);
 		Rank.SUBCLASS = termVocabulary.findTermByUuid(Rank.uuidSubclass);
 		Rank.SUBDIVISION = termVocabulary.findTermByUuid(Rank.uuidSubdivision);
 		Rank.SUBFAMILY = termVocabulary.findTermByUuid(Rank.uuidSubfamily);

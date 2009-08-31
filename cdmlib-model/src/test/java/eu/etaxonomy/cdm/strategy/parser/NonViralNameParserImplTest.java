@@ -573,6 +573,14 @@ public class NonViralNameParserImplTest {
 		assertNull(((BookSection)nameBookSection.getNomenclaturalReference()).getInBook().getDatePublished().getStart());
 		assertEquals("1905", ((BookSection)nameBookSection.getNomenclaturalReference()).getDatePublished().getYear());
 
+		String strXXXs = "Abies alba, Soer der 1987";
+		NonViralName<?> problemName = parser.parseReferencedName(strXXXs, null, null);
+		assertTrue(problemName.hasProblem());
+		parser.parseReferencedName(problemName, strBookSection, null, true);
+		assertFalse(problemName.hasProblem());
+		
+		
+		
 	}
 
 	private void assertFullRefNameStandard(NonViralName<?> name){

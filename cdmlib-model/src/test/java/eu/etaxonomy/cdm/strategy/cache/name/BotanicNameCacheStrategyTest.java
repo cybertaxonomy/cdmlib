@@ -214,7 +214,7 @@ public class BotanicNameCacheStrategyTest {
 		String methodName = "getInfraGenusNameCache";
 		Method method = getMethod(NonViralNameDefaultCacheStrategy.class, methodName, NonViralName.class);
 		this.getValue(method, strategy, subGenusName);
-		assertEquals("Genus (InfraGenericPart)", strategy.getNameCache(subGenusName));
+		assertEquals("Genus subg. InfraGenericPart", strategy.getNameCache(subGenusName));
 	}
 
 	/**

@@ -28,6 +28,7 @@ import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
 
 /**
@@ -162,6 +163,7 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 			return null;
 		}
 		String result = "";
+		//Autonym
 		if (isAutonym(nonViralName)){
 			String speciesPart = getSpeciesNameCache(nonViralName);
 			//TODO should this include basionym authors and ex authors
@@ -192,10 +194,23 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 			result = result.trim().replace("null", "");
 		}else{ //not Autonym
 			String nameCache = CdmUtils.Nz(getNameCache(nonViralName));
-			String authorCache = CdmUtils.Nz(getAuthorshipCache(nonViralName));
-			result = CdmUtils.concat(NameAuthorSeperator, nameCache, authorCache);
+			if (nameIncludesAuthorship(nonViralName)){
+				String authorCache = CdmUtils.Nz(getAuthorshipCache(nonViralName));
+				result = CdmUtils.concat(NameAuthorSeperator, nameCache, authorCache);
+			}else{
+				result = nameCache;
+			}
 		}
 		return result;
+	}
+	
+	protected boolean nameIncludesAuthorship(NonViralName nonViralName){
+		Rank rank = nonViralName.getRank();
+		if (rank != null && rank.isSpeciesAggregate()){
+			return false;
+		}else{
+			return true;
+		}
 	}
 	
 	
@@ -407,12 +422,39 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 		
 		protected String getInfraGenusNameCache(NonViralName nonViralName){
 			String result;
+			Rank rank = nonViralName.getRank();
+			if (rank.isSpeciesAggregate()){
+				return getSpeciesAggregateCache(nonViralName);
+			}
+			String infraGenericMarker = "xxx.";
+			if (rank != null){
+				try {
+					infraGenericMarker = rank.getInfraGenericMarker();
+				} catch (UnknownCdmTypeException e) {
+					infraGenericMarker = "'unhandled infrageneric rank'";
+				}
+			}
 			result = CdmUtils.Nz(nonViralName.getGenusOrUninomial());
-			result += " (" + (CdmUtils.Nz(nonViralName.getInfraGenericEpithet()) + ")").trim().replace("null", "");
+			result += " " + infraGenericMarker + " " + (CdmUtils.Nz(nonViralName.getInfraGenericEpithet())).trim().replace("null", "");
 			result = addAppendedPhrase(result, nonViralName);
 			return result;
 		}
 
+//		aggr.|agg.|group
+		protected String getSpeciesAggregateCache(NonViralName nonViralName){
+			String result;
+			result = CdmUtils.Nz(nonViralName.getGenusOrUninomial());
+			result += " " + CdmUtils.Nz(nonViralName.getSpecificEpithet()).trim().replace("null", "");
+			String marker;
+			try {
+				marker = nonViralName.getRank().getInfraGenericMarker();
+			} catch (UnknownCdmTypeException e) {
+				marker = "'unknown aggregat type'";
+			}
+			result += " " + marker;
+			result = addAppendedPhrase(result, nonViralName);
+			return result;
+		}
 		
 		protected String getSpeciesNameCache(NonViralName nonViralName){
 			String result;

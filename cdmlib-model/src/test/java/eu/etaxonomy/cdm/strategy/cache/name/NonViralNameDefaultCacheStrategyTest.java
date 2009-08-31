@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.strategy.cache.name;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import junit.framework.Assert;
 
 import org.apache.log4j.Logger;
 import org.junit.Before;
@@ -21,6 +22,7 @@ import eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
+import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.reference.Book;
 
@@ -212,6 +214,32 @@ public class NonViralNameDefaultCacheStrategyTest {
 		assertEquals(basComSeparator, strategy.getBasionymAuthorCombinationAuthorSeperator());
 		strategy.setBasionymAuthorCombinationAuthorSeperator(null);
 		assertNull(strategy.getBasionymAuthorCombinationAuthorSeperator());
+	}
+	
+	@Test
+	public void testGetInfraGericNames(){
+		String author = "Anyauthor";
+		NonViralName nonViralName = NonViralName.NewInstance(Rank.SUBGENUS());
+		nonViralName.setGenusOrUninomial("Genus");
+		nonViralName.setInfraGenericEpithet("subgenus");
+		nonViralName.setAuthorshipCache(author);
+		//test ordinary infrageneric
+		String subGenusNameCache = strategy.getInfraGenusNameCache(nonViralName);
+		assertEquals("Subgenus name should be 'Genus subg. subgenus'.", "Genus subg. subgenus", subGenusNameCache);
+		String subGenusTitle = strategy.getTitleCache(nonViralName);
+		assertEquals("Subgenus name should be 'Genus subg. subgenus Anyauthor'.", "Genus subg. subgenus Anyauthor", subGenusTitle);
+		//test species aggregates and species groups
+		nonViralName.setRank(Rank.SPECIESAGGREGATE());
+		nonViralName.setSpecificEpithet("species");
+		String aggrNameCache = strategy.getInfraGenusNameCache(nonViralName);
+		assertEquals("Species aggregate name should be 'Genus species aggr.'.", "Genus species aggr.", aggrNameCache);
+		String aggrNameTitle = strategy.getTitleCache(nonViralName);
+		Assert.assertTrue("Species aggregate should not include author information.", aggrNameTitle.indexOf(author) == -1);
+		assertEquals("Species aggregate name should be 'Genus species aggr.'.", "Genus species aggr.", aggrNameTitle);
+		nonViralName.setRank(Rank.SPECIESGROUP());
+		String groupNameTitle = strategy.getTitleCache(nonViralName);
+		assertEquals("Species group name should be 'Genus species group'.", "Genus species group", groupNameTitle);
+		
 	}
 
 }
