@@ -59,7 +59,9 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 @Audited
 public class SpecimenTypeDesignation extends TypeDesignationBase<SpecimenTypeDesignationStatus>
 implements ITypeDesignation {
-	
+	private static final long serialVersionUID = 6481627446997275007L;
+
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(SpecimenTypeDesignation.class);
 	
 	@XmlElement(name = "TypeSpecimen")
