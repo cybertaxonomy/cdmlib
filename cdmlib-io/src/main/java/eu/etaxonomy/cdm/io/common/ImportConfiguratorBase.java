@@ -68,7 +68,6 @@ public abstract class ImportConfiguratorBase<STATE extends ImportStateBase> exte
 	private Person commentator =  Person.NewTitledInstance("automatic BerlinModel2CDM importer");
 	
 	private Language factLanguage = Language.ENGLISH();
-	private CdmApplicationController cdmApp = null;
 	protected Class<ICdmIO>[] ioClassList;
 	
 	protected ICdmIO[] ioList;

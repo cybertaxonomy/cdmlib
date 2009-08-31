@@ -15,14 +15,13 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
-import eu.etaxonomy.cdm.io.common.ImportStateBase;
 import eu.etaxonomy.cdm.io.excel.common.ExcelImportConfiguratorBase;
-import eu.etaxonomy.cdm.io.excel.common.ExcelImportState;
+import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.reference.Database;
+import eu.etaxonomy.cdm.model.reference.Generic;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
 public class NormalExplicitImportConfigurator extends ExcelImportConfiguratorBase implements IImportConfigurator {
-
 	private static final Logger logger = Logger.getLogger(NormalExplicitImportConfigurator.class);
 	
 //	@SuppressWarnings("unchecked")
@@ -33,8 +32,8 @@ public class NormalExplicitImportConfigurator extends ExcelImportConfiguratorBas
 	};
 	
 	public static NormalExplicitImportConfigurator NewInstance(String url,
-			ICdmDataSource destination){
-		return new NormalExplicitImportConfigurator(url, destination);
+			ICdmDataSource destination, NomenclaturalCode nomenclaturalCode){
+		return new NormalExplicitImportConfigurator(url, destination, nomenclaturalCode);
 	}
 	
 	
@@ -42,11 +41,12 @@ public class NormalExplicitImportConfigurator extends ExcelImportConfiguratorBas
 	 * @param url
 	 * @param destination
 	 */
-	private NormalExplicitImportConfigurator(String url, ICdmDataSource destination) {
+	private NormalExplicitImportConfigurator(String url, ICdmDataSource destination, NomenclaturalCode nomenclaturalCode) {
 		super(url, destination);
 		setSource(url);
 		setDestination(destination);
 		setDbSchemaValidation(DbSchemaValidation.CREATE);
+		setNomenclaturalCode(nomenclaturalCode);
 	}
 	
 	
@@ -55,8 +55,8 @@ public class NormalExplicitImportConfigurator extends ExcelImportConfiguratorBas
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#getNewState()
 	 */
-	public ExcelImportState getNewState() {
-		return new ExcelImportState(this);
+	public TaxonExcelImportState getNewState() {
+		return new TaxonExcelImportState(this);
 	}
 
 	/* (non-Javadoc)
@@ -83,8 +83,8 @@ public class NormalExplicitImportConfigurator extends ExcelImportConfiguratorBas
 		//TODO
 		if (this.sourceReference == null){
 			logger.warn("getSource Reference not yet fully implemented");
-			sourceReference = Database.NewInstance();
-			sourceReference.setTitleCache("Distribution data import");
+			sourceReference = Generic.NewInstance();
+			sourceReference.setTitleCache("Excel Taxon import");
 		}
 		return sourceReference;
 	}

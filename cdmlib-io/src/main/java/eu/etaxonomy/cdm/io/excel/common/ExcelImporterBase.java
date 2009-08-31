@@ -12,17 +12,13 @@ package eu.etaxonomy.cdm.io.excel.common;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.common.ExcelUtils;
-import eu.etaxonomy.cdm.io.common.CdmIoBase;
-import eu.etaxonomy.cdm.io.common.IImportConfigurator;
-import eu.etaxonomy.cdm.io.common.MapWrapper;
-import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.io.common.CdmImportBase;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 
 /**
@@ -30,7 +26,7 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
  * @created 17.12.2008
  * @version 1.0
  */
-public abstract class ExcelImporterBase extends CdmIoBase<ExcelImportState> {
+public abstract class ExcelImporterBase<STATE extends ExcelImportState> extends CdmImportBase<ExcelImportConfiguratorBase, STATE> {
 	private static final Logger logger = Logger.getLogger(ExcelImporterBase.class);
 
 	protected static final String SCIENTIFIC_NAME_COLUMN = "ScientificName";
@@ -47,9 +43,7 @@ public abstract class ExcelImporterBase extends CdmIoBase<ExcelImportState> {
      * @param stores (not used)
      */
 	@Override
-//	protected boolean doInvoke(IImportConfigurator config,
-//			Map<String, MapWrapper<? extends CdmBase>> stores) {
-	protected boolean doInvoke(ExcelImportState state){
+	protected boolean doInvoke(STATE state){
 		
 		boolean success = false;
 		
@@ -63,28 +57,40 @@ public abstract class ExcelImporterBase extends CdmIoBase<ExcelImportState> {
 			return false;
 		}
 		// read and save all rows of the excel worksheet
-    	try {
-			recordList = ExcelUtils.parseXLS((String)state.getConfig().getSource());
+		String source = (String)state.getConfig().getSource();
+		source = source.replace("file:/", "");
+		try {
+			recordList = ExcelUtils.parseXLS(source);
 		} catch (FileNotFoundException e1) {
-			logger.error("File not found: " + (String)state.getConfig().getSource());
+			logger.error("File not found: " + source);
 			return false;
 		}
     	
     	if (recordList != null) {
     		HashMap<String,String> record = null;
-    		TransactionStatus txStatus = appCtr.startTransaction();
+    		
+    		TransactionStatus txStatus = startTransaction();
 
+    		//first pass
     		for (int i = 0; i < recordList.size(); i++) {
     			record = recordList.get(i);
-    			success = analyzeRecord(record);
-    			success = saveRecord();
+    			success = analyzeRecord(record, state);
+    			success = firstPass(state);
     		}
-    		appCtr.commitTransaction(txStatus);
+    		//second pass
+    		for (int i = 0; i < recordList.size(); i++) {
+    			record = recordList.get(i);
+    			success = analyzeRecord(record, state);
+    			success = secondPass(state);
+        	}
+    		
+    		commitTransaction(txStatus);
+    	}else{
+    		logger.warn("No records found in " + source);
     	}
     	
 		try {
-	    	appCtr.close();
-			logger.debug("End excel data import"); 
+	    	logger.debug("End excel data import"); 
 				
 		} catch (Exception e) {
     		logger.error("Error closing the application context");
@@ -95,7 +101,7 @@ public abstract class ExcelImporterBase extends CdmIoBase<ExcelImportState> {
 	}
 
 	@Override
-	protected boolean doCheck(ExcelImportState state) {
+	protected boolean doCheck(STATE state) {
 		boolean result = true;
 		logger.warn("No check implemented for Excel import");
 		return result;
@@ -107,19 +113,18 @@ public abstract class ExcelImporterBase extends CdmIoBase<ExcelImportState> {
 	 * @param record
 	 * @return
 	 */
-	protected abstract boolean analyzeRecord(HashMap<String,String> record);
+	protected abstract boolean analyzeRecord(HashMap<String,String> record, STATE state);
 	
-	protected abstract boolean saveRecord();
+	protected abstract boolean firstPass(STATE state);
+	protected abstract boolean secondPass(STATE state);
 	
 	
 	public ExcelImportConfiguratorBase getConfigurator() {
-		
 		return configurator;
 	}
 	
 	
 	public CdmApplicationController getApplicationController() {
-		
 		return appCtr;
 	}
 

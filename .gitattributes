@@ -1097,6 +1097,7 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/distribution/DistributionImpor
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/taxa/NormalExplicitImport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/taxa/NormalExplicitImportConfigurator.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/taxa/NormalExplicitRow.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/taxa/TaxonExcelImportState.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/taxa/TaxonExcelImporterBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/faunaEuropaea/FaunaEuropaeaAuthorImport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/faunaEuropaea/FaunaEuropaeaDistributionImport.java -text
@@ -1208,6 +1209,7 @@ cdmlib-io/src/main/resources/schema/xml/XMLSchema.xsd -text
 cdmlib-io/src/main/resources/schema/xml/xml.xsd -text
 cdmlib-io/src/site/site.xml -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/abcd206/SpecimenImportConfiguratorTest.java -text
+cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/excel/taxa/NormalExplicitImportTest.java -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/jaxb/AgentsTest.java -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/jaxb/AnnotationTest.java -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/jaxb/CdmDocumentBuilderTest.java -text
@@ -1239,8 +1241,8 @@ cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/abcd206/SpecimenImportConfigura
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/dataset.dtd -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/excel/taxa/DenormalExplicit.xls -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/excel/taxa/DenormalImplied.xls -text
-cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/excel/taxa/NormalExplicit.xls -text
-cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/excel/taxa/NormalExplicitTest-input.xls -text
+cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/excel/taxa/NormalExplicitImportTest-input.xls -text
+cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/excel/taxa/NormalExplicitImportTest.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/excel/taxa/NormalImplied.xls -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/jaxb/AgentsTest.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/jaxb/AnnotationTest.xml -text

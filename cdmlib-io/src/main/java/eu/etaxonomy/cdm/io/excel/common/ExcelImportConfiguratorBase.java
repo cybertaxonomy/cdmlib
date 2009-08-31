@@ -10,6 +10,8 @@
 package eu.etaxonomy.cdm.io.excel.common;
 
 
+import java.io.InputStream;
+
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
