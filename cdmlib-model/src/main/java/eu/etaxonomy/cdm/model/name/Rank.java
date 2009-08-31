@@ -560,8 +560,7 @@ public class Rank extends OrderedTermBase<Rank> {
 		}else if (abbrev.equalsIgnoreCase("ser.")) { return Rank.SERIES();
 		}else if (abbrev.equalsIgnoreCase("subser.")) { return Rank.SUBSERIES();
 		}else if (abbrev.equalsIgnoreCase("aggr.")) { return Rank.SPECIESAGGREGATE();
-		//TODO
-		//}else if (abbrev.equalsIgnoreCase("group")) { return Rank.SPECIESGROUP();
+		}else if (abbrev.equalsIgnoreCase("group")) { return Rank.SPECIESGROUP();
 		}else if (abbrev.equalsIgnoreCase("sp.")) { return Rank.SPECIES();
 		}else if (abbrev.equalsIgnoreCase("subsp.")) { return Rank.SUBSPECIES();
 		}else if (abbrev.equalsIgnoreCase("convar.")) { return Rank.CONVAR();
