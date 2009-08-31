@@ -362,8 +362,7 @@ public final class BerlinModelTransformer {
 						case 50: return Rank.SERIES();
 						case 52: return Rank.SUBSERIES();
 						case 58: return Rank.SPECIESAGGREGATE();
-						//FIXME
-						//case 59: return Rank.SPECIESAGGREGATE();
+						case 59: return Rank.SPECIESGROUP();
 						case 60: return Rank.SPECIES();
 						case 65: return Rank.SUBSPECIES();
 						case 68: return Rank.CONVAR();
