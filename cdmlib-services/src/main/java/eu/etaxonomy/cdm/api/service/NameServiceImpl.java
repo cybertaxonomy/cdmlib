@@ -356,4 +356,21 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
 		
 		return new DefaultPagerImpl<TaxonNameBase>(pageNumber, numberOfResults, pageSize, results);
 	}
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.service.INameService#getUuidAndTitleCacheOfNames()
+	 */
+	public Map<UUID, String> getUuidAndTitleCacheOfNames() {
+		return dao.getUuidAndTitleCacheOfNames();
+	}
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.service.IService#list(java.lang.Class, java.lang.Integer, java.lang.Integer, java.util.List, java.util.List)
+	 */
+	public <TYPE extends TaxonNameBase> Pager<TYPE> list(Class<TYPE> type,
+			Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
+			List<String> propertyPaths) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

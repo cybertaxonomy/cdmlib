@@ -160,7 +160,7 @@ public class LocationServiceImpl extends ServiceBase<DefinedTermBase,IDefinedTer
 		while(it.hasNext()){
 			
 			NamedArea area =  HibernateProxyHelper.deproxy(it.next(), NamedArea.class);
-			if(area.getPartOf() == null){
+			if(area.getPartOfWorkaround() == null){
 				topLevelTerms.add(area);
 			}
 		}

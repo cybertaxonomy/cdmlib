@@ -23,7 +23,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.database.CdmPersistentDataSource;
+import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
 import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
+import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.model.common.init.TermNotFoundException;
 
 
@@ -85,15 +87,33 @@ public class DatabaseServiceHibernateImpl  implements IDatabaseService, Applicat
 	 * @see eu.etaxonomy.cdm.api.service.IDatabaseService#saveDataSource(eu.etaxonomy.cdm.database.DatabaseTypeEnum, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
 	 */
 	@Transactional(readOnly=false)
+	@Deprecated
 	public CdmPersistentDataSource saveDataSource(String strDataSourceName, DatabaseTypeEnum databaseTypeEnum,
 			String server, String database, String username, String password) throws TermNotFoundException  {
 		return CdmPersistentDataSource.save(strDataSourceName, databaseTypeEnum, server, database, username, password);
+	}
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.service.IDatabaseService#saveDataSource(java.lang.String, eu.etaxonomy.cdm.database.ICdmDataSource)
+	 */
+	public CdmPersistentDataSource saveDataSource(String strDataSourceName,
+			ICdmDataSource dataSource) {
+		return CdmPersistentDataSource.save(strDataSourceName, dataSource);
+	}
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.service.IDatabaseService#updateDataSource(java.lang.String, eu.etaxonomy.cdm.database.CdmPersistentDataSource)
+	 */
+	public CdmPersistentDataSource updateDataSource(String strDataSourceName,
+			CdmPersistentDataSource dataSource) throws DataSourceNotFoundException {
+		return CdmPersistentDataSource.update(strDataSourceName, dataSource);
 	}
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.IDatabaseService#useLocalHsqldb(java.lang.String, java.lang.String, boolean, boolean)
 	 */
 	@Transactional(readOnly=false)
+	@Deprecated
 	public CdmPersistentDataSource saveLocalHsqldb(String strDataSourceName, String databasePath, String databaseName, String username, String password, boolean silent, boolean startServer) {
 		return CdmPersistentDataSource.saveLocalHsqlDb(strDataSourceName, databasePath, databaseName, username, password);
 	}
@@ -101,6 +121,7 @@ public class DatabaseServiceHibernateImpl  implements IDatabaseService, Applicat
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.IDatabaseService#useLocalHsqldb()
 	 */
+	@Deprecated
 	public boolean useLocalDefaultHsqldb()  throws TermNotFoundException{
 		CdmPersistentDataSource dataSource = CdmPersistentDataSource.NewLocalHsqlInstance();
 			return connectToDatasource(dataSource);
@@ -110,6 +131,7 @@ public class DatabaseServiceHibernateImpl  implements IDatabaseService, Applicat
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.IDatabaseService#useLocalHsqldb(java.lang.String, java.lang.String, boolean, boolean)
 	 */
+	@Deprecated
 	public boolean useLocalHsqldb(String databasePath, String databaseName, String username, String password, boolean silent, boolean startServer) 
 				throws TermNotFoundException{
 		CdmPersistentDataSource dataSource = saveLocalHsqldb("tmpHsqlDb", databasePath, databaseName, username, password, silent, startServer);
@@ -158,7 +180,4 @@ public class DatabaseServiceHibernateImpl  implements IDatabaseService, Applicat
 			throws BeansException {
 		this.appContext = applicationContext;
 	}
-
-
-
 }

@@ -12,7 +12,9 @@ package eu.etaxonomy.cdm.api.service;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.database.CdmPersistentDataSource;
+import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
 import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
+import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.model.common.init.TermNotFoundException;
 
 /**
@@ -54,7 +56,9 @@ public interface IDatabaseService {
 	 * Make sure to close the application when exiting the programm, 
 	 * otherwise the hsql-server might still be running, if startet by cdmLibrary.
 	 * @return true if a connection could be established
+	 * @deprecate	use h2 instead
 	 */
+	@Deprecated
 	public boolean useLocalDefaultHsqldb()  throws TermNotFoundException;
 	
 	/**
@@ -70,7 +74,9 @@ public interface IDatabaseService {
 	 * @param startServer if true, the dbserver is started if the url can't be reached by the dbDriver
 	 * @return true if a connection could be established
 	 * TODO exceptions
+	 * @deprecated use h2 instead
 	 */
+	@Deprecated
 	public boolean useLocalHsqldb(String databasePath, String databaseName, String username, String password, boolean silent, boolean startServer) throws TermNotFoundException;
 
 	/**
@@ -111,8 +117,32 @@ public interface IDatabaseService {
 	 * @param username
 	 * @param password
 	 * @return the CdmDataSource, null if not successful.
+	 * @deprecated create an ICdmDataSource in your application and use save(strDataSourceName, ICdmDataSource) instead. 
+	 * This method will perish
 	 */
+	@Deprecated
 	public CdmPersistentDataSource saveDataSource(String strDataSourceName, DatabaseTypeEnum databaseTypeEnum, String server, String database, String username, String password) throws TermNotFoundException;
+	
+	/**
+	 * Saves a new ICdmDatasource into the datasource config file.
+	 * 
+	 * @param strDataSourceName
+	 * @param dataSource
+	 * @return
+	 */
+	public CdmPersistentDataSource saveDataSource(String strDataSourceName, ICdmDataSource dataSource);
+	
+	/**
+	 * Update an already saved datasource in datasource config file
+	 * @param strDataSourceName
+	 * 			the beanId under which the dataSource should be saved
+	 * @param dataSource
+	 * 			the dataSource to be saved
+	 * @return
+	 * 			the CdmDataSource, null if not successful
+	 * @throws DataSourceNotFoundException 
+	 */
+	public CdmPersistentDataSource updateDataSource(String strDataSourceName, CdmPersistentDataSource dataSource) throws DataSourceNotFoundException;
 	
 	/**
 	 * Saves a new hsqldb datasource into the datasource config file.
@@ -123,6 +153,7 @@ public interface IDatabaseService {
 	 * @param password
 	 * @return the CdmDataSource, null if not successful.
 	 */
+	@Deprecated
 	public CdmPersistentDataSource saveLocalHsqldb(String strDataSourceName, String path, String database, String username, String password, boolean silent, boolean startServer);
 	
 	public void setApplicationController(CdmApplicationController cdmApplicationController);

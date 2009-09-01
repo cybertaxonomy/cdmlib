@@ -276,4 +276,12 @@ public interface INameService extends IIdentifiableEntityService<TaxonNameBase> 
 	 * @see <a href="http://lucene.apache.org/java/2_4_0/queryparsersyntax.html">Apache Lucene - Query Parser Syntax</a>
 	 */
 	public Pager<TaxonNameBase> search(Class<? extends TaxonNameBase> clazz, String queryString, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+
+	/**
+	 * Returns a map that holds uuid, titleCache pairs of all names in the current database
+	 * 
+	 * @return 
+	 * 			a <code>Map</code> containing uuid and titleCache of names
+	 */
+	public Map<UUID, String> getUuidAndTitleCacheOfNames();
 }
