@@ -2337,16 +2337,12 @@ eclipse-plugin/spring-agent-2.5.6.jar -text
 eclipse-plugin/spring-agent-2.5.6src.zip -text
 eclipse-plugin/spring-aop-2.5.6.jar -text
 eclipse-plugin/spring-aop-2.5.6src.zip -text
-eclipse-plugin/spring-aop-2.5src.zip -text
 eclipse-plugin/spring-aspects-2.5.6.jar -text
 eclipse-plugin/spring-aspects-2.5.6src.zip -text
 eclipse-plugin/spring-beans-2.5.6.jar -text
 eclipse-plugin/spring-beans-2.5.6src.zip -text
-eclipse-plugin/spring-beans-2.5.jar -text
-eclipse-plugin/spring-beans-2.5src.zip -text
 eclipse-plugin/spring-context-2.5.6.jar -text
 eclipse-plugin/spring-context-2.5.6src.zip -text
-eclipse-plugin/spring-context-support-2.5src.zip -text
 eclipse-plugin/spring-core-2.5.6.jar -text
 eclipse-plugin/spring-core-2.5.6src.zip -text
 eclipse-plugin/spring-jdbc-2.5.6.jar -text
