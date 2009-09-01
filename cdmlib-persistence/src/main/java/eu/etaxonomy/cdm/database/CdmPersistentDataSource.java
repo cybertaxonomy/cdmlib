@@ -60,6 +60,11 @@ public class CdmPersistentDataSource extends CdmDataSourceBase{
 	public enum DbProperties{
 		DRIVER_CLASS,
 		URL,
+		SERVER, 
+		DATABASE,
+		PORT,
+		MODE,
+		FILEPATH,
 		USERNAME,
 		PASSWORD;
 
@@ -70,6 +75,16 @@ public class CdmPersistentDataSource extends CdmDataSourceBase{
 					return "driverClassName";
 				case URL:
 					return "url";
+				case SERVER:
+					return "server";
+				case DATABASE:
+					return "database";
+				case PORT:
+					return "port";
+				case MODE:
+					return "mode";
+				case FILEPATH:
+					return "filePath";
 				case USERNAME:
 					return "username";
 				case PASSWORD:
@@ -154,23 +169,23 @@ public class CdmPersistentDataSource extends CdmDataSourceBase{
 
 	
 	public String getDatabase() {
-		return getDatabaseProperty("database");
+		return getDatabaseProperty(DbProperties.DATABASE);
 	}
 
 
 	public String getFilePath() {
 		//TODO null
-		return getDatabaseProperty("filePath");
+		return getDatabaseProperty(DbProperties.FILEPATH);
 	}
 
 
 	public H2Mode getMode() {
 		//TODO null
-		return H2Mode.fromString(getDatabaseProperty("mode"));
+		return H2Mode.fromString(getDatabaseProperty(DbProperties.MODE));
 	}
 
 	public int getPort() {
-		String port = CdmUtils.Nz(getDatabaseProperty("port"));
+		String port = CdmUtils.Nz(getDatabaseProperty(DbProperties.PORT));
 		if ("".equals(port)){
 			return -1;
 		}else{
@@ -181,7 +196,7 @@ public class CdmPersistentDataSource extends CdmDataSourceBase{
 
 
 	public String getServer() {
-		return getDatabaseProperty("server");
+		return getDatabaseProperty(DbProperties.SERVER);
 	}
 
 	/**
@@ -210,25 +225,25 @@ public class CdmPersistentDataSource extends CdmDataSourceBase{
 	 * Returns the database type of the data source. 
 	 * @return the database type of the data source. Null if the bean or the driver class property does not exist or the driver class is unknown.
 	 */
-	protected String getDatabaseProperty(String property){
+	protected String getDatabaseProperty(DbProperties property){
 		Element bean = getDatasourceBeanXml(this.dataSourceName);
 		String url;
 		String result = null;
 		if (bean != null){
-			result = getPropertyValue(bean, property);
+			result = getPropertyValue(bean, property.toString());
 			if (result == null){  //test if property is database, server or port which are included in the url
-				url = getPropertyValue(bean, "url");
+				url = getPropertyValue(bean, DbProperties.URL.toString());
 				DatabaseTypeEnum dbTypeEnum = getDatabaseType();
 				if (dbTypeEnum != null){
 					IDatabaseType dbType = dbTypeEnum.getDatabaseType();
-					if (property.equals("database")){
+					if (property.equals(DbProperties.DATABASE)){
 						result = dbType.getDatabaseNameByConnectionString(url);
-					}else if(property.equals("server")){
+					}else if(property.equals(DbProperties.SERVER)){
 						result = dbType.getServerNameByConnectionString(url);
-					}else if(property.equals("port")){
+					}else if(property.equals(DbProperties.PORT)){
 						result = String.valueOf(dbType.getPortByConnectionString(url));
 					}else{
-						logger.info("unknown property: " + property);
+						logger.debug("Unknown property: " + property);
 					}
 				}
 			}
@@ -239,7 +254,7 @@ public class CdmPersistentDataSource extends CdmDataSourceBase{
 	private String getPropertyValue(Element bean, String property){
 		Element driverProp = XmlHelp.getFirstAttributedChild(bean, "property", "name", property);
 		if (driverProp == null){
-			logger.info("Unknown property" + property);
+			logger.debug("Unknown property: " + property);
 	    	return null;
 		}else{
 			String strProperty = driverProp.getAttributeValue("value");
@@ -423,7 +438,10 @@ public class CdmPersistentDataSource extends CdmDataSourceBase{
 	 * @param username
 	 * @param password
 	 * @return the CdmDataSource, null if not successful.
+	 * @deprecated create an ICdmDataSource in your application and use save(strDataSourceName, ICdmDataSource) instead. 
+	 * This method will perish
 	 */
+	@Deprecated
 	public static CdmPersistentDataSource save(String strDataSourceName, DatabaseTypeEnum databaseTypeEnum, String server, String database, 
 			String username, String password){
 		return save(strDataSourceName, databaseTypeEnum, server, database, 
@@ -431,8 +449,11 @@ public class CdmPersistentDataSource extends CdmDataSourceBase{
 	}
 	
 	/**
-	 * Saves or updates the datasource to the datasource config file.
-	 * @param strDataSourceName name of the datasource (without postfix DataSource)
+	 * Saves a datasource to the datasource config file. If strDataSourceName differs a new dataSource
+	 * will be created in config file. Use update() of real update functionality.
+	 * 
+	 * @param strDataSourceName 
+	 * 			name of the datasource (without postfix DataSource)
 	 * @param databaseTypeEnum
 	 * @param server
 	 * @param database
@@ -440,19 +461,39 @@ public class CdmPersistentDataSource extends CdmDataSourceBase{
 	 * @param username
 	 * @param password
 	 * @return the CdmDataSource, null if not successful.
+	 * @deprecated create an ICdmDataSource in your application and use save(strDataSourceName, ICdmDataSource) instead. 
+	 * This method will perish
 	 */
-	public static CdmPersistentDataSource save(String strDataSourceName, DatabaseTypeEnum databaseTypeEnum, String server, String database, 
-				int port, String username, String password){
+	@Deprecated
+	public static CdmPersistentDataSource save(
+			String strDataSourceName, 
+			DatabaseTypeEnum databaseTypeEnum, 
+			String server, 
+			String database, 
+			int port, 
+			String username, 
+			String password
+	){
 		Class<? extends DriverManagerDataSource> driverManagerDataSource =  DriverManagerDataSource.class;
-		return save(strDataSourceName, databaseTypeEnum, server, database, port, username, password, driverManagerDataSource, null, null, null, null, null, null);
+		return save(strDataSourceName, databaseTypeEnum, server, database, port + "", username, password, driverManagerDataSource, null, null, null, null, null, null);
 	}
 	
-	
+	/**
+	 * 
+	 * @param strDataSourceName
+	 * @param databasePath
+	 * @param databaseName
+	 * @param username
+	 * @param password
+	 * @return
+	 * @deprecated use h2 instead
+	 */
+	@Deprecated
 	public static CdmPersistentDataSource saveLocalHsqlDb(String strDataSourceName, String databasePath, String databaseName, String username, String password){
 		DatabaseTypeEnum databaseTypeEnum = DatabaseTypeEnum.HSqlDb;
 		Class<? extends DriverManagerDataSource> driverManagerDataSource =  LocalHsqldb.class;
 		String server = "localhost";
-		int port = databaseTypeEnum.getDefaultPort();
+		String port = databaseTypeEnum.getDefaultPort() + "";
 		return save(strDataSourceName, databaseTypeEnum, server, databaseName, port, username, password, driverManagerDataSource, "init", "destroy", true, true, databasePath, null);
 	}
 	
@@ -466,12 +507,15 @@ public class CdmPersistentDataSource extends CdmDataSourceBase{
 	 * @param password
 	 * @param mode
 	 * @return
+	 * @deprecated create an ICdmDataSource in your application and use save(strDataSourceName, ICdmDataSource) instead. 
+	 * This method will perish
 	 */
+	@Deprecated
 	public static CdmPersistentDataSource saveLocalH2(String strDataSourceName, String databasePath, String databaseName, String username, String password, H2Mode mode){
 		DatabaseTypeEnum databaseTypeEnum = DatabaseTypeEnum.H2;
 		Class<? extends DriverManagerDataSource> driverManagerDataSource =  LocalH2.class;
 		String server = "localhost";
-		int port = databaseTypeEnum.getDefaultPort();
+		String port = databaseTypeEnum.getDefaultPort() + "";
 		return save(strDataSourceName, databaseTypeEnum, server, databaseName, port, username, password, driverManagerDataSource, null, null, null, null, databasePath, mode);
 	}
 	
@@ -480,7 +524,7 @@ public class CdmPersistentDataSource extends CdmDataSourceBase{
 			DatabaseTypeEnum databaseTypeEnum, 
 			String server, 
 			String database, 
-			int port, 
+			String port, 
 			String username, 
 			String password, 
 			Class<? extends DriverManagerDataSource> driverManagerDataSource,
@@ -491,7 +535,10 @@ public class CdmPersistentDataSource extends CdmDataSourceBase{
 			String filePath,
 			H2Mode mode
 		){
-		ICdmDataSource dataSource = new CdmDataSource(databaseTypeEnum, server, database, port, username, password, filePath, mode);
+		
+		int portNumber = "".equals(port) ? databaseTypeEnum.getDefaultPort() : Integer.valueOf(port);
+		
+		ICdmDataSource dataSource = new CdmDataSource(databaseTypeEnum, server, database, portNumber, username, password, filePath, mode);
 				
 		//root
 		Element root = getBeansRoot(getDataSourceInputStream());
@@ -530,7 +577,74 @@ public class CdmPersistentDataSource extends CdmDataSourceBase{
 		}
 	}
 	
-	
+	/**
+	 * @param strDataSourceName
+	 * @param dataSource
+	 * @return
+	 * 			the updated dataSource, null if not succesful
+	 */
+	public static CdmPersistentDataSource update(String strDataSourceName,
+			ICdmDataSource dataSource) throws DataSourceNotFoundException, IllegalArgumentException{
+		delete(CdmPersistentDataSource.NewInstance(strDataSourceName));
+		return save(strDataSourceName, dataSource);
+	}
+
+	/**
+	 * Saves a datasource to the datasource config file. If strDataSourceName differs a new dataSource
+	 * will be created in config file. Use update() of real update functionality.
+	 * 
+	 * @param strDataSourceName
+	 * @param dataSource
+	 * @return
+	 */
+	public static CdmPersistentDataSource save(String strDataSourceName,
+			ICdmDataSource dataSource)  throws IllegalArgumentException{
+		
+		if(dataSource.getDatabaseType() == null){
+			new IllegalArgumentException("Database type not specified");
+		}
+		
+		if(dataSource.getDatabaseType().equals(DatabaseTypeEnum.H2)){
+			Class<? extends DriverManagerDataSource> driverManagerDataSource =  LocalH2.class;
+			if(dataSource.getMode() == null){
+				new IllegalArgumentException("H2 mode not specified");
+			}
+			return save(
+					strDataSourceName, 
+					dataSource.getDatabaseType(), 
+					"localhost", 
+					getCheckedDataSourceParameter(dataSource.getDatabase()), 
+					dataSource.getDatabaseType().getDefaultPort() + "", 
+					getCheckedDataSourceParameter(dataSource.getUsername()), 
+					getCheckedDataSourceParameter(dataSource.getPassword()), 
+					driverManagerDataSource, 
+					null, null, null, null, 
+					getCheckedDataSourceParameter(dataSource.getFilePath()), 
+					dataSource.getMode());
+		}else{
+			Class<? extends DriverManagerDataSource> driverManagerDataSource =  DriverManagerDataSource.class;
+			return save(
+					strDataSourceName, 
+					dataSource.getDatabaseType(), 
+					getCheckedDataSourceParameter(dataSource.getServer()), 
+					getCheckedDataSourceParameter(dataSource.getDatabase()), 
+					dataSource.getPort() + "", 
+					getCheckedDataSourceParameter(dataSource.getUsername()), 
+					getCheckedDataSourceParameter(dataSource.getPassword()), 
+					driverManagerDataSource, 
+					null, null, null, null, null, null);
+		}
+	}
+
+	private static String getCheckedDataSourceParameter(String parameter) throws IllegalArgumentException{		
+		if(parameter != null){
+			return parameter;
+		}else{
+			new IllegalArgumentException("Non obsolete paramater was assigned a null value: " + parameter);
+			return null;
+		}
+	}
+
 	/**
 	 * Deletes a dataSource
 	 * @param dataSource

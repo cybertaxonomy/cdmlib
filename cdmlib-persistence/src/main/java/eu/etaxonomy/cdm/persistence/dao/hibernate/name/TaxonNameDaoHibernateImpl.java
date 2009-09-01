@@ -10,14 +10,16 @@
 package eu.etaxonomy.cdm.persistence.dao.hibernate.name;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.apache.lucene.analysis.SimpleAnalyzer;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
 import org.hibernate.Criteria;
-import org.hibernate.Hibernate;
 import org.hibernate.Query;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Order;
@@ -47,9 +49,6 @@ import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
 import eu.etaxonomy.cdm.model.name.ViralName;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
-import eu.etaxonomy.cdm.model.taxon.Synonym;
-import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.persistence.dao.QueryParseException;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
@@ -581,12 +580,6 @@ extends IdentifiableDaoBase<TaxonNameBase> implements ITaxonNameDao {
 		
 	}
 
-	public <TYPE extends TaxonNameBase> List<TYPE> list(Class<TYPE> type,
-			Integer limit, Integer start, List<OrderHint> orderHints,
-			List<String> propertyPaths) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	public int count(Class<? extends TaxonNameBase> clazz, String queryString) {
 		checkNotInPriorView("TaxonNameDaoHibernateImpl.count(String queryString, Boolean accepted)");
@@ -677,5 +670,42 @@ extends IdentifiableDaoBase<TaxonNameBase> implements ITaxonNameDao {
 
 	public String suggestQuery(String string) {
 		throw new UnsupportedOperationException("suggestQuery is not supported for TaxonNameBase");
+	}
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao#getUuidAndTitleCacheOfNames()
+	 */
+	public Map<UUID, String> getUuidAndTitleCacheOfNames() {
+		String queryString = "SELECT uuid, fullTitleCache FROM TaxonNameBase";
+		
+		List<Object[]> result = getSession().createSQLQuery(queryString).list();
+				
+		if(result.size() == 0){
+			return null;
+		}else{
+			java.util.Map<UUID, String> map = new HashMap<UUID, String>(result.size()); 
+			
+			for (Object object : result){
+				
+				Object[] objectArray = (Object[]) object;
+				
+				UUID uuid = UUID.fromString((String) objectArray[0]);
+				String titleCache = (String) objectArray[1];
+				
+				map.put(uuid, titleCache);
+			}
+			
+			return map;	
+		}
+	}
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao#list(java.lang.Class, java.lang.Integer, java.lang.Integer, java.util.List, java.util.List)
+	 */
+	public <TYPE extends TaxonNameBase> List<TYPE> list(Class<TYPE> type,
+			Integer limit, Integer start, List<OrderHint> orderHints,
+			List<String> propertyPaths) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

@@ -9,6 +9,8 @@
 package eu.etaxonomy.cdm.persistence.dao.name;
 
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 import org.hibernate.criterion.Criterion;
 
@@ -254,4 +256,6 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonNameBase>, ISearcha
 			MatchMode matchmode, List<Criterion> criteria);
 	
 	public List<RelationshipBase> getAllRelationships(Integer limit, Integer start); 
+	
+	public Map<UUID, String> getUuidAndTitleCacheOfNames();
 }
