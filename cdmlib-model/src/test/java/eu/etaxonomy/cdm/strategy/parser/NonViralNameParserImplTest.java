@@ -26,7 +26,9 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor;
 import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
@@ -49,15 +51,15 @@ public class NonViralNameParserImplTest {
 	
 	final private String strNameFamily = "Asteraceae";
 	final private String strNameGenus = "Abies Mueller";
-	final private String strNameGenusUnicode = "Abies M�ller";
+	final private String strNameGenusUnicode = "Abies M\u00FCller";
 	final private String strNameAbies1 = "Abies alba";
 	final private String strNameAbiesSub1 = "Abies alba subsp. beta";
 	final private String strNameAbiesAuthor1 = "Abies alba Mueller";
-	final private String strNameAbiesAuthor1Unicode = "Abies alba M�ller";
+	final private String strNameAbiesAuthor1Unicode = "Abies alba M\u00FCller";
 	final private String strNameAbiesBasionymAuthor1 = "Abies alba (Ciardelli) D'Mueller";
-	final private String strNameAbiesBasionymAuthor1Unicode = "Abies alba (Ciardelli) D'Müller";
+	final private String strNameAbiesBasionymAuthor1Unicode = "Abies alba (Ciardelli) D'M\u00FCller";
 	final private String strNameAbiesBasionymExAuthor1 ="Abies alba (Ciardelli ex Doering) D'Mueller ex. de Greuther"; 
-	final private String strNameAbiesBasionymExAuthor1Unicode ="Abies alba (Ciardelli ex D�ring) D'�ller ex. de Greuther"; 
+	final private String strNameAbiesBasionymExAuthor1Unicode ="Abies alba (Ciardelli ex D\u00F6ring) D'M\u00FCller ex. de Greuther"; 
 	final private String strNameTeam1 = "Abies alba Mueller & L."; 
 	final private String strNameZoo1 = "Abies alba Mueller & L., 1822";
 	final private String strNameZoo2 = "Abies alba (Mueller, 1822) Ciardelli, 2002";
@@ -146,29 +148,29 @@ public class NonViralNameParserImplTest {
 	 * Test method for {@link eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl#parseFullName(java.lang.String, eu.etaxonomy.cdm.model.name.Rank)}.
 	 */
 	@Test
-	@Ignore //TODO Character encoding in svn
 	public final void testParseFullNameUnicode() {
 
 		NonViralName nameAuthor = parser.parseFullName(strNameAbiesAuthor1Unicode, null, Rank.SPECIES());
 		assertEquals("Abies", nameAuthor.getGenusOrUninomial());
 		assertEquals("alba", nameAuthor.getSpecificEpithet());
-		assertEquals("M�ller", nameAuthor.getCombinationAuthorTeam().getNomenclaturalTitle());
+		assertEquals("M\u00FCller", nameAuthor.getCombinationAuthorTeam().getNomenclaturalTitle());
 		
 		NonViralName nameBasionymAuthor = parser.parseFullName(strNameAbiesBasionymAuthor1Unicode, null, Rank.SPECIES());
 		assertEquals("Abies", nameBasionymAuthor.getGenusOrUninomial());
 		assertEquals("alba", nameBasionymAuthor.getSpecificEpithet());
-		assertEquals("D'M�ller", nameBasionymAuthor.getCombinationAuthorTeam().getNomenclaturalTitle());
-		BotanicalName basionym = (BotanicalName)nameBasionymAuthor.getBasionym();
-		assertEquals("Ciardelli", basionym.getCombinationAuthorTeam().getNomenclaturalTitle());
+		assertEquals("D'M\u00FCller", nameBasionymAuthor.getCombinationAuthorTeam().getNomenclaturalTitle());
+		INomenclaturalAuthor basionymTeam = nameBasionymAuthor.getBasionymAuthorTeam();
+		assertEquals("Ciardelli", basionymTeam.getNomenclaturalTitle());
 		
 		NonViralName nameBasionymExAuthor = parser.parseFullName(strNameAbiesBasionymExAuthor1Unicode, null, Rank.SPECIES());
 		assertEquals("Abies", nameBasionymExAuthor.getGenusOrUninomial());
 		assertEquals("alba", nameBasionymExAuthor.getSpecificEpithet());
-		assertEquals("D'M�ller", nameBasionymExAuthor.getCombinationAuthorTeam().getNomenclaturalTitle());
+		assertEquals("D'M\u00FCller", nameBasionymExAuthor.getCombinationAuthorTeam().getNomenclaturalTitle());
 		assertEquals("de Greuther", nameBasionymExAuthor.getExCombinationAuthorTeam().getNomenclaturalTitle());
-		BotanicalName basionym2 = (BotanicalName)nameBasionymExAuthor.getBasionym();
-		assertEquals("Ciardelli", basionym2.getCombinationAuthorTeam().getNomenclaturalTitle());
-		assertEquals("D�ring", basionym2.getExCombinationAuthorTeam().getNomenclaturalTitle());
+		INomenclaturalAuthor basionymTeam2 = nameBasionymExAuthor.getBasionymAuthorTeam();
+		assertEquals("Ciardelli", basionymTeam2.getNomenclaturalTitle());
+		INomenclaturalAuthor exBasionymTeam2 = nameBasionymExAuthor.getExBasionymAuthorTeam();
+		assertEquals("D\u00F6ring", exBasionymTeam2.getNomenclaturalTitle());
 	}
 	
 	
@@ -405,12 +407,12 @@ public class NonViralNameParserImplTest {
 		
 		
 		//Special MicroRefs
-		String strSpecDetail5 = "Abies alba Mill. in Sp. Pl. 4(6): Gard n� 4. 1987";
+		String strSpecDetail5 = "Abies alba Mill. in Sp. Pl. 4(6): Gard n\u00B0 4. 1987";
 		fullReference = strSpecDetail5 + ".";
 		NonViralName<?> nameSpecDet5 = parser.parseReferencedName(fullReference, null, Rank.SPECIES());
 		assertFalse(nameSpecDet5.hasProblem());
 		assertEquals(strSpecDetail5, nameSpecDet5.getFullTitleCache());
-		assertEquals("Gard n� 4", nameSpecDet5.getNomenclaturalMicroReference());
+		assertEquals("Gard n\u00B0 4", nameSpecDet5.getNomenclaturalMicroReference());
 		
 		//Special MicroRefs
 		String strSpecDetail6 = "Abies alba Mill. in Sp. Pl. 4(6): 455a. 1987";
@@ -588,6 +590,9 @@ public class NonViralNameParserImplTest {
 		testParsable = "Pithecellobium macrostachyum (Benth., 1845)";
 		assertTrue(isParsable(testParsable, NomenclaturalCode.ICZN));
 
+		testParsable = "Pithecellobium macrostachyum L., Sp. Pl. 3: n\u00B0 123. 1753."; //00B0 is degree sign
+		assertTrue(isParsable(testParsable, NomenclaturalCode.ICBN));
+		
 	}
 	
 	private boolean isParsable(String string, NomenclaturalCode code){

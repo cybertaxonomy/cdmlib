@@ -905,13 +905,15 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName>
 			authors[3]= basAuthors[1];
 			years[3] = basYears[1];
 		}
-		TeamOrPersonBase<?>[] combinationAuthors = new TeamOrPersonBase[2];;
-		Integer[] combinationYears = new Integer[2];
-		authorsAndEx(fullAuthorString.substring(authorTeamStart), combinationAuthors, combinationYears);
-		authors[0]= combinationAuthors[0] ;
-		years[0] = combinationYears[0];
-		authors[1]= combinationAuthors[1];
-		years[1] = combinationYears[1];
+		if (fullAuthorString.length() >= authorTeamStart){
+			TeamOrPersonBase<?>[] combinationAuthors = new TeamOrPersonBase[2];;
+			Integer[] combinationYears = new Integer[2];
+			authorsAndEx(fullAuthorString.substring(authorTeamStart), combinationAuthors, combinationYears);
+			authors[0]= combinationAuthors[0] ;
+			years[0] = combinationYears[0];
+			authors[1]= combinationAuthors[1];
+			years[1] = combinationYears[1];
+		}
 	}
 	
 	
@@ -1146,7 +1148,7 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName>
     static String obligateDotWord = "(" + capitalWord + "|" + nonCapitalWord + ")\\.+"; //word (capital or non-capital) with obligate '.' at the end
     
     //Words used in an epethiton for a TaxonName
-    static String nonCapitalEpiWord = "[a-z�\\-]+";   //TODO solve checkin Problem with Unicode character "[a-z�\\-]+";
+    static String nonCapitalEpiWord = "[a-z\u00EF\\-]+";
     static String capitalEpiWord = "[A-Z]"+ nonCapitalEpiWord;
      
     
@@ -1187,7 +1189,7 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName>
     static String basStart = "\\(";
     static String basEnd = "\\)";
     static String botanicBasionymAuthor = basStart + "(" + authorAndExTeam + ")" + basEnd;  // '(' and ')' is for evaluation with RE.paren(x)
-    static String fullBotanicAuthorString = fWs + "(" + botanicBasionymAuthor +")?" + fWs + authorAndExTeam + fWs;
+    static String fullBotanicAuthorString = fWs + "((" + botanicBasionymAuthor +")?" + fWs + authorAndExTeam + "|" + botanicBasionymAuthor +")"+ fWs;
     static String facultFullBotanicAuthorString = "(" +  fullBotanicAuthorString + ")?" ; 
         
     //Zoo. Author
@@ -1196,7 +1198,7 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName>
     static String zooAuthorAddidtion = fWs + zooAuthorYearSeperator + fWs + singleYear;
     static String zooAuthorTeam = authorTeam + zooAuthorAddidtion;
     static String zooBasionymAuthor = basStart + "(" + zooAuthorTeam + ")" + basEnd;
-    static String fullZooAuthorString = fWs + "(" + zooBasionymAuthor +")?" + fWs + zooAuthorTeam + fWs;
+    static String fullZooAuthorString = fWs + "((" + zooBasionymAuthor +")?" + fWs + zooAuthorTeam + "|" + zooBasionymAuthor +")"+ fWs;
     static String facultFullZooAuthorString = "(" +  fullZooAuthorString + ")?" ; 
  
     static String facultFullAuthorString2 = "(" + facultFullBotanicAuthorString + "|" + facultFullZooAuthorString + ")";
@@ -1212,14 +1214,14 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName>
     static String nr4 = "\\d{1,4}";
     static String nr5 = "\\d{1,5}";
     
-    
+   
     static String pPage = nr5 + "[a-z]?";
-    static String pStrNo = "n�" + fWs + "(" + nr4 + ")";
+    static String pStrNo = "n\u00B0" + fWs + "(" + nr4 + ")";
     
     static String pBracketNr = "\\[" + nr4 + "\\]";
     static String pFolBracket = "\\[fol\\." + fWs + "\\d{1,2}(-\\d{1,2})?\\]";
     
-    static String pStrTab = "tab\\." + fWs + nr4 + "(" + fWs + "(B|�|\\(\\d{1,3}\\)))?";
+    static String pStrTab = "tab\\." + fWs + nr4 + "(" + fWs + "(B|\u00DF|\\(\\d{1,3}\\)))?";
     static String pFig = "fig." + fWs + nr4 + "[a-z]?";
     static String pFigs = pFig + "(-" + nr4 + ")?";
     //static String pTabFig = pStrTab + "(," + fWs + pFigs + ")?";
@@ -1236,7 +1238,7 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName>
     
     static String pTabSpecial = "tab\\." + fWs + "(ad" + fWs + "\\d{1,3}|alphab)";
     static String pPageSpecial = nr4 + fWs + "(in obs|, Expl\\. Tab)";
-    static String pSpecialGardDict = capitalWord + oWs + "n�" + oWs + "\\d{1,2}";
+    static String pSpecialGardDict = capitalWord + oWs + "n\u00B0" + oWs + "\\d{1,2}";
     //TODO
     // static String pSpecialDetail = "(in err|in tab|sine pag|add\\. & emend|Emend|""\\d{3}"" \\[\\d{3}\\])";
  // static String pSpecialDetail = "(in err|in tab|sine pag|add\\. & emend|Emend|""\\d{3}"" \\[\\d{3}\\])";
