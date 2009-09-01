@@ -12,8 +12,11 @@ package eu.etaxonomy.cdm.model.name;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
+
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.OrderedTermBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
+import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
 import org.apache.log4j.Logger;
@@ -73,6 +76,8 @@ public class Rank extends OrderedTermBase<Rank> {
 	private static final UUID uuidOrder = UUID.fromString("b0785a65-c1c1-4eb4-88c7-dbd3df5aaad1");
 	private static final UUID uuidSuborder = UUID.fromString("768ad378-fa85-42ab-b668-763225832f57");
 	private static final UUID uuidInfraorder = UUID.fromString("84099182-a6f5-47d7-8586-33c9e9955a10");
+	private static final UUID uuidSectionZoology = UUID.fromString("691d371e-10d7-43f0-93db-3d7fa1a62c54");
+	private static final UUID uuidSubsectionZoology = UUID.fromString("0ed32d28-adc4-4303-a9ca-68e2acd67e33");
 	private static final UUID uuidSuperfamily = UUID.fromString("2cfa510a-dcea-4a03-b66a-b1528f9b0796");
 	private static final UUID uuidFamily = UUID.fromString("af5f2481-3192-403f-ae65-7c957a0f02b6");
 	private static final UUID uuidSubfamily = UUID.fromString("862526ee-7592-4760-a23a-4ff3641541c5");
@@ -85,8 +90,8 @@ public class Rank extends OrderedTermBase<Rank> {
 	private static final UUID uuidGenus = UUID.fromString("1b11c34c-48a8-4efa-98d5-84f7f66ef43a");
 	private static final UUID uuidSubgenus = UUID.fromString("78786e16-2a70-48af-a608-494023b91904");
 	private static final UUID uuidInfragenus = UUID.fromString("a9972969-82cd-4d54-b693-a096422f13fa");
-	private static final UUID uuidSection = UUID.fromString("3edff68f-8527-49b5-bf91-7e4398bb975c");
-	private static final UUID uuidSubsection = UUID.fromString("d20f5b61-d463-4448-8f8a-c1ff1f262f59");
+	private static final UUID uuidSectionBotany = UUID.fromString("3edff68f-8527-49b5-bf91-7e4398bb975c");
+	private static final UUID uuidSubsectionBotany = UUID.fromString("d20f5b61-d463-4448-8f8a-c1ff1f262f59");
 	private static final UUID uuidSeries = UUID.fromString("d7381ecf-48f8-429b-9c54-f461656978cd");
 	private static final UUID uuidSubseries = UUID.fromString("80c9a263-f4db-4a13-b6c2-b7fec1aa1200");
 	private static final UUID uuidSpeciesAggregate = UUID.fromString("1ecae058-4217-4f75-9c27-6d8ba099ac7a");
@@ -142,8 +147,8 @@ public class Rank extends OrderedTermBase<Rank> {
 	private static Rank SPECIESGROUP;
 	private static Rank SUBSERIES;
 	private static Rank SERIES;
-	private static Rank SUBSECTION;
-	private static Rank SECTION;
+	private static Rank SUBSECTION_BOTANY;
+	private static Rank SECTION_BOTANY;
 	private static Rank INFRAGENUS;
 	private static Rank SUBGENUS;
 	private static Rank GENUS;
@@ -156,6 +161,8 @@ public class Rank extends OrderedTermBase<Rank> {
 	private static Rank SUBFAMILY;
 	private static Rank FAMILY;
 	private static Rank SUPERFAMILY;
+	private static Rank SUBSECTION_ZOOLOGY;
+	private static Rank SECTION_ZOOLOGY;
 	private static Rank INFRAORDER;
 	private static Rank SUBORDER;
 	private static Rank ORDER;
@@ -201,6 +208,30 @@ public class Rank extends OrderedTermBase<Rank> {
 	 */
 	public Rank(String term, String label, String labelAbbrev) {
 		super(term, label, labelAbbrev);
+	}
+
+	/** 
+	 * Creates a new empty rank.
+	 * 
+	 * @see #NewInstance(String, String, String)
+	 */
+	private static Rank NewInstance(){
+		return new Rank();
+	}
+	
+	/** 
+	 * Creates an additional rank with a description (in the {@link Language#DEFAULT() default language}),
+	 * a label and a label abbreviation.
+	 * 
+	 * @param	term  		 the string (in the default language) describing the
+	 * 						 new rank to be created 
+	 * @param	label  		 the string identifying the new rank to be created
+	 * @param	labelAbbrev  the string identifying (in abbreviated form) the
+	 * 						 new rank to be created
+	 * @see 				 #NewInstance()
+	 */
+	private static Rank NewInstance(String term, String label, String labelAbbrev){
+		return new Rank(term, label, labelAbbrev);
 	}
 
 	//********* METHODS **************************************/
@@ -307,11 +338,17 @@ public class Rank extends OrderedTermBase<Rank> {
 	public static final Rank INFRAGENUS(){
 	  return INFRAGENUS;
 	}
-	public static final Rank SECTION(){
-	  return SECTION;
+	public static final Rank SECTION_BOTANY(){
+	  return SECTION_BOTANY;
 	}
-	public static final Rank SUBSECTION(){
-	  return SUBSECTION;
+	public static final Rank SUBSECTION_BOTANY(){
+	  return SUBSECTION_BOTANY;
+	}
+	public static final Rank SECTION_ZOOLOGY(){
+		return SECTION_ZOOLOGY;
+	}
+	public static final Rank SUBSECTION_ZOOLOGY(){
+		return SUBSECTION_ZOOLOGY;
 	}
 	public static final Rank SERIES(){
 	  return SERIES;
@@ -490,6 +527,19 @@ public class Rank extends OrderedTermBase<Rank> {
 		return getRankByNameOrAbbreviation(strRank, false);
 	}
 
+	/**
+	 * Returns the rank identified through a name (abbreviated or not) for a given nomenclatural code.
+	 * Preliminary implementation for BotanicalNameParser.
+	 * 
+	 * @param	strRank	the string identifying the rank
+	 * @param   nc      the nomenclatural code
+	 * @return  		the rank
+	 */
+	public static Rank getRankByNameOrAbbreviation(String strRank, NomenclaturalCode nc)
+				throws UnknownCdmTypeException{
+		return getRankByNameOrAbbreviation(strRank, nc, false);
+	}
+	
 	// TODO
 	// Preliminary implementation for BotanicalNameParser.
 	// not yet complete
@@ -511,6 +561,27 @@ public class Rank extends OrderedTermBase<Rank> {
 		}
 	}
 	
+	// TODO
+	// Preliminary implementation for BotanicalNameParser.
+	// not yet complete
+	/**
+	 * Returns the rank identified through a name (abbreviated or not).
+	 * Preliminary implementation for BotanicalNameParser.
+	 * 
+	 * @param	strRank	the string identifying the rank
+	 * @param   nc      the nomenclatural code
+	 * @param 	useUnknown 	if true the rank UNKNOWN_RANK is returned if the abbrev is 
+	 * 			unknown or not yet implemented
+	 * @return  		the rank
+	 */
+	public static Rank getRankByNameOrAbbreviation(String strRank, NomenclaturalCode nc, boolean useUnknown)
+			throws UnknownCdmTypeException{
+		try {
+			return getRankByAbbreviation(strRank, nc);
+		} catch (UnknownCdmTypeException e) {
+			return getRankByName(strRank, nc, useUnknown);
+		}
+	}
 	
 	/**
 	 * Returns the rank identified through an abbreviated name.
@@ -522,6 +593,19 @@ public class Rank extends OrderedTermBase<Rank> {
 	public static Rank getRankByAbbreviation(String abbrev) 
 						throws UnknownCdmTypeException{
 		return getRankByAbbreviation(abbrev, false);
+	}
+	
+	/**
+	 * Returns the rank identified through an abbreviated name for a given nomenclatural code.
+	 * Preliminary implementation.
+	 * 
+	 * @param	abbrev	the string for the name abbreviation
+	 * @param	nc	    the nomenclatural code
+	 * @return  		the rank
+	 */
+	public static Rank getRankByAbbreviation(String abbrev, NomenclaturalCode nc) 
+	throws UnknownCdmTypeException{
+		return getRankByAbbreviation(abbrev, nc, false);
 	}
 	
 	// TODO
@@ -556,8 +640,8 @@ public class Rank extends OrderedTermBase<Rank> {
 		}else if (abbrev.equalsIgnoreCase("subtrib.")) { return Rank.SUBTRIBE();
 		}else if (abbrev.equalsIgnoreCase("gen.")) { return Rank.GENUS();
 		}else if (abbrev.equalsIgnoreCase("subg.")) { return Rank.SUBGENUS();
-		}else if (abbrev.equalsIgnoreCase("sect.")) { return Rank.SECTION();
-		}else if (abbrev.equalsIgnoreCase("subsect.")) { return Rank.SUBSECTION();
+		}else if (abbrev.equalsIgnoreCase("sect.")) { return Rank.SECTION_BOTANY();
+		}else if (abbrev.equalsIgnoreCase("subsect.")) { return Rank.SUBSECTION_BOTANY();
 		}else if (abbrev.equalsIgnoreCase("ser.")) { return Rank.SERIES();
 		}else if (abbrev.equalsIgnoreCase("subser.")) { return Rank.SUBSERIES();
 		}else if (abbrev.equalsIgnoreCase("aggr.")) { return Rank.SPECIESAGGREGATE();
@@ -590,6 +674,29 @@ public class Rank extends OrderedTermBase<Rank> {
 	}
 	
 	// TODO
+	// Preliminary implementation to cover Botany and Zoology.
+	/**
+	 * Returns the rank identified through an abbreviated name for a given nomenclatural code.
+	 * Preliminary implementation for ICBN and ICZN.
+	 * 
+	 * @param	abbrev		the string for the name abbreviation
+	 * @param	nc	        the nomenclatural code
+	 * @param 	useUnknown 	if true the rank UNKNOWN_RANK is returned if the abbrev is 
+	 * 			unknown or not yet implemented
+	 * @return  the rank
+	 */
+	public static Rank getRankByAbbreviation(String abbrev, NomenclaturalCode nc,  boolean useUnknown) 
+	throws UnknownCdmTypeException{
+
+		if (nc.equals(NomenclaturalCode.ICZN)) {
+			if (abbrev.equalsIgnoreCase("sect.")) { return Rank.SECTION_ZOOLOGY();
+			} else if (abbrev.equalsIgnoreCase("subsect.")) { return Rank.SUBSECTION_ZOOLOGY();
+			}
+		}
+		return getRankByAbbreviation(abbrev, useUnknown);
+	}
+	
+	// TODO
 	// Preliminary implementation for BotanicalNameParser.
 	// not yet complete
 	/**
@@ -599,10 +706,25 @@ public class Rank extends OrderedTermBase<Rank> {
 	 * @param	rankName	the string for the name of the rank
 	 * @return  			the rank
 	 */
-	public static Rank getRankByName(String rankName)throws UnknownCdmTypeException{
+	public static Rank getRankByName(String rankName) throws UnknownCdmTypeException{
 		return getRankByName(rankName, false);
 	}
 	
+
+	// TODO
+	// Preliminary implementation for ICBN and ICZN.
+	// not yet complete
+	/**
+	 * Returns the rank identified through a name for a given nomenclatural code.
+	 * Preliminary implementation for ICBN and ICZN.
+	 * 
+	 * @param	rankName	the string for the name of the rank
+	 * @param	nc	        the nomenclatural code
+	 * @return  			the rank
+	 */
+	public static Rank getRankByName(String rankName, NomenclaturalCode nc) throws UnknownCdmTypeException{
+		return getRankByName(rankName, nc, false);
+	}
 
 	/**
 	 * Returns the rank identified through a name.
@@ -632,8 +754,8 @@ public class Rank extends OrderedTermBase<Rank> {
 		}else if (rankName.equalsIgnoreCase("Subtribus")){ return Rank.SUBTRIBE();
 		}else if (rankName.equalsIgnoreCase("Genus")){ return Rank.GENUS();
 		}else if (rankName.equalsIgnoreCase("Subgenus")){ return Rank.SUBGENUS();
-		}else if (rankName.equalsIgnoreCase("Sectio")){ return Rank.SECTION();
-		}else if (rankName.equalsIgnoreCase("Subsectio")){ return Rank.SUBSECTION();
+		}else if (rankName.equalsIgnoreCase("Sectio")){ return Rank.SECTION_BOTANY();
+		}else if (rankName.equalsIgnoreCase("Subsectio")){ return Rank.SUBSECTION_BOTANY();
 		}else if (rankName.equalsIgnoreCase("Series")){ return Rank.SERIES();
 		}else if (rankName.equalsIgnoreCase("Subseries")){ return Rank.SUBSERIES();
 		}else if (rankName.equalsIgnoreCase("Aggregate")){ return Rank.SPECIESAGGREGATE();
@@ -670,6 +792,17 @@ public class Rank extends OrderedTermBase<Rank> {
 		}
 	}
 	
+	public static Rank getRankByName(String rankName, NomenclaturalCode nc, boolean useUnknown)
+	throws UnknownCdmTypeException {
+		
+	if (nc.equals(NomenclaturalCode.ICZN)) {
+		if (rankName.equalsIgnoreCase("Sectio")) { return Rank.SECTION_ZOOLOGY();
+		} else if (rankName.equalsIgnoreCase("Subsectio")) { return Rank.SUBSECTION_ZOOLOGY();
+		}
+	}
+	return getRankByName(rankName, useUnknown);
+	}
+	
 	//TODO
 	//dummy implementation for BerlinModelImport
 	// not yet complete
@@ -687,8 +820,8 @@ public class Rank extends OrderedTermBase<Rank> {
 		else if (this.equals(Rank.SUBTRIBE()) ){return "subtrib.";}
 		else if (this.equals(Rank.GENUS()) ){return "gen.";}
 		else if (this.equals(Rank.SUBGENUS()) ){return "subg.";}
-		else if (this.equals(Rank.SECTION()) ){return "sect.";}
-		else if (this.equals(Rank.SUBSECTION()) ){return "subsect.";}
+		else if (this.equals(Rank.SECTION_BOTANY()) ){return "sect.";}
+		else if (this.equals(Rank.SUBSECTION_BOTANY()) ){return "subsect.";}
 		else if (this.equals(Rank.SERIES()) ){return "ser.";}
 		//else if (this.equals(Rank.AGGREGATE()) ){return "aggr.";}
 		else if (this.equals(Rank.SPECIES()) ){return "sp.";}
@@ -713,9 +846,9 @@ public class Rank extends OrderedTermBase<Rank> {
 			return "subg.";
 		}else if (this.equals(Rank.INFRAGENUS())){
 			return "infrag.";  //??
-		}else if (this.equals(Rank.SECTION())){ 
+		}else if (this.equals(Rank.SECTION_BOTANY())){ 
 			return "sect.";
-		}else if (this.equals(Rank.SUBSECTION())){
+		}else if (this.equals(Rank.SUBSECTION_BOTANY())){
 			return "subsect.";
 		}else if (this.equals(Rank.SERIES())){
 			return "ser.";
@@ -762,7 +895,8 @@ public class Rank extends OrderedTermBase<Rank> {
 		Rank.ORDER = termVocabulary.findTermByUuid(Rank.uuidOrder);
 		Rank.PATHOVARIETY = termVocabulary.findTermByUuid(Rank.uuidPathoVariety);
 		Rank.PHYLUM = termVocabulary.findTermByUuid(Rank.uuidPhylum);
-		Rank.SECTION = termVocabulary.findTermByUuid(Rank.uuidSection);
+		Rank.SECTION_BOTANY = termVocabulary.findTermByUuid(Rank.uuidSectionBotany);
+		Rank.SECTION_ZOOLOGY = termVocabulary.findTermByUuid(Rank.uuidSectionZoology);
 		Rank.SERIES = termVocabulary.findTermByUuid(Rank.uuidSeries);
 		Rank.SPECIALFORM = termVocabulary.findTermByUuid(Rank.uuidSpecialForm);
 		Rank.SPECIES = termVocabulary.findTermByUuid(Rank.uuidSpecies);
@@ -776,7 +910,8 @@ public class Rank extends OrderedTermBase<Rank> {
 		Rank.SUBKINGDOM = termVocabulary.findTermByUuid(Rank.uuidSubkingdom);
 		Rank.SUBORDER = termVocabulary.findTermByUuid(Rank.uuidSuborder);
 		Rank.SUBPHYLUM = termVocabulary.findTermByUuid(Rank.uuidSubphylum);
-		Rank.SUBSECTION = termVocabulary.findTermByUuid(Rank.uuidSubsection);
+		Rank.SUBSECTION_BOTANY = termVocabulary.findTermByUuid(Rank.uuidSubsectionBotany);
+		Rank.SUBSECTION_ZOOLOGY = termVocabulary.findTermByUuid(Rank.uuidSubsectionZoology);
 		Rank.SUBSERIES = termVocabulary.findTermByUuid(Rank.uuidSubseries);
 		Rank.SUBSPECIES = termVocabulary.findTermByUuid(Rank.uuidSubspecies);
 		Rank.SUBSPECIFICAGGREGATE = termVocabulary.findTermByUuid(Rank.uuidSubspecificAggregate);

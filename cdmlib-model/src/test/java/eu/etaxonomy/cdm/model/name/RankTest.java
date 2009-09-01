@@ -11,10 +11,12 @@ package eu.etaxonomy.cdm.model.name;
 
 import static org.junit.Assert.*;
 
+import java.lang.reflect.Method;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
@@ -46,6 +48,8 @@ public class RankTest extends EntityTestBase {
 	private static final UUID uuidOrder = UUID.fromString("b0785a65-c1c1-4eb4-88c7-dbd3df5aaad1");
 	private static final UUID uuidSuborder = UUID.fromString("768ad378-fa85-42ab-b668-763225832f57");
 	private static final UUID uuidInfraorder = UUID.fromString("84099182-a6f5-47d7-8586-33c9e9955a10");
+	private static final UUID uuidSectionZoology = UUID.fromString("691d371e-10d7-43f0-93db-3d7fa1a62c54");
+	private static final UUID uuidSubsectionZoology = UUID.fromString("0ed32d28-adc4-4303-a9ca-68e2acd67e33");
 	private static final UUID uuidSuperfamily = UUID.fromString("2cfa510a-dcea-4a03-b66a-b1528f9b0796");
 	private static final UUID uuidFamily = UUID.fromString("af5f2481-3192-403f-ae65-7c957a0f02b6");
 	private static final UUID uuidSubfamily = UUID.fromString("862526ee-7592-4760-a23a-4ff3641541c5");
@@ -58,8 +62,8 @@ public class RankTest extends EntityTestBase {
 	private static final UUID uuidGenus = UUID.fromString("1b11c34c-48a8-4efa-98d5-84f7f66ef43a");
 	private static final UUID uuidSubgenus = UUID.fromString("78786e16-2a70-48af-a608-494023b91904");
 	private static final UUID uuidInfragenus = UUID.fromString("a9972969-82cd-4d54-b693-a096422f13fa");
-	private static final UUID uuidSection = UUID.fromString("3edff68f-8527-49b5-bf91-7e4398bb975c");
-	private static final UUID uuidSubsection = UUID.fromString("d20f5b61-d463-4448-8f8a-c1ff1f262f59");
+	private static final UUID uuidSectionBotany = UUID.fromString("3edff68f-8527-49b5-bf91-7e4398bb975c");
+	private static final UUID uuidSubsectionBotany = UUID.fromString("d20f5b61-d463-4448-8f8a-c1ff1f262f59");
 	private static final UUID uuidSeries = UUID.fromString("d7381ecf-48f8-429b-9c54-f461656978cd");
 	private static final UUID uuidSubseries = UUID.fromString("80c9a263-f4db-4a13-b6c2-b7fec1aa1200");
 	private static final UUID uuidSpeciesAggregate = UUID.fromString("1ecae058-4217-4f75-9c27-6d8ba099ac7a");
@@ -103,7 +107,7 @@ public class RankTest extends EntityTestBase {
 		Rank rank = new Rank("term", "label", null);
 		assertEquals("label", rank.getLabel());
 	}
-
+	
 	@Test
 	public void testEMPIRE() {
 		assertEquals(uuidEmpire,  Rank.EMPIRE().getUuid());
@@ -274,15 +278,25 @@ public class RankTest extends EntityTestBase {
 	}
 
 	@Test
-	public void testSECTION() {
-		assertEquals(uuidSection, Rank.SECTION().getUuid());
+	public void testSECTION_BOTANY() {
+		assertEquals(uuidSectionBotany, Rank.SECTION_BOTANY().getUuid());
 	}
 
 	@Test
 	public void testSUBSECTION() {
-		assertEquals(uuidSubsection, Rank.SUBSECTION().getUuid());
+		assertEquals(uuidSubsectionBotany, Rank.SUBSECTION_BOTANY().getUuid());
 	}
 
+	@Test
+	public void testSECTION_ZOOLOGY() {
+		assertEquals(uuidSectionZoology, Rank.SECTION_ZOOLOGY().getUuid());
+	}
+
+	@Test
+	public void testSUBSECTION_ZOOLOGY() {
+		assertEquals(uuidSubsectionZoology, Rank.SUBSECTION_ZOOLOGY().getUuid());
+	}
+	
 	@Test
 	public void testSERIES() {
 		assertEquals(uuidSeries, Rank.SERIES().getUuid());
@@ -487,9 +501,35 @@ public class RankTest extends EntityTestBase {
 
 	@Test
 	public void testGetRankByNameOrAbbreviation() {
+		NomenclaturalCode bot = NomenclaturalCode.ICBN;
+		NomenclaturalCode zoo = NomenclaturalCode.ICZN;
 		try {
 			assertEquals(Rank.VARIETY(), Rank.getRankByAbbreviation("var."));
 			assertEquals(Rank.GENUS(), Rank.getRankByName("genus"));
+			
+			assertEquals(Rank.SECTION_BOTANY(), Rank.getRankByAbbreviation("sect."));
+			assertEquals(Rank.SECTION_BOTANY(), Rank.getRankByAbbreviation("sect.", false));
+			assertEquals(Rank.SECTION_BOTANY(), Rank.getRankByAbbreviation("sect.", bot));
+			assertEquals(Rank.SECTION_ZOOLOGY(), Rank.getRankByAbbreviation("sect.", zoo));
+			assertEquals(Rank.SECTION_BOTANY(), Rank.getRankByAbbreviation("sect.", bot, false));
+			assertEquals(Rank.SECTION_ZOOLOGY(), Rank.getRankByAbbreviation("sect.", zoo, false));
+			
+			assertEquals(Rank.SECTION_BOTANY(), Rank.getRankByName("Sectio"));
+			assertEquals(Rank.SECTION_BOTANY(), Rank.getRankByName("Sectio", false));
+			assertEquals(Rank.SECTION_BOTANY(), Rank.getRankByName("Sectio", bot));
+			assertEquals(Rank.SECTION_ZOOLOGY(), Rank.getRankByName("Sectio", zoo));
+			assertEquals(Rank.SECTION_BOTANY(), Rank.getRankByName("Sectio", bot, false));
+			assertEquals(Rank.SECTION_ZOOLOGY(), Rank.getRankByName("Sectio", zoo, false));
+			
+			assertEquals(Rank.SUBSECTION_BOTANY(), Rank.getRankByNameOrAbbreviation("Subsectio"));
+			assertEquals(Rank.SUBSECTION_BOTANY(), Rank.getRankByNameOrAbbreviation("subsect."));
+			assertEquals(Rank.SUBSECTION_BOTANY(), Rank.getRankByNameOrAbbreviation("Subsectio", false));
+			assertEquals(Rank.SUBSECTION_BOTANY(), Rank.getRankByNameOrAbbreviation("subsect.", false));
+			assertEquals(Rank.SUBSECTION_BOTANY(), Rank.getRankByNameOrAbbreviation("Subsectio", bot));
+			assertEquals(Rank.SUBSECTION_ZOOLOGY(), Rank.getRankByNameOrAbbreviation("subsect.", zoo));
+			assertEquals(Rank.SUBSECTION_BOTANY(), Rank.getRankByNameOrAbbreviation("Subsectio", bot, false));
+			assertEquals(Rank.SUBSECTION_ZOOLOGY(), Rank.getRankByNameOrAbbreviation("subsect.", zoo, false));
+						
 		} catch (UnknownCdmTypeException e) {
 			fail();
 		}
