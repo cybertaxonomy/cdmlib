@@ -357,8 +357,8 @@ public final class BerlinModelTransformer {
 						case 35: return Rank.SUBTRIBE();
 						case 40: return Rank.GENUS();
 						case 42: return Rank.SUBGENUS();
-						case 45: return Rank.SECTION();
-						case 47: return Rank.SUBSECTION();
+						case 45: return Rank.SECTION_BOTANY();
+						case 47: return Rank.SUBSECTION_BOTANY();
 						case 50: return Rank.SERIES();
 						case 52: return Rank.SUBSERIES();
 						case 58: return Rank.SPECIESAGGREGATE();
@@ -421,8 +421,8 @@ public final class BerlinModelTransformer {
 		else if (rank.equals(Rank.SUBTRIBE())){		return 35;}
 		else if (rank.equals(Rank.GENUS())){		return 40;}
 		else if (rank.equals(Rank.SUBGENUS())){		return 42;}
-		else if (rank.equals(Rank.SECTION())){		return 45;}
-		else if (rank.equals(Rank.SUBSECTION())){	return 47;}
+		else if (rank.equals(Rank.SECTION_BOTANY())){		return 45;}
+		else if (rank.equals(Rank.SUBSECTION_BOTANY())){	return 47;}
 		else if (rank.equals(Rank.SERIES())){		return 50;}
 		else if (rank.equals(Rank.SUBSERIES())){	return 52;}
 		else if (rank.equals(Rank.SPECIESAGGREGATE())){	return 58;}

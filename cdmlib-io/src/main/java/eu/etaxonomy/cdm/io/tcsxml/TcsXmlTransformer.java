@@ -65,8 +65,8 @@ public final class TcsXmlTransformer {
 		}else if (strRank.equals("taxinfragen")){return Rank.INFRAGENERICTAXON();
 		}else if (strRank.equals("subser")){return Rank.SUBSERIES();
 		}else if (strRank.equals("ser")){return Rank.SERIES();
-		}else if (strRank.equals("subsect")){return Rank.SUBSECTION();
-		}else if (strRank.equals("sect")){return Rank.SECTION();
+		}else if (strRank.equals("subsect")){return Rank.SUBSECTION_BOTANY();
+		}else if (strRank.equals("sect")){return Rank.SECTION_BOTANY();
 		//species group
 		}else if (strRank.equals("subsp_aggr")){return Rank.SUBSPECIFICAGGREGATE();
 		}else if (strRank.equals("ssp")){return Rank.SUBSPECIES();
