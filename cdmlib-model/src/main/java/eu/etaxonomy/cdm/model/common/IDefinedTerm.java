@@ -24,10 +24,18 @@ public interface IDefinedTerm<T extends IDefinedTerm> extends ILoadableTerm<T> {
 	
 	public T getByUuid(UUID uuid);
 
+	/**
+	 * Returns the defined term this term is a kind of.
+	 * Therefore the returned term is a generalization of <code>this</code> term
+	 */
 	public T getKindOf();
 
 //	public void setKindOf(T kindOf);
 
+	/**
+	 * Returns all defined terms this term is a generalization for.
+	 * Therefore the returned terms are kind of <code>this</code> term
+	 */
 	public Set<T> getGeneralizationOf();
 
 //	public void setGeneralizationOf(Set<T> generalizationOf);
@@ -36,10 +44,18 @@ public interface IDefinedTerm<T extends IDefinedTerm> extends ILoadableTerm<T> {
 //
 //	public void removeGeneralization(T generalization);
 
+	/**
+	 * Returns the defined term this term is a part of.
+	 * Therefore the returned term includes <code>this</code> term
+	 */
 	public T getPartOf();
 
 //	public void setPartOf(T partOf);
 
+	/**
+	 * Returns all defined terms this term includes.
+	 * Therefore the returned terms are part of <code>this</code> term
+	 */
 	public Set<T> getIncludes();
 
 //	public void setIncludes(Set<T> includes);

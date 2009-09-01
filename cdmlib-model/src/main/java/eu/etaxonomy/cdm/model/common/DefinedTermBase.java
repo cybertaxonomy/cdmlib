@@ -216,9 +216,7 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
 	public T getKindOf(){
 		return this.kindOf;
 	}
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.IDefinedTerm#getByUuid(java.util.UUID)
-	 */
+
 	public void setKindOf(T kindOf){
 		this.kindOf = kindOf;
 	}

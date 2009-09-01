@@ -26,8 +26,7 @@ import org.junit.Test;
  */
 public class DefaultTermInitializerTest {
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger
-			.getLogger(DefaultTermInitializerTest.class);
+	private static final Logger logger = Logger.getLogger(DefaultTermInitializerTest.class);
 
 	/**
 	 * @throws java.lang.Exception

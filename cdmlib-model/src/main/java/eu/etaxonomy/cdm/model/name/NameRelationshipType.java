@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.model.name;
 
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -23,6 +24,7 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
@@ -60,27 +62,9 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
 public class NameRelationshipType extends RelationshipTermBase<NameRelationshipType> {
 	static Logger logger = Logger.getLogger(NameRelationshipType.class);
 
-	private static NameRelationshipType ORTHOGRAPHIC_VARIANT;
-
-	private static NameRelationshipType LATER_HOMONYM;
-
-	private static NameRelationshipType TREATED_AS_LATER_HOMONYM;
-
-	private static NameRelationshipType ALTERNATIVE_NAME;
-
-	private static NameRelationshipType BASIONYM;
-
-	private static NameRelationshipType REPLACED_SYNONYM;
-
-	private static NameRelationshipType CONSERVED_AGAINST;
-
-	private static NameRelationshipType VALIDATED_BY_NAME;
-
-	private static NameRelationshipType LATER_VALIDATED_BY_NAME;
-
-	private static NameRelationshipType BLOCKING_NAME_FOR;
-
 	private static final UUID uuidOrthographicVariant = UUID.fromString("eeaea868-c4c1-497f-b9fe-52c9fc4aca53");
+	private static final UUID uuidMisspelling = UUID.fromString("c6f9afcb-8287-4a2b-a6f6-4da3a073d5de");
+	private static final UUID uuidEmendation = UUID.fromString("6e23ad45-3f2a-462b-ad87-d2389cd6e26c");
 	private static final UUID uuidLaterHomonym = UUID.fromString("80f06f65-58e0-4209-b811-cb40ad7220a6");
 	private static final UUID uuidTreatedAsLaterHomonym = UUID.fromString("2990a884-3302-4c8b-90b2-dfd31aaa2778");
 	private static final UUID uuidAlternativeName = UUID.fromString("049c6358-1094-4765-9fae-c9972a0e7780");
@@ -90,6 +74,16 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	private static final UUID uuidValidatedByName = UUID.fromString("a176c9ad-b4c2-4c57-addd-90373f8270eb");
 	private static final UUID uuidLaterValidatedByName = UUID.fromString("a25ee4c1-863a-4dab-9499-290bf9b89639");
 	private static final UUID uuidBlockingNameFor = UUID.fromString("1dab357f-2e12-4511-97a4-e5153589e6a6");
+	
+	protected static Map<UUID, NameRelationshipType> termMap = null;		
+	
+	protected static NameRelationshipType findTermByUuid(UUID uuid){
+		if (termMap == null){
+			return null;
+		}
+		return (NameRelationshipType)termMap.get(uuid);
+	}
+	
 	
 	// ************* CONSTRUCTORS *************/	
 	/** 
@@ -227,10 +221,48 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	 * must be almost identical (so one usually does not differentiate them).<BR>
 	 * For instance <i>Angelica silvestris</i> L. is an orthographic variant of
 	 * <i>Angelica sylvestris</i> L.<BR>
-	 * This type is symmetric and transitive.
+	 * This type is symmetric and transitive but usually orthographic variant relationships should be organized
+	 * in a star schema with the correct variant in the middle and other variants pointing to it.
 	 */
 	public static final NameRelationshipType ORTHOGRAPHIC_VARIANT(){
-		  return ORTHOGRAPHIC_VARIANT;
+		  return findTermByUuid(uuidOrthographicVariant);
+	}
+	/**
+	 * Returns the "misspelling" name relationship type. The first
+	 * {@link TaxonNameBase taxon name} involved in such a relationship is a 
+	 * misspelling of the second taxon name. The two {@link TaxonNameBase taxon names}
+	 * involved in such a relationship must have the same {@link NonViralName#getAuthorshipCache() authorship}
+	 * and {@link Rank rank}, belong to the same {@link HomotypicalGroup homotypical group} and their name parts
+	 * must be almost identical (so one usually does not differentiate them).<BR>
+	 * For instance <i>Anhelica silvestris</i> L. is a misspelling of
+	 * <i>Angelica silvestris</i> L.<BR>
+	 * A misspelling is always accicentally (not on purpose). Therefore misspellings are a 
+	 * subset of {@link #ORTHOGRAPHIC_VARIANT orthographic variants} and are complementary to 
+	 * emendations. A misspelling is always an {@link #ORTHOGRAPHIC_VARIANT orthographic variant}, too.
+	 * This type is symmetric and transitive but usually the misspelling relationships should be organized
+	 * in a star schema with the correct variant in the middle and the misspellings pointing to it.
+	 */
+	public static final NameRelationshipType MISSPELLING(){
+		  return findTermByUuid(uuidMisspelling);
+	}
+	/**
+	 * Returns the "emendation" name relationship type. The first
+	 * {@link TaxonNameBase taxon name} involved in such a relationship is a 
+	 * misspelling of the second taxon name. The two {@link TaxonNameBase taxon names}
+	 * involved in such a relationship must have the same {@link NonViralName#getAuthorshipCache() authorship}
+	 * and {@link Rank rank}, belong to the same {@link HomotypicalGroup homotypical group} and their name parts
+	 * must be almost identical (so one usually does not differentiate them).<BR>
+	 * For instance <i>Angelica silvestris</i> L. is a emendation of
+	 * <i>Angelica sylvestris</i> L.<BR>
+	 * The name corrected by an emendation has originally been used on purpose (not accidentially) 
+	 * Therefore emendations are a subset of {@link #ORTHOGRAPHIC_VARIANT orthographic variants} and are 
+	 * complementary to {@link #MISSPELLING missepllings}. An emendation is always an 
+	 * {@link #ORTHOGRAPHIC_VARIANT orthographic variant}, too.<BR>
+	 * This type is symmetric and transitive but usually the misspelling relationships should be organized
+	 * in a star schema with the correct variant in the middle and the misspellings pointing to it.
+	 */
+	public static final NameRelationshipType EMENDATION(){
+		  return findTermByUuid(uuidEmendation);
 	}
 	/**
 	 * Returns the "later homonym" name relationship type. The first
@@ -251,7 +283,7 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	 * @see	NomenclaturalStatusType#isLegitimateType()
 	 */
 	public static final NameRelationshipType LATER_HOMONYM(){
-	  return LATER_HOMONYM; 
+	  return findTermByUuid(uuidLaterHomonym);
 	}
 	/**
 	 * Returns the "treated as later homonym" name relationship type. The first
@@ -270,7 +302,7 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	 * @see	NomenclaturalStatusType#isLegitimateType()
 	 */
 	public static final NameRelationshipType TREATED_AS_LATER_HOMONYM(){
-	  return TREATED_AS_LATER_HOMONYM; 
+	  return findTermByUuid(uuidTreatedAsLaterHomonym);
 	}
 	/**
 	 * Returns the "alternative name" name relationship type. Both {@link TaxonNameBase taxon names}
@@ -286,7 +318,7 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	 * This type is neither symmetric nor transitive.
 	 */
 	public static final NameRelationshipType ALTERNATIVE_NAME(){
-	  return ALTERNATIVE_NAME;
+	  return findTermByUuid(uuidAlternativeName);
 	}
 	/**
 	 * Returns the "basionym" name relationship type. The first {@link TaxonNameBase taxon name} 
@@ -303,7 +335,7 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	 * This type is neither symmetric nor transitive.
 	 */
 	public static final NameRelationshipType BASIONYM(){
-	  return BASIONYM;
+	  return findTermByUuid(uuidBasionym);
 	}
 	/**
 	 * Returns the "replaced synonym" name relationship type. The first 
@@ -328,7 +360,7 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	 * @see NomenclaturalStatusType#NOVUM()
 	 */
 	public static final NameRelationshipType REPLACED_SYNONYM(){
-	  return REPLACED_SYNONYM;
+	  return findTermByUuid(uuidReplacedSynonym);
 	}
 	/**
 	 * Returns the "conserved against" name relationship type. Both {@link TaxonNameBase taxon names}
@@ -347,7 +379,7 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	 * @see NomenclaturalStatusType#isIllegitimateType()
 	 */
 	public static final NameRelationshipType CONSERVED_AGAINST(){
-	  return CONSERVED_AGAINST;
+	  return findTermByUuid(uuidConservedAgainst);
 	}
 	/**
 	 * Returns the "validated by name" name relationship type. The two
@@ -361,7 +393,7 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	 * @see		NomenclaturalStatusType#VALID()
 	 */
 	public static final NameRelationshipType VALIDATED_BY_NAME(){
-	  return VALIDATED_BY_NAME;
+	  return findTermByUuid(uuidValidatedByName);
 	}
 	/**
 	 * Returns the "later validated by name" name relationship type. The two
@@ -375,7 +407,7 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	 * @see		NomenclaturalStatusType#VALID()
 	 */
 	public static final NameRelationshipType LATER_VALIDATED_BY_NAME(){
-	  return LATER_VALIDATED_BY_NAME; 
+	  return findTermByUuid(uuidLaterValidatedByName); 
 	}
 	/**
 	 * Returns the "blocking name" name relationship type. The first 
@@ -396,25 +428,26 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	 * @see NomenclaturalStatusType#NOVUM()
 	 */
 	public static final NameRelationshipType BLOCKING_NAME_FOR(){
-	  return  BLOCKING_NAME_FOR;
+	  return  findTermByUuid(uuidBlockingNameFor);
 	}
 
 	@Override
 	protected void setDefaultTerms(TermVocabulary<NameRelationshipType> termVocabulary) {
-		NameRelationshipType.ALTERNATIVE_NAME = termVocabulary.findTermByUuid(NameRelationshipType.uuidAlternativeName);
-		NameRelationshipType.BASIONYM = termVocabulary.findTermByUuid(NameRelationshipType.uuidBasionym);
-		NameRelationshipType.BLOCKING_NAME_FOR = termVocabulary.findTermByUuid(NameRelationshipType.uuidBlockingNameFor);
-		NameRelationshipType.CONSERVED_AGAINST = termVocabulary.findTermByUuid(NameRelationshipType.uuidConservedAgainst);
-		NameRelationshipType.LATER_HOMONYM = termVocabulary.findTermByUuid(NameRelationshipType.uuidLaterHomonym);
-		NameRelationshipType.LATER_VALIDATED_BY_NAME = termVocabulary.findTermByUuid(NameRelationshipType.uuidLaterValidatedByName);
-		NameRelationshipType.ORTHOGRAPHIC_VARIANT = termVocabulary.findTermByUuid(NameRelationshipType.uuidOrthographicVariant);
-		NameRelationshipType.REPLACED_SYNONYM = termVocabulary.findTermByUuid(NameRelationshipType.uuidReplacedSynonym);
-		NameRelationshipType.TREATED_AS_LATER_HOMONYM = termVocabulary.findTermByUuid(NameRelationshipType.uuidTreatedAsLaterHomonym);
-		NameRelationshipType.VALIDATED_BY_NAME = termVocabulary.findTermByUuid(NameRelationshipType.uuidValidatedByName);		
+		termMap = new HashMap<UUID, NameRelationshipType>();
+		for (NameRelationshipType term : termVocabulary.getTerms()){
+			termMap.put(term.getUuid(), term);
+		}
 	}
 
 	@Override
 	public NameRelationshipType readCsvLine(Class<NameRelationshipType> termClass, List<String> csvLine, Map<UUID,DefinedTermBase> terms) {
-		return super.readCsvLine(termClass, csvLine, terms);
+		NameRelationshipType result = super.readCsvLine(termClass, csvLine, terms);
+		String kindOfString = csvLine.get(8).trim();
+		if (CdmUtils.isNotEmpty(kindOfString)){
+			UUID uuidKindOf = UUID.fromString(kindOfString);
+			DefinedTermBase kindOf = terms.get(uuidKindOf);
+			result.setKindOf((NameRelationshipType)kindOf);
+		}
+		return result;
 	}
 }
