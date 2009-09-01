@@ -579,8 +579,20 @@ public class NonViralNameParserImplTest {
 		parser.parseReferencedName(problemName, strBookSection, null, true);
 		assertFalse(problemName.hasProblem());
 		
+		String testParsable = "Pithecellobium macrostachyum Benth.";
+		assertTrue(isParsable(testParsable, NomenclaturalCode.ICBN));
+
+		testParsable = "Pithecellobium macrostachyum (Benth.)";
+		assertTrue(isParsable(testParsable, NomenclaturalCode.ICBN));
 		
-		
+		testParsable = "Pithecellobium macrostachyum (Benth., 1845)";
+		assertTrue(isParsable(testParsable, NomenclaturalCode.ICZN));
+
+	}
+	
+	private boolean isParsable(String string, NomenclaturalCode code){
+		NonViralName<?> name = parser.parseReferencedName(string, code, null);
+		return ! name.hasProblem();
 	}
 
 	private void assertFullRefNameStandard(NonViralName<?> name){
