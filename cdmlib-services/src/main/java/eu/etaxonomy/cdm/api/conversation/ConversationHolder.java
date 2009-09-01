@@ -233,6 +233,10 @@ public class ConversationHolder{
 		return sessionFactory;
 	}
 
+	public void delete(Object object){
+		this.getSession().delete(object);
+	}
+	
 	/**
 	 * Facades Session.lock()
 	 */
