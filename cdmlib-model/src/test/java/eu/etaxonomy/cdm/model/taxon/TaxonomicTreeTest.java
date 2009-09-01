@@ -115,7 +115,7 @@ public class TaxonomicTreeTest {
 	public void testAddRoot() {
 		TaxonNameBase<?,?> synonymName = BotanicalName.NewInstance(Rank.SPECIES());
 		Synonym synonym = Synonym.NewInstance(synonymName, ref1);
-		TaxonNode taxonNode1 = taxonomicView1.addRoot(taxon1, synonym);
+		TaxonNode taxonNode1 = taxonomicView1.addRoot(taxon1, synonym, null);
 		
 		
 		
@@ -146,7 +146,7 @@ public class TaxonomicTreeTest {
 	 */
 	@Test
 	public void testIsTaxonInTree() {
-		taxonomicView1.addRoot(taxon1, null);
+		taxonomicView1.addRoot(taxon1, null, null);
 		
 		assertTrue(taxonomicView1.isTaxonInTree(taxon1));
 		Taxon anyTaxon = Taxon.NewInstance(null, null);
@@ -159,8 +159,8 @@ public class TaxonomicTreeTest {
 	 */
 	@Test
 	public void testMakeRootChildOfOtherNode() {
-		TaxonNode root1 = taxonomicView1.addRoot(taxon1, null);
-		TaxonNode root2 = taxonomicView1.addRoot(taxon2, null);
+		TaxonNode root1 = taxonomicView1.addRoot(taxon1, null, null);
+		TaxonNode root2 = taxonomicView1.addRoot(taxon2, null, null);
 		Taxon taxon3 = Taxon.NewInstance(null, null);
 		root2.addChild(taxon3);
 		String microRef = "p55";
@@ -184,7 +184,7 @@ public class TaxonomicTreeTest {
 	
 	@Test
 	public void testIsRootInTree() {
-		TaxonNode root = taxonomicView1.addRoot(taxon1, null);
+		TaxonNode root = taxonomicView1.addRoot(taxon1, null, null);
 		
 		assertTrue(taxonomicView1.isTaxonInTree(taxon1));
 		assertTrue(taxonomicView1.isRootInTree(taxon1));
@@ -199,7 +199,7 @@ public class TaxonomicTreeTest {
 	
 	@Test
 	public void testGetRootNode() {
-		TaxonNode root = taxonomicView1.addRoot(taxon1, null);
+		TaxonNode root = taxonomicView1.addRoot(taxon1, null, null);
 		
 		assertEquals(root, taxonomicView1.getRootNode(taxon1));
 		Taxon anyTaxon = Taxon.NewInstance(null, null);
@@ -216,7 +216,7 @@ public class TaxonomicTreeTest {
 
 		TaxonNameBase<?,?> synonymName = BotanicalName.NewInstance(Rank.SPECIES());
 		Synonym synonym = Synonym.NewInstance(synonymName, ref1);
-		TaxonNode rootNode = taxonomicView1.addRoot(taxon1, synonym);
+		TaxonNode rootNode = taxonomicView1.addRoot(taxon1, synonym, null);
 		Assert.assertEquals(0,rootNode.getChildNodes().size());
 		
 		//add child to existing root

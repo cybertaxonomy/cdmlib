@@ -104,14 +104,26 @@ public class TaxonomicTree extends IdentifiableEntity implements IReferencedEnti
 	
 	
 	public static TaxonomicTree NewInstance(String name){
-		return NewInstance(name, Language.DEFAULT());
+		return NewInstance(name, null, Language.DEFAULT());
 	}
 	
 	public static TaxonomicTree NewInstance(String name, Language language){
-		TaxonomicTree result =  new TaxonomicTree();
+		return NewInstance(name, null, language);
+	}
+	
+	public static TaxonomicTree NewInstance(String name, ReferenceBase reference){
+		return NewInstance(name, reference, Language.DEFAULT());
+	}
+	
+	public static TaxonomicTree NewInstance(String name, ReferenceBase reference, Language language){
+		return new TaxonomicTree(name, reference, language);
+	}
+	
+	protected TaxonomicTree(String name, ReferenceBase reference, Language language){
+		this();
 		LanguageString langName = LanguageString.NewInstance(name, language);
-		result.setName(langName);
-		return result;
+		setName(langName);
+		setReference(reference);
 	}
 	
 	protected TaxonomicTree(){
@@ -126,13 +138,13 @@ public class TaxonomicTree extends IdentifiableEntity implements IReferencedEnti
 	 * @param synonymUsed
 	 * @return
 	 */
-	public TaxonNode addRoot(Taxon taxon, Synonym synonymUsed){
+	public TaxonNode addRoot(Taxon taxon, Synonym synonymUsed, ReferenceBase reference){
 		TaxonNode newRoot = new TaxonNode(taxon, this);
 		rootNodes.add(newRoot);
 		newRoot.setParent(null);
 		newRoot.setTaxonomicView(this);
 		newRoot.setTaxon(taxon);
-//		newRoot.setReferenceForParentChildRelation(ref); //ref not needed for root !!
+		newRoot.setReferenceForParentChildRelation(reference);
 		newRoot.setSynonymToBeUsed(synonymUsed);
 		return newRoot;
 	}
@@ -298,7 +310,7 @@ public class TaxonomicTree extends IdentifiableEntity implements IReferencedEnti
 			
 			//add parent node if not exist
 			if (parentNode == null){
-				parentNode = this.addRoot(parent, null);
+				parentNode = this.addRoot(parent, null, null);
 			}
 			
 			//add child if not exists

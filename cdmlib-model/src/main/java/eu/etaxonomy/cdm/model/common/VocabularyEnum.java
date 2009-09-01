@@ -113,4 +113,15 @@ public enum VocabularyEnum {
 	public Class<? extends DefinedTermBase<?>> getClazz(){
 		return clazz;
 	}
+	
+	public VocabularyEnum getVocabularyEnum(Class clazz){
+		
+		for(VocabularyEnum vocabulary : this.values()){
+			if(vocabulary.getClass().equals(clazz)){
+				return vocabulary;
+			}
+		}
+		
+		return null;
+	}
 }

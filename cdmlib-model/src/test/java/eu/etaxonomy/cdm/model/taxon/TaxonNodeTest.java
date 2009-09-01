@@ -104,7 +104,7 @@ public class TaxonNodeTest {
 	 */
 	@Test
 	public void testAddChild() {
-		TaxonNode root = taxonomicView1.addRoot(taxon1, null);
+		TaxonNode root = taxonomicView1.addRoot(taxon1, null, null);
 		assertEquals("Number of all nodes in view should be 1", 1, taxonomicView1.getAllNodes().size());
 		
 		TaxonNode child = root.addChild(taxon2, ref2, "p33", syn1);
@@ -168,7 +168,7 @@ public class TaxonNodeTest {
 	 */
 	@Test
 	public void testGetChildNodes() {
-		TaxonNode root = taxonomicView1.addRoot(taxon1, null);
+		TaxonNode root = taxonomicView1.addRoot(taxon1, null, null);
 		assertEquals("Number of all nodes in view should be 1", 1, taxonomicView1.getAllNodes().size());
 		
 		TaxonNode child = root.addChild(taxon2, ref2, "p33", syn1);
@@ -182,7 +182,7 @@ public class TaxonNodeTest {
 	
 	@Test
 	public void testgetCountChildren(){
-		TaxonNode root = taxonomicView1.addRoot(taxon1, null);
+		TaxonNode root = taxonomicView1.addRoot(taxon1, null, null);
 		assertEquals("Count of children must be 0", 0, root.getCountChildren());
 		TaxonNode child = root.addChild(taxon2, ref2, "p33", syn1);
 		assertEquals("Count of children must be 1", 1, root.getCountChildren());
@@ -198,7 +198,7 @@ public class TaxonNodeTest {
 	
 	@Test
 	public void testRemove(){
-		TaxonNode root = taxonomicView1.addRoot(taxon1, null);
+		TaxonNode root = taxonomicView1.addRoot(taxon1, null, null);
 		assertEquals("Number of all nodes in view should be 1", 1, taxonomicView1.getAllNodes().size());
 		
 		
