@@ -18,6 +18,8 @@
       <plugin>
         <artifactId>maven-antrun-plugin</artifactId>
         <executions>
+          <!-- 
+
           <execution>
             <id>aspectj-main</id>
             <phase>process-sources</phase>
@@ -64,10 +66,13 @@
                   </sourceroots>
                 </iajc>
               </tasks>
-            </configuration>
-          </execution>
-        </executions>
-        <dependencies>
+          </configuration>
+        </execution>
+                -->
+      </executions>
+      <dependencies>
+      <!--
+
           <dependency>
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjtools</artifactId>
@@ -78,7 +83,8 @@
             <artifactId>aspectjrt</artifactId>
             <version>1.6.3</version>
           </dependency>
-        </dependencies>
+                  -->
+      </dependencies>
       </plugin>
     </plugins>
   </build>

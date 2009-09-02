@@ -17,6 +17,7 @@ import org.hibernate.proxy.HibernateProxy;
 import net.sf.json.processors.JsonBeanProcessorMatcher;
 import eu.etaxonomy.cdm.model.common.OrderedTermBase;
 import eu.etaxonomy.cdm.model.common.TermBase;
+import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -60,6 +61,9 @@ public class CdmProxyBeanProcessorMatcher extends JsonBeanProcessorMatcher {
 		}
 		if (TaxonRelationship.class.isAssignableFrom(target)) {
 			return DEFAULT.getMatch(TaxonRelationship.class, set);
+		}
+		if (Media.class.isAssignableFrom(target)) {
+			return DEFAULT.getMatch(Media.class, set);
 		}
 		return DEFAULT.getMatch(target, set);
 	}

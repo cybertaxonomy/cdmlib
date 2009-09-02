@@ -164,7 +164,7 @@ public class CdmDestinations {
 	//
 	public static ICdmDataSource cdm_test_andreasK1(){
 		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
-		String cdmServer = "192.168.2.10";
+		String cdmServer = "127.0.0.1"; //FIXME"192.168.2.10";
 		String cdmDB = "cdm_test_andreasK1";
 		String cdmUserName = "edit";
 		return makeDestination(cdmServer, cdmDB, -1, cdmUserName, null);

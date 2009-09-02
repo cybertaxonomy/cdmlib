@@ -68,12 +68,17 @@ public class MovieFile extends MediaRepresentationPart {
 	}
 	
 	
+	/**
+	 * The Length of the movie in seconds
+	 * 
+	 * @return
+	 */
 	public int getDuration(){
 		return this.duration;
 	}
 
 	/**
-	 * 
+	 * Sets the Length of the movie in seconds
 	 * @param duration    duration
 	 */
 	public void setDuration(int duration){

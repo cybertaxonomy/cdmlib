@@ -26,7 +26,8 @@ public interface IMultiLanguageText {
 	public LanguageString add(LanguageString languageString);
 
 	/**
-	 * Iterates on the languages. As soon as there exists a language string for this language in this multilanguage text
+	 * Iterates on the languages. As soon as there exists a language string for this language in 
+	 * this multilanguage text
 	 * it is returned.
 	 * @param languages
 	 * @return 

@@ -215,27 +215,32 @@
 			<id>EditRepository</id>
 			<url>http://wp5.e-taxonomy.eu/cdmlib/mavenrepo/</url>
 		</repository>
-        <!-- apache incubating repository -->
+    <!-- apache incubating repository -->
 		<repository>
 			<id>ApacheIncubating</id>
 			<url>http://people.apache.org/repo/m2-incubating-repository/</url>
 		</repository>
 		<!-- Neccessary for hibernate-envers -->
-        <repository>
-          <releases>
-	          <enabled>true</enabled>
-	          <updatePolicy>always</updatePolicy>
-	          <checksumPolicy>warn</checksumPolicy>
-	        </releases>
-	        <snapshots>
-	          <enabled>false</enabled>
-	          <updatePolicy>never</updatePolicy>
-	          <checksumPolicy>fail</checksumPolicy>
-	        </snapshots>
-	        <id>jboss-repository</id>
-	        <name>JBoss Repository</name>
-	        <url>http://repository.jboss.com/maven2</url>
-	      </repository>
+		<repository>
+			<releases>
+				<enabled>true</enabled>
+				<updatePolicy>always</updatePolicy>
+				<checksumPolicy>warn</checksumPolicy>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+				<updatePolicy>never</updatePolicy>
+				<checksumPolicy>fail</checksumPolicy>
+			</snapshots>
+			<id>jboss-repository</id>
+			<name>JBoss Repository</name>
+			<url>http://repository.jboss.com/maven2</url>
+		</repository>
+		<!-- codehaus mule repository needed for yourkit  -->
+		<repository>
+			<id>CodehausMuleRepository</id>
+			<url>http://dist.codehaus.org/mule/dependencies/maven2/</url>
+		</repository>
 	</repositories>
 
 	<!-- **** PLUGINS **** -->
@@ -1029,27 +1034,32 @@
 	  		<version>2000.3</version>
 	  	</dependency>
 -->
-        <dependency>
-        	<groupId>oracle</groupId>
-        	<artifactId>ojdbc14</artifactId>
-        	<version>10.2.0.2</version>
-        </dependency>
-        <dependency>
-        	<groupId>oracle</groupId>
-        	<artifactId>ojdbc14</artifactId>
-        	<version>9i</version>
-        </dependency>
-        <dependency>
-        	<groupId>oracle</groupId>
-        	<artifactId>ojdbc14</artifactId>
-        	<version>9.2.0.5</version>
-        </dependency>
-		<dependency>
-			<groupId>com.h2database</groupId>
-			<artifactId>h2</artifactId>
-			<version>1.1.115</version>
-		</dependency>
-			
+			<dependency>
+				<groupId>oracle</groupId>
+				<artifactId>ojdbc14</artifactId>
+				<version>10.2.0.2</version>
+			</dependency>
+			<dependency>
+				<groupId>oracle</groupId>
+				<artifactId>ojdbc14</artifactId>
+				<version>9i</version>
+			</dependency>
+			<dependency>
+				<groupId>oracle</groupId>
+				<artifactId>ojdbc14</artifactId>
+				<version>9.2.0.5</version>
+			</dependency>
+			<dependency>
+				<groupId>com.h2database</groupId>
+				<artifactId>h2</artifactId>
+				<version>1.1.115</version>
+			</dependency>
+			<!-- yourkit profiler api controller (used in ..)-->  
+			<dependency>
+				<groupId>com.yourkit</groupId>
+				<artifactId>yjp-controller-api-redist</artifactId>
+				<version>8.0.1</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 

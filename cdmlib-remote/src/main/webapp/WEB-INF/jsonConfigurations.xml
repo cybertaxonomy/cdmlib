@@ -150,6 +150,12 @@
                     	<property name="replaceMultilanguageText" value="true" />
                     </bean>
                 </entry>
+                <entry key="eu.etaxonomy.cdm.model.media.Media">
+                    <bean class="eu.etaxonomy.cdm.remote.json.processor.MediaBeanProcessor">
+                    	<property name="replaceTitle" value="true" />
+                    	<property name="replaceDescription" value="true" />
+                    </bean>
+                </entry>
             </map>
         </property>
         <property name="jsonPropertyFilters">

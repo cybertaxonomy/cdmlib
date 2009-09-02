@@ -140,7 +140,9 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 	 */
 	@Test
 	@DataSet
+	@Ignore
 	public void testInit() {
+		logger.warn("testInit()");
 		assertNotNull("Instance of ITaxonDao expected",taxonDao);
 		assertNotNull("Instance of IReferenceDao expected",referenceDao);
 	}
@@ -152,6 +154,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 	 */
 	@Test
 	@DataSet
+	@Ignore
 	public void testGetRootTaxa() {
 		ReferenceBase sec1 = referenceDao.findById(1);
 		assert sec1 != null : "sec1 must exist";
@@ -266,6 +269,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 		Synonym synAtroposAgassiz = (Synonym)taxonDao.findByUuid(atroposAgassiz);
 		Taxon taxonRethera = (Taxon)taxonDao.findByUuid(rethera);
 		taxonRethera.addSynonym(synAtroposAgassiz, SynonymRelationshipType.SYNONYM_OF());
+		logger.warn("addSynonym(..)");
 		
 		Synonym synAtroposLeach = (Synonym)taxonDao.findByUuid(atroposLeach);
 		Taxon taxonRetheraSecCdmtest = (Taxon)taxonDao.findByUuid(retheraSecCdmtest);

@@ -49,12 +49,12 @@ public class DipteraActivator {
 	//database validation status (create, update, validate ...)
 	static DbSchemaValidation hbm2dll = DbSchemaValidation.CREATE;
 	static final Source berlinModelSource = BerlinModelSources.EDIT_Diptera();
-	static final ICdmDataSource cdmDestination = CdmDestinations.localH2Diptera();
+	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_import_diptera();
 	static final UUID secUuid = UUID.fromString("06fd671f-1226-4e3b-beca-1959b3b32e20");
 	static final UUID treeUuid = UUID.fromString("1e3093f6-c761-4e96-8065-2c1334ddd0c1");
 	static final int sourceSecId = 1000000;
 	static final UUID featureTreeUuid = UUID.fromString("ae9615b8-bc60-4ed0-ad96-897f9226d568");
-	static final Object[] featureKeyList = new Integer[]{1,4,5,10,11,12,13,99}; 
+	static final Object[] featureKeyList = new Integer[]{1,4,5,10,11,12,13,99}; // TODO remove  13 occurence
 	
 	static boolean useTaxonomicTree = true;
 	//editor - import

@@ -35,9 +35,12 @@ import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.jaxb.MultilanguageTextAdapter;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
+import eu.etaxonomy.cdm.model.common.MultilanguageText;
+import eu.etaxonomy.cdm.model.common.MultilanguageTextHelper;
 import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.common.TermBase;
 
@@ -187,7 +190,9 @@ public class TextData extends DescriptionElementBase {
 	 * 
 	 * @param languages
 	 * @return
+	 * @deprecated replaced by static method  {@link MultilanguageTextHelper#getPreferredLanguageString(Map, List)}
 	 */
+	@Deprecated
 	public LanguageString getPreferredLanguageString(List<Language> languages) {
 		
 		LanguageString languageString = null;

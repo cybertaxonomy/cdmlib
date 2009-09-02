@@ -68,6 +68,9 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
+import com.yourkit.api.Controller;
+
+
 
 /**
  * @author a.babadshanjan
@@ -93,7 +96,9 @@ public class FaunaEuropaeaRelTaxonIncludeImport extends FaunaEuropaeaImportBase 
 	/* Number of times method buildParentName() has been called for one taxon */
 	private int callCount = 0;
 	private Map<Integer, FaunaEuropaeaTaxon> fauEuTaxonMap = new HashMap();
-	
+
+	private static Controller controller;
+	private int memSnapshotCnt = 0;
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doCheck(eu.etaxonomy.cdm.io.common.IImportConfigurator)
@@ -151,25 +156,42 @@ public class FaunaEuropaeaRelTaxonIncludeImport extends FaunaEuropaeaImportBase 
 	
 	protected boolean doInvoke(FaunaEuropaeaImportState state) {				
 		
-		Map<String, MapWrapper<? extends CdmBase>> stores = state.getStores();
-		MapWrapper<TaxonBase> taxonStore = (MapWrapper<TaxonBase>)stores.get(ICdmIO.TAXON_STORE);
-		taxonStore.makeEmpty();
-		MapWrapper<TeamOrPersonBase> authorStore = (MapWrapper<TeamOrPersonBase>)stores.get(ICdmIO.TEAM_STORE);
-		authorStore.makeEmpty();
-		
 		boolean success = true;
 		
-		if(logger.isInfoEnabled()) { logger.info("Start making taxonomically included relationships..."); }
-		
-//		TransactionStatus txStatus = startTransaction();
+		// start memory snapshot
+		try {
+			controller = new Controller();
+			memSnapshotCnt = 0;
 
-		success = retrieveChildParentUuidMap(state);
-		success = createRelationships(state);
+			memorySnapshot();
 		
-//		commitTransaction(txStatus);
-
-		logger.info("End making taxa...");
+			Map<String, MapWrapper<? extends CdmBase>> stores = state.getStores();
+			MapWrapper<TaxonBase> taxonStore = (MapWrapper<TaxonBase>)stores.get(ICdmIO.TAXON_STORE);
+			taxonStore.makeEmpty();
+			MapWrapper<TeamOrPersonBase> authorStore = (MapWrapper<TeamOrPersonBase>)stores.get(ICdmIO.TEAM_STORE);
+			authorStore.makeEmpty();
+			
+			if(logger.isInfoEnabled()) { logger.info("Start making taxonomically included relationships..."); }
+			
+	//		TransactionStatus txStatus = startTransaction();
+	
+			success = retrieveChildParentUuidMap(state);
+			memorySnapshot();
+			success = createRelationships(state);
+			
+	//		commitTransaction(txStatus);
+	
+			logger.info("End making taxa...");
+			memorySnapshot();
+		} catch (Exception e) {
+			logger.error(e);
+		}
 		return success;
+	}
+
+	protected void memorySnapshot() throws Exception {
+		logger.info("taking memory snapshot " + memSnapshotCnt++);
+		controller.captureMemorySnapshot();
 	}
 
 	

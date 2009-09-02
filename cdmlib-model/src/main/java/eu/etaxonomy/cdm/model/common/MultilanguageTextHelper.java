@@ -9,6 +9,10 @@
 
 package eu.etaxonomy.cdm.model.common;
 
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -68,5 +72,41 @@ public class MultilanguageTextHelper {
 	
 	public void setLanguageString(LanguageString languageString) {
 		this.languageString = languageString;
+	}
+	
+    /**
+	 * Returns the LanguageString in the preferred language. Preferred languages
+	 * are specified by the parameter languages, which receives a list of
+	 * Language instances in the order of preference. If no representation in
+	 * any preferred languages is found the method falls back to return the
+	 * Representation in Language.DEFAULT() and if neccesary further falls back
+	 * to return the first element found if any.
+	 * 
+	 * TODO think about this fall-back strategy & 
+	 * see also {@link TermBase#getPreferredRepresentation(List)}
+	 * 
+	 * @param languages
+	 * @return
+	 */
+	public static LanguageString getPreferredLanguageString(Map<Language, LanguageString> multilanguageText, List<Language> languages) {
+		
+		LanguageString languageString = null;
+		if(languages != null){
+			for(Language language : languages) {
+				languageString = multilanguageText.get(language);
+				if(languageString != null){
+					return languageString;
+				}
+			}
+		}
+		languageString = multilanguageText.get(Language.DEFAULT());
+		
+		if(languageString == null && multilanguageText.size() > 0){
+			Iterator<LanguageString> it = multilanguageText.values().iterator();
+			if(it.hasNext()){
+				languageString = it.next();
+			}
+		}
+		return languageString;
 	}
 }
