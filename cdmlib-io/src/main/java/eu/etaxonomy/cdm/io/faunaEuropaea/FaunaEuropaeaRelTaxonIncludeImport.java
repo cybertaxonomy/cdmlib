@@ -159,7 +159,6 @@ public class FaunaEuropaeaRelTaxonIncludeImport extends FaunaEuropaeaImportBase 
 		boolean success = true;
 		
 
-			ProfilerController.memorySnapshot();
 		
 			Map<String, MapWrapper<? extends CdmBase>> stores = state.getStores();
 			MapWrapper<TaxonBase> taxonStore = (MapWrapper<TaxonBase>)stores.get(ICdmIO.TAXON_STORE);
@@ -171,14 +170,14 @@ public class FaunaEuropaeaRelTaxonIncludeImport extends FaunaEuropaeaImportBase 
 			
 	//		TransactionStatus txStatus = startTransaction();
 	
-			success = retrieveChildParentUuidMap(state);
 			ProfilerController.memorySnapshot();
+			success = retrieveChildParentUuidMap(state);
 			success = createRelationships(state);
+			ProfilerController.memorySnapshot();
 			
 	//		commitTransaction(txStatus);
 	
 			logger.info("End making taxa...");
-			ProfilerController.memorySnapshot();
 
 		return success;
 	}
@@ -574,6 +573,9 @@ public class FaunaEuropaeaRelTaxonIncludeImport extends FaunaEuropaeaImportBase 
 		}
 
 		for (int j = 1; j <= nbrOfBlocks + 1; j++) {
+			
+			ProfilerController.memorySnapshot();
+			
 			int offset = j - 1;
 			int start = offset * limit;
 
