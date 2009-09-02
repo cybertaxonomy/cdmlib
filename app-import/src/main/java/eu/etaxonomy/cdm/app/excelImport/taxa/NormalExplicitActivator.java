@@ -33,11 +33,10 @@ public class NormalExplicitActivator {
     
     public static void main(String[] args) {
 
+    	NomenclaturalCode code = NomenclaturalCode.ICBN;
     	NormalExplicitImportConfigurator normalExplicitImportConfigurator = 
-    		NormalExplicitImportConfigurator.NewInstance(fileName, destinationDb);
+    		NormalExplicitImportConfigurator.NewInstance(fileName, destinationDb, code);
 
-    	normalExplicitImportConfigurator.setNomenclaturalCode(NomenclaturalCode.ICBN);
-    	
 		CdmDefaultImport<NormalExplicitImportConfigurator> normalExplicitImport = 
 			new CdmDefaultImport<NormalExplicitImportConfigurator>();
 
