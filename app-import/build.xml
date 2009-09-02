@@ -23,6 +23,7 @@
     	<pathelement location="${M2_REPO}/eu/etaxonomy/cdmlib-persistence/2.1/cdmlib-persistence-2.1.jar"/>
     	<pathelement location="${M2_REPO}/eu/etaxonomy/cdmlib-services/2.1/cdmlib-services-2.1.jar"/>
         <pathelement location="${M2_REPO}/cglib/cglib-nodep/2.1_3/cglib-nodep-2.1_3.jar"/>
+    	<pathelement location="${M2_REPO}/com/yourkit/yjp-controller-api-redist/8.0.1/yjp-controller-api-redist-8.0.1.jar"/>
         <pathelement location="${M2_REPO}/commons-beanutils/commons-beanutils/1.7.0/commons-beanutils-1.7.0.jar"/>
         <pathelement location="${M2_REPO}/commons-codec/commons-codec/1.3/commons-codec-1.3.jar"/>
         <pathelement location="${M2_REPO}/commons-collections/commons-collections/3.2/commons-collections-3.2.jar"/>
