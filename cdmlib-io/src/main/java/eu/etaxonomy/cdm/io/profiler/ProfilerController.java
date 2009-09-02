@@ -12,7 +12,7 @@ public class ProfilerController {
 	private static Controller controller;
 	private static int memSnapshotCnt = 0;
 	
-	private void init(){
+	private static void init(){
 		if(controller == null){
 			try {
 				controller = new Controller();
@@ -24,6 +24,7 @@ public class ProfilerController {
 	}
 	
 	public static void memorySnapshot() {
+		init();
 		try {
 			logger.info("taking memory snapshot " + memSnapshotCnt++);
 			controller.captureMemorySnapshot();
