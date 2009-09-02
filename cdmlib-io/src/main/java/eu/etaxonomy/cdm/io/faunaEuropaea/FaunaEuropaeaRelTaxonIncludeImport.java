@@ -47,6 +47,7 @@ import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.io.common.Source;
+import eu.etaxonomy.cdm.io.profiler.ProfilerController;
 import eu.etaxonomy.cdm.io.tcsxml.in.TcsXmlImportState;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -97,8 +98,7 @@ public class FaunaEuropaeaRelTaxonIncludeImport extends FaunaEuropaeaImportBase 
 	private int callCount = 0;
 	private Map<Integer, FaunaEuropaeaTaxon> fauEuTaxonMap = new HashMap();
 
-	private static Controller controller;
-	private int memSnapshotCnt = 0;
+
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doCheck(eu.etaxonomy.cdm.io.common.IImportConfigurator)
@@ -158,12 +158,8 @@ public class FaunaEuropaeaRelTaxonIncludeImport extends FaunaEuropaeaImportBase 
 		
 		boolean success = true;
 		
-		// start memory snapshot
-		try {
-			controller = new Controller();
-			memSnapshotCnt = 0;
 
-			memorySnapshot();
+			ProfilerController.memorySnapshot();
 		
 			Map<String, MapWrapper<? extends CdmBase>> stores = state.getStores();
 			MapWrapper<TaxonBase> taxonStore = (MapWrapper<TaxonBase>)stores.get(ICdmIO.TAXON_STORE);
@@ -176,25 +172,17 @@ public class FaunaEuropaeaRelTaxonIncludeImport extends FaunaEuropaeaImportBase 
 	//		TransactionStatus txStatus = startTransaction();
 	
 			success = retrieveChildParentUuidMap(state);
-			memorySnapshot();
+			ProfilerController.memorySnapshot();
 			success = createRelationships(state);
 			
 	//		commitTransaction(txStatus);
 	
 			logger.info("End making taxa...");
-			memorySnapshot();
-		} catch (Exception e) {
-			logger.error(e);
-		}
+			ProfilerController.memorySnapshot();
+
 		return success;
 	}
 
-	protected void memorySnapshot() throws Exception {
-		logger.info("taking memory snapshot " + memSnapshotCnt++);
-		controller.captureMemorySnapshot();
-	}
-
-	
 	/** Retrieve child-parent uuid map from CDM DB */
 	private boolean retrieveChildParentUuidMap(FaunaEuropaeaImportState state) {
 
