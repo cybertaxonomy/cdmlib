@@ -77,7 +77,8 @@ Bundle-ClassPath: antlr-2.7.6.jar,
  unitils-1.0.jar,
  wsdl4j-1.6.1.jar,
  xercesImpl.jar,
- xml-apis.jar
+ xml-apis.jar,
+ yjp-controller-api-redist-8.0.1.jar
 Export-Package: eu.etaxonomy.cdm,
  eu.etaxonomy.cdm.api.application,
  eu.etaxonomy.cdm.api.application.eclipse,

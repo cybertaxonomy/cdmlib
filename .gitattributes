@@ -2373,6 +2373,7 @@ eclipse-plugin/wsdl4j-1.6.1.jar -text
 eclipse-plugin/wsdl4j-1.6.1src.zip -text
 eclipse-plugin/xercesImpl.jar -text
 eclipse-plugin/xml-apis.jar -text
+eclipse-plugin/yjp-controller-api-redist-8.0.1.jar -text
 eclipse-updateSite/.project -text
 eclipse-updateSite/index.html -text
 eclipse-updateSite/site.xml -text
