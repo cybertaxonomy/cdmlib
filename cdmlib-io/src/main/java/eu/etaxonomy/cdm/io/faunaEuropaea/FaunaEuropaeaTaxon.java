@@ -31,6 +31,8 @@ public class FaunaEuropaeaTaxon {
 	private String authorName;
 	private boolean parenthesis = false;
 	private boolean valid = false;
+	private String genusName = "";
+	private String specificEpithet = "";
 	
 	/**
 	 * @return the authorName
@@ -224,6 +226,34 @@ public class FaunaEuropaeaTaxon {
 	 */
 	public void setOriginalGenusName(String originalGenusName) {
 		this.originalGenusName = originalGenusName;
+	}
+
+	/**
+	 * @return the genusName
+	 */
+	public String getGenusName() {
+		return genusName;
+	}
+
+	/**
+	 * @param genusName the genusName to set
+	 */
+	public void setGenusName(String genusName) {
+		this.genusName = genusName;
+	}
+
+	/**
+	 * @return the specificEpithet
+	 */
+	public String getSpecificEpithet() {
+		return specificEpithet;
+	}
+
+	/**
+	 * @param specificEpithet the specificEpithet to set
+	 */
+	public void setSpecificEpithet(String specificEpithet) {
+		this.specificEpithet = specificEpithet;
 	}
 
 //	/**

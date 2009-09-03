@@ -138,16 +138,17 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 	private boolean retrieveTaxa(FaunaEuropaeaImportState state) {
 
 		int limit = state.getConfig().getLimitSave();
-		
+
 		Map<String, MapWrapper<? extends CdmBase>> stores = state.getStores();
 //		MapWrapper<TaxonBase> nameStore = (MapWrapper<TaxonBase>)stores.get(ICdmIO.TAXONNAME_STORE);
 		MapWrapper<TaxonBase> taxonStore = (MapWrapper<TaxonBase>)stores.get(ICdmIO.TAXON_STORE);
 		MapWrapper<TeamOrPersonBase> authorStore = (MapWrapper<TeamOrPersonBase>)stores.get(ICdmIO.TEAM_STORE);
 //		Map<Integer, FaunaEuropaeaTaxon> fauEuTaxonMap = state.getFauEuTaxonMap();
 		Map<Integer, FaunaEuropaeaTaxon> fauEuTaxonMap = new HashMap<Integer, FaunaEuropaeaTaxon>(limit);
+		state.setFauEuTaxonMap(fauEuTaxonMap);
 
 		if (logger.isInfoEnabled()) {
-			logger.info("Initial size of taxon Store is: " + taxonStore.size());
+			logger.info("Initial size of taxon store is: " + taxonStore.size());
 		}
 		FaunaEuropaeaImportConfigurator fauEuConfig = state.getConfig();
 		ReferenceBase<?> sourceRef = fauEuConfig.getSourceReference();
@@ -157,7 +158,7 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 		boolean success = true;
 
 		try {
-			
+
 			String strQuery = 
 				" SELECT Taxon.*, rank.*, author.* " + 
 				" FROM dbo.Taxon " +
@@ -169,13 +170,13 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 				logger.debug("Query: " + strQuery);
 			}
 			ResultSet rs = source.getResultSet(strQuery);
-			
+
 			while (rs.next()) {
 
 //				if ((i++ % limit) == 0 && i != 1 ) { 
-//					if(logger.isInfoEnabled()) {
-//						logger.info("Taxa retrieved: " + (i-1)); 
-//					}
+//				if(logger.isInfoEnabled()) {
+//				logger.info("Taxa retrieved: " + (i-1)); 
+//				}
 //				}
 
 				int taxonId = rs.getInt("TAX_ID");
@@ -188,7 +189,7 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 				int status = rs.getInt("TAX_VALID");
 				int year = rs.getInt("TAX_YEAR");
 				String autName = rs.getString("aut_name");
-				
+
 				Rank rank = null;
 				int parenthesis = rs.getInt("TAX_PARENTHESIS");
 				UUID taxonBaseUuid = null;
@@ -197,12 +198,12 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 				} else {
 					taxonBaseUuid = UUID.randomUUID();
 				}
-				
+
 //				String originalGenusName = "";
 //				String genusName = "";
 //				String specificEpithet = "";
 
-				
+
 				FaunaEuropaeaTaxon fauEuTaxon = new FaunaEuropaeaTaxon();
 				fauEuTaxon.setUuid(taxonBaseUuid);
 				fauEuTaxon.setLocalName(rs.getString("TAX_NAME"));
@@ -224,7 +225,7 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 					fauEuTaxon.setValid(false);
 				}
 
-				
+
 				try {
 					rank = FaunaEuropaeaTransformer.rankId2Rank(rs, false);
 				} catch (UnknownCdmTypeException e) {
@@ -234,7 +235,7 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 					logger.warn("Taxon (" + taxonId + ") has rank null and can not be saved.");
 					continue;
 				}
-				
+
 				ReferenceBase<?> sourceReference = fauEuConfig.getSourceReference();
 				ReferenceBase<?> auctReference = fauEuConfig.getAuctReference();
 
@@ -245,7 +246,7 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 
 				// set local name cache
 //				zooName.setNameCache(localName);
-				
+
 				TaxonBase<?> taxonBase;
 
 				Synonym synonym;
@@ -276,11 +277,11 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 					}
 
 					taxonBase.setUuid(taxonBaseUuid);
-					
+
 					ImportHelper.setOriginalSource(taxonBase, fauEuConfig.getSourceReference(), taxonId, OS_NAMESPACE_TAXON);
 					ImportHelper.setOriginalSource(zooName, fauEuConfig.getSourceReference(), taxonId, "TaxonName");
-					
-					
+
+
 					if (!taxonStore.containsId(taxonId)) {
 						if (taxonBase == null) {
 							if (logger.isDebugEnabled()) { 
@@ -291,7 +292,7 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 						taxonStore.put(taxonId, taxonBase);
 						fauEuTaxonMap.put(taxonId, fauEuTaxon);
 //						if (logger.isDebugEnabled()) { 
-//							logger.debug("Stored taxon base (" + taxonId + ") " + localName); 
+//						logger.debug("Stored taxon base (" + taxonId + ") " + localName); 
 //						}
 					} else {
 						logger.warn("Not imported taxon base with duplicated TAX_ID (" + taxonId + 
@@ -300,24 +301,31 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 				} catch (Exception e) {
 					logger.warn("An exception occurred when creating taxon base with id " + taxonId + 
 					". Taxon base could not be saved.");
+					e.printStackTrace();
 				}
-			}
-			
-			if ((i++ % limit) == 0 && i != 1 ) { 
-				if(logger.isInfoEnabled()) {
-					logger.info("Taxa retrieved: " + (i-1)); 
-				}
-				success = processTaxaSecondPass(state);
-				success = saveTaxa(state, state.getHighestTaxonIndex(), limit);
-				
-				if (logger.isInfoEnabled()) {
-					logger.info("Final size of taxon Store is: " + taxonStore.size());
-				}
-				
-				taxonStore.makeNewMap((IService)getTaxonService());
-//				taxonStore.makeEmpty();
-			}
 
+				if ((i++ % limit) == 0 && i != 1 ) { 
+					if(logger.isInfoEnabled()) {
+						logger.info("Taxa retrieved: " + (i-1)); 
+					}
+					success = processTaxaSecondPass(state);
+					success = saveTaxa(state);
+
+					if (logger.isInfoEnabled()) {
+						logger.info("End size of taxon Store is: " + taxonStore.size());
+					}
+
+//					taxonStore.makeNewMap((IService)getTaxonService());
+					taxonStore.makeEmpty();
+					fauEuTaxonMap = new HashMap<Integer, FaunaEuropaeaTaxon>(limit);
+					state.setFauEuTaxonMap(fauEuTaxonMap);
+
+					if (logger.isInfoEnabled()) {
+						logger.info("Final size of taxon Store is: " + taxonStore.size());
+					}
+				}
+
+			}
 		} catch (SQLException e) {
 			logger.error("SQLException:" +  e);
 			success = false;
@@ -645,12 +653,12 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 
 			taxonBase = taxonBase.deproxy(taxonBase, TaxonBase.class);
 
-			completeString = 
-				buildLowerTaxonName(originalGenus, useOriginalGenus,
-						genusOrUninomial, infraGenericEpithet, specificEpithet, infraSpecificEpithet,
-						fauEuTaxon, fauEuTaxonMap);
-			
-			completeString = (String) CdmUtils.removeDuplicateWhitespace(completeString.trim());
+//			completeString = 
+//				buildLowerTaxonName(originalGenus, useOriginalGenus,
+//						genusOrUninomial, infraGenericEpithet, specificEpithet, infraSpecificEpithet,
+//						fauEuTaxon, fauEuTaxonMap);
+//			
+//			completeString = (String) CdmUtils.removeDuplicateWhitespace(completeString.trim());
 
 		}
 		setCompleteTaxonName(completeString, useOriginalGenus,
@@ -713,7 +721,30 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 		}
 		return success;
 	}
+
 	
+	protected boolean saveTaxa(FaunaEuropaeaImportState state) {
+
+		boolean success = true;
+
+		Map<String, MapWrapper<? extends CdmBase>> stores = state.getStores();
+		MapWrapper<TaxonBase> taxonStore = (MapWrapper<TaxonBase>)stores.get(ICdmIO.TAXON_STORE);
+		TransactionStatus txStatus = null;
+
+		if(logger.isInfoEnabled()) { logger.info("Saving taxa ..."); }
+
+		if (state.getConfig().isUseTransactions()) {
+			txStatus = startTransaction();
+		}
+
+		getTaxonService().saveTaxonAll(taxonStore.objects());
+
+		if (state.getConfig().isUseTransactions()) {
+			commitTransaction(txStatus);
+		}
+
+		return success;
+	}
 	
 
 }
