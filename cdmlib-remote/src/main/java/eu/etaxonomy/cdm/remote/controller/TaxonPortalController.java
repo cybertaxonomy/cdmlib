@@ -560,6 +560,8 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 			}
 		}
 		
+		// move into media ...
+		
 		// find best matching representations of each media
 		String path = request.getServletPath();
 		String[] pathTokens = path.split("/");
