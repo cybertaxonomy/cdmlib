@@ -12,11 +12,16 @@ package eu.etaxonomy.cdm.io.faunaEuropaea;
 import static eu.etaxonomy.cdm.io.faunaEuropaea.FaunaEuropaeaTransformer.A_AUCT;
 import static eu.etaxonomy.cdm.io.faunaEuropaea.FaunaEuropaeaTransformer.P_PARENTHESIS;
 import static eu.etaxonomy.cdm.io.faunaEuropaea.FaunaEuropaeaTransformer.Q_NO_RESTRICTION;
+import static eu.etaxonomy.cdm.io.faunaEuropaea.FaunaEuropaeaTransformer.R_GENUS;
+import static eu.etaxonomy.cdm.io.faunaEuropaea.FaunaEuropaeaTransformer.R_SUBGENUS;
+import static eu.etaxonomy.cdm.io.faunaEuropaea.FaunaEuropaeaTransformer.R_SPECIES;
+import static eu.etaxonomy.cdm.io.faunaEuropaea.FaunaEuropaeaTransformer.R_SUBSPECIES;
 import static eu.etaxonomy.cdm.io.faunaEuropaea.FaunaEuropaeaTransformer.T_STATUS_ACCEPTED;
 import static eu.etaxonomy.cdm.io.faunaEuropaea.FaunaEuropaeaTransformer.T_STATUS_NOT_ACCEPTED;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -29,10 +34,18 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.io.berlinModel.CdmOneToManyMapper;
+import eu.etaxonomy.cdm.io.berlinModel.CdmStringMapper;
+import eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportState;
+import eu.etaxonomy.cdm.io.common.CdmAttributeMapperBase;
+import eu.etaxonomy.cdm.io.common.CdmSingleAttributeMapperBase;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
+import eu.etaxonomy.cdm.io.common.IImportConfigurator;
+import eu.etaxonomy.cdm.io.common.ImportHelper;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.io.common.Source;
-import eu.etaxonomy.cdm.io.profiler.ProfilerController;
+import eu.etaxonomy.cdm.io.tcsxml.in.TcsXmlImportState;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ISourceable;
@@ -40,12 +53,18 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.OriginalSource;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.ZoologicalName;
+import eu.etaxonomy.cdm.model.reference.Database;
+import eu.etaxonomy.cdm.model.reference.Generic;
+import eu.etaxonomy.cdm.model.reference.PublicationBase;
+import eu.etaxonomy.cdm.model.reference.Publisher;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.taxon.Synonym;
+import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
-
 
 
 /**
@@ -54,10 +73,10 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
  * @version 1.0
  */
 @Component
-public class FaunaEuropaeaRelTaxonIncludeImport extends FaunaEuropaeaImportBase  {
+public class FaunaEuropaeaRelMisappNamesImport extends FaunaEuropaeaImportBase  {
 	
 	public static final String OS_NAMESPACE_TAXON = "Taxon";
-	private static final Logger logger = Logger.getLogger(FaunaEuropaeaRelTaxonIncludeImport.class);
+	private static final Logger logger = Logger.getLogger(FaunaEuropaeaRelMisappNamesImport.class);
 
 	/* Max number of taxa to retrieve (for test purposes) */
 	private int maxTaxa = 0;
@@ -65,13 +84,14 @@ public class FaunaEuropaeaRelTaxonIncludeImport extends FaunaEuropaeaImportBase 
 	private int limit = 5000; // TODO: Make configurable
 	/* Max number of taxa to be retrieved from CDM DB with one service call */
 	private int limitRetrieve = 10000; // TODO: Make configurable
+	/* Interval for progress info message when retrieving taxa */
+	private int modCount = 10000;
 	/* Highest taxon index in the FauEu database */
 	private int highestTaxonIndex = 0;
 	/* Number of times method buildParentName() has been called for one taxon */
 	private int callCount = 0;
 	private Map<Integer, FaunaEuropaeaTaxon> fauEuTaxonMap = new HashMap();
-
-
+	
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doCheck(eu.etaxonomy.cdm.io.common.IImportConfigurator)
@@ -108,40 +128,36 @@ public class FaunaEuropaeaRelTaxonIncludeImport extends FaunaEuropaeaImportBase 
 	
 	protected boolean doInvoke(FaunaEuropaeaImportState state) {				
 		
-		boolean success = true;
-
 		Map<String, MapWrapper<? extends CdmBase>> stores = state.getStores();
 		MapWrapper<TaxonBase> taxonStore = (MapWrapper<TaxonBase>)stores.get(ICdmIO.TAXON_STORE);
 		taxonStore.makeEmpty();
 		MapWrapper<TeamOrPersonBase> authorStore = (MapWrapper<TeamOrPersonBase>)stores.get(ICdmIO.TEAM_STORE);
 		authorStore.makeEmpty();
-
-		if(logger.isInfoEnabled()) { logger.info("Start making taxonomically included relationships..."); }
-
-		//		TransactionStatus txStatus = startTransaction();
-
-		ProfilerController.memorySnapshot();
 		
-		success = processParentsChildren(state);
+		boolean success = true;
 		
-		ProfilerController.memorySnapshot();
+		if(logger.isInfoEnabled()) { logger.info("Start making taxa..."); }
+		
+		TransactionStatus txStatus = startTransaction();
 
-		//		commitTransaction(txStatus);
+		success = retrieveChildParentUuidMap(state);
+		success = createRelationships(state);
+		
+		commitTransaction(txStatus);
 
 		logger.info("End making taxa...");
-
 		return success;
 	}
 
+	
 	/** Retrieve child-parent uuid map from CDM DB */
-	private boolean processParentsChildren(FaunaEuropaeaImportState state) {
+	private boolean retrieveChildParentUuidMap(FaunaEuropaeaImportState state) {
 
-		int limit = state.getConfig().getLimitSave();
-
-		TransactionStatus txStatus = null;
-
-		Map<UUID, UUID> childParentMap = null;
+		Map<UUID, UUID> childParentMap = state.getChildParentMap();
+		Map<String, MapWrapper<? extends CdmBase>> stores = state.getStores();
+		MapWrapper<TaxonBase> taxonStore = (MapWrapper<TaxonBase>)stores.get(ICdmIO.TAXON_STORE);
 		FaunaEuropaeaImportConfigurator fauEuConfig = state.getConfig();
+		ReferenceBase<?> sourceRef = fauEuConfig.getSourceReference();
 		Source source = fauEuConfig.getSource();
 		int i = 0;
 		boolean success = true;
@@ -162,12 +178,7 @@ public class FaunaEuropaeaRelTaxonIncludeImport extends FaunaEuropaeaImportBase 
 			
 			while (rs.next()) {
 				
-				if ((i++ % limit) == 0) { 
-					
-					ProfilerController.memorySnapshot();
-					txStatus = startTransaction();
-					childParentMap = new HashMap<UUID, UUID>(limit);
-					
+				if ((i++ % modCount) == 0 && i != 1 ) { 
 					if(logger.isInfoEnabled()) {
 						logger.info("Parent-child mappings retrieved: " + (i-1)); 
 					}
@@ -185,17 +196,6 @@ public class FaunaEuropaeaRelTaxonIncludeImport extends FaunaEuropaeaImportBase 
 				} else {
 					if(logger.isDebugEnabled()) {
 						logger.debug("Duplicated child UUID (" + childUuid + ")");
-					}
-				}
-				if (((i % limit) == 0 && i != 1 )) { 
-
-					success = createRelationships(state, childParentMap);
-
-					childParentMap = null;
-					commitTransaction(txStatus);
-					
-					if(logger.isInfoEnabled()) {
-						logger.info("i = " + i + " - Transaction committed"); 
 					}
 				}
 			}
@@ -232,41 +232,58 @@ public class FaunaEuropaeaRelTaxonIncludeImport extends FaunaEuropaeaImportBase 
 	}		
 
 
-	/* Creates parent-child relationships.
-	 * Parent-child pairs are retrieved in blocks via findByUUID(Set<UUID>) from CDM DB. 
-	 * It takes about 5min to save a block of 5000 taxa.*/
-	private boolean createRelationships(FaunaEuropaeaImportState state, Map<UUID, UUID> childParentMap) {
+	/** Creates parent-child relationships.
+	 * Parent-child pairs are retrieved in blocks via findByUUID(Set<UUID>) from CDM DB 
+	 * This takes about 2min for a block of 5000.*/
+	private boolean createRelationships(FaunaEuropaeaImportState state) {
 
+		Map<UUID, UUID> childParentUuidMap = state.getChildParentMap();
 		ReferenceBase<?> sourceRef = state.getConfig().getSourceReference();
+
+		int upperBorder = childParentUuidMap.size();
+		int nbrOfBlocks = 0;
+
 		boolean success = true;
 
-			//add tree to new session
-			TaxonomicTree tree = state.getTree(sourceRef);
-			if (tree == null){
-				tree = makeTree(state, sourceRef);
+		if (upperBorder < limit) {             // TODO: test with critical values
+			limit = upperBorder;
+		} else {
+			nbrOfBlocks = upperBorder / limit;
+		}
+
+		if(logger.isInfoEnabled()) { 
+			logger.info("number of child-parent pairs = " + upperBorder 
+					+ ", limit = " + limit
+					+ ", number of blocks = " + nbrOfBlocks); 
+		}
+
+		for (int j = 1; j <= nbrOfBlocks + 1; j++) {
+			int offset = j - 1;
+			int start = offset * limit;
+
+			if(logger.isInfoEnabled()) { logger.info("Processing child-parent pairs: " + start + " - " + (start + limit - 1)); }
+
+			if(logger.isInfoEnabled()) { 
+				logger.info("index = " + j 
+						+ ", offset = " + offset
+						+ ", start = " + start); 
 			}
-			getTaxonService().saveTaxonomicTree(tree);
-			
+
+			if (j == nbrOfBlocks + 1) {
+				limit = upperBorder - nbrOfBlocks * limit;
+				if(logger.isInfoEnabled()) { logger.info("number of blocks = " + nbrOfBlocks + " limit = " + limit); }
+			}
+
+			TransactionStatus txStatus = startTransaction();
+
+			Map<UUID, UUID> childParentPartUuidMap = partMap(limit, childParentUuidMap);
 			Set<TaxonBase> childSet = new HashSet<TaxonBase>(limit);
 			
-			Set<UUID> childKeysSet = childParentMap.keySet();
-			Set<UUID> parentValuesSet = new HashSet<UUID>(childParentMap.values());
+			Set<UUID> childKeysSet = childParentPartUuidMap.keySet();
+			Set<UUID> parentValuesSet = new HashSet<UUID>(childParentPartUuidMap.values());
 			
-			if (logger.isInfoEnabled()) {
-				logger.info("Start reading children and parents");
-			}
 			List<TaxonBase> children = getTaxonService().findByUuid(childKeysSet);
 			List<TaxonBase> parents = getTaxonService().findByUuid(parentValuesSet);
-			Map<UUID, TaxonBase> parentsMap = new HashMap<UUID, TaxonBase>();
-			for (TaxonBase taxonBase : parents){
-				parentsMap.put(taxonBase.getUuid(), taxonBase);
-			}
-			
-			
-			if (logger.isInfoEnabled()) {
-				logger.info("End reading children and parents");
-			}
-			
 			
 			if (logger.isTraceEnabled()) {
 				for (UUID uuid : childKeysSet) {
@@ -298,27 +315,25 @@ public class FaunaEuropaeaRelTaxonIncludeImport extends FaunaEuropaeaImportBase 
 				try {
 					Taxon childTaxon = child.deproxy(child, Taxon.class);
 					childUuid = childTaxon.getUuid();
-					mappedParentUuid = childParentMap.get(childUuid);
+					mappedParentUuid = childParentPartUuidMap.get(childUuid);
 					TaxonBase parent = null;
 					
-					TaxonBase potentialParent = parentsMap.get(mappedParentUuid);
-//					for (TaxonBase potentialParent : parents ) {
-//						parentUuid = potentialParent.getUuid();
-//						if(parentUuid.equals(mappedParentUuid)) {
+					for (TaxonBase potentialParent : parents ) {
+						parentUuid = potentialParent.getUuid();
+						if(parentUuid.equals(mappedParentUuid)) {
 							parent = potentialParent;
 							if (logger.isDebugEnabled()) {
 								logger.debug("Parent (" + parentUuid + ") found for child (" + childUuid + ")");
 							}
-//							break;
-//						}
-//					}
+							break;
+						}
+					}
 					
 					Taxon parentTaxon = parent.deproxy(parent, Taxon.class);
 					
 					if (childTaxon != null && parentTaxon != null) {
 						
-//						makeTaxonomicallyIncluded(state, parentTaxon, childTaxon, sourceRef, null, tree);
-						makeTaxonomicallyIncluded(state, parentTaxon, childTaxon, sourceRef, null);
+						makeMisappliedName(parentTaxon, childTaxon, sourceRef, null);
 						
 						if (logger.isDebugEnabled()) {
 							logger.debug("Parent-child (" + parentUuid + "-" + childUuid + 
@@ -360,56 +375,30 @@ public class FaunaEuropaeaRelTaxonIncludeImport extends FaunaEuropaeaImportBase 
 				}
 
 			}
-			if (logger.isInfoEnabled()) {
-				logger.info("Start saving childSet");
-			}
 			getTaxonService().saveTaxonAll(childSet);
-			if (logger.isInfoEnabled()) {
-				logger.info("End saving childSet");
-			}
-
+			commitTransaction(txStatus);
 			parentValuesSet = null;
 			childSet = null;
+			childParentPartUuidMap = null;
 			children = null;
 			parents = null;
-		
+		}
 		return success;
 	}
 
 	
-	private boolean makeTaxonomicallyIncluded(FaunaEuropaeaImportState state, Taxon toTaxon, Taxon fromTaxon, 
-			ReferenceBase citation, String microCitation){
-		boolean success = true;
-		ReferenceBase sec = toTaxon.getSec();
-		sec = CdmBase.deproxy(sec, ReferenceBase.class);
-		sec = citation;
-		TaxonomicTree tree = state.getTree(sec);
-		
-//		Session session = getTaxonService().getSession();
-		
-//		if (session.contains(sec)) {
-//			logger.debug("Sec contained in session. Id = " + sec.getId());
-//		} else {
-//			logger.info("Sec not contained in session. Id = " + sec.getId());
-//			getReferenceService().merge(sec);
-//		}
-		
-		if (tree == null){
-			tree = makeTree(state, sec);
+	private void makeMisappliedName(Taxon toTaxon, Taxon fromTaxon, 
+			ReferenceBase citation, String microCitation) {
+		try {
+			fromTaxon.addMisappliedName(toTaxon, citation, microCitation);
+			if (logger.isInfoEnabled()) {
+				logger.info("Misapplied name created from taxon " + fromTaxon.getUuid() 
+						+ " to " + toTaxon.getUuid());
+			}
+		} catch (Exception e) {
+			logger.error("Error creating misapplied name relationship from taxon " 
+					+ fromTaxon.getUuid() + " to " + toTaxon.getUuid());
 		}
-
-//		if (session.contains(tree)) {
-//			logger.debug("Taxonomic tree contained in session. Id = " + tree.getId());
-//		} else {
-//			logger.info("Taxonomic tree not contained in session. Id = " + tree.getId());
-//			UUID treeUuid = state.getTree(sec).getUuid();
-//			tree = getTaxonService().getTaxonomicTreeByUuid(treeUuid);
-//			logger.info("Tree retrieved");
-//		}
-		
-		success = tree.addParentChild(toTaxon, fromTaxon, citation, microCitation);
-		return success;
 	}
-
 	
 }

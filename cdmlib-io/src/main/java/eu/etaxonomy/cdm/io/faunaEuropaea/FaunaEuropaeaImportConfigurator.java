@@ -36,15 +36,15 @@ public class FaunaEuropaeaImportConfigurator extends ImportConfiguratorBase<Faun
 	/* Max number of taxa to be saved with one service call */
 	private int limitSave = 1000;
 	private int maxTaxon = 306000;
-	private boolean useTransactions = true;
 	private ReferenceBase<?> auctReference;
 	
 //	@SuppressWarnings("unchecked")
 //	protected void makeIoClassList() {
 //		ioClassList = new Class[] {
 //				FaunaEuropaeaAuthorImport.class,
-//				FaunaEuropaeaNameImport.class,
-//				FaunaEuropaeaRelShipImport.class,
+//				FaunaEuropaeaTaxonNameImport.class,
+//	            FaunaEuropaeaRelTaxonIncludeImport.class,
+//              FaunaEuropaeaRelMisappNamesImport.class,
 //				FaunaEuropaeaRefImport.class,
 //				FaunaEuropaeaDistributionImport.class
 //		};
@@ -53,9 +53,8 @@ public class FaunaEuropaeaImportConfigurator extends ImportConfiguratorBase<Faun
 	@SuppressWarnings("unchecked")
 	protected void makeIoClassList() {
 		ioClassList = new Class[] {
-//				FaunaEuropaeaAuthorImport.class,
+				FaunaEuropaeaAuthorImport.class,
 				FaunaEuropaeaTaxonNameImport.class,
-//				FaunaEuropaeaRelShipImport.class,
 //				FaunaEuropaeaRelTaxonIncludeImport.class
 //				FaunaEuropaeaRefImport.class,
 //				FaunaEuropaeaDistributionImport.class
@@ -186,20 +185,6 @@ public class FaunaEuropaeaImportConfigurator extends ImportConfiguratorBase<Faun
 	 */
 	public void setDoHeterotypicSynonyms(boolean doHeterotypicSynonyms) {
 		this.doHeterotypicSynonyms = doHeterotypicSynonyms;
-	}
-
-	/**
-	 * @return the useTransactions
-	 */
-	public boolean isUseTransactions() {
-		return useTransactions;
-	}
-
-	/**
-	 * @param useTransactions the useTransactions to set
-	 */
-	public void setUseTransactions(boolean useTransactions) {
-		this.useTransactions = useTransactions;
 	}
 
 	/**

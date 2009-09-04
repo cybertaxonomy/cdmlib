@@ -140,17 +140,13 @@ public class FaunaEuropaeaNameImport extends FaunaEuropaeaImportBase  {
 		
 		if(logger.isInfoEnabled()) { logger.info("Start making taxa..."); }
 
-		if (state.getConfig().isUseTransactions()) {
-			txStatus = startTransaction();
-		}
+		txStatus = startTransaction();
 		
 		success = retrieveTaxa2TaxonStore(state, fauEuTaxonMap, Q_NO_RESTRICTION);
 		success = processTaxaSecondPass(state, fauEuTaxonMap);
 		success = saveTaxa(state, state.getHighestTaxonIndex(), state.getConfig().getLimitSave());
 		
-		if (state.getConfig().isUseTransactions()) {
-			commitTransaction(txStatus);
-		}
+		commitTransaction(txStatus);
 		
 		logger.info("End making taxa...");
 		ProfilerController.memorySnapshot();

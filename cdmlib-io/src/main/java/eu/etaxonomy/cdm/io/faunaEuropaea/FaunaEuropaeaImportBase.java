@@ -163,18 +163,14 @@ implements ICdmImport<FaunaEuropaeaImportConfigurator,FaunaEuropaeaImportState> 
 				}
 			}
 
-			if (state.getConfig().isUseTransactions()) {
-				txStatus = startTransaction();
-			}
+			txStatus = startTransaction();
     		
 			Collection<TaxonBase> taxonMapPart = taxonStore.objects(start, limit);
 			getTaxonService().saveTaxonAll(taxonMapPart);
 			taxonMapPart = null;
 			taxonStore.removeObjects(start, limit);
 			
-			if (state.getConfig().isUseTransactions()) {
-				commitTransaction(txStatus);
-			}
+			commitTransaction(txStatus);
 
 		}
 		

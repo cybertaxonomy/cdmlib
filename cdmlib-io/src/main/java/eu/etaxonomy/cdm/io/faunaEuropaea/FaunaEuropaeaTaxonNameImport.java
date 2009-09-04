@@ -67,8 +67,6 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 
 	/* Max number of taxa to retrieve (for test purposes) */
 	private int maxTaxa = 0;
-	/* Interval for progress info message when retrieving taxa */
-//	private int modCount = 10000;
 	
 
 	/* (non-Javadoc)
@@ -110,23 +108,10 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 	protected boolean doInvoke(FaunaEuropaeaImportState state) {				
 		
 		ProfilerController.memorySnapshot();
-
-//		TransactionStatus txStatus = null;
 		boolean success = true;
-		
 		if(logger.isInfoEnabled()) { logger.info("Start making taxa..."); }
 
-//		if (state.getConfig().isUseTransactions()) {
-//			txStatus = startTransaction();
-//		}
-		
-		success = retrieveTaxa(state);
-//		success = processTaxaSecondPass(state);
-//		success = saveTaxa(state, state.getHighestTaxonIndex(), state.getConfig().getLimitSave());
-		
-//		if (state.getConfig().isUseTransactions()) {
-//			commitTransaction(txStatus);
-//		}
+		success = processTaxa(state);
 		
 		logger.info("End making taxa...");
 		ProfilerController.memorySnapshot();
@@ -135,7 +120,7 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 
 	
 	/** Retrieve taxa from FauEu DB, fill TaxonStore */
-	private boolean retrieveTaxa(FaunaEuropaeaImportState state) {
+	private boolean processTaxa(FaunaEuropaeaImportState state) {
 
 		int limit = state.getConfig().getLimitSave();
 
@@ -144,18 +129,8 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 		Map<String, MapWrapper<? extends CdmBase>> stores = state.getStores();
 		MapWrapper<TeamOrPersonBase> authorStore = (MapWrapper<TeamOrPersonBase>)stores.get(ICdmIO.TEAM_STORE);
 		
-//		MapWrapper<TaxonBase> nameStore = (MapWrapper<TaxonBase>)stores.get(ICdmIO.TAXONNAME_STORE);
-//		MapWrapper<TaxonBase> taxonStore = (MapWrapper<TaxonBase>)stores.get(ICdmIO.TAXON_STORE);
-//		Map<Integer, FaunaEuropaeaTaxon> fauEuTaxonMap = state.getFauEuTaxonMap();
-		
 		Map<Integer, TaxonBase<?>> taxonMap = null;
 		Map<Integer, FaunaEuropaeaTaxon> fauEuTaxonMap = null;
-
-//		Map<Integer, TaxonBase<?>> taxonMap = new HashMap<Integer, TaxonBase<?>>(limit);
-//		Map<Integer, FaunaEuropaeaTaxon> fauEuTaxonMap = new HashMap<Integer, FaunaEuropaeaTaxon>(limit);
-		
-//		state.setFauEuTaxonMap(fauEuTaxonMap);
-//		state.setFauEuTaxonMap(fauEuTaxonMap);
 
 		FaunaEuropaeaImportConfigurator fauEuConfig = state.getConfig();
 		ReferenceBase<?> sourceRef = fauEuConfig.getSourceReference();
@@ -180,12 +155,13 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 
 			while (rs.next()) {
 
-				if ((i++ % limit) == 0) { 
-					if (state.getConfig().isUseTransactions()) {
-						txStatus = startTransaction();
-					}
+				if ((i++ % limit) == 0) {
+					
+					ProfilerController.memorySnapshot();
+					txStatus = startTransaction();
 					taxonMap = new HashMap<Integer, TaxonBase<?>>(limit);
 					fauEuTaxonMap = new HashMap<Integer, FaunaEuropaeaTaxon>(limit);
+					
 					if(logger.isInfoEnabled()) {
 						logger.info("i = " + i + " - Transaction started"); 
 					}
@@ -303,6 +279,7 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 						}
 						taxonMap.put(taxonId, taxonBase);
 						fauEuTaxonMap.put(taxonId, fauEuTaxon);
+						
 //						if (logger.isDebugEnabled()) { 
 //						logger.debug("Stored taxon base (" + taxonId + ") " + localName); 
 //						}
@@ -316,22 +293,17 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 					e.printStackTrace();
 				}
 
-				if ((i % limit) == 0 && i != 1 ) { 
+				if (((i % limit) == 0 && i != 1 )) { 
 
 					success = processTaxaSecondPass(state, taxonMap, fauEuTaxonMap);
-					success = saveTaxa(state,  taxonMap);
+					saveTaxa(state, taxonMap);
 
-//					taxonStore.makeNewMap((IService)getTaxonService());
+					ProfilerController.memorySnapshot();
 					
-					if (logger.isDebugEnabled()) {
-						logger.debug("Final size of taxon store is: " + taxonMap.size());
-					}
 					taxonMap = null;
 					fauEuTaxonMap = null;
+					commitTransaction(txStatus);
 					
-					if (state.getConfig().isUseTransactions()) {
-						commitTransaction(txStatus);
-					}
 					if(logger.isInfoEnabled()) {
 						logger.info("i = " + i + " - Transaction committed"); 
 					}
@@ -355,10 +327,6 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 
 		if(logger.isDebugEnabled()) { logger.debug("Processing taxa second pass..."); }
 
-//		Map<String, MapWrapper<? extends CdmBase>> stores = state.getStores();
-//		MapWrapper<TaxonBase> taxonStore = (MapWrapper<TaxonBase>)stores.get(ICdmIO.TAXON_STORE);
-//		Map<Integer, FaunaEuropaeaTaxon> fauEuTaxonMap = state.getFauEuTaxonMap();
-
 		FaunaEuropaeaImportConfigurator fauEuConfig = state.getConfig();
 		ReferenceBase<?> sourceRef = fauEuConfig.getSourceReference();
 		
@@ -366,11 +334,10 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 
 		for (int id : taxonMap.keySet())
 		{
-			TaxonBase<?> taxonBase = taxonMap.get(id);
 			if (logger.isDebugEnabled()) { logger.debug("Taxon # " + id); }
 			
+			TaxonBase<?> taxonBase = taxonMap.get(id);
 			TaxonNameBase<?,?> taxonName = taxonBase.getName();
-			
 			FaunaEuropaeaTaxon fauEuTaxon = fauEuTaxonMap.get(id);
 			
 			String nameString = 
@@ -737,20 +704,12 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 	}
 
 	
-	protected boolean saveTaxa(FaunaEuropaeaImportState state, Map<Integer, TaxonBase<?>> taxonMap) {
+	protected void saveTaxa(FaunaEuropaeaImportState state, Map<Integer, TaxonBase<?>> taxonMap) {
 
-		boolean success = true;
-
-//		Map<String, MapWrapper<? extends CdmBase>> stores = state.getStores();
-//		MapWrapper<TaxonBase> taxonStore = (MapWrapper<TaxonBase>)stores.get(ICdmIO.TAXON_STORE);
-		
 		if(logger.isDebugEnabled()) { logger.debug("Saving taxa ..."); }
-
 
 		getTaxonService().saveTaxonAll(taxonMap.values());
 
-
-		return success;
 	}
 	
 

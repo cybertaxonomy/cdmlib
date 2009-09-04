@@ -180,15 +180,11 @@ public class FaunaEuropaeaDistributionImport  extends FaunaEuropaeaImportBase {
 			
 			if(logger.isInfoEnabled()) { logger.info("Saving distributions ..."); }
 			
-			if (state.getConfig().isUseTransactions()) {
-				txStatus = startTransaction();
-			}
+			txStatus = startTransaction();
 
 			success = saveTaxa(state, state.getHighestTaxonIndex(), state.getConfig().getLimitSave());
 			
-			if (state.getConfig().isUseTransactions()) {
-				commitTransaction(txStatus);
-			}
+			commitTransaction(txStatus);
 			
 			if(logger.isInfoEnabled()) { logger.info("End making distributions..."); }
 			

@@ -116,16 +116,12 @@ public class FaunaEuropaeaAuthorImport extends FaunaEuropaeaImportBase {
 			
 			if(logger.isInfoEnabled()) { logger.info("Saving authors ..."); }
 
-			if (state.getConfig().isUseTransactions()) {
-				txStatus = startTransaction();
-			}
-			
+			txStatus = startTransaction();
+
 			// save authors
 			getAgentService().saveAgentAll(authorStore.objects());
 
-			if (state.getConfig().isUseTransactions()) {
-				commitTransaction(txStatus);
-			}
+			commitTransaction(txStatus);
 			
 			if(logger.isInfoEnabled()) { logger.info("End making authors ..."); }
 
