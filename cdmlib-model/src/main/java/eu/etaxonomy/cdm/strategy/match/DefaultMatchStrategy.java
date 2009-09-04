@@ -196,7 +196,7 @@ public class DefaultMatchStrategy extends StrategyBase implements IMatchStrategy
 					replaceModeList = new ArrayList<MatchMode>();
 				}
 				Class<?> fieldType = field.getType();
-				System.out.print(field.getName() + ": ");
+				logger.debug(field.getName() + ": ");
 				if (isPrimitive(fieldType)){
 					result &= matchPrimitiveField(matchFirst, matchSecond, fieldMatcher, replaceModeList);
 				}else if (fieldType == String.class ){
@@ -241,7 +241,7 @@ public class DefaultMatchStrategy extends StrategyBase implements IMatchStrategy
 			}
 			result |= replaceMode.matches(value1, value2, null);
 		}
-		System.out.println(fieldMatcher.getMatchMode() + ", " + field.getType().getName()+ ": " + result);
+		logger.debug(fieldMatcher.getMatchMode() + ", " + field.getType().getName()+ ": " + result);
 		return result;
 	}
 
@@ -283,7 +283,7 @@ public class DefaultMatchStrategy extends StrategyBase implements IMatchStrategy
 			}
 			result |= replaceMode.matches(value1, value2, null);
 		}
-		System.out.println(fieldMatcher.getMatchMode() + ", " + field.getType().getName()+ ": " + result);
+		logger.debug(fieldMatcher.getMatchMode() + ", " + field.getType().getName()+ ": " + result);
 		return result;
 	}
 
