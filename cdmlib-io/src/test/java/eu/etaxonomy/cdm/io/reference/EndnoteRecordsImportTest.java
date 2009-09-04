@@ -13,30 +13,24 @@ import static org.junit.Assert.assertNotNull;
 
 import java.net.URL;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.unitils.spring.annotation.SpringBeanByName;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
-import eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportConfigurator;
-import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultImport;
 import eu.etaxonomy.cdm.io.common.CdmDefaultImport;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
-import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.io.reference.endnote.in.EndnoteImportConfigurator;
-import eu.etaxonomy.cdm.io.taxonx.TaxonXImportConfigurator;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 /**
  * @author andy
  *
  */
+@Ignore //TODO
 public class EndnoteRecordsImportTest /*extends CdmTransactionalIntegrationTest */{
 	
 //	@SpringBeanByName

@@ -955,21 +955,21 @@ public class AbcdIO extends SpecimenIoBase implements ICdmIO<SpecimenImportState
 
 		if (this.nomenclatureCode.toString().equals("Zoological")){
 			taxonName = (ZoologicalName)nvnpi.parseFullName(scientificName,NomenclaturalCode.ICZN,null);
-			if (taxonName.hasProblem())
+			if (taxonName.hasProblem()!=0)
 				problem=true;
 		}
 		if (this.nomenclatureCode.toString().equals("Botanical")){
 			taxonName  = (BotanicalName)nvnpi.parseFullName(scientificName,NomenclaturalCode.ICBN,null);
-			if (taxonName.hasProblem())
+			if (taxonName.hasProblem()!=0)
 				problem=true;;}
 		if (this.nomenclatureCode.toString().equals("Bacterial")){
 			taxonName = (BacterialName)nvnpi.parseFullName(scientificName,NomenclaturalCode.ICNB, null);
-			if (taxonName.hasProblem())
+			if (taxonName.hasProblem()!=0)
 				problem=true;
 		}
 		if (this.nomenclatureCode.toString().equals("Cultivar")){
 			taxonName = (CultivarPlantName)nvnpi.parseFullName(scientificName,NomenclaturalCode.ICNCP, null);
-			if (taxonName.hasProblem())
+			if (taxonName.hasProblem()!=0)
 				problem=true;;
 		}
 //		if (this.nomenclatureCode.toString().equals("Viral")){
@@ -1018,7 +1018,7 @@ public class AbcdIO extends SpecimenIoBase implements ICdmIO<SpecimenImportState
 				team.setTitleCache(getFromMap(atomisedMap,"CombinationAuthorTeamAndYear"));
 				taxonName.setCombinationAuthorTeam(team);
 			}
-			if (taxonName.hasProblem())
+			if (taxonName.hasProblem()!=0)
 				logger.info("pb ICZN");
 			else return taxonName;
 		}
@@ -1054,7 +1054,7 @@ public class AbcdIO extends SpecimenIoBase implements ICdmIO<SpecimenImportState
 				team.setTitleCache(getFromMap(atomisedMap,"CombinationAuthorTeamAndYear"));
 				taxonName.setCombinationAuthorTeam(team);
 			}
-			if (taxonName.hasProblem())
+			if (taxonName.hasProblem()!=0)
 				logger.info("pb ICBN");
 			else return taxonName;
 		}
@@ -1075,14 +1075,14 @@ public class AbcdIO extends SpecimenIoBase implements ICdmIO<SpecimenImportState
 				team.setTitleCache(getFromMap(atomisedMap,"ParentheticalAuthorTeamAndYear"));
 				taxonName.setBasionymAuthorTeam(team);
 			}
-			if (taxonName.hasProblem())
+			if (taxonName.hasProblem()!=0)
 				logger.info("pb ICNB");
 			else return taxonName;
 		}
 		if (this.nomenclatureCode.equals("Cultivar")){
 			CultivarPlantName taxonName = CultivarPlantName.NewInstance(null);
 
-			if (taxonName.hasProblem())
+			if (taxonName.hasProblem()!=0)
 				logger.info("pb ICNCP");
 			else return taxonName;
 		}
