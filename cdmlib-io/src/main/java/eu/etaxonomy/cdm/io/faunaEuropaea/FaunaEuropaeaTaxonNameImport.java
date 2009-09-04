@@ -111,22 +111,22 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 		
 		ProfilerController.memorySnapshot();
 
-		TransactionStatus txStatus = null;
+//		TransactionStatus txStatus = null;
 		boolean success = true;
 		
 		if(logger.isInfoEnabled()) { logger.info("Start making taxa..."); }
 
-		if (state.getConfig().isUseTransactions()) {
-			txStatus = startTransaction();
-		}
+//		if (state.getConfig().isUseTransactions()) {
+//			txStatus = startTransaction();
+//		}
 		
 		success = retrieveTaxa(state);
 //		success = processTaxaSecondPass(state);
 //		success = saveTaxa(state, state.getHighestTaxonIndex(), state.getConfig().getLimitSave());
 		
-		if (state.getConfig().isUseTransactions()) {
-			commitTransaction(txStatus);
-		}
+//		if (state.getConfig().isUseTransactions()) {
+//			commitTransaction(txStatus);
+//		}
 		
 		logger.info("End making taxa...");
 		ProfilerController.memorySnapshot();
@@ -139,17 +139,24 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 
 		int limit = state.getConfig().getLimitSave();
 
-		Map<String, MapWrapper<? extends CdmBase>> stores = state.getStores();
-//		MapWrapper<TaxonBase> nameStore = (MapWrapper<TaxonBase>)stores.get(ICdmIO.TAXONNAME_STORE);
-		MapWrapper<TaxonBase> taxonStore = (MapWrapper<TaxonBase>)stores.get(ICdmIO.TAXON_STORE);
-		MapWrapper<TeamOrPersonBase> authorStore = (MapWrapper<TeamOrPersonBase>)stores.get(ICdmIO.TEAM_STORE);
-//		Map<Integer, FaunaEuropaeaTaxon> fauEuTaxonMap = state.getFauEuTaxonMap();
-		Map<Integer, FaunaEuropaeaTaxon> fauEuTaxonMap = new HashMap<Integer, FaunaEuropaeaTaxon>(limit);
-		state.setFauEuTaxonMap(fauEuTaxonMap);
+		TransactionStatus txStatus = null;
 
-		if (logger.isInfoEnabled()) {
-			logger.info("Initial size of taxon store is: " + taxonStore.size());
-		}
+		Map<String, MapWrapper<? extends CdmBase>> stores = state.getStores();
+		MapWrapper<TeamOrPersonBase> authorStore = (MapWrapper<TeamOrPersonBase>)stores.get(ICdmIO.TEAM_STORE);
+		
+//		MapWrapper<TaxonBase> nameStore = (MapWrapper<TaxonBase>)stores.get(ICdmIO.TAXONNAME_STORE);
+//		MapWrapper<TaxonBase> taxonStore = (MapWrapper<TaxonBase>)stores.get(ICdmIO.TAXON_STORE);
+//		Map<Integer, FaunaEuropaeaTaxon> fauEuTaxonMap = state.getFauEuTaxonMap();
+		
+		Map<Integer, TaxonBase<?>> taxonMap = null;
+		Map<Integer, FaunaEuropaeaTaxon> fauEuTaxonMap = null;
+
+//		Map<Integer, TaxonBase<?>> taxonMap = new HashMap<Integer, TaxonBase<?>>(limit);
+//		Map<Integer, FaunaEuropaeaTaxon> fauEuTaxonMap = new HashMap<Integer, FaunaEuropaeaTaxon>(limit);
+		
+//		state.setFauEuTaxonMap(fauEuTaxonMap);
+//		state.setFauEuTaxonMap(fauEuTaxonMap);
+
 		FaunaEuropaeaImportConfigurator fauEuConfig = state.getConfig();
 		ReferenceBase<?> sourceRef = fauEuConfig.getSourceReference();
 
@@ -173,11 +180,16 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 
 			while (rs.next()) {
 
-//				if ((i++ % limit) == 0 && i != 1 ) { 
-//				if(logger.isInfoEnabled()) {
-//				logger.info("Taxa retrieved: " + (i-1)); 
-//				}
-//				}
+				if ((i++ % limit) == 0) { 
+					if (state.getConfig().isUseTransactions()) {
+						txStatus = startTransaction();
+					}
+					taxonMap = new HashMap<Integer, TaxonBase<?>>(limit);
+					fauEuTaxonMap = new HashMap<Integer, FaunaEuropaeaTaxon>(limit);
+					if(logger.isInfoEnabled()) {
+						logger.info("i = " + i + " - Transaction started"); 
+					}
+				}
 
 				int taxonId = rs.getInt("TAX_ID");
 				String localName = rs.getString("TAX_NAME");
@@ -282,14 +294,14 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 					ImportHelper.setOriginalSource(zooName, fauEuConfig.getSourceReference(), taxonId, "TaxonName");
 
 
-					if (!taxonStore.containsId(taxonId)) {
+					if (!taxonMap.containsKey(taxonId)) {
 						if (taxonBase == null) {
 							if (logger.isDebugEnabled()) { 
 								logger.debug("Taxon base is null. Taxon (" + taxonId + ") ignored.");
 							}
 							continue;
 						}
-						taxonStore.put(taxonId, taxonBase);
+						taxonMap.put(taxonId, taxonBase);
 						fauEuTaxonMap.put(taxonId, fauEuTaxon);
 //						if (logger.isDebugEnabled()) { 
 //						logger.debug("Stored taxon base (" + taxonId + ") " + localName); 
@@ -304,24 +316,24 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 					e.printStackTrace();
 				}
 
-				if ((i++ % limit) == 0 && i != 1 ) { 
-					if(logger.isInfoEnabled()) {
-						logger.info("Taxa retrieved: " + (i-1)); 
-					}
-					success = processTaxaSecondPass(state);
-					success = saveTaxa(state);
+				if ((i % limit) == 0 && i != 1 ) { 
 
-					if (logger.isInfoEnabled()) {
-						logger.info("End size of taxon Store is: " + taxonStore.size());
-					}
+					success = processTaxaSecondPass(state, taxonMap, fauEuTaxonMap);
+					success = saveTaxa(state,  taxonMap);
 
 //					taxonStore.makeNewMap((IService)getTaxonService());
-					taxonStore.makeEmpty();
-					fauEuTaxonMap = new HashMap<Integer, FaunaEuropaeaTaxon>(limit);
-					state.setFauEuTaxonMap(fauEuTaxonMap);
-
-					if (logger.isInfoEnabled()) {
-						logger.info("Final size of taxon Store is: " + taxonStore.size());
+					
+					if (logger.isDebugEnabled()) {
+						logger.debug("Final size of taxon store is: " + taxonMap.size());
+					}
+					taxonMap = null;
+					fauEuTaxonMap = null;
+					
+					if (state.getConfig().isUseTransactions()) {
+						commitTransaction(txStatus);
+					}
+					if(logger.isInfoEnabled()) {
+						logger.info("i = " + i + " - Transaction committed"); 
 					}
 				}
 
@@ -338,21 +350,23 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 	/**
 	 * Processes taxa from complete taxon store
 	 */
-	private boolean processTaxaSecondPass(FaunaEuropaeaImportState state) {
+	private boolean processTaxaSecondPass(FaunaEuropaeaImportState state, Map<Integer, TaxonBase<?>> taxonMap,
+			Map<Integer, FaunaEuropaeaTaxon> fauEuTaxonMap) {
 
-		if(logger.isInfoEnabled()) { logger.info("Processing taxa second pass..."); }
+		if(logger.isDebugEnabled()) { logger.debug("Processing taxa second pass..."); }
 
-		Map<String, MapWrapper<? extends CdmBase>> stores = state.getStores();
-		MapWrapper<TaxonBase> taxonStore = (MapWrapper<TaxonBase>)stores.get(ICdmIO.TAXON_STORE);
+//		Map<String, MapWrapper<? extends CdmBase>> stores = state.getStores();
+//		MapWrapper<TaxonBase> taxonStore = (MapWrapper<TaxonBase>)stores.get(ICdmIO.TAXON_STORE);
+//		Map<Integer, FaunaEuropaeaTaxon> fauEuTaxonMap = state.getFauEuTaxonMap();
+
 		FaunaEuropaeaImportConfigurator fauEuConfig = state.getConfig();
 		ReferenceBase<?> sourceRef = fauEuConfig.getSourceReference();
-		Map<Integer, FaunaEuropaeaTaxon> fauEuTaxonMap = state.getFauEuTaxonMap();
-
+		
 		boolean success = true;
 
-		for (int id : taxonStore.keySet())
+		for (int id : taxonMap.keySet())
 		{
-			TaxonBase<?> taxonBase = taxonStore.get(id);
+			TaxonBase<?> taxonBase = taxonMap.get(id);
 			if (logger.isDebugEnabled()) { logger.debug("Taxon # " + id); }
 			
 			TaxonNameBase<?,?> taxonName = taxonBase.getName();
@@ -723,25 +737,18 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 	}
 
 	
-	protected boolean saveTaxa(FaunaEuropaeaImportState state) {
+	protected boolean saveTaxa(FaunaEuropaeaImportState state, Map<Integer, TaxonBase<?>> taxonMap) {
 
 		boolean success = true;
 
-		Map<String, MapWrapper<? extends CdmBase>> stores = state.getStores();
-		MapWrapper<TaxonBase> taxonStore = (MapWrapper<TaxonBase>)stores.get(ICdmIO.TAXON_STORE);
-		TransactionStatus txStatus = null;
+//		Map<String, MapWrapper<? extends CdmBase>> stores = state.getStores();
+//		MapWrapper<TaxonBase> taxonStore = (MapWrapper<TaxonBase>)stores.get(ICdmIO.TAXON_STORE);
+		
+		if(logger.isDebugEnabled()) { logger.debug("Saving taxa ..."); }
 
-		if(logger.isInfoEnabled()) { logger.info("Saving taxa ..."); }
 
-		if (state.getConfig().isUseTransactions()) {
-			txStatus = startTransaction();
-		}
+		getTaxonService().saveTaxonAll(taxonMap.values());
 
-		getTaxonService().saveTaxonAll(taxonStore.objects());
-
-		if (state.getConfig().isUseTransactions()) {
-			commitTransaction(txStatus);
-		}
 
 		return success;
 	}
