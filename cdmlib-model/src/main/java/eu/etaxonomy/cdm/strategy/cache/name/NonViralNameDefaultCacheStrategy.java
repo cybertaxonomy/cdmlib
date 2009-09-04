@@ -469,16 +469,21 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 		
 		
 		protected String getInfraSpeciesNameCache(NonViralName nonViralName){
+			return getInfraSpeciesNameCache(nonViralName, true);
+		}
+		
+		protected String getInfraSpeciesNameCache(NonViralName nonViralName, boolean includeMarker){
 			String result;
 			result = CdmUtils.Nz(nonViralName.getGenusOrUninomial());
 			result += " " + (CdmUtils.Nz(nonViralName.getSpecificEpithet()).trim()).replace("null", "");
-			if (! isAutonym(nonViralName)){
+			if (includeMarker){ 
 				result += " " + (nonViralName.getRank().getAbbreviation()).trim().replace("null", "");
 			}
 			result += " " + (CdmUtils.Nz(nonViralName.getInfraSpecificEpithet())).trim().replace("null", "");
 			result = addAppendedPhrase(result, nonViralName);
 			return result;
 		}
+
 		
 		
 		/**

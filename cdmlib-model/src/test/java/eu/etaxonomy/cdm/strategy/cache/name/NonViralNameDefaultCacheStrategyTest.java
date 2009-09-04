@@ -119,6 +119,12 @@ public class NonViralNameDefaultCacheStrategyTest {
 		speciesName.setNameCache("Any species");
 		assertEquals("Species Name should be Any species", "Any species", speciesName.getNameCache());
 		assertEquals("Species Name should be Any species", "Any species", speciesName.getTitleCache());
+		assertEquals("subSpeciesNameString should be correct", subSpeciesNameString, subSpeciesName.getNameCache());
+		BotanicalName botName = BotanicalName.NewInstance(Rank.VARIETY());
+		botName.setGenusOrUninomial("Lepidocaryum");
+		botName.setSpecificEpithet("tenue");
+		botName.setInfraSpecificEpithet("tenue");
+		assertEquals("", "Lepidocaryum tenue var. tenue", botName.getNameCache());
 	}
 
 	/**

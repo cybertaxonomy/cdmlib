@@ -15,6 +15,7 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor;
+import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
 
 public class ZooNameDefaultCacheStrategy <T extends ZoologicalName> extends NonViralNameDefaultCacheStrategy<T> implements  INonViralNameCacheStrategy<T> {
@@ -94,6 +95,11 @@ public class ZooNameDefaultCacheStrategy <T extends ZoologicalName> extends NonV
 
 	public void setAuthorYearSeperator(String authorYearSeperator) {
 		AuthorYearSeperator = authorYearSeperator;
+	}
+	
+	protected String getInfraSpeciesNameCache(NonViralName nonViralName){
+		boolean includeMarker = ! isAutonym(nonViralName);
+		return getInfraSpeciesNameCache(nonViralName, includeMarker);
 	}
 
 }

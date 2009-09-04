@@ -162,7 +162,8 @@ public class BotanicNameCacheStrategyTest {
 		subSpeciesName.setBasionymAuthorTeam(null);
 		subSpeciesName.setExCombinationAuthorTeam(null);
 		subSpeciesName.setExBasionymAuthorTeam(null);
-		assertEquals("Abies alba alba", strategy.getNameCache(subSpeciesName));
+		//changed 2009-09-04
+		assertEquals("Abies alba subsp. alba", strategy.getNameCache(subSpeciesName));
 		assertEquals("Abies alba L. subsp. alba", strategy.getTitleCache(subSpeciesName));
 	}
 
@@ -242,7 +243,8 @@ public class BotanicNameCacheStrategyTest {
 	public final void testAutonyms() {
 		subSpeciesName.setInfraSpecificEpithet("alba");
 		subSpeciesName.setCombinationAuthorTeam(author);
-		assertEquals("Abies alba alba", strategy.getNameCache(subSpeciesName));
+		//changed 2009-09-04
+		assertEquals("Abies alba subsp. alba", strategy.getNameCache(subSpeciesName));
 		assertEquals("Abies alba L. subsp. alba", strategy.getTitleCache(subSpeciesName));
 	}
 	
