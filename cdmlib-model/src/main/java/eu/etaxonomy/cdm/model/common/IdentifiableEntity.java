@@ -10,6 +10,8 @@
 package eu.etaxonomy.cdm.model.common;
 
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -98,7 +100,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 	})
 	@FieldBridge(impl=StripHtmlBridge.class)
 	@Match(value=MatchMode.CACHE, cacheReplaceMode=ReplaceMode.ALL)
-	private String titleCache;
+	protected String titleCache;
 	
 	//if true titleCache will not be automatically generated/updated
 	@XmlElement(name = "ProtectedTitleCache")
@@ -139,6 +141,17 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 	@Transient
 	protected S cacheStrategy;
 	
+    protected IdentifiableEntity(){
+    	PropertyChangeListener listener = new PropertyChangeListener() {
+        	public void propertyChange(PropertyChangeEvent e) {
+        		if ( !e.getPropertyName().equals("titleCache") && ! isProtectedTitleCache()){
+        			titleCache = null;
+        		}
+        	}
+    	};
+    	addPropertyChangeListener(listener);
+    }
+    
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#getLsid()
 	 */
@@ -193,7 +206,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 			titleCache = titleCache.substring(0, 251) + "...";
 		}
 		this.titleCache = titleCache;
-		this.setProtectedTitleCache(protectCache);
+		this.protectedTitleCache = protectCache;
 	}
 	
 	/* (non-Javadoc)

@@ -18,25 +18,27 @@ package eu.etaxonomy.cdm.model.common;
 public interface IParsable {
 
 	/**
-	 * Returns the boolean value of the flag indicating whether the used parser 
-	 * method was able to parse a string successfully into this object (<code>false</code>)
-	 * or not (<code>true</code>). 
+	 * Returns an integer value indicating whether the used parser 
+	 * method was able to parse a string successfully into this object (<code>0</code>)
+	 * or not (<code>!=0</code>). The the parsing was not successful the value returned 
+	 * defines in more detail what the problem was. The definition of these values depends
+	 * on the parser that has been used for parsing.
 	 *  
 	 * @return  the boolean value of the hasProblem flag
 	 */
-	public boolean getHasProblem();
+	public int getHasProblem();
 	
 	/**
 	 * @see  #getHasProblem()
 	 */
-	public void setHasProblem(boolean hasProblem);
+	public void setHasProblem(int hasProblem);
 	
 	/**
-	 * Returns exactly the same boolean value as the {@link #getHasProblem() getHasProblem} method.  
+	 * Returns exactly the same int value as the {@link #getHasProblem() getHasProblem} method.  
 	 *  
 	 * @see  #getHasProblem()
 	 */
-	public boolean hasProblem();
+	public int hasProblem();
 	
 	/**
 	 * Returns the integer value of the position where a parsing problem starts.

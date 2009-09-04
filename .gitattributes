@@ -1573,6 +1573,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/merge/MergeException.java -
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/merge/MergeMode.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/parser/INonViralNameParser.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/parser/NonViralNameParserImpl.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/parser/NonViralNameParserImplRegExBase.java -text
 cdmlib-model/src/main/resources/log4j.properties -text
 cdmlib-model/src/main/resources/terms/AbsenceTerm.csv -text
 cdmlib-model/src/main/resources/terms/AnnotationType.csv -text

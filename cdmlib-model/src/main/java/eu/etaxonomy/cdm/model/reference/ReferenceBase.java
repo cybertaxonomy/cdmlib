@@ -106,10 +106,9 @@ public abstract class ReferenceBase<S extends IReferenceBaseCacheStrategy> exten
 //	@Transient
 //	private ReferenceIdentity referenceIdentity;
 	
-	//this flag will be set to true if the parseName method was unable to successfully parse the name
 	@XmlAttribute
     @Match(MatchMode.IGNORE)
-	private boolean hasProblem = false;
+	private int hasProblem = 0;
 	
 	@XmlAttribute
     @Match(MatchMode.IGNORE)
@@ -199,21 +198,21 @@ public abstract class ReferenceBase<S extends IReferenceBaseCacheStrategy> exten
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.IParsable#getHasProblem()
 	 */
-	public boolean getHasProblem(){
+	public int getHasProblem(){
 		return this.hasProblem;
 	}
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.IParsable#setHasProblem(boolean)
 	 */
-	public void setHasProblem(boolean hasProblem){
+	public void setHasProblem(int hasProblem){
 		this.hasProblem = hasProblem;
 	}
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.IParsable#hasProblem()
 	 */
-	public boolean hasProblem(){
+	public int hasProblem(){
 		return getHasProblem();
 	}
 	

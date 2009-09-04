@@ -369,12 +369,12 @@ public class TaxonNameBaseTest {
 	@Test
 	public void testGetSetHasProblem() {
 		TaxonNameBase name1 = BotanicalName.NewInstance(null);
-		name1.setHasProblem(false);
-		Assert.assertFalse(name1.hasProblem());
-		name1.setHasProblem(true);
-		Assert.assertTrue(name1.hasProblem());
-		name1.setHasProblem(false);
-		Assert.assertFalse(name1.getHasProblem());
+		name1.setHasProblem(0);
+		Assert.assertTrue(name1.hasProblem()==0);
+		name1.setHasProblem(1);
+		Assert.assertTrue(name1.hasProblem()==1);
+		name1.setHasProblem(0);
+		Assert.assertFalse(name1.getHasProblem()!=0);
 	}
 
 	/**

@@ -109,7 +109,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 	@XmlElement(name = "FullTitleCache")
 	@Column(length=330, name="fullTitleCache")
 	@Match(value=MatchMode.CACHE, cacheReplaceMode=ReplaceMode.ALL)
-	private String fullTitleCache;
+	protected String fullTitleCache;
 	
 	//if true titleCache will not be automatically generated/updated
 	@XmlElement(name = "ProtectedFullTitleCache")
@@ -130,7 +130,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 	private String nomenclaturalMicroReference;
 	
     @XmlAttribute
-	private boolean hasProblem = false;
+	private int hasProblem = 0;
 	
     @XmlAttribute
     private int problemStarts = -1;
@@ -789,21 +789,21 @@ public void addRelationshipToName(TaxonNameBase toName, NameRelationshipType typ
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.IParsable#getHasProblem()
 	 */
-	public boolean getHasProblem(){
+	public int getHasProblem(){
 		return this.hasProblem;
 	}
 	
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.IParsable#setHasProblem(boolean)
+	 * @see eu.etaxonomy.cdm.model.common.IParsable#setHasProblem(int)
 	 */
-	public void setHasProblem(boolean hasProblem){
+	public void setHasProblem(int hasProblem){
 		this.hasProblem = hasProblem;
 	}
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.IParsable#hasProblem()
 	 */
-	public boolean hasProblem(){
+	public int hasProblem(){
 		return getHasProblem();
 	}
 	

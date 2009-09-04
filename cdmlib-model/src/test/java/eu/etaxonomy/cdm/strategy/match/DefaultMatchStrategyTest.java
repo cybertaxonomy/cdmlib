@@ -53,7 +53,7 @@ public class DefaultMatchStrategyTest {
 	private Annotation annotation1;
 	private String title1 = "Title1";
 	private TimePeriod datePublished1 = TimePeriod.NewInstance(2000);
-	private boolean hasProblem1 = true;
+	private int hasProblem1 = 1;
 	private LSID lsid1;
 	
 	private Book book2;
@@ -66,7 +66,7 @@ public class DefaultMatchStrategyTest {
 	private String title2 = "Title2";
 	private DateTime created2 = new DateTime(1999, 3, 1, 0, 0, 0, 0);
 	private TimePeriod datePublished2 = TimePeriod.NewInstance(2002);
-	private boolean hasProblem2 = true;
+	private int hasProblem2 = 1;
 	private LSID lsid2;
 	
 	

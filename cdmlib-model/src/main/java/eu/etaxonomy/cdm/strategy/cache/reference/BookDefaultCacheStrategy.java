@@ -89,7 +89,7 @@ public class BookDefaultCacheStrategy <T extends Book> extends NomRefDefaultCach
 		}
 		//edition
 		String editionPart = "";
-		if (!"".equals(edition)){
+		if (CdmUtils.isNotEmpty(edition)){
 			editionPart = edition;
 			if (isNumeric(edition)){
 				editionPart = prefixEdition + blank + editionPart;
@@ -100,7 +100,7 @@ public class BookDefaultCacheStrategy <T extends Book> extends NomRefDefaultCach
 		
 		//inSeries
 		String seriesPart = "";
-		if (!"".equals(series)){
+		if (CdmUtils.isNotEmpty(series)){
 			seriesPart = series;
 			if (isNumeric(series)){
 				seriesPart = prefixSeries + blank + seriesPart;
@@ -115,7 +115,7 @@ public class BookDefaultCacheStrategy <T extends Book> extends NomRefDefaultCach
 		
 		//volume Part
 		String volumePart = "";
-		if (!"".equals(volume)){
+		if (CdmUtils.isNotEmpty(volume)){
 			volumePart = volume;
 			if (needsComma){
 				volumePart = comma + blank + volumePart;

@@ -44,7 +44,7 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
  * @author a.mueller
  *
  */
-public class NonViralNameParserImpl implements INonViralNameParser<NonViralName> {
+public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase implements INonViralNameParser<NonViralName> {
 	private static final Logger logger = Logger.getLogger(NonViralNameParserImpl.class);
 	
 	// good intro: http://java.sun.com/docs/books/tutorial/essential/regex/index.html
@@ -171,10 +171,10 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName>
 	private String getLocalFullName(NonViralName nameToBeFilled){
 		if (nameToBeFilled instanceof ZoologicalName){
 			return anyZooFullName;
-		}else if (nameToBeFilled instanceof NonViralName) {
-			return anyBotanicFullName;  //TODO ?
 		}else if (nameToBeFilled instanceof BotanicalName) {
 			return anyBotanicFullName;
+		}else if (nameToBeFilled instanceof NonViralName) {
+			return anyBotanicFullName;  //TODO ?
 		}else{
 			logger.warn("nameToBeFilled class not supported ("+nameToBeFilled.getClass()+")");
 			return null;
@@ -244,13 +244,13 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName>
 			makeNoFullRefMatch(nameToBeFilled, fullReferenceString, rank);
 		}
 		//problem handling. Start and end solved in subroutines
-		if (! nameToBeFilled.hasProblem()){
+		if (nameToBeFilled.hasProblem()==0){
 			makeProblemEmpty(nameToBeFilled);
 		}
 	}
 	
 	private void makeProblemEmpty(IParsable parsable){
-		parsable.setHasProblem(false);
+		parsable.setHasProblem(0);
 		parsable.setProblemStarts(-1);
 		parsable.setProblemEnds(-1);
 	}
@@ -278,7 +278,7 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName>
 //		}
 		
 		//don't parse if name can't be separated
-		nameToBeFilled.setHasProblem(true);
+		nameToBeFilled.setHasProblem(1);
 		nameToBeFilled.setTitleCache(fullReferenceString);
 		nameToBeFilled.setFullTitleCache(fullReferenceString);
 		// FIXME Quick fix, otherwise search would not deilver results for unparsable names
@@ -320,7 +320,7 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName>
 	    if (nameToBeFilled.isProtectedTitleCache() || nameToBeFilled.getRank() == null ){
 	    	start = Math.max(0, start);
 		}else{
-			if (ref != null && ref.getHasProblem()){
+			if (ref != null && ref.getHasProblem()!=0){
 				start = Math.max(nameAndSeparatorLength, start);
 		    	//TODO search within ref
 			}	
@@ -329,7 +329,7 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName>
 	    //end
 	    int end = nameToBeFilled.getProblemEnds();
 	    
-	    if (ref != null && ref.getHasProblem()){
+	    if (ref != null && ref.getHasProblem()!=0){
 	    	end = Math.min(nameAndSeparatorLength + ref.getProblemEnds(), end);
 	    }else{
 	    	if (nameToBeFilled.isProtectedTitleCache() ){
@@ -341,8 +341,8 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName>
 	    nameToBeFilled.setProblemEnds(end);
 
 	    //delegate has problem to name
-	    if (ref != null && ref.getHasProblem()){
-	    	nameToBeFilled.setHasProblem(true);
+	    if (ref != null && ref.getHasProblem()!=0){
+	    	nameToBeFilled.setHasProblem(1);
 	    }
 	    
 	    ReferenceBase<?> nomRef;
@@ -421,7 +421,7 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName>
 			}
 			//parse title and author
 			ref = parseReferenceTitle(strReference, yearPart, isInReference);
-			if (ref.hasProblem()){
+			if (ref.hasProblem()!=0){
 				ref.setTitleCache( (isInReference?"in ":"") +  originalStrReference);
 			}
 			nameToBeFilled.setNomenclaturalReference((ReferenceBase)ref);
@@ -431,8 +431,8 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName>
 	    	ref = Generic.NewInstance();
 	    	ref.setTitleCache(strReference);
 	    	ref.setProblemEnds(strReference.length());
-	    	ref.setHasProblem(true);
-	    	nameToBeFilled.setHasProblem(true);
+	    	ref.setHasProblem(1);
+	    	nameToBeFilled.setHasProblem(1);
 	    	nameToBeFilled.setNomenclaturalReference((ReferenceBase)ref);
 	    }
 	}
@@ -491,7 +491,7 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName>
 	
 	private void makeUnparsableRefTitle(INomenclaturalReference result, String reference){
 		result.setTitleCache(reference);
-		result.setHasProblem(true);
+		result.setHasProblem(1);
 	}
 	
 	/**
@@ -732,7 +732,7 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName>
 					rank = null;
 					nameToBeFilled.setRank(rank);
 					nameToBeFilled.setGenusOrUninomial(epi[0]);
-					nameToBeFilled.setHasProblem(true);
+					nameToBeFilled.setHasProblem(1);
 					nameToBeFilled.setProblemStarts(0);
 					nameToBeFilled.setProblemEnds(epi[0].length());
 				}
@@ -791,7 +791,7 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName>
 					//TODO result.setUnnamedNamePhrase(epi[2] + " " + epi[3]);
 					authorString = fullNameString.substring(epi[0].length()+ 1 + epi[1].length() +1 + epi[2].length() + 1 + epi[3].length());
 				}else{
-					nameToBeFilled.setHasProblem(true);
+					nameToBeFilled.setHasProblem(1);
 					nameToBeFilled.setTitleCache(fullNameString);
 					// FIXME Quick fix, otherwise search would not deilver results for unparsable names
 					nameToBeFilled.setNameCache(fullNameString);
@@ -801,7 +801,7 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName>
 			}
 			//none
 			else{ 
-				nameToBeFilled.setHasProblem(true);
+				nameToBeFilled.setHasProblem(1);
 				nameToBeFilled.setTitleCache(fullNameString);
 				// FIXME Quick fix, otherwise search would not deilver results for unparsable names
 				nameToBeFilled.setNameCache(fullNameString);
@@ -816,7 +816,7 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName>
 					Class<? extends NonViralName> clazz = nameToBeFilled.getClass();
 					fullAuthors(authorString, authors, years, clazz);
 				} catch (StringNotParsableException e) {
-					nameToBeFilled.setHasProblem(true);
+					nameToBeFilled.setHasProblem(1);
 					nameToBeFilled.setTitleCache(fullNameString);
 					// FIXME Quick fix, otherwise search would not deilver results for unparsable names
 					nameToBeFilled.setNameCache(fullNameString);
@@ -839,7 +839,7 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName>
 				return;
 			}
 		} catch (UnknownCdmTypeException e) {
-			nameToBeFilled.setHasProblem(true);
+			nameToBeFilled.setHasProblem(1);
 			nameToBeFilled.setTitleCache(fullNameString);
 			// FIXME Quick fix, otherwise search would not deilver results for unparsable names
 			nameToBeFilled.setNameCache(fullNameString);
@@ -1091,7 +1091,7 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName>
 		nameToBeFilled.setAuthorshipCache(null, false);
 		
 		
-		nameToBeFilled.setHasProblem(false);
+		nameToBeFilled.setHasProblem(0);
 		// TODO ?
 		//nameToBeFilled.setHomotypicalGroup(newHomotypicalGroup);
 
@@ -1118,262 +1118,8 @@ public class NonViralNameParserImpl implements INonViralNameParser<NonViralName>
 			zoologicalName.setBreed(null);
 			zoologicalName.setOriginalPublicationYear(null);
 		}
-		
-		//TODO adapt to @Version of versionable entity, throws still optimistic locking error
-		//nameToBeFilled.setUpdated(Calendar.getInstance());
-		// TODO nameToBeFilled.setUpdatedBy(updatedBy);		
 	}
 	
 	
-    
-    //splitter
-    static String epiSplitter = "(\\s+|\\(|\\))"; //( ' '+| '(' | ')' )
-    static Pattern pattern = Pattern.compile(epiSplitter); 
-    
-    //some useful non-terminals
-    static String pStart = "^";
-    static String end = "$";
-    static String anyEnd = ".*" + end;
-    static String oWs = "\\s+"; //obligatory whitespaces
-    static String fWs = "\\s*"; //facultative whitespcace
-    
-    static String capitalWord = "\\p{javaUpperCase}\\p{javaLowerCase}*";
-    static String nonCapitalWord = "\\p{javaLowerCase}+";
-    static String word = "(" + capitalWord + "|" + nonCapitalWord + ")"; //word (capital or non-capital) with no '.' at the end
-    
-    
-    static String capitalDotWord = capitalWord + "\\.?"; //capitalWord with facultativ '.' at the end
-    static String nonCapitalDotWord = nonCapitalWord + "\\.?"; //nonCapitalWord with facultativ '.' at the end
-    static String dotWord = "(" + capitalWord + "|" + nonCapitalWord + ")\\.?"; //word (capital or non-capital) with facultativ '.' at the end
-    static String obligateDotWord = "(" + capitalWord + "|" + nonCapitalWord + ")\\.+"; //word (capital or non-capital) with obligate '.' at the end
-    
-    //Words used in an epethiton for a TaxonName
-    static String nonCapitalEpiWord = "[a-z\u00EF\\-]+";
-    static String capitalEpiWord = "[A-Z]"+ nonCapitalEpiWord;
-     
-    
-   //years
-    static String month = "(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)";
-    static String singleYear = "\\b" + "(?:17|18|19|20)" + "\\d{2}" + "\\b";                      // word boundary followed by either 17,18,19, or 20 (not captured) followed by 2 digits 	      
-    static String yearPhrase = singleYear + "("+ fWs + "-" + fWs + singleYear + ")?" ;
-    								//+ "(" + month + ")?)" ;                 // optional month
-    
-    //seperator
-    static String yearSeperator = "\\." + oWs;
-    static String detailSeparator = ":" + oWs;
-    static String referenceSeparator1 = "," + oWs ;
-    static String inReferenceSeparator = oWs + "in" + oWs;
-    static String referenceSeperator = "(" + referenceSeparator1 +"|" + inReferenceSeparator + ")" ;
-    static String referenceAuthorSeparator = ","+ oWs;
-    static String volumeSeparator = oWs ; // changed from "," + fWs
-    static String referenceEnd = "\\.";
-     
-    
-    //status
-    static String status = "";
-    
-    //marker
-    static String InfraGenusMarker = "(subgen.|subg.|sect.|subsect.|ser.|subser.|t.infgen.)";
-    static String aggrOrGroupMarker = "(aggr.|agg.|group)";
-    static String infraSpeciesMarker = "(subsp.|convar.|var.|subvar.|f.|subf.|f.spec.|tax." + fWs + "infrasp.)";
-    static String oldInfraSpeciesMarker = "(prol.|proles|race|taxon|sublusus)";
-    
-    
-    //AuthorString
-    static String authorPart = "(" + "(D'|L'|'t\\s)?" + capitalDotWord + "('" + nonCapitalDotWord + ")?" + "|da|de(n|l|\\sla)?)" ;
-    static String author = "(" + authorPart + "(" + fWs + "|-)" + ")+" + "(f.|fil.|secundus)?";
-    static String teamSplitter = fWs + "(&)" + fWs;
-    static String authorTeam = fWs + "(" + author + teamSplitter + ")*" + author + "(" + teamSplitter + "al.)?" + fWs;
-    static String exString = "(ex.?)";
-    static String authorAndExTeam = authorTeam + "(" + oWs + exString + oWs + authorTeam + ")?";
-    static String basStart = "\\(";
-    static String basEnd = "\\)";
-    static String botanicBasionymAuthor = basStart + "(" + authorAndExTeam + ")" + basEnd;  // '(' and ')' is for evaluation with RE.paren(x)
-    static String fullBotanicAuthorString = fWs + "((" + botanicBasionymAuthor +")?" + fWs + authorAndExTeam + "|" + botanicBasionymAuthor +")"+ fWs;
-    static String facultFullBotanicAuthorString = "(" +  fullBotanicAuthorString + ")?" ; 
-        
-    //Zoo. Author
-    //TODO does zoo author have ex-Author?
-    static String zooAuthorYearSeperator = ",";
-    static String zooAuthorAddidtion = fWs + zooAuthorYearSeperator + fWs + singleYear;
-    static String zooAuthorTeam = authorTeam + zooAuthorAddidtion;
-    static String zooBasionymAuthor = basStart + "(" + zooAuthorTeam + ")" + basEnd;
-    static String fullZooAuthorString = fWs + "((" + zooBasionymAuthor +")?" + fWs + zooAuthorTeam + "|" + zooBasionymAuthor +")"+ fWs;
-    static String facultFullZooAuthorString = "(" +  fullZooAuthorString + ")?" ; 
- 
-    static String facultFullAuthorString2 = "(" + facultFullBotanicAuthorString + "|" + facultFullZooAuthorString + ")";
-    
-    static String basionymAuthor = "(" + botanicBasionymAuthor + "|" + zooBasionymAuthor+ ")";
-    static String fullAuthorString = "(" + fullBotanicAuthorString + "|" + fullZooAuthorString+ ")";
-    
-    //details
-    //TODO still very simple
-    
-    
-    static String nr2 = "\\d{1,2}";
-    static String nr4 = "\\d{1,4}";
-    static String nr5 = "\\d{1,5}";
-    
-   
-    static String pPage = nr5 + "[a-z]?";
-    static String pStrNo = "n\u00B0" + fWs + "(" + nr4 + ")";
-    
-    static String pBracketNr = "\\[" + nr4 + "\\]";
-    static String pFolBracket = "\\[fol\\." + fWs + "\\d{1,2}(-\\d{1,2})?\\]";
-    
-    static String pStrTab = "tab\\." + fWs + nr4 + "(" + fWs + "(B|\u00DF|\\(\\d{1,3}\\)))?";
-    static String pFig = "fig." + fWs + nr4 + "[a-z]?";
-    static String pFigs = pFig + "(-" + nr4 + ")?";
-    //static String pTabFig = pStrTab + "(," + fWs + pFigs + ")?";
-    static String pTabFig = "(" + pStrTab + "|" + pFigs + ")";
-    
-    //e.g.: p455; p.455; pp455-456; pp.455-456; pp.455,456; 455, 456; pages 456-457; pages 456,567
-    static String pSinglePages = "(p\\.?)?" + fWs + pPage + "(," + pTabFig +")?";
-    static String pMultiPages = "(pp\\.?|pages)?" + fWs + pPage + fWs + "(-|,)" +fWs + pPage ;
-    //static String pPages = pPage + "(," + fWs + "(" + pPage + "|" + pTabFig + ")" + ")?";
-    static String pPages = "(" + pSinglePages +"|" + pMultiPages +")";
-    
-    
-    static String pCouv = "couv\\." + fWs + "\\d{1,3}";
-    
-    static String pTabSpecial = "tab\\." + fWs + "(ad" + fWs + "\\d{1,3}|alphab)";
-    static String pPageSpecial = nr4 + fWs + "(in obs|, Expl\\. Tab)";
-    static String pSpecialGardDict = capitalWord + oWs + "n\u00B0" + oWs + "\\d{1,2}";
-    //TODO
-    // static String pSpecialDetail = "(in err|in tab|sine pag|add\\. & emend|Emend|""\\d{3}"" \\[\\d{3}\\])";
- // static String pSpecialDetail = "(in err|in tab|sine pag|add\\. & emend|Emend|""\\d{3}"" \\[\\d{3}\\])";
-    static String pSpecialDetail = "(in err|in tab|sine pag|add\\.)";
-    
-    
-//    Const romI = "[Ii]{0,3}"
-//    	Const romX = "[Xx]{0,3}"
-//    	Const romC = "[Cc]{0,3}"
-//    	Const romM = "[Mm]{0,3}"   
-//    ' roman numbers
-//    ' !! includes empty string: ""
-//    romOne = "([Vv]?" & romI & or_ & "(IV|iv)" & or_ & "(IX|ix)" & ")"
-//    romTen = "([Ll]?" & romX & or_ & "(XL|xl)" & or_ & "(XC|xc)" & ")"
-//    romHun = "([Dd]?" & romC & or_ & "(CD|cd)" & or_ & "(CM|cm)" & ")"
-//    romNr = "(?=[MDCLXVImdclxvi])(((" & romM & ")?" & romHun & ")?" & romTen & ")?" & romOne
-    static String pRomNr = "ljfweffaflas"; //TODO rom number have to be tested first
-    
-    static String pDetailAlternatives = "(" + pPages + "|" + pPageSpecial + "|" + pStrNo + "|" + pBracketNr +
-    			"|" + pTabFig + "|" + pTabSpecial + "|" + pFolBracket + "|" + pCouv + "|" + pRomNr + "|" + 
-    			pSpecialGardDict + "|" + pSpecialDetail + ")";
-
-    static String detail = pDetailAlternatives;
-    
-    //reference
-    static String volume = nr4 + "(\\("+ nr4  + "\\))?"; 	      
-    static String anySepChar = "(," + fWs + ")";
-    
-    static int authorSeparatorMaxPosition = 4;
-    static String pTitleWordSeparator = "(\\."+ fWs+"|" + oWs + ")";
-    static String referenceTitleFirstPart = "(" + word + pTitleWordSeparator + ")";
-    static String referenceTitle = referenceTitleFirstPart + "*" + dotWord;
-    static String referenceTitleWithSepCharacters = "(" + referenceTitle  + anySepChar + "?)" + "{1,}";
-    static String referenceTitleWithoutAuthor = "(" + referenceTitleFirstPart + ")" + "{"+ (authorSeparatorMaxPosition -1) +",}" + dotWord + 
-    			anySepChar + referenceTitleWithSepCharacters;   //separators exist and first separator appears at position authorSeparatorMaxPosition or later
-   
-    static String editionSeparator = oWs + "ed\\.?" + oWs;
-    static String pEdition = nr2;
-    
-    static String pVolPart = volumeSeparator +  volume;
-    static String pEditionPart = editionSeparator +  pEdition;
-    static String pEditionVolPart = editionSeparator +  pEdition + fWs + "," + volumeSeparator +  volume;
-    static String pEditionVolAlternative = "(" + pEditionPart + "|" + pVolPart + "|" + pEditionVolPart + ")?";
-    
-    static String pVolRefTitle = referenceTitle + "(" + pVolPart + ")?";
-    static String softEditionVolRefTitle = referenceTitleWithSepCharacters + pEditionVolAlternative;
-    static String softVolNoAuthorRefTitle = referenceTitleWithoutAuthor + "(" + volumeSeparator +  volume + ")?";
-    
-    static String pBookReference = softEditionVolRefTitle;
-    static String pBookSectionReference = authorTeam + referenceAuthorSeparator + softEditionVolRefTitle;
-    static String pArticleReference = pVolRefTitle  ; 
-    static String pSoftArticleReference = softVolNoAuthorRefTitle  ; 
-    
-    
-    static String pReferenceSineDetail = "(" + pArticleReference + "|" + pBookSectionReference + "|" + pBookReference + ")"; 
-    
-    static String pReference = pReferenceSineDetail + detailSeparator + detail + 
-					yearSeperator + yearPhrase + "(" + referenceEnd + ")?"; 
-
-    //static String strictBook = referenc 
-    
-    
-    
-    static Pattern referencePattern = Pattern.compile(pReference);
-    static Pattern referenceSineDetailPattern = Pattern.compile(pReferenceSineDetail);
-    
-    static String pNomStatusNom = "nom\\." + fWs + "(superfl\\.|nud\\.|illeg\\.|inval\\.|cons\\.|alternativ\\.|subnud.|"+
-    					"rej\\.|rej\\."+ fWs + "prop\\.|provis\\.)";
-    static String pNomStatusOrthVar = "orth\\." + fWs + "var\\.";
-    static String pNomStatus = "(" + pNomStatusNom + "|" + pNomStatusOrthVar +  ")";
-    static String pNomStatusPhrase1 = "," + fWs + pNomStatus;
-    static String pNomStatusPhrase2 = "\\[" + fWs + pNomStatus + "\\]";
-    
-    static String pNomStatusPhrase = "(?:" + pNomStatusPhrase1 + "|" + pNomStatusPhrase2 + ")";
-
-// Soraya
-//opus utique oppr.
-//pro syn.
-//provisional synonym
-//fossil name
-
-    
-    
-    //cultivars and hybrids
-    static String cultivar = oWs + "'..+'"; //Achtung mit Hochkomma in AuthorNamen
-    static String cultivarMarker = oWs + "(cv.|')";
-    static String hybrid = oWs + "((x|X)" + oWs + "|notho)";//= ( x )|( X )|( notho)
-    
-    //  Name String
-    static String genusOrSupraGenus = capitalEpiWord;
-    static String infraGenus = capitalEpiWord + oWs + InfraGenusMarker + oWs + capitalEpiWord;
-    static String aggrOrGroup = capitalEpiWord + oWs + nonCapitalEpiWord + oWs + aggrOrGroupMarker;
-    static String species = capitalEpiWord + oWs +  nonCapitalEpiWord;
-    static String infraSpecies = capitalEpiWord + oWs +  nonCapitalEpiWord + oWs + infraSpeciesMarker + oWs + nonCapitalEpiWord;
-    static String oldInfraSpecies = capitalEpiWord + oWs +  nonCapitalEpiWord + oWs + oldInfraSpeciesMarker + oWs + nonCapitalEpiWord;
-    static String autonym = capitalEpiWord + oWs + "(" + nonCapitalEpiWord +")" + oWs + fullBotanicAuthorString +  oWs + infraSpeciesMarker + oWs + "\\1";  //2-nd word and last word are the same 
-
-    static String anyBotanicName = "(" + genusOrSupraGenus + "|" + infraGenus + "|" + aggrOrGroup + "|" + species + "|" + 
-					infraSpecies + "|" + infraSpecies + "|" + oldInfraSpecies + "|" + autonym   + ")+";
-    static String anyZooName = "(" + genusOrSupraGenus + "|" + infraGenus + "|" + aggrOrGroup + "|" + species + "|" + 
-					infraSpecies + "|" + infraSpecies + "|" + oldInfraSpecies + ")+";
-    static String anyBotanicFullName = anyBotanicName + oWs + fullBotanicAuthorString ;
-    static String anyZooFullName = anyZooName + oWs + fullZooAuthorString ;
-    static String anyFullName = "(" + anyBotanicFullName + "|" + anyZooFullName + ")";
-    
-    //Pattern
-    static Pattern oWsPattern = Pattern.compile(oWs);
-    static Pattern teamSplitterPattern = Pattern.compile(teamSplitter);
-    static Pattern cultivarPattern = Pattern.compile(cultivar);
-    static Pattern cultivarMarkerPattern = Pattern.compile(cultivarMarker);
-    static Pattern hybridPattern = Pattern.compile(hybrid); 
-    
-    static Pattern genusOrSupraGenusPattern = Pattern.compile(pStart + genusOrSupraGenus + facultFullAuthorString2 + end);
-    static Pattern infraGenusPattern = Pattern.compile(pStart + infraGenus + facultFullAuthorString2 + end);
-    static Pattern aggrOrGroupPattern = Pattern.compile(pStart + aggrOrGroup + fWs + end); //aggr. or group has no author string
-    static Pattern speciesPattern = Pattern.compile(pStart + species + facultFullAuthorString2 + end);
-    static Pattern infraSpeciesPattern = Pattern.compile(pStart + infraSpecies + facultFullAuthorString2 + end);
-    static Pattern oldInfraSpeciesPattern = Pattern.compile(pStart + oldInfraSpecies + facultFullAuthorString2 + end);
-    static Pattern autonymPattern = Pattern.compile(pStart + autonym + fWs + end);
-	
-    static Pattern botanicBasionymPattern = Pattern.compile(botanicBasionymAuthor);
-    static Pattern zooBasionymPattern = Pattern.compile(zooBasionymAuthor);
-    static Pattern basionymPattern = Pattern.compile(basionymAuthor);
-    
-    static Pattern zooAuthorPattern = Pattern.compile(zooAuthorTeam);
-    static Pattern zooAuthorAddidtionPattern = Pattern.compile(zooAuthorAddidtion);
-    
-    static Pattern exAuthorPattern = Pattern.compile(oWs + exString);
-    
-    static Pattern fullBotanicAuthorStringPattern = Pattern.compile(fullBotanicAuthorString);
-    static Pattern fullZooAuthorStringPattern = Pattern.compile(fullZooAuthorString);
-    static Pattern fullAuthorStringPattern = Pattern.compile(fullAuthorString);
-    
-    static Pattern anyBotanicFullNamePattern = Pattern.compile(anyBotanicFullName);
-    static Pattern anyZooFullNamePattern = Pattern.compile(anyZooFullName);
-    
     
 }

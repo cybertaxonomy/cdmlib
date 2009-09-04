@@ -605,7 +605,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 	 */
 	public void setNameCache(String nameCache, boolean protectedNameCache){
 		this.nameCache = nameCache;
-		this.setProtectedTitleCache(false);
+		//this.setProtectedTitleCache(false);  //now handled by propertyChangeListener
 		this.setProtectedNameCache(protectedNameCache);
 	}
 	
@@ -664,9 +664,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 			return this.authorshipCache;			
 		}
 		// is title dirty, i.e. equal NULL?
-		if (authorshipCache == null ){
-			this.authorshipCache = generateAuthorship();
-		}else{
+		if (this.authorshipCache == null ||  this.titleCache == null ){
 			//TODO get is Dirty of authors
 			this.authorshipCache = generateAuthorship();
 		}
@@ -704,7 +702,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 	public void setTitleCache(String titleCache, boolean protectCache){
 		super.setTitleCache(titleCache, protectCache);
 		if (! this.isProtectedFullTitleCache()){
-			this.setFullTitleCache(null, false);
+			this.fullTitleCache = null;
 		}
 	}
 	

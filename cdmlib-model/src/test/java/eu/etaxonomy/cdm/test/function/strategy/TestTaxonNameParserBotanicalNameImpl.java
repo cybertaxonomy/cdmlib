@@ -127,7 +127,7 @@ public class TestTaxonNameParserBotanicalNameImpl {
 		System.out.println("  Name: " + nvName.getTitleCache());
 		System.out.println("  Reference: " + ((nvName.getNomenclaturalReference() == null) ? "-" : nvName.getNomenclaturalReference().getTitleCache()));
 		System.out.println("  FullReference: " + ((nvName.getNomenclaturalReference() == null) ? "-" : ((INomenclaturalReference)nvName.getNomenclaturalReference()).getNomenclaturalCitation(nvName.getNomenclaturalMicroReference())));
-		return nvName.hasProblem() == true? 1: 0;
+		return nvName.hasProblem() !=0 ? 1: 0;
 
 	}
 	

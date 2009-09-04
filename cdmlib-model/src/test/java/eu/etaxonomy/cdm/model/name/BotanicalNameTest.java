@@ -55,7 +55,7 @@ public class BotanicalNameTest extends EntityTestBase{
 	public final void testPARSED_NAME() {
 		String fullName = "Abies alba subsp. beta (L.) Mill.";
 		BotanicalName name = BotanicalName.PARSED_NAME(fullName);
-		assertFalse(name.getHasProblem());
+		assertTrue(name.getHasProblem()==0);
 		assertEquals("beta", name.getInfraSpecificEpithet());
 	}
 

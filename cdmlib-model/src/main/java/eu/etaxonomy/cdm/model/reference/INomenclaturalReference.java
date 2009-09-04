@@ -37,12 +37,11 @@ public interface INomenclaturalReference extends IIdentifiableEntity, IParsable{
 	 */
 	public String getYear();
 
-	/**
-	 * Returns the boolean value indicating whether the used parser 
-	 * method was able to parse the string designating the reference
-	 * successfully (false) or not (true).
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.IParsable#getHasProblem()
 	 */
-	public boolean getHasProblem();
+	public int getHasProblem();
 	
 	public void setDatePublished(TimePeriod datePublished);
 	
