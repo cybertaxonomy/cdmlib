@@ -29,7 +29,7 @@ public class FaunaEuropaeaActivator {
 	private static final Logger logger = Logger.getLogger(FaunaEuropaeaActivator.class);
 
 	static final Source faunaEuropaeaSource = FaunaEuropaeaSources.faunEu();
-	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_test_andreasK1();
+	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_test_anahit();
 	
 	static final CHECK check = CHECK.IMPORT_WITHOUT_CHECK;
 //	static DbSchemaValidation dbSchemaValidation = DbSchemaValidation.CREATE;
@@ -51,8 +51,6 @@ public class FaunaEuropaeaActivator {
 	static final boolean doMisappliedNames = true;
 	static final boolean doHeterotypicSynonyms = true;
 
-	static final boolean useTransactions = true;
-	
 // ************************ NONE **************************************** //
 		
 //	static final boolean doAuthors = false;
@@ -86,7 +84,6 @@ public class FaunaEuropaeaActivator {
 		fauEuImportConfigurator.setDoBasionyms(doBasionyms);
 		fauEuImportConfigurator.setDoMisappliedNames(doMisappliedNames);
 		fauEuImportConfigurator.setDoHeterotypicSynonyms(doHeterotypicSynonyms);
-		fauEuImportConfigurator.setUseTransactions(useTransactions);
 		fauEuImportConfigurator.setLimitSave(limitSave);
 
 		// invoke import
