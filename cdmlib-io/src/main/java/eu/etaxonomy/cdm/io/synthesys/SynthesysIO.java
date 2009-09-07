@@ -295,21 +295,21 @@ public class SynthesysIO  extends SpecimenIoBase  implements ICdmIO<SpecimenImpo
 
 		if (this.nomenclatureCode.toString().equals("Zoological")){
 			taxonName = nvnpi.parseFullName(scientificName,NomenclaturalCode.ICZN,null);
-			if (taxonName.hasProblem()!=0)
+			if (taxonName.hasProblem())
 				problem=true;
 		}
 		if (this.nomenclatureCode.toString().equals("Botanical")){
 			taxonName  = nvnpi.parseFullName(scientificName,NomenclaturalCode.ICBN,null);
-			if (taxonName.hasProblem()!=0)
+			if (taxonName.hasProblem())
 				problem=true;;}
 		if (this.nomenclatureCode.toString().equals("Bacterial")){
 			taxonName = nvnpi.parseFullName(scientificName,NomenclaturalCode.ICNB, null);
-			if (taxonName.hasProblem()!=0)
+			if (taxonName.hasProblem())
 				problem=true;
 		}
 		if (this.nomenclatureCode.toString().equals("Cultivar")){
 			taxonName = nvnpi.parseFullName(scientificName,NomenclaturalCode.ICNCP, null);
-			if (taxonName.hasProblem()!=0)
+			if (taxonName.hasProblem())
 				problem=true;;
 		}
 //		if (this.nomenclatureCode.toString().equals("Viral")){
