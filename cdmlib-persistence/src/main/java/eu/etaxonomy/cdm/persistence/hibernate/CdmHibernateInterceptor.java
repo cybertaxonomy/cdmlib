@@ -91,7 +91,7 @@ public class CdmHibernateInterceptor extends EmptyInterceptor {
     private boolean checkTransientDefinedTerms(Object[] state){
         boolean result = false;
 //	                if (VocabularyStoreImpl.isInitialized()){
-//	                        //System.out.println("Save: " + entity);
+//	                        //logger.debug("Save: " + entity);
 //	                        int i = -1;
 //	                        for (Object singleState : state){
 //	                                i++;
@@ -100,7 +100,7 @@ public class CdmHibernateInterceptor extends EmptyInterceptor {
 // 	                                        if (term.getId() != 0){
 // 	                                                continue;
 // 	                                        }else{
-// 	                                                //System.out.println(" " + singleState.getClass());
+// 	                                                //logger.debug(" " + singleState.getClass());
 // 	                                                UUID uuid = term.getUuid();
 // 	                                                DefinedTermBase storedTermBase = VocabularyStoreImpl.getCurrentVocabularyStore().getTermByUuid(uuid);
 // 	                                                if (storedTermBase == null){
