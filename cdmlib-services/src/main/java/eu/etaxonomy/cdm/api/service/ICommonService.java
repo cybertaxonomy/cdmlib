@@ -37,10 +37,15 @@ public interface ICommonService extends IService<OriginalSource>{
 //	public abstract UUID saveCdmBase(CdmBase cdmBase);
 
 	/**
+	 * Saves all meta data
 	 * @param metaData
 	 */
-	public void saveAll(Collection<CdmMetaData> metaData);
+	public void saveAllMetaData(Collection<CdmMetaData> metaData);
 	
+	/**
+	 * Returns all meta data.
+	 * @return
+	 */
 	public Map<MetaDataPropertyName, CdmMetaData> getCdmMetaData();
 	
 	
