@@ -213,7 +213,7 @@ public class DefaultMergeStrategy extends StrategyBase implements IMergeStrategy
 		if (mergeMode != MergeMode.FIRST){
 			mergeCdmBaseValue(mergeFirst, mergeSecond, field, deleteSet);
 		}
-		System.out.println(propertyName + ": " + mergeMode + ", " + field.getType().getName());
+		logger.debug(propertyName + ": " + mergeMode + ", " + field.getType().getName());
 		
 	}
 	
@@ -227,7 +227,7 @@ public class DefaultMergeStrategy extends StrategyBase implements IMergeStrategy
 		if (mergeMode != MergeMode.FIRST){
 			mergeCdmBaseValue(mergeFirst, mergeSecond, field, deleteSet);
 		}
-		System.out.println(propertyName + ": " + mergeMode + ", " + field.getType().getName());
+		logger.debug(propertyName + ": " + mergeMode + ", " + field.getType().getName());
 		
 	}
 	
@@ -264,7 +264,7 @@ public class DefaultMergeStrategy extends StrategyBase implements IMergeStrategy
 			Object value = getMergeValue(mergeFirst, mergeSecond, field);
 			field.set(mergeFirst, value);
 		}
-		System.out.println(propertyName + ": " + mergeMode + ", " + fieldType.getName());
+		logger.debug(propertyName + ": " + mergeMode + ", " + fieldType.getName());
 	}
 	
 	/**
@@ -290,7 +290,7 @@ public class DefaultMergeStrategy extends StrategyBase implements IMergeStrategy
 		if (mergeMode != MergeMode.FIRST){
 			mergeCollectionFieldNoFirst(mergeFirst, mergeSecond, field, mergeMode, deleteSet, clonedObjects);
 		}
-		System.out.println(propertyName + ": " + mergeMode + ", " + fieldType.getName());
+		logger.debug(propertyName + ": " + mergeMode + ", " + fieldType.getName());
 		
 	}
 
@@ -413,7 +413,7 @@ public class DefaultMergeStrategy extends StrategyBase implements IMergeStrategy
 			Object value = getMergeValue(mergeFirst, mergeSecond, field);
 			field.set(mergeFirst, value);
 		}
-		System.out.println(propertyName + ": " + mergeMode + ", " + fieldType.getName());
+		logger.debug(propertyName + ": " + mergeMode + ", " + fieldType.getName());
 		
 	}
 	
@@ -429,7 +429,7 @@ public class DefaultMergeStrategy extends StrategyBase implements IMergeStrategy
 			Object value = getMergeValue(mergeFirst, mergeSecond, field);
 			field.set(mergeFirst, value);
 		}
-		System.out.println(propertyName + ": " + mergeMode + ", " + fieldType.getName());
+		logger.debug(propertyName + ": " + mergeMode + ", " + fieldType.getName());
 		
 	}
 
@@ -487,7 +487,7 @@ public class DefaultMergeStrategy extends StrategyBase implements IMergeStrategy
 			ParameterizedTypeImpl paraType = (ParameterizedTypeImpl)genericType;
 			Class<?> rawType = paraType.getRawType();
 			Type[] arguments = paraType.getActualTypeArguments();
-			//System.out.println(arguments.length);
+
 			if (arguments.length == 1){
 				Class collectionClass;
 				if (arguments[0] instanceof Class){

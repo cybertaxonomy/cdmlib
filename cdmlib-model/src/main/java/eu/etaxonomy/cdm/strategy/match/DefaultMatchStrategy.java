@@ -26,7 +26,6 @@ import org.apache.log4j.Logger;
 
 import sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl;
 import sun.reflect.generics.reflectiveObjects.TypeVariableImpl;
-
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.DoubleResult;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
@@ -359,7 +358,6 @@ public class DefaultMatchStrategy extends StrategyBase implements IMatchStrategy
 			ParameterizedTypeImpl paraType = (ParameterizedTypeImpl)genericType;
 			paraType.getRawType();
 			Type[] arguments = paraType.getActualTypeArguments();
-			//System.out.println(arguments.length);
 			if (arguments.length == 1){
 				Class collectionClass;
 				try {
