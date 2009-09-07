@@ -11,6 +11,7 @@
 
 package eu.etaxonomy.cdm.api.application;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
@@ -49,6 +50,7 @@ import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.CdmMetaData;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.common.init.TermNotFoundException;
@@ -198,6 +200,10 @@ public class CdmApplicationController {
 		if (dbSchemaValidation == DbSchemaValidation.CREATE || dbSchemaValidation == DbSchemaValidation.CREATE_DROP){
 			User firstUser = User.NewInstance("admin", "0000");
 			getUserService().save(firstUser);
+			logger.warn("Created admin user");
+			//write meta data
+			List<CdmMetaData> metaData = CdmMetaData.propertyList();
+			getCommonService().saveAll(metaData);
 		}
 		return true;
 	}

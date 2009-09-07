@@ -10,12 +10,16 @@
 
 package eu.etaxonomy.cdm.api.service;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.CdmMetaData;
 import eu.etaxonomy.cdm.model.common.ISourceable;
 import eu.etaxonomy.cdm.model.common.OriginalSource;
+import eu.etaxonomy.cdm.model.common.CdmMetaData.MetaDataPropertyName;
 import eu.etaxonomy.cdm.strategy.match.IMatchStrategy;
 import eu.etaxonomy.cdm.strategy.match.IMatchable;
 import eu.etaxonomy.cdm.strategy.match.MatchException;
@@ -32,6 +36,14 @@ public interface ICommonService extends IService<OriginalSource>{
 //	/** save a reference and return its UUID**/
 //	public abstract UUID saveCdmBase(CdmBase cdmBase);
 
+	/**
+	 * @param metaData
+	 */
+	public void saveAll(Collection<CdmMetaData> metaData);
+	
+	public Map<MetaDataPropertyName, CdmMetaData> getCdmMetaData();
+	
+	
 	/** find cdmBase by UUID**/
 	public ISourceable getSourcedObjectByIdInSource(Class clazz, String idInSource, String idNamespace);
 
@@ -70,5 +82,8 @@ public interface ICommonService extends IService<OriginalSource>{
 		
 	
 	public List getHqlResult(String hqlQuery);
+
+
+
 
 }

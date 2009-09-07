@@ -10,8 +10,13 @@
 
 package eu.etaxonomy.cdm.api.service;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,9 +25,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.CdmMetaData;
 import eu.etaxonomy.cdm.model.common.ISourceable;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.OriginalSource;
+import eu.etaxonomy.cdm.model.common.CdmMetaData.MetaDataPropertyName;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
 import eu.etaxonomy.cdm.persistence.dao.common.IOriginalSourceDao;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
@@ -227,6 +234,32 @@ public class CommonServiceImpl extends ServiceBase<OriginalSource,IOriginalSourc
 		logger.warn("Not yet implemented");
 		return null;
 	}
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.service.ICommonService#saveAll(java.util.Collection)
+	 */
+	public void saveAll(Collection<CdmMetaData> metaData) {
+		Iterator<CdmMetaData> iterator = metaData.iterator();
+		while(iterator.hasNext()){
+			CdmMetaData cdmMetaData = iterator.next();
+			genericDao.saveMetaData(cdmMetaData);
+		}
+	}
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.service.ICommonService#getCdmMetaData()
+	 */
+	public Map<MetaDataPropertyName, CdmMetaData> getCdmMetaData() {
+		Map<MetaDataPropertyName, CdmMetaData> result = new HashMap<MetaDataPropertyName, CdmMetaData>();
+		List<CdmMetaData> metaDataList = genericDao.getMetaData();
+		for (CdmMetaData metaData : metaDataList){
+			MetaDataPropertyName propertyName = metaData.getPropertyName();
+			result.put(propertyName, metaData);
+		}
+		return result;
+	}
+
+
 
 	
 }
