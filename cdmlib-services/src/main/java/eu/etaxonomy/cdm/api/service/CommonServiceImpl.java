@@ -16,7 +16,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -88,7 +87,7 @@ public class CommonServiceImpl extends ServiceBase<OriginalSource,IOriginalSourc
 //			referencedCdmBase = (CdmBase)HibernateProxyHelper.deproxy(referencedCdmBase);
 //			Class referencedClass = referencedCdmBase.getClass();
 //			Set<CdmBase> result = new HashSet<CdmBase>();
-//			System.out.println("Referenced Class: " + referencedClass.getName());
+//			logger.debug("Referenced Class: " + referencedClass.getName());
 //			
 //			for (Class<? extends CdmBase> cdmClass : allCdmClasses){
 //				Set<Field> fields = getFields(cdmClass);
@@ -132,7 +131,7 @@ public class CommonServiceImpl extends ServiceBase<OriginalSource,IOriginalSourc
 //			ParameterizedTypeImpl paraType = (ParameterizedTypeImpl)genericType;
 //			paraType.getRawType();
 //			Type[] arguments = paraType.getActualTypeArguments();
-//			//System.out.println(arguments.length);
+//			//logger.debug(arguments.length);
 //			if (arguments.length == 1){
 //				Class collectionClass;
 //				try {
@@ -170,7 +169,7 @@ public class CommonServiceImpl extends ServiceBase<OriginalSource,IOriginalSourc
 //			String className = StringUtils.rightPad(cdmClass.getSimpleName(), 30);
 //			String returnTypeName = StringUtils.rightPad(type.getSimpleName(), 30);
 //			
-//			System.out.println(methodName +   "\t\t" + className + "\t\t" + returnTypeName);
+//			logger.debug(methodName +   "\t\t" + className + "\t\t" + returnTypeName);
 ////			result_old.add(method);
 //			result.addAll(getCdmBasesByFieldAndClass(field, itemClass, cdmClass, value, isCollection));
 //		}

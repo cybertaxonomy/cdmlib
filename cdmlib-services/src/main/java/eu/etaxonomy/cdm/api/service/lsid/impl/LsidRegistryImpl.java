@@ -78,7 +78,6 @@ public class LsidRegistryImpl implements LSIDRegistry {
 				}
 				
 				if(!foundDao) {
-					System.out.println("Did not find DAO serving classes of type " + clazz + " for authority " + lsidAuthority.getAuthority() + " with namespace " + namespace);
 					log.warn("Did not find DAO serving classes of type " + clazz + " for authority " + lsidAuthority.getAuthority() + " with namespace " + namespace);
 				}
 			}
