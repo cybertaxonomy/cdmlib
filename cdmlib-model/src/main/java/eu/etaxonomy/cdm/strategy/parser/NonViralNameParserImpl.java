@@ -317,7 +317,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 	    int nameAndSeparatorLength = nameAndSeparator.length();
 	    int fullRefLength = nameToBeFilled.getFullTitleCache().length();
 	    
-	    if (nameToBeFilled.isProtectedTitleCache() || nameToBeFilled.getRank() == null ){
+	    if (nameToBeFilled.isProtectedTitleCache() || nameToBeFilled.getParsingProblems().contains(ParserProblem.CheckRank)){
 	    	start = Math.max(0, start);
 		}else{
 			if (ref != null && ref.getParsingProblem()!=0){
@@ -729,10 +729,10 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 				} 
 				//genus
 				else {
-					rank = null;
+					rank = guessUninomialRank(nameToBeFilled, epi[0]); 
 					nameToBeFilled.setRank(rank);
 					nameToBeFilled.setGenusOrUninomial(epi[0]);
-					nameToBeFilled.addParsingProblem(ParserProblem.CheckUninomial);
+					nameToBeFilled.addParsingProblem(ParserProblem.CheckRank);
 					nameToBeFilled.setProblemStarts(0);
 					nameToBeFilled.setProblemEnds(epi[0].length());
 				}
@@ -852,6 +852,47 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 
 	
 	
+	/**
+	 * Guesses the rank of uninomial depending on the typical endings for ranks
+	 * @param nameToBeFilled
+	 * @param string
+	 */
+	private Rank guessUninomialRank(NonViralName nameToBeFilled, String uninomial) {
+		Rank result = Rank.GENUS();
+		if (nameToBeFilled.isInstanceOf(BotanicalName.class)){
+			if (false){
+				
+			}else if (uninomial.endsWith("phyta") || uninomial.endsWith("mycota") ){  //plants, fungi
+				result = Rank.SECTION_BOTANY();
+			}else if (uninomial.endsWith("bionta")){
+				result = Rank.SUBKINGDOM();  //TODO
+			}else if (uninomial.endsWith("phytina")|| uninomial.endsWith("mycotina")  ){  //plants, fungi
+				result = Rank.SUBSECTION_BOTANY();
+			}else if (uninomial.endsWith("opsida") || uninomial.endsWith("phyceae") || uninomial.endsWith("mycetes")){  //plants, algae, fungi
+				result = Rank.CLASS();
+			}else if (uninomial.endsWith("idae") || uninomial.endsWith("phycidae") || uninomial.endsWith("mycetidae")){ //plants, algae, fungi
+				result = Rank.SUBCLASS();
+			}else if (uninomial.endsWith("ales")){
+				result = Rank.ORDER();
+			}else if (uninomial.endsWith("ineae")){
+				result = Rank.SUBORDER();
+			}else if (uninomial.endsWith("aceae")){
+					result = Rank.FAMILY();
+			}else if (uninomial.endsWith("oideae")){
+				result = Rank.SUBFAMILY();
+			}else if (uninomial.endsWith("eae")){
+				result = Rank.TRIBE();
+			}else if (uninomial.endsWith("inae")){
+				result = Rank.SUBTRIBE();
+			}else if (uninomial.endsWith("ota")){
+				result = Rank.KINGDOM();  //TODO
+			}
+		}else{
+			//
+		}
+		return result;
+	}
+
 	/**
 	 * Parses the fullAuthorString
 	 * @param fullAuthorString

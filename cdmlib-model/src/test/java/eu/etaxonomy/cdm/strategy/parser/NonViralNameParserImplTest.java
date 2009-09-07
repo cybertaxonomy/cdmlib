@@ -17,7 +17,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -567,7 +566,7 @@ public class NonViralNameParserImplTest {
 		assertTrue(nameGenusUnparse.hasProblem());
 		list = nameGenusUnparse.getParsingProblems();
 		assertTrue("Problem detail", list.contains(ParserProblem.CheckDetailOrYear));
-		assertTrue("Problem uninomial", list.contains(ParserProblem.CheckUninomial));
+		assertTrue("Problem uninomial", list.contains(ParserProblem.CheckRank));
 		assertEquals(strGenusUnparse, nameGenusUnparse.getFullTitleCache());
 		assertEquals(0, nameGenusUnparse.getProblemStarts()); 
 		assertEquals(19, nameGenusUnparse.getProblemEnds());   

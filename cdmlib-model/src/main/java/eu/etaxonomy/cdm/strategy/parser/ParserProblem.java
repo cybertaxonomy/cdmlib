@@ -21,7 +21,7 @@ import org.apache.log4j.Logger;
  * @version 1.0
  */
 public enum ParserProblem {
-	CheckUninomial(WARNING()),
+	CheckRank(WARNING()),
 	CheckDetailOrYear(WARNING()),
 	NameReferenceSeparation(ERROR()),
 	UnparsableReferenceTitle(ERROR()),

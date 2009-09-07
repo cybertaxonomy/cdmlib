@@ -27,6 +27,7 @@ import org.junit.Test;
  * @version 1.0
  */
 public class NameParserWarningTest {
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(NameParserWarningTest.class);
 
 	/**
@@ -67,7 +68,7 @@ public class NameParserWarningTest {
 	public void testWarningList() {
 		List<ParserProblem> list = ParserProblem.warningList(5);
 		assertEquals("list must include 2 warnings", 2, list.size());
-		assertTrue("Warning list should include warning 0", list.contains(ParserProblem.CheckUninomial));
+		assertTrue("Warning list should include warning 0", list.contains(ParserProblem.CheckRank));
 		assertTrue("Warning list should include warning 2", list.contains(ParserProblem.NameReferenceSeparation));
 	}
 	
