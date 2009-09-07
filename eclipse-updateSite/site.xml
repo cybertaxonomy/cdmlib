@@ -3,10 +3,10 @@
    <description url="file:///P:\eclipse\cdmlib\eclipse-updateSite">
       Eine schöne Update Site
    </description>
-   <feature url="features/eu.etaxonomy.cdmlib_2.1.0.200908131042.jar" id="eu.etaxonomy.cdmlib" version="2.1.0.200908131042">
+   <feature url="features/eu.etaxonomy.cdmlib_2.1.0.200909071723.jar" id="eu.etaxonomy.cdmlib" version="2.1.0.200909071723">
       <category name="CDM Library"/>
    </feature>
-   <feature url="features/eu.etaxonomy.cdmlib.source_2.1.0.200908131042.jar" id="eu.etaxonomy.cdmlib.source" version="2.1.0.200908131042">
+   <feature url="features/eu.etaxonomy.cdmlib.source_2.1.0.200909071723.jar" id="eu.etaxonomy.cdmlib.source" version="2.1.0.200909071723">
       <category name="CDM Library"/>
    </feature>
    <category-def name="CDM Library" label="CDM Library">

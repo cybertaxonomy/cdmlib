@@ -122,6 +122,7 @@ eclipse-updateSite/artifacts.xml
 eclipse-updateSite/content.xml
 eclipse-updateSite/features/*.jar
 eclipse-updateSite/plugins/*.jar
+eclipse-updateSite/plugins/*.zip
 musiclib-hibernatetest/.classpath
 musiclib-hibernatetest/.project
 musiclib-hibernatetest/.settings
