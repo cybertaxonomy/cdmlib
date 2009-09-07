@@ -129,7 +129,7 @@ public class DefaultMergeStrategyTest {
 		book1.setInSeries(printSeries1);
 		book1.addAnnotation(annotation1);
 		book1.setDatePublished(datePublished1);
-		book1.setHasProblem(hasProblem1);
+		book1.setParsingProblem(hasProblem1);
 		lsid1 = new LSID("authority1", "namespace1", "object1", "revision1");
 		book1.setLsid(lsid1);
 		book1.setNomenclaturallyRelevant(false);
@@ -143,7 +143,7 @@ public class DefaultMergeStrategyTest {
 		book2.addAnnotation(annotation2);
 		book2.setCreated(created2);
 		book2.setDatePublished(datePublished2);
-		book2.setHasProblem(hasProblem2);
+		book2.setParsingProblem(hasProblem2);
 		lsid2 = new LSID("authority2", "namespace2", "object2", "revision2");
 		book2.setLsid(lsid2);
 		book2.setNomenclaturallyRelevant(true);
@@ -237,7 +237,7 @@ public class DefaultMergeStrategyTest {
 			bookMergeStrategy.setMergeMode("created", MergeMode.SECOND);
 			bookMergeStrategy.setMergeMode("updated",MergeMode.NULL);
 			bookMergeStrategy.setMergeMode("datePublished", MergeMode.SECOND);
-			bookMergeStrategy.setMergeMode("hasProblem", MergeMode.SECOND);
+			bookMergeStrategy.setMergeMode("parsingProblem", MergeMode.SECOND);
 			bookMergeStrategy.setMergeMode("inSeries", MergeMode.SECOND);
 			bookMergeStrategy.setMergeMode("lsid", MergeMode.SECOND);
 			
@@ -251,7 +251,7 @@ public class DefaultMergeStrategyTest {
 		Assert.assertNull("Volume should be null", book1.getVolume());
 		
 		//Boolean
-		Assert.assertEquals("Has problem must be hasProblem2", hasProblem2, book1.hasProblem());
+		Assert.assertEquals("Has problem must be hasProblem2", hasProblem2, book1.getParsingProblem());
 		Assert.assertEquals("nomenclaturally relevant must have value true (AND semantics)", true, book1.isNomenclaturallyRelevant() );
 		
 		

@@ -10,6 +10,8 @@
 package eu.etaxonomy.cdm.model.reference;
 
 
+import java.util.List;
+
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
@@ -45,6 +47,7 @@ import eu.etaxonomy.cdm.strategy.match.MatchMode;
 import eu.etaxonomy.cdm.strategy.merge.IMergable;
 import eu.etaxonomy.cdm.strategy.merge.Merge;
 import eu.etaxonomy.cdm.strategy.merge.MergeMode;
+import eu.etaxonomy.cdm.strategy.parser.ParserProblem;
 
 /**
  * The upmost (abstract) class for references (information sources). Its two
@@ -108,7 +111,7 @@ public abstract class ReferenceBase<S extends IReferenceBaseCacheStrategy> exten
 	
 	@XmlAttribute
     @Match(MatchMode.IGNORE)
-	private int hasProblem = 0;
+	private int parsingProblem = 0;
 	
 	@XmlAttribute
     @Match(MatchMode.IGNORE)
@@ -198,22 +201,22 @@ public abstract class ReferenceBase<S extends IReferenceBaseCacheStrategy> exten
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.IParsable#getHasProblem()
 	 */
-	public int getHasProblem(){
-		return this.hasProblem;
+	public int getParsingProblem(){
+		return this.parsingProblem;
 	}
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.IParsable#setHasProblem(boolean)
 	 */
-	public void setHasProblem(int hasProblem){
-		this.hasProblem = hasProblem;
+	public void setParsingProblem(int parsingProblem){
+		this.parsingProblem = parsingProblem;
 	}
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.IParsable#hasProblem()
 	 */
-	public int hasProblem(){
-		return getHasProblem();
+	public boolean hasProblem(){
+		return parsingProblem != 0;
 	}
 	
 	
@@ -245,6 +248,19 @@ public abstract class ReferenceBase<S extends IReferenceBaseCacheStrategy> exten
 		this.problemEnds = end;
 	}
 	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.IParsable#addProblem(eu.etaxonomy.cdm.strategy.parser.NameParserWarning)
+	 */
+	public void addParsingProblem(ParserProblem warning){
+		parsingProblem = ParserProblem.addWarning(parsingProblem, warning);
+	}
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.IParsable#getParsingProblems()
+	 */
+	public List<ParserProblem> getParsingProblems() {
+		return ParserProblem.warningList(this.parsingProblem);
+	}
 	
 	
 	/**
@@ -311,5 +327,6 @@ public abstract class ReferenceBase<S extends IReferenceBaseCacheStrategy> exten
 		//no changes to: authorTeam, hasProblem, nomenclaturallyRelevant, uri
 		return result;
 	}
+
 
 }

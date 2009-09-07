@@ -46,8 +46,8 @@ import eu.etaxonomy.cdm.model.name.Rank;
 				assertEquals(b.getGenusOrUninomial(), lastPropValue);
 			b.setSpecificEpithet("vulgaris");
 				assertEquals(b.getSpecificEpithet(), lastPropValue);
-			b.setHasProblem(2);
-				assertEquals(b.getHasProblem(), lastPropValue);
+			b.setParsingProblem(2);
+				assertEquals(b.getParsingProblem(), lastPropValue);
 		}
 
 		@Test

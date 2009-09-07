@@ -9,6 +9,10 @@
 
 package eu.etaxonomy.cdm.model.common;
 
+import java.util.List;
+
+import eu.etaxonomy.cdm.strategy.parser.ParserProblem;
+
 
 /**
  * @author a.mueller
@@ -24,21 +28,35 @@ public interface IParsable {
 	 * defines in more detail what the problem was. The definition of these values depends
 	 * on the parser that has been used for parsing.
 	 *  
-	 * @return  the boolean value of the hasProblem flag
+	 * @return  the int value parsingProblem
 	 */
-	public int getHasProblem();
+	public int getParsingProblem();
 	
 	/**
-	 * @see  #getHasProblem()
+	 * @see  #getParsingProblem()
 	 */
-	public void setHasProblem(int hasProblem);
+	public void setParsingProblem(int hasProblem);
 	
 	/**
 	 * Returns exactly the same int value as the {@link #getHasProblem() getHasProblem} method.  
 	 *  
 	 * @see  #getHasProblem()
 	 */
-	public int hasProblem();
+	public boolean hasProblem();
+	
+	
+	/**
+	 * Returns a list of all warnings and errors that have been recognized during the parsing
+	 * and not yet handled.
+	 * @return
+	 */
+	public List<ParserProblem> getParsingProblems();
+	
+	/**
+	 * Adds a parsing problem to the list of parsing problems
+	 * @param warning
+	 */
+	public void addParsingProblem(ParserProblem warning);
 	
 	/**
 	 * Returns the integer value of the position where a parsing problem starts.

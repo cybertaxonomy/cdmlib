@@ -62,6 +62,7 @@ import eu.etaxonomy.cdm.strategy.match.MatchMode;
 import eu.etaxonomy.cdm.strategy.match.Match.ReplaceMode;
 import eu.etaxonomy.cdm.strategy.merge.Merge;
 import eu.etaxonomy.cdm.strategy.merge.MergeMode;
+import eu.etaxonomy.cdm.strategy.parser.ParserProblem;
 
 /**
  * The upmost (abstract) class for scientific taxon names regardless of any
@@ -130,7 +131,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 	private String nomenclaturalMicroReference;
 	
     @XmlAttribute
-	private int hasProblem = 0;
+	private int parsingProblem = 0;
 	
     @XmlAttribute
     private int problemStarts = -1;
@@ -789,22 +790,36 @@ public void addRelationshipToName(TaxonNameBase toName, NameRelationshipType typ
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.IParsable#getHasProblem()
 	 */
-	public int getHasProblem(){
-		return this.hasProblem;
+	public int getParsingProblem(){
+		return this.parsingProblem;
 	}
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.IParsable#setHasProblem(int)
 	 */
-	public void setHasProblem(int hasProblem){
-		this.hasProblem = hasProblem;
+	public void setParsingProblem(int parsingProblem){
+		this.parsingProblem = parsingProblem;
+	}
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.IParsable#addProblem(eu.etaxonomy.cdm.strategy.parser.NameParserWarning)
+	 */
+	public void addParsingProblem(ParserProblem warning){
+		parsingProblem = ParserProblem.addWarning(parsingProblem, warning);
+	}
+	
+	/**
+	 * @param warnings
+	 */
+	public void addParsingProblems(int warnings){
+		parsingProblem = ParserProblem.addWarnings(parsingProblem, warnings);
 	}
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.IParsable#hasProblem()
 	 */
-	public int hasProblem(){
-		return getHasProblem();
+	public boolean hasProblem(){
+		return parsingProblem != 0;
 	}
 	
 	/* (non-Javadoc)
@@ -1081,13 +1096,12 @@ public void addRelationshipToName(TaxonNameBase toName, NameRelationshipType typ
 		return null;
 	}
 
-	/** 
-	 * Not yet implemented
+	/**
+	 * Returns the parsing problems 
+	 * @return
 	 */
-	@Deprecated
-	public String[] getProblems(){
-		logger.warn("getProblems not yet implemented");
-		return null;
+	public List<ParserProblem> getParsingProblems(){
+		return ParserProblem.warningList(this.parsingProblem);
 	}
 
 	/**

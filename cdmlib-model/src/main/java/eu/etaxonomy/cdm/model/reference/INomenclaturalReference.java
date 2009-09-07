@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.model.reference;
 import eu.etaxonomy.cdm.model.common.IIdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IParsable;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
+import eu.etaxonomy.cdm.strategy.parser.ParserProblem;
 
 
  /**
@@ -37,13 +38,7 @@ public interface INomenclaturalReference extends IIdentifiableEntity, IParsable{
 	 */
 	public String getYear();
 
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.IParsable#getHasProblem()
-	 */
-	public int getHasProblem();
-	
 	public void setDatePublished(TimePeriod datePublished);
-	
+
 	
 }

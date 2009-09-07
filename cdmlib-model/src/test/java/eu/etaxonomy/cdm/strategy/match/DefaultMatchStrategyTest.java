@@ -113,7 +113,7 @@ public class DefaultMatchStrategyTest {
 		book1.setInSeries(printSeries1);
 		book1.addAnnotation(annotation1);
 		book1.setDatePublished(datePublished1);
-		book1.setHasProblem(hasProblem1);
+		book1.setParsingProblem(hasProblem1);
 		lsid1 = new LSID("authority1", "namespace1", "object1", "revision1");
 		book1.setLsid(lsid1);
 		book1.setNomenclaturallyRelevant(false);
@@ -127,7 +127,7 @@ public class DefaultMatchStrategyTest {
 		book2.addAnnotation(annotation2);
 		book2.setCreated(created2);
 		book2.setDatePublished(datePublished2);
-		book2.setHasProblem(hasProblem2);
+		book2.setParsingProblem(hasProblem2);
 		lsid2 = new LSID("authority2", "namespace2", "object2", "revision2");
 		book2.setLsid(lsid2);
 		book2.setNomenclaturallyRelevant(true);
