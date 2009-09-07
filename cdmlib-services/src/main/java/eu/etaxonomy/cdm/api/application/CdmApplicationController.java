@@ -203,7 +203,7 @@ public class CdmApplicationController {
 			logger.warn("Created admin user");
 			//write meta data
 			List<CdmMetaData> metaData = CdmMetaData.propertyList();
-			getCommonService().saveAll(metaData);
+			getCommonService().saveAllMetaData(metaData);
 		}
 		return true;
 	}
