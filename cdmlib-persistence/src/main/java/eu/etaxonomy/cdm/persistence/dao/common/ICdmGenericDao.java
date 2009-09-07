@@ -10,12 +10,15 @@
 package eu.etaxonomy.cdm.persistence.dao.common;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.dao.DataAccessException;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.CdmMetaData;
+import eu.etaxonomy.cdm.model.common.CdmMetaData.MetaDataPropertyName;
 import eu.etaxonomy.cdm.strategy.match.IMatchStrategy;
 import eu.etaxonomy.cdm.strategy.match.IMatchable;
 import eu.etaxonomy.cdm.strategy.match.MatchException;
@@ -31,6 +34,10 @@ public interface ICdmGenericDao {
 	public UUID update(CdmBase transientObject) throws DataAccessException;
 	
 	public UUID delete(CdmBase persistentObject) throws DataAccessException;
+	
+	public void saveMetaData(CdmMetaData cdmMetaData);
+	
+	public List<CdmMetaData> getMetaData();
 	
 	/**
 	 * Returns a CdmBase object of class <code>clazz</code> that has a property with name

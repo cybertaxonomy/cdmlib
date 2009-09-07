@@ -36,6 +36,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.CriteriaSpecification;
 import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.impl.SessionFactoryImpl;
 import org.hibernate.impl.SessionImpl;
@@ -69,6 +70,7 @@ import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.CdmMetaData;
 import eu.etaxonomy.cdm.model.common.Extension;
 import eu.etaxonomy.cdm.model.common.ICdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
@@ -76,10 +78,12 @@ import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.PartialUserType;
 import eu.etaxonomy.cdm.model.common.UUIDUserType;
 import eu.etaxonomy.cdm.model.common.WSDLDefinitionUserType;
+import eu.etaxonomy.cdm.model.common.CdmMetaData.MetaDataPropertyName;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
+import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.strategy.match.CacheMatcher;
 import eu.etaxonomy.cdm.strategy.match.DefaultMatchStrategy;
 import eu.etaxonomy.cdm.strategy.match.FieldMatcher;
@@ -1145,7 +1149,22 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 		return result;
 	}
 
-	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao#saveMetaData(eu.etaxonomy.cdm.model.common.CdmMetaData)
+	 */
+	public void saveMetaData(CdmMetaData cdmMetaData) {
+		getSession().saveOrUpdate(cdmMetaData);
+	}
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao#getMetaData()
+	 */
+	public List<CdmMetaData> getMetaData() {
+		Session session = getSession();
+		Criteria crit = session.createCriteria(CdmMetaData.class);
+		List<CdmMetaData> results = crit.list();
+		return results;
+	}
 }
 
 
