@@ -126,8 +126,9 @@ public class CdmUtils {
 	}
 	
 	static public String testMe(){
-		System.out.println("Shit");
-		return "Oje";
+		String message = "This is a test";
+		System.out.println(message);
+		return message;
 	}
 	
 	static public String readInputLine(String inputQuestion){
