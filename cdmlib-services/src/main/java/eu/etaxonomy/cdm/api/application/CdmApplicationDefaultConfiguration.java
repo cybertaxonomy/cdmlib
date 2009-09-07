@@ -91,7 +91,6 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
 	private ProviderManager authenticationManager;
 	@Autowired
 	private IUserService userService;
-
 	
 	/**
 	 * 

@@ -17,7 +17,6 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.MutablePropertyValues;
-import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
 import org.springframework.context.support.AbstractApplicationContext;
@@ -180,22 +179,6 @@ public class CdmApplicationController {
 			appContext.refresh();
 			appContext.start();
 			
-
-			
-			
-	//		} catch (BeanCreationException e) {
-	//			// create new schema
-	//			if (dbSchemaValidation == DbSchemaValidation.VALIDATE) {
-	//				logger.error("ApplicationContext could not be created. " +
-	//					" Maybe your database schema is not up-to-date, " +
-	//					" but there might be other BeanCreation problems too." +
-	//					" Try to run CdmApplicationController with dbSchemaValidation.CREATE or dbSchemaValidation.UPDATE option. ");
-	//			} else {
-	//				logger.error("BeanCreationException (CdmApplicationController started with " + dbSchemaValidation.toString() + " option.");
-	//			}
-	//			e.printStackTrace();
-	//			throw e;
-	//		}
 		setApplicationContext(appContext);
 		if (dbSchemaValidation == DbSchemaValidation.CREATE || dbSchemaValidation == DbSchemaValidation.CREATE_DROP){
 			User firstUser = User.NewInstance("admin", "0000");
@@ -369,6 +352,9 @@ public class CdmApplicationController {
 		return configuration.getAuthenticationManager();
 	}
 	
+	public final Object getBean(String name){
+		return this.applicationContext.getBean(name);
+	}
 	
 	/*
 	 * OLD TRANSACTION STUFF 
