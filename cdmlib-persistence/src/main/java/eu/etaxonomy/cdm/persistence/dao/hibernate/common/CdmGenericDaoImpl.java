@@ -23,7 +23,6 @@ import java.util.Set;
 
 import javax.naming.NamingException;
 import javax.naming.Reference;
-import javax.persistence.JoinTable;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.UnhandledException;
@@ -36,7 +35,6 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.CriteriaSpecification;
 import org.hibernate.criterion.Criterion;
-import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.impl.SessionFactoryImpl;
 import org.hibernate.impl.SessionImpl;
@@ -78,12 +76,10 @@ import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.PartialUserType;
 import eu.etaxonomy.cdm.model.common.UUIDUserType;
 import eu.etaxonomy.cdm.model.common.WSDLDefinitionUserType;
-import eu.etaxonomy.cdm.model.common.CdmMetaData.MetaDataPropertyName;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
-import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.strategy.match.CacheMatcher;
 import eu.etaxonomy.cdm.strategy.match.DefaultMatchStrategy;
 import eu.etaxonomy.cdm.strategy.match.FieldMatcher;
@@ -271,7 +267,7 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 			String associatedEntityName = entityType.getAssociatedEntityName();
 			Class entityClass = Class.forName(associatedEntityName);
 			if (entityClass.isInterface()){
-				System.out.println("There is an interface");
+				logger.debug("There is an interface");
 			}
 			if (entityClass.isAssignableFrom(referencedClass)){
 				makeSingleProperty(referencedClass, entityClass, propertyName, cdmClass, result, isCollection);
@@ -286,7 +282,7 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 			Field field = cdmClass.getDeclaredField(propertyName);
 			Class returnType = field.getType();
 			if (returnType.isInterface()){
-				System.out.println("There is an interface");
+				logger.debug("There is an interface");
 			}
 			if (returnType.isAssignableFrom(referencedClass)){
 				makeSingleProperty(referencedClass, returnType, propertyName, cdmClass, result, isCollection);
@@ -328,7 +324,7 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 			String className = StringUtils.rightPad(cdmClass.getSimpleName(), 30);
 			String returnTypeName = StringUtils.rightPad(type.getSimpleName(), 30);
 			
-//			System.out.println(fieldName +   "\t\t" + className + "\t\t" + returnTypeName);
+//			logger.debug(fieldName +   "\t\t" + className + "\t\t" + returnTypeName);
 			ReferenceHolder refHolder = new ReferenceHolder();
 			refHolder.propertyName = propertyName;
 			refHolder.otherClass = cdmClass;
@@ -421,7 +417,7 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 			//session.delete(null, mergable2, true, null);
 			session.delete(cdmBase2);
 			for (ICdmBase toBeDeleted : deleteSet){
-				System.out.println("Delete " + toBeDeleted);
+				logger.debug("Delete " + toBeDeleted);
 				if (toBeDeleted != cdmBase2){
 					session.delete(toBeDeleted);
 				}
@@ -474,12 +470,12 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 			e.printStackTrace();
 		}
 		Statistics statistics = sessionFactory.getStatistics();
-		System.out.println("");
+		logger.debug("");
 		ClassMetadata taxonMetaData = sessionFactory.getClassMetadata(Taxon.class);
 		String ename = taxonMetaData.getEntityName();
 		try {
 			Reference ref = sessionFactory.getReference();
-			System.out.println("");
+			logger.debug("");
 		} catch (NamingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -490,7 +486,7 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 		int propertyNr = 0;
 		for (Type propertyType: propertyTypes){
 			String propertyName = classMetadata.getPropertyNames()[propertyNr];
-			System.out.println(propertyName);
+			logger.debug(propertyName);
 			makeMergeProperty(cdmBase1, cdmBase2, propertyType, propertyName, sessionFactory, false);
 			propertyNr++;
 		}
@@ -503,7 +499,7 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 				CollectionMetadata collMetadata2 = sessionFactory.getCollectionMetadata(collectionRole);
 				String role = collMetadata2.getRole();
 				Type elType = collMetadata2.getElementType();
-				System.out.println(role);
+				logger.debug(role);
 			}
 		}
 	}
@@ -524,7 +520,7 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 			for (String collectionRole : collectionRoles){
 				CollectionMetadata collMetadata = sessionFactory.getCollectionMetadata(collectionRole);
 				CollectionPersister collPersister = sessionFactory.getCollectionPersister(collectionRole);
-				System.out.println("");
+				logger.debug("");
 			}
 		}else{
 			logger.warn("Class metadata is not of type AbstractEntityPersister");
@@ -551,12 +547,12 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 				for (String collectionRole : collectionRoles){
 					CollectionMetadata collMetadata = sessionFactory.getCollectionMetadata(collectionRole);
 					String role = collMetadata.getRole();
-					System.out.println(role);
+					logger.debug(role);
 					
 				}
 				
 //				if (entityClass.isInterface()){
-//					System.out.println("So ein interface");
+//					logger.debug("So ein interface");
 //				}
 //				if (entityClass.isAssignableFrom(clazz)){
 //					makeSingleProperty(referencedClass, entityClass, propertyName, cdmClass, result, isCollection);
@@ -590,7 +586,7 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 					}
 					
 				}
-				System.out.println("");
+				logger.debug("");
 				
 //			makePropertyType(result, referencedClass, sessionFactory, cdmClass, elType, propertyName, true);
 			}else if (propertyType.isAnyType()){
@@ -598,7 +594,7 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 				Field field = clazz.getDeclaredField(propertyName);
 				Class returnType = field.getType();
 //			if (returnType.isInterface()){
-//				System.out.println("So ein interface");
+//				logger.debug("So ein interface");
 //			}
 //			if (returnType.isAssignableFrom(referencedClass)){
 //				makeSingleProperty(referencedClass, returnType, propertyName, cdmClass, result, isCollection);
@@ -746,7 +742,7 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 		        query.setEntity("newValue", cdmBase1);
 		        query.setInteger("id",referencingObject.getId());
 		        int rowCount = query.executeUpdate();
-		        System.out.println("Rows affected: " + rowCount);
+		        logger.debug("Rows affected: " + rowCount);
 		        session.refresh(referencingObject);
 	        }
 	    }
@@ -859,7 +855,7 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 		}
 		Statistics statistics = factory.getStatistics();
 		Map allClassMetadata = factory.getAllClassMetadata();
-		System.out.println("");
+		logger.debug("");
 		
 	}
 
@@ -899,7 +895,7 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 		ClassMetadata classMetaData = session.getSessionFactory().getClassMetadata(matchClass.getCanonicalName());
 		Criteria criteria = session.createCriteria(matchClass);
 		boolean noMatch = makeCriteria(objectToMatch, matchStrategy, classMetaData, criteria);
-		System.out.println(criteria);
+		logger.debug(criteria);
 		//session.flush();
 		if (noMatch == false){
 			List<T> matchCandidates = criteria.list();
