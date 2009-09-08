@@ -55,6 +55,10 @@ public class CdmMetaData extends CdmBase{
 		return result;
 	}
 	
+	private CdmMetaData() {
+		super();
+	}
+	
 	public CdmMetaData(MetaDataPropertyName propertyName, String value) {
 		super();
 		this.propertyName = propertyName;
