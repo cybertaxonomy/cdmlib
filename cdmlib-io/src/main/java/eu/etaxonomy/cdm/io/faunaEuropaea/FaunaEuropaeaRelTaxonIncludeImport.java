@@ -155,7 +155,7 @@ public class FaunaEuropaeaRelTaxonIncludeImport extends FaunaEuropaeaImportBase 
 				" SELECT dbo.Taxon.UUID AS ChildUuid, Parent.UUID AS ParentUuid " +
 				" FROM dbo.Taxon INNER JOIN dbo.Taxon AS Parent " +
 				" ON dbo.Taxon.TAX_TAX_IDPARENT = Parent.TAX_ID " +
-				" WHERE (dbo.Taxon.TAX_VALID <> 0) AND (dbo.Taxon.TAX_AUT_ID <> " + A_AUCT + ")" +
+				" WHERE (dbo.Taxon.TAX_VALID <> 0) AND (dbo.Taxon.TAX_AUT_ID <> " + A_AUCT + " OR dbo.Taxon.TAX_AUT_ID IS NULL )" +
 				" ORDER BY dbo.Taxon.TAX_RNK_ID ASC";
 
 			if (logger.isInfoEnabled()) {
