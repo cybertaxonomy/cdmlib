@@ -31,7 +31,7 @@ public class FaunaEuropaeaActivator {
 	static final Source faunaEuropaeaSource = FaunaEuropaeaSources.faunEu();
 	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_test_anahit();
 	
-	static final CHECK check = CHECK.IMPORT_WITHOUT_CHECK;
+	static final CHECK check = CHECK.CHECK_AND_IMPORT;
 //	static DbSchemaValidation dbSchemaValidation = DbSchemaValidation.CREATE;
 //	static DbSchemaValidation dbSchemaValidation = DbSchemaValidation.VALIDATE;
 	static DbSchemaValidation dbSchemaValidation = DbSchemaValidation.UPDATE;

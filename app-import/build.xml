@@ -6,6 +6,7 @@
     <property name="debuglevel" value="source,lines,vars"/>
     <property name="target" value="1.5"/>
     <property name="source" value="1.5"/>
+    <property name="agentlib-option" value="-agentlib:yjpagent"/>
 
     <path id="app-import.classpath">
         <pathelement location="target/classes"/>
@@ -129,13 +130,14 @@
     </target>
     <target name="DipteraActivator">
         <java classname="eu.etaxonomy.cdm.app.wp6.diptera.DipteraActivator" failonerror="true" fork="yes">
-            <jvmarg line="-Xmx1512M"/>
+            <jvmarg line="-Xmx1512M ${agentlib-option}"/>
             <classpath refid="app-import.classpath"/>
         </java>
     </target>
     <target name="FaunaEuropaeaActivator">
         <java classname="eu.etaxonomy.cdm.app.faunaEuropaea.FaunaEuropaeaActivator" failonerror="true" fork="yes">
-            <jvmarg line="-Xmx1600M"/>
+            <!-- <jvmarg line="-Xmx10000M -XX:+PrintGC ${agentlib-option}"/> -->
+	    <jvmarg line="-Xmx1000M ${agentlib-option}"/>
             <classpath refid="app-import.classpath"/>
         </java>
     </target>
