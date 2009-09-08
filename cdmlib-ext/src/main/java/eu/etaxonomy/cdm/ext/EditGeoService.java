@@ -52,6 +52,24 @@ public class EditGeoService implements IEditGeoService{
 	}
 
 	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.ext.IEditGeoService#getEditGeoServiceUrlParameterString(eu.etaxonomy.cdm.model.description.TaxonDescription, java.util.Map, int, int, java.lang.String, java.lang.String)
+	 */
+	public String getEditGeoServiceUrlParameterString(
+			TaxonDescription taxonDescription,
+			Map<PresenceAbsenceTermBase<?>, Color> presenceAbsenceTermColors,
+			int width, int height, String bbox, String backLayer) {
+		
+		Set<Distribution> distributions = new HashSet<Distribution>();
+		List<Distribution> result = dao.getDescriptionElements(taxonDescription, getDistributionFeatures(), Distribution.class, null, null, null);
+		distributions.addAll(result);
+		
+		String uriParams = EditGeoServiceUtilities.getEditGeoServiceUrlParameterString(distributions,
+				presenceAbsenceTermColors, 0, 0, null, "tdwg4");
+
+		return uriParams;
+	}
+	
+	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.IEditGeoService#getEditGeoServiceUrlParameterString(eu.etaxonomy.cdm.model.taxon.Taxon, java.util.Map, int, int, java.lang.String, java.lang.String)
 	 */
 	public String getEditGeoServiceUrlParameterString(Taxon taxon,
@@ -72,6 +90,6 @@ public class EditGeoService implements IEditGeoService{
 			presenceAbsenceTermColors, 0, 0, null, "tdwg4");
 
 		return uriParams;
-	}
+	}	
 	
 }
