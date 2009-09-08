@@ -41,7 +41,7 @@ public enum ParserProblem {
 	private static final Logger logger = Logger.getLogger(ParserProblem.class);
 	
 	private final static int WARNING(){return 0;};
-	private final static int ERROR() {return 0;};
+	private final static int ERROR() {return 1;};
 	
 	int type;  
 	
