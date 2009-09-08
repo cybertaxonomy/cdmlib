@@ -861,7 +861,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 		Rank result = Rank.GENUS();
 		if (nameToBeFilled.isInstanceOf(BotanicalName.class)){
 			if (false){
-				
+				//
 			}else if (uninomial.endsWith("phyta") || uninomial.endsWith("mycota") ){  //plants, fungi
 				result = Rank.SECTION_BOTANY();
 			}else if (uninomial.endsWith("bionta")){
@@ -886,6 +886,22 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 				result = Rank.SUBTRIBE();
 			}else if (uninomial.endsWith("ota")){
 				result = Rank.KINGDOM();  //TODO
+			}
+		}else if (nameToBeFilled.isInstanceOf(ZoologicalName.class)){
+			if (false){
+				//
+			}else if (uninomial.endsWith("oideae")){
+				result = Rank.SUPERFAMILY();
+			}else if (uninomial.endsWith("idae")){
+					result = Rank.FAMILY();
+			}else if (uninomial.endsWith("inae")){
+				result = Rank.SUBFAMILY();
+			}else if (uninomial.endsWith("inae")){
+				result = Rank.SUBFAMILY();
+			}else if (uninomial.endsWith("ini")){
+				result = Rank.TRIBE();
+			}else if (uninomial.endsWith("ina")){
+				result = Rank.SUBTRIBE();
 			}
 		}else{
 			//
