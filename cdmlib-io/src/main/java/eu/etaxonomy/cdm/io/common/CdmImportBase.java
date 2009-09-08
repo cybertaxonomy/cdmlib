@@ -43,4 +43,34 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		return tree;
 	}
 	
+	
+	/**
+	 * Alternative memory saving method variant of
+	 * {@link #makeTree(STATE state, ReferenceBase ref)} which stores only the
+	 * UUID instead of the full tree in the <code>ImportStateBase</code> by 
+	 * using <code>state.putTreeUuid(ref, tree);</code>
+	 * 
+	 * @param state
+	 * @param ref
+	 * @return
+	 */
+	protected TaxonomicTree makeTreeMemSave(STATE state, ReferenceBase ref){
+		String treeName = "TaxonTree (Import)";
+		if (ref != null && CdmUtils.isNotEmpty(ref.getTitleCache())){
+			treeName = ref.getTitleCache();
+		}
+		TaxonomicTree tree = TaxonomicTree.NewInstance(treeName);
+		tree.setReference(ref);
+		
+
+		// use defined uuid for first tree
+		CONFIG config = (CONFIG)state.getConfig();
+		if (state.countTrees() < 1 ){
+			tree.setUuid(config.getTreeUuid());
+		}
+		getTaxonService().saveTaxonomicTree(tree);
+		state.putTreeUuid(ref, tree);
+		return tree;
+	}
+	
 }

@@ -152,7 +152,8 @@ public class FaunaEuropaeaRelTaxonIncludeImport extends FaunaEuropaeaImportBase 
 				" SELECT dbo.Taxon.UUID AS ChildUuid, Parent.UUID AS ParentUuid " +
 				" FROM dbo.Taxon INNER JOIN dbo.Taxon AS Parent " +
 				" ON dbo.Taxon.TAX_TAX_IDPARENT = Parent.TAX_ID " +
-				" WHERE (dbo.Taxon.TAX_VALID <> 0) AND (dbo.Taxon.TAX_AUT_ID <> " + A_AUCT + ")";
+				" WHERE (dbo.Taxon.TAX_VALID <> 0) AND (dbo.Taxon.TAX_AUT_ID <> " + A_AUCT + ")" +
+				" ORDER BY dbo.Taxon.TAX_RNK_ID ASC";
 
 			if (logger.isInfoEnabled()) {
 				logger.info("Query: " + strQuery);
@@ -162,9 +163,13 @@ public class FaunaEuropaeaRelTaxonIncludeImport extends FaunaEuropaeaImportBase 
 			
 			while (rs.next()) {
 				
+				// take memory snapshot every 10000 relations
+				if((i % 10000) == 0){
+					ProfilerController.memorySnapshot();					
+				}
+				
 				if ((i++ % limit) == 0) { 
 					
-					ProfilerController.memorySnapshot();
 					txStatus = startTransaction();
 					childParentMap = new HashMap<UUID, UUID>(limit);
 					
@@ -241,11 +246,14 @@ public class FaunaEuropaeaRelTaxonIncludeImport extends FaunaEuropaeaImportBase 
 		boolean success = true;
 
 			//add tree to new session
-			TaxonomicTree tree = state.getTree(sourceRef);
-			if (tree == null){
-				tree = makeTree(state, sourceRef);
+		
+			UUID treeUuid = state.getTreeUuid(sourceRef);
+			TaxonomicTree tree;
+			if (treeUuid == null){
+				tree = makeTreeMemSave(state, sourceRef);
+			} else {
+				tree = getTaxonService().getTaxonomicTreeByUuid(treeUuid);			
 			}
-			getTaxonService().saveTaxonomicTree(tree);
 			
 			Set<TaxonBase> childSet = new HashSet<TaxonBase>(limit);
 			
@@ -257,7 +265,7 @@ public class FaunaEuropaeaRelTaxonIncludeImport extends FaunaEuropaeaImportBase 
 			}
 			List<TaxonBase> children = getTaxonService().findByUuid(childKeysSet);
 			List<TaxonBase> parents = getTaxonService().findByUuid(parentValuesSet);
-			Map<UUID, TaxonBase> parentsMap = new HashMap<UUID, TaxonBase>();
+			Map<UUID, TaxonBase> parentsMap = new HashMap<UUID, TaxonBase>(parents.size());
 			for (TaxonBase taxonBase : parents){
 				parentsMap.put(taxonBase.getUuid(), taxonBase);
 			}

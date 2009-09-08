@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.io.common;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
@@ -37,6 +38,9 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase> ext
 	
 	private Map<ReferenceBase,TaxonomicTree> treeMap = new HashMap<ReferenceBase,TaxonomicTree>();
 
+	private Map<ReferenceBase,UUID> treeUuidMap = new HashMap<ReferenceBase,UUID>();
+
+	
 	protected ImportStateBase(CONFIG config){
 		this.config = config;
 		stores.put(ICdmIO.USER_STORE, new MapWrapper<User>(service));
@@ -93,6 +97,23 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase> ext
 	}
 	
 	public int countTrees(){
-		return treeMap.size();
+		return treeUuidMap.size();
+	}
+	
+	/**
+	 * @return the treeUuid
+	 */
+	public UUID getTreeUuid(ReferenceBase ref) {
+		return treeUuidMap.get(ref);
+	}
+
+	public void putTreeUuid(ReferenceBase ref, TaxonomicTree tree) {
+		if (tree != null){
+			this.treeUuidMap.put(ref, tree.getUuid());
+		}
+	}
+	
+	public int countTreeUuids(){
+		return treeUuidMap.size();
 	}
 }

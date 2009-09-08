@@ -38,7 +38,6 @@ import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.io.common.Source;
-import eu.etaxonomy.cdm.io.profiler.ProfilerController;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.OriginalSource;
@@ -107,14 +106,12 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 	 */
 	protected boolean doInvoke(FaunaEuropaeaImportState state) {				
 		
-		ProfilerController.memorySnapshot();
 		boolean success = true;
 		if(logger.isInfoEnabled()) { logger.info("Start making taxa..."); }
 
 		success = processTaxa(state);
 		
 		logger.info("End making taxa...");
-		ProfilerController.memorySnapshot();
 		return success;
 	}
 
@@ -157,7 +154,6 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 
 				if ((i++ % limit) == 0) {
 					
-					ProfilerController.memorySnapshot();
 					txStatus = startTransaction();
 					taxonMap = new HashMap<Integer, TaxonBase<?>>(limit);
 					fauEuTaxonMap = new HashMap<Integer, FaunaEuropaeaTaxon>(limit);
@@ -297,8 +293,6 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 
 					success = processTaxaSecondPass(state, taxonMap, fauEuTaxonMap);
 					saveTaxa(state, taxonMap);
-
-					ProfilerController.memorySnapshot();
 					
 					taxonMap = null;
 					fauEuTaxonMap = null;
