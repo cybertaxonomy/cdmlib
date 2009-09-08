@@ -24,6 +24,7 @@ import org.hibernate.search.SearchFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
+import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.reference.Article;
 import eu.etaxonomy.cdm.model.reference.BibtexReference;
 import eu.etaxonomy.cdm.model.reference.Book;
@@ -197,7 +198,7 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<ReferenceBase
 		throw new UnsupportedOperationException("suggestQuery is not supported for ReferenceBase");
 	}
 
-	public java.util.Map<UUID, String> getUuidAndTitleCacheOfReferences(){
+	public List<UuidAndTitleCache> getUuidAndTitleCacheOfReferences(){
 		String queryString = "SELECT uuid, titleCache FROM ReferenceBase";
 		
 		List<Object[]> result = getSession().createSQLQuery(queryString).list();
@@ -205,7 +206,7 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<ReferenceBase
 		if(result.size() == 0){
 			return null;
 		}else{
-			java.util.Map<UUID, String> map = new HashMap<UUID, String>(result.size()); 
+			List<UuidAndTitleCache> list = new ArrayList<UuidAndTitleCache>(result.size()); 
 			
 			for (Object object : result){
 				
@@ -214,10 +215,10 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<ReferenceBase
 				UUID uuid = UUID.fromString((String) objectArray[0]);
 				String titleCache = (String) objectArray[1];
 				
-				map.put(uuid, titleCache);
+				list.add(new UuidAndTitleCache(uuid, titleCache));
 			}
 			
-			return map;	
+			return list;	
 		}
 	}
 	

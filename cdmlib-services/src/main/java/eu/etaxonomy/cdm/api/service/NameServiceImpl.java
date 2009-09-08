@@ -34,6 +34,7 @@ import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
+import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.HybridRelationship;
@@ -360,7 +361,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.INameService#getUuidAndTitleCacheOfNames()
 	 */
-	public Map<UUID, String> getUuidAndTitleCacheOfNames() {
+	public List<UuidAndTitleCache> getUuidAndTitleCacheOfNames() {
 		return dao.getUuidAndTitleCacheOfNames();
 	}
 

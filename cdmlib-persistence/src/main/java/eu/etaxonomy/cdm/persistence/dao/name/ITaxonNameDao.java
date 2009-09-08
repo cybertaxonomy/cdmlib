@@ -15,6 +15,7 @@ import java.util.UUID;
 import org.hibernate.criterion.Criterion;
 
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
+import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.HybridRelationship;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
@@ -257,5 +258,5 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonNameBase>, ISearcha
 	
 	public List<RelationshipBase> getAllRelationships(Integer limit, Integer start); 
 	
-	public Map<UUID, String> getUuidAndTitleCacheOfNames();
+	public List<UuidAndTitleCache> getUuidAndTitleCacheOfNames();
 }

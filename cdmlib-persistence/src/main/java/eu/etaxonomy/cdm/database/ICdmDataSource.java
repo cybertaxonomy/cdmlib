@@ -14,8 +14,6 @@ import java.sql.ResultSet;
 import org.hibernate.cache.CacheProvider;
 import org.springframework.beans.factory.config.BeanDefinition;
 
-import eu.etaxonomy.cdm.database.DbSchemaValidation;
-
 public interface ICdmDataSource {
 
 	/**

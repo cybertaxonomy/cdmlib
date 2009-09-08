@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
+import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.HybridRelationship;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
@@ -141,7 +142,7 @@ public class ReferenceServiceImpl extends IdentifiableServiceBase<ReferenceBase,
 		return new DefaultPagerImpl<ReferenceBase>(pageNumber, numberOfResults, pageSize, results);
 	}
 
-	public Map<UUID, String> getUuidAndTitleCacheOfReferences() {
+	public List<UuidAndTitleCache> getUuidAndTitleCacheOfReferences() {
 		
 		return dao.getUuidAndTitleCacheOfReferences();
 	}

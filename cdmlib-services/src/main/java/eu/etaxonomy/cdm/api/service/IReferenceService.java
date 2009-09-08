@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
+import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
@@ -105,6 +106,6 @@ public interface IReferenceService extends IIdentifiableEntityService<ReferenceB
 	 * @return 
 	 * 			a <code>Map</code> containing uuid and titleCache of references
 	 */
-	public Map<UUID, String> getUuidAndTitleCacheOfReferences();
+	public List<UuidAndTitleCache> getUuidAndTitleCacheOfReferences();
 	
 }

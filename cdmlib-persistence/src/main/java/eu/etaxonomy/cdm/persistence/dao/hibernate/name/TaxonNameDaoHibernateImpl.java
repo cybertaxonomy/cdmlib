@@ -34,6 +34,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
+import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.name.BacterialName;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.CultivarPlantName;
@@ -675,7 +676,7 @@ extends IdentifiableDaoBase<TaxonNameBase> implements ITaxonNameDao {
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao#getUuidAndTitleCacheOfNames()
 	 */
-	public Map<UUID, String> getUuidAndTitleCacheOfNames() {
+	public List<UuidAndTitleCache> getUuidAndTitleCacheOfNames() {
 		String queryString = "SELECT uuid, fullTitleCache FROM TaxonNameBase";
 		
 		List<Object[]> result = getSession().createSQLQuery(queryString).list();
@@ -683,7 +684,7 @@ extends IdentifiableDaoBase<TaxonNameBase> implements ITaxonNameDao {
 		if(result.size() == 0){
 			return null;
 		}else{
-			java.util.Map<UUID, String> map = new HashMap<UUID, String>(result.size()); 
+			List<UuidAndTitleCache> list = new ArrayList<UuidAndTitleCache>(result.size()); 
 			
 			for (Object object : result){
 				
@@ -692,10 +693,10 @@ extends IdentifiableDaoBase<TaxonNameBase> implements ITaxonNameDao {
 				UUID uuid = UUID.fromString((String) objectArray[0]);
 				String titleCache = (String) objectArray[1];
 				
-				map.put(uuid, titleCache);
+				list.add(new UuidAndTitleCache(uuid, titleCache));
 			}
 			
-			return map;	
+			return list;	
 		}
 	}
 

@@ -50,6 +50,7 @@ import eu.etaxonomy.cdm.model.common.Extension;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.OriginalSource;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
+import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
@@ -1049,7 +1050,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 	 * (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#getUuidAndTitleCacheOfAcceptedTaxa(eu.etaxonomy.cdm.model.taxon.TaxonomicTree)
 	 */
-	public Map<UUID, String> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByTaxonomicTree(TaxonomicTree taxonomicTree) {
+	public List<UuidAndTitleCache> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByTaxonomicTree(TaxonomicTree taxonomicTree) {
 
 		int taxonomicTreeId = taxonomicTree.getId();
 		
@@ -1060,7 +1061,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		if(result.size() == 0){
 			return null;
 		}else{
-			Map<UUID, String> map = new HashMap<UUID, String>(result.size()); 
+			List<UuidAndTitleCache> list = new ArrayList<UuidAndTitleCache>(result.size()); 
 			
 			for (Object object : result){
 				
@@ -1069,10 +1070,10 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 				UUID uuid = UUID.fromString((String) objectArray[0]);
 				String titleCache = (String) objectArray[1];
 				
-				map.put(uuid, titleCache);
+				list.add(new UuidAndTitleCache(uuid, titleCache));
 			}
 			
-			return map;	
+			return list;	
 		}
 	}
 	
