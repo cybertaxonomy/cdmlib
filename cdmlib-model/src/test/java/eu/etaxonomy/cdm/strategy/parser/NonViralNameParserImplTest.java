@@ -227,6 +227,16 @@ public class NonViralNameParserImplTest {
 		//null
 		NonViralName nameNull = parser.parseFullName(strNameNull);
 		assertNull(nameNull);
+		
+		//Uninomials
+		ZoologicalName milichiidae = (ZoologicalName)parser.parseFullName("Milichiidae", NomenclaturalCode.ICZN, null);
+		assertEquals("Family rank expected", Rank.FAMILY(), milichiidae.getRank());
+		BotanicalName crepidinae = (BotanicalName)parser.parseFullName("Crepidinae", NomenclaturalCode.ICBN, null);
+		assertEquals("Family rank expected", Rank.SUBTRIBE(), crepidinae.getRank());
+		BotanicalName abies = (BotanicalName)parser.parseFullName("Abies", NomenclaturalCode.ICBN, null);
+		assertEquals("Family rank expected", Rank.GENUS(), abies.getRank());
+		
+		
 	}
 	
 	private void testName_StringNomcodeRank(Method parseMethod) 
