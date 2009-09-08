@@ -65,7 +65,7 @@ public class CdmApplicationController {
 	public static final String DEFAULT_APPLICATION_CONTEXT_RESOURCE = "/eu/etaxonomy/cdm/defaultApplicationContext.xml";
 	
 	public AbstractApplicationContext applicationContext;
-	private ICdmApplicationConfiguration configuration;
+	private ICdmApplicationConfiguration configuration; 
 	private Resource applicationContextResource;
 	
 	final static DbSchemaValidation defaultDbSchemaValidation = DbSchemaValidation.VALIDATE;
@@ -180,14 +180,21 @@ public class CdmApplicationController {
 			appContext.start();
 			
 		setApplicationContext(appContext);
-		if (dbSchemaValidation == DbSchemaValidation.CREATE || dbSchemaValidation == DbSchemaValidation.CREATE_DROP){
+		
+		//initialize user and metaData for new databases
+		int userCount = getUserService().count(User.class);
+		if (userCount == 0 ){
 			User firstUser = User.NewInstance("admin", "0000");
 			getUserService().save(firstUser);
 			logger.warn("Created admin user");
 			//write meta data
+		}
+		int metaDataCount = getCommonService().getCdmMetaData().size();
+		if (metaDataCount == 0){
 			List<CdmMetaData> metaData = CdmMetaData.propertyList();
 			getCommonService().saveAllMetaData(metaData);
 		}
+		
 		return true;
 	}
 	
