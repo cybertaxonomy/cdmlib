@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Entity;
+import javax.persistence.Id;
 
 import org.apache.log4j.Logger;
 
@@ -23,7 +24,7 @@ import org.apache.log4j.Logger;
  * @version 1.0
  */
 @Entity
-public class CdmMetaData {
+public class CdmMetaData extends CdmBase{
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CdmMetaData.class);
 
@@ -46,7 +47,8 @@ public class CdmMetaData {
 	
 	private MetaDataPropertyName propertyName;
 	private String value;
-
+	
+	
 	public static final List<CdmMetaData> propertyList(){
 		List<CdmMetaData> result = new ArrayList<CdmMetaData>();
 		result.add(new CdmMetaData(MetaDataPropertyName.DB_SCHEMA_VERSION, dbSchemaVersion));
@@ -86,6 +88,7 @@ public class CdmMetaData {
 	public void setValue(String value) {
 		this.value = value;
 	}
+
 	
 	
 }
