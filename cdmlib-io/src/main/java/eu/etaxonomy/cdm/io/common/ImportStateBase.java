@@ -108,7 +108,7 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase> ext
 	}
 
 	public void putTreeUuid(ReferenceBase ref, TaxonomicTree tree) {
-		if (tree != null){
+		if (tree != null &&  tree.getUuid() != null){
 			this.treeUuidMap.put(ref, tree.getUuid());
 		}
 	}
