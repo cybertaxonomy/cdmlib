@@ -13,6 +13,8 @@ package eu.etaxonomy.cdm.model.common;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.Entity;
+
 import org.apache.log4j.Logger;
 
 /**
@@ -20,6 +22,7 @@ import org.apache.log4j.Logger;
  * @created 07.09.2009
  * @version 1.0
  */
+@Entity
 public class CdmMetaData {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CdmMetaData.class);
