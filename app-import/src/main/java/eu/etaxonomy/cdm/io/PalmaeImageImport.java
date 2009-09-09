@@ -14,7 +14,11 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.Map.Entry;
 
 import org.apache.log4j.Logger;
 import org.apache.sanselan.ImageReadException;
@@ -27,15 +31,22 @@ import org.springframework.stereotype.Component;
 import eu.etaxonomy.cdm.app.images.AbstractImageImporter;
 import eu.etaxonomy.cdm.app.images.ImageImportConfigurator;
 import eu.etaxonomy.cdm.common.MediaMetaData.ImageMetaData;
+import eu.etaxonomy.cdm.model.agent.Address;
+import eu.etaxonomy.cdm.model.agent.AgentBase;
+import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.media.ImageFile;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
+import eu.etaxonomy.cdm.model.media.Rights;
+import eu.etaxonomy.cdm.model.media.RightsTerm;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.strategy.match.DefaultMatchStrategy;
+import eu.etaxonomy.cdm.strategy.match.IMatchStrategy;
 
 /**
  * TODO not working at the moment
@@ -47,6 +58,14 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 @Component
 public class PalmaeImageImport extends AbstractImageImporter {
 	private static final Logger logger = Logger.getLogger(PalmaeImageImport.class);
+	
+	enum MetaData{
+		NAME,
+		ARTIST,
+		COPYRIGHT,
+		COPYRIGHTNOTICE
+	}
+		
 	
 	/**
 	 * Rudimetary implementation using apache sanselan. This implementation depends
@@ -80,7 +99,11 @@ public class PalmaeImageImport extends AbstractImageImporter {
 			JpegImageMetadata jpegMetadata = (JpegImageMetadata) metadata;
 
 			for (Object object : jpegMetadata.getItems()){
+				
 				Item item = (Item) object;
+				//System.out.println(item.getKeyword());
+				
+				
 				if(item.getKeyword().equals("ObjectName")){
 					logger.info("File: " + imageFile.getName() + ". ObjectName string is: " + item.getText());
 					String[] objectNameSplit = item.getText().split(";");
@@ -91,24 +114,81 @@ public class PalmaeImageImport extends AbstractImageImporter {
 						logger.warn("ObjectNameSplit has no second part: " + item.getText() + " in " + imageFile.getName());
 						//throw e;
 					}
-				}				
+				}
 			}
 		}
 		
 		
 		return name;
 	}
+	
+	public Map<MetaData, String> getMetaData(File imageFile, List<MetaData> metaData){
+		HashMap result = new HashMap();
+		
+		IImageMetadata metadata = null;
+		List<String> metaDataStrings = new ArrayList<String>();
+		
+		for (MetaData data: metaData){
+			metaDataStrings.add(data.name().toLowerCase());
+		}
+			
+		
+		try {
+			metadata = Sanselan.getMetadata(imageFile);
+		} catch (ImageReadException e) {
+			logger.error("Error reading image" + " in " + imageFile.getName(), e);
+		} catch (IOException e) {
+			logger.error("Error reading file"  + " in " + imageFile.getName(), e);
+		}
+		
+		
+		
+		if(metadata instanceof JpegImageMetadata){
+			JpegImageMetadata jpegMetadata = (JpegImageMetadata) metadata;
+			
+			int counter = 0;
+				for (Object object : jpegMetadata.getItems()){
+					Item item = (Item) object;
+					
+					if(metaDataStrings.contains(item.getKeyword().toLowerCase())){
+						logger.info("File: " + imageFile.getName() + ". "+ item.getKeyword() +"string is: " + item.getText());
+						result.put(MetaData.valueOf(item.getKeyword().toUpperCase()), item.getText());
+						Set<Entry<MetaData, String>> resultSet = result.entrySet();
+							/*for (Entry e: resultSet){
+								System.err.println(e.getKey() +" -- "+e.getValue());
+							}*/
+					}
+						
+				}
+		}
+		
+		return result;
+	}
+		
+	
 
 	protected boolean invokeImageImport (ImageImportConfigurator config){
 		
 		logger.info("Importing images from directory: " + config.getSourceNameString());
 		File sourceFolder = (File)config.getSource();
+		String taxonName;
 		if(sourceFolder.isDirectory()){
 			for( File file : sourceFolder.listFiles()){
 				if(file.isFile()){
 				
-					String taxonName = retrieveTaxonNameFromImageMetadata(file);
+					taxonName= retrieveTaxonNameFromImageMetadata(file);
 					logger.info("Looking up taxa with taxon name: " + taxonName);
+					
+					//TODO:
+					ArrayList<MetaData> metaDataList = new ArrayList();
+					metaDataList.add (MetaData.ARTIST);
+					metaDataList.add (MetaData.COPYRIGHT);
+					metaDataList.add (MetaData.COPYRIGHTNOTICE);
+					//metaDataList.add (MetaData.NAME);
+					
+					Map<MetaData, String> metaData = getMetaData(file, metaDataList);
+					
+					
 					
 					ReferenceBase sec = referenceService.getReferenceByUuid(config.getSecUuid());
 
@@ -155,13 +235,57 @@ public class PalmaeImageImport extends AbstractImageImporter {
 						
 						Media media = Media.NewInstance();
 						media.addRepresentation(representation);
+						Person artist = null;
+						//TODO: add the rights and the author:
+						if (metaData.containsKey(MetaData.ARTIST)){
+							//TODO search for the person first and then create the object...
+							artist = Person.NewTitledInstance(metaData.get(MetaData.ARTIST).replace("'", ""));
+							artist.setFirstname(getFirstName(metaData.get(MetaData.ARTIST)).replace("'", ""));
+							artist.setLastname(getLastName(metaData.get(MetaData.ARTIST)).replace("'", ""));
+							System.err.println("Artist-Titlecache: "+artist.getTitleCache());
+							IMatchStrategy matchStrategy = DefaultMatchStrategy.NewInstance(AgentBase.class);
+							try{
+								List<Person> agents = commonService.findMatching(artist, matchStrategy);
+								
+								if (agents.size()!= 0){
+									artist = agents.get(0);
+								}
+							}catch(eu.etaxonomy.cdm.strategy.match.MatchException e){
+								//TODO
+							}
+							
+							media.setArtist(artist);
+						}
+						
+						if (metaData.containsKey(MetaData.COPYRIGHT)){
+							//TODO: maybe search for the identic right... 
+							Rights copyright = Rights.NewInstance();
+							copyright.setType(RightsTerm.COPYRIGHT());
+							Person copyrightOwner;
+							if (artist != null && !artist.getLastname().equalsIgnoreCase(getLastName(metaData.get(MetaData.COPYRIGHT)))){
+								copyrightOwner = Person.NewInstance();
+														
+								copyrightOwner.setFirstname(getFirstName(metaData.get(MetaData.COPYRIGHT)));
+								copyrightOwner.setLastname(getLastName(metaData.get(MetaData.COPYRIGHT)));
+							}else
+							{
+								copyrightOwner = artist;
+							}
+							copyright.setAgent(copyrightOwner);
+							//IMatchStrategy matchStrategy = DefaultMatchStrategy.NewInstance(Rights.class);
+							media.addRights(copyright);
+						}
+						
+						
+						
 						
 						feature.addMedia(media);
 						
 						feature.setType(Feature.IMAGE());
 
 						TaxonDescription description = TaxonDescription.NewInstance(taxon);
-						
+						System.err.println(taxon.getTitleCache());
+						description.setTitleCache("TEST");
 						description.addElement(feature);
 						taxon.addDescription(description);
 						
@@ -175,10 +299,48 @@ public class PalmaeImageImport extends AbstractImageImporter {
 		}else{
 			logger.error("given source folder is not a directory");
 		}
-		
 		return true;
 	}
 	
+	private String getFirstName(String artist){
+		if (artist == null){
+			return "";
+		}
+		if (!artist.contains(" ")) {
+			return "";
+		}
+		if (artist.contains(",")){
+			String [] artistSplits = artist.split(",");
+			artist = artistSplits[0];
+			 
+		}
+		System.err.println(artist);
+		try{
+		return artist.substring(0, artist.lastIndexOf(' ')).replace("'", "");
+		}catch (Exception e){
+			return "";
+		}
+	}
+	
+	private String getLastName(String artist){
+		
+		if (artist.contains(",")){
+			String [] artistSplits = artist.split(",");
+			artist = artistSplits[0];
+			System.err.println(artist);
+		}
+		if (!artist.contains(" ")) {
+			System.err.println ("No space...");
+			return artist;
+		}
+		try{
+		return artist.substring(artist.lastIndexOf(' ')).replace(" ", "");
+		}
+		catch(Exception e){
+			return "";
+		}
+	}
+			
 	
 //	protected boolean invokeImageImport (IImportConfigurator config){
 //		
