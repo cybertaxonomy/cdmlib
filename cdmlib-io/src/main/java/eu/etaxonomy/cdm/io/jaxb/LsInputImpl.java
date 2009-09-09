@@ -14,9 +14,7 @@ import java.io.Reader;
 import org.w3c.dom.ls.LSInput;
 
 /**
- * Copied from CATE. Not used at this point.
- * 
- * @author a.babadshanjan
+ * Copied from CATE (@author ben.clark). Not used at this point.
  */
 public class LsInputImpl implements LSInput {
 	

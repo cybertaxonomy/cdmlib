@@ -21,9 +21,7 @@ import org.w3c.dom.ls.LSResourceResolver;
 import org.xml.sax.InputSource;
 
 /**
- * Copied from CATE. Not used at this point.
- * 
- * @author a.babadshanjan
+ * Copied from CATE (@author ben.clark). Not used at this point.
  */
 public class CdmResourceResolver implements LSResourceResolver {
 	private final CatalogResolver catalogResolver;

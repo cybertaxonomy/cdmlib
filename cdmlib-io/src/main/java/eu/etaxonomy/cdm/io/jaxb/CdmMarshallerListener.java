@@ -19,7 +19,7 @@ public class CdmMarshallerListener extends Marshaller.Listener {
 	
 	public void beforeMarshal(Object target) {
 		
-		//TODO: Just a place holder at this point
+		//TODO: This method is just a place holder at this point.
 		
 //		if (target instanceof DefinedTermBase) {
 //			((DefinedTermBase)target).setId(0);

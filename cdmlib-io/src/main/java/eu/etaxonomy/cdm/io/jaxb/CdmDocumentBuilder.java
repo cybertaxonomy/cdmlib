@@ -47,7 +47,7 @@ import eu.etaxonomy.cdm.model.agent.Person;
 /**
  * Initializes a JaxbContext with one class (eu.etaxonomy.cdm.model.DataSet). 
  * 
- * @author a.babadshanjan
+ * @author a.babadshanjan, ben.clark
  */
 //Binds it to XML schemas found in /src/main/resources/schema/cdm (cdm.xsd, common.xsd, name.xsd).
 //There is a bit of magic with a resource resolver in eu.etaxonomy.cdm.io.jaxb
@@ -101,7 +101,7 @@ public class CdmDocumentBuilder {
 		schema = schemaFactory.newSchema(sources);
 	}
 	
-	protected void contstructUnmarshaller() throws ParserConfigurationException, SAXException, JAXBException {
+	protected void constructUnmarshaller() throws ParserConfigurationException, SAXException, JAXBException {
 		unmarshaller = jaxbContext.createUnmarshaller();
         unmarshaller.setSchema(schema);
 	    
@@ -125,7 +125,7 @@ public class CdmDocumentBuilder {
 		
 	    jaxbContext = JAXBContext.newInstance(getContextClasses());
 		
-        contstructUnmarshaller();
+        constructUnmarshaller();
         constructMarshaller();
 	}
 	
@@ -136,7 +136,8 @@ public class CdmDocumentBuilder {
         
 		// For test purposes insert newlines to make the XML output readable
 		marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, formattedOutput);
-		marshaller.setProperty(Marshaller.JAXB_SCHEMA_LOCATION,"http://etaxonomy.eu/cdm/model/1.0 schema/cdm/cdm.xsd");
+//		marshaller.setProperty(Marshaller.JAXB_SCHEMA_LOCATION,"http://etaxonomy.eu/cdm/model/1.0 schema/cdm/cdm.xsd");
+		marshaller.setProperty(Marshaller.JAXB_SCHEMA_LOCATION,"http://etaxonomy.eu/cdm/model/1.0 cdm.xsd");
 		marshaller.setProperty(Marshaller.JAXB_ENCODING, encoding);
 		
 		CdmMarshallerListener marshallerListener = new CdmMarshallerListener();
@@ -151,7 +152,7 @@ public class CdmDocumentBuilder {
 		
 	    jaxbContext = JAXBContext.newInstance(getContextClasses());
 		
-        contstructUnmarshaller();
+        constructUnmarshaller();
         constructMarshaller();
 	}
 	
@@ -190,8 +191,7 @@ public class CdmDocumentBuilder {
 		
 	}
 
-//  can only be used with JAXB 2.1
-//	public void writeFile(DataSet dataSet, File file) throws JAXBException {
+//	public void marshal(DataSet dataSet, File file) throws JAXBException {
 //		marshaller.marshal(dataSet, file);
 //	}
 
