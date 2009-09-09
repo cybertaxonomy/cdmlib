@@ -19,20 +19,25 @@ import java.util.UUID;
 public class FaunaEuropaeaTaxon {
 	
 	private UUID uuid;
-//	private UUID nameUuid;
 	private int id;
-	private int parentId;
-	private int originalGenusId;
 	private int rankId;
-	private String localName;
-	private String originalGenusName = "";
+	private int parentId;
+	private int parentRankId;
+	private int grandParentRankId;
+	private int greatGrandParentRankId;
+	private int originalGenusId;
 	private int year;
-//	private int authorId;
+	private String localName;
+	private String parentName;
+	private String grandParentName;
+	private String greatGrandParentName;
+	private String greatGreatGrandParentName;
+	private String originalGenusName;
 	private String authorName;
 	private boolean parenthesis = false;
 	private boolean valid = false;
-	private String genusName = "";
-	private String specificEpithet = "";
+//	private int authorId;
+//	private UUID nameUuid;
 	
 	/**
 	 * @return the authorName
@@ -63,19 +68,22 @@ public class FaunaEuropaeaTaxon {
 	}
 
 	public FaunaEuropaeaTaxon() {
-		this.id = 0;
-		this.parentId = 0;
-		this.rankId = 0;
+		this.localName = "";
+		this.parentName = "";
+		this.grandParentName = "";
+		this.greatGrandParentName = "";
+		this.originalGenusName = "";
+		this.authorName = "";
 	}
 	
-	public FaunaEuropaeaTaxon(String name, int parentId) {
-		this(name, parentId, null);
-	}
+//	public FaunaEuropaeaTaxon(String name, int parentId) {
+//		this(name, parentId, null);
+//	}
 	
-	public FaunaEuropaeaTaxon(String scientificName, int parentId, String reference) {
-		this.parentId = parentId;
-		this.localName = scientificName;
-	}
+//	public FaunaEuropaeaTaxon(String scientificName, int parentId, String reference) {
+//		this.parentId = parentId;
+//		this.localName = scientificName;
+//	}
 	
 	/**
 	 * @return the parentId
@@ -89,6 +97,7 @@ public class FaunaEuropaeaTaxon {
 	public void setParentId(int parentId) {
 		this.parentId = parentId;
 	}
+	
 	/**
 	 * @return the name
 	 */
@@ -229,31 +238,101 @@ public class FaunaEuropaeaTaxon {
 	}
 
 	/**
-	 * @return the genusName
+	 * @return the parentName
 	 */
-	public String getGenusName() {
-		return genusName;
+	public String getParentName() {
+		return parentName;
 	}
 
 	/**
-	 * @param genusName the genusName to set
+	 * @param parentName the parentName to set
 	 */
-	public void setGenusName(String genusName) {
-		this.genusName = genusName;
+	public void setParentName(String parentName) {
+		this.parentName = parentName;
 	}
 
 	/**
-	 * @return the specificEpithet
+	 * @return the grandParentName
 	 */
-	public String getSpecificEpithet() {
-		return specificEpithet;
+	public String getGrandParentName() {
+		return grandParentName;
 	}
 
 	/**
-	 * @param specificEpithet the specificEpithet to set
+	 * @param grandParentName the grandParentName to set
 	 */
-	public void setSpecificEpithet(String specificEpithet) {
-		this.specificEpithet = specificEpithet;
+	public void setGrandParentName(String grandParentName) {
+		this.grandParentName = grandParentName;
+	}
+
+	/**
+	 * @return the greatGrandParentName
+	 */
+	public String getGreatGrandParentName() {
+		return greatGrandParentName;
+	}
+
+	/**
+	 * @param greatGrandParentName the greatGrandParentName to set
+	 */
+	public void setGreatGrandParentName(String greatGrandParentName) {
+		this.greatGrandParentName = greatGrandParentName;
+	}
+
+	/**
+	 * @return the parentRankId
+	 */
+	public int getParentRankId() {
+		return parentRankId;
+	}
+
+	/**
+	 * @param parentRankId the parentRankId to set
+	 */
+	public void setParentRankId(int parentRankId) {
+		this.parentRankId = parentRankId;
+	}
+
+	/**
+	 * @return the grandParentRankId
+	 */
+	public int getGrandParentRankId() {
+		return grandParentRankId;
+	}
+
+	/**
+	 * @param grandParentRankId the grandParentRankId to set
+	 */
+	public void setGrandParentRankId(int grandParentRankId) {
+		this.grandParentRankId = grandParentRankId;
+	}
+
+	/**
+	 * @return the greatGrandParentRankId
+	 */
+	public int getGreatGrandParentRankId() {
+		return greatGrandParentRankId;
+	}
+
+	/**
+	 * @param greatGrandParentRankId the greatGrandParentRankId to set
+	 */
+	public void setGreatGrandParentRankId(int greatGrandParentRankId) {
+		this.greatGrandParentRankId = greatGrandParentRankId;
+	}
+
+	/**
+	 * @return the greatGreatGrandParentName
+	 */
+	public String getGreatGreatGrandParentName() {
+		return greatGreatGrandParentName;
+	}
+
+	/**
+	 * @param greatGreatGrandParentName the greatGreatGrandParentName to set
+	 */
+	public void setGreatGreatGrandParentName(String greatGreatGrandParentName) {
+		this.greatGreatGrandParentName = greatGreatGrandParentName;
 	}
 
 //	/**
