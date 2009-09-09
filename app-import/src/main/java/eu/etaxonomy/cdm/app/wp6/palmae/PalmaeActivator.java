@@ -53,10 +53,10 @@ public class PalmaeActivator {
 	static final boolean pubishReferencesInBibliography = false;
 	
 	//should the other imports run as well?
-	static final boolean includeTaxonX = true;
+	static final boolean includeTaxonX = false;
 	static final boolean includeImages = true;
-	static final boolean includeExcelProtologue = true;
-	static final boolean includeMediaProtologue = true;
+	static final boolean includeExcelProtologue = false;
+	static final boolean includeMediaProtologue = false;
 	
 	//check - import
 	static final CHECK check = CHECK.CHECK_AND_IMPORT;
@@ -167,6 +167,7 @@ public class PalmaeActivator {
 		boolean success = true;
 		
 		logger.debug("start");
+		
 		PalmaeActivator me = new PalmaeActivator();
 		me.doImport();
 		
