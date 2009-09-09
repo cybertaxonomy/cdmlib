@@ -14,13 +14,17 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.UUID;
+import java.util.Map.Entry;
 
 import org.apache.log4j.Logger;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.TransactionStatus;
@@ -36,7 +40,10 @@ import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
+import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
+import eu.etaxonomy.cdm.model.media.Media;
+import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
@@ -766,6 +773,55 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 	public List<UuidAndTitleCache> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByTaxonomicTree(TaxonomicTree taxonomicTree) {
 		return taxonDao.getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByTaxonomicTree(taxonomicTree);
 	}
+	
+	
+	public Map<UUID, List<MediaRepresentation>> getAllMediaForChildNodes(Taxon taxon, TaxonomicTree taxTree, List<String> propertyPaths, int size, int height, int widthOrDuration, String[] mimeTypes){
+		TreeMap<UUID, List<MediaRepresentation>> result = new TreeMap<UUID, List<MediaRepresentation>>();
+		List<Media> taxonMedia = new ArrayList<Media>();
+		List<MediaRepresentation> medRep = new ArrayList<MediaRepresentation>();
+		//add all media of the children to the result map
+		if (taxTree != null || taxon != null){
+			
+			taxTree = taxonTreeDao.load(taxTree.getUuid());
+			taxon = (Taxon)dao.load(taxon.getUuid());
+					
+			List<TaxonNode> taxNodes = loadChildNodesOfTaxon(taxon, taxTree, propertyPaths);
+			if (taxNodes.size() != 0){
+			
+			defaultBeanInitializer.initializeAll(taxNodes, propertyPaths);
+			TaxonNode taxNode = loadTaxonNodeByTaxon(taxon, taxTree.getUuid(), propertyPaths);
+			
+			//Set<TaxonNode> childNodes = taxNode.getAllNodes();
+			taxNodes.add(taxNode);
+			if (taxNodes != null){
+				for(TaxonNode childNode : taxNodes){
+					taxon = childNode.getTaxon();
+					Set<TaxonDescription> descriptions = taxon.getDescriptions();
+					for (TaxonDescription taxDesc: descriptions){
+						Set<DescriptionElementBase> elements = taxDesc.getElements();
+						for (DescriptionElementBase descElem: elements){
+							for(Media media : descElem.getMedia()){
+								taxonMedia.add(media);
+								
+								//find the best matching representation
+								medRep.add(media.findBestMatchingRepresentation(size, height, widthOrDuration, mimeTypes));
+								
+							}
+						}
+					}
+					result.put(taxon.getUuid(), medRep);
+										
+				}	
+			}
+			}
+			
+		}
+		
+		
+		return result;
+	}
+	
+	
 
 
 }
