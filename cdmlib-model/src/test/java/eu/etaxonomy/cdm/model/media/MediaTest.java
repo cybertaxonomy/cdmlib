@@ -38,11 +38,15 @@ public class MediaTest {
 	private Media media1; 
 	private Team team1;
 	private MediaRepresentation mediaRepresentation1;
+	private MediaRepresentation mediaRepresentation2;
+	private MediaRepresentationPart mediaRepresentationPart1;
+	private MediaRepresentationPart mediaRepresentationPart2;
 	private LanguageString languageString1;
 	private final String germanDescription = "media1Desc2";
 	private Rights rights1;
 	private LanguageString languageString2;
-	
+	private String uriString1 = "Path to image 1";
+	private String uriString2 = "Path to image 2";
 	/**
 	 * @throws java.lang.Exception
 	 */
@@ -72,8 +76,21 @@ public class MediaTest {
 		media1.addDescription(languageString1);
 		media1.addDescription("media1Desc2", Language.GERMAN());
 		mediaRepresentation1 = MediaRepresentation.NewInstance();
+		mediaRepresentation2 = MediaRepresentation.NewInstance();
 		mediaRepresentation1.setMimeType("MimeType1");
+		mediaRepresentation2.setMimeType("MimeType1");
+		mediaRepresentationPart1 = ImageFile.NewInstance(uriString1, 100);
+		mediaRepresentationPart2 = ImageFile.NewInstance(uriString2, 1000);
+		((ImageFile) mediaRepresentationPart1).setHeight(100);
+		((ImageFile) mediaRepresentationPart1).setWidth(100);
+		
+		((ImageFile) mediaRepresentationPart2).setHeight(100);
+		((ImageFile) mediaRepresentationPart2).setWidth(100);
+		
+		mediaRepresentation1.addRepresentationPart(mediaRepresentationPart1);
+		mediaRepresentation2.addRepresentationPart(mediaRepresentationPart2);
 		media1.addRepresentation(mediaRepresentation1);
+		media1.addRepresentation(mediaRepresentation2);
 		rights1 = Rights.NewInstance();
 		media1.addRights(rights1);
 		
@@ -239,5 +256,13 @@ public class MediaTest {
 		Assert.assertEquals("Number of descriptions must be 1", 1, media1.getDescription().size() );
 		media1.removeDescription(Language.GERMAN());
 		Assert.assertEquals("Number of descriptions must be 0", 0, media1.getDescription().size() );
+	}
+	
+	@Test
+	public void testfindBestMatchingRepresentation() {
+		String[] mimetypes = {".*"};
+		Assert.assertEquals(mediaRepresentation1, media1.findBestMatchingRepresentation(100, 100, 100, mimetypes));
+		Assert.assertEquals(mediaRepresentation2, media1.findBestMatchingRepresentation(1000, 100, 100, mimetypes));
+	
 	}
 }
