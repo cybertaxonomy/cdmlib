@@ -9,10 +9,18 @@
 
 package eu.etaxonomy.cdm.model.media;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Set;
+import java.util.SortedMap;
+import java.util.TreeMap;
+import java.util.Map.Entry;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.persistence.Basic;
 import javax.persistence.Entity;
@@ -229,6 +237,106 @@ public class Media extends IdentifiableEntity implements Cloneable {
 	
 	public int compareTo(Object o) {
 		return 0;
+	}
+	/**
+	 * @param mimeTypeRegexes
+	 * @param size
+	 * @param widthOrDuration
+	 * @param height
+	 * @return
+	 * 
+	 * 
+	 */
+	public MediaRepresentation findBestMatchingRepresentation(int size, int height, int widthOrDuration, String[] mimeTypes){
+		// find best matching representations of each media
+		Set<MediaRepresentation> reps = this.getRepresentations();
+				
+		List<Media> returnMedia = new ArrayList<Media>(reps.size());
+		SortedMap<Integer, MediaRepresentation> prefRepresentations 
+				= orderMediaRepresentations(mimeTypes, size, widthOrDuration, height);
+			try {
+				// take first one and remove all other representations
+				MediaRepresentation prefOne = prefRepresentations.get(prefRepresentations.firstKey());
+				
+				return prefOne;
+				
+			} catch (NoSuchElementException nse) {
+				/* IGNORE */
+			}
+			return null;
+		}
+	
+	
+	/**
+	 * @param mimeTypeRegexes
+	 * @param size
+	 * @param widthOrDuration
+	 * @param height
+	 * @return
+	 * 
+	 * 
+	 */
+	private SortedMap<Integer, MediaRepresentation> orderMediaRepresentations(String[] mimeTypeRegexes,
+			Integer size, Integer widthOrDuration, Integer height) {
+		SortedMap<Integer, MediaRepresentation> prefRepr = new TreeMap<Integer, MediaRepresentation>();
+		SortedMap<String, MediaRepresentation> sortedForSizeDistance = new TreeMap<String, MediaRepresentation>();		
+		String keyString = "";
+		for (String mimeTypeRegex : mimeTypeRegexes) {
+			// getRepresentationByMimeType
+			Pattern mimeTypePattern = Pattern.compile(mimeTypeRegex);
+			int representationCnt = 0;
+			for (MediaRepresentation representation : getRepresentations()) {
+				
+				Matcher mather = mimeTypePattern.matcher(representation.getMimeType());
+				if (mather.matches()) {
+					int dwa = 0;
+					
+					//first the size is used for comparison
+					for (MediaRepresentationPart part : representation.getParts()) {
+						if (part.getSize()!= null){
+							int sizeOfPart = part.getSize();
+							int distance = sizeOfPart - size;
+							if (distance < 0) {
+								distance*= -1;
+							}
+							dwa += distance;
+						}
+						//if height and width/duration is defined, add this information, too
+						if (height != 0 && widthOrDuration != 0){
+							int dw = 0;
+							
+							if (part instanceof ImageFile) {
+								ImageFile image = (ImageFile) part;
+								dw = image.getWidth() * image.getHeight() - height * widthOrDuration;
+							}
+							else if (part instanceof MovieFile){
+								MovieFile movie = (MovieFile) part;
+								dw = movie.getDuration() - widthOrDuration;
+										
+							}else if (part instanceof AudioFile){
+								AudioFile audio = (AudioFile) part;
+								dw = audio.getDuration() - widthOrDuration;
+								
+							}
+							if (dw < 0) {
+								dw *= -1;
+							}
+							dwa += dw;
+							
+						}
+					}
+					dwa = (representation.getParts().size() > 0 ? dwa / representation.getParts().size() : 0);
+					
+					//keyString =(dwa + representationCnt++) + '_' + representation.getMimeType();
+					
+					prefRepr.put((dwa + representationCnt++), representation);
+					System.out.println(prefRepr.get(prefRepr.firstKey()) + " --- " + prefRepr.firstKey());
+				}
+					
+			}				
+						
+		}
+		return prefRepr;
 	}
 	
 }
