@@ -13,6 +13,7 @@ package eu.etaxonomy.cdm.api.service;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.api.service.config.ITaxonServiceConfigurator;
@@ -20,8 +21,11 @@ import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
+import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
+import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
@@ -438,4 +442,16 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	 * 			a <code>Map</code> containing uuid and titleCache of accepted taxa
 	 */
 	public List<UuidAndTitleCache> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByTaxonomicTree(TaxonomicTree taxonomicTree);
+	/**
+	 * Returns a map that holds Taxon, titleCache pairs of all accepted taxa for a given taxonomic tree
+	 * 
+	 * @param taxonomicTree
+	 * 			the taxonomic tree in which the taxon is looked for
+	 * @param taxon
+	 * 			the taxon to look for 
+	 * @return 
+	 * 			a <code>Map</code> containing taxon and media uri
+	 */
+	public Map<UUID, List<MediaRepresentation>> getAllMediaForChildNodes(Taxon taxon, TaxonomicTree taxTree, List<String> propertyPaths,  int size, int height, int widthOrDuration, String[] mimeTypes);
+
 }
