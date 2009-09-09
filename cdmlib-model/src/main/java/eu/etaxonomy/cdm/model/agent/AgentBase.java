@@ -48,7 +48,7 @@ import eu.etaxonomy.cdm.strategy.merge.MergeMode;
  * @created 08-Nov-2007 13:06:57
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "Agent", propOrder = {
+@XmlType(name = "AgentBase", propOrder = {
 		"contact"
 })
 @Entity
