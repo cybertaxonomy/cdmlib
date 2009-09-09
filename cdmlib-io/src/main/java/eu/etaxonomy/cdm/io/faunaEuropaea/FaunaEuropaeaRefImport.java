@@ -15,6 +15,7 @@ import static eu.etaxonomy.cdm.io.faunaEuropaea.FaunaEuropaeaTransformer.T_STATU
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -51,6 +52,7 @@ import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
+import eu.etaxonomy.cdm.strategy.match.IMatchable;
 
 
 /**
@@ -84,7 +86,7 @@ public class FaunaEuropaeaRefImport extends FaunaEuropaeaImportBase {
 //		try {
 			Source source = fauEuConfig.getSource();
 			String sqlStr = "";
-			ResultSet rs = source.getResultSet(sqlStr);
+//			ResultSet rs = source.getResultSet(sqlStr);
 			return result;
 //		} catch (SQLException e) {
 //			e.printStackTrace();
@@ -114,21 +116,12 @@ public class FaunaEuropaeaRefImport extends FaunaEuropaeaImportBase {
 		
 		try {
 			String strQuery = 
-				" SELECT MAX(TAX_ID) AS TAX_ID FROM dbo.Taxon ";
-			
-			ResultSet rs = source.getResultSet(strQuery);
-			while (rs.next()) {
-				int maxTaxonId = rs.getInt("TAX_ID");
-//				highestTaxonIndex = maxTaxonId;
-			}
-
-			strQuery = 
 				" SELECT Reference.*, TaxRefs.* " + 
                 " FROM Reference INNER JOIN TaxRefs ON Reference.ref_id = TaxRefs.trf_ref_id " +
                 " WHERE (1=1)" + 
                 " ORDER BY TaxRefs.trf_tax_id";
 			
-			rs = source.getResultSet(strQuery) ;
+			ResultSet rs = source.getResultSet(strQuery) ;
 			
 			int i = 0;
 			while (rs.next()) {
@@ -184,6 +177,9 @@ public class FaunaEuropaeaRefImport extends FaunaEuropaeaImportBase {
 						if (refAuthor == null) {
 							logger.warn("Reference author is null");
 						}
+						
+						List<TeamOrPersonBase<Team>> matches = getCommonService().findMatching(author, null);
+							
 						authorStore.put(refId, author);
 						if (logger.isDebugEnabled()) { 
 							logger.debug("Stored author (" + refId + ") " + refAuthor); 

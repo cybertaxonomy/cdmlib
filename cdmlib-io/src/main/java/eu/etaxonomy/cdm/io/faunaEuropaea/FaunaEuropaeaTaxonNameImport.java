@@ -305,7 +305,7 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 					e.printStackTrace();
 				}
 
-				if (((i % limit) == 0 && i != 1 )) { 
+				if ((i % limit) == 0 && i != 1 ) { 
 
 					success = processTaxaSecondPass(state, taxonMap, fauEuTaxonMap);
 					saveTaxa(state, taxonMap);
@@ -351,20 +351,20 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 			FaunaEuropaeaTaxon fauEuTaxon = fauEuTaxonMap.get(id);
 			
 			String nameString = 
-				buildTaxonName(fauEuTaxon, taxonBase, taxonName, false, fauEuTaxonMap, fauEuConfig);
+				buildTaxonName(fauEuTaxon, taxonBase, taxonName, false, fauEuConfig);
 			
-			if (fauEuConfig.isDoBasionyms() && (fauEuTaxon.isValid()) &&
+			if (fauEuConfig.isDoBasionyms() && fauEuTaxon.isValid() &&
 					(fauEuTaxon.getOriginalGenusId() != 0) &&
 					(fauEuTaxon.getParentId() != fauEuTaxon.getOriginalGenusId())) {
-				success = createBasionym(fauEuTaxon, taxonBase, taxonName, fauEuTaxonMap, fauEuConfig);
+				success = createBasionym(fauEuTaxon, taxonBase, taxonName, fauEuConfig);
 			}
 		}
 		return success;	
 	}
 
 	
-	private boolean createBasionym(FaunaEuropaeaTaxon fauEuTaxon, TaxonBase<?> taxonBase, TaxonNameBase<?,?>taxonName, 
-			Map<Integer, FaunaEuropaeaTaxon> fauEuTaxonMap, FaunaEuropaeaImportConfigurator fauEuConfig) {
+	private boolean createBasionym(FaunaEuropaeaTaxon fauEuTaxon, TaxonBase<?> taxonBase, 
+			TaxonNameBase<?,?>taxonName, FaunaEuropaeaImportConfigurator fauEuConfig) {
 
 //		if (fauEuTaxon.isParenthesis() && (fauEuTaxon.getOriginalGenusId() != 0)
 //		&& (fauEuTaxon.getParentId() != fauEuTaxon.getOriginalGenusId())) {
@@ -396,7 +396,7 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 				logger.debug("Homotypic synonym created (" + fauEuTaxon.getId() + ")");
 			}
 			
-			buildTaxonName(fauEuTaxon, homotypicSynonym, basionym, true, fauEuTaxonMap, fauEuConfig);
+			buildTaxonName(fauEuTaxon, homotypicSynonym, basionym, true, fauEuConfig);
 			
 		} catch (Exception e) {
 			logger.warn("Exception occurred when creating basionym for " + fauEuTaxon.getId());
@@ -494,7 +494,7 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 	private String buildLowerTaxonName(StringBuilder originalGenus, boolean useOriginalGenus,
 			StringBuilder genusOrUninomial, StringBuilder infraGenericEpithet, 
 			StringBuilder specificEpithet, StringBuilder infraSpecificEpithet,
-			FaunaEuropaeaTaxon fauEuTaxon, Map<Integer, FaunaEuropaeaTaxon> fauEuTaxonMap) {
+			FaunaEuropaeaTaxon fauEuTaxon) {
 		
 		String localName = fauEuTaxon.getLocalName();
 		int taxonId = fauEuTaxon.getId();
@@ -616,7 +616,7 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 	
 	/** Build taxon's name parts and caches */
 	private String buildTaxonName(FaunaEuropaeaTaxon fauEuTaxon, TaxonBase<?> taxonBase, TaxonNameBase<?,?>taxonName,
-			boolean useOriginalGenus, Map<Integer, FaunaEuropaeaTaxon> fauEuTaxonMap, FaunaEuropaeaImportConfigurator fauEuConfig) {
+			boolean useOriginalGenus, FaunaEuropaeaImportConfigurator fauEuConfig) {
 
 		/* Local taxon name string */
 		String localString = "";
@@ -658,7 +658,7 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 			completeString = 
 				buildLowerTaxonName(originalGenus, useOriginalGenus,
 						genusOrUninomial, infraGenericEpithet, specificEpithet, infraSpecificEpithet,
-						fauEuTaxon, fauEuTaxonMap);
+						fauEuTaxon);
 			
 			completeString = (String) CdmUtils.removeDuplicateWhitespace(completeString.trim());
 
