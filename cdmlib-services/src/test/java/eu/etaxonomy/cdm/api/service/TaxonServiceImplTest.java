@@ -105,7 +105,7 @@ public class TaxonServiceImplTest extends CdmIntegrationTest {
 		logger.warn("Not yet implemented"); // TODO
 	}
 	
-	@Ignore
+//	@Ignore
 	@Test
 	public final void testPrintDataSet() {
 		
