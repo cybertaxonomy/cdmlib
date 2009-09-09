@@ -15,6 +15,8 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.model.common.Language;
+
 /**
  * @author a.mueller
  * @created 04.09.2009
@@ -48,6 +50,34 @@ public enum ParserProblem {
 	private ParserProblem(int type){
 		this.type = type;
 	}
+	
+	public String getMessage(){
+		return getMessage(Language.DEFAULT());
+	}
+	
+	public String getMessage(Language language){
+		//TODO language not yet supported
+		if (this == CheckRank){
+			return "check rank";
+		}else if (this == CheckDetailOrYear){
+			return "detail or year part ambigous";
+		}else if (this == NameReferenceSeparation){
+			return "name not parsable or name-reference separation not possible";
+		}else if (this == UnparsableReferenceTitle){
+			return "reference title not parsable";
+		}else if (this == UnparsableAuthorPart){
+			return "author part not parsable";
+		}else if (this == UnparsableNamePart){
+			return "name part not parsable";
+		}else if (this == OldInfraSpeciesNotSupported){
+			return "name not parsable - old infraspecific marker not supported by parser";
+		}else if (this == RankNotSupported){
+			return "rank not supported by parser";
+		}else{
+			return "unknown parser problem";
+		}
+	}
+	
 	
 	public boolean isError(){
 		return type == ERROR();
@@ -101,15 +131,7 @@ public enum ParserProblem {
 		return hasProblem | newWarnings;
 	}
 	
-//	
-//	private static BitSet bitSetFromInt(int number){
-//		BitSet result = new BitSet(32);
-//		for (int i = 0; i < 32; i++){
-//			if (testBit(number, i)){
-//				result.set(i);
-//			}
-//		}
-//		return result;
-//	}
+
+	
 	
 }
