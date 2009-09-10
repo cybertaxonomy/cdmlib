@@ -14,6 +14,7 @@ import static eu.etaxonomy.cdm.io.faunaEuropaea.FaunaEuropaeaTransformer.T_STATU
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +22,8 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
+import org.hibernate.Hibernate;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
@@ -51,6 +54,7 @@ import eu.etaxonomy.cdm.model.reference.StrictReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 import eu.etaxonomy.cdm.strategy.match.IMatchable;
 
@@ -64,9 +68,19 @@ import eu.etaxonomy.cdm.strategy.match.IMatchable;
 public class FaunaEuropaeaRefImport extends FaunaEuropaeaImportBase {
 	private static final Logger logger = Logger.getLogger(FaunaEuropaeaRefImport.class);
 
+//	private static final List<String> TAXON_INIT_STRATEGY = Arrays.asList(new String []{
+//			"descriptions.*"
+//			});
+//
+//	private static final List<String> SYNONYM_INIT_STRATEGY = Arrays.asList(new String []{
+//			"synonymRelations"
+//			});
+	
 	/* Interval for progress info message when retrieving taxa */
 	private int modCount = 10000;
 	
+	@Autowired
+	private BeanInitializer defaultBeanInitializer;
 		
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doCheck(eu.etaxonomy.cdm.io.common.IImportConfigurator)
@@ -102,7 +116,7 @@ public class FaunaEuropaeaRefImport extends FaunaEuropaeaImportBase {
 		
 		Map<String, MapWrapper<? extends CdmBase>> stores = state.getStores();
 		MapWrapper<TeamOrPersonBase> authorStore = (MapWrapper<TeamOrPersonBase>)stores.get(ICdmIO.TEAM_STORE);
-		MapWrapper<TaxonBase> taxonStore = (MapWrapper<TaxonBase>)stores.get(ICdmIO.TAXON_STORE);
+//		MapWrapper<TaxonBase> taxonStore = (MapWrapper<TaxonBase>)stores.get(ICdmIO.TAXON_STORE);
 		MapWrapper<ReferenceBase> refStore = (MapWrapper<ReferenceBase>)stores.get(ICdmIO.REFERENCE_STORE);
 		TransactionStatus txStatus = null;
 				
@@ -116,11 +130,15 @@ public class FaunaEuropaeaRefImport extends FaunaEuropaeaImportBase {
 		
 		try {
 			String strQuery = 
-				" SELECT Reference.*, TaxRefs.* " + 
-                " FROM Reference INNER JOIN TaxRefs ON Reference.ref_id = TaxRefs.trf_ref_id " +
-                " WHERE (1=1)" + 
+				" SELECT Reference.*, TaxRefs.*, Taxon.UUID " + 
+                " FROM TaxRefs " +
+				" INNER JOIN Reference ON Reference.ref_id = TaxRefs.trf_ref_id " +
+                " INNER JOIN Taxon ON TaxRefs.trf_tax_id = Taxon.TAX_ID " +
                 " ORDER BY TaxRefs.trf_tax_id";
 			
+			if (logger.isInfoEnabled()) {
+				logger.info("Query: " + strQuery);
+			}
 			ResultSet rs = source.getResultSet(strQuery) ;
 			
 			int i = 0;
@@ -139,7 +157,15 @@ public class FaunaEuropaeaRefImport extends FaunaEuropaeaImportBase {
 				String title = rs.getString("ref_title");
 				String refSource = rs.getString("ref_source");
 				String page = rs.getString("trf_page");
+				UUID taxonBaseUuid = null;
+				if (resultSetHasColumn(rs,"UUID")){
+					taxonBaseUuid = UUID.fromString(rs.getString("UUID"));
+				} else {
+					taxonBaseUuid = UUID.randomUUID();
+				}
 				
+				txStatus = startTransaction();
+
 				StrictReferenceBase<?> reference = null;
 				TeamOrPersonBase<Team> author = null;
 				
@@ -173,16 +199,21 @@ public class FaunaEuropaeaRefImport extends FaunaEuropaeaImportBase {
 					
 					// Create authors
 					
-					if (!authorStore.containsId(refId)) { // TODO: Don't insert identical author names
+					if (!authorStore.containsId(refId)) {
 						if (refAuthor == null) {
 							logger.warn("Reference author is null");
 						}
 						
 						List<TeamOrPersonBase<Team>> matches = getCommonService().findMatching(author, null);
-							
-						authorStore.put(refId, author);
-						if (logger.isDebugEnabled()) { 
-							logger.debug("Stored author (" + refId + ") " + refAuthor); 
+						if (matches.size() == 0) {
+							authorStore.put(refId, author);
+							if (logger.isDebugEnabled()) { 
+								logger.debug("Stored author (" + refId + ") " + refAuthor); 
+							}
+						} else {
+							if (logger.isDebugEnabled()) { 
+								logger.debug("Matching authors found. Not stored author (" + refId + ") " + refAuthor); 
+							}
 						}
 					} else {
 						if (logger.isDebugEnabled()) { 
@@ -199,34 +230,53 @@ public class FaunaEuropaeaRefImport extends FaunaEuropaeaImportBase {
 				try {
 					// Create descriptions
 
-					Taxon taxon;
-					TaxonBase taxonBase = taxonStore.get(taxonId);
-					if (taxonBase == null) { continue; }
+					Taxon taxon = null;
+					TaxonBase taxonBase = getTaxonService().findByUuid(taxonBaseUuid);
+//					TaxonBase taxonBase = getTaxonService().load(taxonBaseUuid, TAXON_INIT_STRATEGY);
+//					TaxonBase taxonBase = taxonStore.get(taxonId);
+					if (taxonBase == null) { 
+						if (logger.isDebugEnabled()) { 
+							logger.debug("TaxonBase is null (" + taxonBaseUuid);
+						}
+						continue; 
+					}
 					boolean isSynonym = taxonBase.isInstanceOf(Synonym.class);
-					if (isSynonym){
+					if (isSynonym) {
+//						taxonBase = getTaxonService().load(taxonBase.getUuid(), SYNONYM_INIT_STRATEGY);
 						Synonym syn = CdmBase.deproxy(taxonBase, Synonym.class);
-						taxon = syn.getAcceptedTaxa().iterator().next();
-					}else{
+						Set<Taxon> acceptedTaxa = syn.getAcceptedTaxa();
+						if (acceptedTaxa.size() > 0) {
+							taxon = syn.getAcceptedTaxa().iterator().next();
+						} else {
+							if (logger.isDebugEnabled()) { 
+								logger.debug("Synonym (" + taxonBase.getUuid() + ") does not have accepted taxa");
+							}
+						}
+					} else {
 						taxon = CdmBase.deproxy(taxonBase, Taxon.class);
 					}
 
-					TaxonDescription taxonDescription = null;
-					Set<TaxonDescription> descriptions = taxon.getDescriptions();
-					if (descriptions.size() > 0) {
-						taxonDescription = descriptions.iterator().next(); 
-					} else {
-						taxonDescription = TaxonDescription.NewInstance();
-						taxon.addDescription(taxonDescription);
-					}
+					if (taxon != null) {
+						TaxonDescription taxonDescription = null;
+//						Hibernate.initialize(taxon);
+//						defaultBeanInitializer.initialize(taxon, TAXON_INIT_DESCRIPTIONS_STRATEGY);
+						Set<TaxonDescription> descriptions = taxon.getDescriptions();
+						if (descriptions.size() > 0) {
+							taxonDescription = descriptions.iterator().next(); 
+						} else {
+							taxonDescription = TaxonDescription.NewInstance();
+							taxon.addDescription(taxonDescription);
+						}
 
-					TextData textData = TextData.NewInstance(Feature.CITATION());
-					if (isSynonym){
-						Synonym syn = CdmBase.deproxy(taxonBase, Synonym.class);
-						textData.setNameUsedInReference(syn.getName());
+						TextData textData = TextData.NewInstance(Feature.CITATION());
+						if (isSynonym){
+							Synonym syn = CdmBase.deproxy(taxonBase, Synonym.class);
+							textData.setNameUsedInReference(syn.getName());
+						}
+						textData.setCitation(reference);
+						textData.setCitationMicroReference(page);
+						taxonDescription.addElement(textData);
 					}
-					textData.setCitation(reference);
-					textData.setCitationMicroReference(page);
-					taxonDescription.addElement(textData);
 
 				} catch (Exception e) {
 					logger.warn("An exception occurred when creating description for reference " + refId + 
@@ -238,8 +288,6 @@ public class FaunaEuropaeaRefImport extends FaunaEuropaeaImportBase {
 			
 			if(logger.isInfoEnabled()) { logger.info("Saving references ..."); }
 			
-			txStatus = startTransaction();
-
 			// save taxa, references, and authors
 			success = saveTaxa(state, state.getHighestTaxonIndex(), state.getConfig().getLimitSave());
 			getReferenceService().saveReferenceAll(refStore.objects());
