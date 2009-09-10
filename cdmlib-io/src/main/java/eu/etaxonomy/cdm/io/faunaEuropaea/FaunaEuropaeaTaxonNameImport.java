@@ -624,10 +624,10 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 		String completeString = "";
 
 		StringBuilder originalGenus = null;
-//		StringBuilder originalGenus = new StringBuilder();
+		String originalGenusString = fauEuTaxon.getOriginalGenusName();
 		
-		if (useOriginalGenus) {
-			originalGenus = new StringBuilder(fauEuTaxon.getOriginalGenusName());
+		if (useOriginalGenus && originalGenusString != null) {
+			originalGenus = new StringBuilder(originalGenusString);
 		}
 		StringBuilder genusOrUninomial = new StringBuilder();
 		StringBuilder infraGenericEpithet = new StringBuilder(); 
