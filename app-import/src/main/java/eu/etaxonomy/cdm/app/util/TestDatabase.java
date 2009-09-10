@@ -41,6 +41,7 @@ import eu.etaxonomy.cdm.model.reference.StrictReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 /**
  * @author a.babadshanjan
@@ -85,6 +86,7 @@ public class TestDatabase {
 		TransactionStatus txStatus = appCtr.startTransaction();
 		DataSet dataSet = buildDataSet();
 		
+		appCtr.getTermService().saveAll(dataSet.getTerms());
 		appCtr.getTaxonService().saveTaxonAll(dataSet.getTaxonBases());
 
 		appCtr.commitTransaction(txStatus);
@@ -106,8 +108,8 @@ public class TestDatabase {
 	    List<DefinedTermBase> terms = new ArrayList<DefinedTermBase>();
 	    List<ReferenceBase> references = new ArrayList<ReferenceBase>();
 	    List<TaxonNameBase> taxonomicNames = new ArrayList<TaxonNameBase>();
-	    List<Taxon> taxa = new ArrayList<Taxon>();
-	    List<Synonym> synonyms = new ArrayList<Synonym>();
+	    List<TaxonBase> taxonBases = new ArrayList<TaxonBase>();
+//	    List<Synonym> synonyms = new ArrayList<Synonym>();
 	    List<AnnotatableEntity> homotypicalGroups;
 
 		StrictReferenceBase citRef, sec;
@@ -224,13 +226,14 @@ public class TestDatabase {
 		child2.addSynonym(syn2, SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF());
 		freeT.addSynonym(synFree, SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF());
 
-		synonyms.add(synFree);
-		synonyms.add(syn11);
-		synonyms.add(syn12);
-		synonyms.add(syn2);
+		taxonBases.add(synFree);
+		taxonBases.add(syn11);
+		taxonBases.add(syn12);
+		taxonBases.add(syn2);
 		
 		// taxonomic children
 		
+		//TODO: Adapt to taxonomic tree
 		root1T.addTaxonomicChild(child1, sec, "p.1010");
 		root1T.addTaxonomicChild(child2, sec, "p.1020");
 		child2.addTaxonomicChild(child21, sec, "p.2000");
@@ -238,26 +241,26 @@ public class TestDatabase {
 		root2T.addTaxonomicChild(child1, sec, "p.1010");
 		root2T.addTaxonomicChild(child2, sec, "p.1020");
 		
-		taxa.add(root1T);
-		taxa.add(root2T);
-		taxa.add(freeT);
-		taxa.add(child1);
-		taxa.add(child2);
-		taxa.add(child21);
-		taxa.add(childR2_1);
-		taxa.add(childR2_2);
+		taxonBases.add(root1T);
+		taxonBases.add(root2T);
+		taxonBases.add(freeT);
+		taxonBases.add(child1);
+		taxonBases.add(child2);
+		taxonBases.add(child21);
+		taxonBases.add(childR2_1);
+		taxonBases.add(childR2_2);
 		
 		DataSet dataSet = new DataSet();
 	
-		logger.warn("WARNING: TestDatabase has been commented in parts after refactoring (2009-02-25)");
-//TODO commented after Bens refactoring for version 2.1  		
-//		dataSet.setAgents(agents);
-//		dataSet.setAgentData(agentData);
-//		dataSet.setTerms(terms);
-//		dataSet.setReferences(references);
-//		dataSet.setTaxonomicNames(taxonomicNames);
-//		dataSet.setTaxa(taxa);
-//		dataSet.setSynonyms(synonyms);
+		logger.warn("WARNING: TestDatabase has been commented in parts. Mainly, must be adapted to taxonomic tree.");
+		
+		dataSet.setTerms(terms);
+		dataSet.setAgents(agents);
+//		dataSet.setAgentData(agentData); //TODO
+		dataSet.setTerms(terms);
+		dataSet.setReferences(references);
+		dataSet.setTaxonomicNames(taxonomicNames);
+		dataSet.setTaxonBases(taxonBases);
 		
 		return dataSet;
 
