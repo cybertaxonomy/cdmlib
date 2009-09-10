@@ -130,7 +130,7 @@ public class JaxbExport extends CdmExportBase<JaxbExportConfigurator, JaxbExport
 		if (jaxbExpConfig.isDoTermVocabularies() == true) {
 			if (termVocabularyRows == 0) { termVocabularyRows = MAX_ROWS; }
 			logger.info("# TermVocabulary");
-			dataSet.setTermVocabularies(getTermService().getAllTermVocabularies(MAX_ROWS, 0));;
+			dataSet.setTermVocabularies(getTermService().listTermVocabularies(termVocabularyRows, 0, null, null));
 		}
 
 //		if (jaxbExpConfig.isDoLanguageData() == true) {
