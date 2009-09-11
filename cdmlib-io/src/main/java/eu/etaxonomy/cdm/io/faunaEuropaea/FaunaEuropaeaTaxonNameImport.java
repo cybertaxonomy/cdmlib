@@ -116,7 +116,7 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 	}
 
 	
-	/** Retrieve taxa from FauEu DB, fill TaxonStore */
+	/** Retrieve taxa from FauEu DB, process in blocks */
 	private boolean processTaxa(FaunaEuropaeaImportState state) {
 
 		int limit = state.getConfig().getLimitSave();

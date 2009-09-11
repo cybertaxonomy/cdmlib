@@ -12,10 +12,12 @@ package eu.etaxonomy.cdm.io.faunaEuropaea;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
@@ -50,12 +52,9 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
  * @version 1.0
  */
 @Component
-public class FaunaEuropaeaDistributionImport  extends FaunaEuropaeaImportBase {
+public class FaunaEuropaeaDistributionImport extends FaunaEuropaeaImportBase {
 	private static final Logger logger = Logger.getLogger(FaunaEuropaeaDistributionImport.class);
 
-	private int modCount = 10000;
-	/* Max number of references to be saved with one service call */
-	private int limit = 20000; // TODO: Make configurable
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doCheck(eu.etaxonomy.cdm.io.common.IImportConfigurator)
@@ -75,7 +74,7 @@ public class FaunaEuropaeaDistributionImport  extends FaunaEuropaeaImportBase {
 //		try {
 			Source source = fauEuConfig.getSource();
 			String sqlStr = "";
-			ResultSet rs = source.getResultSet(sqlStr);
+	//		ResultSet rs = source.getResultSet(sqlStr);
 			return result;
 //		} catch (SQLException e) {
 //			e.printStackTrace();
@@ -89,15 +88,19 @@ public class FaunaEuropaeaDistributionImport  extends FaunaEuropaeaImportBase {
 	@Override
 	protected boolean doInvoke(FaunaEuropaeaImportState state) {	
 		
-		Map<String, MapWrapper<? extends CdmBase>> stores = state.getStores();
-		MapWrapper<TaxonBase> taxonStore = (MapWrapper<TaxonBase>)stores.get(ICdmIO.TAXON_STORE);
-		TransactionStatus txStatus = null;
+		int limit = state.getConfig().getLimitSave();
 		
-		//make not needed maps empty
-//		MapWrapper<TeamOrPersonBase<?>> authorStore = (MapWrapper<TeamOrPersonBase<?>>)stores.get(ICdmIO.TEAM_STORE);
-//		authorMap.makeEmpty();
-
-		Set<TaxonBase> taxonMap = new HashSet<TaxonBase>();
+		/* Taxon store for retrieving taxa from and saving taxa to CDM */
+		List<TaxonBase> taxonList = null;
+		/* UUID store as input for retrieving taxa from CDM */
+		Set<UUID> taxonUuids = null;
+		/* Store to hold helper objects */
+		Map<UUID, FaunaEuropaeaDistributionTaxon> fauEuTaxonMap = null;
+		
+//		Map<UUID, TaxonBase<?>> taxonMap = null;
+//		Set<TaxonBase<?>> taxonSet = null;
+		
+		TransactionStatus txStatus = null;
 		
 		FaunaEuropaeaImportConfigurator fauEuConfig = state.getConfig();
 		Source source = fauEuConfig.getSource();
@@ -105,95 +108,135 @@ public class FaunaEuropaeaDistributionImport  extends FaunaEuropaeaImportBase {
 		String namespace = "Distribution";
 		boolean success = true;
 		
-		if(logger.isInfoEnabled()) { logger.info("Start making Distributions..."); }
+		
+		//make not needed maps empty
+//		Map<String, MapWrapper<? extends CdmBase>> stores = state.getStores();
+//		MapWrapper<TeamOrPersonBase<?>> authorStore = (MapWrapper<TeamOrPersonBase<?>>)stores.get(ICdmIO.TEAM_STORE);
+//		authorStore.makeEmpty();
+
+		if(logger.isInfoEnabled()) { logger.info("Start making distributions..."); }
 		
 		try {
 			String strQuery = 
-				" SELECT distribution.*, Area.* " + 
-                " FROM distribution INNER JOIN Area ON distribution.dis_ara_id = Area.ara_id " +
-                " WHERE (1=1)";
+				" SELECT distribution.*, Area.*, Taxon.UUID " + 
+				" FROM distribution INNER JOIN " +
+                " Area ON distribution.dis_ara_id = Area.ara_id INNER JOIN " +
+                " Taxon ON distribution.dis_tax_id = Taxon.TAX_ID ";
             								
 			ResultSet rs = source.getResultSet(strQuery) ;
 			
 			int i = 0;
 			while (rs.next()) {
 				
-				if ((i++ % modCount) == 0 && i!= 1 ) { 
+				if ((i++ % limit) == 0) {
+					
+					txStatus = startTransaction();
+					taxonUuids = new HashSet<UUID>(limit);
+					fauEuTaxonMap = new HashMap<UUID, FaunaEuropaeaDistributionTaxon>(limit);
+//					taxonSet = new HashSet<TaxonBase<?>>(limit);
+					
 					if(logger.isInfoEnabled()) {
-						logger.info("Distributions handled: " + (i-1)); 
+						logger.info("i = " + i + " - Distribution import transaction started"); 
 					}
 				}
 				
-				int disId = rs.getInt("dis_id");
 				int taxonId = rs.getInt("dis_tax_id");
+				int disId = rs.getInt("dis_id");
 				int occStatusId = rs.getInt("dis_present");
+				int areaId = rs.getInt("ara_id");
+				String areaName = rs.getString("ara_name");
+				String areaCode = rs.getString("ara_code");
+				int extraLimital = rs.getInt("ara_extralimital");
+				UUID fauEuTaxonUuid = null;
+				if (resultSetHasColumn(rs,"UUID")){
+					fauEuTaxonUuid = UUID.fromString(rs.getString("UUID"));
+				} else {
+					fauEuTaxonUuid = UUID.randomUUID();
+				}
 				
-				TaxonBase<?> taxonBase = taxonStore.get(taxonId);
+				FaunaEuropaeaDistributionTaxon fauEuTaxon = new FaunaEuropaeaDistributionTaxon();
+				fauEuTaxon.setTaxonId(taxonId);
+				fauEuTaxon.setDistributionId(disId);
+				fauEuTaxon.setOccurrenceStatusId(occStatusId);
+				fauEuTaxon.setAreaId(areaId);
+				fauEuTaxon.setAreaName(areaName);
+				fauEuTaxon.setAreaCode(areaCode);
+				fauEuTaxon.setExtraLimital(extraLimital);
+				fauEuTaxon.setTaxonUuid(fauEuTaxonUuid);
 				
-				try {
-				if (taxonBase != null) {
-					Taxon taxon;
-					if (taxonBase instanceof Taxon) {
-						taxon = (Taxon)taxonBase;
-					} else {
-						logger.warn("TaxonBase (" + taxonId + " is not of type Taxon but: " 
-								+ taxonBase.getClass().getSimpleName());
+				if (!taxonUuids.contains(fauEuTaxonUuid)) {
+					taxonUuids.add(fauEuTaxonUuid);
+					fauEuTaxonMap.put(fauEuTaxonUuid, fauEuTaxon);
+				} else {
+					if (logger.isDebugEnabled()) { 
+						logger.debug("Taxon (" + fauEuTaxonUuid + ") already stored.");
 						continue;
 					}
-					
-					TaxonDescription taxonDescription;
-					Set<TaxonDescription> descriptionSet= taxon.getDescriptions();
-					if (descriptionSet.size() > 0) {
-						taxonDescription = descriptionSet.iterator().next(); 
-					} else {
-						taxonDescription = TaxonDescription.NewInstance();
-						taxon.addDescription(taxonDescription);
-					}
-										
-    				PresenceAbsenceTermBase<?> presenceAbsenceStatus 
-    				= FaunaEuropaeaTransformer.occStatus2PresenceAbsence(occStatusId);
-					NamedArea namedArea = FaunaEuropaeaTransformer.areaId2TdwgArea(rs);
-    				
-					Distribution newDistribution = Distribution.NewInstance(namedArea, presenceAbsenceStatus);
-					taxonDescription.addElement(newDistribution);
-					
-					//ImportHelper.setOriginalSource(reference, fauEuConfig.getSourceReference(), disId, namespace);
-					
-//					if (!refStore.containsId(refId)) {
-//						if (reference == null) {
-//							logger.warn("Reference is null");
-//						}
-//						refStore.put(refId, reference);
-//					} else {
-//						logger.warn("Reference with duplicated ref_id (" + refId + 
-//								") not imported.");
-//					}
-					taxonMap.add(taxon);
 				}
+				
+				if ((i % limit) == 0 && i != 1 ) {
 					
-				} catch (Exception e) {
-					logger.warn("An exception occurred when creating distribution with id " + disId + 
-					". Reference could not be saved.");
-					e.printStackTrace();
-				}
-			}
-			
-			if(logger.isInfoEnabled()) { logger.info("Saving distributions ..."); }
-			
-			txStatus = startTransaction();
+					try {
 
-			success = saveTaxa(state, state.getHighestTaxonIndex(), state.getConfig().getLimitSave());
-			
-			commitTransaction(txStatus);
-			
+						taxonList = getTaxonService().findByUuid(taxonUuids);
+
+						for (TaxonBase taxonBase : taxonList) {
+
+							if (taxonBase != null) {
+								Taxon taxon;
+								if (taxonBase instanceof Taxon) {
+									taxon = taxonBase.deproxy(taxonBase, Taxon.class);
+								} else {
+									logger.warn("TaxonBase (" + taxonId + " is not of type Taxon but: " 
+											+ taxonBase.getClass().getSimpleName());
+									continue;
+								}
+
+								TaxonDescription taxonDescription;
+								Set<TaxonDescription> descriptionSet = taxon.getDescriptions();
+								if (descriptionSet.size() > 0) {
+									taxonDescription = descriptionSet.iterator().next(); 
+								} else {
+									taxonDescription = TaxonDescription.NewInstance();
+									taxon.addDescription(taxonDescription);
+								}
+
+								UUID taxonUuid = taxonBase.getUuid();
+								FaunaEuropaeaDistributionTaxon fauEuHelperTaxon = fauEuTaxonMap.get(taxonUuid);
+								
+								PresenceAbsenceTermBase<?> presenceAbsenceStatus 
+								= FaunaEuropaeaTransformer.occStatus2PresenceAbsence(fauEuHelperTaxon.getOccurrenceStatusId());
+								NamedArea namedArea = 
+									FaunaEuropaeaTransformer.areaId2TdwgArea(fauEuHelperTaxon);
+
+								Distribution newDistribution = Distribution.NewInstance(namedArea, presenceAbsenceStatus);
+								taxonDescription.addElement(newDistribution);
+
+							}
+						}
+						if(logger.isInfoEnabled()) { logger.info("Saving taxa..."); }
+
+						getTaxonService().saveTaxonAll(taxonList);
+						
+						taxonUuids = null;
+						taxonList = null;
+						fauEuTaxonMap = null;
+						commitTransaction(txStatus);
+						
+					} catch (Exception e) {
+						logger.warn("An exception occurred when creating distribution with id " + disId);
+						e.printStackTrace();
+					}
+				}
+
 			if(logger.isInfoEnabled()) { logger.info("End making distributions..."); }
 			
-			return true;
-			
+			}		
 		} catch (SQLException e) {
 			logger.error("SQLException:" +  e);
 			return false;
 		}
+		return true;
 	}
 
 	

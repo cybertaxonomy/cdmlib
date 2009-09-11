@@ -68,20 +68,9 @@ import eu.etaxonomy.cdm.strategy.match.IMatchable;
 public class FaunaEuropaeaRefImport extends FaunaEuropaeaImportBase {
 	private static final Logger logger = Logger.getLogger(FaunaEuropaeaRefImport.class);
 
-//	private static final List<String> TAXON_INIT_STRATEGY = Arrays.asList(new String []{
-//			"descriptions.*"
-//			});
-//
-//	private static final List<String> SYNONYM_INIT_STRATEGY = Arrays.asList(new String []{
-//			"synonymRelations"
-//			});
-	
 	/* Interval for progress info message when retrieving taxa */
 	private int modCount = 10000;
 	
-	@Autowired
-	private BeanInitializer defaultBeanInitializer;
-		
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doCheck(eu.etaxonomy.cdm.io.common.IImportConfigurator)
 	 */
@@ -116,7 +105,6 @@ public class FaunaEuropaeaRefImport extends FaunaEuropaeaImportBase {
 		
 		Map<String, MapWrapper<? extends CdmBase>> stores = state.getStores();
 		MapWrapper<TeamOrPersonBase> authorStore = (MapWrapper<TeamOrPersonBase>)stores.get(ICdmIO.TEAM_STORE);
-//		MapWrapper<TaxonBase> taxonStore = (MapWrapper<TaxonBase>)stores.get(ICdmIO.TAXON_STORE);
 		MapWrapper<ReferenceBase> refStore = (MapWrapper<ReferenceBase>)stores.get(ICdmIO.REFERENCE_STORE);
 		TransactionStatus txStatus = null;
 				
@@ -232,17 +220,14 @@ public class FaunaEuropaeaRefImport extends FaunaEuropaeaImportBase {
 
 					Taxon taxon = null;
 					TaxonBase taxonBase = getTaxonService().findByUuid(taxonBaseUuid);
-//					TaxonBase taxonBase = getTaxonService().load(taxonBaseUuid, TAXON_INIT_STRATEGY);
-//					TaxonBase taxonBase = taxonStore.get(taxonId);
 					if (taxonBase == null) { 
 						if (logger.isDebugEnabled()) { 
-							logger.debug("TaxonBase is null (" + taxonBaseUuid);
+							logger.debug("TaxonBase is null (" + taxonBaseUuid + ")");
 						}
 						continue; 
 					}
 					boolean isSynonym = taxonBase.isInstanceOf(Synonym.class);
 					if (isSynonym) {
-//						taxonBase = getTaxonService().load(taxonBase.getUuid(), SYNONYM_INIT_STRATEGY);
 						Synonym syn = CdmBase.deproxy(taxonBase, Synonym.class);
 						Set<Taxon> acceptedTaxa = syn.getAcceptedTaxa();
 						if (acceptedTaxa.size() > 0) {
@@ -258,8 +243,6 @@ public class FaunaEuropaeaRefImport extends FaunaEuropaeaImportBase {
 
 					if (taxon != null) {
 						TaxonDescription taxonDescription = null;
-//						Hibernate.initialize(taxon);
-//						defaultBeanInitializer.initialize(taxon, TAXON_INIT_DESCRIPTIONS_STRATEGY);
 						Set<TaxonDescription> descriptions = taxon.getDescriptions();
 						if (descriptions.size() > 0) {
 							taxonDescription = descriptions.iterator().next(); 

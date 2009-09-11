@@ -181,15 +181,16 @@ public final class FaunaEuropaeaTransformer {
 	}
 	
 	
-	public static NamedArea areaId2TdwgArea (ResultSet rs) throws UnknownCdmTypeException {
+	public static NamedArea areaId2TdwgArea (FaunaEuropaeaDistributionTaxon fauEuTaxon) 
+	throws UnknownCdmTypeException {
 		
 		NamedArea tdwgArea = null;
 		
 		try {
-			int areaId = rs.getInt("ara_id");
-			String areaName = rs.getString("ara_name");
-			String areaCode = rs.getString("ara_code");
-			int extraLimital = rs.getInt("ara_extralimital");
+			int areaId = fauEuTaxon.getAreaId();
+			String areaName = fauEuTaxon.getAreaName();
+			String areaCode = fauEuTaxon.getAreaCode();
+			int extraLimital = fauEuTaxon.getExtraLimital();
 			
 			//TODO: Verify mappings with comments. Those don't map to TDWG areas.
 			
@@ -273,12 +274,11 @@ public final class FaunaEuropaeaTransformer {
 			else 					
 				throw new UnknownCdmTypeException("Unknown Area " + areaCode);
 
-				
 			if (logger.isDebugEnabled()) {
 				logger.debug(areaId + ", " + areaName + ", " + areaCode + ", " + extraLimital);
 			}
 			
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			logger.warn("Exception occurred. Area could not be mapped.");
 			return null;

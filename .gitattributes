@@ -1101,11 +1101,11 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/taxa/TaxonExcelImportState.jav
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/taxa/TaxonExcelImporterBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/faunaEuropaea/FaunaEuropaeaAuthorImport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/faunaEuropaea/FaunaEuropaeaDistributionImport.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/faunaEuropaea/FaunaEuropaeaDistributionTaxon.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/faunaEuropaea/FaunaEuropaeaImportBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/faunaEuropaea/FaunaEuropaeaImportConfigurator.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/faunaEuropaea/FaunaEuropaeaImportState.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/faunaEuropaea/FaunaEuropaeaRefImport.java -text
-cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/faunaEuropaea/FaunaEuropaeaReferenceImport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/faunaEuropaea/FaunaEuropaeaRelMisappNamesImport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/faunaEuropaea/FaunaEuropaeaRelTaxonIncludeImport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/faunaEuropaea/FaunaEuropaeaTaxon.java -text
