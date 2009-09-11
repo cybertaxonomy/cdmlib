@@ -147,32 +147,36 @@ public class FaunaEuropaeaDistributionImport extends FaunaEuropaeaImportBase {
 				String areaName = rs.getString("ara_name");
 				String areaCode = rs.getString("ara_code");
 				int extraLimital = rs.getInt("ara_extralimital");
-				UUID fauEuTaxonUuid = null;
+				UUID currentTaxonUuid = null;
 				if (resultSetHasColumn(rs,"UUID")){
-					fauEuTaxonUuid = UUID.fromString(rs.getString("UUID"));
+					currentTaxonUuid = UUID.fromString(rs.getString("UUID"));
 				} else {
-					fauEuTaxonUuid = UUID.randomUUID();
+					currentTaxonUuid = UUID.randomUUID();
 				}
 				
-				FaunaEuropaeaDistributionTaxon fauEuTaxon = new FaunaEuropaeaDistributionTaxon();
-				fauEuTaxon.setTaxonId(taxonId);
-				fauEuTaxon.setDistributionId(disId);
-				fauEuTaxon.setOccurrenceStatusId(occStatusId);
-				fauEuTaxon.setAreaId(areaId);
-				fauEuTaxon.setAreaName(areaName);
-				fauEuTaxon.setAreaCode(areaCode);
-				fauEuTaxon.setExtraLimital(extraLimital);
-				fauEuTaxon.setTaxonUuid(fauEuTaxonUuid);
+				FaunaEuropaeaDistribution fauEuDistribution = new FaunaEuropaeaDistribution();
+				fauEuDistribution.setTaxonId(taxonId);
+				fauEuDistribution.setDistributionId(disId);
+				fauEuDistribution.setOccurrenceStatusId(occStatusId);
+				fauEuDistribution.setAreaId(areaId);
+				fauEuDistribution.setAreaName(areaName);
+				fauEuDistribution.setAreaCode(areaCode);
+				fauEuDistribution.setExtraLimital(extraLimital);
+				fauEuDistribution.setTaxonUuid(currentTaxonUuid);
 				
-				if (!taxonUuids.contains(fauEuTaxonUuid)) {
-					taxonUuids.add(fauEuTaxonUuid);
-					fauEuTaxonMap.put(fauEuTaxonUuid, fauEuTaxon);
+				if (!taxonUuids.contains(currentTaxonUuid)) {
+					taxonUuids.add(currentTaxonUuid);
+					FaunaEuropaeaDistributionTaxon fauEuDistributionTaxon = 
+						new FaunaEuropaeaDistributionTaxon(currentTaxonUuid);
+					fauEuTaxonMap.put(currentTaxonUuid, fauEuDistributionTaxon);
 				} else {
-					if (logger.isDebugEnabled()) { 
-						logger.debug("Taxon (" + fauEuTaxonUuid + ") already stored.");
+					if (logger.isTraceEnabled()) { 
+						logger.trace("Taxon (" + currentTaxonUuid + ") already stored.");
 						continue;
 					}
 				}
+				
+				fauEuTaxonMap.get(currentTaxonUuid).addDistribution(fauEuDistribution);
 				
 				if ((i % limit) == 0 && i != 1 ) {
 					
@@ -204,14 +208,16 @@ public class FaunaEuropaeaDistributionImport extends FaunaEuropaeaImportBase {
 								UUID taxonUuid = taxonBase.getUuid();
 								FaunaEuropaeaDistributionTaxon fauEuHelperTaxon = fauEuTaxonMap.get(taxonUuid);
 								
-								PresenceAbsenceTermBase<?> presenceAbsenceStatus 
-								= FaunaEuropaeaTransformer.occStatus2PresenceAbsence(fauEuHelperTaxon.getOccurrenceStatusId());
-								NamedArea namedArea = 
-									FaunaEuropaeaTransformer.areaId2TdwgArea(fauEuHelperTaxon);
+								for (FaunaEuropaeaDistribution fauEuHelperDistribution : fauEuHelperTaxon.getDistributions()) {
 
-								Distribution newDistribution = Distribution.NewInstance(namedArea, presenceAbsenceStatus);
-								taxonDescription.addElement(newDistribution);
+									PresenceAbsenceTermBase<?> presenceAbsenceStatus 
+									= FaunaEuropaeaTransformer.occStatus2PresenceAbsence(fauEuHelperDistribution.getOccurrenceStatusId());
+									NamedArea namedArea = 
+										FaunaEuropaeaTransformer.areaId2TdwgArea(fauEuHelperDistribution);
 
+									Distribution newDistribution = Distribution.NewInstance(namedArea, presenceAbsenceStatus);
+									taxonDescription.addElement(newDistribution);
+								}
 							}
 						}
 						if(logger.isInfoEnabled()) { logger.info("Saving taxa..."); }
@@ -228,14 +234,13 @@ public class FaunaEuropaeaDistributionImport extends FaunaEuropaeaImportBase {
 						e.printStackTrace();
 					}
 				}
-
-			if(logger.isInfoEnabled()) { logger.info("End making distributions..."); }
-			
 			}		
 		} catch (SQLException e) {
 			logger.error("SQLException:" +  e);
 			return false;
 		}
+		if(logger.isInfoEnabled()) { logger.info("End making distributions..."); }
+		
 		return true;
 	}
 

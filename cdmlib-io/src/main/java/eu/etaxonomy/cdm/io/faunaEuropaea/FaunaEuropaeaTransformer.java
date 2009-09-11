@@ -181,16 +181,16 @@ public final class FaunaEuropaeaTransformer {
 	}
 	
 	
-	public static NamedArea areaId2TdwgArea (FaunaEuropaeaDistributionTaxon fauEuTaxon) 
+	public static NamedArea areaId2TdwgArea (FaunaEuropaeaDistribution fauEuDistribution) 
 	throws UnknownCdmTypeException {
 		
 		NamedArea tdwgArea = null;
 		
 		try {
-			int areaId = fauEuTaxon.getAreaId();
-			String areaName = fauEuTaxon.getAreaName();
-			String areaCode = fauEuTaxon.getAreaCode();
-			int extraLimital = fauEuTaxon.getExtraLimital();
+			int areaId = fauEuDistribution.getAreaId();
+			String areaName = fauEuDistribution.getAreaName();
+			String areaCode = fauEuDistribution.getAreaCode();
+			int extraLimital = fauEuDistribution.getExtraLimital();
 			
 			//TODO: Verify mappings with comments. Those don't map to TDWG areas.
 			
