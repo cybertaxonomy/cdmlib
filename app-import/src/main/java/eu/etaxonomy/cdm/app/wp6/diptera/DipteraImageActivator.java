@@ -10,20 +10,20 @@
 package eu.etaxonomy.cdm.app.wp6.diptera;
 
 import java.io.File;
-import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.app.common.CdmDestinations;
 import eu.etaxonomy.cdm.app.images.ImageImportConfigurator;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
-import eu.etaxonomy.cdm.io.CichorieaeImageImport;
 import eu.etaxonomy.cdm.io.DipteraImageImport;
-import eu.etaxonomy.cdm.io.PalmaeImageImport;
 import eu.etaxonomy.cdm.io.common.CdmDefaultImport;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 
 /**
+ * DON'T USE
+ * THIS IMPORT IS NOT NEEDED ANYMORE. THE DATA ARE IMPORTED VIA BERLIN MODEL ALREADY.
+ * 
  * @author a.babadshanjan
  * @created 27.04.2009
  * @version 1.0
@@ -46,6 +46,6 @@ public class DipteraImageActivator  {
 //		imageConfigurator.setSecUuid(secUuid);
 		
 		CdmDefaultImport<IImportConfigurator> importer = new CdmDefaultImport<IImportConfigurator>();
-		importer.invoke(imageConfigurator);
+		//importer.invoke(imageConfigurator);
 	}
 }
