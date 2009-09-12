@@ -82,6 +82,8 @@ public class CichorieaeActivator {
 
 
 // **************** ALL *********************	
+
+	static final boolean doUser = true;
 	//authors
 	static final boolean doAuthors = true;
 	//references
@@ -101,11 +103,11 @@ public class CichorieaeActivator {
 
 	//etc.
 	static final boolean doMarker = true;
-	static final boolean doUser = true;
 
 	
 // **************** SELECTED *********************
 
+//	static final boolean doUser = true;
 //	//authors
 //	static final boolean doAuthors = false;
 //	//references
@@ -124,8 +126,7 @@ public class CichorieaeActivator {
 //	static final boolean doOccurences = false;
 //	
 //	//etc.
-//	static final boolean doMarker = true;
-//	static final boolean doUser = true;
+//	static final boolean doMarker = false;
 	
 	
 	/**
@@ -162,7 +163,9 @@ public class CichorieaeActivator {
 		
 		bmImportConfigurator.setDoMarker(doMarker);
 		bmImportConfigurator.setDoUser(doUser);
+		bmImportConfigurator.setEditor(editor);
 		bmImportConfigurator.setDbSchemaValidation(hbm2dll);
+
 
 		// mediaResourceLocations
 		if ( mediaPath.exists() && mediaPath.isDirectory()){
