@@ -28,30 +28,30 @@ public class FaunaEuropaeaDistribution {
 	private int extraLimital;
 	
 	
-	/**
-	 * @return the taxonUuid
-	 */
-	public UUID getTaxonUuid() {
-		return taxonUuid;
-	}
-	/**
-	 * @param taxonUuid the taxonUuid to set
-	 */
-	public void setTaxonUuid(UUID taxonUuid) {
-		this.taxonUuid = taxonUuid;
-	}
-	/**
-	 * @return the taxonId
-	 */
-	public int getTaxonId() {
-		return taxonId;
-	}
-	/**
-	 * @param taxonId the taxonId to set
-	 */
-	public void setTaxonId(int taxonId) {
-		this.taxonId = taxonId;
-	}
+//	/**
+//	 * @return the taxonUuid
+//	 */
+//	public UUID getTaxonUuid() {
+//		return taxonUuid;
+//	}
+//	/**
+//	 * @param taxonUuid the taxonUuid to set
+//	 */
+//	public void setTaxonUuid(UUID taxonUuid) {
+//		this.taxonUuid = taxonUuid;
+//	}
+//	/**
+//	 * @return the taxonId
+//	 */
+//	public int getTaxonId() {
+//		return taxonId;
+//	}
+//	/**
+//	 * @param taxonId the taxonId to set
+//	 */
+//	public void setTaxonId(int taxonId) {
+//		this.taxonId = taxonId;
+//	}
 	/**
 	 * @return the distributionId
 	 */

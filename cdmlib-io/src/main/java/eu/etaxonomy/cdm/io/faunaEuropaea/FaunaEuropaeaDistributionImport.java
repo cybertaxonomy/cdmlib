@@ -155,14 +155,14 @@ public class FaunaEuropaeaDistributionImport extends FaunaEuropaeaImportBase {
 				}
 				
 				FaunaEuropaeaDistribution fauEuDistribution = new FaunaEuropaeaDistribution();
-				fauEuDistribution.setTaxonId(taxonId);
+//				fauEuDistribution.setTaxonUuid(currentTaxonUuid);
+//				fauEuDistribution.setTaxonId(taxonId);
 				fauEuDistribution.setDistributionId(disId);
 				fauEuDistribution.setOccurrenceStatusId(occStatusId);
 				fauEuDistribution.setAreaId(areaId);
 				fauEuDistribution.setAreaName(areaName);
 				fauEuDistribution.setAreaCode(areaCode);
 				fauEuDistribution.setExtraLimital(extraLimital);
-				fauEuDistribution.setTaxonUuid(currentTaxonUuid);
 				
 				if (!taxonUuids.contains(currentTaxonUuid)) {
 					taxonUuids.add(currentTaxonUuid);
