@@ -10,7 +10,9 @@
 
 package eu.etaxonomy.cdm.model.taxon;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Entity;
@@ -144,6 +146,9 @@ public class TaxonNode  extends AnnotatableEntity {
 		return childNode;
 	}
 	
+	/*
+	 * TODO what is the meaning of this method? Is addChildNote a typo? why is it protected? n.hoffmann
+	 */
 	protected void addChildNote(TaxonNode childNode, ReferenceBase ref, String microReference, Synonym synonymUsed){
 		if (! childNode.getTaxonomicTree().equals(this.getTaxonomicTree())){
 			throw new IllegalArgumentException("addChildNote(): both nodes must be part of the same view");
@@ -154,6 +159,29 @@ public class TaxonNode  extends AnnotatableEntity {
 		childNode.setReferenceForParentChildRelation(ref);
 		childNode.setMicroReferenceForParentChildRelation(microReference);
 		childNode.setSynonymToBeUsed(synonymUsed);
+	}
+	
+	/**
+	 * Moves a taxon node and all descendent nodes to a new parent. 
+	 * 
+	 * @param childNode the taxon node to be moved to the new parent
+	 * @return the child node in the state of having a new parent
+	 */
+	public TaxonNode addChildNode(TaxonNode childNode, ReferenceBase reference, String microReference){
+		// check if this node is a descendant of the childNode 
+		if(childNode.getParent() != this && childNode.isAscendant(this)){
+			throw new IllegalAncestryException("New parent node is a descendant of the node to be moved.");
+		}
+		
+		childNode.setParent(this);
+		childNode.setReferenceForParentChildRelation(reference);
+		childNode.setMicroReferenceForParentChildRelation(microReference);
+		
+		for(TaxonNode grandChildNode : childNode.getChildNodes()){
+			childNode.addChildNode(grandChildNode, childNode.getReferenceForParentChildRelation(), childNode.getMicroReferenceForParentChildRelation());
+		}
+		
+		return childNode;
 	}
 	
 	/**
@@ -234,14 +262,32 @@ public class TaxonNode  extends AnnotatableEntity {
 	 * 
 	 * @return 
 	 */
-	protected Set<TaxonNode> getAllNodes(){
+	protected Set<TaxonNode> getDescendants(){
 		Set<TaxonNode> nodeSet = new HashSet<TaxonNode>();
 		
 		nodeSet.add(this);
 		
 		for(TaxonNode childNode : getChildNodes()){
-			nodeSet.addAll(childNode.getAllNodes());
+			nodeSet.addAll(childNode.getDescendants());
 		}		
+		
+		return nodeSet;
+	}
+	
+	/**
+	 * Returns a 
+	 * 
+	 * @return
+	 */
+	protected Set<TaxonNode> getAscendants(){
+		Set<TaxonNode> nodeSet = new HashSet<TaxonNode>();
+		
+		
+		nodeSet.add(this);
+		
+		if(this.getParent() != null){
+			nodeSet.addAll(this.getParent().getAscendants());
+		}
 		
 		return nodeSet;
 	}
@@ -286,6 +332,7 @@ public class TaxonNode  extends AnnotatableEntity {
 	 * Whether this TaxonNode is a root node
 	 * @return
 	 */
+	@Transient
 	public boolean isRootNode(){
 		return parent == null;
 	}
@@ -294,6 +341,11 @@ public class TaxonNode  extends AnnotatableEntity {
 	 * Whether this TaxonNode is a descendant of the given TaxonNode
 	 * 
 	 * Caution: use this method with care on big branches. -> performance and memory hungry
+	 * 
+	 * Protip: Try solving your problem with the isAscendant method which traverses the tree in the 
+	 * other direction (up). This will always result in rather small set of recursive parents beeing
+	 * generated
+	 * 
 	 * TODO implement more efficiently without generating the set of descendants first
 	 * 
 	 * @param possibleParent
@@ -301,9 +353,27 @@ public class TaxonNode  extends AnnotatableEntity {
 	 */
 	@Transient
 	public boolean isDescendant(TaxonNode possibleParent){
-		return possibleParent.getAllNodes().contains(this);
+		return possibleParent.getDescendants().contains(this);
 	}
 	
+	/**
+	 * Whether this TaxonNode is an ascendant of the given TaxonNode
+	 * 
+	 * 
+	 * @param possibleChild
+	 * @return true if there are ascendants
+	 */
+	@Transient
+	public boolean isAscendant(TaxonNode possibleChild){
+		return possibleChild.getAscendants().contains(this);
+	}
+	
+	/**
+	 * Whether this taxon has child nodes
+	 * 
+	 * @return true if the taxonNode has childNodes
+	 */
+	@Transient
 	public boolean hasChildNodes(){
 		return childNodes.size() > 0;
 	}

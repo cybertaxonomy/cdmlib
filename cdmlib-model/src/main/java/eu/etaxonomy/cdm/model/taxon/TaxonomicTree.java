@@ -360,7 +360,7 @@ public class TaxonomicTree extends IdentifiableEntity implements IReferencedEnti
 		Set<TaxonNode> allNodes = new HashSet<TaxonNode>();
 		
 		for(TaxonNode rootNode : getRootNodes()){
-			allNodes.addAll(rootNode.getAllNodes());
+			allNodes.addAll(rootNode.getDescendants());
 		}
 		
 		return allNodes;
