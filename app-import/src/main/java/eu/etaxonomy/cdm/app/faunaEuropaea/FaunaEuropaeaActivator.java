@@ -9,8 +9,12 @@
 
 package eu.etaxonomy.cdm.app.faunaEuropaea;
 
+import java.util.UUID;
+
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.api.application.CdmApplicationController;
+import eu.etaxonomy.cdm.app.berlinModelImport.TreeCreator;
 import eu.etaxonomy.cdm.app.common.CdmDestinations;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
@@ -19,6 +23,9 @@ import eu.etaxonomy.cdm.io.common.IImportConfigurator.DO_REFERENCES;
 import eu.etaxonomy.cdm.io.common.CdmDefaultImport;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.io.faunaEuropaea.FaunaEuropaeaImportConfigurator;
+import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.description.FeatureNode;
+import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 
 /**
@@ -29,9 +36,10 @@ public class FaunaEuropaeaActivator {
 	private static final Logger logger = Logger.getLogger(FaunaEuropaeaActivator.class);
 
 	static final Source faunaEuropaeaSource = FaunaEuropaeaSources.faunEu();
-	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_test_andreasK1();
+	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_test_jaxb();
 	
-	static final CHECK check = CHECK.CHECK_AND_IMPORT;
+//	static final CHECK check = CHECK.CHECK_AND_IMPORT;
+	static final CHECK check = CHECK.IMPORT_WITHOUT_CHECK;
 //	static DbSchemaValidation dbSchemaValidation = DbSchemaValidation.CREATE;
 //	static DbSchemaValidation dbSchemaValidation = DbSchemaValidation.VALIDATE;
 	static DbSchemaValidation dbSchemaValidation = DbSchemaValidation.UPDATE;
@@ -91,6 +99,20 @@ public class FaunaEuropaeaActivator {
 			new CdmDefaultImport<FaunaEuropaeaImportConfigurator>();
 		fauEuImport.invoke(fauEuImportConfigurator);
 
+		//make feature tree
+		
+		FeatureTree featureTree = FeatureTree.NewInstance(UUID.fromString("ff59b9ad-1fb8-4aa4-a8ba-79d62123d0fb"));
+		FeatureNode root = featureTree.getRoot();
+		
+		CdmApplicationController app = fauEuImport.getCdmAppController();
+		Feature citationFeature = (Feature)app.getTermService().getTermByUuid(UUID.fromString("99b2842f-9aa7-42fa-bd5f-7285311e0101"));
+		FeatureNode citationNode = FeatureNode.NewInstance(citationFeature);
+		root.addChild(citationNode);
+		Feature distributionFeature = (Feature)app.getTermService().getTermByUuid(UUID.fromString("9fc9d10c-ba50-49ee-b174-ce83fc3f80c6"));
+		FeatureNode distributionNode = FeatureNode.NewInstance(distributionFeature);
+		root.addChild(distributionNode);
+		
+		app.getDescriptionService().saveFeatureTree(featureTree);
 		
 		System.out.println("End import from Fauna Europaea ("+ faunaEuropaeaSource.getDatabase() + ")...");
 	}
