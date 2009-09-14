@@ -531,33 +531,8 @@ extends IdentifiableDaoBase<TaxonNameBase> implements ITaxonNameDao {
 		}
 	}
 
-	public List<? extends TaxonNameBase<?,?>> findByName(String queryString, 
-			MatchMode matchmode, Integer pageSize, Integer pageNumber, List<Criterion> criteria, List<String> propertyPaths) {
-
-		Criteria crit = getSession().createCriteria(type);
-		if (matchmode == MatchMode.EXACT) {
-			crit.add(Restrictions.eq("nameCache", matchmode.queryStringFrom(queryString)));
-		} else {
-			crit.add(Restrictions.ilike("nameCache", matchmode.queryStringFrom(queryString)));
-		}
-		if(criteria != null){
-			for (Criterion criterion : criteria) {
-				crit.add(criterion);
-			}
-		}
-		crit.addOrder(Order.asc("nameCache"));
-
-		if(pageSize != null) {
-			crit.setMaxResults(pageSize);
-			if(pageNumber != null) {
-				crit.setFirstResult(pageNumber * pageSize);
-			}
-		}
-
-		List<? extends TaxonNameBase<?,?>> results = crit.list();
-		defaultBeanInitializer.initializeAll(results, propertyPaths);
-		
-		return results;
+	public List<TaxonNameBase> findByName(Class<? extends TaxonNameBase> clazz, String queryString, MatchMode matchmode, List<Criterion> criterion, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+		return super.findByParam(clazz, "nameCache", queryString, matchmode, criterion, pageSize, pageNumber, orderHints, propertyPaths);
 	}
 	
 	public List<RelationshipBase> getAllRelationships(Integer limit, Integer start) {
@@ -573,11 +548,8 @@ extends IdentifiableDaoBase<TaxonNameBase> implements ITaxonNameDao {
 	}
 	
 	
-	public Integer countByName(String queryString, 
-			MatchMode matchmode, List<Criterion> criteria) {
-		//TODO improve performance
-		List<? extends TaxonNameBase<?,?>> results = findByName(queryString, matchmode, null, null, criteria, null);
-		return results.size();
+	public Integer countByName(Class<? extends TaxonNameBase> clazz, String queryString, MatchMode matchmode, List<Criterion> criteria) {
+		return super.countByParam(clazz, "nameCache", queryString, matchmode, criteria);
 		
 	}
 

@@ -26,6 +26,7 @@ import org.hibernate.HibernateException;
 import org.hibernate.NonUniqueObjectException;
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.ProjectionList;
@@ -264,6 +265,14 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 
 	public List<T> list(Integer limit, Integer start) {
 		return list(limit, start, null); 
+	}
+
+	protected void addCriteria(Criteria criteria, List<Criterion> criterion) {
+		if(criterion != null) {
+			for(Criterion c : criterion) {
+				criteria.add(c);
+			}
+		}	
 	}
 	
 	public List<Object[]> group(Class<? extends T> clazz,Integer limit, Integer start, List<Grouping> groups, List<String> propertyPaths) {

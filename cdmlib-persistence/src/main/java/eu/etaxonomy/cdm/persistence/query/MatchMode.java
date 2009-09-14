@@ -16,6 +16,7 @@ package eu.etaxonomy.cdm.persistence.query;
 public enum MatchMode {
 	EXACT,
 	BEGINNING,
+      END,
 	ANYWHERE;
 	
 	public String queryStringFrom(String queryString){
@@ -28,6 +29,8 @@ public enum MatchMode {
 				return queryString + "%";			
 			case ANYWHERE:
 				return "%" + queryString + "%";
+                  case END:
+				return "%" + queryString;
 			default:
 				return queryString;
 		}
