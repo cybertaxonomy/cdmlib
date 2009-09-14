@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
+import org.hibernate.criterion.Criterion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,7 +30,10 @@ import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.InstitutionalMembership;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
+import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.agent.IAgentDao;
+import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 
@@ -146,5 +150,17 @@ public class AgentServiceImpl extends IdentifiableServiceBase<AgentBase,IAgentDa
 		}
 		
 		return new DefaultPagerImpl<AgentBase>(pageNumber, numberOfResults, pageSize, results);
+	}
+
+      
+	public Pager<AgentBase> findByNomenclaturalTitle(Class<? extends TeamOrPersonBase> clazz, String queryString,MatchMode matchmode, List<Criterion> criteria, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+		 Integer numberOfResults = dao.countByNomenclaturalTitle(clazz, queryString, matchmode, criteria);
+		 
+		 List<AgentBase> results = new ArrayList<AgentBase>();
+		 if(numberOfResults > 0) { // no point checking again
+				results = dao.findByNomenclaturalTitle(clazz, queryString, matchmode, criteria, pageSize, pageNumber, orderHints, propertyPaths); 
+		 }
+			
+			return new DefaultPagerImpl<AgentBase>(pageNumber, numberOfResults, pageSize, results);
 	}
 }

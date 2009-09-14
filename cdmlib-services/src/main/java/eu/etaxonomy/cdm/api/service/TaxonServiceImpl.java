@@ -680,10 +680,8 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		
 		if(clazz != null){
 			numberTaxaResults = 
-				dao.countTaxaByName(clazz, 
-					configurator.getSearchString(), configurator.getTaxonomicTree(), configurator.getMatchMode(),
-					configurator.getNamedAreas());
-			if(numberTaxaResults > configurator.getPageSize() * configurator.getPageNumber()){ // no point checking again if less results
+				dao.countTaxaByName(clazz, configurator.getSearchString(), configurator.getTaxonomicTree(), configurator.getMatchMode(), configurator.getNamedAreas());
+				if(numberTaxaResults > configurator.getPageSize() * configurator.getPageNumber()){ // no point checking again if less results
 				taxa = dao.getTaxaByName(clazz, 
 					configurator.getSearchString(), configurator.getTaxonomicTree(), configurator.getMatchMode(),
 					configurator.getNamedAreas(), configurator.getPageSize(), 
@@ -704,8 +702,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		if (configurator.isDoNamesWithoutTaxa()) {
             int numberNameResults = 0;
             //FIXME implement search by area
-			List<? extends TaxonNameBase<?,?>> names = 
-				nameDao.findByName(configurator.getSearchString(), configurator.getMatchMode(), 
+			List<? extends TaxonNameBase> names = nameDao.findByName(null, configurator.getSearchString(), configurator.getMatchMode(), null,
 						configurator.getPageSize(), configurator.getPageNumber(), null, null);
 			if (logger.isDebugEnabled()) { logger.debug(names.size() + " matching name(s) found"); }
 			if (names.size() > 0) {

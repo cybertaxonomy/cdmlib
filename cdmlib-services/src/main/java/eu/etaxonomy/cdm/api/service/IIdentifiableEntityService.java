@@ -12,12 +12,16 @@ package eu.etaxonomy.cdm.api.service;
 
 import java.util.List;
 
+import org.hibernate.criterion.Criterion;
+
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.ISourceable;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.OriginalSource;
 import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
+import eu.etaxonomy.cdm.persistence.query.MatchMode;
+import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 public interface IIdentifiableEntityService<T extends IdentifiableEntity> extends IAnnotatableService<T> {
 
@@ -49,4 +53,23 @@ public interface IIdentifiableEntityService<T extends IdentifiableEntity> extend
     public Pager<Rights> getRights(T t, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
     
     public abstract ISourceable getSourcedObjectByIdInSource(Class clazz, String idInSource, String idNamespace);
+
+    
+	/**
+	 * Return a Pager of objects matching the given query string, optionally filtered by class, optionally with a particular MatchMode
+	 * 
+	 * @param clazz filter by class - can be null to include all instances of type T
+	 * @param queryString the query string to filter by
+	 * @param matchmode use a particular type of matching (can be null - defaults to exact matching)
+	 * @param criteria additional criteria to filter by
+	 * @param pageSize The maximum number of objects returned (can be null for all objects)
+	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
+	 * @param propertyPaths properties to initialize - see {@link BeanInitializer#initialize(Object, List)}
+	 * @param orderHints
+	 *            Supports path like <code>orderHints.propertyNames</code> which
+	 *            include *-to-one properties like createdBy.username or
+	 *            authorTeam.persistentTitleCache
+	 * @return a paged list of instances of type T matching the queryString
+	 */
+    public Pager<T> findByTitle(Class<? extends T> clazz, String queryString,MatchMode matchmode, List<Criterion> criteria, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 }
