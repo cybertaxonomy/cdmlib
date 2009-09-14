@@ -103,6 +103,11 @@ implements ITypeDesignation {
 	 */
 	protected SpecimenTypeDesignation(){
 	}
+
+      public static SpecimenTypeDesignation NewInstance() {
+		return new SpecimenTypeDesignation();
+	}
+	
 	
 	/**
 	 * Class constructor: creates a new specimen type designation instance

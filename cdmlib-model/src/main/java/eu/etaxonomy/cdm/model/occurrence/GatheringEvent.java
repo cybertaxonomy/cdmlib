@@ -131,6 +131,8 @@ public class GatheringEvent extends EventBase implements Cloneable{
 
 
 	public Set<NamedArea> getCollectingAreas(){
+            if (this.collectingAreas == null)
+			this.collectingAreas = getNewNamedAreaSet();
 		return this.collectingAreas;
 	}
 

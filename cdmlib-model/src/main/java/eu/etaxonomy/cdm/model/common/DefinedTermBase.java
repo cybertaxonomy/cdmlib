@@ -36,6 +36,8 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.Index;
+import org.hibernate.annotations.Table;
 import org.hibernate.envers.Audited;
 
 import au.com.bytecode.opencsv.CSVWriter;
@@ -89,6 +91,7 @@ import eu.etaxonomy.cdm.model.reference.BibtexEntryType;
 @Entity
 @Audited
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
+@Table(appliesTo="DefinedTermBase", indexes = { @Index(name = "definedTermTitleCacheIndex", columnNames = { "titleCache" }) })
 public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBase implements ILoadableTerm<T>, IDefinedTerm<T> {
 	private static final long serialVersionUID = 2931811562248571531L;
 	private static final Logger logger = Logger.getLogger(DefinedTermBase.class);

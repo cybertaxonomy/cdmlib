@@ -26,6 +26,8 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.Index;
+import org.hibernate.annotations.Table;
 import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.common.TermBase;
@@ -58,6 +60,7 @@ import eu.etaxonomy.cdm.model.common.TermBase;
 @XmlRootElement(name = "FeatureTree")
 @Entity
 @Audited
+@Table(appliesTo="FeatureTree", indexes = { @Index(name = "featureTreeTitleCacheIndex", columnNames = { "titleCache" }) })
 public class FeatureTree extends TermBase {
 	private static final long serialVersionUID = -6713834139003172735L;
 	@SuppressWarnings("unused")

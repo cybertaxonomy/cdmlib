@@ -43,6 +43,8 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.Index;
+import org.hibernate.annotations.Table;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
@@ -79,6 +81,7 @@ import eu.etaxonomy.cdm.model.common.LanguageString;
 @Entity
 @Indexed
 @Audited
+@Table(appliesTo="Media", indexes = { @Index(name = "mediaTitleCacheIndex", columnNames = { "titleCache" }) })
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 public class Media extends IdentifiableEntity implements Cloneable {
 	private static final long serialVersionUID = -1927421567263473658L;

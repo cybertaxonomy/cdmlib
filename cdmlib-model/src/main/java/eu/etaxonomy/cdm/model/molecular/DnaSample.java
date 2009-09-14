@@ -62,6 +62,22 @@ public class DnaSample extends Specimen implements Cloneable {
     @OneToMany(fetch = FetchType.LAZY)
 	private Set<Sequence> sequences = new HashSet<Sequence>();
 
+      
+	/**
+	 * Factory method
+	 * @return
+	 */
+	public static DnaSample NewInstance(){
+		return new DnaSample();
+	}
+	
+	/**
+	 * Constructor
+	 */
+	protected DnaSample() {
+		super();
+	}
+
 	public Set<Sequence> getSequences() {
 		return sequences;
 	}
