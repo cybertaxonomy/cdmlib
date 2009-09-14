@@ -36,7 +36,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.persistence.dao.QueryParseException;
 import eu.etaxonomy.cdm.persistence.dao.common.OperationNotSupportedInPriorViewException;
-import eu.etaxonomy.cdm.persistence.dao.hibernate.common.AnnotatableDaoImpl;
+import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
 import eu.etaxonomy.cdm.persistence.dao.media.IMediaDao;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
@@ -45,7 +45,7 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
  * @created 08.09.2008
  */
 @Repository
-public class MediaDaoHibernateImpl extends AnnotatableDaoImpl<Media> implements IMediaDao {
+public class MediaDaoHibernateImpl extends IdentifiableDaoBase<Media> implements IMediaDao {
 
 	private String defaultField = "title.text";
 	private Class<? extends Media> indexedClasses[]; 
