@@ -37,7 +37,7 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 @Service
 @Transactional(readOnly=true)
-public class MediaServiceImpl extends AnnotatableServiceBase<Media,IMediaDao> implements IMediaService {
+public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> implements IMediaService {
 	
 	@Autowired
 	private IMediaRepresentationDao mediaRepresentationDao;
@@ -118,5 +118,10 @@ public class MediaServiceImpl extends AnnotatableServiceBase<Media,IMediaDao> im
 		}
 		
 		return new DefaultPagerImpl<Media>(pageNumber, numberOfResults, pageSize, results);
+	}
+
+	public void generateTitleCache() {
+		// TODO Auto-generated method stub
+		
 	}
 }

@@ -27,7 +27,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
-public interface IMediaService extends IAnnotatableService<Media> {
+public interface IMediaService extends IIdentifiableEntityService<Media> {
 
 	// FIXME candidate for harmonization?
 	public abstract Map<UUID, Media> saveMediaAll(Collection<Media> mediaCollection);

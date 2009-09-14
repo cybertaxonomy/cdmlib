@@ -20,12 +20,14 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.spring.annotation.SpringBeanByType;
 
+import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.TdwgArea;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 
 /**
@@ -117,5 +119,11 @@ public class TermServiceImplTest extends CdmIntegrationTest {
 		String tdwgAbbreviation = "GER-OO";
 		NamedArea germany = service.getAreaByTdwgAbbreviation(tdwgAbbreviation);
 		assertEquals(tdwgAbbreviation, germany.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel());
+	}
+	
+	@Test
+	public void testListTerms() {
+		Pager<SpecimenTypeDesignationStatus> results = service.list(SpecimenTypeDesignationStatus.class, null,null,null,null);
+		assertNotNull("Results should not be null",results);
 	}
 }

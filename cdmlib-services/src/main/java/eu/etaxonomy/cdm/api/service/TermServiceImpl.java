@@ -31,7 +31,6 @@ import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.LanguageStringBase;
-import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.VocabularyEnum;
@@ -40,7 +39,6 @@ import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
 import eu.etaxonomy.cdm.model.location.TdwgArea;
 import eu.etaxonomy.cdm.model.media.Media;
-import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ILanguageStringBaseDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ILanguageStringDao;
@@ -50,7 +48,7 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 @Service
 @Transactional(readOnly = true)
-public class TermServiceImpl extends ServiceBase<DefinedTermBase,IDefinedTermDao> implements ITermService{
+public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDefinedTermDao> implements ITermService{
 	private static final Logger logger = Logger.getLogger(TermServiceImpl.class);
 	
 	protected ITermVocabularyDao vocabularyDao;
@@ -61,6 +59,11 @@ public class TermServiceImpl extends ServiceBase<DefinedTermBase,IDefinedTermDao
 	private IRepresentationDao representationDao;
 	@Autowired
 	private ILanguageStringDao languageStringDao;
+	
+	@Autowired
+	protected void setDao(IDefinedTermDao dao) {
+		this.dao = dao;
+	}
 	
 	@Autowired
 	protected void setVocabularyDao(ITermVocabularyDao vocabularyDao) {
@@ -284,11 +287,6 @@ public class TermServiceImpl extends ServiceBase<DefinedTermBase,IDefinedTermDao
 			return languageStringBaseDao.save(languageData);
 	}
 
-	@Autowired
-	protected void setDao(IDefinedTermDao dao) {
-		this.dao = dao;
-	}
-
 	/**
 	 *  (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.ITermService#getAreaByTdwgAbbreviation(java.lang.String)
@@ -364,5 +362,10 @@ public class TermServiceImpl extends ServiceBase<DefinedTermBase,IDefinedTermDao
 		}
 		
 		return new DefaultPagerImpl<T>(pageNumber, numberOfResults, pageSize, results);
+	}
+
+	public void generateTitleCache() {
+		// TODO Auto-generated method stub
+		
 	}	
 }
