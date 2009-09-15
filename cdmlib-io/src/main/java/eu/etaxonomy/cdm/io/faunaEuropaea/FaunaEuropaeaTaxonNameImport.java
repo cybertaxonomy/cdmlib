@@ -136,21 +136,6 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 		int i = 0;
 		boolean success = true;
 
-//		String strQuery = 
-//			" SELECT Parent.TAX_NAME AS P2Name, Parent.TAX_RNK_ID AS P2RankId, " +
-//			" GrandParent.TAX_NAME AS GP3Name, GrandParent.TAX_RNK_ID AS GP3RankId, " +
-//			" GreatGrandParent.TAX_NAME AS GGP4Name, GreatGrandParent.TAX_RNK_ID AS GGP4RankId, " +
-//			" GreatGreatGrandParent.TAX_NAME AS GGGP5Name, OriginalGenusTaxon.TAX_NAME AS OGenusName, " +
-//			" Taxon.*, rank.*, author.* " +
-//			" FROM Taxon LEFT OUTER JOIN " +
-//			" Taxon AS Parent ON Taxon.TAX_TAX_IDPARENT = Parent.TAX_ID LEFT OUTER JOIN " +
-//			" Taxon AS GrandParent ON Parent.TAX_TAX_IDPARENT = GrandParent.TAX_ID LEFT OUTER JOIN " +
-//			" Taxon AS GreatGrandParent ON GrandParent.TAX_TAX_IDPARENT = GreatGrandParent.TAX_ID LEFT OUTER JOIN " +
-//			" Taxon AS GreatGreatGrandParent ON GreatGrandParent.TAX_TAX_IDPARENT = GreatGreatGrandParent.TAX_ID LEFT OUTER JOIN " +
-//			" Taxon AS OriginalGenusTaxon ON Taxon.TAX_TAX_IDGENUS = OriginalGenusTaxon.TAX_ID LEFT OUTER JOIN " +
-//			" author ON Taxon.TAX_AUT_ID = author.aut_id LEFT OUTER JOIN " +
-//			" rank ON Taxon.TAX_RNK_ID = rank.rnk_id ";
-
 		String selectCount = 
 			" SELECT count(*) ";
 
@@ -292,7 +277,7 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 							if (logger.isDebugEnabled()) {
 								logger.debug("Misapplied name created (" + taxonId + ")");
 							}
-						} else { // regular taxon
+						} else { // accepted taxon
 							taxon = Taxon.NewInstance(zooName, sourceReference);
 							if (logger.isDebugEnabled()) {
 								logger.debug("Taxon created (" + taxonId + ")");
