@@ -254,6 +254,7 @@ public class FaunaEuropaeaRefImport extends FaunaEuropaeaImportBase {
 
 				fauEuTaxonMap.get(currentTaxonUuid).addReference(fauEuReference);
 
+				Taxon taxon = null;
 				if ((i % limit) == 0 && i != 1 ) {
 
 					try {
@@ -264,7 +265,6 @@ public class FaunaEuropaeaRefImport extends FaunaEuropaeaImportBase {
 
 							// Create descriptions
 
-							Taxon taxon = null;
 							if (taxonBase == null) { 
 								if (logger.isDebugEnabled()) { 
 									logger.debug("TaxonBase is null (" + currentTaxonUuid + ")");

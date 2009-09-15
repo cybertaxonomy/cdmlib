@@ -33,6 +33,7 @@ import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Distribution;
+import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
 import eu.etaxonomy.cdm.model.description.PresenceTerm;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
@@ -216,6 +217,7 @@ public class FaunaEuropaeaDistributionImport extends FaunaEuropaeaImportBase {
 										FaunaEuropaeaTransformer.areaId2TdwgArea(fauEuHelperDistribution);
 
 									Distribution newDistribution = Distribution.NewInstance(namedArea, presenceAbsenceStatus);
+									newDistribution.setType(Feature.DISTRIBUTION());
 									taxonDescription.addElement(newDistribution);
 								}
 							}

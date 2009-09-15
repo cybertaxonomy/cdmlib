@@ -15,6 +15,7 @@ import java.sql.SQLException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.springframework.transaction.TransactionStatus;
@@ -32,7 +33,9 @@ import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
 
 /**
  * @author a.babadshanjan
@@ -112,6 +115,28 @@ implements ICdmImport<FaunaEuropaeaImportConfigurator,FaunaEuropaeaImportState> 
 	}
 	
 
+	/**
+	 * @param state
+	 * @param sourceRef
+	 */
+	protected TaxonomicTree getTaxonomicTreeFor(FaunaEuropaeaImportState state, ReferenceBase<?> sourceRef) {
+		
+		TaxonomicTree tree;
+		UUID treeUuid = state.getTreeUuid(sourceRef);
+		if (treeUuid == null){
+			if(logger.isInfoEnabled()) { logger.info(".. creating new taxonomic tree"); }
+			
+			TransactionStatus txStatus = startTransaction();
+			tree = makeTreeMemSave(state, sourceRef);
+			commitTransaction(txStatus);
+			
+		} else {
+			tree = getTaxonService().getTaxonomicTreeByUuid(treeUuid);
+		}
+		return tree;
+	}
+
+	
 	protected boolean saveTaxa(FaunaEuropaeaImportState state,
 			int highestTaxonIndex, int limit) {
 

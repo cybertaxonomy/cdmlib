@@ -211,33 +211,84 @@ public class FaunaEuropaeaRelTaxonIncludeImport extends FaunaEuropaeaImportBase 
 	}
 
 	
-	public Map<UUID, UUID> partMap(int border, Map<UUID, UUID> map) {
+	/** Retrieve misapplied name / accepted taxon uuid map from CDM DB */
+	private boolean processMisappliedNames(FaunaEuropaeaImportState state) {
 
-		if (logger.isInfoEnabled()) {
-			logger.info("Map size: " + map.size());
+		int limit = state.getConfig().getLimitSave();
+
+		TransactionStatus txStatus = null;
+
+		Map<UUID, UUID> childParentMap = null;
+		FaunaEuropaeaImportConfigurator fauEuConfig = state.getConfig();
+		Source source = fauEuConfig.getSource();
+		int i = 0;
+		boolean success = true;
+
+		try {
+
+			String strQuery = 
+				" SELECT dbo.Taxon.UUID AS ChildUuid, Parent.UUID AS ParentUuid " +
+				" FROM dbo.Taxon INNER JOIN dbo.Taxon AS Parent " +
+				" ON dbo.Taxon.TAX_TAX_IDPARENT = Parent.TAX_ID " +
+				" WHERE (dbo.Taxon.TAX_VALID <> 0) AND (dbo.Taxon.TAX_AUT_ID <> " + A_AUCT + " OR dbo.Taxon.TAX_AUT_ID IS NULL )" +
+				" ORDER BY dbo.Taxon.TAX_RNK_ID ASC";
+
+			if (logger.isInfoEnabled()) {
+				logger.info("Query: " + strQuery);
+			}
+
+			ResultSet rs = source.getResultSet(strQuery);
+			
+			while (rs.next()) {
+				
+				if ((i++ % limit) == 0) {
+					
+					txStatus = startTransaction();
+					childParentMap = new HashMap<UUID, UUID>(limit);
+					
+					if(logger.isInfoEnabled()) {
+						logger.info("Parent-child mappings retrieved: " + (i-1)); 
+					}
+				}
+
+				String childUuidStr = rs.getString("ChildUuid");
+				String parentUuidStr = rs.getString("ParentUuid");
+				UUID childUuid = UUID.fromString(childUuidStr);
+				UUID parentUuid = UUID.fromString(parentUuidStr);
+				
+				if (!childParentMap.containsKey(childUuid)) {
+
+						childParentMap.put(childUuid, parentUuid);
+
+				} else {
+					if(logger.isDebugEnabled()) {
+						logger.debug("Duplicated child UUID (" + childUuid + ")");
+					}
+				}
+				if (((i % limit) == 0 && i != 1 )) { 
+
+					success = createRelationships(state, childParentMap);
+
+					childParentMap = null;
+					commitTransaction(txStatus);
+					
+					if(logger.isInfoEnabled()) {
+						logger.info("i = " + i + " - Transaction committed"); 
+					}
+				}
+			}
+
+		} catch (SQLException e) {
+			logger.error("SQLException:" +  e);
+			success = false;
 		}
-		Set<Map.Entry<UUID, UUID>> entries = map.entrySet();
-		Iterator<Map.Entry<UUID, UUID>> entryIter = entries.iterator();
-		Map<UUID, UUID> partMap = new HashMap<UUID, UUID>();
+		return success;		
+	}
 
-		for (int i = 0; i < border; i++) {
-			//while (entryIter.hasNext()) {
-
-			Map.Entry<UUID, UUID> mapEntry = (Map.Entry<UUID, UUID>)entryIter.next();
-			partMap.put(mapEntry.getKey(), mapEntry.getValue());
-			entryIter.remove();
-		}
-		
-		if (logger.isDebugEnabled()) {
-			logger.debug("Map size: " + map.size());
-		}
-		return partMap;
-	}		
-
-
+	
 	/* Creates parent-child relationships.
 	 * Parent-child pairs are retrieved in blocks via findByUUID(Set<UUID>) from CDM DB. 
-	 * It takes about 5min to save a block of 5000 taxa.*/
+	 */
 	private boolean createRelationships(FaunaEuropaeaImportState state, Map<UUID, UUID> childParentMap) {
 
 		TaxonBase taxon = getTaxonService().getTaxonByUuid(UUID.fromString("ac7b30dc-6207-4c71-9752-ee0fb838a271"));
@@ -376,25 +427,4 @@ public class FaunaEuropaeaRelTaxonIncludeImport extends FaunaEuropaeaImportBase 
 		return success;
 	}
 
-	/**
-	 * @param state
-	 * @param sourceRef
-	 */
-	private TaxonomicTree getTaxonomicTreeFor(FaunaEuropaeaImportState state, ReferenceBase<?> sourceRef) {
-		
-		TaxonomicTree tree;
-		UUID treeUuid = state.getTreeUuid(sourceRef);
-		if (treeUuid == null){
-			if(logger.isInfoEnabled()) { logger.info(".. creating new taxonomic tree"); }
-			
-			TransactionStatus txStatus = startTransaction();
-			tree = makeTreeMemSave(state, sourceRef);
-			commitTransaction(txStatus);
-			
-		} else {
-			tree = getTaxonService().getTaxonomicTreeByUuid(treeUuid);
-		}
-		return tree;
-	}
-	
 }
