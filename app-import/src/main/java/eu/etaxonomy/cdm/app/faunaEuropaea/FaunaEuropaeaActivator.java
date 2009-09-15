@@ -36,37 +36,40 @@ public class FaunaEuropaeaActivator {
 	private static final Logger logger = Logger.getLogger(FaunaEuropaeaActivator.class);
 
 	static final Source faunaEuropaeaSource = FaunaEuropaeaSources.faunEu();
-	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_test_jaxb();
+	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_test_anahit();
 	
 //	static final CHECK check = CHECK.CHECK_AND_IMPORT;
 	static final CHECK check = CHECK.IMPORT_WITHOUT_CHECK;
 //	static DbSchemaValidation dbSchemaValidation = DbSchemaValidation.CREATE;
-//	static DbSchemaValidation dbSchemaValidation = DbSchemaValidation.VALIDATE;
 	static DbSchemaValidation dbSchemaValidation = DbSchemaValidation.UPDATE;
+//	static DbSchemaValidation dbSchemaValidation = DbSchemaValidation.VALIDATE;
 	static final NomenclaturalCode nomenclaturalCode  = NomenclaturalCode.ICZN;
 
 // ****************** ALL *****************************************
 	
 	static final int limitSave = 1000;
 	
-	static final boolean doAuthors = true;
-	static final boolean doTaxa = true;
-	static final DO_REFERENCES doReferences =  DO_REFERENCES.ALL;
-	static final boolean doDistributions = true;
-	
-	static final boolean doBasionyms = true;
-	static final boolean doTaxonomicallyIncluded = true;
-	static final boolean doMisappliedNames = true;
-	static final boolean doHeterotypicSynonyms = true;
+//	static final boolean doAuthors = true;
+//	static final boolean doTaxa = true;
+//	static final boolean doBasionyms = true;
+//	static final boolean doTaxonomicallyIncluded = true;
+//	static final boolean doMisappliedNames = true;
+//	static final boolean doHeterotypicSynonyms = true;
+//	static final DO_REFERENCES doReferences =  DO_REFERENCES.ALL;
+//	static final boolean doDistributions = true;
+//	static final boolean makeFeatureTree = true;
 
 // ************************ NONE **************************************** //
 		
-//	static final boolean doAuthors = false;
-//	static final DO_REFERENCES doReferences =  DO_REFERENCES.NONE;
-//	static final boolean doTaxa = false;
-//	static final boolean doSynonyms = false;
-//	static final boolean doRelTaxa = false;
-//	static final boolean doDistributions = false;
+	static final boolean doAuthors = false;
+	static final boolean doTaxa = false;
+	static final boolean doBasionyms = false;
+	static final boolean doTaxonomicallyIncluded = false;
+	static final boolean doMisappliedNames = true;
+	static final boolean doHeterotypicSynonyms = false;
+	static final DO_REFERENCES doReferences =  DO_REFERENCES.NONE;
+	static final boolean doDistributions = false;
+	static final boolean makeFeatureTree = false;
 	
 	
 	/**
@@ -101,18 +104,20 @@ public class FaunaEuropaeaActivator {
 
 		//make feature tree
 		
-		FeatureTree featureTree = FeatureTree.NewInstance(UUID.fromString("ff59b9ad-1fb8-4aa4-a8ba-79d62123d0fb"));
-		FeatureNode root = featureTree.getRoot();
-		
-		CdmApplicationController app = fauEuImport.getCdmAppController();
-		Feature citationFeature = (Feature)app.getTermService().getTermByUuid(UUID.fromString("99b2842f-9aa7-42fa-bd5f-7285311e0101"));
-		FeatureNode citationNode = FeatureNode.NewInstance(citationFeature);
-		root.addChild(citationNode);
-		Feature distributionFeature = (Feature)app.getTermService().getTermByUuid(UUID.fromString("9fc9d10c-ba50-49ee-b174-ce83fc3f80c6"));
-		FeatureNode distributionNode = FeatureNode.NewInstance(distributionFeature);
-		root.addChild(distributionNode);
-		
-		app.getDescriptionService().saveFeatureTree(featureTree);
+		if (makeFeatureTree == true) {
+			FeatureTree featureTree = FeatureTree.NewInstance(UUID.fromString("ff59b9ad-1fb8-4aa4-a8ba-79d62123d0fb"));
+			FeatureNode root = featureTree.getRoot();
+
+			CdmApplicationController app = fauEuImport.getCdmAppController();
+			Feature citationFeature = (Feature)app.getTermService().getTermByUuid(UUID.fromString("99b2842f-9aa7-42fa-bd5f-7285311e0101"));
+			FeatureNode citationNode = FeatureNode.NewInstance(citationFeature);
+			root.addChild(citationNode);
+			Feature distributionFeature = (Feature)app.getTermService().getTermByUuid(UUID.fromString("9fc9d10c-ba50-49ee-b174-ce83fc3f80c6"));
+			FeatureNode distributionNode = FeatureNode.NewInstance(distributionFeature);
+			root.addChild(distributionNode);
+
+			app.getDescriptionService().saveFeatureTree(featureTree);
+		}
 		
 		System.out.println("End import from Fauna Europaea ("+ faunaEuropaeaSource.getDatabase() + ")...");
 	}
