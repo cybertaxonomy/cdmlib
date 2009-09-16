@@ -247,7 +247,7 @@ public class Media extends IdentifiableEntity implements Cloneable {
 	 * 
 	 * 
 	 */
-	public MediaRepresentation findBestMatchingRepresentation(int size, int height, int widthOrDuration, String[] mimeTypes){
+	public MediaRepresentation findBestMatchingRepresentation(Integer size, Integer height, Integer widthOrDuration, String[] mimeTypes){
 		// find best matching representations of each media
 		Set<MediaRepresentation> reps = this.getRepresentations();
 				
