@@ -22,7 +22,7 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.media.Media;
-import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
+//import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
@@ -213,6 +213,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	 * @return
 	 */
 	public TaxonomicTree getTaxonomicTreeByUuid(UUID uuid);
+	
 	
 	/**
 	 * Returns a taxonomic tree by it's uuid.
@@ -441,7 +442,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	 * @return 
 	 * 			a <code>Map</code> containing uuid and titleCache of accepted taxa
 	 */
-	public List<UuidAndTitleCache> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByTaxonomicTree(TaxonomicTree taxonomicTree);
+	//public List<UuidAndTitleCache> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByTaxonomicTree(TaxonomicTree taxonomicTree);
 	/**
 	 * Returns a map that holds Taxon, titleCache pairs of all accepted taxa for a given taxonomic tree
 	 * 
@@ -454,4 +455,5 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	 */
 	public Map<UUID, List<MediaRepresentation>> getAllMediaForChildNodes(Taxon taxon, TaxonomicTree taxTree, List<String> propertyPaths,  int size, int height, int widthOrDuration, String[] mimeTypes);
 
+	public List<MediaRepresentation> getAllMedia(Taxon taxon, int size, int height, int widthOrDuration, String[] mimeTypes);
 }
