@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
+	<classpathentry exported="true" kind="lib" path="commons-beanutils-1.7.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="yjp-controller-api-redist-8.0.1.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
@@ -75,7 +76,6 @@
 	<classpathentry exported="true" kind="lib" path="spring-tx-2.5.6.jar" sourcepath="spring-tx-2.5.6src.zip"/>
 	<classpathentry exported="true" kind="lib" path="spring-web-2.5.6.jar" sourcepath="spring-web-2.5.6src.zip"/>
 	<classpathentry exported="true" kind="lib" path="spring-webmvc-2.5.6.jar" sourcepath="spring-webmvc-2.5.6src.zip"/>
-	<classpathentry exported="true" kind="lib" path="unitils-1.0.jar" sourcepath="unitils-1.0src.zip"/>
 	<classpathentry exported="true" kind="lib" path="wsdl4j-1.6.1.jar" sourcepath="wsdl4j-1.6.1src.zip"/>
 	<classpathentry exported="true" kind="lib" path="xercesImpl.jar" sourcepath="eclipse-pluginsrc.zip"/>
 	<classpathentry exported="true" kind="lib" path="xml-apis.jar" sourcepath="eclipse-pluginsrc.zip"/>
