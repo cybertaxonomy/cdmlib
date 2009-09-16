@@ -31,6 +31,8 @@ import eu.etaxonomy.cdm.io.profiler.ProfilerController;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.taxon.Synonym;
+import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
@@ -48,19 +50,24 @@ public class FaunaEuropaeaRelTaxonIncludeImport extends FaunaEuropaeaImportBase 
 	public static final String OS_NAMESPACE_TAXON = "Taxon";
 	private static final Logger logger = Logger.getLogger(FaunaEuropaeaRelTaxonIncludeImport.class);
 
-	/* Max number of taxa to retrieve (for test purposes) */
-	private int maxTaxa = 0;
-	/* Max number of taxa to be saved in CDM DB with one service call */
 	private int limit = 5000; // TODO: Make configurable
 	/* Max number of taxa to be retrieved from CDM DB with one service call */
-	private int limitRetrieve = 10000; // TODO: Make configurable
-	/* Highest taxon index in the FauEu database */
-	private int highestTaxonIndex = 0;
-	/* Number of times method buildParentName() has been called for one taxon */
-	private int callCount = 0;
-	//private Map<Integer, FaunaEuropaeaTaxon> fauEuTaxonMap = new HashMap();
+	private ReferenceBase<?> sourceRef = null;
 
+	
+	/**
+	 * @return the sourceRef
+	 */
+	private ReferenceBase<?> getSourceRef() {
+		return sourceRef;
+	}
 
+	/**
+	 * @param sourceRef the sourceRef to set
+	 */
+	private void setSourceRef(ReferenceBase<?> sourceRef) {
+		this.sourceRef = sourceRef;
+	}
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doCheck(eu.etaxonomy.cdm.io.common.IImportConfigurator)
@@ -109,17 +116,15 @@ public class FaunaEuropaeaRelTaxonIncludeImport extends FaunaEuropaeaImportBase 
 
 		if(logger.isInfoEnabled()) { logger.info("Start making taxonomically included relationships..."); }
 
-		//ReferenceBase<?> sourceRef = state.getConfig().getSourceReference();
 		TransactionStatus txStatus = startTransaction();
 		
 		TaxonBase taxon = getTaxonService().getTaxonByUuid(UUID.fromString("ac7b30dc-6207-4c71-9752-ee0fb838a271"));
-		ReferenceBase<?> sourceRef = taxon.getSec();
-		TaxonomicTree tree = getTaxonomicTreeFor(state, sourceRef);
+		setSourceRef(taxon.getSec());
 
+		TaxonomicTree tree = getTaxonomicTreeFor(state, sourceRef);
 		commitTransaction(txStatus);
 		
 		ProfilerController.memorySnapshot();
-		
 		if (state.getConfig().isDoTaxonomicallyIncluded()) {
 			success = processParentsChildren(state);
 		}
@@ -128,10 +133,9 @@ public class FaunaEuropaeaRelTaxonIncludeImport extends FaunaEuropaeaImportBase 
 			success = processMisappliedNames(state);
 		}
 		ProfilerController.memorySnapshot();
-//		if (state.getConfig().isDoHeterotypicSynonyms()) {
-//			success = processHeterotypicSynonyms(state);
-//		}
-		
+		if (state.getConfig().isDoHeterotypicSynonyms()) {
+			success = processHeterotypicSynonyms(state);
+		}
 		ProfilerController.memorySnapshot();
 
 		logger.info("End making taxa...");
@@ -170,13 +174,6 @@ public class FaunaEuropaeaRelTaxonIncludeImport extends FaunaEuropaeaImportBase 
 			selectColumns + fromClause + orderClause;
 			
 		try {
-
-//			String strQuery = 
-//				" SELECT dbo.Taxon.UUID AS ChildUuid, Parent.UUID AS ParentUuid " +
-//				" FROM dbo.Taxon INNER JOIN dbo.Taxon AS Parent " +
-//				" ON dbo.Taxon.TAX_TAX_IDPARENT = Parent.TAX_ID " +
-//				" WHERE (dbo.Taxon.TAX_VALID <> 0) AND (dbo.Taxon.TAX_AUT_ID <> " + A_AUCT + " OR dbo.Taxon.TAX_AUT_ID IS NULL )" +
-//				" ORDER BY dbo.Taxon.TAX_RNK_ID ASC";
 
 			ResultSet rs = source.getResultSet(countQuery);
 			rs.next();
@@ -329,16 +326,107 @@ public class FaunaEuropaeaRelTaxonIncludeImport extends FaunaEuropaeaImportBase 
 	}
 
 	
+	/** Retrieve synonyms from FauEuDB DB */
+	private boolean processHeterotypicSynonyms(FaunaEuropaeaImportState state) {
+
+		int limit = state.getConfig().getLimitSave();
+
+		TransactionStatus txStatus = null;
+
+		Map<UUID, UUID> childParentMap = null;
+		FaunaEuropaeaImportConfigurator fauEuConfig = state.getConfig();
+		Source source = fauEuConfig.getSource();
+		int i = 0;
+		boolean success = true;
+
+		String selectCount = 
+			" SELECT count(*) ";
+
+		String selectColumns = " SELECT Taxon.UUID AS SynonymUuid, Parent.UUID AS AcceptedUuid ";
+		
+		String fromClause = " FROM Taxon INNER JOIN Taxon AS Parent " +
+		" ON Taxon.TAX_TAX_IDPARENT = Parent.TAX_ID " +
+		" WHERE (Taxon.TAX_VALID = 0) AND (Taxon.TAX_AUT_ID <> " + A_AUCT + ")";
+		
+		String orderClause = " ORDER BY dbo.Taxon.TAX_RNK_ID ASC ";
+
+		String countQuery = 
+			selectCount + fromClause;
+
+		String selectQuery = 
+			selectColumns + fromClause + orderClause;
+			
+		try {
+
+			ResultSet rs = source.getResultSet(countQuery);
+			rs.next();
+			int count = rs.getInt(1);
+			
+			rs = source.getResultSet(selectQuery);
+
+	        if (logger.isInfoEnabled()) {
+				logger.info("Number of rows: " + count);
+				logger.info("Count Query: " + countQuery);
+				logger.info("Select Query: " + selectQuery);
+			}
+
+			while (rs.next()) {
+				
+				if ((i++ % limit) == 0) {
+					
+					txStatus = startTransaction();
+					childParentMap = new HashMap<UUID, UUID>(limit);
+					
+					if(logger.isInfoEnabled()) {
+						logger.info("Synonyms retrieved: " + (i-1) ); 
+					}
+				}
+
+				String childUuidStr = rs.getString("SynonymUuid");
+				String parentUuidStr = rs.getString("AcceptedUuid");
+				UUID childUuid = UUID.fromString(childUuidStr);
+				UUID parentUuid = UUID.fromString(parentUuidStr);
+				
+				if (!childParentMap.containsKey(childUuid)) {
+
+						childParentMap.put(childUuid, parentUuid);
+
+				} else {
+					if(logger.isDebugEnabled()) {
+						logger.debug("Duplicated child UUID (" + childUuid + ")");
+					}
+				}
+
+				if (((i % limit) == 0 && i != 1 ) || i == count) { 
+
+					success = createHeterotypicSynonyms(state, childParentMap);
+
+					childParentMap = null;
+					commitTransaction(txStatus);
+
+					if(logger.isInfoEnabled()) {
+						logger.info("i = " + i + " - Transaction committed"); 
+					}
+				}
+			}
+
+		} catch (SQLException e) {
+			logger.error("SQLException:" +  e);
+			success = false;
+		}
+		return success;		
+	}
+	
 	/* Creates parent-child relationships.
 	 * Parent-child pairs are retrieved in blocks via findByUUID(Set<UUID>) from CDM DB. 
 	 */
 	private boolean createParentChildRelationships(FaunaEuropaeaImportState state, Map<UUID, UUID> childParentMap) {
 
-		TaxonBase taxon = getTaxonService().getTaxonByUuid(UUID.fromString("ac7b30dc-6207-4c71-9752-ee0fb838a271"));
-		ReferenceBase<?> sourceRef = taxon.getSec();
+//		TaxonBase taxon = getTaxonService().getTaxonByUuid(UUID.fromString("ac7b30dc-6207-4c71-9752-ee0fb838a271"));
+//		ReferenceBase<?> sourceRef = taxon.getSec();
 		boolean success = true;
 		
-			TaxonomicTree tree = getTaxonomicTreeFor(state, sourceRef);
+			TaxonomicTree tree = getTaxonomicTreeFor(state, getSourceRef());
 			
 			Set<TaxonBase> childSet = new HashSet<TaxonBase>(limit);
 			
@@ -468,8 +556,8 @@ public class FaunaEuropaeaRelTaxonIncludeImport extends FaunaEuropaeaImportBase 
 		return success;
 	}
 
-	/* Creates parent-child relationships.
-	 * Parent-child pairs are retrieved in blocks via findByUUID(Set<UUID>) from CDM DB. 
+	/* Creates misapplied name relationships.
+	 * Misapplied name-accepted taxon pairs are retrieved in blocks via findByUUID(Set<UUID>) from CDM DB. 
 	 */
 	private boolean createMisappliedNameRelationships(FaunaEuropaeaImportState state, Map<UUID, UUID> fromToMap) {
 
@@ -477,8 +565,6 @@ public class FaunaEuropaeaRelTaxonIncludeImport extends FaunaEuropaeaImportBase 
 		ReferenceBase<?> sourceRef = taxon.getSec();
 		boolean success = true;
 		
-			TaxonomicTree tree = getTaxonomicTreeFor(state, sourceRef);
-			
 			Set<TaxonBase> misappliedNameSet = new HashSet<TaxonBase>(limit);
 			
 			Set<UUID> misappliedNamesSet = fromToMap.keySet();
@@ -598,8 +684,124 @@ public class FaunaEuropaeaRelTaxonIncludeImport extends FaunaEuropaeaImportBase 
 			misappliedNameSet = null;
 			misappliedNames = null;
 			acceptedTaxa = null;
-			tree = null;
 		
 		return success;
 	}
+
+	
+	/* Creates heterotypic synonym relationships.
+	 * Synonym-accepted taxon pairs are retrieved in blocks via findByUUID(Set<UUID>) from CDM DB. 
+	 */
+	private boolean createHeterotypicSynonyms(FaunaEuropaeaImportState state, Map<UUID, UUID> fromToMap) {
+
+		boolean success = true;
+
+		Set<TaxonBase> synonymSet = new HashSet<TaxonBase>(limit);
+
+		Set<UUID> synonymUuidSet = fromToMap.keySet();
+		Set<UUID> acceptedTaxaUuidSet = new HashSet<UUID>(fromToMap.values());
+
+		if (logger.isInfoEnabled()) {
+			logger.info("Start reading synonyms names and accepted taxa");
+		}
+		List<TaxonBase> synonyms = getTaxonService().findByUuid(synonymUuidSet);
+		List<TaxonBase> acceptedTaxa = getTaxonService().findByUuid(acceptedTaxaUuidSet);
+		Map<UUID, TaxonBase> acceptedTaxaMap = new HashMap<UUID, TaxonBase>(acceptedTaxa.size());
+		for (TaxonBase taxonBase : acceptedTaxa){
+			acceptedTaxaMap.put(taxonBase.getUuid(), taxonBase);
+		}
+
+		if (logger.isInfoEnabled()) {
+			logger.info("End reading synonyms names and accepted taxa");
+		}
+
+		if (logger.isTraceEnabled()) {
+			for (UUID uuid : synonymUuidSet) {
+				logger.trace("synonym uuid query: " + uuid);
+			}
+		}
+		if (logger.isTraceEnabled()) {
+			for (UUID uuid : acceptedTaxaUuidSet) {
+				logger.trace("accepted taxon uuid query: " + uuid);
+			}
+		}
+		if (logger.isTraceEnabled()) {
+			for (TaxonBase tb : synonyms) {
+				logger.trace("synonym uuid result: " + tb.getUuid());
+			}
+		}
+		if (logger.isTraceEnabled()) {
+			for (TaxonBase tb : acceptedTaxa) {
+				logger.trace("accepted taxon uuid result: " + tb.getUuid());
+			}
+		}
+
+		UUID mappedAcceptedTaxonUuid = null;
+		UUID synonymUuid = null;
+		Synonym synonym = null;
+		TaxonBase acceptedTaxonBase = null;
+		Taxon acceptedTaxon = null;
+
+		for (TaxonBase synonymTaxonBase : synonyms) {
+
+			try {
+				synonym = synonymTaxonBase.deproxy(synonymTaxonBase, Synonym.class);
+				synonymUuid = synonym.getUuid();
+				mappedAcceptedTaxonUuid = fromToMap.get(synonymUuid);
+				acceptedTaxonBase = null;
+
+				acceptedTaxonBase = acceptedTaxaMap.get(mappedAcceptedTaxonUuid);
+				if (logger.isDebugEnabled()) {
+					logger.debug("Parent (" + mappedAcceptedTaxonUuid + ") found for child (" + synonymUuid + ")");
+				}
+				acceptedTaxon = acceptedTaxonBase.deproxy(acceptedTaxonBase, Taxon.class);
+
+				if (synonym != null && acceptedTaxon != null) {
+
+					//TODO: in case original genus exists must add synonym to original genus instead of to accepted taxon
+					acceptedTaxon.addSynonym(synonym, SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF());
+
+					if (logger.isDebugEnabled()) {
+						logger.debug("Accepted taxon - synonym (" + mappedAcceptedTaxonUuid + " - " + synonymUuid + 
+						") relationship created");
+					}
+					if (synonym != null && !synonymSet.contains(synonym)) {
+
+						synonymSet.add(synonym);
+
+						if (logger.isTraceEnabled()) {
+							logger.trace("Synonym (" + synonymUuid + ") added to Set");
+						}
+
+					} else {
+						if (logger.isDebugEnabled()) {
+							logger.debug("Duplicated synonym (" + synonymUuid + ")");
+						}
+					}
+				} else {
+					if (logger.isDebugEnabled()) {
+						logger.debug("Accepted taxon (" + mappedAcceptedTaxonUuid + ") or misapplied name (" + synonymUuid + " is null");
+					}
+				}
+			} catch (Exception e) {
+				logger.error("Error creating synonym relationship: accepted taxon-synonym (" + 
+						mappedAcceptedTaxonUuid + "-" + synonymUuid + ")", e);
+			}
+		}
+		if (logger.isInfoEnabled()) {
+			logger.info("Start saving synonymSet");
+		}
+		getTaxonService().saveTaxonAll(synonymSet);
+		if (logger.isInfoEnabled()) {
+			logger.info("End saving synonymSet");
+		}
+
+		acceptedTaxaUuidSet = null;
+		synonymSet = null;
+		synonyms = null;
+		acceptedTaxa = null;
+
+		return success;
+	}
+
 }
