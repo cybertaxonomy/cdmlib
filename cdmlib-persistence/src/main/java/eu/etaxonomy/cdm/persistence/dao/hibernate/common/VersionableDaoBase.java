@@ -99,12 +99,17 @@ public abstract class VersionableDaoBase<T extends VersionableEntity> extends Cd
 	}
 	
 	@Override
-	public <TYPE extends T> int count(Class<TYPE> type) {
+	public <TYPE extends T> int count(Class<TYPE> clazz) {
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
-			return super.count(type);
+			return super.count(clazz);
 		} else {
-			AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(type,auditEvent.getRevisionNumber());
+			AuditQuery query = null;
+			if(clazz == null) {
+			    query = getAuditReader().createQuery().forEntitiesAtRevision(type,auditEvent.getRevisionNumber());
+			} else {
+				 query = getAuditReader().createQuery().forEntitiesAtRevision(clazz,auditEvent.getRevisionNumber());
+			}
 			query.addProjection(AuditEntity.id().count("id"));
 			return ((Long)query.getSingleResult()).intValue();
 		}

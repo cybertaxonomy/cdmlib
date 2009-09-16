@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
@@ -20,6 +21,7 @@ import org.apache.lucene.analysis.SimpleAnalyzer;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
 import org.hibernate.Criteria;
+import org.hibernate.Hibernate;
 import org.hibernate.Query;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Order;
@@ -183,7 +185,7 @@ extends IdentifiableDaoBase<TaxonNameBase> implements ITaxonNameDao {
 			if(genusOrUninomial != null) {
 				query.add(AuditEntity.property("genusOrUninomial").eq(genusOrUninomial));
 			} else {
-				query.add(AuditEntity.property("genusOrUninomial").isNull());
+				query.add(AuditEntity.property("genusOrUninomial").eq(null));
 			}
 
 			if(infraGenericEpithet != null) {
@@ -209,7 +211,8 @@ extends IdentifiableDaoBase<TaxonNameBase> implements ITaxonNameDao {
 			}
 
 			query.addProjection(AuditEntity.id().count("id"));
-			return ((Long)query.getSingleResult()).intValue();
+			int result = ((Long)query.getSingleResult()).intValue();
+			return result;
 		}
 	}
 
@@ -252,15 +255,26 @@ extends IdentifiableDaoBase<TaxonNameBase> implements ITaxonNameDao {
 			query.setParameter("name",name);
 			return ((Long)query.uniqueResult()).intValue();
 		} else {
-			AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(TypeDesignationBase.class,auditEvent.getRevisionNumber());
-			query.add(AuditEntity.relatedId("typifiedNames").eq(name.getId()));
-			query.addProjection(AuditEntity.id().count("id"));
-
-			if(type != null) {
-				query.add(AuditEntity.relatedId("typeStatus").eq(status.getId()));
+			// Ugly, but typifiedNames is OneToMany, and envers doesn't support this
+			AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(TaxonNameBase.class,auditEvent.getRevisionNumber());
+			query.add(AuditEntity.id().eq(name.getId()));
+			
+			TaxonNameBase n = (TaxonNameBase)query.getSingleResult();
+			Hibernate.initialize(n.getTypeDesignations());
+			int typeDesignations = 0;
+			if(status != null) {
+				for(TypeDesignationBase typeDesignation : (Set<TypeDesignationBase>)n.getTypeDesignations()) {
+					if(status.equals(typeDesignation.getTypeStatus())) {
+						typeDesignations++;
+					}
+				}
+			} else {
+				for(TypeDesignationBase typeDesignation : (Set<TypeDesignationBase>)n.getTypeDesignations()) {
+					typeDesignations++;
+				}
 			}
 
-			return ((Long)query.getSingleResult()).intValue();
+			return typeDesignations;
 		}
 	}
 
@@ -363,9 +377,7 @@ extends IdentifiableDaoBase<TaxonNameBase> implements ITaxonNameDao {
 		return getTypeDesignations(name, status, pageSize, pageNumber, null);
 	}
 	
-	public List<TypeDesignationBase> getTypeDesignations(TaxonNameBase name,
-				TypeDesignationStatusBase status, Integer pageSize, Integer pageNumber,
-				List<String> propertyPaths){
+	public List<TypeDesignationBase> getTypeDesignations(TaxonNameBase name, TypeDesignationStatusBase status, Integer pageSize, Integer pageNumber, List<String> propertyPaths){
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
 			Query query = null;
@@ -387,23 +399,42 @@ extends IdentifiableDaoBase<TaxonNameBase> implements ITaxonNameDao {
 			}
 			return defaultBeanInitializer.initializeAll((List<TypeDesignationBase>)query.list(), propertyPaths);
 		} else {
-			AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(TypeDesignationBase.class,auditEvent.getRevisionNumber());
-			query.add(AuditEntity.relatedId("typifiedNames").eq(name.getId()));
-
-			if(type != null) {
-				query.add(AuditEntity.relatedId("typeStatus").eq(status.getId()));
-			}
+			// Ugly, but typifiedNames is OneToMany, and envers doesn't support this
+			AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(TaxonNameBase.class,auditEvent.getRevisionNumber());
+			query.add(AuditEntity.id().eq(name.getId()));
 			
-			if(pageSize != null) {
-				query.setMaxResults(pageSize);
-				if(pageNumber != null) {
-					query.setFirstResult(pageNumber * pageSize);
-				} else {
-					query.setFirstResult(0);
+			TaxonNameBase n = (TaxonNameBase)query.getSingleResult();
+			Hibernate.initialize(n.getTypeDesignations());
+
+			List<TypeDesignationBase> typeDesignations = new ArrayList<TypeDesignationBase>();
+			if(status == null) {
+				typeDesignations.addAll((Set<TypeDesignationBase>)n.getTypeDesignations());
+			} else {
+				for(TypeDesignationBase typeDesignation : (Set<TypeDesignationBase>)n.getTypeDesignations()) {
+					if(status.equals(typeDesignation.getTypeStatus())) {
+						typeDesignations.add(typeDesignation);
+					}
 				}
 			}
-
-			return (List<TypeDesignationBase>)query.getResultList();
+			
+			int from = 0;
+			int to = typeDesignations.size();
+			
+			if(pageSize != null) {
+				to = pageSize;
+				if(pageNumber != null) {
+					from = pageNumber * pageSize;
+					to =  from + pageSize;
+				}
+			}
+			
+			List<TypeDesignationBase> result = null;
+			try{
+				result = typeDesignations.subList(from, to);
+			} catch (IndexOutOfBoundsException iobe) {
+				return new ArrayList<TypeDesignationBase>();
+			}
+			return defaultBeanInitializer.initializeAll(result, propertyPaths);
 		}
 	}
 
