@@ -804,15 +804,22 @@ public void addRelationshipToName(TaxonNameBase toName, NameRelationshipType typ
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.IParsable#addProblem(eu.etaxonomy.cdm.strategy.parser.NameParserWarning)
 	 */
-	public void addParsingProblem(ParserProblem warning){
-		parsingProblem = ParserProblem.addWarning(parsingProblem, warning);
+	public void addParsingProblem(ParserProblem problem){
+		parsingProblem = ParserProblem.addProblem(parsingProblem, problem);
+	}
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.IParsable#removeParsingProblem(eu.etaxonomy.cdm.strategy.parser.ParserProblem)
+	 */
+	public void removeParsingProblem(ParserProblem problem) {
+		parsingProblem = ParserProblem.removeProblem(parsingProblem, problem);
 	}
 	
 	/**
 	 * @param warnings
 	 */
-	public void addParsingProblems(int warnings){
-		parsingProblem = ParserProblem.addWarnings(parsingProblem, warnings);
+	public void addParsingProblems(int problems){
+		parsingProblem = ParserProblem.addProblems(parsingProblem, problems);
 	}
 	
 	/* (non-Javadoc)
@@ -821,6 +828,16 @@ public void addRelationshipToName(TaxonNameBase toName, NameRelationshipType typ
 	public boolean hasProblem(){
 		return parsingProblem != 0;
 	}
+	
+	
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.IParsable#hasProblem(eu.etaxonomy.cdm.strategy.parser.ParserProblem)
+	 */
+	public boolean hasProblem(ParserProblem problem) {
+		return getParsingProblems().contains(problem);
+	}
+	
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.IParsable#problemStarts()

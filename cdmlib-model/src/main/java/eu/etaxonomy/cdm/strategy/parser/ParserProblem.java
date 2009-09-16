@@ -123,14 +123,30 @@ public enum ParserProblem {
 	 * @param warning
 	 * @return
 	 */
-	public static int addWarning(int originalWarnings, ParserProblem newWarning) {
-		return originalWarnings | 1 << newWarning.ordinal();
+	public static int addProblem(int originalProblems, ParserProblem newProblem) {
+		if (newProblem == null){
+			return originalProblems;
+		}else{
+			return originalProblems | 1 << newProblem.ordinal();
+		}
 	}
 	
-	public static int addWarnings(int hasProblem, int newWarnings) {
-		return hasProblem | newWarnings;
+	public static int addProblems(int hasProblem, int newProblems) {
+		return hasProblem | newProblems;
 	}
-	
+
+	/**
+	 * @param parsingProblem
+	 * @param problemToRemove
+	 * @return
+	 */
+	public static int removeProblem(int originalProblems, ParserProblem problemToRemove) {
+		if (problemToRemove == null){
+			return originalProblems;
+		}else{
+			return originalProblems & ~(1 << problemToRemove.ordinal());
+		}
+	}	
 
 	
 	

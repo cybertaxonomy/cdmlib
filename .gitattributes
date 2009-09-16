@@ -1685,8 +1685,8 @@ cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/cache/name/ZoologicalNameCa
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/cache/reference/CdDvdDefaultCacheStrategyTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/match/DefaultMatchStrategyTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/merge/DefaultMergeStrategyTest.java -text
-cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/parser/NameParserWarningTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/parser/NonViralNameParserImplTest.java -text
+cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/parser/ParserProblemTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/test/function/TestFullReferenceParser.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/test/function/TestModel.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/test/function/TestSpecimen.java -text

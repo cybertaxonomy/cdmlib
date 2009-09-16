@@ -219,6 +219,13 @@ public abstract class ReferenceBase<S extends IReferenceBaseCacheStrategy> exten
 		return parsingProblem != 0;
 	}
 	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.IParsable#hasProblem(eu.etaxonomy.cdm.strategy.parser.ParserProblem)
+	 */
+	public boolean hasProblem(ParserProblem problem) {
+		return getParsingProblems().contains(problem);
+	}
+	
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.IParsable#problemStarts()
@@ -252,7 +259,14 @@ public abstract class ReferenceBase<S extends IReferenceBaseCacheStrategy> exten
 	 * @see eu.etaxonomy.cdm.model.common.IParsable#addProblem(eu.etaxonomy.cdm.strategy.parser.NameParserWarning)
 	 */
 	public void addParsingProblem(ParserProblem warning){
-		parsingProblem = ParserProblem.addWarning(parsingProblem, warning);
+		parsingProblem = ParserProblem.addProblem(parsingProblem, warning);
+	}
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.IParsable#removeParsingProblem(eu.etaxonomy.cdm.strategy.parser.ParserProblem)
+	 */
+	public void removeParsingProblem(ParserProblem problem) {
+		parsingProblem = ParserProblem.removeProblem(parsingProblem, problem);
 	}
 	
 	/* (non-Javadoc)

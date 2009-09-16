@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.strategy.parser;
 
 import static org.junit.Assert.*;
 
+import java.util.BitSet;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -26,9 +27,9 @@ import org.junit.Test;
  * @created 04.09.2009
  * @version 1.0
  */
-public class NameParserWarningTest {
+public class ParserProblemTest {
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(NameParserWarningTest.class);
+	private static final Logger logger = Logger.getLogger(ParserProblemTest.class);
 
 	/**
 	 * @throws java.lang.Exception
@@ -73,18 +74,39 @@ public class NameParserWarningTest {
 	}
 	
 	@Test
-	public void testAddWarning(){
-		int warning = ParserProblem.addWarning(0, ParserProblem.NameReferenceSeparation);
+	public void testAddProblem(){
+		int warning = ParserProblem.addProblem(0, ParserProblem.NameReferenceSeparation);
 		int expected = (int)Math.pow(2, ParserProblem.NameReferenceSeparation.ordinal()) ;
 		assertEquals("Unexpected value for addWarning", expected,warning);
-		warning = ParserProblem.addWarning(warning, ParserProblem.CheckDetailOrYear);
+		warning = ParserProblem.addProblem(warning, ParserProblem.CheckDetailOrYear);
 		expected = expected + (int)Math.pow(2, ParserProblem.CheckDetailOrYear.ordinal()) ;
 		assertEquals("Unexpected value for addWarning", expected,warning);
 	}
 	
 	@Test
-	public void testAddWarnings(){
-		assertEquals("Unexpected value for addWarning", 23, ParserProblem.addWarnings(21, 6));
+	public void testRemoveProblem(){
+		int warning = ParserProblem.addProblem(0, ParserProblem.NameReferenceSeparation);
+		warning = ParserProblem.addProblem(warning, ParserProblem.CheckRank);
+		warning = ParserProblem.addProblem(warning, ParserProblem.CheckDetailOrYear);
+		assertEquals("Number of problems must be 3", 3, ParserProblem.warningList(warning).size());
+		assertTrue("Check Rank must be a problem", ParserProblem.warningList(warning).contains(ParserProblem.CheckRank));
+		
+		warning = ParserProblem.removeProblem(warning, ParserProblem.CheckRank);
+		assertEquals("Number of problems must be 2", 2, ParserProblem.warningList(warning).size());
+		assertFalse("Check Rank must not be a problem anymore", ParserProblem.warningList(warning).contains(ParserProblem.CheckRank));
+		
+		warning = ParserProblem.removeProblem(warning, ParserProblem.CheckRank);
+		assertEquals("Number of problems must be 2", 2, ParserProblem.warningList(warning).size());
+		assertFalse("Check Rank must not be a problem anymore", ParserProblem.warningList(warning).contains(ParserProblem.CheckRank));
+
+		warning = ParserProblem.removeProblem(warning, null);
+		assertEquals("Number of problems must be 2", 2, ParserProblem.warningList(warning).size());
+		assertFalse("Check Rank must not be a problem anymore", ParserProblem.warningList(warning).contains(ParserProblem.CheckRank));
+	}
+	
+	@Test
+	public void testAddProblems(){
+		assertEquals("Unexpected value for addWarning", 23, ParserProblem.addProblems(21, 6));
 	}
 	
 	@Test
@@ -99,8 +121,8 @@ public class NameParserWarningTest {
 	
 	@Test
 	public void testHasError() {
-		int warning = ParserProblem.addWarning(0, ParserProblem.NameReferenceSeparation);
-		warning = ParserProblem.addWarning(warning, ParserProblem.CheckDetailOrYear);
+		int warning = ParserProblem.addProblem(0, ParserProblem.NameReferenceSeparation);
+		warning = ParserProblem.addProblem(warning, ParserProblem.CheckDetailOrYear);
 		assertTrue("warning list with NameReferenceSeparation must have error", ParserProblem.hasError(warning));
 	}
 

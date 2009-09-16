@@ -56,23 +56,28 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 	public static NonViralNameParserImpl NewInstance(){
 		return new NonViralNameParserImpl();
 	}
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.strategy.ITaxonNameParser#parseSimpleName(java.lang.String, eu.etaxonomy.cdm.model.name.Rank)
-	 */
-	public NonViralName parseSimpleName(String simpleName, Rank rank){
-		//TODO
-		logger.warn("parseSimpleName() not yet implemented. Uses parseFullName() instead");
-		return parseFullName(simpleName, null, rank);
-	}
-
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.strategy.ITaxonNameParser#parseSubGenericSimpleName(java.lang.String)
 	 */
 	public NonViralName parseSimpleName(String simpleName){
-		return parseSimpleName(simpleName, null);
+		return parseSimpleName(simpleName, null, null);
 	}
+	
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.strategy.parser.INonViralNameParser#parseSimpleName(java.lang.String, eu.etaxonomy.cdm.model.name.NomenclaturalCode, eu.etaxonomy.cdm.model.name.Rank)
+	 */
+	public NonViralName parseSimpleName(String simpleName, NomenclaturalCode code, Rank rank){
+		//"parseSimpleName() not yet implemented. Uses parseFullName() instead");
+		return parseFullName(simpleName, code, rank);
+	}
+
+	public void parseSimpleName(NonViralName nameToBeFilled, String simpleNameString, Rank rank, boolean makeEmpty){
+		//"parseSimpleName() not yet implemented. Uses parseFullName() instead");
+		parseFullName(nameToBeFilled, simpleNameString, rank, makeEmpty);
+	}
+
 	
 	public NonViralName getNonViralNameInstance(String fullString, NomenclaturalCode code){
 		return getNonViralNameInstance(fullString, code, null);
@@ -693,15 +698,18 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 	
 	public void parseFullName(NonViralName nameToBeFilled, String fullNameString, Rank rank, boolean makeEmpty) {
 		//TODO prol. etc.
-		
+		boolean hasCheckRankProblem = false; //was rank guessed in a previous parsing process?
 		if (nameToBeFilled == null){
 			logger.warn("name is null!");
+		}else{
+			hasCheckRankProblem = nameToBeFilled.hasProblem(ParserProblem.CheckRank);
 		}
 		String authorString = null;
 		
 		if (fullNameString == null){
 			return;
 		}
+		
 		if (makeEmpty){
 			makeEmpty(nameToBeFilled);
 		}
@@ -723,11 +731,11 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 		    }
 		    else if (genusOrSupraGenusPattern.matcher(fullNameString).matches()){
 		    	//supraGeneric
-				if (rank != null && (rank.isSupraGeneric()|| rank.isGenus())){
+				if (rank != null && ! hasCheckRankProblem  && (rank.isSupraGeneric()|| rank.isGenus())){
 					nameToBeFilled.setRank(rank);
 					nameToBeFilled.setGenusOrUninomial(epi[0]);
 				} 
-				//genus
+				//genus or guess rank
 				else {
 					rank = guessUninomialRank(nameToBeFilled, epi[0]); 
 					nameToBeFilled.setRank(rank);

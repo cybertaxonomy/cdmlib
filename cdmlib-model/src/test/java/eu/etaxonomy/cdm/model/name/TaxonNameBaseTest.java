@@ -498,14 +498,6 @@ public class TaxonNameBaseTest {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.name.TaxonNameBase#getParsingProblems()}.
-	 */
-	@Test
-	public void testGetProblems() {
-		logger.warn("not yet implemented");
-	}
-
-	/**
 	 * Test method for {@link eu.etaxonomy.cdm.model.name.TaxonNameBase#getReferenceYear()}.
 	 */
 	@Test
