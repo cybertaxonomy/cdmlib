@@ -420,6 +420,8 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		return dao.getAllRelationships(limit, start);
 	}
 	
+	
+	
 	/**
 	 * FIXME Candidate for harmonization
 	 * is this the same as termService.getVocabulary(VocabularyEnum.TaxonRelationshipType) ? 
@@ -769,11 +771,11 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 	/*
 	 * (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#getUuidAndTitleCacheOfAcceptedTaxa(eu.etaxonomy.cdm.model.taxon.TaxonomicTree)
-	 */
+	 
 	public List<UuidAndTitleCache> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByTaxonomicTree(TaxonomicTree taxonomicTree) {
 		return taxonDao.getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByTaxonomicTree(taxonomicTree);
 	}
-	
+	*/
 	
 	public Map<UUID, List<MediaRepresentation>> getAllMediaForChildNodes(Taxon taxon, TaxonomicTree taxTree, List<String> propertyPaths, int size, int height, int widthOrDuration, String[] mimeTypes){
 		TreeMap<UUID, List<MediaRepresentation>> result = new TreeMap<UUID, List<MediaRepresentation>>();
@@ -783,7 +785,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		if (taxTree != null || taxon != null){
 			
 			taxTree = taxonTreeDao.load(taxTree.getUuid());
-			taxon = (Taxon)dao.load(taxon.getUuid());
+			//taxon = (Taxon)dao.load(taxon.getUuid());
 					
 			List<TaxonNode> taxNodes = loadChildNodesOfTaxon(taxon, taxTree, propertyPaths);
 			if (taxNodes.size() != 0){
@@ -796,7 +798,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 			if (taxNodes != null){
 				for(TaxonNode childNode : taxNodes){
 					taxon = childNode.getTaxon();
-					Set<TaxonDescription> descriptions = taxon.getDescriptions();
+					/*Set<TaxonDescription> descriptions = taxon.getDescriptions();
 					for (TaxonDescription taxDesc: descriptions){
 						Set<DescriptionElementBase> elements = taxDesc.getElements();
 						for (DescriptionElementBase descElem: elements){
@@ -808,8 +810,8 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 								
 							}
 						}
-					}
-					result.put(taxon.getUuid(), medRep);
+					}*/
+					result.put(taxon.getUuid(), getAllMedia(taxon, size, height, widthOrDuration,mimeTypes));
 										
 				}	
 			}
@@ -820,6 +822,28 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		
 		return result;
 	}
+
+
+	public List<MediaRepresentation> getAllMedia(Taxon taxon, int size, int height, int widthOrDuration, String[] mimeTypes){
+		List<MediaRepresentation> medRep = new ArrayList<MediaRepresentation>();
+		taxon = (Taxon)dao.load(taxon.getUuid());
+		Set<TaxonDescription> descriptions = taxon.getDescriptions();
+		for (TaxonDescription taxDesc: descriptions){
+			Set<DescriptionElementBase> elements = taxDesc.getElements();
+			for (DescriptionElementBase descElem: elements){
+				for(Media media : descElem.getMedia()){
+									
+					//find the best matching representation
+					medRep.add(media.findBestMatchingRepresentation(size, height, widthOrDuration, mimeTypes));
+					
+				}
+			}
+		}
+		return medRep;
+	}
+
+
+	
 	
 	
 
