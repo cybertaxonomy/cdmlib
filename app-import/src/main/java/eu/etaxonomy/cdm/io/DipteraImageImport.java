@@ -9,37 +9,26 @@
 
 package eu.etaxonomy.cdm.io;
 
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.UUID;
 
 import org.apache.log4j.Logger;
-import org.apache.sanselan.ImageReadException;
-import org.apache.sanselan.Sanselan;
-import org.apache.sanselan.common.IImageMetadata;
-import org.apache.sanselan.common.ImageMetadata.Item;
-import org.apache.sanselan.formats.jpeg.JpegImageMetadata;
 import org.springframework.stereotype.Component;
 
-import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.app.images.AbstractImageImporter;
 import eu.etaxonomy.cdm.app.images.ImageImportConfigurator;
 import eu.etaxonomy.cdm.common.ExcelUtils;
 import eu.etaxonomy.cdm.common.MediaMetaData.ImageMetaData;
-import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.media.ImageFile;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
@@ -85,7 +74,7 @@ public class DipteraImageImport extends AbstractImageImporter {
 
 				taxonService.saveTaxon(taxon);
 
-				TextData feature = TextData.NewInstance();
+				TextData imageTextData = TextData.NewInstance();
 
 				logger.info("Importing image for taxon: " + taxa);
 
@@ -106,13 +95,13 @@ public class DipteraImageImport extends AbstractImageImporter {
 					Media media = Media.NewInstance();
 					media.addRepresentation(representation);
 
-					feature.addMedia(media);
+					imageTextData.addMedia(media);
 
-					feature.setType(Feature.IMAGE());
+					imageTextData.setType(Feature.IMAGE());
 
 					TaxonDescription description = TaxonDescription.NewInstance(taxon);
 
-					description.addElement(feature);
+					description.addElement(imageTextData);
 
 				} catch (MalformedURLException e) {
 					logger.error("Malformed URL", e);
