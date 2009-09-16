@@ -87,7 +87,7 @@
 
   <xs:element name="TextFormat" type="description:TextFormat"/>
   
-  <xs:complexType name="MediaKey">
+	<xs:complexType name="MediaKey">
     <xs:complexContent>
       <xs:extension base="media:Media">
         <xs:sequence>
@@ -105,10 +105,24 @@
               </xs:sequence>
             </xs:complexType>
           </xs:element>
-          <xs:element name="GeoScopes" minOccurs="0">
+          <xs:element name="GeographicalScope" minOccurs="0">
             <xs:complexType>
               <xs:sequence>
-                <xs:element name="GeoScope" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element name="Area" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="ScopeRestrictions" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="Restriction" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="KeyRepresentations" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="KeyRepresentation" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
               </xs:sequence>
             </xs:complexType>
           </xs:element>
@@ -175,6 +189,13 @@
             <xs:complexType>
               <xs:sequence>
                 <xs:element name="SupportedCategoricalEnumeration" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+           <xs:element name="RecommendedMeasurementUnits" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="RecommendedMeasurementUnit" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
               </xs:sequence>
             </xs:complexType>
           </xs:element>
@@ -275,6 +296,13 @@
               </xs:sequence>
             </xs:complexType>
           </xs:element>
+          <xs:element name="DescriptiveSystem" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element ref="description:Feature" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
           <xs:element name="DescriptionElements" minOccurs="0">
             <xs:complexType>
               <xs:sequence>
@@ -290,6 +318,7 @@
               </xs:sequence>
             </xs:complexType>
           </xs:element>
+          <xs:element name="ImageGallery" type="xs:boolean"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
@@ -365,6 +394,7 @@
             </xs:complexType>
           </xs:element>
           <xs:element name="InDescription" type="xs:IDREF" minOccurs="0"/>
+          <xs:element name="nameUsedInReference" type="xs:IDREF" minOccurs="0"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
@@ -480,11 +510,11 @@
     </xs:complexContent>
   </xs:complexType>
 
-  <xs:complexType name="FeatureNode">
+   <xs:complexType name="FeatureNode">
     <xs:complexContent>
       <xs:extension base="common:VersionableEntity">
         <xs:sequence>
-          <xs:element name="Feature" type="xs:IDREF" minOccurs="0"/>
+          <xs:element ref="description:Feature" minOccurs="0"/>
           <xs:element name="Parent" type="xs:IDREF" minOccurs="0"/>
           <xs:element name="Children" minOccurs="0">
             <xs:complexType>
@@ -493,6 +523,28 @@
               </xs:sequence>
             </xs:complexType>
           </xs:element>
+          <xs:element name="OnlyApplicableIf" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="OnlyApplicableIf" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="InapplicableIf" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="InapplicableIf" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="Questions" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="Question" type="common:Representation" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="Taxon" type="xs:IDREF" minOccurs="0"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>

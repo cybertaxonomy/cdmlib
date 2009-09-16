@@ -163,7 +163,7 @@
 
   <xs:complexType name="TermBase" abstract="true">
     <xs:complexContent>
-      <xs:extension base="common:VersionableEntity">
+      <xs:extension base="common:IdentifiableEntity">
         <xs:sequence>
           <xs:element name="URI" type="xs:anyURI" minOccurs="0"/>
           <xs:element name="Representations" minOccurs="0">
@@ -183,6 +183,7 @@
       <xs:extension base="common:CdmBase">
         <xs:sequence>
           <xs:element name="UpdatedBy" type="xs:IDREF" minOccurs="0"/>
+          <xs:element name="Updated" type="xs:string" minOccurs="0"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
@@ -320,6 +321,24 @@
               </xs:sequence>
             </xs:complexType>
           </xs:element>
+          <xs:element name="Credits" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="Credit" type="common:Credit" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="Credit">
+    <xs:complexContent>
+      <xs:extension base="common:LanguageStringBase">
+        <xs:sequence>
+          <xs:element name="Agent" type="xs:IDREF" minOccurs="0"/>
+          <xs:element name="AbbreviatedText" type="xs:string" minOccurs="0"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
@@ -496,6 +515,7 @@
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
+  
   <xs:complexType name="LSIDAuthority">
     <xs:sequence>
       <xs:element name="Authority" type="xs:string"/>
@@ -505,6 +525,7 @@
       <xs:element name="Namespaces" type="common:Namespaces"/>
     </xs:sequence>
   </xs:complexType>
+  
   <xs:complexType name="Namespaces">
     <xs:sequence>
       <xs:element ref="common:Namespace" minOccurs="1" maxOccurs="unbounded"/>
@@ -517,11 +538,13 @@
       <xs:element name="Class" type="xs:string"/>
     </xs:sequence>
   </xs:complexType>
+  
   <xs:complexType name="MultilanguageText">
     <xs:sequence>
-      <xs:element ref="common:LanguageString" minOccurs="1" maxOccurs="unbounded"/>
+      <xs:element ref="common:LanguageString" minOccurs="0" maxOccurs="unbounded"/>
     </xs:sequence>
   </xs:complexType>
+  
   <xs:simpleType name="UUID">
         <xs:annotation>
             <xs:appinfo>

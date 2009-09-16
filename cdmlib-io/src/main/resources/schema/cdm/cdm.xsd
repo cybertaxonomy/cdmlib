@@ -71,6 +71,7 @@
                 <xs:element ref="name:NameRelationshipType"/>
                 <xs:element ref="name:NomenclaturalCode"/>
                 <xs:element ref="name:NomenclaturalStatusType"/>
+                <xs:element ref="name:NameTypeDesignationStatus"/>
                 <xs:element ref="description:PresenceTerm"/>
                 <xs:element ref="occurrence:PreservationMethod"/>
                 <xs:element ref="name:Rank"/>
@@ -199,6 +200,7 @@
                 <xs:element ref="name:BacterialName"/>
                 <xs:element ref="name:BotanicalName"/>
                 <xs:element ref="name:CultivarPlantName"/>
+                <xs:element ref="name:NonViralName"/>
                 <xs:element ref="name:ViralName"/>
                 <xs:element ref="name:ZoologicalName"/>
               </xs:choice>

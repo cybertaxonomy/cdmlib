@@ -77,7 +77,7 @@
           <xs:element name="IsNomenclaturallyRelevant" type="xs:boolean"/>
           <xs:element name="AuthorTeam" type="xs:IDREF" minOccurs="0"/>
         </xs:sequence>
-        <xs:attribute name="hasProblem" type="xs:boolean" use="required"/>
+        <xs:attribute name="parsingProblem" type="xs:int" use="required"/>
         <xs:attribute name="problemStarts" type="xs:int" use="required"/>
         <xs:attribute name="problemEnds" type="xs:int" use="required"/>
       </xs:extension>
