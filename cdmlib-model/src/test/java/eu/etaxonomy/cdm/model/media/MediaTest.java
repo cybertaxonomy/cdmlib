@@ -122,7 +122,7 @@ public class MediaTest {
 			Assert.assertEquals("German description must equal media1Desc2", germanDescription, mediaClone.getDescription().get(Language.GERMAN()).getText() );
 			
 			Assert.assertEquals("Media created year must be 2002", 2002, mediaClone.getMediaCreated().getYear());
-			Assert.assertEquals("Number of media representations must be 1", 1, mediaClone.getRepresentations().size());
+			Assert.assertEquals("Number of media representations must be 2", 2, mediaClone.getRepresentations().size());
 			Assert.assertNotSame("Only media representation must not be mediaRepresentation1", mediaRepresentation1, mediaClone.getRepresentations().iterator().next());
 			Assert.assertEquals("Only meda representation must have same MimeType as mediaRepresentation1", mediaRepresentation1.getMimeType(), mediaClone.getRepresentations().iterator().next().getMimeType());
 			Assert.assertTrue("Rights must contain rights1", mediaClone.getRights().contains(rights1));
@@ -152,7 +152,10 @@ public class MediaTest {
 		Assert.assertTrue("Representations must contain mediaRepresentation1", media1.getRepresentations().contains(mediaRepresentation1));
 		media1.removeRepresentation(mediaRepresentation1);
 		Assert.assertFalse("Representations must not contain mediaRepresentation1", media1.getRepresentations().contains(mediaRepresentation1));
-		Assert.assertEquals("Number of representations must be 0", 0, media1.getRepresentations().size());	
+		Assert.assertEquals("Number of representations must be 1", 1, media1.getRepresentations().size());
+		media1.removeRepresentation(mediaRepresentation2);
+		Assert.assertFalse("Representations must not contain mediaRepresentation2", media1.getRepresentations().contains(mediaRepresentation2));
+		Assert.assertEquals("Number of representations must be 0", 0, media1.getRepresentations().size());
 	}
 
 	/**
