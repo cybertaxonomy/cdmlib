@@ -141,9 +141,9 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 
 		String selectColumns = 
 			" SELECT Parent.TAX_NAME AS P2Name, Parent.TAX_RNK_ID AS P2RankId, " +
-			" GrandParent.TAX_NAME AS GP3Name, GrandParent.TAX_RNK_ID AS GP3RankId, " +
-			" GreatGrandParent.TAX_NAME AS GGP4Name, GreatGrandParent.TAX_RNK_ID AS GGP4RankId, " +
-			" GreatGreatGrandParent.TAX_NAME AS GGGP5Name, OriginalGenusTaxon.TAX_NAME AS OGenusName, " +
+			" GrandParent.TAX_ID AS GP3Id, GrandParent.TAX_NAME AS GP3Name, GrandParent.TAX_RNK_ID AS GP3RankId, " +
+			" GreatGrandParent.TAX_ID AS GGP4Id, GreatGrandParent.TAX_NAME AS GGP4Name, GreatGrandParent.TAX_RNK_ID AS GGP4RankId, " +
+			" GreatGreatGrandParent.TAX_ID AS GGG5Id, GreatGreatGrandParent.TAX_NAME AS GGGP5Name, OriginalGenusTaxon.TAX_NAME AS OGenusName, " +
 			" Taxon.*, rank.*, author.* ";
 		
 		String fromClause = 
@@ -372,9 +372,12 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 			String nameString = 
 				buildTaxonName(fauEuTaxon, taxonBase, taxonName, false, fauEuConfig);
 			
-			if (fauEuConfig.isDoBasionyms() && fauEuTaxon.isValid() &&
-					(fauEuTaxon.getOriginalGenusId() != 0) &&
-					(fauEuTaxon.getParentId() != fauEuTaxon.getOriginalGenusId())) {
+//			if (fauEuConfig.isDoBasionyms() && fauEuTaxon.isValid() &&
+//					(fauEuTaxon.getOriginalGenusId() != 0) &&
+//					(fauEuTaxon.getParentId() != fauEuTaxon.getOriginalGenusId())) {
+			if (fauEuConfig.isDoBasionyms() 
+					&& fauEuTaxon.getRankId() > R_SUBGENUS
+					&& (fauEuTaxon.getOriginalGenusId() != 0)) {
 				success = createBasionym(fauEuTaxon, taxonBase, taxonName, fauEuConfig);
 			}
 		}
@@ -506,6 +509,69 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 		stringBuilder.append(" ");
 		
 		return stringBuilder.toString();
+	}
+
+	/** Get actual genus id **/
+	private int getActualGenusId(FaunaEuropaeaTaxon fauEuTaxon) {
+		
+		int actualGenusId = -1;
+		int rank = fauEuTaxon.getRankId();
+		int parentRankId = fauEuTaxon.getParentRankId();
+		int grandParentRankId = fauEuTaxon.getGrandParentRankId();
+		int greatGrandParentRankId = fauEuTaxon.getGreatGrandParentRankId();
+		
+		if (fauEuTaxon.isValid()) { // Taxon
+			
+			if (rank == R_SPECIES) {
+
+				if(parentRankId == R_SUBGENUS) {
+
+					actualGenusId = fauEuTaxon.getGrandParentId();
+	
+				} else if(parentRankId == R_GENUS) {
+
+					actualGenusId = fauEuTaxon.getParentId();
+				}
+
+			} else if (rank == R_SUBSPECIES) {
+
+				if(grandParentRankId == R_SUBGENUS) {
+
+					actualGenusId = fauEuTaxon.getGreatGrandParentId();
+					
+				} else if (grandParentRankId == R_GENUS) {
+
+					actualGenusId = fauEuTaxon.getGrandParentId();
+
+				}
+			}
+		} else { // Synonym
+			
+			if (rank == R_SPECIES) {
+
+				if(grandParentRankId == R_SUBGENUS) {
+					
+					actualGenusId = fauEuTaxon.getGreatGrandParentId();
+					
+				} else if (grandParentRankId == R_GENUS) {
+					
+					actualGenusId = fauEuTaxon.getGrandParentId();
+
+				}
+
+			} else if (rank == R_SUBSPECIES) {
+				
+				if(greatGrandParentRankId == R_SUBGENUS) {
+					
+					actualGenusId = fauEuTaxon.getGreatGreatGrandParentId();
+					
+				} else if (greatGrandParentRankId == R_GENUS) {
+					
+					actualGenusId = fauEuTaxon.getGreatGrandParentId();
+				}
+			}
+		}
+		return actualGenusId;
 	}
 	
 	
