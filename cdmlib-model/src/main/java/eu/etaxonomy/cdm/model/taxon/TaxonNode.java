@@ -10,9 +10,7 @@
 
 package eu.etaxonomy.cdm.model.taxon;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Entity;
@@ -56,7 +54,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 @XmlRootElement(name = "TaxonNode")
 @Entity
 @Audited
-public class TaxonNode  extends AnnotatableEntity {
+public class TaxonNode  extends AnnotatableEntity implements ITreeNode{
 	private static final long serialVersionUID = -4743289894926587693L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TaxonNode.class);
@@ -119,36 +117,83 @@ public class TaxonNode  extends AnnotatableEntity {
 		super();
 	}
 	
-	//to create nodes either use TaxonomicView.addRoot() or TaxonNode.addChild();
+	/**
+	 * to create nodes either use TaxonomicView.addRoot() or TaxonNode.addChild();
+	 * @param taxon
+	 * @param taxonomicTree
+	 * @deprecated setting of taxonomic tree is handled in the addTaxonNode() method,
+	 * use TaxonNode(taxon) instead
+	 */
 	protected TaxonNode (Taxon taxon, TaxonomicTree taxonomicTree){
-		setTaxon(taxon);
+		this(taxon);
 		setTaxonomicView(taxonomicTree);
+	}
+	
+	/**
+	 * to create nodes either use TaxonomicView.addRoot() or TaxonNode.addChild();
+	 * 
+	 * @param taxon
+	 */
+	protected TaxonNode(Taxon taxon){
+		setTaxon(taxon);
 	}
 
 	
 	
 //************************ METHODS **************************/
-	
+	/**
+	 * @deprecated developers should be forced to pass in null values if they choose so.
+	 */
+	@Deprecated
 	public TaxonNode addChild(Taxon taxon){
 		return addChild(taxon, null, null, null);
 	}
 	
+	/**
+	 * @deprecated developers should be forced to pass in null values if they choose so.
+	 */
+	@Deprecated
 	public TaxonNode addChild(Taxon taxon, ReferenceBase ref, String microReference){
 		return addChild(taxon, ref, microReference, null);
 	}	
 	
+	/**
+	 * 
+	 * @param taxon
+	 * @param ref
+	 * @param microReference
+	 * @param synonymUsed
+	 * @return
+	 * @deprecated use addChildTaxon() instead
+	 */
+	@Deprecated
 	public TaxonNode addChild(Taxon taxon, ReferenceBase ref, String microReference, Synonym synonymUsed){
+		return addChildTaxon(taxon, ref, microReference, synonymUsed);
+	}
+	
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.taxon.ITreeNode#addChildTaxon(eu.etaxonomy.cdm.model.taxon.Taxon, eu.etaxonomy.cdm.model.reference.ReferenceBase, java.lang.String, eu.etaxonomy.cdm.model.taxon.Synonym)
+	 */
+	public TaxonNode addChildTaxon(Taxon taxon, ReferenceBase citation,
+			String microCitation, Synonym synonymToBeUsed) {
 		if (this.getTaxonomicTree().isTaxonInTree(taxon)){
 			throw new IllegalArgumentException("Taxon may not be twice in a taxonomic view");
 		}
-		TaxonNode childNode = new TaxonNode(taxon, this.getTaxonomicTree());
-		addChildNote(childNode, ref, microReference, synonymUsed);
-		return childNode;
+		
+		return addChildNode(new TaxonNode(taxon), citation, microCitation, synonymToBeUsed);
 	}
 	
-	/*
-	 * TODO what is the meaning of this method? Is addChildNote a typo? why is it protected? n.hoffmann
+	/**
+	 * 
+	 * @param childNode
+	 * @param ref
+	 * @param microReference
+	 * @param synonymUsed
+	 * 
+	 * @deprecated use addChildNode instead
 	 */
+	@Deprecated 
 	protected void addChildNote(TaxonNode childNode, ReferenceBase ref, String microReference, Synonym synonymUsed){
 		if (! childNode.getTaxonomicTree().equals(this.getTaxonomicTree())){
 			throw new IllegalArgumentException("addChildNote(): both nodes must be part of the same view");
@@ -162,23 +207,27 @@ public class TaxonNode  extends AnnotatableEntity {
 	}
 	
 	/**
-	 * Moves a taxon node and all descendent nodes to a new parent. 
+	 * Moves a taxon node to a new parent. Descendents of the node are moved as well 
 	 * 
 	 * @param childNode the taxon node to be moved to the new parent
 	 * @return the child node in the state of having a new parent
 	 */
-	public TaxonNode addChildNode(TaxonNode childNode, ReferenceBase reference, String microReference){
+	public TaxonNode addChildNode(TaxonNode childNode, ReferenceBase reference, String microReference, Synonym synonymToBeUsed){
 		// check if this node is a descendant of the childNode 
 		if(childNode.getParent() != this && childNode.isAscendant(this)){
 			throw new IllegalAncestryException("New parent node is a descendant of the node to be moved.");
 		}
 		
 		childNode.setParent(this);
+		childNode.setTaxonomicView(this.getTaxonomicTree());
+		childNodes.add(childNode);
+		this.countChildren++;
 		childNode.setReferenceForParentChildRelation(reference);
 		childNode.setMicroReferenceForParentChildRelation(microReference);
+		childNode.setSynonymToBeUsed(synonymToBeUsed);
 		
 		for(TaxonNode grandChildNode : childNode.getChildNodes()){
-			childNode.addChildNode(grandChildNode, childNode.getReferenceForParentChildRelation(), childNode.getMicroReferenceForParentChildRelation());
+			childNode.addChildNode(grandChildNode, childNode.getReferenceForParentChildRelation(), childNode.getMicroReferenceForParentChildRelation(), childNode.getSynonymToBeUsed());
 		}
 		
 		return childNode;
@@ -190,8 +239,18 @@ public class TaxonNode  extends AnnotatableEntity {
 	 * 
 	 * @param node
 	 * @return
+	 * @deprecated use removeChildNode() instead
 	 */
+	@Deprecated
 	public boolean removeChild(TaxonNode node){
+		return removeChildNode(node);
+	}	
+	
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.taxon.ITreeNode#removeChildNode(eu.etaxonomy.cdm.model.taxon.TaxonNode)
+	 */
+	public boolean removeChildNode(TaxonNode node) {
 		boolean result = false;
 		if (node != null){
 			// two iterations because of ConcurrentModificationErrors
@@ -200,7 +259,7 @@ public class TaxonNode  extends AnnotatableEntity {
                     removeNodes.add(grandChildNode); 
             } 
             for (TaxonNode childNode : removeNodes) { 
-                    childNode.removeChild(node); 
+                    childNode.removeChildNode(node); 
             } 
             
 			result = childNodes.remove(node);
@@ -214,13 +273,15 @@ public class TaxonNode  extends AnnotatableEntity {
 			node.setTaxon(null);
 		}
 		return result;
-	}	
+	}
 	
 	/**
 	 * Remove this taxonNode From its taxonomic view.
 	 * 
 	 * @return true on success
+	 * @deprecated use removeChildNode() instead as it is mandatory by the interface ITreeNode
 	 */
+	@Deprecated
 	public boolean remove(){
 		if(isRootNode()){
 			return taxonomicTree.removeRoot(this);
@@ -377,6 +438,4 @@ public class TaxonNode  extends AnnotatableEntity {
 	public boolean hasChildNodes(){
 		return childNodes.size() > 0;
 	}
-	
-
 }
