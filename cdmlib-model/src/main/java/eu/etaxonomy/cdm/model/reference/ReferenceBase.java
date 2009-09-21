@@ -73,7 +73,7 @@ import eu.etaxonomy.cdm.strategy.parser.ParserProblem;
  * @created 08-Nov-2007 13:06:47
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "ReferenceBase", propOrder = {
+@XmlType(name = "Reference", propOrder = {
 	"uri",
 	"nomenclaturallyRelevant",
     "authorTeam",
@@ -99,7 +99,8 @@ import eu.etaxonomy.cdm.strategy.parser.ParserProblem;
 @Entity
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 @Audited
-@Table(appliesTo="ReferenceBase", indexes = { @org.hibernate.annotations.Index(name = "ReferenceBaseTitleCacheIndex", columnNames = { "titleCache" }) })
+@javax.persistence.Table(name="Reference")
+@Table(appliesTo="Reference", indexes = { @org.hibernate.annotations.Index(name = "ReferenceTitleCacheIndex", columnNames = { "titleCache" }) })
 public abstract class ReferenceBase<S extends IReferenceBaseCacheStrategy> extends IdentifiableMediaEntity<S> implements IParsable, IMergable, IMatchable {
 	private static final long serialVersionUID = -2034764545042691295L;
 	private static final Logger logger = Logger.getLogger(ReferenceBase.class);
