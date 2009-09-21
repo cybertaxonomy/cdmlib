@@ -82,9 +82,6 @@ public class FaunaEuropaeaRefImport extends FaunaEuropaeaImportBase {
 	@Override
 	protected boolean doInvoke(FaunaEuropaeaImportState state) {				
 
-//		Map<String, MapWrapper<? extends CdmBase>> stores = state.getStores();
-//		MapWrapper<TeamOrPersonBase> authorStore = (MapWrapper<TeamOrPersonBase>)stores.get(ICdmIO.TEAM_STORE);
-//		MapWrapper<ReferenceBase> refStore = (MapWrapper<ReferenceBase>)stores.get(ICdmIO.REFERENCE_STORE);
 		TransactionStatus txStatus = null;
 		List<TaxonBase> taxonList = null;
 		Set<UUID> taxonUuids = null;
@@ -98,23 +95,43 @@ public class FaunaEuropaeaRefImport extends FaunaEuropaeaImportBase {
 
 		String namespace = "Reference";
 		boolean success = true;
+		int i = 0;
+
+		String selectCount = 
+			" SELECT count(*) ";
+
+		String selectColumns = 
+			" SELECT Reference.*, TaxRefs.*, Taxon.UUID  ";
+			
+		String fromClause = 
+			" FROM TaxRefs " +
+			" INNER JOIN Reference ON Reference.ref_id = TaxRefs.trf_ref_id " +
+			" INNER JOIN Taxon ON TaxRefs.trf_tax_id = Taxon.TAX_ID ";
+		
+		String orderClause = 
+			" ORDER BY TaxRefs.trf_tax_id";
+			
+		String countQuery = 
+			selectCount + fromClause;
+
+		String selectQuery = 
+			selectColumns + fromClause + orderClause;
 
 		if(logger.isInfoEnabled()) { logger.info("Start making References..."); }
 
 		try {
-			String strQuery = 
-				" SELECT Reference.*, TaxRefs.*, Taxon.UUID " + 
-				" FROM TaxRefs " +
-				" INNER JOIN Reference ON Reference.ref_id = TaxRefs.trf_ref_id " +
-				" INNER JOIN Taxon ON TaxRefs.trf_tax_id = Taxon.TAX_ID " +
-				" ORDER BY TaxRefs.trf_tax_id";
-
-			if (logger.isInfoEnabled()) {
-				logger.info("Query: " + strQuery);
+			ResultSet rs = source.getResultSet(countQuery);
+			rs.next();
+			int count = rs.getInt(1);
+			
+			rs = source.getResultSet(selectQuery);
+            								
+	        if (logger.isInfoEnabled()) {
+				logger.info("Number of rows: " + count);
+				logger.info("Count Query: " + countQuery);
+				logger.info("Select Query: " + selectQuery);
 			}
-			ResultSet rs = source.getResultSet(strQuery) ;
 
-			int i = 0;
 			while (rs.next()) {
 
 				if ((i++ % limit) == 0) {
@@ -229,7 +246,7 @@ public class FaunaEuropaeaRefImport extends FaunaEuropaeaImportBase {
 				fauEuTaxonMap.get(currentTaxonUuid).addReference(fauEuReference);
 
 				Taxon taxon = null;
-				if ((i % limit) == 0 && i != 1 ) {
+				if (((i % limit) == 0 && i != 1 ) || i == count) { 
 
 					try {
 
@@ -287,12 +304,14 @@ public class FaunaEuropaeaRefImport extends FaunaEuropaeaImportBase {
 								}
 							}
 						}
-						if(logger.isInfoEnabled()) { logger.info("Saving references ..."); }
+						if(logger.isInfoEnabled()) { 
+							logger.info("i = " + i + " - Transaction committed"); 
+						}
 
 						// save taxa, references, and authors
 						getTaxonService().saveTaxonAll(taxonList);
 						getReferenceService().saveReferenceAll(references);
-						getAgentService().saveAgentAll(authors);
+//						getAgentService().saveAgentAll(authors);
 
 						taxonUuids = null;
 						references = null;

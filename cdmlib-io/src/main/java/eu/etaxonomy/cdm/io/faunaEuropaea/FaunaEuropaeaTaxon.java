@@ -19,6 +19,7 @@ import java.util.UUID;
 public class FaunaEuropaeaTaxon {
 	
 	private UUID uuid;
+	private UUID parentUuid;
 	private int id;
 	private int rankId;
 	private int parentId;
@@ -378,6 +379,20 @@ public class FaunaEuropaeaTaxon {
 	 */
 	public void setGreatGreatGrandParentId(int greatGreatGrandParentId) {
 		this.greatGreatGrandParentId = greatGreatGrandParentId;
+	}
+
+	/**
+	 * @return the parentUuid
+	 */
+	public UUID getParentUuid() {
+		return parentUuid;
+	}
+
+	/**
+	 * @param parentUuid the parentUuid to set
+	 */
+	public void setParentUuid(UUID parentUuid) {
+		this.parentUuid = parentUuid;
 	}
 
 //	/**
