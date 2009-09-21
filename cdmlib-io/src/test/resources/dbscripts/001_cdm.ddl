@@ -2504,7 +2504,8 @@
         updated timestamp,
         citationmicroreference varchar(255),
         originalnamestring varchar(255),
-        idinsource varchar(255),
+        nameUsedInSource_id integer,
+		idinsource varchar(255),
         idnamespace varchar(255),
         sourcedObj_type varchar(255),
         sourcedObj_id integer not null,
@@ -2524,7 +2525,8 @@
         updated timestamp,
         citationmicroreference varchar(255),
         originalnamestring varchar(255),
-        idinsource varchar(255),
+        nameUsedInSource_id integer,
+		idinsource varchar(255),
         idnamespace varchar(255),
         createdby_id integer,
         updatedby_id integer,
@@ -6682,6 +6684,11 @@
         add constraint FK229A496C9803512F 
         foreign key (citation_id) 
         references Reference;
+
+    alter table OriginalSourceBase 
+        add constraint FK820A492C9803E12F 
+        foreign key (nameUsedInSource_id) 
+        references TaxonNameBase;
 
     alter table OriginalSourceBase 
         add constraint FK229A496CBC5DA539 

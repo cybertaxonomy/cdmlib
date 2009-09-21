@@ -130,7 +130,9 @@ public class TaxonXDescriptionImport extends CdmIoBase<TaxonXImportState> implem
 				description.addElement(descriptionElement);
 				
 				//add reference
-				descriptionElement.setCitation(state.getModsReference());
+				if (state.getModsReference() != null){
+					descriptionElement.addSource(null, null, state.getModsReference(), null, null, null);
+				}
 			}
 
 		}

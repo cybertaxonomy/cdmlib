@@ -28,6 +28,8 @@ import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.DescriptionElementSource;
+import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
@@ -294,12 +296,15 @@ public class FaunaEuropaeaRefImport extends FaunaEuropaeaImportBase {
 								for (FaunaEuropaeaReference storedReference : fauEuHelperTaxon.getReferences()) {
 
 									TextData textData = TextData.NewInstance(Feature.CITATION());
+									
+									ReferenceBase citation = storedReference.getCdmReference();
+									String microCitation = storedReference.getPage();
+									DescriptionElementSource originalSource = DescriptionElementSource.NewInstance(null, null, citation, microCitation, null, null);
 									if (isSynonym){
 										Synonym syn = CdmBase.deproxy(taxonBase, Synonym.class);
-										textData.setNameUsedInReference(syn.getName());
+										originalSource.setNameUsedInSource(syn.getName());
 									}
-									textData.setCitation(storedReference.getCdmReference());
-									textData.setCitationMicroReference(storedReference.getPage());
+									textData.addSource(originalSource);
 									taxonDescription.addElement(textData);
 								}
 							}

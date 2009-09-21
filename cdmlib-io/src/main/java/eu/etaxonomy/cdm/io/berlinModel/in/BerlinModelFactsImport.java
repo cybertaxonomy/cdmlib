@@ -27,6 +27,7 @@ import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.model.common.Annotation;
+import eu.etaxonomy.cdm.model.common.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
@@ -318,9 +319,12 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 							citation = null;
 						}
 
-						
-						textData.setCitation(citation);
-						textData.setCitationMicroReference(details);
+						if (citation != null || CdmUtils.isNotEmpty(details)){
+							DescriptionElementSource originalSource = DescriptionElementSource.NewInstance();
+							originalSource.setCitation(citation);
+							originalSource.setCitationMicroReference(details);
+							textData.addSource(originalSource);
+						}
 						taxonDescription.addElement(textData);
 						//doubtfulFlag
 						if (doubtfulFlag){

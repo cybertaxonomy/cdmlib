@@ -14,6 +14,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlSchemaType;
@@ -21,10 +22,13 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Any;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
 
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
 /**
@@ -33,7 +37,8 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
  * @version 1.0
  */
 @XmlType(name = "DescriptionElementSource", propOrder = {
-	    "sourcedObj"
+	    "sourcedObj",
+	    "nameUsedInSource",
 	})
 @Entity
 @Audited
@@ -70,6 +75,13 @@ public class DescriptionElementSource extends OriginalSourceBase<DescriptionElem
 		return result;
 	}
 	
+	public static DescriptionElementSource NewInstance(String id, String idNamespace, ReferenceBase citation, String microReference, TaxonNameBase nameUsedInSource, String originalNameString){
+		DescriptionElementSource result = NewInstance(id, idNamespace, citation, microReference);
+		result.setNameUsedInSource(nameUsedInSource);
+		result.setOriginalNameString(originalNameString);
+		return result;
+	}
+	
 	@XmlElement(name = "SourcedObject")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
@@ -81,7 +93,21 @@ public class DescriptionElementSource extends OriginalSourceBase<DescriptionElem
 	@NotAudited
 	private DescriptionElementBase sourcedObj;
 	
-
+	@XmlElement(name = "nameUsedInSource")
+	@XmlIDREF
+	@XmlSchemaType(name = "IDREF")
+	@ManyToOne(fetch = FetchType.LAZY)
+	@Cascade({CascadeType.SAVE_UPDATE})
+	private TaxonNameBase nameUsedInSource;
+	
+	private DescriptionElementSource(){
+		
+	}
+	
+	
+// **************************  GETTER / SETTER ****************************************************/
+	
+	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.IOriginalSource#getSourcedObj()
 	 */
@@ -95,5 +121,23 @@ public class DescriptionElementSource extends OriginalSourceBase<DescriptionElem
 	public void setSourcedObj(DescriptionElementBase sourcedObj) {
 		this.sourcedObj = sourcedObj;
 	}
+	
+	
+	/**
+	 * @return the taxonNameUsedInSource
+	 */
+	public TaxonNameBase getNameUsedInSource() {
+		return nameUsedInSource;
+	}
+
+	/**
+	 * @param nameUsedInReference the nameUsedInReference to set
+	 */
+	public void setNameUsedInSource(TaxonNameBase nameUsedInSource) {
+		this.nameUsedInSource = nameUsedInSource;
+	}
+
+	
+	
 	
 }
