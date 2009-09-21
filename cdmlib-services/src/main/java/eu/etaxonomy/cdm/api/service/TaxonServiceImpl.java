@@ -14,17 +14,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.UUID;
-import java.util.Map.Entry;
 
 import org.apache.log4j.Logger;
-import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.TransactionStatus;
@@ -48,6 +45,7 @@ import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.taxon.ITreeNode;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
@@ -129,6 +127,20 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 	public TaxonNode getTaxonNodeByUuid(UUID uuid) {
 		return taxonNodeDao.findByUuid(uuid);
 	}
+	
+	/**
+	 * FIXME Candidate for harmonization
+	 * move to taxonTreeService
+	 */
+	public ITreeNode getTreeNodeByUuid(UUID uuid){
+		ITreeNode treeNode = taxonNodeDao.findByUuid(uuid);
+		if(treeNode == null){
+			treeNode = taxonTreeDao.findByUuid(uuid);
+		}
+		
+		return treeNode;
+	}
+	
 	/**
 	 * FIXME Candidate for harmonization
 	 * move to taxonTreeService
@@ -419,8 +431,6 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 	public List<RelationshipBase> getAllRelationships(int limit, int start){
 		return dao.getAllRelationships(limit, start);
 	}
-	
-	
 	
 	/**
 	 * FIXME Candidate for harmonization
@@ -771,11 +781,11 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 	/*
 	 * (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#getUuidAndTitleCacheOfAcceptedTaxa(eu.etaxonomy.cdm.model.taxon.TaxonomicTree)
-	 
+	 */
 	public List<UuidAndTitleCache> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByTaxonomicTree(TaxonomicTree taxonomicTree) {
 		return taxonDao.getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByTaxonomicTree(taxonomicTree);
 	}
-	*/
+	
 	
 	public Map<UUID, List<MediaRepresentation>> getAllMediaForChildNodes(Taxon taxon, TaxonomicTree taxTree, List<String> propertyPaths, int size, int height, int widthOrDuration, String[] mimeTypes){
 		TreeMap<UUID, List<MediaRepresentation>> result = new TreeMap<UUID, List<MediaRepresentation>>();
@@ -785,7 +795,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		if (taxTree != null || taxon != null){
 			
 			taxTree = taxonTreeDao.load(taxTree.getUuid());
-			//taxon = (Taxon)dao.load(taxon.getUuid());
+			taxon = (Taxon)dao.load(taxon.getUuid());
 					
 			List<TaxonNode> taxNodes = loadChildNodesOfTaxon(taxon, taxTree, propertyPaths);
 			if (taxNodes.size() != 0){
@@ -798,7 +808,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 			if (taxNodes != null){
 				for(TaxonNode childNode : taxNodes){
 					taxon = childNode.getTaxon();
-					/*Set<TaxonDescription> descriptions = taxon.getDescriptions();
+					Set<TaxonDescription> descriptions = taxon.getDescriptions();
 					for (TaxonDescription taxDesc: descriptions){
 						Set<DescriptionElementBase> elements = taxDesc.getElements();
 						for (DescriptionElementBase descElem: elements){
@@ -810,8 +820,8 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 								
 							}
 						}
-					}*/
-					result.put(taxon.getUuid(), getAllMedia(taxon, size, height, widthOrDuration,mimeTypes));
+					}
+					result.put(taxon.getUuid(), medRep);
 										
 				}	
 			}
@@ -822,6 +832,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		
 		return result;
 	}
+
 
 
 	public List<MediaRepresentation> getAllMedia(Taxon taxon, int size, int height, int widthOrDuration, String[] mimeTypes){

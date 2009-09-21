@@ -15,7 +15,6 @@ import org.apache.log4j.Logger;
 import org.hibernate.LockMode;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.stat.SessionStatistics;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;

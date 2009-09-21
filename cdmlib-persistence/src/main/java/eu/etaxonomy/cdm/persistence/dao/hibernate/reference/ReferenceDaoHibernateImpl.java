@@ -9,7 +9,6 @@
 package eu.etaxonomy.cdm.persistence.dao.hibernate.reference;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -210,7 +209,7 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<ReferenceBase
 				UUID uuid = UUID.fromString((String) objectArray[0]);
 				String titleCache = (String) objectArray[1];
 				
-				list.add(new UuidAndTitleCache(uuid, titleCache));
+				list.add(new UuidAndTitleCache(type, uuid, titleCache));
 			}
 			
 			return list;	

@@ -24,7 +24,9 @@ import eu.etaxonomy.cdm.model.common.ISourceable;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.OriginalSourceBase;
+import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.media.Rights;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
 
 @Transactional(readOnly = true)
@@ -94,5 +96,12 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 			result = list.get(0);
 		}
 		return result;
+	}
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.service.IIdentifiableEntityService#getUuidAndTitleCache()
+	 */
+	public List<UuidAndTitleCache<T>> getUuidAndTitleCache() {
+		return dao.getUuidAndTitleCache();
 	}
 }

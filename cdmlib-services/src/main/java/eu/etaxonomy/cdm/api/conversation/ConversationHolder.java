@@ -214,7 +214,7 @@ public class ConversationHolder{
 		if(longSession == null){
 			logger.info("Creating Session: [" + longSession + "]");
 			longSession = SessionFactoryUtils.getNewSession(getSessionFactory());
-			longSession.setFlushMode(FlushMode.MANUAL);
+			longSession.setFlushMode(FlushMode.COMMIT);
 		}
 		
 		// connect dataSource with session

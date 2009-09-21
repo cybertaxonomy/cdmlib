@@ -9,7 +9,10 @@
 
 package eu.etaxonomy.cdm.persistence.dao.hibernate.common;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
@@ -26,6 +29,7 @@ import eu.etaxonomy.cdm.model.common.Credit;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.LSID;
+import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
@@ -193,5 +197,20 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity> extends Annotatab
 				return (T)objs.get(0)[0];
 			}
 		}
+	}
+	
+	public List<UuidAndTitleCache<T>> getUuidAndTitleCache(){
+		List<UuidAndTitleCache<T>> list = new ArrayList<UuidAndTitleCache<T>>();
+		Session session = getSession();
+		
+		Query query = session.createQuery("select uuid, titleCache from " + type.getSimpleName());
+		
+		List<Object[]> result = query.list();
+		
+		for(Object[] object : result){
+			list.add(new UuidAndTitleCache<T>(type, (UUID) object[0], (String) object[1]));
+		}
+		
+		return list;
 	}
 }

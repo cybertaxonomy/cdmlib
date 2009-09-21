@@ -14,6 +14,7 @@ import java.util.List;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.LSID;
+import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
 
@@ -74,4 +75,14 @@ public interface IIdentifiableDao <T extends IdentifiableEntity> extends IAnnota
 	
 	// TODO Migrated from IOriginalSourceDao
 	public List<T> findOriginalSourceByIdInSource(String idInSource, String idNamespace);
+	
+	/**
+	 * Return a list of all uuids mapped to titleCache in the convenient <code>UuidAndTitleCache</code> object.
+	 * Retrieving this list is considered to be significantly faster than initializing the fully fledged buiseness
+	 * objects. To be used in cases where you want to present large amount of data and provide details after 
+	 * a selection has been made.  
+	 * 
+	 * @return a list of <code>UuidAndTitleCache</code> instances
+	 */
+	public List<UuidAndTitleCache<T>> getUuidAndTitleCache(); 
 }
