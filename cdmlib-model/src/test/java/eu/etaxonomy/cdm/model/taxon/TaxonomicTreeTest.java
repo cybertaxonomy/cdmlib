@@ -10,18 +10,18 @@
 
 package eu.etaxonomy.cdm.model.taxon;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.lang.reflect.TypeVariable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
 
 import junit.framework.Assert;
@@ -35,13 +35,11 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.agent.Person;
-import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
-import eu.etaxonomy.cdm.model.reference.Article;
 import eu.etaxonomy.cdm.model.reference.Book;
 import eu.etaxonomy.cdm.model.reference.Journal;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
@@ -115,7 +113,7 @@ public class TaxonomicTreeTest {
 	public void testAddRoot() {
 		TaxonNameBase<?,?> synonymName = BotanicalName.NewInstance(Rank.SPECIES());
 		Synonym synonym = Synonym.NewInstance(synonymName, ref1);
-		TaxonNode taxonNode1 = taxonomicView1.addRoot(taxon1, synonym, null);
+		TaxonNode taxonNode1 = taxonomicView1.addChildTaxon(taxon1, null, null, synonym);
 		
 		
 		
@@ -127,8 +125,8 @@ public class TaxonomicTreeTest {
 		TaxonNode root = rootNodes.iterator().next();
 		assertEquals(taxon1, root.getTaxon());
 		assertSame(taxonNode1, root);
-		assertNull(root.getReferenceForParentChildRelation());
-		assertNull(root.getMicroReferenceForParentChildRelation());
+		assertNull(root.getReference());
+		assertNull(root.getMicroReference());
 		assertEquals(synonym, root.getSynonymToBeUsed());
 		
 		//any node
@@ -146,7 +144,7 @@ public class TaxonomicTreeTest {
 	 */
 	@Test
 	public void testIsTaxonInTree() {
-		taxonomicView1.addRoot(taxon1, null, null);
+		taxonomicView1.addChildTaxon(taxon1, null, null, null);
 		
 		assertTrue(taxonomicView1.isTaxonInTree(taxon1));
 		Taxon anyTaxon = Taxon.NewInstance(null, null);
@@ -159,10 +157,10 @@ public class TaxonomicTreeTest {
 	 */
 	@Test
 	public void testMakeRootChildOfOtherNode() {
-		TaxonNode root1 = taxonomicView1.addRoot(taxon1, null, null);
-		TaxonNode root2 = taxonomicView1.addRoot(taxon2, null, null);
+		TaxonNode root1 = taxonomicView1.addChildTaxon(taxon1, null, null, null);
+		TaxonNode root2 = taxonomicView1.addChildTaxon(taxon2, null, null, null);
 		Taxon taxon3 = Taxon.NewInstance(null, null);
-		root2.addChild(taxon3);
+		root2.addChildTaxon(taxon3, null, null, null);
 		String microRef = "p55";
 		
 		assertFalse("Root1 must not yet be child of root 2", root2.getChildNodes().contains(root1));
@@ -176,15 +174,15 @@ public class TaxonomicTreeTest {
 		assertSame("Root2 must be parent of root 1", root2, root1.getParent());
 		assertEquals("view must contain 3 nodes", 3, taxonomicView1.getAllNodes().size());
 		assertEquals("view must contain 1 root", 1, taxonomicView1.getRootNodes().size());
-		assertEquals("new child node must have the expected reference for parent child relationship", ref1, root1.getReferenceForParentChildRelation());
-		assertEquals("new child node must have the expected micro reference for parent child relationship", microRef, root1.getMicroReferenceForParentChildRelation());
+		assertEquals("new child node must have the expected reference for parent child relationship", ref1, root1.getReference());
+		assertEquals("new child node must have the expected micro reference for parent child relationship", microRef, root1.getMicroReference());
 		assertEquals("root2 must have 2 children", 2, root2.getChildNodes().size());
 		
 	}
 	
 	@Test
 	public void testIsRootInTree() {
-		TaxonNode root = taxonomicView1.addRoot(taxon1, null, null);
+		TaxonNode root = taxonomicView1.addChildTaxon(taxon1, null, null, null);
 		
 		assertTrue(taxonomicView1.isTaxonInTree(taxon1));
 		assertTrue(taxonomicView1.isRootInTree(taxon1));
@@ -192,21 +190,21 @@ public class TaxonomicTreeTest {
 		assertFalse(taxonomicView1.isTaxonInTree(anyTaxon));
 		assertFalse(taxonomicView1.isRootInTree(anyTaxon));
 		Taxon child = Taxon.NewInstance(null, null);
-		root.addChild(child);
+		root.addChildTaxon(child, null, null, null);
 		assertTrue(taxonomicView1.isTaxonInTree(child));
 		assertFalse(taxonomicView1.isRootInTree(child));
 	}
 	
 	@Test
 	public void testGetRootNode() {
-		TaxonNode root = taxonomicView1.addRoot(taxon1, null, null);
+		TaxonNode root = taxonomicView1.addChildTaxon(taxon1, null, null, null);
 		
 		assertEquals(root, taxonomicView1.getRootNode(taxon1));
 		Taxon anyTaxon = Taxon.NewInstance(null, null);
 		assertFalse(taxonomicView1.isTaxonInTree(anyTaxon));
 		assertNull(taxonomicView1.getRootNode(anyTaxon));
 		Taxon child = Taxon.NewInstance(null, null);
-		root.addChild(child);
+		root.addChildTaxon(child, null, null, null);
 		assertTrue(taxonomicView1.isTaxonInTree(child));
 		assertNull(taxonomicView1.getRootNode(child));
 	}
@@ -216,7 +214,7 @@ public class TaxonomicTreeTest {
 
 		TaxonNameBase<?,?> synonymName = BotanicalName.NewInstance(Rank.SPECIES());
 		Synonym synonym = Synonym.NewInstance(synonymName, ref1);
-		TaxonNode rootNode = taxonomicView1.addRoot(taxon1, synonym, null);
+		TaxonNode rootNode = taxonomicView1.addChildTaxon(taxon1, null, null, synonym);
 		Assert.assertEquals(0,rootNode.getChildNodes().size());
 		
 		//add child to existing root
@@ -235,8 +233,8 @@ public class TaxonomicTreeTest {
 		Assert.assertEquals(1,rootNode.getChildNodes().size());
 		childNode = rootNode.getChildNodes().iterator().next();
 		Assert.assertEquals(taxon2, childNode.getTaxon());
-		Assert.assertEquals(ref2, childNode.getReferenceForParentChildRelation());
-		Assert.assertEquals("Micro2", childNode.getMicroReferenceForParentChildRelation());
+		Assert.assertEquals(ref2, childNode.getReference());
+		Assert.assertEquals("Micro2", childNode.getMicroReference());
 		
 		logger.info("testAddParentChild not yet fully implemented");
 
