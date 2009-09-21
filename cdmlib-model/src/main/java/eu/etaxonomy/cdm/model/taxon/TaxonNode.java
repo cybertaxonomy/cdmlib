@@ -130,7 +130,7 @@ public class TaxonNode  extends AnnotatableEntity implements ITreeNode{
 	}
 	
 	/**
-	 * to create nodes either use TaxonomicView.addRoot() or TaxonNode.addChild();
+	 * to create nodes either use TaxonomicView.addChildTaxon() or TaxonNode.addChildTaxon();
 	 * 
 	 * @param taxon
 	 */
@@ -178,7 +178,7 @@ public class TaxonNode  extends AnnotatableEntity implements ITreeNode{
 	public TaxonNode addChildTaxon(Taxon taxon, ReferenceBase citation,
 			String microCitation, Synonym synonymToBeUsed) {
 		if (this.getTaxonomicTree().isTaxonInTree(taxon)){
-			throw new IllegalArgumentException("Taxon may not be twice in a taxonomic view");
+			throw new IllegalArgumentException("Taxon may not be in a taxonomic view twice");
 		}
 		
 		return addChildNode(new TaxonNode(taxon), citation, microCitation, synonymToBeUsed);
@@ -222,12 +222,12 @@ public class TaxonNode  extends AnnotatableEntity implements ITreeNode{
 		childNode.setTaxonomicView(this.getTaxonomicTree());
 		childNodes.add(childNode);
 		this.countChildren++;
-		childNode.setReferenceForParentChildRelation(reference);
-		childNode.setMicroReferenceForParentChildRelation(microReference);
+		childNode.setReference(reference);
+		childNode.setMicroReference(microReference);
 		childNode.setSynonymToBeUsed(synonymToBeUsed);
 		
 		for(TaxonNode grandChildNode : childNode.getChildNodes()){
-			childNode.addChildNode(grandChildNode, childNode.getReferenceForParentChildRelation(), childNode.getMicroReferenceForParentChildRelation(), childNode.getSynonymToBeUsed());
+			childNode.addChildNode(grandChildNode, childNode.getReference(), childNode.getMicroReference(), childNode.getSynonymToBeUsed());
 		}
 		
 		return childNode;
@@ -276,17 +276,15 @@ public class TaxonNode  extends AnnotatableEntity implements ITreeNode{
 	}
 	
 	/**
-	 * Remove this taxonNode From its taxonomic view.
+	 * Remove this taxonNode From its taxonomic parent
 	 * 
 	 * @return true on success
-	 * @deprecated use removeChildNode() instead as it is mandatory by the interface ITreeNode
 	 */
-	@Deprecated
 	public boolean remove(){
-		if(isRootNode()){
-			return taxonomicTree.removeRoot(this);
+		if(isTopmostNode()){
+			return taxonomicTree.removeChildNode(this);
 		}else{
-			return getParent().removeChild(this);
+			return getParent().removeChildNode(this);
 		}		
 	}
 	
@@ -356,24 +354,75 @@ public class TaxonNode  extends AnnotatableEntity implements ITreeNode{
 //	protected void setChildNodes(List<TaxonNode> childNodes) {
 //		this.childNodes = childNodes;
 //	}
+	/**
+	 * The reference for the parent child relationship
+	 * 
+	 * @see eu.etaxonomy.cdm.model.taxon.ITreeNode#getReference()
+	 */
+	public ReferenceBase getReference() {
+		return referenceForParentChildRelation;
+	}
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.taxon.ITreeNode#setReference(eu.etaxonomy.cdm.model.reference.ReferenceBase)
+	 */
+	public void setReference(ReferenceBase reference) {
+		this.referenceForParentChildRelation = reference;
+	}
+	
+	/**
+	 * @return
+	 * @deprecated use getReference instead
+	 */
+	@Deprecated 
 	public ReferenceBase getReferenceForParentChildRelation() {
 		return referenceForParentChildRelation;
 	}
+	@Deprecated
 	public void setReferenceForParentChildRelation(
 			ReferenceBase referenceForParentChildRelation) {
 		this.referenceForParentChildRelation = referenceForParentChildRelation;
 	}
+	
+	/**
+	 * 
+	 * 
+	 * @see eu.etaxonomy.cdm.model.taxon.ITreeNode#getMicroReference()
+	 */
+	public String getMicroReference() {
+		return microReferenceForParentChildRelation;
+	}
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.taxon.ITreeNode#setMicroReference(java.lang.String)
+	 */
+	public void setMicroReference(String microReference) {
+		this.microReferenceForParentChildRelation = microReference;
+	}
+	
+	@Deprecated
 	public String getMicroReferenceForParentChildRelation() {
 		return microReferenceForParentChildRelation;
 	}
+	
+	@Deprecated
 	public void setMicroReferenceForParentChildRelation(
 			String microReferenceForParentChildRelation) {
 		this.microReferenceForParentChildRelation = microReferenceForParentChildRelation;
 	}
+
+	
+	/**
+	 * @return the count of children this taxon node has
+	 */
 	public int getCountChildren() {
 		return countChildren;
 	}
-	public void setCountChildren(int countChildren) {
+	
+	/**
+	 * @param countChildren
+	 */
+	protected void setCountChildren(int countChildren) {
 		this.countChildren = countChildren;
 	}
 //	public Taxon getOriginalConcept() {
@@ -392,9 +441,19 @@ public class TaxonNode  extends AnnotatableEntity implements ITreeNode{
 	/**
 	 * Whether this TaxonNode is a root node
 	 * @return
+	 * @deprecated use isTopmostNode() instead
 	 */
 	@Transient
 	public boolean isRootNode(){
+		return parent == null;
+	}
+	
+	/**
+	 * Whether this TaxonNode is a direct child of the taxonomic tree TreeNode
+	 * @return
+	 */
+	@Transient
+	public boolean isTopmostNode(){
 		return parent == null;
 	}
 	
@@ -404,8 +463,8 @@ public class TaxonNode  extends AnnotatableEntity implements ITreeNode{
 	 * Caution: use this method with care on big branches. -> performance and memory hungry
 	 * 
 	 * Protip: Try solving your problem with the isAscendant method which traverses the tree in the 
-	 * other direction (up). This will always result in rather small set of recursive parents beeing
-	 * generated
+	 * other direction (up). It will always result in a rather small set of consecutive parents beeing
+	 * generated.
 	 * 
 	 * TODO implement more efficiently without generating the set of descendants first
 	 * 

@@ -160,7 +160,6 @@ public class TaxonomicTree extends IdentifiableEntity implements IReferencedEnti
 	 * @return
 	 * @deprecated use addChildNode() or addChildTaxon() instead
 	 */
-	@Deprecated
 	public TaxonNode addRoot(Taxon taxon, Synonym synonymUsed, ReferenceBase reference){
 		TaxonNode newRoot = new TaxonNode(taxon, this);
 		rootNodes.add(newRoot);
@@ -178,7 +177,7 @@ public class TaxonomicTree extends IdentifiableEntity implements IReferencedEnti
 	 */
 	public boolean removeChildNode(TaxonNode node) {
 		boolean result = false;
-		if(node.isRootNode()){
+		if(node.isTopmostNode()){
 
 			for (TaxonNode childNode : node.getChildNodes()){
 				node.removeChildNode(childNode);
@@ -193,6 +192,12 @@ public class TaxonomicTree extends IdentifiableEntity implements IReferencedEnti
 		return result;
 	}
 	
+	/**
+	 * 
+	 * @param node
+	 * @return
+	 * @deprecated use removeChildNode() instead
+	 */
 	public boolean removeRoot(TaxonNode node){
 		return removeChildNode(node);
 	}
@@ -313,6 +318,13 @@ public class TaxonomicTree extends IdentifiableEntity implements IReferencedEnti
 	 * one parent. <Br>
 	 * If the parent-child relationship between these two taxa already exists nothing is changed. Only 
 	 * citation and microcitation are overwritten by the new values if these values are not null.
+	 * 
+	 * TODO this looks like very specialized functionality. Upon examination, it turned out that it is used
+	 * solely in imports and it also looks like it is very tightly coupled with the way the imports are implemented.
+	 * As an advocat for a clean API, I would very much recommend not having this in the library itself as I can 
+	 * not really see who else will be needing this.
+	 * - n.hoffmann
+	 * 
 	 * @param parent
 	 * @param child
 	 * @param citation
@@ -386,7 +398,6 @@ public class TaxonomicTree extends IdentifiableEntity implements IReferencedEnti
 	 * @return
 	 */
 	@Transient
-	@Deprecated
 	public Set<TaxonNode> getAllNodes() {
 		Set<TaxonNode> allNodes = new HashSet<TaxonNode>();
 		

@@ -10,6 +10,7 @@
 
 package eu.etaxonomy.cdm.model.taxon;
 
+import eu.etaxonomy.cdm.model.common.ICdmBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
 
@@ -18,7 +19,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
  * @created Sep 18, 2009
  * @version 1.0
  */
-public interface ITreeNode {
+public interface ITreeNode extends ICdmBase {
 
 	/**
 	 * Adds a taxon node as a child of the ITreeNode
@@ -50,4 +51,15 @@ public interface ITreeNode {
 	 * @return true on success
 	 */
 	public abstract boolean removeChildNode(TaxonNode node);
+	
+	/**
+	 * @return the citation for the parent child relationship or the tree itself
+	 */
+	public abstract ReferenceBase getReference();
+	
+	/**
+	 * 
+	 * @return the microCitation for the parent child relationship or the tree itself
+	 */
+	public abstract String getMicroReference();
 }
