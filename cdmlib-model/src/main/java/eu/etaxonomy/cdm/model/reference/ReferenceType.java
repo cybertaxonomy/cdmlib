@@ -10,6 +10,8 @@
 
 package eu.etaxonomy.cdm.model.reference;
 
+import eu.etaxonomy.cdm.model.common.Language;
+
 
 /**
  * @author a.mueller
@@ -17,24 +19,36 @@ package eu.etaxonomy.cdm.model.reference;
  * @version 1.0
  */
 public enum ReferenceType {
-	Article(),
-	Book(),
-	BookSection(),
-	CdDvd(),
-	Database(),
-	Generic(),
-	InProceedings(),
-	Journal(),
-	Map(),
-	Patent(),
-	PersonalCommunication(),
-	PrintSeries(),
-	Proceedings(),
-	Report(),
-	Thesis(),
-	WebPage();
+	Article("Article"),
+	Book("Book"),
+	BookSection("Book Section"),
+	CdDvd("CD or DVD"),
+	Database("Database"),
+	Generic("Generic"),
+	InProceedings("Inproceedings"),
+	Journal("Journal"),
+	Map("Map"),
+	Patent("Patent"),
+	PersonalCommunication("Personal Communication"),
+	PrintSeries("Print Series"),
+	Proceedings("Proceedings"),
+	Report("Report"),
+	Thesis("Thesis"),
+	WebPage("Web Page");
 	
 	
+	private String readableString;
 	
+	private ReferenceType(String defaultString){
+		readableString = defaultString;
+	}
+	
+	public String getMessage(){
+		return getMessage(Language.DEFAULT());
+	}
+	public String getMessage(Language language){
+		//TODO make multi-lingual
+		return readableString;
+	}
 	
 }
