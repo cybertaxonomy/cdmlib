@@ -1481,7 +1481,6 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/occurrence/package-info.java -
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/occurrence/package.html -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/overview.html -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/Article.java -text
-cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/BibtexEntryType.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/Book.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/BookSection.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/CdDvd.java -text
@@ -1583,7 +1582,6 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/parser/ParserProblem.java -
 cdmlib-model/src/main/resources/log4j.properties -text
 cdmlib-model/src/main/resources/terms/AbsenceTerm.csv -text
 cdmlib-model/src/main/resources/terms/AnnotationType.csv -text
-cdmlib-model/src/main/resources/terms/BibtexEntryType.csv -text
 cdmlib-model/src/main/resources/terms/Continent.csv -text
 cdmlib-model/src/main/resources/terms/DerivationEventType.csv -text
 cdmlib-model/src/main/resources/terms/DeterminationModifier.csv -text
@@ -1673,7 +1671,6 @@ cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/name/RankTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/name/SpecimenTypeDesignationTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/name/TaxonNameBaseTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/occurrence/SpecimenTest.java -text
-cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/reference/BibtexEntryTypeTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/reference/PublicationBaseTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/taxon/TaxonBaseTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/taxon/TaxonComparatorTest.java -text

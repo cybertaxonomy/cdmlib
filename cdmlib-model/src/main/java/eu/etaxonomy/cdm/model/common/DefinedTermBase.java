@@ -51,7 +51,6 @@ import eu.etaxonomy.cdm.model.media.RightsTerm;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEventType;
 import eu.etaxonomy.cdm.model.occurrence.PreservationMethod;
-import eu.etaxonomy.cdm.model.reference.BibtexEntryType;
 
 
 /**
@@ -70,7 +69,6 @@ import eu.etaxonomy.cdm.model.reference.BibtexEntryType;
 @XmlRootElement(name = "DefinedTermBase")
 @XmlSeeAlso({
 	AnnotationType.class,
-	BibtexEntryType.class,
 	DerivationEventType.class,
 	ExtensionType.class,
     Feature.class,

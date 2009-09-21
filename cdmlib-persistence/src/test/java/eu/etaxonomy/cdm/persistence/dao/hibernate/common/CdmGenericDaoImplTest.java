@@ -149,7 +149,6 @@ import eu.etaxonomy.cdm.model.occurrence.PreservationMethod;
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.Article;
-import eu.etaxonomy.cdm.model.reference.BibtexEntryType;
 import eu.etaxonomy.cdm.model.reference.Book;
 import eu.etaxonomy.cdm.model.reference.BookSection;
 import eu.etaxonomy.cdm.model.reference.CdDvd;
@@ -465,7 +464,6 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 				Specimen.class, 
 				SpecimenOrObservationBase.class, 
 				Article.class, 
-				BibtexEntryType.class, 
 				Book.class, 
 				BookSection.class, 
 				CdDvd.class, 

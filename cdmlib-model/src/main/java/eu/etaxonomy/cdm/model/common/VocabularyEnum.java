@@ -41,7 +41,6 @@ import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEventType;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationModifier;
 import eu.etaxonomy.cdm.model.occurrence.PreservationMethod;
-import eu.etaxonomy.cdm.model.reference.BibtexEntryType;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 
@@ -79,7 +78,6 @@ public enum VocabularyEnum {
 	NameTypeDesignationStatus("ab60e738-4d09-4c24-a1b3-9466b01f9f55", NameTypeDesignationStatus.class),
 	ExtensionType("117cc307-5bd4-4b10-9b2f-2e14051b3b20",ExtensionType.class),
 	ReferenceSystem("ec6376e5-0c9c-4f5c-848b-b288e6c17a86",ReferenceSystem.class),
-	BibtexEntryType("dd72a0b2-2159-4657-a8e6-0210c332e2ed", BibtexEntryType.class),
 	InstitutionType("29ad808b-3126-4274-be81-4561e7afc76f", InstitutionType.class),
 	Keyword("332634b2-8ab5-43f8-ae78-f466e9dae1f3", Keyword.class),
 	MeasurementUnit("3b82c375-66bb-4636-be74-dc9cd087292a", MeasurementUnit.class),

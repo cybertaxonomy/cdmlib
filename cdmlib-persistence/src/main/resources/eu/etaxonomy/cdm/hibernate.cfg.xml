@@ -144,7 +144,6 @@
       <mapping class="eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase"/>
       <!-- Reference Package -->
       <mapping class="eu.etaxonomy.cdm.model.reference.Article"/>
-      <mapping class="eu.etaxonomy.cdm.model.reference.BibtexEntryType"/>
       <mapping class="eu.etaxonomy.cdm.model.reference.Book"/>
       <mapping class="eu.etaxonomy.cdm.model.reference.BookSection"/>
       <mapping class="eu.etaxonomy.cdm.model.reference.CdDvd"/>

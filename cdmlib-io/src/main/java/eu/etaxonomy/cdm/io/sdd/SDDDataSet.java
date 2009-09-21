@@ -93,7 +93,6 @@ import eu.etaxonomy.cdm.model.occurrence.PreservationMethod;
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.Article;
-import eu.etaxonomy.cdm.model.reference.BibtexEntryType;
 import eu.etaxonomy.cdm.model.reference.Book;
 import eu.etaxonomy.cdm.model.reference.BookSection;
 import eu.etaxonomy.cdm.model.reference.CdDvd;
@@ -184,7 +183,6 @@ public class SDDDataSet {
     @XmlElements({
     	@XmlElement(name = "AbsenceTerm", namespace = "http://etaxonomy.eu/cdm/model/description/1.0", type = AbsenceTerm.class),
     	@XmlElement(name = "AnnotationType", namespace = "http://etaxonomy.eu/cdm/model/common/1.0", type = AnnotationType.class),
-    	@XmlElement(name = "BibtexEntryType", namespace = "http://etaxonomy.eu/cdm/model/reference/1.0", type = BibtexEntryType.class),
     	@XmlElement(name = "Continent", namespace = "http://etaxonomy.eu/cdm/model/location/1.0", type = Continent.class),
     	@XmlElement(name = "DerivationEventType", namespace = "http://etaxonomy.eu/cdm/model/occurrence/1.0", type = DerivationEventType.class),
     	@XmlElement(name = "DeterminationModifier", namespace = "http://etaxonomy.eu/cdm/model/occurrence/1.0", type = DeterminationModifier.class),
