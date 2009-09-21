@@ -1500,6 +1500,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/Proceedings.java -te
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/PublicationBase.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/ReferenceBase.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/ReferenceIdentity.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/ReferenceType.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/Report.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/SectionBase.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/Thesis.java -text
