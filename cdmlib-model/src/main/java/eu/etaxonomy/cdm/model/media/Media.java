@@ -118,7 +118,7 @@ public class Media extends IdentifiableEntity implements Cloneable {
 	@XmlElementWrapper(name = "MediaRepresentations")
 	@XmlElement(name = "MediaRepresentation")
 	@OneToMany(mappedBy="media",fetch = FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE, CascadeType.DELETE_ORPHAN})
 	private Set<MediaRepresentation> representations = new HashSet<MediaRepresentation>();
 	
 	@XmlElement(name = "Artist")
