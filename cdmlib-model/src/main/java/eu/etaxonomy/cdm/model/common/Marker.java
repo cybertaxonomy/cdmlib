@@ -65,9 +65,6 @@ public class Marker extends VersionableEntity implements Cloneable{
 	@JoinColumn(name = "markedObj_id")
 	@NotAudited
 	private AnnotatableEntity markedObj;
-	
-    @XmlAttribute(name = "isTechnical")
-    private boolean isTechnical=false;
     
 	/**
 	 * Factory method
@@ -142,25 +139,6 @@ public class Marker extends VersionableEntity implements Cloneable{
 		return getFlag();
 	}
 
-	/**
-	 * A flag indicating if the marked value is user content or technical information
-	 * to be used by applications only. E.g. a FeatureTree may have a marker that defines
-	 * the role of this FeatureTree ("for ordering") whereas a {@link eu.etaxonomy.cdm.model.taxon.Taxon taxon}
-	 * may have a user defined marker "completed" that indicates that this taxon does not
-	 * need further investigation. The earlier will be flagged isTechnical=true whereas 
-	 * the later will be flagged as isTechnical=false 
-	 * @return the isTechnical
-	 */
-	public boolean isTechnical() {
-		return isTechnical;
-	}
-
-	/**
-	 * @param isTechnical the isTechnical to set
-	 */
-	public void setTechnical(boolean isTechnical) {
-		this.isTechnical = isTechnical;
-	}
 	
 //****************** CLONE ************************************************/
 
