@@ -1115,13 +1115,13 @@ create table DefinedTermBase_MeasurementUnit (
         primary key (REV, DescriptionBase_id, sources_id)
     );
 
-    create table DescriptionBase_ReferenceBase (
+    create table DescriptionBase_Reference (
         DescriptionBase_id integer not null,
         descriptionsources_id integer not null,
         primary key (DescriptionBase_id, descriptionsources_id)
     );
 
-    create table DescriptionBase_ReferenceBase_AUD (
+    create table DescriptionBase_Reference_AUD (
         REV integer not null,
         DescriptionBase_id integer not null,
         descriptionsources_id integer not null,
@@ -1435,13 +1435,13 @@ create table DefinedTermBase_MeasurementUnit (
         primary key (REV, DeterminationEvent_id, markers_id)
     );
 
-    create table DeterminationEvent_ReferenceBase (
+    create table DeterminationEvent_Reference (
         DeterminationEvent_id integer not null,
         setofreferences_id integer not null,
         primary key (DeterminationEvent_id, setofreferences_id)
     );
 
-    create table DeterminationEvent_ReferenceBase_AUD (
+    create table DeterminationEvent_Reference_AUD (
         REV integer not null,
         DeterminationEvent_id integer not null,
         setofreferences_id integer not null,
@@ -2681,7 +2681,7 @@ create table DefinedTermBase_MeasurementUnit (
         primary key (REV, polytomousKey_fk, taxon_fk)
     );
 
-    create table ReferenceBase (
+    create table Reference (
         DTYPE varchar(31) not null,
         id integer not null,
         created timestamp,
@@ -2726,7 +2726,7 @@ create table DefinedTermBase_MeasurementUnit (
         unique (uuid)
     );
 
-    create table ReferenceBase_AUD (
+    create table Reference_AUD (
         DTYPE varchar(31) not null,
         id integer not null,
         REV integer not null,
@@ -2772,110 +2772,110 @@ create table DefinedTermBase_MeasurementUnit (
 		primary key (id, REV)
     );
 
-    create table ReferenceBase_Annotation (
-        ReferenceBase_id integer not null,
+    create table Reference_Annotation (
+        Reference_id integer not null,
         annotations_id integer not null,
-        primary key (ReferenceBase_id, annotations_id),
+        primary key (Reference_id, annotations_id),
         unique (annotations_id)
     );
 
-    create table ReferenceBase_Annotation_AUD (
+    create table Reference_Annotation_AUD (
         REV integer not null,
-        ReferenceBase_id integer not null,
+        Reference_id integer not null,
         annotations_id integer not null,
         revtype tinyint,
-        primary key (REV, ReferenceBase_id, annotations_id)
+        primary key (REV, Reference_id, annotations_id)
     );
 
-    create table ReferenceBase_Credit (
-        ReferenceBase_id integer not null,
+    create table Reference_Credit (
+        Reference_id integer not null,
         credits_id integer not null,
         sortIndex integer not null,
-        primary key (ReferenceBase_id, sortIndex),
+        primary key (Reference_id, sortIndex),
         unique (credits_id)
     );
 
-    create table ReferenceBase_Credit_AUD (
+    create table Reference_Credit_AUD (
         REV integer not null,
-        ReferenceBase_id integer not null,
+        Reference_id integer not null,
         credits_id integer not null,
         sortIndex integer not null,
         revtype tinyint,
-        primary key (REV, ReferenceBase_id, credits_id, sortIndex)
+        primary key (REV, Reference_id, credits_id, sortIndex)
     );
 
-    create table ReferenceBase_Extension (
-        ReferenceBase_id integer not null,
+    create table Reference_Extension (
+        Reference_id integer not null,
         extensions_id integer not null,
-        primary key (ReferenceBase_id, extensions_id),
+        primary key (Reference_id, extensions_id),
         unique (extensions_id)
     );
 
-    create table ReferenceBase_Extension_AUD (
+    create table Reference_Extension_AUD (
         REV integer not null,
-        ReferenceBase_id integer not null,
+        Reference_id integer not null,
         extensions_id integer not null,
         revtype tinyint,
-        primary key (REV, ReferenceBase_id, extensions_id)
+        primary key (REV, Reference_id, extensions_id)
     );
 
-    create table ReferenceBase_Marker (
-        ReferenceBase_id integer not null,
+    create table Reference_Marker (
+        Reference_id integer not null,
         markers_id integer not null,
-        primary key (ReferenceBase_id, markers_id),
+        primary key (Reference_id, markers_id),
         unique (markers_id)
     );
 
-    create table ReferenceBase_Marker_AUD (
+    create table Reference_Marker_AUD (
         REV integer not null,
-        ReferenceBase_id integer not null,
+        Reference_id integer not null,
         markers_id integer not null,
         revtype tinyint,
-        primary key (REV, ReferenceBase_id, markers_id)
+        primary key (REV, Reference_id, markers_id)
     );
 
-    create table ReferenceBase_Media (
-        ReferenceBase_id integer not null,
+    create table Reference_Media (
+        Reference_id integer not null,
         media_id integer not null,
-        primary key (ReferenceBase_id, media_id)
+        primary key (Reference_id, media_id)
     );
 
-    create table ReferenceBase_Media_AUD (
+    create table Reference_Media_AUD (
         REV integer not null,
-        ReferenceBase_id integer not null,
+        Reference_id integer not null,
         media_id integer not null,
         revtype tinyint,
-        primary key (REV, ReferenceBase_id, media_id)
+        primary key (REV, Reference_id, media_id)
     );
 
-    create table ReferenceBase_OriginalSourceBase (
-        ReferenceBase_id integer not null,
+    create table Reference_OriginalSourceBase (
+        Reference_id integer not null,
         sources_id integer not null,
-        primary key (ReferenceBase_id, sources_id),
+        primary key (Reference_id, sources_id),
         unique (sources_id)
     );
 
-    create table ReferenceBase_OriginalSourceBase_AUD (
+    create table Reference_OriginalSourceBase_AUD (
         REV integer not null,
-        ReferenceBase_id integer not null,
+        Reference_id integer not null,
         sources_id integer not null,
         revtype tinyint,
-        primary key (REV, ReferenceBase_id, sources_id)
+        primary key (REV, Reference_id, sources_id)
     );
 
-    create table ReferenceBase_Rights (
-        ReferenceBase_id integer not null,
+    create table Reference_Rights (
+        Reference_id integer not null,
         rights_id integer not null,
-        primary key (ReferenceBase_id, rights_id),
+        primary key (Reference_id, rights_id),
         unique (rights_id)
     );
 
-    create table ReferenceBase_Rights_AUD (
+    create table Reference_Rights_AUD (
         REV integer not null,
-        ReferenceBase_id integer not null,
+        Reference_id integer not null,
         rights_id integer not null,
         revtype tinyint,
-        primary key (REV, ReferenceBase_id, rights_id)
+        primary key (REV, Reference_id, rights_id)
     );
 
     create table RelationshipTermBase_inverseRepresentation (
@@ -3177,14 +3177,14 @@ create table DefinedTermBase_MeasurementUnit (
         primary key (REV, Sequence_id, sources_id)
     );
 
-    create table Sequence_ReferenceBase (
+    create table Sequence_Reference (
         Sequence_id integer not null,
         citations_id integer not null,
         primary key (Sequence_id, citations_id),
         unique (citations_id)
     );
 
-    create table Sequence_ReferenceBase_AUD (
+    create table Sequence_Reference_AUD (
         REV integer not null,
         Sequence_id integer not null,
         citations_id integer not null,
@@ -4862,7 +4862,7 @@ create table DefinedTermBase_MeasurementUnit (
     alter table CDM_VIEW 
         add constraint FKC5DE8EF8765B124B 
         foreign key (reference_id) 
-        references ReferenceBase;
+        references Reference;
 
     alter table CDM_VIEW 
         add constraint FKC5DE8EF84FF2DB2C 
@@ -5483,17 +5483,17 @@ create table DefinedTermBase_MeasurementUnit (
         foreign key (REV) 
         references AuditEvent;
 
-    alter table DescriptionBase_ReferenceBase 
+    alter table DescriptionBase_Reference 
         add constraint FK76188CAAF1DDBFAB 
         foreign key (DescriptionBase_id) 
         references DescriptionBase;
 
-    alter table DescriptionBase_ReferenceBase 
+    alter table DescriptionBase_Reference 
         add constraint FK76188CAA45AB7BBA 
         foreign key (descriptionsources_id) 
-        references ReferenceBase;
+        references Reference;
 
-    alter table DescriptionBase_ReferenceBase_AUD 
+    alter table DescriptionBase_Reference_AUD 
         add constraint FK687A557B34869AAE 
         foreign key (REV) 
         references AuditEvent;
@@ -5596,7 +5596,7 @@ create table DefinedTermBase_MeasurementUnit (
     alter table DescriptionElementBase 
         add constraint FK38FE76719803512F 
         foreign key (citation_id) 
-        references ReferenceBase;
+        references Reference;
 
     alter table DescriptionElementBase 
         add constraint FK38FE7671E8D36B00 
@@ -5808,17 +5808,17 @@ create table DefinedTermBase_MeasurementUnit (
         foreign key (REV) 
         references AuditEvent;
 
-    alter table DeterminationEvent_ReferenceBase 
+    alter table DeterminationEvent_Reference 
         add constraint FK6248EEF43EF09CD5 
         foreign key (setofreferences_id) 
-        references ReferenceBase;
+        references Reference;
 
-    alter table DeterminationEvent_ReferenceBase 
+    alter table DeterminationEvent_Reference 
         add constraint FK6248EEF46BE0BFDA 
         foreign key (DeterminationEvent_id) 
         references DeterminationEvent;
 
-    alter table DeterminationEvent_ReferenceBase_AUD 
+    alter table DeterminationEvent_Reference_AUD 
         add constraint FK25BC82C534869AAE 
         foreign key (REV) 
         references AuditEvent;
@@ -6111,7 +6111,7 @@ create table DefinedTermBase_MeasurementUnit (
     alter table HybridRelationship 
         add constraint FK9033CE749803512F 
         foreign key (citation_id) 
-        references ReferenceBase;
+        references Reference;
 
     alter table HybridRelationship 
         add constraint FK9033CE74BC5DA539 
@@ -6306,7 +6306,7 @@ create table DefinedTermBase_MeasurementUnit (
     alter table Media 
         add constraint FK46C7FC49803512F 
         foreign key (citation_id) 
-        references ReferenceBase;
+        references Reference;
 
     alter table Media 
         add constraint FK46C7FC4BC5DA539 
@@ -6636,7 +6636,7 @@ create table DefinedTermBase_MeasurementUnit (
     alter table NameRelationship 
         add constraint FK5E510839803512F 
         foreign key (citation_id) 
-        references ReferenceBase;
+        references Reference;
 
     alter table NameRelationship 
         add constraint FK5E51083BC5DA539 
@@ -6691,7 +6691,7 @@ create table DefinedTermBase_MeasurementUnit (
     alter table NomenclaturalStatus 
         add constraint FK1FFEC88B9803512F 
         foreign key (citation_id) 
-        references ReferenceBase;
+        references Reference;
 
     alter table NomenclaturalStatus 
         add constraint FK1FFEC88BBC5DA539 
@@ -6741,7 +6741,7 @@ create table DefinedTermBase_MeasurementUnit (
     alter table OriginalSourceBase 
         add constraint FK229A496C9803512F 
         foreign key (citation_id) 
-        references ReferenceBase;
+        references Reference;
 
     alter table OriginalSourceBase 
         add constraint FK229A496CBC5DA539 
@@ -6873,144 +6873,144 @@ create table DefinedTermBase_MeasurementUnit (
         foreign key (REV) 
         references AuditEvent;
 
-    create index ReferenceBaseTitleCacheIndex on ReferenceBase (titleCache);
+    create index ReferenceTitleCacheIndex on Reference (titleCache);
 
-    alter table ReferenceBase 
+    alter table Reference 
         add constraint FK8F034C9C1A488155 
         foreign key (inreference_id) 
-        references ReferenceBase;
+        references Reference;
 
-    alter table ReferenceBase 
+    alter table Reference 
         add constraint FK8F034C9C4FF2DB2C 
         foreign key (createdby_id) 
         references UserAccount;
 
-    alter table ReferenceBase 
+    alter table Reference 
         add constraint FK8F034C9C403E17F4 
         foreign key (institution_id) 
         references AgentBase;
 
-    alter table ReferenceBase 
+    alter table Reference 
         add constraint FK8F034C9CAEC3B8B8 
         foreign key (school_id) 
         references AgentBase;
 
-    alter table ReferenceBase 
+    alter table Reference 
         add constraint FK8F034C9C697665E 
         foreign key (authorteam_id) 
         references AgentBase;
 
-    alter table ReferenceBase 
+    alter table Reference 
         add constraint FK8F034C9CBC5DA539 
         foreign key (updatedby_id) 
         references UserAccount;
 
-    alter table ReferenceBase_AUD 
+    alter table Reference_AUD 
         add constraint FK8D3FCC6D34869AAE 
         foreign key (REV) 
         references AuditEvent;
 
-    alter table ReferenceBase_Annotation 
+    alter table Reference_Annotation 
         add constraint FKC97616D2F443DB5A 
-        foreign key (ReferenceBase_id) 
-        references ReferenceBase;
+        foreign key (Reference_id) 
+        references Reference;
 
-    alter table ReferenceBase_Annotation 
+    alter table Reference_Annotation 
         add constraint FKC97616D21E403E0B 
         foreign key (annotations_id) 
         references Annotation;
 
-    alter table ReferenceBase_Annotation_AUD 
+    alter table Reference_Annotation_AUD 
         add constraint FK60368BA334869AAE 
         foreign key (REV) 
         references AuditEvent;
 
-    alter table ReferenceBase_Credit 
+    alter table Reference_Credit 
         add constraint FK5861201CF443DB5A 
-        foreign key (ReferenceBase_id) 
-        references ReferenceBase;
+        foreign key (Reference_id) 
+        references Reference;
 
-    alter table ReferenceBase_Credit 
+    alter table Reference_Credit 
         add constraint FK5861201C32D1B9F 
         foreign key (credits_id) 
         references Credit;
 
-    alter table ReferenceBase_Credit_AUD 
+    alter table Reference_Credit_AUD 
         add constraint FK487DFED34869AAE 
         foreign key (REV) 
         references AuditEvent;
 
-    alter table ReferenceBase_Extension 
+    alter table Reference_Extension 
         add constraint FK81E1703C927DE9DF 
         foreign key (extensions_id) 
         references Extension;
 
-    alter table ReferenceBase_Extension 
+    alter table Reference_Extension 
         add constraint FK81E1703CF443DB5A 
-        foreign key (ReferenceBase_id) 
-        references ReferenceBase;
+        foreign key (Reference_id) 
+        references Reference;
 
-    alter table ReferenceBase_Extension_AUD 
+    alter table Reference_Extension_AUD 
         add constraint FKD723200D34869AAE 
         foreign key (REV) 
         references AuditEvent;
 
-    alter table ReferenceBase_Marker 
+    alter table Reference_Marker 
         add constraint FK6888095DF443DB5A 
-        foreign key (ReferenceBase_id) 
-        references ReferenceBase;
+        foreign key (Reference_id) 
+        references Reference;
 
-    alter table ReferenceBase_Marker 
+    alter table Reference_Marker 
         add constraint FK6888095D777265A1 
         foreign key (markers_id) 
         references Marker;
 
-    alter table ReferenceBase_Marker_AUD 
+    alter table Reference_Marker_AUD 
         add constraint FK68A640AE34869AAE 
         foreign key (REV) 
         references AuditEvent;
 
-    alter table ReferenceBase_Media 
+    alter table Reference_Media 
         add constraint FK3D2F4A61C2C29593 
         foreign key (media_id) 
         references Media;
 
-    alter table ReferenceBase_Media 
+    alter table Reference_Media 
         add constraint FK3D2F4A61F443DB5A 
-        foreign key (ReferenceBase_id) 
-        references ReferenceBase;
+        foreign key (Reference_id) 
+        references Reference;
 
-    alter table ReferenceBase_Media_AUD 
+    alter table Reference_Media_AUD 
         add constraint FK25FD5FB234869AAE 
         foreign key (REV) 
         references AuditEvent;
 
-    alter table ReferenceBase_OriginalSourceBase 
+    alter table Reference_OriginalSourceBase 
         add constraint FK68651F6F3BAB2414 
         foreign key (sources_id) 
         references OriginalSourceBase;
 
-    alter table ReferenceBase_OriginalSourceBase 
+    alter table Reference_OriginalSourceBase 
         add constraint FK68651F6FF443DB5A 
-        foreign key (ReferenceBase_id) 
-        references ReferenceBase;
+        foreign key (Reference_id) 
+        references Reference;
 
-    alter table ReferenceBase_OriginalSourceBase_AUD 
+    alter table Reference_OriginalSourceBase_AUD 
         add constraint FK6905FDC034869AAE 
         foreign key (REV) 
         references AuditEvent;
 
-    alter table ReferenceBase_Rights 
+    alter table Reference_Rights 
         add constraint FK717BF6FAF443DB5A 
-        foreign key (ReferenceBase_id) 
-        references ReferenceBase;
+        foreign key (Reference_id) 
+        references Reference;
 
-    alter table ReferenceBase_Rights 
+    alter table Reference_Rights 
         add constraint FK717BF6FAC13F7B21 
         foreign key (rights_id) 
         references Rights;
 
-    alter table ReferenceBase_Rights_AUD 
+    alter table Reference_Rights_AUD 
         add constraint FKD48017CB34869AAE 
         foreign key (REV) 
         references AuditEvent;
@@ -7150,7 +7150,7 @@ create table DefinedTermBase_MeasurementUnit (
     alter table Sequence 
         add constraint FK544ADBE1B982A103 
         foreign key (publishedin_id) 
-        references ReferenceBase;
+        references Reference;
 
     alter table Sequence 
         add constraint FK544ADBE12DBE1F1F 
@@ -7272,17 +7272,17 @@ create table DefinedTermBase_MeasurementUnit (
         foreign key (REV) 
         references AuditEvent;
 
-    alter table Sequence_ReferenceBase 
+    alter table Sequence_Reference 
         add constraint FK18D91CBE7291F8A 
         foreign key (citations_id) 
-        references ReferenceBase;
+        references Reference;
 
-    alter table Sequence_ReferenceBase 
+    alter table Sequence_Reference 
         add constraint FK18D91CBED57FFDD5 
         foreign key (Sequence_id) 
         references Sequence;
 
-    alter table Sequence_ReferenceBase_AUD 
+    alter table Sequence_Reference_AUD 
         add constraint FK998CBB8F34869AAE 
         foreign key (REV) 
         references AuditEvent;
@@ -7622,7 +7622,7 @@ create table DefinedTermBase_MeasurementUnit (
     alter table SynonymRelationship 
         add constraint FKF483ADB39803512F 
         foreign key (citation_id) 
-        references ReferenceBase;
+        references Reference;
 
     alter table SynonymRelationship 
         add constraint FKF483ADB3BC5DA539 
@@ -7684,7 +7684,7 @@ create table DefinedTermBase_MeasurementUnit (
     alter table TaxonBase 
         add constraint FK9249B49B5E4A2F85 
         foreign key (sec_id) 
-        references ReferenceBase;
+        references Reference;
 
     alter table TaxonBase 
         add constraint FK9249B49BBC5DA539 
@@ -7821,7 +7821,7 @@ create table DefinedTermBase_MeasurementUnit (
     alter table TaxonNameBase 
         add constraint FKB4870C64AC9C024 
         foreign key (nomenclaturalreference_id) 
-        references ReferenceBase;
+        references Reference;
 
     alter table TaxonNameBase 
         add constraint FKB4870C6B14B73EF 
@@ -8016,7 +8016,7 @@ create table DefinedTermBase_MeasurementUnit (
     alter table TaxonNode 
         add constraint FK924F5BCC215EDF26 
         foreign key (referenceforparentchildrelation_id) 
-        references ReferenceBase;
+        references Reference;
 
     alter table TaxonNode 
         add constraint FK924F5BCC39DB2DFB 
@@ -8086,7 +8086,7 @@ create table DefinedTermBase_MeasurementUnit (
     alter table TaxonRelationship 
         add constraint FK7482BA029803512F 
         foreign key (citation_id) 
-        references ReferenceBase;
+        references Reference;
 
     alter table TaxonRelationship 
         add constraint FK7482BA02BC5DA539 
@@ -8131,7 +8131,7 @@ create table DefinedTermBase_MeasurementUnit (
     alter table TaxonomicTree 
         add constraint FKE332DBE0765B124B 
         foreign key (reference_id) 
-        references ReferenceBase;
+        references Reference;
 
     alter table TaxonomicTree 
         add constraint FKE332DBE04FF2DB2C 
@@ -8311,7 +8311,7 @@ create table DefinedTermBase_MeasurementUnit (
     alter table TypeDesignationBase 
         add constraint FK8AC9DCAE9803512F 
         foreign key (citation_id) 
-        references ReferenceBase;
+        references Reference;
 
     alter table TypeDesignationBase 
         add constraint FK8AC9DCAE4CB0F315 
