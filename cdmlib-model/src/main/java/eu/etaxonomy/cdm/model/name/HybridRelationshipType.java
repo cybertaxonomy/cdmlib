@@ -56,8 +56,9 @@ import javax.xml.bind.annotation.XmlType;
 @Entity
 @Audited
 public class HybridRelationshipType extends RelationshipTermBase<HybridRelationshipType> {
-  
-	static Logger logger = Logger.getLogger(HybridRelationshipType.class);
+	private static final long serialVersionUID = 5225908742890437668L;
+	@SuppressWarnings("unused")
+	private static final Logger logger = Logger.getLogger(HybridRelationshipType.class);
 
 	private static HybridRelationshipType FIRST_PARENT;
 	private static HybridRelationshipType SECOND_PARENT;

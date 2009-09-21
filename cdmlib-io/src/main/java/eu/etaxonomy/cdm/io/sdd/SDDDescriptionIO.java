@@ -35,12 +35,9 @@ import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.common.MediaMetaData.ImageMetaData;
 import eu.etaxonomy.cdm.io.common.CdmImportBase;
-import eu.etaxonomy.cdm.io.common.CdmIoBase;
-import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.ICdmImport;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
-import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.Annotation;
@@ -48,9 +45,9 @@ import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
-import eu.etaxonomy.cdm.model.common.OriginalSource;
 import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.common.TermBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
@@ -668,13 +665,13 @@ public class SDDDescriptionIO extends CdmImportBase<SDDImportConfigurator, SDDIm
 				NonViralName tnb = null;
 				if (!id.equals("")) {
 					tnb = NonViralName.NewInstance(null);
-					OriginalSource source = null;
+					IdentifiableSource source = null;
 					if (uri != null) {
 						if (!uri.equals("")) {
-							source = OriginalSource.NewInstance(id, "TaxonName", Generic.NewInstance(), uri);
+							source = IdentifiableSource.NewInstance(id, "TaxonName", Generic.NewInstance(), uri);
 						}
 					} else {
-						source = OriginalSource.NewInstance(id, "TaxonName");
+						source = IdentifiableSource.NewInstance(id, "TaxonName");
 					}
 					tnb.addSource(source);
 					taxonNameBases.put(id,tnb);
@@ -1072,7 +1069,7 @@ public class SDDDescriptionIO extends CdmImportBase<SDDImportConfigurator, SDDIm
 				//  </Representation>
 				Person person = Person.NewInstance();
 				importRepresentation(elAgent, sddNamespace, person, idA, sddConfig);
-				person.addSource(OriginalSource.NewInstance(idA, "Agent"));
+				person.addSource(IdentifiableSource.NewInstance(idA, "Agent"));
 
 				// <Links>
 				Element elLinks = elAgent.getChild("Links",sddNamespace);

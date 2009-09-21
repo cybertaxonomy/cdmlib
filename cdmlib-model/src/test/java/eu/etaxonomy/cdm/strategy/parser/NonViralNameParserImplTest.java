@@ -39,8 +39,7 @@ import eu.etaxonomy.cdm.model.reference.Book;
 import eu.etaxonomy.cdm.model.reference.BookSection;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.Journal;
-import eu.etaxonomy.cdm.model.reference.StrictReferenceBase;
-
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 /**
  * @author a.mueller
  *
@@ -737,7 +736,7 @@ public class NonViralNameParserImplTest {
 		assertNotNull(name.getNomenclaturalReference());
 		INomenclaturalReference ref = (INomenclaturalReference)name.getNomenclaturalReference();
 		assertEquals("1987", ref.getYear());
-		StrictReferenceBase refBase = (StrictReferenceBase)ref;
+		ReferenceBase refBase = (ReferenceBase)ref;
 		assertEquals("Sp. Pl.", refBase.getTitle());
 	}
 

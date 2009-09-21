@@ -48,8 +48,8 @@ import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.Figure;
 import eu.etaxonomy.cdm.model.common.GrantedAuthorityImpl;
 import eu.etaxonomy.cdm.model.common.Group;
+import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Keyword;
-import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.common.LSIDAuthority;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
@@ -57,7 +57,7 @@ import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.OrderedTermBase;
 import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
-import eu.etaxonomy.cdm.model.common.OriginalSource;
+import eu.etaxonomy.cdm.model.common.OriginalSourceBase;
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
 import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
@@ -72,9 +72,9 @@ import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.FeatureNode;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
-import eu.etaxonomy.cdm.model.description.MediaKey;
 import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
 import eu.etaxonomy.cdm.model.description.MeasurementUnit;
+import eu.etaxonomy.cdm.model.description.MediaKey;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
 import eu.etaxonomy.cdm.model.description.PresenceTerm;
 import eu.etaxonomy.cdm.model.description.QuantitativeData;
@@ -150,7 +150,6 @@ import eu.etaxonomy.cdm.model.occurrence.Specimen;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.Article;
 import eu.etaxonomy.cdm.model.reference.BibtexEntryType;
-import eu.etaxonomy.cdm.model.reference.BibtexReference;
 import eu.etaxonomy.cdm.model.reference.Book;
 import eu.etaxonomy.cdm.model.reference.BookSection;
 import eu.etaxonomy.cdm.model.reference.CdDvd;
@@ -164,11 +163,9 @@ import eu.etaxonomy.cdm.model.reference.PersonalCommunication;
 import eu.etaxonomy.cdm.model.reference.PrintSeries;
 import eu.etaxonomy.cdm.model.reference.PrintedUnitBase;
 import eu.etaxonomy.cdm.model.reference.Proceedings;
-import eu.etaxonomy.cdm.model.reference.Publisher;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.reference.Report;
 import eu.etaxonomy.cdm.model.reference.SectionBase;
-import eu.etaxonomy.cdm.model.reference.StrictReferenceBase;
 import eu.etaxonomy.cdm.model.reference.Thesis;
 import eu.etaxonomy.cdm.model.reference.WebPage;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
@@ -368,6 +365,7 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 				Figure.class, 
 				GrantedAuthorityImpl.class, 
 				Group.class, 
+				IdentifiableSource.class,
 				Keyword.class, 
 				Language.class, 
 				LanguageString.class, 
@@ -376,7 +374,7 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 				MarkerType.class, 
 				OrderedTermBase.class, 
 				OrderedTermVocabulary.class, 
-				OriginalSource.class, 
+				OriginalSourceBase.class,
 				RelationshipTermBase.class, 
 				Representation.class, 
 				TermVocabulary.class, 
@@ -468,7 +466,6 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 				SpecimenOrObservationBase.class, 
 				Article.class, 
 				BibtexEntryType.class, 
-				BibtexReference.class, 
 				Book.class, 
 				BookSection.class, 
 				CdDvd.class, 
@@ -483,10 +480,8 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 				PrintSeries.class, 
 				Proceedings.class, 
 				ReferenceBase.class, 
-				Publisher.class, 
 				Report.class, 
 				SectionBase.class, 
-				StrictReferenceBase.class, 
 				Thesis.class, 
 				WebPage.class, 
 				Synonym.class, 
@@ -673,8 +668,8 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 		article1.addExtension(extension1);
 		article2.addExtension(extension2);
 		
-		OriginalSource source1 = OriginalSource.NewInstance();
-		OriginalSource source2 = OriginalSource.NewInstance();
+		IdentifiableSource source1 = IdentifiableSource.NewInstance();
+		IdentifiableSource source2 = IdentifiableSource.NewInstance();
 		
 		article1.addSource(source1);
 		article2.addSource(source2);

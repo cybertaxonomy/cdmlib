@@ -17,11 +17,9 @@ import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
@@ -58,39 +56,39 @@ import eu.etaxonomy.cdm.strategy.cache.reference.INomenclaturalReferenceCacheStr
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Article", propOrder = {
-		"volume",
-		"pages",
-		"series",
-		"inJournal"
+//		"volume",
+//		"pages",
+//		"series",
+//		"inJournal"
 })
 @XmlRootElement(name = "Article")
 @Entity
 @Indexed(index = "eu.etaxonomy.cdm.model.reference.ReferenceBase")
 @Audited
 @Configurable
-public class Article extends StrictReferenceBase<INomenclaturalReferenceCacheStrategy<Article>> implements INomenclaturalReference, IVolumeReference, Cloneable {
+public class Article extends ReferenceBase<INomenclaturalReferenceCacheStrategy<Article>> implements INomenclaturalReference, IVolumeReference, Cloneable {
 	private static final long serialVersionUID = -1528079480114388117L;
 	private static final Logger logger = Logger.getLogger(Article.class);
 	
-    @XmlElement(name = "Series")
-    @Field(index=Index.TOKENIZED)
-	private String series;
-	
-    @XmlElement(name = "Volume")
-    @Field(index=Index.TOKENIZED)
-	private String volume;
-	
-    @XmlElement(name = "Pages")
-    @Field(index=Index.TOKENIZED)
-	private String pages;
-	
-    @XmlElement(name = "InJournal")
-    @XmlIDREF
-    @XmlSchemaType(name = "IDREF")
-    @ManyToOne(fetch = FetchType.LAZY)
-    @IndexedEmbedded
-    @Cascade(CascadeType.SAVE_UPDATE)
-	private Journal inJournal;
+//    @XmlElement(name = "Series")
+//    @Field(index=Index.TOKENIZED)
+//	private String series;
+//	
+//    @XmlElement(name = "Volume")
+//    @Field(index=Index.TOKENIZED)
+//	private String volume;
+//	
+//    @XmlElement(name = "Pages")
+//    @Field(index=Index.TOKENIZED)
+//	private String pages;
+//	
+//    @XmlElement(name = "InJournal")
+//    @XmlIDREF
+//    @XmlSchemaType(name = "IDREF")
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @IndexedEmbedded
+//    @Cascade(CascadeType.SAVE_UPDATE)
+//	private Journal inJournal;
 
 
 	/** 
@@ -101,6 +99,7 @@ public class Article extends StrictReferenceBase<INomenclaturalReferenceCacheStr
 	 */
 	protected Article(){
 		super();
+		this.type = ReferenceType.Article;
 		this.cacheStrategy = ArticleDefaultCacheStrategy.NewInstance();
 	}	
 	
@@ -162,14 +161,14 @@ public class Article extends StrictReferenceBase<INomenclaturalReferenceCacheStr
 	 * @see 	Journal
 	 */
 	public Journal getInJournal(){
-		return this.inJournal;
+		return (Journal)this.inReference;
 	}
 	
 	/**
 	 * @see #getInJournal()
 	 */
 	public void setInJournal(Journal inJournal){
-		this.inJournal = inJournal;
+		this.inReference = inJournal;
 	}
 
 	/**

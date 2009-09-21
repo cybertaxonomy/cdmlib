@@ -116,9 +116,9 @@ public class DefaultMatchStrategy extends StrategyBase implements IMatchStrategy
 			throws MatchException {
 		boolean result = true;
 		if (matchFirst == null || matchSecond == null){
-			result = false;
+			return false;
 		}else if (matchFirst == matchSecond){
-			result = true;
+			return true;
 		}else if (matchFirst.getClass() != matchSecond.getClass()){
 			return false;
 		}
@@ -209,6 +209,8 @@ public class DefaultMatchStrategy extends StrategyBase implements IMatchStrategy
 				}else if (isCollection(fieldType)){
 					result &= matchCollectionField(matchFirst, matchSecond, fieldMatcher, replaceModeList);
 				}else if(fieldType.isInterface()){
+					result &= matchPrimitiveField(matchFirst, matchSecond, fieldMatcher, replaceModeList);
+				}else if(fieldType.isEnum()){
 					result &= matchPrimitiveField(matchFirst, matchSecond, fieldMatcher, replaceModeList);
 				}else{
 					throw new RuntimeException("Unknown Object type for matching: " + fieldType);
@@ -434,7 +436,11 @@ public class DefaultMatchStrategy extends StrategyBase implements IMatchStrategy
 				if (IMatchable.class.isAssignableFrom(fieldType)){
 					matchMode = defaultMatchMatchMode;
 					if (matchStrategy == null){
-						matchStrategy = DefaultMatchStrategy.NewInstance(fieldType);
+						if (fieldType == this.matchClass){
+							matchStrategy = this;
+						}else{
+							matchStrategy = DefaultMatchStrategy.NewInstance(fieldType);
+						}
 					}
 					matching.setFieldMatcher(FieldMatcher.NewInstance(field, matchMode, matchStrategy), temporary);
 				}else{

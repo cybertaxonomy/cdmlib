@@ -22,7 +22,7 @@ import org.hibernate.search.annotations.Indexed;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import eu.etaxonomy.cdm.strategy.cache.reference.IReferenceBaseCacheStrategy;
-import eu.etaxonomy.cdm.strategy.cache.reference.StrictReferenceBaseDefaultCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.reference.ReferenceBaseDefaultCacheStrategy;
 
 /**
  * This class represents a database used as an information source. A database is
@@ -43,23 +43,23 @@ import eu.etaxonomy.cdm.strategy.cache.reference.StrictReferenceBaseDefaultCache
 @Audited
 @Configurable
 public class Database extends PublicationBase<IReferenceBaseCacheStrategy<Database>> implements Cloneable {
-
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -7077612779393752878L;
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(Database.class);
 
-	protected Database() {
-		this.cacheStrategy = new StrictReferenceBaseDefaultCacheStrategy<Database>();
-	}
-	
 	/** 
 	 * Creates a new empty database instance.
 	 */
 	public static Database NewInstance(){
 		return new Database();
 	}
+	
+	protected Database() {
+		super();
+		this.type = ReferenceType.Database;
+		this.cacheStrategy = new ReferenceBaseDefaultCacheStrategy<Database>();
+	}
+
 	
 	
 	

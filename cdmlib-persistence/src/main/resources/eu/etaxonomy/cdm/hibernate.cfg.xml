@@ -28,6 +28,8 @@
       <mapping class="eu.etaxonomy.cdm.model.common.Extension"/>
       <mapping class="eu.etaxonomy.cdm.model.common.ExtensionType"/>
       <mapping class="eu.etaxonomy.cdm.model.common.Figure"/>
+      <mapping class="eu.etaxonomy.cdm.model.common.IdentifiableSource"/>
+      <mapping class="eu.etaxonomy.cdm.model.common.DescriptionElementSource"/>
       <mapping class="eu.etaxonomy.cdm.model.common.GrantedAuthorityImpl"/>
       <mapping class="eu.etaxonomy.cdm.model.common.Group"/>
       <mapping class="eu.etaxonomy.cdm.model.common.Keyword"/>
@@ -39,7 +41,7 @@
       <mapping class="eu.etaxonomy.cdm.model.common.MarkerType"/>
       <mapping class="eu.etaxonomy.cdm.model.common.OrderedTermBase"/>
       <mapping class="eu.etaxonomy.cdm.model.common.OrderedTermVocabulary"/>
-      <mapping class="eu.etaxonomy.cdm.model.common.OriginalSource"/>
+      <mapping class="eu.etaxonomy.cdm.model.common.OriginalSourceBase"/>
       <mapping class="eu.etaxonomy.cdm.model.common.RelationshipTermBase"/>
       <mapping class="eu.etaxonomy.cdm.model.common.Representation"/>
       <mapping class="eu.etaxonomy.cdm.model.common.TermVocabulary"/>
@@ -143,7 +145,6 @@
       <!-- Reference Package -->
       <mapping class="eu.etaxonomy.cdm.model.reference.Article"/>
       <mapping class="eu.etaxonomy.cdm.model.reference.BibtexEntryType"/>
-      <mapping class="eu.etaxonomy.cdm.model.reference.BibtexReference"/>
       <mapping class="eu.etaxonomy.cdm.model.reference.Book"/>
       <mapping class="eu.etaxonomy.cdm.model.reference.BookSection"/>
       <mapping class="eu.etaxonomy.cdm.model.reference.CdDvd"/>
@@ -159,10 +160,8 @@
       <mapping class="eu.etaxonomy.cdm.model.reference.Proceedings"/>
       <mapping class="eu.etaxonomy.cdm.model.reference.ReferenceBase"/>
 <!--      <mapping class="eu.etaxonomy.cdm.model.reference.ReferenceIdentity"/>-->
-      <mapping class="eu.etaxonomy.cdm.model.reference.Publisher"/>
       <mapping class="eu.etaxonomy.cdm.model.reference.Report"/>
       <mapping class="eu.etaxonomy.cdm.model.reference.SectionBase"/>
-      <mapping class="eu.etaxonomy.cdm.model.reference.StrictReferenceBase"/>
       <mapping class="eu.etaxonomy.cdm.model.reference.Thesis"/>
       <mapping class="eu.etaxonomy.cdm.model.reference.WebPage"/>
       <!-- Taxon Package -->
@@ -190,6 +189,10 @@
       <event type="update">
           <listener class="eu.etaxonomy.cdm.persistence.hibernate.UpdateEntityListener"/>
           <listener class="org.hibernate.event.def.DefaultUpdateEventListener"/>
+      </event>
+      <event type="delete">
+      		<listener class="eu.etaxonomy.cdm.persistence.hibernate.CdmDeleteListener"/>
+      		<listener class="org.hibernate.event.def.DefaultDeleteEventListener"/>
       </event>
       <event type="post-insert">
             <listener class="org.hibernate.envers.event.AuditEventListener"/>

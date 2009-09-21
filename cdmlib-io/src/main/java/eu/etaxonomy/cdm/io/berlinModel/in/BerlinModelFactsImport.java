@@ -9,6 +9,8 @@
 
 package eu.etaxonomy.cdm.io.berlinModel.in;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
@@ -19,6 +21,7 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.common.MediaMetaData.ImageMetaData;
 import eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
@@ -32,6 +35,9 @@ import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
+import eu.etaxonomy.cdm.model.media.ImageFile;
+import eu.etaxonomy.cdm.model.media.Media;
+import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
@@ -138,7 +144,7 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doInvoke(eu.etaxonomy.cdm.io.common.IImportConfigurator, eu.etaxonomy.cdm.api.application.CdmApplicationController, java.util.Map)
 	 */
 	@Override
-	protected boolean doInvoke(BerlinModelImportState state){
+	protected boolean doInvoke(BerlinModelImportState state) {
 		boolean result = true;
 		
 		MapWrapper<TaxonBase> taxonMap = (MapWrapper<TaxonBase>)state.getStore(ICdmIO.TAXON_STORE);
@@ -201,17 +207,56 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 							continue;
 						}
 						
-						TaxonDescription taxonDescription;
+						TaxonDescription taxonDescription = null;
 						Set<TaxonDescription> descriptionSet= taxon.getDescriptions();
-						if (descriptionSet.size() > 0) {
-							taxonDescription = descriptionSet.iterator().next(); 
-						}else{
-							taxonDescription = TaxonDescription.NewInstance();
-							taxonDescription.setTitleCache(sourceRef == null ? null:sourceRef.getTitleCache());
-							taxon.addDescription(taxonDescription);
+						
+						boolean isImage = false;
+						Media media = null;
+						//for diptera images
+						if (categoryFk == 51){  //TODO check also FactCategory string
+							isImage = true;
+							String uri = fact;
+							Integer size = null; 
+							ImageMetaData imageMetaData = new ImageMetaData();
+							URL url;
+							try {
+								url = new URL(fact.trim());
+							} catch (MalformedURLException e) {
+								logger.warn("Malformed URL. Image could not be imported: " + CdmUtils.Nz(uri));
+								continue;
+							}
+							imageMetaData.readFrom(url);
+							media = Media.NewInstance();
+							MediaRepresentation mediaRepresentation = MediaRepresentation.NewInstance(imageMetaData.getMimeType(), null);
+							media.addRepresentation(mediaRepresentation);
+							ImageFile image = ImageFile.NewInstance(uri, size, imageMetaData);
+							mediaRepresentation.addRepresentationPart(image);
+							for (TaxonDescription desc: descriptionSet){
+								if (desc.isImageGallery()){
+									taxonDescription = desc;
+								}
+							}
+							if (taxonDescription == null){
+								taxonDescription = TaxonDescription.NewInstance();
+								taxonDescription.setTitleCache(sourceRef == null ? "Image Galery":sourceRef.getTitleCache()+"-Image Galery");
+								taxon.addDescription(taxonDescription);
+								taxonDescription.setImageGallery(true);
+							}
 						}
-						
-						
+						//all others (no image)
+						else{ 
+							for (TaxonDescription desc: descriptionSet){
+								if (! desc.isImageGallery()){
+									taxonDescription = desc;
+								}
+							}
+							if (taxonDescription == null){
+								taxonDescription = TaxonDescription.NewInstance();
+								taxonDescription.setTitleCache(sourceRef == null ? null:sourceRef.getTitleCache());
+								taxon.addDescription(taxonDescription);
+							}
+						}
+					
 						//textData
 						TextData textData = null;
 						boolean newTextData = true;
@@ -240,7 +285,8 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 						
 						if(newTextData == true)	{ textData = TextData.NewInstance(); }
 
-
+						
+						
 						//for diptera database
 						if (categoryFk == 99 && notes.contains("<OriginalName>")){
 							notes = notes.replaceAll("<OriginalName>", "");
@@ -249,8 +295,13 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 						}
 						//TODO textData.putText(fact, bmiConfig.getFactLanguage());  //doesn't work because  bmiConfig.getFactLanguage() is not not a persistent Language Object
 						//throws  in thread "main" org.springframework.dao.InvalidDataAccessApiUsageException: object references an unsaved transient instance - save the transient instance before flushing: eu.etaxonomy.cdm.model.common.Language; nested exception is org.hibernate.TransientObjectException: object references an unsaved transient instance - save the transient instance before flushing: eu.etaxonomy.cdm.model.common.Language
-						textData.putText(fact, Language.DEFAULT());
-						textData.setType(feature);
+						if (isImage){
+							textData.addMedia(media);
+							textData.setType(Feature.IMAGE());
+						}else{
+							textData.putText(fact, Language.DEFAULT());
+							textData.setType(feature);
+						}
 						
 						//
 						ReferenceBase citation;
@@ -310,10 +361,9 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 						
 						taxonStore.add(taxon);
 					}
-				} catch (RuntimeException re){
-					logger.error("A runtime exception occurred during the facts import");
+				} catch (Exception re){
+					logger.error("An exception occurred during the facts import");
 					result = false;
-					throw re;
 				}
 				//put
 			}

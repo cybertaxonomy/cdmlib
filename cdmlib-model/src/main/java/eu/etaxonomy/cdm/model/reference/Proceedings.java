@@ -25,7 +25,7 @@ import org.hibernate.search.annotations.Indexed;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import eu.etaxonomy.cdm.strategy.cache.reference.IReferenceBaseCacheStrategy;
-import eu.etaxonomy.cdm.strategy.cache.reference.StrictReferenceBaseDefaultCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.reference.ReferenceBaseDefaultCacheStrategy;
 
 /**
  * This class represents conference proceedings. Proceedings are a
@@ -43,7 +43,7 @@ import eu.etaxonomy.cdm.strategy.cache.reference.StrictReferenceBaseDefaultCache
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Proceedings", propOrder = {
-    "organization"
+//    "organization"
 })
 @XmlRootElement(name = "Proceedings")
 @Entity
@@ -51,12 +51,14 @@ import eu.etaxonomy.cdm.strategy.cache.reference.StrictReferenceBaseDefaultCache
 @Audited
 @Configurable
 public class Proceedings extends PrintedUnitBase<IReferenceBaseCacheStrategy<Proceedings>> implements Cloneable {
+	private static final long serialVersionUID = -2096638066963321309L;
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(Proceedings.class);
 	
-	//The conference sponsor
-	@XmlElement(name = "Organization")
-	@Field(index=Index.TOKENIZED)
-	private String organization;
+//	//The conference sponsor
+//	@XmlElement(name = "Organization")
+//	@Field(index=Index.TOKENIZED)
+//	private String organization;
 	
 	
 	/** 
@@ -83,7 +85,8 @@ public class Proceedings extends PrintedUnitBase<IReferenceBaseCacheStrategy<Pro
 	
 	protected Proceedings(){
 		super();
-		this.cacheStrategy = new StrictReferenceBaseDefaultCacheStrategy<Proceedings>();
+		this.type = ReferenceType.Proceedings;
+		this.cacheStrategy = new ReferenceBaseDefaultCacheStrategy<Proceedings>();
 	}
 	
 

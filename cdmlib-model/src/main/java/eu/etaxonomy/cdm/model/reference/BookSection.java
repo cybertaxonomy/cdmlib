@@ -20,7 +20,6 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
@@ -48,7 +47,7 @@ import eu.etaxonomy.cdm.strategy.cache.reference.INomenclaturalReferenceCacheStr
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "BookSection", propOrder = {
-    "inBook"
+//    "inBook"
 })
 @XmlRootElement(name = "BookSection")
 @Entity
@@ -56,21 +55,16 @@ import eu.etaxonomy.cdm.strategy.cache.reference.INomenclaturalReferenceCacheStr
 @Audited
 @Configurable
 public class BookSection extends SectionBase<INomenclaturalReferenceCacheStrategy<BookSection>> implements INomenclaturalReference, Cloneable {
-	
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -1066199749700092670L;
-
 	private static final Logger logger = Logger.getLogger(BookSection.class);
 	
-    @XmlElement(name = "InBook")
-    @XmlIDREF
-    @XmlSchemaType(name = "IDREF")
-    @ManyToOne(fetch = FetchType.LAZY)
-    @IndexedEmbedded
-    @Cascade(CascadeType.SAVE_UPDATE)
-	private Book inBook;
+//    @XmlElement(name = "InBook")
+//    @XmlIDREF
+//    @XmlSchemaType(name = "IDREF")
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @IndexedEmbedded
+//    @Cascade(CascadeType.SAVE_UPDATE)
+//	private Book inBook;
 	
 //    @XmlTransient
 //    @Transient
@@ -85,6 +79,7 @@ public class BookSection extends SectionBase<INomenclaturalReferenceCacheStrateg
 	 */
 	protected BookSection(){
 		super();
+		this.type = ReferenceType.BookSection;
 		this.cacheStrategy = BookSectionDefaultCacheStrategy.NewInstance();
 	}
 	
@@ -131,14 +126,15 @@ public class BookSection extends SectionBase<INomenclaturalReferenceCacheStrateg
 	 * @see 	Book
 	 */
 	public Book getInBook(){
-		return this.inBook;
+		//TODO casting
+		return (Book)this.inReference;
 	}
 
 	/**
 	 * @see #getInBook()
 	 */
 	public void setInBook(Book inBook){
-		this.inBook = inBook;
+		this.inReference = inBook;
 	}
 
 

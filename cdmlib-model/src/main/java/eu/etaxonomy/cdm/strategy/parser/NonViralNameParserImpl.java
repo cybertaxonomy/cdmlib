@@ -27,7 +27,6 @@ import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.model.reference.Article;
-import eu.etaxonomy.cdm.model.reference.BibtexReference;
 import eu.etaxonomy.cdm.model.reference.Book;
 import eu.etaxonomy.cdm.model.reference.BookSection;
 import eu.etaxonomy.cdm.model.reference.Generic;
@@ -35,7 +34,6 @@ import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.IVolumeReference;
 import eu.etaxonomy.cdm.model.reference.Journal;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
-import eu.etaxonomy.cdm.model.reference.StrictReferenceBase;
 import eu.etaxonomy.cdm.strategy.exceptions.StringNotParsableException;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
@@ -562,11 +560,8 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 		
 		if (nomRef instanceof BookSection){
 			handleBookSectionYear((BookSection)nomRef, datePublished);
-		}else if (nomRef instanceof StrictReferenceBase){
-			((StrictReferenceBase)nomRef).setDatePublished(datePublished);	
-		}else if (nomRef instanceof BibtexReference){
-				((BibtexReference)nomRef).setDatePublished(datePublished);
-				((BibtexReference)nomRef).setYear(year);
+		}else if (nomRef instanceof ReferenceBase){
+			((ReferenceBase)nomRef).setDatePublished(datePublished);	
 		}else{
 			throw new ClassCastException("nom Ref is not of type StrictReferenceBase but " + (nomRef == null? "(null)" : nomRef.getClass()));
 		}

@@ -44,9 +44,14 @@ import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 
 import eu.etaxonomy.cdm.jaxb.MultilanguageTextAdapter;
+import eu.etaxonomy.cdm.model.common.DescriptionElementSource;
+import eu.etaxonomy.cdm.model.common.ISourceable;
+import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.MultilanguageText;
+import eu.etaxonomy.cdm.model.common.OriginalSourceBase;
 import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.media.IMediaEntity;
@@ -54,6 +59,8 @@ import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.strategy.merge.Merge;
+import eu.etaxonomy.cdm.strategy.merge.MergeMode;
 
 /**
  * The upmost (abstract) class for a piece of information) about
@@ -80,12 +87,13 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 	    "modifyingText",
 	    "media",
 	    "inDescription",
-	    "nameUsedInReference"
+	    "nameUsedInReference",
+	    "sources"
 })
 @Entity
 @Audited
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
-public abstract class DescriptionElementBase extends ReferencedEntityBase {
+public abstract class DescriptionElementBase extends ReferencedEntityBase implements ISourceable<DescriptionElementSource> {
 	private static final long serialVersionUID = 5000910777835755905L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DescriptionElementBase.class);
@@ -136,6 +144,14 @@ public abstract class DescriptionElementBase extends ReferencedEntityBase {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE})
 	private TaxonNameBase nameUsedInReference;
+	
+    @XmlElementWrapper(name = "Sources")
+    @XmlElement(name = "OriginalSource")
+    @OneToMany(fetch = FetchType.LAZY)		
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
+	@Merge(MergeMode.ADD_CLONE)
+	private Set<DescriptionElementSource> sources = new HashSet<DescriptionElementSource>();
+    
 	
 
 	// ************* CONSTRUCTORS *************/	
@@ -331,6 +347,35 @@ public abstract class DescriptionElementBase extends ReferencedEntityBase {
 		return this.modifyingText.remove(language);
 	}
 
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.ISourceable#getSources()
+	 */
+	public Set<DescriptionElementSource> getSources() {
+		return this.sources;		
+	}
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.ISourceable#addSource(eu.etaxonomy.cdm.model.common.IOriginalSource)
+	 */
+	public void addSource(DescriptionElementSource source) {
+		if (source != null){
+			DescriptionElementBase oldSourcedObj = source.getSourcedObj();
+			if (oldSourcedObj != null && oldSourcedObj != this){
+				oldSourcedObj.getSources().remove(source);
+			}
+			this.sources.add(source);
+			source.setSourcedObj(this);
+		}
+	}
+	 
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.ISourceable#removeSource(eu.etaxonomy.cdm.model.common.IOriginalSource)
+	 */
+	public void removeSource(DescriptionElementSource source) {
+		this.sources.remove(source);
+	}
+
+	
 	/**
 	 * @return the nameUsedInReference
 	 */

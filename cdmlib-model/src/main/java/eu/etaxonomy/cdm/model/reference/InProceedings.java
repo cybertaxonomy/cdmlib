@@ -30,7 +30,7 @@ import org.hibernate.search.annotations.IndexedEmbedded;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import eu.etaxonomy.cdm.strategy.cache.reference.IReferenceBaseCacheStrategy;
-import eu.etaxonomy.cdm.strategy.cache.reference.StrictReferenceBaseDefaultCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.reference.ReferenceBaseDefaultCacheStrategy;
 
 /**
  * This class represents isolated parts (usually papers or abstracts) within
@@ -45,7 +45,7 @@ import eu.etaxonomy.cdm.strategy.cache.reference.StrictReferenceBaseDefaultCache
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "InProceedings", propOrder = {
-    "inProceedings"
+//    "inProceedings"
 })
 @XmlRootElement(name = "InProceedings")
 @Entity
@@ -53,26 +53,19 @@ import eu.etaxonomy.cdm.strategy.cache.reference.StrictReferenceBaseDefaultCache
 @Audited
 @Configurable
 public class InProceedings extends SectionBase<IReferenceBaseCacheStrategy<InProceedings>> {
-
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -286946099144494551L;
-
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(InProceedings.class);
 	
-	@XmlElement(name = "InProceedings")
-	@XmlIDREF
-	@XmlSchemaType(name = "InProceedings")
-	@ManyToOne(fetch = FetchType.LAZY)
-	@IndexedEmbedded
-	@Cascade(CascadeType.SAVE_UPDATE)
-	private Proceedings inProceedings;
+//	@XmlElement(name = "InProceedings")
+//	@XmlIDREF
+//	@XmlSchemaType(name = "InProceedings")
+//	@ManyToOne(fetch = FetchType.LAZY)
+//	@IndexedEmbedded
+//	@Cascade(CascadeType.SAVE_UPDATE)
+//	private Proceedings inProceedings;
 
-	protected InProceedings() {
-		this.cacheStrategy = new StrictReferenceBaseDefaultCacheStrategy<InProceedings>();
-	}
-	
+
 	/** 
 	 * Creates a new empty "in proceedings" instance.
 	 * 
@@ -97,6 +90,13 @@ public class InProceedings extends SectionBase<IReferenceBaseCacheStrategy<InPro
 	}
 	
 	
+	protected InProceedings() {
+		super();
+		this.type = ReferenceType.InProceedings;
+		this.cacheStrategy = new ReferenceBaseDefaultCacheStrategy<InProceedings>();
+	}
+	
+	
 	/**
 	 * Returns the {@link Proceedings proceedings} <i>this</i> "in proceedings" (usually 
 	 * a paper or an abstract) is part of.
@@ -106,14 +106,14 @@ public class InProceedings extends SectionBase<IReferenceBaseCacheStrategy<InPro
 	 * @see 	Proceedings
 	 */
 	public Proceedings getInProceedings(){
-		return this.inProceedings;
+		return (Proceedings)this.inReference;
 	}
 
 	/**
 	 * @see #getInProceedings()
 	 */
 	public void setInProceedings(Proceedings inProceedings){
-		this.inProceedings = inProceedings;
+		this.inReference = inProceedings;
 	}
 
 }

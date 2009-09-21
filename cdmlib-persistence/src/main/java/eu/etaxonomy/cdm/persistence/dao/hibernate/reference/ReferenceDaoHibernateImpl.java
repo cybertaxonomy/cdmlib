@@ -26,7 +26,6 @@ import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.reference.Article;
-import eu.etaxonomy.cdm.model.reference.BibtexReference;
 import eu.etaxonomy.cdm.model.reference.Book;
 import eu.etaxonomy.cdm.model.reference.BookSection;
 import eu.etaxonomy.cdm.model.reference.CdDvd;
@@ -43,7 +42,6 @@ import eu.etaxonomy.cdm.model.reference.PublicationBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.reference.Report;
 import eu.etaxonomy.cdm.model.reference.SectionBase;
-import eu.etaxonomy.cdm.model.reference.StrictReferenceBase;
 import eu.etaxonomy.cdm.model.reference.Thesis;
 import eu.etaxonomy.cdm.model.reference.WebPage;
 import eu.etaxonomy.cdm.persistence.dao.QueryParseException;
@@ -67,23 +65,22 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<ReferenceBase
 
 	public ReferenceDaoHibernateImpl() {
 		super(ReferenceBase.class);
-		indexedClasses = new Class[16];
+		indexedClasses = new Class[15];
 		indexedClasses[0] = Article.class;
-		indexedClasses[1] = BibtexReference.class;
-		indexedClasses[2] = Patent.class;
-		indexedClasses[3] = PersonalCommunication.class;
-		indexedClasses[4] = BookSection.class;
-		indexedClasses[5] = InProceedings.class;
-		indexedClasses[6] = CdDvd.class;
-		indexedClasses[7] = Database.class;
-		indexedClasses[8] = Generic.class;
-		indexedClasses[9] = Journal.class;
-		indexedClasses[10] = Map.class;
-		indexedClasses[11] = WebPage.class;
-		indexedClasses[12] = Book.class;
-		indexedClasses[13] = Proceedings.class;
-		indexedClasses[14] = Report.class;
-		indexedClasses[15] = Thesis.class;
+		indexedClasses[1] = Patent.class;
+		indexedClasses[2] = PersonalCommunication.class;
+		indexedClasses[3] = BookSection.class;
+		indexedClasses[4] = InProceedings.class;
+		indexedClasses[5] = CdDvd.class;
+		indexedClasses[6] = Database.class;
+		indexedClasses[7] = Generic.class;
+		indexedClasses[8] = Journal.class;
+		indexedClasses[9] = Map.class;
+		indexedClasses[10] = WebPage.class;
+		indexedClasses[11] = Book.class;
+		indexedClasses[12] = Proceedings.class;
+		indexedClasses[13] = Report.class;
+		indexedClasses[14] = Thesis.class;
 	}
 
 	public int count(Class<? extends ReferenceBase> clazz, String queryString) {
@@ -133,23 +130,21 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<ReferenceBase
 		for(ReferenceBase reference : list(null,null)) { // re-index all agents
 			Hibernate.initialize(reference.getAuthorTeam());
 			
-			if(reference instanceof StrictReferenceBase) {
-				if(reference instanceof Article) {
-					Hibernate.initialize(((Article)reference).getInJournal());
-				} else if(reference instanceof SectionBase) {
-					if(reference instanceof BookSection) {
-					    Hibernate.initialize(((BookSection)reference).getInBook());
-					} else if(reference instanceof InProceedings) {
-						Hibernate.initialize(((InProceedings)reference).getInProceedings());
-					}
-				} else if(reference instanceof PublicationBase) {
-					if(reference instanceof Thesis) {
-						Hibernate.initialize(((Thesis)reference).getSchool());
-					} else if(reference instanceof Report) {
-						Hibernate.initialize(((Report)reference).getInstitution());
-					} else if(reference instanceof PrintedUnitBase) {
-						Hibernate.initialize(((PrintedUnitBase)reference).getInSeries());
-					}
+			if(reference instanceof Article) {
+				Hibernate.initialize(((Article)reference).getInJournal());
+			} else if(reference instanceof SectionBase) {
+				if(reference instanceof BookSection) {
+				    Hibernate.initialize(((BookSection)reference).getInBook());
+				} else if(reference instanceof InProceedings) {
+					Hibernate.initialize(((InProceedings)reference).getInProceedings());
+				}
+			} else if(reference instanceof PublicationBase) {
+				if(reference instanceof Thesis) {
+					Hibernate.initialize(((Thesis)reference).getSchool());
+				} else if(reference instanceof Report) {
+					Hibernate.initialize(((Report)reference).getInstitution());
+				} else if(reference instanceof PrintedUnitBase) {
+					Hibernate.initialize(((PrintedUnitBase)reference).getInSeries());
 				}
 			}
 			fullTextSession.index(reference);

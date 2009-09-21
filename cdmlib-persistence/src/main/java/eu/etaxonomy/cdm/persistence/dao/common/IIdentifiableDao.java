@@ -12,8 +12,8 @@ package eu.etaxonomy.cdm.persistence.dao.common;
 import java.util.List;
 
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.LSID;
-import eu.etaxonomy.cdm.model.common.OriginalSource;
 import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
 
@@ -51,7 +51,7 @@ public interface IIdentifiableDao <T extends IdentifiableEntity> extends IAnnota
 	 * @param propertyPaths properties to initialize - see {@link BeanInitializer#initialize(Object, List)}
 	 * @return a List of OriginalSource instances
 	 */
-	public List<OriginalSource> getSources(T identifiableEntity, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
+	public List<IdentifiableSource> getSources(T identifiableEntity, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 	
 	/**
 	 * Return a count of the rights for this identifiable entity

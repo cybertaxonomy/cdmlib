@@ -195,10 +195,16 @@ public class HybridRelationship extends RelationshipBase<NonViralName, NonViralN
 	}
 
 	protected void setRelatedFrom(NonViralName relatedFrom) {
+		if (relatedFrom == null){
+			this.deletedObjects.add(this.relatedFrom);
+		}
 		this.relatedFrom = relatedFrom;
 	}
 
 	protected void setRelatedTo(NonViralName relatedTo) {
+		if (relatedTo == null){
+			this.deletedObjects.add(this.relatedTo);
+		}
 		this.relatedTo = relatedTo;
 	}
 

@@ -44,43 +44,44 @@ import eu.etaxonomy.cdm.strategy.cache.reference.IReferenceBaseCacheStrategy;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "PrintedUnitBase", propOrder = {
-		"editor",	
-		"volume",
-		"pages",
-		"inSeries",
-		"seriesPart"
+//		"editor",	
+//		"volume",
+//		"pages",
+//		"inSeries",
+//		"seriesPart"
 })
 @XmlRootElement(name = "PrintedUnitBase")
 @Entity
 @Indexed(index = "eu.etaxonomy.cdm.model.reference.ReferenceBase")
 @Audited
 public abstract class PrintedUnitBase<S extends IReferenceBaseCacheStrategy> extends PublicationBase<S> implements IVolumeReference{
+	private static final long serialVersionUID = 7263496796924430088L;
+	@SuppressWarnings("unused")
+	private static final Logger logger = Logger.getLogger(PrintedUnitBase.class);
 	
-	static Logger logger = Logger.getLogger(PrintedUnitBase.class);
-	
-    @XmlElement(name = "Editor")
-    @Field(index=Index.TOKENIZED)
-	private String editor;
-	
-    @XmlElement(name = "Volume")
-    @Field(index=Index.TOKENIZED)
-	private String volume;
-	
-    @XmlElement(name = "Pages")
-    @Field(index=Index.TOKENIZED)
-	private String pages;
-	
-    @XmlElement(name = "InSeries")
-    @XmlIDREF
-    @XmlSchemaType(name = "IDREF")
-    @ManyToOne(fetch = FetchType.LAZY)
-    @IndexedEmbedded
-    @Cascade(CascadeType.SAVE_UPDATE)
-	private PrintSeries inSeries;
-	
-    @XmlElement(name = "SeriesPart")
-    @Field(index=Index.TOKENIZED)
-	private String seriesPart;
+//    @XmlElement(name = "Editor")
+//    @Field(index=Index.TOKENIZED)
+//	private String editor;
+//	
+//    @XmlElement(name = "Volume")
+//    @Field(index=Index.TOKENIZED)
+//	private String volume;
+//	
+//    @XmlElement(name = "Pages")
+//    @Field(index=Index.TOKENIZED)
+//	private String pages;
+//	
+//    @XmlElement(name = "InSeries")
+//    @XmlIDREF
+//    @XmlSchemaType(name = "IDREF")
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @IndexedEmbedded
+//    @Cascade(CascadeType.SAVE_UPDATE)
+//	private PrintSeries inSeries;
+//	
+//    @XmlElement(name = "SeriesPart")
+//    @Field(index=Index.TOKENIZED)
+//	private String seriesPart;
 
 	/**
 	 * Returns the printed series <i>this</i> printed unit belongs to.
@@ -89,14 +90,14 @@ public abstract class PrintedUnitBase<S extends IReferenceBaseCacheStrategy> ext
 	 * @see 	PrintSeries
 	 */
 	public PrintSeries getInSeries(){
-		return this.inSeries;
+		return (PrintSeries)this.inReference;
 	}
 
 	/**
 	 * @see #getInSeries()
 	 */
 	public void setInSeries(PrintSeries inSeries){
-		this.inSeries = inSeries;
+		this.inReference = inSeries;
 	}
 
 	/**

@@ -22,7 +22,7 @@ import org.hibernate.search.annotations.Indexed;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import eu.etaxonomy.cdm.strategy.cache.reference.IReferenceBaseCacheStrategy;
-import eu.etaxonomy.cdm.strategy.cache.reference.StrictReferenceBaseDefaultCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.reference.ReferenceBaseDefaultCacheStrategy;
 
 /**
  * This class represents personal communications. A personal communication is a
@@ -44,12 +44,10 @@ import eu.etaxonomy.cdm.strategy.cache.reference.StrictReferenceBaseDefaultCache
 @Indexed(index = "eu.etaxonomy.cdm.model.reference.ReferenceBase")
 @Audited
 @Configurable
-public class PersonalCommunication extends StrictReferenceBase<IReferenceBaseCacheStrategy<PersonalCommunication>> implements Cloneable {
+public class PersonalCommunication extends ReferenceBase<IReferenceBaseCacheStrategy<PersonalCommunication>> implements Cloneable {
+	private static final long serialVersionUID = -2527724602502055339L;
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(PersonalCommunication.class);
-	
-	protected PersonalCommunication() {
-		this.cacheStrategy = new StrictReferenceBaseDefaultCacheStrategy<PersonalCommunication>();
-	}
 	
 	/**
 	 * Creates a new empty personal communication instance.
@@ -58,6 +56,12 @@ public class PersonalCommunication extends StrictReferenceBase<IReferenceBaseCac
 		PersonalCommunication result = new PersonalCommunication();
 		return result;
 	}
+	
+	protected PersonalCommunication() {
+		this.type = ReferenceType.PersonalCommunication;
+		this.cacheStrategy = new ReferenceBaseDefaultCacheStrategy<PersonalCommunication>();
+	}
+
 	
 
 	/** 

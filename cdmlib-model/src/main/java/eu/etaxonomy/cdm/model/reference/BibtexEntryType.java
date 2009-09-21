@@ -23,11 +23,8 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 
-import eu.etaxonomy.cdm.model.agent.InstitutionType;
-import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
-import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 
 /**
@@ -51,6 +48,7 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
 @Audited
 public class BibtexEntryType extends DefinedTermBase<BibtexEntryType> {
 	private static final long serialVersionUID = 1603469685147239870L;
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(BibtexEntryType.class);
 
 	private static final UUID uuidArticle = UUID.fromString("41fa81b3-40bf-4836-836b-db058cc34a98");

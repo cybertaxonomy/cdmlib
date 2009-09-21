@@ -39,19 +39,20 @@ import eu.etaxonomy.cdm.strategy.cache.reference.IReferenceBaseCacheStrategy;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "SectionBase", propOrder = {
-    "pages"
+//    "pages"
 })
 @XmlRootElement(name = "SectionBase")
 @Entity
 @Indexed(index = "eu.etaxonomy.cdm.model.reference.ReferenceBase")
 @Audited
-public abstract class SectionBase<S extends IReferenceBaseCacheStrategy> extends StrictReferenceBase<S> {
+public abstract class SectionBase<S extends IReferenceBaseCacheStrategy> extends ReferenceBase<S> {
+	private static final long serialVersionUID = -2430228069266443975L;
+	@SuppressWarnings("unused")
+	private static final Logger logger = Logger.getLogger(SectionBase.class);
 	
-	static Logger logger = Logger.getLogger(SectionBase.class);
-	
-	@XmlElement(name = "Pages")
-	@Field(index=Index.TOKENIZED)
-	private String pages;
+//	@XmlElement(name = "Pages")
+//	@Field(index=Index.TOKENIZED)
+//	private String pages;
 
 	/**
 	 * Returns the string representing the page(s) where the content of
@@ -70,17 +71,6 @@ public abstract class SectionBase<S extends IReferenceBaseCacheStrategy> extends
 		this.pages = pages;
 	}
 
-	/**
-	 * Returns the {@link PrintedUnitBase printed unit} to which <i>this</i> section
-	 * belongs.
-	 * 
-	 * @return  the printed unit containing <i>this</i> section
-	 */
-	@Transient
-	public PrintedUnitBase getPrintedUnit(){
-		logger.warn("Not yet implemented");
-		return null;
-	}
 
 //*********** CLONE **********************************/	
 	

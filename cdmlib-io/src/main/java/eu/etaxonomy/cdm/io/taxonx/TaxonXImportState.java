@@ -13,7 +13,7 @@ package eu.etaxonomy.cdm.io.taxonx;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.ImportStateBase;
-import eu.etaxonomy.cdm.model.reference.StrictReferenceBase;
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
 /**
  * @author a.mueller
@@ -24,19 +24,19 @@ public class TaxonXImportState extends ImportStateBase<TaxonXImportConfigurator>
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TaxonXImportState.class);
 
-	private StrictReferenceBase<?> modsReference;
+	private ReferenceBase<?> modsReference;
 	
 	/**
 	 * @return the modsReference
 	 */
-	public StrictReferenceBase<?> getModsReference() {
+	public ReferenceBase<?> getModsReference() {
 		return modsReference;
 	}
 
 	/**
 	 * @param modsReference the modsReference to set
 	 */
-	public void setModsReference(StrictReferenceBase<?> modsReference) {
+	public void setModsReference(ReferenceBase<?> modsReference) {
 		this.modsReference = modsReference;
 	}
 

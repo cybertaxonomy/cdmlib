@@ -15,7 +15,7 @@ import java.util.List;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.ISourceable;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
-import eu.etaxonomy.cdm.model.common.OriginalSource;
+import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
 
@@ -35,7 +35,7 @@ public interface IIdentifiableEntityService<T extends IdentifiableEntity> extend
 	 * @param propertyPaths properties to initialize - see {@link BeanInitializer#initialize(Object, List)}
 	 * @return a Pager of OriginalSource entities
 	 */
-    public Pager<OriginalSource> getSources(T t, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
+    public Pager<IdentifiableSource> getSources(T t, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
     
 	/**
 	 * Return a Pager of rights belonging to this object

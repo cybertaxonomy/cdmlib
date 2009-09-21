@@ -38,7 +38,6 @@
 		@MetaValue(value = "eu.etaxonomy.cdm.model.occurrence.Observation", targetEntity = Observation.class),
 		@MetaValue(value = "eu.etaxonomy.cdm.model.occurrence.Specimen", targetEntity = Specimen.class),
 		@MetaValue(value = "eu.etaxonomy.cdm.model.reference.Article", targetEntity = Article.class),
-		@MetaValue(value = "eu.etaxonomy.cdm.model.reference.BibtexReference", targetEntity = BibtexReference.class),
 		@MetaValue(value = "eu.etaxonomy.cdm.model.reference.Book", targetEntity = Book.class),
 		@MetaValue(value = "eu.etaxonomy.cdm.model.reference.BookSection", targetEntity = BookSection.class),
 		@MetaValue(value = "eu.etaxonomy.cdm.model.reference.CdDvd", targetEntity = CdDvd.class),
@@ -84,7 +83,6 @@ import eu.etaxonomy.cdm.model.occurrence.LivingBeing;
 import eu.etaxonomy.cdm.model.occurrence.Observation;
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
 import eu.etaxonomy.cdm.model.reference.Article;
-import eu.etaxonomy.cdm.model.reference.BibtexReference;
 import eu.etaxonomy.cdm.model.reference.Book;
 import eu.etaxonomy.cdm.model.reference.BookSection;
 import eu.etaxonomy.cdm.model.reference.CdDvd;

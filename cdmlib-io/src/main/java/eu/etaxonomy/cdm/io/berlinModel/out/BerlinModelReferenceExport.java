@@ -33,7 +33,6 @@ import eu.etaxonomy.cdm.model.reference.BookSection;
 import eu.etaxonomy.cdm.model.reference.InProceedings;
 import eu.etaxonomy.cdm.model.reference.PrintedUnitBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
-import eu.etaxonomy.cdm.model.reference.StrictReferenceBase;
 import eu.etaxonomy.cdm.model.reference.Thesis;
 
 
@@ -49,7 +48,7 @@ public class BerlinModelReferenceExport extends BerlinModelExportBase<ReferenceB
 	private static int modCount = 1000;
 	private static final String dbTableName = "Reference";
 	private static final String pluralString = "references";
-	private static final Class<? extends CdmBase> standardMethodParameter = StrictReferenceBase.class;
+	private static final Class<? extends CdmBase> standardMethodParameter = ReferenceBase.class;
 
 	public BerlinModelReferenceExport(){
 		super();
@@ -225,13 +224,13 @@ public class BerlinModelReferenceExport extends BerlinModelExportBase<ReferenceB
 	
 	//called by MethodMapper
 	@SuppressWarnings("unused")
-	private static Integer getRefCategoryFk(StrictReferenceBase<?> ref){
+	private static Integer getRefCategoryFk(ReferenceBase<?> ref){
 		return BerlinModelTransformer.ref2refCategoryId(ref);
 	}
 	
 	//called by MethodMapper
 	@SuppressWarnings("unused")
-	private static String getRefCache(StrictReferenceBase<?> ref){
+	private static String getRefCache(ReferenceBase<?> ref){
 		if (ref.isProtectedTitleCache()){
 			return ref.getTitleCache();
 		}else{
@@ -241,7 +240,7 @@ public class BerlinModelReferenceExport extends BerlinModelExportBase<ReferenceB
 
 	//called by MethodMapper
 	@SuppressWarnings("unused")
-	private static String getNomRefCache(StrictReferenceBase<?> ref){
+	private static String getNomRefCache(ReferenceBase<?> ref){
 		if (ref.isProtectedTitleCache()){
 			return ref.getTitleCache();
 		}else{
@@ -261,7 +260,7 @@ public class BerlinModelReferenceExport extends BerlinModelExportBase<ReferenceB
 
 	//called by MethodMapper
 	@SuppressWarnings("unused")
-	private static String getNomRefTitle(StrictReferenceBase<?> ref){
+	private static String getNomRefTitle(ReferenceBase<?> ref){
 		if (ref.isNomenclaturallyRelevant()){
 			return ref.getTitle();
 		}else{
@@ -273,7 +272,7 @@ public class BerlinModelReferenceExport extends BerlinModelExportBase<ReferenceB
 	
 	//called by MethodMapper
 	@SuppressWarnings("unused")
-	private static String getRefAuthorString(StrictReferenceBase<?> ref){
+	private static String getRefAuthorString(ReferenceBase<?> ref){
 		if (ref == null){
 			return null;
 		}else{
@@ -284,7 +283,7 @@ public class BerlinModelReferenceExport extends BerlinModelExportBase<ReferenceB
 	
 	//called by MethodMapper
 	@SuppressWarnings("unused")
-	private static Boolean getPreliminaryFlag(StrictReferenceBase<?> ref){
+	private static Boolean getPreliminaryFlag(ReferenceBase<?> ref){
 		if (ref.isProtectedTitleCache()){
 			return true;
 		}else{
@@ -294,7 +293,7 @@ public class BerlinModelReferenceExport extends BerlinModelExportBase<ReferenceB
 
 	//called by MethodMapper
 	@SuppressWarnings("unused")
-	private static Boolean getThesisFlag(StrictReferenceBase<?> ref){
+	private static Boolean getThesisFlag(ReferenceBase<?> ref){
 		if (ref.isInstanceOf(Thesis.class)){
 			return true;
 		}else{

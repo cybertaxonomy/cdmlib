@@ -50,10 +50,10 @@ import eu.etaxonomy.cdm.strategy.cache.reference.INomenclaturalReferenceCacheStr
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Generic", propOrder = {
-		"editor",
-		"volume",
-		"pages",
-		"series"
+//		"editor",
+//		"volume",
+//		"pages",
+//		"series"
 })
 @XmlRootElement(name = "Generic")
 @Entity
@@ -64,30 +64,22 @@ public class Generic extends PublicationBase<INomenclaturalReferenceCacheStrateg
 	private static final long serialVersionUID = -2547067957118035042L;
 	private static final Logger logger = Logger.getLogger(Generic.class);
 
-//	@XmlElementWrapper(name = "Publishers")
-//	@XmlElement(name = "Publisher")
-//    @OneToMany (cascade = {javax.persistence.CascadeType.ALL}, fetch= FetchType.LAZY)
-//	@IndexColumn(name="sortIndex", base = 0)
-//	@JoinColumn (name = "genericReferenceBase_id", insertable=false, updatable=false)
-//	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE_ORPHAN})
-//	private List<Publisher> genericPublishers = new ArrayList<Publisher>();
-
-    @XmlElement(name = "Editor")
-    @Field(index=Index.TOKENIZED)
-	private String editor;
-	
-    @XmlElement(name = "Series")
-    @Field(index=Index.TOKENIZED)
-	private String series;
-	
-    @XmlElement(name = "Volume")
-    @Field(index=Index.TOKENIZED)
-	private String volume;
-	
-    @XmlElement(name = "Pages")
-    @Field(index=Index.TOKENIZED)
-	private String pages;
-	
+//    @XmlElement(name = "Editor")
+//    @Field(index=Index.TOKENIZED)
+//	private String editor;
+//	
+//    @XmlElement(name = "Series")
+//    @Field(index=Index.TOKENIZED)
+//	private String series;
+//	
+//    @XmlElement(name = "Volume")
+//    @Field(index=Index.TOKENIZED)
+//	private String volume;
+//	
+//    @XmlElement(name = "Pages")
+//    @Field(index=Index.TOKENIZED)
+//	private String pages;
+//	
 	/** 
 	 * Class constructor: creates a new empty generic reference instance
 	 * only containing the {@link eu.etaxonomy.cdm.strategy.cache.reference.GenericDefaultCacheStrategy default cache strategy}.
@@ -96,6 +88,7 @@ public class Generic extends PublicationBase<INomenclaturalReferenceCacheStrateg
 	 */
 	public Generic(){
 		super();
+		this.type = ReferenceType.Generic;
 		this.cacheStrategy = GenericDefaultCacheStrategy.NewInstance();
 	}
 	

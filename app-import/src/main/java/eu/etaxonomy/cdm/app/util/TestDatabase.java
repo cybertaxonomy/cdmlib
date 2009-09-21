@@ -37,7 +37,6 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Book;
 import eu.etaxonomy.cdm.model.reference.Database;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
-import eu.etaxonomy.cdm.model.reference.StrictReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -112,7 +111,7 @@ public class TestDatabase {
 //	    List<Synonym> synonyms = new ArrayList<Synonym>();
 	    List<AnnotatableEntity> homotypicalGroups;
 
-		StrictReferenceBase citRef, sec;
+		ReferenceBase citRef, sec;
 		BotanicalName name1, name2, name21, nameRoot1, nameFree, synName11, synName12, synName2, synNameFree;
 		BotanicalName nameRoot2, nameR2_1, nameR2_2;
 		Taxon child1, child2, child21, root1T, root2T, freeT;

@@ -5,13 +5,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.hibernate.impl.SessionFactoryImpl;
 import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
@@ -30,10 +29,12 @@ import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.TdwgArea;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
+import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
+import eu.etaxonomy.cdm.model.name.NameRelationshipType;
+import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Generic;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
-import eu.etaxonomy.cdm.model.reference.StrictReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 public class Datasource {
@@ -271,8 +272,8 @@ public class Datasource {
 	}
 
 	private boolean testH2(){
-		testLocalH2();
-		if (true)return true;
+//		testLocalH2();
+//		if (true)return true;
 		try{
 			DbSchemaValidation validation = DbSchemaValidation.CREATE;
 			ICdmDataSource ds = 
@@ -282,33 +283,49 @@ public class Datasource {
 	//			 CdmPersistentDataSource.NewInstance("localH2");
 			CdmApplicationController appCtr = CdmApplicationController.NewInstance(ds, validation);
 			try {
-				StrictReferenceBase ref = Generic.NewInstance();
-				ref.setTitle("SdfEWsddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd" +
-						   "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd" +
-						   "dwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww" +
-						   "ddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd");
-				appCtr.getReferenceService().save(ref);
-				
-				SessionFactoryImpl sf = (SessionFactoryImpl)appCtr.getSessionFactory();
-				//sf.get
-				Session session;
-				//session.get
-				Map cmd = sf.getAllClassMetadata();
-				for (Object o: cmd.keySet()){
-					Object value = cmd.get(o);
-					try {
-						Class.forName((String)value);
-					} catch (ClassNotFoundException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					System.out.println(value);
+				BotanicalName botName1 = BotanicalName.NewInstance(Rank.SPECIES());
+				BotanicalName botName2 = BotanicalName.NewInstance(Rank.SPECIES());
+				BotanicalName hybridName = BotanicalName.NewInstance(Rank.SPECIES());
+				botName1.addRelationshipToName(botName2, NameRelationshipType.ORTHOGRAPHIC_VARIANT(), null);
+				UUID uuid1 = botName1.getUuid();
+				UUID uuid2 = botName2.getUuid();
+				try {
+					Logger loggerTrace = logger.getLogger("org.hibernate.type");
+					loggerTrace.setLevel(Level.TRACE);
+					System.out.println(logger.getName());
+					
+					appCtr.getNameService().save(botName1);
+					ResultSet rs = ds.executeQuery("Select count(*) as n FROM NameRelationship");
+					rs.next();
+					int c = rs.getInt("n");
+					System.out.println("Begin :" + c);
+					
+					botName1.removeRelationToTaxonName(botName2);
+					botName1.setSpecificEpithet("DELETED");
+					botName2.addHybridParent(hybridName, HybridRelationshipType.FIRST_PARENT(), null);
+					
+					TransactionStatus tx = appCtr.startTransaction();
+					appCtr.getNameService().saveOrUpdate(botName2);
+					rs = ds.executeQuery("Select count(*) as n FROM NameRelationship");
+					rs.next();
+					c = rs.getInt("n");
+					System.out.println("End: " + c);
+		
+					appCtr.commitTransaction(tx);
+					
+					appCtr.getNameService().saveOrUpdate(botName1);
+					
+					rs = ds.executeQuery("Select count(*) as n FROM NameRelationship");
+					rs.next();
+					c = rs.getInt("n");
+					System.out.println("End: " + c);
+					
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
 				
-				TaxonNameBase name = BotanicalName.NewInstance(null);
-				UUID uuid = appCtr.getNameService().saveOrUpdate(name);
-				List l = appCtr.getNameService().getAllNames(5, 1);
-				System.out.println(l);
+				
 				//Agent agent = new Agent();
 				//appCtr.getAgentService().saveAgent(agent);
 				appCtr.close();

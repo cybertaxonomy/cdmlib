@@ -20,15 +20,13 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.envers.query.AuditEntity;
 import org.hibernate.envers.query.AuditQuery;
-import org.hibernate.impl.AbstractQueryImpl;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Credit;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.LSID;
-import eu.etaxonomy.cdm.model.common.OriginalSource;
 import eu.etaxonomy.cdm.model.media.Rights;
-import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 
@@ -136,13 +134,13 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity> extends Annotatab
 		return (List<Credit>)query.list();
 	}
 
-	public List<OriginalSource> getSources(T identifiableEntity, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
+	public List<IdentifiableSource> getSources(T identifiableEntity, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
 		checkNotInPriorView("IdentifiableDaoBase.getSources(T identifiableEntity, Integer pageSize, Integer pageNumber)");
-		Query query = getSession().createQuery("select source from OriginalSource source where source.sourcedObj.id = :id and source.sourcedObj.class = :class");
+		Query query = getSession().createQuery("select source from OriginalSourceBase source where source.sourcedObj.id = :id and source.sourcedObj.class = :class");
 		query.setParameter("id",identifiableEntity.getId());
 		query.setParameter("class",identifiableEntity.getClass().getName());
 		setPagingParameter(query, pageSize, pageNumber);
-		List<OriginalSource> results = (List<OriginalSource>)query.list();
+		List<IdentifiableSource> results = (List<IdentifiableSource>)query.list();
 		defaultBeanInitializer.initializeAll(results, propertyPaths);
 		return results;
 	}

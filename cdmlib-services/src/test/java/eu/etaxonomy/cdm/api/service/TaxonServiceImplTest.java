@@ -9,7 +9,6 @@ import static org.junit.Assert.assertNull;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.spring.annotation.SpringBeanByType;
 
@@ -105,11 +104,9 @@ public class TaxonServiceImplTest extends CdmIntegrationTest {
 		logger.warn("Not yet implemented"); // TODO
 	}
 	
-//	@Ignore
 	@Test
 	public final void testPrintDataSet() {
-		
-		printDataSet(System.out);
+		//printDataSet(System.out);
 	}
 	
 	public final void testMakeTaxonSynonym() {

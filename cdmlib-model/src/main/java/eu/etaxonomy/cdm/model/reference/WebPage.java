@@ -22,7 +22,7 @@ import org.hibernate.search.annotations.Indexed;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import eu.etaxonomy.cdm.strategy.cache.reference.IReferenceBaseCacheStrategy;
-import eu.etaxonomy.cdm.strategy.cache.reference.StrictReferenceBaseDefaultCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.reference.ReferenceBaseDefaultCacheStrategy;
 
 /**
  * This class represents electronic publications available on the world wide web.
@@ -42,14 +42,17 @@ import eu.etaxonomy.cdm.strategy.cache.reference.StrictReferenceBaseDefaultCache
 @Audited
 @Configurable
 public class WebPage extends PublicationBase<IReferenceBaseCacheStrategy<WebPage>> implements Cloneable {
-	static Logger logger = Logger.getLogger(WebPage.class);
+	private static final long serialVersionUID = -1527430409075839226L;
+	@SuppressWarnings("unused")
+	private static final Logger logger = Logger.getLogger(WebPage.class);
 
 	/** 
 	 * Class constructor: creates a new empty web page instance.
 	 */
 	protected WebPage(){
 		super();
-		this.cacheStrategy = new StrictReferenceBaseDefaultCacheStrategy<WebPage>();
+		this.type = ReferenceType.WebPage;
+		this.cacheStrategy = new ReferenceBaseDefaultCacheStrategy<WebPage>();
 	}
 	
 	/** 

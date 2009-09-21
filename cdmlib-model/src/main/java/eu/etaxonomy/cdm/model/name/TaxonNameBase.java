@@ -51,7 +51,6 @@ import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
-import eu.etaxonomy.cdm.model.reference.StrictReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
@@ -159,8 +158,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
     @XmlElementWrapper(name = "RelationsFromThisName")
     @XmlElement(name = "RelationFromThisName")
     @OneToMany(mappedBy="relatedFrom", fetch= FetchType.LAZY)
-	//TODO @Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE_ORPHAN}) => DELETE_ORPHAN does not work ( org.hibernate.HibernateException: Don't change the reference to a collection with cascade="all-delete-orphan": eu.etaxonomy.cdm.model.name.TaxonNameBase.relationsFromThisName)
-	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE_ORPHAN})
 	@Merge(MergeMode.RELATION)
 	private Set<NameRelationship> relationsFromThisName = new HashSet<NameRelationship>();
 
@@ -169,7 +167,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @OneToMany(mappedBy="relatedTo", fetch= FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE , CascadeType.DELETE_ORPHAN })
 	@Merge(MergeMode.RELATION)
 	private Set<NameRelationship> relationsToThisName = new HashSet<NameRelationship>();
 
@@ -1090,7 +1088,7 @@ public void addRelationshipToName(TaxonNameBase toName, NameRelationshipType typ
 	 * @see #getNomenclaturalReference()
 	 */
 	@Transient
-	public StrictReferenceBase getCitation(){
+	public ReferenceBase getCitation(){
 		//TODO What is the purpose of this method differing from the getNomenclaturalReference method? 
 		logger.warn("getCitation not yet implemented");
 		return null;

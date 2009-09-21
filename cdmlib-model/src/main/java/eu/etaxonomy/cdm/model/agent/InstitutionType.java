@@ -24,7 +24,6 @@ import org.hibernate.envers.Audited;
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
-import eu.etaxonomy.cdm.model.reference.BibtexEntryType;
 
 /**
  * Represents an element of a controlled {@link eu.etaxonomy.cdm.model.common.TermVocabulary vocabulary} for different kinds of institutions.

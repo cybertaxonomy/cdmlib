@@ -9,12 +9,16 @@
 
 package eu.etaxonomy.cdm.model.common;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
@@ -35,6 +39,12 @@ public abstract class RelationshipBase<FROM extends IRelated, TO extends IRelate
 
 	@XmlAttribute(name = "isDoubtful")
 	private boolean doubtful;
+	
+	//this set is used only for persistence (CdmDeleteListener) to delete savely relationships and update there former related objects
+	@XmlTransient
+	@Transient
+	protected Set<IRelated> deletedObjects = new HashSet<IRelated>();
+	
 	
 	/**
 	 * enumeration and String representation of the <code>relatedFrom</code> and
@@ -96,6 +106,16 @@ public abstract class RelationshipBase<FROM extends IRelated, TO extends IRelate
 		this.doubtful = doubtful;
 	}
 	
+	public boolean isRemoved(){
+		if ( this.getRelatedFrom() == null ^ this.getRelatedTo() == null){
+			throw new IllegalStateException("A relationship may have only both related object as null or none. But just one is null!");
+		}
+		return this.getRelatedFrom() == null || this.getRelatedTo() == null;
+	}
+	
+	public Set getDeletedObjects(){
+		return this.deletedObjects;
+	}
 	
 // TODO
 //	UUID toUuid; 

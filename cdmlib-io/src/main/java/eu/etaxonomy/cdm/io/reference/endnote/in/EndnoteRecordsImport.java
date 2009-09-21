@@ -8,48 +8,46 @@ package eu.etaxonomy.cdm.io.reference.endnote.in;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.ListIterator;
-import java.util.Map;
 import java.util.List;
- 
-import org.apache.log4j.Logger;
-import org.apache.poi.hssf.record.formula.functions.Sum;
- 
-import org.jdom.*;
+import java.util.Map;
 
+import org.apache.log4j.Logger;
+import org.jdom.Element;
 import org.jdom.Namespace;
-import org.joda.time.DateTime;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.common.DoubleResult;
-import eu.etaxonomy.cdm.common.ResultWrapper;
 import eu.etaxonomy.cdm.common.XmlHelp;
-import eu.etaxonomy.cdm.io.common.CdmImportBase;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
-import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
-import eu.etaxonomy.cdm.io.tcsrdf.TcsRdfImportState;
-import eu.etaxonomy.cdm.io.tcsxml.in.TcsXmlImportConfigurator;
-import eu.etaxonomy.cdm.io.tcsxml.in.TcsXmlImportState;
-import eu.etaxonomy.cdm.model.agent.*;
+import eu.etaxonomy.cdm.model.agent.Address;
+import eu.etaxonomy.cdm.model.agent.Contact;
+import eu.etaxonomy.cdm.model.agent.Institution;
+import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.Extension;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.LanguageStringBase;
-import eu.etaxonomy.cdm.model.common.OriginalSource;
-import eu.etaxonomy.cdm.model.common.TimePeriod;
-import eu.etaxonomy.cdm.model.media.Media;
-import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.model.occurrence.Collection;
-import eu.etaxonomy.cdm.model.occurrence.Specimen;
-import eu.etaxonomy.cdm.model.reference.*;
-import eu.etaxonomy.cdm.io.reference.endnote.in.EndNoteImportBase;
+import eu.etaxonomy.cdm.model.reference.Article;
+import eu.etaxonomy.cdm.model.reference.Book;
+import eu.etaxonomy.cdm.model.reference.BookSection;
+import eu.etaxonomy.cdm.model.reference.CdDvd;
+import eu.etaxonomy.cdm.model.reference.Database;
+import eu.etaxonomy.cdm.model.reference.Generic;
+import eu.etaxonomy.cdm.model.reference.Journal;
+import eu.etaxonomy.cdm.model.reference.Patent;
+import eu.etaxonomy.cdm.model.reference.PersonalCommunication;
+import eu.etaxonomy.cdm.model.reference.PrintSeries;
+import eu.etaxonomy.cdm.model.reference.PrintedUnitBase;
+import eu.etaxonomy.cdm.model.reference.Proceedings;
+import eu.etaxonomy.cdm.model.reference.PublicationBase;
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Report;
+import eu.etaxonomy.cdm.model.reference.Thesis;
+import eu.etaxonomy.cdm.model.reference.WebPage;
 /**
  * @author a.bukhman
  *
@@ -115,7 +113,7 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 	    String tcsElementName = "record";
 		String idNamespace = "record";
 		List<Element> elRecordList = (List<Element>)elRecords.getChildren(tcsElementName, tcsNamespace);
-		StrictReferenceBase<?> reference = null;	
+		ReferenceBase<?> reference = null;	
 		TeamOrPersonBase<?> author = null;
 		PrintedUnitBase<?> printedUnitBase = null;
 		

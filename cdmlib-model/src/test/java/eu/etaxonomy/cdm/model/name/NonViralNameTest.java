@@ -274,4 +274,78 @@ public class NonViralNameTest extends EntityTestBase {
 		nonViralName1.setCombinationAuthorTeam(null);
 		assertEquals(null, nonViralName1.getCombinationAuthorTeam());
 	}
+	
+
+	@Test
+	public final void testGetChildAndParentRelationships() {
+		NonViralName nonViralName1 = new NonViralName();
+		assertEquals(0, nonViralName1.getParentRelationships().size());
+		assertEquals(0, nonViralName1.getChildRelationships().size());
+		BotanicalName femaleParent = BotanicalName.NewInstance(null);
+		HybridRelationship hybridRelationship = new HybridRelationship(nonViralName1, femaleParent, HybridRelationshipType.FEMALE_PARENT(), null );
+		assertEquals(1, nonViralName1.getChildRelationships().size());
+		assertEquals(hybridRelationship, nonViralName1.getChildRelationships().iterator().next());
+		assertEquals(1, femaleParent.getParentRelationships().size());
+	}
+
+	@Test
+	public final void testAddHybridRelationships() {
+		NonViralName nonViralName1 = new NonViralName();
+		assertEquals(0, nonViralName1.getParentRelationships().size());
+		assertEquals(0, nonViralName1.getChildRelationships().size());
+		BotanicalName femaleParent = BotanicalName.NewInstance(null);
+		BotanicalName maleParent = BotanicalName.NewInstance(null);
+		
+		nonViralName1.addHybridParent(femaleParent, HybridRelationshipType.MALE_PARENT(), null);
+		nonViralName1.addHybridParent(maleParent, HybridRelationshipType.MALE_PARENT(), null);
+		
+		assertEquals(2, nonViralName1.getChildRelationships().size());
+		assertEquals(0, nonViralName1.getParentRelationships().size());
+		assertEquals(1, maleParent.getParentRelationships().size());
+		assertEquals(1, femaleParent.getParentRelationships().size());
+		assertEquals(0, maleParent.getChildRelationships().size());
+		assertEquals(0, femaleParent.getChildRelationships().size());
+				
+	}
+
+	@Test(expected=IllegalArgumentException.class)
+	public final void testAddHybridRelationship() {
+		NonViralName nonViralName1 = new NonViralName();
+		assertEquals(0, nonViralName1.getParentRelationships().size());
+		assertEquals(0, nonViralName1.getChildRelationships().size());
+		NonViralName botanicalName2 = new NonViralName();
+		botanicalName2.addHybridRelationship(null);
+	}
+
+	@Test
+	public final void testRemoveHybridRelationship() {
+		NonViralName botanicalName1 = new NonViralName();
+		assertEquals(0, botanicalName1.getParentRelationships().size());
+		assertEquals(0, botanicalName1.getChildRelationships().size());
+		BotanicalName femaleParent = BotanicalName.NewInstance(null);
+		NonViralName maleParent = NonViralName.NewInstance(null);
+		ZoologicalName child = ZoologicalName.NewInstance(null);
+		
+		botanicalName1.addHybridParent(femaleParent, HybridRelationshipType.FEMALE_PARENT(), null);
+		botanicalName1.addHybridParent(maleParent, HybridRelationshipType.MALE_PARENT(), null);
+		botanicalName1.addHybridChild(child, HybridRelationshipType.FIRST_PARENT(), null);
+		assertEquals(2, botanicalName1.getChildRelationships().size());
+		assertEquals(1, botanicalName1.getParentRelationships().size());
+		assertEquals(1, child.getChildRelationships().size());
+		
+		botanicalName1.removeHybridParent(femaleParent);
+		assertEquals(1, botanicalName1.getChildRelationships().size());
+		assertEquals(1, botanicalName1.getParentRelationships().size());
+		
+		botanicalName1.removeHybridParent(maleParent);
+		assertEquals(0, botanicalName1.getChildRelationships().size());
+		assertEquals(1, botanicalName1.getParentRelationships().size());
+		
+		botanicalName1.removeHybridChild(child);
+		assertEquals(0, botanicalName1.getParentRelationships().size());
+		
+		//null
+		botanicalName1.removeHybridRelationship(null);
+		assertEquals(0, botanicalName1.getChildRelationships().size());
+	}
 }

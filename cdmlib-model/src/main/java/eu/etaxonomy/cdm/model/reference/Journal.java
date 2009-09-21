@@ -40,7 +40,7 @@ import eu.etaxonomy.cdm.strategy.cache.reference.JournalDefaultCacheStrategy;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Journal", propOrder = {
-    "issn"
+//    "issn"
 })
 @XmlRootElement(name = "Journal")
 @Entity
@@ -50,9 +50,9 @@ import eu.etaxonomy.cdm.strategy.cache.reference.JournalDefaultCacheStrategy;
 public class Journal extends PublicationBase<IReferenceBaseCacheStrategy<Journal>> implements Cloneable {
 	static Logger logger = Logger.getLogger(Journal.class);
 	
-	@XmlElement(name = "ISSN")
-	@Field(index=Index.TOKENIZED)
-	private String issn;
+//	@XmlElement(name = "ISSN")
+//	@Field(index=Index.TOKENIZED)
+//	private String issn;
 
 	
 	/** 
@@ -63,6 +63,7 @@ public class Journal extends PublicationBase<IReferenceBaseCacheStrategy<Journal
 	 */
 	protected Journal(){
 		super();
+		this.type = ReferenceType.Journal;
 		cacheStrategy = JournalDefaultCacheStrategy.NewInstance();
 	}
 	

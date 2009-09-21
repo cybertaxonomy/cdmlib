@@ -25,7 +25,7 @@ import org.hibernate.search.annotations.Indexed;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import eu.etaxonomy.cdm.strategy.cache.reference.IReferenceBaseCacheStrategy;
-import eu.etaxonomy.cdm.strategy.cache.reference.StrictReferenceBaseDefaultCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.reference.ReferenceBaseDefaultCacheStrategy;
 
 /**
  * This class represents collections of {@link PrintedUnitBase printed published references} which
@@ -40,7 +40,7 @@ import eu.etaxonomy.cdm.strategy.cache.reference.StrictReferenceBaseDefaultCache
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "PrintSeries", propOrder = {
-    "series"
+//    "series"
 })
 @XmlRootElement(name = "PrintSeries")
 @Entity
@@ -48,14 +48,17 @@ import eu.etaxonomy.cdm.strategy.cache.reference.StrictReferenceBaseDefaultCache
 @Audited
 @Configurable
 public class PrintSeries extends PublicationBase<IReferenceBaseCacheStrategy<PrintSeries>> implements Cloneable {
+	private static final long serialVersionUID = -6723799677497340157L;
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(PrintSeries.class);
 	
-	@XmlElement(name = "Series")
-	@Field(index=Index.TOKENIZED)
-	private String series;
+//	@XmlElement(name = "Series")
+//	@Field(index=Index.TOKENIZED)
+//	private String series;
 
 	protected PrintSeries() {
-		this.cacheStrategy = new StrictReferenceBaseDefaultCacheStrategy<PrintSeries>();
+		this.type = ReferenceType.PrintSeries;
+		this.cacheStrategy = new ReferenceBaseDefaultCacheStrategy<PrintSeries>();
 	}
 	
 	/** 

@@ -16,7 +16,6 @@ import static eu.etaxonomy.cdm.io.common.ImportHelper.OVERWRITE;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -27,18 +26,14 @@ import org.springframework.stereotype.Component;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.XmlHelp;
 import eu.etaxonomy.cdm.io.berlinModel.CdmOneToManyMapper;
-import eu.etaxonomy.cdm.io.berlinModel.CdmStringMapper;
-import eu.etaxonomy.cdm.io.common.CdmAttributeMapperBase;
 import eu.etaxonomy.cdm.io.common.CdmSingleAttributeMapperBase;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.IXmlMapper;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
-import eu.etaxonomy.cdm.io.common.ImportStateBase;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
-import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
@@ -47,10 +42,7 @@ import eu.etaxonomy.cdm.model.reference.Book;
 import eu.etaxonomy.cdm.model.reference.BookSection;
 import eu.etaxonomy.cdm.model.reference.Generic;
 import eu.etaxonomy.cdm.model.reference.Journal;
-import eu.etaxonomy.cdm.model.reference.PublicationBase;
-import eu.etaxonomy.cdm.model.reference.Publisher;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
-import eu.etaxonomy.cdm.model.reference.StrictReferenceBase;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
 /**
@@ -124,7 +116,7 @@ public class TcsRdfReferenceImport extends TcsRdfImportBase implements ICdmIO<Tc
 
 
 	
-	private boolean makeStandardMapper(Element parentElement, StrictReferenceBase ref, Set<String> omitAttributes){
+	private boolean makeStandardMapper(Element parentElement, ReferenceBase ref, Set<String> omitAttributes){
 		if (omitAttributes == null){
 			omitAttributes = new HashSet<String>();
 		}
@@ -144,7 +136,7 @@ public class TcsRdfReferenceImport extends TcsRdfImportBase implements ICdmIO<Tc
 		return true;
 	}
 	
-	private boolean makeSingleAttributeMapper(CdmSingleAttributeXmlMapperBase mapper, Element parentElement, StrictReferenceBase ref, Set<String> omitAttributes){
+	private boolean makeSingleAttributeMapper(CdmSingleAttributeXmlMapperBase mapper, Element parentElement, ReferenceBase ref, Set<String> omitAttributes){
 		boolean result = true;
 		Object value = getValue(mapper, parentElement);
 		//write to destination
@@ -157,7 +149,7 @@ public class TcsRdfReferenceImport extends TcsRdfImportBase implements ICdmIO<Tc
 		return result;
 	}
 	
-	private boolean makeMultipleAttributeMapper(CdmOneToManyMapper<?,?,CdmTextElementMapper> mapper, Element parentElement, StrictReferenceBase ref, Set<String> omitAttributes){
+	private boolean makeMultipleAttributeMapper(CdmOneToManyMapper<?,?,CdmTextElementMapper> mapper, Element parentElement, ReferenceBase ref, Set<String> omitAttributes){
 		if (omitAttributes == null){
 			omitAttributes = new HashSet<String>();
 		}
@@ -231,7 +223,7 @@ public class TcsRdfReferenceImport extends TcsRdfImportBase implements ICdmIO<Tc
 			String strPubType = XmlHelp.getChildAttributeValue(elPublicationCitation, tcsElementName, tcsNamespace, "resource", rdfNamespace);
 			
 			try {
-				StrictReferenceBase ref = TcsRdfTransformer.pubTypeStr2PubType(strPubType);
+				ReferenceBase<?> ref = TcsRdfTransformer.pubTypeStr2PubType(strPubType);
 				if (ref==null){
 					ref = Generic.NewInstance();
 				}
@@ -292,7 +284,7 @@ public class TcsRdfReferenceImport extends TcsRdfImportBase implements ICdmIO<Tc
 				tcsNamespace = publicationNamespace;
 				if (! CdmUtils.Nz(strTitle).trim().equals("")  || nomRefExists == false){
 					//TODO
-					StrictReferenceBase biblioRef = (StrictReferenceBase)ref.clone();
+					ReferenceBase<?> biblioRef = (ReferenceBase<?>)ref.clone();
 					biblioRef.setTitle(strTitle);
 					ImportHelper.setOriginalSource(ref, config.getSourceReference(), strAbout, idNamespace);
 					referenceMap.put(strAbout, biblioRef);

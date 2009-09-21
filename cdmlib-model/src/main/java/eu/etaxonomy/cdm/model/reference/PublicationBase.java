@@ -33,23 +33,23 @@ import eu.etaxonomy.cdm.strategy.cache.reference.IReferenceBaseCacheStrategy;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "PublicationBase", propOrder = {
-    "publisher",
-    "placePublished"
+//    "publisher",
+//    "placePublished"
 })
 @XmlRootElement(name = "PublicationBase")
 @Entity
 @Indexed(index = "eu.etaxonomy.cdm.model.reference.ReferenceBase")
 @Audited
-public abstract class PublicationBase<S extends IReferenceBaseCacheStrategy> extends StrictReferenceBase<S> {
+public abstract class PublicationBase<S extends IReferenceBaseCacheStrategy> extends ReferenceBase<S> {
 	private static final long serialVersionUID = -3050853696708743386L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(PublicationBase.class);
-	
-	@XmlElement(name = "Publisher")
-	private String publisher;
-	
-	@XmlElement(name = "PlacePublished")
-	private String placePublished;
+//	
+//	@XmlElement(name = "Publisher")
+//	private String publisher;
+//	
+//	@XmlElement(name = "PlacePublished")
+//	private String placePublished;
 
 	
 	public PublicationBase(){

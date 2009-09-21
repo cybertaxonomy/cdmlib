@@ -12,10 +12,10 @@ package eu.etaxonomy.cdm.persistence.dao.common;
 import java.util.List;
 
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
-import eu.etaxonomy.cdm.model.common.OriginalSource;
+import eu.etaxonomy.cdm.model.common.OriginalSourceBase;
 
 
-public interface IOriginalSourceDao extends ICdmEntityDao<OriginalSource>{
+public interface IOriginalSourceDao extends ICdmEntityDao<OriginalSourceBase>{
 	
 
 	public List<IdentifiableEntity> findOriginalSourceByIdInSource(Class clazz, String idInSource, String idNamespace);
@@ -26,7 +26,7 @@ public interface IOriginalSourceDao extends ICdmEntityDao<OriginalSource>{
 	 * @param idNamespace
 	 * @return
 	 */
-	public List<OriginalSource> findOriginalSourceByIdInSource(String idInSource, String idNamespace);
+	public List<OriginalSourceBase> findOriginalSourceByIdInSource(String idInSource, String idNamespace);
 
 	
 }

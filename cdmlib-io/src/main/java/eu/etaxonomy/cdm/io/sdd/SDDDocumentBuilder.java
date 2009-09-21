@@ -43,9 +43,9 @@ import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
-import eu.etaxonomy.cdm.model.common.OriginalSource;
 import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.common.TermBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
@@ -407,7 +407,7 @@ public class SDDDocumentBuilder {
 				agent.setAttribute(ROLE, role);
 				Person author = team.getTeamMembers().get(i);
 				if (author.getSources() != null) {
-					OriginalSource os = (OriginalSource) author.getSources().toArray()[0];
+					IdentifiableSource os = (IdentifiableSource) author.getSources().toArray()[0];
 					String id = os.getIdInSource();
 					if (id != null) {
 						if (!id.equals("")) {
@@ -617,7 +617,7 @@ public class SDDDocumentBuilder {
 			if (ve instanceof IdentifiableEntity) {
 				IdentifiableEntity ie = (IdentifiableEntity) ve;
 				if (ie.getSources().size() > 0) {
-					OriginalSource os = (OriginalSource) ie.getSources().toArray()[0];
+					IdentifiableSource os = (IdentifiableSource) ie.getSources().toArray()[0];
 					String id = os.getIdInSource();
 					if (id != null) {
 						if (!id.equals("")) {

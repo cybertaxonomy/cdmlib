@@ -31,12 +31,13 @@ import com.ibm.lsid.MalformedLSIDException;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.Extension;
+import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageStringBase;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
-import eu.etaxonomy.cdm.model.common.OriginalSource;
+import eu.etaxonomy.cdm.model.common.OriginalSourceBase;
 import eu.etaxonomy.cdm.model.description.Sex;
 import eu.etaxonomy.cdm.model.description.SpecimenDescription;
 import eu.etaxonomy.cdm.model.description.Stage;
@@ -143,7 +144,7 @@ public class SpecimenTest {
 		Marker marker = Marker.NewInstance(MarkerType.COMPLETE(), false);
 		Rights right = Rights.NewInstance("right", Language.DEFAULT());
 		Media media = Media.NewInstance();
-		OriginalSource source = OriginalSource.NewInstance("12", "idNamespace");
+		IdentifiableSource source = IdentifiableSource.NewInstance("12", "idNamespace");
 		
 		specimen.setAccessionNumber(accessionNumber);
 		specimen.setCatalogNumber(catalogNumber);
@@ -240,7 +241,7 @@ public class SpecimenTest {
 		assertEquals(right, specimenClone.getRights().iterator().next());
 		
 		assertFalse(source.equals(specimenClone.getSources().iterator().next()));
-		assertEquals(source.getId(), ((OriginalSource)specimenClone.getSources().iterator().next()).getId());
+		assertEquals(source.getId(), ((OriginalSourceBase)specimenClone.getSources().iterator().next()).getId());
 		assertNotSame(source, specimenClone.getSources().iterator().next());
 		assertEquals(1, specimenClone.getSources().size());
 	}

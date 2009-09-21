@@ -22,7 +22,8 @@ import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ISourceable;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
-import eu.etaxonomy.cdm.model.common.OriginalSource;
+import eu.etaxonomy.cdm.model.common.IdentifiableSource;
+import eu.etaxonomy.cdm.model.common.OriginalSourceBase;
 import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
 
@@ -44,15 +45,15 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 		return new DefaultPagerImpl<Rights>(pageNumber, numberOfResults, pageSize, results);
 	}
 
-	public Pager<OriginalSource> getSources(T t, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
+	public Pager<IdentifiableSource> getSources(T t, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
 		 Integer numberOfResults = dao.countSources(t);
 			
-			List<OriginalSource> results = new ArrayList<OriginalSource>();
+			List<IdentifiableSource> results = new ArrayList<IdentifiableSource>();
 			if(numberOfResults > 0) { // no point checking again
 				results = dao.getSources(t, pageSize, pageNumber,propertyPaths); 
 			}
 			
-			return new DefaultPagerImpl<OriginalSource>(pageNumber, numberOfResults, pageSize, results);
+			return new DefaultPagerImpl<IdentifiableSource>(pageNumber, numberOfResults, pageSize, results);
 	}
 
 	protected List<T> findByTitle(IIdentifiableEntityServiceConfigurator config){

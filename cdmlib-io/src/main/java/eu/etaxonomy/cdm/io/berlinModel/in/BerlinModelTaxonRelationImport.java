@@ -34,14 +34,12 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.ResultWrapper;
 import eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
-import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
-import eu.etaxonomy.cdm.model.reference.StrictReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
@@ -155,9 +153,9 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 				
 				int ptRefFk = rs.getInt("PTRefFk");
 				
-				StrictReferenceBase ref = (StrictReferenceBase)referenceMap.get(ptRefFk);
+				ReferenceBase<?> ref = referenceMap.get(ptRefFk);
 				if (ref == null){
-					ref = (StrictReferenceBase)nomRefMap.get(ptRefFk);
+					ref = nomRefMap.get(ptRefFk);
 				}
 				//FIXME treeName
 				String treeName = "TaxonTree - No Name";
@@ -167,7 +165,7 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 				TaxonomicTree tree = TaxonomicTree.NewInstance(treeName);
 				tree.setReference(ref);
 				
-				UUID uuid = getTaxonService().saveTaxonomicTree(tree);
+				getTaxonService().saveTaxonomicTree(tree);
 				state.putTree(ref, tree);
 			}
 		} catch (SQLException e) {

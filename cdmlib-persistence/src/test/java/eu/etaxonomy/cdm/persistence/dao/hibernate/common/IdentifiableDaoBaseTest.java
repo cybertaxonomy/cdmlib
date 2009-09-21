@@ -16,8 +16,8 @@ import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.model.common.Credit;
+import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.LSID;
-import eu.etaxonomy.cdm.model.common.OriginalSource;
 import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.taxon.TaxonDaoHibernateImpl;
@@ -106,7 +106,7 @@ public class IdentifiableDaoBaseTest extends CdmIntegrationTest {
 		TaxonBase taxon = identifiableDao.findByUuid(uuid);
 		assert taxon != null : "IdentifiableEntity must exist";
 		
-		List<OriginalSource> sources = identifiableDao.getSources(taxon, null, null,null);
+		List<IdentifiableSource> sources = identifiableDao.getSources(taxon, null, null,null);
 
 		assertNotNull("getSources should return a List", sources);
 		assertFalse("the list should not be empty", sources.isEmpty());

@@ -8,6 +8,7 @@ import static junit.framework.Assert.assertTrue;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -127,20 +128,11 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 		AuditEventContextHolder.clearContext();
 	}
 	
-//	@Test
-//	@DataSet
-//	public void testPrintDataSet() {
-//		
-//		printDataSet(System.out);
-//	
-//	}
-	
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.taxon.TaxonDaoHibernateImpl#TaxonDaoHibernateImpl()}.
 	 */
 	@Test
 	@DataSet
-	@Ignore
 	public void testInit() {
 		logger.warn("testInit()");
 		assertNotNull("Instance of ITaxonDao expected",taxonDao);
@@ -154,7 +146,6 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 	 */
 	@Test
 	@DataSet
-	@Ignore
 	public void testGetRootTaxa() {
 		ReferenceBase sec1 = referenceDao.findById(1);
 		assert sec1 != null : "sec1 must exist";
@@ -547,7 +538,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 		taxonDao.delete(taxon);
 		setComplete();
 		endTransaction();
-		//try {printDataSet(new FileOutputStream("test.xml"));} catch(Exception e) { } 
+		try {printDataSet(new FileOutputStream("test.xml"));} catch(Exception e) { } 
 	}
 	
 	@Test

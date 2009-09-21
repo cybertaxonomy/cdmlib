@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Entity;
-import javax.persistence.Id;
 
 import org.apache.log4j.Logger;
 
@@ -39,7 +38,7 @@ public class CdmMetaData extends CdmBase{
 	 * be handled by SCHEMA_VALIDATION.UPDATE
 	 * The last number represents the date of change.
 	 */
-	private static final String dbSchemaVersion = "2.1.0.0.200909071123";
+	private static final String dbSchemaVersion = "2.1.1.0.200909181723";
 	
 	public enum MetaDataPropertyName{
 		DB_SCHEMA_VERSION
