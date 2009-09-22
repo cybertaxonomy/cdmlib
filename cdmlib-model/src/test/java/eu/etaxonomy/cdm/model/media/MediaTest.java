@@ -152,7 +152,10 @@ public class MediaTest {
 		Assert.assertTrue("Representations must contain mediaRepresentation1", media1.getRepresentations().contains(mediaRepresentation1));
 		media1.removeRepresentation(mediaRepresentation1);
 		Assert.assertFalse("Representations must not contain mediaRepresentation1", media1.getRepresentations().contains(mediaRepresentation1));
-		Assert.assertEquals("Number of representations must be 1", 1, media1.getRepresentations().size());	
+		Assert.assertEquals("Number of representations must be 1", 1, media1.getRepresentations().size());
+		media1.removeRepresentation(mediaRepresentation2);
+		Assert.assertFalse("Representations must not contain mediaRepresentation2", media1.getRepresentations().contains(mediaRepresentation2));
+		Assert.assertEquals("Number of representations must be 0", 0, media1.getRepresentations().size());
 	}
 
 	/**

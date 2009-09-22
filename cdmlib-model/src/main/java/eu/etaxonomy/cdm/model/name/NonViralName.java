@@ -48,6 +48,8 @@ import eu.etaxonomy.cdm.strategy.cache.name.NonViralNameDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.match.Match;
 import eu.etaxonomy.cdm.strategy.match.MatchMode;
 import eu.etaxonomy.cdm.strategy.match.Match.ReplaceMode;
+import eu.etaxonomy.cdm.strategy.merge.Merge;
+import eu.etaxonomy.cdm.strategy.merge.MergeMode;
 
 /**
  * The taxon name class for all non viral taxa. Parenthetical authorship is derived
@@ -80,7 +82,12 @@ import eu.etaxonomy.cdm.strategy.match.Match.ReplaceMode;
     "authorshipCache",
     "protectedAuthorshipCache",
     "protectedNameCache",
-    "hybridRelationships"
+    "hybridParentRelations",
+    "hybridChildRelations",
+    "hybridFormula",
+    "monomHybrid",
+    "binomHybrid",
+    "trinomHybrid",
 })
 @XmlRootElement(name = "NonViralName")
 @Entity
@@ -160,13 +167,34 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 	@XmlElement(name = "ProtectedAuthorshipCache")
 	protected boolean protectedAuthorshipCache;
 
-    @XmlElementWrapper(name = "HybridRelationships")
-    @XmlElement(name = "HybridRelationship")
-    @OneToMany(fetch = FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE_ORPHAN})
-	private Set<HybridRelationship> hybridRelationships = new HashSet<HybridRelationship>();
+    @XmlElementWrapper(name = "HybridRelationsFromThisName")
+    @XmlElement(name = "HybridRelationsFromThisName")
+    @OneToMany(mappedBy="relatedFrom", fetch = FetchType.LAZY)
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE_ORPHAN })
+	@Merge(MergeMode.RELATION)
+	private Set<HybridRelationship> hybridParentRelations = new HashSet<HybridRelationship>();
 
+    @XmlElementWrapper(name = "HybridRelationsToThisName")
+    @XmlElement(name = "HybridRelationsToThisName")
+    @OneToMany(mappedBy="relatedTo", fetch = FetchType.LAZY)
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE_ORPHAN })
+	@Merge(MergeMode.RELATION)
+	private Set<HybridRelationship> hybridChildRelations = new HashSet<HybridRelationship>();
+
+	//if set: this name is a hybrid formula (a hybrid that does not have an own name) and no other hybrid flags may be set. A
+	//hybrid name  may not have either an authorteam nor other name components.
+    @XmlElement(name ="IsHybridFormula")
+	private boolean hybridFormula = false;
 	
+    @XmlElement(name ="IsMonomHybrid")
+	private boolean monomHybrid = false;
+	
+    @XmlElement(name ="IsBinomHybrid")
+	private boolean binomHybrid = false;
+	
+    @XmlElement(name ="IsTrinomHybrid")
+	private boolean trinomHybrid = false;
+    
 //    @XmlTransient
 //    @Transient
 //	protected INonViralNameCacheStrategy cacheStrategy;
@@ -775,28 +803,135 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 		}
 	}
 	
+
+	/**
+	 * Returns the boolean value of the flag indicating whether the name of <i>this</i>
+	 * botanical taxon name is a hybrid formula (true) or not (false). A hybrid
+	 * named by a hybrid formula (composed with its parent names by placing the
+	 * multiplication sign between them) does not have an own published name
+	 * and therefore has neither an {@link NonViralName#getAuthorshipCache() autorship}
+	 * nor other name components. If this flag is set no other hybrid flags may
+	 * be set.
+	 *  
+	 * @return  the boolean value of the isHybridFormula flag
+	 * @see		#isMonomHybrid()
+	 * @see		#isBinomHybrid()
+	 * @see		#isTrinomHybrid()
+	 */
+	public boolean isHybridFormula(){
+		return this.hybridFormula;
+	}
+
+	/**
+	 * @see  #isHybridFormula()
+	 */
+	public void setHybridFormula(boolean hybridFormula){
+		this.hybridFormula = hybridFormula;
+	}
+
+	/**
+	 * Returns the boolean value of the flag indicating whether <i>this</i> botanical
+	 * taxon name is the name of an intergeneric hybrid (true) or not (false).
+	 * In this case the multiplication sign is placed before the scientific
+	 * name. If this flag is set no other hybrid flags may be set.
+	 *  
+	 * @return  the boolean value of the isMonomHybrid flag
+	 * @see		#isHybridFormula()
+	 * @see		#isBinomHybrid()
+	 * @see		#isTrinomHybrid()
+	 */
+	public boolean isMonomHybrid(){
+		return this.monomHybrid;
+	}
+
+	/**
+	 * @see  #isMonomHybrid()
+	 * @see	 #isBinomHybrid()
+	 * @see	 #isTrinomHybrid()
+	 */
+	public void setMonomHybrid(boolean monomHybrid){
+		this.monomHybrid = monomHybrid;
+	}
+
+	/**
+	 * Returns the boolean value of the flag indicating whether <i>this</i> botanical
+	 * taxon name is the name of an interspecific hybrid (true) or not (false).
+	 * In this case the multiplication sign is placed before the species
+	 * epithet. If this flag is set no other hybrid flags may be set.
+	 *  
+	 * @return  the boolean value of the isBinomHybrid flag
+	 * @see		#isHybridFormula()
+	 * @see		#isMonomHybrid()
+	 * @see		#isTrinomHybrid()
+	 */
+	public boolean isBinomHybrid(){
+		return this.binomHybrid;
+	}
+
+	/**
+	 * @see	 #isBinomHybrid()
+	 * @see  #isMonomHybrid()
+	 * @see	 #isTrinomHybrid()
+	 */
+	public void setBinomHybrid(boolean binomHybrid){
+		this.binomHybrid = binomHybrid;
+	}
+
+	/**
+	 * Returns the boolean value of the flag indicating whether <i>this</i> botanical
+	 * taxon name is the name of an infraspecific hybrid (true) or not (false).
+	 * In this case the term "notho-" (optionally abbreviated "n-") is used as
+	 * a prefix to the term denoting the infraspecific rank of <i>this</i> botanical
+	 * taxon name. If this flag is set no other hybrid flags may be set.
+	 *  
+	 * @return  the boolean value of the isTrinomHybrid flag
+	 * @see		#isHybridFormula()
+	 * @see		#isMonomHybrid()
+	 * @see		#isBinomHybrid()
+	 */
+	public boolean isTrinomHybrid(){
+		return this.trinomHybrid;
+	}
+
+	/**
+	 * @see	 #isTrinomHybrid()
+	 * @see	 #isBinomHybrid()
+	 * @see  #isMonomHybrid()
+	 */
+	public void setTrinomHybrid(boolean trinomHybrid){
+		this.trinomHybrid = trinomHybrid;
+	}
 	
 	/** 
 	 * Returns the set of all {@link HybridRelationship hybrid relationships}
-	 * in which <i>this</i> botanical taxon name is involved. Any botanical taxon name
-	 * (even itself a hybrid taxon name) can be a parent of another hybrid
-	 * taxon name.
+	 * in which <i>this</i> taxon name is involved as a {@link common.RelationshipBase#getRelatedFrom() parent}.
 	 *  
-	 * @see    #getParentRelationships()
+	 * @see    #getHybridRelationships()
 	 * @see    #getChildRelationships()
-	 * @see    #addHybridRelationship(HybridRelationship)
-	 * @see    #addRelationship(RelationshipBase)
+	 * @see    HybridRelationshipType
 	 */
-	public Set<HybridRelationship> getHybridRelationships() {
-		return hybridRelationships;
+	public Set<HybridRelationship> getParentRelationships() {
+		return hybridParentRelations;
+	}
+
+	/** 
+	 * Returns the set of all {@link HybridRelationship hybrid relationships}
+	 * in which <i>this</i> taxon name is involved as a {@link common.RelationshipBase#getRelatedTo() child}.
+	 *  
+	 * @see    #getHybridRelationships()
+	 * @see    #getParentRelationships()
+	 * @see    HybridRelationshipType
+	 */
+	public Set<HybridRelationship> getChildRelationships() {
+		return hybridChildRelations;
 	}
 
 	/**
 	 * Adds the given {@link HybridRelationship hybrid relationship} to the set
-	 * of {@link #getHybridRelationships() hybrid relationships} of both botanical taxon names
-	 * involved in this hybrid relationship. One of both botanical taxon names
+	 * of {@link #getHybridRelationships() hybrid relationships} of both non viral taxon names
+	 * involved in this hybrid relationship. One of both non viral taxon names
 	 * must be <i>this</i> botanical taxon name otherwise no addition will be carried
-	 * out. The {@link eu.etaxonomy.cdm.model.common.RelationshipBase#getRelatedTo() child botanical taxon name}
+	 * out. The {@link eu.etaxonomy.cdm.model.common.RelationshipBase#getRelatedTo() child non viral taxon name}
 	 * must be a hybrid, which means that one of its four hybrid flags must be set.
 	 * 
 	 * @param relationship  the hybrid relationship to be added
@@ -808,11 +943,40 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 	 * @see    				#getParentRelationships()
 	 * @see    				#getChildRelationships()
 	 * @see    				#addRelationship(RelationshipBase)
+	 * @throws 				IllegalArgumentException
 	 */
-	protected void addHybridRelationship(HybridRelationship relationship) {
-		this.hybridRelationships.add(relationship);
+	protected void addHybridRelationship(HybridRelationship rel) {
+		if (rel!=null && rel.getHybridName().equals(this)){
+			this.hybridChildRelations.add(rel);
+		}else if(rel!=null && rel.getParentName().equals(this)){
+			this.hybridParentRelations.add(rel);			
+		}else{
+			throw new IllegalArgumentException("Hybrid relationship is either null or the relationship does not reference this name");
+		}
 	}
 
+	
+
+	/**
+	 * Does the same as the addHybridRelationship method if the given
+	 * {@link common.RelationshipBase relation} is also a {@link HybridRelationship hybrid relationship}.
+	 * Otherwise this method does the same as the overwritten {@link TaxonNameBase#addRelationship(RelationshipBase) addRelationship}
+	 * method from TaxonNameBase.
+	 * 
+	 * @param relation  the relationship to be added to some of <i>this</i> taxon name's relationships sets
+	 * @see    	   		#addHybridRelationship(HybridRelationship)
+	 * @see    	   		TaxonNameBase#addRelationship(RelationshipBase)
+	 * @see    	   		TaxonNameBase#addNameRelationship(NameRelationship)
+	 */
+	@Override
+	@Deprecated  //To be used by RelationshipBase only
+	public void addRelationship(RelationshipBase relation) {
+		if (relation instanceof HybridRelationship){
+			addHybridRelationship((HybridRelationship)relation);
+		}else {
+			super.addRelationship(relation);
+		}
+	}
 	
 	/**
 	 * Creates a new {@link HybridRelationship#HybridRelationship(BotanicalName, BotanicalName, HybridRelationshipType, String) hybrid relationship} 
@@ -864,37 +1028,53 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 	 * @param  relationship  the hybrid relationship which should be deleted from the corresponding sets
 	 * @see    				 #getHybridRelationships()
 	 */
-	public void removeHybridRelationship(HybridRelationship relationship) {
-		//TODO
-		logger.warn("Birelationship not yet implemented");
-		this.hybridRelationships.remove(relationship);
+	public void removeHybridRelationship(HybridRelationship hybridRelation) {
+		if (hybridRelation == null) {
+			return;
+		}
+		
+		NonViralName parent = hybridRelation.getParentName();
+		NonViralName child = hybridRelation.getHybridName();
+
+		hybridRelation.setHybridName(null);
+		hybridRelation.setParentName(null);
+
+		if (parent != null) {
+			parent.removeHybridRelationship(hybridRelation);
+		}
+		
+		if (child != null) {
+			child.removeHybridRelationship(hybridRelation);
+		}
+		
+		this.hybridChildRelations.remove(hybridRelation);
+		this.hybridParentRelations.remove(hybridRelation);
 	}
 
 	
-	/** 
-	 * Returns the set of all {@link HybridRelationship hybrid relationships}
-	 * in which <i>this</i> botanical taxon name is involved as a {@link common.RelationshipBase#getRelatedFrom() parent}.
-	 *  
-	 * @see    #getHybridRelationships()
-	 * @see    #getChildRelationships()
-	 * @see    HybridRelationshipType
-	 */
-	public Set<HybridRelationship> getParentRelationships() {
-		// FIXME: filter relations
-		return hybridRelationships;
+	public void removeHybridChild(NonViralName child) {
+		Set<HybridRelationship> hybridRelationships = new HashSet<HybridRelationship>();
+		hybridRelationships.addAll(this.getChildRelationships());
+		hybridRelationships.addAll(this.getParentRelationships());
+		for(HybridRelationship hybridRelationship : hybridRelationships) {
+			// remove name relationship from this side 
+			if (hybridRelationship.getParentName().equals(this) && hybridRelationship.getHybridName().equals(child)) {
+				this.removeHybridRelationship(hybridRelationship);
+			}
+		}
+	}
+	
+	public void removeHybridParent(NonViralName parent) {
+		Set<HybridRelationship> hybridRelationships = new HashSet<HybridRelationship>();
+		hybridRelationships.addAll(this.getChildRelationships());
+		hybridRelationships.addAll(this.getParentRelationships());
+		for(HybridRelationship hybridRelationship : hybridRelationships) {
+			// remove name relationship from this side 
+			if (hybridRelationship.getParentName().equals(parent) && hybridRelationship.getHybridName().equals(this)) {
+				this.removeHybridRelationship(hybridRelationship);
+			}
+		}
 	}
 
-	/** 
-	 * Returns the set of all {@link HybridRelationship hybrid relationships}
-	 * in which <i>this</i> botanical taxon name is involved as a {@link common.RelationshipBase#getRelatedTo() child}.
-	 *  
-	 * @see    #getHybridRelationships()
-	 * @see    #getParentRelationships()
-	 * @see    HybridRelationshipType
-	 */
-	public Set<HybridRelationship> getChildRelationships() {
-		// FIXME: filter relations
-		return hybridRelationships;
-	}
 
 }

@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.model.molecular;
 
 
+import eu.etaxonomy.cdm.jaxb.DateTimeAdapter;
 import eu.etaxonomy.cdm.model.media.IMediaDocumented;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
@@ -17,15 +18,19 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IReferencedEntity;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.common.IdentifiableEntityDefaultCacheStrategy;
+import eu.etaxonomy.cdm.strategy.match.Match;
+import eu.etaxonomy.cdm.strategy.match.MatchMode;
 
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Index;
 import org.hibernate.annotations.Table;
+import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Indexed;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import java.util.*;
@@ -40,6 +45,7 @@ import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 /**
  * @author m.doering
@@ -77,10 +83,11 @@ public class Sequence extends IdentifiableEntity<IIdentifiableEntityCacheStrateg
 	private Integer length;
 	
 	//should be calculated in case sequence is set
-	// FIXME Should be a DateTime
-	@XmlElement(name = "DateSequenced")
-	@Temporal(TemporalType.DATE)
-	private Calendar dateSequenced;
+	@XmlElement (name = "DateSequenced", type= String.class)
+	@XmlJavaTypeAdapter(DateTimeAdapter.class)
+	@Type(type="dateTimeUserType")
+	@Basic(fetch = FetchType.LAZY)
+	private DateTime dateSequenced;
 	
 	//should be calculated in case sequence is set
 	@XmlAttribute(name = "isBarcode")
@@ -211,7 +218,7 @@ public class Sequence extends IdentifiableEntity<IIdentifiableEntityCacheStrateg
 		this.length = length;
 	}
 
-	public Calendar getDateSequenced(){
+	public DateTime getDateSequenced(){
 		return this.dateSequenced;
 	}
 
@@ -219,7 +226,7 @@ public class Sequence extends IdentifiableEntity<IIdentifiableEntityCacheStrateg
 	 * 
 	 * @param dateSequenced    dateSequenced
 	 */
-	public void setDateSequenced(Calendar dateSequenced){
+	public void setDateSequenced(DateTime dateSequenced){
 		this.dateSequenced = dateSequenced;
 	}
 

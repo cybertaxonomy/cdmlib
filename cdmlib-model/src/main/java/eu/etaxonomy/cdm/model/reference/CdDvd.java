@@ -43,7 +43,8 @@ import eu.etaxonomy.cdm.strategy.cache.reference.INomenclaturalReferenceCacheStr
 @Audited
 @Configurable
 public class CdDvd extends PublicationBase<INomenclaturalReferenceCacheStrategy<CdDvd>> implements INomenclaturalReference, Cloneable{
-	static Logger logger = Logger.getLogger(CdDvd.class);
+	private static final long serialVersionUID = -1010571682756717813L;
+	private static final Logger logger = Logger.getLogger(CdDvd.class);
 
 	public static CdDvd NewInstance() {
 		return new CdDvd();
@@ -57,6 +58,7 @@ public class CdDvd extends PublicationBase<INomenclaturalReferenceCacheStrategy<
 	
 	protected CdDvd(){
 		super();
+		this.type = ReferenceType.CdDvd;
 		this.cacheStrategy = CdDvdDefaultCacheStrategy.NewInstance();
 	}
 	

@@ -30,10 +30,9 @@ import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 import org.springframework.beans.factory.annotation.Configurable;
 
+import sun.management.resources.agent;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.strategy.cache.reference.INomenclaturalReferenceCacheStrategy;
-import eu.etaxonomy.cdm.strategy.cache.reference.IReferenceBaseCacheStrategy;
-import eu.etaxonomy.cdm.strategy.cache.reference.StrictReferenceBaseDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.reference.ThesisDefaultCacheStrategy;
 
 /**
@@ -51,7 +50,7 @@ import eu.etaxonomy.cdm.strategy.cache.reference.ThesisDefaultCacheStrategy;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Thesis", propOrder = {
-    "school"
+//    "school"
 })
 @XmlRootElement(name = "Thesis")
 @Entity
@@ -59,18 +58,20 @@ import eu.etaxonomy.cdm.strategy.cache.reference.ThesisDefaultCacheStrategy;
 @Audited
 @Configurable
 public class Thesis extends PublicationBase<INomenclaturalReferenceCacheStrategy<Thesis>> implements INomenclaturalReference, Cloneable{
-	
+	private static final long serialVersionUID = -1554558008861571165L;
 	private static final Logger logger = Logger.getLogger(Thesis.class);
 	
-	@XmlElement(name = "School")
-    @XmlIDREF
-    @XmlSchemaType(name = "IDREF")
-	@ManyToOne(fetch = FetchType.LAZY)
-	@IndexedEmbedded
-	@Cascade(CascadeType.SAVE_UPDATE)
-	private Institution school;
+//	@XmlElement(name = "School")
+//    @XmlIDREF
+//    @XmlSchemaType(name = "IDREF")
+//	@ManyToOne(fetch = FetchType.LAZY)
+//	@IndexedEmbedded
+//	@Cascade(CascadeType.SAVE_UPDATE)
+//	private Institution school;
 	
 	protected Thesis() {
+		super();
+		this.type = ReferenceType.Thesis;
 		this.cacheStrategy = ThesisDefaultCacheStrategy.NewInstance();
 	}
 

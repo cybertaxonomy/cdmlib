@@ -22,7 +22,7 @@ import org.hibernate.search.annotations.Indexed;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import eu.etaxonomy.cdm.strategy.cache.reference.IReferenceBaseCacheStrategy;
-import eu.etaxonomy.cdm.strategy.cache.reference.StrictReferenceBaseDefaultCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.reference.ReferenceBaseDefaultCacheStrategy;
 /**
  * This class represents patents. A patent is a document containing the set of
  * exclusive rights granted by a state to an inventor or his assignee for a
@@ -42,11 +42,15 @@ import eu.etaxonomy.cdm.strategy.cache.reference.StrictReferenceBaseDefaultCache
 @Indexed(index = "eu.etaxonomy.cdm.model.reference.ReferenceBase")
 @Audited
 @Configurable
-public class Patent extends StrictReferenceBase<IReferenceBaseCacheStrategy<Patent>> implements Cloneable {
+public class Patent extends ReferenceBase<IReferenceBaseCacheStrategy<Patent>> implements Cloneable {
+	private static final long serialVersionUID = -5490088861369456472L;
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(Patent.class);
 	
 	protected Patent() {
-		this.cacheStrategy = new StrictReferenceBaseDefaultCacheStrategy<Patent>();
+		super();
+		this.type = ReferenceType.Patent;
+		this.cacheStrategy = new ReferenceBaseDefaultCacheStrategy<Patent>();
 	}	
 	
 	/** 

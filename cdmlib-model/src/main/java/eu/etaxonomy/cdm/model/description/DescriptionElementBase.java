@@ -40,20 +40,23 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.IndexColumn;
 import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 
 import eu.etaxonomy.cdm.jaxb.MultilanguageTextAdapter;
+import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
+import eu.etaxonomy.cdm.model.common.DescriptionElementSource;
+import eu.etaxonomy.cdm.model.common.ISourceable;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.MultilanguageText;
-import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
-import eu.etaxonomy.cdm.model.media.IMediaEntity;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.strategy.merge.Merge;
+import eu.etaxonomy.cdm.strategy.merge.MergeMode;
 
 /**
  * The upmost (abstract) class for a piece of information) about
@@ -80,12 +83,12 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 	    "modifyingText",
 	    "media",
 	    "inDescription",
-	    "nameUsedInReference"
+	    "sources"
 })
 @Entity
 @Audited
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
-public abstract class DescriptionElementBase extends ReferencedEntityBase {
+public abstract class DescriptionElementBase extends AnnotatableEntity implements ISourceable<DescriptionElementSource> {
 	private static final long serialVersionUID = 5000910777835755905L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DescriptionElementBase.class);
@@ -130,12 +133,20 @@ public abstract class DescriptionElementBase extends ReferencedEntityBase {
     private DescriptionBase inDescription;
 	
 	//TODO can this be handled together with ReferencedEntityBase.originalNameString??
-	@XmlElement(name = "nameUsedInReference")
-	@XmlIDREF
-	@XmlSchemaType(name = "IDREF")
-	@ManyToOne(fetch = FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE})
-	private TaxonNameBase nameUsedInReference;
+//	@XmlElement(name = "nameUsedInReference")
+//	@XmlIDREF
+//	@XmlSchemaType(name = "IDREF")
+//	@ManyToOne(fetch = FetchType.LAZY)
+//	@Cascade({CascadeType.SAVE_UPDATE})
+//	private TaxonNameBase nameUsedInReference;
+	
+    @XmlElementWrapper(name = "Sources")
+    @XmlElement(name = "OriginalSource")
+    @OneToMany(fetch = FetchType.LAZY)		
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
+	@Merge(MergeMode.ADD_CLONE)
+	private Set<DescriptionElementSource> sources = new HashSet<DescriptionElementSource>();
+    
 	
 
 	// ************* CONSTRUCTORS *************/	
@@ -331,19 +342,164 @@ public abstract class DescriptionElementBase extends ReferencedEntityBase {
 		return this.modifyingText.remove(language);
 	}
 
-	/**
-	 * @return the nameUsedInReference
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.ISourceable#getSources()
 	 */
-	public TaxonNameBase getNameUsedInReference() {
-		return nameUsedInReference;
+	public Set<DescriptionElementSource> getSources() {
+		return this.sources;		
+	}
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.ISourceable#addSource(eu.etaxonomy.cdm.model.common.IOriginalSource)
+	 */
+	public void addSource(DescriptionElementSource source) {
+		if (source != null){
+			DescriptionElementBase oldSourcedObj = source.getSourcedObj();
+			if (oldSourcedObj != null && oldSourcedObj != this){
+				oldSourcedObj.getSources().remove(source);
+			}
+			this.sources.add(source);
+			source.setSourcedObj(this);
+		}
+	}
+	
+	public void addSource(String id, String idNamespace, ReferenceBase citation, String microReference, TaxonNameBase nameUsedInSource, String originalNameString){
+		DescriptionElementSource newSource = DescriptionElementSource.NewInstance(id, idNamespace, citation, microReference, nameUsedInSource, originalNameString);
+		addSource(newSource);
+	}
+	 
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.ISourceable#removeSource(eu.etaxonomy.cdm.model.common.IOriginalSource)
+	 */
+	public void removeSource(DescriptionElementSource source) {
+		this.sources.remove(source);
+	}
+
+	
+	/**
+	 * Gets the citation micro reference of the first source. This method is deprecated and exists only to be compliant with version 2.0.
+	 * It will be removed in v2.3
+	 * @return
+	 */
+	@Transient
+	@Deprecated
+	public String getCitationMicroReference(){
+		if (this.sources.size() < 1){
+			return null;
+		}else{
+			return this.sources.iterator().next().getCitationMicroReference();
+		}
+	}
+	
+	/**
+	 * Sets the citation micro reference of the first source. This method is deprecated and exists only to be compliant with version 2.0.
+	 * It will be removed in v2.3
+	 * If more than one source exists an IllegalStateException is thrown
+	 **/
+	@Transient
+	@Deprecated
+	public void setCitationMicroReference(String citationMicroReference){
+		if (this.sources.size() < 1){
+			this.addSource(DescriptionElementSource.NewInstance(null, null, null, citationMicroReference));
+		}else if (this.sources.size() > 1){
+			throw new IllegalStateException("When adding a microcitation via the setCitationMicroReference method there must be only one source available");
+		}else{
+			this.sources.iterator().next().setCitationMicroReference(citationMicroReference);
+		}
 	}
 
 	/**
-	 * @param nameUsedInReference the nameUsedInReference to set
-	 */
-	public void setNameUsedInReference(TaxonNameBase nameUsedInReference) {
-		this.nameUsedInReference = nameUsedInReference;
+	 * Gets the citation of the first source. This method is deprecated and exists only to be compliant with version 2.0.
+	 * It will be removed in v2.3
+	 */ 
+	@Transient
+	@Deprecated
+	public ReferenceBase getCitation(){
+		if (this.sources.size() < 1){
+			return null;
+		}else{
+			return this.sources.iterator().next().getCitation();
+		}
 	}
 	
+	/**
+	 * Sets the citation of the first source. This method is deprecated and exists only to be compliant with version 2.0.
+	 * It will be removed in v2.3
+	 * If more than one source exists an IllegalStateException is thrown
+	 **/
+	@Deprecated
+	public void setCitation(ReferenceBase citation) {
+		if (this.sources.size() < 1){
+			this.addSource(DescriptionElementSource.NewInstance(null, null, citation, null));
+		}else if (this.sources.size() > 1){
+			throw new IllegalStateException("When adding a citation via the setCitation method there must be only one source available");
+		}else{
+			this.sources.iterator().next().setCitation(citation);
+		}
+	}
+	
+	
+	/**
+	 * Gets the original name string of the first source. This method is deprecated and exists only to be compliant with version 2.0.
+	 * It will be removed in v2.3
+	 * @return
+	 */
+	@Transient
+	@Deprecated
+	public String getOriginalNameString(){
+		if (this.sources.size() < 1){
+			return null;
+		}else{
+			return this.sources.iterator().next().getOriginalNameString();
+		}
+	}
+	
+	/**
+	 * Sets the original name string of the first source. This method is deprecated and exists only to be compliant with version 2.0.
+	 * It will be removed in v2.3
+	 * If more than one source exists an IllegalStateException is thrown
+	 **/
+	@Transient
+	@Deprecated
+	public void setOriginalNameString(String originalNameString){
+		if (this.sources.size() < 1){
+			this.addSource(DescriptionElementSource.NewInstance(null, null, null, null, null, originalNameString));
+		}else if (this.sources.size() > 1){
+			throw new IllegalStateException("When adding a microcitation via the setCitationMicroReference method there must be only one source available");
+		}else{
+			this.sources.iterator().next().setOriginalNameString(originalNameString);
+		}
+	}
+	
+
+	/**
+	 * Gets the name used in source of the first source. This method is deprecated and exists only to be compliant with version 2.0.
+	 * It will be removed in v2.3
+	 */ 
+	@Transient
+	@Deprecated
+	public TaxonNameBase getNameUsedInReference(){
+		if (this.sources.size() < 1){
+			return null;
+		}else{
+			return this.sources.iterator().next().getNameUsedInSource();
+		}
+	}
+	
+	/**
+	 * Sets the name used in reference of the first source. This method is deprecated and exists only to be compliant with version 2.0.
+	 * It will be removed in v2.3
+	 * If more than one source exists an IllegalStateException is thrown
+	 **/
+	@Deprecated
+	public void setNameUsedInReference(TaxonNameBase nameUsedInSource) {
+		if (this.sources.size() < 1){
+			this.addSource(DescriptionElementSource.NewInstance(null, null, null, null, nameUsedInSource, null));
+		}else if (this.sources.size() > 1){
+			throw new IllegalStateException("When adding a citation via the setCitation method there must be only one source available");
+		}else{
+			this.sources.iterator().next().setNameUsedInSource(nameUsedInSource);
+		}
+	}
 	
 }

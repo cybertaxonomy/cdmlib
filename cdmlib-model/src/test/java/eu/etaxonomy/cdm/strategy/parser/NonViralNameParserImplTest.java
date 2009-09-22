@@ -39,8 +39,7 @@ import eu.etaxonomy.cdm.model.reference.Book;
 import eu.etaxonomy.cdm.model.reference.BookSection;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.Journal;
-import eu.etaxonomy.cdm.model.reference.StrictReferenceBase;
-
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 /**
  * @author a.mueller
  *
@@ -124,7 +123,36 @@ public class NonViralNameParserImplTest {
 	 */
 	@Test
 	public final void testParseSimpleName() {
-		logger.warn("Not yet implemented"); // TODO
+		
+		//Uninomials
+		ZoologicalName milichiidae = (ZoologicalName)parser.parseSimpleName("Milichiidae", NomenclaturalCode.ICZN, null);
+		assertEquals("Family rank expected", Rank.FAMILY(), milichiidae.getRank());
+		BotanicalName crepidinae = (BotanicalName)parser.parseSimpleName("Crepidinae", NomenclaturalCode.ICBN, null);
+		assertEquals("Family rank expected", Rank.SUBTRIBE(), crepidinae.getRank());
+		BotanicalName abies = (BotanicalName)parser.parseSimpleName("Abies", NomenclaturalCode.ICBN, null);
+		assertEquals("Family rank expected", Rank.GENUS(), abies.getRank());
+		
+		abies.addParsingProblem(ParserProblem.CheckRank);
+		parser.parseSimpleName(abies, "Abies", abies.getRank(), true);
+		assertTrue(abies.getParsingProblems().contains(ParserProblem.CheckRank));
+		
+		BotanicalName rosa = (BotanicalName)parser.parseSimpleName("Rosaceae", NomenclaturalCode.ICBN, null);
+		assertTrue("Rosaceae have rank family", rosa.getRank().equals(Rank.FAMILY()));
+		assertTrue("Rosaceae must have a rank warning", rosa.hasProblem(ParserProblem.CheckRank));
+		parser.parseSimpleName(rosa, "Rosaceaex", abies.getRank(), true);
+		assertEquals("Rosaceaex have rank genus", Rank.GENUS(), rosa.getRank());
+		assertTrue("Rosaceaex must have a rank warning", rosa.hasProblem(ParserProblem.CheckRank));
+	
+		//repeat but remove warning after first parse
+		rosa = (BotanicalName)parser.parseSimpleName("Rosaceae", NomenclaturalCode.ICBN, null);
+		assertTrue("Rosaceae have rank family", rosa.getRank().equals(Rank.FAMILY()));
+		assertTrue("Rosaceae must have a rank warning", rosa.hasProblem(ParserProblem.CheckRank));
+		rosa.removeParsingProblem(ParserProblem.CheckRank);
+		parser.parseSimpleName(rosa, "Rosaceaex", rosa.getRank(), true);
+		assertEquals("Rosaceaex have rank family", Rank.FAMILY(), rosa.getRank());
+		assertFalse("Rosaceaex must have no rank warning", rosa.hasProblem(ParserProblem.CheckRank));
+
+		
 	}
 
 	/**
@@ -228,15 +256,11 @@ public class NonViralNameParserImplTest {
 		NonViralName nameNull = parser.parseFullName(strNameNull);
 		assertNull(nameNull);
 		
-		//Uninomials
-		ZoologicalName milichiidae = (ZoologicalName)parser.parseFullName("Milichiidae", NomenclaturalCode.ICZN, null);
-		assertEquals("Family rank expected", Rank.FAMILY(), milichiidae.getRank());
-		BotanicalName crepidinae = (BotanicalName)parser.parseFullName("Crepidinae", NomenclaturalCode.ICBN, null);
-		assertEquals("Family rank expected", Rank.SUBTRIBE(), crepidinae.getRank());
-		BotanicalName abies = (BotanicalName)parser.parseFullName("Abies", NomenclaturalCode.ICBN, null);
-		assertEquals("Family rank expected", Rank.GENUS(), abies.getRank());
-		
-		
+		//some authors
+		String fullNameString = "Abies alba (Greuther & L'Hiver & al. ex Müller & Schmidt)Clark ex Ciardelli"; 
+		BotanicalName authorname = (BotanicalName)parser.parseFullName(fullNameString);
+		assertFalse(authorname.hasProblem());
+		assertEquals("Basionym author should have 3 authors", 3, ((Team)authorname.getBasionymAuthorTeam()).getTeamMembers().size());
 	}
 	
 	private void testName_StringNomcodeRank(Method parseMethod) 
@@ -712,7 +736,7 @@ public class NonViralNameParserImplTest {
 		assertNotNull(name.getNomenclaturalReference());
 		INomenclaturalReference ref = (INomenclaturalReference)name.getNomenclaturalReference();
 		assertEquals("1987", ref.getYear());
-		StrictReferenceBase refBase = (StrictReferenceBase)ref;
+		ReferenceBase refBase = (ReferenceBase)ref;
 		assertEquals("Sp. Pl.", refBase.getTitle());
 	}
 

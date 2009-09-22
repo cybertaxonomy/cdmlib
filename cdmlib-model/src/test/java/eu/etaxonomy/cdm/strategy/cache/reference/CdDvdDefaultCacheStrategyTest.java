@@ -1,10 +1,10 @@
 
 package eu.etaxonomy.cdm.strategy.cache.reference;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import org.apache.log4j.Logger;
-import org.hibernate.search.store.DirectoryProviderHelper;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -13,7 +13,6 @@ import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.reference.CdDvd;
-import eu.etaxonomy.cdm.strategy.cache.reference.CdDvdDefaultCacheStrategy;
 
 public class CdDvdDefaultCacheStrategyTest {
 	@SuppressWarnings("unused")
@@ -41,7 +40,6 @@ public class CdDvdDefaultCacheStrategyTest {
 		cdDvd.setTitle(title);
 		publisher = "An ugly publisher";
 		place = "A beutiful place"; 
-		//cdDvd.addPublisher(publisher, place);
 		publicationDate = TimePeriod.NewInstance(1999, 2001);
 		cdDvd.setDatePublished(publicationDate);
 		this.instance = CdDvdDefaultCacheStrategy.NewInstance();

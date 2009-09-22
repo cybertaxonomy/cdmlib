@@ -22,7 +22,7 @@ import org.hibernate.search.annotations.Indexed;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import eu.etaxonomy.cdm.strategy.cache.reference.IReferenceBaseCacheStrategy;
-import eu.etaxonomy.cdm.strategy.cache.reference.StrictReferenceBaseDefaultCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.reference.ReferenceBaseDefaultCacheStrategy;
 
 /**
  * This class represents published maps from which information can be derived.
@@ -43,12 +43,10 @@ import eu.etaxonomy.cdm.strategy.cache.reference.StrictReferenceBaseDefaultCache
 @Audited
 @Configurable
 public class Map extends PublicationBase<IReferenceBaseCacheStrategy<Map>> implements Cloneable {
+	private static final long serialVersionUID = 5169607564182639395L;
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(Map.class);
 
-	protected Map() {
-		this.cacheStrategy = new StrictReferenceBaseDefaultCacheStrategy<Map>();
-	}
-	
 	/** 
 	 * Creates a new empty map instance.
 	 */
@@ -56,6 +54,13 @@ public class Map extends PublicationBase<IReferenceBaseCacheStrategy<Map>> imple
 		Map result = new Map();
 		return result;
 	}
+	
+	protected Map() {
+		super();
+		this.type = ReferenceType.Map;
+		this.cacheStrategy = new ReferenceBaseDefaultCacheStrategy<Map>();
+	}
+
 	
 	
 	/** 

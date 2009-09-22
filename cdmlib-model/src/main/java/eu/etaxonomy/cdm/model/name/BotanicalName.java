@@ -23,10 +23,8 @@ import org.hibernate.search.annotations.Indexed;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
-import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.strategy.cache.name.BotanicNameDefaultCacheStrategy;
-import eu.etaxonomy.cdm.strategy.match.IMatchable;
 import eu.etaxonomy.cdm.strategy.parser.INonViralNameParser;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 
@@ -41,10 +39,6 @@ import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "BotanicalName", propOrder = {
-    "hybridFormula",
-    "monomHybrid",
-    "binomHybrid",
-    "trinomHybrid",
     "anamorphic"
 })
 @XmlRootElement(name = "BotanicalName")
@@ -56,20 +50,6 @@ public class BotanicalName extends NonViralName<BotanicalName> /*implements IMer
 	private static final long serialVersionUID = 6818651572463497727L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(BotanicalName.class);
-	
-	//if set: this name is a hybrid formula (a hybrid that does not have an own name) and no other hybrid flags may be set. A
-	//hybrid name  may not have either an authorteam nor other name components.
-    @XmlElement(name ="IsHybridFormula")
-	private boolean hybridFormula = false;
-	
-    @XmlElement(name ="IsMonomHybrid")
-	private boolean monomHybrid = false;
-	
-    @XmlElement(name ="IsBinomHybrid")
-	private boolean binomHybrid = false;
-	
-    @XmlElement(name ="IsTrinomHybrid")
-	private boolean trinomHybrid = false;
 	
 	//Only for fungi: to indicate that the type of the name is asexual or not
     @XmlElement(name ="IsAnamorphic")
@@ -279,126 +259,7 @@ public class BotanicalName extends NonViralName<BotanicalName> /*implements IMer
 		}
 		return (BotanicalName)nameParser.parseReferencedName(fullNameAndReferenceString, NomenclaturalCode.ICBN, rank);
 	}
-	
 
-	/**
-	 * Does the same as the addHybridRelationship method if the given
-	 * {@link common.RelationshipBase relation} is also a {@link HybridRelationship hybrid relationship}.
-	 * Otherwise this method does the same as the overwritten {@link TaxonNameBase#addRelationship(RelationshipBase) addRelationship}
-	 * method from TaxonNameBase.
-	 * 
-	 * @param relation  the relationship to be added to some of <i>this</i> taxon name's relationships sets
-	 * @see    	   		#addHybridRelationship(HybridRelationship)
-	 * @see    	   		TaxonNameBase#addRelationship(RelationshipBase)
-	 * @see    	   		TaxonNameBase#addNameRelationship(NameRelationship)
-	 */
-	@Override
-	@Deprecated  //To be used by RelationshipBase only
-	public void addRelationship(RelationshipBase relation) {
-		if (relation instanceof HybridRelationship){
-			addHybridRelationship((HybridRelationship)relation);
-		}else {
-			super.addRelationship(relation);
-		}
-	}
-
-	/**
-	 * Returns the boolean value of the flag indicating whether the name of <i>this</i>
-	 * botanical taxon name is a hybrid formula (true) or not (false). A hybrid
-	 * named by a hybrid formula (composed with its parent names by placing the
-	 * multiplication sign between them) does not have an own published name
-	 * and therefore has neither an {@link NonViralName#getAuthorshipCache() autorship}
-	 * nor other name components. If this flag is set no other hybrid flags may
-	 * be set.
-	 *  
-	 * @return  the boolean value of the isHybridFormula flag
-	 * @see		#isMonomHybrid()
-	 * @see		#isBinomHybrid()
-	 * @see		#isTrinomHybrid()
-	 */
-	public boolean isHybridFormula(){
-		return this.hybridFormula;
-	}
-
-	/**
-	 * @see  #isHybridFormula()
-	 */
-	public void setHybridFormula(boolean hybridFormula){
-		this.hybridFormula = hybridFormula;
-	}
-
-	/**
-	 * Returns the boolean value of the flag indicating whether <i>this</i> botanical
-	 * taxon name is the name of an intergeneric hybrid (true) or not (false).
-	 * In this case the multiplication sign is placed before the scientific
-	 * name. If this flag is set no other hybrid flags may be set.
-	 *  
-	 * @return  the boolean value of the isMonomHybrid flag
-	 * @see		#isHybridFormula()
-	 * @see		#isBinomHybrid()
-	 * @see		#isTrinomHybrid()
-	 */
-	public boolean isMonomHybrid(){
-		return this.monomHybrid;
-	}
-
-	/**
-	 * @see  #isMonomHybrid()
-	 * @see	 #isBinomHybrid()
-	 * @see	 #isTrinomHybrid()
-	 */
-	public void setMonomHybrid(boolean monomHybrid){
-		this.monomHybrid = monomHybrid;
-	}
-
-	/**
-	 * Returns the boolean value of the flag indicating whether <i>this</i> botanical
-	 * taxon name is the name of an interspecific hybrid (true) or not (false).
-	 * In this case the multiplication sign is placed before the species
-	 * epithet. If this flag is set no other hybrid flags may be set.
-	 *  
-	 * @return  the boolean value of the isBinomHybrid flag
-	 * @see		#isHybridFormula()
-	 * @see		#isMonomHybrid()
-	 * @see		#isTrinomHybrid()
-	 */
-	public boolean isBinomHybrid(){
-		return this.binomHybrid;
-	}
-
-	/**
-	 * @see	 #isBinomHybrid()
-	 * @see  #isMonomHybrid()
-	 * @see	 #isTrinomHybrid()
-	 */
-	public void setBinomHybrid(boolean binomHybrid){
-		this.binomHybrid = binomHybrid;
-	}
-
-	/**
-	 * Returns the boolean value of the flag indicating whether <i>this</i> botanical
-	 * taxon name is the name of an infraspecific hybrid (true) or not (false).
-	 * In this case the term "notho-" (optionally abbreviated "n-") is used as
-	 * a prefix to the term denoting the infraspecific rank of <i>this</i> botanical
-	 * taxon name. If this flag is set no other hybrid flags may be set.
-	 *  
-	 * @return  the boolean value of the isTrinomHybrid flag
-	 * @see		#isHybridFormula()
-	 * @see		#isMonomHybrid()
-	 * @see		#isBinomHybrid()
-	 */
-	public boolean isTrinomHybrid(){
-		return this.trinomHybrid;
-	}
-
-	/**
-	 * @see	 #isTrinomHybrid()
-	 * @see	 #isBinomHybrid()
-	 * @see  #isMonomHybrid()
-	 */
-	public void setTrinomHybrid(boolean trinomHybrid){
-		this.trinomHybrid = trinomHybrid;
-	}
 
 	/**
 	 * Returns the boolean value of the flag indicating whether the specimen

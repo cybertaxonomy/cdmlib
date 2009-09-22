@@ -2,6 +2,10 @@ package eu.etaxonomy.cdm.strategy.cache.taxon;
 
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
+import eu.etaxonomy.cdm.model.name.NonViralName;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.strategy.StrategyBase;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
@@ -19,7 +23,9 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase> extends Strategy
 	public String getTitleCache(T taxonBase) {
 		String title;
 		if (taxonBase.getName() != null && taxonBase.getName().getTitleCache() != null){
-			title = taxonBase.getName().getTitleCache() + " sec. ";
+			String namePart = getNamePart(taxonBase);
+			
+			title = namePart + " sec. ";
 			if (taxonBase.getSec() != null){
 				title += taxonBase.getSec().getTitleCache();
 			}else{
@@ -29,6 +35,23 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase> extends Strategy
 			title = taxonBase.toString();
 		}
 		return title;
+	}
+
+	/**
+	 * @param name
+	 */
+	private String getNamePart(TaxonBase taxonBase) {
+		TaxonNameBase nameBase = taxonBase.getName();
+		String result = nameBase.getTitleCache();
+		//use name cache instead of title cache if required
+		if (taxonBase.isUseNameCache() && nameBase.isInstanceOf(NonViralName.class)){
+			NonViralName nvn = HibernateProxyHelper.deproxy(nameBase, NonViralName.class);
+			result = nvn.getNameCache();
+		}
+		if (CdmUtils.isNotEmpty(taxonBase.getAppendedPhrase())){
+			result = result.trim() + " " +  taxonBase.getAppendedPhrase().trim(); 
+		}
+		return result;
 	}
 
 }

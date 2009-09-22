@@ -228,10 +228,16 @@ public class SynonymRelationship extends RelationshipBase<Synonym, Taxon, Synony
 	}
 
 	protected void setRelatedFrom(Synonym relatedFrom) {
+		if (relatedFrom == null){
+			this.deletedObjects.add(this.relatedFrom);
+		}
 		this.relatedFrom = relatedFrom;
 	}
 	
 	protected void setRelatedTo(Taxon relatedTo) {
+		if (relatedTo == null){
+			this.deletedObjects.add(this.relatedTo);
+		}
 		this.relatedTo = relatedTo;
 	}
 

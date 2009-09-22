@@ -44,8 +44,8 @@ import eu.etaxonomy.cdm.strategy.cache.reference.INomenclaturalReferenceCacheStr
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Book", propOrder = {
-    "edition",
-    "isbn"
+//    "edition",
+//    "isbn"
 })
 @XmlRootElement(name = "Book")
 @Entity
@@ -56,13 +56,13 @@ public class Book extends PrintedUnitBase<INomenclaturalReferenceCacheStrategy<B
 	private static final long serialVersionUID = 2703962996516519037L;
 	private static final Logger logger = Logger.getLogger(Book.class);
 	
-    @XmlElement(name = "Edition")
-    @Field(index=Index.TOKENIZED)
-	private String edition;
-
-    @XmlElement(name = "ISBN")
-    @Field(index=Index.TOKENIZED)
-	private String isbn;
+//    @XmlElement(name = "Edition")
+//    @Field(index=Index.TOKENIZED)
+//	private String edition;
+//
+//    @XmlElement(name = "ISBN")
+//    @Field(index=Index.TOKENIZED)
+//	private String isbn;
 	
 //    @XmlTransient
 //    @Transient
@@ -76,6 +76,7 @@ public class Book extends PrintedUnitBase<INomenclaturalReferenceCacheStrategy<B
 	 */
 	protected Book(){
 		super();
+		this.type = ReferenceType.Book;
 		this.cacheStrategy = BookDefaultCacheStrategy.NewInstance();
 	}
 	

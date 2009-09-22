@@ -53,7 +53,6 @@ import eu.etaxonomy.cdm.model.media.RightsTerm;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEventType;
 import eu.etaxonomy.cdm.model.occurrence.PreservationMethod;
-import eu.etaxonomy.cdm.model.reference.BibtexEntryType;
 
 
 /**
@@ -72,7 +71,6 @@ import eu.etaxonomy.cdm.model.reference.BibtexEntryType;
 @XmlRootElement(name = "DefinedTermBase")
 @XmlSeeAlso({
 	AnnotationType.class,
-	BibtexEntryType.class,
 	DerivationEventType.class,
 	ExtensionType.class,
     Feature.class,
@@ -90,8 +88,8 @@ import eu.etaxonomy.cdm.model.reference.BibtexEntryType;
 })
 @Entity
 @Audited
-@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 @Table(appliesTo="DefinedTermBase", indexes = { @Index(name = "definedTermTitleCacheIndex", columnNames = { "titleCache" }) })
+@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBase implements ILoadableTerm<T>, IDefinedTerm<T> {
 	private static final long serialVersionUID = 2931811562248571531L;
 	private static final Logger logger = Logger.getLogger(DefinedTermBase.class);

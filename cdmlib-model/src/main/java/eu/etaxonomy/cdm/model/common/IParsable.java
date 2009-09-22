@@ -38,11 +38,18 @@ public interface IParsable {
 	public void setParsingProblem(int hasProblem);
 	
 	/**
-	 * Returns exactly the same int value as the {@link #getHasProblem() getHasProblem} method.  
+	 * Returns true if any parsing problem (warning or error) exists.  
 	 *  
 	 * @see  #getHasProblem()
 	 */
 	public boolean hasProblem();
+	
+	/**
+	 * Returns true, if the specified problem exists. False otherwise.
+	 * @param problem
+	 * @return
+	 */
+	public boolean hasProblem(ParserProblem problem);
 	
 	
 	/**
@@ -54,9 +61,16 @@ public interface IParsable {
 	
 	/**
 	 * Adds a parsing problem to the list of parsing problems
-	 * @param warning
+	 * @param problem
 	 */
-	public void addParsingProblem(ParserProblem warning);
+	public void addParsingProblem(ParserProblem problem);
+	
+	/**
+	 * Removes a parsing problem from the list of parsing problems.
+	 * If the problem is not in the list or is <code>null</code>, nothing happens.
+	 * @param warning
+	 */public void removeParsingProblem(ParserProblem problem);
+	
 	
 	/**
 	 * Returns the integer value of the position where a parsing problem starts.

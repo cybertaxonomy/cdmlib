@@ -63,7 +63,6 @@ public abstract class ReferencedEntityBase extends AnnotatableEntity implements 
 
 	public ReferencedEntityBase() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 

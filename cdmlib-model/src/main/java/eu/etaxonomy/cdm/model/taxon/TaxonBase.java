@@ -59,14 +59,17 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "TaxonBase", propOrder = {
     "name",
-    "sec"
+    "sec",
+    "doubtful",
+    "appendedPhrase",
+    "useNameCache"
 })
 @Entity
 @Audited
 @Table(appliesTo="TaxonBase", indexes = { @Index(name = "taxonBaseTitleCacheIndex", columnNames = { "titleCache" }) })
 public abstract class TaxonBase<S extends IIdentifiableEntityCacheStrategy> extends IdentifiableEntity<S> {
-	
-	static Logger logger = Logger.getLogger(TaxonBase.class);
+	private static final long serialVersionUID = -3589185949928938529L;
+	private static final Logger logger = Logger.getLogger(TaxonBase.class);
 	
 	private static Method methodTaxonNameAddTaxonBase;
 	
@@ -104,6 +107,13 @@ public abstract class TaxonBase<S extends IIdentifiableEntityCacheStrategy> exte
     @Cascade(CascadeType.SAVE_UPDATE)
 	private ReferenceBase sec;
 
+	
+	@XmlElement(name = "AppendedPhrase")
+	private String appendedPhrase;
+
+	@XmlAttribute(name= "UseNameCache")
+	private boolean useNameCache = false;
+    
 	
 // ************* CONSTRUCTORS *************/	
 	/** 
@@ -224,6 +234,40 @@ public abstract class TaxonBase<S extends IIdentifiableEntityCacheStrategy> exte
 		this.sec = sec;
 	}
 	
+	
+	
+	/**
+	 * An appended phrase is a phrase that is added to the {@link eu.etaxonomy.cdm.model.name.TaxonNameBase taxon name}
+	 * 's title cache to be used just in this taxon. E.g. the phrase "sensu latu" may be added
+	 * to the name to describe this taxon more precisely.
+	 * If {@link #isUseNameCache()} 
+	 * @return the appendedPhrase
+	 */
+	public String getAppendedPhrase() {
+		return appendedPhrase;
+	}
+
+	/**
+	 * @param appendedPhrase the appendedPhrase to set
+	 */
+	public void setAppendedPhrase(String appendedPhrase) {
+		this.appendedPhrase = appendedPhrase;
+	}
+
+	/**
+	 * @return the useNameCache
+	 */
+	public boolean isUseNameCache() {
+		return useNameCache;
+	}
+
+	/**
+	 * @param useNameCache the useNameCache to set
+	 */
+	public void setUseNameCache(boolean useNameCache) {
+		this.useNameCache = useNameCache;
+	}
+
 	/**
 	 * Returns the boolean value indicating whether <i>this</i> (abstract) taxon
 	 * might be saved (true) or not (false). An (abstract) taxon is meaningful
@@ -231,6 +275,7 @@ public abstract class TaxonBase<S extends IIdentifiableEntityCacheStrategy> exte
 	 * exist (are not "null").
 	 * FIXME This should be part of a more generic validation architecture
 	 */
+	@Deprecated
 	@Transient
 	public boolean isSaveable(){
 		if (  (this.getName() == null)  ||  (this.getSec() == null)  ){

@@ -66,7 +66,7 @@ public class NameRelationship extends RelationshipBase<TaxonNameBase, TaxonNameB
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch=FetchType.LAZY)
-    @Cascade(CascadeType.SAVE_UPDATE)
+    @Cascade({CascadeType.SAVE_UPDATE})
 	private TaxonNameBase relatedFrom;
 
 	@XmlElement(name = "RelatedTo")
@@ -201,10 +201,16 @@ public class NameRelationship extends RelationshipBase<TaxonNameBase, TaxonNameB
 	}
 
 	protected void setRelatedFrom(TaxonNameBase relatedFrom) {
+		if (relatedFrom == null){
+			this.deletedObjects.add(this.relatedFrom);
+		}
 		this.relatedFrom = relatedFrom;
 	}
 
 	protected void setRelatedTo(TaxonNameBase relatedTo) {
+		if (relatedTo == null){
+			this.deletedObjects.add(this.relatedTo);
+		}
 		this.relatedTo = relatedTo;
 	}
 

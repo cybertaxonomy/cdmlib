@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.model.taxon;
 import java.util.Comparator;
 
 import org.apache.log4j.Logger;
+import org.joda.time.DateTime;
 
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
@@ -37,9 +38,11 @@ public class TaxonComparator implements Comparator<TaxonBase> {
 	 * Returns a negative value if the publication year corresponding to the
 	 * first given taxon precedes the publication year corresponding to the
 	 * second given taxon. Returns a positive value if the contrary is true and
-	 * 0 if both publication years are identical. In case one of the publication
+	 * 0 if both publication years and the date, when they are created, are identical. In case one of the publication
 	 * years is "null" and the other is not, the "empty" publication year will
 	 * be considered to be always preceded by the "not null" publication year.
+	 * If both publication years are "null" the creation date is used for the comparison
+	 * 
 	 *  
 	 * @see		java.lang.String#compareTo(String)
 	 * @see		java.util.Comparator#compare(java.lang.Object, java.lang.Object)
@@ -49,13 +52,29 @@ public class TaxonComparator implements Comparator<TaxonBase> {
 		String date1 = getDate(taxonBase1);;
 		String date2 = getDate(taxonBase2);
 		if (date1 == null && date2 == null){
-			return 0;
+			result = 0;
 		}else if (date1 == null){
 			return 1;
 		}else if (date2 == null){
 			return -1;
+		}else{
+				result = date1.compareTo(date2);
 		}
-		result = date1.compareTo(date2);
+		if (result == 0){
+			DateTime date11 = taxonBase1.getCreated();
+			DateTime date12 = taxonBase2.getCreated();
+			if (date11 == null && date12 == null) {
+				return 0;
+			}
+			if (date11 == null) {
+				return 1;
+			}
+			if (date12 == null) {
+				return -1;
+			}
+			result = date11.compareTo(date12);
+		}
+		
 		return result;
 	}
 	

@@ -18,9 +18,10 @@ import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.Annotation;
+import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
-import eu.etaxonomy.cdm.model.common.OriginalSource;
+import eu.etaxonomy.cdm.model.common.OriginalSourceBase;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
 import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
@@ -118,7 +119,7 @@ public class TestSpecimen {
 		specimen.addMedia(media);
 
 		//Original ID
-		OriginalSource source = OriginalSource.NewInstance();
+		IdentifiableSource source = IdentifiableSource.NewInstance();
 		String id = "22";
 		source.setIdInSource(id);
 		specimen.addSource(source);

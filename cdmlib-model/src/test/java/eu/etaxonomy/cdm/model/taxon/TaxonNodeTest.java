@@ -10,9 +10,12 @@
 
 package eu.etaxonomy.cdm.model.taxon;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
-import java.util.List;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -92,7 +95,9 @@ public class TaxonNodeTest {
 	 */
 	@Test
 	public void testNewTaxonTaxonomicView() {
-		TaxonNode testNode = new TaxonNode(taxon1, taxonomicView1);
+		TaxonNode testNode = new TaxonNode(taxon1);
+		taxonomicView1.addChildNode(testNode, null, null, null);
+		
 		assertNotNull("test node should not be null", testNode);
 		assertEquals(taxon1,testNode.getTaxon());
 		assertEquals(taxonomicView1,testNode.getTaxonomicTree());
@@ -104,16 +109,16 @@ public class TaxonNodeTest {
 	 */
 	@Test
 	public void testAddChild() {
-		TaxonNode root = taxonomicView1.addRoot(taxon1, null, null);
+		TaxonNode root = taxonomicView1.addChildTaxon(taxon1, null, null, null);
 		assertEquals("Number of all nodes in view should be 1", 1, taxonomicView1.getAllNodes().size());
 		
-		TaxonNode child = root.addChild(taxon2, ref2, "p33", syn1);
+		TaxonNode child = root.addChildTaxon(taxon2, ref2, "p33", syn1);
 		//test child properties
 		assertNotNull("Child should not be null", child);
 		assertEquals("Child taxon should be taxon2", taxon2, child.getTaxon());
 		assertEquals("Parent taxon should be taxon1", taxon1, child.getParent().getTaxon());
-		assertEquals("Reference should be ref2", ref2, child.getReferenceForParentChildRelation());
-		assertEquals("Microreference should be 'p33'", "p33", child.getMicroReferenceForParentChildRelation());
+		assertEquals("Reference should be ref2", ref2, child.getReference());
+		assertEquals("Microreference should be 'p33'", "p33", child.getMicroReference());
 		assertEquals("Synonym should be syn1", syn1, child.getSynonymToBeUsed());
 		
 		//test parent properties
@@ -142,7 +147,8 @@ public class TaxonNodeTest {
 	 */
 	@Test
 	public void testSetTaxon() {
-		TaxonNode node = new TaxonNode(taxon1, taxonomicView1);
+		TaxonNode node = new TaxonNode(taxon1);
+		taxonomicView1.addChildNode(node, null, null, null);
 		assertNotNull(taxon2);
 		node.setTaxon(taxon2);
 		assertSame("taxon must be the same", taxon2, node.getTaxon());
@@ -154,10 +160,11 @@ public class TaxonNodeTest {
 	 */
 	@Test
 	public void testSetParent() {
-		TaxonNode node = new TaxonNode(taxon1, taxonomicView1);
+		TaxonNode node = new TaxonNode(taxon1);
 		assertNotNull(taxon2);
-		TaxonNode parent = new TaxonNode(taxon2, taxonomicView1);
+		TaxonNode parent = new TaxonNode(taxon2);
 		assertSame("Taxon must be the same", taxon2, parent.getTaxon());
+		taxonomicView1.addChildNode(parent, null, null, null);
 		node.setParent(parent);
 		assertSame("taxon2 must contain node", parent, node.getParent());
 		assertTrue("setParent must not handle child list of parent", parent.getChildNodes().isEmpty());
@@ -168,10 +175,10 @@ public class TaxonNodeTest {
 	 */
 	@Test
 	public void testGetChildNodes() {
-		TaxonNode root = taxonomicView1.addRoot(taxon1, null, null);
+		TaxonNode root = taxonomicView1.addChildTaxon(taxon1, null, null, null);
 		assertEquals("Number of all nodes in view should be 1", 1, taxonomicView1.getAllNodes().size());
 		
-		TaxonNode child = root.addChild(taxon2, ref2, "p33", syn1);
+		TaxonNode child = root.addChildTaxon(taxon2, ref2, "p33", syn1);
 		
 		Set<TaxonNode> childList = root.getChildNodes();
 		assertFalse("parent child list must not be empty",childList.isEmpty());
@@ -182,27 +189,27 @@ public class TaxonNodeTest {
 	
 	@Test
 	public void testgetCountChildren(){
-		TaxonNode root = taxonomicView1.addRoot(taxon1, null, null);
+		TaxonNode root = taxonomicView1.addChildTaxon(taxon1, null, null, null);
 		assertEquals("Count of children must be 0", 0, root.getCountChildren());
-		TaxonNode child = root.addChild(taxon2, ref2, "p33", syn1);
+		TaxonNode child = root.addChildTaxon(taxon2, ref2, "p33", syn1);
 		assertEquals("Count of children must be 1", 1, root.getCountChildren());
 		Taxon taxon3 = Taxon.NewInstance(null, null);
-		TaxonNode child2 = root.addChild(taxon3, null, null, null);
+		TaxonNode child2 = root.addChildTaxon(taxon3, null, null, null);
 		assertEquals("Count of children must be 2", 2, root.getCountChildren());
-		root.removeChild(child);
+		root.removeChildNode(child);
 		assertEquals("Count of children must be 1", 1, root.getCountChildren());
-		root.removeChild(child2);
+		root.removeChildNode(child2);
 		assertEquals("Count of children must be 0", 0, root.getCountChildren());
 		
 	}
 	
 	@Test
 	public void testRemove(){
-		TaxonNode root = taxonomicView1.addRoot(taxon1, null, null);
+		TaxonNode root = taxonomicView1.addChildTaxon(taxon1, null, null, null);
 		assertEquals("Number of all nodes in view should be 1", 1, taxonomicView1.getAllNodes().size());
 		
 		
-		TaxonNode childNode = root.addChild(taxon2);
+		TaxonNode childNode = root.addChildTaxon(taxon2, null, null, null);
 		assertEquals("Count of children must be 1", 1, root.getCountChildren());
 		
 		childNode.remove();

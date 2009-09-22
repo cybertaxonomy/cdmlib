@@ -192,6 +192,8 @@ public class DefaultMergeStrategy extends StrategyBase implements IMergeStrategy
 					mergeSingleCdmBaseField(mergeFirst, mergeSecond, field, deleteSet);
 				}else if(fieldType.isInterface()){
 					mergeInterfaceField(mergeFirst, mergeSecond, field, deleteSet);
+				}else if(fieldType.isEnum()){
+					mergeEnumField(mergeFirst, mergeSecond, field, deleteSet);
 				}else{
 					throw new RuntimeException("Unknown Object type for merging: " + fieldType);
 				}
@@ -208,6 +210,20 @@ public class DefaultMergeStrategy extends StrategyBase implements IMergeStrategy
 	 * 
 	 */
 	private <T extends IMergable> void mergeInterfaceField(T mergeFirst, T mergeSecond, Field field, Set<ICdmBase> deleteSet) throws Exception {
+		String propertyName = field.getName();
+		MergeMode mergeMode =  this.getMergeMode(propertyName);
+		if (mergeMode != MergeMode.FIRST){
+			mergeCdmBaseValue(mergeFirst, mergeSecond, field, deleteSet);
+		}
+		logger.debug(propertyName + ": " + mergeMode + ", " + field.getType().getName());
+		
+	}
+
+	/**
+	 * @throws Exception 
+	 * 
+	 */
+	private <T extends IMergable> void mergeEnumField(T mergeFirst, T mergeSecond, Field field, Set<ICdmBase> deleteSet) throws Exception {
 		String propertyName = field.getName();
 		MergeMode mergeMode =  this.getMergeMode(propertyName);
 		if (mergeMode != MergeMode.FIRST){

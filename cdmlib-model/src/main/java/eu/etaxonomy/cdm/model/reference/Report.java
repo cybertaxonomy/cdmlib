@@ -31,7 +31,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.strategy.cache.reference.IReferenceBaseCacheStrategy;
-import eu.etaxonomy.cdm.strategy.cache.reference.StrictReferenceBaseDefaultCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.reference.ReferenceBaseDefaultCacheStrategy;
 
 /**
  * This class represents reports. A report is a document characterized by 
@@ -48,7 +48,7 @@ import eu.etaxonomy.cdm.strategy.cache.reference.StrictReferenceBaseDefaultCache
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Report", propOrder = {
-    "institution"
+//    "institution"
 })
 @XmlRootElement(name = "Report")
 @Entity
@@ -56,18 +56,22 @@ import eu.etaxonomy.cdm.strategy.cache.reference.StrictReferenceBaseDefaultCache
 @Audited
 @Configurable
 public class Report extends PublicationBase<IReferenceBaseCacheStrategy<Report>> implements Cloneable {
-	static Logger logger = Logger.getLogger(Report.class);
+	private static final long serialVersionUID = 2224085476416095383L;
+	@SuppressWarnings("unused")
+	private static final Logger logger = Logger.getLogger(Report.class);
 	
-	@XmlElement(name = "Institution")
-	@XmlIDREF
-	@XmlSchemaType(name = "IDREF")
-	@ManyToOne(fetch = FetchType.LAZY)
-	@IndexedEmbedded
-	@Cascade(CascadeType.SAVE_UPDATE)
-	private Institution institution;
+//	@XmlElement(name = "Institution")
+//	@XmlIDREF
+//	@XmlSchemaType(name = "IDREF")
+//	@ManyToOne(fetch = FetchType.LAZY)
+//	@IndexedEmbedded
+//	@Cascade(CascadeType.SAVE_UPDATE)
+//	private Institution institution;
 
 	protected Report() {
-		this.cacheStrategy = new StrictReferenceBaseDefaultCacheStrategy<Report>();
+		super();
+		this.type = ReferenceType.Report;
+		this.cacheStrategy = new ReferenceBaseDefaultCacheStrategy<Report>();
 	}
 	
 	/** 

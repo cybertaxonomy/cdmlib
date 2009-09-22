@@ -29,7 +29,7 @@ public interface INonViralNameParser<T extends TaxonNameBase> extends IStrategy 
 	 * @param rank
 	 * @return TaxonNameBase, with rank = Rank.GENUS for all Uninomials  
 	 */
-	public T parseSimpleName(String simpleName, Rank rank);
+	public T parseSimpleName(String simpleName, NomenclaturalCode code, Rank rank);
 
 	/**
 	 * Parses the taxon name String and returns a TaxonNameBase. 

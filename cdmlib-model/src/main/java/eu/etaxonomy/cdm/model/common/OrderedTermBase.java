@@ -9,9 +9,6 @@
 
 package eu.etaxonomy.cdm.model.common;
 
-import java.util.Comparator;
-import java.util.Set;
-
 import javax.persistence.Entity;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;

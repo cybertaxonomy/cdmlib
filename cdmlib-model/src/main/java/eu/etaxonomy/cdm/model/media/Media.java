@@ -43,10 +43,10 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
-import org.hibernate.annotations.Index;
-import org.hibernate.annotations.Table;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
+import org.hibernate.annotations.Index;
+import org.hibernate.annotations.Table;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 import org.joda.time.DateTime;
@@ -110,7 +110,7 @@ public class Media extends IdentifiableEntity implements Cloneable {
     @OneToMany(fetch = FetchType.LAZY)
     @IndexedEmbedded
     @JoinTable(name = "Media_Description")
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE,CascadeType.DELETE})
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE,CascadeType.DELETE,CascadeType.DELETE_ORPHAN})
 	private Map<Language,LanguageString> description = new HashMap<Language,LanguageString>();
 	
 	//A single medium such as a picture can have multiple representations in files. 
@@ -118,7 +118,7 @@ public class Media extends IdentifiableEntity implements Cloneable {
 	@XmlElementWrapper(name = "MediaRepresentations")
 	@XmlElement(name = "MediaRepresentation")
 	@OneToMany(mappedBy="media",fetch = FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE, CascadeType.DELETE_ORPHAN})
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
 	private Set<MediaRepresentation> representations = new HashSet<MediaRepresentation>();
 	
 	@XmlElement(name = "Artist")
@@ -250,7 +250,7 @@ public class Media extends IdentifiableEntity implements Cloneable {
 	 * 
 	 * 
 	 */
-	public MediaRepresentation findBestMatchingRepresentation(int size, int height, int widthOrDuration, String[] mimeTypes){
+	public MediaRepresentation findBestMatchingRepresentation(Integer size, Integer height, Integer widthOrDuration, String[] mimeTypes){
 		// find best matching representations of each media
 		Set<MediaRepresentation> reps = this.getRepresentations();
 				
@@ -341,5 +341,4 @@ public class Media extends IdentifiableEntity implements Cloneable {
 		}
 		return prefRepr;
 	}
-	
 }

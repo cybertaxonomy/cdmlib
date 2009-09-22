@@ -18,6 +18,7 @@ import java.util.*;
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
 
 /**
@@ -48,13 +49,12 @@ public class MarkerType extends DefinedTermBase<MarkerType> {
 		return new MarkerType(term, label, labelAbbrev);
 	}
 	
-	protected static MarkerType getTermByUuid(UUID uuid){
-		if (termMap == null){
-			DefaultTermInitializer vocabularyStore = new DefaultTermInitializer();
-			vocabularyStore.initialize();
-		}
-		return (MarkerType)termMap.get(uuid);
-	}
+	
+	
+    @XmlAttribute(name = "isTechnical")
+    private boolean isTechnical=false;
+    
+
 
 	
 	/**
@@ -64,7 +64,29 @@ public class MarkerType extends DefinedTermBase<MarkerType> {
 	 */
 	public MarkerType() {
 	}
+
+	/**
+	 * A flag indicating if markers of this type are user content or technical information
+	 * to be used by applications only. E.g. a FeatureTree may have a marker that defines
+	 * the role of this FeatureTree ("for ordering") whereas a {@link eu.etaxonomy.cdm.model.taxon.Taxon taxon}
+	 * may have a user defined marker "completed" that indicates that this taxon does not
+	 * need further investigation. The earlier will be flagged isTechnical=true whereas 
+	 * the later will be flagged as isTechnical=false 
+	 * @return the isTechnical
+	 */
+	public boolean isTechnical() {
+		return isTechnical;
+	}
+
+	/**
+	 * @param isTechnical the isTechnical to set
+	 */
+	public void setTechnical(boolean isTechnical) {
+		this.isTechnical = isTechnical;
+	}
 	
+//***************************** CONSTRUCTOR **************************************/	
+
 	/**
 	 * Constructor
 	 * @param term
@@ -74,7 +96,16 @@ public class MarkerType extends DefinedTermBase<MarkerType> {
 		super(term, label, labelAbbrev);
 	}
 
-
+//***************************** TERMS **************************************/
+    
+	protected static MarkerType getTermByUuid(UUID uuid){
+		if (termMap == null){
+			DefaultTermInitializer vocabularyStore = new DefaultTermInitializer();
+			vocabularyStore.initialize();
+		}
+		return (MarkerType)termMap.get(uuid);
+	}
+	
 	public static final MarkerType IMPORTED(){
 		return getTermByUuid(uuidImported);
 	}

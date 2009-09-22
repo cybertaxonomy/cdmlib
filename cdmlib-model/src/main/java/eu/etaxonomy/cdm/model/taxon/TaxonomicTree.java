@@ -57,7 +57,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 @XmlRootElement(name = "TaxonomicTree")
 @Entity
 @Audited
-public class TaxonomicTree extends IdentifiableEntity implements IReferencedEntity{
+public class TaxonomicTree extends IdentifiableEntity implements IReferencedEntity, ITreeNode{
 	private static final long serialVersionUID = -753804821474209635L;
 	private static final Logger logger = Logger.getLogger(TaxonomicTree.class);
 	
@@ -130,13 +130,35 @@ public class TaxonomicTree extends IdentifiableEntity implements IReferencedEnti
 		super();
 	}
 	
-	
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.taxon.ITreeNode#addChildNode(eu.etaxonomy.cdm.model.taxon.TaxonNode, eu.etaxonomy.cdm.model.reference.ReferenceBase, java.lang.String, eu.etaxonomy.cdm.model.taxon.Synonym)
+	 */
+	public TaxonNode addChildNode(TaxonNode childNode, ReferenceBase citation,
+			String microCitation, Synonym synonymToBeUsed) {
+		rootNodes.add(childNode);
+		childNode.setParent(null);
+		childNode.setTaxonomicView(this);
+		childNode.setReferenceForParentChildRelation(citation);
+		childNode.setMicroReferenceForParentChildRelation(microCitation);
+		childNode.setSynonymToBeUsed(synonymToBeUsed);
+		return childNode;
+	}
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.taxon.ITreeNode#addChildTaxon(eu.etaxonomy.cdm.model.taxon.Taxon, eu.etaxonomy.cdm.model.reference.ReferenceBase, java.lang.String, eu.etaxonomy.cdm.model.taxon.Synonym)
+	 */
+	public TaxonNode addChildTaxon(Taxon taxon, ReferenceBase citation,
+			String microCitation, Synonym synonymToBeUsed) {
+		return addChildNode(new TaxonNode(taxon), citation, microCitation, synonymToBeUsed);
+	}
 	
 	/**
 	 * Adds a taxon to the taxonomic tree and makes it one of the root nodes.
 	 * @param taxon
 	 * @param synonymUsed
 	 * @return
+	 * @deprecated use addChildNode() or addChildTaxon() instead
 	 */
 	public TaxonNode addRoot(Taxon taxon, Synonym synonymUsed, ReferenceBase reference){
 		TaxonNode newRoot = new TaxonNode(taxon, this);
@@ -149,12 +171,16 @@ public class TaxonomicTree extends IdentifiableEntity implements IReferencedEnti
 		return newRoot;
 	}
 	
-	public boolean removeRoot(TaxonNode node){
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.taxon.ITreeNode#removeChildNode(eu.etaxonomy.cdm.model.taxon.TaxonNode)
+	 */
+	public boolean removeChildNode(TaxonNode node) {
 		boolean result = false;
-		if(node.isRootNode()){
+		if(node.isTopmostNode()){
 
 			for (TaxonNode childNode : node.getChildNodes()){
-				node.removeChild(childNode);
+				node.removeChildNode(childNode);
 			}
 			result = rootNodes.remove(node);
 
@@ -164,6 +190,16 @@ public class TaxonomicTree extends IdentifiableEntity implements IReferencedEnti
 			node.setTaxon(null);			
 		}
 		return result;
+	}
+	
+	/**
+	 * 
+	 * @param node
+	 * @return
+	 * @deprecated use removeChildNode() instead
+	 */
+	public boolean removeRoot(TaxonNode node){
+		return removeChildNode(node);
 	}
 	
 	/**
@@ -189,7 +225,7 @@ public class TaxonomicTree extends IdentifiableEntity implements IReferencedEnti
 		if (otherNode.equals(root)){
 			throw new IllegalArgumentException("root node and other node must not be the same");
 		}
-		otherNode.addChildNote(root, ref, microReference, null);
+		otherNode.addChildNode(root, ref, microReference, null);
 		getRootNodes().remove(root);
 	}
 	
@@ -282,6 +318,13 @@ public class TaxonomicTree extends IdentifiableEntity implements IReferencedEnti
 	 * one parent. <Br>
 	 * If the parent-child relationship between these two taxa already exists nothing is changed. Only 
 	 * citation and microcitation are overwritten by the new values if these values are not null.
+	 * 
+	 * TODO this looks like very specialized functionality. Upon examination, it turned out that it is used
+	 * solely in imports and it also looks like it is very tightly coupled with the way the imports are implemented.
+	 * As an advocat for a clean API, I would very much recommend not having this in the library itself as I can 
+	 * not really see who else will be needing this.
+	 * - n.hoffmann
+	 * 
 	 * @param parent
 	 * @param child
 	 * @param citation
@@ -310,12 +353,12 @@ public class TaxonomicTree extends IdentifiableEntity implements IReferencedEnti
 			
 			//add parent node if not exist
 			if (parentNode == null){
-				parentNode = this.addRoot(parent, null, null);
+				parentNode = this.addChildTaxon(parent, null, null, null);
 			}
 			
 			//add child if not exists
 			if (childNode == null){
-				parentNode.addChild(child, citation, microCitation);
+				parentNode.addChildTaxon(child, citation, microCitation, null);
 			}else{
 				//child is still root
 				//TODO test if child is rootNode otherwise thrwo IllegalStateException
@@ -355,12 +398,11 @@ public class TaxonomicTree extends IdentifiableEntity implements IReferencedEnti
 	 * @return
 	 */
 	@Transient
-	@Deprecated
 	public Set<TaxonNode> getAllNodes() {
 		Set<TaxonNode> allNodes = new HashSet<TaxonNode>();
 		
 		for(TaxonNode rootNode : getRootNodes()){
-			allNodes.addAll(rootNode.getAllNodes());
+			allNodes.addAll(rootNode.getDescendants());
 		}
 		
 		return allNodes;
@@ -453,5 +495,4 @@ public class TaxonomicTree extends IdentifiableEntity implements IReferencedEnti
 		}
 		return rootNodes;
 	}
-
 }

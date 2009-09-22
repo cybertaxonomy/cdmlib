@@ -17,6 +17,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlSchemaType;
@@ -64,7 +65,7 @@ public class Marker extends VersionableEntity implements Cloneable{
 	@JoinColumn(name = "markedObj_id")
 	@NotAudited
 	private AnnotatableEntity markedObj;
-	
+    
 	/**
 	 * Factory method
 	 * @return
@@ -137,10 +138,11 @@ public class Marker extends VersionableEntity implements Cloneable{
 	public boolean getValue(){
 		return getFlag();
 	}
-	
+
 	
 //****************** CLONE ************************************************/
-	 
+
+
 	/* (non-Javadoc)
 	 * @see java.lang.Object#clone()
 	 */

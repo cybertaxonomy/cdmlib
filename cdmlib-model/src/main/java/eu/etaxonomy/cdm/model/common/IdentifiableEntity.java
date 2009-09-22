@@ -57,7 +57,7 @@ import eu.etaxonomy.cdm.strategy.merge.MergeMode;
 /**
  * Superclass for the primary CDM classes that can be referenced from outside via LSIDs and contain a simple generated title string as a label for human reading.
  * All subclasses inherit the ability to store additional properties that are stored as {@link Extension Extensions}, basically a string value with a type term.
- * Any number of right statements can be attached as well as multiple {@link OriginalSource} objects. 
+ * Any number of right statements can be attached as well as multiple {@link OriginalSourceBase} objects. 
  * Original sources carry a reference to the source, an ID within that source and the original title/label of this object as it was used in that source (originalNameString).
  * A Taxon for example that was taken from 2 sources like FaunaEuropaea and IPNI would have two originalSource objects.
  * The originalSource representing that taxon as it was found in IPNI would contain IPNI as the reference, the IPNI id of the taxon and the name of the taxon exactly as it was used in IPNI.
@@ -78,7 +78,7 @@ import eu.etaxonomy.cdm.strategy.merge.MergeMode;
 })
 @MappedSuperclass
 public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrategy> extends AnnotatableEntity 
-		implements ISourceable, IIdentifiableEntity /*, Comparable<IdentifiableEntity> */{
+		implements IIdentifiableEntity /*, ISourceable<IdentifiableSource> */ {
 	private static final long serialVersionUID = -5610995424730659058L;
 	private static final Logger logger = Logger.getLogger(IdentifiableEntity.class);
 
@@ -135,7 +135,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
     @OneToMany(fetch = FetchType.LAZY)		
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
 	@Merge(MergeMode.ADD_CLONE)
-	private Set<OriginalSource> sources = new HashSet<OriginalSource>();
+	private Set<IdentifiableSource> sources = new HashSet<IdentifiableSource>();
     
     @XmlTransient
 	@Transient
@@ -317,15 +317,16 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 	}
 
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#getSources()
+	 * @see eu.etaxonomy.cdm.model.common.ISourceable#getSources()
 	 */
-	public Set<OriginalSource> getSources() {
+	public Set<IdentifiableSource> getSources() {
 		return this.sources;		
 	}
+	
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#addSource(eu.etaxonomy.cdm.model.common.OriginalSource)
+	 * @see eu.etaxonomy.cdm.model.common.ISourceable#addSource(eu.etaxonomy.cdm.model.common.OriginalSourceBase)
 	 */
-	public void addSource(OriginalSource source) {
+	public void addSource(IdentifiableSource source) {
 		if (source != null){
 			IdentifiableEntity oldSourcedObj = source.getSourcedObj();
 			if (oldSourcedObj != null && oldSourcedObj != this){
@@ -335,12 +336,15 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 			source.setSourcedObj(this);
 		}
 	}
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#removeSource(eu.etaxonomy.cdm.model.common.OriginalSource)
+	 
+	 /* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.ISourceable#removeSource(eu.etaxonomy.cdm.model.common.IOriginalSource)
 	 */
-	public void removeSource(OriginalSource source) {
-		this.sources.remove(source);		
+	public void removeSource(IdentifiableSource source) {
+		this.sources.remove(source);
 	}
+	
+//******************************** TO STRING *****************************************************/	
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#toString()
@@ -355,8 +359,9 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 		}
 		return result;	
 	}
-	 
-	 public int compareTo(IdentifiableEntity identifiableEntity) {
+
+
+	public int compareTo(IdentifiableEntity identifiableEntity) {
 
 		 int result = 0;
 		 
@@ -471,9 +476,9 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 		}
 		
 		//OriginalSources
-		result.sources = new HashSet<OriginalSource>();
-		for (OriginalSource originalSource : this.sources){
-			OriginalSource newSource = (OriginalSource)originalSource.clone();
+		result.sources = new HashSet<IdentifiableSource>();
+		for (IdentifiableSource source : this.sources){
+			IdentifiableSource newSource = (IdentifiableSource)source.clone();
 			result.addSource(newSource);
 		}
 		

@@ -54,7 +54,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 @XmlRootElement(name = "TaxonNode")
 @Entity
 @Audited
-public class TaxonNode  extends AnnotatableEntity {
+public class TaxonNode  extends AnnotatableEntity implements ITreeNode{
 	private static final long serialVersionUID = -4743289894926587693L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TaxonNode.class);
@@ -117,33 +117,83 @@ public class TaxonNode  extends AnnotatableEntity {
 		super();
 	}
 	
-	//to create nodes either use TaxonomicView.addRoot() or TaxonNode.addChild();
+	/**
+	 * to create nodes either use TaxonomicView.addRoot() or TaxonNode.addChild();
+	 * @param taxon
+	 * @param taxonomicTree
+	 * @deprecated setting of taxonomic tree is handled in the addTaxonNode() method,
+	 * use TaxonNode(taxon) instead
+	 */
 	protected TaxonNode (Taxon taxon, TaxonomicTree taxonomicTree){
-		setTaxon(taxon);
+		this(taxon);
 		setTaxonomicView(taxonomicTree);
+	}
+	
+	/**
+	 * to create nodes either use TaxonomicView.addChildTaxon() or TaxonNode.addChildTaxon();
+	 * 
+	 * @param taxon
+	 */
+	protected TaxonNode(Taxon taxon){
+		setTaxon(taxon);
 	}
 
 	
 	
 //************************ METHODS **************************/
-	
+	/**
+	 * @deprecated developers should be forced to pass in null values if they choose so.
+	 */
+	@Deprecated
 	public TaxonNode addChild(Taxon taxon){
 		return addChild(taxon, null, null, null);
 	}
 	
+	/**
+	 * @deprecated developers should be forced to pass in null values if they choose so.
+	 */
+	@Deprecated
 	public TaxonNode addChild(Taxon taxon, ReferenceBase ref, String microReference){
 		return addChild(taxon, ref, microReference, null);
 	}	
 	
+	/**
+	 * 
+	 * @param taxon
+	 * @param ref
+	 * @param microReference
+	 * @param synonymUsed
+	 * @return
+	 * @deprecated use addChildTaxon() instead
+	 */
+	@Deprecated
 	public TaxonNode addChild(Taxon taxon, ReferenceBase ref, String microReference, Synonym synonymUsed){
-		if (this.getTaxonomicTree().isTaxonInTree(taxon)){
-			throw new IllegalArgumentException("Taxon may not be twice in a taxonomic view");
-		}
-		TaxonNode childNode = new TaxonNode(taxon, this.getTaxonomicTree());
-		addChildNote(childNode, ref, microReference, synonymUsed);
-		return childNode;
+		return addChildTaxon(taxon, ref, microReference, synonymUsed);
 	}
 	
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.taxon.ITreeNode#addChildTaxon(eu.etaxonomy.cdm.model.taxon.Taxon, eu.etaxonomy.cdm.model.reference.ReferenceBase, java.lang.String, eu.etaxonomy.cdm.model.taxon.Synonym)
+	 */
+	public TaxonNode addChildTaxon(Taxon taxon, ReferenceBase citation,
+			String microCitation, Synonym synonymToBeUsed) {
+		if (this.getTaxonomicTree().isTaxonInTree(taxon)){
+			throw new IllegalArgumentException("Taxon may not be in a taxonomic view twice");
+		}
+		
+		return addChildNode(new TaxonNode(taxon), citation, microCitation, synonymToBeUsed);
+	}
+	
+	/**
+	 * 
+	 * @param childNode
+	 * @param ref
+	 * @param microReference
+	 * @param synonymUsed
+	 * 
+	 * @deprecated use addChildNode instead
+	 */
+	@Deprecated 
 	protected void addChildNote(TaxonNode childNode, ReferenceBase ref, String microReference, Synonym synonymUsed){
 		if (! childNode.getTaxonomicTree().equals(this.getTaxonomicTree())){
 			throw new IllegalArgumentException("addChildNote(): both nodes must be part of the same view");
@@ -157,13 +207,50 @@ public class TaxonNode  extends AnnotatableEntity {
 	}
 	
 	/**
+	 * Moves a taxon node to a new parent. Descendents of the node are moved as well 
+	 * 
+	 * @param childNode the taxon node to be moved to the new parent
+	 * @return the child node in the state of having a new parent
+	 */
+	public TaxonNode addChildNode(TaxonNode childNode, ReferenceBase reference, String microReference, Synonym synonymToBeUsed){
+		// check if this node is a descendant of the childNode 
+		if(childNode.getParent() != this && childNode.isAscendant(this)){
+			throw new IllegalAncestryException("New parent node is a descendant of the node to be moved.");
+		}
+		
+		childNode.setParent(this);
+		childNode.setTaxonomicView(this.getTaxonomicTree());
+		childNodes.add(childNode);
+		this.countChildren++;
+		childNode.setReference(reference);
+		childNode.setMicroReference(microReference);
+		childNode.setSynonymToBeUsed(synonymToBeUsed);
+		
+		for(TaxonNode grandChildNode : childNode.getChildNodes()){
+			childNode.addChildNode(grandChildNode, childNode.getReference(), childNode.getMicroReference(), childNode.getSynonymToBeUsed());
+		}
+		
+		return childNode;
+	}
+	
+	/**
 	 * This removes recursively all child nodes from this node and from this taxonomic view.
 	 * TODO remove orphan nodes completely 
 	 * 
 	 * @param node
 	 * @return
+	 * @deprecated use removeChildNode() instead
 	 */
+	@Deprecated
 	public boolean removeChild(TaxonNode node){
+		return removeChildNode(node);
+	}	
+	
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.taxon.ITreeNode#removeChildNode(eu.etaxonomy.cdm.model.taxon.TaxonNode)
+	 */
+	public boolean removeChildNode(TaxonNode node) {
 		boolean result = false;
 		if (node != null){
 			// two iterations because of ConcurrentModificationErrors
@@ -172,7 +259,7 @@ public class TaxonNode  extends AnnotatableEntity {
                     removeNodes.add(grandChildNode); 
             } 
             for (TaxonNode childNode : removeNodes) { 
-                    childNode.removeChild(node); 
+                    childNode.removeChildNode(node); 
             } 
             
 			result = childNodes.remove(node);
@@ -186,18 +273,18 @@ public class TaxonNode  extends AnnotatableEntity {
 			node.setTaxon(null);
 		}
 		return result;
-	}	
+	}
 	
 	/**
-	 * Remove this taxonNode From its taxonomic view.
+	 * Remove this taxonNode From its taxonomic parent
 	 * 
 	 * @return true on success
 	 */
 	public boolean remove(){
-		if(isRootNode()){
-			return taxonomicTree.removeRoot(this);
+		if(isTopmostNode()){
+			return taxonomicTree.removeChildNode(this);
 		}else{
-			return getParent().removeChild(this);
+			return getParent().removeChildNode(this);
 		}		
 	}
 	
@@ -234,14 +321,32 @@ public class TaxonNode  extends AnnotatableEntity {
 	 * 
 	 * @return 
 	 */
-	protected Set<TaxonNode> getAllNodes(){
+	protected Set<TaxonNode> getDescendants(){
 		Set<TaxonNode> nodeSet = new HashSet<TaxonNode>();
 		
 		nodeSet.add(this);
 		
 		for(TaxonNode childNode : getChildNodes()){
-			nodeSet.addAll(childNode.getAllNodes());
+			nodeSet.addAll(childNode.getDescendants());
 		}		
+		
+		return nodeSet;
+	}
+	
+	/**
+	 * Returns a 
+	 * 
+	 * @return
+	 */
+	protected Set<TaxonNode> getAscendants(){
+		Set<TaxonNode> nodeSet = new HashSet<TaxonNode>();
+		
+		
+		nodeSet.add(this);
+		
+		if(this.getParent() != null){
+			nodeSet.addAll(this.getParent().getAscendants());
+		}
 		
 		return nodeSet;
 	}
@@ -249,24 +354,75 @@ public class TaxonNode  extends AnnotatableEntity {
 //	protected void setChildNodes(List<TaxonNode> childNodes) {
 //		this.childNodes = childNodes;
 //	}
+	/**
+	 * The reference for the parent child relationship
+	 * 
+	 * @see eu.etaxonomy.cdm.model.taxon.ITreeNode#getReference()
+	 */
+	public ReferenceBase getReference() {
+		return referenceForParentChildRelation;
+	}
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.taxon.ITreeNode#setReference(eu.etaxonomy.cdm.model.reference.ReferenceBase)
+	 */
+	public void setReference(ReferenceBase reference) {
+		this.referenceForParentChildRelation = reference;
+	}
+	
+	/**
+	 * @return
+	 * @deprecated use getReference instead
+	 */
+	@Deprecated 
 	public ReferenceBase getReferenceForParentChildRelation() {
 		return referenceForParentChildRelation;
 	}
+	@Deprecated
 	public void setReferenceForParentChildRelation(
 			ReferenceBase referenceForParentChildRelation) {
 		this.referenceForParentChildRelation = referenceForParentChildRelation;
 	}
+	
+	/**
+	 * 
+	 * 
+	 * @see eu.etaxonomy.cdm.model.taxon.ITreeNode#getMicroReference()
+	 */
+	public String getMicroReference() {
+		return microReferenceForParentChildRelation;
+	}
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.taxon.ITreeNode#setMicroReference(java.lang.String)
+	 */
+	public void setMicroReference(String microReference) {
+		this.microReferenceForParentChildRelation = microReference;
+	}
+	
+	@Deprecated
 	public String getMicroReferenceForParentChildRelation() {
 		return microReferenceForParentChildRelation;
 	}
+	
+	@Deprecated
 	public void setMicroReferenceForParentChildRelation(
 			String microReferenceForParentChildRelation) {
 		this.microReferenceForParentChildRelation = microReferenceForParentChildRelation;
 	}
+
+	
+	/**
+	 * @return the count of children this taxon node has
+	 */
 	public int getCountChildren() {
 		return countChildren;
 	}
-	public void setCountChildren(int countChildren) {
+	
+	/**
+	 * @param countChildren
+	 */
+	protected void setCountChildren(int countChildren) {
 		this.countChildren = countChildren;
 	}
 //	public Taxon getOriginalConcept() {
@@ -285,8 +441,19 @@ public class TaxonNode  extends AnnotatableEntity {
 	/**
 	 * Whether this TaxonNode is a root node
 	 * @return
+	 * @deprecated use isTopmostNode() instead
 	 */
+	@Transient
 	public boolean isRootNode(){
+		return parent == null;
+	}
+	
+	/**
+	 * Whether this TaxonNode is a direct child of the taxonomic tree TreeNode
+	 * @return
+	 */
+	@Transient
+	public boolean isTopmostNode(){
 		return parent == null;
 	}
 	
@@ -294,6 +461,11 @@ public class TaxonNode  extends AnnotatableEntity {
 	 * Whether this TaxonNode is a descendant of the given TaxonNode
 	 * 
 	 * Caution: use this method with care on big branches. -> performance and memory hungry
+	 * 
+	 * Protip: Try solving your problem with the isAscendant method which traverses the tree in the 
+	 * other direction (up). It will always result in a rather small set of consecutive parents beeing
+	 * generated.
+	 * 
 	 * TODO implement more efficiently without generating the set of descendants first
 	 * 
 	 * @param possibleParent
@@ -301,12 +473,28 @@ public class TaxonNode  extends AnnotatableEntity {
 	 */
 	@Transient
 	public boolean isDescendant(TaxonNode possibleParent){
-		return possibleParent.getAllNodes().contains(this);
+		return possibleParent.getDescendants().contains(this);
 	}
 	
+	/**
+	 * Whether this TaxonNode is an ascendant of the given TaxonNode
+	 * 
+	 * 
+	 * @param possibleChild
+	 * @return true if there are ascendants
+	 */
+	@Transient
+	public boolean isAscendant(TaxonNode possibleChild){
+		return possibleChild.getAscendants().contains(this);
+	}
+	
+	/**
+	 * Whether this taxon has child nodes
+	 * 
+	 * @return true if the taxonNode has childNodes
+	 */
+	@Transient
 	public boolean hasChildNodes(){
 		return childNodes.size() > 0;
 	}
-	
-
 }

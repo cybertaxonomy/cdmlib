@@ -14,7 +14,7 @@ import java.util.Set;
 
 import eu.etaxonomy.cdm.model.media.Rights;
 
-public interface IIdentifiableEntity {
+public interface IIdentifiableEntity extends ISourceable<IdentifiableSource>{
 
 	public LSID getLsid();
 
@@ -55,12 +55,6 @@ public interface IIdentifiableEntity {
 	public boolean isProtectedTitleCache();
 
 	public void setProtectedTitleCache(boolean protectedTitleCache);
-
-	public Set<OriginalSource> getSources();
-
-	public void addSource(OriginalSource source);
-
-	public void removeSource(OriginalSource source);
 
 	/**
 	 * Overrides {@link eu.etaxonomy.cdm.model.common.CdmBase#toString()}.

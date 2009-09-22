@@ -238,7 +238,7 @@ public class DefaultMergeStrategyTest {
 			bookMergeStrategy.setMergeMode("updated",MergeMode.NULL);
 			bookMergeStrategy.setMergeMode("datePublished", MergeMode.SECOND);
 			bookMergeStrategy.setMergeMode("parsingProblem", MergeMode.SECOND);
-			bookMergeStrategy.setMergeMode("inSeries", MergeMode.SECOND);
+			bookMergeStrategy.setMergeMode("inReference", MergeMode.SECOND);
 			bookMergeStrategy.setMergeMode("lsid", MergeMode.SECOND);
 			
 			bookMergeStrategy.invoke(book1, book2);
