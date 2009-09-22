@@ -145,7 +145,7 @@ public abstract class VersionableDaoBase<T extends VersionableEntity> extends Cd
 		}
 	}
 	
-	public List<AuditEventRecord<T>> getAuditEvents(T t, Integer pageSize, Integer pageNumber, AuditEventSort sort) {
+	public List<AuditEventRecord<T>> getAuditEvents(T t, Integer pageSize, Integer pageNumber, AuditEventSort sort, List<String> propertyPaths) {
 		AuditEvent auditEvent = getAuditEventFromContext();
 		
 		AuditQuery query = getAuditReader().createQuery().forRevisionsOfEntity(type, false, true);
@@ -185,6 +185,9 @@ public abstract class VersionableDaoBase<T extends VersionableEntity> extends Cd
         	records.add(new AuditEventRecordImpl<T>(obj));
         }
         
+        for(AuditEventRecord<T> record : records) {
+        	defaultBeanInitializer.initialize(record.getAuditableObject(), propertyPaths);
+        }
 		return records;
 	}
 	
@@ -212,7 +215,7 @@ public abstract class VersionableDaoBase<T extends VersionableEntity> extends Cd
 	}
 	
 	public AuditEventRecord<T> getNextAuditEvent(T t) {
-		List<AuditEventRecord<T>> auditEvents = getAuditEvents(t,1,0,AuditEventSort.FORWARDS);
+		List<AuditEventRecord<T>> auditEvents = getAuditEvents(t,1,0,AuditEventSort.FORWARDS, null);
 		if(auditEvents.isEmpty()) {
 			return null;
 		} else {
@@ -221,7 +224,7 @@ public abstract class VersionableDaoBase<T extends VersionableEntity> extends Cd
 	}
 	
 	public AuditEventRecord<T> getPreviousAuditEvent(T t) {
-		List<AuditEventRecord<T>> auditEvents = getAuditEvents(t,1,0,AuditEventSort.BACKWARDS);
+		List<AuditEventRecord<T>> auditEvents = getAuditEvents(t,1,0,AuditEventSort.BACKWARDS, null);
 		if(auditEvents.isEmpty()) {
 			return null;
 		} else {

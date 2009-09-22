@@ -52,13 +52,6 @@ public class CollectionDaoHibernateImpl extends IdentifiableDaoBase<Collection> 
 		}
 	}
 
-	public <TYPE extends Collection> List<TYPE> list(Class<TYPE> type,
-			Integer limit, Integer start, List<OrderHint> orderHints,
-			List<String> propertyPaths) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 	public int count(Class<? extends Collection> clazz, String queryString) {
 		checkNotInPriorView("CollectionDaoHibernateImpl.count(Class<? extends Collection> clazz, String queryString)");
         QueryParser queryParser = new QueryParser(defaultField, new SimpleAnalyzer());

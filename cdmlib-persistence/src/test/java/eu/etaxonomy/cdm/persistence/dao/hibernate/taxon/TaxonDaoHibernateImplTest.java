@@ -592,7 +592,12 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     	TaxonBase taxon = taxonDao.findByUuid(sphingidae);
     	assert taxon != null : "taxon cannot be null";
     	
-    	List<AuditEventRecord<TaxonBase>> auditEvents = taxonDao.getAuditEvents(taxon, null,null,null);
+    	List<String> propertyPaths = new ArrayList<String>();
+    	propertyPaths.add("name");
+    	propertyPaths.add("createdBy");
+    	propertyPaths.add("updatedBy");
+    	
+    	List<AuditEventRecord<TaxonBase>> auditEvents = taxonDao.getAuditEvents(taxon, null,null,null,propertyPaths);
     	assertNotNull("getAuditEvents should return a list",auditEvents);
     	assertFalse("the list should not be empty",auditEvents.isEmpty());
     	assertEquals("There should be two AuditEventRecords in the list",2, auditEvents.size());
@@ -605,7 +610,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     	TaxonBase taxon =  taxonDao.findByUuid(sphingidae);
     	assert taxon != null : "taxon cannot be null";
     	
-    	List<AuditEventRecord<TaxonBase>> auditEvents = taxonDao.getAuditEvents(taxon, null,null,AuditEventSort.FORWARDS);
+    	List<AuditEventRecord<TaxonBase>> auditEvents = taxonDao.getAuditEvents(taxon, null,null,AuditEventSort.FORWARDS,null);
     	assertNotNull("getAuditEvents should return a list",auditEvents);
     	assertFalse("the list should not be empty",auditEvents.isEmpty());
     	assertEquals("There should be one audit event in the list",1,auditEvents.size());
