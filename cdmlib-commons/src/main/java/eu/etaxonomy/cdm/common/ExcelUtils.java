@@ -76,8 +76,12 @@ public class ExcelUtils {
     				for(int c = 0; c < cols; c++) {
     					cell = row.getCell((short)c);
     					if(cell != null) {
-    						headers.put(columns.get(c), cell.toString());
-    						if(logger.isDebugEnabled()) { logger.debug("Cell #" + c + ": " + cell.toString()); }
+    						if (c >= columns.size()){
+    							logger.warn("Cell has no header. There are only " + columns.size() + " headers but more not-null cells in approx. row " + row.getRowNum() + ". Cell is neglected.");
+    						}else{
+    							if(logger.isDebugEnabled()) { logger.debug("Cell #" + c + ": " + cell.toString()); }
+    							headers.put(columns.get(c), cell.toString());	
+    						}
     					} else {
     						if(logger.isDebugEnabled()) { logger.debug("Cell #" + c + " is null"); }
     					}
