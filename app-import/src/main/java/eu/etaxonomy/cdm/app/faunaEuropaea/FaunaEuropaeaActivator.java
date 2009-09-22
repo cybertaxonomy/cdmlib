@@ -40,36 +40,36 @@ public class FaunaEuropaeaActivator {
 	
 //	static final CHECK check = CHECK.CHECK_AND_IMPORT;
 	static final CHECK check = CHECK.IMPORT_WITHOUT_CHECK;
-//	static DbSchemaValidation dbSchemaValidation = DbSchemaValidation.CREATE;
-	static DbSchemaValidation dbSchemaValidation = DbSchemaValidation.UPDATE;
+	static DbSchemaValidation dbSchemaValidation = DbSchemaValidation.CREATE;
+//	static DbSchemaValidation dbSchemaValidation = DbSchemaValidation.UPDATE;
 //	static DbSchemaValidation dbSchemaValidation = DbSchemaValidation.VALIDATE;
 	static final NomenclaturalCode nomenclaturalCode  = NomenclaturalCode.ICZN;
 
 // ****************** ALL *****************************************
 	
-	static final int limitSave = 1000;
+	static final int limitSave = 2000;
 	
-//	static final boolean doAuthors = true;
-//	static final boolean doTaxa = true;
-//	static final boolean doBasionyms = true;
-//	static final boolean doTaxonomicallyIncluded = true;
-//	static final boolean doMisappliedNames = true;
-//	static final boolean doHeterotypicSynonyms = true;
-//	static final DO_REFERENCES doReferences =  DO_REFERENCES.ALL;
-//	static final boolean doDistributions = true;
-//	static final boolean makeFeatureTree = true;
+	static final boolean doAuthors = true;
+	static final boolean doTaxa = true;
+	static final boolean doBasionyms = true;
+	static final boolean doTaxonomicallyIncluded = true;
+	static final boolean doMisappliedNames = true;
+	static final boolean doHeterotypicSynonyms = true;
+	static final DO_REFERENCES doReferences =  DO_REFERENCES.ALL;
+	static final boolean doDistributions = true;
+	static final boolean makeFeatureTree = true;
 
 // ************************ NONE **************************************** //
 		
-	static final boolean doAuthors = false;
-	static final boolean doTaxa = false;
-	static final boolean doBasionyms = false;
-	static final boolean doTaxonomicallyIncluded = false;
-	static final boolean doMisappliedNames = true;
-	static final boolean doHeterotypicSynonyms = false;
-	static final DO_REFERENCES doReferences =  DO_REFERENCES.NONE;
-	static final boolean doDistributions = false;
-	static final boolean makeFeatureTree = false;
+//	static final boolean doAuthors = false;
+//	static final boolean doTaxa = false;
+//	static final boolean doBasionyms = false;
+//	static final boolean doTaxonomicallyIncluded = false;
+//	static final boolean doMisappliedNames = false;
+//	static final boolean doHeterotypicSynonyms = true;
+//	static final DO_REFERENCES doReferences =  DO_REFERENCES.NONE;
+//	static final boolean doDistributions = false;
+//	static final boolean makeFeatureTree = false;
 	
 	
 	/**
