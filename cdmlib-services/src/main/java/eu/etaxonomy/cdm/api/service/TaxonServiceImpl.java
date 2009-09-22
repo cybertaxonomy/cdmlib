@@ -14,17 +14,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.UUID;
-import java.util.Map.Entry;
 
 import org.apache.log4j.Logger;
-import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.TransactionStatus;
@@ -48,6 +45,7 @@ import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.taxon.ITreeNode;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
@@ -129,6 +127,20 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 	public TaxonNode getTaxonNodeByUuid(UUID uuid) {
 		return taxonNodeDao.findByUuid(uuid);
 	}
+	
+	/**
+	 * FIXME Candidate for harmonization
+	 * move to taxonTreeService
+	 */
+	public ITreeNode getTreeNodeByUuid(UUID uuid){
+		ITreeNode treeNode = taxonNodeDao.findByUuid(uuid);
+		if(treeNode == null){
+			treeNode = taxonTreeDao.findByUuid(uuid);
+		}
+		
+		return treeNode;
+	}
+	
 	/**
 	 * FIXME Candidate for harmonization
 	 * move to taxonTreeService
@@ -817,6 +829,29 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		
 		return result;
 	}
+
+
+
+	public List<MediaRepresentation> getAllMedia(Taxon taxon, int size, int height, int widthOrDuration, String[] mimeTypes){
+		List<MediaRepresentation> medRep = new ArrayList<MediaRepresentation>();
+		taxon = (Taxon)dao.load(taxon.getUuid());
+		Set<TaxonDescription> descriptions = taxon.getDescriptions();
+		for (TaxonDescription taxDesc: descriptions){
+			Set<DescriptionElementBase> elements = taxDesc.getElements();
+			for (DescriptionElementBase descElem: elements){
+				for(Media media : descElem.getMedia()){
+									
+					//find the best matching representation
+					medRep.add(media.findBestMatchingRepresentation(size, height, widthOrDuration, mimeTypes));
+					
+				}
+			}
+		}
+		return medRep;
+	}
+
+
+	
 	
 	
 

@@ -18,7 +18,7 @@ import java.util.Set;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.CdmMetaData;
 import eu.etaxonomy.cdm.model.common.ISourceable;
-import eu.etaxonomy.cdm.model.common.OriginalSource;
+import eu.etaxonomy.cdm.model.common.OriginalSourceBase;
 import eu.etaxonomy.cdm.model.common.CdmMetaData.MetaDataPropertyName;
 import eu.etaxonomy.cdm.strategy.match.IMatchStrategy;
 import eu.etaxonomy.cdm.strategy.match.IMatchable;
@@ -28,7 +28,7 @@ import eu.etaxonomy.cdm.strategy.merge.IMergeStrategy;
 import eu.etaxonomy.cdm.strategy.merge.MergeException;
 
 
-public interface ICommonService extends IService<OriginalSource>{
+public interface ICommonService extends IService<OriginalSourceBase>{
 //	
 //	/** find cdmBase by UUID**/
 //	public abstract CdmBase getCdmBaseByUuid(UUID uuid);

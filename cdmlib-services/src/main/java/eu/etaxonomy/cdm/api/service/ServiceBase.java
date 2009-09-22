@@ -132,16 +132,18 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
 				i++;
 				if ( (i % flushAfterNo) == 0){
 					try{
-									logger.debug("flush");
-					dao.flush();
+									logger.debug("no flush");
+									//TODO fixme!!!
+									dao.flush();
 					}catch(Exception e){
 						logger.error("UUUIIIII");
-						e.printStackTrace();
+						
 					}
 				}
 			}
 
 		if ( logger.isInfoEnabled() ){logger.info("Saved " + i + " objects" );}
+		logger.error("End of SaveCDMObject...Saved " + i + " objects" );
 		return resultMap;
 	}
 
