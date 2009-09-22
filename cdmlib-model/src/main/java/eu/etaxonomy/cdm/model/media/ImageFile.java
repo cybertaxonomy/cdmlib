@@ -10,7 +10,12 @@
 package eu.etaxonomy.cdm.model.media;
 
 
-import java.util.Calendar;
+import javax.persistence.Entity;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
@@ -18,13 +23,6 @@ import org.joda.time.DateTime;
 
 import eu.etaxonomy.cdm.common.MediaMetaData.ImageMetaData;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
-
-import javax.persistence.*;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
 
 /**
  * @author m.doering
