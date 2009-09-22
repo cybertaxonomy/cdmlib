@@ -154,9 +154,7 @@ public class PalmaeImageImport extends AbstractImageImporter {
 						logger.info("File: " + imageFile.getName() + ". "+ item.getKeyword() +"string is: " + item.getText());
 						result.put(MetaData.valueOf(item.getKeyword().toUpperCase()), item.getText());
 						Set<Entry<MetaData, String>> resultSet = result.entrySet();
-							/*for (Entry e: resultSet){
-								System.err.println(e.getKey() +" -- "+e.getValue());
-							}*/
+							
 					}
 						
 				}
@@ -242,7 +240,7 @@ public class PalmaeImageImport extends AbstractImageImporter {
 							artist = Person.NewTitledInstance(metaData.get(MetaData.ARTIST).replace("'", ""));
 							artist.setFirstname(getFirstName(metaData.get(MetaData.ARTIST)).replace("'", ""));
 							artist.setLastname(getLastName(metaData.get(MetaData.ARTIST)).replace("'", ""));
-							System.err.println("Artist-Titlecache: "+artist.getTitleCache());
+							//System.err.println("Artist-Titlecache: "+artist.getTitleCache());
 							IMatchStrategy matchStrategy = DefaultMatchStrategy.NewInstance(AgentBase.class);
 							try{
 								List<Person> agents = commonService.findMatching(artist, matchStrategy);
@@ -284,7 +282,7 @@ public class PalmaeImageImport extends AbstractImageImporter {
 						feature.setType(Feature.IMAGE());
 
 						TaxonDescription description = TaxonDescription.NewInstance(taxon);
-						System.err.println(taxon.getTitleCache());
+						
 						description.setTitleCache("TEST");
 						description.addElement(feature);
 						taxon.addDescription(description);
@@ -314,7 +312,7 @@ public class PalmaeImageImport extends AbstractImageImporter {
 			artist = artistSplits[0];
 			 
 		}
-		System.err.println(artist);
+		
 		try{
 		return artist.substring(0, artist.lastIndexOf(' ')).replace("'", "");
 		}catch (Exception e){
@@ -327,10 +325,10 @@ public class PalmaeImageImport extends AbstractImageImporter {
 		if (artist.contains(",")){
 			String [] artistSplits = artist.split(",");
 			artist = artistSplits[0];
-			System.err.println(artist);
+			
 		}
 		if (!artist.contains(" ")) {
-			System.err.println ("No space...");
+			
 			return artist;
 		}
 		try{
