@@ -24,6 +24,7 @@ import org.apache.log4j.Logger;
  */
 @Entity
 public class CdmMetaData extends CdmBase{
+	private static final long serialVersionUID = -3033376680593279078L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CdmMetaData.class);
 

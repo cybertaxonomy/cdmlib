@@ -27,6 +27,11 @@ import org.hibernate.envers.NotAudited;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
 /**
+ * This class represents an {@link eu.etaxonomy.cdm.model.common.IOriginalSource IOriginalSource}
+ * that can be used with {@link eu.etaxonomy.cdm.model.common.IdentifiableEntity identifiable entity}.
+ * 
+ * @see eu.etaxonomy.cdm.model.common.IOriginalSource
+ * 
  * @author a.mueller
  * @created 18.09.2009
  * @version 1.0

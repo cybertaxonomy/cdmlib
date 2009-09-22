@@ -11,11 +11,17 @@
 package eu.etaxonomy.cdm.model.common;
 
 /**
- * Other names/labels/titles (abreviated or not) for the same object (person,
- * reference, source, etc.).
- * It can also be used to store the id, namespace/tablename from an import source into CDM.
- * E.g. when importing SDD data here you may store the filename and the id used in the SDD file here.
+ * An original source can be used in different ways.<BR>
+ * 1.) As a referencing system. The original source holds all information about the reference, 
+ * the microReference (page, figure, ...), the identifier used in for the referenced object in the 
+ * reference, a namespace that makes this identifier unique, the original name string that in 
+ * general stores the representation of the referenced object within the source (if the string representation
+ * in the source differs from that one unsed in the CDM object)
  * 
+ * 2.) Dataprovenance: When importing data from another datasource important information like the identifier
+ * and it's namespace (e.g. tablename) as well as the datasource itself maybe stored in an original source.
+ * E.g. when importing SDD data here you may store the filename and the id used in the SDD file here.
+ *
  * @author a.mueller
  * @created 18.09.2009
  * @version 1.0

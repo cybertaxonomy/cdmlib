@@ -32,6 +32,18 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
 /**
+ * This class represents an {@link eu.etaxonomy.cdm.model.common.IOriginalSource IOriginalSource}
+ * that can be used with {@link eu.etaxonomy.cdm.model.description.DescriptionElementBase description elements}.
+ * Additionally to the core functionally of IOriginalSource a {@link eu.etaxonomy.cdm.model.name.TaxonNameBase taxon name}
+ * can be stored that points to the name used in the source. This is needed because description always belong
+ * to accepted taxa while the referenced citations may use synonym names.
+ * </BR>
+ * The use of "originalNameString" within a DescriptionElementSource has to be discussed.
+ * In general this string is to be used for different representations of the sourced object. In this classes
+ * context it could also stand for the string representation of the taxon name used in the source. This
+ * may make sense if the taxon name is not available in the CDM and the user for some reason does not want 
+ * to create a new ful {@link eu.etaxonomy.cdm.model.name.TaxonNameBase taxon name}.
+ *  
  * @author a.mueller
  * @created 18.09.2009
  * @version 1.0

@@ -24,21 +24,8 @@ import org.hibernate.annotations.Table;
 import org.hibernate.envers.Audited;
 
 /**
- * Abstract base class for original sources.
- * An original source can be used in different ways.<BR>
- * 1.) As a referencing system. The original source holds all information about the reference, 
- * the microReference (page, figure, ...), the identifier used in for the referenced object in the 
- * reference, a namespace that makes this identifier unique, the original name string that in 
- * general stores the representation of the referenced object within the source (if a differing
- * string is used in the source then for the CDM object
- * 
- * 
- * Other names/labels/titles (abreviated or not) for the same object (person,
- * reference, source, etc.).
- * 
- * 2.) Dataprovenance: When importing data from another (database) datasource the identifier, namespace/tablename
- *  from an import source into CDM.
- * E.g. when importing SDD data here you may store the filename and the id used in the SDD file here.
+ * Abstract base class for classes implementing {@link eu.etaxonomy.cdm.model.common.IOriginalSource IOriginalSource}.
+ * @see eu.etaxonomy.cdm.model.common.IOriginalSource
  * 
  * @author m.doering
  * @version 1.0
