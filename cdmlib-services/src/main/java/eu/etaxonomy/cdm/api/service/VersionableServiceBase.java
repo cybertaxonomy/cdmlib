@@ -28,12 +28,12 @@ public abstract class VersionableServiceBase<T extends VersionableEntity, DAO ex
  	 * FIXME candidate for harmonization
 	 * rename pageAuditEvents
 	 */
-	public Pager<AuditEventRecord<T>> getAuditEvents(T t, Integer pageSize,	Integer pageNumber, AuditEventSort sort) {
+	public Pager<AuditEventRecord<T>> getAuditEvents(T t, Integer pageSize,	Integer pageNumber, AuditEventSort sort, List<String> propertyPaths) {
 		Integer numberOfResults = dao.countAuditEvents(t, sort);
 			
 		List<AuditEventRecord<T>> results = new ArrayList<AuditEventRecord<T>>();
 		if(numberOfResults > 0) { // no point checking again
-			results = dao.getAuditEvents(t, pageSize, pageNumber, sort);
+			results = dao.getAuditEvents(t, pageSize, pageNumber, sort,propertyPaths);
 		}
 		
 		return new DefaultPagerImpl<AuditEventRecord<T>>(pageNumber, numberOfResults, pageSize, results);

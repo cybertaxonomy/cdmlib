@@ -10,6 +10,8 @@
 
 package eu.etaxonomy.cdm.api.service;
 
+import java.util.List;
+
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.view.AuditEventRecord;
@@ -28,9 +30,10 @@ public interface IVersionableService<T extends VersionableEntity> extends IServi
 	 * @param pageSize
 	 * @param pageNumber
 	 * @param sort
+	 * @param propertyPaths paths initialized on the returned objects - only applied to the objects returned from the first grouping
 	 * @return a Pager containing audit event instances, plus metadata
 	 */
-	public Pager<AuditEventRecord<T>> getAuditEvents(T t, Integer pageSize, Integer pageNumber, AuditEventSort sort);
+	public Pager<AuditEventRecord<T>> getAuditEvents(T t, Integer pageSize, Integer pageNumber, AuditEventSort sort, List<String> propertyPaths);
 	
 	/**
 	 * A convenience method which returns a record of the next (relative to the audit event in context)

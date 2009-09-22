@@ -30,6 +30,7 @@ import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
+import eu.etaxonomy.cdm.persistence.query.Grouping;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 @Transactional(readOnly=true)
@@ -302,5 +303,9 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
 	 */
 	public List<T> rows(String tableName, int limit, int start) {
 		return dao.rows(tableName, limit, start);
+	}
+	
+	public List<Object[]> group(Class<? extends T> clazz,Integer limit, Integer start, List<Grouping> groups, List<String> propertyPaths) {
+		return dao.group(clazz, limit, start, groups, propertyPaths);
 	}
 }

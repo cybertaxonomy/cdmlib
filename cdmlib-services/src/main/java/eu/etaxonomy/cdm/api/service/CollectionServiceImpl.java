@@ -20,7 +20,7 @@ public class CollectionServiceImpl extends	IdentifiableServiceBase<Collection, I
 	
 	static private final Logger logger = Logger.getLogger(CollectionServiceImpl.class);
 
-      @Autowired
+    @Autowired
 	@Override
 	protected void setDao(ICollectionDao dao) {
 		this.dao = dao;

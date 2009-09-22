@@ -26,6 +26,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
+import eu.etaxonomy.cdm.persistence.query.Grouping;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 
@@ -259,4 +260,20 @@ public interface IService<T extends CdmBase>{
 	 * @return an entity of type <T> matching the uuid, or null if that entity does not exist
 	 */
 	public boolean exists(UUID uuid);
+	
+    /**
+     * Returns a sublist of objects matching the grouping projections supplied using the groups parameter
+     * 
+     * It would be nice to be able to return a pager, but for the moment hibernate doesn't
+     * seem to support this (HHH-3238 - impossible to get the rowcount for a criteria that has projections)
+     * 
+     * @param clazz Restrict the query to objects of a certain class, or null for all objects of type T or subclasses
+     * @param limit the maximum number of entities returned (can be null to return
+	 *            all entities)
+     * @param start The (0-based) offset from the start of the recordset
+     * @param groups The grouping objects representing a projection, plus an optional ordering on that projected property
+     * @param propertyPaths paths initialized on the returned objects - only applied to the objects returned from the first grouping
+     * @return a list of arrays of objects, each matching the grouping objects supplied in the parameters.
+     */
+	public List<Object[]> group(Class<? extends T> clazz,Integer limit, Integer start, List<Grouping> groups, List<String> propertyPaths);
 }
