@@ -87,6 +87,14 @@ public class CdmDestinations {
 		String cdmUserName = "edit";
 		return makeDestination(cdmServer, cdmDB, -1, cdmUserName, null);
 	}
+
+	public static ICdmDataSource cdm_test_andreas_diptera(){
+		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
+		String cdmServer = "192.168.2.10";
+		String cdmDB = "cdm_test_andreas_diptera"; 
+		String cdmUserName = "edit";
+		return makeDestination(cdmServer, cdmDB, -1, cdmUserName, null);
+	}
 	
 	public static ICdmDataSource cdm_test_andreasM(){
 		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
@@ -335,6 +343,15 @@ public class CdmDestinations {
 		String cdmDB = "cdm_edit_palmae"; 
 		String cdmUserName = "edit";
 		return makeDestination(cdmServer, cdmDB, -1, cdmUserName, null);
+	}
+	
+	public static ICdmDataSource cdm_edit_diptera_preview_B(){
+		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
+		String cdmServer = "127.0.0.1";
+		String cdmDB = "cdm_edit_diptera_b"; 
+		String cdmUserName = "edit";
+		int port = 13306;
+		return makeDestination(cdmServer, cdmDB, port, cdmUserName, null);
 	}
 	
 	public static ICdmDataSource cdm_edit_palmae_preview_B(){
