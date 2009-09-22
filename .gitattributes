@@ -1822,6 +1822,7 @@ cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/fetch/CdmFetch.jav
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/CacheStrategyGenerator.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/CdmDataChangeEvent.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/CdmDataChangeMap.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/CdmDeleteListener.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/CdmHibernateInterceptor.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/CdmPostDataChangeObservableListener.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/ICdmPostDataChangeObserver.java -text
@@ -1881,6 +1882,7 @@ cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/dao/hibernate/refe
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/dao/hibernate/taxon/TaxonDaoHibernateImplTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/dao/hibernate/taxon/TaxonNodeDaoHibernateImplTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/hibernate/CacheStrategyGeneratorTest.java -text
+cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/hibernate/CdmDeleteListenerTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/test/function/Datasource.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/test/function/TestCdmApplicationUtils.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/test/function/TestPersistence.java -text
@@ -1961,10 +1963,13 @@ cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/taxon/TaxonNodeDaoHibernateImplTest.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/hibernate/CacheStrategyGeneratorTest.testOnSaveOrUpdate-result.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/hibernate/CacheStrategyGeneratorTest.xml -text
+cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/hibernate/CdmDeleteListenerTest.testOnDelete-result.xml -text
+cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/hibernate/CdmDeleteListenerTest.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/override.properties -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/override.properties-testPersistentDataSource -text
 cdmlib-persistence/src/test/resources/log4j.properties -text
 cdmlib-persistence/src/test/resources/unitils.properties -text
+cdmlib-persistence/testXXX.txt -text
 cdmlib-remote/LICENSE.TXT -text
 cdmlib-remote/README.TXT -text
 cdmlib-remote/ide/eclipse/cdmlib-remote[!!-~]-[!!-~]jetty[!!-~]run[!!-~]\[debug\].launch -text

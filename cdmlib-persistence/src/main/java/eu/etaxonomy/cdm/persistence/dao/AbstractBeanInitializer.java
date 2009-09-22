@@ -20,11 +20,6 @@ import java.util.Set;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.log4j.Logger;
-import org.hibernate.Hibernate;
-import org.hibernate.proxy.HibernateProxy;
-import org.hibernate.proxy.HibernateProxyHelper;
-import org.hibernate.proxy.LazyInitializer;
-import org.hibernate.proxy.pojo.javassist.JavassistLazyInitializer;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 

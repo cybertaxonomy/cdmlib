@@ -20,7 +20,7 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
-import eu.etaxonomy.cdm.model.common.OriginalSource;
+import eu.etaxonomy.cdm.model.common.OriginalSourceBase;
 import eu.etaxonomy.cdm.persistence.dao.common.IOriginalSourceDao;
 
 /**
@@ -29,11 +29,11 @@ import eu.etaxonomy.cdm.persistence.dao.common.IOriginalSourceDao;
  * @version 1.0
  */
 @Repository
-public class OriginalSourceDaoImpl extends CdmEntityDaoBase<OriginalSource> implements	IOriginalSourceDao {
+public class OriginalSourceDaoImpl extends CdmEntityDaoBase<OriginalSourceBase> implements	IOriginalSourceDao {
 	private static final Logger logger = Logger.getLogger(OriginalSourceDaoImpl.class);
 
 	public OriginalSourceDaoImpl() {
-		super(OriginalSource.class); 
+		super(OriginalSourceBase.class); 
 	}
 	
 	/* (non-Javadoc)
@@ -58,7 +58,7 @@ public class OriginalSourceDaoImpl extends CdmEntityDaoBase<OriginalSource> impl
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.persistence.dao.common.IOriginalSourceDao#findOriginalSourceByIdInSource(java.lang.String, java.lang.String)
 	 */
-	public List<OriginalSource> findOriginalSourceByIdInSource(String idInSource, String idNamespace) {
+	public List<OriginalSourceBase> findOriginalSourceByIdInSource(String idInSource, String idNamespace) {
 		Session session = getSession();
 		Criteria crit = session.createCriteria(type);
 		crit.add(Restrictions.eq("idInSource", idInSource));
@@ -68,7 +68,7 @@ public class OriginalSourceDaoImpl extends CdmEntityDaoBase<OriginalSource> impl
 			crit.add(Restrictions.eq("idNamespace", idNamespace));
 		}
 		crit.addOrder(Order.desc("created"));
-		List<OriginalSource> results = crit.list();
+		List<OriginalSourceBase> results = crit.list();
 		
 		return results;
 	}

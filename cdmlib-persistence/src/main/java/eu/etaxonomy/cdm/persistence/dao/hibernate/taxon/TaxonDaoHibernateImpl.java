@@ -12,11 +12,9 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -30,7 +28,6 @@ import org.hibernate.Criteria;
 import org.hibernate.FetchMode;
 import org.hibernate.Hibernate;
 import org.hibernate.Query;
-import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
@@ -47,8 +44,8 @@ import org.springframework.util.ReflectionUtils;
 
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.Extension;
+import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Marker;
-import eu.etaxonomy.cdm.model.common.OriginalSource;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
@@ -546,8 +543,8 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		    getSession().delete(extension);
 	    }
 		
-		for(Iterator<OriginalSource> iterator = taxonBase.getSources().iterator(); iterator.hasNext();) {
-			OriginalSource source = iterator.next();
+		for(Iterator<IdentifiableSource> iterator = taxonBase.getSources().iterator(); iterator.hasNext();) {
+			IdentifiableSource source = iterator.next();
 		    source.setSourcedObj(null);
 		    iterator.remove();
 		    getSession().delete(source);
@@ -1070,7 +1067,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 				UUID uuid = UUID.fromString((String) objectArray[0]);
 				String titleCache = (String) objectArray[1];
 				
-				list.add(new UuidAndTitleCache(uuid, titleCache));
+				list.add(new UuidAndTitleCache(type, uuid, titleCache));
 			}
 			
 			return list;	

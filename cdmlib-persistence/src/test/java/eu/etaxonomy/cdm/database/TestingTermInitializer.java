@@ -54,6 +54,7 @@ public class TestingTermInitializer extends PersistentTermInitializer {
 		try {
 			connection = getConnection();
 			IDataSet dataSet = new FlatXmlDataSet(new InputStreamReader(termsDataSet.getInputStream()),new InputStreamReader(termsDtd.getInputStream()));
+			
 			DatabaseOperation.CLEAN_INSERT.execute(connection, dataSet);
 		} catch (Exception e) {
 			logger.error(e);
@@ -67,6 +68,7 @@ public class TestingTermInitializer extends PersistentTermInitializer {
 				logger.error(sqle);
 			}
 		}
+		
 		transactionManager.commit(txStatus);
 		
 		for(VocabularyEnum vocabularyType : VocabularyEnum.values()) {

@@ -696,7 +696,7 @@ extends IdentifiableDaoBase<TaxonNameBase> implements ITaxonNameDao {
 				UUID uuid = UUID.fromString((String) objectArray[0]);
 				String titleCache = (String) objectArray[1];
 				
-				list.add(new UuidAndTitleCache(uuid, titleCache));
+				list.add(new UuidAndTitleCache(type, uuid, titleCache));
 			}
 			
 			return list;	

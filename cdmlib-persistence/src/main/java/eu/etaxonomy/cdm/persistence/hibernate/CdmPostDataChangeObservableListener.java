@@ -43,11 +43,9 @@ public class CdmPostDataChangeObservableListener
 		, PostLoadEventListener
 		, PostUpdateEventListener
 {
-
 	private static final long serialVersionUID = -8764348096490526927L;
-
-	private static final Logger logger = Logger
-			.getLogger(CdmPostDataChangeObservableListener.class);
+	@SuppressWarnings("unused")
+	private static final Logger logger = Logger.getLogger(CdmPostDataChangeObservableListener.class);
 	
 	/**
 	 * if this is set to true, observers have to be notified manually by calling 

@@ -33,11 +33,8 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * @version 1.0
  */
 public class CdmDataChangeEvent extends AbstractEvent{
-	
 	private static final long serialVersionUID = 9113025682352080372L;
-
-	private static final Logger logger = Logger
-			.getLogger(CdmDataChangeEvent.class);
+	private static final Logger logger = Logger.getLogger(CdmDataChangeEvent.class);
 	
 	/**
 	 * The event types currently implemented

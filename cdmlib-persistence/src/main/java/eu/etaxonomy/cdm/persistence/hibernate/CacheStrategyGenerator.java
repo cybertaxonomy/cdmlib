@@ -17,7 +17,6 @@ import org.joda.time.DateTime;
 import org.springframework.security.Authentication;
 import org.springframework.security.context.SecurityContextHolder;
 
-import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ICdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.User;
@@ -69,7 +68,5 @@ public class CacheStrategyGenerator implements SaveOrUpdateEventListener {
         	
         	
         }
-        
-
     }
 }
