@@ -43,7 +43,7 @@ public class PalmaeActivator {
 	//database validation status (create, update, validate ...)
 	static DbSchemaValidation hbm2dll = DbSchemaValidation.CREATE;
 	static final String tcsSource = TcsSources.arecaceae_local();
-	static final ICdmDataSource cdmDestination = CdmDestinations.localH2();
+	static final ICdmDataSource cdmDestination = CdmDestinations.localH2Palmae();
 
 	static final UUID featureTreeUuid = UUID.fromString("72ccce05-7cc8-4dab-8e47-bf3f5fd848a0");
 		
@@ -53,10 +53,10 @@ public class PalmaeActivator {
 	static final boolean pubishReferencesInBibliography = false;
 	
 	//should the other imports run as well?
-	static final boolean includeTaxonX = false;
+	static final boolean includeTaxonX = true;
 	static final boolean includeImages = true;
-	static final boolean includeExcelProtologue = false;
-	static final boolean includeMediaProtologue = false;
+	static final boolean includeExcelProtologue = true;
+	static final boolean includeMediaProtologue = true;
 	
 	//check - import
 	static final CHECK check = CHECK.CHECK_AND_IMPORT;
@@ -184,7 +184,7 @@ public class PalmaeActivator {
 		if (includeExcelProtologue){
 			System.out.println("Start importing protologues ...");
 			ImageImportConfigurator imageConfigurator = ImageImportConfigurator.NewInstance(
-					PalmaeProtologueActivator.sourceFile, cdmDestination, PalmaeProtologueImport.class);
+					PalmaeExcelProtologueActivator.sourceFile, cdmDestination, PalmaeProtologueImport.class);
 			imageConfigurator.setSecUuid(secUuid);
 			
 			CdmDefaultImport<IImportConfigurator> imageImporter = new CdmDefaultImport<IImportConfigurator>();

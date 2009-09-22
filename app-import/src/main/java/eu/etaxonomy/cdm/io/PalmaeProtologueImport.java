@@ -35,14 +35,13 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
  */
 @Component
 public class PalmaeProtologueImport extends AbstractImageImporter {
-	private static final Logger logger = Logger
-			.getLogger(PalmaeProtologueImport.class);
+	private static final Logger logger = Logger.getLogger(PalmaeProtologueImport.class);
 
 	public static final String SPECIES = "Species";
-	public static final String TAXONID = "TaxonID";
-	public static final String ACC_OR_SYN = "AcceptedOrSynonym";
-	public static final String AUTHOR = "Author";
-	public static final String REFERENCE = "Reference";
+	public static final String TAXONID = "Taxon ID";
+//	public static final String ACC_OR_SYN = "AcceptedOrSynonym";
+//	public static final String AUTHOR = "Author";
+//	public static final String REFERENCE = "Reference";
 	public static final String LINK_PROTO = "Link proto";
 	
 	/* (non-Javadoc)
@@ -70,9 +69,6 @@ public class PalmaeProtologueImport extends AbstractImageImporter {
 			count++;
 			String species = row.get(PalmaeProtologueImport.SPECIES).trim();
 			String taxonId = row.get(PalmaeProtologueImport.TAXONID);
-			//String accOrSyn = row.get(PalmaeProtologueImport.ACC_OR_SYN).trim();
-			//String author = row.get(PalmaeProtologueImport.AUTHOR).trim();			
-			//String reference = row.get(PalmaeProtologueImport.REFERENCE).trim();
 			String linkProto= row.get(PalmaeProtologueImport.LINK_PROTO).trim();
 			
 			//logger.info(species + ",  " + taxonId + ",  " + accOrSyn + ",  " + reference + ",  " + linkProto);

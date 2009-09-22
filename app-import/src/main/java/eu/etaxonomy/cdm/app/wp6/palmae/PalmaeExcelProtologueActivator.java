@@ -26,13 +26,12 @@ import eu.etaxonomy.cdm.io.common.IImportConfigurator;
  * @created 19.11.2008
  * @version 2.0 (18.02.2009)
  */
-public class PalmaeProtologueActivator {
+public class PalmaeExcelProtologueActivator {
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger
-			.getLogger(PalmaeProtologueActivator.class);
+	private static final Logger logger = Logger.getLogger(PalmaeExcelProtologueActivator.class);
 
 	public static final File sourceFile = new File("src/main/resources/images/protologue_links_palmae.xls");
-	private static final ICdmDataSource cdmDestination = CdmDestinations.localH2();
+	private static final ICdmDataSource cdmDestination = CdmDestinations.localH2Palmae();
 
 	static final UUID secUuid = UUID.fromString("5f32b8af-0c97-48ac-8d33-6099ed68c625");
 	
