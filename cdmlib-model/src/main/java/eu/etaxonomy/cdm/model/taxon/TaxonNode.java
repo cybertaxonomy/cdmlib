@@ -10,6 +10,7 @@
 
 package eu.etaxonomy.cdm.model.taxon;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -31,6 +32,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
+import org.springframework.util.Assert;
 
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
@@ -214,8 +216,15 @@ public class TaxonNode  extends AnnotatableEntity implements ITreeNode{
 	 */
 	public TaxonNode addChildNode(TaxonNode childNode, ReferenceBase reference, String microReference, Synonym synonymToBeUsed){
 		// check if this node is a descendant of the childNode 
-		if(childNode.getParent() != this && childNode.isAscendant(this)){
+		if(childNode.getParent() != this && childNode.isAncestor(this)){
 			throw new IllegalAncestryException("New parent node is a descendant of the node to be moved.");
+		}
+		
+		// remove this childNode from previous parents and trees
+		if(childNode.getParent() != null){
+			childNode.getParent().removeChildNode(childNode);
+		}else if(childNode.getTaxonomicTree() != null){
+			childNode.getTaxonomicTree().removeChildNode(childNode);
 		}
 		
 		childNode.setParent(this);
@@ -227,7 +236,7 @@ public class TaxonNode  extends AnnotatableEntity implements ITreeNode{
 		childNode.setSynonymToBeUsed(synonymToBeUsed);
 		
 		for(TaxonNode grandChildNode : childNode.getChildNodes()){
-			childNode.addChildNode(grandChildNode, childNode.getReference(), childNode.getMicroReference(), childNode.getSynonymToBeUsed());
+			childNode.addChildNode(grandChildNode, grandChildNode.getReference(), grandChildNode.getMicroReference(), grandChildNode.getSynonymToBeUsed());
 		}
 		
 		return childNode;
@@ -243,48 +252,68 @@ public class TaxonNode  extends AnnotatableEntity implements ITreeNode{
 	 */
 	@Deprecated
 	public boolean removeChild(TaxonNode node){
-		return removeChildNode(node);
+		return deleteChildNode(node);
 	}	
 	
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.taxon.ITreeNode#removeChildNode(eu.etaxonomy.cdm.model.taxon.TaxonNode)
 	 */
-	public boolean removeChildNode(TaxonNode node) {
-		boolean result = false;
-		if (node != null){
-			// two iterations because of ConcurrentModificationErrors
-            Set<TaxonNode> removeNodes = new HashSet<TaxonNode>(); 
-            for (TaxonNode grandChildNode : node.getChildNodes()) { 
-                    removeNodes.add(grandChildNode); 
-            } 
-            for (TaxonNode childNode : removeNodes) { 
-                    childNode.removeChildNode(node); 
-            } 
-            
-			result = childNodes.remove(node);
-			this.countChildren--;
-			if (this.countChildren < 0){
-				throw new IllegalStateException("children count must not be negative ");
-			}
-			node.getTaxon().removeTaxonNode(node);
-			node.setParent(null);
-			node.setTaxonomicView(null);
-			node.setTaxon(null);
+	public boolean deleteChildNode(TaxonNode node) {
+		boolean result = removeChildNode(node);
+		
+		node.getTaxon().removeTaxonNode(node);
+		node.setTaxon(null);
+		
+		ArrayList<TaxonNode> childNodes = new ArrayList<TaxonNode>(node.getChildNodes()); 
+		for(TaxonNode childNode : childNodes){
+			node.deleteChildNode(childNode);
 		}
+		
+//		// two iterations because of ConcurrentModificationErrors
+//        Set<TaxonNode> removeNodes = new HashSet<TaxonNode>(); 
+//        for (TaxonNode grandChildNode : node.getChildNodes()) { 
+//                removeNodes.add(grandChildNode); 
+//        } 
+//        for (TaxonNode childNode : removeNodes) { 
+//                childNode.deleteChildNode(node); 
+//        } 
+            
 		return result;
 	}
+	
+	protected boolean removeChildNode(TaxonNode node){
+		boolean result = false;
+		
+		if(node == null){
+			throw new IllegalArgumentException("TaxonNode may not be null");
+		}
+		if(node.getParent() != this){
+			throw new IllegalArgumentException("TaxonNode must be a child of this node");
+		}
+		
+		result = childNodes.remove(node);
+		this.countChildren--;
+		if (this.countChildren < 0){
+			throw new IllegalStateException("children count must not be negative ");
+		}
+		node.setParent(null);
+		node.setTaxonomicView(null);
+		
+		return result;
+	}
+	
 	
 	/**
 	 * Remove this taxonNode From its taxonomic parent
 	 * 
 	 * @return true on success
 	 */
-	public boolean remove(){
+	public boolean delete(){
 		if(isTopmostNode()){
-			return taxonomicTree.removeChildNode(this);
+			return taxonomicTree.deleteChildNode(this);
 		}else{
-			return getParent().removeChildNode(this);
+			return getParent().deleteChildNode(this);
 		}		
 	}
 	
@@ -338,14 +367,14 @@ public class TaxonNode  extends AnnotatableEntity implements ITreeNode{
 	 * 
 	 * @return
 	 */
-	protected Set<TaxonNode> getAscendants(){
+	protected Set<TaxonNode> getAncestors(){
 		Set<TaxonNode> nodeSet = new HashSet<TaxonNode>();
 		
 		
 		nodeSet.add(this);
 		
 		if(this.getParent() != null){
-			nodeSet.addAll(this.getParent().getAscendants());
+			nodeSet.addAll(this.getParent().getAncestors());
 		}
 		
 		return nodeSet;
@@ -484,8 +513,8 @@ public class TaxonNode  extends AnnotatableEntity implements ITreeNode{
 	 * @return true if there are ascendants
 	 */
 	@Transient
-	public boolean isAscendant(TaxonNode possibleChild){
-		return possibleChild.getAscendants().contains(this);
+	public boolean isAncestor(TaxonNode possibleChild){
+		return possibleChild.getAncestors().contains(this);
 	}
 	
 	/**

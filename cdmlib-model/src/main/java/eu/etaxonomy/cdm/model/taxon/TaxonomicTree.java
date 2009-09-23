@@ -139,8 +139,8 @@ public class TaxonomicTree extends IdentifiableEntity implements IReferencedEnti
 		rootNodes.add(childNode);
 		childNode.setParent(null);
 		childNode.setTaxonomicView(this);
-		childNode.setReferenceForParentChildRelation(citation);
-		childNode.setMicroReferenceForParentChildRelation(microCitation);
+		childNode.setReference(citation);
+		childNode.setMicroReference(microCitation);
 		childNode.setSynonymToBeUsed(synonymToBeUsed);
 		return childNode;
 	}
@@ -175,20 +175,36 @@ public class TaxonomicTree extends IdentifiableEntity implements IReferencedEnti
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.taxon.ITreeNode#removeChildNode(eu.etaxonomy.cdm.model.taxon.TaxonNode)
 	 */
-	public boolean removeChildNode(TaxonNode node) {
-		boolean result = false;
-		if(node.isTopmostNode()){
-
-			for (TaxonNode childNode : node.getChildNodes()){
-				node.removeChildNode(childNode);
-			}
-			result = rootNodes.remove(node);
-
-			node.getTaxon().removeTaxonNode(node);
-			node.setParent(null);
-			node.setTaxonomicView(null);
-			node.setTaxon(null);			
+	public boolean deleteChildNode(TaxonNode node) {
+		boolean result = removeChildNode(node);
+		
+		node.getTaxon().removeTaxonNode(node);
+		node.setTaxon(null);	
+		
+		ArrayList<TaxonNode> childNodes = new ArrayList<TaxonNode>(node.getChildNodes()); 
+		for (TaxonNode childNode : childNodes){
+			node.deleteChildNode(childNode);
 		}
+		return result;
+	}
+	
+	/**
+	 * 
+	 * @param node
+	 * @return
+	 */
+	protected boolean removeChildNode(TaxonNode node){
+		boolean result = false;
+		
+		if(!rootNodes.contains(node)){
+			throw new IllegalArgumentException("TaxonNode is a not a root node of this taxonomic tree");
+		}
+		
+		result = rootNodes.remove(node);
+
+		node.setParent(null);
+		node.setTaxonomicView(null);
+		
 		return result;
 	}
 	
@@ -199,7 +215,7 @@ public class TaxonomicTree extends IdentifiableEntity implements IReferencedEnti
 	 * @deprecated use removeChildNode() instead
 	 */
 	public boolean removeRoot(TaxonNode node){
-		return removeChildNode(node);
+		return deleteChildNode(node);
 	}
 	
 	/**
