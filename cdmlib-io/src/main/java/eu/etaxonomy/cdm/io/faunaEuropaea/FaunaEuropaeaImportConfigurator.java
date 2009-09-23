@@ -32,7 +32,6 @@ public class FaunaEuropaeaImportConfigurator extends ImportConfiguratorBase<Faun
 	private boolean doTaxonomicallyIncluded = true;
 	private boolean doMisappliedNames = true;
 	private boolean doHeterotypicSynonyms = true;
-//	private boolean doHeterotypicSynonymsForBasionyms = true;
 	
 	/* Max number of taxa to be saved with one service call */
 	private int limitSave = 1000;
@@ -43,7 +42,6 @@ public class FaunaEuropaeaImportConfigurator extends ImportConfiguratorBase<Faun
 		ioClassList = new Class[] {
 				FaunaEuropaeaAuthorImport.class,
 				FaunaEuropaeaTaxonNameImport.class,
-				FaunaEuropaeaHeterotypicSynonymImport.class,
 				FaunaEuropaeaRelTaxonIncludeImport.class,
 				FaunaEuropaeaRefImport.class,
 				FaunaEuropaeaDistributionImport.class
