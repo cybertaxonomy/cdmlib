@@ -2,6 +2,7 @@ package eu.etaxonomy.cdm.test.function;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.CdmPersistentDataSource;
 import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
 
@@ -17,24 +18,24 @@ public class Datasource {
 		String server = "87.106.XXX.XXX";
 		
 		CdmPersistentDataSource defaultDataSource = CdmPersistentDataSource.save(
-				"mysql_cichorieae", DatabaseTypeEnum.MySQL, server , "cdm_edit_cichorieae",port, username, pwd);
+				"mysql_cichorieae", CdmDataSource.NewMySqlInstance(server , "cdm_edit_cichorieae",port, username, pwd), null);
 
 //		logger.warn(defaultDataSource.getDatabase());
 //		logger.warn(defaultDataSource.getPort());
 //		logger.warn(defaultDataSource.getServer());
 		
 		defaultDataSource = CdmPersistentDataSource.save(
-				"mysql_cichorieae", DatabaseTypeEnum.SqlServer2005, server, "cdm_edit_cichorieae", port, username, pwd);
+				"mysql_cichorieae", CdmDataSource.NewSqlServer2005Instance(server, "cdm_edit_cichorieae", port, username, pwd), null);
 
 		logger.warn(defaultDataSource.getDatabase());
 		logger.warn(defaultDataSource.getPort());
 		logger.warn(defaultDataSource.getServer());
 		
 		defaultDataSource = CdmPersistentDataSource.save(
-				"mysql_cichorieae", DatabaseTypeEnum.MySQL, "192.168.2.10", "cdm_edit_cichorieae", 3306, username, "XXX");
+				"mysql_cichorieae", CdmDataSource.NewMySqlInstance("192.168.2.10", "cdm_edit_cichorieae", 3306, username, "XXX"), null);
 		
 		defaultDataSource = CdmPersistentDataSource.save(
-				"mysql_cichorieae", DatabaseTypeEnum.MySQL, server, "cdm_edit_cichorieae", port, username, pwd);
+				"mysql_cichorieae", CdmDataSource.NewMySqlInstance(server, "cdm_edit_cichorieae", port, username, pwd), null);
 
 		
 		try {

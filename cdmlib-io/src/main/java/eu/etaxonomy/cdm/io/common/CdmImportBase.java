@@ -38,7 +38,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		if (state.countTrees() < 1 ){
 			tree.setUuid(config.getTreeUuid());
 		}
-		getTaxonService().saveTaxonomicTree(tree);
+		getTaxonTreeService().save(tree);
 		state.putTree(ref, tree);
 		return tree;
 	}
@@ -68,7 +68,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		if (state.countTrees() < 1 ){
 			tree.setUuid(config.getTreeUuid());
 		}
-		getTaxonService().saveTaxonomicTree(tree);
+		getTaxonTreeService().save(tree);
 		state.putTreeUuid(ref, tree);
 		return tree;
 	}

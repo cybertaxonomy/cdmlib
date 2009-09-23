@@ -73,7 +73,6 @@ public interface ICdmDataSource {
 	 */
 	public H2Mode getMode();
 	
-	
 	/**
 	 * Tests, if a database connection can be established.
 	 * @return true if test was successful, false otherwise

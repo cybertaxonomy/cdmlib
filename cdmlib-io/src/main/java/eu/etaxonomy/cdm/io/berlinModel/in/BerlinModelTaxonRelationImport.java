@@ -165,7 +165,7 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 				TaxonomicTree tree = TaxonomicTree.NewInstance(treeName);
 				tree.setReference(ref);
 				
-				getTaxonService().saveTaxonomicTree(tree);
+				getTaxonTreeService().save(tree);
 				state.putTree(ref, tree);
 			}
 		} catch (SQLException e) {

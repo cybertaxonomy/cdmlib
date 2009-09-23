@@ -3,7 +3,11 @@
  */
 package eu.etaxonomy.cdm.database;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -25,7 +29,6 @@ import org.springframework.beans.factory.config.BeanDefinition;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationUtils;
 import eu.etaxonomy.cdm.database.CdmPersistentDataSource.DbProperties;
-import eu.etaxonomy.cdm.database.DbSchemaValidation;
 
 /**
  * @author a.mueller
@@ -234,7 +237,7 @@ public class CdmPersistentDataSourceTest {
 	public void testExists() {
 		assertTrue(CdmPersistentDataSource.exists("default"));
 		assertTrue(CdmPersistentDataSource.exists("localDefaultHsql"));
-		assertFalse(CdmPersistentDataSource.exists("xlsjödfl"));
+		assertFalse(CdmPersistentDataSource.exists("xlsjï¿½dfl"));
 	}
 
 	/**
@@ -252,20 +255,22 @@ public class CdmPersistentDataSourceTest {
 		String password = "password";
 		int port = 1234;
 		
-		CdmPersistentDataSource.save(dataSourceString, databaseType, servername, db, port, username, password);
+		ICdmDataSource dataSource = CdmDataSource.NewInstance(databaseType, servername, db, port, username, password);
+		
+		CdmPersistentDataSource.save(dataSourceString, dataSource, null);
 		assertTrue(CdmPersistentDataSource.exists(dataSourceString));
 		
-		CdmPersistentDataSource dataSource = null;
+		CdmPersistentDataSource loadedDataSource = null;
 		try {
-			dataSource = CdmPersistentDataSource.NewInstance(dataSourceString);
+			loadedDataSource = CdmPersistentDataSource.NewInstance(dataSourceString);
 		} catch (DataSourceNotFoundException e1) {
 			fail();
 		}
 		assertEquals(databaseType, dataSource.getDatabaseType());
-		assertEquals(DatabaseTypeEnum.SqlServer2005.getDriverClassName(), dataSource.getDatasourceProperty(DbProperties.DRIVER_CLASS));
-		assertEquals("jdbc:sqlserver://server:1234;databaseName=database;SelectMethod=cursor", dataSource.getDatasourceProperty(DbProperties.URL));
-		assertEquals(username, dataSource.getDatasourceProperty(DbProperties.USERNAME));
-		assertEquals(password, dataSource.getDatasourceProperty(DbProperties.PASSWORD));
+		assertEquals(DatabaseTypeEnum.SqlServer2005.getDriverClassName(), loadedDataSource.getDatasourceProperty(DbProperties.DRIVER_CLASS));
+		assertEquals("jdbc:sqlserver://server:1234;databaseName=database;SelectMethod=cursor", loadedDataSource.getDatasourceProperty(DbProperties.URL));
+		assertEquals(username, loadedDataSource.getDatasourceProperty(DbProperties.USERNAME));
+		assertEquals(password, loadedDataSource.getDatasourceProperty(DbProperties.PASSWORD));
 		//delete
 		try {
 			CdmPersistentDataSource.delete(CdmPersistentDataSource.NewInstance(dataSourceString));
@@ -281,37 +286,6 @@ public class CdmPersistentDataSourceTest {
 	//@Test
 	public void testSaveStringDatabaseTypeEnumStringStringStringString() {
 		//see testSaveStringDatabaseTypeEnumStringStringIntStringString
-	}
-
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.database.CdmPersistentDataSource#saveLocalHsqlDb(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)}.
-	 * @throws IOException 
-	 */
-	@Test
-	public void testSaveLocalHsqlDb() throws IOException {
-		String dataSourceString = "tmp";
-		assertFalse(CdmPersistentDataSource.exists(dataSourceString));
-		
-		@SuppressWarnings("unused")
-		String servername = "server";
-		String db = "testHsqlDb";
-		String username = "username";
-		String password = "password";
-		
-		CdmPersistentDataSource.saveLocalHsqlDb(dataSourceString, CdmApplicationUtils.getWritableResourceDir().getAbsolutePath(), db, username, password);
-		assertTrue(CdmPersistentDataSource.exists(dataSourceString));
-		
-		CdmPersistentDataSource dataSource = null;
-		try {
-			dataSource = CdmPersistentDataSource.NewInstance(dataSourceString);
-		} catch (DataSourceNotFoundException e1) {
-			fail();
-		}
-		assertEquals(DatabaseTypeEnum.HSqlDb, dataSource.getDatabaseType());
-		assertEquals(DatabaseTypeEnum.HSqlDb.getDriverClassName(), dataSource.getDatasourceProperty(DbProperties.DRIVER_CLASS));
-		assertEquals("jdbc:hsqldb:hsql://localhost:9001/testHsqlDb", dataSource.getDatasourceProperty(DbProperties.URL));
-		assertEquals(username, dataSource.getDatasourceProperty(DbProperties.USERNAME));
-		assertEquals(password, dataSource.getDatasourceProperty(DbProperties.PASSWORD));
 	}
 
 	/**

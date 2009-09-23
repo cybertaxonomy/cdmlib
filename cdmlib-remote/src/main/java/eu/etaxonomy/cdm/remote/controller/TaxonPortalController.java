@@ -43,6 +43,7 @@ import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
+import eu.etaxonomy.cdm.api.service.ITaxonTreeService;
 import eu.etaxonomy.cdm.api.service.config.ITaxonServiceConfigurator;
 import eu.etaxonomy.cdm.api.service.config.impl.TaxonServiceConfiguratorImpl;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
@@ -101,6 +102,8 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 	private IDescriptionService descriptionService;
 	@Autowired
 	private IReferenceService referenceService;
+	@Autowired
+	private ITaxonTreeService taxonTreeService;
 	
 	
 	private static final List<String> TAXON_INIT_STRATEGY = Arrays.asList(new String []{
@@ -302,7 +305,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 		config.setTaxonPropertyPath(SIMPLE_TAXON_INIT_STRATEGY);
 		config.setNamedAreas(areas);
 		if(treeUuid != null){
-			TaxonomicTree taxonomicTree = service.getTaxonomicTreeByUuid(treeUuid);
+			TaxonomicTree taxonomicTree = taxonTreeService.getTaxonomicTreeByUuid(treeUuid);
 			config.setTaxonomicTree(taxonomicTree);
 		}
 			

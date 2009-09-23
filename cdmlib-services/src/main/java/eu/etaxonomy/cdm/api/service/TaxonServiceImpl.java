@@ -12,13 +12,11 @@ package eu.etaxonomy.cdm.api.service;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
@@ -45,7 +43,6 @@ import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
-import eu.etaxonomy.cdm.model.taxon.ITreeNode;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
@@ -54,31 +51,22 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
-import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
 import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.common.IOrderedTermVocabularyDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
-import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao;
-import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonomicTreeDao;
 import eu.etaxonomy.cdm.persistence.fetch.CdmFetch;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 
 @Service
 @Transactional(readOnly = true)
-public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDao> implements ITaxonService {
+public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDao> implements ITaxonService{
 	private static final Logger logger = Logger.getLogger(TaxonServiceImpl.class);
 
 	@Autowired
 	private ITaxonNameDao nameDao;
-	@Autowired
-	private ITaxonomicTreeDao taxonTreeDao;
-	@Autowired
-	private ITaxonNodeDao taxonNodeDao;
-	@Autowired
-	private ITaxonDao taxonDao;
 	
 	/**
 	 * FIXME Candidate for harmonization
@@ -117,116 +105,6 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 	public TaxonBase getTaxonByUuid(UUID uuid) {
 		return super.findByUuid(uuid);
 	}
-	
-	/**
-	 * FIXME Candidate for harmonization
-	 * move to taxonTreeService
-	 * (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#getTaxonNodeByUuid(java.util.UUID)
-	 */
-	public TaxonNode getTaxonNodeByUuid(UUID uuid) {
-		return taxonNodeDao.findByUuid(uuid);
-	}
-	
-	/**
-	 * FIXME Candidate for harmonization
-	 * move to taxonTreeService
-	 */
-	public ITreeNode getTreeNodeByUuid(UUID uuid){
-		ITreeNode treeNode = taxonNodeDao.findByUuid(uuid);
-		if(treeNode == null){
-			treeNode = taxonTreeDao.findByUuid(uuid);
-		}
-		
-		return treeNode;
-	}
-	
-	/**
-	 * FIXME Candidate for harmonization
-	 * move to taxonTreeService
-	 */
-	public TaxonNode loadTaxonNodeByTaxon(Taxon taxon, UUID taxonomicTreeUuid, List<String> propertyPaths){
-		TaxonomicTree tree = taxonTreeDao.load(taxonomicTreeUuid);
-		TaxonNode node = tree.getNode(taxon);
-		defaultBeanInitializer.initialize(node, propertyPaths);
-		return node;
-	}
-	/**
-	 * FIXME Candidate for harmonization
-	 * move to taxonTreeService 
-	 */
-	public List<TaxonNode> loadRankSpecificRootNodes(TaxonomicTree taxonomicTree, Rank rank, List<String> propertyPaths){
-		TaxonomicTree tree = taxonTreeDao.load(taxonomicTree.getUuid());
-		
-		List<TaxonNode> rootNodes = tree.getRankSpecificRootNodes(rank);
-		//sort nodes by TaxonName
-		
-		Collections.sort(rootNodes, taxonNodeComparator);
-		
-		// initialize all nodes
-		defaultBeanInitializer.initializeAll(rootNodes, propertyPaths);
-		
-		return rootNodes;
-	}
-	
-	/**
-     * (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#loadTreeBranchTo(eu.etaxonomy.cdm.model.taxon.TaxonNode, eu.etaxonomy.cdm.model.name.Rank, java.util.List)
-	 * FIXME Candidate for harmonization
-	 * move to taxonTreeService
-	 */
-	public List<TaxonNode> loadTreeBranchTo(TaxonNode taxonNode, Rank baseRank, List<String> propertyPaths){
-		
-		TaxonNode thisNode = taxonNodeDao.load(taxonNode.getUuid(), propertyPaths);
-		List<TaxonNode> pathToRoot = new ArrayList<TaxonNode>();
-		pathToRoot.add(thisNode);
-		
-		TaxonNode parentNode = thisNode.getParent();
-		while(parentNode != null){
-			Rank parentNodeRank = parentNode.getTaxon().getName().getRank();
-			// stop if the next parent is higher than the baseRank
-			if(baseRank != null && baseRank.isLower(parentNodeRank)){
-				break;
-			}
-			pathToRoot.add(parentNode);
-			parentNode = parentNode.getParent();
-		}
-		
-		// initialize and invert order of nodes in list
-		defaultBeanInitializer.initializeAll(pathToRoot, propertyPaths);
-		Collections.reverse(pathToRoot);
-		
-		return pathToRoot;
-	}
-	
-	/**
-	 * FIXME Candidate for harmonization
-	 * move to taxonTreeService
-	 */
-	public List<TaxonNode> loadTreeBranchToTaxon(Taxon taxon, TaxonomicTree taxonomicTree, Rank baseRank, List<String> propertyPaths){
-		TaxonomicTree tree = taxonTreeDao.load(taxonomicTree.getUuid());
-		taxon = (Taxon)dao.load(taxon.getUuid());
-		TaxonNode node = tree.getNode(taxon);
-		if(node == null){
-			logger.warn("The specified tacon is not found in the given tree.");
-			return null;
-		}
-		return loadTreeBranchTo(node, baseRank, propertyPaths);
-	}
-	
-	/**
-	 * FIXME Candidate for harmonization
-	 * move to taxonTreeService
-	 */
-	public List<TaxonNode> loadChildNodesOfTaxon(Taxon taxon, TaxonomicTree taxonomicTree, List<String> propertyPaths){
-		TaxonomicTree tree = taxonTreeDao.load(taxonomicTree.getUuid());
-		taxon = (Taxon)dao.load(taxon.getUuid());
-		List<TaxonNode> childNodes = new ArrayList<TaxonNode>();
-		childNodes.addAll(tree.getNode(taxon).getChildNodes());
-		Collections.sort(childNodes, taxonNodeComparator);
-		defaultBeanInitializer.initializeAll(childNodes, propertyPaths);
-		return childNodes;
-	}
 
 	/**
 	 * FIXME Candidate for harmonization
@@ -237,17 +115,6 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 	@Transactional(readOnly = false)
 	public UUID saveTaxon(TaxonBase taxon) {
 		return super.saveCdmObject(taxon);
-	}
-	
-	/**
-	 * FIXME Candidate for harmonization
-	 * move to taxonTreeService
-	 * (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#saveTaxonNode(eu.etaxonomy.cdm.model.taxon.TaxonNode)
-	 */
-	@Transactional(readOnly = false)
-	public UUID saveTaxonNode(TaxonNode taxonNode) {
-		return taxonNodeDao.save(taxonNode);
 	}
 
 	/**
@@ -273,15 +140,6 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 	@Transactional(readOnly = false)
 	public Map<UUID, ? extends TaxonBase> saveTaxonAll(Collection<? extends TaxonBase> taxonCollection){
 		return saveCdmObjectAll(taxonCollection);
-	}
-	
-	/**
-	 * FIXME Candidate for harmonization
-	 * move to taxonTreeService
-	 */
-	public Map<UUID, TaxonNode> saveTaxonNodeAll(
-			Collection<TaxonNode> taxonNodeCollection) {
-		return taxonNodeDao.saveAll(taxonNodeCollection);
 	}
 
 	/**
@@ -333,58 +191,6 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		return dao.getAllSynonyms(limit, start);
 	}
 
-
-	/**
-	 * FIXME Candidate for harmonization
-	 * move to taxonTreeService
-	 *  (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#getAllTaxonomicTrees(int, int)
-	 * 
-	 */
-	@Deprecated
-	public List<TaxonomicTree> getAllTaxonomicTrees(int limit, int start) {
-		return taxonTreeDao.list(limit, start);
-	}
-	
-	/**
-	 * FIXME Candidate for harmonization
-	 * taxonTreeService.list
-	 */
-	public List<TaxonomicTree> listTaxonomicTrees(Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
-		return taxonTreeDao.list(limit, start, orderHints, propertyPaths);
-	}	
-
-	/**
-	 * FIXME Candidate for harmonization
-	 * taxonTreeService.find
-	 *  (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#getTaxonomicTreeByUuid(java.util.UUID)
-	 */
-	public TaxonomicTree getTaxonomicTreeByUuid(UUID uuid){
-		return taxonTreeDao.findByUuid(uuid);
-	}
-	
-	/**
-	 * FIXME Candidate for harmonization
-	 * taxonTreeService.delete
-	 * (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#removeTaxonomicTree(java.util.UUID)
-	 */
-	@Transactional(readOnly = false)
-	public UUID removeTaxonomicTree(TaxonomicTree taxonomicTree) {
-		return taxonTreeDao.delete(taxonomicTree);
-	}
-	
-	/**
-	 * FIXME Candidate for harmonization
-	 * taxonTreeService.save
-	 *  (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#saveTaxonomicTree(eu.etaxonomy.cdm.model.taxon.TaxonomicTree)
-	 */
-	@Transactional(readOnly = false)
-	public UUID saveTaxonomicTree(TaxonomicTree tree){
-		return taxonTreeDao.saveOrUpdate(tree);
-	}
 
 	/**
 	 * FIXME Candidate for harmonization
@@ -567,15 +373,6 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 	//TODO
 	public void generateTitleCache(boolean forceProtected) {
 		logger.warn("generateTitleCache not yet fully implemented!");
-//		for (TaxonBase tb : taxonDao.getAllTaxa(null,null)){
-//			logger.warn("Old taxon title: " + tb.getTitleCache());
-//			if (forceProtected || !tb.isProtectedTitleCache() ){
-//				tb.setTitleCache(tb.generateTitle(), false);
-//				taxonDao.update(tb);
-//				logger.warn("New title: " + tb.getTitleCache());
-//			}
-//		}
-		
 	}
 
 	@Autowired
@@ -777,63 +574,10 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		logger.warn("Pager<TYPE> list(xxx) method not yet implemented");
 		return null;
 	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#getUuidAndTitleCacheOfAcceptedTaxa(eu.etaxonomy.cdm.model.taxon.TaxonomicTree)
-	 */
-	public List<UuidAndTitleCache> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByTaxonomicTree(TaxonomicTree taxonomicTree) {
-		return taxonDao.getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByTaxonomicTree(taxonomicTree);
-	}
 	
-	
-	public Map<UUID, List<MediaRepresentation>> getAllMediaForChildNodes(Taxon taxon, TaxonomicTree taxTree, List<String> propertyPaths, int size, int height, int widthOrDuration, String[] mimeTypes){
-		TreeMap<UUID, List<MediaRepresentation>> result = new TreeMap<UUID, List<MediaRepresentation>>();
-		List<Media> taxonMedia = new ArrayList<Media>();
-		List<MediaRepresentation> medRep = new ArrayList<MediaRepresentation>();
-		//add all media of the children to the result map
-		if (taxTree != null || taxon != null){
-			
-			taxTree = taxonTreeDao.load(taxTree.getUuid());
-			taxon = (Taxon)dao.load(taxon.getUuid());
-					
-			List<TaxonNode> taxNodes = loadChildNodesOfTaxon(taxon, taxTree, propertyPaths);
-			if (taxNodes.size() != 0){
-			
-			defaultBeanInitializer.initializeAll(taxNodes, propertyPaths);
-			TaxonNode taxNode = loadTaxonNodeByTaxon(taxon, taxTree.getUuid(), propertyPaths);
-			
-			//Set<TaxonNode> childNodes = taxNode.getAllNodes();
-			taxNodes.add(taxNode);
-			if (taxNodes != null){
-				for(TaxonNode childNode : taxNodes){
-					taxon = childNode.getTaxon();
-					Set<TaxonDescription> descriptions = taxon.getDescriptions();
-					for (TaxonDescription taxDesc: descriptions){
-						Set<DescriptionElementBase> elements = taxDesc.getElements();
-						for (DescriptionElementBase descElem: elements){
-							for(Media media : descElem.getMedia()){
-								taxonMedia.add(media);
-								
-								//find the best matching representation
-								medRep.add(media.findBestMatchingRepresentation(size, height, widthOrDuration, mimeTypes));
-								
-							}
-						}
-					}
-					result.put(taxon.getUuid(), medRep);
-										
-				}	
-			}
-			}
-			
-		}
-		
-		
-		return result;
+	public List<UuidAndTitleCache<TaxonBase>> getTaxonUuidAndTitleCache(){
+		return dao.getUuidAndTitleCache();
 	}
-
-
 
 	public List<MediaRepresentation> getAllMedia(Taxon taxon, int size, int height, int widthOrDuration, String[] mimeTypes){
 		List<MediaRepresentation> medRep = new ArrayList<MediaRepresentation>();
@@ -854,8 +598,14 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 	}
 
 
-	
-	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#saveTaxonNodeAll(java.util.Collection)
+	 */
+	public Map<UUID, TaxonNode> saveTaxonNodeAll(
+			Collection<TaxonNode> taxonNodeCollection) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 
 

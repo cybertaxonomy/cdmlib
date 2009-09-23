@@ -20,11 +20,10 @@ import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
-//import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
+import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
-import eu.etaxonomy.cdm.model.taxon.ITreeNode;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
@@ -46,69 +45,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	 */
 	public abstract TaxonBase getTaxonByUuid(UUID uuid);
 	
-	/**
-	 * 
-	 * @param uuid
-	 * @return
-	 */
-	public abstract TaxonNode getTaxonNodeByUuid(UUID uuid);
-	
-	/**
-	 * 
-	 * @param uuid
-	 * @return
-	 */
-	public abstract ITreeNode getTreeNodeByUuid(UUID uuid);
-	
-	/**
-	 * @param taxon
-	 * @param taxonomicTree
-	 * @param propertyPath
-	 * @return
-	 */
-	public TaxonNode loadTaxonNodeByTaxon(Taxon taxon, UUID taxonomicTreeUuid, List<String> propertyPaths);
-	
-	/**
-	 * @param taxonNode
-	 * @param baseRank
-	 *            specifies the root level of the taxonomic tree, may be null.
-	 *            Nodes of this rank or in case this rank does not exist in the
-	 *            current branch the next lower rank is taken as root node for
-	 *            this rank henceforth called the <b>base node</b>.
-	 * @param propertyPaths
-	 *            the initialization strategy for the returned TaxonNode
-	 *            instances.
-	 * @return the path of nodes from the <b>base node</b> to the node of the
-	 *         specified taxon.
-	 */
-	public List<TaxonNode> loadTreeBranchTo(TaxonNode taxonNode, Rank baseRank, List<String> propertyPaths);
 
-	/**
-	 * @param taxon
-	 * @param taxonomicTree
-	 *            the taxonomic tree to be used
-	 * @param baseRank
-	 *            specifies the root level of the taxonomic tree, may be null.
-	 *            Nodes of this rank or in case this rank does not exist in the
-	 *            current branch the next lower rank is taken as as root node for
-	 *            this rank henceforth called the <b>base node</b>.
-	 * @param propertyPaths
-	 *            the initialization strategy for the returned TaxonNode
-	 *            instances.
-	 * @return the path of nodes from the <b>base node</b> to the node of the specified
-	 *         taxon.
-	 */
-	public List<TaxonNode> loadTreeBranchToTaxon(Taxon taxon, TaxonomicTree taxonomicTree, Rank baseRank,
-			List<String> propertyPaths);
-	
-	/**
-	 * @param taxon
-	 * @param taxonomicTree
-	 * @param propertyPaths
-	 * @return
-	 */
-	public List<TaxonNode> loadChildNodesOfTaxon(Taxon taxon, TaxonomicTree taxonomicTree, List<String> propertyPaths);
-	
 	
 	/**
 	 * FIXME candidate for harmonization? 
@@ -116,13 +53,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	 */
 	public abstract UUID saveTaxon(TaxonBase taxon);
 
-	/**
-	 * 
-	 * @param taxonNode
-	 * @return
-	 */
-	public abstract UUID saveTaxonNode(TaxonNode taxonNode);
-	
+
 	/**
 	 * FIXME candidate for harmonization?
 	 *  save a taxon and return its UUID
@@ -135,13 +66,6 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	 */
 	public abstract Map<UUID, ? extends TaxonBase> saveTaxonAll(Collection<? extends TaxonBase> taxonCollection);
 
-	/**
-	 * 
-	 * @param taxonNodeCollection
-	 * @return
-	 */
-	public abstract Map<UUID, TaxonNode> saveTaxonNodeAll(Collection<TaxonNode> taxonNodeCollection);
-	
 	/**
 	 * FIXME candidate for harmonization?
 	 * delete a taxon and return its UUID
@@ -174,71 +98,13 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	 * @return
 	 */
 	public abstract List<TaxonBase> getAllTaxonBases(int limit, int start);
-	
-	
-	/**
-	 * Computes all taxonomic trees.
-	 * FIXME candidate for harmonization
-	 * @param limit
-	 * @param start
-	 * @return
-	 * @deprecated use {#listTaxonomicTrees} instead
-	 */
-	@Deprecated
-	public List<TaxonomicTree> getAllTaxonomicTrees(int limit, int start);
 
-	/**
-	 * @param limit
-	 * @param start
-	 * @param orderHints
-	 * @param propertyPaths
-	 * @return
-	 */
-	public List<TaxonomicTree> listTaxonomicTrees(Integer limit, Integer start, List<OrderHint> orderHints,
-			List<String> propertyPaths);
-	
-	
-	/**
-	 * Loads all TaxonNodes of the specified tree for a given Rank.
-	 * If a branch does not contain a TaxonNode with a TaxonName at the given
-	 * Rank the node associated with the next lower Rank is taken as root node.
-	 * If the <code>rank</code> is null the absolute root nodes will be returned.
-	 *
-	 * @param taxonomicTree
-	 * @param rank may be null
-	 * @param propertyPaths
-	 * @return
-	 */
-	public List<TaxonNode> loadRankSpecificRootNodes(TaxonomicTree taxonomicTree, Rank rank, List<String> propertyPaths);
-	
-	
-	/**
-	 * Returns a taxonomic tree by it's uuid.
-	 * @param uuid
-	 * @return
-	 */
-	public TaxonomicTree getTaxonomicTreeByUuid(UUID uuid);
-	
-	
-	/**
-	 * Returns a taxonomic tree by it's uuid.
-	 * @param uuid
-	 * @return
-	 */
-	public UUID saveTaxonomicTree(TaxonomicTree tree);
-	
-	/**
-	 * Remove the taxonomic tree from the persitence context
-	 * 
-	 * @param taxonomicTree
-	 * @return
-	 */
-	public UUID removeTaxonomicTree(TaxonomicTree taxonomicTree);
-	
+
 	/**
 	 * Computes all Taxon instances that do not have a taxonomic parent and has at least one child.
 	 * @param sec The concept reference that the taxon belongs to
 	 * @return The List<Taxon> of root taxa.
+	 * @deprecated obsolete when using taxonomicTree
 	 */
 	public List<Taxon> getRootTaxa(ReferenceBase sec);
 	
@@ -249,6 +115,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	 * 
 	 * @param onlyWithChildren if true only taxa are returned that have taxonomic children. <Br>Default: true.
 	 * @return The List<Taxon> of root taxa.
+	 * @deprecated obsolete when using taxonomicTree
 	 */
 	public abstract List<Taxon> getRootTaxa(ReferenceBase sec, CdmFetch cdmFetch, boolean onlyWithChildren);
 
@@ -259,6 +126,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	 * @param withMisapplications if false taxa that have at least one misapplied name relationship in which they are
 	 * the misapplied name are not returned.<Br>Default: true.
 	 * @return The List<Taxon> of root taxa.
+	 * @deprecated obsolete when using taxonomicTree
 	 */
 	public abstract List<Taxon> getRootTaxa(ReferenceBase sec, boolean onlyWithChildren, boolean withMisapplications);
 
@@ -275,6 +143,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	 *            {@link BeanInitializer#initialize(Object, List)}. <Br>
 	 *            Default: true.
 	 * @return The List<Taxon> of root taxa.
+	 * @deprecated obsolete when using taxonomicTree
 	 */
 	public abstract List<Taxon> getRootTaxa(Rank rank, ReferenceBase sec, boolean onlyWithChildren, boolean withMisapplications, List<String> propertyPaths);
 	
@@ -440,25 +309,13 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	public Pager<IdentifiableEntity> findTaxaAndNames(ITaxonServiceConfigurator configurator);
 	
 	/**
-	 * Returns a map that holds uuid, titleCache pairs of all accepted taxa for a given taxonomic tree
 	 * 
-	 * @param taxonomicTree
-	 * 			the taxonomic tree to look for taxa in
-	 * @return 
-	 * 			a <code>Map</code> containing uuid and titleCache of accepted taxa
-	 */
-	//public List<UuidAndTitleCache> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByTaxonomicTree(TaxonomicTree taxonomicTree);
-	/**
-	 * Returns a map that holds Taxon, titleCache pairs of all accepted taxa for a given taxonomic tree
-	 * 
-	 * @param taxonomicTree
-	 * 			the taxonomic tree in which the taxon is looked for
 	 * @param taxon
-	 * 			the taxon to look for 
-	 * @return 
-	 * 			a <code>Map</code> containing taxon and media uri
+	 * @param size
+	 * @param height
+	 * @param widthOrDuration
+	 * @param mimeTypes
+	 * @return
 	 */
-	public Map<UUID, List<MediaRepresentation>> getAllMediaForChildNodes(Taxon taxon, TaxonomicTree taxTree, List<String> propertyPaths,  int size, int height, int widthOrDuration, String[] mimeTypes);
-
 	public List<MediaRepresentation> getAllMedia(Taxon taxon, int size, int height, int widthOrDuration, String[] mimeTypes);
 }

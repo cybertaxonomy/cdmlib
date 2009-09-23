@@ -131,7 +131,7 @@ implements ICdmImport<FaunaEuropaeaImportConfigurator,FaunaEuropaeaImportState> 
 			commitTransaction(txStatus);
 			
 		} else {
-			tree = getTaxonService().getTaxonomicTreeByUuid(treeUuid);
+			tree = getTaxonTreeService().getTaxonomicTreeByUuid(treeUuid);
 		}
 		return tree;
 	}

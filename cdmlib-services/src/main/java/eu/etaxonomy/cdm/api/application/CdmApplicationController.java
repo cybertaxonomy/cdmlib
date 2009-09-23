@@ -42,6 +42,7 @@ import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.api.service.IService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
+import eu.etaxonomy.cdm.api.service.ITaxonTreeService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.IUserService;
 import eu.etaxonomy.cdm.database.CdmPersistentDataSource;
@@ -303,6 +304,10 @@ public class CdmApplicationController {
 
 	public final ITaxonService getTaxonService(){
 		return configuration.getTaxonService();
+	}
+	
+	public final ITaxonTreeService getTaxonTreeService(){
+		return configuration.getTaxonTreeService();
 	}
 
 	public final IReferenceService getReferenceService(){
