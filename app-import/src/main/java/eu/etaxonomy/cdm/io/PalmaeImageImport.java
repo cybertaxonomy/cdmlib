@@ -31,7 +31,6 @@ import org.springframework.stereotype.Component;
 import eu.etaxonomy.cdm.app.images.AbstractImageImporter;
 import eu.etaxonomy.cdm.app.images.ImageImportConfigurator;
 import eu.etaxonomy.cdm.common.MediaMetaData.ImageMetaData;
-import eu.etaxonomy.cdm.model.agent.Address;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.description.Feature;
@@ -65,7 +64,9 @@ public class PalmaeImageImport extends AbstractImageImporter {
 		COPYRIGHT,
 		COPYRIGHTNOTICE
 	}
-		
+	
+	private static int modCount = 300;
+
 	
 	/**
 	 * Rudimetary implementation using apache sanselan. This implementation depends
@@ -171,9 +172,11 @@ public class PalmaeImageImport extends AbstractImageImporter {
 		File sourceFolder = (File)config.getSource();
 		String taxonName;
 		if(sourceFolder.isDirectory()){
+			int i = 0;
 			for( File file : sourceFolder.listFiles()){
 				if(file.isFile()){
-				
+					if ((i++ % modCount) == 0 && i != 1 ){ logger.info("Images handled: " + (i-1));}
+					
 					taxonName= retrieveTaxonNameFromImageMetadata(file);
 					logger.info("Looking up taxa with taxon name: " + taxonName);
 					
