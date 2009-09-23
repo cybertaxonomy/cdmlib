@@ -55,7 +55,9 @@ public class TaxonRelationshipType extends RelationshipTermBase<TaxonRelationshi
 	
 	static Logger logger = Logger.getLogger(TaxonRelationshipType.class);
 
+	@Deprecated //will be removed in future versions. Use Taxonomic Tree/TaxonNode instead
 	private static final UUID uuidTaxonomicallyIncludedIn = UUID.fromString("d13fecdf-eb44-4dd7-9244-26679c05df1c");
+
 	private static final UUID uuidMisappliedNameFor = UUID.fromString("1ed87175-59dd-437e-959e-0d71583d8417");
 	private static final UUID uuidInvalidDesignationFor = UUID.fromString("605b1d01-f2b1-4544-b2e0-6f08def3d6ed");
 	
@@ -86,7 +88,9 @@ public class TaxonRelationshipType extends RelationshipTermBase<TaxonRelationshi
 	private static final UUID uuidCongruentToOrOverlapsOrExcludes = UUID.fromString("6fabef72-5264-44f1-bfc0-8e2e141375f2");
 	private static final UUID uuidIncludesOrOverlapsOrExcludes = UUID.fromString("b7153c89-cc6c-4f8c-bf74-216f10feac46");
 	
+	@Deprecated //will be removed in future versions. Use Taxonomic Tree/TaxonNode instead
 	private static TaxonRelationshipType TAXONOMICALLY_INCLUDED_IN;
+
 	private static TaxonRelationshipType MISAPPLIED_NAME_FOR;
 	private static TaxonRelationshipType INVALID_DESIGNATION_FOR;
 	private static TaxonRelationshipType CONTRADICTION;
