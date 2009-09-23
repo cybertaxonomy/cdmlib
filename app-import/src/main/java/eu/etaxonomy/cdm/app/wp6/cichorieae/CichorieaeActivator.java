@@ -18,10 +18,15 @@ import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.app.berlinModelImport.BerlinModelSources;
 import eu.etaxonomy.cdm.app.berlinModelImport.TreeCreator;
 import eu.etaxonomy.cdm.app.common.CdmDestinations;
+import eu.etaxonomy.cdm.app.images.ImageImportConfigurator;
+import eu.etaxonomy.cdm.app.wp6.palmae.PalmaeImageActivator;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
+import eu.etaxonomy.cdm.io.CichorieaeImageImport;
+import eu.etaxonomy.cdm.io.PalmaeImageImport;
 import eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportConfigurator;
 import eu.etaxonomy.cdm.io.common.CdmDefaultImport;
+import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator.CHECK;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator.DO_REFERENCES;
@@ -51,7 +56,9 @@ public class CichorieaeActivator {
 	static final Source berlinModelSource = BerlinModelSources.EDIT_CICHORIEAE();
 	static final ICdmDataSource cdmDestination = CdmDestinations.localH2Cichorieae();
 
-	static final UUID treeUuid = UUID.fromString("e7c02b5f-70b1-4569-8f6c-9fa26e3c5395");
+	static final UUID secUuid = UUID.fromString("6924c75d-e0d0-4a6d-afb7-3dd8c71195ca");
+	static final UUID treeUuid = UUID.fromString("534e190f-3339-49ba-95d9-fa27d5493e3e");
+//	static final UUID treeUuid = UUID.fromString("00db28a7-50e1-4abc-86ec-b2a8ce870de9");
 	static final int sourceSecId = 7800000;
 	
 	static final UUID featureTreeUuid = UUID.fromString("ae9615b8-bc60-4ed0-ad96-897f9226d568");
@@ -64,6 +71,10 @@ public class CichorieaeActivator {
 	static final File mediaPath = new File("\\\\media\\editwp6\\protolog");
 	// set to zero for unlimited nameFacts
 	static final int maximumNumberOfNameFacts = 0;
+	
+	//should the other imports run as well?
+	static final boolean includeImages = true;
+	static final boolean includeTaraxacum = true; // TODO
 	
 	
 	//check - import
@@ -201,6 +212,23 @@ public class CichorieaeActivator {
 		}
 		
 		System.out.println("End import from BerlinModel ("+ source.getDatabase() + ")...");
+		
+		if (includeImages) {
+			System.out.println("Start importing images ...");
+			CdmDefaultImport<IImportConfigurator> imageImporter = new CdmDefaultImport<IImportConfigurator>();
+			ImageImportConfigurator imageConfigurator = ImageImportConfigurator.NewInstance(
+					CichorieaeImageActivator.sourceFolder, cdmDestination, CichorieaeImageImport.class);
+			imageConfigurator.setSecUuid(secUuid);
+			imageConfigurator.setTreeUuid(treeUuid);
+			imageImporter.invoke(imageConfigurator);
+			System.out.println("End importing images ...");
+		}
+
+		if (includeTaraxacum) {
+			 // TODO	
+		}
+		
+		
 	}
 
 }
