@@ -252,7 +252,7 @@ public class PalmaeImageImport extends AbstractImageImporter {
 									artist = agents.get(0);
 								}
 							}catch(eu.etaxonomy.cdm.strategy.match.MatchException e){
-								//TODO
+								logger.warn("MatchException occurred");
 							}
 							
 							media.setArtist(artist);
