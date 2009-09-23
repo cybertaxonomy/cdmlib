@@ -55,17 +55,6 @@ public class FaunaEuropaeaRelTaxonIncludeImport extends FaunaEuropaeaImportBase 
 	" WHERE (Taxon.TAX_VALID = 0) " +
 	" AND (Taxon.TAX_AUT_ID <> " + A_AUCT + " OR Taxon.TAX_AUT_ID IS NULL)";
 
-//	private static String PARENT_SYNONYM_FROM_CLAUSE = " FROM Taxon INNER JOIN Taxon AS Parent " +
-//	" ON Taxon.TAX_TAX_IDPARENT = Parent.TAX_ID " +
-//	" WHERE (Taxon.TAX_TAX_IDGENUS is null) AND (Taxon.TAX_VALID = 0) " +
-//	" AND (Taxon.TAX_AUT_ID <> " + A_AUCT + " OR Taxon.TAX_AUT_ID IS NULL)";
-
-//	private static String ORIGINAL_GENUS_SYNONYM_FROM_CLAUSE = " FROM Taxon INNER JOIN Taxon AS Parent " +
-//	" ON Taxon.TAX_TAX_IDGENUS = Parent.TAX_ID " +
-//	" WHERE (Taxon.TAX_TAX_IDGENUS is not null) AND (Taxon.TAX_VALID = 0) " +
-//	" AND (Taxon.TAX_AUT_ID <> " + A_AUCT + " OR Taxon.TAX_AUT_ID IS NULL)";
-
-	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doCheck(eu.etaxonomy.cdm.io.common.IImportConfigurator)
 	 */
@@ -135,8 +124,6 @@ public class FaunaEuropaeaRelTaxonIncludeImport extends FaunaEuropaeaImportBase 
 				logger.info("Start making heterotypic synonym relationships..."); 
 			}
 			success = processHeterotypicSynonyms(state, ALL_SYNONYM_FROM_CLAUSE);
-//			success = processHeterotypicSynonyms(state, PARENT_SYNONYM_FROM_CLAUSE);
-//			success = processHeterotypicSynonyms(state, ORIGINAL_GENUS_SYNONYM_FROM_CLAUSE);
 		}
 		ProfilerController.memorySnapshot();
 
@@ -367,98 +354,6 @@ public class FaunaEuropaeaRelTaxonIncludeImport extends FaunaEuropaeaImportBase 
 			}
 	        
 	        success = storeSynonymRelationships(rs, count, state);
-
-		} catch (SQLException e) {
-			logger.error("SQLException:" +  e);
-			success = false;
-		}
-		return success;		
-	}
-
-	
-	/** Retrieve synonyms from FauEuDB DB */
-	private boolean processHeterotypicSynonyms_(FaunaEuropaeaImportState state) {
-
-		int limit = state.getConfig().getLimitSave();
-
-		TransactionStatus txStatus = null;
-
-		Map<UUID, UUID> synonymAcceptedMap = null;
-		FaunaEuropaeaImportConfigurator fauEuConfig = state.getConfig();
-		Source source = fauEuConfig.getSource();
-		int i = 0;
-		boolean success = true;
-
-		String selectCount = 
-			" SELECT count(*) ";
-
-		String selectColumns = " SELECT Taxon.UUID AS SynonymUuid, Parent.UUID AS AcceptedUuid ";
-		
-		String fromClause = " FROM Taxon INNER JOIN Taxon AS Parent " +
-		" ON Taxon.TAX_TAX_IDPARENT = Parent.TAX_ID " +
-		" WHERE (Taxon.TAX_VALID = 0) AND (Taxon.TAX_AUT_ID <> " + A_AUCT + " OR Taxon.TAX_AUT_ID IS NULL)";
-		
-		String orderClause = " ORDER BY dbo.Taxon.TAX_RNK_ID ASC ";
-
-		String countQuery = 
-			selectCount + fromClause;
-
-		String selectQuery = 
-			selectColumns + fromClause + orderClause;
-			
-		try {
-
-			ResultSet rs = source.getResultSet(countQuery);
-			rs.next();
-			int count = rs.getInt(1);
-			
-			rs = source.getResultSet(selectQuery);
-
-	        if (logger.isInfoEnabled()) {
-				logger.info("Number of rows: " + count);
-				logger.info("Count Query: " + countQuery);
-				logger.info("Select Query: " + selectQuery);
-			}
-
-			while (rs.next()) {
-				
-				if ((i++ % limit) == 0) {
-					
-					txStatus = startTransaction();
-					synonymAcceptedMap = new HashMap<UUID, UUID>(limit);
-					
-					if(logger.isInfoEnabled()) {
-						logger.info("Synonyms retrieved: " + (i-1)); 
-					}
-				}
-
-				String synonymUuidStr = rs.getString("SynonymUuid");
-				String acceptedUuidStr = rs.getString("AcceptedUuid");
-				UUID synonymUuid = UUID.fromString(synonymUuidStr);
-				UUID acceptedUuid = UUID.fromString(acceptedUuidStr);
-				
-				if (!synonymAcceptedMap.containsKey(synonymUuid)) {
-
-						synonymAcceptedMap.put(synonymUuid, acceptedUuid);
-
-				} else {
-					if(logger.isDebugEnabled()) {
-						logger.debug("Duplicated child UUID (" + synonymUuid + ")");
-					}
-				}
-
-				if (((i % limit) == 0 && i != 1 ) || i == count) { 
-
-					success = createHeterotypicSynonyms(state, synonymAcceptedMap);
-
-					synonymAcceptedMap = null;
-					commitTransaction(txStatus);
-
-					if(logger.isInfoEnabled()) {
-						logger.info("i = " + i + " - Transaction committed"); 
-					}
-				}
-			}
 
 		} catch (SQLException e) {
 			logger.error("SQLException:" +  e);

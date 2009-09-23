@@ -21,7 +21,9 @@ import static eu.etaxonomy.cdm.io.faunaEuropaea.FaunaEuropaeaTransformer.T_STATU
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
@@ -120,6 +122,8 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 		
 		Map<Integer, TaxonBase<?>> taxonMap = null;
 		Map<Integer, FaunaEuropaeaTaxon> fauEuTaxonMap = null;
+		/* Store for heterotypic synonyms to be save separately */
+		Set<Synonym> synonymSet = null;
 
 		FaunaEuropaeaImportConfigurator fauEuConfig = state.getConfig();
 		ReferenceBase<?> sourceRef = fauEuConfig.getSourceReference();
@@ -176,6 +180,7 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 					txStatus = startTransaction();
 					taxonMap = new HashMap<Integer, TaxonBase<?>>(limit);
 					fauEuTaxonMap = new HashMap<Integer, FaunaEuropaeaTaxon>(limit);
+					synonymSet = new HashSet<Synonym>();
 					
 					if(logger.isInfoEnabled()) {
 						logger.info("i = " + i + " - Transaction started"); 
@@ -329,10 +334,13 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 
 				if (((i % limit) == 0 && i != 1 ) || i == count) { 
 
-					success = processTaxaSecondPass(state, taxonMap, fauEuTaxonMap);
-					saveTaxa(state, taxonMap);
+					success = processTaxaSecondPass(state, taxonMap, fauEuTaxonMap, synonymSet);
+					if(logger.isDebugEnabled()) { logger.debug("Saving taxa ..."); }
+					getTaxonService().saveTaxonAll(taxonMap.values());
+					getTaxonService().saveTaxonAll(synonymSet);
 					
 					taxonMap = null;
+					synonymSet = null;
 					fauEuTaxonMap = null;
 					commitTransaction(txStatus);
 					
@@ -355,7 +363,7 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 	 * Processes taxa from complete taxon store
 	 */
 	private boolean processTaxaSecondPass(FaunaEuropaeaImportState state, Map<Integer, TaxonBase<?>> taxonMap,
-			Map<Integer, FaunaEuropaeaTaxon> fauEuTaxonMap) {
+			Map<Integer, FaunaEuropaeaTaxon> fauEuTaxonMap, Set<Synonym> synonymSet) {
 
 		if(logger.isDebugEnabled()) { logger.debug("Processing taxa second pass..."); }
 
@@ -387,7 +395,7 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 				}
 				
 				if (actualGenusId != originalGenusId) { 
-					success = createBasionym(fauEuTaxon, taxonBase, taxonName, fauEuConfig);
+					success = createBasionym(fauEuTaxon, taxonBase, taxonName, fauEuConfig, synonymSet);
 				}
 			}
 		}
@@ -396,7 +404,7 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 
 	
 	private boolean createBasionym(FaunaEuropaeaTaxon fauEuTaxon, TaxonBase<?> taxonBase, 
-			TaxonNameBase<?,?>taxonName, FaunaEuropaeaImportConfigurator fauEuConfig) {
+			TaxonNameBase<?,?>taxonName, FaunaEuropaeaImportConfigurator fauEuConfig, Set<Synonym> synonymSet) {
 
 		boolean success = true;
 
@@ -413,19 +421,29 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 				logger.debug("Basionym created (" + fauEuTaxon.getId() + ")");
 			}
 
+			// create synonym
+			Synonym synonym = Synonym.NewInstance(basionym, fauEuConfig.getSourceReference());
+			
 			if (fauEuTaxon.isValid()) { // Taxon
-				// create homotypic synonym
+
+				// homotypic synonym
 				Taxon taxon = taxonBase.deproxy(taxonBase, Taxon.class);
-				
-				Synonym homotypicSynonym = Synonym.NewInstance(basionym, fauEuConfig.getSourceReference());
-				taxon.addHomotypicSynonym(homotypicSynonym, fauEuConfig.getSourceReference(), null);
+				taxon.addHomotypicSynonym(synonym, fauEuConfig.getSourceReference(), null);
 				if (logger.isDebugEnabled()) {
 					logger.debug("Homotypic synonym created (" + fauEuTaxon.getId() + ")");
 				}
 
-				buildTaxonName(fauEuTaxon, homotypicSynonym, basionym, true, fauEuConfig);
-			}
+			} else { // Synonym
 				
+				// heterotypic synonym
+				// synonym relationship to the accepted taxon is created later
+				synonymSet.add(synonym);
+				if (logger.isDebugEnabled()) {
+					logger.debug("Heterotypic synonym stored (" + fauEuTaxon.getId() + ")");
+				}
+			}
+			
+			buildTaxonName(fauEuTaxon, synonym, basionym, true, fauEuConfig);
 			
 		} catch (Exception e) {
 			logger.warn("Exception occurred when creating basionym for " + fauEuTaxon.getId());
@@ -815,15 +833,5 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 		}
 		return success;
 	}
-
-	
-	protected void saveTaxa(FaunaEuropaeaImportState state, Map<Integer, TaxonBase<?>> taxonMap) {
-
-		if(logger.isDebugEnabled()) { logger.debug("Saving taxa ..."); }
-
-		getTaxonService().saveTaxonAll(taxonMap.values());
-
-	}
-	
 
 }

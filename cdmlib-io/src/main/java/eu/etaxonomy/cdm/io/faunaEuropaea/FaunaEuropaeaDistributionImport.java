@@ -227,16 +227,15 @@ public class FaunaEuropaeaDistributionImport extends FaunaEuropaeaImportBase {
 								}
 							}
 						}
-						if(logger.isInfoEnabled()) { 
-							logger.info("i = " + i + " - Transaction committed"); 
-						}
-
 						getTaxonService().saveTaxonAll(taxonList);
 
 						taxonUuids = null;
 						taxonList = null;
 						fauEuTaxonMap = null;
 						commitTransaction(txStatus);
+						if(logger.isInfoEnabled()) { 
+							logger.info("i = " + i + " - Transaction committed"); 
+						}
 
 					} catch (Exception e) {
 						logger.warn("An exception occurred when creating distribution with id " + disId);
