@@ -29,6 +29,7 @@ import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 import org.springframework.beans.factory.annotation.Configurable;
 
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.strategy.cache.reference.IReferenceBaseCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.reference.ReferenceBaseDefaultCacheStrategy;
 
@@ -106,7 +107,10 @@ public class InProceedings extends SectionBase<IReferenceBaseCacheStrategy<InPro
 	 * @see 	Proceedings
 	 */
 	public Proceedings getInProceedings(){
-		return (Proceedings)this.inReference;
+		if (! this.inReference.isInstanceOf(Proceedings.class)){
+			throw new IllegalStateException("The in-reference of an inproceeding may only be of type Proceedings");
+		}
+		return CdmBase.deproxy(this.inReference,Proceedings.class);
 	}
 
 	/**

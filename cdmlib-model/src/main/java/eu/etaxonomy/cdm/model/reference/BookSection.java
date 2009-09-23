@@ -31,6 +31,7 @@ import org.hibernate.search.annotations.IndexedEmbedded;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.strategy.cache.reference.BookSectionDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.reference.INomenclaturalReferenceCacheStrategy;
@@ -126,8 +127,10 @@ public class BookSection extends SectionBase<INomenclaturalReferenceCacheStrateg
 	 * @see 	Book
 	 */
 	public Book getInBook(){
-		//TODO casting
-		return (Book)this.inReference;
+		if (! this.inReference.isInstanceOf(Book.class)){
+			throw new IllegalStateException("The in-reference of a BookSection may only be of type Book");
+		}
+		return CdmBase.deproxy(this.inReference,Book.class);
 	}
 
 	/**

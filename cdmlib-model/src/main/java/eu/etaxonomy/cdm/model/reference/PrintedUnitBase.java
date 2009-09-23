@@ -30,6 +30,7 @@ import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.strategy.cache.reference.IReferenceBaseCacheStrategy;
 
 /**
@@ -90,7 +91,10 @@ public abstract class PrintedUnitBase<S extends IReferenceBaseCacheStrategy> ext
 	 * @see 	PrintSeries
 	 */
 	public PrintSeries getInSeries(){
-		return (PrintSeries)this.inReference;
+		if (! this.inReference.isInstanceOf(PrintSeries.class)){
+			throw new IllegalStateException("The in-reference of a printed unit base may only be a PrintSeries");
+		}
+		return CdmBase.deproxy(this.inReference,PrintSeries.class);
 	}
 
 	/**
