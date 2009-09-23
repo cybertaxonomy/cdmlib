@@ -152,6 +152,9 @@ public class Article extends ReferenceBase<INomenclaturalReferenceCacheStrategy<
 	 * @see 	Journal
 	 */
 	public Journal getInJournal(){
+		if (inReference == null){
+			return null;
+		}
 		if (! this.inReference.isInstanceOf(Journal.class)){
 			throw new IllegalStateException("The in-reference of an article may only be of type Journal");
 		}
