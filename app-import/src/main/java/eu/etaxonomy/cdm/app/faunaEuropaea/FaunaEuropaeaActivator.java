@@ -43,51 +43,51 @@ public class FaunaEuropaeaActivator {
 
 //	static final CHECK check = CHECK.CHECK_AND_IMPORT;
 	static final CHECK check = CHECK.IMPORT_WITHOUT_CHECK;
-//	static DbSchemaValidation dbSchemaValidation = DbSchemaValidation.CREATE;
+	static DbSchemaValidation dbSchemaValidation = DbSchemaValidation.CREATE;
 //	static DbSchemaValidation dbSchemaValidation = DbSchemaValidation.UPDATE;
-	static DbSchemaValidation dbSchemaValidation = DbSchemaValidation.VALIDATE;
+//	static DbSchemaValidation dbSchemaValidation = DbSchemaValidation.VALIDATE;
 	static final NomenclaturalCode nomenclaturalCode  = NomenclaturalCode.ICZN;
 
 // ****************** ALL *****************************************
 	
-//	// Fauna Europaea to CDM import
-//	static final boolean doAuthors = true;
-//	static final boolean doTaxa = true;
-//	static final boolean doBasionyms = true;
-//	static final boolean doTaxonomicallyIncluded = true;
-//	static final boolean doMisappliedNames = true;
-//	static final boolean doHeterotypicSynonyms = true;
-//	static final DO_REFERENCES doReferences =  DO_REFERENCES.ALL;
-//	static final boolean doDistributions = true;
-//	static final boolean makeFeatureTree = true;
-//    // CDM to CDM import
-//	static final boolean doHeterotypicSynonymsForBasionyms = true;
+	// Fauna Europaea to CDM import
+	static final boolean doAuthors = true;
+	static final boolean doTaxa = true;
+	static final boolean doBasionyms = true;
+	static final boolean doTaxonomicallyIncluded = true;
+	static final boolean doMisappliedNames = true;
+	static final boolean doHeterotypicSynonyms = true;
+	static final DO_REFERENCES doReferences =  DO_REFERENCES.ALL;
+	static final boolean doDistributions = true;
+	static final boolean makeFeatureTree = true;
+    // CDM to CDM import
+	static final boolean doHeterotypicSynonymsForBasionyms = true;
 	
 // ************************ NONE **************************************** //
 		
 	// Fauna Europaea to CDM import
-	static final boolean doAuthors = true;
-	static final boolean doTaxa = false;
-	static final boolean doBasionyms = false;
-	static final boolean doTaxonomicallyIncluded = false;
-	static final boolean doMisappliedNames = false;
-	static final boolean doHeterotypicSynonyms = false;
-	static final DO_REFERENCES doReferences =  DO_REFERENCES.NONE;
-	static final boolean doDistributions = false;
-	static final boolean makeFeatureTree = false;
-    // CDM to CDM import
-	static final boolean doHeterotypicSynonymsForBasionyms = true;
+//	static final boolean doAuthors = false;
+//	static final boolean doTaxa = false;
+//	static final boolean doBasionyms = false;
+//	static final boolean doTaxonomicallyIncluded = false;
+//	static final boolean doMisappliedNames = false;
+//	static final boolean doHeterotypicSynonyms = false;
+//	static final DO_REFERENCES doReferences =  DO_REFERENCES.NONE;
+//	static final boolean doDistributions = false;
+//	static final boolean makeFeatureTree = false;
+//    // CDM to CDM import
+//	static final boolean doHeterotypicSynonymsForBasionyms = false;
 	
 	
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		System.out.println("Start import from Fauna Europaea ("+ faunaEuropaeaSource.getDatabase() + ") ...");
 		
 		ICdmDataSource destination = cdmDestination;
-		
-		// invoke Fauna Europaea to CDM import
+		System.out.println("Starting import from Fauna Europaea (" + faunaEuropaeaSource.getDatabase() + ") to CDM (" + destination.getDatabase() + ")...");
+
+				// invoke Fauna Europaea to CDM import
 		
 		FaunaEuropaeaImportConfigurator fauEuImportConfigurator = 
 			FaunaEuropaeaImportConfigurator.NewInstance(faunaEuropaeaSource,  destination);
@@ -115,6 +115,8 @@ public class FaunaEuropaeaActivator {
 		}
 
 		// invoke CDM to CDM import
+		
+		System.out.println("Starting import from CDM to CDM (" + destination.getDatabase() + ")...");
 		
 		CdmImportConfigurator cdmImportConfigurator = 
 			CdmImportConfigurator.NewInstance(destination, destination);
