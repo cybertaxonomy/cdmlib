@@ -82,9 +82,18 @@ public enum NomenclaturalCode implements IDefinedTerm<NomenclaturalCode> {
 	 */
 	@Override
 	public String toString() {
-		return "NomenclaturalCode" + "<" + uuid + "> " + this.name();
+		return "NomenclaturalCode" + " <" + uuid + "> " + this.name();
 	}
 
+	public static NomenclaturalCode fromString(String string){
+
+		for(NomenclaturalCode code : NomenclaturalCode.values()){
+			if(code.name().equals(string)) return code;
+		}
+		
+		return null;
+	}
+	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.IDefinedTerm#getByUuid(java.util.UUID)
 	 */
