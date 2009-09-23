@@ -203,40 +203,41 @@ public class FaunaEuropaeaRefImport extends FaunaEuropaeaImportBase {
 						logger.warn("Reference is null");
 					}
 					references.add(reference);
-					if (logger.isDebugEnabled()) { 
-						logger.debug("Stored reference (" + refId + ") " + refAuthor); 
+					if (logger.isTraceEnabled()) { 
+						logger.trace("Stored reference (" + refAuthor + ")"); 
 					}
 				} else {
 					if (logger.isDebugEnabled()) { 
-						logger.debug("Not imported reference with duplicated ref_id (" + refId + 
-								") " + refAuthor);
+						logger.debug("Duplicated reference (" + refId + ", " + refAuthor + ")");
 					}
 					continue;
 				}
 
 				// Store author
 
+				boolean store = true;
 				if (!authors.contains(refId)) {
 					if (refAuthor == null) {
 						logger.warn("Reference author is null");
 					}
-					authors.add(author);
-					if (logger.isDebugEnabled()) { 
-						logger.debug("Stored author (" + refId + ") " + refAuthor); 
+					String storedAuthorTitleCache = null;
+					for (TeamOrPersonBase<?> storedAuthor : authors) {
+						storedAuthorTitleCache = storedAuthor.getTitleCache();
+						if (storedAuthorTitleCache.equals(refAuthor)) {
+							store = false;
+							if (logger.isDebugEnabled()) {
+								logger.debug("Duplicated author (" + refId + ", " + refAuthor + ")");
+							}
+							break;
+						}
+					}
+					if (store == true) { 
+						authors.add(author); 
+						if (logger.isTraceEnabled()) { 
+							logger.trace("Stored author (" + refAuthor + ")");
+						}
 					}
 
-					// TODO: 
-//					List<TeamOrPersonBase<Team>> matches = getCommonService().findMatching(author, null);
-//					if (matches.size() == 0) {
-//					authorStore.put(refId, author);
-//					if (logger.isDebugEnabled()) { 
-//					logger.debug("Stored author (" + refId + ") " + refAuthor); 
-//					}
-//					} else {
-//					if (logger.isDebugEnabled()) { 
-//					logger.debug("Matching authors found. Not stored author (" + refId + ") " + refAuthor); 
-//					}
-//					}
 				} else {
 					if (logger.isDebugEnabled()) { 
 						logger.debug("Not imported author with duplicated aut_id (" + refId + 
@@ -270,9 +271,9 @@ public class FaunaEuropaeaRefImport extends FaunaEuropaeaImportBase {
 								if (acceptedTaxa.size() > 0) {
 									taxon = syn.getAcceptedTaxa().iterator().next();
 								} else {
-									if (logger.isDebugEnabled()) { 
-										logger.debug("Synonym (" + taxonBase.getUuid() + ") does not have accepted taxa");
-									}
+//									if (logger.isDebugEnabled()) { 
+										logger.warn("Synonym (" + taxonBase.getUuid() + ") does not have accepted taxa");
+//									}
 								}
 							} else {
 								taxon = CdmBase.deproxy(taxonBase, Taxon.class);
@@ -315,7 +316,7 @@ public class FaunaEuropaeaRefImport extends FaunaEuropaeaImportBase {
 						// save taxa, references, and authors
 						getTaxonService().saveTaxonAll(taxonList);
 						getReferenceService().saveReferenceAll(references);
-//						getAgentService().saveAgentAll(authors);
+						getAgentService().saveAgentAll(authors);
 
 						taxonUuids = null;
 						references = null;
