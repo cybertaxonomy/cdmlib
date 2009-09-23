@@ -22,6 +22,7 @@ import eu.etaxonomy.cdm.io.common.IImportConfigurator.CHECK;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator.DO_REFERENCES;
 import eu.etaxonomy.cdm.io.common.CdmDefaultImport;
 import eu.etaxonomy.cdm.io.common.Source;
+import eu.etaxonomy.cdm.io.faunaEuropaea.CdmImportConfigurator;
 import eu.etaxonomy.cdm.io.faunaEuropaea.FaunaEuropaeaImportConfigurator;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.FeatureNode;
@@ -36,40 +37,46 @@ public class FaunaEuropaeaActivator {
 	private static final Logger logger = Logger.getLogger(FaunaEuropaeaActivator.class);
 
 	static final Source faunaEuropaeaSource = FaunaEuropaeaSources.faunEu();
-	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_test_anahit();
+	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_test_anahit2();
 	
+	static final int limitSave = 2000;
+
 //	static final CHECK check = CHECK.CHECK_AND_IMPORT;
 	static final CHECK check = CHECK.IMPORT_WITHOUT_CHECK;
-	static DbSchemaValidation dbSchemaValidation = DbSchemaValidation.CREATE;
+//	static DbSchemaValidation dbSchemaValidation = DbSchemaValidation.CREATE;
 //	static DbSchemaValidation dbSchemaValidation = DbSchemaValidation.UPDATE;
-//	static DbSchemaValidation dbSchemaValidation = DbSchemaValidation.VALIDATE;
+	static DbSchemaValidation dbSchemaValidation = DbSchemaValidation.VALIDATE;
 	static final NomenclaturalCode nomenclaturalCode  = NomenclaturalCode.ICZN;
 
 // ****************** ALL *****************************************
 	
-	static final int limitSave = 2000;
+//	// Fauna Europaea to CDM import
+//	static final boolean doAuthors = true;
+//	static final boolean doTaxa = true;
+//	static final boolean doBasionyms = true;
+//	static final boolean doTaxonomicallyIncluded = true;
+//	static final boolean doMisappliedNames = true;
+//	static final boolean doHeterotypicSynonyms = true;
+//	static final DO_REFERENCES doReferences =  DO_REFERENCES.ALL;
+//	static final boolean doDistributions = true;
+//	static final boolean makeFeatureTree = true;
+//    // CDM to CDM import
+//	static final boolean doHeterotypicSynonymsForBasionyms = true;
 	
-	static final boolean doAuthors = true;
-	static final boolean doTaxa = true;
-	static final boolean doBasionyms = true;
-	static final boolean doTaxonomicallyIncluded = true;
-	static final boolean doMisappliedNames = true;
-	static final boolean doHeterotypicSynonyms = true;
-	static final DO_REFERENCES doReferences =  DO_REFERENCES.ALL;
-	static final boolean doDistributions = true;
-	static final boolean makeFeatureTree = true;
-
 // ************************ NONE **************************************** //
 		
-//	static final boolean doAuthors = false;
-//	static final boolean doTaxa = false;
-//	static final boolean doBasionyms = false;
-//	static final boolean doTaxonomicallyIncluded = false;
-//	static final boolean doMisappliedNames = false;
-//	static final boolean doHeterotypicSynonyms = true;
-//	static final DO_REFERENCES doReferences =  DO_REFERENCES.NONE;
-//	static final boolean doDistributions = false;
-//	static final boolean makeFeatureTree = false;
+	// Fauna Europaea to CDM import
+	static final boolean doAuthors = true;
+	static final boolean doTaxa = false;
+	static final boolean doBasionyms = false;
+	static final boolean doTaxonomicallyIncluded = false;
+	static final boolean doMisappliedNames = false;
+	static final boolean doHeterotypicSynonyms = false;
+	static final DO_REFERENCES doReferences =  DO_REFERENCES.NONE;
+	static final boolean doDistributions = false;
+	static final boolean makeFeatureTree = false;
+    // CDM to CDM import
+	static final boolean doHeterotypicSynonymsForBasionyms = true;
 	
 	
 	/**
@@ -79,6 +86,8 @@ public class FaunaEuropaeaActivator {
 		System.out.println("Start import from Fauna Europaea ("+ faunaEuropaeaSource.getDatabase() + ") ...");
 		
 		ICdmDataSource destination = cdmDestination;
+		
+		// invoke Fauna Europaea to CDM import
 		
 		FaunaEuropaeaImportConfigurator fauEuImportConfigurator = 
 			FaunaEuropaeaImportConfigurator.NewInstance(faunaEuropaeaSource,  destination);
@@ -95,13 +104,41 @@ public class FaunaEuropaeaActivator {
 		fauEuImportConfigurator.setDoBasionyms(doBasionyms);
 		fauEuImportConfigurator.setDoMisappliedNames(doMisappliedNames);
 		fauEuImportConfigurator.setDoHeterotypicSynonyms(doHeterotypicSynonyms);
-		fauEuImportConfigurator.setLimitSave(limitSave);
-
-		// invoke import
+		
 		CdmDefaultImport<FaunaEuropaeaImportConfigurator> fauEuImport = 
 			new CdmDefaultImport<FaunaEuropaeaImportConfigurator>();
-		fauEuImport.invoke(fauEuImportConfigurator);
+		try {
+			fauEuImport.invoke(fauEuImportConfigurator);
+		} catch (Exception e) {
+			System.out.println("ERROR in Fauna Europaea to CDM import");
+			e.printStackTrace();
+		}
 
+		// invoke CDM to CDM import
+		
+		CdmImportConfigurator cdmImportConfigurator = 
+			CdmImportConfigurator.NewInstance(destination, destination);
+		
+		cdmImportConfigurator.setDbSchemaValidation(DbSchemaValidation.VALIDATE);
+		cdmImportConfigurator.setNomenclaturalCode(nomenclaturalCode);
+		cdmImportConfigurator.setCheck(check);
+
+		cdmImportConfigurator.setDoHeterotypicSynonymsForBasionyms(doHeterotypicSynonymsForBasionyms);
+		cdmImportConfigurator.setDoAuthors(false);
+		cdmImportConfigurator.setDoTaxa(false);
+		cdmImportConfigurator.setDoReferences(DO_REFERENCES.NONE);
+		cdmImportConfigurator.setDoOccurrence(false);
+		cdmImportConfigurator.setLimitSave(limitSave);
+
+		CdmDefaultImport<CdmImportConfigurator> cdmImport = 
+			new CdmDefaultImport<CdmImportConfigurator>();
+		try {
+			cdmImport.invoke(cdmImportConfigurator);
+		} catch (Exception e) {
+			System.out.println("ERROR in CDM to CDM import");
+			e.printStackTrace();
+		}
+		
 		//make feature tree
 		
 		if (makeFeatureTree == true) {
@@ -119,7 +156,7 @@ public class FaunaEuropaeaActivator {
 			app.getDescriptionService().saveFeatureTree(featureTree);
 		}
 		
-		System.out.println("End import from Fauna Europaea ("+ faunaEuropaeaSource.getDatabase() + ")...");
+		System.out.println("End importing Fauna Europaea data");
 	}
 
 }
