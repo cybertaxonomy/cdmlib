@@ -34,6 +34,7 @@ import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 import org.springframework.util.Assert;
 
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
@@ -288,7 +289,7 @@ public class TaxonNode  extends AnnotatableEntity implements ITreeNode{
 		if(node == null){
 			throw new IllegalArgumentException("TaxonNode may not be null");
 		}
-		if(node.getParent() != this){
+		if(HibernateProxyHelper.deproxy(node.getParent(), TaxonNode.class) != this){
 			throw new IllegalArgumentException("TaxonNode must be a child of this node");
 		}
 		
