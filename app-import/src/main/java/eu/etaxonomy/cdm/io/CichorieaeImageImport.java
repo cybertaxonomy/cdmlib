@@ -126,7 +126,7 @@ public class CichorieaeImageImport extends AbstractImageImporter {
 	protected boolean invokeImageImport (ImageImportConfigurator config){
 		File source = (File)config.getSource();
 		UUID treeUuid = config.getTreeUuid();
-		TaxonomicTree tree = taxonService.getTaxonomicTreeByUuid(treeUuid);
+		TaxonomicTree tree = taxonTreeService.getTaxonomicTreeByUuid(treeUuid);
 		
 		if (source.isDirectory()){
 			for (File file : source.listFiles() ){
