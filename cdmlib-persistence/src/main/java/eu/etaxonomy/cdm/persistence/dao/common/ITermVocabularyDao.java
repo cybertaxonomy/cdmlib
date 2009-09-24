@@ -14,6 +14,7 @@ import java.util.List;
 
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
+import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 
 /**
@@ -41,4 +42,19 @@ public interface ITermVocabularyDao extends IIdentifiableDao<TermVocabulary> {
 	public <T extends DefinedTermBase> List<T> getTerms(TermVocabulary<T> termVocabulary, Integer pageSize, Integer pageNumber);
 	
 	public <T extends DefinedTermBase> TermVocabulary<T> findByUri(String termSourceUri, Class<T> clazz);
+
+	/**
+	 * Return a List of terms that belong to the termVocabulary supplied
+	 * 
+	 * @param termVocabulary The term vocabulary which 'owns' the terms of interest
+	 * @param pageSize The maximum number of terms returned (can be null for all terms)
+	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
+	 * @param orderHints
+	 *            Supports path like <code>orderHints.propertyNames</code> which
+	 *            include *-to-one properties like createdBy.username or
+	 *            authorTeam.persistentTitleCache
+	 * @param propertyPaths properties to be initialized
+	 * @return a List of terms
+	 */
+	public <T extends DefinedTermBase> List<T> getTerms(TermVocabulary<T> vocabulary,Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 }
