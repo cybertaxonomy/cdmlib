@@ -30,15 +30,15 @@ import eu.etaxonomy.cdm.io.jaxb.JaxbImportConfigurator;
 public class CdmExportImportActivator {
 
 	/* SerializeFrom DB **/
-	private static final ICdmDataSource source = CdmDestinations.cdm_test_jaxb();
+	private static final ICdmDataSource source = CdmDestinations.cdm_test_jaxb2();
 	private static final ICdmDataSource destination = CdmDestinations.cdm_test_jaxb2();
 
 	// Import:
 	private static String importFileName = 
-		"file:/C:/Dokumente%20und%20Einstellungen/a.babadshanjan/Eigene%20Dateien/archive/dbExport/jaxb/export_test_app_import.xml";
+		"file:/C:/Dokumente%20und%20Einstellungen/k.luther/Eigene%20Dateien/Neuer%20Ordner/cdmlib/cdmlib-io/target/classes/schema/cdm/export_test_app_import.xml";
     // Export:
 	private static String exportFileName = 
-		"C:\\Dokumente und Einstellungen\\a.babadshanjan\\Eigene Dateien\\archive\\dbExport\\jaxb\\export_test_app_import.xml";
+		"C:\\Dokumente und Einstellungen\\k.luther\\Eigene Dateien\\archive\\export_test_app_import.xml";
 
 	/** NUMBER_ROWS_TO_RETRIEVE = 0 is the default case to retrieve all rows.
 	 * For testing purposes: If NUMBER_ROWS_TO_RETRIEVE >0 then retrieve 
@@ -151,13 +151,14 @@ public class CdmExportImportActivator {
 
 		CdmExportImportActivator sc = new CdmExportImportActivator();
 
-//		CdmApplicationController appCtr = null;
-//		appCtr = sc.initDb(cdmTestAnahit);
-//		appCtr = sc.initDb(sourceDb);
-//		sc.loadTestData(appCtr);
+		CdmApplicationController appCtr = null;
+		appCtr = sc.initDb(source);
+		//appCtr = sc.initDb(destination);
+		
+		sc.loadTestData(appCtr);
 		
 		sc.invokeExport();
-		sc.invokeImport();
+		//sc.invokeImport();
 	}
 
 }
