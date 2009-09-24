@@ -11,7 +11,7 @@ public class IdentifiableEntityDefaultCacheStrategy<T extends IdentifiableEntity
 	final static UUID uuid = UUID.fromString("85cbecb0-2020-11de-8c30-0800200c9a66");
 	
 	public String getTitleCache(T object) {
-		return "";
+		return "-title cache generation not implemented-";
 	}
 
 	@Override
