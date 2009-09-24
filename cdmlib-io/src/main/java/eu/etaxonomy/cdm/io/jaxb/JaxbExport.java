@@ -240,7 +240,7 @@ public class JaxbExport extends CdmExportBase<JaxbExportConfigurator, JaxbExport
 		if (jaxbExpConfig.isDoTaxonomicTreeData() == true) {
 			if (taxonomicTreeDataRows == 0) { taxonomicTreeDataRows = MAX_ROWS; }
 			logger.info("# Taxonomic Tree");
-			dataSet.setTaxonomicTrees(getTaxonService().listTaxonomicTrees(taxonomicTreeDataRows, 0, null, null));
+			dataSet.setTaxonomicTrees(( getTaxonTreeService().list(taxonomicTreeDataRows, 0, null, null)).getRecords());
 		}
 	}
 
