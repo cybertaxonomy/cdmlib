@@ -46,40 +46,12 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 public interface INameService extends IIdentifiableEntityService<TaxonNameBase> {
 
-	/**
-	 * FIXME candidate for harmonization?
-	 * @param uuid
-	 * @return
-	 */
-	public TaxonNameBase getTaxonNameByUuid(UUID uuid);
-
-	/**
-	 * FIXME candidate for harmonization?
-	 * @param taxonName
-	 * @return
-	 */
-	public UUID saveTaxonName(TaxonNameBase taxonName);
-
-	/**
-	 * FIXME candidate for harmonization?
-	 * Saves a collection of  TaxonNames and return its UUID@param taxonCollection
-	 * @return
-	 */
-	public Map<UUID, TaxonNameBase> saveTaxonNameAll(Collection<? extends TaxonNameBase> taxonCollection);
 
 	public Map<UUID, TypeDesignationBase> saveTypeDesignationAll(Collection<TypeDesignationBase> typeDesignationCollection);
 
 	public Map<UUID, ReferencedEntityBase> saveReferencedEntitiesAll(Collection<ReferencedEntityBase> referencedEntityCollection);
 		
 	public Map<UUID, HomotypicalGroup> saveAllHomotypicalGroups(Collection<HomotypicalGroup> homotypicalGroups);
-	
-	/**
-	 * FIXME candidate for harmonization?
-	 * @param limit
-	 * @param start
-	 * @return
-	 */
-	public List<TaxonNameBase> getAllNames(int limit, int start);
 
 	public List<NomenclaturalStatus> getAllNomenclaturalStatus(int limit, int start);
 

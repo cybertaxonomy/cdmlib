@@ -117,20 +117,6 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
 		return super.findByTitle(config);
 	}
 	
-	public TaxonNameBase<?,?> getTaxonNameByUuid(UUID uuid) {
-		return super.getCdmObjectByUuid(uuid);
-	}
-
-	@Transactional(readOnly = false)
-	public UUID saveTaxonName(TaxonNameBase taxonName) {
-		return super.saveCdmObject(taxonName);
-	}
-	
-	@Transactional(readOnly = false)
-	public Map<UUID, TaxonNameBase> saveTaxonNameAll(Collection<? extends TaxonNameBase> taxonNameCollection){
-		return saveCdmObjectAll(taxonNameCollection);
-	}
-	
 	@Transactional(readOnly = false)
 	public Map<UUID, HomotypicalGroup> saveAllHomotypicalGroups(Collection<HomotypicalGroup> homotypicalGroups){
 		return homotypicalGroupDao.saveAll(homotypicalGroups);
@@ -144,11 +130,6 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
 	@Transactional(readOnly = false)
 	public Map<UUID, ReferencedEntityBase> saveReferencedEntitiesAll(Collection<ReferencedEntityBase> referencedEntityCollection){
 		return referencedEntityDao.saveAll(referencedEntityCollection);
-	}
-	
-	@Transactional(readOnly = false)
-	public UUID removeTaxonName(TaxonNameBase taxonName) {
-		return super.removeCdmObject(taxonName);
 	}
 
 	public List<TaxonNameBase> getAllNames(int limit, int start){

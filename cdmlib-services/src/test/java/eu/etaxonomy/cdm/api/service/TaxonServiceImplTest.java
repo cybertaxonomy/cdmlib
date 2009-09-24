@@ -46,8 +46,8 @@ public class TaxonServiceImplTest extends CdmIntegrationTest {
 	@Test
 	public final void testGetTaxonByUuid() {
 		Taxon expectedTaxon = Taxon.NewInstance(null, null);
-		UUID uuid = service.saveTaxon(expectedTaxon);
-		TaxonBase actualTaxon = service.getTaxonByUuid(uuid);
+		UUID uuid = service.save(expectedTaxon);
+		TaxonBase actualTaxon = service.find(uuid);
 		assertEquals(expectedTaxon, actualTaxon);
 	}
 
@@ -57,8 +57,8 @@ public class TaxonServiceImplTest extends CdmIntegrationTest {
 	@Test
 	public final void testSaveTaxon() {
 		Taxon expectedTaxon = Taxon.NewInstance(null, null);
-		UUID uuid = service.saveTaxon(expectedTaxon);
-		TaxonBase actualTaxon = service.getTaxonByUuid(uuid);
+		UUID uuid = service.save(expectedTaxon);
+		TaxonBase actualTaxon = service.find(uuid);
 		assertEquals(expectedTaxon, actualTaxon);
 	}
 
@@ -68,9 +68,9 @@ public class TaxonServiceImplTest extends CdmIntegrationTest {
 	@Test
 	public final void testRemoveTaxon() {
 		Taxon taxon = Taxon.NewInstance(BotanicalName.NewInstance(null), null);
-		UUID uuid = service.saveTaxon(taxon);
-		service.removeTaxon(taxon);
-		TaxonBase actualTaxon = service.getTaxonByUuid(uuid);
+		UUID uuid = service.save(taxon);
+		service.delete(taxon);
+		TaxonBase actualTaxon = service.find(uuid);
 		assertNull(actualTaxon);
 	}
 	

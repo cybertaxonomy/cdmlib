@@ -46,80 +46,6 @@ public class ReferenceServiceImpl extends IdentifiableServiceBase<ReferenceBase,
 		if (logger.isDebugEnabled()) { logger.debug("Load ReferenceService Bean"); }
 	}
 
-	/**
-	 * FIXME Candidate for harmonization
-	 * find
-	 */
-	public ReferenceBase getReferenceByUuid(UUID uuid) {
-		return super.getCdmObjectByUuid(uuid); 
-	}
-
-	/**
-	 * FIXME Candidate for harmonization
-	 * getByTitle?
-	 */
-	public List<ReferenceBase> getReferencesByTitle(String title) {
-		return super.findCdmObjectsByTitle(title);
-	}
-	
-	public List<ReferenceBase> getReferencesByTitle(String title, Class<ReferenceBase> clazz) {
-		return super.findCdmObjectsByTitle(title, clazz);
-	}
-	
-	/**
-	 * FIXME Candidate for harmonization
-	 * save
-	 */
-	@Transactional(readOnly = false)
-	public UUID saveReference(ReferenceBase reference) {
-		return super.saveCdmObject(reference);
-	}
-
-	/**
-	 * FIXME Candidate for harmonization
-	 * save(Set<Reference> references)
-	 */
-	@Transactional(readOnly = false)
-	public Map<UUID, ReferenceBase> saveReferenceAll(Collection<ReferenceBase> referenceCollection){
-		return saveCdmObjectAll(referenceCollection);
-	}
-
-	/**
-	 * FIXME Candidate for harmonization
-	 * list()
-	 *  (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.IReferenceService#getAllReferences(int, int)
-	 */
-	@Deprecated
-	public List<ReferenceBase> getAllReferences(int limit, int start){
-			return dao.list(limit, start);
-	}
-	
-	/**
-	 * FIXME Candidate for harmonization
-	 * list
-	 *  (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.IReferenceService#getAllReferences(java.lang.Integer, java.lang.Integer)
-	 */
-	public Pager<ReferenceBase> getAllReferences(Integer pageSize, Integer pageNumber, List<OrderHint> orderHints) {
-        Integer numberOfResults = dao.count();
-		
-		List<ReferenceBase> results = new ArrayList<ReferenceBase>();
-		if(numberOfResults > 0) { // no point checking again
-			Integer start = pageSize == null ? 0 : pageSize * (pageNumber - 1);
-			results = dao.list(pageSize, start, orderHints); //TODO implement pager like method in dao?
-		}
-		return new DefaultPagerImpl<ReferenceBase>(pageNumber, numberOfResults, pageSize, results);
-	}
-
-	/**
-	 * FIXME Candidate for harmonization
-	 * list
-	 */
-	public Pager<ReferenceBase> getAllReferences(Integer pageSize, Integer pageNumber) {
-		return getAllReferences(pageSize, pageNumber, null);
-	}
-
 	public void generateTitleCache() {
 		logger.warn("Not yet implemented");
 		// TODO Auto-generated method stub
@@ -145,12 +71,5 @@ public class ReferenceServiceImpl extends IdentifiableServiceBase<ReferenceBase,
 	public List<UuidAndTitleCache> getUuidAndTitleCacheOfReferences() {
 		
 		return dao.getUuidAndTitleCacheOfReferences();
-	}
-
-	public <TYPE extends ReferenceBase> Pager<TYPE> list(Class<TYPE> type,
-			Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
-			List<String> propertyPaths) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 }

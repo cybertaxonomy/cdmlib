@@ -33,7 +33,7 @@ public interface IVersionableService<T extends VersionableEntity> extends IServi
 	 * @param propertyPaths paths initialized on the returned objects - only applied to the objects returned from the first grouping
 	 * @return a Pager containing audit event instances, plus metadata
 	 */
-	public Pager<AuditEventRecord<T>> getAuditEvents(T t, Integer pageSize, Integer pageNumber, AuditEventSort sort, List<String> propertyPaths);
+	public Pager<AuditEventRecord<T>> pageAuditEvents(T t, Integer pageSize, Integer pageNumber, AuditEventSort sort, List<String> propertyPaths);
 	
 	/**
 	 * A convenience method which returns a record of the next (relative to the audit event in context)

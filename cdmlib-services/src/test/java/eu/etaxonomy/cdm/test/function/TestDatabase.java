@@ -97,7 +97,7 @@ public class TestDatabase {
 	//		botanicalName.getTitleCache();
 			
 			Taxon taxon1 = Taxon.NewInstance(botanicalName,journal);
-			appCtr.getTaxonService().saveTaxon(taxon1);
+			appCtr.getTaxonService().save(taxon1);
 			BotanicalName homotypName = BotanicalName.NewInstance(Rank.SUBGENUS(), botanicalName.getHomotypicalGroup());
 			homotypName.setGenusOrUninomial("Subgenus");
 			homotypName.setInfraGenericEpithet("homotyp");
@@ -143,7 +143,7 @@ public class TestDatabase {
 			journal.setTitleCache("Afro+Doc");
 			
 			Taxon taxon = Taxon.NewInstance(botanicalName,journal);
-			appCtr.getTaxonService().saveTaxon(taxon);
+			appCtr.getTaxonService().save(taxon);
 			
 			TaxonDescription taxonDescription = TaxonDescription.NewInstance();
 			taxon.addDescription(taxonDescription);
@@ -164,7 +164,7 @@ public class TestDatabase {
 			taxonDescription.addElement(commonName);
 			
 			//save
-			appCtr.getTaxonService().saveTaxon(taxon);
+			appCtr.getTaxonService().save(taxon);
 
 			
 			appCtr.close();
@@ -199,7 +199,7 @@ public class TestDatabase {
 			parentName.addHybridChild(childName, HybridRelationshipType.FIRST_PARENT(), null);
 			
 			//save
-			appCtr.getNameService().saveTaxonName(parentName);
+			appCtr.getNameService().save(parentName);
 
 			
 			appCtr.close();
@@ -234,7 +234,7 @@ public class TestDatabase {
 //			Taxon taxon2 = Taxon.NewInstance(botanicalName2, null);
 	//		botanicalName.getTitleCache();
 			Rank.SPECIES();
-			appCtr.getNameService().saveTaxonName(botanicalName);
+			appCtr.getNameService().save(botanicalName);
 
 //			appCtr.getTaxonService().saveTaxon(taxon2);
 //			appCtr.getTaxonService().saveTaxon(taxon);

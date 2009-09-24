@@ -2,27 +2,26 @@
 package eu.etaxonomy.cdm.test.integration;
 
 
-import java.util.Calendar;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
+
 import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
-import static org.junit.Assert.*;
-
 import org.joda.time.DateTime;
-
-import org.junit.Ignore;
-import org.junit.Test;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
+import org.junit.Test;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.database.CdmDataSource;
-import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -33,7 +32,6 @@ import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
@@ -132,7 +130,7 @@ public class CreateDataTest {
 		
 //		Synonym syn2 = Synonym.NewInstance(genusTaxon.getName(), null);
 		
-		app.getTaxonService().saveTaxon(genusTaxon);
+		app.getTaxonService().save(genusTaxon);
 		//app.getTaxonService().saveTaxon(syn2);
 	}
 	
@@ -142,7 +140,7 @@ public class CreateDataTest {
 		//Taxon with childs, basionym, childrens synonyms, child misapplied Name
 		
 		
-		TaxonNameBase<?,?> genusName2 = (TaxonNameBase<?,?>)app.getNameService().getTaxonNameByUuid(UUID.fromString(genusNameUuid));
+		TaxonNameBase<?,?> genusName2 = (TaxonNameBase<?,?>)app.getNameService().find(UUID.fromString(genusNameUuid));
 		Set<TaxonBase> set = (Set<TaxonBase>)genusName2.getTaxonBases();
 		System.out.println("Size:" + set.size());
 		for (TaxonBase tb : set){
@@ -150,7 +148,7 @@ public class CreateDataTest {
 		}
 		
 		//taxon
-		Taxon genusTaxon = (Taxon)app.getTaxonService().getTaxonByUuid(UUID.fromString(genusUuid));
+		Taxon genusTaxon = (Taxon)app.getTaxonService().find(UUID.fromString(genusUuid));
 		assertNotNull(genusTaxon);
 		//name
 		BotanicalName genusName = (BotanicalName)genusTaxon.getName();
@@ -205,14 +203,14 @@ public class CreateDataTest {
 		if (ignore){return;}
 		logger.warn("testSave");
 		ITaxonService taxonService = app.getTaxonService();
-		Taxon genusTaxon = (Taxon)taxonService.getTaxonByUuid(UUID.fromString(genusUuid));
+		Taxon genusTaxon = (Taxon)taxonService.find(UUID.fromString(genusUuid));
 		BotanicalName genusName = (BotanicalName)genusTaxon.getName();
 		genusName.setGenusOrUninomial("newGenusUninomial");
 		genusName.setUpdated(new DateTime());
 		BotanicalName newName = BotanicalName.NewInstance(Rank.SPECIES());
 		Taxon newTaxon = Taxon.NewInstance(newName, genusTaxon.getSec());
 		genusTaxon.addTaxonomicChild(newTaxon, null, "5677");
-		UUID uuid = taxonService.saveTaxon(newTaxon);
+		UUID uuid = taxonService.save(newTaxon);
 		assertNotNull(uuid);
 	}
 

@@ -40,4 +40,8 @@ public class CollectionServiceImpl extends	IdentifiableServiceBase<Collection, I
 			
 		return new DefaultPagerImpl<Collection>(pageNumber, numberOfResults, pageSize, results);
 	}
+	
+	public List<Collection> searchByCode(String code) {
+		return this.dao.getCollectionByCode(code);
+	}
 }

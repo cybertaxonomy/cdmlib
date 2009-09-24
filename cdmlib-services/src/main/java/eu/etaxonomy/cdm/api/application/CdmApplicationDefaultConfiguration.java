@@ -22,9 +22,11 @@ import org.springframework.transaction.PlatformTransactionManager;
 
 import eu.etaxonomy.cdm.api.conversation.ConversationHolder;
 import eu.etaxonomy.cdm.api.service.IAgentService;
+import eu.etaxonomy.cdm.api.service.ICollectionService;
 import eu.etaxonomy.cdm.api.service.ICommonService;
 import eu.etaxonomy.cdm.api.service.IDatabaseService;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
+import eu.etaxonomy.cdm.api.service.IFeatureTreeService;
 import eu.etaxonomy.cdm.api.service.ILocationService;
 import eu.etaxonomy.cdm.api.service.IMediaService;
 import eu.etaxonomy.cdm.api.service.INameService;
@@ -34,6 +36,7 @@ import eu.etaxonomy.cdm.api.service.IService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.IUserService;
+import eu.etaxonomy.cdm.api.service.IVocabularyService;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
@@ -91,6 +94,12 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
 	private ProviderManager authenticationManager;
 	@Autowired
 	private IUserService userService;
+	@Autowired
+	private ICollectionService collectionService;
+	@Autowired
+	private IFeatureTreeService featureTreeService;
+	@Autowired
+	private IVocabularyService vocabularyService;
 	
 	/**
 	 * 
@@ -207,8 +216,15 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
 		return new ConversationHolder(dataSource, sessionFactory, transactionManager);
 	}
 
+	public ICollectionService getCollectionService() {
+		return collectionService;
+	}
 
+	public IFeatureTreeService getFeatureTreeService() {
+		return featureTreeService;
+	}
 
-	
-	
+	public IVocabularyService getVocabularyService() {
+		return vocabularyService;
+	}	
 }

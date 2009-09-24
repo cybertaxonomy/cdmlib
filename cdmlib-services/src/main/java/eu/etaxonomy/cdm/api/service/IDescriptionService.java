@@ -32,78 +32,22 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 public interface IDescriptionService extends IIdentifiableEntityService<DescriptionBase> {
 
-	/**
-	 * @return
-	 */
-	// FIXME candidate for harmonization? findByUuid
-	public DescriptionBase getDescriptionBaseByUuid(UUID uuid);
 
-	/**
-	 * Persists a <code>Description</code>
-	  * @param description
-	 * @return
-	 */
-	// FIXME candidate for harmonization? save
-	public UUID saveDescription(DescriptionBase description);
 
-	/**
-	 * Persists a <code>FeatureTree</code>
-	 * @param tree
-	 * @return
-	 */
-	public UUID saveFeatureTree(FeatureTree tree);
-	// FIXME could you handle the feature data elements using @Cascade?
-	public void saveFeatureDataAll(Collection<VersionableEntity> featureData);
-	public Map<UUID, FeatureTree> saveFeatureTreeAll(Collection<FeatureTree> trees);
-	public Map<UUID, FeatureNode> saveFeatureNodeAll(Collection<FeatureNode> nodes);
 	
-	/**
-	 * Gets a FeatureTree instance matching the supplied uuid
-	 * 
-	 * @param uuid the uuid of the FeatureTree of interest
-	 * @return a FeatureTree, or null if the FeatureTree does not exist
-	 */
-	public FeatureTree getFeatureTreeByUuid(UUID uuid);
+
 	
-	/**
-	 * Finds the feature tree specified by the <code>uuid</code> parameter and
-	 * recursively initializes all bean properties given in the
-	 * <code>propertyPaths</code> parameter.
-	 * <p>
-	 * For detailed description and examples <b>please refer to:</b> 
-	 * {@link BeanInitializer#initialize(Object, List)}
-	 * 
-	 * @param uuid
-	 * @param propertyPaths properties to initialize
-	 * @return
-	 */
-	public FeatureTree loadFeatureTree(UUID uuid, List<String> propertyPaths);
+
 	
-	/**
-	 * Finds the feature node specified by the <code>uuid</code> parameter and
-	 * recursively initializes all bean properties given in the
-	 * <code>propertyPaths</code> parameter.
-	 * <p>
-	 * For detailed description and examples <b>please refer to:</b> 
-	 * {@link BeanInitializer#initialize(Object, List)}
-	 * 
-	 * @param uuid
-	 * @param propertyPaths properties to initialize
-	 * @return
-	 */
-	public FeatureNode loadFeatureNode(UUID uuid, List<String> propertyPaths);
-	public List<FeatureNode> getFeatureNodesAll();
-	public List<Feature> getFeaturesAll();
+
+
 	
-	public List<FeatureTree> getFeatureTreesAll(List<String> propertyPaths);
-	public List<FeatureNode> getFeatureNodesAll(List<String> propertyPaths);
-	public List<Feature> getFeaturesAll(List<String> propertyPaths);
+
 	
 	/**
 	 * 
@@ -111,7 +55,7 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
 	 * @deprecated use TermService#getVocabulary(VocabularyType) instead
 	 */
 	public TermVocabulary<Feature> getDefaultFeatureVocabulary();
-	//public TermVocabulary<Feature> getFeatureVocabulary();
+
 	/**
 	 * @deprecated use TermService#getVocabulary(VocabularyType) instead
 	 */
@@ -154,7 +98,7 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
 	public UUID deleteDescriptionElement(DescriptionElementBase descriptionElement);
 	
 	/**
-	 * List the descriptions of type <TYPE>, filtered using the following parameters
+	 * List the descriptions of type <T>, filtered using the following parameters
 	 *  
 	 * @param type The type of description returned (Taxon, TaxonName, or Specimen)
 	 * @param hasMedia Restrict the description to those that do (true) or don't (false) contain <i>elements</i> that have one or more media (can be null)
@@ -166,7 +110,7 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
 	 * @param propertyPaths properties to initialize - see {@link BeanInitializer#initialize(Object, List)}
 	 * @return a Pager containing DescriptionBase instances
 	 */
-	public <TYPE extends DescriptionBase> Pager<TYPE> listDescriptions(Class<TYPE> type, Boolean hasMedia, Boolean hasText, Set<Feature> feature, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+	public Pager<DescriptionBase> page(Class<? extends DescriptionBase> type, Boolean hasMedia, Boolean hasText, Set<Feature> feature, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 	
 	/**
 	 * Count the descriptions of type <TYPE>, filtered using the following parameters
@@ -177,7 +121,7 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
 	 * @param feature Restrict the description to those <i>elements</i> which are scoped by one of the Features passed (can be null or empty)
 	 * @return a count of DescriptionBase instances
 	 */
-	public <TYPE extends DescriptionBase> int countDescriptions(Class<TYPE> type, Boolean hasImages, Boolean hasText, Set<Feature> feature);
+	public int count(Class<? extends DescriptionBase> type, Boolean hasImages, Boolean hasText, Set<Feature> feature);
 	
 	/**
 	 * Returns description elements of type <TYPE>, belonging to a given description, optionally filtered by one or more features
@@ -191,7 +135,7 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
 	 * @param propertyPaths Properties to initialize in the returned entities, following the syntax described in {@link BeanInitializer#initialize(Object, List)}
 	 * @return a Pager containing DescriptionElementBase instances
 	 */
-	public <TYPE extends DescriptionElementBase> Pager<TYPE> getDescriptionElements(DescriptionBase description,Set<Feature> features, Class<TYPE> type, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
+	public Pager<DescriptionElementBase> getDescriptionElements(DescriptionBase description,Set<Feature> features, Class<? extends DescriptionElementBase> type, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 	
 	/**
 	 * Returns a List of TaxonDescription instances, optionally filtered by parameters passed to this method

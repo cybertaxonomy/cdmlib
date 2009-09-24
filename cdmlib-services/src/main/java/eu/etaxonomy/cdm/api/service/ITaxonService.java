@@ -42,11 +42,6 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	
 	/**
-	 * FIXME candidate for harmonization? 
-	 */
-	public abstract TaxonBase getTaxonByUuid(UUID uuid);
-	
-	/**
 	 * 
 	 * @param uuid
 	 * @return
@@ -109,13 +104,6 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	 */
 	public List<TaxonNode> loadChildNodesOfTaxon(Taxon taxon, TaxonomicTree taxonomicTree, List<String> propertyPaths);
 	
-	
-	/**
-	 * FIXME candidate for harmonization? 
-	 * save a taxon and return its UUID
-	 */
-	public abstract UUID saveTaxon(TaxonBase taxon);
-
 	/**
 	 * 
 	 * @param taxonNode
@@ -123,17 +111,6 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	 */
 	public abstract UUID saveTaxonNode(TaxonNode taxonNode);
 	
-	/**
-	 * FIXME candidate for harmonization?
-	 *  save a taxon and return its UUID
-	 */
-	//public abstract UUID saveTaxon(TaxonBase taxon, TransactionStatus txStatus);
-	
-	/**
-	 * FIXME candidate for harmonization?
-	 * save a collection of taxa and return its UUID
-	 */
-	public abstract Map<UUID, ? extends TaxonBase> saveTaxonAll(Collection<? extends TaxonBase> taxonCollection);
 
 	/**
 	 * 
@@ -141,12 +118,6 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	 * @return
 	 */
 	public abstract Map<UUID, TaxonNode> saveTaxonNodeAll(Collection<TaxonNode> taxonNodeCollection);
-	
-	/**
-	 * FIXME candidate for harmonization?
-	 * delete a taxon and return its UUID
-	 */
-	public abstract UUID removeTaxon(TaxonBase taxon);
 	
 	/**
 	 * Computes all taxon bases.
@@ -164,17 +135,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	 * @param start
 	 * @return
 	 */
-	public abstract List<Taxon> getAllTaxa(int limit, int start);
-	
-	/**
-	 * Computes all taxon bases.
-	 * FIXME could substitute with list(limit,start) from superclass
-	 * @param limit
-	 * @param start
-	 * @return
-	 */
-	public abstract List<TaxonBase> getAllTaxonBases(int limit, int start);
-	
+	public abstract List<Taxon> getAllTaxa(int limit, int start);	
 	
 	/**
 	 * Computes all taxonomic trees.

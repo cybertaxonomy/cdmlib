@@ -78,14 +78,14 @@ public class TestTaxonFunction {
 		Synonym synTaxon = Synonym.NewInstance(botSynName, sec);
 		childTaxon2.addSynonym(synTaxon, SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF());
 		//save
-		cdmApp.getTaxonService().saveTaxon(genusTaxon);
+		cdmApp.getTaxonService().save(genusTaxon);
 		
 		//other taxon
 		BotanicalName otherName = BotanicalName.NewInstance(Rank.GENUS());
 		otherName.setTitleCache("otherName");
 		Taxon otherTaxon = Taxon.NewInstance(otherName, sec);
 		
-		cdmApp.getTaxonService().saveTaxon(otherTaxon);
+		cdmApp.getTaxonService().save(otherTaxon);
 		cdmApp.close();
 		logger.info("init Database end ...");
 	}
@@ -96,7 +96,7 @@ public class TestTaxonFunction {
 			initDatabase();
 		}
 		CdmApplicationController cdmApp = getCdmApplicationController("defaultMySql", DbSchemaValidation.VALIDATE);
-		ReferenceBase sec = cdmApp.getReferenceService().getReferenceByUuid(getRefUuid());
+		ReferenceBase sec = cdmApp.getReferenceService().find(getRefUuid());
 		List<Taxon> rootList = cdmApp.getTaxonService().getRootTaxa(sec, CdmFetch.NO_FETCH(), false);
 		for (Taxon taxon:rootList){
 			System.out.println(taxon);

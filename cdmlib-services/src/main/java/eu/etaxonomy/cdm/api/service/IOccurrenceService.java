@@ -8,13 +8,10 @@
 package eu.etaxonomy.cdm.api.service;
 
 import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
 import eu.etaxonomy.cdm.model.media.Media;
-import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
@@ -26,38 +23,10 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
  * @created 01.09.2008
  */
 public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenOrObservationBase> {
-
-	/**
-	 * FIXME candidate for harmonization?
-	 * Computes all specimen or observation bases.
-	 * @param limit
-	 * @param start
-	 * @return
-	 */
-	public abstract List<SpecimenOrObservationBase> getAllSpecimenOrObservationBases(int limit, int start);
-
-	/**
-	 * FIXME candidate for harmonization? 
-	 * Saves a collection of specimen or observation bases.
-	 * @return Map with UUID as key and SpecimenOrObservationBase as value.
-	 */
-	public abstract Map<UUID, ? extends SpecimenOrObservationBase> 
-	saveSpecimenOrObservationBaseAll(java.util.Collection<? extends SpecimenOrObservationBase> specimenOrObservationBaseCollection);
-
-	/** 
-	 * FIXME candidate for harmonizaion?
-	 * save a specimen or observation and return its UUID
-	 */
-	public abstract UUID saveSpecimenOrObservationBase (SpecimenOrObservationBase specimenOrObservationBase);
 	
 	public WaterbodyOrCountry getCountryByIso(String iso639);
 	
 	public List<WaterbodyOrCountry> getWaterbodyOrCountryByName(String name);
-	
-	/** */
-	public abstract List<Collection> searchCollectionByCode(String code);
-	
-	public abstract UUID saveCollection(Collection collection);
 	
 	/**
      * Returns a List of Media that are associated with a given occurence
