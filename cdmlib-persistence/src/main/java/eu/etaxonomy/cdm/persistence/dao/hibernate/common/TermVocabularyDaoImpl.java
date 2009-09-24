@@ -26,15 +26,13 @@ import eu.etaxonomy.cdm.persistence.dao.common.ITermVocabularyDao;
  *
  */
 @Repository
-public class TermVocabularyDaoImpl extends VersionableDaoBase<TermVocabulary<DefinedTermBase>> implements
+public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> implements
 		ITermVocabularyDao {
-
-	
 	/**
 	 * @param type
 	 */
 	public TermVocabularyDaoImpl() {
-		super((Class)TermVocabulary.class);
+		super(TermVocabulary.class);
 	}
 
 	public int countTerms(TermVocabulary termVocabulary) {

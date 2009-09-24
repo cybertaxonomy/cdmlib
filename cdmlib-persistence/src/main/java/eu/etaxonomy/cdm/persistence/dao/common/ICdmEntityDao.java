@@ -37,8 +37,6 @@ public interface ICdmEntityDao<T extends CdmBase> {
 	 * @throws DataAccessException
 	 */
 	public UUID saveOrUpdate(T transientObject) throws DataAccessException;
-
-	//public UUID saveOrUpdateAll(Collection<T> transientObjects) throws DataAccessException;
 	
 	/**
 	 * @param newOrManagedObject
@@ -53,7 +51,7 @@ public interface ICdmEntityDao<T extends CdmBase> {
 		
 	public Session getSession() throws DataAccessException;
 
-		public Map<UUID, T> saveAll(Collection<T> cdmObjCollection) throws DataAccessException;
+	public Map<UUID, T> saveAll(Collection<T> cdmObjCollection) throws DataAccessException;
 
 	/**
 	 * @param transientObject
@@ -120,7 +118,7 @@ public interface ICdmEntityDao<T extends CdmBase> {
 	 * @return
 	 * @throws DataAccessException
 	 */
-	public <TYPE extends T> List<TYPE> list(Class<TYPE> type, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
+	public List<T> list(Class<? extends T> type, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
 	
 	/**
 	 * Returns a sublist of CdmBase instances stored in the database. A maximum
@@ -154,7 +152,7 @@ public interface ICdmEntityDao<T extends CdmBase> {
 	 * @return
 	 * @throws DataAccessException
 	 */
-	public <TYPE extends T> List<TYPE> list(Class<TYPE> type, Integer limit, Integer start) throws DataAccessException;
+	public List<T> list(Class<? extends T> type, Integer limit, Integer start) throws DataAccessException;
 	
     /**
      * Returns a sublist of objects matching the grouping projections supplied using the groups parameter
@@ -237,12 +235,12 @@ public interface ICdmEntityDao<T extends CdmBase> {
 	public int count();
 
 	/**
-	 * Returns the number of objects of type <TYPE> - which must extend T
-	 * @param <TYPE>
+	 * Returns the number of objects of type <T> - which must extend T
+	 * @param <T>
 	 * @param clazz
 	 * @return
 	 */
-	public <TYPE extends T> int count(Class<TYPE> clazz);
+	public int count(Class<? extends T> clazz);
 
 	/**
 	 * FIXME Should this method exist : I would expect flushing of a session to be

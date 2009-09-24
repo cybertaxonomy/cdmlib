@@ -10,9 +10,7 @@
 package eu.etaxonomy.cdm.persistence.dao.hibernate.description;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -28,7 +26,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
-import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
@@ -72,7 +69,7 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
 		return ((Long)query.uniqueResult()).intValue();
 	}
 
-	public <TYPE extends DescriptionElementBase> int countDescriptionElements(DescriptionBase description, Set<Feature> features, Class<TYPE> clazz) {
+	public int countDescriptionElements(DescriptionBase description, Set<Feature> features, Class<? extends DescriptionElementBase> clazz) {
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
 			Criteria criteria = null;
@@ -131,7 +128,7 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
 		}
 	}
 
-	public <TYPE extends DescriptionBase> int countDescriptions(Class<TYPE> clazz, Boolean hasImages, Boolean hasText, Set<Feature> features) {
+	public int countDescriptions(Class<? extends DescriptionBase> clazz, Boolean hasImages, Boolean hasText, Set<Feature> features) {
 		checkNotInPriorView("DescriptionDaoImpl.countDescriptions(Class<TYPE> type, Boolean hasImages, Boolean hasText, Set<Feature> features)");
 		Criteria inner = null;
 		
@@ -211,8 +208,7 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
 		}
 	}
 
-	public <TYPE extends DescriptionElementBase> List<TYPE> getDescriptionElements(DescriptionBase description, Set<Feature> features,	
-		Class<TYPE> clazz, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
+	public List<DescriptionElementBase> getDescriptionElements(DescriptionBase description, Set<Feature> features,Class<? extends DescriptionElementBase> clazz, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
 
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
@@ -238,13 +234,13 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
 		        }
 		    }
 		    
-		    List<TYPE> results = (List<TYPE>)criteria.list();
+		    List<DescriptionElementBase> results = (List<DescriptionElementBase>)criteria.list();
 		    
 		    defaultBeanInitializer.initializeAll(results, propertyPaths);
 		
 	    	return results; 
 		} else {
-			List<TYPE> result = new ArrayList<TYPE>();
+			List<DescriptionElementBase> result = new ArrayList<DescriptionElementBase>();
 			if(features != null && !features.isEmpty()) {
 				
 			    for(Feature f : features) {
@@ -260,7 +256,7 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
 			        }
 			     
 			        query.add(AuditEntity.relatedId("feature").eq(f.getId()));
-			        result.addAll((List<TYPE>)query.getResultList());
+			        result.addAll((List<DescriptionElementBase>)query.getResultList());
 			    }
 			} else {
 				AuditQuery query = null;
@@ -420,7 +416,7 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
 	 * 
 	 * outer.add(Subqueries.propertyIn("id", inner));
 	 */
-	public <TYPE extends DescriptionBase> List<TYPE> listDescriptions(Class<TYPE> clazz, Boolean hasImages, Boolean hasText,	Set<Feature> features, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+	public List<DescriptionBase> listDescriptions(Class<? extends DescriptionBase> clazz, Boolean hasImages, Boolean hasText,	Set<Feature> features, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
 		checkNotInPriorView("DescriptionDaoImpl.listDescriptions(Class<TYPE> type, Boolean hasImages, Boolean hasText,	Set<Feature> features, Integer pageSize, Integer pageNumber)");
 		Criteria inner = null;
 		
@@ -472,7 +468,7 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
 		List<Object> intermediateResult = (List<Object>)inner.list();
 		
 		if(intermediateResult.isEmpty()) {
-			return new ArrayList<TYPE>();
+			return new ArrayList<DescriptionBase>();
 		}
 		
 		Integer[] resultIds = new Integer[intermediateResult.size()];
@@ -495,7 +491,7 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
 		outer.add(Restrictions.in("id", resultIds));
 		addOrder(outer, orderHints);
 		
-		List<TYPE> results = (List<TYPE>)outer.list();
+		List<DescriptionBase> results = (List<DescriptionBase>)outer.list();
 		defaultBeanInitializer.initializeAll(results, propertyPaths);
 		return results;
 	}

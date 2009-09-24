@@ -99,7 +99,7 @@ public abstract class VersionableDaoBase<T extends VersionableEntity> extends Cd
 	}
 	
 	@Override
-	public <TYPE extends T> int count(Class<TYPE> clazz) {
+	public int count(Class<? extends T> clazz) {
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
 			return super.count(clazz);
@@ -131,7 +131,7 @@ public abstract class VersionableDaoBase<T extends VersionableEntity> extends Cd
 	}
 	
 	@Override
-	public <TYPE extends T> List<TYPE> list(Class<TYPE> type, Integer limit, Integer start) {
+	public List<T> list(Class<? extends T> type, Integer limit, Integer start) {
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
 			return super.list(type,limit, start);
@@ -141,7 +141,7 @@ public abstract class VersionableDaoBase<T extends VersionableEntity> extends Cd
 		   	  query.setMaxResults(limit);
 			  query.setFirstResult(start);
 			}
-			return (List<TYPE>)query.getResultList();
+			return (List<T>)query.getResultList();
 		}
 	}
 	

@@ -20,7 +20,7 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
  * @author a.mueller
  *
  */
-public interface ITermVocabularyDao extends IVersionableDao<TermVocabulary<DefinedTermBase>> {
+public interface ITermVocabularyDao extends IIdentifiableDao<TermVocabulary> {
 	
 	/**
 	 * Return a count of terms that belong to the termVocabulary supplied

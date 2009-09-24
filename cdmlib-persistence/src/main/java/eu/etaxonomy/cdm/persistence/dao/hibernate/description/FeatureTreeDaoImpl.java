@@ -17,7 +17,7 @@ import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.persistence.dao.description.IFeatureTreeDao;
-import eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmEntityDaoBase;
+import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
 
 /**
  * @author a.mueller
@@ -25,7 +25,7 @@ import eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmEntityDaoBase;
  * @version 1.0
  */
 @Repository
-public class FeatureTreeDaoImpl extends CdmEntityDaoBase<FeatureTree> implements IFeatureTreeDao{
+public class FeatureTreeDaoImpl extends IdentifiableDaoBase<FeatureTree> implements IFeatureTreeDao{
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(FeatureTreeDaoImpl.class);
 

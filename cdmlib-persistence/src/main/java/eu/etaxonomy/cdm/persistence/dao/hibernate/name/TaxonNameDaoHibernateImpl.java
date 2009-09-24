@@ -702,14 +702,4 @@ extends IdentifiableDaoBase<TaxonNameBase> implements ITaxonNameDao {
 			return list;	
 		}
 	}
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao#list(java.lang.Class, java.lang.Integer, java.lang.Integer, java.util.List, java.util.List)
-	 */
-	public <TYPE extends TaxonNameBase> List<TYPE> list(Class<TYPE> type,
-			Integer limit, Integer start, List<OrderHint> orderHints,
-			List<String> propertyPaths) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 }
