@@ -25,7 +25,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
@@ -164,6 +163,9 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 				}
 				TaxonomicTree tree = TaxonomicTree.NewInstance(treeName);
 				tree.setReference(ref);
+				if (i == 1 && state.getConfig().getTreeUuid() != null){
+					tree.setUuid(state.getConfig().getTreeUuid());
+				}
 				
 				getTaxonTreeService().save(tree);
 				state.putTree(ref, tree);
@@ -204,11 +206,8 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 		Source source = config.getSource();
 		
 		try {
-			if (config.isUseTaxonomicTree()){
-				success &= makeTaxonomicTrees(state);
-			}
-		
-		
+			success &= makeTaxonomicTrees(state);
+					
 			logger.info("start makeTaxonRelationships ...");
 
 			//get data from database
@@ -393,17 +392,12 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 	}
 	
 	private boolean makeTaxonomicallyIncluded(BerlinModelImportState state, Taxon child, Taxon parent, ReferenceBase citation, String microCitation){
-		if (state.getConfig().isUseTaxonomicTree() == false){
-			parent.addTaxonomicChild(child, citation, microCitation);
-			return true;
-		}else{
-			ReferenceBase toRef = parent.getSec();
-			TaxonomicTree tree = state.getTree(toRef);
-			if (tree == null){
-				throw new IllegalStateException("Tree for ToTaxon reference does not exist.");
-			}
-			return tree.addParentChild(parent, child, citation, microCitation);
+		ReferenceBase toRef = parent.getSec();
+		TaxonomicTree tree = state.getTree(toRef);
+		if (tree == null){
+			throw new IllegalStateException("Tree for ToTaxon reference does not exist.");
 		}
+		return tree.addParentChild(parent, child, citation, microCitation);
 	}
 	
 	/* (non-Javadoc)
