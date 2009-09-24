@@ -184,7 +184,7 @@ public abstract class ReferenceBase<S extends IReferenceBaseCacheStrategy> exten
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
-    @IndexedEmbedded
+    @IndexedEmbedded(depth = 1)
     @Cascade(CascadeType.SAVE_UPDATE)
 	protected ReferenceBase inReference;
     
