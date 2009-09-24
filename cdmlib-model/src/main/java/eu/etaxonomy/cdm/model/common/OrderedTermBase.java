@@ -24,6 +24,7 @@ import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
 import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
+import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
@@ -46,8 +47,7 @@ import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 	NamedArea.class,
 	NamedAreaLevel.class,
 	NomenclaturalStatusType.class,
-	Rank.class,
-	SpecimenTypeDesignationStatus.class
+	Rank.class
 })
 @Entity
 @Audited

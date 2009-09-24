@@ -11,12 +11,15 @@
 package eu.etaxonomy.cdm.model.taxon;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
@@ -29,16 +32,21 @@ import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.IndexedEmbedded;
 
+import eu.etaxonomy.cdm.jaxb.MultilanguageTextAdapter;
 import eu.etaxonomy.cdm.model.common.IReferencedEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
+import eu.etaxonomy.cdm.model.common.LanguageStringBase;
+import eu.etaxonomy.cdm.model.common.MultilanguageText;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
@@ -61,11 +69,11 @@ public class TaxonomicTree extends IdentifiableEntity implements IReferencedEnti
 	private static final long serialVersionUID = -753804821474209635L;
 	private static final Logger logger = Logger.getLogger(TaxonomicTree.class);
 	
-	@XmlElement(name = "name")
-	@XmlIDREF
-	@XmlSchemaType(name = "IDREF")
+	@XmlElement(name = "Name")
 	@OneToOne(fetch = FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE})
+	@JoinColumn(name = "name_id", referencedColumnName = "id")
+	@IndexedEmbedded
 	private LanguageString name;
 	
 //	@XmlElementWrapper(name = "allNodes")

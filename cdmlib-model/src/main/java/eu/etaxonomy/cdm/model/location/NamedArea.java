@@ -63,7 +63,11 @@ import eu.etaxonomy.cdm.model.media.Media;
     "level"
 })
 @XmlRootElement(name = "NamedArea")
-@XmlSeeAlso({TdwgArea.class})
+@XmlSeeAlso({
+	TdwgArea.class,
+	Continent.class,
+	WaterbodyOrCountry.class
+})
 @Entity
 @Audited
 public class NamedArea extends OrderedTermBase<NamedArea> {

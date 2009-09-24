@@ -49,14 +49,16 @@ import eu.etaxonomy.cdm.strategy.match.MatchMode;
     "updated",
     "updatedBy"
 })
+@XmlJavaTypeAdapter(value=DateTimeAdapter.class,type=DateTime.class)
 @MappedSuperclass
 public abstract class VersionableEntity extends CdmBase {
 	private static final long serialVersionUID = 1409299200302758513L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(VersionableEntity.class);
 	
-	@XmlElement(name ="Updated", type = String.class)
-	@XmlJavaTypeAdapter(DateTimeAdapter.class)
+	//@XmlElement(name ="Updated", type = String.class)
+	//@XmlJavaTypeAdapter(DateTimeAdapter.class)
+	@XmlElement(name ="Updated")
 	@Type(type="dateTimeUserType")
 	@Basic(fetch = FetchType.LAZY)
 	@Match(MatchMode.IGNORE)
