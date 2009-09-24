@@ -103,6 +103,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 			i++;
 			if ( (i % flushAfterNo) == 0){
 				try{
+					//TODO: fixme!!
 					logger.debug("flush");
 					flush();
 				}catch(Exception e){
@@ -155,6 +156,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 			logger.error(e.getIdentifier());
 			logger.error(e.getEntityName());
 			logger.error(e.getMessage());
+			
 			e.printStackTrace();
 			throw e;
 		} catch (HibernateException e) {

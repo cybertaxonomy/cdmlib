@@ -474,6 +474,8 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 	public List<Taxon> getAllTaxa(Integer limit, Integer start) {
 		return super.list(Taxon.class, limit, start);
 	}
+	
+	
 
 	public List<RelationshipBase> getAllRelationships(Integer limit, Integer start) {
 		AuditEvent auditEvent = getAuditEventFromContext();
