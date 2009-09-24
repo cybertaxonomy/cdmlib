@@ -49,7 +49,7 @@ public class DipteraActivator {
 	//database validation status (create, update, validate ...)
 	static DbSchemaValidation hbm2dll = DbSchemaValidation.CREATE;
 	static final Source berlinModelSource = BerlinModelSources.EDIT_Diptera();
-	static final ICdmDataSource cdmDestination = CdmDestinations.localH2();
+	static final ICdmDataSource cdmDestination = CdmDestinations.localH2Diptera();
 	static final UUID secUuid = UUID.fromString("06fd671f-1226-4e3b-beca-1959b3b32e20");
 	static final UUID treeUuid = UUID.fromString("1e3093f6-c761-4e96-8065-2c1334ddd0c1");
 	static final int sourceSecId = 1000000;
@@ -94,11 +94,11 @@ public class DipteraActivator {
 // **************** SELECTED *********************
 	
 //	//authors
-//	static final boolean doAuthors = true;
+//	static final boolean doAuthors = false;
 //	//references
 //	static final DO_REFERENCES doReferences =  DO_REFERENCES.NONE;
 //	//names
-//	static final boolean doTaxonNames = false;
+//	static final boolean doTaxonNames = true;
 //	static final boolean doRelNames = false;
 //	static final boolean doNameStatus = false;
 //	static final boolean doTypes = false;
@@ -106,8 +106,8 @@ public class DipteraActivator {
 //	
 //	//taxa
 //	static final boolean doTaxa = true;
-//	static final boolean doRelTaxa = false;
-//	static final boolean doFacts = true;
+//	static final boolean doRelTaxa = true;
+//	static final boolean doFacts = false;
 //	static final boolean doOccurences = false;
 //	
 //	//etc.
