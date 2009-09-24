@@ -149,7 +149,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
         		}
         	}
     	};
-    	addPropertyChangeListener(listener);
+    	propertyChangeSupport.addPropertyChangeListener(listener);
     }
     
 	/* (non-Javadoc)
