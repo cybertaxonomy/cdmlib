@@ -22,11 +22,14 @@ public class WarningTolerantValidationEventHandler extends
 		// ignore warnings
 		if (validationEvent.getSeverity() != ValidationEvent.WARNING) {
 		  ValidationEventLocator validationEventLocator = validationEvent.getLocator();
-		  logger.warn("Line:Col[" + validationEventLocator.getLineNumber() + ":" + validationEventLocator.getColumnNumber() +"]:" + validationEvent.getMessage());
+		 // logger.warn("Line:Col[" + validationEventLocator.getLineNumber() + ":" + validationEventLocator.getColumnNumber() +"]:" + validationEvent.getMessage());
+		
+		  //  validationEvent.getLinkedException().printStackTrace();
 		  return true;
 		} else {
 		   ValidationEventLocator validationEventLocator = validationEvent.getLocator();
-   		   logger.error("Line:Col[" + validationEventLocator.getLineNumber() + ":" + validationEventLocator.getColumnNumber() +"]:" + validationEvent.getMessage());
+		  // System.err.println("Stacktrace: "+validationEvent.getLinkedException().getMessage());
+   		   logger.warn("Line:Col[" + validationEventLocator.getLineNumber() + ":" + validationEventLocator.getColumnNumber() +"]:" + validationEvent.getMessage()+ " : "+validationEvent.getLinkedException().getStackTrace());
    		   
    		   return false;
 		}

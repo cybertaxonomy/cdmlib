@@ -171,8 +171,9 @@
           <xs:element name="SupportsIndividualAssociation" type="xs:boolean"/>
           <xs:element name="SupportsTaxonInteraction" type="xs:boolean"/>
           <xs:element name="SupportsCommonTaxonName" type="xs:boolean"/>
+          <xs:element name="SupportsCategoricalData" type="xs:boolean"/>
           <xs:element name="RecommendedModifierEnumerations" minOccurs="0">
-            <xs:complexType>
+           <xs:complexType>
               <xs:sequence>
                 <xs:element name="RecommendedModifierEnumeration" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
               </xs:sequence>
@@ -501,7 +502,7 @@
 
   <xs:complexType name="TextData">
     <xs:complexContent>
-      <xs:extension base="description:DescriptionElementBase">
+      <xs:extension base="common:ReferencedEntityBase">
         <xs:sequence>
           <xs:element name="MultiLanguageText" type="common:MultilanguageText" minOccurs="0"/>
           <xs:element name="Format" type="xs:IDREF" minOccurs="0"/>

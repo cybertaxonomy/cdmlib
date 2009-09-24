@@ -13,6 +13,7 @@ import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -98,7 +99,8 @@ public class JaxbImport extends CdmIoBase<JaxbImportState> implements ICdmIO<Jax
 		} 
 		
 		// save data in DB
-		logger.info("Saving data to DB... "); //+ dbname
+		logger.error("Saving data to DB... "); //+ dbname
+		
 		success = saveData(jaxbImpConfig, dataSet);
 		
 		return success;
@@ -125,8 +127,8 @@ public class JaxbImport extends CdmIoBase<JaxbImportState> implements ICdmIO<Jax
 
 		// Get an app controller that omits term loading
 		// CdmApplicationController.getCdmAppController(boolean createNew, boolean omitTermLoading){
-//		CdmApplicationController appCtr = jaxbImpConfig.getCdmAppController(false, true);
-		//TransactionStatus txStatus = startTransaction();
+		//CdmApplicationController appCtr = jaxbImpConfig.getCdmAppController(false, true);
+		TransactionStatus txStatus = startTransaction();
 		//TransactionStatus txStatus = null;
 
 		// Have single transactions per service save call. Otherwise, getting
@@ -139,9 +141,9 @@ public class JaxbImport extends CdmIoBase<JaxbImportState> implements ICdmIO<Jax
 
 		if ((jaxbImpConfig.isDoTermVocabularies() == true) 
 				&& (termVocabularies = dataSet.getTermVocabularies()).size() > 0) {
-			//txStatus = startTransaction();
+			txStatus = startTransaction();
 			ret &= saveTermVocabularies(termVocabularies);
-			//commitTransaction(txStatus);
+			commitTransaction(txStatus);
 		}
 		
 		if ((jaxbImpConfig.isDoTerms() == true)
@@ -234,7 +236,11 @@ public class JaxbImport extends CdmIoBase<JaxbImportState> implements ICdmIO<Jax
 			if (jaxbImpConfig.isDoTaxa() == true) {
 				if ((taxonBases = dataSet.getTaxonBases()).size() > 0) {
 					logger.info("Taxon bases: " + taxonBases.size());
-					getTaxonService().saveTaxonAll(taxonBases);
+					Iterator <TaxonBase> taxBases = taxonBases.iterator();
+					while (taxBases.hasNext()){
+						getTaxonService().save(taxBases.next());
+					}
+					//getTaxonService().saveTaxonAll(taxonBases);
 				}
 			}
 		} catch (Exception ex) {
@@ -308,8 +314,7 @@ public class JaxbImport extends CdmIoBase<JaxbImportState> implements ICdmIO<Jax
 			logger.error("Error saving media");
 			ret = false;
 		}
-		//commitTransaction(txStatus);
-
+		
 		//commitTransaction(txStatus);
 		logger.info("All data saved");
 
@@ -340,6 +345,7 @@ public class JaxbImport extends CdmIoBase<JaxbImportState> implements ICdmIO<Jax
 			getTermService().saveTermsAll(terms);
 		} catch (Exception ex) {
 			logger.error("Error saving terms");
+			ex.printStackTrace();
 			success = false;
 		}
 		return success;

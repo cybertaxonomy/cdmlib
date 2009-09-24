@@ -188,17 +188,17 @@
               </xs:sequence>
             </xs:complexType>
           </xs:element>
-          <xs:element name="TaxonBases" minOccurs="0">
-            <xs:complexType>
-              <xs:sequence>
-                <xs:element name="TaxonBase" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
-              </xs:sequence>
-            </xs:complexType>
-          </xs:element>
           <xs:element name="Descriptions" minOccurs="0">
             <xs:complexType>
               <xs:sequence>
                 <xs:element name="Description" type="description:TaxonNameDescription" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="TaxonBases" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="TaxonBase" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
               </xs:sequence>
             </xs:complexType>
           </xs:element>
@@ -209,7 +209,8 @@
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
-
+  
+  
   <xs:complexType name="HomotypicalGroup">
     <xs:complexContent>
       <xs:extension base="common:AnnotatableEntity">

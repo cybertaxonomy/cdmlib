@@ -122,7 +122,7 @@
     <xs:complexContent>
       <xs:extension base="common:IdentifiableEntity">
         <xs:sequence>
-          <xs:element name="taxTreeName" type="xs:IDREF" minOccurs="0"/>
+          <xs:element name="Name" type="common:LanguageString" minOccurs="0"/>
           <xs:element name="rootNodes" minOccurs="0">
             <xs:complexType>
               <xs:sequence>

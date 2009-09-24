@@ -14,9 +14,14 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.List;
 
+import javax.xml.transform.sax.SAXResult;
+
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
+import org.xml.sax.ContentHandler;
+import org.xml.sax.Locator;
+import org.xml.sax.helpers.DefaultHandler;
 
 import eu.etaxonomy.cdm.io.common.CdmExportBase;
 import eu.etaxonomy.cdm.io.common.CdmIoBase;
@@ -30,6 +35,7 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
 
 /**
  * @author a.babadshanjan
@@ -90,8 +96,15 @@ public class JaxbExport extends CdmExportBase<JaxbExportConfigurator, JaxbExport
 		try {
 			cdmDocumentBuilder = new CdmDocumentBuilder();
 			PrintWriter writer = new PrintWriter(new OutputStreamWriter(new FileOutputStream(fileName), "UTF8"), true);
+			
+			/*SAXResult result = new SAXResult();
+			ContentHandler handler = new DefaultHandler();
+			
+			result.setHandler(handler);*/
+			
+			//cdmDocumentBuilder.marshal(dataSet, result);
 			cdmDocumentBuilder.marshal(dataSet, writer);
-
+			
 			// TODO: Split into one file per data set member to see whether performance improves?
 
 			logger.info("XML file written");
@@ -123,6 +136,7 @@ public class JaxbExport extends CdmExportBase<JaxbExportConfigurator, JaxbExport
 		int occurrencesRows = numberOfRows;
 		int mediaRows = numberOfRows;
 		int featureDataRows = numberOfRows;
+		int taxonomicTreeDataRows = numberOfRows;
 		int languageDataRows = numberOfRows;
 		int termVocabularyRows = numberOfRows;
 		int homotypicalGroupRows = numberOfRows;
@@ -222,6 +236,11 @@ public class JaxbExport extends CdmExportBase<JaxbExportConfigurator, JaxbExport
 			if (featureDataRows == 0) { featureDataRows = MAX_ROWS; }
 			logger.info("# Feature Tree, Feature Node");
 			dataSet.setFeatureTrees(getDescriptionService().getFeatureTreesAll(null));
+		}
+		if (jaxbExpConfig.isDoTaxonomicTreeData() == true) {
+			if (taxonomicTreeDataRows == 0) { taxonomicTreeDataRows = MAX_ROWS; }
+			logger.info("# Taxonomic Tree");
+			dataSet.setTaxonomicTrees(getTaxonService().listTaxonomicTrees(taxonomicTreeDataRows, 0, null, null));
 		}
 	}
 
