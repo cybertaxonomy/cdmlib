@@ -188,7 +188,7 @@ public class TaxonNodeTest {
 	}
 	
 	@Test
-	public void testgetCountChildren(){
+	public void testGetCountChildren(){
 		TaxonNode root = taxonomicView1.addChildTaxon(taxon1, null, null, null);
 		assertEquals("Count of children must be 0", 0, root.getCountChildren());
 		TaxonNode child = root.addChildTaxon(taxon2, ref2, "p33", syn1);

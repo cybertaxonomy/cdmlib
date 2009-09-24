@@ -138,7 +138,7 @@ public class TaxonomicTree extends IdentifiableEntity implements IReferencedEnti
 			String microCitation, Synonym synonymToBeUsed) {
 		rootNodes.add(childNode);
 		childNode.setParent(null);
-		childNode.setTaxonomicView(this);
+		childNode.setTaxonomicTree(this);
 		childNode.setReference(citation);
 		childNode.setMicroReference(microCitation);
 		childNode.setSynonymToBeUsed(synonymToBeUsed);
@@ -164,7 +164,7 @@ public class TaxonomicTree extends IdentifiableEntity implements IReferencedEnti
 		TaxonNode newRoot = new TaxonNode(taxon, this);
 		rootNodes.add(newRoot);
 		newRoot.setParent(null);
-		newRoot.setTaxonomicView(this);
+		newRoot.setTaxonomicTree(this);
 		newRoot.setTaxon(taxon);
 		newRoot.setReferenceForParentChildRelation(reference);
 		newRoot.setSynonymToBeUsed(synonymUsed);
@@ -203,7 +203,7 @@ public class TaxonomicTree extends IdentifiableEntity implements IReferencedEnti
 		result = rootNodes.remove(node);
 
 		node.setParent(null);
-		node.setTaxonomicView(null);
+		node.setTaxonomicTree(null);
 		
 		return result;
 	}
@@ -242,7 +242,7 @@ public class TaxonomicTree extends IdentifiableEntity implements IReferencedEnti
 			throw new IllegalArgumentException("root node and other node must not be the same");
 		}
 		otherNode.addChildNode(root, ref, microReference, null);
-		getRootNodes().remove(root);
+		//getRootNodes().remove(root);
 	}
 	
 //	public void makeThisNodePartOfOtherView(TaxonNode oldRoot, TaxonNode replacedNodeInOtherView, ReferenceBase reference, String microReference){
