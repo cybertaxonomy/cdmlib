@@ -52,73 +52,73 @@ public class CichorieaeImageImport extends AbstractImageImporter {
 	private static final String NAME = "NAME";
 	//private static final String CODE = "CODE";
 
-	/** 
-	 * Imports images from an Excel file.
-	 */
-	protected boolean invokeImageImport_ (ImageImportConfigurator config){
-		
-		ArrayList<HashMap<String, String>> contents;
-		try {
-			contents = ExcelUtils.parseXLS(config.getSource().toString());
-		} catch (FileNotFoundException e1) {
-			logger.error("FileNotFound: " + config.getSource().toString());
-			return false;
-		}
-		
-		for (HashMap<String, String> row : contents){
-			
-			String taxonName = row.get(CichorieaeImageImport.NAME).trim();
-			
-			INameService nameService = getNameService();
-			List<TaxonBase> taxa = taxonService.searchTaxaByName(taxonName, config.getSourceReference());			
-			
-			if(taxa.size() == 0){
-				logger.warn("no taxon with this name found: " + taxonName);
-			}else if(taxa.size() > 1){
-				logger.warn("multiple taxa with this name found: " + taxonName);
-			}else{
-				Taxon taxon = (Taxon) taxa.get(0);
-				
-				taxonService.saveTaxon(taxon);
-				
-				TextData feature = TextData.NewInstance();
-				
-				logger.info("Importing image for taxon: " + taxa);
-				
-				
-				ImageMetaData imageMetaData = new ImageMetaData();
-				
-				
-				try {
-					URL url = new URL(row.get(CichorieaeImageImport.URL).trim());
-					
-					imageMetaData.readFrom(url);
-					
-					ImageFile image = ImageFile.NewInstance(url.toString(), null, imageMetaData);
-					
-					MediaRepresentation representation = MediaRepresentation.NewInstance(imageMetaData.getMimeType(), null);
-					representation.addRepresentationPart(image);
-					
-					Media media = Media.NewInstance();
-					media.addRepresentation(representation);
-					
-					feature.addMedia(media);
-					
-					feature.setType(Feature.IMAGE());
-					
-					TaxonDescription description = TaxonDescription.NewInstance(taxon);
-					
-					description.addElement(feature);
-					
-				} catch (MalformedURLException e) {
-					logger.error("Malformed URL", e);
-				}
-				
-			}
-		}
-		return true;
-		
-	}
+//	/** 
+//	 * Imports images from an Excel file.
+//	 */
+//	protected boolean invokeImageImport_ (ImageImportConfigurator config){
+//		
+//		ArrayList<HashMap<String, String>> contents;
+//		try {
+//			contents = ExcelUtils.parseXLS(config.getSource().toString());
+//		} catch (FileNotFoundException e1) {
+//			logger.error("FileNotFound: " + config.getSource().toString());
+//			return false;
+//		}
+//		
+//		for (HashMap<String, String> row : contents){
+//			
+//			String taxonName = row.get(CichorieaeImageImport.NAME).trim();
+//			
+//			INameService nameService = getNameService();
+//			List<TaxonBase> taxa = taxonService.searchTaxaByName(taxonName, config.getSourceReference());			
+//			
+//			if(taxa.size() == 0){
+//				logger.warn("no taxon with this name found: " + taxonName);
+//			}else if(taxa.size() > 1){
+//				logger.warn("multiple taxa with this name found: " + taxonName);
+//			}else{
+//				Taxon taxon = (Taxon) taxa.get(0);
+//				
+//				taxonService.saveTaxon(taxon);
+//				
+//				TextData feature = TextData.NewInstance();
+//				
+//				logger.info("Importing image for taxon: " + taxa);
+//				
+//				
+//				ImageMetaData imageMetaData = new ImageMetaData();
+//				
+//				
+//				try {
+//					URL url = new URL(row.get(CichorieaeImageImport.URL).trim());
+//					
+//					imageMetaData.readFrom(url);
+//					
+//					ImageFile image = ImageFile.NewInstance(url.toString(), null, imageMetaData);
+//					
+//					MediaRepresentation representation = MediaRepresentation.NewInstance(imageMetaData.getMimeType(), null);
+//					representation.addRepresentationPart(image);
+//					
+//					Media media = Media.NewInstance();
+//					media.addRepresentation(representation);
+//					
+//					feature.addMedia(media);
+//					
+//					feature.setType(Feature.IMAGE());
+//					
+//					TaxonDescription description = TaxonDescription.NewInstance(taxon);
+//					
+//					description.addElement(feature);
+//					
+//				} catch (MalformedURLException e) {
+//					logger.error("Malformed URL", e);
+//				}
+//				
+//			}
+//		}
+//		return true;
+//		
+//	}
 	
 	/** 
 	 * Imports images from a directory.
