@@ -46,6 +46,10 @@ public class FeatureTreeServiceImpl extends IdentifiableServiceBase<FeatureTree,
 			rootPaths.add("root." + path);
 		}
 		
+		if(propertyPaths != null) { 
+		    rootPaths.addAll(propertyPaths);
+		}
+		
 		FeatureTree featureTree = load(uuid, rootPaths);
 		loadNodes(featureTree.getRoot(),nodePaths);
 		return featureTree;
