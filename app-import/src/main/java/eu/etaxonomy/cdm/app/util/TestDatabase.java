@@ -41,6 +41,8 @@ import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
 
 /**
  * @author a.babadshanjan
@@ -108,6 +110,8 @@ public class TestDatabase {
 	    List<ReferenceBase> references = new ArrayList<ReferenceBase>();
 	    List<TaxonNameBase> taxonomicNames = new ArrayList<TaxonNameBase>();
 	    List<TaxonBase> taxonBases = new ArrayList<TaxonBase>();
+	    
+	    
 //	    List<Synonym> synonyms = new ArrayList<Synonym>();
 	    List<AnnotatableEntity> homotypicalGroups;
 
@@ -116,13 +120,17 @@ public class TestDatabase {
 		BotanicalName nameRoot2, nameR2_1, nameR2_2;
 		Taxon child1, child2, child21, root1T, root2T, freeT;
 		Taxon childR2_1, childR2_2;
+		TaxonNode child1Node, child2Node, child21Node, root1TNode, root2TNode, freeTNode;
+		TaxonNode childR2_1Node, childR2_2Node;
+		TaxonomicTree taxTree, taxTree2;
 		Synonym syn11, syn12, syn2, synFree;
 		Rank rankSpecies, rankSubspecies, rankGenus;
 
 		// agents 
 		// - persons, institutions 
 
-		Person linne = new Person("Carl", "Linné", "L.");
+		Person linne = new Person("Carl", "Linne", "L.");
+		linne.setTitleCache("Linne & Karl");
 		GregorianCalendar birth = new GregorianCalendar(1707, 4, 23);
 		GregorianCalendar death = new GregorianCalendar(1778, 0, 10);
 		TimePeriod period = TimePeriod.NewInstance(birth, death);
@@ -194,7 +202,7 @@ public class TestDatabase {
 		
 		sec = Book.NewInstance();
 		sec.setAuthorTeam(linne);
-		sec.setTitleCache("Plant Speciation");
+		sec.setTitleCache("Plant Specification & Taxonomy");
 		references.add(sec);
 		
 		citRef = Database.NewInstance();
@@ -233,12 +241,27 @@ public class TestDatabase {
 		// taxonomic children
 		
 		//TODO: Adapt to taxonomic tree
+		taxTree = TaxonomicTree.NewInstance("TestTree");
+		
+		root1TNode = taxTree.addRoot(root1T, null, sec);
+		child1Node = root1TNode.addChild(child1);
+		child2Node = root1TNode.addChild(child2);
+		child21Node = child2Node.addChild(child21);
+		
+		taxTree2 = TaxonomicTree.NewInstance("TestTree2");
+		
+		root2TNode = taxTree2.addRoot(root2T, null, sec);
+		root2TNode.addChild(child1, sec, "p.1010", syn11);
+		root2TNode.addChild(child2);
+		
+		/*
 		root1T.addTaxonomicChild(child1, sec, "p.1010");
 		root1T.addTaxonomicChild(child2, sec, "p.1020");
 		child2.addTaxonomicChild(child21, sec, "p.2000");
 				
 		root2T.addTaxonomicChild(child1, sec, "p.1010");
 		root2T.addTaxonomicChild(child2, sec, "p.1020");
+		*/
 		
 		taxonBases.add(root1T);
 		taxonBases.add(root2T);
