@@ -17,6 +17,7 @@ import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 
 public class CdmDestinations {
+	@SuppressWarnings("unused")
 	private static Logger logger = Logger.getLogger(CdmDestinations.class);
 	
 	public static ICdmDataSource cdm_1_1(){
@@ -100,6 +101,14 @@ public class CdmDestinations {
 		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
 		String cdmServer = "192.168.2.10";
 		String cdmDB = "cdm_test_andreas_palmae"; 
+		String cdmUserName = "edit";
+		return makeDestination(cdmServer, cdmDB, -1, cdmUserName, null);
+	}
+	
+	public static ICdmDataSource cdm_test_andreas_cichorieae(){
+		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
+		String cdmServer = "192.168.2.10";
+		String cdmDB = "cdm_test_andreas_cichorieae"; 
 		String cdmUserName = "edit";
 		return makeDestination(cdmServer, cdmDB, -1, cdmUserName, null);
 	}
@@ -362,14 +371,15 @@ public class CdmDestinations {
 		return makeDestination(cdmServer, cdmDB, port, cdmUserName, null);
 	}
 	
-	public static ICdmDataSource cdm_edit_palmae_preview_B(){
+	public static ICdmDataSource cdm_edit_cichorieae_preview_B(){
 		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
 		String cdmServer = "127.0.0.1";
-		String cdmDB = "cdm_edit_palmae_b"; 
+		String cdmDB = "cdm_edit_cichorieae_b"; 
 		String cdmUserName = "edit";
 		int port = 13306;
 		return makeDestination(cdmServer, cdmDB, port, cdmUserName, null);
 	}
+
 	public static ICdmDataSource cdm_edit_palmae_preview_A(){
 		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
 		String cdmServer = "127.0.0.1";
@@ -378,6 +388,15 @@ public class CdmDestinations {
 		int port = 13306;
 		return makeDestination(cdmServer, cdmDB, port, cdmUserName, null);
 	}		
+	
+	public static ICdmDataSource cdm_edit_palmae_preview_B(){
+		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
+		String cdmServer = "127.0.0.1";
+		String cdmDB = "cdm_edit_palmae_b"; 
+		String cdmUserName = "edit";
+		int port = 13306;
+		return makeDestination(cdmServer, cdmDB, port, cdmUserName, null);
+	}
 	
 	public static ICdmDataSource cdm_v1_palmae(){
 		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
