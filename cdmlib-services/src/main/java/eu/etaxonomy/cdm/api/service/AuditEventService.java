@@ -38,12 +38,11 @@ public class AuditEventService implements IAuditEventService {
 		return dao.exists(uuid);
 	}
 
-	public AuditEvent findById(Integer id) {
+	public AuditEvent find(Integer id) {
 		return dao.findById(id);
 	}
 
-	// FIXME Rename -> find
-	public AuditEvent findByUuid(UUID uuid) {
+	public AuditEvent find(UUID uuid) {
 		return dao.findByUuid(uuid);
 	}
 

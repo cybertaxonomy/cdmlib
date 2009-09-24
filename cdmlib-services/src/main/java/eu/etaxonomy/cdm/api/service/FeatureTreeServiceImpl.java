@@ -1,6 +1,8 @@
 package eu.etaxonomy.cdm.api.service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,4 +37,24 @@ public class FeatureTreeServiceImpl extends IdentifiableServiceBase<FeatureTree,
 		return featureNodeDao.list();
 	}
 
+	public FeatureTree loadWithNodes(UUID uuid, List<String> propertyPaths, List<String> nodePaths) {
+		nodePaths.add("children");
+		
+		List<String> rootPaths = new ArrayList<String>();
+		rootPaths.add("root");
+		for(String path : nodePaths) {
+			rootPaths.add("root." + path);
+		}
+		
+		FeatureTree featureTree = load(uuid, rootPaths);
+		loadNodes(featureTree.getRoot(),nodePaths);
+		return featureTree;
+	}
+	
+	private void loadNodes(FeatureNode node, List<String> nodePaths) {
+		for(FeatureNode child : node.getChildren()) {
+			FeatureNode featureNode = featureNodeDao.load(child.getUuid(),nodePaths);
+			loadNodes(featureNode,nodePaths);
+		}
+	}
 }

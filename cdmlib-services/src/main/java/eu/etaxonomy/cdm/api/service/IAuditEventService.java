@@ -36,7 +36,7 @@ public interface IAuditEventService {
 	 * @param id
 	 * @return an AuditEvent, or null if there is no AuditEvent with that identifier
 	 */
-    public AuditEvent findById(Integer Id);
+    public AuditEvent find(Integer Id);
     
     /**
      * Find the AuditEvent with a uuid (surrogate key) equal to the uuid supplied
@@ -44,7 +44,7 @@ public interface IAuditEventService {
      * @param uuid
      * @return an AuditEvent, or null if there is no AuditEvent with a uuid which matches
      */
-    public AuditEvent findByUuid(UUID uuid);
+    public AuditEvent find(UUID uuid);
     
     /**
      * Checks whether an AuditEvent with a matching uuid exists in the database
