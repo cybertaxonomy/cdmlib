@@ -51,13 +51,7 @@ public class CacheStrategyGenerator implements SaveOrUpdateEventListener {
 				    }
 				}
 	          }
-            
-        	//title cache
-        	if(IdentifiableEntity.class.isAssignableFrom(entityClazz)) {
-        		IdentifiableEntity identifiableEntity = (IdentifiableEntity)entity;
-        		identifiableEntity.getTitleCache();
-            }
-        	
+
         	//non-viral-name caches
         	if(NonViralName.class.isAssignableFrom(entityClazz)) {
         		NonViralName nonViralName = (NonViralName)entity;
@@ -65,7 +59,12 @@ public class CacheStrategyGenerator implements SaveOrUpdateEventListener {
         		nonViralName.getAuthorshipCache();
         		nonViralName.getNameCache();
             }
-        	
+            
+        	//title cache
+        	if(IdentifiableEntity.class.isAssignableFrom(entityClazz)) {
+        		IdentifiableEntity identifiableEntity = (IdentifiableEntity)entity;
+        		identifiableEntity.getTitleCache();
+            }
         	
         }
     }
