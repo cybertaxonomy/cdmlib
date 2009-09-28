@@ -54,14 +54,15 @@ public class CacheStrategyGenerator implements SaveOrUpdateEventListener {
 
         	//non-viral-name caches
         	if(NonViralName.class.isAssignableFrom(entityClazz)) {
-        		NonViralName nonViralName = (NonViralName)entity;
-        		nonViralName.getFullTitleCache();
+        		NonViralName<?> nonViralName = (NonViralName<?>)entity;
         		nonViralName.getAuthorshipCache();
         		nonViralName.getNameCache();
-            }
+        		nonViralName.getTitleCache();
+        		nonViralName.getFullTitleCache();
+        	}
             
         	//title cache
-        	if(IdentifiableEntity.class.isAssignableFrom(entityClazz)) {
+        	else if(IdentifiableEntity.class.isAssignableFrom(entityClazz)) {
         		IdentifiableEntity identifiableEntity = (IdentifiableEntity)entity;
         		identifiableEntity.getTitleCache();
             }

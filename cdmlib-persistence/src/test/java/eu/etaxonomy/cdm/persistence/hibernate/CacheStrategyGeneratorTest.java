@@ -27,6 +27,7 @@ import org.unitils.dbunit.annotation.ExpectedDataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.model.name.BotanicalName;
+import eu.etaxonomy.cdm.model.reference.Book;
 import eu.etaxonomy.cdm.model.reference.Generic;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
@@ -88,11 +89,11 @@ public class CacheStrategyGeneratorTest extends CdmIntegrationTest {
 		name2.setGenusOrUninomial("Abies");
 		name2.setSpecificEpithet("alba");
 		name2.setAuthorshipCache("Mill.", true);
-		Generic ref = Generic.NewInstance();
-		ref.setTitleCache("NomRefTitle");
+		Book ref = Book.NewInstance();
+		ref.setTitle("My Book");
 		name2.setNomenclaturalReference(ref);
 		name2.setNomenclaturalMicroReference("44");
-		System.out.println(name.getTitleCache());
+		System.out.println(name.getFullTitleCache());
 		
 		cdmEntityDaoBase.saveOrUpdate(name2);
 		BotanicalName name3 =  (BotanicalName)cdmEntityDaoBase.findByUuid(UUID.fromString("049a3963-c4ea-4047-8588-2f8f15352730"));
