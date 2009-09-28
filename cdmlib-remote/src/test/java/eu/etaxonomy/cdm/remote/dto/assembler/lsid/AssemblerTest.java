@@ -30,7 +30,6 @@ import org.hibernate.proxy.LazyInitializer;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.UnitilsJUnit4;
 import org.unitils.spring.annotation.SpringApplicationContext;
@@ -39,6 +38,7 @@ import org.unitils.spring.annotation.SpringBeanByType;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
+import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.NonViralName;
@@ -191,6 +191,8 @@ public class AssemblerTest extends UnitilsJUnit4 {
 					return proxy.invoke(obj, args);
 				} else if("hashCode".equals(method.getName())) {
 					return wrappedClass.hashCode();
+				} else if("initListener".equals(method.getName())) {
+					return null;
 				} else {
 					throw new LazyInitializationException(null);
 				}
