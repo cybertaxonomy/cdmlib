@@ -69,7 +69,7 @@ public class CdmDeleteListenerTest extends CdmIntegrationTest {
 			if (!file.exists()){
 				file.createNewFile();
 			}
-			printDataSet(new FileOutputStream(file));
+			//printDataSet(new FileOutputStream(file));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
