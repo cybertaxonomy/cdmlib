@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import eu.etaxonomy.cdm.api.service.ITermService;
+import eu.etaxonomy.cdm.api.service.IVocabularyService;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.OrderedTermBase;
@@ -56,6 +57,13 @@ public class TermListController extends BaseListController<DefinedTermBase, ITer
 			"representations",
 			"terms.representations"
 	});
+	
+	private IVocabularyService vocabularyService;
+	
+	@Autowired
+	public void setVocabularyService(IVocabularyService vocabularyService) {
+		this.vocabularyService = vocabularyService;
+	}
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.remote.controller.AbstractListController#setService(eu.etaxonomy.cdm.api.service.IService)
@@ -76,14 +84,14 @@ public class TermListController extends BaseListController<DefinedTermBase, ITer
 	@SuppressWarnings("unchecked")
 	@RequestMapping(method = RequestMethod.GET,
 		value = "/*/term/")
-	public Pager<TermVocabulary<DefinedTermBase>> doGetVocabularies(
+	public Pager<TermVocabulary> doGetVocabularies(
 			@RequestParam(value = "page", required = false) Integer page,
 			@RequestParam(value = "pageSize", required = false) Integer pageSize) {
 		
 		if(page == null){ page = DEFAULT_PAGE_NUMBER;}
 		if(pageSize == null){ pageSize = DEFAULT_PAGESIZE;}
 		
-		return (Pager<TermVocabulary<DefinedTermBase>>) service.pageTermVocabularies(pageSize, page, null, VOCABULARY_LIST_INIT_STRATEGY);
+		return (Pager<TermVocabulary>) vocabularyService.page(null,pageSize, page, null, VOCABULARY_LIST_INIT_STRATEGY);
 	}
 	
 	/**
@@ -98,7 +106,7 @@ public class TermListController extends BaseListController<DefinedTermBase, ITer
 		value = "/*/term/?*")
 	public TermVocabulary<DefinedTermBase> doGetTerms(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		UUID uuid = readValueUuid(request, "^/(?:[^/]+)/term/([^/?#&\\.]+).*");
-		TermVocabulary<DefinedTermBase> vocab = service.loadVocabulary(uuid, VOCABULARY_INIT_STRATEGY);
+		TermVocabulary<DefinedTermBase> vocab = vocabularyService.load(uuid, VOCABULARY_INIT_STRATEGY);
 		return vocab;
 	}
 	
@@ -116,8 +124,8 @@ public class TermListController extends BaseListController<DefinedTermBase, ITer
 		ModelAndView mv = new ModelAndView();
 		UUID uuidThis = readValueUuid(request, "^/(?:[^/]+)/term/([^/?#&\\.]+).*");
 		UUID uuidThat = readValueUuid(request, "^/(?:[^/]+)/term/(?:[^/]+)/compareTo/([^/?#&\\.]+).*");
-		DefinedTermBase thisTerm = service.loadTerm(uuidThis, TERM_COMPARE_INIT_STRATEGY);
-		DefinedTermBase thatTerm = service.loadTerm(uuidThat, TERM_COMPARE_INIT_STRATEGY);
+		DefinedTermBase thisTerm = service.load(uuidThis, TERM_COMPARE_INIT_STRATEGY);
+		DefinedTermBase thatTerm = service.load(uuidThat, TERM_COMPARE_INIT_STRATEGY);
 		if(thisTerm.getVocabulary().equals(thatTerm.getVocabulary())){
 			if(OrderedTermBase.class.isAssignableFrom(thisTerm.getClass())){
 				Integer result = ((OrderedTermBase)thisTerm).compareTo((OrderedTermBase)thatTerm);

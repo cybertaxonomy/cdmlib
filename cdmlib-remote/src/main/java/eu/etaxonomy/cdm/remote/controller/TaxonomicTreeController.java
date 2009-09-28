@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import eu.etaxonomy.cdm.api.service.ITaxonService;
+import eu.etaxonomy.cdm.api.service.ITaxonTreeService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.database.UpdatableRoutingDataSource;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
@@ -57,7 +58,7 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
  * TODO this controller should be a portal controller!!
  */
 @Controller
-public class TaxonomicTreeController extends AbstractListController<TaxonBase, ITaxonService> {
+public class TaxonomicTreeController extends AbstractListController<TaxonomicTree,ITaxonTreeService> {
 	
 	
 	private static final List<String> TAXONTREE_INIT_STRATEGY = Arrays.asList(new String[]{
@@ -72,20 +73,27 @@ public class TaxonomicTreeController extends AbstractListController<TaxonBase, I
 
 	public static final Logger logger = Logger.getLogger(TaxonomicTreeController.class);
 
-	private ITaxonService service;
+	private ITaxonService taxonService;
+	
+	private ITaxonTreeService service;
 	
 	private ITermService termService;
 	
 	private Pattern parameterPattern = Pattern.compile("^/(?:[^/]+)/portal/taxontree/([^?#&\\.]+).*");
 
 	@Autowired
-	public void setService(ITaxonService service) {
+	public void setService(ITaxonTreeService service) {
 		this.service = service; 
 	}
 	
 	@Autowired
 	public void setTermService(ITermService termService) {
 		this.termService = termService;
+	}
+	
+	@Autowired
+	public void setTaxonService(ITaxonService taxonService) {
+		this.taxonService = taxonService;
 	}
 
 	
@@ -111,7 +119,7 @@ public class TaxonomicTreeController extends AbstractListController<TaxonBase, I
 	public List<TaxonomicTree> getTaxonomicTrees(HttpServletRequest request, HttpServletResponse response)
 			throws IOException {
 		logger.info("getTaxonomicTrees()");
-		return service.listTaxonomicTrees(null, null, null, TAXONTREE_INIT_STRATEGY);
+		return service.list(null, null, null,null, TAXONTREE_INIT_STRATEGY);
 	}
 	
 	
@@ -199,7 +207,7 @@ public class TaxonomicTreeController extends AbstractListController<TaxonBase, I
 		//TODO rank is being ignored
 		try {
 			UUID uuid = stringToUuid(uriParams.get(uriParams.size() - 1));
-			Taxon taxon = (Taxon) service.load(uuid);
+			Taxon taxon = (Taxon) taxonService.load(uuid);
 			List<TaxonNode> childs = service.loadChildNodesOfTaxon(taxon, tree, NODE_INIT_STRATEGY);
 			return childs;
 		} catch (ClassCastException cce) {
@@ -240,7 +248,7 @@ public class TaxonomicTreeController extends AbstractListController<TaxonBase, I
 		TaxonomicTree tree = readTreeByUuid(uriParams.get(0));
 		Rank rank = readRankByUuid(uriParams.get(0));
 		UUID taxonUuid = stringToUuid(uriParams.get(uriParams.size() - 2));
-		Taxon taxon = (Taxon) service.load(taxonUuid);
+		Taxon taxon = (Taxon) taxonService.load(taxonUuid);
 
 		return service.loadTreeBranchToTaxon(taxon, tree, rank, NODE_INIT_STRATEGY);
 	}
@@ -296,7 +304,7 @@ public class TaxonomicTreeController extends AbstractListController<TaxonBase, I
 		if((pos = paramStr.indexOf(',')) > 0){
 			String uuidStr = paramStr.substring(pos + 1);
 			UUID uuid = UUID.fromString(uuidStr);
-			DefinedTermBase dt =  termService.findByUuid(uuid);
+			DefinedTermBase dt =  termService.find(uuid);
 			if(dt instanceof Rank){
 				return (Rank)dt;
 			} else {

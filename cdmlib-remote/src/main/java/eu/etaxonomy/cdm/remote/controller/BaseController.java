@@ -81,7 +81,7 @@ public abstract class BaseController<T extends CdmBase, SERVICE extends IService
 			
 			if(initStrategy == null){
 				// may be null is set to null via the setter
-				obj = service.findByUuid(uuid);
+				obj = service.find(uuid);
 			} else {				
 				obj = service.load(uuid, initStrategy);
 			}

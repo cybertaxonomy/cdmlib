@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
+import eu.etaxonomy.cdm.api.service.IFeatureTreeService;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
 
@@ -34,6 +35,9 @@ import eu.etaxonomy.cdm.model.description.FeatureTree;
 @Controller
 @RequestMapping(value = {"/*/description", "/*/featuretree"})
 public class DescriptionListController extends BaseListController<DescriptionBase, IDescriptionService> {
+	
+	@Autowired
+	private IFeatureTreeService featureTreeService;
 	
 	private static final List<String> FEATURETREE_INIT_STRATEGY = Arrays.asList(
 			new String[]{
@@ -54,7 +58,7 @@ public class DescriptionListController extends BaseListController<DescriptionBas
 	@RequestMapping(method = RequestMethod.GET, value="/*/featuretree")
 	public List<FeatureTree> doGetFeatureTrees(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		
-		List<FeatureTree> obj = service.getFeatureTreesAll(FEATURETREE_INIT_STRATEGY);
+		List<FeatureTree> obj = featureTreeService.list(null,null,null,null,FEATURETREE_INIT_STRATEGY);
 		return obj;
 	}
 }

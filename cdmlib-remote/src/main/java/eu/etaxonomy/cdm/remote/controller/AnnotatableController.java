@@ -49,7 +49,7 @@ public abstract class AnnotatableController<T extends AnnotatableEntity, SERVICE
 			UUID uuid = readValueUuid(request, null);
 			Assert.notNull(uuid, HttpStatusMessage.UUID_NOT_FOUND.toString());
 			
-			annotatableEntity = service.findByUuid(uuid);
+			annotatableEntity = service.find(uuid);
 			Assert.notNull(annotatableEntity, HttpStatusMessage.UUID_NOT_FOUND.toString());
 		} catch (IllegalArgumentException iae) {
 			HttpStatusMessage.fromString(iae.getMessage()).send(response);
