@@ -46,7 +46,8 @@ public class Datasource {
 		System.out.println(lsDataSources);
 		CdmPersistentDataSource dataSource = lsDataSources.get(0);
 		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
-		CdmPersistentDataSource.save(dataSource.getName(), dbType, "192.168.2.10", "cdm_test_andreas", "edit", "");
+//		ICdmDataSource dataSource = CdmDataSource.NewInstance(dbType, "192.168.2.10", "cdm_test_andreas", dbType.getDefaultPort() + "", "edit", "", null, null);
+		CdmPersistentDataSource.save(dataSource.getName(), dataSource, null);
 		CdmApplicationController appCtr;
 		try {
 			appCtr = CdmApplicationController.NewInstance(dataSource);
@@ -76,7 +77,9 @@ public class Datasource {
 			String username = "edit";
 			String password = "";
 			
-			appCtr.getDatabaseService().saveDataSource("testSqlServer", dbType, server, database, username, password);
+			ICdmDataSource dataSource = CdmDataSource.NewInstance(DatabaseTypeEnum.SqlServer2005, "LAPTOPHP", "cdmTest", DatabaseTypeEnum.SqlServer2005.getDefaultPort(), "edit", "");
+			
+			appCtr.getDatabaseService().saveDataSource("testSqlServer", dataSource, null);
 			appCtr.getDatabaseService().connectToDatabase(dbType, server, database, username, password);
 			
 			appCtr.close();
@@ -132,7 +135,10 @@ public class Datasource {
 		String database = "cdmTest";
 		String username = "edit";
 		String password = "";
-		CdmPersistentDataSource ds = CdmPersistentDataSource.save("testSqlServer", databaseTypeEnum, server, database, username, password);
+		
+		ICdmDataSource dataSource = CdmDataSource.NewInstance(databaseTypeEnum, server, database, databaseTypeEnum.getDefaultPort(), username, password); 
+		
+		CdmPersistentDataSource ds = CdmPersistentDataSource.save("testSqlServer", dataSource, null);
 		try {
 			CdmApplicationController appCtr = CdmApplicationController.NewInstance(ds);
 			Person agent = Person.NewInstance();
@@ -153,7 +159,10 @@ public class Datasource {
 		String database = "cdm_test";
 		String username = "edit";
 		String password = "";
-		CdmPersistentDataSource ds = CdmPersistentDataSource.save("PostgreTest", databaseTypeEnum, server, database, username, password);
+		
+		ICdmDataSource dataSource = CdmDataSource.NewInstance(databaseTypeEnum, server, database, databaseTypeEnum.getDefaultPort(), username, password); 
+		
+		CdmPersistentDataSource ds = CdmPersistentDataSource.save("PostgreTest", dataSource, null);
 		try {
 			CdmApplicationController appCtr = CdmApplicationController.NewInstance(ds);
 			Person agent = Person.NewInstance();

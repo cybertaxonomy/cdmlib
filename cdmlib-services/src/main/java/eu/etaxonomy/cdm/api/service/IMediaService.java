@@ -22,7 +22,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
-public interface IMediaService extends IIdentifiableEntityService<Media> {
+public interface IMediaService extends IAnnotatableService<Media> {
 
 	/**
 	 * Return a List of MediaKeys, optionally filtered by the parameters passed.

@@ -2159,6 +2159,7 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IReferenceService.jav
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/ITaxonNodeComparator.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/ITaxonService.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/ITaxonTreeService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/ITermService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IUserService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IVersionableService.java -text
@@ -2173,6 +2174,7 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/ServiceBase.java -tex
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/ServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/TaxonNodeByNameComparator.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/TaxonServiceImpl.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/TaxonTreeServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/TermServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/UserService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/VersionableServiceBase.java -text
@@ -2220,6 +2222,7 @@ cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/DescriptionServiceImp
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/NameServiceImplTest2.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/TaxonServiceImplTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/TaxonServiceSearchTest.java -text
+cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/TaxonTreeServiceImplTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/TermServiceImplTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/UserServiceImplTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/lsid/LSIDAuthorityServiceTest.java -text

@@ -118,3 +118,4 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 		  return new DefaultPagerImpl<T>(pageNumber, numberOfResults, pageSize, results);
 	}
 }
+

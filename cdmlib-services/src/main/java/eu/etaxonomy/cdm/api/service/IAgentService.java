@@ -15,8 +15,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import org.hibernate.criterion.Criterion;
-
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.agent.Address;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
@@ -24,9 +22,6 @@ import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.InstitutionalMembership;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
-import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
-import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
-import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 public interface IAgentService extends IIdentifiableEntityService<AgentBase> {
@@ -79,23 +74,4 @@ public interface IAgentService extends IIdentifiableEntityService<AgentBase> {
 	 * @see <a href="http://lucene.apache.org/java/2_4_0/queryparsersyntax.html">Apache Lucene - Query Parser Syntax</a>
 	 */
 	public Pager<AgentBase> search(Class<? extends AgentBase> clazz, String queryString, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
-
-      
-	/**
-	 * Return a Pager of agents with a nomenclatural title matching the given query string, optionally filtered by class, optionally with a particular MatchMode
-	 * 
-	 * @param clazz filter by class - can be null to include all agents
-	 * @param queryString the query string to filter by
-	 * @param matchmode use a particular type of matching (can be null - defaults to exact matching)
-	 * @param criteria additional criteria to filter by
-	 * @param pageSize The maximum number of objects returned (can be null for all objects)
-	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
-	 * @param propertyPaths properties to initialize - see {@link BeanInitializer#initialize(Object, List)}
-	 * @param orderHints
-	 *            Supports path like <code>orderHints.propertyNames</code> which
-	 *            include *-to-one properties like createdBy.username or
-	 *            authorTeam.persistentTitleCache
-	 * @return a paged list of agents matching the queryString
-	 */
-    public Pager<AgentBase> findByNomenclaturalTitle(Class<? extends TeamOrPersonBase> clazz, String queryString,MatchMode matchmode, List<Criterion> criteria, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 }

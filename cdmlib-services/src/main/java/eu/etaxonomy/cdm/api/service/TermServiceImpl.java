@@ -43,7 +43,7 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 @Service
 @Transactional(readOnly = true)
-public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDefinedTermDao> implements ITermService{
+public class TermServiceImpl extends ServiceBase<DefinedTermBase,IDefinedTermDao> implements ITermService{
 	private static final Logger logger = Logger.getLogger(TermServiceImpl.class);
 	private ILanguageStringDao languageStringDao;
 	@Autowired
@@ -81,7 +81,7 @@ public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDe
 	public List<Language> getLanguagesByLocale(Enumeration<Locale> locales){
 		return dao.getLanguagesByLocale(locales);
 	}
-	
+
 	/**
 	 *  (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.ITermService#getAreaByTdwgAbbreviation(java.lang.String)
@@ -157,11 +157,6 @@ public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDe
 		}
 		
 		return new DefaultPagerImpl<T>(pageNumber, numberOfResults, pageSize, results);
-	}
-
-	public void generateTitleCache() {
-		// TODO Auto-generated method stub
-		
 	}
 
 	public List<LanguageString> getAllLanguageStrings(int limit, int start) {

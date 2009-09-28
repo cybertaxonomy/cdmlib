@@ -18,7 +18,6 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
-import org.hibernate.criterion.Criterion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -28,8 +27,6 @@ import eu.etaxonomy.cdm.api.service.config.IIdentifiableEntityServiceConfigurato
 import eu.etaxonomy.cdm.api.service.config.INameServiceConfigurator;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
-import eu.etaxonomy.cdm.model.agent.AgentBase;
-import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
@@ -97,7 +94,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
 	}
 	
 	public List<NonViralName> getNamesByNameCache(String nameCache){
-		List result = dao.findByName(null,nameCache, MatchMode.EXACT,null, null, null, null, null);
+		List result = dao.findByName(nameCache, MatchMode.EXACT, null, null, null, null);
 		return result;
 	}
 	
@@ -347,17 +344,6 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
 	 */
 	public List<UuidAndTitleCache> getUuidAndTitleCacheOfNames() {
 		return dao.getUuidAndTitleCacheOfNames();
-	}
-
-      public Pager<TaxonNameBase> findByName(Class<? extends TaxonNameBase> clazz, String queryString,MatchMode matchmode, List<Criterion> criteria, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
-		 Integer numberOfResults = dao.countByName(clazz, queryString, matchmode, criteria);
-		 
-		 List<TaxonNameBase> results = new ArrayList<TaxonNameBase>();
-		 if(numberOfResults > 0) { // no point checking again
-				results = dao.findByName(clazz, queryString, matchmode, criteria, pageSize, pageNumber, orderHints, propertyPaths); 
-		 }
-			
-			return new DefaultPagerImpl<TaxonNameBase>(pageNumber, numberOfResults, pageSize, results);
 	}
 
 	/* (non-Javadoc)

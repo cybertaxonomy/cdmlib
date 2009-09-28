@@ -34,6 +34,7 @@ import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.api.service.IService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
+import eu.etaxonomy.cdm.api.service.ITaxonTreeService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.IUserService;
 import eu.etaxonomy.cdm.api.service.IVocabularyService;
@@ -55,6 +56,9 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
 	@Autowired
 	//@Qualifier("taxonService")
 	private ITaxonService taxonService;
+	@Autowired
+	//@Qualifier("taxonTreeService")
+	private ITaxonTreeService taxonTreeService;
 	@Autowired
 	//@Qualifier("referenceService")
 	private IReferenceService referenceService;
@@ -142,6 +146,14 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
 		return this.taxonService;
 	}
 	
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getTaxonTreeService()
+	 */
+	public ITaxonTreeService getTaxonTreeService() {
+		return this.taxonTreeService;
+	}
+	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getDescriptionService()
 	 */
@@ -149,10 +161,18 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
 		return this.descriptionService;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getOccurrenceService()
+	 */
 	public IOccurrenceService getOccurrenceService(){
 		return this.occurrenceService;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getMediaService()
+	 */
 	public IMediaService getMediaService(){
 		return this.mediaService;
 	}

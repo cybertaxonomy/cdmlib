@@ -22,11 +22,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
+import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.CdmPersistentDataSource;
 import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
 import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
+import eu.etaxonomy.cdm.database.H2Mode;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.model.common.init.TermNotFoundException;
+import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 
 
 
@@ -66,8 +69,9 @@ public class DatabaseServiceHibernateImpl  implements IDatabaseService, Applicat
 	 * @see eu.etaxonomy.cdm.api.service.IDatabaseService#connectToDatabase(eu.etaxonomy.cdm.database.DatabaseTypeEnum, java.lang.String, java.lang.String, java.lang.String, java.lang.String, int)
 	 */
 	public boolean connectToDatabase(DatabaseTypeEnum databaseTypeEnum, String server,
-			String database, String username, String password, int port) throws TermNotFoundException  {
-		CdmPersistentDataSource tmpDataSource =  saveDataSource(TMP_DATASOURCE, databaseTypeEnum, server, database, username, password);
+			String database, String username, String password, int port, String filePath, H2Mode mode, NomenclaturalCode code) throws TermNotFoundException  {
+		ICdmDataSource dataSource = CdmDataSource.NewInstance(databaseTypeEnum, server, database, port, username, password);
+		CdmPersistentDataSource tmpDataSource =  saveDataSource(TMP_DATASOURCE, dataSource, code);
 		boolean result = connectToDatasource(tmpDataSource);
 		CdmPersistentDataSource.delete(tmpDataSource);
 		return result;
@@ -79,64 +83,25 @@ public class DatabaseServiceHibernateImpl  implements IDatabaseService, Applicat
 	 */
 	public boolean connectToDatabase(DatabaseTypeEnum databaseTypeEnum, String server,
 			String database, String username, String password)  throws TermNotFoundException {
-		return connectToDatabase(databaseTypeEnum, server, database, username, password, databaseTypeEnum.getDefaultPort()) ;
-	}
-
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.IDatabaseService#saveDataSource(eu.etaxonomy.cdm.database.DatabaseTypeEnum, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
-	 */
-	@Transactional(readOnly=false)
-	@Deprecated
-	public CdmPersistentDataSource saveDataSource(String strDataSourceName, DatabaseTypeEnum databaseTypeEnum,
-			String server, String database, String username, String password) throws TermNotFoundException  {
-		return CdmPersistentDataSource.save(strDataSourceName, databaseTypeEnum, server, database, username, password);
+		return connectToDatabase(databaseTypeEnum, server, database, username, password, databaseTypeEnum.getDefaultPort(), null, null, null) ;
 	}
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.IDatabaseService#saveDataSource(java.lang.String, eu.etaxonomy.cdm.database.ICdmDataSource)
 	 */
 	public CdmPersistentDataSource saveDataSource(String strDataSourceName,
-			ICdmDataSource dataSource) {
-		return CdmPersistentDataSource.save(strDataSourceName, dataSource);
+			ICdmDataSource dataSource, NomenclaturalCode code) {
+		return CdmPersistentDataSource.save(strDataSourceName, dataSource, code);
 	}
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.IDatabaseService#updateDataSource(java.lang.String, eu.etaxonomy.cdm.database.CdmPersistentDataSource)
 	 */
 	public CdmPersistentDataSource updateDataSource(String strDataSourceName,
-			CdmPersistentDataSource dataSource) throws DataSourceNotFoundException {
-		return CdmPersistentDataSource.update(strDataSourceName, dataSource);
+			CdmPersistentDataSource dataSource, NomenclaturalCode code) throws DataSourceNotFoundException {
+		return CdmPersistentDataSource.update(strDataSourceName, dataSource, code);
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.IDatabaseService#useLocalHsqldb(java.lang.String, java.lang.String, boolean, boolean)
-	 */
-	@Transactional(readOnly=false)
-	@Deprecated
-	public CdmPersistentDataSource saveLocalHsqldb(String strDataSourceName, String databasePath, String databaseName, String username, String password, boolean silent, boolean startServer) {
-		return CdmPersistentDataSource.saveLocalHsqlDb(strDataSourceName, databasePath, databaseName, username, password);
-	}
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.IDatabaseService#useLocalHsqldb()
-	 */
-	@Deprecated
-	public boolean useLocalDefaultHsqldb()  throws TermNotFoundException{
-		CdmPersistentDataSource dataSource = CdmPersistentDataSource.NewLocalHsqlInstance();
-			return connectToDatasource(dataSource);
-	}
-
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.IDatabaseService#useLocalHsqldb(java.lang.String, java.lang.String, boolean, boolean)
-	 */
-	@Deprecated
-	public boolean useLocalHsqldb(String databasePath, String databaseName, String username, String password, boolean silent, boolean startServer) 
-				throws TermNotFoundException{
-		CdmPersistentDataSource dataSource = saveLocalHsqldb("tmpHsqlDb", databasePath, databaseName, username, password, silent, startServer);
-		return connectToDatasource(dataSource);
-	}
 	
 //TODO removed 04.02.2009 as spring 2.5.6 does not support DriverManagerDataSource.getDriverClassName anymore
 //Let's see if this is not needed by any other application

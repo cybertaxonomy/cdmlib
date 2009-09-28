@@ -16,8 +16,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import org.hibernate.criterion.Criterion;
-
 import eu.etaxonomy.cdm.api.service.config.IIdentifiableEntityServiceConfigurator;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -41,7 +39,6 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
-import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 public interface INameService extends IIdentifiableEntityService<TaxonNameBase> {
@@ -252,25 +249,6 @@ public interface INameService extends IIdentifiableEntityService<TaxonNameBase> 
 	 * @see <a href="http://lucene.apache.org/java/2_4_0/queryparsersyntax.html">Apache Lucene - Query Parser Syntax</a>
 	 */
 	public Pager<TaxonNameBase> search(Class<? extends TaxonNameBase> clazz, String queryString, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
-
-      
-	/**
-	 * Return a Pager of names with a name matching the given query string, optionally filtered by class, optionally with a particular MatchMode
-	 * 
-	 * @param clazz filter by class - can be null to include all names
-	 * @param queryString the query string to filter by
-	 * @param matchmode use a particular type of matching (can be null - defaults to exact matching)
-	 * @param criteria additional criteria to filter by
-	 * @param pageSize The maximum number of objects returned (can be null for all objects)
-	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
-	 * @param propertyPaths properties to initialize - see {@link BeanInitializer#initialize(Object, List)}
-	 * @param orderHints
-	 *            Supports path like <code>orderHints.propertyNames</code> which
-	 *            include *-to-one properties like createdBy.username or
-	 *            authorTeam.persistentTitleCache
-	 * @return a paged list of names matching the queryString
-	 */
-    public Pager<TaxonNameBase> findByName(Class<? extends TaxonNameBase> clazz, String queryString,MatchMode matchmode, List<Criterion> criteria, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
 	/**
 	 * Returns a map that holds uuid, titleCache pairs of all names in the current database
