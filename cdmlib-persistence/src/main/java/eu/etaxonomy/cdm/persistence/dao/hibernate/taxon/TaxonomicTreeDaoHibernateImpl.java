@@ -33,5 +33,6 @@ public class TaxonomicTreeDaoHibernateImpl extends IdentifiableDaoBase<Taxonomic
 	public TaxonomicTreeDaoHibernateImpl() {
 		super(TaxonomicTree.class);
 	}
-
+	
+	
 }

@@ -129,8 +129,8 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity> extends Annotatab
     	defaultBeanInitializer.initializeAll(result, propertyPaths);
     	return result;
     }
-    
-    public int countByTitle(Class<? extends T> clazz, String queryString, MatchMode matchmode, List<Criterion> criterion) {
+
+	public int countByTitle(Class<? extends T> clazz, String queryString, MatchMode matchmode, List<Criterion> criterion) {
     	return countByParam(clazz, "titleCache",queryString,matchmode,criterion);
     }
     

@@ -22,8 +22,7 @@ import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.RootBeanDefinition;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
-import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
-import eu.etaxonomy.cdm.database.DbSchemaValidation;
+import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 
 /**
  * @author a.mueller
@@ -50,8 +49,12 @@ public class CdmDataSource extends CdmDataSourceBase {
 	private boolean showSql = false;
 	private boolean formatSql = false;
 	private boolean registerSearchListener = false;
-	private Class<? extends CacheProvider> cacheProviderClass = NoCacheProvider.class;;
+	private Class<? extends CacheProvider> cacheProviderClass = NoCacheProvider.class;
 
+	public static CdmDataSource NewInstance(DatabaseTypeEnum dbType, String server, String database, int port, String username, String password){
+		return new CdmDataSource(dbType, server, database, port, username, password, null, null);
+	}
+	
 	static public CdmDataSource  NewMySqlInstance(String server, String database, String username, String password){
 		return new CdmDataSource(DatabaseTypeEnum.MySQL, server, database, -1, username, password, null, null);
 	}
@@ -271,10 +274,7 @@ public class CdmDataSource extends CdmDataSourceBase {
 	 */
 	public String getUsername() {
 		return username;
-	}
-
-	
-	
+	}	
 	
 }
 

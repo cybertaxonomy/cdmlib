@@ -13,6 +13,7 @@ import org.apache.log4j.Logger;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
+import eu.etaxonomy.cdm.database.NomenclaturalCodeAwareDriverManagerDataSource;
 
 
 /**
@@ -20,7 +21,6 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
  *
  */
 abstract class DatabaseTypeBase implements IDatabaseType {
-	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DatabaseTypeBase.class);
 	
 	//typeName
@@ -99,7 +99,7 @@ abstract class DatabaseTypeBase implements IDatabaseType {
 	 * @see eu.etaxonomy.cdm.database.types.IDatabaseType#getDriverManagerDataSourceClass()
 	 */
 	public Class<? extends DriverManagerDataSource> getDriverManagerDataSourceClass() {
-		return DriverManagerDataSource.class;
+		return NomenclaturalCodeAwareDriverManagerDataSource.class;
 	} 
 	
 	/* (non-Javadoc)

@@ -18,6 +18,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.CdmPersistentDataSource;
 import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
 
@@ -65,7 +66,9 @@ public class OracleDatabaseTypeTest {
 		username = "user";
 		password = "wd";
 		dataSource = CdmPersistentDataSource.save(
-				"oracleTest", enumType, server, dbName, port, username, password);
+				"oracleTest", 
+				CdmDataSource.NewInstance(enumType, server, dbName, port, username, password),
+				null);
 	}
 
 	/**

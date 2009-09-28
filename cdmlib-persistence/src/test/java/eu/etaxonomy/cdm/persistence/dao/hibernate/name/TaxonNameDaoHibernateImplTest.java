@@ -7,7 +7,6 @@ import static org.junit.Assert.assertNotNull;
 import java.util.List;
 import java.util.UUID;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -20,13 +19,11 @@ import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
-import eu.etaxonomy.cdm.model.view.AuditEvent;
-import eu.etaxonomy.cdm.model.view.context.AuditEventContextHolder;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 
-
+@DataSet
 public class TaxonNameDaoHibernateImplTest extends CdmIntegrationTest {
 	
 	@SpringBeanByType
@@ -37,26 +34,15 @@ public class TaxonNameDaoHibernateImplTest extends CdmIntegrationTest {
 	private UUID acherontiaLachesisUuid;
 	private UUID atroposUuid;
 	
-	private AuditEvent previousAuditEvent;
-	
 	@Before
 	public void setUp() {
-		previousAuditEvent = new AuditEvent();
-		previousAuditEvent.setRevisionNumber(1025);
-		previousAuditEvent.setUuid(UUID.fromString("a680fab4-365e-4765-b49e-768f2ee30cda"));
 		cryptocoryneGriffithiiUuid = UUID.fromString("497a9955-5c5a-4f2b-b08c-2135d336d633");
 	    acherontiaUuid = UUID.fromString("c2cab2ad-3e3a-47b8-8aa8-d9e1c0857647");
 	    acherontiaLachesisUuid = UUID.fromString("7969821b-a2cf-4d01-95ec-6a5ed0ca3f69");
 	    atroposUuid = UUID.fromString("27004fcc-14d4-47d4-a3e1-75750fdb5b79");
 	}
 	
-	@After
-	public void tearDown() {
-		AuditEventContextHolder.clearContext();
-	}
-	
 	@Test
-	@DataSet
 	public void testGetHybridRelationships() {
 		BotanicalName cryptocoryneGriffithii = (BotanicalName)taxonNameDao.findByUuid(cryptocoryneGriffithiiUuid);
 		assert cryptocoryneGriffithii!= null : "name must exist";
@@ -69,7 +55,6 @@ public class TaxonNameDaoHibernateImplTest extends CdmIntegrationTest {
 	}
 	
 	@Test
-	@DataSet
 	public void testCountHybridRelationships() {
 		BotanicalName cryptocoryneGriffithii = (BotanicalName)taxonNameDao.findByUuid(cryptocoryneGriffithiiUuid);
 		assert cryptocoryneGriffithii != null : "name must exist";
@@ -80,7 +65,6 @@ public class TaxonNameDaoHibernateImplTest extends CdmIntegrationTest {
 	}
 	
 	@Test
-	@DataSet
 	public void testGetNameRelationships() {
 		TaxonNameBase acherontia = taxonNameDao.findByUuid(acherontiaUuid);
 		assert acherontia != null : "name must exist";
@@ -103,7 +87,6 @@ public class TaxonNameDaoHibernateImplTest extends CdmIntegrationTest {
 	}
 	
 	@Test
-	@DataSet
 	public void testCountNameRelationships() {
 		TaxonNameBase acherontia = taxonNameDao.findByUuid(acherontiaUuid);
 		assert acherontia != null : "name must exist";
@@ -122,7 +105,6 @@ public class TaxonNameDaoHibernateImplTest extends CdmIntegrationTest {
 	}
 
 	@Test
-	@DataSet
 	public void testGetTypeDesignations() {
 		TaxonNameBase acherontiaLachesis = taxonNameDao.findByUuid(acherontiaLachesisUuid);
 		assert acherontiaLachesis != null : "name must exist";
@@ -135,7 +117,6 @@ public class TaxonNameDaoHibernateImplTest extends CdmIntegrationTest {
 	}
 	
 	@Test
-	@DataSet
 	public void testCountTypeDesignations() {
 		TaxonNameBase acherontiaLachesis = taxonNameDao.findByUuid(acherontiaLachesisUuid);
 		assert acherontiaLachesis != null : "name must exist";
@@ -146,7 +127,6 @@ public class TaxonNameDaoHibernateImplTest extends CdmIntegrationTest {
 	}
 	
 	@Test
-	@DataSet
 	public void testSearchNames() {
 		List<TaxonNameBase> result = taxonNameDao.searchNames("Atropos", null, null, null, Rank.GENUS(), null, null, null, null);
 		
@@ -156,7 +136,6 @@ public class TaxonNameDaoHibernateImplTest extends CdmIntegrationTest {
 	}
 	
 	@Test
-	@DataSet
 	public void testCountNames() {
 		int count = taxonNameDao.countNames("Atropos", null, null, null, Rank.GENUS());
 		
@@ -180,21 +159,5 @@ public class TaxonNameDaoHibernateImplTest extends CdmIntegrationTest {
 		assertNotNull(rank);
 		assertFalse("Rank are equal, level must not be higher", rank.isHigher(acherontiaLachesis.getRank()));
 		assertFalse("Rank are equal, level must not be lower", rank.isLower(acherontiaLachesis.getRank()));
-	}
-	
-	/**
-	 * Testing revealed a bug in the construction of 
-	 * org.hibernate.envers.query.criteria.NullAuditExpression (and 
-	 * by extension NotNullAuditExpression), where the HQL clause was
-	 * {alias} = :{param}, when it should have been
-	 * {alias} is null. This has been patched in the snapshot version
-	 */
-	@Test
-	@DataSet("TaxonNameDaoHibernateImplTest.testListInPriorView.xml")
-	public void testCountNamesInPriorView() {
-		AuditEventContextHolder.getContext().setAuditEvent(previousAuditEvent);
-        int count = taxonNameDao.countNames("Atropos", null, null, null, Rank.GENUS());
-		
-		assertEquals("countNames should return 3",3,count);
 	}
 }

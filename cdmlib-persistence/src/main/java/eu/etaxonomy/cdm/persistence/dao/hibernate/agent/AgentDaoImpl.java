@@ -18,7 +18,6 @@ import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
-import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.envers.query.AuditEntity;
 import org.hibernate.envers.query.AuditQuery;
@@ -33,12 +32,10 @@ import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.InstitutionalMembership;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
-import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.persistence.dao.QueryParseException;
 import eu.etaxonomy.cdm.persistence.dao.agent.IAgentDao;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
-import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 
@@ -224,16 +221,5 @@ public class AgentDaoImpl extends IdentifiableDaoBase<AgentBase> implements IAge
 	        searchFactory.optimize(clazz); // optimize the indices ()
 		}
 	    fullTextSession.flushToIndexes();
-	}
-
-      public Integer countByNomenclaturalTitle(Class<? extends TeamOrPersonBase> clazz,	String queryString, MatchMode matchmode, List<Criterion> criteria) {
-		return super.countByParam(clazz, "nomenclaturalTitle", queryString, matchmode, criteria);
-	}
-
-	public List<AgentBase> findByNomenclaturalTitle(Class<? extends TeamOrPersonBase> clazz, String queryString, MatchMode matchmode, List<Criterion> criteria, Integer pageSize,Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
-		if(clazz == null) {
-			clazz = TeamOrPersonBase.class;
-		}
-		return super.findByParam(clazz, "nomenclaturalTitle", queryString, matchmode, criteria, pageSize, pageNumber, orderHints, propertyPaths);
 	}
 }

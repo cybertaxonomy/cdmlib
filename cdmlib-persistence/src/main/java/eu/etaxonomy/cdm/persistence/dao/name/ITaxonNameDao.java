@@ -196,7 +196,17 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonNameBase>, ISearcha
 	 * @param rank
 	 * @return a count of TaxonNameBase instances
 	 */
-	public int countNames(String uninomial, String infraGenericEpithet, String specificEpithet, String infraspecificEpithet, Rank rank);
+	public int countNames(String uninomial, String infraGenericEpithet,
+			String specificEpithet, String infraspecificEpithet, Rank rank);
+
+	/**
+	 * Returns a count of TaxonNameBase instances that match the properties passed
+	 * 
+	 * @param queryString
+	 * @param matchMode
+	 * @param criteria
+	 */
+	public int countNames(String queryString, MatchMode matchMode, List<Criterion> criteria);
 
 	/**
 	 * Returns a List of TaxonNameBase instances which nameCache matches the
@@ -224,35 +234,27 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonNameBase>, ISearcha
 	public int countNames(String queryString);
 
 	/**
-	 * Return a List of taxon names matching the given query string, optionally filtered by class, optionally with a particular MatchMode
-	 * 
-	 * @param clazz filter by class - can be null to include all taxon names
-	 * @param queryString the query string to filter by
-	 * @param matchmode use a particular type of matching (can be null - defaults to exact matching)
-	 * @param criteria extra restrictions to apply
-	 * @param pageSize The maximum number of rights returned (can be null for all rights)
-	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
-	 * @param propertyPaths properties to initialize - see {@link BeanInitializer#initialize(Object, List)}
-	 * @param orderHints
-	 *            Supports path like <code>orderHints.propertyNames</code> which
-	 *            include *-to-one properties like createdBy.username or
-	 *            authorTeam.persistentTitleCache
-	 * @return a List of taxon names matching the queryString
+	 * @param queryString
+	 * @param matchmode
+	 * @param pageSize
+	 * @param pageNumber
+	 * @param criteria
+	 * @param propertyPaths TODO
+	 * @return
 	 */
-	public List<TaxonNameBase> findByName(Class<? extends TaxonNameBase> clazz, String queryString, MatchMode matchmode, List<Criterion> criteria, Integer pageSize, Integer pageNumber,List<OrderHint> orderHints, List<String> propertyPaths);
+	public List<? extends TaxonNameBase<?, ?>> findByName(String queryString,
+			MatchMode matchmode, Integer pageSize, Integer pageNumber,
+			List<Criterion> criteria, List<String> propertyPaths);
 	
 	
 	/**
-	 * Return a count of names with their nameCache matching the given query string, optionally 
-	 * filtered by class, optionally with a particular MatchMode
-	 * 
-	 * @param clazz filter by class - can be null to include taxon names
-	 * @param queryString the query string to filter by
-	 * @param matchmode use a particular type of matching (can be null - defaults to exact matching)
-	 * @param criteria extra restrictions to apply
-	 * @return a count of taxon names matching the queryString
+	 * @param queryString
+	 * @param matchmode
+	 * @param criteria
+	 * @return
 	 */
-	public Integer countByName(Class<? extends TaxonNameBase> clazz, String queryString, MatchMode matchmode, List<Criterion> criteria);
+	public Integer countByName(String queryString, 
+			MatchMode matchmode, List<Criterion> criteria);
 	
 	public List<RelationshipBase> getAllRelationships(Integer limit, Integer start); 
 	

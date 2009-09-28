@@ -108,8 +108,9 @@ public abstract class VersionableDaoBase<T extends VersionableEntity> extends Cd
 			if(clazz == null) {
 			    query = getAuditReader().createQuery().forEntitiesAtRevision(type,auditEvent.getRevisionNumber());
 			} else {
-				 query = getAuditReader().createQuery().forEntitiesAtRevision(clazz,auditEvent.getRevisionNumber());
+				query = getAuditReader().createQuery().forEntitiesAtRevision(clazz,auditEvent.getRevisionNumber());
 			}
+			
 			query.addProjection(AuditEntity.id().count("id"));
 			return ((Long)query.getSingleResult()).intValue();
 		}

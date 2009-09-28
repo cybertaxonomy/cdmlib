@@ -152,6 +152,7 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
 	/**
 	 * Computes all Taxon instances that do not have a taxonomic parent and has at least one child.
 	 * @return The List<Taxon> of root taxa.
+	 * @deprecated obsolete when using taxonomicTree
 	 */
 	public List<Taxon> getRootTaxa(ReferenceBase sec);
 
@@ -164,6 +165,7 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
 	 * @param withMisaplications if false only taxa are returned that have no isMisappliedNameFor relationship. 
 	 * <Br>Default: true.
 	 * @return The List<Taxon> of root taxa.
+	 * @deprecated obsolete when using taxonomicTree
 	 */
 	public List<Taxon> getRootTaxa(ReferenceBase sec, CdmFetch cdmFetch, Boolean onlyWithChildren, Boolean withMisapplications);
 	
@@ -189,6 +191,7 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
 	 *            {@link BeanInitializer#initialize(Object, List)}. <Br>
 	 *            Default: true.
 	 * @return The List<Taxon> of root taxa.
+	 * @deprecated obsolete when using taxonomicTree
 	 */
 	public List<Taxon> 
 	getRootTaxa(Rank rank, ReferenceBase sec, CdmFetch cdmFetch, Boolean onlyWithChildren, Boolean withMisapplications, List<String> propertyPaths);

@@ -1,6 +1,7 @@
 package eu.etaxonomy.cdm.persistence.dao.hibernate.taxon;
 
 import static junit.framework.Assert.assertNotNull;
+import static org.junit.Assert.assertEquals;
 
 import java.util.UUID;
 
@@ -22,8 +23,10 @@ public class TaxonNodeDaoHibernateImplTest extends
 
 	@SpringBeanByType	
 	private ITaxonNodeDao taxonNodeDao;
+	
 	@SpringBeanByType
 	private ITaxonomicTreeDao taxonomicTreeDao;
+	
 	private UUID uuid;
 	
 	@Before
@@ -51,5 +54,15 @@ public class TaxonNodeDaoHibernateImplTest extends
 		TaxonNode taxonNode = (TaxonNode) taxonNodeDao.findByUuid(uuid);
 		TaxonomicTree.class.getDeclaredConstructors();
 		assertNotNull("findByUuid should return a taxon node", taxonNode);
+	}
+	
+	@Test
+	@DataSet
+	public void testTaxonomicTree() {
+		TaxonomicTree taxonTree =  taxonomicTreeDao.findByUuid(UUID.fromString("aeee7448-5298-4991-b724-8d5b75a0a7a9"));
+		
+		assertNotNull("findByUuid should return a taxon tree", taxonTree);
+		assertNotNull("taxonomic tree should have a name",taxonTree.getName());
+		assertEquals("taxonomic tree should have a name which is 'Name'",taxonTree.getName().getText(),"Name");
 	}
 }

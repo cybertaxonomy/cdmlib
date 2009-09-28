@@ -102,6 +102,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 			i++;
 			if ( (i % flushAfterNo) == 0){
 				try{
+					//TODO: fixme!!
 					logger.debug("flush");
 					flush();
 				}catch(Exception e){
@@ -154,6 +155,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 			logger.error(e.getIdentifier());
 			logger.error(e.getEntityName());
 			logger.error(e.getMessage());
+			
 			e.printStackTrace();
 			throw e;
 		} catch (HibernateException e) {
@@ -264,14 +266,6 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 	public List<T> list(Integer limit, Integer start) {
 		return list(limit, start, null); 
 	}
-
-	protected void addCriteria(Criteria criteria, List<Criterion> criterion) {
-		if(criterion != null) {
-			for(Criterion c : criterion) {
-				criteria.add(c);
-			}
-		}	
-	}
 	
 	public List<Object[]> group(Class<? extends T> clazz,Integer limit, Integer start, List<Grouping> groups, List<String> propertyPaths) {
 		
@@ -356,6 +350,15 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 			}
 		}
 	}  
+	
+	protected void addCriteria(Criteria criteria, List<Criterion> criterion) {
+		if(criterion != null) {
+			for(Criterion c : criterion) {
+				criteria.add(c);
+			}
+		}
+			
+	}
 	
 	protected void addOrder(Criteria criteria, List<OrderHint> orderHints) {
 		if(orderHints != null){

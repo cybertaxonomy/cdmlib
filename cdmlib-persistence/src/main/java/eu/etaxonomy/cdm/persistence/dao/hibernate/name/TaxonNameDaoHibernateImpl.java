@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
@@ -21,7 +20,6 @@ import org.apache.lucene.analysis.SimpleAnalyzer;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
 import org.hibernate.Criteria;
-import org.hibernate.Hibernate;
 import org.hibernate.Query;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Order;
@@ -185,7 +183,7 @@ extends IdentifiableDaoBase<TaxonNameBase> implements ITaxonNameDao {
 			if(genusOrUninomial != null) {
 				query.add(AuditEntity.property("genusOrUninomial").eq(genusOrUninomial));
 			} else {
-				query.add(AuditEntity.property("genusOrUninomial").eq(null));
+				query.add(AuditEntity.property("genusOrUninomial").isNull());
 			}
 
 			if(infraGenericEpithet != null) {
@@ -211,8 +209,7 @@ extends IdentifiableDaoBase<TaxonNameBase> implements ITaxonNameDao {
 			}
 
 			query.addProjection(AuditEntity.id().count("id"));
-			int result = ((Long)query.getSingleResult()).intValue();
-			return result;
+			return ((Long)query.getSingleResult()).intValue();
 		}
 	}
 
@@ -255,26 +252,15 @@ extends IdentifiableDaoBase<TaxonNameBase> implements ITaxonNameDao {
 			query.setParameter("name",name);
 			return ((Long)query.uniqueResult()).intValue();
 		} else {
-			// Ugly, but typifiedNames is OneToMany, and envers doesn't support this
-			AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(TaxonNameBase.class,auditEvent.getRevisionNumber());
-			query.add(AuditEntity.id().eq(name.getId()));
-			
-			TaxonNameBase n = (TaxonNameBase)query.getSingleResult();
-			Hibernate.initialize(n.getTypeDesignations());
-			int typeDesignations = 0;
-			if(status != null) {
-				for(TypeDesignationBase typeDesignation : (Set<TypeDesignationBase>)n.getTypeDesignations()) {
-					if(status.equals(typeDesignation.getTypeStatus())) {
-						typeDesignations++;
-					}
-				}
-			} else {
-				for(TypeDesignationBase typeDesignation : (Set<TypeDesignationBase>)n.getTypeDesignations()) {
-					typeDesignations++;
-				}
+			AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(TypeDesignationBase.class,auditEvent.getRevisionNumber());
+			query.add(AuditEntity.relatedId("typifiedNames").eq(name.getId()));
+			query.addProjection(AuditEntity.id().count("id"));
+
+			if(type != null) {
+				query.add(AuditEntity.relatedId("typeStatus").eq(status.getId()));
 			}
 
-			return typeDesignations;
+			return ((Long)query.getSingleResult()).intValue();
 		}
 	}
 
@@ -377,7 +363,9 @@ extends IdentifiableDaoBase<TaxonNameBase> implements ITaxonNameDao {
 		return getTypeDesignations(name, status, pageSize, pageNumber, null);
 	}
 	
-	public List<TypeDesignationBase> getTypeDesignations(TaxonNameBase name, TypeDesignationStatusBase status, Integer pageSize, Integer pageNumber, List<String> propertyPaths){
+	public List<TypeDesignationBase> getTypeDesignations(TaxonNameBase name,
+				TypeDesignationStatusBase status, Integer pageSize, Integer pageNumber,
+				List<String> propertyPaths){
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
 			Query query = null;
@@ -399,42 +387,23 @@ extends IdentifiableDaoBase<TaxonNameBase> implements ITaxonNameDao {
 			}
 			return defaultBeanInitializer.initializeAll((List<TypeDesignationBase>)query.list(), propertyPaths);
 		} else {
-			// Ugly, but typifiedNames is OneToMany, and envers doesn't support this
-			AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(TaxonNameBase.class,auditEvent.getRevisionNumber());
-			query.add(AuditEntity.id().eq(name.getId()));
-			
-			TaxonNameBase n = (TaxonNameBase)query.getSingleResult();
-			Hibernate.initialize(n.getTypeDesignations());
+			AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(TypeDesignationBase.class,auditEvent.getRevisionNumber());
+			query.add(AuditEntity.relatedId("typifiedNames").eq(name.getId()));
 
-			List<TypeDesignationBase> typeDesignations = new ArrayList<TypeDesignationBase>();
-			if(status == null) {
-				typeDesignations.addAll((Set<TypeDesignationBase>)n.getTypeDesignations());
-			} else {
-				for(TypeDesignationBase typeDesignation : (Set<TypeDesignationBase>)n.getTypeDesignations()) {
-					if(status.equals(typeDesignation.getTypeStatus())) {
-						typeDesignations.add(typeDesignation);
-					}
-				}
+			if(type != null) {
+				query.add(AuditEntity.relatedId("typeStatus").eq(status.getId()));
 			}
-			
-			int from = 0;
-			int to = typeDesignations.size();
 			
 			if(pageSize != null) {
-				to = pageSize;
+				query.setMaxResults(pageSize);
 				if(pageNumber != null) {
-					from = pageNumber * pageSize;
-					to =  from + pageSize;
+					query.setFirstResult(pageNumber * pageSize);
+				} else {
+					query.setFirstResult(0);
 				}
 			}
-			
-			List<TypeDesignationBase> result = null;
-			try{
-				result = typeDesignations.subList(from, to);
-			} catch (IndexOutOfBoundsException iobe) {
-				return new ArrayList<TypeDesignationBase>();
-			}
-			return defaultBeanInitializer.initializeAll(result, propertyPaths);
+
+			return (List<TypeDesignationBase>)query.getResultList();
 		}
 	}
 
@@ -562,8 +531,33 @@ extends IdentifiableDaoBase<TaxonNameBase> implements ITaxonNameDao {
 		}
 	}
 
-	public List<TaxonNameBase> findByName(Class<? extends TaxonNameBase> clazz, String queryString, MatchMode matchmode, List<Criterion> criterion, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
-		return super.findByParam(clazz, "nameCache", queryString, matchmode, criterion, pageSize, pageNumber, orderHints, propertyPaths);
+	public List<? extends TaxonNameBase<?,?>> findByName(String queryString, 
+			MatchMode matchmode, Integer pageSize, Integer pageNumber, List<Criterion> criteria, List<String> propertyPaths) {
+
+		Criteria crit = getSession().createCriteria(type);
+		if (matchmode == MatchMode.EXACT) {
+			crit.add(Restrictions.eq("nameCache", matchmode.queryStringFrom(queryString)));
+		} else {
+			crit.add(Restrictions.ilike("nameCache", matchmode.queryStringFrom(queryString)));
+		}
+		if(criteria != null){
+			for (Criterion criterion : criteria) {
+				crit.add(criterion);
+			}
+		}
+		crit.addOrder(Order.asc("nameCache"));
+
+		if(pageSize != null) {
+			crit.setMaxResults(pageSize);
+			if(pageNumber != null) {
+				crit.setFirstResult(pageNumber * pageSize);
+			}
+		}
+
+		List<? extends TaxonNameBase<?,?>> results = crit.list();
+		defaultBeanInitializer.initializeAll(results, propertyPaths);
+		
+		return results;
 	}
 	
 	public List<RelationshipBase> getAllRelationships(Integer limit, Integer start) {
@@ -579,8 +573,11 @@ extends IdentifiableDaoBase<TaxonNameBase> implements ITaxonNameDao {
 	}
 	
 	
-	public Integer countByName(Class<? extends TaxonNameBase> clazz, String queryString, MatchMode matchmode, List<Criterion> criteria) {
-		return super.countByParam(clazz, "nameCache", queryString, matchmode, criteria);
+	public Integer countByName(String queryString, 
+			MatchMode matchmode, List<Criterion> criteria) {
+		//TODO improve performance
+		List<? extends TaxonNameBase<?,?>> results = findByName(queryString, matchmode, null, null, criteria, null);
+		return results.size();
 		
 	}
 

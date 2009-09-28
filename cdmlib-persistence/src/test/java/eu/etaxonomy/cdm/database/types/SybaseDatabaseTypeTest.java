@@ -18,6 +18,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.CdmPersistentDataSource;
 import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
 
@@ -65,7 +66,9 @@ public class SybaseDatabaseTypeTest {
 		username = "user";
 		password = "wd";
 		dataSource = CdmPersistentDataSource.save(
-				"sybaseTest", enumType, server, dbName, port, username, password);
+				"sybaseTest", 
+				CdmDataSource.NewInstance(enumType, server, dbName, port, username, password),
+				null);
 	}
 
 	/**

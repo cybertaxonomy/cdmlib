@@ -21,7 +21,6 @@ import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.taxon.TaxonDaoHibernateImpl;
-import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 
 /**
@@ -133,19 +132,6 @@ public class IdentifiableDaoBaseTest extends CdmIntegrationTest {
 		LSID lsid = new LSID("urn:lsid:example.org:namespace:1:1");
 		TaxonBase result = identifiableDao.find(lsid);
 		assertNotNull(result);
-	}
-
-      @Test
-	public void testCountByTitle() {
-	    int numberOfTaxa = identifiableDao.countByTitle(null, "Lorem", MatchMode.ANYWHERE, null);
-	    assertEquals("countByTitle should return 1", 1, numberOfTaxa);
-	}
-	
-	@Test
-	public void testFindByTitleGenericMethod() {
-	    List<TaxonBase> result = identifiableDao.findByTitle(null, "Lorem", MatchMode.ANYWHERE, null, 30, 0, null, null);
-	    assertNotNull(result);
-	    assertEquals("findByTitle should return 1 TaxonBase instance", 1, result.size());
 	}
 	
 }

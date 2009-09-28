@@ -488,6 +488,8 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		
 		return criteria.list();
 	}
+	
+	
 
 	public List<RelationshipBase> getAllRelationships(Integer limit, Integer start) {
 		AuditEvent auditEvent = getAuditEventFromContext();
