@@ -1149,7 +1149,13 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 		nameToBeFilled.setAuthorshipCache(null, false);
 		
 		
+		//delete problems except check rank
+		boolean hasCheckRank = nameToBeFilled.hasProblem(ParserProblem.CheckRank);
 		nameToBeFilled.setParsingProblem(0);
+		if (hasCheckRank){
+			nameToBeFilled.addParsingProblem(ParserProblem.CheckRank);
+		}
+		
 		// TODO ?
 		//nameToBeFilled.setHomotypicalGroup(newHomotypicalGroup);
 
@@ -1162,19 +1168,21 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 		nameToBeFilled.setNomenclaturalMicroReference(null);
 		nameToBeFilled.setNomenclaturalReference(null);
 		
-		if (nameToBeFilled instanceof BotanicalName){
+		nameToBeFilled.setHybridFormula(false);
+		nameToBeFilled.setMonomHybrid(false);
+		nameToBeFilled.setBinomHybrid(false);
+		nameToBeFilled.setTrinomHybrid(false);
+		
+		if (nameToBeFilled.isInstanceOf(BotanicalName.class)){
 			BotanicalName botanicalName = (BotanicalName)nameToBeFilled;
 			botanicalName.setAnamorphic(false);
-			botanicalName.setHybridFormula(false);
-			botanicalName.setMonomHybrid(false);
-			botanicalName.setBinomHybrid(false);
-			botanicalName.setTrinomHybrid(false);
 		}
 		
-		if (nameToBeFilled instanceof ZoologicalName){
+		if (nameToBeFilled.isInstanceOf(ZoologicalName.class)){
 			ZoologicalName zoologicalName = (ZoologicalName)nameToBeFilled;
 			zoologicalName.setBreed(null);
 			zoologicalName.setOriginalPublicationYear(null);
+			
 		}
 	}
 	
