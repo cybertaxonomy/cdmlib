@@ -43,7 +43,7 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 @Service
 @Transactional(readOnly = true)
-public class TermServiceImpl extends ServiceBase<DefinedTermBase,IDefinedTermDao> implements ITermService{
+public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDefinedTermDao> implements ITermService{
 	private static final Logger logger = Logger.getLogger(TermServiceImpl.class);
 	private ILanguageStringDao languageStringDao;
 	@Autowired
@@ -169,5 +169,10 @@ public class TermServiceImpl extends ServiceBase<DefinedTermBase,IDefinedTermDao
 
 	public UUID saveLanguageData(LanguageStringBase languageData) {
 		return languageStringBaseDao.save(languageData);
+	}
+
+	public void generateTitleCache() {
+		// TODO Auto-generated method stub
+		
 	}	
 }
