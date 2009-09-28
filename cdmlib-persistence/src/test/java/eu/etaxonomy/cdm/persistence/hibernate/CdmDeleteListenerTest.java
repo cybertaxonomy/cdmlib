@@ -94,18 +94,4 @@ public class CdmDeleteListenerTest extends CdmIntegrationTest {
 		
 		taxonNameDao.saveOrUpdate(name1);
 	}
-	
-	@Test
-	@Ignore
-	public void testPrintDataset2(){
-		try {
-			File file = new File("testXXX.txt");
-			if (!file.exists()){
-				file.createNewFile();
-			}
-			printDataSet(new FileOutputStream(file));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
 }
