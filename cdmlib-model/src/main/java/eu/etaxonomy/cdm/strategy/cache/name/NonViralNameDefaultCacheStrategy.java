@@ -231,7 +231,7 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 		
 		String result = "";
 		//title cache
-		String titleCache = getTitleCache(nonViralName);
+		String titleCache = nonViralName.getTitleCache();   // OLD: getTitleCache(nonViralName);
 		
 		String microReference = nonViralName.getNomenclaturalMicroReference();
 		ReferenceBase<?> ref = nonViralName.getNomenclaturalReference();

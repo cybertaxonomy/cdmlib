@@ -306,17 +306,6 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 		return fullTitleCache;
 	}
 
-	/**
-	 * @param fullTitleCache
-	 * @return
-	 */
-	private String getTruncatedCache(String fullTitleCache) {
-		if (fullTitleCache != null && fullTitleCache.length() > 329){
-			logger.warn("Truncation of full title cache: " + this.toString() + "/" + fullTitleCache);
-			fullTitleCache = fullTitleCache.substring(0, 329) + "...";
-		}
-		return fullTitleCache;
-	}
 	
     public void setFullTitleCache(String fullTitleCache){
 		setFullTitleCache(fullTitleCache, PROTECTED);

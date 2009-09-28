@@ -156,19 +156,6 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
     	addPropertyChangeListener(listener);  
     }
     
-    
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#getLsid()
-	 */
-	public LSID getLsid(){
-		return this.lsid;
-	}
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#setLsid(java.lang.String)
-	 */
-	public void setLsid(LSID lsid){
-		this.lsid = lsid;
-	}
 
 	/**
 	 * By default, we expect most cdm objects to be abstract things 
@@ -178,8 +165,11 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 	 */
 	public byte[] getData() {
 		return null;
-	}
+	}	
 
+//******************************** CACHE *****************************************************/	
+
+	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#getTitleCache()
 	 */
@@ -190,7 +180,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 		}
 		// is title dirty, i.e. equal NULL?
 		if (titleCache == null){
-			this.setTitleCache(generateTitle(),protectedTitleCache) ; //for truncating
+			this.titleCache = getTruncatedCache(generateTitle()) ;
 		}
 		return titleCache;
 	}
@@ -205,14 +195,40 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 	 * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#setTitleCache(java.lang.String, boolean)
 	 */
 	public void setTitleCache(String titleCache, boolean protectCache){
-		//TODO truncation of title cache
-		if (titleCache != null && titleCache.length() > 254){
-			logger.warn("Truncation of title cache: " + this.toString() + "/" + titleCache);
-			titleCache = titleCache.substring(0, 251) + "...";
-		}
+		titleCache = getTruncatedCache(titleCache);
 		this.titleCache = titleCache;
 		this.protectedTitleCache = protectCache;
 	}
+	
+	
+	/**
+	 * @param cache
+	 * @return
+	 */
+	@Transient
+	protected String getTruncatedCache(String cache) {
+		if (cache != null && cache.length() > 252){
+			logger.warn("Truncation of cache: " + this.toString() + "/" + cache);
+			cache = cache.substring(0, 252) + "...";
+		}
+		return cache;
+	}
+		
+//**************************************************************************************
+    
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#getLsid()
+	 */
+	public LSID getLsid(){
+		return this.lsid;
+	}
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#setLsid(java.lang.String)
+	 */
+	public void setLsid(LSID lsid){
+		this.lsid = lsid;
+	}
+
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#getRights()
@@ -348,6 +364,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 	public void removeSource(IdentifiableSource source) {
 		this.sources.remove(source);
 	}
+
 	
 //******************************** TO STRING *****************************************************/	
 	
