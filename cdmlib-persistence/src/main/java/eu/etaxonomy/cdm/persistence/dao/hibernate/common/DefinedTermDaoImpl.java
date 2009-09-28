@@ -47,7 +47,7 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
  * @version 1.0
  */
 @Repository
-public class DefinedTermDaoImpl extends VersionableDaoBase<DefinedTermBase> implements IDefinedTermDao{
+public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> implements IDefinedTermDao{
 	private static final Logger logger = Logger.getLogger(DefinedTermDaoImpl.class);
 
 	public DefinedTermDaoImpl() {
