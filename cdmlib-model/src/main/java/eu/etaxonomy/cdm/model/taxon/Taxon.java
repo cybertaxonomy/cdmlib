@@ -302,19 +302,36 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 	 * {@link SynonymRelationship#getSynonym() synonym} attribute within the synonym relationship
 	 * itself will be set to "null".
 	 *
-	 * @param  synonymRelation  the synonym relationship which should be deleted
+	 * @param synonymRelation  	the synonym relationship which should be deleted
+	 * @param removeSynonymNameFromHomotypicalGroup 
+	 * 							if set to true the synonym name will also be deleted from its homotypical group
 	 * @see     		  		#getSynonymRelations()
 	 * @see     		  		#addSynonymRelation(SynonymRelationship)
 	 * @see 			  		#removeSynonym(Synonym)
 	 */
-	public void removeSynonymRelation(SynonymRelationship synonymRelation) {
+	public void removeSynonymRelation(SynonymRelationship synonymRelation, boolean removeSynonymNameFromHomotypicalGroup) {
 		synonymRelation.setAcceptedTaxon(null);
 		Synonym synonym = synonymRelation.getSynonym();
 		if (synonym != null){
 			synonymRelation.setSynonym(null);
 			synonym.removeSynonymRelation(synonymRelation);
+			if(removeSynonymNameFromHomotypicalGroup){
+				synonym.getName().getHomotypicalGroup().removeTypifiedName(synonym.getName());
+			}
 		}
 		this.synonymRelations.remove(synonymRelation);
+	}
+	
+	/**
+	 * Like {@link Taxon#removeSynonymRelation(SynonymRelationship, boolean)} but synonym name will be deleted from homotypical group 
+	 * by default
+	 * 
+	 * @param synonymRelation   the synonym relationship which should be deleted
+	 * 
+	 * @see					#removeSynonymRelation(SynonymRelationship, boolean)
+	 */
+	public void removeSynonymRelation(SynonymRelationship synonymRelation){
+		removeSynonymRelation(synonymRelation, true);
 	}
 
 	
@@ -1375,13 +1392,11 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 		list.remove(this.getHomotypicGroup());
 		//sort
 		Map<Synonym, HomotypicalGroup> map = new HashMap<Synonym, HomotypicalGroup>();
-		for (HomotypicalGroup homoGroup: list){
-			if (homoGroup != null) {
-				List<Synonym> synonymList = homoGroup.getSynonymsInGroup(getSec());
-				if (synonymList.size() > 0){
-					map.put(synonymList.get(0), homoGroup);
-				}
-			} // else { TODO: error message
+		for (HomotypicalGroup homotypicalGroup: list){
+			List<Synonym> synonymList = homotypicalGroup.getSynonymsInGroup(getSec());
+			if (synonymList.size() > 0){
+				map.put(synonymList.get(0), homotypicalGroup);
+			}
 		}
 		List<Synonym> keyList = new ArrayList<Synonym>();
 		keyList.addAll(map.keySet());

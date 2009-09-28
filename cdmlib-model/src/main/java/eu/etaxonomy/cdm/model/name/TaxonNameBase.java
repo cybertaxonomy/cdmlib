@@ -1102,6 +1102,9 @@ public void addRelationshipToName(TaxonNameBase toName, NameRelationshipType typ
 	 * @see #getHomotypicalGroup()
 	 */
 	protected void setHomotypicalGroup(HomotypicalGroup homotypicalGroup) {
+		if (homotypicalGroup == null){
+			homotypicalGroup = HomotypicalGroup.NewInstance();
+		}
 		this.homotypicalGroup = homotypicalGroup;
 	}
 	

@@ -217,7 +217,8 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 		if (fullReferenceString == null){
 			return;
 		}
-		makeProblemEmpty(nameToBeFilled);
+		// happens already in standardize(...)
+//		makeProblemEmpty(nameToBeFilled);
 		
 		//make nomenclatural status and replace it by empty string 
 	    fullReferenceString = parseNomStatus(fullReferenceString, nameToBeFilled);
