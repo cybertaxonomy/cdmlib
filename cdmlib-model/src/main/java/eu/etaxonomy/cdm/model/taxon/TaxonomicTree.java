@@ -11,12 +11,15 @@
 package eu.etaxonomy.cdm.model.taxon;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
@@ -29,16 +32,21 @@ import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.IndexedEmbedded;
 
+import eu.etaxonomy.cdm.jaxb.MultilanguageTextAdapter;
 import eu.etaxonomy.cdm.model.common.IReferencedEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
+import eu.etaxonomy.cdm.model.common.LanguageStringBase;
+import eu.etaxonomy.cdm.model.common.MultilanguageText;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
@@ -61,11 +69,11 @@ public class TaxonomicTree extends IdentifiableEntity implements IReferencedEnti
 	private static final long serialVersionUID = -753804821474209635L;
 	private static final Logger logger = Logger.getLogger(TaxonomicTree.class);
 	
-	@XmlElement(name = "name")
-	@XmlIDREF
-	@XmlSchemaType(name = "IDREF")
+	@XmlElement(name = "Name")
 	@OneToOne(fetch = FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE})
+	@JoinColumn(name = "name_id", referencedColumnName = "id")
+	@IndexedEmbedded
 	private LanguageString name;
 	
 //	@XmlElementWrapper(name = "allNodes")
@@ -138,9 +146,9 @@ public class TaxonomicTree extends IdentifiableEntity implements IReferencedEnti
 			String microCitation, Synonym synonymToBeUsed) {
 		rootNodes.add(childNode);
 		childNode.setParent(null);
-		childNode.setTaxonomicView(this);
-		childNode.setReferenceForParentChildRelation(citation);
-		childNode.setMicroReferenceForParentChildRelation(microCitation);
+		childNode.setTaxonomicTree(this);
+		childNode.setReference(citation);
+		childNode.setMicroReference(microCitation);
 		childNode.setSynonymToBeUsed(synonymToBeUsed);
 		return childNode;
 	}
@@ -164,7 +172,7 @@ public class TaxonomicTree extends IdentifiableEntity implements IReferencedEnti
 		TaxonNode newRoot = new TaxonNode(taxon, this);
 		rootNodes.add(newRoot);
 		newRoot.setParent(null);
-		newRoot.setTaxonomicView(this);
+		newRoot.setTaxonomicTree(this);
 		newRoot.setTaxon(taxon);
 		newRoot.setReferenceForParentChildRelation(reference);
 		newRoot.setSynonymToBeUsed(synonymUsed);
@@ -175,20 +183,36 @@ public class TaxonomicTree extends IdentifiableEntity implements IReferencedEnti
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.taxon.ITreeNode#removeChildNode(eu.etaxonomy.cdm.model.taxon.TaxonNode)
 	 */
-	public boolean removeChildNode(TaxonNode node) {
-		boolean result = false;
-		if(node.isTopmostNode()){
-
-			for (TaxonNode childNode : node.getChildNodes()){
-				node.removeChildNode(childNode);
-			}
-			result = rootNodes.remove(node);
-
-			node.getTaxon().removeTaxonNode(node);
-			node.setParent(null);
-			node.setTaxonomicView(null);
-			node.setTaxon(null);			
+	public boolean deleteChildNode(TaxonNode node) {
+		boolean result = removeChildNode(node);
+		
+		node.getTaxon().removeTaxonNode(node);
+		node.setTaxon(null);	
+		
+		ArrayList<TaxonNode> childNodes = new ArrayList<TaxonNode>(node.getChildNodes()); 
+		for (TaxonNode childNode : childNodes){
+			node.deleteChildNode(childNode);
 		}
+		return result;
+	}
+	
+	/**
+	 * 
+	 * @param node
+	 * @return
+	 */
+	protected boolean removeChildNode(TaxonNode node){
+		boolean result = false;
+		
+		if(!rootNodes.contains(node)){
+			throw new IllegalArgumentException("TaxonNode is a not a root node of this taxonomic tree");
+		}
+		
+		result = rootNodes.remove(node);
+
+		node.setParent(null);
+		node.setTaxonomicTree(null);
+		
 		return result;
 	}
 	
@@ -199,7 +223,7 @@ public class TaxonomicTree extends IdentifiableEntity implements IReferencedEnti
 	 * @deprecated use removeChildNode() instead
 	 */
 	public boolean removeRoot(TaxonNode node){
-		return removeChildNode(node);
+		return deleteChildNode(node);
 	}
 	
 	/**
@@ -226,7 +250,7 @@ public class TaxonomicTree extends IdentifiableEntity implements IReferencedEnti
 			throw new IllegalArgumentException("root node and other node must not be the same");
 		}
 		otherNode.addChildNode(root, ref, microReference, null);
-		getRootNodes().remove(root);
+		//getRootNodes().remove(root);
 	}
 	
 //	public void makeThisNodePartOfOtherView(TaxonNode oldRoot, TaxonNode replacedNodeInOtherView, ReferenceBase reference, String microReference){

@@ -20,6 +20,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
@@ -40,6 +41,9 @@ import eu.etaxonomy.cdm.jaxb.FormattedTextAdapter;
 @XmlType(name = "LanguageStringBase", propOrder = {
     "text",
     "language"
+})
+@XmlSeeAlso({
+	LanguageString.class
 })
 @MappedSuperclass
 public abstract class LanguageStringBase extends AnnotatableEntity{

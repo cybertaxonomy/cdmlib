@@ -36,8 +36,6 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
-import org.hibernate.annotations.Index;
-import org.hibernate.annotations.Table;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 
@@ -58,7 +56,6 @@ import org.hibernate.envers.Audited;
 @Entity
 @Audited
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
-@Table(appliesTo="TermVocabulary", indexes = { @Index(name = "vocabularyTitleCacheIndex", columnNames = { "titleCache" }) })
 public class TermVocabulary<T extends DefinedTermBase> extends TermBase implements Iterable<T> {
 	private static final long serialVersionUID = 1925052321596648672L;
 	@SuppressWarnings("unused")

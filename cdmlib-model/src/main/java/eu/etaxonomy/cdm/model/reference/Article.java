@@ -11,28 +11,19 @@ package eu.etaxonomy.cdm.model.reference;
 
 
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
-import org.hibernate.search.annotations.IndexedEmbedded;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.strategy.cache.reference.ArticleDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.reference.INomenclaturalReferenceCacheStrategy;
@@ -161,7 +152,13 @@ public class Article extends ReferenceBase<INomenclaturalReferenceCacheStrategy<
 	 * @see 	Journal
 	 */
 	public Journal getInJournal(){
-		return (Journal)this.inReference;
+		if (inReference == null){
+			return null;
+		}
+		if (! this.inReference.isInstanceOf(Journal.class)){
+			throw new IllegalStateException("The in-reference of an article may only be of type Journal");
+		}
+		return CdmBase.deproxy(this.inReference,Journal.class);
 	}
 	
 	/**

@@ -18,6 +18,7 @@
       <plugin>
         <artifactId>maven-antrun-plugin</artifactId>
         <executions>
+          
           <execution>
             <id>aspectj-main</id>
             <phase>process-sources</phase>
@@ -192,6 +193,10 @@
     <dependency>
       <groupId>wsdl4j</groupId>
       <artifactId>wsdl4j</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-lang</groupId>
+      <artifactId>commons-lang</artifactId>
     </dependency>
     <dependency>
       <groupId>javax.xml.bind</groupId>

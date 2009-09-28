@@ -16,7 +16,7 @@ package eu.etaxonomy.cdm.model.common;
  * the microReference (page, figure, ...), the identifier used in for the referenced object in the 
  * reference, a namespace that makes this identifier unique, the original name string that in 
  * general stores the representation of the referenced object within the source (if the string representation
- * in the source differs from that one used in the CDM object)
+ * in the source differs from that one unsed in the CDM object)
  * 
  * 2.) Dataprovenance: When importing data from another datasource important information like the identifier
  * and it's namespace (e.g. tablename) as well as the datasource itself maybe stored in an original source.

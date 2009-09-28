@@ -95,10 +95,6 @@ implements ITypeDesignation {
 	protected NameTypeDesignation() {
 	}
 
-      public static NameTypeDesignation NewInstance() {
-		return new NameTypeDesignation();
-	}
-
 	/**
 	 * Class constructor: creates a new name type designation instance
 	 * (including its {@link eu.etaxonomy.cdm.model.reference.ReferenceBase reference source} and eventually
@@ -169,7 +165,7 @@ implements ITypeDesignation {
 	/**
 	 * @see  #getTypeName()
 	 */
-	public void setTypeName(TaxonNameBase typeName){
+	private void setTypeName(TaxonNameBase typeName){
 		this.typeName = typeName;
 	}
 

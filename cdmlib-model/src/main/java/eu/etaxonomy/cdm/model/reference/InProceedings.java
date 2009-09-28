@@ -11,24 +11,17 @@ package eu.etaxonomy.cdm.model.reference;
 
 
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.ManyToOne;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
-import org.hibernate.search.annotations.IndexedEmbedded;
 import org.springframework.beans.factory.annotation.Configurable;
 
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.strategy.cache.reference.IReferenceBaseCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.reference.ReferenceBaseDefaultCacheStrategy;
 
@@ -106,7 +99,13 @@ public class InProceedings extends SectionBase<IReferenceBaseCacheStrategy<InPro
 	 * @see 	Proceedings
 	 */
 	public Proceedings getInProceedings(){
-		return (Proceedings)this.inReference;
+		if (inReference == null){
+			return null;
+		}
+		if (! this.inReference.isInstanceOf(Proceedings.class)){
+			throw new IllegalStateException("The in-reference of an inproceeding may only be of type Proceedings");
+		}
+		return CdmBase.deproxy(this.inReference,Proceedings.class);
 	}
 
 	/**

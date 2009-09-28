@@ -149,7 +149,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
         		}
         	}
     	};
-    	propertyChangeSupport.addPropertyChangeListener(listener);
+    	propertyChangeSupport.addPropertyChangeListener(listener);  //didn't use this.addXXX to make lsid.AssemblerTest run in cdmlib-remote
     }
     
 	/* (non-Javadoc)

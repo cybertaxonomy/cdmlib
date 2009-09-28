@@ -11,7 +11,7 @@ import org.joda.time.Partial;
 public class PartialAdapter extends XmlAdapter<String, Partial> {
 	
 	protected static Pattern PATTERN;
-	private static String REGEX = "^(\\d{4})(?:\\-(\\d{2})(?:\\-(\\d{2})(?:T(\\d{2})(?:\\:(\\d{2})(?:\\:(\\d{2})(?:\\.(\\d+))?)?)?)?)?)?$";
+	private static String REGEX = "^(\\d{4})(?:\\-(\\d{1,2})(?:\\-(\\d{1,2})(?:T(\\d{2})(?:\\:(\\d{2})(?:\\:(\\d{2})(?:\\.(\\d+))?)?)?)?)?)?$";
 	
 	static {
 		PATTERN = Pattern.compile(REGEX);

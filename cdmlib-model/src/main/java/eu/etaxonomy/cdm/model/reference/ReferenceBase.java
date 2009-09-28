@@ -157,11 +157,9 @@ public abstract class ReferenceBase<S extends IReferenceBaseCacheStrategy> exten
 	protected String organization;
 	
 	@XmlElement(name = "Publisher")
-	@Field(index=Index.TOKENIZED)
 	protected String publisher;
 	
 	@XmlElement(name = "PlacePublished")
-	@Field(index=Index.TOKENIZED)
 	protected String placePublished;
     
 	@XmlElement(name = "Institution")
@@ -184,7 +182,7 @@ public abstract class ReferenceBase<S extends IReferenceBaseCacheStrategy> exten
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
-    @IndexedEmbedded(depth = 1)
+//    @IndexedEmbedded
     @Cascade(CascadeType.SAVE_UPDATE)
 	protected ReferenceBase inReference;
     
@@ -199,7 +197,6 @@ public abstract class ReferenceBase<S extends IReferenceBaseCacheStrategy> exten
 	@XmlElement(name ="Abstract" )
 	@Column(length=65536, name="referenceAbstract")
 	@Lob
-	@Field(index=Index.TOKENIZED)
 	private String referenceAbstract;  //abstract is a reserved term in Java
 	
 	//URIs like DOIs, LSIDs or Handles for this reference

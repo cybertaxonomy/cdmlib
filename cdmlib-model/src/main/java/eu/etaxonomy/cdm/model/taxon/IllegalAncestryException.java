@@ -17,10 +17,6 @@ package eu.etaxonomy.cdm.model.taxon;
  * @version 1.0
  */
 public class IllegalAncestryException extends RuntimeException {
-
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -3307728728821304141L;
 	
 	/**

@@ -10,6 +10,7 @@
 
 package eu.etaxonomy.cdm.model.taxon;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -31,7 +32,9 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
+import org.springframework.util.Assert;
 
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
@@ -126,7 +129,7 @@ public class TaxonNode  extends AnnotatableEntity implements ITreeNode{
 	 */
 	protected TaxonNode (Taxon taxon, TaxonomicTree taxonomicTree){
 		this(taxon);
-		setTaxonomicView(taxonomicTree);
+		setTaxonomicTree(taxonomicTree);
 	}
 	
 	/**
@@ -214,25 +217,46 @@ public class TaxonNode  extends AnnotatableEntity implements ITreeNode{
 	 */
 	public TaxonNode addChildNode(TaxonNode childNode, ReferenceBase reference, String microReference, Synonym synonymToBeUsed){
 		// check if this node is a descendant of the childNode 
-		if(childNode.getParent() != this && childNode.isAscendant(this)){
+		if(childNode.getParent() != this && childNode.isAncestor(this)){
 			throw new IllegalAncestryException("New parent node is a descendant of the node to be moved.");
+		}
+
+		TaxonomicTree oldChildTree = childNode.getTaxonomicTree();
+		
+		// remove this childNode from previous parents and trees
+		if(childNode.getParent() != null){  //child is already child
+			childNode.getParent().removeChildNode(childNode);
+		}else if(oldChildTree != null){     //child is root in old tree
+			childNode.getTaxonomicTree().removeChildNode(childNode);
+		}
+		
+		TaxonomicTree parentTree = this.getTaxonomicTree();
+		if (oldChildTree != null && ! oldChildTree.equals(parentTree)){  //oldChildTree is null if the node was just created new
+			childNode.setTaxonomicTreeRecursively(parentTree);
+		}else{
+			childNode.setTaxonomicTree(parentTree);
 		}
 		
 		childNode.setParent(this);
-		childNode.setTaxonomicView(this.getTaxonomicTree());
 		childNodes.add(childNode);
 		this.countChildren++;
 		childNode.setReference(reference);
 		childNode.setMicroReference(microReference);
 		childNode.setSynonymToBeUsed(synonymToBeUsed);
 		
-		for(TaxonNode grandChildNode : childNode.getChildNodes()){
-			childNode.addChildNode(grandChildNode, childNode.getReference(), childNode.getMicroReference(), childNode.getSynonymToBeUsed());
-		}
-		
 		return childNode;
 	}
 	
+	/**
+	 * @param parentTree
+	 */
+	private void setTaxonomicTreeRecursively(TaxonomicTree parentTree) {
+		this.setTaxonomicTree(parentTree);
+		for(TaxonNode childNode : this.getChildNodes()){
+			childNode.setTaxonomicTreeRecursively(parentTree);
+		}
+	}
+
 	/**
 	 * This removes recursively all child nodes from this node and from this taxonomic view.
 	 * TODO remove orphan nodes completely 
@@ -243,48 +267,74 @@ public class TaxonNode  extends AnnotatableEntity implements ITreeNode{
 	 */
 	@Deprecated
 	public boolean removeChild(TaxonNode node){
-		return removeChildNode(node);
+		return deleteChildNode(node);
 	}	
 	
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.taxon.ITreeNode#removeChildNode(eu.etaxonomy.cdm.model.taxon.TaxonNode)
 	 */
-	public boolean removeChildNode(TaxonNode node) {
-		boolean result = false;
-		if (node != null){
-			// two iterations because of ConcurrentModificationErrors
-            Set<TaxonNode> removeNodes = new HashSet<TaxonNode>(); 
-            for (TaxonNode grandChildNode : node.getChildNodes()) { 
-                    removeNodes.add(grandChildNode); 
-            } 
-            for (TaxonNode childNode : removeNodes) { 
-                    childNode.removeChildNode(node); 
-            } 
-            
-			result = childNodes.remove(node);
-			this.countChildren--;
-			if (this.countChildren < 0){
-				throw new IllegalStateException("children count must not be negative ");
-			}
-			node.getTaxon().removeTaxonNode(node);
-			node.setParent(null);
-			node.setTaxonomicView(null);
-			node.setTaxon(null);
+	public boolean deleteChildNode(TaxonNode node) {
+		boolean result = removeChildNode(node);
+		
+		node.getTaxon().removeTaxonNode(node);
+		node.setTaxon(null);
+		
+		ArrayList<TaxonNode> childNodes = new ArrayList<TaxonNode>(node.getChildNodes()); 
+		for(TaxonNode childNode : childNodes){
+			node.deleteChildNode(childNode);
 		}
+		
+//		// two iterations because of ConcurrentModificationErrors
+//        Set<TaxonNode> removeNodes = new HashSet<TaxonNode>(); 
+//        for (TaxonNode grandChildNode : node.getChildNodes()) { 
+//                removeNodes.add(grandChildNode); 
+//        } 
+//        for (TaxonNode childNode : removeNodes) { 
+//                childNode.deleteChildNode(node); 
+//        } 
+            
 		return result;
 	}
+	
+	/**
+	 * Removes the child node from this node. Sets the parent and the taxonomic tree of the child 
+	 * node to null
+	 * @param childNode
+	 * @return
+	 */
+	protected boolean removeChildNode(TaxonNode childNode){
+		boolean result = false;
+		
+		if(childNode == null){
+			throw new IllegalArgumentException("TaxonNode may not be null");
+		}
+		if(HibernateProxyHelper.deproxy(childNode.getParent(), TaxonNode.class) != this){
+			throw new IllegalArgumentException("TaxonNode must be a child of this node");
+		}
+		
+		result = childNodes.remove(childNode);
+		this.countChildren--;
+		if (this.countChildren < 0){
+			throw new IllegalStateException("children count must not be negative ");
+		}
+		childNode.setParent(null);
+		childNode.setTaxonomicTree(null);
+		
+		return result;
+	}
+	
 	
 	/**
 	 * Remove this taxonNode From its taxonomic parent
 	 * 
 	 * @return true on success
 	 */
-	public boolean remove(){
+	public boolean delete(){
 		if(isTopmostNode()){
-			return taxonomicTree.removeChildNode(this);
+			return taxonomicTree.deleteChildNode(this);
 		}else{
-			return getParent().removeChildNode(this);
+			return getParent().deleteChildNode(this);
 		}		
 	}
 	
@@ -309,7 +359,7 @@ public class TaxonNode  extends AnnotatableEntity implements ITreeNode{
 		return taxonomicTree;
 	}
 	//invisible part of the bidirectional relationship, for public use TaxonomicView.addRoot() or TaxonNode.addChild()
-	protected void setTaxonomicView(TaxonomicTree taxonomicTree) {
+	protected void setTaxonomicTree(TaxonomicTree taxonomicTree) {
 		this.taxonomicTree = taxonomicTree;
 	}
 	public Set<TaxonNode> getChildNodes() {
@@ -338,14 +388,14 @@ public class TaxonNode  extends AnnotatableEntity implements ITreeNode{
 	 * 
 	 * @return
 	 */
-	protected Set<TaxonNode> getAscendants(){
+	protected Set<TaxonNode> getAncestors(){
 		Set<TaxonNode> nodeSet = new HashSet<TaxonNode>();
 		
 		
 		nodeSet.add(this);
 		
 		if(this.getParent() != null){
-			nodeSet.addAll(this.getParent().getAscendants());
+			nodeSet.addAll(this.getParent().getAncestors());
 		}
 		
 		return nodeSet;
@@ -484,8 +534,8 @@ public class TaxonNode  extends AnnotatableEntity implements ITreeNode{
 	 * @return true if there are ascendants
 	 */
 	@Transient
-	public boolean isAscendant(TaxonNode possibleChild){
-		return possibleChild.getAscendants().contains(this);
+	public boolean isAncestor(TaxonNode possibleChild){
+		return possibleChild.getAncestors().contains(this);
 	}
 	
 	/**
