@@ -70,7 +70,7 @@ public class TestLocationServiceImpl  extends CdmIntegrationTest{
 			DbSchemaValidation dbSchemaValidation = DbSchemaValidation.CREATE;
 
 //			ICdmDataSource datasource = CdmDataSource.NewMySqlInstance(server, database, username, password);
-			ICdmDataSource datasource = CdmDataSource.NewH2EmbeddedInstance("test", "sa", "");
+			ICdmDataSource datasource = CdmDataSource.NewH2EmbeddedInstance("test", "sa", "", null);
 			CdmApplicationController appCtr = CdmApplicationController.NewInstance(datasource, dbSchemaValidation);
 			
 			ConversationHolder conversation = appCtr.NewConversation();

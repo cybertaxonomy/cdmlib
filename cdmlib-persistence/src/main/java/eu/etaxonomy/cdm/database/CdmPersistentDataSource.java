@@ -480,7 +480,7 @@ public class CdmPersistentDataSource extends CdmDataSourceBase{
 		
 		int portNumber = "".equals(port) ? databaseTypeEnum.getDefaultPort() : Integer.valueOf(port);
 		
-		ICdmDataSource dataSource = new CdmDataSource(databaseTypeEnum, server, database, portNumber, username, password, filePath, mode);
+		ICdmDataSource dataSource = new CdmDataSource(databaseTypeEnum, server, database, portNumber, username, password, filePath, mode, code);
 				
 		//root
 		Element root = getBeansRoot(getDataSourceInputStream());
@@ -528,9 +528,9 @@ public class CdmPersistentDataSource extends CdmDataSourceBase{
 	 * 			the updated dataSource, null if not succesful
 	 */
 	public static CdmPersistentDataSource update(String strDataSourceName,
-			ICdmDataSource dataSource, NomenclaturalCode code) throws DataSourceNotFoundException, IllegalArgumentException{
+			ICdmDataSource dataSource) throws DataSourceNotFoundException, IllegalArgumentException{
 		delete(CdmPersistentDataSource.NewInstance(strDataSourceName));
-		return save(strDataSourceName, dataSource, code);
+		return save(strDataSourceName, dataSource);
 	}
 
 	/**
@@ -539,11 +539,10 @@ public class CdmPersistentDataSource extends CdmDataSourceBase{
 	 * 
 	 * @param strDataSourceName
 	 * @param dataSource
-	 * @param code
 	 * @return
 	 */
 	public static CdmPersistentDataSource save(String strDataSourceName,
-			ICdmDataSource dataSource, NomenclaturalCode code)  throws IllegalArgumentException{
+			ICdmDataSource dataSource)  throws IllegalArgumentException{
 		
 		if(dataSource.getDatabaseType() == null){
 			new IllegalArgumentException("Database type not specified");
@@ -566,7 +565,7 @@ public class CdmPersistentDataSource extends CdmDataSourceBase{
 					null, null, null, null, 
 					getCheckedDataSourceParameter(dataSource.getFilePath()), 
 					dataSource.getMode(),
-					code);
+					dataSource.getNomenclaturalCode());
 		}else{
 			Class<? extends DriverManagerDataSource> driverManagerDataSource =  DriverManagerDataSource.class;
 			return save(
@@ -579,7 +578,7 @@ public class CdmPersistentDataSource extends CdmDataSourceBase{
 					getCheckedDataSourceParameter(dataSource.getPassword()), 
 					driverManagerDataSource, 
 					null, null, null, null, null, null,
-					code);
+					dataSource.getNomenclaturalCode());
 		}
 	}
 

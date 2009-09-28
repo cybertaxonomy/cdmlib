@@ -22,6 +22,8 @@ import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.InstitutionalMembership;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
+import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 public interface IAgentService extends IIdentifiableEntityService<AgentBase> {
@@ -89,4 +91,19 @@ public interface IAgentService extends IIdentifiableEntityService<AgentBase> {
 	 * @see <a href="http://lucene.apache.org/java/2_4_0/queryparsersyntax.html">Apache Lucene - Query Parser Syntax</a>
 	 */
 	public Pager<AgentBase> search(Class<? extends AgentBase> clazz, String queryString, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+	
+	/**
+	 * Returns a list of <code>UuidAndTitleCache</code> containing all <code>Person</code>s
+	 * 
+	 * @return a list of <code>UuidAndTitleCache</code> instances
+	 */
+	public List<UuidAndTitleCache<Person>> getPersonUuidAndNomenclaturalTitle();
+	
+	/**
+	 * Returns a list of <code>UuidAndTitleCache</code> containing all <code>TeamOrPersonBase</code> obejcts
+	 * with their respective nomenclaturalTitle instead of regular titleCache
+	 * 
+	 * @return a list of <code>UuidAndTitleCache</code> instances
+	 */
+	public List<UuidAndTitleCache<TeamOrPersonBase>> getTeamOrPersonBaseUuidAndNomenclaturalTitle();
 }

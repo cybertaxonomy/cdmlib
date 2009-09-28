@@ -51,7 +51,7 @@ public class TestTaxonServices {
 		
 		logger.info("Setting DB " + dbname);
 		String password = AccountStore.readOrStorePassword(dbname, server, username, null);
-		ICdmDataSource datasource = CdmDataSource.NewMySqlInstance(server, dbname, username, password);
+		ICdmDataSource datasource = CdmDataSource.NewMySqlInstance(server, dbname, username, password, null);
 		return datasource;
 	}
 

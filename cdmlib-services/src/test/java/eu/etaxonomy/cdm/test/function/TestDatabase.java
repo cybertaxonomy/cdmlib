@@ -5,7 +5,8 @@ package eu.etaxonomy.cdm.test.function;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
+
+import junit.framework.Assert;
 
 import org.apache.log4j.Logger;
 import org.hibernate.mapping.Column;
@@ -13,8 +14,6 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
-import eu.etaxonomy.cdm.api.service.IDatabaseService;
-import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.common.AccountStore;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.database.CdmDataSource;
@@ -34,9 +33,9 @@ import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
+import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.reference.Journal;
-import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 
@@ -82,7 +81,7 @@ public class TestDatabase {
 			DbSchemaValidation dbSchemaValidation = DbSchemaValidation.CREATE;
 
 //			ICdmDataSource datasource = CdmDataSource.NewMySqlInstance(server, database, username, password);
-			ICdmDataSource datasource = CdmDataSource.NewH2EmbeddedInstance("CDM", "sa", "");
+			ICdmDataSource datasource = CdmDataSource.NewH2EmbeddedInstance("CDM", "sa", "", null);
 			CdmApplicationController appCtr = CdmApplicationController.NewInstance(datasource, dbSchemaValidation);
 			
 			Rank genus = Rank.GENUS();
@@ -132,7 +131,7 @@ public class TestDatabase {
 			String username = "edit";
 			String password = CdmUtils.readInputLine("Password: ");
 			DbSchemaValidation dbSchemaValidation = DbSchemaValidation.VALIDATE;
-			ICdmDataSource datasource = CdmDataSource.NewMySqlInstance(server, database, username, password);
+			ICdmDataSource datasource = CdmDataSource.NewMySqlInstance(server, database, username, password, null);
 			CdmApplicationController appCtr = CdmApplicationController.NewInstance(datasource, dbSchemaValidation);
 			
 			Rank genus = Rank.GENUS();
@@ -187,7 +186,7 @@ public class TestDatabase {
 			String username = "edit";
 			String password = CdmUtils.readInputLine("Password: ");
 			DbSchemaValidation dbSchemaValidation = DbSchemaValidation.CREATE;
-			ICdmDataSource datasource = CdmDataSource.NewMySqlInstance(server, database, username, password);
+			ICdmDataSource datasource = CdmDataSource.NewMySqlInstance(server, database, username, password, null);
 			CdmApplicationController appCtr = CdmApplicationController.NewInstance(datasource, dbSchemaValidation);
 			
 			Rank genus = Rank.GENUS();
@@ -220,7 +219,7 @@ public class TestDatabase {
 			String username = "andreas";
 			String password = CdmUtils.readInputLine("Password: ");
 			DbSchemaValidation validation = DbSchemaValidation.VALIDATE;
-			ICdmDataSource datasource = CdmDataSource.NewSqlServer2005Instance(server, database, username, password);
+			ICdmDataSource datasource = CdmDataSource.NewSqlServer2005Instance(server, database, username, password, null);
 			CdmApplicationController appCtr = CdmApplicationController.NewInstance(datasource, validation);
 			
 			Rank genus = Rank.GENUS();
@@ -284,7 +283,7 @@ public class TestDatabase {
 			DbSchemaValidation dbSchemaValidation = DbSchemaValidation.CREATE;
 
 //			ICdmDataSource datasource = CdmDataSource.NewMySqlInstance(server, database, username, password);
-			ICdmDataSource datasource = CdmDataSource.NewH2EmbeddedInstance("CDM", "sa", "");
+			ICdmDataSource datasource = CdmDataSource.NewH2EmbeddedInstance("CDM", "sa", "", null);
 			CdmApplicationController appCtr = CdmApplicationController.NewInstance(datasource, dbSchemaValidation);
 			BotanicalName botName = BotanicalName.NewInstance(Rank.SPECIES());
 			botName.setGenusOrUninomial("Genus");
@@ -309,7 +308,30 @@ public class TestDatabase {
 			logger.error("defined terms not found");
 		}
 	}
+	
+	public void testDataSourceWithNomenclaturalCode(){
+		String dataSourceName = "test";
+		NomenclaturalCode code = NomenclaturalCode.ICZN;
+//		ICdmDataSource dataSource = CdmDataSource.NewH2EmbeddedInstance("test", "sa", "", code);
+		ICdmDataSource dataSource = CdmDataSource.NewMySqlInstance("192.168.2.10", "cdm_test_niels2", "edit", "wp5", code);
+		CdmPersistentDataSource.save(dataSourceName, dataSource);
 		
+		try {
+			CdmPersistentDataSource loadedDataSource = CdmPersistentDataSource.NewInstance(dataSourceName);
+//			CdmApplicationController.NewInstance(loadedDataSource, DbSchemaValidation.CREATE);
+			
+			NomenclaturalCode loadedCode = loadedDataSource.getNomenclaturalCode();
+			Assert.assertEquals(code, loadedCode);
+			
+			CdmPersistentDataSource.delete(loadedDataSource);
+			
+		} catch (DataSourceNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+		
+		
+	}
 	
 	
 	public static ICdmDataSource cdm_test_anahit2(){
@@ -328,18 +350,18 @@ public class TestDatabase {
 		//establish connection
 		pwd = AccountStore.readOrStorePassword(cdmServer, cdmDB, cdmUserName, pwd);
 		//TODO not MySQL
-		ICdmDataSource destination = CdmDataSource.NewMySqlInstance(cdmServer, cdmDB, port, cdmUserName, pwd);
+		ICdmDataSource destination = CdmDataSource.NewMySqlInstance(cdmServer, cdmDB, port, cdmUserName, pwd, null);
 		return destination;
 
 	}
-
 	
 	/**
 	 * @param args
 	 */
 	public static void  main(String[] args) {
 		TestDatabase sc = new TestDatabase();
-    	sc.testNewDatabaseConnection();
+//    	sc.testNewDatabaseConnection();
+		sc.testDataSourceWithNomenclaturalCode();
 	}
 
 }

@@ -29,6 +29,7 @@ import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.InstitutionalMembership;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.dao.agent.IAgentDao;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
@@ -148,4 +149,18 @@ public class AgentServiceImpl extends IdentifiableServiceBase<AgentBase,IAgentDa
 		
 		return new DefaultPagerImpl<AgentBase>(pageNumber, numberOfResults, pageSize, results);
 	}
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.service.IAgentService#getPersonUuidAndNomenclaturalTitle()
+	 */
+	public List<UuidAndTitleCache<Person>> getPersonUuidAndNomenclaturalTitle() {
+		return dao.getPersonUuidAndNomenclaturalTitle();
+	}
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.service.IAgentService#getTeamOrPersonBaseUuidAndNomenclaturalTitle()
+	 */
+	public List<UuidAndTitleCache<TeamOrPersonBase>> getTeamOrPersonBaseUuidAndNomenclaturalTitle() {
+		return dao.getTeamOrPersonBaseUuidAndNomenclaturalTitle();
+	}	
 }

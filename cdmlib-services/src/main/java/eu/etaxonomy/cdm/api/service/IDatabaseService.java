@@ -90,7 +90,7 @@ public interface IDatabaseService {
 	 * @param code
 	 * @return
 	 */
-	public CdmPersistentDataSource saveDataSource(String strDataSourceName, ICdmDataSource dataSource, NomenclaturalCode code);
+	public CdmPersistentDataSource saveDataSource(String strDataSourceName, ICdmDataSource dataSource);
 	
 	/**
 	 * Update an already saved datasource in datasource config file
@@ -102,7 +102,7 @@ public interface IDatabaseService {
 	 * 			the CdmDataSource, null if not successful
 	 * @throws DataSourceNotFoundException 
 	 */
-	public CdmPersistentDataSource updateDataSource(String strDataSourceName, CdmPersistentDataSource dataSource, NomenclaturalCode code) throws DataSourceNotFoundException;
+	public CdmPersistentDataSource updateDataSource(String strDataSourceName, CdmPersistentDataSource dataSource) throws DataSourceNotFoundException;
 
 	public void setApplicationController(CdmApplicationController cdmApplicationController);
 }

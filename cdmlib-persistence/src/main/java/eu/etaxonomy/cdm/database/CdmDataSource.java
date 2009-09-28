@@ -38,6 +38,7 @@ public class CdmDataSource extends CdmDataSourceBase {
 	private int port = -1;
 	private String username;
 	private String password;
+	private NomenclaturalCode nomenclaturalCode;
 	
 	private String filePath;
 	private H2Mode mode;
@@ -51,41 +52,33 @@ public class CdmDataSource extends CdmDataSourceBase {
 	private boolean registerSearchListener = false;
 	private Class<? extends CacheProvider> cacheProviderClass = NoCacheProvider.class;
 
-	public static CdmDataSource NewInstance(DatabaseTypeEnum dbType, String server, String database, int port, String username, String password){
-		return new CdmDataSource(dbType, server, database, port, username, password, null, null);
+	public static CdmDataSource NewInstance(DatabaseTypeEnum dbType, String server, String database, int port, String username, String password, NomenclaturalCode code){
+		return new CdmDataSource(dbType, server, database, port, username, password, null, null, code);
 	}
 	
-	static public CdmDataSource  NewMySqlInstance(String server, String database, String username, String password){
-		return new CdmDataSource(DatabaseTypeEnum.MySQL, server, database, -1, username, password, null, null);
+	static public CdmDataSource  NewMySqlInstance(String server, String database, String username, String password, NomenclaturalCode code){
+		return new CdmDataSource(DatabaseTypeEnum.MySQL, server, database, -1, username, password, null, null, code);
 	}
 	
-	static public CdmDataSource  NewMySqlInstance(String server, String database, int port, String username, String password){
-		return new CdmDataSource(DatabaseTypeEnum.MySQL, server, database, port, username, password, null, null);
+	static public CdmDataSource  NewMySqlInstance(String server, String database, int port, String username, String password, NomenclaturalCode code){
+		return new CdmDataSource(DatabaseTypeEnum.MySQL, server, database, port, username, password, null, null, code);
 	}
 
-	static public CdmDataSource  NewSqlServer2005Instance(String server, String database, String username, String password){
-		return new CdmDataSource(DatabaseTypeEnum.SqlServer2005, server, database, -1, username, password, null, null);
+	static public CdmDataSource  NewSqlServer2005Instance(String server, String database, String username, String password, NomenclaturalCode code){
+		return new CdmDataSource(DatabaseTypeEnum.SqlServer2005, server, database, -1, username, password, null, null, code);
 	}
 	
-	static public CdmDataSource  NewSqlServer2005Instance(String server, String database, int port, String username, String password){
-		return new CdmDataSource(DatabaseTypeEnum.SqlServer2005, server, database, port, username, password, null, null);
+	static public CdmDataSource  NewSqlServer2005Instance(String server, String database, int port, String username, String password, NomenclaturalCode code){
+		return new CdmDataSource(DatabaseTypeEnum.SqlServer2005, server, database, port, username, password, null, null, code);
 	}
 
-	/** in work */
-	static public CdmDataSource  NewH2EmbeddedInstance(String database, String username, String password){
+	/** in work 
+	 * @param code TODO*/
+	static public CdmDataSource  NewH2EmbeddedInstance(String database, String username, String password, NomenclaturalCode code){
 		//FIXME in work
 		int port = -1;
 		H2Mode mode = H2Mode.EMBEDDED;
-		CdmDataSource dataSource = new CdmDataSource(DatabaseTypeEnum.H2, null, database, port, username, password, null, mode);
-		return dataSource;
-	}
-	
-	/** in work */
-	static public CdmDataSource  NewH2EmbeddedInstance(String database, String username, String password, String filePath){
-		//FIXME in work
-		int port = -1;
-		H2Mode mode = H2Mode.EMBEDDED;
-		CdmDataSource dataSource = new CdmDataSource(DatabaseTypeEnum.H2, null, database, port, username, password, filePath, mode);
+		CdmDataSource dataSource = new CdmDataSource(DatabaseTypeEnum.H2, null, database, port, username, password, null, mode, code);
 		return dataSource;
 	}
 
@@ -96,7 +89,7 @@ public class CdmDataSource extends CdmDataSourceBase {
 		H2Mode mode = H2Mode.IN_MEMORY;
 		String username = "sa";
 		String password = "";
-		CdmDataSource dataSource = new CdmDataSource(DatabaseTypeEnum.H2, null, null, port, username, password, null, mode);
+		CdmDataSource dataSource = new CdmDataSource(DatabaseTypeEnum.H2, null, null, port, username, password, null, mode, null);
 		return dataSource;
 	}
 
@@ -106,7 +99,7 @@ public class CdmDataSource extends CdmDataSourceBase {
 	 * @param database
 	 * @param port
 	 */
-	protected CdmDataSource(DatabaseTypeEnum dbType, String server, String database, int port, String username, String password, String filePath, H2Mode mode) {
+	protected CdmDataSource(DatabaseTypeEnum dbType, String server, String database, int port, String username, String password, String filePath, H2Mode mode, NomenclaturalCode code) {
 		super();
 		this.dbType = dbType;
 		this.server = server;
@@ -118,6 +111,7 @@ public class CdmDataSource extends CdmDataSourceBase {
 		this.destroyMethodName = dbType.getDestroyMethod();
 		this.filePath = filePath;
 		this.mode = mode;
+		this.nomenclaturalCode = code;
 	}
 	
 	
@@ -274,7 +268,13 @@ public class CdmDataSource extends CdmDataSourceBase {
 	 */
 	public String getUsername() {
 		return username;
-	}	
-	
+	}
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.database.ICdmDataSource#getNomenclaturalCode()
+	 */
+	public NomenclaturalCode getNomenclaturalCode() {
+		return nomenclaturalCode;
+	}		
 }
 

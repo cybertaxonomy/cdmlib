@@ -62,7 +62,7 @@ public class EndnoteRecordsImportTest /*extends CdmTransactionalIntegrationTest 
 	@Ignore
 	public void testDoInvoke() {
 		DbSchemaValidation hbm2dll = DbSchemaValidation.CREATE;
-		ICdmDataSource cdmDestination = CdmDataSource.NewH2EmbeddedInstance("endnoteTest", "sa", "");;
+		ICdmDataSource cdmDestination = CdmDataSource.NewH2EmbeddedInstance("endnoteTest", "sa", "", null);;
 		String inputFile = "/eu/etaxonomy/cdm/io/reference/EndnoteRecordImportTest-input.xml";
 		URL url = this.getClass().getResource(inputFile);
 		assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);

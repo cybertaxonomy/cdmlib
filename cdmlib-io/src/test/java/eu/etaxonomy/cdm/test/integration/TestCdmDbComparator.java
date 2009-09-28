@@ -53,7 +53,7 @@ public class TestCdmDbComparator {
 	public static ICdmDataSource CDM_DB(String dbname) {
 		
 	String password = AccountStore.readOrStorePassword(dbname, server, username, null);
-	ICdmDataSource datasource = CdmDataSource.NewMySqlInstance(server, dbname, username, password);
+	ICdmDataSource datasource = CdmDataSource.NewMySqlInstance(server, dbname, username, password, null);
 	return datasource;
 	}
 	
@@ -254,7 +254,7 @@ public class TestCdmDbComparator {
     		String password = AccountStore.readOrStorePassword(dbname, server, username, null);
     		
     		DbSchemaValidation dbSchemaValidation = DbSchemaValidation.VALIDATE;
-    		ICdmDataSource datasource = CdmDataSource.NewMySqlInstance(server, dbname, username, password);
+    		ICdmDataSource datasource = CdmDataSource.NewMySqlInstance(server, dbname, username, password, null);
     		appCtr = CdmApplicationController.NewInstance(datasource, dbSchemaValidation, true);
 
     	} catch (DataSourceNotFoundException e) {
@@ -294,7 +294,7 @@ public class TestCdmDbComparator {
     		String password = AccountStore.readOrStorePassword(dbname, server, username, null);
     		
     		DbSchemaValidation dbSchemaValidation = DbSchemaValidation.VALIDATE;
-    		ICdmDataSource datasource = CdmDataSource.NewMySqlInstance(server, dbname, username, password);
+    		ICdmDataSource datasource = CdmDataSource.NewMySqlInstance(server, dbname, username, password, null);
     		appCtr = CdmApplicationController.NewInstance(datasource, dbSchemaValidation, true);
 
     	} catch (DataSourceNotFoundException e) {

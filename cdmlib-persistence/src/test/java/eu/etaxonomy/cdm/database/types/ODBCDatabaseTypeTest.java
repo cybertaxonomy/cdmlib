@@ -66,7 +66,7 @@ public class ODBCDatabaseTypeTest {
 		username = "user";
 		password = "wd";
 		dataSource = CdmPersistentDataSource.save(
-				"sybaseTest", CdmDataSource.NewInstance(enumType, server, dbName, port, username, password), null);
+				"sybaseTest", CdmDataSource.NewInstance(enumType, server, dbName, port, username, password, null));
 	}
 
 	/**

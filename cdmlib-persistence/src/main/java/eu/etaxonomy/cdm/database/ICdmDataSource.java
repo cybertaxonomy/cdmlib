@@ -14,6 +14,8 @@ import java.sql.ResultSet;
 import org.hibernate.cache.CacheProvider;
 import org.springframework.beans.factory.config.BeanDefinition;
 
+import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
+
 public interface ICdmDataSource {
 
 	/**
@@ -96,7 +98,7 @@ public interface ICdmDataSource {
      */
 	public int executeUpdate (String sqlUpdate);
 
-
+	public NomenclaturalCode getNomenclaturalCode();	
 	
 //
 //	public void setFilePath(String filePath);

@@ -14,7 +14,6 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.DOMException;
@@ -43,32 +42,21 @@ public class FormattedTextAdapter extends XmlAdapter<FormattedText,java.lang.Str
 	
 	public FormattedText marshal(String string) throws Exception {
 		if(string != null) {
-			
-			string = StringEscapeUtils.escapeXml(string);
-			String documentString = "<?xml version=\"1.0\"?><Text>"  + string + "</Text>";
+			String documentString = "<?xml version=\"1.0\"?><text>"  + string + "</text>";
 			log.debug("Parsing " + documentString);
-			
 			FormattedText text = new FormattedText();
 		    DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		    DocumentBuilder parser = factory.newDocumentBuilder();
-		    //
-		   // System.err.println(documentString);
 		    Document document = parser.parse(new InputSource(new StringReader(documentString)));
-		    
 		    NodeList childNodes = document.getDocumentElement().getChildNodes();
-		    
 		    for(int i = 0; i < childNodes.getLength(); i++) {
 		    	Node node = childNodes.item(i);
 		    	if(node instanceof org.w3c.dom.Text ) {
 		    		org.w3c.dom.Text textNode = (org.w3c.dom.Text) node;
-		    		//if (documentString.contains("United Kingdom")){
-		    //			System.err.println("w3c..." + textNode.getData());
-		    		//}
-		    	
+		    		
 		    		text.getContent().add(textNode.getTextContent());
 		    	} else {
 		    	    text.getContent().add(node);
-		    		//System.err.println("no w3c..." + text.toString());
 		    	}
 		    }
 		    return text;
@@ -93,7 +81,6 @@ public class FormattedTextAdapter extends XmlAdapter<FormattedText,java.lang.Str
 						attributes.removeNamedItem(prefix);
 					} catch(DOMException de){
 						if(de.code != DOMException.NOT_FOUND_ERR) {
-							System.err.println("no such prefix: " + prefix);
 							throw de;
 						}
 					}
