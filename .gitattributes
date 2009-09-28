@@ -54,7 +54,6 @@ app-import/src/main/java/eu/etaxonomy/cdm/app/wp6/cichorieae/CichorieaeImageActi
 app-import/src/main/java/eu/etaxonomy/cdm/app/wp6/cichorieae/TaraxacumActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/wp6/diptera/DipteraActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/wp6/diptera/DipteraDistributionParser.java -text
-app-import/src/main/java/eu/etaxonomy/cdm/app/wp6/diptera/DipteraImageActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/wp6/palmae/PalmaeActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/wp6/palmae/PalmaeExcelProtologueActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/wp6/palmae/PalmaeImageActivator.java -text
@@ -62,7 +61,6 @@ app-import/src/main/java/eu/etaxonomy/cdm/app/wp6/palmae/PalmaeProtologueImportA
 app-import/src/main/java/eu/etaxonomy/cdm/app/wp6/palmae/PalmaeTaxonXImportActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/wp6/palmae/config/PalmaeProtologueImportConfigurator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/io/CichorieaeImageImport.java -text
-app-import/src/main/java/eu/etaxonomy/cdm/io/DipteraImageImport.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/io/PalmaeImageImport.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/io/PalmaeProtologueImport.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/io/ProtologueImport.java -text

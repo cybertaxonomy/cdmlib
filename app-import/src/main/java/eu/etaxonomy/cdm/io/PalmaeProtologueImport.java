@@ -39,9 +39,6 @@ public class PalmaeProtologueImport extends AbstractImageImporter {
 
 	public static final String SPECIES = "Species";
 	public static final String TAXONID = "Taxon ID";
-//	public static final String ACC_OR_SYN = "AcceptedOrSynonym";
-//	public static final String AUTHOR = "Author";
-//	public static final String REFERENCE = "Reference";
 	public static final String LINK_PROTO = "Link proto";
 	
 	/* (non-Javadoc)
@@ -57,9 +54,6 @@ public class PalmaeProtologueImport extends AbstractImageImporter {
 			logger.error("FileNotFound: " + config.getSource().toString());
 			return false;
 		}
-				
-//		ICommonService commonService = getCommonService();
-//		INameService nameService = getNameService();
 		
 		Set<TaxonNameBase> taxonNameStore = new HashSet<TaxonNameBase>();
 		
@@ -70,9 +64,7 @@ public class PalmaeProtologueImport extends AbstractImageImporter {
 			String species = row.get(PalmaeProtologueImport.SPECIES).trim();
 			String taxonId = row.get(PalmaeProtologueImport.TAXONID);
 			String linkProto= row.get(PalmaeProtologueImport.LINK_PROTO).trim();
-			
-			//logger.info(species + ",  " + taxonId + ",  " + accOrSyn + ",  " + reference + ",  " + linkProto);
-			
+
 			TaxonNameBase taxonNameBase = (TaxonNameBase)getCommonService().getSourcedObjectByIdInSource(TaxonNameBase.class, "palm_tn_" + taxonId.replace(".0", ""), "TaxonName");
 			
 			if(taxonNameBase == null){

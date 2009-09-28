@@ -55,7 +55,7 @@ public class CichorieaeActivator {
 	static final ICdmDataSource cdmDestination = CdmDestinations.localH2Cichorieae();
 
 	static final UUID secUuid = UUID.fromString("6924c75d-e0d0-4a6d-afb7-3dd8c71195ca");
-	static final UUID treeUuid = UUID.fromString("534e190f-3339-49ba-95d9-fa27d5493e3e");
+	static final UUID taxonomicTreeUuid = UUID.fromString("534e190f-3339-49ba-95d9-fa27d5493e3e");
 //	static final UUID treeUuid = UUID.fromString("00db28a7-50e1-4abc-86ec-b2a8ce870de9");
 	static final int sourceSecId = 7800000;
 	
@@ -150,7 +150,7 @@ public class CichorieaeActivator {
 		
 		BerlinModelImportConfigurator bmImportConfigurator = BerlinModelImportConfigurator.NewInstance(source,  destination);
 		
-		bmImportConfigurator.setTreeUuid(treeUuid);
+		bmImportConfigurator.setTreeUuid(taxonomicTreeUuid);
 		bmImportConfigurator.setSourceSecId(sourceSecId);
 		
 		bmImportConfigurator.setNomenclaturalCode(nomenclaturalCode);
@@ -174,7 +174,7 @@ public class CichorieaeActivator {
 		bmImportConfigurator.setDoUser(doUser);
 		bmImportConfigurator.setEditor(editor);
 		bmImportConfigurator.setDbSchemaValidation(hbm2dll);
-
+		
 
 		// mediaResourceLocations
 		if ( mediaPath.exists() && mediaPath.isDirectory()){
@@ -217,12 +217,13 @@ public class CichorieaeActivator {
 			ImageImportConfigurator imageConfigurator = ImageImportConfigurator.NewInstance(
 					CichorieaeImageActivator.sourceFolder, cdmDestination, CichorieaeImageImport.class);
 			imageConfigurator.setSecUuid(secUuid);
-			imageConfigurator.setTreeUuid(treeUuid);
+			imageConfigurator.setTreeUuid(taxonomicTreeUuid);
 			imageImporter.invoke(imageConfigurator);
 			System.out.println("End importing images ...");
 		}
 
 		if (includeTaraxacum) {
+			 logger.warn("Taraxacum import not yet implemented");
 			 // TODO	
 		}
 		

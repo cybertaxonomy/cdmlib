@@ -28,8 +28,7 @@ import eu.etaxonomy.cdm.io.common.IImportConfigurator;
  */
 public class CichorieaeImageActivator  {
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger
-			.getLogger(CichorieaeImageActivator.class);
+	private static final Logger logger = Logger.getLogger(CichorieaeImageActivator.class);
 	
 	public static final File sourceFolder  = new File("\\\\media\\editwp6\\photos");
 //	private static final File sourceFile = new File("src/main/resources/images/images_cich.xls");

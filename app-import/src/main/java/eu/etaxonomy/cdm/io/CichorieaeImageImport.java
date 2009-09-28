@@ -16,6 +16,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
@@ -34,6 +35,7 @@ import eu.etaxonomy.cdm.model.media.ImageFile;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
@@ -127,6 +129,7 @@ public class CichorieaeImageImport extends AbstractImageImporter {
 		File source = (File)config.getSource();
 		UUID treeUuid = config.getTreeUuid();
 		TaxonomicTree tree = taxonTreeService.getTaxonomicTreeByUuid(treeUuid);
+		ReferenceBase sourceRef = config.getSourceReference();
 		
 		if (source.isDirectory()){
 			for (File file : source.listFiles() ){
@@ -194,7 +197,8 @@ public class CichorieaeImageImport extends AbstractImageImporter {
 							taxon = (Taxon) taxa.get(0);
 						}
 						taxonService.saveTaxon(taxon);
-						TextData feature = TextData.NewInstance();
+						
+						TextData textData = TextData.NewInstance();
 						logger.info("Importing image for taxon: " + taxa);
 						ImageMetaData imageMetaData = new ImageMetaData();
 						try {
@@ -209,12 +213,14 @@ public class CichorieaeImageImport extends AbstractImageImporter {
 							representation.addRepresentationPart(image);
 							Media media = Media.NewInstance();
 							media.addRepresentation(representation);
-							feature.addMedia(media);
-							feature.putText(taxonName, Language.ENGLISH());
+							
+							textData.addMedia(media);
+							textData.putText(taxonName, Language.ENGLISH());
 
-							feature.setType(Feature.IMAGE());
-							TaxonDescription description = TaxonDescription.NewInstance(taxon);
-							description.addElement(feature);
+							textData.setType(Feature.IMAGE());
+							TaxonDescription taxonDescription = taxon.getOrCreateImageGallery(sourceRef == null ? null :sourceRef.getTitleCache());
+							
+							taxonDescription.addElement(textData);
 
 						} catch (MalformedURLException e) {
 							logger.error("Malformed URL", e);

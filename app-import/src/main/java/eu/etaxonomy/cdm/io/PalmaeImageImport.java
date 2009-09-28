@@ -211,7 +211,6 @@ public class PalmaeImageImport extends AbstractImageImporter {
 						
 						TextData feature = TextData.NewInstance();
 						
-	
 						ImageMetaData imageMetaData = new ImageMetaData();
 						imageMetaData.readFrom(file);
 						
@@ -229,7 +228,6 @@ public class PalmaeImageImport extends AbstractImageImporter {
 						
 						
 						ImageFile imageFile = ImageFile.NewInstance(url.toString(), null, imageMetaData);
-						
 						
 						MediaRepresentation representation = MediaRepresentation.NewInstance(mimeType, suffix);
 						representation.addRepresentationPart(imageFile);
@@ -277,22 +275,15 @@ public class PalmaeImageImport extends AbstractImageImporter {
 							media.addRights(copyright);
 						}
 						
-						
-						
-						
 						feature.addMedia(media);
 						
 						feature.setType(Feature.IMAGE());
-
-						TaxonDescription description = TaxonDescription.NewInstance(taxon);
+						ReferenceBase sourceRef = config.getSourceReference();
+						TaxonDescription description = taxon.getOrCreateImageGallery(sourceRef == null ? null :sourceRef.getTitleCache());
 						
-						description.setTitleCache("TEST");
 						description.addElement(feature);
-						taxon.addDescription(description);
 						
 						taxonService.saveTaxon(taxon);
-						
-						//descriptionService.saveDescription(description);
 						
 					}
 				}
