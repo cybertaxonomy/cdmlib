@@ -10,6 +10,8 @@
 package eu.etaxonomy.cdm.model.name;
 
 
+import java.util.Map;
+
 import javax.persistence.Entity;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -22,7 +24,9 @@ import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
 import org.springframework.beans.factory.annotation.Configurable;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.strategy.cache.name.BotanicNameDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.parser.INonViralNameParser;
@@ -260,7 +264,19 @@ public class BotanicalName extends NonViralName<BotanicalName> /*implements IMer
 		return (BotanicalName)nameParser.parseReferencedName(fullNameAndReferenceString, NomenclaturalCode.ICBN, rank);
 	}
 
+//*********************** 	
 
+	private static Map<String, java.lang.reflect.Field> allFields = null;
+	@Override
+    protected Map<String, java.lang.reflect.Field> getAllFields(){
+    	if (allFields == null){
+			allFields = CdmUtils.getAllFields(this.getClass(), CdmBase.class, false, false, false, true);
+		}
+    	return allFields;
+    }
+
+//************************* 
+	
 	/**
 	 * Returns the boolean value of the flag indicating whether the specimen
 	 * type of <i>this</i> botanical taxon name for a fungus is asexual (true) or not

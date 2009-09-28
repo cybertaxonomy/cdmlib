@@ -142,15 +142,20 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 	protected S cacheStrategy;
 	
     protected IdentifiableEntity(){
+    	initListener();
+    }
+    
+    protected void initListener(){
     	PropertyChangeListener listener = new PropertyChangeListener() {
         	public void propertyChange(PropertyChangeEvent e) {
-        		if ( !e.getPropertyName().equals("titleCache") && ! isProtectedTitleCache()){
+        		if (!e.getPropertyName().equals("titleCache") && ! isProtectedTitleCache()){
         			titleCache = null;
         		}
         	}
     	};
-    	propertyChangeSupport.addPropertyChangeListener(listener);  //didn't use this.addXXX to make lsid.AssemblerTest run in cdmlib-remote
+    	addPropertyChangeListener(listener);  
     }
+    
     
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#getLsid()

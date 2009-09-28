@@ -24,7 +24,9 @@ import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.model.reference.Book;
+import eu.etaxonomy.cdm.model.reference.Generic;
 
 /**
  * @author a.mueller
@@ -149,7 +151,142 @@ public class NonViralNameDefaultCacheStrategyTest {
 		assertEquals(atomizedAuthorCache, speciesName.getAuthorshipCache());
 		String atomizedTitleCache = speciesNameString + " "+ strategy.getBasionymStart()+ basAuthor.getNomenclaturalTitle()+strategy.getBasionymEnd()+strategy.getBasionymAuthorCombinationAuthorSeperator()+exAuthor.getNomenclaturalTitle();
 		assertEquals(atomizedTitleCache, speciesName.getTitleCache());
-		assertEquals(atomizedTitleCache, speciesName.getFullTitleCache());
+		assertEquals(atomizedTitleCache, speciesName.getFullTitleCache());	
+	}
+	
+	@Test
+	public void testCacheListener() {
+		Generic ref = Generic.NewInstance();
+		ref.setTitleCache("GenericRef");
+		this.subSpeciesName.setNomenclaturalReference(ref);
+		Assert.assertEquals("Expected full title cache has error", "Abies alba subsp. beta, GenericRef", subSpeciesName.getFullTitleCache());
+		subSpeciesName.setCombinationAuthorTeam(author);
+		subSpeciesName.setBasionymAuthorTeam(basAuthor);
+		Assert.assertEquals("Expected full title cache has error", "Abies alba subsp. beta (Basio, A.) L., GenericRef", subSpeciesName.getFullTitleCache());
+		//cascade name change to fullTitleCache
+		subSpeciesName.setRank(Rank.SPECIES());
+		subSpeciesName.setProtectedNameCache(true);
+		Assert.assertNull("name cache should be null", subSpeciesName.getNameCache());
+		subSpeciesName.setProtectedNameCache(false);
+		Assert.assertNotNull("name cache should not be null", subSpeciesName.getNameCache());
+		Assert.assertEquals("Expected full title cache has error", "Abies alba (Basio, A.) L., GenericRef", subSpeciesName.getFullTitleCache());
+		Assert.assertEquals("Expected full title cache has error", "Abies alba (Basio, A.) L.", subSpeciesName.getTitleCache());
+		Assert.assertEquals("Expected full title cache has error", "Abies alba", subSpeciesName.getNameCache());
+		
+		subSpeciesName.setProtectedNameCache(true);
+		subSpeciesName.setSpecificEpithet("gamma");
+		Assert.assertEquals("Expected full title cache has error", "Abies alba (Basio, A.) L., GenericRef", subSpeciesName.getFullTitleCache());
+		Assert.assertEquals("Expected full title cache has error", "Abies alba (Basio, A.) L.", subSpeciesName.getTitleCache());
+		Assert.assertEquals("Expected full title cache has error", "Abies alba", subSpeciesName.getNameCache());
+		//make original status
+		subSpeciesName.setRank(Rank.SUBSPECIES());
+		Assert.assertEquals("Expected full title cache has error", "Abies alba (Basio, A.) L., GenericRef", subSpeciesName.getFullTitleCache());
+		
+		//author change
+		author.setNomenclaturalTitle("M.");
+		Assert.assertEquals("Expected full title cache has error", "(Basio, A.) M.", subSpeciesName.getAuthorshipCache());
+		Assert.assertEquals("Expected full title cache has error", "Abies alba (Basio, A.) M., GenericRef", subSpeciesName.getFullTitleCache());
+		Assert.assertEquals("Expected full title cache has error", "Abies alba (Basio, A.) M.", subSpeciesName.getTitleCache());
+		
+		//protectedTitleCache
+		subSpeciesName.setProtectedTitleCache(true);
+		subSpeciesName.setProtectedNameCache(false);
+		subSpeciesName.setGenusOrUninomial("Pinus");
+		subSpeciesName.setSpecificEpithet("alba");
+		Assert.assertEquals("Expected full title cache has error", "Pinus alba subsp. beta", subSpeciesName.getNameCache());
+		Assert.assertEquals("Expected full title cache has error", "Abies alba (Basio, A.) M., GenericRef", subSpeciesName.getFullTitleCache());
+		Assert.assertEquals("Expected full title cache has error", "Abies alba (Basio, A.) M.", subSpeciesName.getTitleCache());
+
+		subSpeciesName.setTitleCache("Pinus beta C.");
+		Assert.assertEquals("Expected full title cache has error", "Pinus beta C., GenericRef", subSpeciesName.getFullTitleCache());
+		subSpeciesName.setProtectedTitleCache(false);
+		
+		Assert.assertEquals("Expected full title cache has error", "Pinus alba subsp. beta (Basio, A.) M., GenericRef", subSpeciesName.getFullTitleCache());
+		
+		//protected full title cache set
+		subSpeciesName.setFullTitleCache("ABC");
+		Assert.assertEquals("Expected full title cache has error", "ABC", subSpeciesName.getFullTitleCache());
+		subSpeciesName.setProtectedFullTitleCache(false);
+		Assert.assertEquals("Expected full title cache has error", "Pinus alba subsp. beta (Basio, A.) M., GenericRef", subSpeciesName.getFullTitleCache());
+
+		//protected title cache set
+		subSpeciesName.setProtectedTitleCache(false);
+		Assert.assertEquals("Expected full title cache has error", "Pinus alba subsp. beta (Basio, A.) M., GenericRef", subSpeciesName.getFullTitleCache());
+		
+		//protectedNameCache set
+		subSpeciesName.setProtectedNameCache(true);
+		Assert.assertEquals("Expected full title cache has error", "Pinus alba subsp. beta (Basio, A.) M., GenericRef", subSpeciesName.getFullTitleCache());
+		subSpeciesName.setNameCache("P. alba subsp. beta");
+		Assert.assertEquals("Expected full title cache has error", "P. alba subsp. beta (Basio, A.) M., GenericRef", subSpeciesName.getFullTitleCache());
+		
+		subSpeciesName.setGenusOrUninomial("A.");
+		subSpeciesName.setProtectedNameCache(false);
+		Assert.assertEquals("Expected full title cache has error", "A. alba subsp. beta (Basio, A.) M., GenericRef", subSpeciesName.getFullTitleCache());
+		subSpeciesName.setNameCache("P. alba subsp. beta");
+		Assert.assertEquals("Expected full title cache has error", "P. alba subsp. beta (Basio, A.) M., GenericRef", subSpeciesName.getFullTitleCache());
+	
+		//protected authorship
+		subSpeciesName.setProtectedAuthorshipCache(true);
+		Assert.assertEquals("Expected full title cache has error", "P. alba subsp. beta (Basio, A.) M., GenericRef", subSpeciesName.getFullTitleCache());
+		subSpeciesName.setAuthorshipCache("Ciard.");
+		Assert.assertEquals("Expected full title cache has error", "P. alba subsp. beta Ciard., GenericRef", subSpeciesName.getFullTitleCache());
+		
+		author.setNomenclaturalTitle("X.");
+		subSpeciesName.setProtectedAuthorshipCache(false);
+		Assert.assertEquals("Expected full title cache has error", "P. alba subsp. beta (Basio, A.) X., GenericRef", subSpeciesName.getFullTitleCache());
+		
+		//clear
+		subSpeciesName.setProtectedNameCache(false);
+		Assert.assertEquals("Expected full title cache has error", "A. alba subsp. beta (Basio, A.) X., GenericRef", subSpeciesName.getFullTitleCache());
+		
+		//appended phrase
+		subSpeciesName.setProtectedNameCache(true);
+		Assert.assertEquals("Expected full title cache has error", "A. alba subsp. beta (Basio, A.) X., GenericRef", subSpeciesName.getFullTitleCache());
+		subSpeciesName.setAppendedPhrase("app phrase");
+		Assert.assertEquals("Expected full title cache has error", "A. alba subsp. beta (Basio, A.) X., GenericRef", subSpeciesName.getFullTitleCache());
+		subSpeciesName.setProtectedNameCache(false);
+		Assert.assertEquals("Expected full title cache has error", "A. alba subsp. beta app phrase (Basio, A.) X., GenericRef", subSpeciesName.getFullTitleCache());
+		subSpeciesName.setAppendedPhrase("app2 phrase2");
+		subSpeciesName.setProtectedNameCache(true);
+		Assert.assertNull("NameCache should be null", subSpeciesName.getNameCache());
+		subSpeciesName.setProtectedNameCache(false);
+		subSpeciesName.setAppendedPhrase(null);
+		
+		
+		//ref + nomRef
+		Book book = Book.NewInstance();
+		book.setTitle("Booktitle");
+		Assert.assertNotNull("TitleCache should not be null", subSpeciesName.getTitleCache());
+		subSpeciesName.setNomenclaturalReference(book);
+		subSpeciesName.setNomenclaturalMicroReference("22");
+		Assert.assertEquals("Expected full title cache has error", "A. alba subsp. beta (Basio, A.) X., Booktitle: 22", subSpeciesName.getFullTitleCache());
+		subSpeciesName.setProtectedTitleCache(true);
+		Assert.assertNotNull("TitleCache should not be null", subSpeciesName.getTitleCache());
+		
+		//year
+		ZoologicalName zooName = ZoologicalName.NewInstance(Rank.SPECIES());
+		zooName.setGenusOrUninomial("Homo");
+		zooName.setSpecificEpithet("sapiens");
+		zooName.setBasionymAuthorTeam(basAuthor);
+		zooName.setCombinationAuthorTeam(author);
+		zooName.setNomenclaturalReference(book);
+		zooName.setNomenclaturalMicroReference("22");
+		Assert.assertEquals("Expected full title cache has error", "Homo sapiens (Basio, A.) X., Booktitle: 22", zooName.getFullTitleCache());
+		
+		zooName.setOriginalPublicationYear(1922);
+		zooName.setPublicationYear(1948);
+		Assert.assertEquals("Expected full title cache has error", "Homo sapiens (Basio, A., 1922) X., 1948, Booktitle: 22", zooName.getFullTitleCache());
+		zooName.setOriginalPublicationYear(1923);
+		zooName.setProtectedAuthorshipCache(true);
+		Assert.assertNull("AuthorshipCache should be null", zooName.getAuthorshipCache());
+		zooName.setProtectedAuthorshipCache(false);
+		Assert.assertNotNull("AuthorshipCache should not be null", zooName.getAuthorshipCache());
+		zooName.setPublicationYear(1949);
+		zooName.setProtectedAuthorshipCache(true);
+		Assert.assertNull("AuthorshipCache should be null", zooName.getAuthorshipCache());
+		
+		
+		
 		
 	}
 	

@@ -75,7 +75,7 @@ public abstract class CdmBase implements Serializable, ICdmBase{
 	
 	@Transient
 	@XmlTransient
-	protected PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
+	private PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
 	
 	@XmlAttribute(name = "id", required = true)
 	@Id

@@ -163,6 +163,9 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 			return null;
 		}
 		
+		if (nonViralName.isProtectedTitleCache()){
+			return nonViralName.getTitleCache();
+		}
 		String result = "";
 		//Autonym
 		if (isAutonym(nonViralName)){
@@ -194,7 +197,7 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 			result = CdmUtils.concat(" ", new String[]{speciesPart, authorPart, infraSpeciesSeparator, infraSpeciesPart});
 			result = result.trim().replace("null", "");
 		}else{ //not Autonym
-			String nameCache = CdmUtils.Nz(getNameCache(nonViralName));
+			String nameCache = nonViralName.getNameCache();  //OLD: CdmUtils.Nz(getNameCache(nonViralName));
 			if (nameIncludesAuthorship(nonViralName)){
 				String authorCache = CdmUtils.Nz(getAuthorshipCache(nonViralName));
 				result = CdmUtils.concat(NameAuthorSeperator, nameCache, authorCache);

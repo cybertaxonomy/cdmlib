@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.model.name;
 import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -54,6 +55,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.strategy.cache.name.CacheUpdate;
 import eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy;
 import eu.etaxonomy.cdm.strategy.match.IMatchable;
 import eu.etaxonomy.cdm.strategy.match.Match;
@@ -109,11 +111,13 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 	@XmlElement(name = "FullTitleCache")
 	@Column(length=330, name="fullTitleCache")
 	@Match(value=MatchMode.CACHE, cacheReplaceMode=ReplaceMode.ALL)
-	protected String fullTitleCache;
+	@CacheUpdate(noUpdate ="titleCache")
+    protected String fullTitleCache;
 	
 	//if true titleCache will not be automatically generated/updated
 	@XmlElement(name = "ProtectedFullTitleCache")
-	private boolean protectedFullTitleCache;
+	@CacheUpdate(value ="fullTitleCache", noUpdate ="titleCache")
+    private boolean protectedFullTitleCache;
 	
     @XmlElementWrapper(name = "Descriptions")
     @XmlElement(name = "Description")
@@ -123,19 +127,24 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 	
     @XmlElement(name = "AppendedPhrase")
     @Field(index= org.hibernate.search.annotations.Index.TOKENIZED)
-	private String appendedPhrase;
+	@CacheUpdate(value ="nameCache")
+    private String appendedPhrase;
 	
     @XmlElement(name = "NomenclaturalMicroReference")
     @Field(index= org.hibernate.search.annotations.Index.TOKENIZED)
-	private String nomenclaturalMicroReference;
+	@CacheUpdate(noUpdate ="titleCache")
+    private String nomenclaturalMicroReference;
 	
     @XmlAttribute
-	private int parsingProblem = 0;
+    @CacheUpdate(noUpdate ={"titleCache","fullTitleCache"})
+   private int parsingProblem = 0;
 	
     @XmlAttribute
+    @CacheUpdate(noUpdate ={"titleCache","fullTitleCache"})
     private int problemStarts = -1;
     
     @XmlAttribute
+    @CacheUpdate(noUpdate ={"titleCache","fullTitleCache"})
     private int problemEnds = -1;
     
     @XmlElementWrapper(name = "TypeDesignations")
@@ -153,7 +162,8 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
     @ManyToOne(fetch = FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
 	@Match(MatchMode.IGNORE)
-	private HomotypicalGroup homotypicalGroup;
+	@CacheUpdate(noUpdate ="titleCache")
+    private HomotypicalGroup homotypicalGroup;
 
     @XmlElementWrapper(name = "RelationsFromThisName")
     @XmlElement(name = "RelationFromThisName")
@@ -188,14 +198,16 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.EAGER)
-	private Rank rank;
+	@CacheUpdate(value ="nameCache")
+    private Rank rank;
 
 	@XmlElement(name = "NomenclaturalReference")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE})
-	private ReferenceBase nomenclaturalReference;
+	@CacheUpdate(noUpdate ="titleCache")
+    private ReferenceBase nomenclaturalReference;
 	
 // ************* CONSTRUCTORS *************/	
 	/** 
@@ -256,6 +268,8 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 		homotypicalGroup.addTypifiedName(this);
 	}
 	
+	abstract protected Map<String, java.lang.reflect.Field> getAllFields();
+	
 //********* METHODS **************************************/
 	
 	/**
@@ -274,35 +288,46 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 	
 	public abstract String generateFullTitle();
 
+	
+
+	@Transient
+	public List<Object> getTaggedName(){
+		return getCacheStrategy().getTaggedName(this);
+	}
+	
 	@Transient
 	public String getFullTitleCache(){
 		if (protectedFullTitleCache){
 			return this.fullTitleCache;			
 		}
-		if (fullTitleCache == null){
-			this.setFullTitleCache(generateFullTitle(), protectedFullTitleCache);
+		if (fullTitleCache == null ){
+			this.fullTitleCache = getTruncatedCache(generateFullTitle());
+		}
+		return fullTitleCache;
+	}
+
+	/**
+	 * @param fullTitleCache
+	 * @return
+	 */
+	private String getTruncatedCache(String fullTitleCache) {
+		if (fullTitleCache != null && fullTitleCache.length() > 329){
+			logger.warn("Truncation of full title cache: " + this.toString() + "/" + fullTitleCache);
+			fullTitleCache = fullTitleCache.substring(0, 329) + "...";
 		}
 		return fullTitleCache;
 	}
 	
-	@Transient
-	public List<Object> getTaggedName(){
-		return getCacheStrategy().getTaggedName(this);
-	}
-
     public void setFullTitleCache(String fullTitleCache){
 		setFullTitleCache(fullTitleCache, PROTECTED);
 	}
 	
 	public void setFullTitleCache(String fullTitleCache, boolean protectCache){
-		//TODO truncation of full title cache
-		if (fullTitleCache != null && fullTitleCache.length() > 329){
-			logger.warn("Truncation of full title cache: " + this.toString() + "/" + fullTitleCache);
-			fullTitleCache = fullTitleCache.substring(0, 329) + "...";
-		}
+		fullTitleCache = getTruncatedCache(fullTitleCache);
 		this.fullTitleCache = fullTitleCache;
 		this.setProtectedFullTitleCache(protectCache);
 	}
+
 	
 	public boolean isProtectedFullTitleCache() {
 		return protectedFullTitleCache;

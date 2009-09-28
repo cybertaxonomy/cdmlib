@@ -1542,6 +1542,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/agent/TeamDefaultCach
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/common/IIdentifiableEntityCacheStrategy.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/common/IdentifiableEntityDefaultCacheStrategy.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/name/BotanicNameDefaultCacheStrategy.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/name/CacheUpdate.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/name/INameCacheStrategy.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/name/INonViralNameCacheStrategy.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/name/NameCacheStrategyBase.java -text

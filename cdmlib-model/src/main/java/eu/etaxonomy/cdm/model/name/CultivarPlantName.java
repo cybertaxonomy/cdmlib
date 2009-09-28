@@ -9,10 +9,15 @@
 
 package eu.etaxonomy.cdm.model.name;
 
+import java.util.Map;
+
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
 import org.springframework.beans.factory.annotation.Configurable;
+
+import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -111,6 +116,19 @@ public class CultivarPlantName extends BotanicalName {
 	public static CultivarPlantName NewInstance(Rank rank, HomotypicalGroup homotypicalGroup){
 		return new CultivarPlantName(rank, homotypicalGroup);
 	}
+	
+//*********************** 	
+
+	private static Map<String, java.lang.reflect.Field> allFields = null;
+	@Override
+    protected Map<String, java.lang.reflect.Field> getAllFields(){
+    	if (allFields == null){
+			allFields = CdmUtils.getAllFields(this.getClass(), CdmBase.class, false, false, false, true);
+		}
+    	return allFields;
+    }
+
+//************************* 
 	
 	/** 
 	 * Returns the characteristical cultivar name part string assigned to <i>this</i>

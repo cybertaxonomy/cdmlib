@@ -16,6 +16,9 @@ import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
+
+import java.util.Map;
+
 import junit.framework.Assert;
 
 import org.apache.log4j.Logger;
@@ -23,6 +26,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.reference.Generic;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
@@ -76,7 +81,12 @@ public class TaxonNameBaseTest {
 		@Override
 		public String generateTitle() {
 			return null;
+		}
+		@Override
+		protected Map<String, java.lang.reflect.Field> getAllFields() {
+			return null;
 		};
+		
 	}
 
 	
