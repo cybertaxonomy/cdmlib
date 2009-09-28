@@ -33,6 +33,7 @@ import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
+import eu.etaxonomy.cdm.api.service.ITaxonTreeService;
 import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultImport;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
@@ -63,6 +64,9 @@ public class NormalExplicitImportTest extends CdmTransactionalIntegrationTest{
 	
 	@SpringBeanByType
 	ITaxonService taxonService;
+	
+	@SpringBeanByType
+	ITaxonTreeService taxonTreeService;
 
 	private IImportConfigurator configurator;
 	
@@ -88,8 +92,8 @@ public class NormalExplicitImportTest extends CdmTransactionalIntegrationTest{
 		//printDataSet(System.out);
 		boolean result = defaultImport.invoke(configurator);
 		assertTrue("Return value for import.invoke should be true", result);
-		assertEquals("Number of TaxonNames should be 9", 9, nameService.count());
-		List<TaxonomicTree> treeList = taxonService.listTaxonomicTrees(null, null, null, null);
+		assertEquals("Number of TaxonNames should be 9", 9, nameService.count(null));
+		List<TaxonomicTree> treeList = taxonTreeService.list(null, null,null,null,null);
 		assertEquals("Number of taxonomic trees should be 1", 1, treeList.size());
 		TaxonomicTree tree = treeList.get(0);
 		Set<TaxonNode> rootNodes = tree.getRootNodes();

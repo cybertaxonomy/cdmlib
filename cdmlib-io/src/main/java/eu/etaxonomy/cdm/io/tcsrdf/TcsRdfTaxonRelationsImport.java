@@ -12,22 +12,18 @@ package eu.etaxonomy.cdm.io.tcsrdf;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.jdom.Element;
 import org.jdom.Namespace;
 import org.springframework.stereotype.Component;
 
-import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.XmlHelp;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
-import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
-import eu.etaxonomy.cdm.model.reference.StrictReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -122,7 +118,7 @@ public class TcsRdfTaxonRelationsImport extends TcsRdfImportBase implements ICdm
 			}
 		}//elTaxonConcept
 		logger.info("Taxa to save: " + taxonStore.size());
-		getTaxonService().saveTaxonAll(taxonStore);
+		getTaxonService().save(taxonStore);
 		
 		logger.info("end makeRelTaxa ...");
 		return success;

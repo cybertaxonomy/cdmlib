@@ -10,11 +10,9 @@
 package eu.etaxonomy.cdm.io.taxonx;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.jdom.Attribute;
@@ -36,9 +34,8 @@ import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
-import eu.etaxonomy.cdm.model.reference.StrictReferenceBase;
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
 
@@ -75,7 +72,7 @@ public class TaxonXDescriptionImport extends CdmIoBase<TaxonXImportState> implem
 	
 	private String getDescriptionTitle(TaxonXImportState state){
 		String result = "Untitled";
-		StrictReferenceBase<?> ref = state.getModsReference();
+		ReferenceBase<?> ref = state.getModsReference();
 		if (ref != null){
 			result = ref.getTitle();
 			if ( CdmUtils.isEmpty(result)){
@@ -133,13 +130,15 @@ public class TaxonXDescriptionImport extends CdmIoBase<TaxonXImportState> implem
 				description.addElement(descriptionElement);
 				
 				//add reference
-				descriptionElement.setCitation(state.getModsReference());
+				if (state.getModsReference() != null){
+					descriptionElement.addSource(null, null, state.getModsReference(), null, null, null);
+				}
 			}
 
 		}
 		if (description.size() >0){
 			taxon.addDescription(description);
-			getTaxonService().saveTaxon(taxon);
+			getTaxonService().save(taxon);
 		}
 		return true;
 	}

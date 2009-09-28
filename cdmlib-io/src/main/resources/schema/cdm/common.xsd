@@ -163,7 +163,7 @@
 
   <xs:complexType name="TermBase" abstract="true">
     <xs:complexContent>
-      <xs:extension base="common:VersionableEntity">
+      <xs:extension base="common:IdentifiableEntity">
         <xs:sequence>
           <xs:element name="URI" type="xs:anyURI" minOccurs="0"/>
           <xs:element name="Representations" minOccurs="0">
@@ -183,6 +183,7 @@
       <xs:extension base="common:CdmBase">
         <xs:sequence>
           <xs:element name="UpdatedBy" type="xs:IDREF" minOccurs="0"/>
+          <xs:element name="Updated" type="xs:string" minOccurs="0"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
@@ -220,6 +221,18 @@
     </xs:complexContent>
   </xs:complexType>
 
+
+  <xs:complexType name="LanguageStringBase" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="common:AnnotatableEntity">
+        <xs:sequence>
+          <xs:element name="Text" type="common:FormattedText" minOccurs="1"/>
+          <xs:element name="Language" type="xs:IDREF" minOccurs="1"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  
   <xs:complexType name="LanguageString">
     <xs:complexContent>
       <xs:extension base="common:LanguageStringBase">
@@ -227,17 +240,7 @@
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
-
-  <xs:complexType name="LanguageStringBase" abstract="true">
-    <xs:complexContent>
-      <xs:extension base="common:AnnotatableEntity">
-        <xs:sequence>
-          <xs:element name="Text" type="common:FormattedText" minOccurs="0"/>
-          <xs:element name="Language" type="xs:IDREF" minOccurs="0"/>
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
+  
 
    <xs:complexType name="FormattedText" mixed="true">
         <xs:choice minOccurs="0">
@@ -249,7 +252,8 @@
                 </xs:annotation>
             </xs:any>
         </xs:choice>
-    </xs:complexType>
+  </xs:complexType>
+  
   <xs:complexType name="Language">
     <xs:complexContent>
       <xs:extension base="common:DefinedTermBase">
@@ -257,14 +261,14 @@
         <xs:attribute name="iso639_1">
           <xs:simpleType>
             <xs:restriction base="xs:string">
-              <xs:length value="2"/>
+              <!--<xs:length value="2"/>-->
             </xs:restriction>
           </xs:simpleType> 
         </xs:attribute>
         <xs:attribute name="iso639_2">
           <xs:simpleType>
             <xs:restriction base="xs:string">
-              <xs:length value="3"/>
+              <!--<xs:length value="3"/>-->
             </xs:restriction>
           </xs:simpleType> 
         </xs:attribute>
@@ -297,8 +301,8 @@
       <xs:extension base="common:AnnotatableEntity">
         <xs:sequence>
           <xs:element name="LSID" type="common:LSID" minOccurs="0"/>
-          <xs:element name="TitleCache" type="common:FormattedText"/>
-          <xs:element name="ProtectedTitleCache" type="xs:boolean"/>
+          <xs:element name="TitleCache" type="common:FormattedText" minOccurs="0"/>
+          <xs:element name="ProtectedTitleCache" type="xs:boolean" minOccurs="0"/>
           <xs:element name="Rights" minOccurs="0">
             <xs:complexType>
               <xs:sequence>
@@ -313,6 +317,13 @@
               </xs:sequence>
             </xs:complexType>
           </xs:element>
+          <xs:element name="Credits" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="Credit" type="common:Credit" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
           <xs:element name="Sources" minOccurs="0">
             <xs:complexType>
               <xs:sequence>
@@ -320,6 +331,17 @@
               </xs:sequence>
             </xs:complexType>
           </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="Credit">
+    <xs:complexContent>
+      <xs:extension base="common:LanguageStringBase">
+        <xs:sequence>
+          <xs:element name="Agent" type="xs:IDREF" minOccurs="0"/>
+          <xs:element name="AbbreviatedText" type="xs:string" minOccurs="0"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
@@ -450,7 +472,7 @@
           <xs:element name="InverseRepresentations" minOccurs="0">
             <xs:complexType>
               <xs:sequence>
-                <xs:element name="InverseRepresentation" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element ref="common:Representation" minOccurs="0" maxOccurs="unbounded"/>
               </xs:sequence>
             </xs:complexType>
           </xs:element>
@@ -496,6 +518,7 @@
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
+  
   <xs:complexType name="LSIDAuthority">
     <xs:sequence>
       <xs:element name="Authority" type="xs:string"/>
@@ -505,6 +528,7 @@
       <xs:element name="Namespaces" type="common:Namespaces"/>
     </xs:sequence>
   </xs:complexType>
+  
   <xs:complexType name="Namespaces">
     <xs:sequence>
       <xs:element ref="common:Namespace" minOccurs="1" maxOccurs="unbounded"/>
@@ -517,11 +541,13 @@
       <xs:element name="Class" type="xs:string"/>
     </xs:sequence>
   </xs:complexType>
+  
   <xs:complexType name="MultilanguageText">
     <xs:sequence>
-      <xs:element ref="common:LanguageString" minOccurs="1" maxOccurs="unbounded"/>
+      <xs:element ref="common:LanguageString" minOccurs="0" maxOccurs="unbounded"/>
     </xs:sequence>
   </xs:complexType>
+  
   <xs:simpleType name="UUID">
         <xs:annotation>
             <xs:appinfo>
@@ -549,7 +575,7 @@
             </xs:appinfo>
         </xs:annotation>
         <xs:restriction base="xs:string">
-            <xs:pattern value="[0-9]{4}(-[0-9]{2}(-[0-9]{2}(T[0-9]{2}(:[0-9]{2}(:[0-9]{2}(\.[0-9]+)?)?)?)?)?)?"/>
+            <xs:pattern value="[0-9]{4}(-[0-9]{1,2}(-[0-9]{1,2}(T[0-9]{2}(:[0-9]{2}(:[0-9]{2}(\.[0-9]+)?)?)?)?)?)?"/>
         </xs:restriction>
     </xs:simpleType>
 </xs:schema>

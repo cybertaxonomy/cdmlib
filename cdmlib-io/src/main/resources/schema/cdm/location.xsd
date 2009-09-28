@@ -34,6 +34,8 @@
   <xs:element name="Point" type="location:Point"/>
 
   <xs:element name="ReferenceSystem" type="location:ReferenceSystem"/>
+  
+  <xs:element name="TdwgArea" type="location:TdwgArea"/>
 
   <xs:element name="WaterbodyOrCountry" type="location:WaterbodyOrCountry"/>
 
@@ -115,6 +117,14 @@
   <xs:complexType name="NamedAreaLevel">
     <xs:complexContent>
       <xs:extension base="common:OrderedTermBase">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  
+  <xs:complexType name="TdwgArea">
+    <xs:complexContent>
+      <xs:extension base="location:NamedArea">
         <xs:sequence/>
       </xs:extension>
     </xs:complexContent>

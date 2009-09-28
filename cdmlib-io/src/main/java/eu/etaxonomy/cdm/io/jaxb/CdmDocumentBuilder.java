@@ -28,6 +28,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import javax.xml.transform.Source;
+import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
@@ -143,6 +144,8 @@ public class CdmDocumentBuilder {
 		CdmMarshallerListener marshallerListener = new CdmMarshallerListener();
 		marshaller.setListener(marshallerListener);		
 		marshaller.setEventHandler(new WarningTolerantValidationEventHandler());
+		System.out.println(marshaller.toString());
+		
 	}
 
 	public CdmDocumentBuilder(boolean formattedOutput, String encoding) throws SAXException, JAXBException, IOException, ParserConfigurationException {
@@ -188,6 +191,12 @@ public class CdmDocumentBuilder {
 		logger.info("Start unmarshalling");
 		T t = (T) unmarshaller.unmarshal(saxSource);
 		return t;
+		
+	}
+
+	public void marshal(DataSet dataSet, SAXResult result) throws JAXBException {
+		logger.info("Start marshalling");
+		marshaller.marshal(dataSet, result);
 		
 	}
 

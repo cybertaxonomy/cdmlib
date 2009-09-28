@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.io.faunaEuropaea;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
@@ -17,16 +18,12 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.io.common.ICdmIO;
-import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.io.common.Source;
-import eu.etaxonomy.cdm.model.agent.AgentBase;
-import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
 
 /**
@@ -119,7 +116,7 @@ public class FaunaEuropaeaAuthorImport extends FaunaEuropaeaImportBase {
 			txStatus = startTransaction();
 
 			// save authors
-			getAgentService().saveAgentAll(authorStore.objects());
+			getAgentService().save((Collection)authorStore.objects());
 
 			commitTransaction(txStatus);
 			

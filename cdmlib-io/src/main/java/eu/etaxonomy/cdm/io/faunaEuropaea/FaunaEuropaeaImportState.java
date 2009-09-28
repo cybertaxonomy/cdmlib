@@ -36,7 +36,7 @@ public class FaunaEuropaeaImportState extends ImportStateBase<FaunaEuropaeaImpor
 	private Map<UUID, UUID> childParentMap = new HashMap();
 	
 	/* Highest taxon index in the FauEu database */
-	private int highestTaxonIndex = 305755;
+//	private int highestTaxonIndex = 305755;
 	/* Max number of taxa to be saved with one service call */
 //	private int limit = 20000;
 
@@ -55,19 +55,6 @@ public class FaunaEuropaeaImportState extends ImportStateBase<FaunaEuropaeaImpor
 //		this.limit = limit;
 //	}
 
-	/**
-	 * @return the highestTaxonIndex
-	 */
-	public int getHighestTaxonIndex() {
-		return highestTaxonIndex;
-	}
-
-	/**
-	 * @param highestTaxonIndex the highestTaxonIndex to set
-	 */
-	public void setHighestTaxonIndex(int highestTaxonIndex) {
-		this.highestTaxonIndex = highestTaxonIndex;
-	}
 
 	/**
 	 * @return the fauEuTaxonMap
@@ -97,12 +84,4 @@ public class FaunaEuropaeaImportState extends ImportStateBase<FaunaEuropaeaImpor
 		this.childParentMap = childParentMap;
 	}
 	
-//	/* (non-Javadoc)
-//	 * @see eu.etaxonomy.cdm.io.common.IoStateBase#initialize(eu.etaxonomy.cdm.io.common.IoConfiguratorBase)
-//	 */
-//	@Override
-//	public void initialize(ExcelImportConfiguratorBase config) {
-//				
-//	}
-
 }

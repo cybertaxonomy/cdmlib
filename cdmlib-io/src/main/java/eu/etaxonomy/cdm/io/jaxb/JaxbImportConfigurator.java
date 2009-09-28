@@ -43,7 +43,7 @@ public class JaxbImportConfigurator extends ImportConfiguratorBase implements II
 //	private boolean doTaxa = true;
 	private boolean doTerms = true;
 	private boolean doTermVocabularies = true;
-	private boolean doHomotypicalGroups = true;
+	private boolean doHomotypicalGroups = false;
 	private boolean doTypeDesignations = true;
 
 	
@@ -169,7 +169,7 @@ public class JaxbImportConfigurator extends ImportConfiguratorBase implements II
 		super();
 		setSource(url);
 		setDestination(destination);
-		setDbSchemaValidation(DbSchemaValidation.CREATE);
+		setDbSchemaValidation(DbSchemaValidation.VALIDATE);
 	}
 
 

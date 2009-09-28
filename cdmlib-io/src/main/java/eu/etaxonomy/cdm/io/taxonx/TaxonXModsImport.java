@@ -29,7 +29,6 @@ import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.reference.Generic;
 import eu.etaxonomy.cdm.model.reference.PublicationBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
-import eu.etaxonomy.cdm.model.reference.StrictReferenceBase;
 
 
 /**
@@ -69,7 +68,7 @@ public class TaxonXModsImport extends CdmIoBase<TaxonXImportState> implements IC
 		if (elTaxonHeader != null){
 			Element elMods = elTaxonHeader.getChild("mods", nsMods);
 			if (elMods != null){
-				StrictReferenceBase<?> ref = Generic.NewInstance();
+				ReferenceBase<?> ref = Generic.NewInstance();
 				//TitleInfo
 				Element elTitleInfo = elMods.getChild("titleInfo", nsMods);
 				if (elTitleInfo != null){
@@ -225,7 +224,7 @@ public class TaxonXModsImport extends CdmIoBase<TaxonXImportState> implements IC
 	 * @param elTitleInfo
 	 * @param ref
 	 */
-	private boolean makeTitleInfo(Element elTitleInfo, StrictReferenceBase<?> ref) {
+	private boolean makeTitleInfo(Element elTitleInfo, ReferenceBase<?> ref) {
 		Namespace nsMods = elTitleInfo.getNamespace();
 		List<Content> contentList = elTitleInfo.getContent();
 		

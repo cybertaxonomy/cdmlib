@@ -9,7 +9,6 @@
 
 package eu.etaxonomy.cdm.io.berlinModel.in;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -24,18 +23,13 @@ import org.joda.time.DateTime;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.CdmImportBase;
-import eu.etaxonomy.cdm.io.common.CdmIoBase;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
-import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
-import eu.etaxonomy.cdm.io.common.ImportStateBase;
-import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator.EDITOR;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
-import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -95,7 +89,7 @@ public abstract class BerlinModelImportBase extends CdmImportBase<BerlinModelImp
 		} catch (SQLException e) {
 			//Table "Name" has no updated when/who
 		}
-		Object notes = rs.getObject("notes");
+		String notes = rs.getString("notes");
 		
 		boolean success  = true;
 		
@@ -126,11 +120,11 @@ public abstract class BerlinModelImportBase extends CdmImportBase<BerlinModelImp
 		
 		
 		//notes
-		if (notes != null){
+		if (CdmUtils.isNotEmpty(notes)){
 			String notesString = String.valueOf(notes);
-			if (notesString.length() > 3999 ){
-				notesString = notesString.substring(0, 3996) + "...";
-				logger.warn("Notes string is longer than 3999 and was truncated: " + annotatableEntity);
+			if (notesString.length() > 65530 ){
+				notesString = notesString.substring(0, 65530) + "...";
+				logger.warn("Notes string is longer than 65530 and was truncated: " + annotatableEntity);
 			}
 			Annotation notesAnnotation = Annotation.NewInstance(notesString, null);
 			//notesAnnotation.setAnnotationType(AnnotationType.EDITORIAL());
@@ -262,7 +256,7 @@ public abstract class BerlinModelImportBase extends CdmImportBase<BerlinModelImp
 	}
 	
 	protected ExtensionType getExtensionType(UUID uuid, String label, String text, String labelAbbrev){
-		ExtensionType extensionType = (ExtensionType)getTermService().getTermByUuid(uuid);
+		ExtensionType extensionType = (ExtensionType)getTermService().find(uuid);
 		if (extensionType == null){
 			extensionType = new ExtensionType(label, text, labelAbbrev);
 			extensionType.setUuid(uuid);
@@ -272,7 +266,7 @@ public abstract class BerlinModelImportBase extends CdmImportBase<BerlinModelImp
 	}
 	
 	protected MarkerType getMarkerType(UUID uuid, String label, String text, String labelAbbrev){
-		MarkerType markerType = (MarkerType)getTermService().getTermByUuid(uuid);
+		MarkerType markerType = (MarkerType)getTermService().find(uuid);
 		if (markerType == null){
 			markerType = MarkerType.NewInstance(label, text, labelAbbrev);
 			markerType.setUuid(uuid);

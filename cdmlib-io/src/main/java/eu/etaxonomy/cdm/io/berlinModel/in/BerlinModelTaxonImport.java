@@ -285,14 +285,12 @@ public class BerlinModelTaxonImport  extends BerlinModelImportBase  {
 					//namePhrase
 					String namePhrase = rs.getString("NamePhrase");
 					if (CdmUtils.isNotEmpty(namePhrase)){
-						ExtensionType namePhraseExtensionType = getExtensionType(APPENDED_TITLE_PHRASE, "appended title phrase","appended title phrase","app. phrase");
-						Extension.NewInstance(taxonBase, namePhrase, namePhraseExtensionType);
+						taxonBase.setAppendedPhrase(namePhrase);
 					}
 					//useNameCache
 					Boolean useNameCacheFlag = rs.getBoolean("UseNameCacheFlag");
 					if (useNameCacheFlag){
-						MarkerType useNameCacheMarkerType = getMarkerType(USE_NAME_CACHE, "appended title phrase","appended title phrase","app. phrase");
-						taxonBase.addMarker(Marker.NewInstance(useNameCacheMarkerType, useNameCacheFlag));
+						taxonBase.setUseNameCache(true);
 					}
 					//publisheFlag
 					Boolean publishFlag = rs.getBoolean("PublishFlag");
@@ -308,7 +306,7 @@ public class BerlinModelTaxonImport  extends BerlinModelImportBase  {
 			}
 			//invokeRelations(source, cdmApp, deleteAll, taxonMap, referenceMap);
 			logger.info("saving "+i+" taxa ...");
-			getTaxonService().saveTaxonAll(taxonMap.objects());
+			getTaxonService().save(taxonMap.objects());
 			
 			logger.info("end makeTaxa ..." + getSuccessString(success));
 			

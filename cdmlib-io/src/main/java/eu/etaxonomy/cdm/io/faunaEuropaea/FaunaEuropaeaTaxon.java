@@ -19,12 +19,16 @@ import java.util.UUID;
 public class FaunaEuropaeaTaxon {
 	
 	private UUID uuid;
+	private UUID parentUuid;
 	private int id;
 	private int rankId;
 	private int parentId;
 	private int parentRankId;
+	private int grandParentId;
 	private int grandParentRankId;
+	private int greatGrandParentId;
 	private int greatGrandParentRankId;
+	private int greatGreatGrandParentId;
 	private int originalGenusId;
 	private int year;
 	private String localName;
@@ -333,6 +337,62 @@ public class FaunaEuropaeaTaxon {
 	 */
 	public void setGreatGreatGrandParentName(String greatGreatGrandParentName) {
 		this.greatGreatGrandParentName = greatGreatGrandParentName;
+	}
+
+	/**
+	 * @return the grandParentId
+	 */
+	public int getGrandParentId() {
+		return grandParentId;
+	}
+
+	/**
+	 * @param grandParentId the grandParentId to set
+	 */
+	public void setGrandParentId(int grandParentId) {
+		this.grandParentId = grandParentId;
+	}
+
+	/**
+	 * @return the greatGrandParentId
+	 */
+	public int getGreatGrandParentId() {
+		return greatGrandParentId;
+	}
+
+	/**
+	 * @param greatGrandParentId the greatGrandParentId to set
+	 */
+	public void setGreatGrandParentId(int greatGrandParentId) {
+		this.greatGrandParentId = greatGrandParentId;
+	}
+
+	/**
+	 * @return the greatGreatGrandParentId
+	 */
+	public int getGreatGreatGrandParentId() {
+		return greatGreatGrandParentId;
+	}
+
+	/**
+	 * @param greatGreatGrandParentId the greatGreatGrandParentId to set
+	 */
+	public void setGreatGreatGrandParentId(int greatGreatGrandParentId) {
+		this.greatGreatGrandParentId = greatGreatGrandParentId;
+	}
+
+	/**
+	 * @return the parentUuid
+	 */
+	public UUID getParentUuid() {
+		return parentUuid;
+	}
+
+	/**
+	 * @param parentUuid the parentUuid to set
+	 */
+	public void setParentUuid(UUID parentUuid) {
+		this.parentUuid = parentUuid;
 	}
 
 //	/**

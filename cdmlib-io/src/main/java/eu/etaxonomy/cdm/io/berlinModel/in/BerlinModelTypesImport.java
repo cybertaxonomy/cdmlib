@@ -158,7 +158,7 @@ public class BerlinModelTypesImport extends BerlinModelImportBase /*implements I
 			
 			
 			logger.info("Names to save: " + taxonNameStore.size());
-			getNameService().saveTaxonNameAll(taxonNameStore);	
+			getNameService().save(taxonNameStore);	
 			
 			logger.info("end makeTypes ..." + getSuccessString(result));
 			return result;

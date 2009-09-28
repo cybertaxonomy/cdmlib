@@ -248,7 +248,7 @@ public class BerlinModelTaxonNameImport extends BerlinModelImportBase {
 				
 			} //while rs.hasNext()
 			logger.info(i + " names handled");
-			getNameService().saveTaxonNameAll(taxonNameMap.objects());
+			getNameService().save(taxonNameMap.objects());
 			
 //			makeNameSpecificData(nameMap);
 

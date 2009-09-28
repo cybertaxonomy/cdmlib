@@ -26,7 +26,6 @@ import eu.etaxonomy.cdm.model.reference.Journal;
 import eu.etaxonomy.cdm.model.reference.PersonalCommunication;
 import eu.etaxonomy.cdm.model.reference.PrintSeries;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
-import eu.etaxonomy.cdm.model.reference.StrictReferenceBase;
 import eu.etaxonomy.cdm.model.reference.WebPage;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
@@ -141,7 +140,7 @@ public final class TcsRdfTransformer {
 	
 	/** Creates an cdm-Rank by the tcs rank
 	 */
-	public static StrictReferenceBase pubTypeStr2PubType (String strPubType) throws UnknownCdmTypeException{
+	public static ReferenceBase pubTypeStr2PubType (String strPubType) throws UnknownCdmTypeException{
 		String tcsRoot = "http://rs.tdwg.org/ontology/voc/PublicationCitation#";
 		String tcsBook = tcsRoot + "Book";
 		String tcsJournal = tcsRoot + "Journal";

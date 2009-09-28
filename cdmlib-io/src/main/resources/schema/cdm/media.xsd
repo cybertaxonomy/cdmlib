@@ -33,6 +33,8 @@
 
   <xs:element name="MovieFile" type="media:MovieFile"/>
 
+  <xs:element name="ReferencedMedia" type="media:ReferencedMedia"/>
+
   <xs:element name="Rights" type="media:Rights"/>
 
   <xs:element name="RightsTerm" type="media:RightsTerm"/>
@@ -162,6 +164,17 @@
       <xs:extension base="media:MediaRepresentationPart">
         <xs:sequence>
           <xs:element name="Duration" type="xs:int"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  
+  <xs:complexType name="ReferencedMedia" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="media:Media">
+        <xs:sequence>
+          <xs:element name="CitationMicroReference" type="xs:string" minOccurs="0"/>
+          <xs:element name="Citation" type="xs:IDREF" minOccurs="0"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>

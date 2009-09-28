@@ -140,7 +140,7 @@ public class BerlinModelNameStatusImport extends BerlinModelImportBase {
 				}
 			}
 			logger.info("TaxonNames to save: " + nameStore.size());
-			getNameService().saveTaxonNameAll(nameStore);
+			getNameService().save(nameStore);
 			
 			logger.info("end makeNameStatus ..." + getSuccessString(success));
 			return success;

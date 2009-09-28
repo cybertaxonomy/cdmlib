@@ -443,7 +443,7 @@ public class TestCdmDbComparator {
 		Map<String, List<String>> tables = new HashMap<String, List<String>>(table_list.length);
 		
 		List<String> agentTableContent = new ArrayList<String>(MAX_ROWS);
-		List<? extends AgentBase> agents = appCtr.getAgentService().getAllAgents(MAX_ROWS, 0);
+		List<? extends AgentBase> agents = appCtr.getAgentService().list(null,MAX_ROWS, 0,null,null);
 		for (AgentBase agent: agents ) {
 			//TODO: Want the entire row as string not just toString() of the object.
 			agentTableContent.add(agent.toString());
@@ -453,7 +453,7 @@ public class TestCdmDbComparator {
 		//List<Annotation> annotations = appCtr.getTermService().getAllAnnotations(MAX_ROWS, 0);
 		
 		List<String> definedTermBaseTableContent = new ArrayList<String>(MAX_ROWS);
-		List<DefinedTermBase> definedTermBases = appCtr.getTermService().getAllDefinedTerms(MAX_ROWS, 0);
+		List<DefinedTermBase> definedTermBases = appCtr.getTermService().list(null,MAX_ROWS, 0,null,null);
 		for (DefinedTermBase definedTermBase: definedTermBases ) {
 			definedTermBaseTableContent.add(definedTermBase.toString());
 		}
@@ -467,14 +467,14 @@ public class TestCdmDbComparator {
 		//List<NameRelationship> nameRelationships = appCtr.getNameService().getAllNameRelationships(MAX_ROWS, 0);
 		List<NomenclaturalStatus> nomenclaturalStatus = appCtr.getNameService().getAllNomenclaturalStatus(MAX_ROWS, 0);
 		//List<OriginalSource> originalSources = appCtr.getNameService().getAllOriginalSources(MAX_ROWS, 0);
-		List<ReferenceBase> referenceBases = appCtr.getReferenceService().getAllReferences(MAX_ROWS, 0);
+		List<ReferenceBase> referenceBases = appCtr.getReferenceService().list(null,MAX_ROWS, 0,null,null);
 		List<Representation> representations = appCtr.getTermService().getAllRepresentations(MAX_ROWS, 0);
-		List<SpecimenOrObservationBase> specimenOrObservationBases = appCtr.getOccurrenceService().getAllSpecimenOrObservationBases(MAX_ROWS, 0);
+		List<SpecimenOrObservationBase> specimenOrObservationBases = appCtr.getOccurrenceService().list(null,MAX_ROWS, 0,null,null);
 		//List<SynonymRelationship> synonymRelationships = appCtr.getTaxonService().getAllSynonymRelationships(MAX_ROWS, 0);
 //		List<TaxonBase> taxonBases = appCtr.getTaxonService().getAllTaxa(MAX_ROWS, 0);
 //		List<TaxonNameBase> taxonNameBases = appCtr.getNameService().getAllNames(MAX_ROWS, 0);
 		//List<TaxonRelationship> taxonRelationships = appCtr.getTaxonService().getAllTaxonRelationships(MAX_ROWS, 0);
-		List<TermVocabulary<DefinedTermBase>> termVocabularies = appCtr.getTermService().getAllTermVocabularies(MAX_ROWS, 0);
+		List<TermVocabulary> termVocabularies = appCtr.getVocabularyService().list(null,MAX_ROWS, 0,null,null);
 		List<TypeDesignationBase> typeDesignationBases = appCtr.getNameService().getAllTypeDesignations(MAX_ROWS, 0);
 		
 		return tables;

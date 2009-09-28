@@ -34,10 +34,14 @@
   <xs:element name="SynonymRelationshipType" type="taxon:SynonymRelationshipType"/>
 
   <xs:element name="Taxon" type="taxon:Taxon"/>
+  
+  <xs:element name="TaxonNode" type="taxon:TaxonNode"/>
 
   <xs:element name="TaxonRelationship" type="taxon:TaxonRelationship"/>
 
   <xs:element name="TaxonRelationshipType" type="taxon:TaxonRelationshipType"/>
+  
+  <xs:element name="TaxonomicTree" type="taxon:TaxonomicTree"/>
 
   <xs:complexType name="SynonymRelationshipType">
     <xs:complexContent>
@@ -60,6 +64,13 @@
       <xs:extension base="taxon:TaxonBase">
         <xs:sequence>
           <xs:element name="TaxonomicParentCache" type="xs:IDREF" minOccurs="0"/>
+          <xs:element name="taxonNodes" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="taxonNode" type="taxon:TaxonNode" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
           <xs:element name="TaxonomicChildrenCount" type="xs:int"/>
           <xs:element name="SynonymRelations" minOccurs="0">
             <xs:complexType>
@@ -90,6 +101,7 @@
             </xs:complexType>
           </xs:element>
         </xs:sequence>
+        <xs:attribute name="taxonStatusUnknown" type="xs:boolean" use="required"/>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
@@ -102,6 +114,48 @@
           <xs:element name="Sec" type="xs:IDREF" minOccurs="0"/>
         </xs:sequence>
         <xs:attribute name="isDoubtful" type="xs:boolean" use="required"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  
+  <xs:complexType name="TaxonomicTree">
+    <xs:complexContent>
+      <xs:extension base="common:IdentifiableEntity">
+        <xs:sequence>
+          <xs:element name="Name" type="common:LanguageString" minOccurs="0"/>
+          <xs:element name="rootNodes" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="rootNode" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="reference" type="xs:IDREF" minOccurs="0"/>
+          <xs:element name="microReference" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+ 
+  <xs:complexType name="TaxonNode">
+    <xs:complexContent>
+      <xs:extension base="common:AnnotatableEntity">
+        <xs:sequence>
+          <xs:element name="taxon" type="xs:IDREF" minOccurs="0"/>
+          <xs:element name="parent" type="xs:IDREF" minOccurs="0"/>
+          <xs:element name="taxonomicTree" type="xs:IDREF" minOccurs="0"/>
+          <xs:element name="childNodes" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="childNode" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="reference" type="xs:IDREF" minOccurs="0"/>
+          <xs:element name="microReference" type="xs:string" minOccurs="0"/>
+          <xs:element name="countChildren" type="xs:int"/>
+          <xs:element name="synonymToBeUsed" type="xs:IDREF" minOccurs="0"/>
+        </xs:sequence>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>

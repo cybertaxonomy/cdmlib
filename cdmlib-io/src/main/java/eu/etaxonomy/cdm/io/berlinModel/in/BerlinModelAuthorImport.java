@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.io.berlinModel.in;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collection;
 
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
@@ -158,7 +159,7 @@ public class BerlinModelAuthorImport extends BerlinModelImportBase {
 
 			
 		logger.info("save " + i + " "+pluralString + " ...");
-		getAgentService().saveAgentAll(personMap.objects());
+		getAgentService().save((Collection)personMap.objects());
 
 		logger.info("end make "+pluralString+" ..." + getSuccessString(success));;
 		return success;

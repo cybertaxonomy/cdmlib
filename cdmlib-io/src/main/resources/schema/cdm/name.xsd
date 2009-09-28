@@ -8,6 +8,7 @@
   xmlns:xs="http://www.w3.org/2001/XMLSchema" 
   xmlns:reference="http://etaxonomy.eu/cdm/model/reference/1.0" 
   xmlns:agent="http://etaxonomy.eu/cdm/model/agent/1.0"
+  xmlns:taxon="http://etaxonomy.eu/cdm/model/taxon/1.0"
   xmlns:jxb="http://java.sun.com/xml/ns/jaxb"
   xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
   jxb:extensionBindingPrefixes="xjc"
@@ -22,6 +23,7 @@
   <xs:import namespace="http://etaxonomy.eu/cdm/model/description/1.0" schemaLocation="description.xsd"/>
   <xs:import namespace="http://etaxonomy.eu/cdm/model/occurrence/1.0" schemaLocation="occurrence.xsd"/>
   <xs:import namespace="http://etaxonomy.eu/cdm/model/agent/1.0" schemaLocation="agent.xsd"/>
+  <xs:import namespace="http://etaxonomy.eu/cdm/model/taxon/1.0" schemaLocation="taxon.xsd"/>
   <xs:annotation>
     <xs:appinfo>
       <jxb:schemaBindings>
@@ -63,6 +65,8 @@
   <xs:element name="NameRelationshipType" type="name:NameRelationshipType"/>
 
   <xs:element name="NameTypeDesignation" type="name:NameTypeDesignation"/>
+  
+  <xs:element name="NameTypeDesignationStatus" type="name:NameTypeDesignationStatus"/>
 
   <xs:element name="NomenclaturalCode" type="name:NomenclaturalCode"/>
 
@@ -73,7 +77,7 @@
   <xs:element name="Rank" type="name:Rank"/>
 
   <xs:element name="SpecimenTypeDesignation" type="name:SpecimenTypeDesignation"/>
-
+	
   <xs:element name="TaxonNameBase" type="name:TaxonNameBase"/>
 
   <xs:element name="TypeDesignationBase" type="name:TypeDesignationBase"/>
@@ -139,7 +143,7 @@
 
   <xs:complexType name="SpecimenTypeDesignationStatus">
     <xs:complexContent>
-      <xs:extension base="common:OrderedTermBase">
+      <xs:extension base="name:TypeDesignationStatusBase">
         <xs:sequence/>
       </xs:extension>
     </xs:complexContent>
@@ -184,13 +188,6 @@
               </xs:sequence>
             </xs:complexType>
           </xs:element>
-          <xs:element name="TaxonBases" minOccurs="0">
-            <xs:complexType>
-              <xs:sequence>
-                <xs:element name="TaxonBase" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
-              </xs:sequence>
-            </xs:complexType>
-          </xs:element>
           <xs:element name="Descriptions" minOccurs="0">
             <xs:complexType>
               <xs:sequence>
@@ -198,14 +195,22 @@
               </xs:sequence>
             </xs:complexType>
           </xs:element>
+          <xs:element name="TaxonBases" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="TaxonBase" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
         </xs:sequence>
-        <xs:attribute name="hasProblem" type="xs:boolean" use="required"/>
+        <xs:attribute name="parsingProblem" type="xs:int" use="required"/>
         <xs:attribute name="problemStarts" type="xs:int" use="required"/>
         <xs:attribute name="problemEnds" type="xs:int" use="required"/>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
-
+  
+  
   <xs:complexType name="HomotypicalGroup">
     <xs:complexContent>
       <xs:extension base="common:AnnotatableEntity">
@@ -276,10 +281,26 @@
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
+  
+  <xs:complexType name="TypeDesignationStatusBase" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="common:OrderedTermBase">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  
+  <xs:complexType name="NameTypeDesignationStatus">
+    <xs:complexContent>
+      <xs:extension base="name:TypeDesignationStatusBase">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
 
   <xs:complexType name="SpecimenTypeDesignation">
     <xs:complexContent>
-      <xs:extension base="name:TypeDesignationBase">
+      <xs:extension base="name:TypeDesignationStatusBase">
         <xs:sequence>
           <xs:element name="TypeSpecimen" type="xs:IDREF" minOccurs="0"/>
           <xs:element name="TypeStatus" type="xs:IDREF" minOccurs="0"/>
@@ -304,6 +325,13 @@
           <xs:element name="AuthorshipCache" type="xs:string" minOccurs="0"/>
           <xs:element name="ProtectedAuthorshipCache" type="xs:boolean"/>
           <xs:element name="ProtectedNameCache" type="xs:boolean"/>
+          <xs:element name="HybridRelationships" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="HybridRelationship" type="name:HybridRelationship" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
@@ -318,14 +346,7 @@
           <xs:element name="IsBinomHybrid" type="xs:boolean"/>
           <xs:element name="IsTrinomHybrid" type="xs:boolean"/>
           <xs:element name="IsAnamorphic" type="xs:boolean"/>
-          <xs:element name="HybridRelationships" minOccurs="0">
-            <xs:complexType>
-              <xs:sequence>
-                <xs:element name="HybridRelationship" type="name:HybridRelationship" minOccurs="0" maxOccurs="unbounded"/>
-              </xs:sequence>
-            </xs:complexType>
-          </xs:element>
-        </xs:sequence>
+         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>

@@ -35,12 +35,9 @@ import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.common.MediaMetaData.ImageMetaData;
 import eu.etaxonomy.cdm.io.common.CdmImportBase;
-import eu.etaxonomy.cdm.io.common.CdmIoBase;
-import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.ICdmImport;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
-import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.Annotation;
@@ -48,9 +45,9 @@ import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
-import eu.etaxonomy.cdm.model.common.OriginalSource;
 import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.common.TermBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
@@ -471,46 +468,46 @@ public class SDDDescriptionIO extends CdmImportBase<SDDImportConfigurator, SDDIm
 		ITermService termService = getTermService();
 		for (Iterator<StateData> k = stateDatas.values().iterator() ; k.hasNext() ;){
 			StateData sd = k.next();
-			termService.saveTerm(sd.getState()); 
+			termService.save(sd.getState()); 
 		}
 		for (Iterator<Feature> k = features.values().iterator() ; k.hasNext() ;){
 			Feature feature = k.next();
-			termService.saveTerm(feature); 
+			termService.save(feature); 
 		}
 		if (units != null) {
 			for (Iterator<MeasurementUnit> k = units.values().iterator() ; k.hasNext() ;){
 				MeasurementUnit unit = k.next();
 				if (unit != null) {
-					termService.saveTerm(unit); 
+					termService.save(unit); 
 				}
 			}
 		}
 		for (Iterator<StatisticalMeasure> k = statisticalMeasures.iterator() ; k.hasNext() ;) {
 			StatisticalMeasure sm = k.next();
-			termService.saveTerm(sm); 
+			termService.save(sm); 
 		}
 
 		for (Iterator<AnnotationType> at = annotationTypes.iterator() ; at.hasNext() ;) {
 			AnnotationType annotationType = at.next();
-			termService.saveTerm(annotationType); 
+			termService.save(annotationType); 
 		}
 
 		IReferenceService referenceService = getReferenceService();
 		// referenceService.saveReference(sourceReference); 
 		for (Iterator<ReferenceBase> k = publications.values().iterator() ; k.hasNext() ;){
 			Article publication = (Article) k.next();
-			referenceService.saveReference(publication); 
+			referenceService.save(publication); 
 		}
 
 		IAgentService agentService = getAgentService();
 		for (Iterator<Person> p = authors.values().iterator() ; p.hasNext() ;) {
 			Person person = p.next();
-			agentService.saveAgent(person);
+			agentService.save(person);
 		}
 
 		for (Iterator<Person> p = editors.values().iterator() ; p.hasNext() ;) {
 			Person person = p.next();
-			agentService.saveAgent(person);
+			agentService.save(person);
 		}
 
 		// Returns a CdmApplicationController created by the values of this configuration.
@@ -519,14 +516,14 @@ public class SDDDescriptionIO extends CdmImportBase<SDDImportConfigurator, SDDIm
 		for (Iterator<TaxonDescription> k = taxonDescriptions.values().iterator() ; k.hasNext() ;){
 			TaxonDescription taxonDescription = k.next();
 			// Persists a Description
-			descriptionService.saveDescription(taxonDescription); 
+			descriptionService.save(taxonDescription); 
 		}
 
 		//	descriptionService.saveFeatureNodeAll(featureNodes.values());
 
 		for (Iterator<FeatureTree> k = featureTrees.iterator() ; k.hasNext() ;) {
 			FeatureTree tree = k.next();
-			descriptionService.saveFeatureTree(tree);
+			getFeatureTreeService().save(tree);
 		}
 
 	}
@@ -668,13 +665,13 @@ public class SDDDescriptionIO extends CdmImportBase<SDDImportConfigurator, SDDIm
 				NonViralName tnb = null;
 				if (!id.equals("")) {
 					tnb = NonViralName.NewInstance(null);
-					OriginalSource source = null;
+					IdentifiableSource source = null;
 					if (uri != null) {
 						if (!uri.equals("")) {
-							source = OriginalSource.NewInstance(id, "TaxonName", Generic.NewInstance(), uri);
+							source = IdentifiableSource.NewInstance(id, "TaxonName", Generic.NewInstance(), uri);
 						}
 					} else {
-						source = OriginalSource.NewInstance(id, "TaxonName");
+						source = IdentifiableSource.NewInstance(id, "TaxonName");
 					}
 					tnb.addSource(source);
 					taxonNameBases.put(id,tnb);
@@ -1072,7 +1069,7 @@ public class SDDDescriptionIO extends CdmImportBase<SDDImportConfigurator, SDDIm
 				//  </Representation>
 				Person person = Person.NewInstance();
 				importRepresentation(elAgent, sddNamespace, person, idA, sddConfig);
-				person.addSource(OriginalSource.NewInstance(idA, "Agent"));
+				person.addSource(IdentifiableSource.NewInstance(idA, "Agent"));
 
 				// <Links>
 				Element elLinks = elAgent.getChild("Links",sddNamespace);

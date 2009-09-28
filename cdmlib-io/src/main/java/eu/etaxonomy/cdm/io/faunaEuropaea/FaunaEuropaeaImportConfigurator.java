@@ -35,28 +35,15 @@ public class FaunaEuropaeaImportConfigurator extends ImportConfiguratorBase<Faun
 	
 	/* Max number of taxa to be saved with one service call */
 	private int limitSave = 1000;
-	private int maxTaxon = 306000;
 	private ReferenceBase<?> auctReference;
-	
-//	@SuppressWarnings("unchecked")
-//	protected void makeIoClassList() {
-//		ioClassList = new Class[] {
-//				FaunaEuropaeaAuthorImport.class,
-//				FaunaEuropaeaTaxonNameImport.class,
-//	            FaunaEuropaeaRelTaxonIncludeImport.class,
-//              FaunaEuropaeaRelMisappNamesImport.class,
-//				FaunaEuropaeaRefImport.class,
-//				FaunaEuropaeaDistributionImport.class
-//		};
-//	};
 	
 	@SuppressWarnings("unchecked")
 	protected void makeIoClassList() {
 		ioClassList = new Class[] {
-//				FaunaEuropaeaAuthorImport.class,
-//				FaunaEuropaeaTaxonNameImport.class,
-//				FaunaEuropaeaRelTaxonIncludeImport.class
-//				FaunaEuropaeaRefImport.class,
+				FaunaEuropaeaAuthorImport.class,
+				FaunaEuropaeaTaxonNameImport.class,
+				FaunaEuropaeaRelTaxonIncludeImport.class,
+				FaunaEuropaeaRefImport.class,
 				FaunaEuropaeaDistributionImport.class
 		};
 	};
@@ -66,6 +53,16 @@ public class FaunaEuropaeaImportConfigurator extends ImportConfiguratorBase<Faun
 }
 	
 	private FaunaEuropaeaImportConfigurator(Source source, ICdmDataSource destination) {
+		setSource(source);
+		setDestination(destination);
+		setNomenclaturalCode(NomenclaturalCode.ICBN);
+	}
+	
+	public static FaunaEuropaeaImportConfigurator NewInstance(ICdmDataSource source, ICdmDataSource destination){
+		return new FaunaEuropaeaImportConfigurator(source, destination);
+}
+	
+	private FaunaEuropaeaImportConfigurator(ICdmDataSource source, ICdmDataSource destination) {
 		setSource(source);
 		setDestination(destination);
 		setNomenclaturalCode(NomenclaturalCode.ICBN);
@@ -208,20 +205,4 @@ public class FaunaEuropaeaImportConfigurator extends ImportConfiguratorBase<Faun
 		this.limitSave = limitSave;
 	}
 
-	/**
-	 * @return the maxTaxon
-	 */
-	public int getMaxTaxon() {
-		return maxTaxon;
-	}
-
-	/**
-	 * @param maxTaxon the maxTaxon to set
-	 */
-	public void setMaxTaxon(int maxTaxon) {
-		this.maxTaxon = maxTaxon;
-	}
-	
-	
-	
 }

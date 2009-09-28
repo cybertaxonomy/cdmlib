@@ -60,7 +60,7 @@ public class SDDDescriptionIOTest extends CdmTransactionalIntegrationTest {
 		sddDescriptionIo.doInvoke(new SDDImportState(configurator));
 		this.setComplete();
 		this.endTransaction();
-		assertEquals("Number of TaxonNames should be 1", 1, nameService.count());
+		assertEquals("Number of TaxonNames should be 1", 1, nameService.count(null));
 	}
 
 }

@@ -220,7 +220,7 @@ public class BerlinModelTaxonNameRelationImport extends BerlinModelImportBase {
 				}
 			}
 			logger.info("TaxonName to save: " + nameStore.size());
-			getNameService().saveTaxonNameAll(nameStore);
+			getNameService().save(nameStore);
 			
 			logger.info("end makeNameRelationships ..." + getSuccessString(success));
 			return success;

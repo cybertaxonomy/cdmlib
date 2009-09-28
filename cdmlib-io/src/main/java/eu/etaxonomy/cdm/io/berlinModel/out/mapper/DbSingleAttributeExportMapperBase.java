@@ -21,6 +21,7 @@ import org.joda.time.DateTime;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.CdmSingleAttributeMapperBase;
 import eu.etaxonomy.cdm.io.common.DbExportStateBase;
+import eu.etaxonomy.cdm.io.common.ExportConfiguratorBase;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -163,7 +164,7 @@ public abstract class DbSingleAttributeExportMapperBase<STATE extends DbExportSt
 	}
 	
 	protected boolean checkSqlServerColumnExists(){
-		Source source = getState().getConfig().getDestination();
+		Source source = null; // FIXME this would not compile! getState().getConfig()).getDestination();
 		String strQuery = "SELECT  Count(t.id) as n " +
 				" FROM sysobjects AS t " +
 				" INNER JOIN syscolumns AS c ON t.id = c.id " +
@@ -189,7 +190,7 @@ public abstract class DbSingleAttributeExportMapperBase<STATE extends DbExportSt
 	}
 	
 	protected int getDbColumnIntegerInfo(String selectPart){
-		Source source = getState().getConfig().getDestination();
+		Source source = null; // FIXME this would not compile! getState().getConfig().getDestination();
 		String strQuery = "SELECT  " + selectPart + " as result" +
 				" FROM sysobjects AS t " +
 				" INNER JOIN syscolumns AS c ON t.id = c.id " +

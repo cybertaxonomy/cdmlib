@@ -185,7 +185,7 @@ public class SynthesysIO  extends SpecimenIoBase  implements ICdmIO<SpecimenImpo
 		Collection collection = Collection.NewInstance();
 		List<Collection> collections;
 		try{
-			collections = getOccurrenceService().searchCollectionByCode(this.collectionCode);
+			collections = getCollectionService().searchByCode(this.collectionCode);
 		}catch(Exception e){
 			collections=new ArrayList<Collection>();
 		}
@@ -261,7 +261,7 @@ public class SynthesysIO  extends SpecimenIoBase  implements ICdmIO<SpecimenImpo
 				catch(Exception e){taxon=null;}
 			}
 			if (!config.getDoReUseTaxon() || taxon == null){
-				getNameService().saveTaxonName(taxonName);
+				getNameService().save(taxonName);
 				taxon = Taxon.NewInstance(taxonName, sec); //sec set null
 			}
 
@@ -455,12 +455,12 @@ public class SynthesysIO  extends SpecimenIoBase  implements ICdmIO<SpecimenImpo
 			 * SAVE AND STORE DATA
 			 */			
 
-			getTermService().saveTerm(areaCountry);//save it sooner
+			getTermService().save(areaCountry);//save it sooner
 			//ONLY FOR ABCD XML DATA
 //			for (int i=0; i<nas.size();i++)
 //				app.getTermService().saveTerm(nas.get(i));//save it sooner (foreach area)
 			getTermService().saveLanguageData(unitsGatheringEvent.getLocality());//save it sooner
-			getOccurrenceService().saveSpecimenOrObservationBase(derivedThing);
+			getOccurrenceService().save(derivedThing);
 
 			logger.info("saved new specimen ...");
 

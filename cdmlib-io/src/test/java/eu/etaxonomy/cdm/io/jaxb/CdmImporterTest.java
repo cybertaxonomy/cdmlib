@@ -25,7 +25,6 @@ import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
-import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 public class CdmImporterTest  extends CdmTransactionalIntegrationTest{

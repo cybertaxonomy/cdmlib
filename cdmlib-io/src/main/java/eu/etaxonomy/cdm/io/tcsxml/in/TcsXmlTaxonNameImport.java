@@ -185,7 +185,7 @@ public class TcsXmlTaxonNameImport extends TcsXmlImportBase implements ICdmIO<Tc
 		}
 		logger.info(i + " names handled");
 		Collection<? extends TaxonNameBase> col = taxonNameMap.objects();
-		getNameService().saveTaxonNameAll(col);
+		getNameService().save((Collection)col);
 
 		logger.info("end makeTaxonNames ...");
 		return success.getValue();

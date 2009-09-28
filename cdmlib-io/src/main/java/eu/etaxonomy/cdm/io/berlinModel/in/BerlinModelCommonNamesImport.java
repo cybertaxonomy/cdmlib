@@ -173,7 +173,7 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 				//put
 			}
 			logger.info("Taxa to save: " + taxonStore.size());
-			getTaxonService().saveTaxonAll(taxonStore);	
+			getTaxonService().save(taxonStore);	
 			
 			logger.info("end make commonNames ..." + getSuccessString(success));
 			return true;

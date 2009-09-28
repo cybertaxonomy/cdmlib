@@ -120,7 +120,7 @@ public class BerlinModelUserImport extends BerlinModelImportBase {
 
 			
 		logger.info("save " + i + " "+pluralString + " ...");
-		getUserService().saveAll(userMap.objects());
+		getUserService().save(userMap.objects());
 
 		logger.info("end make "+pluralString+" ..." + getSuccessString(success));;
 		return success;

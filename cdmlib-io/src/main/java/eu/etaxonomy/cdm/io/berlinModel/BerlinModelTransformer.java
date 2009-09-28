@@ -36,9 +36,9 @@ import eu.etaxonomy.cdm.model.reference.Patent;
 import eu.etaxonomy.cdm.model.reference.PersonalCommunication;
 import eu.etaxonomy.cdm.model.reference.PrintSeries;
 import eu.etaxonomy.cdm.model.reference.Proceedings;
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.reference.Report;
 import eu.etaxonomy.cdm.model.reference.SectionBase;
-import eu.etaxonomy.cdm.model.reference.StrictReferenceBase;
 import eu.etaxonomy.cdm.model.reference.Thesis;
 import eu.etaxonomy.cdm.model.reference.WebPage;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
@@ -489,7 +489,7 @@ public final class BerlinModelTransformer {
 //		public static int T_STATUS_ORPHANED = 6;
 	}
 		
-	public static Integer ref2refCategoryId (StrictReferenceBase<?> ref){
+	public static Integer ref2refCategoryId (ReferenceBase<?> ref){
 		if (ref == null){
 			return null;
 		}

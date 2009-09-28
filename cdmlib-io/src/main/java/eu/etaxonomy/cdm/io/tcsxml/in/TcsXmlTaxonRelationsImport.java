@@ -95,7 +95,7 @@ public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdm
 		taxonRelCount += makeTaxonRelationshipAssertion(state, taxonMap, referenceMap, taxonStore, elDataSet, tcsNamespace, success);	
 		
 		logger.info("Taxa to save: " + taxonStore.size());
-		getTaxonService().saveTaxonAll(taxonStore);
+		getTaxonService().save(taxonStore);
 		
 		logger.info("end make taxon relations ...");
 		return success.getValue();

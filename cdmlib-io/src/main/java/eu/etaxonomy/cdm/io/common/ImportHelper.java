@@ -7,21 +7,20 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Calendar;
 import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.jdom.Element;
 import org.jdom.Namespace;
-import org.joda.time.DateTime;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.ISourceable;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.OriginalSource;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 /**
@@ -50,11 +49,8 @@ public class ImportHelper {
 	 * @param sourceId
 	 * @return
 	 */
-	public static boolean setOriginalSource(IdentifiableEntity idEntity, ReferenceBase sourceReference, String sourceId, String namespace){
-		OriginalSource originalSource = new OriginalSource();
-		originalSource.setIdInSource(sourceId);
-		originalSource.setCitation(sourceReference);
-		originalSource.setIdNamespace(namespace);
+	public static boolean setOriginalSource(ISourceable idEntity, ReferenceBase sourceReference, String sourceId, String namespace){
+		IdentifiableSource originalSource = IdentifiableSource.NewInstance(sourceId, namespace, sourceReference, null);
 		idEntity.addSource(originalSource);
 		return true;
 	}

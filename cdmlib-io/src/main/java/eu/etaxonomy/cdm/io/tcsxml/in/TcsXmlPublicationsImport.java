@@ -123,7 +123,7 @@ public class TcsXmlPublicationsImport extends TcsXmlImportBase implements ICdmIO
 //		logger.info("Save nomenclatural references (" + nomRefCount + ")");
 //		referenceService.saveReferenceAll(nomRefMap.objects());
 		logger.info("Save bibliographical references (" + i +")");
-		referenceService.saveReferenceAll(referenceMap.objects());
+		referenceService.save(referenceMap.objects());
 
 		logger.info("end make publications ...");
 		return success;

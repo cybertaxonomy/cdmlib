@@ -14,9 +14,14 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.List;
 
+import javax.xml.transform.sax.SAXResult;
+
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
+import org.xml.sax.ContentHandler;
+import org.xml.sax.Locator;
+import org.xml.sax.helpers.DefaultHandler;
 
 import eu.etaxonomy.cdm.io.common.CdmExportBase;
 import eu.etaxonomy.cdm.io.common.CdmIoBase;
@@ -30,6 +35,7 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
 
 /**
  * @author a.babadshanjan
@@ -90,8 +96,15 @@ public class JaxbExport extends CdmExportBase<JaxbExportConfigurator, JaxbExport
 		try {
 			cdmDocumentBuilder = new CdmDocumentBuilder();
 			PrintWriter writer = new PrintWriter(new OutputStreamWriter(new FileOutputStream(fileName), "UTF8"), true);
+			
+			/*SAXResult result = new SAXResult();
+			ContentHandler handler = new DefaultHandler();
+			
+			result.setHandler(handler);*/
+			
+			//cdmDocumentBuilder.marshal(dataSet, result);
 			cdmDocumentBuilder.marshal(dataSet, writer);
-
+			
 			// TODO: Split into one file per data set member to see whether performance improves?
 
 			logger.info("XML file written");
@@ -123,6 +136,7 @@ public class JaxbExport extends CdmExportBase<JaxbExportConfigurator, JaxbExport
 		int occurrencesRows = numberOfRows;
 		int mediaRows = numberOfRows;
 		int featureDataRows = numberOfRows;
+		int taxonomicTreeDataRows = numberOfRows;
 		int languageDataRows = numberOfRows;
 		int termVocabularyRows = numberOfRows;
 		int homotypicalGroupRows = numberOfRows;
@@ -130,7 +144,7 @@ public class JaxbExport extends CdmExportBase<JaxbExportConfigurator, JaxbExport
 		if (jaxbExpConfig.isDoTermVocabularies() == true) {
 			if (termVocabularyRows == 0) { termVocabularyRows = MAX_ROWS; }
 			logger.info("# TermVocabulary");
-			dataSet.setTermVocabularies(getTermService().listTermVocabularies(termVocabularyRows, 0, null, null));
+			dataSet.setTermVocabularies((List)getVocabularyService().list(null,termVocabularyRows, 0, null, null));
 		}
 
 //		if (jaxbExpConfig.isDoLanguageData() == true) {
@@ -143,27 +157,27 @@ public class JaxbExport extends CdmExportBase<JaxbExportConfigurator, JaxbExport
 		if (jaxbExpConfig.isDoTerms() == true) {
 			if (definedTermBaseRows == 0) { definedTermBaseRows = getTermService().count(DefinedTermBase.class); }
 			logger.info("# DefinedTermBase: " + definedTermBaseRows);
-			dataSet.setTerms(getTermService().getAllDefinedTerms(definedTermBaseRows, 0));
+			dataSet.setTerms(getTermService().list(null,definedTermBaseRows, 0,null,null));
 		}
 
 		if (jaxbExpConfig.isDoAuthors() == true) {
 			if (agentRows == 0) { agentRows = getAgentService().count(AgentBase.class); }
 			logger.info("# Agents: " + agentRows);
 			//logger.info("    # Team: " + appCtr.getAgentService().count(Team.class));
-			dataSet.setAgents(getAgentService().getAllAgents(agentRows, 0));
+			dataSet.setAgents(getAgentService().list(null,agentRows, 0,null,null));
 		}
 
 		if (jaxbExpConfig.getDoReferences() != IImportConfigurator.DO_REFERENCES.NONE) {
 			if (referenceBaseRows == 0) { referenceBaseRows = getReferenceService().count(ReferenceBase.class); }
 			logger.info("# ReferenceBase: " + referenceBaseRows);
-			dataSet.setReferences(getReferenceService().getAllReferences(referenceBaseRows, 0));
+			dataSet.setReferences(getReferenceService().list(null,referenceBaseRows, 0,null,null));
 		}
 
 		if (jaxbExpConfig.isDoTaxonNames() == true) {
 			if (taxonNameBaseRows == 0) { taxonNameBaseRows = getNameService().count(TaxonNameBase.class); }
 			logger.info("# TaxonNameBase: " + taxonNameBaseRows);
 			//logger.info("    # Taxon: " + getNameService().count(BotanicalName.class));
-			dataSet.setTaxonomicNames(getNameService().getAllNames(taxonNameBaseRows, 0));
+			dataSet.setTaxonomicNames(getNameService().list(null,taxonNameBaseRows, 0,null,null));
 		}
 
 		if (jaxbExpConfig.isDoHomotypicalGroups() == true) {
@@ -177,7 +191,7 @@ public class JaxbExport extends CdmExportBase<JaxbExportConfigurator, JaxbExport
 			logger.info("# TaxonBase: " + taxonBaseRows);
 //			dataSet.setTaxa(new ArrayList<Taxon>());
 //			dataSet.setSynonyms(new ArrayList<Synonym>());
-			List<TaxonBase> tb = getTaxonService().getAllTaxonBases(taxonBaseRows, 0);
+			List<TaxonBase> tb = getTaxonService().list(null,taxonBaseRows, 0,null,null);
 			for (TaxonBase taxonBase : tb) {
 				dataSet.addTaxonBase(taxonBase);
 			}
@@ -207,13 +221,13 @@ public class JaxbExport extends CdmExportBase<JaxbExportConfigurator, JaxbExport
 		if (jaxbExpConfig.isDoOccurrence() == true) {
 			if (occurrencesRows == 0) { occurrencesRows = getOccurrenceService().count(SpecimenOrObservationBase.class); }
 			logger.info("# SpecimenOrObservationBase: " + occurrencesRows);
-			dataSet.setOccurrences(getOccurrenceService().getAllSpecimenOrObservationBases(occurrencesRows, 0));
+			dataSet.setOccurrences(getOccurrenceService().list(null,occurrencesRows, 0,null,null));
 		}
 
 		if (jaxbExpConfig.isDoMedia() == true) {
 			if (mediaRows == 0) { mediaRows = MAX_ROWS; }
 			logger.info("# Media");
-			dataSet.setMedia(getMediaService().getAllMedia(mediaRows, 0));
+			dataSet.setMedia(getMediaService().list(null,mediaRows, 0,null,null));
 //			dataSet.addMedia(getMediaService().getAllMediaRepresentations(mediaRows, 0));
 //			dataSet.addMedia(getMediaService().getAllMediaRepresentationParts(mediaRows, 0));
 		}
@@ -221,7 +235,12 @@ public class JaxbExport extends CdmExportBase<JaxbExportConfigurator, JaxbExport
 		if (jaxbExpConfig.isDoFeatureData() == true) {
 			if (featureDataRows == 0) { featureDataRows = MAX_ROWS; }
 			logger.info("# Feature Tree, Feature Node");
-			dataSet.setFeatureTrees(getDescriptionService().getFeatureTreesAll(null));
+			dataSet.setFeatureTrees(getFeatureTreeService().list(null,null,null,null,null));
+		}
+		if (jaxbExpConfig.isDoTaxonomicTreeData() == true) {
+			if (taxonomicTreeDataRows == 0) { taxonomicTreeDataRows = MAX_ROWS; }
+			logger.info("# Taxonomic Tree");
+			dataSet.setTaxonomicTrees(( getTaxonTreeService().list(null,taxonomicTreeDataRows, 0, null, null)));
 		}
 	}
 

@@ -120,7 +120,7 @@ public class BerlinModelWebMarkerImport extends BerlinModelImportBase {
 
 			
 		logger.info("save " + i + " "+pluralString + " ...");
-		getTaxonService().saveAll(taxaToBeSaved);
+		getTaxonService().save(taxaToBeSaved);
 		logger.info("end make "+pluralString+" ..." + getSuccessString(success));;
 		return success;
 		

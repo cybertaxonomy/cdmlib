@@ -71,6 +71,7 @@
                 <xs:element ref="name:NameRelationshipType"/>
                 <xs:element ref="name:NomenclaturalCode"/>
                 <xs:element ref="name:NomenclaturalStatusType"/>
+                <xs:element ref="name:NameTypeDesignationStatus"/>
                 <xs:element ref="description:PresenceTerm"/>
                 <xs:element ref="occurrence:PreservationMethod"/>
                 <xs:element ref="name:Rank"/>
@@ -126,6 +127,7 @@
           <xs:complexType>
             <xs:sequence>
               <xs:choice minOccurs="0" maxOccurs="unbounded">
+                <xs:element ref="occurrence:DerivedUnit"/>
                 <xs:element ref="occurrence:DnaSample"/>
                 <xs:element ref="occurrence:FieldObservation"/>
                 <xs:element ref="occurrence:Fossil"/>
@@ -192,6 +194,14 @@
             <xs:attribute ref="xml:base"/>
           </xs:complexType>
         </xs:element>
+        <xs:element name="TaxonomicTrees" minOccurs="0">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element ref="taxon:TaxonomicTree" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+            <xs:attribute ref="xml:base"/>
+          </xs:complexType>
+        </xs:element>
         <xs:element name="TaxonomicNames" minOccurs="0">
           <xs:complexType>
             <xs:sequence>
@@ -199,6 +209,7 @@
                 <xs:element ref="name:BacterialName"/>
                 <xs:element ref="name:BotanicalName"/>
                 <xs:element ref="name:CultivarPlantName"/>
+                <xs:element ref="name:NonViralName"/>
                 <xs:element ref="name:ViralName"/>
                 <xs:element ref="name:ZoologicalName"/>
               </xs:choice>

@@ -192,7 +192,7 @@ public class TcsRdfTaxonImport  extends TcsRdfImportBase implements ICdmIO<TcsRd
 		}
 		//invokeRelations(source, cdmApp, deleteAll, taxonMap, referenceMap);
 		logger.info("saving taxa ...");
-		taxonService.saveTaxonAll(taxonMap.objects());
+		taxonService.save(taxonMap.objects());
 		logger.info("end makeTaxa ...");
 		return success;
 	}

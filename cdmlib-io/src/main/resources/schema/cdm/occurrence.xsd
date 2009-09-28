@@ -44,8 +44,12 @@
   <xs:element name="DerivationEvent" type="occurrence:DerivationEvent"/>
 
   <xs:element name="DerivationEventType" type="occurrence:DerivationEventType"/>
+  
+  <xs:element name="DerivedUnit" type="occurrence:derivedUnit"/>
 
   <xs:element name="DerivedUnitBase" type="occurrence:DerivedUnitBase"/>
+  
+  <xs:element name="DeterminationEvent" type="occurrence:DeterminationEvent"/>
 
   <xs:element name="DeterminationModifier" type="occurrence:DeterminationModifier"/>
 
@@ -86,6 +90,14 @@
   <xs:complexType name="PreservationMethod">
     <xs:complexContent>
       <xs:extension base="common:DefinedTermBase">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  
+  <xs:complexType name="derivedUnit">
+    <xs:complexContent>
+      <xs:extension base="occurrence:DerivedUnitBase">
         <xs:sequence/>
       </xs:extension>
     </xs:complexContent>

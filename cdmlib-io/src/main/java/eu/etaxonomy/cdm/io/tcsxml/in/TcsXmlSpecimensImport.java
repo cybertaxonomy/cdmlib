@@ -128,7 +128,7 @@ public class TcsXmlSpecimensImport extends TcsXmlImportBase implements ICdmIO<Tc
 		}
 		
 		logger.info("Save specimen (" + i +")");
-	    getOccurrenceService().saveSpecimenOrObservationBaseAll(specimenMap.objects());
+	    getOccurrenceService().save((java.util.Collection)specimenMap.objects());
 
 		logger.info("end make Specimens ...");
 		return success;

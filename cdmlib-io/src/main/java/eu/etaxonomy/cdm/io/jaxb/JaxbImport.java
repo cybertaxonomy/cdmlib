@@ -13,6 +13,7 @@ import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -98,7 +99,8 @@ public class JaxbImport extends CdmIoBase<JaxbImportState> implements ICdmIO<Jax
 		} 
 		
 		// save data in DB
-		logger.info("Saving data to DB... "); //+ dbname
+		logger.error("Saving data to DB... "); //+ dbname
+		
 		success = saveData(jaxbImpConfig, dataSet);
 		
 		return success;
@@ -125,8 +127,8 @@ public class JaxbImport extends CdmIoBase<JaxbImportState> implements ICdmIO<Jax
 
 		// Get an app controller that omits term loading
 		// CdmApplicationController.getCdmAppController(boolean createNew, boolean omitTermLoading){
-//		CdmApplicationController appCtr = jaxbImpConfig.getCdmAppController(false, true);
-		//TransactionStatus txStatus = startTransaction();
+		//CdmApplicationController appCtr = jaxbImpConfig.getCdmAppController(false, true);
+		TransactionStatus txStatus = startTransaction();
 		//TransactionStatus txStatus = null;
 
 		// Have single transactions per service save call. Otherwise, getting
@@ -139,9 +141,9 @@ public class JaxbImport extends CdmIoBase<JaxbImportState> implements ICdmIO<Jax
 
 		if ((jaxbImpConfig.isDoTermVocabularies() == true) 
 				&& (termVocabularies = dataSet.getTermVocabularies()).size() > 0) {
-			//txStatus = startTransaction();
+			txStatus = startTransaction();
 			ret &= saveTermVocabularies(termVocabularies);
-			//commitTransaction(txStatus);
+			commitTransaction(txStatus);
 		}
 		
 		if ((jaxbImpConfig.isDoTerms() == true)
@@ -173,7 +175,7 @@ public class JaxbImport extends CdmIoBase<JaxbImportState> implements ICdmIO<Jax
 			if (jaxbImpConfig.isDoAuthors() == true) {
 				if ((agents = dataSet.getAgents()).size() > 0) {
 					logger.info("Agents: " + agents.size());
-					getAgentService().saveAgentAll(agents);
+					getAgentService().save((Collection)agents);
 				}
 			}
 		} catch (Exception ex) {
@@ -188,7 +190,7 @@ public class JaxbImport extends CdmIoBase<JaxbImportState> implements ICdmIO<Jax
 			if (jaxbImpConfig.getDoReferences() != IImportConfigurator.DO_REFERENCES.NONE) {
 				if ((references = dataSet.getReferences()).size() > 0) {
 					logger.info("References: " + references.size());
-					getReferenceService().saveReferenceAll(references);
+					getReferenceService().save(references);
 				}
 			}
 		} catch (Exception ex) {
@@ -203,7 +205,7 @@ public class JaxbImport extends CdmIoBase<JaxbImportState> implements ICdmIO<Jax
 			if (jaxbImpConfig.isDoTaxonNames() == true) {
 				if ((taxonomicNames = dataSet.getTaxonomicNames()).size() > 0) {
 					logger.info("Taxonomic names: " + taxonomicNames.size());
-					getNameService().saveTaxonNameAll(taxonomicNames);
+					getNameService().save(taxonomicNames);
 				}
 			}
 		} catch (Exception ex) {
@@ -234,7 +236,11 @@ public class JaxbImport extends CdmIoBase<JaxbImportState> implements ICdmIO<Jax
 			if (jaxbImpConfig.isDoTaxa() == true) {
 				if ((taxonBases = dataSet.getTaxonBases()).size() > 0) {
 					logger.info("Taxon bases: " + taxonBases.size());
-					getTaxonService().saveTaxonAll(taxonBases);
+					Iterator <TaxonBase> taxBases = taxonBases.iterator();
+					while (taxBases.hasNext()){
+						getTaxonService().save(taxBases.next());
+					}
+					//getTaxonService().saveTaxonAll(taxonBases);
 				}
 			}
 		} catch (Exception ex) {
@@ -271,7 +277,7 @@ public class JaxbImport extends CdmIoBase<JaxbImportState> implements ICdmIO<Jax
 			if (jaxbImpConfig.isDoOccurrence() == true) {
 				if ((occurrences = dataSet.getOccurrences()).size() > 0) {
 					logger.info("Occurrences: " + occurrences.size());
-					getOccurrenceService().saveSpecimenOrObservationBaseAll(occurrences);
+					getOccurrenceService().save(occurrences);
 				}
 			}
 		} catch (Exception ex) {
@@ -286,7 +292,7 @@ public class JaxbImport extends CdmIoBase<JaxbImportState> implements ICdmIO<Jax
 			if (jaxbImpConfig.isDoFeatureData() == true) {
 				if ((featureTrees = dataSet.getFeatureTrees()).size() > 0) {
 					logger.info("Feature data: " + featureTrees.size());
-					getDescriptionService().saveFeatureTreeAll(featureTrees);
+					getFeatureTreeService().save(featureTrees);
 				}
 			}
 		} catch (Exception ex) {
@@ -301,15 +307,14 @@ public class JaxbImport extends CdmIoBase<JaxbImportState> implements ICdmIO<Jax
 			if (jaxbImpConfig.isDoMedia() == true) {
 				if ((media = dataSet.getMedia()).size() > 0) {
 					logger.info("Media: " + media.size());
-					getMediaService().saveMediaAll(media);
+					getMediaService().save(media);
 				}
 			}
 		} catch (Exception ex) {
 			logger.error("Error saving media");
 			ret = false;
 		}
-		//commitTransaction(txStatus);
-
+		
 		//commitTransaction(txStatus);
 		logger.info("All data saved");
 
@@ -324,7 +329,7 @@ public class JaxbImport extends CdmIoBase<JaxbImportState> implements ICdmIO<Jax
 		boolean success = true;
 		logger.info("Term vocabularies: " + termVocabularies.size());
 		try {
-			getTermService().saveTermVocabulariesAll(termVocabularies);
+			getVocabularyService().save((List)termVocabularies);
 		} catch (Exception ex) {
 			logger.error("Error saving term vocabularies");
 			success = false;
@@ -337,9 +342,10 @@ public class JaxbImport extends CdmIoBase<JaxbImportState> implements ICdmIO<Jax
 		boolean success = true;
 		logger.info("Terms: " + terms.size());
 		try {
-			getTermService().saveTermsAll(terms);
+			getTermService().save(terms);
 		} catch (Exception ex) {
 			logger.error("Error saving terms");
+			ex.printStackTrace();
 			success = false;
 		}
 		return success;

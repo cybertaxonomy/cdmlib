@@ -15,6 +15,7 @@ import java.sql.SQLException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.springframework.transaction.TransactionStatus;
@@ -32,7 +33,9 @@ import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
 
 /**
  * @author a.babadshanjan
@@ -112,68 +115,25 @@ implements ICdmImport<FaunaEuropaeaImportConfigurator,FaunaEuropaeaImportState> 
 	}
 	
 
-	protected boolean saveTaxa(FaunaEuropaeaImportState state,
-			int highestTaxonIndex, int limit) {
-
-		Map<String, MapWrapper<? extends CdmBase>> stores = state.getStores();
-		MapWrapper<TaxonBase> taxonStore = (MapWrapper<TaxonBase>)stores.get(ICdmIO.TAXON_STORE);
-		TransactionStatus txStatus = null;
-
-		int n = 0;
-		int nbrOfTaxa = highestTaxonIndex;
-//		int nbrOfTaxa = taxonStore.size();
-		boolean success = true;
-
-		if(logger.isInfoEnabled()) { logger.info("Saving taxa ..."); }
-
-		if (nbrOfTaxa < limit) {             // TODO: test with critical values
-			limit = nbrOfTaxa;
-		} else {
-			n = nbrOfTaxa / limit;
-		}
-
-		if(logger.isInfoEnabled()) { 
-			logger.info("number of taxa = " + taxonStore.size() 
-					+ ", highest taxon index = " + highestTaxonIndex 
-					+ ", limit = " + limit
-					+ ", n = " + n); 
-		}
-
-		// save taxa in blocks of <=limit
+	/**
+	 * @param state
+	 * @param sourceRef
+	 */
+	protected TaxonomicTree getTaxonomicTreeFor(FaunaEuropaeaImportState state, ReferenceBase<?> sourceRef) {
 		
-		for (int j = 1; j <= n + 1; j++)
-		{
-			int offset = j - 1;
-			int start = offset * limit;
-
-			if(logger.isInfoEnabled()) { 
-				logger.info("Saving taxa: " + start + " - " + (start + limit - 1)); 
-			}
-
-			if(logger.isInfoEnabled()) { 
-				logger.info("index = " + j 
-						+ ", offset = " + offset
-						+ ", start = " + start); 
-			}
+		TaxonomicTree tree;
+		UUID treeUuid = state.getTreeUuid(sourceRef);
+		if (treeUuid == null){
+			if(logger.isInfoEnabled()) { logger.info(".. creating new taxonomic tree"); }
 			
-			if (j == n + 1) {
-				limit = nbrOfTaxa - n * limit;
-				if(logger.isInfoEnabled()) { 
-					logger.info("n = " + n + ", limit = " + limit); 
-				}
-			}
-
-			txStatus = startTransaction();
-    		
-			Collection<TaxonBase> taxonMapPart = taxonStore.objects(start, limit);
-			getTaxonService().saveTaxonAll(taxonMapPart);
-			taxonMapPart = null;
-			taxonStore.removeObjects(start, limit);
-			
+			TransactionStatus txStatus = startTransaction();
+			tree = makeTreeMemSave(state, sourceRef);
 			commitTransaction(txStatus);
-
+			
+		} else {
+			tree = getTaxonTreeService().getTaxonomicTreeByUuid(treeUuid);
 		}
-		
-		return success;
+		return tree;
 	}
+
 }

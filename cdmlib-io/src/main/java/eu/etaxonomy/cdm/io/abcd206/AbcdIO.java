@@ -846,7 +846,7 @@ public class AbcdIO extends SpecimenIoBase implements ICdmIO<SpecimenImportState
 		Collection collection = Collection.NewInstance();
 		List<Collection> collections;
 		try{
-			collections = getOccurrenceService().searchCollectionByCode(this.collectionCode);
+			collections = getCollectionService().searchByCode(this.collectionCode);
 		}catch(Exception e){
 			collections=new ArrayList<Collection>();
 		}
@@ -932,7 +932,7 @@ public class AbcdIO extends SpecimenIoBase implements ICdmIO<SpecimenImportState
 //			taxonName.setFullTitleCache(scientificName);
 
 			if (!config.getDoReUseTaxon() || taxon == null){
-				getNameService().saveTaxonName(taxonName);
+				getNameService().save(taxonName);
 				taxon = Taxon.NewInstance(taxonName, sec); //sec set null
 			}
 			determinationEvent = DeterminationEvent.NewInstance();
@@ -1247,11 +1247,11 @@ public class AbcdIO extends SpecimenIoBase implements ICdmIO<SpecimenImportState
 			/**
 			 * SAVE AND STORE DATA
 			 */			
-			getTermService().saveTerm(areaCountry);//save it sooner
+			getTermService().save(areaCountry);//save it sooner
 			for (int i=0; i<nas.size();i++)
-				getTermService().saveTerm(nas.get(i));//save it sooner (foreach area)
+				getTermService().save(nas.get(i));//save it sooner (foreach area)
 			getTermService().saveLanguageData(unitsGatheringEvent.getLocality());//save it sooner
-			getOccurrenceService().saveSpecimenOrObservationBase(derivedThing);
+			getOccurrenceService().save(derivedThing);
 			logger.info("saved ABCD specimen ...");
 
 

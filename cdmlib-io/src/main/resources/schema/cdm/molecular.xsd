@@ -33,6 +33,8 @@
 
   <xs:element name="Locus" type="molecular:Locus"/>
 
+  <xs:element name="PhylogeneticTree" type="molecular:PhylogeneticTree"/>
+
   <xs:element name="Sequence" type="molecular:Sequence"/>
 
   <xs:complexType name="DnaSample">
@@ -109,5 +111,22 @@
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
+  
+  <xs:complexType name="PhylogeneticTree">
+    <xs:complexContent>
+      <xs:extension base="media:ReferencedMedia">
+        <xs:sequence>
+          <xs:element name="UsedSequences" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="UsedSequence" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  
 </xs:schema>
 
