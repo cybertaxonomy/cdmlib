@@ -105,6 +105,14 @@ implements ITypeDesignation {
 	}
 	
 	/**
+	 * Static factory method
+	 * @return
+	 */
+	public static SpecimenTypeDesignation NewInstance() {
+		return new SpecimenTypeDesignation();
+	}
+	
+	/**
 	 * Class constructor: creates a new specimen type designation instance
 	 * (including its {@link eu.etaxonomy.cdm.model.reference.ReferenceBase reference source} and 
 	 * eventually the taxon name string originally used by this reference when 

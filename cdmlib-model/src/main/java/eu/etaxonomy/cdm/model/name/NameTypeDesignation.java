@@ -96,6 +96,14 @@ implements ITypeDesignation {
 	}
 
 	/**
+	 * Static factory method
+	 * @return
+	 */
+	public static NameTypeDesignation NewInstance() {
+		return new NameTypeDesignation();
+	}
+	
+	/**
 	 * Class constructor: creates a new name type designation instance
 	 * (including its {@link eu.etaxonomy.cdm.model.reference.ReferenceBase reference source} and eventually
 	 * the taxon name string originally used by this reference when establishing
@@ -165,7 +173,7 @@ implements ITypeDesignation {
 	/**
 	 * @see  #getTypeName()
 	 */
-	private void setTypeName(TaxonNameBase typeName){
+	public void setTypeName(TaxonNameBase typeName){
 		this.typeName = typeName;
 	}
 
