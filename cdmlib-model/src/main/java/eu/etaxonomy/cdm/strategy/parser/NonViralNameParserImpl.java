@@ -253,7 +253,11 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 	}
 	
 	private void makeProblemEmpty(IParsable parsable){
+		boolean hasCheckRank = parsable.hasProblem(ParserProblem.CheckRank);
 		parsable.setParsingProblem(0);
+		if (hasCheckRank){
+			parsable.addParsingProblem(ParserProblem.CheckRank);
+		}
 		parsable.setProblemStarts(-1);
 		parsable.setProblemEnds(-1);
 	}
@@ -1150,12 +1154,8 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 		
 		
 		//delete problems except check rank
-		boolean hasCheckRank = nameToBeFilled.hasProblem(ParserProblem.CheckRank);
-		nameToBeFilled.setParsingProblem(0);
-		if (hasCheckRank){
-			nameToBeFilled.addParsingProblem(ParserProblem.CheckRank);
-		}
-		
+		makeProblemEmpty(nameToBeFilled);
+				
 		// TODO ?
 		//nameToBeFilled.setHomotypicalGroup(newHomotypicalGroup);
 
