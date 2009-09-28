@@ -1250,6 +1250,7 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 	 * @see #getTaxonomicChildren()
 	 * @see java.lang.Iterable#iterator()
 	 */
+	@Deprecated
 	public Iterator<Taxon> iterator() {
 		return new TaxonIterator(this.getTaxonomicChildren());
 	}
@@ -1258,6 +1259,7 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 	 * @author m.doering
 	 *
 	 */
+	@Deprecated
 	private class TaxonIterator implements Iterator<Taxon> {
 		   private Taxon[] items;
 		   private int i= 0;
@@ -1409,5 +1411,54 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 		//sort end
 		return result;
 	}
-
+	
+	/**
+	 * Returns the image gallery description. If no image gallery exists, a new one is created using the 
+	 * defined title and adds the string "-Image Gallery" to the title.</BR>
+	 * If multiple image galleries exist an arbitrary one is choosen.
+	 * @param title
+	 * @return
+	 */
+	@Transient
+	public TaxonDescription getOrCreateImageGallery(String title){
+		return getOrCreateImageGallery(title, true, false);
+	}
+	
+	/**
+	 * Returns the image gallery description. If no image gallery exists, a new one is created using the 
+	 * defined title.</BR>
+	 * If onlyTitle == true we look only for an image gallery with this title, create a new one otherwise.
+	 * If multiple image galleries exist that match the conditions an arbitrary one is choosen.
+	 * @param title
+	 * @param onlyTitle
+	 * @param if true, the String "Image Gallery
+	 * @return
+	 */
+	@Transient
+	public TaxonDescription getOrCreateImageGallery(String title, boolean addImageGalleryToTitle, boolean onlyTitle){
+		TaxonDescription result = null;
+		String titleCache = (title == null) ? "Image Gallery" : title;
+		if (title != null && addImageGalleryToTitle){
+			titleCache = titleCache+ "-Image Gallery";
+		}
+		Set<TaxonDescription> descriptionSet = this.getDescriptions();
+		for (TaxonDescription desc: descriptionSet){
+			if (desc.isImageGallery()){
+				if (onlyTitle && ! titleCache.equals(desc.getTitleCache())){
+					continue;
+				}
+				result = desc;
+				if (onlyTitle && titleCache.equals(desc.getTitleCache())){
+					break;
+				}
+			}
+		}
+		if (result == null){
+			result = TaxonDescription.NewInstance();
+			result.setTitleCache(titleCache);
+			this.addDescription(result);
+			result.setImageGallery(true);
+		}
+		return result;
+	}
 }
