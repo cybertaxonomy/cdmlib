@@ -67,7 +67,7 @@ public class OracleDatabaseTypeTest {
 		password = "wd";
 		dataSource = CdmPersistentDataSource.save(
 				"oracleTest", 
-				CdmDataSource.NewInstance(enumType, server, dbName, port, username, password, null));
+				CdmDataSource.NewInstance(enumType, server, dbName, port, username, password));
 	}
 
 	/**

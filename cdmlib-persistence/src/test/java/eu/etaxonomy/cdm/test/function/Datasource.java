@@ -25,7 +25,7 @@ public class Datasource {
 //		logger.warn(defaultDataSource.getServer());
 		
 		defaultDataSource = CdmPersistentDataSource.save(
-				"mysql_cichorieae", CdmDataSource.NewSqlServer2005Instance(server, "cdm_edit_cichorieae", port, username, pwd, null));
+				"mysql_cichorieae", CdmDataSource.NewSqlServer2005Instance(server, "cdm_edit_cichorieae", port, username, pwd));
 
 		logger.warn(defaultDataSource.getDatabase());
 		logger.warn(defaultDataSource.getPort());

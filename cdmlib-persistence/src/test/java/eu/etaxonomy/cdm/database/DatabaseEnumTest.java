@@ -90,7 +90,7 @@ public class DatabaseEnumTest {
 	@Ignore
 	@Test
 	public void testGetConnectionStringStringString() {
-		ICdmDataSource cdmDataSource = CdmDataSource.NewMySqlInstance("192.168.2.10", "cdm_test", null, null, null);
+		ICdmDataSource cdmDataSource = CdmDataSource.NewMySqlInstance("192.168.2.10", "cdm_test", null, null);
 		assertEquals("jdbc:mysql://192.168.2.10:3306/cdm_test", DatabaseEnumTest.dbEnum.getConnectionString(cdmDataSource));
 		ICdmDataSource sqlServerDataSource = CdmDataSource.NewSqlServer2005Instance("192.168.2.10", "cdm_test", null, null, null);
 		assertEquals("jdbc:sqlserver://192.168.2.10:1433;databaseName=cdm_test;SelectMethod=cursor", DatabaseEnumTest.dbEnumSql2005.getConnectionString(sqlServerDataSource));

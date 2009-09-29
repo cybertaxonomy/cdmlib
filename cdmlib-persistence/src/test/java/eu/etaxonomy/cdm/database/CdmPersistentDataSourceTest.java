@@ -254,7 +254,7 @@ public class CdmPersistentDataSourceTest {
 		String password = "password";
 		int port = 1234;
 		
-		ICdmDataSource dataSource = CdmDataSource.NewInstance(databaseType, servername, db, port, username, password, null);
+		ICdmDataSource dataSource = CdmDataSource.NewInstance(databaseType, servername, db, port, username, password);
 		
 		CdmPersistentDataSource.save(dataSourceString, dataSource);
 		assertTrue(CdmPersistentDataSource.exists(dataSourceString));

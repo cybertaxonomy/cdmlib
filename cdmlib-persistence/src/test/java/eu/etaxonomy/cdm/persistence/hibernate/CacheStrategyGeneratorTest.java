@@ -21,16 +21,19 @@ import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.xml.FlatXmlDataSet;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.dbunit.annotation.ExpectedDataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
+import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.reference.Book;
 import eu.etaxonomy.cdm.model.reference.Generic;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.persistence.dao.agent.IAgentDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 
@@ -49,6 +52,8 @@ public class CacheStrategyGeneratorTest extends CdmIntegrationTest {
 	@SpringBeanByType
 	private ITaxonNameDao cdmEntityDaoBase;
 	
+	@SpringBeanByType
+	private IAgentDao agentDao;
 
 	/**
 	 * @throws java.lang.Exception
@@ -65,8 +70,9 @@ public class CacheStrategyGeneratorTest extends CdmIntegrationTest {
 	 * @throws Exception 
 	 */
 	@Test
-	public void testCdmEntityDaoBase() throws Exception {
+	public void testDaos() throws Exception {
 		assertNotNull("cdmEntityDaoBase should exist",cdmEntityDaoBase);
+		assertNotNull("agentDao should exist",agentDao);
 	}
 
 	/**
@@ -75,7 +81,8 @@ public class CacheStrategyGeneratorTest extends CdmIntegrationTest {
 	@Test
 	@DataSet("CacheStrategyGeneratorTest.xml")
 	@ExpectedDataSet
-	public void testOnSaveOrUpdate() {
+	public void testOnSaveOrUpdateNames() {
+		//names
 		BotanicalName name =  (BotanicalName)cdmEntityDaoBase.findByUuid(UUID.fromString("a49a3963-c4ea-4047-8588-2f8f15352730"));
 		name.setTitleCache(null, false);
 		name.setNameCache(null, false);
@@ -95,21 +102,57 @@ public class CacheStrategyGeneratorTest extends CdmIntegrationTest {
 		name2.setNomenclaturalMicroReference("44");
 		
 		cdmEntityDaoBase.saveOrUpdate(name2);
-		BotanicalName name3 =  (BotanicalName)cdmEntityDaoBase.findByUuid(UUID.fromString("049a3963-c4ea-4047-8588-2f8f15352730"));
-		//printDataSet(System.err);
-		try {
-			getConnection().getConnection().commit();
-			IDataSet actualDataSet = getConnection().createDataSet(new String[]{"TaxonNameBase", "ReferenceBase"} );
-			FlatXmlDataSet.write(actualDataSet, System.err);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} catch (DataSetException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+//		BotanicalName name3 =  (BotanicalName)cdmEntityDaoBase.findByUuid(UUID.fromString("049a3963-c4ea-4047-8588-2f8f15352730"));
+//		printDataSet(System.err, new String[]{"TaxonNameBase", "ReferenceBase"});
 	}
 
+	/**
+	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmEntityDaoBase#saveOrUpdate(eu.etaxonomy.cdm.model.common.CdmBase)}.
+	 */
+	@Ignore
+	@Test
+	@DataSet("CacheStrategyGeneratorTest.xml")
+	@ExpectedDataSet
+	public void testOnSaveOrUpdateAgents() {
+
+		//person
+		Person person1;
+		Person person2;
+		Person person3;person1 = Person.NewInstance();
+		
+		person1.setId(1121);
+		person1.setFirstname("P1FN");
+		person1.setLastname("P1LN");
+		person1.setPrefix("Dr1.");
+		person1.setSuffix("Suff1");
+		
+		person2 = Person.NewInstance();
+		person2.setId(1122);
+		person2.setNomenclaturalTitle("P2NomT");
+		person2.setLastname("P2LN");
+		person2.setFirstname("P2FN");
+		person2.setSuffix("P2Suff");
+		
+		person3 = Person.NewInstance(); //empty person
+		person3.setId(1123);
+//		System.out.println(person1.getTitleCache());
+//		System.out.println(person1.getNomenclaturalTitle());
+//		System.out.println(person2.getTitleCache());
+//		System.out.println(person2.getNomenclaturalTitle());
+//		System.out.println(person3.getTitleCache());
+//		System.out.println(person3.getNomenclaturalTitle());
+		
+		agentDao.saveOrUpdate(person1);
+		agentDao.save(person2);
+		agentDao.saveOrUpdate(person3);
+		
+		//Teams
+		
+		
+		person3 = (Person)agentDao.findByUuid(UUID.fromString("049a3963-c4ea-4047-8588-2f8f15352730"));
+		printDataSet(System.err, new String[]{"AgentBase"});
+		System.out.println("End");
+	}
 	
 }	
 	

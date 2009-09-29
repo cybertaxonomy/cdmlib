@@ -78,7 +78,7 @@ public class CdmDataSourceTest {
 	 */
 	@Test
 	public void testNewMySqlInstanceStringStringStringString() {
-		ICdmDataSource ds = CdmDataSource.NewMySqlInstance(server, database, username, pwd, null);
+		ICdmDataSource ds = CdmDataSource.NewMySqlInstance(server, database, username, pwd);
 		assertNotNull("NewMySqlInstance(String, String, String, String) should not return null ", ds);
 		assertEquals(server, ds.getServer());
 		assertEquals(database, ds.getDatabase());
@@ -121,7 +121,7 @@ public class CdmDataSourceTest {
 	 */
 	@Test
 	public void testNewSqlServer2005InstanceStringStringIntStringString() {
-		ICdmDataSource ds = CdmDataSource.NewSqlServer2005Instance(server, database, port, username, pwd, null);
+		ICdmDataSource ds = CdmDataSource.NewSqlServer2005Instance(server, database, port, username, pwd);
 		assertNotNull("NewSqlServer2005Instance(String, String, String, String) should not return null ", ds);
 		assertEquals(server, ds.getServer());
 		assertEquals(database, ds.getDatabase());

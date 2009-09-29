@@ -52,11 +52,30 @@ public class CdmDataSource extends CdmDataSourceBase {
 	private boolean registerSearchListener = false;
 	private Class<? extends CacheProvider> cacheProviderClass = NoCacheProvider.class;
 
-	public static CdmDataSource NewInstance(DatabaseTypeEnum dbType, String server, String database, int port, String username, String password, NomenclaturalCode code){
-		return new CdmDataSource(dbType, server, database, port, username, password, null, null, code);
+	static NomenclaturalCode code = null;
+	
+	public static CdmDataSource NewInstance(DatabaseTypeEnum dbType, String server, String database, String username, String password){
+		return new CdmDataSource(dbType, server, database, -1, username, password, null, null, null);
+	}
+
+	public static CdmDataSource NewInstance(DatabaseTypeEnum dbType, String server, String database, int port, String username, String password){
+		return new CdmDataSource(dbType, server, database, port, username, password, null, null, null);
 	}
 	
-	static public CdmDataSource  NewMySqlInstance(String server, String database, String username, String password, NomenclaturalCode code){
+	public static CdmDataSource NewInstance(DatabaseTypeEnum dbType, String server, String database, String username, String password , NomenclaturalCode code){
+		return new CdmDataSource(dbType, server, database, -1, username, password, null, null, code);
+	}
+	
+	public static CdmDataSource NewInstance(DatabaseTypeEnum dbType, String server, String database, int port, String username, String password , NomenclaturalCode code){
+		return new CdmDataSource(dbType, server, database, port, username, password, null, null, code);
+	}
+
+	
+	static public CdmDataSource  NewMySqlInstance(String server, String database, String username, String password ){
+		return new CdmDataSource(DatabaseTypeEnum.MySQL, server, database, -1, username, password, null, null, null);
+	}
+	
+	static public CdmDataSource  NewMySqlInstance(String server, String database, String username, String password , NomenclaturalCode code){
 		return new CdmDataSource(DatabaseTypeEnum.MySQL, server, database, -1, username, password, null, null, code);
 	}
 	
@@ -68,10 +87,16 @@ public class CdmDataSource extends CdmDataSourceBase {
 		return new CdmDataSource(DatabaseTypeEnum.SqlServer2005, server, database, -1, username, password, null, null, code);
 	}
 	
-	static public CdmDataSource  NewSqlServer2005Instance(String server, String database, int port, String username, String password, NomenclaturalCode code){
+	static public CdmDataSource  NewSqlServer2005Instance(String server, String database, int port, String username, String password /*, NomenclaturalCode code*/){
 		return new CdmDataSource(DatabaseTypeEnum.SqlServer2005, server, database, port, username, password, null, null, code);
 	}
 
+	
+	/** in work 
+	 * @param code TODO*/
+	static public CdmDataSource  NewH2EmbeddedInstance(String database, String username, String password){
+		return NewH2EmbeddedInstance(database, username, password, null);
+	}
 	/** in work 
 	 * @param code TODO*/
 	static public CdmDataSource  NewH2EmbeddedInstance(String database, String username, String password, NomenclaturalCode code){
