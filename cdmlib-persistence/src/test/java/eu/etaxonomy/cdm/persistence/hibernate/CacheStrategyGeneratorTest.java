@@ -109,32 +109,36 @@ public class CacheStrategyGeneratorTest extends CdmIntegrationTest {
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmEntityDaoBase#saveOrUpdate(eu.etaxonomy.cdm.model.common.CdmBase)}.
 	 */
-	@Ignore
 	@Test
 	@DataSet("CacheStrategyGeneratorTest.xml")
 	@ExpectedDataSet
 	public void testOnSaveOrUpdateAgents() {
 
+//		646dad4b-0f0e-4f5a-b059-8099ad9a6125
+//		ca904533-2a70-49f3-9a0e-5e4bcc12c154
+//		4c4e15e3-3a4f-4505-900a-fae2555ac9e4
+		
 		//person
 		Person person1;
 		Person person2;
 		Person person3;person1 = Person.NewInstance();
 		
-		person1.setId(1121);
+		person1.setUuid(UUID.fromString("646dad4b-0f0e-4f5a-b059-8099ad9a6125"));
 		person1.setFirstname("P1FN");
 		person1.setLastname("P1LN");
 		person1.setPrefix("Dr1.");
 		person1.setSuffix("Suff1");
 		
 		person2 = Person.NewInstance();
-		person2.setId(1122);
+		person2.setUuid(UUID.fromString("ca904533-2a70-49f3-9a0e-5e4bcc12c154"));
 		person2.setNomenclaturalTitle("P2NomT");
 		person2.setLastname("P2LN");
 		person2.setFirstname("P2FN");
 		person2.setSuffix("P2Suff");
 		
 		person3 = Person.NewInstance(); //empty person
-		person3.setId(1123);
+		person3.setUuid(UUID.fromString("4c4e15e3-3a4f-4505-900a-fae2555ac9e4"));
+		
 //		System.out.println(person1.getTitleCache());
 //		System.out.println(person1.getNomenclaturalTitle());
 //		System.out.println(person2.getTitleCache());
@@ -143,7 +147,7 @@ public class CacheStrategyGeneratorTest extends CdmIntegrationTest {
 //		System.out.println(person3.getNomenclaturalTitle());
 		
 		agentDao.saveOrUpdate(person1);
-		agentDao.save(person2);
+		agentDao.saveOrUpdate(person2);
 		agentDao.saveOrUpdate(person3);
 		
 		//Teams
