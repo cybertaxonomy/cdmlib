@@ -77,7 +77,7 @@ public class Datasource {
 			String username = "edit";
 			String password = "";
 			
-			ICdmDataSource dataSource = CdmDataSource.NewInstance(DatabaseTypeEnum.SqlServer2005, "LAPTOPHP", "cdmTest", DatabaseTypeEnum.SqlServer2005.getDefaultPort(), "edit", "", null);
+			ICdmDataSource dataSource = CdmDataSource.NewInstance(DatabaseTypeEnum.SqlServer2005, "LAPTOPHP", "cdmTest", DatabaseTypeEnum.SqlServer2005.getDefaultPort(), "edit", "");
 			
 			appCtr.getDatabaseService().saveDataSource("testSqlServer", dataSource);
 			appCtr.getDatabaseService().connectToDatabase(dbType, server, database, username, password);
@@ -136,7 +136,7 @@ public class Datasource {
 		String username = "edit";
 		String password = "";
 		
-		ICdmDataSource dataSource = CdmDataSource.NewInstance(databaseTypeEnum, server, database, databaseTypeEnum.getDefaultPort(), username, password, null); 
+		ICdmDataSource dataSource = CdmDataSource.NewInstance(databaseTypeEnum, server, database, databaseTypeEnum.getDefaultPort(), username, password); 
 		
 		CdmPersistentDataSource ds = CdmPersistentDataSource.save("testSqlServer", dataSource);
 		try {
@@ -160,7 +160,7 @@ public class Datasource {
 		String username = "edit";
 		String password = "";
 		
-		ICdmDataSource dataSource = CdmDataSource.NewInstance(databaseTypeEnum, server, database, databaseTypeEnum.getDefaultPort(), username, password, null); 
+		ICdmDataSource dataSource = CdmDataSource.NewInstance(databaseTypeEnum, server, database, databaseTypeEnum.getDefaultPort(), username, password); 
 		
 		CdmPersistentDataSource ds = CdmPersistentDataSource.save("PostgreTest", dataSource);
 		try {

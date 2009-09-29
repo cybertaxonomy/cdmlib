@@ -36,8 +36,7 @@ public class TestC3P0Configuration{
 	
 	@Before
 	public void setup() throws DataSourceNotFoundException, TermNotFoundException{
-		ICdmDataSource dataSource = CdmDataSource.NewMySqlInstance("localhost", "test", "", "", NomenclaturalCode.ICBN);
-		
+		CdmDataSource dataSource = CdmDataSource.NewMySqlInstance("localhost", "test", -1, "", "", NomenclaturalCode.ICBN);
 		appController = CdmApplicationController.NewInstance(dataSource, DbSchemaValidation.CREATE);
 	}
 	

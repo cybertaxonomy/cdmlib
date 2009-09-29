@@ -131,7 +131,7 @@ public class TestDatabase {
 			String username = "edit";
 			String password = CdmUtils.readInputLine("Password: ");
 			DbSchemaValidation dbSchemaValidation = DbSchemaValidation.VALIDATE;
-			ICdmDataSource datasource = CdmDataSource.NewMySqlInstance(server, database, username, password, null);
+			ICdmDataSource datasource = CdmDataSource.NewMySqlInstance(server, database, username, password);
 			CdmApplicationController appCtr = CdmApplicationController.NewInstance(datasource, dbSchemaValidation);
 			
 			Rank genus = Rank.GENUS();
@@ -186,7 +186,7 @@ public class TestDatabase {
 			String username = "edit";
 			String password = CdmUtils.readInputLine("Password: ");
 			DbSchemaValidation dbSchemaValidation = DbSchemaValidation.CREATE;
-			ICdmDataSource datasource = CdmDataSource.NewMySqlInstance(server, database, username, password, null);
+			ICdmDataSource datasource = CdmDataSource.NewMySqlInstance(server, database, username, password);
 			CdmApplicationController appCtr = CdmApplicationController.NewInstance(datasource, dbSchemaValidation);
 			
 			Rank genus = Rank.GENUS();
@@ -313,7 +313,7 @@ public class TestDatabase {
 		String dataSourceName = "test";
 		NomenclaturalCode code = NomenclaturalCode.ICZN;
 //		ICdmDataSource dataSource = CdmDataSource.NewH2EmbeddedInstance("test", "sa", "", code);
-		ICdmDataSource dataSource = CdmDataSource.NewMySqlInstance("192.168.2.10", "cdm_test_niels2", "edit", "wp5", code);
+		ICdmDataSource dataSource = CdmDataSource.NewMySqlInstance("192.168.2.10", "cdm_test_niels2", 3306, "edit", "wp5", code);
 		CdmPersistentDataSource.save(dataSourceName, dataSource);
 		
 		try {
