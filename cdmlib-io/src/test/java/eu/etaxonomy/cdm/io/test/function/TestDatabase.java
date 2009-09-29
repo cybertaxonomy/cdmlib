@@ -56,7 +56,7 @@ public class TestDatabase {
 		
 		logger.info("Setting DB " + dbname);
 		String password = AccountStore.readOrStorePassword(dbname, server, username, null);
-		ICdmDataSource datasource = CdmDataSource.NewMySqlInstance(server, dbname, username, password, null);
+		ICdmDataSource datasource = CdmDataSource.NewMySqlInstance(server, dbname, username, password);
 		return datasource;
 	}
 	
