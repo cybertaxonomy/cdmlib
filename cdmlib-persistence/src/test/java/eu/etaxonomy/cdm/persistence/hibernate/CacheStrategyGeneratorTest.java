@@ -93,7 +93,6 @@ public class CacheStrategyGeneratorTest extends CdmIntegrationTest {
 		ref.setTitle("My Book");
 		name2.setNomenclaturalReference(ref);
 		name2.setNomenclaturalMicroReference("44");
-		System.out.println(name.getFullTitleCache());
 		
 		cdmEntityDaoBase.saveOrUpdate(name2);
 		BotanicalName name3 =  (BotanicalName)cdmEntityDaoBase.findByUuid(UUID.fromString("049a3963-c4ea-4047-8588-2f8f15352730"));
