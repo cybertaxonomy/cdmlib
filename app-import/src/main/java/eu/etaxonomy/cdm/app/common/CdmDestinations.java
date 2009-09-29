@@ -262,7 +262,7 @@ public class CdmDestinations {
 	}
 	
 	public static ICdmDataSource localH2(String database, String username, String filePath){
-		return CdmDataSource.NewH2EmbeddedInstance(database, "sa", "",filePath);
+		return CdmDataSource.NewH2EmbeddedInstance(database, "sa", "", filePath, null);
 	}
 	
 	public static ICdmDataSource localH2Salvador(){
@@ -472,7 +472,7 @@ public class CdmDestinations {
 		//establish connection
 		pwd = AccountStore.readOrStorePassword(cdmServer, cdmDB, cdmUserName, pwd);
 		//TODO not MySQL
-		ICdmDataSource destination = CdmDataSource.NewMySqlInstance(cdmServer, cdmDB, port, cdmUserName, pwd);
+		ICdmDataSource destination = CdmDataSource.NewMySqlInstance(cdmServer, cdmDB, port, cdmUserName, pwd, null);
 		return destination;
 
 	}
