@@ -180,7 +180,8 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 		}
 		// is title dirty, i.e. equal NULL?
 		if (titleCache == null){
-			this.titleCache = getTruncatedCache(generateTitle()) ;
+			this.titleCache = generateTitle();
+			this.titleCache = getTruncatedCache(this.titleCache) ;
 		}
 		return titleCache;
 	}

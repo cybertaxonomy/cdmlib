@@ -33,6 +33,7 @@ import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
 import org.springframework.beans.factory.annotation.Configurable;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.strategy.cache.agent.TeamDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.match.IMatchable;
 import eu.etaxonomy.cdm.strategy.match.MatchMode;
@@ -193,6 +194,9 @@ public class Team extends TeamOrPersonBase<Team> {
 		}
 		if (nomenclaturalTitle == null){
 			this.nomenclaturalTitle = cacheStrategy.getNomenclaturalTitle(this);
+		}else{
+			//as long as team members to not inform the team about changes the cache must be created new each time
+			nomenclaturalTitle = cacheStrategy.getNomenclaturalTitle(this);
 		}
 		return nomenclaturalTitle;	
 	}
@@ -220,5 +224,23 @@ public class Team extends TeamOrPersonBase<Team> {
 	public void setNomenclaturalTitle(String nomenclaturalTitle, boolean protectedNomenclaturalTitleCache) {
 		this.nomenclaturalTitle = nomenclaturalTitle;
 		this.protectedNomenclaturalTitleCache = protectedNomenclaturalTitleCache;
+	}
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.agent.TeamOrPersonBase#getTitleCache()
+	 */
+	@Override
+	public String getTitleCache() {
+		isGeneratingTitleCache = true;
+		String result = "";
+		if (isProtectedTitleCache()){
+			result =  this.titleCache;			
+		}else{
+			result = generateTitle();
+			result = replaceEmptyTitleByNomTitle(result);
+			result = getTruncatedCache(result);
+		}
+		isGeneratingTitleCache = false;
+		return result;
 	}
 }

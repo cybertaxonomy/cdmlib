@@ -17,10 +17,14 @@ import eu.etaxonomy.cdm.strategy.StrategyBase;
  *
  */
 public class TeamDefaultCacheStrategy extends StrategyBase implements INomenclaturalAuthorCacheStrategy<Team> {
+	private static final long serialVersionUID = 8375295443642690479L;
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TeamDefaultCacheStrategy.class);
 
 	final static UUID uuid = UUID.fromString("1cbda0d1-d5cc-480f-bf38-40a510a3f223");
 
+	public static final String EMPTY_TEAM = "-empty team-";
+	
 	static public TeamDefaultCacheStrategy NewInstance(){
 		return new TeamDefaultCacheStrategy();
 	}
@@ -49,8 +53,10 @@ public class TeamDefaultCacheStrategy extends StrategyBase implements INomenclat
 		for (Person teamMember : teamMembers){
 			result += teamMember.getNomenclaturalTitle() + " & ";
 		}
-		if (teamMembers.size() > 1){
+		if (teamMembers.size() > 0){
 			result = result.substring(0, result.length() - 3);
+		}else{
+			result = getTitleCache(team);
 		}
 		return result;
 	}
@@ -65,8 +71,10 @@ public class TeamDefaultCacheStrategy extends StrategyBase implements INomenclat
 		for (Person teamMember : teamMembers){
 			result += teamMember.getTitleCache() + " & ";
 		}
-		if (teamMembers.size() > 1){
+		if (teamMembers.size() > 0){
 			result = result.substring(0, result.length() - 3);
+		}else{
+			result = EMPTY_TEAM;
 		}
 		return result;
 	}

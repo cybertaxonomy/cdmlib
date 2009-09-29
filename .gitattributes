@@ -1679,6 +1679,8 @@ cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/taxon/TaxonComparatorTest.java
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/taxon/TaxonNodeTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/taxon/TaxonTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/taxon/TaxonomicTreeTest.java -text
+cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/cache/agent/PersonDefaultCacheStrategyTest.java -text
+cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/cache/agent/TeamDefaultCacheStrategyTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/cache/name/BotanicNameCacheStrategyTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/cache/name/NonViralNameDefaultCacheStrategyTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/cache/name/ZoologicalNameCacheStrategyTest.java -text

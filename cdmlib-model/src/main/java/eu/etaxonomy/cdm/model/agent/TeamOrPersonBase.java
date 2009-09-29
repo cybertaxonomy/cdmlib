@@ -22,6 +22,7 @@ import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.strategy.cache.agent.INomenclaturalAuthorCacheStrategy;
 import eu.etaxonomy.cdm.strategy.match.IMatchable;
 
@@ -49,6 +50,10 @@ public abstract class TeamOrPersonBase<T extends TeamOrPersonBase<?>> extends Ag
 	@Field(index=Index.TOKENIZED)
 	protected String nomenclaturalTitle;
 
+	@Transient
+	@XmlTransient
+	protected boolean isGeneratingTitleCache = false;
+	
 	/**
 	 * Returns the identification string (nomenclatural abbreviation) used in
 	 * nomenclature for this {@link Person person} or this {@link Team team}.
@@ -56,7 +61,11 @@ public abstract class TeamOrPersonBase<T extends TeamOrPersonBase<?>> extends Ag
 	 * @see  INomenclaturalAuthor#getNomenclaturalTitle()
 	 */
 	public String getNomenclaturalTitle() {
-		return nomenclaturalTitle;
+		String result = nomenclaturalTitle;
+		if (CdmUtils.isEmpty(nomenclaturalTitle) && (isGeneratingTitleCache == false)){
+			result = getTitleCache();
+		}
+		return result;
 	}
 
 	/** 
@@ -65,4 +74,32 @@ public abstract class TeamOrPersonBase<T extends TeamOrPersonBase<?>> extends Ag
 	public void setNomenclaturalTitle(String nomenclaturalTitle) {
 		this.nomenclaturalTitle = nomenclaturalTitle;
 	}
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.IdentifiableEntity#getTitleCache()
+	 */
+	@Override
+	public String getTitleCache() {
+		isGeneratingTitleCache = true;
+		String result = super.getTitleCache();
+		result = replaceEmptyTitleByNomTitle(result);
+		isGeneratingTitleCache = false;
+		return result;
+	}
+
+	/**
+	 * @param result
+	 * @return
+	 */
+	protected String replaceEmptyTitleByNomTitle(String result) {
+		if (CdmUtils.isEmpty(result)){
+			result = nomenclaturalTitle;
+		}
+		if (CdmUtils.isEmpty(result)){
+			result = super.getTitleCache();
+		}
+		return result;
+	}
+	
+	
 }
