@@ -31,6 +31,7 @@ public enum ParserProblem {
 	UnparsableAuthorPart(ERROR()),
 	OldInfraSpeciesNotSupported(ERROR()),
 	RankNotSupported(ERROR()),
+	NewCombinationHasPublication(WARNING()),
 	;
 	
 	//logger.warn("ICNCP parsing not yet implemented");
@@ -73,6 +74,8 @@ public enum ParserProblem {
 			return "name not parsable - old infraspecific marker not supported by parser";
 		}else if (this == RankNotSupported){
 			return "rank not supported by parser";
+		}else if (this == NewCombinationHasPublication){
+			return "zool. new combination should not have a nomencl. reference";
 		}else{
 			return "unknown parser problem";
 		}

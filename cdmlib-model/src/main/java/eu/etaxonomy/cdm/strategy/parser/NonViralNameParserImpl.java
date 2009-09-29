@@ -14,6 +14,7 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IParsable;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.name.BacterialName;
@@ -236,7 +237,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 		Matcher onlyNameMatcher = getMatcher (localFullName, fullReferenceString);
 		Matcher onlySimpleNameMatcher = getMatcher (localSimpleName, fullReferenceString);
 		
-		if (nameAndRefSeparatorMatcher.find()){  
+		if (nameAndRefSeparatorMatcher.find()){
 			makeNameWithReference(nameToBeFilled, fullReferenceString, nameAndRefSeparatorMatcher, rank, makeEmpty);
 		}else if (onlyNameMatcher.matches()){
 			makeEmpty = false;
@@ -316,7 +317,20 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 		int oldProblemEnds = nameToBeFilled.getProblemEnds();
 		parseFullName(nameToBeFilled, name, rank, makeEmpty);
 	    nameToBeFilled.setProblemEnds(oldProblemEnds);
-		parseReference(nameToBeFilled, referenceString, isInReference); 
+		
+		//zoological new combinations should not have a nom. reference to be parsed
+	    if (nameToBeFilled.isInstanceOf(ZoologicalName.class)){
+			ZoologicalName zooName = CdmBase.deproxy(nameToBeFilled, ZoologicalName.class);
+			//is name new combination?
+			if (zooName.getBasionymAuthorTeam() != null || zooName.getOriginalPublicationYear() != null){
+				ParserProblem parserProblem = ParserProblem.NewCombinationHasPublication;
+				zooName.addParsingProblem(parserProblem);
+				nameToBeFilled.setProblemStarts((nameToBeFilled.getProblemStarts()> -1) ? nameToBeFilled.getProblemStarts(): name.length());
+				nameToBeFilled.setProblemEnds(Math.max(fullReferenceString.length(), nameToBeFilled.getProblemEnds()));
+			}
+		}
+		
+	    parseReference(nameToBeFilled, referenceString, isInReference); 
 	    INomenclaturalReference ref = (INomenclaturalReference)nameToBeFilled.getNomenclaturalReference();
 
 	    //problem start
@@ -402,47 +416,67 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 			strReference = strReference.substring(0, strReference.length() - endPart.length());
 		}
 		
-		String pDetailYear = ".*" + detailSeparator + detail + fWs + yearSeperator + fWs + yearPhrase + fWs + end;
-		Matcher detailYearMatcher = getMatcher(pDetailYear, strReference);
+//		String pDetailYear = ".*" + detailSeparator + detail + fWs + yearSeperator + fWs + yearPhrase + fWs + end;
+//		Matcher detailYearMatcher = getMatcher(pDetailYear, strReference);
 		
-		//if (referencePattern.matcher(reference).matches() ){
-		if (detailYearMatcher.matches() ){
+		String strReferenceWithYear = strReference;
+		//year
+		String yearPart = null;
+		String pYearPhrase = yearSeperator + fWs + yearPhrase + fWs + end;
+		Matcher yearPhraseMatcher = getMatcher(pYearPhrase, strReference);
+		if (yearPhraseMatcher.find()){
+			yearPart = yearPhraseMatcher.group(0);
+			strReference = strReference.substring(0, strReference.length() - yearPart.length());
+			yearPart = yearPart.replaceFirst(pStart + yearSeperator, "").trim();
+		}else{
+			if (nameToBeFilled.isInstanceOf(ZoologicalName.class)){
+				ZoologicalName zooName = CdmBase.deproxy(nameToBeFilled, ZoologicalName.class);
+				yearPart = String.valueOf(zooName.getPublicationYear());
+				//continue
+			}else{
+				ref = makeDetailYearUnparsable(nameToBeFilled,strReference);
+				ref.setDatePublished(TimePeriod.parseString(yearPart));
+				return;
+			}
+		}
+		
 			
-			//year
-			String yearPart = null;
-			String pYearPhrase = yearSeperator + fWs + yearPhrase + fWs + end;
-			Matcher yearPhraseMatcher = getMatcher(pYearPhrase, strReference);
-			if (yearPhraseMatcher.find()){
-				yearPart = yearPhraseMatcher.group(0);
-				strReference = strReference.substring(0, strReference.length() - yearPart.length());
-				yearPart = yearPart.replaceFirst(pStart + yearSeperator, "").trim();
-			}
-			
-			//detail
-			String pDetailPhrase = detailSeparator + fWs + detail + fWs + end;
-			Matcher detailPhraseMatcher = getMatcher(pDetailPhrase, strReference);
-			if (detailPhraseMatcher.find()){
-				String detailPart = detailPhraseMatcher.group(0);
-				strReference = strReference.substring(0, strReference.length() - detailPart.length());
-				detailPart = detailPart.replaceFirst(pStart + detailSeparator, "").trim();
-				nameToBeFilled.setNomenclaturalMicroReference(detailPart);
-			}
-			//parse title and author
-			ref = parseReferenceTitle(strReference, yearPart, isInReference);
-			if (ref.hasProblem()){
-				ref.setTitleCache( (isInReference?"in ":"") +  originalStrReference);
-			}
-			nameToBeFilled.setNomenclaturalReference((ReferenceBase)ref);
-			int end = Math.min(strReference.length(), ref.getProblemEnds());
-			ref.setProblemEnds(end);
-	    }else{  //detail and year not parsable
-	    	ref = Generic.NewInstance();
-	    	ref.setTitleCache(strReference);
-	    	ref.setProblemEnds(strReference.length());
-	    	ref.addParsingProblem(ParserProblem.CheckDetailOrYear);
-	    	nameToBeFilled.addParsingProblem(ParserProblem.CheckDetailOrYear);
-	    	nameToBeFilled.setNomenclaturalReference((ReferenceBase)ref);
-	    }
+		//detail
+		String pDetailPhrase = detailSeparator + fWs + detail + fWs + end;
+		Matcher detailPhraseMatcher = getMatcher(pDetailPhrase, strReference);
+		if (detailPhraseMatcher.find()){
+			String detailPart = detailPhraseMatcher.group(0);
+			strReference = strReference.substring(0, strReference.length() - detailPart.length());
+			detailPart = detailPart.replaceFirst(pStart + detailSeparator, "").trim();
+			nameToBeFilled.setNomenclaturalMicroReference(detailPart);
+		}else{
+			makeDetailYearUnparsable(nameToBeFilled, strReferenceWithYear);
+			return;
+		}
+		//parse title and author
+		ref = parseReferenceTitle(strReference, yearPart, isInReference);
+		if (ref.hasProblem()){
+			ref.setTitleCache( (isInReference?"in ":"") +  originalStrReference);
+		}
+		nameToBeFilled.setNomenclaturalReference((ReferenceBase)ref);
+		int end = Math.min(strReference.length(), ref.getProblemEnds());
+		ref.setProblemEnds(end);
+	}
+
+	/**
+	 * @param nameToBeFilled
+	 * @param strReference
+	 * @return 
+	 */
+	private INomenclaturalReference makeDetailYearUnparsable(NonViralName nameToBeFilled, String strReference) {
+		INomenclaturalReference ref;
+		ref = Generic.NewInstance();
+		ref.setTitleCache(strReference);
+		ref.setProblemEnds(strReference.length());
+		ref.addParsingProblem(ParserProblem.CheckDetailOrYear);
+		nameToBeFilled.addParsingProblem(ParserProblem.CheckDetailOrYear);
+		nameToBeFilled.setNomenclaturalReference((ReferenceBase)ref);
+		return ref;
 	}
 		
 	/**
@@ -543,32 +577,14 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 		if ("".equals(year.trim())){
 			return true;
 		}
-		String[] years = year.split("-");
-		Partial startDate = null;
-		Partial endDate = null;
-		try{
-			if (years.length < 1){
-				throw new StringNotParsableException();
-			}else {
-				startDate = parseSingleDate(years[0]);
-				if (years.length > 1){
-					endDate = parseSingleDate(years[1]);
-					if (years.length > 2){
-						throw new StringNotParsableException();
-					}
-				}
-			}
-		}catch(StringNotParsableException npe){
-			result = false;
-		}
-		TimePeriod datePublished = TimePeriod.NewInstance(startDate, endDate);
+		TimePeriod datePublished = TimePeriod.parseString(year);
 		
 		if (nomRef instanceof BookSection){
 			handleBookSectionYear((BookSection)nomRef, datePublished);
 		}else if (nomRef instanceof ReferenceBase){
 			((ReferenceBase)nomRef).setDatePublished(datePublished);	
 		}else{
-			throw new ClassCastException("nom Ref is not of type StrictReferenceBase but " + (nomRef == null? "(null)" : nomRef.getClass()));
+			throw new ClassCastException("nom Ref is not of type ReferenceBase but " + (nomRef == null? "(null)" : nomRef.getClass()));
 		}
 		return result;	
 	}

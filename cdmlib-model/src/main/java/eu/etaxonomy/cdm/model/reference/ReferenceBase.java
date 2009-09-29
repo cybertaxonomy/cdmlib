@@ -460,7 +460,8 @@ public abstract class ReferenceBase<S extends IReferenceBaseCacheStrategy> exten
 	 */
 	@Transient
 	public String getYear(){
-		if (this.getDatePublished() != null && this.getDatePublished().getStart() != null){
+		TimePeriod datePublished = this.getDatePublished();
+		if (datePublished != null ){
 			return getDatePublished().getYear();
 		}else{
 			return null;

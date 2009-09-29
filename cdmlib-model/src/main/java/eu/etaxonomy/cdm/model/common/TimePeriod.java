@@ -421,14 +421,14 @@ public class TimePeriod implements Cloneable, Serializable {
 	//case "1806"[1807];
 	private static final Pattern uncorrectYearPatter =  Pattern.compile("\"\\d{4}\"\\s*\\[\\d{4}\\]");
 	//case fl. 1806 or c. 1806 or fl. 1806?
-	private static final Pattern prefixedYearPattern =  Pattern.compile("(fl|c)\\.\\s*\\d{4}(-\\d{4})?\\??");
+	private static final Pattern prefixedYearPattern =  Pattern.compile("(fl|c)\\.\\s*\\d{4}(\\s*-\\s*\\d{4})?\\??");
 	//standard
-	private static final Pattern standardPattern =  Pattern.compile("\\s*\\d{2,4}(-\\d{2,4})?");
+	private static final Pattern standardPattern =  Pattern.compile("\\s*\\d{2,4}(\\s*-\\s*\\d{2,4})?");
 	
 	
 	public static TimePeriod parseString(String strPeriod) {
 		//TODO move to parser class
-		//TODO until now only quick and dirty and wrong
+		//TODO until now only quick and dirty (and partly wrong)
 		TimePeriod result = null;
 		if (strPeriod == null){
 			return result;
@@ -463,11 +463,12 @@ public class TimePeriod implements Cloneable, Serializable {
 				try {
 					//start
 					if (! CdmUtils.isEmpty(years[0])){
-						dtStart = parseSingleDate(years[0]);
+						dtStart = parseSingleDate(years[0].trim());
 					}
 					
 					//end
 					if (years.length >= 2 && ! CdmUtils.isEmpty(years[1])){
+						years[1] = years[1].trim();
 						if (years[1].length()==2 && dtStart != null && dtStart.isSupported(DateTimeFieldType.year())){
 							years[1] = String.valueOf(dtStart.get(DateTimeFieldType.year())/100) + years[1];
 						}
@@ -487,6 +488,7 @@ public class TimePeriod implements Cloneable, Serializable {
 	protected static Partial parseSingleDate(String singleDateString) throws IllegalArgumentException{
 		//FIXME until now only quick and dirty and incomplete
 		Partial partial =  new Partial();
+		singleDateString = singleDateString.trim();
 		if (CdmUtils.isNumeric(singleDateString)){
 			try {
 				Integer year = Integer.valueOf(singleDateString.trim());
