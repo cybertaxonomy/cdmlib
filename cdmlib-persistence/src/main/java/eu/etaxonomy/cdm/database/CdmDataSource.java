@@ -95,11 +95,18 @@ public class CdmDataSource extends CdmDataSourceBase {
 	/** in work 
 	 * @param code TODO*/
 	static public CdmDataSource  NewH2EmbeddedInstance(String database, String username, String password){
-		return NewH2EmbeddedInstance(database, username, password, null);
+		return NewH2EmbeddedInstance(database, username, password, null,  null);
 	}
+	
 	/** in work 
 	 * @param code TODO*/
 	static public CdmDataSource  NewH2EmbeddedInstance(String database, String username, String password, NomenclaturalCode code){
+		return NewH2EmbeddedInstance(database, username, password, null, code);
+	}
+	
+	/** in work 
+	 * @param code TODO*/
+	static public CdmDataSource  NewH2EmbeddedInstance(String database, String username, String password, String filePath, NomenclaturalCode code){
 		//FIXME in work
 		int port = -1;
 		H2Mode mode = H2Mode.EMBEDDED;
