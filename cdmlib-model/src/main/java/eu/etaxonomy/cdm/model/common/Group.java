@@ -37,10 +37,6 @@ import org.springframework.security.GrantedAuthority;
 @Entity
 @Table(name = "PermissionGroup")
 public class Group extends CdmBase {
-	
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 7216686200093054648L;
 	
 	@XmlElement(name = "Name")
