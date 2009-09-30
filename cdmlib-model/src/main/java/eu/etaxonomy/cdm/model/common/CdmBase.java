@@ -23,6 +23,8 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Min;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -82,15 +84,18 @@ public abstract class CdmBase implements Serializable, ICdmBase{
 	@GeneratedValue(generator = "system-increment")
 	@DocumentId
 	@Match(MatchMode.IGNORE)
+	@NotNull
+	@Min(0)
 	private int id;
     
 	@XmlAttribute(required = true)
     @XmlJavaTypeAdapter(UUIDAdapter.class)
     @XmlID
 	@Type(type="uuidUserType")
-	@NaturalId
+	@NaturalId // This has the effect of placing a "unique" constraint on the database column
 	@Column(length=36)
 	@Match(MatchMode.IGNORE)
+	@NotNull
 	protected UUID uuid;
 	
 	@XmlElement (name = "Created", type= String.class)

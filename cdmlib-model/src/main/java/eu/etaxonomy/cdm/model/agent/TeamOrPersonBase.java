@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.model.agent;
 
 import javax.persistence.Entity;
 import javax.persistence.Transient;
+import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -21,9 +22,11 @@ import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
+import org.hibernate.validation.constraints.NotEmpty;
 
 import eu.etaxonomy.cdm.strategy.cache.agent.INomenclaturalAuthorCacheStrategy;
 import eu.etaxonomy.cdm.strategy.match.IMatchable;
+import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 
 
 /**
@@ -47,6 +50,8 @@ public abstract class TeamOrPersonBase<T extends TeamOrPersonBase<?>> extends Ag
 
 	@XmlElement(name="NomenclaturalTitle")
 	@Field(index=Index.TOKENIZED)
+	@NullOrNotEmpty
+    @Size(max = 255)
 	protected String nomenclaturalTitle;
 
 	/**

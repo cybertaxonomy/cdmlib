@@ -17,6 +17,8 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -33,10 +35,12 @@ import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
+import org.hibernate.validation.constraints.NotEmpty;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.common.IdentifiableEntityDefaultCacheStrategy;
+import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 
 /**
  * This class represents public or private institutions.
@@ -70,10 +74,14 @@ public class Institution extends AgentBase<IIdentifiableEntityCacheStrategy<Inst
 	
     @XmlElement(name = "Code")
     @Field(index=Index.TOKENIZED)
+    @NullOrNotEmpty
+    @Size(max = 255)
 	private String code;
 	
     @XmlElement(name = "Name")
     @Field(index=Index.TOKENIZED)
+    @NullOrNotEmpty
+    @Size(max = 255)
 	private String name;
 	
     @XmlElementWrapper(name = "Types")
@@ -81,6 +89,7 @@ public class Institution extends AgentBase<IIdentifiableEntityCacheStrategy<Inst
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToMany(fetch = FetchType.LAZY)
+    @NotNull
 	private Set<InstitutionType> types = new HashSet<InstitutionType>();
 	
     @XmlElement(name = "IsPartOf")
@@ -115,6 +124,9 @@ public class Institution extends AgentBase<IIdentifiableEntityCacheStrategy<Inst
 	 * @see     InstitutionType
 	 */
 	public Set<InstitutionType> getTypes(){
+		if(types == null) {
+			this.types = new HashSet<InstitutionType>();
+		}
 		return this.types;
 	}
 	

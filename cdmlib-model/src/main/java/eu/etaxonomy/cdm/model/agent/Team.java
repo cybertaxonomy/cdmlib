@@ -16,6 +16,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToMany;
 import javax.persistence.Transient;
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -85,6 +86,7 @@ public class Team extends TeamOrPersonBase<Team> {
 	@ManyToMany(fetch = FetchType.LAZY)
 	@Cascade(CascadeType.SAVE_UPDATE)
 	@Match(MatchMode.MATCH)
+	@NotNull
 	private List<Person> teamMembers = new ArrayList<Person>();
 	
 	
@@ -109,6 +111,9 @@ public class Team extends TeamOrPersonBase<Team> {
 	 * A person may be a member of several distinct teams. 
 	 */
 	public List<Person> getTeamMembers(){
+		if(teamMembers == null) {
+			this.teamMembers = new ArrayList<Person>();
+		}
 		return this.teamMembers;
 	}
 	

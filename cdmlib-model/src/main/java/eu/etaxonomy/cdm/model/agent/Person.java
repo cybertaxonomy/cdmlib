@@ -18,6 +18,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -35,6 +37,8 @@ import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
+import org.hibernate.validation.constraints.NotEmpty;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import eu.etaxonomy.cdm.model.common.Keyword;
@@ -42,6 +46,7 @@ import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.strategy.cache.agent.PersonDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.match.Match;
 import eu.etaxonomy.cdm.strategy.match.MatchMode;
+import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 
 /**
  * This class represents human beings, living or dead.<BR>
@@ -84,29 +89,39 @@ public class Person extends TeamOrPersonBase<Person>{
 
     @XmlElement(name = "Prefix")
     @Field(index=Index.TOKENIZED)
+    @NullOrNotEmpty
+    @Size(max = 255)
 	private String prefix;
     
     @XmlElement(name = "FirstName")
     @Field(index=Index.TOKENIZED)
+    @NullOrNotEmpty
+    @Size(max = 255)
 	private String firstname;
 	
     @XmlElement(name = "LastName")
     @Field(index=Index.TOKENIZED)
+    @NullOrNotEmpty
+    @Size(max = 255)
 	private String lastname;
 	
     @XmlElement(name = "Suffix")
     @Field(index=Index.TOKENIZED)
+    @NullOrNotEmpty
+    @Size(max = 255)
 	private String suffix;
 	
     @XmlElement(name = "Lifespan")
     @IndexedEmbedded
     @Match(value=MatchMode.EQUAL_OR_ONE_NULL)
+    @NotNull
 	private TimePeriod lifespan = TimePeriod.NewInstance();
 	
     @XmlElementWrapper(name = "InstitutionalMemberships")
     @XmlElement(name = "InstitutionalMembership")
     @OneToMany(fetch=FetchType.LAZY, mappedBy = "person")
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
+	@NotNull
 	protected Set<InstitutionalMembership> institutionalMemberships = new HashSet<InstitutionalMembership>();
 	
     @XmlElementWrapper(name = "Keywords")
@@ -119,6 +134,7 @@ public class Person extends TeamOrPersonBase<Person>{
 	        joinColumns=@JoinColumn(name="person_fk"),
 	        inverseJoinColumns=@JoinColumn(name="keyword_fk")
 	)
+	@NotNull
 	private Set<Keyword> keywords = new HashSet<Keyword>();
 
 	/** 
@@ -184,6 +200,9 @@ public class Person extends TeamOrPersonBase<Person>{
 	 * @see     InstitutionalMembership
 	 */
 	public Set<InstitutionalMembership> getInstitutionalMemberships(){
+		if(institutionalMemberships == null) {
+			this.institutionalMemberships = new HashSet<InstitutionalMembership>();
+		}
 		return this.institutionalMemberships;
 	}
 
@@ -237,6 +256,9 @@ public class Person extends TeamOrPersonBase<Person>{
 	 * @see 	Keyword
 	 */
 	public Set<Keyword> getKeywords(){
+		if(keywords == null) {
+			this.keywords = new HashSet<Keyword>();
+		}
 		return this.keywords;
 	}
 
@@ -337,6 +359,9 @@ public class Person extends TeamOrPersonBase<Person>{
 	 * @see  eu.etaxonomy.cdm.model.common.TimePeriod
 	 */
 	public TimePeriod getLifespan(){
+		if(lifespan == null) {
+			this.lifespan = TimePeriod.NewInstance(new DateTime(),new DateTime());
+		}
 		return this.lifespan;
 	}
 	/**
