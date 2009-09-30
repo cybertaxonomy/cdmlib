@@ -57,32 +57,52 @@
 
   <xs:element name="PublicationBase" type="reference:PublicationBase"/>
 
-  <xs:element name="RelationshipBase" type="reference:ReferenceBase"/>
+  <xs:element name="RelationshipBase" type="reference:Reference"/>
 
   <xs:element name="Report" type="reference:Report"/>
 
   <xs:element name="SectionBase" type="reference:SectionBase"/>
 
-  <xs:element name="StrictReferenceBase" type="reference:StrictReferenceBase"/>
+  <!-- <xs:element name="StrictReferenceBase" type="reference:StrictReferenceBase"/> --> 
 
   <xs:element name="Thesis" type="reference:Thesis"/>
 
   <xs:element name="WebPage" type="reference:WebPage"/>
 
-  <xs:complexType name="ReferenceBase" abstract="true">
+  <xs:complexType name="Reference" abstract="true">
     <xs:complexContent>
       <xs:extension base="media:IdentifiableMediaEntity">
         <xs:sequence>
-          <xs:element name="URI" type="xs:anyURI" minOccurs="0"/>
+          <xs:element name="URI" type="xs:string" minOccurs="0"/>
           <xs:element name="IsNomenclaturallyRelevant" type="xs:boolean"/>
           <xs:element name="AuthorTeam" type="xs:IDREF" minOccurs="0"/>
+          <xs:element name="Abstract" type="xs:string" minOccurs="0"/>
+          <xs:element name="Title" type="xs:string" minOccurs="0"/>
+          <xs:element name="Editor" type="xs:string" minOccurs="0"/>
+          <xs:element name="Volume" type="xs:string" minOccurs="0"/>
+          <xs:element name="Pages" type="xs:string" minOccurs="0"/>
+          <xs:element name="Series" type="xs:string" minOccurs="0"/>
+          <xs:element name="Edition" type="xs:string" minOccurs="0"/>
+          <xs:element name="ISBN" type="xs:string" minOccurs="0"/>
+          <xs:element name="ISSN" type="xs:string" minOccurs="0"/>
+          <xs:element name="SeriesPart" type="xs:string" minOccurs="0"/>
+          <xs:element name="DatePublished" type="common:TimePeriod" minOccurs="0"/>
+          <xs:element name="Publisher" type="xs:string" minOccurs="0"/>
+          <xs:element name="PlacePublished" type="xs:string" minOccurs="0"/>
+          <xs:element name="Institution" type="xs:IDREF" minOccurs="0"/>
+          <xs:element name="School" type="xs:IDREF" minOccurs="0"/>
+          <xs:element name="Organization" type="xs:string" minOccurs="0"/>
+          <xs:element name="InReference" type="xs:IDREF" minOccurs="0"/>
         </xs:sequence>
+        <xs:attribute name="type" type="reference:referenceType"/>
         <xs:attribute name="parsingProblem" type="xs:int" use="required"/>
         <xs:attribute name="problemStarts" type="xs:int" use="required"/>
         <xs:attribute name="problemEnds" type="xs:int" use="required"/>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
+  
+  
 
   <xs:complexType name="BibtexEntryType">
     <xs:complexContent>
@@ -94,20 +114,15 @@
 
   <xs:complexType name="Article">
     <xs:complexContent>
-      <xs:extension base="reference:StrictReferenceBase">
-        <xs:sequence>
-          <xs:element name="Volume" type="xs:string" minOccurs="0"/>
-          <xs:element name="Pages" type="xs:string" minOccurs="0"/>
-          <xs:element name="Series" type="xs:string" minOccurs="0"/>
-          <xs:element name="InJournal" type="xs:IDREF" minOccurs="0"/>
-        </xs:sequence>
+      <xs:extension base="reference:Reference">
+        <xs:all/>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
 
-  <xs:complexType name="StrictReferenceBase" abstract="true">
+ <!-- <xs:complexType name="StrictReferenceBase" abstract="true">
     <xs:complexContent>
-      <xs:extension base="reference:ReferenceBase">
+      <xs:extension base="reference:Reference">
         <xs:sequence>
           <xs:element name="Title" type="xs:string" minOccurs="0"/>
           <xs:element name="DatePublished" type="common:TimePeriod" minOccurs="0"/>
@@ -115,24 +130,20 @@
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
+  -->
 
   <xs:complexType name="Journal">
     <xs:complexContent>
       <xs:extension base="reference:PublicationBase">
-        <xs:sequence>
-          <xs:element name="ISSN" type="xs:string" minOccurs="0"/>
-        </xs:sequence>
+        <xs:all/>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
 
   <xs:complexType name="PublicationBase" abstract="true">
     <xs:complexContent>
-      <xs:extension base="reference:StrictReferenceBase">
-        <xs:sequence>
-          <xs:element name="Publisher" type="xs:string" minOccurs="0"/>
-          <xs:element name="PlacePublished" type="xs:string" minOccurs="0"/>
-        </xs:sequence>
+      <xs:extension base="reference:Reference">
+        <xs:all/>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
@@ -140,24 +151,17 @@
   <xs:complexType name="Book">
     <xs:complexContent>
       <xs:extension base="reference:PrintedUnitBase">
-        <xs:sequence>
-          <xs:element name="Edition" type="xs:string" minOccurs="0"/>
-          <xs:element name="ISBN" type="xs:string" minOccurs="0"/>
-        </xs:sequence>
+        <xs:all/>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
+  
+  
 
   <xs:complexType name="PrintedUnitBase" abstract="true">
     <xs:complexContent>
       <xs:extension base="reference:PublicationBase">
-        <xs:sequence>
-          <xs:element name="Editor" type="xs:string" minOccurs="0"/>
-          <xs:element name="Volume" type="xs:string" minOccurs="0"/>
-          <xs:element name="Pages" type="xs:string" minOccurs="0"/>
-          <xs:element name="InSeries" type="xs:IDREF" minOccurs="0"/>
-          <xs:element name="SeriesPart" type="xs:string" minOccurs="0"/>
-        </xs:sequence>
+        <xs:all/>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
@@ -165,9 +169,7 @@
   <xs:complexType name="PrintSeries">
     <xs:complexContent>
       <xs:extension base="reference:PublicationBase">
-        <xs:sequence>
-          <xs:element name="Series" type="xs:string" minOccurs="0"/>
-        </xs:sequence>
+        <xs:all/>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
@@ -175,19 +177,15 @@
   <xs:complexType name="BookSection">
     <xs:complexContent>
       <xs:extension base="reference:SectionBase">
-        <xs:sequence>
-          <xs:element name="InBook" type="xs:IDREF" minOccurs="0"/>
-        </xs:sequence>
+        <xs:all/>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
 
   <xs:complexType name="SectionBase" abstract="true">
     <xs:complexContent>
-      <xs:extension base="reference:StrictReferenceBase">
-        <xs:sequence>
-          <xs:element name="Pages" type="xs:string" minOccurs="0"/>
-        </xs:sequence>
+      <xs:extension base="reference:Reference">
+        <xs:all/>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
@@ -210,15 +208,8 @@
 
   <xs:complexType name="Generic">
     <xs:complexContent>
-      <xs:extension base="reference:StrictReferenceBase">
-        <xs:sequence>
-          <xs:element name="Publisher" type="xs:string" minOccurs="0"/>
-          <xs:element name="PlacePublished" type="xs:string" minOccurs="0"/>
-          <xs:element name="Editor" type="xs:string" minOccurs="0"/>
-          <xs:element name="Volume" type="xs:string" minOccurs="0"/>
-          <xs:element name="Pages" type="xs:string" minOccurs="0"/>
-          <xs:element name="Series" type="xs:string" minOccurs="0"/>          
-        </xs:sequence>
+      <xs:extension base="reference:PublicationBase">
+        <xs:all/>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
@@ -226,9 +217,7 @@
   <xs:complexType name="InProceedings">
     <xs:complexContent>
       <xs:extension base="reference:SectionBase">
-        <xs:sequence>
-          <xs:element name="InProceedings" type="xs:IDREF" minOccurs="0"/>
-        </xs:sequence>
+        <xs:all/>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
@@ -236,9 +225,7 @@
   <xs:complexType name="Proceedings">
     <xs:complexContent>
       <xs:extension base="reference:PrintedUnitBase">
-        <xs:sequence>
-          <xs:element name="Organization" type="xs:string" minOccurs="0"/>
-        </xs:sequence>
+        <xs:all/>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
@@ -253,7 +240,7 @@
 
   <xs:complexType name="Patent">
     <xs:complexContent>
-      <xs:extension base="reference:StrictReferenceBase">
+      <xs:extension base="reference:Reference">
         <xs:sequence/>
       </xs:extension>
     </xs:complexContent>
@@ -261,7 +248,7 @@
 
   <xs:complexType name="PersonalCommunication">
     <xs:complexContent>
-      <xs:extension base="reference:StrictReferenceBase">
+      <xs:extension base="reference:Reference">
         <xs:sequence/>
       </xs:extension>
     </xs:complexContent>
@@ -270,9 +257,7 @@
   <xs:complexType name="Report">
     <xs:complexContent>
       <xs:extension base="reference:PublicationBase">
-        <xs:sequence>
-          <xs:element name="Institution" type="xs:IDREF" minOccurs="0"/>
-        </xs:sequence>
+        <xs:all/>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
@@ -280,9 +265,7 @@
   <xs:complexType name="Thesis">
     <xs:complexContent>
       <xs:extension base="reference:PublicationBase">
-        <xs:sequence>
-          <xs:element name="School" type="xs:IDREF" minOccurs="0"/>
-        </xs:sequence>
+        <xs:all/>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
@@ -294,5 +277,27 @@
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
+  
+  <xs:simpleType name="referenceType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Article"/>
+      <xs:enumeration value="Book"/>
+      <xs:enumeration value="Book Section"/>
+      <xs:enumeration value="CD or DVD"/>
+      <xs:enumeration value="Database"/>
+      <xs:enumeration value="Generic"/>
+      <xs:enumeration value="Inproceedings"/>
+      <xs:enumeration value="Journal"/>
+      <xs:enumeration value="Map"/>
+      <xs:enumeration value="Patent"/>
+      <xs:enumeration value="Personal Communication"/>
+      <xs:enumeration value="Print Series"/>
+      <xs:enumeration value="Proceedings"/>
+      <xs:enumeration value="Report"/>
+      <xs:enumeration value="Thesis"/>
+      <xs:enumeration value="Web Page"/>
+    </xs:restriction>
+  </xs:simpleType>
+  
 </xs:schema>
 

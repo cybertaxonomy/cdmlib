@@ -162,9 +162,9 @@
       <xs:extension base="common:DefinedTermBase">
         <xs:sequence>
           <xs:element ref="common:KindOf" minOccurs="0"/>
-          <xs:element ref="common:Generalizations" minOccurs="0"/>
+          <xs:element ref="common:Generalizations"/>
           <xs:element ref="common:PartOf" minOccurs="0"/>
-          <xs:element ref="common:Includes" minOccurs="0"/>
+          <xs:element ref="common:Includes"/>
           <xs:element name="SupportsTextData" type="xs:boolean"/>
           <xs:element name="SupportsQuantitativeData" type="xs:boolean"/>
           <xs:element name="SupportsDistribution" type="xs:boolean"/>
@@ -173,7 +173,7 @@
           <xs:element name="SupportsCommonTaxonName" type="xs:boolean"/>
           <xs:element name="SupportsCategoricalData" type="xs:boolean"/>
           <xs:element name="RecommendedModifierEnumerations" minOccurs="0">
-           <xs:complexType>
+            <xs:complexType>
               <xs:sequence>
                 <xs:element name="RecommendedModifierEnumeration" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
               </xs:sequence>
@@ -193,7 +193,7 @@
               </xs:sequence>
             </xs:complexType>
           </xs:element>
-           <xs:element name="RecommendedMeasurementUnits" minOccurs="0">
+          <xs:element name="RecommendedMeasurementUnits" minOccurs="0">
             <xs:complexType>
               <xs:sequence>
                 <xs:element name="RecommendedMeasurementUnit" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
@@ -300,7 +300,7 @@
           <xs:element name="DescriptiveSystem" minOccurs="0">
             <xs:complexType>
               <xs:sequence>
-                <xs:element ref="description:Feature" minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element name="Feature" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
               </xs:sequence>
             </xs:complexType>
           </xs:element>
@@ -308,7 +308,7 @@
             <xs:complexType>
               <xs:sequence>
                 <xs:choice minOccurs="0" maxOccurs="unbounded">
-                  <xs:element ref="description:CategoricalData"/>
+                  <xs:element name="CategorialData" type="description:CategoricalData"/>
                   <xs:element ref="description:CommonTaxonName"/>
                   <xs:element ref="description:Distribution"/>
                   <xs:element ref="description:IndividualsAssociation"/>
@@ -376,13 +376,13 @@
 
   <xs:complexType name="DescriptionElementBase" abstract="true">
     <xs:complexContent>
-      <xs:extension base="common:ReferencedEntityBase">
+      <xs:extension base="common:AnnotatableEntity">
         <xs:sequence>
-          <xs:element name="Feature" type="xs:IDREF" minOccurs="0"/>
+          <xs:element ref="description:Feature" minOccurs="0"/>
           <xs:element name="Modifiers" minOccurs="0">
             <xs:complexType>
               <xs:sequence>
-                <xs:element name="Modifier" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element ref="description:Modifier" minOccurs="0" maxOccurs="unbounded"/>
               </xs:sequence>
             </xs:complexType>
           </xs:element>
@@ -395,7 +395,13 @@
             </xs:complexType>
           </xs:element>
           <xs:element name="InDescription" type="xs:IDREF" minOccurs="0"/>
-          <xs:element name="nameUsedInReference" type="xs:IDREF" minOccurs="0"/>
+          <xs:element name="Sources" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="OriginalSource" type="common:DescriptionElementSource" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>

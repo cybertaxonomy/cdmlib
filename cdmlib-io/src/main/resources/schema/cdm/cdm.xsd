@@ -124,21 +124,20 @@
           </xs:complexType>
         </xs:element>
         <xs:element name="Occurrences" minOccurs="0">
-          <xs:complexType>
-            <xs:sequence>
-              <xs:choice minOccurs="0" maxOccurs="unbounded">
-                <xs:element ref="occurrence:DerivedUnit"/>
-                <xs:element ref="occurrence:DnaSample"/>
-                <xs:element ref="occurrence:FieldObservation"/>
-                <xs:element ref="occurrence:Fossil"/>
-                <xs:element ref="occurrence:LivingBeing"/>
-                <xs:element ref="occurrence:Observation"/>
-                <xs:element ref="occurrence:Specimen"/>
-              </xs:choice>
-            </xs:sequence>
-            <xs:attribute ref="xml:base"/>
-          </xs:complexType>
-        </xs:element>
+        <xs:complexType>
+          <xs:sequence>
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+              <xs:element ref="occurrence:DerivedUnit"/>
+              <xs:element ref="occurrence:DnaSample"/>
+              <xs:element ref="occurrence:FieldObservation"/>
+              <xs:element ref="occurrence:Fossil"/>
+              <xs:element ref="occurrence:LivingBeing"/>
+              <xs:element ref="occurrence:Observation"/>
+              <xs:element ref="occurrence:Specimen"/>
+            </xs:choice>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
         <xs:element name="EventBases" minOccurs="0">
           <xs:complexType>
             <xs:sequence>

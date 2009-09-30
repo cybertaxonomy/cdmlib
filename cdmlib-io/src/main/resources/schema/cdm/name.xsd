@@ -240,6 +240,7 @@
           </xs:element>
           <xs:element name="HomotypicalGroup" type="xs:IDREF" minOccurs="0"/>
           <xs:element name="IsNotDesignated" type="xs:boolean"/>
+          <xs:element name="TypeStatus" type="xs:IDREF" minOccurs="0"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
@@ -300,15 +301,14 @@
 
   <xs:complexType name="SpecimenTypeDesignation">
     <xs:complexContent>
-      <xs:extension base="name:TypeDesignationStatusBase">
+      <xs:extension base="name:TypeDesignationBase">
         <xs:sequence>
           <xs:element name="TypeSpecimen" type="xs:IDREF" minOccurs="0"/>
-          <xs:element name="TypeStatus" type="xs:IDREF" minOccurs="0"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
-
+  
   <xs:complexType name="NonViralName">
     <xs:complexContent>
       <xs:extension base="name:TaxonNameBase">
@@ -325,13 +325,24 @@
           <xs:element name="AuthorshipCache" type="xs:string" minOccurs="0"/>
           <xs:element name="ProtectedAuthorshipCache" type="xs:boolean"/>
           <xs:element name="ProtectedNameCache" type="xs:boolean"/>
-          <xs:element name="HybridRelationships" minOccurs="0">
+          <xs:element name="HybridRelationsFromThisName" minOccurs="0">
             <xs:complexType>
               <xs:sequence>
-                <xs:element name="HybridRelationship" type="name:HybridRelationship" minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element name="HybridRelationsFromThisName" type="name:HybridRelationship" minOccurs="0" maxOccurs="unbounded"/>
               </xs:sequence>
             </xs:complexType>
           </xs:element>
+          <xs:element name="HybridRelationsToThisName" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="HybridRelationsToThisName" type="name:HybridRelationship" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="IsHybridFormula" type="xs:boolean"/>
+          <xs:element name="IsMonomHybrid" type="xs:boolean"/>
+          <xs:element name="IsBinomHybrid" type="xs:boolean"/>
+          <xs:element name="IsTrinomHybrid" type="xs:boolean"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
@@ -341,7 +352,7 @@
     <xs:complexContent>
       <xs:extension base="name:NonViralName">
         <xs:sequence>
-          <xs:element name="IsHybridFormula" type="xs:boolean"/>
+          
           <xs:element name="IsMonomHybrid" type="xs:boolean"/>
           <xs:element name="IsBinomHybrid" type="xs:boolean"/>
           <xs:element name="IsTrinomHybrid" type="xs:boolean"/>

@@ -114,6 +114,7 @@
           <xs:element name="Sec" type="xs:IDREF" minOccurs="0"/>
         </xs:sequence>
         <xs:attribute name="isDoubtful" type="xs:boolean" use="required"/>
+        <xs:attribute name="UseNameCache" type="xs:boolean" />
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>

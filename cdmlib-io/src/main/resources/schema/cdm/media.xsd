@@ -41,22 +41,15 @@
 
   <xs:complexType name="Media">
     <xs:complexContent>
-      <xs:extension base="common:AnnotatableEntity">
+      <xs:extension base="common:IdentifiableEntity">
         <xs:sequence>
           <xs:element name="MediaTitle" type="common:MultilanguageText" minOccurs="0"/>
-          <xs:element name="MediaCreated" type="xs:dateTime" minOccurs="0"/>
+          <xs:element name="MediaCreated" type="xs:string" minOccurs="0"/>
           <xs:element name="MediaDescription" type="common:MultilanguageText" minOccurs="0"/>
           <xs:element name="MediaRepresentations" minOccurs="0">
             <xs:complexType>
               <xs:sequence>
                 <xs:element name="MediaRepresentation" type="media:MediaRepresentation" minOccurs="0" maxOccurs="unbounded"/>
-              </xs:sequence>
-            </xs:complexType>
-          </xs:element>
-          <xs:element name="Rights" minOccurs="0">
-            <xs:complexType>
-              <xs:sequence>
-                <xs:element name="Right" type="media:Rights" minOccurs="0" maxOccurs="unbounded"/>
               </xs:sequence>
             </xs:complexType>
           </xs:element>
