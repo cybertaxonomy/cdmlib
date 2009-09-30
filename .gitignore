@@ -123,6 +123,7 @@ eclipse-updateSite/content.xml
 eclipse-updateSite/features/*.jar
 eclipse-updateSite/plugins/*.jar
 eclipse-updateSite/plugins/*.zip
+eclipse-updateSite/src
 musiclib-hibernatetest/.classpath
 musiclib-hibernatetest/.project
 musiclib-hibernatetest/.settings
