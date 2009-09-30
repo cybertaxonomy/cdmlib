@@ -38,6 +38,7 @@ import eu.etaxonomy.cdm.model.common.GrantedAuthorityImpl;
 import eu.etaxonomy.cdm.model.common.Group;
 import eu.etaxonomy.cdm.model.common.Keyword;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
@@ -144,7 +145,8 @@ import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
 	    "media",
 	    "users",
 	    "groups",
-	    "grantedAuthorities"
+	    "grantedAuthorities",
+	    "languageStrings"
 })
 @XmlRootElement(name = "DataSet")
 public class DataSet {
@@ -188,6 +190,7 @@ public class DataSet {
     	//    	@XmlElement(name = "TdwgArea", namespace = "http://etaxonomy.eu/cdm/model/location/1.0", type = TdwgArea.class),
     	@XmlElement(name = "TextFormat", namespace = "http://etaxonomy.eu/cdm/model/description/1.0", type = TextFormat.class),
     	@XmlElement(name = "WaterbodyOrCountry", namespace = "http://etaxonomy.eu/cdm/model/location/1.0", type = WaterbodyOrCountry.class)
+    	
     })
     protected List<DefinedTermBase> terms = new ArrayList<DefinedTermBase>();
 	
@@ -196,7 +199,9 @@ public class DataSet {
         @XmlElement(name = "TermVocabulary", namespace = "http://etaxonomy.eu/cdm/model/common/1.0", type = TermVocabulary.class),
         @XmlElement(name = "OrderedTermVocabulary", namespace = "http://etaxonomy.eu/cdm/model/common/1.0", type = OrderedTermVocabulary.class)
     })
+        
     protected List<TermVocabulary<DefinedTermBase>> termVocabularies = new ArrayList<TermVocabulary<DefinedTermBase>>();
+	
 	
     @XmlElementWrapper(name = "Agents")
     @XmlElements({             
@@ -218,6 +223,9 @@ public class DataSet {
     @XmlElementWrapper(name = "TaxonomicTrees")
     @XmlElement(name = "TaxonomicTree", namespace = "http://etaxonomy.eu/cdm/model/taxon/1.0")
     protected List<TaxonomicTree> taxonomicTrees = new ArrayList<TaxonomicTree>();
+    
+   
+    protected List<LanguageString> languageStrings =new ArrayList<LanguageString>();
       
 
     @XmlElementWrapper(name = "Occurrences")
@@ -406,6 +414,8 @@ public class DataSet {
     public void setTermVocabularies(List<TermVocabulary<DefinedTermBase>> value) {
         this.termVocabularies = value;
     }
+    
+    
 
     /**
      * Gets the value of the taxonomicNames property.
@@ -478,7 +488,29 @@ public class DataSet {
     public void setOccurrences(List<SpecimenOrObservationBase> value) {
         this.occurrences = value;
     }
+    /*
+    * Gets the value of the occurrences property.
+    * 
+    * @return
+    *     possible object is
+    *     {@link List<LanguageStringBase> }
+    *     
+    */
+   public List<LanguageString> getLanguageStrings() {
+       return languageStrings;
+   }
 
+   /**
+    * Sets the value of the occurrences property.
+    * 
+    * @param value
+    *     allowed object is
+    *     {@link List<SpecimenOrObservationBase> }
+    *     
+    */
+   public void setLanguageStrings(List<LanguageString> value) {
+       this.languageStrings = value;
+   }
     /**
      * Gets the value of the references property.
      * 

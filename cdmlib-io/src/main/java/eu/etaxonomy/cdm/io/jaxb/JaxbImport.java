@@ -32,6 +32,7 @@ import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.LanguageStringBase;
 import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
+import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
@@ -114,6 +115,7 @@ public class JaxbImport extends CdmIoBase<JaxbImportState> implements ICdmIO<Jax
 		Collection<TaxonBase> taxonBases;
 		List<? extends AgentBase> agents;
 		List<DefinedTermBase> terms;
+		List<User> users;
 		List<ReferenceBase> references;
 		List<TaxonNameBase> taxonomicNames;
 		List<DescriptionBase> descriptions;
@@ -141,15 +143,16 @@ public class JaxbImport extends CdmIoBase<JaxbImportState> implements ICdmIO<Jax
 
 		if ((jaxbImpConfig.isDoTermVocabularies() == true) 
 				&& (termVocabularies = dataSet.getTermVocabularies()).size() > 0) {
-			txStatus = startTransaction();
+			//txStatus = startTransaction();
 			ret &= saveTermVocabularies(termVocabularies);
-			commitTransaction(txStatus);
+			
 		}
 		
 		if ((jaxbImpConfig.isDoTerms() == true)
 				&& (terms = dataSet.getTerms()).size() > 0) {
 			//txStatus = startTransaction();
 			ret &= saveTerms(terms);
+			
 			//commitTransaction(txStatus);
 		}
 		
@@ -168,14 +171,26 @@ public class JaxbImport extends CdmIoBase<JaxbImportState> implements ICdmIO<Jax
 //			ret = false;
 //		}
 //		commitTransaction(txStatus);
-
+		try {
+			if (jaxbImpConfig.isDoUser() == true) {
+				if ((users = dataSet.getUsers()).size() > 0) {
+					logger.error("Agents: " + users.size());
+					getUserService().saveAll(users);
+					
+				}
+			}
+		} catch (Exception ex) {
+			logger.error("Error saving agents");
+			ret = false;
+		}
 		
 		//txStatus = startTransaction();
 		try {
 			if (jaxbImpConfig.isDoAuthors() == true) {
 				if ((agents = dataSet.getAgents()).size() > 0) {
-					logger.info("Agents: " + agents.size());
+					logger.error("Agents: " + agents.size());
 					getAgentService().saveAgentAll(agents);
+					
 				}
 			}
 		} catch (Exception ex) {
@@ -185,12 +200,13 @@ public class JaxbImport extends CdmIoBase<JaxbImportState> implements ICdmIO<Jax
 		//commitTransaction(txStatus);
 
 
-		//txStatus = startTransaction();
+		txStatus = startTransaction();
 		try {
 			if (jaxbImpConfig.getDoReferences() != IImportConfigurator.DO_REFERENCES.NONE) {
 				if ((references = dataSet.getReferences()).size() > 0) {
 					logger.info("References: " + references.size());
 					getReferenceService().saveReferenceAll(references);
+					
 				}
 			}
 		} catch (Exception ex) {
@@ -206,6 +222,7 @@ public class JaxbImport extends CdmIoBase<JaxbImportState> implements ICdmIO<Jax
 				if ((taxonomicNames = dataSet.getTaxonomicNames()).size() > 0) {
 					logger.info("Taxonomic names: " + taxonomicNames.size());
 					getNameService().saveTaxonNameAll(taxonomicNames);
+					
 				}
 			}
 		} catch (Exception ex) {
@@ -221,6 +238,7 @@ public class JaxbImport extends CdmIoBase<JaxbImportState> implements ICdmIO<Jax
 				if ((homotypicalGroups = dataSet.getHomotypicalGroups()).size() > 0) {
 					logger.info("Homotypical groups: " + homotypicalGroups.size());
 					getNameService().saveAllHomotypicalGroups(homotypicalGroups);
+					
 				}
 			}
 		} catch (Exception ex) {
@@ -235,11 +253,12 @@ public class JaxbImport extends CdmIoBase<JaxbImportState> implements ICdmIO<Jax
 		try {
 			if (jaxbImpConfig.isDoTaxa() == true) {
 				if ((taxonBases = dataSet.getTaxonBases()).size() > 0) {
-					logger.info("Taxon bases: " + taxonBases.size());
+					logger.error("Taxon bases: " + taxonBases.size());
 					Iterator <TaxonBase> taxBases = taxonBases.iterator();
 					while (taxBases.hasNext()){
-						getTaxonService().save(taxBases.next());
+						getTaxonService().save( taxBases.next());
 					}
+					
 					//getTaxonService().saveTaxonAll(taxonBases);
 				}
 			}
@@ -255,8 +274,9 @@ public class JaxbImport extends CdmIoBase<JaxbImportState> implements ICdmIO<Jax
 		try {
 			if (jaxbImpConfig.isDoTypeDesignations() == true) {
 				if ((typeDesignations = dataSet.getTypeDesignations()).size() > 0) {
-					logger.info("Type Designations: " + typeDesignations.size());
+					logger.error("Type Designations: " + typeDesignations.size());
 					getNameService().saveTypeDesignationAll(typeDesignations);
+					
 				}
 			}
 		} catch (Exception ex) {

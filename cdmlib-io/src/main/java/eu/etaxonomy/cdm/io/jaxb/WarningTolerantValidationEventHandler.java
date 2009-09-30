@@ -22,9 +22,9 @@ public class WarningTolerantValidationEventHandler extends
 		// ignore warnings
 		if (validationEvent.getSeverity() != ValidationEvent.WARNING) {
 		  ValidationEventLocator validationEventLocator = validationEvent.getLocator();
-		 // logger.warn("Line:Col[" + validationEventLocator.getLineNumber() + ":" + validationEventLocator.getColumnNumber() +"]:" + validationEvent.getMessage());
+		  logger.warn("Line:Col[" + validationEventLocator.getLineNumber() + ":" + validationEventLocator.getColumnNumber() +"]:" + validationEvent.getMessage());
 		
-		  //  validationEvent.getLinkedException().printStackTrace();
+		  //  TODO: check this
 		  return true;
 		} else {
 		   ValidationEventLocator validationEventLocator = validationEvent.getLocator();
