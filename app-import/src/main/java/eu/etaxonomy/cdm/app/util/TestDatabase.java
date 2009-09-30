@@ -28,10 +28,14 @@ import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Keyword;
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.common.init.TermNotFoundException;
+import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
+import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Book;
@@ -59,7 +63,7 @@ public class TestDatabase {
 		
 		logger.info("Setting DB " + dbname);
 		String password = AccountStore.readOrStorePassword(dbname, server, username, null);
-		ICdmDataSource datasource = CdmDataSource.NewMySqlInstance(server, dbname, username, password);
+		ICdmDataSource datasource = CdmDataSource.NewMySqlInstance(server, dbname, username, password, NomenclaturalCode.ICBN);
 		return datasource;
 	}
 	
@@ -110,6 +114,16 @@ public class TestDatabase {
 	    List<ReferenceBase> references = new ArrayList<ReferenceBase>();
 	    List<TaxonNameBase> taxonomicNames = new ArrayList<TaxonNameBase>();
 	    List<TaxonBase> taxonBases = new ArrayList<TaxonBase>();
+	    
+	    List<Feature> features = new ArrayList<Feature>();
+	    
+	    Feature feature1 = new Feature();
+	    feature1.setLabel("Feature1", Language.ENGLISH());
+	    features.add(feature1);
+	    
+	    TaxonNameDescription taxNameDescription = TaxonNameDescription.NewInstance();
+	    taxNameDescription.addFeature(feature1);
+	    
 	    
 	    
 //	    List<Synonym> synonyms = new ArrayList<Synonym>();
@@ -167,7 +181,7 @@ public class TestDatabase {
         // taxonomic names
 		
 		nameRoot1 = BotanicalName.NewInstance(rankGenus,"Calendula",null,null,null,linne,null,"p.100", null);
-		
+		nameRoot1.addDescription(taxNameDescription);
 		name1 = BotanicalName.NewInstance(rankSpecies,"Calendula",null,"arvensis",null,linne,null,"p.1", null);
 		synName11 = BotanicalName.NewInstance(rankSpecies,"Caltha",null,"arvensis",null,linne,null,"p.11", null);
 		synName12 = BotanicalName.NewInstance(rankSpecies,"Calendula",null,"sancta",null,linne,null,"p.12", null);
