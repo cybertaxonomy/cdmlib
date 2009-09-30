@@ -17,7 +17,6 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
