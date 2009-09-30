@@ -19,7 +19,7 @@
 		<module>cdmlib-persistence</module>
 		<module>cdmlib-services</module>
 		<module>cdmlib-ext</module>
-		<module>cdmlib-remote</module>
+		<!--<module>cdmlib-remote</module>-->
 		<module>cdmlib-io</module>
 	</modules>
   
@@ -125,15 +125,15 @@
 		</developer>
 		<developer>
 			<!-- your SVN account id please! -->
-			<id>DavidTaylor</id>
+			<id>k.luther</id>
 			<name>
-				Dave Taylor
+				Katja Luther
 			</name>
-			<email>D.Taylor [at] kew.org</email>
+			<email>k.luther [at] bgbm.org</email>
 			<organization>
-				Royal Botanic Gardens, Kew
+				Botanical Garden Botanical Museum Berlin
 			</organization>
-			<organizationUrl>http://www.kew.org/computing/</organizationUrl>
+			<organizationUrl>http://www.bgbm.org/BioDivInf/</organizationUrl>
 			<timezone>+1</timezone>
 			<roles>
 				<role>developer</role>
