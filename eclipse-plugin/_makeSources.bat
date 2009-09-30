@@ -32,5 +32,5 @@ copy "C:\Dokumente und Einstellungen\a.mueller\.m2\repository\eu\etaxonomy\cdmli
 copy "C:\Dokumente und Einstellungen\a.mueller\.m2\repository\eu\etaxonomy\cdmlib-io\2.1\cdmlib-io-2.1.jar" cdmlib-io-2.1.jar
 copy "C:\Dokumente und Einstellungen\a.mueller\.m2\repository\eu\etaxonomy\cdmlib-io\2.1\cdmlib-io-2.1-sources.jar" cdmlib-io-2.1src.zip
 
-copy "C:\Dokumente und Einstellungen\a.mueller\.m2\repository\eu\etaxonomy\cdmlib-io\2.1\cdmlib-ext-2.1.jar" cdmlib-ext-2.1.jar
-copy "C:\Dokumente und Einstellungen\a.mueller\.m2\repository\eu\etaxonomy\cdmlib-io\2.1\cdmlib-ext-2.1-sources.jar" cdmlib-ext-2.1src.zip
+copy "C:\Dokumente und Einstellungen\a.mueller\.m2\repository\eu\etaxonomy\cdmlib-ext\2.1\cdmlib-ext-2.1.jar" cdmlib-ext-2.1.jar
+copy "C:\Dokumente und Einstellungen\a.mueller\.m2\repository\eu\etaxonomy\cdmlib-ext\2.1\cdmlib-ext-2.1-sources.jar" cdmlib-ext-2.1src.zip
