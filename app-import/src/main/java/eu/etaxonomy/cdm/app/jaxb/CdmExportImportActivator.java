@@ -31,7 +31,7 @@ public class CdmExportImportActivator {
 
 	/* SerializeFrom DB **/
 	private static final ICdmDataSource source = CdmDestinations.cdm_test_jaxb2();
-	private static final ICdmDataSource destination = CdmDestinations.cdm_test_jaxb2();
+	private static final ICdmDataSource destination = CdmDestinations.cdm_test_jaxb();
 
 	// Import:
 	private static String importFileName = 
@@ -131,7 +131,7 @@ public class CdmExportImportActivator {
 		// Init source DB
 		CdmApplicationController appCtrInit = null;
 
-		appCtrInit = TestDatabase.initDb(db, DbSchemaValidation.CREATE, false);
+		appCtrInit = TestDatabase.initDb(db, DbSchemaValidation.CREATE, true);
 
 		return appCtrInit;
 	}
@@ -144,7 +144,7 @@ public class CdmExportImportActivator {
 	}
 
 
-	/**
+	/**c
 	 * @param args
 	 */
 	public static void main(String[] args) {
@@ -152,13 +152,13 @@ public class CdmExportImportActivator {
 		CdmExportImportActivator sc = new CdmExportImportActivator();
 
 		CdmApplicationController appCtr = null;
-		appCtr = sc.initDb(source);
-		//appCtr = sc.initDb(destination);
+		//appCtr = sc.initDb(source);
+		appCtr = sc.initDb(destination);
 		
-		sc.loadTestData(appCtr);
+		//sc.loadTestData(appCtr);
 		
-		sc.invokeExport();
-		//sc.invokeImport();
+		//sc.invokeExport();
+		sc.invokeImport();
 	}
 
 }
