@@ -79,12 +79,6 @@ implements ITypeDesignation {
 	@Cascade(CascadeType.SAVE_UPDATE)
 	private TaxonNameBase typeName;
 	
-//	@XmlElement(name = "HomotypicalGroup")
-//	@XmlIDREF
-//	@XmlSchemaType(name = "IDREF")
-//	private HomotypicalGroup homotypicalGroup;
-	
-	
 	
 	// ************* CONSTRUCTORS *************/	
 	/** 
