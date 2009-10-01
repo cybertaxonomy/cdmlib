@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import javax.persistence.Entity;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
@@ -41,7 +42,6 @@ public class NameTypeDesignationStatus extends TypeDesignationStatusBase<NameTyp
 	private static final Logger logger = Logger.getLogger(NameTypeDesignationStatus.class);
 
 	private static final UUID uuidAutomatic = UUID.fromString("e89d8b21-615a-4602-913f-1625bf39a69f");
-	private static final UUID uuidFirstRevisor = UUID.fromString("a14ec046-c48f-4a73-939f-bd57880c7565");
 	private static final UUID uuidMonotypy = UUID.fromString("3fc639b2-9a64-45f8-9a81-657a4043ad74");
 	private static final UUID uuidNotApplicable = UUID.fromString("91a9d6a9-7754-41cd-9f7e-be136f599f7e");
 	private static final UUID uuidOriginalDesignation = UUID.fromString("40032a44-973b-4a64-b25e-76f86c3a753c");
@@ -49,6 +49,7 @@ public class NameTypeDesignationStatus extends TypeDesignationStatusBase<NameTyp
 	private static final UUID uuidSubsequentMonotypy = UUID.fromString("2b5806d8-31b0-406e-a32a-4adac0c89ae4");
 	private static final UUID uuidSubsequentDesignation = UUID.fromString("3e449e7d-a03c-4431-a7d3-aa258406f6b2");
 	private static final UUID uuidTautonymy = UUID.fromString("84521f09-3e10-43f5-aa6f-2173a55a6790");
+	private static final UUID uuidLectotype = UUID.fromString("4177c938-b741-40e1-95e5-4c53bd1ed87d");
 	
 	/** 
 	 * Factory method: creates an additional type designation status instance
@@ -102,15 +103,6 @@ public class NameTypeDesignationStatus extends TypeDesignationStatusBase<NameTyp
 	public static final NameTypeDesignationStatus AUTOMATIC(){
 		return findTermByUuid(uuidAutomatic);
 	}
-
-	/**
-	 * Returns the "first revisor" name type designation status.</BR>
-	 * Used in the BDWD for incorrect original spellings only. This is only a way of 
-	 * dealing with misspellings in the database, not an actual type designation.
-	 */
-	public static final NameTypeDesignationStatus FIRST_REVISOR(){
-		return findTermByUuid(uuidFirstRevisor);
-	}
 	
 	/**
 	 * Returns the "monotypy" name type designation status.</BR>
@@ -123,7 +115,8 @@ public class NameTypeDesignationStatus extends TypeDesignationStatusBase<NameTyp
 	
 	/**
 	 * Returns the "not applicable" name type designation status.</BR>
-	 * Used in the BDWD for nomina nuda, emendations and misspellings.
+	 * Used in the BDWD (BioSystematic Database of World Diptera) for 
+	 * nomina nuda, emendations and misspellings.
 	 */
 	public static final NameTypeDesignationStatus NOT_APPLICABLE(){
 		return findTermByUuid(uuidNotApplicable);
@@ -164,10 +157,21 @@ public class NameTypeDesignationStatus extends TypeDesignationStatusBase<NameTyp
 	 * Returns the "subsequent designation" name type designation status.</BR>
 	 * Several species were included in the original genus description. 
 	 * One of these has been designated as type species in a later publication.
+	 * 
 	 * ICZN 69.1
 	 */
 	public static final NameTypeDesignationStatus SUBSEQUENT_DESIGNATION(){
 		return findTermByUuid(uuidSubsequentDesignation);
+	}
+
+	
+	/**
+	 * Returns the lectotype name type designation status.</BR>
+	 * This may be the same as a {@link SUBSEQUENT_DESIGNATION()} but used in botany.
+	 * Maybe these 2 status will be merged in future.
+	 */
+	public static final NameTypeDesignationStatus LECTOTYPE(){
+		return findTermByUuid(uuidLectotype);
 	}
 	
 	/**
@@ -178,12 +182,40 @@ public class NameTypeDesignationStatus extends TypeDesignationStatusBase<NameTyp
 	public static final NameTypeDesignationStatus TAUTONYMY(){
 		return findTermByUuid(uuidTautonymy);
 	}
+
 	
 	@Override
 	protected void setDefaultTerms(TermVocabulary<NameTypeDesignationStatus> termVocabulary) {
 		termMap = new HashMap<UUID, NameTypeDesignationStatus>();
 		for (NameTypeDesignationStatus term : termVocabulary.getTerms()){
 			termMap.put(term.getUuid(), term);
+		}
+	}
+	
+	/**
+	 * Returns the boolean value indicating whether <i>this</i> type designation
+	 * status is itself "lectotype" or a kind of "lectotype" (true) or not
+	 * (false). Returns false if <i>this</i> type designation status is null.<BR>
+	 * A lectotype is a {@link eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase specimen or illustration} designated as the
+	 * nomenclatural type, when no holotype was indicated at the time of
+	 * publication of the "type-bringing" {@link TaxonNameBase taxon name}, when the
+	 * holotype is found to be assigned to taxon names belonging to more than
+	 * one {@link HomotypicalGroup homotypical group}, or as long as it is missing.
+	 *
+	 * @see  #LECTOTYPE()
+	 * @see  #HOLOTYPE()
+	 * @see  eu.etaxonomy.cdm.model.common.DefinedTermBase#getKindOf()
+	 */
+	@Transient
+	public boolean isLectotype(){
+		if (
+				this.equals(LECTOTYPE()) ||
+				this.equals(SUBSEQUENT_DESIGNATION()) ||
+				this.equals(PRESENT_DESIGNATION() ) 	
+				){
+			return true;
+		}else{
+			return false;
 		}
 	}
 }

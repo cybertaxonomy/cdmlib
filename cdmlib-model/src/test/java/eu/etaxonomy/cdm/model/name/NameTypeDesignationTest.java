@@ -44,7 +44,7 @@ public class NameTypeDesignationTest {
 	@Before
 	public void setUp() {
 		term1 = new NameTypeDesignation();
-		term2 = new NameTypeDesignation(new ZoologicalName(), null, null, null, true, false, false, false);
+		term2 = new NameTypeDesignation(new ZoologicalName(), null, null, null, null, true, false, false);
 	}
 	
 	@Test

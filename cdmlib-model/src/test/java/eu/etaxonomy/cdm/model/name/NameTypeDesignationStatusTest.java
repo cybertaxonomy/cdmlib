@@ -63,11 +63,6 @@ public class NameTypeDesignationStatusTest extends EntityTestBase {
 	public void testAUTOMATIC() {
 		assertEquals(uuidAutomatic,  NameTypeDesignationStatus.AUTOMATIC().getUuid());	
 	}
-	
-	@Test
-	public void testFIRST_REVISOR() {
-		assertEquals(uuidFirstRevisor,  NameTypeDesignationStatus.FIRST_REVISOR().getUuid());	
-	}
 
 	@Test
 	public void testMONOTYPY() {

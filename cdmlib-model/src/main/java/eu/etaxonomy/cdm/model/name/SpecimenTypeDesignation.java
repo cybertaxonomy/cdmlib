@@ -153,18 +153,6 @@ implements ITypeDesignation {
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.name.ITypeDesignation#isLectoType()
 	 */
-	/**
-	 * Returns the boolean value indicating whether <i>this</i> specimen type
-	 * designation has a "lectotype" status (true) or not (false).<BR>
-	 * A lectotype is a {@link eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase specimen or illustration} designated as the
-	 * nomenclatural type, when no holotype was indicated at the time of
-	 * publication of the "type-bringing" {@link TaxonNameBase taxon name}, when the
-	 * holotype is found to belong to more than one taxon name,
-	 * or as long as it is missing.
-	 *
-	 * @see  SpecimenTypeDesignationStatus#isLectotype()
-	 * @see  SpecimenTypeDesignationStatus#HOLOTYPE()
-	 */
 	@Transient
 	public boolean isLectoType() {
 		return getTypeStatus().isLectotype();

@@ -965,13 +965,14 @@ public void addRelationshipToName(TaxonNameBase toName, NameRelationshipType typ
 				ReferenceBase citation, 
 				String citationMicroReference, 
 				String originalNameString, 
+				NameTypeDesignationStatus status,
 				boolean isRejectedType, 
 				boolean isConservedType, 
-				boolean isLectoType, 
+				/*boolean isLectoType, */
 				boolean isNotDesignated, 
 				boolean addToAllHomotypicNames) {
-		NameTypeDesignation nameTypeDesignation = new NameTypeDesignation(typeSpecies, citation, citationMicroReference, originalNameString, isRejectedType, isConservedType, isLectoType, isNotDesignated);
-		nameTypeDesignation.setLectoType(isLectoType);
+		NameTypeDesignation nameTypeDesignation = new NameTypeDesignation(typeSpecies, citation, citationMicroReference, originalNameString, status, isRejectedType, isConservedType, isNotDesignated);
+		//nameTypeDesignation.setLectoType(isLectoType);
 		addTypeDesignation(nameTypeDesignation, addToAllHomotypicNames);
 	}
 	
