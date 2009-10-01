@@ -154,7 +154,8 @@ public class PalmaeActivator {
 		root.addChild(newNode);
 		newNode = FeatureNode.NewInstance(Feature.MATERIALS_EXAMINED());
 		root.addChild(newNode);
-
+		newNode = FeatureNode.NewInstance(Feature.ANATOMY());
+		root.addChild(newNode);
 		return result;
 		
 
