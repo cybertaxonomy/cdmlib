@@ -95,7 +95,7 @@ import eu.etaxonomy.cdm.strategy.parser.ParserProblem;
     "organization",
     "inReference"
 })
-@XmlRootElement(name = "RelationshipBase")
+@XmlRootElement(name = "ReferenceBase")
 @Entity
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 @Audited
