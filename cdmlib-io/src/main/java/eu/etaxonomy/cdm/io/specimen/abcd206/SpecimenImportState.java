@@ -8,7 +8,7 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package eu.etaxonomy.cdm.io.synthesys;
+package eu.etaxonomy.cdm.io.specimen.abcd206;
 
 import org.apache.log4j.Logger;
 
@@ -27,13 +27,12 @@ public class SpecimenImportState extends ImportStateBase<SpecimenImportConfigura
 		super(config);
 	}
 	
-	
 //	/* (non-Javadoc)
 //	 * @see eu.etaxonomy.cdm.io.common.IoStateBase#initialize(eu.etaxonomy.cdm.io.common.IoConfiguratorBase)
 //	 */
 //	@Override
 //	public void initialize(SpecimenImportConfigurator config) {
-//				
+////		super(config);		
 //	}
 
 }

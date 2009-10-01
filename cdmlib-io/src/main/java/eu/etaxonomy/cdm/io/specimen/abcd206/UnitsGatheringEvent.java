@@ -7,7 +7,8 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package eu.etaxonomy.cdm.io.synthesys;
+package eu.etaxonomy.cdm.io.specimen.abcd206;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +28,7 @@ import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
 
 /**
  * @author p.kelbert
- * @created 29.10.2008
+ * @created 20.10.2008
  * @version 1.0
  */
 public class UnitsGatheringEvent {
@@ -68,7 +69,7 @@ public class UnitsGatheringEvent {
 			loc = LanguageString.NewInstance(locality,Language.DEFAULT());
 		}
 		else
-			loc = LanguageString.NewInstance(locality,config.getTermService().getLanguageByIso(languageIso));
+			loc = LanguageString.NewInstance(locality, config.getTermService().getLanguageByIso(languageIso));
 		this.gatheringEvent.setLocality(loc);
 	}
 

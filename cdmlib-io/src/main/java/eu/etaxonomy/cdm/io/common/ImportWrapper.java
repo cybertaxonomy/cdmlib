@@ -18,8 +18,8 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
-import eu.etaxonomy.cdm.io.abcd206.SpecimenImportConfigurator;
 import eu.etaxonomy.cdm.io.jaxb.JaxbImportConfigurator;
+import eu.etaxonomy.cdm.io.specimen.abcd206.SpecimenImportConfigurator;
 import eu.etaxonomy.cdm.io.tcsxml.in.TcsXmlImportConfigurator;
 
 /**
