@@ -55,27 +55,6 @@ public class CdmDeleteListenerTest extends CdmIntegrationTest {
 		assertNotNull("taxonNameDao should exist",taxonNameDao);
 	}
 	
-	@Test
-	@DataSet("CdmDeleteListenerTest.xml")
-	public void testPrintDataset(){
-		BotanicalName botName1 = BotanicalName.NewInstance(Rank.SPECIES());
-		BotanicalName botName2 = BotanicalName.NewInstance(Rank.SPECIES());
-		//botName1.addRelationshipToName(botName2, NameRelationshipType.ORTHOGRAPHIC_VARIANT(), null);
-		botName1.addHybridChild(botName2, HybridRelationshipType.FEMALE_PARENT(), null);
-		taxonNameDao.saveOrUpdate(botName1);
-		//taxonNameDao.flush();
-		try {
-			File file = new File("testXXX.txt");
-			if (!file.exists()){
-				file.createNewFile();
-			}
-			//printDataSet(new FileOutputStream(file));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-	
-	
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.persistence.hibernate.CdmDeleteListener#onDelete(org.hibernate.event.DeleteEvent, java.util.Set)}.
 	 */
