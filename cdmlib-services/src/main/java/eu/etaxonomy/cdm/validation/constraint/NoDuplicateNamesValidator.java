@@ -3,6 +3,8 @@ package eu.etaxonomy.cdm.validation.constraint;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.name.NonViralName;
@@ -14,6 +16,7 @@ public class NoDuplicateNamesValidator implements
 	
 	private INameService nameService;
 	
+	@Autowired
 	public void setNameService(INameService nameService) {
 		this.nameService = nameService;
 	}
@@ -31,8 +34,10 @@ public class NoDuplicateNamesValidator implements
 					                                                             name.getRank(),
 					                                                             null,null, null, null);
 			if(matchingNonViralNames.getCount() > 0) {
+				System.out.println("matching names, returning false");
 			    return false;
 			} else {
+				System.out.println("no matching names, returning true");
 				return true;
 			}
 

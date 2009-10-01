@@ -4,14 +4,12 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://jboss.org/xml/ns/javax/validation/mapping ../validation-mapping-1.0.xsd">
     <default-package>eu.etaxonomy.cdm.model.name</default-package>
-    
     <bean class="NonViralName" ignore-annotations="false">
-        <class>
-            <constraint annotation="eu.etaxonomy.cdm.validation.annotation.NoDuplicateNames">
-                <groups>
-                    <value>eu.etaxonomy.cdm.validation.Level3</value>
-                </groups>
-            </constraint>
-        </class>       
+               
     </bean>
+    <constraint-definition annotation="eu.etaxonomy.cdm.validation.annotation.NoDuplicateNames">
+        <validated-by include-existing-validators="false">
+            <value>eu.etaxonomy.cdm.validation.constraint.NoDuplicateNamesValidator</value>
+        </validated-by>
+    </constraint-definition>
 </constraint-mappings>
