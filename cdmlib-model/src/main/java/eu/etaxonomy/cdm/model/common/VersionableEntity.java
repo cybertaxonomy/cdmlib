@@ -56,9 +56,9 @@ public abstract class VersionableEntity extends CdmBase {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(VersionableEntity.class);
 	
-	//@XmlElement(name ="Updated", type = String.class)
-	//@XmlJavaTypeAdapter(DateTimeAdapter.class)
-	@XmlElement(name ="Updated")
+	@XmlElement(name ="Updated", type = String.class)
+	@XmlJavaTypeAdapter(DateTimeAdapter.class)
+	//@XmlElement(name ="Updated")
 	@Type(type="dateTimeUserType")
 	@Basic(fetch = FetchType.LAZY)
 	@Match(MatchMode.IGNORE)
