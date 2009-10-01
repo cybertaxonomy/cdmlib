@@ -53,7 +53,9 @@ import eu.etaxonomy.cdm.strategy.match.Match.ReplaceMode;
 import eu.etaxonomy.cdm.strategy.merge.Merge;
 import eu.etaxonomy.cdm.strategy.merge.MergeMode;
 import eu.etaxonomy.cdm.validation.Level2;
+import eu.etaxonomy.cdm.validation.Level3;
 import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
+import eu.etaxonomy.cdm.validation.annotation.NoDuplicateNames;
 
 /**
  * The taxon name class for all non viral taxa. Parenthetical authorship is derived
@@ -98,6 +100,7 @@ import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 @Indexed(index = "eu.etaxonomy.cdm.model.name.TaxonNameBase")
 @Audited
 @Configurable
+@NoDuplicateNames(groups = {Level3.class})
 public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonViralNameCacheStrategy> {
 	private static final long serialVersionUID = 4441110073881088033L;
 	private static final Logger logger = Logger.getLogger(NonViralName.class);
