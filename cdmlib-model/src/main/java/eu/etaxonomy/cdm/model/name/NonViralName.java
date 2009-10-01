@@ -93,7 +93,7 @@ import eu.etaxonomy.cdm.strategy.merge.MergeMode;
     "hybridFormula",
     "monomHybrid",
     "binomHybrid",
-    "trinomHybrid",
+    "trinomHybrid"
 })
 @XmlRootElement(name = "NonViralName")
 @Entity
