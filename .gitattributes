@@ -2215,6 +2215,8 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/pager/Pager.java -tex
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/pager/impl/AbstractPagerImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/pager/impl/DefaultPagerImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/pager/impl/StringLabelPagerImpl.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/validation/annotation/NoDuplicateNames.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/validation/constraint/NoDuplicateNamesValidator.java -text
 cdmlib-services/src/main/resources/eu/etaxonomy/cdm/defaultApplicationContext.xml -text
 cdmlib-services/src/main/resources/eu/etaxonomy/cdm/defaultSecurityContext.xml -text
 cdmlib-services/src/main/resources/eu/etaxonomy/cdm/services.xml -text
@@ -2253,6 +2255,7 @@ cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/integration/TermLoaderIntegr
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/integration/TestTaxonServices.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/suite/CdmTestSuite.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/unit/CdmUnitTestBase.java -text
+cdmlib-services/src/test/java/eu/etaxonomy/cdm/validation/ValidationTest.java -text
 cdmlib-services/src/test/resources/dbscripts/001_cdm.ddl -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/CommonServiceImplTest.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/TaxonServiceImplTest.xml -text
@@ -2269,6 +2272,9 @@ cdmlib-services/src/test/resources/eu/etaxonomy/cdm/cdm.datasources.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/service/PUBLIC.xsd -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/service/dataset.xsd -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/test/function/ConcurrentSessionTest.xml -text
+cdmlib-services/src/test/resources/eu/etaxonomy/cdm/validation/ValidationTest.xml -text
+cdmlib-services/src/test/resources/eu/etaxonomy/cdm/validation/name/TaxonNameBase-Constraints.xml -text
+cdmlib-services/src/test/resources/eu/etaxonomy/cdm/validation/validation-mapping-1.0.xsd -text
 cdmlib-services/src/test/resources/log4j.properties -text
 cdmlib-services/src/test/resources/override.properties -text
 cdmlib-services/src/test/resources/unitils.properties -text
