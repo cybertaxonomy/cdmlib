@@ -24,6 +24,7 @@ import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlIDREF;
@@ -93,7 +94,7 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
 	private Set<ReferenceBase> descriptionSources = new HashSet<ReferenceBase>();
 	
 	@XmlElementWrapper(name = "DescriptiveSystem")
-	@XmlElement(name = "Feature")
+	@XmlElementRef(name = "Feature")
 	@ManyToMany(fetch = FetchType.LAZY)  //FIXME
     @Cascade( { CascadeType.SAVE_UPDATE, CascadeType.MERGE })
     @JoinTable(name = "DescriptionBase_Feature")
