@@ -149,13 +149,13 @@ public class BerlinModelTaxonNameRelationImport extends BerlinModelImportBase {
 						boolean isLectoType = (relQualifierFk == NAME_REL_IS_LECTOTYPE_OF);
 						boolean isNotDesignated = (relQualifierFk == NAME_REL_TYPE_NOT_DESIGNATED);
 						
+						NameTypeDesignationStatus status = null;
 						String originalNameString = null;
 						//TODO addToAllNames true or false?
 						boolean addToAllNames = false;
 						if (config.getNameTypeDesignationStatusMethod() != null){
 							Method method = config.getNameTypeDesignationStatusMethod();
 							method.setAccessible(true);
-							NameTypeDesignationStatus status;
 							try {
 								status = (NameTypeDesignationStatus)method.invoke(null, notes);
 								nameTo.addNameTypeDesignation(nameFrom, citation, microcitation, originalNameString, status, addToAllNames);
@@ -163,7 +163,10 @@ public class BerlinModelTaxonNameRelationImport extends BerlinModelImportBase {
 								throw new RuntimeException(e);
 							}
 						}else{
-							nameTo.addNameTypeDesignation(nameFrom, citation, microcitation, originalNameString, isRejectedType, isConservedType, isLectoType, isNotDesignated, addToAllNames);
+							if (isLectoType){
+								status = NameTypeDesignationStatus.LECTOTYPE();
+							}
+							nameTo.addNameTypeDesignation(nameFrom, citation, microcitation, originalNameString, status, isRejectedType, isConservedType, /*isLectoType,*/ isNotDesignated, addToAllNames);
 						}
 						
 					}else if (relQualifierFk == NAME_REL_IS_ORTHOGRAPHIC_VARIANT_OF){

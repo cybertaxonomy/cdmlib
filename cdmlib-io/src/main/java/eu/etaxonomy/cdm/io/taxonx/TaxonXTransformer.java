@@ -108,6 +108,7 @@ public final class TaxonXTransformer {
 //		}else if ("synopsis".equals(descriptionType)){return Feature.synopsis;
 		}else if ("uses".equals(descriptionType)){return Feature.USES();
 		}else if ("vernacular".equals(descriptionType)){return Feature.COMMON_NAME();
+		}else if ("anatomy".equals(descriptionType)){return Feature.ANATOMY();
 		}else {
 			throw new UnknownCdmTypeException("Unknown Description Type: " + descriptionType);
 		}
