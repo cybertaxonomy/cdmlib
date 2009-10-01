@@ -23,32 +23,32 @@
         </agent:Person>
     </Agents>
     <References>
-        <reference:Article id="1" uuid="urn-uuid-818946e6-351b-456b-91cd-6d03eca32026" hasProblem="false" problemStarts="-1" problemEnds="-1">
+        <reference:Article id="1" uuid="urn-uuid-818946e6-351b-456b-91cd-6d03eca32026" parsingProblem="0" problemStarts="-1" problemEnds="-1">
             <common:TitleCache>Godfray, 2002</common:TitleCache>
             <common:ProtectedTitleCache>false</common:ProtectedTitleCache>
             <reference:IsNomenclaturallyRelevant>false</reference:IsNomenclaturallyRelevant>
             <reference:AuthorTeam>urn-uuid-1a634162-4db8-4d83-84b0-079730d73c51</reference:AuthorTeam>
             <reference:Title>Challenges for taxonomy</reference:Title>
+            <reference:Volume>417</reference:Volume>
+            <reference:Pages>17-19</reference:Pages>
+            <reference:InReference>urn-uuid-b29ebbae-03c4-4162-ad33-34ede873b233</reference:InReference>
             <reference:DatePublished>
                 <common:Start>2002-05-02</common:Start>
                 <common:End>2002-05-02</common:End>
             </reference:DatePublished>
-            <reference:Volume>417</reference:Volume>
-            <reference:Pages>17-19</reference:Pages>
-            <reference:InJournal>urn-uuid-b29ebbae-03c4-4162-ad33-34ede873b233</reference:InJournal>
         </reference:Article>
-        <reference:Journal id="2" uuid="urn-uuid-b29ebbae-03c4-4162-ad33-34ede873b233" hasProblem="false" problemStarts="-1" problemEnds="-1">
+        <reference:Journal id="2" uuid="urn-uuid-b29ebbae-03c4-4162-ad33-34ede873b233" parsingProblem="0" problemStarts="-1" problemEnds="-1">
             <common:TitleCache>Nature</common:TitleCache>
             <common:ProtectedTitleCache>false</common:ProtectedTitleCache>
             <reference:IsNomenclaturallyRelevant>false</reference:IsNomenclaturallyRelevant>
             <reference:Title>Nature</reference:Title>
+            <reference:ISSN>0028-0836</reference:ISSN>
             <reference:DatePublished>
                 <common:Start>1869-11-04</common:Start>
                 <common:End>2008-01-17</common:End>
             </reference:DatePublished>
-            <reference:ISSN>0028-0836</reference:ISSN>
         </reference:Journal>
-        <reference:Book id="3" uuid="urn-uuid-09e7c521-5f9b-4223-a13f-042f74a99d8f" hasProblem="false" problemStarts="-1" problemEnds="-1">
+        <reference:Book id="3" uuid="urn-uuid-09e7c521-5f9b-4223-a13f-042f74a99d8f" parsingProblem="0" problemStarts="-1" problemEnds="-1">
             <common:TitleCache>Darwin, 1859</common:TitleCache>
             <common:ProtectedTitleCache>false</common:ProtectedTitleCache>
             <reference:IsNomenclaturallyRelevant>false</reference:IsNomenclaturallyRelevant>
@@ -59,7 +59,7 @@
                 <common:End>1859-11-24</common:End>
             </reference:DatePublished>            
         </reference:Book>
-        <reference:Book id="4" uuid="urn-uuid-60b73f57-ebe9-43b4-aedf-05608be0497b" hasProblem="false" problemStarts="-1" problemEnds="-1">
+        <reference:Book id="4" uuid="urn-uuid-60b73f57-ebe9-43b4-aedf-05608be0497b" parsingProblem="0" problemStarts="-1" problemEnds="-1">
             <common:TitleCache>Darwin, 2005</common:TitleCache>
             <common:ProtectedTitleCache>false</common:ProtectedTitleCache>
             <reference:IsNomenclaturallyRelevant>false</reference:IsNomenclaturallyRelevant>
