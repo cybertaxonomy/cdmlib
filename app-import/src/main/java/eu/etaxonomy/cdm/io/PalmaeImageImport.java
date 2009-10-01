@@ -67,6 +67,7 @@ public class PalmaeImageImport extends AbstractImageImporter {
 	
 	private static int modCount = 300;
 
+	private static String pluralString = "images";
 	
 	/**
 	 * Rudimetary implementation using apache sanselan. This implementation depends
@@ -106,7 +107,7 @@ public class PalmaeImageImport extends AbstractImageImporter {
 				
 				
 				if(item.getKeyword().equals("ObjectName")){
-					logger.info("File: " + imageFile.getName() + ". ObjectName string is: " + item.getText());
+					logger.debug("File: " + imageFile.getName() + ". ObjectName string is: " + item.getText());
 					String[] objectNameSplit = item.getText().split(";");
 					
 					try {
@@ -152,7 +153,7 @@ public class PalmaeImageImport extends AbstractImageImporter {
 					Item item = (Item) object;
 					
 					if(metaDataStrings.contains(item.getKeyword().toLowerCase())){
-						logger.info("File: " + imageFile.getName() + ". "+ item.getKeyword() +"string is: " + item.getText());
+						logger.debug("File: " + imageFile.getName() + ". "+ item.getKeyword() +"string is: " + item.getText());
 						result.put(MetaData.valueOf(item.getKeyword().toUpperCase()), item.getText());
 						Set<Entry<MetaData, String>> resultSet = result.entrySet();
 							
@@ -172,13 +173,13 @@ public class PalmaeImageImport extends AbstractImageImporter {
 		File sourceFolder = (File)config.getSource();
 		String taxonName;
 		if(sourceFolder.isDirectory()){
-			int i = 0;
+			int count = 0;
 			for( File file : sourceFolder.listFiles()){
 				if(file.isFile()){
-					if ((i++ % modCount) == 0 && i != 1 ){ logger.info("Images handled: " + (i-1));}
+					doCount(count++, modCount, pluralString);
 					
 					taxonName= retrieveTaxonNameFromImageMetadata(file);
-					logger.info("Looking up taxa with taxon name: " + taxonName);
+					logger.debug("Looking up taxa with taxon name: " + taxonName);
 					
 					//TODO:
 					ArrayList<MetaData> metaDataList = new ArrayList();
@@ -333,73 +334,8 @@ public class PalmaeImageImport extends AbstractImageImporter {
 		}
 	}
 			
-	
-//	protected boolean invokeImageImport (IImportConfigurator config){
-//		
-//		logger.info("importing images from directory: " + config.getSourceNameString());
-//		File sourceFolder = (File)config.getSource();
-//		if( sourceFolder.isDirectory()){
-//			for( File file : sourceFolder.listFiles()){
-//				logger.info(file);
-//				String taxonName = retrieveTaxonNameFromImageMetadata(file);
-//			
-//				List<TaxonBase> taxa = getTaxonService().searchTaxaByName(taxonName, config.getSourceReference());			
-//				
-//				
-//				if(taxa.size() == 0){
-//					logger.warn("no taxon with this name found" + taxonName);
-//				}else if(taxa.size() > 1){
-//					logger.warn("multiple taxa with this name found: " + taxonName);
-//				}else{
-//					Taxon taxon = (Taxon) taxa.get(0);
-//					
-//					taxonService.saveTaxon(taxon);
-//					
-//					TextData feature = TextData.NewInstance();
-//					
-//					URL url = null;
-//					try {
-//						url = new URL("test");
-//					} catch (MalformedURLException e) {
-//						logger.warn("URL is malformed: "+ url);
-//					}
-//					ImageMetaData imageMetaData = new ImageMetaData();
-//					imageMetaData.readFrom(url);
-//					
-//					int size = 100;
-//					
-//					String mimeType = "mime";
-//					String suffix = "suffix";
-//					
-//					
-//					
-//					MediaRepresentationPart mediaRepresentationPart = MediaRepresentationPart.NewInstance(url.toString(), size);
-//					
-//					MediaRepresentation representation = MediaRepresentation.NewInstance(mimeType, suffix);
-//					representation.addRepresentationPart(mediaRepresentationPart);
-//					
-//					Media media = Media.NewInstance();
-//					media.addRepresentation(representation);
-//					
-//					feature.addMedia(media);
-//					
-//					TaxonDescription description = TaxonDescription.NewInstance(taxon);
-//					
-//					description.addElement(feature);
-//					
-//					//taxon.addDescription(description);
-//					//taxonService.saveTaxon(taxon);
-//					//descriptionService.saveDescription(description);
-//					
-//				}
-//				
-//				logger.info(taxonName);
-//			}
-//		}else{
-//			logger.error("given source folder is not a directory");
-//		}
-//		return true;
-//	}
-
+	protected void doCount(int count, int modCount, String pluralString){
+		if ((count % modCount ) == 0 && count!= 0 ){ logger.info(pluralString + " handled: " + (count));}
+	}
 
 }
