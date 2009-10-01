@@ -18,6 +18,7 @@ import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
+import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -36,6 +37,7 @@ import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Fields;
 import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
+import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor;
@@ -50,6 +52,8 @@ import eu.etaxonomy.cdm.strategy.match.MatchMode;
 import eu.etaxonomy.cdm.strategy.match.Match.ReplaceMode;
 import eu.etaxonomy.cdm.strategy.merge.Merge;
 import eu.etaxonomy.cdm.strategy.merge.MergeMode;
+import eu.etaxonomy.cdm.validation.Level2;
+import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 
 /**
  * The taxon name class for all non viral taxa. Parenthetical authorship is derived
@@ -104,6 +108,8 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
     })
 	@Match(value=MatchMode.CACHE, cacheReplaceMode=ReplaceMode.DEFINED, 
 			cacheReplacedProperties={"genusOrUninomial", "infraGenericEpithet", "specificEpithet", "infraSpecificEpithet"} )
+	@NotEmpty(groups = Level2.class) // implictly NotNull
+	@Size(max = 255)
 	private String nameCache;
 	
 	@XmlElement(name = "ProtectedNameCache")
@@ -112,18 +118,26 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 	@XmlElement(name = "GenusOrUninomial")
 	@Field(index=Index.TOKENIZED)
 	@Match(MatchMode.EQUAL_REQUIRED)
+	@NullOrNotEmpty
+    @Size(max = 255)
 	private String genusOrUninomial;
 	
 	@XmlElement(name = "InfraGenericEpithet")
 	@Field(index=Index.TOKENIZED)
+	@NullOrNotEmpty
+    @Size(max = 255)
 	private String infraGenericEpithet;
 	
 	@XmlElement(name = "SpecificEpithet")
 	@Field(index=Index.TOKENIZED)
+	@NullOrNotEmpty
+    @Size(max = 255)
 	private String specificEpithet;
 	
 	@XmlElement(name = "InfraSpecificEpithet")
 	@Field(index=Index.TOKENIZED)
+	@NullOrNotEmpty
+    @Size(max = 255)
 	private String infraSpecificEpithet;
 	
 	@XmlElement(name = "CombinationAuthorTeam", type = TeamOrPersonBase.class)
@@ -162,6 +176,8 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 	@Field(index=Index.TOKENIZED)
 	@Match(value=MatchMode.CACHE, cacheReplaceMode=ReplaceMode.DEFINED, 
 			cacheReplacedProperties={"combinationAuthorTeam", "basionymAuthorTeam", "exCombinationAuthorTeam", "exBasionymAuthorTeam"} )
+	@NotEmpty(groups = Level2.class) // implictly NotNull
+	@Size(max = 255)
 	private String authorshipCache;
 	
 	@XmlElement(name = "ProtectedAuthorshipCache")

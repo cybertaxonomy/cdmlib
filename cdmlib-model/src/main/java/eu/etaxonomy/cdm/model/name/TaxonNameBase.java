@@ -23,6 +23,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
+import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -62,6 +63,7 @@ import eu.etaxonomy.cdm.strategy.match.Match.ReplaceMode;
 import eu.etaxonomy.cdm.strategy.merge.Merge;
 import eu.etaxonomy.cdm.strategy.merge.MergeMode;
 import eu.etaxonomy.cdm.strategy.parser.ParserProblem;
+import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 
 /**
  * The upmost (abstract) class for scientific taxon names regardless of any
@@ -123,10 +125,14 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 	
     @XmlElement(name = "AppendedPhrase")
     @Field(index= org.hibernate.search.annotations.Index.TOKENIZED)
+    @NullOrNotEmpty
+    @Size(max = 255)
 	private String appendedPhrase;
 	
     @XmlElement(name = "NomenclaturalMicroReference")
     @Field(index= org.hibernate.search.annotations.Index.TOKENIZED)
+    @NullOrNotEmpty
+    @Size(max = 255)
 	private String nomenclaturalMicroReference;
 	
     @XmlAttribute

@@ -9,12 +9,10 @@
 package eu.etaxonomy.cdm.model.agent;
 
 import javax.persistence.Entity;
-import javax.persistence.Transient;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
@@ -22,10 +20,7 @@ import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
-import org.hibernate.validation.constraints.NotEmpty;
-
 import eu.etaxonomy.cdm.strategy.cache.agent.INomenclaturalAuthorCacheStrategy;
-import eu.etaxonomy.cdm.strategy.match.IMatchable;
 import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 
 

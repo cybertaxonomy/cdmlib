@@ -6,7 +6,7 @@ import java.lang.annotation.Retention;
 
 import java.lang.annotation.Target;
 import javax.validation.Constraint;
-import javax.validation.ConstraintPayload;
+import javax.validation.Payload;
 
 import eu.etaxonomy.cdm.validation.constraint.NullOrNotEmptyValidator;
 
@@ -15,7 +15,7 @@ import eu.etaxonomy.cdm.validation.constraint.NullOrNotEmptyValidator;
 @Constraint(validatedBy = NullOrNotEmptyValidator.class)
 @Documented
 public @interface NullOrNotEmpty {
-String message() default "{validator.nullornotempty}";
-Class<? extends ConstraintPayload>[] payload() default {};
+String message() default "{eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty.message}";
+Class<? extends Payload>[] payload() default {};
 Class<?>[] groups() default {};
 }

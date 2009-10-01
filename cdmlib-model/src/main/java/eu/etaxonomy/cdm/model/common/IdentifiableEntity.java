@@ -40,7 +40,7 @@ import org.hibernate.annotations.IndexColumn;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
 import org.hibernate.search.annotations.Fields;
-import org.hibernate.validation.constraints.NotEmpty;
+import org.hibernate.validator.constraints.NotEmpty;
 
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.hibernate.StripHtmlBridge;

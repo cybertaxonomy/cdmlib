@@ -37,7 +37,6 @@ import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
-import org.hibernate.validation.constraints.NotEmpty;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Configurable;
 
