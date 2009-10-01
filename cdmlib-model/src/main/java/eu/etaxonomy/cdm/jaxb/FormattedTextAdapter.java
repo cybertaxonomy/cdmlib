@@ -14,6 +14,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.DOMException;
@@ -42,8 +43,9 @@ public class FormattedTextAdapter extends XmlAdapter<FormattedText,java.lang.Str
 	
 	public FormattedText marshal(String string) throws Exception {
 		if(string != null) {
+			string = StringEscapeUtils.escapeXml(string);
 			String documentString = "<?xml version=\"1.0\"?><text>"  + string + "</text>";
-			log.debug("Parsing " + documentString);
+			//log.debug("Parsing " + documentString);
 			FormattedText text = new FormattedText();
 		    DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		    DocumentBuilder parser = factory.newDocumentBuilder();
