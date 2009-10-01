@@ -45,7 +45,7 @@ public class PalmaeActivator {
 	static final String tcsSource = TcsSources.arecaceae_local();
 	static final ICdmDataSource cdmDestination = CdmDestinations.localH2Palmae();
 
-	static final UUID featureTreeUuid = UUID.fromString("72ccce05-7cc8-4dab-8e47-bf3f5fd848a0");
+	public static final UUID featureTreeUuid = UUID.fromString("72ccce05-7cc8-4dab-8e47-bf3f5fd848a0");
 		
 	static final UUID treeUuid = UUID.fromString("1adb71d4-cce6-45e1-b578-e668778d9ec6");
 	static final UUID secUuid = UUID.fromString("5f32b8af-0c97-48ac-8d33-6099ed68c625");
@@ -57,6 +57,7 @@ public class PalmaeActivator {
 	static final boolean includeImages = true;
 	static final boolean includeExcelProtologue = true;
 	static final boolean includeMediaProtologue = true;
+	static final boolean updateFeatureTree = true;
 	
 	//check - import
 	static final CHECK check = CHECK.CHECK_AND_IMPORT;
@@ -217,6 +218,11 @@ public class PalmaeActivator {
 			PalmaeTaxonXImportActivator.cdmDestination = cdmDestination;
 			success &= taxonXimporter.runImport();
 			System.out.println("End importing taxonX ...");
+		}
+		
+		PalmaeFeatureTreeUpdater updater = new PalmaeFeatureTreeUpdater();
+		if (updateFeatureTree){
+			updater.updateMissingFeatures(cdmDestination);
 		}
 		
 		String strSuccess = "";

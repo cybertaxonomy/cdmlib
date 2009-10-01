@@ -76,8 +76,10 @@ public class PalmaeTaxonXImportActivator {
 	
 	private boolean makeDirectory(CdmDefaultImport<IImportConfigurator> cdmImport, TaxonXImportConfigurator taxonXImportConfigurator, File source){
 		boolean success = true;
+		int count = 0;
 		for (File file : source.listFiles() ){
 			if (file.isFile()){
+				doCount(count++, 300, "Files");
 				success &= importFile(cdmImport, taxonXImportConfigurator, file);
 			}else{
 				if (! file.getName().startsWith(".")){
@@ -96,7 +98,7 @@ public class PalmaeTaxonXImportActivator {
 			config.setSource(url.toString());
 			String originalSourceId = file.getName();
 			originalSourceId =originalSourceId.replace(".xml", "");
-			logger.info(originalSourceId);
+			logger.debug(originalSourceId);
 			config.setOriginalSourceId(originalSourceId);
 			TransactionStatus tx = cdmImport.getCdmAppController().startTransaction();
 			success &= cdmImport.invoke(config);
@@ -108,6 +110,9 @@ public class PalmaeTaxonXImportActivator {
 		}
 	}
 	
+	protected void doCount(int count, int modCount, String pluralString){
+		if ((count % modCount ) == 0 && count!= 0 ){ logger.info(pluralString + " handled: " + (count));}
+	}
 	
 	/**
 	 * @param args

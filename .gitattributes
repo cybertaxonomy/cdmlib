@@ -56,6 +56,7 @@ app-import/src/main/java/eu/etaxonomy/cdm/app/wp6/diptera/DipteraActivator.java 
 app-import/src/main/java/eu/etaxonomy/cdm/app/wp6/diptera/DipteraDistributionParser.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/wp6/palmae/PalmaeActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/wp6/palmae/PalmaeExcelProtologueActivator.java -text
+app-import/src/main/java/eu/etaxonomy/cdm/app/wp6/palmae/PalmaeFeatureTreeUpdater.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/wp6/palmae/PalmaeImageActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/wp6/palmae/PalmaeProtologueImportActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/wp6/palmae/PalmaeTaxonXImportActivator.java -text
