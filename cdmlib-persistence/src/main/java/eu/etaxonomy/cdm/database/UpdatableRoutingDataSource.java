@@ -70,7 +70,7 @@ public class UpdatableRoutingDataSource extends AbstractRoutingDataSource {
 	public Map<String,SimpleDriverDataSource> updateDataSources() {
 		logger.info("loading & testing datasources .. ");
 		Map<String,SimpleDriverDataSource> datasources = loadDataSources();
-		setTargetDataSources(datasources);
+		setTargetDataSources((Map)datasources);
 		DataSource defaultDatasource = datasources.get(defaultDatasourceName);
 		if(defaultDatasource == null) {
 			logger.error("Defaultdatasource '" +defaultDatasourceName + "' not found.");

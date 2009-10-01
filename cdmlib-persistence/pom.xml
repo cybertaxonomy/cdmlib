@@ -145,10 +145,6 @@
         <artifactId>javassist</artifactId>
   	</dependency>
   	<dependency>
-        <groupId>org.springframework</groupId>
-        <artifactId>spring-agent</artifactId>
-    </dependency>
-  	<dependency>
   		<groupId>javax.annotation</groupId>
   		<artifactId>jsr250-api</artifactId>
   	</dependency>
@@ -207,31 +203,27 @@
     </dependency>
   	<dependency>
   		<groupId>org.springframework</groupId>
-  		<artifactId>spring</artifactId>
+  		<artifactId>org.springframework.beans</artifactId>
   	</dependency>
   	<dependency>
   		<groupId>org.springframework</groupId>
-  		<artifactId>spring-beans</artifactId>
+  		<artifactId>org.springframework.orm</artifactId>
   	</dependency>
   	<dependency>
   		<groupId>org.springframework</groupId>
-  		<artifactId>spring-orm</artifactId>
+  		<artifactId>org.springframework.jdbc</artifactId>
   	</dependency>
   	<dependency>
   		<groupId>org.springframework</groupId>
-  		<artifactId>spring-jdbc</artifactId>
-  	</dependency>
-  	<dependency>
-  		<groupId>org.springframework</groupId>
-  		<artifactId>spring-test</artifactId>
+  		<artifactId>org.springframework.test</artifactId>
   	</dependency>
     <dependency>
 		<groupId>org.springframework</groupId>
-		<artifactId>spring-aop</artifactId>
+		<artifactId>org.springframework.aop</artifactId>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
-      <artifactId>spring-aspects</artifactId>
+      <artifactId>org.springframework.aspects</artifactId>
     </dependency>
     <dependency>
     	<groupId>org.springframework.security</groupId>
