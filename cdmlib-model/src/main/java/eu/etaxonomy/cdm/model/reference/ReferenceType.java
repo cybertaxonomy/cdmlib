@@ -10,6 +10,9 @@
 
 package eu.etaxonomy.cdm.model.reference;
 
+import javax.xml.bind.annotation.XmlEnum;
+import javax.xml.bind.annotation.XmlEnumValue;
+
 import eu.etaxonomy.cdm.model.common.Language;
 
 
@@ -18,22 +21,39 @@ import eu.etaxonomy.cdm.model.common.Language;
  * @created 20.09.2009
  * @version 1.0
  */
+@XmlEnum
 public enum ReferenceType {
+	@XmlEnumValue("Article")
 	Article("Article"),
+	@XmlEnumValue("Book")
 	Book("Book"),
+	@XmlEnumValue("Book Section")
 	BookSection("Book Section"),
+	@XmlEnumValue("CD or DVD")
 	CdDvd("CD or DVD"),
+	@XmlEnumValue("Database")
 	Database("Database"),
+	@XmlEnumValue("Generic")
 	Generic("Generic"),
+	@XmlEnumValue("Inproceedings")
 	InProceedings("Inproceedings"),
+	@XmlEnumValue("Journal")
 	Journal("Journal"),
+	@XmlEnumValue("Map")
 	Map("Map"),
+	@XmlEnumValue("Patent")
 	Patent("Patent"),
+	@XmlEnumValue("Personal Communication")
 	PersonalCommunication("Personal Communication"),
+	@XmlEnumValue("Print Series")
 	PrintSeries("Print Series"),
+	@XmlEnumValue("Proceedings")
 	Proceedings("Proceedings"),
+	@XmlEnumValue("Report")
 	Report("Report"),
+	@XmlEnumValue("Thesis")
 	Thesis("Thesis"),
+	@XmlEnumValue("Web Page")
 	WebPage("Web Page");
 	
 	
