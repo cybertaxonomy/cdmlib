@@ -1,18 +1,26 @@
 package eu.etaxonomy.cdm.validation.constraint;
 
+import java.lang.annotation.Annotation;
+
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
-import eu.etaxonomy.cdm.model.name.NonViralName;
-import eu.etaxonomy.cdm.validation.annotation.NoDuplicateNames;
-
+/**
+ * Stub validatior for use when a constraint uses cdmlib-services component
+ * (and therfore the implementation requires components that are not visible 
+ * in the cdmlib-model package)
+ * 
+ * To resolve this circular dependency, use this stub as the validator in the
+ * annotation, then substitute an implementation using an XML config file.
+ *  
+ * @author ben.clark
+ */
 public class StubValidator implements
-		ConstraintValidator<NoDuplicateNames,NonViralName> {
+		ConstraintValidator<Annotation,Object> {
 	
-	public void initialize(NoDuplicateNames noDuplicateNames) { }
+	public void initialize(Annotation annotation) { }
 
-	public boolean isValid(NonViralName name, ConstraintValidatorContext constraintContext) {
-		System.out.println("in isValid");
+	public boolean isValid(Object obj, ConstraintValidatorContext constraintContext) {
 		return true;
 	}
 }

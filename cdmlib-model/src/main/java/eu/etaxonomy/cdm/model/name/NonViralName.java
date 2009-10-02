@@ -18,6 +18,7 @@ import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -54,6 +55,7 @@ import eu.etaxonomy.cdm.strategy.merge.Merge;
 import eu.etaxonomy.cdm.strategy.merge.MergeMode;
 import eu.etaxonomy.cdm.validation.Level2;
 import eu.etaxonomy.cdm.validation.Level3;
+import eu.etaxonomy.cdm.validation.annotation.CorrectEpithetsForRank;
 import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 import eu.etaxonomy.cdm.validation.annotation.NoDuplicateNames;
 
@@ -100,7 +102,8 @@ import eu.etaxonomy.cdm.validation.annotation.NoDuplicateNames;
 @Indexed(index = "eu.etaxonomy.cdm.model.name.TaxonNameBase")
 @Audited
 @Configurable
-@NoDuplicateNames(groups = {Level3.class})
+@CorrectEpithetsForRank(groups = Level2.class)
+@NoDuplicateNames(groups = Level3.class)
 public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonViralNameCacheStrategy> {
 	private static final long serialVersionUID = 4441110073881088033L;
 	private static final Logger logger = Logger.getLogger(NonViralName.class);
@@ -123,24 +126,29 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 	@Match(MatchMode.EQUAL_REQUIRED)
 	@NullOrNotEmpty
     @Size(max = 255)
+    @Pattern(regexp = "[A-Z][a-z\\uc3a4\\uc3ab\\uc3af\\uc3b6\\uc3bc\\-]+", groups=Level2.class)
+    @NotEmpty(groups = Level3.class)
 	private String genusOrUninomial;
 	
 	@XmlElement(name = "InfraGenericEpithet")
 	@Field(index=Index.TOKENIZED)
 	@NullOrNotEmpty
     @Size(max = 255)
+    @Pattern(regexp = "[a-z\\uc3a4\\uc3ab\\uc3af\\uc3b6\\uc3bc\\-]+", groups=Level2.class)
 	private String infraGenericEpithet;
 	
 	@XmlElement(name = "SpecificEpithet")
 	@Field(index=Index.TOKENIZED)
 	@NullOrNotEmpty
     @Size(max = 255)
+    @Pattern(regexp = "[a-z\\uc3a4\\uc3ab\\uc3af\\uc3b6\\uc3bc\\-]+", groups=Level2.class)
 	private String specificEpithet;
 	
 	@XmlElement(name = "InfraSpecificEpithet")
 	@Field(index=Index.TOKENIZED)
 	@NullOrNotEmpty
     @Size(max = 255)
+    @Pattern(regexp = "[a-z\\uc3a4\\uc3ab\\uc3af\\uc3b6\\uc3bc\\-]+", groups=Level3.class)
 	private String infraSpecificEpithet;
 	
 	@XmlElement(name = "CombinationAuthorTeam", type = TeamOrPersonBase.class)

@@ -1583,8 +1583,10 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/parser/NonViralNameParserIm
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/parser/ParserProblem.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/Level2.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/Level3.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/annotation/CorrectEpithetsForRank.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/annotation/NoDuplicateNames.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/annotation/NullOrNotEmpty.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/constraint/CorrectEpithetsForRankValidator.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/constraint/NullOrNotEmptyValidator.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/constraint/StubValidator.java -text
 cdmlib-model/src/main/resources/ValidationMessages.properties -text
