@@ -109,6 +109,7 @@ public class ValidationTest extends CdmIntegrationTest {
 		name.setNameCache("Abies balsamea");
 		name.setAuthorshipCache("L.");
 		name.setTitleCache("Abies balsamea L.");
+		name.setFullTitleCache("Abies balsamea L.");
 		
         Set<ConstraintViolation<BotanicalName>> constraintViolations  = validator.validate(name, Default.class,Level2.class);
         assertTrue("There should not be a constraint violation as this name is valid at the default and at the second level",constraintViolations.isEmpty());
@@ -126,6 +127,7 @@ public class ValidationTest extends CdmIntegrationTest {
 		
         Set<ConstraintViolation<BotanicalName>> constraintViolations  = validator.validate(name, Default.class);
         assertTrue("There should not be a constraint violation as this name is valid at the default level",constraintViolations.isEmpty());
+       
         constraintViolations  = validator.validate(name, Default.class,Level2.class);
         assertFalse("There should be a constraint violation as this name is valid at the default level, but invalid at the second level",constraintViolations.isEmpty());
 	}
@@ -141,6 +143,7 @@ public class ValidationTest extends CdmIntegrationTest {
 		name.setNameCache("Abies balsamea");
 		name.setAuthorshipCache("L.");
 		name.setTitleCache("Abies balsamea L.");
+		name.setFullTitleCache("Abies balsamea L.");
 		
         Set<ConstraintViolation<BotanicalName>> constraintViolations  = validator.validate(name, Default.class,Level2.class, Level3.class);
         assertTrue("There should not be a constraint violation as this name is valid at all levels",constraintViolations.isEmpty());
@@ -157,7 +160,7 @@ public class ValidationTest extends CdmIntegrationTest {
 		name.setNameCache("Abies alba");
 		name.setAuthorshipCache("Mill.");
 		name.setTitleCache("Abies alba Mill.");
-		
+		name.setFullTitleCache("Abies alba Mill.");
 		
         Set<ConstraintViolation<BotanicalName>> constraintViolations  = validator.validate(name, Default.class, Level2.class);
         assertTrue("There should not be a constraint violation as this name is valid at the default and second level",constraintViolations.isEmpty());

@@ -2223,6 +2223,8 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/validation/constraint/NoDuplicate
 cdmlib-services/src/main/resources/eu/etaxonomy/cdm/defaultApplicationContext.xml -text
 cdmlib-services/src/main/resources/eu/etaxonomy/cdm/defaultSecurityContext.xml -text
 cdmlib-services/src/main/resources/eu/etaxonomy/cdm/services.xml -text
+cdmlib-services/src/main/resources/eu/etaxonomy/cdm/validation/name/TaxonNameBase-Constraints.xml -text
+cdmlib-services/src/main/resources/eu/etaxonomy/cdm/validation/validation-mapping-1.0.xsd -text
 cdmlib-services/src/main/resources/wsdl/LSIDAuthorityServiceHTTPBindings.wsdl -text
 cdmlib-services/src/main/resources/wsdl/LSIDAuthorityServiceSOAPBindings.wsdl -text
 cdmlib-services/src/main/resources/wsdl/LSIDDataServiceFTPBindings.wsdl -text
@@ -2276,8 +2278,6 @@ cdmlib-services/src/test/resources/eu/etaxonomy/cdm/service/PUBLIC.xsd -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/service/dataset.xsd -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/test/function/ConcurrentSessionTest.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/validation/ValidationTest.xml -text
-cdmlib-services/src/test/resources/eu/etaxonomy/cdm/validation/name/TaxonNameBase-Constraints.xml -text
-cdmlib-services/src/test/resources/eu/etaxonomy/cdm/validation/validation-mapping-1.0.xsd -text
 cdmlib-services/src/test/resources/log4j.properties -text
 cdmlib-services/src/test/resources/override.properties -text
 cdmlib-services/src/test/resources/unitils.properties -text

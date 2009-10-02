@@ -34,10 +34,12 @@ public class NoDuplicateNamesValidator implements
 					                                                             name.getRank(),
 					                                                             null,null, null, null);
 			if(matchingNonViralNames.getCount() > 0) {
-				System.out.println("matching names, returning false");
-			    return false;
+				if(matchingNonViralNames.getCount() == 1 && matchingNonViralNames.getRecords().get(0).equals(name)) {
+					return true;
+				} else {
+			        return false;
+				}
 			} else {
-				System.out.println("no matching names, returning true");
 				return true;
 			}
 
