@@ -338,6 +338,7 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 						//TODO
 						//Designation References -> unclear how to map to CDM
 						//factId -> OriginalSource for descriptionElements not yet implemented
+						
 						//sequence -> textData is not an identifiable entity therefore extensions are not possible
 						//fact category better
 						
