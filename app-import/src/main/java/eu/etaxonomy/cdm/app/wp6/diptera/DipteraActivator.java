@@ -22,6 +22,7 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportConfigurator;
+import eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelTaxonImport.PublishMarkerChooser;
 import eu.etaxonomy.cdm.io.common.CdmDefaultImport;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator.CHECK;
@@ -61,6 +62,8 @@ public class DipteraActivator {
 	static final EDITOR editor = EDITOR.EDITOR_AS_EDITOR;
 	//check - import
 	static final CHECK check = CHECK.CHECK_AND_IMPORT;
+	//taxon publish marker
+	static final PublishMarkerChooser taxonPublish = PublishMarkerChooser.NO_MARKER;
 
 	static final boolean doDistributionParser = true;  //also run DipteraDistributionParser
 
@@ -149,6 +152,7 @@ public class DipteraActivator {
 		bmImportConfigurator.setDoMarker(doMarker);
 		bmImportConfigurator.setDoUser(doUser);
 		bmImportConfigurator.setEditor(editor);
+		bmImportConfigurator.setTaxonPublishMarker(taxonPublish);
 		try {
 			Method nameTypeDesignationStatusMethod = DipteraActivator.class.getDeclaredMethod("nameTypeDesignationStatueMethod", String.class);
 			bmImportConfigurator.setNameTypeDesignationStatusMethod(nameTypeDesignationStatusMethod);

@@ -220,7 +220,7 @@ public class PalmaeActivator {
 			System.out.println("End importing taxonX ...");
 		}
 		
-		PalmaeFeatureTreeUpdater updater = new PalmaeFeatureTreeUpdater();
+		PalmaePostImportUpdater updater = new PalmaePostImportUpdater();
 		if (updateFeatureTree){
 			updater.updateMissingFeatures(cdmDestination);
 		}
