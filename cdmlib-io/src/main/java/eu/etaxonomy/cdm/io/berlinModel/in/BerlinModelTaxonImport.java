@@ -23,7 +23,6 @@ import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
-import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.io.common.Source;
@@ -53,6 +52,26 @@ public class BerlinModelTaxonImport  extends BerlinModelImportBase  {
 	public static final UUID APPENDED_TITLE_PHRASE = UUID.fromString("b121f3b6-89bb-48e1-a010-7d3148d2caba");
 	public static final UUID USE_NAME_CACHE = UUID.fromString("1b959a0d-230b-4b03-b7b6-2bd46056a22d");
 	
+	
+	/**
+	 * How should the publish flag in table PTaxon be interpreted
+	 * NO_MARKER: No marker is set
+	 * ONLY_FALSE: 
+	 */
+	public enum PublishMarkerChooser{
+		NO_MARKER,
+		ONLY_FALSE,
+		ONLY_TRUE,
+		ALL;
+		
+		boolean doMark(boolean value){
+			if (value == true){
+				return this == ALL || this == ONLY_TRUE;
+			}else{
+				return this == ALL || this == ONLY_FALSE;
+			}
+		}
+	}
 	
 	
 	private int modCount = 10000;
@@ -294,7 +313,9 @@ public class BerlinModelTaxonImport  extends BerlinModelImportBase  {
 					}
 					//publisheFlag
 					Boolean publishFlag = rs.getBoolean("PublishFlag");
-					taxonBase.addMarker(Marker.NewInstance(MarkerType.PUBLISH(), publishFlag));
+					if (config.getTaxonPublishMarker().doMark(publishFlag)){
+						taxonBase.addMarker(Marker.NewInstance(MarkerType.PUBLISH(), publishFlag));
+					}
 					//Notes
 					doIdCreatedUpdatedNotes(state, taxonBase, rs, taxonId, namespace);
 					
