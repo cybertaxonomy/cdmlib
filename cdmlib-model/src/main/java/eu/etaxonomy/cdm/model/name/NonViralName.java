@@ -10,7 +10,10 @@
 package eu.etaxonomy.cdm.model.name;
 
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import javax.persistence.Entity;
@@ -41,11 +44,14 @@ import org.hibernate.search.annotations.Indexed;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.beans.factory.annotation.Configurable;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.strategy.cache.name.CacheUpdate;
 import eu.etaxonomy.cdm.strategy.cache.name.INonViralNameCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.name.NonViralNameDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.match.Match;
@@ -119,11 +125,13 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 	private String nameCache;
 	
 	@XmlElement(name = "ProtectedNameCache")
-	protected boolean protectedNameCache;
+	@CacheUpdate(value="nameCache")
+    protected boolean protectedNameCache;
 	
 	@XmlElement(name = "GenusOrUninomial")
 	@Field(index=Index.TOKENIZED)
 	@Match(MatchMode.EQUAL_REQUIRED)
+	@CacheUpdate("nameCache")
 	@NullOrNotEmpty
     @Size(max = 255)
     @Pattern(regexp = "[A-Z][a-z\\uc3a4\\uc3ab\\uc3af\\uc3b6\\uc3bc\\-]+", groups=Level2.class)
@@ -132,6 +140,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 	
 	@XmlElement(name = "InfraGenericEpithet")
 	@Field(index=Index.TOKENIZED)
+	@CacheUpdate("nameCache")
 	@NullOrNotEmpty
     @Size(max = 255)
     @Pattern(regexp = "[a-z\\uc3a4\\uc3ab\\uc3af\\uc3b6\\uc3bc\\-]+", groups=Level2.class)
@@ -139,6 +148,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 	
 	@XmlElement(name = "SpecificEpithet")
 	@Field(index=Index.TOKENIZED)
+	@CacheUpdate("nameCache")
 	@NullOrNotEmpty
     @Size(max = 255)
     @Pattern(regexp = "[a-z\\uc3a4\\uc3ab\\uc3af\\uc3b6\\uc3bc\\-]+", groups=Level2.class)
@@ -146,6 +156,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 	
 	@XmlElement(name = "InfraSpecificEpithet")
 	@Field(index=Index.TOKENIZED)
+	@CacheUpdate("nameCache")
 	@NullOrNotEmpty
     @Size(max = 255)
     @Pattern(regexp = "[a-z\\uc3a4\\uc3ab\\uc3af\\uc3b6\\uc3bc\\-]+", groups=Level3.class)
@@ -157,6 +168,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
     @ManyToOne(fetch = FetchType.LAZY)
 	@Target(TeamOrPersonBase.class)
 	@Cascade(CascadeType.SAVE_UPDATE)
+	@CacheUpdate("authorshipCache")
 	private INomenclaturalAuthor combinationAuthorTeam;
 	
 	@XmlElement(name = "ExCombinationAuthorTeam", type = TeamOrPersonBase.class)
@@ -165,6 +177,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
     @ManyToOne(fetch = FetchType.LAZY)
 	@Target(TeamOrPersonBase.class)
 	@Cascade(CascadeType.SAVE_UPDATE)
+	@CacheUpdate("authorshipCache")
 	private INomenclaturalAuthor exCombinationAuthorTeam;
 	
 	@XmlElement(name = "BasionymAuthorTeam", type = TeamOrPersonBase.class)
@@ -173,6 +186,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
     @ManyToOne(fetch = FetchType.LAZY)
 	@Target(TeamOrPersonBase.class)
 	@Cascade(CascadeType.SAVE_UPDATE)
+	@CacheUpdate("authorshipCache")
 	private INomenclaturalAuthor basionymAuthorTeam;
 	
 	@XmlElement(name = "ExBasionymAuthorTeam", type = TeamOrPersonBase.class)
@@ -192,6 +206,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 	private String authorshipCache;
 	
 	@XmlElement(name = "ProtectedAuthorshipCache")
+	@CacheUpdate("authorshipCache")
 	protected boolean protectedAuthorshipCache;
 
     @XmlElementWrapper(name = "HybridRelationsFromThisName")
@@ -222,9 +237,45 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
     @XmlElement(name ="IsTrinomHybrid")
 	private boolean trinomHybrid = false;
     
-//    @XmlTransient
-//    @Transient
-//	protected INonViralNameCacheStrategy cacheStrategy;
+	/** 
+	 * Creates a new non viral taxon name instance
+	 * only containing its {@link common.Rank rank} and 
+ 	 * the {@link eu.etaxonomy.cdm.strategy.cache.name.NonViralNameDefaultCacheStrategy default cache strategy}.
+	 * 
+	 * @param  rank  the rank to be assigned to <i>this</i> non viral taxon name
+	 * @see    #NewInstance(Rank, HomotypicalGroup)
+	 * @see    #NonViralName(Rank, HomotypicalGroup)
+	 * @see    #NonViralName()
+	 * @see    #NonViralName(Rank, String, String, String, String, TeamOrPersonBase, ReferenceBase, String, HomotypicalGroup)
+	 * @see    eu.etaxonomy.cdm.strategy.cache.name.INonViralNameCacheStrategy
+	 * @see    eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy
+	 * @see    eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy
+	 */
+	public static NonViralName NewInstance(Rank rank){
+		return new NonViralName(rank, null);
+	}
+
+	/** 
+	 * Creates a new non viral taxon name instance
+	 * only containing its {@link common.Rank rank},
+	 * its {@link HomotypicalGroup homotypical group} and 
+ 	 * the {@link eu.etaxonomy.cdm.strategy.cache.name.NonViralNameDefaultCacheStrategy default cache strategy}.
+	 * The new non viral taxon name instance will be also added to the set of
+	 * non viral taxon names belonging to this homotypical group.
+	 * 
+	 * @param  rank  the rank to be assigned to <i>this</i> non viral taxon name
+	 * @param  homotypicalGroup  the homotypical group to which <i>this</i> non viral taxon name belongs
+	 * @see    #NewInstance(Rank)
+	 * @see    #NonViralName(Rank, HomotypicalGroup)
+	 * @see    #NonViralName()
+	 * @see    #NonViralName(Rank, String, String, String, String, TeamOrPersonBase, ReferenceBase, String, HomotypicalGroup)
+	 * @see    eu.etaxonomy.cdm.strategy.cache.name.INonViralNameCacheStrategy
+	 * @see    eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy
+	 * @see    eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy
+	 */
+	public static NonViralName NewInstance(Rank rank, HomotypicalGroup homotypicalGroup){
+		return new NonViralName(rank, homotypicalGroup);
+	}
 	
 	// ************* CONSTRUCTORS *************/	
 	
@@ -309,79 +360,119 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 		this.setNomenclaturalMicroReference(nomenclMicroRef);
 	}
 	
+	
+	
 	//********* METHODS **************************************/
-	/** 
-	 * Creates a new non viral taxon name instance
-	 * only containing its {@link common.Rank rank} and 
- 	 * the {@link eu.etaxonomy.cdm.strategy.cache.name.NonViralNameDefaultCacheStrategy default cache strategy}.
-	 * 
-	 * @param  rank  the rank to be assigned to <i>this</i> non viral taxon name
-	 * @see    #NewInstance(Rank, HomotypicalGroup)
-	 * @see    #NonViralName(Rank, HomotypicalGroup)
-	 * @see    #NonViralName()
-	 * @see    #NonViralName(Rank, String, String, String, String, TeamOrPersonBase, ReferenceBase, String, HomotypicalGroup)
-	 * @see    eu.etaxonomy.cdm.strategy.cache.name.INonViralNameCacheStrategy
-	 * @see    eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy
-	 * @see    eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy
-	 */
-	public static NonViralName NewInstance(Rank rank){
-		return new NonViralName(rank, null);
-	}
 
-	/** 
-	 * Creates a new non viral taxon name instance
-	 * only containing its {@link common.Rank rank},
-	 * its {@link HomotypicalGroup homotypical group} and 
- 	 * the {@link eu.etaxonomy.cdm.strategy.cache.name.NonViralNameDefaultCacheStrategy default cache strategy}.
-	 * The new non viral taxon name instance will be also added to the set of
-	 * non viral taxon names belonging to this homotypical group.
-	 * 
-	 * @param  rank  the rank to be assigned to <i>this</i> non viral taxon name
-	 * @param  homotypicalGroup  the homotypical group to which <i>this</i> non viral taxon name belongs
-	 * @see    #NewInstance(Rank)
-	 * @see    #NonViralName(Rank, HomotypicalGroup)
-	 * @see    #NonViralName()
-	 * @see    #NonViralName(Rank, String, String, String, String, TeamOrPersonBase, ReferenceBase, String, HomotypicalGroup)
-	 * @see    eu.etaxonomy.cdm.strategy.cache.name.INonViralNameCacheStrategy
-	 * @see    eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy
-	 * @see    eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy
-	 */
-	public static NonViralName NewInstance(Rank rank, HomotypicalGroup homotypicalGroup){
-		return new NonViralName(rank, homotypicalGroup);
-	}
 	
 	private void setNameCacheStrategy(){
 		if (getClass() == NonViralName.class){
 			this.cacheStrategy = NonViralNameDefaultCacheStrategy.NewInstance();
+		}	
+	}
+
+    protected void initListener(){
+    	PropertyChangeListener listener = new PropertyChangeListener() {
+        	public void propertyChange(PropertyChangeEvent e) {
+        		boolean protectedByLowerCache = false;
+        		//authorship cache
+        		if (fieldHasCacheUpdateProperty(e.getPropertyName(), "authorshipCache")){
+        			if (protectedAuthorshipCache){
+        				protectedByLowerCache = true;
+                	}else{
+                		authorshipCache = null;
+                	}
+        		}
+        		
+        		//nameCache
+        		if (fieldHasCacheUpdateProperty(e.getPropertyName(), "nameCache")){
+        			if (protectedNameCache){
+        				protectedByLowerCache = true;
+                	}else{
+                		nameCache = null;
+                	}
+        		}
+        		//title cache
+        		if (! fieldHasNoUpdateProperty(e.getPropertyName(), "titleCache")){
+        			if (isProtectedTitleCache()|| protectedByLowerCache == true ){
+        				protectedByLowerCache = true;
+                	}else{
+                		titleCache = null;
+                	}
+        		}
+        		//full title cache
+        		if (! fieldHasNoUpdateProperty(e.getPropertyName(), "fullTitleCache")){
+        			if (isProtectedFullTitleCache()|| protectedByLowerCache == true ){
+        				protectedByLowerCache = true;
+                	}else{
+                		fullTitleCache = null;
+                	}
+        		}
+        	}
+    	};
+    	addPropertyChangeListener(listener);  //didn't use this.addXXX to make lsid.AssemblerTest run in cdmlib-remote
+    }
+    
+    private static Map<String, java.lang.reflect.Field> allFields = null;
+	@Override
+    protected Map<String, java.lang.reflect.Field> getAllFields(){
+    	if (allFields == null){
+			allFields = CdmUtils.getAllFields(this.getClass(), CdmBase.class, false, false, false, true);
 		}
-		
+    	return allFields;
+    }
+    
+    /**
+	 * @param propertyName
+	 * @param string
+	 * @return
+	 */
+	private boolean fieldHasCacheUpdateProperty(String propertyName, String cacheName) {
+		java.lang.reflect.Field field;
+		try {
+			field = getAllFields().get(propertyName);
+    		if (field != null){
+				CacheUpdate updateAnnotation = field.getAnnotation(CacheUpdate.class);
+	    		if (updateAnnotation != null){
+		    		for (String value : updateAnnotation.value()){
+		    			if (cacheName.equals(value)){
+		    				return true;
+		    			}
+		    		}
+	    		}
+    		}
+    		return false;
+		} catch (SecurityException e1) {
+			throw e1;
+		} 
 	}
 	
-	//TODO for PROTOTYPE
-	/**
-	 * Returns the {@link eu.etaxonomy.cdm.strategy.cache.name.INonViralNameCacheStrategy cache strategy} used to generate
-	 * several strings corresponding to <i>this</i> non viral taxon name
-	 * (in particular taxon name caches and author strings).
-	 * 
-	 * @return  the cache strategy used for <i>this</i> non viral taxon name
-	 * @see 	eu.etaxonomy.cdm.strategy.cache.name.INonViralNameCacheStrategy
-	 * @see 	eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy
-	 * @see     eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy
-	 */
-//	@Override
-//	@Transient
-//	public INonViralNameCacheStrategy getCacheStrategy() {
-//		return cacheStrategy;
-//	}
-	
-	/**
-	 * @see  #getCacheStrategy()
-	 */
-//	@Override
-//	public void setCacheStrategy(INonViralNameCacheStrategy cacheStrategy) {
-//		this.cacheStrategy = cacheStrategy;
-//	}
+	private boolean fieldHasNoUpdateProperty(String propertyName, String cacheName) {
+		java.lang.reflect.Field field;
+		//do not update fields with the same name
+		if (cacheName.equals(propertyName)){
+			return true;
+		}
+		//evaluate annotation
+		try {
+			field = getAllFields().get(propertyName);
+			if (field != null){
+				CacheUpdate updateAnnotation = field.getAnnotation(CacheUpdate.class);
+				if (updateAnnotation != null){
+		    		for (String value : updateAnnotation.noUpdate()){
+		    			if (cacheName.equals(value)){
+		    				return true;
+		    			}
+		    		}
+	    		}
+			}
+    		return false;
+		} catch (SecurityException e1) {
+			throw e1;
+		} 
+	}
 
+	
 	/**
 	 * Returns the {@link eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor author (team)} that published <i>this</i> non viral
 	 * taxon name.
@@ -660,7 +751,6 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 	 */
 	public void setNameCache(String nameCache, boolean protectedNameCache){
 		this.nameCache = nameCache;
-		//this.setProtectedTitleCache(false);  //now handled by propertyChangeListener
 		this.setProtectedNameCache(protectedNameCache);
 	}
 	
@@ -718,12 +808,31 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 		if (protectedAuthorshipCache){
 			return this.authorshipCache;			
 		}
-		// is title dirty, i.e. equal NULL?
-		if (this.authorshipCache == null ||  this.titleCache == null ){
-			//TODO get is Dirty of authors
+		if (this.authorshipCache == null ){
 			this.authorshipCache = generateAuthorship();
+		}else{
+			//TODO get is Dirty of authors, make better if possible
+			this.setAuthorshipCache(generateAuthorship(), protectedAuthorshipCache); //throw change event to inform higher caches
+			
 		}
 		return authorshipCache;
+	}
+	
+	
+	/**
+	 * Updates the authorship cache if any changes appeared in the authors nomenclatural caches.
+	 * Deletes the titleCache and the fullTitleCache if not protected and if any change has happened
+	 * @return
+	 */
+	private void updateAuthorshipCache() {
+		//updates the authorship cache if necessary and via the listener updates all higher caches
+		if (protectedAuthorshipCache == false){
+			String oldCache = this.authorshipCache;
+			String newCache = this.getAuthorshipCache();
+			if ( (oldCache == null && newCache != null)  ||  ! oldCache.equals(newCache)){
+				this.setAuthorshipCache(this.getAuthorshipCache(), false);
+			}
+		}
 	}
 
 	/**
@@ -737,6 +846,19 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 		setAuthorshipCache(authorshipCache, true);
 	}
 	
+	@Transient
+	public String getFullTitleCache(){
+		updateAuthorshipCache();
+		return super.getFullTitleCache();
+	}
+	
+	@Transient
+	public String getTitleCache(){
+		updateAuthorshipCache();
+		return super.getTitleCache();
+	}
+
+	
 	/**
 	 * Assigns an authorshipCache string to <i>this</i> non viral taxon name.
 	 *  
@@ -747,18 +869,11 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 	 */
 	public void setAuthorshipCache(String authorshipCache, boolean protectedAuthorshipCache) {
 		this.authorshipCache = authorshipCache;
-		//TODO hibernate safe?
-		if (! this.isProtectedTitleCache()){
-			this.setTitleCache(null, false);
-		}
 		this.setProtectedAuthorshipCache(protectedAuthorshipCache);
 	}
 
 	public void setTitleCache(String titleCache, boolean protectCache){
 		super.setTitleCache(titleCache, protectCache);
-		if (! this.isProtectedFullTitleCache()){
-			this.fullTitleCache = null;
-		}
 	}
 	
 	/**
@@ -823,11 +938,6 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 	 */
 	public void setProtectedAuthorshipCache(boolean protectedAuthorshipCache) {
 		this.protectedAuthorshipCache = protectedAuthorshipCache;
-		if (protectedAuthorshipCache == false){
-			if (! this.isProtectedFullTitleCache()){
-				this.setFullTitleCache(null, false);
-			}
-		}
 	}
 	
 

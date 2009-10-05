@@ -12,7 +12,7 @@ package eu.etaxonomy.cdm.model.reference;
 import eu.etaxonomy.cdm.model.common.IIdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IParsable;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
-import eu.etaxonomy.cdm.strategy.parser.ParserProblem;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 
 
  /**

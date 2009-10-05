@@ -46,6 +46,7 @@ public interface ITreeNode extends ICdmBase {
 	/**
 	 * This recursively removes all child nodes from this node and from this taxonomic view.
 	 * 
+	 * TODO remove orphan nodes completely 
 	 * 
 	 * @param node
 	 * @return true on success
@@ -63,4 +64,3 @@ public interface ITreeNode extends ICdmBase {
 	 */
 	public abstract String getMicroReference();
 }
-

@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.model.name;
 import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -57,6 +58,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.strategy.cache.name.CacheUpdate;
 import eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy;
 import eu.etaxonomy.cdm.strategy.match.IMatchable;
 import eu.etaxonomy.cdm.strategy.match.Match;
@@ -114,12 +116,14 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 	@XmlElement(name = "FullTitleCache")
 	@Column(length=330, name="fullTitleCache")
 	@Match(value=MatchMode.CACHE, cacheReplaceMode=ReplaceMode.ALL)
+	@CacheUpdate(noUpdate ="titleCache")
 	@NotEmpty(groups = Level2.class)
 	@Size(max = 330)
 	protected String fullTitleCache;
 	
 	//if true titleCache will not be automatically generated/updated
 	@XmlElement(name = "ProtectedFullTitleCache")
+	@CacheUpdate(value ="fullTitleCache", noUpdate ="titleCache")
 	private boolean protectedFullTitleCache;
 	
     @XmlElementWrapper(name = "Descriptions")
@@ -130,23 +134,28 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 	
     @XmlElement(name = "AppendedPhrase")
     @Field(index= org.hibernate.search.annotations.Index.TOKENIZED)
+    @CacheUpdate(value ="nameCache")
     @NullOrNotEmpty
     @Size(max = 255)
 	private String appendedPhrase;
 	
     @XmlElement(name = "NomenclaturalMicroReference")
     @Field(index= org.hibernate.search.annotations.Index.TOKENIZED)
+    @CacheUpdate(noUpdate ="titleCache")
     @NullOrNotEmpty
     @Size(max = 255)
 	private String nomenclaturalMicroReference;
 	
     @XmlAttribute
+    @CacheUpdate(noUpdate ={"titleCache","fullTitleCache"})
 	private int parsingProblem = 0;
 	
     @XmlAttribute
+    @CacheUpdate(noUpdate ={"titleCache","fullTitleCache"})
     private int problemStarts = -1;
     
     @XmlAttribute
+    @CacheUpdate(noUpdate ={"titleCache","fullTitleCache"})
     private int problemEnds = -1;
     
     @XmlElementWrapper(name = "TypeDesignations")
@@ -165,6 +174,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
     @ManyToOne(fetch = FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
 	@Match(MatchMode.IGNORE)
+	@CacheUpdate(noUpdate ="titleCache")
 	@NotNull
 	private HomotypicalGroup homotypicalGroup;
 
@@ -205,6 +215,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.EAGER)
+	@CacheUpdate(value ="nameCache")
 	@NotNull
 	private Rank rank;
 
@@ -213,6 +224,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE})
+	@CacheUpdate(noUpdate ="titleCache")
 	private ReferenceBase nomenclaturalReference;
 	
 // ************* CONSTRUCTORS *************/	
@@ -274,6 +286,8 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 		homotypicalGroup.addTypifiedName(this);
 	}
 	
+	abstract protected Map<String, java.lang.reflect.Field> getAllFields();
+	
 //********* METHODS **************************************/
 	
 	/**
@@ -292,35 +306,35 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 	
 	public abstract String generateFullTitle();
 
+	
+
+	@Transient
+	public List<Object> getTaggedName(){
+		return getCacheStrategy().getTaggedName(this);
+	}
+	
 	@Transient
 	public String getFullTitleCache(){
 		if (protectedFullTitleCache){
 			return this.fullTitleCache;			
 		}
-		if (fullTitleCache == null){
-			this.setFullTitleCache(generateFullTitle(), protectedFullTitleCache);
+		if (fullTitleCache == null ){
+			this.fullTitleCache = getTruncatedCache(generateFullTitle());
 		}
 		return fullTitleCache;
 	}
-	
-	@Transient
-	public List<Object> getTaggedName(){
-		return getCacheStrategy().getTaggedName(this);
-	}
 
+	
     public void setFullTitleCache(String fullTitleCache){
 		setFullTitleCache(fullTitleCache, PROTECTED);
 	}
 	
 	public void setFullTitleCache(String fullTitleCache, boolean protectCache){
-		//TODO truncation of full title cache
-		if (fullTitleCache != null && fullTitleCache.length() > 329){
-			logger.warn("Truncation of full title cache: " + this.toString() + "/" + fullTitleCache);
-			fullTitleCache = fullTitleCache.substring(0, 329) + "...";
-		}
+		fullTitleCache = getTruncatedCache(fullTitleCache);
 		this.fullTitleCache = fullTitleCache;
 		this.setProtectedFullTitleCache(protectCache);
 	}
+
 	
 	public boolean isProtectedFullTitleCache() {
 		return protectedFullTitleCache;
@@ -981,13 +995,14 @@ public void addRelationshipToName(TaxonNameBase toName, NameRelationshipType typ
 				ReferenceBase citation, 
 				String citationMicroReference, 
 				String originalNameString, 
+				NameTypeDesignationStatus status,
 				boolean isRejectedType, 
 				boolean isConservedType, 
-				boolean isLectoType, 
+				/*boolean isLectoType, */
 				boolean isNotDesignated, 
 				boolean addToAllHomotypicNames) {
-		NameTypeDesignation nameTypeDesignation = new NameTypeDesignation(typeSpecies, citation, citationMicroReference, originalNameString, isRejectedType, isConservedType, isLectoType, isNotDesignated);
-		nameTypeDesignation.setLectoType(isLectoType);
+		NameTypeDesignation nameTypeDesignation = new NameTypeDesignation(typeSpecies, citation, citationMicroReference, originalNameString, status, isRejectedType, isConservedType, isNotDesignated);
+		//nameTypeDesignation.setLectoType(isLectoType);
 		addTypeDesignation(nameTypeDesignation, addToAllHomotypicNames);
 	}
 	

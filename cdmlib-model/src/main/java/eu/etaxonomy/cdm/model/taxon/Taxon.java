@@ -302,19 +302,36 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 	 * {@link SynonymRelationship#getSynonym() synonym} attribute within the synonym relationship
 	 * itself will be set to "null".
 	 *
-	 * @param  synonymRelation  the synonym relationship which should be deleted
+	 * @param synonymRelation  	the synonym relationship which should be deleted
+	 * @param removeSynonymNameFromHomotypicalGroup 
+	 * 							if set to true the synonym name will also be deleted from its homotypical group
 	 * @see     		  		#getSynonymRelations()
 	 * @see     		  		#addSynonymRelation(SynonymRelationship)
 	 * @see 			  		#removeSynonym(Synonym)
 	 */
-	public void removeSynonymRelation(SynonymRelationship synonymRelation) {
+	public void removeSynonymRelation(SynonymRelationship synonymRelation, boolean removeSynonymNameFromHomotypicalGroup) {
 		synonymRelation.setAcceptedTaxon(null);
 		Synonym synonym = synonymRelation.getSynonym();
 		if (synonym != null){
 			synonymRelation.setSynonym(null);
 			synonym.removeSynonymRelation(synonymRelation);
+			if(removeSynonymNameFromHomotypicalGroup){
+				synonym.getName().getHomotypicalGroup().removeTypifiedName(synonym.getName());
+			}
 		}
 		this.synonymRelations.remove(synonymRelation);
+	}
+	
+	/**
+	 * Like {@link Taxon#removeSynonymRelation(SynonymRelationship, boolean)} but synonym name will be deleted from homotypical group 
+	 * by default
+	 * 
+	 * @param synonymRelation   the synonym relationship which should be deleted
+	 * 
+	 * @see					#removeSynonymRelation(SynonymRelationship, boolean)
+	 */
+	public void removeSynonymRelation(SynonymRelationship synonymRelation){
+		removeSynonymRelation(synonymRelation, true);
 	}
 
 	
@@ -1233,6 +1250,7 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 	 * @see #getTaxonomicChildren()
 	 * @see java.lang.Iterable#iterator()
 	 */
+	@Deprecated
 	public Iterator<Taxon> iterator() {
 		return new TaxonIterator(this.getTaxonomicChildren());
 	}
@@ -1241,6 +1259,7 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 	 * @author m.doering
 	 *
 	 */
+	@Deprecated
 	private class TaxonIterator implements Iterator<Taxon> {
 		   private Taxon[] items;
 		   private int i= 0;
@@ -1375,13 +1394,11 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 		list.remove(this.getHomotypicGroup());
 		//sort
 		Map<Synonym, HomotypicalGroup> map = new HashMap<Synonym, HomotypicalGroup>();
-		for (HomotypicalGroup homoGroup: list){
-			if (homoGroup != null) {
-				List<Synonym> synonymList = homoGroup.getSynonymsInGroup(getSec());
-				if (synonymList.size() > 0){
-					map.put(synonymList.get(0), homoGroup);
-				}
-			} // else { TODO: error message
+		for (HomotypicalGroup homotypicalGroup: list){
+			List<Synonym> synonymList = homotypicalGroup.getSynonymsInGroup(getSec());
+			if (synonymList.size() > 0){
+				map.put(synonymList.get(0), homotypicalGroup);
+			}
 		}
 		List<Synonym> keyList = new ArrayList<Synonym>();
 		keyList.addAll(map.keySet());
@@ -1394,5 +1411,54 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 		//sort end
 		return result;
 	}
-
+	
+	/**
+	 * Returns the image gallery description. If no image gallery exists, a new one is created using the 
+	 * defined title and adds the string "-Image Gallery" to the title.</BR>
+	 * If multiple image galleries exist an arbitrary one is choosen.
+	 * @param title
+	 * @return
+	 */
+	@Transient
+	public TaxonDescription getOrCreateImageGallery(String title){
+		return getOrCreateImageGallery(title, true, false);
+	}
+	
+	/**
+	 * Returns the image gallery description. If no image gallery exists, a new one is created using the 
+	 * defined title.</BR>
+	 * If onlyTitle == true we look only for an image gallery with this title, create a new one otherwise.
+	 * If multiple image galleries exist that match the conditions an arbitrary one is choosen.
+	 * @param title
+	 * @param onlyTitle
+	 * @param if true, the String "Image Gallery
+	 * @return
+	 */
+	@Transient
+	public TaxonDescription getOrCreateImageGallery(String title, boolean addImageGalleryToTitle, boolean onlyTitle){
+		TaxonDescription result = null;
+		String titleCache = (title == null) ? "Image Gallery" : title;
+		if (title != null && addImageGalleryToTitle){
+			titleCache = titleCache+ "-Image Gallery";
+		}
+		Set<TaxonDescription> descriptionSet = this.getDescriptions();
+		for (TaxonDescription desc: descriptionSet){
+			if (desc.isImageGallery()){
+				if (onlyTitle && ! titleCache.equals(desc.getTitleCache())){
+					continue;
+				}
+				result = desc;
+				if (onlyTitle && titleCache.equals(desc.getTitleCache())){
+					break;
+				}
+			}
+		}
+		if (result == null){
+			result = TaxonDescription.NewInstance();
+			result.setTitleCache(titleCache);
+			this.addDescription(result);
+			result.setImageGallery(true);
+		}
+		return result;
+	}
 }

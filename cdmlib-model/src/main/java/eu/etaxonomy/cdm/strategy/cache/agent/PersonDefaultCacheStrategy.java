@@ -6,6 +6,7 @@ package eu.etaxonomy.cdm.strategy.cache.agent;
 import java.util.UUID;
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.strategy.StrategyBase;
 
@@ -15,6 +16,7 @@ import eu.etaxonomy.cdm.strategy.StrategyBase;
  */
 public class PersonDefaultCacheStrategy extends StrategyBase implements
 		INomenclaturalAuthorCacheStrategy<Person> {
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(PersonDefaultCacheStrategy.class);
 
 	final static UUID uuid = UUID.fromString("9abda0e1-d5cc-480f-be38-40a510a3f253");
@@ -49,16 +51,33 @@ public class PersonDefaultCacheStrategy extends StrategyBase implements
 	 * @see eu.etaxonomy.cdm.strategy.INomenclaturalAuthorCacheStrategy#getTitleCache(eu.etaxonomy.cdm.model.name.TaxonNameBase)
 	 */
 	public String getTitleCache(Person person) {
-		if (! (person.getLastname() == null)  && ! (person.getLastname().trim().equals("")) ){
-			String result = "";
-			if (person.getFirstname() != null){
-				result += person.getFirstname() + " ";
-			}
-			result += person.getLastname();
+		String result = "";
+		if (CdmUtils.isNotEmpty(person.getLastname() ) ){
+			result = person.getLastname();
+			result = addFirstNamePrefixSuffix(result, person);
 			return result;
 		}else{
-			return person.getNomenclaturalTitle();
+			result = person.getNomenclaturalTitle();
+			if (CdmUtils.isNotEmpty(result)){
+				return result;
+			}
+			addFirstNamePrefixSuffix("", person);
+			if (CdmUtils.isNotEmpty(result)){
+				return result;
+			}
 		}
+		return person.toString();
+	}
+
+	/**
+	 * 
+	 */
+	private String addFirstNamePrefixSuffix(String oldString, Person person) {
+		String result = oldString;
+		result = CdmUtils.concat(" ", person.getFirstname(),result); 
+		result = CdmUtils.concat(" ", person.getPrefix(),result); 
+		result = CdmUtils.concat(" ", result, person.getSuffix()); 
+		return result;
 	}
 
 }

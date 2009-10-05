@@ -63,6 +63,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 @Audited
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase> extends ReferencedEntityBase implements ITypeDesignation {
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TypeDesignationBase.class);
 
 	@XmlElement(name = "IsNotDesignated")
@@ -142,7 +143,7 @@ public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase> e
 
 
 	/** 
-	 * Returns the {@link SpecimenTypeDesignationStatus type designation status} for <i>this</i> specimen type
+	 * Returns the {@link TypeDesignationStatusBase type designation status} for <i>this</i> specimen type
 	 * designation. This status describes which of the possible categories of
 	 * types like "holotype", "neotype", "syntype" or "isotype" applies to <i>this</i>
 	 * specimen type designation.

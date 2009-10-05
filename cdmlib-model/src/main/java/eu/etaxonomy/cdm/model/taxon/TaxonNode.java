@@ -300,6 +300,7 @@ public class TaxonNode  extends AnnotatableEntity implements ITreeNode{
 	/**
 	 * Removes the child node from this node. Sets the parent and the taxonomic tree of the child 
 	 * node to null
+	 * 
 	 * @param childNode
 	 * @return
 	 */

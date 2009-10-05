@@ -87,7 +87,7 @@ public class SpecimenTypeDesignationStatus extends TypeDesignationStatusBase<Spe
 
 	private static SpecimenTypeDesignationStatus HOLOTYPE;
 
-	private static SpecimenTypeDesignationStatus UNSPECIFIC;
+	private static SpecimenTypeDesignationStatus UNSPECIFIED;
 	
 	private static SpecimenTypeDesignationStatus ORIGINAL_MATERIAL;
 	
@@ -111,7 +111,7 @@ public class SpecimenTypeDesignationStatus extends TypeDesignationStatusBase<Spe
 	private static final UUID uuidIsoepitype = UUID.fromString("95b90696-e103-4bc0-b60b-c594983fb566");
 	private static final UUID uuidIconotype = UUID.fromString("643513d0-32f5-46ba-840b-d9b9caf8160f");
 	private static final UUID uuidPhototype = UUID.fromString("b7807acc-f559-474e-ad4a-e7a41e085e34");
-	private static final UUID uuidUnspecific = UUID.fromString("230fd762-b143-49de-ac2e-744bcc48a63b");
+	private static final UUID uuidUnspecified = UUID.fromString("230fd762-b143-49de-ac2e-744bcc48a63b");
 	private static final UUID uuidOriginalMaterial = UUID.fromString("49c96cae-6be6-401e-9b36-1bc12d9dc8f9");
 	private static final UUID uuidIsosyntype = UUID.fromString("052a5ff0-8e9a-4355-b24f-5e4bb6071f44");
 
@@ -375,7 +375,7 @@ public class SpecimenTypeDesignationStatus extends TypeDesignationStatusBase<Spe
 	 * 
 	 */
 	public static final SpecimenTypeDesignationStatus UNSPECIFIC(){
-		return UNSPECIFIC;
+		return UNSPECIFIED;
 	}
 
 	/**
@@ -417,7 +417,7 @@ public class SpecimenTypeDesignationStatus extends TypeDesignationStatusBase<Spe
 		SpecimenTypeDesignationStatus.SECOND_STEP_NEOTYPE = termVocabulary.findTermByUuid(SpecimenTypeDesignationStatus.uuidSecondStepNeotype);
 		SpecimenTypeDesignationStatus.SYNTYPE = termVocabulary.findTermByUuid(SpecimenTypeDesignationStatus.uuidSyntype);		
 		SpecimenTypeDesignationStatus.ISOSYNTYPE = termVocabulary.findTermByUuid(SpecimenTypeDesignationStatus.uuidIsosyntype);
-		SpecimenTypeDesignationStatus.UNSPECIFIC = termVocabulary.findTermByUuid(SpecimenTypeDesignationStatus.uuidUnspecific);		
+		SpecimenTypeDesignationStatus.UNSPECIFIED = termVocabulary.findTermByUuid(SpecimenTypeDesignationStatus.uuidUnspecified);		
 		SpecimenTypeDesignationStatus.ORIGINAL_MATERIAL = termVocabulary.findTermByUuid(SpecimenTypeDesignationStatus.uuidOriginalMaterial);
 	}
 

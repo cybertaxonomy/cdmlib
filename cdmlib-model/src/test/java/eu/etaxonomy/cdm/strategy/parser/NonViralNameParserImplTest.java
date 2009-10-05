@@ -418,6 +418,21 @@ public class NonViralNameParserImplTest {
 		assertEquals(Integer.valueOf(1923), nameZooRefNotParsabel.getPublicationYear());
 		assertEquals(1, nameZooRefNotParsabel.getStatus().size());
 
+		String strZooNameSineYear = "Homo sapiens L., 1758, Sp. An. 3: 345";
+		ZoologicalName nameZooNameSineYear = (ZoologicalName)parser.parseReferencedName(strZooNameSineYear);
+		assertFalse(nameZooNameSineYear.hasProblem());
+		assertEquals("Name without reference year must have year", (Integer)1758, nameZooNameSineYear.getPublicationYear());
+		assertEquals("Name without reference year must have year", "1758", nameZooNameSineYear.getNomenclaturalReference().getYear());
+		
+		String strZooNameNewCombination = "Homo sapiens (L., 1758) Mill., 1830, Sp. An. 3: 345";
+		ZoologicalName nameZooNameNewCombination = (ZoologicalName)parser.parseReferencedName(strZooNameNewCombination);
+		assertTrue(nameZooNameNewCombination.hasProblem());
+		list = nameZooNameNewCombination.getParsingProblems();
+		assertTrue("List must contain new combination has publication warning ", list.contains(ParserProblem.NewCombinationHasPublication));
+		assertEquals(35, nameZooNameNewCombination.getProblemStarts());
+		assertEquals(51, nameZooNameNewCombination.getProblemEnds());
+		
+		
 		//Special MicroRefs
 		String strSpecDetail1 = "Abies alba Mill. in Sp. Pl. 4(6): [455]. 1987";
 		NonViralName<?> nameSpecDet1 = parser.parseReferencedName(strSpecDetail1 + ".", null, Rank.SPECIES());

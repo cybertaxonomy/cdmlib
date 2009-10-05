@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.model.name;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -53,7 +54,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 @XmlType(name = "NameTypeDesignation", propOrder = {
     "rejectedType",
     "conservedType",
-    "lectoType",
+    /*"lectoType",*/
     "typeName"
 })
 @Entity
@@ -61,7 +62,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 public class NameTypeDesignation extends TypeDesignationBase<NameTypeDesignationStatus> 
 implements ITypeDesignation {
 	
-	static Logger logger = Logger.getLogger(NameTypeDesignation.class);
+	final static Logger logger = Logger.getLogger(NameTypeDesignation.class);
 	
 	@XmlElement(name = "IsRejectedType")
 	private boolean rejectedType;
@@ -69,8 +70,8 @@ implements ITypeDesignation {
 	@XmlElement(name = "IsConservedType")
 	private boolean conservedType;
 	
-	@XmlElement(name = "IsLectoType")
-	private boolean lectoType;
+//	@XmlElement(name = "IsLectoType")
+//	private boolean lectoType;
 	
 	@XmlElement(name = "TypeName")
 	@XmlIDREF
@@ -78,12 +79,6 @@ implements ITypeDesignation {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@Cascade(CascadeType.SAVE_UPDATE)
 	private TaxonNameBase typeName;
-	
-//	@XmlElement(name = "HomotypicalGroup")
-//	@XmlIDREF
-//	@XmlSchemaType(name = "IDREF")
-//	private HomotypicalGroup homotypicalGroup;
-	
 	
 	
 	// ************* CONSTRUCTORS *************/	
@@ -95,14 +90,6 @@ implements ITypeDesignation {
 	protected NameTypeDesignation() {
 	}
 
-	/**
-	 * Static factory method
-	 * @return
-	 */
-	public static NameTypeDesignation NewInstance() {
-		return new NameTypeDesignation();
-	}
-	
 	/**
 	 * Class constructor: creates a new name type designation instance
 	 * (including its {@link eu.etaxonomy.cdm.model.reference.ReferenceBase reference source} and eventually
@@ -151,12 +138,12 @@ implements ITypeDesignation {
 	 * @see							TaxonNameBase#addNameTypeDesignation(TaxonNameBase, ReferenceBase, String, String, boolean, boolean, boolean, boolean, boolean)
 	 */
 	protected NameTypeDesignation(TaxonNameBase typeName, ReferenceBase citation, String citationMicroReference,
-			String originalNameString, boolean rejectedType, boolean conservedType, boolean lectoType, boolean isNotDesignated) {
+			String originalNameString, NameTypeDesignationStatus status, boolean rejectedType, boolean conservedType, /*boolean lectoType,*/ boolean isNotDesignated) {
 		super(citation, citationMicroReference, originalNameString, isNotDesignated);
 		this.setTypeName(typeName);
 		this.rejectedType = rejectedType;
 		this.conservedType = conservedType;
-		this.lectoType = lectoType;
+//		this.lectoType = lectoType;
 	}
 		
 	//********* METHODS **************************************/
@@ -173,7 +160,7 @@ implements ITypeDesignation {
 	/**
 	 * @see  #getTypeName()
 	 */
-	public void setTypeName(TaxonNameBase typeName){
+	private void setTypeName(TaxonNameBase typeName){
 		this.typeName = typeName;
 	}
 
@@ -211,6 +198,11 @@ implements ITypeDesignation {
 		this.conservedType = conservedType;
 	}
 
+	@Transient
+	public boolean isLectoType() {
+		return getTypeStatus().isLectotype();
+	}
+	
 	/** 
 	 * Returns the boolean value "true" if the use of the species {@link TaxonNameBase taxon name}
 	 * as the type for <i>this</i> taxon name type designation was posterior to the
@@ -220,17 +212,17 @@ implements ITypeDesignation {
 	 *  
 	 * @see   ReferencedEntityBase#getCitation()
 	 */
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.name.ITypeDesignation#isLectoType()
-	 */
-	public boolean isLectoType() {
-		return lectoType;
-	}
-
-	/**
-	 * @see   #isLectoType()
-	 */
-	public void setLectoType(boolean lectoType) {
-		this.lectoType = lectoType;
-	}
+//	/* (non-Javadoc)
+//	 * @see eu.etaxonomy.cdm.model.name.ITypeDesignation#isLectoType()
+//	 */
+//	public boolean isLectoType() {
+//		return lectoType;
+//	}
+//
+//	/**
+//	 * @see   #isLectoType()
+//	 */
+//	public void setLectoType(boolean lectoType) {
+//		this.lectoType = lectoType;
+//	}
 }

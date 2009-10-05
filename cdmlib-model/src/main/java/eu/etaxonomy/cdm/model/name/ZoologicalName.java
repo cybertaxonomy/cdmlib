@@ -10,6 +10,8 @@
 package eu.etaxonomy.cdm.model.name;
 
 
+import java.util.Map;
+
 import javax.persistence.Entity;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -24,8 +26,11 @@ import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
 import org.springframework.beans.factory.annotation.Configurable;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
+import eu.etaxonomy.cdm.strategy.cache.name.CacheUpdate;
 import eu.etaxonomy.cdm.strategy.cache.name.ZooNameDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.parser.INonViralNameParser;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
@@ -63,11 +68,13 @@ public class ZoologicalName extends NonViralName<ZoologicalName> {
 	
 	@XmlElement(name = "PublicationYear")
 	@Field(index=Index.UN_TOKENIZED)
-	private Integer publicationYear;
+	@CacheUpdate(value ="authorshipCache")
+    private Integer publicationYear;
 	
 	@XmlElement(name = "OriginalPublicationYear")
 	@Field(index=Index.UN_TOKENIZED)
-	private Integer originalPublicationYear;
+	@CacheUpdate(value ="authorshipCache")
+    private Integer originalPublicationYear;
 
 	static private INonViralNameParser nameParser = new NonViralNameParserImpl();
 
@@ -258,7 +265,20 @@ public class ZoologicalName extends NonViralName<ZoologicalName> {
 		return NomenclaturalCode.ICZN;
 	}
 	
+//*************** ***************************
+	
+	private static Map<String, java.lang.reflect.Field> allFields = null;
+	@Override
+    protected Map<String, java.lang.reflect.Field> getAllFields(){
+    	if (allFields == null){
+			allFields = CdmUtils.getAllFields(this.getClass(), CdmBase.class, false, false, false, true);
+		}
+    	return allFields;
+    }
+	
 /* ***************** GETTER / SETTER ***************************/
+	
+	
 	
 	/**
 	 * Returns the breed name string for <i>this</i> animal (zoological taxon name).

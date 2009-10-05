@@ -9,10 +9,12 @@
 package eu.etaxonomy.cdm.model.agent;
 
 import javax.persistence.Entity;
+import javax.persistence.Transient;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
@@ -20,6 +22,7 @@ import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.strategy.cache.agent.INomenclaturalAuthorCacheStrategy;
 import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 
@@ -49,6 +52,10 @@ public abstract class TeamOrPersonBase<T extends TeamOrPersonBase<?>> extends Ag
     @Size(max = 255)
 	protected String nomenclaturalTitle;
 
+	@Transient
+	@XmlTransient
+	protected boolean isGeneratingTitleCache = false;
+	
 	/**
 	 * Returns the identification string (nomenclatural abbreviation) used in
 	 * nomenclature for this {@link Person person} or this {@link Team team}.
@@ -56,7 +63,11 @@ public abstract class TeamOrPersonBase<T extends TeamOrPersonBase<?>> extends Ag
 	 * @see  INomenclaturalAuthor#getNomenclaturalTitle()
 	 */
 	public String getNomenclaturalTitle() {
-		return nomenclaturalTitle;
+		String result = nomenclaturalTitle;
+		if (CdmUtils.isEmpty(nomenclaturalTitle) && (isGeneratingTitleCache == false)){
+			result = getTitleCache();
+		}
+		return result;
 	}
 
 	/** 
@@ -65,4 +76,32 @@ public abstract class TeamOrPersonBase<T extends TeamOrPersonBase<?>> extends Ag
 	public void setNomenclaturalTitle(String nomenclaturalTitle) {
 		this.nomenclaturalTitle = nomenclaturalTitle;
 	}
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.IdentifiableEntity#getTitleCache()
+	 */
+	@Override
+	public String getTitleCache() {
+		isGeneratingTitleCache = true;
+		String result = super.getTitleCache();
+		result = replaceEmptyTitleByNomTitle(result);
+		isGeneratingTitleCache = false;
+		return result;
+	}
+
+	/**
+	 * @param result
+	 * @return
+	 */
+	protected String replaceEmptyTitleByNomTitle(String result) {
+		if (CdmUtils.isEmpty(result)){
+			result = nomenclaturalTitle;
+		}
+		if (CdmUtils.isEmpty(result)){
+			result = super.getTitleCache();
+		}
+		return result;
+	}
+	
+	
 }

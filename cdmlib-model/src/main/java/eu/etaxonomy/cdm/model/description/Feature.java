@@ -120,6 +120,7 @@ public class Feature extends DefinedTermBase<Feature> {
 	private static Feature DISTRIBUTION;
 	private static Feature DESCRIPTION;
 	private static Feature UNKNOWN;
+	private static Feature ANATOMY;
 
 	@XmlElement(name = "SupportsTextData")
 	private boolean supportsTextData;
@@ -567,6 +568,7 @@ public class Feature extends DefinedTermBase<Feature> {
 	private static final UUID uuidIntroduction = UUID.fromString("e75255ca-8ff4-4905-baad-f842927fe1d3");
 	private static final UUID uuidDiscussion = UUID.fromString("d3c4cbb6-0025-4322-886b-cd0156753a25");
 	private static final UUID uuidImage = UUID.fromString("84193b2c-327f-4cce-90ef-c8da18fd5bb5");
+	private static final UUID uuidAnatomy = UUID.fromString("94213b2c-e67a-4d37-25ef-e8d316edfba1");
 	
 	
 //	private static final UUID uuidDistribution = UUID.fromString("");
@@ -770,6 +772,13 @@ public class Feature extends DefinedTermBase<Feature> {
 	public static final Feature OCCURRENCE(){
 		return OCCURRENCE;
 	}
+
+	/**
+	 * Returns the "anatomy" feature.
+	 */
+	public static final Feature ANATOMY(){
+		return ANATOMY;
+	}
 	
 	/**
 	 * Returns the "citation" feature. This feature can only be described
@@ -873,6 +882,7 @@ public class Feature extends DefinedTermBase<Feature> {
 		Feature.PROTOLOG = termVocabulary.findTermByUuid(Feature.uuidProtolog);
 		Feature.UNKNOWN = termVocabulary.findTermByUuid(Feature.uuidUnknown);
 		Feature.USES = termVocabulary.findTermByUuid(Feature.uuidUses);
+		Feature.ANATOMY = termVocabulary.findTermByUuid(Feature.uuidAnatomy);
 	}
 
 }

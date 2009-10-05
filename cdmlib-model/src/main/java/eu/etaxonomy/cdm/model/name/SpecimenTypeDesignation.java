@@ -105,14 +105,6 @@ implements ITypeDesignation {
 	}
 	
 	/**
-	 * Static factory method
-	 * @return
-	 */
-	public static SpecimenTypeDesignation NewInstance() {
-		return new SpecimenTypeDesignation();
-	}
-	
-	/**
 	 * Class constructor: creates a new specimen type designation instance
 	 * (including its {@link eu.etaxonomy.cdm.model.reference.ReferenceBase reference source} and 
 	 * eventually the taxon name string originally used by this reference when 
@@ -160,18 +152,6 @@ implements ITypeDesignation {
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.name.ITypeDesignation#isLectoType()
-	 */
-	/**
-	 * Returns the boolean value indicating whether <i>this</i> specimen type
-	 * designation has a "lectotype" status (true) or not (false).<BR>
-	 * A lectotype is a {@link eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase specimen or illustration} designated as the
-	 * nomenclatural type, when no holotype was indicated at the time of
-	 * publication of the "type-bringing" {@link TaxonNameBase taxon name}, when the
-	 * holotype is found to belong to more than one taxon name,
-	 * or as long as it is missing.
-	 *
-	 * @see  SpecimenTypeDesignationStatus#isLectotype()
-	 * @see  SpecimenTypeDesignationStatus#HOLOTYPE()
 	 */
 	@Transient
 	public boolean isLectoType() {

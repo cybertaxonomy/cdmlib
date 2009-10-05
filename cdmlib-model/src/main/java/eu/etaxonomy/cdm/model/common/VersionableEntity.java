@@ -59,6 +59,7 @@ public abstract class VersionableEntity extends CdmBase {
 	//@XmlElement(name ="Updated", type = String.class)
 	//@XmlJavaTypeAdapter(DateTimeAdapter.class)
 	@XmlElement(name ="Updated")
+	//@XmlElement(name ="Updated")
 	@Type(type="dateTimeUserType")
 	@Basic(fetch = FetchType.LAZY)
 	@Match(MatchMode.IGNORE)

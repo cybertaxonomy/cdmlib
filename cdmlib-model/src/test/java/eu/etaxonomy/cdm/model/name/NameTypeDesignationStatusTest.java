@@ -17,7 +17,6 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
@@ -63,11 +62,6 @@ public class NameTypeDesignationStatusTest extends EntityTestBase {
 	@Test
 	public void testAUTOMATIC() {
 		assertEquals(uuidAutomatic,  NameTypeDesignationStatus.AUTOMATIC().getUuid());	
-	}
-	
-	@Test
-	public void testFIRST_REVISOR() {
-		assertEquals(uuidFirstRevisor,  NameTypeDesignationStatus.FIRST_REVISOR().getUuid());	
 	}
 
 	@Test

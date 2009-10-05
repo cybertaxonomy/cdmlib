@@ -107,7 +107,7 @@ public abstract class ReferenceBase<S extends IReferenceBaseCacheStrategy> exten
 	
 	@XmlAttribute(name ="type")
 	@Column(name="refType")  
-	ReferenceType type;
+	protected ReferenceType type;
 	
 	//Title of the reference
 	@XmlElement(name ="Title" )
@@ -241,6 +241,15 @@ public abstract class ReferenceBase<S extends IReferenceBaseCacheStrategy> exten
 	
 //*************************** GETTER / SETTER ******************************************/    
 	
+	/**
+	 * @return the type
+	 */
+	public ReferenceType getType() {
+		return type;
+	}
+    
+    
+    
 	/**
 	 * Returns a string representing the title of <i>this</i> reference. If a
 	 * reference has different titles (for instance abbreviated and not
@@ -451,7 +460,8 @@ public abstract class ReferenceBase<S extends IReferenceBaseCacheStrategy> exten
 	 */
 	@Transient
 	public String getYear(){
-		if (this.getDatePublished() != null && this.getDatePublished().getStart() != null){
+		TimePeriod datePublished = this.getDatePublished();
+		if (datePublished != null ){
 			return getDatePublished().getYear();
 		}else{
 			return null;
