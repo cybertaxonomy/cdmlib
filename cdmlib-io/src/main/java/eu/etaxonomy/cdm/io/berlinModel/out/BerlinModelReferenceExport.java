@@ -257,11 +257,13 @@ public class BerlinModelReferenceExport extends BerlinModelExportBase<ReferenceB
 ////			return null;
 ////		}
 //	}
+	
 
 	//called by MethodMapper
 	@SuppressWarnings("unused")
-	private static String getNomRefTitle(ReferenceBase<?> ref){
-		if (ref.isNomenclaturallyRelevant()){
+	private static String getNomTitleAbbrev(ReferenceBase<?> ref){
+		
+		if (/*ref.isNomenclaturallyRelevant() &&*/ ref.getTitle() != null && ref.getTitle().length() <=80){
 			return ref.getTitle();
 		}else{
 			return null;

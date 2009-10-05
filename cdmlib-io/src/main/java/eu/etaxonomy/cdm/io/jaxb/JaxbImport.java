@@ -32,6 +32,7 @@ import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.LanguageStringBase;
 import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
+import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
@@ -114,6 +115,7 @@ public class JaxbImport extends CdmIoBase<JaxbImportState> implements ICdmIO<Jax
 		Collection<TaxonBase> taxonBases;
 		List<? extends AgentBase> agents;
 		List<DefinedTermBase> terms;
+		List<User> users;
 		List<ReferenceBase> references;
 		List<TaxonNameBase> taxonomicNames;
 		List<DescriptionBase> descriptions;
@@ -141,15 +143,16 @@ public class JaxbImport extends CdmIoBase<JaxbImportState> implements ICdmIO<Jax
 
 		if ((jaxbImpConfig.isDoTermVocabularies() == true) 
 				&& (termVocabularies = dataSet.getTermVocabularies()).size() > 0) {
-			txStatus = startTransaction();
+			//txStatus = startTransaction();
 			ret &= saveTermVocabularies(termVocabularies);
-			commitTransaction(txStatus);
+			
 		}
 		
 		if ((jaxbImpConfig.isDoTerms() == true)
 				&& (terms = dataSet.getTerms()).size() > 0) {
 			//txStatus = startTransaction();
 			ret &= saveTerms(terms);
+			
 			//commitTransaction(txStatus);
 		}
 		
@@ -168,7 +171,18 @@ public class JaxbImport extends CdmIoBase<JaxbImportState> implements ICdmIO<Jax
 //			ret = false;
 //		}
 //		commitTransaction(txStatus);
-
+		try {
+			if (jaxbImpConfig.isDoUser() == true) {
+				if ((users = dataSet.getUsers()).size() > 0) {
+					logger.error("Agents: " + users.size());
+					getUserService().save(users);
+					
+				}
+			}
+		} catch (Exception ex) {
+			logger.error("Error saving agents");
+			ret = false;
+		}
 		
 		//txStatus = startTransaction();
 		try {
@@ -221,6 +235,7 @@ public class JaxbImport extends CdmIoBase<JaxbImportState> implements ICdmIO<Jax
 				if ((homotypicalGroups = dataSet.getHomotypicalGroups()).size() > 0) {
 					logger.info("Homotypical groups: " + homotypicalGroups.size());
 					getNameService().saveAllHomotypicalGroups(homotypicalGroups);
+					
 				}
 			}
 		} catch (Exception ex) {

@@ -118,31 +118,6 @@
     </xs:complexContent>
   </xs:complexType>
 
-  <xs:complexType name="Specimen">
-    <xs:complexContent>
-      <xs:extension base="occurrence:DerivedUnitBase">
-        <xs:sequence>
-          <xs:element name="Preservation" type="xs:IDREF" minOccurs="0"/>
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="DerivedUnitBase" abstract="true">
-    <xs:complexContent>
-      <xs:extension base="occurrence:SpecimenOrObservationBase">
-        <xs:sequence>
-          <xs:element name="Collection" type="xs:IDREF" minOccurs="0"/>
-          <xs:element name="CatalogNumber" type="xs:string" minOccurs="0"/>
-          <xs:element name="StoredUnder" type="xs:IDREF" minOccurs="0"/>
-          <xs:element name="DerivedFrom" type="xs:IDREF" minOccurs="0"/>
-          <xs:element name="AccessionNumber" type="xs:string" minOccurs="0"/>
-          <xs:element name="CollectorsNumber" type="xs:string" minOccurs="0"/>
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
   <xs:complexType name="SpecimenOrObservationBase" abstract="true">
     <xs:complexContent>
       <xs:extension base="media:IdentifiableMediaEntity">
@@ -154,7 +129,7 @@
           <xs:element name="Descriptions" minOccurs="0">
             <xs:complexType>
               <xs:sequence>
-                <xs:element name="Description" type="description:SpecimenDescription" minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element name="Description" type="description:DescriptionBase" minOccurs="0" maxOccurs="unbounded"/>
               </xs:sequence>
             </xs:complexType>
           </xs:element>
@@ -168,7 +143,7 @@
           <xs:element name="DerivationEvents" minOccurs="0">
             <xs:complexType>
               <xs:sequence>
-                <xs:element name="DerivationEvent" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element ref="occurrence:DerivationEvent" minOccurs="0" maxOccurs="unbounded"/>
               </xs:sequence>
             </xs:complexType>
           </xs:element>
@@ -176,6 +151,23 @@
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
+
+  <xs:complexType name="DerivedUnitBase" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="occurrence:SpecimenOrObservationBase">
+        <xs:sequence>
+          <xs:element ref="occurrence:Collection" minOccurs="0"/>
+          <xs:element name="CatalogNumber" type="xs:string" minOccurs="0"/>
+          <xs:element name="StoredUnder" type="xs:IDREF" minOccurs="0"/>
+          <xs:element name="DerivedFrom" type="xs:IDREF" minOccurs="0"/>
+          <xs:element name="AccessionNumber" type="xs:string" minOccurs="0"/>
+          <xs:element name="CollectorsNumber" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  
 
   <xs:complexType name="DeterminationEvent">
     <xs:complexContent>
@@ -192,6 +184,16 @@
               </xs:sequence>
             </xs:complexType>
           </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="Specimen">
+    <xs:complexContent>
+      <xs:extension base="occurrence:DerivedUnitBase">
+        <xs:sequence>
+          <xs:element name="Preservation" type="xs:IDREF" minOccurs="0"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
@@ -215,7 +217,7 @@
               </xs:sequence>
             </xs:complexType>
           </xs:element>
-          <xs:element name="DerivationEventType" type="xs:IDREF" minOccurs="0"/>
+          <xs:element ref="occurrence:DerivationEventType" minOccurs="0"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
@@ -227,7 +229,7 @@
         <xs:sequence>
           <xs:element name="FieldNumber" type="xs:string" minOccurs="0"/>
           <xs:element name="FieldNotes" type="xs:string" minOccurs="0"/>
-          <xs:element name="GatheringEvent" type="xs:IDREF"/>
+           <xs:element ref="occurrence:GatheringEvent" minOccurs="0"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>

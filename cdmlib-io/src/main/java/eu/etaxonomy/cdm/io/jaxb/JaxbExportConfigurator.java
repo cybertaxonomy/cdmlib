@@ -27,7 +27,7 @@ public class JaxbExportConfigurator extends ExportConfiguratorBase implements IE
 	private boolean formattedOutput = Boolean.TRUE;
 	private String encoding = "UTF-8"; 
 
-//	private boolean doAgents = true;
+	private boolean doUsers = true;
 	private boolean doAgentData = true;
 	private boolean doLanguageData = true;
 	private boolean doFeatureData = true;
@@ -93,6 +93,7 @@ public class JaxbExportConfigurator extends ExportConfiguratorBase implements IE
 		return doLanguageData;
 	}
 	
+	
 	public void setDoLanguageData(boolean doLanguageData) {
 		this.doLanguageData = doLanguageData;
 	}
@@ -138,6 +139,9 @@ public class JaxbExportConfigurator extends ExportConfiguratorBase implements IE
 
 	public boolean isDoSynonyms() {
 		return doSynonyms;
+	}
+	public boolean isDoUsers() {
+		return doUsers;
 	}
 	
 	public void setDoSynonyms(boolean doSynonyms) {
@@ -227,5 +231,7 @@ public class JaxbExportConfigurator extends ExportConfiguratorBase implements IE
 
 	public void setDoTypeDesignations(boolean doTypeDesignations) {
 		this.doTypeDesignations = doTypeDesignations;
-	}	
+	}
+
+		
 }

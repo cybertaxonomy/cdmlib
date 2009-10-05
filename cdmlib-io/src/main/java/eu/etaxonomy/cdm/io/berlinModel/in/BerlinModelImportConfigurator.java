@@ -27,6 +27,7 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.reference.Database;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
+import eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelTaxonImport.PublishMarkerChooser;
 
 /**
  * @author a.mueller
@@ -40,6 +41,7 @@ public class BerlinModelImportConfigurator extends ImportConfiguratorBase<Berlin
 			return new BerlinModelImportConfigurator(berlinModelSource, destination);
 	}
 
+	private PublishMarkerChooser taxonPublishMarker = PublishMarkerChooser.ALL;
 	
 	private Method namerelationshipTypeMethod;
 	private Method uuidForDefTermMethod;
@@ -232,6 +234,23 @@ public class BerlinModelImportConfigurator extends ImportConfiguratorBase<Berlin
 	public void setNamerelationshipTypeMethod(Method namerelationshipTypeMethod) {
 		this.namerelationshipTypeMethod = namerelationshipTypeMethod;
 	}
+	
+	/**
+	 * @return the taxonPublishMarker
+	 */
+	public BerlinModelTaxonImport.PublishMarkerChooser getTaxonPublishMarker() {
+		return taxonPublishMarker;
+	}
+
+	/**
+	 * @param taxonPublishMarker the taxonPublishMarker to set
+	 */
+	public void setTaxonPublishMarker(
+			BerlinModelTaxonImport.PublishMarkerChooser taxonPublishMarker) {
+		this.taxonPublishMarker = taxonPublishMarker;
+	}
+
+
 
 	/**
 	 * @return the uuidForDefTermMethod

@@ -262,8 +262,8 @@ public class ImportHelper {
 		T result;
 		try {
 			if (isBoolean){
-				if (cdmAttrName == null || cdmAttrName.length() < 3 || !cdmAttrName.startsWith("is")){
-					throw new IllegalArgumentException("boolean CdmAttributeName should have atleast 3 characters and start with 'is': " + cdmAttrName);
+				if (cdmAttrName == null || cdmAttrName.length() < 3 ||  !( cdmAttrName.startsWith("is") || cdmAttrName.startsWith("use"))     ){
+					throw new IllegalArgumentException("boolean CdmAttributeName should have atleast 3 characters and start with 'is' or 'use': " + cdmAttrName);
 				}
 				methodName = cdmAttrName ;
 			}else {

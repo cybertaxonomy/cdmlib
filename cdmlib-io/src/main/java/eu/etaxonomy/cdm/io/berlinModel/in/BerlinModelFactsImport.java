@@ -216,32 +216,10 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 						//for diptera images
 						if (categoryFk == 51){  //TODO check also FactCategory string
 							isImage = true;
-							String uri = fact;
-							Integer size = null; 
-							ImageMetaData imageMetaData = new ImageMetaData();
-							URL url;
-							try {
-								url = new URL(fact.trim());
-							} catch (MalformedURLException e) {
-								logger.warn("Malformed URL. Image could not be imported: " + CdmUtils.Nz(uri));
-								continue;
-							}
-							imageMetaData.readFrom(url);
 							media = Media.NewInstance();
-							MediaRepresentation mediaRepresentation = MediaRepresentation.NewInstance(imageMetaData.getMimeType(), null);
-							media.addRepresentation(mediaRepresentation);
-							ImageFile image = ImageFile.NewInstance(uri, size, imageMetaData);
-							mediaRepresentation.addRepresentationPart(image);
-							for (TaxonDescription desc: descriptionSet){
-								if (desc.isImageGallery()){
-									taxonDescription = desc;
-								}
-							}
+							taxonDescription = makeImage(state, fact, media, descriptionSet, taxon);
 							if (taxonDescription == null){
-								taxonDescription = TaxonDescription.NewInstance();
-								taxonDescription.setTitleCache(sourceRef == null ? "Image Galery":sourceRef.getTitleCache()+"-Image Galery");
-								taxon.addDescription(taxonDescription);
-								taxonDescription.setImageGallery(true);
+								continue;
 							}
 						}
 						//all others (no image)
@@ -360,6 +338,7 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 						//TODO
 						//Designation References -> unclear how to map to CDM
 						//factId -> OriginalSource for descriptionElements not yet implemented
+						
 						//sequence -> textData is not an identifiable entity therefore extensions are not possible
 						//fact category better
 						
@@ -384,6 +363,37 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 
 	}
 	
+	/**
+	 * @param state 
+	 * @param media 
+	 * @param media 
+	 * @param descriptionSet 
+	 * 
+	 */
+	private TaxonDescription makeImage(BerlinModelImportState state, String fact, Media media, Set<TaxonDescription> descriptionSet, Taxon taxon) {
+		TaxonDescription taxonDescription = null;
+		ReferenceBase sourceRef = state.getConfig().getSourceReference();
+		String uri = fact;
+		Integer size = null; 
+		ImageMetaData imageMetaData = new ImageMetaData();
+		URL url;
+		try {
+			url = new URL(fact.trim());
+		} catch (MalformedURLException e) {
+			logger.warn("Malformed URL. Image could not be imported: " + CdmUtils.Nz(uri));
+			return null;
+		}
+		imageMetaData.readFrom(url);
+		MediaRepresentation mediaRepresentation = MediaRepresentation.NewInstance(imageMetaData.getMimeType(), null);
+		media.addRepresentation(mediaRepresentation);
+		ImageFile image = ImageFile.NewInstance(uri, size, imageMetaData);
+		mediaRepresentation.addRepresentationPart(image);
+		
+		taxonDescription = taxon.getOrCreateImageGallery(sourceRef == null ? null :sourceRef.getTitleCache());
+		
+		return taxonDescription;
+	}
+
 	private TaxonBase getTaxon(MapWrapper<TaxonBase> taxonMap, Object taxonIdObj, Integer taxonId){
 		if (taxonIdObj != null){
 			return taxonMap.get(taxonId);

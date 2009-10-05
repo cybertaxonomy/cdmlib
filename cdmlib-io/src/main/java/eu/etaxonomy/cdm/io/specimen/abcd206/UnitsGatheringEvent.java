@@ -7,7 +7,7 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package eu.etaxonomy.cdm.io.abcd206;
+package eu.etaxonomy.cdm.io.specimen.abcd206;
 
 
 import java.util.ArrayList;
@@ -122,7 +122,7 @@ public class UnitsGatheringEvent {
 			collName = collectors.next();
 			/*check if the collector does already exist*/
 			try{
-				List<AgentBase> col = config.getAgentService().findByTitle(null, collName, null, null, null, null, null, null).getRecords();
+				List<AgentBase> col = config.getAgentService().findByTitle(null,collName,null,null,null,null,null, null).getRecords();
 				collector=col.get(0);
 			}catch (Exception e) {
 				collector = Person.NewInstance();

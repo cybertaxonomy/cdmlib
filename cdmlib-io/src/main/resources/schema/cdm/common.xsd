@@ -291,7 +291,7 @@
   <xs:complexType name="MarkerType">
     <xs:complexContent>
       <xs:extension base="common:DefinedTermBase">
-        <xs:sequence/>
+        <xs:attribute name="isTechnical" type="xs:boolean"/>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
@@ -351,6 +351,7 @@
     <xs:sequence>
       <xs:element name="Start" type="common:Partial" minOccurs="0"/>
       <xs:element name="End" type="common:Partial" minOccurs="0"/>
+      <xs:element name="FreeText" type="xs:string" minOccurs="0"/>
     </xs:sequence>
   </xs:complexType>
 
@@ -439,6 +440,17 @@
               </xs:sequence>
             </xs:complexType>
           </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  
+  <xs:complexType name="DescriptionElementSource">
+    <xs:complexContent>
+      <xs:extension base="common:OriginalSource">
+        <xs:sequence>
+          <xs:element name="SourcedObject" type="xs:IDREF" minOccurs="0"/>
+          <xs:element name="nameUsedInSource" type="xs:IDREF" minOccurs="0"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>

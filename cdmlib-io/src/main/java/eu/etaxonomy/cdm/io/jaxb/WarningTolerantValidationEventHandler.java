@@ -25,6 +25,8 @@ public class WarningTolerantValidationEventHandler extends
 		 // logger.warn("Line:Col[" + validationEventLocator.getLineNumber() + ":" + validationEventLocator.getColumnNumber() +"]:" + validationEvent.getMessage());
 		
 		  //  validationEvent.getLinkedException().printStackTrace();
+		
+		  //  TODO: check this
 		  return true;
 		} else {
 		   ValidationEventLocator validationEventLocator = validationEvent.getLocator();
