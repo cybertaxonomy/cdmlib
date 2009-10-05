@@ -18,7 +18,7 @@ import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
-public interface IAnnotatableService<T extends AnnotatableEntity> extends IVersionableService<T> {
+public interface IAnnotatableService<T extends AnnotatableEntity> extends IService<T> {
 	
 	/**
 	 * Return a Pager containing Annotation entities belonging to the object supplied, optionally

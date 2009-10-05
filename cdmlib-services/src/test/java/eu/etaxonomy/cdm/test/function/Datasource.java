@@ -47,7 +47,7 @@ public class Datasource {
 		CdmPersistentDataSource dataSource = lsDataSources.get(0);
 		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
 //		ICdmDataSource dataSource = CdmDataSource.NewInstance(dbType, "192.168.2.10", "cdm_test_andreas", dbType.getDefaultPort() + "", "edit", "", null, null);
-		CdmPersistentDataSource.save(dataSource.getName(), dataSource, null);
+		CdmPersistentDataSource.save(dataSource.getName(), dataSource);
 		CdmApplicationController appCtr;
 		try {
 			appCtr = CdmApplicationController.NewInstance(dataSource);
@@ -79,7 +79,7 @@ public class Datasource {
 			
 			ICdmDataSource dataSource = CdmDataSource.NewInstance(DatabaseTypeEnum.SqlServer2005, "LAPTOPHP", "cdmTest", DatabaseTypeEnum.SqlServer2005.getDefaultPort(), "edit", "");
 			
-			appCtr.getDatabaseService().saveDataSource("testSqlServer", dataSource, null);
+			appCtr.getDatabaseService().saveDataSource("testSqlServer", dataSource);
 			appCtr.getDatabaseService().connectToDatabase(dbType, server, database, username, password);
 			
 			appCtr.close();
@@ -93,7 +93,7 @@ public class Datasource {
 	private void testSqlServer(){
 		DbSchemaValidation validation = DbSchemaValidation.CREATE;
 		CdmDataSource ds = 
-			CdmDataSource.NewSqlServer2005Instance("LENOVO-T61", "NielsTest", "Niels", "test");
+			CdmDataSource.NewSqlServer2005Instance("LENOVO-T61", "NielsTest", "Niels", "test", null);
 			//CdmDataSource.NewH2EmbeddedInstance("cdm", "sa", "");
 //		ds =
 //			 CdmPersistentDataSource.NewInstance("localH2");
@@ -138,7 +138,7 @@ public class Datasource {
 		
 		ICdmDataSource dataSource = CdmDataSource.NewInstance(databaseTypeEnum, server, database, databaseTypeEnum.getDefaultPort(), username, password); 
 		
-		CdmPersistentDataSource ds = CdmPersistentDataSource.save("testSqlServer", dataSource, null);
+		CdmPersistentDataSource ds = CdmPersistentDataSource.save("testSqlServer", dataSource);
 		try {
 			CdmApplicationController appCtr = CdmApplicationController.NewInstance(ds);
 			Person agent = Person.NewInstance();
@@ -162,7 +162,7 @@ public class Datasource {
 		
 		ICdmDataSource dataSource = CdmDataSource.NewInstance(databaseTypeEnum, server, database, databaseTypeEnum.getDefaultPort(), username, password); 
 		
-		CdmPersistentDataSource ds = CdmPersistentDataSource.save("PostgreTest", dataSource, null);
+		CdmPersistentDataSource ds = CdmPersistentDataSource.save("PostgreTest", dataSource);
 		try {
 			CdmApplicationController appCtr = CdmApplicationController.NewInstance(ds);
 			Person agent = Person.NewInstance();
@@ -204,7 +204,7 @@ public class Datasource {
 		try {
 			DbSchemaValidation validation = DbSchemaValidation.CREATE;
 			ICdmDataSource ds = 
-				CdmDataSource.NewH2EmbeddedInstance("cdm", "sa", "");
+				CdmDataSource.NewH2EmbeddedInstance("cdm", "sa", "", null);
 //			ds =
 //				 CdmPersistentDataSource.NewInstance("localH2");
 			CdmApplicationController appCtr = CdmApplicationController.NewInstance(ds, validation);
@@ -286,7 +286,7 @@ public class Datasource {
 		try{
 			DbSchemaValidation validation = DbSchemaValidation.CREATE;
 			ICdmDataSource ds = 
-				CdmDataSource.NewH2EmbeddedInstance("cdm", "sa", "");
+				CdmDataSource.NewH2EmbeddedInstance("cdm", "sa", "", null);
 				//CdmDataSource.NewH2EmbeddedInstance("cdm", "sa", "");
 	//		ds =
 	//			 CdmPersistentDataSource.NewInstance("localH2");

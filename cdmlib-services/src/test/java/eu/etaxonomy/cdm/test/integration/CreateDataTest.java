@@ -107,7 +107,7 @@ public class CreateDataTest {
 				pwd = CdmUtils.readInputLine("Please insert password for " + CdmUtils.Nz(cdmUserName) + ": ");
 			}
 			//TODO not MySQL
-			ICdmDataSource destination = CdmDataSource.NewMySqlInstance(cdmServer, cdmDB, port, cdmUserName, pwd);
+			ICdmDataSource destination = CdmDataSource.NewMySqlInstance(cdmServer, cdmDB, port, cdmUserName, pwd, null);
 			//ICdmDataSource destination = CdmDataSource.NewSqlServer2005Instance(cdmServer, cdmDB, cdmUserName, pwd);
 			return destination;
 		} catch (Exception e) {

@@ -29,7 +29,7 @@ import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
-public interface ITermService extends IIdentifiableEntityService<DefinedTermBase> {
+public interface ITermService extends IService<DefinedTermBase> {
 
 	public DefinedTermBase getByUri(String uri);
 

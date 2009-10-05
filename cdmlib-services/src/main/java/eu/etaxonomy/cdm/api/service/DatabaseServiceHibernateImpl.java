@@ -70,8 +70,8 @@ public class DatabaseServiceHibernateImpl  implements IDatabaseService, Applicat
 	 */
 	public boolean connectToDatabase(DatabaseTypeEnum databaseTypeEnum, String server,
 			String database, String username, String password, int port, String filePath, H2Mode mode, NomenclaturalCode code) throws TermNotFoundException  {
-		ICdmDataSource dataSource = CdmDataSource.NewInstance(databaseTypeEnum, server, database, port, username, password);
-		CdmPersistentDataSource tmpDataSource =  saveDataSource(TMP_DATASOURCE, dataSource, code);
+		ICdmDataSource dataSource = CdmDataSource.NewInstance(databaseTypeEnum, server, database, port, username, password, code);
+		CdmPersistentDataSource tmpDataSource =  saveDataSource(TMP_DATASOURCE, dataSource);
 		boolean result = connectToDatasource(tmpDataSource);
 		CdmPersistentDataSource.delete(tmpDataSource);
 		return result;
@@ -90,16 +90,16 @@ public class DatabaseServiceHibernateImpl  implements IDatabaseService, Applicat
 	 * @see eu.etaxonomy.cdm.api.service.IDatabaseService#saveDataSource(java.lang.String, eu.etaxonomy.cdm.database.ICdmDataSource)
 	 */
 	public CdmPersistentDataSource saveDataSource(String strDataSourceName,
-			ICdmDataSource dataSource, NomenclaturalCode code) {
-		return CdmPersistentDataSource.save(strDataSourceName, dataSource, code);
+			ICdmDataSource dataSource) {
+		return CdmPersistentDataSource.save(strDataSourceName, dataSource);
 	}
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.IDatabaseService#updateDataSource(java.lang.String, eu.etaxonomy.cdm.database.CdmPersistentDataSource)
 	 */
 	public CdmPersistentDataSource updateDataSource(String strDataSourceName,
-			CdmPersistentDataSource dataSource, NomenclaturalCode code) throws DataSourceNotFoundException {
-		return CdmPersistentDataSource.update(strDataSourceName, dataSource, code);
+			CdmPersistentDataSource dataSource) throws DataSourceNotFoundException {
+		return CdmPersistentDataSource.update(strDataSourceName, dataSource);
 	}
 
 	
