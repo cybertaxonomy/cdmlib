@@ -86,6 +86,32 @@ public abstract class CdmIntegrationTest extends UnitilsJUnit4 {
 	}
 	
 	/**
+	 * Prints the named tables to an output stream, using dbunit's
+	 * {@link org.dbunit.dataset.xml.FlatXmlDataSet}. 
+	 * 
+	 * @see {@link #printDataSet(OutputStream)}
+	 * @param out
+	 * @param tableNames
+	 */
+	public void printDataSet(OutputStream out, String[] tableNames) {
+		IDatabaseConnection connection = null;
+
+		try {
+			connection = getConnection();
+			IDataSet actualDataSet = connection.createDataSet(tableNames); 
+			FlatXmlDataSet.write(actualDataSet, out);
+		} catch (Exception e) {
+			logger.error(e);
+		} finally {
+			try {
+				connection.close();
+			} catch (SQLException sqle) {
+				logger.error(sqle);
+			}
+		}
+	}
+	
+	/**
 	 * Prints a dtd to an output stream, using dbunit's
 	 * {@link org.dbunit.dataset.xml.FlatDtdDataSet}. 
 	 *  

@@ -80,9 +80,7 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity> extends Annotatab
 		return results;
 	}
 	
-	public List<T> findByTitle(String queryString, MatchMode matchMode,	int page, int pageSize, List<Criterion> criteria) {
-		return findByTitle(null, queryString, matchMode, criteria, pageSize, page, null, null);
-	}
+
 	
 	public List<T> findByTitle(Class<? extends T> clazz, String queryString, MatchMode matchmode, List<Criterion> criterion, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
 		return findByParam(clazz, "titleCache", queryString, matchmode, criterion, pageSize, pageNumber, orderHints, propertyPaths);
@@ -130,41 +128,31 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity> extends Annotatab
     	return result;
     }
 
-	public int countByTitle(Class<? extends T> clazz, String queryString, MatchMode matchmode, List<Criterion> criterion) {
-    	return countByParam(clazz, "titleCache",queryString,matchmode,criterion);
-    }
-    
-	
-	protected int countByParam(Class<? extends T> clazz, String param, String queryString, MatchMode matchmode, List<Criterion> criterion) {
-    	checkNotInPriorView("IdentifiableDaoBase.findByParam(Class<? extends T> clazz, String queryString, MatchMode matchmode, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths)");
-    	Criteria criteria = null;
-
-    	if(clazz == null) {
-    		criteria = getSession().createCriteria(type);
-    	} else {
-    		criteria = getSession().createCriteria(clazz);
-    	}
-
-    	if (queryString != null) {
-    		if(matchmode == null) {
-    			criteria.add(Restrictions.ilike(param, queryString));
-    		} else if(matchmode == MatchMode.BEGINNING) {
-    			criteria.add(Restrictions.ilike(param, queryString, org.hibernate.criterion.MatchMode.START));
-    		} else if(matchmode == MatchMode.END) {
-    			criteria.add(Restrictions.ilike(param, queryString, org.hibernate.criterion.MatchMode.END));
-    		} else if(matchmode == MatchMode.EXACT) {
-    			criteria.add(Restrictions.ilike(param, queryString, org.hibernate.criterion.MatchMode.EXACT));
-    		} else {
-    			criteria.add(Restrictions.ilike(param, queryString, org.hibernate.criterion.MatchMode.ANYWHERE));
-    		}
-    	}
-    	
-    	addCriteria(criteria, criterion);
-    	
-    	criteria.setProjection(Projections.rowCount());    	
-
-    	List<T> result = criteria.list();
-    	return (Integer)criteria.uniqueResult();
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.persistence.dao.common.ITitledDao#findByTitle(java.lang.String, boolean, int, int, java.util.List)
+	 */
+	public List<T> findByTitle(String queryString, MatchMode matchmode, int page, int pagesize, List<Criterion> criteria) {
+		checkNotInPriorView("IdentifiableDaoBase.findByTitle(String queryString, MATCH_MODE matchmode, int page, int pagesize, List<Criterion> criteria)");
+		Criteria crit = getSession().createCriteria(type);
+		if (matchmode == MatchMode.EXACT) {
+			crit.add(Restrictions.eq("titleCache", matchmode.queryStringFrom(queryString)));
+		} else {
+//			crit.add(Restrictions.ilike("titleCache", matchmode.queryStringFrom(queryString)));
+			crit.add(Restrictions.like("titleCache", matchmode.queryStringFrom(queryString)));
+		}
+		if (pagesize >= 0) {
+			crit.setMaxResults(pagesize);
+		}
+		if(criteria != null){
+			for (Criterion criterion : criteria) {
+				crit.add(criterion);
+			}
+		}
+		crit.addOrder(Order.asc("titleCache"));
+		int firstItem = (page - 1) * pagesize;
+		crit.setFirstResult(firstItem);
+		List<T> results = crit.list();
+		return results;
 	}
 
 	public int countRights(T identifiableEntity) {
@@ -274,4 +262,41 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity> extends Annotatab
 		
 		return list;
 	}
+
+	public int countByTitle(Class<? extends T> clazz, String queryString,	MatchMode matchmode, List<Criterion> criterion) {
+		return countByParam(clazz, "titleCache",queryString,matchmode,criterion);
+	}
+	
+	protected int countByParam(Class<? extends T> clazz, String param, String queryString, MatchMode matchmode, List<Criterion> criterion) {
+    	checkNotInPriorView("IdentifiableDaoBase.findByParam(Class<? extends T> clazz, String queryString, MatchMode matchmode, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths)");
+    	Criteria criteria = null;
+
+    	if(clazz == null) {
+    		criteria = getSession().createCriteria(type);
+    	} else {
+    		criteria = getSession().createCriteria(clazz);
+    	}
+
+    	if (queryString != null) {
+    		if(matchmode == null) {
+    			criteria.add(Restrictions.ilike(param, queryString));
+    		} else if(matchmode == MatchMode.BEGINNING) {
+    			criteria.add(Restrictions.ilike(param, queryString, org.hibernate.criterion.MatchMode.START));
+    		} else if(matchmode == MatchMode.END) {
+    			criteria.add(Restrictions.ilike(param, queryString, org.hibernate.criterion.MatchMode.END));
+    		} else if(matchmode == MatchMode.EXACT) {
+    			criteria.add(Restrictions.ilike(param, queryString, org.hibernate.criterion.MatchMode.EXACT));
+    		} else {
+    			criteria.add(Restrictions.ilike(param, queryString, org.hibernate.criterion.MatchMode.ANYWHERE));
+    		}
+    	}
+    	
+    	addCriteria(criteria, criterion);
+    	
+    	criteria.setProjection(Projections.rowCount());    	
+
+    	List<T> result = criteria.list();
+    	return (Integer)criteria.uniqueResult();
+	}
+
 }

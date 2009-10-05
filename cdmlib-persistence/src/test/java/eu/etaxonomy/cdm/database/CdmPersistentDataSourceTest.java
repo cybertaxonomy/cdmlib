@@ -27,7 +27,6 @@ import org.springframework.beans.PropertyValue;
 import org.springframework.beans.PropertyValues;
 import org.springframework.beans.factory.config.BeanDefinition;
 
-import eu.etaxonomy.cdm.api.application.CdmApplicationUtils;
 import eu.etaxonomy.cdm.database.CdmPersistentDataSource.DbProperties;
 
 /**
@@ -257,7 +256,7 @@ public class CdmPersistentDataSourceTest {
 		
 		ICdmDataSource dataSource = CdmDataSource.NewInstance(databaseType, servername, db, port, username, password);
 		
-		CdmPersistentDataSource.save(dataSourceString, dataSource, null);
+		CdmPersistentDataSource.save(dataSourceString, dataSource);
 		assertTrue(CdmPersistentDataSource.exists(dataSourceString));
 		
 		CdmPersistentDataSource loadedDataSource = null;

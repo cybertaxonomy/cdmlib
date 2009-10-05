@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.agent;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.apache.lucene.analysis.SimpleAnalyzer;
@@ -18,6 +19,7 @@ import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
+import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.envers.query.AuditEntity;
 import org.hibernate.envers.query.AuditQuery;
@@ -32,6 +34,8 @@ import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.InstitutionalMembership;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
+import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.persistence.dao.QueryParseException;
 import eu.etaxonomy.cdm.persistence.dao.agent.IAgentDao;
@@ -221,5 +225,41 @@ public class AgentDaoImpl extends IdentifiableDaoBase<AgentBase> implements IAge
 	        searchFactory.optimize(clazz); // optimize the indices ()
 		}
 	    fullTextSession.flushToIndexes();
+	}
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.persistence.dao.agent.IAgentDao#getTeamOrPersonBaseUuidAndNomenclaturalTitle()
+	 */
+	public List<UuidAndTitleCache<TeamOrPersonBase>> getTeamOrPersonBaseUuidAndNomenclaturalTitle() {
+		List<UuidAndTitleCache<TeamOrPersonBase>> list = new ArrayList<UuidAndTitleCache<TeamOrPersonBase>>();
+		Session session = getSession();
+		
+		Query query = session.createQuery("select uuid, nomenclaturalTitle from " + type.getSimpleName() + " where dtype = 'Person' or dtype = 'Team'");
+		
+		List<Object[]> result = query.list();
+		
+		for(Object[] object : result){
+			list.add(new UuidAndTitleCache<TeamOrPersonBase>(TeamOrPersonBase.class, (UUID) object[0], (String) object[1]));
+		}
+		
+		return list;
+	}
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.persistence.dao.agent.IAgentDao#getTeamUuidAndTitleCache()
+	 */
+	public List<UuidAndTitleCache<Person>> getPersonUuidAndNomenclaturalTitle() {
+		List<UuidAndTitleCache<Person>> list = new ArrayList<UuidAndTitleCache<Person>>();
+		Session session = getSession();
+		
+		Query query = session.createQuery("select uuid, nomenclaturalTitle from " + type.getSimpleName() + " where dtype = 'Person'");
+		
+		List<Object[]> result = query.list();
+		
+		for(Object[] object : result){
+			list.add(new UuidAndTitleCache<Person>(Person.class, (UUID) object[0], (String) object[1]));
+		}
+		
+		return list;
 	}
 }

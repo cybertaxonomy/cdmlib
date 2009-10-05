@@ -67,8 +67,7 @@ public class SybaseDatabaseTypeTest {
 		password = "wd";
 		dataSource = CdmPersistentDataSource.save(
 				"sybaseTest", 
-				CdmDataSource.NewInstance(enumType, server, dbName, port, username, password),
-				null);
+				CdmDataSource.NewInstance(enumType, server, dbName, port, username, password));
 	}
 
 	/**

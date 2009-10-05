@@ -26,6 +26,7 @@ import org.hibernate.search.Search;
 import org.hibernate.search.SearchFactory;
 import org.springframework.stereotype.Repository;
 
+import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.description.MediaKey;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.Media;

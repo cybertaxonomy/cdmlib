@@ -66,8 +66,7 @@ public class SqlServer2000DatabaseTypeTest {
 		password = "wd";
 		dataSource = CdmPersistentDataSource.save(
 				"postgreSqlTest", 
-				CdmDataSource.NewInstance(enumType, server, dbName, port, username, password),
-				null);
+				CdmDataSource.NewInstance(enumType, server, dbName, port, username, password));
 	}
 
 	/**

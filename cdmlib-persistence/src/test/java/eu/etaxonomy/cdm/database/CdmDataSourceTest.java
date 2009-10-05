@@ -19,6 +19,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.beans.factory.config.BeanDefinition;
 
+import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
+
 /**
  * @author a.mueller
  * @created 18.12.2008
@@ -58,7 +60,7 @@ public class CdmDataSourceTest {
 		username = "myUsername";
 		pwd = "myPassword";
 		port = 80;
-		datasource = CdmDataSource.NewMySqlInstance(server, database, port, username, pwd);
+		datasource = CdmDataSource.NewMySqlInstance(server, database, port, username, pwd, null);
 		
 	}
 
@@ -72,7 +74,7 @@ public class CdmDataSourceTest {
 //*************** TESTS ***********************************************
 	
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.database.CdmDataSource#NewMySqlInstance(java.lang.String, java.lang.String, java.lang.String, java.lang.String)}.
+	 * Test method for {@link eu.etaxonomy.cdm.database.CdmDataSource#NewMySqlInstance(java.lang.String, java.lang.String, java.lang.String, java.lang.String, NomenclaturalCode)}.
 	 */
 	@Test
 	public void testNewMySqlInstanceStringStringStringString() {
@@ -86,11 +88,11 @@ public class CdmDataSourceTest {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.database.CdmDataSource#NewMySqlInstance(java.lang.String, java.lang.String, int, java.lang.String, java.lang.String)}.
+	 * Test method for {@link eu.etaxonomy.cdm.database.CdmDataSource#NewMySqlInstance(java.lang.String, java.lang.String, int, java.lang.String, java.lang.String, NomenclaturalCode)}.
 	 */
 	@Test
 	public void testNewMySqlInstanceStringStringIntStringString() {
-		ICdmDataSource ds = CdmDataSource.NewMySqlInstance(server, database, port, username, pwd);
+		ICdmDataSource ds = CdmDataSource.NewMySqlInstance(server, database, port, username, pwd, null);
 		assertNotNull("NewMySqlInstance(String, String, int, String, String) should not return null ", ds);
 		assertEquals(server, ds.getServer());
 		assertEquals(database, ds.getDatabase());
@@ -101,11 +103,11 @@ public class CdmDataSourceTest {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.database.CdmDataSource#NewSqlServer2005Instance(java.lang.String, java.lang.String, java.lang.String, java.lang.String)}.
+	 * Test method for {@link eu.etaxonomy.cdm.database.CdmDataSource#NewSqlServer2005Instance(java.lang.String, java.lang.String, java.lang.String, java.lang.String, NomenclaturalCode)}.
 	 */
 	@Test
 	public void testNewSqlServer2005InstanceStringStringStringString() {
-		ICdmDataSource ds = CdmDataSource.NewSqlServer2005Instance(server, database, username, pwd);
+		ICdmDataSource ds = CdmDataSource.NewSqlServer2005Instance(server, database, username, pwd, null);
 		assertNotNull("NewSqlServer2005Instance(String, String, String, String) should not return null ", ds);
 		assertEquals(server, ds.getServer());
 		assertEquals(database, ds.getDatabase());
@@ -115,7 +117,7 @@ public class CdmDataSourceTest {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.database.CdmDataSource#NewSqlServer2005Instance(java.lang.String, java.lang.String, int, java.lang.String, java.lang.String)}.
+	 * Test method for {@link eu.etaxonomy.cdm.database.CdmDataSource#NewSqlServer2005Instance(java.lang.String, java.lang.String, int, java.lang.String, java.lang.String, NomenclaturalCode)}.
 	 */
 	@Test
 	public void testNewSqlServer2005InstanceStringStringIntStringString() {
@@ -130,11 +132,11 @@ public class CdmDataSourceTest {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.database.CdmDataSource#NewH2EmbeddedInstance(java.lang.String, java.lang.String, java.lang.String)}.
+	 * Test method for {@link eu.etaxonomy.cdm.database.CdmDataSource#NewH2EmbeddedInstance(java.lang.String, java.lang.String, java.lang.String, NomenclaturalCode)}.
 	 */
 	@Test
 	public void testNewH2EmbeddedInstanceStringStringString() {
-		ICdmDataSource ds = CdmDataSource.NewH2EmbeddedInstance(database, username, pwd);
+		ICdmDataSource ds = CdmDataSource.NewH2EmbeddedInstance(database, username, pwd, null);
 		assertNotNull("NewH2EmbeddedInstance(String, String, String) should not return null ", ds);
 		assertEquals(null, ds.getServer());  //TODO right?
 		assertEquals(database, ds.getDatabase());
@@ -166,7 +168,7 @@ public class CdmDataSourceTest {
 		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
 		H2Mode h2Mode = H2Mode.EMBEDDED;
 		String filePath = "path";
-		ICdmDataSource ds = new CdmDataSource(dbType, server, database, port, username, pwd, filePath, h2Mode);
+		ICdmDataSource ds = new CdmDataSource(dbType, server, database, port, username, pwd, filePath, h2Mode, null);
 		assertNotNull("new datasource() should not be null", ds);
 	}
 
@@ -256,7 +258,7 @@ public class CdmDataSourceTest {
 	public void testGetFilePath() {
 		assertEquals(null, datasource.getFilePath());
 		String filePath = "path";
-		ICdmDataSource ds = new CdmDataSource(DatabaseTypeEnum.H2, server, database, port, username, pwd, filePath, H2Mode.EMBEDDED);
+		ICdmDataSource ds = new CdmDataSource(DatabaseTypeEnum.H2, server, database, port, username, pwd, filePath, H2Mode.EMBEDDED, null);
 		assertNotNull("new datasource() should not be null", ds);
 		assertEquals(filePath, ds.getFilePath());
 	}
@@ -285,7 +287,7 @@ public class CdmDataSourceTest {
 		assertEquals(null, datasource.getFilePath());
 		String filePath = "path";
 		H2Mode mode = H2Mode.EMBEDDED;
-		ICdmDataSource ds = new CdmDataSource(DatabaseTypeEnum.H2, server, database, port, username, pwd, filePath, mode);
+		ICdmDataSource ds = new CdmDataSource(DatabaseTypeEnum.H2, server, database, port, username, pwd, filePath, mode, null);
 		assertNotNull("new datasource() should not be null", ds);
 		assertEquals(mode, ds.getMode());
 	}
