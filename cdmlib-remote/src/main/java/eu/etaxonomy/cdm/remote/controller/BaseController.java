@@ -101,17 +101,44 @@ public abstract class BaseController<T extends CdmBase, SERVICE extends IService
 	}
 
 	  /* TODO implement
-	   * 
-	  @RequestMapping(method = RequestMethod.POST)
-	  public T doPost(@PathVariable(value = "uuid") UUID uuid, @ModelAttribute("object") T object, BindingResult result) {
-	        validator.validate(object, result);
-	        if (result.hasErrors()) {
+	   
+	  private Validator validator;
+	  
+	  private javax.validation.Validator javaxValidator;
+	
+	  @RequestMapping(method = RequestMethod.PUT, headers="content-type=multipart/form-data")
+	  public T doPutForm(@PathVariable(value = "uuid") UUID uuid, @ModelAttribute("object") T object, BindingResult result) {
+		  object.setUuid(uuid);
+	      validator.validate(object, result);
+	      if (result.hasErrors()) {
+	      	throw new Error();
+	            // set http status code depending upon what happened, possibly return
+	            // the put object and errors so that they can be rendered into a suitable error response
+	      } else {
+	         // requires merging detached object ?gilead?
+	         service.save(object);
+	      }
+	        
+	        return object;
+	  }
+	  
+	  @RequestMapping(method = RequestMethod.PUT, headers="content-type=text/json")
+	  public T doPutJSON(@PathVariable(value = "uuid") UUID uuid, @RequestBody String jsonMessage) {
+		  JSONObject jsonObject = JSONObject.fromObject(jsonMessage);
+		  T object = (T)JSONObject.toBean(jsonObject, this.getClass());
+		  
+
+		  Set<ConstraintViolation<T>> constraintViolations = javaxValidator.validate(object);
+	        if (!constraintViolations.isEmpty()) {
+	        	throw new Error();
 	                // set http status code depending upon what happened, possibly return
 	            // the put object and errors so that they can be rendered into a suitable error response
 	        } else {
 	          // requires merging detached object ?gilead?
-	          service.update(object);
+	          service.save(object);
 	        }
+	        
+	        return object;
 	  }
 
 	  @RequestMapping(method = RequestMethod.PUT) // the cdm-server may not allow clients to specify the uuid for resources
