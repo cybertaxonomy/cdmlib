@@ -50,7 +50,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
  */
 @XmlType(name = "DescriptionElementSource", propOrder = {
 	    "sourcedObj",
-	    "nameUsedInSource",
+	    "nameUsedInSource"
 	})
 @Entity
 @Audited

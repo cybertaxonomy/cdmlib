@@ -45,8 +45,6 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Type;
-import org.hibernate.annotations.Table;
-import org.hibernate.annotations.Index;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
@@ -84,7 +82,6 @@ import eu.etaxonomy.cdm.validation.Level2;
 @Entity
 @Indexed
 @Audited
-@Table(appliesTo="Media", indexes = { @Index(name = "mediaTitleCacheIndex", columnNames = { "titleCache" }) })
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 public class Media extends IdentifiableEntity implements Cloneable {
 	private static final long serialVersionUID = -1927421567263473658L;
@@ -124,7 +121,7 @@ public class Media extends IdentifiableEntity implements Cloneable {
 	@XmlElementWrapper(name = "MediaRepresentations")
 	@XmlElement(name = "MediaRepresentation")
 	@OneToMany(mappedBy="media",fetch = FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE,CascadeType.DELETE_ORPHAN})
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
 	@NotNull
 	@NotEmpty(groups = Level2.class)
 	private Set<MediaRepresentation> representations = new HashSet<MediaRepresentation>();
@@ -358,4 +355,5 @@ public class Media extends IdentifiableEntity implements Cloneable {
 		}
 		return prefRepr;
 	}
+	
 }

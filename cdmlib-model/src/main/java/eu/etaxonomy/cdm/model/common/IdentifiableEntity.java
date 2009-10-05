@@ -176,6 +176,9 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 		return null;
 	}
 
+//******************************** CACHE *****************************************************/	
+
+	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#getTitleCache()
 	 */
@@ -341,10 +344,6 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 	 * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#isProtectedTitleCache()
 	 */
 	public boolean isProtectedTitleCache() {
-		return protectedTitleCache;
-	}
-	
-	public boolean getProtectedTitleCache() {
 		return protectedTitleCache;
 	}
 

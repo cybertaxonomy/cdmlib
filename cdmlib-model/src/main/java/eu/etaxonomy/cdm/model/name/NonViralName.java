@@ -195,6 +195,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
     @ManyToOne(fetch = FetchType.LAZY)
 	@Target(TeamOrPersonBase.class)
 	@Cascade(CascadeType.SAVE_UPDATE)
+	@CacheUpdate("authorshipCache")
 	private INomenclaturalAuthor exBasionymAuthorTeam;
 	
 	@XmlElement(name = "AuthorshipCache")
