@@ -79,7 +79,6 @@ public enum VocabularyEnum {
 	ExtensionType("117cc307-5bd4-4b10-9b2f-2e14051b3b20",ExtensionType.class),
 	ReferenceSystem("ec6376e5-0c9c-4f5c-848b-b288e6c17a86",ReferenceSystem.class),
 	InstitutionType("29ad808b-3126-4274-be81-4561e7afc76f", InstitutionType.class),
-	Keyword("332634b2-8ab5-43f8-ae78-f466e9dae1f3", Keyword.class),
 	MeasurementUnit("3b82c375-66bb-4636-be74-dc9cd087292a", MeasurementUnit.class),
 	Scope("109bf76d-6f55-43d5-9ec5-6115d9490faa", Scope.class),
 	Stage("4d475bea-c3ae-4494-be16-6796f22fabac", Stage.class),

@@ -1334,7 +1334,6 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/IRelated.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/ISourceable.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/IdentifiableEntity.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/IdentifiableSource.java -text
-cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/Keyword.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/LSID.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/LSIDAuthority.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/LSIDWSDLLocator.java -text

@@ -14,17 +14,12 @@ import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
-import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
@@ -37,7 +32,6 @@ import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import eu.etaxonomy.cdm.model.common.Keyword;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.strategy.cache.agent.PersonDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.match.Match;
@@ -70,8 +64,7 @@ import eu.etaxonomy.cdm.strategy.match.MatchMode;
 	    "lastname",
 	    "suffix",
 	    "lifespan",
-	    "institutionalMemberships",
-	    "keywords"
+	    "institutionalMemberships"
 	})
 @XmlRootElement(name = "Person")
 @Entity
@@ -108,18 +101,6 @@ public class Person extends TeamOrPersonBase<Person>{
     @OneToMany(fetch=FetchType.LAZY, mappedBy = "person")
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
 	protected Set<InstitutionalMembership> institutionalMemberships = new HashSet<InstitutionalMembership>();
-	
-    @XmlElementWrapper(name = "Keywords")
-    @XmlElement(name = "Keyword")
-    @XmlIDREF
-    @XmlSchemaType(name="IDREF")
-    @ManyToMany(fetch=FetchType.LAZY)
-	@JoinTable(
-	        name="Person_Keyword",
-	        joinColumns=@JoinColumn(name="person_fk"),
-	        inverseJoinColumns=@JoinColumn(name="keyword_fk")
-	)
-	private Set<Keyword> keywords = new HashSet<Keyword>();
 
 	/** 
 	 * Creates a new empty instance for a person whose existence is all what is known.
@@ -228,39 +209,6 @@ public class Person extends TeamOrPersonBase<Person>{
 		this.institutionalMemberships.remove(ims);
 	}
 
-
-	/** 
-	 * Returns the set of {@link eu.etaxonomy.cdm.model.common.Keyword keywords} mostly representing a taxonomic or
-	 * a geographical specialization of <i>this</i> person.
-	 * Keywords are items of a controlled {@link eu.etaxonomy.cdm.model.common.TermVocabulary vocabulary}.
-	 *
-	 * @see 	Keyword
-	 */
-	public Set<Keyword> getKeywords(){
-		return this.keywords;
-	}
-
-	/** 
-	 * Adds a new keyword from the keyword vocabulary to the set of keywords
-	 * describing or circumscribing <i>this</i> person's activities.
-	 *
-	 * @param  keyword  any keyword 
-	 * @see 			#getKeywords()
-	 * @see 			eu.etaxonomy.cdm.model.common.Keyword
-	 */
-	public void addKeyword(Keyword keyword){
-		this.keywords.add(keyword);
-	}
-	/** 
-	 * Removes one element from the set of keywords for <i>this</i> person.
-	 *
-	 * @param  keyword  the keyword which should be deleted
-	 * @see             #getKeywords()
-	 */
-	public void removeKeyword(Keyword keyword){
-		this.keywords.remove(keyword);
-	}
-	
 	/**
 	 * Returns the string representing the prefix (for instance "Prof.&nbsp;Dr.<!-- -->")
 	 * to <i>this</i> person's name.
