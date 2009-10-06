@@ -17,7 +17,9 @@ import org.joda.time.DateTime;
 import org.springframework.security.Authentication;
 import org.springframework.security.context.SecurityContextHolder;
 
+import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ICdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.User;
@@ -64,9 +66,14 @@ public class CacheStrategyGenerator implements SaveOrUpdateEventListener {
             }else if(TeamOrPersonBase.class.isAssignableFrom(entityClazz)){
             	TeamOrPersonBase teamOrPerson = (TeamOrPersonBase)entity;
             	String nomTitle = teamOrPerson.getNomenclaturalTitle();
-            	teamOrPerson.setNomenclaturalTitle(nomTitle); //nomTitle is not necessarily cached when it is created
-            	teamOrPerson.getTitleCache();
-            	
+            	if (teamOrPerson.isInstanceOf(Team.class)){
+            		CdmBase.deproxy(teamOrPerson, Team.class).setNomenclaturalTitle(nomTitle, false); //nomTitle is not necessarily cached when it is created
+            	}
+            	String titleCache = teamOrPerson.getTitleCache();
+            	if (! teamOrPerson.isProtectedTitleCache()){
+                	teamOrPerson.setTitleCache(titleCache, false);
+            	}
+ 
             //title cache
             }else if(IdentifiableEntity.class.isAssignableFrom(entityClazz)) {
         		IdentifiableEntity identifiableEntity = (IdentifiableEntity)entity;
