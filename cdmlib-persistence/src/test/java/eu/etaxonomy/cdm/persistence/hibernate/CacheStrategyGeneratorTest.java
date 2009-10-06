@@ -158,8 +158,8 @@ public class CacheStrategyGeneratorTest extends CdmIntegrationTest {
 		agentDao.saveOrUpdate(team1);
 		
 		person3 = (Person)agentDao.findByUuid(UUID.fromString("049a3963-c4ea-4047-8588-2f8f15352730"));
-		printDataSet(System.err, new String[]{"AgentBase"});
-		System.out.println("End");
+//		printDataSet(System.err, new String[]{"AgentBase"});
+//		System.out.println("End");
 	}
 	
 }	
