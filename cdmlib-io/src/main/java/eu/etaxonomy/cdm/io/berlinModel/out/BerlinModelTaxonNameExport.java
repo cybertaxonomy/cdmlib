@@ -109,7 +109,6 @@ public class BerlinModelTaxonNameExport extends BerlinModelExportBase<TaxonNameB
 		mapping.addMapper(DbBooleanMapper.NewInstance("isTrinomHybrid", "TrinomHybFlag", false, false));
 		mapping.addMapper(DbStringMapper.NewFacultativeInstance("cultivarName", "CultivarName"));
 		
-		logger.warn("CreateTaxonNameExportMapping");
 		mapping.addMapper(TeamOrPersonMapper.NewInstance("combinationAuthorTeam", "AuthorTeamFk"));
 		mapping.addMapper(TeamOrPersonMapper.NewInstance("exCombinationAuthorTeam", "ExAuthorTeamFk"));
 		mapping.addMapper(TeamOrPersonMapper.NewInstance("basionymAuthorTeam", "BasAuthorTeamFk"));
