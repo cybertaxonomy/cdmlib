@@ -27,7 +27,7 @@ import eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbStringMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.IdMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.MethodMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.RefDetailMapper;
-import eu.etaxonomy.cdm.io.common.IExportConfigurator;
+import eu.etaxonomy.cdm.io.berlinModel.out.mapper.TeamOrPersonMapper;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
@@ -109,11 +109,11 @@ public class BerlinModelTaxonNameExport extends BerlinModelExportBase<TaxonNameB
 		mapping.addMapper(DbBooleanMapper.NewInstance("isTrinomHybrid", "TrinomHybFlag", false, false));
 		mapping.addMapper(DbStringMapper.NewFacultativeInstance("cultivarName", "CultivarName"));
 		
-		mapping.addMapper(DbObjectMapper.NewInstance("combinationAuthorTeam", "AuthorTeamFk"));
-		mapping.addMapper(DbObjectMapper.NewInstance("exCombinationAuthorTeam", "ExAuthorTeamFk"));
-		mapping.addMapper(DbObjectMapper.NewInstance("basionymAuthorTeam", "BasAuthorTeamFk"));
-		mapping.addMapper(DbObjectMapper.NewInstance("exBasionymAuthorTeam", "ExBasAuthorTeamFk"));
-		
+		mapping.addMapper(TeamOrPersonMapper.NewInstance("combinationAuthorTeam", "AuthorTeamFk"));
+		mapping.addMapper(TeamOrPersonMapper.NewInstance("exCombinationAuthorTeam", "ExAuthorTeamFk"));
+		mapping.addMapper(TeamOrPersonMapper.NewInstance("basionymAuthorTeam", "BasAuthorTeamFk"));
+		mapping.addMapper(TeamOrPersonMapper.NewInstance("exBasionymAuthorTeam", "ExBasAuthorTeamFk"));
+
 		mapping.addMapper(DbObjectMapper.NewInstance("nomenclaturalReference", "NomRefFk"));
 		mapping.addMapper(RefDetailMapper.NewInstance("nomenclaturalMicroReference","nomenclaturalReference", "NomRefDetailFk"));
 		mapping.addMapper(CreatedAndNotesMapper.NewInstance(false));

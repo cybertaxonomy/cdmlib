@@ -238,7 +238,6 @@ public class Team extends TeamOrPersonBase<Team> {
 			result = getTruncatedCache(result);
 		}
 		isGeneratingTitleCache = false;
-		this.titleCache = result;
 		return result;
 	}
 }

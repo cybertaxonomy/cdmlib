@@ -28,6 +28,7 @@ import org.unitils.dbunit.annotation.ExpectedDataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.model.agent.Person;
+import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.reference.Book;
 import eu.etaxonomy.cdm.model.reference.Generic;
@@ -151,7 +152,10 @@ public class CacheStrategyGeneratorTest extends CdmIntegrationTest {
 		agentDao.saveOrUpdate(person3);
 		
 		//Teams
-		
+		Team team1 = Team.NewInstance();
+		team1.addTeamMember(person1);
+		team1.setUuid(UUID.fromString("db957a0a-1494-49bb-8d17-d3eaa2076573"));
+		agentDao.saveOrUpdate(team1);
 		
 		person3 = (Person)agentDao.findByUuid(UUID.fromString("049a3963-c4ea-4047-8588-2f8f15352730"));
 		printDataSet(System.err, new String[]{"AgentBase"});
