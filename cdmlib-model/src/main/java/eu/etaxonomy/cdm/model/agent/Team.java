@@ -33,12 +33,9 @@ import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.strategy.cache.agent.TeamDefaultCacheStrategy;
-import eu.etaxonomy.cdm.strategy.match.IMatchable;
-import eu.etaxonomy.cdm.strategy.match.MatchMode;
 import eu.etaxonomy.cdm.strategy.match.Match;
-import eu.etaxonomy.cdm.strategy.merge.IMergable;
+import eu.etaxonomy.cdm.strategy.match.MatchMode;
 
 /**
  * This class represents teams of {@link Person persons}. A team exists either for itself
