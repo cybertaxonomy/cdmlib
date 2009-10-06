@@ -39,7 +39,8 @@ public class FormattedTextAdapter extends XmlAdapter<FormattedText,java.lang.Str
 		                                         "xmlns:view",
 		                                         "xmlns:xsi"};
 
-	private static final Log log = LogFactory.getLog(FormattedTextAdapter.class);
+	@SuppressWarnings("unused")
+	private static final Log logger = LogFactory.getLog(FormattedTextAdapter.class);
 	
 	public FormattedText marshal(String string) throws Exception {
 		if(string != null) {

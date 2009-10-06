@@ -32,7 +32,6 @@ import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
-import eu.etaxonomy.cdm.model.common.Keyword;
 import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
@@ -471,17 +470,10 @@ public class DefaultMergeStrategyTest {
 		person1.addInstitutionalMembership(institution1, period1, "departement1", "role1");
 		person2.addInstitutionalMembership(institution2, period2, "departement2", "role2");
 		
-		Keyword keyword1 = Keyword.NewInstance("K1", "K1", "K1");
-		person1.addKeyword(keyword1);
-		
-		Keyword keyword2 = Keyword.NewInstance("K2", "K2", "K2");
-		person2.addKeyword(keyword2);
-
 		IMergeStrategy personMergeStrategy = DefaultMergeStrategy.NewInstance(Person.class);
 		personMergeStrategy.invoke(person1, person2);
 		
 		Assert.assertEquals("Number of institutional memberships must be 2", 2, person1.getInstitutionalMemberships().size());
-		Assert.assertEquals("Number of keywords must be 2", 2, person1.getKeywords().size());
 		for (InstitutionalMembership institutionalMembership : person1.getInstitutionalMemberships()){
 			Assert.assertSame("Person of institutional memebership must be person1", person1, institutionalMembership.getPerson());
 		}

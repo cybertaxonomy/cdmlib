@@ -14,7 +14,6 @@ import org.apache.log4j.Logger;
 import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
-import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.common.AccountStore;
 import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
@@ -27,7 +26,6 @@ import eu.etaxonomy.cdm.model.agent.InstitutionalMembership;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
-import eu.etaxonomy.cdm.model.common.Keyword;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
@@ -150,8 +148,8 @@ public class TestDatabase {
 		TimePeriod period = TimePeriod.NewInstance(birth, death);
 		linne.setLifespan(period);
 
-		Keyword keyword = Keyword.NewInstance("plantarum", "lat", "");
-		linne.addKeyword(keyword);
+//		Keyword keyword = Keyword.NewInstance("plantarum", "lat", "");
+//		linne.addKeyword(keyword);
 
 		Institution institute = Institution.NewInstance();
 
@@ -176,7 +174,7 @@ public class TestDatabase {
 		rankSubspecies = Rank.SUBSPECIES();
 		rankGenus = Rank.GENUS();
 		
-		terms.add(keyword);
+//		terms.add(keyword);
 		
         // taxonomic names
 		

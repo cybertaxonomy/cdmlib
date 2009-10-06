@@ -1044,6 +1044,7 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/out/mapper/IdMapper.java
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/out/mapper/IndexCounter.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/out/mapper/MethodMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/out/mapper/RefDetailMapper.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/out/mapper/TeamOrPersonMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/CdmApplicationAwareDefaultExport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/CdmApplicationAwareDefaultImport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/CdmAttributeMapperBase.java -text
@@ -1334,7 +1335,6 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/IRelated.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/ISourceable.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/IdentifiableEntity.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/IdentifiableSource.java -text
-cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/Keyword.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/LSID.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/LSIDAuthority.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/LSIDWSDLLocator.java -text
@@ -1591,7 +1591,6 @@ cdmlib-model/src/main/resources/terms/ExtensionType.csv -text
 cdmlib-model/src/main/resources/terms/Feature.csv -text
 cdmlib-model/src/main/resources/terms/HybridRelationshipType.csv -text
 cdmlib-model/src/main/resources/terms/InstitutionType.csv -text
-cdmlib-model/src/main/resources/terms/Keyword.csv -text
 cdmlib-model/src/main/resources/terms/Language.csv -text
 cdmlib-model/src/main/resources/terms/MarkerType.csv -text
 cdmlib-model/src/main/resources/terms/MeasurementUnit.csv -text
