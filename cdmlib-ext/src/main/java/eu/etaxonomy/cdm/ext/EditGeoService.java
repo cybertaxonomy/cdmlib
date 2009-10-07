@@ -60,11 +60,10 @@ public class EditGeoService implements IEditGeoService{
 			int width, int height, String bbox, String backLayer) {
 		
 		Set<Distribution> distributions = new HashSet<Distribution>();
-		List<Distribution> result = dao.getDescriptionElements(taxonDescription, getDistributionFeatures(), Distribution.class, null, null, null);
+		List<Distribution> result = (List)dao.getDescriptionElements(taxonDescription, getDistributionFeatures(), Distribution.class, null, null, null);
 		distributions.addAll(result);
 		
-		String uriParams = EditGeoServiceUtilities.getEditGeoServiceUrlParameterString(distributions,
-				presenceAbsenceTermColors, 0, 0, null, "tdwg4");
+		String uriParams = EditGeoServiceUtilities.getEditGeoServiceUrlParameterString(distributions, presenceAbsenceTermColors, 0, 0, null, "tdwg4");
 
 		return uriParams;
 	}
@@ -81,7 +80,7 @@ public class EditGeoService implements IEditGeoService{
 		Set<Distribution> distCollection = new HashSet<Distribution>();
 		// get descriptions elements for each description
 		for (TaxonDescription td : taxonDescriptions) {
-			List<Distribution> dists = dao.getDescriptionElements(td, getDistributionFeatures(), Distribution.class, null, null, null);
+			List<Distribution> dists = (List)dao.getDescriptionElements(td, getDistributionFeatures(), Distribution.class, null, null, null);
 			distCollection.addAll(dists);
 		}
 		// generate the uri parameter string
