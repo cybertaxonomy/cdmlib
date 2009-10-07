@@ -58,7 +58,7 @@ public class CreateDataTestNoUnit {
 		} catch (TermNotFoundException e) {
 			e.printStackTrace();
 		}
-		TaxonNameBase<?,?> genusName2 = (TaxonNameBase<?,?>)app.getNameService().getTaxonNameByUuid(UUID.fromString(CreateDataTest.genusNameUuid));
+		TaxonNameBase<?,?> genusName2 = (TaxonNameBase<?,?>)app.getNameService().find(UUID.fromString(CreateDataTest.genusNameUuid));
 		Set<TaxonBase> set = (Set<TaxonBase>)genusName2.getTaxonBases();
 		System.out.println("Size:" + set.size());
 		for (TaxonBase tb : set){
@@ -66,7 +66,7 @@ public class CreateDataTestNoUnit {
 		}
 		
 		//taxon
-		Taxon genusTaxon = (Taxon)app.getTaxonService().getTaxonByUuid(UUID.fromString(CreateDataTest.genusUuid));
+		Taxon genusTaxon = (Taxon)app.getTaxonService().find(UUID.fromString(CreateDataTest.genusUuid));
 		assertNotNull(genusTaxon);
 		//name
 		BotanicalName genusName = (BotanicalName)genusTaxon.getName();

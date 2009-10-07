@@ -10,35 +10,20 @@
 
 package eu.etaxonomy.cdm.api.service;
 
-import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.description.MediaKey;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.Media;
-import eu.etaxonomy.cdm.model.media.MediaRepresentation;
-import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
-public interface IMediaService extends IAnnotatableService<Media> {
+public interface IMediaService extends IIdentifiableEntityService<Media> {
 
-	// FIXME candidate for harmonization?
-	public abstract Map<UUID, Media> saveMediaAll(Collection<Media> mediaCollection);
-	
-	// FIXME candidate for harmonization?
-	public abstract List<Media> getAllMedia(int limit, int start);
-
-	public abstract List<MediaRepresentation> getAllMediaRepresentations(int limit, int start);
-
-	public abstract List<MediaRepresentationPart> getAllMediaRepresentationParts(int limit, int start);
-	
 	/**
 	 * Return a List of MediaKeys, optionally filtered by the parameters passed.
 	 * 

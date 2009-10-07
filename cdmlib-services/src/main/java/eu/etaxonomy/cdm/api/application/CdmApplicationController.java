@@ -32,9 +32,11 @@ import org.springframework.transaction.support.DefaultTransactionDefinition;
 import eu.etaxonomy.cdm.api.application.eclipse.EclipseRcpSaveGenericApplicationContext;
 import eu.etaxonomy.cdm.api.conversation.ConversationHolder;
 import eu.etaxonomy.cdm.api.service.IAgentService;
+import eu.etaxonomy.cdm.api.service.ICollectionService;
 import eu.etaxonomy.cdm.api.service.ICommonService;
 import eu.etaxonomy.cdm.api.service.IDatabaseService;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
+import eu.etaxonomy.cdm.api.service.IFeatureTreeService;
 import eu.etaxonomy.cdm.api.service.ILocationService;
 import eu.etaxonomy.cdm.api.service.IMediaService;
 import eu.etaxonomy.cdm.api.service.INameService;
@@ -45,6 +47,7 @@ import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITaxonTreeService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.IUserService;
+import eu.etaxonomy.cdm.api.service.IVocabularyService;
 import eu.etaxonomy.cdm.database.CdmPersistentDataSource;
 import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
@@ -206,7 +209,7 @@ public class CdmApplicationController {
 	 */
 	public boolean testDefinedTermsAreMissing(){
 		UUID englishUuid = UUID.fromString("e9f8cdb7-6819-44e8-95d3-e2d0690c3523");
-		DefinedTermBase<?> english = this.getTermService().getTermByUri(englishUuid.toString());
+		DefinedTermBase<?> english = this.getTermService().getByUri(englishUuid.toString());
 		if ( english == null || ! english.getUuid().equals(englishUuid)){
 			return true;
 		}else{
@@ -349,6 +352,18 @@ public class CdmApplicationController {
 	public final IUserService getUserService(){
 		return configuration.getUserService();
 	}
+	
+	public final ICollectionService getCollectionService(){
+		return configuration.getCollectionService();
+	}
+	
+	public final IFeatureTreeService getFeatureTreeService(){
+		return configuration.getFeatureTreeService();
+	}
+	
+	public final IVocabularyService getVocabularyService(){
+		return configuration.getVocabularyService();
+	}	
 	
 	public final IService<CdmBase> getMainService(){
 		return configuration.getMainService();

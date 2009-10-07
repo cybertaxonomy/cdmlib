@@ -20,12 +20,14 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.spring.annotation.SpringBeanByType;
 
+import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.TdwgArea;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 
 /**
@@ -38,6 +40,9 @@ public class TermServiceImplTest extends CdmIntegrationTest {
 
 	@SpringBeanByType
 	private ITermService service;
+	
+	@SpringBeanByType
+	private IVocabularyService vocabularyService;
 
 /* ************************* TESTS *************************************************/
 	
@@ -56,12 +61,12 @@ public class TermServiceImplTest extends CdmIntegrationTest {
 	@Test
 	public void testGetTermByUri() {
 		String uri = ""; 
-		DefinedTermBase term = service.getTermByUri(uri);
+		DefinedTermBase term = service.getByUri(uri);
 		assertNotNull(term);
 		//assertEquals(Rank.DOMAIN(), term);
 		//NULL
 		String uriNotExist = "";
-		DefinedTermBase termNotExist = service.getTermByUri(uriNotExist);
+		DefinedTermBase termNotExist = service.getByUri(uriNotExist);
 		assertNull(termNotExist);
 	}
 
@@ -73,13 +78,13 @@ public class TermServiceImplTest extends CdmIntegrationTest {
 		// Rank.Domain
 		String strUUID = "ffca6ec8-8b88-417b-a6a0-f7c992aac19b"; 
 		UUID uuid = UUID.fromString(strUUID);
-		DefinedTermBase term = service.getTermByUuid(uuid);
+		DefinedTermBase term = service.find(uuid);
 		assertNotNull(term);
 		assertEquals(Rank.DOMAIN(), term);
 		//NULL
 		String strUUIDNotExist = "00000000-8b88-417b-a6a0-f7c992aac19c";
 		UUID uuidNotExist = UUID.fromString(strUUIDNotExist);
-		DefinedTermBase termNotExist = service.getTermByUuid(uuidNotExist);
+		DefinedTermBase termNotExist = service.find(uuidNotExist);
 		assertNull(termNotExist);
 	}
 
@@ -93,13 +98,13 @@ public class TermServiceImplTest extends CdmIntegrationTest {
 		//Rank
 		String rankVocabularyUuid = "ef0d1ce1-26e3-4e83-b47b-ca74eed40b1b"; 
 		UUID rankUuid = UUID.fromString(rankVocabularyUuid);
-		TermVocabulary<Rank> voc = service.getVocabulary(rankUuid);
+		TermVocabulary<Rank> voc = vocabularyService.find(rankUuid);
 		assertNotNull(voc);
 		assertEquals(61, voc.getTerms().size());
 		//Null
 		String nullVocabularyUuid = "00000000-26e3-4e83-b47b-ca74eed40b1b"; 
 		UUID nullUuid = UUID.fromString(nullVocabularyUuid);
-		TermVocabulary<Rank> nullVoc = service.getVocabulary(nullUuid);
+		TermVocabulary<Rank> nullVoc = vocabularyService.find(nullUuid);
 		assertNull(nullVoc);
 	}
 
@@ -117,5 +122,11 @@ public class TermServiceImplTest extends CdmIntegrationTest {
 		String tdwgAbbreviation = "GER-OO";
 		NamedArea germany = service.getAreaByTdwgAbbreviation(tdwgAbbreviation);
 		assertEquals(tdwgAbbreviation, germany.getRepresentation(Language.DEFAULT()).getAbbreviatedLabel());
+	}
+	
+	@Test
+	public void testListTerms() {
+		Pager<SpecimenTypeDesignationStatus> results = (Pager)service.page(SpecimenTypeDesignationStatus.class, null,null,null,null);
+		assertNotNull("Results should not be null",results);
 	}
 }

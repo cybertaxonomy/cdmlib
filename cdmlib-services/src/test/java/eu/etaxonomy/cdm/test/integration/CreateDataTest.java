@@ -130,7 +130,7 @@ public class CreateDataTest {
 		
 //		Synonym syn2 = Synonym.NewInstance(genusTaxon.getName(), null);
 		
-		app.getTaxonService().saveTaxon(genusTaxon);
+		app.getTaxonService().save(genusTaxon);
 		//app.getTaxonService().saveTaxon(syn2);
 	}
 	
@@ -140,7 +140,7 @@ public class CreateDataTest {
 		//Taxon with childs, basionym, childrens synonyms, child misapplied Name
 		
 		
-		TaxonNameBase<?,?> genusName2 = (TaxonNameBase<?,?>)app.getNameService().getTaxonNameByUuid(UUID.fromString(genusNameUuid));
+		TaxonNameBase<?,?> genusName2 = (TaxonNameBase<?,?>)app.getNameService().find(UUID.fromString(genusNameUuid));
 		Set<TaxonBase> set = (Set<TaxonBase>)genusName2.getTaxonBases();
 		System.out.println("Size:" + set.size());
 		for (TaxonBase tb : set){
@@ -148,7 +148,7 @@ public class CreateDataTest {
 		}
 		
 		//taxon
-		Taxon genusTaxon = (Taxon)app.getTaxonService().getTaxonByUuid(UUID.fromString(genusUuid));
+		Taxon genusTaxon = (Taxon)app.getTaxonService().find(UUID.fromString(genusUuid));
 		assertNotNull(genusTaxon);
 		//name
 		BotanicalName genusName = (BotanicalName)genusTaxon.getName();
@@ -203,14 +203,14 @@ public class CreateDataTest {
 		if (ignore){return;}
 		logger.warn("testSave");
 		ITaxonService taxonService = app.getTaxonService();
-		Taxon genusTaxon = (Taxon)taxonService.getTaxonByUuid(UUID.fromString(genusUuid));
+		Taxon genusTaxon = (Taxon)taxonService.find(UUID.fromString(genusUuid));
 		BotanicalName genusName = (BotanicalName)genusTaxon.getName();
 		genusName.setGenusOrUninomial("newGenusUninomial");
 		genusName.setUpdated(new DateTime());
 		BotanicalName newName = BotanicalName.NewInstance(Rank.SPECIES());
 		Taxon newTaxon = Taxon.NewInstance(newName, genusTaxon.getSec());
 		genusTaxon.addTaxonomicChild(newTaxon, null, "5677");
-		UUID uuid = taxonService.saveTaxon(newTaxon);
+		UUID uuid = taxonService.save(newTaxon);
 		assertNotNull(uuid);
 	}
 

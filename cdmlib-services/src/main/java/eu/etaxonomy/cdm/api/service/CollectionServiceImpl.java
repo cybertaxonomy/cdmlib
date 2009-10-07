@@ -4,12 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.persistence.dao.occurrence.ICollectionDao;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
@@ -20,6 +20,7 @@ public class CollectionServiceImpl extends	IdentifiableServiceBase<Collection, I
 	
 	static private final Logger logger = Logger.getLogger(CollectionServiceImpl.class);
 
+    @Autowired
 	@Override
 	protected void setDao(ICollectionDao dao) {
 		this.dao = dao;
@@ -38,5 +39,9 @@ public class CollectionServiceImpl extends	IdentifiableServiceBase<Collection, I
 		}
 			
 		return new DefaultPagerImpl<Collection>(pageNumber, numberOfResults, pageSize, results);
+	}
+	
+	public List<Collection> searchByCode(String code) {
+		return this.dao.getCollectionByCode(code);
 	}
 }

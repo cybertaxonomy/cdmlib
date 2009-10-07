@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.hibernate.criterion.Criterion;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.config.IIdentifiableEntityServiceConfigurator;
@@ -23,17 +24,18 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ISourceable;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
-import eu.etaxonomy.cdm.model.common.OriginalSourceBase;
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.media.Rights;
-import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
+import eu.etaxonomy.cdm.persistence.query.MatchMode;
+import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 @Transactional(readOnly = true)
 public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO extends IIdentifiableDao<T>> extends AnnotatableServiceBase<T,DAO> 
 						implements IIdentifiableEntityService<T>{
 	@SuppressWarnings("unused")
-	private static final  Logger logger = Logger.getLogger(IdentifiableServiceBase.class);
+	protected
+	static final  Logger logger = Logger.getLogger(IdentifiableServiceBase.class);
 
 	
 	public Pager<Rights> getRights(T t, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
@@ -104,4 +106,16 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 	public List<UuidAndTitleCache<T>> getUuidAndTitleCache() {
 		return dao.getUuidAndTitleCache();
 	}
+	
+	public Pager<T> findByTitle(Class<? extends T> clazz, String queryString,MatchMode matchmode, List<Criterion> criteria, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+		 Integer numberOfResults = dao.countByTitle(clazz, queryString, matchmode, criteria);
+			
+		 List<T> results = new ArrayList<T>();
+		 if(numberOfResults > 0) { // no point checking again
+				results = dao.findByTitle(clazz, queryString, matchmode, criteria, pageSize, pageNumber, orderHints, propertyPaths); 
+		 }
+			
+		  return new DefaultPagerImpl<T>(pageNumber, numberOfResults, pageSize, results);
+	}
 }
+

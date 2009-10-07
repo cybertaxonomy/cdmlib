@@ -10,17 +10,13 @@
 
 package eu.etaxonomy.cdm.api.service;
 
-import java.util.Collection;
 import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 
 import eu.etaxonomy.cdm.api.service.config.ITaxonServiceConfigurator;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
-import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
@@ -29,49 +25,15 @@ import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
-import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
-import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
 import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
 import eu.etaxonomy.cdm.persistence.fetch.CdmFetch;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 
 public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
-	
-	/**
-	 * FIXME candidate for harmonization? 
-	 */
-	public abstract TaxonBase getTaxonByUuid(UUID uuid);
-	
 
-	
-	/**
-	 * FIXME candidate for harmonization? 
-	 * save a taxon and return its UUID
-	 */
-	public abstract UUID saveTaxon(TaxonBase taxon);
-
-
-	/**
-	 * FIXME candidate for harmonization?
-	 *  save a taxon and return its UUID
-	 */
-	//public abstract UUID saveTaxon(TaxonBase taxon, TransactionStatus txStatus);
-	
-	/**
-	 * FIXME candidate for harmonization?
-	 * save a collection of taxa and return its UUID
-	 */
-	public abstract Map<UUID, ? extends TaxonBase> saveTaxonAll(Collection<? extends TaxonBase> taxonCollection);
-
-	/**
-	 * FIXME candidate for harmonization?
-	 * delete a taxon and return its UUID
-	 */
-	public abstract UUID removeTaxon(TaxonBase taxon);
-	
 	/**
 	 * Computes all taxon bases.
 	 * FIXME could substitute with list(Synonym.class, limit, start)
@@ -88,18 +50,8 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	 * @param start
 	 * @return
 	 */
-	public abstract List<Taxon> getAllTaxa(int limit, int start);
+	public abstract List<Taxon> getAllTaxa(int limit, int start);	
 	
-	/**
-	 * Computes all taxon bases.
-	 * FIXME could substitute with list(limit,start) from superclass
-	 * @param limit
-	 * @param start
-	 * @return
-	 */
-	public abstract List<TaxonBase> getAllTaxonBases(int limit, int start);
-
-
 	/**
 	 * Computes all Taxon instances that do not have a taxonomic parent and has at least one child.
 	 * @param sec The concept reference that the taxon belongs to

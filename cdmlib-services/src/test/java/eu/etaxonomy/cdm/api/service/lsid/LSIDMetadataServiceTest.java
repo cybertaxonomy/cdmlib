@@ -8,11 +8,9 @@ import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
-import com.ibm.lsid.MetadataResponse;
-
 import eu.etaxonomy.cdm.api.service.lsid.impl.LsidRegistryImpl;
+import eu.etaxonomy.cdm.model.common.IIdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.LSID;
-import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 
 @DataSet("LSIDAuthorityServiceTest.testGetAvailableServices.xml")
@@ -39,13 +37,11 @@ public class LSIDMetadataServiceTest extends CdmIntegrationTest {
 	
 	@Test
 	public void testGetMetadataWithKnownLSID() throws Exception {
-		MetadataResponse metadataResponse = lsidMetadataService.getMetadata(lsid,null);
-		Taxon taxon = (Taxon)metadataResponse.getValue();
-		assertNotNull("getMetadata should return a MetadataResponse",metadataResponse);
-		assertNotNull("the metadata response should contain an object",metadataResponse.getValue());
-		assertEquals("the object should have an lsid equal to the lsid supplied",lsid.getAuthority(),taxon.getLsid().getAuthority());
-		assertEquals("the object should have an lsid equal to the lsid supplied",lsid.getNamespace(),taxon.getLsid().getNamespace());
-		assertEquals("the object should have an lsid equal to the lsid supplied",lsid.getObject(),taxon.getLsid().getObject());
+		IIdentifiableEntity identifiableEntity = lsidMetadataService.getMetadata(lsid);
+		assertNotNull("getMetadata should return an IdentifiableEntity",identifiableEntity);
+		assertEquals("the object should have an lsid equal to the lsid supplied",lsid.getAuthority(),identifiableEntity.getLsid().getAuthority());
+		assertEquals("the object should have an lsid equal to the lsid supplied",lsid.getNamespace(),identifiableEntity.getLsid().getNamespace());
+		assertEquals("the object should have an lsid equal to the lsid supplied",lsid.getObject(),identifiableEntity.getLsid().getObject());
 	}
 
 }

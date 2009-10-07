@@ -43,6 +43,7 @@ import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.taxon.ITreeNode;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
@@ -68,13 +69,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 	@Autowired
 	private ITaxonNameDao nameDao;
 	
-	/**
-	 * FIXME Candidate for harmonization
-	 * remove commented out dao
-	 */
-//	@Autowired
-//	@Qualifier("nonViralNameDaoHibernateImpl")
-//	private INonViralNameDao nonViralNameDao;
+
 	@Autowired
 	private IOrderedTermVocabularyDao orderedVocabularyDao;
 	@Autowired
@@ -87,70 +82,12 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 	public void setTaxonNodeComparator(ITaxonNodeComparator<? super TaxonNode> taxonNodeComparator){
 		this.taxonNodeComparator = (Comparator<? super TaxonNode>) taxonNodeComparator;
 	}
-
 	
 	/**
 	 * Constructor
 	 */
 	public TaxonServiceImpl(){
 		if (logger.isDebugEnabled()) { logger.debug("Load TaxonService Bean"); }
-	}
-	
-	/**
-	 * FIXME Candidate for harmonization
-	 * find
-	 *  (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#getTaxonByUuid(java.util.UUID)
-	 */
-	public TaxonBase getTaxonByUuid(UUID uuid) {
-		return super.findByUuid(uuid);
-	}
-
-	/**
-	 * FIXME Candidate for harmonization
-	 * save
-	 * (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#saveTaxon(eu.etaxonomy.cdm.model.taxon.TaxonBase)
-	 */
-	@Transactional(readOnly = false)
-	public UUID saveTaxon(TaxonBase taxon) {
-		return super.saveCdmObject(taxon);
-	}
-
-	/**
-	 * FIXME Candidate for harmonization
-	 * this method seems redundant, remove
-	 * @param taxon
-	 * @param txStatus
-	 * @return
-	 */
-	//@Transactional(readOnly = false)
-	public UUID saveTaxon(TaxonBase taxon, TransactionStatus txStatus) {
-		//return super.saveCdmObject(taxon, txStatus);
-		return super.saveCdmObject(taxon);
-	}
-	
-	
-	/**
-	 * FIXME Candidate for harmonization
-	 * save(Set<Taxon> taxa)
-	 *  (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#saveTaxonAll(java.util.Collection)
-	 */
-	@Transactional(readOnly = false)
-	public Map<UUID, ? extends TaxonBase> saveTaxonAll(Collection<? extends TaxonBase> taxonCollection){
-		return saveCdmObjectAll(taxonCollection);
-	}
-
-	/**
-	 * FIXME Candidate for harmonization
-	 * delete
-	 *  (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#removeTaxon(eu.etaxonomy.cdm.model.taxon.TaxonBase)
-	 */
-	@Transactional(readOnly = false)
-	public UUID removeTaxon(TaxonBase taxon) {
-		return super.removeCdmObject(taxon);
 	}
 
 	/**
@@ -159,26 +96,6 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 	 */
 	public List<TaxonBase> searchTaxaByName(String name, ReferenceBase sec) {
 		return dao.getTaxaByName(name, sec);
-	}
-
-	/**
-	 * FIXME Candidate for harmonization
-	 * list
-	 * (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#getAllTaxonBases(int, int)
-	 */
-	public List<TaxonBase> getAllTaxonBases(int limit, int start){
-		return dao.list(limit, start);
-	}
-
-	/**
-	 * FIXME Candidate for harmonization
-	 * list
-	 *  (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#getAllTaxa(int, int)
-	 */
-	public List<Taxon> getAllTaxa(int limit, int start){
-		return dao.getAllTaxa(limit, start);
 	}
 	
 	/**
@@ -189,6 +106,16 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 	 */
 	public List<Synonym> getAllSynonyms(int limit, int start) {
 		return dao.getAllSynonyms(limit, start);
+	}
+	
+	/**
+	 * FIXME Candidate for harmonization
+	 * list(Taxon.class, ...)
+	 *  (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#getAllTaxa(int, int)
+	 */
+	public List<Taxon> getAllTaxa(int limit, int start) {
+		return dao.getAllTaxa(limit, start);
 	}
 
 
@@ -565,15 +492,6 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		return new DefaultPagerImpl<IdentifiableEntity>
 			(configurator.getPageNumber(), numberOfResults, configurator.getPageSize(), results);
 	}
-
-	/**
-	 * FIXME Candidate for harmonization
-	 * remove, clearly this method is never used
-	 */
-	public <TYPE extends TaxonBase> Pager<TYPE> list(Class<TYPE> type,	Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,	List<String> propertyPaths) {
-		logger.warn("Pager<TYPE> list(xxx) method not yet implemented");
-		return null;
-	}
 	
 	public List<UuidAndTitleCache<TaxonBase>> getTaxonUuidAndTitleCache(){
 		return dao.getUuidAndTitleCache();
@@ -596,17 +514,4 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		}
 		return medRep;
 	}
-
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#saveTaxonNodeAll(java.util.Collection)
-	 */
-	public Map<UUID, TaxonNode> saveTaxonNodeAll(
-			Collection<TaxonNode> taxonNodeCollection) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
-
-
 }

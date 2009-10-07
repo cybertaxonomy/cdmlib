@@ -44,10 +44,10 @@ public class TestC3P0Configuration{
 	public void testLongSession() throws InterruptedException{
 		appController.NewConversation();
 		
-		appController.getTaxonService().list(null, null);
+		appController.getTaxonService().list(null, null, null, null,null);
 		
 		Thread.sleep(70 * 1000);
 		
-		appController.getTaxonService().list(null, null);
+		appController.getTaxonService().list(null, null, null, null,null);
 	}
 }

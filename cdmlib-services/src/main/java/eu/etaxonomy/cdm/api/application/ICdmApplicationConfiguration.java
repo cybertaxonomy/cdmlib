@@ -15,9 +15,11 @@ import org.springframework.transaction.PlatformTransactionManager;
 
 import eu.etaxonomy.cdm.api.conversation.ConversationHolder;
 import eu.etaxonomy.cdm.api.service.IAgentService;
+import eu.etaxonomy.cdm.api.service.ICollectionService;
 import eu.etaxonomy.cdm.api.service.ICommonService;
 import eu.etaxonomy.cdm.api.service.IDatabaseService;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
+import eu.etaxonomy.cdm.api.service.IFeatureTreeService;
 import eu.etaxonomy.cdm.api.service.ILocationService;
 import eu.etaxonomy.cdm.api.service.IMediaService;
 import eu.etaxonomy.cdm.api.service.INameService;
@@ -28,6 +30,7 @@ import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITaxonTreeService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.IUserService;
+import eu.etaxonomy.cdm.api.service.IVocabularyService;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
@@ -126,5 +129,11 @@ public interface ICdmApplicationConfiguration {
 	 * @return
 	 */
 	public ConversationHolder NewConversation();
+
+	public ICollectionService getCollectionService();
+
+	public IFeatureTreeService getFeatureTreeService();
+
+	public IVocabularyService getVocabularyService();
 	
 }

@@ -13,6 +13,14 @@
 
  	<context:component-scan base-package="eu/etaxonomy/cdm/api"/>
     
+    <bean id="validatorFactory" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
+        <property name="mappingLocations">
+            <set>
+                <value>classpath:/eu/etaxonomy/cdm/validation/name/TaxonNameBase-Constraints.xml</value>
+            </set>
+        </property>
+    </bean>
+    
     <!-- enable the configuration of transactional behavior based on annotations -->
     <tx:annotation-driven transaction-manager="transactionManager"/>      
   

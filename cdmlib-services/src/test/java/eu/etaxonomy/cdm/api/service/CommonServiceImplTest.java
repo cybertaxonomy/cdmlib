@@ -135,7 +135,7 @@ public class CommonServiceImplTest extends CdmIntegrationTest {
 //		occurrenceService.save(spec1);
 		
 		UUID uuidSpec = UUID.fromString("41539e9c-3764-4f14-9712-2d07d00c8e4c");
-		SpecimenOrObservationBase spec1 = occurrenceService.findByUuid(uuidSpec);
+		SpecimenOrObservationBase spec1 = occurrenceService.find(uuidSpec);
 		
 	
 		Set<CdmBase> referencedObjects = service.getReferencingObjects(spec1);

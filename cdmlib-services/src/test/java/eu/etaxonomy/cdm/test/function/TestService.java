@@ -61,7 +61,7 @@ public class TestService {
 		Synonym syn = Synonym.NewInstance(bn, sec);
 		childTaxon.addSynonym(syn, SynonymRelationshipType.SYNONYM_OF());
  		TransactionStatus txStatus = appCtr.startTransaction();
-		appCtr.getTaxonService().saveTaxon(childTaxon);
+		appCtr.getTaxonService().save(childTaxon);
 		appCtr.commitTransaction(txStatus);
  		
  		
@@ -80,11 +80,11 @@ public class TestService {
 		nvn.setCombinationAuthorTeam(team);
 		
 		logger.info("Save objects ...");
- 		appCtr.getTaxonService().saveTaxon(parentTaxon);
+ 		appCtr.getTaxonService().save(parentTaxon);
 		
 		// load Name list 
 		logger.info("Load existing names from db...");
-		List<TaxonNameBase> tnList = appCtr.getNameService().getAllNames(1000, 0);
+		List<TaxonNameBase> tnList = appCtr.getNameService().list(null,1000, 0,null,null);
 		for (TaxonNameBase tn2: tnList){
 			logger.info("Title: "+ tn2.getTitleCache() + " UUID: " + tn2.getUuid()+";");
 		}
@@ -93,7 +93,7 @@ public class TestService {
 	public void testRootTaxa(){
 		// load Name list 
 		logger.info("Load existing names from db...");
-		List<TaxonNameBase> tnList = appCtr.getNameService().getAllNames(1000, 0);
+		List<TaxonNameBase> tnList = appCtr.getNameService().list(null,1000, 0,null,null);
 		for (TaxonNameBase tn2: tnList){
 			logger.info("Title: "+ tn2.getTitleCache() + " UUID: " + tn2.getUuid()+";");
 		}
@@ -134,12 +134,12 @@ public class TestService {
 		Taxon taxon1 = Taxon.NewInstance(taxonName, ref);
 		Taxon taxon2 = Taxon.NewInstance(taxonName, null);
 		logger.info("Save taxon ...");
-		UUID uuidTaxon1 = taxonService.saveTaxon(taxon1);
+		UUID uuidTaxon1 = taxonService.save(taxon1);
 		logger.info("  UUID: " + uuidTaxon1);
-		UUID uuidTaxon2 = taxonService.saveTaxon(taxon2);
+		UUID uuidTaxon2 = taxonService.save(taxon2);
 		logger.info("  UUID: " + uuidTaxon2);
 		logger.info("Remove taxon ...");
-		UUID uuid = taxonService.removeTaxon(taxon1);
+		UUID uuid = taxonService.delete(taxon1);
 		logger.info("  UUID: " + uuid);
 	}
 	
@@ -174,9 +174,9 @@ public class TestService {
 		parent.addTaxonomicChild(child, null, null);
 		
 		logger.info("Save taxon ...");
-		UUID uuidTaxon1 = taxonService.saveTaxon(parent);
+		UUID uuidTaxon1 = taxonService.save(parent);
 		logger.info("  UUID: " + uuidTaxon1);
-		UUID uuidTaxon2 = taxonService.saveTaxon(child);
+		UUID uuidTaxon2 = taxonService.save(child);
 		logger.info("  UUID: " + uuidTaxon2);
 		
 		
@@ -196,7 +196,7 @@ public class TestService {
 		Taxon taxon = Taxon.NewInstance(taxonName, ref);
 		
 		logger.info("Save taxon ...");
-		UUID uuidTaxon1 = taxonService.saveTaxon(taxon);
+		UUID uuidTaxon1 = taxonService.save(taxon);
 		logger.info("  UUID: " + uuidTaxon1);
 
 	}

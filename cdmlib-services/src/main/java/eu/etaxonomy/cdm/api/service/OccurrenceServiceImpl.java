@@ -47,50 +47,10 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 	static private final Logger logger = Logger.getLogger(OccurrenceServiceImpl.class);
 	
 	@Autowired
-	private IDefinedTermDao definedTermDao;
-	
-	@Autowired
-	private IOccurrenceDao occurenceDao;
-	
-	@Autowired
-	private ICollectionDao collectionDao;
-	
+	private IDefinedTermDao definedTermDao;	
 
 	public OccurrenceServiceImpl() {
 		logger.debug("Load OccurrenceService Bean");
-	}
-	
-	/**
-	 * FIXME Candidate for harmonization
-	 * list
-	 *  (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.IOccurrenceService#getAllspecimenOrObservationBases(int, int)
-	 */
-	public List<SpecimenOrObservationBase> getAllSpecimenOrObservationBases(
-			int limit, int start) {
-		return dao.list(limit, start);
-	}
-
-	/**
-	 * FIXME Candidate for harmonization
-	 * save(Set<SpecimenOrObservationBase> specimens)
-	 *  (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.IOccurrenceService#saveSpecimenOrObservationBaseAll(java.util.Collection)
-	 */
-	@Transactional(readOnly = false)
-	public Map<UUID, ? extends SpecimenOrObservationBase> saveSpecimenOrObservationBaseAll(
-			Collection<? extends SpecimenOrObservationBase> specimenOrObservationBaseCollection) {
-		return saveCdmObjectAll(specimenOrObservationBaseCollection);
-	}
-
-	/**
-	 * FIXME Candidate for harmonization
-	 * save
-	 */
-	@Transactional(readOnly = false)
-	public UUID saveSpecimenOrObservationBase(
-			SpecimenOrObservationBase specimenOrObservationBase) {
-		return super.saveCdmObject(specimenOrObservationBase);
 	}
 	
 	/* (non-Javadoc)
@@ -121,14 +81,6 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 			countries.add((WaterbodyOrCountry)terms.get(i));
 		}
 		return countries;
-	}
-	
-	/**
-	 * FIXME Candidate for harmonization
-	 * move to collectionService
-	 */
-	public List<eu.etaxonomy.cdm.model.occurrence.Collection> searchCollectionByCode(String code) {
-		return this.collectionDao.getCollectionByCode(code);
 	}
 
 	@Autowired
@@ -167,14 +119,6 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 		}
 		
 		return new DefaultPagerImpl<Media>(pageNumber, numberOfResults, pageSize, results);
-	}
-
-	/**
-	 * FIXME Candidate for harmonization
-	 * collectionService.save
-	 */
-	public UUID saveCollection(eu.etaxonomy.cdm.model.occurrence.Collection collection) {
-		return collectionDao.save(collection);
 	}
 
 	public Pager<SpecimenOrObservationBase> search(Class<? extends SpecimenOrObservationBase> clazz, String queryString, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {

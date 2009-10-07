@@ -16,6 +16,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import org.hibernate.criterion.Criterion;
+
 import eu.etaxonomy.cdm.api.service.config.IIdentifiableEntityServiceConfigurator;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -39,44 +41,17 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
+import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 public interface INameService extends IIdentifiableEntityService<TaxonNameBase> {
 
-	/**
-	 * FIXME candidate for harmonization?
-	 * @param uuid
-	 * @return
-	 */
-	public TaxonNameBase getTaxonNameByUuid(UUID uuid);
-
-	/**
-	 * FIXME candidate for harmonization?
-	 * @param taxonName
-	 * @return
-	 */
-	public UUID saveTaxonName(TaxonNameBase taxonName);
-
-	/**
-	 * FIXME candidate for harmonization?
-	 * Saves a collection of  TaxonNames and return its UUID@param taxonCollection
-	 * @return
-	 */
-	public Map<UUID, TaxonNameBase> saveTaxonNameAll(Collection<? extends TaxonNameBase> taxonCollection);
 
 	public Map<UUID, TypeDesignationBase> saveTypeDesignationAll(Collection<TypeDesignationBase> typeDesignationCollection);
 
 	public Map<UUID, ReferencedEntityBase> saveReferencedEntitiesAll(Collection<ReferencedEntityBase> referencedEntityCollection);
 		
 	public Map<UUID, HomotypicalGroup> saveAllHomotypicalGroups(Collection<HomotypicalGroup> homotypicalGroups);
-	
-	/**
-	 * FIXME candidate for harmonization?
-	 * @param limit
-	 * @param start
-	 * @return
-	 */
-	public List<TaxonNameBase> getAllNames(int limit, int start);
 
 	public List<NomenclaturalStatus> getAllNomenclaturalStatus(int limit, int start);
 
@@ -285,4 +260,22 @@ public interface INameService extends IIdentifiableEntityService<TaxonNameBase> 
 	 * 			a <code>Map</code> containing uuid and titleCache of names
 	 */
 	public List<UuidAndTitleCache> getUuidAndTitleCacheOfNames();
+	
+	/**
+	 * Return a Pager of names matching the given query string, optionally filtered by class, optionally with a particular MatchMode
+	 * 
+	 * @param clazz filter by class - can be null to include all instances of type T
+	 * @param queryString the query string to filter by
+	 * @param matchmode use a particular type of matching (can be null - defaults to exact matching)
+	 * @param criteria additional criteria to filter by
+	 * @param pageSize The maximum number of objects returned (can be null for all objects)
+	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
+	 * @param propertyPaths properties to initialize - see {@link BeanInitializer#initialize(Object, List)}
+	 * @param orderHints
+	 *            Supports path like <code>orderHints.propertyNames</code> which
+	 *            include *-to-one properties like createdBy.username or
+	 *            authorTeam.persistentTitleCache
+	 * @return a paged list of instances of type T matching the queryString
+	 */
+    public Pager<TaxonNameBase> findByName(Class<? extends TaxonNameBase> clazz, String queryString,MatchMode matchmode, List<Criterion> criteria, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 }

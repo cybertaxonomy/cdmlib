@@ -27,22 +27,7 @@ import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 public interface IAgentService extends IIdentifiableEntityService<AgentBase> {
-	
-	// FIXME Candidate for harmonization
-	public abstract AgentBase getAgentByUuid(UUID uuid);
-
-	// FIXME Candidate for harmonization
-	public abstract UUID saveAgent(AgentBase agent);
-	
-	// FIXME Candidate for harmonization
-	public abstract Map<UUID, AgentBase> saveAgentAll(Collection<? extends AgentBase> agentCollection);
-	
-	// FIXME Candidate for harmonization
-	public abstract List<AgentBase> findAgentsByTitle(String title);
-
-	// FIXME Candidate for harmonization
-	public abstract List<AgentBase> getAllAgents(int limit, int start);
-	
+		
 	public abstract List<Institution> searchInstitutionByCode(String code);
 	
 	/**

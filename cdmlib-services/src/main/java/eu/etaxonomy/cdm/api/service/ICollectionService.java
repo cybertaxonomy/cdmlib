@@ -26,4 +26,11 @@ public interface ICollectionService extends	IIdentifiableEntityService<Collectio
 	 * @see <a href="http://lucene.apache.org/java/2_4_0/queryparsersyntax.html">Apache Lucene - Query Parser Syntax</a>
 	 */
 	public Pager<Collection> search(Class<? extends Collection> clazz, String query, Integer pageSize,Integer pageNumber, List<OrderHint> orderHints,List<String> propertyPaths);
+	
+	/**
+	 * Return a list of collections matching the given code
+	 * @param code 
+	 * @return a List of Collection objects
+	 */
+	public List<Collection> searchByCode(String code);
 }

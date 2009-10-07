@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ibm.lsid.LSIDException;
-import com.ibm.lsid.MetadataResponse;
 import com.ibm.lsid.server.LSIDServerException;
 import com.ibm.lsid.server.LSIDServiceConfig;
 
@@ -36,7 +35,7 @@ public class LsidMetadataServiceImpl  implements LSIDMetadataService {
 		this.lsidRegistry = lsidRegistry;
 	}	
 		
-	public MetadataResponse getMetadata(LSID lsid, String[] acceptedFormats) throws LSIDServerException {
+	public IIdentifiableEntity getMetadata(LSID lsid) throws LSIDServerException {
 		IIdentifiableDao identfiableDAO = lsidRegistry.lookupDAO(lsid);
 		if(identfiableDAO == null) { // we do not have a mapping for lsids with this authority or namespace
 			throw new LSIDServerException(LSIDException.UNKNOWN_LSID, "Unknown LSID");
@@ -48,19 +47,7 @@ public class LsidMetadataServiceImpl  implements LSIDMetadataService {
 				throw new LSIDServerException(LSIDException.UNKNOWN_LSID, "Unknown LSID");
 			}
 			
-			if (acceptedFormats != null) {
-                boolean found = false;
-                for (int i=0;i<acceptedFormats.length;i++) {
-                        if (acceptedFormats[i].equals(MetadataResponse.RDF_FORMAT ))
-                                found = true;
-                        break;                                
-                }
-                if (!found) {
-                        throw new LSIDServerException(LSIDServerException.NO_METADATA_AVAILABLE_FOR_FORMATS,"No metadata found for given format");
-                }
-            }
-			
-			return new MetadataResponse(identifiable, null, MetadataResponse.RDF_FORMAT);
+			return identifiable;
 		} catch (LSIDException e) {
 			throw new LSIDServerException(e, e.getErrorCode(),e.getMessage());
 		}

@@ -115,9 +115,9 @@ public class Datasource {
 			}
 			
 			Person agent = Person.NewInstance();
-			appCtr.getAgentService().saveAgent(agent);
+			appCtr.getAgentService().save(agent);
 			TaxonNameBase tn = BotanicalName.NewInstance(null);
-			appCtr.getNameService().saveTaxonName(tn);
+			appCtr.getNameService().save(tn);
 			appCtr.close();
 		} catch (DataSourceNotFoundException e) {
 			logger.error("Unknown datasource");
@@ -142,9 +142,9 @@ public class Datasource {
 		try {
 			CdmApplicationController appCtr = CdmApplicationController.NewInstance(ds);
 			Person agent = Person.NewInstance();
-			appCtr.getAgentService().saveAgent(agent);
+			appCtr.getAgentService().save(agent);
 			TaxonNameBase tn = BotanicalName.NewInstance(null);
-			appCtr.getNameService().saveTaxonName(tn);
+			appCtr.getNameService().save(tn);
 			appCtr.close();
 		} catch (DataSourceNotFoundException e) {
 			logger.error("Unknown datasource");
@@ -166,9 +166,9 @@ public class Datasource {
 		try {
 			CdmApplicationController appCtr = CdmApplicationController.NewInstance(ds);
 			Person agent = Person.NewInstance();
-			appCtr.getAgentService().saveAgent(agent);
+			appCtr.getAgentService().save(agent);
 			TaxonNameBase tn = BotanicalName.NewInstance(null);
-			appCtr.getNameService().saveTaxonName(tn);
+			appCtr.getNameService().save(tn);
 			appCtr.close();
 		} catch (DataSourceNotFoundException e) {
 			logger.error("Unknown datasource");
@@ -182,7 +182,7 @@ public class Datasource {
 			CdmPersistentDataSource ds = CdmPersistentDataSource.NewLocalHsqlInstance();
 			CdmApplicationController appCtr = CdmApplicationController.NewInstance(ds);
 			try {
-				List l = appCtr.getNameService().getAllNames(5, 1);
+				List l = appCtr.getNameService().list(null,5, 1,null,null);
 				System.out.println(l);
 				//Agent agent = new Agent();
 				//appCtr.getAgentService().saveAgent(agent);

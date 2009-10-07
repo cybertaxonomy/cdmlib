@@ -79,17 +79,17 @@ public class TestTaxonServices {
 		logger.info("Testing makeTaxonSynonym()");
 		TransactionStatus txStatus = appCtr.startTransaction();
 
-		Taxon oldTaxon = (Taxon)appCtr.getTaxonService().getTaxonByUuid(UUID.fromString("83a87f0c-e2c4-4b41-b603-4e77e7e53158"));
-		Taxon newAcceptedTaxon = (Taxon)appCtr.getTaxonService().getTaxonByUuid(UUID.fromString("0b423190-fcca-4228-86a9-77974477f160"));
+		Taxon oldTaxon = (Taxon)appCtr.getTaxonService().find(UUID.fromString("83a87f0c-e2c4-4b41-b603-4e77e7e53158"));
+		Taxon newAcceptedTaxon = (Taxon)appCtr.getTaxonService().find(UUID.fromString("0b423190-fcca-4228-86a9-77974477f160"));
 		SynonymRelationshipType synonymType = SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF();
 
 		ReferenceBase citation;
 		citation = Book.NewInstance();
-		AgentBase linne = appCtr.getAgentService().getAgentByUuid(UUID.fromString("f6272e48-5b4e-40c1-b4e9-ee32334fa19f"));
+		AgentBase linne = appCtr.getAgentService().find(UUID.fromString("f6272e48-5b4e-40c1-b4e9-ee32334fa19f"));
 		citation.setAuthorTeam((TeamOrPersonBase)linne);
 		citation.setTitleCache("Make Taxon Synonym Test");
 		String microRef = "123";
-		appCtr.getReferenceService().saveReference(citation);
+		appCtr.getReferenceService().save(citation);
 
 		appCtr.getTaxonService().makeTaxonSynonym(oldTaxon, newAcceptedTaxon, synonymType, citation, microRef);
 
@@ -103,15 +103,15 @@ public class TestTaxonServices {
 		TransactionStatus txStatus = appCtr.startTransaction();
 
 		BotanicalName name1, name2;
-		AgentBase linne = appCtr.getAgentService().getAgentByUuid(UUID.fromString("f6272e48-5b4e-40c1-b4e9-ee32334fa19f"));
+		AgentBase linne = appCtr.getAgentService().find(UUID.fromString("f6272e48-5b4e-40c1-b4e9-ee32334fa19f"));
 		name1 = BotanicalName.NewInstance(Rank.SPECIES(),"Name1",null,"arvensis",null,(TeamOrPersonBase)linne,null,"p.1", null);
 		name2 = BotanicalName.NewInstance(Rank.SPECIES(),"Name2",null,"lanzae",null,(TeamOrPersonBase)linne,null,"p.2", null);
 
 		name1.addRelationshipToName(name2, NameRelationshipType.BASIONYM(), "ruleTo");
 		name2.addRelationshipFromName(name1, NameRelationshipType.BASIONYM(), "ruleFrom");
 
-		appCtr.getNameService().saveTaxonName(name1);
-		appCtr.getNameService().saveTaxonName(name2);
+		appCtr.getNameService().save(name1);
+		appCtr.getNameService().save(name2);
 
 		logger.info("Removing Name Relationships");
 
@@ -124,9 +124,9 @@ public class TestTaxonServices {
 
 		name1.removeNameRelationship(nameRel);
 //		name1.removeTaxonName(name2);
-		appCtr.getNameService().saveTaxonName(name1);
+		appCtr.getNameService().save(name1);
 
-		Taxon taxon = (Taxon)appCtr.getTaxonService().getTaxonByUuid(UUID.fromString("6a8be65b-94b6-4136-919a-02002e409158"));
+		Taxon taxon = (Taxon)appCtr.getTaxonService().find(UUID.fromString("6a8be65b-94b6-4136-919a-02002e409158"));
 		Set<Synonym> synonyms = taxon.getSynonyms();
 
 //		List<TaxonBase> taxa = appCtr.getTaxonService().getAllTaxa(100, 0);
@@ -142,7 +142,7 @@ public class TestTaxonServices {
 			}
 		}
 		taxon.removeSynonym(syn);
-		appCtr.getTaxonService().saveTaxon(taxon);
+		appCtr.getTaxonService().save(taxon);
 
 //		name1FromRelations.removeAll(name1FromRelations);
 
@@ -160,18 +160,18 @@ public class TestTaxonServices {
 		TransactionStatus txStatus = appCtr.startTransaction();
 		
 		NamedArea namedArea = NamedArea.NewInstance("MyTerm", "MyLabel", "MyLabelAbbr");
-		UUID naid = appCtr.getTermService().saveTerm(namedArea);
+		UUID naid = appCtr.getTermService().save(namedArea);
 		
 		WaterbodyOrCountry woc = WaterbodyOrCountry.NewInstance("NAR", "Narnia", "NN");
-		UUID wocid = appCtr.getTermService().saveTerm(woc);
+		UUID wocid = appCtr.getTermService().save(woc);
 		
-		DefinedTermBase dtb = appCtr.getTermService().getTermByUuid(naid);
+		DefinedTermBase dtb = appCtr.getTermService().find(naid);
 //		DefinedTermBase dtb = 
 //			appCtr.getTermService().getTermByUuid(UUID.fromString("dbcedb8b-ae38-45b0-a400-840babf68f9c"));
 		logger.debug("NamedArea: " + dtb.toString());
 //		dtb = TdwgArea.getAreaByTdwgAbbreviation("AGE-LP");
 		//logger.debug("TdwgArea: " + dtb.toString());
-		dtb = appCtr.getTermService().getTermByUuid(wocid);
+		dtb = appCtr.getTermService().find(wocid);
 //		dtb = 
 //			appCtr.getTermService().getTermByUuid(UUID.fromString("7cc278aa-b42a-4b5f-b7ad-0cbab0730da8"));
 		logger.debug("WaterbodyOrCountry: " + dtb.toString());
