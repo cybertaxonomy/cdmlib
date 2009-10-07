@@ -122,7 +122,7 @@ public class UnitsGatheringEvent {
 			collName = collectors.next();
 			/*check if the collector does already exist*/
 			try{
-				List<AgentBase> col = config.getAgentService().findAgentsByTitle(collName);
+				List<AgentBase> col = config.getAgentService().findByTitle(null,collName,null,null,null,null,null, null).getRecords();
 				collector=col.get(0);
 			}catch (Exception e) {
 				collector = Person.NewInstance();

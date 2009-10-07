@@ -92,7 +92,7 @@ public class BerlinModelTaxonomicTreeExport extends BerlinModelExportBase<Relati
 			
 			TransactionStatus txStatus = startTransaction(true);
 			
-			List<TaxonomicTree> list = getTaxonTreeService().list(10000000,0);
+			List<TaxonomicTree> list = getTaxonTreeService().list(null,10000000,0,null,null);
 			
 			BerlinModelExportMapping mapping = getMapping();
 			mapping.initialize(state);

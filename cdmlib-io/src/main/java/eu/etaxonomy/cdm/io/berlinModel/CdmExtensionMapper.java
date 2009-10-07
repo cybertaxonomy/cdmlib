@@ -105,7 +105,7 @@ public class CdmExtensionMapper extends CdmSingleAttributeMapperBase {
 	}
 	
 	protected ExtensionType getExtensionType(ITermService service, UUID uuid, String label, String text, String labelAbbrev){
-		ExtensionType extensionType = (ExtensionType)service.getTermByUuid(uuid);
+		ExtensionType extensionType = (ExtensionType)service.find(uuid);
 		if (extensionType == null){
 			extensionType = new ExtensionType(label, text, labelAbbrev);
 			extensionType.setUuid(uuid);

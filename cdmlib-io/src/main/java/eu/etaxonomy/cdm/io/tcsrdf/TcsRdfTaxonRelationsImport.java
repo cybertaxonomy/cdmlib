@@ -118,7 +118,7 @@ public class TcsRdfTaxonRelationsImport extends TcsRdfImportBase implements ICdm
 			}
 		}//elTaxonConcept
 		logger.info("Taxa to save: " + taxonStore.size());
-		getTaxonService().saveTaxonAll(taxonStore);
+		getTaxonService().save(taxonStore);
 		
 		logger.info("end makeRelTaxa ...");
 		return success;

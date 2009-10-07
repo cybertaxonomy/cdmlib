@@ -106,7 +106,7 @@ public class TaxonXNomenclatureImport extends CdmIoBase<TaxonXImportState> imple
 		
 		
 		if (isChanged){
-			getTaxonService().saveTaxon(taxon);
+			getTaxonService().save(taxon);
 		}
 		commitTransaction(tx);
 		return true;
@@ -597,7 +597,7 @@ public class TaxonXNomenclatureImport extends CdmIoBase<TaxonXImportState> imple
 		//INameService taxonNameService = config.getCdmAppController().getNameService();
 		INameService taxonNameService = getNameService();
 		
-		taxonNameService.saveTaxonName(taxonNameBase);
+		taxonNameService.save(taxonNameBase);
 		Set<TaxonNameBase> typifiedNames = taxonNameBase.getHomotypicalGroup().getTypifiedNames();
 		for(TaxonNameBase typifiedName: typifiedNames){
 			typifiedName.getTypeDesignations().size();	
@@ -612,7 +612,7 @@ public class TaxonXNomenclatureImport extends CdmIoBase<TaxonXImportState> imple
 	private void unlazySynonym(IImportConfigurator config, Taxon taxon){
 		TransactionStatus txStatus = startTransaction();
 		ITaxonService taxonService = getTaxonService();
-		taxonService.saveTaxon(taxon);
+		taxonService.save(taxon);
 		Set<Synonym> synonyms = taxon.getSynonyms();
 		logger.debug(synonyms.size());
 		//taxonService.saveTaxon(taxon);

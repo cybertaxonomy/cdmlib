@@ -75,12 +75,12 @@ public class BerlinModelTaxonExport extends BerlinModelExportBase<TaxonBase> {
 		mapping.addMapper(DbStringMapper.NewFacultativeInstance("appendedPhrase", "NamePhrase"));
 		
 		//detail
-		ExtensionType detailExtensionType = (ExtensionType)getTermService().getTermByUuid(BerlinModelTaxonImport.DETAIL_EXT_UUID);
+		ExtensionType detailExtensionType = (ExtensionType)getTermService().find(BerlinModelTaxonImport.DETAIL_EXT_UUID);
 		if (detailExtensionType != null){
 			mapping.addMapper(DbExtensionMapper.NewInstance(detailExtensionType, "Detail"));
 		}
 		//idInSource
-		ExtensionType idInSourceExtensionType = (ExtensionType)getTermService().getTermByUuid(BerlinModelImportBase.ID_IN_SOURCE_EXT_UUID);
+		ExtensionType idInSourceExtensionType = (ExtensionType)getTermService().find(BerlinModelImportBase.ID_IN_SOURCE_EXT_UUID);
 		if (idInSourceExtensionType != null){
 			mapping.addMapper(DbIntegerExtensionMapper.NewInstance(idInSourceExtensionType, "IdInSource"));
 		}
@@ -115,7 +115,7 @@ public class BerlinModelTaxonExport extends BerlinModelExportBase<TaxonBase> {
 			
 			TransactionStatus txStatus = startTransaction(true);
 			
-			List<TaxonBase> list = getTaxonService().list(100000000, 0);
+			List<TaxonBase> list = getTaxonService().list(null,100000000, 0, null, null);
 			
 			BerlinModelExportMapping mapping = getMapping();
 			mapping.initialize(state);

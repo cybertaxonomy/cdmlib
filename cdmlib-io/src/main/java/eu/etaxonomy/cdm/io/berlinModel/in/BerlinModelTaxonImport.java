@@ -327,7 +327,7 @@ public class BerlinModelTaxonImport  extends BerlinModelImportBase  {
 			}
 			//invokeRelations(source, cdmApp, deleteAll, taxonMap, referenceMap);
 			logger.info("saving "+i+" taxa ...");
-			getTaxonService().saveTaxonAll(taxonMap.objects());
+			getTaxonService().save(taxonMap.objects());
 			
 			logger.info("end makeTaxa ..." + getSuccessString(success));
 			

@@ -125,7 +125,7 @@ public class BerlinModelReferenceExport extends BerlinModelExportBase<ReferenceB
 			
 			TransactionStatus txStatus = startTransaction(true);
 			
-			List<ReferenceBase> list = getReferenceService().list(100000000, 0);
+			List<ReferenceBase> list = getReferenceService().list(null,100000000, 0,null,null);
 			
 			BerlinModelExportMapping mapping = getMapping();
 			mapping.initialize(state);

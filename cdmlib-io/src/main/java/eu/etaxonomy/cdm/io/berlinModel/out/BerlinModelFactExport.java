@@ -107,7 +107,7 @@ public class BerlinModelFactExport extends BerlinModelExportBase<TextData> {
 			
 			TransactionStatus txStatus = startTransaction(true);
 			
-			List<DescriptionBase> list = getDescriptionService().list(1000000000, 0);
+			List<DescriptionBase> list = getDescriptionService().list(null,1000000000, 0,null,null);
 			
 			BerlinModelExportMapping mapping = getMapping();
 			mapping.initialize(state);

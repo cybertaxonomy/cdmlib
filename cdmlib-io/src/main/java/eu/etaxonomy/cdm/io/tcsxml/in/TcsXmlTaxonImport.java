@@ -226,7 +226,7 @@ public class TcsXmlTaxonImport  extends TcsXmlImportBase implements ICdmIO<TcsXm
 		}
 		//invokeRelations(source, cdmApp, deleteAll, taxonMap, referenceMap);
 		logger.info(i + " taxa handled. Saving ...");
-		taxonService.saveTaxonAll(taxonMap.objects());
+		taxonService.save(taxonMap.objects());
 		logger.info("end makeTaxa ...");
 		return success.getValue();
 	}

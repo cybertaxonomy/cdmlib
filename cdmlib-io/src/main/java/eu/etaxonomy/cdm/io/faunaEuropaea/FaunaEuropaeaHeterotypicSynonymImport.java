@@ -10,6 +10,7 @@
 
 package eu.etaxonomy.cdm.io.faunaEuropaea;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -117,7 +118,7 @@ implements ICdmImport<CdmImportConfigurator, CdmImportState> {
 						}
 					}
 						
-					getTaxonService().saveTaxonAll(taxonSet);
+					getTaxonService().save((Collection)taxonSet);
 					taxonSet = null;
 					synonymList = null;
 					commitTransaction(txStatus);

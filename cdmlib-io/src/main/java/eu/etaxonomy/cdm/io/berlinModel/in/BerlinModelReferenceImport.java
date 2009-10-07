@@ -235,9 +235,9 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 			//save and store in map
 			logger.info("Save nomenclatural preliminary references (" + refCounter.nomRefCount + ")");
 			Collection<ReferenceBase> col = nomRefDetailMap.objects();
-			getReferenceService().saveReferenceAll(col);
+			getReferenceService().save(col);
 			logger.info("Save bibliographical preliminary references (" + refCounter.referenceCount +")");
-			getReferenceService().saveReferenceAll(refDetailMap.objects());
+			getReferenceService().save(refDetailMap.objects());
 			
 			//TODO
 			//SecondarySources
@@ -339,9 +339,9 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 				
 				//save and store in map
 				logger.info("Save nomenclatural references (" + refCounter.nomRefCount + ")");
-				getReferenceService().saveReferenceAll(nomRefStore.objects());
+				getReferenceService().save(nomRefStore.objects());
 				logger.info("Save bibliographical references (" + refCounter.referenceCount +")");
-				getReferenceService().saveReferenceAll(referenceStore.objects());
+				getReferenceService().save(referenceStore.objects());
 				j++;
 			}//end resultSetList	
 

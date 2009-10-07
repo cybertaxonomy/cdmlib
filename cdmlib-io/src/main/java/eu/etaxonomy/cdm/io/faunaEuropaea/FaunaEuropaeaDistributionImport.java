@@ -188,7 +188,7 @@ public class FaunaEuropaeaDistributionImport extends FaunaEuropaeaImportBase {
 
 					try {
 
-						taxonList = getTaxonService().findByUuid(taxonUuids);
+						taxonList = getTaxonService().find(taxonUuids);
 
 						for (TaxonBase taxonBase : taxonList) {
 
@@ -227,7 +227,7 @@ public class FaunaEuropaeaDistributionImport extends FaunaEuropaeaImportBase {
 								}
 							}
 						}
-						getTaxonService().saveTaxonAll(taxonList);
+						getTaxonService().save(taxonList);
 
 						taxonUuids = null;
 						taxonList = null;

@@ -131,7 +131,7 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 	
 			}
 			Collection<Feature> col = result.getAllValues();
-			getTermService().saveTermsAll(col);
+			getTermService().save((Collection)col);
 			return result;
 		} catch (SQLException e) {
 			logger.error("SQLException:" +  e);
@@ -352,7 +352,7 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 			}
 			logger.info("Facts handled: " + (i-1));
 			logger.info("Taxa to save: " + taxonStore.size());
-			getTaxonService().saveTaxonAll(taxonStore);	
+			getTaxonService().save(taxonStore);	
 			
 			logger.info("end makeFacts ..." + getSuccessString(result));
 			return result;

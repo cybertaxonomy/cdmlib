@@ -2059,7 +2059,7 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 		}	
 		
 		logger.info(i + " Records handled. Saving ...");
-		referenceService.saveAll(referenceMap.objects());
+		referenceService.save(referenceMap.objects());
 		logger.info("end make Records ...");
 		return success;
 	}	

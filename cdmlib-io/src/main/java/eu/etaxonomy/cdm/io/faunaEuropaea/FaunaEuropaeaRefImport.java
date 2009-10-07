@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.io.faunaEuropaea;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -252,7 +253,7 @@ public class FaunaEuropaeaRefImport extends FaunaEuropaeaImportBase {
 
 					try {
 
-						taxonList = getTaxonService().findByUuid(taxonUuids);
+						taxonList = getTaxonService().find(taxonUuids);
 
 						for (TaxonBase taxonBase : taxonList) {
 
@@ -314,9 +315,9 @@ public class FaunaEuropaeaRefImport extends FaunaEuropaeaImportBase {
 						}
 
 						// save taxa, references, and authors
-						getTaxonService().saveTaxonAll(taxonList);
-						getReferenceService().saveReferenceAll(references);
-						getAgentService().saveAgentAll(authors);
+						getTaxonService().save(taxonList);
+						getReferenceService().save(references);
+						getAgentService().save((Collection)authors);
 
 						taxonUuids = null;
 						references = null;

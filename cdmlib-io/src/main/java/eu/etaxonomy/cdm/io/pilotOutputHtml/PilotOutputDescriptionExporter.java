@@ -146,7 +146,7 @@ public class PilotOutputDescriptionExporter extends CdmExportBase<PilotOutputExp
 		if (sddExpConfig.isDoTermVocabularies() == true) {
 			if (termVocabularyRows == 0) { termVocabularyRows = MAX_ROWS; }
 			logger.info("# TermVocabulary");
-			sddDataSet.setTermVocabularies(getTermService().getAllTermVocabularies(MAX_ROWS, 0));;
+			sddDataSet.setTermVocabularies((List)getTermService().list(null,MAX_ROWS, 0,null,null));;
 		}
 
 		if (sddExpConfig.isDoLanguageData() == true) {
@@ -159,27 +159,27 @@ public class PilotOutputDescriptionExporter extends CdmExportBase<PilotOutputExp
 		if (sddExpConfig.isDoTerms() == true) {
 			if (definedTermBaseRows == 0) { definedTermBaseRows = getTermService().count(DefinedTermBase.class); }
 			logger.info("# DefinedTermBase: " + definedTermBaseRows);
-			sddDataSet.setTerms(getTermService().getAllDefinedTerms(definedTermBaseRows, 0));
+			sddDataSet.setTerms(getTermService().list(null,definedTermBaseRows, 0,null,null));
 		}
 
 		if (sddExpConfig.isDoAuthors() == true) {
 			if (agentRows == 0) { agentRows = getAgentService().count(AgentBase.class); }
 			logger.info("# Agents: " + agentRows);
 			//logger.info("    # Team: " + getAgentService().count(Team.class));
-			sddDataSet.setAgents(getAgentService().getAllAgents(agentRows, 0));
+			sddDataSet.setAgents(getAgentService().list(null,agentRows, 0,null,null));
 		}
 
 		if (sddExpConfig.getDoReferences() != IImportConfigurator.DO_REFERENCES.NONE) {
 			if (referenceBaseRows == 0) { referenceBaseRows = getReferenceService().count(ReferenceBase.class); }
 			logger.info("# ReferenceBase: " + referenceBaseRows);
-			sddDataSet.setReferences(getReferenceService().getAllReferences(referenceBaseRows, 0));
+			sddDataSet.setReferences(getReferenceService().list(null,referenceBaseRows, 0,null,null));
 		}
 
 		if (sddExpConfig.isDoTaxonNames() == true) {
 			if (taxonNameBaseRows == 0) { taxonNameBaseRows = getNameService().count(TaxonNameBase.class); }
 			logger.info("# TaxonNameBase: " + taxonNameBaseRows);
 			//logger.info("    # Taxon: " + getNameService().count(BotanicalName.class));
-			sddDataSet.setTaxonomicNames(getNameService().getAllNames(taxonNameBaseRows, 0));
+			sddDataSet.setTaxonomicNames(getNameService().list(null,taxonNameBaseRows, 0,null,null));
 		}
 
 		if (sddExpConfig.isDoHomotypicalGroups() == true) {
@@ -193,7 +193,7 @@ public class PilotOutputDescriptionExporter extends CdmExportBase<PilotOutputExp
 			logger.info("# TaxonBase: " + taxonBaseRows);
 //			dataSet.setTaxa(new ArrayList<Taxon>());
 //			dataSet.setSynonyms(new ArrayList<Synonym>());
-			List<TaxonBase> tb = getTaxonService().getAllTaxonBases(taxonBaseRows, 0);
+			List<TaxonBase> tb = getTaxonService().list(null,taxonBaseRows, 0,null,null);
 			for (TaxonBase taxonBase : tb) {
 				if (taxonBase instanceof Taxon) {
 					sddDataSet.addTaxon((Taxon)taxonBase);
@@ -230,13 +230,13 @@ public class PilotOutputDescriptionExporter extends CdmExportBase<PilotOutputExp
 		if (sddExpConfig.isDoOccurrence() == true) {
 			if (occurrencesRows == 0) { occurrencesRows = getOccurrenceService().count(SpecimenOrObservationBase.class); }
 			logger.info("# SpecimenOrObservationBase: " + occurrencesRows);
-			sddDataSet.setOccurrences(getOccurrenceService().getAllSpecimenOrObservationBases(occurrencesRows, 0));
+			sddDataSet.setOccurrences(getOccurrenceService().list(null,occurrencesRows, 0,null,null));
 		}
 
 		if (sddExpConfig.isDoMedia() == true) {
 			if (mediaRows == 0) { mediaRows = MAX_ROWS; }
 			logger.info("# Media");
-			sddDataSet.setMedia(getMediaService().getAllMedia(mediaRows, 0));
+			sddDataSet.setMedia(getMediaService().list(null,mediaRows, 0,null,null));
 //			dataSet.addMedia(getMediaService().getAllMediaRepresentations(mediaRows, 0));
 //			dataSet.addMedia(getMediaService().getAllMediaRepresentationParts(mediaRows, 0));
 		}
@@ -244,8 +244,8 @@ public class PilotOutputDescriptionExporter extends CdmExportBase<PilotOutputExp
 		if (sddExpConfig.isDoFeatureData() == true) {
 			if (featureDataRows == 0) { featureDataRows = MAX_ROWS; }
 			logger.info("# Feature Tree, Feature Node");
-			sddDataSet.setFeatureData(getDescriptionService().getFeatureNodesAll());
-			sddDataSet.addFeatureData(getDescriptionService().getFeatureTreesAll(null));
+			sddDataSet.setFeatureData(getFeatureTreeService().getFeatureNodesAll());
+			sddDataSet.addFeatureData(getFeatureTreeService().list(null,null,null,null,null));
 		}
 	}
 

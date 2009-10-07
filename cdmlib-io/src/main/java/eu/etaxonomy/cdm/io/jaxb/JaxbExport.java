@@ -147,14 +147,14 @@ public class JaxbExport extends CdmExportBase<JaxbExportConfigurator, JaxbExport
 		if (jaxbExpConfig.isDoTermVocabularies() == true) {
 			if (termVocabularyRows == 0) { termVocabularyRows = MAX_ROWS; }
 			logger.info("# TermVocabulary");
-			dataSet.setTermVocabularies(getTermService().listTermVocabularies(termVocabularyRows, 0, null, null));
+			dataSet.setTermVocabularies((List)getVocabularyService().list(null,termVocabularyRows, 0, null, null));
 		}
 		
 		if (jaxbExpConfig.isDoUsers() == true) {
 			
 			if (UserRows == 0) { UserRows = MAX_ROWS; }
 			logger.info("# User");
-			dataSet.setUsers(getUserService().list(UserRows, 0));
+			dataSet.setUsers(getUserService().list(null,UserRows, 0,null,null));
 		}
 
 //		if (jaxbExpConfig.isDoLanguageData() == true) {
@@ -168,20 +168,20 @@ public class JaxbExport extends CdmExportBase<JaxbExportConfigurator, JaxbExport
 		if (jaxbExpConfig.isDoTerms() == true) {
 			if (definedTermBaseRows == 0) { definedTermBaseRows = getTermService().count(DefinedTermBase.class); }
 			logger.info("# DefinedTermBase: " + definedTermBaseRows);
-			dataSet.setTerms(getTermService().getAllDefinedTerms(definedTermBaseRows, 0));
+			dataSet.setTerms(getTermService().list(null,definedTermBaseRows, 0,null,null));
 		}
 
 		if (jaxbExpConfig.isDoAuthors() == true) {
 			if (agentRows == 0) { agentRows = getAgentService().count(AgentBase.class); }
 			logger.info("# Agents: " + agentRows);
 			//logger.info("    # Team: " + appCtr.getAgentService().count(Team.class));
-			dataSet.setAgents(getAgentService().list(agentRows,0));
+			dataSet.setAgents(getAgentService().list(null,agentRows, 0,null,null));
 		}
 
 		if (jaxbExpConfig.getDoReferences() != IImportConfigurator.DO_REFERENCES.NONE) {
 			if (referenceBaseRows == 0) { referenceBaseRows = getReferenceService().count(ReferenceBase.class); }
 			logger.info("# ReferenceBase: " + referenceBaseRows);
-			dataSet.setReferences(getReferenceService().list(referenceBaseRows, 0));
+			dataSet.setReferences(getReferenceService().list(null,referenceBaseRows, 0,null,null));
 		}
 		
 		if (jaxbExpConfig.isDoHomotypicalGroups() == true) {
@@ -194,7 +194,7 @@ public class JaxbExport extends CdmExportBase<JaxbExportConfigurator, JaxbExport
 			if (taxonNameBaseRows == 0) { taxonNameBaseRows = getNameService().count(TaxonNameBase.class); }
 			logger.info("# TaxonNameBase: " + taxonNameBaseRows);
 			//logger.info("    # Taxon: " + getNameService().count(BotanicalName.class));
-			dataSet.setTaxonomicNames(getNameService().getAllNames(taxonNameBaseRows, 0));
+			dataSet.setTaxonomicNames(getNameService().list(null,taxonNameBaseRows, 0,null,null));
 		}
 
 		
@@ -204,7 +204,7 @@ public class JaxbExport extends CdmExportBase<JaxbExportConfigurator, JaxbExport
 			logger.info("# TaxonBase: " + taxonBaseRows);
 //			dataSet.setTaxa(new ArrayList<Taxon>());
 //			dataSet.setSynonyms(new ArrayList<Synonym>());
-			List<TaxonBase> tb = getTaxonService().getAllTaxonBases(taxonBaseRows, 0);
+			List<TaxonBase> tb = getTaxonService().list(null,taxonBaseRows, 0,null,null);
 			for (TaxonBase taxonBase : tb) {
 				dataSet.addTaxonBase((TaxonBase)HibernateProxyHelper.deproxy(taxonBase));
 			}
@@ -228,7 +228,7 @@ public class JaxbExport extends CdmExportBase<JaxbExportConfigurator, JaxbExport
 		if (jaxbExpConfig.isDoOccurrence() == true) {
 			if (occurrencesRows == 0) { occurrencesRows = getOccurrenceService().count(SpecimenOrObservationBase.class); }
 			logger.info("# SpecimenOrObservationBase: " + occurrencesRows);
-			List<SpecimenOrObservationBase> occurrenceList = getOccurrenceService().getAllSpecimenOrObservationBases(occurrencesRows, 0);
+			List<SpecimenOrObservationBase> occurrenceList = getOccurrenceService().list(null,occurrencesRows, 0,null,null);
 			/*List<SpecimenOrObservationBase> noProxyList = new ArrayList<SpecimenOrObservationBase>();
 			for (SpecimenOrObservationBase specimen : occurrenceList){
 				specimen = (SpecimenOrObservationBase)HibernateProxyHelper.deproxy(specimen);
@@ -247,7 +247,7 @@ public class JaxbExport extends CdmExportBase<JaxbExportConfigurator, JaxbExport
 		if (jaxbExpConfig.isDoMedia() == true) {
 			if (mediaRows == 0) { mediaRows = MAX_ROWS; }
 			logger.info("# Media");
-			dataSet.setMedia(getMediaService().getAllMedia(mediaRows, 0));
+			dataSet.setMedia(getMediaService().list(null,mediaRows, 0,null,null));
 //			dataSet.addMedia(getMediaService().getAllMediaRepresentations(mediaRows, 0));
 //			dataSet.addMedia(getMediaService().getAllMediaRepresentationParts(mediaRows, 0));
 		}
@@ -255,13 +255,13 @@ public class JaxbExport extends CdmExportBase<JaxbExportConfigurator, JaxbExport
 		if (jaxbExpConfig.isDoFeatureData() == true) {
 			if (featureDataRows == 0) { featureDataRows = MAX_ROWS; }
 			logger.info("# Feature Tree, Feature Node");
-			dataSet.setFeatureTrees(getDescriptionService().getFeatureTreesAll(null));
+			dataSet.setFeatureTrees(getFeatureTreeService().list(null,null,null,null,null));
 		}
 		if (jaxbExpConfig.isDoTaxonomicTreeData() == true) {
 			if (taxonomicTreeDataRows == 0) { taxonomicTreeDataRows = MAX_ROWS; }
 			logger.info("# Taxonomic Tree");
 			List<TaxonomicTree> taxTrees = new ArrayList<TaxonomicTree>();
-			taxTrees= getTaxonTreeService().list(taxonomicTreeDataRows, 0, null, null).getRecords();
+			taxTrees= getTaxonTreeService().list(null,taxonomicTreeDataRows, 0, null, null);
 			List<TaxonomicTree> taxTreesdeproxy = new ArrayList<TaxonomicTree>();
 			for (TaxonomicTree taxTree : taxTrees){
 				HibernateProxyHelper.deproxy(taxTree);

@@ -248,7 +248,7 @@ public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<T
 			}
 		}
 		logger.info(i + " names handled");
-		getNameService().saveTaxonNameAll(taxonNameMap.objects());
+		getNameService().save(taxonNameMap.objects());
 //		makeNameSpecificData(nameMap);
 		logger.info("end makeTaxonNames ...");
 		return success;

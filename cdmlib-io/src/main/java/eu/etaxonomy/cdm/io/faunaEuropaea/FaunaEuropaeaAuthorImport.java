@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.io.faunaEuropaea;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
@@ -115,7 +116,7 @@ public class FaunaEuropaeaAuthorImport extends FaunaEuropaeaImportBase {
 			txStatus = startTransaction();
 
 			// save authors
-			getAgentService().saveAgentAll(authorStore.objects());
+			getAgentService().save((Collection)authorStore.objects());
 
 			commitTransaction(txStatus);
 			

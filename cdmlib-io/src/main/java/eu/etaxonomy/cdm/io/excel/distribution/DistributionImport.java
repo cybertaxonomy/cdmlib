@@ -255,7 +255,7 @@ public class DistributionImport extends CdmIoBase<ExcelImportState> implements I
     					}
     				}
     				if (save == true) {
-    					getTaxonService().saveTaxon(taxon);
+    					getTaxonService().save(taxon);
     					if (logger.isDebugEnabled()) { logger.debug("Taxon saved"); }
     				}
     			}

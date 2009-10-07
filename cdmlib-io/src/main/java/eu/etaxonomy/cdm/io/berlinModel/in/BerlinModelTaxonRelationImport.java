@@ -323,7 +323,7 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 				}
 			}
 			logger.info("Taxa to save: " + taxonStore.size());
-			getTaxonService().saveTaxonAll(taxonStore);
+			getTaxonService().save(taxonStore);
 			
 			logger.info("end makeTaxonRelationships ..." + getSuccessString(success));
 			return success;

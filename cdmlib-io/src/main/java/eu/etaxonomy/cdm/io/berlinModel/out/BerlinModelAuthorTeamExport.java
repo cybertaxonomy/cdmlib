@@ -90,7 +90,7 @@ public class BerlinModelAuthorTeamExport extends BerlinModelExportBase<Team> {
 			
 			TransactionStatus txStatus = startTransaction(true);
 			Class<Team> clazz = Team.class;
-			List<? extends AgentBase> list = getAgentService().list(clazz, 100000000, 0);
+			List<? extends AgentBase> list = getAgentService().list(clazz, 100000000, 0,null,null);
 			
 			BerlinModelExportMapping mapping = getMapping();
 			mapping.initialize(state);

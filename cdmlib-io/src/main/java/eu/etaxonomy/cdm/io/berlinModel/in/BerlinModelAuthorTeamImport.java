@@ -128,7 +128,7 @@ public class BerlinModelAuthorTeamImport extends BerlinModelImportBase {
 
 			
 		logger.info(i + " "+pluralString+" handled");
-		getAgentService().saveAgentAll(teamMap.objects());
+		getAgentService().save(teamMap.objects());
 
 		logger.info("end make "+pluralString+" ... " + getSuccessString(success));
 		personMap.makeEmpty();

@@ -130,7 +130,7 @@ public class TcsRdfTaxonNameRelationsImport extends TcsRdfImportBase implements 
 		//TODO
 		
 		logger.info(nameRelCount + " nameRelations handled");
-		nameService.saveTaxonNameAll(nameStore);
+		nameService.save(nameStore);
 		logger.info("end makeNameRelationships ...");
 		return success;
 	}

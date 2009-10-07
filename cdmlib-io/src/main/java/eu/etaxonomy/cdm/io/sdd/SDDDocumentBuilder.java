@@ -30,10 +30,10 @@ import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 import org.xml.sax.SAXException;
 
-import com.sun.org.apache.xerces.internal.impl.xpath.regex.ParseException;
-import com.sun.org.apache.xml.internal.serialize.DOMSerializer;
-import com.sun.org.apache.xml.internal.serialize.OutputFormat;
-import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
+import org.apache.xerces.impl.xpath.regex.ParseException;
+import org.apache.xml.serialize.DOMSerializer;
+import org.apache.xml.serialize.OutputFormat;
+import org.apache.xml.serialize.XMLSerializer;
 
 import eu.etaxonomy.cdm.io.jaxb.CdmMarshallerListener;
 import eu.etaxonomy.cdm.model.agent.Person;

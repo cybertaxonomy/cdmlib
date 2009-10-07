@@ -20,6 +20,7 @@ import static eu.etaxonomy.cdm.io.faunaEuropaea.FaunaEuropaeaTransformer.T_STATU
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -336,8 +337,8 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 
 					success = processTaxaSecondPass(state, taxonMap, fauEuTaxonMap, synonymSet);
 					if(logger.isDebugEnabled()) { logger.debug("Saving taxa ..."); }
-					getTaxonService().saveTaxonAll(taxonMap.values());
-					getTaxonService().saveTaxonAll(synonymSet);
+					getTaxonService().save((Collection)taxonMap.values());
+					getTaxonService().save((Collection)synonymSet);
 					
 					taxonMap = null;
 					synonymSet = null;

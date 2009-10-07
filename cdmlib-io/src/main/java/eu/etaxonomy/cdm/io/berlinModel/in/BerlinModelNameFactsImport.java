@@ -172,7 +172,7 @@ public class BerlinModelNameFactsImport  extends BerlinModelImportBase  {
 				logger.warn("ONLY " + config.getMaximumNumberOfNameFacts() + " NAMEFACTS imported !!!" )
 			;};
 			logger.info("Names to save: " + taxonNameStore.size());
-			getNameService().saveTaxonNameAll(taxonNameStore);	
+			getNameService().save(taxonNameStore);	
 			
 			logger.info("end makeNameFacts ..." + getSuccessString(success));
 			return success;

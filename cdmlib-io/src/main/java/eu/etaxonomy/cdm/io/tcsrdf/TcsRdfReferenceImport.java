@@ -319,9 +319,9 @@ public class TcsRdfReferenceImport extends TcsRdfImportBase implements ICdmIO<Tc
 		
 		//save and store in map
 		logger.info("Save nomenclatural references (" + nomRefCount + ")");
-		getReferenceService().saveReferenceAll(nomRefMap.objects());
+		getReferenceService().save(nomRefMap.objects());
 		logger.info("Save bibliographical references (" + biblioRefsCount +")");
-		getReferenceService().saveReferenceAll(referenceMap.objects());
+		getReferenceService().save(referenceMap.objects());
 		
 		//referenceService.saveReferenceAll(referenceMap.objects());
 		logger.info("end makeReferences ...");

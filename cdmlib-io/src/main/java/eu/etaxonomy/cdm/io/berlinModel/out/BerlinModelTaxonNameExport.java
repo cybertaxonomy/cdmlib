@@ -117,7 +117,7 @@ public class BerlinModelTaxonNameExport extends BerlinModelExportBase<TaxonNameB
 		mapping.addMapper(DbObjectMapper.NewInstance("nomenclaturalReference", "NomRefFk"));
 		mapping.addMapper(RefDetailMapper.NewInstance("nomenclaturalMicroReference","nomenclaturalReference", "NomRefDetailFk"));
 		mapping.addMapper(CreatedAndNotesMapper.NewInstance(false));
-		ExtensionType sourceAccExtensionType = (ExtensionType)getTermService().getTermByUuid(BerlinModelTaxonNameImport.SOURCE_ACC_UUID);
+		ExtensionType sourceAccExtensionType = (ExtensionType)getTermService().find(BerlinModelTaxonNameImport.SOURCE_ACC_UUID);
 		if (sourceAccExtensionType != null){
 			mapping.addMapper(DbExtensionMapper.NewInstance(sourceAccExtensionType, "Source_Acc"));
 		}
@@ -183,7 +183,7 @@ public class BerlinModelTaxonNameExport extends BerlinModelExportBase<TaxonNameB
 	}
 
 	protected List<TaxonNameBase> getObjectList(){
-		List<TaxonNameBase> list = getNameService().list(100000000, 0);
+		List<TaxonNameBase> list = getNameService().list(null,100000000, null,null,null);
 		return list;
 	}
 

@@ -210,7 +210,7 @@ public class TcsXmlTaxonNameRelationsImport extends TcsXmlImportBase implements 
 		//TODO
 		
 		logger.info(nameRelCount + " nameRelations handled");
-		getNameService().saveTaxonNameAll(nameStore);
+		getNameService().save(nameStore);
 		logger.info("end make taxon name relationships ...");
 		return success.getValue();
 	}

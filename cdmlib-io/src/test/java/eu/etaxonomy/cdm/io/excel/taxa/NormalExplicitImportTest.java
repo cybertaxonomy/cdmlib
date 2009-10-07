@@ -92,8 +92,8 @@ public class NormalExplicitImportTest extends CdmTransactionalIntegrationTest{
 		//printDataSet(System.out);
 		boolean result = defaultImport.invoke(configurator);
 		assertTrue("Return value for import.invoke should be true", result);
-		assertEquals("Number of TaxonNames should be 9", 9, nameService.count());
-		List<TaxonomicTree> treeList = taxonTreeService.list(null, null).getRecords();
+		assertEquals("Number of TaxonNames should be 9", 9, nameService.count(null));
+		List<TaxonomicTree> treeList = taxonTreeService.list(null, null,null,null,null);
 		assertEquals("Number of taxonomic trees should be 1", 1, treeList.size());
 		TaxonomicTree tree = treeList.get(0);
 		Set<TaxonNode> rootNodes = tree.getRootNodes();

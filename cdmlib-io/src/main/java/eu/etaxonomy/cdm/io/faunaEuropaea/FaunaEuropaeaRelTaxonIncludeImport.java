@@ -104,7 +104,7 @@ public class FaunaEuropaeaRelTaxonIncludeImport extends FaunaEuropaeaImportBase 
 
 		TransactionStatus txStatus = startTransaction();
 		
-		TaxonBase taxon = getTaxonService().getTaxonByUuid(UUID.fromString("ac7b30dc-6207-4c71-9752-ee0fb838a271"));
+		TaxonBase taxon = getTaxonService().find(UUID.fromString("ac7b30dc-6207-4c71-9752-ee0fb838a271"));
 		ReferenceBase<?> sourceRef = taxon.getSec();
 
 		TaxonomicTree tree = getTaxonomicTreeFor(state, sourceRef);
@@ -420,7 +420,7 @@ public class FaunaEuropaeaRelTaxonIncludeImport extends FaunaEuropaeaImportBase 
 	 */
 	private boolean createParentChildRelationships(FaunaEuropaeaImportState state, Map<UUID, UUID> childParentMap) {
 
-		TaxonBase taxon = getTaxonService().getTaxonByUuid(UUID.fromString("ac7b30dc-6207-4c71-9752-ee0fb838a271"));
+		TaxonBase taxon = getTaxonService().find(UUID.fromString("ac7b30dc-6207-4c71-9752-ee0fb838a271"));
 		ReferenceBase<?> sourceRef = taxon.getSec();
 		boolean success = true;
 		int limit = state.getConfig().getLimitSave();
@@ -435,8 +435,8 @@ public class FaunaEuropaeaRelTaxonIncludeImport extends FaunaEuropaeaImportBase 
 			if (logger.isTraceEnabled()) {
 				logger.trace("Start reading children and parents");
 			}
-			List<TaxonBase> children = getTaxonService().findByUuid(childKeysSet);
-			List<TaxonBase> parents = getTaxonService().findByUuid(parentValuesSet);
+			List<TaxonBase> children = getTaxonService().find(childKeysSet);
+			List<TaxonBase> parents = getTaxonService().find(parentValuesSet);
 			Map<UUID, TaxonBase> parentsMap = new HashMap<UUID, TaxonBase>(parents.size());
 			for (TaxonBase taxonBase : parents){
 				parentsMap.put(taxonBase.getUuid(), taxonBase);
@@ -519,7 +519,7 @@ public class FaunaEuropaeaRelTaxonIncludeImport extends FaunaEuropaeaImportBase 
 			if (logger.isTraceEnabled()) {
 				logger.trace("Start saving childSet");
 			}
-			getTaxonService().saveTaxonAll(childSet);
+			getTaxonService().save(childSet);
 			if (logger.isTraceEnabled()) {
 				logger.trace("End saving childSet");
 			}
@@ -538,7 +538,7 @@ public class FaunaEuropaeaRelTaxonIncludeImport extends FaunaEuropaeaImportBase 
 	 */
 	private boolean createMisappliedNameRelationships(FaunaEuropaeaImportState state, Map<UUID, UUID> fromToMap) {
 
-		TaxonBase taxon = getTaxonService().getTaxonByUuid(UUID.fromString("ac7b30dc-6207-4c71-9752-ee0fb838a271"));
+		TaxonBase taxon = getTaxonService().find(UUID.fromString("ac7b30dc-6207-4c71-9752-ee0fb838a271"));
 		ReferenceBase<?> sourceRef = taxon.getSec();
 		boolean success = true;
 		int limit = state.getConfig().getLimitSave();
@@ -551,8 +551,8 @@ public class FaunaEuropaeaRelTaxonIncludeImport extends FaunaEuropaeaImportBase 
 			if (logger.isTraceEnabled()) {
 				logger.trace("Start reading misapplied names and accepted taxa");
 			}
-			List<TaxonBase> misappliedNames = getTaxonService().findByUuid(misappliedNamesSet);
-			List<TaxonBase> acceptedTaxa = getTaxonService().findByUuid(acceptedTaxaSet);
+			List<TaxonBase> misappliedNames = getTaxonService().find(misappliedNamesSet);
+			List<TaxonBase> acceptedTaxa = getTaxonService().find(acceptedTaxaSet);
 			Map<UUID, TaxonBase> acceptedTaxaMap = new HashMap<UUID, TaxonBase>(acceptedTaxa.size());
 			for (TaxonBase taxonBase : acceptedTaxa){
 				acceptedTaxaMap.put(taxonBase.getUuid(), taxonBase);
@@ -642,7 +642,7 @@ public class FaunaEuropaeaRelTaxonIncludeImport extends FaunaEuropaeaImportBase 
 			if (logger.isTraceEnabled()) {
 				logger.trace("Start saving misappliedNameSet");
 			}
-			getTaxonService().saveTaxonAll(misappliedNameSet);
+			getTaxonService().save(misappliedNameSet);
 			if (logger.isTraceEnabled()) {
 				logger.trace("End saving misappliedNameSet");
 			}
@@ -672,8 +672,8 @@ public class FaunaEuropaeaRelTaxonIncludeImport extends FaunaEuropaeaImportBase 
 		if (logger.isTraceEnabled()) {
 			logger.trace("Reading synonym names and accepted taxa...");
 		}
-		List<TaxonBase> synonyms = getTaxonService().findByUuid(synonymUuidSet);
-		List<TaxonBase> acceptedTaxa = getTaxonService().findByUuid(acceptedTaxaUuidSet);
+		List<TaxonBase> synonyms = getTaxonService().find(synonymUuidSet);
+		List<TaxonBase> acceptedTaxa = getTaxonService().find(acceptedTaxaUuidSet);
 		Map<UUID, TaxonBase> acceptedTaxaMap = new HashMap<UUID, TaxonBase>(acceptedTaxa.size());
 		for (TaxonBase taxonBase : acceptedTaxa){
 			acceptedTaxaMap.put(taxonBase.getUuid(), taxonBase);
@@ -750,7 +750,7 @@ public class FaunaEuropaeaRelTaxonIncludeImport extends FaunaEuropaeaImportBase 
 		if (logger.isTraceEnabled()) {
 			logger.trace("Start saving synonymSet");
 		}
-		getTaxonService().saveTaxonAll(synonymSet);
+		getTaxonService().save(synonymSet);
 		if (logger.isTraceEnabled()) {
 			logger.trace("End saving synonymSet");
 		}

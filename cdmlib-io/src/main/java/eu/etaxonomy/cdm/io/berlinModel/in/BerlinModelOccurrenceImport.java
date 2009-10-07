@@ -216,7 +216,7 @@ public class BerlinModelOccurrenceImport  extends BerlinModelImportBase {
             logger.info("Distributions: " + countDistributions + ", Descriptions: " + countDescriptions );
 			logger.warn("Unmatched occurrences: "  + (i - countDescriptions));
 			logger.info("Taxa to save: " + taxonStore.size());
-			getTaxonService().saveTaxonAll(taxonStore);	
+			getTaxonService().save(taxonStore);	
 			
 			logger.info("end make occurrences ..." + getSuccessString(success));
 			return success;

@@ -256,7 +256,7 @@ public abstract class BerlinModelImportBase extends CdmImportBase<BerlinModelImp
 	}
 	
 	protected ExtensionType getExtensionType(UUID uuid, String label, String text, String labelAbbrev){
-		ExtensionType extensionType = (ExtensionType)getTermService().getTermByUuid(uuid);
+		ExtensionType extensionType = (ExtensionType)getTermService().find(uuid);
 		if (extensionType == null){
 			extensionType = new ExtensionType(label, text, labelAbbrev);
 			extensionType.setUuid(uuid);
@@ -266,7 +266,7 @@ public abstract class BerlinModelImportBase extends CdmImportBase<BerlinModelImp
 	}
 	
 	protected MarkerType getMarkerType(UUID uuid, String label, String text, String labelAbbrev){
-		MarkerType markerType = (MarkerType)getTermService().getTermByUuid(uuid);
+		MarkerType markerType = (MarkerType)getTermService().find(uuid);
 		if (markerType == null){
 			markerType = MarkerType.NewInstance(label, text, labelAbbrev);
 			markerType.setUuid(uuid);

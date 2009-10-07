@@ -138,7 +138,7 @@ public class TaxonXDescriptionImport extends CdmIoBase<TaxonXImportState> implem
 		}
 		if (description.size() >0){
 			taxon.addDescription(description);
-			getTaxonService().saveTaxon(taxon);
+			getTaxonService().save(taxon);
 		}
 		return true;
 	}

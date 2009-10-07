@@ -226,8 +226,8 @@
     <xs:complexContent>
       <xs:extension base="common:AnnotatableEntity">
         <xs:sequence>
-          <xs:element name="Text" type="common:FormattedText" minOccurs="0"/>
-          <xs:element name="Language" type="xs:IDREF" minOccurs="0"/>
+          <xs:element name="Text" type="common:FormattedText" minOccurs="1"/>
+          <xs:element name="Language" type="xs:IDREF" minOccurs="1"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
