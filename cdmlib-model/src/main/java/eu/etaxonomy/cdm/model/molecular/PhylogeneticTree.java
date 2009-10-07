@@ -19,6 +19,7 @@ import org.hibernate.search.annotations.Indexed;
 import java.util.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -49,11 +50,14 @@ public class PhylogeneticTree extends ReferencedMedia {
 	@XmlElement(name = "UsedSequence")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY)// FIXME surely should be ManyToMany - you can use a sequence to construct several different phylogenetic trees
+    @NotNull
 	private Set<Sequence> usedSequences = new HashSet<Sequence>();
 	
 	public Set<Sequence> getUsedSequences() {
-		logger.debug("getUsedSequences");
+		if(usedSequences == null) {
+			this.usedSequences = new HashSet<Sequence>();
+		}
 		return usedSequences;
 	}
 

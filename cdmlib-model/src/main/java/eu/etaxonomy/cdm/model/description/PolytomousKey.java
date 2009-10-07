@@ -18,6 +18,7 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -69,6 +70,7 @@ public class PolytomousKey extends FeatureTree implements IIdentificationKey{
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@ManyToMany(fetch = FetchType.LAZY)
+	@NotNull
 	private Set<Taxon> coveredTaxa = new HashSet<Taxon>();
 	
 	@XmlElementWrapper(name = "TaxonomicScope")
@@ -81,6 +83,7 @@ public class PolytomousKey extends FeatureTree implements IIdentificationKey{
 	        joinColumns=@JoinColumn(name="polytomousKey_fk"),
 	        inverseJoinColumns=@JoinColumn(name="taxon_fk")
 	)
+	@NotNull
 	private Set<Taxon> taxonomicScope = new HashSet<Taxon>();
 	
 	@XmlElementWrapper( name = "GeographicalScope")
@@ -89,6 +92,7 @@ public class PolytomousKey extends FeatureTree implements IIdentificationKey{
 	@XmlSchemaType(name = "IDREF")
 	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name="PolytomousKey_NamedArea")
+	@NotNull
 	private Set<NamedArea> geographicalScope = new HashSet<NamedArea>();
 	
 	@XmlElementWrapper( name = "ScopeRestrictions")
@@ -97,6 +101,7 @@ public class PolytomousKey extends FeatureTree implements IIdentificationKey{
 	@XmlSchemaType(name = "IDREF")
 	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name="PolytomousKey_Scope")
+	@NotNull
 	private Set<Scope> scopeRestrictions = new HashSet<Scope>();
 	
 	/** 
@@ -118,6 +123,9 @@ public class PolytomousKey extends FeatureTree implements IIdentificationKey{
 	 * <i>this</i> identification key.
 	 */
 	public Set<Taxon> getCoveredTaxa() {
+		if(coveredTaxa == null) {
+			this.coveredTaxa = new HashSet<Taxon>();
+		}
 		return coveredTaxa;
 	}
 	/**
@@ -155,6 +163,9 @@ public class PolytomousKey extends FeatureTree implements IIdentificationKey{
 	 * data where <i>this</i> identification key is valid.
 	 */
 	public Set<NamedArea> getGeographicalScope() {
+		if(geographicalScope == null) {
+			this.geographicalScope = new HashSet<NamedArea>();
+		}
 		return geographicalScope;
 	}
 	
@@ -185,6 +196,9 @@ public class PolytomousKey extends FeatureTree implements IIdentificationKey{
 	 * scope of <i>this</i> identification key 
 	 */
 	public Set<Taxon> getTaxonomicScope() {
+		if(taxonomicScope == null) {
+			this.taxonomicScope = new HashSet<Taxon>();
+		}
 		return taxonomicScope;
 	}
 	
@@ -216,6 +230,9 @@ public class PolytomousKey extends FeatureTree implements IIdentificationKey{
 	 * <i>this</i> identification key 
 	 */
 	public Set<Scope> getScopeRestrictions() {
+		if(scopeRestrictions == null) {
+			this.scopeRestrictions = new HashSet<Scope>();
+		}
 		return scopeRestrictions;
 	}
 	

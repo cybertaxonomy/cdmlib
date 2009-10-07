@@ -21,6 +21,8 @@ import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -39,6 +41,7 @@ import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Fields;
 import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
+import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
@@ -56,6 +59,11 @@ import eu.etaxonomy.cdm.strategy.match.MatchMode;
 import eu.etaxonomy.cdm.strategy.match.Match.ReplaceMode;
 import eu.etaxonomy.cdm.strategy.merge.Merge;
 import eu.etaxonomy.cdm.strategy.merge.MergeMode;
+import eu.etaxonomy.cdm.validation.Level2;
+import eu.etaxonomy.cdm.validation.Level3;
+import eu.etaxonomy.cdm.validation.annotation.CorrectEpithetsForRank;
+import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
+import eu.etaxonomy.cdm.validation.annotation.NoDuplicateNames;
 
 /**
  * The taxon name class for all non viral taxa. Parenthetical authorship is derived
@@ -93,13 +101,15 @@ import eu.etaxonomy.cdm.strategy.merge.MergeMode;
     "hybridFormula",
     "monomHybrid",
     "binomHybrid",
-    "trinomHybrid"
+    "trinomHybrid",
 })
 @XmlRootElement(name = "NonViralName")
 @Entity
 @Indexed(index = "eu.etaxonomy.cdm.model.name.TaxonNameBase")
 @Audited
 @Configurable
+@CorrectEpithetsForRank(groups = Level2.class)
+@NoDuplicateNames(groups = Level3.class)
 public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonViralNameCacheStrategy> {
 	private static final long serialVersionUID = 4441110073881088033L;
 	private static final Logger logger = Logger.getLogger(NonViralName.class);
@@ -110,6 +120,8 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
     })
 	@Match(value=MatchMode.CACHE, cacheReplaceMode=ReplaceMode.DEFINED, 
 			cacheReplacedProperties={"genusOrUninomial", "infraGenericEpithet", "specificEpithet", "infraSpecificEpithet"} )
+	@NotEmpty(groups = Level2.class) // implictly NotNull
+	@Size(max = 255)
 	private String nameCache;
 	
 	@XmlElement(name = "ProtectedNameCache")
@@ -120,22 +132,35 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 	@Field(index=Index.TOKENIZED)
 	@Match(MatchMode.EQUAL_REQUIRED)
 	@CacheUpdate("nameCache")
-    private String genusOrUninomial;
+	@NullOrNotEmpty
+    @Size(max = 255)
+    @Pattern(regexp = "[A-Z][a-z\\uc3a4\\uc3ab\\uc3af\\uc3b6\\uc3bc\\-]+", groups=Level2.class)
+    @NotEmpty(groups = Level3.class)
+	private String genusOrUninomial;
 	
 	@XmlElement(name = "InfraGenericEpithet")
 	@Field(index=Index.TOKENIZED)
 	@CacheUpdate("nameCache")
-    private String infraGenericEpithet;
+	@NullOrNotEmpty
+    @Size(max = 255)
+    @Pattern(regexp = "[a-z\\uc3a4\\uc3ab\\uc3af\\uc3b6\\uc3bc\\-]+", groups=Level2.class)
+	private String infraGenericEpithet;
 	
 	@XmlElement(name = "SpecificEpithet")
 	@Field(index=Index.TOKENIZED)
 	@CacheUpdate("nameCache")
-    private String specificEpithet;
+	@NullOrNotEmpty
+    @Size(max = 255)
+    @Pattern(regexp = "[a-z\\uc3a4\\uc3ab\\uc3af\\uc3b6\\uc3bc\\-]+", groups=Level2.class)
+	private String specificEpithet;
 	
 	@XmlElement(name = "InfraSpecificEpithet")
 	@Field(index=Index.TOKENIZED)
 	@CacheUpdate("nameCache")
-    private String infraSpecificEpithet;
+	@NullOrNotEmpty
+    @Size(max = 255)
+    @Pattern(regexp = "[a-z\\uc3a4\\uc3ab\\uc3af\\uc3b6\\uc3bc\\-]+", groups=Level3.class)
+	private String infraSpecificEpithet;
 	
 	@XmlElement(name = "CombinationAuthorTeam", type = TeamOrPersonBase.class)
     @XmlIDREF
@@ -144,7 +169,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 	@Target(TeamOrPersonBase.class)
 	@Cascade(CascadeType.SAVE_UPDATE)
 	@CacheUpdate("authorshipCache")
-    private INomenclaturalAuthor combinationAuthorTeam;
+	private INomenclaturalAuthor combinationAuthorTeam;
 	
 	@XmlElement(name = "ExCombinationAuthorTeam", type = TeamOrPersonBase.class)
     @XmlIDREF
@@ -153,7 +178,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 	@Target(TeamOrPersonBase.class)
 	@Cascade(CascadeType.SAVE_UPDATE)
 	@CacheUpdate("authorshipCache")
-    private INomenclaturalAuthor exCombinationAuthorTeam;
+	private INomenclaturalAuthor exCombinationAuthorTeam;
 	
 	@XmlElement(name = "BasionymAuthorTeam", type = TeamOrPersonBase.class)
     @XmlIDREF
@@ -162,7 +187,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 	@Target(TeamOrPersonBase.class)
 	@Cascade(CascadeType.SAVE_UPDATE)
 	@CacheUpdate("authorshipCache")
-    private INomenclaturalAuthor basionymAuthorTeam;
+	private INomenclaturalAuthor basionymAuthorTeam;
 	
 	@XmlElement(name = "ExBasionymAuthorTeam", type = TeamOrPersonBase.class)
     @XmlIDREF
@@ -171,17 +196,19 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 	@Target(TeamOrPersonBase.class)
 	@Cascade(CascadeType.SAVE_UPDATE)
 	@CacheUpdate("authorshipCache")
-    private INomenclaturalAuthor exBasionymAuthorTeam;
+	private INomenclaturalAuthor exBasionymAuthorTeam;
 	
 	@XmlElement(name = "AuthorshipCache")
 	@Field(index=Index.TOKENIZED)
 	@Match(value=MatchMode.CACHE, cacheReplaceMode=ReplaceMode.DEFINED, 
 			cacheReplacedProperties={"combinationAuthorTeam", "basionymAuthorTeam", "exCombinationAuthorTeam", "exBasionymAuthorTeam"} )
+	@NotEmpty(groups = Level2.class) // implictly NotNull
+	@Size(max = 255)
 	private String authorshipCache;
 	
 	@XmlElement(name = "ProtectedAuthorshipCache")
-	@CacheUpdate(value="authorshipCache")
-    protected boolean protectedAuthorshipCache;
+	@CacheUpdate("authorshipCache")
+	protected boolean protectedAuthorshipCache;
 
     @XmlElementWrapper(name = "HybridRelationsFromThisName")
     @XmlElement(name = "HybridRelationsFromThisName")

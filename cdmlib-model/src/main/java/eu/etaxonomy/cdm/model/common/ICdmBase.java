@@ -2,10 +2,15 @@ package eu.etaxonomy.cdm.model.common;
 
 import java.util.UUID;
 
+import javax.validation.GroupSequence;
+import javax.validation.groups.Default;
+
 import org.joda.time.DateTime;
 
-import eu.etaxonomy.cdm.model.agent.Person;
+import eu.etaxonomy.cdm.validation.Level2;
+import eu.etaxonomy.cdm.validation.Level3;
 
+@GroupSequence({Default.class, Level2.class, Level3.class})
 public interface ICdmBase {
 
 	/**

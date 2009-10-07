@@ -15,6 +15,7 @@ import java.util.Set;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.Transient;
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -63,6 +64,7 @@ public abstract class AgentBase<S extends IIdentifiableEntityCacheStrategy> exte
     @Embedded
     @Merge(MergeMode.MERGE)
     @Match(MatchMode.IGNORE)
+    @NotNull
     private Contact contact;
 	
 	/** 
@@ -72,6 +74,9 @@ public abstract class AgentBase<S extends IIdentifiableEntityCacheStrategy> exte
 	 * @see 	Contact
 	 */
 	public Contact getContact(){
+		if(contact == null) {
+			this.contact = new Contact();
+		}
 		return this.contact;
 	}
 	/**

@@ -23,6 +23,8 @@ import javax.persistence.FetchType;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -38,6 +40,7 @@ import org.hibernate.annotations.IndexColumn;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
 import org.hibernate.search.annotations.Fields;
+import org.hibernate.validator.constraints.NotEmpty;
 
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.hibernate.StripHtmlBridge;
@@ -53,6 +56,7 @@ import eu.etaxonomy.cdm.strategy.match.MatchMode;
 import eu.etaxonomy.cdm.strategy.match.Match.ReplaceMode;
 import eu.etaxonomy.cdm.strategy.merge.Merge;
 import eu.etaxonomy.cdm.strategy.merge.MergeMode;
+import eu.etaxonomy.cdm.validation.Level2;
 
 /**
  * Superclass for the primary CDM classes that can be referenced from outside via LSIDs and contain a simple generated title string as a label for human reading.
@@ -100,6 +104,8 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 	})
 	@FieldBridge(impl=StripHtmlBridge.class)
 	@Match(value=MatchMode.CACHE, cacheReplaceMode=ReplaceMode.ALL)
+	@NotEmpty(groups = Level2.class) // implictly NotNull
+	@Size(max = 255)
 	protected String titleCache;
 	
 	//if true titleCache will not be automatically generated/updated
@@ -112,6 +118,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
 	//TODO
 	@Merge(MergeMode.ADD_CLONE)
+	@NotNull
 	private Set<Rights> rights = new HashSet<Rights>();
     
     @XmlElementWrapper(name = "Credits")
@@ -121,20 +128,23 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
     //TODO
 	@Merge(MergeMode.ADD_CLONE)
+	@NotNull
 	private List<Credit> credits = new ArrayList<Credit>();
 	
     @XmlElementWrapper(name = "Extensions")
     @XmlElement(name = "Extension")
     @OneToMany(fetch = FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE, CascadeType.DELETE_ORPHAN})
 	@Merge(MergeMode.ADD_CLONE)
+	@NotNull
 	private Set<Extension> extensions = new HashSet<Extension>();
 	
     @XmlElementWrapper(name = "Sources")
     @XmlElement(name = "OriginalSource")
     @OneToMany(fetch = FetchType.LAZY)		
-	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE, CascadeType.DELETE_ORPHAN})
 	@Merge(MergeMode.ADD_CLONE)
+	@NotNull
 	private Set<IdentifiableSource> sources = new HashSet<IdentifiableSource>();
     
     @XmlTransient
@@ -155,7 +165,6 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
     	};
     	addPropertyChangeListener(listener);  
     }
-    
 
 	/**
 	 * By default, we expect most cdm objects to be abstract things 
@@ -165,7 +174,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 	 */
 	public byte[] getData() {
 		return null;
-	}	
+	}
 
 //******************************** CACHE *****************************************************/	
 
@@ -229,12 +238,13 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 	public void setLsid(LSID lsid){
 		this.lsid = lsid;
 	}
-
-	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#getRights()
 	 */
 	public Set<Rights> getRights() {
+		if(rights == null) {
+			this.rights = new HashSet<Rights>();
+		}
 		return this.rights;		
 	}
 	
@@ -253,6 +263,9 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 
 	
 	public List<Credit> getCredits() {
+		if(credits == null) {
+			this.credits = new ArrayList<Credit>();
+		}
 		return this.credits;		
 	}
 	
@@ -297,6 +310,9 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 	 * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#getExtensions()
 	 */
 	public Set<Extension> getExtensions(){
+		if(extensions == null) {
+			this.extensions = new HashSet<Extension>();
+		}
 		return this.extensions;
 	}
 
@@ -342,6 +358,9 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 	 * @see eu.etaxonomy.cdm.model.common.ISourceable#getSources()
 	 */
 	public Set<IdentifiableSource> getSources() {
+		if(sources == null) {
+			this.sources = new HashSet<IdentifiableSource>();
+		}
 		return this.sources;		
 	}
 	
@@ -365,7 +384,6 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 	public void removeSource(IdentifiableSource source) {
 		this.sources.remove(source);
 	}
-
 	
 //******************************** TO STRING *****************************************************/	
 	

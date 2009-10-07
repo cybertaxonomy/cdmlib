@@ -30,6 +30,7 @@ import javax.persistence.InheritanceType;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -47,6 +48,7 @@ import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
+import org.hibernate.validator.constraints.NotEmpty;
 import org.joda.time.DateTime;
 
 import eu.etaxonomy.cdm.jaxb.DateTimeAdapter;
@@ -55,6 +57,7 @@ import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
+import eu.etaxonomy.cdm.validation.Level2;
 
 /**
  * A {@link Media media} is any kind of media that represents a media object. 
@@ -90,7 +93,9 @@ public class Media extends IdentifiableEntity implements Cloneable {
     @XmlJavaTypeAdapter(MultilanguageTextAdapter.class)
     @OneToMany(fetch = FetchType.LAZY)
     @IndexedEmbedded
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE,CascadeType.DELETE})
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE,CascadeType.DELETE, CascadeType.DELETE_ORPHAN})
+    @NotNull
+    @NotEmpty(groups = Level2.class)
 	private Map<Language,LanguageString> title = new HashMap<Language,LanguageString>();
 	
 	//creation date of the media (not of the record) 
@@ -107,7 +112,8 @@ public class Media extends IdentifiableEntity implements Cloneable {
     @OneToMany(fetch = FetchType.LAZY)
     @IndexedEmbedded
     @JoinTable(name = "Media_Description")
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE,CascadeType.DELETE})
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE,CascadeType.DELETE,CascadeType.DELETE_ORPHAN})
+    @NotNull
 	private Map<Language,LanguageString> description = new HashMap<Language,LanguageString>();
 	
 	//A single medium such as a picture can have multiple representations in files. 
@@ -115,7 +121,9 @@ public class Media extends IdentifiableEntity implements Cloneable {
 	@XmlElementWrapper(name = "MediaRepresentations")
 	@XmlElement(name = "MediaRepresentation")
 	@OneToMany(mappedBy="media",fetch = FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE, CascadeType.DELETE_ORPHAN})
+	@NotNull
+	@NotEmpty(groups = Level2.class)
 	private Set<MediaRepresentation> representations = new HashSet<MediaRepresentation>();
 	
 	@XmlElement(name = "Artist")
@@ -143,6 +151,9 @@ public class Media extends IdentifiableEntity implements Cloneable {
 	}
 
 	public Set<MediaRepresentation> getRepresentations(){
+		if(representations == null) {
+			this.representations = new HashSet<MediaRepresentation>();
+		}
 		return this.representations;
 	}
 
@@ -172,6 +183,9 @@ public class Media extends IdentifiableEntity implements Cloneable {
 	}
 
 	public Map<Language,LanguageString> getTitle(){
+		if(title == null) {
+			this.title = new HashMap<Language,LanguageString>();
+		}
 		return this.title;
 	}
 	
@@ -192,6 +206,9 @@ public class Media extends IdentifiableEntity implements Cloneable {
 	}
 
 	public Map<Language,LanguageString> getDescription(){
+		if(this.description == null) {
+			this.description = new HashMap<Language,LanguageString>();
+		}
 		return this.description;
 	}
 	

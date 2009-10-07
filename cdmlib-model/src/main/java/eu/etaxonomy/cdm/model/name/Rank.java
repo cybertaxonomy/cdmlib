@@ -838,7 +838,7 @@ public class Rank extends OrderedTermBase<Rank> {
 			return "xxx.";
 		}
 	}
-	
+	@Transient
 	public String getInfraGenericMarker() throws UnknownCdmTypeException{
 		if (! this.isInfraGeneric()){
 			throw new IllegalStateException("An infrageneric marker is only available for a infrageneric rank but was asked for rank: " + this.toString());

@@ -24,6 +24,8 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -41,6 +43,7 @@ import org.hibernate.annotations.Index;
 import org.hibernate.annotations.Table;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Field;
+import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.util.ReflectionUtils;
 
 import eu.etaxonomy.cdm.model.common.IParsable;
@@ -64,6 +67,8 @@ import eu.etaxonomy.cdm.strategy.match.Match.ReplaceMode;
 import eu.etaxonomy.cdm.strategy.merge.Merge;
 import eu.etaxonomy.cdm.strategy.merge.MergeMode;
 import eu.etaxonomy.cdm.strategy.parser.ParserProblem;
+import eu.etaxonomy.cdm.validation.Level2;
+import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 
 /**
  * The upmost (abstract) class for scientific taxon names regardless of any
@@ -112,12 +117,14 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 	@Column(length=330, name="fullTitleCache")
 	@Match(value=MatchMode.CACHE, cacheReplaceMode=ReplaceMode.ALL)
 	@CacheUpdate(noUpdate ="titleCache")
-    protected String fullTitleCache;
+	@NotEmpty(groups = Level2.class)
+	@Size(max = 330)
+	protected String fullTitleCache;
 	
 	//if true titleCache will not be automatically generated/updated
 	@XmlElement(name = "ProtectedFullTitleCache")
 	@CacheUpdate(value ="fullTitleCache", noUpdate ="titleCache")
-    private boolean protectedFullTitleCache;
+	private boolean protectedFullTitleCache;
 	
     @XmlElementWrapper(name = "Descriptions")
     @XmlElement(name = "Description")
@@ -127,17 +134,21 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 	
     @XmlElement(name = "AppendedPhrase")
     @Field(index= org.hibernate.search.annotations.Index.TOKENIZED)
-	@CacheUpdate(value ="nameCache")
-    private String appendedPhrase;
+    @CacheUpdate(value ="nameCache")
+    @NullOrNotEmpty
+    @Size(max = 255)
+	private String appendedPhrase;
 	
     @XmlElement(name = "NomenclaturalMicroReference")
     @Field(index= org.hibernate.search.annotations.Index.TOKENIZED)
-	@CacheUpdate(noUpdate ="titleCache")
-    private String nomenclaturalMicroReference;
+    @CacheUpdate(noUpdate ="titleCache")
+    @NullOrNotEmpty
+    @Size(max = 255)
+	private String nomenclaturalMicroReference;
 	
     @XmlAttribute
     @CacheUpdate(noUpdate ={"titleCache","fullTitleCache"})
-   private int parsingProblem = 0;
+	private int parsingProblem = 0;
 	
     @XmlAttribute
     @CacheUpdate(noUpdate ={"titleCache","fullTitleCache"})
@@ -152,8 +163,9 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToMany(fetch = FetchType.LAZY)
-	//TODO @Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE_ORPHAN})
-	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
+	//TODO @Cascade({CascadeType.DELETE_ORPHAN})
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE, CascadeType.DELETE_ORPHAN})
+	@NotNull
 	private Set<TypeDesignationBase> typeDesignations = new HashSet<TypeDesignationBase>();
 
     @XmlElement(name = "HomotypicalGroup")
@@ -163,13 +175,15 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
 	@Match(MatchMode.IGNORE)
 	@CacheUpdate(noUpdate ="titleCache")
-    private HomotypicalGroup homotypicalGroup;
+	@NotNull
+	private HomotypicalGroup homotypicalGroup;
 
     @XmlElementWrapper(name = "RelationsFromThisName")
     @XmlElement(name = "RelationFromThisName")
     @OneToMany(mappedBy="relatedFrom", fetch= FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE_ORPHAN})
 	@Merge(MergeMode.RELATION)
+	@NotNull
 	private Set<NameRelationship> relationsFromThisName = new HashSet<NameRelationship>();
 
     @XmlElementWrapper(name = "RelationsToThisName")
@@ -179,12 +193,14 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
     @OneToMany(mappedBy="relatedTo", fetch= FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE , CascadeType.DELETE_ORPHAN })
 	@Merge(MergeMode.RELATION)
+	@NotNull
 	private Set<NameRelationship> relationsToThisName = new HashSet<NameRelationship>();
 
     @XmlElementWrapper(name = "NomenclaturalStatuses")
     @XmlElement(name = "NomenclaturalStatus")
     @OneToMany(fetch= FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE,CascadeType.DELETE,CascadeType.DELETE_ORPHAN})
+	@NotNull
 	private Set<NomenclaturalStatus> status = new HashSet<NomenclaturalStatus>();
 
     @XmlElementWrapper(name = "TaxonBases")
@@ -192,6 +208,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @OneToMany(mappedBy="name", fetch= FetchType.LAZY)
+    @NotNull
 	private Set<TaxonBase> taxonBases = new HashSet<TaxonBase>();
     
     @XmlElement(name = "Rank")
@@ -199,7 +216,8 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.EAGER)
 	@CacheUpdate(value ="nameCache")
-    private Rank rank;
+	@NotNull
+	private Rank rank;
 
 	@XmlElement(name = "NomenclaturalReference")
     @XmlIDREF
@@ -207,7 +225,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
     @ManyToOne(fetch = FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE})
 	@CacheUpdate(noUpdate ="titleCache")
-    private ReferenceBase nomenclaturalReference;
+	private ReferenceBase nomenclaturalReference;
 	
 // ************* CONSTRUCTORS *************/	
 	/** 
@@ -526,6 +544,9 @@ public void addRelationshipToName(TaxonNameBase toName, NameRelationshipType typ
 	 * @see    #addRelationshipFromName(TaxonNameBase, NameRelationshipType, String)
 	 */
 	public Set<NameRelationship> getRelationsFromThisName() {
+		if(relationsFromThisName == null) {
+			this.relationsFromThisName = new HashSet<NameRelationship>();
+		}
 		return relationsFromThisName;
 	}
 
@@ -538,6 +559,9 @@ public void addRelationshipToName(TaxonNameBase toName, NameRelationshipType typ
 	 * @see    #addRelationshipToName(TaxonNameBase, NameRelationshipType, String)
 	 */
 	public Set<NameRelationship> getRelationsToThisName() {
+		if(relationsToThisName == null) {
+			this.relationsToThisName = new HashSet<NameRelationship>();
+		}
 		return relationsToThisName;
 	}
 	
@@ -551,6 +575,9 @@ public void addRelationshipToName(TaxonNameBase toName, NameRelationshipType typ
 	 * @see     NomenclaturalStatusType
 	 */
 	public Set<NomenclaturalStatus> getStatus() {
+		if(status == null) {
+			this.status = new HashSet<NomenclaturalStatus>();
+		}
 		return status;
 	}
 
@@ -888,6 +915,9 @@ public void addRelationshipToName(TaxonNameBase toName, NameRelationshipType typ
 	 * @see     SpecimenTypeDesignation
 	 */
 	public Set<TypeDesignationBase> getTypeDesignations() {
+		if(typeDesignations == null) {
+			this.typeDesignations = new HashSet<TypeDesignationBase>();
+		}
 		return typeDesignations;
 	}
 	
@@ -1092,9 +1122,6 @@ public void addRelationshipToName(TaxonNameBase toName, NameRelationshipType typ
 	 * @see #getHomotypicalGroup()
 	 */
 	protected void setHomotypicalGroup(HomotypicalGroup homotypicalGroup) {
-		if (homotypicalGroup == null){
-			homotypicalGroup = HomotypicalGroup.NewInstance();
-		}
 		this.homotypicalGroup = homotypicalGroup;
 	}
 	
@@ -1166,6 +1193,9 @@ public void addRelationshipToName(TaxonNameBase toName, NameRelationshipType typ
 	 * @see	#getSynonyms()
 	 */
 	public Set<TaxonBase> getTaxonBases() {
+		if(taxonBases == null) {
+			this.taxonBases = new HashSet<TaxonBase>();
+		}
 		return this.taxonBases;
 	}
 	

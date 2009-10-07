@@ -112,6 +112,7 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
 	@XmlElement(name = "Description")
 	@XmlJavaTypeAdapter(MultilanguageTextAdapter.class)
 	@OneToMany(fetch = FetchType.LAZY)
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE, CascadeType.DELETE_ORPHAN})
 	@IndexedEmbedded
 	protected Map<Language,LanguageString> description = new HashMap<Language,LanguageString>();
 	

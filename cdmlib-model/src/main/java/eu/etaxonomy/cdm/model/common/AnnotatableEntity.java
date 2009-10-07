@@ -15,6 +15,7 @@ import java.util.Set;
 import javax.persistence.FetchType;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.OneToMany;
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -48,15 +49,17 @@ public abstract class AnnotatableEntity extends VersionableEntity {
 	@XmlElementWrapper(name = "Markers")
 	@XmlElement(name = "Marker")
 	@OneToMany(fetch=FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE, CascadeType.DELETE_ORPHAN})
 	@Merge(MergeMode.ADD_CLONE)
+	@NotNull
 	protected Set<Marker> markers = new HashSet<Marker>();
 	
 	@XmlElementWrapper(name = "Annotations")
 	@XmlElement(name = "Annotation")
 	@OneToMany(fetch=FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE, CascadeType.DELETE_ORPHAN})
 	@Merge(MergeMode.ADD_CLONE)
+	@NotNull
 	protected Set<Annotation> annotations = new HashSet<Annotation>();
 	
 	protected AnnotatableEntity() {
@@ -67,6 +70,9 @@ public abstract class AnnotatableEntity extends VersionableEntity {
 	
 	
 	public Set<Marker> getMarkers(){
+		if(markers == null) {
+			this.markers = new HashSet<Marker>();
+		}
 		return this.markers;
 	}
 	public void addMarker(Marker marker){
@@ -85,6 +91,9 @@ public abstract class AnnotatableEntity extends VersionableEntity {
 //*************** ANNOTATIONS **********************************************
 	
 	public Set<Annotation> getAnnotations(){
+		if(annotations == null) {
+			this.annotations = new HashSet<Annotation>();
+		}
 		return this.annotations;
 	}
 	public void addAnnotation(Annotation annotation){
