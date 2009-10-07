@@ -18,9 +18,10 @@ public interface IVersionableDao<T extends VersionableEntity> extends ICdmEntity
 	 * @param pageSize The maximum number of audit event records returned (can be null for all audit event records)
 	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
 	 * @param sort should the list be sorted going forward in time (AuditEventSort.FORWARDS) or backwards (AuditEventSort.BACKWARDS)
+	 * @param propertyPaths paths initialized on the returned audited objects
 	 * @return a list of AuditEventRecords, containing the AuditEvent, the state of the entity at that event, and the type of modification
 	 */
-    public List<AuditEventRecord<T>> getAuditEvents(T t, Integer pageSize, Integer pageNumber, AuditEventSort sort);
+    public List<AuditEventRecord<T>> getAuditEvents(T t, Integer pageSize, Integer pageNumber, AuditEventSort sort, List<String> propertyPaths);
 	
     /**
      * Returns  a count of audit events which affected the state of an entity t.

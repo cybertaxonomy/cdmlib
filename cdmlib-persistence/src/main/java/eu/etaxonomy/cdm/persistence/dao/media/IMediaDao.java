@@ -17,13 +17,14 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.common.IAnnotatableDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
+import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ISearchableDao;
 
 /**
  * @author a.babadshanjan
  * @created 08.09.2008
  */
-public interface IMediaDao extends IAnnotatableDao<Media>, ISearchableDao<Media> {
+public interface IMediaDao extends IIdentifiableDao<Media>, ISearchableDao<Media> {
 	
 	/**
 	 * Return a count of MediaKeys, optionally filtered by the parameters passed.

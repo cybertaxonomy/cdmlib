@@ -99,12 +99,18 @@ public abstract class VersionableDaoBase<T extends VersionableEntity> extends Cd
 	}
 	
 	@Override
-	public <TYPE extends T> int count(Class<TYPE> type) {
+	public int count(Class<? extends T> clazz) {
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
-			return super.count(type);
+			return super.count(clazz);
 		} else {
-			AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(type,auditEvent.getRevisionNumber());
+			AuditQuery query = null;
+			if(clazz == null) {
+			    query = getAuditReader().createQuery().forEntitiesAtRevision(type,auditEvent.getRevisionNumber());
+			} else {
+				query = getAuditReader().createQuery().forEntitiesAtRevision(clazz,auditEvent.getRevisionNumber());
+			}
+			
 			query.addProjection(AuditEntity.id().count("id"));
 			return ((Long)query.getSingleResult()).intValue();
 		}
@@ -126,7 +132,7 @@ public abstract class VersionableDaoBase<T extends VersionableEntity> extends Cd
 	}
 	
 	@Override
-	public <TYPE extends T> List<TYPE> list(Class<TYPE> type, Integer limit, Integer start) {
+	public List<T> list(Class<? extends T> type, Integer limit, Integer start) {
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
 			return super.list(type,limit, start);
@@ -136,11 +142,11 @@ public abstract class VersionableDaoBase<T extends VersionableEntity> extends Cd
 		   	  query.setMaxResults(limit);
 			  query.setFirstResult(start);
 			}
-			return (List<TYPE>)query.getResultList();
+			return (List<T>)query.getResultList();
 		}
 	}
 	
-	public List<AuditEventRecord<T>> getAuditEvents(T t, Integer pageSize, Integer pageNumber, AuditEventSort sort) {
+	public List<AuditEventRecord<T>> getAuditEvents(T t, Integer pageSize, Integer pageNumber, AuditEventSort sort, List<String> propertyPaths) {
 		AuditEvent auditEvent = getAuditEventFromContext();
 		
 		AuditQuery query = getAuditReader().createQuery().forRevisionsOfEntity(type, false, true);
@@ -180,6 +186,9 @@ public abstract class VersionableDaoBase<T extends VersionableEntity> extends Cd
         	records.add(new AuditEventRecordImpl<T>(obj));
         }
         
+        for(AuditEventRecord<T> record : records) {
+        	defaultBeanInitializer.initialize(record.getAuditableObject(), propertyPaths);
+        }
 		return records;
 	}
 	
@@ -207,7 +216,7 @@ public abstract class VersionableDaoBase<T extends VersionableEntity> extends Cd
 	}
 	
 	public AuditEventRecord<T> getNextAuditEvent(T t) {
-		List<AuditEventRecord<T>> auditEvents = getAuditEvents(t,1,0,AuditEventSort.FORWARDS);
+		List<AuditEventRecord<T>> auditEvents = getAuditEvents(t,1,0,AuditEventSort.FORWARDS, null);
 		if(auditEvents.isEmpty()) {
 			return null;
 		} else {
@@ -216,7 +225,7 @@ public abstract class VersionableDaoBase<T extends VersionableEntity> extends Cd
 	}
 	
 	public AuditEventRecord<T> getPreviousAuditEvent(T t) {
-		List<AuditEventRecord<T>> auditEvents = getAuditEvents(t,1,0,AuditEventSort.BACKWARDS);
+		List<AuditEventRecord<T>> auditEvents = getAuditEvents(t,1,0,AuditEventSort.BACKWARDS, null);
 		if(auditEvents.isEmpty()) {
 			return null;
 		} else {

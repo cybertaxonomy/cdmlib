@@ -573,8 +573,7 @@ extends IdentifiableDaoBase<TaxonNameBase> implements ITaxonNameDao {
 	}
 	
 	
-	public Integer countByName(String queryString, 
-			MatchMode matchmode, List<Criterion> criteria) {
+	public Integer countByName(String queryString, MatchMode matchmode, List<Criterion> criteria) {
 		//TODO improve performance
 		List<? extends TaxonNameBase<?,?>> results = findByName(queryString, matchmode, null, null, criteria, null);
 		return results.size();
@@ -700,13 +699,11 @@ extends IdentifiableDaoBase<TaxonNameBase> implements ITaxonNameDao {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao#list(java.lang.Class, java.lang.Integer, java.lang.Integer, java.util.List, java.util.List)
-	 */
-	public <TYPE extends TaxonNameBase> List<TYPE> list(Class<TYPE> type,
-			Integer limit, Integer start, List<OrderHint> orderHints,
-			List<String> propertyPaths) {
-		// TODO Auto-generated method stub
-		return null;
+	public Integer countByName(Class<? extends TaxonNameBase> clazz,String queryString, MatchMode matchmode, List<Criterion> criteria) {
+        return super.countByParam(clazz, "nameCache", queryString, matchmode, criteria);
+	}
+
+	public List<TaxonNameBase> findByName(Class<? extends TaxonNameBase> clazz,	String queryString, MatchMode matchmode, List<Criterion> criteria,Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,	List<String> propertyPaths) {
+		return super.findByParam(clazz, "nameCache", queryString, matchmode, criteria, pageSize, pageNumber, orderHints, propertyPaths);
 	}
 }

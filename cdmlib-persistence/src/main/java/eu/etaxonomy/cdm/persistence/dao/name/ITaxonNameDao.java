@@ -259,4 +259,26 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonNameBase>, ISearcha
 	public List<RelationshipBase> getAllRelationships(Integer limit, Integer start); 
 	
 	public List<UuidAndTitleCache> getUuidAndTitleCacheOfNames();
+
+	/**
+	 * @param clazz
+	 * @param queryString
+	 * @param matchmode
+	 * @param pageSize
+	 * @param pageNumber
+	 * @param criteria
+	 * @param orderHints
+	 * @param propertyPaths TODO
+	 * @return
+	 */
+	public List<TaxonNameBase> findByName(Class<? extends TaxonNameBase> clazz,	String queryString, MatchMode matchmode, List<Criterion> criteria,Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,	List<String> propertyPaths);
+
+	/**
+	 * @param clazz
+	 * @param queryString
+	 * @param matchmode
+	 * @param criteria
+	 * @return
+	 */
+	public Integer countByName(Class<? extends TaxonNameBase> clazz, String queryString, MatchMode matchmode, List<Criterion> criteria);
 }

@@ -27,7 +27,7 @@ import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 
-public interface IDefinedTermDao extends IVersionableDao<DefinedTermBase>, ITitledDao<DefinedTermBase>{
+public interface IDefinedTermDao extends IIdentifiableDao<DefinedTermBase>, ITitledDao<DefinedTermBase>{
 	
 	/**
 	 * @param iso639 a two or three letter language code according to iso639-1 or iso639-2

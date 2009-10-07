@@ -42,7 +42,7 @@ public interface IDescriptionDao extends IIdentifiableDao<DescriptionBase> {
 	 * @param propertyPaths properties to initialize - see {@link BeanInitializer#initialize(Object, List)}
 	 * @return a List of DescriptionBase instances
 	 */
-	<TYPE extends DescriptionBase> List<TYPE> listDescriptions(Class<TYPE> type, Boolean hasMedia, Boolean hasText, Set<Feature> feature, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+	 List<DescriptionBase> listDescriptions(Class<? extends DescriptionBase> type, Boolean hasMedia, Boolean hasText, Set<Feature> feature, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 	
 	/**
 	 * Count the descriptions of type <TYPE>, filtered using the following parameters
@@ -53,7 +53,7 @@ public interface IDescriptionDao extends IIdentifiableDao<DescriptionBase> {
 	 * @param feature Restrict the description to those <i>elements</i> which are scoped by one of the Features passed (can be null or empty)
 	 * @return a count of DescriptionBase instances
 	 */
-	<TYPE extends DescriptionBase> int countDescriptions(Class<TYPE> type, Boolean hasImages, Boolean hasText, Set<Feature> feature);
+	 int countDescriptions(Class<? extends DescriptionBase> type, Boolean hasImages, Boolean hasText, Set<Feature> feature);
 	
 	/**
 	 * Returns description elements of type <TYPE>, belonging to a given description, optionally filtered by one or more features
@@ -66,7 +66,7 @@ public interface IDescriptionDao extends IIdentifiableDao<DescriptionBase> {
 	 * @param propertyPaths Properties to initialize in the returned entities, following the syntax described in {@link BeanInitializer#initialize(Object, List)}
 	 * @return a List of DescriptionElementBase instances
 	 */
-	<TYPE extends DescriptionElementBase> List<TYPE> getDescriptionElements(DescriptionBase description,Set<Feature> features, Class<TYPE> type, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
+	 List<DescriptionElementBase> getDescriptionElements(DescriptionBase description,Set<Feature> features, Class<? extends DescriptionElementBase> type, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 	
 	/**
 	 * Returns a count of description elements of type <TYPE>, belonging to a given description, optionally filtered by one or more features
@@ -76,7 +76,7 @@ public interface IDescriptionDao extends IIdentifiableDao<DescriptionBase> {
 	 * @param type The type of description
 	 * @return a count of DescriptionElementBase instances
 	 */
-	<TYPE extends DescriptionElementBase> int countDescriptionElements(DescriptionBase description,	Set<Feature> features, Class<TYPE> type);
+	 int countDescriptionElements(DescriptionBase description,	Set<Feature> features, Class<? extends DescriptionElementBase> type);
 	
 	/**
 	 * Returns a List of TaxonDescription instances, optionally filtered by parameters passed to this method

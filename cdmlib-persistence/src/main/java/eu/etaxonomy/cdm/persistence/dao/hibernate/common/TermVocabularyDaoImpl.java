@@ -11,7 +11,9 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.common;
 
 import java.util.List;
 
+import org.hibernate.Criteria;
 import org.hibernate.Query;
+import org.hibernate.criterion.Restrictions;
 import org.hibernate.envers.query.AuditEntity;
 import org.hibernate.envers.query.AuditQuery;
 import org.springframework.stereotype.Repository;
@@ -20,21 +22,20 @@ import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.persistence.dao.common.ITermVocabularyDao;
+import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
  * @author a.mueller
  *
  */
 @Repository
-public class TermVocabularyDaoImpl extends VersionableDaoBase<TermVocabulary<DefinedTermBase>> implements
+public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> implements
 		ITermVocabularyDao {
-
-	
 	/**
 	 * @param type
 	 */
 	public TermVocabularyDaoImpl() {
-		super((Class)TermVocabulary.class);
+		super(TermVocabulary.class);
 	}
 
 	public int countTerms(TermVocabulary termVocabulary) {
@@ -52,31 +53,36 @@ public class TermVocabularyDaoImpl extends VersionableDaoBase<TermVocabulary<Def
 		}
 	}
 
-	public <T extends DefinedTermBase> List<T> getTerms(TermVocabulary<T> termVocabulary, Integer pageSize, Integer pageNumber) {
+	public <T extends DefinedTermBase> List<T> getTerms(TermVocabulary<T> vocabulary,Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,List<String> propertyPaths) {
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
-    		Query query = getSession().createQuery("select term from DefinedTermBase term where term.vocabulary = :vocabulary");
-	    	query.setParameter("vocabulary", termVocabulary);
+			Criteria criteria = getSession().createCriteria(DefinedTermBase.class);
+			criteria.createCriteria("vocabulary").add(Restrictions.idEq(vocabulary.getId()));
 		
 		    if(pageSize != null) {
-			    query.setMaxResults(pageSize);
+		    	criteria.setMaxResults(pageSize);
 		        if(pageNumber != null) {
-		    	    query.setFirstResult(pageNumber * pageSize);
+		        	criteria.setFirstResult(pageNumber * pageSize);
 		        }
 		    }
-		
-		    return (List<T>)query.list();
+		    
+		    this.addOrder(criteria, orderHints);
+		    List<T> result = (List<T>)criteria.list();
+		    defaultBeanInitializer.initializeAll(result, propertyPaths);
+		    return result;
 		} else {
 			AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(type,auditEvent.getRevisionNumber());
-			query.add(AuditEntity.relatedId("vocabulary").eq(termVocabulary.getId()));
+			query.add(AuditEntity.relatedId("vocabulary").eq(vocabulary.getId()));
 			
 			if(pageSize != null) {
 			    query.setMaxResults(pageSize);
 		        if(pageNumber != null) {
 		    	    query.setFirstResult(pageNumber * pageSize);
 		        }
-		    }
+			}
 			
+			List<T> result = (List<T>)query.getResultList();
+		    defaultBeanInitializer.initializeAll(result, propertyPaths);
 			return (List<T>)query.getResultList();
 		}
 	}
@@ -96,5 +102,7 @@ public class TermVocabularyDaoImpl extends VersionableDaoBase<TermVocabulary<Def
 		}
 	}
 
-
+	public <T extends DefinedTermBase> List<T> getTerms(TermVocabulary<T> termVocabulary, Integer pageSize,	Integer pageNumber) {
+		return getTerms(termVocabulary, pageSize, pageNumber, null, null);
+	}
 }

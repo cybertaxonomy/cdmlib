@@ -468,11 +468,25 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 	}
 
 	public List<Synonym> getAllSynonyms(Integer limit, Integer start) {
-		return super.list(Synonym.class, limit, start);
+		Criteria criteria = getSession().createCriteria(Synonym.class);
+		
+		if(limit != null) {
+			criteria.setFirstResult(start);
+			criteria.setMaxResults(limit);
+		}
+		
+		return criteria.list();
 	}
 
 	public List<Taxon> getAllTaxa(Integer limit, Integer start) {
-		return super.list(Taxon.class, limit, start);
+        Criteria criteria = getSession().createCriteria(Taxon.class);
+		
+		if(limit != null) {
+			criteria.setFirstResult(start);
+			criteria.setMaxResults(limit);
+		}
+		
+		return criteria.list();
 	}
 	
 	

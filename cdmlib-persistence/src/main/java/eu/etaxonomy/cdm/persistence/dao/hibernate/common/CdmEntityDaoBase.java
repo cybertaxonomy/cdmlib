@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.common;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -26,11 +25,11 @@ import org.hibernate.HibernateException;
 import org.hibernate.NonUniqueObjectException;
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Property;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.envers.query.AuditQuery;
 import org.hibernate.search.FullTextQuery;
@@ -252,7 +251,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 		return count(type);
 	}
 	
-	public <TYPE extends T> int count(Class<TYPE> clazz) {
+	public int count(Class<? extends T> clazz) {
 		Session session = getSession();
 		Criteria criteria = null;
 		if(clazz == null) {
@@ -352,6 +351,15 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 		}
 	}  
 	
+	protected void addCriteria(Criteria criteria, List<Criterion> criterion) {
+		if(criterion != null) {
+			for(Criterion c : criterion) {
+				criteria.add(c);
+			}
+		}
+			
+	}
+	
 	protected void addOrder(Criteria criteria, List<OrderHint> orderHints) {
 		if(orderHints != null){
 			for(OrderHint orderHint : orderHints){
@@ -414,7 +422,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 		return results;
 	}
 
-	public <TYPE extends T> List<TYPE> list(Class<TYPE> clazz, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
+	public List<T> list(Class<? extends T> clazz, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
 		Criteria criteria = null;
 		if(clazz == null) {
 			criteria = getSession().createCriteria(type); 
@@ -423,22 +431,26 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 		} 
 		
 		if(limit != null) {
-			criteria.setFirstResult(start);
+			if(start != null) {
+			    criteria.setFirstResult(start);
+			} else {
+				criteria.setFirstResult(0);
+			}
 			criteria.setMaxResults(limit);
 		}
 		
 		addOrder(criteria,orderHints);
 		
-		List<TYPE> results = (List<TYPE>)criteria.list();
+		List<T> results = (List<T>)criteria.list();
 		defaultBeanInitializer.initializeAll(results, propertyPaths);
 		return results; 
 	}
 	
-	public <TYPE extends T> List<TYPE> list(Class<TYPE> type, Integer limit, Integer start, List<OrderHint> orderHints) {
+	public List<T> list(Class<? extends T> type, Integer limit, Integer start, List<OrderHint> orderHints) {
 		return list(type,limit,start,orderHints,null);
 	}
 	
-	public <TYPE extends T> List<TYPE> list(Class<TYPE> type, Integer limit, Integer start) {
+	public List<T> list(Class<? extends T> type, Integer limit, Integer start) {
 		return list(type,limit,start,null,null);
 	}
 	
