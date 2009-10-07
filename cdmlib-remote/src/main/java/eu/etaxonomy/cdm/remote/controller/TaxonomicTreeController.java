@@ -58,7 +58,7 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
  * TODO this controller should be a portal controller!!
  */
 @Controller
-public class TaxonomicTreeController extends AbstractListController<TaxonomicTree, ITaxonTreeService> {
+public class TaxonomicTreeController extends AbstractListController<TaxonomicTree,ITaxonTreeService> {
 	
 	
 	private static final List<String> TAXONTREE_INIT_STRATEGY = Arrays.asList(new String[]{
@@ -73,9 +73,9 @@ public class TaxonomicTreeController extends AbstractListController<TaxonomicTre
 
 	public static final Logger logger = Logger.getLogger(TaxonomicTreeController.class);
 
-	private ITaxonTreeService service;
-	
 	private ITaxonService taxonService;
+	
+	private ITaxonTreeService service;
 	
 	private ITermService termService;
 	
@@ -87,13 +87,13 @@ public class TaxonomicTreeController extends AbstractListController<TaxonomicTre
 	}
 	
 	@Autowired
-	public void setTaxonService(ITaxonService taxonService) {
-		this.taxonService = taxonService;
+	public void setTermService(ITermService termService) {
+		this.termService = termService;
 	}
 	
 	@Autowired
-	public void setTermService(ITermService termService) {
-		this.termService = termService;
+	public void setTaxonService(ITaxonService taxonService) {
+		this.taxonService = taxonService;
 	}
 
 	
@@ -119,7 +119,7 @@ public class TaxonomicTreeController extends AbstractListController<TaxonomicTre
 	public List<TaxonomicTree> getTaxonomicTrees(HttpServletRequest request, HttpServletResponse response)
 			throws IOException {
 		logger.info("getTaxonomicTrees()");
-		return service.list(null, null, null, TAXONTREE_INIT_STRATEGY).getRecords();
+		return service.list(null, null, null,null, TAXONTREE_INIT_STRATEGY);
 	}
 	
 	
@@ -208,8 +208,7 @@ public class TaxonomicTreeController extends AbstractListController<TaxonomicTre
 		try {
 			UUID uuid = stringToUuid(uriParams.get(uriParams.size() - 1));
 			Taxon taxon = (Taxon) taxonService.load(uuid);
-			TaxonNode taxonNode = tree.getNode(taxon);
-			List<TaxonNode> childs = service.loadChildNodesOfTaxonNode(taxonNode, NODE_INIT_STRATEGY);
+			List<TaxonNode> childs = service.loadChildNodesOfTaxon(taxon, tree, NODE_INIT_STRATEGY);
 			return childs;
 		} catch (ClassCastException cce) {
 			response.sendError(500, "The specified instance is not a taxon");
@@ -250,8 +249,8 @@ public class TaxonomicTreeController extends AbstractListController<TaxonomicTre
 		Rank rank = readRankByUuid(uriParams.get(0));
 		UUID taxonUuid = stringToUuid(uriParams.get(uriParams.size() - 2));
 		Taxon taxon = (Taxon) taxonService.load(taxonUuid);
-		TaxonNode taxonNode = tree.getNode(taxon);
-		return service.loadTreeBranch(taxonNode, rank, NODE_INIT_STRATEGY);
+
+		return service.loadTreeBranchToTaxon(taxon, tree, rank, NODE_INIT_STRATEGY);
 	}
 	
 	/**
@@ -305,7 +304,7 @@ public class TaxonomicTreeController extends AbstractListController<TaxonomicTre
 		if((pos = paramStr.indexOf(',')) > 0){
 			String uuidStr = paramStr.substring(pos + 1);
 			UUID uuid = UUID.fromString(uuidStr);
-			DefinedTermBase dt =  termService.findByUuid(uuid);
+			DefinedTermBase dt =  termService.find(uuid);
 			if(dt instanceof Rank){
 				return (Rank)dt;
 			} else {

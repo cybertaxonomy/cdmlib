@@ -201,4 +201,20 @@ public boolean matchStart(String arg0, String arg1) {
 	// TODO Auto-generated method stub
 	return false;
 }
+
+public String combine(String pattern1, String pattern2) {
+	// TODO Auto-generated method stub
+	return null;
+}
+
+public Map<String, String> extractUriTemplateVariables(String pattern,
+		String path) {
+	// TODO Auto-generated method stub
+	return null;
+}
+
+public Comparator<String> getPatternComparator(String path) {
+	// TODO Auto-generated method stub
+	return null;
+}
 }

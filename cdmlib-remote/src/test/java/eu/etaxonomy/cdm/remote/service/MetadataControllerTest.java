@@ -1,6 +1,8 @@
 package eu.etaxonomy.cdm.remote.service;
 
 
+import static org.junit.Assert.assertTrue;
+
 import org.easymock.EasyMock;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,6 +20,7 @@ import com.ibm.lsid.server.LSIDServerException;
 
 import eu.etaxonomy.cdm.api.service.lsid.LSIDMetadataService;
 import eu.etaxonomy.cdm.model.common.LSID;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.test.util.LSIDMatchers;
 
 public class MetadataControllerTest extends UnitilsJUnit4 {
@@ -44,8 +47,8 @@ public class MetadataControllerTest extends UnitilsJUnit4 {
 	
 	@Test
     public void testGetMetadata() throws Exception {
-		MetadataResponse metadataResponse = new MetadataResponse(null, null);
-		EasyMock.expect(metadataService.getMetadata(LSIDMatchers.eqLSID(lsid), EasyMock.aryEq(acceptedFormats))).andReturn(metadataResponse);
+		Taxon taxon = Taxon.NewInstance(null,null);
+		EasyMock.expect(metadataService.getMetadata(LSIDMatchers.eqLSID(lsid))).andReturn(taxon);
 		EasyMock.replay(metadataService);
 		
 		
@@ -53,14 +56,12 @@ public class MetadataControllerTest extends UnitilsJUnit4 {
 		
 		EasyMock.verify(metadataService);
 		ModelAndViewAssert.assertViewName(modelAndView, "Metadata.rdf");		
-		ModelAndViewAssert.assertModelAttributeValue(modelAndView,"metadataResponse",metadataResponse);
+		assertTrue(modelAndView.getModel().containsValue(taxon));
 	}
     
 	@Test(expected = LSIDServerException.class)
     public void testGetMetadataWithoutAcceptedFormat() throws Exception {
-    	acceptedFormats = new String[]{MetadataResponse.N3_FORMAT,MetadataResponse.XMI_FORMAT};
-    	LSIDServerException lse = new LSIDServerException(LSIDServerException.NO_METADATA_AVAILABLE_FOR_FORMATS,"No metadata found for given format");
-    	EasyMock.expect(metadataService.getMetadata(LSIDMatchers.eqLSID(lsid), EasyMock.aryEq(acceptedFormats))).andThrow(lse);
+    	acceptedFormats = new String[]{MetadataResponse.N3_FORMAT,MetadataResponse.XMI_FORMAT};   	
     	EasyMock.replay(metadataService);
     	
 		metadataController.getMetadata(lsid, "application/n3,application/xml+xmi");
@@ -70,7 +71,7 @@ public class MetadataControllerTest extends UnitilsJUnit4 {
     public void testGetMetadataWithUnknownLSID() throws Exception {
  
     	LSIDServerException lse = new LSIDServerException(LSIDException.UNKNOWN_LSID, "Unknown LSID");
-    	EasyMock.expect(metadataService.getMetadata(LSIDMatchers.eqLSID(lsid), EasyMock.aryEq(acceptedFormats))).andThrow(lse);
+    	EasyMock.expect(metadataService.getMetadata(LSIDMatchers.eqLSID(lsid))).andThrow(lse);
     	EasyMock.replay(metadataService);
 
         metadataController.getMetadata(lsid, "application/xml+rdf");

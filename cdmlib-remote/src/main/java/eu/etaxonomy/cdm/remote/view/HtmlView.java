@@ -9,8 +9,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.web.servlet.View;
 
-import eu.etaxonomy.cdm.remote.view.JsonView.Type;
-
 public class HtmlView implements View{
 
 

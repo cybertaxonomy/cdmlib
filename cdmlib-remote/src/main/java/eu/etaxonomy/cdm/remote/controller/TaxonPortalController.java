@@ -102,9 +102,9 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 	private IDescriptionService descriptionService;
 	@Autowired
 	private IReferenceService referenceService;
+	
 	@Autowired
 	private ITaxonTreeService taxonTreeService;
-	
 	
 	private static final List<String> TAXON_INIT_STRATEGY = Arrays.asList(new String []{
 			"*",
@@ -305,7 +305,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 		config.setTaxonPropertyPath(SIMPLE_TAXON_INIT_STRATEGY);
 		config.setNamedAreas(areas);
 		if(treeUuid != null){
-			TaxonomicTree taxonomicTree = taxonTreeService.getTaxonomicTreeByUuid(treeUuid);
+			TaxonomicTree taxonomicTree = taxonTreeService.find(treeUuid);
 			config.setTaxonomicTree(taxonomicTree);
 		}
 			

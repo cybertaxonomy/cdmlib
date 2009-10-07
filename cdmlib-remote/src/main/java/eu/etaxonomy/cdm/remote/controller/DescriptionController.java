@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import eu.etaxonomy.cdm.api.service.AnnotatableServiceBase;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
+import eu.etaxonomy.cdm.api.service.IFeatureTreeService;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
@@ -44,7 +45,9 @@ import eu.etaxonomy.cdm.persistence.dao.common.IAnnotatableDao;
 @RequestMapping(value = {"/*/description/*","/*/description/*/annotation", "/*/featuretree/*"})
 public class DescriptionController extends AnnotatableController<DescriptionBase, IDescriptionService>
 {
-
+	@Autowired
+	private IFeatureTreeService featureTreeService;
+	
 	public DescriptionController(){
 		super();
 		setUuidParameterPattern("^/(?:[^/]+)/(?:[^/]+)/([^/?#&\\.]+).*");
@@ -82,7 +85,7 @@ public class DescriptionController extends AnnotatableController<DescriptionBase
 			method = RequestMethod.GET)
 	public FeatureTree doGetFeatureTree(HttpServletRequest request, HttpServletResponse response)throws IOException {
 		UUID featureTreeUuid = readValueUuid(request, null);
-		FeatureTree featureTree = service.loadFeatureTree(featureTreeUuid, FEATURETREE_INIT_STRATEGY);
+		FeatureTree featureTree = featureTreeService.load(featureTreeUuid, FEATURETREE_INIT_STRATEGY);
 		if(featureTree == null){
 			HttpStatusMessage.UUID_NOT_FOUND.send(response);
 		}

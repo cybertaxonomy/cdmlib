@@ -13,6 +13,7 @@ import java.util.StringTokenizer;
 import java.util.Vector;
 
 import eu.etaxonomy.cdm.api.service.lsid.LSIDMetadataService;
+import eu.etaxonomy.cdm.model.common.IIdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.remote.editor.LSIDPropertyEditor;
 
@@ -73,10 +74,23 @@ public class MetadataController {
 			acceptedFormats = new String[v.size()];
 			v.toArray(acceptedFormats);
 		}
-
-		MetadataResponse metadataResponse = lsidMetadataService.getMetadata(lsid, acceptedFormats);
 		
-		return new ModelAndView("Metadata.rdf","metadataResponse",metadataResponse);
+		if (acceptedFormats != null) {
+            boolean found = false;
+            for (int i=0;i<acceptedFormats.length;i++) {
+                    if (acceptedFormats[i].equals(MetadataResponse.RDF_FORMAT ))
+                            found = true;
+                    break;                                
+            }
+            if (!found) {
+                    throw new LSIDServerException(LSIDServerException.NO_METADATA_AVAILABLE_FOR_FORMATS,"No metadata found for given format");
+            }
+        }		
+
+		IIdentifiableEntity identifiableEntity = lsidMetadataService.getMetadata(lsid);
+		ModelAndView modelAndView = new ModelAndView("Metadata.rdf");
+		modelAndView.addObject(identifiableEntity);
+		return modelAndView;
 	}
 	
 	@RequestMapping(value = "/authority/metadata.do", params = "!lsid")

@@ -23,6 +23,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
+import eu.etaxonomy.cdm.api.service.IFeatureTreeService;
+import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.Feature;
 
@@ -37,6 +39,8 @@ import eu.etaxonomy.cdm.model.description.Feature;
 @RequestMapping(value = {"/*/feature/", "/*/feature/*"})
 public class FeatureListController extends BaseController<DescriptionBase, IDescriptionService>
 {
+	@Autowired
+	private ITermService termService;
 
 	private static final List<String> FEATURE_INIT_STRATEGY = Arrays.asList(new String[]{"representations"});
 
@@ -73,7 +77,7 @@ public class FeatureListController extends BaseController<DescriptionBase, IDesc
 	@RequestMapping(method = RequestMethod.GET)
 	public List<Feature> doGetFeatures(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		
-		List<Feature> obj = service.getFeaturesAll(FEATURE_INIT_STRATEGY);
+		List<Feature> obj = (List)termService.list(Feature.class,null,null,null,FEATURE_INIT_STRATEGY);
 		return obj;
 	}
 
