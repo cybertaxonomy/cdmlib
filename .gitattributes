@@ -2418,7 +2418,6 @@ eclipse-plugin/yjp-controller-api-redist-8.0.1.jar -text
 eclipse-updateSite/.project -text
 eclipse-updateSite/index.html -text
 eclipse-updateSite/site.xml -text
-/editEclipseCodeTemplate.xml -text
 libraryTesterApplication/.classpath -text
 libraryTesterApplication/.project -text
 libraryTesterApplication/cdmResources/applicationContext.xml -text
