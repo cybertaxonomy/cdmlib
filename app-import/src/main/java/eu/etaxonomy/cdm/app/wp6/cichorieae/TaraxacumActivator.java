@@ -51,10 +51,12 @@ public class TaraxacumActivator {
 	//database validation status (create, update, validate ...)
 	static DbSchemaValidation hbm2dll = DbSchemaValidation.UPDATE;
 	static final Source berlinModelSource = BerlinModelSources.EDIT_Taraxacum();
-	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_import_cichorieae();
+	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_bgbm24_cichorieae_b();
 
 	org.h2.jdbc.JdbcSQLException h;
-	static final UUID treeUuid = UUID.fromString("ba7120ce-4fab-49dc-aaa4-f36276426aa8");
+	static final UUID treeUuid = UUID.fromString("019c4b4d-736b-4d2e-883c-e3244167080a");
+//	static final UUID treeUuid = UUID.fromString("00db28a7-50e1-4abc-86ec-b2a8ce870de9");
+//	static final UUID treeUuid = UUID.fromString("534e190f-3339-49ba-95d9-fa27d5493e3e");
 	static final int sourceSecId = 7700000;
 	
 	static final UUID featureTreeUuid = UUID.fromString("ab007336-d853-4f2f-a490-7c8232eafe7b");
@@ -82,7 +84,7 @@ public class TaraxacumActivator {
 
 
 // **************** ALL *********************	
-////	authors
+    //authors
 	static final boolean doAuthors = true;
 	//references
 	static final DO_REFERENCES doReferences =  DO_REFERENCES.ALL;
@@ -105,17 +107,17 @@ public class TaraxacumActivator {
 //	//authors
 //	static final boolean doAuthors = false;
 //	//references
-//	static final DO_REFERENCES doReferences =  DO_REFERENCES.NONE;
+//	static final DO_REFERENCES doReferences =  DO_REFERENCES.CONCEPT_REFERENCES;
 //	//names
-//	static final boolean doTaxonNames = false;
+//	static final boolean doTaxonNames = true;
 //	static final boolean doRelNames = false;
 //	static final boolean doNameStatus = false;
 //	static final boolean doTypes = false;
 //	static final boolean doNameFacts = false;
 //	
 //	//taxa 
-//	static final boolean doTaxa = false;
-//	static final boolean doRelTaxa = false;
+//	static final boolean doTaxa = true;
+//	static final boolean doRelTaxa = true;
 //	static final boolean doFacts = false;
 //	static final boolean doOccurences = false;
 	
@@ -131,6 +133,7 @@ public class TaraxacumActivator {
 		
 		BerlinModelImportConfigurator bmImportConfigurator = BerlinModelImportConfigurator.NewInstance(source,  destination);
 		
+		bmImportConfigurator.setTreeUuid(treeUuid);
 //		bmImportConfigurator.setSecUuid(secUuid);
 		bmImportConfigurator.setSourceSecId(sourceSecId);
 		
@@ -177,7 +180,9 @@ public class TaraxacumActivator {
 			FeatureNode imageNode = FeatureNode.NewInstance(Feature.IMAGE());
 			tree.getRoot().addChild(imageNode);
 			FeatureNode distributionNode = FeatureNode.NewInstance(Feature.DISTRIBUTION());
-			tree.getRoot().addChild(distributionNode, 2);
+			FeatureNode featureNode = tree.getRoot();
+//			tree.getRoot().addChild(distributionNode, 2);
+			tree.getRoot().addChild(distributionNode, featureNode.getChildCount() + 1);
 			app.getDescriptionService().saveFeatureTree(tree);
 			mergeIntoCichorieae(app);
 			app.commitTransaction(tx);
@@ -186,7 +191,7 @@ public class TaraxacumActivator {
 		logger.info("End import from BerlinModel ("+ source.getDatabase() + ")...");
 	}
 	
-	public void mergeIntoCichorieae(CdmApplicationController app){
+		public void mergeIntoCichorieae(CdmApplicationController app){
 		
 		String taraxTaraxacum = "9a7bced0-fa1a-432e-9cca-57b62219cde6";
 		String cichTaraxacum = "c946ac62-b6c6-493b-8ed9-278fa38b931a";
@@ -194,22 +199,39 @@ public class TaraxacumActivator {
 		Taxon taraxacumInCich = (Taxon)app.getTaxonService().findByUuid(taraxacumCichUUID);
 		if (taraxacumInCich != null) {
 			logger.info("Merge Taraxacum");
-			Taxon parent = taraxacumInCich.getTaxonomicParent();
-			Set<TaxonNode> parentNodes = parent.getTaxonNodes();
-			if(parentNodes.size() != 1){
-				throw new RuntimeException("Exactly one Taxon Node expected, but found " + parentNodes.size());
+			Set<TaxonNode> taxonNodesInCich = taraxacumInCich.getTaxonNodes();
+			TaxonNode taxonNodeInCich = null;
+			TaxonNode parentNodeInCich = null;
+			Taxon parentInCich = null;
+			
+			if (taxonNodesInCich == null) {
+				logger.error("No taxon nodes found for Taraxacum in Cich DB");
+			} else {
+				logger.info(taxonNodesInCich .size()+ " taxon node(s) found for Taraxacum in Cich DB");
+				taxonNodeInCich = taxonNodesInCich.iterator().next();
+				parentNodeInCich = taxonNodeInCich.getParent();
+				parentInCich = parentNodeInCich.getTaxon();
 			}
-			TaxonNode parentNode = parentNodes.iterator().next();
+			
 			UUID taraxacumTaraxUUID = UUID.fromString(taraxTaraxacum);
 			Taxon taraxacumInTarax = (Taxon)app.getTaxonService().findByUuid(taraxacumTaraxUUID);
+			
+			Set<TaxonNode> taxonNodesInTarax = taraxacumInTarax.getTaxonNodes();
+			
+			if (taxonNodesInTarax == null) {
+				logger.warn("No taxon nodes found for Taraxacum in Taraxacum DB");
+			}
 	
 			//TODO reference
 			ReferenceBase citation = null;
 			String microcitation = null;
-			parentNode.addChild(taraxacumInTarax, citation, microcitation);
-			app.getTaxonService().save(parent);
-			TaxonNode taraxacumInCichNode = parentNode.getTaxonomicTree().getNode(taraxacumInCich);
-			parentNode.removeChild(taraxacumInCichNode);
+			
+			TaxonNode taxonNodeInTarax = 
+				parentNodeInCich.addChild(taraxacumInTarax, citation, microcitation);
+			parentNodeInCich.getTaxonomicTree().addParentChild(parentInCich, taraxacumInTarax, null, null);
+			parentNodeInCich.removeChild(taxonNodeInCich);
+			
+			app.getTaxonService().save(parentInCich);
 			app.getTaxonService().delete(taraxacumInCich);
 		}
 	}

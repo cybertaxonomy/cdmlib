@@ -244,6 +244,59 @@ public class CdmDestinations {
 		return makeDestination(cdmServer, cdmDB, -1, cdmUserName, null);
 	}
 	
+	public static ICdmDataSource cdm_bgbm24_palmae_a(){
+		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
+		String cdmServer = "192.168.2.10";
+		int port = 3306;
+		String cdmDB = "cdm_edit_palmae_a";
+		String cdmUserName = "edit";
+		return makeDestination(cdmServer, cdmDB, port, cdmUserName, null);
+	}
+	
+	public static ICdmDataSource cdm_bgbm24_cichorieae_a(){
+		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
+		String cdmServer = "192.168.2.10";
+		int port = 3306;
+		String cdmDB = "cdm_edit_cichorieae_a";
+		String cdmUserName = "edit";
+		return makeDestination(cdmServer, cdmDB, port, cdmUserName, null);
+	}
+	
+	public static ICdmDataSource cdm_bgbm24_dipera_a(){
+		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
+		String cdmServer = "192.168.2.10";
+		int port = 3306;
+		String cdmDB = "cdm_edit_diptera_a";
+		String cdmUserName = "edit";
+		return makeDestination(cdmServer, cdmDB, port, cdmUserName, null);
+	}
+	public static ICdmDataSource cdm_bgbm24_palmae_b(){
+		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
+		String cdmServer = "192.168.2.10";
+		int port = 3306;
+		String cdmDB = "cdm_edit_palmae_b";
+		String cdmUserName = "edit";
+		return makeDestination(cdmServer, cdmDB, port, cdmUserName, null);
+	}
+	
+	public static ICdmDataSource cdm_bgbm24_cichorieae_b(){
+		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
+		String cdmServer = "192.168.2.10";
+		int port = 3306;
+		String cdmDB = "cdm_edit_cichorieae_b";
+		String cdmUserName = "edit";
+		return makeDestination(cdmServer, cdmDB, port , cdmUserName, null);
+	}
+	
+	public static ICdmDataSource cdm_bgbm24_dipera_b(){
+		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
+		String cdmServer = "127.0.0.1";
+		int port = 3306;
+		String cdmDB = "cdm_edit_diptera_b";
+		String cdmUserName = "edit";
+		return makeDestination(cdmServer, cdmDB, port, cdmUserName, null);
+	}
+	
 	public static ICdmDataSource cdm_local_palmae(){
 		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
 		String cdmServer = "127.0.0.1";
