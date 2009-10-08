@@ -36,7 +36,7 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase> ext
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ImportStateBase.class);
 	
-	private Map<ReferenceBase,TaxonomicTree> treeMap = new HashMap<ReferenceBase,TaxonomicTree>();
+	private Map<Object,TaxonomicTree> treeMap = new HashMap<Object,TaxonomicTree>();
 
 	private Map<ReferenceBase,UUID> treeUuidMap = new HashMap<ReferenceBase,UUID>();
 
@@ -83,14 +83,14 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase> ext
 	/**
 	 * @return the treeMap
 	 */
-	public TaxonomicTree getTree(ReferenceBase ref) {
+	public TaxonomicTree getTree(Object ref) {
 		return treeMap.get(ref);
 	}
 
 	/**
 	 * @param treeMap the treeMap to set
 	 */
-	public void putTree(ReferenceBase ref, TaxonomicTree tree) {
+	public void putTree(Object ref, TaxonomicTree tree) {
 		if (tree != null){
 			this.treeMap.put(ref, tree);
 		}
