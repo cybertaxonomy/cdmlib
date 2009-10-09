@@ -52,7 +52,6 @@
               <xs:choice minOccurs="0" maxOccurs="unbounded">
                 <xs:element ref="description:AbsenceTerm"/>
                 <xs:element ref="common:AnnotationType"/>
-                <xs:element ref="reference:BibtexEntryType"/>
                 <xs:element ref="location:Continent"/>
                 <xs:element ref="occurrence:DerivationEventType"/>
                 <xs:element ref="occurrence:DeterminationModifier"/>
@@ -60,7 +59,6 @@
                 <xs:element ref="description:Feature"/>
                 <xs:element ref="name:HybridRelationshipType"/>
                 <xs:element ref="agent:InstitutionType"/>
-                <xs:element ref="common:Keyword"/>
                 <xs:element ref="common:Language"/>
                 <xs:element ref="common:MarkerType"/>
                 <xs:element ref="description:MeasurementUnit"/>

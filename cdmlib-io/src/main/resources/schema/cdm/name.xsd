@@ -352,9 +352,6 @@
     <xs:complexContent>
       <xs:extension base="name:NonViralName">
         <xs:sequence>
-          <xs:element name="IsMonomHybrid" type="xs:boolean"/>
-          <xs:element name="IsBinomHybrid" type="xs:boolean"/>
-          <xs:element name="IsTrinomHybrid" type="xs:boolean"/>
           <xs:element name="IsAnamorphic" type="xs:boolean"/>
          </xs:sequence>
       </xs:extension>

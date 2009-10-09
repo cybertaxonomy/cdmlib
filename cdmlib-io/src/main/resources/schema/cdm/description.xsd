@@ -378,7 +378,7 @@
     <xs:complexContent>
       <xs:extension base="common:AnnotatableEntity">
         <xs:sequence>
-          <xs:element ref="description:Feature" minOccurs="0"/>
+          <xs:element name="Feature" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
           <xs:element name="Modifiers" minOccurs="0">
             <xs:complexType>
               <xs:sequence>
