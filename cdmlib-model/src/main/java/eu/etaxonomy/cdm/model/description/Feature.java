@@ -121,6 +121,8 @@ public class Feature extends DefinedTermBase<Feature> {
 	private static Feature DESCRIPTION;
 	private static Feature UNKNOWN;
 	private static Feature ANATOMY;
+	private static Feature HOSTPLANT;
+	private static Feature PATHOGEN_AGENT;
 
 	@XmlElement(name = "SupportsTextData")
 	private boolean supportsTextData;
@@ -569,7 +571,9 @@ public class Feature extends DefinedTermBase<Feature> {
 	private static final UUID uuidDiscussion = UUID.fromString("d3c4cbb6-0025-4322-886b-cd0156753a25");
 	private static final UUID uuidImage = UUID.fromString("84193b2c-327f-4cce-90ef-c8da18fd5bb5");
 	private static final UUID uuidAnatomy = UUID.fromString("94213b2c-e67a-4d37-25ef-e8d316edfba1");
-	
+	private static final UUID uuidHostPlant = UUID.fromString("6e9de1d5-05f0-40d5-8786-2fe30d0d894d");
+	private static final UUID uuidPathogenAgent = UUID.fromString("002d05f2-fd72-49f1-ba4d-196cf09240b5");
+
 	
 //	private static final UUID uuidDistribution = UUID.fromString("");
 //	private static final UUID uuidDistribution = UUID.fromString("");
@@ -779,7 +783,19 @@ public class Feature extends DefinedTermBase<Feature> {
 	public static final Feature ANATOMY(){
 		return ANATOMY;
 	}
-	
+	/**
+	 * Returns the "hostplant" feature.
+	 */
+	public static final Feature HOSTPLANT(){
+		return HOSTPLANT;
+	}
+	/**
+	 * Returns the "pathogen agent" feature.
+	 */
+	public static final Feature PATHOGEN_AGENT(){
+		return PATHOGEN_AGENT;
+	}
+
 	/**
 	 * Returns the "citation" feature. This feature can only be described
 	 * with {@link TextData text data}.
@@ -883,6 +899,8 @@ public class Feature extends DefinedTermBase<Feature> {
 		Feature.UNKNOWN = termVocabulary.findTermByUuid(Feature.uuidUnknown);
 		Feature.USES = termVocabulary.findTermByUuid(Feature.uuidUses);
 		Feature.ANATOMY = termVocabulary.findTermByUuid(Feature.uuidAnatomy);
+		Feature.PATHOGEN_AGENT = termVocabulary.findTermByUuid(Feature.uuidPathogenAgent);
+		Feature.HOSTPLANT = termVocabulary.findTermByUuid(uuidHostPlant); 
 	}
 
 }
