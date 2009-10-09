@@ -98,7 +98,9 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
-	@IndexedEmbedded
+    //@Cascade(CascadeType.SAVE_UPDATE)
+    @Cascade(CascadeType.MERGE)
+    @IndexedEmbedded
 	private Feature feature;
 	
 	@XmlElementWrapper(name = "Modifiers")
