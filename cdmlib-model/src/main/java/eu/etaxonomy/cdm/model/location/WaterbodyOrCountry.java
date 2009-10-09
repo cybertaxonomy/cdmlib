@@ -38,6 +38,7 @@ import au.com.bytecode.opencsv.CSVWriter;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
+import eu.etaxonomy.cdm.model.description.Feature;
 
 /**
  * +/- current ISO codes. year given with each entry
@@ -580,7 +581,10 @@ uuidRedSea
 uuidPersianGulf
 
 	 */
-
+public static final WaterbodyOrCountry AFGHANISTAN(){
+	return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidAfghanistan);
+}
+	
 	public static final WaterbodyOrCountry ARGENTINA_ARGENTINE_REPUBLIC(){
 		return null; // FIXME(uuidArgentinaArgentineRepublic);
 	}
