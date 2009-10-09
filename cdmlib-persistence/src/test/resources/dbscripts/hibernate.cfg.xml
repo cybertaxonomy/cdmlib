@@ -21,7 +21,7 @@
       <mapping class="eu.etaxonomy.cdm.model.common.Extension"/>
       <mapping class="eu.etaxonomy.cdm.model.common.ExtensionType"/>
       <mapping class="eu.etaxonomy.cdm.model.common.Figure"/>
-      <mapping class="eu.etaxonomy.cdm.model.common.Keyword"/>
+      <!--<mapping class="eu.etaxonomy.cdm.model.common.Keyword"/>-->
       <mapping class="eu.etaxonomy.cdm.model.common.Language"/>
       <mapping class="eu.etaxonomy.cdm.model.common.LanguageString"/>
       <mapping class="eu.etaxonomy.cdm.model.common.Marker"/>
