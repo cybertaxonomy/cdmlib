@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+import jxl.write.DateTime;
+
 import org.apache.log4j.Logger;
 import org.springframework.transaction.TransactionStatus;
 
@@ -30,8 +32,14 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.common.init.TermNotFoundException;
+import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.description.TaxonDescription;
+import eu.etaxonomy.cdm.model.description.TaxonInteraction;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
+import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.location.NamedAreaType;
+import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -115,13 +123,12 @@ public class TestDatabase {
 	    
 	    List<Feature> features = new ArrayList<Feature>();
 	    
-	    Feature feature1 = new Feature();
-	    feature1.setLabel("Feature1", Language.ENGLISH());
-	    features.add(feature1);
+	    Feature feature1 = Feature.BIOLOGY_ECOLOGY();
 	    
 	    TaxonNameDescription taxNameDescription = TaxonNameDescription.NewInstance();
 	    taxNameDescription.addFeature(feature1);
 	    
+	    	    
 	    
 	    
 //	    List<Synonym> synonyms = new ArrayList<Synonym>();
@@ -228,6 +235,34 @@ public class TestDatabase {
 		childR2_1 = Taxon.NewInstance(nameR2_1, sec);
 		childR2_2 = Taxon.NewInstance(nameR2_2, sec);
 		
+		//TaxonInteractions
+		
+		TaxonInteraction descBase = TaxonInteraction.NewInstance();
+		descBase.setTaxon2(root1T);
+		Feature hostplant = Feature.HOSTPLANT();
+		
+		descBase.setFeature(hostplant);
+		TaxonDescription taxDesc = TaxonDescription.NewInstance();
+		taxDesc.addElement(descBase);
+		root2T.addDescription(taxDesc);
+		
+		//locations
+		
+		taxDesc = TaxonDescription.NewInstance();
+		Feature locationFeature = Feature.DISTRIBUTION();
+
+		
+		//locationFeature.
+		WaterbodyOrCountry area = WaterbodyOrCountry.NewInstance("", "locationTest", null);
+		area.setType(NamedAreaType.NATURAL_AREA());
+		
+		//WaterbodyOrCountry woC= WaterbodyOrCountry.NewInstance();
+		area.addWaterbodyOrCountry(WaterbodyOrCountry.AFGHANISTAN());
+		taxDesc.addGeoScope(area);
+		taxDesc.addFeature(locationFeature);
+		root1T.addDescription(taxDesc);
+		
+		
 		// synonyms
 		
 		synFree = Synonym.NewInstance(synNameFree, sec);
@@ -269,6 +304,8 @@ public class TestDatabase {
 		root2T.addTaxonomicChild(child1, sec, "p.1010");
 		root2T.addTaxonomicChild(child2, sec, "p.1020");
 		*/
+		//
+		
 		
 		taxonBases.add(root1T);
 		taxonBases.add(root2T);
