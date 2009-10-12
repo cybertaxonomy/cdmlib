@@ -88,7 +88,9 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
 	private Set<ReferenceBase> descriptionSources = new HashSet<ReferenceBase>();
 	
 	@XmlElementWrapper(name = "DescriptiveSystem")
-	@XmlElementRef(name = "Feature")
+	@XmlElement(name = "Feature")
+	@XmlIDREF
+	@XmlSchemaType(name="IDREF")
 	@ManyToMany(fetch = FetchType.LAZY)  //FIXME
     @Cascade( { CascadeType.SAVE_UPDATE, CascadeType.MERGE })
     @JoinTable(name = "DescriptionBase_Feature")
