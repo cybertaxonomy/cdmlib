@@ -291,23 +291,6 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
 	public int size(){
 		return this.elements.size();
 	}
-	
-	/**
-	 * Generates a string that identifies <i>this</i> description.
-	 * This string may be stored in the inherited
-	 * {@link common.IdentifiableEntity#getTitleCache() titleCache} attribute.<BR>
-	 * This method overrides the generic and inherited generateTitle method
-	 * from {@link IdentifiableEntity IdentifiableEntity}.
-	 *
-	 * @return  the string identifying <i>this</i> description
-	 * @see  	eu.etaxonomy.cdm.model.common.IdentifiableEntity#generateTitle()
-	 * @see  	eu.etaxonomy.cdm.model.common.IdentifiableEntity#getTitleCache()
-	 */
-//	@Override
-//	public String generateTitle() {
-//		//TODO generate title "generate Title not yet implemented"
-//		return this.toString();
-//	}
 
     /**
 	 * @return the imageGallery
