@@ -141,7 +141,7 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
 //	private TaxonNameBase nameUsedInReference;
 	
     @XmlElementWrapper(name = "Sources")
-    @XmlElement(name = "OriginalSource")
+    @XmlElement(name = "DescriptionElementSource")
     @OneToMany(fetch = FetchType.LAZY)		
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
 	@Merge(MergeMode.ADD_CLONE)
