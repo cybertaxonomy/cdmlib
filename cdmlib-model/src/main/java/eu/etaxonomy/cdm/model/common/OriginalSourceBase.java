@@ -10,18 +10,25 @@
 package eu.etaxonomy.cdm.model.common;
 
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.JoinColumn;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
+import org.hibernate.annotations.Any;
 import org.hibernate.annotations.Table;
 import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 
 /**
  * Abstract base class for classes implementing {@link eu.etaxonomy.cdm.model.common.IOriginalSource IOriginalSource}.
@@ -54,6 +61,16 @@ public abstract class OriginalSourceBase<T extends ISourceable> extends Referenc
 	@XmlElement(name = "IdNamespace")
 	private String idNamespace;
 
+	/*@XmlElement(name = "SourcedObject")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
+	@Any(metaDef = "CdmBase",
+	    	 metaColumn=@Column(name = "sourcedObj_type"),
+	    	 fetch = FetchType.LAZY,
+	    	 optional = false)
+	@JoinColumn(name = "sourcedObj_id")
+	@NotAudited
+	protected IdentifiableEntity sourcedObj;*/
 
 	/**
 	 * Constructor
