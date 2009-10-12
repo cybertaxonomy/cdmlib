@@ -84,7 +84,7 @@ public class IdentifiableSource extends OriginalSourceBase<IdentifiableEntity>{
 	@JoinColumn(name = "sourcedObj_id")
 	@NotAudited
 	private IdentifiableEntity sourcedObj;
-	
+
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.IOriginalSource#getSourcedObj()

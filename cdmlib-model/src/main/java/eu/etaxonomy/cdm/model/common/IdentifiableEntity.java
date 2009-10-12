@@ -131,7 +131,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 	private Set<Extension> extensions = new HashSet<Extension>();
 	
     @XmlElementWrapper(name = "Sources")
-    @XmlElement(name = "OriginalSource")
+    @XmlElement(name = "IdentifiableSource")
     @OneToMany(fetch = FetchType.LAZY)		
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
 	@Merge(MergeMode.ADD_CLONE)
