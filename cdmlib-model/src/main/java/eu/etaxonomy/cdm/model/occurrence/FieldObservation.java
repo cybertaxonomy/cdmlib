@@ -18,6 +18,8 @@ import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations .CascadeType;
+
+import javax.validation.Valid;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -32,10 +34,12 @@ import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
+import org.hibernate.validator.constraints.Length;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.common.IdentifiableEntityDefaultCacheStrategy;
+import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 
 /**
  * In situ observation of a taxon in the field. If a specimen exists, 
@@ -60,10 +64,14 @@ public class FieldObservation extends SpecimenOrObservationBase<IIdentifiableEnt
 
 	@XmlElement(name = "FieldNumber")
 	@Field(index=Index.TOKENIZED)
+	@NullOrNotEmpty
+	@Length(max = 255)
 	private String fieldNumber;
 	
 	@XmlElement(name = "FieldNotes")
 	@Field(index=Index.TOKENIZED)
+	@NullOrNotEmpty
+	@Length(max = 255)
 	private String fieldNotes;
 	
 	@XmlElement(name = "GatheringEvent")
@@ -72,6 +80,7 @@ public class FieldObservation extends SpecimenOrObservationBase<IIdentifiableEnt
 	@ManyToOne(fetch = FetchType.LAZY)
     @Cascade( { CascadeType.SAVE_UPDATE })
     @IndexedEmbedded(depth = 2)
+    @Valid
 	private GatheringEvent gatheringEvent;
 
 	/**

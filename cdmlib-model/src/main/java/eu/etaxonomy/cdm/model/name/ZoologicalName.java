@@ -13,6 +13,7 @@ package eu.etaxonomy.cdm.model.name;
 import java.util.Map;
 
 import javax.persistence.Entity;
+import javax.validation.constraints.Min;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -24,6 +25,7 @@ import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
+import org.hibernate.validator.constraints.Length;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
@@ -34,6 +36,7 @@ import eu.etaxonomy.cdm.strategy.cache.name.CacheUpdate;
 import eu.etaxonomy.cdm.strategy.cache.name.ZooNameDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.parser.INonViralNameParser;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
+import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 
 /**
  * The taxon name class for animals.
@@ -64,16 +67,20 @@ public class ZoologicalName extends NonViralName<ZoologicalName> {
 	//Name of the breed of an animal
 	@XmlElement(name = "Breed")
 	@Field(index=Index.TOKENIZED)
+	@NullOrNotEmpty
+	@Length(max = 255)
 	private String breed;
 	
 	@XmlElement(name = "PublicationYear")
 	@Field(index=Index.UN_TOKENIZED)
 	@CacheUpdate(value ="authorshipCache")
+	@Min(0)
     private Integer publicationYear;
 	
 	@XmlElement(name = "OriginalPublicationYear")
 	@Field(index=Index.UN_TOKENIZED)
 	@CacheUpdate(value ="authorshipCache")
+	@Min(0)
     private Integer originalPublicationYear;
 
 	static private INonViralNameParser nameParser = new NonViralNameParserImpl();

@@ -18,6 +18,7 @@ import javax.persistence.FetchType;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Transient;
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -35,6 +36,7 @@ import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
+import org.hibernate.validator.constraints.Length;
 import org.joda.time.Partial;
 
 import eu.etaxonomy.cdm.model.agent.AgentBase;
@@ -43,6 +45,7 @@ import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.Point;
+import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 
 /**
  * The event when gathering a specimen or recording a field observation only
@@ -82,10 +85,13 @@ public class GatheringEvent extends EventBase implements Cloneable{
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@ManyToMany(fetch = FetchType.LAZY)
+	@NotNull
 	private Set<NamedArea> collectingAreas = new HashSet<NamedArea>();
 	
 	@XmlElement(name = "CollectingMethod")
 	@Field(index=Index.TOKENIZED)
+	@NullOrNotEmpty
+	@Length(max = 255)
 	private String collectingMethod;
 	
 	// meter above/below sea level of the surface
@@ -131,6 +137,9 @@ public class GatheringEvent extends EventBase implements Cloneable{
 
 
 	public Set<NamedArea> getCollectingAreas(){
+		if(collectingAreas == null) {
+			this.collectingAreas = new HashSet<NamedArea>();
+		}
 		return this.collectingAreas;
 	}
 

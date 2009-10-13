@@ -26,11 +26,13 @@ import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
+import org.hibernate.validator.constraints.Length;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy;
+import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 
 /**
  * The taxon name class for viral taxa. The scientific name will be stored
@@ -66,6 +68,8 @@ public class ViralName extends TaxonNameBase<ViralName, INameCacheStrategy<Viral
 	
 	@XmlElement(name = "Acronym")
 	@Field(index=Index.TOKENIZED)
+	@NullOrNotEmpty
+	@Length(max = 255)
 	private String acronym;
 
 	// ************* CONSTRUCTORS *************/	

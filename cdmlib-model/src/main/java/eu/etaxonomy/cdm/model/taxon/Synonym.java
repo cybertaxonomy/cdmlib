@@ -25,6 +25,7 @@ import eu.etaxonomy.cdm.strategy.cache.taxon.TaxonBaseDefaultCacheStrategy;
 import java.util.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -70,6 +71,7 @@ public class Synonym extends TaxonBase<IIdentifiableEntityCacheStrategy<Synonym>
     @XmlSchemaType(name = "IDREF")
     @OneToMany(mappedBy="relatedFrom", fetch=FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
+	@NotNull
 	private Set<SynonymRelationship> synonymRelations = new HashSet<SynonymRelationship>();
 
 	// ************* CONSTRUCTORS *************/	
@@ -123,6 +125,9 @@ public class Synonym extends TaxonBase<IIdentifiableEntityCacheStrategy<Synonym>
 	 * @see    #removeSynonymRelation(SynonymRelationship)
 	 */
 	public Set<SynonymRelationship> getSynonymRelations() {
+		if(synonymRelations == null) {
+			this.synonymRelations = new HashSet<SynonymRelationship>();
+		}
 		return synonymRelations;
 	}
 

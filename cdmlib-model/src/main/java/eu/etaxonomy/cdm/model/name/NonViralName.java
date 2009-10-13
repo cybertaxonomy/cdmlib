@@ -21,6 +21,7 @@ import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -62,6 +63,7 @@ import eu.etaxonomy.cdm.strategy.merge.MergeMode;
 import eu.etaxonomy.cdm.validation.Level2;
 import eu.etaxonomy.cdm.validation.Level3;
 import eu.etaxonomy.cdm.validation.annotation.CorrectEpithetsForRank;
+import eu.etaxonomy.cdm.validation.annotation.MustHaveAuthority;
 import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 import eu.etaxonomy.cdm.validation.annotation.NoDuplicateNames;
 
@@ -109,6 +111,7 @@ import eu.etaxonomy.cdm.validation.annotation.NoDuplicateNames;
 @Audited
 @Configurable
 @CorrectEpithetsForRank(groups = Level2.class)
+@MustHaveAuthority(groups = Level2.class)
 @NoDuplicateNames(groups = Level3.class)
 public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonViralNameCacheStrategy> {
 	private static final long serialVersionUID = 4441110073881088033L;
@@ -133,8 +136,8 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 	@Match(MatchMode.EQUAL_REQUIRED)
 	@CacheUpdate("nameCache")
 	@NullOrNotEmpty
-    @Size(max = 255)
-    @Pattern(regexp = "[A-Z][a-z\\uc3a4\\uc3ab\\uc3af\\uc3b6\\uc3bc\\-]+", groups=Level2.class)
+    @Size(max = 255)                                                                                       
+    @Pattern(regexp = "[A-Z][a-z\\u00E4\\u00EB\\u00EF\\u00F6\\u00FC\\-]+", groups=Level2.class, message="{eu.etaxonomy.cdm.model.name.NonViralName.allowedCharactersForUninomial.message}")
     @NotEmpty(groups = Level3.class)
 	private String genusOrUninomial;
 	
@@ -143,7 +146,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 	@CacheUpdate("nameCache")
 	@NullOrNotEmpty
     @Size(max = 255)
-    @Pattern(regexp = "[a-z\\uc3a4\\uc3ab\\uc3af\\uc3b6\\uc3bc\\-]+", groups=Level2.class)
+    @Pattern(regexp = "[a-z\\u00E4\\u00EB\\u00EF\\u00F6\\u00FC\\-]+", groups=Level2.class,message="{eu.etaxonomy.cdm.model.name.NonViralName.allowedCharactersForEpithet.message}")
 	private String infraGenericEpithet;
 	
 	@XmlElement(name = "SpecificEpithet")
@@ -151,7 +154,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 	@CacheUpdate("nameCache")
 	@NullOrNotEmpty
     @Size(max = 255)
-    @Pattern(regexp = "[a-z\\uc3a4\\uc3ab\\uc3af\\uc3b6\\uc3bc\\-]+", groups=Level2.class)
+    @Pattern(regexp = "[a-z\\u00E4\\u00EB\\u00EF\\u00F6\\u00FC\\-]+", groups=Level2.class, message = "{eu.etaxonomy.cdm.model.name.NonViralName.allowedCharactersForEpithet.message}")
 	private String specificEpithet;
 	
 	@XmlElement(name = "InfraSpecificEpithet")
@@ -159,7 +162,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 	@CacheUpdate("nameCache")
 	@NullOrNotEmpty
     @Size(max = 255)
-    @Pattern(regexp = "[a-z\\uc3a4\\uc3ab\\uc3af\\uc3b6\\uc3bc\\-]+", groups=Level3.class)
+    @Pattern(regexp = "[a-z\\u00E4\\u00EB\\u00EF\\u00F6\\u00FC\\-]+", groups=Level2.class, message = "{eu.etaxonomy.cdm.model.name.NonViralName.allowedCharactersForEpithet.message}")
 	private String infraSpecificEpithet;
 	
 	@XmlElement(name = "CombinationAuthorTeam", type = TeamOrPersonBase.class)
@@ -202,7 +205,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 	@Field(index=Index.TOKENIZED)
 	@Match(value=MatchMode.CACHE, cacheReplaceMode=ReplaceMode.DEFINED, 
 			cacheReplacedProperties={"combinationAuthorTeam", "basionymAuthorTeam", "exCombinationAuthorTeam", "exBasionymAuthorTeam"} )
-	@NotEmpty(groups = Level2.class) // implictly NotNull
+	@NullOrNotEmpty // implictly NotNull
 	@Size(max = 255)
 	private String authorshipCache;
 	
@@ -215,6 +218,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
     @OneToMany(mappedBy="relatedFrom", fetch = FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE_ORPHAN })
 	@Merge(MergeMode.RELATION)
+	@NotNull
 	private Set<HybridRelationship> hybridParentRelations = new HashSet<HybridRelationship>();
 
     @XmlElementWrapper(name = "HybridRelationsToThisName")
@@ -222,6 +226,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
     @OneToMany(mappedBy="relatedTo", fetch = FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE_ORPHAN })
 	@Merge(MergeMode.RELATION)
+	@NotNull
 	private Set<HybridRelationship> hybridChildRelations = new HashSet<HybridRelationship>();
 
 	//if set: this name is a hybrid formula (a hybrid that does not have an own name) and no other hybrid flags may be set. A
@@ -1049,6 +1054,9 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 	 * @see    HybridRelationshipType
 	 */
 	public Set<HybridRelationship> getParentRelationships() {
+		if(hybridParentRelations == null) {
+			this.hybridParentRelations = new HashSet<HybridRelationship>();
+		}
 		return hybridParentRelations;
 	}
 
@@ -1061,6 +1069,9 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 	 * @see    HybridRelationshipType
 	 */
 	public Set<HybridRelationship> getChildRelationships() {
+		if(hybridChildRelations == null) {
+			this.hybridChildRelations = new HashSet<HybridRelationship>();
+		}
 		return hybridChildRelations;
 	}
 

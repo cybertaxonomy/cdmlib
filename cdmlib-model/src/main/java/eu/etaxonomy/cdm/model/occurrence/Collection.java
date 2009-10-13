@@ -30,12 +30,14 @@ import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
+import org.hibernate.validator.constraints.Length;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.common.IdentifiableEntityDefaultCacheStrategy;
+import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 
 /**
  * @author m.doering
@@ -67,18 +69,26 @@ public class Collection extends IdentifiableMediaEntity<IIdentifiableEntityCache
 	
 	@XmlElement(name = "Code")
 	@Field(index=org.hibernate.search.annotations.Index.UN_TOKENIZED)
+	@NullOrNotEmpty
+	@Length(max = 255)
 	private String code;
 	
 	@XmlElement(name = "CodeStandard")
 	@Field(index=org.hibernate.search.annotations.Index.UN_TOKENIZED)
+	@NullOrNotEmpty
+	@Length(max = 255)
 	private String codeStandard;
 	
 	@XmlElement(name = "Name")
 	@Field(index=org.hibernate.search.annotations.Index.TOKENIZED)
+	@NullOrNotEmpty
+	@Length(max = 255)
 	private String name;
 
 	@XmlElement(name = "TownOrLocation")
 	@Field(index=org.hibernate.search.annotations.Index.TOKENIZED)
+	@NullOrNotEmpty
+	@Length(max = 255)
 	private String townOrLocation;
 	
 	@XmlElement(name = "Institution")

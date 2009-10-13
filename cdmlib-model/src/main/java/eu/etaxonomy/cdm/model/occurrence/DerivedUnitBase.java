@@ -30,9 +30,11 @@ import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
+import org.hibernate.validator.constraints.Length;
 
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
+import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 
 /**
  * http://www.bgbm.org/biodivinf/docs/CollectionModel/ReprintTNR.pdf
@@ -68,14 +70,20 @@ public abstract class DerivedUnitBase<S extends IIdentifiableEntityCacheStrategy
 
 	@XmlElement(name = "CatalogNumber")
 	@Field(index=Index.UN_TOKENIZED)
+	@NullOrNotEmpty
+	@Length(max = 255)
 	private String catalogNumber;
 	
 	@XmlElement(name = "AccessionNumber")
 	@Field(index=Index.UN_TOKENIZED)
+	@NullOrNotEmpty
+	@Length(max = 255)
 	private String accessionNumber;
 	
 	@XmlElement(name = "CollectorsNumber")
 	@Field(index=Index.UN_TOKENIZED)
+	@NullOrNotEmpty
+	@Length(max = 255)
 	private String collectorsNumber;
 	
 	@XmlElement(name = "StoredUnder")

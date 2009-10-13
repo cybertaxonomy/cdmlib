@@ -23,6 +23,8 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -82,6 +84,7 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
 	@XmlElement(name = "Description")
 	@ManyToMany(fetch = FetchType.LAZY,mappedBy="describedSpecimenOrObservations",targetEntity=DescriptionBase.class)
 	@Cascade(CascadeType.SAVE_UPDATE)
+	@NotNull
 	private Set<DescriptionBase> descriptions = new HashSet<DescriptionBase>();
 	
 	@XmlElementWrapper(name = "Determinations")
@@ -89,6 +92,7 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
 	@OneToMany(mappedBy="identifiedUnit")
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
 	@IndexedEmbedded(depth = 2)
+	@NotNull
 	private Set<DeterminationEvent> determinations = new HashSet<DeterminationEvent>();
 	
 	@XmlElement(name = "Sex")
@@ -105,6 +109,7 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
 	
 	@XmlElement(name = "IndividualCount")
 	@Field(index=org.hibernate.search.annotations.Index.UN_TOKENIZED)
+	@Min(0)
 	private Integer individualCount;
 	
 	// the verbatim description of this occurrence. Free text usable when no atomised data is available.
@@ -114,6 +119,7 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
 	@OneToMany(fetch = FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE, CascadeType.DELETE_ORPHAN})
 	@IndexedEmbedded
+	@NotNull
 	protected Map<Language,LanguageString> description = new HashMap<Language,LanguageString>();
 	
 	// events that created derivedUnits from this unit
@@ -122,6 +128,7 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToMany(fetch=FetchType.LAZY)
+    @NotNull
 	protected Set<DerivationEvent> derivationEvents = new HashSet<DerivationEvent>();
 
 	/**
@@ -132,6 +139,9 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
 	}
 	
 	public Set<DescriptionBase> getDescriptions() {
+		if(descriptions == null) {
+			this.descriptions = new HashSet<DescriptionBase>();
+		}
 		return this.descriptions;
 	}
 
@@ -164,6 +174,9 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
 	}
 	
 	public Set<DerivationEvent> getDerivationEvents() {
+		if(derivationEvents == null) {
+			this.derivationEvents = new HashSet<DerivationEvent>();
+		}
 		return this.derivationEvents;
 	}
 	
@@ -179,6 +192,9 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
 	}
 	
 	public Set<DeterminationEvent> getDeterminations() {
+		if(determinations == null) {
+			this.determinations = new HashSet<DeterminationEvent>();
+		}
 		return this.determinations;
 	}
 

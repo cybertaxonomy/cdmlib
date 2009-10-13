@@ -16,6 +16,7 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -37,6 +38,7 @@ import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
+import eu.etaxonomy.cdm.validation.Level2;
 
 /**
  * The upmost (abstract) class for the use of a {@link eu.etaxonomy.cdm.model.name.TaxonNameBase taxon name} in a {@link eu.etaxonomy.cdm.model.reference.ReferenceBase reference}
@@ -96,6 +98,7 @@ public abstract class TaxonBase<S extends IIdentifiableEntityCacheStrategy> exte
 	@JoinColumn(name="taxonName_fk")
 	@IndexedEmbedded
 	@Cascade(CascadeType.SAVE_UPDATE)
+	@NotNull(groups = Level2.class)
 	private TaxonNameBase name;
 	
 	// The concept reference
@@ -105,6 +108,7 @@ public abstract class TaxonBase<S extends IIdentifiableEntityCacheStrategy> exte
     @ManyToOne(fetch = FetchType.LAZY)
     @IndexedEmbedded
     @Cascade(CascadeType.SAVE_UPDATE)
+    @NotNull(groups = Level2.class)
 	private ReferenceBase sec;
 
 	

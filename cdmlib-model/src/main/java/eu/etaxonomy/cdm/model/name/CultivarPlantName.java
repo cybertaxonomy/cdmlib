@@ -14,10 +14,12 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
+import org.hibernate.validator.constraints.Length;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -52,6 +54,8 @@ public class CultivarPlantName extends BotanicalName {
 	
 	//the characteristical name of the cultivar
     @XmlElement(name = "CultivarName", required = true)
+    @NullOrNotEmpty
+    @Length(max = 255)
 	private String cultivarName;
 
 	// ************* CONSTRUCTORS *************/	

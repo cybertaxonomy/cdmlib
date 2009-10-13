@@ -25,6 +25,7 @@ import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -87,6 +88,7 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 	@XmlElement(name = "Description")
 	@OneToMany(mappedBy="taxon", fetch= FetchType.LAZY) 
 	@Cascade({CascadeType.SAVE_UPDATE})
+	@NotNull
 	private Set<TaxonDescription> descriptions = new HashSet<TaxonDescription>();
 
 	// all related synonyms
@@ -94,6 +96,7 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 	@XmlElement(name = "SynonymRelationship")
     @OneToMany(mappedBy="relatedTo", fetch=FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
+	@NotNull
 	private Set<SynonymRelationship> synonymRelations = new HashSet<SynonymRelationship>();
 
 	// all taxa relations with rel.fromTaxon==this
@@ -101,6 +104,7 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 	@XmlElement(name = "FromThisTaxonRelationship")
     @OneToMany(mappedBy="relatedFrom", fetch=FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
+	@NotNull
 	private Set<TaxonRelationship> relationsFromThisTaxon = new HashSet<TaxonRelationship>();
 
 	// all taxa relations with rel.toTaxon==this
@@ -110,6 +114,7 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
     @XmlSchemaType(name = "IDREF")
     @OneToMany(mappedBy="relatedTo", fetch=FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
+	@NotNull
 	private Set<TaxonRelationship> relationsToThisTaxon = new HashSet<TaxonRelationship>();
 
 	@XmlAttribute(name= "taxonStatusUnknown")
@@ -200,6 +205,9 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 	 * @see eu.etaxonomy.cdm.model.description.TaxonDescription#getTaxon()
 	 */
 	public Set<TaxonDescription> getDescriptions() {
+		if(descriptions == null) {
+			descriptions = new HashSet<TaxonDescription>();
+		}
 		return descriptions;
 	}
 
@@ -272,6 +280,9 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 	 * @see    #getSynonyms()
 	 */
 	public Set<SynonymRelationship> getSynonymRelations() {
+		if(synonymRelations == null) {
+			this.synonymRelations = new HashSet<SynonymRelationship>();
+		}
 		return synonymRelations;
 	}
 	
@@ -343,6 +354,9 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 	 * @see    #getTaxonRelations()
 	 */
 	public Set<TaxonRelationship> getRelationsFromThisTaxon() {
+		if(relationsFromThisTaxon == null) {
+			this.relationsFromThisTaxon = new HashSet<TaxonRelationship>();
+		}
 		return relationsFromThisTaxon;
 	}
 
@@ -355,6 +369,9 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 	 * @see    #getTaxonRelations()
 	 */
 	public Set<TaxonRelationship> getRelationsToThisTaxon() {
+		if(relationsToThisTaxon == null) {
+			this.relationsToThisTaxon = new HashSet<TaxonRelationship>();
+		}
 		return relationsToThisTaxon;
 	}
 	/** 

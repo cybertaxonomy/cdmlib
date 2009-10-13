@@ -21,6 +21,7 @@ import javax.persistence.InheritanceType;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
+import javax.validation.constraints.Pattern;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -39,6 +40,7 @@ import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.IndexedEmbedded;
+import org.hibernate.validator.constraints.Length;
 
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
@@ -54,6 +56,8 @@ import eu.etaxonomy.cdm.strategy.merge.IMergable;
 import eu.etaxonomy.cdm.strategy.merge.Merge;
 import eu.etaxonomy.cdm.strategy.merge.MergeMode;
 import eu.etaxonomy.cdm.strategy.parser.ParserProblem;
+import eu.etaxonomy.cdm.validation.Level2;
+import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 
 /**
  * The upmost (abstract) class for references (information sources). Its two
@@ -106,7 +110,7 @@ public abstract class ReferenceBase<S extends IReferenceBaseCacheStrategy> exten
 	private static final Logger logger = Logger.getLogger(ReferenceBase.class);
 	
 	@XmlAttribute(name ="type")
-	@Column(name="refType")  
+	@Column(name="refType")
 	protected ReferenceType type;
 	
 	//Title of the reference
@@ -115,6 +119,8 @@ public abstract class ReferenceBase<S extends IReferenceBaseCacheStrategy> exten
 	@Lob
 	@Field(index=Index.TOKENIZED)
 	@Match(MatchMode.EQUAL_REQUIRED)
+	@NullOrNotEmpty
+	@Length(max = 4096)
 	private String title;
 	
 //********************************************************/    
@@ -122,44 +128,71 @@ public abstract class ReferenceBase<S extends IReferenceBaseCacheStrategy> exten
 	
     @XmlElement(name = "Editor")
     @Field(index=Index.TOKENIZED)
+    @NullOrNotEmpty
+	@Length(max = 255)
 	protected String editor;
 	
     @XmlElement(name = "Series")
     @Field(index=Index.TOKENIZED)
+    @NullOrNotEmpty
+	@Length(max = 255)
 	protected String series;
 	
     @XmlElement(name = "Volume")
     @Field(index=Index.TOKENIZED)
+    @NullOrNotEmpty
+	@Length(max = 255)
 	protected String volume;
 	
     @XmlElement(name = "Pages")
     @Field(index=Index.TOKENIZED)
+    @NullOrNotEmpty
+	@Length(max = 255)
 	protected String pages;
 	
     @XmlElement(name = "Edition")
     @Field(index=Index.TOKENIZED)
+    @NullOrNotEmpty
+	@Length(max = 255)
 	protected String edition;
 
     @XmlElement(name = "ISBN")
     @Field(index=Index.TOKENIZED)
+    @NullOrNotEmpty
+	@Length(max = 255)
+	@Pattern(regexp = "ISBN\\x20(?=.{13}$)\\d{1,5}([- ])\\d{1,7}\\1\\d{1,6}\\1(\\d|X)$", groups = Level2.class, message = "{eu.etaxonomy.cdm.model.reference.ReferenceBase.isbn.message}") 
 	protected String isbn;
     
 	@XmlElement(name = "ISSN")
 	@Field(index=Index.TOKENIZED)
+	@NullOrNotEmpty
+	@Length(max = 255)
+	@Pattern(regexp = "ISSN\\x20(?=.{9}$)\\d{4}([- ])\\d{4} (\\d|X)$", groups = Level2.class, message = "{eu.etaxonomy.cdm.model.reference.ReferenceBase.isbn.message}") 
 	protected String issn;
 	
     @XmlElement(name = "SeriesPart")
     @Field(index=Index.TOKENIZED)
+    @NullOrNotEmpty
+	@Length(max = 255)
 	protected String seriesPart;
     
 	@XmlElement(name = "Organization")
 	@Field(index=Index.TOKENIZED)
+	@NullOrNotEmpty
+	@Length(max = 255)
 	protected String organization;
 	
 	@XmlElement(name = "Publisher")
+	@Field(index=Index.TOKENIZED)
+	@NullOrNotEmpty
+	@Length(max = 255)
 	protected String publisher;
 	
+	
 	@XmlElement(name = "PlacePublished")
+	@Field(index=Index.TOKENIZED)
+	@NullOrNotEmpty
+	@Length(max = 255)
 	protected String placePublished;
     
 	@XmlElement(name = "Institution")
@@ -197,11 +230,17 @@ public abstract class ReferenceBase<S extends IReferenceBaseCacheStrategy> exten
 	@XmlElement(name ="Abstract" )
 	@Column(length=65536, name="referenceAbstract")
 	@Lob
+	@Field(index=Index.TOKENIZED)
+	@NullOrNotEmpty
+	@Length(max = 65536)
 	private String referenceAbstract;  //abstract is a reserved term in Java
 	
 	//URIs like DOIs, LSIDs or Handles for this reference
 	@XmlElement(name = "URI")
-	@Field(index=org.hibernate.search.annotations.Index.TOKENIZED)
+	@Field(index=org.hibernate.search.annotations.Index.UN_TOKENIZED)
+	@NullOrNotEmpty
+	@Length(max = 255)
+	@Pattern(regexp = "^([a-z0-9+.-]+):(?://(?:((?:[a-z0-9-._~!$&'()*+,;=:]|%[0-9A-F]{2})*)@)?((?:[a-z0-9-._~!$&'()*+,;=]|%[0-9A-F]{2})*)(?::(\\d*))?(/(?:[a-z0-9-._~!$&'()*+,;=:@/]|%[0-9A-F]{2})*)?|(/?(?:[a-z0-9-._~!$&'()*+,;=:@]|%[0-9A-F]{2})+(?:[a-z0-9-._~!$&'()*+,;=:@/]|%[0-9A-F]{2})*)?)(?:\\?((?:[a-z0-9-._~!$&'()*+,;=:/?@]|%[0-9A-F]{2})*))?(?:#((?:[a-z0-9-._~!$&'()*+,;=:/?@]|%[0-9A-F]{2})*))?$", groups = Level2.class, message = "{eu.etaxonomy.cdm.model.reference.ReferenceBase.uri.message}") 
 	private String uri;
 	
 	//flag to subselect only references that could be useful for nomenclatural citations. If a reference is used as a
@@ -444,6 +483,7 @@ public abstract class ReferenceBase<S extends IReferenceBaseCacheStrategy> exten
 	 * @see  #generateTitle()
 	 */
 	// TODO implement
+	@Transient
 	public String getCitation(){
 		if (cacheStrategy == null){
 			logger.warn("No CacheStrategy defined for "+ this.getClass() + ": " + this.getUuid());
