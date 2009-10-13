@@ -46,8 +46,7 @@ public class TaxonDescriptionDefaultCacheStrategyTest {
 		Assert.assertEquals("Wrong title cache for description", "Taxon description", taxonDescription.getTitleCache());
 		taxonDescription.setImageGallery(true);
 		Assert.assertEquals("Wrong title cache for description", "Image galery", taxonDescription.getTitleCache());
-		
-		
+
 	}
 	
 }
