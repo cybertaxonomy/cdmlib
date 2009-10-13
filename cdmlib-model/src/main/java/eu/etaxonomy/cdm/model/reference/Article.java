@@ -151,6 +151,7 @@ public class Article extends ReferenceBase<INomenclaturalReferenceCacheStrategy<
 	 * @return  the journal
 	 * @see 	Journal
 	 */
+	@Transient
 	public Journal getInJournal(){
 		if (inReference == null){
 			return null;

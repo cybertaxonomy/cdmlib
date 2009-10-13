@@ -59,6 +59,7 @@ public abstract class TeamOrPersonBase<T extends TeamOrPersonBase<?>> extends Ag
 	 * 
 	 * @see  INomenclaturalAuthor#getNomenclaturalTitle()
 	 */
+	@Transient
 	public String getNomenclaturalTitle() {
 		String result = nomenclaturalTitle;
 		if (CdmUtils.isEmpty(nomenclaturalTitle) && (isGeneratingTitleCache == false)){
@@ -78,6 +79,7 @@ public abstract class TeamOrPersonBase<T extends TeamOrPersonBase<?>> extends Ag
 	 * @see eu.etaxonomy.cdm.model.common.IdentifiableEntity#getTitleCache()
 	 */
 	@Override
+	@Transient
 	public String getTitleCache() {
 		isGeneratingTitleCache = true;
 		String result = super.getTitleCache();

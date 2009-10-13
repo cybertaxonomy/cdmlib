@@ -444,6 +444,7 @@ public abstract class ReferenceBase<S extends IReferenceBaseCacheStrategy> exten
 	 * @see  #generateTitle()
 	 */
 	// TODO implement
+	@Transient
 	public String getCitation(){
 		if (cacheStrategy == null){
 			logger.warn("No CacheStrategy defined for "+ this.getClass() + ": " + this.getUuid());
@@ -544,6 +545,7 @@ public abstract class ReferenceBase<S extends IReferenceBaseCacheStrategy> exten
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.IParsable#getParsingProblems()
 	 */
+	@Transient
 	public List<ParserProblem> getParsingProblems() {
 		return ParserProblem.warningList(this.parsingProblem);
 	}

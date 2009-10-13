@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.model.reference;
 
 
 import javax.persistence.Entity;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -66,6 +67,7 @@ public class CdDvd extends PublicationBase<INomenclaturalReferenceCacheStrategy<
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.reference.INomenclaturalReference#getNomenclaturalCitation(java.lang.String)
 	 */
+	@Transient
 	public String getNomenclaturalCitation(String microReference) {
 		if (cacheStrategy == null){
 			logger.warn("No CacheStrategy defined for "+ this.getClass() + ": " + this.getUuid());
