@@ -719,6 +719,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 			logger.warn("name is null!");
 		}else{
 			hasCheckRankProblem = nameToBeFilled.hasProblem(ParserProblem.CheckRank);
+			nameToBeFilled.removeParsingProblem(ParserProblem.CheckRank);
 		}
 		String authorString = null;
 		
