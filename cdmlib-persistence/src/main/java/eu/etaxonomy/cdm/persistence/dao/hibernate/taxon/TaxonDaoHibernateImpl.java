@@ -366,7 +366,8 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 					" sn.nameCache " + matchOperator + " :queryString";
 			}
 		}
-			
+		
+		// TODO  mysql needs  optimization:  see http://www.xaprb.com/blog/2006/04/30/how-to-optimize-subqueries-and-joins-in-mysql/#commen
 		if(clazz.equals(Taxon.class)){
 			// find Taxa
 			hql = "select " + selectWhat + " from " + clazz.getSimpleName() + " t" 
@@ -386,6 +387,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		}
 		
 		Query query = getSession().createQuery(hql);
+		
 		
 		query.setParameter("queryString", hqlQueryString);
 		if(doAreaRestriction){
