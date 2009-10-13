@@ -50,8 +50,8 @@ import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
  * @author ben.clark
  *
  */
-public class CorrectEpithetsForRankTest extends CdmIntegrationTest {
-	private static final Logger logger = Logger.getLogger(CorrectEpithetsForRankTest.class);
+public class MustHaveAuthorityTest extends CdmIntegrationTest {
+	private static final Logger logger = Logger.getLogger(MustHaveAuthorityTest.class);
 	
 	@SpringBeanByType
 	private Validator validator;
@@ -62,6 +62,8 @@ public class CorrectEpithetsForRankTest extends CdmIntegrationTest {
 	public void setUp() {
 		name = BotanicalName.NewInstance(Rank.SPECIES());
 		name.setNameCache("Aus aus");
+		name.setGenusOrUninomial("Aus");
+		name.setSpecificEpithet("aus");
 		name.setAuthorshipCache("L.");
 		name.setFullTitleCache("Aus aus L.");
 		name.setTitleCache("Aus aus L.");
@@ -72,71 +74,32 @@ public class CorrectEpithetsForRankTest extends CdmIntegrationTest {
 	
 	@Test
 	public void testValidSpecificName() {
-		name.setGenusOrUninomial("Aus");
-		name.setSpecificEpithet("aus");
+        Set<ConstraintViolation<BotanicalName>> constraintViolations  = validator.validate(name, Level2.class);
+        assertTrue("There should be no constraint violations as this name has the correct epithets for it rank",constraintViolations.isEmpty());
+	}
+	
+	@Test
+	public void testValidSpecificNameWithBasionymAuthorTeam() {
+		name.setAuthorshipCache(null);
+		name.setBasionymAuthorTeam(Person.NewInstance());
         Set<ConstraintViolation<BotanicalName>> constraintViolations  = validator.validate(name, Level2.class);
         assertTrue("There should be no constraint violations as this name has the correct epithets for it rank",constraintViolations.isEmpty());
 	}
 	
 	@Test
 	public void testInValidSpecificName() {
-		name.setGenusOrUninomial("Aus");
-		name.setSpecificEpithet(null); // at the default level, this property can be null
+		name.setAuthorshipCache(null);
         Set<ConstraintViolation<BotanicalName>> constraintViolations  = validator.validate(name, Level2.class);
         assertFalse("There should be a constraint violation as this name does not have a specific epithet",constraintViolations.isEmpty());
 	}
 	
 	@Test
-	public void testValidFamilyGroupName() {
-		name.setGenusOrUninomial("Aus");
-		name.setRank(Rank.FAMILY());
-        Set<ConstraintViolation<BotanicalName>> constraintViolations  = validator.validate(name, Level2.class);
-        assertTrue("There should be no constraint violations as this name has the correct epithets for it rank",constraintViolations.isEmpty());
-	}
-	
-	@Test
-	public void testInValidFamilyGroupName() {
-		name.setGenusOrUninomial("Aus");
-		name.setRank(Rank.FAMILY()); // at the default level, this property can be null
-		name.setSpecificEpithet("aus");
-        Set<ConstraintViolation<BotanicalName>> constraintViolations  = validator.validate(name, Level2.class);
-        assertFalse("There should be a constraint violation as this name does not have a specific epithet",constraintViolations.isEmpty());
-	}
-	
-	@Test
-	public void testValidGenusGroupName() {
-		name.setGenusOrUninomial("Aus");
-		name.setInfraGenericEpithet("bus");
-		name.setRank(Rank.SUBGENUS());
-        Set<ConstraintViolation<BotanicalName>> constraintViolations  = validator.validate(name, Level2.class);
-        assertTrue("There should be no constraint violations as this name has the correct epithets for it rank",constraintViolations.isEmpty());
-	}
-	
-	@Test
-	public void testInValidGenusGroupName() {
-		name.setGenusOrUninomial("Aus");
-		name.setRank(Rank.SUBGENUS()); // at the default level, this property can be null
-		name.setSpecificEpithet("aus");
-        Set<ConstraintViolation<BotanicalName>> constraintViolations  = validator.validate(name, Level2.class);
-        assertFalse("There should be a constraint violation as this name does not have a specific epithet",constraintViolations.isEmpty());
-	}
-	
-	@Test
-	public void testValidInfraSpecificName() {
-		name.setGenusOrUninomial("Aus");
-		name.setSpecificEpithet("aus");
-		name.setInfraSpecificEpithet("ceus");
+	public void testValidAutonym() {
+		name.setInfraSpecificEpithet("aus");
+		name.setAuthorshipCache(null);
+		name.setBasionymAuthorTeam(null);
 		name.setRank(Rank.SUBSPECIES());
         Set<ConstraintViolation<BotanicalName>> constraintViolations  = validator.validate(name, Level2.class);
         assertTrue("There should be no constraint violations as this name has the correct epithets for it rank",constraintViolations.isEmpty());
-	}
-	
-	@Test
-	public void testInValidInfraSpecificName() {
-		name.setGenusOrUninomial("Aus");
-		name.setRank(Rank.SUBGENUS()); // at the default level, this property can be null
-		name.setSpecificEpithet("aus");
-        Set<ConstraintViolation<BotanicalName>> constraintViolations  = validator.validate(name, Level2.class);
-        assertFalse("There should be a constraint violation as this name does not have a specific epithet",constraintViolations.isEmpty());
 	}
 }

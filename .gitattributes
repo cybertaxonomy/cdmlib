@@ -2270,6 +2270,9 @@ cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/integration/TestTaxonService
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/suite/CdmTestSuite.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/unit/CdmUnitTestBase.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/validation/CorrectEpithetsForRankTest.java -text
+cdmlib-services/src/test/java/eu/etaxonomy/cdm/validation/MustHaveAuthorityTest.java -text
+cdmlib-services/src/test/java/eu/etaxonomy/cdm/validation/NameValidCharactersTest.java -text
+cdmlib-services/src/test/java/eu/etaxonomy/cdm/validation/ReferenceValidationTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/validation/ValidationTest.java -text
 cdmlib-services/src/test/resources/dbscripts/001_cdm.ddl -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/CommonServiceImplTest.xml -text
