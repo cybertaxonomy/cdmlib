@@ -143,6 +143,7 @@ implements ITypeDesignation {
 		this.setTypeName(typeName);
 		this.rejectedType = rejectedType;
 		this.conservedType = conservedType;
+		this.setTypeStatus(status);
 //		this.lectoType = lectoType;
 	}
 		
