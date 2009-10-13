@@ -171,6 +171,7 @@ public class Feature extends DefinedTermBase<Feature> {
 	@OneToMany(fetch = FetchType.LAZY)
     @JoinTable(name="DefinedTermBase_SupportedCategoricalEnumeration")
 	private Set<TermVocabulary<State>> supportedCategoricalEnumerations = new HashSet<TermVocabulary<State>>();
+	
 	@XmlElement(name = "SupportsCommonTaxonName")
 	private boolean supportsCommonTaxonName;
 	
