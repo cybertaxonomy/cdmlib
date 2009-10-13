@@ -79,6 +79,11 @@ implements ITypeDesignation {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@Cascade(CascadeType.SAVE_UPDATE)
 	private TaxonNameBase typeName;
+
+	
+	public static NameTypeDesignation NewInstance() {
+		return new NameTypeDesignation();
+	}
 	
 	
 	// ************* CONSTRUCTORS *************/	
@@ -89,10 +94,7 @@ implements ITypeDesignation {
 	 */
 	protected NameTypeDesignation() {
 	}
-	
-	public static NameTypeDesignation NewInstance() {
-		return new NameTypeDesignation();
-	}
+
 
 	/**
 	 * Class constructor: creates a new name type designation instance
@@ -147,6 +149,7 @@ implements ITypeDesignation {
 		this.setTypeName(typeName);
 		this.rejectedType = rejectedType;
 		this.conservedType = conservedType;
+		this.setTypeStatus(status);
 //		this.lectoType = lectoType;
 	}
 		
