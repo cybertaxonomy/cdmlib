@@ -200,7 +200,12 @@ implements ITypeDesignation {
 
 	@Transient
 	public boolean isLectoType() {
-		return getTypeStatus().isLectotype();
+		NameTypeDesignationStatus status = getTypeStatus();
+		if (status == null){
+			return false;
+		}else{
+			return status.isLectotype();
+		}
 	}
 	
 	/** 
