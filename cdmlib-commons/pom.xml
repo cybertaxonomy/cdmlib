@@ -23,7 +23,7 @@
   <dependencies>
     <dependency>
       <groupId>org.springframework</groupId>
-      <artifactId>spring-test</artifactId>
+      <artifactId>org.springframework.test</artifactId>
     </dependency>
     <dependency>
       <groupId>jdom</groupId>
