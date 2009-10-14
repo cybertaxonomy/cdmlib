@@ -102,7 +102,7 @@ public class BerlinModelAuthorTeamImport extends BerlinModelImportBase {
 					Boolean preliminaryFlag = rsTeam.getBoolean("PreliminaryFlag");
 					String authorTeamCache = rsTeam.getString("AuthorTeamCache");
 					//String fullAuthorTeamCache = rsTeam.getString("FullAuthorTeamCache");
-					team.setTitleCache(authorTeamCache, preliminaryFlag);
+					team.setTitleCache(authorTeamCache);
 					team.setNomenclaturalTitle(authorTeamCache, preliminaryFlag);
 	
 					//TODO
@@ -110,6 +110,9 @@ public class BerlinModelAuthorTeamImport extends BerlinModelImportBase {
 					//title cache or nomenclaturalTitle?
 					
 					makeSequence(team, teamId, rsSequence, state.getStores());
+					if (team.getTeamMembers().size()> 0 && preliminaryFlag == false){
+						team.setProtectedTitleCache(false);
+					}
 					
 					//created, notes
 					doIdCreatedUpdatedNotes(state, team, rsTeam, teamId, namespace);
