@@ -102,7 +102,7 @@ public class BerlinModelAuthorTeamImport extends BerlinModelImportBase {
 					Boolean preliminaryFlag = rsTeam.getBoolean("PreliminaryFlag");
 					String authorTeamCache = rsTeam.getString("AuthorTeamCache");
 					//String fullAuthorTeamCache = rsTeam.getString("FullAuthorTeamCache");
-					team.setTitleCache(authorTeamCache, preliminaryFlag);
+					team.setTitleCache(authorTeamCache);
 					team.setNomenclaturalTitle(authorTeamCache, preliminaryFlag);
 	
 					//TODO
