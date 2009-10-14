@@ -110,6 +110,9 @@ public class BerlinModelAuthorTeamImport extends BerlinModelImportBase {
 					//title cache or nomenclaturalTitle?
 					
 					makeSequence(team, teamId, rsSequence, state.getStores());
+					if (team.getTeamMembers().size()> 0 && preliminaryFlag == false){
+						team.setProtectedTitleCache(false);
+					}
 					
 					//created, notes
 					doIdCreatedUpdatedNotes(state, team, rsTeam, teamId, namespace);
