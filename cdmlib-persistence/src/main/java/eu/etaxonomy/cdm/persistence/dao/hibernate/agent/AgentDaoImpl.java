@@ -234,7 +234,7 @@ public class AgentDaoImpl extends IdentifiableDaoBase<AgentBase> implements IAge
 		List<UuidAndTitleCache<TeamOrPersonBase>> list = new ArrayList<UuidAndTitleCache<TeamOrPersonBase>>();
 		Session session = getSession();
 		
-		Query query = session.createQuery("select uuid, nomenclaturalTitle from " + type.getSimpleName() + " where dtype = 'Person' or dtype = 'Team'");
+		Query query = session.createQuery("select uuid, nomenclaturalTitle from " + type.getSimpleName() + " where dtype = 'Person' or dtype = 'Team'");
 		
 		List<Object[]> result = query.list();
 		

@@ -13,6 +13,7 @@
 <!--        <property name="url" value="testUrl"/>-->
 <!--        <property name="username" value="testUser"/>-->
 <!--        <property name="password" value="testPassword"/>-->
+<!-- 		<property name="nomenclaturalCode" value="ICZN"/> -->
 <!--    </bean>-->
 
 </beans>

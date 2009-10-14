@@ -107,7 +107,7 @@ public class CdmDataSourceTest {
 	 */
 	@Test
 	public void testNewSqlServer2005InstanceStringStringStringString() {
-		ICdmDataSource ds = CdmDataSource.NewSqlServer2005Instance(server, database, username, pwd, null);
+		ICdmDataSource ds = CdmDataSource.NewSqlServer2005Instance(server, database, -1, username, pwd, null);
 		assertNotNull("NewSqlServer2005Instance(String, String, String, String) should not return null ", ds);
 		assertEquals(server, ds.getServer());
 		assertEquals(database, ds.getDatabase());

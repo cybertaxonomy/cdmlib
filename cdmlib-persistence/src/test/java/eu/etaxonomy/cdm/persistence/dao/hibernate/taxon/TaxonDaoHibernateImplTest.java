@@ -82,7 +82,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 	private UUID mimas;
 	private UUID rethera;
 	private UUID retheraSecCdmtest;
-	private UUID atroposAgassiz; 
+	private UUID atroposAgassiz;
 	private UUID atroposLeach;
 	private UUID acherontiaLachesis;
 	private AuditEvent previousAuditEvent;

@@ -80,7 +80,7 @@ public interface ICdmDataSource {
 	 * @return true if test was successful, false otherwise
 	 * @throws Exception 
 	 */
-	public boolean testConnection() throws Exception;
+	public boolean testConnection() throws DataSourceNotFoundException;
 	
 	public String getUsername();
 	

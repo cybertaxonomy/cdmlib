@@ -2235,6 +2235,7 @@ cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/lsid/LSIDMetadataServ
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/lsid/LSIDRegistryTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/pager/PagerTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/function/Datasource.java -text
+cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/function/TestAgentService.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/function/TestC3P0Configuration.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/function/TestConcurrentSession.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/function/TestConversationEnabled.java -text

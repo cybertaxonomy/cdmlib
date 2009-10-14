@@ -219,7 +219,7 @@ public class TestDatabase {
 			String username = "andreas";
 			String password = CdmUtils.readInputLine("Password: ");
 			DbSchemaValidation validation = DbSchemaValidation.VALIDATE;
-			ICdmDataSource datasource = CdmDataSource.NewSqlServer2005Instance(server, database, username, password, null);
+			ICdmDataSource datasource = CdmDataSource.NewSqlServer2005Instance(server, database, -1, username, password, null);
 			CdmApplicationController appCtr = CdmApplicationController.NewInstance(datasource, validation);
 			
 			Rank genus = Rank.GENUS();
