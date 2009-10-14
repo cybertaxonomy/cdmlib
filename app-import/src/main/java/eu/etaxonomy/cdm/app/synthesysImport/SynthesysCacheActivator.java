@@ -20,6 +20,7 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
+import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.app.common.CdmDestinations;
 import eu.etaxonomy.cdm.common.ExcelUtils;
 import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
@@ -224,7 +225,7 @@ public class SynthesysCacheActivator {
 
 				
 //				tx = app.startTransaction();
-				app.getNameService().saveTaxonName(taxonName);
+				app.getNameService().saveOrUpdate(taxonName);
 				taxon = Taxon.NewInstance(taxonName, sec); //TODO use real reference for sec
 //				app.commitTransaction(tx);
 
@@ -363,8 +364,8 @@ public class SynthesysCacheActivator {
 				collName = collectors.next();
 				/*check if the collector does already exist*/
 				try{
-					List<AgentBase> col = app.getAgentService().findAgentsByTitle(collName);
-					collector=col.get(0);
+					Pager<AgentBase> col = app.getAgentService().findByTitle(null, collName, null, null, null, null, null, null);
+					collector=col.getRecords().get(0);
 					System.out.println("a trouve l'agent");
 				}catch (Exception e) {
 					collector = Person.NewInstance();
@@ -395,8 +396,8 @@ public class SynthesysCacheActivator {
 			//	app.getOccurrenceService().saveSpecimenOrObservationBase(fieldObservation);
 			try {
 //				tx = app.startTransaction();
-				app.getTermService().saveTerm(area);//save it sooner
-				app.getOccurrenceService().saveSpecimenOrObservationBase(derivedThing);
+				app.getTermService().saveOrUpdate(area);//save it sooner
+				app.getOccurrenceService().saveOrUpdate(derivedThing);
 //				app.commitTransaction(tx);
 //				app.close();
 			} catch (Exception e) {

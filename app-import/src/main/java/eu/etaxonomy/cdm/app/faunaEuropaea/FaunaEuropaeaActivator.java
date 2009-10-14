@@ -148,14 +148,14 @@ public class FaunaEuropaeaActivator {
 			FeatureNode root = featureTree.getRoot();
 
 			CdmApplicationController app = fauEuImport.getCdmAppController();
-			Feature citationFeature = (Feature)app.getTermService().getTermByUuid(UUID.fromString("99b2842f-9aa7-42fa-bd5f-7285311e0101"));
+			Feature citationFeature = (Feature)app.getTermService().find(UUID.fromString("99b2842f-9aa7-42fa-bd5f-7285311e0101"));
 			FeatureNode citationNode = FeatureNode.NewInstance(citationFeature);
 			root.addChild(citationNode);
-			Feature distributionFeature = (Feature)app.getTermService().getTermByUuid(UUID.fromString("9fc9d10c-ba50-49ee-b174-ce83fc3f80c6"));
+			Feature distributionFeature = (Feature)app.getTermService().find(UUID.fromString("9fc9d10c-ba50-49ee-b174-ce83fc3f80c6"));
 			FeatureNode distributionNode = FeatureNode.NewInstance(distributionFeature);
 			root.addChild(distributionNode);
 
-			app.getDescriptionService().saveFeatureTree(featureTree);
+			app.getFeatureTreeService().saveOrUpdate(featureTree);
 		}
 		
 		System.out.println("End importing Fauna Europaea data");

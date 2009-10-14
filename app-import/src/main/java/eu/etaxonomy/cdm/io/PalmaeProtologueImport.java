@@ -92,7 +92,7 @@ public class PalmaeProtologueImport extends AbstractImageImporter {
 		}
 		
 		
-		getNameService().saveTaxonNameAll(taxonNameStore);
+		getNameService().save(taxonNameStore);
 		logger.info(count + " protologues imported to CDM store.");
 		
 		return true;

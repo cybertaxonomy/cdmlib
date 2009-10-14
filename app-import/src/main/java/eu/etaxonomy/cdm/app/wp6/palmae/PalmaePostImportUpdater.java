@@ -52,7 +52,7 @@ public class PalmaePostImportUpdater {
 			
 			TransactionStatus tx = cdmApp.startTransaction();
 			
-			FeatureTree tree = cdmApp.getDescriptionService().getFeatureTreeByUuid(featureTreeUuid);
+			FeatureTree tree = cdmApp.getFeatureTreeService().find(featureTreeUuid);
 			FeatureNode root = tree.getRoot();
 			
 			List<Feature> featureList = cdmApp.getDescriptionService().getFeaturesAll();
@@ -95,7 +95,7 @@ public class PalmaePostImportUpdater {
 
 			int page = 0;
 			int count = cdmApp.getTaxonService().count(Taxon.class);
-			List<Taxon> taxonList = cdmApp.getTaxonService().list(Taxon.class, 100000, page);
+			List<Taxon> taxonList = cdmApp.getTaxonService().list(Taxon.class, 100000, page, null, null);
 			for (Taxon taxon : taxonList){
 				
 				if (taxon.getTaxonNodes().size() <1){

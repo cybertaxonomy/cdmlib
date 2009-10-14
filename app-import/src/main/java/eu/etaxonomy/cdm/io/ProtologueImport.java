@@ -20,10 +20,8 @@ import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.api.service.ICommonService;
 import eu.etaxonomy.cdm.app.wp6.palmae.config.PalmaeProtologueImportConfigurator;
-import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.CdmIoBase;
 import eu.etaxonomy.cdm.io.common.DefaultImportState;
-import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
@@ -83,7 +81,7 @@ public class ProtologueImport extends CdmIoBase<DefaultImportState<PalmaeProtolo
 				success &= storeName(nameStore, name);
 			}
 		}
-		getNameService().saveAll(nameStore);
+		getNameService().save(nameStore);
 		commitTransaction(txStatus);
 		logger.info("end make Protologues from files ...");
 		return success;

@@ -196,7 +196,7 @@ public class CichorieaeImageImport extends AbstractImageImporter {
 						} else {
 							taxon = (Taxon) taxa.get(0);
 						}
-						taxonService.saveTaxon(taxon);
+						taxonService.saveOrUpdate(taxon);
 						
 						TextData textData = TextData.NewInstance();
 						logger.info("Importing image for taxon: " + taxa);

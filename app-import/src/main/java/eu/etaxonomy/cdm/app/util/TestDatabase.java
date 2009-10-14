@@ -97,8 +97,8 @@ public class TestDatabase {
 		TransactionStatus txStatus = appCtr.startTransaction();
 		DataSet dataSet = buildDataSet();
 		
-		appCtr.getTermService().saveAll(dataSet.getTerms());
-		appCtr.getTaxonService().saveTaxonAll(dataSet.getTaxonBases());
+		appCtr.getTermService().save(dataSet.getTerms());
+		appCtr.getTaxonService().save(dataSet.getTaxonBases());
 
 		appCtr.commitTransaction(txStatus);
 		appCtr.close();

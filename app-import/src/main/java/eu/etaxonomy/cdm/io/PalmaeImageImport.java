@@ -192,7 +192,7 @@ public class PalmaeImageImport extends AbstractImageImporter {
 					
 					
 					
-					ReferenceBase sec = referenceService.getReferenceByUuid(config.getSecUuid());
+					ReferenceBase sec = referenceService.find(config.getSecUuid());
 
 					List<TaxonBase> taxa = new ArrayList<TaxonBase>();
 					if (taxonName != null){
@@ -208,7 +208,7 @@ public class PalmaeImageImport extends AbstractImageImporter {
 					}else{
 						Taxon taxon = (Taxon) taxa.get(0);
 						
-						taxonService.saveTaxon(taxon);
+						taxonService.saveOrUpdate(taxon);
 						
 						TextData feature = TextData.NewInstance();
 						
@@ -284,7 +284,7 @@ public class PalmaeImageImport extends AbstractImageImporter {
 						
 						description.addElement(feature);
 						
-						taxonService.saveTaxon(taxon);
+						taxonService.saveOrUpdate(taxon);
 						
 					}
 				}

@@ -51,7 +51,7 @@ public class TaraxacumActivator {
 	//database validation status (create, update, validate ...)
 	static DbSchemaValidation hbm2dll = DbSchemaValidation.UPDATE;
 	static final Source berlinModelSource = BerlinModelSources.EDIT_Taraxacum();
-	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_bgbm24_cichorieae_b();
+	static final ICdmDataSource cdmDestination = CdmDestinations.localH2Cichorieae();
 
 	org.h2.jdbc.JdbcSQLException h;
 	static final UUID treeUuid = UUID.fromString("019c4b4d-736b-4d2e-883c-e3244167080a");
@@ -107,17 +107,17 @@ public class TaraxacumActivator {
 //	//authors
 //	static final boolean doAuthors = false;
 //	//references
-//	static final DO_REFERENCES doReferences =  DO_REFERENCES.CONCEPT_REFERENCES;
+//	static final DO_REFERENCES doReferences =  DO_REFERENCES.NONE;
 //	//names
-//	static final boolean doTaxonNames = true;
+//	static final boolean doTaxonNames = false;
 //	static final boolean doRelNames = false;
 //	static final boolean doNameStatus = false;
 //	static final boolean doTypes = false;
 //	static final boolean doNameFacts = false;
 //	
 //	//taxa 
-//	static final boolean doTaxa = true;
-//	static final boolean doRelTaxa = true;
+//	static final boolean doTaxa = false;
+//	static final boolean doRelTaxa = false;
 //	static final boolean doFacts = false;
 //	static final boolean doOccurences = false;
 	
@@ -183,7 +183,7 @@ public class TaraxacumActivator {
 			FeatureNode featureNode = tree.getRoot();
 //			tree.getRoot().addChild(distributionNode, 2);
 			tree.getRoot().addChild(distributionNode, featureNode.getChildCount() + 1);
-			app.getDescriptionService().saveFeatureTree(tree);
+			app.getFeatureTreeService().saveOrUpdate(tree);
 			mergeIntoCichorieae(app);
 			app.commitTransaction(tx);
 		}
@@ -196,7 +196,7 @@ public class TaraxacumActivator {
 		String taraxTaraxacum = "9a7bced0-fa1a-432e-9cca-57b62219cde6";
 		String cichTaraxacum = "c946ac62-b6c6-493b-8ed9-278fa38b931a";
 		UUID taraxacumCichUUID = UUID.fromString(cichTaraxacum);
-		Taxon taraxacumInCich = (Taxon)app.getTaxonService().findByUuid(taraxacumCichUUID);
+		Taxon taraxacumInCich = (Taxon)app.getTaxonService().find(taraxacumCichUUID);
 		if (taraxacumInCich != null) {
 			logger.info("Merge Taraxacum");
 			Set<TaxonNode> taxonNodesInCich = taraxacumInCich.getTaxonNodes();
@@ -214,7 +214,7 @@ public class TaraxacumActivator {
 			}
 			
 			UUID taraxacumTaraxUUID = UUID.fromString(taraxTaraxacum);
-			Taxon taraxacumInTarax = (Taxon)app.getTaxonService().findByUuid(taraxacumTaraxUUID);
+			Taxon taraxacumInTarax = (Taxon)app.getTaxonService().find(taraxacumTaraxUUID);
 			
 			Set<TaxonNode> taxonNodesInTarax = taraxacumInTarax.getTaxonNodes();
 			

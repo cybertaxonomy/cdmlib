@@ -52,7 +52,7 @@ public class CichorieaeActivator {
 	//database validation status (create, update, validate ...)
 	static DbSchemaValidation hbm2dll = DbSchemaValidation.CREATE;
 	static final Source berlinModelSource = BerlinModelSources.EDIT_CICHORIEAE();
-	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_bgbm24_cichorieae_b();
+	static final ICdmDataSource cdmDestination = CdmDestinations.localH2Cichorieae();
 
 	static final UUID secUuid = UUID.fromString("6924c75d-e0d0-4a6d-afb7-3dd8c71195ca");
 	static final UUID taxonomicTreeUuid = UUID.fromString("534e190f-3339-49ba-95d9-fa27d5493e3e");
@@ -206,7 +206,7 @@ public class CichorieaeActivator {
 			tree.getRoot().addChild(imageNode);
 			FeatureNode distributionNode = FeatureNode.NewInstance(Feature.DISTRIBUTION());
 			tree.getRoot().addChild(distributionNode, 2); 
-			app.getDescriptionService().saveFeatureTree(tree);
+			app.getFeatureTreeService().saveOrUpdate(tree);
 		}
 		
 		System.out.println("End import from BerlinModel ("+ source.getDatabase() + ")...");

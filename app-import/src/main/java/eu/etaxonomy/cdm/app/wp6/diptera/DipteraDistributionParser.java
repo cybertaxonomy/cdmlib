@@ -55,7 +55,7 @@ public class DipteraDistributionParser {
 	protected void doDistribution(CdmApplicationController app){
 		pattern = Pattern.compile(epiSplitter); 
 	    TransactionStatus txStatus = app.startTransaction();
-		List<TaxonBase> taxa = app.getTaxonService().getAllTaxonBases(1000000, 0);
+		List<TaxonBase> taxa = app.getTaxonService().list(null, null, null, null, null);
 		for (TaxonBase taxon: taxa ){
 			if (taxon instanceof Taxon){
 		//		unlazyDescription(app, (Taxon)taxon);

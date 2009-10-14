@@ -186,7 +186,7 @@ public class DipteraActivator {
 			// add distribution
 			FeatureNode distributionNode = FeatureNode.NewInstance(Feature.DISTRIBUTION());
 			tree.getRoot().addChild(distributionNode);
-			app.getDescriptionService().saveFeatureTree(tree);
+			app.getFeatureTreeService().saveOrUpdate(tree);
 		}
 		System.out.println("End import from BerlinModel ("+ source.getDatabase() + ")...");
 	}

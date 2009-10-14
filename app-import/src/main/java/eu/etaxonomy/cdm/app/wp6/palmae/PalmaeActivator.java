@@ -116,7 +116,7 @@ public class PalmaeActivator {
 		CdmApplicationController app = tcsImport.getCdmAppController();
 		
 		FeatureTree tree = getFeatureTree();
-		app.getDescriptionService().saveFeatureTree(tree);
+		app.getFeatureTreeService().saveOrUpdate(tree);
 		System.out.println("End import from TCS ("+ source.toString() + ")...");
 		
 		return success;

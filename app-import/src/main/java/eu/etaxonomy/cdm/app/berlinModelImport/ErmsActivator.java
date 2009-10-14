@@ -145,7 +145,7 @@ public class ErmsActivator {
 			//make feature tree
 			FeatureTree tree = TreeCreator.flatTree(featureTreeUuid, bmImportConfigurator.getFeatureMap(), featureKeyList);
 			app = bmImport.getCdmAppController();
-			app.getDescriptionService().saveFeatureTree(tree);
+			app.getFeatureTreeService().saveOrUpdate(tree);
 		}
 		System.out.println("End import from BerlinModel ("+ source.getDatabase() + ")...");
 	}

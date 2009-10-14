@@ -90,7 +90,7 @@ public class TcsXmlTestActivator {
 		Book book = Book.NewInstance();
 		//book.setDatePublished(TimePeriod.NewInstance(1945));
 		book.setDatePublished(TimePeriod.NewInstance(1945).setEndDay(12).setEndMonth(4));
-		refService.saveReference(book);
+		refService.saveOrUpdate(book);
 		tcsImport.getCdmAppController().close();
 		logger.info("End");
 		System.out.println("End import from TCS ("+ source.toString() + ")...");

@@ -72,10 +72,10 @@ public class TestTransaction {
 			
 	    	TransactionStatus txStatOne = appCtr.startTransaction();
 	    	
-	    	List<? extends AgentBase> agents = appCtr.getAgentService().getAllAgents(MAX_ENTRIES, 0);
+	    	List<? extends AgentBase> agents = appCtr.getAgentService().list(null, MAX_ENTRIES, 0, null, null);
 	    	//List<TeamOrPersonBase> agents = appCtr.getAgentService().getAllAgents(MAX_ENTRIES, 0);
 	    	TeamOrPersonBase author = (TeamOrPersonBase) agents.get(0);
-	    	List<ReferenceBase> references = appCtr.getReferenceService().getAllReferences(MAX_ENTRIES, 0);
+	    	List<ReferenceBase> references = appCtr.getReferenceService().list(null, MAX_ENTRIES, 0, null, null);
 	    	ReferenceBase sec = references.get(0);
 	    	List<Taxon> taxa = appCtr.getTaxonService().getAllTaxa(MAX_ENTRIES, 0);
 
@@ -85,7 +85,7 @@ public class TestTransaction {
 			taxon1 = taxa.get(0);
 			child1 = Taxon.NewInstance(name1, sec);
 			taxon1.addTaxonomicChild(child1, sec, "D#t1-c1");
-			appCtr.getTaxonService().saveTaxon(taxon1);
+			appCtr.getTaxonService().saveOrUpdate(taxon1);
 			
 
 			/* ************** Start Transaction #2 ******************************** */
@@ -103,7 +103,7 @@ public class TestTransaction {
 			
 	    	appCtr.commitTransaction(txStatOne);
 	    	
-			UUID t2uuid = appCtr.getTaxonService().saveTaxon(taxon2);
+			UUID t2uuid = appCtr.getTaxonService().saveOrUpdate(taxon2);
 	    	
 			/* ************** Commit Transaction #2 ******************************** */
 			
@@ -150,10 +150,10 @@ public class TestTransaction {
 			
 	    	TransactionStatus txStatOne = appCtr.startTransaction();
 	    	
-	    	List<? extends AgentBase> agents = appCtr.getAgentService().getAllAgents(MAX_ENTRIES, 0);
+	    	List<? extends AgentBase> agents = appCtr.getAgentService().list(null, MAX_ENTRIES, 0, null, null);
 	    	//List<TeamOrPersonBase> agents = appCtr.getAgentService().getAllAgents(MAX_ENTRIES, 0);
 	    	TeamOrPersonBase author = (TeamOrPersonBase) agents.get(0);
-	    	List<ReferenceBase> references = appCtr.getReferenceService().getAllReferences(MAX_ENTRIES, 0);
+	    	List<ReferenceBase> references = appCtr.getReferenceService().list(null, MAX_ENTRIES, 0, null, null);
 	    	ReferenceBase sec = references.get(0);
 	    	List<Taxon> taxa = appCtr.getTaxonService().getAllTaxa(MAX_ENTRIES, 0);
 
@@ -163,7 +163,7 @@ public class TestTransaction {
 	    	taxon1 = taxa.get(5);
 			child1 = Taxon.NewInstance(name1, sec);
 			taxon1.addTaxonomicChild(child1, sec, "S#t1-c1");
-			appCtr.getTaxonService().saveTaxon(taxon1);
+			appCtr.getTaxonService().saveOrUpdate(taxon1);
 			
 
 			/* ************** Start Transaction #2 ******************************** */
@@ -181,7 +181,7 @@ public class TestTransaction {
 			
 	    	appCtr.commitTransaction(txStatOne);
 	    	
-			UUID t2uuid = appCtr.getTaxonService().saveTaxon(taxon2);
+			UUID t2uuid = appCtr.getTaxonService().saveOrUpdate(taxon2);
 	    	
 			/* ************** Commit Transaction #2 ******************************** */
 			
@@ -251,17 +251,17 @@ public class TestTransaction {
 			
 	    	TransactionStatus txStatOne = appCtr.startTransaction();
 	    	
-	    	List<? extends AgentBase> agents = appCtr.getAgentService().getAllAgents(MAX_ENTRIES, 0);
+	    	List<? extends AgentBase> agents = appCtr.getAgentService().list(null, MAX_ENTRIES, 0, null, null);
 	    	//List<TeamOrPersonBase> agents = appCtr.getAgentService().getAllAgents(MAX_ENTRIES, 0);
 	    	//Agent author = agents.get(0);
 	    	TeamOrPersonBase author = (TeamOrPersonBase) agents.get(0);
-	    	List<ReferenceBase> references = appCtr.getReferenceService().getAllReferences(MAX_ENTRIES, 0);
+	    	List<ReferenceBase> references = appCtr.getReferenceService().list(null, MAX_ENTRIES, 0, null, null);
 	    	ReferenceBase sec = references.get(0);
 
 			name1 = 
 				BotanicalName.NewInstance(rankSpecies, "NewTaxon1", null, "taxon1", null, author, null, "1", null);
 	    	taxon1 = Taxon.NewInstance(name1, sec);
-			t1uuid = appCtr.getTaxonService().saveTaxon(taxon1);
+			t1uuid = appCtr.getTaxonService().saveOrUpdate(taxon1);
 			//t1uuid = appCtr.getTaxonService().saveTaxon(taxon1, txStatOne);
 
 			/* ************** Start Transaction #2 ******************************** */
@@ -273,7 +273,7 @@ public class TestTransaction {
 			
 			name1_ = 
 				BotanicalName.NewInstance(rankSpecies, "NewTaxon1_", null, "taxon1_", null, author, null, "1_", null);
-	    	taxon1_ = appCtr.getTaxonService().getTaxonByUuid(t1uuid);
+	    	taxon1_ = appCtr.getTaxonService().find(t1uuid);
 			
 			/* ************** Commit Transaction #1 ******************************** */
 			
