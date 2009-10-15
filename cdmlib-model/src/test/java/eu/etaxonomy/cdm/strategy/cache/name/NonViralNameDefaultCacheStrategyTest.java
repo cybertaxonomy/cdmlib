@@ -127,6 +127,11 @@ public class NonViralNameDefaultCacheStrategyTest {
 		botName.setSpecificEpithet("tenue");
 		botName.setInfraSpecificEpithet("tenue");
 		assertEquals("", "Lepidocaryum tenue var. tenue", botName.getNameCache());
+		BotanicalName specName = BotanicalName.NewInstance(Rank.SPECIES());
+		specName.setGenusOrUninomial("Genus");
+		specName.setSpecificEpithet("");
+		assertEquals("Empty species string must not result in trailing whitespace", "Genus", specName.getNameCache());
+		
 	}
 
 	/**

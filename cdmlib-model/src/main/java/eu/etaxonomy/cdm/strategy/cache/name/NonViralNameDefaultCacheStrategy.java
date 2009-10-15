@@ -422,7 +422,7 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 		protected String getGenusOrUninomialNameCache(NonViralName nonViralName){
 			String result;
 			result = CdmUtils.Nz(nonViralName.getGenusOrUninomial());
-			result = addAppendedPhrase(result, nonViralName);
+			result = addAppendedPhrase(result, nonViralName).trim();
 			return result;
 		}
 		
@@ -442,7 +442,7 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 			}
 			result = CdmUtils.Nz(nonViralName.getGenusOrUninomial());
 			result += " " + infraGenericMarker + " " + (CdmUtils.Nz(nonViralName.getInfraGenericEpithet())).trim().replace("null", "");
-			result = addAppendedPhrase(result, nonViralName);
+			result = addAppendedPhrase(result, nonViralName).trim();
 			return result;
 		}
 
@@ -458,7 +458,7 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 				marker = "'unknown aggregat type'";
 			}
 			result += " " + marker;
-			result = addAppendedPhrase(result, nonViralName);
+			result = addAppendedPhrase(result, nonViralName).trim();
 			return result;
 		}
 		
@@ -484,7 +484,7 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 				result += " " + (nonViralName.getRank().getAbbreviation()).trim().replace("null", "");
 			}
 			result += " " + (CdmUtils.Nz(nonViralName.getInfraSpecificEpithet())).trim().replace("null", "");
-			result = addAppendedPhrase(result, nonViralName);
+			result = addAppendedPhrase(result, nonViralName).trim();
 			return result;
 		}
 
