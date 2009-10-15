@@ -466,7 +466,8 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 			String result;
 			result = CdmUtils.Nz(nonViralName.getGenusOrUninomial());
 			result += " " + CdmUtils.Nz(nonViralName.getSpecificEpithet()).trim().replace("null", "");
-			result = addAppendedPhrase(result, nonViralName);
+			result = addAppendedPhrase(result, nonViralName).trim();
+			result = result.replace("\\s\\", " ");
 			return result;
 		}
 		
