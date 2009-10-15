@@ -155,6 +155,9 @@ public class TestDatabase {
 		TimePeriod period = TimePeriod.NewInstance(birth, death);
 		linne.setLifespan(period);
 
+//		Keyword keyword = Keyword.NewInstance("plantarum", "lat", "");
+//		linne.addKeyword(keyword);
+
 		Institution institute = Institution.NewInstance();
 
 		agents.add(linne);
@@ -177,6 +180,8 @@ public class TestDatabase {
 		rankSpecies = Rank.SPECIES();
 		rankSubspecies = Rank.SUBSPECIES();
 		rankGenus = Rank.GENUS();
+		
+//		terms.add(keyword);
 		
         // taxonomic names
 		

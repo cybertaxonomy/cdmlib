@@ -118,6 +118,7 @@ public class BookSection extends SectionBase<INomenclaturalReferenceCacheStrateg
 	 * @return  the book containing <i>this</i> book section
 	 * @see 	Book
 	 */
+	@Transient
 	public Book getInBook(){
 		if (inReference == null){
 			return null;

@@ -51,12 +51,11 @@ public class BerlinModelAuthorTeamExport extends BerlinModelExportBase<Team> {
 		boolean result = true;
 		logger.warn("Checking for "+pluralString+" not yet implemented");
 		//result &= checkArticlesWithoutJournal(bmiConfig);
-		//result &= checkPartOfJournal(bmiConfig);
 		
 		return result;
 	}
 	
-	private BerlinModelExportMapping getMapping(){
+	public BerlinModelExportMapping getMapping(){
 		String tableName = dbTableName;
 		BerlinModelExportMapping mapping = new BerlinModelExportMapping(tableName);
 		mapping.addMapper(IdMapper.NewInstance("AuthorTeamId"));

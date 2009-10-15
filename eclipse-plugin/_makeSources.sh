@@ -3,7 +3,7 @@
 rm ./cdmlib-commons-2.3src.zip ./cdmlib-commons-2.3.jar ./cdmlib-model-2.3src.zip \
  ./cdmlib-model-2.3.jar ./cdmlib-persistence-2.3src.zip ./cdmlib-persistence-2.3.jar \
  ./cdmlib-services-2.3src.zip ./cdmlib-services-2.3.jar \
- ./cdmlib-io-2.3src.zip ./cdmlib-io-2.3.jar ./cdmlib-ext-2.3src.zip ./cdmlib-ext-2.3.jar > /dev/null 2>&3 
+ ./cdmlib-io-2.3src.zip ./cdmlib-io-2.3.jar ./cdmlib-ext-2.3src.zip ./cdmlib-ext-2.3.jar > /dev/null 2>&1 
 
 
 LIBDIR=~/.m2/repository/eu/etaxonomy

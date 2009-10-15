@@ -9,7 +9,7 @@
 
 package eu.etaxonomy.cdm.database.types;
 
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import javax.sql.DataSource;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.database.LocalHsqldb;
@@ -69,7 +69,7 @@ public class HSqlDbDatabaseType extends DatabaseTypeBase {
 	}
 
 	@Override
-	public Class<? extends DriverManagerDataSource> getDriverManagerDataSourceClass() {
+	public Class<? extends DataSource> getDataSourceClass() {
 		return LocalHsqldb.class;
 	}
 

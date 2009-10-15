@@ -60,6 +60,8 @@ public class PresenceTerm extends PresenceAbsenceTermBase<PresenceTerm> {
 	private static PresenceTerm NATIVE_PRESENCE_QUESTIONABLE;
 	private static PresenceTerm NATIVE;
 	private static PresenceTerm PRESENT;
+	private static PresenceTerm NATURALISED;
+	private static PresenceTerm INVASIVE;
 
 	//********* METHODS **************************************/
 	/** 
@@ -128,6 +130,8 @@ public class PresenceTerm extends PresenceAbsenceTermBase<PresenceTerm> {
 	private static final UUID uuidIF=UUID.fromString("826239f7-45b7-42b5-857c-c1f852cfad6b");
 	private static final UUID uuidIC=UUID.fromString("fac8c347-8262-44a1-b0a4-db4de451c021");
 	private static final UUID uuidE=UUID.fromString("c3ee7048-15b7-4be1-b687-9ce9c1a669d6");
+	private static final UUID uuidNA=UUID.fromString("4e04990a-66fe-4fdf-856c-f40772fbcf0a");
+	private static final UUID uuidIV=UUID.fromString("dc536e3d-a753-4bbe-a386-dd8aff35c234");
 
 	
 	//TODO Marc: Kannst du die noch ein bischen sch�ner formatieren, wenn du sie dokumentierst? Danke
@@ -149,6 +153,8 @@ public class PresenceTerm extends PresenceAbsenceTermBase<PresenceTerm> {
 	public static final PresenceTerm INTRODUCED_NATURALIZED(){return INTRODUCED_NATURALIZED; }
 	public static final PresenceTerm INTRODUCED_REPORTED_IN_ERROR(){return INTRODUCED_REPORTED_IN_ERROR; } 
 	public static final PresenceTerm ENDEMIC_FOR_THE_RELEVANT_AREA(){return ENDEMIC_FOR_THE_RELEVANT_AREA; } 
+	public static final PresenceTerm INVASIVE(){return INVASIVE; }
+	public static final PresenceTerm NATURALISED(){return NATURALISED; } 
 
 	public static PresenceTerm getPresenceTermByAbbreviation(String abbrev) { 
 
@@ -171,6 +177,8 @@ public class PresenceTerm extends PresenceAbsenceTermBase<PresenceTerm> {
 		} else if (abbrev.equalsIgnoreCase("nf")) { return PresenceTerm.NATIVE_REPORTED_IN_ERROR();
 		} else if (abbrev.equalsIgnoreCase("nq")) { return PresenceTerm.NATIVE_PRESENCE_QUESTIONABLE();
 		} else if (abbrev.equalsIgnoreCase("p"))  { return PresenceTerm.PRESENT();
+		} else if (abbrev.equalsIgnoreCase("na"))  { return PresenceTerm.NATURALISED();
+		} else if (abbrev.equalsIgnoreCase("iv"))  { return PresenceTerm.INVASIVE();
 		} else {
 			logger.warn("Unknown presence status term: " + abbrev);
 			return null;
@@ -196,6 +204,8 @@ public class PresenceTerm extends PresenceAbsenceTermBase<PresenceTerm> {
 		PresenceTerm.NATIVE_FORMERLY_NATIVE = termVocabulary.findTermByUuid(PresenceTerm.uuidNE);
 		PresenceTerm.NATIVE_PRESENCE_QUESTIONABLE = termVocabulary.findTermByUuid(PresenceTerm.uuidNQ);
 		PresenceTerm.NATIVE_REPORTED_IN_ERROR = termVocabulary.findTermByUuid(PresenceTerm.uuidNF);
-		PresenceTerm.PRESENT = termVocabulary.findTermByUuid(PresenceTerm.uuidP);		
+		PresenceTerm.PRESENT = termVocabulary.findTermByUuid(PresenceTerm.uuidP);
+		PresenceTerm.INVASIVE = termVocabulary.findTermByUuid(PresenceTerm.uuidIV);
+		PresenceTerm.NATURALISED = termVocabulary.findTermByUuid(PresenceTerm.uuidNA);
 	}
 }

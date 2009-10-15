@@ -159,6 +159,9 @@ implements ITypeDesignation {
 	 */
 	@Transient
 	public boolean isLectoType() {
+		if(getTypeStatus() == null){
+			return false;
+		}
 		return getTypeStatus().isLectotype();
 	}
 	

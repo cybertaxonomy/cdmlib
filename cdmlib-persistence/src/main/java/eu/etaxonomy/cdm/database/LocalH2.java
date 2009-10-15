@@ -17,10 +17,10 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
 
+import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.log4j.Logger;
 import org.h2.tools.Server;
 import org.springframework.jdbc.CannotGetJdbcConnectionException;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationUtils;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
@@ -33,7 +33,7 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
  *
  */
 
-public class LocalH2 extends DriverManagerDataSource {
+public class LocalH2 extends BasicDataSource {
 	private static final Logger logger = Logger.getLogger(LocalH2.class);
 	
 	private String sep = System.getProperty("file.separator");
@@ -69,7 +69,8 @@ public class LocalH2 extends DriverManagerDataSource {
 	 * @throws CannotGetJdbcConnectionException
 	 */
 	public LocalH2(String url) throws CannotGetJdbcConnectionException {
-		super(url);
+		super();
+		this.setUrl(url);
 		setDriverClassName(DEFAULT_DRIVER_CLASS_NAME);
 	}
 
@@ -81,7 +82,10 @@ public class LocalH2 extends DriverManagerDataSource {
 	 */
 	public LocalH2(String url, String username, String password)
 			throws CannotGetJdbcConnectionException {
-		super(url, username, password);
+		super();
+		this.setUrl(url);
+		this.setUsername(username);
+		this.setPassword(password);
 		this.setDriverClassName(DEFAULT_DRIVER_CLASS_NAME);
 	}
 
@@ -94,7 +98,11 @@ public class LocalH2 extends DriverManagerDataSource {
 	 */
 	public LocalH2(String driverClassName, String url, String username,
 			String password) throws CannotGetJdbcConnectionException {
-		super(driverClassName, url, username, password);
+		super();
+		this.setUrl(url);
+		this.setUsername(username);
+		this.setPassword(password);
+		this.setDriverClassName(driverClassName);
 	}
 
 //** ********************************************************************************/

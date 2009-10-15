@@ -10,6 +10,8 @@
 
 package eu.etaxonomy.cdm.model.reference;
 
+import javax.persistence.Transient;
+
 import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlEnumValue;
 
@@ -63,6 +65,7 @@ public enum ReferenceType {
 		readableString = defaultString;
 	}
 	
+	@Transient
 	public String getMessage(){
 		return getMessage(Language.DEFAULT());
 	}

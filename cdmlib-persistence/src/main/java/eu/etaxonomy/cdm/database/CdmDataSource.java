@@ -51,8 +51,6 @@ public class CdmDataSource extends CdmDataSourceBase {
 	private boolean formatSql = false;
 	private boolean registerSearchListener = false;
 	private Class<? extends CacheProvider> cacheProviderClass = NoCacheProvider.class;
-
-	static NomenclaturalCode code = null;
 	
 	public static CdmDataSource NewInstance(DatabaseTypeEnum dbType, String server, String database, String username, String password){
 		return new CdmDataSource(dbType, server, database, -1, username, password, null, null, null);
@@ -83,12 +81,16 @@ public class CdmDataSource extends CdmDataSourceBase {
 		return new CdmDataSource(DatabaseTypeEnum.MySQL, server, database, port, username, password, null, null, code);
 	}
 
-	static public CdmDataSource  NewSqlServer2005Instance(String server, String database, String username, String password, NomenclaturalCode code){
-		return new CdmDataSource(DatabaseTypeEnum.SqlServer2005, server, database, -1, username, password, null, null, code);
+	static public CdmDataSource  NewPostgreSQLInstance(String server, String database, int port, String username, String password, NomenclaturalCode code){
+		return new CdmDataSource(DatabaseTypeEnum.PostgreSQL, server, database, port, username, password, null, null, code);
+	}
+
+	static public CdmDataSource  NewSqlServer2005Instance(String server, String database, int port, String username, String password, NomenclaturalCode code){
+		return new CdmDataSource(DatabaseTypeEnum.SqlServer2005, server, database, port, username, password, null, null, code);
 	}
 	
 	static public CdmDataSource  NewSqlServer2005Instance(String server, String database, int port, String username, String password /*, NomenclaturalCode code*/){
-		return new CdmDataSource(DatabaseTypeEnum.SqlServer2005, server, database, port, username, password, null, null, code);
+		return new CdmDataSource(DatabaseTypeEnum.SqlServer2005, server, database, port, username, password, null, null, null);
 	}
 
 	
@@ -160,7 +162,7 @@ public class CdmDataSource extends CdmDataSourceBase {
 	 */
 	@SuppressWarnings("unchecked")
 	public BeanDefinition getDatasourceBean(){
-		AbstractBeanDefinition bd = new RootBeanDefinition(dbType.getDriverManagerDataSourceClass());
+		AbstractBeanDefinition bd = new RootBeanDefinition(dbType.getDataSourceClass());
 		//attributes
 		bd.setLazyInit(isLazy);
 		if (! CdmUtils.Nz(initMethodName).trim().equals("") ){

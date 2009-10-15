@@ -9,11 +9,12 @@
 
 package eu.etaxonomy.cdm.database.types;
 
+import javax.sql.DataSource;
+
 import org.apache.log4j.Logger;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
-import eu.etaxonomy.cdm.database.NomenclaturalCodeAwareDriverManagerDataSource;
+import eu.etaxonomy.cdm.database.NomenclaturalCodeAwareDataSource;
 
 
 /**
@@ -96,10 +97,10 @@ abstract class DatabaseTypeBase implements IDatabaseType {
 	abstract protected String getConnectionString(ICdmDataSource cdmDataSource, int port);
 
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.database.types.IDatabaseType#getDriverManagerDataSourceClass()
+	 * @see eu.etaxonomy.cdm.database.types.IDatabaseType#getDataSourceClass()
 	 */
-	public Class<? extends DriverManagerDataSource> getDriverManagerDataSourceClass() {
-		return NomenclaturalCodeAwareDriverManagerDataSource.class;
+	public Class<? extends DataSource> getDataSourceClass() {
+		return NomenclaturalCodeAwareDataSource.class;
 	} 
 	
 	/* (non-Javadoc)

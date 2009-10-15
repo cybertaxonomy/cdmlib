@@ -1603,7 +1603,6 @@ cdmlib-model/src/main/resources/terms/ExtensionType.csv -text
 cdmlib-model/src/main/resources/terms/Feature.csv -text
 cdmlib-model/src/main/resources/terms/HybridRelationshipType.csv -text
 cdmlib-model/src/main/resources/terms/InstitutionType.csv -text
-cdmlib-model/src/main/resources/terms/Keyword.csv -text
 cdmlib-model/src/main/resources/terms/Language.csv -text
 cdmlib-model/src/main/resources/terms/MarkerType.csv -text
 cdmlib-model/src/main/resources/terms/MeasurementUnit.csv -text
@@ -1733,7 +1732,7 @@ cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/ICdmDataSource.java -
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/LocalH2.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/LocalHsqldb.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/NamedContextHolder.java -text
-cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/NomenclaturalCodeAwareDriverManagerDataSource.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/NomenclaturalCodeAwareDataSource.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/PersistentTermInitializer.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/UpdatableRoutingDataSource.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/types/DatabaseTypeBase.java -text
@@ -2255,6 +2254,7 @@ cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/lsid/LSIDMetadataServ
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/lsid/LSIDRegistryTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/pager/PagerTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/function/Datasource.java -text
+cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/function/TestAgentService.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/function/TestC3P0Configuration.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/function/TestConcurrentSession.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/function/TestConversationEnabled.java -text

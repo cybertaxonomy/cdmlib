@@ -19,7 +19,7 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 public interface ICdmDataSource {
 
 	/**
-	 * Returns a BeanDefinition object of type  DriverManagerDataSource that contains
+	 * Returns a BeanDefinition object of type  DataSource that contains
 	 * datsource properties (url, username, password, ...)
 	 * @return BeanDefinition
 	 */
@@ -80,7 +80,7 @@ public interface ICdmDataSource {
 	 * @return true if test was successful, false otherwise
 	 * @throws Exception 
 	 */
-	public boolean testConnection() throws Exception;
+	public boolean testConnection() throws DataSourceNotFoundException;
 	
 	public String getUsername();
 	

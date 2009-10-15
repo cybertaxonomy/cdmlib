@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.model.reference;
 
 
 import javax.persistence.Entity;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -98,6 +99,7 @@ public class InProceedings extends SectionBase<IReferenceBaseCacheStrategy<InPro
 	 * 			published
 	 * @see 	Proceedings
 	 */
+	@Transient
 	public Proceedings getInProceedings(){
 		if (inReference == null){
 			return null;

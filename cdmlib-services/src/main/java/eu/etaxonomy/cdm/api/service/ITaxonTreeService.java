@@ -100,6 +100,10 @@ public interface ITaxonTreeService extends IIdentifiableEntityService<TaxonomicT
 	public List<TaxonNode> loadTreeBranch(TaxonNode taxonNode, Rank baseRank, List<String> propertyPaths);
 	
 	/**
+	 * Although this method seems to be a redundant alternative to {@link #loadChildNodesOfTaxonNode(TaxonNode, List)} it is an important 
+	 * alternative from which web services benefit. Without this method the web service controller method, which operates outside of the 
+	 * transaction, would have to initialize the full taxon tree with all nodes of the taxon. 
+	 * This would be rather slow compared to using this method. 
 	 * @param taxon
 	 * @param taxonomicTree
 	 *            the taxonomic tree to be used
@@ -113,20 +117,20 @@ public interface ITaxonTreeService extends IIdentifiableEntityService<TaxonomicT
 	 *            instances.
 	 * @return the path of nodes from the <b>base node</b> to the node of the specified
 	 *         taxon.
-	 * @deprecated use loadTreeBranch(TaxonNode taxonNode, ...) instead
-	 * if you have a taxonomicTree and a taxon that is in it, you should also have the according taxonNode
 	 */
 	public List<TaxonNode> loadTreeBranchToTaxon(Taxon taxon, TaxonomicTree taxonomicTree, Rank baseRank, List<String> propertyPaths);
 		
 	
 	
 	/**
+	 * Although this method seems to be a redundant alternative to {@link #loadChildNodesOfTaxonNode(TaxonNode, List)} it is an important 
+	 * alternative from which web services benefit. Without this method the web service controller method, which operates outside of the 
+	 * transaction, would have to initialize the full taxon tree with all nodes of the taxon. 
+	 * This would be rather slow compared to using this method. 
 	 * @param taxon
 	 * @param taxonomicTree
 	 * @param propertyPaths
 	 * @return
-	 * @deprecated use loadChildNodesOfTaxonNode(TaxonNode taxonNode, List<String> propertyPaths) instead
-	 * if you have a taxonomicTree and a taxon that is in it, you should also have the according taxonNode
 	 */
 	public List<TaxonNode> loadChildNodesOfTaxon(Taxon taxon, TaxonomicTree taxonomicTree, List<String> propertyPaths);
 	
@@ -144,7 +148,7 @@ public interface ITaxonTreeService extends IIdentifiableEntityService<TaxonomicT
 	 * @param taxonomicTree
 	 * @return
 	 */
-	public List<UuidAndTitleCache> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByTaxonomicTree(TaxonomicTree taxonomicTree);
+	public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByTaxonomicTree(TaxonomicTree taxonomicTree);
 	
 	/**
 	 * @param taxon

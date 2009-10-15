@@ -378,7 +378,7 @@
     <xs:complexContent>
       <xs:extension base="common:AnnotatableEntity">
         <xs:sequence>
-          <xs:element name="Feature" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+          <xs:element name="Feature" type= "xs:IDREF" minOccurs="0"/>
           <xs:element name="Modifiers" minOccurs="0">
             <xs:complexType>
               <xs:sequence>
@@ -398,7 +398,7 @@
           <xs:element name="Sources" minOccurs="0">
             <xs:complexType>
               <xs:sequence>
-                <xs:element name="OriginalSource" type="common:DescriptionElementSource" minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element name="DescriptionElementSource" type="common:DescriptionElementSource" minOccurs="0" maxOccurs="unbounded"/>
               </xs:sequence>
             </xs:complexType>
           </xs:element>
@@ -508,7 +508,7 @@
 
   <xs:complexType name="TextData">
     <xs:complexContent>
-      <xs:extension base="common:ReferencedEntityBase">
+      <xs:extension base="description:DescriptionElementBase">
         <xs:sequence>
           <xs:element name="MultiLanguageText" type="common:MultilanguageText" minOccurs="0"/>
           <xs:element name="Format" type="xs:IDREF" minOccurs="0"/>
@@ -521,7 +521,7 @@
     <xs:complexContent>
       <xs:extension base="common:VersionableEntity">
         <xs:sequence>
-          <xs:element ref="description:Feature" minOccurs="0"/>
+          <xs:element name="Feature" type="xs:IDREF" minOccurs="0"/>
           <xs:element name="Parent" type="xs:IDREF" minOccurs="0"/>
           <xs:element name="Children" minOccurs="0">
             <xs:complexType>

@@ -12,8 +12,9 @@ package eu.etaxonomy.cdm.database;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.sql.DataSource;
+
 import org.apache.log4j.Logger;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 import eu.etaxonomy.cdm.database.types.H2DatabaseType;
 import eu.etaxonomy.cdm.database.types.HSqlDbDatabaseType;
@@ -23,7 +24,6 @@ import eu.etaxonomy.cdm.database.types.OdbcDatabaseType;
 import eu.etaxonomy.cdm.database.types.OracleDatabaseType;
 import eu.etaxonomy.cdm.database.types.PostgreSQLDatabaseType;
 import eu.etaxonomy.cdm.database.types.SqlServer2005DatabaseType;
-import eu.etaxonomy.cdm.database.types.SqlServer2000DatabaseType;
 import eu.etaxonomy.cdm.database.types.SybaseDatabaseType;
 
 /**
@@ -96,11 +96,11 @@ public enum DatabaseTypeEnum {
 	}
     
 	/**
-	 * Returns the DriverManagerDataSource class that that the datasource needs to create a spring bean
-	 * @return the DriverManagerDataSource class
+	 * Returns the DataSource class that that the datasource needs to create a spring bean
+	 * @return the DataSource class
 	 */
-	public Class<? extends DriverManagerDataSource> getDriverManagerDataSourceClass(){
-		return dbType.getDriverManagerDataSourceClass();
+	public Class<? extends DataSource> getDataSourceClass(){
+		return dbType.getDataSourceClass();
 	}
 	
 	/**

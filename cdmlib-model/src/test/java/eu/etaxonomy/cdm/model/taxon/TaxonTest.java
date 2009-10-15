@@ -9,7 +9,10 @@
  
 package eu.etaxonomy.cdm.model.taxon;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Set;
 
@@ -17,6 +20,7 @@ import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.agent.Person;
@@ -300,7 +304,10 @@ public class TaxonTest extends EntityTestBase {
 	 */
 	@Test
 	public void testGetTaxonRelations() {
-		logger.warn("Not yet implemented");
+		Taxon taxon = Taxon.NewInstance(null, null);
+		taxon.addTaxonRelation(Taxon.NewInstance(null, null), TaxonRelationshipType.CONTRADICTION(), null, null);
+		Set<TaxonRelationship> relationships = taxon.getTaxonRelations();
+		assertTrue("There should be exactly one relationship", relationships.size() == 1);
 	}
 
 	/**
@@ -308,15 +315,32 @@ public class TaxonTest extends EntityTestBase {
 	 */
 	@Test
 	public void testRemoveTaxonRelation() {
-		logger.warn("Not yet implemented");
+		Taxon taxon = Taxon.NewInstance(null, null);
+		taxon.addTaxonRelation(Taxon.NewInstance(null, null), TaxonRelationshipType.CONTRADICTION(), null, null);
+		assertTrue("There should be exactly one taxon relationship", taxon.getTaxonRelations().size() == 1);
+		TaxonRelationship relationship = (TaxonRelationship) taxon.getTaxonRelations().toArray()[0];
+		assertNotNull("Relationship should not be null", relationship);
+		taxon.removeTaxonRelation(relationship);
+		assertTrue("There should be no taxon relationships", taxon.getTaxonRelations().size() == 0);
 	}
 
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.model.taxon.Taxon#addTaxonRelation(eu.etaxonomy.cdm.model.taxon.TaxonRelationship)}.
+	 * 
+	 * FIXME addTaxonRelation(TaxonRelationship) is not working at the moment
 	 */
+	@Ignore
 	@Test
 	public void testAddTaxonRelationTaxonRelationship() {
-		logger.warn("Not yet implemented");
+		Taxon taxon = Taxon.NewInstance(null, null);
+		taxon.addTaxonRelation(Taxon.NewInstance(null, null), TaxonRelationshipType.CONTRADICTION(), null, null);
+		assertTrue("There should be exactly one taxon relationship", taxon.getTaxonRelations().size() == 1);
+		TaxonRelationship relationship = (TaxonRelationship) taxon.getTaxonRelations().toArray()[0];
+		assertNotNull("Relationship should not be null", relationship);
+		taxon.removeTaxonRelation(relationship);
+		assertTrue("There should be no taxon relationships", taxon.getTaxonRelations().size() == 0);
+		taxon.addTaxonRelation(relationship);
+		assertTrue("There should be exactly one taxon relationships", taxon.getTaxonRelations().size() == 1);
 	}
 
 	/**

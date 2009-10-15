@@ -249,7 +249,6 @@ public class TaxonomicTreeController extends AbstractListController<TaxonomicTre
 		Rank rank = readRankByUuid(uriParams.get(0));
 		UUID taxonUuid = stringToUuid(uriParams.get(uriParams.size() - 2));
 		Taxon taxon = (Taxon) taxonService.load(taxonUuid);
-
 		return service.loadTreeBranchToTaxon(taxon, tree, rank, NODE_INIT_STRATEGY);
 	}
 	

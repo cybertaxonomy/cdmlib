@@ -276,7 +276,7 @@
         <xs:sequence>
           <xs:element name="IsRejectedType" type="xs:boolean"/>
           <xs:element name="IsConservedType" type="xs:boolean"/>
-          <xs:element name="IsLectoType" type="xs:boolean"/>
+          <!--<xs:element name="IsLectoType" type="xs:boolean"/>-->
           <xs:element name="TypeName" type="xs:IDREF" minOccurs="0"/>
         </xs:sequence>
       </xs:extension>

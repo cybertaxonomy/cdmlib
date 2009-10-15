@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.model.reference;
 
 
 import javax.persistence.Entity;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -80,6 +81,7 @@ public abstract class PrintedUnitBase<S extends IReferenceBaseCacheStrategy> ext
 	 * @return  printed series
 	 * @see 	PrintSeries
 	 */
+	@Transient
 	public PrintSeries getInSeries(){
 		if (inReference == null){
 			return null;

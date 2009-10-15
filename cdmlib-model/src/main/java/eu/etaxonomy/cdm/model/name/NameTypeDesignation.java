@@ -26,7 +26,6 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 
-import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
 /**
@@ -143,14 +142,19 @@ implements ITypeDesignation {
 	 * @see							TypeDesignationBase#isNotDesignated()
 	 * @see							TaxonNameBase#addNameTypeDesignation(TaxonNameBase, ReferenceBase, String, String, boolean, boolean, boolean, boolean, boolean)
 	 */
-	protected NameTypeDesignation(TaxonNameBase typeName, ReferenceBase citation, String citationMicroReference,
-			String originalNameString, NameTypeDesignationStatus status, boolean rejectedType, boolean conservedType, /*boolean lectoType,*/ boolean isNotDesignated) {
-		super(citation, citationMicroReference, originalNameString, isNotDesignated);
-		this.setTypeName(typeName);
+	protected NameTypeDesignation(	TaxonNameBase typeName, 
+									ReferenceBase citation, 
+									String citationMicroReference,
+									String originalNameString, 
+									NameTypeDesignationStatus status, 
+									boolean rejectedType, 
+									boolean conservedType, 
+									boolean isNotDesignated
+								) {
+		this(typeName, status, citation, citationMicroReference, originalNameString);
+		this.setNotDesignated(isNotDesignated);
 		this.rejectedType = rejectedType;
 		this.conservedType = conservedType;
-		this.setTypeStatus(status);
-//		this.lectoType = lectoType;
 	}
 		
 	//********* METHODS **************************************/
@@ -207,12 +211,10 @@ implements ITypeDesignation {
 
 	@Transient
 	public boolean isLectoType() {
-		NameTypeDesignationStatus status = getTypeStatus();
-		if (status == null){
+		if (getTypeStatus() == null) {
 			return false;
-		}else{
-			return status.isLectotype();
 		}
+		return getTypeStatus().isLectotype();
 	}
 	
 	/** 

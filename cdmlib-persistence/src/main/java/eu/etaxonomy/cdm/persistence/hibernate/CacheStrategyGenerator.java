@@ -75,7 +75,7 @@ public class CacheStrategyGenerator implements SaveOrUpdateEventListener {
             	if (! teamOrPerson.isProtectedTitleCache()){
                 	teamOrPerson.setTitleCache(titleCache, false);
             	}
-            	
+ 
             //title cache
             }else if(IdentifiableEntity.class.isAssignableFrom(entityClazz)) {
         		IdentifiableEntity identifiableEntity = (IdentifiableEntity)entity;

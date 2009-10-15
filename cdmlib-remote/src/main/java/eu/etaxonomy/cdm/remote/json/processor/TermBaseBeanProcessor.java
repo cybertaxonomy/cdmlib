@@ -39,7 +39,8 @@ public class TermBaseBeanProcessor extends AbstractCdmBeanProcessor<TermBase> {
 			"representations",
 			"inversRepresentations",
 			"terms",
-			"partOf" // exclude partOf to avoid  lazy loading exceptions
+			"infraGenericMarker", //FIXME leads to IllegalStateException if not excluded
+			"partOf" // exclude partOf to avoid  lazy loading exceptions,
 			});
 
 	private boolean replaceRepresentations = false;

@@ -129,4 +129,5 @@ eclipse-updateSite/src
 musiclib-hibernatetest/.classpath
 musiclib-hibernatetest/.project
 musiclib-hibernatetest/.settings
+/target
 /testANTLR
