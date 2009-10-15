@@ -68,8 +68,8 @@ import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 @Audited
 @Indexed
 public class GatheringEvent extends EventBase implements Cloneable{
-	
-	static Logger logger = Logger.getLogger(GatheringEvent.class);
+	private static final long serialVersionUID = 7980806082366532180L;
+	private static final Logger logger = Logger.getLogger(GatheringEvent.class);
 
 	@XmlElement(name = "Locality")
 	@OneToOne(fetch = FetchType.LAZY)
