@@ -148,7 +148,7 @@ public interface ITaxonTreeService extends IIdentifiableEntityService<TaxonomicT
 	 * @param taxonomicTree
 	 * @return
 	 */
-	public List<UuidAndTitleCache> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByTaxonomicTree(TaxonomicTree taxonomicTree);
+	public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByTaxonomicTree(TaxonomicTree taxonomicTree);
 	
 	/**
 	 * @param taxon

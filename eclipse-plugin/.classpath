@@ -4,8 +4,8 @@
 	<classpathentry exported="true" kind="lib" path="cdmlib-ext-2.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="cdmlib-io-2.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="cdmlib-model-2.2.jar"/>
-	<classpathentry exported="true" kind="lib" path="cdmlib-persistence-2.2.jar"/>
-	<classpathentry exported="true" kind="lib" path="cdmlib-services-2.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="cdmlib-persistence-2.2.jar" sourcepath="cdmlib-persistence-2.2src.zip"/>
+	<classpathentry exported="true" kind="lib" path="cdmlib-services-2.2.jar" sourcepath="cdmlib-services-2.2src.zip"/>
 	<classpathentry exported="true" kind="lib" path="commons-beanutils-1.7.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="yjp-controller-api-redist-8.0.1.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
