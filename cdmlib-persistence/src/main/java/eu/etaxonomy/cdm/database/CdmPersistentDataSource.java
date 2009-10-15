@@ -25,8 +25,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 
-import javax.swing.text.DefaultEditorKit.InsertContentAction;
+import javax.sql.DataSource;
 
+import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.log4j.Logger;
 import org.hibernate.cache.CacheProvider;
 import org.hibernate.cache.NoCacheProvider;
@@ -39,7 +40,6 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.PropertiesFactoryBean;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.RootBeanDefinition;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationUtils;
 import eu.etaxonomy.cdm.common.CdmUtils;
@@ -339,7 +339,7 @@ public class CdmPersistentDataSource extends CdmDataSourceBase{
 	}
 	
 	/**
-	 * Returns a BeanDefinition object of type  DriverManagerDataSource that contains
+	 * Returns a BeanDefinition object of type DataSource that contains
 	 * datsource properties (url, username, password, ...)
 	 * @return
 	 */
@@ -347,7 +347,7 @@ public class CdmPersistentDataSource extends CdmDataSourceBase{
 	public BeanDefinition getDatasourceBean(){
 		DatabaseTypeEnum dbtype = DatabaseTypeEnum.getDatabaseEnumByDriverClass(getDatasourceProperty(DbProperties.DRIVER_CLASS));
 		
-		AbstractBeanDefinition bd = new RootBeanDefinition(dbtype.getDriverManagerDataSourceClass());
+		AbstractBeanDefinition bd = new RootBeanDefinition(dbtype.getDataSourceClass());
 		//attributes
 		Iterator<Attribute> iterator = getDatasourceAttributes().iterator();
 		while(iterator.hasNext()){
@@ -452,7 +452,7 @@ public class CdmPersistentDataSource extends CdmDataSourceBase{
 	 * @param port
 	 * @param username
 	 * @param password
-	 * @param driverManagerDataSource
+	 * @param dataSourceClass
 	 * @param initMethod
 	 * @param destroyMethod
 	 * @param startSilent
@@ -468,7 +468,7 @@ public class CdmPersistentDataSource extends CdmDataSourceBase{
 			String port, 
 			String username, 
 			String password, 
-			Class<? extends DriverManagerDataSource> driverManagerDataSource,
+			Class<? extends DataSource> dataSourceClass,
 			String initMethod,
 			String destroyMethod,
 			Boolean startSilent,
@@ -492,7 +492,7 @@ public class CdmPersistentDataSource extends CdmDataSourceBase{
 		if (bean != null){
 			bean.detach();  //delete old version if necessary
 		}
-		bean = insertXmlBean(root, getBeanName(strDataSourceName), driverManagerDataSource.getName());
+		bean = insertXmlBean(root, getBeanName(strDataSourceName), dataSourceClass.getName());
 		//attributes
 		bean.setAttribute("lazy-init", "true");
 		if (initMethod != null) {bean.setAttribute("init-method", initMethod);}
@@ -549,7 +549,7 @@ public class CdmPersistentDataSource extends CdmDataSourceBase{
 		}
 		
 		if(dataSource.getDatabaseType().equals(DatabaseTypeEnum.H2)){
-			Class<? extends DriverManagerDataSource> driverManagerDataSource =  LocalH2.class;
+			Class<? extends DataSource> dataSourceClass =  LocalH2.class;
 			if(dataSource.getMode() == null){
 				new IllegalArgumentException("H2 mode not specified");
 			}
@@ -561,13 +561,14 @@ public class CdmPersistentDataSource extends CdmDataSourceBase{
 					dataSource.getDatabaseType().getDefaultPort() + "", 
 					getCheckedDataSourceParameter(dataSource.getUsername()), 
 					getCheckedDataSourceParameter(dataSource.getPassword()), 
-					driverManagerDataSource, 
+					dataSourceClass, 
 					null, null, null, null, 
 					getCheckedDataSourceParameter(dataSource.getFilePath()), 
 					dataSource.getMode(),
 					dataSource.getNomenclaturalCode());
 		}else{
-			Class<? extends DriverManagerDataSource> driverManagerDataSource =  DriverManagerDataSource.class;
+			Class<? extends DataSource> dataSourceClass =  BasicDataSource.class; //TODO make configurable
+
 			return save(
 					strDataSourceName, 
 					dataSource.getDatabaseType(), 
@@ -576,7 +577,7 @@ public class CdmPersistentDataSource extends CdmDataSourceBase{
 					dataSource.getPort() + "", 
 					getCheckedDataSourceParameter(dataSource.getUsername()), 
 					getCheckedDataSourceParameter(dataSource.getPassword()), 
-					driverManagerDataSource, 
+					dataSourceClass, 
 					null, null, null, null, null, null,
 					dataSource.getNomenclaturalCode());
 		}

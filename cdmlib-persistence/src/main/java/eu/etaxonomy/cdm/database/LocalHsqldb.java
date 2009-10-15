@@ -17,10 +17,10 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
 
+import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.log4j.Logger;
 import org.hsqldb.Server;
 import org.springframework.jdbc.CannotGetJdbcConnectionException;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationUtils;
 
@@ -30,7 +30,7 @@ import eu.etaxonomy.cdm.api.application.CdmApplicationUtils;
  *
  */
 
-public class LocalHsqldb extends DriverManagerDataSource {
+public class LocalHsqldb extends BasicDataSource {
 	private static final Logger logger = Logger.getLogger(LocalHsqldb.class);
 	
 	private String sep = System.getProperty("file.separator");
@@ -64,7 +64,8 @@ public class LocalHsqldb extends DriverManagerDataSource {
 	 * @throws CannotGetJdbcConnectionException
 	 */
 	public LocalHsqldb(String url) throws CannotGetJdbcConnectionException {
-		super(url);
+		super();
+		this.setUrl(url);
 		setDriverClassName(DEFAULT_DRIVER_CLASS_NAME);
 	}
 
@@ -76,7 +77,10 @@ public class LocalHsqldb extends DriverManagerDataSource {
 	 */
 	public LocalHsqldb(String url, String username, String password)
 			throws CannotGetJdbcConnectionException {
-		super(url, username, password);
+		super();
+		this.setUrl(url);
+		this.setUsername(username);
+		this.setPassword(password);
 		this.setDriverClassName(DEFAULT_DRIVER_CLASS_NAME);
 	}
 
@@ -89,7 +93,11 @@ public class LocalHsqldb extends DriverManagerDataSource {
 	 */
 	public LocalHsqldb(String driverClassName, String url, String username,
 			String password) throws CannotGetJdbcConnectionException {
-		super(driverClassName, url, username, password);
+		super();
+		this.setUrl(url);
+		this.setUsername(username);
+		this.setPassword(password);
+		this.setDriverClassName(driverClassName);
 	}
 
 	public void init(){
@@ -104,7 +112,7 @@ public class LocalHsqldb extends DriverManagerDataSource {
 	
 
 	/* (non-Javadoc)
-	 * @see org.springframework.jdbc.datasource.DriverManagerDataSource#getUrl()
+	 * @see org.springframework.jdbc.datasource.BasicDataSource#getUrl()
 	 */
 	@Override
 	public String getUrl() {
@@ -112,7 +120,7 @@ public class LocalHsqldb extends DriverManagerDataSource {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.springframework.jdbc.datasource.DriverManagerDataSource#setUrl(java.lang.String)
+	 * @see org.springframework.jdbc.datasource.BasicDataSource#setUrl(java.lang.String)
 	 */
 	@Override
 	public void setUrl(String url) {

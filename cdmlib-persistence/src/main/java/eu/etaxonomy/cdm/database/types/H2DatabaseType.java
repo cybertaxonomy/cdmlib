@@ -12,8 +12,9 @@ package eu.etaxonomy.cdm.database.types;
 import java.io.File;
 import java.io.IOException;
 
+import javax.sql.DataSource;
+
 import org.apache.log4j.Logger;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationUtils;
 import eu.etaxonomy.cdm.database.H2Mode;
@@ -148,7 +149,7 @@ public class H2DatabaseType extends DatabaseTypeBase {
 	}
 
 	@Override
-	public Class<? extends DriverManagerDataSource> getDriverManagerDataSourceClass() {
+	public Class<? extends DataSource> getDataSourceClass() {
 		return LocalH2.class;
 	}
 

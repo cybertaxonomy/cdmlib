@@ -10,8 +10,8 @@
 
 package eu.etaxonomy.cdm.database;
 
+import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.log4j.Logger;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 
@@ -20,10 +20,9 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
  * @created Sep 22, 2009
  * @version 1.0
  */
-public class NomenclaturalCodeAwareDriverManagerDataSource extends
-		DriverManagerDataSource {
+public class NomenclaturalCodeAwareDataSource extends BasicDataSource {
 	private static final Logger logger = Logger
-			.getLogger(NomenclaturalCodeAwareDriverManagerDataSource.class);
+			.getLogger(NomenclaturalCodeAwareDataSource.class);
 	
 	private NomenclaturalCode nomenclaturalCode;
 

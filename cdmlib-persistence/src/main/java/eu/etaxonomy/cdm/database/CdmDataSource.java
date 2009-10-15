@@ -80,6 +80,10 @@ public class CdmDataSource extends CdmDataSourceBase {
 	static public CdmDataSource  NewMySqlInstance(String server, String database, int port, String username, String password, NomenclaturalCode code){
 		return new CdmDataSource(DatabaseTypeEnum.MySQL, server, database, port, username, password, null, null, code);
 	}
+	
+	static public CdmDataSource  NewPostgreSQLInstance(String server, String database, int port, String username, String password, NomenclaturalCode code){
+		return new CdmDataSource(DatabaseTypeEnum.PostgreSQL, server, database, port, username, password, null, null, code);
+	}
 
 	static public CdmDataSource  NewSqlServer2005Instance(String server, String database, int port, String username, String password, NomenclaturalCode code){
 		return new CdmDataSource(DatabaseTypeEnum.SqlServer2005, server, database, port, username, password, null, null, code);
@@ -158,7 +162,7 @@ public class CdmDataSource extends CdmDataSourceBase {
 	 */
 	@SuppressWarnings("unchecked")
 	public BeanDefinition getDatasourceBean(){
-		AbstractBeanDefinition bd = new RootBeanDefinition(dbType.getDriverManagerDataSourceClass());
+		AbstractBeanDefinition bd = new RootBeanDefinition(dbType.getDataSourceClass());
 		//attributes
 		bd.setLazyInit(isLazy);
 		if (! CdmUtils.Nz(initMethodName).trim().equals("") ){
