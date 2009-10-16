@@ -271,7 +271,8 @@ public class SynthesysCacheActivator {
 			Collection collection = Collection.NewInstance();
 			List<Collection> collections;
 			try{
-				collections = app.getOccurrenceService().searchCollectionByCode(this.collectionCode);
+				collections = app.getCollectionService().searchByCode(this.collectionCode);
+				//.searchCollectionByCode(this.collectionCode);
 			}catch(Exception e){
 				System.out.println("BLA"+e);
 				collections=new ArrayList<Collection>();
