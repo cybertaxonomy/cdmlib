@@ -36,18 +36,6 @@ import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 public interface IDescriptionService extends IIdentifiableEntityService<DescriptionBase> {
-
-
-
-	
-
-	
-
-	
-
-
-	
-
 	
 	/**
 	 * 
