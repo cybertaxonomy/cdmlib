@@ -21,6 +21,7 @@ import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.app.common.CdmDestinations;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
+import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.FeatureNode;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
@@ -28,6 +29,7 @@ import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 /**
  * @author a.mueller
@@ -55,19 +57,19 @@ public class PalmaePostImportUpdater {
 			FeatureTree tree = cdmApp.getFeatureTreeService().find(featureTreeUuid);
 			FeatureNode root = tree.getRoot();
 			
-			List<Feature> featureList = cdmApp.getDescriptionService().getFeaturesAll();
-			for (Feature feature : featureList){
+			List<DefinedTermBase> featureList = cdmApp.getTermService().list(Feature.class, null, null, null, null);
+			for (DefinedTermBase feature : featureList){
 				String label = feature.getLabel();
 				if (relationships.equals(label)){
-					FeatureNode newNode = FeatureNode.NewInstance(feature);
+					FeatureNode newNode = FeatureNode.NewInstance((Feature)feature);
 					root.addChild(newNode);
 					count++;
 				}else if(taxonomicAccounts.equals(label)){
-					FeatureNode newNode = FeatureNode.NewInstance(feature);
+					FeatureNode newNode = FeatureNode.NewInstance((Feature)feature);
 					root.addChild(newNode);
 					count++;
 				}else if(fossilRecord.equals(label)){
-					FeatureNode newNode = FeatureNode.NewInstance(feature);
+					FeatureNode newNode = FeatureNode.NewInstance((Feature)feature);
 					root.addChild(newNode);
 					count++;
 				}
@@ -95,10 +97,12 @@ public class PalmaePostImportUpdater {
 
 			int page = 0;
 			int count = cdmApp.getTaxonService().count(Taxon.class);
-			List<Taxon> taxonList = cdmApp.getTaxonService().list(Taxon.class, 100000, page, null, null);
-			for (Taxon taxon : taxonList){
-				
-				if (taxon.getTaxonNodes().size() <1){
+			List<TaxonBase> taxonList = cdmApp.getTaxonService().list(Taxon.class, 100000, page, null, null);
+			Taxon taxon;
+			for (TaxonBase taxonBase : taxonList){
+				if (taxonBase instanceof Taxon){
+					taxon = (Taxon)taxonBase;
+				if (((Taxon)taxon).getTaxonNodes().size() <1){
 					TaxonNameBase name = taxon.getName();
 					Set<Taxon> taxa = name.getTaxa();
 					for(Taxon taxonCandidate: taxa ){
@@ -107,6 +111,7 @@ public class PalmaePostImportUpdater {
 							//delete
 						}
 					}
+				}
 				}
 				//if nicht in treatment (isNameUsage)
 				   //suche treatement taxon
