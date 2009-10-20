@@ -770,7 +770,7 @@ public void addRelationshipToName(TaxonNameBase toName, NameRelationshipType typ
 	 * @see 	eu.etaxonomy.cdm.model.reference.INomenclaturalReference
 	 * @see 	eu.etaxonomy.cdm.model.reference.ReferenceBase
 	 */
-	public ReferenceBase getNomenclaturalReference(){
+	public INomenclaturalReference getNomenclaturalReference(){
 		return this.nomenclaturalReference;
 	}
 	/**
@@ -781,7 +781,7 @@ public void addRelationshipToName(TaxonNameBase toName, NameRelationshipType typ
 	 * @throws IllegalArgumentException if parameter <code>nomenclaturalReference</code> is not assignable from {@link INomenclaturalReference}
 	 * @see  #getNomenclaturalReference()
 	 */
-	public void setNomenclaturalReference(ReferenceBase nomenclaturalReference){
+	public void setNomenclaturalReference(INomenclaturalReference nomenclaturalReference){
 		if(nomenclaturalReference != null){
 			if(!INomenclaturalReference.class.isAssignableFrom(nomenclaturalReference.getClass())){
 				throw new IllegalArgumentException("Parameter nomenclaturalReference is not assignable from INomenclaturalReference");

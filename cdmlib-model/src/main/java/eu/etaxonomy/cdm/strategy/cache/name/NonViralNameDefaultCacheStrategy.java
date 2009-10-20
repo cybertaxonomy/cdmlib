@@ -234,7 +234,7 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 		String titleCache = nonViralName.getTitleCache();   // OLD: getTitleCache(nonViralName);
 		
 		String microReference = nonViralName.getNomenclaturalMicroReference();
-		ReferenceBase<?> ref = nonViralName.getNomenclaturalReference();
+		INomenclaturalReference ref = nonViralName.getNomenclaturalReference();
 		String referenceBaseCache = null;
 		if (ref != null){
 			INomenclaturalReference nomRef = HibernateProxyHelper.deproxy(ref, INomenclaturalReference.class);

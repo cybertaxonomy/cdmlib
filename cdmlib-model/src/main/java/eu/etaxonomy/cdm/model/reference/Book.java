@@ -185,7 +185,7 @@ public class Book extends PrintedUnitBase<INomenclaturalReferenceCacheStrategy<B
 //	}
 	
 	
-//*********** CLONE **********************************/	
+		
 		
 	/** 
 	 * Clones <i>this</i> book. This is a shortcut that enables to

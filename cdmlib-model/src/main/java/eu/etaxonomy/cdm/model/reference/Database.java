@@ -63,8 +63,6 @@ public class Database extends PublicationBase<IReferenceBaseCacheStrategy<Databa
 	
 	
 	
-//*********** CLONE **********************************/	
-	
 	/** 
 	 * Clones <i>this</i> database instance. This is a shortcut that enables to
 	 * create a new instance that differs only slightly from <i>this</i>

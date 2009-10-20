@@ -72,8 +72,8 @@ public abstract class SectionBase<S extends IReferenceBaseCacheStrategy> extends
 	}
 
 
-//*********** CLONE **********************************/	
 	
+
 
 	/** 
 	 * Clones <i>this</i> section. This is a shortcut that enables to

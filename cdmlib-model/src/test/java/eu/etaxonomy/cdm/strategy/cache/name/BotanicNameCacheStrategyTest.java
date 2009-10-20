@@ -31,7 +31,9 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.reference.Book;
+import eu.etaxonomy.cdm.model.reference.IBook;
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 
 /**
  * @author a.mueller
@@ -61,7 +63,8 @@ public class BotanicNameCacheStrategyTest {
 	private INomenclaturalAuthor exAuthor;
 	private INomenclaturalAuthor basAuthor;
 	private INomenclaturalAuthor exBasAuthor;
-	private Book citationRef;
+	private ReferenceBase citationRef;
+	ReferenceFactory refFactory;
 	
 	/**
 	 * @throws java.lang.Exception
@@ -77,6 +80,7 @@ public class BotanicNameCacheStrategyTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
+		refFactory = ReferenceFactory.newInstance();
 		strategy = BotanicNameDefaultCacheStrategy.NewInstance();
 		familyName = BotanicalName.PARSED_NAME(familyNameString, Rank.FAMILY());
 		genusName = BotanicalName.PARSED_NAME(genusNameString, Rank.GENUS());
@@ -97,7 +101,7 @@ public class BotanicNameCacheStrategyTest {
 		exBasAuthor = Person.NewInstance();
 		exBasAuthor.setNomenclaturalTitle(exBasAuthorString);
 		
-		citationRef = Book.NewInstance();
+		citationRef = refFactory.newBook();
 		// Gard. Dict. ed. 8, no. 1. 1768.
 		citationRef.setTitle("Gard. Dict.");
 		//citationRef.setPlacePublished("");

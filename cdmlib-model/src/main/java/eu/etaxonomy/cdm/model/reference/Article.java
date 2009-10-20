@@ -181,7 +181,7 @@ public class Article extends ReferenceBase<INomenclaturalReferenceCacheStrategy<
 
 	/**
 	 * @see #getSeries()
-	 */
+	 *//*
 	public void setSeries(String series){
 		this.series = series;
 	}
@@ -279,8 +279,8 @@ public class Article extends ReferenceBase<INomenclaturalReferenceCacheStrategy<
 //		return nomRefBase.generateTitle();
 //	}
 	
-//*********** CLONE **********************************/	
 
+	
 	
 	/** 
 	 * Clones <i>this</i> article. This is a shortcut that enables to

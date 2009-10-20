@@ -22,8 +22,9 @@ import org.junit.Test;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.reference.Book;
+//import eu.etaxonomy.cdm.model.reference.Book;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
@@ -60,6 +61,7 @@ public class TaxonBaseDefaultCacheStrategyTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
+		ReferenceFactory refFactory = ReferenceFactory.newInstance();
 		name = BotanicalName.NewInstance(Rank.SPECIES());
 		name.setGenusOrUninomial("Abies");
 		name.setSpecificEpithet("alba");
@@ -72,7 +74,7 @@ public class TaxonBaseDefaultCacheStrategyTest {
 		name.setBasionymAuthorTeam(basionymAuthor);
 		assertEquals("Namecache should be Abies alba", expectedNameCache, name.getNameCache());
 		assertEquals("Titlecache should be Abies alba (Mill.) L.", expectedNameTitleCache, name.getTitleCache());
-		sec = Book.NewInstance();
+		sec = refFactory.newBook();
 		sec.setTitle("Sp.Pl.");
 	}
 

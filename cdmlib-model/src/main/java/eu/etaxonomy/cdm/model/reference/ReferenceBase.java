@@ -34,6 +34,9 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.Filter;
+import org.hibernate.annotations.FilterDef;
+import org.hibernate.annotations.ParamDef;
 //import org.hibernate.annotations.Index;
 import org.hibernate.annotations.Table;
 import org.hibernate.envers.Audited;
@@ -48,6 +51,7 @@ import eu.etaxonomy.cdm.model.common.IParsable;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.strategy.cache.reference.ArticleDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.reference.IReferenceBaseCacheStrategy;
 import eu.etaxonomy.cdm.strategy.match.IMatchable;
 import eu.etaxonomy.cdm.strategy.match.Match;
@@ -78,6 +82,7 @@ import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Reference", propOrder = {
+	"type",
 	"uri",
 	"nomenclaturallyRelevant",
     "authorTeam",
@@ -105,7 +110,9 @@ import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 @Audited
 @javax.persistence.Table(name="Reference")
 @Table(appliesTo="Reference", indexes = { @org.hibernate.annotations.Index(name = "ReferenceTitleCacheIndex", columnNames = { "titleCache" }) })
-public abstract class ReferenceBase<S extends IReferenceBaseCacheStrategy> extends IdentifiableMediaEntity<S> implements IParsable, IMergable, IMatchable {
+
+//public abstract class ReferenceBase<S extends IReferenceBaseCacheStrategy> extends IdentifiableMediaEntity<S> implements IParsable, IMergable, IMatchable, IArticle, IBook, IJournal, IBookSection,ICdDvd,IGeneric,IInProceedings, IProceedings, IPrintSeries, IReport, IThesis,IWebPage {
+public class ReferenceBase<S extends IReferenceBaseCacheStrategy> extends IdentifiableMediaEntity<S> implements INomenclaturalReference, IParsable, IMergable, IMatchable, IArticle, IBook, IPatent, IDatabase, IJournal, IBookSection,ICdDvd,IGeneric,IInProceedings, IProceedings, IPrintSeries, IReport, IThesis,IWebPage {
 	private static final long serialVersionUID = -2034764545042691295L;
 	private static final Logger logger = Logger.getLogger(ReferenceBase.class);
 	
@@ -278,8 +285,144 @@ public abstract class ReferenceBase<S extends IReferenceBaseCacheStrategy> exten
     @Match(MatchMode.IGNORE)
     private int problemEnds = -1;
 	
-//*************************** GETTER / SETTER ******************************************/    
+    
+    protected ReferenceBase(){
+		super();
+	}
+    
+	protected ReferenceBase(ReferenceType type) {
+		this.type = type;
+		//this.cacheStrategy = ArticleDefaultCacheStrategy.NewInstance();
+	}
 	
+ 
+
+//*************************** GETTER / SETTER ******************************************/    
+	public String getEditor() {
+		return editor;
+	}
+	
+	public void setEditor(String editor) {
+		this.editor = editor;
+	}
+
+	public String getSeries() {
+		return series;
+	}
+
+	public void setSeries(String series) {
+		this.series = series;
+	}
+
+	public String getVolume() {
+		return volume;
+	}
+
+	public void setVolume(String volume) {
+		this.volume = volume;
+	}
+
+	public String getPages() {
+		return pages;
+	}
+
+	public void setPages(String pages) {
+		this.pages = pages;
+	}
+
+	public String getEdition() {
+		return edition;
+	}
+
+	public void setEdition(String edition) {
+		this.edition = edition;
+	}
+
+	public String getIsbn() {
+		return isbn;
+	}
+
+	public void setIsbn(String isbn) {
+		this.isbn = isbn;
+	}
+
+	public String getIssn() {
+		return issn;
+	}
+
+	public void setIssn(String issn) {
+		this.issn = issn;
+	}
+
+	public String getSeriesPart() {
+		return seriesPart;
+	}
+
+	public void setSeriesPart(String seriesPart) {
+		this.seriesPart = seriesPart;
+	}
+
+	public String getOrganization() {
+		return organization;
+	}
+
+	public void setOrganization(String organization) {
+		this.organization = organization;
+	}
+
+	public String getPublisher() {
+		return publisher;
+	}
+
+	public void setPublisher(String publisher) {
+		this.publisher = publisher;
+	}
+	
+	public void setPublisher(String publisher, String placePublished){
+		this.publisher = publisher;
+		this.placePublished = placePublished;
+	}
+
+	public String getPlacePublished() {
+		return placePublished;
+	}
+
+	public void setPlacePublished(String placePublished) {
+		this.placePublished = placePublished;
+	}
+
+	public Institution getInstitution() {
+		return institution;
+	}
+
+	public void setInstitution(Institution institution) {
+		this.institution = institution;
+	}
+
+	public Institution getSchool() {
+		return school;
+	}
+
+	public void setSchool(Institution school) {
+		this.school = school;
+	}
+
+	public ReferenceBase getInReference() {
+		return inReference;
+	}
+
+	public void setInReference(ReferenceBase inReference) {
+		this.inReference = inReference;
+	}
+
+	public void setType(ReferenceType type) {
+		this.type = type;
+	}
+
+	
+	
+
+
 	/**
 	 * @return the type
 	 */
@@ -665,4 +808,111 @@ public abstract class ReferenceBase<S extends IReferenceBaseCacheStrategy> exten
 		}
 	}
 	
+	/* Casting methods */
+	
+	public IArticle castReferenceToArticle(ReferenceBase ref){
+		return (IArticle) ref;
+	}
+	
+	public IBook castReferenceToBook(ReferenceBase ref){
+		return (IBook) ref;
+	}
+	
+	public IBookSection castReferenceToBookSection(ReferenceBase ref){
+		return (IBookSection) ref;
+	}
+	
+	public ICdDvd castReferenceToCdDvd(ReferenceBase ref){
+		return (ICdDvd) ref;
+	}
+	
+	public IDatabase castReferenceToDatabase(ReferenceBase ref){
+		return (IDatabase) ref;
+	}
+	
+	public IGeneric castReferenceToGeneric(ReferenceBase ref){
+		return (IGeneric) ref;
+	}
+	
+	public IInProceedings castReferenceToInProceedings(ReferenceBase ref){
+		return (IInProceedings) ref;
+	}
+	
+	public IJournal castReferenceToJournal(ReferenceBase ref){
+		return (IJournal) ref;
+	}
+	
+	public IMap castReferenceToMap(ReferenceBase ref){
+		return (IMap) ref;
+	}
+	
+	public IPatent castReferenceToPatent(ReferenceBase ref){
+		return (IPatent) ref;
+	}
+	
+	public IPersonalCommunication castReferenceToPersonalCommunication(ReferenceBase ref){
+		return (IPersonalCommunication) ref;
+	}
+	
+	public IPrintSeries castReferenceToPrintSeries(ReferenceBase ref){
+		return (IPrintSeries) ref;
+	}
+	
+	public IWebPage castReferenceToWebPage(ReferenceBase ref){
+		return (IWebPage) ref;
+	}
+	
+	public IProceedings castReferenceToProceedings(ReferenceBase ref){
+		return (IProceedings) ref;
+	}
+	
+	public IReport castReferenceToReport(ReferenceBase ref){
+		return (IReport) ref;
+	}
+
+	public IThesis castReferenceToThesis(ReferenceBase ref){
+		return (IThesis) ref;
+	}
+
+	//FIXME!
+	public String getNomenclaturalCitation(String microReference) {
+		return null;
+	}
+
+	public IJournal getInJournal() {
+		IJournal journal = this.inReference;
+		return journal;
+	}
+
+	public void setInJournal(IJournal journal) {
+		this.inReference = (ReferenceBase) journal;
+		
+	}
+
+	public IPrintSeries getInSeries() {
+		IPrintSeries printSeries = this.inReference;
+		return printSeries;
+	}
+
+	public void setInSeries(IPrintSeries inSeries) {
+		this.inReference = (ReferenceBase) inSeries;
+		
+	}
+
+	public IBook getInBook() {
+		IBook book = this.inReference;
+		return book;
+	}
+
+	public void setInBook(IBook book) {
+		this.inReference = (ReferenceBase) book;
+		
+	}
+
+	
+
+
+	
+	
 }
+

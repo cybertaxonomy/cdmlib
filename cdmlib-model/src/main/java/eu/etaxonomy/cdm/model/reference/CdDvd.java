@@ -64,7 +64,7 @@ public class CdDvd extends PublicationBase<INomenclaturalReferenceCacheStrategy<
 	}
 	
 
-	/* (non-Javadoc)
+	 /**(non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.reference.INomenclaturalReference#getNomenclaturalCitation(java.lang.String)
 	 */
 	@Transient
@@ -78,7 +78,6 @@ public class CdDvd extends PublicationBase<INomenclaturalReferenceCacheStrategy<
 	}
 	
 
-//*********** CLONE **********************************/	
 	
 	/** 
 	 * Clones <i>this</i> Cd or Dvd instance. This is a shortcut that enables to
