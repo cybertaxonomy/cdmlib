@@ -9,6 +9,9 @@
 
 package eu.etaxonomy.cdm.app.common;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.AccountStore;
@@ -528,6 +531,44 @@ public class CdmDestinations {
 		ICdmDataSource destination = CdmDataSource.NewMySqlInstance(cdmServer, cdmDB, port, cdmUserName, pwd, null);
 		return destination;
 
+	}
+
+
+	/**
+	 * Accepts a string array and tries to find a method returning an ICdmDataSource with 
+	 * the name of the given first string in the array
+	 * 
+	 * @param args
+	 * @return
+	 */
+	public static ICdmDataSource chooseDestination(String[] args) {
+		if(args == null)
+			return null;
+		
+		if(args.length != 1)
+			return null;
+		
+		String possibleDestination = args[0];
+		
+		Method[] methods = CdmDestinations.class.getMethods();
+		
+		for (Method method : methods){
+			if(method.getName().equals(possibleDestination)){
+				try {
+					return (ICdmDataSource) method.invoke(null, null);
+				} catch (IllegalArgumentException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IllegalAccessException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (InvocationTargetException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+		return null;
 	}
 
 }

@@ -122,11 +122,12 @@ public class DipteraActivator {
 	 * @param args
 	 */
 	public static void main(String[] args) {
+		
 		System.out.println("Start import from BerlinModel("+ berlinModelSource.getDatabase() + ") ...");
 		
 		//make BerlinModel Source
 		Source source = berlinModelSource;
-		ICdmDataSource destination = cdmDestination;
+		ICdmDataSource destination = CdmDestinations.chooseDestination(args) != null ? CdmDestinations.chooseDestination(args) : cdmDestination;
 		
 		BerlinModelImportConfigurator bmImportConfigurator = BerlinModelImportConfigurator.NewInstance(source,  destination);
 		
