@@ -30,9 +30,6 @@ public class ReferenceBaseDefaultCacheStrategy<T extends ReferenceBase> extends 
 	public ReferenceBaseDefaultCacheStrategy(){
 		super();
 	}
-	public static ReferenceBaseDefaultCacheStrategy NewInstance(){
-		return new ReferenceBaseDefaultCacheStrategy();
-	}
 	
 	
 	

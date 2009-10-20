@@ -181,7 +181,7 @@ public class Article extends ReferenceBase<INomenclaturalReferenceCacheStrategy<
 
 	/**
 	 * @see #getSeries()
-	 *//*
+	 */
 	public void setSeries(String series){
 		this.series = series;
 	}
@@ -237,7 +237,7 @@ public class Article extends ReferenceBase<INomenclaturalReferenceCacheStrategy<
 //		return nomRefBase.getCitation();
 //	}
 
-/**
+	/**
 	 * Returns a formatted string containing the entire citation used for
 	 * nomenclatural purposes based on <i>this</i> article - including
 	 * (abbreviated) title of the journal but not authors of the article -
@@ -279,7 +279,7 @@ public class Article extends ReferenceBase<INomenclaturalReferenceCacheStrategy<
 //		return nomRefBase.generateTitle();
 //	}
 	
-
+//*********** CLONE **********************************/	
 
 	
 	/** 

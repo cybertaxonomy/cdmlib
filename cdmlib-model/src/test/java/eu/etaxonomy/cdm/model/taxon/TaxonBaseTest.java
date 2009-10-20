@@ -23,9 +23,8 @@ import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
-import eu.etaxonomy.cdm.model.reference.IBook;
+import eu.etaxonomy.cdm.model.reference.Book;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
-import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 
 /**
@@ -54,8 +53,7 @@ public class TaxonBaseTest extends EntityTestBase {
 	 */
 	@Before
 	public void setUp() throws Exception {
-		ReferenceFactory refFactory = ReferenceFactory.newInstance();
-		sec= refFactory.newBook();
+		sec= Book.NewInstance();
 		sec.setTitleCache("Schoenes saftiges Allg�u");
 		name1 = ZoologicalName.NewInstance(Rank.SPECIES(),"Panthera",null,"onca",null,null,null,"p.1467", null);
 		HomotypicalGroup homotypicalGroup = HomotypicalGroup.NewInstance();

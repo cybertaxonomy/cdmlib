@@ -13,9 +13,9 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Article;
 
-public class ArticleDefaultCacheStrategy <T extends ReferenceBase> extends NomRefDefaultCacheStrategyBase<T> implements  INomenclaturalReferenceCacheStrategy<T> {
+public class ArticleDefaultCacheStrategy <T extends Article> extends NomRefDefaultCacheStrategyBase<T> implements  INomenclaturalReferenceCacheStrategy<T> {
 	private static final Logger logger = Logger.getLogger(ArticleDefaultCacheStrategy.class);
 	
 	private String prefixSeries = "ser.";
@@ -56,11 +56,11 @@ public class ArticleDefaultCacheStrategy <T extends ReferenceBase> extends NomRe
 		if (article == null){
 			return null;
 		}
-		if (article.getInReference() == null){
+		if (article.getInJournal() == null){
 			return null;
 		}
 		
-		String titelAbbrev = CdmUtils.Nz(article.getInReference().getTitle()).trim();
+		String titelAbbrev = CdmUtils.Nz(article.getInJournal().getTitle()).trim();
 		String series = CdmUtils.Nz(article.getSeries()).trim();
 		String volume = CdmUtils.Nz(article.getVolume()).trim();
 		

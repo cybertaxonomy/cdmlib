@@ -199,7 +199,6 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.EAGER)
 	@CacheUpdate(value ="nameCache")
-	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
     private Rank rank;
 
 	@XmlElement(name = "NomenclaturalReference")
@@ -743,7 +742,7 @@ public void addRelationshipToName(TaxonNameBase toName, NameRelationshipType typ
 	 * @see 	eu.etaxonomy.cdm.model.reference.INomenclaturalReference
 	 * @see 	eu.etaxonomy.cdm.model.reference.ReferenceBase
 	 */
-	public INomenclaturalReference getNomenclaturalReference(){
+	public ReferenceBase getNomenclaturalReference(){
 		return this.nomenclaturalReference;
 	}
 	/**
@@ -754,7 +753,7 @@ public void addRelationshipToName(TaxonNameBase toName, NameRelationshipType typ
 	 * @throws IllegalArgumentException if parameter <code>nomenclaturalReference</code> is not assignable from {@link INomenclaturalReference}
 	 * @see  #getNomenclaturalReference()
 	 */
-	public void setNomenclaturalReference(INomenclaturalReference nomenclaturalReference){
+	public void setNomenclaturalReference(ReferenceBase nomenclaturalReference){
 		if(nomenclaturalReference != null){
 			if(!INomenclaturalReference.class.isAssignableFrom(nomenclaturalReference.getClass())){
 				throw new IllegalArgumentException("Parameter nomenclaturalReference is not assignable from INomenclaturalReference");

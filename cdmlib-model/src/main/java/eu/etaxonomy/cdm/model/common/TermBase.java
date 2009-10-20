@@ -6,8 +6,6 @@ import java.util.List;
 import java.util.Set;
 
 import javax.persistence.FetchType;
-import javax.persistence.JoinTable;
-import javax.persistence.JoinColumn;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
@@ -48,7 +46,7 @@ public abstract class TermBase extends IdentifiableEntity {
 	@XmlElementWrapper(name = "Representations")
 	@XmlElement(name = "Representation")
     @OneToMany(fetch=FetchType.EAGER)
-    @Cascade( { CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE })
+	@Cascade( { CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE })
 	private Set<Representation> representations = new HashSet<Representation>();
 	
 	public TermBase(){

@@ -29,9 +29,8 @@ import org.junit.Test;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Generic;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
-import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -339,10 +338,9 @@ public class TaxonNameBaseTest {
 	 */
 	@Test
 	public void testGetSetNomenclaturalReference() {
-		ReferenceFactory refFactory = ReferenceFactory.newInstance();
 		INomenclaturalReference nr = (INomenclaturalReference) nameBase1.getNomenclaturalReference();
 		assertNull("Nomenclatural Reference shall be null", nr);
-		nameBase1.setNomenclaturalReference(refFactory.newGeneric());
+		nameBase1.setNomenclaturalReference(Generic.NewInstance());
 		nr = (INomenclaturalReference) nameBase1.getNomenclaturalReference();
 		assertNotNull("Nomenclatural Reference shall not be null", nr);
 	}

@@ -62,7 +62,8 @@ public class WebPage extends PublicationBase<IReferenceBaseCacheStrategy<WebPage
 		return new WebPage();
 	}
 	
-
+//*********** CLONE **********************************/	
+	
 	/** 
 	 * Clones <i>this</i> web page instance. This is a shortcut that enables to
 	 * create a new instance that differs only slightly from <i>this</i>

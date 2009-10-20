@@ -18,10 +18,8 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
-//import eu.etaxonomy.cdm.model.reference.Journal;
-import eu.etaxonomy.cdm.model.reference.IJournal;
+import eu.etaxonomy.cdm.model.reference.Journal;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
-import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 
@@ -38,10 +36,9 @@ public class DatabaseInitialiser {
 
 	public static Integer insertTaxon(String speciesname){
 		logger.info("Populate database with a taxon");
-		ReferenceFactory refFactory = ReferenceFactory.newInstance();
-		IJournal sec = refFactory.newJournal();
+		ReferenceBase sec = Journal.NewInstance();
 		NonViralName nvName = BotanicalName.NewInstance(Rank.SPECIES());
-		Taxon tax = Taxon.NewInstance(nvName, (ReferenceBase)sec);
+		Taxon tax = Taxon.NewInstance(nvName, sec);
 		//BotanicalName ve = nm.getNextVersion();
 		nvName.setNameCache(speciesname);
 		nvName.setTitleCache(speciesname);

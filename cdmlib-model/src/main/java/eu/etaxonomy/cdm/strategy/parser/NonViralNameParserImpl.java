@@ -27,15 +27,13 @@ import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
-import eu.etaxonomy.cdm.model.reference.IGeneric;
-import eu.etaxonomy.cdm.model.reference.IArticle;
-import eu.etaxonomy.cdm.model.reference.IBook;
-import eu.etaxonomy.cdm.model.reference.IBookSection;
-import eu.etaxonomy.cdm.model.reference.IJournal;
+import eu.etaxonomy.cdm.model.reference.Article;
+import eu.etaxonomy.cdm.model.reference.Book;
+import eu.etaxonomy.cdm.model.reference.BookSection;
+import eu.etaxonomy.cdm.model.reference.Generic;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
-import eu.etaxonomy.cdm.model.reference.IReferenceBase;
 import eu.etaxonomy.cdm.model.reference.IVolumeReference;
-import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
+import eu.etaxonomy.cdm.model.reference.Journal;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.strategy.exceptions.StringNotParsableException;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
@@ -52,7 +50,6 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 	
 	final static boolean MAKE_EMPTY = true;
 	final static boolean MAKE_NOT_EMPTY = false;
-	private ReferenceFactory refFactory = ReferenceFactory.newInstance();
 	
 	
 	public static NonViralNameParserImpl NewInstance(){
@@ -370,8 +367,8 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 	    	nameToBeFilled.addParsingProblems(ref.getParsingProblem());
 	    }
 	    
-	    IReferenceBase nomRef;
-		if ( (nomRef = (IReferenceBase)nameToBeFilled.getNomenclaturalReference()) != null ){
+	    ReferenceBase<?> nomRef;
+		if ( (nomRef = nameToBeFilled.getNomenclaturalReference()) != null ){
 			nomRef.setAuthorTeam((TeamOrPersonBase)nameToBeFilled.getCombinationAuthorTeam());
 		}
 	}
@@ -409,7 +406,6 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 	
 	
 	private void parseReference(NonViralName nameToBeFilled, String strReference, boolean isInReference){
-		
 		INomenclaturalReference ref;
 		String originalStrReference = strReference;
 		
@@ -474,9 +470,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 	 */
 	private INomenclaturalReference makeDetailYearUnparsable(NonViralName nameToBeFilled, String strReference) {
 		INomenclaturalReference ref;
-		//ref = Generic.NewInstance();
-		
-		ref = refFactory.newGeneric();
+		ref = Generic.NewInstance();
 		ref.setTitleCache(strReference);
 		ref.setProblemEnds(strReference.length());
 		ref.addParsingProblem(ParserProblem.CheckDetailOrYear);
@@ -492,7 +486,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 	 * @return
 	 */
 	private INomenclaturalReference parseReferenceTitle(String strReference, String year, boolean isInReference){
-		IBook result = null;
+		INomenclaturalReference result = null;
 		
 		Matcher refSineDetailMatcher = referenceSineDetailPattern.matcher(strReference);
 		if (! refSineDetailMatcher.matches()){
@@ -511,7 +505,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 				result = parseBook(strReference);
 			}else{
 				logger.warn("Non-InRef must be book but does not match book");
-				result = refFactory.newBook();
+				result = Book.NewInstance();
 				makeUnparsableRefTitle(result, strReference);
 			}
 		}else{  //inRef
@@ -523,7 +517,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 			}else if (bookSectionMatcher.matches()){
 				result = parseBookSection(strReference);
 			}else{
-				result =  refFactory.newGeneric();
+				result =  Generic.NewInstance();
 				makeUnparsableRefTitle(result, "in " + strReference);
 			}
 		}
@@ -585,8 +579,8 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 		}
 		TimePeriod datePublished = TimePeriod.parseString(year);
 		
-		if (nomRef instanceof IBookSection){
-			handleBookSectionYear((IBookSection)nomRef, datePublished);
+		if (nomRef instanceof BookSection){
+			handleBookSectionYear((BookSection)nomRef, datePublished);
 		}else if (nomRef instanceof ReferenceBase){
 			((ReferenceBase)nomRef).setDatePublished(datePublished);	
 		}else{
@@ -609,7 +603,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 		return strReference;
 	}
 	
-	private String makeEdition(IBook book, String strReference){
+	private String makeEdition(Book book, String strReference){
 		//volume
 		String editionPart = null;
 		Matcher editionPhraseMatcher = getMatcher(pEditionPart, strReference);
@@ -631,8 +625,8 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 		return strReference;
 	}
 	
-	private IBook parseBook(String reference){
-		IBook result = refFactory.newBook();
+	private Book parseBook(String reference){
+		Book result = Book.NewInstance();
 		reference = makeEdition(result, reference);
 		reference = makeVolume(result, reference);
 		result.setTitle(reference);
@@ -640,19 +634,19 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 	}
 	
 	
-	private ReferenceBase parseArticle(String reference){
+	private Article parseArticle(String reference){
 		//if (articlePatter)
 		//(type, author, title, volume, editor, series;
-		ReferenceBase result = refFactory.newArticle();
+		Article result = Article.NewInstance();
 		reference = makeVolume(result, reference);
-		ReferenceBase inJournal = refFactory.newJournal();
+		Journal inJournal = Journal.NewInstance();
 		inJournal.setTitle(reference);
-		result.setInReference(inJournal);
+		result.setInJournal(inJournal);
 		return result;
 	}
 	
-	private ReferenceBase parseBookSection(String reference){
-		ReferenceBase result = refFactory.newBookSection();
+	private BookSection parseBookSection(String reference){
+		BookSection result = BookSection.NewInstance();
 		String[] parts = reference.split(referenceAuthorSeparator, 2);
 		if (parts.length != 2){
 			logger.warn("Unexpected number of parts");
@@ -662,7 +656,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 			String bookString = parts[1];
 			
 			TeamOrPersonBase<?> authorTeam = author(authorString);
-			IBook inBook = parseBook(bookString);
+			Book inBook = parseBook(bookString);
 			inBook.setAuthorTeam(authorTeam);
 			result.setInBook(inBook);
 		}
@@ -684,7 +678,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 	 * @param bookSection
 	 * @param datePublished
 	 */
-	private void handleBookSectionYear(IBookSection bookSection, TimePeriod datePublished){
+	private void handleBookSectionYear(BookSection bookSection, TimePeriod datePublished){
 		if (datePublished == null || datePublished.getStart() == null || bookSection == null){
 			return;
 		}
@@ -708,7 +702,6 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 	 * @see eu.etaxonomy.cdm.strategy.ITaxonNameParser#parseFullName(java.lang.String, eu.etaxonomy.cdm.model.name.Rank)
 	 */
 	public NonViralName parseFullName(String fullNameString, NomenclaturalCode nomCode, Rank rank) {
-		
 		if (fullNameString == null){
 			return null;
 		}else{

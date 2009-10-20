@@ -88,7 +88,6 @@ public class SynonymRelationship extends RelationshipBase<Synonym, Taxon, Synony
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch=FetchType.EAGER)
-    @Cascade(CascadeType.SAVE_UPDATE)
 	private SynonymRelationshipType type;
 	
 	//for hibernate, don't use

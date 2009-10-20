@@ -16,7 +16,6 @@ import org.joda.time.DateTime;
 
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
-import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
 /**
@@ -95,7 +94,7 @@ public class TaxonComparator implements Comparator<TaxonBase> {
 					
 					result = String.valueOf(((ZoologicalName)name).getPublicationYear());
 				}else{
-					 INomenclaturalReference ref = name.getNomenclaturalReference();
+					 ReferenceBase ref = name.getNomenclaturalReference();
 					if (ref == null){
 						result = null;
 					}else{

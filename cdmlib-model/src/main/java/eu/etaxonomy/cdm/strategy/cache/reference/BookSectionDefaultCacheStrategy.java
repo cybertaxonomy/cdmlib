@@ -15,13 +15,12 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
-//import eu.etaxonomy.cdm.model.reference.Book;
-//import eu.etaxonomy.cdm.model.reference.BookSection;
-import eu.etaxonomy.cdm.model.reference.IBook;
+import eu.etaxonomy.cdm.model.reference.Book;
+import eu.etaxonomy.cdm.model.reference.BookSection;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
-public class BookSectionDefaultCacheStrategy <T extends ReferenceBase> extends NomRefDefaultCacheStrategyBase<T>  implements  INomenclaturalReferenceCacheStrategy<T> {
+public class BookSectionDefaultCacheStrategy <T extends BookSection> extends NomRefDefaultCacheStrategyBase<T>  implements  INomenclaturalReferenceCacheStrategy<T> {
 	private static final Logger logger = Logger.getLogger(BookSectionDefaultCacheStrategy.class);
 	
 	private String afterBookAuthor = " - ";
@@ -62,14 +61,14 @@ public class BookSectionDefaultCacheStrategy <T extends ReferenceBase> extends N
 	 */
 	@Override
 	public String getTokenizedNomenclaturalTitel(T bookSection) {
-		if (bookSection == null || bookSection.getInReference() == null){
+		if (bookSection == null || bookSection.getInBook() == null){
 			return null;
 		}
-		ReferenceBase inBook = bookSection.getInReference();
+		Book inBook = bookSection.getInBook();
 		String result;
 		//use booksection's publication date if it exists
 		if (bookSection.getDatePublished() != null && bookSection.getDatePublished().getStart() != null){
-			BookDefaultCacheStrategy<ReferenceBase> bookStrategy = BookDefaultCacheStrategy.NewInstance();
+			BookDefaultCacheStrategy<Book> bookStrategy = BookDefaultCacheStrategy.NewInstance();
 			result =  bookStrategy.getNomRefTitleWithoutYearAndAuthor(inBook);
 			result += INomenclaturalReference.MICRO_REFERENCE_TOKEN;
 			result = addYear(result, bookSection);
@@ -78,7 +77,7 @@ public class BookSectionDefaultCacheStrategy <T extends ReferenceBase> extends N
 			result = inBook.getNomenclaturalCitation(INomenclaturalReference.MICRO_REFERENCE_TOKEN);
 			result = result.replace(beforeMicroReference +  INomenclaturalReference.MICRO_REFERENCE_TOKEN, INomenclaturalReference.MICRO_REFERENCE_TOKEN);
 		}
-		result = getBookAuthorPart(bookSection.getInReference(), afterNomRefBookAuthor) + result;
+		result = getBookAuthorPart(bookSection.getInBook(), afterNomRefBookAuthor) + result;
 		result = "in " +  result;
 		return result;
 	}
@@ -88,10 +87,10 @@ public class BookSectionDefaultCacheStrategy <T extends ReferenceBase> extends N
 	 */
 	@Override
 	public String getTitleCache(T bookSection) {
-		if (bookSection.getInReference() == null){
+		if (bookSection.getInBook() == null){
 			return null;
 		}
-		String result = bookSection.getInReference().getTitleCache();
+		String result = bookSection.getInBook().getTitleCache();
 		TeamOrPersonBase<?> team = bookSection.getAuthorTeam();
 		String bookAuthor = CdmUtils.Nz(team == null? "" : team.getTitleCache());
 		result = bookAuthor + afterBookAuthor + result;
@@ -104,7 +103,7 @@ public class BookSectionDefaultCacheStrategy <T extends ReferenceBase> extends N
 		return result;
 	}
 	
-	private String getBookAuthorPart(ReferenceBase book, String seperator){
+	private String getBookAuthorPart(Book book, String seperator){
 		if (book == null){
 			return "";
 		}

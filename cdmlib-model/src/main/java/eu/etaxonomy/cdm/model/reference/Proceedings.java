@@ -108,7 +108,7 @@ public class Proceedings extends PrintedUnitBase<IReferenceBaseCacheStrategy<Pro
 	}
 
 	
-	
+	//*********** CLONE **********************************/	
 			
 	/** 
 	 * Clones <i>this</i> conference proceedings. This is a shortcut that enables to

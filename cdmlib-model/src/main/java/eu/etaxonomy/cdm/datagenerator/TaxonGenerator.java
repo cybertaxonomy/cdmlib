@@ -10,10 +10,9 @@ import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
-//import eu.etaxonomy.cdm.model.reference.Book;
-//import eu.etaxonomy.cdm.model.reference.Database;
+import eu.etaxonomy.cdm.model.reference.Book;
+import eu.etaxonomy.cdm.model.reference.Database;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
-import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -26,12 +25,11 @@ public class TaxonGenerator {
 	private Random rnd = new Random();
 
 	public static Taxon getTestTaxon(){
-		ReferenceFactory refFactory = ReferenceFactory.newInstance();
 		Person deCandolle = Person.NewInstance();
 		deCandolle.setTitleCache("DC.");
-		ReferenceBase sec = refFactory.newDatabase();
+		ReferenceBase sec = Database.NewInstance();
 		sec.setTitleCache("Flora lunaea");
-		ReferenceBase citationRef = refFactory.newBook();
+		ReferenceBase citationRef = Book.NewInstance();
 		citationRef.setTitleCache("Sp. lunarum");
 		
         //genus taxon with Name, combinationAuthor, 

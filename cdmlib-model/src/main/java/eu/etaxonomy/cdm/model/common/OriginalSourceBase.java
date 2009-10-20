@@ -40,11 +40,11 @@ import org.hibernate.envers.NotAudited;
  */
 
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "OriginalSourceBase", propOrder = {
+@XmlType(name = "OriginalSource", propOrder = {
     "idInSource",
     "idNamespace"
 })
-@XmlRootElement(name = "OriginalSourceBase")
+@XmlRootElement(name = "OriginalSource")
 @Entity
 @Audited
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
@@ -122,5 +122,14 @@ public abstract class OriginalSourceBase<T extends ISourceable> extends Referenc
 		return result;
 	}
 	
-	
+	/**
+	 * Clones this original source and sets the clones sourced object to 'sourceObj'
+	 * @see java.lang.Object#clone()
+	 */
+	public OriginalSourceBase clone(IdentifiableEntity sourcedObj) throws CloneNotSupportedException{
+		OriginalSourceBase result = (OriginalSourceBase)clone();
+		result.setSourcedObj(sourcedObj);
+		return result;
+	}
+
 }

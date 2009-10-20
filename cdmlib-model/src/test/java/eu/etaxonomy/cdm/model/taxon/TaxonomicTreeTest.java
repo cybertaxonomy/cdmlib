@@ -40,10 +40,9 @@ import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
-//import eu.etaxonomy.cdm.model.reference.Book;
-//import eu.etaxonomy.cdm.model.reference.Journal;
+import eu.etaxonomy.cdm.model.reference.Book;
+import eu.etaxonomy.cdm.model.reference.Journal;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
-import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 
 /**
  * @author a.mueller
@@ -64,7 +63,6 @@ public class TaxonomicTreeTest {
 	private static TaxonNameBase<?,?> taxonName2;
 	private static ReferenceBase ref1;
 	private static ReferenceBase ref2;
-	private ReferenceFactory refFactory;
 	
 	
 	
@@ -88,12 +86,11 @@ public class TaxonomicTreeTest {
 	@Before
 	public void setUp() throws Exception {
 		viewName1 = "Greuther, 1993";
-		refFactory = ReferenceFactory.newInstance();
 		taxonomicView1 = TaxonomicTree.NewInstance(viewName1);
 		taxonName1 = BotanicalName.NewInstance(Rank.SPECIES());
 		taxonName1 = ZoologicalName.NewInstance(Rank.SPECIES());
-		ref1 = refFactory.newJournal();
-		ref2 = refFactory.newJournal();
+		ref1 = Journal.NewInstance();
+		ref2 = Journal.NewInstance();
 		taxon1 = Taxon.NewInstance(taxonName1, ref1);
 		taxon2 = Taxon.NewInstance(taxonName2, ref2);
 		
@@ -333,7 +330,7 @@ public class TaxonomicTreeTest {
 			BotanicalName name = BotanicalName.NewInstance(Rank.GENUS());
 			name.setTitleCache("A dummy name");
 			result.add(name);
-			ReferenceBase ref = refFactory.newBook();
+			ReferenceBase ref = Book.NewInstance();
 			ref.setTitleCache("A dummy book");
 			result.add(ref);
 			

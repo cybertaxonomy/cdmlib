@@ -26,8 +26,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.sun.org.apache.bcel.internal.generic.ReferenceType;
-
 import eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
@@ -36,16 +34,11 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
-//import eu.etaxonomy.cdm.model.reference.Article;
-//import eu.etaxonomy.cdm.model.reference.Book;
-//import eu.etaxonomy.cdm.model.reference.BookSection;
-import eu.etaxonomy.cdm.model.reference.IArticle;
-import eu.etaxonomy.cdm.model.reference.IBook;
-import eu.etaxonomy.cdm.model.reference.IBookSection;
-import eu.etaxonomy.cdm.model.reference.IJournal;
+import eu.etaxonomy.cdm.model.reference.Article;
+import eu.etaxonomy.cdm.model.reference.Book;
+import eu.etaxonomy.cdm.model.reference.BookSection;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
-import eu.etaxonomy.cdm.model.reference.IVolumeReference;
-//import eu.etaxonomy.cdm.model.reference.Journal;
+import eu.etaxonomy.cdm.model.reference.Journal;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 /**
  * @author a.mueller
@@ -342,16 +335,16 @@ public class NonViralNameParserImplTest {
 		String strFullWhiteSpcaceAndDot = "Abies alba Mill.,  Sp.   Pl.  4:  455 .  1987 .";
 		NonViralName<?> namefullWhiteSpcaceAndDot = parser.parseReferencedName(strFullWhiteSpcaceAndDot, null, Rank.SPECIES());
 		assertFullRefStandard(namefullWhiteSpcaceAndDot);
-		assertTrue(((ReferenceBase)namefullWhiteSpcaceAndDot.getNomenclaturalReference()).getType().equals(eu.etaxonomy.cdm.model.reference.ReferenceType.Book));
+		assertTrue(namefullWhiteSpcaceAndDot.getNomenclaturalReference() instanceof Book);
 		assertEquals( "Abies alba Mill., Sp. Pl. 4: 455. 1987", namefullWhiteSpcaceAndDot.getFullTitleCache());
 
 		//Book
 		String fullReference = "Abies alba Mill., Sp. Pl. 4: 455. 1987";
 		NonViralName<?> name1 = parser.parseReferencedName(fullReference, null, Rank.SPECIES());
 		assertFullRefStandard(name1);
-		assertTrue(((ReferenceBase)name1.getNomenclaturalReference()).getType().equals(eu.etaxonomy.cdm.model.reference.ReferenceType.Book));
+		assertTrue(name1.getNomenclaturalReference() instanceof Book);
 		assertEquals(fullReference, name1.getFullTitleCache());
-		assertTrue("Name author and reference author should be the same", name1.getCombinationAuthorTeam() == ((ReferenceBase)name1.getNomenclaturalReference()).getAuthorTeam());
+		assertTrue("Name author and reference author should be the same", name1.getCombinationAuthorTeam() == name1.getNomenclaturalReference().getAuthorTeam());
 		
 		//Book Section
 		fullReference = "Abies alba Mill. in Otto, Sp. Pl. 4(6): 455. 1987";
@@ -359,17 +352,17 @@ public class NonViralNameParserImplTest {
 		assertFullRefNameStandard(name2);
 		assertEquals(fullReference, name2.getFullTitleCache());
 		assertFalse(name2.hasProblem());
-		INomenclaturalReference ref = name2.getNomenclaturalReference();
-		assertEquals(eu.etaxonomy.cdm.model.reference.ReferenceType.Book, ((ReferenceBase)ref).getType());
-		IBookSection bookSection = (IBookSection) ref;
-		IBook inBook = bookSection.getInBook();
+		INomenclaturalReference ref = (INomenclaturalReference)name2.getNomenclaturalReference();
+		assertEquals(BookSection.class, ref.getClass());
+		BookSection bookSection = (BookSection)ref;
+		Book inBook = bookSection.getInBook();
 		assertNotNull(inBook);
 		assertNotNull(inBook.getAuthorTeam());
 		assertEquals("Otto", inBook.getAuthorTeam().getTitleCache());
 		assertEquals("Otto, Sp. Pl. 4(6)", inBook.getTitleCache());
 		assertEquals("Sp. Pl.", inBook.getTitle());
 		assertEquals("4(6)", inBook.getVolume());
-		assertTrue("Name author and reference author should be the same", name2.getCombinationAuthorTeam() == ((ReferenceBase)name2.getNomenclaturalReference()).getAuthorTeam());
+		assertTrue("Name author and reference author should be the same", name2.getCombinationAuthorTeam() == name2.getNomenclaturalReference().getAuthorTeam());
 		
 		//Article
 		fullReference = "Abies alba Mill. in Sp. Pl. 4(6): 455. 1987";
@@ -377,15 +370,15 @@ public class NonViralNameParserImplTest {
 		assertFullRefNameStandard(name3);
 		assertEquals(fullReference, name3.getFullTitleCache());
 		assertFalse(name3.hasProblem());
-		ref = name3.getNomenclaturalReference();
-		assertEquals(eu.etaxonomy.cdm.model.reference.ReferenceType.Article, ref.getType());
-		//Article article = (Article)ref;
-		IJournal journal = ((IArticle)ref).getInJournal();
+		ref = (INomenclaturalReference)name3.getNomenclaturalReference();
+		assertEquals(Article.class, ref.getClass());
+		Article article = (Article)ref;
+		Journal journal = article.getInJournal();
 		assertNotNull(journal);
 		//assertEquals("Sp. Pl. 4(6)", inBook.getTitleCache());
-		assertEquals("Sp. Pl.",((ReferenceBase) journal).getTitleCache());
+		assertEquals("Sp. Pl.", journal.getTitleCache());
 		assertEquals("Sp. Pl.", journal.getTitle());
-		assertEquals("4(6)",((IArticle)ref).getVolume());
+		assertEquals("4(6)", article.getVolume());
 		assertTrue("Name author and reference author should be the same", name3.getCombinationAuthorTeam() == name3.getNomenclaturalReference().getAuthorTeam());
 		
 		//SoftArticle - having "," on position > 4
@@ -399,15 +392,15 @@ public class NonViralNameParserImplTest {
 		assertFalse(name4.hasProblem());
 		assertFullRefNameStandard(name4);
 		assertEquals(fullReferenceWithoutYear + " " + parsedYear, name4.getFullTitleCache());
-		ref = name4.getNomenclaturalReference();
-		assertEquals(eu.etaxonomy.cdm.model.reference.ReferenceType.Article, ref.getType());
-		//article = (Article)ref;
+		ref = (INomenclaturalReference)name4.getNomenclaturalReference();
+		assertEquals(Article.class, ref.getClass());
+		article = (Article)ref;
 		assertEquals(parsedYear, ref.getYear());
-		journal = ((IArticle)ref).getInJournal();
+		journal = article.getInJournal();
 		assertNotNull(journal);
-		assertEquals(journalTitle, ((ReferenceBase) journal).getTitleCache());
+		assertEquals(journalTitle, journal.getTitleCache());
 		assertEquals(journalTitle, journal.getTitle());
-		assertEquals("4(6)", ((IArticle)ref).getVolume());
+		assertEquals("4(6)", article.getVolume());
 		
 		//Zoo name
 		String strNotParsableZoo = "Abies alba M., 1923, Sp. P. xxwer4352, nom. inval.";
@@ -531,32 +524,32 @@ public class NonViralNameParserImplTest {
 		NonViralName<?> nameNoVolume = parser.parseReferencedName(strNoVolume, null, Rank.SPECIES());
 		assertFalse(nameNoVolume.hasProblem());
 		assertEquals(strNoVolume, nameNoVolume.getFullTitleCache());
-		assertEquals(null, ((IVolumeReference)(nameNoVolume.getNomenclaturalReference())).getVolume());
-		assertEquals(null, ((IBook)nameNoVolume.getNomenclaturalReference()).getEdition());
+		assertEquals(null, ((Book)nameNoVolume.getNomenclaturalReference()).getVolume());
+		assertEquals(null, ((Book)nameNoVolume.getNomenclaturalReference()).getEdition());
 
 		//volume, no edition
 		strNoVolume = "Abies alba Mill., Sp. Pl. 2: 455. 1987";
 		nameNoVolume = parser.parseReferencedName(strNoVolume, null, Rank.SPECIES());
 		assertFalse(nameNoVolume.hasProblem());
 		assertEquals(strNoVolume, nameNoVolume.getFullTitleCache());
-		assertEquals("2", ((IVolumeReference)(nameNoVolume.getNomenclaturalReference())).getVolume());
-		assertEquals(null, ((IBook)(nameNoVolume.getNomenclaturalReference())).getEdition());
+		assertEquals("2", ((Book)nameNoVolume.getNomenclaturalReference()).getVolume());
+		assertEquals(null, ((Book)nameNoVolume.getNomenclaturalReference()).getEdition());
 
 		//no volume, edition
 		strNoVolume = "Abies alba Mill., Sp. Pl. ed. 3: 455. 1987";
 		nameNoVolume = parser.parseReferencedName(strNoVolume, null, Rank.SPECIES());
 		assertFalse(nameNoVolume.hasProblem());
 		assertEquals(strNoVolume, nameNoVolume.getFullTitleCache());
-		assertEquals(null, ((IVolumeReference)(nameNoVolume.getNomenclaturalReference())).getVolume());
-		assertEquals("3", ((IBook)(nameNoVolume.getNomenclaturalReference())).getEdition());
+		assertEquals(null, ((Book)nameNoVolume.getNomenclaturalReference()).getVolume());
+		assertEquals("3", ((Book)nameNoVolume.getNomenclaturalReference()).getEdition());
 		
 		//volume, edition
 		strNoVolume = "Abies alba Mill., Sp. Pl. ed. 3, 4(5): 455. 1987";
 		nameNoVolume = parser.parseReferencedName(strNoVolume, null, Rank.SPECIES());
 		assertFalse(nameNoVolume.hasProblem());
 		assertEquals(strNoVolume, nameNoVolume.getFullTitleCache());
-		assertEquals("4(5)", ((IVolumeReference)(nameNoVolume.getNomenclaturalReference())).getVolume());
-		assertEquals("3", ((IBook)(nameNoVolume.getNomenclaturalReference())).getEdition());
+		assertEquals("4(5)", ((Book)nameNoVolume.getNomenclaturalReference()).getVolume());
+		assertEquals("3", ((Book)nameNoVolume.getNomenclaturalReference()).getEdition());
 		
 		String strUnparsableInRef = "Abies alba Mill. in -er46: 455. 1987";
 		NonViralName<?> nameUnparsableInRef = parser.parseReferencedName(strUnparsableInRef, null, Rank.SPECIES());
@@ -643,8 +636,8 @@ public class NonViralNameParserImplTest {
 		assertEquals(strBookSection2NoComma, nameBookSection2.getFullTitleCache());
 		assertEquals(-1, nameBookSection2.getProblemStarts()); 
 		assertEquals(-1, nameBookSection2.getProblemEnds());
-		assertNull((nameBookSection2.getNomenclaturalReference()).getDatePublished().getStart());
-		assertEquals("1905-1907", ((IBookSection)nameBookSection2.getNomenclaturalReference()).getInBook().getDatePublished().getYear());
+		assertNull(((BookSection)nameBookSection2.getNomenclaturalReference()).getDatePublished().getStart());
+		assertEquals("1905-1907", ((BookSection)nameBookSection2.getNomenclaturalReference()).getInBook().getDatePublished().getYear());
 
 		
 		String strBookSection = "Hieracium vulgatum subsp. acuminatum (Jord.) Zahn in Schinz & Keller, Fl. Schweiz ed. 2, 2: 288. 1905";
@@ -654,8 +647,8 @@ public class NonViralNameParserImplTest {
 		assertEquals(strBookSection, nameBookSection.getFullTitleCache());
 		assertEquals(-1, nameBookSection.getProblemStarts()); 
 		assertEquals(-1, nameBookSection.getProblemEnds());
-		assertNull(((IBookSection)nameBookSection.getNomenclaturalReference()).getInBook().getDatePublished().getStart());
-		assertEquals("1905", ((IBookSection)nameBookSection.getNomenclaturalReference()).getDatePublished().getYear());
+		assertNull(((BookSection)nameBookSection.getNomenclaturalReference()).getInBook().getDatePublished().getStart());
+		assertEquals("1905", ((BookSection)nameBookSection.getNomenclaturalReference()).getDatePublished().getYear());
 
 		String strXXXs = "Abies alba, Soer der 1987";
 		NonViralName<?> problemName = parser.parseReferencedName(strXXXs, null, null);

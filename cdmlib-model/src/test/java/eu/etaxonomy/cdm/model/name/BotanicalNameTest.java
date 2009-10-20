@@ -25,10 +25,9 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
-//import eu.etaxonomy.cdm.model.reference.Article;
+import eu.etaxonomy.cdm.model.reference.Article;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
-import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 
 
@@ -80,14 +79,13 @@ public class BotanicalNameTest extends EntityTestBase{
 
 	@Test
 	public final void testBotanicalNameRankStringStringStringAgentINomenclaturalReferenceString() {
-		ReferenceFactory refFactory = ReferenceFactory.newInstance();
 		Rank rank = Rank.SPECIALFORM();
 		String genusOrUninomial = "Genus";
 		String infraGenericEpithet = "infraGenericEpi";
 		String specificEpithet = "specEpi";
 		String infraSpecificEpithet = "infraSpecificEpi";
 		TeamOrPersonBase combinationAuthorTeam = Team.NewInstance();
-		INomenclaturalReference nomenclaturalReference = refFactory.newArticle();
+		INomenclaturalReference nomenclaturalReference = Article.NewInstance();
 		String nomenclMicroRef = "microRef";
 		HomotypicalGroup homotypicalGroup = new HomotypicalGroup();
 		BotanicalName fullName = new BotanicalName(rank, genusOrUninomial, infraGenericEpithet, specificEpithet, infraSpecificEpithet, combinationAuthorTeam, nomenclaturalReference, nomenclMicroRef, homotypicalGroup);

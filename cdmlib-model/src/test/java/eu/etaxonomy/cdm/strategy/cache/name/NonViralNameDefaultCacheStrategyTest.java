@@ -25,10 +25,8 @@ import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
-import eu.etaxonomy.cdm.model.reference.IBook;
-import eu.etaxonomy.cdm.model.reference.IGeneric;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
-import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
+import eu.etaxonomy.cdm.model.reference.Book;
+import eu.etaxonomy.cdm.model.reference.Generic;
 
 /**
  * @author a.mueller
@@ -60,8 +58,7 @@ public class NonViralNameDefaultCacheStrategyTest {
 	private INomenclaturalAuthor exAuthor;
 	private INomenclaturalAuthor basAuthor;
 	private INomenclaturalAuthor exBasAuthor;
-	private ReferenceBase citationRef;
-	private ReferenceFactory refFactory;
+	private Book citationRef;
 	
 	@BeforeClass
 	public static void setUpBeforeClass() {
@@ -74,7 +71,6 @@ public class NonViralNameDefaultCacheStrategyTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
-		refFactory = ReferenceFactory.newInstance();
 		strategy = NonViralNameDefaultCacheStrategy.NewInstance();
 		familyName = BotanicalName.PARSED_NAME(familyNameString, Rank.FAMILY());
 		genusName = BotanicalName.PARSED_NAME(genusNameString, Rank.GENUS());
@@ -160,7 +156,7 @@ public class NonViralNameDefaultCacheStrategyTest {
 	
 	@Test
 	public void testCacheListener() {
-		ReferenceBase ref = refFactory.newGeneric();
+		Generic ref = Generic.NewInstance();
 		ref.setTitleCache("GenericRef");
 		this.subSpeciesName.setNomenclaturalReference(ref);
 		Assert.assertEquals("Expected full title cache has error", "Abies alba subsp. beta, GenericRef", subSpeciesName.getFullTitleCache());
@@ -258,7 +254,7 @@ public class NonViralNameDefaultCacheStrategyTest {
 		
 		
 		//ref + nomRef
-		ReferenceBase book = refFactory.newBook();
+		Book book = Book.NewInstance();
 		book.setTitle("Booktitle");
 		Assert.assertNotNull("TitleCache should not be null", subSpeciesName.getTitleCache());
 		subSpeciesName.setNomenclaturalReference(book);

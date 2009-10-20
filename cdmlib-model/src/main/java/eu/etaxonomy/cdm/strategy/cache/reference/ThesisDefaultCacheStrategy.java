@@ -13,11 +13,10 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
-//import eu.etaxonomy.cdm.model.reference.Generic;
-//import eu.etaxonomy.cdm.model.reference.Thesis;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Generic;
+import eu.etaxonomy.cdm.model.reference.Thesis;
 
-public class ThesisDefaultCacheStrategy <T extends ReferenceBase> extends NomRefDefaultCacheStrategyBase<T> implements  INomenclaturalReferenceCacheStrategy<T> {
+public class ThesisDefaultCacheStrategy <T extends Thesis> extends NomRefDefaultCacheStrategyBase<T> implements  INomenclaturalReferenceCacheStrategy<T> {
 	private static final Logger logger = Logger.getLogger(ThesisDefaultCacheStrategy.class);
 	
 

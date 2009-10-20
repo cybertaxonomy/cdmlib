@@ -139,6 +139,7 @@ public class Thesis extends PublicationBase<INomenclaturalReferenceCacheStrategy
 	}
 	
 	
+//************************************* CLONE ******************************************/	
 
 	
 	/** 

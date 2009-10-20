@@ -22,7 +22,7 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
  * @version 1.0
  * @created 08-Nov-2007 13:06:29
  */
-public interface INomenclaturalReference extends IIdentifiableEntity, IParsable, IReferenceBase{
+public interface INomenclaturalReference extends IIdentifiableEntity, IParsable{
 
 	public final String MICRO_REFERENCE_TOKEN = "@@MicroReference";
 	
@@ -39,8 +39,6 @@ public interface INomenclaturalReference extends IIdentifiableEntity, IParsable,
 	public String getYear();
 
 	public void setDatePublished(TimePeriod datePublished);
-
-	
 
 	
 }
