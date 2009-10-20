@@ -92,7 +92,7 @@ public abstract class PublicationBase<S extends IReferenceBaseCacheStrategy> ext
 	}
 	
 	
-//*********** CLONE **********************************/	
+
 
 	/** 
 	 * Clones <i>this</i> publication. This is a shortcut that enables to

@@ -94,7 +94,7 @@ public class PrintSeries extends PublicationBase<IReferenceBaseCacheStrategy<Pri
 		this.series = series;
 	}
 	
-//*********** CLONE **********************************/	
+
 	
 	/** 
 	 * Clones <i>this</i> print series instance. This is a shortcut that enables to

@@ -24,7 +24,8 @@ import org.junit.Test;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.reference.Database;
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 
 /**
@@ -100,7 +101,8 @@ public class AnnotationTest extends EntityTestBase {
 	 */
 	@Test
 	public void testGetSetAnnotatedObj() {
-		AnnotatableEntity database = Database.NewInstance();
+		ReferenceFactory refFactory = ReferenceFactory.newInstance();
+		AnnotatableEntity database = refFactory.newDatabase();
 		annotation1.setAnnotatedObj(database);
 		assertSame(database, annotation1.getAnnotatedObj());
 		annotation1.setAnnotatedObj(null);

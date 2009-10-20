@@ -31,7 +31,8 @@ public class PublicationBaseTest {
 	@SuppressWarnings("unused")
 	private static Logger logger = Logger.getLogger(PublicationBaseTest.class);
 
-	private CdDvd publicationBase;
+	private IBook publicationBase;
+	private IArticle publicationBase2;
 	private String publisher1;
 	private String publisher2;
 	private String place1;
@@ -60,7 +61,12 @@ public class PublicationBaseTest {
 		publisher2 = "publisher2";
 		place1 = "place1";
 		place2 = "place2";
-		publicationBase = new CdDvd();
+		
+		ReferenceFactory refFactory = ReferenceFactory.newInstance();
+		publicationBase = refFactory.newBook();
+		
+		publicationBase2 = refFactory.newArticle();
+		
 	}
 
 	/**
@@ -72,22 +78,20 @@ public class PublicationBaseTest {
 
 	
 	
-//	/**
-//	 * Test method for {@link eu.etaxonomy.cdm.model.reference.PublicationBase#addPublisher(java.lang.String, java.lang.String)}.
-//	 */
-//	@Test
-//	public void testAddPublisherStringString() {
-//		assertEquals("Publishers list must be empty", 0, publicationBase.getPublishers().size());
-//		publicationBase.addPublisher(publisher1, place1);
-//		assertEquals("Publishers list must contains exactly 1 entry", 1, publicationBase.getPublishers().size());
-//		publicationBase.addPublisher(publisher2, place2);
-//		assertEquals("Publishers list must contains exactly 2 entry", 2, publicationBase.getPublishers().size());
-//		//List<Publisher> publishers = publicationBase.getPublishers();
-//		assertEquals("First publisher must be publisher1", publisher1, publicationBase.getPublisher(0).getPublisherName());
-//		assertEquals("Second publisher must be publisher2", publisher2, publicationBase.getPublisher(1).getPublisherName());
-//		assertEquals("First publication place  must be place1", place1, publicationBase.getPublisher(0).getPlace());
-//		assertEquals("Second publication place must be place2", place2, publicationBase.getPublisher(1).getPlace());
-//	}
+	/**
+	 * Test method for {@link eu.etaxonomy.cdm.model.reference.PublicationBase#addPublisher(java.lang.String, java.lang.String)}.
+	 */
+	@Test
+	public void testAddPublisherStringString() {
+		assertEquals("No publisher is set", null, publicationBase.getPublisher());
+		publicationBase.setPublisher(publisher1, place1);
+		assertEquals("The publishers is publisher1", publisher1, publicationBase.getPublisher());
+		assertEquals("The place is place1", place1, publicationBase.getPlacePublished());
+		publicationBase.setPublisher(publisher2, place2);
+		assertEquals("Second publisher must be publisher2", publisher2, publicationBase.getPublisher());
+		
+		assertEquals("Second publication place must be place2", place2, publicationBase.getPlacePublished());
+	}
 
 //	/**
 //	 * Test method for {@link eu.etaxonomy.cdm.model.reference.PublicationBase#addPublisher(java.lang.String, java.lang.String, int)}.

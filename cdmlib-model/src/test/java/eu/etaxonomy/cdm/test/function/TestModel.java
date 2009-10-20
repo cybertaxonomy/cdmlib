@@ -19,8 +19,9 @@ import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
-import eu.etaxonomy.cdm.model.reference.Journal;
+//import eu.etaxonomy.cdm.model.reference.Journal;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -29,7 +30,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 public class TestModel {
 	private static final UUID TEST_TAXON_UUID = UUID.fromString("b3084573-343d-4279-ba92-4ab01bb47db5");
 	static Logger logger = Logger.getLogger(TestModel.class);
-	
+	ReferenceFactory refFactory = ReferenceFactory.newInstance();
 	
 	public void testSomething(){
 		
@@ -40,7 +41,7 @@ public class TestModel {
 		ZoologicalName parentName = ZoologicalName.NewInstance(Rank.FAMILY());
 		
 		logger.info("Create reference objects...");
-		ReferenceBase sec = Journal.NewInstance();
+		ReferenceBase sec = refFactory.newJournal();
 		sec.setTitleCache("TestJournal");
 		
 		logger.info("Create taxon objects...");
@@ -70,7 +71,7 @@ public class TestModel {
 	
 	public void testParentRelation(){
 		TaxonNameBase taxonName = BotanicalName.NewInstance(Rank.SPECIES());
-		ReferenceBase ref = Journal.NewInstance();
+		ReferenceBase ref = refFactory.newJournal();
 		Taxon parent = Taxon.NewInstance(taxonName, ref);
 		Taxon child = Taxon.NewInstance(taxonName, null);
 		parent.addTaxonomicChild(child, null, null);
@@ -80,7 +81,7 @@ public class TestModel {
 	}
 	
 	public void testDescription(){
-		ReferenceBase ref = Journal.NewInstance();
+		ReferenceBase ref = refFactory.newJournal();
 		Taxon taxon = Taxon.NewInstance(null, ref);
 		TaxonDescription desc = TaxonDescription.NewInstance();
 		taxon.addDescription(desc);

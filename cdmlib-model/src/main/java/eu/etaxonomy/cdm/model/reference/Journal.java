@@ -99,7 +99,7 @@ public class Journal extends PublicationBase<IReferenceBaseCacheStrategy<Journal
 	}
 
 	
-//*********** CLONE **********************************/	
+
 	
 	/** 
 	 * Clones <i>this</i> journal instance. This is a shortcut that enables to

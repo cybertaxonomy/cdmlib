@@ -172,7 +172,7 @@ public abstract class PrintedUnitBase<S extends IReferenceBaseCacheStrategy> ext
 		this.seriesPart = seriesPart;
 	}
 
-//*********** CLONE **********************************/	
+
 
 
 	/** 

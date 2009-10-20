@@ -213,7 +213,7 @@ public class BookSection extends SectionBase<INomenclaturalReferenceCacheStrateg
 //		return nomRefBase.generateTitle();
 //	}
 	
-//*********** CLONE **********************************/	
+	
 
 	/** 
 	 * Clones <i>this</i> book section. This is a shortcut that enables to

@@ -72,7 +72,7 @@ public abstract class SectionBase<S extends IReferenceBaseCacheStrategy> extends
 	}
 
 
-//*********** CLONE **********************************/	
+	
 	
 
 	/** 

@@ -28,9 +28,10 @@ import org.junit.Test;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.model.reference.Book;
-import eu.etaxonomy.cdm.model.reference.Journal;
+//import eu.etaxonomy.cdm.model.reference.Book;
+//import eu.etaxonomy.cdm.model.reference.Journal;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 
 /**
  * @author a.mueller
@@ -69,11 +70,12 @@ public class TaxonNodeTest {
 	@Before
 	public void setUp() throws Exception {
 		viewName1 = "Greuther, 1993";
+		ReferenceFactory refFactory = ReferenceFactory.newInstance();
 		taxonomicView1 = TaxonomicTree.NewInstance(viewName1);
 		taxonName1 = BotanicalName.NewInstance(Rank.SPECIES());
 		taxonName1 = BotanicalName.NewInstance(Rank.SUBSPECIES());
-		ref1 = Journal.NewInstance();
-		ref2 = Book.NewInstance();
+		ref1 = refFactory.newJournal();
+		ref2 = refFactory.newBook();
 		taxon1 = Taxon.NewInstance(taxonName1, ref1);
 		taxon2 = Taxon.NewInstance(taxonName2, ref1);
 		//taxonNode1 = new TaxonNode(taxon1, taxonomicView1);

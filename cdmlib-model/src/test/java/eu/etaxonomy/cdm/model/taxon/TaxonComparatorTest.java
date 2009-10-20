@@ -25,8 +25,9 @@ import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
-import eu.etaxonomy.cdm.model.reference.Book;
+//import eu.etaxonomy.cdm.model.reference.Book;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 
 /**
  * @author a.mueller
@@ -72,11 +73,13 @@ public class TaxonComparatorTest {
 	@Test
 	public void testCompare() {
 		logger.debug("start testCompare");
-		ReferenceBase sec = Book.NewInstance();
+		ReferenceFactory refFactory = ReferenceFactory.newInstance();
 		
-		Book ref1 = Book.NewInstance(); 
-		Book ref2 = Book.NewInstance(); 
-		Book ref3 = Book.NewInstance(); 
+		ReferenceBase sec = refFactory.newBook();
+		
+		ReferenceBase ref1 = refFactory.newBook();
+		ReferenceBase ref2 = refFactory.newBook();
+		ReferenceBase ref3 = refFactory.newBook();
 		Calendar cal1 = Calendar.getInstance();
 		Calendar cal2 = Calendar.getInstance();
 		Calendar cal3 = Calendar.getInstance();

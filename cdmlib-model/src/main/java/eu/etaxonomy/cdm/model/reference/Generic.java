@@ -225,11 +225,9 @@ public class Generic extends PublicationBase<INomenclaturalReferenceCacheStrateg
 		}
 	}
 
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.reference.ReferenceBase#generateTitle()
-	 */
 	/**
+	 (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.reference.ReferenceBase#generateTitle()
 	 * Generates, according to the {@link strategy.cache.reference.GenericDefaultCacheStrategy default cache strategy}
 	 * assigned to <i>this</i> generic reference, a string that identifies <i>this</i>
 	 * reference and returns it. This string may be stored in the inherited
@@ -247,7 +245,7 @@ public class Generic extends PublicationBase<INomenclaturalReferenceCacheStrateg
 //		return nomRefBase.generateTitle();
 //	}
 	
-//*********** CLONE **********************************/	
+
 	
 
 	/** 

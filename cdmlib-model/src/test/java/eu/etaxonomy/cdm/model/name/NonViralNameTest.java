@@ -22,9 +22,13 @@ import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
-import eu.etaxonomy.cdm.model.reference.Article;
-import eu.etaxonomy.cdm.model.reference.Generic;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+//import eu.etaxonomy.cdm.model.reference.Article;
+//import eu.etaxonomy.cdm.model.reference.Generic;
+import eu.etaxonomy.cdm.model.reference.IArticle;
+import eu.etaxonomy.cdm.model.reference.IGeneric;
+import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
+import eu.etaxonomy.cdm.model.reference.IReferenceBase;
+import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 
 /**
@@ -37,6 +41,7 @@ public class NonViralNameTest extends EntityTestBase {
 	
 	NonViralName<?> nonViralName1;
 	NonViralName<?> nonViralName2;
+	ReferenceFactory refFactory;
 	
 	@BeforeClass
 	public static void setUpBeforeClass() {
@@ -51,6 +56,7 @@ public class NonViralNameTest extends EntityTestBase {
 	public void setUp() throws Exception {
 		nonViralName1 = new BotanicalName();
 		nonViralName2 = new BotanicalName();
+		refFactory = ReferenceFactory.newInstance();
 	}
 
 	/**
@@ -106,7 +112,7 @@ public class NonViralNameTest extends EntityTestBase {
 	@Test
 	public final void testNonViralNameRankStringStringStringAgentINomenclaturalReferenceString() {
 		Team agent = Team.NewInstance();
-		Article article = Article.NewInstance();
+		INomenclaturalReference article = refFactory.newArticle();
 		HomotypicalGroup homotypicalGroup = HomotypicalGroup.NewInstance();
 		NonViralName<?> nonViralName = new NonViralName(Rank.GENUS(), "Genus", "infraGen", "species", "infraSpec", agent, article, "mikro", homotypicalGroup);
 		assertEquals("Genus", nonViralName.getGenusOrUninomial() );
@@ -243,7 +249,7 @@ public class NonViralNameTest extends EntityTestBase {
 		String strTeam1 = "Team1";
 		String strTeam2 = "Team2";
 		String strTeam3 = "Team3";
-		ReferenceBase<?> ref1 = Generic.NewInstance();
+		IGeneric ref1 = refFactory.newGeneric();
 		ref1.setTitleCache("RefTitle");
 		
 		Team team1 = Team.NewInstance();

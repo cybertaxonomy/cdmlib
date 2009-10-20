@@ -29,8 +29,9 @@ import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
-import eu.etaxonomy.cdm.model.reference.Book;
+//import eu.etaxonomy.cdm.model.reference.Book;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 
 public class TaxonTest extends EntityTestBase {
@@ -60,11 +61,12 @@ public class TaxonTest extends EntityTestBase {
 	
 	@Before
 	public void setUp() throws Exception {
+		ReferenceFactory refFactory = ReferenceFactory.newInstance();
 		Person linne =new Person("Carl", "Linné", "L.");
-		sec= Book.NewInstance();
+		sec= refFactory.newBook();
 		sec.setAuthorTeam(linne);
 		sec.setTitleCache("Schönes saftiges Allgäu");
-		misSec = Book.NewInstance();
+		misSec = refFactory.newBook();
 		misSec.setTitleCache("Stupid book");
 		
 		name1 = ZoologicalName.NewInstance(Rank.SPECIES(),"Panthera",null,"onca",null,linne,null,"p.1467", null);

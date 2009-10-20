@@ -46,9 +46,11 @@ import eu.etaxonomy.cdm.jaxb.MultilanguageTextAdapter;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.common.ISourceable;
+import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.MultilanguageText;
+import eu.etaxonomy.cdm.model.common.OriginalSourceBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
@@ -501,5 +503,16 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
 			this.sources.iterator().next().setNameUsedInSource(nameUsedInSource);
 		}
 	}
+	
+	/**
+	 * Clones this original source and sets the clones sourced object to 'sourceObj'
+	 * @see java.lang.Object#clone()
+	 */
+	public DescriptionElementSource clone(DescriptionElementBase sourcedObj) throws CloneNotSupportedException{
+		DescriptionElementSource result = (DescriptionElementSource)clone();
+		result.setSourcedObj(sourcedObj);
+		return result;
+	}
+
 	
 }
