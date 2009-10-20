@@ -68,8 +68,8 @@ public class ReferenceServiceImpl extends IdentifiableServiceBase<ReferenceBase,
 		return new DefaultPagerImpl<ReferenceBase>(pageNumber, numberOfResults, pageSize, results);
 	}
 
-	public List<UuidAndTitleCache> getUuidAndTitleCacheOfReferences() {
+	public List<UuidAndTitleCache<ReferenceBase>> getUuidAndTitle() {
 		
-		return dao.getUuidAndTitleCacheOfReferences();
+		return dao.getUuidAndTitle();
 	}
 }

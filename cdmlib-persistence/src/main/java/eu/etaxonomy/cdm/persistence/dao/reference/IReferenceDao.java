@@ -21,5 +21,5 @@ import eu.etaxonomy.cdm.persistence.dao.common.ITitledDao;
  *
  */
 public interface IReferenceDao extends IIdentifiableDao<ReferenceBase>, ITitledDao<ReferenceBase>, ISearchableDao<ReferenceBase> {
-	public List<UuidAndTitleCache> getUuidAndTitleCacheOfReferences();
+	public List<UuidAndTitleCache<ReferenceBase>> getUuidAndTitle();
 }

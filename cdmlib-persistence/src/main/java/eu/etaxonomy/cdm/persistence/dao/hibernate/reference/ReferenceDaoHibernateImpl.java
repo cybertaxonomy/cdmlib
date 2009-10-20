@@ -17,6 +17,8 @@ import org.apache.lucene.analysis.SimpleAnalyzer;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
 import org.hibernate.Hibernate;
+import org.hibernate.Query;
+import org.hibernate.Session;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.Search;
 import org.hibernate.search.SearchFactory;
@@ -192,28 +194,19 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<ReferenceBase
 		throw new UnsupportedOperationException("suggestQuery is not supported for ReferenceBase");
 	}
 
-	public List<UuidAndTitleCache> getUuidAndTitleCacheOfReferences(){
-		String queryString = "SELECT uuid, titleCache FROM ReferenceBase";
+	public List<UuidAndTitleCache<ReferenceBase>> getUuidAndTitle(){
+		List<UuidAndTitleCache<ReferenceBase>> list = new ArrayList<UuidAndTitleCache<ReferenceBase>>();
+		Session session = getSession();
 		
-		List<Object[]> result = getSession().createSQLQuery(queryString).list();
-				
-		if(result.size() == 0){
-			return null;
-		}else{
-			List<UuidAndTitleCache> list = new ArrayList<UuidAndTitleCache>(result.size()); 
-			
-			for (Object object : result){
-				
-				Object[] objectArray = (Object[]) object;
-				
-				UUID uuid = UUID.fromString((String) objectArray[0]);
-				String titleCache = (String) objectArray[1];
-				
-				list.add(new UuidAndTitleCache(type, uuid, titleCache));
-			}
-			
-			return list;	
+		Query query = session.createQuery("select uuid, title from " + type.getSimpleName());
+		
+		List<Object[]> result = query.list();
+		
+		for(Object[] object : result){
+			list.add(new UuidAndTitleCache<ReferenceBase>(type, (UUID) object[0], (String) object[1]));
 		}
+		
+		return list;
 	}
 	
 }

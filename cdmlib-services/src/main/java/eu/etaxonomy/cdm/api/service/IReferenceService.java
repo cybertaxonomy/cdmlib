@@ -43,6 +43,6 @@ public interface IReferenceService extends IIdentifiableEntityService<ReferenceB
 	 * @return 
 	 * 			a <code>Map</code> containing uuid and titleCache of references
 	 */
-	public List<UuidAndTitleCache> getUuidAndTitleCacheOfReferences();
+	public List<UuidAndTitleCache<ReferenceBase>> getUuidAndTitle();
 	
 }
