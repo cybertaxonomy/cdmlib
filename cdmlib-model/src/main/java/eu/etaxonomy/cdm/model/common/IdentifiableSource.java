@@ -100,4 +100,15 @@ public class IdentifiableSource extends OriginalSourceBase<IdentifiableEntity>{
 		this.sourcedObj = sourcedObj;
 	}
 	
+	/**
+	 * Clones this original source and sets the clones sourced object to 'sourceObj'
+	 * @see java.lang.Object#clone()
+	 */
+	public IdentifiableSource clone(IdentifiableEntity sourcedObj) throws CloneNotSupportedException{
+		IdentifiableSource result = (IdentifiableSource)clone();
+		result.setSourcedObj(sourcedObj);
+		return result;
+}
+
+	
 }
