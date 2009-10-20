@@ -37,22 +37,7 @@
 		@MetaValue(value = "eu.etaxonomy.cdm.model.occurrence.LivingBeing", targetEntity = LivingBeing.class),
 		@MetaValue(value = "eu.etaxonomy.cdm.model.occurrence.Observation", targetEntity = Observation.class),
 		@MetaValue(value = "eu.etaxonomy.cdm.model.occurrence.Specimen", targetEntity = Specimen.class),
-		@MetaValue(value = "eu.etaxonomy.cdm.model.reference.Article", targetEntity = Article.class),
-		@MetaValue(value = "eu.etaxonomy.cdm.model.reference.Book", targetEntity = Book.class),
-		@MetaValue(value = "eu.etaxonomy.cdm.model.reference.BookSection", targetEntity = BookSection.class),
-		@MetaValue(value = "eu.etaxonomy.cdm.model.reference.CdDvd", targetEntity = CdDvd.class),
-		@MetaValue(value = "eu.etaxonomy.cdm.model.reference.Database", targetEntity = Database.class),
-		@MetaValue(value = "eu.etaxonomy.cdm.model.reference.Generic", targetEntity = Generic.class),
-		@MetaValue(value = "eu.etaxonomy.cdm.model.reference.InProceedings", targetEntity = InProceedings.class),
-		@MetaValue(value = "eu.etaxonomy.cdm.model.reference.Journal", targetEntity = Journal.class),
-		@MetaValue(value = "eu.etaxonomy.cdm.model.reference.Map", targetEntity = Map.class),
-		@MetaValue(value = "eu.etaxonomy.cdm.model.reference.Patent", targetEntity = Patent.class),
-		@MetaValue(value = "eu.etaxonomy.cdm.model.reference.PersonalCommunication", targetEntity = PersonalCommunication.class),
-		@MetaValue(value = "eu.etaxonomy.cdm.model.reference.PrintSeries", targetEntity = PrintSeries.class),
-		@MetaValue(value = "eu.etaxonomy.cdm.model.reference.Proceedings", targetEntity = Proceedings.class),
-		@MetaValue(value = "eu.etaxonomy.cdm.model.reference.Report", targetEntity = Report.class),
-		@MetaValue(value = "eu.etaxonomy.cdm.model.reference.Thesis", targetEntity = Thesis.class),
-		@MetaValue(value = "eu.etaxonomy.cdm.model.reference.WebPage", targetEntity = WebPage.class),
+		@MetaValue(value = "eu.etaxonomy.cdm.model.reference.ReferenceBase", targetEntity = ReferenceBase.class),
 		@MetaValue(value = "eu.etaxonomy.cdm.model.taxon.Synonym", targetEntity = Synonym.class),
 		@MetaValue(value = "eu.etaxonomy.cdm.model.taxon.Taxon", targetEntity = Taxon.class)
 		})
@@ -82,22 +67,7 @@ import eu.etaxonomy.cdm.model.occurrence.Fossil;
 import eu.etaxonomy.cdm.model.occurrence.LivingBeing;
 import eu.etaxonomy.cdm.model.occurrence.Observation;
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
-import eu.etaxonomy.cdm.model.reference.Article;
-import eu.etaxonomy.cdm.model.reference.Book;
-import eu.etaxonomy.cdm.model.reference.BookSection;
-import eu.etaxonomy.cdm.model.reference.CdDvd;
-import eu.etaxonomy.cdm.model.reference.Database;
-import eu.etaxonomy.cdm.model.reference.Generic;
-import eu.etaxonomy.cdm.model.reference.InProceedings;
-import eu.etaxonomy.cdm.model.reference.Journal;
-import eu.etaxonomy.cdm.model.reference.Map;
-import eu.etaxonomy.cdm.model.reference.Patent;
-import eu.etaxonomy.cdm.model.reference.PersonalCommunication;
-import eu.etaxonomy.cdm.model.reference.PrintSeries;
-import eu.etaxonomy.cdm.model.reference.Proceedings;
-import eu.etaxonomy.cdm.model.reference.Report;
-import eu.etaxonomy.cdm.model.reference.Thesis;
-import eu.etaxonomy.cdm.model.reference.WebPage;
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 	
