@@ -80,6 +80,12 @@ public class DescriptionElementSource extends OriginalSourceBase<DescriptionElem
 		return result;
 	}
 	
+	public static DescriptionElementSource NewInstance(String id, String idNamespace, ReferenceBase citation){
+		DescriptionElementSource result = NewInstance(id, idNamespace);
+		result.setCitation(citation);		
+		return result;
+	}
+	
 	public static DescriptionElementSource NewInstance(String id, String idNamespace, ReferenceBase citation, String microReference){
 		DescriptionElementSource result = NewInstance(id, idNamespace);
 		result.setCitation(citation);
