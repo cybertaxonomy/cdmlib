@@ -90,12 +90,11 @@ public class SalvadorExport {
 //	static final boolean doOccurences = false;
 //	
 	
-	public boolean 	doExport(){
+	public boolean 	doExport(ICdmDataSource source){
 		System.out.println("Start export to Berlin Model ("+ berlinModelDestination.getDatabase() + ") ...");
 		
 		//make BerlinModel Source
 		Source destination = berlinModelDestination;
-		ICdmDataSource source = cdmSource;
 		
 		BerlinModelExportConfigurator bmExportConfigurator = BerlinModelExportConfigurator.NewInstance(destination, source);
 		
@@ -135,7 +134,9 @@ public class SalvadorExport {
 	 */
 	public static void main(String[] args) {
 		SalvadorExport ex = new SalvadorExport();
-		ex.doExport();
+		ICdmDataSource source = CdmDestinations.chooseDestination(args) != null ? CdmDestinations.chooseDestination(args) : cdmSource;
+
+		ex.doExport(source);
 	}
 	
 	

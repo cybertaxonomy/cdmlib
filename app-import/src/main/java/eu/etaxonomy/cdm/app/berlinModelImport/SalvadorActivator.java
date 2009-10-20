@@ -112,12 +112,11 @@ public class SalvadorActivator {
 //	static final boolean doUser = false;	
 	
 	
-	public boolean doImport(){
+	public boolean doImport(ICdmDataSource destination){
 		System.out.println("Start import from BerlinModel("+ berlinModelSource.getDatabase() + ") ...");
 		
 		//make BerlinModel Source
 		Source source = berlinModelSource;
-		ICdmDataSource destination = cdmDestination;
 		
 		BerlinModelImportConfigurator config = BerlinModelImportConfigurator.NewInstance(source,  destination);
 		
@@ -166,10 +165,12 @@ public class SalvadorActivator {
 	 */
 	public static void main(String[] args) {
 		SalvadorActivator activator = new SalvadorActivator();
-		activator.doImport();
+		ICdmDataSource destination = CdmDestinations.chooseDestination(args) != null ? CdmDestinations.chooseDestination(args) : cdmDestination;
+
+		activator.doImport(destination);
 		if (doExport == true){
 			SalvadorExport export = new SalvadorExport();
-			export.doExport();
+			export.doExport(destination);
 		}
 	}
 
