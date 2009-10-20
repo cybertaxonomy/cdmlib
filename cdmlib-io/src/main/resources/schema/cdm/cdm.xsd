@@ -52,7 +52,6 @@
               <xs:choice minOccurs="0" maxOccurs="unbounded">
                 <xs:element ref="description:AbsenceTerm"/>
                 <xs:element ref="common:AnnotationType"/>
-                <xs:element ref="reference:BibtexEntryType"/>
                 <xs:element ref="location:Continent"/>
                 <xs:element ref="occurrence:DerivationEventType"/>
                 <xs:element ref="occurrence:DeterminationModifier"/>
@@ -153,22 +152,23 @@
           <xs:complexType>
             <xs:sequence>
               <xs:choice minOccurs="0" maxOccurs="unbounded">
-                <xs:element ref="reference:Article"/>
-                <xs:element ref="reference:Book"/>
-                <xs:element ref="reference:BookSection"/>
-                <xs:element ref="reference:CdDvd"/>
-                <xs:element ref="reference:Database"/>
-                <xs:element ref="reference:Generic"/>
-                <xs:element ref="reference:InProceedings"/>
-                <xs:element ref="reference:Journal"/>
-                <xs:element ref="reference:Map"/>
-                <xs:element ref="reference:Patent"/>
-                <xs:element ref="reference:PersonalCommunication"/>
-                <xs:element ref="reference:PrintSeries"/>
-                <xs:element ref="reference:Proceedings"/>
-                <xs:element ref="reference:Report"/>
-                <xs:element ref="reference:Thesis"/>
-                <xs:element ref="reference:WebPage"/>
+              		<xs:element ref="reference:ReferenceBase"/>
+<!--                <xs:element ref="reference:Article"/>-->
+<!--                <xs:element ref="reference:Book"/>-->
+<!--                <xs:element ref="reference:BookSection"/>-->
+<!--                <xs:element ref="reference:CdDvd"/>-->
+<!--                <xs:element ref="reference:Database"/>-->
+<!--                <xs:element ref="reference:Generic"/>-->
+<!--                <xs:element ref="reference:InProceedings"/>-->
+<!--                <xs:element ref="reference:Journal"/>-->
+<!--                <xs:element ref="reference:Map"/>-->
+<!--                <xs:element ref="reference:Patent"/>-->
+<!--                <xs:element ref="reference:PersonalCommunication"/>-->
+<!--                <xs:element ref="reference:PrintSeries"/>-->
+<!--                <xs:element ref="reference:Proceedings"/>-->
+<!--                <xs:element ref="reference:Report"/>-->
+<!--                <xs:element ref="reference:Thesis"/>-->
+<!--                <xs:element ref="reference:WebPage"/>-->
               </xs:choice>
             </xs:sequence>
             <xs:attribute ref="xml:base"/>

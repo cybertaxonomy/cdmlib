@@ -25,51 +25,51 @@
       </jxb:schemaBindings>
     </xs:appinfo>
   </xs:annotation>
-  <xs:element name="Article" type="reference:Article"/>
+ 	<xs:element name="ReferenceBase" type="reference:ReferenceBase"/>
 
-  <xs:element name="BibtexEntryType" type="reference:BibtexEntryType"/>
+<!--  <xs:element name="BibtexEntryType" type="reference:BibtexEntryType"/>-->
+<!---->
+<!--  <xs:element name="Book" type="reference:Book"/>-->
+<!---->
+<!--  <xs:element name="BookSection" type="reference:BookSection"/>-->
+<!---->
+<!--  <xs:element name="CdDvd" type="reference:CdDvd"/>-->
+<!---->
+<!--  <xs:element name="Database" type="reference:Database"/>-->
+<!---->
+<!--  <xs:element name="Generic" type="reference:Generic"/>-->
+<!---->
+<!--  <xs:element name="InProceedings" type="reference:InProceedings"/>-->
+<!---->
+<!--  <xs:element name="Journal" type="reference:Journal"/>-->
+<!---->
+<!--  <xs:element name="Map" type="reference:Map"/>-->
+<!---->
+<!--  <xs:element name="Patent" type="reference:Patent"/>-->
+<!---->
+<!--  <xs:element name="PersonalCommunication" type="reference:PersonalCommunication"/>-->
+<!---->
+<!--  <xs:element name="PrintSeries" type="reference:PrintSeries"/>-->
+<!---->
+<!--  <xs:element name="PrintedUnitBase" type="reference:PrintedUnitBase"/>-->
+<!---->
+<!--  <xs:element name="Proceedings" type="reference:Proceedings"/>-->
+<!---->
+<!--  <xs:element name="PublicationBase" type="reference:PublicationBase"/>-->
+<!---->
+<!--  <xs:element name="RelationshipBase" type="reference:ReferenceBase"/>-->
+<!---->
+<!--  <xs:element name="Report" type="reference:Report"/>-->
+<!---->
+<!--  <xs:element name="SectionBase" type="reference:SectionBase"/>-->
+<!--
+   <xs:element name="StrictReferenceBase" type="reference:StrictReferenceBase"/>  
+-->
+<!--  <xs:element name="Thesis" type="reference:Thesis"/>-->
+<!---->
+<!--  <xs:element name="WebPage" type="reference:WebPage"/>-->
 
-  <xs:element name="Book" type="reference:Book"/>
-
-  <xs:element name="BookSection" type="reference:BookSection"/>
-
-  <xs:element name="CdDvd" type="reference:CdDvd"/>
-
-  <xs:element name="Database" type="reference:Database"/>
-
-  <xs:element name="Generic" type="reference:Generic"/>
-
-  <xs:element name="InProceedings" type="reference:InProceedings"/>
-
-  <xs:element name="Journal" type="reference:Journal"/>
-
-  <xs:element name="Map" type="reference:Map"/>
-
-  <xs:element name="Patent" type="reference:Patent"/>
-
-  <xs:element name="PersonalCommunication" type="reference:PersonalCommunication"/>
-
-  <xs:element name="PrintSeries" type="reference:PrintSeries"/>
-
-  <xs:element name="PrintedUnitBase" type="reference:PrintedUnitBase"/>
-
-  <xs:element name="Proceedings" type="reference:Proceedings"/>
-
-  <xs:element name="PublicationBase" type="reference:PublicationBase"/>
-
-  <xs:element name="RelationshipBase" type="reference:Reference"/>
-
-  <xs:element name="Report" type="reference:Report"/>
-
-  <xs:element name="SectionBase" type="reference:SectionBase"/>
-
-  <!-- <xs:element name="StrictReferenceBase" type="reference:StrictReferenceBase"/> --> 
-
-  <xs:element name="Thesis" type="reference:Thesis"/>
-
-  <xs:element name="WebPage" type="reference:WebPage"/>
-
-  <xs:complexType name="Reference" abstract="true">
+  <xs:complexType name="ReferenceBase" abstract="true">
     <xs:complexContent>
       <xs:extension base="media:IdentifiableMediaEntity">
         <xs:sequence>
@@ -104,21 +104,21 @@
   
   
 
-  <xs:complexType name="BibtexEntryType">
-    <xs:complexContent>
-      <xs:extension base="common:DefinedTermBase">
-        <xs:sequence/>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="Article">
-    <xs:complexContent>
-      <xs:extension base="reference:Reference">
-        <xs:all/>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
+<!--  <xs:complexType name="BibtexEntryType">-->
+<!--    <xs:complexContent>-->
+<!--      <xs:extension base="common:DefinedTermBase">-->
+<!--        <xs:sequence/>-->
+<!--      </xs:extension>-->
+<!--    </xs:complexContent>-->
+<!--  </xs:complexType>-->
+<!---->
+<!--  <xs:complexType name="Article">-->
+<!--    <xs:complexContent>-->
+<!--      <xs:extension base="reference:ReferenceBase">-->
+<!--        <xs:all/>-->
+<!--      </xs:extension>-->
+<!--    </xs:complexContent>-->
+<!--  </xs:complexType>-->
 
  <!-- <xs:complexType name="StrictReferenceBase" abstract="true">
     <xs:complexContent>
@@ -132,151 +132,151 @@
   </xs:complexType>
   -->
 
-  <xs:complexType name="Journal">
-    <xs:complexContent>
-      <xs:extension base="reference:PublicationBase">
-        <xs:all/>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="PublicationBase" abstract="true">
-    <xs:complexContent>
-      <xs:extension base="reference:Reference">
-        <xs:all/>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="Book">
-    <xs:complexContent>
-      <xs:extension base="reference:PrintedUnitBase">
-        <xs:all/>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-  
-  
-
-  <xs:complexType name="PrintedUnitBase" abstract="true">
-    <xs:complexContent>
-      <xs:extension base="reference:PublicationBase">
-        <xs:all/>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="PrintSeries">
-    <xs:complexContent>
-      <xs:extension base="reference:PublicationBase">
-        <xs:all/>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="BookSection">
-    <xs:complexContent>
-      <xs:extension base="reference:SectionBase">
-        <xs:all/>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="SectionBase" abstract="true">
-    <xs:complexContent>
-      <xs:extension base="reference:Reference">
-        <xs:all/>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="CdDvd">
-    <xs:complexContent>
-      <xs:extension base="reference:PublicationBase">
-        <xs:sequence/>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="Database">
-    <xs:complexContent>
-      <xs:extension base="reference:PublicationBase">
-        <xs:sequence/>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="Generic">
-    <xs:complexContent>
-      <xs:extension base="reference:PublicationBase">
-        <xs:all/>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="InProceedings">
-    <xs:complexContent>
-      <xs:extension base="reference:SectionBase">
-        <xs:all/>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="Proceedings">
-    <xs:complexContent>
-      <xs:extension base="reference:PrintedUnitBase">
-        <xs:all/>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="Map">
-    <xs:complexContent>
-      <xs:extension base="reference:PublicationBase">
-        <xs:sequence/>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="Patent">
-    <xs:complexContent>
-      <xs:extension base="reference:Reference">
-        <xs:sequence/>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="PersonalCommunication">
-    <xs:complexContent>
-      <xs:extension base="reference:Reference">
-        <xs:sequence/>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="Report">
-    <xs:complexContent>
-      <xs:extension base="reference:PublicationBase">
-        <xs:all/>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="Thesis">
-    <xs:complexContent>
-      <xs:extension base="reference:PublicationBase">
-        <xs:all/>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="WebPage">
-    <xs:complexContent>
-      <xs:extension base="reference:PublicationBase">
-        <xs:sequence/>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
+<!--  <xs:complexType name="Journal">-->
+<!--    <xs:complexContent>-->
+<!--      <xs:extension base="reference:PublicationBase">-->
+<!--        <xs:all/>-->
+<!--      </xs:extension>-->
+<!--    </xs:complexContent>-->
+<!--  </xs:complexType>-->
+<!---->
+<!--  <xs:complexType name="PublicationBase" abstract="true">-->
+<!--    <xs:complexContent>-->
+<!--      <xs:extension base="reference:ReferenceBase">-->
+<!--        <xs:all/>-->
+<!--      </xs:extension>-->
+<!--    </xs:complexContent>-->
+<!--  </xs:complexType>-->
+<!---->
+<!--  <xs:complexType name="Book">-->
+<!--    <xs:complexContent>-->
+<!--      <xs:extension base="reference:PrintedUnitBase">-->
+<!--        <xs:all/>-->
+<!--      </xs:extension>-->
+<!--    </xs:complexContent>-->
+<!--  </xs:complexType>-->
+<!--  -->
+<!--  -->
+<!---->
+<!--  <xs:complexType name="PrintedUnitBase" abstract="true">-->
+<!--    <xs:complexContent>-->
+<!--      <xs:extension base="reference:PublicationBase">-->
+<!--        <xs:all/>-->
+<!--      </xs:extension>-->
+<!--    </xs:complexContent>-->
+<!--  </xs:complexType>-->
+<!---->
+<!--  <xs:complexType name="PrintSeries">-->
+<!--    <xs:complexContent>-->
+<!--      <xs:extension base="reference:PublicationBase">-->
+<!--        <xs:all/>-->
+<!--      </xs:extension>-->
+<!--    </xs:complexContent>-->
+<!--  </xs:complexType>-->
+<!---->
+<!--  <xs:complexType name="BookSection">-->
+<!--    <xs:complexContent>-->
+<!--      <xs:extension base="reference:SectionBase">-->
+<!--        <xs:all/>-->
+<!--      </xs:extension>-->
+<!--    </xs:complexContent>-->
+<!--  </xs:complexType>-->
+<!---->
+<!--  <xs:complexType name="SectionBase" abstract="true">-->
+<!--    <xs:complexContent>-->
+<!--      <xs:extension base="reference:ReferenceBase">-->
+<!--        <xs:all/>-->
+<!--      </xs:extension>-->
+<!--    </xs:complexContent>-->
+<!--  </xs:complexType>-->
+<!---->
+<!--  <xs:complexType name="CdDvd">-->
+<!--    <xs:complexContent>-->
+<!--      <xs:extension base="reference:PublicationBase">-->
+<!--        <xs:sequence/>-->
+<!--      </xs:extension>-->
+<!--    </xs:complexContent>-->
+<!--  </xs:complexType>-->
+<!---->
+<!--  <xs:complexType name="Database">-->
+<!--    <xs:complexContent>-->
+<!--      <xs:extension base="reference:PublicationBase">-->
+<!--        <xs:sequence/>-->
+<!--      </xs:extension>-->
+<!--    </xs:complexContent>-->
+<!--  </xs:complexType>-->
+<!---->
+<!--  <xs:complexType name="Generic">-->
+<!--    <xs:complexContent>-->
+<!--      <xs:extension base="reference:PublicationBase">-->
+<!--        <xs:all/>-->
+<!--      </xs:extension>-->
+<!--    </xs:complexContent>-->
+<!--  </xs:complexType>-->
+<!---->
+<!--  <xs:complexType name="InProceedings">-->
+<!--    <xs:complexContent>-->
+<!--      <xs:extension base="reference:SectionBase">-->
+<!--        <xs:all/>-->
+<!--      </xs:extension>-->
+<!--    </xs:complexContent>-->
+<!--  </xs:complexType>-->
+<!---->
+<!--  <xs:complexType name="Proceedings">-->
+<!--    <xs:complexContent>-->
+<!--      <xs:extension base="reference:PrintedUnitBase">-->
+<!--        <xs:all/>-->
+<!--      </xs:extension>-->
+<!--    </xs:complexContent>-->
+<!--  </xs:complexType>-->
+<!---->
+<!--  <xs:complexType name="Map">-->
+<!--    <xs:complexContent>-->
+<!--      <xs:extension base="reference:PublicationBase">-->
+<!--        <xs:sequence/>-->
+<!--      </xs:extension>-->
+<!--    </xs:complexContent>-->
+<!--  </xs:complexType>-->
+<!---->
+<!--  <xs:complexType name="Patent">-->
+<!--    <xs:complexContent>-->
+<!--      <xs:extension base="reference:ReferenceBase">-->
+<!--        <xs:sequence/>-->
+<!--      </xs:extension>-->
+<!--    </xs:complexContent>-->
+<!--  </xs:complexType>-->
+<!---->
+<!--  <xs:complexType name="PersonalCommunication">-->
+<!--    <xs:complexContent>-->
+<!--      <xs:extension base="reference:ReferenceBase">-->
+<!--        <xs:sequence/>-->
+<!--      </xs:extension>-->
+<!--    </xs:complexContent>-->
+<!--  </xs:complexType>-->
+<!---->
+<!--  <xs:complexType name="Report">-->
+<!--    <xs:complexContent>-->
+<!--      <xs:extension base="reference:PublicationBase">-->
+<!--        <xs:all/>-->
+<!--      </xs:extension>-->
+<!--    </xs:complexContent>-->
+<!--  </xs:complexType>-->
+<!---->
+<!--  <xs:complexType name="Thesis">-->
+<!--    <xs:complexContent>-->
+<!--      <xs:extension base="reference:PublicationBase">-->
+<!--        <xs:all/>-->
+<!--      </xs:extension>-->
+<!--    </xs:complexContent>-->
+<!--  </xs:complexType>-->
+<!---->
+<!--  <xs:complexType name="WebPage">-->
+<!--    <xs:complexContent>-->
+<!--      <xs:extension base="reference:PublicationBase">-->
+<!--        <xs:sequence/>-->
+<!--      </xs:extension>-->
+<!--    </xs:complexContent>-->
+<!--  </xs:complexType>-->
   
   <xs:simpleType name="referenceType">
     <xs:restriction base="xs:string">
