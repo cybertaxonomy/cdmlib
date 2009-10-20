@@ -78,13 +78,12 @@ public class PalmaeActivator {
 	static final boolean doFacts = true;
 
 	
-	private boolean doImport(){
+	private boolean doImport(ICdmDataSource destination){
 		boolean success = true;
 		System.out.println("Start import from Tcs("+ tcsSource.toString() + ") ...");
 		
 		//make BerlinModel Source
 		String source = tcsSource;
-		ICdmDataSource destination = cdmDestination;
 		
 		TcsRdfImportConfigurator tcsImportConfigurator = TcsRdfImportConfigurator.NewInstance(source,  destination);
 		
@@ -169,15 +168,16 @@ public class PalmaeActivator {
 		boolean success = true;
 		
 		logger.debug("start");
+		ICdmDataSource destination = CdmDestinations.chooseDestination(args) != null ? CdmDestinations.chooseDestination(args) : cdmDestination;
 		
 		PalmaeActivator me = new PalmaeActivator();
-		me.doImport();
+		me.doImport(destination);
 		
 		if (includeImages){
 			System.out.println("Start importing images ...");
 			CdmDefaultImport<IImportConfigurator> imageImporter = new CdmDefaultImport<IImportConfigurator>();
 			ImageImportConfigurator imageConfigurator = ImageImportConfigurator.NewInstance(
-					PalmaeImageActivator.sourceFolder, cdmDestination, PalmaeImageImport.class);
+					PalmaeImageActivator.sourceFolder, destination, PalmaeImageImport.class);
 			imageConfigurator.setSecUuid(secUuid);
 			success &= imageImporter.invoke(imageConfigurator);
 			System.out.println("End importing images ...");
@@ -186,7 +186,7 @@ public class PalmaeActivator {
 		if (includeExcelProtologue){
 			System.out.println("Start importing protologues ...");
 			ImageImportConfigurator imageConfigurator = ImageImportConfigurator.NewInstance(
-					PalmaeExcelProtologueActivator.sourceFile, cdmDestination, PalmaeProtologueImport.class);
+					PalmaeExcelProtologueActivator.sourceFile, destination, PalmaeProtologueImport.class);
 			imageConfigurator.setSecUuid(secUuid);
 			
 			CdmDefaultImport<IImportConfigurator> imageImporter = new CdmDefaultImport<IImportConfigurator>();
@@ -199,7 +199,7 @@ public class PalmaeActivator {
 			String urlString = "http://wp5.e-taxonomy.eu/media/palmae/protologe/";
 			File source = new File (protologueSource);
 
-			PalmaeProtologueImportConfigurator protologConfig = PalmaeProtologueImportConfigurator.NewInstance(protologueSource, cdmDestination, urlString);
+			PalmaeProtologueImportConfigurator protologConfig = PalmaeProtologueImportConfigurator.NewInstance(protologueSource, destination, urlString);
 			CdmDefaultImport<IImportConfigurator> cdmImport = new CdmDefaultImport<IImportConfigurator>();
 			
 			//protologConfig.setDoFacts(doDescriptions);
@@ -215,14 +215,14 @@ public class PalmaeActivator {
 		if (includeTaxonX){
 			System.out.println("Start importing taxonX ...");
 			PalmaeTaxonXImportActivator taxonXimporter = new PalmaeTaxonXImportActivator();
-			PalmaeTaxonXImportActivator.cdmDestination = cdmDestination;
+			PalmaeTaxonXImportActivator.cdmDestination = destination;
 			success &= taxonXimporter.runImport();
 			System.out.println("End importing taxonX ...");
 		}
 		
 		PalmaePostImportUpdater updater = new PalmaePostImportUpdater();
 		if (updateFeatureTree){
-			updater.updateMissingFeatures(cdmDestination);
+			updater.updateMissingFeatures(destination);
 		}
 		
 		String strSuccess = "";

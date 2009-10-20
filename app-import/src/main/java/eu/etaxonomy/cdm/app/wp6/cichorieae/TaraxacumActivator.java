@@ -124,12 +124,11 @@ public class TaraxacumActivator {
 	/**
 	 * @param args
 	 */
-	public void doImport() {
+	public void doImport(ICdmDataSource destination) {
 		logger.info("Start import from BerlinModel("+ berlinModelSource.getDatabase() + ") to " + cdmDestination.getDatabase() + " ...");
 		
 		//make BerlinModel Source
 		Source source = berlinModelSource;
-		ICdmDataSource destination = cdmDestination;
 		
 		BerlinModelImportConfigurator bmImportConfigurator = BerlinModelImportConfigurator.NewInstance(source,  destination);
 		
@@ -238,7 +237,9 @@ public class TaraxacumActivator {
 	
 	public static void main(String[] args) {
 		TaraxacumActivator ta = new TaraxacumActivator();
-		ta.doImport();
+		ICdmDataSource destination = CdmDestinations.chooseDestination(args) != null ? CdmDestinations.chooseDestination(args) : cdmDestination;
+		
+		ta.doImport(destination);
 		
 	}
 
