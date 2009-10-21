@@ -340,7 +340,7 @@ public class TaxonTest extends EntityTestBase {
 		taxon.removeTaxonRelation(relationship);
 		assertTrue("There should be no taxon relationships", taxon.getTaxonRelations().size() == 0);
 		taxon.addTaxonRelation(relationship);
-		assertTrue("There should be exactly one taxon relationships", taxon.getTaxonRelations().size() == 1);
+		assertEquals("There should be exactly one taxon relationships", 1, taxon.getTaxonRelations().size());
 	}
 
 	/**
