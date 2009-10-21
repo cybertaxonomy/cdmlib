@@ -52,7 +52,10 @@ import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.strategy.cache.reference.ArticleDefaultCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.reference.BookDefaultCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.reference.INomenclaturalReferenceCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.reference.IReferenceBaseCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.reference.JournalDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.match.IMatchable;
 import eu.etaxonomy.cdm.strategy.match.Match;
 import eu.etaxonomy.cdm.strategy.match.MatchMode;
@@ -874,9 +877,19 @@ public class ReferenceBase<S extends IReferenceBaseCacheStrategy> extends Identi
 		return (IThesis) ref;
 	}
 
-	//FIXME!
+	
 	public String getNomenclaturalCitation(String microReference) {
-		return null;
+		if (cacheStrategy == null){
+			logger.warn("No CacheStrategy defined for "+ this.getClass() + ": " + this.getUuid());
+			return null;
+		}else{
+			if (cacheStrategy instanceof INomenclaturalReferenceCacheStrategy){
+				return ((INomenclaturalReferenceCacheStrategy)cacheStrategy).getNomenclaturalCitation(this,microReference);
+			}else {
+				logger.warn("No INomenclaturalReferenceCacheStrategy defined for "+ this.getClass() + ": " + this.getUuid());
+				return null;
+			}
+		}
 	}
 
 	public IJournal getInJournal() {
@@ -885,7 +898,7 @@ public class ReferenceBase<S extends IReferenceBaseCacheStrategy> extends Identi
 	}
 
 	public void setInJournal(IJournal journal) {
-		this.inReference = (ReferenceBase) journal;
+		this.inReference = (ReferenceBase<JournalDefaultCacheStrategy<ReferenceBase>>) journal;
 		
 	}
 
@@ -895,7 +908,7 @@ public class ReferenceBase<S extends IReferenceBaseCacheStrategy> extends Identi
 	}
 
 	public void setInSeries(IPrintSeries inSeries) {
-		this.inReference = (ReferenceBase) inSeries;
+		this.inReference = (ReferenceBase<IReferenceBaseCacheStrategy<ReferenceBase>>) inSeries;
 		
 	}
 
@@ -905,7 +918,7 @@ public class ReferenceBase<S extends IReferenceBaseCacheStrategy> extends Identi
 	}
 
 	public void setInBook(IBook book) {
-		this.inReference = (ReferenceBase) book;
+		this.inReference = (ReferenceBase<BookDefaultCacheStrategy<ReferenceBase>>) book;
 		
 	}
 

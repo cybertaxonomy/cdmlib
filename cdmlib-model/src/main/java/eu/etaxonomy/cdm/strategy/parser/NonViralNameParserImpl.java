@@ -37,6 +37,7 @@ import eu.etaxonomy.cdm.model.reference.IReferenceBase;
 import eu.etaxonomy.cdm.model.reference.IVolumeReference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.ReferenceType;
 import eu.etaxonomy.cdm.strategy.exceptions.StringNotParsableException;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
@@ -370,8 +371,8 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 	    	nameToBeFilled.addParsingProblems(ref.getParsingProblem());
 	    }
 	    
-	    IReferenceBase nomRef;
-		if ( (nomRef = (IReferenceBase)nameToBeFilled.getNomenclaturalReference()) != null ){
+	    ReferenceBase nomRef;
+		if ( (nomRef = (ReferenceBase)nameToBeFilled.getNomenclaturalReference()) != null ){
 			nomRef.setAuthorTeam((TeamOrPersonBase)nameToBeFilled.getCombinationAuthorTeam());
 		}
 	}
@@ -585,7 +586,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 		}
 		TimePeriod datePublished = TimePeriod.parseString(year);
 		
-		if (nomRef instanceof IBookSection){
+		if (nomRef.getType().equals(ReferenceType.BookSection)){
 			handleBookSectionYear((IBookSection)nomRef, datePublished);
 		}else if (nomRef instanceof ReferenceBase){
 			((ReferenceBase)nomRef).setDatePublished(datePublished);	
