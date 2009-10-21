@@ -25,7 +25,7 @@ public class CdmDestinations {
 		String cdmServer = "192.168.2.10";
 		String cdmDB = "cdm_1_1"; // values: "cdm_1_1"  "cdm_build"
 		String cdmUserName = "edit";
-		return makeDestination(cdmServer, cdmDB, -1, cdmUserName, null);
+		return makeDestination(dbType, cdmServer, cdmDB, -1, cdmUserName, null);
 	}
 	
 	
@@ -34,7 +34,7 @@ public class CdmDestinations {
 		String cdmServer = "192.168.2.10";
 		String cdmDB = "cdm_build"; // values: "cdm_1_1"  "cdm_build"
 		String cdmUserName = "edit";
-		return makeDestination(cdmServer, cdmDB, -1, cdmUserName, null);
+		return makeDestination(dbType, cdmServer, cdmDB, -1, cdmUserName, null);
 	}
 	
 	/**
@@ -45,7 +45,7 @@ public class CdmDestinations {
 		String cdmServer = "192.168.2.10";
 		String cdmDB = "cdm_import";
 		String cdmUserName = "edit";
-		return makeDestination(cdmServer, cdmDB, -1, cdmUserName, null);
+		return makeDestination(dbType, cdmServer, cdmDB, -1, cdmUserName, null);
 	}
 	
 	public static ICdmDataSource cdm_test(){
@@ -53,7 +53,7 @@ public class CdmDestinations {
 		String cdmServer = "192.168.2.10";
 		String cdmDB = "cdm_test"; // values: "cdm_1_1"  "cdm_build"
 		String cdmUserName = "edit";
-		return makeDestination(cdmServer, cdmDB, -1, cdmUserName, null);
+		return makeDestination(dbType, cdmServer, cdmDB, -1, cdmUserName, null);
 	}
 	
 	
@@ -62,7 +62,7 @@ public class CdmDestinations {
 		String cdmServer = "192.168.2.10";
 		String cdmDB = "cdm_test_anahit"; 
 		String cdmUserName = "edit";
-		return makeDestination(cdmServer, cdmDB, -1, cdmUserName, null);
+		return makeDestination(dbType, cdmServer, cdmDB, -1, cdmUserName, null);
 	}
 	
 	public static ICdmDataSource cdm_test_anahit2(){
@@ -70,7 +70,7 @@ public class CdmDestinations {
 		String cdmServer = "192.168.2.10";
 		String cdmDB = "cdm_test_anahit2"; 
 		String cdmUserName = "edit";
-		return makeDestination(cdmServer, cdmDB, -1, cdmUserName, null);
+		return makeDestination(dbType, cdmServer, cdmDB, -1, cdmUserName, null);
 	}
 	
 	public static ICdmDataSource cdm_test_jaxb(){
@@ -78,7 +78,7 @@ public class CdmDestinations {
 		String cdmServer = "192.168.2.10";
 		String cdmDB = "cdm_test_jaxb"; 
 		String cdmUserName = "edit";
-		return makeDestination(cdmServer, cdmDB, -1, cdmUserName, null);
+		return makeDestination(dbType, cdmServer, cdmDB, -1, cdmUserName, null);
 	}
 	
 	public static ICdmDataSource cdm_test_jaxb2(){
@@ -86,7 +86,7 @@ public class CdmDestinations {
 		String cdmServer = "192.168.2.10";
 		String cdmDB = "cdm_test_jaxb2"; 
 		String cdmUserName = "edit";
-		return makeDestination(cdmServer, cdmDB, -1, cdmUserName, null);
+		return makeDestination(dbType, cdmServer, cdmDB, -1, cdmUserName, null);
 	}
 
 	public static ICdmDataSource cdm_test_andreas_diptera(){
@@ -94,7 +94,7 @@ public class CdmDestinations {
 		String cdmServer = "192.168.2.10";
 		String cdmDB = "cdm_test_andreas_diptera"; 
 		String cdmUserName = "edit";
-		return makeDestination(cdmServer, cdmDB, -1, cdmUserName, null);
+		return makeDestination(dbType, cdmServer, cdmDB, -1, cdmUserName, null);
 	}
 	
 	public static ICdmDataSource cdm_test_andreas_palmae(){
@@ -102,7 +102,7 @@ public class CdmDestinations {
 		String cdmServer = "192.168.2.10";
 		String cdmDB = "cdm_test_andreas_palmae"; 
 		String cdmUserName = "edit";
-		return makeDestination(cdmServer, cdmDB, -1, cdmUserName, null);
+		return makeDestination(dbType, cdmServer, cdmDB, -1, cdmUserName, null);
 	}
 	
 	public static ICdmDataSource cdm_test_andreas_cichorieae(){
@@ -110,7 +110,7 @@ public class CdmDestinations {
 		String cdmServer = "192.168.2.10";
 		String cdmDB = "cdm_test_andreas_cichorieae"; 
 		String cdmUserName = "edit";
-		return makeDestination(cdmServer, cdmDB, -1, cdmUserName, null);
+		return makeDestination(dbType, cdmServer, cdmDB, -1, cdmUserName, null);
 	}
 	
 	public static ICdmDataSource cdm_test_andreasM(){
@@ -118,7 +118,7 @@ public class CdmDestinations {
 		String cdmServer = "192.168.2.10";
 		String cdmDB = "cdm_test_andreasM"; 
 		String cdmUserName = "edit";
-		return makeDestination(cdmServer, cdmDB, -1, cdmUserName, null);
+		return makeDestination(dbType, cdmServer, cdmDB, -1, cdmUserName, null);
 	}
 	
 	public static ICdmDataSource cdm_test_andreasM2(){
@@ -126,7 +126,7 @@ public class CdmDestinations {
 		String cdmServer = "192.168.2.10";
 		String cdmDB = "cdm_test_andreasM2"; 
 		String cdmUserName = "edit";
-		return makeDestination(cdmServer, cdmDB, -1, cdmUserName, null);
+		return makeDestination(dbType, cdmServer, cdmDB, -1, cdmUserName, null);
 	}
 	
 	public static ICdmDataSource cdm_test_andreasM3(){
@@ -134,7 +134,7 @@ public class CdmDestinations {
 		String cdmServer = "192.168.2.10";
 		String cdmDB = "cdm_test_andreasM3"; 
 		String cdmUserName = "edit";
-		return makeDestination(cdmServer, cdmDB, -1, cdmUserName, null);
+		return makeDestination(dbType, cdmServer, cdmDB, -1, cdmUserName, null);
 	}
 	
 	
@@ -143,7 +143,7 @@ public class CdmDestinations {
 		String cdmServer = "192.168.2.10";
 		String cdmDB = "cdm_editor_test2"; 
 		String cdmUserName = "edit";
-		return makeDestination(cdmServer, cdmDB, -1, cdmUserName, null);
+		return makeDestination(dbType, cdmServer, cdmDB, -1, cdmUserName, null);
 	}
 	
 		public static ICdmDataSource cdm_portal(){
@@ -151,7 +151,7 @@ public class CdmDestinations {
 		String cdmServer = "192.168.2.10";
 		String cdmDB = "cdm_portal";
 		String cdmUserName = "edit";
-		return makeDestination(cdmServer, cdmDB, -1, cdmUserName, null);
+		return makeDestination(dbType, cdmServer, cdmDB, -1, cdmUserName, null);
 	}
 	
 	public static ICdmDataSource cdm_portal_test(){
@@ -159,7 +159,7 @@ public class CdmDestinations {
 		String cdmServer = "192.168.2.10";
 		String cdmDB = "cdm_portal_test";
 		String cdmUserName = "edit";
-		return makeDestination(cdmServer, cdmDB, -1, cdmUserName, null);
+		return makeDestination(dbType, cdmServer, cdmDB, -1, cdmUserName, null);
 	}
 	
 	public static ICdmDataSource cdm_test_patricia(){
@@ -167,7 +167,7 @@ public class CdmDestinations {
 		String cdmServer = "192.168.2.10";
 		String cdmDB = "cdm_test_patricia";
 		String cdmUserName = "edit";
-		return makeDestination(cdmServer, cdmDB, -1, cdmUserName, null);
+		return makeDestination(dbType, cdmServer, cdmDB, -1, cdmUserName, null);
 	}
 
 	public static ICdmDataSource cdm_test_niels1(){
@@ -175,7 +175,7 @@ public class CdmDestinations {
 		String cdmServer = "192.168.2.10";
 		String cdmDB = "cdm_test_niels1";
 		String cdmUserName = "edit";
-		return makeDestination(cdmServer, cdmDB, -1, cdmUserName, null);
+		return makeDestination(dbType, cdmServer, cdmDB, -1, cdmUserName, null);
 	}
 	
 	public static ICdmDataSource cdm_test_niels2(){
@@ -183,7 +183,7 @@ public class CdmDestinations {
 		String cdmServer = "192.168.2.10";
 		String cdmDB = "cdm_test_niels2";
 		String cdmUserName = "edit";
-		return makeDestination(cdmServer, cdmDB, -1, cdmUserName, null);
+		return makeDestination(dbType, cdmServer, cdmDB, -1, cdmUserName, null);
 	}
 	
 	//
@@ -192,7 +192,7 @@ public class CdmDestinations {
 		String cdmServer = "192.168.2.10";
 		String cdmDB = "cdm_test_andreasK1";
 		String cdmUserName = "edit";
-		return makeDestination(cdmServer, cdmDB, -1, cdmUserName, null);
+		return makeDestination(dbType, cdmServer, cdmDB, -1, cdmUserName, null);
 	}
 	
 	public static ICdmDataSource cdm_test_andreasK2(){
@@ -200,7 +200,7 @@ public class CdmDestinations {
 		String cdmServer = "192.168.2.10";
 		String cdmDB = "cdm_test_andreasK2";
 		String cdmUserName = "edit";
-		return makeDestination(cdmServer, cdmDB, -1, cdmUserName, null);
+		return makeDestination(dbType, cdmServer, cdmDB, -1, cdmUserName, null);
 	}
 	
 
@@ -209,7 +209,7 @@ public class CdmDestinations {
 		String cdmServer = "192.168.2.10";
 		String cdmDB = "cdm_pesi_erms";
 		String cdmUserName = "edit";
-		return makeDestination(cdmServer, cdmDB, -1, cdmUserName, null);
+		return makeDestination(dbType, cdmServer, cdmDB, -1, cdmUserName, null);
 	}
 	
 	public static ICdmDataSource cdm_portal_test_localhost(){
@@ -217,7 +217,7 @@ public class CdmDestinations {
 		String cdmServer = "127.0.0.1";
 		String cdmDB = "cdm_portal_test";
 		String cdmUserName = "edit";
-		return makeDestination(cdmServer, cdmDB, -1, cdmUserName, null);
+		return makeDestination(dbType, cdmServer, cdmDB, -1, cdmUserName, null);
 	}
 	
 	public static ICdmDataSource cdm_portal_test_localhost2(){
@@ -225,7 +225,7 @@ public class CdmDestinations {
 		String cdmServer = "127.0.0.1";
 		String cdmDB = "cdm_portal_test2";
 		String cdmUserName = "edit";
-		return makeDestination(cdmServer, cdmDB, -1, cdmUserName, null);
+		return makeDestination(dbType, cdmServer, cdmDB, -1, cdmUserName, null);
 	}
 	
 	public static ICdmDataSource cdm_local_cichorieae(){
@@ -233,7 +233,7 @@ public class CdmDestinations {
 		String cdmServer = "127.0.0.1";
 		String cdmDB = "cdm_edit_cichorieae";
 		String cdmUserName = "edit";
-		return makeDestination(cdmServer, cdmDB, -1, cdmUserName, null);
+		return makeDestination(dbType, cdmServer, cdmDB, -1, cdmUserName, null);
 	}
 	
 	public static ICdmDataSource cdm_local_dipera(){
@@ -241,7 +241,7 @@ public class CdmDestinations {
 		String cdmServer = "127.0.0.1";
 		String cdmDB = "cdm_edit_diptera";
 		String cdmUserName = "edit";
-		return makeDestination(cdmServer, cdmDB, -1, cdmUserName, null);
+		return makeDestination(dbType, cdmServer, cdmDB, -1, cdmUserName, null);
 	}
 	
 	public static ICdmDataSource cdm_local_palmae(){
@@ -249,7 +249,7 @@ public class CdmDestinations {
 		String cdmServer = "127.0.0.1";
 		String cdmDB = "cdm_edit_palmae";
 		String cdmUserName = "edit";
-		return makeDestination(cdmServer, cdmDB, -1, cdmUserName, null);
+		return makeDestination(dbType, cdmServer, cdmDB, -1, cdmUserName, null);
 	}
 	
 	
@@ -311,55 +311,65 @@ public class CdmDestinations {
 		String cdmServer = "192.168.2.11";
 		String cdmDB = "cdm_portal_test";
 		String cdmUserName = "edit";
-		return makeDestination(cdmServer, cdmDB, -1, cdmUserName, null);
+		return makeDestination(dbType, cdmServer, cdmDB, -1, cdmUserName, null);
 	}
 	
-	public static ICdmDataSource cdm_edit_cichorieae(){
-		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
-		String cdmServer = "192.168.2.10";
-		String cdmDB = "cdm_edit_cichorieae"; 
+	public static ICdmDataSource cdm_edit_cichorieae_PG(){
+		DatabaseTypeEnum dbType = DatabaseTypeEnum.PostgreSQL;
+		String cdmServer = "127.0.0.1";
+		String cdmDB = "cdm_edit_cichorieae_a"; 
 		String cdmUserName = "edit";
-		return makeDestination(cdmServer, cdmDB, -1, cdmUserName, null);
+		int port = 15432;
+		return makeDestination(dbType, cdmServer, cdmDB, port, cdmUserName, null);
 	}
 	
-	public static ICdmDataSource cdm_v1_cichorieae(){
+	public static ICdmDataSource cdm_edit_cichorieae_a(){
 		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
 		String cdmServer = "192.168.2.10";
-		String cdmDB = "cdm_v1_cichorieae"; 
+		String cdmDB = "cdm_edit_cichorieae_a"; 
 		String cdmUserName = "edit";
-		return makeDestination(cdmServer, cdmDB, -1, cdmUserName, null);
+		return makeDestination(dbType, cdmServer, cdmDB, -1, cdmUserName, null);
 	}
 	
-	public static ICdmDataSource cdm_edit_diptera(){
+	public static ICdmDataSource cdm_edit_cichorieae_b(){
 		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
 		String cdmServer = "192.168.2.10";
-		String cdmDB = "cdm_edit_diptera"; 
+		String cdmDB = "cdm_edit_cichorieae_b"; 
 		String cdmUserName = "edit";
-		return makeDestination(cdmServer, cdmDB, -1, cdmUserName, null);
+		return makeDestination(dbType, cdmServer, cdmDB, -1, cdmUserName, null);
+	}
+	
+	public static ICdmDataSource cdm_edit_diptera_a(){
+		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
+		String cdmServer = "192.168.2.10";
+		String cdmDB = "cdm_edit_diptera_a"; 
+		String cdmUserName = "edit";
+		return makeDestination(dbType, cdmServer, cdmDB, -1, cdmUserName, null);
+	}
+	
+	public static ICdmDataSource cdm_edit_diptera_b(){
+		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
+		String cdmServer = "192.168.2.10";
+		String cdmDB = "cdm_edit_diptera_b"; 
+		String cdmUserName = "edit";
+		return makeDestination(dbType, cdmServer, cdmDB, -1, cdmUserName, null);
 	}
 		
-	public static ICdmDataSource cdm_edit_diptera_177(){
-		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
-		String cdmServer = "87.106.88.177";
-		String cdmDB = "cdm_edit_diptera"; 
-		String cdmUserName = "edit";
-		return makeDestination(cdmServer, cdmDB, 80, cdmUserName, null);
-	}
-		
-	public static ICdmDataSource cdm_v1_diptera(){
+
+	public static ICdmDataSource cdm_edit_palmae_a(){
 		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
 		String cdmServer = "192.168.2.10";
-		String cdmDB = "cdm_v1_diptera"; 
+		String cdmDB = "cdm_edit_palmae_a";
 		String cdmUserName = "edit";
-		return makeDestination(cdmServer, cdmDB, -1, cdmUserName, null);
+		return makeDestination(dbType, cdmServer, cdmDB, -1, cdmUserName, null);
 	}
 	
-	public static ICdmDataSource cdm_edit_palmae(){
+	public static ICdmDataSource cdm_edit_palmae_b(){
 		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
 		String cdmServer = "192.168.2.10";
-		String cdmDB = "cdm_edit_palmae"; 
+		String cdmDB = "cdm_edit_palmae_b"; 
 		String cdmUserName = "edit";
-		return makeDestination(cdmServer, cdmDB, -1, cdmUserName, null);
+		return makeDestination(dbType, cdmServer, cdmDB, -1, cdmUserName, null);
 	}
 	
 	public static ICdmDataSource cdm_edit_diptera_preview_B(){
@@ -368,7 +378,7 @@ public class CdmDestinations {
 		String cdmDB = "cdm_edit_diptera_b"; 
 		String cdmUserName = "edit";
 		int port = 13306;
-		return makeDestination(cdmServer, cdmDB, port, cdmUserName, null);
+		return makeDestination(dbType, cdmServer, cdmDB, port, cdmUserName, null);
 	}
 	
 	public static ICdmDataSource cdm_edit_cichorieae_preview_B(){
@@ -377,7 +387,7 @@ public class CdmDestinations {
 		String cdmDB = "cdm_edit_cichorieae_b"; 
 		String cdmUserName = "edit";
 		int port = 13306;
-		return makeDestination(cdmServer, cdmDB, port, cdmUserName, null);
+		return makeDestination(dbType, cdmServer, cdmDB, port, cdmUserName, null);
 	}
 
 	public static ICdmDataSource cdm_edit_palmae_preview_A(){
@@ -386,7 +396,7 @@ public class CdmDestinations {
 		String cdmDB = "cdm_edit_palmae_a"; 
 		String cdmUserName = "edit";
 		int port = 13306;
-		return makeDestination(cdmServer, cdmDB, port, cdmUserName, null);
+		return makeDestination(dbType, cdmServer, cdmDB, port, cdmUserName, null);
 	}		
 	
 	public static ICdmDataSource cdm_edit_palmae_preview_B(){
@@ -395,7 +405,7 @@ public class CdmDestinations {
 		String cdmDB = "cdm_edit_palmae_b"; 
 		String cdmUserName = "edit";
 		int port = 13306;
-		return makeDestination(cdmServer, cdmDB, port, cdmUserName, null);
+		return makeDestination(dbType, cdmServer, cdmDB, port, cdmUserName, null);
 	}
 	
 	public static ICdmDataSource cdm_v1_palmae(){
@@ -403,7 +413,7 @@ public class CdmDestinations {
 		String cdmServer = "192.168.2.10";
 		String cdmDB = "cdm_v1_palmae"; 
 		String cdmUserName = "edit";
-		return makeDestination(cdmServer, cdmDB, -1, cdmUserName, null);
+		return makeDestination(dbType, cdmServer, cdmDB, -1, cdmUserName, null);
 	}
 	
 	public static ICdmDataSource cdm_edit_salvador(){
@@ -411,7 +421,7 @@ public class CdmDestinations {
 		String cdmServer = "192.168.2.10";
 		String cdmDB = "cdm_edit_salvador"; 
 		String cdmUserName = "edit";
-		return makeDestination(cdmServer, cdmDB, -1, cdmUserName, null);
+		return makeDestination(dbType, cdmServer, cdmDB, -1, cdmUserName, null);
 	}
 	
 	public static ICdmDataSource cdm_import_cichorieae() {
@@ -419,7 +429,7 @@ public class CdmDestinations {
 		String cdmServer = "192.168.2.10";
 		String cdmDB = "cdm_import_cichorieae"; 
 		String cdmUserName = "edit";
-		return makeDestination(cdmServer, cdmDB, -1, cdmUserName, null);
+		return makeDestination(dbType, cdmServer, cdmDB, -1, cdmUserName, null);
 	}
 	
 	public static ICdmDataSource cdm_import_diptera() {
@@ -427,7 +437,7 @@ public class CdmDestinations {
 		String cdmServer = "192.168.2.10";
 		String cdmDB = "cdm_import_diptera"; 
 		String cdmUserName = "edit";
-		return makeDestination(cdmServer, cdmDB, -1, cdmUserName, null);
+		return makeDestination(dbType, cdmServer, cdmDB, -1, cdmUserName, null);
 	}
 	
 	public static ICdmDataSource cdm_import_palmae() {
@@ -435,7 +445,7 @@ public class CdmDestinations {
 		String cdmServer = "192.168.2.10";
 		String cdmDB = "cdm_import_palmae"; 
 		String cdmUserName = "edit";
-		return makeDestination(cdmServer, cdmDB, -1, cdmUserName, null);
+		return makeDestination(dbType, cdmServer, cdmDB, -1, cdmUserName, null);
 	}
 	
 	public static ICdmDataSource cdm_import_salvador() {
@@ -443,7 +453,7 @@ public class CdmDestinations {
 		String cdmServer = "192.168.2.10";
 		String cdmDB = "cdm_import_salvador"; 
 		String cdmUserName = "edit";
-		return makeDestination(cdmServer, cdmDB, -1, cdmUserName, null);
+		return makeDestination(dbType, cdmServer, cdmDB, -1, cdmUserName, null);
 	}
 	
 	public static ICdmDataSource cdm_salvador_production() {
@@ -451,7 +461,7 @@ public class CdmDestinations {
 		String cdmServer = "192.168.2.10";
 		String cdmDB = "salvador_cdm"; 
 		String cdmUserName = "salvador";
-		return makeDestination(cdmServer, cdmDB, -1, cdmUserName, null);
+		return makeDestination(dbType, cdmServer, cdmDB, -1, cdmUserName, null);
 	}
 	
 	
@@ -464,15 +474,32 @@ public class CdmDestinations {
 //	}
 	
 	
+
+	 
 	/**
 	 * initializes source
-	 * @return true, if connection establisehd
+	 * TODO only supports MySQL and PostgreSQL
+	 * 
+	 * @param dbType
+	 * @param cdmServer
+	 * @param cdmDB
+	 * @param port
+	 * @param cdmUserName
+	 * @param pwd
+	 * @return
 	 */
-	private static ICdmDataSource makeDestination(String cdmServer, String cdmDB, int port, String cdmUserName, String pwd ){
+	private static ICdmDataSource makeDestination(DatabaseTypeEnum dbType, String cdmServer, String cdmDB, int port, String cdmUserName, String pwd ){
 		//establish connection
 		pwd = AccountStore.readOrStorePassword(cdmServer, cdmDB, cdmUserName, pwd);
-		//TODO not MySQL
-		ICdmDataSource destination = CdmDataSource.NewMySqlInstance(cdmServer, cdmDB, port, cdmUserName, pwd, null);
+		ICdmDataSource destination;
+		if(dbType.equals(DatabaseTypeEnum.MySQL)){
+			destination = CdmDataSource.NewMySqlInstance(cdmServer, cdmDB, port, cdmUserName, pwd, null);			
+		} else if(dbType.equals(DatabaseTypeEnum.PostgreSQL)){
+			destination = CdmDataSource.NewPostgreSQLInstance(cdmServer, cdmDB, port, cdmUserName, pwd, null);			
+		} else {
+			//TODO others
+			throw new RuntimeException("Unsupported DatabaseType");
+		}
 		return destination;
 
 	}
