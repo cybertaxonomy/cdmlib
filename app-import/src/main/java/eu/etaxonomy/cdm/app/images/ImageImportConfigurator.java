@@ -28,18 +28,31 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 public class ImageImportConfigurator extends ImportConfiguratorBase implements IImportConfigurator {
 	private static final Logger logger = Logger.getLogger(ImageImportConfigurator.class);
 
-	public static ImageImportConfigurator NewInstance(File source, ICdmDataSource destination, Class<? extends AbstractImageImporter> importerClass){
-		return new ImageImportConfigurator(source, destination, importerClass);		
+	public static ImageImportConfigurator NewInstance(File source, ICdmDataSource destination, String mediaUrlString, Class<? extends AbstractImageImporter> importerClass){
+		return new ImageImportConfigurator(source, destination, mediaUrlString, importerClass);		
 	}
 	
-	private ImageImportConfigurator(File source, ICdmDataSource destination, Class<? extends AbstractImageImporter> importerClass){
+	/**
+	 * @param source
+	 * @param destination
+	 * @param importerClass
+	 * @return
+	 * @deprecated use {@link #NewInstance(File, ICdmDataSource, String, Class)} instead
+	 */
+	@Deprecated 
+	public static ImageImportConfigurator NewInstance(File source, ICdmDataSource destination, Class<? extends AbstractImageImporter> importerClass){
+		return new ImageImportConfigurator(source, destination, null, importerClass);		
+	}
+	
+	private ImageImportConfigurator(File source, ICdmDataSource destination, String mediaUrlString, Class<? extends AbstractImageImporter> importerClass){
 		FileNotFoundException e;
 		setSource(source);
 		setDestination(destination);
+		setMediaUrlString(mediaUrlString);
 		ioClassList = new Class[] {importerClass};
 	}
 	
-	private String mediaUrlString = "http://wp5.e-taxonomy.eu/media/palmae/images/";
+	private String mediaUrlString = null;
 	
 
 
@@ -73,6 +86,9 @@ public class ImageImportConfigurator extends ImportConfiguratorBase implements I
 	 * @return the mediaUrlString
 	 */
 	public String getMediaUrlString() {
+		if(mediaUrlString == null){
+			throw new NullPointerException("mediaUrlString has not been set");
+		}
 		return mediaUrlString;
 	}
 
