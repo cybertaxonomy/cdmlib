@@ -2,9 +2,12 @@ package eu.etaxonomy.cdm.model.reference;
 
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.IIdentifiableEntity;
+import eu.etaxonomy.cdm.model.common.IParsable;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
+import eu.etaxonomy.cdm.strategy.match.IMatchable;
+import eu.etaxonomy.cdm.strategy.merge.IMergable;
 
-public interface IReferenceBase extends IIdentifiableEntity{
+public interface IReferenceBase extends IIdentifiableEntity, IParsable, IMergable, IMatchable{
 
 	//public ReferenceBase getInReference() ;
 
