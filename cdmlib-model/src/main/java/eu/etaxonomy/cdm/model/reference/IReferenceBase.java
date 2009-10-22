@@ -1,9 +1,10 @@
 package eu.etaxonomy.cdm.model.reference;
 
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
+import eu.etaxonomy.cdm.model.common.IIdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 
-public interface IReferenceBase {
+public interface IReferenceBase extends IIdentifiableEntity{
 
 	//public ReferenceBase getInReference() ;
 
