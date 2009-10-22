@@ -22,4 +22,14 @@ import eu.etaxonomy.cdm.persistence.dao.common.ITitledDao;
  */
 public interface IReferenceDao extends IIdentifiableDao<ReferenceBase>, ITitledDao<ReferenceBase>, ISearchableDao<ReferenceBase> {
 	public List<UuidAndTitleCache> getUuidAndTitleCacheOfReferences();
+	/**
+	 * @return all references marked with publish-flag
+	 */
+	public List<ReferenceBase> getAllReferencesForPublishing();
+	
+	/**
+	 * @return all references not used as nomenclatural reference with publish flag
+	 */
+	public List<ReferenceBase> getAllNotNomenclaturalReferencesForPublishing();
+	
 }

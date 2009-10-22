@@ -17,6 +17,7 @@ import org.apache.lucene.analysis.SimpleAnalyzer;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
 import org.hibernate.Hibernate;
+import org.hibernate.Query;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.Search;
 import org.hibernate.search.SearchFactory;
@@ -30,6 +31,7 @@ import eu.etaxonomy.cdm.model.reference.BookSection;
 import eu.etaxonomy.cdm.model.reference.CdDvd;
 import eu.etaxonomy.cdm.model.reference.Database;
 import eu.etaxonomy.cdm.model.reference.Generic;
+
 import eu.etaxonomy.cdm.model.reference.InProceedings;
 import eu.etaxonomy.cdm.model.reference.Journal;
 import eu.etaxonomy.cdm.model.reference.Map;
@@ -214,6 +216,26 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<ReferenceBase
 			
 			return list;	
 		}
+	}
+	
+	public List<ReferenceBase> getAllReferencesForPublishing(){
+		List<ReferenceBase> references = getSession().createQuery("Select r from ReferenceBase r "+
+				"where r.id IN "+
+					"(Select m.markedObj.id from Marker m where "+
+						"m.markerType.id = "+
+							"(Select dtb.id from DefinedTermBase dtb, Representation r where r member of dtb.representations and r.text='publish'))").list();
+		return references;
+	}
+	
+	public List<ReferenceBase> getAllNotNomenclaturalReferencesForPublishing(){
+		
+		List<ReferenceBase> references = getSession().createQuery("select t.nomenclaturalReference from TaxonNameBase t").list();
+		String queryString = "from ReferenceBase b where b not in (:referenceList) and b in (:publish)" ;
+		Query referenceQuery = getSession().createQuery(queryString).setParameterList("referenceList", references);
+		referenceQuery.setParameterList("publish", getAllReferencesForPublishing());
+		List<ReferenceBase> resultRefernces =referenceQuery.list();
+				
+		return resultRefernces;
 	}
 	
 }
