@@ -153,4 +153,8 @@ public class ReferenceServiceImpl extends IdentifiableServiceBase<ReferenceBase,
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	public List<ReferenceBase> getAllReferencesForPublishing(){
+		return dao.getAllNotNomenclaturalReferencesForPublishing();
+	}
 }

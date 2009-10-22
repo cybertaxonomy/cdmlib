@@ -108,4 +108,5 @@ public interface IReferenceService extends IIdentifiableEntityService<ReferenceB
 	 */
 	public List<UuidAndTitleCache> getUuidAndTitleCacheOfReferences();
 	
+	public List<ReferenceBase> getAllReferencesForPublishing();
 }
