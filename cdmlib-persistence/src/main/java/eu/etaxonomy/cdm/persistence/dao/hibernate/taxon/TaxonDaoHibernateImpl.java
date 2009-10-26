@@ -369,18 +369,60 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		}
 		
 		// TODO  mysql needs  optimization:  see http://www.xaprb.com/blog/2006/04/30/how-to-optimize-subqueries-and-joins-in-mysql/#commen
+		Query subTaxon = null;
+		Query subSynonym = null;
 		if(clazz.equals(Taxon.class)){
 			// find Taxa
-			hql = "select " + selectWhat + " from " + clazz.getSimpleName() + " t" 
-				+ " where t in (" + taxonSubselect + ")";		
+			subTaxon = getSession().createQuery(taxonSubselect).setParameter("queryString", hqlQueryString);;
+			if(doAreaRestriction){
+				subTaxon.setParameterList("namedAreas", areasExpanded);
+			}	
+			if(taxonomicTree != null){
+				subTaxon.setParameter("taxonomicTree", taxonomicTree);
+			}
 		} else if(clazz.equals(Synonym.class)){
 			// find synonyms
-			hql = "select " + selectWhat + " from " + clazz.getSimpleName() + " t" 
-				+ " where t in (" + synonymSubselect + ")";		
+			subSynonym = getSession().createQuery(synonymSubselect).setParameter("queryString", hqlQueryString);;
+			if(doAreaRestriction){
+				subSynonym.setParameterList("namedAreas", areasExpanded);
+			}		
+			if(taxonomicTree != null){
+				subSynonym.setParameter("taxonomicTree", taxonomicTree);
+			}
 		} else {
 			// find taxa and synonyms
+			subSynonym = getSession().createQuery(synonymSubselect).setParameter("queryString", hqlQueryString);;
+			subTaxon = getSession().createQuery(taxonSubselect).setParameter("queryString", hqlQueryString);;
+			if(doAreaRestriction){
+				subTaxon.setParameterList("namedAreas", areasExpanded);
+				subSynonym.setParameterList("namedAreas", areasExpanded);
+			}
+			if(taxonomicTree != null){
+				subTaxon.setParameter("taxonomicTree", taxonomicTree);
+				subSynonym.setParameter("taxonomicTree", taxonomicTree);
+			}
+		}
+		
+		List<TaxonBase> taxa = null;
+		List<TaxonBase> synonyms = null;
+		if(clazz.equals(Taxon.class)){
+			taxa = subTaxon.list();
+		}else if (clazz.equals(Synonym.class)){
+			synonyms = subSynonym.list();
+		}else {
+			taxa = subTaxon.list();
+			synonyms = subSynonym.list();
+		}
+		if(clazz.equals(Taxon.class)){
 			hql = "select " + selectWhat + " from " + clazz.getSimpleName() + " t" 
-			+ " where t in (" + taxonSubselect + ") OR t in (" + synonymSubselect + ")";
+			+ " where t in (:taxa)";
+								
+		} else if(clazz.equals(Synonym.class)){
+			hql = "select " + selectWhat + " from " + clazz.getSimpleName() + " t" 
+				+ " where t in (:synonyms)";		
+		} else {
+			hql = "select " + selectWhat + " from " + clazz.getSimpleName() + " t" 
+			+ " where t in (:taxa) OR t in (:synonyms)";
 		}
 		
 		if(!doCount){
@@ -389,16 +431,19 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		
 		Query query = getSession().createQuery(hql);
 		
-		
-		query.setParameter("queryString", hqlQueryString);
-		if(doAreaRestriction){
-			query.setParameterList("namedAreas", areasExpanded);
+		if(clazz.equals(Taxon.class)){
+			//find taxa
+			query.setParameterList("taxa", taxa );
+		} else if(clazz.equals(Synonym.class)){
+			// find synonyms
+			query.setParameterList("synonyms", synonyms);		
+		} else {
+			// find taxa and synonyms
+			query.setParameterList("taxa", taxa);
+			query.setParameterList("synonyms",synonyms);
 		}
 		
-		if(taxonomicTree != null){
-			query.setParameter("taxonomicTree", taxonomicTree);
-		}
-
+		
 		if(pageSize != null &&  !doCount) {
 			query.setMaxResults(pageSize);
 			if(pageNumber != null) {
