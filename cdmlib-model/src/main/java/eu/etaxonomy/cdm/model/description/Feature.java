@@ -123,6 +123,7 @@ public class Feature extends DefinedTermBase<Feature> {
 	private static Feature ANATOMY;
 	private static Feature HOSTPLANT;
 	private static Feature PATHOGEN_AGENT;
+	private static Feature INDIVIDUALS_ASSOCIATION;
 
 	@XmlElement(name = "SupportsTextData")
 	private boolean supportsTextData;
@@ -574,7 +575,7 @@ public class Feature extends DefinedTermBase<Feature> {
 	private static final UUID uuidAnatomy = UUID.fromString("94213b2c-e67a-4d37-25ef-e8d316edfba1");
 	private static final UUID uuidHostPlant = UUID.fromString("6e9de1d5-05f0-40d5-8786-2fe30d0d894d");
 	private static final UUID uuidPathogenAgent = UUID.fromString("002d05f2-fd72-49f1-ba4d-196cf09240b5");
-
+	private static final UUID uuidIndividualsAssociation = UUID.fromString("e2308f37-ddc5-447d-b483-5e2171dd85fd");
 	
 //	private static final UUID uuidDistribution = UUID.fromString("");
 //	private static final UUID uuidDistribution = UUID.fromString("");
@@ -856,7 +857,12 @@ public class Feature extends DefinedTermBase<Feature> {
 	public static final Feature IMAGE(){
 		return IMAGE;
 	}
-	
+	/**
+	 * Returns the "individuals association" feature.
+	 */
+	public static final Feature INDIVIDUALS_ASSOCIATION(){
+		return INDIVIDUALS_ASSOCIATION;
+	}
 	/**
 	 * Returns the "hybrid_parent" feature. This feature can only be used
 	 * by {@link TaxonInteraction taxon interactions}.<BR>
@@ -902,6 +908,7 @@ public class Feature extends DefinedTermBase<Feature> {
 		Feature.ANATOMY = termVocabulary.findTermByUuid(Feature.uuidAnatomy);
 		Feature.PATHOGEN_AGENT = termVocabulary.findTermByUuid(Feature.uuidPathogenAgent);
 		Feature.HOSTPLANT = termVocabulary.findTermByUuid(uuidHostPlant); 
+		Feature.INDIVIDUALS_ASSOCIATION = termVocabulary.findTermByUuid(uuidIndividualsAssociation); 
 	}
 
 }

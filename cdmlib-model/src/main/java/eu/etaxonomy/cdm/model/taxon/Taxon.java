@@ -99,7 +99,7 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 	@XmlElement(name = "SynonymRelationship")
     @OneToMany(mappedBy="relatedTo", fetch=FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
-	@NotNull
+    @NotNull
 	private Set<SynonymRelationship> synonymRelations = new HashSet<SynonymRelationship>();
 
 	// all taxa relations with rel.fromTaxon==this
