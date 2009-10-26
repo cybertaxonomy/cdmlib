@@ -28,12 +28,17 @@ import eu.etaxonomy.cdm.model.agent.InstitutionalMembership;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
+import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.common.init.TermNotFoundException;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
+import eu.etaxonomy.cdm.model.description.QuantitativeData;
+import eu.etaxonomy.cdm.model.description.StatisticalMeasure;
+import eu.etaxonomy.cdm.model.description.StatisticalMeasurementValue;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TaxonInteraction;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
@@ -44,6 +49,8 @@ import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.occurrence.Specimen;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.Book;
 import eu.etaxonomy.cdm.model.reference.Database;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
@@ -127,8 +134,27 @@ public class TestDatabase {
 	    
 	    TaxonNameDescription taxNameDescription = TaxonNameDescription.NewInstance();
 	    taxNameDescription.addFeature(feature1);
+	    QuantitativeData element = QuantitativeData.NewInstance();
+	    StatisticalMeasurementValue statisticalValue = StatisticalMeasurementValue.NewInstance();
+	    statisticalValue.setType(StatisticalMeasure.MAX());
+	    statisticalValue.setValue((float) 2.1);
+	    element.addStatisticalValue(statisticalValue);
+	    taxNameDescription.addElement(element);
 	    
-	    	    
+	    SpecimenOrObservationBase specimen = Specimen.NewInstance();
+	    
+	    specimen.setIndividualCount(12);
+	    
+	    
+	    Feature featureIndAss = Feature.INDIVIDUALS_ASSOCIATION();
+	    TaxonNameDescription newTaxNameDesc = TaxonNameDescription.NewInstance();
+	    newTaxNameDesc.addFeature(featureIndAss);
+	    IndividualsAssociation indAss = IndividualsAssociation.NewInstance();
+	    indAss.setAssociatedSpecimenOrObservation(specimen);
+	    
+	    newTaxNameDesc.addElement(indAss);
+	    
+	    
 	    
 	    
 //	    List<Synonym> synonyms = new ArrayList<Synonym>();
@@ -187,6 +213,7 @@ public class TestDatabase {
 		
 		nameRoot1 = BotanicalName.NewInstance(rankGenus,"Calendula",null,null,null,linne,null,"p.100", null);
 		nameRoot1.addDescription(taxNameDescription);
+		nameRoot1.addDescription(newTaxNameDesc);
 		name1 = BotanicalName.NewInstance(rankSpecies,"Calendula",null,"arvensis",null,linne,null,"p.1", null);
 		synName11 = BotanicalName.NewInstance(rankSpecies,"Caltha",null,"arvensis",null,linne,null,"p.11", null);
 		synName12 = BotanicalName.NewInstance(rankSpecies,"Calendula",null,"sancta",null,linne,null,"p.12", null);
@@ -328,10 +355,10 @@ public class TestDatabase {
 		dataSet.setTerms(terms);
 		dataSet.setAgents(agents);
 //		dataSet.setAgentData(agentData); //TODO
-		dataSet.setTerms(terms);
 		dataSet.setReferences(references);
 		dataSet.setTaxonomicNames(taxonomicNames);
 		dataSet.setTaxonBases(taxonBases);
+		
 		
 		return dataSet;
 

@@ -30,7 +30,7 @@ import eu.etaxonomy.cdm.io.jaxb.JaxbImportConfigurator;
 public class CdmExportImportActivator {
 
 	/* SerializeFrom DB **/
-	private static final ICdmDataSource source = CdmDestinations.cdm_test_jaxb();
+	private static final ICdmDataSource source = CdmDestinations.localH2();
 	private static final ICdmDataSource destination = CdmDestinations.cdm_test_jaxb();
 
 	// Import:
@@ -132,7 +132,7 @@ public class CdmExportImportActivator {
 		// Init source DB
 		CdmApplicationController appCtrInit = null;
 
-		appCtrInit = TestDatabase.initDb(db, DbSchemaValidation.VALIDATE, false);
+		appCtrInit = TestDatabase.initDb(db, DbSchemaValidation.CREATE, false);
 
 		return appCtrInit;
 	}
@@ -156,7 +156,7 @@ public class CdmExportImportActivator {
 		appCtr = sc.initDb(source);
 		//appCtr = sc.initDb(destination);
 		
-		//sc.loadTestData(appCtr);
+		sc.loadTestData(appCtr);
 		
 		sc.invokeExport();
 		//sc.invokeImport();

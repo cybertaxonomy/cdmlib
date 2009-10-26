@@ -1,3 +1,12 @@
+/**
+* Copyright (C) 2009 EDIT
+* European Distributed Institute of Taxonomy
+* http://www.e-taxonomy.eu
+*
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/ 
+
 package eu.etaxonomy.cdm.persistence.dao.hibernate.taxon;
 
 import static junit.framework.Assert.assertEquals;
@@ -97,6 +106,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 
 	@Before
 	public void setUp() {
+		
 		uuid = UUID.fromString("496b1325-be50-4b0a-9aa2-3ecd610215f2");
 		sphingidae = UUID.fromString("54e767ee-894e-4540-a758-f906ecb4e2d9");
 		acherontia = UUID.fromString("c5cc8674-4242-49a4-aada-72d63194f5fa");
@@ -261,11 +271,11 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 		Taxon taxonRethera = (Taxon)taxonDao.findByUuid(rethera);
 		taxonRethera.addSynonym(synAtroposAgassiz, SynonymRelationshipType.SYNONYM_OF());
 		logger.warn("addSynonym(..)");
-		
+		this.taxonDao.clear();
 		Synonym synAtroposLeach = (Synonym)taxonDao.findByUuid(atroposLeach);
 		Taxon taxonRetheraSecCdmtest = (Taxon)taxonDao.findByUuid(retheraSecCdmtest);
 		taxonRetheraSecCdmtest.addSynonym(synAtroposLeach, SynonymRelationshipType.SYNONYM_OF());
-		
+		this.taxonDao.clear();
 		// 1. searching for a taxon (Rethera)
 		List<TaxonBase> results = taxonDao.getTaxaByName(Taxon.class, "Rethera", null, MatchMode.BEGINNING, namedAreas,
 			null, null, null);

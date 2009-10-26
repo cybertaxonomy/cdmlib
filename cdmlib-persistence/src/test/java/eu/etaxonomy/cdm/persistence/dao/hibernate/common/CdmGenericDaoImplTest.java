@@ -549,9 +549,9 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 		Set<CdmBase> referencedObjects = cdmGenericDao.getReferencingObjects(ref1);
 		System.out.println("############## RESULT ###################");
 		for (CdmBase obj: referencedObjects){
-			System.out.println("Object: " + obj.getClass().getSimpleName() + " - " + obj);
+			System.out.println("Object1: " + obj.getClass().getSimpleName() + " - " + obj);
 		}
-		assertEquals(3, referencedObjects.size());
+		assertEquals(2, referencedObjects.size());
 		System.out.println("############## ENDE ###################");
 		
 //		UUID uuidAuthor = UUID.fromString("4ce66544-a5a3-4601-ab0b-1f0a1338327b");
@@ -560,7 +560,7 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 		referencedObjects = cdmGenericDao.getReferencingObjects(author);
 		System.out.println("############## RESULT ###################");
 		for (CdmBase obj: referencedObjects){
-			System.out.println("Object: " + obj.getClass().getSimpleName() + " - " + obj);
+			System.out.println("Object2: " + obj.getClass().getSimpleName() + " - " + obj);
 		}
 		assertEquals(2, referencedObjects.size());
 		System.out.println("############## ENDE ###################");

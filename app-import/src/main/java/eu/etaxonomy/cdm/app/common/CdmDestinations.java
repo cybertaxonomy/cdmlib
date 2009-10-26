@@ -81,7 +81,8 @@ public class CdmDestinations {
 		String cdmServer = "192.168.2.10";
 		String cdmDB = "cdm_test_jaxb"; 
 		String cdmUserName = "edit";
-		return makeDestination(cdmServer, cdmDB, -1, cdmUserName, null);
+		String pwd = "wp5";
+		return makeDestination(cdmServer, cdmDB, -1, cdmUserName, pwd);
 	}
 	
 	public static ICdmDataSource cdm_test_jaxb2(){
@@ -89,7 +90,8 @@ public class CdmDestinations {
 		String cdmServer = "192.168.2.10";
 		String cdmDB = "cdm_test_jaxb2"; 
 		String cdmUserName = "edit";
-		return makeDestination(cdmServer, cdmDB, -1, cdmUserName, null);
+		String pwd = "wp5";
+		return makeDestination(cdmServer, cdmDB, -1, cdmUserName, pwd);
 	}
 
 	public static ICdmDataSource cdm_test_andreas_diptera(){
@@ -244,6 +246,7 @@ public class CdmDestinations {
 		String cdmServer = "127.0.0.1";
 		String cdmDB = "cdm_edit_diptera";
 		String cdmUserName = "edit";
+		
 		return makeDestination(cdmServer, cdmDB, -1, cdmUserName, null);
 	}
 	
