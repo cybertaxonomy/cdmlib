@@ -17,6 +17,8 @@ import java.net.URI;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.reference.Article;
+import eu.etaxonomy.cdm.model.reference.IArticle;
+import eu.etaxonomy.cdm.model.reference.IJournal;
 import eu.etaxonomy.cdm.model.reference.Journal;
 
 public class ReferenceTest {
@@ -29,10 +31,10 @@ public class ReferenceTest {
 	        URI uri = new URI(URIEncoder.encode(this.getClass().getResource(resource).toString()));
 	        DataSet dataSet = cdmDocumentBuilder.unmarshal(DataSet.class, new InputStreamReader(this.getClass().getResourceAsStream(resource)),uri.toString());
 			
-			Article article = (Article)dataSet.getReferences().get(0);	
+			IArticle article = (IArticle)dataSet.getReferences().get(0);	
 			assertNotNull("Article must not be null",article);
 			
-			Journal journal = (Journal)dataSet.getReferences().get(1);
+			IJournal journal = (IJournal)dataSet.getReferences().get(1);
 			assertNotNull("Journal must not be null", journal);
 			assertEquals("Journal must equal Article.inJournal",journal,article.getInJournal());
 	    }

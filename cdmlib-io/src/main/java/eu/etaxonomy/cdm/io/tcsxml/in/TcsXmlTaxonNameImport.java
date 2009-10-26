@@ -323,7 +323,7 @@ public class TcsXmlTaxonNameImport extends TcsXmlImportBase implements ICdmIO<Tc
 			
 	
 		}else{ //ViralName
-			logger.warn("Non NonViralNames not yet supported by makeCanonicalName");
+			//logger.warn("Non NonViralNames not yet supported by makeCanonicalName");
 		}
 				
 
@@ -343,12 +343,12 @@ public class TcsXmlTaxonNameImport extends TcsXmlImportBase implements ICdmIO<Tc
 	
 	protected void testNoMoreElements(){
 		//TODO
-		logger.info("testNoMoreElements Not yet implemented");
+		//logger.info("testNoMoreElements Not yet implemented");
 	}
 	
 	private void makeCultivarName(){
 		//TODO
-		logger.warn("'makeCultivarName' Not yet implemented");
+		//logger.warn("'makeCultivarName' Not yet implemented");
 	}
 	
 	private void makeGenusReferenceType(TaxonNameBase name, Element elGenus, MapWrapper<TaxonNameBase> taxonNameMap, ResultWrapper<Boolean> success){
@@ -368,7 +368,7 @@ public class TcsXmlTaxonNameImport extends TcsXmlImportBase implements ICdmIO<Tc
 			}	
 		}else{
 			//TODO   (can be changed if Viral Name also has Genus in future
-			logger.warn("Genus ref type for Viral Name not implemented yet");
+			//logger.warn("Genus ref type for Viral Name not implemented yet");
 		}
 		
 	}
@@ -437,7 +437,7 @@ public class TcsXmlTaxonNameImport extends TcsXmlImportBase implements ICdmIO<Tc
 				Element elSimple = XmlHelp.getSingleChildElement(success, elCanonicalAuthorship, childName, ns, obligatory);
 				String simple = (elSimple == null)? "" : elSimple.getTextNormalize();
 				//TODO
-				logger.warn("authorship cache cache protected not yet implemented");
+				//logger.warn("authorship cache cache protected not yet implemented");
 				//nonViralName.setAuthorshipCache(simple, cacheProtected);
 
 				childName = "Authorship";
@@ -518,7 +518,7 @@ public class TcsXmlTaxonNameImport extends TcsXmlImportBase implements ICdmIO<Tc
 	
 	private void makeTypification(TaxonNameBase name, Element elTypifiacation, ResultWrapper<Boolean> success){
 		if (elTypifiacation != null){
-			logger.warn("makeTypification not yet implemented");
+			//logger.warn("makeTypification not yet implemented");
 			//success.setValue(false);
 		}
 	}
@@ -528,14 +528,14 @@ public class TcsXmlTaxonNameImport extends TcsXmlImportBase implements ICdmIO<Tc
 		//Status
 			
 		if (elPublicationStatus != null){
-			logger.warn("makePublicationStatus not yet implemented");
+			//logger.warn("makePublicationStatus not yet implemented");
 			//success.setValue(false);
 		}
 	}
 	
 	private void makeProviderLink(TaxonNameBase name, Element elProviderLink, ResultWrapper<Boolean> success){
 		if (elProviderLink != null){
-			logger.warn("makeProviderLink not yet implemented");
+			//logger.warn("makeProviderLink not yet implemented");
 			//success.setValue(false);
 		}
 	}
@@ -543,7 +543,7 @@ public class TcsXmlTaxonNameImport extends TcsXmlImportBase implements ICdmIO<Tc
 
 	private void makeProviderSpecificData(TaxonNameBase name, Element elProviderSpecificData, ResultWrapper<Boolean> success){
 		if (elProviderSpecificData != null){
-			logger.warn("makeProviderSpecificData not yet implemented");
+			//logger.warn("makeProviderSpecificData not yet implemented");
 			//success.setValue(false);
 		}
 	}
