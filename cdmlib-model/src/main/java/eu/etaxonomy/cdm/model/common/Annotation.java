@@ -56,6 +56,12 @@ public class Annotation extends LanguageStringBase implements Cloneable {
 		return new Annotation(text, lang);
 	}
 	
+	public static Annotation NewInstance(String text, AnnotationType annotationType, Language lang){
+		Annotation annotation = new Annotation(text, lang);
+		annotation.setAnnotationType(annotationType);
+		return annotation;
+	}
+	
 	/**
 	 * Factory method. Using default language.
 	 * @param text

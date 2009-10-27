@@ -71,6 +71,7 @@ public class TaxonInteraction extends DescriptionElementBase {
     @XmlJavaTypeAdapter(MultilanguageTextAdapter.class)
     @OneToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "TaxonInteraction_LanguageString")
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
 	private Map<Language,LanguageString> description = new HashMap<Language,LanguageString>();
 	
 	@XmlElement(name = "Taxon2")
@@ -94,6 +95,20 @@ public class TaxonInteraction extends DescriptionElementBase {
 		return new TaxonInteraction();
 	}
 	
+	/**
+	 * Creates a new empty taxon interaction instance and also sets the feature
+	 * 
+	 * @param feature
+	 * @return
+	 */
+	public static TaxonInteraction NewInstance(Feature feature){
+		TaxonInteraction taxonInteraction = new TaxonInteraction();
+		if(feature.supportsTaxonInteraction()){
+			taxonInteraction.setFeature(feature);
+		}
+		return taxonInteraction;
+	}
+	
 	
 	/** 
 	 * Returns the second {@link Taxon taxon} involved in <i>this</i> taxon interaction.
@@ -115,8 +130,23 @@ public class TaxonInteraction extends DescriptionElementBase {
 	 * <i>this</i> taxon interaction. The different {@link LanguageString language strings}
 	 * contained in the multilanguage text should all have the same meaning.
 	 */
-	public Map<Language,LanguageString> getDescription(){
+	public Map<Language,LanguageString> getDescriptions(){
 		return this.description;
+	}
+	
+	/** 
+	 * Returns the description string in the given {@link Language language}
+	 * 
+	 * @param language	the language in which the description string looked for is formulated
+	 * @see				#getDescriptions()
+	 */ 
+	public String getDescription(Language language){
+		LanguageString languageString = description.get(language);
+		if (languageString == null){
+			return null;
+		}else{
+			return languageString.getText();
+		}
 	}
 
 	/**
