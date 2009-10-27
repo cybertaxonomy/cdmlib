@@ -10,18 +10,23 @@
 
 package eu.etaxonomy.cdm.test.function;
 
+import static org.junit.Assert.assertNotNull;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import junit.framework.Assert;
 
 import org.apache.log4j.Logger;
 import org.hibernate.mapping.Column;
+import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
+import eu.etaxonomy.cdm.api.conversation.ConversationHolder;
 import eu.etaxonomy.cdm.common.AccountStore;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.database.CdmDataSource;
@@ -33,9 +38,13 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Contact;
 import eu.etaxonomy.cdm.model.agent.Person;
+import eu.etaxonomy.cdm.model.common.Annotation;
+import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.init.TermNotFoundException;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
+import eu.etaxonomy.cdm.model.description.DescriptionBase;
+import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
@@ -45,6 +54,7 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.reference.Journal;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 
 public class TestDatabase {
@@ -321,7 +331,8 @@ public class TestDatabase {
 		String dataSourceName = "test";
 		NomenclaturalCode code = NomenclaturalCode.ICZN;
 //		ICdmDataSource dataSource = CdmDataSource.NewH2EmbeddedInstance("test", "sa", "", code);
-		ICdmDataSource dataSource = CdmDataSource.NewMySqlInstance("192.168.2.10", "cdm_test_niels2", 3306, "edit", "wp5", code);
+		String password = CdmUtils.readInputLine("Password: ");
+		ICdmDataSource dataSource = CdmDataSource.NewMySqlInstance("192.168.2.10", "cdm_test_niels2", 3306, "edit", password, code);
 		CdmPersistentDataSource.save(dataSourceName, dataSource);
 		
 		try {
@@ -338,6 +349,62 @@ public class TestDatabase {
 			e.printStackTrace();
 		} 
 		
+		
+	}
+	
+	public void testLoadedAnnotationGetAnnotatedObjectCall(){
+		String password = CdmUtils.readInputLine("Password: ");
+		ICdmDataSource dataSource = CdmDataSource.NewMySqlInstance("192.168.2.10", "cdm_test_niels2", 3306, "edit", password, NomenclaturalCode.ICBN);
+		try {
+			CdmApplicationController appCtr = CdmApplicationController.NewInstance(dataSource, DbSchemaValidation.UPDATE);
+			
+			ConversationHolder conversation = appCtr.NewConversation();
+			
+			// make the taxon and description elements 
+			Taxon taxon = Taxon.NewInstance(null, null);			
+
+			TaxonDescription taxonDescription = TaxonDescription.NewInstance(taxon);
+			
+			UUID taxonDescriptionUuid = taxonDescription.getUuid();
+			
+			Feature featureAnatomy = Feature.ANATOMY(); 
+			
+			TextData textData = TextData.NewInstance();
+			textData.addAnnotation(Annotation.NewInstance(null, null));
+			
+			assertNotNull(textData.getAnnotations().iterator().next().getAnnotatedObj());
+			
+			textData.setFeature(featureAnatomy);
+			
+			taxonDescription.addElement(textData);
+
+			appCtr.getTaxonService().save(taxon);
+			
+			conversation.commit(false);
+			// end of creation phase
+			
+			
+			// load the new taxon in a new conversation to assure that it was loaded into a new session
+			// if you are willing to blame it on conversations, please rewrite into two methods 
+			// the result will be the same
+			ConversationHolder newConversation = appCtr.NewConversation();
+			DescriptionBase loadedDescription = appCtr.getDescriptionService().load(taxonDescriptionUuid);
+			
+			TextData descriptionElement = (TextData) loadedDescription.getElements().iterator().next();
+		
+			Annotation annotation = descriptionElement.getAnnotations().iterator().next();
+			
+			// this should not be null
+			assertNotNull(annotation.getAnnotatedObj());
+			
+			
+		} catch (DataSourceNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (TermNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 	}
 	
@@ -369,7 +436,8 @@ public class TestDatabase {
 	public static void  main(String[] args) {
 		TestDatabase sc = new TestDatabase();
 //    	sc.testNewDatabaseConnection();
-		sc.testDataSourceWithNomenclaturalCode();
+//		sc.testDataSourceWithNomenclaturalCode();
+		sc.testLoadedAnnotationGetAnnotatedObjectCall();
 	}
 
 }
