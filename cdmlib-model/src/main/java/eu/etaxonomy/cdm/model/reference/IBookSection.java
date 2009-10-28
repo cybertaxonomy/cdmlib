@@ -9,11 +9,16 @@
 
 package eu.etaxonomy.cdm.model.reference;
 
+import eu.etaxonomy.cdm.strategy.cache.reference.BookSectionDefaultCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.reference.GenericDefaultCacheStrategy;
+
 
 public interface IBookSection extends ISectionBase, INomenclaturalReference{
 
 	public IBook getInBook();
 	
 	public void setInBook (IBook book);
+	
+	void setCacheStrategy(BookSectionDefaultCacheStrategy cacheStratefy);
 
 }

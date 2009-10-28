@@ -46,10 +46,14 @@ import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.strategy.cache.reference.ArticleDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.reference.BookDefaultCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.reference.BookSectionDefaultCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.reference.GenericDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.reference.INomenclaturalReferenceCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.reference.IReferenceBaseCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.reference.JournalDefaultCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.reference.ReferenceBaseDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.match.Match;
 import eu.etaxonomy.cdm.strategy.match.MatchMode;
 import eu.etaxonomy.cdm.strategy.merge.Merge;
@@ -806,66 +810,101 @@ public class ReferenceBase<S extends IReferenceBaseCacheStrategy> extends Identi
 	/* Casting methods */
 	
 	public IArticle castReferenceToArticle(ReferenceBase ref){
+		((IArticle) this).setCacheStrategy(ArticleDefaultCacheStrategy.NewInstance());
+		this.type = ReferenceType.Article;
+		
 		return (IArticle) ref;
 	}
 	
 	public IBook castReferenceToBook(ReferenceBase ref){
+		((IBook) this).setCacheStrategy(BookDefaultCacheStrategy.NewInstance());
+		this.type = ReferenceType.Book;
 		return (IBook) ref;
 	}
 	
 	public IBookSection castReferenceToBookSection(ReferenceBase ref){
+		((IBookSection) this).setCacheStrategy(BookSectionDefaultCacheStrategy.NewInstance());
+		this.type = ReferenceType.BookSection;
+		
 		return (IBookSection) ref;
 	}
 	
 	public ICdDvd castReferenceToCdDvd(ReferenceBase ref){
+		((ICdDvd) this).setCacheStrategy(ReferenceBaseDefaultCacheStrategy.NewInstance());
+		this.type = ReferenceType.CdDvd;
 		return (ICdDvd) ref;
 	}
 	
-	public IDatabase castReferenceToDatabase(ReferenceBase ref){
-		return (IDatabase) ref;
+	public IDatabase castReferenceToDatabase(){
+		((IDatabase) this).setCacheStrategy(ReferenceBaseDefaultCacheStrategy.NewInstance());
+		this.type = ReferenceType.Database;
+		return (IDatabase) this;
 	}
 	
-	public IGeneric castReferenceToGeneric(ReferenceBase ref){
-		return (IGeneric) ref;
+	public IGeneric castReferenceToGeneric(){
+		((IGeneric) this).setCacheStrategy(GenericDefaultCacheStrategy.NewInstance());
+		this.type = ReferenceType.Generic;
+		return (IGeneric) this;
 	}
 	
-	public IInProceedings castReferenceToInProceedings(ReferenceBase ref){
-		return (IInProceedings) ref;
+	public IInProceedings castReferenceToInProceedings(){
+		((IInProceedings) this).setCacheStrategy(ReferenceBaseDefaultCacheStrategy.NewInstance());
+		this.type = ReferenceType.InProceedings;
+		return (IInProceedings) this;
 	}
 	
-	public IJournal castReferenceToJournal(ReferenceBase ref){
-		return (IJournal) ref;
+	public IJournal castReferenceToJournal(){
+		((IJournal) this).setCacheStrategy(JournalDefaultCacheStrategy.NewInstance());
+		this.type = ReferenceType.Journal;
+		return (IJournal) this;
 	}
 	
 	public IMap castReferenceToMap(ReferenceBase ref){
+		((IMap) this).setCacheStrategy(ReferenceBaseDefaultCacheStrategy.NewInstance());
+		this.type = ReferenceType.Map;
 		return (IMap) ref;
 	}
 	
 	public IPatent castReferenceToPatent(ReferenceBase ref){
+		((IPatent) this).setCacheStrategy(ReferenceBaseDefaultCacheStrategy.NewInstance());
+		this.type = ReferenceType.Patent;
 		return (IPatent) ref;
 	}
 	
 	public IPersonalCommunication castReferenceToPersonalCommunication(ReferenceBase ref){
+		((IPersonalCommunication) this).setCacheStrategy(ReferenceBaseDefaultCacheStrategy.NewInstance());
+		this.type = ReferenceType.PersonalCommunication;
 		return (IPersonalCommunication) ref;
 	}
 	
 	public IPrintSeries castReferenceToPrintSeries(ReferenceBase ref){
+		((IPrintSeries) this).setCacheStrategy(ReferenceBaseDefaultCacheStrategy.NewInstance());
+		this.type = ReferenceType.PrintSeries;
 		return (IPrintSeries) ref;
 	}
 	
 	public IWebPage castReferenceToWebPage(ReferenceBase ref){
+		((IWebPage) this).setCacheStrategy(ReferenceBaseDefaultCacheStrategy.NewInstance());
+		this.type = ReferenceType.WebPage;
 		return (IWebPage) ref;
 	}
 	
 	public IProceedings castReferenceToProceedings(ReferenceBase ref){
+		((IProceedings) this).setCacheStrategy(ReferenceBaseDefaultCacheStrategy.NewInstance());
+		this.type = ReferenceType.Proceedings;
 		return (IProceedings) ref;
 	}
 	
 	public IReport castReferenceToReport(ReferenceBase ref){
+		((IReport) this).setCacheStrategy(ReferenceBaseDefaultCacheStrategy.NewInstance());
+		this.type = ReferenceType.Report;
+		
 		return (IReport) ref;
 	}
 
 	public IThesis castReferenceToThesis(ReferenceBase ref){
+		((IThesis) this).setCacheStrategy(ReferenceBaseDefaultCacheStrategy.NewInstance());
+		this.type = ReferenceType.Thesis;
 		return (IThesis) ref;
 	}
 
@@ -912,6 +951,31 @@ public class ReferenceBase<S extends IReferenceBaseCacheStrategy> extends Identi
 	public void setInBook(IBook book) {
 		this.inReference = (ReferenceBase<BookDefaultCacheStrategy<ReferenceBase>>) book;
 		
+	}
+
+	public void setCacheStrategy(ReferenceBaseDefaultCacheStrategy cacheStrategy) {
+		this.cacheStrategy = (S) cacheStrategy;
+		
+	}
+
+	public void setCacheStrategy(ArticleDefaultCacheStrategy cacheStrategy) {
+		this.cacheStrategy = (S) cacheStrategy;
+	}
+
+	public void setCacheStrategy(BookDefaultCacheStrategy cacheStrategy) {
+		this.cacheStrategy = (S) cacheStrategy;
+	}
+
+	public void setCacheStrategy(JournalDefaultCacheStrategy cacheStrategy) {
+		this.cacheStrategy = (S) cacheStrategy;		
+	}
+
+	public void setCacheStrategy(BookSectionDefaultCacheStrategy cacheStratefy) {
+		this.cacheStrategy = (S) cacheStrategy;
+	}
+
+	public void setCacheStrategy(GenericDefaultCacheStrategy cacheStratefy) {
+		this.cacheStrategy = (S) cacheStrategy;
 	}
 
 	

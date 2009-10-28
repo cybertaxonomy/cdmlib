@@ -9,6 +9,8 @@
 
 package eu.etaxonomy.cdm.model.reference;
 
+import eu.etaxonomy.cdm.strategy.cache.reference.BookDefaultCacheStrategy;
+
 public interface IBook extends IPrintedUnitBase, INomenclaturalReference{
 	
 	public void setEdition(String edition);
@@ -18,6 +20,7 @@ public interface IBook extends IPrintedUnitBase, INomenclaturalReference{
 	public String getIsbn();
 	
 	public void setIsbn(String isbn);
+	void setCacheStrategy(BookDefaultCacheStrategy cacheStrategy);
 	
 	
 

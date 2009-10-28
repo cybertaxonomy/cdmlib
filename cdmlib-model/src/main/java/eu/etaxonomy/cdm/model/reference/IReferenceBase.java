@@ -13,6 +13,7 @@ import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.IIdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IParsable;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
+import eu.etaxonomy.cdm.strategy.cache.reference.ReferenceBaseDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.match.IMatchable;
 import eu.etaxonomy.cdm.strategy.merge.IMergable;
 
@@ -39,4 +40,6 @@ public interface IReferenceBase extends IIdentifiableEntity, IParsable, IMergabl
 	public void setAuthorTeam(TeamOrPersonBase authorTeam);
 	
 	public TeamOrPersonBase getAuthorTeam();
+	
+	void setCacheStrategy(ReferenceBaseDefaultCacheStrategy cacheStrategy);
 }

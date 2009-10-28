@@ -9,6 +9,8 @@
 
 package eu.etaxonomy.cdm.model.reference;
 
+import eu.etaxonomy.cdm.strategy.cache.reference.ArticleDefaultCacheStrategy;
+
 public interface IArticle extends IVolumeReference, INomenclaturalReference{
 	
 	public void setSeries(String series);
@@ -26,4 +28,6 @@ public interface IArticle extends IVolumeReference, INomenclaturalReference{
 	public IJournal getInJournal();
 	
 	public void setInJournal(IJournal journal);
+	
+	void setCacheStrategy(ArticleDefaultCacheStrategy cacheStrategy);
 }

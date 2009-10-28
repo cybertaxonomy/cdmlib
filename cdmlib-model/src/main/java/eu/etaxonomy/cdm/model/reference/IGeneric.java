@@ -9,6 +9,8 @@
 
 package eu.etaxonomy.cdm.model.reference;
 
+import eu.etaxonomy.cdm.strategy.cache.reference.GenericDefaultCacheStrategy;
+
 public interface IGeneric extends IPublicationBase, IVolumeReference, INomenclaturalReference{
 
 	public String getEditor();
@@ -26,5 +28,7 @@ public interface IGeneric extends IPublicationBase, IVolumeReference, INomenclat
 	public String getPages();
 	
 	public void setPages(String pages);
+	
+	void setCacheStrategy(GenericDefaultCacheStrategy cacheStratefy);
 	
 }

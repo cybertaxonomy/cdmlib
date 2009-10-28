@@ -9,10 +9,14 @@
 
 package eu.etaxonomy.cdm.model.reference;
 
+import eu.etaxonomy.cdm.strategy.cache.reference.JournalDefaultCacheStrategy;
+
 public interface IJournal extends IPublicationBase{
 
 	public String getIssn();
 	
 	public void setIssn(String issn);
+	
+	void setCacheStrategy(JournalDefaultCacheStrategy cacheStrategy);
 	
 }
