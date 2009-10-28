@@ -92,6 +92,7 @@ cdmlib-services/target
 eclipse-feature-source/.classpath
 eclipse-feature-source/.settings
 eclipse-feature-source/src
+eclipse-feature/.settings
 eclipse-plugin/.settings
 eclipse-plugin/cdmlib-*.jar
 eclipse-plugin/cdmlib-*.zip
@@ -121,6 +122,7 @@ eclipse-plugin/dist
 eclipse-plugin/log4j-1.2.14src.zip
 eclipse-plugin/target
 eclipse-updateSite/.classpath
+eclipse-updateSite/.settings
 eclipse-updateSite/artifacts.xml
 eclipse-updateSite/content.xml
 eclipse-updateSite/features/*.jar

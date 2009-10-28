@@ -2,7 +2,7 @@
 <feature
       id="eu.etaxonomy.cdmlib"
       label="CDM Library"
-      version="2.2.0.qualifier"
+      version="2.3.0.qualifier"
       provider-name="EDIT">
 
    <description url="http://dev.e-taxonomy.eu/trac/wiki/CdmLibrary">
