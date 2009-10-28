@@ -9,9 +9,12 @@
 
 package eu.etaxonomy.cdm.model.reference;
 
-import eu.etaxonomy.cdm.strategy.cache.reference.ReferenceBaseDefaultCacheStrategy;
 
 public interface IInProceedings extends ISectionBase{
 	
 
+	public IProceedings getInProceedings();
+	
+	public void setInProceedings(IProceedings inProceedings);
+	
 }

@@ -106,9 +106,20 @@ public class ReferenceFactory {
 		return new ReferenceFactory();
 	}
 
-	public ReferenceBase newPrintSeries(String series) {
+	/** 
+	 * Creates a new empty print series instance.
+	 */
+	public ReferenceBase newPrintSeries() {
 		ReferenceBase<ReferenceBaseDefaultCacheStrategy<ReferenceBase>> refBase = new ReferenceBase<ReferenceBaseDefaultCacheStrategy<ReferenceBase>>(ReferenceType.PrintSeries);
-		refBase.setSeries(series);
+		refBase.setCacheStrategy(ReferenceBaseDefaultCacheStrategy.NewInstance());
+		return refBase;
+	}
+	
+	/** 
+	 * Creates a new print series instance with a given title string.
+	 */
+	public ReferenceBase newPrintSeries(String series) {
+		ReferenceBase<ReferenceBaseDefaultCacheStrategy<ReferenceBase>> refBase = newPrintSeries();
 		refBase.setCacheStrategy(ReferenceBaseDefaultCacheStrategy.NewInstance());
 		return refBase;
 	}

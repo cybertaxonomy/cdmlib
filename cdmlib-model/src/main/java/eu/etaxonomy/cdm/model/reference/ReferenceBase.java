@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.model.reference;
 
 
+import java.lang.reflect.Method;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -41,8 +42,10 @@ import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.validator.constraints.Length;
 
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
@@ -293,7 +296,6 @@ public class ReferenceBase<S extends IReferenceBaseCacheStrategy> extends Identi
 		this.type = type;
 		//this.cacheStrategy = ArticleDefaultCacheStrategy.NewInstance();
 	}
-	
  
 
 //*************************** GETTER / SETTER ******************************************/    
@@ -412,15 +414,12 @@ public class ReferenceBase<S extends IReferenceBaseCacheStrategy> extends Identi
 
 	public void setInReference(ReferenceBase inReference) {
 		this.inReference = inReference;
-	}
+	}	
 
-	public void setType(ReferenceType type) {
+	public void setType(ReferenceType type) {		
+		this.setCacheStrategy((S) type.getCacheStrategy());
 		this.type = type;
 	}
-
-	
-	
-
 
 	/**
 	 * @return the type
@@ -429,7 +428,15 @@ public class ReferenceBase<S extends IReferenceBaseCacheStrategy> extends Identi
 		return type;
 	}
     
-    
+	/**
+	 * Whether this reference is of the given type
+	 * 
+	 * @param type
+	 * @return
+	 */
+	public boolean isOfType(ReferenceType type){
+		return type == getType();
+	}    
     
 	/**
 	 * Returns a string representing the title of <i>this</i> reference. If a
@@ -952,7 +959,20 @@ public class ReferenceBase<S extends IReferenceBaseCacheStrategy> extends Identi
 		this.inReference = (ReferenceBase<BookDefaultCacheStrategy<ReferenceBase>>) book;
 		
 	}
+	
+	public IProceedings getInProceedings() {
+		IProceedings proceedings = this.inReference;
+		return proceedings;
+	}
+	
+	public void setInProceedings(IProceedings proceeding) {
+		this.inReference = (ReferenceBase<BookDefaultCacheStrategy<ReferenceBase>>) proceeding;
+	}
 
+	public void setCacheStrategy(S cacheStrategy){
+		this.cacheStrategy = cacheStrategy;
+	}
+	
 	public void setCacheStrategy(ReferenceBaseDefaultCacheStrategy cacheStrategy) {
 		this.cacheStrategy = (S) cacheStrategy;
 		
@@ -970,18 +990,12 @@ public class ReferenceBase<S extends IReferenceBaseCacheStrategy> extends Identi
 		this.cacheStrategy = (S) cacheStrategy;		
 	}
 
-	public void setCacheStrategy(BookSectionDefaultCacheStrategy cacheStratefy) {
+	public void setCacheStrategy(BookSectionDefaultCacheStrategy cacheStrategy) {
 		this.cacheStrategy = (S) cacheStrategy;
 	}
 
-	public void setCacheStrategy(GenericDefaultCacheStrategy cacheStratefy) {
+	public void setCacheStrategy(GenericDefaultCacheStrategy cacheStrategy) {
 		this.cacheStrategy = (S) cacheStrategy;
-	}
-
-	
-
-
-	
-	
+	}	
 }
 

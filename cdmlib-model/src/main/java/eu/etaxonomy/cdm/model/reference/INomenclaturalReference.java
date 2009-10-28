@@ -39,8 +39,4 @@ public interface INomenclaturalReference extends IReferenceBase{
 	public String getYear();
 
 	public void setDatePublished(TimePeriod datePublished);
-
-	
-
-	
 }

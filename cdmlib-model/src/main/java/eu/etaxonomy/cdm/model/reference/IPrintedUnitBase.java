@@ -9,7 +9,6 @@
 
 package eu.etaxonomy.cdm.model.reference;
 
-import eu.etaxonomy.cdm.model.common.CdmBase;
 
 public interface IPrintedUnitBase extends IPublicationBase, IVolumeReference {
 
@@ -29,5 +28,8 @@ public interface IPrintedUnitBase extends IPublicationBase, IVolumeReference {
 	
 	public void setPages(String pages);
 	
+	public String getSeriesPart();
+	
+	public void setSeriesPart(String seriesPart);
 	
 }

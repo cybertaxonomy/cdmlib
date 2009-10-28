@@ -42,4 +42,23 @@ public interface IReferenceBase extends IIdentifiableEntity, IParsable, IMergabl
 	public TeamOrPersonBase getAuthorTeam();
 	
 	void setCacheStrategy(ReferenceBaseDefaultCacheStrategy cacheStrategy);
+	
+	/**
+	 * Returns the Uniform Resource Identifier (URI) corresponding to <i>this</i>
+	 * reference. An URI is a string of characters used to identify a resource
+	 * on the Internet.
+	 * 
+	 * @return  the URI of <i>this</i> reference
+	 */
+	public String getUri();
+	/**
+	 * @see #getUri()
+	 */
+	public void setUri(String uri);
+		
+	public String getReferenceAbstract();
+	
+	public void setReferenceAbstract(String referenceAbstract);
+	
+	public boolean isOfType(ReferenceType type);
 }
