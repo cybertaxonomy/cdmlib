@@ -10,10 +10,15 @@
 package eu.etaxonomy.cdm.model.common;
 
 import eu.etaxonomy.cdm.model.agent.Person;
+import eu.etaxonomy.cdm.model.description.TextData;
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Any;
+import org.hibernate.annotations.AnyMetaDef;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.MetaValue;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
 
@@ -98,8 +103,16 @@ public class Annotation extends LanguageStringBase implements Cloneable {
     @XmlSchemaType(name = "IDREF")
     @Any(metaDef = "CdmBase",
 	    	 metaColumn=@Column(name = "annotatedObj_type"),
-	    	 fetch = FetchType.LAZY,
+	    	 fetch = FetchType.EAGER,
 	    	 optional = false)
+	    	 
+  	 @AnyMetaDef(idType = "int", metaType = "string", 
+            metaValues = { 
+             @MetaValue(targetEntity = TextData.class, value = "TextData"),
+             @MetaValue(targetEntity = ReferenceBase.class, value = "Reference")
+       		})
+
+
 	@JoinColumn(name = "annotatedObj_id")
 	@NotAudited
 	private AnnotatableEntity annotatedObj;
