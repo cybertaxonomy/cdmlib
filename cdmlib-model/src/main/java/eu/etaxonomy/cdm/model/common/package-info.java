@@ -39,8 +39,10 @@
 		@MetaValue(value = "eu.etaxonomy.cdm.model.occurrence.Specimen", targetEntity = Specimen.class),
 		@MetaValue(value = "eu.etaxonomy.cdm.model.reference.ReferenceBase", targetEntity = ReferenceBase.class),
 		@MetaValue(value = "eu.etaxonomy.cdm.model.taxon.Synonym", targetEntity = Synonym.class),
-		@MetaValue(value = "eu.etaxonomy.cdm.model.taxon.Taxon", targetEntity = Taxon.class)
-		})
+		@MetaValue(value = "eu.etaxonomy.cdm.model.taxon.Taxon", targetEntity = Taxon.class),
+		@MetaValue(value = "eu.etaxonomy.cdm.model.description.TextData", targetEntity = TextData.class)
+
+})
 package eu.etaxonomy.cdm.model.common;
 
 import org.hibernate.annotations.GenericGenerator;
@@ -53,6 +55,7 @@ import eu.etaxonomy.cdm.model.description.MediaKey;
 import eu.etaxonomy.cdm.model.description.SpecimenDescription;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
+import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.molecular.Sequence;
 import eu.etaxonomy.cdm.model.name.BacterialName;

@@ -105,14 +105,6 @@ public class Annotation extends LanguageStringBase implements Cloneable {
 	    	 metaColumn=@Column(name = "annotatedObj_type"),
 	    	 fetch = FetchType.EAGER,
 	    	 optional = false)
-	    	 
-  	 @AnyMetaDef(idType = "int", metaType = "string", 
-            metaValues = { 
-             @MetaValue(targetEntity = TextData.class, value = "TextData"),
-             @MetaValue(targetEntity = ReferenceBase.class, value = "Reference")
-       		})
-
-
 	@JoinColumn(name = "annotatedObj_id")
 	@NotAudited
 	private AnnotatableEntity annotatedObj;
