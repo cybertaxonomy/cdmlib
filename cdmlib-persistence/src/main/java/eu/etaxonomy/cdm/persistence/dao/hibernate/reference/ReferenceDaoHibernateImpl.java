@@ -209,4 +209,24 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<ReferenceBase
 		return list;
 	}
 	
+	public List<ReferenceBase> getAllReferencesForPublishing(){
+		List<ReferenceBase> references = getSession().createQuery("Select r from ReferenceBase r "+
+				"where r.id IN "+
+					"(Select m.markedObj.id from Marker m where "+
+						"m.markerType.id = "+
+							"(Select dtb.id from DefinedTermBase dtb, Representation r where r member of dtb.representations and r.text='publish'))").list();
+		return references;
+	}
+	
+	public List<ReferenceBase> getAllNotNomenclaturalReferencesForPublishing(){
+		
+		List<ReferenceBase> references = getSession().createQuery("select t.nomenclaturalReference from TaxonNameBase t").list();
+		String queryString = "from ReferenceBase b where b not in (:referenceList) and b in (:publish)" ;
+		Query referenceQuery = getSession().createQuery(queryString).setParameterList("referenceList", references);
+		referenceQuery.setParameterList("publish", getAllReferencesForPublishing());
+		List<ReferenceBase> resultRefernces =referenceQuery.list();
+				
+		return resultRefernces;
+	}
+	
 }

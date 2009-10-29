@@ -213,8 +213,7 @@ public class Team extends TeamOrPersonBase<Team> {
 	 */
 	@Override
 	public void setNomenclaturalTitle(String nomenclaturalTitle) {
-		setNomenclaturalTitle(nomenclaturalTitle, PROTECTED);
-		this.nomenclaturalTitle = nomenclaturalTitle;
+		this.setNomenclaturalTitle(nomenclaturalTitle, PROTECTED);
 	}
 
 	/**
@@ -246,4 +245,15 @@ public class Team extends TeamOrPersonBase<Team> {
 		isGeneratingTitleCache = false;
 		return result;
 	}
+
+	public boolean isProtectedNomenclaturalTitleCache() {
+		return protectedNomenclaturalTitleCache;
+	}
+
+	public void setProtectedNomenclaturalTitleCache(
+			boolean protectedNomenclaturalTitleCache) {
+		this.protectedNomenclaturalTitleCache = protectedNomenclaturalTitleCache;
+	}
+	
+	
 }

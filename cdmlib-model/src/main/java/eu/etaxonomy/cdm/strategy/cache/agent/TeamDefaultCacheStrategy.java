@@ -62,7 +62,7 @@ public class TeamDefaultCacheStrategy extends StrategyBase implements INomenclat
 		if (teamMembers.size() > 0){
 			result = result.substring(0, result.length() - 3);
 		}else{
-			result = getTitleCache(team);
+			result = team.getTitleCache();
 		}
 		return result;
 	}

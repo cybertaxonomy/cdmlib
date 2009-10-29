@@ -62,7 +62,8 @@ public class PalmaeImageImport extends AbstractImageImporter {
 		NAME,
 		ARTIST,
 		COPYRIGHT,
-		COPYRIGHTNOTICE
+		COPYRIGHTNOTICE,
+		OBJECTNAME
 	}
 	
 	private static int modCount = 300;
@@ -186,6 +187,7 @@ public class PalmaeImageImport extends AbstractImageImporter {
 					metaDataList.add (MetaData.ARTIST);
 					metaDataList.add (MetaData.COPYRIGHT);
 					metaDataList.add (MetaData.COPYRIGHTNOTICE);
+					metaDataList.add (MetaData.OBJECTNAME);
 					//metaDataList.add (MetaData.NAME);
 					
 					Map<MetaData, String> metaData = getMetaData(file, metaDataList);
@@ -235,8 +237,11 @@ public class PalmaeImageImport extends AbstractImageImporter {
 						
 						Media media = Media.NewInstance();
 						media.addRepresentation(representation);
-						Person artist = null;
+						if (metaData.containsKey(MetaData.OBJECTNAME)){
+							media.setTitleCache(metaData.get(MetaData.OBJECTNAME).replace("'", ""), true);
+						}
 						//TODO: add the rights and the author:
+						Person artist = null;
 						if (metaData.containsKey(MetaData.ARTIST)){
 							//TODO search for the person first and then create the object...
 							artist = Person.NewTitledInstance(metaData.get(MetaData.ARTIST).replace("'", ""));

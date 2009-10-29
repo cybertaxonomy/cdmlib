@@ -211,7 +211,7 @@ public class BerlinModelOccurrenceImport  extends BerlinModelImportBase {
                 }
                 
             }
-            makeOccurreceSource(distributionMap, state, duplicateMap);
+            //TODO fix: makeOccurrenceSource(distributionMap, state, duplicateMap);
 			
             logger.info("Distributions: " + countDistributions + ", Descriptions: " + countDescriptions );
 			logger.warn("Unmatched occurrences: "  + (i - countDescriptions));
@@ -232,7 +232,7 @@ public class BerlinModelOccurrenceImport  extends BerlinModelImportBase {
 	 * @param state
 	 * @throws SQLException 
 	 */
-	private void makeOccurreceSource(MapWrapper<Distribution> distributionMap, BerlinModelImportState state, Map<Integer, Distribution> duplicateMap) 
+	private void makeOccurrenceSource(MapWrapper<Distribution> distributionMap, BerlinModelImportState state, Map<Integer, Distribution> duplicateMap) 
 				throws SQLException {
 		//FIXME multiple sources for one distribution, needs model change first
 		Map<String, ReferenceBase<?>> sourceIdMap = makeSourceIdMap(state); 

@@ -9,15 +9,8 @@
 */
 package eu.etaxonomy.cdm.remote.service;
 
-import eu.etaxonomy.cdm.api.service.lsid.LSIDAuthorityService;
-import eu.etaxonomy.cdm.model.common.LSID;
-import eu.etaxonomy.cdm.model.common.LSIDAuthority;
-import eu.etaxonomy.cdm.remote.editor.LSIDAuthorityPropertyEditor;
-import eu.etaxonomy.cdm.remote.editor.LSIDPropertyEditor;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.WebDataBinder;
@@ -28,8 +21,13 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.ibm.lsid.ExpiringResponse;
 import com.ibm.lsid.LSIDException;
-
 import com.ibm.lsid.server.LSIDServerException;
+
+import eu.etaxonomy.cdm.api.service.lsid.LSIDAuthorityService;
+import eu.etaxonomy.cdm.model.common.LSID;
+import eu.etaxonomy.cdm.model.common.LSIDAuthority;
+import eu.etaxonomy.cdm.remote.editor.LSIDAuthorityPropertyEditor;
+import eu.etaxonomy.cdm.remote.editor.LSIDPropertyEditor;
 
 /**
  * Controller which accepts incoming requests to the LSIDAuthorityService

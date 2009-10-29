@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" 
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <!-- 
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
+		xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+		http://maven.apache.org/maven-v4_0_0.xsd"
    -->
 	<parent>
 		<groupId>eu.etaxonomy</groupId>
@@ -14,11 +14,18 @@
   <artifactId>cdmlib-remote</artifactId>
   <packaging>war</packaging>
   <name>CDM Community Server</name>
-  <description>The EDIT CDM Community Server allows remote access to the common data model via webservices in the wider sense</description>
+	<description>The EDIT CDM Community Server allows remote access to
+		the common data model via webservices in the wider sense</description>
   <scm>
-    <connection>scm:svn:http://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlib-remote/</connection>
-  	<developerConnection>scm:svn:https://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlib-remote/</developerConnection>
-  	<url>http://dev.e-taxonomy.eu/trac/browser/trunk/cdmlib/cdmlib-remote/</url>
+		<connection>
+			scm:svn:http://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlib-remote/
+		</connection>
+		<developerConnection>
+			scm:svn:https://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlib-remote/
+		</developerConnection>
+		<url>
+			http://dev.e-taxonomy.eu/trac/browser/trunk/cdmlib/cdmlib-remote/
+		</url>
   </scm>
 
 	<dependencies>
@@ -38,7 +45,12 @@
 			<groupId>eu.etaxonomy</groupId>
 			<artifactId>cdmlib-services</artifactId>
 		</dependency>
-		<dependency>
+		<!--<dependency>
+			<groupId>org.mortbay.jetty</groupId>
+			<artifactId>jetty</artifactId>
+			<version>6.1.16</version>
+		</dependency>
+		--><dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>servlet-api</artifactId>
 			<scope>provided</scope>
@@ -129,8 +141,8 @@
 			<artifactId>x</artifactId>
 			<version>1.1.2</version>
 			<type>tld</type>
-		</dependency>		
-		
+		</dependency>
+
 		<!--  SQL Profiling  -->
 		<dependency>
     <groupId>p6spy</groupId>
@@ -142,16 +154,81 @@
 	<build>
 	<!-- Configure the webapp -->
  	<finalName>cdmserver</finalName> 
-<!--		
+		<!--
  		<finalName>cdmserver-cichorieae</finalName> 
-		<finalName>cdmserver-palmae</finalName>
+			<finalName>cdmserver-palmae</finalName>
 		<finalName>cdmserver-diptera</finalName>
 		<finalName>cdmserver</finalName>
 		<finalName>cdmserver-elsalvador</finalName>
-		<finalName>cdmserver-erms</finalName>
+			<finalName>cdmserver-erms</finalName>
 -->
+		
 		<plugins>
-			<plugin><!--use mvn tomcat:deploy -->
+		<plugin>
+		    <groupId>net.sf.alchim</groupId>
+		    <artifactId>winstone-maven-plugin</artifactId>
+		    <executions>
+		        <execution>
+		            <goals>
+		                <goal>embed</goal>
+		            </goals>
+		            <phase>package</phase>
+		        </execution>
+		    </executions>
+		</plugin>
+				
+			<!--<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>2.0</version>
+				<configuration>
+					<archive>
+						<manifest>
+							<addClasspath>true</addClasspath>
+							<mainClass>eu.etaxonomy.cdm.server.CdmServer
+							</mainClass>
+						</manifest>
+					</archive>
+				</configuration>
+				<executions>
+					<execution>
+						<id>move-main-class</id>
+						<phase>compile</phase>
+						<configuration>
+							<tasks>
+								  Ant tasks 
+								<echo>Moving CdmServer.class to ${project.build.directory}/${project.artifactId}</echo>
+								<move todir="${project.build.directory}/${project.artifactId}">
+									<fileset dir="${project.build.directory}/classes/">
+										<include name="**/CdmServer.class" />
+									</fileset>
+								</move>
+							</tasks>
+						</configuration>
+						<goals>
+							<goal>war</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>unpack-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <includeTypes>jar</includeTypes>
+							<outputDirectory>${project.build.directory}/${project.build.finalName}</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+			
+
+			--><plugin><!--use mvn tomcat:deploy -->
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>tomcat-maven-plugin</artifactId>
 				<configuration>
@@ -165,40 +242,37 @@
 					<!-- remote testing-->
 					<update>true</update>
 					<server>tomcat-cdm</server>
-					<url>http://160.45.63.201:8080/manager</url>			
+					<url>http://160.45.63.201:8080/manager
+					</url>
 					
 <!--				<server>tomcat-local</server>-->
 				</configuration>
 			</plugin>
 
-			<plugin><!-- 
-			  to run use:
-			    mvn jetty:run
-			   
-			  for debugging: 
-			    export MAVEN_OPTS="-Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,address=4000,server=y,suspend=n"
-          mvn jetty:run
-         
-        for faster startup offline mode & skip tests:
-          mvn -o -Dmaven.test.skip=true jetty:run-war
-        
-        an eclipse plugin to start/restart/stop jetty6
-          http://dbpowder.sourceforge.net/etc/jettylauncher6/updates/
-          
-        see also: 
-          http://docs.codehaus.org/display/JETTY/Debugging+with+the+Maven+Jetty+Plugin+inside+Eclipse
-          http://mahertb.blogspot.com/2006/08/debugging-maven-web-application-with.html
+			<plugin>
+				<!--
+					to run use: mvn jetty:run for debugging: export MAVEN_OPTS="-Xdebug
+					-Xnoagent -Djava.compiler=NONE
+					-Xrunjdwp:transport=dt_socket,address=4000,server=y,suspend=n" mvn
+					jetty:run for faster startup offline mode & skip tests: mvn -o
+					-Dmaven.test.skip=true jetty:run-war an eclipse plugin to
+					start/restart/stop jetty6
+					http://dbpowder.sourceforge.net/etc/jettylauncher6/updates/ see
+					also:
+					http://docs.codehaus.org/display/JETTY/Debugging+with+the+Maven+Jetty+Plugin+inside+Eclipse
+					http://mahertb.blogspot.com/2006/08/debugging-maven-web-application-with.html
 			  -->
 				<groupId>org.mortbay.jetty</groupId>
 				<artifactId>maven-jetty-plugin</artifactId>
 				<configuration>
 					<!-- Configure the webapp -->
-					<contextPath>/cdmserver-cichorieae/</contextPath>
-<!--					
-					<contextPath>/cdmserver-palmae/</contextPath>
-					<contextPath>/cdmserver-diptera/</contextPath>
-					<contextPath>/cdmserver/</contextPath>
-					<contextPath>/cdmserver-elsalvador/</contextPath>
+					<contextPath>/cdmserver-cichorieae/
+					</contextPath>
+					<!--
+						<contextPath>/cdmserver-palmae/</contextPath>
+						<contextPath>/cdmserver-diptera/</contextPath>
+						<contextPath>/cdmserver/</contextPath>
+						<contextPath>/cdmserver-elsalvador/</contextPath>
 					<contextPath>/cdmserver-erms/</contextPath>
 -->
 					<!-- configure the container -->

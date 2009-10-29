@@ -35,8 +35,11 @@ public class PalmaeExcelProtologueActivator {
 
 	static final UUID secUuid = UUID.fromString("5f32b8af-0c97-48ac-8d33-6099ed68c625");
 	
+	// set the webserver path to the protologues
+	private static final String urlString = "http://wp5.e-taxonomy.eu/media/palmae/protologe/";
+	
 	public static void main (String[] whatever){
-		ImageImportConfigurator imageConfigurator = ImageImportConfigurator.NewInstance(sourceFile, cdmDestination, PalmaeProtologueImport.class);
+		ImageImportConfigurator imageConfigurator = ImageImportConfigurator.NewInstance(sourceFile, cdmDestination, urlString, PalmaeProtologueImport.class);
 		imageConfigurator.setSecUuid(secUuid);
 		
 		CdmDefaultImport<IImportConfigurator> importer = new CdmDefaultImport<IImportConfigurator>();

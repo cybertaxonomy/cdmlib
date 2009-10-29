@@ -15,6 +15,7 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.io.common.Source;
@@ -101,17 +102,17 @@ public class BerlinModelAuthorTeamImport extends BerlinModelImportBase {
 					
 					Boolean preliminaryFlag = rsTeam.getBoolean("PreliminaryFlag");
 					String authorTeamCache = rsTeam.getString("AuthorTeamCache");
-					//String fullAuthorTeamCache = rsTeam.getString("FullAuthorTeamCache");
-					team.setTitleCache(authorTeamCache);
+					String fullAuthorTeamCache = rsTeam.getString("FullAuthorTeamCache");
+					if (CdmUtils.isEmpty(fullAuthorTeamCache)){
+						fullAuthorTeamCache = authorTeamCache;
+					}
+					team.setTitleCache(fullAuthorTeamCache, preliminaryFlag);
 					team.setNomenclaturalTitle(authorTeamCache, preliminaryFlag);
 	
-					//TODO
-					//FullAuthorTeamCache
-					//title cache or nomenclaturalTitle?
-					
 					makeSequence(team, teamId, rsSequence, state.getStores());
-					if (team.getTeamMembers().size()> 0 && preliminaryFlag == false){
-						team.setProtectedTitleCache(false);
+					if (team.getTeamMembers().size()== 0 && preliminaryFlag == false){
+						team.setProtectedTitleCache(true);
+						team.setProtectedNomenclaturalTitleCache(true);
 					}
 					
 					//created, notes

@@ -188,6 +188,11 @@
 		      <artifactId>commons-lang</artifactId>
      </dependency>
      <dependency>
+      <groupId>commons-dbcp</groupId>
+      <artifactId>commons-dbcp</artifactId>
+      <version>1.2.2</version>
+    </dependency>
+  	<dependency>
 	   <groupId>org.springmodules</groupId>
 	   <artifactId>spring-modules-lucene</artifactId>
     </dependency>

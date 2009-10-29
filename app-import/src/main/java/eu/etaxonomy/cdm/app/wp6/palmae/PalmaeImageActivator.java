@@ -41,9 +41,8 @@ public class PalmaeImageActivator  {
 	static final UUID secUuid = UUID.fromString("5f32b8af-0c97-48ac-8d33-6099ed68c625");
 
 	public static void main (String[] cowabunga){
-		ImageImportConfigurator imageConfigurator = ImageImportConfigurator.NewInstance(sourceFolder, cdmDestination, PalmaeImageImport.class);
+		ImageImportConfigurator imageConfigurator = ImageImportConfigurator.NewInstance(sourceFolder, cdmDestination, urlString, PalmaeImageImport.class);
 		imageConfigurator.setSecUuid(secUuid);
-		imageConfigurator.setMediaUrlString(urlString);
 		
 		CdmDefaultImport<IImportConfigurator> importer = new CdmDefaultImport<IImportConfigurator>();
 		//AbstractImageImporter imageImporter = new PalmaeImageActivator();

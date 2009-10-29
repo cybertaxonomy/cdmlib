@@ -125,8 +125,11 @@ public class TeamDefaultCacheStrategyTest {
 		//person3
 		Assert.assertNotNull("team3 nomenclatural title must not to be null", team3.getNomenclaturalTitle());
 		Assert.assertTrue("team3 nomenclatural title must not be empty", CdmUtils.isNotEmpty(team3.getNomenclaturalTitle()));
-		//don't take to serious, may be also something different, but not empty
+		
+		
+		//don't take next test to serious, may be also something different, but not empty
 		Assert.assertEquals("team3 nomenclatural title should be empty team replacement string", TeamDefaultCacheStrategy.EMPTY_TEAM, team3.getNomenclaturalTitle());
+		
 	}
 	
 

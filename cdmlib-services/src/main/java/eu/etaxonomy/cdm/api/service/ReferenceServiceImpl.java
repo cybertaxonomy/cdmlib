@@ -72,4 +72,9 @@ public class ReferenceServiceImpl extends IdentifiableServiceBase<ReferenceBase,
 		
 		return dao.getUuidAndTitle();
 	}
+	
+	public List<ReferenceBase> getAllReferencesForPublishing(){
+		return dao.getAllNotNomenclaturalReferencesForPublishing();
+	}
+
 }
