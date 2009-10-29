@@ -44,6 +44,11 @@ public class PalmaeActivator {
 	static DbSchemaValidation hbm2dll = DbSchemaValidation.CREATE;
 	static final String tcsSource = TcsSources.arecaceae_local();
 	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_edit_palmae_a();
+	
+	// set the webserver path to the images
+	private static final String imageUrlString = "http://wp5.e-taxonomy.eu/media/palmae/photos/";
+	// set the webserver path to the protologues
+	private static final String protologueUrlString = "http://wp5.e-taxonomy.eu/media/palmae/protologe/";
 
 	public static final UUID featureTreeUuid = UUID.fromString("72ccce05-7cc8-4dab-8e47-bf3f5fd848a0");
 		
@@ -177,7 +182,7 @@ public class PalmaeActivator {
 			System.out.println("Start importing images ...");
 			CdmDefaultImport<IImportConfigurator> imageImporter = new CdmDefaultImport<IImportConfigurator>();
 			ImageImportConfigurator imageConfigurator = ImageImportConfigurator.NewInstance(
-					PalmaeImageActivator.sourceFolder, cdmDestination, PalmaeImageImport.class);
+					PalmaeImageActivator.sourceFolder, cdmDestination, imageUrlString, PalmaeImageImport.class);
 			imageConfigurator.setSecUuid(secUuid);
 			success &= imageImporter.invoke(imageConfigurator);
 			System.out.println("End importing images ...");
@@ -186,7 +191,7 @@ public class PalmaeActivator {
 		if (includeExcelProtologue){
 			System.out.println("Start importing protologues ...");
 			ImageImportConfigurator imageConfigurator = ImageImportConfigurator.NewInstance(
-					PalmaeExcelProtologueActivator.sourceFile, cdmDestination, PalmaeProtologueImport.class);
+					PalmaeExcelProtologueActivator.sourceFile, cdmDestination, protologueUrlString, PalmaeProtologueImport.class);
 			imageConfigurator.setSecUuid(secUuid);
 			
 			CdmDefaultImport<IImportConfigurator> imageImporter = new CdmDefaultImport<IImportConfigurator>();
