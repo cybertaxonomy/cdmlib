@@ -84,7 +84,14 @@ public class OrderedTermVocabulary<T extends OrderedTermBase> extends TermVocabu
 	public SortedSet<T> getLowerAndEqualTerms(T otb) {
 		SortedSet<T> result = new TreeSet<T>();
 		SortedSet<T> sortedSet = getSortedSetOfTerms();
+	
 		result.addAll( sortedSet.headSet(otb));
+		//headSet Returns a view of the portion of this set whose elements are STRICTLY less than toElement
+		for (T setObject : terms){
+			if (setObject.compareTo(otb) == 0){
+				result.add(setObject);
+			}
+		}
 		return result;
 	}
 	
