@@ -230,9 +230,12 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 				
 		boolean doCount = false;
 		Query query = prepareTaxaByName(clazz, queryString, taxonomicTree, matchMode, namedAreas, pageSize, pageNumber, doCount);
-		List<TaxonBase> results = query.list();
-		defaultBeanInitializer.initializeAll(results, propertyPaths);
-		return results;
+		if (query != null){
+			List<TaxonBase> results = query.list();
+			defaultBeanInitializer.initializeAll(results, propertyPaths);
+			return results;
+		}
+		return new ArrayList<TaxonBase>();
 		
 	}
 
@@ -383,6 +386,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		} else if(clazz.equals(Synonym.class)){
 			// find synonyms
 			subSynonym = getSession().createQuery(synonymSubselect).setParameter("queryString", hqlQueryString);;
+			
 			if(doAreaRestriction){
 				subSynonym.setParameterList("namedAreas", areasExpanded);
 			}		
@@ -407,28 +411,48 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		List<TaxonBase> synonyms = null;
 		if(clazz.equals(Taxon.class)){
 			taxa = subTaxon.list();
+			System.err.println("number of taxa: " +taxa.size());
 		}else if (clazz.equals(Synonym.class)){
+			System.err.println(subSynonym.getQueryString());
 			synonyms = subSynonym.list();
+			System.err.println("number of synonyms: " +synonyms.size());
 		}else {
+			System.err.println(subTaxon.getQueryString());
 			taxa = subTaxon.list();
+			System.err.println("number of taxa: " +taxa.size());
 			synonyms = subSynonym.list();
+			System.err.println("number of synonyms: " +synonyms.size());
 		}
 		if(clazz.equals(Taxon.class)){
-			hql = "select " + selectWhat + " from " + clazz.getSimpleName() + " t" 
-			+ " where t in (:taxa)";
-								
-		} else if(clazz.equals(Synonym.class)){
-			hql = "select " + selectWhat + " from " + clazz.getSimpleName() + " t" 
-				+ " where t in (:synonyms)";		
+			if  (taxa.size()>0){
+				hql = "select " + selectWhat + " from " + clazz.getSimpleName() + " t" + " where t in (:taxa)";
+			}else{
+				hql = "select " + selectWhat + " from " + clazz.getSimpleName() + " t";
+			}
+		} else if(clazz.equals(Synonym.class) ){
+			if (synonyms.size()>0){
+				hql = "select " + selectWhat + " from " + clazz.getSimpleName() + " t" + " where t in (:synonyms)";		
+			}else{
+				hql = "select " + selectWhat + " from " + clazz.getSimpleName() + " t";
+			}
 		} else {
-			hql = "select " + selectWhat + " from " + clazz.getSimpleName() + " t" 
-			+ " where t in (:taxa) OR t in (:synonyms)";
+			if(synonyms.size()>0 && taxa.size()>0){
+				hql = "select " + selectWhat + " from " + clazz.getSimpleName() + " t" + " where t in (:taxa) OR t in (:synonyms)";
+			}else if (synonyms.size()>0 ){
+				hql = "select " + selectWhat + " from " + clazz.getSimpleName() + " t" 
+				+ " where t in (:synonyms)";	
+			} else if (taxa.size()>0 ){
+				hql = "select " + selectWhat + " from " + clazz.getSimpleName() + " t" + " where t in (:taxa) ";
+			} else{
+				hql = "select " + selectWhat + " from " + clazz.getSimpleName() + " t";
+			}
 		}
 		
+		if (hql == "") return null;
 		if(!doCount){
 			hql += " order by t.titleCache"; //" order by t.name.nameCache";
 		}
-		
+	
 		Query query = getSession().createQuery(hql);
 		
 		if(clazz.equals(Taxon.class)){
@@ -436,14 +460,16 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 			query.setParameterList("taxa", taxa );
 		} else if(clazz.equals(Synonym.class)){
 			// find synonyms
-			query.setParameterList("synonyms", synonyms);		
+			query.setParameterList("synonyms", synonyms);
+			
+		
 		} else {
 			// find taxa and synonyms
 			query.setParameterList("taxa", taxa);
 			query.setParameterList("synonyms",synonyms);
 		}
 		
-		
+		System.err.println("query: " +query.getQueryString());
 		if(pageSize != null &&  !doCount) {
 			query.setMaxResults(pageSize);
 			if(pageNumber != null) {
@@ -462,8 +488,10 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		
 		boolean doCount = true;
 		Query query = prepareTaxaByName(clazz, queryString, taxonomicTree, matchMode, namedAreas, null, null, doCount);
-		Object result = query.uniqueResult();
-		return (Long) result;
+		if (query != null) {
+			return (Long)query.uniqueResult();
+		}
+		return 0;
 		
 	}
 
