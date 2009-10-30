@@ -969,9 +969,9 @@ public class ReferenceBase<S extends IReferenceBaseCacheStrategy> extends Identi
 		this.inReference = (ReferenceBase<BookDefaultCacheStrategy<ReferenceBase>>) proceeding;
 	}
 
-	public void setCacheStrategy(S cacheStrategy){
-		this.cacheStrategy = cacheStrategy;
-	}
+	//public void setCacheStrategy(S cacheStrategy){
+	//	this.cacheStrategy = cacheStrategy;
+	//}
 	
 	public void setCacheStrategy(ReferenceBaseDefaultCacheStrategy cacheStrategy) {
 		this.cacheStrategy = (S) cacheStrategy;
