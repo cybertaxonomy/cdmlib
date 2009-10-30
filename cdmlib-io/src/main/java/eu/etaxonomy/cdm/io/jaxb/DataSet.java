@@ -781,5 +781,10 @@ public class DataSet {
 	public void setGrantedAuthorities(List<GrantedAuthority> grantedAuthorities) {
 		this.grantedAuthorities = grantedAuthorities;
 	}
+
+	public void addUser(User deproxy) {
+		this.users.add(deproxy);
+		
+	}
     
 }

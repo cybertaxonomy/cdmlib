@@ -33,6 +33,7 @@ import eu.etaxonomy.cdm.io.common.IExportConfigurator;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
+import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
@@ -144,18 +145,25 @@ public class JaxbExport extends CdmExportBase<JaxbExportConfigurator, JaxbExport
 		int homotypicalGroupRows = numberOfRows;
 		int UserRows= numberOfRows;
 
+		if (jaxbExpConfig.isDoUsers() == true) {
+			
+			if (UserRows == 0) { UserRows = MAX_ROWS; }
+			logger.info("# User");
+			List<User> users = getUserService().list(null, UserRows, 0, null, null);
+		
+			
+			for (User user: users){
+				dataSet.addUser( (User)HibernateProxyHelper.deproxy(user));
+			}
+			
+		}
 		if (jaxbExpConfig.isDoTermVocabularies() == true) {
 			if (termVocabularyRows == 0) { termVocabularyRows = MAX_ROWS; }
 			logger.info("# TermVocabulary");
 			dataSet.setTermVocabularies((List)getVocabularyService().list(null,termVocabularyRows, 0, null, null));
 		}
 		
-		if (jaxbExpConfig.isDoUsers() == true) {
-			
-			if (UserRows == 0) { UserRows = MAX_ROWS; }
-			logger.info("# User");
-			dataSet.setUsers(getUserService().list(null,UserRows, 0,null,null));
-		}
+		
 
 //		if (jaxbExpConfig.isDoLanguageData() == true) {
 //			if (languageDataRows == 0) { languageDataRows = MAX_ROWS; }
@@ -170,13 +178,15 @@ public class JaxbExport extends CdmExportBase<JaxbExportConfigurator, JaxbExport
 			logger.info("# DefinedTermBase: " + definedTermBaseRows);
 			dataSet.setTerms(getTermService().list(null,definedTermBaseRows, 0,null,null));
 		}
-
+		
 		if (jaxbExpConfig.isDoAuthors() == true) {
 			if (agentRows == 0) { agentRows = getAgentService().count(AgentBase.class); }
 			logger.info("# Agents: " + agentRows);
 			//logger.info("    # Team: " + appCtr.getAgentService().count(Team.class));
 			dataSet.setAgents(getAgentService().list(null,agentRows, 0,null,null));
 		}
+		
+		
 
 		if (jaxbExpConfig.getDoReferences() != IImportConfigurator.DO_REFERENCES.NONE) {
 			if (referenceBaseRows == 0) { referenceBaseRows = getReferenceService().count(ReferenceBase.class); }
