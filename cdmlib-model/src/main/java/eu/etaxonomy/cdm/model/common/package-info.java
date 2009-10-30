@@ -37,11 +37,20 @@
 		@MetaValue(value = "eu.etaxonomy.cdm.model.occurrence.LivingBeing", targetEntity = LivingBeing.class),
 		@MetaValue(value = "eu.etaxonomy.cdm.model.occurrence.Observation", targetEntity = Observation.class),
 		@MetaValue(value = "eu.etaxonomy.cdm.model.occurrence.Specimen", targetEntity = Specimen.class),
-		@MetaValue(value = "eu.etaxonomy.cdm.model.reference.ReferenceBase", targetEntity = ReferenceBase.class),
+		@MetaValue(value = "eu.etaxonomy.cdm.model.reference.Journal", targetEntity = Journal.class),
+		@MetaValue(value = "eu.etaxonomy.cdm.model.reference.Article", targetEntity = Article.class),
+		@MetaValue(value = "eu.etaxonomy.cdm.model.reference.Book", targetEntity = Book.class),
+		@MetaValue(value = "eu.etaxonomy.cdm.model.reference.Generic", targetEntity = Generic.class),
+		@MetaValue(value = "eu.etaxonomy.cdm.model.reference.Database", targetEntity = Database.class),
+		@MetaValue(value = "eu.etaxonomy.cdm.model.reference.BookSection", targetEntity = BookSection.class),
+		@MetaValue(value = "eu.etaxonomy.cdm.model.reference.Reference", targetEntity = ReferenceBase.class),
+		@MetaValue(value = "eu.etaxonomy.cdm.model.reference.PrintSeries", targetEntity = PrintSeries.class),
+		@MetaValue(value = "eu.etaxonomy.cdm.model.reference.Thesis", targetEntity = Thesis.class),
+		@MetaValue(value = "eu.etaxonomy.cdm.model.reference.WebPage", targetEntity = WebPage.class),
 		@MetaValue(value = "eu.etaxonomy.cdm.model.taxon.Synonym", targetEntity = Synonym.class),
 		@MetaValue(value = "eu.etaxonomy.cdm.model.taxon.Taxon", targetEntity = Taxon.class),
-		@MetaValue(value = "eu.etaxonomy.cdm.model.description.TextData", targetEntity = TextData.class)
-
+		@MetaValue(value = "eu.etaxonomy.cdm.model.description.TextData", targetEntity = TextData.class),
+		@MetaValue(value = "eu.etaxonomy.cdm.model.agent.TeamOrPersonBase", targetEntity = TeamOrPersonBase.class)
 })
 package eu.etaxonomy.cdm.model.common;
 
@@ -51,6 +60,7 @@ import org.hibernate.annotations.MetaValue;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.description.MediaKey;
 import eu.etaxonomy.cdm.model.description.SpecimenDescription;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
@@ -70,7 +80,16 @@ import eu.etaxonomy.cdm.model.occurrence.Fossil;
 import eu.etaxonomy.cdm.model.occurrence.LivingBeing;
 import eu.etaxonomy.cdm.model.occurrence.Observation;
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
+import eu.etaxonomy.cdm.model.reference.Book;
+import eu.etaxonomy.cdm.model.reference.BookSection;
+import eu.etaxonomy.cdm.model.reference.Database;
+import eu.etaxonomy.cdm.model.reference.Generic;
+import eu.etaxonomy.cdm.model.reference.Journal;
+import eu.etaxonomy.cdm.model.reference.Article;
+import eu.etaxonomy.cdm.model.reference.PrintSeries;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.Thesis;
+import eu.etaxonomy.cdm.model.reference.WebPage;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 	
