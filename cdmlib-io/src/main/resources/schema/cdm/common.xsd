@@ -222,8 +222,8 @@
     <xs:complexContent>
       <xs:extension base="common:AnnotatableEntity">
         <xs:sequence>
-          <xs:element name="Text" type="common:FormattedText" minOccurs="1"/>
-          <xs:element name="Language" type="xs:IDREF" minOccurs="1"/>
+          <xs:element name="Text" type="common:FormattedText" minOccurs="0"/>
+          <xs:element name="Language" type="xs:IDREF" minOccurs="0"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
@@ -417,7 +417,7 @@
       <xs:extension base="common:LanguageStringBase">
         <xs:sequence>
           <xs:element name="Commentator" type="xs:IDREF" minOccurs="0"/>
-          <xs:element name="AnnotatedObject" type="xs:IDREF" minOccurs="0"/>
+          <xs:element name="AnnotatedObject" type="xs:IDREF" minOccurs="1"/>
           <xs:element name="AnnotationType" type="xs:IDREF" minOccurs="0"/>
           <xs:element name="LinkbackURL" type="xs:anyURI" minOccurs="0"/>
         </xs:sequence>
@@ -454,7 +454,7 @@
     <xs:complexContent>
       <xs:extension base="common:OriginalSourceBase">
         <xs:sequence>
-          <xs:element name="SourcedObject" type="xs:IDREF"/>
+          <xs:element name="SourcedObject" type="xs:IDREF" minOccurs="0"/>
           <xs:element name="nameUsedInSource" type="xs:IDREF" minOccurs="0"/>
         </xs:sequence>
       </xs:extension>
