@@ -261,8 +261,8 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 		
 		Set<NamedArea> namedAreas = new HashSet<NamedArea>();
 		namedAreas.add((NamedArea)definedTermDao.load(northernAmericaUuid));
-//		namedAreas.add((NamedArea)definedTermDao.load(southernAmericaUuid));
-//		namedAreas.add((NamedArea)definedTermDao.load(antarcticaUuid));
+		//namedAreas.add((NamedArea)definedTermDao.load(southernAmericaUuid));
+		//namedAreas.add((NamedArea)definedTermDao.load(antarcticaUuid));
 
 		TaxonomicTree taxonmicTree = taxonomicTreeDao.findByUuid(taxonomicTreeUuid);
 		
@@ -277,6 +277,8 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 		taxonRetheraSecCdmtest.addSynonym(synAtroposLeach, SynonymRelationshipType.SYNONYM_OF());
 		this.taxonDao.clear();
 		// 1. searching for a taxon (Rethera)
+		//long numberOfTaxa = taxonDao.countTaxaByName(Taxon.class, "Rethera", null, MatchMode.BEGINNING, namedAreas);
+		
 		List<TaxonBase> results = taxonDao.getTaxaByName(Taxon.class, "Rethera", null, MatchMode.BEGINNING, namedAreas,
 			null, null, null);
 		assertNotNull("getTaxaByName should return a List", results);
@@ -290,7 +292,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 		
 
 		// 3. searching for Synonyms
-		results = taxonDao.getTaxaByName(Synonym.class, "Atropo", null, MatchMode.BEGINNING, namedAreas,
+		results = taxonDao.getTaxaByName(Synonym.class, "Atropo", null, MatchMode.ANYWHERE, null,
 			null, null, null);
 		assertNotNull("getTaxaByName should return a List", results);
 		for (TaxonBase taxonbase: results){
@@ -321,7 +323,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 		results = taxonDao.getTaxaByName(TaxonBase.class, "A", null, MatchMode.BEGINNING, namedAreas,
 			null, null, null);
 		assertNotNull("getTaxaByName should return a List", results);
-		assertTrue("expected to find two taxa but found "+results.size(), results.size() == 8);
+		assertTrue("expected to find 8 taxa but found "+results.size(), results.size() == 8);
 	}
 
 	
