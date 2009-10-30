@@ -489,6 +489,26 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 					}
 					
 				}
+			}else if (toTaxon == null || fromTaxon == null){
+				if (toTaxon == null){
+					toTaxon = this;
+					relationsToThisTaxon.add(rel);
+					if (fromTaxon!= null){
+						fromTaxon.addTaxonRelation(rel);
+					}
+					if (rel.getType().equals(TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN()) && fromTaxon!=null ){
+						this.taxonomicChildrenCount++;
+					}
+				}else if (fromTaxon == null && toTaxon != null){
+					fromTaxon = this;
+					relationsFromThisTaxon.add(rel);
+					if (toTaxon!=null){
+						toTaxon.addTaxonRelation(rel);
+					}
+					if (rel.getType().equals(TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN()) && toTaxon!=null ){
+						this.taxonomicParentCache = toTaxon;
+					}
+				}
 			}
 		}	
 	}
