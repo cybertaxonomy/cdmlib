@@ -331,7 +331,7 @@ public class TaxonTest extends EntityTestBase {
 	 * 
 	 * FIXME addTaxonRelation(TaxonRelationship) is not working at the moment
 	 */
-	@Ignore
+	//@Ignore
 	@Test
 	public void testAddTaxonRelationTaxonRelationship() {
 		Taxon taxon = Taxon.NewInstance(null, null);
