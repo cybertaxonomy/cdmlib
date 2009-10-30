@@ -18,8 +18,11 @@ import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.reference.Article;
 import eu.etaxonomy.cdm.model.reference.IArticle;
+import eu.etaxonomy.cdm.model.reference.IGeneric;
 import eu.etaxonomy.cdm.model.reference.IJournal;
 import eu.etaxonomy.cdm.model.reference.Journal;
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.strategy.cache.reference.JournalDefaultCacheStrategy;
 
 public class ReferenceTest {
 		
@@ -37,5 +40,23 @@ public class ReferenceTest {
 			IJournal journal = (IJournal)dataSet.getReferences().get(1);
 			assertNotNull("Journal must not be null", journal);
 			assertEquals("Journal must equal Article.inJournal",journal,article.getInJournal());
+	    }
+	    
+	    @Test
+	    public void testCastReferences() throws Exception{
+	    	CdmDocumentBuilder cdmDocumentBuilder = new CdmDocumentBuilder();
+	        URI uri = new URI(URIEncoder.encode(this.getClass().getResource(resource).toString()));
+	    	DataSet dataSet = cdmDocumentBuilder.unmarshal(DataSet.class, new InputStreamReader(this.getClass().getResourceAsStream(resource)),uri.toString());
+			
+			IArticle article = (IArticle)dataSet.getReferences().get(0);	
+			assertNotNull("Article must not be null",article);
+			
+			IJournal journal = ((ReferenceBase)article).castReferenceToJournal();
+			assertEquals("Journal", journal.getType().name());
+			
+			IGeneric generic = ((ReferenceBase)journal).castReferenceToGeneric();
+			assertEquals("Generic", generic.getType().name());
+			
+			
 	    }
 }
