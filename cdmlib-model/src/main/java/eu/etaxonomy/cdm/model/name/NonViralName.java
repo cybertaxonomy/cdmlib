@@ -205,7 +205,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 	@Field(index=Index.TOKENIZED)
 	@Match(value=MatchMode.CACHE, cacheReplaceMode=ReplaceMode.DEFINED, 
 			cacheReplacedProperties={"combinationAuthorTeam", "basionymAuthorTeam", "exCombinationAuthorTeam", "exBasionymAuthorTeam"} )
-	@NullOrNotEmpty // implictly NotNull
+	@NullOrNotEmpty
 	@Size(max = 255)
 	private String authorshipCache;
 	

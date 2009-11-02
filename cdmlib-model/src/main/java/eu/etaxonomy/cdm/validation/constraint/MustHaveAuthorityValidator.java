@@ -26,9 +26,9 @@ public class MustHaveAuthorityValidator implements
 		
 		if(name.getBasionymAuthorTeam() == null && name.getAuthorshipCache() == null) {
 		
-		    if(name.getRank().isInfraSpecific()) {
-			    if(name instanceof BotanicalName && name.getSpecificEpithet() != null && name.getInfraSpecificEpithet() != null && name.getInfraSpecificEpithet().equals(name.getSpecificEpithet())) {
-				    valid = true;
+		    if(name instanceof BotanicalName && name.getRank().isInfraSpecific()) {
+			    if(name.getSpecificEpithet() != null && name.getInfraSpecificEpithet() != null && name.getInfraSpecificEpithet().equals(name.getSpecificEpithet())) {
+				    valid = true; // is AUTONYM
 			    } else {
 				    valid = false;
 			    }

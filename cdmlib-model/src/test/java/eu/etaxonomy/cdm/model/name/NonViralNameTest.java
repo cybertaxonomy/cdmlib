@@ -258,7 +258,7 @@ public class NonViralNameTest extends EntityTestBase {
 		team2.setNomenclaturalTitle(strTeam2);
 		nonViralName1.setGenusOrUninomial("Abies");
 		nonViralName1.setSpecificEpithet("alba");
-		nonViralName1.setNomenclaturalReference(ref1);
+		//nonViralName1.setNomenclaturalReference(ref1);
 		Assert.assertEquals("Abies alba", nonViralName1.getNameCache());
 		
 		nonViralName1.setCombinationAuthorTeam(team1);

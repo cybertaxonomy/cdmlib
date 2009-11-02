@@ -212,7 +212,7 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
 	 * @see eu.etaxonomy.cdm.model.common.IDefinedTerm#getKindOf()
 	 */
 	public T getKindOf(){
-		return this.kindOf;
+		return (T)DefinedTermBase.deproxy(this.kindOf, this.getClass());
 	}
 
 	public void setKindOf(T kindOf){
@@ -252,7 +252,7 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
 	 * @see eu.etaxonomy.cdm.model.common.IDefinedTerm#getPartOf()
 	 */
 	public T getPartOf(){
-		return this.partOf;
+		return (T)DefinedTermBase.deproxy(this.partOf, this.getClass());
 	}
 	
 	/* (non-Javadoc)

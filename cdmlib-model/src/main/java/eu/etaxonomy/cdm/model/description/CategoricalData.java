@@ -27,6 +27,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Indexed;
 
 /**
  * This class represents information pieces expressed in categorical type of
@@ -57,6 +58,7 @@ import org.hibernate.envers.Audited;
 @XmlRootElement(name = "CategoricalData")
 @Entity
 @Audited
+@Indexed(index = "eu.etaxonomy.cdm.model.description.DescriptionElementBase")
 public class CategoricalData extends DescriptionElementBase {
 	private static final long serialVersionUID = -6298361966947668998L;
 	private static final Logger logger = Logger.getLogger(CategoricalData.class);

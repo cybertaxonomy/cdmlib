@@ -31,6 +31,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Indexed;
 
 import eu.etaxonomy.cdm.jaxb.MultilanguageTextAdapter;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -60,6 +61,7 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 @XmlRootElement(name = "IndividualsAssociation")
 @Entity
 @Audited
+@Indexed(index = "eu.etaxonomy.cdm.model.description.DescriptionElementBase")
 public class IndividualsAssociation extends DescriptionElementBase {
 	private static final long serialVersionUID = -4117554860254531809L;
 	@SuppressWarnings("unused")

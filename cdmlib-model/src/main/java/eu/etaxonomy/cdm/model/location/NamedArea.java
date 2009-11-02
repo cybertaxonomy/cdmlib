@@ -202,8 +202,9 @@ public class NamedArea extends OrderedTermBase<NamedArea> {
 	@XmlElement(name = "PartOf", namespace = "http://etaxonomy.eu/cdm/model/common/1.0")
 	@XmlIDREF
     @XmlSchemaType(name = "IDREF")
+    @Override
 	public NamedArea getPartOf(){
-		return partOf;
+		return super.getPartOf();
 	}
 	
 	/**

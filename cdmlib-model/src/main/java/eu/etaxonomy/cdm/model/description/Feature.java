@@ -127,39 +127,26 @@ public class Feature extends DefinedTermBase<Feature> {
 	private static Feature SPECIMEN;
 	private static Feature OBSERVATION;
 
-	@XmlElement(name = "SupportsTextData")
 	private boolean supportsTextData;
 	
-	@XmlElement(name = "SupportsQuantitativeData")
 	private boolean supportsQuantitativeData;
 	
-	@XmlElement(name = "SupportsDistribution")
 	private boolean supportsDistribution;
 	
-	@XmlElement(name = "SupportsIndividualAssociation")
 	private boolean supportsIndividualAssociation;
 	
-	@XmlElement(name = "SupportsTaxonInteraction")
 	private boolean supportsTaxonInteraction;
 	
-	@XmlElement(name = "SupportsCategoricalData")
 	private boolean supportsCategoricalData;
 	
 	/*
 	 * FIXME Should this be Many-To-Many or do we expect each Feature to have its own unique modifier enums?
 	 */
-	@XmlElementWrapper(name = "RecommendedModifierEnumerations")
-	@XmlElement(name = "RecommendedModifierEnumeration")
-	@XmlIDREF
-	@XmlSchemaType(name = "IDREF")
 	@OneToMany(fetch = FetchType.LAZY)
     @JoinTable(name="DefinedTermBase_RecommendedModifierEnumeration")
 	private Set<TermVocabulary<Modifier>> recommendedModifierEnumeration = new HashSet<TermVocabulary<Modifier>>();
 	
-	@XmlElementWrapper(name = "RecommendedStatisticalMeasures")
-	@XmlElement(name = "RecommendedStatisticalMeasure")
-	@XmlIDREF
-	@XmlSchemaType(name = "IDREF")
+	
 	@ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name="DefinedTermBase_StatisticalMeasure")
 	private Set<StatisticalMeasure> recommendedStatisticalMeasures = new HashSet<StatisticalMeasure>();
@@ -167,21 +154,12 @@ public class Feature extends DefinedTermBase<Feature> {
 	/*
 	 * FIXME Should this be Many-To-Many or do we expect each Feature to have its own unique state enums?
 	 */
-	@XmlElementWrapper(name = "SupportedCategoricalEnumerations")
-	@XmlElement(name = "SupportedCategoricalEnumeration")
-	@XmlIDREF
-	@XmlSchemaType(name = "IDREF")
 	@OneToMany(fetch = FetchType.LAZY)
     @JoinTable(name="DefinedTermBase_SupportedCategoricalEnumeration")
 	private Set<TermVocabulary<State>> supportedCategoricalEnumerations = new HashSet<TermVocabulary<State>>();
 	
-	@XmlElement(name = "SupportsCommonTaxonName")
 	private boolean supportsCommonTaxonName;
-	
-	@XmlElementWrapper(name = "RecommendedMeasurementUnits")
-	@XmlElement(name = "RecommendedMeasurementUnit")
-	@XmlIDREF
-	@XmlSchemaType(name = "IDREF")
+
 	@ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name="DefinedTermBase_MeasurementUnit")
 	private Set<MeasurementUnit> recommendedMeasurementUnits = new HashSet<MeasurementUnit>();
@@ -247,7 +225,8 @@ public class Feature extends DefinedTermBase<Feature> {
 	 *  
 	 * @return  the boolean value of the supportsQuantitativeData flag
 	 */
-	public boolean supportsQuantitativeData() {
+	@XmlElement(name = "SupportsQuantitativeData")
+	public boolean isSupportsQuantitativeData() {
 		return supportsQuantitativeData;
 	}
 
@@ -265,7 +244,8 @@ public class Feature extends DefinedTermBase<Feature> {
 	 *  
 	 * @return  the boolean value of the supportsTextData flag
 	 */
-	public boolean supportsTextData() {
+	@XmlElement(name = "SupportsTextData")
+	public boolean isSupportsTextData() {
 		return supportsTextData;
 	}
 
@@ -284,7 +264,8 @@ public class Feature extends DefinedTermBase<Feature> {
 	 *  
 	 * @return  the boolean value of the supportsDistribution flag
 	 */
-	public boolean supportsDistribution() {
+	@XmlElement(name = "SupportsDistribution")
+	public boolean isSupportsDistribution() {
 		return supportsDistribution;
 	}
 
@@ -302,7 +283,8 @@ public class Feature extends DefinedTermBase<Feature> {
 	 *  
 	 * @return  the boolean value of the supportsIndividualAssociation flag
 	 */
-	public boolean supportsIndividualAssociation() {
+	@XmlElement(name = "SupportsIndividualAssociation")
+	public boolean isSupportsIndividualAssociation() {
 		return supportsIndividualAssociation;
 	}
 
@@ -321,7 +303,8 @@ public class Feature extends DefinedTermBase<Feature> {
 	 *  
 	 * @return  the boolean value of the supportsTaxonInteraction flag
 	 */
-	public boolean supportsTaxonInteraction() {
+	@XmlElement(name = "SupportsTaxonInteraction")
+	public boolean isSupportsTaxonInteraction() {
 		return supportsTaxonInteraction;
 	}
 
@@ -340,7 +323,8 @@ public class Feature extends DefinedTermBase<Feature> {
 	 *  
 	 * @return  the boolean value of the supportsCommonTaxonName flag
 	 */
-	public boolean supportsCommonTaxonName() {
+	@XmlElement(name = "SupportsCommonTaxonName")
+	public boolean isSupportsCommonTaxonName() {
 		return supportsCommonTaxonName;
 	}
 
@@ -358,7 +342,8 @@ public class Feature extends DefinedTermBase<Feature> {
 	 *  
 	 * @return  the boolean value of the supportsCategoricalData flag
 	 */
-	public boolean supportsCategoricalData() {
+	@XmlElement(name = "SupportsCategoricalData")
+	public boolean isSupportsCategoricalData() {
 		return supportsCategoricalData;
 	}
 
@@ -376,6 +361,10 @@ public class Feature extends DefinedTermBase<Feature> {
 	 * with <i>this</i> feature.
 	 *  
 	 */
+	@XmlElementWrapper(name = "RecommendedModifierEnumerations")
+	@XmlElement(name = "RecommendedModifierEnumeration")
+	@XmlIDREF
+	@XmlSchemaType(name = "IDREF")
 	public Set<TermVocabulary<Modifier>> getRecommendedModifierEnumeration() {
 		return recommendedModifierEnumeration;
 	}
@@ -409,6 +398,10 @@ public class Feature extends DefinedTermBase<Feature> {
 	 * Returns the set of {@link StatisticalMeasure statistical measures} recommended to be used
 	 * in case of {@link QuantitativeData quantitative data} with <i>this</i> feature.
 	 */
+	@XmlElementWrapper(name = "RecommendedStatisticalMeasures")
+	@XmlElement(name = "RecommendedStatisticalMeasure")
+	@XmlIDREF
+	@XmlSchemaType(name = "IDREF")
 	public Set<StatisticalMeasure> getRecommendedStatisticalMeasures() {
 		return recommendedStatisticalMeasures;
 	}
@@ -442,6 +435,10 @@ public class Feature extends DefinedTermBase<Feature> {
 	 * Returns the set of {@link StatisticalMeasure statistical measures} recommended to be used
 	 * in case of {@link QuantitativeData quantitative data} with <i>this</i> feature.
 	 */
+	@XmlElementWrapper(name = "RecommendedMeasurementUnits")
+	@XmlElement(name = "RecommendedMeasurementUnit")
+	@XmlIDREF
+	@XmlSchemaType(name = "IDREF")
 	public Set<MeasurementUnit> getRecommendedMeasurementUnits() {
 		return recommendedMeasurementUnits;
 	}
@@ -477,6 +474,10 @@ public class Feature extends DefinedTermBase<Feature> {
 	 * with <i>this</i> feature.
 	 * 
 	 */
+	@XmlElementWrapper(name = "SupportedCategoricalEnumerations")
+	@XmlElement(name = "SupportedCategoricalEnumeration")
+	@XmlIDREF
+	@XmlSchemaType(name = "IDREF")
 	public Set<TermVocabulary<State>> getSupportedCategoricalEnumerations() {
 		return supportedCategoricalEnumerations;
 	}
@@ -509,6 +510,7 @@ public class Feature extends DefinedTermBase<Feature> {
 	@XmlElement(name = "KindOf", namespace = "http://etaxonomy.eu/cdm/model/common/1.0")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
+    @Override
 	public Feature getKindOf(){
 		return super.getKindOf();
 	}
@@ -861,6 +863,7 @@ public class Feature extends DefinedTermBase<Feature> {
 	public static final Feature IMAGE(){
 		return IMAGE;
 	}
+	
 	/**
 	 * Returns the "individuals association" feature.
 	 */

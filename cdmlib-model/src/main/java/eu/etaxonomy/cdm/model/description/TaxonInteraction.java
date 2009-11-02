@@ -31,6 +31,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Indexed;
 
 import eu.etaxonomy.cdm.jaxb.MultilanguageTextAdapter;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -62,6 +63,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 @XmlRootElement(name = "TaxonInteraction")
 @Entity
 @Audited
+@Indexed(index = "eu.etaxonomy.cdm.model.description.DescriptionElementBase")
 public class TaxonInteraction extends DescriptionElementBase {
 	private static final long serialVersionUID = -5014025677925668627L;
 	@SuppressWarnings("unused")
@@ -103,7 +105,7 @@ public class TaxonInteraction extends DescriptionElementBase {
 	 */
 	public static TaxonInteraction NewInstance(Feature feature){
 		TaxonInteraction taxonInteraction = new TaxonInteraction();
-		if(feature.supportsTaxonInteraction()){
+		if(feature.isSupportsTaxonInteraction()){
 			taxonInteraction.setFeature(feature);
 		}
 		return taxonInteraction;

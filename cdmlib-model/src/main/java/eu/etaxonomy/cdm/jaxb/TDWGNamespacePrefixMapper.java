@@ -14,6 +14,7 @@ import com.sun.xml.bind.marshaller.NamespacePrefixMapper;
 public class TDWGNamespacePrefixMapper extends NamespacePrefixMapper {
 
 	private static final String RDF_PREFIX = "rdf";
+	private static final String XML_PREFIX = "xml";
 	private static final String DC_PREFIX = "dc";
 	private static final String DCTERMS_PREFIX = "dcterms";
 	private static final String OWL_PREFIX = "owl";
@@ -23,7 +24,10 @@ public class TDWGNamespacePrefixMapper extends NamespacePrefixMapper {
 	private static final String PERSON_PREFIX = "tp";
 	private static final String TEAM_PREFIX = "tt";
 	private static final String PUBLICATIONCITATION_PREFIX = "tpc";
+	private static final String SPECIESPROFILEMODEL_PREFIX = "spm";
+	private static final String GEOGRAPHICALREGION_PREFIX = "gr";
 		
+	public static final String XML_NAMESPACE = "http://www.w3.org/XML/1998/namespace";
 	public static final String RDF_NAMESPACE = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
 	public static final String DC_NAMESPACE = "http://purl.org/dc/elements/1.1/";
 	public static final String DCTERMS_NAMESPACE = "http://purl.org/dc/terms/";
@@ -34,6 +38,8 @@ public class TDWGNamespacePrefixMapper extends NamespacePrefixMapper {
 	public static final String PERSON_NAMESPACE = "http://rs.tdwg.org/ontology/voc/Person#";
 	public static final String TEAM_NAMESPACE = "http://rs.tdwg.org/ontology/voc/Team#";
 	public static final String PUBLICATIONCITATION_NAMESPACE = "http://rs.tdwg.org/ontology/voc/PublicationCitation#";;
+	public static final String SPECIESPROFILEMODEL_NAMESPACE = "http://rs.tdwg.org/ontology/voc/SpeciesProfileModel#";
+	public static final String GEOGRAPHICALREGION_NAMESPACE = "http://rs.tdwg.org/ontology/voc/GeographicRegion#";
 	
 	public String getPreferredPrefix(String namespaceURI, String suggestion, boolean requirePrefix) {
 		String result = suggestion;
@@ -82,6 +88,18 @@ public class TDWGNamespacePrefixMapper extends NamespacePrefixMapper {
 		
 		if(namespaceURI.equals(TDWGNamespacePrefixMapper.PUBLICATIONCITATION_NAMESPACE)) {
 			return TDWGNamespacePrefixMapper.PUBLICATIONCITATION_PREFIX;
+		}
+		
+		if(namespaceURI.equals(TDWGNamespacePrefixMapper.SPECIESPROFILEMODEL_NAMESPACE)) {
+			return TDWGNamespacePrefixMapper.SPECIESPROFILEMODEL_PREFIX;
+		}
+		
+		if(namespaceURI.equals(TDWGNamespacePrefixMapper.XML_NAMESPACE)) {
+			return TDWGNamespacePrefixMapper.XML_PREFIX;
+		}
+		
+		if(namespaceURI.equals(TDWGNamespacePrefixMapper.GEOGRAPHICALREGION_NAMESPACE)) {
+			return TDWGNamespacePrefixMapper.GEOGRAPHICALREGION_PREFIX;
 		}
 		
 		return result;

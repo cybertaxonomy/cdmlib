@@ -23,6 +23,7 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Indexed;
 
 import eu.etaxonomy.cdm.model.common.Language;
 
@@ -49,6 +50,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 @XmlRootElement(name = "CommonTaxonName")
 @Entity
 @Audited
+@Indexed(index = "eu.etaxonomy.cdm.model.description.DescriptionElementBase")
 public class CommonTaxonName extends DescriptionElementBase {
 	private static final long serialVersionUID = 2643808051976643339L;
 	private static final Logger logger = Logger.getLogger(CommonTaxonName.class);

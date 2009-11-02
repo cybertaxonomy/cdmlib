@@ -24,6 +24,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Indexed;
 
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -52,6 +53,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 @XmlRootElement(name = "Distribution")
 @Entity
 @Audited
+@Indexed(index = "eu.etaxonomy.cdm.model.description.DescriptionElementBase")
 public class Distribution extends DescriptionElementBase {
 	private static final long serialVersionUID = 8366462435651559730L;
 	@SuppressWarnings("unused")

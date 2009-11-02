@@ -125,7 +125,7 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
     @XmlSchemaType(name = "IDREF")
     @ManyToMany(fetch = FetchType.LAZY)
     @IndexColumn(name="sortIndex", base = 0)
-	@Cascade({CascadeType.SAVE_UPDATE})
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
 	private List<Media> media = new ArrayList<Media>();
 	
 	@XmlElement(name = "InDescription")
