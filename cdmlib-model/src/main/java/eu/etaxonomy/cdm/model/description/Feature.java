@@ -124,6 +124,8 @@ public class Feature extends DefinedTermBase<Feature> {
 	private static Feature HOSTPLANT;
 	private static Feature PATHOGEN_AGENT;
 	private static Feature INDIVIDUALS_ASSOCIATION;
+	private static Feature SPECIMEN;
+	private static Feature OBSERVATION;
 
 	@XmlElement(name = "SupportsTextData")
 	private boolean supportsTextData;
@@ -576,6 +578,8 @@ public class Feature extends DefinedTermBase<Feature> {
 	private static final UUID uuidHostPlant = UUID.fromString("6e9de1d5-05f0-40d5-8786-2fe30d0d894d");
 	private static final UUID uuidPathogenAgent = UUID.fromString("002d05f2-fd72-49f1-ba4d-196cf09240b5");
 	private static final UUID uuidIndividualsAssociation = UUID.fromString("e2308f37-ddc5-447d-b483-5e2171dd85fd");
+	private static final UUID uuidSpecimen = UUID.fromString("8200e050-d5fd-4cac-8a76-4b47afb13809");
+	private static final UUID uuidObservation = UUID.fromString("f59e747d-0b4f-4bf7-b69a-cbd50bc78595");
 	
 //	private static final UUID uuidDistribution = UUID.fromString("");
 //	private static final UUID uuidDistribution = UUID.fromString("");
@@ -863,6 +867,21 @@ public class Feature extends DefinedTermBase<Feature> {
 	public static final Feature INDIVIDUALS_ASSOCIATION(){
 		return INDIVIDUALS_ASSOCIATION;
 	}
+	
+	public static final Feature SPECIMEN(){
+		Feature specimen = SPECIMEN;
+		Set<Feature> generalizationOf = new HashSet<Feature>();
+		generalizationOf.add(INDIVIDUALS_ASSOCIATION());
+		specimen.setGeneralizationOf(generalizationOf);
+		return specimen;
+	}
+	public static final Feature OBSERVATION(){
+		Feature observation = OBSERVATION;
+		Set<Feature> generalizationOf = new HashSet<Feature>();
+		generalizationOf.add(INDIVIDUALS_ASSOCIATION());
+		observation.setGeneralizationOf(generalizationOf);
+		return observation;
+	}
 	/**
 	 * Returns the "hybrid_parent" feature. This feature can only be used
 	 * by {@link TaxonInteraction taxon interactions}.<BR>
@@ -909,6 +928,8 @@ public class Feature extends DefinedTermBase<Feature> {
 		Feature.PATHOGEN_AGENT = termVocabulary.findTermByUuid(Feature.uuidPathogenAgent);
 		Feature.HOSTPLANT = termVocabulary.findTermByUuid(uuidHostPlant); 
 		Feature.INDIVIDUALS_ASSOCIATION = termVocabulary.findTermByUuid(uuidIndividualsAssociation); 
+		Feature.SPECIMEN = termVocabulary.findTermByUuid(uuidSpecimen);
+		Feature.OBSERVATION = termVocabulary.findTermByUuid(uuidObservation);
 	}
 
 }
