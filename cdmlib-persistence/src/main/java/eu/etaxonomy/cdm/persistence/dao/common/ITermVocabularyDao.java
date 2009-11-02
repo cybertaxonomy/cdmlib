@@ -57,4 +57,20 @@ public interface ITermVocabularyDao extends IIdentifiableDao<TermVocabulary> {
 	 * @return a List of terms
 	 */
 	public <T extends DefinedTermBase> List<T> getTerms(TermVocabulary<T> vocabulary,Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+	
+	/**
+     * Returns term vocabularies that contain terms of a certain class e.g. Feature, Modifier, State.
+     * 
+     * @param <TERM>
+     * @param clazz the term class of the terms in the vocabulary
+     * @param limit The maximum number of vocabularies returned (can be null for all vocabularies)
+     * @param start The offset from the start of the result set (0 - based, can be null - equivalent of starting at the beginning of the recordset)
+     * @param orderHints 
+     *            Supports path like <code>orderHints.propertyNames</code> which
+	 *            include *-to-one properties like createdBy.username or
+	 *            authorTeam.persistentTitleCache
+     * @param propertyPaths properties to be initialized
+     * @return a list of term vocabularies
+     */
+	<TERM extends DefinedTermBase> List<TermVocabulary<TERM>> listByTermClass(Class<TERM> clazz, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
 }

@@ -234,7 +234,7 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
 				}
 				Hibernate.initialize(derivedUnit.getStoredUnder());
 				SpecimenOrObservationBase original = derivedUnit.getOriginalUnit();
-				if(original.isInstanceOf(FieldObservation.class)) {
+				if(original != null && original.isInstanceOf(FieldObservation.class)) {
 					FieldObservation fieldObservation = original.deproxy(original, FieldObservation.class);
 					Hibernate.initialize(fieldObservation.getGatheringEvent());
 					if(fieldObservation.getGatheringEvent() != null) {

@@ -13,6 +13,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -32,6 +33,8 @@ import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.model.view.context.AuditEventContextHolder;
 import eu.etaxonomy.cdm.persistence.dao.agent.IAgentDao;
+import eu.etaxonomy.cdm.persistence.query.OrderHint;
+import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 public class AgentDaoImplTest extends CdmTransactionalIntegrationTest {
@@ -198,6 +201,19 @@ public class AgentDaoImplTest extends CdmTransactionalIntegrationTest {
 		List<AgentBase> result = agentDao.list(null, null);
 		Assert.assertNotNull("list() should return a list",result);
 		Assert.assertEquals("list() should return nine agents in the current view",result.size(),9);
+	}
+	
+	@Test
+	@DataSet("AgentDaoImplTest.testExists.xml")
+	public void testSortingListInPreviousView() {
+		AuditEventContextHolder.getContext().setAuditEvent(previousAuditEvent);
+		List<OrderHint> orderHints = new ArrayList<OrderHint>();
+		orderHints.add(new OrderHint("titleCache", SortOrder.ASCENDING));
+		List<AgentBase> result = agentDao.list(null, null, null,orderHints,null);
+		Assert.assertNotNull("list() should return a list",result);
+		Assert.assertEquals("list() should return nine agents in the current view",result.size(),9);
+		Assert.assertEquals(result.get(0).getTitleCache(), "B.R. Clark");
+		Assert.assertEquals(result.get(8).getTitleCache(), "University of Oxford");
 	}
 	
 	@Test

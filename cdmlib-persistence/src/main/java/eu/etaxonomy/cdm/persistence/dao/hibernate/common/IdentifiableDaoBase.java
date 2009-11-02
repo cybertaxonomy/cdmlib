@@ -164,7 +164,7 @@ public class IdentifiableDaoBase<T extends IdentifiableEntity> extends Annotatab
 
 	public int countSources(T identifiableEntity) {
 		checkNotInPriorView("IdentifiableDaoBase.countSources(T identifiableEntity)");
-		Query query = getSession().createQuery("select count(source) from OriginalSource source where source.sourcedObj = :identifiableEntity");
+		Query query = getSession().createQuery("select count(source) from OriginalSourceBase source where source.sourcedObj = :identifiableEntity");
 		query.setParameter("identifiableEntity",identifiableEntity);
 		return ((Long)query.uniqueResult()).intValue();
 	}

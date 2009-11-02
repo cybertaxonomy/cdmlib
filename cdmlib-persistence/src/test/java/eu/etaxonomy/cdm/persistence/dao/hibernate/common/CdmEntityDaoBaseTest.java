@@ -14,6 +14,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -35,6 +36,8 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.common.IUserDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
+import eu.etaxonomy.cdm.persistence.query.OrderHint;
+import eu.etaxonomy.cdm.persistence.query.RandomOrder;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 /**
@@ -215,6 +218,19 @@ public class CdmEntityDaoBaseTest extends CdmTransactionalIntegrationTest {
 	@DataSet("CdmEntityDaoBaseTest.xml")
 	public void testList() {
 		List<TaxonBase> list = cdmEntityDaoBase.list(1000, 0);
+		assertNotNull("list() should not return null",list);
+		assertEquals("list() should return a list with two entities in it",list.size(),2);
+	}
+	
+	/**
+	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmEntityDaoBase#list(int, int)}.
+	 */
+	@Test
+	@DataSet("CdmEntityDaoBaseTest.xml")
+	public void testRandomOrder() {
+		List<OrderHint> orderHints = new ArrayList<OrderHint>();
+		orderHints.add(new RandomOrder());
+		List<TaxonBase> list = cdmEntityDaoBase.list(null,1000, 0,orderHints,null);
 		assertNotNull("list() should not return null",list);
 		assertEquals("list() should return a list with two entities in it",list.size(),2);
 	}

@@ -45,6 +45,7 @@ import org.springframework.util.ReflectionUtils;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.Extension;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
+import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
@@ -1192,5 +1193,30 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		public void setTitleCache(String titleCache) {
 			this.titleCache = titleCache;
 		}
+	}
+	
+	@Override
+	public TaxonBase find(LSID lsid) {
+		TaxonBase taxonBase = super.find(lsid);
+		if(taxonBase != null) {
+			List<String> propertyPaths = new ArrayList<String>();
+			propertyPaths.add("createdBy");
+			propertyPaths.add("updatedBy");
+			propertyPaths.add("name");
+			propertyPaths.add("sec");
+			propertyPaths.add("relationsToThisTaxon");
+			propertyPaths.add("relationsToThisTaxon.fromTaxon");
+			propertyPaths.add("relationsToThisTaxon.toTaxon");
+			propertyPaths.add("relationsFromThisTaxon");
+			propertyPaths.add("relationsFromThisTaxon.toTaxon");
+			propertyPaths.add("relationsToThisTaxon.type");
+			propertyPaths.add("synonymRelations");
+			propertyPaths.add("synonymRelations.synonym");
+			propertyPaths.add("synonymRelations.type");
+			propertyPaths.add("descriptions");
+			
+			defaultBeanInitializer.initialize(taxonBase, propertyPaths);
+		}
+		return taxonBase;
 	}
 }

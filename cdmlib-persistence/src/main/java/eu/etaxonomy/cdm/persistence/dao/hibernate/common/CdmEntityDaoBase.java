@@ -363,25 +363,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 	protected void addOrder(Criteria criteria, List<OrderHint> orderHints) {
 		if(orderHints != null){
 			for(OrderHint orderHint : orderHints){
-				Order order;
-				String assocObj = null, propname;
-				int pos;
-				if((pos = orderHint.getPropertyName().indexOf('.', 0)) >= 0){
-					assocObj = orderHint.getPropertyName().substring(0, pos);
-					propname = orderHint.getPropertyName().substring(pos + 1);
-				} else {
-					propname = orderHint.getPropertyName();
-				}
-				if(orderHint.isAscending()){
-					order = Order.asc(propname);					
-				} else {
-					order = Order.desc(propname);
-				}
-				if(assocObj != null){
-					criteria.createCriteria(assocObj).addOrder(order);
-				} else {
-					criteria.addOrder(order);				
-				}
+				orderHint.add(criteria);
 			}
 		}
 	}

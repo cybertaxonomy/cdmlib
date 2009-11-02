@@ -9,10 +9,13 @@
 
 package eu.etaxonomy.cdm.persistence.dao.hibernate.common;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.Query;
+import org.hibernate.criterion.ProjectionList;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.envers.query.AuditEntity;
 import org.hibernate.envers.query.AuditQuery;
@@ -83,7 +86,7 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
 			
 			List<T> result = (List<T>)query.getResultList();
 		    defaultBeanInitializer.initializeAll(result, propertyPaths);
-			return (List<T>)query.getResultList();
+			return result;
 		}
 	}
 
@@ -104,5 +107,33 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
 
 	public <T extends DefinedTermBase> List<T> getTerms(TermVocabulary<T> termVocabulary, Integer pageSize,	Integer pageNumber) {
 		return getTerms(termVocabulary, pageSize, pageNumber, null, null);
+	}
+
+	public <TERM extends DefinedTermBase> List<TermVocabulary<TERM>> listByTermClass(Class<TERM> clazz, Integer limit, Integer start,List<OrderHint> orderHints, List<String> propertyPaths) {
+		checkNotInPriorView("TermVocabularyDao.listByTermClass(Class<TERM> clazz, Integer limit, Integer start,	List<OrderHint> orderHints, List<String> propertyPaths)");
+		Criteria criteria = getSession().createCriteria(type);
+		criteria.createAlias("terms", "trms").add(Restrictions.eq("trms.class", clazz.getSimpleName()));		
+		criteria.setProjection(Projections.id());
+		List<Integer> intermediateResults = criteria.list();
+		
+		if(intermediateResults.size() == 0) {
+			return new ArrayList<TermVocabulary<TERM>>();
+		}
+		
+		criteria = getSession().createCriteria(type);
+		criteria.add(Restrictions.in("id", intermediateResults));
+		
+		if(limit != null) {
+		    criteria.setMaxResults(limit);
+	        if(start != null) {
+	    	    criteria.setFirstResult(start);
+	        }
+		}
+		
+		this.addOrder(criteria, orderHints);
+		
+		List<TermVocabulary<TERM>> result = (List<TermVocabulary<TERM>>)criteria.list();
+	    defaultBeanInitializer.initializeAll(result, propertyPaths);
+		return result;
 	}
 }

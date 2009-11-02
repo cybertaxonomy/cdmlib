@@ -15,10 +15,14 @@ import java.util.UUID;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.lucene.search.Sort;
+import org.apache.lucene.search.SortField;
 import org.hibernate.envers.AuditReader;
 import org.hibernate.envers.AuditReaderFactory;
 import org.hibernate.envers.query.AuditEntity;
 import org.hibernate.envers.query.AuditQuery;
+import org.hibernate.envers.query.order.AuditOrder;
+import org.hibernate.search.FullTextQuery;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -38,6 +42,7 @@ import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.common.AuditEventSort;
 import eu.etaxonomy.cdm.persistence.dao.common.IVersionableDao;
 import eu.etaxonomy.cdm.persistence.dao.common.OperationNotSupportedInPriorViewException;
+import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 public abstract class VersionableDaoBase<T extends VersionableEntity> extends CdmEntityDaoBase<T> implements IVersionableDao<T> {
 	
@@ -101,9 +106,7 @@ public abstract class VersionableDaoBase<T extends VersionableEntity> extends Cd
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
 			return super.count();
 		} else {
-			AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(type,auditEvent.getRevisionNumber());
-			query.addProjection(AuditEntity.id().count("id"));
-			return ((Long)query.getSingleResult()).intValue();
+			return this.count(null);
 		}
 	}
 	
@@ -131,12 +134,7 @@ public abstract class VersionableDaoBase<T extends VersionableEntity> extends Cd
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
 			return super.list(limit, start);
 		} else {
-			AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(type,auditEvent.getRevisionNumber());
-			if(limit != null) {
-		   	  query.setMaxResults(limit);
-			  query.setFirstResult(start);
-			}
-			return (List<T>)query.getResultList();		
+			return this.list(null, limit, start);
 		}
 	}
 	
@@ -146,12 +144,42 @@ public abstract class VersionableDaoBase<T extends VersionableEntity> extends Cd
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
 			return super.list(type,limit, start);
 		} else {
-			AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(type,auditEvent.getRevisionNumber());
+			return this.list(type, limit, start, null,null);
+		}
+	}
+	
+	@Override
+	public List<T> list(Class<? extends T> clazz, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
+		AuditEvent auditEvent = getAuditEventFromContext();
+		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
+			return super.list(clazz, limit, start, orderHints, propertyPaths);
+		} else {
+			AuditQuery query = null;
+			
+			if(clazz == null) {
+				query = getAuditReader().createQuery().forEntitiesAtRevision(type,auditEvent.getRevisionNumber());
+			} else {
+				query = getAuditReader().createQuery().forEntitiesAtRevision(clazz,auditEvent.getRevisionNumber());
+			}
+			
+			addOrder(query,orderHints);
+			
 			if(limit != null) {
 		   	  query.setMaxResults(limit);
 			  query.setFirstResult(start);
 			}
-			return (List<T>)query.getResultList();
+			
+			List<T> result = (List<T>)query.getResultList();
+			defaultBeanInitializer.initializeAll(result, propertyPaths);
+		    return result;
+		}
+	}	
+	
+	protected void addOrder(AuditQuery query, List<OrderHint> orderHints) {
+		if(orderHints != null && !orderHints.isEmpty()) {
+		   for(OrderHint orderHint : orderHints) {
+			   orderHint.add(query);
+		   }
 		}
 	}
 	

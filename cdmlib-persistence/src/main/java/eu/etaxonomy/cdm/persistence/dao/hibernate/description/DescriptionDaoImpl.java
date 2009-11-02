@@ -25,6 +25,7 @@ import org.hibernate.envers.query.AuditQuery;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
+import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
@@ -572,5 +573,31 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
 		//TODO inprove performance
 		List<CommonTaxonName> results =  searchDescriptionByCommonName(queryString, matchMode, null, null);
 		return results.size();
+	}
+	
+	@Override
+	public DescriptionBase find(LSID lsid) {
+		DescriptionBase descriptionBase = super.find(lsid);
+		if(descriptionBase != null) {
+			List<String> propertyPaths = new ArrayList<String>();
+			propertyPaths.add("createdBy");
+			propertyPaths.add("updatedBy");
+			propertyPaths.add("taxon");
+			propertyPaths.add("taxonName");
+			propertyPaths.add("elements");
+			propertyPaths.add("elements.createdBy");
+			propertyPaths.add("elements.updatedBy");
+			propertyPaths.add("elements.feature");
+			propertyPaths.add("elements.multilanguageText");
+			propertyPaths.add("elements.multilanguageText.language");
+			propertyPaths.add("elements.area");
+			propertyPaths.add("elements.status");
+			propertyPaths.add("elements.modifyingText");
+			propertyPaths.add("elements.modifyingText.language");
+			propertyPaths.add("elements.modifiers");
+			
+			defaultBeanInitializer.initialize(descriptionBase, propertyPaths);
+		}
+		return descriptionBase;
 	}
 }
