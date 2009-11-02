@@ -18,10 +18,10 @@ import net.sf.dozer.util.mapping.fieldmap.FieldMap;
 public class HibernateProxyFieldMapper implements CustomFieldMapperIF {
 
 	public boolean mapField(Object source, Object destination, Object sourceFieldValue, ClassMap classMap, FieldMap fieldMapping) {
-		if(sourceFieldValue != null && Hibernate.isInitialized(sourceFieldValue)) {
-		  return false;
+
+		if(Hibernate.isInitialized(sourceFieldValue)) {
+		    return false;
 		} else {
-			fieldMapping.writeDestValue(destination, null);
 			return true;
 		}
 		

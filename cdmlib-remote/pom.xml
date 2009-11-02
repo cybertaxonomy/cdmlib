@@ -111,9 +111,9 @@
       <classifier>jdk15</classifier>   
     </dependency>
 	<dependency>
-	  <groupId>org.springframework.ws</groupId>
-	  <artifactId>spring-oxm-tiger</artifactId>
-	  <version>1.5.0</version>
+	  <groupId>org.springframework</groupId>
+	  <artifactId>org.springframework.oxm</artifactId>
+	  <version>3.0.0.RC1</version>
 	</dependency>
 
 		<!-- XmlView -->

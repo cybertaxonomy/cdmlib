@@ -34,7 +34,10 @@ import eu.etaxonomy.cdm.remote.dto.tdwg.voc.PublicationCitation;
 	    "sameAs",
 	    "identifier",
 	    "created",
-	    "relations",
+	    "creator",
+	    "date",
+	    "contributor",
+	    "relation",
 	    "abcdEquivalence",
 	    "berlinModelEquivalence",
 	    "darwinCoreEquivalence",
@@ -49,6 +52,7 @@ import eu.etaxonomy.cdm.remote.dto.tdwg.voc.PublicationCitation;
 	    "publishedInCitation"
 })
 public abstract class BaseThing {
+	
 	@XmlElement(namespace = "http://purl.org/dc/elements/1.1/")
 	private String title;
 	
@@ -62,8 +66,18 @@ public abstract class BaseThing {
 	@XmlJavaTypeAdapter(DateTimeAdapter.class)
 	private DateTime created;
 	
+	@XmlElement(namespace = "http://purl.org/dc/terms/")
+	@XmlJavaTypeAdapter(DateTimeAdapter.class)
+	private DateTime date;
+
+	@XmlElement(namespace = "http://purl.org/dc/elements/1.1/")
+	private String creator;
+	
+	@XmlElement(namespace = "http://purl.org/dc/elements/1.1/")
+	private String contributor;
+	
 	@XmlElement(name = "relation", namespace = "http://purl.org/dc/elements/1.1/")
-	private Set<Relation> relations;
+	private Relation relation;
 	
 	@XmlElement
 	private String abcdEquivalence;
@@ -100,6 +114,30 @@ public abstract class BaseThing {
 
 	@XmlElement(name = "publishedInCitation")
 	private PublishedInCitation publishedInCitation;
+	
+	public DateTime getDate() {
+		return date;
+	}
+
+	public void setDate(DateTime date) {
+		this.date = date;
+	}
+	
+	public String getCreator() {
+		return creator;
+	}
+
+	public void setCreator(String creator) {
+		this.creator = creator;
+	}
+
+	public String getContributor() {
+		return contributor;
+	}
+
+	public void setContributor(String contributor) {
+		this.contributor = contributor;
+	}
 	
 	public String getAbcdEquivalence() {
 		return abcdEquivalence;
@@ -229,12 +267,12 @@ public abstract class BaseThing {
 		return publishedInCitation != null ? publishedInCitation.getPublicationCitation() : null;
 	}
 
-	public void setRelations(Set<Relation> relations) {
-		this.relations = relations;
+	public void setRelation(Relation relation) {
+		this.relation = relation;
 	}
 
-	public Set<Relation> getRelations() {
-		return relations;
+	public Relation getRelation() {
+		return relation;
 	}
 	
 	@XmlAccessorType(XmlAccessType.FIELD)

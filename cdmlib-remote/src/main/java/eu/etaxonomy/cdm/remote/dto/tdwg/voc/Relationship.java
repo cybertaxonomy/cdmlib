@@ -23,16 +23,16 @@ import eu.etaxonomy.cdm.remote.dto.tdwg.BaseThing;
 	    "relationshipCategory",
 	    "toTaxon"
 })
-@XmlRootElement(namespace = "http://rs.tdwg.org/ontology/voc/TaxonConcept#")
+@XmlRootElement(name = "Relationship",namespace = "http://rs.tdwg.org/ontology/voc/TaxonConcept#")
 public class Relationship extends BaseThing {
 	
-	@XmlElement(namespace = "http://rs.tdwg.org/ontology/voc/TaxonConcept#")
+	@XmlElement(name = "fromTaxon", namespace = "http://rs.tdwg.org/ontology/voc/TaxonConcept#")
 	private FromTaxon fromTaxon;
 	
 	@XmlElement(namespace = "http://rs.tdwg.org/ontology/voc/TaxonConcept#")
 	private RelationshipCategory relationshipCategory;
 	
-	@XmlElement(namespace = "http://rs.tdwg.org/ontology/voc/TaxonConcept#")
+	@XmlElement(name = "toTaxon", namespace = "http://rs.tdwg.org/ontology/voc/TaxonConcept#")
 	private ToTaxon toTaxon;
 	
 	public TaxonConcept getFromTaxon() {
@@ -68,7 +68,7 @@ public class Relationship extends BaseThing {
 	}
 
 	@XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = {
+    @XmlType(name = "FromTaxon", propOrder = {
         "taxonConcept"
     })
 	public static class FromTaxon extends LinkType {
@@ -80,7 +80,8 @@ public class Relationship extends BaseThing {
 		
 		protected FromTaxon(TaxonConcept taxonConcept) {
 	        if(taxonConcept != null && taxonConcept.getIdentifier() != null) {
-			    	this.setResource(taxonConcept.getIdentifier());
+			    //this.setResource(taxonConcept.getIdentifier());
+	        	this.setTaxonConcept(taxonConcept);
 	        }
 		}
 		
@@ -94,7 +95,7 @@ public class Relationship extends BaseThing {
 	}
 	
 	@XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = {
+    @XmlType(name = "ToTaxon", propOrder = {
         "taxonConcept"
     })
 	public static class ToTaxon extends LinkType {
@@ -105,9 +106,7 @@ public class Relationship extends BaseThing {
 		protected ToTaxon() {}
 		
 		protected ToTaxon(TaxonConcept taxonConcept) {
-			if(taxonConcept != null && taxonConcept.getIdentifier() != null) {
-			    this.setResource(taxonConcept.getIdentifier());
-			} 
+			    this.setTaxonConcept(taxonConcept);
 		}
 
 		protected TaxonConcept getTaxonConcept() {
@@ -121,7 +120,7 @@ public class Relationship extends BaseThing {
 	}
 	
 	@XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = {
+    @XmlType(name = "RelationshipCategory", propOrder = {
         "taxonRelationshipTerm"
     })
 	public static class RelationshipCategory extends LinkType {

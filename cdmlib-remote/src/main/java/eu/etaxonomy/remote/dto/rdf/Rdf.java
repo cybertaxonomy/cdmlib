@@ -30,6 +30,7 @@ import javax.xml.bind.annotation.XmlType;
 
 import eu.etaxonomy.cdm.remote.dto.tdwg.BaseThing;
 import eu.etaxonomy.cdm.remote.dto.tdwg.voc.TaxonConcept;
+import eu.etaxonomy.cdm.remote.dto.tdwg.voc.SpeciesProfileModel;
 
 
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -40,7 +41,8 @@ import eu.etaxonomy.cdm.remote.dto.tdwg.voc.TaxonConcept;
 public class Rdf {
 
     @XmlElements({
-	  @XmlElement(name = "TaxonConcept", namespace = "http://rs.tdwg.org/ontology/voc/TaxonConcept#", type = TaxonConcept.class)
+	  @XmlElement(name = "TaxonConcept", namespace = "http://rs.tdwg.org/ontology/voc/TaxonConcept#", type = TaxonConcept.class),
+	  @XmlElement(name = "SpeciesProfileModel", namespace = "http://rs.tdwg.org/ontology/voc/SpeciesProfileModel#", type = SpeciesProfileModel.class)
     })
     protected Set<BaseThing> things = new HashSet<BaseThing>();
 

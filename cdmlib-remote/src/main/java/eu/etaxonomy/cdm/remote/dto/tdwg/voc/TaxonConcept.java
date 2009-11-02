@@ -19,6 +19,8 @@ import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
+import com.sun.xml.bind.CycleRecoverable;
+
 import eu.etaxonomy.cdm.remote.dto.tdwg.Actor;
 import eu.etaxonomy.cdm.remote.dto.tdwg.Concept;
 
@@ -27,10 +29,11 @@ import eu.etaxonomy.cdm.remote.dto.tdwg.Concept;
 	    "primary",
 	    "accordingTo",
 	    "hasName",
-	    "hasRelationships"
+	    "hasRelationships",
+	    "describedBys"
 })
 @XmlRootElement(name = "TaxonConcept", namespace = "http://rs.tdwg.org/ontology/voc/TaxonConcept#")
-public class TaxonConcept extends Concept {
+public class TaxonConcept extends Concept implements CycleRecoverable {
 
 	@XmlElement(namespace = "http://rs.tdwg.org/ontology/voc/TaxonConcept#")
 	private Boolean primary;
@@ -43,6 +46,9 @@ public class TaxonConcept extends Concept {
 	
 	@XmlElement(name = "hasRelationship", namespace = "http://rs.tdwg.org/ontology/voc/TaxonConcept#")
 	private Set<HasRelationship> hasRelationships = null;
+	
+	@XmlElement(name = "describedBy", namespace = "http://rs.tdwg.org/ontology/voc/TaxonConcept#")
+	private Set<DescribedBy> describedBys = null;
 	
 	public Set<Relationship> getHasRelationship() {
 		if(hasRelationships != null) {
@@ -64,6 +70,29 @@ public class TaxonConcept extends Concept {
 		  }
 		} else {
 			hasRelationships = null;
+		}
+	}
+	
+	public Set<SpeciesProfileModel> getDescribedBy() {
+		if(describedBys != null) {
+			Set<SpeciesProfileModel> speciesProfileModels = new HashSet<SpeciesProfileModel>();
+			for(DescribedBy describedBy : describedBys) {
+				speciesProfileModels.add(describedBy.getSpeciesProfileModel());
+			}
+			return speciesProfileModels;
+		} else {
+			return null;
+		}
+	}
+
+	public void setDescribedBy(Set<SpeciesProfileModel> speciesProfileModels) {
+		if(speciesProfileModels != null) {
+		  this.describedBys = new HashSet<DescribedBy>();
+		  for(SpeciesProfileModel speciesProfileModel : speciesProfileModels) {
+			describedBys.add( new DescribedBy(speciesProfileModel));
+		  }
+		} else {
+			describedBys = null;
 		}
 	}
 
@@ -108,7 +137,7 @@ public class TaxonConcept extends Concept {
 	}
 	
 	@XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = {
+    @XmlType(name = "HasName", propOrder = {
         "taxonName"
     })
 	public static class HasName extends LinkType {
@@ -139,12 +168,12 @@ public class TaxonConcept extends Concept {
 	}
 	
 	@XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = {
+    @XmlType(name = "HasRelationship", propOrder = {
         "relationship"
     })
 	public static class HasRelationship extends LinkType {
 
-		@XmlElement(name = "Relationship")
+		@XmlElement(name = "Relationship", namespace = "http://rs.tdwg.org/ontology/voc/TaxonConcept#")
 		private Relationship relationship;
 		
 		protected HasRelationship() {}
@@ -163,7 +192,7 @@ public class TaxonConcept extends Concept {
 	}
 	
 	@XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = {
+    @XmlType(name = "AccordingTo", propOrder = {
         "actor"
     })
 	public static class AccordingTo extends LinkType {
@@ -195,5 +224,36 @@ public class TaxonConcept extends Concept {
 		protected void setActor(Actor actor) {
 			this.actor = actor;
 		}
+	}
+	
+	@XmlAccessorType(XmlAccessType.FIELD)
+    @XmlType(name = "DescribedBy", propOrder = {
+        "speciesProfileModel"
+    })
+	public static class DescribedBy extends LinkType {
+
+		@XmlElement(name = "SpeciesProfileModel", namespace = "http://rs.tdwg.org/ontology/voc/SpeciesProfileModel#")
+		private SpeciesProfileModel speciesProfileModel;
+		
+		protected DescribedBy() {}
+		
+		protected DescribedBy(SpeciesProfileModel speciesProfileModel) {
+			this.speciesProfileModel = speciesProfileModel;
+		}
+		
+		protected SpeciesProfileModel getSpeciesProfileModel() {
+			return speciesProfileModel;
+		}
+
+		protected void setSpeciesProfileModel(SpeciesProfileModel speciesProfileModel) {
+			this.speciesProfileModel = speciesProfileModel;
+		}
+	}
+
+	public Object onCycleDetected(Context context) {
+		TaxonConcept taxonConcept = new TaxonConcept();
+		taxonConcept.setIdentifier(super.getIdentifier());
+		taxonConcept.setTitle(super.getTitle());
+		return taxonConcept;
 	}
 }

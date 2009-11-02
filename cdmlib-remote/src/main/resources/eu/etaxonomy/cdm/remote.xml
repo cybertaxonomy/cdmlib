@@ -13,15 +13,17 @@
         <property name="classesToBeBound">
             <list>
                 <value>eu.etaxonomy.remote.dto.rdf.Rdf</value>
-                <value>eu.etaxonomy.cdm.remote.dto.tdwg.voc.TaxonConcept</value>           
+                <value>eu.etaxonomy.cdm.remote.dto.tdwg.voc.TaxonConcept</value>
+                <value>eu.etaxonomy.cdm.remote.dto.tdwg.voc.SpeciesProfileModel</value>            
             </list>
         </property>
         <property name="marshallerProperties">
             <map>
-                <entry key="com.sun.xml.bind.namespacePrefixMapper">
-                    <bean class="eu.etaxonomy.cdm.jaxb.TDWGNamespacePrefixMapper"/>
-                </entry>
-            </map>
+              <entry key="com.sun.xml.bind.namespacePrefixMapper">
+                  <bean class="eu.etaxonomy.cdm.jaxb.TDWGNamespacePrefixMapper"/>
+              </entry>
+              <entry key="com.sun.xml.bind.xmlHeaders" value="&lt;?xml-stylesheet type='text/xsl' href='/human.xsl'?&gt;"/>
+           </map>
         </property>
     </bean>
     
@@ -40,6 +42,7 @@
       </property>
       <property name="customConvertersWithId">
         <map>
+          <entry key="relatedPageConverter" value-ref="relatedPageConverter"/>
           <entry key="lsidProxyConverter" value-ref="lsidProxyConverter"/>
           <entry key="lsidConverter">
             <bean class="eu.etaxonomy.cdm.remote.dto.assembler.converter.LsidConverter"/>
@@ -53,9 +56,15 @@
           <entry key="preferLsidToUriConverter">
             <bean class="eu.etaxonomy.cdm.remote.dto.assembler.converter.PreferLsidToUriConverter"/>
           </entry>
+          <entry key="stripTagsConverter">
+            <bean class="eu.etaxonomy.cdm.remote.dto.assembler.converter.StripTagsConverter"/>
+          </entry>
         </map>
       </property>
     </bean>
     
-    <bean name="lsidProxyConverter" class="eu.etaxonomy.cdm.remote.dto.assembler.converter.LsidProxyConverter"/>
+  <bean name="lsidProxyConverter" class="eu.etaxonomy.cdm.remote.dto.assembler.converter.LsidProxyConverter"/>
+  
+  <bean name="relatedPageConverter" class="eu.etaxonomy.cdm.remote.dto.assembler.converter.DefaultRelatedPageConverter"/>
+  
 </beans>

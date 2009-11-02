@@ -40,12 +40,26 @@ import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.common.LSID;
+import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.LanguageString;
+import eu.etaxonomy.cdm.model.description.Distribution;
+import eu.etaxonomy.cdm.model.description.PresenceTerm;
+import eu.etaxonomy.cdm.model.description.TaxonDescription;
+import eu.etaxonomy.cdm.model.description.TextData;
+import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.reference.Book;
+import eu.etaxonomy.cdm.model.taxon.Synonym;
+import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
+import eu.etaxonomy.cdm.remote.dto.tdwg.DefinedTerm;
+import eu.etaxonomy.cdm.remote.dto.tdwg.voc.InfoItem;
+import eu.etaxonomy.cdm.remote.dto.tdwg.voc.Relationship;
+import eu.etaxonomy.cdm.remote.dto.tdwg.voc.SpeciesProfileModel;
+import eu.etaxonomy.cdm.remote.dto.tdwg.voc.StringType;
 import eu.etaxonomy.cdm.remote.dto.tdwg.voc.TaxonConcept;
 
 @SpringApplicationContext("file:./target/test-classes/eu/etaxonomy/cdm/applicationContext-test.xml")
@@ -59,6 +73,7 @@ public class AssemblerTest extends UnitilsJUnit4 {
 	private TeamOrPersonBase authorTeam;
 	private NonViralName name;
 	private LSID lsid;
+	private TaxonDescription taxonDescription;
 	
 	@BeforeClass
 	public static void onSetUp() {
@@ -72,6 +87,7 @@ public class AssemblerTest extends UnitilsJUnit4 {
 	    
 	    authorTeam = Person.NewInstance();
 	    authorTeam.setTitleCache("authorTeam.titleCache");
+	    authorTeam.setLsid(new LSID("urn:lsid:dagg.org:agents:2"));
 	    
 	    name = BotanicalName.NewInstance(null);
 	    name.setNameCache("nameCache");
@@ -89,13 +105,40 @@ public class AssemblerTest extends UnitilsJUnit4 {
 
 		for(int i = 0; i < 10; i++) {
 			Taxon child = Taxon.NewInstance(name, sec);
+			child.setLsid(new LSID("urn:lsid:example.org:taxonconcepts:" + (2 + i )));
 			taxon.addTaxonomicChild(child, null,null);
 		}
+
+		
+		taxonDescription = TaxonDescription.NewInstance();
+		taxon.addDescription(taxonDescription);
+		
+		TextData textData = TextData.NewInstance();
+		Language english = Language.NewInstance();
+		english.setIso639_1("en");
+		Language french = Language.NewInstance();
+		french.setIso639_1("fr");
+		textData.getMultilanguageText().put(english, LanguageString.NewInstance("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce justo leo, tempus ultricies bibendum eu, interdum sit amet ipsum. Suspendisse eu odio in sem iaculis euismod. Suspendisse sed metus ante, in sodales risus. In sit amet magna sit amet risus elementum dapibus. Nullam in magna at mauris placerat sagittis. Proin urna nisl, porta at venenatis in, tristique tempus nisl. Proin vel arcu blandit velit vestibulum blandit. In at diam libero, vel malesuada mauris. Duis a enim diam. Donec urna dui, dictum at suscipit vel, consectetur quis est. In venenatis bibendum diam nec laoreet. ", english));
+		textData.getMultilanguageText().put(french, LanguageString.NewInstance("Mauris elementum malesuada orci, non eleifend metus placerat ut. Aenean ornare felis sed lectus cursus id cursus nulla consectetur. Mauris magna justo, placerat id pretium posuere, ultrices et libero. Aliquam erat volutpat. Ut libero diam, interdum commodo fringilla sollicitudin, faucibus vel nisl. Fusce mattis justo interdum enim rhoncus eget sollicitudin dolor lobortis. Morbi mauris odio, tempus eget egestas eu, ornare vel ante. In quis placerat mi. Aliquam blandit tristique dictum. Donec pretium dui lacinia magna ornare eu venenatis ante dignissim. Integer ullamcorper tempus nisl et tincidunt. Curabitur vel nulla eu dolor faucibus porta. Mauris pulvinar est at est porta molestie. Nam varius nunc nec ipsum lacinia non egestas turpis congue. In at ipsum augue. Nulla mollis lobortis mauris ac sagittis. Nullam et facilisis lacus. Nam euismod sapien pellentesque lacus hendrerit dapibus. Aenean blandit rhoncus feugiat.", french));		
+		taxonDescription.addElement(textData);
+		
+		Distribution distribution = Distribution.NewInstance();
+		NamedArea namedArea = NamedArea.NewInstance("Africa", "Africa", "Africa");
+		namedArea.setTitleCache("Africa");
+		distribution.setArea(namedArea);
+		distribution.setStatus(PresenceTerm.NATIVE());
+		
+		taxonDescription.addElement(distribution);
 	}
 	
 	@Test
 	public void testDeepMapping() {
+		for(int i = 0; i < 3; i++) {
+			Synonym synonym = Synonym.NewInstance(name,sec);
+			taxon.addSynonym(synonym,new SynonymRelationshipType());
+		}
 		TaxonConcept taxonConcept = (TaxonConcept)mapper.map(taxon, TaxonConcept.class);
+		
 		assertNotNull("map() should return an object", taxonConcept);
 		assertTrue("map() should return a TaxonConcept",taxonConcept instanceof TaxonConcept);
 
@@ -110,7 +153,7 @@ public class AssemblerTest extends UnitilsJUnit4 {
 		assertNotNull("TaxonBase.name should be mapped to TaxonConcept.hasName",taxonConcept.getHasName());
 		assertEquals("NonViralName.nameCache should be mapped to TaxonName.nameComplete",name.getNameCache(),taxonConcept.getHasName().getNameComplete());
 		assertNotNull("Taxon.relationsToThisTaxon should be copied into TaxonConcept.hasRelationship",taxonConcept.getHasRelationship());
-		assertEquals("There should be 10 relations in TaxonConcept.hasRelationship",10,taxonConcept.getHasRelationship().size());
+		assertEquals("There should be 13 relations in TaxonConcept.hasRelationship",13,taxonConcept.getHasRelationship().size());
 	}
 	
 	@Test
@@ -135,7 +178,13 @@ public class AssemblerTest extends UnitilsJUnit4 {
 		relationsToThisTaxonField.set(taxon, proxy);
 		
 		TaxonConcept taxonConcept = (TaxonConcept)mapper.map(taxon, TaxonConcept.class);
-		assertNull("TaxonBase.relationsToThisTaxon was uninitialized, so TaxonConcept.hasRelationship should be null",taxonConcept.getHasRelationship());
+		assertTrue("TaxonBase.relationsToThisTaxon was uninitialized, so TaxonConcept.hasRelationship should be null",taxonConcept.getHasRelationship().isEmpty());
+	}
+	
+	@Test
+	public void testSpeciesProfileModelMapping() {
+		SpeciesProfileModel speciesProfileModel = (SpeciesProfileModel)mapper.map(taxonDescription, SpeciesProfileModel.class);
+		assertEquals(speciesProfileModel.getHasInformation().size(),2);
 	}
 	
 	private <T extends Collection> T getUninitializedPersistentCollection(final Class<T> clazz,final T wrappedCollection) {

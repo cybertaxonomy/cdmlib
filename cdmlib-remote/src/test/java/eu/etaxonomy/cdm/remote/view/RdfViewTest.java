@@ -7,7 +7,9 @@ import java.io.OutputStreamWriter;
 import java.io.StringReader;
 import java.io.Writer;
 import java.net.URI;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import javax.xml.transform.Result;
@@ -29,8 +31,11 @@ import org.unitils.spring.annotation.SpringApplicationContext;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.remote.dto.dc.Relation;
+import eu.etaxonomy.cdm.remote.dto.tdwg.voc.InfoItem;
 import eu.etaxonomy.cdm.remote.dto.tdwg.voc.PublicationCitation;
 import eu.etaxonomy.cdm.remote.dto.tdwg.voc.Relationship;
+import eu.etaxonomy.cdm.remote.dto.tdwg.voc.SpeciesProfileModel;
+import eu.etaxonomy.cdm.remote.dto.tdwg.voc.StringType;
 import eu.etaxonomy.cdm.remote.dto.tdwg.voc.TaxonConcept;
 import eu.etaxonomy.cdm.remote.dto.tdwg.voc.TaxonName;
 import eu.etaxonomy.cdm.remote.dto.tdwg.voc.TaxonRelationshipTerm;
@@ -44,6 +49,8 @@ public class RdfViewTest extends UnitilsJUnit4 {
 	private Marshaller marshaller;
 	
 	private Rdf rdf;
+	private TaxonConcept taxonConcept;
+	private SpeciesProfileModel speciesProfileModel;
 	
 	@Before
 	public void setUp() throws Exception {
@@ -52,7 +59,7 @@ public class RdfViewTest extends UnitilsJUnit4 {
 	    XMLUnit.setSAXParserFactory("org.apache.xerces.jaxp.SAXParserFactoryImpl");
 	    XMLUnit.setIgnoreWhitespace(true);
 	    
-		TaxonConcept taxonConcept = new TaxonConcept();
+		taxonConcept = new TaxonConcept();
 
 		TaxonName taxonName = new TaxonName();
 		taxonName.setAuthorship("authorship");
@@ -63,11 +70,10 @@ public class RdfViewTest extends UnitilsJUnit4 {
 		taxonConcept.setTitle("Lorem ipsum");
 		taxonConcept.setCreated(new DateTime(2004, 12, 25, 12, 0, 0, 0,DateTimeZone.UTC));
 		
-		Set<Relation> relations = new HashSet<Relation>();
+		
 		Relation relation = new Relation();
 		relation.setResource(new URI("http://www.example.org/"));
-		relations.add(relation);
-		taxonConcept.setRelations(relations);
+		taxonConcept.setRelation(relation);
 		PublicationCitation publicationCitation = new PublicationCitation();
 		taxonConcept.setPublishedIn("Lorem ipsum dolor");
 		
@@ -83,25 +89,59 @@ public class RdfViewTest extends UnitilsJUnit4 {
 		relationship.setRelationshipCategory(taxonRelationshipTerm);
 		TaxonConcept t = new TaxonConcept();
 		t.setIdentifier(new URI("urn:lsid:example.org:taxonconcepts:2"));
+		t.setTitle("Dolor sic amet");
 		relationship.setToTaxon(t);
-		relationship.setFromTaxon(taxonConcept);
+		//relationship.setFromTaxon(taxonConcept);
 		relationships.add(relationship);
 		
 		taxonConcept.setHasRelationship(relationships);
 		
+		SpeciesProfileModel speciesProfileModel1 = new SpeciesProfileModel();
+		speciesProfileModel1.setIdentifier(new URI("urn:lsid:example.org:descriptions:1"));
+		speciesProfileModel1.setTitle("Description of Aus aus");
+ 
+		Set<SpeciesProfileModel> speciesProfileModels = new HashSet<SpeciesProfileModel>();
+		speciesProfileModels.add(speciesProfileModel1);
+		taxonConcept.setDescribedBy(speciesProfileModels);
 		rdf = new Rdf();
-		rdf.addThing(taxonConcept);
+		
+		speciesProfileModel = new SpeciesProfileModel();
+		InfoItem infoItem = new InfoItem();
+		StringType englishDescription = new StringType();
+		englishDescription.setLang("en");
+		englishDescription.setValue("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras tincidunt pretium quam, id tristique sem iaculis vitae. Vestibulum pharetra eros in ligula rutrum imperdiet. In lorem dui, cursus a suscipit in, pulvinar eget nisl. Phasellus ut nunc eu mauris adipiscing luctus non vel lorem. Suspendisse volutpat faucibus ante, nec bibendum libero consectetur sed. Nullam non posuere neque. Nulla egestas ullamcorper mauris nec tincidunt. Duis id nibh justo. Mauris vel felis et mi eleifend auctor a ac dui. Morbi in urna leo, eu varius lorem. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi mollis nunc eget purus ullamcorper eget pulvinar sapien bibendum. Donec et velit augue, eu pretium mauris. Maecenas lorem leo, malesuada vitae tempor a, gravida quis dolor. Pellentesque lacus velit, sagittis quis posuere ac, rutrum a lacus. Cras dolor ligula, hendrerit at porta sed, posuere euismod mi. Sed sit amet velit turpis.");
+		Map<Object,StringType> hasContent = new HashMap<Object,StringType>();
+		hasContent.put(englishDescription.getValue(),englishDescription);
+		infoItem.setHasContent(hasContent);
+		Set<InfoItem> infoItems = new HashSet<InfoItem>();
+		infoItems.add(infoItem);
+		speciesProfileModel.setHasInformation(infoItems);
 	}
 	
 	@Test
 	public void testMarshalRdf() throws Exception {	
+		rdf.addThing(taxonConcept);
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		Writer writer = new BufferedWriter(new OutputStreamWriter(outputStream,"UTF-8" ));
 		marshaller.marshal(rdf, new StreamResult(writer));
 		writer.close();
-		
+
 		String resource = "/eu/etaxonomy/cdm/remote/view/RdfViewTest.rdf";	
+//		System.out.println(new String(outputStream.toByteArray()));
 		XMLAssert.assertXMLEqual(new InputStreamReader(this.getClass().getResourceAsStream(resource)),new StringReader(new String(outputStream.toByteArray())));
+	}
+	
+	@Test
+	public void testMarshalSPM() throws Exception {
+		rdf.addThing(speciesProfileModel);
+		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+		Writer writer = new BufferedWriter(new OutputStreamWriter(outputStream,"UTF-8" ));
+		marshaller.marshal(rdf, new StreamResult(writer));
+		writer.close();
+
+//		String resource = "/eu/etaxonomy/cdm/remote/view/RdfViewTest.rdf";	
+//		System.out.println(new String(outputStream.toByteArray()));
+//		XMLAssert.assertXMLEqual(new InputStreamReader(this.getClass().getResourceAsStream(resource)),new StringReader(new String(outputStream.toByteArray())));
 	}
 
 }
