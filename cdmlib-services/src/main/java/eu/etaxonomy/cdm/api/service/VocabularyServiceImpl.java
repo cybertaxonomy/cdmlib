@@ -45,15 +45,8 @@ public class VocabularyServiceImpl extends IdentifiableServiceBase<TermVocabular
 		return dao.findByUuid(vocabularyType.getUuid());
 	}
 	
-	/**
-	 *  (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.ITermService#listVocabularies(java.lang.Class)
-	 * FIXME candidate for harmonization
-	 * vocabularyService.list
-	 */
-	public Set<TermVocabulary> listVocabularies(Class termClass) {
-		logger.error("Method not implemented yet");
-		return null;
+	public <TERM extends DefinedTermBase> List<TermVocabulary<TERM>> listByTermClass(Class<TERM> clazz, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
+		return dao.listByTermClass(clazz, limit, start, orderHints, propertyPaths);
 	}	
 	
 	/** 
