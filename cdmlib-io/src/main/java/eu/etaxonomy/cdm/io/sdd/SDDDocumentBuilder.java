@@ -559,7 +559,7 @@ public class SDDDocumentBuilder {
 			for (int i = 0; i < f; i++) {
 				if (cdmSource.getTerms().get(i) instanceof Feature) {
 					Feature character = (Feature) cdmSource.getTerms().get(i);
-					if (character.supportsQuantitativeData()) {
+					if (character.isSupportsQuantitativeData()) {
 						ElementImpl elQuantitativeCharacter = new ElementImpl(document, QUANTITATIVE_CHARACTER);
 						charactersCount = buildReference(character, characters, ID, elQuantitativeCharacter, "c", charactersCount);
 						// TODO if the character also supports text, add to the label a short tag to distinguish
@@ -569,7 +569,7 @@ public class SDDDocumentBuilder {
 						elCharacters.appendChild(elQuantitativeCharacter);
 					}
 
-					if (character.supportsCategoricalData()) {
+					if (character.isSupportsCategoricalData()) {
 						ElementImpl elCategoricalCharacter = new ElementImpl(document, CATEGORICAL_CHARACTER);
 						charactersCount = buildReference(character, characters, ID, elCategoricalCharacter, "c", charactersCount);
 						buildRepresentation(elCategoricalCharacter, character);
@@ -592,7 +592,7 @@ public class SDDDocumentBuilder {
 							}
 						}
 					}
-					if (character.supportsTextData()) {
+					if (character.isSupportsTextData()) {
 						ElementImpl elTextCharacter = new ElementImpl(document, TEXT_CHARACTER);
 						charactersCount = buildReference(character, characters, ID, elTextCharacter, "c", charactersCount);
 						buildRepresentation(elTextCharacter, character);
