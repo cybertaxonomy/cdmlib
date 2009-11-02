@@ -865,22 +865,21 @@ public class Feature extends DefinedTermBase<Feature> {
 	 * Returns the "individuals association" feature.
 	 */
 	public static final Feature INDIVIDUALS_ASSOCIATION(){
-		return INDIVIDUALS_ASSOCIATION;
+		Feature individuals_association = INDIVIDUALS_ASSOCIATION;
+		Set<Feature> generalizationOf = new HashSet<Feature>();
+		generalizationOf.add(SPECIMEN());
+		generalizationOf.add(OBSERVATION());
+		individuals_association.setGeneralizationOf(generalizationOf);
+		return individuals_association;
+		
 	}
 	
 	public static final Feature SPECIMEN(){
-		Feature specimen = SPECIMEN;
-		Set<Feature> generalizationOf = new HashSet<Feature>();
-		generalizationOf.add(INDIVIDUALS_ASSOCIATION());
-		specimen.setGeneralizationOf(generalizationOf);
-		return specimen;
+		return SPECIMEN;
 	}
+	
 	public static final Feature OBSERVATION(){
-		Feature observation = OBSERVATION;
-		Set<Feature> generalizationOf = new HashSet<Feature>();
-		generalizationOf.add(INDIVIDUALS_ASSOCIATION());
-		observation.setGeneralizationOf(generalizationOf);
-		return observation;
+		return OBSERVATION;
 	}
 	/**
 	 * Returns the "hybrid_parent" feature. This feature can only be used
