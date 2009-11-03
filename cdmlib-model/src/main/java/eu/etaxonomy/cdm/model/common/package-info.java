@@ -45,12 +45,14 @@
 		@MetaValue(value = "eu.etaxonomy.cdm.model.reference.BookSection", targetEntity = BookSection.class),
 		@MetaValue(value = "eu.etaxonomy.cdm.model.reference.Reference", targetEntity = ReferenceBase.class),
 		@MetaValue(value = "eu.etaxonomy.cdm.model.reference.PrintSeries", targetEntity = PrintSeries.class),
+		@MetaValue(value = "eu.etaxonomy.cdm.model.reference.Proceedings", targetEntity = Proceedings.class),
 		@MetaValue(value = "eu.etaxonomy.cdm.model.reference.Thesis", targetEntity = Thesis.class),
 		@MetaValue(value = "eu.etaxonomy.cdm.model.reference.WebPage", targetEntity = WebPage.class),
 		@MetaValue(value = "eu.etaxonomy.cdm.model.taxon.Synonym", targetEntity = Synonym.class),
 		@MetaValue(value = "eu.etaxonomy.cdm.model.taxon.Taxon", targetEntity = Taxon.class),
 		@MetaValue(value = "eu.etaxonomy.cdm.model.description.TextData", targetEntity = TextData.class),
-		@MetaValue(value = "eu.etaxonomy.cdm.model.agent.TeamOrPersonBase", targetEntity = TeamOrPersonBase.class)
+		@MetaValue(value = "eu.etaxonomy.cdm.model.agent.TeamOrPersonBase", targetEntity = TeamOrPersonBase.class),
+		@MetaValue(value = "eu.etaxonomy.cdm.model.common.User", targetEntity = User.class)
 })
 package eu.etaxonomy.cdm.model.common;
 
@@ -87,6 +89,7 @@ import eu.etaxonomy.cdm.model.reference.Generic;
 import eu.etaxonomy.cdm.model.reference.Journal;
 import eu.etaxonomy.cdm.model.reference.Article;
 import eu.etaxonomy.cdm.model.reference.PrintSeries;
+import eu.etaxonomy.cdm.model.reference.Proceedings;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.reference.Thesis;
 import eu.etaxonomy.cdm.model.reference.WebPage;
