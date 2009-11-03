@@ -412,17 +412,17 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		List<TaxonBase> synonyms = null;
 		if(clazz.equals(Taxon.class)){
 			taxa = subTaxon.list();
-			System.err.println("number of taxa: " +taxa.size());
+//			System.err.println("number of taxa: " +taxa.size());
 		}else if (clazz.equals(Synonym.class)){
-			System.err.println(subSynonym.getQueryString());
+//			System.err.println(subSynonym.getQueryString());
 			synonyms = subSynonym.list();
-			System.err.println("number of synonyms: " +synonyms.size());
+//			System.err.println("number of synonyms: " +synonyms.size());
 		}else {
-			System.err.println(subTaxon.getQueryString());
+//			System.err.println(subTaxon.getQueryString());
 			taxa = subTaxon.list();
-			System.err.println("number of taxa: " +taxa.size());
+//			System.err.println("number of taxa: " +taxa.size());
 			synonyms = subSynonym.list();
-			System.err.println("number of synonyms: " +synonyms.size());
+//			System.err.println("number of synonyms: " +synonyms.size());
 		}
 		if(clazz.equals(Taxon.class)){
 			if  (taxa.size()>0){
@@ -472,7 +472,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 			query.setParameterList("synonyms",synonyms);
 		}
 		
-		System.err.println("query: " +query.getQueryString());
+//		System.err.println("query: " +query.getQueryString());
 		if(pageSize != null &&  !doCount) {
 			query.setMaxResults(pageSize);
 			if(pageNumber != null) {
