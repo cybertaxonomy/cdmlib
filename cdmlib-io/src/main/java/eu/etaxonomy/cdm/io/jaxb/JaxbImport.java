@@ -174,13 +174,13 @@ public class JaxbImport extends CdmIoBase<JaxbImportState> implements ICdmIO<Jax
 		try {
 			if (jaxbImpConfig.isDoUser() == true) {
 				if ((users = dataSet.getUsers()).size() > 0) {
-					logger.error("Agents: " + users.size());
+					logger.error("Users: " + users.size());
 					getUserService().save(users);
 					
 				}
 			}
 		} catch (Exception ex) {
-			logger.error("Error saving agents");
+			logger.error("Error saving users");
 			ret = false;
 		}
 		
@@ -252,14 +252,16 @@ public class JaxbImport extends CdmIoBase<JaxbImportState> implements ICdmIO<Jax
 				if ((taxonBases = dataSet.getTaxonBases()).size() > 0) {
 					logger.info("Taxon bases: " + taxonBases.size());
 					Iterator <TaxonBase> taxBases = taxonBases.iterator();
-					while (taxBases.hasNext()){
+					getTaxonService().save(taxonBases);
+					/*while (taxBases.hasNext()){
 						getTaxonService().save(taxBases.next());
-					}
+					}*/
 					//getTaxonService().saveTaxonAll(taxonBases);
 				}
 			}
 		} catch (Exception ex) {
 			logger.error("Error saving taxa");
+			ex.printStackTrace();
 			ret = false;
 		}
 		//commitTransaction(txStatus);
@@ -330,7 +332,7 @@ public class JaxbImport extends CdmIoBase<JaxbImportState> implements ICdmIO<Jax
 			ret = false;
 		}
 		
-		//commitTransaction(txStatus);
+		commitTransaction(txStatus);
 		logger.info("All data saved");
 
 		return ret;
