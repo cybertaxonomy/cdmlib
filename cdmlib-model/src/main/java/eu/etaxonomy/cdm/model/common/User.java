@@ -19,6 +19,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -32,6 +33,8 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
@@ -61,6 +64,10 @@ public class User extends CdmBase implements UserDetails {
 	private static final long serialVersionUID = 6582191171369439163L;
 	@SuppressWarnings(value="unused")
 	private static final Logger logger = Logger.getLogger(User.class);
+	
+	protected User(){
+		super();
+	}
 	
 	public static User NewInstance(String username, String pwd){
 		User user = new User();
@@ -120,8 +127,9 @@ public class User extends CdmBase implements UserDetails {
 	@XmlElement(name = "Person")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
-	@OneToOne(fetch = FetchType.LAZY)
+	@OneToOne(fetch = FetchType.EAGER)
 	@Cascade({CascadeType.SAVE_UPDATE})
+	@Fetch(FetchMode.JOIN)
 	protected Person person;
 	
 	@XmlTransient
@@ -217,6 +225,7 @@ public class User extends CdmBase implements UserDetails {
 	public Set<Group> getGroups() {
 		return groups;
 	}
+	
 	
 	public Person getPerson() {
 		return person;
