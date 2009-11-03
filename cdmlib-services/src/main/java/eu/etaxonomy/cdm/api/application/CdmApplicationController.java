@@ -32,6 +32,7 @@ import org.springframework.transaction.support.DefaultTransactionDefinition;
 import eu.etaxonomy.cdm.api.application.eclipse.EclipseRcpSaveGenericApplicationContext;
 import eu.etaxonomy.cdm.api.conversation.ConversationHolder;
 import eu.etaxonomy.cdm.api.service.IAgentService;
+import eu.etaxonomy.cdm.api.service.IAnnotationService;
 import eu.etaxonomy.cdm.api.service.ICollectionService;
 import eu.etaxonomy.cdm.api.service.ICommonService;
 import eu.etaxonomy.cdm.api.service.IDatabaseService;
@@ -430,6 +431,13 @@ public class CdmApplicationController {
 		PlatformTransactionManager txManager = configuration.getTransactionManager();
 		txManager.commit(txStatus);
 		return;
+	}
+
+
+
+	public IAnnotationService getAnnotationService() {
+		
+		return configuration.getAnnotationService();
 	}
 
 }
