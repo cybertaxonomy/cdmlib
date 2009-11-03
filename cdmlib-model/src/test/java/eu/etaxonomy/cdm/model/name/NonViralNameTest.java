@@ -244,7 +244,7 @@ public class NonViralNameTest extends EntityTestBase {
 	 * NOT FINISHED YET
 	 */
 	@Test
-	@Ignore //FIXME
+	
 	public final void testGetSetAuthorshipCache() {
 		String strTeam1 = "Team1";
 		String strTeam2 = "Team2";
@@ -258,7 +258,7 @@ public class NonViralNameTest extends EntityTestBase {
 		team2.setNomenclaturalTitle(strTeam2);
 		nonViralName1.setGenusOrUninomial("Abies");
 		nonViralName1.setSpecificEpithet("alba");
-		//nonViralName1.setNomenclaturalReference(ref1);
+		nonViralName1.setNomenclaturalReference(ref1);
 		Assert.assertEquals("Abies alba", nonViralName1.getNameCache());
 		
 		nonViralName1.setCombinationAuthorTeam(team1);
