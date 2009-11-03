@@ -79,7 +79,7 @@ public class CommonServiceImplTest extends CdmIntegrationTest {
 	 */
 	@Test
 	@DataSet
-	//@Ignore
+	@Ignore
 	public final void testGetReferencingObjects() {
 		BotanicalName name = BotanicalName.NewInstance(Rank.SPECIES());
 		name.setTitleCache("A name");
