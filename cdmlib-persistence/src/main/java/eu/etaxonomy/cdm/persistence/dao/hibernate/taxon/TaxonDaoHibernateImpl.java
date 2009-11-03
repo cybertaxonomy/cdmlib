@@ -456,17 +456,19 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 	
 		Query query = getSession().createQuery(hql);
 		
-		if(clazz.equals(Taxon.class)){
+		if(clazz.equals(Taxon.class) && taxa.size()>0){
 			//find taxa
 			query.setParameterList("taxa", taxa );
-		} else if(clazz.equals(Synonym.class)){
+		} else if(clazz.equals(Synonym.class) && synonyms.size()>0){
 			// find synonyms
 			query.setParameterList("synonyms", synonyms);
 			
 		
 		} else {
 			// find taxa and synonyms
+			if (taxa.size()>0)
 			query.setParameterList("taxa", taxa);
+			if (synonyms.size()>0)
 			query.setParameterList("synonyms",synonyms);
 		}
 		
