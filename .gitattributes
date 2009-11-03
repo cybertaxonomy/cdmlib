@@ -23,7 +23,6 @@ app-import/src/main/java/eu/etaxonomy/cdm/app/images/AbstractImageImporter.java 
 app-import/src/main/java/eu/etaxonomy/cdm/app/images/ImageImportConfigurator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/images/ImageImportState.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/jaxb/CdmDiffActivator.java -text
-app-import/src/main/java/eu/etaxonomy/cdm/app/jaxb/CdmExportImportActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/jaxb/JaxbExportActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/jaxb/JaxbImportActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/pilotOutputHtml/SimpleDescriptionOutput.java -text
