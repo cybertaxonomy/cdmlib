@@ -35,11 +35,13 @@ import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
 import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Contact;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.init.TermNotFoundException;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
@@ -370,15 +372,17 @@ public class TestDatabase {
 			Feature featureAnatomy = Feature.ANATOMY(); 
 			
 			TextData textData = TextData.NewInstance();
-			textData.addAnnotation(Annotation.NewInstance(null, null));
+			Annotation annotation = Annotation.NewInstance(null, null);
+			textData.addAnnotation(annotation);
 			
 			assertNotNull(textData.getAnnotations().iterator().next().getAnnotatedObj());
-			
+			CdmBase obj = textData.getAnnotations().iterator().next();
 			textData.setFeature(featureAnatomy);
 			
 			taxonDescription.addElement(textData);
-
+			//taxon.addAnnotation(annotation);
 			appCtr.getTaxonService().save(taxon);
+			appCtr.getAnnotationService().save((Annotation)obj);
 			
 			conversation.commit(false);
 			// end of creation phase
@@ -391,8 +395,11 @@ public class TestDatabase {
 			DescriptionBase loadedDescription = appCtr.getDescriptionService().load(taxonDescriptionUuid);
 			
 			TextData descriptionElement = (TextData) loadedDescription.getElements().iterator().next();
-		
-			Annotation annotation = descriptionElement.getAnnotations().iterator().next();
+			descriptionElement = (TextData)HibernateProxyHelper.deproxy(descriptionElement);
+			annotation = descriptionElement.getAnnotations().iterator().next();
+
+			annotation = (Annotation)appCtr.getAnnotationService().load(annotation.getUuid());
+			//System.out.println(((Taxon)annotation.getAnnotatedObj()).getTitleCache());
 			
 			// this should not be null
 			assertNotNull(annotation.getAnnotatedObj());
