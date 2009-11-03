@@ -26,7 +26,7 @@ import org.junit.Test;
  * @created 23.03.2009
  * @version 1.0
  */
-@Ignore
+//@Ignore
 public class PublicationBaseTest {
 	@SuppressWarnings("unused")
 	private static Logger logger = Logger.getLogger(PublicationBaseTest.class);
@@ -93,6 +93,7 @@ public class PublicationBaseTest {
 		assertEquals("Second publication place must be place2", place2, publicationBase.getPlacePublished());
 	}
 
+	
 //	/**
 //	 * Test method for {@link eu.etaxonomy.cdm.model.reference.PublicationBase#addPublisher(java.lang.String, java.lang.String, int)}.
 //	 */
