@@ -127,9 +127,8 @@ public class User extends CdmBase implements UserDetails {
 	@XmlElement(name = "Person")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
-	@OneToOne(fetch = FetchType.EAGER)
+	@OneToOne(fetch = FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE})
-	@Fetch(FetchMode.JOIN)
 	protected Person person;
 	
 	@XmlTransient
