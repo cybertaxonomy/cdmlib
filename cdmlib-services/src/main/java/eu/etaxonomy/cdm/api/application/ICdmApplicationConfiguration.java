@@ -15,7 +15,6 @@ import org.springframework.transaction.PlatformTransactionManager;
 
 import eu.etaxonomy.cdm.api.conversation.ConversationHolder;
 import eu.etaxonomy.cdm.api.service.IAgentService;
-import eu.etaxonomy.cdm.api.service.IAnnotationService;
 import eu.etaxonomy.cdm.api.service.ICollectionService;
 import eu.etaxonomy.cdm.api.service.ICommonService;
 import eu.etaxonomy.cdm.api.service.IDatabaseService;
@@ -136,7 +135,5 @@ public interface ICdmApplicationConfiguration {
 	public IFeatureTreeService getFeatureTreeService();
 
 	public IVocabularyService getVocabularyService();
-
-	public IAnnotationService getAnnotationService();
 	
 }
