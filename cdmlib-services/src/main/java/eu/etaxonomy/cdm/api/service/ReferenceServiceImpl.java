@@ -77,4 +77,9 @@ public class ReferenceServiceImpl extends IdentifiableServiceBase<ReferenceBase,
 		return dao.getAllNotNomenclaturalReferencesForPublishing();
 	}
 
+	public List<ReferenceBase> getAllNomenclaturalReferences() {
+		
+		return dao.getAllNomenclaturalReferences();
+	}
+
 }
