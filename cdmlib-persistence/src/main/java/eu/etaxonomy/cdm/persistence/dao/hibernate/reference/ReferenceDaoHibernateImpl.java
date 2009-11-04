@@ -26,7 +26,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
-import eu.etaxonomy.cdm.model.reference.Article;
+/*import eu.etaxonomy.cdm.model.reference.Article;
 import eu.etaxonomy.cdm.model.reference.Book;
 import eu.etaxonomy.cdm.model.reference.BookSection;
 import eu.etaxonomy.cdm.model.reference.CdDvd;
@@ -39,12 +39,19 @@ import eu.etaxonomy.cdm.model.reference.Patent;
 import eu.etaxonomy.cdm.model.reference.PersonalCommunication;
 import eu.etaxonomy.cdm.model.reference.PrintedUnitBase;
 import eu.etaxonomy.cdm.model.reference.Proceedings;
-import eu.etaxonomy.cdm.model.reference.PublicationBase;
+import eu.etaxonomy.cdm.model.reference.PublicationBase;*/
+import eu.etaxonomy.cdm.model.reference.IArticle;
+import eu.etaxonomy.cdm.model.reference.IBookSection;
+import eu.etaxonomy.cdm.model.reference.IInProceedings;
+import eu.etaxonomy.cdm.model.reference.IPrintedUnitBase;
+import eu.etaxonomy.cdm.model.reference.IReport;
+import eu.etaxonomy.cdm.model.reference.IThesis;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
-import eu.etaxonomy.cdm.model.reference.Report;
+import eu.etaxonomy.cdm.model.reference.ReferenceType;
+/*import eu.etaxonomy.cdm.model.reference.Report;
 import eu.etaxonomy.cdm.model.reference.SectionBase;
 import eu.etaxonomy.cdm.model.reference.Thesis;
-import eu.etaxonomy.cdm.model.reference.WebPage;
+import eu.etaxonomy.cdm.model.reference.WebPage;*/
 import eu.etaxonomy.cdm.persistence.dao.QueryParseException;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
 import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
@@ -66,7 +73,7 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<ReferenceBase
 
 	public ReferenceDaoHibernateImpl() {
 		super(ReferenceBase.class);
-		indexedClasses = new Class[15];
+		/*indexedClasses = new Class[15];
 		indexedClasses[0] = Article.class;
 		indexedClasses[1] = Patent.class;
 		indexedClasses[2] = PersonalCommunication.class;
@@ -81,7 +88,7 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<ReferenceBase
 		indexedClasses[11] = Book.class;
 		indexedClasses[12] = Proceedings.class;
 		indexedClasses[13] = Report.class;
-		indexedClasses[14] = Thesis.class;
+		indexedClasses[14] = Thesis.class;*/
 	}
 
 	public int count(Class<? extends ReferenceBase> clazz, String queryString) {
@@ -131,22 +138,18 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<ReferenceBase
 		for(ReferenceBase reference : list(null,null)) { // re-index all agents
 			Hibernate.initialize(reference.getAuthorTeam());
 			
-			if(reference instanceof Article) {
-				Hibernate.initialize(((Article)reference).getInJournal());
-			} else if(reference instanceof SectionBase) {
-				if(reference instanceof BookSection) {
-				    Hibernate.initialize(((BookSection)reference).getInBook());
-				} else if(reference instanceof InProceedings) {
-					Hibernate.initialize(((InProceedings)reference).getInProceedings());
-				}
-			} else if(reference instanceof PublicationBase) {
-				if(reference instanceof Thesis) {
-					Hibernate.initialize(((Thesis)reference).getSchool());
-				} else if(reference instanceof Report) {
-					Hibernate.initialize(((Report)reference).getInstitution());
-				} else if(reference instanceof PrintedUnitBase) {
-					Hibernate.initialize(((PrintedUnitBase)reference).getInSeries());
-				}
+			if(reference.getType().equals(ReferenceType.Article)) {
+				Hibernate.initialize(((IArticle)reference).getInJournal());
+			} else if(reference.getType().equals(ReferenceType.BookSection)) {
+				   Hibernate.initialize(((IBookSection)reference).getInBook());
+			} else if(reference.getType().equals(ReferenceType.InProceedings)) {
+					Hibernate.initialize(((IInProceedings)reference).getInProceedings());
+			}else if(reference.getType().equals(ReferenceType.Thesis)) {
+				Hibernate.initialize(((IThesis)reference).getSchool());
+			} else if(reference.getType().equals(ReferenceType.Report)) {
+				Hibernate.initialize(((IReport)reference).getInstitution());
+			} else if(reference.getType().equals(ReferenceType.PrintedUnitBase)) {
+				Hibernate.initialize(((IPrintedUnitBase)reference).getInSeries());
 			}
 			fullTextSession.index(reference);
 		}
@@ -228,5 +231,9 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<ReferenceBase
 				
 		return resultRefernces;
 	}
-	
+public List<ReferenceBase> getAllNomenclaturalReferences(){
+		
+		List<ReferenceBase> references = getSession().createQuery("select t.nomenclaturalReference from TaxonNameBase t").list();
+		return references;
+	}
 }

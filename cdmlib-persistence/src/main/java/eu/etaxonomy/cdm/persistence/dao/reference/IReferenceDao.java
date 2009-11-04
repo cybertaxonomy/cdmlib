@@ -32,4 +32,6 @@ public interface IReferenceDao extends IIdentifiableDao<ReferenceBase>, ITitledD
 	 */
 	public List<ReferenceBase> getAllNotNomenclaturalReferencesForPublishing();
 	
+	public List<ReferenceBase> getAllNomenclaturalReferences();
+	
 }
