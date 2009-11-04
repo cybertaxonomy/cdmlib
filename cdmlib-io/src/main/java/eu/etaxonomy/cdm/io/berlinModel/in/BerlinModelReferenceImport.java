@@ -61,17 +61,26 @@ import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
-import eu.etaxonomy.cdm.model.reference.Article;
+/*import eu.etaxonomy.cdm.model.reference.Article;
 import eu.etaxonomy.cdm.model.reference.Book;
 import eu.etaxonomy.cdm.model.reference.BookSection;
 import eu.etaxonomy.cdm.model.reference.Database;
-import eu.etaxonomy.cdm.model.reference.Generic;
-import eu.etaxonomy.cdm.model.reference.Journal;
+import eu.etaxonomy.cdm.model.reference.Generic;*/
+import eu.etaxonomy.cdm.model.reference.IArticle;
+import eu.etaxonomy.cdm.model.reference.IBook;
+import eu.etaxonomy.cdm.model.reference.IBookSection;
+import eu.etaxonomy.cdm.model.reference.IGeneric;
+import eu.etaxonomy.cdm.model.reference.IJournal;
+import eu.etaxonomy.cdm.model.reference.IPrintSeries;
+import eu.etaxonomy.cdm.model.reference.IWebPage;
+/*import eu.etaxonomy.cdm.model.reference.Journal;
 import eu.etaxonomy.cdm.model.reference.PrintSeries;
-import eu.etaxonomy.cdm.model.reference.Proceedings;
+import eu.etaxonomy.cdm.model.reference.Proceedings;*/
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
-import eu.etaxonomy.cdm.model.reference.Thesis;
-import eu.etaxonomy.cdm.model.reference.WebPage;
+import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
+import eu.etaxonomy.cdm.model.reference.ReferenceType;
+/*import eu.etaxonomy.cdm.model.reference.Thesis;
+import eu.etaxonomy.cdm.model.reference.WebPage;*/
 
 /**
  * @author a.mueller
@@ -85,11 +94,12 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 	public static final UUID REF_DEPOSITED_AT_UUID = UUID.fromString("23ca88c7-ce73-41b2-8ca3-2cb22f013beb");
 	public static final UUID REF_SOURCE = UUID.fromString("d6432582-2216-4b08-b0db-76f6c1013141");
 	public static final UUID DATE_STRING_UUID = UUID.fromString("e4130eae-606e-4b0c-be4f-e93dc161be7d");
-	
+	ReferenceFactory refFactory;
 	private int modCount = 1000;
 	
 	public BerlinModelReferenceImport(){
 		super();
+		refFactory = ReferenceFactory.newInstance();
 	}
 
 	
@@ -207,7 +217,7 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 				//nomRef
 				String fullNomRefCache = rs.getString("fullNomRefCache"); 
 				if (! CdmUtils.Nz(fullNomRefCache).trim().equals("") ){
-					Generic genericReference = Generic.NewInstance();
+					ReferenceBase genericReference = refFactory.newGeneric();
 					genericReference.setTitleCache(fullNomRefCache);
 					nomRefDetailMap.put(refDetailId, genericReference);
 					//refId, created, notes
@@ -221,7 +231,7 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 				String fullRefCache = rs.getString("fullRefCache"); 
 				if (! CdmUtils.Nz(fullRefCache).trim().equals("") && 
 						fullRefCache.equals(fullNomRefCache)){
-					Generic genericReference = Generic.NewInstance();
+					ReferenceBase genericReference = refFactory.newGeneric();
 					genericReference.setTitleCache(fullRefCache);
 					refDetailMap.put(refDetailId, genericReference);
 					
@@ -399,7 +409,7 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 				referenceBase = makePartOfOtherTitle(valueMap, referenceStore, nomRefStore);
 			}else{
 				logger.warn("Unknown categoryFk (" + categoryFk + "). Create 'Generic instead'");
-				referenceBase = Generic.NewInstance();
+				referenceBase = refFactory.newGeneric();
 				success = false;
 			}
 							
@@ -507,7 +517,8 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 	}
 	
 	private ReferenceBase<?> makeArticle (Map<String, Object> valueMap, MapWrapper<ReferenceBase> referenceStore, MapWrapper<ReferenceBase> nomRefStore){
-		Article article = Article.NewInstance();
+		
+		IArticle article = refFactory.newArticle();
 		Object inRefFk = valueMap.get("inRefFk".toLowerCase());
 		Integer inRefCategoryFk = (Integer)valueMap.get("inRefCategoryFk".toLowerCase());
 		Integer refId = (Integer)valueMap.get("refId".toLowerCase());
@@ -525,8 +536,9 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 					if (inJournal == null){
 						logger.warn("inJournal for " + inRefFkInt + " is null. "+
 						" InReference relation could not be set");
-					}else if (Journal.class.isAssignableFrom(inJournal.getClass())){
-						article.setInJournal((Journal)inJournal);
+					//}else if (ReferenceBase.class.isAssignableFrom(inJournal.getClass())){
+					}else if (inJournal.getType().equals(ReferenceType.Journal)){
+						article.setInJournal((IJournal)inJournal);
 					}else{
 						logger.warn("InJournal is not of type journal but of type " + inJournal.getClass().getSimpleName() +
 							" Inreference relation could not be set");
@@ -540,8 +552,8 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 					" InReference was not added to Article! ");
 			}
 		}
-		makeStandardMapper(valueMap, article); //url, pages, series, volume
-		return article;
+		makeStandardMapper(valueMap, (ReferenceBase)article); //url, pages, series, volume
+		return (ReferenceBase)article;
 	}
 	
 	private ReferenceBase<?> makePartOfOtherTitle (Map<String, Object> valueMap, MapWrapper<ReferenceBase> referenceStore, MapWrapper<ReferenceBase> nomRefStore){
@@ -552,8 +564,8 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 		
 		if (inRefCategoryFk == REF_BOOK){
 			//BookSection
-			BookSection bookSection = BookSection.NewInstance();
-			result = bookSection;
+			IBookSection bookSection = refFactory.newBookSection();
+			result = (ReferenceBase)bookSection;
 			if (inRefFk != null){
 				int inRefFkInt = (Integer)inRefFk;
 				if (nomRefStore.containsId(inRefFkInt) || referenceStore.containsId(inRefFkInt)){
@@ -566,8 +578,9 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 					if (inBook == null){
 						logger.warn("inBook for " + inRefFkInt + " is null. "+
 						" InReference relation could not be set");;
-					}else if (Book.class.isAssignableFrom(inBook.getClass())){
-						bookSection.setInBook((Book)inBook);
+					//}else if (Book.class.isAssignableFrom(inBook.getClass())){
+					}else if (inBook.getType().equals(ReferenceType.Book)){
+						bookSection.setInBook((IBook)inBook);
 						//TODO
 					}else{
 						logger.warn("InBook is not of type book but of type " + inBook.getClass().getSimpleName() +
@@ -583,17 +596,17 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 			//TODO 
 			logger.warn("Reference (refId = " + refId + ") of type 'part_of_other_title' is part of 'article'." +
 					" This type is not implemented yet. Generic reference created instead") ;
-			result = Generic.NewInstance();
+			result = refFactory.newGeneric();
 		}else if (inRefCategoryFk == REF_JOURNAL){
 			//TODO 
 			logger.warn("Reference (refId = " + refId + ") of type 'part_of_other_title' has inReference of type 'journal'." +
 					" This is not allowed! Generic reference created instead") ;
-			result = Generic.NewInstance();
+			result = refFactory.newGeneric();
 			result.addMarker(Marker.NewInstance(MarkerType.TO_BE_CHECKED(), true));
 		}else{
 			logger.warn("InReference type (catFk = " + inRefCategoryFk + ") of part-of-reference not recognized for refId " + refId + "." +
 				" Create 'Generic' reference instead");
-			result = Generic.NewInstance();
+			result = refFactory.newGeneric();
 		}
 		makeStandardMapper(valueMap, result); //url, pages
 		return result;
@@ -601,14 +614,14 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 	
 	private ReferenceBase<?> makeWebSite(Map<String, Object> valueMap){
 		if (logger.isDebugEnabled()){logger.debug("RefType 'Website'");}
-		WebPage webPage = WebPage.NewInstance();
+		ReferenceBase webPage = refFactory.newWebPage();
 		makeStandardMapper(valueMap, webPage); //placePublished, publisher
 		return webPage;
 	}
 	
 	private ReferenceBase<?> makeUnknown(Map<String, Object> valueMap){
 		if (logger.isDebugEnabled()){logger.debug("RefType 'Unknown'");}
-		Generic generic = Generic.NewInstance();
+		ReferenceBase generic = refFactory.newGeneric();
 //		generic.setSeries(series);
 		makeStandardMapper(valueMap, generic); //pages, placePublished, publisher, series, volume
 		return generic;
@@ -616,7 +629,7 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 
 	private ReferenceBase<?> makeInformal(Map<String, Object> valueMap){
 		if (logger.isDebugEnabled()){logger.debug("RefType 'Informal'");}
-		Generic generic =  Generic.NewInstance();
+		ReferenceBase generic = refFactory.newGeneric();
 //		informal.setSeries(series);
 		makeStandardMapper(valueMap, generic);//editor, pages, placePublished, publisher, series, volume
 		String informal = (String)valueMap.get("InformalRefCategory".toLowerCase());
@@ -628,14 +641,14 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 	
 	private ReferenceBase<?> makeDatabase(Map<String, Object> valueMap){
 		if (logger.isDebugEnabled()){logger.debug("RefType 'Database'");}
-		Database database =  Database.NewInstance();
+		ReferenceBase database =  refFactory.newDatabase();
 		makeStandardMapper(valueMap, database); //?
 		return database;
 	}
 	
 	private ReferenceBase<?> makeJournal(Map<String, Object> valueMap){
 		if (logger.isDebugEnabled()){logger.debug("RefType 'Journal'");}
-		Journal journal = Journal.NewInstance();
+		ReferenceBase journal = refFactory.newJournal();
 		
 		Set<String> omitAttributes = new HashSet<String>();
 		String series = "series";
@@ -650,7 +663,7 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 	
 	private ReferenceBase<?> makeBook(Map<String, Object> valueMap, MapWrapper<ReferenceBase> referenceStore, MapWrapper<ReferenceBase> nomRefStore){
 		if (logger.isDebugEnabled()){logger.debug("RefType 'Book'");}
-		Book book = Book.NewInstance();
+		ReferenceBase book = refFactory.newBook();
 		Integer refId = (Integer)valueMap.get("refId".toLowerCase());
 		
 		//Set bookAttributes = new String[]{"edition", "isbn", "pages","publicationTown","publisher","volume"};
@@ -662,14 +675,14 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 		makeStandardMapper(valueMap, book, omitAttributes);
 		
 		//Series (as String)
-		PrintSeries printSeries = null;
+		IPrintSeries printSeries = null;
 		if (valueMap.get(attrSeries) != null){
 			String series = (String)valueMap.get("title".toLowerCase());
 			if (series == null){
 				String nomTitle = (String)valueMap.get("nomTitleAbbrev".toLowerCase());
 				series = nomTitle;
 			}
-			printSeries = PrintSeries.NewInstance(series);
+			printSeries = refFactory.newPrintSeries(series);
 			//TODO only one for ref and nomRef
 			logger.warn("Implementation of printSeries is preliminary");
 		}
@@ -687,8 +700,9 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 				if (inSeries == null){
 					logger.warn("inSeries for " + inRefFkInt + " is null. "+
 					" InReference relation could not be set");;
-				}else if (PrintSeries.class.isAssignableFrom(inSeries.getClass())){
-					book.setInSeries((PrintSeries)inSeries);
+				//}else if (PrintSeries.class.isAssignableFrom(inSeries.getClass())){
+				}else if (inSeries.getType().equals(ReferenceType.PrintSeries)){
+					book.setInSeries((IPrintSeries)inSeries);
 					//TODO
 				}else{
 					logger.warn("inSeries is not of type PrintSeries but of type " + inSeries.getClass().getSimpleName() +
@@ -711,21 +725,21 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 	
 	private ReferenceBase<?> makePrintSeries(Map<String, Object> valueMap){
 		if (logger.isDebugEnabled()){logger.debug("RefType 'PrintSeries'");}
-		PrintSeries printSeries = PrintSeries.NewInstance();
+		ReferenceBase printSeries = refFactory.newPrintSeries();
 		makeStandardMapper(valueMap, printSeries, null);
 		return printSeries;
 	}
 	
 	private ReferenceBase<?> makeProceedings(Map<String, Object> valueMap){
 		if (logger.isDebugEnabled()){logger.debug("RefType 'Proceedings'");}
-		Proceedings proceedings = Proceedings.NewInstance();
+		ReferenceBase proceedings = refFactory.newProceedings();
 		makeStandardMapper(valueMap, proceedings, null);	
 		return proceedings;
 	}
 
 	private ReferenceBase<?> makeThesis(Map<String, Object> valueMap){
 		if (logger.isDebugEnabled()){logger.debug("RefType 'Thesis'");}
-		Thesis thesis = Thesis.NewInstance();
+		ReferenceBase thesis = refFactory.newThesis();
 		makeStandardMapper(valueMap, thesis, null);	
 		return thesis;
 	}
@@ -734,7 +748,7 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 	private ReferenceBase<?> makeJournalVolume(Map<String, Object> valueMap){
 		if (logger.isDebugEnabled()){logger.debug("RefType 'JournalVolume'");}
 		//Proceedings proceedings = Proceedings.NewInstance();
-		Generic journalVolume = Generic.NewInstance();
+		ReferenceBase journalVolume = refFactory.newGeneric();
 		makeStandardMapper(valueMap, journalVolume, null);	
 		logger.warn("Journal volumes not yet implemented. Generic created instead but with errors");
 		return journalVolume;

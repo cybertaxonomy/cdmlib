@@ -18,8 +18,9 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.ProtologueImport;
 import eu.etaxonomy.cdm.io.common.DefaultImportState;
 import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
-import eu.etaxonomy.cdm.model.reference.Database;
+import eu.etaxonomy.cdm.model.reference.IDatabase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 
 /**
  * @author a.mueller
@@ -72,7 +73,8 @@ public class PalmaeProtologueImportConfigurator extends	ImportConfiguratorBase<D
 	public ReferenceBase getSourceReference() {
 		//TODO
 		//logger.warn("getSource Reference not yet implemented");
-		ReferenceBase result = Database.NewInstance();
+		ReferenceFactory refFactory = ReferenceFactory.newInstance();
+		ReferenceBase result = refFactory.newDatabase();
 		result.setTitleCache("XXX");
 		return result;
 	}

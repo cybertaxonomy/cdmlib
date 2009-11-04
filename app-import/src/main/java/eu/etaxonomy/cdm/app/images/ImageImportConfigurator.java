@@ -17,8 +17,9 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
-import eu.etaxonomy.cdm.model.reference.Database;
+import eu.etaxonomy.cdm.model.reference.IDatabase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 
 /**
  * @author n.hoffmann
@@ -64,7 +65,8 @@ public class ImageImportConfigurator extends ImportConfiguratorBase implements I
 	//TODO
 		if (this.sourceReference == null){
 			logger.warn("getSource Reference not yet fully implemented");
-			sourceReference = Database.NewInstance();
+			ReferenceFactory refFactory = ReferenceFactory.newInstance();
+			sourceReference = refFactory.newDatabase();
 			sourceReference.setTitleCache("XXX");
 		}
 		return sourceReference;

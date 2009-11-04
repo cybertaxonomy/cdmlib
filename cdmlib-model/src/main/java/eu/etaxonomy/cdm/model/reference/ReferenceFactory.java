@@ -144,6 +144,55 @@ public class ReferenceFactory {
 		article.setDatePublished(datePublished);
 		return null;
 	}
+
+	public ReferenceBase newReference(ReferenceType refType) {
+		ReferenceBase refBase;
+		if (refType ==ReferenceType.Article)
+			refBase = newArticle();
+		else if (refType == ReferenceType.Journal)
+			refBase = newJournal();
+		else if (refType == ReferenceType.Generic)
+			refBase = newGeneric();
+		else if (refType == ReferenceType.BookSection)
+			refBase = newBookSection();
+		else if (refType == ReferenceType.CdDvd)
+			refBase = newCdDvd();
+		else if (refType == ReferenceType.Database)
+			refBase = newDatabase();
+		else if (refType == ReferenceType.InProceedings)
+			refBase = newInProceedings();
+		else if (refType == ReferenceType.Map)
+			refBase = newMap();
+		else if (refType == ReferenceType.Patent)
+			refBase = newPatent();
+		else if (refType == ReferenceType.PersonalCommunication)
+			refBase = newPersonalCommunication();
+		else if (refType == ReferenceType.PrintSeries)
+			refBase = newPrintSeries();
+		else if (refType == ReferenceType.Proceedings)
+			refBase = newProceedings();
+		else if (refType == ReferenceType.Report)
+			refBase = newReport();
+		else if (refType == ReferenceType.Thesis)
+			refBase = newThesis();
+		else 
+			refBase = newGeneric();
+		
+		
+		return refBase;
+	}
+
+	public ReferenceBase newPersonalCommunication() {
+		ReferenceBase<ReferenceBaseDefaultCacheStrategy<ReferenceBase>> personalCommunication = new ReferenceBase<ReferenceBaseDefaultCacheStrategy<ReferenceBase>>(ReferenceType.PersonalCommunication);
+		personalCommunication.setCacheStrategy(ReferenceBaseDefaultCacheStrategy.NewInstance());
+		return personalCommunication;
+	}
+
+	public ReferenceBase newPatent() {
+		ReferenceBase<ReferenceBaseDefaultCacheStrategy<ReferenceBase>> patent = new ReferenceBase<ReferenceBaseDefaultCacheStrategy<ReferenceBase>>(ReferenceType.Patent);
+		patent.setCacheStrategy(ReferenceBaseDefaultCacheStrategy.NewInstance());
+		return patent;
+	}
 	
 	
 	

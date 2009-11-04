@@ -29,8 +29,9 @@ import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
-import eu.etaxonomy.cdm.model.reference.Database;
+import eu.etaxonomy.cdm.model.reference.IDatabase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 
@@ -96,8 +97,8 @@ public class ViennaActivator {
 				if (! family.equals("Asteraceae")){
 					logger.warn("Family not Asteracea: ID= " + strId);
 				}
-				
-				ReferenceBase sec = Database.NewInstance();
+				ReferenceFactory refFactory = ReferenceFactory.newInstance();
+				ReferenceBase sec = refFactory.newDatabase();
 				sec.setTitleCache("Vienna Asteraceae Images");
 				
 				TaxonNameBase taxonName = (BotanicalName)NonViralNameParserImpl.NewInstance().parseFullName(strTaxonName);

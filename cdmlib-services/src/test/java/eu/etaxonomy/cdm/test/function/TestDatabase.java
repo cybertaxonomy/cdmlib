@@ -52,16 +52,19 @@ import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.reference.Journal;
+import eu.etaxonomy.cdm.model.reference.IJournal;
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 
 public class TestDatabase {
 	private static final Logger logger = Logger.getLogger(TestDatabase.class);
-	
+	ReferenceFactory refFactory;
 	private void test(){
 		System.out.println("Start TestDatabase");
+		refFactory = ReferenceFactory.newInstance();
 		//testNewDatabaseConnection();
 		//testFacts();
 //		testNewDatasourceClass();
@@ -106,14 +109,14 @@ public class TestDatabase {
 			BotanicalName botanicalName = BotanicalName.NewInstance(genus);
 			botanicalName.setGenusOrUninomial("GenusName");
 		
-			Journal journal = Journal.NewInstance();
+			IJournal journal = refFactory.newJournal();
 			journal.setTitleCache("Afro+Doc");
 			
 			//			Taxon taxon = Taxon.NewInstance(botanicalName, journal);
 //			Taxon taxon2 = Taxon.NewInstance(botanicalName2, null);
 	//		botanicalName.getTitleCache();
 			
-			Taxon taxon1 = Taxon.NewInstance(botanicalName,journal);
+			Taxon taxon1 = Taxon.NewInstance(botanicalName,(ReferenceBase)journal);
 			appCtr.getTaxonService().save(taxon1);
 			BotanicalName homotypName = BotanicalName.NewInstance(Rank.SUBGENUS(), botanicalName.getHomotypicalGroup());
 			homotypName.setGenusOrUninomial("Subgenus");
@@ -156,10 +159,10 @@ public class TestDatabase {
 			BotanicalName botanicalName = BotanicalName.NewInstance(genus);
 			botanicalName.setGenusOrUninomial("GenusName");
 		
-			Journal journal = Journal.NewInstance();
+			IJournal journal = refFactory.newJournal();
 			journal.setTitleCache("Afro+Doc");
 			
-			Taxon taxon = Taxon.NewInstance(botanicalName,journal);
+			Taxon taxon = Taxon.NewInstance(botanicalName,(ReferenceBase)journal);
 			appCtr.getTaxonService().save(taxon);
 			
 			TaxonDescription taxonDescription = TaxonDescription.NewInstance();
@@ -244,7 +247,7 @@ public class TestDatabase {
 			BotanicalName botanicalName = BotanicalName.NewInstance(genus);
 			botanicalName.setGenusOrUninomial("GenusName");
 		
-			Journal journal = Journal.NewInstance();
+			IJournal journal = refFactory.newJournal();
 			journal.setTitle("JournalTitel");
 			
 			//			Taxon taxon = Taxon.NewInstance(botanicalName, journal);

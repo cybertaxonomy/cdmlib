@@ -22,6 +22,7 @@ import org.junit.Test;
 import eu.etaxonomy.cdm.model.agent.Contact;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.common.LSID;
@@ -31,9 +32,11 @@ import eu.etaxonomy.cdm.model.location.ReferenceSystem;
 import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.reference.Book;
-import eu.etaxonomy.cdm.model.reference.BookSection;
-import eu.etaxonomy.cdm.model.reference.PrintSeries;
+import eu.etaxonomy.cdm.model.reference.IBook;
+import eu.etaxonomy.cdm.model.reference.IBookSection;
+import eu.etaxonomy.cdm.model.reference.IPrintSeries;
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 
 /**
  * @author a.mueller
@@ -45,22 +48,22 @@ public class DefaultMatchStrategyTest {
 	private static final Logger logger = Logger.getLogger(DefaultMatchStrategyTest.class);
 
 	private DefaultMatchStrategy matchStrategy;
-	private Book book1;
+	private IBook book1;
 	private String editionString1 ="Ed.1";
 	private String volumeString1 ="Vol.1";
 	private Team team1;
-	private PrintSeries printSeries1;
+	private IPrintSeries printSeries1;
 	private Annotation annotation1;
 	private String title1 = "Title1";
 	private TimePeriod datePublished1 = TimePeriod.NewInstance(2000);
 	private int hasProblem1 = 1;
 	private LSID lsid1;
 	
-	private Book book2;
+	private IBook book2;
 	private String editionString2 ="Ed.2";
 	private String volumeString2 ="Vol.2";
 	private Team team2;
-	private PrintSeries printSeries2;
+	private IPrintSeries printSeries2;
 	private Annotation annotation2;
 	private String annotationString2;
 	private String title2 = "Title2";
@@ -68,9 +71,9 @@ public class DefaultMatchStrategyTest {
 	private TimePeriod datePublished2 = TimePeriod.NewInstance(2002);
 	private int hasProblem2 = 1;
 	private LSID lsid2;
+	ReferenceFactory refFactory;
 	
-	
-	private Book book3;
+	private IBook book3;
 	
 	/**
 	 * @throws java.lang.Exception
@@ -93,44 +96,44 @@ public class DefaultMatchStrategyTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
-		
+		refFactory = ReferenceFactory.newInstance();
 		team1 = Team.NewInstance();
 		team1.setTitleCache("Team1");
 		team2 = Team.NewInstance();
 		team2.setTitleCache("Team2");
-		printSeries1 = PrintSeries.NewInstance("Series1");
+		printSeries1 = refFactory.newPrintSeries("Series1");
 		printSeries1.setTitle("print series");
-		printSeries2 = PrintSeries.NewInstance("Series2");
+		printSeries2 = refFactory.newPrintSeries("Series2");
 		annotation1 = Annotation.NewInstance("Annotation1", null);
 		annotationString2 = "Annotation2";
 		annotation2 = Annotation.NewInstance(annotationString2, null);
 		
-		book1 = Book.NewInstance();
+		book1 = refFactory.newBook();
 		book1.setAuthorTeam(team1);
 		book1.setTitle(title1);
 		book1.setEdition(editionString1);
 		book1.setVolume(volumeString1);
 		book1.setInSeries(printSeries1);
-		book1.addAnnotation(annotation1);
+		((AnnotatableEntity) book1).addAnnotation(annotation1);
 		book1.setDatePublished(datePublished1);
 		book1.setParsingProblem(hasProblem1);
 		lsid1 = new LSID("authority1", "namespace1", "object1", "revision1");
 		book1.setLsid(lsid1);
-		book1.setNomenclaturallyRelevant(false);
+		((ReferenceBase) book1).setNomenclaturallyRelevant(false);
 		
-		book2 = Book.NewInstance();
+		book2 = refFactory.newBook();
 		book2.setAuthorTeam(team2);
 		book2.setTitle(title2);
 		book2.setEdition(editionString2);
 		book2.setVolume(volumeString2);
 		book2.setInSeries(printSeries2);
-		book2.addAnnotation(annotation2);
+		( (AnnotatableEntity) book2).addAnnotation(annotation2);
 		book2.setCreated(created2);
 		book2.setDatePublished(datePublished2);
 		book2.setParsingProblem(hasProblem2);
 		lsid2 = new LSID("authority2", "namespace2", "object2", "revision2");
 		book2.setLsid(lsid2);
-		book2.setNomenclaturallyRelevant(true);
+		((ReferenceBase) book2).setNomenclaturallyRelevant(true);
 		
 	}
 
@@ -148,9 +151,9 @@ public class DefaultMatchStrategyTest {
 	 */
 	@Test
 	public void testNewInstance() {
-		matchStrategy = DefaultMatchStrategy.NewInstance(Book.class);
+		matchStrategy = DefaultMatchStrategy.NewInstance(ReferenceBase.class);
 		Assert.assertNotNull(matchStrategy);
-		Assert.assertEquals(Book.class, matchStrategy.getMatchClass());
+		Assert.assertEquals(ReferenceBase.class, matchStrategy.getMatchClass());
 	}
 
 	/**
@@ -158,7 +161,7 @@ public class DefaultMatchStrategyTest {
 	 */
 	@Test
 	public void testGetMatchMode() {
-		matchStrategy = DefaultMatchStrategy.NewInstance(Book.class);
+		matchStrategy = DefaultMatchStrategy.NewInstance(ReferenceBase.class);
 		Assert.assertEquals("Match mode for isbn should be MatchMode.EQUAL_", MatchMode.EQUAL, matchStrategy.getMatchMode("isbn"));
 		Assert.assertEquals("Match mode for title should be MatchMode.EQUAL", MatchMode.EQUAL_REQUIRED, matchStrategy.getMatchMode("title"));
 	}
@@ -170,7 +173,7 @@ public class DefaultMatchStrategyTest {
 	public void testGetSetMatchMode() {
 		//legal value
 		try {
-			matchStrategy = DefaultMatchStrategy.NewInstance(Book.class);
+			matchStrategy = DefaultMatchStrategy.NewInstance(ReferenceBase.class);
 			matchStrategy.setMatchMode("edition", MatchMode.EQUAL_REQUIRED);
 			Assert.assertEquals("Match mode for edition should be", MatchMode.EQUAL_REQUIRED, matchStrategy.getMatchMode("edition"));
 		} catch (MatchException e1) {
@@ -194,10 +197,10 @@ public class DefaultMatchStrategyTest {
 
 	@Test
 	public void testInvokeCache() throws MatchException {
-		matchStrategy = DefaultMatchStrategy.NewInstance(Book.class);
+		matchStrategy = DefaultMatchStrategy.NewInstance(ReferenceBase.class);
 		Assert.assertTrue("Same object should always match", matchStrategy.invoke(book1, book1));
 		
-		Book bookClone = (Book)book1.clone();
+		IBook bookClone = (IBook) ((ReferenceBase) book1).clone();
 		Assert.assertTrue("Cloned book should match", matchStrategy.invoke(book1, bookClone));
 		book1.setTitleCache("cache1");
 		Assert.assertFalse("Cached book should not match", matchStrategy.invoke(book1, bookClone));
@@ -234,10 +237,10 @@ public class DefaultMatchStrategyTest {
 	
 	@Test
 	public void testInvokeReferences() throws MatchException {
-		matchStrategy = DefaultMatchStrategy.NewInstance(Book.class);
+		matchStrategy = DefaultMatchStrategy.NewInstance(ReferenceBase.class);
 		Assert.assertTrue("Same object should always match", matchStrategy.invoke(book1, book1));
 		
-		Book bookClone = (Book)book1.clone();
+		IBook bookClone = (IBook) ((ReferenceBase) book1).clone();
 		Assert.assertTrue("Cloned book should match", matchStrategy.invoke(book1, bookClone));
 		bookClone.setTitle("Any title");
 		Assert.assertFalse("Books with differing titles should not match", matchStrategy.invoke(book1, bookClone));
@@ -253,7 +256,7 @@ public class DefaultMatchStrategyTest {
 		
 		bookClone.setInSeries(printSeries2);
 		Assert.assertFalse("Cloned book with differing print series should not match", matchStrategy.invoke(book1, bookClone));
-		PrintSeries seriesClone = printSeries1.clone();
+		IPrintSeries seriesClone = (IPrintSeries)((ReferenceBase)printSeries1).clone();
 		bookClone.setInSeries(seriesClone);
 		Assert.assertTrue("Cloned book with cloned bookSeries should match", matchStrategy.invoke(book1, bookClone));
 		seriesClone.setTitle("Another title");
@@ -261,8 +264,8 @@ public class DefaultMatchStrategyTest {
 		bookClone.setInSeries(printSeries1);
 		Assert.assertTrue("Original printSeries should match", matchStrategy.invoke(book1, bookClone));
 		
-		Book bookTitle1 = Book.NewInstance();
-		Book bookTitle2 = Book.NewInstance();
+		IBook bookTitle1 = refFactory.newBook();
+		IBook bookTitle2 = refFactory.newBook();
 		Assert.assertFalse("Books without title should not match", matchStrategy.invoke(bookTitle1, bookTitle2));
 		String title = "Any title";
 		bookTitle1.setTitle(title);
@@ -285,9 +288,17 @@ public class DefaultMatchStrategyTest {
 		Assert.assertTrue("Books with same publication dates should match", matchStrategy.invoke(bookTitle1, bookTitle2));
 
 		//BookSection
-		BookSection section1 = BookSection.NewInstance(bookTitle1, null, "SecTitle", "22-33");
-		BookSection section2 = BookSection.NewInstance(bookTitle1, null, "SecTitle", "22-33");
-		IMatchStrategy bookSectionMatchStrategy = DefaultMatchStrategy.NewInstance(BookSection.class);
+		IBookSection section1 = refFactory.newBookSection();
+		section1.setInBook(bookTitle1);
+		section1.setTitle("SecTitle");
+		section1.setPages("22-33");
+		IBookSection section2 = refFactory.newBookSection();
+		section2.setInBook(bookTitle1);
+		section2.setTitle("SecTitle");
+		section2.setPages("22-33");
+		
+		
+		IMatchStrategy bookSectionMatchStrategy = DefaultMatchStrategy.NewInstance(ReferenceBase.class);
 		Assert.assertTrue("Equal BookSections should match", bookSectionMatchStrategy.invoke(section1, section2));
 		section2.setInBook(bookTitle2);
 		Assert.assertTrue("Matching books should result in matching book sections", bookSectionMatchStrategy.invoke(section1, section2));
@@ -297,7 +308,7 @@ public class DefaultMatchStrategyTest {
 		bookTitle2.setPages(null);
 		Assert.assertTrue("Matching books should result in matching book sections", bookSectionMatchStrategy.invoke(section1, section2));
 		printSeries2.setTitle("A new series title");
-		IMatchStrategy printSeriesMatchStrategy = DefaultMatchStrategy.NewInstance(PrintSeries.class);
+		IMatchStrategy printSeriesMatchStrategy = DefaultMatchStrategy.NewInstance(ReferenceBase.class);
 		Assert.assertFalse("Print series with differing titles should not match", printSeriesMatchStrategy.invoke(printSeries1, printSeries2));
 		bookTitle1.setInSeries(printSeries1);
 		bookTitle2.setInSeries(printSeries2);
@@ -310,8 +321,8 @@ public class DefaultMatchStrategyTest {
 		
 		person1.setPrefix("pre1");
 		person2.setPrefix("pre2");
+		book2= (IBook) ((ReferenceBase) book1).clone();
 		
-		book2 = (Book)book1.clone();
 		Assert.assertTrue("Equal books should match", matchStrategy.invoke(book1, book2));
 		
 		book1.setAuthorTeam(person1);

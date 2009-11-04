@@ -16,11 +16,11 @@ import java.net.URI;
 
 import org.junit.Test;
 
-import eu.etaxonomy.cdm.model.reference.Article;
+
 import eu.etaxonomy.cdm.model.reference.IArticle;
 import eu.etaxonomy.cdm.model.reference.IGeneric;
 import eu.etaxonomy.cdm.model.reference.IJournal;
-import eu.etaxonomy.cdm.model.reference.Journal;
+
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.strategy.cache.reference.JournalDefaultCacheStrategy;
 

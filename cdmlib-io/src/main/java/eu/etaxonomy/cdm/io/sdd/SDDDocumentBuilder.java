@@ -63,9 +63,11 @@ import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.model.reference.Article;
-import eu.etaxonomy.cdm.model.reference.Database;
+import eu.etaxonomy.cdm.model.reference.IArticle;
+import eu.etaxonomy.cdm.model.reference.IDatabase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
+import eu.etaxonomy.cdm.model.reference.ReferenceType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
@@ -91,7 +93,9 @@ public class SDDDocumentBuilder {
 	private Map<TaxonDescription,String> codedDescriptions = new HashMap<TaxonDescription,String>();
 	private Map<Media,String> medias = new HashMap<Media,String>();
 	private Map<State,String> states = new HashMap<State,String>();
-	private Map<Article, String> articles = new HashMap<Article, String>();
+	private Map<ReferenceBase, String> articles = new HashMap<ReferenceBase, String>();
+	private ReferenceFactory refFactory = ReferenceFactory.newInstance();
+	
 	private int agentsCount = 0;
 	private int articlesCount = 0;
 	private int codedDescriptionsCount = 0;
@@ -233,11 +237,11 @@ public class SDDDocumentBuilder {
 
 		List<ReferenceBase> references = cdmSource.getReferences();
 		Iterator<ReferenceBase> iterator = references.iterator();
-		Database d = Database.NewInstance();
+		IDatabase d = refFactory.newDatabase();
 		while (iterator.hasNext()) {
 			ReferenceBase reference = (ReferenceBase) iterator.next();
-			if (reference instanceof Database) {
-				buildDataset(baselement, (Database) reference);
+			if (reference.getType().equals(ReferenceType.Database)) {
+				buildDataset(baselement, reference);
 			}
 		}
 
@@ -262,11 +266,11 @@ public class SDDDocumentBuilder {
 		List<ReferenceBase> references = cdmSource.getReferences();
 		Iterator<ReferenceBase> iterator = references.iterator();
 		boolean database = false;
-		Database d = Database.NewInstance();
+		IDatabase d = refFactory.newDatabase();
 		while ((iterator.hasNext()) && (!database)) {
 			ReferenceBase reference = (ReferenceBase) iterator.next();
-			if (reference instanceof Database) {
-				d = (Database) reference;
+			if (reference.getType().equals(ReferenceType.Database)) {
+				d = reference;
 			}
 		}
 		DateTime dt = d.getCreated();
@@ -283,7 +287,7 @@ public class SDDDocumentBuilder {
 	}
 
 	// Builds the information associated with a dataset
-	public void buildDataset(ElementImpl baselement, Database reference) throws ParseException {
+	public void buildDataset(ElementImpl baselement,IDatabase reference) throws ParseException {
 		// create Dataset and language
 		ElementImpl dataset = new ElementImpl(document, DATASET);
 		// no default language associated with a dataset in the CDM
@@ -301,14 +305,14 @@ public class SDDDocumentBuilder {
 	/**
 	 * Builds a Representation element using a ReferenceBase
 	 */
-	public void buildRepresentation(ElementImpl element, ReferenceBase reference) throws ParseException {
+	public void buildRepresentation(ElementImpl element, IDatabase reference) throws ParseException {
 
 		//			create <Representation> element
 		ElementImpl representation = new ElementImpl(document, REPRESENTATION);
 		element.appendChild(representation);
 		buildLabel(representation, reference.getTitleCache());
 
-		Set<Annotation> annotations = reference.getAnnotations();
+		Set<Annotation> annotations = ((ReferenceBase)reference).getAnnotations();
 		Iterator iterator = annotations.iterator();
 		String detailText = null;
 		if (iterator.hasNext()) {
@@ -322,7 +326,7 @@ public class SDDDocumentBuilder {
 			representation.appendChild(detail);
 		}
 
-		Set<Media> rm = reference.getMedia();
+		Set<Media> rm = ((ReferenceBase)reference).getMedia();
 
 		if (rm != null && rm.size() > 0) {
 			ElementImpl mediaObject;
@@ -441,14 +445,14 @@ public class SDDDocumentBuilder {
 	/**
 	 * Builds ModifiedDate associated with RevisionData
 	 */
-	public void buildDateModified(ElementImpl revisionData, Database database) throws ParseException {
+	public void buildDateModified(ElementImpl revisionData, IDatabase database) throws ParseException {
 
 		//  <DateModified>2006-04-08T00:00:00</DateModified>
 
-		if (database.getUpdated() != null) {
+		if (((ReferenceBase)database).getUpdated() != null) {
 			ElementImpl dateModified = new ElementImpl(document, DATE_MODIFIED);
 
-			DateTime c = database.getUpdated();
+			DateTime c = ((ReferenceBase)database).getUpdated();
 			DateTimeFormatter fmt = ISODateTimeFormat.dateTime();
 
 			String date = fmt.print(c);
@@ -462,7 +466,7 @@ public class SDDDocumentBuilder {
 	/**
 	 * Builds IPRStatements associated with the Dataset
 	 */
-	public void buildIPRStatements(ElementImpl dataset, Database database) throws ParseException {
+	public void buildIPRStatements(ElementImpl dataset, IDatabase database) throws ParseException {
 
 		// <IPRStatements>
 		//  <IPRStatement role="Copyright">
@@ -487,7 +491,7 @@ public class SDDDocumentBuilder {
 	/**
 	 * Builds RevisionData associated with the Dataset
 	 */
-	public void buildRevisionData(ElementImpl dataset, Database database) throws ParseException {
+	public void buildRevisionData(ElementImpl dataset, IDatabase database) throws ParseException {
 
 		// <RevisionData>
 		//  <Creators>
@@ -757,12 +761,12 @@ public class SDDDocumentBuilder {
 		Set<ReferenceBase> descriptionSources = taxonDescription.getDescriptionSources();
 		for (Iterator<ReferenceBase> rb = descriptionSources.iterator() ; rb.hasNext() ;){
 			ReferenceBase descriptionSource = rb.next();
-			if (descriptionSource instanceof Article) {
-				Article article = (Article) descriptionSource;
+			if (descriptionSource.getType().equals(ReferenceType.Article)) {
+				
 				ElementImpl citation = new ElementImpl(document, CITATION);
-				articlesCount = buildReference(article, articles, REF, citation, "p", articlesCount);
+				articlesCount = buildReference(descriptionSource, articles, REF, citation, "p", articlesCount);
 
-				Set<Annotation> annotations = article.getAnnotations();
+				Set<Annotation> annotations = descriptionSource.getAnnotations();
 				for (Iterator<Annotation> a = annotations.iterator() ; a.hasNext() ;){
 					Annotation annotation = a.next();
 					AnnotationType annotationType = annotation.getAnnotationType();

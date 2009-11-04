@@ -23,8 +23,9 @@ import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.model.reference.Book;
+import eu.etaxonomy.cdm.model.reference.IBook;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -59,7 +60,8 @@ public class TestTaxonFunction {
 		CdmApplicationController cdmApp = getCdmApplicationController("defaultMySql", hbm2dll);
 		
 		INonViralNameParser parser = NonViralNameParserImpl.NewInstance();
-		ReferenceBase sec = Book.NewInstance();
+		ReferenceFactory refFactory = ReferenceFactory.newInstance();
+		ReferenceBase sec = refFactory.newBook();
 		sec.setTitleCache("ConceptRef");
 		
 		//root

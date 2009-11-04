@@ -37,8 +37,10 @@ import eu.etaxonomy.cdm.io.tcsrdf.CdmSingleAttributeXmlMapperBase;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
-import eu.etaxonomy.cdm.model.reference.Generic;
+import eu.etaxonomy.cdm.model.reference.IGeneric;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
+import eu.etaxonomy.cdm.model.reference.ReferenceType;
 
 /**
  * @author a.mueller
@@ -54,7 +56,7 @@ public abstract class EndNoteImportBase  extends CdmImportBase<EndnoteImportConf
 	protected static Namespace nsTc = Namespace.getNamespace("http://rs.tdwg.org/ontology/voc/TaxonConcept#");
 	protected static Namespace nsTpub = Namespace.getNamespace("http://rs.tdwg.org/ontology/voc/PublicationCitation#");
 	protected static Namespace nsTpalm = Namespace.getNamespace("http://wp5.e-taxonomy.eu/import/palmae/common");
-	
+	ReferenceFactory refFactory = ReferenceFactory.newInstance();
 	
 	protected abstract boolean doInvoke(EndnoteImportState state);
 
@@ -187,12 +189,14 @@ public abstract class EndNoteImportBase  extends CdmImportBase<EndnoteImportConf
 	}
 	
 	
-	protected <T extends IdentifiableEntity> T makeReferenceType(Element element, Class<? extends T> clazz, MapWrapper<? extends T> objectMap, ResultWrapper<Boolean> success){
+	protected <T extends IdentifiableEntity> T makeReferenceType(Element element, ReferenceType refType, MapWrapper<? extends T> objectMap, ResultWrapper<Boolean> success){
 		T result = null;
+		
 		String linkType = element.getAttributeValue("linkType");
 		String ref = element.getAttributeValue("ref");
 		if(ref == null && linkType == null){
-			result = getInstance(clazz);
+			result = (T) refFactory.newReference(refType);
+				
 			if (result != null){
 				String title = element.getTextNormalize();
 				result.setTitleCache(title);
@@ -231,7 +235,7 @@ public abstract class EndNoteImportBase  extends CdmImportBase<EndnoteImportConf
 			if (elAccordingToDetailed != null){
 				result = makeAccordingToDetailed(elAccordingToDetailed, referenceMap, success);
 			}else{
-				result = Generic.NewInstance();
+				result = refFactory.newGeneric();
 				String title = elSimple.getTextNormalize();
 				result.setTitleCache(title);
 			}
@@ -254,7 +258,7 @@ public abstract class EndNoteImportBase  extends CdmImportBase<EndnoteImportConf
 			childName = "PublishedIn";
 			obligatory = false;
 			Element elPublishedIn = XmlHelp.getSingleChildElement(success, elAccordingToDetailed, childName, tcsNamespace, obligatory);
-			result = makeReferenceType(elPublishedIn, Generic.class, referenceMap, success);
+			result = makeReferenceType(elPublishedIn, ReferenceType.Generic, referenceMap, success);
 			
 			//MicroReference
 			childName = "MicroReference";

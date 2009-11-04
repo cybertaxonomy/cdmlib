@@ -37,8 +37,10 @@ import eu.etaxonomy.cdm.io.tcsrdf.CdmSingleAttributeXmlMapperBase;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
-import eu.etaxonomy.cdm.model.reference.Generic;
+import eu.etaxonomy.cdm.model.reference.IGeneric;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
+import eu.etaxonomy.cdm.model.reference.ReferenceType;
 
 /**
  * @author a.mueller
@@ -57,7 +59,7 @@ public abstract class TcsXmlImportBase  extends CdmImportBase<TcsXmlImportConfig
 	
 	
 	protected abstract boolean doInvoke(TcsXmlImportState state);
-
+	ReferenceFactory refFactory = ReferenceFactory.newInstance();
 	
 //	/* (non-Javadoc)
 //	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doInvoke(eu.etaxonomy.cdm.io.common.IImportConfigurator, eu.etaxonomy.cdm.api.application.CdmApplicationController, java.util.Map)
@@ -231,7 +233,7 @@ public abstract class TcsXmlImportBase  extends CdmImportBase<TcsXmlImportConfig
 			if (elAccordingToDetailed != null){
 				result = makeAccordingToDetailed(elAccordingToDetailed, referenceMap, success);
 			}else{
-				result = Generic.NewInstance();
+				result = refFactory.newGeneric();
 				String title = elSimple.getTextNormalize();
 				result.setTitleCache(title);
 			}
@@ -254,7 +256,7 @@ public abstract class TcsXmlImportBase  extends CdmImportBase<TcsXmlImportConfig
 			childName = "PublishedIn";
 			obligatory = false;
 			Element elPublishedIn = XmlHelp.getSingleChildElement(success, elAccordingToDetailed, childName, tcsNamespace, obligatory);
-			result = makeReferenceType(elPublishedIn, Generic.class, referenceMap, success);
+			result = makeReferenceType(elPublishedIn, ReferenceBase.class, referenceMap, success);
 			
 			//MicroReference
 			childName = "MicroReference";

@@ -17,8 +17,9 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
-import eu.etaxonomy.cdm.model.reference.Database;
+import eu.etaxonomy.cdm.model.reference.IDatabase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 
 public abstract class ExcelImportConfiguratorBase extends ImportConfiguratorBase implements IImportConfigurator{
 	private static final Logger logger = Logger.getLogger(ExcelImportConfiguratorBase.class);
@@ -58,7 +59,8 @@ public abstract class ExcelImportConfiguratorBase extends ImportConfiguratorBase
 		//TODO
 		if (this.sourceReference == null){
 			logger.warn("getSource Reference not yet fully implemented");
-			sourceReference = Database.NewInstance();
+			ReferenceFactory refFactory = ReferenceFactory.newInstance();
+			sourceReference = refFactory.newDatabase();
 			sourceReference.setTitleCache("Distribution data import");
 		}
 		return sourceReference;

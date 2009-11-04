@@ -147,6 +147,8 @@
       <mapping class="eu.etaxonomy.cdm.model.occurrence.Specimen"/>
       <mapping class="eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase"/>
       <!-- Reference Package -->
+      <mapping class="eu.etaxonomy.cdm.model.reference.ReferenceBase"/>
+      <!--
       <mapping class="eu.etaxonomy.cdm.model.reference.Article"/>
       <mapping class="eu.etaxonomy.cdm.model.reference.Book"/>
       <mapping class="eu.etaxonomy.cdm.model.reference.BookSection"/>
@@ -161,12 +163,14 @@
       <mapping class="eu.etaxonomy.cdm.model.reference.PrintedUnitBase"/>
       <mapping class="eu.etaxonomy.cdm.model.reference.PrintSeries"/>
       <mapping class="eu.etaxonomy.cdm.model.reference.Proceedings"/>
-      <mapping class="eu.etaxonomy.cdm.model.reference.ReferenceBase"/>
-<!--      <mapping class="eu.etaxonomy.cdm.model.reference.ReferenceIdentity"/>-->
+      
+      
+     <mapping class="eu.etaxonomy.cdm.model.reference.ReferenceIdentity"/>
       <mapping class="eu.etaxonomy.cdm.model.reference.Report"/>
       <mapping class="eu.etaxonomy.cdm.model.reference.SectionBase"/>
       <mapping class="eu.etaxonomy.cdm.model.reference.Thesis"/>
       <mapping class="eu.etaxonomy.cdm.model.reference.WebPage"/>
+      -->
       <!-- Taxon Package -->
       <mapping class="eu.etaxonomy.cdm.model.taxon.Synonym"/>
       <mapping class="eu.etaxonomy.cdm.model.taxon.SynonymRelationship"/>

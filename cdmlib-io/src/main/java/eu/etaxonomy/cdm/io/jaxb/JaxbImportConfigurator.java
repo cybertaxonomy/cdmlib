@@ -15,8 +15,9 @@ import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
-import eu.etaxonomy.cdm.model.reference.Database;
+import eu.etaxonomy.cdm.model.reference.IDatabase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 
 /**
  * @author a.babadshanjan
@@ -197,8 +198,9 @@ public class JaxbImportConfigurator extends ImportConfiguratorBase implements II
 	public ReferenceBase getSourceReference() {
 		//TODO
 		if (this.sourceReference == null){
+			ReferenceFactory refFactory = ReferenceFactory.newInstance();
 			logger.warn("getSource Reference not yet fully implemented");
-			sourceReference = Database.NewInstance();
+			sourceReference = refFactory.newDatabase();
 			sourceReference.setTitleCache("Jaxb import");
 		}
 		return sourceReference;

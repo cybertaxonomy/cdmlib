@@ -16,7 +16,9 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -26,6 +28,8 @@ import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
+import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.description.AbsenceTerm;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
@@ -217,6 +221,32 @@ public class DescriptionDaoHibernateImplTest extends CdmIntegrationTest {
 		propertyPaths.add("feature");
 		
 		List<DescriptionElementBase> elements = descriptionDao.getDescriptionElements(description, null, TextData.class, null, null,propertyPaths);
+		System.err.println(elements.size());
+		for (DescriptionElementBase descElB: elements){
+			if (descElB instanceof TextData){
+				Map<Language, LanguageString> multiLanguage = ((TextData)descElB).getMultilanguageText();
+				LanguageString defaultString = multiLanguage.get(Language.DEFAULT());
+				System.err.println(defaultString);
+			}
+		}
+		Iterator<DescriptionElementBase> elements2 = description.getElements().iterator();
+		while(elements2.hasNext()){
+			DescriptionElementBase element = elements2.next();
+			if (element instanceof TextData){
+				Map<Language, LanguageString> multiLanguage = ((TextData)element).getMultilanguageText();
+				LanguageString defaultString = multiLanguage.get(Language.DEFAULT());
+				defaultString.setText("blablub");
+			}
+		}
+		elements = descriptionDao.getDescriptionElements(description, null, TextData.class, null, null,propertyPaths);
+		System.err.println(elements.size());
+		for (DescriptionElementBase descElB: elements){
+			if (descElB instanceof TextData){
+				Map<Language, LanguageString> multiLanguage = ((TextData)descElB).getMultilanguageText();
+				LanguageString defaultString = multiLanguage.get(Language.DEFAULT());
+				System.err.println(defaultString);
+			}
+		}
 		
 		assertNotNull("getDescriptionElements should return a List");
 		assertFalse("getDescriptionElements should not be empty",elements.isEmpty());

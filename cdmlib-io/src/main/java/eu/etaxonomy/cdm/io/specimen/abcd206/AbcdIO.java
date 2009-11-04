@@ -61,8 +61,9 @@ import eu.etaxonomy.cdm.model.occurrence.FieldObservation;
 import eu.etaxonomy.cdm.model.occurrence.LivingBeing;
 import eu.etaxonomy.cdm.model.occurrence.Observation;
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
-import eu.etaxonomy.cdm.model.reference.Generic;
+import eu.etaxonomy.cdm.model.reference.IGeneric;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
@@ -886,6 +887,7 @@ public class AbcdIO extends SpecimenIoBase implements ICdmIO<SpecimenImportState
 		NonViralName<?> taxonName = null;
 		String fullScientificNameString;
 		Taxon taxon = null;
+		ReferenceFactory refFatory = ReferenceFactory.newInstance();
 		DeterminationEvent determinationEvent = null;
 		List<TaxonBase> names = null;
 
@@ -936,8 +938,10 @@ public class AbcdIO extends SpecimenIoBase implements ICdmIO<SpecimenImportState
 			determinationEvent = DeterminationEvent.NewInstance();
 			determinationEvent.setTaxon(taxon);
 			determinationEvent.setPreferredFlag(preferredFlag);
+			
 			for (int l=0;l<this.referenceList.size();l++){
-				ReferenceBase reference = new Generic();
+				
+				ReferenceBase reference = refFatory.newGeneric();
 				reference.setTitleCache(this.referenceList.get(l));
 				determinationEvent.addReference(reference);
 			}

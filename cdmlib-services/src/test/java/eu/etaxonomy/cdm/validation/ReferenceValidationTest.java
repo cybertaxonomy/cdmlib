@@ -42,9 +42,10 @@ import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
-import eu.etaxonomy.cdm.model.reference.Article;
-import eu.etaxonomy.cdm.model.reference.Book;
+import eu.etaxonomy.cdm.model.reference.IArticle;
+import eu.etaxonomy.cdm.model.reference.IBook;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 
@@ -60,11 +61,12 @@ public class ReferenceValidationTest extends CdmIntegrationTest {
 	@SpringBeanByType
 	private Validator validator;
 	
-	private Book book;
-	
+	private IBook book;
+	ReferenceFactory refFactory;
 	@Before
 	public void setUp() {
-		book = Book.NewInstance();
+		refFactory = ReferenceFactory.newInstance();
+		book = refFactory.newBook();
 		book.setTitleCache("Lorem ipsum");
 	}
 	
@@ -76,35 +78,35 @@ public class ReferenceValidationTest extends CdmIntegrationTest {
 	 */
 	@Test
 	public final void testLevel2ValidationWithValidBook() {
-        Set<ConstraintViolation<Book>> constraintViolations  = validator.validate(book, Level2.class);
+        Set<ConstraintViolation<IBook>> constraintViolations  = validator.validate(book, Level2.class);
         assertTrue("There should be no constraint violations as this book is valid at level 2",constraintViolations.isEmpty());
 	}
 	
 	@Test
 	public final void testLevel2ValidationWithValidISBN() {
 		book.setIsbn("ISBN 1-919795-99-5");
-        Set<ConstraintViolation<Book>> constraintViolations  = validator.validate(book, Level2.class);
+        Set<ConstraintViolation<IBook>> constraintViolations  = validator.validate(book, Level2.class);
         assertTrue("There should be no constraint violations as this book is valid at level 2",constraintViolations.isEmpty());
 	}
 	
 	@Test
 	public final void testLevel2ValidationWithInValidISBN() {
 		book.setIsbn("ISBN 1-9197954-99-5");
-        Set<ConstraintViolation<Book>> constraintViolations  = validator.validate(book, Level2.class);
+        Set<ConstraintViolation<IBook>> constraintViolations  = validator.validate(book, Level2.class);
         assertFalse("There should be a constraint violation as this book has an invalid ISBN number",constraintViolations.isEmpty());
 	}
 	
 	@Test
 	public final void testLevel2ValidationWithValidUri() {
 		book.setUri("http://www.e-taxonomy.eu");
-        Set<ConstraintViolation<Book>> constraintViolations  = validator.validate(book, Level2.class);
+        Set<ConstraintViolation<IBook>> constraintViolations  = validator.validate(book, Level2.class);
         assertTrue("There should be no constraint violations as this book is valid at level 2",constraintViolations.isEmpty());
 	}
 	
 	@Test
 	public final void testLevel2ValidationWithInValidUri() {
 		book.setUri("http://www.e-\taxonomy.eu");
-        Set<ConstraintViolation<Book>> constraintViolations  = validator.validate(book, Level2.class);
+        Set<ConstraintViolation<IBook>> constraintViolations  = validator.validate(book, Level2.class);
         assertFalse("There should be a constraint violation as this book has an invalid URI",constraintViolations.isEmpty());
 	}
 }

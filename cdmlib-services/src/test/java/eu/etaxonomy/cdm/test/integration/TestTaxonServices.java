@@ -28,8 +28,9 @@ import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.reference.Book;
+import eu.etaxonomy.cdm.model.reference.IBook;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -84,7 +85,8 @@ public class TestTaxonServices {
 		SynonymRelationshipType synonymType = SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF();
 
 		ReferenceBase citation;
-		citation = Book.NewInstance();
+		ReferenceFactory refFactory = ReferenceFactory.newInstance();
+		citation = refFactory.newBook();
 		AgentBase linne = appCtr.getAgentService().find(UUID.fromString("f6272e48-5b4e-40c1-b4e9-ee32334fa19f"));
 		citation.setAuthorTeam((TeamOrPersonBase)linne);
 		citation.setTitleCache("Make Taxon Synonym Test");

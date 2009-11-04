@@ -16,7 +16,7 @@ import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
-import eu.etaxonomy.cdm.model.reference.Journal;
+import eu.etaxonomy.cdm.model.reference.IJournal;
 import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 
@@ -48,7 +48,7 @@ public class ReferenceDaoHibernateImplTest extends CdmIntegrationTest {
 	
 	@Test
 	public void testGetPublishers() {
-		Journal firstJournal = (Journal)referenceDao.findByUuid(firstJournalUuid);
+		IJournal firstJournal = (IJournal)referenceDao.findByUuid(firstJournalUuid);
 		assert firstJournal!= null : "journal must exist";
 		
 //		List<Publisher> publishers = firstJournal.getPublishers();

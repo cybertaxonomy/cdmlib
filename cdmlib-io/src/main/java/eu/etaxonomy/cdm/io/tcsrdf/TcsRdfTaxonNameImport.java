@@ -34,8 +34,9 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.model.reference.Generic;
+import eu.etaxonomy.cdm.model.reference.IGeneric;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
 /**
@@ -142,7 +143,8 @@ public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<T
 				tcsNamespace = config.getCommonNamespace();
 				value = (String)ImportHelper.getXmlInputValue(elTaxonName, tcsElementName, tcsNamespace);
 				if (value != null){
-					Generic nomRef = Generic.NewInstance(); //TODO
+					ReferenceFactory refFactory = ReferenceFactory.newInstance();
+					IGeneric nomRef = refFactory.newGeneric(); //TODO
 					nomRef.setTitleCache(value);
 					nameBase.setNomenclaturalReference(nomRef);
 					
@@ -161,7 +163,7 @@ public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<T
 						}
 					}
 					if (state.getConfig().isPublishReferences()){
-						nomRef.addMarker(Marker.NewInstance(MarkerType.PUBLISH(), false));
+						((ReferenceBase)nomRef).addMarker(Marker.NewInstance(MarkerType.PUBLISH(), false));
 					}
 				}
 						

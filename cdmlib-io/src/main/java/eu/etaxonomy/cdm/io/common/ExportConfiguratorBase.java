@@ -11,8 +11,9 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.IExportConfigurator.CHECK;
-import eu.etaxonomy.cdm.model.reference.Database;
+import eu.etaxonomy.cdm.model.reference.IDatabase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 
 /**
  * @author a.babadshanjan
@@ -26,7 +27,7 @@ public abstract class ExportConfiguratorBase<DESTINATION extends Object> extends
 	
 	private ICdmDataSource source;
 	private DESTINATION destination;
-	protected ReferenceBase sourceReference;
+	protected IDatabase sourceReference;
 	protected Class<ICdmIO>[] ioClassList;
 
 	
@@ -66,10 +67,11 @@ public abstract class ExportConfiguratorBase<DESTINATION extends Object> extends
 	 * @see eu.etaxonomy.cdm.io.common.ImportConfiguratorBase#getSourceReference()
 	 */
 //	@Override
-	public ReferenceBase getSourceReference() {
+	public IDatabase getSourceReference() {
 		//TODO //needed
+		ReferenceFactory refFactory = ReferenceFactory.newInstance();
 		if (this.sourceReference == null){
-			sourceReference = Database.NewInstance();
+			sourceReference = refFactory.newDatabase();
 			if (getSource() != null){
 				sourceReference.setTitleCache(getSource().getDatabase());
 			}

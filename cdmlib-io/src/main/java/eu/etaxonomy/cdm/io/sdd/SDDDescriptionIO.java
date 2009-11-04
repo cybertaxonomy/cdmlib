@@ -71,10 +71,11 @@ import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.model.reference.Article;
-import eu.etaxonomy.cdm.model.reference.Database;
-import eu.etaxonomy.cdm.model.reference.Generic;
+import eu.etaxonomy.cdm.model.reference.IArticle;
+import eu.etaxonomy.cdm.model.reference.IDatabase;
+import eu.etaxonomy.cdm.model.reference.IGeneric;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 /**
@@ -106,8 +107,8 @@ public class SDDDescriptionIO extends CdmImportBase<SDDImportConfigurator, SDDIm
 
 	private Set<AnnotationType> annotationTypes = new HashSet<AnnotationType>();
 	private Set<Feature> featureSet = new HashSet<Feature>();
-
-	private ReferenceBase sec = Database.NewInstance();
+	ReferenceFactory refFactory = ReferenceFactory.newInstance();
+	private ReferenceBase sec = refFactory.newDatabase();
 	private ReferenceBase sourceReference = null;
 
 	private Language datasetLanguage = null;
@@ -359,7 +360,7 @@ public class SDDDescriptionIO extends CdmImportBase<SDDImportConfigurator, SDDIm
 							if (td.getDescriptionSources().toArray().length > 0) {
 								this.associateImageWithCdmBase(ref,(ReferenceBase) td.getDescriptionSources().toArray()[0]);
 							} else {
-								ReferenceBase descriptionSource = Generic.NewInstance();
+								ReferenceBase descriptionSource = refFactory.newGeneric();
 								td.addDescriptionSource(descriptionSource);
 								this.associateImageWithCdmBase(ref,descriptionSource);
 							}
@@ -449,15 +450,15 @@ public class SDDDescriptionIO extends CdmImportBase<SDDImportConfigurator, SDDIm
 			TaxonDescription td = taxonDescriptions.get(ref);
 			td.addDescriptionSource(sec);
 			if (citations.containsKey(ref)) {
-				Article publication = (Article) publications.get(citations.get(ref));
+				IArticle publication = (IArticle) publications.get(citations.get(ref));
 				if (locations.containsKey(ref)) {
 					Annotation location = Annotation.NewInstance(locations.get(ref), datasetLanguage);
 					AnnotationType annotationType = AnnotationType.NewInstance("", "location", "");
 					annotationTypes.add(annotationType);
 					location.setAnnotationType(annotationType);
-					publication.addAnnotation(location);
+					((ReferenceBase)publication).addAnnotation(location);
 				}
-				td.addDescriptionSource(publication);
+				td.addDescriptionSource((ReferenceBase)publication);
 			}
 		}
 		logger.info("end makeTaxonDescriptions ...");
@@ -495,7 +496,7 @@ public class SDDDescriptionIO extends CdmImportBase<SDDImportConfigurator, SDDIm
 		IReferenceService referenceService = getReferenceService();
 		// referenceService.saveReference(sourceReference); 
 		for (Iterator<ReferenceBase> k = publications.values().iterator() ; k.hasNext() ;){
-			Article publication = (Article) k.next();
+			ReferenceBase publication = (ReferenceBase) k.next();
 			referenceService.save(publication); 
 		}
 
@@ -668,7 +669,7 @@ public class SDDDescriptionIO extends CdmImportBase<SDDImportConfigurator, SDDIm
 					IdentifiableSource source = null;
 					if (uri != null) {
 						if (!uri.equals("")) {
-							source = IdentifiableSource.NewInstance(id, "TaxonName", Generic.NewInstance(), uri);
+							source = IdentifiableSource.NewInstance(id, "TaxonName", refFactory.newGeneric(), uri);
 						}
 					} else {
 						source = IdentifiableSource.NewInstance(id, "TaxonName");
@@ -1142,7 +1143,7 @@ public class SDDDescriptionIO extends CdmImportBase<SDDImportConfigurator, SDDIm
 					//  <Representation>
 					//   <Label>Sample Citation</Label>
 					//  </Representation>
-					Article publication = Article.NewInstance();
+					ReferenceBase publication = refFactory.newArticle();
 					importRepresentation(elPublication, sddNamespace, publication, idP, sddConfig);
 
 					publications.put(idP,publication);

@@ -37,12 +37,18 @@ import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
-import eu.etaxonomy.cdm.model.reference.Article;
+/*import eu.etaxonomy.cdm.model.reference.Article;
 import eu.etaxonomy.cdm.model.reference.Book;
 import eu.etaxonomy.cdm.model.reference.BookSection;
 import eu.etaxonomy.cdm.model.reference.Generic;
-import eu.etaxonomy.cdm.model.reference.Journal;
+import eu.etaxonomy.cdm.model.reference.Journal;*/
+import eu.etaxonomy.cdm.model.reference.IArticle;
+import eu.etaxonomy.cdm.model.reference.IBook;
+import eu.etaxonomy.cdm.model.reference.IBookSection;
+import eu.etaxonomy.cdm.model.reference.IJournal;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
+import eu.etaxonomy.cdm.model.reference.ReferenceType;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
 /**
@@ -199,7 +205,7 @@ public class TcsRdfReferenceImport extends TcsRdfImportBase implements ICdmIO<Tc
 		Namespace rdfNamespace = config.getRdfNamespace();
 		String prefix = "tpub";
 		Namespace publicationNamespace = config.getPublicationNamespace();
-
+		ReferenceFactory refFactory = ReferenceFactory.newInstance();
 		
 		String idNamespace = "PublicationCitation";
 		tcsElementName = "PublicationCitation";
@@ -225,7 +231,7 @@ public class TcsRdfReferenceImport extends TcsRdfImportBase implements ICdmIO<Tc
 			try {
 				ReferenceBase<?> ref = TcsRdfTransformer.pubTypeStr2PubType(strPubType);
 				if (ref==null){
-					ref = Generic.NewInstance();
+					ref = refFactory.newGeneric();
 				}
 				
 				Set<String> omitAttributes = null;
@@ -253,10 +259,10 @@ public class TcsRdfReferenceImport extends TcsRdfImportBase implements ICdmIO<Tc
 				String strParent = XmlHelp.getChildAttributeValue(elPublicationCitation, tcsElementName, tcsNamespace, "resource", rdfNamespace);
 				ReferenceBase parent = referenceMap.get(strParent);
 				if (parent != null){
-					if ((ref instanceof Article) && (parent instanceof Journal)){
-						((Article)ref).setInJournal((Journal)parent);
-					}else if ((ref instanceof BookSection) && (parent instanceof Book)){
-						((BookSection)ref).setInBook((Book)parent);
+					if ((ref.getType().equals(ReferenceType.Article)) && (parent.getType().equals(ReferenceType.Journal))){
+						((IArticle)ref).setInJournal((IJournal)parent);
+					}else if ((ref.getType().equals(ReferenceType.BookSection)) && (parent.getType().equals(ReferenceType.Book))){
+						((IBookSection)ref).setInBook((IBook)parent);
 					}else{
 						logger.warn("parent type (parent: " + parent.getClass().getSimpleName() +", child("+strAbout+"): " + ref.getClass().getSimpleName() +  ")not yet implemented");
 						//ref.setParent(parent);

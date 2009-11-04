@@ -51,9 +51,10 @@ import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
-import eu.etaxonomy.cdm.model.reference.Book;
-import eu.etaxonomy.cdm.model.reference.Database;
+import eu.etaxonomy.cdm.model.reference.IBook;
+import eu.etaxonomy.cdm.model.reference.IDatabase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -245,13 +246,13 @@ public class TestDatabase {
 		taxonomicNames.add(nameRoot2);
 		
         // references
-		
-		sec = Book.NewInstance();
+		ReferenceFactory refFactory = ReferenceFactory.newInstance();
+		sec = refFactory.newBook();
 		sec.setAuthorTeam(linne);
 		sec.setTitleCache("Plant Specification & Taxonomy");
 		references.add(sec);
 		
-		citRef = Database.NewInstance();
+		citRef = refFactory.newDatabase();
 		citRef.setAuthorTeam(linne);
 		citRef.setTitleCache("BioCASE");
 		references.add(citRef);

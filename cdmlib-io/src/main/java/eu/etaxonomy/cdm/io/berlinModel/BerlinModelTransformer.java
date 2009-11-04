@@ -26,21 +26,22 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
-import eu.etaxonomy.cdm.model.reference.Article;
-import eu.etaxonomy.cdm.model.reference.Book;
-import eu.etaxonomy.cdm.model.reference.CdDvd;
-import eu.etaxonomy.cdm.model.reference.Database;
-import eu.etaxonomy.cdm.model.reference.Generic;
-import eu.etaxonomy.cdm.model.reference.Journal;
-import eu.etaxonomy.cdm.model.reference.Patent;
-import eu.etaxonomy.cdm.model.reference.PersonalCommunication;
-import eu.etaxonomy.cdm.model.reference.PrintSeries;
-import eu.etaxonomy.cdm.model.reference.Proceedings;
+import eu.etaxonomy.cdm.model.reference.IArticle;
+import eu.etaxonomy.cdm.model.reference.IBook;
+import eu.etaxonomy.cdm.model.reference.ICdDvd;
+import eu.etaxonomy.cdm.model.reference.IDatabase;
+import eu.etaxonomy.cdm.model.reference.IGeneric;
+import eu.etaxonomy.cdm.model.reference.IJournal;
+import eu.etaxonomy.cdm.model.reference.IPatent;
+import eu.etaxonomy.cdm.model.reference.IPersonalCommunication;
+import eu.etaxonomy.cdm.model.reference.IPrintSeries;
+import eu.etaxonomy.cdm.model.reference.IProceedings;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
-import eu.etaxonomy.cdm.model.reference.Report;
-import eu.etaxonomy.cdm.model.reference.SectionBase;
-import eu.etaxonomy.cdm.model.reference.Thesis;
-import eu.etaxonomy.cdm.model.reference.WebPage;
+import eu.etaxonomy.cdm.model.reference.IReport;
+import eu.etaxonomy.cdm.model.reference.ISectionBase;
+import eu.etaxonomy.cdm.model.reference.IThesis;
+import eu.etaxonomy.cdm.model.reference.IWebPage;
+import eu.etaxonomy.cdm.model.reference.ReferenceType;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -493,30 +494,30 @@ public final class BerlinModelTransformer {
 		if (ref == null){
 			return null;
 		}
-		else if (ref instanceof Article){		return REF_ARTICLE;}
-		else if (ref instanceof SectionBase){	return REF_PART_OF_OTHER_TITLE;}
-		else if (ref instanceof Book){	return REF_BOOK;}
-		else if (ref instanceof Database){	return REF_DATABASE;}
+		else if (ref.getType().equals(ReferenceType.Article)){		return REF_ARTICLE;}
+		else if (ref instanceof ISectionBase){	return REF_PART_OF_OTHER_TITLE;}
+		else if (ref.getType().equals(ReferenceType.Book)){	return REF_BOOK;}
+		else if (ref.getType().equals(ReferenceType.Database)){	return REF_DATABASE;}
 //		else if (ref instanceof SectionBas){	return REF_INFORMAL;}
 //		else if (ref instanceof SectionBas){	return REF_NOT_APPLICABLE;}
-		else if (ref instanceof WebPage){	return REF_WEBSITE;}
-		else if (ref instanceof CdDvd){	return REF_CD;}
-		else if (ref instanceof Journal){	return REF_JOURNAL;}
-		else if (ref instanceof Generic){	return REF_UNKNOWN;}
-		else if (ref instanceof PrintSeries){	
+		else if (ref.getType().equals(ReferenceType.WebPage)){	return REF_WEBSITE;}
+		else if (ref.getType().equals(ReferenceType.CdDvd)){	return REF_CD;}
+		else if (ref.getType().equals(ReferenceType.Journal)){	return REF_JOURNAL;}
+		else if (ref.getType().equals(ReferenceType.Generic)){	return REF_UNKNOWN;}
+		else if (ref.getType().equals(ReferenceType.PrintSeries)){	
 			logger.warn("Print Series is not a standard Berlin Model category");
 			return REF_PRINT_SERIES;
 		}
-		else if (ref instanceof Proceedings){	
+		else if (ref.getType().equals(ReferenceType.Proceedings)){	
 			logger.warn("Proceedings is not a standard Berlin Model category");
 			return REF_CONFERENCE_PROCEEDINGS;
 		}
 //		else if (ref instanceof ){	return REF_JOURNAL_VOLUME;}
-		else if (ref instanceof Patent){	return REF_NOT_APPLICABLE;}
-		else if (ref instanceof PersonalCommunication){	return REF_INFORMAL;}
-		else if (ref instanceof Report){	return REF_NOT_APPLICABLE;}
-		else if (ref instanceof Thesis){	return REF_NOT_APPLICABLE;}
-		else if (ref instanceof Report){	return REF_NOT_APPLICABLE;}
+		else if (ref.getType().equals(ReferenceType.Patent)){	return REF_NOT_APPLICABLE;}
+		else if (ref.getType().equals(ReferenceType.PersonalCommunication)){	return REF_INFORMAL;}
+		else if (ref.getType().equals(ReferenceType.Report)){	return REF_NOT_APPLICABLE;}
+		else if (ref.getType().equals(ReferenceType.Thesis)){	return REF_NOT_APPLICABLE;}
+		else if (ref.getType().equals(ReferenceType.Report)){	return REF_NOT_APPLICABLE;}
 		
 		else {
 			//TODO Exception

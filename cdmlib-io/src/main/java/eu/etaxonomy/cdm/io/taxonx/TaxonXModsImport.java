@@ -26,9 +26,11 @@ import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
-import eu.etaxonomy.cdm.model.reference.Generic;
-import eu.etaxonomy.cdm.model.reference.PublicationBase;
+import eu.etaxonomy.cdm.model.reference.IGeneric;
+import eu.etaxonomy.cdm.model.reference.IPublicationBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
+import eu.etaxonomy.cdm.model.reference.ReferenceType;
 
 
 /**
@@ -42,7 +44,7 @@ public class TaxonXModsImport extends CdmIoBase<TaxonXImportState> implements IC
 
 	@SuppressWarnings("unused")
 	private static int modCount = 10000;
-
+	private ReferenceFactory refFactory = ReferenceFactory.newInstance();
 	public TaxonXModsImport(){
 		super();
 	}
@@ -68,7 +70,7 @@ public class TaxonXModsImport extends CdmIoBase<TaxonXImportState> implements IC
 		if (elTaxonHeader != null){
 			Element elMods = elTaxonHeader.getChild("mods", nsMods);
 			if (elMods != null){
-				ReferenceBase<?> ref = Generic.NewInstance();
+				ReferenceBase<?> ref = refFactory.newGeneric();
 				//TitleInfo
 				Element elTitleInfo = elMods.getChild("titleInfo", nsMods);
 				if (elTitleInfo != null){
@@ -131,8 +133,8 @@ public class TaxonXModsImport extends CdmIoBase<TaxonXImportState> implements IC
 			contentList.remove(elDateIssued);
 			
 			TimePeriod datePublished = TimePeriod.parseString(dateIssued);
-			if (ref.isInstanceOf(PublicationBase.class)){
-				((PublicationBase<?>)ref).setDatePublished(datePublished );
+			if (ref.getType().equals(ReferenceType.PublicationBase)){
+				((IPublicationBase)ref).setDatePublished(datePublished );
 			}else{
 				logger.warn("Reference has issue date but is not of type publication base. Date was not set");
 			}
@@ -144,8 +146,8 @@ public class TaxonXModsImport extends CdmIoBase<TaxonXImportState> implements IC
 			String publisher = elPublisher.getTextNormalize();
 			contentList.remove(elPublisher);
 			
-			if (ref.isInstanceOf(PublicationBase.class)){
-				((PublicationBase<?>)ref).setPublisher(publisher);
+			if (ref.getType().equals(ReferenceType.PublicationBase)){
+				((IPublicationBase)ref).setPublisher(publisher);
 			}else{
 				logger.warn("Reference has publisher but is not of type publication base. Publisher was not set");
 			}

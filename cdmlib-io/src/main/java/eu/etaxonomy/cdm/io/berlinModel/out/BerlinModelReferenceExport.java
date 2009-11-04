@@ -28,12 +28,17 @@ import eu.etaxonomy.cdm.io.berlinModel.out.mapper.MethodMapper;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator.DO_REFERENCES;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.reference.Article;
-import eu.etaxonomy.cdm.model.reference.BookSection;
-import eu.etaxonomy.cdm.model.reference.InProceedings;
-import eu.etaxonomy.cdm.model.reference.PrintedUnitBase;
+/*import eu.etaxonomy.cdm.model.reference.Article;
+import eu.etaxonomy.cdm.model.reference.BookSection;*/
+import eu.etaxonomy.cdm.model.reference.IArticle;
+import eu.etaxonomy.cdm.model.reference.IBookSection;
+import eu.etaxonomy.cdm.model.reference.IInProceedings;
+import eu.etaxonomy.cdm.model.reference.IPrintedUnitBase;
+/*import eu.etaxonomy.cdm.model.reference.InProceedings;
+import eu.etaxonomy.cdm.model.reference.PrintedUnitBase;*/
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
-import eu.etaxonomy.cdm.model.reference.Thesis;
+import eu.etaxonomy.cdm.model.reference.ReferenceType;
+//import eu.etaxonomy.cdm.model.reference.Thesis;
 
 
 /**
@@ -179,14 +184,14 @@ public class BerlinModelReferenceExport extends BerlinModelExportBase<ReferenceB
 
 	private ReferenceBase<?> getInRef(ReferenceBase<?> ref){
 		ReferenceBase<?> inRef;
-		if (ref instanceof Article){
-			return ((Article)ref).getInJournal();
-		}else if (ref instanceof BookSection){
-			return ((BookSection)ref).getInBook();
-		}else if (ref instanceof InProceedings){
-			return ((InProceedings)ref).getInProceedings();
-		}else if (ref instanceof PrintedUnitBase){
-			return ((PrintedUnitBase)ref).getInSeries();
+		if (ref.getType().equals(ReferenceType.Article)){
+			return (ReferenceBase)((IArticle)ref).getInJournal();
+		}else if (ref.getType().equals(ReferenceType.BookSection)){
+			return (ReferenceBase)((IBookSection)ref).getInBook();
+		}else if (ref.getType().equals(ReferenceType.InProceedings)){
+			return (ReferenceBase) ((IInProceedings)ref).getInProceedings();
+		}else if (ref.getType().equals(ReferenceType.PrintedUnitBase)){
+			return (ReferenceBase)((IPrintedUnitBase)ref).getInSeries();
 		}else{
 			return null;
 		}
@@ -296,7 +301,7 @@ public class BerlinModelReferenceExport extends BerlinModelExportBase<ReferenceB
 	//called by MethodMapper
 	@SuppressWarnings("unused")
 	private static Boolean getThesisFlag(ReferenceBase<?> ref){
-		if (ref.isInstanceOf(Thesis.class)){
+		if (ref.getType().equals(ReferenceType.Thesis)){
 			return true;
 		}else{
 			return false;

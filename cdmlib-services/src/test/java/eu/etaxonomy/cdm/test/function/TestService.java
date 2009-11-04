@@ -35,8 +35,9 @@ import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
-import eu.etaxonomy.cdm.model.reference.Journal;
+import eu.etaxonomy.cdm.model.reference.IJournal;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -50,7 +51,7 @@ public class TestService {
 	
 	private static final UUID TEST_TAXON_UUID = UUID.fromString("b3084573-343d-4279-ba92-4ab01bb47db5");
 	private static CdmApplicationController appCtr;
-	
+	ReferenceFactory refFactory = ReferenceFactory.newInstance();
 	
 	public void testAppController() {
 		logger.info("Create name objects...");
@@ -60,7 +61,8 @@ public class TestService {
 		ZoologicalName zn = ZoologicalName.NewInstance(Rank.FAMILY());
 		
 		logger.info("Create reference objects...");
-		ReferenceBase sec = Journal.NewInstance();
+		
+		ReferenceBase sec = refFactory.newJournal();
 		sec.setTitleCache("TestJournal");
 		
 		logger.info("Create taxon objects...");
@@ -137,7 +139,7 @@ public class TestService {
 	public void testDeleteTaxa(){
 		ITaxonService taxonService = (ITaxonService)appCtr.getTaxonService();
 		TaxonNameBase<?,?> taxonName = BotanicalName.NewInstance(Rank.SPECIES());
-		ReferenceBase ref = Journal.NewInstance();
+		ReferenceBase ref = refFactory.newJournal();
 		Taxon taxon1 = Taxon.NewInstance(taxonName, ref);
 		Taxon taxon2 = Taxon.NewInstance(taxonName, null);
 		logger.info("Save taxon ...");
@@ -175,7 +177,7 @@ public class TestService {
 	public void testDeleteRelationship(){
 		ITaxonService taxonService = (ITaxonService)appCtr.getTaxonService();
 		TaxonNameBase<?,?> taxonName = BotanicalName.NewInstance(Rank.SPECIES());
-		ReferenceBase ref = Journal.NewInstance();
+		ReferenceBase ref = refFactory.newJournal();
 		Taxon parent = Taxon.NewInstance(taxonName, ref);
 		Taxon child = Taxon.NewInstance(taxonName, null);
 		parent.addTaxonomicChild(child, null, null);
@@ -199,7 +201,7 @@ public class TestService {
 	public void testTransientRank(){
 		ITaxonService taxonService = (ITaxonService)appCtr.getTaxonService();
 		TaxonNameBase<?,?> taxonName = BotanicalName.NewInstance(transientRank);
-		ReferenceBase ref = Journal.NewInstance();
+		ReferenceBase ref =  refFactory.newJournal();
 		Taxon taxon = Taxon.NewInstance(taxonName, ref);
 		
 		logger.info("Save taxon ...");

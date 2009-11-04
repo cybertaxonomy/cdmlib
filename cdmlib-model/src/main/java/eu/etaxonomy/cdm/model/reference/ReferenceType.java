@@ -64,7 +64,11 @@ public enum ReferenceType {
 	@XmlEnumValue("Thesis")
 	Thesis("Thesis", ThesisDefaultCacheStrategy.class),
 	@XmlEnumValue("Web Page")
-	WebPage("Web Page", ReferenceBaseDefaultCacheStrategy.class);
+	WebPage("Web Page", ReferenceBaseDefaultCacheStrategy.class), 
+	@XmlEnumValue("Printed Unit Base")
+	PrintedUnitBase("Printed Unit Base", ReferenceBaseDefaultCacheStrategy.class), 
+	@XmlEnumValue("Publication Base")
+	PublicationBase("Publication Base", ReferenceBaseDefaultCacheStrategy.class);
 	
 	
 	private String readableString;

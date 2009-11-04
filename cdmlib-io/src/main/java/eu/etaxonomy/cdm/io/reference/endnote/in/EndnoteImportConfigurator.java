@@ -23,8 +23,9 @@ import eu.etaxonomy.cdm.common.XmlHelp;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
-import eu.etaxonomy.cdm.model.reference.Database;
+import eu.etaxonomy.cdm.model.reference.IDatabase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 
 @Component
 public class EndnoteImportConfigurator extends ImportConfiguratorBase<EndnoteImportState> implements IImportConfigurator {
@@ -133,7 +134,8 @@ public class EndnoteImportConfigurator extends ImportConfiguratorBase<EndnoteImp
 		//TODO
 		if (this.sourceReference == null){
 			logger.warn("getSource Reference not yet fully implemented");
-			sourceReference = Database.NewInstance();
+			ReferenceFactory refFactory = ReferenceFactory.newInstance();
+			sourceReference = refFactory.newDatabase();
 			sourceReference.setTitleCache("XXX");
 		}
 		return sourceReference;

@@ -16,8 +16,9 @@ import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
 import eu.etaxonomy.cdm.io.common.ImportStateBase;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
-import eu.etaxonomy.cdm.model.reference.Database;
+import eu.etaxonomy.cdm.model.reference.IDatabase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 
 /**
  * @author a.babadshanjan
@@ -88,7 +89,8 @@ public class CdmImportConfigurator extends ImportConfiguratorBase<CdmImportState
 		//TODO
 		if (this.sourceReference == null){
 			logger.warn("getSource Reference not yet fully implemented");
-			sourceReference = Database.NewInstance();
+			ReferenceFactory refFactory = ReferenceFactory.newInstance();
+			sourceReference = refFactory.newDatabase();
 			sourceReference.setTitleCache("Fauna Europaea database");
 		}
 		return sourceReference;

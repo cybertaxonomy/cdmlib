@@ -12,8 +12,9 @@ package eu.etaxonomy.cdm.io.common;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
-import eu.etaxonomy.cdm.model.reference.Database;
+import eu.etaxonomy.cdm.model.reference.IDatabase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 
 
 /**
@@ -84,9 +85,11 @@ public abstract class DbExportConfiguratorBase extends ExportConfiguratorBase<So
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.tcsrdf.IImportConfigurator#getSourceReference()
 	 */
-	public ReferenceBase getSourceReference() {
+	public IDatabase getSourceReference() {
+		
 		if (sourceReference == null){
-			sourceReference =  Database.NewInstance();
+		ReferenceFactory refFactory = ReferenceFactory.newInstance();
+			sourceReference =  refFactory.newDatabase();
 			if (getSource() != null){
 				sourceReference.setTitleCache(getSource().getDatabase());
 			}

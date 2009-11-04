@@ -14,6 +14,7 @@ import static org.junit.Assert.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.junit.After;
@@ -144,7 +145,11 @@ public class TextDataTest {
 	public void testSetMultilanguageText() {
 		MultilanguageText multilanguageText = MultilanguageText.NewInstance();
 		assertFalse(multilanguageText.equals(textData1.getMultilanguageText()));
-		
+		Map<Language, LanguageString> texts = textData1.getMultilanguageText();
+		System.out.println(texts.size());
+		LanguageString text = texts.get(Language.DEFAULT());
+		text.setText("This is a test");
+		System.out.println(texts.size());
 		textData1.getMultilanguageText().clear();
 		assertNotNull(textData1.getMultilanguageText());
 		assertEquals(0, textData1.getMultilanguageText().size());

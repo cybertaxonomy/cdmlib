@@ -49,7 +49,9 @@ import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.NonViralName;
-import eu.etaxonomy.cdm.model.reference.Book;
+import eu.etaxonomy.cdm.model.reference.IBook;
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -69,11 +71,12 @@ public class AssemblerTest extends UnitilsJUnit4 {
 	private MapperIF mapper;
 	
 	private Taxon taxon;
-	private Book sec;
+	private IBook sec;
 	private TeamOrPersonBase authorTeam;
 	private NonViralName name;
 	private LSID lsid;
 	private TaxonDescription taxonDescription;
+	ReferenceFactory refFactory = ReferenceFactory.newInstance();
 	
 	@BeforeClass
 	public static void onSetUp() {
@@ -93,18 +96,18 @@ public class AssemblerTest extends UnitilsJUnit4 {
 	    name.setNameCache("nameCache");
 	    name.setAuthorshipCache("authorshipCache");
 	    
-	    sec = Book.NewInstance();
+	    sec = refFactory.newBook();
 	    sec.setAuthorTeam(authorTeam);
 	    sec.setTitleCache("sec.titleCache");
 	    sec.setLsid(new LSID("urn:lsid:example.org:references:1"));
 	    
-		taxon = Taxon.NewInstance(name, sec);
+		taxon = Taxon.NewInstance(name, (ReferenceBase)sec);
 		taxon.setCreated(new DateTime(2004, 12, 25, 12, 0, 0, 0));
 		taxon.setTitleCache("titleCache");
 		taxon.setLsid(lsid);
 
 		for(int i = 0; i < 10; i++) {
-			Taxon child = Taxon.NewInstance(name, sec);
+			Taxon child = Taxon.NewInstance(name, (ReferenceBase)sec);
 			child.setLsid(new LSID("urn:lsid:example.org:taxonconcepts:" + (2 + i )));
 			taxon.addTaxonomicChild(child, null,null);
 		}
@@ -134,7 +137,7 @@ public class AssemblerTest extends UnitilsJUnit4 {
 	@Test
 	public void testDeepMapping() {
 		for(int i = 0; i < 3; i++) {
-			Synonym synonym = Synonym.NewInstance(name,sec);
+			Synonym synonym = Synonym.NewInstance(name,(ReferenceBase)sec);
 			taxon.addSynonym(synonym,new SynonymRelationshipType());
 		}
 		TaxonConcept taxonConcept = (TaxonConcept)mapper.map(taxon, TaxonConcept.class);
@@ -158,7 +161,7 @@ public class AssemblerTest extends UnitilsJUnit4 {
 	
 	@Test
 	public void testLazyInitializationExceptionWithProxy() throws Exception {
-		Book proxy = getUninitializedDetachedProxy(Book.class,sec);
+		IBook proxy = getUninitializedDetachedProxy(ReferenceBase.class,(ReferenceBase)sec);
 		assert !Hibernate.isInitialized(proxy);
 		Field secField = TaxonBase.class.getDeclaredField("sec");
 		secField.setAccessible(true);

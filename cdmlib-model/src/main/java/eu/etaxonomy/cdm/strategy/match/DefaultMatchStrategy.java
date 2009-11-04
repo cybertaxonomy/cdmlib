@@ -203,7 +203,7 @@ public class DefaultMatchStrategy extends StrategyBase implements IMatchStrategy
 				}else if(isUserType(fieldType)){
 					result &= matchPrimitiveField(matchFirst, matchSecond, fieldMatcher, replaceModeList);
 				}else if(fieldType == UUID.class){
-					result &= matchPrimitiveField(matchFirst, matchSecond, fieldMatcher, replaceModeList);
+					//result &= matchPrimitiveField(matchFirst, matchSecond, fieldMatcher, replaceModeList);
 				}else if(isSingleCdmBaseObject(fieldType)){
 					result &= matchPrimitiveField(matchFirst, matchSecond, fieldMatcher, replaceModeList);
 				}else if (isCollection(fieldType)){

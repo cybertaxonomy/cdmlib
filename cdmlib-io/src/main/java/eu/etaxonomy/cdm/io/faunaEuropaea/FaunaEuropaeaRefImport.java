@@ -33,8 +33,9 @@ import eu.etaxonomy.cdm.model.common.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
-import eu.etaxonomy.cdm.model.reference.Generic;
+import eu.etaxonomy.cdm.model.reference.IGeneric;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
@@ -187,8 +188,8 @@ public class FaunaEuropaeaRefImport extends FaunaEuropaeaImportBase {
 
 				ReferenceBase<?> reference = null;
 				TeamOrPersonBase<Team> author = null;
-
-				reference = Generic.NewInstance();
+				ReferenceFactory refFactory = ReferenceFactory.newInstance();
+				reference = refFactory.newGeneric();
 				reference.setTitleCache(title);
 				reference.setDatePublished(ImportHelper.getDatePublished(year));
 				author = Team.NewInstance();

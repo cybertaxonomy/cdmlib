@@ -26,8 +26,9 @@ import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
 import eu.etaxonomy.cdm.io.common.ImportStateBase;
 import eu.etaxonomy.cdm.io.tcsxml.DefaultTcsXmlPlaceholders;
 import eu.etaxonomy.cdm.io.tcsxml.ITcsXmlPlaceholderClass;
-import eu.etaxonomy.cdm.model.reference.Database;
+import eu.etaxonomy.cdm.model.reference.IDatabase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 
 @Component
 public class TcsXmlImportConfigurator extends ImportConfiguratorBase<TcsXmlImportState> implements IImportConfigurator {
@@ -176,7 +177,8 @@ public class TcsXmlImportConfigurator extends ImportConfiguratorBase<TcsXmlImpor
 		//TODO
 		if (this.sourceReference == null){
 			logger.warn("getSource Reference not yet fully implemented");
-			sourceReference = Database.NewInstance();
+			ReferenceFactory refFactory = ReferenceFactory.newInstance();
+			sourceReference = refFactory.newDatabase();
 			sourceReference.setTitleCache("XXX");
 		}
 		return sourceReference;

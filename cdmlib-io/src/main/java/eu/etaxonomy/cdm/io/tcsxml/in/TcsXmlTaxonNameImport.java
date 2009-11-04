@@ -36,7 +36,7 @@ import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
-import eu.etaxonomy.cdm.model.reference.Generic;
+import eu.etaxonomy.cdm.model.reference.IGeneric;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
@@ -472,7 +472,7 @@ public class TcsXmlTaxonNameImport extends TcsXmlImportBase implements ICdmIO<Tc
 	
 	private void makePublishedIn(TaxonNameBase name, Element elPublishedIn, MapWrapper<ReferenceBase> referenceMap, ResultWrapper<Boolean> success){
 		if (elPublishedIn != null && name != null){
-			Class<? extends ReferenceBase> clazz = Generic.class;
+			Class<? extends ReferenceBase> clazz = ReferenceBase.class;
 			ReferenceBase ref = makeReferenceType(elPublishedIn, clazz, referenceMap, success);
 			if (ref instanceof INomenclaturalReference){
 				name.setNomenclaturalReference(ref);

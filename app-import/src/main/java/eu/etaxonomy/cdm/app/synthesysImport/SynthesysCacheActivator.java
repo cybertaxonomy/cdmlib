@@ -44,8 +44,9 @@ import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
 import eu.etaxonomy.cdm.model.occurrence.LivingBeing;
 import eu.etaxonomy.cdm.model.occurrence.Observation;
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
-import eu.etaxonomy.cdm.model.reference.Database;
+import eu.etaxonomy.cdm.model.reference.IDatabase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 
@@ -151,7 +152,8 @@ public class SynthesysCacheActivator {
 		}
 		tx = app.startTransaction();
 		try {
-			ReferenceBase sec = Database.NewInstance();
+			ReferenceFactory refFactory = ReferenceFactory.newInstance();
+			ReferenceBase sec = refFactory.newDatabase();
 			sec.setTitleCache("SYNTHESYS CACHE DATA");
 
 			/**

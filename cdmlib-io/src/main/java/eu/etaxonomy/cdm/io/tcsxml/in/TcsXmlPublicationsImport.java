@@ -26,8 +26,9 @@ import eu.etaxonomy.cdm.io.common.ImportHelper;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.io.tcsrdf.TcsRdfImportState;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.reference.Generic;
+import eu.etaxonomy.cdm.model.reference.IGeneric;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 
 /**
  * @author a.mueller
@@ -96,6 +97,7 @@ public class TcsXmlPublicationsImport extends TcsXmlImportBase implements ICdmIO
 		
 		int i = 0;
 		//for each taxonName
+		ReferenceFactory refFactory = ReferenceFactory.newInstance();
 		for (Element elPublication : elPublicationList){
 			if ((++i % modCount) == 0){ logger.info("publications handled: " + (i-1));}
 			
@@ -109,7 +111,8 @@ public class TcsXmlPublicationsImport extends TcsXmlImportBase implements ICdmIO
 			Element elSimple = doubleResult.getFirstResult();
 
 			String simple = elSimple.getTextNormalize();
-			ReferenceBase reference = Generic.NewInstance();
+			
+			ReferenceBase reference = refFactory.newGeneric();
 			reference.setTitleCache(simple);
 
 			childName = "PublicationDetailed";
