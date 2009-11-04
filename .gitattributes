@@ -2338,6 +2338,8 @@ eclipse-plugin/.project -text
 eclipse-plugin/META-INF/MANIFEST.MF -text
 eclipse-plugin/_makeSources.bat -text
 eclipse-plugin/_makeSources.sh -text
+eclipse-plugin/activation-1.1.jar -text
+eclipse-plugin/activation-1.1src.zip -text
 eclipse-plugin/antlr-2.7.6.jar -text
 eclipse-plugin/aopalliance-1.0.jar -text
 eclipse-plugin/asm-attrs.jar -text
@@ -2479,6 +2481,8 @@ eclipse-plugin/wsdl4j-1.6.1.jar -text
 eclipse-plugin/wsdl4j-1.6.1src.zip -text
 eclipse-plugin/xercesImpl.jar -text
 eclipse-plugin/xml-apis.jar -text
+eclipse-plugin/xml-resolver-1.2.jar -text
+eclipse-plugin/xml-resolver-1.2src.zip -text
 eclipse-plugin/yjp-controller-api-redist-8.0.1.jar -text
 eclipse-updateSite/.project -text
 eclipse-updateSite/index.html -text
