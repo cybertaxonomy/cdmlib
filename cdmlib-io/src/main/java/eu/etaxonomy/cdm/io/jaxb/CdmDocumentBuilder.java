@@ -23,7 +23,6 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
-import javax.xml.bind.UnmarshallerHandler;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -43,7 +42,6 @@ import org.xml.sax.XMLReader;
 import eu.etaxonomy.cdm.jaxb.CdmNamespacePrefixMapper;
 import eu.etaxonomy.cdm.jaxb.FormattedText;
 import eu.etaxonomy.cdm.jaxb.MultilanguageTextElement;
-import eu.etaxonomy.cdm.model.agent.Person;
 
 /**
  * Initializes a JaxbContext with one class (eu.etaxonomy.cdm.model.DataSet). 

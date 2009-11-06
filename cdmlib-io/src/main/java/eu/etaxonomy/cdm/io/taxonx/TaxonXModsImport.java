@@ -133,7 +133,7 @@ public class TaxonXModsImport extends CdmIoBase<TaxonXImportState> implements IC
 			contentList.remove(elDateIssued);
 			
 			TimePeriod datePublished = TimePeriod.parseString(dateIssued);
-			if (ref.getType().equals(ReferenceType.PublicationBase)){
+			if (ref.getType().isPublication()){
 				((IPublicationBase)ref).setDatePublished(datePublished );
 			}else{
 				logger.warn("Reference has issue date but is not of type publication base. Date was not set");
@@ -146,7 +146,7 @@ public class TaxonXModsImport extends CdmIoBase<TaxonXImportState> implements IC
 			String publisher = elPublisher.getTextNormalize();
 			contentList.remove(elPublisher);
 			
-			if (ref.getType().equals(ReferenceType.PublicationBase)){
+			if (ref.getType().isPublication()){
 				((IPublicationBase)ref).setPublisher(publisher);
 			}else{
 				logger.warn("Reference has publisher but is not of type publication base. Publisher was not set");

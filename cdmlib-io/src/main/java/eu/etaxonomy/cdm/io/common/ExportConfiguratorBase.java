@@ -159,10 +159,10 @@ public abstract class ExportConfiguratorBase<DESTINATION extends Object> extends
 	 */
 	public boolean isValid(){
 		boolean result = true;
-		if (source == null && this.getCdmAppController() == null ){
-			logger.warn("Connection to CDM could not be established");
-			result = false;
-		}
+//		if (source == null && this.getCdmAppController() == null ){
+//			logger.warn("Connection to CDM could not be established");
+//			result = false;
+//		}
 		if (destination == null){
 			logger.warn("Invalid export destination");
 			result = false;

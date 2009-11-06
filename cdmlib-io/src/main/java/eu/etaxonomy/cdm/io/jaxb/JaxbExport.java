@@ -15,20 +15,13 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.transform.sax.SAXResult;
-
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
-import org.xml.sax.ContentHandler;
-import org.xml.sax.Locator;
-import org.xml.sax.helpers.DefaultHandler;
 
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.io.common.CdmExportBase;
-import eu.etaxonomy.cdm.io.common.CdmIoBase;
 import eu.etaxonomy.cdm.io.common.ICdmExport;
-import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IExportConfigurator;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
@@ -74,10 +67,10 @@ public class JaxbExport extends CdmExportBase<JaxbExportConfigurator, JaxbExport
 	protected boolean doInvoke(JaxbExportState state) {
 		
 		JaxbExportConfigurator jaxbExpConfig = (JaxbExportConfigurator)state.getConfig();
-		String dbname = jaxbExpConfig.getSource().getName();
+//		String dbname = jaxbExpConfig.getSource().getName();
     	String fileName = jaxbExpConfig.getDestination();
-		logger.info("Serializing DB " + dbname + " to file " + fileName);
-		logger.debug("DbSchemaValidation = " + jaxbExpConfig.getDbSchemaValidation());
+//		logger.info("Serializing DB " + dbname + " to file " + fileName);
+//		logger.debug("DbSchemaValidation = " + jaxbExpConfig.getDbSchemaValidation());
 
 		TransactionStatus txStatus = startTransaction(true);
 		DataSet dataSet = new DataSet();
