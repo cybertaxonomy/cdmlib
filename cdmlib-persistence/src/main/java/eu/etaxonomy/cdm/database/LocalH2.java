@@ -17,7 +17,10 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
 
+import javax.sql.DataSource;
+
 import org.apache.commons.dbcp.BasicDataSource;
+import org.apache.commons.pool.impl.GenericObjectPool;
 import org.apache.log4j.Logger;
 import org.h2.tools.Server;
 import org.springframework.jdbc.CannotGetJdbcConnectionException;
@@ -74,6 +77,19 @@ public class LocalH2 extends BasicDataSource {
 		setDriverClassName(DEFAULT_DRIVER_CLASS_NAME);
 	}
 
+	/* FIXME This is a workaround to solve a problem with dbcp connection pooling.
+	 * Remove this when dbcp connection pool gets configured correctly
+	 * 
+	 * (non-Javadoc)
+	 * @see org.apache.commons.dbcp.BasicDataSource#createDataSource()
+	 */
+	@Override
+	protected synchronized DataSource createDataSource() throws SQLException {
+		super.createDataSource();
+		connectionPool.setWhenExhaustedAction(GenericObjectPool.WHEN_EXHAUSTED_GROW);
+		return dataSource;
+	}
+	
 	/**
 	 * @param url
 	 * @param username
@@ -82,11 +98,9 @@ public class LocalH2 extends BasicDataSource {
 	 */
 	public LocalH2(String url, String username, String password)
 			throws CannotGetJdbcConnectionException {
-		super();
-		this.setUrl(url);
+		this(url);
 		this.setUsername(username);
 		this.setPassword(password);
-		this.setDriverClassName(DEFAULT_DRIVER_CLASS_NAME);
 	}
 
 	/**
@@ -98,10 +112,7 @@ public class LocalH2 extends BasicDataSource {
 	 */
 	public LocalH2(String driverClassName, String url, String username,
 			String password) throws CannotGetJdbcConnectionException {
-		super();
-		this.setUrl(url);
-		this.setUsername(username);
-		this.setPassword(password);
+		this(url, username, password);
 		this.setDriverClassName(driverClassName);
 	}
 

@@ -2358,6 +2358,7 @@ eclipse-plugin/commons-beanutils-1.7.0src.zip -text
 eclipse-plugin/commons-collections-3.2.jar -text
 eclipse-plugin/commons-collections-3.2src.zip -text
 eclipse-plugin/commons-dbcp-1.2.2.jar -text
+eclipse-plugin/commons-dbcp-1.2.2src.zip -text
 eclipse-plugin/commons-lang-2.4.jar -text
 eclipse-plugin/commons-logging-1.0.4.jar -text
 eclipse-plugin/commons-pool-1.3.jar -text

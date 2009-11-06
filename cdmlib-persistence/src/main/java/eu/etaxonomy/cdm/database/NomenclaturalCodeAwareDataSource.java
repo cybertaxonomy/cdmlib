@@ -10,7 +10,12 @@
 
 package eu.etaxonomy.cdm.database;
 
+import java.sql.SQLException;
+
+import javax.sql.DataSource;
+
 import org.apache.commons.dbcp.BasicDataSource;
+import org.apache.commons.pool.impl.GenericObjectPool;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
@@ -32,5 +37,18 @@ public class NomenclaturalCodeAwareDataSource extends BasicDataSource {
 
 	public void setNomenclaturalCode(NomenclaturalCode nomenclaturalCode) {
 		this.nomenclaturalCode = nomenclaturalCode;
+	}
+	
+	/* FIXME This is a workaround to solve a problem with dbcp connection pooling.
+	 * Remove this when dbcp connection pool gets configured correctly
+	 * 
+	 * (non-Javadoc)
+	 * @see org.apache.commons.dbcp.BasicDataSource#createDataSource()
+	 */
+	@Override
+	protected synchronized DataSource createDataSource() throws SQLException {
+		super.createDataSource();
+		connectionPool.setWhenExhaustedAction(GenericObjectPool.WHEN_EXHAUSTED_GROW);
+		return dataSource;
 	}
 }

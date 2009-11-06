@@ -17,7 +17,6 @@ import org.hibernate.LockMode;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.orm.hibernate3.SessionFactoryUtils;
 import org.springframework.orm.hibernate3.SessionHolder;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -72,10 +71,13 @@ public class ConversationHolder{
 	 */
 	private TransactionStatus transactionStatus;
 
+	private boolean closed = false;
+
 	/**
 	 * Simple constructor used by Spring only
 	 */
 	private ConversationHolder(){
+		closed = false;
 	}
 
 	public ConversationHolder(DataSource dataSource, SessionFactory sessionFactory, 
@@ -102,7 +104,7 @@ public class ConversationHolder{
 	public void bind() {
 		
 		logger.info("Binding resources for ConversationHolder: [" + this + "]");	
-		
+				
 		if(TransactionSynchronizationManager.isSynchronizationActive()){
 			TransactionSynchronizationManager.clearSynchronization();
 		}
@@ -133,12 +135,10 @@ public class ConversationHolder{
 		return this.sessionHolder;
 	}
 	
-	
-	
 	/**
 	 * @return
 	 */
-	public DataSource getDataSource() {
+	private DataSource getDataSource() {
 		return this.dataSource;
 	}
 
@@ -216,17 +216,11 @@ public class ConversationHolder{
 	/**
 	 * @return the session associated with this conversation manager 
 	 */
-	public Session getSession() {
+	private Session getSession() {
 		if(longSession == null){
 			logger.info("Creating Session: [" + longSession + "]");
 			longSession = SessionFactoryUtils.getNewSession(getSessionFactory());
 			longSession.setFlushMode(FlushMode.COMMIT);
-		}
-		
-		// connect dataSource with session
-		if (!longSession.isConnected()){
-			longSession.reconnect(DataSourceUtils.getConnection(getDataSource()));
-			logger.info("Reconnecting DataSource: [" + dataSource + "]" );
 		}
 		
 		return longSession;
@@ -235,7 +229,7 @@ public class ConversationHolder{
 	/** 
 	 * @return the session factory that is bound to this conversation manager
 	 */
-	public SessionFactory getSessionFactory() {
+	private SessionFactory getSessionFactory() {
 		return sessionFactory;
 	}
 
@@ -247,11 +241,11 @@ public class ConversationHolder{
 	 * Facades Session.lock()
 	 */
 	public void lock(Object persistentObject, LockMode lockMode) {
-		longSession.lock(persistentObject, lockMode);
+		getSession().lock(persistentObject, lockMode);
 	}
 	
 	public void lock(String entityName, Object persistentObject, LockMode lockMode){
-		longSession.lock(entityName, persistentObject, lockMode);
+		getSession().lock(entityName, persistentObject, lockMode);
 	}
 
 	/**
@@ -280,5 +274,18 @@ public class ConversationHolder{
 	 */
 	public void unregisterForDataStoreChanges(IConversationEnabled observer) {
 		CdmPostDataChangeObservableListener.getDefault().unregister(observer);
+	}
+	
+	/**
+	 * Free resources bound to this conversationHolder
+	 */
+	public void close(){
+		if(getSession().isOpen())
+			getSession().close();
+		closed = true;
+	}
+	
+	public boolean isClosed(){
+		return closed;
 	}
 }

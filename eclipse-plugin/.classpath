@@ -71,7 +71,7 @@
 	<classpathentry exported="true" kind="lib" path="xercesImpl.jar" sourcepath="eclipse-pluginsrc.zip"/>
 	<classpathentry exported="true" kind="lib" path="xml-apis.jar" sourcepath="eclipse-pluginsrc.zip"/>
 	<classpathentry exported="true" kind="lib" path="yjp-controller-api-redist-8.0.1.jar"/>
-	<classpathentry exported="true" kind="lib" path="commons-dbcp-1.2.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="commons-dbcp-1.2.2.jar" sourcepath="commons-dbcp-1.2.2src.zip"/>
 	<classpathentry exported="true" kind="lib" path="org.springframework.aop-3.0.0.RC1.jar" sourcepath="org.springframework.aop-3.0.0.RC1src.zip"/>
 	<classpathentry exported="true" kind="lib" path="org.springframework.aspects-3.0.0.RC1.jar" sourcepath="org.springframework.aspects-3.0.0.RC1src.zip"/>
 	<classpathentry exported="true" kind="lib" path="org.springframework.beans-3.0.0.RC1.jar" sourcepath="org.springframework.beans-3.0.0.RC1src.zip"/>
