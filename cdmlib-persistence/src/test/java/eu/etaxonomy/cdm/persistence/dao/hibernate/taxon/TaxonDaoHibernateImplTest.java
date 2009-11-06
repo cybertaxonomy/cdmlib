@@ -25,6 +25,8 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.hibernate.Hibernate;
+import org.hibernate.envers.query.AuditEntity;
+import org.hibernate.envers.query.criteria.AuditCriterion;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -809,4 +811,37 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     	TaxonomicTree taxonomicTree = taxonomicTreeDao.findByUuid(taxonomicTreeUuid);
 		assertNotNull(taxonDao.getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByTaxonomicTree(taxonomicTree));
 	}
+    
+    @Test
+    @DataSet("TaxonDaoHibernateImplTest.testFindDeleted.xml")
+    public void testGetAuditEventsByType() {
+    	
+    	List<String> propertyPaths = new ArrayList<String>();
+    	propertyPaths.add("name");
+    	propertyPaths.add("createdBy");
+    	propertyPaths.add("updatedBy");
+    	
+    	List<AuditEventRecord<TaxonBase>> auditEvents = taxonDao.getAuditEvents(TaxonBase.class, previousAuditEvent, mostRecentAuditEvent, null,null, null, AuditEventSort.FORWARDS, propertyPaths);
+    	assertNotNull("getAuditEvents should return a list",auditEvents);
+    	assertFalse("the list should not be empty",auditEvents.isEmpty());
+    	assertEquals("There should be thirty eight AuditEventRecords in the list",38, auditEvents.size());
+    }
+    
+    @Test
+    @DataSet("TaxonDaoHibernateImplTest.testFindDeleted.xml")
+    public void testGetAuditEventsByTypeWithRestrictions() {
+    	
+    	List<String> propertyPaths = new ArrayList<String>();
+    	propertyPaths.add("name");
+    	propertyPaths.add("createdBy");
+    	propertyPaths.add("updatedBy");
+    	
+    	List<AuditCriterion> criteria = new ArrayList<AuditCriterion>();
+    	criteria.add(AuditEntity.property("lsid_lsid").isNotNull());
+    	
+    	List<AuditEventRecord<TaxonBase>> auditEvents = taxonDao.getAuditEvents(TaxonBase.class, previousAuditEvent, mostRecentAuditEvent, criteria,null, null, AuditEventSort.FORWARDS, propertyPaths);
+    	assertNotNull("getAuditEvents should return a list",auditEvents);
+    	assertFalse("the list should not be empty",auditEvents.isEmpty());
+    	assertEquals("There should be one AuditEventRecord in the list",1, auditEvents.size());
+    }
 }

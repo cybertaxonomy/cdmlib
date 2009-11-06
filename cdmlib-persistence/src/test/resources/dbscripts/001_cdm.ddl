@@ -2082,8 +2082,7 @@ create table DefinedTermBase_MeasurementUnit (
         lsid_revision varchar(255),
         protectedtitlecache bit not null,
         titleCache varchar(255),
-        primary key (id),
-        unique (uuid)
+        primary key (id, REV)
     );
 
 

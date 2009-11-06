@@ -12,6 +12,8 @@ package eu.etaxonomy.cdm.persistence.view;
 import java.util.List;
 import java.util.UUID;
 
+import org.joda.time.DateTime;
+
 import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.persistence.dao.common.AuditEventSort;
 
@@ -78,4 +80,11 @@ public interface IAuditEventDao {
      * @return true if an AuditEvent with a matching uuid exists in the database, false otherwise
      */
     public boolean exists(UUID uuid);
+
+    /**
+     * Returns the AuditEvent that represents the given DateTime
+     * @param dateTime
+     * @return an AuditEvent object
+     */
+	public AuditEvent findByDate(DateTime dateTime);
 }

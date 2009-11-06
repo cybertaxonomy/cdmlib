@@ -17,10 +17,12 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
+import org.hibernate.criterion.Criterion;
 import org.hibernate.envers.AuditReader;
 import org.hibernate.envers.AuditReaderFactory;
 import org.hibernate.envers.query.AuditEntity;
 import org.hibernate.envers.query.AuditQuery;
+import org.hibernate.envers.query.criteria.AuditCriterion;
 import org.hibernate.envers.query.order.AuditOrder;
 import org.hibernate.search.FullTextQuery;
 import org.joda.time.DateTime;
@@ -268,5 +270,81 @@ public abstract class VersionableDaoBase<T extends VersionableEntity> extends Cd
 		} else {
 		    return auditEvents.get(0);
 		}
+	}
+
+	public Integer countAuditEvents(Class<? extends T> clazz, AuditEvent from,	AuditEvent to, List<AuditCriterion> criteria) {
+		AuditQuery query = null;
+		
+		if(clazz == null) {
+		   query = getAuditReader().createQuery().forRevisionsOfEntity(type, false, true);
+		} else {
+		   query = getAuditReader().createQuery().forRevisionsOfEntity(clazz, false, true);
+		}
+		
+		if(from != null) {
+			query.add(AuditEntity.revisionNumber().ge(from.getRevisionNumber()));
+		} 
+		
+		if(to != null && !to.equals(AuditEvent.CURRENT_VIEW)) {
+			query.add(AuditEntity.revisionNumber().lt(to.getRevisionNumber()));
+		} 
+		
+		addCriteria(query,criteria);
+		
+		query.addProjection(AuditEntity.property("id").count());
+		
+		return ((Long)query.getSingleResult()).intValue();
+	}
+
+	protected void addCriteria(AuditQuery query, List<AuditCriterion> criteria) {
+		if(criteria != null) {
+			for(AuditCriterion c : criteria) {
+				query.add(c);
+			}
+		}
+	}
+
+	public List<AuditEventRecord<T>> getAuditEvents(Class<? extends T> clazz,AuditEvent from, AuditEvent to, List<AuditCriterion> criteria,	Integer pageSize, Integer pageNumber, AuditEventSort sort,	List<String> propertyPaths) {
+        AuditQuery query = null;
+		
+		if(clazz == null) {
+		   query = getAuditReader().createQuery().forRevisionsOfEntity(type, false, true);
+		} else {
+		   query = getAuditReader().createQuery().forRevisionsOfEntity(clazz, false, true);
+		}
+		
+		if(from != null) {
+			query.add(AuditEntity.revisionNumber().ge(from.getRevisionNumber()));
+		} 
+		
+		if(to != null && !to.equals(AuditEvent.CURRENT_VIEW)) {
+			query.add(AuditEntity.revisionNumber().lt(to.getRevisionNumber()));
+		} 
+		
+		addCriteria(query,criteria);
+		
+		if(pageSize != null) {
+		    query.setMaxResults(pageSize);
+		    if(pageNumber != null) {
+		        query.setFirstResult(pageNumber * pageSize);
+		    } else {
+		    	query.setFirstResult(0);
+		    }
+		}
+		
+		/**
+         * At the moment we need to transform the data manually
+         */
+        List<Object[]> objs = (List<Object[]>)query.getResultList();
+        List<AuditEventRecord<T>> records = new ArrayList<AuditEventRecord<T>>();
+        
+        for(Object[] obj : objs) {
+        	records.add(new AuditEventRecordImpl<T>(obj));
+        }
+        
+        for(AuditEventRecord<T> record : records) {
+        	defaultBeanInitializer.initialize(record.getAuditableObject(), propertyPaths);
+        }
+		return records;
 	}
 }

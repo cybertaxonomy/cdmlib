@@ -13,6 +13,9 @@ import java.util.List;
 import java.util.UUID;
 
 import org.hibernate.Query;
+import org.hibernate.envers.AuditReader;
+import org.hibernate.envers.AuditReaderFactory;
+import org.joda.time.DateTime;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.view.AuditEvent;
@@ -22,6 +25,10 @@ import eu.etaxonomy.cdm.persistence.view.IAuditEventDao;
 
 @Repository
 public class AuditEventDao extends DaoBase implements IAuditEventDao {
+	
+	protected AuditReader getAuditReader() {
+		return AuditReaderFactory.get(getSession());
+	}
 
 	public int count() {
 		Query query = getSession().createQuery("select count(auditEvent) from AuditEvent auditEvent");
@@ -82,5 +89,10 @@ public class AuditEventDao extends DaoBase implements IAuditEventDao {
 		}
 		
 		return (List<AuditEvent>)query.list();
+	}
+
+	public AuditEvent findByDate(DateTime dateTime) {
+		Number id = getAuditReader().getRevisionNumberForDate(dateTime.toDate());
+		return (AuditEvent)getSession().load(AuditEvent.class, id);
 	}
 }
