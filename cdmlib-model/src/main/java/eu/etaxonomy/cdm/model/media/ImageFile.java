@@ -21,7 +21,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 import org.joda.time.DateTime;
 
-import eu.etaxonomy.cdm.common.MediaMetaData.ImageMetaData;
+import eu.etaxonomy.cdm.common.mediaMetaData.ImageMetaData;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 
 /**
