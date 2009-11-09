@@ -24,7 +24,10 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import eu.etaxonomy.cdm.common.MediaMetaData.ImageMetaData;
+import eu.etaxonomy.cdm.common.mediaMetaData.MediaMetaData;
+import eu.etaxonomy.cdm.common.mediaMetaData.ImageMetaData;
+import eu.etaxonomy.cdm.common.mediaMetaData.MetaDataFactory;
+import eu.etaxonomy.cdm.common.mediaMetaData.MimeType;
 
 /**
  * @author n.hoffmann
@@ -68,10 +71,15 @@ public class MediaMetaDataTest {
 	@Test
 	public void readImageInfoFromFile() {
 		File imageFile = new File("./src/test/resources/images/OregonScientificDS6639-DSC_0307-small.jpg");
-		ImageMetaData imageMetaData = new ImageMetaData();
-		imageMetaData = MediaMetaData.readImageMetaData(imageFile, imageMetaData);
+		MetaDataFactory metaFactory = MetaDataFactory.getInstance();
+		ImageMetaData imageMetaData = (ImageMetaData) metaFactory.readMediaData(imageFile.toURI(), MimeType.JPEG);
+		//imageMetaData.readFrom(imageFile);
 		
 		assertImageInfo(imageMetaData);		
+		imageFile = new File("./src/test/resources/images/OregonScientificDS6639-DSC_0307-small.tif");
+		
+		 imageMetaData = (ImageMetaData) metaFactory.readMediaData(imageFile.toURI(), MimeType.IMAGE);
+		 assertTiffInfo(imageMetaData);		
 	}
 	
 	@Ignore
@@ -81,8 +89,9 @@ public class MediaMetaDataTest {
 			//TODO make ready for windows
 			URL imageUrl = new URL("file://" + new File("").getAbsolutePath()+ "/src/test/resources/images/OregonScientificDS6639-DSC_0307-small.jpg");
 			
-			ImageMetaData imageMetaData = new ImageMetaData();
-			imageMetaData = MediaMetaData.readImageMetaData(imageUrl, imageMetaData);
+			MetaDataFactory metaFactory = MetaDataFactory.getInstance();
+			ImageMetaData imageMetaData = (ImageMetaData) metaFactory.readMediaData(CdmUtils.string2Uri(imageUrl.toString()), MimeType.JPEG);
+			//imageMetaData.readImageMetaData(imageUrl);
 			
 			assertImageInfo(imageMetaData);		
 			
@@ -98,5 +107,14 @@ public class MediaMetaDataTest {
 		Assert.assertEquals(225, imageMetaData.getHeight());
 		Assert.assertEquals("image/jpeg", imageMetaData.getMimeType());
 		
+	}
+	
+	private void assertTiffInfo (ImageMetaData imageMetaData){
+		
+		Assert.assertEquals(24, imageMetaData.getBitPerPixel());
+		Assert.assertEquals("TIFF Tag-based Image File Format", imageMetaData.getFormatName());
+		Assert.assertEquals(300, imageMetaData.getWidth());
+		Assert.assertEquals(225, imageMetaData.getHeight());
+		Assert.assertEquals("image/tiff", imageMetaData.getMimeType());
 	}
 }
