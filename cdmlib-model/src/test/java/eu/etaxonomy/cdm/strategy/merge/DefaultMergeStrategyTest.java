@@ -320,7 +320,7 @@ public class DefaultMergeStrategyTest {
 	 * @throws MergeException 
 	 */
 	@Test
-	@Ignore
+	//@Ignore
 	public void testInvokeTxonNames() throws MergeException {
 		IMergeStrategy botNameMergeStrategy = DefaultMergeStrategy.NewInstance(BotanicalName.class);
 		BotanicalName botName1 = BotanicalName.NewInstance(Rank.SPECIES());
@@ -344,7 +344,7 @@ public class DefaultMergeStrategyTest {
 		TaxonNameDescription description1 = TaxonNameDescription.NewInstance();
 		botName1.addDescription(description1);
 		TaxonNameDescription description2 = TaxonNameDescription.NewInstance();
-		botName2.addDescription(description2);
+		botName1.addDescription(description2);
 		
 		//authors
 		Team team1 = Team.NewInstance();
@@ -368,10 +368,10 @@ public class DefaultMergeStrategyTest {
 		}
 
 		//Boolean
-		Assert.assertEquals("Is anamorphic must be false", true && false, botName1.isAnamorphic());
+		Assert.assertEquals("Is anamorphic must be false", true && false, botName2.isAnamorphic());
 		
 		//NameRelations
-		Set<NameRelationship> toRelations = botName1.getRelationsToThisName();
+		Set<NameRelationship> toRelations = botName2.getRelationsToThisName();
 		Set<NameRelationship> basionymRelations = new HashSet<NameRelationship>();
 		for (NameRelationship toRelation : toRelations){
 			if (toRelation.getType().equals(NameRelationshipType.BASIONYM())){
@@ -383,18 +383,18 @@ public class DefaultMergeStrategyTest {
 		//TODO merge relation if matches() = true
 		
 		//Types
-		Assert.assertEquals("Number of specimen type designations must be 1", 1, botName1.getSpecimenTypeDesignations().size());
+		Assert.assertEquals("Number of specimen type designations must be 1", 1, botName2.getSpecimenTypeDesignations().size());
 		//TODO add to all names etc.
 		
 		//Description
 		Assert.assertEquals("Number of descriptions must be 2", 2, botName1.getDescriptions().size());
 		
 		//AuthorTeams
-		Assert.assertEquals("Combination author must be combination author 2", team2, botName1.getCombinationAuthorTeam());
+		Assert.assertEquals("Combination author must be combination author 1", team1, botName1.getCombinationAuthorTeam());
 		
 		//Taxa
 		Assert.assertEquals("TaxonName of taxon1 must be name1", botName1, taxon1.getName());
-		Assert.assertEquals("TaxonName of taxon2 must be name1", botName1, taxon2.getName());
+		Assert.assertEquals("TaxonName of taxon2 must be name2", botName2, taxon2.getName());
 		
 	}
 	
