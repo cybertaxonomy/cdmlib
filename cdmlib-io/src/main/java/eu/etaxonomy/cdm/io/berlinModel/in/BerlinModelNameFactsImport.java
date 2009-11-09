@@ -24,7 +24,7 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
-import eu.etaxonomy.cdm.common.MediaMetaData.ImageMetaData;
+import eu.etaxonomy.cdm.common.mediaMetaData.ImageMetaData;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.io.common.Source;
@@ -300,8 +300,8 @@ public class BerlinModelNameFactsImport  extends BerlinModelImportBase  {
 	
 	
 	private ImageFile makeImage(String imageUri, Integer size, File file){
-		ImageMetaData imageMetaData = new ImageMetaData();
-		imageMetaData.readFrom(file);
+		ImageMetaData imageMetaData = ImageMetaData.newInstance();
+		imageMetaData.readMetaData(file.toURI());
 		ImageFile image = ImageFile.NewInstance(imageUri, size, imageMetaData);
 		return image;
 	}

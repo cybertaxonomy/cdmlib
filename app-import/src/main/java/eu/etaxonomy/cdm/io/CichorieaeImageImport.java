@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.io;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,8 +26,11 @@ import org.springframework.stereotype.Component;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.app.images.AbstractImageImporter;
 import eu.etaxonomy.cdm.app.images.ImageImportConfigurator;
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.ExcelUtils;
-import eu.etaxonomy.cdm.common.MediaMetaData.ImageMetaData;
+import eu.etaxonomy.cdm.common.mediaMetaData.ImageMetaData;
+import eu.etaxonomy.cdm.common.mediaMetaData.MetaDataFactory;
+import eu.etaxonomy.cdm.common.mediaMetaData.MimeType;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
@@ -200,15 +204,22 @@ public class CichorieaeImageImport extends AbstractImageImporter {
 						
 						TextData textData = TextData.NewInstance();
 						logger.info("Importing image for taxon: " + taxa);
-						ImageMetaData imageMetaData = new ImageMetaData();
+						//ImageMetaData imageMetaData =ImageMetaData.newInstance();
+						MetaDataFactory metaDataFactory = MetaDataFactory.getInstance();
+						
+						
+
 						try {
 							String urlPrefix = "http://media.bgbm.org/erez/erez?src=EditWP6/photos/";
 							String urlString = urlPrefix + name;
 							logger.info(urlString);
 							URL url = new URL(urlString);
 
-							imageMetaData.readFrom(url);
-							ImageFile image = ImageFile.NewInstance(url.toString(), null, imageMetaData);
+							URI uri = CdmUtils.string2Uri(urlString);
+							
+							ImageMetaData imageMetaData = (ImageMetaData) metaDataFactory.readMediaData(uri, MimeType.IMAGE);
+							ImageFile image = ImageFile.NewInstance(url.toString(), null, imageMetaData.getHeight(), imageMetaData.getWidth());
+							
 							MediaRepresentation representation = MediaRepresentation.NewInstance(imageMetaData.getMimeType(), null);
 							representation.addRepresentationPart(image);
 							Media media = Media.NewInstance();

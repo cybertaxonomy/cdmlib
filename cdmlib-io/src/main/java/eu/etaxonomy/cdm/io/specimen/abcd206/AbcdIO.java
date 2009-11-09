@@ -32,8 +32,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import eu.etaxonomy.cdm.common.MediaMetaData;
-import eu.etaxonomy.cdm.common.MediaMetaData.ImageMetaData;
+import eu.etaxonomy.cdm.common.mediaMetaData.MediaMetaData;
+import eu.etaxonomy.cdm.common.mediaMetaData.ImageMetaData;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
@@ -1227,9 +1227,9 @@ public class AbcdIO extends SpecimenIoBase implements ICdmIO<SpecimenImportState
 				ImageFile imf;
 				for (int i=0;i<this.multimediaObjects.size();i++){
 					if(this.multimediaObjects.get(i) != null){
-						imd = new ImageMetaData();
+						imd = ImageMetaData.newInstance();
 						url = new URL(this.multimediaObjects.get(i));
-						imd = MediaMetaData.readImageMetaData(url, imd);
+						imd.readMetaData(url.toURI());
 						if (imd != null){
 							representation = MediaRepresentation.NewInstance();
 							imf = ImageFile.NewInstance(this.multimediaObjects.get(i), null, imd);

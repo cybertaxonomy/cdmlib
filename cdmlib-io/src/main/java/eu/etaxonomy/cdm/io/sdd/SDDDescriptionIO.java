@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.io.sdd;
 
 import java.io.File;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -33,7 +34,7 @@ import eu.etaxonomy.cdm.api.service.IAgentService;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.api.service.ITermService;
-import eu.etaxonomy.cdm.common.MediaMetaData.ImageMetaData;
+import eu.etaxonomy.cdm.common.mediaMetaData.ImageMetaData;
 import eu.etaxonomy.cdm.io.common.CdmImportBase;
 import eu.etaxonomy.cdm.io.common.ICdmImport;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
@@ -1194,13 +1195,14 @@ public class SDDDescriptionIO extends CdmImportBase<SDDImportConfigurator, SDDIm
 						Element elSource = elMO.getChild("Source",sddNamespace);
 						String href = elSource.getAttributeValue("href");
 
-						ImageMetaData imageMetaData = new ImageMetaData();
+						ImageMetaData imageMetaData = ImageMetaData.newInstance();
 						ImageFile image = null;
 
 						if (href.substring(0,7).equals("http://")) {
 							try{
 								URL url = new URL(href);
-								imageMetaData.readFrom(url);
+								
+								imageMetaData.readMetaData(url.toURI());
 								image = ImageFile.NewInstance(url.toString(), null, imageMetaData);
 							} catch (MalformedURLException e) {
 								logger.error("Malformed URL", e);
@@ -1211,7 +1213,7 @@ public class SDDDescriptionIO extends CdmImportBase<SDDImportConfigurator, SDDIm
 							File parent = f.getParentFile();
 							String fi = parent.toString() + File.separator + href;
 							File file = new File(fi);
-							imageMetaData.readFrom(file);
+							imageMetaData.readMetaData(file.toURI());
 							image = ImageFile.NewInstance(file.toString(), null, imageMetaData);
 						}
 

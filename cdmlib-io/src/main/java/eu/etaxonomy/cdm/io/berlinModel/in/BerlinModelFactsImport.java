@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.io.berlinModel.in;
 
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -21,7 +22,7 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
-import eu.etaxonomy.cdm.common.MediaMetaData.ImageMetaData;
+import eu.etaxonomy.cdm.common.mediaMetaData.ImageMetaData;
 import eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
@@ -375,7 +376,7 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 		ReferenceBase sourceRef = state.getConfig().getSourceReference();
 		String uri = fact;
 		Integer size = null; 
-		ImageMetaData imageMetaData = new ImageMetaData();
+		ImageMetaData imageMetaData = ImageMetaData.newInstance();
 		URL url;
 		try {
 			url = new URL(fact.trim());
@@ -383,7 +384,12 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 			logger.warn("Malformed URL. Image could not be imported: " + CdmUtils.Nz(uri));
 			return null;
 		}
-		imageMetaData.readFrom(url);
+		try {
+			imageMetaData.readMetaData(url.toURI());
+		}
+		catch(URISyntaxException e){
+			e.printStackTrace();
+		}
 		MediaRepresentation mediaRepresentation = MediaRepresentation.NewInstance(imageMetaData.getMimeType(), null);
 		media.addRepresentation(mediaRepresentation);
 		ImageFile image = ImageFile.NewInstance(uri, size, imageMetaData);

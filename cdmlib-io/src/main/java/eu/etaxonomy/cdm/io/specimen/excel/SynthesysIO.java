@@ -21,8 +21,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.common.ExcelUtils;
-import eu.etaxonomy.cdm.common.MediaMetaData;
-import eu.etaxonomy.cdm.common.MediaMetaData.ImageMetaData;
+import eu.etaxonomy.cdm.common.mediaMetaData.MediaMetaData;
+import eu.etaxonomy.cdm.common.mediaMetaData.ImageMetaData;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
@@ -430,10 +430,11 @@ public class SynthesysIO  extends SpecimenIoBase  implements ICdmIO<SpecimenImpo
 				ImageFile imf;
 				for (int i=0;i<this.multimediaObjects.size();i++){
 					if(this.multimediaObjects.get(i) != null){
-						mmd = new MediaMetaData();
-						imd = new ImageMetaData();
+						//mmd = new MediaMetaData();
+						imd = ImageMetaData.newInstance();
 						url = new URL(this.multimediaObjects.get(i));
-						imd = MediaMetaData.readImageMetaData(url, imd);
+						//imd = MediaMetaData.readImageMetaData(url, imd);
+						imd.readMetaData(url.toURI());
 						if (imd != null){
 							System.out.println("image not null");
 							representation = MediaRepresentation.NewInstance();

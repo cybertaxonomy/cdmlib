@@ -30,7 +30,10 @@ import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.app.images.AbstractImageImporter;
 import eu.etaxonomy.cdm.app.images.ImageImportConfigurator;
-import eu.etaxonomy.cdm.common.MediaMetaData.ImageMetaData;
+import eu.etaxonomy.cdm.common.mediaMetaData.ImageMetaData;
+import eu.etaxonomy.cdm.common.mediaMetaData.MediaMetaData;
+import eu.etaxonomy.cdm.common.mediaMetaData.MetaDataFactory;
+import eu.etaxonomy.cdm.common.mediaMetaData.MimeType;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.description.Feature;
@@ -213,9 +216,9 @@ public class PalmaeImageImport extends AbstractImageImporter {
 						taxonService.saveOrUpdate(taxon);
 						
 						TextData feature = TextData.NewInstance();
+						MetaDataFactory metaDataFactory = MetaDataFactory.getInstance();
+						ImageMetaData imageMetaData = (ImageMetaData) metaDataFactory.readMediaData(file.toURI(), MimeType.IMAGE);
 						
-						ImageMetaData imageMetaData = new ImageMetaData();
-						imageMetaData.readFrom(file);
 						
 						String mimeType = imageMetaData.getMimeType();
 						String suffix = "jpg";
@@ -230,7 +233,8 @@ public class PalmaeImageImport extends AbstractImageImporter {
 						}
 						
 						
-						ImageFile imageFile = ImageFile.NewInstance(url.toString(), null, imageMetaData);
+						ImageFile imageFile = ImageFile.NewInstance(url.toString(),null, imageMetaData.getHeight(), imageMetaData.getWidth());
+						
 						
 						MediaRepresentation representation = MediaRepresentation.NewInstance(mimeType, suffix);
 						representation.addRepresentationPart(imageFile);
