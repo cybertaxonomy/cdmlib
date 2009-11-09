@@ -38,7 +38,10 @@ public abstract class MediaMetaData {
 	
 	public abstract void readMetaData(URI mediaUri);
  
- 
+	public Map<String, String> getMetaData() {
+		
+		return metaData;
+	}
 
  
 	
