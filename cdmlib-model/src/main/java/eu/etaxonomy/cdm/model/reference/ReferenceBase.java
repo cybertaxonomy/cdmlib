@@ -291,11 +291,12 @@ public class ReferenceBase<S extends IReferenceBaseCacheStrategy> extends Identi
     protected ReferenceBase(){
 		super();
 		this.type = ReferenceType.Generic;
+		this.cacheStrategy =(S)this.type.getCacheStrategy();
 	}
     
 	protected ReferenceBase(ReferenceType type) {
 		this.type = type;
-		//this.cacheStrategy = ArticleDefaultCacheStrategy.NewInstance();
+		this.cacheStrategy =(S) type.getCacheStrategy();
 	}
  
 
@@ -974,8 +975,8 @@ public class ReferenceBase<S extends IReferenceBaseCacheStrategy> extends Identi
 	//	this.cacheStrategy = cacheStrategy;
 	//}
 	
-	public void setCacheStrategy(ReferenceBaseDefaultCacheStrategy cacheStrategy) {
-		this.cacheStrategy = (S) cacheStrategy;
+	public void setCacheStrategy(IReferenceBaseCacheStrategy iReferenceBaseCacheStrategy) {
+		this.cacheStrategy = (S) iReferenceBaseCacheStrategy;
 		
 	}
 
@@ -997,6 +998,11 @@ public class ReferenceBase<S extends IReferenceBaseCacheStrategy> extends Identi
 
 	public void setCacheStrategy(GenericDefaultCacheStrategy cacheStrategy) {
 		this.cacheStrategy = (S) cacheStrategy;
+	}
+
+	public void setCacheStrategy(ReferenceBaseDefaultCacheStrategy cacheStrategy) {
+		this.cacheStrategy = (S)cacheStrategy;
+		
 	}	
 }
 
