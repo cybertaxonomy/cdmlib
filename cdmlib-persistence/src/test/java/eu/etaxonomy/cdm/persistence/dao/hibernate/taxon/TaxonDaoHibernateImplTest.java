@@ -828,6 +828,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     }
     
     @Test
+    @Ignore
     @DataSet("TaxonDaoHibernateImplTest.testFindDeleted.xml")
     public void testGetAuditEventsByTypeWithRestrictions() {
     	

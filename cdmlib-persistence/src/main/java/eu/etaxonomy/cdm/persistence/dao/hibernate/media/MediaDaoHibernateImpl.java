@@ -6,9 +6,12 @@
 
 package eu.etaxonomy.cdm.persistence.dao.hibernate.media;
 
+import java.net.URI;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.lucene.analysis.SimpleAnalyzer;
@@ -26,6 +29,7 @@ import org.hibernate.search.Search;
 import org.hibernate.search.SearchFactory;
 import org.springframework.stereotype.Repository;
 
+import eu.etaxonomy.cdm.common.mediaMetaData.ImageMetaData;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.description.MediaKey;
 import eu.etaxonomy.cdm.model.location.NamedArea;
@@ -263,4 +267,14 @@ public class MediaDaoHibernateImpl extends IdentifiableDaoBase<Media> implements
 	public String suggestQuery(String string) {
 		throw new UnsupportedOperationException("suggestQuery is not supported for Media");
 	}
+	
+	public Map<String, String> getMediaMetaData(URI uri){
+		HashMap<String, String> metaData = new HashMap<String, String>();
+		ImageMetaData imageMetaData = ImageMetaData.newInstance();
+		imageMetaData.readMetaData(uri);
+		
+		
+		return imageMetaData.getMetaData();
+	}
+	
 }

@@ -6,7 +6,9 @@
 
 package eu.etaxonomy.cdm.persistence.dao.media;
 
+import java.net.URI;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import eu.etaxonomy.cdm.model.description.MediaKey;
@@ -68,5 +70,7 @@ public interface IMediaDao extends IIdentifiableDao<Media>, ISearchableDao<Media
 	 * @return a List of Rights instances
 	 */
 	public List<Rights> getRights(Media t, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
+
+	public Map<String,String> getMediaMetaData(URI uri);
 
 }

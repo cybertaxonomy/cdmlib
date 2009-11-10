@@ -130,6 +130,10 @@
   		<groupId>eu.etaxonomy</groupId>
   		<artifactId>cdmlib-model</artifactId>
   	</dependency>
+	<dependency>
+  		<groupId>eu.etaxonomy</groupId>
+  		<artifactId>cdmlib-commons</artifactId>
+  	</dependency>
   	<dependency>
   	    <groupId>org.slf4j</groupId>
         <artifactId>slf4j-log4j12</artifactId>
