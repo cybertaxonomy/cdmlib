@@ -29,7 +29,7 @@ public interface IIdentifiableEntityService<T extends IdentifiableEntity> extend
 	/**
 	 * (Re-)generate the title caches for all objects of this concrete IdentifiableEntity class
 	 */
-	public abstract void generateTitleCache();
+	public void generateTitleCache();
 
 	/**
 	 * Return a Pager of sources belonging to this object
@@ -53,7 +53,7 @@ public interface IIdentifiableEntityService<T extends IdentifiableEntity> extend
 	 */
     public Pager<Rights> getRights(T t, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
     
-    public abstract ISourceable getSourcedObjectByIdInSource(Class clazz, String idInSource, String idNamespace);
+    public ISourceable getSourcedObjectByIdInSource(Class clazz, String idInSource, String idNamespace);
     
 	/**
 	 * Return a list of all uuids mapped to titleCache in the convenient <code>UuidAndTitleCache</code> object.

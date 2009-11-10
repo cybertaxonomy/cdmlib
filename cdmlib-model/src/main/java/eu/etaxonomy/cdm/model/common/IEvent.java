@@ -13,12 +13,12 @@ import eu.etaxonomy.cdm.model.agent.AgentBase;
 
 public interface IEvent {
 
-	public abstract TimePeriod getTimeperiod();
+	public TimePeriod getTimeperiod();
 
-	public abstract void setTimeperiod(TimePeriod timeperiod);
+	public void setTimeperiod(TimePeriod timeperiod);
 
-	public abstract AgentBase getActor();
+	public AgentBase getActor();
 
-	public abstract void setActor(AgentBase actor);
+	public void setActor(AgentBase actor);
 
 }

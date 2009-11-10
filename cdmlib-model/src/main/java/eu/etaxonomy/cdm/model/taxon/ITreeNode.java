@@ -30,7 +30,7 @@ public interface ITreeNode extends ICdmBase {
 	 * @param synonymToBeUsed
 	 * @return
 	 */
-	public abstract TaxonNode addChildNode(TaxonNode childNode, ReferenceBase citation, String microCitation, Synonym synonymToBeUsed);
+	public TaxonNode addChildNode(TaxonNode childNode, ReferenceBase citation, String microCitation, Synonym synonymToBeUsed);
 	
 	/**
 	 * Adds a taxon as a child of the ITreeNode
@@ -41,7 +41,7 @@ public interface ITreeNode extends ICdmBase {
 	 * @param synonymToBeUsed
 	 * @return
 	 */
-	public abstract TaxonNode addChildTaxon(Taxon taxon, ReferenceBase citation, String microCitation, Synonym synonymToBeUsed);
+	public TaxonNode addChildTaxon(Taxon taxon, ReferenceBase citation, String microCitation, Synonym synonymToBeUsed);
 	
 	/**
 	 * This recursively removes all child nodes from this node and from this taxonomic view.
@@ -51,12 +51,12 @@ public interface ITreeNode extends ICdmBase {
 	 * @param node
 	 * @return true on success
 	 */
-	public abstract boolean deleteChildNode(TaxonNode node);
+	public boolean deleteChildNode(TaxonNode node);
 	
 	/**
 	 * @return the citation for the parent child relationship or the tree itself
 	 */
-	public abstract ReferenceBase getReference();
+	public ReferenceBase getReference();
 	
 	/**
 	 * 

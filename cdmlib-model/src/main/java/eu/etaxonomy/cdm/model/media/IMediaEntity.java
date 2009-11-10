@@ -29,18 +29,18 @@ public interface IMediaEntity extends IMediaDocumented{
 	 * @return
 	 */
 	
-	public abstract Set<Media> getMedia();
+	public Set<Media> getMedia();
 	
 	/**
 	 * Adds a media to this object
 	 * @param media
 	 */
-	public abstract void addMedia(Media media);
+	public void addMedia(Media media);
 
 	/**
 	 * Removes a media from this object
 	 * @param media
 	 */
-	public abstract void removeMedia(Media media);
+	public void removeMedia(Media media);
 
 }

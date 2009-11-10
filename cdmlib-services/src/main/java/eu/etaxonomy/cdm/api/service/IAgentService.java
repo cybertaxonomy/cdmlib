@@ -28,7 +28,7 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 public interface IAgentService extends IIdentifiableEntityService<AgentBase> {
 		
-	public abstract List<Institution> searchInstitutionByCode(String code);
+	public List<Institution> searchInstitutionByCode(String code);
 	
 	/**
 	 * Return a paged list of the institutional memberships held by a person

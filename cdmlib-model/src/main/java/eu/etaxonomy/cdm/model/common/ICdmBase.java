@@ -26,7 +26,7 @@ public interface ICdmBase {
 	 * Returns local unique identifier for the concrete subclass
 	 * @return
 	 */
-	public abstract int getId();
+	public int getId();
 
 	/**
 	 * Assigns a unique local ID to this object. 
@@ -34,13 +34,13 @@ public interface ICdmBase {
 	 * set automatically by the persistence framework when object is saved.
 	 * @param id
 	 */
-	public abstract void setId(int id);
+	public void setId(int id);
 
-	public abstract UUID getUuid();
+	public UUID getUuid();
 
-	public abstract void setUuid(UUID uuid);
+	public void setUuid(UUID uuid);
 
-	public abstract DateTime getCreated();
+	public DateTime getCreated();
 
 	/**
 	 * Sets the timestamp this object was created. 
@@ -50,10 +50,10 @@ public interface ICdmBase {
 	 * 
 	 * @param created
 	 */
-	public abstract void setCreated(DateTime created);
+	public void setCreated(DateTime created);
 
-	public abstract User getCreatedBy();
+	public User getCreatedBy();
 
-	public abstract void setCreatedBy(User createdBy);
+	public void setCreatedBy(User createdBy);
 
 }

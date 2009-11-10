@@ -41,7 +41,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	 * @param start
 	 * @return
 	 */
-	public abstract List<Synonym> getAllSynonyms(int limit, int start);
+	public List<Synonym> getAllSynonyms(int limit, int start);
 	
 	/**
 	 * Computes all taxon bases.
@@ -50,7 +50,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	 * @param start
 	 * @return
 	 */
-	public abstract List<Taxon> getAllTaxa(int limit, int start);	
+	public List<Taxon> getAllTaxa(int limit, int start);	
 	
 	/**
 	 * Computes all Taxon instances that do not have a taxonomic parent and has at least one child.
@@ -69,7 +69,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	 * @return The List<Taxon> of root taxa.
 	 * @deprecated obsolete when using taxonomicTree
 	 */
-	public abstract List<Taxon> getRootTaxa(ReferenceBase sec, CdmFetch cdmFetch, boolean onlyWithChildren);
+	public List<Taxon> getRootTaxa(ReferenceBase sec, CdmFetch cdmFetch, boolean onlyWithChildren);
 
 	/**
 	 * Computes all Taxon instances that do not have a taxonomic parent.
@@ -80,7 +80,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	 * @return The List<Taxon> of root taxa.
 	 * @deprecated obsolete when using taxonomicTree
 	 */
-	public abstract List<Taxon> getRootTaxa(ReferenceBase sec, boolean onlyWithChildren, boolean withMisapplications);
+	public List<Taxon> getRootTaxa(ReferenceBase sec, boolean onlyWithChildren, boolean withMisapplications);
 
 	/**
 	 * Computes all Taxon instances which name is of a certain Rank.
@@ -97,7 +97,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	 * @return The List<Taxon> of root taxa.
 	 * @deprecated obsolete when using taxonomicTree
 	 */
-	public abstract List<Taxon> getRootTaxa(Rank rank, ReferenceBase sec, boolean onlyWithChildren, boolean withMisapplications, List<String> propertyPaths);
+	public List<Taxon> getRootTaxa(Rank rank, ReferenceBase sec, boolean onlyWithChildren, boolean withMisapplications, List<String> propertyPaths);
 	
 	/**
 	 * Computes all relationships.
@@ -105,7 +105,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	 * @param start
 	 * @return
 	 */
-    public abstract List<RelationshipBase> getAllRelationships(int limit, int start);
+    public List<RelationshipBase> getAllRelationships(int limit, int start);
 
 	/**
 	 * Returns TaxonRelationshipType vocabulary
@@ -115,7 +115,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	public OrderedTermVocabulary<TaxonRelationshipType> getTaxonRelationshipTypeVocabulary();
 
 	/** */
-	public abstract List<TaxonBase> searchTaxaByName(String name, ReferenceBase sec);
+	public List<TaxonBase> searchTaxaByName(String name, ReferenceBase sec);
 		
 	/**
 	 * Changes an accepted taxon to a synonym of another taxon. 
