@@ -233,6 +233,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		Query query = prepareTaxaByName(clazz, queryString, taxonomicTree, matchMode, namedAreas, pageSize, pageNumber, doCount);
 		if (query != null){
 			List<TaxonBase> results = query.list();
+			results.addAll (prepareTaxaByCommonName(queryString, taxonomicTree, matchMode, namedAreas, pageSize, pageNumber, doCount).list());
 			defaultBeanInitializer.initializeAll(results, propertyPaths);
 			return results;
 		}
@@ -370,7 +371,11 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 					" where" +
 					" sn.nameCache " + matchOperator + " :queryString";
 			}
+			
+		
 		}
+		
+		
 		
 		// TODO  mysql needs  optimization:  see http://www.xaprb.com/blog/2006/04/30/how-to-optimize-subqueries-and-joins-in-mysql/#commen
 		Query subTaxon = null;
@@ -408,8 +413,8 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 			}
 		}
 		
-		List<TaxonBase> taxa = null;
-		List<TaxonBase> synonyms = null;
+		List<TaxonBase> taxa = new ArrayList<TaxonBase>();
+		List<TaxonBase> synonyms = new ArrayList<TaxonBase>();
 		if(clazz.equals(Taxon.class)){
 			taxa = subTaxon.list();
 //			System.err.println("number of taxa: " +taxa.size());
@@ -480,6 +485,35 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 			}
 		}
 		
+		return query;
+	}
+	
+	private Query prepareTaxaByCommonName(String queryString, TaxonomicTree taxonomicTree,
+			MatchMode matchMode, Set<NamedArea> namedAreas, Integer pageSize, Integer pageNumber, boolean doCount){
+		
+		String matchOperator;
+		if (matchMode == MatchMode.EXACT) {
+			matchOperator = "=";
+		} else {
+			matchOperator = "like";
+		}
+		
+		String hql= "from Taxon t " +
+		"join t.descriptions d "+
+		"join d.descriptionElements e " +
+		"join e.feature f " +
+		"where f.supportsCommonTaxonName = true and e.name "+matchOperator+" :queryString";//and ls.text like 'common%'";
+		
+		Query query = getSession().createQuery(hql);
+		
+		query.setParameter("queryString", queryString);
+		
+		if(pageSize != null &&  !doCount) {
+			query.setMaxResults(pageSize);
+			if(pageNumber != null) {
+				query.setFirstResult(pageNumber * pageSize);
+			}
+		}
 		return query;
 	}
 	
