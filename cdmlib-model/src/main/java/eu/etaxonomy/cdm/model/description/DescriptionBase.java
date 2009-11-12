@@ -62,7 +62,7 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
     "describedSpecimenOrObservations",
     "descriptionSources",
     "descriptiveSystem",
-    "elements",
+    "descriptionElements",
     "imageGallery"
 })
 @Entity
@@ -108,7 +108,7 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
     })
     @OneToMany(fetch=FetchType.LAZY, mappedBy = "inDescription")
 	@Cascade( { CascadeType.SAVE_UPDATE, CascadeType.MERGE })
-	private Set<DescriptionElementBase> elements = new HashSet<DescriptionElementBase>();
+	private Set<DescriptionElementBase> descriptionElements = new HashSet<DescriptionElementBase>();
 
 	@XmlElement(name = "ImageGallery")
 	private boolean imageGallery;
@@ -253,7 +253,7 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
 	 * @see    #removeElement(DescriptionElementBase)
 	 */
 	public Set<DescriptionElementBase> getElements() {
-		return this.elements;
+		return this.descriptionElements;
 	}
 
 	/**
@@ -266,7 +266,7 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
 	 */
 	public void addElement(DescriptionElementBase element) {
 		element.setInDescription(this);
-		this.elements.add(element);
+		this.descriptionElements.add(element);
 	}
 
 	/** 
@@ -278,7 +278,7 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
 	 * @see     		#addElement(DescriptionElementBase)
 	 */
 	public void removeElement(DescriptionElementBase element) {
-		this.elements.remove(element);
+		this.descriptionElements.remove(element);
 		element.setInDescription(null);
 	}
 	
@@ -291,7 +291,7 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
 	 * @return	the number of elements of the elementary description data set
 	 */
 	public int size(){
-		return this.elements.size();
+		return this.descriptionElements.size();
 	}
 	
     /**
