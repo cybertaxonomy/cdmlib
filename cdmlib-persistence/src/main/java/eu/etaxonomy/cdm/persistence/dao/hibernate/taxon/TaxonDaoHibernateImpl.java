@@ -241,6 +241,21 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		
 	}
 
+	public List<TaxonBase> getTaxaByCommonName(String queryString, TaxonomicTree taxonomicTree,
+			MatchMode matchMode, Set<NamedArea> namedAreas, Integer pageSize, 
+			Integer pageNumber, List<String> propertyPaths) {
+			boolean doCount = false;	
+			Query query = prepareTaxaByCommonName(queryString, taxonomicTree, matchMode, namedAreas, pageSize, pageNumber, doCount);
+			if (query != null){
+				List<TaxonBase> results = query.list();
+				defaultBeanInitializer.initializeAll(results, propertyPaths);
+				return results;
+			}
+			return new ArrayList<TaxonBase>();
+		
+	}
+	
+
 	/**
 	 * @param clazz
 	 * @param queryString
@@ -1255,4 +1270,13 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		}
 		return taxonBase;
 	}
+
+	public List<TaxonBase> getTaxaByCommonName(String queryString,
+			TaxonomicTree taxonomicTree, MatchMode matchMode,
+			Set<NamedArea> namedAreas, Integer pageSize, Integer pageNumber) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	
 }

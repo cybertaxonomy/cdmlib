@@ -25,6 +25,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.hibernate.Hibernate;
+import org.hibernate.Query;
 import org.hibernate.envers.query.AuditEntity;
 import org.hibernate.envers.query.criteria.AuditCriterion;
 import org.junit.After;
@@ -35,9 +36,12 @@ import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.dbunit.annotation.ExpectedDataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Distribution;
+import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
+import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -845,4 +849,19 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     	assertFalse("the list should not be empty",auditEvents.isEmpty());
     	assertEquals("There should be one AuditEventRecord in the list",1, auditEvents.size());
     }
+    @Test
+    @DataSet("TaxonDaoHibernateImplTest.testGetTaxaByNameAndArea.xml")
+    public void testGetCommonName(){
+    	
+    	
+    	List textData = taxonDao.getTaxaByCommonName("common%", null,
+    			MatchMode.BEGINNING, null, null, null, null);
+    	
+    	assertNotNull("getTaxaByCommonName should return a list", textData);
+    	assertFalse("the list should not be empty", textData.isEmpty());
+    	assertEquals("There should be one Taxon with common name", 1,textData.size());
+    	System.err.println("Number of common names: " +textData.size());
+    	
+    }
+    
 }
