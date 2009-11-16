@@ -301,20 +301,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 		results = taxonDao.getTaxaByName(Synonym.class, "Atropo", null, MatchMode.ANYWHERE, null,
 			null, null, null);
 		assertNotNull("getTaxaByName should return a List", results);
-		for (TaxonBase taxonbase: results){
-			Synonym synonym =  (Synonym)taxonbase;
-			System.out.println(synonym.getClass() + ", " + synonym);
-			Set<TaxonDescription> descriptions = synonym.getAcceptedTaxa().iterator().next().getDescriptions();
-			for (TaxonDescription taxDesc:descriptions){
-				for (DescriptionElementBase elem : taxDesc.getElements()){
-					if (elem.isInstanceOf(Distribution.class)){
-						NamedArea area = ((Distribution)elem).getArea();
-						System.out.println(area);
-						
-					}
-				}
-			}
-		}
+	
 		assertTrue("expected to find two taxa but found "+results.size(), results.size() == 3);
 		
 		// 4. searching for Synonyms
