@@ -293,7 +293,6 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 			Query areaQuery = getSession().createQuery("select childArea from NamedArea as childArea left join childArea.partOf as parentArea where parentArea = :area");
 			expandNamedAreas(namedAreas, areasExpanded, areaQuery);
 		}
-		
 		boolean doAreaRestriction = areasExpanded.size() > 0;
 		
 		String taxonSubselect = null;

@@ -106,7 +106,6 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 	private UUID northernAmericaUuid;
 	private UUID southernAmericaUuid;
 	private UUID antarcticaUuid;
-	private UUID australiaUuid;
 
 	private UUID taxonomicTreeUuid;
 	
@@ -136,7 +135,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 		northernAmericaUuid = UUID.fromString("2757e726-d897-4546-93bd-7951d203bf6f");
 		southernAmericaUuid = UUID.fromString("6310b3ba-96f4-4855-bb5b-326e7af188ea");
 		antarcticaUuid = UUID.fromString("791b3aa0-54dd-4bed-9b68-56b4680aad0c");
-		australiaUuid = UUID.fromString("37cc7b35-a580-47a2-aedf-bd06a5afe8e5");
+		
 		taxonomicTreeUuid = UUID.fromString("aeee7448-5298-4991-b724-8d5b75a0a7a9");
 	}
 	
@@ -268,7 +267,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 		
 		Set<NamedArea> namedAreas = new HashSet<NamedArea>();
 		namedAreas.add((NamedArea)definedTermDao.load(northernAmericaUuid));
-		namedAreas.add((NamedArea)definedTermDao.load(australiaUuid));
+		//namedAreas.add((NamedArea)definedTermDao.load(southernAmericaUuid));
 		//namedAreas.add((NamedArea)definedTermDao.load(antarcticaUuid));
 
 		TaxonomicTree taxonmicTree = taxonomicTreeDao.findByUuid(taxonomicTreeUuid);
@@ -286,13 +285,10 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 		// 1. searching for a taxon (Rethera)
 		//long numberOfTaxa = taxonDao.countTaxaByName(Taxon.class, "Rethera", null, MatchMode.BEGINNING, namedAreas);
 		
-		//List<TaxonBase> results = taxonDao.getTaxaByName(Taxon.class, "Rethera", null, MatchMode.BEGINNING, namedAreas,
-			//null, null, null);
-		List<TaxonBase> results = taxonDao.getTaxaByName(Taxon.class, "Cryptocoryne", null, MatchMode.BEGINNING, namedAreas,
-				null, null, null);
-		System.err.println(results.get(0).getTitleCache());
+		List<TaxonBase> results = taxonDao.getTaxaByName(Taxon.class, "Rethera", null, MatchMode.BEGINNING, namedAreas,
+			null, null, null);
 		assertNotNull("getTaxaByName should return a List", results);
-		assertTrue("expected to find two taxa but found "+results.size(), results.size() == 1);
+		assertTrue("expected to find two taxa but found "+results.size(), results.size() == 2);
 		
 		// 2. searching for a taxon (Rethera) contained in a specific taxonomicTree
 		results = taxonDao.getTaxaByName(Taxon.class, "Rethera", taxonmicTree, MatchMode.BEGINNING, namedAreas,
