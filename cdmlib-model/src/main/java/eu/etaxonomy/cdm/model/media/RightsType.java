@@ -29,60 +29,60 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
  * @created 08-Nov-2007 13:06:50
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "RightsTerm")
-@XmlRootElement(name = "RightsTerm")
+@XmlType(name = "RightsType")
+@XmlRootElement(name = "RightsType")
 @Entity
 @Audited
-public class RightsTerm extends DefinedTermBase<RightsTerm> {
+public class RightsType extends DefinedTermBase<RightsType> {
 	private static final long serialVersionUID = -5823263624000932116L;
-	private static final Logger logger = Logger.getLogger(RightsTerm.class);
-	private static RightsTerm LICENSE;
-	private static RightsTerm COPYRIGHT;
-	private static RightsTerm ACCESS_RIGHTS;
+	private static final Logger logger = Logger.getLogger(RightsType.class);
+	private static RightsType LICENSE;
+	private static RightsType COPYRIGHT;
+	private static RightsType ACCESS_RIGHTS;
 
 	
 	/**
 	 * Factory method
 	 * @return
 	 */
-	public static RightsTerm NewInstance(){
+	public static RightsType NewInstance(){
 		logger.debug("NewInstance");
-		return new RightsTerm();
+		return new RightsType();
 	}
 
 	/**
 	 * Factory method
 	 * @return
 	 */
-	public static RightsTerm NewInstance(String text, String label, String labelAbbrev){
-		return new RightsTerm(text, label, labelAbbrev);
+	public static RightsType NewInstance(String text, String label, String labelAbbrev){
+		return new RightsType(text, label, labelAbbrev);
 	}
 	
 	/**
 	 * Default Constructor
 	 */
-	public RightsTerm() {
+	public RightsType() {
 	}
 
 	/**
 	 * Constructor
 	 */
-	public RightsTerm(String term, String label, String labelAbbrev) {
+	public RightsType(String term, String label, String labelAbbrev) {
 		super(term, label, labelAbbrev);
 	}
 
 	/**
 	 * http://purl.org/dc/terms/accessRights
 	 */
-	public static final RightsTerm ACCESS_RIGHTS(){
+	public static final RightsType ACCESS_RIGHTS(){
 		return ACCESS_RIGHTS;
 	}
 
-	public static final RightsTerm COPYRIGHT(){
+	public static final RightsType COPYRIGHT(){
 		return COPYRIGHT;
 	}
 
-	public static final RightsTerm LICENSE(){
+	public static final RightsType LICENSE(){
 		return LICENSE;
 	}
 	
@@ -92,10 +92,10 @@ public class RightsTerm extends DefinedTermBase<RightsTerm> {
 
 
 	@Override
-	protected void setDefaultTerms(TermVocabulary<RightsTerm> termVocabulary) {
-		RightsTerm.ACCESS_RIGHTS = termVocabulary.findTermByUuid(RightsTerm.uuidAccessRights);
-		RightsTerm.COPYRIGHT = termVocabulary.findTermByUuid(RightsTerm.uuidCopyright);
-		RightsTerm.LICENSE = termVocabulary.findTermByUuid(RightsTerm.uuidLicense);		
+	protected void setDefaultTerms(TermVocabulary<RightsType> termVocabulary) {
+		RightsType.ACCESS_RIGHTS = termVocabulary.findTermByUuid(RightsType.uuidAccessRights);
+		RightsType.COPYRIGHT = termVocabulary.findTermByUuid(RightsType.uuidCopyright);
+		RightsType.LICENSE = termVocabulary.findTermByUuid(RightsType.uuidLicense);		
 	}
 
 }

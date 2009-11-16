@@ -14,7 +14,7 @@
                              ../../../../../../classes/schema/cdm/cdm.xsd">
     <Terms>                    
         <common:Language id="1" uuid="urn-uuid-3d14c42f-f1a4-4e49-b287-7fbc63034dd5" iso639_1="en" iso639_2="eng"/>
-        <media:RightsTerm id="2" uuid="urn-uuid-ec428771-3cb4-4062-b414-fcc35729f7e2">
+        <media:RightsType id="2" uuid="urn-uuid-ec428771-3cb4-4062-b414-fcc35729f7e2">
             <common:Representations>
               <common:Representation id="1" uuid="urn-uuid-f90974d0-fc2c-11dd-87af-0800200c9a66">
                 <common:Text>Access Rights</common:Text>
@@ -22,8 +22,8 @@
               </common:Representation>
             </common:Representations>
             <common:TermVocabulary>urn-uuid-7d4d7234-6ce5-40f4-934d-3dc3e0a86e9c</common:TermVocabulary>
-        </media:RightsTerm>
-        <media:RightsTerm id="3" uuid="urn-uuid-d228293e-4139-48a5-ac34-898a263d47ed">
+        </media:RightsType>
+        <media:RightsType id="3" uuid="urn-uuid-d228293e-4139-48a5-ac34-898a263d47ed">
             <common:Representations>
               <common:Representation id="2" uuid="urn-uuid-a8cc5690-fcef-11dd-87af-0800200c9a66">
                 <common:Text>License</common:Text>
@@ -31,8 +31,8 @@
               </common:Representation>
             </common:Representations>
             <common:TermVocabulary>urn-uuid-7d4d7234-6ce5-40f4-934d-3dc3e0a86e9c</common:TermVocabulary>
-        </media:RightsTerm>     
-        <media:RightsTerm id="4" uuid="urn-uuid-3f222fa1-ad70-4ec3-aa7f-6b917362c072">
+        </media:RightsType>     
+        <media:RightsType id="4" uuid="urn-uuid-3f222fa1-ad70-4ec3-aa7f-6b917362c072">
             <common:Representations>
               <common:Representation id="3" uuid="urn-uuid-c3547ba0-fcef-11dd-87af-0800200c9a66">
                 <common:Text>Copyright</common:Text>
@@ -40,7 +40,7 @@
               </common:Representation>
             </common:Representations>
             <common:TermVocabulary>urn-uuid-7d4d7234-6ce5-40f4-934d-3dc3e0a86e9c</common:TermVocabulary>
-        </media:RightsTerm>
+        </media:RightsType>
     </Terms>
     <TermVocabularies>
         <common:TermVocabulary id="1" uuid="urn-uuid-7d4d7234-6ce5-40f4-934d-3dc3e0a86e9c">
