@@ -295,6 +295,11 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		}
 		boolean doAreaRestriction = areasExpanded.size() > 0;
 		
+		Set<UUID> namedAreasUuids = new HashSet<UUID>();
+		for (NamedArea area:areasExpanded){
+			namedAreasUuids.add(area.getUuid());
+		}
+		
 		String taxonSubselect = null;
 		String synonymSubselect = null;
 		
@@ -309,7 +314,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 					" join t.name n " +
 					" join t.taxonNodes as tn "+
 					" where" +
-					" e.area in (:namedAreas) AND" +
+					" e.area.uuid in (:namedAreasUuids) AND" +
 					" tn.taxonomicTree = :taxonomicTree" +
 					" AND n.nameCache " + matchOperator + " :queryString";
 				
@@ -322,7 +327,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 					" join sr.relatedFrom s" + // the synonyms
 					" join s.name sn"+ 
 					" where" +
-					" e.area in (:namedAreas) AND" +
+					" e.area.uuid in (:namedAreasUuids) AND" +
 					" tn.taxonomicTree = :taxonomicTree" +
 					" AND sn.nameCache " + matchOperator + " :queryString";
 				
@@ -356,7 +361,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 					" join d.taxon t" +
 					" join t.name n "+
 					" where" +
-					(doAreaRestriction ? " e.area in (:namedAreas) AND" : "") +
+					(doAreaRestriction ? " e.area.uuid in (:namedAreasUuids) AND" : "") +
 					" n.nameCache " + matchOperator + " :queryString";
 				
 				synonymSubselect = "select s from" +
@@ -367,7 +372,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 					" join sr.relatedFrom s" + // the synonyms
 					" join s.name sn"+ 
 					" where" +
-					(doAreaRestriction ? " e.area in (:namedAreas) AND" : "") +
+					(doAreaRestriction ? " e.area.uuid in (:namedAreasUuids) AND" : "") +
 					" sn.nameCache " + matchOperator + " :queryString";
 				
 			} else {
@@ -399,7 +404,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 			// find Taxa
 			subTaxon = getSession().createQuery(taxonSubselect).setParameter("queryString", hqlQueryString);;
 			if(doAreaRestriction){
-				subTaxon.setParameterList("namedAreas", areasExpanded);
+				subTaxon.setParameterList("namedAreasUuids", namedAreasUuids);
 			}	
 			if(taxonomicTree != null){
 				subTaxon.setParameter("taxonomicTree", taxonomicTree);
@@ -409,7 +414,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 			subSynonym = getSession().createQuery(synonymSubselect).setParameter("queryString", hqlQueryString);;
 			
 			if(doAreaRestriction){
-				subSynonym.setParameterList("namedAreas", areasExpanded);
+				subSynonym.setParameterList("namedAreasUuids", namedAreasUuids);
 			}		
 			if(taxonomicTree != null){
 				subSynonym.setParameter("taxonomicTree", taxonomicTree);
@@ -419,8 +424,8 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 			subSynonym = getSession().createQuery(synonymSubselect).setParameter("queryString", hqlQueryString);;
 			subTaxon = getSession().createQuery(taxonSubselect).setParameter("queryString", hqlQueryString);;
 			if(doAreaRestriction){
-				subTaxon.setParameterList("namedAreas", areasExpanded);
-				subSynonym.setParameterList("namedAreas", areasExpanded);
+				subTaxon.setParameterList("namedAreasUuids", namedAreasUuids);
+				subSynonym.setParameterList("namedAreasUuids", namedAreasUuids);
 			}
 			if(taxonomicTree != null){
 				subTaxon.setParameter("taxonomicTree", taxonomicTree);
