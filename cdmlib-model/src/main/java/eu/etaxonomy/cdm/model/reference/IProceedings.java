@@ -11,4 +11,7 @@ package eu.etaxonomy.cdm.model.reference;
 
 public interface IProceedings extends IPublicationBase{
 
+	public String getOrganization();
+	
+	public void setOrganization(String organization);
 }

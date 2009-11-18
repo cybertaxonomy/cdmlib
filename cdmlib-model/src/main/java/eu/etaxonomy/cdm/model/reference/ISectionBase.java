@@ -14,4 +14,8 @@ public interface ISectionBase extends IReferenceBase {
 	public String getPages();
 	
 	public void setPages(String pages);
+	
+	public ReferenceBase getInReference();
+	
+	public void setInReference(ReferenceBase referenceBase);
 }

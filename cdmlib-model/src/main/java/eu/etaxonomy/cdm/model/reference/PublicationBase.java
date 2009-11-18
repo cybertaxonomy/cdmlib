@@ -40,6 +40,7 @@ import eu.etaxonomy.cdm.strategy.cache.reference.IReferenceBaseCacheStrategy;
 @Entity
 @Indexed(index = "eu.etaxonomy.cdm.model.reference.ReferenceBase")
 @Audited
+@Deprecated
 public abstract class PublicationBase<S extends IReferenceBaseCacheStrategy> extends ReferenceBase<S> {
 	private static final long serialVersionUID = -3050853696708743386L;
 	@SuppressWarnings("unused")

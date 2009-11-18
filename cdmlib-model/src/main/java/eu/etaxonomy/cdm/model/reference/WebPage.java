@@ -41,6 +41,7 @@ import eu.etaxonomy.cdm.strategy.cache.reference.ReferenceBaseDefaultCacheStrate
 @Indexed(index = "eu.etaxonomy.cdm.model.reference.ReferenceBase")
 @Audited
 @Configurable
+@Deprecated
 public class WebPage extends PublicationBase<IReferenceBaseCacheStrategy<WebPage>> implements Cloneable {
 	private static final long serialVersionUID = -1527430409075839226L;
 	@SuppressWarnings("unused")

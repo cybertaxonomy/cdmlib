@@ -57,6 +57,7 @@ import eu.etaxonomy.cdm.strategy.cache.reference.ThesisDefaultCacheStrategy;
 @Indexed(index = "eu.etaxonomy.cdm.model.reference.ReferenceBase")
 @Audited
 @Configurable
+@Deprecated
 public class Thesis extends PublicationBase<INomenclaturalReferenceCacheStrategy<Thesis>> implements INomenclaturalReference, Cloneable{
 	private static final long serialVersionUID = -1554558008861571165L;
 	private static final Logger logger = Logger.getLogger(Thesis.class);

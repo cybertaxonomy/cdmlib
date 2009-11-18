@@ -43,6 +43,7 @@ import eu.etaxonomy.cdm.strategy.cache.reference.INomenclaturalReferenceCacheStr
 @Indexed(index = "eu.etaxonomy.cdm.model.reference.ReferenceBase")
 @Audited
 @Configurable
+@Deprecated
 public class CdDvd extends PublicationBase<INomenclaturalReferenceCacheStrategy<CdDvd>> implements INomenclaturalReference, Cloneable{
 	private static final long serialVersionUID = -1010571682756717813L;
 	private static final Logger logger = Logger.getLogger(CdDvd.class);

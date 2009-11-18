@@ -44,6 +44,7 @@ import eu.etaxonomy.cdm.strategy.cache.reference.ReferenceBaseDefaultCacheStrate
 @Indexed(index = "eu.etaxonomy.cdm.model.reference.ReferenceBase")
 @Audited
 @Configurable
+@Deprecated
 public class PersonalCommunication extends ReferenceBase<IReferenceBaseCacheStrategy<PersonalCommunication>> implements Cloneable {
 	private static final long serialVersionUID = -2527724602502055339L;
 	@SuppressWarnings("unused")

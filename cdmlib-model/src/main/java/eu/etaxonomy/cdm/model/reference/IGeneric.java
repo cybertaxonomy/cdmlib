@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.model.reference;
 
 import eu.etaxonomy.cdm.strategy.cache.reference.GenericDefaultCacheStrategy;
 
-public interface IGeneric extends IPublicationBase, IVolumeReference, INomenclaturalReference{
+public interface IGeneric extends IPublicationBase, INomenclaturalReference{
 
 	public String getEditor();
 	
@@ -21,13 +21,18 @@ public interface IGeneric extends IPublicationBase, IVolumeReference, INomenclat
 	
 	public void setSeries(String series);
 	
-	public String getVolume();
-	
-	public void setVolume(String volume);
-	
 	public String getPages();
 	
 	public void setPages(String pages);
+	/**
+	 * Returns the volume of a reference.
+	 */
+	public String getVolume();
+	
+	/**
+	 * Sets the volume of the reference.
+	 */
+	public void setVolume(String volume);
 	
 	void setCacheStrategy(GenericDefaultCacheStrategy cacheStratefy);
 	

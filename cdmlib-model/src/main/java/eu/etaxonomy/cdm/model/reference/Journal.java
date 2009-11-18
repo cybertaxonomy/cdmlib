@@ -47,6 +47,7 @@ import eu.etaxonomy.cdm.strategy.cache.reference.JournalDefaultCacheStrategy;
 @Indexed(index = "eu.etaxonomy.cdm.model.reference.ReferenceBase")
 @Audited
 @Configurable
+@Deprecated
 public class Journal extends PublicationBase<IReferenceBaseCacheStrategy<Journal>> implements Cloneable {
 	static Logger logger = Logger.getLogger(Journal.class);
 	

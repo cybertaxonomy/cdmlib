@@ -108,6 +108,10 @@ public enum ReferenceType {
 		return ReferenceBaseDefaultCacheStrategy.NewInstance();
 	}
 	
+	public boolean isVolumeReference(){
+		return (isPrintedUnit() || this == Generic || this == Article);
+	}
+	
 	public boolean isPublication(){
 		return (this == CdDvd || this == Database || this == Generic
 				|| this == Journal || this == Map || this == Book

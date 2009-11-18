@@ -46,6 +46,7 @@ import eu.etaxonomy.cdm.strategy.cache.reference.ReferenceBaseDefaultCacheStrate
 @Indexed(index = "eu.etaxonomy.cdm.model.reference.ReferenceBase")
 @Audited
 @Configurable
+@Deprecated
 public class InProceedings extends SectionBase<IReferenceBaseCacheStrategy<InProceedings>> {
 	private static final long serialVersionUID = -286946099144494551L;
 	@SuppressWarnings("unused")

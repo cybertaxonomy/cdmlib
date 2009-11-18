@@ -50,6 +50,7 @@ import eu.etaxonomy.cdm.strategy.cache.reference.ReferenceBaseDefaultCacheStrate
 @Indexed(index = "eu.etaxonomy.cdm.model.reference.ReferenceBase")
 @Audited
 @Configurable
+@Deprecated
 public class Proceedings extends PrintedUnitBase<IReferenceBaseCacheStrategy<Proceedings>> implements Cloneable {
 	private static final long serialVersionUID = -2096638066963321309L;
 	@SuppressWarnings("unused")

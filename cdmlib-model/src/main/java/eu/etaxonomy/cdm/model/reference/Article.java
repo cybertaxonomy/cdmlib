@@ -57,6 +57,7 @@ import eu.etaxonomy.cdm.strategy.cache.reference.INomenclaturalReferenceCacheStr
 @Indexed(index = "eu.etaxonomy.cdm.model.reference.ReferenceBase")
 @Audited
 @Configurable
+@Deprecated
 public class Article extends ReferenceBase<INomenclaturalReferenceCacheStrategy<Article>> implements INomenclaturalReference, IVolumeReference, Cloneable {
 	private static final long serialVersionUID = -1528079480114388117L;
 	private static final Logger logger = Logger.getLogger(Article.class);

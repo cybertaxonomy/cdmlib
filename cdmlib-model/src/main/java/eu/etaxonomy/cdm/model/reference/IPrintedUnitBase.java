@@ -20,14 +20,6 @@ public interface IPrintedUnitBase extends IPublicationBase, IVolumeReference {
 	
 	public void setEditor(String editor);
 	
-	public String getVolume();
-	
-	public void setVolume(String volume);
-	
-	public String getPages();
-	
-	public void setPages(String pages);
-	
 	public String getSeriesPart();
 	
 	public void setSeriesPart(String seriesPart);

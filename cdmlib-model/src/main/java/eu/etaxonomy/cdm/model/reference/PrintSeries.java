@@ -47,6 +47,7 @@ import eu.etaxonomy.cdm.strategy.cache.reference.ReferenceBaseDefaultCacheStrate
 @Indexed(index = "eu.etaxonomy.cdm.model.reference.ReferenceBase")
 @Audited
 @Configurable
+@Deprecated
 public class PrintSeries extends PublicationBase<IReferenceBaseCacheStrategy<PrintSeries>> implements Cloneable {
 	private static final long serialVersionUID = -6723799677497340157L;
 	@SuppressWarnings("unused")
