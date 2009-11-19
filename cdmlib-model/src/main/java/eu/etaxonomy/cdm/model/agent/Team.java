@@ -72,7 +72,7 @@ public class Team extends TeamOrPersonBase<Team> {
 	public static final Logger logger = Logger.getLogger(Team.class);
 	
     @XmlElement(name = "ProtectedNomenclaturalTitleCache")
-	private boolean protectedNomenclaturalTitleCache;
+	private boolean protectedNomenclaturalTitleCache = false;
 
 	//An abreviated name for the team (e. g. in case of nomenclatural authorteams). A non abreviated name for the team (e. g.
 	//in case of some bibliographical references)
