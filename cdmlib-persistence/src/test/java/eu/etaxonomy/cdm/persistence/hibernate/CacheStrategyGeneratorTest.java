@@ -20,6 +20,7 @@ import org.apache.log4j.Logger;
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.xml.FlatXmlDataSet;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -82,7 +83,7 @@ public class CacheStrategyGeneratorTest extends CdmIntegrationTest {
 	 */
 	@Test
 	@DataSet("CacheStrategyGeneratorTest.xml")
-	@ExpectedDataSet
+	//@ExpectedDataSet
 	public void testOnSaveOrUpdateNames() {
 		//names
 		BotanicalName name =  (BotanicalName)cdmEntityDaoBase.findByUuid(UUID.fromString("a49a3963-c4ea-4047-8588-2f8f15352730"));
@@ -105,6 +106,12 @@ public class CacheStrategyGeneratorTest extends CdmIntegrationTest {
 		name2.setNomenclaturalMicroReference("44");
 		
 		cdmEntityDaoBase.saveOrUpdate(name2);
+		
+		Assert.assertEquals(name, cdmEntityDaoBase.findByUuid(name.getUuid()));
+		BotanicalName nameTest = (BotanicalName)cdmEntityDaoBase.findByUuid(name.getUuid());
+		System.err.println(nameTest.getFullTitleCache());
+		Assert.assertEquals(name2, cdmEntityDaoBase.findByUuid(name2.getUuid()));
+		System.err.println(cdmEntityDaoBase.findByUuid(name2.getUuid()).getFullTitleCache());
 //		BotanicalName name3 =  (BotanicalName)cdmEntityDaoBase.findByUuid(UUID.fromString("049a3963-c4ea-4047-8588-2f8f15352730"));
 //		printDataSet(System.err, new String[]{"TaxonNameBase", "ReferenceBase"});
 	}
@@ -114,7 +121,7 @@ public class CacheStrategyGeneratorTest extends CdmIntegrationTest {
 	 */
 	@Test
 	@DataSet("CacheStrategyGeneratorTest.xml")
-	@ExpectedDataSet
+	//@ExpectedDataSet
 	public void testOnSaveOrUpdateAgents() {
 
 //		646dad4b-0f0e-4f5a-b059-8099ad9a6125
@@ -159,7 +166,10 @@ public class CacheStrategyGeneratorTest extends CdmIntegrationTest {
 		team1.setUuid(UUID.fromString("db957a0a-1494-49bb-8d17-d3eaa2076573"));
 		agentDao.saveOrUpdate(team1);
 		
-		person3 = (Person)agentDao.findByUuid(UUID.fromString("049a3963-c4ea-4047-8588-2f8f15352730"));
+		Person person4 = (Person)agentDao.findByUuid(UUID.fromString("4c4e15e3-3a4f-4505-900a-fae2555ac9e4"));
+		Assert.assertEquals(person3, person4);
+		Team team2 = (Team) agentDao.findByUuid(UUID.fromString("db957a0a-1494-49bb-8d17-d3eaa2076573"));
+		Assert.assertEquals(team1, team2);
 //		printDataSet(System.err, new String[]{"AgentBase"});
 //		System.out.println("End");
 	}
