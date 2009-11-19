@@ -130,7 +130,7 @@ public class HomotypicalGroup extends AnnotatableEntity {
 	 * @see    				#addTypifiedName(TaxonNameBase)
 	 */
 	public void removeTypifiedName(TaxonNameBase typifiedName) {
-		typifiedName.setHomotypicalGroup(null);
+		typifiedName.setHomotypicalGroup(HomotypicalGroup.NewInstance());
 		typifiedNames.remove(typifiedName);	
 	}
 

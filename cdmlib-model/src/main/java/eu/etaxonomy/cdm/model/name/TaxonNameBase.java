@@ -1123,6 +1123,9 @@ public void addRelationshipToName(TaxonNameBase toName, NameRelationshipType typ
 	 * @see #getHomotypicalGroup()
 	 */
 	protected void setHomotypicalGroup(HomotypicalGroup homotypicalGroup) {
+		if (homotypicalGroup == null){
+			throw new IllegalArgumentException("HomotypicalGroup of name should never be null but was set to 'null'");
+		}
 		this.homotypicalGroup = homotypicalGroup;
 	}
 	
