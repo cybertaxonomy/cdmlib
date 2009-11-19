@@ -117,6 +117,7 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
     @XmlJavaTypeAdapter(MultilanguageTextAdapter.class)
     @OneToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "DescriptionElementBase_ModifyingText")
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
 	private Map<Language,LanguageString> modifyingText = new HashMap<Language,LanguageString>();
 	
 	@XmlElementWrapper(name = "Media")
