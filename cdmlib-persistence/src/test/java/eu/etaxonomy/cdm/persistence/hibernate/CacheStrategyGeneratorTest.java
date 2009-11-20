@@ -14,6 +14,7 @@ import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
@@ -31,6 +32,8 @@ import org.unitils.spring.annotation.SpringBeanByType;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
+import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.IBook;
 import eu.etaxonomy.cdm.model.reference.IGeneric;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
@@ -109,9 +112,21 @@ public class CacheStrategyGeneratorTest extends CdmIntegrationTest {
 		
 		Assert.assertEquals(name, cdmEntityDaoBase.findByUuid(name.getUuid()));
 		BotanicalName nameTest = (BotanicalName)cdmEntityDaoBase.findByUuid(name.getUuid());
-		System.err.println(nameTest.getFullTitleCache());
+		
 		Assert.assertEquals(name2, cdmEntityDaoBase.findByUuid(name2.getUuid()));
-		System.err.println(cdmEntityDaoBase.findByUuid(name2.getUuid()).getFullTitleCache());
+		System.err.println("FulltitleCache: "+ cdmEntityDaoBase.findByUuid(name2.getUuid()).getFullTitleCache());
+		System.err.println("updated: " + cdmEntityDaoBase.findByUuid(name2.getUuid()).getUpdated());
+		BotanicalName name3 = BotanicalName.NewInstance(Rank.GENUS());
+		name3.setFullTitleCache("Test: MyBook");
+		name3.setTitleCache("Test");
+		cdmEntityDaoBase.saveOrUpdate(name3);
+		List<TaxonNameBase> taxa = cdmEntityDaoBase.findByTitle("Test");
+		
+		TaxonNameBase nameBase = taxa.get (0);
+		BotanicalName botName = (BotanicalName)nameBase;
+		
+		System.err.println("created "+botName.getCreated());
+		System.err.println("updated: " +botName.getUpdated());
 //		BotanicalName name3 =  (BotanicalName)cdmEntityDaoBase.findByUuid(UUID.fromString("049a3963-c4ea-4047-8588-2f8f15352730"));
 //		printDataSet(System.err, new String[]{"TaxonNameBase", "ReferenceBase"});
 	}

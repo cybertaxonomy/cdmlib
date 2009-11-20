@@ -66,7 +66,7 @@ public class CacheStrategyGenerator implements SaveOrUpdateEventListener {
             }else if(TeamOrPersonBase.class.isAssignableFrom(entityClazz)){
             	TeamOrPersonBase teamOrPerson = (TeamOrPersonBase)entity;
             	String nomTitle = teamOrPerson.getNomenclaturalTitle();
-            	if (teamOrPerson.isInstanceOf(Team.class)){
+            	if (teamOrPerson instanceof Team){
             		Team team =CdmBase.deproxy(teamOrPerson, Team.class); 
             		team.setNomenclaturalTitle(nomTitle, team.isProtectedNomenclaturalTitleCache()); //nomTitle is not necessarily cached when it is created
             	}else{
