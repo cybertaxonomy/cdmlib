@@ -144,8 +144,8 @@ public  class ImageMetaData extends MediaMetaData {
 			
 			for (Object object : mediaData.getItems()){
 				Item item = (Item) object;
-				System.err.println("File: " + mediaUri.getPath() + ". "+ item.getKeyword() +"string is: " + item.getText());
-				logger.debug("File: " + mediaUri.getPath() + ". "+ item.getKeyword() +"string is: " + item.getText());
+				System.err.println("File: " + mediaUri.getPath() + ". "+ item.getKeyword() +" string is: " + item.getText());
+				logger.debug("File: " + mediaUri.getPath() + ". "+ item.getKeyword() +" string is: " + item.getText());
 				metaData.put(item.getKeyword(), item.getText());
 				
 			}
