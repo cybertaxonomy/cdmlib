@@ -134,7 +134,14 @@ public  class ImageMetaData extends MediaMetaData {
 	public void readMetaData(URI mediaUri) {
 		readImageInfo(mediaUri);
 		try {
-			IImageMetadata mediaData = Sanselan.getMetadata(new File(mediaUri));
+			File image = null;
+			InputStream inputStream;
+			URL imageUrl = mediaUri.toURL();    
+			    
+			URLConnection connection = imageUrl.openConnection();
+			inputStream = connection.getInputStream();
+			IImageMetadata mediaData = Sanselan.getMetadata(inputStream, null);
+			
 			for (Object object : mediaData.getItems()){
 				Item item = (Item) object;
 				System.err.println("File: " + mediaUri.getPath() + ". "+ item.getKeyword() +"string is: " + item.getText());
