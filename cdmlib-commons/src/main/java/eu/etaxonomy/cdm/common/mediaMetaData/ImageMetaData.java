@@ -106,23 +106,20 @@ public  class ImageMetaData extends MediaMetaData {
 	public void readImageInfo(URI imageUri){
 		
 		File image = null;
+		InputStream inputStream;
 		try {
 			
-			URL url = imageUri.toURL();    
+			URL imageUrl = imageUri.toURL();    
 		    
-		    if (url != null){
-				String fileName = url.getPath();
-				if (fileName.contains("%20")) {
-					fileName = fileName.replaceAll("%20", " ");
-				}
-			image = new File(fileName); 
-
+			URLConnection connection = imageUrl.openConnection();
 			
+			inputStream = connection.getInputStream();
 			
-			ImageInfo imageInfo = Sanselan.getImageInfo(image);
+			ImageInfo imageInfo = Sanselan.getImageInfo(inputStream, null);
+			
 			
 			readImageInfo(imageInfo);
-		    }
+		    
 		} catch (IOException e) {
 			
 			logger.warn("Could not read: "+ image.getName() + "; reason:"+e.getMessage());
