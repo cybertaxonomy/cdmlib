@@ -109,12 +109,13 @@ public  class ImageMetaData extends MediaMetaData {
 		InputStream inputStream;
 		try {
 			
+		
 			URL imageUrl = imageUri.toURL();    
 		    
 			URLConnection connection = imageUrl.openConnection();
 			
 			inputStream = connection.getInputStream();
-			
+
 			ImageInfo imageInfo = Sanselan.getImageInfo(inputStream, null);
 			
 			
