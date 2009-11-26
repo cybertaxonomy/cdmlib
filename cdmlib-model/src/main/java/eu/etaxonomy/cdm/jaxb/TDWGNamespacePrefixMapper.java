@@ -26,6 +26,8 @@ public class TDWGNamespacePrefixMapper extends NamespacePrefixMapper {
 	private static final String PUBLICATIONCITATION_PREFIX = "tpc";
 	private static final String SPECIESPROFILEMODEL_PREFIX = "spm";
 	private static final String GEOGRAPHICALREGION_PREFIX = "gr";
+	private static final String OAIPMH_PREFIX = "oai";
+	private static final String OAIDC_PREFIX = "oai_dc";
 		
 	public static final String XML_NAMESPACE = "http://www.w3.org/XML/1998/namespace";
 	public static final String RDF_NAMESPACE = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
@@ -40,6 +42,8 @@ public class TDWGNamespacePrefixMapper extends NamespacePrefixMapper {
 	public static final String PUBLICATIONCITATION_NAMESPACE = "http://rs.tdwg.org/ontology/voc/PublicationCitation#";;
 	public static final String SPECIESPROFILEMODEL_NAMESPACE = "http://rs.tdwg.org/ontology/voc/SpeciesProfileModel#";
 	public static final String GEOGRAPHICALREGION_NAMESPACE = "http://rs.tdwg.org/ontology/voc/GeographicRegion#";
+	public static final String OAIPMH_NAMESPACE = "http://www.openarchives.org/OAI/2.0/";
+	public static final String OAIDC_NAMESPACE = "http://www.openarchives.org/OAI/2.0/oai_dc/";
 	
 	public String getPreferredPrefix(String namespaceURI, String suggestion, boolean requirePrefix) {
 		String result = suggestion;
@@ -100,6 +104,14 @@ public class TDWGNamespacePrefixMapper extends NamespacePrefixMapper {
 		
 		if(namespaceURI.equals(TDWGNamespacePrefixMapper.GEOGRAPHICALREGION_NAMESPACE)) {
 			return TDWGNamespacePrefixMapper.GEOGRAPHICALREGION_PREFIX;
+		}
+		
+		if(namespaceURI.equals(TDWGNamespacePrefixMapper.OAIPMH_NAMESPACE)) {
+			return TDWGNamespacePrefixMapper.OAIPMH_PREFIX;
+		}
+		
+		if(namespaceURI.equals(TDWGNamespacePrefixMapper.OAIDC_NAMESPACE)) {
+			return TDWGNamespacePrefixMapper.OAIDC_PREFIX;
 		}
 		
 		return result;

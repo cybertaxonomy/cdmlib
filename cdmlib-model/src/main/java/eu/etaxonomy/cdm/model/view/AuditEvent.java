@@ -62,6 +62,10 @@ public static final AuditEvent CURRENT_VIEW;
 	public DateTime getDate() {
 		return date;
 	}
+	
+	public void setDate(DateTime date) {
+		this.date = date;
+	}
 
 	@Id
 	@GeneratedValue

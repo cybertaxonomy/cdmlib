@@ -27,8 +27,12 @@ public class DateTimeAdapter extends XmlAdapter<String, DateTime> {
 	@Override
 	public String marshal(DateTime dateTime) throws Exception {
 		if (logger.isDebugEnabled()){logger.debug("marshal");}
-		DateTimeFormatter dateTimeFormatter = ISODateTimeFormat.dateTime();
-		return dateTimeFormatter.print(dateTime);
+		if(dateTime == null) {
+			return null;
+		} else {
+		    DateTimeFormatter dateTimeFormatter = ISODateTimeFormat.dateTime();
+		    return dateTimeFormatter.print(dateTime);
+		}
 	}
 
 	@Override

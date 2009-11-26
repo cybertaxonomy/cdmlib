@@ -33,6 +33,7 @@ import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 import org.joda.time.DateTime;
+import org.joda.time.Partial;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import eu.etaxonomy.cdm.model.common.TimePeriod;
@@ -303,7 +304,7 @@ public class Person extends TeamOrPersonBase<Person>{
 	 */
 	public TimePeriod getLifespan(){
 		if(lifespan == null) {
-			this.lifespan = TimePeriod.NewInstance(new DateTime(),new DateTime());
+			this.lifespan = TimePeriod.NewInstance(new Partial(), new Partial());
 		}
 		return this.lifespan;
 	}

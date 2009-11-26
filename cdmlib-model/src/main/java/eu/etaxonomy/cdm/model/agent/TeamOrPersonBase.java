@@ -83,7 +83,7 @@ public abstract class TeamOrPersonBase<T extends TeamOrPersonBase<?>> extends Ag
 	 * @see eu.etaxonomy.cdm.model.common.IdentifiableEntity#getTitleCache()
 	 */
 	@Override
-	@Transient
+//	@Transient
 	public String getTitleCache() {
 		isGeneratingTitleCache = true;
 		String result = super.getTitleCache();

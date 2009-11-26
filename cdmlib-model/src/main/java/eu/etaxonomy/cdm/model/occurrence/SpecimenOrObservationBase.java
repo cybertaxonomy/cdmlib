@@ -128,6 +128,7 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToMany(fetch=FetchType.LAZY)
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE, CascadeType.DELETE_ORPHAN})
     @NotNull
 	protected Set<DerivationEvent> derivationEvents = new HashSet<DerivationEvent>();
 

@@ -291,7 +291,7 @@ public abstract class CdmBase implements Serializable, ICdmBase{
 	 * or {@link http://www.ibm.com/developerworks/java/library/j-jtp05273.html ibm}
 	 * for more information about equals and hashcode. 
 	 */
-	 @Override
+	@Override
 	public int hashCode() {
 		   int hashCode = 7;
 		   hashCode = 29 * hashCode + this.getUuid().hashCode();
