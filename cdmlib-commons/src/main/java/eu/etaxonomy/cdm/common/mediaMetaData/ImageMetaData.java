@@ -1,8 +1,12 @@
 package eu.etaxonomy.cdm.common.mediaMetaData;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
@@ -104,12 +108,21 @@ public  class ImageMetaData extends MediaMetaData {
 		File image = null;
 		try {
 			
-			image = new File(imageUri);
+			URL url = imageUri.toURL();    
+		    
+		    if (url != null){
+				String fileName = url.getPath();
+				if (fileName.contains("%20")) {
+					fileName = fileName.replaceAll("%20", " ");
+				}
+			image = new File(fileName); 
+
+			
 			
 			ImageInfo imageInfo = Sanselan.getImageInfo(image);
 			
 			readImageInfo(imageInfo);
-			
+		    }
 		} catch (IOException e) {
 			
 			logger.warn("Could not read: "+ image.getName() + "; reason:"+e.getMessage());
