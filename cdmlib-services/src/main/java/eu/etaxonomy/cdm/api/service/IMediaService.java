@@ -10,7 +10,9 @@
 
 package eu.etaxonomy.cdm.api.service;
 
+import java.net.URI;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
@@ -63,4 +65,6 @@ public interface IMediaService extends IIdentifiableEntityService<Media> {
 	 * @see <a href="http://lucene.apache.org/java/2_4_0/queryparsersyntax.html">Apache Lucene - Query Parser Syntax</a>
 	 */
 	public Pager<Media> search(Class<? extends Media> clazz, String queryString, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+
+	public Map<String,String> getImageMetaData(URI uri);
 }
