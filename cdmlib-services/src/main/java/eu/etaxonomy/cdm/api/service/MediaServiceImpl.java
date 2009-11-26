@@ -10,8 +10,10 @@
 
 package eu.etaxonomy.cdm.api.service;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
+import eu.etaxonomy.cdm.common.mediaMetaData.MediaMetaData;
 import eu.etaxonomy.cdm.model.description.MediaKey;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.Media;
@@ -73,5 +76,11 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
 	public void generateTitleCache() {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	public Map<String,String> getImageMetaData(URI uri){
+		Map <String,String> results ;
+		results = dao.getMediaMetaData(uri);
+		return results;
 	}
 }
