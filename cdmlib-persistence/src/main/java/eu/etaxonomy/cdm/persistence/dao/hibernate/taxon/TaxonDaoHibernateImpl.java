@@ -844,21 +844,42 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 	public int countSynonyms(Taxon taxon, SynonymRelationshipType type) {
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
-			Query query = null;
+			Criteria criteria = getSession().createCriteria(SynonymRelationship.class);
 
-			if(type == null) {
-				query = getSession().createQuery("select count(synonymRelationship) from SynonymRelationship synonymRelationship where synonymRelationship.relatedTo = :relatedTo");
-			} else {
-				query = getSession().createQuery("select count(synonymRelationship) from SynonymRelationship synonymRelationship where synonymRelationship.relatedTo = :relatedTo and synonymRelationship.type = :type");
-				query.setParameter("type",type);
-			}
-
-			query.setParameter("relatedTo", taxon);
-
-			return ((Long)query.uniqueResult()).intValue();
+			criteria.add(Restrictions.eq("relatedTo", taxon));
+		    if(type != null) {
+		    	criteria.add(Restrictions.eq("type", type));
+		    } 
+		    criteria.setProjection(Projections.rowCount());
+			return (Integer)criteria.uniqueResult();
 		} else {
 			AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(SynonymRelationship.class,auditEvent.getRevisionNumber());
 			query.add(AuditEntity.relatedId("relatedTo").eq(taxon.getId()));
+			query.addProjection(AuditEntity.id().count("id"));
+			
+			if(type != null) {
+				query.add(AuditEntity.relatedId("type").eq(type.getId()));
+		    }
+			
+			return ((Long)query.getSingleResult()).intValue();
+		}
+	}
+	
+	public int countSynonyms(Synonym synonym, SynonymRelationshipType type) {
+		AuditEvent auditEvent = getAuditEventFromContext();
+		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
+			Criteria criteria = getSession().createCriteria(SynonymRelationship.class);
+
+			criteria.add(Restrictions.eq("relatedFrom", synonym));
+		    if(type != null) {
+		    	criteria.add(Restrictions.eq("type", type));
+		    } 
+		    
+		    criteria.setProjection(Projections.rowCount());
+			return (Integer)criteria.uniqueResult();
+		} else {
+			AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(SynonymRelationship.class,auditEvent.getRevisionNumber());
+			query.add(AuditEntity.relatedId("relatedFrom").eq(synonym.getId()));
 			query.addProjection(AuditEntity.id().count("id"));
 			
 			if(type != null) {
@@ -1087,6 +1108,55 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		} else {
 			AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(SynonymRelationship.class,auditEvent.getRevisionNumber());
 			query.add(AuditEntity.relatedId("relatedTo").eq(taxon.getId()));
+			
+			if(type != null) {
+				query.add(AuditEntity.relatedId("type").eq(type.getId()));
+		    }
+			
+			if(pageSize != null) {
+		        query.setMaxResults(pageSize);
+		        if(pageNumber != null) {
+		            query.setFirstResult(pageNumber * pageSize);
+		        } else {
+		    	    query.setFirstResult(0);
+		        }
+		    }
+			
+			List<SynonymRelationship> result = (List<SynonymRelationship>)query.getResultList();
+			defaultBeanInitializer.initializeAll(result, propertyPaths);
+			
+			return result;
+		}
+	}
+	
+	public List<SynonymRelationship> getSynonyms(Synonym synonym, SynonymRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+		AuditEvent auditEvent = getAuditEventFromContext();
+		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
+            Criteria criteria = getSession().createCriteria(SynonymRelationship.class);
+            
+			criteria.add(Restrictions.eq("relatedFrom", synonym));
+		    if(type != null) {
+		    	criteria.add(Restrictions.eq("type", type));
+		    } 
+		
+            addOrder(criteria,orderHints);
+		
+		    if(pageSize != null) {
+		    	criteria.setMaxResults(pageSize);
+		        if(pageNumber != null) {
+		        	criteria.setFirstResult(pageNumber * pageSize);
+		        } else {
+		        	criteria.setFirstResult(0);
+		        }
+		    }
+		
+		    List<SynonymRelationship> result = (List<SynonymRelationship>)criteria.list();
+		    defaultBeanInitializer.initializeAll(result, propertyPaths);
+		    
+		    return result;
+		} else {
+			AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(SynonymRelationship.class,auditEvent.getRevisionNumber());
+			query.add(AuditEntity.relatedId("relatedFrom").eq(synonym.getId()));
 			
 			if(type != null) {
 				query.add(AuditEntity.relatedId("type").eq(type.getId()));

@@ -11,36 +11,23 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.common;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.lucene.search.Sort;
-import org.apache.lucene.search.SortField;
-import org.hibernate.criterion.Criterion;
 import org.hibernate.envers.AuditReader;
 import org.hibernate.envers.AuditReaderFactory;
 import org.hibernate.envers.query.AuditEntity;
 import org.hibernate.envers.query.AuditQuery;
 import org.hibernate.envers.query.criteria.AuditCriterion;
-import org.hibernate.envers.query.order.AuditOrder;
-import org.hibernate.search.FullTextQuery;
-import org.joda.time.DateTime;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.dao.DataAccessException;
-import org.springframework.security.Authentication;
-import org.springframework.security.context.SecurityContextHolder;
 
-import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
-import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.model.view.AuditEventRecord;
 import eu.etaxonomy.cdm.model.view.AuditEventRecordImpl;
 import eu.etaxonomy.cdm.model.view.context.AuditEventContext;
 import eu.etaxonomy.cdm.model.view.context.AuditEventContextHolder;
-import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.common.AuditEventSort;
 import eu.etaxonomy.cdm.persistence.dao.common.IVersionableDao;
 import eu.etaxonomy.cdm.persistence.dao.common.OperationNotSupportedInPriorViewException;
@@ -86,6 +73,34 @@ public abstract class VersionableDaoBase<T extends VersionableEntity> extends Cd
 			query.add(AuditEntity.property("uuid").eq(uuid));
 			// TODO initialize bits
 			return (T)query.getSingleResult();			
+		}
+	}
+	
+	@Override
+	public T load(UUID uuid) {
+		AuditEvent auditEvent = getAuditEventFromContext();
+		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
+			return super.load(uuid);
+		} else {
+			AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(type,auditEvent.getRevisionNumber());
+			query.add(AuditEntity.property("uuid").eq(uuid));
+			T t = (T)query.getSingleResult();
+			defaultBeanInitializer.load(t);
+			return t;			
+		}
+	}
+	
+	@Override
+	public T load(UUID uuid, List<String> propertyPaths) {
+		AuditEvent auditEvent = getAuditEventFromContext();
+		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
+			return super.load(uuid,propertyPaths);
+		} else {
+			AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(type,auditEvent.getRevisionNumber());
+			query.add(AuditEntity.property("uuid").eq(uuid));
+			T t = (T)query.getSingleResult();
+			defaultBeanInitializer.initialize(t, propertyPaths);
+			return t;
 		}
 	}
 	
@@ -346,5 +361,16 @@ public abstract class VersionableDaoBase<T extends VersionableEntity> extends Cd
         	defaultBeanInitializer.initialize(record.getAuditableObject(), propertyPaths);
         }
 		return records;
+	}
+	
+	@Override
+	public int count(T example, Set<String> includeProperties) {
+		this.checkNotInPriorView("count(T example, Set<String> includeProperties)");
+		return super.count(example, includeProperties);
+	}
+	
+	public List<T> list(T example, Set<String> includeProperties, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
+		this.checkNotInPriorView("list(T example, Set<String> includeProperties, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {");
+		return super.list(example, includeProperties, limit, start, orderHints, propertyPaths);
 	}
 }

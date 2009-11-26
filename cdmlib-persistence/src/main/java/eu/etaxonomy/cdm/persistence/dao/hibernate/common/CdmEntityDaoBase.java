@@ -9,6 +9,7 @@
 
 package eu.etaxonomy.cdm.persistence.dao.hibernate.common;
 
+import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -27,19 +28,25 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.DetachedCriteria;
+import org.hibernate.criterion.Example;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.criterion.Example.PropertySelector;
 import org.hibernate.envers.query.AuditQuery;
+import org.hibernate.metadata.ClassMetadata;
 import org.hibernate.search.FullTextQuery;
+import org.hibernate.type.Type;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.security.Authentication;
 import org.springframework.security.context.SecurityContextHolder;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.ReflectionUtils;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.User;
@@ -469,5 +476,88 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 		    	query.setFirstResult(0);
 		    }
 		}
+	}
+	
+	public int count(T example, Set<String> includeProperties) {
+		Criteria criteria = getSession().createCriteria(example.getClass());
+		addExample(criteria,example,includeProperties);
+		
+		criteria.setProjection(Projections.rowCount());
+		return (Integer)criteria.uniqueResult();
+	}
+	
+	protected void addExample(Criteria criteria, T example, Set<String> includeProperties) {
+		if(includeProperties != null && !includeProperties.isEmpty()) {
+		    criteria.add(Example.create(example).setPropertySelector(new PropertySelectorImpl(includeProperties)));
+		    ClassMetadata classMetadata = getSession().getSessionFactory().getClassMetadata(example.getClass());
+		    for(String property : includeProperties) {  
+		        Type type  = classMetadata.getPropertyType(property);
+		        if(type.isEntityType()) {
+				    try {
+					    Field field = ReflectionUtils.findField(example.getClass(), property);
+					    field.setAccessible(true);
+					    Object value =  field.get(example);
+					    if(value != null) {
+			    	        criteria.add(Restrictions.eq(property,value));
+					    } else {
+					    	criteria.add(Restrictions.isNull(property));
+					    }
+				    } catch (SecurityException se) {
+					    throw new InvalidDataAccessApiUsageException("Tried to add criteria for property " + property, se);
+				    } catch (HibernateException he) {
+					    throw new InvalidDataAccessApiUsageException("Tried to add criteria for property " + property, he);
+				    } catch (IllegalArgumentException iae) {
+					    throw new InvalidDataAccessApiUsageException("Tried to add criteria for property " + property, iae);
+				    } catch (IllegalAccessException ie) {
+					    throw new InvalidDataAccessApiUsageException("Tried to add criteria for property " + property, ie);
+				    }
+		    	
+		        }
+		    }
+		} else {
+			criteria.add(Example.create(example));
+		}
+	}
+	
+	public List<T> list(T example, Set<String> includeProperties, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
+		Criteria criteria = getSession().createCriteria(example.getClass());
+		addExample(criteria,example,includeProperties);
+		
+		if(limit != null) {
+			if(start != null) {
+			    criteria.setFirstResult(start);
+			} else {
+				criteria.setFirstResult(0);
+			}
+			criteria.setMaxResults(limit);
+		}
+		
+		addOrder(criteria,orderHints);
+		
+		List<T> results = (List<T>)criteria.list();
+		defaultBeanInitializer.initializeAll(results, propertyPaths);
+		return results; 
+	}
+	
+	private class PropertySelectorImpl implements PropertySelector {
+
+		private Set<String> includeProperties;
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -3175311800911570546L;
+
+		public PropertySelectorImpl(Set<String> includeProperties) {
+			this.includeProperties = includeProperties;
+		}
+
+		public boolean include(Object propertyValue, String propertyName,	Type type) {
+			if(includeProperties.contains(propertyName)) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+		
 	}
 }

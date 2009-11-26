@@ -15,6 +15,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.springframework.stereotype.Repository;
 
+import eu.etaxonomy.cdm.model.description.FeatureNode;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.persistence.dao.description.IFeatureTreeDao;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
@@ -36,6 +37,13 @@ public class FeatureTreeDaoImpl extends IdentifiableDaoBase<FeatureTree> impleme
 	public List<FeatureTree> list() {
 		Criteria crit = getSession().createCriteria(type); 
 		return crit.list(); 
+	}
+
+	public void loadNodes(FeatureNode root, List<String> nodePaths) {
+		for(FeatureNode child : root.getChildren()) {
+			defaultBeanInitializer.initialize(child, nodePaths);
+			loadNodes(child,nodePaths);
+		}
 	}
 
 }

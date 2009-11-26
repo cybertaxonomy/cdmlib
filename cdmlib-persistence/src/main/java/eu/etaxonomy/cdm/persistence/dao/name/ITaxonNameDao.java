@@ -21,6 +21,7 @@ import eu.etaxonomy.cdm.model.name.HybridRelationship;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
+import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
@@ -88,7 +89,7 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonNameBase>, ISearcha
 	 *            the hybrid relationship type (or null to return all hybrid)
 	 * @return a count of HybridRelationship instances
 	 */
-	public int countHybridNames(BotanicalName name, HybridRelationshipType type);
+	public int countHybridNames(NonViralName name, HybridRelationshipType type);
 
 	/**
 	 * Return a List of hybrids related to this name, optionally filtered by
@@ -106,7 +107,7 @@ public interface ITaxonNameDao extends IIdentifiableDao<TaxonNameBase>, ISearcha
 	 *            set (0 - based)
 	 * @return a List of HybridRelationship instances
 	 */
-	public List<HybridRelationship> getHybridNames(BotanicalName name, HybridRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+	public List<HybridRelationship> getHybridNames(NonViralName name, HybridRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
 	/**
 	 * Return a count of types related to this name, optionally filtered by type

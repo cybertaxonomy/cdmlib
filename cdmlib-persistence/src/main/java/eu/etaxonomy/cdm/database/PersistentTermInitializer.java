@@ -26,6 +26,7 @@ import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
+import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.VocabularyEnum;
 import eu.etaxonomy.cdm.model.common.init.TermLoader;
@@ -114,6 +115,9 @@ public class PersistentTermInitializer extends DefaultTermInitializer {
 			for(Object object : persistedVocabulary.getTerms()) {
 				DefinedTermBase definedTermBase = (DefinedTermBase) object;
 				Hibernate.initialize(definedTermBase.getRepresentations());
+				for(Representation r : definedTermBase.getRepresentations()) {
+					Hibernate.initialize(r.getLanguage());
+				}
 				terms.put(definedTermBase.getUuid(), definedTermBase);			
 			}
 		}else{

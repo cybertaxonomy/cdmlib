@@ -13,14 +13,14 @@ import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.description.FeatureNode;
 import eu.etaxonomy.cdm.persistence.dao.description.IFeatureNodeDao;
-import eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmEntityDaoBase;
+import eu.etaxonomy.cdm.persistence.dao.hibernate.common.VersionableDaoBase;
 
 /**
  * @author a.babadshanjan
  * @created 09.09.2008
  */
 @Repository
-public class FeatureNodeDaoImpl extends CdmEntityDaoBase<FeatureNode> implements IFeatureNodeDao {
+public class FeatureNodeDaoImpl extends VersionableDaoBase<FeatureNode> implements IFeatureNodeDao {
 
 	public FeatureNodeDaoImpl() {
 		super(FeatureNode.class); 

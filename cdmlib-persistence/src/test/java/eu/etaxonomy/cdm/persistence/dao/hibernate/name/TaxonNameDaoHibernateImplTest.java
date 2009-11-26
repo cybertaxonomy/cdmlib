@@ -13,7 +13,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import org.junit.Before;
@@ -28,6 +31,7 @@ import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
+import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
@@ -146,7 +150,23 @@ public class TaxonNameDaoHibernateImplTest extends CdmIntegrationTest {
 	
 	@Test
 	public void testCountNames() {
+		System.out.println("count");
 		int count = taxonNameDao.countNames("Atropos", null, null, null, Rank.GENUS());
+		
+		assertEquals("countNames should return 3",3,count);
+	}
+	
+	@Test
+	public void testCountNamesByExample() {
+		ZoologicalName zoologicalName = ZoologicalName.NewInstance(Rank.GENUS());
+		zoologicalName.setGenusOrUninomial("Atropos");
+		Set<String> includedProperties = new HashSet<String>();
+		includedProperties.add("genusOrUninomial");
+		includedProperties.add("specificEpithet");
+		includedProperties.add("infraSpecificEpithet");
+		includedProperties.add("rank");
+		System.out.println("countByExample");
+		int count = taxonNameDao.count(zoologicalName,includedProperties);
 		
 		assertEquals("countNames should return 3",3,count);
 	}

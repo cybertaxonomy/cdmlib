@@ -321,6 +321,30 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
 	public List<SynonymRelationship> getSynonyms(Taxon taxon, SynonymRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 	
 	/**
+	 * Returns a count of the SynonymRelationships (of where relationship.type == type,
+	 *  if this arguement is supplied) where the supplied synonym is relatedFrom.
+	 * 
+	 * @param taxon The synonym that is relatedFrom
+	 * @param type The type of SynonymRelationship (can be null)
+	 * @return the number of SynonymRelationship instances
+	 */
+	public int countSynonyms(Synonym synonym, SynonymRelationshipType type);
+	
+	/**
+	 * Returns the SynonymRelationships (of where relationship.type == type, if this arguement is supplied) 
+	 * where the supplied synonym is relatedFrom.
+	 * 
+	 * @param taxon The synonym that is relatedFrom
+	 * @param type The type of SynonymRelationship (can be null)
+	 * @param pageSize The maximum number of relationships returned (can be null for all relationships)
+	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
+	 * * @param orderHints Properties to order by
+	 * @param propertyPaths Properties to initialize in the returned entities, following the syntax described in {@link BeanInitializer#initialize(Object, List)}
+	 * @return a List of SynonymRelationship instances
+	 */
+	public List<SynonymRelationship> getSynonyms(Synonym synoynm, SynonymRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+	
+	/**
 	 * Returns a count of TaxonBase instances where the
 	 * taxon.name properties match the parameters passed.
 	 * 

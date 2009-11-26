@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.persistence.dao.description;
 
 import java.util.List;
 
+import eu.etaxonomy.cdm.model.description.FeatureNode;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
 
@@ -21,4 +22,6 @@ import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
  */
 public interface IFeatureTreeDao extends IIdentifiableDao<FeatureTree> {
 	public List<FeatureTree> list();
+
+	public void loadNodes(FeatureNode root, List<String> nodePaths);
 }

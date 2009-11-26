@@ -254,4 +254,47 @@ public interface ICdmEntityDao<T extends CdmBase> {
 	 * @return
 	 */
 	public Class<T> getType();
-}
+	
+	/**
+	 * Method that counts the number of objects matching the example provided. 
+	 * The includeProperties property is used to specify which properties of the example are used.
+	 * 
+	 * If includeProperties is null or empty, then all literal properties are used (restrictions are
+	 * applied as in the Hibernate Query-By-Example API call Example.create(object)).
+	 * 
+	 * If includeProperties is not empty then only literal properties that are named in the set are used to 
+	 * create restrictions, *PLUS* any *ToOne related entities. Related entities are matched on ID, not by 
+	 * their internal literal values (e.g. the call is criteria.add(Restrictions.eq(property,relatedObject)), not 
+	 * criteria.createCriteria(property).add(Example.create(relatedObject)))
+	 * 
+	 * @param example
+	 * @param includeProperties
+	 * @return a count of matching objects
+	 */
+	public int count(T example, Set<String> includeProperties);
+	
+	/**
+	 * Method that lists the objects matching the example provided. 
+	 * The includeProperties property is used to specify which properties of the example are used.
+	 * 
+	 * If includeProperties is null or empty, then all literal properties are used (restrictions are
+	 * applied as in the Hibernate Query-By-Example API call Example.create(object)).
+	 * 
+	 * If includeProperties is not empty then only literal properties that are named in the set are used to 
+	 * create restrictions, *PLUS* any *ToOne related entities. Related entities are matched on ID, not by 
+	 * their internal literal values (e.g. the call is criteria.add(Restrictions.eq(property,relatedObject)), not 
+	 * criteria.createCriteria(property).add(Example.create(relatedObject)))
+	 * 
+	 * @param example
+	 * @param includeProperties
+	 * @param limit the maximum number of entities returned (can be null to return
+	 *            all entities)
+     * @param start The (0-based) offset from the start of the recordset
+     * @param orderHints
+	 *            Supports path like <code>orderHints.propertyNames</code> which
+	 *            include *-to-one properties like createdBy.username or
+     * @param propertyPaths paths initialized on the returned objects - only applied to the objects returned from the first grouping
+	 * @return a list of matching objects
+	 */
+	public List<T> list(T example, Set<String> includeProperties, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
+} 

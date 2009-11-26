@@ -493,14 +493,4 @@ public int countDefinedTermByRepresentationText(String text, Class<? extends Def
 		    return (DefinedTermBase)query.getSingleResult();
 		}
 	}
-
-
-//	@Override
-//	public List<DefinedTermBase> list(int limit, int start) {
-//		Query query = getSession().createQuery("select term from DefinedTermBase term join fetch term.representations representation ");
-//		query.setMaxResults(limit);
-//		query.setFirstResult(start);
-//		return (List<DefinedTermBase>) query.list();
-//	}
-
 }

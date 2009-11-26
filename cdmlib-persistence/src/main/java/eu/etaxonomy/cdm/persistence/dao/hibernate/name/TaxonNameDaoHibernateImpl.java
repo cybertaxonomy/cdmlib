@@ -83,7 +83,7 @@ extends IdentifiableDaoBase<TaxonNameBase> implements ITaxonNameDao {
 	private String defaultField = "titleCache";
 	private Class<? extends TaxonNameBase> indexedClasses[]; 
 
-	public int countHybridNames(BotanicalName name, HybridRelationshipType type) {
+	public int countHybridNames(NonViralName name, HybridRelationshipType type) {
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
 			Query query = null;
@@ -240,31 +240,19 @@ extends IdentifiableDaoBase<TaxonNameBase> implements ITaxonNameDao {
 	}
 
 	public int countTypeDesignations(TaxonNameBase name, SpecimenTypeDesignationStatus status) {
-		AuditEvent auditEvent = getAuditEventFromContext();
-		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
-			Query query = null;
-			if(status == null) {
-				query = getSession().createQuery("select count(designation) from TypeDesignationBase designation join designation.typifiedNames name where name = :name");
-			} else {
-				query = getSession().createQuery("select count(designation) from TypeDesignationBase designation join designation.typifiedNames name where name = :name and designation.typeStatus = :status");
-				query.setParameter("status", status);
-			}
-			query.setParameter("name",name);
-			return ((Long)query.uniqueResult()).intValue();
+		checkNotInPriorView("countTypeDesignations(TaxonNameBase name, SpecimenTypeDesignationStatus status)");
+		Query query = null;
+		if(status == null) {
+			query = getSession().createQuery("select count(designation) from TypeDesignationBase designation join designation.typifiedNames name where name = :name");
 		} else {
-			AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(TypeDesignationBase.class,auditEvent.getRevisionNumber());
-			query.add(AuditEntity.relatedId("typifiedNames").eq(name.getId()));
-			query.addProjection(AuditEntity.id().count("id"));
-
-			if(type != null) {
-				query.add(AuditEntity.relatedId("typeStatus").eq(status.getId()));
-			}
-
-			return ((Long)query.getSingleResult()).intValue();
+			query = getSession().createQuery("select count(designation) from TypeDesignationBase designation join designation.typifiedNames name where name = :name and designation.typeStatus = :status");
+			query.setParameter("status", status);
 		}
+		query.setParameter("name",name);
+		return ((Long)query.uniqueResult()).intValue();
 	}
 
-	public List<HybridRelationship> getHybridNames(BotanicalName name, HybridRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+	public List<HybridRelationship> getHybridNames(NonViralName name, HybridRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
 			Criteria criteria = getSession().createCriteria(HybridRelationship.class);
@@ -363,48 +351,26 @@ extends IdentifiableDaoBase<TaxonNameBase> implements ITaxonNameDao {
 		return getTypeDesignations(name, status, pageSize, pageNumber, null);
 	}
 	
-	public List<TypeDesignationBase> getTypeDesignations(TaxonNameBase name,
-				TypeDesignationStatusBase status, Integer pageSize, Integer pageNumber,
-				List<String> propertyPaths){
-		AuditEvent auditEvent = getAuditEventFromContext();
-		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
-			Query query = null;
-			if(status == null) {
-				query = getSession().createQuery("select designation from TypeDesignationBase designation join designation.typifiedNames name where name = :name");
-			} else {
-				query = getSession().createQuery("select designation from TypeDesignationBase designation join designation.typifiedNames name where name = :name and designation.typeStatus = :status");
-				query.setParameter("status", status);
-			}
-			query.setParameter("name",name);
-
-			if(pageSize != null) {
-				query.setMaxResults(pageSize);
-				if(pageNumber != null) {
-					query.setFirstResult(pageNumber * pageSize);
-				} else {
-					query.setFirstResult(0);
-				}
-			}
-			return defaultBeanInitializer.initializeAll((List<TypeDesignationBase>)query.list(), propertyPaths);
+	public List<TypeDesignationBase> getTypeDesignations(TaxonNameBase name,TypeDesignationStatusBase status, Integer pageSize, Integer pageNumber,	List<String> propertyPaths){
+		checkNotInPriorView("getTypeDesignations(TaxonNameBase name,TypeDesignationStatusBase status, Integer pageSize, Integer pageNumber,	List<String> propertyPaths)");
+		Query query = null;
+		if(status == null) {
+			query = getSession().createQuery("select designation from TypeDesignationBase designation join designation.typifiedNames name where name = :name");
 		} else {
-			AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(TypeDesignationBase.class,auditEvent.getRevisionNumber());
-			query.add(AuditEntity.relatedId("typifiedNames").eq(name.getId()));
-
-			if(type != null) {
-				query.add(AuditEntity.relatedId("typeStatus").eq(status.getId()));
-			}
-			
-			if(pageSize != null) {
-				query.setMaxResults(pageSize);
-				if(pageNumber != null) {
-					query.setFirstResult(pageNumber * pageSize);
-				} else {
-					query.setFirstResult(0);
-				}
-			}
-
-			return (List<TypeDesignationBase>)query.getResultList();
+			query = getSession().createQuery("select designation from TypeDesignationBase designation join designation.typifiedNames name where name = :name and designation.typeStatus = :status");
+			query.setParameter("status", status);
 		}
+		query.setParameter("name",name);
+
+		if(pageSize != null) {
+			query.setMaxResults(pageSize);
+			if(pageNumber != null) {
+				query.setFirstResult(pageNumber * pageSize);
+			} else {
+				query.setFirstResult(0);
+			}
+		}
+		return defaultBeanInitializer.initializeAll((List<TypeDesignationBase>)query.list(), propertyPaths);
 	}
 
 	

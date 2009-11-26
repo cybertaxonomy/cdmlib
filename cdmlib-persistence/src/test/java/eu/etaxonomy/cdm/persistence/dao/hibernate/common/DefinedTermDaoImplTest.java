@@ -28,10 +28,16 @@ import org.junit.Test;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
+import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.view.AuditEvent;
+import eu.etaxonomy.cdm.model.view.context.AuditEventContextHolder;
 import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
+import eu.etaxonomy.cdm.persistence.query.OrderHint;
+import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 
 public class DefinedTermDaoImplTest extends CdmIntegrationTest {
@@ -45,6 +51,7 @@ public class DefinedTermDaoImplTest extends CdmIntegrationTest {
 	private UUID middleEuropeUuid;
 	private UUID westTropicalAfricaUuid;
 	private Set<NamedArea> namedAreas;
+	private AuditEvent auditEvent;
 	
 	@Before
 	public void setUp() {
@@ -54,6 +61,10 @@ public class DefinedTermDaoImplTest extends CdmIntegrationTest {
 		middleEuropeUuid = UUID.fromString("d292f237-da3d-408b-93a1-3257a8c80b97");
 		westTropicalAfricaUuid = UUID.fromString("931164ad-ec16-4133-afab-bdef25d67636");
 		namedAreas = new HashSet<NamedArea>();
+		auditEvent = new AuditEvent();
+		auditEvent.setUuid(UUID.fromString("6456c23d-6424-42dc-a240-36d34e77b249"));
+		auditEvent.setRevisionNumber(1001);
+		AuditEventContextHolder.clearContext();
 	}
 
 	@Test
@@ -162,5 +173,24 @@ public class DefinedTermDaoImplTest extends CdmIntegrationTest {
 		 
 		 int numberOfPartOf = dao.countPartOf(namedAreas);
 		 assertEquals("countPartOf should return 2",2,numberOfPartOf);
+	 }
+	 
+	 @Test
+	 public void testListInitialization() {
+		 AuditEventContextHolder.getContext().setAuditEvent(auditEvent);
+		 List<OrderHint> orderHints = new ArrayList<OrderHint>();
+		 orderHints.add(new OrderHint("titleCache",SortOrder.ASCENDING));
+		 
+		 List<String> propertyPaths = new ArrayList<String>();
+		 propertyPaths.add("representations");
+		 propertyPaths.add("representations.language");
+		 List<DefinedTermBase> extensionTypes = dao.list(ExtensionType.class,null, null, orderHints, propertyPaths);
+		 
+		 
+		 assertTrue(Hibernate.isInitialized(extensionTypes.get(0).getRepresentations()));
+		 Set<Representation> representations = extensionTypes.get(0).getRepresentations();
+		 for(Representation representation : representations) {
+			 assertTrue(Hibernate.isInitialized(representation.getLanguage()));
+		 }
 	 }
 }
