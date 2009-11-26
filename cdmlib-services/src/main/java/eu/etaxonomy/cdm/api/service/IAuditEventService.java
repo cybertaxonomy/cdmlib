@@ -12,6 +12,8 @@ package eu.etaxonomy.cdm.api.service;
 
 import java.util.UUID;
 
+import org.joda.time.DateTime;
+
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.persistence.dao.common.AuditEventSort;
@@ -71,4 +73,11 @@ public interface IAuditEventService {
      * the first event in the database
      */
     public AuditEvent getPreviousAuditEvent(AuditEvent auditEvent);
+
+    /**
+     * Returns the AuditEvent that represents the given DateTime
+     * @param dateTime
+     * @return an AuditEvent object
+     */
+	public AuditEvent find(DateTime dateTime);
 }

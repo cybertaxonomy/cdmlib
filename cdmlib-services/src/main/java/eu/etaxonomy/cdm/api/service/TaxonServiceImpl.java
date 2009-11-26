@@ -369,6 +369,17 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		return new DefaultPagerImpl<SynonymRelationship>(pageNumber, numberOfResults, pageSize, results);
 	}
 	
+	public Pager<SynonymRelationship> getSynonyms(Synonym synonym,	SynonymRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+        Integer numberOfResults = dao.countSynonyms(synonym, type);
+		
+		List<SynonymRelationship> results = new ArrayList<SynonymRelationship>();
+		if(numberOfResults > 0) { // no point checking again
+			results = dao.getSynonyms(synonym, type, pageSize, pageNumber, orderHints, propertyPaths); 
+		}
+		
+		return new DefaultPagerImpl<SynonymRelationship>(pageNumber, numberOfResults, pageSize, results);
+	}
+	
 	public List<Synonym> getHomotypicSynonymsByHomotypicGroup(Taxon taxon, List<String> propertyPaths){
 		Taxon t = (Taxon)dao.load(taxon.getUuid(), propertyPaths);
 		return t.getHomotypicSynonymsByHomotypicGroup();

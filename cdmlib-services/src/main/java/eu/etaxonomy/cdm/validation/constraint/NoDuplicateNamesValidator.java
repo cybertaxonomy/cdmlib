@@ -9,19 +9,39 @@
 
 package eu.etaxonomy.cdm.validation.constraint;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.api.service.INameService;
-import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.validation.annotation.NoDuplicateNames;
 
 public class NoDuplicateNamesValidator implements
 		ConstraintValidator<NoDuplicateNames,NonViralName> {
+	
+	private static Set<String> includeProperties;
+	
+	static {
+		includeProperties = new HashSet<String>();
+		includeProperties.add("genusOrUninomial");
+		includeProperties.add("infraGenericEpithet");
+		includeProperties.add("specificEpithet");
+		includeProperties.add("infraSpecificEpithet");
+		includeProperties.add("rank");
+		includeProperties.add("nomenclaturalReference");
+		includeProperties.add("nomenclaturalMicroReference");
+		includeProperties.add("basionymAuthorTeam");
+		includeProperties.add("exBasionymAuthorTeam");
+		includeProperties.add("combinationAuthorTeam");
+		includeProperties.add("exCombinationAuthorTeam");
+	}
 	
 	private INameService nameService;
 	
@@ -36,14 +56,9 @@ public class NoDuplicateNamesValidator implements
 		if(name == null) {
 			return true;
 		} else {
-			Pager<TaxonNameBase> matchingNonViralNames = nameService.searchNames(name.getGenusOrUninomial(),
-					                                                             name.getInfraGenericEpithet(),
-					                                                             name.getSpecificEpithet(),
-					                                                             name.getInfraSpecificEpithet(),
-					                                                             name.getRank(),
-					                                                             null,null, null, null);
-			if(matchingNonViralNames.getCount() > 0) {
-				if(matchingNonViralNames.getCount() == 1 && matchingNonViralNames.getRecords().get(0).equals(name)) {
+			List<TaxonNameBase> matchingNonViralNames = nameService.list(name, includeProperties, null, null, null, null);
+			if(matchingNonViralNames.size() > 0) {
+				if(matchingNonViralNames.size() == 1 && matchingNonViralNames.get(0).equals(name)) {
 					return true;
 				} else {
 			        return false;

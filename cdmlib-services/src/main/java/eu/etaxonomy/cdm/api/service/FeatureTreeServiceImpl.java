@@ -60,14 +60,7 @@ public class FeatureTreeServiceImpl extends IdentifiableServiceBase<FeatureTree,
 		}
 		
 		FeatureTree featureTree = load(uuid, rootPaths);
-		loadNodes(featureTree.getRoot(),nodePaths);
+		dao.loadNodes(featureTree.getRoot(),nodePaths);
 		return featureTree;
-	}
-	
-	private void loadNodes(FeatureNode node, List<String> nodePaths) {
-		for(FeatureNode child : node.getChildren()) {
-			FeatureNode featureNode = featureNodeDao.load(child.getUuid(),nodePaths);
-			loadNodes(featureNode,nodePaths);
-		}
 	}
 }

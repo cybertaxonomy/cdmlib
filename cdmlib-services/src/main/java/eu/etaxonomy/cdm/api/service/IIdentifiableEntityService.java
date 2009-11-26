@@ -18,6 +18,7 @@ import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.ISourceable;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
+import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
@@ -31,6 +32,16 @@ public interface IIdentifiableEntityService<T extends IdentifiableEntity> extend
 	 */
 	public void generateTitleCache();
 
+	/**
+	 * Finds an object with a given LSID. If the object does not currently exist in the current view, then
+	 * the most recent prior version of the object will be returned, or null if an object with this identifier
+	 * has never existed
+	 * 
+	 * @param lsid
+	 * @return an object of type T or null of the object has never existed
+	 */
+	public T find(LSID lsid);
+	
 	/**
 	 * Return a Pager of sources belonging to this object
 	 * 

@@ -24,6 +24,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ISourceable;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
+import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
@@ -116,6 +117,10 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 		 }
 			
 		  return new DefaultPagerImpl<T>(pageNumber, numberOfResults, pageSize, results);
+	}
+	
+	public T find(LSID lsid) {
+		return dao.find(lsid);
 	}
 }
 

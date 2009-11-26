@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -63,5 +64,9 @@ public class AuditEventService implements IAuditEventService {
 		}
 			
 		return new DefaultPagerImpl<AuditEvent>(pageNumber, numberOfResults, pageSize, results);
+	}
+
+	public AuditEvent find(DateTime dateTime) {
+		return dao.findByDate(dateTime);
 	}
 }

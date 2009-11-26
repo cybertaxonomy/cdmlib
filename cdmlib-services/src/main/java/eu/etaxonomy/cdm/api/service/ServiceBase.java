@@ -145,4 +145,8 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
 	public UUID update(T transientObject) {
 		return dao.update(transientObject);
 	}
+	
+	public List<T> list(T example, Set<String> includeProperties, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
+		return dao.list(example, includeProperties, limit, start, orderHints, propertyPaths);
+	}
 }

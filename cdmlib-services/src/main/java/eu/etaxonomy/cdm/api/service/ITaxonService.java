@@ -203,6 +203,20 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	
 	/**
 	 * Returns the SynonymRelationships (of where relationship.type == type, if this argument is supplied) 
+	 * where the supplied synonym is relatedFrom.
+	 * 
+	 * @param taxon The synonym that is relatedFrom
+	 * @param type The type of SynonymRelationship (can be null)
+	 * @param pageSize The maximum number of relationships returned (can be null for all relationships)
+	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
+	 * * @param orderHints Properties to order by
+	 * @param propertyPaths Properties to initialize in the returned entities, following the syntax described in {@link BeanInitializer#initialize(Object, List)}
+	 * @return a Pager of SynonymRelationship instances
+	 */
+	public Pager<SynonymRelationship> getSynonyms(Synonym synonym, SynonymRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+	
+	/**
+	 * Returns the SynonymRelationships (of where relationship.type == type, if this argument is supplied) 
 	 * where the supplied taxon is relatedTo.
 	 * 
 	 * @param taxon The taxon that is relatedTo

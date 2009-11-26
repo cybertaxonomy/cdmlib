@@ -12,8 +12,11 @@ package eu.etaxonomy.cdm.api.service;
 
 import java.util.List;
 
+import org.hibernate.envers.query.criteria.AuditCriterion;
+
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
+import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.model.view.AuditEventRecord;
 import eu.etaxonomy.cdm.persistence.dao.common.AuditEventSort;
 
@@ -52,5 +55,22 @@ public interface IVersionableService<T extends VersionableEntity> extends IServi
 	 * @return a record of the previous audit event to affect t, or null if the current event is the first to affect t
 	 */
 	public AuditEventRecord<T> getPreviousAuditEvent(T t);
-
+	
+	/**
+	 * Returns a list of all audit events occurring to objects of type T, optionally restricted to objects of type clazz
+	 * between the AuditEvents from and to, inclusive, optionally filtered by other criteria
+	 * 
+	 * @param clazz Restrict the results returned to objects of this class
+	 * @param from The audit event to start from (inclusive, or pass null to start from the beginning of the recordset)
+	 * @param to The audit event to continue until (exclusive, or pass null to return audit events up to the time of the query)
+	 * @param criteria Extra criteria to filter by
+	 * @param pageSize The maximum number of objects returned (can be null for all matching objects)
+	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based, 
+	 *                   can be null, equivalent of starting at the beginning of the recordset)
+	 * @param sort Sort the events either forwards or backwards in time
+	 * @param propertyPaths properties to be initialized
+	 * @return
+	 */
+	public Pager<AuditEventRecord<T>> pageAuditEvents(Class<? extends T> clazz,AuditEvent from,AuditEvent to, List<AuditCriterion> criteria, Integer pageSize, Integer pageValue, AuditEventSort sort,List<String> propertyPaths);
+ 
 }

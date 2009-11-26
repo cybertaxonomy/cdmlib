@@ -167,10 +167,13 @@ public class ValidationTest extends CdmIntegrationTest {
 		name.setAuthorshipCache("Mill.");
 		name.setTitleCache("Abies alba Mill.");
 		name.setFullTitleCache("Abies alba Mill.");
+		name.setNomenclaturalReference(null);
+		name.setNomenclaturalMicroReference(null);
 		
         Set<ConstraintViolation<BotanicalName>> constraintViolations  = validator.validate(name, Default.class, Level2.class);
         assertTrue("There should not be a constraint violation as this name is valid at the default and second level",constraintViolations.isEmpty());
         constraintViolations  = validator.validate(name, Default.class,Level2.class, Level3.class);
         assertFalse("There should be a constraint violation as this name is valid at the default and second level, but invalid at the third level",constraintViolations.isEmpty());
+        
 	}
 }
