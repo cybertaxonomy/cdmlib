@@ -138,6 +138,14 @@
          <a>toTaxon</a>
          <b>toTaxon</b>
        </field>
+       <field-exclude>
+           <a>createdBy.username</a>
+           <b>creator</b>
+       </field-exclude>
+       <field-exclude>
+           <a>updatedBy.username</a>
+           <b>contributor</b>
+       </field-exclude>
     </mapping> 
     
     <mapping> 
@@ -151,6 +159,14 @@
             <a>acceptedTaxon</a>
             <b>toTaxon</b>
         </field>
+        <field-exclude>
+            <a>createdBy.username</a>
+            <b>creator</b>
+        </field-exclude>
+        <field-exclude>
+            <a>updatedBy.username</a>
+            <b>contributor</b>
+        </field-exclude>        
     </mapping>
     
 </mappings>
