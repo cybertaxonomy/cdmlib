@@ -13,6 +13,8 @@ package eu.etaxonomy.cdm.remote.controller;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -22,6 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.ModelAndView;
 
 import eu.etaxonomy.cdm.api.service.IMediaService;
 import eu.etaxonomy.cdm.common.mediaMetaData.MediaMetaData;
@@ -54,25 +57,35 @@ public class MediaController extends AnnotatableController<Media, IMediaService>
 	public void setService(IMediaService service) {
 		this.service = service;
 	}
+	private static final List<String> MEDIA_INIT_STRATEGY = Arrays.asList(new String []{
+			"*",
+			"representations",
+			"representations.parts"
+	});
 	
 	@RequestMapping(value = {"/*/media/*/metadata"})
-	public Map<String, String> doGetMediaMetaData(HttpServletRequest request, HttpServletResponse response) throws IOException {
+	public ModelAndView doGetMediaMetaData(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		Map<String, String> result;
-		Media media = getCdmBase(request, response, null, Media.class);
+		Media media = getCdmBase(request, response, MEDIA_INIT_STRATEGY, Media.class);
 		
 		Set<MediaRepresentation> representations = media.getRepresentations();
 		//hole die erste Representation und davon die Metadaten 
 
-		MediaRepresentation[] repArray = (MediaRepresentation[]) representations.toArray();
-		
+		Object[] repArray = representations.toArray();
+		Object mediaRep = repArray[0];
+		ModelAndView mv = new ModelAndView();
 		try {
-			result = service.getImageMetaData(new URI(repArray[0].getParts().get(0).getUri()));
+			if (mediaRep instanceof MediaRepresentation){
+				MediaRepresentation medRep = (MediaRepresentation) mediaRep;
+				String uriString = medRep.getParts().get(0).getUri();
+				result = service.getImageMetaData(new URI(uriString));
+				mv.addObject(result);
+			}
 		} catch (URISyntaxException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			return null;
 		}
-		return result;
+		return mv;
 		
 	}
 

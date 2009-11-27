@@ -209,6 +209,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 	
 	public TaxonPortalController(){
 		super();
+		setInitializationStrategy(TAXON_INIT_STRATEGY);
 		setUuidParameterPattern("^/(?:[^/]+)/portal/(?:[^/]+)/([^/?#&\\.]+).*");
 	}
 	
@@ -230,7 +231,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.remote.controller.BaseController#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
-	 */
+	
 	@Override
 	@RequestMapping(method = RequestMethod.GET)
 	public TaxonBase doGet(HttpServletRequest request, HttpServletResponse response)throws IOException {
@@ -238,7 +239,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 		TaxonBase tb = getCdmBase(request, response, TAXON_INIT_STRATEGY, TaxonBase.class);
 		return tb;
 	}
-	
+	 */
 	/**
 	 * Find Taxa, Synonyms, Common Names by name, either globally or in a specific geographic area. 
 	 * <p>
