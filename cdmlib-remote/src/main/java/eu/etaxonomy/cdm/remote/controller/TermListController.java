@@ -32,6 +32,7 @@ import eu.etaxonomy.cdm.model.common.OrderedTermBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
+import eu.etaxonomy.cdm.model.location.NamedAreaType;
 
 /**
  * TODO write controller documentation
@@ -165,7 +166,8 @@ public class TermListController extends BaseListController<DefinedTermBase, ITer
 			case 3: level = NamedAreaLevel.TDWG_LEVEL3(); break;
 			case 4: level = NamedAreaLevel.TDWG_LEVEL4(); break;
 		}
-		Pager<NamedArea> p = service.list(level, null, null, null, null, null);
+		NamedAreaType type = null;
+		Pager<NamedArea> p = service.list(level, type, null, null, null, null);
 		return p.getRecords();
 	}
 
