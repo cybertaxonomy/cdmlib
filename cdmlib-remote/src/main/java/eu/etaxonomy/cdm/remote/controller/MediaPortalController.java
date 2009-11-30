@@ -47,6 +47,7 @@ public class MediaPortalController extends AnnotatableController<Media, IMediaSe
 
 	public MediaPortalController(){
 		super();
+		setInitializationStrategy(MEDIA_INIT_STRATEGY);
 		setUuidParameterPattern("^/(?:[^/]+)/portal/media/([^/?#&\\.]+).*");
 	}
 	
@@ -57,17 +58,6 @@ public class MediaPortalController extends AnnotatableController<Media, IMediaSe
 	@Override
 	public void setService(IMediaService service) {
 		this.service = service;
-	}
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.remote.controller.BaseController#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
-	 */
-	@Override
-	@RequestMapping(method = RequestMethod.GET)
-	public Media doGet(HttpServletRequest request, HttpServletResponse response)throws IOException {
-		logger.info("doGet()");
-		Media media = getCdmBase(request, response, MEDIA_INIT_STRATEGY, Media.class);
-		return media;
 	}
 
 }
