@@ -184,7 +184,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 			"elements.$",
 			"elements.sources.citation.",
 			"elements.sources.citation.authorTeam",
-			"elements.sources.citation.authorTeam.teamMember",
+			"elements.sources.citation.authorTeam.teamMembers",
 			"elements.multilanguageText",
 			"elements.media.representations.parts",
 	});
