@@ -273,8 +273,8 @@ public class TaxonTreeServiceImpl extends IdentifiableServiceBase<TaxonomicTree,
 	 * @see eu.etaxonomy.cdm.api.service.ITaxonTreeService#getAllMediaForChildNodes(eu.etaxonomy.cdm.model.taxon.TaxonNode, java.util.List, int, int, int, java.lang.String[])
 	 */
 	public Map<UUID, List<MediaRepresentation>> getAllMediaForChildNodes(
-			TaxonNode taxonNode, List<String> propertyPaths, int size,
-			int height, int widthOrDuration, String[] mimeTypes) {
+			TaxonNode taxonNode, List<String> propertyPaths, Integer size,
+			Integer height, Integer widthOrDuration, String[] mimeTypes) {
 		
 		TreeMap<UUID, List<MediaRepresentation>> result = new TreeMap<UUID, List<MediaRepresentation>>();
 		List<Media> taxonMedia = new ArrayList<Media>();
@@ -314,7 +314,7 @@ public class TaxonTreeServiceImpl extends IdentifiableServiceBase<TaxonomicTree,
 		
 	}
 	
-	public Map<UUID, List<MediaRepresentation>> getAllMediaForChildNodes(Taxon taxon, TaxonomicTree taxTree, List<String> propertyPaths, int size, int height, int widthOrDuration, String[] mimeTypes){
+	public Map<UUID, List<MediaRepresentation>> getAllMediaForChildNodes(Taxon taxon, TaxonomicTree taxTree, List<String> propertyPaths, Integer size, Integer height, Integer widthOrDuration, String[] mimeTypes){
 		TaxonNode node = taxTree.getNode(taxon);
 		
 		return getAllMediaForChildNodes(node, propertyPaths, size, height, widthOrDuration, mimeTypes);

@@ -508,9 +508,9 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		return dao.getUuidAndTitleCache();
 	}
 
-	public List<MediaRepresentation> getAllMedia(Taxon taxon, int size, int height, int widthOrDuration, String[] mimeTypes){
+	public List<MediaRepresentation> getAllMedia(Taxon taxon, int size, int height, int widthOrDuration, String[] mimeTypes, List<String> propertyPaths){
 		List<MediaRepresentation> medRep = new ArrayList<MediaRepresentation>();
-		taxon = (Taxon)dao.load(taxon.getUuid());
+		taxon = (Taxon)dao.load(taxon.getUuid(), propertyPaths);
 		Set<TaxonDescription> descriptions = taxon.getDescriptions();
 		for (TaxonDescription taxDesc: descriptions){
 			Set<DescriptionElementBase> elements = taxDesc.getElements();

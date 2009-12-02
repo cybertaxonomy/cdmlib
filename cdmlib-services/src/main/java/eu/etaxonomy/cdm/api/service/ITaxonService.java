@@ -283,5 +283,5 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	 * @param mimeTypes
 	 * @return
 	 */
-	public List<MediaRepresentation> getAllMedia(Taxon taxon, int size, int height, int widthOrDuration, String[] mimeTypes);
+	public List<MediaRepresentation> getAllMedia(Taxon taxon, int size, int height, int widthOrDuration, String[] mimeTypes, List<String> propertyPaths);
 }
