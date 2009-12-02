@@ -59,8 +59,13 @@ public class JpegImageMetaData extends ImageMetaData {
 					Item item = (Item) object;
 					System.err.println("File: " + imageFile.getName() + ". "+ item.getKeyword() +"string is: " + item.getText());
 					logger.debug("File: " + imageFile.getName() + ". "+ item.getKeyword() +"string is: " + item.getText());
-					metaData.put(item.getKeyword(), item.getText());
-					
+					if (item.getKeyword().contains("/")){
+						String key = item.getKeyword();
+						key.replace("/", "_");
+						metaData.put(key, item.getText());
+					}else{
+						metaData.put(item.getKeyword(), item.getText());
+					}
 				}
 		}else{
 			logger.error("The mimetype is not jpeg");
