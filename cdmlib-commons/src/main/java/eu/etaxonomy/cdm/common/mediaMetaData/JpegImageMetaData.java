@@ -57,14 +57,18 @@ public class JpegImageMetaData extends ImageMetaData {
 			int counter = 0;
 				for (Object object : jpegMetadata.getItems()){
 					Item item = (Item) object;
-					System.err.println("File: " + imageFile.getName() + ". "+ item.getKeyword() +"string is: " + item.getText());
-					logger.debug("File: " + imageFile.getName() + ". "+ item.getKeyword() +"string is: " + item.getText());
+					
+					logger.debug("File: " + imageFile.getName() + ". "+ item.getKeyword() +" string is: " + item.getText());
 					if (item.getKeyword().contains("/")){
 						String key = item.getKeyword();
-						key.replace("/", "_");
+						//key.replace("/", "");
+						int index = key.indexOf("/");
+						key = key.substring(0, index);
 						metaData.put(key, item.getText());
+						System.err.println("File: " + imageFile.getName() + ". "+ key +" string is: " + item.getText());
 					}else{
 						metaData.put(item.getKeyword(), item.getText());
+						System.err.println("File: " + imageFile.getName() + ". "+ item.getKeyword() +" string is: " + item.getText());
 					}
 				}
 		}else{
