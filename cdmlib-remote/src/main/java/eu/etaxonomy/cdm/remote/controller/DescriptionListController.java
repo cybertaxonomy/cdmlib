@@ -43,7 +43,7 @@ public class DescriptionListController extends BaseListController<DescriptionBas
 			new String[]{
 				"representations",
 				"root.feature.representations",
-				"root.children.feature.representations",
+				"root.children.feature.representations"
 			});
 
 	/* (non-Javadoc)
