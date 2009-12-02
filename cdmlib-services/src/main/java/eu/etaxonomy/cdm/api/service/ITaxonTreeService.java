@@ -162,7 +162,7 @@ public interface ITaxonTreeService extends IIdentifiableEntityService<TaxonomicT
 	 *  @deprecated use getAllMediaForChildNodes(TaxonNode taxonNode, ...) instead
 	 * if you have a taxonomicTree and a taxon that is in it, you should also have the according taxonNode
 	 */
-	public Map<UUID, List<MediaRepresentation>> getAllMediaForChildNodes(Taxon taxon, TaxonomicTree taxTree, List<String> propertyPaths, Integer size, Integer height, Integer widthOrDuration, String[] mimeTypes);
+	public Map<UUID, List<MediaRepresentation>> getAllMediaForChildNodes(Taxon taxon, TaxonomicTree taxTree, List<String> propertyPaths, int size, int height, int widthOrDuration, String[] mimeTypes);
 	
 	/**
 	 * 
@@ -174,7 +174,7 @@ public interface ITaxonTreeService extends IIdentifiableEntityService<TaxonomicT
 	 * @param mimeTypes
 	 * @return
 	 */
-	public Map<UUID, List<MediaRepresentation>> getAllMediaForChildNodes(TaxonNode taxonNode, List<String> propertyPaths, Integer size, Integer height, Integer widthOrDuration, String[] mimeTypes);
+	public Map<UUID, List<MediaRepresentation>> getAllMediaForChildNodes(TaxonNode taxonNode, List<String> propertyPaths, int size, int height, int widthOrDuration, String[] mimeTypes);
 	
 	/**
 	 * 
