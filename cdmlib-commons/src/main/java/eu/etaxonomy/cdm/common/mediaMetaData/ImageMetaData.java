@@ -161,10 +161,10 @@ public  class ImageMetaData extends MediaMetaData {
 					int index = key.indexOf("/");
 					key = key.substring(0, index);
 					metaData.put(key, item.getText());
-					System.err.println("File: " + image.getName() + ". "+ key +" string is: " + item.getText());
+					
 				}else{
 					metaData.put(item.getKeyword(), item.getText());
-					System.err.println("File: " + image.getName() + ". "+ item.getKeyword() +" string is: " + item.getText());
+					
 				}
 				
 			}
