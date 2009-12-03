@@ -155,9 +155,17 @@ public  class ImageMetaData extends MediaMetaData {
 			
 			for (Object object : mediaData.getItems()){
 				Item item = (Item) object;
-				System.err.println("File: " + mediaUri.getPath() + ". "+ item.getKeyword() +" string is: " + item.getText());
-				logger.debug("File: " + mediaUri.getPath() + ". "+ item.getKeyword() +" string is: " + item.getText());
-				metaData.put(item.getKeyword(), item.getText());
+				if (item.getKeyword().contains("/")){
+					String key = item.getKeyword();
+					//key.replace("/", "");
+					int index = key.indexOf("/");
+					key = key.substring(0, index);
+					metaData.put(key, item.getText());
+					System.err.println("File: " + image.getName() + ". "+ key +" string is: " + item.getText());
+				}else{
+					metaData.put(item.getKeyword(), item.getText());
+					System.err.println("File: " + image.getName() + ". "+ item.getKeyword() +" string is: " + item.getText());
+				}
 				
 			}
 		} catch (ImageReadException e) {
