@@ -13,10 +13,8 @@ package eu.etaxonomy.cdm.remote.controller;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -33,7 +31,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.parsing.ParseState.Entry;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
@@ -64,7 +61,6 @@ import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
-import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
@@ -109,9 +105,6 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 	
 	@Autowired
 	private ITaxonTreeService taxonTreeService;
-	
-	@Autowired
-	private ITaxonService taxonService;
 	
 	private static final List<String> TAXON_INIT_STRATEGY = Arrays.asList(new String []{
 			"*",
@@ -194,12 +187,6 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 			//"elements.sources.citation.authorTeam.teamMembers.",
 			"elements.multilanguageText",
 			"elements.media.representations.parts",
-	});
-	
-	protected static final List<String> TAXON_MEDIA_INIT_STRATEGY = Arrays.asList(new String[]{
-		"$",
-		"media.representations.",
-		"media.representations.parts"
 	});
 	
 	private static final List<String> NAMEDESCRIPTION_INIT_STRATEGY = Arrays.asList(new String []{
@@ -557,67 +544,16 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 	@RequestMapping(
 		value = {"/*/portal/taxon/*/media/*/*"},
 		method = RequestMethod.GET)
-	public ModelAndView doGetMedia(HttpServletRequest request, HttpServletResponse response)throws IOException {
+	public List<Media> doGetMedia(HttpServletRequest request, HttpServletResponse response)throws IOException {
 		logger.info("doGetMedia()" + request.getServletPath());
 		Taxon t = getCdmBase(request, response, null, Taxon.class);
-		Map<String,List<MediaRepresentation>> p = new HashMap<String,List<MediaRepresentation>>();
-		boolean hasChildren = false;
-		if (!t.getTaxonNodes().isEmpty()){
-			Iterator<TaxonNode> nodes = t.getTaxonNodes().iterator();
-			TaxonNode node = nodes.next();
-			hasChildren = !node.getChildNodes().isEmpty();
-			Map<UUID,List<MediaRepresentation>> allMedia;
-			if (hasChildren){
-				allMedia = taxonTreeService.getAllMediaForChildNodes(node, TAXON_MEDIA_INIT_STRATEGY, null, null, null, null);
-				Set<Map.Entry<UUID, List<MediaRepresentation>>> entries = allMedia.entrySet();
-				for (Map.Entry<UUID, List<MediaRepresentation>> entry : entries){
-					p.put(entry.toString(), entry.getValue());
-				}
-			}
-		}else{
-			String path = request.getServletPath();
-			String[] pathTokens = path.split("/");
-			String[] mimeTypes = pathTokens[6].split(",");
-			String[] sizeTokens = pathTokens[7].split(",");
-			Integer widthOrDuration = null;
-			Integer height = null;
-			Integer size = null;
-			
-			for(int i=0; i<mimeTypes.length; i++){
-				mimeTypes[i] = mimeTypes[i].replace(':', '/');
-			}
-			
-			if(sizeTokens.length > 0){
-				try {
-					size = Integer.valueOf(sizeTokens[0]);
-				} catch (NumberFormatException nfe) {
-					/* IGNORE */
-				}
-			}
-			if(sizeTokens.length > 1){
-				try {
-					widthOrDuration = Integer.valueOf(sizeTokens[1]);
-				} catch (NumberFormatException nfe) {
-					/* IGNORE */
-				}
-			}
-			if(sizeTokens.length > 2){
-				try {
-					height = Integer.valueOf(sizeTokens[2]);
-				} catch (NumberFormatException nfe) {
-					/* IGNORE */
-				}
-			}
+		Pager<TaxonDescription> p = 
+			descriptionService.getTaxonDescriptions(t, null, null, null, null, TAXONDESCRIPTION_INIT_STRATEGY);
 		
-		List<MediaRepresentation> mr = 
-			taxonService.getAllMedia(t, size, height, widthOrDuration, mimeTypes, TAXON_INIT_STRATEGY);
-		
-		p.put(t.getUuid().toString(), mr);
-		}
 		// pars the media and quality parameters
 		
 		
-		/* collect all media of the given taxon
+		// collect all media of the given taxon
 		boolean limitToGalleries = false;
 		List<Media> taxonMedia = new ArrayList<Media>();
 		for(TaxonDescription desc : p.getRecords()){
@@ -629,15 +565,63 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 				}
 			}
 		}
-		*/
+		
 		// move into media ...
 		
 		// find best matching representations of each media
+		String path = request.getServletPath();
+		String[] pathTokens = path.split("/");
+		String[] mimeTypes = pathTokens[6].split(",");
+		String[] sizeTokens = pathTokens[7].split(",");
+		Integer widthOrDuration = null;
+		Integer height = null;
+		Integer size = null;
 		
+		for(int i=0; i<mimeTypes.length; i++){
+			mimeTypes[i] = mimeTypes[i].replace(':', '/');
+		}
 		
-		ModelAndView mv = new ModelAndView();
-		mv.addAllObjects(p);
-		return mv;
+		if(sizeTokens.length > 0){
+			try {
+				size = Integer.valueOf(sizeTokens[0]);
+			} catch (NumberFormatException nfe) {
+				/* IGNORE */
+			}
+		}
+		if(sizeTokens.length > 1){
+			try {
+				widthOrDuration = Integer.valueOf(sizeTokens[1]);
+			} catch (NumberFormatException nfe) {
+				/* IGNORE */
+			}
+		}
+		if(sizeTokens.length > 2){
+			try {
+				height = Integer.valueOf(sizeTokens[2]);
+			} catch (NumberFormatException nfe) {
+				/* IGNORE */
+			}
+		}
+		
+		List<Media> returnMedia = new ArrayList<Media>(taxonMedia.size());
+		for(Media media : taxonMedia){
+			SortedMap<String, MediaRepresentation> prefRepresentations 
+				= orderMediaRepresentations(media, mimeTypes, size, widthOrDuration, height);
+			try {
+				// take first one and remove all other representations
+				MediaRepresentation prefOne = prefRepresentations.get(prefRepresentations.firstKey());
+				for (MediaRepresentation representation : media.getRepresentations()) {
+					if (representation != prefOne) {
+						media.removeRepresentation(representation);
+					}
+				}
+				returnMedia.add(media);
+			} catch (NoSuchElementException nse) {
+				/* IGNORE */
+			}
+		}
+		
+		return returnMedia;
 	}
 
 	/**
