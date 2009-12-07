@@ -13,6 +13,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.net.URL;
+import java.net.URLConnection;
 
 import org.apache.log4j.Logger;
 import org.apache.sanselan.ImageReadException;
@@ -31,26 +33,29 @@ public class TiffImageMetaData extends ImageMetaData {
 	private static Logger logger = Logger.getLogger(TiffImageMetaData.class);
 
 	public void readImageMetaData(URI imageURI){
-		InputStream inputStream = null;
-		IImageMetadata metadata = null;
+		IImageMetadata mediaData = null;
 		File imageFile = null;
-		
+		readImageInfo(imageURI);
 		try {
-			imageFile = new File(imageURI);
-					
-			metadata = Sanselan.getMetadata(imageFile);
+			InputStream inputStream;
+			URL imageUrl = imageURI.toURL();    
+			    
+			URLConnection connection = imageUrl.openConnection();
+			inputStream = connection.getInputStream();
+			mediaData = Sanselan.getMetadata(inputStream, null);
+		    
+			
 		} catch (ImageReadException e) {
-			logger.error("Error reading image" + " in " + imageFile.getName(), e);
+			logger.error(e);
 		} catch (IOException e) {
-			logger.error("Error reading file"  + " in " + imageFile.getName(), e);
+			logger.error(e);
 		}
-		
-		if(metadata instanceof TiffImageMetadata){
-			TiffImageMetadata jpegMetadata = (TiffImageMetadata) metadata;
+		if(mediaData instanceof TiffImageMetadata){
+			TiffImageMetadata jpegMetadata = (TiffImageMetadata) mediaData;
 			for (Object object : jpegMetadata.getItems()){
 				Item item = (Item) object;
 			
-				logger.debug("File: " + imageFile.getName() + ". "+ item.getKeyword() +"string is: " + item.getText());
+				//logger.debug("File: " + imageFile.getName() + ". "+ item.getKeyword() +"string is: " + item.getText());
 				metaData.put(item.getKeyword(), item.getText());
 					
 			}
