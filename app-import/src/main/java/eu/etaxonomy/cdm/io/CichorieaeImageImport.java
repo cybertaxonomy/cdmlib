@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.io;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
@@ -21,6 +22,9 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
+import org.apache.sanselan.ImageInfo;
+import org.apache.sanselan.ImageReadException;
+import org.apache.sanselan.Sanselan;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.api.service.INameService;
@@ -216,8 +220,11 @@ public class CichorieaeImageImport extends AbstractImageImporter {
 							URL url = new URL(urlString);
 
 							URI uri = CdmUtils.string2Uri(urlString);
-							
-							ImageMetaData imageMetaData = (ImageMetaData) metaDataFactory.readMediaData(uri, MimeType.IMAGE);
+												
+							//imageinfo = Sanselan.getImageInfo(file);
+							ImageMetaData imageMetaData =ImageMetaData.newInstance();
+							imageMetaData.readImageInfo(uri);
+							//ImageMetaData imageMetaData = (ImageMetaData) metaDataFactory.readMediaData(uri, MimeType.IMAGE);
 							ImageFile image = ImageFile.NewInstance(url.toString(), null, imageMetaData.getHeight(), imageMetaData.getWidth());
 							
 							MediaRepresentation representation = MediaRepresentation.NewInstance(imageMetaData.getMimeType(), null);
@@ -235,7 +242,10 @@ public class CichorieaeImageImport extends AbstractImageImporter {
 
 						} catch (MalformedURLException e) {
 							logger.error("Malformed URL", e);
-						}
+						} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 					}
 				}else{
 					logger.warn("File is not a file (but a directory?): " + file.getName());
