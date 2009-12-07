@@ -28,6 +28,7 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.CdmIoBase;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
+import eu.etaxonomy.cdm.model.common.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
@@ -100,9 +101,18 @@ public class TaxonXDescriptionImport extends CdmIoBase<TaxonXImportState> implem
 			logger.warn("Taxon could not be found");
 			return false;
 		}
+		
+		ReferenceBase modsReference = state.getModsReference();
+		if (modsReference == null){
+			modsReference = state.getConfig().getSourceReference();
+		}
+		
 		//unlazyDescription(txConfig, taxon);
 		TaxonDescription description = TaxonDescription.NewInstance();
 		description.setTitleCache(getDescriptionTitle(state));
+		if (modsReference != null){
+			description.addDescriptionSource(modsReference);
+		}
 		
 		Element elTaxonBody = root.getChild("taxonxBody", nsTaxonx);
 		Element elTreatment = elTaxonBody.getChild("treatment", nsTaxonx);
@@ -118,11 +128,11 @@ public class TaxonXDescriptionImport extends CdmIoBase<TaxonXImportState> implem
 			}
 			String text = getText(div);
 			if (!"".equals(CdmUtils.Nz(text).trim())){
-				// FIXME hibernate throws an exception when a string is longer than approx. 4000 chars.
-				// for now we truncate any description text to 4000 characters.
+				// hibernate throws an exception when a string is longer than approx. 65500 chars.
+				// for now we truncate any description text to 65500 characters.
 				if(text.length() > 65500){
 					text = text.substring(0, 65500) + "... [text truncated]";
-					logger.warn("FIXME - Truncation of text occurred.");
+					logger.warn("Truncation of text: description for taxon " + taxon.getTitleCache() + " was longer than 65500 characters.");
 				}
 				
 				DescriptionElementBase descriptionElement = TextData.NewInstance(text, Language.ENGLISH(), null);
@@ -130,8 +140,8 @@ public class TaxonXDescriptionImport extends CdmIoBase<TaxonXImportState> implem
 				description.addElement(descriptionElement);
 				
 				//add reference
-				if (state.getModsReference() != null){
-					descriptionElement.addSource(null, null, state.getModsReference(), null, null, null);
+				if (modsReference != null){
+					descriptionElement.addSource(null, null, modsReference, null, null, null);
 				}
 			}
 
