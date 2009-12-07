@@ -465,7 +465,7 @@ public class FeatureNode extends VersionableEntity {
 	 * @param	taxon	the taxon to be set 
 	 * @see				#getTaxon() 
 	 */
-	protected void setTaxon(Taxon taxon) {
+	public void setTaxon(Taxon taxon) {
 		this.taxon = taxon;
 	}
 }
