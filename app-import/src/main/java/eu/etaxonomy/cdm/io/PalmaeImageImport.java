@@ -21,6 +21,7 @@ import java.util.Set;
 import java.util.Map.Entry;
 
 import org.apache.log4j.Logger;
+import org.apache.sanselan.ImageInfo;
 import org.apache.sanselan.ImageReadException;
 import org.apache.sanselan.Sanselan;
 import org.apache.sanselan.common.IImageMetadata;
@@ -216,11 +217,12 @@ public class PalmaeImageImport extends AbstractImageImporter {
 						taxonService.saveOrUpdate(taxon);
 						
 						TextData feature = TextData.NewInstance();
-						MetaDataFactory metaDataFactory = MetaDataFactory.getInstance();
-						ImageMetaData imageMetaData = (ImageMetaData) metaDataFactory.readMediaData(file.toURI(), MimeType.IMAGE);
+						//MetaDataFactory metaDataFactory = MetaDataFactory.getInstance();
+						//ImageMetaData imageMetaData = (ImageMetaData) metaDataFactory.readMediaData(file.toURI(), MimeType.IMAGE);
+						try{
+						ImageInfo imageinfo = Sanselan.getImageInfo(file);
 						
-						
-						String mimeType = imageMetaData.getMimeType();
+						String mimeType = imageinfo.getMimeType();
 						String suffix = "jpg";
 						
 						
@@ -233,7 +235,7 @@ public class PalmaeImageImport extends AbstractImageImporter {
 						}
 						
 						
-						ImageFile imageFile = ImageFile.NewInstance(url.toString(),null, imageMetaData.getHeight(), imageMetaData.getWidth());
+						ImageFile imageFile = ImageFile.NewInstance(url.toString(),null, imageinfo.getHeight(), imageinfo.getWidth());
 						
 						
 						MediaRepresentation representation = MediaRepresentation.NewInstance(mimeType, suffix);
@@ -294,7 +296,9 @@ public class PalmaeImageImport extends AbstractImageImporter {
 						description.addElement(feature);
 						
 						taxonService.saveOrUpdate(taxon);
-						
+						}catch(Exception e) {
+							e.printStackTrace();
+						}
 					}
 				}
 			}
