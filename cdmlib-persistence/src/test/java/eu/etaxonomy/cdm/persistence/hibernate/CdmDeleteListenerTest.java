@@ -12,8 +12,6 @@ package eu.etaxonomy.cdm.persistence.hibernate;
 
 import static org.junit.Assert.assertNotNull;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.util.Set;
 import java.util.UUID;
 
@@ -25,12 +23,9 @@ import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.dbunit.annotation.ExpectedDataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
-import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.HybridRelationship;
-import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.NonViralName;
-import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 
