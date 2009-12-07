@@ -31,6 +31,7 @@ import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
@@ -174,8 +175,11 @@ public class TcsRdfTaxonImport  extends TcsRdfImportBase implements ICdmIO<TcsRd
 				Taxon taxon = Taxon.NewInstance(taxonNameBase, sec);
 				List<DescriptionElementBase> geoList = makeGeo(elTaxonConcept, geoNamespace, rdfNamespace);
 				TaxonDescription description = TaxonDescription.NewInstance(taxon);
+				description.addDescriptionSource(taxon.getSec());
 				for (DescriptionElementBase geo: geoList){
 					description.addElement(geo);
+					DescriptionElementSource source = DescriptionElementSource.NewInstance(null, null, taxon.getSec(), null);
+					geo.addSource(source);
 				}
 				taxon.addDescription(description);
 				taxonBase = taxon;
