@@ -30,7 +30,6 @@ public class UpdateEntityListener implements SaveOrUpdateEventListener {
 		if(entity != null && VersionableEntity.class.isAssignableFrom(entity.getClass())) {
 			VersionableEntity versionableEntity = (VersionableEntity)entity;
 			versionableEntity.setUpdated(new DateTime());
-			SecurityContextHolder.setStrategyName(SecurityContextHolder.MODE_GLOBAL);
 			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 			if(authentication != null && authentication.getPrincipal() != null && authentication.getPrincipal() instanceof User) {
 			  User user = (User)authentication.getPrincipal();
