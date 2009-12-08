@@ -74,10 +74,10 @@ public class JpegImageMetaData extends ImageMetaData {
 						int index = key.indexOf("/");
 						key = key.substring(0, index);
 						metaData.put(key, item.getText());
-						System.err.println("File: " + imageFile.getName() + ". "+ key +" string is: " + item.getText());
+						
 					}else{
 						metaData.put(item.getKeyword(), item.getText());
-						System.err.println("File: " + imageFile.getName() + ". "+ item.getKeyword() +" string is: " + item.getText());
+						
 					}
 				}
 		}else{
