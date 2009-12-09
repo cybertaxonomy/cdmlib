@@ -263,7 +263,7 @@ public class TaxonNode  extends AnnotatableEntity implements ITreeNode{
 	 * 
 	 * @param node
 	 * @return
-	 * @deprecated use removeChildNode() instead
+	 * @deprecated use deleteChildNode() instead
 	 */
 	@Deprecated
 	public boolean removeChild(TaxonNode node){

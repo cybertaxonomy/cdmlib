@@ -111,15 +111,16 @@ public class TaxonTreeServiceImpl extends IdentifiableServiceBase<TaxonomicTree,
 		List<TaxonNode> pathToRoot = new ArrayList<TaxonNode>();
 		pathToRoot.add(thisNode);
 		
-		TaxonNode parentNode = thisNode.getParent();
-		while(parentNode != null){
-			Rank parentNodeRank = parentNode.getTaxon().getName().getRank();
+		ITreeNode parentNode = thisNode.getParent();
+		while(parentNode instanceof TaxonNode){
+			TaxonNode parent = (TaxonNode) parentNode;
+			Rank parentNodeRank = parent.getTaxon().getName().getRank();
 			// stop if the next parent is higher than the baseRank
 			if(baseRank != null && baseRank.isLower(parentNodeRank)){
 				break;
 			}
-			pathToRoot.add(parentNode);
-			parentNode = parentNode.getParent();
+			pathToRoot.add(parent);
+			parentNode = parent.getParent();
 		}
 		
 		// initialize and invert order of nodes in list

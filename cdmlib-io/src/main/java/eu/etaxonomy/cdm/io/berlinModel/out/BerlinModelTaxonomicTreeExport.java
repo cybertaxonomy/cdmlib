@@ -23,6 +23,7 @@ import eu.etaxonomy.cdm.io.berlinModel.out.mapper.MethodMapper;
 import eu.etaxonomy.cdm.io.common.DbExportStateBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
+import eu.etaxonomy.cdm.model.taxon.ITreeNode;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
@@ -164,8 +165,9 @@ public class BerlinModelTaxonomicTreeExport extends BerlinModelExportBase<Relati
 	}
 
 	private static Integer getObjectFk(TaxonNode node, DbExportStateBase<?> state, boolean isName, boolean isFrom){
-		Taxon taxon = (isFrom) ? node.getTaxon():  node.getParent().getTaxon();
-		if (taxon != null){
+		ITreeNode treeNode = (isFrom) ? node :  node.getParent();
+		if (treeNode instanceof TaxonNode){
+			Taxon taxon = ((TaxonNode) treeNode).getTaxon();
 			CdmBase cdmBase = (isName) ? taxon.getName(): taxon.getSec();
 			return state.getDbId(cdmBase);
 		}

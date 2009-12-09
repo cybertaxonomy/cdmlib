@@ -208,7 +208,7 @@ public class TaraxacumActivator {
 			} else {
 				logger.info(taxonNodesInCich .size()+ " taxon node(s) found for Taraxacum in Cich DB");
 				taxonNodeInCich = taxonNodesInCich.iterator().next();
-				parentNodeInCich = taxonNodeInCich.getParent();
+				parentNodeInCich = (TaxonNode) taxonNodeInCich.getParent();
 				parentInCich = parentNodeInCich.getTaxon();
 			}
 			
@@ -226,9 +226,9 @@ public class TaraxacumActivator {
 			String microcitation = null;
 			
 			TaxonNode taxonNodeInTarax = 
-				parentNodeInCich.addChild(taraxacumInTarax, citation, microcitation);
+				parentNodeInCich.addChildTaxon(taraxacumInTarax, citation, microcitation, null);
 			parentNodeInCich.getTaxonomicTree().addParentChild(parentInCich, taraxacumInTarax, null, null);
-			parentNodeInCich.removeChild(taxonNodeInCich);
+			parentNodeInCich.deleteChildNode(taxonNodeInCich);
 			
 			app.getTaxonService().save(parentInCich);
 			app.getTaxonService().delete(taraxacumInCich);
