@@ -366,8 +366,8 @@ public class TaxonomicTree extends IdentifiableEntity implements IReferencedEnti
 			//no multiple parents are allowed in the tree
 			if (childNode != null && childNode.getParent() != null){
 				//...different to the parent taxon  throw exception
-				if (! childNode.getParent().getTaxon().equals(parent) ){
-					throw new IllegalStateException("The child taxon is already part of the tree but has an other parent taxon than the one than the parent to be added. Child: " + child.toString() + ", new parent:" + parent.toString() + ", old parent: " + childNode.getParent().getTaxon().toString()) ;
+				if (! (childNode.getParent() instanceof TaxonNode) && ((TaxonNode)childNode.getParent()).getTaxon().equals(parent) ){
+					throw new IllegalStateException("The child taxon is already part of the tree but has an other parent taxon than the one than the parent to be added. Child: " + child.toString() + ", new parent:" + parent.toString() + ", old parent: " + ((TaxonNode) childNode.getParent()).getTaxon().toString()) ;
 				//... same as the parent taxon do nothing but overwriting citation and microCitation
 				}else{
 					handleCitationOverwrite(childNode, citation, microCitation);

@@ -289,6 +289,19 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		
 		acceptedTaxon.addSynonymName(oldAcceptedTaxonName, synonymRelationshipType);
 	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#makeSynonymAcceptedTaxon(eu.etaxonomy.cdm.model.taxon.Synonym, eu.etaxonomy.cdm.model.taxon.Taxon)
+	 */
+	public Taxon makeSynonymAcceptedTaxon(Synonym synonym, Taxon acceptedTaxon){
+		
+		Taxon newAcceptedTaxon = Taxon.NewInstance(synonym.getName(), acceptedTaxon.getSec());
+		
+		acceptedTaxon.removeSynonym(synonym);
+		
+		return newAcceptedTaxon;
+	}
 
 	public void generateTitleCache() {
 		generateTitleCache(true);

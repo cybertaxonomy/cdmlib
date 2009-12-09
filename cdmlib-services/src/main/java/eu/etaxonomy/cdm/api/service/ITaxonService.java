@@ -125,7 +125,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	 * @param newAcceptedTaxon
 	 * 				the accepted taxon, the old taxon will become a synonym of
 	 * @param synonymType
-	 * 				<code>SynonymRelationshipType</code> to indicate wether hetero or homotypic
+	 * 				<code>SynonymRelationshipType</code> to indicate whether hetero or homotypic
 	 * @param citation
 	 * 				the reference for this assumption
 	 * @param citationMicroReference
@@ -136,14 +136,32 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	public Synonym makeTaxonSynonym (Taxon oldTaxon, Taxon newAcceptedTaxon, SynonymRelationshipType synonymType, ReferenceBase citation, String citationMicroReference);
 	
 	/**
-	 * Sets the synonyms name as the accepted taxons name. Deletes the synonym from the accepted taxon synonym list
-	 * and attaches a new synonym created with the former name of the accepted taxon 
+	 * Swaps given synonym and accepted taxon. 
+	 * In particular:
+	 * <ul> 
+	 * 		<li>A new accepted taxon with the synonyms name is created</li>
+	 * 		<li>The synonym is deleted from the old accepted taxons synonym list</li>
+	 * 		<li>A new synonym with the name of the old accepted taxon is created</li>
+	 * 		<li>The newly created synonym get related to the newly created accepted taxon</li>
+	 * </ul>
 	 * 
 	 * @param synonym 
 	 * @param acceptedTaxon
 	 * @param synonymRelationshipType the relationship type the newly created synonym will have. Defaults to SYNONYM_OF
 	 */
 	public void swapSynonymAndAcceptedTaxon(Synonym synonym, Taxon acceptedTaxon, SynonymRelationshipType synonymRelationshipType );
+	
+	/**
+	 * Change a synonym into an accepted taxon and removes existing synonym relationship to the given accepted taxon.
+	 * 
+	 * @param synonym
+	 * 				the synonym to change into an accepted taxon
+	 * @param acceptedTaxon
+	 * 				an accepted taxon, the synonym had a relationship to
+	 * @return
+	 * 				the newly created accepted taxon
+	 */
+	public Taxon makeSynonymAcceptedTaxon(Synonym synonym, Taxon acceptedTaxon);
 	
 	/**
 	 * Returns the TaxonRelationships (of where relationship.type == type, if this argument is supplied) 

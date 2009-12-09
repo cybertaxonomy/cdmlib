@@ -224,8 +224,8 @@ public class TaxonNode  extends AnnotatableEntity implements ITreeNode{
 		TaxonomicTree oldChildTree = childNode.getTaxonomicTree();
 		
 		// remove this childNode from previous parents and trees
-		if(childNode.getParent() != null){  //child is already child
-			childNode.getParent().removeChildNode(childNode);
+		if(childNode.getParent() instanceof TaxonNode){  //child is already child
+			((TaxonNode) childNode.getParent()).removeChildNode(childNode);
 		}else if(oldChildTree != null){     //child is root in old tree
 			childNode.getTaxonomicTree().removeChildNode(childNode);
 		}
@@ -350,11 +350,15 @@ public class TaxonNode  extends AnnotatableEntity implements ITreeNode{
 			taxon.addTaxonNode(this);
 		}
 	}
-	public TaxonNode getParent() {
+	public ITreeNode getParent() {
+		if(isTopmostNode())
+			return getTaxonomicTree();
 		return parent;
 	}
-	protected void setParent(TaxonNode parent) {
-		this.parent = parent;
+	protected void setParent(ITreeNode parent) {
+		if(parent instanceof TaxonomicTree)
+			this.parent = null;
+		this.parent = (TaxonNode) parent;
 	}
 	public TaxonomicTree getTaxonomicTree() {
 		return taxonomicTree;
@@ -395,8 +399,8 @@ public class TaxonNode  extends AnnotatableEntity implements ITreeNode{
 		
 		nodeSet.add(this);
 		
-		if(this.getParent() != null){
-			nodeSet.addAll(this.getParent().getAncestors());
+		if(this.getParent() instanceof TaxonNode){
+			nodeSet.addAll(((TaxonNode) this.getParent()).getAncestors());
 		}
 		
 		return nodeSet;
