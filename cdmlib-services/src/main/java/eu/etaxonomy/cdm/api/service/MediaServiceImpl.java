@@ -10,7 +10,13 @@
 
 package eu.etaxonomy.cdm.api.service;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.net.URI;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -78,9 +84,10 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
 		
 	}
 	
-	public Map<String,String> getImageMetaData(URI uri){
+	public Map<String,String> getImageMetaData(URI uri, Integer timeOut){
+		
 		Map <String,String> results ;
-		results = dao.getMediaMetaData(uri);
+		results = dao.getMediaMetaData(uri, timeOut);
 		return results;
 	}
 }

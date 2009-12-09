@@ -66,5 +66,5 @@ public interface IMediaService extends IIdentifiableEntityService<Media> {
 	 */
 	public Pager<Media> search(Class<? extends Media> clazz, String queryString, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
-	public Map<String,String> getImageMetaData(URI uri);
+	public Map<String,String> getImageMetaData(URI uri, Integer timeOut);
 }
