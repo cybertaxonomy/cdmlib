@@ -72,28 +72,28 @@ public class MediaMetaDataTest {
 	public void readImageInfoFromFile() {
 		File imageFile = new File("./src/test/resources/images/OregonScientificDS6639-DSC_0307-small.jpg");
 		MetaDataFactory metaFactory = MetaDataFactory.getInstance();
-		ImageMetaData imageMetaData = (ImageMetaData) metaFactory.readMediaData(imageFile.toURI(), MimeType.JPEG);
+		ImageMetaData imageMetaData = (ImageMetaData) metaFactory.readMediaData(imageFile.toURI(), MimeType.JPEG, 0);
 		//imageMetaData.readFrom(imageFile);
 		
 		assertImageInfo(imageMetaData);		
 		imageFile = new File("./src/test/resources/images/OregonScientificDS6639-DSC_0307-small.tif");
 		
-		 imageMetaData = (ImageMetaData) metaFactory.readMediaData(imageFile.toURI(), MimeType.IMAGE);
+		 imageMetaData = (ImageMetaData) metaFactory.readMediaData(imageFile.toURI(), MimeType.IMAGE, 0);
 		 assertTiffInfo(imageMetaData);		
 	}
 	
-	@Ignore
+	@Test
 	public void readImageInfoFromUrl() {
 		try {
 			
 			//TODO make ready for windows
-			URL imageUrl = new URL("file://" + new File("").getAbsolutePath()+ "/src/test/resources/images/OregonScientificDS6639-DSC_0307-small.jpg");
-			
+			//URL imageUrl = new URL("file://" + new File("").getAbsolutePath()+ "/src/test/resources/images/OregonScientificDS6639-DSC_0307-small.jpg");
+			URL imageUrl = new URL("http://wp5.e-taxonomy.eu/media/palmae/photos/palm_tc_100447_6.jpg");
 			MetaDataFactory metaFactory = MetaDataFactory.getInstance();
-			ImageMetaData imageMetaData = (ImageMetaData) metaFactory.readMediaData(CdmUtils.string2Uri(imageUrl.toString()), MimeType.JPEG);
+			ImageMetaData imageMetaData = (ImageMetaData) metaFactory.readMediaData(CdmUtils.string2Uri(imageUrl.toString()), MimeType.JPEG, 30000);
 			//imageMetaData.readImageMetaData(imageUrl);
 			
-			assertImageInfo(imageMetaData);		
+			Assert.assertNotNull(imageMetaData);
 			
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
