@@ -71,6 +71,6 @@ public interface IMediaDao extends IIdentifiableDao<Media>, ISearchableDao<Media
 	 */
 	public List<Rights> getRights(Media t, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 
-	public Map<String,String> getMediaMetaData(URI uri);
+	public Map<String,String> getMediaMetaData(URI uri, Integer timeOut);
 
 }

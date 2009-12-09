@@ -268,10 +268,10 @@ public class MediaDaoHibernateImpl extends IdentifiableDaoBase<Media> implements
 		throw new UnsupportedOperationException("suggestQuery is not supported for Media");
 	}
 	
-	public Map<String, String> getMediaMetaData(URI uri){
-		HashMap<String, String> metaData = new HashMap<String, String>();
+	public Map<String, String> getMediaMetaData(URI uri, Integer timeOut){
+		
 		ImageMetaData imageMetaData = ImageMetaData.newInstance();
-		imageMetaData.readMetaData(uri);
+		imageMetaData.readMetaData(uri, timeOut);
 		
 		
 		return imageMetaData.getMetaData();
