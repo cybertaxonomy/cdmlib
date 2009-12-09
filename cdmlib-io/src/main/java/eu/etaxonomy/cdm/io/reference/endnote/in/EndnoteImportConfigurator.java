@@ -23,6 +23,7 @@ import eu.etaxonomy.cdm.common.XmlHelp;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
+import eu.etaxonomy.cdm.io.common.ImportStateBase;
 import eu.etaxonomy.cdm.model.reference.IDatabase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
@@ -44,13 +45,13 @@ public class EndnoteImportConfigurator extends ImportConfiguratorBase<EndnoteImp
 	
 	//	rdfNamespace
 	Namespace EndnoteNamespace;
-
+/*TODO: wieder zurück!!!
 	protected void makeIoClassList(){
 		ioClassList = new Class[]{
 			EndnoteRecordsImport.class
 		};
 	};
-
+*/
 	/**
 	 * @param berlinModelSource
 	 * @param sourceReference
@@ -166,7 +167,8 @@ public class EndnoteImportConfigurator extends ImportConfiguratorBase<EndnoteImp
 	 */
 	public Method getFunctionRecordsDetailed() {
 		if (functionRecordsDetailed == null){
-			functionRecordsDetailed = getDefaultFunction(EndnoteRecordsImport.class, "defaultRecordsDetailedFunction");
+			//TODO!!!
+		//	functionRecordsDetailed = getDefaultFunction(EndnoteRecordsImport.class, "defaultRecordsDetailedFunction");
 		}
 		return functionRecordsDetailed;
 		
@@ -223,5 +225,12 @@ public class EndnoteImportConfigurator extends ImportConfiguratorBase<EndnoteImp
 	public void setPlaceholderClass(IEndnotePlaceholderClass placeholderClass) {
 		this.placeholderClass = placeholderClass;
 	}
+
+	@Override
+	protected void makeIoClassList() {
+		// TODO Auto-generated method stub
+		
+	}
+
 	
 }

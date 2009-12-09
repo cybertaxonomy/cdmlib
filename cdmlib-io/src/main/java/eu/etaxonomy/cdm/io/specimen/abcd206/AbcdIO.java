@@ -1229,7 +1229,7 @@ public class AbcdIO extends SpecimenIoBase implements ICdmIO<SpecimenImportState
 					if(this.multimediaObjects.get(i) != null){
 						imd = ImageMetaData.newInstance();
 						url = new URL(this.multimediaObjects.get(i));
-						imd.readMetaData(url.toURI());
+						imd.readMetaData(url.toURI(), 0);
 						if (imd != null){
 							representation = MediaRepresentation.NewInstance();
 							imf = ImageFile.NewInstance(this.multimediaObjects.get(i), null, imd);

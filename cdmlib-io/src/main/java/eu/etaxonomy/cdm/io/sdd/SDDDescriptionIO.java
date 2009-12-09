@@ -1202,7 +1202,7 @@ public class SDDDescriptionIO extends CdmImportBase<SDDImportConfigurator, SDDIm
 							try{
 								URL url = new URL(href);
 								
-								imageMetaData.readMetaData(url.toURI());
+								imageMetaData.readMetaData(url.toURI(), 0);
 								image = ImageFile.NewInstance(url.toString(), null, imageMetaData);
 							} catch (MalformedURLException e) {
 								logger.error("Malformed URL", e);
@@ -1213,7 +1213,7 @@ public class SDDDescriptionIO extends CdmImportBase<SDDImportConfigurator, SDDIm
 							File parent = f.getParentFile();
 							String fi = parent.toString() + File.separator + href;
 							File file = new File(fi);
-							imageMetaData.readMetaData(file.toURI());
+							imageMetaData.readMetaData(file.toURI(), 0);
 							image = ImageFile.NewInstance(file.toString(), null, imageMetaData);
 						}
 

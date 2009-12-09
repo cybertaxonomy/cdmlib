@@ -301,7 +301,7 @@ public class BerlinModelNameFactsImport  extends BerlinModelImportBase  {
 	
 	private ImageFile makeImage(String imageUri, Integer size, File file){
 		ImageMetaData imageMetaData = ImageMetaData.newInstance();
-		imageMetaData.readMetaData(file.toURI());
+		imageMetaData.readMetaData(file.toURI(), 0);
 		ImageFile image = ImageFile.NewInstance(imageUri, size, imageMetaData);
 		return image;
 	}

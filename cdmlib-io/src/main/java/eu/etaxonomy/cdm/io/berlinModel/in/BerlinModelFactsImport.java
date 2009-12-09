@@ -385,7 +385,7 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 			return null;
 		}
 		try {
-			imageMetaData.readMetaData(url.toURI());
+			imageMetaData.readMetaData(url.toURI(), 0);
 		}
 		catch(URISyntaxException e){
 			e.printStackTrace();

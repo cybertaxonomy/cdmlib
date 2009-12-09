@@ -434,7 +434,7 @@ public class SynthesysIO  extends SpecimenIoBase  implements ICdmIO<SpecimenImpo
 						imd = ImageMetaData.newInstance();
 						url = new URL(this.multimediaObjects.get(i));
 						//imd = MediaMetaData.readImageMetaData(url, imd);
-						imd.readMetaData(url.toURI());
+						imd.readMetaData(url.toURI(), 0);
 						if (imd != null){
 							System.out.println("image not null");
 							representation = MediaRepresentation.NewInstance();
