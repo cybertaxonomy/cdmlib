@@ -114,7 +114,7 @@ public  class ImageMetaData extends MediaMetaData {
 	
 	
 
-	public void readImageInfo(URI imageUri){
+	public void readImageInfo(URI imageUri, Integer timeOut){
 		
 		File image = null;
 		InputStream inputStream;
@@ -124,6 +124,7 @@ public  class ImageMetaData extends MediaMetaData {
 			URL imageUrl = imageUri.toURL();    
 		    
 			URLConnection connection = imageUrl.openConnection();
+			connection.setConnectTimeout(timeOut);
 			
 			inputStream = connection.getInputStream();
 
@@ -134,7 +135,7 @@ public  class ImageMetaData extends MediaMetaData {
 		    
 		} catch (IOException e) {
 			
-			logger.warn("Could not read: "+ image.getName() + "; reason:"+e.getMessage());
+			logger.warn("Could not read: "+ imageUri.toString() + "; reason:"+e.getMessage());
 		} catch (ImageReadException e) {
 			logger.error("Could not open url: " + image.getPath() + ". " + e.getMessage());
 		}
@@ -142,14 +143,15 @@ public  class ImageMetaData extends MediaMetaData {
 	}
 
 	@Override
-	public void readMetaData(URI mediaUri) {
-		readImageInfo(mediaUri);
+	public void readMetaData(URI mediaUri, Integer timeOut) {
+		readImageInfo(mediaUri, timeOut);
 		try {
 			File image = null;
 			InputStream inputStream;
 			URL imageUrl = mediaUri.toURL();    
 			    
 			URLConnection connection = imageUrl.openConnection();
+			connection.setConnectTimeout(timeOut);
 			inputStream = connection.getInputStream();
 			IImageMetadata mediaData = Sanselan.getMetadata(inputStream, null);
 			
@@ -172,8 +174,7 @@ public  class ImageMetaData extends MediaMetaData {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.warn("The image server is not available!");
 		}
 		
 	}

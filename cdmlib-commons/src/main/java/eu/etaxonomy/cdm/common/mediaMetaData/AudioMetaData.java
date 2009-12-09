@@ -19,7 +19,7 @@ import java.net.URI;
 public class AudioMetaData extends MediaMetaData {
 
 	@Override
-	public void readMetaData(URI imageUri) {
+	public void readMetaData(URI imageUri, Integer timeOut) {
 		// TODO Auto-generated method stub
 		
 	}

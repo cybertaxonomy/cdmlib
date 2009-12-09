@@ -36,7 +36,7 @@ public abstract class MediaMetaData {
 	HashMap<String, String> metaData;
 	
 	
-	public abstract void readMetaData(URI mediaUri);
+	public abstract void readMetaData(URI mediaUri, Integer timeOut);
  
 	public Map<String, String> getMetaData() {
 		

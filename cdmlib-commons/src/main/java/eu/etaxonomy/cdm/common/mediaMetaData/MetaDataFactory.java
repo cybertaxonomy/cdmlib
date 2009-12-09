@@ -30,31 +30,31 @@ public final class MetaDataFactory {
         }
         return instance;
     }
-	public MediaMetaData readMediaData(URI uri, MimeType mimetype){
+	public MediaMetaData readMediaData(URI uri, MimeType mimetype, Integer timeOut){
 		//MediaMetaData metaData = MediaMetaData.newInstance();
 		//MimeType mimeType = metaData.readMediaInfo(uri);
 		switch (mimetype){
 			case JPEG:
 				JpegImageMetaData jpegMediaMetaData = JpegImageMetaData.newInstance();
-				jpegMediaMetaData.readImageMetaData(uri);
-				((ImageMetaData)jpegMediaMetaData).readImageInfo(uri);
+				jpegMediaMetaData.readMetaData(uri, timeOut);
+				((ImageMetaData)jpegMediaMetaData).readImageInfo(uri, timeOut);
 				return jpegMediaMetaData;
 			case TIFF:
 				TiffImageMetaData tiffMetaData = TiffImageMetaData.newInstance();
-				tiffMetaData.readImageMetaData(uri);
-				((ImageMetaData)tiffMetaData).readImageInfo(uri);
+				tiffMetaData.readMetaData(uri, timeOut);
+				((ImageMetaData)tiffMetaData).readImageInfo(uri, timeOut);
 				return tiffMetaData;
 			case IMAGE:
 				ImageMetaData imageMetaData = ImageMetaData.newInstance();
-				imageMetaData.readImageInfo(uri);
+				imageMetaData.readImageInfo(uri, timeOut);
 				if (imageMetaData.mimeType.equals(MimeType.JPEG.getMimeType())){
 					JpegImageMetaData jpegMediaMetaData2 = JpegImageMetaData.newInstance();
-					jpegMediaMetaData2.readImageMetaData(uri);
+					jpegMediaMetaData2.readMetaData(uri, timeOut);
 					return jpegMediaMetaData2;
 				}else if (imageMetaData.mimeType.equals(MimeType.TIFF.getMimeType())){
 					TiffImageMetaData tiffMetaData2 = TiffImageMetaData.newInstance();
-					tiffMetaData2.readImageMetaData(uri);
-					((ImageMetaData)tiffMetaData2).readImageInfo(uri);
+					tiffMetaData2.readMetaData(uri, timeOut);
+					((ImageMetaData)tiffMetaData2).readImageInfo(uri, timeOut);
 					return tiffMetaData2;
 				}
 			default:

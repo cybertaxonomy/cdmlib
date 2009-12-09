@@ -32,7 +32,7 @@ import org.apache.sanselan.formats.tiff.TiffImageMetadata;
 public class TiffImageMetaData extends ImageMetaData {
 	private static Logger logger = Logger.getLogger(TiffImageMetaData.class);
 
-	public void readImageMetaData(URI imageURI){
+	/*public void readImageMetaData(URI imageURI){
 		IImageMetadata mediaData = null;
 		File imageFile = null;
 		readImageInfo(imageURI);
@@ -64,7 +64,7 @@ public class TiffImageMetaData extends ImageMetaData {
 		}
 		
 		
-	}
+	}*/
 
 	public static TiffImageMetaData newInstance() {
 		

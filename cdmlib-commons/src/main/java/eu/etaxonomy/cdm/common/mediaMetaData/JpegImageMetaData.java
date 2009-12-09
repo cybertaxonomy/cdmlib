@@ -39,7 +39,7 @@ public class JpegImageMetaData extends ImageMetaData {
 		return new JpegImageMetaData();
 	}
 
-	public void  readImageMetaData (URI imageURI){
+	/*public void  readImageMetaData (URI imageURI, Integer){
 		
 		IImageMetadata mediaData = null;
 		File imageFile = null;
@@ -85,6 +85,6 @@ public class JpegImageMetaData extends ImageMetaData {
 		}
 		
 		
-	}
+	}*/
 	
 }
