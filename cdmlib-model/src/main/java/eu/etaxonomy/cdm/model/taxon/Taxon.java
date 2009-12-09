@@ -331,6 +331,7 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 			synonym.removeSynonymRelation(synonymRelation);
 			if(removeSynonymNameFromHomotypicalGroup){
 				synonym.getName().getHomotypicalGroup().removeTypifiedName(synonym.getName());
+				synonym.getName().removeTaxonBase(synonym);
 			}
 		}
 		this.synonymRelations.remove(synonymRelation);
