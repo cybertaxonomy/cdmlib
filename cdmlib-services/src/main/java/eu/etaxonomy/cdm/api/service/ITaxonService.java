@@ -143,7 +143,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	 * @param acceptedTaxon
 	 * @param synonymRelationshipType the relationship type the newly created synonym will have. Defaults to SYNONYM_OF
 	 */
-	public void makeSynonymAcceptedTaxon(Synonym synonym, Taxon acceptedTaxon, SynonymRelationshipType synonymRelationshipType );
+	public void swapSynonymAndAcceptedTaxon(Synonym synonym, Taxon acceptedTaxon, SynonymRelationshipType synonymRelationshipType );
 	
 	/**
 	 * Returns the TaxonRelationships (of where relationship.type == type, if this argument is supplied) 
