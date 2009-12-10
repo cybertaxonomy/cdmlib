@@ -223,7 +223,7 @@ public class CichorieaeImageImport extends AbstractImageImporter {
 												
 							//imageinfo = Sanselan.getImageInfo(file);
 							ImageMetaData imageMetaData =ImageMetaData.newInstance();
-							imageMetaData.readImageInfo(uri);
+							imageMetaData.readImageInfo(uri, 0);
 							//ImageMetaData imageMetaData = (ImageMetaData) metaDataFactory.readMediaData(uri, MimeType.IMAGE);
 							ImageFile image = ImageFile.NewInstance(url.toString(), null, imageMetaData.getHeight(), imageMetaData.getWidth());
 							
