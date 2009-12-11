@@ -28,6 +28,13 @@ import org.springframework.web.servlet.View;
 
 public class JsonView extends BaseView implements View{
 	
+	/**
+	 * 
+	 */
+	private static final String CONTENTTYPE_JSON = "application/json";
+	
+	private static final String CONTENTTYPE_XML = "text/xml";
+
 	public static final Logger logger = Logger.getLogger(JsonView.class);
 
 	private JsonConfig jsonConfig;
@@ -59,15 +66,19 @@ public class JsonView extends BaseView implements View{
 	public void setJsonConfig(JsonConfig jsonConfig) {
 			this.jsonConfig = jsonConfig;
 	}
-	
+
 	public String getContentType() {
 		return "application/json";
 	}
-
+	
+	
 	public void render(Map model, HttpServletRequest req, HttpServletResponse resp) throws Exception {
 		
 		// Retrieve data from model
 		Object entity = getResponseData(model);
+		
+		// set content type 
+		resp.setContentType(getContentType());
 		
 		// prepare writer
 		// TODO determine preferred charset from HTTP Accept-Charset header
@@ -108,9 +119,11 @@ public class JsonView extends BaseView implements View{
 				String xslInclude = "\r\n<?xml-stylesheet type=\"text/xsl\" href=\"human.xsl\"?>\r\n";
 				xml = xml.replaceFirst("\r\n", xslInclude);
 			}
+			resp.setContentType(CONTENTTYPE_XML);
 			out.append(xml);
 		} else {
 			// assuming json
+			resp.setContentType(CONTENTTYPE_JSON);
 			out.append(jsonObj.toString());
 		}
 		out.flush();
