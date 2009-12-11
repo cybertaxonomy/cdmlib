@@ -275,11 +275,13 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		// create a new synonym with the old acceptedName
 		TaxonNameBase oldAcceptedTaxonName = acceptedTaxon.getName();
 		
+		// store the synonyms name
+		TaxonNameBase newAcceptedTaxonName = synonym.getName();
+		
 		// remove synonym from oldAcceptedTaxon
 		acceptedTaxon.removeSynonym(synonym);
 		
 		// make synonym name the accepted taxons name
-		TaxonNameBase newAcceptedTaxonName = synonym.getName();
 		acceptedTaxon.setName(newAcceptedTaxonName);
 		
 		// add the new synonym to the acceptedTaxon
@@ -299,6 +301,10 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		Taxon newAcceptedTaxon = Taxon.NewInstance(synonym.getName(), acceptedTaxon.getSec());
 		
 		acceptedTaxon.removeSynonym(synonym);
+		
+		// since we are swapping names, we have to detach the name from the synonym completely. 
+		// Otherwise the synonym will still be in the list of typified names.
+		synonym.getName().removeTaxonBase(synonym);
 		
 		return newAcceptedTaxon;
 	}
