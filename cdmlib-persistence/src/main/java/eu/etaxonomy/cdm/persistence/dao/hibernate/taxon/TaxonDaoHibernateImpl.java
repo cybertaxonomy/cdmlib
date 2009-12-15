@@ -318,6 +318,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 					" tn.taxonomicTree = :taxonomicTree" +
 					" AND n.nameCache " + matchOperator + " :queryString";
 				
+				
 				synonymSubselect = "select s from" +
 					" Distribution e" +
 					" join e.inDescription d" +
@@ -402,7 +403,10 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		Query subSynonym = null;
 		if(clazz.equals(Taxon.class)){
 			// find Taxa
-			subTaxon = getSession().createQuery(taxonSubselect).setParameter("queryString", hqlQueryString);;
+			subTaxon = getSession().createQuery(taxonSubselect).setParameter("queryString", hqlQueryString);
+			//subTaxon = getSession().createQuery(taxonSubselect);
+			System.err.println(subTaxon.getQueryString());
+			System.err.println(hqlQueryString);
 			if(doAreaRestriction){
 				subTaxon.setParameterList("namedAreasUuids", namedAreasUuids);
 			}	
@@ -411,7 +415,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 			}
 		} else if(clazz.equals(Synonym.class)){
 			// find synonyms
-			subSynonym = getSession().createQuery(synonymSubselect).setParameter("queryString", hqlQueryString);;
+			subSynonym = getSession().createQuery(synonymSubselect).setParameter("queryString", hqlQueryString);
 			
 			if(doAreaRestriction){
 				subSynonym.setParameterList("namedAreasUuids", namedAreasUuids);
@@ -421,8 +425,8 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 			}
 		} else {
 			// find taxa and synonyms
-			subSynonym = getSession().createQuery(synonymSubselect).setParameter("queryString", hqlQueryString);;
-			subTaxon = getSession().createQuery(taxonSubselect).setParameter("queryString", hqlQueryString);;
+			subSynonym = getSession().createQuery(synonymSubselect).setParameter("queryString", hqlQueryString);
+			subTaxon = getSession().createQuery(taxonSubselect).setParameter("queryString", hqlQueryString);
 			if(doAreaRestriction){
 				subTaxon.setParameterList("namedAreasUuids", namedAreasUuids);
 				subSynonym.setParameterList("namedAreasUuids", namedAreasUuids);
@@ -437,7 +441,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		List<TaxonBase> synonyms = new ArrayList<TaxonBase>();
 		if(clazz.equals(Taxon.class)){
 			taxa = subTaxon.list();
-//			System.err.println("number of taxa: " +taxa.size());
+			System.err.println("number of taxa: " +taxa.size());
 		}else if (clazz.equals(Synonym.class)){
 //			System.err.println(subSynonym.getQueryString());
 			synonyms = subSynonym.list();
@@ -491,11 +495,17 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		
 		} else {
 			// find taxa and synonyms
-			if (taxa.size()>0)
-			query.setParameterList("taxa", taxa);
-			if (synonyms.size()>0)
-			query.setParameterList("synonyms",synonyms);
+			if (taxa.size()>0){
+				query.setParameterList("taxa", taxa);
+			}
+			if (synonyms.size()>0){
+				query.setParameterList("synonyms",synonyms);
+			}
+			if (taxa.size()== 0 && synonyms.size() == 0){
+				return null;
+			}
 		}
+		
 		
 //		System.err.println("query: " +query.getQueryString());
 		if(pageSize != null &&  !doCount) {
