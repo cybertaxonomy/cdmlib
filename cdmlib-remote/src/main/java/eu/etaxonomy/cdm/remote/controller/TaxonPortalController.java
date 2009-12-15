@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -47,7 +48,6 @@ import eu.etaxonomy.cdm.api.service.ITaxonTreeService;
 import eu.etaxonomy.cdm.api.service.config.ITaxonServiceConfigurator;
 import eu.etaxonomy.cdm.api.service.config.impl.TaxonServiceConfiguratorImpl;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
-import eu.etaxonomy.cdm.database.UpdatableRoutingDataSource;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
@@ -61,6 +61,7 @@ import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
@@ -106,6 +107,9 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 	@Autowired
 	private ITaxonTreeService taxonTreeService;
 	
+	@Autowired
+	private ITaxonService taxonService;
+	
 	private static final List<String> TAXON_INIT_STRATEGY = Arrays.asList(new String []{
 			"*",
 			// taxon relations 
@@ -122,6 +126,12 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 			"descriptions.elements.area.$",
 			"descriptions.elements.multilanguageText",
 			"descriptions.elements.media.representations.parts",
+			
+			//taxonomic nodes
+			
+			"taxonNodes.$",
+			"taxonNodes.taxonomicTree.$",
+			"taxonNodes.childNodes.$"
 			
 //			// typeDesignations
 //			"name.typeDesignations.$",
@@ -187,6 +197,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 			//"elements.sources.citation.authorTeam.teamMembers.",
 			"elements.multilanguageText",
 			"elements.media.representations.parts",
+			
 	});
 	
 	private static final List<String> NAMEDESCRIPTION_INIT_STRATEGY = Arrays.asList(new String []{
@@ -203,6 +214,29 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 			"typeStatus.representations",
 			"citation.authorTeam",
 			"typeName.taggedName"
+	});
+	
+	protected static final List<String> TAXONNODEDESCRIPTION_INIT_STRATEGY = Arrays.asList(new String []{
+			"$",
+			/*
+			"taxon.descriptions.$" ,
+			"taxon.descriptions.elements.$",
+			"taxon.descriptions.elements.sources.citation.",
+			"taxon.descriptions.elements.sources.citation.authorTeam.$",
+			//"elements.sources.citation.authorTeam.teamMembers.",
+			"taxon.descriptions.elements.multilanguageText",
+			"taxon.descriptions.elements.media.representations.parts"
+			*/
+			"taxon.name.$",
+			"taxon.name.taggedName",
+			
+			//childnodes:
+			
+			"childNodes.$",
+			/*
+			"childNodes.taxon.$",
+			"childNodes.taxon.name.$"
+			*/
 	});
 	
 	
@@ -546,9 +580,40 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 		method = RequestMethod.GET)
 	public List<Media> doGetMedia(HttpServletRequest request, HttpServletResponse response)throws IOException {
 		logger.info("doGetMedia()" + request.getServletPath());
-		Taxon t = getCdmBase(request, response, null, Taxon.class);
+		Taxon t = getCdmBase(request, response, TAXON_INIT_STRATEGY, Taxon.class);
+		String path = request.getServletPath();
+		List<Media> returnMedia = getMediaForTaxon(t, path);
+		TaxonNode node;
+		//looking for all medias of genus
+		if (t.getTaxonNodes().size()>0){
+			Set<TaxonNode> nodes = t.getTaxonNodes();
+			Iterator<TaxonNode> iterator = nodes.iterator();
+			//TaxonNode holen
+			node = iterator.next();
+			//überprüfen, ob der TaxonNode zum aktuellen Baum gehört.
+			
+			node = taxonTreeService.loadTaxonNode(node, TAXONNODEDESCRIPTION_INIT_STRATEGY);
+			System.err.println(node.getCountChildren());
+			Set<TaxonNode> children = node.getChildNodes();
+			Taxon childTaxon;
+			for (TaxonNode child : children){
+				childTaxon = child.getTaxon();
+				childTaxon = (Taxon)taxonService.load(childTaxon.getUuid(), TAXON_INIT_STRATEGY);
+				System.err.println(childTaxon.getTitleCache());
+				returnMedia.addAll(getMediaForTaxon(childTaxon, path));
+			}
+			
+			
+		}
+		
+		
+		return returnMedia;
+	}
+	
+	private List<Media> getMediaForTaxon(Taxon taxon, String path){
+		
 		Pager<TaxonDescription> p = 
-			descriptionService.getTaxonDescriptions(t, null, null, null, null, TAXONDESCRIPTION_INIT_STRATEGY);
+			descriptionService.getTaxonDescriptions(taxon, null, null, null, null, TAXONDESCRIPTION_INIT_STRATEGY);
 		
 		// pars the media and quality parameters
 		
@@ -569,8 +634,10 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 		// move into media ...
 		
 		// find best matching representations of each media
-		String path = request.getServletPath();
+		//String path = request.getServletPath();
 		String[] pathTokens = path.split("/");
+		
+		System.err.println(pathTokens.toString());
 		String[] mimeTypes = pathTokens[6].split(",");
 		String[] sizeTokens = pathTokens[7].split(",");
 		Integer widthOrDuration = null;
@@ -621,9 +688,10 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 			}
 		}
 		
+		
 		return returnMedia;
 	}
-
+	
 	/**
 	 * @param media
 	 * @param mimeTypeRegexes
@@ -669,6 +737,8 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 		}
 		return prefRepr;
 	}
+
+	
 	
 // ---------------------- code snippet preserved for possible later use --------------------
 //	@RequestMapping(
