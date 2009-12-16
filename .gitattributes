@@ -1454,6 +1454,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/name/HomotypicalGroup.java -te
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/name/HybridRelationship.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/name/HybridRelationshipType.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/name/ITypeDesignation.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/name/NameFeature.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/name/NameRelationship.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/name/NameRelationshipType.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/name/NameTypeDesignation.java -text
@@ -1637,6 +1638,7 @@ cdmlib-model/src/main/resources/terms/Language.csv -text
 cdmlib-model/src/main/resources/terms/MarkerType.csv -text
 cdmlib-model/src/main/resources/terms/MeasurementUnit.csv -text
 cdmlib-model/src/main/resources/terms/Modifier.csv -text
+cdmlib-model/src/main/resources/terms/NameFeature.csv -text
 cdmlib-model/src/main/resources/terms/NameRelationshipType.csv -text
 cdmlib-model/src/main/resources/terms/NameTypeDesignationStatus.csv -text
 cdmlib-model/src/main/resources/terms/NamedArea.csv -text
