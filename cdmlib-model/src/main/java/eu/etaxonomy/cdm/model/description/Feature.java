@@ -102,7 +102,7 @@ public class Feature extends DefinedTermBase<Feature> {
 	private static Feature CULTIVATION;
 	private static Feature CONSERVATION;
 	private static Feature USES;
-//	private static Feature ADDITIONAL_PUBLICATION;
+	private static Feature ADDITIONAL_PUBLICATION;
 	private static Feature CITATION;
 	private static Feature OCCURRENCE;
 	private static Feature PHENOLOGY;
@@ -823,11 +823,11 @@ public class Feature extends DefinedTermBase<Feature> {
 	 * This feature applies only to {@link TaxonNameDescription taxon name descriptions}.
 	 * 
 	 * @see	#isSupportsTextData()
-	 
+	 */
 	public static final Feature ADDITIONAL_PUBLICATION(){
 		return ADDITIONAL_PUBLICATION;
 	}
-	*/
+	
 	
 	/**
 	 * Returns the "uses" feature. This feature only applies
@@ -905,7 +905,7 @@ public class Feature extends DefinedTermBase<Feature> {
 
 	@Override
 	protected void setDefaultTerms(TermVocabulary<Feature> termVocabulary) {
-		//Feature.ADDITIONAL_PUBLICATION = termVocabulary.findTermByUuid(Feature.uuidAdditionalPublication);
+		Feature.ADDITIONAL_PUBLICATION = termVocabulary.findTermByUuid(Feature.uuidAdditionalPublication);
 		Feature.BIOLOGY_ECOLOGY = termVocabulary.findTermByUuid(Feature.uuidBiologyEcology);
 		Feature.CITATION = termVocabulary.findTermByUuid(Feature.uuidCitation);
 		Feature.COMMON_NAME = termVocabulary.findTermByUuid(Feature.uuidCommonName);
