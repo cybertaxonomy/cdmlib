@@ -1,4 +1,4 @@
-package eu.etaxonomy.cdm.model.name;
+package eu.etaxonomy.cdm.model.description;
 
 import java.util.List;
 import java.util.Map;
@@ -7,10 +7,7 @@ import java.util.UUID;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
-import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
-import eu.etaxonomy.cdm.model.description.Feature;
-import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
-import eu.etaxonomy.cdm.model.description.TextData;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 
 public class NameFeature extends DefinedTermBase<NameFeature>{
 

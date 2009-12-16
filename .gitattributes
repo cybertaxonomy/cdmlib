@@ -1397,6 +1397,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/MeasurementUnit.ja
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/MediaKey.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/Modifier.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/MultiAccessKey.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/NameFeature.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/PolytomousKey.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/PresenceAbsenceTermBase.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/PresenceTerm.java -text
@@ -1454,7 +1455,6 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/name/HomotypicalGroup.java -te
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/name/HybridRelationship.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/name/HybridRelationshipType.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/name/ITypeDesignation.java -text
-cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/name/NameFeature.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/name/NameRelationship.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/name/NameRelationshipType.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/name/NameTypeDesignation.java -text
