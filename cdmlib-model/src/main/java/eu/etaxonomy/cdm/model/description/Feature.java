@@ -107,7 +107,7 @@ public class Feature extends DefinedTermBase<Feature> {
 	private static Feature OCCURRENCE;
 	private static Feature PHENOLOGY;
 	private static Feature COMMON_NAME;
-	//private static Feature PROTOLOG;
+	private static Feature PROTOLOG;
 	private static Feature INTRODUCTION;
 	private static Feature DIAGNOSIS;
 	private static Feature ETYMOLOGY;
@@ -751,11 +751,11 @@ public class Feature extends DefinedTermBase<Feature> {
 	 * {@link TaxonNameDescription taxon name descriptions}.
 	 * 
 	 * @see	#isSupportsTextData()
-	 
+	 */
 	public static final Feature PROTOLOG(){
 		return PROTOLOG;
 	}
-	*/
+	
 	/**
 	 * Returns the "common_name" feature. This feature allows to handle only
 	 * {@link CommonTaxonName common names}.
@@ -924,7 +924,7 @@ public class Feature extends DefinedTermBase<Feature> {
 		Feature.MATERIALS_METHODS = termVocabulary.findTermByUuid(Feature.uuidMaterialsMethods);
 		Feature.OCCURRENCE = termVocabulary.findTermByUuid(Feature.uuidOccurrence);
 		Feature.PHENOLOGY = termVocabulary.findTermByUuid(Feature.uuidPhenology);
-		//Feature.PROTOLOG = termVocabulary.findTermByUuid(Feature.uuidProtolog);
+		Feature.PROTOLOG = termVocabulary.findTermByUuid(Feature.uuidProtolog);
 		Feature.UNKNOWN = termVocabulary.findTermByUuid(Feature.uuidUnknown);
 		Feature.USES = termVocabulary.findTermByUuid(Feature.uuidUses);
 		Feature.ANATOMY = termVocabulary.findTermByUuid(Feature.uuidAnatomy);
