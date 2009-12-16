@@ -102,12 +102,12 @@ public class Feature extends DefinedTermBase<Feature> {
 	private static Feature CULTIVATION;
 	private static Feature CONSERVATION;
 	private static Feature USES;
-	private static Feature ADDITIONAL_PUBLICATION;
+//	private static Feature ADDITIONAL_PUBLICATION;
 	private static Feature CITATION;
 	private static Feature OCCURRENCE;
 	private static Feature PHENOLOGY;
 	private static Feature COMMON_NAME;
-	private static Feature PROTOLOG;
+	//private static Feature PROTOLOG;
 	private static Feature INTRODUCTION;
 	private static Feature DIAGNOSIS;
 	private static Feature ETYMOLOGY;
@@ -751,10 +751,11 @@ public class Feature extends DefinedTermBase<Feature> {
 	 * {@link TaxonNameDescription taxon name descriptions}.
 	 * 
 	 * @see	#isSupportsTextData()
-	 */
+	 
 	public static final Feature PROTOLOG(){
 		return PROTOLOG;
 	}
+	*/
 	/**
 	 * Returns the "common_name" feature. This feature allows to handle only
 	 * {@link CommonTaxonName common names}.
@@ -822,11 +823,11 @@ public class Feature extends DefinedTermBase<Feature> {
 	 * This feature applies only to {@link TaxonNameDescription taxon name descriptions}.
 	 * 
 	 * @see	#isSupportsTextData()
-	 */
+	 
 	public static final Feature ADDITIONAL_PUBLICATION(){
 		return ADDITIONAL_PUBLICATION;
 	}
-	
+	*/
 	
 	/**
 	 * Returns the "uses" feature. This feature only applies
@@ -837,7 +838,7 @@ public class Feature extends DefinedTermBase<Feature> {
 	public static final Feature USES(){
 		return USES;
 	}
-	
+	 
 	
 	/**
 	 * Returns the "conservation" feature. This feature only applies
@@ -904,7 +905,7 @@ public class Feature extends DefinedTermBase<Feature> {
 
 	@Override
 	protected void setDefaultTerms(TermVocabulary<Feature> termVocabulary) {
-		Feature.ADDITIONAL_PUBLICATION = termVocabulary.findTermByUuid(Feature.uuidAdditionalPublication);
+		//Feature.ADDITIONAL_PUBLICATION = termVocabulary.findTermByUuid(Feature.uuidAdditionalPublication);
 		Feature.BIOLOGY_ECOLOGY = termVocabulary.findTermByUuid(Feature.uuidBiologyEcology);
 		Feature.CITATION = termVocabulary.findTermByUuid(Feature.uuidCitation);
 		Feature.COMMON_NAME = termVocabulary.findTermByUuid(Feature.uuidCommonName);
@@ -923,7 +924,7 @@ public class Feature extends DefinedTermBase<Feature> {
 		Feature.MATERIALS_METHODS = termVocabulary.findTermByUuid(Feature.uuidMaterialsMethods);
 		Feature.OCCURRENCE = termVocabulary.findTermByUuid(Feature.uuidOccurrence);
 		Feature.PHENOLOGY = termVocabulary.findTermByUuid(Feature.uuidPhenology);
-		Feature.PROTOLOG = termVocabulary.findTermByUuid(Feature.uuidProtolog);
+		//Feature.PROTOLOG = termVocabulary.findTermByUuid(Feature.uuidProtolog);
 		Feature.UNKNOWN = termVocabulary.findTermByUuid(Feature.uuidUnknown);
 		Feature.USES = termVocabulary.findTermByUuid(Feature.uuidUses);
 		Feature.ANATOMY = termVocabulary.findTermByUuid(Feature.uuidAnatomy);
