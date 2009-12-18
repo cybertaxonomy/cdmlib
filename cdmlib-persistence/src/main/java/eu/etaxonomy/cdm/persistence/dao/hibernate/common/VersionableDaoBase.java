@@ -246,7 +246,7 @@ public abstract class VersionableDaoBase<T extends VersionableEntity> extends Cd
 		return records;
 	}
 	
-	public Integer countAuditEvents(T t, AuditEventSort sort) {
+	public int countAuditEvents(T t, AuditEventSort sort) {
 		AuditEvent auditEvent = getAuditEventFromContext();
 		
 		AuditQuery query = getAuditReader().createQuery().forRevisionsOfEntity(type, false, true);
@@ -287,7 +287,7 @@ public abstract class VersionableDaoBase<T extends VersionableEntity> extends Cd
 		}
 	}
 
-	public Integer countAuditEvents(Class<? extends T> clazz, AuditEvent from,	AuditEvent to, List<AuditCriterion> criteria) {
+	public int countAuditEvents(Class<? extends T> clazz, AuditEvent from,	AuditEvent to, List<AuditCriterion> criteria) {
 		AuditQuery query = null;
 		
 		if(clazz == null) {
@@ -306,7 +306,7 @@ public abstract class VersionableDaoBase<T extends VersionableEntity> extends Cd
 		
 		addCriteria(query,criteria);
 		
-		query.addProjection(AuditEntity.property("id").count());
+		query.addProjection(AuditEntity.revisionNumber().count());
 		
 		return ((Long)query.getSingleResult()).intValue();
 	}
@@ -335,6 +335,12 @@ public abstract class VersionableDaoBase<T extends VersionableEntity> extends Cd
 		if(to != null && !to.equals(AuditEvent.CURRENT_VIEW)) {
 			query.add(AuditEntity.revisionNumber().lt(to.getRevisionNumber()));
 		} 
+		
+		if(sort.equals(AuditEventSort.BACKWARDS)) {
+		    query.addOrder(AuditEntity.revisionNumber().desc());
+     	} else {
+  		    query.addOrder(AuditEntity.revisionNumber().asc());
+     	}
 		
 		addCriteria(query,criteria);
 		

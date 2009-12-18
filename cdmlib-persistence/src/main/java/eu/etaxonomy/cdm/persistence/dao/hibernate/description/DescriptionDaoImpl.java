@@ -32,6 +32,7 @@ import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
 import eu.etaxonomy.cdm.model.description.Scope;
+import eu.etaxonomy.cdm.model.description.SpecimenDescription;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
@@ -53,6 +54,10 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
 
 	public DescriptionDaoImpl() {
 		super(DescriptionBase.class); 
+		indexedClasses = new Class[3];
+		indexedClasses[0] = TaxonDescription.class;
+		indexedClasses[1] = TaxonNameDescription.class;
+		indexedClasses[2] = SpecimenDescription.class;
 	}
 
 	public int countDescriptionByDistribution(Set<NamedArea> namedAreas, PresenceAbsenceTermBase status) {

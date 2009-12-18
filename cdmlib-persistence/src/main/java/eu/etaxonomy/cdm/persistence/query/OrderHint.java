@@ -9,10 +9,14 @@
 
 package eu.etaxonomy.cdm.persistence.query;
 
+import java.util.List;
+import java.util.Map;
+
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Order;
 import org.hibernate.envers.query.AuditEntity;
 import org.hibernate.envers.query.AuditQuery;
+import org.hibernate.search.FullTextQuery;
 
 import eu.etaxonomy.cdm.persistence.dao.common.OperationNotSupportedInPriorViewException;
 
@@ -62,25 +66,41 @@ public class OrderHint {
 		return sortOrder.equals(SortOrder.ASCENDING);
 	}
 	
-	public void add(Criteria criteria) {
-		Order order;
-		String assocObj = null, propname;
-		int pos;
-		if((pos = getPropertyName().indexOf('.', 0)) >= 0){
-			assocObj = getPropertyName().substring(0, pos);
-			propname = getPropertyName().substring(pos + 1);
+	public void add(Criteria criteria, Map<String, Criteria> criteriaMap) {
+		if(getPropertyName().indexOf(".") != -1) {
+			/**
+			 * Here we have to work a bit of magic as currently hibernate will
+			 * throw an error if we attempt to join the same association twice.
+			 * 
+			 * http://opensource.atlassian.com/projects/hibernate/browse/HHH-879
+			 */
+			Order order;
+			
+			String[] assocObjs = getPropertyName().split("\\.");
+			String path = "";
+			Criteria c = criteria;
+			for(int i = 0; i < assocObjs.length - 1; i++) {
+				path = path + assocObjs[i];
+				if(criteriaMap.get(path) == null) {
+					c = c.createCriteria(assocObjs[i]);
+					criteriaMap.put(path, c);
+				} else {
+					c = criteriaMap.get(path);
+				}		               
+                path = path + '.';
+            }
+			String propname = assocObjs[assocObjs.length - 1];
+			if(isAscending()){
+				c.addOrder(Order.asc(propname));					
+			} else {
+				c.addOrder(Order.desc(propname));
+			}
 		} else {
-			propname = getPropertyName();
-		}
-		if(isAscending()){
-			order = Order.asc(propname);					
-		} else {
-			order = Order.desc(propname);
-		}
-		if(assocObj != null){
-			criteria.createCriteria(assocObj).addOrder(order);
-		} else {
-			criteria.addOrder(order);				
+			if(isAscending()){
+				criteria.addOrder(Order.asc(getPropertyName()));					
+			} else {
+				criteria.addOrder(Order.desc(getPropertyName()));
+			}
 		}
 	}
 	

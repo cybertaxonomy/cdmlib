@@ -3,14 +3,11 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.description;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.lucene.analysis.SimpleAnalyzer;
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
-import org.apache.lucene.search.Sort;
-import org.apache.lucene.search.SortField;
 import org.hibernate.Hibernate;
 import org.hibernate.Query;
-import org.hibernate.envers.query.AuditQuery;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.Search;
 import org.hibernate.search.SearchFactory;
@@ -19,7 +16,6 @@ import org.springframework.stereotype.Repository;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.media.Media;
-import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.persistence.dao.QueryParseException;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionElementDao;
@@ -58,7 +54,7 @@ public class DescriptionElementDaoImpl extends AnnotatableDaoImpl<DescriptionEle
 
 	public int count(Class<? extends DescriptionElementBase> clazz, String queryString) {
 		checkNotInPriorView("DescriptionElementDaoImpl.countTextData(String queryString)");
-		QueryParser queryParser = new QueryParser(defaultField, new SimpleAnalyzer());
+		QueryParser queryParser = new QueryParser(defaultField, new StandardAnalyzer());
 		 
 		try {
 			org.apache.lucene.search.Query query = queryParser.parse(queryString);
@@ -123,7 +119,7 @@ public class DescriptionElementDaoImpl extends AnnotatableDaoImpl<DescriptionEle
 
 	public List<DescriptionElementBase> search(Class<? extends DescriptionElementBase> clazz, String queryString, Integer pageSize,	Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
 		checkNotInPriorView("DescriptionElementDaoImpl.searchTextData(String queryString, Integer pageSize,	Integer pageNumber)");
-		QueryParser queryParser = new QueryParser(defaultField, new SimpleAnalyzer());
+		QueryParser queryParser = new QueryParser(defaultField, new StandardAnalyzer());
 		 
 		try {
 			org.apache.lucene.search.Query query = queryParser.parse(queryString);
@@ -184,7 +180,7 @@ public class DescriptionElementDaoImpl extends AnnotatableDaoImpl<DescriptionEle
 
 	public int count(String queryString) {
 		checkNotInPriorView("DescriptionElementDaoImpl.count(String queryString)");
-        QueryParser queryParser = new QueryParser(defaultField, new SimpleAnalyzer());
+        QueryParser queryParser = new QueryParser(defaultField, new StandardAnalyzer());
 		
 		try {
 			org.apache.lucene.search.Query query = queryParser.parse(queryString);

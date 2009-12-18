@@ -11,6 +11,8 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.common;
 
 import java.lang.reflect.Field;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -188,6 +190,17 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 	}
 	
 	public UUID delete(T persistentObject) throws DataAccessException {
+		if (persistentObject == null){
+			logger.warn(type.getName() + " was 'null'");
+			return null;
+		}
+		
+		// Merge the object in if it is detached
+		//
+		// I think this is preferable to catching lazy initialization errors 
+		// as that solution only swallows and hides the exception, but doesn't 
+		// actually solve it.
+		getSession().merge(persistentObject);
 		getSession().delete(persistentObject);
 		return persistentObject.getUuid();
 	}
@@ -367,10 +380,23 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 			
 	}
 	
+	private class OrderHintComparator implements Comparator<OrderHint> {
+
+		public int compare(OrderHint o1, OrderHint o2) {
+			return o1.getPropertyName().compareTo(o2.getPropertyName());
+		}
+		
+	}
+	
 	protected void addOrder(Criteria criteria, List<OrderHint> orderHints) {
+		
 		if(orderHints != null){
+			Collections.sort(orderHints, new OrderHintComparator());
+			
+			Map<String,Criteria> criteriaMap = new HashMap<String,Criteria>();
 			for(OrderHint orderHint : orderHints){
-				orderHint.add(criteria);
+				System.out.println("Adding OrderHint " + orderHint.getPropertyName());
+				orderHint.add(criteria,criteriaMap);
 			}
 		}
 	}

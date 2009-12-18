@@ -17,6 +17,7 @@ import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.description.FeatureNode;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
+import eu.etaxonomy.cdm.model.description.PolytomousKey;
 import eu.etaxonomy.cdm.persistence.dao.description.IFeatureTreeDao;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
 
@@ -32,6 +33,9 @@ public class FeatureTreeDaoImpl extends IdentifiableDaoBase<FeatureTree> impleme
 
 	public FeatureTreeDaoImpl() {
 		super(FeatureTree.class); 
+		indexedClasses = new Class[2];
+		indexedClasses[0] = FeatureTree.class;
+		indexedClasses[1] = PolytomousKey.class;
 	}
 	
 	public List<FeatureTree> list() {

@@ -46,7 +46,7 @@ public interface IVersionableDao<T extends VersionableEntity> extends ICdmEntity
      * @param sort should the events considered start now and go forward in time (AuditEventSort.FORWARDS) or backwards (AuditEventSort.BACKWARDS)
      * @return a count of audit events
      */
-	public Integer countAuditEvents(T t, AuditEventSort sort);
+	public int countAuditEvents(T t, AuditEventSort sort);
 	
 	/**
 	 * A convenience method which returns a record of the next (relative to the audit event in context)
@@ -76,7 +76,7 @@ public interface IVersionableDao<T extends VersionableEntity> extends ICdmEntity
 	 * @param criteria Extra criteria to filter by
 	 * @return the count of audit events
 	 */
-	public Integer countAuditEvents(Class<? extends T> clazz,AuditEvent from,AuditEvent to,List<AuditCriterion> criteria);
+	public int countAuditEvents(Class<? extends T> clazz,AuditEvent from,AuditEvent to,List<AuditCriterion> criteria);
 	
 	/**
 	 * Returns a list of all audit events occurring to objects of type T, optionally restricted to objects of type clazz

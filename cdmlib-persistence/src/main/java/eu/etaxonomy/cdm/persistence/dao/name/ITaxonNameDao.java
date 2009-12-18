@@ -9,27 +9,23 @@
 package eu.etaxonomy.cdm.persistence.dao.name;
 
 import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 
 import org.hibernate.criterion.Criterion;
 
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
-import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.HybridRelationship;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
-import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
 import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
-import eu.etaxonomy.cdm.persistence.dao.common.ISearchableDao;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
@@ -37,7 +33,7 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
  * @author a.mueller
  * 
  */
-public interface ITaxonNameDao extends IIdentifiableDao<TaxonNameBase>, ISearchableDao<TaxonNameBase> {
+public interface ITaxonNameDao extends IIdentifiableDao<TaxonNameBase> {
 
 	/**
 	 * Return a count of names related to or from this name, optionally filtered

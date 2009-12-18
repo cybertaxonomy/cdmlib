@@ -10,15 +10,10 @@
 package eu.etaxonomy.cdm.persistence.dao.hibernate.name;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
-import org.apache.lucene.analysis.SimpleAnalyzer;
-import org.apache.lucene.queryParser.ParseException;
-import org.apache.lucene.queryParser.QueryParser;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.criterion.Criterion;
@@ -27,9 +22,6 @@ import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.envers.query.AuditEntity;
 import org.hibernate.envers.query.AuditQuery;
-import org.hibernate.search.FullTextSession;
-import org.hibernate.search.Search;
-import org.hibernate.search.SearchFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
@@ -51,7 +43,6 @@ import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
 import eu.etaxonomy.cdm.model.name.ViralName;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
-import eu.etaxonomy.cdm.persistence.dao.QueryParseException;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
@@ -79,9 +70,6 @@ extends IdentifiableDaoBase<TaxonNameBase> implements ITaxonNameDao {
 		indexedClasses[4] = ViralName.class;
 		indexedClasses[5] = ZoologicalName.class;
 	}
-	
-	private String defaultField = "titleCache";
-	private Class<? extends TaxonNameBase> indexedClasses[]; 
 
 	public int countHybridNames(NonViralName name, HybridRelationshipType type) {
 		AuditEvent auditEvent = getAuditEventFromContext();
@@ -544,98 +532,6 @@ extends IdentifiableDaoBase<TaxonNameBase> implements ITaxonNameDao {
 		List<? extends TaxonNameBase<?,?>> results = findByName(queryString, matchmode, null, null, criteria, null);
 		return results.size();
 		
-	}
-
-
-	public int count(Class<? extends TaxonNameBase> clazz, String queryString) {
-		checkNotInPriorView("TaxonNameDaoHibernateImpl.count(String queryString, Boolean accepted)");
-        QueryParser queryParser = new QueryParser(defaultField, new SimpleAnalyzer());
-		
-		try {
-			org.apache.lucene.search.Query query = queryParser.parse(queryString);
-			
-			FullTextSession fullTextSession = Search.getFullTextSession(this.getSession());
-			org.hibernate.search.FullTextQuery fullTextQuery = null;
-			
-			if(clazz == null) {
-				fullTextQuery = fullTextSession.createFullTextQuery(query, type);
-			} else {
-				fullTextQuery = fullTextSession.createFullTextQuery(query, clazz);
-			}
-			
-		    Integer  result = fullTextQuery.getResultSize();
-		    return result;
-
-		} catch (ParseException e) {
-			throw new QueryParseException(e, queryString);
-		}
-	}
-
-	public void optimizeIndex() {
-		FullTextSession fullTextSession = Search.getFullTextSession(getSession());
-		SearchFactory searchFactory = fullTextSession.getSearchFactory();
-		for(Class clazz : indexedClasses) {
-	        searchFactory.optimize(clazz); // optimize the indices ()
-		}
-	    fullTextSession.flushToIndexes();
-	}
-
-	public void purgeIndex() {
-		FullTextSession fullTextSession = Search.getFullTextSession(getSession());
-		for(Class clazz : indexedClasses) {
-		    fullTextSession.purgeAll(clazz); // remove all taxon base from indexes
-		}
-		fullTextSession.flushToIndexes();
-	}
-
-	public void rebuildIndex() {
-        FullTextSession fullTextSession = Search.getFullTextSession(getSession());
-		
-		for(TaxonNameBase name : list(null,null)) { // re-index all taxon base
-			fullTextSession.index(name);
-		}
-		fullTextSession.flushToIndexes();
-	}
-
-	public List<TaxonNameBase> search(Class<? extends TaxonNameBase> clazz,	String queryString, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
-		checkNotInPriorView("TaxonNameDaoHibernateImpl.searchTaxa(String queryString, Boolean accepted,	Integer pageSize, Integer pageNumber)");
-		QueryParser queryParser = new QueryParser(defaultField, new SimpleAnalyzer());
-		List<TaxonNameBase> results = new ArrayList<TaxonNameBase>();
-		 
-		try {
-			org.apache.lucene.search.Query query = queryParser.parse(queryString);
-			
-			FullTextSession fullTextSession = Search.getFullTextSession(getSession());
-			org.hibernate.search.FullTextQuery fullTextQuery = null;
-			
-			if(clazz == null) {
-				fullTextQuery = fullTextSession.createFullTextQuery(query, TaxonNameBase.class);
-			} else {
-				fullTextQuery = fullTextSession.createFullTextQuery(query, clazz);
-			}
-			
-			addOrder(fullTextQuery,orderHints);
-			
-		    if(pageSize != null) {
-		    	fullTextQuery.setMaxResults(pageSize);
-			    if(pageNumber != null) {
-			    	fullTextQuery.setFirstResult(pageNumber * pageSize);
-			    } else {
-			    	fullTextQuery.setFirstResult(0);
-			    }
-			}
-		    
-		    List<TaxonNameBase> result = (List<TaxonNameBase>)fullTextQuery.list();
-		    defaultBeanInitializer.initializeAll(result, propertyPaths);
-		    return result;
-
-		} catch (ParseException e) {
-			throw new QueryParseException(e, queryString);
-		}
-	}
-
-	public String suggestQuery(String string) {
-		throw new UnsupportedOperationException("suggestQuery is not supported for TaxonNameBase");
 	}
 
 	/* (non-Javadoc)

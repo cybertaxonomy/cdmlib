@@ -370,8 +370,10 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 		propertyPaths.add("fromTaxon");
 		propertyPaths.add("fromTaxon.name");
 		List<OrderHint> orderHints = new ArrayList<OrderHint>();
-		orderHints.add(new OrderHint("relatedFrom.titleCache", SortOrder.ASCENDING));
-		
+		orderHints.add(new OrderHint("relatedFrom.name.genusOrUninomial", SortOrder.ASCENDING));
+		orderHints.add(new OrderHint("relatedFrom.name.specificEpithet", SortOrder.ASCENDING));
+		orderHints.add(new OrderHint("relatedFrom.name.infraSpecificEpithet", SortOrder.ASCENDING));
+		                                               
 		List<TaxonRelationship> relatedTaxa = taxonDao.getTaxonRelationships(taxon, TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN(), null, null, orderHints,propertyPaths, TaxonRelationship.Direction.relatedTo);
 		assertNotNull("getRelatedTaxa should return a List",relatedTaxa);
 		assertEquals("getRelatedTaxa should return all 23 related taxa",relatedTaxa.size(),23);

@@ -14,7 +14,6 @@ import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.Query;
-import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.envers.query.AuditEntity;
@@ -22,6 +21,7 @@ import org.hibernate.envers.query.AuditQuery;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
+import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.persistence.dao.common.ITermVocabularyDao;
@@ -39,6 +39,9 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
 	 */
 	public TermVocabularyDaoImpl() {
 		super(TermVocabulary.class);
+		indexedClasses = new Class[2];
+		indexedClasses[0] = TermVocabulary.class;
+		indexedClasses[1] = OrderedTermVocabulary.class;
 	}
 
 	public int countTerms(TermVocabulary termVocabulary) {

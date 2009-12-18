@@ -13,14 +13,13 @@ import java.util.List;
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
-import eu.etaxonomy.cdm.persistence.dao.common.ISearchableDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ITitledDao;
 
 /**
  * @author a.mueller
  *
  */
-public interface IReferenceDao extends IIdentifiableDao<ReferenceBase>, ITitledDao<ReferenceBase>, ISearchableDao<ReferenceBase> {
+public interface IReferenceDao extends IIdentifiableDao<ReferenceBase>, ITitledDao<ReferenceBase> {
 	public List<UuidAndTitleCache<ReferenceBase>> getUuidAndTitle();
 	/**
 	 * @return all references marked with publish-flag

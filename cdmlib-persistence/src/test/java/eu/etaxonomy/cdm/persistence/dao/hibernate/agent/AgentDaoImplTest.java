@@ -188,6 +188,12 @@ public class AgentDaoImplTest extends CdmTransactionalIntegrationTest {
 	
 	@Test
 	@DataSet("AgentDaoImplTest.testExists.xml")
+	public void testCountAuditEvents() {
+		Assert.assertEquals("There should be eleven AuditEvents",11, agentDao.countAuditEvents(null, null, null, null));
+	}
+	
+	@Test
+	@DataSet("AgentDaoImplTest.testExists.xml")
 	public void testList() {
 		List<AgentBase> result = agentDao.list(null,null);
 		Assert.assertNotNull("list() should return a list",result);

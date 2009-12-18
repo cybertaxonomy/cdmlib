@@ -17,6 +17,7 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
@@ -26,28 +27,30 @@ import org.unitils.spring.annotation.SpringBeanByType;
 import eu.etaxonomy.cdm.model.name.HybridRelationship;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.NonViralName;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
-import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
+import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 /**
  * @author a.mueller
  * @created 17.09.2009
  * @version 1.0
  */
-public class CdmDeleteListenerTest extends CdmIntegrationTest {
+public class CdmDeleteListenerTest extends CdmTransactionalIntegrationTest {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CdmDeleteListenerTest.class);
 
 	@SpringBeanByType
 	private ITaxonNameDao taxonNameDao;
 
-	private UUID name1Uuid = UUID.fromString("a49a3963-c4ea-4047-8588-2f8f15352730");
+	private UUID uuid;
 	
-	@Ignore
-	@Test
-	@DataSet("CdmDeleteListenerTest.xml")
-	public void testTaxonNameDao() throws Exception {
-		assertNotNull("taxonNameDao should exist",taxonNameDao);
+	/**
+	 * @throws java.lang.Exception
+	 */
+	@Before
+	public void setUp() throws Exception {
+		uuid = UUID.fromString("a49a3963-c4ea-4047-8588-2f8f15352730");
 	}
 	
 	/**
@@ -57,15 +60,17 @@ public class CdmDeleteListenerTest extends CdmIntegrationTest {
 	@DataSet("CdmDeleteListenerTest.xml")
 	@ExpectedDataSet
 	public void testOnDelete() {
-		NonViralName name1 = (NonViralName)taxonNameDao.findByUuid(name1Uuid);
-		assertNotNull(name1);
-		Set<NameRelationship> relations = name1.getNameRelations();
+		NonViralName name = (NonViralName)taxonNameDao.findByUuid(uuid);
+		assertNotNull(name);
+		Set<NameRelationship> relations = name.getNameRelations();
 		Assert.assertEquals("There must be 1 name relationship", 1, relations.size());
-		name1.removeNameRelationship(relations.iterator().next());
+		name.removeNameRelationship(relations.iterator().next());
 		
-		Set<HybridRelationship> hybridRels = name1.getParentRelationships();
+		Set<HybridRelationship> hybridRels = name.getParentRelationships();
 		Assert.assertEquals("There must be 1 parent relationship", 1, hybridRels.size());
 		
-		taxonNameDao.saveOrUpdate(name1);
+		taxonNameDao.saveOrUpdate(name);
+		setComplete();
+		endTransaction();
 	}
 }

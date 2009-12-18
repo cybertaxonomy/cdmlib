@@ -13,9 +13,8 @@ import java.util.List;
 
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
-import eu.etaxonomy.cdm.persistence.dao.common.ISearchableDao;
 
-public interface ICollectionDao extends IIdentifiableDao<Collection>, ISearchableDao<Collection> {
+public interface ICollectionDao extends IIdentifiableDao<Collection> {
 	
 	/**
 	 * Returns a list of Collection instances matching the code supplied

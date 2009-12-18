@@ -6,21 +6,16 @@
 
 package eu.etaxonomy.cdm.persistence.dao.hibernate.occurrence;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
-import org.apache.lucene.analysis.SimpleAnalyzer;
-import org.apache.lucene.queryParser.ParseException;
-import org.apache.lucene.queryParser.QueryParser;
 import org.hibernate.Hibernate;
 import org.hibernate.Query;
 import org.hibernate.envers.query.AuditEntity;
 import org.hibernate.envers.query.AuditQuery;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.Search;
-import org.hibernate.search.SearchFactory;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.media.Media;
@@ -30,21 +25,15 @@ import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.occurrence.FieldObservation;
+import eu.etaxonomy.cdm.model.occurrence.Fossil;
 import eu.etaxonomy.cdm.model.occurrence.LivingBeing;
 import eu.etaxonomy.cdm.model.occurrence.Observation;
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
-import eu.etaxonomy.cdm.model.occurrence.Fossil;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
-import eu.etaxonomy.cdm.model.taxon.Synonym;
-import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
-import eu.etaxonomy.cdm.persistence.dao.QueryParseException;
-import eu.etaxonomy.cdm.persistence.dao.common.ISearchableDao;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.taxon.TaxonDaoHibernateImpl;
 import eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao;
-import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
  * @author a.babadshanjan
@@ -55,9 +44,6 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
 	
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TaxonDaoHibernateImpl.class);
-	
-	private static final String defaultField = "titleCache";
-	private Class<? extends SpecimenOrObservationBase> indexedClasses[]; 
 
 	public OccurrenceDaoHibernateImpl() {
 		super(SpecimenOrObservationBase.class);
@@ -174,47 +160,7 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
 		return results;
 	}
 
-	public int count(Class clazz, String queryString) {
-		checkNotInPriorView("OccurrenceDaoHibernateImpl.count(String queryString, Boolean accepted)");
-        QueryParser queryParser = new QueryParser(defaultField, new SimpleAnalyzer());
-		
-		try {
-			org.apache.lucene.search.Query query = queryParser.parse(queryString);
-			
-			FullTextSession fullTextSession = Search.getFullTextSession(this.getSession());
-			org.hibernate.search.FullTextQuery fullTextQuery = null;
-			
-			if(clazz == null) {
-				fullTextQuery = fullTextSession.createFullTextQuery(query, type);
-			} else {
-				fullTextQuery = fullTextSession.createFullTextQuery(query, clazz);
-			}
-			
-		    Integer  result = fullTextQuery.getResultSize();
-		    return result;
-
-		} catch (ParseException e) {
-			throw new QueryParseException(e, queryString);
-		}
-	}
-
-	public void optimizeIndex() {
-		FullTextSession fullTextSession = Search.getFullTextSession(getSession());
-		SearchFactory searchFactory = fullTextSession.getSearchFactory();
-		for(Class clazz : indexedClasses) {
-	        searchFactory.optimize(clazz); // optimize the indices ()
-		}
-	    fullTextSession.flushToIndexes();
-	}
-
-	public void purgeIndex() {
-		FullTextSession fullTextSession = Search.getFullTextSession(getSession());
-		for(Class clazz : indexedClasses) {
-		    fullTextSession.purgeAll(clazz); // remove all taxon base from indexes
-		}
-		fullTextSession.flushToIndexes();
-	}
-
+	@Override
 	public void rebuildIndex() {
         FullTextSession fullTextSession = Search.getFullTextSession(getSession());
 		
@@ -245,46 +191,5 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
 			fullTextSession.index(occurrence);
 		}
 		fullTextSession.flushToIndexes();
-	}
-
-	public List<SpecimenOrObservationBase> search(Class<? extends SpecimenOrObservationBase> clazz, String queryString,Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
-		checkNotInPriorView("OccurrenceDaoHibernateImpl.searchTaxa(String queryString, Boolean accepted,	Integer pageSize, Integer pageNumber)");
-		QueryParser queryParser = new QueryParser(defaultField, new SimpleAnalyzer());
-		List<SpecimenOrObservationBase> results = new ArrayList<SpecimenOrObservationBase>();
-		 
-		try {
-			org.apache.lucene.search.Query query = queryParser.parse(queryString);
-			
-			FullTextSession fullTextSession = Search.getFullTextSession(getSession());
-			org.hibernate.search.FullTextQuery fullTextQuery = null;
-			
-			if(clazz == null) {
-				fullTextQuery = fullTextSession.createFullTextQuery(query, SpecimenOrObservationBase.class);
-			} else {
-				fullTextQuery = fullTextSession.createFullTextQuery(query, clazz);
-			}
-			
-			addOrder(fullTextQuery,orderHints);
-			
-		    if(pageSize != null) {
-		    	fullTextQuery.setMaxResults(pageSize);
-			    if(pageNumber != null) {
-			    	fullTextQuery.setFirstResult(pageNumber * pageSize);
-			    } else {
-			    	fullTextQuery.setFirstResult(0);
-			    }
-			}
-		    
-		    List<SpecimenOrObservationBase> result = (List<SpecimenOrObservationBase>)fullTextQuery.list();
-		    defaultBeanInitializer.initializeAll(result, propertyPaths);
-		    return result;
-
-		} catch (ParseException e) {
-			throw new QueryParseException(e, queryString);
-		}
-	}
-
-	public String suggestQuery(String string) {
-		throw new UnsupportedOperationException("suggestQuery is not supported for SpecimenOrObservationBase");
 	}
 }

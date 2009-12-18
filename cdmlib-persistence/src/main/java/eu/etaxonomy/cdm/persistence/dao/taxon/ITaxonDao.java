@@ -31,7 +31,6 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
 import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
-import eu.etaxonomy.cdm.persistence.dao.common.ISearchableDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ITitledDao;
 import eu.etaxonomy.cdm.persistence.fetch.CdmFetch;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
@@ -41,30 +40,7 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
  * @author a.mueller
  *
  */
-public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<TaxonBase>, ISearchableDao<TaxonBase> {
-	
-//	/**
-//	 * Returns a count of TaxonBase instances (or Taxon instances, if accepted == true, or Synonym instance, if accepted == false) 
-//	 * where the taxonBase.name.nameCache property matches the String queryString
-//	 * 
-//	 * @param queryString
-//	 * @param accepted
-//	 * @param sec
-//	 * @return a count of the matching taxa
-//	 */
-//	public int countTaxaByName(String queryString, Boolean accepted, ReferenceBase sec);
-
-//	/**
-//	 * Returns a count of TaxonBase instances where the
-//	 * taxon.name properties match the parameters passed.
-//	 * 
-//	 * @param queryString search string
-//	 * @param matchMode way how search string shall be matched: exact, beginning, or anywhere
-//	 * @param selectMode either all taxon bases, or all taxa, or all synonyms
-//	 * @param sec reference
-//	 */ 
-//	public Integer countTaxaByName(String queryString, 
-//			MatchMode matchMode, SelectMode selectMode, ReferenceBase sec);
+public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<TaxonBase> {
 
 	/** 
 	 * Returns a list of TaxonBase instances where the taxon.titleCache property matches the name parameter, 

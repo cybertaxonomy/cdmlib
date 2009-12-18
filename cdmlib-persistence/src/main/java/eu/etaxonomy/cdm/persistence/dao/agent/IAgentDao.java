@@ -20,9 +20,8 @@ import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
-import eu.etaxonomy.cdm.persistence.dao.common.ISearchableDao;
 
-public interface IAgentDao extends IIdentifiableDao<AgentBase>, ISearchableDao<AgentBase> {
+public interface IAgentDao extends IIdentifiableDao<AgentBase> {
 	
 	public List<Institution> getInstitutionByCode(String code);
 	

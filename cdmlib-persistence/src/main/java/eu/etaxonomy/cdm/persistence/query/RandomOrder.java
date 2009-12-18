@@ -1,5 +1,7 @@
 package eu.etaxonomy.cdm.persistence.query;
 
+import java.util.Map;
+
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.criterion.CriteriaQuery;
@@ -18,7 +20,7 @@ public class RandomOrder extends OrderHint {
     }
 	
 	@Override
-	public void add(Criteria criteria) {
+	public void add(Criteria criteria, Map<String, Criteria> criteriaMap) {
 		criteria.addOrder(new RandomHibernateOrder());
 	}
     
