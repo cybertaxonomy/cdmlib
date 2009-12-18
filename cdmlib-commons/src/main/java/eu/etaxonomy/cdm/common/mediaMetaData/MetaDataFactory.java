@@ -56,7 +56,9 @@ public final class MetaDataFactory {
 					tiffMetaData2.readMetaData(uri, timeOut);
 					((ImageMetaData)tiffMetaData2).readImageInfo(uri, timeOut);
 					return tiffMetaData2;
-				}
+				} else {
+					return imageMetaData;
+				}				
 			default:
 				break;
 		}
