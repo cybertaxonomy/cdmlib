@@ -395,7 +395,6 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 			
 			Map<String,Criteria> criteriaMap = new HashMap<String,Criteria>();
 			for(OrderHint orderHint : orderHints){
-				System.out.println("Adding OrderHint " + orderHint.getPropertyName());
 				orderHint.add(criteria,criteriaMap);
 			}
 		}
