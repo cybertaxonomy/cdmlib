@@ -55,7 +55,7 @@ import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 })
 @XmlRootElement(name = "Collection")
 @Entity
-@Indexed
+@Indexed(index = "eu.etaxonomy.cdm.model.occurrence.Collection")
 @Audited
 @Configurable
 @Table(appliesTo="Collection", indexes = { @Index(name = "collectionTitleCacheIndex", columnNames = { "titleCache" }) })

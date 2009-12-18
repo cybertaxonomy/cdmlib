@@ -90,7 +90,7 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 	@XmlElementWrapper(name = "Descriptions")
 	@XmlElement(name = "Description")
 	@OneToMany(mappedBy="taxon", fetch= FetchType.LAZY) 
-	@Cascade({CascadeType.SAVE_UPDATE})
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE, CascadeType.DELETE_ORPHAN})
 	@NotNull
 	private Set<TaxonDescription> descriptions = new HashSet<TaxonDescription>();
 
@@ -98,7 +98,7 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 	@XmlElementWrapper(name = "SynonymRelations")
 	@XmlElement(name = "SynonymRelationship")
     @OneToMany(mappedBy="relatedTo", fetch=FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE, CascadeType.DELETE_ORPHAN})
     @NotNull
 	private Set<SynonymRelationship> synonymRelations = new HashSet<SynonymRelationship>();
 
@@ -106,7 +106,7 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 	@XmlElementWrapper(name = "RelationsFromThisTaxon")
 	@XmlElement(name = "FromThisTaxonRelationship")
     @OneToMany(mappedBy="relatedFrom", fetch=FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE, CascadeType.DELETE_ORPHAN})
 	@NotNull
 	private Set<TaxonRelationship> relationsFromThisTaxon = new HashSet<TaxonRelationship>();
 
@@ -116,7 +116,7 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @OneToMany(mappedBy="relatedTo", fetch=FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE, CascadeType.DELETE_ORPHAN})
 	@NotNull
 	private Set<TaxonRelationship> relationsToThisTaxon = new HashSet<TaxonRelationship>();
 

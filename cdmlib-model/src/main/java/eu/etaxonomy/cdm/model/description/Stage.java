@@ -15,6 +15,7 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Indexed;
 
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
@@ -41,6 +42,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "Stage")
 @XmlRootElement(name = "Stage")
 @Entity
+@Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
 @Audited
 public class Stage extends Scope {
 	private static final long serialVersionUID = 2338810516765894760L;

@@ -21,6 +21,7 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Indexed;
 
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -46,6 +47,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "Modifier")
 @XmlRootElement(name = "Modifier")
 @Entity
+@Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
 @Audited
 public class Modifier extends OrderedTermBase<Modifier> {
 	private static final long serialVersionUID = -2491833848163461951L;

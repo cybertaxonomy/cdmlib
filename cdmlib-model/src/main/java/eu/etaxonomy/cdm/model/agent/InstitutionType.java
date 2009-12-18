@@ -20,6 +20,7 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Indexed;
 
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
@@ -38,6 +39,7 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "InstitutionType")
 @Entity
+@Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
 @Audited
 public class InstitutionType extends DefinedTermBase<InstitutionType> {
 	private static final long serialVersionUID = 8714866112728127219L;

@@ -23,6 +23,7 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Indexed;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
@@ -58,6 +59,7 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "NameRelationshipType")
 @Entity
+@Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
 @Audited
 public class NameRelationshipType extends RelationshipTermBase<NameRelationshipType> {
 	static Logger logger = Logger.getLogger(NameRelationshipType.class);

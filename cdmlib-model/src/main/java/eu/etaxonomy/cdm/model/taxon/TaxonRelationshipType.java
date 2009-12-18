@@ -16,6 +16,7 @@ import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
 
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Indexed;
 
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -50,6 +51,7 @@ import java.util.UUID;
 @XmlType(name = "TaxonRelationshipType")
 @XmlRootElement(name = "TaxonRelationshipType")
 @Entity
+@Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
 @Audited
 public class TaxonRelationshipType extends RelationshipTermBase<TaxonRelationshipType> {
 	

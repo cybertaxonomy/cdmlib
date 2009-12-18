@@ -18,6 +18,7 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
 
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Indexed;
 
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -35,6 +36,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "NamedAreaType")
 @XmlRootElement(name = "NamedAreaType")
 @Entity
+@Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
 @Audited
 public class NamedAreaType extends DefinedTermBase<NamedAreaType> {
 	private static final long serialVersionUID = 8280172429797206548L;

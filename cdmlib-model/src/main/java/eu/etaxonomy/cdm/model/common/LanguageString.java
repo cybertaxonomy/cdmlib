@@ -28,7 +28,7 @@ import org.hibernate.search.annotations.Indexed;
 @XmlType(name = "LanguageString")
 @XmlRootElement(name = "LanguageString")
 @Entity
-@Indexed(index = "eu.etaxonomy.cdm.model.common.LanguageStringBase")
+@Indexed(index = "eu.etaxonomy.cdm.model.common.LanguageString")
 @Audited
 public class LanguageString  extends LanguageStringBase implements Cloneable {
 	private static final long serialVersionUID = -1502298496073201104L;

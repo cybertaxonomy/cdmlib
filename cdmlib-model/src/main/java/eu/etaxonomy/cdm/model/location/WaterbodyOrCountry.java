@@ -33,6 +33,7 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Indexed;
 
 import au.com.bytecode.opencsv.CSVWriter;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
@@ -55,6 +56,7 @@ import eu.etaxonomy.cdm.model.description.Feature;
 })
 @XmlRootElement(name = "WaterbodyOrCountry")
 @Entity
+@Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
 @Audited
 public class WaterbodyOrCountry extends NamedArea {
 	private static final long serialVersionUID = -6791671976199722843L;

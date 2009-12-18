@@ -28,6 +28,7 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.IndexedEmbedded;
 
 /**
  * This class represents information pieces expressed in categorical type of
@@ -70,7 +71,8 @@ public class CategoricalData extends DescriptionElementBase {
 	@XmlElementWrapper(name = "States")
 	@XmlElement(name = "State")
 	@ManyToMany(fetch = FetchType.LAZY)
-	@Cascade({ CascadeType.SAVE_UPDATE, CascadeType.MERGE })
+	@Cascade({ CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE,CascadeType.DELETE_ORPHAN })
+	@IndexedEmbedded(depth = 2)
 	private List<StateData> states = new ArrayList<StateData>();
 
 	

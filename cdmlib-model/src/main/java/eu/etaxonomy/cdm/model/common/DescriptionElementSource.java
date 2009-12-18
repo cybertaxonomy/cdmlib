@@ -100,7 +100,6 @@ public class DescriptionElementSource extends OriginalSourceBase<DescriptionElem
 		return result;
 	}
 	
-   //FIXME: There is no sourcedObj_type for DescriptionElementSources... 
 	@XmlElement(name = "SourcedObject")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")

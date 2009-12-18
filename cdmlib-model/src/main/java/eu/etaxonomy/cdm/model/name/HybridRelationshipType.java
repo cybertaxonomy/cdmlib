@@ -21,6 +21,7 @@ import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Indexed;
 
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -54,6 +55,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "HybridRelationshipType")
 @XmlRootElement(name = "HybridRelationshipType")
 @Entity
+@Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
 @Audited
 public class HybridRelationshipType extends RelationshipTermBase<HybridRelationshipType> {
 	private static final long serialVersionUID = 5225908742890437668L;

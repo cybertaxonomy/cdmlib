@@ -18,6 +18,7 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
 
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Indexed;
 
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -35,6 +36,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "PreservationMethod")
 @XmlRootElement(name = "PreservationMethod")
 @Entity
+@Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
 @Audited
 public class PreservationMethod extends DefinedTermBase<PreservationMethod> {
 	private static final long serialVersionUID = -6597303767771121540L;

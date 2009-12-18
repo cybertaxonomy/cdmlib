@@ -20,6 +20,7 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Indexed;
 
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
@@ -38,6 +39,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 @XmlType(name = "PresenceTerm")
 @XmlRootElement(name = "PresenceTerm")
 @Entity
+@Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
 @Audited
 public class PresenceTerm extends PresenceAbsenceTermBase<PresenceTerm> {
 	private static final long serialVersionUID = -2876981902335193596L;

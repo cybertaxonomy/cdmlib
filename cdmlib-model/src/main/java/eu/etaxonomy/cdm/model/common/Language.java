@@ -24,6 +24,7 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Indexed;
 
 import au.com.bytecode.opencsv.CSVWriter;
 
@@ -39,6 +40,7 @@ import au.com.bytecode.opencsv.CSVWriter;
 @XmlType(name = "Language")
 @XmlRootElement(name = "Language")
 @Entity
+@Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
 @Audited
 public class Language extends DefinedTermBase<Language> {
 	private static final long serialVersionUID = -5030610079904074217L;

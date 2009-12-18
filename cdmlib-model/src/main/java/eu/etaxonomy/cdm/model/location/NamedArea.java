@@ -36,6 +36,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Indexed;
 
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
@@ -69,6 +70,7 @@ import eu.etaxonomy.cdm.model.media.Media;
 	WaterbodyOrCountry.class
 })
 @Entity
+@Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
 @Audited
 public class NamedArea extends OrderedTermBase<NamedArea> {
 	private static final long serialVersionUID = 6248434369557403036L;

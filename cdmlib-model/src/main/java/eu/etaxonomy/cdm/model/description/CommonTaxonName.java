@@ -23,7 +23,10 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.IndexedEmbedded;
 
 import eu.etaxonomy.cdm.model.common.Language;
 
@@ -56,12 +59,14 @@ public class CommonTaxonName extends DescriptionElementBase {
 	private static final Logger logger = Logger.getLogger(CommonTaxonName.class);
 	
 	@XmlElement(name = "Name")
+	@Field(index = Index.TOKENIZED)
 	private String name;
 	
 	@XmlElement(name = "Language")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
+	@IndexedEmbedded(depth = 2)
 	private Language language;
 
 	/**

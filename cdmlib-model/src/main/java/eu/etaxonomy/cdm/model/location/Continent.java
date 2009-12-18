@@ -22,6 +22,7 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Indexed;
 
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -36,6 +37,7 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
 @XmlType(name = "Continent")
 @XmlRootElement(name = "Continent")
 @Entity
+@Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
 @Audited
 public class Continent extends NamedArea {
 	private static final long serialVersionUID = 4650684072484353151L;

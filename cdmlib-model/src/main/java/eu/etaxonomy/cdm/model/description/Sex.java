@@ -20,6 +20,7 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Indexed;
 
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
@@ -40,6 +41,7 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 @XmlType(name = "Sex")
 @XmlRootElement(name = "Sex")
 @Entity
+@Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
 @Audited
 public class Sex extends Scope {
 	private static final long serialVersionUID = 3463642992193419657L;

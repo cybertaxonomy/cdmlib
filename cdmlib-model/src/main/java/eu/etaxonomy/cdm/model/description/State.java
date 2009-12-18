@@ -22,6 +22,7 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Indexed;
 
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.OrderedTermBase;
@@ -40,6 +41,7 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
 @XmlType(name = "State")
 @XmlRootElement(name = "State")
 @Entity
+@Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
 @Audited
 public class State extends OrderedTermBase<State> {
 	private static final long serialVersionUID = -4816292463790262516L;

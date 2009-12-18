@@ -16,6 +16,7 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
 
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Indexed;
 
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -34,6 +35,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "NamedAreaLevel")
 @XmlRootElement(name = "NamedAreaLevel")
 @Entity
+@Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
 @Audited
 public class NamedAreaLevel extends OrderedTermBase<NamedAreaLevel> {
 	private static final long serialVersionUID = -7977901140330659208L;

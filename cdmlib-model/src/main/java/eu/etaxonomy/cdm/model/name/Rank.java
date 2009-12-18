@@ -21,6 +21,7 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Indexed;
 
 import java.util.*;
 
@@ -49,6 +50,7 @@ import javax.persistence.*;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Rank")
 @Entity
+@Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
 @Audited
 public class Rank extends OrderedTermBase<Rank> {
 	private static final long serialVersionUID = -8648081681348758485L;

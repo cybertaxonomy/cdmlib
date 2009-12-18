@@ -29,6 +29,9 @@ import org.apache.log4j.Logger;
 import org.hibernate.LazyInitializationException;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Index;
+import org.hibernate.search.annotations.IndexedEmbedded;
 
 import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.model.description.TextData;
@@ -50,12 +53,14 @@ public abstract class TermBase extends IdentifiableEntity {
 	private static final Logger logger = Logger.getLogger(TermBase.class);
 	
 	@XmlElement(name = "URI")
+	@Field(index=Index.UN_TOKENIZED)
 	private String uri;
 	
 	@XmlElementWrapper(name = "Representations")
 	@XmlElement(name = "Representation")
     @OneToMany(fetch=FetchType.EAGER)
-	@Cascade( { CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE })
+	@Cascade( { CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE, CascadeType.DELETE_ORPHAN})
+	@IndexedEmbedded(depth = 2)
 	private Set<Representation> representations = new HashSet<Representation>();
 	
 	public TermBase(){

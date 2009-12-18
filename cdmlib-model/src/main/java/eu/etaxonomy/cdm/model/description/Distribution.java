@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.model.description;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -28,6 +29,7 @@ import org.hibernate.search.annotations.Indexed;
 
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.validation.Level2;
 
 /**
  * This class represents elementary distribution data for a {@link Taxon taxon}.
@@ -63,12 +65,14 @@ public class Distribution extends DescriptionElementBase {
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
+	@NotNull(groups = Level2.class)
 	private NamedArea area;
 	
 	@XmlElement(name = "PresenceAbsenceStatus")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
+	@NotNull(groups = Level2.class)
 	private PresenceAbsenceTermBase<?> status;
 
 	

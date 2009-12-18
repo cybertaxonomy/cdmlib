@@ -18,6 +18,7 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Indexed;
 
 import eu.etaxonomy.cdm.model.description.Modifier;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
@@ -47,6 +48,7 @@ import eu.etaxonomy.cdm.model.name.Rank;
 	Rank.class
 })
 @Entity
+@Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
 @Audited
 public abstract class OrderedTermBase<T extends OrderedTermBase> extends DefinedTermBase<T> implements Comparable<T> {
 	private static final long serialVersionUID = 8000797926720467399L;

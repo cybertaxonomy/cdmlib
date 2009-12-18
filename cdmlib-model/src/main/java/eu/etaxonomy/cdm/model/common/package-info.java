@@ -23,6 +23,12 @@
 		@MetaValue(value = "eu.etaxonomy.cdm.model.description.TaxonDescription", targetEntity = TaxonDescription.class),
 		@MetaValue(value = "eu.etaxonomy.cdm.model.description.SpecimenDescription", targetEntity = SpecimenDescription.class),
 		@MetaValue(value = "eu.etaxonomy.cdm.model.description.TaxonNameDescription", targetEntity = TaxonNameDescription.class),
+		@MetaValue(value = "eu.etaxonomy.cdm.model.description.CategoricalData", targetEntity = CategoricalData.class),
+		@MetaValue(value = "eu.etaxonomy.cdm.model.description.CommonTaxonName", targetEntity = CommonTaxonName.class),
+		@MetaValue(value = "eu.etaxonomy.cdm.model.description.Distribution", targetEntity = Distribution.class),
+		@MetaValue(value = "eu.etaxonomy.cdm.model.description.IndividualsAssociation", targetEntity = IndividualsAssociation.class),
+		@MetaValue(value = "eu.etaxonomy.cdm.model.description.QuantitativeData", targetEntity = QuantitativeData.class),
+		@MetaValue(value = "eu.etaxonomy.cdm.model.description.TaxonInteraction", targetEntity = TaxonInteraction.class),
 		@MetaValue(value = "eu.etaxonomy.cdm.model.media.Media", targetEntity = Media.class),
 		@MetaValue(value = "eu.etaxonomy.cdm.model.molecular.Sequence", targetEntity = Sequence.class),
 		@MetaValue(value = "eu.etaxonomy.cdm.model.name.BacterialName", targetEntity = BacterialName.class),
@@ -63,9 +69,15 @@ import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
+import eu.etaxonomy.cdm.model.description.CategoricalData;
+import eu.etaxonomy.cdm.model.description.CommonTaxonName;
+import eu.etaxonomy.cdm.model.description.Distribution;
+import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
 import eu.etaxonomy.cdm.model.description.MediaKey;
+import eu.etaxonomy.cdm.model.description.QuantitativeData;
 import eu.etaxonomy.cdm.model.description.SpecimenDescription;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
+import eu.etaxonomy.cdm.model.description.TaxonInteraction;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.media.Media;

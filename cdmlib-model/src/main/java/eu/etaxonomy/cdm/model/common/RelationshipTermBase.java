@@ -35,6 +35,10 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Index;
+import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.IndexedEmbedded;
 
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
@@ -57,6 +61,7 @@ import au.com.bytecode.opencsv.CSVWriter;
 	TaxonRelationshipType.class
 })
 @Entity
+@Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
 @Audited
 public abstract class RelationshipTermBase<T extends RelationshipTermBase> extends OrderedTermBase<T> {
 	private static final long serialVersionUID = 5497187985269083971L;
@@ -64,9 +69,11 @@ public abstract class RelationshipTermBase<T extends RelationshipTermBase> exten
 	private static final Logger logger = Logger.getLogger(RelationshipTermBase.class);
 	
 	@XmlElement(name = "Symmetric")
+	@Field(index=Index.UN_TOKENIZED)
 	private boolean symmetric;
 	
 	@XmlElement(name = "Transitive")
+	@Field(index=Index.UN_TOKENIZED)
 	private boolean transitive;
 	
 	@XmlElementWrapper(name = "InverseRepresentations")
@@ -74,6 +81,7 @@ public abstract class RelationshipTermBase<T extends RelationshipTermBase> exten
 	@OneToMany(fetch = FetchType.LAZY)
 	@JoinTable(name="RelationshipTermBase_inverseRepresentation")
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
+	@IndexedEmbedded(depth = 2)
 	private Set<Representation> inverseRepresentations = new HashSet<Representation>();
 	
 	public RelationshipTermBase() {

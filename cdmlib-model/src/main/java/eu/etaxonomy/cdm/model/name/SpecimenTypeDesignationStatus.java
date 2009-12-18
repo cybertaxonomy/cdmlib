@@ -22,6 +22,7 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Indexed;
 
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 
@@ -51,6 +52,7 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "SpecimenTypeDesignationStatus")
 @Entity
+@Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
 @Audited
 public class SpecimenTypeDesignationStatus extends TypeDesignationStatusBase<SpecimenTypeDesignationStatus> {
 	static Logger logger = Logger.getLogger(SpecimenTypeDesignationStatus.class);

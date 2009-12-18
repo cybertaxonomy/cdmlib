@@ -28,6 +28,7 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Indexed;
 
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 
@@ -49,6 +50,7 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
 @XmlType(name = "StatisticalMeasureValue")
 @XmlRootElement(name = "StatisticalMeasureValue")
 @Entity
+@Indexed(index = "eu.etaxonomy.cdm.model.description.DescriptionElementBase")
 @Audited
 public class StatisticalMeasurementValue extends VersionableEntity {
 	private static final long serialVersionUID = -3576311887760351982L;

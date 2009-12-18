@@ -20,6 +20,7 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Indexed;
 
 /**
  * Annotation types ...
@@ -31,6 +32,7 @@ import org.hibernate.envers.Audited;
 @XmlType(name = "AnnotationType")
 @XmlRootElement(name = "AnnotationType")
 @Entity
+@Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
 @Audited
 public class AnnotationType extends DefinedTermBase<AnnotationType> {
 	private static final long serialVersionUID = 49629121282854575L;

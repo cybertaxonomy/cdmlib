@@ -107,7 +107,7 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
         @XmlElement(name = "TextData", namespace = "http://etaxonomy.eu/cdm/model/description/1.0", type = TextData.class)
     })
     @OneToMany(fetch=FetchType.LAZY, mappedBy = "inDescription")
-	@Cascade( { CascadeType.SAVE_UPDATE, CascadeType.MERGE })
+	@Cascade( { CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE, CascadeType.DELETE_ORPHAN })
 	private Set<DescriptionElementBase> descriptionElements = new HashSet<DescriptionElementBase>();
 
 	@XmlElement(name = "ImageGallery")

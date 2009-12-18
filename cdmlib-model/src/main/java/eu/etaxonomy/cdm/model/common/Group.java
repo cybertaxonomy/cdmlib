@@ -25,6 +25,9 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
 import org.hibernate.annotations.NaturalId;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Index;
+import org.hibernate.search.annotations.Indexed;
 import org.springframework.security.GrantedAuthority;
 
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -35,12 +38,14 @@ import org.springframework.security.GrantedAuthority;
 })
 @XmlRootElement(name = "Group")
 @Entity
+@Indexed(index = "eu.etaxonomy.cdm.model.common.Group")
 @Table(name = "PermissionGroup")
 public class Group extends CdmBase {
 	private static final long serialVersionUID = 7216686200093054648L;
 	
 	@XmlElement(name = "Name")
 	@NaturalId
+	@Field(index = Index.UN_TOKENIZED)
 	protected String name;
 	
 	@XmlElementWrapper(name = "Members")

@@ -34,10 +34,14 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
+import org.apache.lucene.document.Field.Index;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.IndexedEmbedded;
 
 
 /**
@@ -54,6 +58,7 @@ import org.hibernate.envers.Audited;
 })
 @XmlRootElement(name = "TermVocabulary")
 @Entity
+@Indexed(index = "eu.etaxonomy.cdm.model.common.TermVocabulary")
 @Audited
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 public class TermVocabulary<T extends DefinedTermBase> extends TermBase implements Iterable<T> {
@@ -65,6 +70,7 @@ public class TermVocabulary<T extends DefinedTermBase> extends TermBase implemen
 	// Software can go and grap these terms incl labels and description. 
 	// UUID needed? Further vocs can be setup through our own ontology.
 	@XmlElement(name = "TermSourceURI")
+	@Field(index=org.hibernate.search.annotations.Index.UN_TOKENIZED)
 	private String termSourceUri;
 	
 
@@ -76,6 +82,7 @@ public class TermVocabulary<T extends DefinedTermBase> extends TermBase implemen
     @OneToMany(mappedBy="vocabulary", fetch=FetchType.LAZY, targetEntity = DefinedTermBase.class)
 	@Type(type="DefinedTermBase")
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
+	@IndexedEmbedded(depth = 2)
 	protected Set<T> terms = getNewTermSet();
 	
 	public T findTermByUuid(UUID uuid){

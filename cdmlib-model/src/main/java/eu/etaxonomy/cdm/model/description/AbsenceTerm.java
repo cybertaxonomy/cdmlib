@@ -14,6 +14,7 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Indexed;
 
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
@@ -38,6 +39,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "AbsenceTerm")
 @XmlRootElement(name = "AbsenceTerm")
 @Entity
+@Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
 @Audited
 public class AbsenceTerm extends PresenceAbsenceTermBase<AbsenceTerm> {
 	private static final long serialVersionUID = -7145360212307512860L;

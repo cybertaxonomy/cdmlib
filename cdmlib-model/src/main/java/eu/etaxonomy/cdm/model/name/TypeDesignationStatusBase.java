@@ -17,6 +17,7 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Indexed;
 
 import eu.etaxonomy.cdm.model.common.OrderedTermBase;
 
@@ -50,6 +51,7 @@ import eu.etaxonomy.cdm.model.common.OrderedTermBase;
 	SpecimenTypeDesignationStatus.class
 })
 @Entity
+@Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
 @Audited
 public abstract class TypeDesignationStatusBase<T extends TypeDesignationStatusBase<?>> extends OrderedTermBase<T> {
 	static Logger logger = Logger.getLogger(TypeDesignationStatusBase.class);

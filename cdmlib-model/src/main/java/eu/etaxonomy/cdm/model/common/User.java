@@ -38,6 +38,10 @@ import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Index;
+import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.IndexedEmbedded;
 import org.springframework.security.GrantedAuthority;
 import org.springframework.security.userdetails.UserDetails;
 
@@ -58,6 +62,7 @@ import eu.etaxonomy.cdm.model.agent.Person;
 })
 @XmlRootElement(name = "User")
 @Entity
+@Indexed(index = "eu.etaxonomy.cdm.model.common.User")
 @Audited
 @Table(name = "UserAccount")
 public class User extends CdmBase implements UserDetails {
@@ -84,6 +89,7 @@ public class User extends CdmBase implements UserDetails {
 	
 	@XmlElement(name = "Username")
 	@NaturalId
+	@Field(index = Index.UN_TOKENIZED)
 	protected String username;
 	
 	/**
@@ -109,6 +115,7 @@ public class User extends CdmBase implements UserDetails {
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@ManyToMany(fetch = FetchType.LAZY)
+	@IndexedEmbedded(depth = 1)
 	@NotAudited
 	protected Set<Group> groups = new HashSet<Group>();
 	
@@ -129,6 +136,7 @@ public class User extends CdmBase implements UserDetails {
 	@XmlSchemaType(name = "IDREF")
 	@OneToOne(fetch = FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE})
+	@IndexedEmbedded(depth = 1)
 	protected Person person;
 	
 	@XmlTransient

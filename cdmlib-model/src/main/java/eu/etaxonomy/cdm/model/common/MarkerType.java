@@ -12,6 +12,9 @@ package eu.etaxonomy.cdm.model.common;
 
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Index;
+import org.hibernate.search.annotations.Indexed;
 
 import java.util.*;
 
@@ -31,6 +34,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "MarkerType")
 @Entity
+@Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
 @Audited
 public class MarkerType extends DefinedTermBase<MarkerType> {
 	private static final long serialVersionUID = -9117424749919907396L;
@@ -52,6 +56,7 @@ public class MarkerType extends DefinedTermBase<MarkerType> {
 	
 	
     @XmlAttribute(name = "isTechnical")
+    @Field(index=Index.UN_TOKENIZED)
     private boolean isTechnical=false;
     
 

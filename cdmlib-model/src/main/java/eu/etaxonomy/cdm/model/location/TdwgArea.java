@@ -23,6 +23,7 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Indexed;
 import org.jdom.Element;
 import org.jdom.Namespace;
 
@@ -42,6 +43,7 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
 @XmlType(name = "TdwgArea")
 @XmlRootElement(name = "TdwgArea")
 @Entity
+@Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
 @Audited
 public class TdwgArea extends NamedArea {
 	private static final long serialVersionUID = 4662215686356109015L;

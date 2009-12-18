@@ -12,6 +12,9 @@ package eu.etaxonomy.cdm.model.common;
 
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Index;
+import org.hibernate.search.annotations.Indexed;
 
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -34,6 +37,7 @@ import javax.xml.bind.annotation.XmlType;
 })
 @XmlRootElement(name = "Representation")
 @Entity
+@Indexed(index = "eu.etaxonomy.cdm.model.common.Representation")
 @Audited
 public class Representation extends LanguageStringBase {
 	private static final long serialVersionUID = -4202420199587324532L;
@@ -41,9 +45,11 @@ public class Representation extends LanguageStringBase {
 	private static final Logger logger = Logger.getLogger(Representation.class);
 
     @XmlElement(name = "Label")
+    @Field(index=Index.TOKENIZED)
 	private String label;
     
     @XmlElement(name = "AbbreviatedLabel")
+    @Field(index=Index.TOKENIZED)
 	private String abbreviatedLabel;
 
 	/**

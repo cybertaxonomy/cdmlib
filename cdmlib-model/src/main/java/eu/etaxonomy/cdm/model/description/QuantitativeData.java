@@ -29,6 +29,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Indexed;
 
 /**
  * This class represents information pieces expressed in numerical data
@@ -62,6 +63,7 @@ import org.hibernate.envers.Audited;
 })
 @XmlRootElement(name = "QuantitativeData")
 @Entity
+@Indexed(index = "eu.etaxonomy.cdm.model.description.DescriptionElementBase")
 @Audited
 public class QuantitativeData extends DescriptionElementBase {
 	private static final long serialVersionUID = -2755806455420051488L;

@@ -19,6 +19,7 @@ import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapKey;
 import javax.persistence.OneToMany;
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -34,6 +35,7 @@ import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
+import org.hibernate.validator.constraints.NotEmpty;
 
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.jaxb.MultilanguageTextAdapter;
@@ -43,6 +45,7 @@ import eu.etaxonomy.cdm.model.common.MultilanguageText;
 import eu.etaxonomy.cdm.model.common.MultilanguageTextHelper;
 import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.common.TermBase;
+import eu.etaxonomy.cdm.validation.Level2;
 
 /**
  * This class represents information pieces expressed in one or several natural
@@ -76,6 +79,7 @@ public class TextData extends DescriptionElementBase {
     @OneToMany (fetch= FetchType.LAZY)
     @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE })
     @IndexedEmbedded
+    @NotNull
 	private Map<Language, LanguageString> multilanguageText = new HashMap<Language,LanguageString>();
 	
 	@XmlElement(name = "Format")

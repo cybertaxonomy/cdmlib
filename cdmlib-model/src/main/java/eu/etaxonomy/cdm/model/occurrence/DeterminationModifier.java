@@ -21,6 +21,7 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Indexed;
 
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.description.Modifier;
@@ -37,6 +38,7 @@ import eu.etaxonomy.cdm.model.location.TdwgArea;
 @XmlType(name = "DeterminationModifier")
 @XmlRootElement(name = "DeterminationModifier")
 @Entity
+@Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
 @Audited
 public class DeterminationModifier extends Modifier {
 	private static final Logger logger = Logger.getLogger(DeterminationModifier.class);

@@ -22,6 +22,7 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Indexed;
 
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
@@ -39,6 +40,7 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
 @XmlType(name = "Scope")
 @XmlRootElement(name = "Scope")
 @Entity
+@Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
 @Audited
 public class Scope extends Modifier {
 	private static final long serialVersionUID = 4479960075363470677L;
