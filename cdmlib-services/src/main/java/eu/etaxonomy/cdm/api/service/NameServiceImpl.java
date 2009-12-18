@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
@@ -22,21 +21,18 @@ import org.hibernate.criterion.Criterion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.config.IIdentifiableEntityServiceConfigurator;
-import eu.etaxonomy.cdm.api.service.config.INameServiceConfigurator;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
-import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
-import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
-import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.HybridRelationship;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
@@ -46,11 +42,9 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
-import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
-import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
-import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.common.IOrderedTermVocabularyDao;
 import eu.etaxonomy.cdm.persistence.dao.common.IReferencedEntityDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ITermVocabularyDao;
@@ -63,7 +57,7 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 
 @Service
-@Transactional(readOnly = true)
+@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxonNameDao> implements INameService {
 	static private final Logger logger = Logger.getLogger(NameServiceImpl.class);
 	
@@ -324,17 +318,6 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
 		List<TaxonNameBase> results = new ArrayList<TaxonNameBase>();
 		if(numberOfResults > 0) { // no point checking again
 			results = dao.searchNames(uninomial, infraGenericEpithet, specificEpithet, infraspecificEpithet, rank, pageSize, pageNumber, orderHints, propertyPaths); 
-		}
-		
-		return new DefaultPagerImpl<TaxonNameBase>(pageNumber, numberOfResults, pageSize, results);
-	}
-	
-	public Pager<TaxonNameBase> search(Class<? extends TaxonNameBase> clazz, String queryString, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
-        Integer numberOfResults = dao.count(clazz,queryString);
-		
-		List<TaxonNameBase> results = new ArrayList<TaxonNameBase>();
-		if(numberOfResults > 0) { // no point checking again
-			results = dao.search(clazz,queryString, pageSize, pageNumber, orderHints, propertyPaths); 
 		}
 		
 		return new DefaultPagerImpl<TaxonNameBase>(pageNumber, numberOfResults, pageSize, results);

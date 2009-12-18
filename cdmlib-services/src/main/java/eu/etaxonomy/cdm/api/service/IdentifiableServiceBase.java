@@ -31,14 +31,13 @@ import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
-@Transactional(readOnly = true)
 public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO extends IIdentifiableDao<T>> extends AnnotatableServiceBase<T,DAO> 
 						implements IIdentifiableEntityService<T>{
 	@SuppressWarnings("unused")
 	protected
 	static final  Logger logger = Logger.getLogger(IdentifiableServiceBase.class);
 
-	
+	@Transactional(readOnly = true)
 	public Pager<Rights> getRights(T t, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
         Integer numberOfResults = dao.countRights(t);
 		
@@ -49,7 +48,8 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 		
 		return new DefaultPagerImpl<Rights>(pageNumber, numberOfResults, pageSize, results);
 	}
-
+	
+	@Transactional(readOnly = true)
 	public Pager<IdentifiableSource> getSources(T t, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
 		 Integer numberOfResults = dao.countSources(t);
 			
@@ -61,6 +61,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 			return new DefaultPagerImpl<IdentifiableSource>(pageNumber, numberOfResults, pageSize, results);
 	}
 
+	@Transactional(readOnly = true)
 	protected List<T> findByTitle(IIdentifiableEntityServiceConfigurator config){
 		return ((IIdentifiableDao)dao).findByTitle(config.getTitleSearchString(),
 				config.getMatchMode(), 0, -1, null);
@@ -75,13 +76,16 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 	 * @param title
 	 * @return
 	 */
+	@Transactional(readOnly = true)
 	protected List<T> findCdmObjectsByTitle(String title){
 		return ((IIdentifiableDao)dao).findByTitle(title);
 	}
 	
+	@Transactional(readOnly = true)
 	protected List<T> findCdmObjectsByTitle(String title, Class<T> clazz){
 		return ((IIdentifiableDao)dao).findByTitleAndClass(title, clazz);
 	}
+	@Transactional(readOnly = true)
 	protected List<T> findCdmObjectsByTitle(String title, CdmBase sessionObject){
 		return ((IIdentifiableDao)dao).findByTitle(title, sessionObject);
 	}
@@ -91,6 +95,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 	 *  (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.ICommonService#getSourcedObjectById(java.lang.String, java.lang.String)
 	 */
+	@Transactional(readOnly = true)
 	public ISourceable getSourcedObjectByIdInSource(Class clazz, String idInSource, String idNamespace) {
 		ISourceable result = null;
 
@@ -104,10 +109,12 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.IIdentifiableEntityService#getUuidAndTitleCache()
 	 */
+	@Transactional(readOnly = true)
 	public List<UuidAndTitleCache<T>> getUuidAndTitleCache() {
 		return dao.getUuidAndTitleCache();
 	}
 	
+	@Transactional(readOnly = true)
 	public Pager<T> findByTitle(Class<? extends T> clazz, String queryString,MatchMode matchmode, List<Criterion> criteria, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
 		 Integer numberOfResults = dao.countByTitle(clazz, queryString, matchmode, criteria);
 			
@@ -119,8 +126,21 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 		  return new DefaultPagerImpl<T>(pageNumber, numberOfResults, pageSize, results);
 	}
 	
+	@Transactional(readOnly = true)
 	public T find(LSID lsid) {
 		return dao.find(lsid);
+	}
+	
+	@Transactional(readOnly = true)
+	public Pager<T> search(Class<? extends T> clazz, String queryString, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+        Integer numberOfResults = dao.count(clazz,queryString);
+		
+		List<T> results = new ArrayList<T>();
+		if(numberOfResults > 0) { // no point checking again
+			results = dao.search(clazz,queryString, pageSize, pageNumber, orderHints, propertyPaths); 
+		}
+		
+		return new DefaultPagerImpl<T>(pageNumber, numberOfResults, pageSize, results);
 	}
 }
 

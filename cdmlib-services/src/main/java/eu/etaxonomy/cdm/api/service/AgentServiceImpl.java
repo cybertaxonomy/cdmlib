@@ -11,14 +11,12 @@
 package eu.etaxonomy.cdm.api.service;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
@@ -32,7 +30,6 @@ import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.persistence.dao.agent.IAgentDao;
-import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 
 
@@ -41,7 +38,7 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
  *
  */
 @Service
-@Transactional(readOnly=true)
+@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 public class AgentServiceImpl extends IdentifiableServiceBase<AgentBase,IAgentDao> implements IAgentService {
     private static final Logger logger = Logger.getLogger(AgentServiceImpl.class);
 	
@@ -99,17 +96,6 @@ public class AgentServiceImpl extends IdentifiableServiceBase<AgentBase,IAgentDa
 		}
 			
 		return new DefaultPagerImpl<Address>(pageNumber, numberOfResults, pageSize, results);
-	}
-
-	public Pager<AgentBase> search(Class<? extends AgentBase> clazz, String queryString, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
-        Integer numberOfResults = dao.count(clazz,queryString);
-		
-		List<AgentBase> results = new ArrayList<AgentBase>();
-		if(numberOfResults > 0) { // no point checking again
-			results = dao.search(clazz,queryString, pageSize, pageNumber, orderHints, propertyPaths); 
-		}
-		
-		return new DefaultPagerImpl<AgentBase>(pageNumber, numberOfResults, pageSize, results);
 	}
 
 	/* (non-Javadoc)

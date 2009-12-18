@@ -201,7 +201,7 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
 	 * FIXME Candidate for harmonization
 	 * move: descriptionElementService.search
 	 */
-	public Pager<DescriptionElementBase> search(Class<? extends DescriptionElementBase> clazz, String queryString, Integer pageSize,	Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+	public Pager<DescriptionElementBase> searchElements(Class<? extends DescriptionElementBase> clazz, String queryString, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
         Integer numberOfResults = descriptionElementDao.count(clazz,queryString);
 		
 		List<DescriptionElementBase> results = new ArrayList<DescriptionElementBase>();

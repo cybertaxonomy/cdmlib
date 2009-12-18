@@ -18,6 +18,7 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
@@ -41,7 +42,7 @@ import eu.etaxonomy.cdm.persistence.dao.common.ITermVocabularyDao;
  * @version 1.0
  */
 @Service
-@Transactional(readOnly=true)
+@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 public class LocationServiceImpl extends ServiceBase<DefinedTermBase,IDefinedTermDao> implements ILocationService {
 	private static final Logger logger = Logger
 			.getLogger(LocationServiceImpl.class);

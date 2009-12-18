@@ -18,13 +18,9 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.hibernate.Session;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
-import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
 import eu.etaxonomy.cdm.persistence.query.Grouping;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
@@ -40,11 +36,9 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
  *
  * @param <T>
  */
-@Transactional(propagation=Propagation.SUPPORTS, readOnly=true)
 public interface IService<T extends CdmBase>{
 
 	// FIXME what does this method do?
-//	@Transactional(readOnly=false)
 	public void clear();
 
 	
@@ -63,7 +57,6 @@ public interface IService<T extends CdmBase>{
 	 * @param persistentObject the object to be deleted
 	 * @return the unique identifier of the deleted entity
 	 */
-	@Transactional(readOnly=false)
 	public UUID delete(T persistentObject);
 	
 	/**
@@ -156,7 +149,6 @@ public interface IService<T extends CdmBase>{
 	 * @param transientObject the entity to be merged
 	 * @return The unique identifier of the persisted entity
 	 */
-	@Transactional(readOnly=false)
 	public UUID merge(T transientObject);
 	
 	/**
@@ -188,7 +180,6 @@ public interface IService<T extends CdmBase>{
 	 * @param persistentObject the object to be refreshed
 	 * @return the unique identifier
 	 */
-	@Transactional(readOnly=false)
 	public UUID refresh(T persistentObject);
 	
 	public List<T> rows(String tableName, int limit, int start);
@@ -199,7 +190,6 @@ public interface IService<T extends CdmBase>{
 	 * @return A Map containing the new entities, keyed using the generated UUID's
 	 *         of those entities
 	 */
-	@Transactional(readOnly=false)
 	public Map<UUID,T> save(Collection<T> newInstances);	
 	
 	/**
@@ -207,7 +197,6 @@ public interface IService<T extends CdmBase>{
 	 * @param newInstance the new entity to be persisted
 	 * @return A generated UUID for the new persistent entity
 	 */
-	@Transactional(readOnly=false)
 	public UUID save(T newInstance);
 	
 	/**
@@ -217,7 +206,6 @@ public interface IService<T extends CdmBase>{
 	 * @param transientObject the entity to be persisted
 	 * @return The unique identifier of the persisted entity
 	 */
-	@Transactional(readOnly=false)
 	public UUID saveOrUpdate(T transientObject);
 	
     /**
@@ -227,7 +215,6 @@ public interface IService<T extends CdmBase>{
 	 * @param transientObject the entity to be persisted
 	 * @return The unique identifier of the persisted entity
 	 */
-	@Transactional(readOnly=false)
 	public UUID update(T transientObject);
 	
 	/**

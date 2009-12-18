@@ -23,9 +23,9 @@ import eu.etaxonomy.cdm.model.view.AuditEventRecord;
 import eu.etaxonomy.cdm.persistence.dao.common.AuditEventSort;
 import eu.etaxonomy.cdm.persistence.dao.common.IVersionableDao;
 
-@Transactional(readOnly = true)
 public abstract class VersionableServiceBase<T extends VersionableEntity, DAO extends IVersionableDao<T>> extends ServiceBase<T,DAO> implements IVersionableService<T> {
 
+	@Transactional(readOnly = true)
 	public Pager<AuditEventRecord<T>> pageAuditEvents(T t, Integer pageSize,	Integer pageNumber, AuditEventSort sort, List<String> propertyPaths) {
 		Integer numberOfResults = dao.countAuditEvents(t, sort);
 			
@@ -37,14 +37,17 @@ public abstract class VersionableServiceBase<T extends VersionableEntity, DAO ex
 		return new DefaultPagerImpl<AuditEventRecord<T>>(pageNumber, numberOfResults, pageSize, results);
 	}
 
+	@Transactional(readOnly = true)
 	public AuditEventRecord<T> getNextAuditEvent(T t) {
 		return dao.getNextAuditEvent(t);
 	}
 
+	@Transactional(readOnly = true)
 	public AuditEventRecord<T> getPreviousAuditEvent(T t) {
 		return dao.getPreviousAuditEvent(t);
 	}
 	
+	@Transactional(readOnly = true)
 	public Pager<AuditEventRecord<T>> pageAuditEvents(Class<? extends T> clazz,AuditEvent from,AuditEvent to, List<AuditCriterion> criteria, Integer pageSize, Integer pageNumber, AuditEventSort sort,List<String> propertyPaths) {
 		Integer numberOfResults = dao.countAuditEvents(clazz, from, to, criteria);
 		

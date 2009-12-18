@@ -16,6 +16,7 @@ import java.util.UUID;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
@@ -25,7 +26,7 @@ import eu.etaxonomy.cdm.persistence.dao.common.AuditEventSort;
 import eu.etaxonomy.cdm.persistence.view.IAuditEventDao;
 
 @Service
-@Transactional(readOnly=true)
+@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 public class AuditEventService implements IAuditEventService {
 	
 	IAuditEventDao dao;

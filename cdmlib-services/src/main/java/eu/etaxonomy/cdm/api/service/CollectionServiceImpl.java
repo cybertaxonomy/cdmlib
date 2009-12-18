@@ -38,17 +38,6 @@ public class CollectionServiceImpl extends	IdentifiableServiceBase<Collection, I
 	public void generateTitleCache() {
 		logger.warn("Not yet implemented");
 	}
-
-	public Pager<Collection> search(Class<? extends Collection> clazz,	String query, Integer pageSize, Integer pageNumber,	List<OrderHint> orderHints, List<String> propertyPaths) {
-		Integer numberOfResults = dao.count(clazz,query);
-			
-		List<Collection> results = new ArrayList<Collection>();
-		if(numberOfResults > 0) { // no point checking again
-			results = dao.search(clazz,query, pageSize, pageNumber, orderHints, propertyPaths); 
-		}
-			
-		return new DefaultPagerImpl<Collection>(pageNumber, numberOfResults, pageSize, results);
-	}
 	
 	public List<Collection> searchByCode(String code) {
 		return this.dao.getCollectionByCode(code);

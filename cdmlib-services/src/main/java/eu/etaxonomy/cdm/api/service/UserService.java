@@ -31,6 +31,7 @@ import org.springframework.security.providers.encoding.PasswordEncoder;
 import org.springframework.security.userdetails.UserDetails;
 import org.springframework.security.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
@@ -42,7 +43,7 @@ import eu.etaxonomy.cdm.persistence.dao.common.IGroupDao;
 import eu.etaxonomy.cdm.persistence.dao.common.IUserDao;
 
 @Service
-@Transactional(readOnly=true)
+@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 public class UserService extends ServiceBase<User,IUserDao> implements IUserService {
 	
 	protected IGroupDao groupDao;

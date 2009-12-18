@@ -11,37 +11,31 @@
 package eu.etaxonomy.cdm.api.service;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
-import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
-import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
-import eu.etaxonomy.cdm.persistence.dao.occurrence.ICollectionDao;
 import eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao;
-import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
  * @author a.babadshanjan
  * @created 01.09.2008
  */
 @Service
-@Transactional(readOnly = true)
+@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObservationBase,IOccurrenceDao> implements IOccurrenceService {
 
 	static private final Logger logger = Logger.getLogger(OccurrenceServiceImpl.class);
@@ -119,16 +113,5 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 		}
 		
 		return new DefaultPagerImpl<Media>(pageNumber, numberOfResults, pageSize, results);
-	}
-
-	public Pager<SpecimenOrObservationBase> search(Class<? extends SpecimenOrObservationBase> clazz, String queryString, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
-        Integer numberOfResults = dao.count(clazz,queryString);
-		
-		List<SpecimenOrObservationBase> results = new ArrayList<SpecimenOrObservationBase>();
-		if(numberOfResults > 0) { // no point checking again
-			results = dao.search(clazz,queryString, pageSize, pageNumber, orderHints, propertyPaths); 
-		}
-		
-		return new DefaultPagerImpl<SpecimenOrObservationBase>(pageNumber, numberOfResults, pageSize, results);
 	}
 }

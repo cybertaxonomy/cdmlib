@@ -23,10 +23,9 @@ import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.persistence.dao.common.IAnnotatableDao;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
-@Transactional(readOnly = true)
 public abstract class AnnotatableServiceBase<T extends AnnotatableEntity,DAO extends IAnnotatableDao<T>> extends VersionableServiceBase<T, DAO>
 		implements IAnnotatableService<T> {
-	
+	@Transactional(readOnly = true)
 	public Pager<Annotation> getAnnotations(T annotatedObj, MarkerType status, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
 		Integer numberOfResults = dao.countAnnotations(annotatedObj, status);
 		

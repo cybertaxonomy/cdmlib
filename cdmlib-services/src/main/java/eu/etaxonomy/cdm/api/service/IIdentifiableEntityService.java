@@ -93,4 +93,21 @@ public interface IIdentifiableEntityService<T extends IdentifiableEntity> extend
 	 * @return a paged list of instances of type T matching the queryString
 	 */
     public Pager<T> findByTitle(Class<? extends T> clazz, String queryString,MatchMode matchmode, List<Criterion> criteria, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+    
+    /**
+	 * Returns a Paged List of IdentifiableEntity instances where the default field matches the String queryString (as interpreted by the Lucene QueryParser)
+	 * 
+	 * @param clazz filter the results by class (or pass null to return all IdentifiableEntity instances)
+	 * @param queryString
+	 * @param pageSize The maximum number of identifiable entities returned (can be null for all matching identifiable entities)
+	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
+	 * @param orderHints
+	 *            Supports path like <code>orderHints.propertyNames</code> which
+	 *            include *-to-one properties like createdBy.username or
+	 *            authorTeam.persistentTitleCache
+	 * @param propertyPaths properties to be initialized
+	 * @return a Pager IdentifiableEntity instances
+	 * @see <a href="http://lucene.apache.org/java/2_4_0/queryparsersyntax.html">Apache Lucene - Query Parser Syntax</a>
+	 */
+	public Pager<T> search(Class<? extends T> clazz, String queryString, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 }

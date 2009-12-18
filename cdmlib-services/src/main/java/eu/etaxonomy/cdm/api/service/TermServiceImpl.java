@@ -21,6 +21,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
@@ -42,7 +43,7 @@ import eu.etaxonomy.cdm.persistence.dao.common.IRepresentationDao;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 @Service
-@Transactional(readOnly = true)
+@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDefinedTermDao> implements ITermService{
 	private static final Logger logger = Logger.getLogger(TermServiceImpl.class);
 	private ILanguageStringDao languageStringDao;

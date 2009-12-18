@@ -20,6 +20,7 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.config.ITaxonServiceConfigurator;
@@ -58,7 +59,7 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 
 @Service
-@Transactional(readOnly = true)
+@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDao> implements ITaxonService{
 	private static final Logger logger = Logger.getLogger(TaxonServiceImpl.class);
 
@@ -409,18 +410,6 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		}
 		return heterotypicSynonymyGroups;
 	}
-
-	public Pager<TaxonBase> search(Class<? extends TaxonBase> clazz, String queryString, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
-        Integer numberOfResults = dao.count(clazz,queryString);
-		
-		List<TaxonBase> results = new ArrayList<TaxonBase>();
-		if(numberOfResults > 0) { // no point checking again
-			results = dao.search(clazz,queryString, pageSize, pageNumber, orderHints, propertyPaths); 
-		}
-		
-		return new DefaultPagerImpl<TaxonBase>(pageNumber, numberOfResults, pageSize, results);
-	}
-
 	
 	public Pager<IdentifiableEntity> findTaxaAndNames(ITaxonServiceConfigurator configurator) {
 		

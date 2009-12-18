@@ -67,17 +67,6 @@ public class MediaServiceImpl extends IdentifiableServiceBase<Media,IMediaDao> i
 		
 		return new DefaultPagerImpl<Rights>(pageNumber, numberOfResults, pageSize, results);
 	}
-	
-	public Pager<Media> search(Class<? extends Media> clazz, String queryString, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
-        Integer numberOfResults = dao.count(clazz,queryString);
-		
-		List<Media> results = new ArrayList<Media>();
-		if(numberOfResults > 0) { // no point checking again
-			results = dao.search(clazz,queryString, pageSize, pageNumber, orderHints, propertyPaths); 
-		}
-		
-		return new DefaultPagerImpl<Media>(pageNumber, numberOfResults, pageSize, results);
-	}
 
 	public void generateTitleCache() {
 		// TODO Auto-generated method stub
