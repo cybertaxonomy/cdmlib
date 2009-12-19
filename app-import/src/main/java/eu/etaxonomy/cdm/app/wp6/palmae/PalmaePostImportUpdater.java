@@ -22,12 +22,16 @@ import eu.etaxonomy.cdm.app.common.CdmDestinations;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.FeatureNode;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.reference.IReferenceBase;
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
@@ -91,43 +95,219 @@ public class PalmaePostImportUpdater {
 	
 	public boolean updateNameUsage(ICdmDataSource dataSource) {
 		try{
+			boolean result = true;
 			CdmApplicationController cdmApp = CdmApplicationController.NewInstance(dataSource, DbSchemaValidation.VALIDATE);
 
 			TransactionStatus tx = cdmApp.startTransaction();
 
 			int page = 0;
 			int count = cdmApp.getTaxonService().count(Taxon.class);
-			List<TaxonBase> taxonList = cdmApp.getTaxonService().list(Taxon.class, 100000, page, null, null);
-			Taxon taxon;
-			for (TaxonBase taxonBase : taxonList){
-				if (taxonBase instanceof Taxon){
-					taxon = (Taxon)taxonBase;
-				if (((Taxon)taxon).getTaxonNodes().size() <1){
-					TaxonNameBase name = taxon.getName();
-					Set<Taxon> taxa = name.getTaxa();
-					for(Taxon taxonCandidate: taxa ){
-						if (taxonCandidate.getTaxonNodes().size() >0){
-							addNameUsage(taxonCandidate, taxon);
-							//delete
+			List<TaxonBase> taxonList = cdmApp.getTaxonService().list(TaxonBase.class, 100000, page, null, null);
+			int i = 0;
+			
+			IReferenceBase treatmentReference = (IReferenceBase) cdmApp.getCommonService().getSourcedObjectByIdInSource(ReferenceBase.class, "palm_pub_ed_999999", "PublicationCitation");
+			if (treatmentReference == null){
+				logger.error("Treatment reference could not be found");
+				result = false;
+			}else{
+				for (TaxonBase nameUsage : taxonList){
+					if ((i++ % 100) == 0){System.out.println(i);};
+	
+					try {
+						//if not in treatment
+						if (! isInTreatment(nameUsage, treatmentReference, false)){
+							//if connected treatment taxon can be found
+							Taxon acceptedTaxon = getAcceptedTreatmentTaxon(nameUsage, treatmentReference);
+							if (acceptedTaxon != null){
+								//add as citation and add to delete list
+								addNameUsage(acceptedTaxon, nameUsage);
+								cdmApp.getTaxonService().delete(nameUsage);
+							}else{
+								logger.warn("Non treatment taxon has no accepted taxon in treatment: " +  nameUsage + " (" + nameUsage.getId() +")" );
+							}
 						}
+					} catch (Exception e) {
+						result = false;
+						e.printStackTrace();
 					}
+//					if (taxonBase instanceof Taxon){
+//						Taxon taxon = (Taxon)taxonBase;
+//						makeNameUsageForSingleTaxon(cdmApp, taxon, taxon);
+//					}else if (taxonBase instanceof Synonym){
+//						Synonym synonym = (Synonym)taxonBase;
+//						Set<Taxon> acceptedTaxonList = synonym.getAcceptedTaxa();
+//						for (Taxon taxon : acceptedTaxonList){
+//							makeNameUsageForSingleTaxon(cdmApp, synonym, taxon);
+//						}
+//					}else{
+//						throw new IllegalStateException("TaxonBase should be either a Taxon or a Synonym but was " + taxonBase.getClass().getName());
+//					}
+	
+	
 				}
+			}
+			
+			UUID featureTreeUuid = PalmaeActivator.featureTreeUuid;
+			FeatureTree tree = cdmApp.getFeatureTreeService().find(featureTreeUuid);
+			FeatureNode root = tree.getRoot();
+			
+			List<DefinedTermBase> featureList = cdmApp.getTermService().list(Feature.class, null, null, null, null);
+			
+			
+			for (DefinedTermBase feature : featureList){
+				if (feature.equals(Feature.CITATION())){
+					FeatureNode newNode = FeatureNode.NewInstance((Feature)feature);
+					root.addChild(newNode);
+					count++;
 				}
-				//if nicht in treatment (isNameUsage)
-				   //suche treatement taxon
-				   
-				//Delete from 
-				
 			}
 			cdmApp.commitTransaction(tx);
+			if (count != 1){
+				logger.warn("Did not add exactly 1 features to the feature tree but " + count);
+				result = false;
+			}
 			logger.info("NameUsage updated!");
-			return true;
+			return result;
 		} catch (Exception e) {
 			e.printStackTrace();
-			logger.error("ERROR in feature tree update");
+			logger.error("ERROR in name usage update");
 			return false;
 		}
 		
+	}
+
+	/**
+	 * @param nameUsage 
+	 * @return
+	 */
+	private Taxon getAcceptedTreatmentTaxon(TaxonBase nameUsage, IReferenceBase treatmentReference) {
+		boolean hasSynonymInTreatment = false;
+		TaxonNameBase name = nameUsage.getName();
+		Set<TaxonBase> candidateList = name.getTaxonBases();
+		for (TaxonBase candidate : candidateList){
+			if (candidate instanceof Taxon){
+				if (isInTreatment(candidate, treatmentReference, false)){
+					return (Taxon)candidate;
+				}
+			}else if (candidate instanceof Synonym){
+				Synonym synonym = (Synonym)candidate;
+				Set<Taxon> accTaxa = synonym.getAcceptedTaxa();
+				if (isInTreatment(synonym, treatmentReference, true)){
+					hasSynonymInTreatment = true;
+				}
+				for (Taxon accTaxon : accTaxa){
+					if (isInTreatment(accTaxon, treatmentReference, false)){
+						return accTaxon;
+					}
+				}
+			}else{
+				throw new IllegalStateException("TaxonBase should be either a Taxon or a Synonym but was " + nameUsage.getClass().getName());
+			}
+		}
+		if (hasSynonymInTreatment){
+			logger.warn("Non treatment taxon has synonym in treatment but no accepted taxon: " +  nameUsage + " (" + nameUsage.getId() +")" );
+		}
+		return null;
+	}
+
+	/**
+	 * @param taxonBase
+	 * @param treatmentReference 
+	 * @return
+	 */
+	private boolean isInTreatment(TaxonBase taxonBase, IReferenceBase treatmentReference, boolean silent) {
+		if (taxonBase.getSec().equals(treatmentReference)){
+			//treatment taxa
+			if (! silent){
+				if (taxonBase instanceof Taxon){
+					if (((Taxon)taxonBase).getTaxonNodes().size()< 1){
+						logger.warn("Taxon has treatment sec but is not in tree: " +  taxonBase + " (" + taxonBase.getId() +")" );
+					}
+				}else if (taxonBase instanceof Synonym){
+					Synonym synonym = (Synonym)taxonBase;
+					boolean hasAccTaxonInTreatment = false;
+					for (Taxon accTaxon : synonym.getAcceptedTaxa()){
+						hasAccTaxonInTreatment |= isInTreatment(accTaxon, treatmentReference, false);
+					}
+					if (hasAccTaxonInTreatment == false){
+						logger.warn("Synonym has treatment reference but has no accepted taxon in tree: " +  taxonBase + " (" + taxonBase.getId() +")" );
+					}
+				}else{
+					throw new IllegalStateException("TaxonBase should be either Taxon or Synonym");
+				}
+			}
+			return true;
+		}else{
+			//taxon not in treatment
+			if (! silent){
+				if (taxonBase instanceof Taxon){
+					if (((Taxon)taxonBase).getTaxonNodes().size()> 0){
+						logger.warn("Taxon has no treatment sec but is in tree: " +  taxonBase + " (" + taxonBase.getId() +")" );
+					}
+				}else if (taxonBase instanceof Synonym){
+					Synonym synonym = (Synonym)taxonBase;
+					boolean hasAccTaxonInTreatment = false;
+					for (Taxon accTaxon : synonym.getAcceptedTaxa()){
+						hasAccTaxonInTreatment |= isInTreatment(accTaxon, treatmentReference, false);
+					}
+					if (hasAccTaxonInTreatment == true){
+						logger.warn("Synonym has no treatment reference but has accepted taxon in treatment: " +  taxonBase + " (" + taxonBase.getId() +")" );
+					}
+				}else{
+					throw new IllegalStateException("TaxonBase should be either Taxon or Synonym but was ");
+				}
+			}
+			return false;
+		}
+	}
+
+	/**
+	 * @param cdmApp
+	 * @param taxon
+	 */
+	private void makeNameUsageForSingleTaxon(CdmApplicationController cdmApp, TaxonBase nameUsageTaxon, Taxon acceptedTaxon) {
+		TaxonNameBase name = nameUsageTaxon.getName();
+		if ((acceptedTaxon).getTaxonNodes().size() <1){
+			//all taxa that are not part of the tree and all synonyms that 
+			if  (name != null){
+				Set<TaxonBase> taxonBases = name.getTaxonBases();
+				boolean hasTaxonInTree = false;
+				for(TaxonBase taxonBaseCandidate: taxonBases ){
+					if (taxonBaseCandidate instanceof Taxon){
+						Taxon taxonCandidate = (Taxon)taxonBaseCandidate;
+						if (taxonCandidate.getTaxonNodes().size() >0){
+							addNameUsage(taxonCandidate, nameUsageTaxon);
+							hasTaxonInTree = true;
+							//delete
+							if (true){
+								cdmApp.getTaxonService().delete(nameUsageTaxon);
+							}
+						}
+					}else if (taxonBaseCandidate instanceof Synonym){
+						Synonym synonymCandidate = (Synonym)taxonBaseCandidate;
+						Set<Taxon> taxonCandidates = synonymCandidate.getAcceptedTaxa();
+//						if (taxonCandidates.size() == 0){
+//							logger.warn("Synonym has no accepted taxon: " + synonymCandidate.getName().getTitleCache());
+//						}
+						for (Taxon taxonCandidate : taxonCandidates){
+							if (taxonCandidate.getTaxonNodes().size() >0){
+								addNameUsage(taxonCandidate, nameUsageTaxon);
+								hasTaxonInTree = true;
+								//delete
+								if (true){
+									cdmApp.getTaxonService().delete(nameUsageTaxon);
+								}
+							}
+						}
+					}
+				}
+				if (hasTaxonInTree == false){
+					logger.warn(name +"(" + (nameUsageTaxon instanceof Synonym ? "Synonym": "Accepted")+ ") has no taxon in tree" );
+				}
+			}else {
+				logger.warn("Name for taxon " + nameUsageTaxon + "(" + nameUsageTaxon.getId() + ") is null");
+			}
+		}
 	}
 	
 	
@@ -135,7 +315,7 @@ public class PalmaePostImportUpdater {
 	 * @param taxonCandidate
 	 * @param taxon
 	 */
-	private boolean addNameUsage(Taxon taxon, Taxon nameUsage) {
+	private boolean addNameUsage(Taxon taxon, TaxonBase nameUsageTaxon) {
 		TaxonDescription myDescription = null;
 		for (TaxonDescription desc : taxon.getDescriptions()){
 			if (! desc.isImageGallery()){
@@ -147,7 +327,8 @@ public class PalmaePostImportUpdater {
 			return false;
 		}
 		TextData textData = TextData.NewInstance(Feature.CITATION());
-		textData.addSource(null, null, nameUsage.getSec(), null, nameUsage.getName(), nameUsage.getName().getTitleCache());
+		textData.putText(nameUsageTaxon.getName().getTitleCache()+":" + nameUsageTaxon.getSec().getTitleCache(), Language.DEFAULT());
+		textData.addSource(null, null, nameUsageTaxon.getSec(), null, nameUsageTaxon.getName(), nameUsageTaxon.getName().getTitleCache());
 		myDescription.addElement(textData);
 		return true;
 	}

@@ -43,7 +43,7 @@ public class PalmaeActivator {
 	//database validation status (create, update, validate ...)
 	static DbSchemaValidation hbm2dll = DbSchemaValidation.CREATE;
 	static final String tcsSource = TcsSources.arecaceae_local();
-	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_edit_palmae_a();
+	static final ICdmDataSource cdmDestination = CdmDestinations.localH2Palmae();
 	
 	// set the webserver path to the images
 	private static final String imageUrlString = "http://wp5.e-taxonomy.eu/media/palmae/photos/";
@@ -58,11 +58,12 @@ public class PalmaeActivator {
 	static final boolean pubishReferencesInBibliography = false;
 	
 	//should the other imports run as well?
-	static final boolean includeTaxonX = true;
-	static final boolean includeImages = true;
-	static final boolean includeExcelProtologue = true;
-	static final boolean includeMediaProtologue = true;
-	static final boolean updateFeatureTree = true;
+	static final boolean includeTaxonX = false;
+	static final boolean includeImages = false;
+	static final boolean includeExcelProtologue = false;
+	static final boolean includeMediaProtologue = false;
+	static final boolean updateFeatureTree = false;
+	static final boolean updateNameUsage = true;
 	
 	//check - import
 	static final CHECK check = CHECK.CHECK_AND_IMPORT;
@@ -229,6 +230,12 @@ public class PalmaeActivator {
 		if (updateFeatureTree){
 			updater.updateMissingFeatures(destination);
 		}
+
+		if (updateNameUsage){
+			updater.updateNameUsage(destination);
+			
+		}
+
 		
 		String strSuccess = "";
 		if (success == false){
