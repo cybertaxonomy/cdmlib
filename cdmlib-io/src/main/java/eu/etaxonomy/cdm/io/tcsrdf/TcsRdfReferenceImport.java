@@ -203,7 +203,6 @@ public class TcsRdfReferenceImport extends TcsRdfImportBase implements ICdmIO<Tc
 		boolean success = true;
 		
 		Namespace rdfNamespace = config.getRdfNamespace();
-		String prefix = "tpub";
 		Namespace publicationNamespace = config.getPublicationNamespace();
 		ReferenceFactory refFactory = ReferenceFactory.newInstance();
 		
@@ -216,12 +215,12 @@ public class TcsRdfReferenceImport extends TcsRdfImportBase implements ICdmIO<Tc
 		int biblioRefsCount = 0;
 		
 		int i = 0;
-		//for each taxonName
+		//for each publication
 		for (Element elPublicationCitation : elPublicationCitations){
 			
 			if ((++i % modCount) == 0){ logger.info("references handled: " + (i-1));}
 			
-			//create TaxonName element
+			//create publication element
 			String strAbout = elPublicationCitation.getAttributeValue("about", rdfNamespace);
 			
 			tcsElementName = "publicationType";
@@ -264,7 +263,7 @@ public class TcsRdfReferenceImport extends TcsRdfImportBase implements ICdmIO<Tc
 					}else if ((ref.getType().equals(ReferenceType.BookSection)) && (parent.getType().equals(ReferenceType.Book))){
 						((IBookSection)ref).setInBook((IBook)parent);
 					}else{
-						logger.warn("parent type (parent: " + parent.getClass().getSimpleName() +", child("+strAbout+"): " + ref.getClass().getSimpleName() +  ")not yet implemented");
+						logger.warn("parent type (parent: " + parent.getType() +", child("+strAbout+"): " + ref.getType() +  ")not yet implemented");
 						//ref.setParent(parent);
 					}
 				}
@@ -292,7 +291,7 @@ public class TcsRdfReferenceImport extends TcsRdfImportBase implements ICdmIO<Tc
 					//TODO
 					ReferenceBase<?> biblioRef = (ReferenceBase<?>)ref.clone();
 					biblioRef.setTitle(strTitle);
-					ImportHelper.setOriginalSource(ref, config.getSourceReference(), strAbout, idNamespace);
+					ImportHelper.setOriginalSource(biblioRef, config.getSourceReference(), strAbout, idNamespace);
 					referenceMap.put(strAbout, biblioRef);
 					biblioRefsCount++;
 				}

@@ -157,7 +157,7 @@ public class MapWrapper<T extends CdmBase> {
 	}
 
 	
-	public Set<Integer> keySet() {
+	public Set<Object> keySet() {
 		return internalMap.keySet();
 	}
 	

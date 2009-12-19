@@ -120,6 +120,13 @@ public class TcsRdfTaxonImport  extends TcsRdfImportBase implements ICdmIO<TcsRd
 
 		ITaxonService taxonService = getTaxonService();
 		
+		//debug names
+		if (false){
+			for (Object nameResource : taxonNameMap.keySet()){
+				System.out.println(nameResource);
+			}
+		}
+		
 		int i = 0;
 		//for each taxonConcept
 		for (Element elTaxonConcept : elTaxonConcepts){
@@ -135,7 +142,11 @@ public class TcsRdfTaxonImport  extends TcsRdfImportBase implements ICdmIO<TcsRd
 			attributeNamespace = rdfNamespace;
 			String strNameResource= XmlHelp.getChildAttributeValue(elTaxonConcept, xmlElementName, elementNamespace, xmlAttributeName, attributeNamespace);
 			TaxonNameBase taxonNameBase = taxonNameMap.get(strNameResource);
-				
+			if (taxonNameBase == null){
+				logger.warn("Taxon has no name: " + taxonAbout + "; Resource: " + strNameResource);
+			}
+			
+			
 			//accordingTo
 			xmlElementName = "accordingTo";
 			elementNamespace = config.getTcNamespace();
@@ -155,10 +166,9 @@ public class TcsRdfTaxonImport  extends TcsRdfImportBase implements ICdmIO<TcsRd
 				logger.warn("sec could not be found in referenceMap or nomRefMap for secId: " + strAccordingTo);
 			}
 			
-			//FIXME or synonym
 			TaxonBase taxonBase;
 			Namespace geoNamespace = config.getGeoNamespace();
-			if (hasIsSynonymRelation(elTaxonConcept, rdfNamespace)){
+			if (hasIsSynonymRelation(elTaxonConcept, rdfNamespace) || isSynonym(elTaxonConcept, config.getPalmNamespace())){
 				//Synonym
 				taxonBase = Synonym.NewInstance(taxonNameBase, sec);
 				List<DescriptionElementBase> geo = makeGeo(elTaxonConcept, geoNamespace, rdfNamespace);
@@ -190,22 +200,56 @@ public class TcsRdfTaxonImport  extends TcsRdfImportBase implements ICdmIO<TcsRd
 			
 		}
 		//invokeRelations(source, cdmApp, deleteAll, taxonMap, referenceMap);
-		logger.info("saving taxa ...");
+		logger.info("saving " + taxonMap.size()+ " taxa ...");
 		taxonService.save(taxonMap.objects());
 		logger.info("end makeTaxa ...");
 		return success;
 	}
 	
 	
-	private boolean hasIsSynonymRelation(Element taxonConcept, Namespace rdfNamespace){
+	/**
+	 * @param rdfNamespace 
+	 * @param elTaxonConcept 
+	 * @return
+	 */
+	private boolean isSynonym(Element elTaxonConcept, Namespace tpalmNamespace) {
+		if (elTaxonConcept == null || ! "TaxonConcept".equalsIgnoreCase(elTaxonConcept.getName()) ){
+			return false;
+		}
+		Element status = elTaxonConcept.getChild("taxonStatus", tpalmNamespace);
+		if (status == null){
+			return false;
+		}else{
+			String statusText = status.getTextNormalize();
+			if ("S".equalsIgnoreCase(statusText)){
+				return true;
+			}else if ("A".equalsIgnoreCase(statusText)){
+				return false;
+			}else if ("C".equalsIgnoreCase(statusText)){
+				return false;
+			}else if ("V".equalsIgnoreCase(statusText)){
+				return false;
+			}else if ("O".equalsIgnoreCase(statusText)){
+				return false;
+			}else if ("U".equalsIgnoreCase(statusText)){
+				return false;
+			}else{
+				logger.warn("Unknown taxon status: " +  statusText);
+				return false;
+			}
+		}
+	}
+
+
+	private boolean hasIsSynonymRelation(Element elTaxonConcept, Namespace rdfNamespace){
 		boolean result = false;
-		if (taxonConcept == null || ! "TaxonConcept".equalsIgnoreCase(taxonConcept.getName()) ){
+		if (elTaxonConcept == null || ! "TaxonConcept".equalsIgnoreCase(elTaxonConcept.getName()) ){
 			return false;
 		}
 		
 		String elName = "relationshipCategory";
-		Filter filter = new ElementFilter(elName, taxonConcept.getNamespace());
-		Iterator<Element> relationshipCategories = taxonConcept.getDescendants(filter);
+		Filter filter = new ElementFilter(elName, elTaxonConcept.getNamespace());
+		Iterator<Element> relationshipCategories = elTaxonConcept.getDescendants(filter);
 		while (relationshipCategories.hasNext()){
 			Element relationshipCategory = relationshipCategories.next();
 			Attribute resource = relationshipCategory.getAttribute("resource", rdfNamespace);

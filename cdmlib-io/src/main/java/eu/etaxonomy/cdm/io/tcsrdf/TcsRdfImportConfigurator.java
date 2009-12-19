@@ -48,6 +48,8 @@ public class TcsRdfImportConfigurator extends ImportConfiguratorBase<TcsRdfImpor
 	private Namespace geoNamespace;
 	//publicationNamespace
 	private Namespace publicationNamespace;
+	//palmNamespace
+	private Namespace palmNamespace;
 	
 //TODO	
 	protected static Namespace nsTcom = Namespace.getNamespace("http://rs.tdwg.org/ontology/voc/Common#");
@@ -142,8 +144,13 @@ public class TcsRdfImportConfigurator extends ImportConfiguratorBase<TcsRdfImpor
 		geoNamespace = root.getNamespace(prefix);
 		prefix = "tpub";
 		publicationNamespace = root.getNamespace(prefix);
+		
+		prefix = "tpalm";
+		palmNamespace = root.getNamespace(prefix);
+		
 		if (rdfNamespace == null || tcNamespace == null || tnNamespace == null ||
-				commonNamespace == null ||	geoNamespace == null || publicationNamespace == null){
+				commonNamespace == null ||	geoNamespace == null || publicationNamespace == null 
+				|| palmNamespace == null){
 			logger.warn("At least one Namespace is NULL");
 		}
 		return true;
@@ -224,8 +231,19 @@ public class TcsRdfImportConfigurator extends ImportConfiguratorBase<TcsRdfImpor
 	public void setPublicationNamespace(Namespace publicationNamespace) {
 		this.publicationNamespace = publicationNamespace;
 	}
-	
-	
+	/**
+	 * @return the palmNamespace
+	 */
+	public Namespace getPalmNamespace() {
+		return palmNamespace;
+	}
+
+	/**
+	 * @param palmNamespace the palmNamespace to set
+	 */
+	public void setPalmNamespace(Namespace palmNamespace) {
+		this.palmNamespace = palmNamespace;
+	}
 
 	/**
 	 * if false references in this rdf file are not published in the bibliography list
