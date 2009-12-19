@@ -113,7 +113,6 @@ public class PalmaeActivator {
 
 		// invoke import
 		CdmDefaultImport<TcsRdfImportConfigurator> tcsImport = new CdmDefaultImport<TcsRdfImportConfigurator>();
-		//new Test().invoke(tcsImportConfigurator);
 		success &= tcsImport.invoke(tcsImportConfigurator);
 		
 		//make feature tree
@@ -150,8 +149,6 @@ public class PalmaeActivator {
 		root.addChild(newNode);
 		newNode = FeatureNode.NewInstance(Feature.CULTIVATION());
 		root.addChild(newNode);
-		// "anatomy", "fossil record" "relationships"
-		//for future
 		newNode = FeatureNode.NewInstance(Feature.DISCUSSION());
 		root.addChild(newNode);
 		newNode = FeatureNode.NewInstance(Feature.DIAGNOSIS());
@@ -233,7 +230,6 @@ public class PalmaeActivator {
 
 		if (updateNameUsage){
 			updater.updateNameUsage(destination);
-			
 		}
 
 		

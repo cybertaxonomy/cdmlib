@@ -119,7 +119,7 @@ public class PalmaePostImportUpdater {
 							//if connected treatment taxon can be found
 							Taxon acceptedTaxon = getAcceptedTreatmentTaxon(nameUsage, treatmentReference);
 							if (acceptedTaxon != null){
-								//add as citation and add to delete list
+								//add as citation and delete
 								addNameUsage(acceptedTaxon, nameUsage);
 								cdmApp.getTaxonService().delete(nameUsage);
 							}else{
@@ -130,30 +130,13 @@ public class PalmaePostImportUpdater {
 						result = false;
 						e.printStackTrace();
 					}
-//					if (taxonBase instanceof Taxon){
-//						Taxon taxon = (Taxon)taxonBase;
-//						makeNameUsageForSingleTaxon(cdmApp, taxon, taxon);
-//					}else if (taxonBase instanceof Synonym){
-//						Synonym synonym = (Synonym)taxonBase;
-//						Set<Taxon> acceptedTaxonList = synonym.getAcceptedTaxa();
-//						for (Taxon taxon : acceptedTaxonList){
-//							makeNameUsageForSingleTaxon(cdmApp, synonym, taxon);
-//						}
-//					}else{
-//						throw new IllegalStateException("TaxonBase should be either a Taxon or a Synonym but was " + taxonBase.getClass().getName());
-//					}
-	
-	
 				}
 			}
-			
+			//add citation feature to feature tree
 			UUID featureTreeUuid = PalmaeActivator.featureTreeUuid;
 			FeatureTree tree = cdmApp.getFeatureTreeService().find(featureTreeUuid);
 			FeatureNode root = tree.getRoot();
-			
 			List<DefinedTermBase> featureList = cdmApp.getTermService().list(Feature.class, null, null, null, null);
-			
-			
 			for (DefinedTermBase feature : featureList){
 				if (feature.equals(Feature.CITATION())){
 					FeatureNode newNode = FeatureNode.NewInstance((Feature)feature);
@@ -161,11 +144,12 @@ public class PalmaePostImportUpdater {
 					count++;
 				}
 			}
-			cdmApp.commitTransaction(tx);
 			if (count != 1){
 				logger.warn("Did not add exactly 1 features to the feature tree but " + count);
 				result = false;
 			}
+			//commit
+			cdmApp.commitTransaction(tx);
 			logger.info("NameUsage updated!");
 			return result;
 		} catch (Exception e) {
@@ -260,56 +244,6 @@ public class PalmaePostImportUpdater {
 			return false;
 		}
 	}
-
-	/**
-	 * @param cdmApp
-	 * @param taxon
-	 */
-	private void makeNameUsageForSingleTaxon(CdmApplicationController cdmApp, TaxonBase nameUsageTaxon, Taxon acceptedTaxon) {
-		TaxonNameBase name = nameUsageTaxon.getName();
-		if ((acceptedTaxon).getTaxonNodes().size() <1){
-			//all taxa that are not part of the tree and all synonyms that 
-			if  (name != null){
-				Set<TaxonBase> taxonBases = name.getTaxonBases();
-				boolean hasTaxonInTree = false;
-				for(TaxonBase taxonBaseCandidate: taxonBases ){
-					if (taxonBaseCandidate instanceof Taxon){
-						Taxon taxonCandidate = (Taxon)taxonBaseCandidate;
-						if (taxonCandidate.getTaxonNodes().size() >0){
-							addNameUsage(taxonCandidate, nameUsageTaxon);
-							hasTaxonInTree = true;
-							//delete
-							if (true){
-								cdmApp.getTaxonService().delete(nameUsageTaxon);
-							}
-						}
-					}else if (taxonBaseCandidate instanceof Synonym){
-						Synonym synonymCandidate = (Synonym)taxonBaseCandidate;
-						Set<Taxon> taxonCandidates = synonymCandidate.getAcceptedTaxa();
-//						if (taxonCandidates.size() == 0){
-//							logger.warn("Synonym has no accepted taxon: " + synonymCandidate.getName().getTitleCache());
-//						}
-						for (Taxon taxonCandidate : taxonCandidates){
-							if (taxonCandidate.getTaxonNodes().size() >0){
-								addNameUsage(taxonCandidate, nameUsageTaxon);
-								hasTaxonInTree = true;
-								//delete
-								if (true){
-									cdmApp.getTaxonService().delete(nameUsageTaxon);
-								}
-							}
-						}
-					}
-				}
-				if (hasTaxonInTree == false){
-					logger.warn(name +"(" + (nameUsageTaxon instanceof Synonym ? "Synonym": "Accepted")+ ") has no taxon in tree" );
-				}
-			}else {
-				logger.warn("Name for taxon " + nameUsageTaxon + "(" + nameUsageTaxon.getId() + ") is null");
-			}
-		}
-	}
-	
 	
 	/**
 	 * @param taxonCandidate
