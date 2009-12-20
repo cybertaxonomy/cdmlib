@@ -71,8 +71,8 @@ public class CichorieaeActivator {
 	static final int maximumNumberOfNameFacts = 0;
 	
 	//should the other imports run as well?
+	static final boolean includeTaraxacum = true; 
 	static final boolean includeImages = true;
-	static final boolean includeTaraxacum = true; // TODO
 	
 	
 	//check - import
@@ -115,7 +115,7 @@ public class CichorieaeActivator {
 
 	
 // **************** SELECTED *********************
-
+//
 //	static final boolean doUser = true;
 //	//authors
 //	static final boolean doAuthors = false;
@@ -129,7 +129,7 @@ public class CichorieaeActivator {
 //	static final boolean doNameFacts = false;
 //	
 //	//taxa 
-//	static final boolean doTaxa = true;
+//	static final boolean doTaxa = false;
 //	static final boolean doRelTaxa = false;
 //	static final boolean doFacts = false;
 //	static final boolean doOccurences = false;
@@ -210,6 +210,17 @@ public class CichorieaeActivator {
 		}
 		
 		System.out.println("End import from BerlinModel ("+ source.getDatabase() + ")...");
+
+
+		if (includeTaraxacum) {
+			System.out.println("Start Taraxacum import from BerlinModel ...");
+			TaraxacumActivator taraxacumActivator = new TaraxacumActivator();
+			taraxacumActivator.doImport(destination, DbSchemaValidation.UPDATE);
+			logger.warn("Taraxacum import still needs to be tested");
+			System.out.println("End Taraxacum import from BerlinModel ...");
+		}
+
+
 		
 		if (includeImages) {
 			System.out.println("Start importing images ...");
@@ -221,12 +232,6 @@ public class CichorieaeActivator {
 			imageImporter.invoke(imageConfigurator);
 			System.out.println("End importing images ...");
 		}
-
-		if (includeTaraxacum) {
-			 logger.warn("Taraxacum import not yet implemented");
-			 // TODO	
-		}
-		
 		
 	}
 
