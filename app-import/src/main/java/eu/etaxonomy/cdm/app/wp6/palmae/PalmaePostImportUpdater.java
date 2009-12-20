@@ -261,7 +261,8 @@ public class PalmaePostImportUpdater {
 			return false;
 		}
 		TextData textData = TextData.NewInstance(Feature.CITATION());
-		textData.putText(nameUsageTaxon.getName().getTitleCache()+":" + nameUsageTaxon.getSec().getTitleCache(), Language.DEFAULT());
+		//creates text (name: reference)
+		//textData.putText(nameUsageTaxon.getName().getTitleCache()+": " + nameUsageTaxon.getSec().getTitleCache(), Language.DEFAULT());
 		textData.addSource(null, null, nameUsageTaxon.getSec(), null, nameUsageTaxon.getName(), nameUsageTaxon.getName().getTitleCache());
 		myDescription.addElement(textData);
 		return true;
