@@ -25,6 +25,7 @@ import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
+import org.hibernate.LockMode;
 import org.hibernate.NonUniqueObjectException;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -78,6 +79,14 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 	public CdmEntityDaoBase(Class<T> type){
 		this.type = type;
 		logger.debug("Creating DAO of type [" + type.getSimpleName() + "]");
+	}
+	
+	public void lock(T t, LockMode lockMode) {
+		getSession().lock(t, lockMode);
+	}
+	
+	public void refresh(T t, LockMode lockMode) {
+		getSession().refresh(t, lockMode);
 	}
 	
 	//TODO this method should be moved to a concrete class (not typed)

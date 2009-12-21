@@ -66,7 +66,7 @@ public class PersistentTermInitializerTest extends CdmIntegrationTest {
 		assertNotNull("language for language vocabulary representation was null but must be default language", voc.getRepresentation(Language.DEFAULT()));	
 	}
 	
-	@Ignore //please committ only with ignore
+	@Ignore //please commit only with ignore
 	@Test
 	public void testPrintData() {
 		printDataSet(System.out);

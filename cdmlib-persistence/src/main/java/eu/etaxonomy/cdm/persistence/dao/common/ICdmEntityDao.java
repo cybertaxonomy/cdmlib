@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import org.hibernate.LockMode;
 import org.hibernate.Session;
 import org.springframework.dao.DataAccessException;
 
@@ -46,6 +47,10 @@ public interface ICdmEntityDao<T extends CdmBase> {
 	public UUID save(T newOrManagedObject) throws DataAccessException;
 	
 	public UUID merge(T transientObject) throws DataAccessException;
+	
+	public void lock(T t, LockMode lockMode) throws DataAccessException;
+	
+	public void refresh(T t, LockMode lockMode) throws DataAccessException;
 	
 	public void clear() throws DataAccessException;
 		
