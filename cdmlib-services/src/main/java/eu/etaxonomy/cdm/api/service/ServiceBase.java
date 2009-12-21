@@ -18,6 +18,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
+import org.hibernate.LockMode;
 import org.hibernate.Session;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -38,6 +39,16 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
 	protected ApplicationContext appContext;
 
 	protected DAO dao;
+
+	@Transactional(readOnly = true)
+	public void lock(T t, LockMode lockMode) {
+		dao.lock(t, lockMode);
+	}
+	
+	@Transactional(readOnly = true)
+	public void refresh(T t, LockMode lockMode) {
+		dao.refresh(t, lockMode);
+	}
 
 	@Transactional(readOnly = false)
 	public void clear() {

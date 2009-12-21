@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import org.hibernate.LockMode;
 import org.hibernate.Session;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
@@ -40,7 +41,18 @@ public interface IService<T extends CdmBase>{
 
 	// FIXME what does this method do?
 	public void clear();
-
+	
+	/**
+	 * Obtain the specified lock mode on the given object t
+	 */
+	public void lock(T t, LockMode lockMode);
+	
+	/**
+	 * Refreshes a given object t using the specified lockmode
+	 * @param t
+	 * @param lockMode
+	 */
+	public void refresh(T t, LockMode lockMode);
 	
 	/**
 	 * Returns a count of all entities of type <T>  optionally restricted
