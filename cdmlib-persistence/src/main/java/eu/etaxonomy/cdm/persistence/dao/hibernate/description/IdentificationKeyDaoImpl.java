@@ -22,7 +22,12 @@ public class IdentificationKeyDaoImpl extends DaoBase implements IIdentification
 	public int count() {
 		Query query = getSession().createQuery("select count(key) from eu.etaxonomy.cdm.model.description.IIdentificationKey key");
 		
-		return ((Long)query.uniqueResult()).intValue();
+		List<Long> result = (List<Long>)query.list();
+		Integer total = 0;
+		for(Long l : result) {
+			total += l.intValue();
+		}
+		return total;
 	}
 
 	public List<IIdentificationKey> list(Integer limit,Integer start, List<String> propertyPaths) {
