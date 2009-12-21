@@ -50,6 +50,8 @@
         <class>eu.etaxonomy.cdm.model.description.IndividualsAssociation</class>
         <class>eu.etaxonomy.cdm.model.description.MeasurementUnit</class>
         <class>eu.etaxonomy.cdm.model.description.Modifier</class>
+        <class>eu.etaxonomy.cdm.model.description.MultiAccessKey</class>
+        <class>eu.etaxonomy.cdm.model.description.PolytomousKey</class>
         <class>eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase</class>
         <class>eu.etaxonomy.cdm.model.description.PresenceTerm</class>
         <class>eu.etaxonomy.cdm.model.description.QuantitativeData</class>
@@ -66,6 +68,7 @@
         <class>eu.etaxonomy.cdm.model.description.TaxonNameDescription</class>
         <class>eu.etaxonomy.cdm.model.description.TextData</class>
         <class>eu.etaxonomy.cdm.model.description.TextFormat</class>
+        <class>eu.etaxonomy.cdm.model.description.WorkingSet</class>
       <!-- Location Package -->
         <class>eu.etaxonomy.cdm.model.location.Continent</class>
         <class>eu.etaxonomy.cdm.model.location.NamedArea</class>

@@ -389,26 +389,6 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 			
 	}
 	
-	private class OrderHintComparator implements Comparator<OrderHint> {
-
-		public int compare(OrderHint o1, OrderHint o2) {
-			return o1.getPropertyName().compareTo(o2.getPropertyName());
-		}
-		
-	}
-	
-	protected void addOrder(Criteria criteria, List<OrderHint> orderHints) {
-		
-		if(orderHints != null){
-			Collections.sort(orderHints, new OrderHintComparator());
-			
-			Map<String,Criteria> criteriaMap = new HashMap<String,Criteria>();
-			for(OrderHint orderHint : orderHints){
-				orderHint.add(criteria,criteriaMap);
-			}
-		}
-	}
-	
 	protected void addOrder(FullTextQuery fullTextQuery, List<OrderHint> orderHints) {
 		if(orderHints != null && !orderHints.isEmpty()) {
 		    org.apache.lucene.search.Sort sort = new Sort();
