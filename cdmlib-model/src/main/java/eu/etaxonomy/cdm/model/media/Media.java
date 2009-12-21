@@ -93,7 +93,7 @@ public class Media extends IdentifiableEntity implements Cloneable {
     @XmlJavaTypeAdapter(MultilanguageTextAdapter.class)
     @OneToMany(fetch = FetchType.LAZY)
     @IndexedEmbedded
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE,CascadeType.DELETE, CascadeType.DELETE_ORPHAN})
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE,CascadeType.DELETE, CascadeType.DELETE_ORPHAN, CascadeType.REFRESH})
     @NotNull
     @NotEmpty(groups = Level2.class)
 	private Map<Language,LanguageString> title = new HashMap<Language,LanguageString>();
@@ -112,7 +112,7 @@ public class Media extends IdentifiableEntity implements Cloneable {
     @OneToMany(fetch = FetchType.LAZY)
     @IndexedEmbedded
     @JoinTable(name = "Media_Description")
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE,CascadeType.DELETE,CascadeType.DELETE_ORPHAN})
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE,CascadeType.DELETE,CascadeType.DELETE_ORPHAN, CascadeType.REFRESH})
     @NotNull
 	private Map<Language,LanguageString> description = new HashMap<Language,LanguageString>();
 	
@@ -121,7 +121,7 @@ public class Media extends IdentifiableEntity implements Cloneable {
 	@XmlElementWrapper(name = "MediaRepresentations")
 	@XmlElement(name = "MediaRepresentation")
 	@OneToMany(mappedBy="media",fetch = FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE, CascadeType.DELETE_ORPHAN})
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE, CascadeType.DELETE_ORPHAN, CascadeType.REFRESH})
 	@NotNull
 	@NotEmpty(groups = Level2.class)
 	private Set<MediaRepresentation> representations = new HashSet<MediaRepresentation>();
