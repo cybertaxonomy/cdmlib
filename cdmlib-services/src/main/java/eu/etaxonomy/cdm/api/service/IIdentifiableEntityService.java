@@ -43,6 +43,18 @@ public interface IIdentifiableEntityService<T extends IdentifiableEntity> extend
 	public T find(LSID lsid);
 	
 	/**
+	 * Replaces all *ToMany and *ToOne references to an object (x) with another object of the same type (y)
+	 * 
+	 * Ignores ManyToAny and OneToAny relationships as these are typically involved with bidirectional 
+	 * parent-child relations
+	 * 
+	 * @param x
+	 * @param y
+	 * @return the replacing object (y)
+	 */
+	public T replace(T x, T y);
+	
+	/**
 	 * Return a Pager of sources belonging to this object
 	 * 
 	 * @param t The identifiable entity

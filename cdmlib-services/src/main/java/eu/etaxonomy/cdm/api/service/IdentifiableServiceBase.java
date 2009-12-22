@@ -67,6 +67,11 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 				config.getMatchMode(), 0, -1, null);
 		// TODO: Implement parameters pageSize, pageNumber, and criteria
 	}
+	
+	@Transactional(readOnly = false)
+	public T replace(T x, T y) {
+		return dao.replace(x, y);
+	}
 	/**
 	 * FIXME Candidate for harmonization
 	 * Given that this method is strongly typed, and generic, could we not simply expose it as
