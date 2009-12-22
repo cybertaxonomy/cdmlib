@@ -79,7 +79,7 @@ public class QuantitativeData extends DescriptionElementBase {
 	@XmlElementWrapper(name = "StatisticalValues")
 	@XmlElement(name = "StatisticalValue")
 	@OneToMany(fetch = FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
+	@Cascade({ CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE,CascadeType.DELETE_ORPHAN })
 	private Set<StatisticalMeasurementValue> statisticalValues = new HashSet<StatisticalMeasurementValue>();
 	
 	/** 
