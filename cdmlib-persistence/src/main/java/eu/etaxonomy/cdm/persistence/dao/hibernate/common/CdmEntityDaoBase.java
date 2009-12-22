@@ -11,8 +11,6 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.common;
 
 import java.lang.reflect.Field;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -46,6 +44,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
+import org.springframework.dao.NonTransientDataAccessException;
+import org.springframework.dao.UncategorizedDataAccessException;
 import org.springframework.security.Authentication;
 import org.springframework.security.context.SecurityContextHolder;
 import org.springframework.stereotype.Repository;
@@ -56,6 +56,8 @@ import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
+import eu.etaxonomy.cdm.persistence.hibernate.replace.ReferringObjectMetadata;
+import eu.etaxonomy.cdm.persistence.hibernate.replace.ReferringObjectMetadataFactory;
 import eu.etaxonomy.cdm.persistence.query.Grouping;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
@@ -74,6 +76,10 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 	@Autowired
 	@Qualifier("defaultBeanInitializer")
 	protected BeanInitializer defaultBeanInitializer;
+	
+
+	@Autowired
+	private ReferringObjectMetadataFactory referringObjectMetadataFactory;
 	
 	
 	public CdmEntityDaoBase(Class<T> type){
@@ -133,6 +139,32 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 		if ( logger.isInfoEnabled() ){logger.info("Saved " + i + " objects" );}
 		return resultMap;
 	}
+	
+	public T replace(T x, T y) {
+		assert !x.equals(y);
+		assert x.getClass().equals(y.getClass());
+		getSession().merge(x);
+		
+        Set<ReferringObjectMetadata> referringObjectMetas = referringObjectMetadataFactory.get(x.getClass());
+        
+        for(ReferringObjectMetadata referringObjectMetadata : referringObjectMetas) {
+          
+          List<CdmBase> referringObjects = referringObjectMetadata.getReferringObjects(x,getSession());
+         
+          for(CdmBase referringObject : referringObjects) {
+            try {
+				referringObjectMetadata.replace(referringObject,x,y);
+				getSession().update(referringObject);
+              
+			} catch (IllegalArgumentException e) {
+				throw new RuntimeException(e.getMessage(),e);
+			} catch (IllegalAccessException e) {
+				throw new RuntimeException(e.getMessage(),e);
+			}
+          }
+        }
+        return y;
+    }
 
 	public Session getSession() throws DataAccessException {
 		return super.getSession();

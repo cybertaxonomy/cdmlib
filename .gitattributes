@@ -1884,6 +1884,14 @@ cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/ICdmPost
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/SaveEntityListener.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/SaveOrUpdateEntityListener.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/UpdateEntityListener.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/replace/ReferringObjectMetadata.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/replace/ReferringObjectMetadataFactory.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/replace/impl/ListReferringObjectMetadata.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/replace/impl/ReferringObjectMetadataFactoryImpl.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/replace/impl/ReferringObjectMetadataImpl.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/replace/impl/SetReferringObjectMetadata.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/replace/impl/ToManyReferringObjectMetadata.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/replace/impl/ToOneReferringObjectMetadata.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/query/GroupByCount.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/query/GroupByDate.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/query/Grouping.java -text
@@ -1942,6 +1950,7 @@ cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/dao/hibernate/taxo
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/dao/hibernate/view/AuditEventDaoTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/hibernate/CacheStrategyGeneratorTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/hibernate/CdmDeleteListenerTest.java -text
+cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/hibernate/replace/ReferringObjectMetadataFactoryTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/test/function/Datasource.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/test/function/TestCdmApplicationUtils.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/test/function/TestPersistence.java -text
@@ -2029,6 +2038,9 @@ cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/hibernate/Cac
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/hibernate/CacheStrategyGeneratorTest.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/hibernate/CdmDeleteListenerTest.testOnDelete-result.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/hibernate/CdmDeleteListenerTest.xml -text
+cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/hibernate/replace/ReferringObjectMetadataFactoryTest.testReplaceToManyProperty-result.xml -text
+cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/hibernate/replace/ReferringObjectMetadataFactoryTest.testReplaceToOneProperty-result.xml -text
+cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/hibernate/replace/ReferringObjectMetadataFactoryTest.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/override.properties -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/override.properties-testPersistentDataSource -text
 cdmlib-persistence/src/test/resources/log4j.properties -text

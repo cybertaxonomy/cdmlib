@@ -48,8 +48,31 @@ public interface ICdmEntityDao<T extends CdmBase> {
 	
 	public UUID merge(T transientObject) throws DataAccessException;
 	
+	/**
+	 * Obtains the specified LockMode on the supplied object
+	 * 
+	 * @param t
+	 * @param lockMode
+	 * @throws DataAccessException
+	 */
 	public void lock(T t, LockMode lockMode) throws DataAccessException;
 	
+	/**
+	 * Globally replace all references to instance t1 with t2
+	 * 
+	 * @param t1
+	 * @param t2
+	 * @return T the replaced object
+	 */
+	public T replace(T t1, T t2);
+	
+	/**
+	 * Refreshes the state of the supplied object using the given LockMode (e.g. use LockMode.READ 
+	 * to bypass the second-level cache and session cache and query the database directly)
+	 * @param t
+	 * @param lockMode
+	 * @throws DataAccessException
+	 */
 	public void refresh(T t, LockMode lockMode) throws DataAccessException;
 	
 	public void clear() throws DataAccessException;
