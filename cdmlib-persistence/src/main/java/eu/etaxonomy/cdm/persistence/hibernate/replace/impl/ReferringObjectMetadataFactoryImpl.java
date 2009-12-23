@@ -47,12 +47,14 @@ public class ReferringObjectMetadataFactoryImpl implements	ReferringObjectMetada
             	String entityName = (String) fromClass;
             	if(!entityName.endsWith("_AUD")) {
             		try {
+//            			System.out.println(entityName);
 						Class entityClass = Class.forName(entityName);
 						ClassMetadata classMetadata = allClassMetadata.get(entityName);
 						for(String propertyName : classMetadata.getPropertyNames()) {
 							Type propertyType = classMetadata.getPropertyType(propertyName);
 						    
 							if (propertyType.isAssociationType()){
+//								System.out.println(entityName+"."+propertyName);
 								AssociationType associationType = (AssociationType)propertyType;
 							
 								if(!propertyType.isAnyType()) {
@@ -60,13 +62,13 @@ public class ReferringObjectMetadataFactoryImpl implements	ReferringObjectMetada
 								    String associatedEntityName = associationType.getAssociatedEntityName((SessionFactoryImpl) sessionFactory.getCurrentSession().getSessionFactory());
 								    Class associatedClass = Class.forName(associatedEntityName);
 								    if (associatedClass.isAssignableFrom(toClass)){
+								
 										
 										try {
-											entityClass.getDeclaredField(propertyName);
-											
 											if(associationType.isEntityType()) {
-																					
+												
 											    referringObjectMetadata.add(new ToOneReferringObjectMetadata(entityClass,propertyName, toClass));
+//											    System.out.println(propertyName + " " + fromClass + " " + toClass);			
 											} else if(associationType.isCollectionType()) {
 												CollectionType collectionType = (CollectionType)propertyType;
 										        if(propertyType instanceof BagType || propertyType instanceof SetType) {

@@ -13,7 +13,21 @@ public abstract class ReferringObjectMetadataImpl implements ReferringObjectMeta
 			Class<? extends CdmBase> toClass) throws SecurityException, NoSuchFieldException {
 		this.type = fromClass;
 		this.fieldName = propertyName;
-		this.field = type.getDeclaredField(fieldName);
+		try {
+		    this.field = type.getDeclaredField(fieldName);
+		} catch(NoSuchFieldException nsfe) {
+			Class superClass = type.getSuperclass();
+			while(!superClass.equals(CdmBase.class)) {
+				try{
+					this.field = superClass.getDeclaredField(fieldName);
+					break;
+				} catch(NoSuchFieldException nsfe1) { }
+				superClass = superClass.getSuperclass();
+			}
+			if(this.field == null) {
+				throw nsfe;
+			}
+		}
 		this.field.setAccessible(true);
 		
 	}

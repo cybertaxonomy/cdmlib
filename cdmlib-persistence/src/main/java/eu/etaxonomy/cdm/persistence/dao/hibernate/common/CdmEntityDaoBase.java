@@ -141,8 +141,18 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 	}
 	
 	public T replace(T x, T y) {
-		assert !x.equals(y);
-		assert x.getClass().equals(y.getClass());
+		if(x.equals(y)) {
+			return y;
+		}
+		
+		Class commonClass = x.getClass();
+        while(!commonClass.isAssignableFrom(y.getClass())) {
+        	if(commonClass.equals(type)) {
+        		throw new RuntimeException();
+        	}
+        	commonClass = commonClass.getSuperclass();
+        }
+
 		getSession().merge(x);
 		
         Set<ReferringObjectMetadata> referringObjectMetas = referringObjectMetadataFactory.get(x.getClass());
