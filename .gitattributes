@@ -2470,9 +2470,9 @@ eclipse-plugin/hibernate3.jar -text
 eclipse-plugin/hibernate3src.zip -text
 eclipse-plugin/hsqldb.jar -text
 eclipse-plugin/javassist.jar -text
-eclipse-plugin/jaxb-api.jar -text
-eclipse-plugin/jaxb-impl-2.0.jar -text
-eclipse-plugin/jaxb-impl-2.0src.zip -text
+eclipse-plugin/jaxb-api-2.1.6.jar -text
+eclipse-plugin/jaxb-impl-2.1.6-sources.jar -text
+eclipse-plugin/jaxb-impl-2.1.6.jar -text
 eclipse-plugin/jdbc-1.2.jar -text
 eclipse-plugin/jdbc2_0-stdext.jar -text
 eclipse-plugin/jdom-1.0.jar -text
