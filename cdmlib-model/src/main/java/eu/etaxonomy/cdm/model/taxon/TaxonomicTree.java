@@ -38,9 +38,6 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.Index;
-import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 
 import eu.etaxonomy.cdm.jaxb.MultilanguageTextAdapter;
@@ -67,7 +64,6 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 })
 @XmlRootElement(name = "TaxonomicTree")
 @Entity
-@Indexed(index = "eu.etaxonomy.cdm.model.taxon.TaxonomicTree")
 @Audited
 public class TaxonomicTree extends IdentifiableEntity implements IReferencedEntity, ITreeNode{
 	private static final long serialVersionUID = -753804821474209635L;
@@ -102,11 +98,9 @@ public class TaxonomicTree extends IdentifiableEntity implements IReferencedEnti
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE})
-	@IndexedEmbedded
 	private ReferenceBase reference;
 	
 	@XmlElement(name = "microReference")
-	@Field(index = Index.TOKENIZED)
 	private String microReference;
 	
 //	/**
@@ -372,7 +366,7 @@ public class TaxonomicTree extends IdentifiableEntity implements IReferencedEnti
 			//no multiple parents are allowed in the tree
 			if (childNode != null && childNode.getParent() != null){
 				//...different to the parent taxon  throw exception
-				if ((childNode.getParent() instanceof TaxonNode) && ((TaxonNode)childNode.getParent()).getTaxon().equals(parent) ){
+				if ((childNode.getParent() instanceof TaxonNode) && !((TaxonNode)childNode.getParent()).getTaxon().equals(parent) ){
 					throw new IllegalStateException("The child taxon is already part of the tree but has an other parent taxon than the one than the parent to be added. Child: " + child.toString() + ", new parent:" + parent.toString() + ", old parent: " + ((TaxonNode) childNode.getParent()).getTaxon().toString()) ;
 				//... same as the parent taxon do nothing but overwriting citation and microCitation
 				}else{
