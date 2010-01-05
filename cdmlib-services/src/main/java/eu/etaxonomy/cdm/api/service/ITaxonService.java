@@ -25,6 +25,7 @@ import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
@@ -120,10 +121,10 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	/**
 	 * Changes an accepted taxon to a synonym of another taxon. 
 	 * 
-	 * @param oldTaxon
-	 * 				the accepted taxon that will be changed into a synonym
-	 * @param newAcceptedTaxon
-	 * 				the accepted taxon, the old taxon will become a synonym of
+	 * @param oldTaxonNode
+	 * 				the <code>TaxonNode</code> of the accepted taxon that will be changed into a synonym
+	 * @param newAcceptedTaxonNode
+	 * 				the <code>TaxonNode</code> of the accepted taxon, the old taxon will become a synonym of
 	 * @param synonymType
 	 * 				<code>SynonymRelationshipType</code> to indicate whether hetero or homotypic
 	 * @param citation
@@ -133,7 +134,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	 * @return
 	 * 				the newly created synonym
 	 */
-	public Synonym makeTaxonSynonym (Taxon oldTaxon, Taxon newAcceptedTaxon, SynonymRelationshipType synonymType, ReferenceBase citation, String citationMicroReference);
+	public Synonym changeAcceptedTaxonToSynonym (TaxonNode oldTaxonNode, TaxonNode newAcceptedTaxonNode, SynonymRelationshipType synonymType, ReferenceBase citation, String citationMicroReference);
 	
 	/**
 	 * Swaps given synonym and accepted taxon. 
@@ -161,7 +162,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	 * @return
 	 * 				the newly created accepted taxon
 	 */
-	public Taxon makeSynonymAcceptedTaxon(Synonym synonym, Taxon acceptedTaxon);
+	public Taxon changeSynonymToAcceptedTaxon(Synonym synonym, Taxon acceptedTaxon);
 	
 	/**
 	 * Returns the TaxonRelationships (of where relationship.type == type, if this argument is supplied) 

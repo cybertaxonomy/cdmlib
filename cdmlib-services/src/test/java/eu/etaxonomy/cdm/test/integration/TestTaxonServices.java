@@ -77,25 +77,25 @@ public class TestTaxonServices {
     
 	private void testMakeTaxonSynonym(CdmApplicationController appCtr) {
 
-		logger.info("Testing makeTaxonSynonym()");
-		TransactionStatus txStatus = appCtr.startTransaction();
-
-		Taxon oldTaxon = (Taxon)appCtr.getTaxonService().find(UUID.fromString("83a87f0c-e2c4-4b41-b603-4e77e7e53158"));
-		Taxon newAcceptedTaxon = (Taxon)appCtr.getTaxonService().find(UUID.fromString("0b423190-fcca-4228-86a9-77974477f160"));
-		SynonymRelationshipType synonymType = SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF();
-
-		ReferenceBase citation;
-		ReferenceFactory refFactory = ReferenceFactory.newInstance();
-		citation = refFactory.newBook();
-		AgentBase linne = appCtr.getAgentService().find(UUID.fromString("f6272e48-5b4e-40c1-b4e9-ee32334fa19f"));
-		citation.setAuthorTeam((TeamOrPersonBase)linne);
-		citation.setTitleCache("Make Taxon Synonym Test");
-		String microRef = "123";
-		appCtr.getReferenceService().save(citation);
-
-		appCtr.getTaxonService().makeTaxonSynonym(oldTaxon, newAcceptedTaxon, synonymType, citation, microRef);
-
-		appCtr.commitTransaction(txStatus);
+//		logger.info("Testing makeTaxonSynonym()");
+//		TransactionStatus txStatus = appCtr.startTransaction();
+//
+//		Taxon oldTaxon = (Taxon)appCtr.getTaxonService().find(UUID.fromString("83a87f0c-e2c4-4b41-b603-4e77e7e53158"));
+//		Taxon newAcceptedTaxon = (Taxon)appCtr.getTaxonService().find(UUID.fromString("0b423190-fcca-4228-86a9-77974477f160"));
+//		SynonymRelationshipType synonymType = SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF();
+//
+//		ReferenceBase citation;
+//		ReferenceFactory refFactory = ReferenceFactory.newInstance();
+//		citation = refFactory.newBook();
+//		AgentBase linne = appCtr.getAgentService().find(UUID.fromString("f6272e48-5b4e-40c1-b4e9-ee32334fa19f"));
+//		citation.setAuthorTeam((TeamOrPersonBase)linne);
+//		citation.setTitleCache("Make Taxon Synonym Test");
+//		String microRef = "123";
+//		appCtr.getReferenceService().save(citation);
+//
+//		appCtr.getTaxonService().changeAcceptedTaxonToSynonym(oldTaxon, newAcceptedTaxon, synonymType, citation, microRef);
+//
+//		appCtr.commitTransaction(txStatus);
 	}
 
 	

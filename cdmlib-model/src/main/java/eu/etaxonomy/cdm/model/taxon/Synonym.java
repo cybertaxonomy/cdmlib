@@ -214,6 +214,19 @@ public class Synonym extends TaxonBase<IIdentifiableEntityCacheStrategy<Synonym>
 		}
 		return taxa;
 	}
+	
+	/**
+	 * Returns true if <i>this</i> is a synonym of the given taxon.
+	 * 
+	 * @param taxon	the taxon to check synonym for
+	 * @return	true if <i>this</i> is a ynonms of the given taxon
+	 * 
+	 * @see #getAcceptedTaxa()
+	 */
+	@Transient
+	public boolean isSynonymOf(Taxon taxon){
+		return getAcceptedTaxa().contains(taxon);
+	}
 
 	/** 
 	 * Returns the set of {@link SynonymRelationshipType synonym relationship types} of the

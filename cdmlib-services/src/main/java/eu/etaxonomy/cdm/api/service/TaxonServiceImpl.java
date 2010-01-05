@@ -180,10 +180,20 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#makeTaxonSynonym(eu.etaxonomy.cdm.model.taxon.Taxon, eu.etaxonomy.cdm.model.taxon.Taxon)
 	 */
 	@Transactional(readOnly = false)
-	public Synonym makeTaxonSynonym(Taxon oldTaxon, Taxon newAcceptedTaxon, SynonymRelationshipType synonymRelationshipType, ReferenceBase citation, String citationMicroReference) {
-		if (oldTaxon == null || newAcceptedTaxon == null || oldTaxon.getName() == null){
-			throw new IllegalArgumentException();
+	public Synonym changeAcceptedTaxonToSynonym(TaxonNode oldTaxonNode, TaxonNode newAcceptedTaxonNode, SynonymRelationshipType synonymRelationshipType, ReferenceBase citation, String citationMicroReference) {
+
+		// TODO at the moment this method only moves synonym-, concept relations and descriptions to the new accepted taxon
+		// in a future version we also want to move cdm data like annotations, marker, so., but we will need a policy for that
+		if (oldTaxonNode == null || newAcceptedTaxonNode == null || oldTaxonNode.getTaxon().getName() == null){
+			throw new IllegalArgumentException("A mandatory parameter was null.");
 		}
+		
+		if(oldTaxonNode.equals(newAcceptedTaxonNode)){
+			throw new IllegalArgumentException("Taxon can not be made synonym of its own.");
+		}
+		
+		Taxon oldTaxon = (Taxon) HibernateProxyHelper.deproxy(oldTaxonNode.getTaxon());
+		Taxon newAcceptedTaxon = (Taxon) HibernateProxyHelper.deproxy(newAcceptedTaxonNode.getTaxon());
 		
 		// Move oldTaxon to newTaxon
 		TaxonNameBase<?,?> synonymName = oldTaxon.getName();
@@ -191,11 +201,10 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 			if (synonymName.isHomotypic(newAcceptedTaxon.getName())){
 				synonymRelationshipType = SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF();
 			}else{
-				//TODO synonymType 
 				synonymRelationshipType = SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF();
 			}
 		}
-		SynonymRelationship synRel = newAcceptedTaxon.addSynonymName(synonymName, synonymRelationshipType, citation, citationMicroReference);
+		SynonymRelationship synonmyRelationship = newAcceptedTaxon.addSynonymName(synonymName, synonymRelationshipType, citation, citationMicroReference);
 		
 		//Move Synonym Relations to new Taxon
 		for(SynonymRelationship synRelation : oldTaxon.getSynonymRelations()){
@@ -203,67 +212,49 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 					synRelation.getCitation(), synRelation.getCitationMicroReference());
 		}
 
+		
+		// CHILD NODES
+		if(oldTaxonNode.getChildNodes() != null && oldTaxonNode.getChildNodes().size() != 0){
+			for(TaxonNode childNode : oldTaxonNode.getChildNodes()){
+				newAcceptedTaxonNode.addChildNode(childNode, childNode.getReference(), childNode.getMicroReference(), childNode.getSynonymToBeUsed());
+			}
+		}
+		
 		//Move Taxon RelationShips to new Taxon
-		Set<TaxonRelationship> removableTaxonRels = new HashSet<TaxonRelationship>();
-		for(TaxonRelationship taxonRelation : oldTaxon.getTaxonRelations()){
-			//CHILDREN
-			if (taxonRelation.getType().equals(TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN())){
-				if (taxonRelation.getFromTaxon() == oldTaxon){
-					removableTaxonRels.add(taxonRelation);
-//					oldTaxon.removeTaxonRelation(taxonRelation);
-				}else if(taxonRelation.getToTaxon() == oldTaxon){
-					newAcceptedTaxon.addTaxonomicChild(taxonRelation.getFromTaxon(), taxonRelation.getCitation(), taxonRelation.getCitationMicroReference());
-					removableTaxonRels.add(taxonRelation);
-//					oldTaxon.removeTaxonRelation(taxonRelation);
-				}else{
-					logger.warn("Taxon is not part of its own Taxonrelationship");
-				}
+		Set<TaxonRelationship> obsoleteTaxonRelationships = new HashSet<TaxonRelationship>();
+		for(TaxonRelationship taxonRelationship : oldTaxon.getTaxonRelations()){
+			Taxon fromTaxon = (Taxon) HibernateProxyHelper.deproxy(taxonRelationship.getFromTaxon());
+			Taxon toTaxon = (Taxon) HibernateProxyHelper.deproxy(taxonRelationship.getToTaxon());
+			if (fromTaxon == oldTaxon){
+				newAcceptedTaxon.addTaxonRelation(taxonRelationship.getToTaxon(), taxonRelationship.getType(), 
+						taxonRelationship.getCitation(), taxonRelationship.getCitationMicroReference());
+				
+			}else if(toTaxon == oldTaxon){
+				taxonRelationship.getFromTaxon().addTaxonRelation(newAcceptedTaxon, taxonRelationship.getType(), 
+						taxonRelationship.getCitation(), taxonRelationship.getCitationMicroReference());
+
+			}else{
+				logger.warn("Taxon is not part of its own Taxonrelationship");
 			}
-			//MISAPPLIED NAMES
-			if (taxonRelation.getType().equals(TaxonRelationshipType.MISAPPLIED_NAME_FOR())){
-				if (taxonRelation.getFromTaxon() == oldTaxon){
-					newAcceptedTaxon.addMisappliedName(taxonRelation.getToTaxon(), taxonRelation.getCitation(), taxonRelation.getCitationMicroReference());
-					removableTaxonRels.add(taxonRelation);
-//					oldTaxon.removeTaxonRelation(taxonRelation);
-				}else if(taxonRelation.getToTaxon() == oldTaxon){
-					newAcceptedTaxon.addMisappliedName(taxonRelation.getFromTaxon(), taxonRelation.getCitation(), taxonRelation.getCitationMicroReference());
-					removableTaxonRels.add(taxonRelation);
-//					oldTaxon.removeTaxonRelation(taxonRelation);
-				}else{
-					logger.warn("Taxon is not part of its own Taxonrelationship");
-				}
+			// Remove old relationships
+			taxonRelationship.setToTaxon(null);
+			taxonRelationship.setFromTaxon(null);
+		}
+		
+		//Move descriptions to new taxon
+		for(TaxonDescription oldDescription : oldTaxon.getDescriptions()){
+			
+			TaxonDescription newDescription = TaxonDescription.NewInstance(newAcceptedTaxon);
+			newDescription.setTitleCache("Description copied from " + oldTaxon + ". Old title: " + oldDescription.getTitleCache());
+			
+			for(DescriptionElementBase element : oldDescription.getElements()){
+				newDescription.addElement(element);
 			}
-			//Concept Relationships
-			//FIXME implement
-//			if (taxonRelation.getType().equals(TaxonRelationshipType.MISAPPLIEDNAMEFOR())){
-//				if (taxonRelation.getFromTaxon() == oldTaxon){
-//					newAcceptedTaxon.addMisappliedName(taxonRelation.getToTaxon(), taxonRelation.getCitation(), taxonRelation.getCitationMicroReference());
-//			        removableTaxonRels.add(taxonRelation);
-//				}else if(taxonRelation.getToTaxon() == oldTaxon){
-//					newAcceptedTaxon.addMisappliedName(taxonRelation.getFromTaxon(), taxonRelation.getCitation(), taxonRelation.getCitationMicroReference());
-//	                removableTaxonRels.add(taxonRelation);
-//				}else{
-//					logger.warn("Taxon is not part of its own Taxonrelationship");
-//				}
-//			}
 		}
+				
+		oldTaxonNode.delete();
 		
-		for(TaxonRelationship taxonRel : removableTaxonRels) {
-			oldTaxon.removeTaxonRelation(taxonRel);
-		}
-		
-		//Move Descriptions to new Taxon
-		for(TaxonDescription taxDescription : oldTaxon.getDescriptions()){
-			newAcceptedTaxon.addDescription(taxDescription);
-		}
-		//delete old Taxon
-		this.dao.saveOrUpdate(newAcceptedTaxon);
-//		FIXME implement
-//		this.dao.delete(oldTaxon);
-		
-		//return
-//		this.dao.flush();
-		return synRel.getSynonym();
+		return synonmyRelationship.getSynonym();
 	}
 
 	/*
@@ -297,7 +288,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 	 * (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#makeSynonymAcceptedTaxon(eu.etaxonomy.cdm.model.taxon.Synonym, eu.etaxonomy.cdm.model.taxon.Taxon)
 	 */
-	public Taxon makeSynonymAcceptedTaxon(Synonym synonym, Taxon acceptedTaxon){
+	public Taxon changeSynonymToAcceptedTaxon(Synonym synonym, Taxon acceptedTaxon){
 		
 		Taxon newAcceptedTaxon = Taxon.NewInstance(synonym.getName(), acceptedTaxon.getSec());
 		
