@@ -20,6 +20,7 @@ import org.springframework.stereotype.Repository;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.MarkerType;
+import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.persistence.dao.common.IAnnotationDao;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
@@ -53,6 +54,48 @@ public class AnnotationDaoImpl extends LanguageStringBaseDaoImpl<Annotation> imp
         
         if(commentator != null) {
             criteria.add(Restrictions.eq("commentator",commentator));
+        }
+		
+		if(status != null) {
+			criteria.createCriteria("markers").add(Restrictions.eq("markerType", status));
+		} 
+		
+		if(pageSize != null) {
+			criteria.setMaxResults(pageSize);
+		    if(pageNumber != null) {
+		    	criteria.setFirstResult(pageNumber * pageSize);
+		    }
+		}
+		
+		addOrder(criteria, orderHints);
+		List<Annotation> results = (List<Annotation>)criteria.list();		
+		defaultBeanInitializer.initializeAll(results, propertyPaths);
+		return results;
+	}
+
+	public int count(User creator, MarkerType status) {
+		checkNotInPriorView("AnnotationDaoImpl.count(User creator, MarkerType statu)");
+		Criteria criteria = getSession().createCriteria(Annotation.class);
+		
+		 if(creator != null) {
+	        criteria.add(Restrictions.eq("createdBy",creator));
+	     }
+			
+		if(status != null) {
+			criteria.createCriteria("markers").add(Restrictions.eq("markerType", status));
+		} 
+		
+		criteria.setProjection(Projections.countDistinct("id"));
+		
+		return (Integer)criteria.uniqueResult();
+	}
+
+	public List<Annotation> list(User creator, MarkerType status, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,	List<String> propertyPaths) {
+		checkNotInPriorView("AnnotationDaoImpl.list(User creator, MarkerType status,	Integer pageSize, Integer pageNumber)");
+        Criteria criteria = getSession().createCriteria(Annotation.class);
+        
+        if(creator != null) {
+            criteria.add(Restrictions.eq("createdBy",creator));
         }
 		
 		if(status != null) {

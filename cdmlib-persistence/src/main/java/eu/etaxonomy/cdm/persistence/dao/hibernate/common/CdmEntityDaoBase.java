@@ -91,8 +91,9 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 		getSession().lock(t, lockMode);
 	}
 	
-	public void refresh(T t, LockMode lockMode) {
+	public void refresh(T t, LockMode lockMode, List<String> propertyPaths) {
 		getSession().refresh(t, lockMode);
+		defaultBeanInitializer.initialize(t, propertyPaths);
 	}
 	
 	//TODO this method should be moved to a concrete class (not typed)
@@ -146,12 +147,14 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 		}
 		
 		Class commonClass = x.getClass();
-        while(!commonClass.isAssignableFrom(y.getClass())) {
-        	if(commonClass.equals(type)) {
-        		throw new RuntimeException();
-        	}
-        	commonClass = commonClass.getSuperclass();
-        }
+		if(y != null) {
+            while(!commonClass.isAssignableFrom(y.getClass())) {
+        	    if(commonClass.equals(type)) {
+        		    throw new RuntimeException();
+        	    }
+        	    commonClass = commonClass.getSuperclass();
+            }
+		}
 
 		getSession().merge(x);
 		

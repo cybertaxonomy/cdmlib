@@ -24,6 +24,7 @@ import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.MarkerType;
+import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.persistence.dao.common.IAnnotationDao;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
@@ -98,7 +99,7 @@ public class AnnotationDaoTest extends CdmIntegrationTest {
 
 		assert markerType != null : "markerType must exist";
 		
-		int numberOfAnnotations = annotationDao.count(null, markerType);
+		int numberOfAnnotations = annotationDao.count((User)null, markerType);
 		assertEquals("countAnnotations should return 2",2,numberOfAnnotations);		
 	}
 	
@@ -107,7 +108,7 @@ public class AnnotationDaoTest extends CdmIntegrationTest {
 		MarkerType markerType = MarkerType.TO_BE_CHECKED();
 		assert markerType != null : "markerType must exist";
 		
-		List<Annotation> annotations = annotationDao.list(null, markerType, null, null, null, null);
+		List<Annotation> annotations = annotationDao.list((User)null, markerType, null, null, null, null);
 		assertNotNull("getAnnotations should return a List",annotations);
 		assertFalse("the list should contain Annotation instances",annotations.isEmpty());
 		assertEquals("getAnnotations should return 2",2,annotations.size());		

@@ -69,11 +69,18 @@ public interface ICdmEntityDao<T extends CdmBase> {
 	/**
 	 * Refreshes the state of the supplied object using the given LockMode (e.g. use LockMode.READ 
 	 * to bypass the second-level cache and session cache and query the database directly)
+	 * 
+	 * All bean properties given in the <code>propertyPaths</code> parameter are recursively initialized.
+	 * <p>
+	 * For detailed description and examples <b>please refer to:</b> 
+	 * {@link BeanInitializer#initialize(Object, List)}
+	 * 
 	 * @param t
 	 * @param lockMode
+	 * @param propertyPaths
 	 * @throws DataAccessException
 	 */
-	public void refresh(T t, LockMode lockMode) throws DataAccessException;
+	public void refresh(T t, LockMode lockMode, List<String> propertyPaths) throws DataAccessException;
 	
 	public void clear() throws DataAccessException;
 		
