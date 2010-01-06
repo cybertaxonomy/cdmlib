@@ -46,8 +46,8 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
 	}
 	
 	@Transactional(readOnly = true)
-	public void refresh(T t, LockMode lockMode) {
-		dao.refresh(t, lockMode);
+	public void refresh(T t, LockMode lockMode, List<String> propertyPaths) {
+		dao.refresh(t, lockMode, propertyPaths);
 	}
 
 	@Transactional(readOnly = false)

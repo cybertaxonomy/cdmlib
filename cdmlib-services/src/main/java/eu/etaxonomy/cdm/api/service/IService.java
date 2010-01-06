@@ -49,10 +49,20 @@ public interface IService<T extends CdmBase>{
 	
 	/**
 	 * Refreshes a given object t using the specified lockmode
+	 * 
+     * All bean properties given in the <code>propertyPaths</code> parameter are recursively initialized.
+	 * <p>
+	 * For detailed description and examples <b>please refer to:</b> 
+	 * {@link BeanInitializer#initialize(Object, List)}
+	 * 
+	 * NOTE: in the case of lockmodes that hit the database (e.g. LockMode.READ), you will need to re-initialize
+	 * child propertiesto avoid a HibernateLazyInitializationException (even if the properties of the child 
+	 * were initialized prior to the refresh).
+	 * 
 	 * @param t
 	 * @param lockMode
 	 */
-	public void refresh(T t, LockMode lockMode);
+	public void refresh(T t, LockMode lockMode, List<String> propertyPaths);
 	
 	/**
 	 * Returns a count of all entities of type <T>  optionally restricted
