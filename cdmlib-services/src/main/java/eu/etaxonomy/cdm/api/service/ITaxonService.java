@@ -153,7 +153,8 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	public void swapSynonymAndAcceptedTaxon(Synonym synonym, Taxon acceptedTaxon, SynonymRelationshipType synonymRelationshipType );
 	
 	/**
-	 * Change a synonym into an accepted taxon and removes existing synonym relationship to the given accepted taxon.
+	 * Change a synonym into an accepted taxon and removes 
+	 * the synonym relationship to the given accepted taxon.
 	 * 
 	 * @param synonym
 	 * 				the synonym to change into an accepted taxon
@@ -163,6 +164,22 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	 * 				the newly created accepted taxon
 	 */
 	public Taxon changeSynonymToAcceptedTaxon(Synonym synonym, Taxon acceptedTaxon);
+	
+	/**
+	 * Change a synonym into a related concept 
+	 * 
+	 * @param synonym
+	 * 				the synonym to change into the concept taxon
+	 * @param toTaxon
+	 * 				the taxon the newly created concept should be related to
+	 * @param taxonRelationshipType
+	 * 				the type of relationship
+	 * @param citation
+	 * @param microcitation
+	 * @return
+	 * 				the newly created concept
+	 */
+	public Taxon changeSynonymToRelatedTaxon(Synonym synonym, Taxon toTaxon, TaxonRelationshipType taxonRelationshipType, ReferenceBase citation, String microcitation);
 	
 	/**
 	 * Returns the TaxonRelationships (of where relationship.type == type, if this argument is supplied) 

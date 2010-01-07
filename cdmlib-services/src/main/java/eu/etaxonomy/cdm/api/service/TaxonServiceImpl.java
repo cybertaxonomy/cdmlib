@@ -300,6 +300,27 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		
 		return newAcceptedTaxon;
 	}
+	
+	public Taxon changeSynonymToRelatedTaxon(Synonym synonym, Taxon toTaxon, TaxonRelationshipType taxonRelationshipType, ReferenceBase citation, String microcitation){
+		
+		// Get name from synonym
+		TaxonNameBase<?, ?> synonymName = synonym.getName();
+		
+		// remove synonym from taxon
+		toTaxon.removeSynonym(synonym);
+		
+		// Create a taxon with synonym name
+		Taxon fromTaxon = Taxon.NewInstance(synonymName, null);
+		
+		// Add taxon relation 
+		fromTaxon.addTaxonRelation(toTaxon, taxonRelationshipType, citation, microcitation);
+				
+		// since we are swapping names, we have to detach the name from the synonym completely. 
+		// Otherwise the synonym will still be in the list of typified names.
+		synonym.getName().removeTaxonBase(synonym);
+		
+		return fromTaxon;
+	}
 
 	public void generateTitleCache() {
 		generateTitleCache(true);
