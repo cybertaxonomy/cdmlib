@@ -399,6 +399,30 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 		rels.addAll(getRelationsFromThisTaxon());
 		return rels;
 	}
+	
+	/**
+	 * If a relationships between <i>this</i> and the given taxon exists they will be returned.
+	 * <i>This</i> taxon is involved either as a source or as a target in the relationships.
+	 * The method will return <code>null</code> if no relations exist between the two taxa.
+	 * 
+	 * @param possiblyRelatedTaxon
+	 * 			a taxon to check for a relationship
+	 * @return
+	 * 			a set of <code>TaxonRelationship</code>s or <code>null</null> if none exists.
+	 */
+	public Set<TaxonRelationship> getTaxonRelations(Taxon possiblyRelatedTaxon){
+		Set<TaxonRelationship> relations = new HashSet<TaxonRelationship>();
+		
+		for(TaxonRelationship relationship : getTaxonRelations()){
+			if(relationship.getFromTaxon().equals(possiblyRelatedTaxon))
+				relations.add(relationship);
+			if(relationship.getToTaxon().equals(possiblyRelatedTaxon))
+				relations.add(relationship);
+		}
+		
+		return relations.size() > 0 ? relations : null;
+	}
+	
 	/** 
 	 * Removes one {@link TaxonRelationship taxon relationship} from one of both sets of
 	 * {@link #getTaxonRelations() taxon relationships} in which <i>this</i> taxon is involved
@@ -420,7 +444,6 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 	 * 
 	 */
 	public void removeTaxonRelation(TaxonRelationship rel) {
-		logger.warn("remove TaxonRelation");  //for testing only 
 		this.relationsToThisTaxon.remove(rel);
 		this.relationsFromThisTaxon.remove(rel);
 		Taxon fromTaxon = rel.getFromTaxon();
