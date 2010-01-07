@@ -22,6 +22,9 @@ import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.Person;
+import eu.etaxonomy.cdm.model.description.MediaKey;
+import eu.etaxonomy.cdm.model.media.Media;
+import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.persistence.dao.agent.IAgentDao;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
@@ -111,7 +114,11 @@ public class ReferringObjectMetadataFactoryTest extends CdmTransactionalIntegrat
 		assert y != null;
 		
 		agentDao.replace(x,y);
-		
+	}
+	
+	@Test
+	public void testIgnoreBidirectionalRelationship() {
+		referringObjectMetadataFactory.get(BotanicalName.class);
 	}
 }	
 	
