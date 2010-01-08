@@ -18,7 +18,9 @@ public class SetReferringObjectMetadata extends ToManyReferringObjectMetadata
 			throws IllegalArgumentException, IllegalAccessException {
 		Set<CdmBase> property = (Set<CdmBase>)field.get(referringObject);
         property.remove(x);
-        property.add(y);
+        if(y != null) {
+            property.add(y);
+        }
 	}
 
 }

@@ -58,8 +58,8 @@ public interface ICdmEntityDao<T extends CdmBase> {
 	public void lock(T t, LockMode lockMode) throws DataAccessException;
 	
 	/**
-	 * Globally replace all references to instance t1 with t2
-	 * 
+	 * Globally replace all references to instance t1 with t2 (including
+	 *  
 	 * NOTE: This replaces all non-bidirectional relationships where type T is on the
 	 * "owning" side of the relationship (since the "owned" objects are, in theory,
 	 * sub-components of the entity and this kind of global replace doesn't really make sense
@@ -68,11 +68,12 @@ public interface ICdmEntityDao<T extends CdmBase> {
 	 * semantics (i.e. CascadeType.DELETE, CascadeType.DELETE_ORPHAN) allowing them to be saved,
 	 * updated, and deleted along with the owning entity automatically.
 	 * 
-	 * @param t1
-	 * @param t2
+	 * @param x the object to replace, must not be null
+	 * @param y the object that will replace. If y is null, then x will be removed from all collections
+	 *          and all properties that refer to x will be replaced with null
 	 * @return T the replaced object
 	 */
-	public T replace(T t1, T t2);
+	public T replace(T x, T y);
 	
 	/**
 	 * Refreshes the state of the supplied object using the given LockMode (e.g. use LockMode.READ 

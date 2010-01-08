@@ -17,13 +17,17 @@ public class ListReferringObjectMetadata extends ToManyReferringObjectMetadata
 	public void replace(CdmBase referringObject, CdmBase x, CdmBase y)
 			throws IllegalArgumentException, IllegalAccessException {
 		List<CdmBase> property = (List<CdmBase>)field.get(referringObject);
-		for(CdmBase c : property) {
-			if(x.equals(c)) {
-				int index = property.indexOf(c);
-				property.set(index, y);
+		if(y != null) {
+		    for(CdmBase c : property) {
+			    if(x.equals(c)) {
+				    int index = property.indexOf(c);
+				    property.set(index, y);
+			    }
+		    }
+		} else {
+			while(property.contains(x)) {
+				property.remove(x);
 			}
 		}
-
 	}
-
 }
