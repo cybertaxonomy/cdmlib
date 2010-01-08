@@ -433,7 +433,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		long numberTaxaResults = 0L;
 		
 		Class<? extends TaxonBase> clazz = null;
-		if (configurator.isDoTaxa() && configurator.isDoSynonyms()) {
+		if ((configurator.isDoTaxa() && configurator.isDoSynonyms()) || configurator.isDoTaxaByOrphanedTaxa()) {
 			clazz = TaxonBase.class;
 		} else if(configurator.isDoTaxa()) {
 			clazz = Taxon.class;
@@ -461,9 +461,8 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		}
 		
 		numberOfResults += numberTaxaResults;
-		
+
 		// Names without taxa 
-		
 		if (configurator.isDoNamesWithoutTaxa()) {
             int numberNameResults = 0;
             //FIXME implement search by area
