@@ -71,6 +71,12 @@ public class CdmDataChangeMap  implements Map<EventType, Vector<CdmDataChangeEve
 		return dataChangeMap.get(key);
 	}
 	
+	/**
+	 * Returns events by type
+	 * 
+	 * @param type
+	 * @return
+	 */
 	public Vector<CdmDataChangeEvent> getEvents(EventType type){
 		return dataChangeMap.get(type);
 	}
@@ -129,11 +135,18 @@ public class CdmDataChangeMap  implements Map<EventType, Vector<CdmDataChangeEve
 		return dataChangeMap.values();
 	}
 	
+	/**
+	 * Returns all change events stored in this change map
+	 * 
+	 * @return
+	 */
 	public Collection<CdmDataChangeEvent> getAllEvents(){
 		Collection<CdmDataChangeEvent> values = new HashSet<CdmDataChangeEvent>();
 		for (EventType type : EventType.values()){
-			for(CdmDataChangeEvent event : dataChangeMap.get(type)){
-				values.add(event);
+			if(dataChangeMap.get(type) != null){
+				for(CdmDataChangeEvent event : dataChangeMap.get(type)){
+					values.add(event);
+				}
 			}
 		}
 		return values;
