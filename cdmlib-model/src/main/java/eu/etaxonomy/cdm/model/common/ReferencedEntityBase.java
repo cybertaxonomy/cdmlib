@@ -52,7 +52,7 @@ public abstract class ReferencedEntityBase extends AnnotatableEntity implements 
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
-    @Cascade(CascadeType.SAVE_UPDATE)
+    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE})
 	private ReferenceBase citation;
 
     @XmlElement(name = "CitationMicroReference")

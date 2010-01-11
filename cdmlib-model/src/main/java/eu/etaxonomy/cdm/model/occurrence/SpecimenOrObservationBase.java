@@ -90,7 +90,7 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
 	@XmlElementWrapper(name = "Determinations")
 	@XmlElement(name = "Determination")
 	@OneToMany(mappedBy="identifiedUnit")
-	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE, CascadeType.DELETE_ORPHAN})
 	@IndexedEmbedded(depth = 2)
 	@NotNull
 	private Set<DeterminationEvent> determinations = new HashSet<DeterminationEvent>();
