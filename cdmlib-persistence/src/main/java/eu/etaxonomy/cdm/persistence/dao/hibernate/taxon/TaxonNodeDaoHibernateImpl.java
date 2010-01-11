@@ -10,12 +10,25 @@
 
 package eu.etaxonomy.cdm.persistence.dao.hibernate.taxon;
 
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
+
+
+
 import org.apache.log4j.Logger;
+import org.hibernate.Query;
+import org.hibernate.Session;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
+import org.unitils.spring.annotation.SpringBeanByType;
 
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.AnnotatableDaoImpl;
+import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao;
 
 /**
@@ -30,8 +43,31 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TaxonNodeDaoHibernateImpl.class);
 	
+	@Autowired
+	private ITaxonDao taxonDao;
+	
 	public TaxonNodeDaoHibernateImpl() {
 		super(TaxonNode.class);
+	}
+	@Override
+	public UUID delete(TaxonNode persistentObject){
+		Taxon taxon = persistentObject.getTaxon();
+		taxon = HibernateProxyHelper.deproxy(taxon, Taxon.class);
+		
+		Session session = this.getSession();
+		Query query = session.createQuery("from TaxonNode t where t.taxon = :taxon");
+		query.setParameter("taxon", taxon);
+		List result = query.list();
+		persistentObject.delete();
+		super.delete(persistentObject);
+		
+		System.err.println("number of taxa: "+ result.size() );
+		if (result.size()==1){
+			taxonDao.delete(taxon);
+		}
+		
+		taxon = (Taxon)taxonDao.findByUuid(taxon.getUuid());
+		return persistentObject.getUuid();
 	}
 
 }
