@@ -453,23 +453,7 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
 			elementsCriteria.add(Restrictions.in("feature", features));
 		}
 		
-		ProjectionList projectionList = Projections.projectionList().add(Projections.id());
-		
-		if(orderHints != null && !orderHints.isEmpty()) {
-		    for(OrderHint orderHint : orderHints) {
-			    projectionList = projectionList.add(Projections.property(orderHint.getPropertyName()));
-		    }
-		}
-		
-		inner.setProjection(Projections.distinct(projectionList));
-		
-		addOrder(inner, orderHints);
-		if(pageSize != null) {
-			inner.setMaxResults(pageSize);
-		    if(pageNumber != null) {
-		    	inner.setFirstResult(pageNumber * pageSize);
-		    }
-		}
+		inner.setProjection(Projections.distinct(Projections.id()));
 		
 		List<Object> intermediateResult = (List<Object>)inner.list();
 		
@@ -478,12 +462,8 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
 		}
 		
 		Integer[] resultIds = new Integer[intermediateResult.size()];
-		for(int i = 0; i < resultIds.length; i++) {
-			if(orderHints == null || orderHints.isEmpty()) {
+		for(int i = 0; i < resultIds.length; i++) {	
 				resultIds[i] = (Integer)intermediateResult.get(i);
-			} else {
-			  resultIds[i] = (Integer)((Object[])intermediateResult.get(i))[0];
-			}
 		}
 		
 		Criteria outer = null;
