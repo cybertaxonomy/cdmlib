@@ -66,7 +66,7 @@ public class TaxonNode  extends AnnotatableEntity implements ITreeNode{
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE})
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
 	private Taxon taxon;
 	
 	
@@ -90,7 +90,7 @@ public class TaxonNode  extends AnnotatableEntity implements ITreeNode{
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @OneToMany(mappedBy="parent", fetch=FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
+   @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
 	private Set<TaxonNode> childNodes = new HashSet<TaxonNode>();
 	
 	@XmlElement(name = "reference")
