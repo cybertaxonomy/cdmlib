@@ -1757,6 +1757,7 @@ cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/CdmDataSourceBase.jav
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/CdmPersistentDataSource.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/DataSourceNotFoundException.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/DataSourceReloader.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/DatabaseSchemaMismatchException.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/DatabaseTypeEnum.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/DbSchemaValidation.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/H2Mode.java -text
