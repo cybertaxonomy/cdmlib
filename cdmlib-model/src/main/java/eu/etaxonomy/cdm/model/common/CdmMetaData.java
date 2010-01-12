@@ -59,6 +59,10 @@ public class CdmMetaData extends CdmBase{
 		super();
 	}
 	
+	public String getMetaDataPropertyName() {
+		return dbSchemaVersion;
+	}
+
 	public CdmMetaData(MetaDataPropertyName propertyName, String value) {
 		super();
 		this.propertyName = propertyName;
