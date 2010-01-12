@@ -383,6 +383,13 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 	protected void setRelationsToThisTaxon(Set<TaxonRelationship> relationsToThisTaxon) {
 		this.relationsToThisTaxon = relationsToThisTaxon;
 	}
+	
+	/** 
+	 * @see    #getRelationsFromThisTaxon()
+	 */
+	protected void setRelationsFromThisTaxon(Set<TaxonRelationship> relationsFromThisTaxon) {
+		this.relationsFromThisTaxon = relationsFromThisTaxon;
+	}
 
 	/** 
 	 * Returns the set of all {@link TaxonRelationship taxon relationships}

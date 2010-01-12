@@ -130,6 +130,13 @@ public class Synonym extends TaxonBase<IIdentifiableEntityCacheStrategy<Synonym>
 		}
 		return synonymRelations;
 	}
+	
+	/** 
+	 * @see    #getSynonymRelations()
+	 */
+	protected void setSynonymRelations(Set<SynonymRelationship> synonymRelations) {
+		this.synonymRelations = synonymRelations;
+	}
 
 	/**
 	 * Adds an existing {@link SynonymRelationship synonym relationship} to the set of
