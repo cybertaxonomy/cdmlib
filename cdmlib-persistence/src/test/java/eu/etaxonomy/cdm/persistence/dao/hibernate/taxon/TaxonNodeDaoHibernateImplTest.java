@@ -87,7 +87,7 @@ public class TaxonNodeDaoHibernateImplTest extends
 		TaxonNode taxNode = (TaxonNode) taxonNodeDao.findByUuid(uuid1);
 		TaxonNode taxNode2 = (TaxonNode) taxonNodeDao.findByUuid(uuid2);
 		Set<TaxonNode> rootNodes = new HashSet<TaxonNode>();
-		//rootNodes.add(taxNode);
+		
 		rootNodes.add(taxNode2);
 		taxonTree.setRootNodes(rootNodes);
 		taxNode.addChildNode(taxNode2, null, null,null);
@@ -101,8 +101,7 @@ public class TaxonNodeDaoHibernateImplTest extends
 		assertEquals("there should be only two taxa", 2, taxa.size());
 		
 		taxonNodeDao.delete(taxNode2);
-		
-		
+				
 		taxa = taxonDao.getAllTaxonBases(10, 0);
 		assertEquals("there should be only one taxon left", 1, taxa.size());
 		
