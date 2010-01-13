@@ -12,9 +12,11 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.name;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -25,6 +27,7 @@ import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.HybridRelationship;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
@@ -32,7 +35,10 @@ import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
+import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 
@@ -41,6 +47,9 @@ public class TaxonNameDaoHibernateImplTest extends CdmIntegrationTest {
 	
 	@SpringBeanByType
 	ITaxonNameDao taxonNameDao;
+	
+	@SpringBeanByType
+	ITaxonDao taxonDao;
 	
 	private UUID cryptocoryneGriffithiiUuid;
 	private UUID acherontiaUuid;
@@ -188,5 +197,27 @@ public class TaxonNameDaoHibernateImplTest extends CdmIntegrationTest {
 		assertNotNull(rank);
 		assertFalse("Rank are equal, level must not be higher", rank.isHigher(acherontiaLachesis.getRank()));
 		assertFalse("Rank are equal, level must not be lower", rank.isLower(acherontiaLachesis.getRank()));
+	}
+	
+	@Test
+	public void testDeleteTaxon(){
+		TaxonNameBase acherontiaLachesis = taxonNameDao.findByUuid(UUID.fromString("497a9955-5c5a-4f2b-b08c-2135d336d633"));
+		HibernateProxyHelper.deproxy(acherontiaLachesis, TaxonNameBase.class);
+		Set<TaxonBase> taxonBases = acherontiaLachesis.getTaxonBases();
+		taxonNameDao.delete(acherontiaLachesis);
+		Iterator<TaxonBase> taxa= taxonBases.iterator();
+		TaxonBase taxon = taxa.next();
+		UUID taxonUuid = taxon.getUuid();
+		//acherontiaLachesis.removeTaxonBase(taxon);
+		//taxonDao.save(taxon);
+		taxonDao.flush();
+		//int numbOfTaxa = taxonDao.count(TaxonBase.class);
+		List<TaxonBase> taxaList = taxonDao.getAllTaxonBases(100, 0);
+		taxonNameDao.flush();
+		acherontiaLachesis = taxonNameDao.findByUuid(UUID.fromString("497a9955-5c5a-4f2b-b08c-2135d336d633"));
+		taxon = taxonDao.findByUuid(taxonUuid);
+		assertNull("There should be no taxonName with the deleted uuid", acherontiaLachesis);
+		assertNull("There should be no taxon with the deleted uuid", taxon);
+	
 	}
 }
