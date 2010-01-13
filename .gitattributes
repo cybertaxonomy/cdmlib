@@ -2235,10 +2235,15 @@ cdmlib-remote/src/main/webapp/WEB-INF/jsonConfigurations.xml -text
 cdmlib-remote/src/main/webapp/WEB-INF/views.xml -text
 cdmlib-remote/src/main/webapp/WEB-INF/web.xml -text
 cdmlib-remote/src/main/webapp/favicon.ico -text svneol=unset#unset
+cdmlib-remote/src/main/webapp/index.html -text
 cdmlib-remote/src/main/webapp/index.jsp -text
+cdmlib-remote/src/main/webapp/js/jquery.js -text
+cdmlib-remote/src/main/webapp/js/jquery.min.js -text
 cdmlib-remote/src/main/webapp/jsp/datasources/list.jsp -text
 cdmlib-remote/src/main/webapp/jsp/index.jsp -text
 cdmlib-remote/src/main/webapp/robots.txt -text
+cdmlib-remote/src/main/webapp/server.css -text
+cdmlib-remote/src/main/webapp/style.css -text
 cdmlib-remote/src/site/site.xml -text
 cdmlib-remote/src/test/java/eu/etaxonomy/cdm/remote/dto/assembler/lsid/AssemblerTest.java -text
 cdmlib-remote/src/test/java/eu/etaxonomy/cdm/remote/service/AuthorityControllerTest.java -text

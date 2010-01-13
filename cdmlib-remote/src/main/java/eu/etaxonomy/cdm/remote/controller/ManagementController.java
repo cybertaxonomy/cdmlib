@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.remote.controller;
 
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
@@ -26,12 +27,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
 
+import eu.etaxonomy.cdm.database.DataSourceInfo;
 import eu.etaxonomy.cdm.database.DataSourceReloader;
 import eu.etaxonomy.cdm.remote.service.Utils;
 
 
-//@Controller
-@RequestMapping(value = {"/cdmmanager/*/*"})
+@Controller
+@RequestMapping(value = {"/manager/*/*"})
 public class ManagementController
 {
 	Log log = LogFactory.getLog(ManagementController.class);
@@ -46,30 +48,22 @@ public class ManagementController
 	 * (non-Javadoc)
 	 * @see org.springframework.web.servlet.mvc.AbstractController#handleRequestInternal(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
-	@RequestMapping(value = { "/cdmmanager/datasources/list" }, method = RequestMethod.GET)
+	@RequestMapping(value = { "/manager/datasources/list" }, method = RequestMethod.GET)
 	protected ModelAndView doList(HttpServletRequest request, HttpServletResponse respone) throws Exception {
 		
-		return doReload(request, respone);
+		ModelAndView mv = new ModelAndView();
+		Map<String, DataSourceInfo> dataSourceInfos = datasoucrceLoader.test();
+		mv.addObject(dataSourceInfos);
 
+		return mv;
 	}
 	
-	@RequestMapping(value = { "/cdmmanager/datasources/reload" }, method = RequestMethod.GET)
+	@RequestMapping(value = { "/manager/datasources/reload" }, method = RequestMethod.GET)
 	public ModelAndView doReload(HttpServletRequest request, HttpServletResponse respone) throws Exception {
 		
-		Map<String, SimpleDriverDataSource> dataSources = datasoucrceLoader.reload();
-		
 		ModelAndView mv = new ModelAndView();
-
-		mv.addObject("title", "CDM Community Server - Manager");
-		String bodyHtml = "<div><h4>Available Data Sources</h4><dl>";
-		bodyHtml += "<p><i>The following data sources have been loaded:</i></p><table><th>BasePath</th><th>DataSource URI</th>";
-		for (String key : dataSources.keySet()) {
-			SimpleDriverDataSource ds = dataSources.get(key);
-			bodyHtml += "<tr><td>" + key + "</td><td>" + ds.getUrl() + "</td></tr>";
-		}
-		bodyHtml += "</table><form name=\"input\" action=\"\" method=\"get\"><input type=\"submit\" value=\"Update\"></td></form></div>";
-		mv.addObject("body", bodyHtml);
-		mv.setViewName("htmlView");
+		Map<String, DataSourceInfo> dataSourceInfos = datasoucrceLoader.reload();
+		mv.addObject(dataSourceInfos);
 
 		return mv;
 	}

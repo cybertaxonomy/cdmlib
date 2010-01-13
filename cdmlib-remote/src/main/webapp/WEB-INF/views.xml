@@ -39,5 +39,12 @@
     <bean name="**/portal/*.json **/portal/**/*.json" class="eu.etaxonomy.cdm.remote.view.JsonView">
         <property name="jsonConfig" ref="jsonConfigPortal" />
     </bean>
+    
+    <!-- management service -->
+    <bean name="/manager/*.xml /manager/**/*.xml" class="eu.etaxonomy.cdm.remote.view.JsonView">
+        <property name="type" value="XML" />
+    </bean>
+    <bean name="/manager/*.json /manager/**/*.json" class="eu.etaxonomy.cdm.remote.view.JsonView">
+    </bean>
 
 </beans>
