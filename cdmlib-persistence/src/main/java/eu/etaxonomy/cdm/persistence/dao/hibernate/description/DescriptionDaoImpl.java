@@ -477,6 +477,13 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
 		outer.add(Restrictions.in("id", resultIds));
 		addOrder(outer, orderHints);
 		
+		if(pageSize != null) {
+			outer.setMaxResults(pageSize);
+		    if(pageNumber != null) {
+		    	outer.setFirstResult(pageNumber * pageSize);
+		    }
+		}
+		
 		List<DescriptionBase> results = (List<DescriptionBase>)outer.list();
 		defaultBeanInitializer.initializeAll(results, propertyPaths);
 		return results;
