@@ -11,20 +11,24 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.name;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
+import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.envers.query.AuditEntity;
 import org.hibernate.envers.query.AuditQuery;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.name.BacterialName;
@@ -42,9 +46,12 @@ import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
 import eu.etaxonomy.cdm.model.name.ViralName;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
+import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
@@ -59,6 +66,9 @@ extends IdentifiableDaoBase<TaxonNameBase> implements ITaxonNameDao {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TaxonNameDaoHibernateImpl.class);
+
+	@Autowired
+	private ITaxonDao taxonDao;
 
 	public TaxonNameDaoHibernateImpl() {
 		super(TaxonNameBase.class); 
@@ -567,5 +577,15 @@ extends IdentifiableDaoBase<TaxonNameBase> implements ITaxonNameDao {
 
 	public List<TaxonNameBase> findByName(Class<? extends TaxonNameBase> clazz,	String queryString, MatchMode matchmode, List<Criterion> criteria,Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,	List<String> propertyPaths) {
 		return super.findByParam(clazz, "nameCache", queryString, matchmode, criteria, pageSize, pageNumber, orderHints, propertyPaths);
+	}
+	
+	public UUID delete (TaxonNameBase persistentObject){
+		Set<TaxonBase> taxonBases = persistentObject.getTaxonBases();
+		super.delete(persistentObject);
+				
+		for (TaxonBase taxonBase: taxonBases){
+			taxonDao.delete(taxonBase);
+		}
+		return persistentObject.getUuid();
 	}
 }
