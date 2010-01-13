@@ -35,9 +35,14 @@ public class DataSourceReloader {
 		return as;
 	}
 	
-	public Map<String,SimpleDriverDataSource> reload() {
+	public Map<String,DataSourceInfo> reload() {
 		return getDataSource().updateDataSources();
 	}
 	
+	public Map<String,DataSourceInfo> test() {
+		Map<String,SimpleDriverDataSource> dataSources = getDataSource().loadDataSources();
+		Map<String, DataSourceInfo> dataSourceInfos = getDataSource().testDataSources(dataSources);
+		return dataSourceInfos;
+	}
 	
 }

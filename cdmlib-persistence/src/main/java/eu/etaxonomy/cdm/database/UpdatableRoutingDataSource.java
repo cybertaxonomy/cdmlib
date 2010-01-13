@@ -17,10 +17,8 @@ import java.util.Map;
 
 import javax.sql.DataSource;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.xml.XmlBeanFactory;
 import org.springframework.core.io.FileSystemResource;
-import org.springframework.jdbc.datasource.AbstractDataSource;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
 
@@ -76,19 +74,26 @@ public class UpdatableRoutingDataSource extends AbstractRoutingDataSource {
 		userdefinedBeanDefinitionFile = filename;
 	}
 	
-	public Map<String,SimpleDriverDataSource> updateDataSources() {
+	public Map<String, DataSourceInfo> updateDataSources() {
+		
 		logger.info("loading & testing datasources .. ");
-		Map<String,SimpleDriverDataSource> datasources = loadDataSources();
-		setTargetDataSources((Map)datasources);
-		DataSource defaultDatasource = datasources.get(defaultDatasourceName);
+		Map<String,SimpleDriverDataSource> dataSources = loadDataSources();
+		Map<String, DataSourceInfo> dataSourceInfos = testDataSources(dataSources);
+		
+		setTargetDataSources((Map)dataSources);
+		DataSource defaultDatasource = dataSources.get(defaultDatasourceName);
 		if(defaultDatasource == null) {
 			logger.error("Defaultdatasource '" +defaultDatasourceName + "' not found.");
 		}
 		setDefaultTargetDataSource(defaultDatasource);
 		super.afterPropertiesSet();
-		return datasources;
+		
+		return dataSourceInfos;
 	}
 
+	/**
+	 * @return
+	 */
 	protected Map<String, SimpleDriverDataSource> loadDataSources() {
 
 		Map<String, SimpleDriverDataSource> dataSources = new HashMap<String, SimpleDriverDataSource>();
@@ -100,6 +105,22 @@ public class UpdatableRoutingDataSource extends AbstractRoutingDataSource {
 		
 		for(String beanName : beanFactory.getBeanDefinitionNames()){
 			SimpleDriverDataSource datasource = (SimpleDriverDataSource)beanFactory.getBean(beanName, SimpleDriverDataSource.class);
+			dataSources.put(beanName, datasource);
+		}
+		return dataSources;
+	}
+	
+	/**
+	 * @param dataSources
+	 * @return
+	 */
+	protected Map<String, DataSourceInfo> testDataSources(Map<String, SimpleDriverDataSource> dataSources) {
+		
+		Map<String, DataSourceInfo> dataSourceInfos = new HashMap<String, DataSourceInfo>();
+
+		for(String key : dataSources.keySet()){
+			SimpleDriverDataSource datasource = dataSources.get(key);
+			DataSourceInfo dsi = new DataSourceInfo(datasource);
 			Connection connection = null;
 			String sqlerror = null;
 			try {
@@ -107,15 +128,16 @@ public class UpdatableRoutingDataSource extends AbstractRoutingDataSource {
 				connection.close();
 			} catch (SQLException e) {
 				sqlerror = e.getMessage() + "["+ e.getSQLState() + "]";
+				dsi.getProblems().add(sqlerror);
 				if(connection !=  null){
 					try {connection.close();} catch (SQLException e1) { /* IGNORE */ }
 				}
 			}
-			logger.info("    /" + beanName + " => "+ datasource.getUrl() + "[ "+(sqlerror == null ? "OK" : "ERROR: " + sqlerror) + " ]");
-			dataSources.put(beanName, datasource);
+			logger.info("    /" + key + " => "+ datasource.getUrl() + "[ "+(sqlerror == null ? "OK" : "ERROR: " + sqlerror) + " ]");
+			dataSourceInfos.put(key, dsi);
 		}
 		
-		return dataSources;
+		return dataSourceInfos;
 	}
 
 }
