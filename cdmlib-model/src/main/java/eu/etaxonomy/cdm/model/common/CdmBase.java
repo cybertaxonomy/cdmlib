@@ -79,7 +79,8 @@ public abstract class CdmBase implements Serializable, ICdmBase{
 	@XmlTransient
 	private PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
 	
-	@XmlAttribute(name = "id", required = true)
+	//@XmlAttribute(name = "id", required = true)
+	@XmlTransient
 	@Id
 	@GeneratedValue(generator = "system-increment")
 	@DocumentId
@@ -90,9 +91,9 @@ public abstract class CdmBase implements Serializable, ICdmBase{
     
 	@XmlAttribute(required = true)
     @XmlJavaTypeAdapter(UUIDAdapter.class)
-    @XmlID
-	@Type(type="uuidUserType")
+    @Type(type="uuidUserType")
 	@NaturalId // This has the effect of placing a "unique" constraint on the database column
+	@XmlID
 	@Column(length=36)
 	@Match(MatchMode.IGNORE)
 	@NotNull
