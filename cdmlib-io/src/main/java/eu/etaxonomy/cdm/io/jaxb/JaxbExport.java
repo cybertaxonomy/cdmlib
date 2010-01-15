@@ -27,6 +27,7 @@ import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.User;
+import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
@@ -258,6 +259,13 @@ public class JaxbExport extends CdmExportBase<JaxbExportConfigurator, JaxbExport
 		if (jaxbExpConfig.isDoFeatureData() == true) {
 			if (featureDataRows == 0) { featureDataRows = MAX_ROWS; }
 			logger.info("# Feature Tree, Feature Node");
+			List<FeatureTree> featureTrees = new ArrayList<FeatureTree>();
+			featureTrees= getFeatureTreeService().list(null,featureDataRows, 0, null, null);
+			List<FeatureTree> taxTreesdeproxy = new ArrayList<FeatureTree>();
+			for (FeatureTree featureTree : featureTrees){
+				HibernateProxyHelper.deproxy(featureTree);
+				taxTreesdeproxy.add(featureTree);
+			}
 			dataSet.setFeatureTrees(getFeatureTreeService().list(null,null,null,null,null));
 		}
 		if (jaxbExpConfig.isDoTaxonomicTreeData() == true) {

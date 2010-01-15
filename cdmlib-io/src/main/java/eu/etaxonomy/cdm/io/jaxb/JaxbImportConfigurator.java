@@ -15,6 +15,7 @@ import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
+import eu.etaxonomy.cdm.io.common.IImportConfigurator.DO_REFERENCES;
 import eu.etaxonomy.cdm.model.reference.IDatabase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
@@ -26,10 +27,10 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 public class JaxbImportConfigurator extends ImportConfiguratorBase implements IImportConfigurator {
 
 	private static final Logger logger = Logger.getLogger(JaxbImportConfigurator.class);
-
+		
 	private int maxRows = 0;
-
-//	private boolean doAgents = true;
+	
+	
 	private boolean doAgentData = true;
 	private boolean doLanguageData = true;
 	private boolean doFeatureData = true;
@@ -50,6 +51,7 @@ public class JaxbImportConfigurator extends ImportConfiguratorBase implements II
 	
 	
 	
+	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#getNewState()
 	 */
@@ -64,12 +66,13 @@ public class JaxbImportConfigurator extends ImportConfiguratorBase implements II
 	public void setMaxRows(int maxRows) {
 		this.maxRows = maxRows;
 	}
-
-
+	
+	
+	
 	public boolean isDoAgentData() {
 		return doAgentData;
 	}
-
+	
 	public void setDoAgentData(boolean doAgentData) {
 		this.doAgentData = doAgentData;
 	}
@@ -170,7 +173,7 @@ public class JaxbImportConfigurator extends ImportConfiguratorBase implements II
 		super();
 		setSource(url);
 		setDestination(destination);
-		setDbSchemaValidation(DbSchemaValidation.VALIDATE);
+		setDbSchemaValidation(DbSchemaValidation.CREATE);
 	}
 
 

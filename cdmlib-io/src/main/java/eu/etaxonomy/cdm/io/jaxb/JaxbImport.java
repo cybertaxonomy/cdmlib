@@ -135,12 +135,7 @@ public class JaxbImport extends CdmIoBase<JaxbImportState> implements ICdmIO<Jax
 		// For example, if taxa are saved all other data referenced by those taxa, such as synonyms, 
 		// are automatically saved as well.
 
-		if ((jaxbImpConfig.isDoTermVocabularies() == true) 
-				&& (termVocabularies = dataSet.getTermVocabularies()).size() > 0) {
-			//txStatus = startTransaction();
-			ret &= saveTermVocabularies(termVocabularies);
-			
-		}
+		
 		
 		if ((jaxbImpConfig.isDoTerms() == true)
 				&& (terms = dataSet.getTerms()).size() > 0) {
@@ -148,6 +143,12 @@ public class JaxbImport extends CdmIoBase<JaxbImportState> implements ICdmIO<Jax
 			ret &= saveTerms(terms);
 			
 			//commitTransaction(txStatus);
+		}
+		if ((jaxbImpConfig.isDoTermVocabularies() == true) 
+				&& (termVocabularies = dataSet.getTermVocabularies()).size() > 0) {
+			//txStatus = startTransaction();
+			ret &= saveTermVocabularies(termVocabularies);
+			
 		}
 		
 		// TODO: Have separate data save methods
