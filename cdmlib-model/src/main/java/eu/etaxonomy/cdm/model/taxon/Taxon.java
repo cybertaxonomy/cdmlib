@@ -135,8 +135,8 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 	
 	@XmlElementWrapper(name = "taxonNodes")
 	@XmlElement(name = "taxonNode")
-    //@XmlIDREF
-    //@XmlSchemaType(name = "IDREF")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
     @OneToMany(mappedBy="taxon", fetch=FetchType.LAZY)
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
 	private Set<TaxonNode> taxonNodes = new HashSet<TaxonNode>();
