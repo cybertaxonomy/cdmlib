@@ -34,7 +34,6 @@
         <property name="password" value="123"/>
         <property name="url" value="jdbc:mysql://192.168.1.100/diptera"/>
     </bean>
-		
 		<bean id="palmae"  lazy-init="true" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
         <property name="driverClass" value="com.mysql.jdbc.Driver"/>
         <property name="username" value="user"/>
