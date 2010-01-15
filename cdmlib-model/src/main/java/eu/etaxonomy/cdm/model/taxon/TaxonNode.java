@@ -74,7 +74,7 @@ public class TaxonNode  extends AnnotatableEntity implements ITreeNode{
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE})
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
 	private TaxonNode parent;
 	
 	
