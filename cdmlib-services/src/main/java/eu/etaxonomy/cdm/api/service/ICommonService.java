@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import eu.etaxonomy.cdm.database.DatabaseSchemaMismatchException;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.CdmMetaData;
 import eu.etaxonomy.cdm.model.common.ISourceable;
@@ -88,7 +89,6 @@ public interface ICommonService extends IService<OriginalSourceBase>{
 	
 	public List getHqlResult(String hqlQuery);
 
-
-
+	public boolean isDatabaseSchemaCompatible();
 
 }
