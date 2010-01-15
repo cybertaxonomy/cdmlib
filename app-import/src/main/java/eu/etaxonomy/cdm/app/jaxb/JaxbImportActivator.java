@@ -33,13 +33,13 @@ import eu.etaxonomy.cdm.io.jaxb.JaxbImportConfigurator;
 public class JaxbImportActivator {
 
 	/* SerializeFrom DB **/
-	private static final ICdmDataSource cdmSource = CdmDestinations.localH2Diptera();
-	private static final ICdmDataSource cdmDestination = CdmDestinations.cdm_test_jaxb();
+	//private static final ICdmDataSource cdmSource = CdmDestinations.localH2Diptera();
+	private static final ICdmDataSource cdmDestination = CdmDestinations.localH2Diptera();
 	
 	// Import:
 	private static String importFileName = 
 		//"C:\\workspace\\cdmlib_2.2\\cdmlib-io\\src\\test\\resources\\eu\\etaxonomy\\cdm\\io\\jaxb\\export_test_app_import.xml";
-		"file:/C:/Dokumente%20und%20Einstellungen/k.luther/Eigene%20Dateien/Neuer%20Ordner/cdmlib/cdmlib-io/target/classes/schema/cdm/export_test_app_import.xml";
+		"file:/C:/Dokumente%20und%20Einstellungen/k.luther/Eigene%20Dateien/Neuer%20Ordner/Neuer%20Ordner%20(2)/cdmlib/cdmlib-io/target/classes/schema/cdm/export_test_app_import.xml";
 	
 
 	/** NUMBER_ROWS_TO_RETRIEVE = 0 is the default case to retrieve all rows.
@@ -110,12 +110,12 @@ public class JaxbImportActivator {
 	public static void main(String[] args) {
 
 		JaxbImportActivator sc = new JaxbImportActivator();
-		ICdmDataSource source = CdmDestinations.chooseDestination(args) != null ? CdmDestinations.chooseDestination(args) : cdmSource;
+		ICdmDataSource destination = CdmDestinations.chooseDestination(args) != null ? CdmDestinations.chooseDestination(args) : cdmDestination;
 		String file = chooseFile(args)!= null ? chooseFile(args) : importFileName;
 		CdmApplicationController appCtr = null;
-		appCtr = sc.initDb(source);
+		appCtr = sc.initDb(destination);
 				
-		sc.invokeImport(file, source);
+		sc.invokeImport(file, destination);
 	}
 
 }
