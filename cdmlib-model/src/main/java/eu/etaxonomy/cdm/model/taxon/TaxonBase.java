@@ -42,6 +42,8 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 import eu.etaxonomy.cdm.validation.Level2;
+import eu.etaxonomy.cdm.validation.annotation.CorrectEpithetsForRank;
+import eu.etaxonomy.cdm.validation.annotation.TaxonNameCannotBeAcceptedAndSynonym;
 
 /**
  * The upmost (abstract) class for the use of a {@link eu.etaxonomy.cdm.model.name.TaxonNameBase taxon name} in a {@link eu.etaxonomy.cdm.model.reference.ReferenceBase reference}
@@ -72,7 +74,7 @@ import eu.etaxonomy.cdm.validation.Level2;
 @Entity
 @Audited
 @Table(appliesTo="TaxonBase", indexes = { @Index(name = "taxonBaseTitleCacheIndex", columnNames = { "titleCache" }) })
-
+@TaxonNameCannotBeAcceptedAndSynonym(groups = Level2.class)
 public abstract class TaxonBase<S extends IIdentifiableEntityCacheStrategy> extends IdentifiableEntity<S> {
 	private static final long serialVersionUID = -3589185949928938529L;
 	private static final Logger logger = Logger.getLogger(TaxonBase.class);
@@ -193,6 +195,9 @@ public abstract class TaxonBase<S extends IIdentifiableEntityCacheStrategy> exte
 	 * @see #getName
 	 */
 	public void setName(TaxonNameBase name) {
+		if(name != null) {
+			name.getTaxonBases().add(this);
+		}
 		this.name = name;
 	}
 	

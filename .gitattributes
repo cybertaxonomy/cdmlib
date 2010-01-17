@@ -1619,10 +1619,12 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/annotation/CorrectEpithet
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/annotation/MustHaveAuthority.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/annotation/NoDuplicateNames.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/annotation/NullOrNotEmpty.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/annotation/TaxonNameCannotBeAcceptedAndSynonym.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/constraint/CorrectEpithetsForRankValidator.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/constraint/MustHaveAuthorityValidator.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/constraint/NullOrNotEmptyValidator.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/constraint/StubValidator.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/constraint/TaxonNameCannotBeAcceptedAndSynonymValidator.java -text
 cdmlib-model/src/main/resources/ValidationMessages.properties -text
 cdmlib-model/src/main/resources/log4j.properties -text
 cdmlib-model/src/main/resources/terms/AbsenceTerm.csv -text

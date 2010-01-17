@@ -13,6 +13,8 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -30,6 +32,7 @@ import eu.etaxonomy.cdm.model.common.IRelated;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.validation.Level2;
 
 /**
  * The class representing the assignation of a {@link Synonym synonym} to an
@@ -75,6 +78,8 @@ public class SynonymRelationship extends RelationshipBase<Synonym, Taxon, Synony
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch=FetchType.EAGER)
     @Cascade(CascadeType.SAVE_UPDATE)
+    @NotNull(groups = Level2.class)
+    @Valid
 	private Synonym relatedFrom;
 
 	@XmlElement(name = "RelatedTo")
@@ -82,6 +87,8 @@ public class SynonymRelationship extends RelationshipBase<Synonym, Taxon, Synony
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch=FetchType.EAGER)
     @Cascade(CascadeType.SAVE_UPDATE)
+    @NotNull(groups = Level2.class)
+    @Valid
 	private Taxon relatedTo;
 
 	@XmlElement(name = "Type")
