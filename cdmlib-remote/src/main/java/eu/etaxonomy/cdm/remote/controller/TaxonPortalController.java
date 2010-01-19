@@ -711,27 +711,31 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 			Pattern mimeTypePattern = Pattern.compile(mimeTypeRegex);
 			int representationCnt = 0;
 			for (MediaRepresentation representation : media.getRepresentations()) {
-				Matcher mather = mimeTypePattern.matcher(representation.getMimeType());
-				if (mather.matches()) {
-					int dwa = 0;
-
-					/* TODO the quality filter part is being skipped 
-					 * // look for representation with the best matching parts
-					for (MediaRepresentationPart part : representation.getParts()) {
-						if (part instanceof ImageFile) {
-							ImageFile image = (ImageFile) part;
-							int dw = image.getWidth() * image.getHeight() - height * widthOrDuration;
-							if (dw < 0) {
-								dw *= -1;
+				int dwa = 0;
+				if(representation.getMimeType() == null){
+					prefRepr.put((dwa + representationCnt++) + "_NA", representation);
+				} else {
+					Matcher mather = mimeTypePattern.matcher(representation.getMimeType());
+					if (mather.matches()) {
+	
+						/* TODO the quality filter part is being skipped 
+						 * // look for representation with the best matching parts
+						for (MediaRepresentationPart part : representation.getParts()) {
+							if (part instanceof ImageFile) {
+								ImageFile image = (ImageFile) part;
+								int dw = image.getWidth() * image.getHeight() - height * widthOrDuration;
+								if (dw < 0) {
+									dw *= -1;
+								}
+								dwa += dw;
 							}
-							dwa += dw;
-						}
-						dwa = (representation.getParts().size() > 0 ? dwa / representation.getParts().size() : 0);
-					}*/
-					prefRepr.put((dwa + representationCnt++) + '_' + representation.getMimeType(), representation);
-										
-					// preferred mime type found => end loop
-					break;
+							dwa = (representation.getParts().size() > 0 ? dwa / representation.getParts().size() : 0);
+						}*/
+						prefRepr.put((dwa + representationCnt++) + '_' + representation.getMimeType(), representation);
+											
+						// preferred mime type found => end loop
+						break;
+					}
 				}
 			}
 		}
