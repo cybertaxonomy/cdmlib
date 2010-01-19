@@ -18,6 +18,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import eu.etaxonomy.cdm.model.common.TermVocabulary;
+import eu.etaxonomy.cdm.model.common.VocabularyEnum;
+import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.FeatureNode;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.persistence.dao.description.IFeatureNodeDao;
@@ -28,6 +31,9 @@ import eu.etaxonomy.cdm.persistence.dao.description.IFeatureTreeDao;
 public class FeatureTreeServiceImpl extends IdentifiableServiceBase<FeatureTree, IFeatureTreeDao> implements IFeatureTreeService {
 
 	private IFeatureNodeDao featureNodeDao;
+	
+	@Autowired
+	private IVocabularyService vocabularyService;
 	
 	@Autowired
 	protected void setDao(IFeatureTreeDao dao) {
@@ -62,6 +68,32 @@ public class FeatureTreeServiceImpl extends IdentifiableServiceBase<FeatureTree,
 		
 		FeatureTree featureTree = load(uuid, rootPaths);
 		dao.loadNodes(featureTree.getRoot(),nodePaths);
+		return featureTree;
+	}
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.service.ServiceBase#load(java.util.UUID, java.util.List)
+	 */
+	@Override
+	public FeatureTree load(UUID uuid, List<String> propertyPaths) {
+		if (dao.count() == 0){
+			return createDefaultFeatureTree();
+		}
+		return super.load(uuid, propertyPaths);
+	}
+	
+	/**
+	 * 
+	 */
+	private FeatureTree createDefaultFeatureTree() {
+		
+		TermVocabulary featureVocabulary = vocabularyService.getVocabulary(VocabularyEnum.Feature);
+		
+		List<Feature> featureList = new ArrayList<Feature>(featureVocabulary.getTerms());
+				
+		FeatureTree featureTree = FeatureTree.NewInstance(DefaultFeatureTreeUuid);
+		save(featureTree);
+		logger.info("Default feature tree created.");
 		return featureTree;
 	}
 }

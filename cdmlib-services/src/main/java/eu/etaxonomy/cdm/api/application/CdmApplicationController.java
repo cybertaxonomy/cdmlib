@@ -11,6 +11,7 @@
 
 package eu.etaxonomy.cdm.api.application;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -55,8 +56,12 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.CdmMetaData;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
+import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.User;
+import eu.etaxonomy.cdm.model.common.VocabularyEnum;
 import eu.etaxonomy.cdm.model.common.init.TermNotFoundException;
+import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.description.FeatureTree;
 
 
 /**
@@ -188,18 +193,26 @@ public class CdmApplicationController {
 		//initialize user and metaData for new databases
 		int userCount = getUserService().count(User.class);
 		if (userCount == 0 ){
-			User firstUser = User.NewInstance("admin", "0000");
-			getUserService().save(firstUser);
-			logger.warn("Created admin user");
-			//write meta data
+			createAdminUser();
 		}
 		int metaDataCount = getCommonService().getCdmMetaData().size();
 		if (metaDataCount == 0){
-			List<CdmMetaData> metaData = CdmMetaData.propertyList();
-			getCommonService().saveAllMetaData(metaData);
+			createMetadata();
 		}
 		
 		return true;
+	}
+
+	private void createAdminUser(){
+		User firstUser = User.NewInstance("admin", "0000");
+		getUserService().save(firstUser);
+		logger.info("Admin user created.");
+	}
+	
+	private void createMetadata(){
+		List<CdmMetaData> metaData = CdmMetaData.propertyList();
+		getCommonService().saveAllMetaData(metaData);
+		logger.info("Metadata created.");
 	}
 	
 	
