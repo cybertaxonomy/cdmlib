@@ -27,7 +27,7 @@ import eu.etaxonomy.cdm.persistence.dao.description.IFeatureNodeDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IFeatureTreeDao;
 
 @Service
-@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+@Transactional(propagation = Propagation.SUPPORTS, readOnly = false)
 public class FeatureTreeServiceImpl extends IdentifiableServiceBase<FeatureTree, IFeatureTreeDao> implements IFeatureTreeService {
 
 	private IFeatureNodeDao featureNodeDao;
@@ -91,7 +91,8 @@ public class FeatureTreeServiceImpl extends IdentifiableServiceBase<FeatureTree,
 		
 		List<Feature> featureList = new ArrayList<Feature>(featureVocabulary.getTerms());
 				
-		FeatureTree featureTree = FeatureTree.NewInstance(DefaultFeatureTreeUuid);
+		FeatureTree featureTree = FeatureTree.NewInstance(featureList);
+		featureTree.setUuid(DefaultFeatureTreeUuid);
 		save(featureTree);
 		logger.info("Default feature tree created.");
 		return featureTree;
