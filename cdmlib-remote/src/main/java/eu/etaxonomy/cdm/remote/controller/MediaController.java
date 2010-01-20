@@ -69,7 +69,7 @@ public class MediaController extends AnnotatableController<Media, IMediaService>
 		Media media = getCdmBase(request, response, MEDIA_INIT_STRATEGY, Media.class);
 		
 		Set<MediaRepresentation> representations = media.getRepresentations();
-		//hole die erste Representation und davon die Metadaten 
+		//get first representation and retrieve the according metadata
 
 		Object[] repArray = representations.toArray();
 		Object mediaRep = repArray[0];
@@ -78,7 +78,7 @@ public class MediaController extends AnnotatableController<Media, IMediaService>
 			if (mediaRep instanceof MediaRepresentation){
 				MediaRepresentation medRep = (MediaRepresentation) mediaRep;
 				String uriString = medRep.getParts().get(0).getUri();
-				result = service.getImageMetaData(new URI(uriString), 300000);
+				result = service.getImageMetaData(new URI(uriString), 3000);
 				mv.addObject(result);
 			}
 		} catch (URISyntaxException e) {
