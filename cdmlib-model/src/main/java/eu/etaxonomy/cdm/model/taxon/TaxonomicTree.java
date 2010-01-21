@@ -11,10 +11,8 @@
 package eu.etaxonomy.cdm.model.taxon;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import javax.persistence.Entity;
@@ -32,7 +30,6 @@ import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
@@ -40,13 +37,10 @@ import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.IndexedEmbedded;
 
-import eu.etaxonomy.cdm.jaxb.MultilanguageTextAdapter;
 import eu.etaxonomy.cdm.model.common.IReferencedEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
-import eu.etaxonomy.cdm.model.common.LanguageStringBase;
-import eu.etaxonomy.cdm.model.common.MultilanguageText;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
@@ -144,12 +138,14 @@ public class TaxonomicTree extends IdentifiableEntity implements IReferencedEnti
 	 */
 	public TaxonNode addChildNode(TaxonNode childNode, ReferenceBase citation,
 			String microCitation, Synonym synonymToBeUsed) {
+		
 		rootNodes.add(childNode);
 		childNode.setParent(null);
 		childNode.setTaxonomicTree(this);
 		childNode.setReference(citation);
 		childNode.setMicroReference(microCitation);
 		childNode.setSynonymToBeUsed(synonymToBeUsed);
+		
 		return childNode;
 	}
 
@@ -518,5 +514,12 @@ public class TaxonomicTree extends IdentifiableEntity implements IReferencedEnti
 			}
 		}
 		return rootNodes;
+	}
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.taxon.ITreeNode#hasChildNodes()
+	 */
+	public boolean hasChildNodes() {
+		return getRootNodes().size() > 0;
 	}
 }

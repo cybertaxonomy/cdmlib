@@ -44,6 +44,13 @@ public interface ITreeNode extends ICdmBase {
 	public TaxonNode addChildTaxon(Taxon taxon, ReferenceBase citation, String microCitation, Synonym synonymToBeUsed);
 	
 	/**
+	 * Whether this TreeNode has child nodes attached
+	 * 
+	 * @return true if this node has children
+	 */
+	public boolean hasChildNodes();
+	
+	/**
 	 * This recursively removes all child nodes from this node and from this taxonomic view.
 	 * 
 	 * TODO remove orphan nodes completely 

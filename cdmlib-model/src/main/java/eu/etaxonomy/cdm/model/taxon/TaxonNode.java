@@ -216,25 +216,27 @@ public class TaxonNode  extends AnnotatableEntity implements ITreeNode{
 	 * @return the child node in the state of having a new parent
 	 */
 	public TaxonNode addChildNode(TaxonNode childNode, ReferenceBase reference, String microReference, Synonym synonymToBeUsed){
+		ITreeNode parentNode = childNode.getParent();
+		
 		// check if this node is a descendant of the childNode 
-		if(childNode.getParent() != this && childNode.isAncestor(this)){
+		if(parentNode != this && childNode.isAncestor(this)){
 			throw new IllegalAncestryException("New parent node is a descendant of the node to be moved.");
 		}
 
-		TaxonomicTree oldChildTree = childNode.getTaxonomicTree();
+		TaxonomicTree oldTree = childNode.getTaxonomicTree();
 		
 		// remove this childNode from previous parents and trees
-		if(childNode.getParent() instanceof TaxonNode){  //child is already child
-			((TaxonNode) childNode.getParent()).removeChildNode(childNode);
-		}else if(oldChildTree != null){     //child is root in old tree
-			childNode.getTaxonomicTree().removeChildNode(childNode);
+		if(parentNode instanceof TaxonNode){  //child is already child
+			((TaxonNode) parentNode).removeChildNode(childNode);
+		}else if(oldTree != null){     //child is root in old tree
+			oldTree.removeChildNode(childNode);
 		}
 		
-		TaxonomicTree parentTree = this.getTaxonomicTree();
-		if (oldChildTree != null && ! oldChildTree.equals(parentTree)){  //oldChildTree is null if the node was just created new
-			childNode.setTaxonomicTreeRecursively(parentTree);
+		TaxonomicTree newTree = this.getTaxonomicTree();
+		if (oldTree == null || (oldTree != null && ! oldTree.equals(newTree))){  //oldTree is null if the node was just created anew
+			childNode.setTaxonomicTreeRecursively(newTree);
 		}else{
-			childNode.setTaxonomicTree(parentTree);
+			childNode.setTaxonomicTree(newTree);
 		}
 		
 		childNode.setParent(this);
@@ -367,6 +369,7 @@ public class TaxonNode  extends AnnotatableEntity implements ITreeNode{
 	protected void setTaxonomicTree(TaxonomicTree taxonomicTree) {
 		this.taxonomicTree = taxonomicTree;
 	}
+	
 	public Set<TaxonNode> getChildNodes() {
 		return childNodes;
 	}
