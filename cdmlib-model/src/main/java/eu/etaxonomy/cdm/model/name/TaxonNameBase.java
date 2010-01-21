@@ -1474,6 +1474,25 @@ public void addRelationshipToName(TaxonNameBase toName, NameRelationshipType typ
 		}
 		return getRank().isInfraGeneric();
 	}
+	
+	/**
+	 * Returns the boolean value indicating whether the taxonomic {@link Rank rank} of <i>this</i>
+	 * taxon name is higher than the species rank (true) or not (false).
+	 * Returns false if rank is null.
+	 * 
+	 * @see  #isGenus()
+	 * @see  #isInfraGeneric()
+	 * @see  #isSpecies()
+	 * @see  #isInfraSpecific()
+	 */
+	@Transient
+	public boolean isSupraSpecific(){
+		if (rank == null) {
+			return false;
+		}
+		return getRank().isHigher(Rank.SPECIES());
+	}
+	
 	/**
 	 * Returns the boolean value indicating whether the taxonomic {@link Rank rank} of <i>this</i>
 	 * taxon name is the species rank (true) or not (false). Non viral names
@@ -1544,4 +1563,110 @@ public void addRelationshipToName(TaxonNameBase toName, NameRelationshipType typ
 	 */
 //	@Override
 //	public abstract String generateTitle();
+	
+	/**
+	 * Creates a basionym relationship between this name and
+	 * 	each name in its homotypic group.
+	 * 
+	 * @param basionymName
+	 */
+	@Transient
+	public void setAsGroupsBasionym() {
+
+		
+		HomotypicalGroup homotypicalGroup = this.getHomotypicalGroup();
+		
+		if (homotypicalGroup == null) {
+			return;
+		}
+		
+		Set<NameRelationship> relations = new HashSet<NameRelationship>();
+		Set<NameRelationship> removeRelations = new HashSet<NameRelationship>();
+		
+		for(TaxonNameBase<?, ?> typifiedName : homotypicalGroup.getTypifiedNames()){
+			
+			Set<NameRelationship> nameRelations = typifiedName.getRelationsFromThisName();
+			
+			for(NameRelationship nameRelation : nameRelations){
+				relations.add(nameRelation);
+			}
+		}
+		
+		for (NameRelationship relation : relations) {
+			
+			// If this is a basionym relation, and toName is in the homotypical group,
+			//	remove the relationship.
+			if (relation.getType().equals(NameRelationshipType.BASIONYM()) &&
+					relation.getToName().getHomotypicalGroup().equals(homotypicalGroup)) {
+				removeRelations.add(relation);
+			}
+		}
+		
+		// Removing relations from a set through which we are iterating causes a 
+		//	ConcurrentModificationException. Therefore, we delete the targeted
+		//	relations in a second step.
+		for (NameRelationship relation : removeRelations) {
+			this.removeNameRelationship(relation);
+		}
+		
+
+		for (TaxonNameBase<?, ?> name : homotypicalGroup.getTypifiedNames()) {
+			if (!name.equals(this)) {
+				
+				// First check whether the relationship already exists
+				if (!this.isBasionymFor(name)) {
+					
+					// Then create it
+					name.addRelationshipFromName(this, 
+							NameRelationshipType.BASIONYM(), null);
+				}
+			}
+		}
+	}
+	
+	/**
+	 * Removes basionym relationship between this name and
+	 * 	each name in its homotypic group.
+	 * 
+	 * @param basionymName
+	 */
+	@Transient
+	public void removeAsGroupsBasionym() {
+
+		HomotypicalGroup homotypicalGroup = this.getHomotypicalGroup();
+		
+		if (homotypicalGroup == null) {
+			return;
+		}
+		
+		Set<NameRelationship> relations = new HashSet<NameRelationship>();
+		Set<NameRelationship> removeRelations = new HashSet<NameRelationship>();
+		
+		for(TaxonNameBase<?, ?> typifiedName : homotypicalGroup.getTypifiedNames()){
+			
+			Set<NameRelationship> nameRelations = typifiedName.getRelationsFromThisName();
+			
+			for(NameRelationship nameRelation : nameRelations){
+				relations.add(nameRelation);
+			}
+		}
+		
+		for (NameRelationship relation : relations) {
+			
+			// If this is a basionym relation, and toName is in the homotypical group,
+			//	and fromName is basionymName, remove the relationship.
+			if (relation.getType().equals(NameRelationshipType.BASIONYM()) &&
+					relation.getFromName().equals(this) &&
+					relation.getToName().getHomotypicalGroup().equals(homotypicalGroup)) {
+				removeRelations.add(relation);
+			}
+		}
+		
+		// Removing relations from a set through which we are iterating causes a 
+		//	ConcurrentModificationException. Therefore, we delete the targeted
+		//	relations in a second step.
+		for (NameRelationship relation : removeRelations) {
+			this.removeNameRelationship(relation);
+		}
+	}
 }
