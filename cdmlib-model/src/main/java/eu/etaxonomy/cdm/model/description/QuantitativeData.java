@@ -30,6 +30,9 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
+import org.hibernate.validator.constraints.NotEmpty;
+
+import eu.etaxonomy.cdm.validation.Level2;
 
 /**
  * This class represents information pieces expressed in numerical data
@@ -80,6 +83,7 @@ public class QuantitativeData extends DescriptionElementBase {
 	@XmlElement(name = "StatisticalValue")
 	@OneToMany(fetch = FetchType.LAZY)
 	@Cascade({ CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE,CascadeType.DELETE_ORPHAN })
+	@NotEmpty(groups = Level2.class)
 	private Set<StatisticalMeasurementValue> statisticalValues = new HashSet<StatisticalMeasurementValue>();
 	
 	/** 
@@ -104,6 +108,9 @@ public class QuantitativeData extends DescriptionElementBase {
 		return statisticalValues;
 	}
 
+	protected void setStatisticalValues(Set<StatisticalMeasurementValue> statisticalValues) {
+		this.statisticalValues = statisticalValues;
+	}
 	/**
 	 * Adds a {@link StatisticalMeasurementValue statistical measurement value} to the set of
 	 * {@link #getStatisticalValues() statistical measurement values} describing

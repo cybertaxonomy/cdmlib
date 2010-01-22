@@ -860,7 +860,10 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 	
 //	@Transient
 	public String getTitleCache(){
-		updateAuthorshipCache();
+		if(!protectedTitleCache) {
+		    updateAuthorshipCache();
+		}
+		
 		return super.getTitleCache();
 	}
 

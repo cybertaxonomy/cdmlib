@@ -110,7 +110,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 	
 	//if true titleCache will not be automatically generated/updated
 	@XmlElement(name = "ProtectedTitleCache")
-	private boolean protectedTitleCache;
+	protected boolean protectedTitleCache;
 	
     @XmlElementWrapper(name = "Rights")
     @XmlElement(name = "Rights")

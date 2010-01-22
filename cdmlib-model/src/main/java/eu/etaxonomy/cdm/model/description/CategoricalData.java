@@ -16,6 +16,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -29,6 +30,9 @@ import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
+import org.hibernate.validator.constraints.NotEmpty;
+
+import eu.etaxonomy.cdm.validation.Level2;
 
 /**
  * This class represents information pieces expressed in categorical type of
@@ -73,6 +77,7 @@ public class CategoricalData extends DescriptionElementBase {
 	@ManyToMany(fetch = FetchType.LAZY)
 	@Cascade({ CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE,CascadeType.DELETE_ORPHAN })
 	@IndexedEmbedded(depth = 2)
+	@NotEmpty(groups = Level2.class)
 	private List<StateData> states = new ArrayList<StateData>();
 
 	
@@ -98,6 +103,10 @@ public class CategoricalData extends DescriptionElementBase {
 	
 	public List<StateData> getStates(){
 		return this.states;
+	}
+	
+	protected void setStates(List<StateData> states){
+		this.states = states;
 	}
 
 	/**
