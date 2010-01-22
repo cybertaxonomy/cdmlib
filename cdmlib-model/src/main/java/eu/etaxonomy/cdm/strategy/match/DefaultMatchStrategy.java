@@ -106,7 +106,7 @@ public class DefaultMatchStrategy extends StrategyBase implements IMatchStrategy
 	 */
 	public MatchMode getMatchMode(String propertyName) {
 		FieldMatcher fieldMatcher = matching.getFieldMatcher(propertyName);
-		return fieldMatcher.getMatchMode();
+		return fieldMatcher == null ? defaultMatchMode : fieldMatcher.getMatchMode();
 	}
 
 	/* (non-Javadoc)
