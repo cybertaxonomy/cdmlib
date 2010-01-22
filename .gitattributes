@@ -2309,6 +2309,7 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/ITermService.java -te
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IUserService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IVersionableService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IVocabularyService.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IWorkingSetService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IdentifiableServiceBase.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IdentificationKeyServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/LocationServiceImpl.java -text
@@ -2325,6 +2326,7 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/TermServiceImpl.java 
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/UserService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/VersionableServiceBase.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/VocabularyServiceImpl.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/WorkingSetService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/IIdentifiableEntityServiceConfigurator.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/INameServiceConfigurator.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/ITaxonServiceConfigurator.java -text
