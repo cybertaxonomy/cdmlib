@@ -1,0 +1,56 @@
+<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>Manual to the palms of Ecuador</mods:title>
+</mods:titleInfo>
+<mods:name type="personal">
+<mods:namePart type="family">Borchsenius</mods:namePart>
+<mods:namePart type="given">F.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:name type="personal">
+<mods:namePart type="family">Pedersen</mods:namePart>
+<mods:namePart type="given">H.B.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:name type="personal">
+<mods:namePart type="family">Balslev</mods:namePart>
+<mods:namePart type="given">H.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>AAU Reports 37. Department of Systematic Botany, University of Aarhus, Denmark in collaboration with Pontificia Universidad Cat�lica del Ecuador</mods:publisher>
+<mods:dateIssued>1998</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Astrocaryum urostachys</name>
+<author>Burret</author>
+<citation>Repert. Spec. Nov. Regni Veg. 35: 151 (1934)</citation>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="description"><p>Understorey or subcanopy palm.  Stem short, or rarely to 10 m tall, and ca. 20 cm in diameter.  Leaves spreading, usually with  leaf axis twisting so that the distal part of the blade is held vertically, to 8 m long; pinnae to 130 on each side, regularly inserted in one plane, straight, grey or brownish white below.  Inflorescences erect, to 150 cm long; branches to 250, to 15 cm long, each with one solitary ca. 15 mm long female flower at base.  Male flowers 3-4 mm long.  Fruits 6-9 cm long, more or less pear shaped, covered with brown to black bristles, distally with a ca. 1 cm long beak.</p></div>
+<div type="distribution"><p>W part of the Amazon basin in Ecuador.  Endemic.  The species appears to have a preference for poorly drained or periodically inundated soils, but can also be found on terra firme.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p>Lower risk/least concern (Borchsenius &amp; Skov 1999).</p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p>This species is sometimes treated as a variety of Astrocaryum murumuru Mart.  If recognised as a separate species it can be regarded as a western segregate characterised by having clustering stems, bristly fruits, and female flowers with non-spiny calyx of approximately the same length as the corolla. Notes for Ecuador. The only Ecuadorian representative of subgenus Monogynanthus.</p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

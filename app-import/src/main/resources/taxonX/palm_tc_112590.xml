@@ -1,0 +1,69 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>A Revision of Linospadix in Australia, with the Description of a New Species</mods:title>
+</mods:titleInfo>
+<mods:name type="personal">
+<mods:namePart type="family">Dowe</mods:namePart>
+<mods:namePart type="given">J.L.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:name type="personal">
+<mods:namePart type="family">Irvine</mods:namePart>
+<mods:namePart type="given">A.K.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Principes 41: 192-197, 211-217</mods:publisher>
+<mods:dateIssued>1997</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Linospadix microcaryus</name>
+<author>(Domin) Burret</author>
+<citation>Notizbl. Bot. Gart. Berlin-Dahlem 12: 331 (1935)</citation>
+<type>Australia, Queensland, Harvey's Ck., 1889; Bailey; s.n.</type>
+<type_loc>Holotype BRI[AQ75431]</type_loc>
+<synonymy>
+<name>Bacularia microcarya</name>
+<author>Domin</author>
+<bibref>Domin, Biblioth. Bot. 85: 499 (1915)</bibref>
+</synonymy>
+<synonymy>
+<name>Bacularia sessilifolia</name>
+<author>Becc.</author>
+<bibref>Becc., Atti Soc. Tosc. Sci. Nat. Pisa, Mem. 44: 133 (1934)</bibref>
+<type>Australia, Queensland, Cook District, Russell R., 1886; Sayer; s.n.</type>
+<type_loc>Type Fl</type_loc>
+</synonymy>
+<synonymy>
+<name>Bacularia sessilifolia var. multisecta</name>
+<author>Becc. ex Martelli</author>
+<bibref>Becc. ex Martelli, Nuovo Giorn. Bot. Ital., n.s., 42: 30 (1935)</bibref>
+<type>Not designated.</type>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p>In reference to the small fruit.</p></div>
+<div type="vernacular"><p></p></div>
+<div type="diagnosis"><p></p></div>
+<div type="description"><p>Clustering small palm. Stems l-6, to 3 m tall, 7-25 mm diam., internodes elongate, green; crown with 5-9 leaves. Leaves 28-70 cm long, irregularly segmented with united pinnae, segments with broad bases, or regularly pinnate; petiole 1-23 cm long, 3-6 mm wide; pinnae 3-23 per leaf, 11-36.5 cm long, by 0.9-7.4 cm wide, semiglossy, lettuce to mid-green above, sometimes dark green when in deep shade, lighter green below; midrib and secondary veins prominent on both surfaces; terminal pair broader than adjacent laterals and often basal pair broader than laterals; lamina, when backlit under 10X magnification, with numerous scattered clear elongate "cells" 0.5-1 mm long linearly parallel to midrib and veins. Inflorescence to B0 cm long. Staminate flowers globose to squatly bullet-shapedi n bud, 2-5 mm long; petals three times the length of sepals, apically rounded, without longitudinal striations, cream/dull yellow at anthesis, not widely opening; stamens 8-12; connective not extending beyond the anther. Fruit globose to turbinate, 5-9 X 5-a mm, yellow-orange, or pink to red at maturity; epicarp smooth. Seed subglobos.</p></div>
+<div type="distribution"><p>From Mts. Spurgeon and Lewis to just south of Innisfail, most common on the lower slopes of Mts. Bartle Frere and Bellenden-Ker, and the Malbon Thompson Range, from near sea level to 1600 m elevation, in rain forest on granite, or occasionally on basalt and metamorphics.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p>Rare (Queensland Herbarium 1994). This designation could be revised to Common: distribution covers an area of approximately 120 km in length and the species is common throughout this range.</p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p>Bailey's 1889 collection from Harvey's Creek (BRI [AQ75431]), cited by Domin in his 1915 protologue, is the type specimen for Linospadix microcarya. This species is the most common Linospadix in the Mt. Bellenden-Ker and Mt. Bartle Frere area. Linospadix microcarya stands apart from the other species due to some unique features: the leaf lamina contains elongate clear "cells" that are visible under 10X magnification, fruit is turbinate (infrequently globose), and staminate flowers do not open widely at anthesis.</p></div>
+<div type="materials_examined"><p>Representative specimens. QUEENSLAND: Cook District, Mt. Spurgeon, Platypus Ck., 20 Sep 1936, White s.n. (BRI, QRS); Summit of Mt. Spurgeon, 1300 m, 12 Aug 1971, Stocker 780 (BRI, QRS); TR 140, Cow LA., 16˚30'5, 145˚10'E, 1150 m, 27 Sep 1973, Irvine 654 (QRS); Mt. Lewis, SFR 143, North Mary LA., 1000 m, 16˚30'S, 145˚16'E, 4 Oct 1973, Irvine 662 (QRS); Mt. Lewis, 15 km N of Rex Hwy., 16˚30'S, 145˚15'E, 900 m alt., 13 Feb 1996, Dowe 0260 (BRI,FTG); Mt. Lewis, 9 km from Rex Hwy., on Mt. Lewis Rd., 16˚35'S, 145˚16'E,350 m alt., 5 Apr 1996, Dowe 0319 (BRI, FTG); Harvey's Ck., l7˚15'S, 145˚55'E,,100 m, 3l Oct 1974, Irvine 1033 (BRI, QRS); Boonjee SFR 1230, 17˚25'S, 145˚45'E, 720 m, 23 Jan 1973, Irvine 445 (QRS). North Kennedy, head of Culla Ck., 1.4 km S of Cooroo Peak, 14 km NW of South Johnstone, l7˚3l'S, 145˚53'E, 60 m alt., Oct l9BB, JessupG JM2559, Guymer &amp; McDonald (BRI). </p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

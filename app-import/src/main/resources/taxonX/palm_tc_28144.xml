@@ -1,0 +1,48 @@
+<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>Re-evaluation of the Genus Butia With a Description of a New Species</mods:title>
+</mods:titleInfo>
+<mods:name type="personal">
+<mods:namePart type="family">Glassman</mods:namePart>
+<mods:namePart type="given">S.F.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Principes 23: 65-79</mods:publisher>
+<mods:dateIssued>1979</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Butia archeri</name>
+<author>(Glassman) Glassman</author>
+<citation>Principes 23: 70 (1979)</citation>
+<type>Brazil, Minas Gerais, near Lavras; W. A. Archer; 4048</type>
+<type_loc>Holotype A</type_loc>
+<synonymy>
+<name>Syagrus archeri</name>
+<author>Glassman</author>
+<bibref>Glassman, Fieldiana, Bot. 31: 235 (1967).</bibref>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>None recorded.</p></div>
+<div type="diagnosis"><p></p></div>
+<div type="description"><p>Acaulescent or sometimes with a short trunk up to almost I m high; sheathing leaf base 13-15 cm long; petiole 8-9 cm long and I cm wide, margins not spiny, merely fibrous; rachis of leaf 66-72 cm long; pinnae 28-44 on each side, regularly arranged, middle ones 36-40 cm long, 0.8-1.3 cm wide, mostly with acuminate, asymmetrical tips; expanded part of spathe 30-39 cm long, 3 cm wide, smooth or striate, glaucous, peduncular part 30 cm long; branched part of spadix 20-30 cm long, rachillae 15-31, each 10-19 cm long, peduncular part of spadix 36 cm long; pistillate flowers rounded or ovoid, 4-7 mm long, 4-6 mm in diam., sepals and petals with obtuse tips; staminate flowers 5-7 mm long on lower part of rachilla, 3-5 mm long on upper part; mature fruit 1.82.0 cm long, 1.0-1.4 cm in diam., short. beaked, persistent perianth 8-10 mm high, endocarp woody, 1-1.5 mm thick, locules 1-2; seed (when single) irregularly globose, 7-9 mm long and 7-9 mm in diam., or when two are present flattened laterally, 10 mm long, 6 mm in diam. </p></div>
+<div type="distribution"><p>Native to Brazil in the states of Minas Gerais, Sao Paulo, and Goias, in grassland pastures and cerrados.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p>This taxon can be easily distinguished from other acaulescent species of Butia (e.g., B. arenicola and B. paraguayensis) by its smooth rather than dentate petiole margins; and from B. microspadix by the more or less glabrous rather than densely tomentose spathes. </p></div>
+<div type="materials_examined"><p>BRAZIL. MINAS GERAIS, near Lavras, Archer 4048 (A, holotype; BH, MO, NY, US, isotypes); 16 km N. of Lavras, campo natural, Glassman &amp; Gomes 8018, 8019, 8020, 8021, 8022, 8023, 8024 (CHI); 10 km N. of Diamantina, associated with Allagoptera, in campo rupestre, common, about 50 plants seen, Glassman 13001 (CHI). SAO PAULO, Casa Branca, O. Handro 313 (SP). GOAlS, Serro do Caiapó, 35 km S. of Caiaponia, H. S. Irwin &amp; T. R. Soderstrom 7750 (BH, NY, US); 9.5 km S.E. of center of Brasilia, D. F., in tree and scrub woodland cerrado, G. Eiten 13062 (CHI). </p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

@@ -1,0 +1,83 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>A monograph of Cyrtostachys (Arecaceae)</mods:title>
+</mods:titleInfo>
+<mods:name  type="personal">
+<mods:namePart type="family">Heatubun</mods:namePart>
+<mods:namePart type="given">Ch.D.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:name  type="personal">
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:name  type="personal">
+<mods:namePart type="family">Mogea</mods:namePart>
+<mods:namePart type="given">J.P.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:name  type="personal">
+<mods:namePart type="family">Harley</mods:namePart>
+<mods:namePart type="given">M.M.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:name  type="personal">
+<mods:namePart type="family">Tjitrosoedirdjo</mods:namePart>
+<mods:namePart type="given">S.S.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:name  type="personal">
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Kew Bulletin 64: 67-94</mods:publisher>
+<mods:dateIssued>2009</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Cyrtostachys elegans</name>
+<author>Burret</author>
+<citation>Notizbl. Bot. Gart. Berlin-Dahlem 13: 472 (1937)</citation>
+<type>Cultivated in Bogor Botanic Garden, II.F. 17. ex New Guinea, April – May 1936; Furtado; SFN 3/1/28</type>
+<type_loc>Holotype B†; isotype K!, L!, SING</type_loc>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>Nibung (Indonesian dialect in Papua, also used for other tree palms).</p></div>
+<div type="diagnosis"><p></p></div>
+<div type="description"><p>Robust, clustering tree palmto 15 (– 20)m, with up to c. 3 adult stems and 4 – 6 or more suckers at the base, crown hemispherical in outline. Stem 15 – 30 cm diam., greyish green apically, greyish brown to black near base; internodes c. 25 cm long. Leaves 9 in crown, curved, 300 – 350 cm long (including petiole); sheath tubular, c. 33 cm wide, forming a distinct crownshaft, c. 250 cm long, light green to pale yellow; petiole short to 10 cm long, 3.5 – 4 cm wide and 1.5 – 2.5 cm thick at the base, channelled adaxially, rounded abaxially; leaflets pendulous, regularly arranged, leathery, 100 – 102 leaflets on each side, middle leaflets 100 – 126.5 × 3.5 – 4.5 cm, apical leaflets c. 33.5 × 1 cm, briefly pointed and sometimes notched at apices, green, discolorous when dried, light brown adaxially, pale brown to whitish abaxially, fine brown ramenta discontinuous along midvein on abaxial surface. Inflorescence 75 – 100 cm long, c. 160 cm wide, branched to 4 orders, creamy to yellowish green, brown when dried; prophyll c. 65 × 24 cm, leathery, peduncular bract similar to prophyll; peduncle very short to 7.5 cm; rachillae 34 – 61.5 cm long; 17 – 19 pits per 1 cm rachilla length (at fruiting stage), pits 2 – 4 mm diam. Staminate flowers 2 – 2.5 × 2 – 2.7 mm, asymmetrical; sepals 1.8 – 2.3 × 1.5 – 2 mm; petals 1.4 – 2 × 1.3 – 1.5 mm; stamens 9; filaments 0.5 – 1.5 × 0.1 – 0.3 mm; anthers 0.5 – 1 × 0.3 – 0.7 mm; pollen size long axis 31 – 42 μm, short axis 24 – 42 μm, proximal wall thickness 1 – 3 μm, distal wall thickness 1 – 2 μm, tectum surface verrucate, less frequently gemmate, trichotomosulcate grains present; pistillode 0.8 – 1.3 × 0.3 – 0.5 mm, trifid. Pistillate flowers 2 – 5.2 × 1.3 – 4.5 mm; sepals 1.6 – 4.8 × 1 – 3.5 mm; petals 1.2 – 3.8 × 0.5 – 3.9 mm; gynoecium 0.9 – 4.5 × 0.4 – 2.5 mm (including stigma); staminodes 4 – 5, membranous. Fruits 12 – 17 × 5 – 6 mm, ellipsoid to sickle-shaped, green to black (when mature); beak 1 – 2 mm long, perianth persistent, forming a narrow cylinder at the base or leaving a different coloured scar, ⅓ – ½ length of fruit. Seeds 6 – 7 × 4 – 5 × 4 mm, ellipsoid, rounded apical and flatted basally. </p></div>
+<div type="distribution"><p>Cyrtostachys elegans is a Central-West New Guinean species and is known only from lowlands in Nabire and Timika in the Indonesian Province of Papua.</p></div>
+<div type="biology_ecology"><p>This palm grows in swampy areas in lowland rain forest at an altitude 10 – 300 m above sea level.</p></div>
+<div type="conservation"><p>Near Threatened (NT). The resettlement and relocation of Nabire town after being hit by a large earthquake recently, and the development in the Timika area to support PT. Freeport Indonesia (the world biggest copper and gold mining company) mining activities will affect the population of this palm. Large areas of forest in the lowlands will disappear.</p></div>
+<div type="uses"><p>Not known.</p></div>
+<div type="discussion"><p>Cyrtostachys elegans is similar to C. loriae in being a robust tree palm with pendulous leaflets and short petiole, but differs from the latter in its clustering habit, the hemispherical crown and elongate inflorescence branched to 4 orders, rather than solitary habit, spherical crown and robust inflorescence branched to 3 orders. This species also differs from the other New Guinean robust tree palm C. bakeri in the presence of curved leaves and hemispherical crown, rather than erect leaves and shuttle-cock crown; however, both species have pendulous leaflets. This species was described by Burret in 1937 based on a herbarium specimen made by C. X. Furtado from a plant cultivated in the Bogor Botanical Garden.</p></div>
+<div type="materials_examined"><p>INDONESIA. Papua Province, Nabire distr.; Wanggar, Bumi R., Satuan Pemukiman Transmigrasi C (SP-C), c. 10 m a.s.l., Feb. 2001, Heatubun et al. 341 (K!, AAU!, MAN!); Bivak Kanehira, 10 km inward from mouth of Bumi R., c. 100 m a.s.l., March 1940, Kanehira &amp; Hatusima 12851 (A!); Bumi R., 40 km inward of Nabire, c. 300 m a.s.l., March 1940, Kanehira &amp; Hatusima 12747 (A!). Mimika distr., Timika area, PT. Freeport Indonesia Concession area, East levee by drowned forest, 5 km S of Kampung Kali Kopi, alt. 20 m a.s.l., Feb. 1998, Heatubun et al. 194 (AAU!, BH!, BO!, K!, L!, MAN!). CULTIVATED. Bogor Botanic Garden origin from New Guinea, II.F.17, May 1936, Furtado SFN 3/1/28 (K!, L!, SING isotypes); XII. E.40, April – May 1936, Furtado SFN 3/1/06 (K!, L!, SING). </p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

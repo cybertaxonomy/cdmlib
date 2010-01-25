@@ -1,0 +1,56 @@
+<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>Manual to the palms of Ecuador</mods:title>
+</mods:titleInfo>
+<mods:name type="personal">
+<mods:namePart type="family">Borchsenius</mods:namePart>
+<mods:namePart type="given">F.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:name type="personal">
+<mods:namePart type="family">Pedersen</mods:namePart>
+<mods:namePart type="given">H.B.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:name type="personal">
+<mods:namePart type="family">Balslev</mods:namePart>
+<mods:namePart type="given">H.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>AAU Reports 37. Department of Systematic Botany, University of Aarhus, Denmark in collaboration with Pontificia Universidad Cat�lica del Ecuador</mods:publisher>
+<mods:dateIssued>1998</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Bactris simplicifrons</name>
+<author>Mart.</author>
+<citation>Hist. Nat. Palm. 2: 103 (1826)</citation>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="description"><p>Understorey palm.  Stems solitary or clustered, to 1.5 m tall, only 5-6 mm in diameter.  Plants spineless except for minute bristles along the outer leaf margin.  Leaf blade 15-40  cm long, simple and then with rachis less than 10 cm long, or more or less regularly divided, with up to 7 sigmoid pinnae on each side, these inserted in one plane, the central ones to 16 cm long, 2.5-3.0 cm wide.  Inflorescence unbranched, 4-8 cm long, with glabrous peduncular bract.  Female flowers scattered along the branches, with a tubular calyx enclosing the corolla.  Fruit 5-10 mm in diameter, yellow to red, glabrous; fruiting perianth with a 3-lobed calyx as long as the 3-lobed corolla; staminodial ring absent.</p></div>
+<div type="distribution"><p>Throughout the Amazon region, in tropical moist and wet forest on terra firme.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p>A widespread, variable species that includes several morphological forms joined by intermediate populations.</p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

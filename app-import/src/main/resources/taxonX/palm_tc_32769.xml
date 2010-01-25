@@ -1,0 +1,107 @@
+<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>A Revision of Calyptronoma (Arecaceae)</mods:title>
+</mods:titleInfo>
+<mods:name type="personal">
+<mods:namePart type="family">Zona</mods:namePart>
+<mods:namePart type="given">S.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Principes 39: 140-151</mods:publisher>
+<mods:dateIssued>1995</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Calyptronoma plumeriana</name>
+<author>(Mart.) Lourteig</author>
+<citation>Phytologia 65: 484 (1989)</citation>
+<type>Plumier's Catal. Gen. Tab. 1 habit excl. details and MSS 7, icones 7, 8, 9 , 10</type>
+<synonymy>
+<name>Calyptronoma dulcis</name>
+<author>(C.Wright ex Griseb.) H.Wendl. in O.C.E.de Kerchove de Denterghem</author>
+<bibref>(C.Wright ex Griseb.) H.Wendl. in O.C.E.de Kerchove de Denterghem, Palmiers: 238 (1878)</bibref>
+<type>Cuba, 1865; Wright; 265</type>
+<type_loc>Holotype GOET!; isotypes GH!</type_loc>
+</synonymy>
+<synonymy>
+<name>Geonoma dulcis</name>
+<author>C.Wright ex Griseb.</author>
+<bibref>C.Wright ex Griseb., Cat. Pl. Cub.: 222 (1866)</bibref>
+</synonymy>
+<synonymy>
+<name>Calyptrogyne dulcis</name>
+<author>(C.Wright ex Griseb.) M.Gómez</author>
+<bibref>(C.Wright ex Griseb.) M.Gómez, Dicc. Bot. Nom. Vulg. Cub. Puerto-Riquenos: 72 (1889)</bibref>
+</synonymy>
+<synonymy>
+<name>Calyptronoma intermedia</name>
+<author>H.Wendl. in O.C.E.de Kerchove de Denterghem</author>
+<bibref>H.Wendl. in O.C.E.de Kerchove de Denterghem, Palmiers: 238 (1878)</bibref>
+<type>Cuba, Pinar del Rio, banks of Taco Taco River; Wright; 3972</type>
+<type_loc>Holotype GOET!; isotypes A!, GA!, NY!, US!</type_loc>
+</synonymy>
+<synonymy>
+<name>Calyptrogyne intermedia</name>
+<author>M.Gómez ex Léon</author>
+<bibref>M.Gómez ex Léon, Contr. Ocas. Mus. Hist. Nat. Colegio "De Le Salle" 3: 8 (1944)</bibref>
+</synonymy>
+<synonymy>
+<name>Geonoma intermedia</name>
+<author>(H.Wendl.) B.S.Williams</author>
+<bibref>(H.Wendl.) B.S.Williams, Cat. 1882: 27 (1882)</bibref>
+</synonymy>
+<synonymy>
+<name>Calyptronoma clementis</name>
+<author>(León) A.D.Hawkes</author>
+<bibref>(León) A.D.Hawkes, Phytologia 3: 145 (1949)</bibref>
+<type>Cuba, Oriente [Guantánamo], Loma San Juan de Buena Vista, S of Hongo-losongo, Sierra Maestra, 900 m alt., Nov. 1940; León; 17964</type>
+<type_loc>Holotype HAC!; isotype GH!</type_loc>
+</synonymy>
+<synonymy>
+<name>Calyptrogyne clementis</name>
+<author>León</author>
+<bibref>León, Contr. Ocas. Mus. Hist. Nat. Colegio "De Le Salle" 3: 11 (1944)</bibref>
+</synonymy>
+<synonymy>
+<name>Calyptronoma microcarpa</name>
+<author>(León) A.D.Hawkes</author>
+<bibref>(León) A.D.Hawkes, Phytologia 3: 145 (1949)</bibref>
+<type>Cuba, Las Villas [Sanctis Spiritus], Topes de Collantes, Trinidad Mts., 800 m, Nov. 1938; León; 18574</type>
+<type_loc>Lectotype HAC!; isolectotypes GH!, HAC!</type_loc>
+</synonymy>
+<synonymy>
+<name>Calyptrogyne microcarpa</name>
+<author>León</author>
+<bibref>León, Contr. Ocas. Mus. Hist. Nat. Colegio "De Le Salle" 3: 10 (1944)</bibref>
+</synonymy>
+<synonymy>
+<name>Calyptronoma clementis subsp. orientensis</name>
+<author>O.Muñiz &amp; Borhidi</author>
+<bibref>O.Muñiz &amp; Borhidi, Acta Bot. Acad. Sci. Hung. 28: 342 (1982)</bibref>
+<type>Cuba, Oriente [Holguin?], Monte Centeno, Moa, 12 Nov 1945; Acuña; 13019</type>
+<type_loc>Holotype HAC!</type_loc>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>Flor de confite, manaca, manaca colorada, manacla, palma de arroyo, palma manaca (Cuba, Dominican Republic); palm a vin (Haiti). "Palma justa", the local name for Prestoea montana (Graham) Nicholson in Cuba, has been misapplied (León 1944).</p></div>
+<div type="diagnosis"><p></p></div>
+<div type="description"><p>Stem l0 m or more tall, 15-20.3 cm in diam. Leaf 1.9-4.6 m long, with 100-160 segments; segments 44.5-92 cm long, 2.2-6.8 cm wide, sometimes bearing inconspicuous multicellular trichomes on the abaxial intercostal surface. Prophyll 27.5- 41 cm long, 6-9.5 cm wide. Peduncle 44-78 cm long and 1.1-2.6 cm wide; rachillae 12.5-24(-26)cm long, 3-6.7 mm in diam., with (5-)6(-7) rows of pits; proximal rachillae borne in clusters of up to 4-7(-10) on stalks 0.9-5 cm long, 0.4-1.2 cm wide, clustered rachillae borne for 2/3 or more the length of the rachis; pits 2.4- 4.7 mm long, 1.8-3.3 mm wide, longitudinal distance between pits (lip to lip) 5.4-12 mm. Staminate flowers 5.1-8.5 mm long; sepals( 3.6-4.7 mm long, 0.8-1.7 mm wide; petals 4.7-6.2 mm long, 1.2-1.6 mm wide; staminal tube 3.4-7 mm long, 1.3-1.7 mm wide; filaments 1.1-1.5 mm long; anthers 1-2.3 mm long. Pistillate flowers 3.4-6.7 mm long; sepals 3.2-4.9 mm long, 0.7- 1.5 mm wide; petals 3.2-5.4 mm long, ca. 1.2 mm wide; staminode 7.5-7.7 mm long, 3.1-3.4 mm wide; gynoecium 4.8-5.1 mm long, style ca. 5.3 mm long; ovary 0.7-0.8 mm long. Fruit 6.8- 12.2 mm long, 4.8-7.8 mm in diam.; endocarp free from seed, strongly netlike; seed 3.8-6 mm long, 2.8-4.8 mm diam. </p></div>
+<div type="distribution"><p>Native to stream banks and arroyos in the hills and mountains of Cuba and Hispaniola.</p></div>
+<div type="biology_ecology"><p>Phenology: Records indicate that this species flowers from April to November in Cuba. Fruits have been collected throughout the year in Cuba. Available data from Hispaniola suggest that this species flowers in July and fruits in December. </p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>Leaves are used for thatch. The flowers and fruits are said to have a sweet flavor, and the terminal bud ("cabbage") is edible (Roig y Mesa l928; Alain 1961).</p></div>
+<div type="discussion"><p>Although I take no pleasure from synonymizing - the well known name C. dulcis, the change is necessary in light of Lourtieg's lectotypification and circumscription of Geonoma plurmeriana. According to Lourteig, G. plumeriana can be referred to a species of Calyptronorna from Hispaniola, but it is now clear that two taxa on Calyptronoma are present on that island. The question then becomes: To which taxon does G. plumeriana apply? The two Hispaniolan taxa are readily distinguished by fruit and seed size. The original description of G. plumeriano noted that its fruits were of "the size of cherries" ("baccis cerasi magnitudine"). This characterization, although vague and inexact, more likely refers to the taxon long known as C. dulcis (fruits 4.8-7.8 mm in diameter). The Hispaniolan taxon with smaller fruit (3.6-4.6 mm in diameter) is C. rivalis. When Grisebach described G. dulcis, the type was designateda s "Wr. a. 1865." Subsequently, "Wright no. 1865" was designated as a type (Bailey 1938; Glassman 1972), but this is in error. As pointed out by León (1944), "1865" is the date of the collection not the collection number. The specimen corresponding to the year 1865 is Wright 265, and this is taken to be the type. The material at GOET, presumably seen by Grisebach, is the holotype. In the original description of Calyptrogyne microcarpa, León designated two syntypes: León 18574 with fruits and León 18449 with flowers. As the epithet describes the fruit size, I have selected León 18574 as the lectotype. In the original description of C. clementis, León cited a previously published name, Calyptrogyne swartzii, as used by Beccari (1912) and Grisebach (1866), excluding the synonyms cited by those authors and implicitly excluding the type of C. swartzii (see Art. 63.1 and 2 of the ICBN). León clearly gave these citations as misapplications of the name C. swartzii, which he knew to be a synonym of Calyptrogyne occidentalis (León 1944, p. 3). He in no way proposed C. clementis as a new name for the palm that was called C. swartzii. Calyptrogyne clementis is therefore interpreted as a new species (as León intended), not as a nomenclatural synonym of C. occidentalis. A useful character for distinguishing the two taxa of Calyptronoma in Hispaniola is the shape of the outer walls of the cells of the abaxial epidermis of the leaf. The outer walls of the abaxial epidermal cells of C. riaalis are strongly convex; while those of C. plumeriana (and C. occidentalis of Jamaica) are smooth. This character is extremely valuable for identifying sterile, mature specimens; however its usefulness with seedlings has not be tested. </p></div>
+<div type="materials_examined"><p>CUBA. CIENFUEGOS. Sierra de San Juan, SE of Cumanayagua, 300-400 m, Hodge &amp; Howard 4506 (A); San Blas, Bailey 12395 (BH), 180-240 m, Jack 6973 (A, US), 240 m, Rehder 1243 (A), Jack 7084 (A, US); La Sierra, 150-240 m, Jack 7580 (A, S, US), Jack 7849 (A, BH, NY, S, US), 180-240 m, Rowe 7585 (A, BH). GUANTANAMO. Monte Verde, N of Guantánamo, Wright 1466 (FI, GH, GOET, MO, NY); Baracoa, Horn 3050 (Fl, NY, US); Yateras, La Prenda, Hioram 4754 (GH, HAC); Yateras, 500 m, Maxon 4464 (US). HOLGUIN. Sierra de Cristal, Mayari, banks of Rio Lebisa, Alain et al. 5720 (GH, HAC); Sierra de Nipe, La Plancha, Le6n &amp; Alain 17999 (GH, HAC, NY, US); Sierra de Nipe, Rio Piloto, Elernan 9682 (S), Eltman 2109 (S), Monte Centeno. Moa, Acuña 13019 (HAC). ISLA DE LA JUVENTUD (ISLA DE PINOS). Vicinity of Santa Barbara, Britton et al. 14761 (GH, NY, US); near Nueva Gerona, Curtiss 485 (A, GH, HAC, NO, NY, US), León 17463 (GH, HAC), León &amp; Marie Victorín 18785 (GH, HAC); San Francisco de las Piedras, León (&amp; Seifriz) 17531 (GH, NAC, US); near San Juan, León &amp; Marie Victorin 18891 (GH, HAC, US); Arroyo del Hatillo, León 17899 (HAC). LA HABANA. Batabanó, León 13619 (HAC). MATANZAS. ZarabandaL, León &amp; Marie Victorón 19549 (GH, HAC, US). PINAR DEL RIO. Consolación del Sur, Bailey 324 (BH), León &amp; Alain 19379 (GH, HAD, US); 4 km W of Consolación del Sur, Dahlgren 22823 (HAC); vicinity of Herradura, Britton 6482 (NY), van Herman 875 (FI,HAC), van Herman 745 (HAC); Sierra de Cabra, Britton et al. 9818 (NY); Taco Taco River valley, León 16531 (BH); Santa Cruz de los Pinos, León 16630 (BH, GH, HAC, US); Pan de Azúcar, Viñales, León 17900 (GH, HAC), León 19538 (GH, HAC, US); Vñales León 19298 (GH, HAC, US); N of San Diego de los Baños, León 4379 (BH, HAC, NY), Palmer &amp; Riley 529 (US); N of Pinar del Río, Shafer 317 (GH, HAC, MO, NY); Paso Real, van Herman 767 (NY); San Luis, Roig 3580 (HAC), Roig 2462 (HAC); El Roble, mpio. Bahia Honda, Zona et al. 631 (FTG, HAJB); near Mameyal, Zona et al. 624 (FTG, HAJB); between San Andres and La Palma, near Loma del Americano, Zona et al. 630 (FTC, HAJB). SANCTI SPIRITUS. Trinidad Mountains, Topes de Collantes, 800 m, León 18574 (GH, NY, US), León 18449 (HAC), León 1907 2 (HAC); Buenos Aires, Trinidad Mountains, 762-1,066 m, Jack 7018 (AS, US); Banao Mountains, León 19380 (GH, HAC, US), León &amp; Roca 7869 (NY). SANTIAGO DE CUBA. SE of Paso Estancia, Sho.fer 1748 (A,, NY); Piedra Gorda to Rio Seboruco, Shafer 3654 (NY); near Santiago, 550 m, Taylor A12 (NY); vicinity of Loma del Gato, Cobre Range, León et al. 10066 (NY). VILLA CLARA. Trinidad Mountains, Herradura, 320 m, Britton &amp; Britton 50lB (NY, US). DOMINICAN REPUBLIC. DUARTE. S side of Quito Espuela above Los Brasitos, Arroyo Guaconejo, 410 m, Zona &amp; Salzman 478 (FLAS, JBSD). EL SEIBO. Sabana de la Mar, El Limpio, ca. 300 m, Ekman H15685 (S, US). SAMANA. Vicinity of Laguna, Pilón de Azúcar, 100-500 m, Abbott 406 (US). SAN CRISTOBAL. Monte Plata, Jiménez s.n. (BH). HAITI. GRAND 'ANSE. Massif de la Hotte, along road between Jérémie and Les Cayes, 4.5 km S of Riviere Glace, 810 m, Iudd &amp; Shean 8669 (FLAS). SUD. Road from Camp Perrin to Beaumont, at Tete Morne Gefferd, Hend,erson &amp; Aubry 1179 (NY). </p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

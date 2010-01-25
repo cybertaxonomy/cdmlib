@@ -1,0 +1,52 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>New Species of Calamus (Palmae) from Lao and Myanmar</mods:title>
+</mods:titleInfo>
+<mods:name type="personal">
+<mods:namePart type="family">Henderson</mods:namePart>
+<mods:namePart type="given">A.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:name type="personal">
+<mods:namePart type="family">Henderson</mods:namePart>
+<mods:namePart type="given">F.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Taiwania 52(2): 152-158</mods:publisher>
+<mods:dateIssued>2007</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Calamus minor</name>
+<author>A.J.Hend.</author>
+<citation>Taiwania 52: 156 (2007)</citation>
+<type>LAO. Bolikhamsay: Thaphabat Province, close to Ban Hatkhai, 18°24’N, 103°09’E, 140 m, 17 Dec 1998; Khamphone Sengdala &amp; T. Evans; 319.</type>
+<type_loc>Holotype K!</type_loc>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>Wai deng, wai hangnou (Lao).</p></div>
+<div type="diagnosis"><p>A Calamo hypoleuco differt caulibus 2.5-3 m longis; foliis vaginis spinis usque 1 cm longis, vaginis apicibus spinis interdum usque 2 cm longis.</p></div>
+<div type="description"><p>Stems clustered, 2.5-3 m long and 0.7-1 cm diameter (with leaf sheaths). Leaf sheaths greenish-yellow, sparsely covered with brown, black-tipped, flattened, horizontally or upward spreading spines to 1.4 cm long, those at sheath apex sometimes to 2.5 cm long; knees present; ocreas present, to 0.3 cm long, fibrous, disintegrating; flagella absent; petioles 3-10 cm long, sparsely covered laterally and abaxially with recurved spines to 0.5 cm long; rachis 40-70 cm long, abaxially with few, recurved, solitary spines; pinnae 5-6 per side of rachis, lanceolate, regularly but distantly arranged, 15-30 cm long, 1.7-4 cm wide, gray abaxially, without marginal spines except near apices, the apical pair of pinnae only briefly joined at their bases; cirri absent. Inflorescences 0.2-0.4 m long, briefly or not flagellate; partial inflorescences inserted at the base of the partial inflorescence bract; partial inflorescence bracts open and not sheathing the main axis, not spiny; staminate inflorescences branched to three orders, with 4-6 partial inflorescences; rachillae to 0.5 cm long; rachillae bracts distichously arranged, to 1 mm long, glabrous; floral bracteoles 0.5 mm long, glabrous; staminate flowers to 3.5 mm long, to 10 per rachilla, arranged alternately and distichously along the rachillae; calyx 2 mm long, tubular except for the 3-lobed apex; corolla 3 mm long, with 3 valvate petals free to the base; pistillode absent; pistillate inflorescences branched to two orders, with up to six partial inflorescences; rachillae to 1.5 cm long; rachillae bracts distichously arranged; pistillate flowers not seen; fruits not seen.</p></div>
+<div type="distribution"><p>Lao (Bolikhamsay).</p></div>
+<div type="biology_ecology"><p>Lowland forest, at 140-160 m elevation.</p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>The shoot is edible and the stems used for handicrafts.</p></div>
+<div type="discussion"><p>The Lao specimens cited here were included by Evans et al. (2002) in Calamus hypoleucus, a species known only from Myanmar. However, as noted by Evans et al., the Lao specimens have longer leaves and narrower pinnae, these with spiny margins near the apex, and longer
+inflorescences.</p></div>
+<div type="materials_examined"><p>Additional specimens examined: LAO. Bolikhamsay: Thaphabat Province, Bhat kai, 18°24’N, 103°08’E, 160 m, 10 Apr 1998, Khamphone et al. 138 (K); Thaphabat Province, close to Ban Hatkhai, 18°24’N, 103°09’E, 140 m, 17 Dec 1998, Khamphone &amp; Evans 320 (K); same locality, same date, Khamphone &amp; Evans 321 (K).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

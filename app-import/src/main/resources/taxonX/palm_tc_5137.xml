@@ -1,0 +1,56 @@
+<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>Manual to the palms of Ecuador</mods:title>
+</mods:titleInfo>
+<mods:name type="personal">
+<mods:namePart type="family">Borchsenius</mods:namePart>
+<mods:namePart type="given">F.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:name type="personal">
+<mods:namePart type="family">Pedersen</mods:namePart>
+<mods:namePart type="given">H.B.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:name type="personal">
+<mods:namePart type="family">Balslev</mods:namePart>
+<mods:namePart type="given">H.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>AAU Reports 37. Department of Systematic Botany, University of Aarhus, Denmark in collaboration with Pontificia Universidad Cat�lica del Ecuador</mods:publisher>
+<mods:dateIssued>1998</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Aiphanes ulei</name>
+<author>(Dammer) Burret</author>
+<citation>Notizbl. Bot. Gart. Berlin-Dahlem 11: 568 (1932)</citation>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="description"><p>Understorey palm.  Stem solitary, short and subterranean, or well developed, to 5 m tall, 2.5-5 cm in diameter.  Leaf blade 60-180 cm long; pinnae 9-15 on each side, wedge shaped, inserted in groups of 2-3 and spreading in different planes, grey-silverish green below, the central ones 15-35 cm long and 8-20 cm wide, with a sinuously V-shaped incision at apex.  Inflorescence 75-150 cm long, with 30-40 thick, adpressed branches.  Flowers white or yellow.  Fruits less than 1 cm in diameter, bright red, often angled from mutual pressure.</p></div>
+<div type="distribution"><p>Moist to wet tropical and premontane forest in the W part of the Amazon basin in Colombia, Brazil, Peru, and Ecuador.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p>Two forms of this species appear to exist.  The first is acaulescent and has white flowers, the other has a well developed aerial stem and yellow flowers.</p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

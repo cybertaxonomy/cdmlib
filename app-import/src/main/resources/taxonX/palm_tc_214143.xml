@@ -1,0 +1,48 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>A Revision of Wallichia (Palmae)</mods:title>
+</mods:titleInfo>
+<mods:name type="personal">
+<mods:namePart type="family">Henderson</mods:namePart>
+<mods:namePart type="given">A.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Taiwania 52(1) 1-11</mods:publisher>
+<mods:dateIssued>2007</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Wallichia triandra</name>
+<author>(J.Joseph) S.K.Basu</author>
+<citation>Principes 20: 120 (1976)</citation>
+<type>INDIA. Arunachal Pradesh, Hayuliang, 25 Sep 1969; A. Rao; 48105</type>
+<type_loc>Holotype CAL</type_loc>
+<synonymy>
+<name>Asraoa triandra</name>
+<author>J.Joseph</author>
+<bibref>Bull. Bot. Surv. India 14: 144 (1972 publ. 1975)</bibref>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="diagnosis"><p></p></div>
+<div type="description"><p>Stems clustered, to 3 m tall, 3-5 cm diameter, Stems bearing staminate and pistillate inflorescences about equal in length. Leaves arranged spirally; sheaths fibrous; rachis to 2 m long; pinnae 11-19 per side of rachis, regularly arranged, spreading in the same plane, pinnae from middle of leaf to 40 cm long, to 10 cm wide at widest point, lanceolate, with two pronounced lobes. Inflorescences unisexual, the pistillate terminal and staminate lateral; staminate inflorescences to 0.35 m long, erect; prophyll not seen; peduncle not seen; peduncular bracts about 8, sheathing the peduncule; rachillae to 16 cm long; staminate flowers to 8 mm long; sepals 1-1.5 mm long, connate into a cupular calyx; petals 6-8 mm long, dark violet; stamens 3; pistillate inflorescences to 0.35 m long, erect; prophyll not seen; peduncle not seen; peduncular bracts several, sheathing the peduncle; rachillae 20-30 cm long; pistillate flowers 4 mm long; sepals 1 mm long; petals 3 mm long; fruits oblong, to 1.3 cm long, to 0.7 cm diameter, red. </p></div>
+<div type="distribution"><p>Known only from China (Tibet) and India (Arunachal Pradesh).</p></div>
+<div type="biology_ecology"><p>Montane rainforest, at 900-2000 m elevation.</p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>None recorded.</p></div>
+<div type="discussion"><p>The description above is taken from Joseph (1972). Kingdom-Ward 18477, which lacks staminate flowers, probably belongs here, based on pinnae shape only. It comes from the same locality as one of the paratypes cited in the original description.</p></div>
+<div type="materials_examined"><p>INDIA. Arunachal. Pradesh: Mishmi Hills, Glo, Kamlang valley, 4000 ft., 1 Apr 1949, Kingdom-Ward 18477 (NY). CHINA. Tibet: Didong, Medog, SE Tibet, 13 Dec 1992, Sun ETM2217 (KUN); Mo-Tuo, Mo Tuo, Bei Ben, 7 Oct 1974, Qing Hai Tibet Team 74-5067 (KUN); Mo Tuo, Lao Mo Tuo, 26 Aug 1974, Qing Hai Tibet Team 74-4548 (KUN).</p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

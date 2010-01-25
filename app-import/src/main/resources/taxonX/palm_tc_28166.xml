@@ -1,0 +1,58 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>Re-evaluation of the Genus Butia With a Description of a New Species</mods:title>
+</mods:titleInfo>
+<mods:name type="personal">
+<mods:namePart type="family">Glassman</mods:namePart>
+<mods:namePart type="given">S.F.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Principes 23: 65-79</mods:publisher>
+<mods:dateIssued>1979</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Butia paraguayensis</name>
+<author>(Barb.Rodr.) L.H.Bailey</author>
+<citation>Gentes Herb. 4: 47 (1936)</citation>
+<type>Paraguay, in rupestribus Cordillera de Altos; Hassler; 896</type>
+<type_loc>Lectotype G</type_loc>
+<synonymy>
+<name>Cocos paraguayensis</name>
+<author>Barb.Rodr.</author>
+<bibref>Barb.Rodr., Palm. Paraguay.: 9 (1899)</bibref>
+</synonymy>
+<synonymy>
+<name>Butia yatay var. paraguayensis</name>
+<author>(Barb.Rodr.) Becc.</author>
+<bibref>(Barb.Rodr.) Becc., Agric. Colon. 10: 503 (1916)</bibref>
+</synonymy>
+<synonymy>
+<name>Syagrus paraguayensis</name>
+<author>(Barb.Rodr.) Glassman</author>
+<bibref>(Barb.Rodr.) Glassman, Fieldiana, Bot. 32: 151 (1970)</bibref>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>Yatay guazu (Paraguay), yatay poñi (Argentina), coco amargoso (Sao Paulo, Brazil).</p></div>
+<div type="diagnosis"><p></p></div>
+<div type="description"><p>Acaulescent, or with trunk 1-2 m tall, 10-20 cm in diam.; sheathing base about 20 cm long, petiole 45-48 cm long, margins mostly with short spines interspersed with fibers; rachis of leaf 57-93 cm long; pinnae 40-42 on each side, regularly arranged, middle ones 45-55 cm long, 0.8-1.5 cm wide, mostly with acute, asymmetrical tips; expanded part of spathe 40-60 cm long, 4-8 cm wide, smooth or striate, brownish-pubescent at first, becoming glabrous with age; branched part of spadix 35-38 cm long, rachillae 38-43, each 20-23 em long; pistillate flowers ovoid, 10-16 mm long, 6-9 mm in diam.; lower staminate flowers 8-13 mm long, upper ones 4-7 mm long; mature fruit ovoid 3.0-3.7 cm long, 2.1-2.3 cm in diam., beak conspicuous, angled, persistent perianth 1.51.8 cm high, locules 1-3, mature seeds not seen. </p></div>
+<div type="distribution"><p>Paraguay, Argentina (province of Corrientes) and Brazil (states of Santa Catarina, Sao Paulo, and Mato Grosso) in campos, cerrados and pastures.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p>Butia paraguayensis is apparently closely related to B. yatay, and may only be a variety of this species. At present, it can be distinguished mainly by its generally smaller dimensions (except for the similarity in SIze of pistillate flowers) .</p></div>
+<div type="materials_examined"><p>PARAGUAY. Cordillera de Altos, Hassler 896 (G, lectotype; K, NY, isolectotypes); Fiebrig 62 (G); Centurion, dry grassy area, Fiebrig 4097 (G, GH, K, M) ; without locality, in campos, Jorgensen &amp; Hassler 4185 (A, C, F, NY, S). ARGENTINA. CORRIENTES: Dept. Mburucuya, Lorna Alta, T. M. Pedersen 3030 (G, GH, K, NY, S): Dept. Ituzaingo, 3 km W. of Virasoro, campestre, Maruñak 168 (F); Isla Apipe Grande, Puerto San Antonio, in palma yatay poñi, Krapovickas et al. 24195 (F); 45 km E. of Ituzaingo, campos altos, A. Schinini et al. 11255 (F): Dept. Capital, Arroyo Riachuelo, in lomadas arenosas, A. Schinini et al, 9460 (F). BRAZIL. SANTA CATARINA, 35 km N. of Itajai, orillas del mar, Krapovickas et al, 23078 (F); SAO PAULO, Moji-Guaçu, Fazenda Campininha, cerrado, Kuhlmann 3924 (SP) ; 4 km S. of Emas, cerrado, Glassman 8746, 8747 (CHI): Pirassununga, Emas, cerrado desprotegido, J. T. Costa 0178 (IPA); MATO GROSSO, 28 km S. of Sidrolandia, vic. of Fazenda Santa Luzia, pasture, associated with Syagrus graminifolia, browsed by cattle, Glassman 13095, 13096 (CHI). </p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

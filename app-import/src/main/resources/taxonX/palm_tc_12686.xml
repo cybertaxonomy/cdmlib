@@ -1,16 +1,36 @@
-﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 <taxonxHeader>
 <mods:mods>
 <mods:titleInfo>
-<mods:title>A monographic study of the subfamily Phytelephantoideae (Arecaceae)</mods:title>
+<mods:title>Manual to the palms of Ecuador</mods:title>
 </mods:titleInfo>
-<mods:name>
-<mods:namePart type="family">Barfod</mods:namePart>
-<mods:namePart type="given">A.S.</mods:namePart>
+<mods:name type="personal">
+<mods:namePart type="family">Borchsenius</mods:namePart>
+<mods:namePart type="given">F.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:name type="personal">
+<mods:namePart type="family">Pedersen</mods:namePart>
+<mods:namePart type="given">H.B.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:name type="personal">
+<mods:namePart type="family">Balslev</mods:namePart>
+<mods:namePart type="given">H.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
 </mods:name>
 <mods:originInfo>
-<mods:publisher>Opera Botanica 105: 1-73</mods:publisher>
-<mods:dateIssued>1991</mods:dateIssued>
+<mods:publisher>AAU Reports 37. Department of Systematic Botany, University of Aarhus, Denmark in collaboration with Pontificia Universidad Cat�lica del Ecuador</mods:publisher>
+<mods:dateIssued>1998</mods:dateIssued>
 </mods:originInfo>
 </mods:mods>
 </taxonxHeader>
@@ -20,24 +40,16 @@
 <name>Aphandra natalia</name>
 <author>(Balslev &amp; A.J.Hend.) Barfod</author>
 <citation>Opera Bot. 105: 46 (1991)</citation>
-<type>Ecuador. Morona-Santiago: Logrono, Men-dez-Sucua road km. 18, 800 m, 14 July 1985 (&#9792; and &#9794;, frts and flws, incl. photos) ; Balslev and Henderson; 60651</type>
-<type_loc>Holotype AAU; Isotypes BH, K, NY, QCA, QCNE</type_loc>
-<synonymy>
-<name>Ammandra natalia</name>
-<author>Balslev and Henderson</author>
-<bibref>Balslev and Henderson, Syst. Bot. 12: 501-504, 1987</bibref>
-</synonymy>
 </nomenclature>
 <div type="introduction"><p></p></div>
 <div type="etymology"><p></p></div>
-<div type="vernacular"><p>Piassaba (Spanish) the fibres; wa-mowe (Waorani) the mature tree; wamomo (Wao-rani) the fruit; wamongi (Waorani) the fibres; wamonngkagi (Waorani) the stem when used for blowgun darts; wamonta (Waorani) the leaves when used for braiding; tinduiki (Shuar).</p></div>
-<div type="diagnosis"><p></p></div>
-<div type="description"><p>Erect single-stemmed palm tree, 3-5 m tall; stem of tall palms clean proximally, rough-ringed, smooth, covered by gray crustaceous lichens, 20 cm in diameter with internodes up to 5 cm long. Leaves 10-15, erect, drooping and twisted apically, 200-250 cm long from point of insertion to blade; leaf base split to 20-30 cm above base, tubular part green, sheath resolved in long coarse fibres along split, petiole 4-6 cm in diam. above the middle, deeply rounded and with white waxy covering abaxially, shallowly grooved with scattered ramenta adaxially; rachis 400-500 cm long with scattered brown scales on adaxial face and dense covering of brown scales abaxially; pinnae 90-120 per side, basal ones subalternate, 50-70 x 0.5-2 cm and inserted 10-15 cm apart, the middle ones opposite, 100-120 x 6-8 cm and inserted 2-5 cm apart, the distal ones opposite and 20-40 x 1-2 cm, midnerve prominent, submarginal veins prominulent, transverse commissures inconspicuous. Staminate peduncle 70-90 cm long, surface layer splitting in tortuous shreds forming a tomentum with masses of pollen and raphide-containing cells adherent to it; prophyll 40-50 x ca. 15 cm, green with scattered brown scales increasing in density towards the apex, margin grossly and irregularly serrate proximally, apex obtuse; first peduncular bract 80-150 cm long, woody-coriaceous, largest circumference in bud to 30 cm, inside cream to yellow, outside yellowish-brown with green tinge, glabrous proximally, otherwise covered by white waxy layer and scattered brown ramenta, these more dense along the carinae and towards the apex; incomplete peduncular bracts 3-5, deltoid to ovate and acute, the basal ones 13-17 cm long; rachis 100-170 cm long, grooved, 4-5 x 2-3 cm in cross-section in the middle part, similar to peduncle in surf ace/color and texture; flower clusters 200-300, the basal ones widely separated, composed of three flowers and subtended by a up to 3 cm long bract, the central ones widely spaced, composed of four flowers and subtended by a deltoid bract to 1 cm long, ultimate flowers solitary, densely crowded, each subtended by a shallow, membranous and inconspicuous bract; flowers with unevenly long pseudopedicels formed late during ontogeny by fusion and elongation of the receptacle and the base of the perianth, the deltoid teeth of the perianth cupule visible on the zigzagged borderline between the tomentose pseudopedicel and the glabrous margin of the receptacle; receptacle enlarged and broadly clavate, 0.8-1.2 X 1.2—1.6 cm, covered by masses of 400-650 stamens; filament 2.5-3 mm long, subulate, subequal to the anthers in width; anthers elongate 3-3.5 x 0.3-0.4 mm, apiculate and sagitate basally. Pistillate peduncle 30-45 x 5-8 cm; prophyll 40-60 x 10-14 cm; first peduncular bract inserted 20-30 cm above prophyll, splitting longitudinally on both the abaxial and the adaxial side, 35-45 cm long, similar to the staminate homologue in circumference, texture, color and haircovering; incomplete peduncular bracts 15-25, the lower ones elliptic with attenuated base, 10-15 x 5-7 cm, acute to acuminate, light brown, scaly and with longitudinal brown stripes, increasingly smooth and acuminate towards the bracts subtending flowers; flower bearing zone 5-8 cm long with 30-50 flowers; floral subtending bracts 4—6 cm long, with up to 3 cm long acumen; sepaloid bracts 4-6, 5-10 cm long, from narrowly deltoid with long apex to strap shaped; tepals 7-9, 15-25 cm long, 5-10 mm wide, apically acuminate; non-functional stamens 30-50, 5-16 mm long; pistil 2.5-3 cm long, 6-8 loculate, tapering apically; style 20-25 x 2-3 mm, widening out and flattened towards the point of separation of the stigmas; stigmas 6-8, 4-5 cm long, tortuous. Infructescences up to 5, but usually fewer on one palm, 30-45 cm in diam.; peduncle 4-5 x 2-3 cm in cross section in the middle part; first peduncular bract woody, persistent; incomplete peduncular bracts closely inserted and covering 5-10 cm of peduncle below the fruit-bearing zone, apically resolved in fibres; fruits 30-45, 7 to 12 cm long, tangential face 4—11 cm in diam with spiny processes up to 3 cm long, resolved in fibre tufts or much shorter and not resolved, basal part of style persistent, abscission scar 2-3 x 1-1.5; inner fleshy mesocarp to 3 mm thick; number of seeds usually 6; pyrenes unevenly sized and shaped in outline, median ridge blunt; rostrum absent; umbo basal, from elongate to round in outline, flattened or ridged. Seedling with two scale leaves; cotyle-donary petiole elongating usually to less than 10 cm; eophyll with about 15 opposite pinnae, petiole and ra-chis with ramenta.</p></div>
-<div type="distribution"><p>A recently discovered endemic to the eastern foothills of the Ecuadorean Andes ranging eastward into the lowlands of southern Amazonian Ecuador.</p></div>
-<div type="biology_ecology"><p>Flowering througout the year with a slight peak in February and March. The population of the type locality is managed and very uniform. Good reproduction is procured by clearing surrounding trees and cleaning the forest floor. The several xeromorphic features in the leaf anatomy are noteworthy because this species grows under ever-wet conditions.</p></div>
+<div type="vernacular"><p></p></div>
+<div type="description"><p>Stem solitary, to 10 m tall, ca. 20 cm in diameter.  Leaves to 6 m long, sometimes with the axis twisting and the distal part of leaf blade held in a vertical position; sheaths with numerous dark-brown fibres at their margins; leaf axis with numerous black scales, especially below; pinnae 90-120 on each side, regularly arranged in one plane, the central ones to 1 m long, 4-6 cm wide.  Male inflorescence pendulous, to 2 m long, yellowish brown.  Female inflorescence compact, ca. 25 cm long, cream coloured at anthesis.  Infructescence 30-45 cm in diameter, borne on a 20-30 cm long peduncle; fruits 30-50 per infructescence, brown.</p></div>
+<div type="distribution"><p>W part of the Amazon basin in Ecuador, Peru, and Brazil, on terra firme and on periodically inundated river banks.</p></div>
+<div type="biology_ecology"><p></p></div>
 <div type="conservation"><p></p></div>
-<div type="uses"><p>The majority of the brooms manufactured and used in Ecuador are made of the fibres of this species. The vernacular name "piassaba" is in general use all over South America for fibre producing palms, such as Leopoldinia piassaba Wallace and Attalea funifera Mart. Fibre extraction is a major source of income in the Province of Morona-Santiago. Along the road from Sucua to Macas there are large plantations of Aphandra natalia. The fibres are extracted from the leaf-bases. The main part of the fibres are exported from the region to Guayaquil and Quito, where broom factories are situated. Wade Davis and Yost (unpubl. data) recorded how the Waoranis of Amazonian Ecuador exploit the fibres of Aphandra natalia for numerous purposes in their daily life. From the stem they extract blowgun darts. Fibres from the leaf base are used for firestarters and torches. The leaves are used for braiding baskets to haul meat and Cassava. The fruit of Aphandra natalia has a fleshy and thick mesocarp that is a much appreciated snack. It is sold on the Sunday market in Sucua.</p></div>
-<div type="discussion"><p>This species has been tranferred from Ammandra where it was recently described because of the unusual morphology of the staminate flower cluster. It shows affinities to both Phytelephas and Ammandra. Fruits have been observed with short spines that do not resolve in lowland populations.</p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p></p></div>
 <div type="materials_examined"><p></p></div>
 </treatment>
 </taxonxBody>

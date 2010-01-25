@@ -1,0 +1,43 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>A Revision of the Genus Nenga</mods:title>
+</mods:titleInfo>
+<mods:name type="personal">
+<mods:namePart type="family">Fernando</mods:namePart>
+<mods:namePart type="given">E.S.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Principes 27: 55-70</mods:publisher>
+<mods:dateIssued>1983</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Nenga grandiflora</name>
+<author>Fernando</author>
+<citation>Principes 27: 66 (1983)</citation>
+<type>Malay Peninsula, Johore, Kota Tinggi, Panti East, 400 m alt., fl. et fr.; Dransfield &amp; Fong; 5048</type>
+<type_loc>Holotypus K; isotypi KEP, L</type_loc>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="diagnosis"><p>N. macro.carpae affinis, sed floribus masculis majoribus, fructu ovoideo, obclavato vel obpyriformi, valde longirostrato, inflorescentia duas rachillas semper ferenti differt.</p></div>
+<div type="description"><p>Solitary, robust palm. Stem ca. 2 m long, 8 cm diam.; internodes to 5 cm, brown. Crownshaft elongate, cylindrical, to 75 cm long, very swollen. Leaves 7-8 in crown, leaf sheath ca. 30-60 cm long, dull green to slightly purplish; petiole ca. 32-54 X 1.6 cm, slightly yellowishorange, rachis angular, rather sharp along the edges. Leaflets to ca. 30 on each side of the rachis, drying light brown; basal leaflets 1-2 costate, ca. 25-42 X 0.81.2 cm, long-acuminate; middle leaflets 34 costate, ca. 40-82 X 5-6.5 cm, longacuminate; terminal leaflet pair 3-6 costate, ca. 30-56 X 3-5.5 cm, acuminate or slightly toothed at tips, the pair sometimes joined to 10 cm at the base along the rachis. Inflorescence infrafoliar, pendulous; prophyll ensiform or lanceolate, ca. 28 X 2.7 cm, drying brown, caducous; peduncle ca. 1.7-4 X 0.8-1.5 cm, flattened, glabrous; peduncular bract triangular, to ca. 5 mm long, 4 mm at the base, membranous; rachillae always 2, ca. 24-30 cm long, 7-1 0 mm thick near the base, glabrous, each rachilla subtended by a membranous, triangular bract to ca. 5 mm long. Staminate flower triangular, trigonous, asymmetric, slightly flexuous; sepals equal or subequal, subulate, acutely and dorsally carinate, flexuous, ca. 1.31.6 cm long, to 3 mm wide; petals elliptic or elliptic-lanceolate, acute to acuminate at tips, equal or slightly subequal to the sepals; filaments ca. 2-2.5 mm long; anthers erect, linear, ca. 6-7 mm long, deeply sagittate at the base; pistillode conical, minute. Pistillate flower shorter than the staminate flower; sepals ca. 5-8 X 57 mm, petals as the sepals, slightly smaller, ca. 4-6 X 4-5 mm; ovary broadly ovoid or subglobose, to 3 X 3 mm; stigma distinctly 3-lobed; staminodes of 6 minute teeth. Infructescence pendulous, densely covered with fruits. Fruit ripening deep red then purplish-black, ovoid to obclavate or obpyriform, ca. 3.8-5.4 X 1.52.0 cm, prominently long-beaked and tipped by a stigma 5-7 mm long, the upper half deeply 3-lobed; epicarp drying with longitudinal ridges; seed narrowly ovoid, ca. 2.3 X 1.2 cm, acute to acuminate or shortly spinescent at tip; base truncate, slightly concave intruded. </p></div>
+<div type="distribution"><p>Malay Peninsula (Johore).</p></div>
+<div type="biology_ecology"><p>In dense humid forest on steep rocky hillslopes or river valley bottoms; ca. 180-500 m alt. Endemic.</p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p>This species is very distinctive in its very large staminate flowers, the consistently 2-branched inflorescence, and the prominently long-beaked, ovoid to obclavate or obpyriform fruit tipped with a distinctly long, 3-lobed stigma. It is most closely related to N. macrocarpa in vegetative features, as well as in the staminate flowers with equal or subequal perianth parts. N. macrocarpa is, however, easily distinguished from N. grandiflora by its inflorescence with often 3-4 rachillae, the much smaller staminate flowers, and the more ellipsoid fruits. Figures 66 and 68a in Whitmore's 'Palms of Malaya' (1973: 80) labelled as N. macrocarpa belong to this new species. </p></div>
+<div type="materials_examined"><p>MALAY PENINSULA: lohore: Kota Tinggi, Panti East, 400 m alt., fl. and fr., Dransfield &amp; Fang 5048 (Holotype K; Isotypes KEP, L), G. Blumut, below Camp 2, ca. 500 malt., fr., Dransfield 841 (K), Sungei Kayu, fr., Corner &amp; Furtado SFN 29482b (K), Kluang, Lenggor Forest Reserve, ca. 180 malt., fr., Dransfield 810 (BH), Mersing Forest Reserve, fl. and fr., Moore &amp; Pennington 9061 (BH). </p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

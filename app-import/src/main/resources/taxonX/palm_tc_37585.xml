@@ -1,0 +1,56 @@
+<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>Manual to the palms of Ecuador</mods:title>
+</mods:titleInfo>
+<mods:name type="personal">
+<mods:namePart type="family">Borchsenius</mods:namePart>
+<mods:namePart type="given">F.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:name type="personal">
+<mods:namePart type="family">Pedersen</mods:namePart>
+<mods:namePart type="given">H.B.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:name type="personal">
+<mods:namePart type="family">Balslev</mods:namePart>
+<mods:namePart type="given">H.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>AAU Reports 37. Department of Systematic Botany, University of Aarhus, Denmark in collaboration with Pontificia Universidad Cat�lica del Ecuador</mods:publisher>
+<mods:dateIssued>1998</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Chamaedorea linearis</name>
+<author>(Ruiz &amp; Pav.) Mart.</author>
+<citation>Hist. Nat. Palm. 2: 5 (1823)</citation>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="description"><p>Understorey palm.  Stem solitary, to 10 m tall, 3-8 cm in diameter, green and smooth.  Leaf sheaths closed, forming a 30-90 cm long green crownshaft; blade 100-250 cm long, with 25-65 equal pinnae on each side, the central ones 30-85 cm long and 3-12 cm wide, with 4-6 subequal nerves.  Inflorescences once branched, 15-100 cm long, with 3-4 swollen, cream coloured peduncular bracts, and 5-55 branches.  Male inflorescences up to 18 per node, female ones solitary at the nodes.  Fruits orange to red, 1.5-2.5 cm in diameter.</p></div>
+<div type="distribution"><p>W of the Andes from N Colombia to S Ecuador, and E of the Andes from N Ecuador to Bolivia.  In Ecuador it is frequent to common in the W lowlands and on the E and W slopes of the Andes up to 2400 m elevation, both in primary and disturbed forest.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p></p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

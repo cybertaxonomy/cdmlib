@@ -1,0 +1,43 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>A Revision of Wallichia (Palmae)</mods:title>
+</mods:titleInfo>
+<mods:name type="personal">
+<mods:namePart type="family">Henderson</mods:namePart>
+<mods:namePart type="given">A.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Taiwania 52(1) 1-11</mods:publisher>
+<mods:dateIssued>2007</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Wallichia lidiae</name>
+<author>A.J.Hend.</author>
+<citation>Taiwania 52: 6 (2007)</citation>
+<type>MYANMAR. Bago Division, W of Oktwin, N of Toungoo, road across Pegu Yoma, 18°51’N, 96°12’E, 4 Nov 2005; A. Henderson, U San Hlaing &amp; Kyi Myat Min; 3212</type>
+<type_loc>Holotype NY!; isotype RAF!</type_loc>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="diagnosis"><p>A similaribus speciebus differt: foliolis vix lobatis, late lanceolatis et inflorescentiis staminatis amplioribus.</p></div>
+<div type="description"><p>Stems clustered, with one main stem and several shorter ones, to 4 m tall, 4 cm diameter, stems bearing staminate inflorescences to 4 m tall, pistillate stems much shorter, to 0.5 m tall. Leaves 6, spirally arranged; sheaths not fibrous; petioles 2 m long; rachis 1 m long; pinnae 7 per side of rachis, regularly and alternately arranged except for clustered proximal pair, spreading in the same plane, pinnae from middle of leaf 50 cm long, 12-14 cm wide at widest point, widest near the middle, broadly lanceolate, scarcely lobed. Inflorescences subtended by smaller leaves, unisexual, staminate and pistillate borne on separate stems, the pistillate terminal the staminate lateral; staminate inflorescences 70 cm long, to 7 per stem, pendulous; prophyll not seen; peduncle 40 cm long; peduncular bracts 11, open and not sheathing the peduncle; rachillae 4 cm long, 1 mm diameter, glabrous; staminate flowers not seen; pistillate inflorescences 45 cm long, pendulous; prophyll not seen; peduncle 20 cm long; peduncular bracts several, open and not sheathing the peduncle; rachillae about 17, 14-15 cm long, 2.5 mm diameter; pistillate flowers to 3 mm long at anthesis; sepals 0.5 mm long; petals 2.5 mm long; gynoecium 2.5 mm long; fruits not seen. </p></div>
+<div type="distribution"><p>Known only from the central part of the Pegu Yomah, Myanmar.</p></div>
+<div type="biology_ecology"><p>On steep slopes in highly disturbed forest, at low elevations.</p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>None recorded.</p></div>
+<div type="discussion"><p>Wallichia lidiae differs from all other species in its short pistillate stems and elongate staminate stems, both of which are borne in the same clump. In pistillate stems the single inflorescence is terminal, and is subtended by smaller leaves. Staminate stems are elongate and have a terminal abortive pistillate inflorescence and up to seven lateral staminate inflorescences. </p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

@@ -1,0 +1,67 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>Trachycarpus geminisectus, the Eight Peaks Fan Palm, a New Species from Vietnam</mods:title>
+</mods:titleInfo>
+<mods:name type="personal">
+<mods:namePart type="family">Gibbons</mods:namePart>
+<mods:namePart type="given">M.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:name type="personal">
+<mods:namePart type="family">Spanner</mods:namePart>
+<mods:namePart type="given">T.W.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:name type="personal">
+<mods:namePart type="family">Nguyen</mods:namePart>
+<mods:namePart type="given">V.D.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:name type="personal">
+<mods:namePart type="family">Anh</mods:namePart>
+<mods:namePart type="given">P.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Palms 47(3) 143-148</mods:publisher>
+<mods:dateIssued>2003</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Trachycarpus geminisectus</name>
+<author>Spanner &amp; al.</author>
+<citation>Palms 47: 146 (2003)</citation>
+<type>VIETNAM. Ha Giang, Quan Ba, Bat Dai Son; Gibbons, Spanner, T.P. Anh &amp; V. D. Nguyen; GSAD 01</type>
+<type_loc>holotypus HN; isotypi K, MO</type_loc>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p>The specific epithet (Latin – geminisectus, with twin segments) relates to the fact that the leaf segments of this palm are usually joined in pairs along their entire length.</p></div>
+<div type="vernacular"><p></p></div>
+<div type="diagnosis"><p>T. principi Gibbons, Spanner &amp; S. Y. Chen similis sed trunco brevi, vaginis foliorum fibris grossissimis compositis lamina grande in ca. 20 segmentis geminatis profunde incisa, floribus fragrantis differt.</p></div>
+<div type="description"><p>Solitary, unarmed, dioecious fan palm; trunk erect, 1–2 m tall, densely clothed in persistent, fibrous leaf-sheaths, ca. 25 cm diameter. Leaves 10–12, forming a spreading, very open crown, marcescent leaves forming a loose skirt around the trunk; leafsheath fibrous, very coarse, dark brown, persistent, dotted with a few pale brown scales, exposed part of sheath divided into stiff, wiry threads; petiole ca. 85 cm, slender, c 1.4 cm wide and 0.9 cm high near middle, very robust, stiff, flat above, triangular in cross section, with a broad yellow stripe below, orange towards the base, glabrescent, margins minutely toothed; hastula small, ca. 1.5 cm long, triangular, petiole slightly extending into the blade below to form a weak costa; leaf-blade palmate, 3/4 to 4/4 orbicular, ca. 85 cm long from hastula, ca. 130 cm wide, very leathery, dark, glossy green above, thick whitish waxy below, transverse veinlets barely visible, deeply and regularly divided for more than 3/4 its length into ca. 40 rigid, stiff, linear segments, joined for their entire length in groups of 2 or rarely 3, slightly tapering from 2/3 their length from the hastula towards the apex, arranged in one plane, producing a nearly flat leaf profile; central segments ca. 85 cm long, 4 cm wide at middle (i.e. ca. 8 cm for a typical double segment), with a very thick and prominent midrib beneath, lateral segments gradually more narrow and shorter, to c 50 x1.5 cm, apex of segments acute-notched, shortly bifid. Inflorescences few, interfoliar, branched to 3 orders. Male inflorescence short, ca. 50 cm long; peduncle short, oval in cross section; peduncular and inflorescence bracts keeled, base tubular, inflated distally, slightly tomentose, apex acuminate; rachis bracts similar to peduncular bracts; rachillae short, 3–6 cm long, thin; flowers densely arranged, subtended by minute bracteoles, globose, ca. 3 mm in diameter, yellow, fragrant; sepals ovate-triangular, 2 mm long, briefly connate at base; petals oblongorbicular, twice as long as sepals; stamens 6, exceeding the petals; filaments slightly ventricose; anthers saggitate, blunt; pistillodes about half the length of stamens. Female inflorescence long, robust, stiff, spreading; peduncle oval in crosssection, prophyll 2-keeled, long, tubular; peduncular and rachis bracts, keeled, long, tubular, apex acuminate; rachillae 7–13 cm long, fleshy, yellowish in fruit; flowers globose, 2–3 mm diameter, yellow, fragrant, usually solitary, subtended by minute bracteoles, sepals 2 mm long, orbicular; petals oblong-orbicular, 2.5–3 mm long; staminodes very small; carpels ventricose with a short, conical style. Fruit shortly stalked, reniform, wider than long; epicarp thin, black, with a white bloom; mesocarp thin; seed reniform, wider than long; endocarp very thin; endosperm homogeneous. Germination remote-tubular, eophyll simple, narrow, plicate </p></div>
+<div type="distribution"><p>Vietnam, Ha Giang province (Quan Ba district) and Cao Bang province (Bao Lac district)</p></div>
+<div type="biology_ecology"><p>In primary closed or secondary, low, wet, mossy mixed cloud forest on steep slopes and along remnant karst limestone ridges, at 1100–1600 m a.s.l.; cooccurring with conifers such as Cupressus, Taxus, Nagea, Pseudotsuga, broadleaf trees like Rhododendron, several Lauraceae and Rosaceae spp. Palms such as Plectocomia(?) and large Caryota have been observed close-by. Even though it has not been observed there yet, it seems very likely that T. geminisectus also occurs in similar habitats just across the border in China’s Guangxi province.</p></div>
+<div type="conservation"><p>With the meager data available at this moment, no precise assessment is possible. Apparently it is very common on some ridges within its distribution area. Its habitat is steep and nearly inaccessible and because the plant has no uses, human interference is minimal. However, it seems that this species could be at risk because of a scattered distribution and through hybridization influence from T. fortunei, which is cultivated in nearby villages. It apparently does not occur in any protected area. </p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p>CULTIVATION:For lack of propagating material, Trachycarpus geminisectus has not yet been introduced into cultivation. There are no plants of this species outside its native habitat. We believe however, that because of its very ornamental large leaves with wide segments and its supposed resistance to cold, it would be a highly desirable landscaping plant for temperate and subtropical areas alike. NOTES: T. geminisectus is easily distinguished from other members of the genus by its large leaves with paired, very wide segments and short trunk with persistent leaf bases that have very coarse, wiry fibers. The double leaf segments, 8 cm wide, or the occasional triple segment, about 12 cm wide, represent by far the widest in the genus. Vegetatively and in floral structure, T. geminisectus seems most closely related to T. princeps Gibbons, Spanner &amp; S. Y. Chen. As there is no recent taxonomic treatment of the genus Trachycarpus (but see Beccari 1931, Kimnach 1977 and Gibbons &amp; Spanner 1998), relationships of T. geminisectus will be dealt with more precisely in a conspectus of the whole genus, which will appear in a later publication. </p></div>
+<div type="materials_examined"><p>VIETNAM. Cao Bang prov., Bao Lac distr., municipality Dinh Phung, Nam Linh ridge (N 22°47’ E 105°49’), 15 April 1999, P.K.Loc, P.H.Hoang, Averyanov L. No CBL 1421, CBL 1422 (K, LE). Ha Giang prov., Quan Ba distr., Can Ti municipality, vicinities of Sing Xuoi Ho village (N 23°04’ E 104°59’), 1100-1150m a.s.l., 12 Oct. 1999, N.T. Hiep, N.Q. Binh, L. Averyanov, P. Cribb, No NTH 3605 (K, LE). Bat Dai Son municipality, on Chong To Tien (ridge), ca. 1300 m a.s.l., (N 23°09’, E 105°00’), 6 April 2000, D.K.Harder, N.T. Hiep, L.V. Averyanov &amp; N.Q. Hieu DKH 5226 (K, MO); idem, Nov. 2001, Gibbons, Spanner, T.P. Anh, V. D. Nguyen, GSAD 01 (Holotype HN, isotypes K, MO). </p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

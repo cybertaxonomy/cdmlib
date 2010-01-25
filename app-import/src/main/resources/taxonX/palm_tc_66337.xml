@@ -1,51 +1,56 @@
-﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 <taxonxHeader>
-		<mods:mods>
-		<mods:titleInfo><mods:title>The Palms of Madagascar</mods:title></mods:titleInfo>
-<mods:name>
-<mods:namePart type="family">Dransfield</mods:namePart>
-<mods:namePart type="given">J.</mods:namePart>
-<mods:namePart type="family">Beentje</mods:namePart>
-<mods:namePart type="given">H.</mods:namePart>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>Manual to the palms of Ecuador</mods:title>
+</mods:titleInfo>
+<mods:name type="personal">
+<mods:namePart type="family">Borchsenius</mods:namePart>
+<mods:namePart type="given">F.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
 </mods:name>
-		<mods:originInfo>
-			<mods:dateIssued>1995</mods:dateIssued>
-			<mods:publisher>Royal Botanic Gardens, Kew and The International Palm Society</mods:publisher>
-		</mods:originInfo>
-		</mods:mods>
+<mods:name type="personal">
+<mods:namePart type="family">Pedersen</mods:namePart>
+<mods:namePart type="given">H.B.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:name type="personal">
+<mods:namePart type="family">Balslev</mods:namePart>
+<mods:namePart type="given">H.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>AAU Reports 37. Department of Systematic Botany, University of Aarhus, Denmark in collaboration with Pontificia Universidad Cat�lica del Ecuador</mods:publisher>
+<mods:dateIssued>1998</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
 </taxonxHeader>
 <taxonxBody>
 <treatment rank="species">
 <nomenclature>
 <name>Elaeis guineensis</name>
 <author>Jacq.</author>
-<citation>Select. Stirp. Amer. Hist. 280 (1763)</citation>
-<bibref>Jum. &amp; H. Perrier, Ann. Inst. Bot.-G&#233;ol. Colon. Marseille S&#233;r. 3, 1 (1): 78 (1913)</bibref>
-<bibref>J. Dransf., Flora Tropical East Africa, Palmae: 50 (1986)</bibref>
-<type>T.172 in Select. Stirp. Amer. Hist. (1763);;</type>
-<synonymy>
-<name>Elaeis guineensis var. madagascariensis</name>
-<author>Jum. &amp; H. Perrier</author>
-<bibref>Jum. &amp; H. Perrier, Les Mati&#232;res Grasses 6 (1911)</bibref>
-</synonymy>
-<synonymy>
-<name>Elaeis madagascariensis</name>
-<author>(Jum. &amp; H. Perrier) Becc.</author>
-<bibref>(Jum. &amp; H. Perrier) Becc., Palme del Madagascar 55 (1914)</bibref>
-<type>Without locality, date or collector, sent by Jumelle to Beccari;; </type>
-<type_loc>Lectotype FI</type_loc>
-</synonymy>
+<citation>Select. Stirp. Amer. Hist.: 280 (1763)</citation>
 </nomenclature>
-<div type="introduction"><p>The oil palm can be found throughout the humid lowland areas in the east of the island, and even in towns on the plateau. Often planted as an ornamental, there are also small commercial plantations, for example near Toamasina and Sambava. It also occurs in the northwest, where Jumelle and Perrier suggested it was native; however, whether the oil palm is native or not in Madagascar is open to debate. We have never seen it in the wild in Madagascar.</p></div>
+<div type="introduction"><p></p></div>
 <div type="etymology"><p></p></div>
-<div type="vernacular"><p>Tsingilo (cited in Fl. Madagascar).</p></div>
-<div type="description"><p>Solitary robust palm. TRUNK grey to 20 m tall, swollen at the base, 30-50 cm diam., covered in remains of leaf bases when young, but in high rainfall areas often obscured by epiphytes. LEAVES c. 40-50 in crown, to 7.5 m long in well grown subadults; leaf base long persistent with coarse brown fibres and upward pointing fibre spines to 35 x 5 mm, &#177; 10 mm distant, confined to the sheath margins; apparent petiole to 1.25 m long, c. 20 cm wide at base, distally armed with bulbous-based spines to 4 cm long, 1-5 cm distant, formed from the basal leaflets; leaflets 100-150 on each side of the rachis, inserted irregularly in two planes, to 120 x 8 cm. STAMINATE INFLORESCENCE with peduncle 15-20 cm long, 5 cm or more diam.; rachillae c. 50, crowded, 10-20 cm long, 1-2 cm diam., with spine-like tip to 1 cm. STAMINATE FLOWERS with sepals 2 x 1.5 mm; petals 2 x 1.5 mm; staminal tube to 2.5 mm long, anthers reflexed 1.5 mm long. PISTILLATE INFLORESCENCE more massive than the staminate, with much shorter rachillae, spine-like tips to 2 cm long. PISTILLATE FLOWERS with sepals 10 x 4 mm; petals similar to sepals; staminodal ring to 1 mm; ovary c. 5 mm diam., styles and stigmas to 10 mm long. FRUIT usually 1seeded, partially enclosed by enlarged calyx and corolla tipped by the stigmatic remains, variable, in wild type c. 3 x 2 cm, bright orange, sometimes dusky violet in exposed parts, mesocarp bright orange, endocarp 2-5 mm thick. SEED c. 2 x 1.5 cm.</p></div>
-<div type="distribution"><p>Widespread throughout the more humid parts of Africa, the distribution much influenced by man. In Madagascar doubtfully native, ?naturalised in the northwest and east in humid areas, particularly near villages.</p></div>
-<div type="biology_ecology"><p>Village margins, valley bottoms, up to c. 500 m as a naturalised plant.</p></div>
-<div type="conservation"><p>Not threatened.</p></div>
-<div type="uses"><p>The most important perennial oil crop of the tropics, also used for a multiplicity of other purposes; in Madagascar, of limited importance.</p></div>
-<div type="discussion"><p>Small populations in the west of the island were separated by Jumelle and Perrier as a distinct variety, E. guineensis var. madagascariensis, and Beccari went further, elevating this variety to specific rank as  E. madagascariensis, based on what we believe to be spurious differences in the position of the anthers and fruit size (anthers reflexed in African populations, erect in Madagascar, fruit smaller in Madagascar populations). However, E. guineensis in Africa is itself very variable, and current thinking (Rajanaidu, pers. com.) is that the taxon in Madagascar fits within the range of variation found in Africa. In the absence of good fertile specimens from the wild in Madagascar, we have based the above description on the wild type African oil palm.</p></div>
-<div type="materials_examined"><p>Mahabo: Valley of Sakeny, near Malaimbandy, Oct. 1933 (sterile), Humbert 11385 (P). Without locality, date or collector, sent by Jumelle to Beccari (FI) (Lectotype of E. madagascariensis).</p></div>
+<div type="vernacular"><p></p></div>
+<div type="description"><p>Canopy palm.  Stem solitary, erect, to 10 m tall, ca. 30-50 cm in diameter.  Leaves to 5 m long; pinnae 100 or more on each side, inserted in groups and spreading in different planes.  Fruits glossy red to black.</p></div>
+<div type="distribution"><p>Native to W Africa, but planted throughout the tropics for its oil-rich fruits which are a major source of plant oil on a world scale (Hartley, 1977).  In Ecuador it is grown in large plantations below 500 m elevation, particularly in the Santo Domingo-Quinind� area.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p>Hybrids between this species and Elaeis oleifera are easily made and six hundred hectares have been planted with hybrid individuals in Ecuador (Carri�n &amp; Cuvi, 1985).  These plants have an erect stem and regularly inserted pinnae borne in one plane.</p></div>
+<div type="materials_examined"><p></p></div>
 </treatment>
 </taxonxBody>
 </taxonx>

@@ -1,0 +1,56 @@
+<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>Manual to the palms of Ecuador</mods:title>
+</mods:titleInfo>
+<mods:name type="personal">
+<mods:namePart type="family">Borchsenius</mods:namePart>
+<mods:namePart type="given">F.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:name type="personal">
+<mods:namePart type="family">Pedersen</mods:namePart>
+<mods:namePart type="given">H.B.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:name type="personal">
+<mods:namePart type="family">Balslev</mods:namePart>
+<mods:namePart type="given">H.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>AAU Reports 37. Department of Systematic Botany, University of Aarhus, Denmark in collaboration with Pontificia Universidad Cat�lica del Ecuador</mods:publisher>
+<mods:dateIssued>1998</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Wettinia oxycarpa</name>
+<author>Galeano-Garc�s &amp; R.Bernal</author>
+<citation>Caldasia 13: 695 (1983)</citation>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="description"><p>Canopy palm.  Stem solitary, 6-15 m tall and 9-15 cm in diameter, usually with one dead leaf hanging down.  Leaves 3.5-6 m long; pinnae 23-30 on each side, entire, pendulous, with a rusty pubescence, especially below and along veins, the central ones 95-130 cm long and 9-12 cm wide, with ca. 13 prominent veins.  Inflorescences 1-6 per node; peduncle 20-25 cm long; rachis 8-25 cm long; branches 30-40, to 15 cm long.  Male flowers 10-12 mm long, with 12-19 stamens.  Female flowers crowded along the branches.  Fruits brown, angled, with a velevety pubescence, 2.5-3.5 cm long and 1.5-2 cm in diameter, forming a single elliptic mass 30-40 x 20 cm.</p></div>
+<div type="distribution"><p>W Colombia and Ecuador, in moist to wet forest in the Andean foothills at elevations between 400 and 1600 m.  Usually very local in its occurrence.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p></p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

@@ -1,0 +1,64 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>Guihaia, a New Coryphoid Genus from China and Vietnam</mods:title>
+</mods:titleInfo>
+<mods:name type="personal">
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:name type="personal">
+<mods:namePart type="family">Shu-kang</mods:namePart>
+<mods:namePart type="given">L.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:name type="personal">
+<mods:namePart type="family">Fa-nan</mods:namePart>
+<mods:namePart type="given">W.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Principes 29: 3-12</mods:publisher>
+<mods:dateIssued>1985</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Guihaia argyrata</name>
+<author>(S.K.Lee &amp; F.N.Wei) S.K.Lee, F.N.Wei &amp; J.Dransf.</author>
+<citation>Principes 29: 9 (1985)</citation>
+<type>China, Guangxi, Yanshuo, 27.5.1964; F. N. Wei; 937</type>
+<type_loc>Holotype IBK</type_loc>
+<synonymy>
+<name>Trachycarpus argyratus</name>
+<author>S.K.Lee &amp; F.N.Wei</author>
+<bibref>S.K.Lee &amp; F.N.Wei, Guihaia 2: 131 (1982)</bibref>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="diagnosis"><p></p></div>
+<div type="description"><p>Low clustering fan palm to ca. 1 m tall; stem decumbent or erect, very short, ca. 3-5 cm diam., sometimes up to 0.5 m tall, with very close leaf scars, the stem usually completely obscured by the old leaf sheaths. Leaves several in crown, spreading; sheath tubular at first, expanding into very sharp needle-like, erect dark brown fibers to ca. 14 cm long, ca. 1 mm wide; petiole up to ca. 1 m long, usually less, much shorter in exposed individuals, ca. 11 mm wide near the base, very slightly narrowed distally, ± hemispherical in cross section, bearing caducous silky hairs when young; adaxial hastula ca. 1 x 1 cm, fringed with hairs when young; lamina ca. 20-60 cm diam. in mid-line, divided to ca. 3/4 to 4/5 into up to ca. 26 single-fold (rarely two-fold) reduplicate segments, up to ca. 2.5 cm wide, the outermost segments very narrow, the segment tips very briefly bifid, adaxial surface dark green, abaxial surface silvery grey hairy. Inflorescences 30-80 cm long, with 2-5 partial inflorescences branching to the 4th order; rachillae very slender, the pistillate to 50 x 0.5 mm, the staminate usually shorter and even more slender. Staminate flower in bud ca. 1.5 mm long or less; sepals ca. 1 x 0.8 mm; corolla ca. 1.2 mm long, the lobes ca. 0.8 mm wide; anthers ca. 0.3 mm diam. Pistillate flower ca. 1.5 mm long; sepals ca. 1 x 0.8 mm; corolla ca. 1.2 mm, the lobes ca. 1 mm wide; staminodes minute, the empty anthers ca. 0.2 mm long; carpels ca. 0.5 x 0.4 mm. Mature fruit subglobose up to ca. 6 mm diam.; epicarp blue-black, waxy; seed ca. 4-5 mm diam. </p></div>
+<div type="distribution"><p></p></div>
+<div type="biology_ecology"><p>Flowers open towards the end of May until June. Fruit ripens at the end of October to November.</p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p></p></div>
+<div type="materials_examined"><p>CHINA. Guangxi: Guilin, Wei Fa-nan 409 (18K), 1513 (18K), 1524 (18K), Chen San-yang 18869, 18870 (HITBC); Lungzhou (Longzhou), Morse 195 (K); Tianyang, Li Chung-ti 601840 (KUN); Rongan (Ch'ang An), Steward &amp; Cheo 1196 (A, P); Yanshuo, Chen Zhao-zhou 53103 (18K), Wei Fa-nan 937 (holotype 18K); Jingxi, Chang Chao-chien 4479 (IBK), Chung Chihsing 84063 (IBK), 82372 (IBK). Guangdong: Yinde, Wei Chao-ftn 123182 (IBSC). </p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

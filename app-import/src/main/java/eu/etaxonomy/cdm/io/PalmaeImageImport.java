@@ -31,10 +31,6 @@ import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.app.images.AbstractImageImporter;
 import eu.etaxonomy.cdm.app.images.ImageImportConfigurator;
-import eu.etaxonomy.cdm.common.mediaMetaData.ImageMetaData;
-import eu.etaxonomy.cdm.common.mediaMetaData.MediaMetaData;
-import eu.etaxonomy.cdm.common.mediaMetaData.MetaDataFactory;
-import eu.etaxonomy.cdm.common.mediaMetaData.MimeType;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.description.Feature;

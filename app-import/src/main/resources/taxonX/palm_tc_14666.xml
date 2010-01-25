@@ -1,0 +1,53 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>A New Species of Arenga (Palmae)</mods:title>
+</mods:titleInfo>
+<mods:name type="personal">
+<mods:namePart type="family">Henderson</mods:namePart>
+<mods:namePart type="given">A.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Taiwania 51(4) 298-301</mods:publisher>
+<mods:dateIssued>2006</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Arenga engleri</name>
+<author>Becc.</author>
+<citation>Malesia 3: 184 (1889)</citation>
+<type>TAIWAN. Taipei, Tamsuy, 14 Apr 1864; R. Oldham; 626</type>
+<type_loc>Lectotype FI-B ; isolectotype K!</type_loc>
+<synonymy>
+<name>Didymosperma engleri</name>
+<author>(Becc.) Warb.</author>
+<bibref>(Becc.) Warb., Monsunia 1: t. 2, f. 1 (1900)</bibref>
+</synonymy>
+<synonymy>
+<name>Arenga tremula var. engleri</name>
+<author>(Becc.) Hatus.</author>
+<bibref>(Becc.) Hatus., Fl. Ryukyus: 754 (1971)</bibref>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>Soan-tsang (Taiwanese), shan-tsong (Mandarin).</p></div>
+<div type="diagnosis"><p></p></div>
+<div type="description"><p>Stems clustered, to 4 m tall, 10-15 cm diameter. Leaves pinnate; sheaths fibrous; ocrea not seen; petioles to 1.8 m long, covered with dark brown, peltate scales; rachis to 3 m long, tomentose as the petiole; pinnae 38-41 per side of rachis, linear, flat adaxially, very briefly lobed along the margins, without ears at the base, regularly arranged and spreading in the same plane except for the basal few pinnae, these paired; middle pinnae 43-49 cm long, 2-2.2 cm wide. Inflorescences interfoliar, unisexual, to 60 cm long, not seen in their entirety; staminate rachillae 9.7-27.6 cm long, 3.6-4 mm diameter, numerous, glabrous; staminate flowers 8-14 mm long, spirally and distantly arranged; sepals 2-2.5 mm long; petals 9-14 mm long; filaments 2-4 mm long; anthers 3-6 mm long; stamens 25-37; pistillate rachillae 27-32 cm long, 5-7.4 mm diameter, glabrous; pistillate flowers spirally and distantly arranged, 3 mm long; sepals 2.5 mm long, broadly imbricate, gibbous; petals 3 mm long, valvate for about two thirds their length; fruits globose, 1.5 cm diameter, orange or red. </p></div>
+<div type="distribution"><p>Taiwan.</p></div>
+<div type="biology_ecology"><p>Lowland forest, at low elevations.</p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p>This species is widely cultivated. One specimen, Chung 6374, from Fukien Province, China, is said by Merrill (1937) to be possibly cultivated.</p></div>
+<div type="materials_examined"><p>TAIWAN. Kaohsiung co.: Rokki, 300 m, 13 May 1934, Gressitt 41 (NY).Nanto co.: Musha, 12 Mar 1918, Wilson 10022 (K, US). Unknown province: no locality, no date, Henry 798 (K, NY, US); Tong An, Chikutoki, E of Kagi, 9 Mar 1912, Price 148 (K). </p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

@@ -1,0 +1,56 @@
+<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>Manual to the palms of Ecuador</mods:title>
+</mods:titleInfo>
+<mods:name type="personal">
+<mods:namePart type="family">Borchsenius</mods:namePart>
+<mods:namePart type="given">F.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:name type="personal">
+<mods:namePart type="family">Pedersen</mods:namePart>
+<mods:namePart type="given">H.B.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:name type="personal">
+<mods:namePart type="family">Balslev</mods:namePart>
+<mods:namePart type="given">H.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>AAU Reports 37. Department of Systematic Botany, University of Aarhus, Denmark in collaboration with Pontificia Universidad Cat�lica del Ecuador</mods:publisher>
+<mods:dateIssued>1998</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Euterpe precatoria</name>
+<author>Mart. in A.D.d'Orbigny</author>
+<citation>Voy. Am�r. M�r. 7(3): 10 (1842)</citation>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="description"><p>Canopy palm.  Stems solitary, or rarely clustered and then few together, to 20 m tall, 15-30 cm in diameter.  Leaves to 4 m long; crownshaft yellowish green; petiole green, glabrous; pinnae numerous, regularly inserted, narrow, strongly pendulous, the central ones 50-85 cm long and 2-3 cm wide.  Inflorescence erect, with axis 40-100 cm long; branches to 200, usually confined to the lower (abaxial) side of the rachis, 30-80 cm long, 3-5 mm in diameter, densely covered with whitish hairs.  Fruits black, globose, ca. 1.5 cm in diameter.  Endosperm homogeneous.  Seedling leaves pinnately divided, the first ones with 2 pinnae on each side, appearing palmate.</p></div>
+<div type="distribution"><p>Central America to Bolivia, up to 2000 m elevation.  In Ecuador it occurs on both sides of the Andes, on terra firme, or east of the Andes also on poorly drained soil.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p>Two varieties are recognised, both of which occur in Ecuador.</p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

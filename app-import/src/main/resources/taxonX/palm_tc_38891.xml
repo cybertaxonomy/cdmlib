@@ -1,0 +1,52 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>A New Species of Chelyocarpus (Palmae, Coryphoideae) From Peruvian Amazonia</mods:title>
+</mods:titleInfo>
+<mods:name type="personal">
+<mods:namePart type="family">Kahn</mods:namePart>
+<mods:namePart type="given">F.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:name type="personal">
+<mods:namePart type="family">Mejia</mods:namePart>
+<mods:namePart type="given">K.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Principes 33: 69-72</mods:publisher>
+<mods:dateIssued>1988</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Chelyocarpus repens</name>
+<author>F.Kahn &amp; K.Mejia</author>
+<citation>Principes 32: 69 (1988)</citation>
+<type>Peru; Kahn &amp; Mejia; 1974</type>
+<type_loc>Holotypus USM; isotypus NY</type_loc>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="diagnosis"><p>Caulis procumbens ad 1 m longus, foliis 10-20. Lamina 0.7 m longa, 1.2 m lata, bipartita, laterilater in 4-6 segmenta elongato- cuneata partita, supra viridis, subtus alba. Inflorescentia erecta, 0.35 m longa, bracteis sterilibus 2; rhachis 5-8 cm longa ad apicem compressa; rami 2 cm longi. Flores 4 mm alti; perianthium uniseriatum plerumque 6•lobatum, 2.5 mm altum; stamina 4-8 plerumque 6; carpella 3-5 raro 1, 2, 6. Fructus globosus, 2.5 cm diametro, epicarpio laevi. Embryo subter dimidium. </p></div>
+<div type="description"><p>Trunk pale-brown, procumbent, up to 1 m long and 6-8 cm diam., sometimes erect, up to 0.6 m high. Roots produced at the lower side along the trunk, with secondary, white, short, spiny roots. Leaves 10-20; sheath 0.25-0.3 m long, densely pale-brown appressed villous; petiole up to 1.8 m long, biconvex and rhombic in section with obtuse margins distally, furfuraceous lepidote on the lower side; hastula deltoid, up to 1.5 cm high 1 cm wide; blade green above, white below, lower surface covered with a continuous layer of thin, white, membranaceous scales, these rubbing off on contact, 0.75 m high 1.2 m wide, divided to within 1.5 cm of the base, laterally divided into 4-6 elongatecuneate many-ribbed segments, to 0.75 m long and 0.2 m wide, the external often acute, each many-ribbed segment divided into 2-7 acute I-ribbed segments, 2-8 cm long and 1.5-4 cm wide, these with the midrib prominent below with up to 3 lateral nerves and several finer tertiary nerves on each side. Inflorescence erect, 1 or 2, rarely more, among petiole bases, ca. 0.35 m long, branching to 1 or 2 orders; peduncle 0.24-0.28 m long, strongly flattened, palebrown appressed villous, turning glabrate, bearing a prophyll at 0.18-0.20 m from the base, pale-brown tomentose then glabrate, 9-11 cm long, and a peduncular bract at 0.22-0.28 m from the base, whitish floccose tomentose at anthesis, 5-7 cm long; rachis flattened, 5-8 cm long, 1-2.5 cm wide at base, with 25-35 first order branches, to 0.5 cm long, strongly flattened and wider next to the rachis, each subtended by a slender, flattened, tomentose bract, up to 1.8 cm long; rachillae up to 2 cm long, adnate to the first order branch, densely covered by flowers. Some flowers borne on rachis and branches. Flowers strongly scented, creamy turning dark brown when dry, sessile, 4 mm high, with a slender bract, 2.5 mm long; perianth uniseriate, 2.5 mm high, often irregularly 6-lobed, each lobe irregularly denticulate; stamens 4-8, usually 6, filaments broad and thick basally, tapered to the exserted anthers, often connate basally or throughout; carpels 1-6, most frequently 3, ca. 1.5 mm high; style short, recurved; stigma papillate; perianth in fruit 2.5 mm high. Fruit greenish, globose, 2.5 cm high; epicarp rather smooth, not tessellate, mesocarp whitish, thin. Seed depressed globose to globose, ca. 1.8 cm high; embryo in the lower third. Only one carpel giving fruit, rarely two, then fruits connate basally. </p></div>
+<div type="distribution"><p>Type locality is near Jenaro Herrera village (4°55'S; 73°40'W) in the lower Ucayali River basin, Loreto, Peru. This species was also collected in Yaguasyacu River (20 40'S; 72°00'W), tributary of Ampiyacu River (Plowman et al., no. 6772), Loreto, Peru.</p></div>
+<div type="biology_ecology"><p>In the type locality, this understory palm occurs in high density on slopes (206 palms, among them 18 seedlings, were counted on 0.62 ha) in "terra firme" forest on acrisol (FAO), also found in limit with seasonal swamp forest, but in low density.</p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p>Chelyocarpus repens differs from the three other species. C. chuco (Martius) H. E. Moore, C. dianeurus (Burret) H. E. Moore, and C. ulei Dammer (Moore 1972) by its uniseriate perianth, its higher number of carpels, its smaller, erect inflorescence with only one peduncular bract and by its procumbent, short stem, creeping in the litter and rooting at the lower side. This character is recorded in the epithet.
+C. repens is a beautiful, elegant palm with slender erect petioles, and palmate blades which are silvery-white below. This procumbent species could have a potential as an indoor ornamental. However, the species is not frequent. It has been collected in only two localities in Peruvian Amazonia. Moreover, fruits are not abundant, with at most 20-50 per infrutescence, and many fruits are perforated by a curculionid beetle which eats the endosperm and destroys the seed. Near Jenaro Herrera village, increasing deforestation by shifting cultivation and pasture extension threatens the type population with extinction. </p></div>
+<div type="materials_examined"><p>Kahn &amp; Mejia 1974 (holotype USM, isotype NY), fl. fr., 13 Nov. 1986; K &amp; M 1973 (NY), fl. fr., 13 Nov. 1986; K &amp; M 1972 (BH, K), fl., 13 Nov. 1986; K &amp; M 2049 (P), fl. 6 May 1987; Blanc 825 (USM), fr., Aug. 1985; Mejia 707 (K), fr., Aug. 1985; K &amp; M 2003 (I PA), fr., 15 Dec. 1986; K &amp; M 2004 (MPEG), fr., 15 Dec. 1986; K &amp; M 2005 (AMAZ), fr. 15 Dec. 1986; K &amp; M 2006 (CAY), fr. 15 Dec. 1986; K &amp; M 2008 (AAU), fr., 15 Dec. 1986; K &amp; M 2021 (BH), fr., 20 Mar. 1987; K &amp; M 2068 (P), fr., 21 July 1987. All these vouchers were collected in the type locality. Plowman et al. 6772 (BH), fr., Mar. 1977 </p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

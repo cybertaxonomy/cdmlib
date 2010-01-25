@@ -1,0 +1,56 @@
+<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>Manual to the palms of Ecuador</mods:title>
+</mods:titleInfo>
+<mods:name type="personal">
+<mods:namePart type="family">Borchsenius</mods:namePart>
+<mods:namePart type="given">F.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:name type="personal">
+<mods:namePart type="family">Pedersen</mods:namePart>
+<mods:namePart type="given">H.B.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:name type="personal">
+<mods:namePart type="family">Balslev</mods:namePart>
+<mods:namePart type="given">H.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>AAU Reports 37. Department of Systematic Botany, University of Aarhus, Denmark in collaboration with Pontificia Universidad Cat�lica del Ecuador</mods:publisher>
+<mods:dateIssued>1998</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Aiphanes weberbaueri</name>
+<author>Burret</author>
+<citation>Notizbl. Bot. Gart. Berlin-Dahlem 11: 565 (1932)</citation>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="description"><p>Understorey palm.  Stem solitary, to 1.5 m tall, rarely adscending, with suckers at base.  Leaf blade 50-140 cm long; pinnae 6-24 on each side, strap shaped to narrowly wedge shaped, almost regularly inserted or grouped, held more or less in one plane, the central ones 12-30 cm long and 2-7 cm wide, often densely bristly on both sides, with oblique apex.  Inflorescence 40-150 cm long; branches 5-35, spreading, usually somewhat thickened in the basal part.  Flowers purple.  Fruits less than 1 cm in diameter, red to purple.</p></div>
+<div type="distribution"><p>W Amazon basin in Ecuador and Peru.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p>A species complex that covers a wide variation in size and shape of pinnae.Notes for Ecuador. Two forms are known from Ecuador.  The typical form, which has a short solitary stem, and bristly, nearly strap shaped pinnae, is known from the Morona-Santiago province around 1800 m elevation.  A second form with adscending stem, sucker shoots at the basal nodes, and narrowly wedge shaped, nearly glabrous pinnae is known from the Pastaza and Morona-Santiago provinces around 1200 m elevation.  The latter is characteristic in having erect inflorescences with horizontal branches that have the flowers arranged in two rows on their upper side.</p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

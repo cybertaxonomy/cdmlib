@@ -1,16 +1,36 @@
-﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 <taxonxHeader>
 <mods:mods>
 <mods:titleInfo>
-<mods:title>A monographic study of the subfamily Phytelephantoideae (Arecaceae)</mods:title>
+<mods:title>Manual to the palms of Ecuador</mods:title>
 </mods:titleInfo>
-<mods:name>
-<mods:namePart type="family">Barfod</mods:namePart>
-<mods:namePart type="given">A.S.</mods:namePart>
+<mods:name type="personal">
+<mods:namePart type="family">Borchsenius</mods:namePart>
+<mods:namePart type="given">F.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:name type="personal">
+<mods:namePart type="family">Pedersen</mods:namePart>
+<mods:namePart type="given">H.B.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:name type="personal">
+<mods:namePart type="family">Balslev</mods:namePart>
+<mods:namePart type="given">H.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
 </mods:name>
 <mods:originInfo>
-<mods:publisher>Opera Botanica 105: 1-73</mods:publisher>
-<mods:dateIssued>1991</mods:dateIssued>
+<mods:publisher>AAU Reports 37. Department of Systematic Botany, University of Aarhus, Denmark in collaboration with Pontificia Universidad Cat�lica del Ecuador</mods:publisher>
+<mods:dateIssued>1998</mods:dateIssued>
 </mods:originInfo>
 </mods:mods>
 </taxonxHeader>
@@ -18,21 +38,19 @@
 <treatment rank="species">
 <nomenclature>
 <name>Phytelephas tumacana</name>
-<author>O.F.Cook</author>
+<author>O.F. Cook</author>
 <citation>J. Wash. Acad. Sci. 17: 224 (1927)</citation>
-<type>Colombia. Narino: Tumaco, 10 May 1926 (&#9794;); Cook and Baker; 103</type>
-<type_loc>Holotype US</type_loc>
 </nomenclature>
 <div type="introduction"><p></p></div>
 <div type="etymology"><p></p></div>
 <div type="vernacular"><p></p></div>
-<div type="diagnosis"><p></p></div>
-<div type="description"><p>Solitary palm tree, stem up to 5 m tall and about 20 cm in diameter. Leaves 10-15, semi-erect to erect, several marcescent leaves usually pendent from crown; leaf 30-40 cm long from point of insertion to blade; petiole 4-5 x 2-2.5 cm in cross-section above the middle, smooth, flattened, with a median ridge adaxially and covered by drab-colored waxy layer, shallowly rounded and green abaxially; rachis 350-500 cm long; pinnae 80 to 110 per side, with brown tomentum basally on abax-ial side, midnerve prominent, submarginal veins promi-nulent, basal pinnae opposite. 18-25 x 0.5-1 cm, 0.5-1 cm apart, middle pinnae subalternate, 60-100 x 4.5-5.5 cm, 3.5-4.5 cm apart, distal pinnae subalternate, 10-15 x 0.5-1 cm, 2-3 cm apart. Staminate peduncle 25-40 cm long, 3-3.5 X 2-2.5 cm in cross section in the middle part; prophyll 25-35 X 4.5-5.5 cm, brownish-green to drab-colored; first peduncular bract inserted 15-20 cm above peduncle base, 30-40 cm long, light brown to cream; incomplete peduncular bracts 5-10, deltoid, 2-4 cm; rachis 100-180 cm long, 2-2.5 cm wide in the middle part, tapering to a blunt, about 1 cm wide apex; bracts subtending flower clusters about 2 cm long proxi-mally on rachis, narrowly deltoid and acute to acuminate; clusters in the middle part composed of 4(—5) flowers each with 1-2 mm long pedicel, proximal clusters composed of fewer flowers with 2-3 mm long pedicels, sub distal clusters sessile, ultimate 4—7 flowers, solitary with pedicels 5-7 mm long; proximal flowers of each cluster separated from the others at late anthesis, flowers free, or pedicels and receptacle irregularly fused typically in sessile flower clusters; receptacle unevenly shaped but usually rounded in outline, 0.5-1 cm in diameter, with slightly deflexed margins, covered by masses of 150-250 stamens; perianth cupule irregularly dentate, adnate basally to receptacle, the free part being less than 1 mm high; filament 25-30 x 0.1-0.2 mm thick, strongly tortuous, brown, tough and elastic; anther 2-3 X 0.5-0.7 mm, shortly apiculate. Pistillate peduncle 20-30 cm long, smooth, cream to light brown, 2.5-3.5 x 1.5-2 cm in cross-section in the middle part; prophyll 20-25 x 5-6 cm, otherwise similar to pistillate prophyll; first peduncular bract inserted 10-15 cm above the peduncle base, 30-45 cm long, similar to staminate homologue in color, texture and shape; incomplete peduncular bracts 10-15, spirally arranged, covering 5-7 cm of peduncle below flower-bearing zone, 5-15 x 2-6 cm, cream basally to light brown apically, the proximal ones acute, the distal ones with long acumen; flowers 5-10; floral subtending bracts, oblique, 8-12 cm x 1-3 cm; sepaloid bracts 4-6, slightly oblique, 5-8 x 0.5-1 cm; tepals 5-8, 20-25 cm long, basally to 2.5 cm wide; non-functional stamens many, filaments long and tortuous, about 0.1 mm thick; gynoe-cium 6-7-loculate, about 1-1.5 cm long, tapering apically; style 10-12 x 0.3-0.4 cm; stigmas (5-)6, 12-15 cm long, strongly tortuous. Infructescences to 20 on one palm; 20-25 cm in diam.; peduncle 20-30 cm long, 5-6 x 2-3 cm in cross-section in the middle part; prophyll and first peduncular bract partly resolved; incomplete peduncular bracts with persistent base; fruit-bearing zone 2.5-3.5 cm long with 5-8 closely inserted fruits, abscission scar rounded to elliptical, to 3.5 cm in widest diameter; fruits 7-8 cm long, tangential face rounded to slightly edged in outline, 10-12 cm in diam.; outer mesocarp with spiny processes 1-1.3 cm long, basal part of style persistent; inner mesocarp 2-5 mm thick, fleshy, pulveraceous and bright cream to yellow upon drying; seeds 5(-6); pyrene rounded; rostrum absent; umbo little raised centrally to basally on pyrene, flattened, ovate in outline with the narrow end pointing up. Seedling with two scale leaves; cotyledonary petiole observed 10-15 cm long; eophyll with 30-36 pinnae.</p></div>
-<div type="distribution"><p>Only recorded from the coastal plains in Narino, Colombia.</p></div>
-<div type="biology_ecology"><p>A common species in the rural areas outside Tumaco. Individual palm trees are conserved in the pastures. Good reproduction was observed in the adjacent forest remnants. Bernal (1989) rated the conservation status of this species as endangered because of the threat from the increasing cultivation of African Oil Palm in the area. Flowering in the end of the rainy season, January to February, probably extending until May.</p></div>
+<div type="description"><p>Stem solitary, to 5 m tall or more and ca. 20 cm in diameter. Leaves 10-15, semi-erect to erect 4-6 m long; pinnae 80-110 on each side, regularly arranged and spreading in one planes, the central ones 60-100 cm long and 4-6 cm wide.  Male inflorescence 1-2.5 m long, cream to yellow, with numerous densely crowded flower clusters, warm to the touch at anthesis.  Male flowers sessile or subsessile, each with 150-250 tortuous stamens, 25-35 mm long. Female inflorescence with 5-10 flowers, each with 5-8 tepals, 20-25 cm long, and a 10-12 cm long style with 5-6 tortuous stigmas, 12-15 cm long. Fruiting heads 20-25 cm in diameter, with 5-8 closely inserted fruits.  Seeds 5-6 per fruit.</p></div>
+<div type="distribution"><p>Known from a small area on the coastal plain in SW Colombia (Deparment of Nari�o) and NW Ecuador (Province of Esmeraldas).
+Distribution in Ecuador. The first record from Ecuador was made in 2004.</p></div>
+<div type="biology_ecology"><p></p></div>
 <div type="conservation"><p></p></div>
-<div type="uses"><p>The leaves are used for thatching. The fleshy inner part of the mesocarp is eaten as a snack. Patifio (1977) noted that extraction of the oil from the mesocarp has been attempted in Tumaco, but did not provide further details.</p></div>
-<div type="discussion"><p>This unusual species is somewhat intermediate between Phytelephas seemannii and P. aeq-uatorialis in habit and in the morphology of the stami-nate flower clusters. The long, tortuous filaments and short anthers are unusual in the genus whereas pollen morphology and leaf anatomy is typical to the genus. Usually a solitary, mid-sized palm tree.</p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p>Distuinguished from P. aequatorialis by its regularly inserted pinnae, sessile (or subsessile) male flowers with tortuous stamens and female flowers with long, strongly tortuous stigmas (11-15 cm versus 7-9 cm in P. aequatorialis)</p></div>
 <div type="materials_examined"><p></p></div>
 </treatment>
 </taxonxBody>

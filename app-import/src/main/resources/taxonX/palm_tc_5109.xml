@@ -1,0 +1,56 @@
+<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>Manual to the palms of Ecuador</mods:title>
+</mods:titleInfo>
+<mods:name type="personal">
+<mods:namePart type="family">Borchsenius</mods:namePart>
+<mods:namePart type="given">F.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:name type="personal">
+<mods:namePart type="family">Pedersen</mods:namePart>
+<mods:namePart type="given">H.B.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:name type="personal">
+<mods:namePart type="family">Balslev</mods:namePart>
+<mods:namePart type="given">H.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>AAU Reports 37. Department of Systematic Botany, University of Aarhus, Denmark in collaboration with Pontificia Universidad Cat�lica del Ecuador</mods:publisher>
+<mods:dateIssued>1998</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Aiphanes hirsuta</name>
+<author>Burret </author>
+<citation>Notizbl. Bot. Gart. Berlin-Dahlem 11: 573 (1932)</citation>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="description"><p>Stems clustered, up to 20 in a clump, 2-10 m tall, 2.5-10 cm in diameter, armed with black spines to 25 cm long. Leaf blade 85-200 cm long, with 9-40 pinnae on ech side, variable in size, shape and arrangement, depending on the subspecies, the central ones 11-65 x 5-22 cm. Inflorescence erect or curving, 60-250 cm long, branched to one order; rachillae 9-100, densely covered with light brown, purple or black spinules, the basal part of the rachillae which bear the female flowers often markedly thickened in fruit. Male flowers purple to white, 2-4 mm in diameter; female flowers brown to violet, 3-7 mm long. Fruits dark red to purple, occasionally white, 7-20 mm in diameter, endocarp in some cases deeply pitted.</p></div>
+<div type="distribution"><p>Panama to Ecuador, W of the Andes.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p>A variable species divided into four subspecies.Notes for Ecuador. The Ecuadorian plants belong to subsp. fosteriorum (H. E. Moore) Borchs. &amp; R. Bernal, distributed from Ecuador to Valle del Cauca in Colombia, characterised by its large, wedge shaped pinnae, and smooth fruits with a deeply pitted endocarp.</p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

@@ -1,0 +1,41 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>A Revision of the Genus Nenga</mods:title>
+</mods:titleInfo>
+<mods:name type="personal">
+<mods:namePart type="family">Fernando</mods:namePart>
+<mods:namePart type="given">E.S.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Principes 27: 55-70</mods:publisher>
+<mods:dateIssued>1983</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Nenga pumila</name>
+<author>(Blume) H.Wendl. in O.C.E.de Kerchove de Denterghem</author>
+<citation>Palmiers: 251 (1878)</citation>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>Djambe ngenge, Ngenge (Sundanese); Ngingi (Javanese).</p></div>
+<div type="diagnosis"><p></p></div>
+<div type="description"><p>Slender palm with stems ca. 2-3 m long, rarely more, 2.5-5 (8) cm diam., clustering at the base; leaf scars prominent; internodes to 8 cm long, smooth, green to greenish-brown. Crownshaft elongate, cylindrical, to ca. 50 cm long, rarely swollen. Leaves 5 to 6 in crown, leaf sheath ca. 40 cm long, dull greenish or yellowish-brown, petiole ca. 30-50 em long, to 1.5 em diam. Leaflets to 25 on each side of the rachis, often drying greyish- green or light brown; basal leaflets usually narrower than the rest, 1 costate, ca. 30-35 X 1 cm, long-acuminate; middle leaflets 2-3 costate, ca. 35-50 X 2.54.5 cm, gradually narrowed at tips; terminal leaflet pair 3-7 costate, ca. 1025 X 2-4.5 cm, acuminate or slightly toothed at tips, sometimes joined to 7 cm long at base along the rachis. Inflorescence infrafoliar, pendulous; prophyll ensiform or lanceolate, rather thin, drying chestnut-brown, caducous; peduncle short, ca. (1) 1.5-3 (4.5) X 1.6 cm, flattened, glabrous; peduncular bract triangularacuminate, to 1.5 em long, 1.0 em at the base, membranous; rachillae usually 3-4, rarely to 7, ca. 20-30 cm long, each subtended by a triangular membranous bract to 5 mm long. Staminate flower triangular, or trigonous, asymmetric, flexuous; sepals subequal, linear-subulate or very narrowly lanceolate, dorsally carinate, very flexuous, ca. 1.0-1.5 cm long; petals narrowly ovate to lanceolate, straight to subfalcate, acuminate at tip, much shorter than sepals, ca. 5-7 X 1.5-2 mm; filament short, to 1 mm long; anthers erect, linear, to 2 mm long, sagittate at base; pistillode conical, minute. Pistillate flower ovoid to subglobose; sepals to 3 X 3 mm; petals as the sepals or only slightly-smaller; ovary ovoid to spherical to 1.5 X 2 mm; stigma 3-lobed; staminodes indistinct. Infructescence pendulous, branches densely covered with fruits. Fruit ripening orange-brown, oblong to oblong-ellipsoid, ca. 1.8-2.0 X 0.8-1.0 cm, tipped with a circular, cushion-shaped stigma, the stigmatic lobes not prominently erect and parted or only slightly so; epicarp drying with longitudinal, slightly anastomosing ridges. Seed oblong-ovoid, ca. 8-11 X 57 mm, abruptly acute to acuminate at tip; base rounded-truncate, shallowly concave-intruded.</p></div>
+<div type="distribution"><p>West Java; in mixed hill forest, also on limestone, ca. 150-1,300 m alt. Endemic.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p>Pinanga neglecta Burret was based on a collection from Reservat Depok near Bogor in West Java. The holotype (Burret 330) has not been found among the remaining Burret palm collections in Berlin. However, the original description matches N. pumila var. pumila and cannot be referred to any known Javanese Pinanga (Dransfield, pers. comm.). P. neglecta is, thus, here reduced to synonymy under N. pumila var. pumila. Nomenclatural Notes. Until 1935, this species was commonly known as Nenga wendlandiana. The name was proposed by Scheffer in 1876 for the type species of the genus, originally designated by Wendland and Drude (1875) as Pinanga nenga BI., but unfortunately no new combination was made. The name N. wendlandiana Scheff. is, however, illegitimate as was discussed by Furtado (1935). Wendland (1878) who strictly followed the rule of priority, provided the correct and valid combination-Nenga pumila (Mart.) H. A. Wendl.-based on Areca pumila Mart., which is an earlier validly published name for Pinanga nenga BI. Furtado (1935) discussed in detail this particular nomenclatural problem and gave satisfactory reasons why N. wendlandiana should be rejected and N. pumila accepted. </p></div>
+<div type="materials_examined"><p>WEST JAVA: Pandeglang, Mandalawangi, G. Pulosari, 600 m alt., fl. and fr., Dransfield 4184 (K); Ciapus, ster., Herb. Lugd. Bat. 329 (L); G. Salak, fl. and fr., Herb. J. C. Schoute (L); Batavia, Ciampea, 150-200 m alt., fl., Koorders 30777B (L), Preanger, Takoka, ca. 1,200 malt., fr., Koorders 33370B (L); Localities unknown, ster., Herb. Lugd. Bat. 202, 328, 330335 (L), fl., Herb. Lugd. Bat. 197-199, 201, fr., Herb. Lugd. Bat. 203 (L), fr., Blume s.n. (Herb. Lugd. Bat. 337) (Type uf Pinanga nenga Bl. var. β hanjawar; Holotype L). </p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

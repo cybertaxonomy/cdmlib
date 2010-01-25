@@ -1,0 +1,70 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>A Revision of Linospadix in Australia, with the Description of a New Species</mods:title>
+</mods:titleInfo>
+<mods:name type="personal">
+<mods:namePart type="family">Dowe</mods:namePart>
+<mods:namePart type="given">J.L.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:name type="personal">
+<mods:namePart type="family">Irvine</mods:namePart>
+<mods:namePart type="given">A.K.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Principes 41: 192-197, 211-217</mods:publisher>
+<mods:dateIssued>1997</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Linospadix palmerianus</name>
+<author>(F.M.Bailey) Burret</author>
+<citation>Notizbl. Bot. Gart. Berlin-Dahlem 12: 331 (1935)</citation>
+<type>Australia ,Queensland, Mt. Bellenden-Ker, 700 m, 1889; Bailey; s.n.</type>
+<type_loc>Lectotype BRI [AQ77548]</type_loc>
+<synonymy>
+<name>Bacularia palmeriana</name>
+<author>F.M.Bailey</author>
+<bibref>F.M.Bailey, Rep. Exped. Bellenden-Ker: 61 (1889)</bibref>
+<bibref>Synop. Queensl. FI., 3rd Supplement 77. 1890</bibref>
+<bibref>Queensl. fl. 5: 1680. 1902</bibref>
+<bibref>Comp. Cat. Queensl. Pl. 573, figure 554. 1913</bibref>
+</synonymy>
+<synonymy>
+<name>Linospadix aequisegmentosus</name>
+<author>(Domin) Burret</author>
+<bibref>(Domin) Burret, Notizbl. Bot. Gart. Berlin-Dahlem 12: 331 (1935)</bibref>
+<type>Lectotype: Domin, Biblioth. Bot. 85: T. l8. figures 1-8. 1915.</type>
+</synonymy>
+<synonymy>
+<name>Bacularia aequisegmentosa</name>
+<author>Domin</author>
+<bibref>Domin, Biblioth. Bot. 85: 500 (1915)</bibref>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p>Named for Edward Palmer, M. L. A., of whom Bailey wrote "indebted for much useful information as to the uses made by the aboriginals of our indigenous plants."</p></div>
+<div type="vernacular"><p></p></div>
+<div type="diagnosis"><p></p></div>
+<div type="description"><p>Clustering small palm. Stems 1-6, to 2 m tall, 8-20 mm diam.; internodes elongate, green; crown with 8-12 leaves. Leaves regularly segmented with united pinnae, most often with two segments either side of rachis, infrequently simply bifid, segments with broad bases, or regularly and finely pinnate; petiole 5.5-13 cm long; pinnae 2-24 per leaf, dull to semiglossy dark green above, lighter green below; midrib prominent on both surfaces, veins numerous and prominent on both surfaces, terminal pinnae broader than laterals; lamina, when backlit under 10X magnification, with numerous circular clear "cells" to 0.1 mm wide, linearly parallel to midrib and veins. Inflorescence to 60 cm long. Staminate flowers squatly bullet-shaped in bud, glabrous, to 3 X 2 mm; petals apically rounded, green at anthesis, not widely opening, deeply striated in the dried state; stamens 6-9; connective not extending beyond the anthers; anthers oblong. Fruit elongate/cylindricall, 0 -15 cm X 5-7 mm, yellow or red at maturity; epicarp smooth or with barely discernible rugose appearance. Seed elongate/ellipsoid. </p></div>
+<div type="distribution"><p>Confined to Mts. Bartle Frere and Bellenden-Ker.</p></div>
+<div type="biology_ecology"><p>In rain forest, on granite, metamorphics, and occasionally on shallow basalts overlying metamorphics from 300 to 1600 m elevation.</p></div>
+<div type="conservation"><p>Rare (Queensland Herbarium 1994)</p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p>In the protologue for this species, Bailey refers to the distribution of this species on Mt. Bartle Frere ". . . the base of the leading spur, at about 2 000 feet, and from that to the summit of the south peak, an altitude of over 5 000 feet." Of what were possibly many specimens collected from this area, at least two are extant: BRI [AQ75548] from Meston's Spur at high elevation and MEL [unnumbered] from "the base of the mountain" to quote Bailey's hand-written notes attached to this collection. The former is chosen here as the lectotype as it best represents the taxon as interpreted in this work.</p></div>
+<div type="materials_examined"><p>Representative Specimens. QUEENSLAND: Cook District. Mt. Bellenden Ker, ridge between cableway and north peak, l7˚I5'S, 145˚51'E, 1500 m alt., 3 Sep 1986, Clarkson 6569 (MBA, QRS); Mt. Bellenden-Ker, I7˚16"S, 145˚52'E, 1500 m, 20 Dec 1994, Gray 5873 (QRS): Summit of Bellenden-Ker, Centre Peak, l4O0 m, undated Webb &amp; Tracey 13688 (QRS); Mt. Bartle Frere, from the base of the mountain, undated (1889?), Bailey s.z. (MEL); Mt. Bartle Frere summit walking track, 17˚22'S, 145˚45'E, 750 m alt., 15 Feb 1996, Dowe 0276 (BRI, FTG); 25 Aug 1996, Dowe 0370 &amp; Smith (BRI); Boonjee, SFR 755, l7˚30'S, 1I45˚40'E, 680 m, 8 Jul 1971, Dockrill 189 (QRS). </p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

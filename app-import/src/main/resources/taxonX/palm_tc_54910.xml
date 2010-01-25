@@ -1,0 +1,118 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>A monograph of Cyrtostachys (Arecaceae)</mods:title>
+</mods:titleInfo>
+<mods:name  type="personal">
+<mods:namePart type="family">Heatubun</mods:namePart>
+<mods:namePart type="given">Ch.D.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:name  type="personal">
+<mods:namePart type="family">Baker</mods:namePart>
+<mods:namePart type="given">W.J.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:name  type="personal">
+<mods:namePart type="family">Mogea</mods:namePart>
+<mods:namePart type="given">J.P.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:name  type="personal">
+<mods:namePart type="family">Harley</mods:namePart>
+<mods:namePart type="given">M.M.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:name  type="personal">
+<mods:namePart type="family">Tjitrosoedirdjo</mods:namePart>
+<mods:namePart type="given">S.S.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:name  type="personal">
+<mods:namePart type="family">Dransfield</mods:namePart>
+<mods:namePart type="given">J.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Kew Bulletin 64: 67-94</mods:publisher>
+<mods:dateIssued>2009</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Cyrtostachys loriae</name>
+<author>Becc.</author>
+<citation>Webbia 1: 303 (1905)</citation>
+<type>Papua New Guinea, Owen Stanley Range Province, 1887; Hartmann; s.n</type>
+<type_loc>Holotype FI!</type_loc>
+<synonymy>
+<name>Cyrtostachys kisu</name>
+<author>Becc.</author>
+<bibref>Becc., Webbia 4: 289 (1914).</bibref>
+<type>The Solomon Islands, Faro island; Guppy; 235</type>
+<type_loc>Holotype K!</type_loc>
+</synonymy>
+<synonymy>
+<name>Cyrtostachys peekeliana</name>
+<author>Becc.</author>
+<bibref>Becc., Bot. Jahrb. Syst. 52: 28 (1914).</bibref>
+<type>Papua New Guinea, New Ireland; Peekel; 106</type>
+<type_loc>Holotype B†; isotype FI!</type_loc>
+</synonymy>
+<synonymy>
+<name>Cyrtostachys brassii</name>
+<author>Burret</author>
+<bibref>Burret, Notizbl. Bot. Gart. Berlin-Dahlem 12: 328 (1935).</bibref>
+<type>Papua New Guinea, Central Province, Kubuna, Nov. 1933; Brass; 5600</type>
+<type_loc>Holotype B†; isotype A!</type_loc>
+</synonymy>
+<synonymy>
+<name>Cyrtostachys phanerolepis</name>
+<author>Burret</author>
+<bibref>Burret, Notizbl. Bot. Gart. Berlin-Dahlem 13: 324 (1936).</bibref>
+<type>Papua New Guinea, Morobe, Sattleberg, July 1935; Clemens; 1353</type>
+<type_loc>Holotype B†; isotype L!, K, photo!</type_loc>
+</synonymy>
+<synonymy>
+<name>Cyrtostachys microcarpa</name>
+<author>Burret</author>
+<bibref>Burret, J. Arnold Arbor. 20: 203 (1939).</bibref>
+<type>Papua New Guinea, Western Province, Fly R., Lake Daviumbu, Sept. 1936; Brass; 7757</type>
+<type_loc>Holotype A; isotype L!</type_loc>
+</synonymy>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>Papua Indonesian: tnang nyi (Sentani, Jayapura); gap (Marap, Tami R.); terep/terrip (Yei/Je, Merauke); Nibung (Indonesian dialect in Papua, also used for other tree palms). Papua New Guinea: yomberi (Timbunke, Sepik); yowoh (Waskuk, Sepik); hek/he-ek (Amele, Madang); terep (Jal, Madang); apaku (Mekeo, Maipa); flim (Mianmin); lobu (Wapi, Marok); mun (Orme, Walwali); wai’eba (Kutubu); toono-i (Bougainville Island); a ikul (New Ireland Island). Solomon Islands: kwara’ae (Aatarae). </p></div>
+<div type="diagnosis"><p></p></div>
+<div type="description"><p>Robust, solitary tree palm to 10 – 30 m. Stem 11.5 – 30 cm diam., brownish-grey to whitish below and green to olive-green above, nodal scars conspicuous, internodes 3 – 30 cm long, crown hemispherical in outline. Leaves 8 – 14 in crown, leaves spreading, 250 – 480 cm long (including petiole); sheath tubular, 112.5 – 180 cm long, 25 – 68 cm wide, forming distinct crownshaft, 125 – 200 cm long, pale yellow to light green; petiole almost missing to short (1 – 10 cm long), 3 – 5.5 cm wide and 1 – 2.8 cm thick at the base, with thin or thick brown to whitish-purple lepidote indumentum; rachis with similar indumentum as the petiole; leaflets regularly arranged, leathery, 76 – 189 leaflets on each side, middle leaflets 80 – 152 × 3.4 – 6.8 cm, apical leaflets 14 – 50 × 0.8 – 2 cm, briefly pointed and sometimes notched at apices, green, discolorous when dried, glaucous adaxially, glaucous to whitish abaxially, fine brown ramenta discontinuous along mid-vein on abaxial surface. Inflorescence infrafoliar, strongly divaricate, 43 – 150 cm long, up to 250 cm wide, branched to 3 orders, green to pale yellow, light brown to black when dried; peduncle very short to 10 cm; rachillae 25 – 88.5 cm long; 6 – 9 mm diam., brown to rusty brown, calyx persistent after fruits fallen; 8 – 16 pits per 1 cm rachilla length (in various stages), pits 2 – 6 mm in diam., deep. Staminate flowers 2.5 – 4 × 2 – 3 mm; sepals 1.2 – 2.2 × 1.5 – 2.9 mm; petals 2 – 3 × 1.2 – 2.5 mm; stamens 9 – 13; filaments 0.7 – 3.5 × 0.1 – 0.2 mm; anthers 1 – 1.5 × 0.5 – 0.8 mm; pollen size, long axis 27 – 56 μm, short axis 25 – 48 μm, proximal wall thickness 1.5 – 5 μm, distal wall thickness 1 – 5 μm, tectum surface sparsely verrucate and gemmate, trichotomosulcate grains present; pistillode 0.7 – 1.7 × 0.2 – 1 (1 – 1.5 at the base) mm. Pistillate flowers 2 – 6 × 2.2 – 5.5 mm; sepals 2.5 – 5.2 × 2.1 – 6.2 mm; petals 1.5 – 5.2 × 1 – 5 mm; gynoecium 1 – 5 × 0.5 – 3.5 mm (including 3 recurved stigmas); staminodes triangular (3 – 4) to circular, membranous. Fruits 8 – 16 × 4 – 5 mm, ellipsoid to sickle-shaped, green to black; beak 0 – 2 mmlong. Seeds 5 – 8 × 2 – 5 × 2 – 5 mm, ellipsoid to ovoid, rounded apically and flattened basally. </p></div>
+<div type="distribution"><p>Cyrtostachys loriae is a widespread species in the Papuasian region, distributed from Kepala Burung (Bird Head’s Peninsula) in the west to Solomon Islands in the east.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p>Least Concern (LC). Cyrtostachys loriae is widespread in the Papuasian region, and as yet the conservation status of this species seems not to be a cause for concern. However, land conversion for oil palm plantations or other purposes, including illegal logging activities in West New Guinea (Indonesian Provinces of Irian Jaya Barat and Papua) could have a severe effect on the populations of the palm. Detailed population studies are still needed to assess its conservation status more precisely.</p></div>
+<div type="uses"><p>Cyrtostachys loriae is one of the more useful species in the genus froman ethnobotanical point of view. It has been used traditionally by people native in both New Guinea and the Solomon Islands. The stems and leaves are used as building materials for traditional houses, e.g. piles, flooring, water pipes, thatch and mattresses. The palm heart or “cabbage” is also eaten fresh or cooked. </p></div>
+<div type="discussion"><p>Cyrtostachys loriae was the first species of the genus to be published from the Papuasian region (Beccari 1905). This palm is easily distinguished by its solitary and robust habit, spherical crown, pendulous leaflets, very short (– 10 cm long) or missing petiole and an inflorescence more robust than in other species, branched to 3 orders, with robust rachillae bearing large and deep pits. Re-examination of the type specimens of Cyrtostachys brassii, C. kisu, C. loriae, C. microcarpa, C. peekeliana and C. phanerolepis revealed no significant differences among them except those caused by differences in developmental stages, despite the inadequate nature of the specimens. Morphological variation among them is continuous, especially after comparison with more adequate specimens from recent collections. No disjunctions in variation occur that would allow the consistent separation of six species as recognised by previous authors. The narrow species concept used in the past reflects limited information obtained from single collections. Moore (1966) pointed out his suspicions that the five taxa above might not be distinct; they all have a solitary habit and 12 stamens except for Cyrtostachys phanerolepis — six stamens, pits in 9 series and larger fruits (Burret 1936). Burret did not realise that the specimen Clemens 1353 (the type of C. phanerolepis) had been mixed with some male flowers of Licuala, and he described C. phanerolepis with staminate flowers from Licuala. Cyrtostachys loriae is the most widespread species of the genus in the Papuasian region, and also occupies a wide range of ecological conditions from swampy areas in the lowlands to heath forest in lower montane vegetation, from evergreen rain forest to dry areas in savannah lands and from the main island of New Guinea to small off-shore islands and the Solomons. The adaptation to various habitats is reflected in the very variable appearance, a plasticity that occurs not only in size and shape, but also the number of certain organs, such as number of stamens. In some specimens, different numbers of stamens can be found within one inflorescence or in different collections from the same locality. There are two collections from savannah areas in Merauke, Indonesian Province of Papua, Maturbongs 654 and van Royen 4734, which look quite distinct in the appearance of their leaves. The petiole and rachis are covered by scaly indumentum, and the leaflets are slender with discolorous surfaces (glaucous adaxially, purplish-brown abaxially). Other characters such as habit, stem, inflorescence and flowers, fruits and seeds fit with Cyrtostachys loriae. The variation in leaf character may reflect different ecological conditions in savannah areas. </p></div>
+<div type="materials_examined"><p>INDONESIA. West Papua Province: Manokwari distr.; Ransiki subdistr., Ransiki, Kostermans s.n. (BO!). Papua Province: Yapen distr.; Yapen Island, Yapen Tengah Mts. Natural Reserves, near base camp at Mananayang R., c. 500 m a.s.l., Feb. 2005, Heatubun et al. 546 (BO!, K!, MAN!); Trans Yapen road, first slope from Mananayang R. to Serui, c. 550 m a.s.l., Feb. 2005, Heatubun et al. 547 (BO!, K!, MAN!). Mimika distr., Timika, mile 50 on road to Tembagapura, forest to W of container depot, 545 m a.s.l., Feb. 1998, Heatubun et al. 208 (BH!, BO!, K!, L!, MAN!). Sarmi distr., Mamberamo R., Idenburgh R., Bernard Camp, 55 m a.s.l., April 1939, Brass 13807 (A!, L!); Bernard Bivak (Camp), 50 m a.s.l., Meijer Dress 501 (BO!, L!). Jayapura distr., Cyclops Mts, N Cyclops Mts. Natural Reserves, 50 – 700 m a.s.l., Jan. 2001, Desianto 01 (AAU, K!, MAN!); foot path to Raveni summit, c. 790 m a.s.l., Aug. 1998, Heatubun et al. 279 (BO!, FTG!, K!, L!, MAN!). Keerom distr., Arso, Tami R., Treferer, 100 – 150 m a.s.l., March 2002, Gusbager et al. 23 (K!, LAE!, MAN!); Workwana village, Yumseyus, 50 – 100 m a.s.l., Feb. 2005, Heatubun et al. 527 (BO!, K!, MAN!); Heatubun et al. 532 (BO!, K!, MAN!); Heatubun et al. 533 (BO!, K!, MAN!). Merauke distr., Kwell village, 60 m a.s.l., Sept. 2000, Maturbongs 654 (BO!, AAU, K!, MAN!); Bot R., about half-way between Bupul and Lake Wam, 60 m a.s.l., Aug. 1954, van Royen 4734 (A!, BO!, L!). PAPUA NEW GUINEA. Sandaun Province: Miwaute, Nov. 1996, Barfod et al. 395 (AAU!). Western Province: Palmer R., 2 miles below junction Black R., July 1936, Brass 7162 (A!, L!); Middle Fly R., Lake Daviumbu, Sept. 1936, Brass 7757 (A, L!); c. 2 miles N of Kiunga, Upper Fly R., c. 300 m a.s.l., Sept. 1967, Pullen 7305 (BH, CANB, L!, LAE,). East Sepik Province: Sepik distr.; along the Sepik R. between Ambunti and Malu, 50 m a.s.l., May 1966, Hoogland &amp; Craven 10114 (A!, BH, CANB, K!, L!, LAE); Anggoram subdistr.; Wewak – Anggoram area, 4 miles N of Timbunke mission, 30 m a.s.l., Sept. 1959, Pullen 1692 (CANB, K!, L!, LAE). West Sepik Province: Sepik distr., Aitape subdistr.; along Pieni R. near Walwali Village, 30 m a.s.l., June 1961, Derbyshire &amp; Hoogland 8020 (A, K!, L!). Telefomin distr.; Carpentaria Exploration Co. Frieda R. Camp, 60 m a.s.l., April 1978, Essig &amp; Young LAE 74052 (CANB, L!, LAE); Hak Valley, c. 900 m a.s.l., Morren &amp; Frodin 3189 (K!). Southern Highlands Province: Lake Kutubu, near Tage, 90 m a.s.l., Sept. 1961, Schodde 2248 (CANB, K!,). Gulf Province: Kikori distr.; TFI logging concession, near Morare village, 20 km NE of Kikori, 130 m a.s.l., Nov. 2000, Baker et al. 1110 (AAU, BRI, K!, L, LAE, NY); logging camp on Vailala R., 0 m a.s.l., March 2000, Barfod 478 (AAU!, BRI, K!, LAE); Barfod 482 (AAU!, BRI, K!, LAE, CANB). Morobe Province: Sattleberg, 700 m a.s.l., July 1935, Clemens 1353 (K (photo)!, L!). Milne Bay Province: Mullins bay road, 0 m a.s.l., March 2000, Barfod et al. 463 (AAU!, BRI, K!, LAE, CANB). Central Province: Kuriva, 300 m a.s.l., March 2000, Barfod 467 (AAU!, BRI, K!, LAE, CANB); Koitaki, 50 m a.s.l., Carr 12253 (A, BM, L!); Kairuku subdistr.; c. 15 miles W of Maipa Village on Akaifu R., Sept. 1962, Derbyshire 867 (CANB, L!, LAE). New Ireland Province: New Ireland Island, Peekel 444 (FI!, K (photo)!). North Solomon Province: Bougainville Island, Marmarromino, 50 m a.s.l., Oct. 1930, Kajewski 2220 (A!). THE SOLOMON ISLANDS. Fauro island; Guppy 235 (holotype K!); Eastern Peninsula; 200 m a.s.l., April 1964, Whitmore BSIP 3945 (BSIP, K!); New Georgia group; Baga Island, April 1964, Whitmore BSIP 4210 (BSIP, K!). </p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

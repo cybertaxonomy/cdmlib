@@ -1,0 +1,44 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>Monograph of Colpothrinax</mods:title>
+</mods:titleInfo>
+<mods:name type="personal">
+<mods:namePart type="family">Evans</mods:namePart>
+<mods:namePart type="given">R.J.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Palms 45(4): 177-195</mods:publisher>
+<mods:dateIssued>2001</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Colpothrinax cookii</name>
+<author>Read</author>
+<citation>Principes 13: 13 (1969)</citation>
+<type>GUATEMALA, Alta Verapaz: Sepacuite coffee estate, north of Panzós, on the northern slope of the principal range of mountains crossed leaving the Polochic Valley, 1200 m, 22 March 1902; Cook &amp; Griggs; 116</type>
+<type_loc>holotype US!; isotype BH!</type_loc>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p>Read (1969) named Colpothrinax cookii in honor of Orator Fuller Cook, who, along with R. F. Griggs, first collected this species (Cook &amp; Griggs 115, 116, 117) and also first recognized that it represented a new taxon.</p></div>
+<div type="vernacular"><p>Guanu (Belize); xan ("Kekchi", Guatemala), shan (Guatemala); suyate, suyate colorado, caral, guano (Honduras).</p></div>
+<div type="diagnosis"><p></p></div>
+<div type="description"><p>Trunk (5-)10-20 m tall, erect, 15-25 cm dbh, columnar, usually naked, sometimes, particularly in closed forest, upper portion partially or completely enclosed in a mat of persistent leafsheath fibers; trunks of juveniles less than ca. 6-8 m tall usually completely enclosed in this mat; mat, when present, usually 20-30 cm thick. Leaves IS-ca. 30; petiole (1-)1.5-2.5(-3) m long, 2.3-3.4 cm wide at attachment to blade; sheath tomentose, the trichomes of two intermixed types: 1) soft, stellate trichomes, ca. 0.5 mm long, basally ferruginous, with free, white distal ends and 2) coarser, longer, wavy, twisted, compressed trichomes, these larger trichomes sparsest, shortest (ca. 1.5 mm long), and lightest in color (± tannish) on the basal portion of the sheath, becoming progressively denser, longer (to 9 mm long), and darker (rufous) distally; sheath disintegrating and fraying into fine, loosely woven, pendulous, filiform, typically ± terete fibers, 0.3-0.5 mm diam.; hastula appressed to or slightly elevated above the blade, 2.3-3.4 x 2.4-3.9 cm, 0.7-1.4 times as wide as long, broadly to very broadly triangular, usually cuspidate apically; costa 16.5-38.5 cm long; blade 131-170 cm long centrally, 62-136 cm long laterally, divided into single-fold segments, except for lateral-most segment of each blade half, composed of 2(-4) folds; central division extending to within 46-67 cm of (1/2-2/3 to) base, the lateral-most division extending to within 11.5-19.0 cm of (ca. 4/5 to) base; folds per blade half 25-35; widest single-fold segment 4.3-5.0 cm wide. Inflorescences with flowers or fruit to ca. 5(-8), plus ca. 5(-7) marcescent; primary-axis 1.2-2.1 m long; inflorescence bracts Ianate, with trichomes 2-8 mm long; peduncle 0.2-0.8 m long; prophyll ca. 25 x 8.0-10.0 cm; peduncular bracts 6-7,27.0-45.0 cm long; rachis 0.9-1.4 m long; rachis bracts 14.0-47.0 cm long; first-order branches 9-12; axes creamy yellow, their primary-axes 12.0-58.5 cm long, with unbranched proximal portion 2.5-37.0 cm long, the branched distal portion 6.0-32.0 cm long; prophyll 10.5-40.5 cm long; rachillae typically 40-50 per basal first-order branch, 10-20 per apical first-order branch, 3.0-15.5 cm long, tomentose, the trichomes (tannish to) ferruginous, 0.2-0.3 mm long; flower-bearing spurs 0.2-0.8(-1.2) mm long, the subtending bracteole 0.7-2.0 mm long, 0.4-1.0 mm wide basally. Floral receptacle 0.7-1.7 mm long; calyx 3.5-5.4 mm long, free distally from corolla for 1/2-2/3 its length, creamy yellow, the lobes 0.5-0.8 mm long; corolla 4.0-6.0 mm long, connate basally for 1/5-1/3 its length, mostly creamy yellow, the lobes valvate, with parallel sides and mucronulate apices, fleshy, adaxially furrowed with involute or thickened margins, forming a hood apically, persistent; filaments 2.1-4.0 mm long, connate basally for 1.1-2.0 mm (2/5-3/5 their length), cream-colored, stamen-cup shorter than or ± same length as calyx-cup, 1.5-2.2 mm diam., anthers 2.3-3.5 x 0.9-1.3 mm; pollen 25-30 x 20-30 pm, tectum on non-apertural face coarsely perforate to reticulate; gynoecium 2.5-3.4 x 1.1-1.6 mm, carpels 1.1-1.6 x 0.7-1.3 mm, cream-colored, styles 1.5-2.2 mm long, cream-colored. Fruit 1.6-2.1 cm diam. Seed 1.0-1.2 x 1.3-1.5 cm. </p></div>
+<div type="distribution"><p>Belize, Guatemala, and Honduras, 700-1,200(-1,600) m; typically in premontane, sometimes lower montane, wet forests on the Caribbean slope.</p></div>
+<div type="biology_ecology"><p>Colpothrinax cookii is restricted to the upper slopes and crests of ridges of premontane wet forests above 700 m elevation and, like C. aphanopetala, often occurs in association with Euterpe precatoria Mart.
+Both staminate and pistillate anthesis in the strong-smelling, creamy yellow flowers of C. cookii appear to occur while the reproductive parts are still enclosed within the unopened corollas, suggesting beetle pollination (Henderson 1986).</p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>The leaves of C. cookii are sometimes used for thatching and for making brooms. Local people in Honduras and Belize (Gerrit Davidse, pers. comm.) have admitted to setting fire to the mat of highly flammable leaf-sheath fibers enclosing the trunks of some individuals merely for the pyrotechnic display.</p></div>
+<div type="discussion"><p>Colpothrinax cookii differs from C. wrightii in its cylindrical, non-swollen trunk, larger fruits and seeds, and more persistent corolla lobes which do not have a basal line of abscission. Its large, fleshy, yellow petals and yellow higher-order inflorescence branches differentiate it from C. aphanopetala. Colpothrinax cookii cannot, however, be differentiated from C. aphanopetala when sterile. Although C. cookii often has larger leaves (blades and petioles) than C. aphanopetala, this tendency is not useful for identification purposes (see discussion under C. aphanopetala). </p></div>
+<div type="materials_examined"><p>BELIZE. Cayo. Vicinity of Doyles Delight, southern Maya Mountains, 16°30'N, 89°03'W, Allen 15220 (MO). Toledo. Vicinity of Doyles Delight, southern Maya Mountains, 16°29'N, 89°02'W, Allen 15450 (MO, US); southern Maya Mountains, Bladen Nature Reserve, ridge just south of the main divide of the Maya Mountains, 16°29'40"N, 88°59'33"W, Davidse &amp; Holland 36808 (BH, F, MEXU, MO); southwestern Maya Mountains, Columbia River Forest Reserve, Little Quartz Ridge, 16°24'25"N, 89°06'07"W, Holst 4333 (MO, US); Columbia Forest Reserve, Little Quartz Ridge, slopes on SW end, 16°23'56"N, 89°06'55"W, Holst &amp; Meadows 5747 (BH, K, MO, NY). GUATEMALA. Alta Verapaz. Sepacuite, Cook &amp; Doyle 156 (US), 163 (US), 166 (US), 174 (US); near the Finca Sepacuite, Cook &amp; Griggs 115 (US), 117 (US). HONDURAS. Atlantida. narrow crest of ridge leading up to Pico Bonito from the NE (from near the Rio Bonito at its confluence with large quebrada), 15°38', , 86°52'W, Evans 2547 (MO); Cordillera Nombre de Dios, fila de la Lora, between Quebrada EI Manch6n and Quebrada San Jose, ca. 2 km N of EI Manch6n, 15°28'N, 87°07'30"W, Evans et al. 2743 (BH, MO). Yoro, ridgetop above Rio Texiguat, near Cerro Cabeza de Negro, along trail from San Jose de Texiguat (at the Rio Guan Guan) to Campo Nuevo, 15°28'N, 87°26'30"W, Evans 2312 (BH, COL, EAP, F, FTG, GH, INB, K, MO, NY, PMA, US). </p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

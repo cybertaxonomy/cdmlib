@@ -1,0 +1,51 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>A Revision of Linospadix in Australia, with the Description of a New Species</mods:title>
+</mods:titleInfo>
+<mods:name type="personal">
+<mods:namePart type="family">Dowe</mods:namePart>
+<mods:namePart type="given">J.L.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:name type="personal">
+<mods:namePart type="family">Irvine</mods:namePart>
+<mods:namePart type="given">A.K.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Principes 41: 192-197, 211-217</mods:publisher>
+<mods:dateIssued>1997</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Linospadix apetiolatus</name>
+<author>Dowe &amp; A.K.Irvine</author>
+<citation>Principes 41: 215 (1997)</citation>
+<type>Australia. Queensland. Cook District. Mt. Lewis, off forestry road 27 km from Rex Hwy., 100 m E of Ranger's hut, 16˚28'S, 145˚16'E, 1220 m, 24 Aug. 1996; Dowe 0369, Ferrero &amp; Smith; </type>
+<type_loc>Holotypus BRI; isotypi K, QRS</type_loc>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p>In reference to the lack of a petiole on the leaf.</p></div>
+<div type="vernacular"><p></p></div>
+<div type="diagnosis"><p>Palma parva caespitosa a speciebus affinibus petiolo semper carenti et habendo basi folia surcularia magna bifida differt; aliquot formae ubi adultae retinent folia magna bifida vel alioquin folia partim secescerunts ed apice magno bifido praedita; perianthium segmentis viridibus; flores staminatis ub anthesil ate aoerientes 9-12 staminibus praediti; fructus cylindrici flavi rubrive sub maturitate.</p></div>
+<div type="description"><p>Clustering small palm. Stems 1-6, 2-5 m tall, 15-25 mm diam.; internodes elongate, green; vegetative aerial growths from nodes common; crown with 6-14 leaves. Leaves 30-90 cm long by l0- 20 cm wide, simply bifid or with broad bilobed terminals and evenly segmented laterals on both sides of midrib and broader pinnae or with one lobe entire and running the length of the rachis and the other lobe segmented into pinnae; dull or semiglossy light green above, lighter green below, with a metallic sheen on both surfaces; midrib very prominent on both surfaces; secondary veins prominent on both surfaces; petiole absent or rarely very short to 3 cm long; lamina thick, opaque to partially translucent, when backlit under 10X magnification with scattered circular clear "cells" to 0.1 mm wide linearly parallel to midrib and veins. Inflorescence to 80 cm lons. Staminate flowers squatly bullet-shaped in bud, 2.8-4 mm long; petals with conspicuous longitudinal striations, apex shortly acute to rounded, green at anthesis, widely opening at anthesis; stamens 4-7; connective not extending beyond the anthers; pistillode lacking. Fruit elongate/cylindrical, 10-15 X 5-6 mm, yellow or red at maturity; epicarp moderately rugose when fully mature. Seed elongate/ellipsoid 9-10 X 3-4 mm. </p></div>
+<div type="distribution"><p>Confined to Mts. Spurgeon and Lewis, above 800 m elevation, on soils derived from granite in Simple Microphyll Vine forest.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p>Listed as K (Queensland Herbarium 1994) but here proposed as rare.</p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p>The type specimen for L. apetiolata is Dowe 0369, Ferrero &amp; Smith collected from Mt. Lewis, at 1220 m elevation. It represents some of the variation that occurs in the species, particularly those forms in which the leaves are bifid, with one lobe entire and running the full length of the rachis, the other lobe segmented into pinnae. Some forms retain the bifid leaf into maturity while others have leaves which are evenly pinnate though with the apical segments united to remain strongly bilobed, and the basal pinnae either slightly broader or much broader than the laterals.</p></div>
+<div type="materials_examined"><p>Representative Specimens; QUEENSLAND: Cook District. Mt. Spurgeon, rock site N side of junction of Platypus Ck. and Mossman R., 16˚30'S, 145˚15'E, 1300 m, 9 Dec 1972, Webb &amp; Tracey 11328 (QRS); M t. Spurgeon near Christensen's Clearing, Zarda LA, TR 142, 16˚30'S, 145˚10'E, 1150 m alt, 24 Sept, Irvine 639 (QRS); Mt. Lewis, SFR 143, North Mary LA., 16˚30'S, 145˚15'E, 1000 m, 12 Feb 1975, Irvine 1159 (QRS); Mt. Lewis, Carbine LA, SFR 143, 16˚29'S, 145˚15'E, 1200 m alt., 25 Jan 1995, Gray 5934 [spirit No 11980] (QRS); Mt. Lewis, 15 km from Rex Hwy., 16˚35'S, 145˚15'E, 900 m alt., 13 Feb 1996, Dowe 0262,0264 &amp; 0270 (BRI, FTG). </p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

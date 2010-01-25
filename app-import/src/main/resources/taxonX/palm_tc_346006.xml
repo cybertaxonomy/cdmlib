@@ -1,0 +1,43 @@
+<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>A New Species of Arenga (Palmae)</mods:title>
+</mods:titleInfo>
+<mods:name type="personal">
+<mods:namePart type="family">Henderson</mods:namePart>
+<mods:namePart type="given">A.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Taiwania 51(4) 298-301</mods:publisher>
+<mods:dateIssued>2006</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Arenga ryukyuensis</name>
+<author>A.J.Hend.</author>
+<citation>Taiwania 51: 298 (2006)</citation>
+<type>JAPAN. “Loo-Choo Islands”, no locality, 1853-1856; C. Wright; s. n.</type>
+<type_loc>Holotype NY!; isotype US!</type_loc>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p>Kuru-tsugu, mani.</p></div>
+<div type="diagnosis"><p>Ab Arenga engleri differt: pinnis subter valde costatis, marginibus distalis lobatis; filamentis 0.5-1 mm longis; et staminibus 35-59.</p></div>
+<div type="description"><p>Stems short and subterranean except for flowering stems, these reaching 2 m tall, 20 cm diameter. Leaves pinnate; sheaths fibrous; ocrea net-like, sheathing, to 30 cm long; petioles to 1 m long, covered with felt-like, light brown tomentum and dark brown, peltate scales; rachis to 2 m long, tomentose as the petiole; pinnae 32-48 per side of rachis, linear, strongly ribbed adaxially, notched along the distal margins, without ears at the base, or rarely ears present, regularly arranged and spreading in the same plane except for the basal few pinnae, these paired; middle pinnae 43-59 cm long, 1.7-3.5 cm wide. Inflorescences interfoliar, unisexual, not seen in their entirety; staminate rachillae 26-37 cm long, 2.9-4.6 mm diameter, numerous, glabrous; staminate flowers 8-9.5 mm long, spirally and distantly arranged; sepals 2.5-3.5 mm long; petals 7.5-9 mm long; filaments 0.5-1 mm long; anthers 5.5-6 mm long; stamens 35-59; pistillate inflorescences pendulous; rachillae 16-31 cm long, 3.4-6.8 mm diameter, glabrous; pistillate flowers spirally and distantly arranged, 16-27 cm long, 5 mm diameter, glabrous; pistillate flowers 2.5 mm long; sepals 2 mm long, broadly imbricate; petals 2.5 mm long, valvate for ca. two thirds their length; fruits globose, 1.2-1.8 cm diameter, orange or red.</p></div>
+<div type="distribution"><p>Japan, Ryukyu Islands (Sakishima Group, Okinawa Group).</p></div>
+<div type="biology_ecology"><p>Lowland forest or secondary forest along river margins, or scrub forest especially near the sea shore, at low elevations.</p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p>No uses recorded.</p></div>
+<div type="discussion"><p>This species has been illustrated by Walker (1976). Several specimens of Arenga ryukyuense are known from the Bonin Islands. On the label of two of these is written “grow wild from cult?”, indicating a cultivated origin for these specimens. The genus is not included in the palm flora of the Bonin Islands (Moore and Fosberg, 1956).</p></div>
+<div type="materials_examined"><p>JAPAN. Sakishima groupe: Iriomote Island, Nakama River, 0-30 m, 29 Apr 1982, Fukuoaka 11346 (KUN); Iriomote, Yaeyama Islands, 21 Jan 1973, Furuse 2132 (K); Iriomote Island, Nakara River, 16 Jul 1955, Hatusima 18717 (US); Iriomote Island, near Funaura, 8 Sep 1974, Murata &amp; Tabata 646 (K); Iriomote, Komi Pasture to Komi, Taketomi-cho, Yaeyama-gun, 0-30 m, 16 Mar 1982, Okada et al. 312 (A, US); Yaeyama Gunto, along Urauchi River, 21 Aug 1951, Walker 6677 (US); Ishigaki Island, Ntana Yama, ridge above Ozato, 100-150 m, 21 Jun 1956, Fosberg 37658 (BH, US); Ishigaki Island, near Tomina, 18 Jul 1955, Hatusima 18890 (US), same locality, 23 Jul 1956, Fosberg 38070 (BH). Okinawa group: Ogami Jima, 25 m, 25 Aug 1956, Fosberg 38405 (BH, US); Okinawa Island, Hyakuna, Shimajiri, 17 Apr 1955, Hatusima 17253 (US); Okinawa, Kawasaki, Kin Village, 5 Jun 1962, Jones s. n. (BH, US); Okinawa Island, Kinwan, 26°21’N, 127°52’E, 9 Apr 1955, Moran 5117 (US); Okinawa, Kunigami, Kunigami-son, Yona, 7 Nov 1976, Ohashi &amp; Tateishi 1028 (US); Okinawa Island, Motobu Peninsula, foot of Mt. Awa, 10 Dec 1953, Walker 7599 (US); Okinawa Nakagami, Tomari Village, near Kuba-saki, 4 Jul 1951, Walker et al. 6017 (US); Okinawa, Naha, 1 Mar 1917, Wilson 8014 (K). </p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

@@ -1,0 +1,51 @@
+﻿<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>Carpoxylon macrospermum</mods:title>
+</mods:titleInfo>
+<mods:name type="personal">
+<mods:namePart type="family">Dowe</mods:namePart>
+<mods:namePart type="given">J.L.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:name type="personal">
+<mods:namePart type="family">Uhl</mods:namePart>
+<mods:namePart type="given">N.W.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>Principes 33: 68-73</mods:publisher>
+<mods:dateIssued>1989</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Carpoxylon macrospermum</name>
+<author>H.Wendl. &amp; Drude</author>
+<citation>Linnaea 39: 177 (1875)</citation>
+<type>Vanuatu, fruit only;;</type>
+<type_loc>Type GOET</type_loc>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="diagnosis"><p></p></div>
+<div type="description"><p>Stem erect to 18 m, ca. 35 cm diam. DBH, base enlarged, 50 cm in diam., leaf scars whitish, prominent, internodes 7 cm long near base to 2 cm long distally. Leaves regularly pinnate, 3.5-4.0 m long; crownshaft green, 1.5-2.0 m long, somewhat larger in diam. towards base; petiole 25 cm long or less, wider proximally; rachis wide to 6.5 cm at base, 4.5 cm wide in middle, 4.0 cm wide distally, extending beyond apical leaflets in a flexible tip about 12 cm long; leaflets about 70 on each side of rachis, proximal ones 114 x 1.5 cm, mid-leaflets 122 x 3.2 cm, distal ones 36 x 1.5 cm. Inflorescences infrafoliar; peduncle stout, elliptical in cross-section, about 14 cm long, 4 cm diam.; prophyll 70 cm long, about 8 cm wide, peduncular bracts two, the first inserted ca. 5 cm above the prophyll, the second 5 cm above the first, each 70 x 7 cm tapering to a woody tip ca. 5 cm long; scars of two to three incomplete bracts above the inner peduncular bract; rachis ca. 36 cm long, rachis bracts subtending 10 primary branches; primary branches stout, lower ones to 2 cm wide with a basal bare portion 7-8 cm wide; rachillae stout, ca. 5 mm diam. and 30-40 cm long, tapering, also with basal pulvini, bearing spirally arranged, rather distant triads, 1.5-1.0 cm apart, for about one-third their length, rachillae much reduced in diam. to 2-3 mm distally, first bracteole surrounding the pistillate flower shallow, 2-4 mm high, rounded, coriaceous, evident in fruiting rachillae, second bracteole smaller and more shallow. Staminate flowers very irregular in bud, 2.5-4.5 x 2.0 mm in young material examined, rounded or pointed apically; sepals 2.5 x 3.0 mm; petals 2.9 x 1.7 mm; stamens six, dorsifixed near the middle, filaments slender, 1.5 mm long, inflexed at tip; anthers 2.0 mm long; pistillode 2.0 mm long. Pistillate flowers studied in very young bud, 2 x 6 mm, irregular; sepals various in size, about 4 x 2 mm; petals imbricate, also not completely developed and varying in size, about 3 x 2 mm; staminodes 0.5 mm high; gynoecium obovoid, 2 mm high x 1.5 mm wide. Fruit slightly obovoid to ellipsoidal, 6 x 3.5 cm, stigmatic remains eccentrically apical; epicarp thin, mesocarp 2 mm thick with large fibers, endocarp 3~4 mm thick, thicker basally, longitudinally ridged, bony below ridges, operculum circular, large. Seed large, ellipsoidal, 4 x 2.5 cm, raphe fibers abundant, extending laterally, little anastomosing, endosperm homogeneous with central cavity; embryo basal. Germination adjacent ligular, eophyll bifid. </p></div>
+<div type="distribution"><p></p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p></p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p>CarpoxyLon, then known only from fruit, was put in Areceae Incertae Sedis in "Genera Palmarum" (Uhl and Dransfield 1987). The newly collected material allows a subtribal placement. The large operculum over the embryo places the genus clearly in Subtribe Iguanurinae of the Areceae, where it appears most closely related to Clinostigma. This relationship is further supported by preliminary cladistic studies of Iguanurinae; using a data base of 32 characters, Carpoxylon and Clinostigma are indicated as sister genera (Uhl and Dransfield unpubl.). Carpoxylon differs from Clinostigma in lacking stilt roots, in the stiffly ascending rather than the pendulous pinnae of most species of Clinostigma, in two rather than a single peduncular bract, in inflorescence branches stiff and spreading rather than more or less pendulous, and in a ridged, bony rather than a thin crustaceous endocarp. Species of Clinostigma are poorly known as are those of other genera of Iguanurinae; more field studies are needed and may change the circumscription of Carpoxylon.</p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>

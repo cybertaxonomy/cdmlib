@@ -1,0 +1,56 @@
+<taxonx xmlns:dc="http://digir.net/schema/conceptual/darwin/core/2.0" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<taxonxHeader>
+<mods:mods>
+<mods:titleInfo>
+<mods:title>Manual to the palms of Ecuador</mods:title>
+</mods:titleInfo>
+<mods:name type="personal">
+<mods:namePart type="family">Borchsenius</mods:namePart>
+<mods:namePart type="given">F.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:name type="personal">
+<mods:namePart type="family">Pedersen</mods:namePart>
+<mods:namePart type="given">H.B.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:name type="personal">
+<mods:namePart type="family">Balslev</mods:namePart>
+<mods:namePart type="given">H.</mods:namePart>
+<role>
+<roleTerm type="text">author</roleTerm>
+<roleTerm type="code">aut</roleTerm>
+</role>
+</mods:name>
+<mods:originInfo>
+<mods:publisher>AAU Reports 37. Department of Systematic Botany, University of Aarhus, Denmark in collaboration with Pontificia Universidad Cat�lica del Ecuador</mods:publisher>
+<mods:dateIssued>1998</mods:dateIssued>
+</mods:originInfo>
+</mods:mods>
+</taxonxHeader>
+<taxonxBody>
+<treatment rank="species">
+<nomenclature>
+<name>Wettinia verruculosa</name>
+<author>H.E.Moore</author>
+<citation>Principes 26: 42 (1982)</citation>
+</nomenclature>
+<div type="introduction"><p></p></div>
+<div type="etymology"><p></p></div>
+<div type="vernacular"><p></p></div>
+<div type="description"><p>Subcanopy palm.  Stem solitary, 8-10 m tall and 15-20 cm in diameter.  Leaves 4-6 m long; pinnae 35-40 on each side, entire, borne horizontally, with a rusty pubescence below, especially along the veins, the central pinnae 110-135 cm long and 8-13 cm wide.  Inflorescences 1-2 per node; branches numerous, short.  Female flowers crowded along branches.  Fruits green, angled, finely warty, forming a single elliptic mass, ca. 25 x 15 cm.</p></div>
+<div type="distribution"><p>Known only from a few localities in SW Colombia and NW Ecuador, in premontane wet forest at 1000-1500 m elevation.</p></div>
+<div type="biology_ecology"><p></p></div>
+<div type="conservation"><p>Endangered (Borchsenius &amp; Skov 1999). Criteria B1, B2c</p></div>
+<div type="uses"><p></p></div>
+<div type="discussion"><p>Flowers have never been collected and described.  Fruits resemble those of Wettinia fascicularis.</p></div>
+<div type="materials_examined"><p></p></div>
+</treatment>
+</taxonxBody>
+</taxonx>
