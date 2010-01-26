@@ -192,6 +192,10 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
 		return user != null;
 	}
 
+	/**
+	 * DO NOT CALL THIS METHOD IN LONG RUNNING SESSIONS OR CONVERSATIONS
+	 * A THROWN UsernameNotFoundException WILL RENDER THE CONVERSATION UNUSABLE
+	 */
 	public UserDetails loadUserByUsername(String username)
 			throws UsernameNotFoundException, DataAccessException {
 		Assert.hasText(username);
@@ -316,11 +320,10 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
 	public UUID save(User user) {
 		if(user.getId() == 0 || dao.load(user.getUuid()) == null){
 			createUser(user);
+		}else{
+			updateUser(user);
 		}
-		updateUser(user);
-		
 		return user.getUuid(); 
-//		return dao.save(user);
 	}
 
 	@Override
