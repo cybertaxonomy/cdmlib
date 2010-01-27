@@ -58,11 +58,11 @@ public class PalmaeActivator {
 	static final boolean pubishReferencesInBibliography = false;
 	
 	//should the other imports run as well?
-	static final boolean includeTaxonX = false;
-	static final boolean includeImages = false;
-	static final boolean includeExcelProtologue = false;
-	static final boolean includeMediaProtologue = false;
-	static final boolean updateFeatureTree = false;
+	static final boolean includeTaxonX = true;
+	static final boolean includeImages = true;
+	static final boolean includeExcelProtologue = true;
+	static final boolean includeMediaProtologue = true;
+	static final boolean updateFeatureTree = true;
 	static final boolean updateNameUsage = true;
 	
 	//check - import
