@@ -150,6 +150,7 @@ Export-Package: eu.etaxonomy.cdm,
    eu.etaxonomy.cdm.persistence.query",
  eu.etaxonomy.cdm.api.service.pager,
  eu.etaxonomy.cdm.api.service.pager.impl;uses:="eu.etaxonomy.cdm.api.service.pager",
+ eu.etaxonomy.cdm.api.utility,
  eu.etaxonomy.cdm.aspectj;
   uses:="org.apache.log4j,
    org.aspectj.runtime.internal,
