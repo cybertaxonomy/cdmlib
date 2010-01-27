@@ -89,9 +89,6 @@ public class ConversationHolder{
 		
 		bind();
 		
-
-		// moved this from editor to here
-		// 
 		if(TransactionSynchronizationManager.hasResource(getDataSource())){
 			TransactionSynchronizationManager.unbindResource(getDataSource());
 		}
@@ -103,7 +100,7 @@ public class ConversationHolder{
 	 */
 	public void bind() {
 		
-		logger.info("Binding resources for ConversationHolder: [" + this + "]");	
+		logger.info("Binding resources for ConversationHolder");	
 				
 		if(TransactionSynchronizationManager.isSynchronizationActive()){
 			TransactionSynchronizationManager.clearSynchronization();
@@ -129,7 +126,7 @@ public class ConversationHolder{
 	
 	public SessionHolder getSessionHolder(){
 		if(this.sessionHolder == null){
-			logger.info("Creating SessionHolder: [" + sessionHolder + "]");
+			logger.info("Creating new SessionHolder");
 			this.sessionHolder = new SessionHolder(getSession());
 		}
 		return this.sessionHolder;
@@ -212,6 +209,10 @@ public class ConversationHolder{
 	 */
 	public TransactionStatus commit(boolean restartTransaction){
 		if(isTransactionActive()){
+			
+			if(getSessionHolder().isRollbackOnly()){
+				logger.error("Commiting this session will not work. It has been marked as rollback only.");
+			}
 			
 			// commit the changes
 			transactionManager.commit(transactionStatus);
