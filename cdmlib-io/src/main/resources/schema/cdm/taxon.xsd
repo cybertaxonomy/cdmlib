@@ -1,32 +1,21 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <xs:schema elementFormDefault="qualified" version="1.0" 
-  targetNamespace="http://etaxonomy.eu/cdm/model/taxon/1.0" 
-  xmlns:taxon="http://etaxonomy.eu/cdm/model/taxon/1.0" 
-  xmlns:reference="http://etaxonomy.eu/cdm/model/reference/1.0" 
-  xmlns:common="http://etaxonomy.eu/cdm/model/common/1.0" 
-  xmlns:name="http://etaxonomy.eu/cdm/model/name/1.0" 
-  xmlns:xs="http://www.w3.org/2001/XMLSchema" 
-  xmlns:description="http://etaxonomy.eu/cdm/model/description/1.0"
-  xmlns:jxb="http://java.sun.com/xml/ns/jaxb"
-  xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
-  jxb:extensionBindingPrefixes="xjc"
-  jxb:version="2.1"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-    xsi:schemaLocation="http://www.w3.org/XML/1998/namespace
-    http://www.w3.org/2005/08/xml.xsd
-    http://www.w3.org/2001/XMLSchema
-    http://www.w3.org/2001/XMLSchema.xsd">
-  <xs:import namespace="http://etaxonomy.eu/cdm/model/common/1.0" schemaLocation="common.xsd"/>
+targetNamespace="http://etaxonomy.eu/cdm/model/taxon/1.0" 
+xmlns:name="http://etaxonomy.eu/cdm/model/name/1.0" 
+xmlns:description="http://etaxonomy.eu/cdm/model/description/1.0" 
+xmlns:common="http://etaxonomy.eu/cdm/model/common/1.0" 
+xmlns:reference="http://etaxonomy.eu/cdm/model/reference/1.0" 
+xmlns:taxon="http://etaxonomy.eu/cdm/model/taxon/1.0" 
+xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
   <xs:import namespace="http://etaxonomy.eu/cdm/model/description/1.0" schemaLocation="description.xsd"/>
+
   <xs:import namespace="http://etaxonomy.eu/cdm/model/name/1.0" schemaLocation="name.xsd"/>
+
   <xs:import namespace="http://etaxonomy.eu/cdm/model/reference/1.0" schemaLocation="reference.xsd"/>
-  <xs:annotation>
-    <xs:appinfo>
-      <jxb:schemaBindings>
-        <jxb:package name="eu.etaxonomy.cdm.model.taxon"/>
-      </jxb:schemaBindings>
-    </xs:appinfo>
-  </xs:annotation>
+
+  <xs:import namespace="http://etaxonomy.eu/cdm/model/common/1.0" schemaLocation="common.xsd"/>
+
   <xs:element name="Synonym" type="taxon:Synonym"/>
 
   <xs:element name="SynonymRelationship" type="taxon:SynonymRelationship"/>
@@ -34,30 +23,14 @@
   <xs:element name="SynonymRelationshipType" type="taxon:SynonymRelationshipType"/>
 
   <xs:element name="Taxon" type="taxon:Taxon"/>
-  
+
   <xs:element name="TaxonNode" type="taxon:TaxonNode"/>
 
   <xs:element name="TaxonRelationship" type="taxon:TaxonRelationship"/>
 
   <xs:element name="TaxonRelationshipType" type="taxon:TaxonRelationshipType"/>
-  
+
   <xs:element name="TaxonomicTree" type="taxon:TaxonomicTree"/>
-
-  <xs:complexType name="SynonymRelationshipType">
-    <xs:complexContent>
-      <xs:extension base="common:RelationshipTermBase">
-        <xs:sequence/>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="TaxonRelationshipType">
-    <xs:complexContent>
-      <xs:extension base="common:RelationshipTermBase">
-        <xs:sequence/>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
 
   <xs:complexType name="Taxon">
     <xs:complexContent>
@@ -112,32 +85,14 @@
         <xs:sequence>
           <xs:element name="Name" type="xs:IDREF"/>
           <xs:element name="Sec" type="xs:IDREF" minOccurs="0"/>
+          <xs:element name="AppendedPhrase" type="xs:string" minOccurs="0"/>
         </xs:sequence>
         <xs:attribute name="isDoubtful" type="xs:boolean" use="required"/>
-        <xs:attribute name="UseNameCache" type="xs:boolean" />
+        <xs:attribute name="UseNameCache" type="xs:boolean" use="required"/>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
-  
-  <xs:complexType name="TaxonomicTree">
-    <xs:complexContent>
-      <xs:extension base="common:IdentifiableEntity">
-        <xs:sequence>
-          <xs:element name="Name" type="common:LanguageString" minOccurs="0"/>
-          <xs:element name="rootNodes" minOccurs="0">
-            <xs:complexType>
-              <xs:sequence>
-                <xs:element name="rootNode" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
-              </xs:sequence>
-            </xs:complexType>
-          </xs:element>
-          <xs:element name="reference" type="xs:IDREF" minOccurs="0"/>
-          <xs:element name="microReference" type="xs:string" minOccurs="0"/>
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
- 
+
   <xs:complexType name="TaxonNode">
     <xs:complexContent>
       <xs:extension base="common:AnnotatableEntity">
@@ -161,6 +116,41 @@
     </xs:complexContent>
   </xs:complexType>
 
+  <xs:complexType name="TaxonomicTree">
+    <xs:complexContent>
+      <xs:extension base="common:IdentifiableEntity">
+        <xs:sequence>
+          <xs:element name="Name" type="common:LanguageString" minOccurs="0"/>
+          <xs:element name="rootNodes" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="rootNode" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="reference" type="xs:IDREF" minOccurs="0"/>
+          <xs:element name="microReference" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="Synonym">
+    <xs:complexContent>
+      <xs:extension base="taxon:TaxonBase">
+        <xs:sequence>
+          <xs:element name="SynonymRelations" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element ref="taxon:SynonymRelationship" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
   <xs:complexType name="SynonymRelationship">
     <xs:complexContent>
       <xs:extension base="common:RelationshipBase">
@@ -175,18 +165,18 @@
     </xs:complexContent>
   </xs:complexType>
 
-  <xs:complexType name="Synonym">
+  <xs:complexType name="SynonymRelationshipType">
     <xs:complexContent>
-      <xs:extension base="taxon:TaxonBase">
-        <xs:sequence>
-          <xs:element name="SynonymRelations" minOccurs="0">
-            <xs:complexType>
-              <xs:sequence>
-                <xs:element name="SynonymRelationship" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
-              </xs:sequence>
-            </xs:complexType>
-          </xs:element>
-        </xs:sequence>
+      <xs:extension base="common:RelationshipTermBase">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="TaxonRelationshipType">
+    <xs:complexContent>
+      <xs:extension base="common:RelationshipTermBase">
+        <xs:sequence/>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>

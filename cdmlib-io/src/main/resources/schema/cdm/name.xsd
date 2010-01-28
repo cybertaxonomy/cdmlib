@@ -1,36 +1,18 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<xs:schema elementFormDefault="qualified" attributeFormDefault="unqualified" version="1.0" 
-  targetNamespace="http://etaxonomy.eu/cdm/model/name/1.0" 
-  xmlns:name="http://etaxonomy.eu/cdm/model/name/1.0" 
-  xmlns:occurrence="http://etaxonomy.eu/cdm/model/occurrence/1.0" 
-  xmlns:common="http://etaxonomy.eu/cdm/model/common/1.0" 
-  xmlns:description="http://etaxonomy.eu/cdm/model/description/1.0" 
-  xmlns:xs="http://www.w3.org/2001/XMLSchema" 
-  xmlns:reference="http://etaxonomy.eu/cdm/model/reference/1.0" 
-  xmlns:agent="http://etaxonomy.eu/cdm/model/agent/1.0"
-  xmlns:taxon="http://etaxonomy.eu/cdm/model/taxon/1.0"
-  xmlns:jxb="http://java.sun.com/xml/ns/jaxb"
-  xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
-  jxb:extensionBindingPrefixes="xjc"
-  jxb:version="2.1"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-    xsi:schemaLocation="http://www.w3.org/XML/1998/namespace
-    http://www.w3.org/2005/08/xml.xsd
-    http://www.w3.org/2001/XMLSchema
-    http://www.w3.org/2001/XMLSchema.xsd">
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<xs:schema elementFormDefault="qualified" version="1.0" targetNamespace="http://etaxonomy.eu/cdm/model/name/1.0" xmlns:reference="http://etaxonomy.eu/cdm/model/reference/1.0" xmlns:common="http://etaxonomy.eu/cdm/model/common/1.0" xmlns:taxon="http://etaxonomy.eu/cdm/model/taxon/1.0" xmlns:description="http://etaxonomy.eu/cdm/model/description/1.0" xmlns:name="http://etaxonomy.eu/cdm/model/name/1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:occurrence="http://etaxonomy.eu/cdm/model/occurrence/1.0" xmlns:agent="http://etaxonomy.eu/cdm/model/agent/1.0">
+
   <xs:import namespace="http://etaxonomy.eu/cdm/model/common/1.0" schemaLocation="common.xsd"/>
+
   <xs:import namespace="http://etaxonomy.eu/cdm/model/reference/1.0" schemaLocation="reference.xsd"/>
+
   <xs:import namespace="http://etaxonomy.eu/cdm/model/description/1.0" schemaLocation="description.xsd"/>
-  <xs:import namespace="http://etaxonomy.eu/cdm/model/occurrence/1.0" schemaLocation="occurrence.xsd"/>
-  <xs:import namespace="http://etaxonomy.eu/cdm/model/agent/1.0" schemaLocation="agent.xsd"/>
+
   <xs:import namespace="http://etaxonomy.eu/cdm/model/taxon/1.0" schemaLocation="taxon.xsd"/>
-  <xs:annotation>
-    <xs:appinfo>
-      <jxb:schemaBindings>
-        <jxb:package name="eu.etaxonomy.cdm.model.name"/>
-      </jxb:schemaBindings>
-    </xs:appinfo>
-  </xs:annotation>
+
+  <xs:import namespace="http://etaxonomy.eu/cdm/model/occurrence/1.0" schemaLocation="occurrence.xsd"/>
+
+  <xs:import namespace="http://etaxonomy.eu/cdm/model/agent/1.0" schemaLocation="agent.xsd"/>
+
   <xs:element name="BacterialName">
     <xs:complexType>
       <xs:complexContent>
@@ -65,7 +47,7 @@
   <xs:element name="NameRelationshipType" type="name:NameRelationshipType"/>
 
   <xs:element name="NameTypeDesignation" type="name:NameTypeDesignation"/>
-  
+
   <xs:element name="NameTypeDesignationStatus" type="name:NameTypeDesignationStatus"/>
 
   <xs:element name="NomenclaturalCode" type="name:NomenclaturalCode"/>
@@ -77,12 +59,12 @@
   <xs:element name="Rank" type="name:Rank"/>
 
   <xs:element name="SpecimenTypeDesignation" type="name:SpecimenTypeDesignation"/>
-	
+
+  <xs:element name="SpecimenTypeDesignationStatus" type="name:SpecimenTypeDesignationStatus"/>
+
   <xs:element name="TaxonNameBase" type="name:TaxonNameBase"/>
 
   <xs:element name="TypeDesignationBase" type="name:TypeDesignationBase"/>
-
-  <xs:element name="SpecimenTypeDesignationStatus" type="name:SpecimenTypeDesignationStatus"/>
 
   <xs:element name="ViralName">
     <xs:complexType>
@@ -109,41 +91,6 @@
   <xs:complexType name="NameRelationshipType">
     <xs:complexContent>
       <xs:extension base="common:RelationshipTermBase">
-        <xs:sequence/>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-  
-   <xs:simpleType name="NomenclaturalCode">
-     <xs:restriction base="xs:string">
-       <xs:enumeration value="ICBN"/>
-       <xs:enumeration value="ICNB"/>
-       <xs:enumeration value="ICNCP"/>
-       <xs:enumeration value="ICVCN"/>
-       <xs:enumeration value="ICZN"/>
-     </xs:restriction>
-   </xs:simpleType>
-  
-
-  <xs:complexType name="NomenclaturalStatusType">
-    <xs:complexContent>
-      <xs:extension base="common:OrderedTermBase">
-        <xs:sequence/>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="Rank">
-    <xs:complexContent>
-      <xs:extension base="common:OrderedTermBase">
-        <xs:sequence/>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="SpecimenTypeDesignationStatus">
-    <xs:complexContent>
-      <xs:extension base="name:TypeDesignationStatusBase">
         <xs:sequence/>
       </xs:extension>
     </xs:complexContent>
@@ -209,8 +156,15 @@
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
-  
-  
+
+  <xs:complexType name="Rank">
+    <xs:complexContent>
+      <xs:extension base="common:OrderedTermBase">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
   <xs:complexType name="HomotypicalGroup">
     <xs:complexContent>
       <xs:extension base="common:AnnotatableEntity">
@@ -246,6 +200,52 @@
     </xs:complexContent>
   </xs:complexType>
 
+  <xs:complexType name="TypeDesignationStatusBase" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="common:OrderedTermBase">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="NameTypeDesignationStatus">
+    <xs:complexContent>
+      <xs:extension base="name:TypeDesignationStatusBase">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="SpecimenTypeDesignationStatus">
+    <xs:complexContent>
+      <xs:extension base="name:TypeDesignationStatusBase">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="NameTypeDesignation">
+    <xs:complexContent>
+      <xs:extension base="name:TypeDesignationBase">
+        <xs:sequence>
+          <xs:element name="IsRejectedType" type="xs:boolean"/>
+          <xs:element name="IsConservedType" type="xs:boolean"/>
+          <xs:element name="TypeName" type="xs:IDREF" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="SpecimenTypeDesignation">
+    <xs:complexContent>
+      <xs:extension base="name:TypeDesignationBase">
+        <xs:sequence>
+          <xs:element name="TypeSpecimen" type="xs:IDREF" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
   <xs:complexType name="NameRelationship">
     <xs:complexContent>
       <xs:extension base="common:RelationshipBase">
@@ -263,52 +263,21 @@
     <xs:complexContent>
       <xs:extension base="common:ReferencedEntityBase">
         <xs:sequence>
-          <xs:element name="ruleConsidered" type="xs:string" minOccurs="0"/>
+          <xs:element name="RuleConsidered" type="xs:string" minOccurs="0"/>
           <xs:element name="NomenclaturalStatusType" type="xs:IDREF" minOccurs="0"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
 
-  <xs:complexType name="NameTypeDesignation">
-    <xs:complexContent>
-      <xs:extension base="name:TypeDesignationBase">
-        <xs:sequence>
-          <xs:element name="IsRejectedType" type="xs:boolean"/>
-          <xs:element name="IsConservedType" type="xs:boolean"/>
-          <!--<xs:element name="IsLectoType" type="xs:boolean"/>-->
-          <xs:element name="TypeName" type="xs:IDREF" minOccurs="0"/>
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-  
-  <xs:complexType name="TypeDesignationStatusBase" abstract="true">
+  <xs:complexType name="NomenclaturalStatusType">
     <xs:complexContent>
       <xs:extension base="common:OrderedTermBase">
         <xs:sequence/>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
-  
-  <xs:complexType name="NameTypeDesignationStatus">
-    <xs:complexContent>
-      <xs:extension base="name:TypeDesignationStatusBase">
-        <xs:sequence/>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
 
-  <xs:complexType name="SpecimenTypeDesignation">
-    <xs:complexContent>
-      <xs:extension base="name:TypeDesignationBase">
-        <xs:sequence>
-          <xs:element name="TypeSpecimen" type="xs:IDREF" minOccurs="0"/>
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-  
   <xs:complexType name="NonViralName">
     <xs:complexContent>
       <xs:extension base="name:TaxonNameBase">
@@ -348,16 +317,6 @@
     </xs:complexContent>
   </xs:complexType>
 
-  <xs:complexType name="BotanicalName">
-    <xs:complexContent>
-      <xs:extension base="name:NonViralName">
-        <xs:sequence>
-          <xs:element name="IsAnamorphic" type="xs:boolean"/>
-         </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
   <xs:complexType name="HybridRelationship">
     <xs:complexContent>
       <xs:extension base="common:RelationshipBase">
@@ -366,6 +325,16 @@
           <xs:element name="RelatedTo" type="xs:IDREF" minOccurs="0"/>
           <xs:element name="Type" type="xs:IDREF" minOccurs="0"/>
           <xs:element name="RuleConsidered" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="BotanicalName">
+    <xs:complexContent>
+      <xs:extension base="name:NonViralName">
+        <xs:sequence>
+          <xs:element name="IsAnamorphic" type="xs:boolean"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
@@ -382,5 +351,15 @@
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
+
+  <xs:simpleType name="NomenclaturalCode">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="ICNB"/>
+      <xs:enumeration value="ICBN"/>
+      <xs:enumeration value="ICNCP"/>
+      <xs:enumeration value="ICZN"/>
+      <xs:enumeration value="ICVCN"/>
+    </xs:restriction>
+  </xs:simpleType>
 </xs:schema>
 

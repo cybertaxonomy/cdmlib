@@ -1,25 +1,27 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<xs:schema elementFormDefault="qualified" attributeFormDefault="unqualified" version="1.0"
-  targetNamespace="http://etaxonomy.eu/cdm/model/common/1.0"
-  xmlns:common="http://etaxonomy.eu/cdm/model/common/1.0"
-  xmlns:media="http://etaxonomy.eu/cdm/model/media/1.0"
-  xmlns:reference="http://etaxonomy.eu/cdm/model/reference/1.0"
-  xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:agent="http://etaxonomy.eu/cdm/model/agent/1.0"
-  xmlns:jxb="http://java.sun.com/xml/ns/jaxb" xmlns:cdm="http://etaxonomy.eu/cdm/model/1.0"
-  xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc" jxb:extensionBindingPrefixes="xjc"
-  jxb:version="2.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://www.w3.org/XML/1998/namespace     http://www.w3.org/2005/08/xml.xsd     http://www.w3.org/2001/XMLSchema     http://www.w3.org/2001/XMLSchema.xsd">
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<xs:schema elementFormDefault="qualified" version="1.0"
+ targetNamespace="http://etaxonomy.eu/cdm/model/common/1.0"
+ xmlns:agent="http://etaxonomy.eu/cdm/model/agent/1.0" 
+ xmlns:media="http://etaxonomy.eu/cdm/model/media/1.0" 
+ xmlns:reference="http://etaxonomy.eu/cdm/model/reference/1.0" 
+ xmlns:location="http://etaxonomy.eu/cdm/model/location/1.0" 
+ xmlns:common="http://etaxonomy.eu/cdm/model/common/1.0" 
+ xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+ xmlns:description="http://etaxonomy.eu/cdm/model/description/1.0" 
+ xmlns:name="http://etaxonomy.eu/cdm/model/name/1.0">
+
   <xs:import namespace="http://etaxonomy.eu/cdm/model/media/1.0" schemaLocation="media.xsd"/>
+
   <xs:import namespace="http://etaxonomy.eu/cdm/model/agent/1.0" schemaLocation="agent.xsd"/>
-  <xs:import namespace="http://etaxonomy.eu/cdm/model/1.0" schemaLocation="cdm.xsd"/>
+
+  <xs:import namespace="http://etaxonomy.eu/cdm/model/location/1.0" schemaLocation="location.xsd"/>
+
   <xs:import namespace="http://etaxonomy.eu/cdm/model/reference/1.0" schemaLocation="reference.xsd"/>
-  <xs:annotation>
-    <xs:appinfo>
-            <jxb:schemaBindings>
-                <jxb:package name="eu.etaxonomy.cdm.model.common"/>
-            </jxb:schemaBindings>
-        </xs:appinfo>
-  </xs:annotation>
+
+  <xs:import namespace="http://etaxonomy.eu/cdm/model/description/1.0" schemaLocation="description.xsd"/>
+
+  <xs:import namespace="http://etaxonomy.eu/cdm/model/name/1.0" schemaLocation="name.xsd"/>
+
   <xs:element name="AnnotationType" type="common:AnnotationType"/>
 
   <xs:element name="DefinedTermBase" type="common:DefinedTermBase"/>
@@ -28,7 +30,17 @@
 
   <xs:element name="ExtensionType" type="common:ExtensionType"/>
 
-  <xs:element name="Keyword" type="common:Keyword"/>
+  <xs:element name="Figure" type="common:Figure"/>
+
+  <xs:element name="GeneralizationOf" nillable="true" type="xs:anyType"/>
+
+  <xs:element name="GrantedAuthority" type="common:GrantedAuthority"/>
+
+  <xs:element name="Group" nillable="true" type="xs:anyType"/>
+
+  <xs:element name="Include" nillable="true" type="xs:anyType"/>
+
+  <xs:element name="KindOf" nillable="true" type="xs:anyType"/>
 
   <xs:element name="Language" type="common:Language"/>
 
@@ -36,98 +48,23 @@
 
   <xs:element name="MarkerType" type="common:MarkerType"/>
 
-  <xs:element name="OrderedTermBase" type="common:OrderedTermBase"/>
+  <xs:element name="OrderedTermVocabulary" type="common:OrderedTermVocabulary"/>
 
-  <xs:element name="OriginalSourceBase" type="common:OriginalSourceBase"/>
+  <xs:element name="OriginalSource" type="common:OriginalSource"/>
+
+  <xs:element name="PartOf" nillable="true" type="xs:anyType"/>
 
   <xs:element name="ReferencedEntityBase" type="common:ReferencedEntityBase"/>
 
   <xs:element name="RelationshipBase" type="common:RelationshipBase"/>
 
-  <xs:element name="RelationshipTermBase" type="common:RelationshipTermBase"/>
-
   <xs:element name="Representation" type="common:Representation"/>
 
-  <xs:element name="TermBase" type="common:TermBase"/>
-
   <xs:element name="TermVocabulary" type="common:TermVocabulary"/>
-
-  <xs:element name="OrderedTermVocabulary" type="common:OrderedTermVocabulary"/>
 
   <xs:element name="TimePeriod" type="common:TimePeriod"/>
 
   <xs:element name="User" type="common:User"/>
-
-  <xs:element name="GrantedAuthority" type="common:GrantedAuthority"/>
-
-  <xs:element name="Group" type="common:Group"/>
-
-  <xs:complexType name="User">
-    <xs:complexContent>
-      <xs:extension base="common:CdmBase">
-        <xs:sequence>
-          <xs:element name="Username" type="xs:string"/>
-          <xs:element name="Password" type="xs:string"/>
-          <xs:element name="EmailAddress" type="xs:string" minOccurs="0"/>
-          <xs:element name="GrantedAuthorities" minOccurs="0">
-            <xs:complexType>
-              <xs:sequence>
-                <xs:element name="GrantedAuthority" type="xs:IDREF" minOccurs="0"
-                  maxOccurs="unbounded"/>
-              </xs:sequence>
-            </xs:complexType>
-          </xs:element>
-          <xs:element name="Groups" minOccurs="0">
-            <xs:complexType>
-              <xs:sequence>
-                <xs:element name="Group" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
-              </xs:sequence>
-            </xs:complexType>
-          </xs:element>
-          <xs:element name="Enabled" type="xs:boolean"/>
-          <xs:element name="AccountNonExpired" type="xs:boolean"/>
-          <xs:element name="CredentialsNonExpired" type="xs:boolean"/>
-          <xs:element name="AccountNonLocked" type="xs:boolean"/>
-          <xs:element name="Person" type="xs:IDREF" minOccurs="0"/>
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="Group">
-    <xs:complexContent>
-      <xs:extension base="common:CdmBase">
-        <xs:sequence>
-          <xs:element name="Name" type="xs:string"/>
-          <xs:element name="Members" minOccurs="0">
-            <xs:complexType>
-              <xs:sequence>
-                <xs:element name="Member" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
-              </xs:sequence>
-            </xs:complexType>
-          </xs:element>
-          <xs:element name="GrantedAuthorities" minOccurs="0">
-            <xs:complexType>
-              <xs:sequence>
-                <xs:element name="GrantedAuthority" type="xs:IDREF" minOccurs="0"
-                  maxOccurs="unbounded"/>
-              </xs:sequence>
-            </xs:complexType>
-          </xs:element>
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="GrantedAuthority">
-    <xs:complexContent>
-      <xs:extension base="common:CdmBase">
-        <xs:sequence>
-          <xs:element name="Authority" type="xs:string"/>
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
 
   <xs:complexType name="OrderedTermBase" abstract="true">
     <xs:complexContent>
@@ -150,8 +87,8 @@
               </xs:sequence>
             </xs:complexType>
           </xs:element>
-          <xs:element name="TermVocabulary" type="xs:IDREF" minOccurs="0"/>
-        </xs:sequence>
+		  <xs:element name="TermVocabulary" type="xs:IDREF" minOccurs="0"/> 
+       </xs:sequence>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
@@ -160,7 +97,7 @@
     <xs:complexContent>
       <xs:extension base="common:IdentifiableEntity">
         <xs:sequence>
-          <xs:element name="URI" type="xs:anyURI" minOccurs="0"/>
+          <xs:element name="URI" type="xs:string" minOccurs="0"/>
           <xs:element name="Representations" minOccurs="0">
             <xs:complexType>
               <xs:sequence>
@@ -172,131 +109,14 @@
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
-
-  <xs:complexType name="VersionableEntity" abstract="true">
-    <xs:complexContent>
-      <xs:extension base="common:CdmBase">
-        <xs:sequence>
-          <xs:element name="UpdatedBy" type="xs:IDREF" minOccurs="0"/>
-          <xs:element name="Updated" type="xs:string" minOccurs="0"/>
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="CdmBase" abstract="true">
-    <xs:sequence>
-      <xs:element name="Created" type="xs:string" minOccurs="0"/>
-      <xs:element name="CreatedBy" type="xs:IDREF" minOccurs="0"/>
-    </xs:sequence>
-    <!--  <xs:attribute name="id" type="xs:int" use="required"/>-->
-    <xs:attribute name="uuid" type="common:UUID" use="required"/>
-  </xs:complexType>
-
-  <xs:complexType name="AnnotatableEntity" abstract="true">
-    <xs:complexContent>
-      <xs:extension base="common:VersionableEntity">
-        <xs:sequence>
-          <xs:element name="Markers" minOccurs="0">
-            <xs:complexType>
-              <xs:sequence>
-                <xs:element name="Marker" type="common:Marker" minOccurs="0" maxOccurs="unbounded"/>
-              </xs:sequence>
-            </xs:complexType>
-          </xs:element>
-          <xs:element name="Annotations" minOccurs="0">
-            <xs:complexType>
-              <xs:sequence>
-                <xs:element name="Annotation" type="common:Annotation" minOccurs="0"
-                  maxOccurs="unbounded"/>
-              </xs:sequence>
-            </xs:complexType>
-          </xs:element>
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-
-  <xs:complexType name="LanguageStringBase" abstract="true">
-    <xs:complexContent>
-      <xs:extension base="common:AnnotatableEntity">
-        <xs:sequence>
-          <xs:element name="Text" type="common:FormattedText" minOccurs="0"/>
-          <xs:element name="Language" type="xs:IDREF" minOccurs="0"/>
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="LanguageString">
-    <xs:complexContent>
-      <xs:extension base="common:LanguageStringBase">
-        <xs:sequence/>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-
-  <xs:complexType name="FormattedText" mixed="true">
-    <xs:choice minOccurs="0">
-      <xs:any processContents="lax" minOccurs="0" maxOccurs="unbounded" namespace="##any">
-        <xs:annotation>
-          <xs:appinfo>
-                        <xjc:dom/>
-                    </xs:appinfo>
-        </xs:annotation>
-      </xs:any>
-    </xs:choice>
-  </xs:complexType>
-
-  <xs:complexType name="Language">
-    <xs:complexContent>
-      <xs:extension base="common:DefinedTermBase">
-        <xs:sequence/>
-        <xs:attribute name="iso639_1">
-          <xs:simpleType>
-            <xs:restriction base="xs:string">
-              <!--<xs:length value="2"/>--> </xs:restriction>
-          </xs:simpleType>
-        </xs:attribute>
-        <xs:attribute name="iso639_2">
-          <xs:simpleType>
-            <xs:restriction base="xs:string">
-              <!--<xs:length value="3"/>--> </xs:restriction>
-          </xs:simpleType>
-        </xs:attribute>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="Marker">
-    <xs:complexContent>
-      <xs:extension base="common:VersionableEntity">
-        <xs:sequence>
-          <xs:element name="Flag" type="xs:boolean"/>
-          <xs:element name="MarkerType" type="xs:IDREF" minOccurs="0"/>
-          <xs:element name="MarkedObject" type="xs:IDREF" minOccurs="0"/>
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="MarkerType">
-    <xs:complexContent>
-      <xs:extension base="common:DefinedTermBase">
-        <xs:attribute name="isTechnical" type="xs:boolean"/>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
+  
   <xs:complexType name="IdentifiableEntity" abstract="true">
     <xs:complexContent>
       <xs:extension base="common:AnnotatableEntity">
         <xs:sequence>
-          <xs:element name="LSID" type="common:LSID" minOccurs="0"/>
-          <xs:element name="TitleCache" type="common:FormattedText" minOccurs="0"/>
-          <xs:element name="ProtectedTitleCache" type="xs:boolean" minOccurs="0"/>
+          <xs:element name="LSID" type="xs:string" minOccurs="0"/>
+          <xs:element name="TitleCache" type="common:FormattedText"/>
+          <xs:element name="ProtectedTitleCache" type="xs:boolean"/>
           <xs:element name="Rights" minOccurs="0">
             <xs:complexType>
               <xs:sequence>
@@ -307,8 +127,7 @@
           <xs:element name="Extensions" minOccurs="0">
             <xs:complexType>
               <xs:sequence>
-                <xs:element name="Extension" type="common:Extension" minOccurs="0"
-                  maxOccurs="unbounded"/>
+                <xs:element name="Extension" type="common:Extension" minOccurs="0" maxOccurs="unbounded"/>
               </xs:sequence>
             </xs:complexType>
           </xs:element>
@@ -331,12 +150,170 @@
     </xs:complexContent>
   </xs:complexType>
 
-  <xs:complexType name="Credit">
+  <xs:complexType name="AnnotatableEntity" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="common:VersionableEntity">
+        <xs:sequence>
+          <xs:element name="Markers" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="Marker" type="common:Marker" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="Annotations" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="Annotation" type="common:Annotation" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="VersionableEntity" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="common:CdmBase">
+        <xs:sequence>
+          <xs:element name="Updated" type="xs:string" minOccurs="0"/>
+          <xs:element name="UpdatedBy" type="xs:IDREF" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="CdmBase" abstract="true">
+    <xs:sequence>
+      <xs:element name="Created" type="xs:string" minOccurs="0"/>
+      <xs:element name="CreatedBy" type="xs:IDREF" minOccurs="0"/>
+    </xs:sequence>
+    <xs:attribute name="uuid" type="xs:ID" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="MultilanguageText">
+    <xs:sequence>
+      <xs:element name="LanguageString" type="xs:IDREF" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="LanguageString">
     <xs:complexContent>
       <xs:extension base="common:LanguageStringBase">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="LanguageStringBase" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="common:AnnotatableEntity">
         <xs:sequence>
-          <xs:element name="Agent" type="xs:IDREF" minOccurs="0"/>
-          <xs:element name="AbbreviatedText" type="xs:string" minOccurs="0"/>
+          <xs:element name="Text" type="common:FormattedText" minOccurs="0"/>
+          <xs:element name="Language" type="xs:IDREF" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="FormattedText" mixed="true">
+    <xs:sequence>
+      <xs:any processContents="skip" namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="Language">
+    <xs:complexContent>
+      <xs:extension base="common:DefinedTermBase">
+        <xs:sequence/>
+        <xs:attribute name="iso639_1" type="xs:string"/>
+        <xs:attribute name="iso639_2" type="xs:string"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="Marker">
+    <xs:complexContent>
+      <xs:extension base="common:VersionableEntity">
+        <xs:sequence>
+          <xs:element name="Flag" type="xs:boolean"/>
+          <xs:element name="MarkerType" type="xs:IDREF" minOccurs="0"/>
+          <xs:element name="MarkedObject" type="xs:IDREF" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="MarkerType">
+    <xs:complexContent>
+      <xs:extension base="common:DefinedTermBase">
+        <xs:sequence/>
+        <xs:attribute name="isTechnical" type="xs:boolean" use="required"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="User">
+    <xs:complexContent>
+      <xs:extension base="common:CdmBase">
+        <xs:sequence>
+          <xs:element name="Username" type="xs:string" minOccurs="0"/>
+          <xs:element name="Password" type="xs:string" minOccurs="0"/>
+          <xs:element name="EmailAddress" type="xs:string" minOccurs="0"/>
+          <xs:element name="GrantedAuthorities" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="GrantedAuthority" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="Groups" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="Group" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="Enabled" type="xs:boolean"/>
+          <xs:element name="AccountNonExpired" type="xs:boolean"/>
+          <xs:element name="CredentialsNonExpired" type="xs:boolean"/>
+          <xs:element name="AccountNonLocked" type="xs:boolean"/>
+          <xs:element name="Person" type="xs:IDREF" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="GrantedAuthority">
+    <xs:complexContent>
+      <xs:extension base="common:CdmBase">
+        <xs:sequence>
+          <xs:element name="Authority" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="Group">
+    <xs:complexContent>
+      <xs:extension base="common:CdmBase">
+        <xs:sequence>
+          <xs:element name="Name" type="xs:string" minOccurs="0"/>
+          <xs:element name="Members" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="Member" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="GrantedAuthorities" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="GrantedAuthority" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
@@ -344,8 +321,8 @@
 
   <xs:complexType name="TimePeriod">
     <xs:sequence>
-      <xs:element name="Start" type="common:Partial" minOccurs="0"/>
-      <xs:element name="End" type="common:Partial" minOccurs="0"/>
+      <xs:element name="Start" type="xs:string" minOccurs="0"/>
+      <xs:element name="End" type="xs:string" minOccurs="0"/>
       <xs:element name="FreeText" type="xs:string" minOccurs="0"/>
     </xs:sequence>
   </xs:complexType>
@@ -370,27 +347,37 @@
     </xs:complexContent>
   </xs:complexType>
 
-  <xs:complexType name="OriginalSourceBase" abstract="true">
+  <xs:complexType name="Credit">
     <xs:complexContent>
-      <xs:extension base="common:ReferencedEntityBase">
+      <xs:extension base="common:LanguageStringBase">
         <xs:sequence>
-          <xs:element name="IdInSource" type="xs:string" minOccurs="0"/>
-          <xs:element name="IdNamespace" type="xs:string" minOccurs="0"/>
-       </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-  
-  <xs:complexType name="IdentifiableSource">
-    <xs:complexContent>
-      <xs:extension base="common:OriginalSourceBase">
-        <xs:sequence>
-          <xs:element name="SourcedObject" type="xs:IDREF"/>
+          <xs:element name="Agent" type="xs:IDREF" minOccurs="0"/>
+          <xs:element name="AbbreviatedText" type="xs:string" minOccurs="0"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
 
+  <xs:complexType name="IdentifiableSource">
+    <xs:complexContent>
+      <xs:extension base="common:OriginalSource">
+        <xs:sequence>
+          <xs:element name="SourcedObject" type="xs:IDREF" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="OriginalSource" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="common:ReferencedEntityBase">
+        <xs:sequence>
+          <xs:element name="IdInSource" type="xs:string" minOccurs="0"/>
+          <xs:element name="IdNamespace" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
 
   <xs:complexType name="ReferencedEntityBase" abstract="true">
     <xs:complexContent>
@@ -404,20 +391,12 @@
     </xs:complexContent>
   </xs:complexType>
 
-  <xs:complexType name="Keyword">
-    <xs:complexContent>
-      <xs:extension base="common:OrderedTermBase">
-        <xs:sequence/>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
   <xs:complexType name="Annotation">
     <xs:complexContent>
       <xs:extension base="common:LanguageStringBase">
         <xs:sequence>
           <xs:element name="Commentator" type="xs:IDREF" minOccurs="0"/>
-          <xs:element name="AnnotatedObject" type="xs:IDREF" minOccurs="1"/>
+          <xs:element name="AnnotatedObject" type="xs:IDREF" minOccurs="0"/>
           <xs:element name="AnnotationType" type="xs:IDREF" minOccurs="0"/>
           <xs:element name="LinkbackURL" type="xs:anyURI" minOccurs="0"/>
         </xs:sequence>
@@ -450,25 +429,6 @@
     </xs:complexContent>
   </xs:complexType>
 
-  <xs:complexType name="DescriptionElementSource">
-    <xs:complexContent>
-      <xs:extension base="common:OriginalSourceBase">
-        <xs:sequence>
-          <xs:element name="SourcedObject" type="xs:IDREF" minOccurs="0"/>
-          <xs:element name="nameUsedInSource" type="xs:IDREF" minOccurs="0"/>
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="OrderedTermVocabulary">
-    <xs:complexContent>
-      <xs:extension base="common:TermVocabulary">
-        <xs:sequence/>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
   <xs:complexType name="Representation">
     <xs:complexContent>
       <xs:extension base="common:LanguageStringBase">
@@ -479,6 +439,34 @@
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
+
+  <xs:complexType name="RelationshipBase" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="common:ReferencedEntityBase">
+        <xs:sequence/>
+        <xs:attribute name="isDoubtful" type="xs:boolean" use="required"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  
+  
+
+  <xs:element name="Generalizations">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="GeneralizationOf" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  
+
+  <xs:element name="Includes">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Include" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
 
   <xs:complexType name="RelationshipTermBase" abstract="true">
     <xs:complexContent>
@@ -498,32 +486,6 @@
     </xs:complexContent>
   </xs:complexType>
 
-  <xs:complexType name="RelationshipBase" abstract="true">
-    <xs:complexContent>
-      <xs:extension base="common:ReferencedEntityBase">
-        <xs:attribute name="isDoubtful" type="xs:boolean"/>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-  <xs:element name="KindOf" type="xs:IDREF"/>
-
-  <xs:element name="Generalizations">
-    <xs:complexType>
-      <xs:sequence>
-        <xs:element name="GeneralizationOf" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
-      </xs:sequence>
-    </xs:complexType>
-  </xs:element>
-  <xs:element name="PartOf" type="xs:IDREF"/>
-
-  <xs:element name="Includes">
-    <xs:complexType>
-      <xs:sequence>
-        <xs:element name="Include" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
-      </xs:sequence>
-    </xs:complexType>
-  </xs:element>
-
   <xs:complexType name="EventBase" abstract="true">
     <xs:complexContent>
       <xs:extension base="common:AnnotatableEntity">
@@ -536,69 +498,33 @@
     </xs:complexContent>
   </xs:complexType>
 
-  <xs:complexType name="LSIDAuthority">
-    <xs:sequence>
-      <xs:element name="Authority" type="xs:string"/>
-      <xs:element name="Server" type="xs:string"/>
-      <xs:element name="Port" type="xs:string"/>
-      <xs:element name="Url" type="xs:string"/>
-      <xs:element name="Namespaces" type="common:Namespaces"/>
-    </xs:sequence>
+  <xs:complexType name="DescriptionElementSource">
+    <xs:complexContent>
+      <xs:extension base="common:OriginalSource">
+        <xs:sequence>
+          <xs:element name="SourcedObject" type="xs:IDREF" minOccurs="0"/>
+          <xs:element name="nameUsedInSource" type="xs:IDREF" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
   </xs:complexType>
 
-  <xs:complexType name="Namespaces">
-    <xs:sequence>
-      <xs:element ref="common:Namespace" minOccurs="1" maxOccurs="unbounded"/>
-    </xs:sequence>
-  </xs:complexType>
-  <xs:element name="Namespace" type="common:Namespace"/>
-  <xs:complexType name="Namespace">
-    <xs:sequence>
-      <xs:element name="NSpace" type="xs:string"/>
-      <xs:element name="Class" type="xs:string"/>
-    </xs:sequence>
+  <xs:complexType name="OrderedTermVocabulary">
+    <xs:complexContent>
+      <xs:extension base="common:TermVocabulary">
+        <xs:sequence>
+          <xs:element name="toBeChangedByObject" type="common:OrderedTermBase" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
   </xs:complexType>
 
-  <xs:complexType name="MultilanguageText">
-    <xs:sequence>
-      <xs:element ref="common:LanguageString" minOccurs="0" maxOccurs="unbounded"/>
-    </xs:sequence>
+  <xs:complexType name="Figure">
+    <xs:complexContent>
+      <xs:extension base="media:ReferencedMedia">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
   </xs:complexType>
-
-  <xs:simpleType name="UUID">
-    <xs:annotation>
-      <xs:appinfo>
-                <xjc:javaType name="java.util.UUID" adapter="eu.etaxonomy.cdm.jaxb.UUIDAdapter"/>
-            </xs:appinfo>
-    </xs:annotation>
-    <xs:restriction base="xs:ID">
-      <xs:pattern
-        value="urn-uuid-([0-9]|[a-f]|[A-F]){8}(-([0-9]|[a-f]|[A-F]){4})(-([0-9]|[a-f]|[A-F]){4})(-([0-9]|[a-f]|[A-F]){4})(-([0-9]|[a-f]|[A-F]){12})"
-      />
-    </xs:restriction>
-  </xs:simpleType>
-  <xs:simpleType name="LSID">
-    <xs:annotation>
-      <xs:appinfo>
-                <xjc:javaType name="eu.etaxonomy.cdm.model.common.LSID" adapter="eu.etaxonomy.cdm.jaxb.LSIDAdapter"/>
-            </xs:appinfo>
-    </xs:annotation>
-    <xs:restriction base="xs:anyURI">
-      <xs:pattern
-        value="(urn|URN):(LSID|lsid):[a-zA-Z0-9\(\)\+,\-\.=@;$_!\*']+:[a-zA-Z0-9\(\)\+,\-\.=@;$_!\*'/]+:[a-zA-Z0-9\(\)\+,\-\.=@;$_!\*']+(:[a-zA-Z0-9\(\)\+,\-\.=@;$_!\*']+)*"
-      />
-    </xs:restriction>
-  </xs:simpleType>
-  <xs:simpleType name="Partial">
-    <xs:annotation>
-      <xs:appinfo>
-                <xjc:javaType name="org.joda.time.Partial" adapter="eu.etaxonomy.cdm.jaxb.PartialAdapter"/>
-            </xs:appinfo>
-    </xs:annotation>
-    <xs:restriction base="xs:string">
-      <xs:pattern
-        value="[0-9]{4}(-[0-9]{1,2}(-[0-9]{1,2}(T[0-9]{2}(:[0-9]{2}(:[0-9]{2}(\.[0-9]+)?)?)?)?)?)?"
-      />
-    </xs:restriction>
-  </xs:simpleType>
 </xs:schema>
+

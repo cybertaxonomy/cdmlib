@@ -1,32 +1,21 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<xs:schema elementFormDefault="qualified" attributeFormDefault="unqualified" version="1.0" 
-  targetNamespace="http://etaxonomy.eu/cdm/model/molecular/1.0" 
-  xmlns:molecular="http://etaxonomy.eu/cdm/model/molecular/1.0" 
-  xmlns:common="http://etaxonomy.eu/cdm/model/common/1.0" 
-  xmlns:occurrence="http://etaxonomy.eu/cdm/model/occurrence/1.0" 
-  xmlns:media="http://etaxonomy.eu/cdm/model/media/1.0" 
-  xmlns:xs="http://www.w3.org/2001/XMLSchema" 
-  xmlns:reference="http://etaxonomy.eu/cdm/model/reference/1.0"
-  xmlns:jxb="http://java.sun.com/xml/ns/jaxb"
-  xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
-  jxb:extensionBindingPrefixes="xjc"
-  jxb:version="2.1"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-    xsi:schemaLocation="http://www.w3.org/XML/1998/namespace
-    http://www.w3.org/2005/08/xml.xsd
-    http://www.w3.org/2001/XMLSchema
-    http://www.w3.org/2001/XMLSchema.xsd">
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<xs:schema elementFormDefault="qualified" version="1.0" 
+targetNamespace="http://etaxonomy.eu/cdm/model/molecular/1.0" 
+xmlns:reference="http://etaxonomy.eu/cdm/model/reference/1.0" 
+xmlns:occurrence="http://etaxonomy.eu/cdm/model/occurrence/1.0" 
+xmlns:common="http://etaxonomy.eu/cdm/model/common/1.0" 
+xmlns:media="http://etaxonomy.eu/cdm/model/media/1.0" 
+xmlns:molecular="http://etaxonomy.eu/cdm/model/molecular/1.0" 
+xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
   <xs:import namespace="http://etaxonomy.eu/cdm/model/occurrence/1.0" schemaLocation="occurrence.xsd"/>
+
   <xs:import namespace="http://etaxonomy.eu/cdm/model/reference/1.0" schemaLocation="reference.xsd"/>
+
   <xs:import namespace="http://etaxonomy.eu/cdm/model/media/1.0" schemaLocation="media.xsd"/>
+
   <xs:import namespace="http://etaxonomy.eu/cdm/model/common/1.0" schemaLocation="common.xsd"/>
-  <xs:annotation>
-    <xs:appinfo>
-      <jxb:schemaBindings>
-        <jxb:package name="eu.etaxonomy.cdm.model.molecular"/>
-      </jxb:schemaBindings>
-    </xs:appinfo>
-  </xs:annotation>
+
   <xs:element name="DnaSample" type="molecular:DnaSample"/>
 
   <xs:element name="GenBankAccession" type="molecular:GenBankAccession"/>
@@ -59,10 +48,10 @@
         <xs:sequence>
           <xs:element name="Sequence" type="xs:string" minOccurs="0"/>
           <xs:element name="Length" type="xs:int" minOccurs="0"/>
-          <xs:element name="DateSequenced" type="xs:dateTime" minOccurs="0"/>
+          <xs:element name="DateSequenced" type="xs:string" minOccurs="0"/>
           <xs:element name="CitationMicroReference" type="xs:string" minOccurs="0"/>
           <xs:element name="PublishedIn" type="xs:IDREF" minOccurs="0"/>
-          <xs:element name="Locus" type="xs:IDREF" minOccurs="0"/>
+          <xs:element ref="molecular:Locus" minOccurs="0"/>
           <xs:element name="Citations" minOccurs="0">
             <xs:complexType>
               <xs:sequence>
@@ -111,7 +100,7 @@
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
-  
+
   <xs:complexType name="PhylogeneticTree">
     <xs:complexContent>
       <xs:extension base="media:ReferencedMedia">
@@ -127,6 +116,5 @@
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
-  
 </xs:schema>
 
