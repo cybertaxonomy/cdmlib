@@ -120,7 +120,11 @@ public class DefaultMatchStrategy extends StrategyBase implements IMatchStrategy
 		}else if (matchFirst == matchSecond){
 			return true;
 		}else if (matchFirst.getClass() != matchSecond.getClass()){
-			return false;
+			matchFirst = (T) HibernateProxyHelper.deproxy(matchFirst);
+			matchSecond = (T) HibernateProxyHelper.deproxy(matchSecond);
+			if (matchFirst.getClass() != matchSecond.getClass()){
+				return false;
+			}
 		}
 		matching.deleteTemporaryMatchers(); //just in case they are not yet deleted during last invoke
 		if (! matchClass.isAssignableFrom(matchFirst.getClass()) ){
@@ -452,6 +456,13 @@ public class DefaultMatchStrategy extends StrategyBase implements IMatchStrategy
 				matching.setFieldMatcher(FieldMatcher.NewInstance(field, matchMode), temporary);
 			}	
 		}
+	}
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.strategy.match.IMatchStrategy#getMatchFields()
+	 */
+	public Set<String> getMatchFieldPropertyNames() {
+		return matchFields.keySet();
 	}
 
 	

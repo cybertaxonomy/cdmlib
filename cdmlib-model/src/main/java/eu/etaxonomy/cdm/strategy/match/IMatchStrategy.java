@@ -10,6 +10,8 @@
 
 package eu.etaxonomy.cdm.strategy.match;
 
+import java.util.Set;
+
 
 /**
  * @author a.mueller
@@ -18,6 +20,10 @@ package eu.etaxonomy.cdm.strategy.match;
  */
 public interface IMatchStrategy {
 
+	public static MatchMode defaultMatchMode = MatchMode.EQUAL;
+	public static MatchMode defaultCollectionMatchMode = MatchMode.IGNORE;
+	public static MatchMode defaultMatchMatchMode = MatchMode.MATCH;
+	
 	public MatchMode getMatchMode(String propertyName);
 
 	/**
@@ -44,4 +50,16 @@ public interface IMatchStrategy {
 	 * @return
 	 */
 	public Matching getMatching();
+	
+	/**
+	 * Returns the class this match strategy matches for
+	 * @return
+	 */
+	public Class getMatchClass();
+	
+	/**
+	 * Returns a map containing all fields this match strategy defines match modes for
+	 * @return
+	 */
+	public Set<String> getMatchFieldPropertyNames();
 }

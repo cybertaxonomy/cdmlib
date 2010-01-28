@@ -298,8 +298,5 @@ public enum MatchMode {
 	public boolean isXOrOneNull(){
 		return (this == EQUAL_OR_ONE_NULL) || (this == MATCH_OR_ONE_NULL);	
 		
-	}
-	
-
-	
+	}	
 }
