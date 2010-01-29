@@ -112,6 +112,8 @@ public class FormattedTextAdapter extends XmlAdapter<FormattedText,java.lang.Str
 		StringWriter stringWriter = new StringWriter();
 		Result output = new StreamResult(stringWriter);
 		transformer.transform(input, output);
-		return stringWriter.toString();
+		String result = stringWriter.toString();
+		result = StringEscapeUtils.unescapeXml(result);
+		return result;
 	}
 }
