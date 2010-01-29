@@ -106,11 +106,8 @@ public class TaxonXImportConfigurator extends ImportConfiguratorBase<TaxonXImpor
 			InputStream is = (InputStream)o;
 			Element root = XmlHelp.getRoot(is);
 			return root;
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		}catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (Exception e) {
+			logger.error("The source '" + source + "' has errors.", e);
 		}
 		return null;
 	}

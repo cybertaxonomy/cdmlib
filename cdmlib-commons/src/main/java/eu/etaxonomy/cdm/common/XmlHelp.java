@@ -38,6 +38,9 @@ public class XmlHelp {
 	 * @param path
 	 * @param fileName
 	 * @return true, if no error
+	 * 
+	 * TODO throw the FileNotFoundException and handle in the calling method. That is more likely the place where you can do 
+	 * something about the problem
 	 */
 	static public boolean saveToXml(Document doc, String path, String fileName, Format format ){
 		try {
@@ -59,6 +62,9 @@ public class XmlHelp {
 	 * @param path
 	 * @param fileName
 	 * @return true, if no error
+	 * 
+	 * TODO throw the IOException and handle in the calling method. That is more likely the place where you can do 
+	 * something about the problem
 	 */
 	static public boolean saveToXml(Document doc, OutputStream outStream, Format format ){
 		try {
@@ -178,23 +184,29 @@ public class XmlHelp {
 	}
 	
 
-	//returns the root Element in the File xmlFile
-	static public  Element getRoot(InputStream xmlInput){
-		try {
-			SAXBuilder builder = new SAXBuilder();
-			Document doc = builder.build(xmlInput);
-			Element root = doc.getRootElement();
-			return root;
-		} catch (JDOMException e) {
-			e.printStackTrace();
-			return null;
-		} catch (IOException e) {
-			e.printStackTrace();
-			return null;
-		} 
+	/**
+	 * returns the root Element in the File xmlFile
+	 * @param xmlInput
+	 * @return
+	 * @throws JDOMException
+	 * @throws IOException
+	 */
+	static public  Element getRoot(InputStream xmlInput) throws JDOMException, IOException{
+		SAXBuilder builder = new SAXBuilder();
+		Document doc = builder.build(xmlInput);
+		Element root = doc.getRootElement();
+		return root;
 	}
 	
-	//returns the root Element in the File xmlFile
+	/**
+	 * returns the root Element in the File xmlFile
+	 * 
+	 * @param xmlInput
+	 * @param elementName
+	 * @return
+	 * TODO throw the JDOMException and the IOException and handle in the calling method. That is more likely the place where you can do 
+	 * something about the problem
+	 */
 	static public  Element getRoot(InputStream xmlInput, String elementName){
 		try {
 			SAXBuilder builder = new SAXBuilder();
@@ -214,7 +226,14 @@ public class XmlHelp {
 		} 
 	}
 	
-	//returns the root Element in the File xmlFile
+	/**
+	 * returns the root Element in the File xmlFile
+	 * @param xmlInput
+	 * @return
+	 * 
+	 * TODO throw the IOException and handle in the calling method. That is more likely the place where you can do 
+	 * something about the problem
+	 */
 	static public  Element getBeansRoot(InputStream xmlInput){
 		try {
 			SAXBuilder builder = new SAXBuilder();
