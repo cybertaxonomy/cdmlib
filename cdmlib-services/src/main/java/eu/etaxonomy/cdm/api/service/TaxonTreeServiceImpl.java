@@ -253,7 +253,9 @@ public class TaxonTreeServiceImpl extends IdentifiableServiceBase<TaxonomicTree,
 		return null;
 	}
 	
-	
+	public List<TaxonNode> getAllNodes(){
+		return taxonNodeDao.list(null,null);
+	}
 	
 	/*
 	 * (non-Javadoc)

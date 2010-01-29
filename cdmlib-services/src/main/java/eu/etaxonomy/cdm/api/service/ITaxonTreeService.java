@@ -210,4 +210,9 @@ public interface ITaxonTreeService extends IIdentifiableEntityService<TaxonomicT
 	 * @return
 	 */
 	public UUID saveTreeNode(ITreeNode treeNode);
+
+	
+	public List<TaxonNode> getAllNodes();
+
+
 }
