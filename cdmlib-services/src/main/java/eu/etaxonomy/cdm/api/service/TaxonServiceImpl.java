@@ -468,7 +468,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             //FIXME implement search by area
 			List<? extends TaxonNameBase<?,?>> names = 
 				nameDao.findByName(configurator.getSearchString(), configurator.getMatchMode(), 
-						configurator.getPageSize(), configurator.getPageNumber(), null, null);
+						configurator.getPageSize(), configurator.getPageNumber(), null, configurator.getTaxonNamePropertyPath());
 			if (logger.isDebugEnabled()) { logger.debug(names.size() + " matching name(s) found"); }
 			if (names.size() > 0) {
 				for (TaxonNameBase<?,?> taxonName : names) {
