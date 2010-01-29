@@ -69,7 +69,7 @@ public class PalmaeProtologueImport extends AbstractImageImporter {
 				taxonId = row.get(PalmaeProtologueImport.TAXONID);
 				linkProto= row.get(PalmaeProtologueImport.LINK_PROTO).trim();
 			}catch (Exception e){
-				logger.error("The row has errors: " + row, e);
+				logger.error("The row has errors: rowNumber: " +count + ", content: "  + row, e);
 			}
 			
 			TaxonNameBase taxonNameBase = (TaxonNameBase)getCommonService().getSourcedObjectByIdInSource(TaxonNameBase.class, "palm_tn_" + taxonId.replace(".0", ""), "TaxonName");
