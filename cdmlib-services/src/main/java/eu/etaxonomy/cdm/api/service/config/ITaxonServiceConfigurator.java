@@ -72,6 +72,10 @@ public interface ITaxonServiceConfigurator {
 	public List<String> getTaxonPropertyPath();
 
 	public void setTaxonPropertyPath(List<String> taxonPropertyPath);
+	
+	public List<String> getTaxonNamePropertyPath();
+
+	public void setTaxonNamePropertyPath(List<String> taxonNamePropertyPath);
 
 	public List<String> getCommonNamePropertyPath();
 
