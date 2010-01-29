@@ -32,6 +32,7 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
 
 /**
@@ -129,6 +130,7 @@ public class JaxbExport extends CdmExportBase<JaxbExportConfigurator, JaxbExport
 		int referenceBaseRows = numberOfRows;
 		int taxonNameBaseRows = numberOfRows;
 		int taxonBaseRows = numberOfRows;
+		int taxonNodeRows = numberOfRows;
 		int relationshipRows = numberOfRows;
 		int occurrencesRows = numberOfRows;
 		int mediaRows = numberOfRows;
@@ -271,13 +273,25 @@ public class JaxbExport extends CdmExportBase<JaxbExportConfigurator, JaxbExport
 		if (jaxbExpConfig.isDoTaxonomicTreeData() == true) {
 			if (taxonomicTreeDataRows == 0) { taxonomicTreeDataRows = MAX_ROWS; }
 			logger.info("# Taxonomic Tree");
+			
+			
 			List<TaxonomicTree> taxTrees = new ArrayList<TaxonomicTree>();
 			taxTrees= getTaxonTreeService().list(null,taxonomicTreeDataRows, 0, null, null);
+			
 			List<TaxonomicTree> taxTreesdeproxy = new ArrayList<TaxonomicTree>();
 			for (TaxonomicTree taxTree : taxTrees){
 				HibernateProxyHelper.deproxy(taxTree);
 				taxTreesdeproxy.add(taxTree);
 			}
+			List<TaxonNode> taxNodes = new ArrayList<TaxonNode>();
+			taxNodes= getTaxonTreeService().getAllNodes();
+			List<TaxonNode> taxNodesdeproxy = new ArrayList<TaxonNode>();
+			for (TaxonNode taxNode : taxNodes){
+				HibernateProxyHelper.deproxy(taxNode);
+				taxNodesdeproxy.add(taxNode);
+			}
+			
+			dataSet.setTaxonNodes(taxNodesdeproxy);
 			dataSet.setTaxonomicTrees(taxTreesdeproxy );
 		}
 		//TODO: FIXME!!!!!

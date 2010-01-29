@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.io.jaxb;
 import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -20,6 +21,7 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.io.common.CdmIoBase;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
@@ -37,6 +39,8 @@ import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
 
 /**
  * @author a.babadshanjan
@@ -183,7 +187,7 @@ public class JaxbImport extends CdmIoBase<JaxbImportState> implements ICdmIO<Jax
 		try {
 			if (jaxbImpConfig.isDoAuthors() == true) {
 				if ((agents = dataSet.getAgents()).size() > 0) {
-					logger.info("Agents: " + agents.size());
+					logger.error("Agents: " + agents.size());
 					getAgentService().save((Collection)agents);
 				}
 			}
@@ -198,11 +202,13 @@ public class JaxbImport extends CdmIoBase<JaxbImportState> implements ICdmIO<Jax
 		try {
 			if (jaxbImpConfig.getDoReferences() != IImportConfigurator.DO_REFERENCES.NONE) {
 				if ((references = dataSet.getReferences()).size() > 0) {
-					logger.info("References: " + references.size());
+					logger.error("References: " + references.size());
 					getReferenceService().save(references);
+					logger.error("ready...");
 				}
 			}
 		} catch (Exception ex) {
+			ex.printStackTrace();
 			logger.error("Error saving references");
 			ret = false;
 		}
@@ -213,7 +219,7 @@ public class JaxbImport extends CdmIoBase<JaxbImportState> implements ICdmIO<Jax
 		try {
 			if (jaxbImpConfig.isDoTaxonNames() == true) {
 				if ((taxonomicNames = dataSet.getTaxonomicNames()).size() > 0) {
-					logger.info("Taxonomic names: " + taxonomicNames.size());
+					logger.error("Taxonomic names: " + taxonomicNames.size());
 					getNameService().save(taxonomicNames);
 				}
 			}
@@ -228,7 +234,7 @@ public class JaxbImport extends CdmIoBase<JaxbImportState> implements ICdmIO<Jax
 		try {
 			if (jaxbImpConfig.isDoHomotypicalGroups() == true) {
 				if ((homotypicalGroups = dataSet.getHomotypicalGroups()).size() > 0) {
-					logger.info("Homotypical groups: " + homotypicalGroups.size());
+					logger.error("Homotypical groups: " + homotypicalGroups.size());
 					getNameService().saveAllHomotypicalGroups(homotypicalGroups);
 					
 				}
@@ -245,7 +251,7 @@ public class JaxbImport extends CdmIoBase<JaxbImportState> implements ICdmIO<Jax
 		try {
 			if (jaxbImpConfig.isDoTaxa() == true) {
 				if ((taxonBases = dataSet.getTaxonBases()).size() > 0) {
-					logger.info("Taxon bases: " + taxonBases.size());
+					logger.error("Taxon bases: " + taxonBases.size());
 					Iterator <TaxonBase> taxBases = taxonBases.iterator();
 					getTaxonService().save(taxonBases);
 					/*while (taxBases.hasNext()){
@@ -267,7 +273,7 @@ public class JaxbImport extends CdmIoBase<JaxbImportState> implements ICdmIO<Jax
 		try {
 			if (jaxbImpConfig.isDoTypeDesignations() == true) {
 				if ((typeDesignations = dataSet.getTypeDesignations()).size() > 0) {
-					logger.info("Type Designations: " + typeDesignations.size());
+					logger.error("Type Designations: " + typeDesignations.size());
 					getNameService().saveTypeDesignationAll(typeDesignations);
 				}
 			}
@@ -288,7 +294,7 @@ public class JaxbImport extends CdmIoBase<JaxbImportState> implements ICdmIO<Jax
 		try {
 			if (jaxbImpConfig.isDoOccurrence() == true) {
 				if ((occurrences = dataSet.getOccurrences()).size() > 0) {
-					logger.info("Occurrences: " + occurrences.size());
+					logger.error("Occurrences: " + occurrences.size());
 					getOccurrenceService().save(occurrences);
 				}
 			}
@@ -303,7 +309,7 @@ public class JaxbImport extends CdmIoBase<JaxbImportState> implements ICdmIO<Jax
 		try {
 			if (jaxbImpConfig.isDoFeatureData() == true) {
 				if ((featureTrees = dataSet.getFeatureTrees()).size() > 0) {
-					logger.info("Feature data: " + featureTrees.size());
+					logger.error("Feature data: " + featureTrees.size());
 					getFeatureTreeService().save(featureTrees);
 				}
 			}
@@ -318,7 +324,7 @@ public class JaxbImport extends CdmIoBase<JaxbImportState> implements ICdmIO<Jax
 		try {
 			if (jaxbImpConfig.isDoMedia() == true) {
 				if ((media = dataSet.getMedia()).size() > 0) {
-					logger.info("Media: " + media.size());
+					logger.error("Media: " + media.size());
 					getMediaService().save(media);
 				}
 			}
@@ -326,6 +332,18 @@ public class JaxbImport extends CdmIoBase<JaxbImportState> implements ICdmIO<Jax
 			logger.error("Error saving media");
 			ret = false;
 		}
+		
+		if (jaxbImpConfig.isDoTaxonomicTreeData() == true) {
+			logger.error("# Taxonomic Tree");
+			
+			Collection<TaxonNode> nodes = dataSet.getTaxonNodes();
+			Collection<TaxonomicTree> taxonTrees = dataSet.getTaxonomicTrees();
+			getTaxonTreeService().saveTaxonNodeAll(nodes);
+			for (TaxonomicTree tree: taxonTrees){
+				getTaxonTreeService().saveOrUpdate(tree);
+			}
+		}
+		
 		
 		commitTransaction(txStatus);
 		logger.info("All data saved");

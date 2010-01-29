@@ -31,6 +31,7 @@ public class JaxbImportConfigurator extends ImportConfiguratorBase implements II
 	private int maxRows = 0;
 	
 	
+	private boolean doUsers = true;
 	private boolean doAgentData = true;
 	private boolean doLanguageData = true;
 	private boolean doFeatureData = true;
@@ -45,8 +46,10 @@ public class JaxbImportConfigurator extends ImportConfiguratorBase implements II
 //	private boolean doTaxa = true;
 	private boolean doTerms = true;
 	private boolean doTermVocabularies = true;
-	private boolean doHomotypicalGroups = false;
+	private boolean doHomotypicalGroups = true;
+
 	private boolean doTypeDesignations = true;
+	private boolean doTaxonomicTreeData = true;
 
 	
 	
@@ -227,6 +230,10 @@ public class JaxbImportConfigurator extends ImportConfiguratorBase implements II
 
 	public void setDoTypeDesignations(boolean doTypeDesignations) {
 		this.doTypeDesignations = doTypeDesignations;
+	}
+
+	public boolean isDoTaxonomicTreeData() {
+		return this.doTaxonomicTreeData;
 	}
 }
 

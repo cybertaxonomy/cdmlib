@@ -136,7 +136,7 @@ public class CdmDocumentBuilder {
 		// For test purposes insert newlines to make the XML output readable
 		marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, formattedOutput);
 //		marshaller.setProperty(Marshaller.JAXB_SCHEMA_LOCATION,"http://etaxonomy.eu/cdm/model/1.0 schema/cdm/cdm.xsd");
-		marshaller.setProperty(Marshaller.JAXB_SCHEMA_LOCATION,"http://etaxonomy.eu/cdm/model/1.0 cdm.xsd");
+		//marshaller.setProperty(Marshaller.JAXB_SCHEMA_LOCATION,"http://etaxonomy.eu/cdm/model/1.0 cdm.xsd");
 		marshaller.setProperty(Marshaller.JAXB_ENCODING, encoding);
 		
 		CdmMarshallerListener marshallerListener = new CdmMarshallerListener();

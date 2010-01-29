@@ -115,6 +115,7 @@ import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
 
@@ -132,6 +133,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
 	    "references",
 	    "typeDesignations",
 	    "featureTrees",
+	    "taxonNodes",
 	    "taxonomicTrees",
 	    "taxonomicNames",
 	    "homotypicalGroups",
@@ -218,6 +220,9 @@ public class DataSet {
     @XmlElement(name = "TaxonomicTree", namespace = "http://etaxonomy.eu/cdm/model/taxon/1.0")
     protected List<TaxonomicTree> taxonomicTrees = new ArrayList<TaxonomicTree>();
     
+    @XmlElementWrapper(name = "TaxonNodes")
+    @XmlElement(name = "TaxonNodes", namespace = "http://etaxonomy.eu/cdm/model/taxon/1.0")
+    protected List<TaxonNode> taxonNodes = new ArrayList<TaxonNode>();
    
     protected List<LanguageString> languageStrings =new ArrayList<LanguageString>();
       
@@ -553,6 +558,8 @@ public class DataSet {
     public void setTaxonomicTrees(List<TaxonomicTree> value) {
     	this.taxonomicTrees = value;
     }
+    
+    
     /**
      * Gets the value of the featureTrees property.
      * 
@@ -563,6 +570,30 @@ public class DataSet {
      */
     public List<TaxonomicTree> getTaxonomicTrees() {
         return taxonomicTrees;
+    }
+    /**
+     * Sets the value of the featureTrees property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link List<FeatureTree> }
+     *     
+     */
+    public void setTaxonNodes(List<TaxonNode> value) {
+    	this.taxonNodes = value;
+    }
+    
+    
+    /**
+     * Gets the value of the featureTrees property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link List<FeatureTree> }
+     *     
+     */
+    public List<TaxonNode> getTaxonNodes() {
+        return taxonNodes;
     }
 
     /**
