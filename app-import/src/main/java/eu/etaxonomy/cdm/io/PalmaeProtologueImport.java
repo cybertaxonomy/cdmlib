@@ -61,10 +61,17 @@ public class PalmaeProtologueImport extends AbstractImageImporter {
 		
 		for (HashMap<String, String> row : contents){
 			count++;
-			String species = row.get(PalmaeProtologueImport.SPECIES).trim();
-			String taxonId = row.get(PalmaeProtologueImport.TAXONID);
-			String linkProto= row.get(PalmaeProtologueImport.LINK_PROTO).trim();
-
+			String species = null;
+			String taxonId = null;
+			String linkProto = null;
+			try{
+				species = row.get(PalmaeProtologueImport.SPECIES).trim();
+				taxonId = row.get(PalmaeProtologueImport.TAXONID);
+				linkProto= row.get(PalmaeProtologueImport.LINK_PROTO).trim();
+			}catch (Exception e){
+				logger.error("The row has errors: " + row, e);
+			}
+			
 			TaxonNameBase taxonNameBase = (TaxonNameBase)getCommonService().getSourcedObjectByIdInSource(TaxonNameBase.class, "palm_tn_" + taxonId.replace(".0", ""), "TaxonName");
 			
 			if(taxonNameBase == null){
