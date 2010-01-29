@@ -2409,6 +2409,12 @@ cdmlib-remote/src/main/resources/eu/etaxonomy/cdm/remote/dto/tdwg/mappings-shall
 cdmlib-remote/src/main/resources/eu/etaxonomy/cdm/remote/dto/tdwg/mappings.xml -text
 cdmlib-remote/src/main/resources/installer/linux/datasources.xml -text
 cdmlib-remote/src/main/resources/installer/linux/initscript/cdmserver -text
+cdmlib-remote/src/main/resources/installer/win32/cdmserver.nsi -text
+cdmlib-remote/src/main/resources/installer/win32/cdmserver/bin/cdmserver.bat -text
+cdmlib-remote/src/main/resources/installer/win32/cdmserver/libs/.cdmLibrary/datasources.xml -text
+cdmlib-remote/src/main/resources/installer/win32/cdmserver/libs/cdmserver-standalone.jar -text
+cdmlib-remote/src/main/resources/installer/win32/cdmserver/license/license.txt -text
+cdmlib-remote/src/main/resources/installer/win32/cdmserver/logs/cdmserverLog.txt -text
 cdmlib-remote/src/main/resources/log4j.properties -text
 cdmlib-remote/src/main/resources/oai-pmh.xsd -text
 cdmlib-remote/src/main/resources/spy.properties -text
