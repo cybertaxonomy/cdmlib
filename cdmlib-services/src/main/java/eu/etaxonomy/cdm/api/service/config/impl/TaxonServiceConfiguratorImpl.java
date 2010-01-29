@@ -38,9 +38,24 @@ implements ITaxonServiceConfigurator {
 	private ReferenceBase sec = null;
 	private TaxonomicTree taxonomicTree = null;
 	private List<String> taxonPropertyPath;
+	private List<String> taxonNamePropertyPath;
 	private List<String> commonNamePropertyPath;
 	private Set<NamedArea> namedAreas;
 	
+	/**
+	 * @return the taxonNamePropertyPath
+	 */
+	public List<String> getTaxonNamePropertyPath() {
+		return taxonNamePropertyPath;
+	}
+
+	/**
+	 * @param taxonNamePropertyPath the taxonNamePropertyPath to set
+	 */
+	public void setTaxonNamePropertyPath(List<String> taxonNamePropertyPath) {
+		this.taxonNamePropertyPath = taxonNamePropertyPath;
+	}
+
 	public static TaxonServiceConfiguratorImpl NewInstance() {
 		return new TaxonServiceConfiguratorImpl();
 	}
