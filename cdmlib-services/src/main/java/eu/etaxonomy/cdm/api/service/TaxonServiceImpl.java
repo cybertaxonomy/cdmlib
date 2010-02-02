@@ -433,7 +433,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		long numberTaxaResults = 0L;
 		
 		Class<? extends TaxonBase> clazz = null;
-		if ((configurator.isDoTaxa() && configurator.isDoSynonyms()) || configurator.isDoTaxaByOrphanedTaxa()) {
+		if ((configurator.isDoTaxa() && configurator.isDoSynonyms())) {
 			clazz = TaxonBase.class;
 		} else if(configurator.isDoTaxa()) {
 			clazz = Taxon.class;

@@ -41,10 +41,6 @@ public interface ITaxonServiceConfigurator {
 	
 	public void setDoTaxaByCommonNames(boolean doTaxaByCommonNames);
 
-	public boolean isDoTaxaByOrphanedTaxa();
-	
-	public void setDoTaxaByOrphanedTaxa(boolean doTaxaByOrphanedTaxa);
-
 	public String getSearchString();
 	
 	public void setSearchString(String searchString);

@@ -32,7 +32,6 @@ implements ITaxonServiceConfigurator {
 	private boolean doTaxa = true;
 	private boolean doSynonyms = false;
 	private boolean doTaxaByCommonNames = false;
-	private boolean doTaxaByOrphanedTaxa = false;
 	private boolean doNamesWithoutTaxa = false;
 	private String searchString;
 	private ReferenceBase sec = null;
@@ -88,20 +87,6 @@ implements ITaxonServiceConfigurator {
 	 */
 	public void setDoTaxaByCommonNames(boolean doTaxaByCommonNames) {
 		this.doTaxaByCommonNames = doTaxaByCommonNames;
-	}
-	
-	/**
-	 * @return doTaxaByOrphanedTaxa
-	 */
-	public boolean isDoTaxaByOrphanedTaxa() {
-		return doTaxaByOrphanedTaxa;
-	}
-
-	/**
-	 * @param doTaxaByOrphanedTaxa
-	 */
-	public void setDoTaxaByOrphanedTaxa(boolean doTaxaByOrphanedTaxa) {
-		this.doTaxaByOrphanedTaxa = doTaxaByOrphanedTaxa;
 	}
 	
 	/**
