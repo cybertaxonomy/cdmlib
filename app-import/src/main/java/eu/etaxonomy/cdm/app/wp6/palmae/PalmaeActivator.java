@@ -159,6 +159,10 @@ public class PalmaeActivator {
 		root.addChild(newNode);
 		newNode = FeatureNode.NewInstance(Feature.ANATOMY());
 		root.addChild(newNode);
+		if (updateNameUsage){
+			newNode = FeatureNode.NewInstance(Feature.CITATION());
+			root.addChild(newNode);
+		}
 		return result;
 		
 
