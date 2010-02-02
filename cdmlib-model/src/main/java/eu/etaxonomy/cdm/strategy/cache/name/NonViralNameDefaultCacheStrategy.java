@@ -28,6 +28,7 @@ import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.strategy.cache.reference.ReferenceBaseDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
 
@@ -237,8 +238,9 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 		INomenclaturalReference ref = nonViralName.getNomenclaturalReference();
 		String referenceBaseCache = null;
 		if (ref != null){
-			INomenclaturalReference nomRef = HibernateProxyHelper.deproxy(ref, INomenclaturalReference.class);
-			referenceBaseCache = nomRef.getNomenclaturalCitation(microReference);
+			INomenclaturalReference nomenclaturalReference = HibernateProxyHelper.deproxy(ref, INomenclaturalReference.class);
+			nomenclaturalReference.setCacheStrategy(nomenclaturalReference.getType().getCacheStrategy());
+			referenceBaseCache = nomenclaturalReference.getNomenclaturalCitation(microReference);
 		}
 		
 		//make nomenclatural status

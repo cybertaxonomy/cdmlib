@@ -441,4 +441,9 @@ public class DefaultMatchStrategyTest {
 	
 	}
 	
+	@Test
+	public void testInvokeTeamOrPersonBase(){
+	
+	}
+	
 }

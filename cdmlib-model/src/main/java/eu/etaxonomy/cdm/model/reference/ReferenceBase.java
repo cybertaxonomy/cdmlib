@@ -457,7 +457,6 @@ public class ReferenceBase<S extends IReferenceBaseCacheStrategy> extends Identi
 	public void setTitle(String title){
 		this.title = title;
 	}
-    
 
 	/**
 	 * Returns the date (mostly only the year) of publication / creation of
