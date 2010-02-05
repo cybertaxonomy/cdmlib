@@ -57,7 +57,6 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
 		persistentObject.delete();
 		super.delete(persistentObject);
 		
-		System.err.println("number of taxa: "+ result.size() );
 		if (result.size()==1){
 			taxonDao.delete(taxon);
 		}

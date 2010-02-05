@@ -10,10 +10,17 @@
 
 package eu.etaxonomy.cdm.persistence.dao.hibernate.taxon;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.log4j.Logger;
+import org.hibernate.Query;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
+import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonomicTreeDao;
@@ -34,6 +41,21 @@ public class TaxonomicTreeDaoHibernateImpl extends IdentifiableDaoBase<Taxonomic
 		super(TaxonomicTree.class);
 		indexedClasses = new Class[1];
 		indexedClasses[0] = TaxonomicTree.class;
+	}
+	
+	public List<TaxonNode> loadRankSpecificRootNodes(TaxonomicTree taxonomicTree, Rank rank, List<String> propertyPaths){
+		String hql = "SELECT tn FROM TaxonNode tn LEFT JOIN tn.childNodes as ctn" +
+				" WHERE tn.taxonomicTree = :tree  AND (" +
+				" tn.taxon.name.rank = :rank" +
+				" OR (tn.taxon.name.rank < :rank AND tn.parent = null)" +
+				" OR (tn.taxon.name.rank > :rank AND ctn.taxon.name.rank < :rank)" +
+				" )";
+		Query query = getSession().createQuery(hql);
+		query.setParameter("rank", rank);
+		query.setParameter("tree", taxonomicTree);
+		List<TaxonNode> results = query.list();
+		defaultBeanInitializer.initializeAll(results, propertyPaths);
+		return results;
 	}
 	
 	

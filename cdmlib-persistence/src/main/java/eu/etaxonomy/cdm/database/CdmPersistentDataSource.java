@@ -100,8 +100,11 @@ public class CdmPersistentDataSource extends CdmDataSourceBase{
 			}
 		}
 	}
+
+
+	private static String dataSourceClassName = BasicDataSource.class.getName();
 	
-	
+
 	//name
 	protected String dataSourceName;
 
@@ -567,9 +570,12 @@ public class CdmPersistentDataSource extends CdmDataSourceBase{
 					dataSource.getMode(),
 					dataSource.getNomenclaturalCode());
 		}else{
-			Class<? extends DataSource> dataSourceClass =  BasicDataSource.class; //TODO make configurable
-
-			return save(
+			
+			Class<? extends DataSource> dataSourceClass;
+			try {
+				dataSourceClass = (Class<? extends DataSource>) Class.forName(dataSourceClassName);
+				
+				CdmPersistentDataSource persistendDatasource =  save(
 					strDataSourceName, 
 					dataSource.getDatabaseType(), 
 					getCheckedDataSourceParameter(dataSource.getServer()), 
@@ -580,6 +586,14 @@ public class CdmPersistentDataSource extends CdmDataSourceBase{
 					dataSourceClass, 
 					null, null, null, null, null, null,
 					dataSource.getNomenclaturalCode());
+				
+				return persistendDatasource;
+			} catch (ClassNotFoundException e) {
+				logger.error("DataSourceClass not found - stopping application", e);
+				System.exit(-1);
+			}
+			// will never be reached
+			return null;
 		}
 	}
 
