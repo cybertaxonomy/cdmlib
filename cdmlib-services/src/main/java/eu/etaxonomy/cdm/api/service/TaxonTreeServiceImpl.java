@@ -87,11 +87,10 @@ public class TaxonTreeServiceImpl extends IdentifiableServiceBase<TaxonomicTree,
 	 * @see eu.etaxonomy.cdm.api.service.ITaxonTreeService#loadRankSpecificRootNodes(eu.etaxonomy.cdm.model.taxon.TaxonomicTree, eu.etaxonomy.cdm.model.name.Rank, java.util.List)
 	 */
 	public List<TaxonNode> loadRankSpecificRootNodes(TaxonomicTree taxonomicTree, Rank rank, List<String> propertyPaths){
-		TaxonomicTree tree = dao.load(taxonomicTree.getUuid());
 		
-		List<TaxonNode> rootNodes = tree.getRankSpecificRootNodes(rank);
+		List<TaxonNode> rootNodes = dao.loadRankSpecificRootNodes(taxonomicTree, rank, propertyPaths);
+		
 		//sort nodes by TaxonName
-		
 		Collections.sort(rootNodes, taxonNodeComparator);
 		
 		// initialize all nodes
