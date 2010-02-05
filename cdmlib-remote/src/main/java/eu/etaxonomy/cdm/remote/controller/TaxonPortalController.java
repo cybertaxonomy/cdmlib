@@ -158,12 +158,13 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 			"synonymRelations.$",
 			"synonymRelations.synonym.$",
 			"synonymRelations.synonym.name.taggedName",
-			"synonymRelations.synonym.name.nomenclaturalReference.inBook.authorTeam",
+			"synonymRelations.synonym.name.nomenclaturalReference.inBook.authorTeam.titleCache",
 			"synonymRelations.synonym.name.nomenclaturalReference.inJournal",
 			"synonymRelations.synonym.name.nomenclaturalReference.inProceedings",
 			"synonymRelations.synonym.name.homotypicalGroup.typifiedNames.$",
 			"synonymRelations.synonym.name.homotypicalGroup.typifiedNames.name.taggedName",
 			"synonymRelations.synonym.name.homotypicalGroup.typifiedNames.taxonBases.$",
+			"synonymRelations.synonym.name.homotypicalGroup.typifiedNames.taxonBases.sec.titleCache", // needed to avoid lazyLoading Exceptions
 			"synonymRelations.synonym.name.homotypicalGroup.typifiedNames.taxonBases.name.taggedName",
 			
 			"name.homotypicalGroup.$",
@@ -171,7 +172,9 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 			"name.homotypicalGroup.typifiedNames.name.taggedName",
 			
 			"name.homotypicalGroup.typifiedNames.taxonBases.$",
-			"name.homotypicalGroup.typifiedNames.taxonBases.name.taggedName"
+			"name.homotypicalGroup.typifiedNames.taxonBases.sec.titleCache", // needed to avoid lazyLoading Exceptions
+			"name.homotypicalGroup.typifiedNames.taxonBases.titleCache",
+			//"name.homotypicalGroup.typifiedNames.taxonBases.name.taggedName"
 			
 	});
 	
