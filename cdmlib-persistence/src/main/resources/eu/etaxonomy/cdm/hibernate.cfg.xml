@@ -9,10 +9,26 @@
       <property name="connection.release_mode">after_transaction</property>
     
       <!-- Connection Pooling -->
-      <property name="connection.provider_class">org.hibernate.connection.C3P0ConnectionProvider</property>
-	  <property name="hibernate.c3p0.idle_test_period">14400</property>
-	  <property name="hibernate.c3p0.timeout">25200</property>
-    
+      <property name="hibernate.connection.provider_class">org.hibernate.connection.C3P0ConnectionProvider</property>
+	    <!-- 
+	        Configuring the C3P0ConnectionProvider
+	        ========================================
+	        see also https://www.hibernate.org/214.html
+	        IMPORTANT:
+	        (1)
+	        Do NOT specify the dataSource in org.springframework.orm.hibernate3.LocalSessionFactoryBean
+	        if using org.hibernate.connection.C3P0ConnectionProvider. 
+	        Specifying it causes Spring to not honor the hibernate.connection.provider_class property 
+	        specified in the Hibernate properties section. 
+	        (2)
+	        Hibernate uses the hibernate.c3p0.max_size property to determine if c3p0
+	        is begin used. Therefore the max_size property MUST be set. - maybe not need in hibernate 3.4 +
+       --><!--
+			  <property name="hibernate.c3p0.max_size">100</property>
+			  <property name="hibernate.c3p0.idle_test_period">14400</property>
+			  <property name="hibernate.c3p0.timeout">25200</property>
+       -->
+      
       <mapping package="eu.etaxonomy.cdm.model.common"/>
       <!-- Annotation Package -->
       <mapping class="eu.etaxonomy.cdm.model.agent.Address"/>

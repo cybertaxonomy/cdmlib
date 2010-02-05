@@ -221,12 +221,12 @@ public class DescriptionDaoHibernateImplTest extends CdmIntegrationTest {
 		propertyPaths.add("feature");
 		
 		List<DescriptionElementBase> elements = descriptionDao.getDescriptionElements(description, null, TextData.class, null, null,propertyPaths);
-		System.err.println(elements.size());
+		//System.err.println(elements.size());
 		for (DescriptionElementBase descElB: elements){
 			if (descElB instanceof TextData){
 				Map<Language, LanguageString> multiLanguage = ((TextData)descElB).getMultilanguageText();
 				LanguageString defaultString = multiLanguage.get(Language.DEFAULT());
-				System.err.println(defaultString);
+				//System.err.println(defaultString);
 			}
 		}
 		Iterator<DescriptionElementBase> elements2 = description.getElements().iterator();
@@ -239,12 +239,12 @@ public class DescriptionDaoHibernateImplTest extends CdmIntegrationTest {
 			}
 		}
 		elements = descriptionDao.getDescriptionElements(description, null, TextData.class, null, null,propertyPaths);
-		System.err.println(elements.size());
+		//System.err.println(elements.size());
 		for (DescriptionElementBase descElB: elements){
 			if (descElB instanceof TextData){
 				Map<Language, LanguageString> multiLanguage = ((TextData)descElB).getMultilanguageText();
 				LanguageString defaultString = multiLanguage.get(Language.DEFAULT());
-				System.err.println(defaultString);
+				//System.err.println(defaultString);
 			}
 		}
 		
