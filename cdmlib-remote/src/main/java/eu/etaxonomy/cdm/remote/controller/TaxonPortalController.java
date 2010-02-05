@@ -593,13 +593,11 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 			//überprüfen, ob der TaxonNode zum aktuellen Baum gehört.
 			
 			node = taxonTreeService.loadTaxonNode(node, TAXONNODEDESCRIPTION_INIT_STRATEGY);
-			System.err.println(node.getCountChildren());
 			Set<TaxonNode> children = node.getChildNodes();
 			Taxon childTaxon;
 			for (TaxonNode child : children){
 				childTaxon = child.getTaxon();
 				childTaxon = (Taxon)taxonService.load(childTaxon.getUuid(), TAXON_INIT_STRATEGY);
-				System.err.println(childTaxon.getTitleCache());
 				returnMedia.addAll(getMediaForTaxon(childTaxon, path));
 			}
 			
@@ -637,7 +635,6 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 		//String path = request.getServletPath();
 		String[] pathTokens = path.split("/");
 		
-		System.err.println(pathTokens.toString());
 		String[] mimeTypes = pathTokens[6].split(",");
 		String[] sizeTokens = pathTokens[7].split(",");
 		Integer widthOrDuration = null;

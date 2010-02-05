@@ -27,7 +27,7 @@
     <import resource="datasources/routing-datasource.xml"/>
     <!-- 
     <import resource="datasources/empty-default-datasource.xml"/>
-	<import resource="datasources/datasources-bgbm24-test.xml"/>
+	  <import resource="datasources/datasources-bgbm24-test.xml"/>
     <import resource="datasources/empty-default-datasource-wp7virtual.xml"/>
     <import resource="datasources/datasources-local.xml"/>
     <import resource="datasources/datasources-wp7virtual-production-A.xml"/> 
