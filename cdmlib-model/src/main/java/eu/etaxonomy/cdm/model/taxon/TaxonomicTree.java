@@ -479,7 +479,9 @@ public class TaxonomicTree extends IdentifiableEntity implements IReferencedEnti
 	 * 
 	 * @param rank may be null
 	 * @return
+	 * @deprecated use {@link ITaxonTreeService.loadRankSpecificRootNode} or {@link ITaxonomicTreeDao.loadRankSpecificRootNode} instead
 	 */
+	@Deprecated
 	public List<TaxonNode> getRankSpecificRootNodes(Rank rank) {
 		List<TaxonNode> baseNodes = new ArrayList<TaxonNode>();
 		if(rank != null){
