@@ -43,8 +43,9 @@ public class TaxonomicTreeDaoHibernateImpl extends IdentifiableDaoBase<Taxonomic
 		indexedClasses[0] = TaxonomicTree.class;
 	}
 	
+	@SuppressWarnings("unchecked")
 	public List<TaxonNode> loadRankSpecificRootNodes(TaxonomicTree taxonomicTree, Rank rank, List<String> propertyPaths){
-		String hql = "SELECT tn FROM TaxonNode tn LEFT JOIN tn.childNodes as ctn" +
+		String hql = "SELECT DISTINCT tn FROM TaxonNode tn LEFT JOIN tn.childNodes as ctn" +
 				" WHERE tn.taxonomicTree = :tree  AND (" +
 				" tn.taxon.name.rank = :rank" +
 				" OR (tn.taxon.name.rank < :rank AND tn.parent = null)" +
