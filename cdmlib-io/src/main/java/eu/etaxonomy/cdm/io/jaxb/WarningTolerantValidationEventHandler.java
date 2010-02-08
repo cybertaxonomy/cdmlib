@@ -30,7 +30,7 @@ public class WarningTolerantValidationEventHandler extends
 		  return true;
 		} else {
 		   ValidationEventLocator validationEventLocator = validationEvent.getLocator();
-		  // System.err.println("Stacktrace: "+validationEvent.getLinkedException().getMessage());
+		  
    		   logger.warn("Line:Col[" + validationEventLocator.getLineNumber() + ":" + validationEventLocator.getColumnNumber() +"]:" + validationEvent.getMessage()+ " : "+validationEvent.getLinkedException().getStackTrace());
    		   
    		   return false;

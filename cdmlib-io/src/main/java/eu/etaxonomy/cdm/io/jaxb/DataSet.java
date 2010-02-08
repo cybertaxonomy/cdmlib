@@ -43,6 +43,7 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.description.AbsenceTerm;
 import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.description.FeatureNode;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.model.description.MeasurementUnit;
 import eu.etaxonomy.cdm.model.description.MediaKey;
@@ -132,6 +133,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
 		"eventBases",
 	    "references",
 	    "typeDesignations",
+	    "featureNodes",
 	    "featureTrees",
 	    "taxonNodes",
 	    "taxonomicTrees",
@@ -215,6 +217,10 @@ public class DataSet {
     @XmlElementWrapper(name = "FeatureTrees")
     @XmlElement(name = "FeatureTree", namespace = "http://etaxonomy.eu/cdm/model/description/1.0")
     protected List<FeatureTree> featureTrees = new ArrayList<FeatureTree>();
+    
+    @XmlElementWrapper(name = "FeatureNodes")
+    @XmlElement(name = "FeatureNodes", namespace = "http://etaxonomy.eu/cdm/model/description/1.0")
+    protected List<FeatureNode> featureNodes = new ArrayList<FeatureNode>();
     
     @XmlElementWrapper(name = "TaxonomicTrees")
     @XmlElement(name = "TaxonomicTree", namespace = "http://etaxonomy.eu/cdm/model/taxon/1.0")
@@ -816,6 +822,16 @@ public class DataSet {
 	public void addUser(User deproxy) {
 		this.users.add(deproxy);
 		
+	}
+
+	public void setFeatureNodes(List<FeatureNode> featureNodesdeproxy) {
+		this.featureNodes = featureNodesdeproxy;
+		
+	}
+
+	public List<FeatureNode> getFeatureNodes() {
+	
+		return featureNodes;
 	}
     
 }

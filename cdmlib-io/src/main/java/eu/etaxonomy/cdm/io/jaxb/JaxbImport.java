@@ -31,6 +31,7 @@ import eu.etaxonomy.cdm.model.common.LanguageStringBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
+import eu.etaxonomy.cdm.model.description.FeatureNode;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
@@ -120,6 +121,7 @@ public class JaxbImport extends CdmIoBase<JaxbImportState> implements ICdmIO<Jax
 		List<TypeDesignationBase> typeDesignations;
 		List<SpecimenOrObservationBase> occurrences;
 		List<FeatureTree> featureTrees;
+		List<FeatureNode> featureNodes;
 		List<Media> media;
 		List<LanguageStringBase> languageData;
 		List<TermVocabulary<DefinedTermBase>> termVocabularies;
@@ -308,6 +310,10 @@ public class JaxbImport extends CdmIoBase<JaxbImportState> implements ICdmIO<Jax
 		//txStatus = startTransaction();
 		try {
 			if (jaxbImpConfig.isDoFeatureData() == true) {
+				if ((featureNodes = dataSet.getFeatureNodes()).size() >0){
+					logger.error("Feature data: " + featureNodes.size());
+					getFeatureTreeService().saveFeatureNodesAll(featureNodes);
+				}
 				if ((featureTrees = dataSet.getFeatureTrees()).size() > 0) {
 					logger.error("Feature data: " + featureTrees.size());
 					getFeatureTreeService().save(featureTrees);
