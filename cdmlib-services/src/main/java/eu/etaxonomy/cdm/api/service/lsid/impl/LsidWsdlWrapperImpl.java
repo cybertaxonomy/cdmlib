@@ -604,8 +604,6 @@ public class LsidWsdlWrapperImpl implements LSIDWSDLWrapper,WSDLConstants {
 		if (protocol.equals(SOAP))
 			binding = definition.getBinding(DATA_SOAP_BINDING);
 		else if (protocol.equals(HTTP)) {
-			System.err.println(dataPort.getClass());
-			System.err.println("path: " + dataPort.getPath());
 			if (dataPort.getPath().equals(LSIDDataPort.PATH_TYPE_URL_ENCODED))
 				binding = definition.getBinding(DATA_HTTP_BINDING);
 			else
