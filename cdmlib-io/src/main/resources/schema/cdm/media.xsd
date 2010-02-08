@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<xs:schema elementFormDefault="qualified" version="1.0" 
+targetNamespace="http://etaxonomy.eu/cdm/model/media/1.0" 
+xmlns:agent="http://etaxonomy.eu/cdm/model/agent/1.0" 
+xmlns:common="http://etaxonomy.eu/cdm/model/common/1.0" 
+xmlns:reference="http://etaxonomy.eu/cdm/model/reference/1.0" 
+xmlns:media="http://etaxonomy.eu/cdm/model/media/1.0" 
+xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <xs:import namespace="http://etaxonomy.eu/cdm/model/common/1.0" schemaLocation="common.xsd"/>
+
+  <xs:import namespace="http://etaxonomy.eu/cdm/model/agent/1.0" schemaLocation="agent.xsd"/>
+
+  <xs:import namespace="http://etaxonomy.eu/cdm/model/reference/1.0" schemaLocation="reference.xsd"/>
+
+  <xs:element name="AudioFile" type="media:AudioFile"/>
+
+  <xs:element name="ImageFile" type="media:ImageFile"/>
+
+  <xs:element name="Media" type="media:Media"/>
+
+  <xs:element name="MovieFile" type="media:MovieFile"/>
+
+  <xs:element name="ReferencedMedia" type="media:ReferencedMedia"/>
+
+  <xs:element name="Rights" type="media:Rights"/>
+
+  <xs:element name="RightsTerm" type="media:RightsTerm"/>
+
+  <xs:complexType name="Media">
+    <xs:complexContent>
+      <xs:extension base="common:IdentifiableEntity">
+        <xs:sequence>
+          <xs:element name="MediaTitle" type="common:MultilanguageText" minOccurs="0"/>
+          <xs:element name="MediaCreated" type="xs:string" minOccurs="0"/>
+          <xs:element name="MediaDescription" type="common:MultilanguageText" minOccurs="0"/>
+          <xs:element name="MediaRepresentations" minOccurs="0" >
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="MediaRepresentation" type="media:MediaRepresentation" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="Artist" type="xs:IDREF" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="IdentifiableMediaEntity" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="common:IdentifiableEntity">
+        <xs:sequence>
+          <xs:element name="Media" minOccurs="0" nillable="true">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="Medium" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="Rights">
+    <xs:complexContent>
+      <xs:extension base="common:LanguageStringBase">
+        <xs:sequence>
+          <xs:element name="URI" type="xs:string" minOccurs="0"/>
+          <xs:element name="AbbreviatedText" type="xs:string" minOccurs="0"/>
+          <xs:element name="Type" type="xs:IDREF" minOccurs="0"/>
+          <xs:element name="Agent" type="xs:IDREF" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="RightsTerm">
+    <xs:complexContent>
+      <xs:extension base="common:DefinedTermBase">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="MediaRepresentation">
+    <xs:complexContent>
+      <xs:extension base="common:VersionableEntity">
+        <xs:sequence>
+          <xs:element name="MimeType" type="xs:string" minOccurs="0"/>
+          <xs:element name="Suffix" type="xs:string" minOccurs="0"/>
+          <xs:element name="Media" type="xs:IDREF" minOccurs="0"/>
+          <xs:element name="MediaRepresentationParts" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:choice minOccurs="0" maxOccurs="unbounded">
+                  <xs:element name="AudioFile" type="media:AudioFile"/>
+                  <xs:element name="ImageFile" type="media:ImageFile"/>
+                  <xs:element name="MovieFile" type="media:MovieFile"/>
+                </xs:choice>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="AudioFile">
+    <xs:complexContent>
+      <xs:extension base="media:MediaRepresentationPart">
+        <xs:sequence>
+          <xs:element name="Duration" type="xs:int"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="MediaRepresentationPart">
+    <xs:complexContent>
+      <xs:extension base="common:VersionableEntity">
+        <xs:sequence>
+          <xs:element name="URI" type="xs:string" minOccurs="0"/>
+          <xs:element name="Size" type="xs:int" minOccurs="0"/>
+          <xs:element name="MediaRepresentation" type="xs:IDREF" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="ImageFile">
+    <xs:complexContent>
+      <xs:extension base="media:MediaRepresentationPart">
+        <xs:sequence>
+          <xs:element name="Height" type="xs:int"/>
+          <xs:element name="Width" type="xs:int"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="MovieFile">
+    <xs:complexContent>
+      <xs:extension base="media:MediaRepresentationPart">
+        <xs:sequence>
+          <xs:element name="Duration" type="xs:int"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="ReferencedMedia" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="media:Media">
+        <xs:sequence>
+          <xs:element name="CitationMicroReference" type="xs:string" minOccurs="0"/>
+          <xs:element name="Citation" type="xs:IDREF" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+</xs:schema>
+

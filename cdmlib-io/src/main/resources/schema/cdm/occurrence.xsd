@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<xs:schema elementFormDefault="qualified" version="1.0" 
+targetNamespace="http://etaxonomy.eu/cdm/model/occurrence/1.0" 
+xmlns:name="http://etaxonomy.eu/cdm/model/name/1.0" 
+xmlns:molecular="http://etaxonomy.eu/cdm/model/molecular/1.0" 
+xmlns:common="http://etaxonomy.eu/cdm/model/common/1.0" 
+xmlns:description="http://etaxonomy.eu/cdm/model/description/1.0" 
+xmlns:occurrence="http://etaxonomy.eu/cdm/model/occurrence/1.0" 
+xmlns:location="http://etaxonomy.eu/cdm/model/location/1.0" 
+xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+xmlns:media="http://etaxonomy.eu/cdm/model/media/1.0" 
+xmlns:agent="http://etaxonomy.eu/cdm/model/agent/1.0" 
+xmlns:taxon="http://etaxonomy.eu/cdm/model/taxon/1.0" 
+xmlns:reference="http://etaxonomy.eu/cdm/model/reference/1.0">
+
+  <xs:import namespace="http://etaxonomy.eu/cdm/model/molecular/1.0" schemaLocation="molecular.xsd"/>
+
+  <xs:import namespace="http://etaxonomy.eu/cdm/model/name/1.0" schemaLocation="name.xsd"/>
+
+  <xs:import namespace="http://etaxonomy.eu/cdm/model/description/1.0" schemaLocation="description.xsd"/>
+
+  <xs:import namespace="http://etaxonomy.eu/cdm/model/common/1.0" schemaLocation="common.xsd"/>
+
+  <xs:import namespace="http://etaxonomy.eu/cdm/model/media/1.0" schemaLocation="media.xsd"/>
+
+  <xs:import namespace="http://etaxonomy.eu/cdm/model/agent/1.0" schemaLocation="agent.xsd"/>
+
+  <xs:import namespace="http://etaxonomy.eu/cdm/model/taxon/1.0" schemaLocation="taxon.xsd"/>
+
+  <xs:import namespace="http://etaxonomy.eu/cdm/model/reference/1.0" schemaLocation="reference.xsd"/>
+
+  <xs:import namespace="http://etaxonomy.eu/cdm/model/location/1.0" schemaLocation="location.xsd"/>
+
+  <xs:element name="Collection" type="occurrence:Collection"/>
+
+  <xs:element name="DerivationEvent" type="occurrence:DerivationEvent"/>
+
+  <xs:element name="DerivationEventType" type="occurrence:DerivationEventType"/>
+
+  <xs:element name="DerivedUnit" type="occurrence:derivedUnit"/>
+
+  <xs:element name="DerivedUnitBase" type="occurrence:DerivedUnitBase"/>
+
+  <xs:element name="DeterminationEvent" type="occurrence:DeterminationEvent"/>
+
+  <xs:element name="DeterminationModifier" type="occurrence:DeterminationModifier"/>
+
+  <xs:element name="DnaSample" type="molecular:DnaSample"/>
+
+  <xs:element name="FieldObservation" type="occurrence:FieldObservation"/>
+
+  <xs:element name="Fossil" type="occurrence:Fossil"/>
+
+  <xs:element name="GatheringEvent" type="occurrence:GatheringEvent"/>
+
+  <xs:element name="LivingBeing" type="occurrence:LivingBeing"/>
+
+  <xs:element name="Observation" type="occurrence:Observation"/>
+
+  <xs:element name="PreservationMethod" type="occurrence:PreservationMethod"/>
+
+  <xs:element name="Specimen" type="occurrence:Specimen"/>
+
+  <xs:element name="SpecimenOrObservationBase" type="occurrence:SpecimenOrObservationBase"/>
+
+  <xs:complexType name="DerivedUnitBase" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="occurrence:SpecimenOrObservationBase">
+        <xs:sequence>
+          <xs:element ref="occurrence:Collection" minOccurs="0"/>
+          <xs:element name="CatalogNumber" type="xs:string" minOccurs="0"/>
+          <xs:element name="StoredUnder" type="xs:IDREF" minOccurs="0"/>
+          <xs:element name="DerivedFrom" type="xs:IDREF" minOccurs="0"/>
+          <xs:element name="AccessionNumber" type="xs:string" minOccurs="0"/>
+          <xs:element name="CollectorsNumber" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="SpecimenOrObservationBase" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="media:IdentifiableMediaEntity">
+        <xs:sequence>
+          <xs:element name="Sex" type="xs:IDREF" minOccurs="0"/>
+          <xs:element name="IndividualCount" type="xs:int" minOccurs="0"/>
+          <xs:element name="LifeStage" type="xs:IDREF" minOccurs="0"/>
+          <xs:element name="Description" type="common:MultilanguageText" minOccurs="0"/>
+          <xs:element name="Descriptions" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="Description" type="description:DescriptionBase" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="Determinations" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="Determination" type="occurrence:DeterminationEvent" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="DerivationEvents" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="DerivationEvent" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="Collection">
+    <xs:complexContent>
+      <xs:extension base="media:IdentifiableMediaEntity">
+        <xs:sequence>
+          <xs:element name="Name" type="xs:string" minOccurs="0"/>
+          <xs:element name="Code" type="xs:string" minOccurs="0"/>
+          <xs:element name="CodeStandard" type="xs:string" minOccurs="0"/>
+          <xs:element name="TownOrLocation" type="xs:string" minOccurs="0"/>
+          <xs:element name="Institution" type="xs:IDREF" minOccurs="0"/>
+          <xs:element name="SuperCollection" type="xs:IDREF" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="DerivationEvent">
+    <xs:complexContent>
+      <xs:extension base="common:EventBase">
+        <xs:sequence>
+          <xs:element name="Originals" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="Original" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="Derivatives" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="Derivative" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element ref="occurrence:DerivationEventType" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="DeterminationEvent">
+    <xs:complexContent>
+      <xs:extension base="common:EventBase">
+        <xs:sequence>
+          <xs:element name="IdentifiedUnit" type="xs:IDREF" minOccurs="0"/>
+          <xs:element name="Taxon" type="xs:IDREF" minOccurs="0"/>
+          <xs:element name="Modifier" type="xs:IDREF" minOccurs="0"/>
+          <xs:element name="PreferredFlag" type="xs:boolean"/>
+          <xs:element name="SetOfReferences" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="Reference" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="DeterminationModifier">
+    <xs:complexContent>
+      <xs:extension base="description:Modifier">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="DerivationEventType">
+    <xs:complexContent>
+      <xs:extension base="common:DefinedTermBase">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="PreservationMethod">
+    <xs:complexContent>
+      <xs:extension base="common:DefinedTermBase">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="derivedUnit">
+    <xs:complexContent>
+      <xs:extension base="occurrence:DerivedUnitBase">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="Specimen">
+    <xs:complexContent>
+      <xs:extension base="occurrence:DerivedUnitBase">
+        <xs:sequence>
+          <xs:element name="Preservation" type="xs:IDREF" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="FieldObservation">
+    <xs:complexContent>
+      <xs:extension base="occurrence:SpecimenOrObservationBase">
+        <xs:sequence>
+          <xs:element name="FieldNumber" type="xs:string" minOccurs="0"/>
+          <xs:element name="FieldNotes" type="xs:string" minOccurs="0"/>
+          <xs:element ref="occurrence:GatheringEvent" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="GatheringEvent">
+    <xs:complexContent>
+      <xs:extension base="common:EventBase">
+        <xs:sequence>
+          <xs:element name="Locality" type="common:LanguageString" minOccurs="0"/>
+          <xs:element name="ExactLocation" type="location:Point" minOccurs="0"/>
+          <xs:element name="CollectingAreas" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="CollectingArea" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="CollectingMethod" type="xs:string" minOccurs="0"/>
+          <xs:element name="AbsoluteElevation" type="xs:int" minOccurs="0"/>
+          <xs:element name="AbsoluteElevationError" type="xs:int" minOccurs="0"/>
+          <xs:element name="DistanceToGround" type="xs:int" minOccurs="0"/>
+          <xs:element name="DistanceToWaterSurface" type="xs:int" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="Fossil">
+    <xs:complexContent>
+      <xs:extension base="occurrence:Specimen">
+        <xs:all/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="LivingBeing">
+    <xs:complexContent>
+      <xs:extension base="occurrence:DerivedUnitBase">
+        <xs:all/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="Observation">
+    <xs:complexContent>
+      <xs:extension base="occurrence:DerivedUnitBase">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+</xs:schema>
+

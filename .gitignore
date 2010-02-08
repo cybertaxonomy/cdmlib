@@ -1,3 +1,12 @@
+cdmlib-io/.classpath
+cdmlib-io/.project
+cdmlib-io/.settings
+cdmlib-io/.umlproject
+cdmlib-io/cdmlib-io.uml
+cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/PUBLIC.xsd
+cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/dataset.xsd
+cdmlib-io/src/test/resources/log4j.properties
+cdmlib-io/target
 cdmlib-model/.classpath
 cdmlib-model/.externalToolBuilders
 cdmlib-model/.project
