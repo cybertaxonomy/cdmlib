@@ -44,6 +44,9 @@ public class BerlinModelImportConfigurator extends ImportConfiguratorBase<Berlin
 
 	private PublishMarkerChooser taxonPublishMarker = PublishMarkerChooser.ALL;
 	
+	/* Max number of taxa to be saved with one service call */
+	private int limitSave = 1000;
+
 	private Method namerelationshipTypeMethod;
 	private Method uuidForDefTermMethod;
 	private Method userTransformationMethod;
@@ -300,4 +303,18 @@ public class BerlinModelImportConfigurator extends ImportConfiguratorBase<Berlin
 		this.nameTypeDesignationStatusMethod = nameTypeDesignationStatusMethod;
 	}
 	
+	/**
+	 * @return the limitSave
+	 */
+	public int getLimitSave() {
+		return limitSave;
+	}
+
+	/**
+	 * @param limitSave the limitSave to set
+	 */
+	public void setLimitSave(int limitSave) {
+		this.limitSave = limitSave;
+	}
+
 }
