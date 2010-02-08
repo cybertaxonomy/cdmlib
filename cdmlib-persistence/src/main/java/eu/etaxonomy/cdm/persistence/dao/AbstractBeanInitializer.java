@@ -33,8 +33,10 @@ public abstract class AbstractBeanInitializer implements BeanInitializer{
 	public static final Logger logger = Logger.getLogger(AbstractBeanInitializer.class);
 	
 	/**
-	 * Initialize the the proxy, unwrap the target object and return it. 
-	 * @param proxy the proxy to initialize
+	 * Initialize the the proxy, unwrap the target object and return it.
+	 * 
+	 * @param proxy
+	 *            the proxy to initialize may wrap a single bean or a collection
 	 * @return the unwrapped target object
 	 */
 	protected abstract Object initializeInstance(Object proxy);
@@ -54,9 +56,16 @@ public abstract class AbstractBeanInitializer implements BeanInitializer{
 	}
 	
 	/**
+	 * Initializes all *toOne relations of the given bean and all *toMany
+	 * relations, depending on the state of the boolean parameters
+	 * <code>cdmEntities</code> and <code>collections</code>
+	 * 
 	 * @param bean
+	 *            the bean to initialize
 	 * @param cdmEntities
+	 *            initialize all *toOne relations to cdm entities
 	 * @param collections
+	 *            initialize all *toMany relations
 	 */
 	public void initializeBean(Object bean, boolean cdmEntities, boolean collections){
 		
@@ -83,7 +92,10 @@ public abstract class AbstractBeanInitializer implements BeanInitializer{
 				if(logger.isDebugEnabled()){
 					logger.debug("initializing: " + prop.getName());
 				}
+				
+				// >>> finally initialize the bean
 				initializeInstance(proxy);
+				
 			} catch (IllegalAccessException e) {
 				logger.error("Illegal access on property " + prop.getName());
 			} catch (InvocationTargetException e) {
@@ -107,14 +119,23 @@ public abstract class AbstractBeanInitializer implements BeanInitializer{
 		}
 		
 		Collections.sort(propertyPaths);
+		//long startTime1 = System.nanoTime();
 		if(logger.isDebugEnabled()){
-			logger.debug(">> starting initialize() of " + bean + " ;class:" + bean.getClass().getSimpleName());
+			logger.debug(">> starting to initialize " + bean + " ;class:" + bean.getClass().getSimpleName());
 		}
 		for(String propPath : propertyPaths){
 			initializePropertyPath(bean, propPath);
 		}
+		//long estimatedTime1 = System.nanoTime() - startTime1;
+		//System.err.println(".");
+		//long startTime2 = System.nanoTime();
+		//for(String propPath : propertyPaths){
+		//	initializePropertyPath(bean, propPath);
+		//}
+		//long estimatedTime2 = System.nanoTime() - startTime2;
+		//System.err.println("first pas: "+estimatedTime1+" ns; second pas: "+estimatedTime2+ " ns");
 		if(logger.isDebugEnabled()){
-			logger.debug("  completed initialize() of " + bean);
+			logger.debug("   Completed initialization of " + bean);
 		}
 		
 	}
@@ -137,7 +158,9 @@ public abstract class AbstractBeanInitializer implements BeanInitializer{
 			logger.debug("processing " + propPath);
 		}
 		
-		// if a wildcard is used for the property do a batch initialization
+		// [1]
+		// if propPath only contains a wildcard (* or $)
+		// => do a batch initialization of *toOne or *toMany relations
 		if(propPath.equals(LOAD_2ONE_WILDCARD)){
 			if(Collection.class.isAssignableFrom(bean.getClass())){
 				initializeAllEntries((Collection)bean, true, false);
@@ -150,117 +173,104 @@ public abstract class AbstractBeanInitializer implements BeanInitializer{
 			if(Collection.class.isAssignableFrom(bean.getClass())){
 				initializeAllEntries((Collection)bean, true, true);
 			} else if(Map.class.isAssignableFrom(bean.getClass())) {
-				initializeAllEntries(((Map)bean).values(), true, false);
+				initializeAllEntries(((Map)bean).values(), true, true);
 			} else {
 				initializeBean(bean, true, true);				
 			}
 		} else {
-		    // initialize a specific property or property path
-			initializeProperty(bean, propPath);
-		}
-	}
-
-	/**
-	 * @param bean
-	 * @param property
-	 * @param nestedPath
-	 */
-//	private void initializeUsingLazyInitializer(Object bean, String property, String nestedPath) {
-//		if (bean instanceof HibernateProxy) {
-//			HibernateProxy proxy = (HibernateProxy) bean;
-//			JavassistLazyInitializer li = (JavassistLazyInitializer)proxy.getHibernateLazyInitializer();
-//			li.invoke(bean, thisMethod, proceed, args);
-//		}
-//	}
-
-	/**
-	 * @param bean
-	 * @param property
-	 * @param nestedPath
-	 */
-	private void initializeProperty(Object bean, String propPath) {
-		
-		// split next path token of
-		String property;
-		String nestedPath = null;
-		int pos;
-		if((pos = propPath.indexOf('.')) > 0){
-			nestedPath = propPath.substring(pos + 1);
-			property = propPath.substring(0, pos);
-		} else {
-			property = propPath;
-		}
-		
-		// is the property indexed?
-		Integer index = null;
-		if((pos = property.indexOf('[')) > 0){
-			String indexString = property.substring(pos + 1, property.indexOf(']'));
-			index = Integer.valueOf(indexString);
-			property = property.substring(0, pos);
-		}
-		
-		try {
-			// initialize
-			//Class targetClass = HibernateProxyHelper.getClassWithoutInitializingProxy(bean); // used for debugging
-			Object proxy = PropertyUtils.getProperty(bean, property);
-			Object unwrappedBean = initializeInstance(proxy);
+			// [2]
+			// propPath contains either a single field or a nested path
 			
-			// handle nested properties
-			if(proxy != null && nestedPath != null){
-				if (Collection.class.isAssignableFrom(proxy.getClass())) {
-					int i = 0;
-					for (Object entrybean : (Collection) proxy) {
-						if(index == null){
-							initializePropertyPath(entrybean, nestedPath);
-						} else if(index.equals(i)){
-							initializePropertyPath(entrybean, nestedPath);
-							break;
-						}
-						i++;
-					}
-				} else if(Map.class.isAssignableFrom(proxy.getClass())) {
-					int i = 0;
-					for (Object entrybean : ((Map) proxy).values()) {
-						if(index == null){
-							initializePropertyPath(entrybean, nestedPath);
-						} else if(index.equals(i)){
-							initializePropertyPath(entrybean, nestedPath);
-							break;
-						}
-						i++;
-					}
-				}else {
-					initializePropertyPath(unwrappedBean, nestedPath);
-				}
+			// split next path token off and keep the remaining as nestedPath
+			String property;
+			String nestedPath = null;
+			int pos;
+			if((pos = propPath.indexOf('.')) > 0){
+				nestedPath = propPath.substring(pos + 1);
+				property = propPath.substring(0, pos);
+			} else {
+				property = propPath;
 			}
 			
-		} catch (IllegalAccessException e) {
-			logger.error("Illegal access on property " + property);
-		} catch (InvocationTargetException e) {
-			logger.error("Cannot invoke property " + property + " not found");
-		} catch (NoSuchMethodException e) {
-			logger.info("Property " + property + " not found");
+			// is the property indexed?
+			Integer index = null;
+			if((pos = property.indexOf('[')) > 0){
+				String indexString = property.substring(pos + 1, property.indexOf(']'));
+				index = Integer.valueOf(indexString);
+				property = property.substring(0, pos);
+			}
+			
+			try {
+				//Class targetClass = HibernateProxyHelper.getClassWithoutInitializingProxy(bean); // used for debugging
+				
+				// [2.a] initialize the bean named by property
+				Object proxy = PropertyUtils.getProperty(bean, property);
+				Object unwrappedBean = initializeInstance(proxy);
+				
+				// [2.b]
+				// recurse into nested properties
+				if(proxy != null && nestedPath != null){
+					if (Collection.class.isAssignableFrom(proxy.getClass())) {
+						// nested collection
+						int i = 0;
+						for (Object entrybean : (Collection) proxy) {
+							if(index == null){
+								initializePropertyPath(entrybean, nestedPath);
+							} else if(index.equals(i)){
+								initializePropertyPath(entrybean, nestedPath);
+								break;
+							}
+							i++;
+						}
+					} else if(Map.class.isAssignableFrom(proxy.getClass())) {
+						// nested map
+						int i = 0;
+						for (Object entrybean : ((Map) proxy).values()) {
+							if(index == null){
+								initializePropertyPath(entrybean, nestedPath);
+							} else if(index.equals(i)){
+								initializePropertyPath(entrybean, nestedPath);
+								break;
+							}
+							i++;
+						}
+					}else {
+						// nested bean
+						initializePropertyPath(unwrappedBean, nestedPath);
+					}
+				}
+				
+			} catch (IllegalAccessException e) {
+				logger.error("Illegal access on property " + property);
+			} catch (InvocationTargetException e) {
+				logger.error("Cannot invoke property " + property + " not found");
+			} catch (NoSuchMethodException e) {
+				logger.info("Property " + property + " not found");
+			}
 		}
 	}
 
+
 	/**
-	 * @param bean
-	 * @param b
-	 * @param c
+	 * @param collection of which all entities are to be initialized
+	 * @param cdmEntities initialize all *toOne relations to cdm entities
+	 * @param collections initialize all *toMany relations
 	 */
 	private void initializeAllEntries(Collection collection, boolean cdmEntities, boolean collections) {
 		for(Object bean : collection){
 			initializeBean(bean, cdmEntities, collections);
 		}
-		
 	}
 
 	/**
+	 * Return all public bean properties which, exclusive those whose return type match any class defined in 
+	 * the parameter <code>typeRestrictions</code> or which are transient properties.
+	 *
 	 * @param bean
-	 * @param cdmEntities
-	 * @param collections
+	 * @param typeRestrictions
 	 * @return
 	 */
+	@SuppressWarnings("unchecked")
 	public static Set<PropertyDescriptor> getProperties(Object bean, Set<Class> typeRestrictions) {
 		
 		Set<PropertyDescriptor> properties = new HashSet<PropertyDescriptor>();

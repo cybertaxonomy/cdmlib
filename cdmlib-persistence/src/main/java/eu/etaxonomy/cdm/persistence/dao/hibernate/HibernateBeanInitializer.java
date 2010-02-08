@@ -43,9 +43,9 @@ public class HibernateBeanInitializer extends AbstractBeanInitializer{
 		} else if ( proxy instanceof PersistentCollection ) {
 			( ( PersistentCollection ) proxy ).forceInitialization();
 		} else if(proxy instanceof CollectionProxy) {
-			( ( CollectionProxy ) proxy ).isEmpty(); // checkInit is protected, unfortunatly;
+			( ( CollectionProxy ) proxy ).isEmpty(); // checkInit is protected, unfortunately;
 		} else if(proxy instanceof MapProxy) {
-			( ( MapProxy ) proxy ).isEmpty(); // checkInit is protected, unfortunatly;
+			( ( MapProxy ) proxy ).isEmpty(); // checkInit is protected, unfortunately;
 		}
 	}
 	
