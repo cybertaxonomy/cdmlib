@@ -7,6 +7,8 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/datagenerator/TaxonGenerator.java -t
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/HibernateProxyHelper.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/PartialBridge.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/StripHtmlBridge.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/jaxb/CdmAccessor.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/jaxb/CdmAccessorFactoryImpl.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/jaxb/CdmNamespacePrefixMapper.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/jaxb/ClassAdapter.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/jaxb/DateTimeAdapter.java -text
