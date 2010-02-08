@@ -16,16 +16,21 @@ import static eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer.T_STATUS_SY
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.io.common.Source;
+import eu.etaxonomy.cdm.io.faunaEuropaea.FaunaEuropaeaTaxon;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Extension;
@@ -179,7 +184,12 @@ public class BerlinModelTaxonImport  extends BerlinModelImportBase  {
 	@Override
 	protected boolean doInvoke(BerlinModelImportState state){				
 		boolean success = true;
+
+		// Get maximum number of taxa to be saved with one service call
+		int limit = state.getConfig().getLimitSave(); // Added
 		
+		TransactionStatus txStatus = null; // Added
+
 		//make not needed maps empty
 		String teamStore = ICdmIO.TEAM_STORE;
 		MapWrapper<? extends CdmBase> store = state.getStore(teamStore);
@@ -191,7 +201,7 @@ public class BerlinModelTaxonImport  extends BerlinModelImportBase  {
 		MapWrapper<ReferenceBase> referenceMap = (MapWrapper<ReferenceBase>)state.getStore(ICdmIO.REFERENCE_STORE);
 		MapWrapper<ReferenceBase> nomRefMap = (MapWrapper<ReferenceBase>)state.getStore(ICdmIO.NOMREF_STORE);
 		MapWrapper<TaxonBase> taxonMap = (MapWrapper<TaxonBase>)state.getStore(ICdmIO.TAXON_STORE);
-		
+
 		BerlinModelImportConfigurator config = state.getConfig();
 		Source source = config.getSource();
 		
@@ -207,11 +217,23 @@ public class BerlinModelTaxonImport  extends BerlinModelImportBase  {
 					" WHERE (1=1)";
 			
 			ResultSet rs = source.getResultSet(strQuery) ;
+//			rs.next(); // Added, needed?
+			int count = rs.getInt(1); // Added
 			
 			int i = 0;
+			int currentIndex = 0;
 			//for each reference
 			while (rs.next()){
 				
+				// Added block
+				if ((i++ % limit) == 0) {
+					
+					txStatus = startTransaction();
+					if(logger.isInfoEnabled()) {
+						logger.info("i = " + i + " - Transaction started"); 
+					}
+				} // Added block
+
 				if ((i++ % modCount) == 0 && i!= 1 ){ logger.info("PTaxa handled: " + (i-1));}
 				
 				//create TaxonName element
@@ -325,12 +347,22 @@ public class BerlinModelTaxonImport  extends BerlinModelImportBase  {
 					success = false;
 				}
 			}
-			//invokeRelations(source, cdmApp, deleteAll, taxonMap, referenceMap);
-			logger.info("saving "+i+" taxa ...");
-			getTaxonService().save(taxonMap.objects());
 			
+			if (((i % limit) == 0 && i != 1 ) || i == count) { // Added
+				//invokeRelations(source, cdmApp, deleteAll, taxonMap, referenceMap);
+				logger.info("saving " + (i-currentIndex) + " taxa ...");
+				currentIndex = i;
+				getTaxonService().save(taxonMap.objects());
+
+				taxonMap = null;
+				commitTransaction(txStatus);
+				
+				if(logger.isInfoEnabled()) {
+					logger.info("i = " + i + " - Transaction committed"); 
+				}
+			}
 			logger.info("end makeTaxa ..." + getSuccessString(success));
-			
+
 			return success;
 		} catch (SQLException e) {
 			logger.error("SQLException:" +  e);
