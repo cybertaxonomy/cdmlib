@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns:tns="http://www.omg.org/LSID/2003/Standard/WSDL"
+    targetNamespace="http://www.omg.org/LSID/2003/Standard/WSDL"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns="http://schemas.xmlsoap.org/wsdl/">
+    
+    <message name="getAvailableServicesRequest">
+        <part name="lsid" type="xsd:anyURI" />
+    </message>
+    <message name="getAvailableServicesResponse">
+        <part name="wsdl" type="xsd:base64Binary" />
+    </message>
+    
+    <message name="notifyForeignAuthorityRequest">
+        <part name="lsid" type="xsd:anyURI" />
+        <part name="authorityName" type="xsd:string" />
+    </message>
+    <message name="notifyForeignAuthorityResponse"/>
+    
+    <message name="revokeNotificationForeignAuthorityRequest">
+        <part name="lsid" type="xsd:anyURI" />
+        <part name="authorityName" type="xsd:string" />
+    </message>
+    <message name="revokeNotificationForeignAuthorityResponse"/>
+    
+    <message name="getDataRequest">
+        <part name="lsid" type="xsd:anyURI" />
+    </message>
+    <message name="getDataResponse">
+        <part name="data-attachment" type="xsd:base64Binary" />
+    </message>
+    
+    <message name="getDataByRangeRequest">
+        <part name="lsid" type="xsd:anyURI" />
+        <part name="start" type="xsd:integer" />
+        <part name="length" type="xsd:integer" />
+    </message>
+    <message name="getDataByRangeResponse">
+        <part name="data-attachment" type="xsd:base64Binary" />
+    </message>
+    
+    <message name="getMetadataRequest">
+        <part name="lsid" type="xsd:anyURI" />
+        <part name="acceptedFormats" type="xsd:string" />
+    </message>
+    <message name="getMetadataResponse">
+        <part name="format" type="xsd:string" />
+        <part name="metadata-attachment" type="xsd:base64Binary" />
+        <part name="expiration" type="xsd:dateTime" />
+    </message>
+    
+    <message name="getMetadataSubsetRequest">
+        <part name="lsid" type="xsd:anyURI" />
+        <part name="acceptedFormats" type="xsd:string" />
+        <part name="selection" type="xsd:string" />
+    </message>
+    <message name="getMetadataSubsetResponse">
+        <part name="format" type="xsd:string" />
+        <part name="metadata-attachment" type="xsd:base64Binary" />
+        <part name="expiration" type="xsd:dateTime" />
+    </message>
+    
+    <portType name="LSIDAuthorityServicePortType">
+        <operation name="getAvailableServices">
+            <input message="tns:getAvailableServicesRequest" />
+            <output message="tns:getAvailableServicesResponse" />
+        </operation>
+        <operation name="notifyForeignAuthority">
+            <input message="tns:notifyForeignAuthorityRequest" />
+            <output message="tns:notifyForeignAuthorityResponse" />
+        </operation>
+        <operation name="revokeNotificationForeignAuthority">
+            <input message="tns:revokeNotificationForeignAuthorityRequest" />
+            <output message="tns:revokeNotificationForeignAuthorityResponse" />
+        </operation>
+    </portType>	
+    
+    <portType name="LSIDDataServicePortType">
+        <operation name="getData">
+            <input message="tns:getDataRequest" />
+            <output message="tns:getDataResponse" />
+        </operation>
+        <operation name="getDataByRange">
+            <input message="tns:getDataByRangeRequest" />
+            <output message="tns:getDataByRangeResponse" />
+        </operation>
+    </portType>
+    
+    <portType name="LSIDMetadataServicePortType">
+        <operation name="getMetadata">
+            <input message="tns:getMetadataRequest" />
+            <output message="tns:getMetadataResponse" />
+        </operation>
+    </portType>
+    
+    <portType name="LSIDMetadataSubsetServicePortType">
+        <operation name="getMetadataSubset">
+            <input message="tns:getMetadataSubsetRequest" />
+            <output message="tns:getMetadataSubsetResponse" />
+        </operation>
+    </portType>
+    
+</definitions>

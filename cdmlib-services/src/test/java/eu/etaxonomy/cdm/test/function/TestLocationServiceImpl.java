@@ -1,0 +1,85 @@
+// $Id$
+/**
+* Copyright (C) 2007 EDIT
+* European Distributed Institute of Taxonomy 
+* http://www.e-taxonomy.eu
+* 
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
+
+package eu.etaxonomy.cdm.test.function;
+
+
+import org.apache.log4j.Logger;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.unitils.spring.annotation.SpringBeanByType;
+
+import eu.etaxonomy.cdm.api.application.CdmApplicationController;
+import eu.etaxonomy.cdm.api.conversation.ConversationHolder;
+import eu.etaxonomy.cdm.api.service.ILocationService;
+import eu.etaxonomy.cdm.api.service.ILocationService.NamedAreaVocabularyType;
+import eu.etaxonomy.cdm.database.CdmDataSource;
+import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
+import eu.etaxonomy.cdm.database.DbSchemaValidation;
+import eu.etaxonomy.cdm.database.ICdmDataSource;
+import eu.etaxonomy.cdm.model.common.init.TermNotFoundException;
+
+import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
+
+/**
+ * @author n.hoffman
+ * @created 12.05.2009
+ * @version 1.0
+ */
+public class TestLocationServiceImpl  extends CdmIntegrationTest{
+	private static final Logger logger = Logger
+			.getLogger(TestLocationServiceImpl.class);
+	
+	@SpringBeanByType
+	private ILocationService locationService;
+	
+	@Ignore
+	@Test
+	public void testGetTopLevelContinentAreas(){
+		locationService.getTopLevelNamedAreasByVocabularyType(NamedAreaVocabularyType.CONTINENT);
+	}
+	
+	@Test
+	public void testGetTopLevelTdwgAreas(){
+		locationService.getTopLevelNamedAreasByVocabularyType(NamedAreaVocabularyType.TDWG_AREA);
+	}
+	
+	@Ignore
+	@Test
+	public void testGetTopLevelWaterbodyOrCoutryAreas(){
+		locationService.getTopLevelNamedAreasByVocabularyType(NamedAreaVocabularyType.WATERBODY_OR_COUNTRY);
+	}
+	
+	public void testNewDatasourceClass(){
+		try {
+//			String server = "192.168.2.10";
+//			String database = "cdm_test_andreasM";
+//			String username = "edit";
+//			String password = CdmUtils.readInputLine("Password: ");
+			DbSchemaValidation dbSchemaValidation = DbSchemaValidation.CREATE;
+
+//			ICdmDataSource datasource = CdmDataSource.NewMySqlInstance(server, database, username, password);
+			ICdmDataSource datasource = CdmDataSource.NewH2EmbeddedInstance("test", "sa", "", null);
+			CdmApplicationController appCtr = CdmApplicationController.NewInstance(datasource, dbSchemaValidation);
+			
+			ConversationHolder conversation = appCtr.NewConversation();
+			conversation.bind();
+			
+			Taxon taxon = Taxon.NewInstance(null, null);
+
+
+		} catch (DataSourceNotFoundException e) {
+			logger.error("datasource error");
+		} catch (TermNotFoundException e) {
+			logger.error("defined terms not found");
+		}
+	}
+}
