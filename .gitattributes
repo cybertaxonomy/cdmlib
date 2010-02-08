@@ -132,11 +132,13 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/faunaEuropaea/FaunaEuropaeaTaxon.jav
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/faunaEuropaea/FaunaEuropaeaTaxonNameImport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/faunaEuropaea/FaunaEuropaeaTransformer.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/jaxb/CdmDocumentBuilder.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/jaxb/CdmIDResolver.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/jaxb/CdmMarshallerListener.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/jaxb/CdmResourceResolver.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/jaxb/CdmSchemaGenerator.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/jaxb/DataSet.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/jaxb/DefaultErrorHandler.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/jaxb/Error.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/jaxb/JaxbExport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/jaxb/JaxbExportConfigurator.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/jaxb/JaxbExportState.java -text
