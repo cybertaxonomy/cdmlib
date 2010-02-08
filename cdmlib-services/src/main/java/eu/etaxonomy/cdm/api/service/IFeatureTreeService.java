@@ -9,7 +9,9 @@
 
 package eu.etaxonomy.cdm.api.service;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.model.description.FeatureNode;
@@ -32,4 +34,6 @@ public interface IFeatureTreeService extends IIdentifiableEntityService<FeatureT
 	 */
 	public FeatureTree loadWithNodes(UUID uuid, List<String> propertyPaths, List<String> nodePaths);
 
+	public Map<UUID, FeatureNode> saveFeatureNodesAll(Collection<FeatureNode> featureNodeCollection);
+	
 }

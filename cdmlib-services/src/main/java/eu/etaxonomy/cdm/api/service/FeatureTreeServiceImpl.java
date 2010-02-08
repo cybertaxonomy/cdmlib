@@ -10,7 +10,9 @@
 package eu.etaxonomy.cdm.api.service;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +25,7 @@ import eu.etaxonomy.cdm.model.common.VocabularyEnum;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.FeatureNode;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
+import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.persistence.dao.description.IFeatureNodeDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IFeatureTreeDao;
 
@@ -52,6 +55,15 @@ public class FeatureTreeServiceImpl extends IdentifiableServiceBase<FeatureTree,
 	public List<FeatureNode> getFeatureNodesAll() {
 		return featureNodeDao.list();
 	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.service.IFeatureTreeService#saveFeatureNodesAll(java.util.Collection)
+	 */
+	public Map<UUID, FeatureNode> saveFeatureNodesAll(
+			Collection<FeatureNode> featureNodeCollection) {
+		return featureNodeDao.saveAll(featureNodeCollection);
+	} 
 
 	public FeatureTree loadWithNodes(UUID uuid, List<String> propertyPaths, List<String> nodePaths) {
 		nodePaths.add("children");
