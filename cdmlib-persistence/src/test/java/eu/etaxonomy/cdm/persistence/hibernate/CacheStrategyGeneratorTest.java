@@ -114,8 +114,8 @@ public class CacheStrategyGeneratorTest extends CdmIntegrationTest {
 		BotanicalName nameTest = (BotanicalName)cdmEntityDaoBase.findByUuid(name.getUuid());
 		
 		Assert.assertEquals(name2, cdmEntityDaoBase.findByUuid(name2.getUuid()));
-		System.err.println("FulltitleCache: "+ cdmEntityDaoBase.findByUuid(name2.getUuid()).getFullTitleCache());
-		System.err.println("updated: " + cdmEntityDaoBase.findByUuid(name2.getUuid()).getUpdated());
+		logger.debug("FulltitleCache: "+ cdmEntityDaoBase.findByUuid(name2.getUuid()).getFullTitleCache());
+		logger.debug("updated: " + cdmEntityDaoBase.findByUuid(name2.getUuid()).getUpdated());
 		BotanicalName name3 = BotanicalName.NewInstance(Rank.GENUS());
 		name3.setFullTitleCache("Test: MyBook");
 		name3.setTitleCache("Test");
@@ -125,8 +125,8 @@ public class CacheStrategyGeneratorTest extends CdmIntegrationTest {
 		TaxonNameBase nameBase = taxa.get (0);
 		BotanicalName botName = (BotanicalName)nameBase;
 		
-		System.err.println("created "+botName.getCreated());
-		System.err.println("updated: " +botName.getUpdated());
+		logger.debug("created "+botName.getCreated());
+		logger.debug("updated: " +botName.getUpdated());
 //		BotanicalName name3 =  (BotanicalName)cdmEntityDaoBase.findByUuid(UUID.fromString("049a3963-c4ea-4047-8588-2f8f15352730"));
 //		printDataSet(System.err, new String[]{"TaxonNameBase", "ReferenceBase"});
 	}
@@ -185,8 +185,7 @@ public class CacheStrategyGeneratorTest extends CdmIntegrationTest {
 		Assert.assertEquals(person3, person4);
 		Team team2 = (Team) agentDao.findByUuid(UUID.fromString("db957a0a-1494-49bb-8d17-d3eaa2076573"));
 		Assert.assertEquals(team1, team2);
-//		printDataSet(System.err, new String[]{"AgentBase"});
-//		System.out.println("End");
+
 	}
 	
 }	
