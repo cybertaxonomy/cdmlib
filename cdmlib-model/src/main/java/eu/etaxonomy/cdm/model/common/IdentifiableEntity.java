@@ -182,7 +182,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#getTitleCache()
 	 */
-	//@Transient  - not transient since this property is to be included in all serializations produced by the remote layer
+	// @Transient  - must not be transient, since this property needs to to be included in all serializations produced by the remote layer 
 	public String getTitleCache(){
 		if (protectedTitleCache){
 			return this.titleCache;			
