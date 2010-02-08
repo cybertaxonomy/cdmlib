@@ -168,9 +168,9 @@ public class Person extends TeamOrPersonBase<Person>{
 	public Person(String firstname, String lastname, String nomenclaturalTitel) {
 		this.setFirstname(firstname);
 		this.setLastname(lastname);
-		System.err.println("before - Set nomenclatural Title");
+		logger.debug("before - Set nomenclatural Title");
 		this.setNomenclaturalTitle(nomenclaturalTitel);
-		System.err.println("after - Set nomenclatural Title");
+		logger.debug("after - Set nomenclatural Title");
 	}
 	
 	
