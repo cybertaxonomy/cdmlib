@@ -588,6 +588,7 @@ public static final WaterbodyOrCountry AFGHANISTAN(){
 }
 	
 	public static final WaterbodyOrCountry ARGENTINA_ARGENTINE_REPUBLIC(){
+		logger.warn("Not yet implemented");
 		return null; // FIXME(uuidArgentinaArgentineRepublic);
 	}
 	
