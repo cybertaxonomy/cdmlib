@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+    
+    <!-- 
+    	- bean names are ant style patterns
+    	- the eu.etaxonomy.cdm.remote.view.PatternViewResolver 
+    	  must be used to resolve patterns used as bean names
+    -->
+    
+    <!-- entity services -->
+    <bean name="**/*.xml" class="eu.etaxonomy.cdm.remote.view.JsonView">
+    	<property name="type" value="XML" />
+    	<!--  <property name="xsl" value="humane.xsl" />  -->
+    	<property name="jsonConfig" ref="jsonConfig" />
+    </bean>
+    <bean name="**/*.json" class="eu.etaxonomy.cdm.remote.view.JsonView">
+    	<property name="jsonConfig" ref="jsonConfig" />
+    </bean>
+    
+    <!-- taxonomy service -->
+    <bean name="**/taxontree.xml **/taxontree/*.xml **/taxontree/**/*.xml" class="eu.etaxonomy.cdm.remote.view.JsonView">
+        <property name="type" value="XML" />
+        <!--  <property name="xsl" value="humane.xsl" />  -->
+        <property name="jsonConfig" ref="jsonConfigTaxonomy" />
+    </bean>
+    <bean name="**/taxontree.json **/taxontree/*.json **/taxontree/**/*.json" class="eu.etaxonomy.cdm.remote.view.JsonView">
+        <property name="jsonConfig" ref="jsonConfigTaxonomy" />
+    </bean>
+    
+    <!-- portal service -->
+    <bean name="**/portal/*.xml **/portal/**/*.xml" class="eu.etaxonomy.cdm.remote.view.JsonView">
+        <property name="type" value="XML" />
+        <!--  <property name="xsl" value="humane.xsl" />  -->
+        <property name="jsonConfig" ref="jsonConfigPortal" />
+    </bean>
+    <bean name="**/portal/*.json **/portal/**/*.json" class="eu.etaxonomy.cdm.remote.view.JsonView">
+        <property name="jsonConfig" ref="jsonConfigPortal" />
+    </bean>
+    
+    <!-- management service -->
+    <bean name="/manager/*.xml /manager/**/*.xml" class="eu.etaxonomy.cdm.remote.view.JsonView">
+        <property name="type" value="XML" />
+    </bean>
+    <bean name="/manager/*.json /manager/**/*.json" class="eu.etaxonomy.cdm.remote.view.JsonView">
+    </bean>
+
+</beans>

@@ -1,0 +1,150 @@
+// $Id$
+/**
+* Copyright (C) 2007 EDIT
+* European Distributed Institute of Taxonomy 
+* http://www.e-taxonomy.eu
+* 
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
+
+package eu.etaxonomy.cdm.remote.json;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import net.sf.json.JsonConfig;
+import net.sf.json.processors.JsonBeanProcessor;
+import net.sf.json.processors.JsonBeanProcessorMatcher;
+import net.sf.json.processors.JsonValueProcessor;
+import net.sf.json.processors.JsonValueProcessorMatcher;
+import net.sf.json.util.CycleDetectionStrategy;
+import net.sf.json.util.PropertyFilter;
+
+import org.springframework.beans.factory.FactoryBean;
+
+/**
+ * 
+ * @author ben.clark
+ * @author a.kohlbecker
+ */
+public class JsonConfigFactoryBean implements FactoryBean {
+
+	private JsonConfig jsonConfig = null;
+	
+	private CycleDetectionStrategy cycleDetectionStrategy = CycleDetectionStrategy.LENIENT;
+	
+	/**
+	 * Default is true, to avoid LayzyLoadingExceptions. See
+	 * {@link #setIgnoreJPATransient(boolean)}
+	 */
+	private boolean ignoreJPATransient = true;
+	
+	private Map<Class,JsonBeanProcessor> jsonBeanProcessors = new HashMap<Class,JsonBeanProcessor>();
+	private List<PropertyFilter> jsonPropertyFilters = new ArrayList<PropertyFilter>();
+	private Map<Class,JsonValueProcessor> jsonValueProcessors = new HashMap<Class,JsonValueProcessor>();
+	private JsonBeanProcessorMatcher jsonBeanProcessorMatcher = JsonBeanProcessorMatcher.DEFAULT;
+	private JsonValueProcessorMatcher jsonValueProcessorMatcher = JsonValueProcessorMatcher.DEFAULT;
+	private boolean ignoreDefaultExcludes = false;
+	private List<String> excludes = new ArrayList<String>();
+	
+	public void setCycleDetectionStrategy(CycleDetectionStrategy cycleDetectionStrategy) {
+		this.cycleDetectionStrategy = cycleDetectionStrategy;
+	}
+	
+	/**
+	 * Default is true, to avoid LayzyLoadingExceptions.
+	 * <p>
+	 * 
+	 * @deprecated Transient getters which are just an alias for another getter
+	 *             are directly returning the the HibernateProxy. However if the
+	 *             return is a collection assembled by an algorithm it is not
+	 *             easily possible finding out if the list elements are
+	 *             initialized. Thus it is <b>NOT RECOMMENDED</b> using this
+	 *             property.
+	 * 
+	 * @param ignoreJPATransient
+	 */
+	@Deprecated
+	public void setIgnoreJPATransient(boolean ignoreJPATransient) {
+		this.ignoreJPATransient = ignoreJPATransient;
+	}
+
+	public void setJsonBeanProcessors(Map<Class, JsonBeanProcessor> jsonBeanProcessors) {
+		this.jsonBeanProcessors = jsonBeanProcessors;
+	}
+
+	public void setJsonPropertyFilters(List<PropertyFilter> jsonPropertyFilters) {
+		this.jsonPropertyFilters = jsonPropertyFilters;
+	}
+
+	public void setJsonBeanProcessorMatcher(JsonBeanProcessorMatcher jsonBeanProcessorMatcher) {
+		this.jsonBeanProcessorMatcher = jsonBeanProcessorMatcher;
+	}
+	
+	public void setJsonValueProcessorMatcher(JsonValueProcessorMatcher jsonValueProcessorMatcher ) {
+		this.jsonValueProcessorMatcher = jsonValueProcessorMatcher;
+	}
+
+	public void setJsonValueProcessors(Map<Class, JsonValueProcessor> jsonValueProcessors) {
+		this.jsonValueProcessors = jsonValueProcessors;
+	}
+	
+	public void setIgnoreDefaultExcludes(boolean ignoreDefaultExcludes) {
+		this.ignoreDefaultExcludes = ignoreDefaultExcludes;
+	}
+
+	public void setExcludes(List<String> excludes) {
+		this.excludes = excludes;
+	}
+
+	public void init() {
+		jsonConfig = new JsonConfig();
+		
+		jsonConfig.setCycleDetectionStrategy(cycleDetectionStrategy);
+		
+		jsonConfig.setIgnoreJPATransient(ignoreJPATransient);
+		
+		jsonConfig.setJsonValueProcessorMatcher(jsonValueProcessorMatcher);
+
+		jsonConfig.setJsonBeanProcessorMatcher(jsonBeanProcessorMatcher);
+		
+		jsonConfig.setExcludes(excludes.toArray(new String[]{}));
+		
+		jsonConfig.setIgnoreDefaultExcludes(ignoreDefaultExcludes);
+		
+		for(Class clazz : jsonBeanProcessors.keySet()) {
+			jsonConfig.registerJsonBeanProcessor(clazz, jsonBeanProcessors.get(clazz));
+		}
+		
+		for(PropertyFilter propertyFilter : jsonPropertyFilters) {
+		    jsonConfig.setJsonPropertyFilter(propertyFilter);
+		}
+
+		
+		for(Class clazz : jsonValueProcessors.keySet()) {
+		    jsonConfig.registerJsonValueProcessor(clazz, jsonValueProcessors.get(clazz)); 
+		}
+		
+		
+	}
+	
+	
+	public Object getObject() throws Exception {
+		if(jsonConfig == null) {
+			init();
+		}
+		return jsonConfig;
+	}
+
+    public Class getObjectType() {
+		return JsonConfig.class;
+	}
+
+	public boolean isSingleton() {
+		return true;
+	}
+
+}

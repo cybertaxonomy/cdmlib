@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:tx="http://www.springframework.org/schema/tx"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans   http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+    http://www.springframework.org/schema/context   http://www.springframework.org/schema/context/spring-context-2.5.xsd
+    http://www.springframework.org/schema/tx   http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+    ">
+	
+	 <!-- include default application context and customization -->
+     <import resource="classpath:/eu/etaxonomy/cdm/defaultApplicationContext.xml"/>  
+     <bean id="persistentTermInitializer" class="eu.etaxonomy.cdm.database.PersistentTermInitializer">
+     	<property name="omit" value="false" />
+     </bean>
+    <context:component-scan base-package="eu/etaxonomy/cdm/ext" />
+ 
+    <!-- enable the configuration of transactional behavior based on annotations -->
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+    
+    <!-- import additional beans into the root context -->
+    <import resource="applicationContext.views.xml"/>
+
+	<!--  load usenames and passwords from properties file and import datasource bean configurations -->
+    <context:property-placeholder location="file:${user.home}/.cdmLibrary/cdmserver.properties"/>
+    <!-- CONFIGURE WEB APPLICATION HERE -->
+    <import resource="datasources/routing-datasource.xml"/>
+    <!-- 
+    <import resource="datasources/empty-default-datasource.xml"/>
+	  <import resource="datasources/datasources-bgbm24-test.xml"/>
+    <import resource="datasources/empty-default-datasource-wp7virtual.xml"/>
+    <import resource="datasources/datasources-local.xml"/>
+    <import resource="datasources/datasources-wp7virtual-production-A.xml"/> 
+    <import resource="datasources/p6spy.xml"/>
+    <import resource="datasources/datasources-bgbm24-import.xml"/>
+    <import resource="datasources/datasources-wp7virtual-production-B.xml"/>
+     -->
+
+</beans>
