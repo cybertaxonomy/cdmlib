@@ -11,23 +11,16 @@ package eu.etaxonomy.cdm.io.faunaEuropaea;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
-import org.springframework.stereotype.Component;
 
-import eu.etaxonomy.cdm.common.ResultWrapper;
 import eu.etaxonomy.cdm.model.description.AbsenceTerm;
-import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
 import eu.etaxonomy.cdm.model.description.PresenceTerm;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.TdwgArea;
-import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
-import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
 /**
@@ -94,9 +87,9 @@ public final class FaunaEuropaeaTransformer {
 	public static PresenceAbsenceTermBase<?> occStatus2PresenceAbsence_ (int occStatusId)  throws UnknownCdmTypeException{
 		switch (occStatusId){
 			case 0: return null;
-			case 110: return PresenceTerm.CULTIVATED_REPORTED_IN_ERROR();
+			case 110: return AbsenceTerm.CULTIVATED_REPORTED_IN_ERROR();
 			case 120: return PresenceTerm.CULTIVATED();
-			case 210: return PresenceTerm.INTRODUCED_REPORTED_IN_ERROR();
+			case 210: return AbsenceTerm.INTRODUCED_REPORTED_IN_ERROR();
 			case 220: return PresenceTerm.INTRODUCED_PRESENCE_QUESTIONABLE();
 			case 230: return PresenceTerm.INTRODUCED_FORMERLY_INTRODUCED();
 			case 240: return PresenceTerm.INTRODUCED_DOUBTFULLY_INTRODUCED();
@@ -104,7 +97,7 @@ public final class FaunaEuropaeaTransformer {
 			case 260: return PresenceTerm.INTRODUCED_UNCERTAIN_DEGREE_OF_NATURALISATION();
 			case 270: return PresenceTerm.INTRODUCED_ADVENTITIOUS();
 			case 280: return PresenceTerm.INTRODUCED_NATURALIZED();
-			case 310: return PresenceTerm.NATIVE_REPORTED_IN_ERROR();
+			case 310: return AbsenceTerm.NATIVE_REPORTED_IN_ERROR();
 			case 320: return PresenceTerm.NATIVE_PRESENCE_QUESTIONABLE();
 			case 330: return PresenceTerm.NATIVE_FORMERLY_NATIVE();
 			case 340: return PresenceTerm.NATIVE_DOUBTFULLY_NATIVE();
