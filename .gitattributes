@@ -1451,3 +1451,4 @@ cdmlib-services/src/test/resources/eu/etaxonomy/cdm/validation/ValidationTest.xm
 cdmlib-services/src/test/resources/log4j.properties -text
 cdmlib-services/src/test/resources/override.properties -text
 cdmlib-services/src/test/resources/unitils.properties -text
+/pom.xml -text
