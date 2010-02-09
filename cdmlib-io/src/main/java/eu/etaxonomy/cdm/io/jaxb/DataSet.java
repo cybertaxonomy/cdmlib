@@ -134,7 +134,6 @@ import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
 		"eventBases",
 	    "references",
 	    "typeDesignations",
-	    "featureNodes",
 	    "featureTrees",
 	    "taxonNodes",
 	    "taxonomicTrees",
@@ -221,10 +220,6 @@ public class DataSet {
       @XmlElement(name = "PolytomousKey", namespace = "http://etaxonomy.eu/cdm/model/description/1.0", type = PolytomousKey.class)
     })
     protected List<FeatureTree> featureTrees = new ArrayList<FeatureTree>();
-    
-    @XmlElementWrapper(name = "FeatureNodes")
-    @XmlElement(name = "FeatureNodes", namespace = "http://etaxonomy.eu/cdm/model/description/1.0")
-    protected List<FeatureNode> featureNodes = new ArrayList<FeatureNode>();
     
     @XmlElementWrapper(name = "TaxonomicTrees")
     @XmlElement(name = "TaxonomicTree", namespace = "http://etaxonomy.eu/cdm/model/taxon/1.0")
@@ -826,16 +821,5 @@ public class DataSet {
 	public void addUser(User deproxy) {
 		this.users.add(deproxy);
 		
-	}
-
-	public void setFeatureNodes(List<FeatureNode> featureNodesdeproxy) {
-		this.featureNodes = featureNodesdeproxy;
-		
-	}
-
-	public List<FeatureNode> getFeatureNodes() {
-	
-		return featureNodes;
-	}
-    
+	}    
 }

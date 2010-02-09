@@ -310,10 +310,6 @@ public class JaxbImport extends CdmIoBase<JaxbImportState> implements ICdmIO<Jax
 		//txStatus = startTransaction();
 		try {
 			if (jaxbImpConfig.isDoFeatureData() == true) {
-				if ((featureNodes = dataSet.getFeatureNodes()).size() >0){
-					logger.error("Feature data: " + featureNodes.size());
-					getFeatureTreeService().saveFeatureNodesAll(featureNodes);
-				}
 				if ((featureTrees = dataSet.getFeatureTrees()).size() > 0) {
 					logger.error("Feature data: " + featureTrees.size());
 					getFeatureTreeService().save(featureTrees);
