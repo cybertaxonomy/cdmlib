@@ -69,8 +69,6 @@ public class FeatureTree extends TermBase {
 	//private Set<FeatureNode> nodes = new HashSet<FeatureNode>();
 	
 	@XmlElement(name = "Root")
-	@XmlIDREF
-	@XmlSchemaType(name="IDREF")
 	@OneToOne(fetch = FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
 	private FeatureNode root;
