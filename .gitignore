@@ -21,6 +21,7 @@ app-import/src/main/resources/arecaceae_alt.rdf
 app-import/src/main/resources/arecaceae_old.rdf
 app-import/src/main/resources/arecaceae_old.zip
 app-import/src/main/resources/arecaceae_old2.rdf
+app-import/src/main/resources/arecaceae_short.rdf
 app-import/src/main/resources/tmp
 app-import/target
 cdmlib-commons/.classpath
