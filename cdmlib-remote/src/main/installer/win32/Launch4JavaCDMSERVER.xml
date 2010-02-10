@@ -1,0 +1,23 @@
+<launch4jConfig>
+  <dontWrapJar>false</dontWrapJar>
+  <headerType>console</headerType>
+  <jar>C:\Dokumente und Einstellungen\f.revilla\Desktop\l4j2\cdmserver-standalone.jar</jar>
+  <outfile>C:\Dokumente und Einstellungen\f.revilla\Desktop\l4j2\bin\cdmserver.exe</outfile>
+  <errTitle></errTitle>
+  <cmdLine></cmdLine>
+  <chdir></chdir>
+  <priority>normal</priority>
+  <downloadUrl>http://java.com/download</downloadUrl>
+  <supportUrl></supportUrl>
+  <customProcName>false</customProcName>
+  <stayAlive>false</stayAlive>
+  <manifest></manifest>
+  <icon></icon>
+  <jre>
+    <path></path>
+    <minVersion>1.5.0</minVersion>
+    <maxVersion></maxVersion>
+    <jdkPreference>preferJre</jdkPreference>
+    <opt>-Xmx1024M -jar %CD%..\\libs\\cdmserver-standalone.jar --httpPort=8080 --ajp13Port=-1 --logfile=%CD%..\\logs\\cdmserverLog.txt</opt>
+  </jre>
+</launch4jConfig>

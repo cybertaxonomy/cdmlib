@@ -57,6 +57,7 @@ Section "MainSection" SEC01
   SetOutPath "$INSTDIR\bin"
   SetOverwrite try
   File "cdmserver\bin\cdmserver.bat"
+  File "cdmserver\bin\cdmserver.exe"
   SetOutPath "$INSTDIR\libs\.cdmLibrary"
   File "cdmserver\libs\.cdmLibrary\datasources.xml"
   SetOutPath "$INSTDIR\libs"
@@ -73,7 +74,7 @@ Section -AdditionalIcons
   CreateDirectory "$SMPROGRAMS\cdmserver"
   CreateShortCut "$SMPROGRAMS\cdmserver\Website.lnk" "$INSTDIR\${PRODUCT_NAME}.url"
   CreateShortCut "$SMPROGRAMS\cdmserver\Uninstall.lnk" "$INSTDIR\uninst.exe"
-  CreateShortCut "$SMPROGRAMS\cdmserver\cdmserver.lnk" "$INSTDIR\bin\cdmserver.bat"
+  CreateShortCut "$SMPROGRAMS\cdmserver\cdmserver.lnk" "$INSTDIR\bin\cdmserver.exe"
 SectionEnd
 
 Section -Post
