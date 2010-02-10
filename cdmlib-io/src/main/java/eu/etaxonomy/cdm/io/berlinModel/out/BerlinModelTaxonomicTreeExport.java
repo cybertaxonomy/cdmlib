@@ -101,7 +101,7 @@ public class BerlinModelTaxonomicTreeExport extends BerlinModelExportBase<Relati
 			int count = 0;
 			for (TaxonomicTree tree : list){
 				for (TaxonNode node : tree.getAllNodes()){
-					if (node.getParent() == null){
+					if (node.isTopmostNode()){
 						continue;
 					}else{
 						doCount(count++, modCount, pluralString);

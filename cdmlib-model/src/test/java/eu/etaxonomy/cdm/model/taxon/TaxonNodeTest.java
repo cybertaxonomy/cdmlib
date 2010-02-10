@@ -130,7 +130,7 @@ public class TaxonNodeTest {
 		assertSame("taxa must be the same", taxon2, childList.iterator().next().getTaxon());
 		
 		//test view properties
-		Set<TaxonNode> rootNodes = taxonomicView1.getRootNodes();
+		Set<TaxonNode> rootNodes = taxonomicView1.getChildNodes();
 		assertEquals("Number of root nodes should be 1", 1, rootNodes.size());
 		Set<TaxonNode> allNodes = taxonomicView1.getAllNodes();
 		assertEquals("Number of all nodes should be 2", 2, allNodes.size());

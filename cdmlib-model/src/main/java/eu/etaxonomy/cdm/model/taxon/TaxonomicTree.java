@@ -85,7 +85,8 @@ public class TaxonomicTree extends IdentifiableEntity implements IReferencedEnti
     @XmlSchemaType(name = "IDREF")
     @OneToMany(fetch=FetchType.LAZY)
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
-	private Set<TaxonNode> rootNodes = new HashSet<TaxonNode>();
+	//TODO 
+    private Set<TaxonNode> rootNodes = new HashSet<TaxonNode>();
 
 	@XmlElement(name = "reference")
 	@XmlIDREF
@@ -223,30 +224,36 @@ public class TaxonomicTree extends IdentifiableEntity implements IReferencedEnti
 	}
 	
 	/**
-	 * Appends an existing root node to another node of this tree. The existing root node becomes 
+	 * Appends an existing topmost node to another node of this tree. The existing topmost node becomes 
 	 * an ordinary node.
-	 * @param root
+	 * @param topmostNode
 	 * @param otherNode
 	 * @param ref
 	 * @param microReference
 	 * @throws IllegalArgumentException
 	 */
-	public void makeRootChildOfOtherNode(TaxonNode root, TaxonNode otherNode, ReferenceBase ref, String microReference)
+	public void makeTopmostNodeChildOfOtherNode(TaxonNode topmostNode, TaxonNode otherNode, ReferenceBase ref, String microReference)
 				throws IllegalArgumentException{
 		if (otherNode == null){
 			throw new NullPointerException("other node must not be null");
 		}
-		if (! getRootNodes().contains(root)){
+		if (! getChildNodes().contains(topmostNode)){
 			throw new IllegalArgumentException("root node to be added as child must already be root node within this tree");
 		}
 		if (otherNode.getTaxonomicTree() == null || ! otherNode.getTaxonomicTree().equals(this)){
 			throw new IllegalArgumentException("other node must already be node within this tree");
 		}
-		if (otherNode.equals(root)){
+		if (otherNode.equals(topmostNode)){
 			throw new IllegalArgumentException("root node and other node must not be the same");
 		}
-		otherNode.addChildNode(root, ref, microReference, null);
+		otherNode.addChildNode(topmostNode, ref, microReference, null);
 		//getRootNodes().remove(root);
+	}
+
+	@Deprecated //will be removed in v3.0
+	public void makeRootChildOfOtherNode(TaxonNode root, TaxonNode otherNode, ReferenceBase ref, String microReference)
+				throws IllegalArgumentException{
+		makeTopmostNodeChildOfOtherNode(root, otherNode, ref, microReference);
 	}
 	
 //	public void makeThisNodePartOfOtherView(TaxonNode oldRoot, TaxonNode replacedNodeInOtherView, ReferenceBase reference, String microReference){
@@ -282,29 +289,35 @@ public class TaxonomicTree extends IdentifiableEntity implements IReferencedEnti
 	}
 	
 	/**
-	 * Checks if the given taxon is one of the root taxa in <b>this</b> tree.
+	 * Checks if the given taxon is one of the topmost taxa in <b>this</b> tree.
 	 * @param taxon
 	 * @return
 	 */
+	public boolean isTopmostInTree(Taxon taxon){
+		return (getTopmostNode(taxon) != null);
+	}	
+	
+	@Deprecated //will be removed in version 3.0
 	public boolean isRootInTree(Taxon taxon){
-		return (getRootNode(taxon) != null);
+		return (getTopmostNode(taxon) != null);
 	}
 	
+	
 	/**
-	 * Checks if the taxon is a root taxon in <b>this</b> tree and returns the according node if true.
+	 * Checks if the taxon is a direct child of <b>this</b> tree and returns the according node if true.
 	 * Returns null otherwise.
 	 * @param taxon
 	 * @return
 	 */
-	public TaxonNode getRootNode(Taxon taxon){
+	public TaxonNode getTopmostNode(Taxon taxon){
 		if (taxon == null){
 			return null;
 		}
 		for (TaxonNode taxonNode: taxon.getTaxonNodes()){
 			if (taxonNode.getTaxonomicTree().equals(this)){
-				if (this.getRootNodes().contains(taxonNode)){
-					if (taxonNode.getParent() != null){
-						logger.warn("A root node should not have parent");
+				if (this.getChildNodes().contains(taxonNode)){
+					if (taxonNode.getParent() instanceof TaxonNode){
+						logger.warn("A topmost node should have a TaxonomicTree as parent but actually has a TaxonNode parent");
 					}
 					return taxonNode;
 				}
@@ -313,18 +326,23 @@ public class TaxonomicTree extends IdentifiableEntity implements IReferencedEnti
 		return null;
 	}
 
+	@Deprecated //will be removed in version 3.0
+	public TaxonNode getRootNode(Taxon taxon){
+		return getTopmostNode(taxon);
+	}
+
 	private boolean handleCitationOverwrite(TaxonNode childNode, ReferenceBase citation, String microCitation){
 		if (citation != null){
-			if (childNode.getReferenceForParentChildRelation() != null && ! childNode.getReferenceForParentChildRelation().equals(citation)){
+			if (childNode.getReference() != null && ! childNode.getReference().equals(citation)){
 				logger.warn("ReferenceForParentChildRelation will be overwritten");
 			}
-			childNode.setReferenceForParentChildRelation(citation);
+			childNode.setReference(citation);
 		}
 		if (microCitation != null){
-			if (childNode.getMicroReferenceForParentChildRelation() != null && ! childNode.getMicroReferenceForParentChildRelation().equals(microCitation)){
+			if (childNode.getMicroReference() != null && ! childNode.getMicroReference().equals(microCitation)){
 				logger.warn("MicroReferenceForParentChildRelation will be overwritten");
 			}
-			childNode.setMicroReferenceForParentChildRelation(microCitation);
+			childNode.setMicroReference(microCitation);
 		}
 		return true;
 	}
@@ -333,7 +351,7 @@ public class TaxonomicTree extends IdentifiableEntity implements IReferencedEnti
 	/**
 	 * Relates two taxa as parent-child nodes within a taxonomic tree. <BR>
 	 * If the taxa are not yet part of the tree they are added to it.<Br>
-	 * If the child taxon is a root still it is added as child and deleted from the rootNode set.<Br>
+	 * If the child taxon is a topmost node still it is added as child and deleted from the rootNode set.<Br>
 	 * If the child is a child of another parent already an IllegalStateException is thrown because a child can have only 
 	 * one parent. <Br>
 	 * If the parent-child relationship between these two taxa already exists nothing is changed. Only 
@@ -360,7 +378,7 @@ public class TaxonomicTree extends IdentifiableEntity implements IReferencedEnti
 			
 			//if child exists in tree and has a parent 
 			//no multiple parents are allowed in the tree
-			if (childNode != null && childNode.getParent() != null){
+			if (childNode != null && ! childNode.isTopmostNode()){
 				//...different to the parent taxon  throw exception
 				if ((childNode.getParent() instanceof TaxonNode) && !((TaxonNode)childNode.getParent()).getTaxon().equals(parent) ){
 					throw new IllegalStateException("The child taxon is already part of the tree but has an other parent taxon than the one than the parent to be added. Child: " + child.toString() + ", new parent:" + parent.toString() + ", old parent: " + ((TaxonNode) childNode.getParent()).getTaxon().toString()) ;
@@ -380,12 +398,12 @@ public class TaxonomicTree extends IdentifiableEntity implements IReferencedEnti
 			if (childNode == null){
 				parentNode.addChildTaxon(child, citation, microCitation, null);
 			}else{
-				//child is still root
-				//TODO test if child is rootNode otherwise thrwo IllegalStateException
-				if (! this.isRootInTree(child)){
-					throw new IllegalStateException("Child is not a root but must be");
+				//child is still topmost node
+				//TODO test if child is topmostNode otherwise throw IllegalStateException
+				if (! this.isTopmostInTree(child)){
+					throw new IllegalStateException("Child is not a topmost node but must be");
 				}
-				this.makeRootChildOfOtherNode(childNode, parentNode, citation, microCitation);
+				this.makeTopmostNodeChildOfOtherNode(childNode, parentNode, citation, microCitation);
 			}
 		} catch (IllegalStateException e) {
 			throw e;
@@ -421,18 +439,23 @@ public class TaxonomicTree extends IdentifiableEntity implements IReferencedEnti
 	public Set<TaxonNode> getAllNodes() {
 		Set<TaxonNode> allNodes = new HashSet<TaxonNode>();
 		
-		for(TaxonNode rootNode : getRootNodes()){
+		for(TaxonNode rootNode : getChildNodes()){
 			allNodes.addAll(rootNode.getDescendants());
 		}
 		
 		return allNodes;
 	}	
 	
-	public Set<TaxonNode> getRootNodes() {
+	public Set<TaxonNode> getChildNodes() {
 		return rootNodes;
 	}
+	
+	@Deprecated //will be removed in version 3.0
+	public Set<TaxonNode> getRootNodes() {
+		return getChildNodes();
+	}
 
-	public void setRootNodes(Set<TaxonNode> rootNodes) {
+	private void setRootNodes(Set<TaxonNode> rootNodes) {
 		this.rootNodes = rootNodes;
 	}
 
@@ -481,13 +504,13 @@ public class TaxonomicTree extends IdentifiableEntity implements IReferencedEnti
 	 * @return
 	 * @deprecated use {@link ITaxonTreeService.loadRankSpecificRootNode} or {@link ITaxonomicTreeDao.loadRankSpecificRootNode} instead
 	 */
-	@Deprecated
+	@Deprecated //will be removed in v3.0
 	public List<TaxonNode> getRankSpecificRootNodes(Rank rank) {
 		List<TaxonNode> baseNodes = new ArrayList<TaxonNode>();
 		if(rank != null){
-			findNodesForRank(rank, getRootNodes(), baseNodes);
+			findNodesForRank(rank, getChildNodes(), baseNodes);
 		} else {
-			baseNodes.addAll(getRootNodes());
+			baseNodes.addAll(getChildNodes());
 		}
 		return baseNodes;
 	}
@@ -522,6 +545,6 @@ public class TaxonomicTree extends IdentifiableEntity implements IReferencedEnti
 	 * @see eu.etaxonomy.cdm.model.taxon.ITreeNode#hasChildNodes()
 	 */
 	public boolean hasChildNodes() {
-		return getRootNodes().size() > 0;
+		return getChildNodes().size() > 0;
 	}
 }

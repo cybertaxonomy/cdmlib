@@ -10,6 +10,8 @@
 
 package eu.etaxonomy.cdm.model.taxon;
 
+import java.util.Set;
+
 import eu.etaxonomy.cdm.model.common.ICdmBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
@@ -64,6 +66,8 @@ public interface ITreeNode extends ICdmBase {
 	 * @return the citation for the parent child relationship or the tree itself
 	 */
 	public ReferenceBase getReference();
+	
+	public Set<TaxonNode> getChildNodes();
 	
 	/**
 	 * 

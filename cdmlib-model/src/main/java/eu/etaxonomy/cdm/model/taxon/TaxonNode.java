@@ -57,7 +57,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 @XmlRootElement(name = "TaxonNode")
 @Entity
 @Audited
-public class TaxonNode  extends AnnotatableEntity implements ITreeNode{
+public class TaxonNode extends AnnotatableEntity implements ITreeNode{
 	private static final long serialVersionUID = -4743289894926587693L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TaxonNode.class);
@@ -434,12 +434,11 @@ public class TaxonNode  extends AnnotatableEntity implements ITreeNode{
 	 */
 	@Deprecated 
 	public ReferenceBase getReferenceForParentChildRelation() {
-		return referenceForParentChildRelation;
+		return getReference();
 	}
 	@Deprecated
-	public void setReferenceForParentChildRelation(
-			ReferenceBase referenceForParentChildRelation) {
-		this.referenceForParentChildRelation = referenceForParentChildRelation;
+	public void setReferenceForParentChildRelation(ReferenceBase referenceForParentChildRelation) {
+		setReference(referenceForParentChildRelation);
 	}
 	
 	/**
@@ -460,13 +459,13 @@ public class TaxonNode  extends AnnotatableEntity implements ITreeNode{
 	
 	@Deprecated
 	public String getMicroReferenceForParentChildRelation() {
-		return microReferenceForParentChildRelation;
+		return getMicroReference();
 	}
 	
 	@Deprecated
 	public void setMicroReferenceForParentChildRelation(
 			String microReferenceForParentChildRelation) {
-		this.microReferenceForParentChildRelation = microReferenceForParentChildRelation;
+		setMicroReference(microReferenceForParentChildRelation);
 	}
 
 	

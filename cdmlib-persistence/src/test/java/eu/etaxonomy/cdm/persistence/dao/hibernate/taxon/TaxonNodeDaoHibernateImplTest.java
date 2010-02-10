@@ -89,7 +89,10 @@ public class TaxonNodeDaoHibernateImplTest extends
 		Set<TaxonNode> rootNodes = new HashSet<TaxonNode>();
 		
 		rootNodes.add(taxNode2);
-		taxonTree.setRootNodes(rootNodes);
+		for (TaxonNode rootNode : rootNodes){
+			taxonTree.addChildNode(rootNode, rootNode.getReference(), rootNode.getMicroReference(), rootNode.getSynonymToBeUsed());
+		}
+		//old: taxonTree.setRootNodes(rootNodes);
 		taxNode.addChildNode(taxNode2, null, null,null);
 		
 		Taxon taxon2 = taxNode2.getTaxon();
