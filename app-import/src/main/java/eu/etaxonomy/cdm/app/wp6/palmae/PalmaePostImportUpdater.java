@@ -22,7 +22,6 @@ import eu.etaxonomy.cdm.app.common.CdmDestinations;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
-import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.FeatureNode;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
@@ -137,6 +136,7 @@ public class PalmaePostImportUpdater {
 			FeatureTree tree = cdmApp.getFeatureTreeService().find(featureTreeUuid);
 			FeatureNode root = tree.getRoot();
 			List<DefinedTermBase> featureList = cdmApp.getTermService().list(Feature.class, null, null, null, null);
+			count = 0;
 			for (DefinedTermBase feature : featureList){
 				if (feature.equals(Feature.CITATION())){
 					FeatureNode newNode = FeatureNode.NewInstance((Feature)feature);
