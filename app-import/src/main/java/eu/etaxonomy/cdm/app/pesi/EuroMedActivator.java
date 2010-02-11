@@ -7,21 +7,36 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package eu.etaxonomy.cdm.app.berlinModelImport;
+package eu.etaxonomy.cdm.app.pesi;
 
+import java.io.File;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.api.application.CdmApplicationController;
+import eu.etaxonomy.cdm.app.berlinModelImport.BerlinModelSources;
+import eu.etaxonomy.cdm.app.berlinModelImport.TreeCreator;
 import eu.etaxonomy.cdm.app.common.CdmDestinations;
+import eu.etaxonomy.cdm.app.images.ImageImportConfigurator;
+import eu.etaxonomy.cdm.app.wp6.cichorieae.CichorieaeImageActivator;
+import eu.etaxonomy.cdm.app.wp6.cichorieae.TaraxacumActivator;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
+import eu.etaxonomy.cdm.io.CichorieaeImageImport;
 import eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportConfigurator;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator.CHECK;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator.DO_REFERENCES;
+import eu.etaxonomy.cdm.io.common.IImportConfigurator.EDITOR;
 import eu.etaxonomy.cdm.io.common.CdmDefaultImport;
+import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.Source;
+import eu.etaxonomy.cdm.model.common.ISourceable;
+import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.description.FeatureNode;
+import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
+import eu.etaxonomy.cdm.model.name.ZoologicalName;
 
 
 /**
@@ -40,17 +55,40 @@ public class EuroMedActivator {
 	//database validation status (create, update, validate ...)
 	static DbSchemaValidation hbm2dll = DbSchemaValidation.CREATE;
 	static final Source berlinModelSource = BerlinModelSources.euroMed();
-	static final ICdmDataSource cdmDestination = CdmDestinations.localH2();
-	static final UUID treeUuid = UUID.fromString("2ea816f8-20cf-4e8f-b52d-dc46d69f89e1");
-	static final int sourceSecId = 1000000;
+	static final ICdmDataSource cdmDestination = CdmDestinations.localH2EuroMed();
+	static final int sourceSecId = 7000000; //500000
+	
+	static final UUID taxonomicTreeUuid = UUID.fromString("314a68f9-8449-495a-91c2-92fde8bcf344");
+	
+	static final UUID featureTreeUuid = UUID.fromString("6a5e1c2b-ec0d-46c8-9c7d-a2059267ffb7");
+	static final Object[] featureKeyList = new Integer[]{1, 31, 4, 98, 41}; 	
+	
+	// set to zero for unlimited nameFacts
+	static final int maximumNumberOfNameFacts = 0;
+	
+	//should the other imports run as well?
+	static final boolean includeTaraxacum = true; 
+	static final boolean includeImages = true;
+	
 	
 	//check - import
 	static final CHECK check = CHECK.CHECK_AND_IMPORT;
 
-
+	//editor - import
+	static final EDITOR editor = EDITOR.EDITOR_AS_EDITOR;
+	
 	//NomeclaturalCode
 	static final NomenclaturalCode nomenclaturalCode = NomenclaturalCode.ICBN;
 
+	//ignore null
+	static final boolean ignoreNull = true;
+	
+	static boolean useTaxonomicTree = true;
+
+
+// **************** ALL *********************	
+
+	static final boolean doUser = true;
 	//authors
 	static final boolean doAuthors = true;
 	//references
@@ -66,8 +104,15 @@ public class EuroMedActivator {
 	static final boolean doTaxa = true;
 	static final boolean doRelTaxa = true;
 	static final boolean doFacts = true;
-	static final boolean doOccurences = false;
+	static final boolean doOccurences = true;
+
+	//etc.
+	static final boolean doMarker = true;
+
 	
+// **************** SELECTED *********************
+//
+//	static final boolean doUser = true;
 //	//authors
 //	static final boolean doAuthors = false;
 //	//references
@@ -79,30 +124,34 @@ public class EuroMedActivator {
 //	static final boolean doTypes = false;
 //	static final boolean doNameFacts = false;
 //	
-//	//taxa
+//	//taxa 
 //	static final boolean doTaxa = false;
 //	static final boolean doRelTaxa = false;
-//	static final boolean doFacts = true;
+//	static final boolean doFacts = false;
 //	static final boolean doOccurences = false;
-	
+//	
+//	//etc.
+//	static final boolean doMarker = false;
 	
 	
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		System.out.println("Start import from BerlinModel("+ berlinModelSource.getDatabase() + ") ...");
+		System.out.println("Start import from BerlinModel("+ berlinModelSource.getDatabase() + ") to " + cdmDestination.getDatabase() + " ...");
 		
 		//make BerlinModel Source
 		Source source = berlinModelSource;
 		ICdmDataSource destination = CdmDestinations.chooseDestination(args) != null ? CdmDestinations.chooseDestination(args) : cdmDestination;
-		
+				
 		BerlinModelImportConfigurator bmImportConfigurator = BerlinModelImportConfigurator.NewInstance(source,  destination);
 		
-		bmImportConfigurator.setTreeUuid(treeUuid);
+		bmImportConfigurator.setTreeUuid(taxonomicTreeUuid);
 		bmImportConfigurator.setSourceSecId(sourceSecId);
+		
 		bmImportConfigurator.setNomenclaturalCode(nomenclaturalCode);
 
+		bmImportConfigurator.setIgnoreNull(ignoreNull);
 		bmImportConfigurator.setDoAuthors(doAuthors);
 		bmImportConfigurator.setDoReferences(doReferences);
 		bmImportConfigurator.setDoTaxonNames(doTaxonNames);
@@ -110,20 +159,42 @@ public class EuroMedActivator {
 		bmImportConfigurator.setDoNameStatus(doNameStatus);
 		bmImportConfigurator.setDoTypes(doTypes);
 		bmImportConfigurator.setDoNameFacts(doNameFacts);
+		bmImportConfigurator.setUseTaxonomicTree(useTaxonomicTree);
 		
 		bmImportConfigurator.setDoTaxa(doTaxa);
 		bmImportConfigurator.setDoRelTaxa(doRelTaxa);
 		bmImportConfigurator.setDoFacts(doFacts);
 		bmImportConfigurator.setDoOccurrence(doOccurences);
+		
+		bmImportConfigurator.setDoMarker(doMarker);
+		bmImportConfigurator.setDoUser(doUser);
+		bmImportConfigurator.setEditor(editor);
 		bmImportConfigurator.setDbSchemaValidation(hbm2dll);
-
+		
+		// maximum number of name facts to import
+		bmImportConfigurator.setMaximumNumberOfNameFacts(maximumNumberOfNameFacts);
+		
 		bmImportConfigurator.setCheck(check);
+		bmImportConfigurator.setEditor(editor);
 		
 		// invoke import
 		CdmDefaultImport<BerlinModelImportConfigurator> bmImport = new CdmDefaultImport<BerlinModelImportConfigurator>();
 		bmImport.invoke(bmImportConfigurator);
 		
+		if (doFacts && bmImportConfigurator.getCheck().equals(CHECK.CHECK_AND_IMPORT)  || bmImportConfigurator.getCheck().equals(CHECK.IMPORT_WITHOUT_CHECK)    ){
+			CdmApplicationController app = bmImport.getCdmAppController();
+			
+			//make feature tree
+			FeatureTree tree = TreeCreator.flatTree(featureTreeUuid, bmImportConfigurator.getFeatureMap(), featureKeyList);
+			FeatureNode imageNode = FeatureNode.NewInstance(Feature.IMAGE());
+			tree.getRoot().addChild(imageNode);
+			FeatureNode distributionNode = FeatureNode.NewInstance(Feature.DISTRIBUTION());
+			tree.getRoot().addChild(distributionNode, 2); 
+			app.getFeatureTreeService().saveOrUpdate(tree);
+		}
+		
 		System.out.println("End import from BerlinModel ("+ source.getDatabase() + ")...");
+
 	}
 
 }

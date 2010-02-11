@@ -8,8 +8,6 @@ app-import/src/main/java/eu/etaxonomy/cdm/app/abcdImport/SynthesysCacheActivator
 app-import/src/main/java/eu/etaxonomy/cdm/app/berlinModelImport/AlgaTerraActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/berlinModelImport/BerlinModelDestinations.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/berlinModelImport/BerlinModelSources.java -text
-app-import/src/main/java/eu/etaxonomy/cdm/app/berlinModelImport/ErmsActivator.java -text
-app-import/src/main/java/eu/etaxonomy/cdm/app/berlinModelImport/EuroMedActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/berlinModelImport/SalvadorActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/berlinModelImport/SalvadorExport.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/berlinModelImport/TreeCreator.java -text
@@ -25,6 +23,8 @@ app-import/src/main/java/eu/etaxonomy/cdm/app/images/ImageImportState.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/jaxb/CdmDiffActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/jaxb/JaxbExportActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/jaxb/JaxbImportActivator.java -text
+app-import/src/main/java/eu/etaxonomy/cdm/app/pesi/ErmsActivator.java -text
+app-import/src/main/java/eu/etaxonomy/cdm/app/pesi/EuroMedActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/pilotOutputHtml/SimpleDescriptionOutput.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/sdd/AnthuriumActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/sdd/CicadActivator.java -text
