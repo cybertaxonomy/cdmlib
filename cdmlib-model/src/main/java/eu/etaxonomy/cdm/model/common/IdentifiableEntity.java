@@ -99,8 +99,8 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 	@XmlElement(name = "TitleCache", required = true)
 	@XmlJavaTypeAdapter(FormattedTextAdapter.class)
 	@Column(length=255, name="titleCache")
-	@Fields({@Field(index = org.hibernate.search.annotations.Index.TOKENIZED),
-	     	 @Field(name = "titleCache_forSort", index = org.hibernate.search.annotations.Index.UN_TOKENIZED)
+	@Fields({@Field(name = "titleCache_tokenized",index = org.hibernate.search.annotations.Index.TOKENIZED),
+	     	 @Field(index = org.hibernate.search.annotations.Index.UN_TOKENIZED)
 	})
 	@FieldBridge(impl=StripHtmlBridge.class)
 	@Match(value=MatchMode.CACHE, cacheReplaceMode=ReplaceMode.ALL)

@@ -42,6 +42,7 @@ import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Fields;
 import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.beans.factory.annotation.Configurable;
 
@@ -118,8 +119,8 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 	private static final Logger logger = Logger.getLogger(NonViralName.class);
 	
 	@XmlElement(name = "NameCache")
-	@Fields({@Field(index = org.hibernate.search.annotations.Index.TOKENIZED),
-    	 @Field(name = "nameCache_forSort", index = org.hibernate.search.annotations.Index.UN_TOKENIZED)
+	@Fields({@Field(name = "nameCache_tokenized",index = org.hibernate.search.annotations.Index.TOKENIZED),
+    	 @Field(index = org.hibernate.search.annotations.Index.UN_TOKENIZED)
     })
 	@Match(value=MatchMode.CACHE, cacheReplaceMode=ReplaceMode.DEFINED, 
 			cacheReplacedProperties={"genusOrUninomial", "infraGenericEpithet", "specificEpithet", "infraSpecificEpithet"} )
@@ -172,6 +173,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 	@Target(TeamOrPersonBase.class)
 	@Cascade(CascadeType.SAVE_UPDATE)
 	@CacheUpdate("authorshipCache")
+	@IndexedEmbedded
 	private INomenclaturalAuthor combinationAuthorTeam;
 	
 	@XmlElement(name = "ExCombinationAuthorTeam", type = TeamOrPersonBase.class)
@@ -181,6 +183,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 	@Target(TeamOrPersonBase.class)
 	@Cascade(CascadeType.SAVE_UPDATE)
 	@CacheUpdate("authorshipCache")
+	@IndexedEmbedded
 	private INomenclaturalAuthor exCombinationAuthorTeam;
 	
 	@XmlElement(name = "BasionymAuthorTeam", type = TeamOrPersonBase.class)
@@ -190,6 +193,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 	@Target(TeamOrPersonBase.class)
 	@Cascade(CascadeType.SAVE_UPDATE)
 	@CacheUpdate("authorshipCache")
+	@IndexedEmbedded
 	private INomenclaturalAuthor basionymAuthorTeam;
 	
 	@XmlElement(name = "ExBasionymAuthorTeam", type = TeamOrPersonBase.class)
@@ -199,10 +203,13 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 	@Target(TeamOrPersonBase.class)
 	@Cascade(CascadeType.SAVE_UPDATE)
 	@CacheUpdate("authorshipCache")
+	@IndexedEmbedded
 	private INomenclaturalAuthor exBasionymAuthorTeam;
 	
 	@XmlElement(name = "AuthorshipCache")
-	@Field(index=Index.TOKENIZED)
+	@Fields({@Field(name = "authorshipCache_tokenized",index = org.hibernate.search.annotations.Index.TOKENIZED),
+    	     @Field(index = org.hibernate.search.annotations.Index.UN_TOKENIZED)
+    })
 	@Match(value=MatchMode.CACHE, cacheReplaceMode=ReplaceMode.DEFINED, 
 			cacheReplacedProperties={"combinationAuthorTeam", "basionymAuthorTeam", "exCombinationAuthorTeam", "exBasionymAuthorTeam"} )
 	@NullOrNotEmpty

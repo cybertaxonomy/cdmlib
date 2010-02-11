@@ -23,8 +23,11 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Type;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.FieldBridge;
 import org.joda.time.DateTime;
 
+import eu.etaxonomy.cdm.hibernate.DateTimeBridge;
 import eu.etaxonomy.cdm.jaxb.DateTimeAdapter;
 import eu.etaxonomy.cdm.strategy.match.Match;
 import eu.etaxonomy.cdm.strategy.match.MatchMode;
@@ -63,6 +66,8 @@ public abstract class VersionableEntity extends CdmBase {
 	@Type(type="dateTimeUserType")
 	@Basic(fetch = FetchType.LAZY)
 	@Match(MatchMode.IGNORE)
+	@Field(index = org.hibernate.search.annotations.Index.UN_TOKENIZED)
+	@FieldBridge(impl = DateTimeBridge.class)
 	private DateTime updated;
 	
 	@XmlElement(name = "UpdatedBy")
