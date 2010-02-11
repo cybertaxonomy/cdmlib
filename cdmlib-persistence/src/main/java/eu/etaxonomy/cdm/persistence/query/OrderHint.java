@@ -18,6 +18,8 @@ import org.hibernate.envers.query.AuditEntity;
 import org.hibernate.envers.query.AuditQuery;
 import org.hibernate.search.FullTextQuery;
 
+import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.ICdmBase;
 import eu.etaxonomy.cdm.persistence.dao.common.OperationNotSupportedInPriorViewException;
 
 public class OrderHint {
@@ -117,5 +119,30 @@ public class OrderHint {
 		}
 	}
 
-
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == this){
+			return true;
+		}
+		if (obj == null){
+			return false;
+		}
+		if (!OrderHint.class.isAssignableFrom(obj.getClass())){
+			return false;
+		}
+		OrderHint orderHint= (OrderHint)obj;
+		boolean propertyNameEqual = orderHint.getPropertyName().equals(this.getPropertyName());
+		boolean sortOrderEqual = orderHint.getSortOrder().equals(this.getSortOrder());
+		if (! propertyNameEqual || !sortOrderEqual){
+				return false;
+		}
+		return true;
+	}
+	
+	@Override
+	public int hashCode() {
+		   int hashCode = 7;
+		   hashCode = 29 * hashCode + this.getPropertyName().hashCode() * this.getSortOrder().hashCode();
+		   return hashCode;
+	}
 }

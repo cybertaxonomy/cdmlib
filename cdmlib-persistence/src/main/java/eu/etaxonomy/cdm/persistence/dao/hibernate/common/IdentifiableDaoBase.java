@@ -46,7 +46,7 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 public class IdentifiableDaoBase<T extends IdentifiableEntity> extends AnnotatableDaoImpl<T> implements IIdentifiableDao<T>{
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(IdentifiableDaoBase.class);
-	protected String defaultField = "titleCache";
+	protected String defaultField = "titleCache_tokenized";
 	protected Class<? extends T> indexedClasses[]; 
 
 	public IdentifiableDaoBase(Class<T> type) {

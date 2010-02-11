@@ -28,8 +28,6 @@ import eu.etaxonomy.cdm.persistence.dao.occurrence.ICollectionDao;
 @Repository
 public class CollectionDaoHibernateImpl extends IdentifiableDaoBase<Collection> implements
 		ICollectionDao {
-	
-	private static final String defaultField = "titleCache";
 		
 	public CollectionDaoHibernateImpl() {
 		super(Collection.class);

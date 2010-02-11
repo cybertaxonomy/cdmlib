@@ -440,13 +440,17 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 		    	OrderHint orderHint = orderHints.get(i);
 		    	switch(orderHint.getSortOrder()) {
 		    	case ASCENDING:
-		            sortFields[i] = new SortField(orderHint.getPropertyName() + "_forSort", true);
+		            sortFields[i] = new SortField(orderHint.getPropertyName(), true);
+		            break;
 		    	case DESCENDING:
-		    		sortFields[i] = new SortField(orderHint.getPropertyName() + "_forSort",false);
+		        default:
+		    		sortFields[i] = new SortField(orderHint.getPropertyName(),false);
+		    		
 		    	}
 		    }
 		    sort.setSort(sortFields);
 		    fullTextQuery.setSort(sort);
+		    
 		}
 	}
 	

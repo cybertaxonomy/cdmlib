@@ -29,7 +29,7 @@ public class TaxonAlternativeSpellingSuggestionParser extends AlternativeSpellin
 		indexedClasses[0] = Taxon.class;
 		indexedClasses[1] = Synonym.class;
 		super.setIndexedClasses(indexedClasses);
-		super.setDefaultField("name.titleCache");
+		super.setDefaultField("name.titleCache_tokenized");
 	}
 
 	@Override
