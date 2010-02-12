@@ -5,7 +5,9 @@
 
 set -e
 
+#
 #variables
+#
 CDM_HOME="/opt/cdmserver/"
 CDM_LIBRARY=$CDM_HOME".cdmLibrary"
 CDM_LOG="/var/log/cdmserver/"
@@ -15,13 +17,26 @@ TMP="/usr/bin/"
 SERVERSCRIPT="cdmserver"
 SERVERJAR="cdmserver-standalone.jar"
 SERVERCONF="datasources.xml"
+PROPERTIES="cdmserver.properties"
 
-CDM_USER=root
-CDM_GROUP=root
-USER=$(grep $CDM_USER /etc/passwd)
-GROUP=$(grep $CDM_GROUP /etc/passwd)
-#echo user : $USER 
-#echo group : $GROUP
+CDM_USER=cdmuser
+CDM_GROUP=cdmgroup
+CDM_USER_HOME=/opt/cdmserver/
+
+#
+#functions
+#
+userExist(){
+    grep $1 /etc/passwd > /dev/null
+    [ $? -eq 0 ] && return $TRUE || return $FALSE
+}
+
+groupExist(){
+    grep $1 /etc/group > /dev/null
+    [ $? -eq 0 ] && return $TRUE || return $FALSE
+}
+
+
 # summary of how this script can be called:
 #        * <postinst> `configure' <most-recently-configured-version>
 #        * <old-postinst> `abort-upgrade' <new version>
@@ -34,25 +49,31 @@ GROUP=$(grep $CDM_GROUP /etc/passwd)
 # for details, see http://www.debian.org/doc/debian-policy/ or
 # the debian-policy package
 
-
 case "$1" in
     configure)
-    
-    #creating a new user and group
- #   echo TESTING!!!!
- #   if [ -n "$GROUP" ]
- #   then
- #   echo GROUP EXISTS!!!!
- #   groupdel $CDM_GROUP
- #   fi
- #   groupadd $CDM_GROUP
- #
- #   if [ -n "$USER" ]
- #   then
- #   echo USER EXITS!!!!
- #   userdel $CDM_USER
- #   fi
- #   useradd -g $CDM_GROUP $CDM_USER
+
+    #
+    # adding the user
+    # if the user already exist will be deleted
+    #
+    if ( userExist $CDM_USER )
+    then
+    echo USER ALREADY EXITS!!!!
+    userdel $CDM_USER
+    fi
+   
+    #
+    # adding the group
+    # if the group already exist will be deleted
+    #
+    if ( groupExist $CDM_GROUP  )
+    then
+    echo GROUP ALREADY EXISTS!!!!
+    groupdel $CDM_GROUP
+    fi
+    groupadd $CDM_GROUP
+
+    useradd -G cdmgroup -d $CDM_USER_HOME $CDM_USER
 
     #installing the script
     cp $TMP$SERVERSCRIPT $bindir
@@ -68,6 +89,7 @@ case "$1" in
     #installing the server and the configfile
     cp $TMP$SERVERCONF $CDM_LIBRARY
     cp $TMP$SERVERJAR $CDM_HOME
+    #cp $TMP$PROPERTIES $CDM_LIBRARY
 
     #starting the script
     $bindir$SERVERSCRIPT start

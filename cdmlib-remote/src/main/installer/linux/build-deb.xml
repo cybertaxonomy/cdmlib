@@ -1,0 +1,69 @@
+<project name="Java application deb packager" default="deb_package">
+
+	<!-- Miscellaneous -->
+	<property name="package.name" value="cdmserver" />
+	<property name="version" value="1" />
+	<property name="version.debian" value="1" />
+	<!-- Various Filenames -->
+    <property name="cdmserverscript.filename" value="cdmserver" />
+    <property name="datasources.filename" value="datasources.xml" />
+    <property name="cdmserver.filename" value="cdmserver-standalone.jar" />
+	
+	<!-- Various Paths -->
+    <property name="installer.path" value="src/main/installer" />
+    <property name="cdmserver.target.path" value="target" />
+    <property name="dest.path" value="usr/bin" />
+	<property name="linux.installer.path" location="${installer.path}/linux" />
+	<!--
+    <property name="initscript.path" location="${installer.path}/linux/initscript" />
+	<property name="cdmlibremote.path" value="../../../.." />
+	-->
+	<property name="cdmserverscript.path" location="${installer.path}/templates" />
+	<property name="cdmserver.path" location="${installer.path}/templates" />
+	<property name="datasources.path" location="${installer.path}/templates/.cdmLibrary" />
+    <property name="postinst.path" location="${linux.installer.path}"/>
+	<property name="postrm.path" location="${linux.installer.path}"/>
+	<property name="ant-deb-task.path" location="${installer.path}/lib"/>
+
+    <!-- create distribution target -->
+    <path id="classpath">
+    	<!--
+        <fileset dir="${user.home}/.m2/repository/ant-deb/ant-deb-task/0.0.1/" includes="*.jar" />
+        -->
+    	<fileset dir="${ant-deb-task.path}" includes="*.jar" />
+    </path>
+
+    <taskdef resource="ant_deb_task.properties" classpathref="classpath" />
+	
+	<target name="deb_package" description="build the deb file">
+		<mkdir dir="dist"/>
+		<deb
+            todir="dist"
+			package="${package.name}"
+			section="graphics"
+            postinst="${postinst.path}/postinst"
+			postrm="${postinst.path}/postrm"
+		> 
+            <version upstream="${version}" debian="${version.debian}"/>
+			<maintainer name="BGBM Team" email="editsupport@bgbm.de"/>
+            <description synopsis="CDM Server: The CDM model for the EDIT Biodiversity Project">
+CDM Server is a cross platform blablabla, visit www.bgbm.de for more info.
+            </description>
+
+			<tarfileset file="${cdmserverscript.path}/${cdmserverscript.filename}" 
+            	        prefix="${dest.path}" />
+			<tarfileset file="${datasources.path}/${datasources.filename}" 
+				        prefix="${dest.path}" />
+	        <tarfileset file="${cdmserver.path}/${cdmserver.filename}" 
+	                    prefix="${dest.path}" />
+
+        </deb>
+	 </target>
+
+	<!--
+	 <target name="clean" description="remove all work folders">
+	 	  <delete dir="dist"/>
+	 </target>
+	 -->
+
+</project>
