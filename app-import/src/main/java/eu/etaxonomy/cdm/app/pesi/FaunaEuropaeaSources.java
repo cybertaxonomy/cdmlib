@@ -7,7 +7,7 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package eu.etaxonomy.cdm.app.faunaEuropaea;
+package eu.etaxonomy.cdm.app.pesi;
 
 import org.apache.log4j.Logger;
 
