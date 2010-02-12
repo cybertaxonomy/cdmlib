@@ -61,6 +61,8 @@ public class PalmaeProtologueImport extends AbstractImageImporter {
 		
 		for (HashMap<String, String> row : contents){
 			count++;
+			
+			TaxonNameBase taxonNameBase = null;
 			String species = null;
 			String taxonId = null;
 			String linkProto = null;
@@ -68,11 +70,12 @@ public class PalmaeProtologueImport extends AbstractImageImporter {
 				species = row.get(PalmaeProtologueImport.SPECIES).trim();
 				taxonId = row.get(PalmaeProtologueImport.TAXONID);
 				linkProto= row.get(PalmaeProtologueImport.LINK_PROTO).trim();
+				taxonNameBase = (TaxonNameBase)getCommonService().getSourcedObjectByIdInSource(TaxonNameBase.class, "palm_tn_" + taxonId.replace(".0", ""), "TaxonName");
 			}catch (Exception e){
 				logger.error("The row has errors: rowNumber: " +count + ", content: "  + row, e);
 			}
 			
-			TaxonNameBase taxonNameBase = (TaxonNameBase)getCommonService().getSourcedObjectByIdInSource(TaxonNameBase.class, "palm_tn_" + taxonId.replace(".0", ""), "TaxonName");
+				
 			
 			if(taxonNameBase == null){
 				logger.warn("no taxon with this name found: " + species + ", idInSource: " + taxonId);
