@@ -21,8 +21,7 @@
     <!-- import additional beans into the root context -->
     <import resource="applicationContext.views.xml"/>
 
-	<!--  load usenames and passwords from properties file and import datasource bean configurations -->
-    <context:property-placeholder location="file:${user.home}/.cdmLibrary/cdmserver.properties"/>
+	<!--  load usenames and passwords from properties file and import data source bean configurations -->
     <!-- CONFIGURE WEB APPLICATION HERE -->
     <import resource="datasources/routing-datasource.xml"/>
     <!-- 
