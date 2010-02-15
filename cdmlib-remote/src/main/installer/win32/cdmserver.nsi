@@ -8,6 +8,11 @@
 !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
 !define PRODUCT_UNINST_ROOT_KEY "HKLM"
 
+!define COPYRIGHT_FILE "..\templates\copyright"
+!define DATASOURCES_FILE "..\templates\.cdmLibrary\datasources.xml"
+!define JAR_FILE "..\..\..\..\target\cdmserver-standalone.jar"
+
+
 ; MUI 1.67 compatible ------
 !include "MUI.nsh"
 
@@ -24,7 +29,7 @@
 ; Welcome page
 !insertmacro MUI_PAGE_WELCOME
 ; License page
-!insertmacro MUI_PAGE_LICENSE "cdmserver\license\license.txt"
+!insertmacro MUI_PAGE_LICENSE ${COPYRIGHT_FILE}
 ; Directory page
 !insertmacro MUI_PAGE_DIRECTORY
 ; Instfiles page
@@ -59,13 +64,16 @@ Section "MainSection" SEC01
   File "cdmserver\bin\cdmserver.bat"
   File "cdmserver\bin\cdmserver.exe"
   SetOutPath "$INSTDIR\libs\.cdmLibrary"
-  File "cdmserver\libs\.cdmLibrary\datasources.xml"
+  ;File "cdmserver\libs\.cdmLibrary\datasources.xml"
+  File ${DATASOURCES_FILE}
   SetOutPath "$INSTDIR\libs"
-  File "cdmserver\libs\cdmserver-standalone.jar"
+  ;File "cdmserver\libs\cdmserver-standalone.jar"
+  File ${JAR_FILE}
   SetOutPath "$INSTDIR\license"
-  File "cdmserver\license\license.txt"
+  ;File "cdmserver\license\license.txt"
+  File ${COPYRIGHT_FILE}
   SetOutPath "$INSTDIR\logs"
-  File "cdmserver\logs\cdmserverLog.txt"
+  ;File "cdmserver\logs\cdmserverLog.txt"
 SectionEnd
 
 Section -AdditionalIcons

@@ -1,2 +1,0 @@
-[Winstone 2010/02/10 11:02:35] - Beginning extraction from war file
-[webapp 2010/02/10 11:02:42] - Initializing Spring root WebApplicationContext
