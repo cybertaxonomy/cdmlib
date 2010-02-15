@@ -59,6 +59,17 @@ public abstract class OrderedTermBase<T extends OrderedTermBase> extends Defined
 	@XmlElement(name = "OrderIndex")
 	protected int orderIndex;
 	
+	/**
+	 * Higher ordered terms have a lower oderIndex, 
+	 * lower ordered terms have a higher order Index:
+	 * <p>
+	 * <b>a.oderIndex &lt; b.oderIndex : a &gt; b</b>
+	 * @return the order index of a term
+	 */
+	public int getOrderIndex() {
+		return orderIndex;
+	}
+		
 	public OrderedTermBase() {
 		super();
 	}
