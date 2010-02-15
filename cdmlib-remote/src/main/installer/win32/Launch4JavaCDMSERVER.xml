@@ -18,6 +18,6 @@
     <minVersion>1.5.0</minVersion>
     <maxVersion></maxVersion>
     <jdkPreference>preferJre</jdkPreference>
-    <opt>-Xmx1024M -jar &quot;%CD%..\\..\\..\\..\\..\\..\\target\\cdmserver-standalone.jar&quot; --httpPort=8080 --ajp13Port=-1 --logfile=%CD%..\\logs\\cdmserverLog.txt</opt>
+    <opt>-Xmx1024M -jar &quot;%CD%..\\libs\\cdmserver-standalone.jar&quot; --httpPort=8080 --ajp13Port=-1 --logfile=%CD%..\\logs\\cdmserverLog.txt</opt>
   </jre>
 </launch4jConfig>
