@@ -73,7 +73,8 @@ public class CommonServiceImpl extends ServiceBase<OriginalSourceBase,IOriginalS
 		List<IdentifiableEntity> list = originalSourceDao.findOriginalSourceByIdInSource(clazz, idInSource, idNamespace);
 		if (! list.isEmpty()){
 			result = list.get(0);
-		}return result;
+		}
+		return result;
 	}
 	
 	
