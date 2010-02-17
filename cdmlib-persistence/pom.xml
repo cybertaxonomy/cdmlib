@@ -267,9 +267,13 @@
   		<groupId>net.sourceforge.jtds</groupId>
   		<artifactId>jtds</artifactId>
   	</dependency>
-  	<dependency>
+  	<!--<dependency>
   		<groupId>com.microsoft.sqlserver</groupId>
   		<artifactId>jdbc</artifactId>
+  	</dependency>-->
+	<dependency>
+  		<groupId>com.microsoft.sqlserver</groupId>
+  		<artifactId>jdbc4</artifactId>
   	</dependency>
 <!-- use SQL Server 2005 driver instead (com.microsoft.sqlserver/jdbc)
   	<dependency>
