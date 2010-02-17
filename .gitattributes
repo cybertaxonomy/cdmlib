@@ -26,6 +26,7 @@ app-import/src/main/java/eu/etaxonomy/cdm/app/pesi/EuroMedActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/pesi/FaunaEuropaeaActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/pesi/FaunaEuropaeaSources.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/pilotOutputHtml/SimpleDescriptionOutput.java -text
+app-import/src/main/java/eu/etaxonomy/cdm/app/references/EndNoteImportActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/sdd/AnthuriumActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/sdd/CicadActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/sdd/CicadUpdateActivator.java -text

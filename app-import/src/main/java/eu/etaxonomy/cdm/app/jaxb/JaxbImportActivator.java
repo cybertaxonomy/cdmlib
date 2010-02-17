@@ -34,12 +34,12 @@ public class JaxbImportActivator {
 
 	/* SerializeFrom DB **/
 	//private static final ICdmDataSource cdmSource = CdmDestinations.localH2Diptera();
-	private static final ICdmDataSource cdmDestination = CdmDestinations.localH2Diptera();
+	private static final ICdmDataSource cdmDestination = CdmDestinations.cdm_test_jaxb();
 	
 	// Import:
 	private static String importFileName = 
 		//"C:\\workspace\\cdmlib_2.2\\cdmlib-io\\src\\test\\resources\\eu\\etaxonomy\\cdm\\io\\jaxb\\export_test_app_import.xml";
-		"file:/C:/Dokumente%20und%20Einstellungen/k.luther/Eigene%20Dateien/Neuer%20Ordner/Neuer%20Ordner%20(2)/cdmlib/cdmlib-io/target/classes/schema/cdm/export_test_app_import.xml";
+		"file:/C:/export_test_app_import.xml";
 	
 
 	/** NUMBER_ROWS_TO_RETRIEVE = 0 is the default case to retrieve all rows.
@@ -91,7 +91,7 @@ public class JaxbImportActivator {
 		// Init source DB
 		CdmApplicationController appCtrInit = null;
 
-		appCtrInit = TestDatabase.initDb(db, DbSchemaValidation.CREATE, true);
+		appCtrInit = TestDatabase.initDb(db, DbSchemaValidation.CREATE, false);
 
 		return appCtrInit;
 	}
