@@ -104,7 +104,7 @@ public class PalmaeImageImport extends AbstractImageImporter {
 			for (Object object : jpegMetadata.getItems()){
 				
 				Item item = (Item) object;
-				//System.out.println(item.getKeyword());
+				
 				
 				
 				if(item.getKeyword().equals("ObjectName")){
@@ -249,7 +249,7 @@ public class PalmaeImageImport extends AbstractImageImporter {
 							artist = Person.NewTitledInstance(metaData.get(MetaData.ARTIST).replace("'", ""));
 							artist.setFirstname(getFirstName(metaData.get(MetaData.ARTIST)).replace("'", ""));
 							artist.setLastname(getLastName(metaData.get(MetaData.ARTIST)).replace("'", ""));
-							//System.err.println("Artist-Titlecache: "+artist.getTitleCache());
+							
 							IMatchStrategy matchStrategy = DefaultMatchStrategy.NewInstance(AgentBase.class);
 							try{
 								List<Person> agents = commonService.findMatching(artist, matchStrategy);

@@ -7,7 +7,7 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package eu.etaxonomy.cdm.app.faunaEuropaea;
+package eu.etaxonomy.cdm.app.pesi;
 
 import java.util.UUID;
 
@@ -37,7 +37,7 @@ public class FaunaEuropaeaActivator {
 	private static final Logger logger = Logger.getLogger(FaunaEuropaeaActivator.class);
 
 	static final Source faunaEuropaeaSource = FaunaEuropaeaSources.faunEu();
-	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_test_anahit2();
+	static final ICdmDataSource cdmDestination = CdmDestinations.localH2();
 	
 	static final int limitSave = 2000;
 

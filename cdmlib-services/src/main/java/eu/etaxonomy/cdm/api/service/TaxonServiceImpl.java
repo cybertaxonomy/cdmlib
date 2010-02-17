@@ -540,4 +540,8 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		}
 		return medRep;
 	}
+
+	public List<TaxonBase> findTaxaByID(Set<Integer> listOfIDs) {
+		return this.dao.findById(listOfIDs);
+	}
 }

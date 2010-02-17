@@ -33,6 +33,7 @@ import eu.etaxonomy.cdm.io.common.CdmIoBase;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
+import eu.etaxonomy.cdm.io.jaxb.JaxbExportState;
 import eu.etaxonomy.cdm.io.tcsrdf.CdmSingleAttributeXmlMapperBase;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -50,12 +51,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceType;
 public abstract class EndNoteImportBase  extends CdmImportBase<EndnoteImportConfigurator, EndnoteImportState> {
 	private static final Logger logger = Logger.getLogger(EndNoteImportBase.class);
 
-	protected static Namespace nsTcom = Namespace.getNamespace("http://rs.tdwg.org/ontology/voc/Common#");
-	protected static Namespace nsTn = Namespace.getNamespace("http://rs.tdwg.org/ontology/voc/TaxonName#");
-	protected static Namespace nsTgeo = Namespace.getNamespace("http://rs.tdwg.org/ontology/voc/GeographicRegion#");
-	protected static Namespace nsTc = Namespace.getNamespace("http://rs.tdwg.org/ontology/voc/TaxonConcept#");
-	protected static Namespace nsTpub = Namespace.getNamespace("http://rs.tdwg.org/ontology/voc/PublicationCitation#");
-	protected static Namespace nsTpalm = Namespace.getNamespace("http://wp5.e-taxonomy.eu/import/palmae/common");
+	
 	ReferenceFactory refFactory = ReferenceFactory.newInstance();
 	
 	protected abstract boolean doInvoke(EndnoteImportState state);
@@ -72,7 +68,17 @@ public abstract class EndNoteImportBase  extends CdmImportBase<EndnoteImportConf
 //		return doInvoke(state);
 //	}
 	
-	
+	@Override
+	protected boolean doCheck(EndnoteImportState state) {
+		boolean result = true;
+		logger.warn("No check implemented for Jaxb export");
+		return result;
+	}
+	@Override
+	protected boolean isIgnore(EndnoteImportState state) {
+		return false;
+	}
+
 	protected boolean makeStandardMapper(Element parentElement, CdmBase ref, Set<String> omitAttributes, CdmSingleAttributeXmlMapperBase[] classMappers){
 		if (omitAttributes == null){
 			omitAttributes = new HashSet<String>();

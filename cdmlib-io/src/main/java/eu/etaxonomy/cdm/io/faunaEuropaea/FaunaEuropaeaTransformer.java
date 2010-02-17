@@ -73,14 +73,22 @@ public final class FaunaEuropaeaTransformer {
 	private static Map<String, String> tdwgAreas = null;
 
 	public static PresenceAbsenceTermBase<?> occStatus2PresenceAbsence(int occStatusId)  throws UnknownCdmTypeException{
-		switch (occStatusId){
+		/*switch (occStatusId){
 			case 0: return AbsenceTerm.ABSENT();
 			case 2: return PresenceTerm.INTRODUCED();
 			case 1: return PresenceTerm.NATIVE();
 			default: {
 				throw new UnknownCdmTypeException("Unknown presence status (id=" + Integer.valueOf(occStatusId).toString() + ")");
 			}
+		}*/
+		switch (occStatusId){
+		case 0: return PresenceTerm.PRESENT();
+		case 2: return AbsenceTerm.ABSENT();
+		case 1: return PresenceTerm.NewInstance("doubtfull present", "doubtfull present", "dp");
+		default: {
+			throw new UnknownCdmTypeException("Unknown presence status (id=" + Integer.valueOf(occStatusId).toString() + ")");
 		}
+	}
 	}
 
 	

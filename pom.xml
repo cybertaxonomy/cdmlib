@@ -1081,12 +1081,22 @@
 	  		<artifactId>hsqldb</artifactId>
 	  		<version>1.8.0.7</version>
 	  	</dependency>
-
+<!--
 	  	<dependency>
 	  		<groupId>com.microsoft.sqlserver</groupId>
 	  		<artifactId>jdbc</artifactId>
 	  		<version>1.2</version>
 	  	</dependency>
+	-->	
+		<!--for sqlserver2008-->
+		<dependency>
+	  		<groupId>com.microsoft.sqlserver</groupId>
+	  		<artifactId>jdbc</artifactId>
+	  		<version>2.0</version>
+			<scope>system</scope>
+			<systemPath>C:/Programme/sqljdbc_2.0/enu/sqljdbc4.jar</systemPath> 
+		</dependency>
+		
 <!-- use SQL Server 2005 driver instead (com.microsoft.sqlserver/jdbc)
 	  	<dependency>
 	  		<groupId>com.microsoft.jdbcdriver</groupId>

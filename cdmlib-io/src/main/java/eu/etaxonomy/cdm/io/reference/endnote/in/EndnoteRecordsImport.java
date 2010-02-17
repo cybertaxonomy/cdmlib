@@ -34,30 +34,17 @@ import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.model.agent.Address;
 import eu.etaxonomy.cdm.model.agent.Contact;
 import eu.etaxonomy.cdm.model.agent.Institution;
+import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
-import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.reference.IArticle;
-import eu.etaxonomy.cdm.model.reference.IBook;
-import eu.etaxonomy.cdm.model.reference.IBookSection;
-import eu.etaxonomy.cdm.model.reference.ICdDvd;
-import eu.etaxonomy.cdm.model.reference.IDatabase;
-import eu.etaxonomy.cdm.model.reference.IGeneric;
-import eu.etaxonomy.cdm.model.reference.IJournal;
-import eu.etaxonomy.cdm.model.reference.IPatent;
-import eu.etaxonomy.cdm.model.reference.IPersonalCommunication;
-import eu.etaxonomy.cdm.model.reference.IPrintSeries;
 import eu.etaxonomy.cdm.model.reference.IPrintedUnitBase;
-import eu.etaxonomy.cdm.model.reference.IProceedings;
 import eu.etaxonomy.cdm.model.reference.IPublicationBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
-import eu.etaxonomy.cdm.model.reference.IReport;
-import eu.etaxonomy.cdm.model.reference.IThesis;
-import eu.etaxonomy.cdm.model.reference.IWebPage;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
+import eu.etaxonomy.cdm.model.reference.ReferenceType;
 /**
  * @author a.bukhman
  *
@@ -87,8 +74,9 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 		boolean obligatory;
 		
 		MapWrapper<Team> authorMap = (MapWrapper<Team>)state.getStore(ICdmIO.TEAM_STORE);
-		MapWrapper<ReferenceBase> referenceMap = (MapWrapper<ReferenceBase>)state.getStore(ICdmIO.REFERENCE_STORE);
 		
+		MapWrapper<ReferenceBase> referenceMap = (MapWrapper<ReferenceBase>)state.getStore(ICdmIO.REFERENCE_STORE);
+		/*
 		Map<String, ReferenceBase> map_article = new HashMap<String, ReferenceBase>();
 		Map<String, ReferenceBase> map_book = new HashMap<String, ReferenceBase>();
 		Map<String, ReferenceBase> map_book_section = new HashMap<String, ReferenceBase>();
@@ -103,7 +91,7 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 		Map<String, ReferenceBase> map_generic = new HashMap<String, ReferenceBase>();
 		Map<String, ReferenceBase> map_printSeries = new HashMap<String, ReferenceBase>();
 		Map<String, ReferenceBase> map_personalCommunication = new HashMap<String, ReferenceBase>();
-		 
+		 */
 		IReferenceService referenceService = getReferenceService();
 		
 		EndnoteImportConfigurator config = state.getConfig();
@@ -118,55 +106,88 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 		doubleResult = XmlHelp.getSingleChildElement(elXml, childName, tcsNamespace, obligatory);
 		Element elRecords = doubleResult.getFirstResult();
 		success &= doubleResult.getSecondResult();
+		
+		//TODO:was soll das??? kann raus?
 		elRecords.getAttributes();
 
 		logger.info("start make Record-Elementen ...");
 	    String tcsElementName = "record";
-		String idNamespace = "record";
+		
 		List<Element> elRecordList = (List<Element>)elRecords.getChildren(tcsElementName, tcsNamespace);
 		ReferenceBase reference = null;	
 		TeamOrPersonBase<?> author = null;
-		IPrintedUnitBase printedUnitBase = null;
+		
 		
 		
 		int i = 0;
 		// for each Record in Endnote
 		for (Element elRecord : elRecordList){
 			if ((++i % modCount) == 0){ logger.info("Names handled: " + (i-1));}
-			List<String> elementList = new ArrayList<String>();
 			//create Record element
-			IPublicationBase publicationBase = null;			
 			CdmBase cdmBase = null;   
 			
-			ReferenceBase article = refFactory.newArticle();				
-			ReferenceBase book = refFactory.newBook();
-			ReferenceBase bookSection = refFactory.newBookSection();
-			ReferenceBase thesis = refFactory.newThesis();
-			ReferenceBase journal = refFactory.newJournal();
-			ReferenceBase patent =  refFactory.newPatent();
-			ReferenceBase generic = refFactory.newGeneric();
-			ReferenceBase personalCommunication = refFactory.newPersonalCommunication();
-			ReferenceBase proceedings  = refFactory.newProceedings();
-			ReferenceBase printSeries = refFactory.newPrintSeries();
-			ReferenceBase cdDvd = refFactory.newCdDvd();
-			ReferenceBase database = refFactory.newDatabase();
-			ReferenceBase report = refFactory.newReport();
-			ReferenceBase webPage = refFactory.newWebPage();
-			Institution school = Institution.NewInstance();
+			logger.info("start make ref-type ...");
+			childName = "ref-type";
+			obligatory = false;
+			doubleResult =  XmlHelp.getSingleChildElement(elRecord, childName, tcsNamespace, obligatory);
+			success &= doubleResult.getSecondResult();
+			Element elRef_type = doubleResult.getFirstResult();
+			
+			if (elRef_type != null) {	
+				String strName_reftype = elRef_type.getAttributeValue("name");			
+				if (strName_reftype.equals("Article")) {
+					reference =  refFactory.newArticle();
+				}else if (strName_reftype.equals("Book")){
+					reference =  refFactory.newBook();
+				}else if (strName_reftype.equals("Book Section")){
+					reference =  refFactory.newBookSection();
+				}else if (strName_reftype.equalsIgnoreCase("Patent")) {
+					reference =  refFactory.newPatent();
+				}else if (strName_reftype.equalsIgnoreCase("Personal Communication")){
+					reference = refFactory.newPersonalCommunication();
+				}else if (strName_reftype.equalsIgnoreCase("Journal")) {
+					reference = refFactory.newJournal();
+				}else if (strName_reftype.equalsIgnoreCase("CdDvd")) {
+					reference = refFactory.newCdDvd();
+				}else if (strName_reftype.equalsIgnoreCase("Database")) {
+					reference = refFactory.newDatabase();
+				}else if (strName_reftype.equalsIgnoreCase("WebPage")) {
+					reference = refFactory.newWebPage();
+				}else if (strName_reftype.equalsIgnoreCase("Report")) {
+					reference = refFactory.newReport();
+				}else if (strName_reftype.equalsIgnoreCase("Thesis")) {
+					reference = refFactory.newThesis();
+				}else if (strName_reftype.equalsIgnoreCase("Print Series")){
+					reference = refFactory.newPrintSeries();
+				}else if (strName_reftype.equals("Journal Article")){
+					reference = refFactory.newArticle();
+				}else if (strName_reftype.equalsIgnoreCase("Conference Proceedings")){
+					reference = refFactory.newProceedings();
+				}else if (strName_reftype.equalsIgnoreCase("Web Page")){
+					reference = refFactory.newWebPage();
+				}else {
+					logger.warn("The type was not found...");
+					reference = refFactory.newGeneric();
+					success = false;
+				}		 			
+			}
+			
+		
+			
+			
 			Team authorTeam = Team.NewInstance();		 
 			
 			logger.info("start make database ...");
 			childName = "database";
 			obligatory = false;
+			// get the database...
 			doubleResult = XmlHelp.getSingleChildElement(elRecord, childName, tcsNamespace, obligatory);
-			success &= doubleResult.getSecondResult();
-			Element elDatabase = new Element ("database");
-						
-			if (elDatabase != null) {
 			
-				String strName = elDatabase.getAttributeValue("name");
-				String strPath = elDatabase.getAttributeValue("path");
-			}
+			success &= doubleResult.getSecondResult();
+			//vorher war es: Element elDatabase = new Element("database");
+			Element elDatabase = doubleResult.getFirstResult();
+						
+			
 				
 			logger.info("start make source-app ...");
 			childName = "source-app";
@@ -179,24 +200,30 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 				String strName_app = elSource_app.getAttributeValue("name");
 				String strVersion = elSource_app.getAttributeValue("version");
 			}
-		
+	// --- reference number -----
 			logger.info("start make rec-number ...");
 			childName = "rec-number";
 			obligatory = false;
 			doubleResult =  XmlHelp.getSingleChildElement(elRecord, childName, tcsNamespace, obligatory);
 			success &= doubleResult.getSecondResult();
 			Element elRec_number = doubleResult.getFirstResult();
-			String nummer = elRec_number.getTextNormalize(); 
-			int num = Integer.parseInt(nummer);
+			String number = elRec_number.getTextNormalize(); 
+			
 		
-			if (cdmBase != null) {  
+			if (number != null) {  
+				int num = Integer.parseInt(number);
+				//warum wird die reference number in cdmBase geschrieben???
 				reference.setId(num);
 				cdmBase.setId(num);
 			} else {
+				
+				// TODO: was hat der Typ mit cdmBase zu tun, warum wurde er nicht gefunden, wenn cdmBase = null???
 				logger.warn("The type was not found...");
 				success = false;
 			}
-			 	
+		// ---- foreign keys ----	 
+			// <key app="EN" db-id="v59px0rxzpx2sre9re8xrs9nwaw0dsfefwp9">10</key> ... 
+			// the number is corresponding to the rec-number, probably because the data come out of the same db
 			logger.info("start make foreign-keys ...");
 			childName = "foreign-keys";
 			obligatory = false;
@@ -215,52 +242,8 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 				}
 			}
 			
-			logger.info("start make ref-type ...");
-			childName = "ref-type";
-			obligatory = false;
-			doubleResult =  XmlHelp.getSingleChildElement(elRecord, childName, tcsNamespace, obligatory);
-			success &= doubleResult.getSecondResult();
-			Element elRef_type = doubleResult.getFirstResult();
 			
-			if (elRef_type != null) {	
-				String strName_reftype = elRef_type.getAttributeValue("name");			
-				if (strName_reftype.equals("Article")) {
-					reference =  article;
-				}else if (strName_reftype.equals("Book")){
-					reference =  book;
-				}else if (strName_reftype.equals("Book Section")){
-					reference =  bookSection;
-				}else if (strName_reftype.equalsIgnoreCase("Patent")) {
-					reference =  patent;
-				}else if (strName_reftype.equalsIgnoreCase("Personal Communication")){
-					reference = personalCommunication;
-				}else if (strName_reftype.equalsIgnoreCase("Journal")) {
-					reference = journal;
-				}else if (strName_reftype.equalsIgnoreCase("CdDvd")) {
-					reference = cdDvd;
-				}else if (strName_reftype.equalsIgnoreCase("Database")) {
-					reference = database;
-				}else if (strName_reftype.equalsIgnoreCase("WebPage")) {
-					reference = webPage;
-				}else if (strName_reftype.equalsIgnoreCase("Report")) {
-					reference = report;
-				}else if (strName_reftype.equalsIgnoreCase("Thesis")) {
-					reference = thesis;
-				}else if (strName_reftype.equalsIgnoreCase("Print Series")){
-					reference = printSeries;
-				}else if (strName_reftype.equals("Journal Article")){
-					reference = article;
-				}else if (strName_reftype.equalsIgnoreCase("Conference Proceedings")){
-					reference = proceedings;
-				}else if (strName_reftype.equalsIgnoreCase("Web Page")){
-					reference = webPage;
-				}else {
-					logger.warn("The type was not found...");
-					reference = (ReferenceBase) generic;
-					success = false;
-				}		 			
-			}
-			
+			//--- Authors -----
 			logger.info("start make contributors ...");
 			childName = "contributors";
 			obligatory = false;
@@ -278,10 +261,37 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 				if (elAuthors !=null){
 					childName = "author";
 					obligatory = false;
+					
 					doubleResult =  XmlHelp.getSingleChildElement(elAuthors, childName, tcsNamespace, obligatory);
-					success &= doubleResult.getSecondResult();
-					Element elAuthor = doubleResult.getFirstResult();
+					//maybe it would be better to use XmlHelp.getChildren(); because <Authors> only contains author tags and we want to have all authors, not only one.
+					List<Element> authors = elAuthors.getChildren();
+					//success &= doubleResult.getSecondResult();
+					//Element elAuthor = doubleResult.getFirstResult();
+					
+					Person pAuthor;
+					for (Element elAuthor : authors){
+						String name = elAuthor.getValue();
+						//first approach atomization only for names like lastname, firstname
+						Element el_styleAuthor = elAuthor.getChild("style");
+						name = el_styleAuthor.getValue();
+						if (name.contains(",")){
+							String lastName = name.substring(0,name.indexOf(","));
+							String firstName = name.substring(name.indexOf(",")+1, name.length());
+						} 
+						pAuthor = Person.NewTitledInstance(name);
+						authorTeam.addTeamMember(pAuthor);
+					}
+					
+					reference.setAuthorTeam(authorTeam);
+					
+					
+					/*
 					if (elAuthor!=null) {
+						//the attributes do not exist??? it looks like this:
+						//<author>
+						//   <style face="normal" font="default" size="100%">ACHILLI, J.</style>
+						// </author>
+						
 						String strCorp_name = elAuthor.getAttributeValue("corp-name");			
 						String strFirst_name = elAuthor.getAttributeValue("first-name");
 						String strInitials = elAuthor.getAttributeValue("initials");
@@ -304,12 +314,15 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 							String strFont = elStyle.getAttributeValue("font");
 							String strSize = elStyle.getAttributeValue("size");
 							String author_style =  elStyle.getTextNormalize();
-
+							// authorTeam is empty... and why it is set, if elStyle!=null???
 							reference.setAuthorTeam(authorTeam);
 						    authorTeam.setNomenclaturalTitle(author_style);						  
 					}
-				}
+				}*/
 			}	
+				
+				// --- secondary authors ---- there is no secondary author in cdm references... and there are no secondary authors in example file...
+				/*
 				logger.info("start make secondary-authors ...");
 				childName = "secondary-authors";
 				obligatory = false;
@@ -350,6 +363,7 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 						}
 					}
 				}
+				*/
 				/** It was not used in this Implementation
 				logger.info("start make tertiary-authors ...");
 				childName = "tertiary-authors";
@@ -463,6 +477,8 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 				*/
 			}
 			 
+			// --- author address --- in endnote 7 it was "AUTHOR_ADDRESS", in Endnote 8 "auth_address" 
+			
 			logger.info("start make auth-address ...");
 			childName = "auth-address";
 			obligatory = false;
@@ -472,6 +488,8 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 			
 			if (elAuth_address != null){
 			
+				String address = elAuth_address.getValue();
+				
 				childName = "style";
 				obligatory = false;
 				doubleResult =  XmlHelp.getSingleChildElement(elAuth_address, childName, tcsNamespace, obligatory);
@@ -484,14 +502,15 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 				String address_style = elStyle_address.getTextNormalize();
 				
 				Contact contact =  new Contact();
-				Address address = Address.NewInstance();
-				reference.setAuthorTeam(authorTeam);
+				Address cdmAddress = Address.NewInstance();
+				cdmAddress.setLocality(address);
+				//reference.setAuthorTeam(authorTeam);
 				authorTeam.setContact(contact);		 
-				contact.addAddress(address);
-				address.setLocality(address_style);
+				contact.addAddress(cdmAddress);
+				
 			}
 			
-			
+			/*
 			logger.info("start make auth-affilation ...");
 			childName = "auth-affiliaton";
 			obligatory = false;
@@ -513,7 +532,9 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 				String affilation = elStyle_affilation.getTextNormalize();
 				reference.addExtension(affilation, ExtensionType.AREA_OF_INTREREST());
 			}
-				
+				*/
+			
+			// ---- titles ----
 			logger.info("start make titles ...");
 			childName = "titles";
 			obligatory = false;
@@ -539,94 +560,74 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 						doubleResult.setSecondResult(true);
 						success &= doubleResult.getSecondResult();
 		
-						Element elStyle_Title = doubleResult.getFirstResult();
-						String title = elStyle_Title.getText();			 
+						Element el_Title = doubleResult.getFirstResult();
+						String title = el_Title.getText();			 
 						title_new.append(title+" ");
 				
-						if (elStyle_Title != null) {
+						if (el_Title != null) {
 						
-							String strColor_Title = elStyle_Title.getAttributeValue("color");
-							String strFace_Title = elStyle_Title.getAttributeValue("face");
-							String strFont_Title = elStyle_Title.getAttributeValue("font");
-							String strSize_Title = elStyle_Title.getAttributeValue("size");
+							String strColor_Title = el_Title.getAttributeValue("color");
+							String strFace_Title = el_Title.getAttributeValue("face");
+							String strFont_Title = el_Title.getAttributeValue("font");
+							String strSize_Title = el_Title.getAttributeValue("size");
 							String strName_reftype = elRef_type.getAttributeValue("name");
-							title_new.toString();
-							
-							if (strName_reftype.equals("Article")) {
-								map_article.put(title_new.toString(), (ReferenceBase) article);
-								ReferenceBase give_article = map_article.get(title_new.toString());
-								give_article.setTitle(title_new.toString());
-								reference=give_article;
+							//title_new.toString();
+							reference.setTitle(title_new.toString());
+							//if (strName_reftype.equals("Article")) {
+								referenceMap.put(title_new.toString(), (ReferenceBase) reference);
+								//ReferenceBase give_article = map_article.get(title_new.toString());
+							/*	
+								
 							}else if (strName_reftype.equals("Book")) {
-								map_book.put(title_new.toString(), book);
-								ReferenceBase give_book = map_book.get(title_new.toString());
-								give_book.setTitle(title_new.toString());
-								reference=give_book;
+								referenceMap.put(title_new.toString(), reference);
+								//ReferenceBase give_book = map_book.get(title_new.toString());
+								
+								
 							}else if (strName_reftype.equals("Book Section")){
-								map_book_section.put(title_new.toString(), bookSection);
-								ReferenceBase give_book_section = map_book_section.get(title_new.toString());
-								give_book_section.setTitle(title_new.toString());
-								reference=give_book_section;
+								referenceMap.put(title_new.toString(), reference);
+								//ReferenceBase give_book_section = map_book_section.get(title_new.toString());
+								
+								
 							}else if (strName_reftype.equalsIgnoreCase("Patent")) {
-								map_patent.put(title_new.toString(), patent);
-								ReferenceBase give_patent = map_patent.get(title_new.toString());
-								give_patent.setTitle(title_new.toString());
-								reference=give_patent;
+								referenceMap.put(title_new.toString(), reference);
+								//ReferenceBase give_patent = map_patent.get(title_new.toString());
+								
 							}else if (strName_reftype.equalsIgnoreCase("Personal Communication")){
-								personalCommunication.setTitle(title_new.toString());
-								reference=personalCommunication;
+								referenceMap.put(title_new.toString(), reference);
+								
 							}else if (strName_reftype.equalsIgnoreCase("Journal")) {
-								map_journal.put(title_new.toString(), journal);
-								ReferenceBase give_journal = map_journal.get(title_new.toString());
-								give_journal.setTitle(title_new.toString());
-								reference=give_journal;
+								reference.put(title_new.toString(), reference);
+								
 							}else if (strName_reftype.equalsIgnoreCase("CdDvd")) {
-								map_cdDvd.put(title_new.toString(), cdDvd);
-								ReferenceBase give_cdDvd = map_cdDvd.get(title_new.toString());
-								give_cdDvd.setTitle(title_new.toString());
-								reference=give_cdDvd;
+								map_cdDvd.put(title_new.toString(), reference);
+								
 							}else if (strName_reftype.equalsIgnoreCase("Database")) {
-								map_database.put(title_new.toString(), database);
-								ReferenceBase give_database = map_database.get(title_new.toString());
-								give_database.setTitle(title_new.toString());
-								reference=give_database;
+								map_database.put(title_new.toString(), reference);
+								
 							}else if (strName_reftype.equalsIgnoreCase("WebPage")) {
-								map_webPage.put(title_new.toString(), webPage);
-								ReferenceBase give_webPage = map_webPage.get(title_new.toString());
-								give_webPage.setTitle(title_new.toString());
-								reference=give_webPage;
+								map_webPage.put(title_new.toString(), reference);
+								
 							}else if (strName_reftype.equalsIgnoreCase("Report")) {
-								map_report.put(title_new.toString(), report);
-								ReferenceBase give_report = map_report.get(title_new.toString());
-								give_report.setTitle(title_new.toString());
-								reference=give_report;
+								map_report.put(title_new.toString(), reference);
+								
 							}else if (strName_reftype.equalsIgnoreCase("Thesis")) {
-								map_thesis.put(title_new.toString(), thesis);
-								ReferenceBase give_thesis = map_thesis.get(title_new.toString());
-								give_thesis.setTitle(title_new.toString());
-								reference=give_thesis;
+								map_thesis.put(title_new.toString(), reference);
+								
 							}else if (strName_reftype.equalsIgnoreCase("Print Series")){
-								map_printSeries.put(title_new.toString(), printSeries);
-								ReferenceBase give_printSeries = map_printSeries.get(title_new.toString());
-								give_printSeries.setTitle(title_new.toString());
+								map_printSeries.put(title_new.toString(), reference);
+								
 							}else if (strName_reftype.equals("Journal Article")){
-								map_article.put(title_new.toString(), article);
-								ReferenceBase give_article = map_article.get(title_new.toString());
-								give_article.setTitle(title_new.toString());
-								reference=give_article;
+								map_article.put(title_new.toString(), reference);
+								
 							}else if (strName_reftype.equalsIgnoreCase("Conference Proceedings")){
-								map_proceedings.put(title_new.toString(), proceedings);
-								ReferenceBase give_proceedings = map_proceedings.get(title_new.toString());
-								give_proceedings.setTitle(title_new.toString());
-								reference=give_proceedings;
+								map_proceedings.put(title_new.toString(), reference);
+								
 							}else {
 								logger.warn("The type was not found...");
-								map_generic.put(title_new.toString(), generic);
-								ReferenceBase give_generic = map_generic.get(title_new.toString());
-								give_generic.setTitle(title_new.toString());
-								reference=give_generic;
+								map_generic.put(title_new.toString(), reference);
+								
 								success = false; 
-							}		 
+							}*/		 
 						}
 					}
 				}
@@ -647,112 +648,54 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 						String strFace_Secondary_title = elStyle_Secondary_title.getAttributeValue("face");
 						String strFont_Secondary_title = elStyle_Secondary_title.getAttributeValue("font");
 						String strSize_Secondary_title = elStyle_Secondary_title.getAttributeValue("size");
-						String strName_reftype = elRef_type.getAttributeValue("name");
-						String secondary_title = elStyle_Secondary_title.getTextNormalize();
+						
+						
+						String secondary_title = elRef_type.getValue();
+						//String secondary_title = elStyle_Secondary_title.getTextNormalize();
 						 
-						if (strName_reftype.equals("Book Section")){
+						if (reference.getType().equals(ReferenceType.Article)){
 				    		if (secondary_title != null) {
-				    			ReferenceBase give_book =map_book.get(secondary_title);
-				    			if (give_book!= null) {
-				    				bookSection.setInBook(give_book);
-				    				give_book.setTitle(secondary_title);
-				    			} else {
-				    				bookSection.setInBook(book);
-				    				map_book.put(secondary_title, book);
-				    				book.setTitle(secondary_title);
+				    			ReferenceBase journal = referenceMap.get(secondary_title);
+				    			if (journal == null){
+				    				journal = refFactory.newJournal();
+				    				journal.setTitle(secondary_title);
+				    				referenceMap.put(secondary_title, journal);
 				    			}
-				    			reference=bookSection;
+				    			reference.setInJournal(journal);
 				    		}
-				    	}else {
-							logger.warn("The type was not found...");
-							map_generic.put(secondary_title, generic);
-							ReferenceBase give_generic = map_generic.get(secondary_title);
-							give_generic.setTitle(secondary_title);
-							reference=give_generic;
-							success = false; 
-						}						
+						}else if (reference.getType().equals(ReferenceType.BookSection)){
+							if (secondary_title != null) {
+				    			ReferenceBase book = referenceMap.get(secondary_title);
+				    			if (book == null){				    				
+				    				book = refFactory.newBook();
+				    				book.setTitle(secondary_title);
+				    				referenceMap.put(secondary_title, book);
+				    			}
+				    			reference.setInJournal(book);
+				    		}
+				    	}else if (reference.getType().equals(ReferenceType.InProceedings)){
+				    		if (secondary_title != null){
+				    			
+				    			ReferenceBase proceedings = referenceMap.get(secondary_title);
+				    			if (proceedings == null){
+				    				proceedings = refFactory.newProceedings();
+					    			proceedings.setTitle(secondary_title);
+					    			referenceMap.put(secondary_title, proceedings);
+				    			}
+				    			reference.setInProceedings(proceedings);
+				    			
+				    		}
+				    	}
+						//TODO: maybe has to be continued...
+									
 					}
 				}
 				
-				/** It was not used in this Implementation
-				childName = "tertiary-title";
-				obligatory = false;
-				doubleResult =  XmlHelp.getSingleChildElement(elTitles, childName, tcsNamespace, obligatory);
-				success &= doubleResult.getSecondResult();
-				Element elTertiary_title = doubleResult.getFirstResult();
-				if (elTertiary_title != null){
-					childName = "style";
-					obligatory = false;
-					doubleResult =  XmlHelp.getSingleChildElement(elTertiary_title, childName, tcsNamespace, obligatory);
-					success &= doubleResult.getSecondResult();
-					Element elStyle_Tertiary_title = doubleResult.getFirstResult();
-					if (elStyle_Tertiary_title != null) {
-						String strColor_Tertiary_title = elStyle_Tertiary_title.getAttributeValue("color");
-						String strFace_Tertiary_title = elStyle_Tertiary_title.getAttributeValue("face");
-						String strFont_Tertiary_title = elStyle_Tertiary_title.getAttributeValue("font");
-						String strSize_Tertiary_title = elStyle_Tertiary_title.getAttributeValue("size");
-					}
-				}
-				childName = "alt-title";
-				obligatory = false;
-				doubleResult =  XmlHelp.getSingleChildElement(elTitles, childName, tcsNamespace, obligatory);
-				success &= doubleResult.getSecondResult();
-				Element elAlt_title = doubleResult.getFirstResult();
-				if (elAlt_title != null) {
-					childName = "style";
-					obligatory = false;
-					doubleResult =  XmlHelp.getSingleChildElement(elAlt_title, childName, tcsNamespace, obligatory);
-					success &= doubleResult.getSecondResult();
-					Element elStyle_Alt_title = doubleResult.getFirstResult();
-					if (elStyle_Alt_title != null) {
-						String strColor_Alt_title = elStyle_Alt_title.getAttributeValue("color");
-						String strFace_Alt_title = elStyle_Alt_title.getAttributeValue("face");
-						String strFont_Alt_title = elStyle_Alt_title.getAttributeValue("font");
-						String strSize_Alt_title = elStyle_Alt_title.getAttributeValue("size");
-					}
-				}
-				childName = "short-title";
-				obligatory = false;
-				doubleResult =  XmlHelp.getSingleChildElement(elTitles, childName, tcsNamespace, obligatory);
-				success &= doubleResult.getSecondResult();
-				Element elShort_title = doubleResult.getFirstResult();
-				if (elShort_title != null) {
-					
-					childName = "style";
-					obligatory = false;
-					doubleResult =  XmlHelp.getSingleChildElement(elShort_title, childName, tcsNamespace, obligatory);
-					success &= doubleResult.getSecondResult();
-					Element elStyle_Short_title = doubleResult.getFirstResult();
-					if (elStyle_Short_title != null) {
-						String strColor_Short_title = elStyle_Short_title.getAttributeValue("color");
-						String strFace_Short_title = elStyle_Short_title.getAttributeValue("face");
-						String strFont_Short_title = elStyle_Short_title.getAttributeValue("font");
-						String strSize_Short_title = elStyle_Short_title.getAttributeValue("size");
-					}
-				}
 				
-				childName = "translated-title";
-				obligatory = false;
-				doubleResult =  XmlHelp.getSingleChildElement(elTitles, childName, tcsNamespace, obligatory);
-				success &= doubleResult.getSecondResult();
-				Element elTranslated_title = doubleResult.getFirstResult();
-				if (elTranslated_title != null) {
-			
-					childName = "style";
-					obligatory = false;
-					doubleResult =  XmlHelp.getSingleChildElement(elTranslated_title, childName, tcsNamespace, obligatory);
-					success &= doubleResult.getSecondResult();
-					Element elStyle_Translated_title = doubleResult.getFirstResult();
-					if (elStyle_Translated_title != null) {
-						String strColor_Translated_title = elStyle_Translated_title.getAttributeValue("color");
-						String strFace_Translated_title = elStyle_Translated_title.getAttributeValue("face");
-						String strFont_Translated_title = elStyle_Translated_title.getAttributeValue("font");
-						String strSize_Translated_title = elStyle_Translated_title.getAttributeValue("size");
-					}
-				}
-			*/
 			}
 		 
+		//------------ periodical -----------
+			
 			logger.info("start make periodical ...");
 			childName = "periodical";
 			obligatory = false;
@@ -773,91 +716,45 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 			    	doubleResult =  XmlHelp.getSingleChildElement(elFull_title, childName, tcsNamespace, obligatory);
 			    	success &= doubleResult.getSecondResult();
 			    	Element elStyle_Full_title = doubleResult.getFirstResult();
-			    	String strColor_Full_title = elStyle_Full_title.getAttributeValue("color");
-			    	String strFace_Full_title = elStyle_Full_title.getAttributeValue("face");
-			    	String strFont_Full_title = elStyle_Full_title.getAttributeValue("font");
-			    	String strSize_Full_title = elStyle_Full_title.getAttributeValue("size");
 			    	
-			    	String strName_reftype = elRef_type.getAttributeValue("name");
-			    	String periodical = elStyle_Full_title.getTextNormalize();
 			    	
-			    	if (strName_reftype.equals("Journal Article")){		    		
+			    	//String strName_reftype = elRef_type.getAttributeValue("name");
+			    	String periodical = elStyle_Full_title.getValue();
+			    	
+			    	if (reference.getType().equals("Article")){		    		
 			    		
 			    		if (periodical != null) {	    			 	
-			    			ReferenceBase give_journal = map_journal.get(periodical);
-							if (give_journal!= null) {
-								article.setInJournal(give_journal);	
+			    			ReferenceBase give_journal = referenceMap.get(periodical);
+							if (give_journal!= null && reference.getInJournal() == null) {
+								reference.setInJournal(give_journal);	
 								give_journal.setTitle(periodical);
 							} else {
-								article.setInJournal(journal);		 
-								map_journal.put(periodical, journal);
+								ReferenceBase journal = refFactory.newJournal();
 								journal.setTitle(periodical);
+								reference.setInJournal(journal);		 
+								referenceMap.put(periodical, journal);
 							}
-							reference=article;
+							
 			    		}
-			    	} else {
-						logger.warn("The type was not found...");
-						success = false;
-					}		 	
+			    	} else if (reference.getType().equals(ReferenceType.InProceedings)){
+			    		if (periodical != null){
+			    			
+			    			ReferenceBase proceedings = referenceMap.get(periodical);
+			    			if (proceedings == null){
+			    				proceedings = refFactory.newProceedings();
+				    			proceedings.setTitle(periodical);
+				    			referenceMap.put(periodical, proceedings);
+			    			}
+			    			reference.setInProceedings(proceedings);
+			    			
+			    		}
+			    	}	 	
 			    }
 			     
-			    /** It was not used in this Implementation
-			    childName = "abbr-1";
-			    obligatory = false;
-			    doubleResult =  XmlHelp.getSingleChildElement(elPeriodical, childName, tcsNamespace, obligatory);
-			    success &= doubleResult.getSecondResult();
-			    Element elAbbr_1 = doubleResult.getFirstResult();
-			    if (elAbbr_1 != null) {
-		
-			    	childName = "style";
-			    	obligatory = false;
-			    	doubleResult =  XmlHelp.getSingleChildElement(elAbbr_1, childName, tcsNamespace, obligatory);
-			    	success &= doubleResult.getSecondResult();
-			    	Element elStyle_Abbr_1 = doubleResult.getFirstResult();
-			    	String strColor_Abbr_1 = elStyle_Abbr_1.getAttributeValue("color");
-			    	String strFace_Abbr_1 = elStyle_Abbr_1.getAttributeValue("face");
-			    	String strFont_Abbr_1 = elStyle_Abbr_1.getAttributeValue("font");
-			    	String strSize_Abbr_1 = elStyle_Abbr_1.getAttributeValue("size");
-			    }
 			    
-			    childName = "abbr-2";
-			    obligatory = false;
-			    doubleResult =  XmlHelp.getSingleChildElement(elPeriodical, childName, tcsNamespace, obligatory);
-			    success &= doubleResult.getSecondResult();
-			    Element elAbbr_2 = doubleResult.getFirstResult();
-			    if (elAbbr_2 != null) {
-		
-			    	childName = "style";
-			    	obligatory = false;
-			    	doubleResult =  XmlHelp.getSingleChildElement(elAbbr_2, childName, tcsNamespace, obligatory);
-			    	success &= doubleResult.getSecondResult();
-			    	Element elStyle_Abbr_2 = doubleResult.getFirstResult();
-			    	String strColor_Abbr_2 = elStyle_Abbr_2.getAttributeValue("color");
-			    	String strFace_Abbr_2 = elStyle_Abbr_2.getAttributeValue("face");
-			    	String strFont_Abbr_2 = elStyle_Abbr_2.getAttributeValue("font");
-			    	String strSize_Abbr_2 = elStyle_Abbr_2.getAttributeValue("size");
-			    }
-			    
-			    childName = "abbr_3";
-			    obligatory = false;
-			    doubleResult =  XmlHelp.getSingleChildElement(elPeriodical, childName, tcsNamespace, obligatory);
-			    success &= doubleResult.getSecondResult();
-			    Element elAbbr_3 = doubleResult.getFirstResult();
-			    if (elAbbr_3 != null) {
-		
-			    	childName = "style";
-			    	obligatory = false;
-			    	doubleResult =  XmlHelp.getSingleChildElement(elAbbr_3, childName, tcsNamespace, obligatory);
-			    	success &= doubleResult.getSecondResult();
-			    	Element elStyle_Abbr_3 = doubleResult.getFirstResult();
-			    	String strColor_Abbr_3 = elStyle_Abbr_3.getAttributeValue("color");
-			    	String strFace_Abbr_3 = elStyle_Abbr_3.getAttributeValue("face");
-			    	String strFont_Abbr_3 = elStyle_Abbr_3.getAttributeValue("font");
-			    	String strSize_Abbr_3 = elStyle_Abbr_3.getAttributeValue("size");
-			    }
-			*/
 			}
 			
+			// -----------pages ---------------------
 			logger.info("start make pages ...");
 			childName = "pages";
 			obligatory = false;
@@ -873,49 +770,15 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 				doubleResult =  XmlHelp.getSingleChildElement(elPages, childName, tcsNamespace, obligatory);
 				success &= doubleResult.getSecondResult();
 				Element elStyle_Pages = doubleResult.getFirstResult();
-				String strColor_Pages = elStyle_Pages.getAttributeValue("color");
-				String strFace_Pages = elStyle_Pages.getAttributeValue("face");
-				String strFont_Pages = elStyle_Pages.getAttributeValue("font");
-				String strSize_Pages = elStyle_Pages.getAttributeValue("size");
+				
 			
-				String strName_reftype = elRef_type.getAttributeValue("name");
-				String page = elStyle_Pages.getTextNormalize();
+				//String strName_reftype = elRef_type.getAttributeValue("name");
+				String pages = elStyle_Pages.getValue();
 				 
-				if (strName_reftype.equals("Journal Article")) {
-					map_article.put(page, article);
-					ReferenceBase give_article = map_article.get(page);
-					give_article.setPages(page);
-					reference = give_article;
-				}else if (strName_reftype.equals("Article")){
-					map_article.put(page, article);
-					ReferenceBase give_article = map_article.get(page);
-					give_article.setPages(page);
-					reference = give_article;		
-				}else if (strName_reftype.equals("Book")){
-					map_book.put(page, book);
-					ReferenceBase give_book = map_book.get(page);
-					give_book.setPages(page);
-					reference=give_book; 
-				}else if (strName_reftype.equals("Book Section")){
-					map_book_section.put(page, bookSection);
-					ReferenceBase give_book_section = map_book_section.get(page);
-					give_book_section.setPages(page);
-					reference=give_book_section;
-				}else if (strName_reftype.equalsIgnoreCase("Conference Proceedings")){
-					map_proceedings.put(page, proceedings);
-					ReferenceBase give_proceedings = map_proceedings.get(page);
-					give_proceedings.setPages(page);
-					reference=give_proceedings;	
-				} else {
-					logger.warn("The type was not found...");
-					map_generic.put(page, generic);
-					ReferenceBase give_generic  = map_generic.get(page);
-					give_generic.setPages(page);
-					reference =give_generic; 
-					success = false;			
-				}		 	
+				reference.setPages(pages);
+				 	
 			}
-			
+		// ----volume ---------------
 			logger.info("start make volume ...");
 			childName = "volume";
 			obligatory = false;
@@ -928,50 +791,13 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 				doubleResult =  XmlHelp.getSingleChildElement(elVolume, childName, tcsNamespace, obligatory);
 				success &= doubleResult.getSecondResult();
 				Element elStyle_Volume = doubleResult.getFirstResult();
-				String strColor_Volume = elStyle_Volume.getAttributeValue("color");
-				String strFace_Volume = elStyle_Volume.getAttributeValue("face");
-				String strFont_Volume = elStyle_Volume.getAttributeValue("font");
-				String strSize_Volume = elStyle_Volume.getAttributeValue("size");
 				
-				String strName_reftype = elRef_type.getAttributeValue("name");
-				String volume = elStyle_Volume.getTextNormalize();
+				//String strName_reftype = elRef_type.getAttributeValue("name");
+				String volume = elStyle_Volume.getValue();
+				reference.setVolume(volume);
 				
-				if (strName_reftype.equals("Journal Article")) {
-					map_article.put(volume, article);
-					ReferenceBase give_article = map_article.get(volume);
-					give_article.setVolume(volume);
-					reference = give_article;
-				}else if (strName_reftype.equals("Article")){
-					map_article.put(volume, article);
-					ReferenceBase give_article = map_article.get(volume);
-					give_article.setVolume(volume);
-					reference = give_article;
-				}else if (strName_reftype.equals("Book")){
-					map_book.put(volume, book);
-					ReferenceBase give_book = map_book.get(volume);
-					give_book.setVolume(volume);
-					reference=give_book; 
-				}else if (strName_reftype.equals("Book Section")){
-					 if (volume != null) {
-						 bookSection.setInBook(book);
-						 book.setVolume(volume);
-						 reference= bookSection;
-					 }
-				}else if (strName_reftype.equalsIgnoreCase("Conference Proceedings")){
-					map_proceedings.put(volume, proceedings);
-					ReferenceBase give_proceedings = map_proceedings.get(volume);
-					give_proceedings.setVolume(volume);
-					reference=give_proceedings;
-				}else{	
-					logger.warn("The type was not found...");
-					map_generic.put(volume, generic);
-					ReferenceBase give_generic  = map_generic.get(volume);
-					give_generic.setVolume(volume);
-					reference =give_generic; 
-					success = true;
-				}		 	
 			}
-			 
+		// --------- number/series ------------
 			logger.info("start make number ...");
 			childName = "number"; // In CDM it's "Series"
 			obligatory = false;
@@ -985,73 +811,14 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 				doubleResult =  XmlHelp.getSingleChildElement(elNumber, childName, tcsNamespace, obligatory);
 				success &= doubleResult.getSecondResult();
 				Element elStyle_Number = doubleResult.getFirstResult();
-				String strColor_Number = elStyle_Number.getAttributeValue("color");
-				String strFace_Number = elStyle_Number.getAttributeValue("face");
-				String strFont_Number = elStyle_Number.getAttributeValue("font");
-				String strSize_Number = elStyle_Number.getAttributeValue("size");
 				
-				String strName_reftype = elRef_type.getAttributeValue("name");
-				String number = elStyle_Number.getTextNormalize();
+				String series = elStyle_Number.getText();
 				
-				if (strName_reftype.equals("Journal Article")) {
-					map_article.put(number, article);
-					ReferenceBase give_article = map_article.get(number);
-					give_article.setSeries(number);
-					reference = give_article;
-				}else if (strName_reftype.equals("Article")){
-					map_article.put(number, article);
-					ReferenceBase give_article = map_article.get(number);
-					give_article.setSeries(number);
-					reference = give_article;
-				}else {			 
-					logger.warn("The type was not found...");
-					map_generic.put(number, generic);
-					ReferenceBase give_generic  = map_generic.get(number);
-					give_generic.setSeries(number);
-					reference =give_generic;
-					success = false;
-				}		 		
+				reference.setSeries(series);
+						
 			}
 			
-			/**
-			// NOT USE IN THE IMPLEMENTATION	
-			childName = "issue"; // not use in CDM
-			obligatory = false;
-			doubleResult =  XmlHelp.getSingleChildElement(elRecord, childName, tcsNamespace, obligatory);
-			success &= doubleResult.getSecondResult();
-			Element elIssue = doubleResult.getFirstResult();
-			if (elIssue != null) {
-			
-				childName = "style";
-				obligatory = false;
-				doubleResult =  XmlHelp.getSingleChildElement(elIssue, childName, tcsNamespace, obligatory);
-				success &= doubleResult.getSecondResult();
-				Element elStyle_Issue = doubleResult.getFirstResult();
-				String strColor_Issue = elStyle_Issue.getAttributeValue("color");
-				String strFace_Issue = elStyle_Issue.getAttributeValue("face");
-				String strFont_Issue = elStyle_Issue.getAttributeValue("font");
-				String strSize_Issue = elStyle_Issue.getAttributeValue("size");
-			}
-			
-			// LIKE NUMBER ELEMENT (the same content) use very selten
-			//Amount Received - the name in Endnote Programm
-			childName = "num-vols"; // not use in CDM
-			obligatory = false;
-			doubleResult =  XmlHelp.getSingleChildElement(elRecord, childName, tcsNamespace, obligatory);
-			success &= doubleResult.getSecondResult();
-			Element elNum_vols = doubleResult.getFirstResult();
-			if (elNum_vols != null) {
-				childName = "style";
-				obligatory = false;
-				doubleResult =  XmlHelp.getSingleChildElement(elNum_vols, childName, tcsNamespace, obligatory);
-				success &= doubleResult.getSecondResult();
-				Element elStyle_Num_vols = doubleResult.getFirstResult();
-				String strColor_Num_vols = elStyle_Num_vols.getAttributeValue("color");
-				String strFace_Num_vols = elStyle_Num_vols.getAttributeValue("face");
-				String strFont_Num_vols = elStyle_Num_vols.getAttributeValue("font");
-				String strSize_Num_vols = elStyle_Num_vols.getAttributeValue("size");
-			}
-			*/
+		// --------------- edition ------------
 			
 			logger.info("start make edition ...");
 			childName = "edition";
@@ -1070,89 +837,18 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 				String strFont_Edition = elStyle_Edition.getAttributeValue("font");
 				String strSize_Edition = elStyle_Edition.getAttributeValue("size");
 				
-				String strName_reftype = elRef_type.getAttributeValue("name");
-				String edition = elStyle_Edition.getTextNormalize();
+				//String strName_reftype = elRef_type.getAttributeValue("name");
+				String edition = elStyle_Edition.getValue();
 				
-				if (strName_reftype.equals("Book")) {
-					map_book.put(edition, book);
-					ReferenceBase give_book = map_book.get(edition);
-					give_book.setEdition(edition);
-					reference=give_book; 
-				}else if (strName_reftype.equals("Book Section")) {
-					bookSection.setInBook(book);
-					book.setEdition(edition);
-					reference=bookSection; 
-				}else {
-					logger.warn("The type was not found...");
-					success = false;
-				}
+				reference.setEdition(edition);
+				
 			}
 			
-			/**It was not used in this Implementation
-			// LIKE NUMBER ELEMENT (the same content) use very selten
-			childName = "section";
-			obligatory = false;
-			doubleResult =  XmlHelp.getSingleChildElement(elRecord, childName, tcsNamespace, obligatory);
-			success &= doubleResult.getSecondResult();
-			Element elSection = doubleResult.getFirstResult();
-			if (elSection != null) {
-				childName = "style";
-				obligatory = false;
-				doubleResult =  XmlHelp.getSingleChildElement(elSection, childName, tcsNamespace, obligatory);
-				success &= doubleResult.getSecondResult();
-				Element elStyle_Section = doubleResult.getFirstResult();
-				String strColor_Section = elStyle_Section.getAttributeValue("color");
-				String strFace_Section = elStyle_Section.getAttributeValue("face");
-				String strFont_Section = elStyle_Section.getAttributeValue("font");
-				String strSize_Section = elStyle_Section.getAttributeValue("size");
-			}
 			
-			// NOT USE IN THE IMPLEMENTATION
-			childName = "reprint-edition";
-			obligatory = false;
-			doubleResult =  XmlHelp.getSingleChildElement(elRecord, childName, tcsNamespace, obligatory);
-			success &= doubleResult.getSecondResult();
-			Element elReprint_edition = doubleResult.getFirstResult();
-			if (elReprint_edition != null) {
-			
-				childName = "style";
-				obligatory = false;
-				doubleResult =  XmlHelp.getSingleChildElement(elReprint_edition, childName, tcsNamespace, obligatory);
-				success &= doubleResult.getSecondResult();
-				Element elStyle_Reprint_edition = doubleResult.getFirstResult();
-				String strColor_Reprint_edition = elStyle_Reprint_edition.getAttributeValue("color");
-				String strFace_Reprint_edition = elStyle_Reprint_edition.getAttributeValue("face");
-				String strFont_Reprint_edition = elStyle_Reprint_edition.getAttributeValue("font");
-				String strSize_Reprint_edition = elStyle_Reprint_edition.getAttributeValue("size");
-			}
-			
-			// use very selten keywords use multiple keyword elements
-			childName = "keywords";
-			obligatory = false;
-			doubleResult =  XmlHelp.getSingleChildElement(elRecord, childName, tcsNamespace, obligatory);
-			success &= doubleResult.getSecondResult();
-			Element elKeywords = doubleResult.getFirstResult();
-			if (elKeywords != null) {
-			
-				childName = "keyword";
-				obligatory = false;
-				doubleResult =  XmlHelp.getSingleChildElement(elKeywords, childName, tcsNamespace, obligatory);
-				success &= doubleResult.getSecondResult();
-				Element elKeyword = doubleResult.getFirstResult();
-				if (elKeyword != null) {
-					childName = "style";
-					obligatory = false;
-					doubleResult =  XmlHelp.getSingleChildElement(elKeyword, childName, tcsNamespace, obligatory);
-					success &= doubleResult.getSecondResult();
-					Element elStyle_Keyword = doubleResult.getFirstResult();
-					String strColor_Keyword = elStyle_Keyword.getAttributeValue("color");
-					String strFace_Keyword = elStyle_Keyword.getAttributeValue("face");
-					String strFont_Keyword = elStyle_Keyword.getAttributeValue("font");
-					String strSize_Keyword = elStyle_Keyword.getAttributeValue("size");
-				}
-			}
-			*/	
-			
+			// ------- dates ---------
+			// <year>
+            //		<style face="normal" font="default" size="100%">1993</style>
+            // </year>
 			childName = "dates";
 			obligatory = false;
 			doubleResult =  XmlHelp.getSingleChildElement(elRecord, childName, tcsNamespace, obligatory);
@@ -1166,11 +862,7 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 				success &= doubleResult.getSecondResult();
 				Element elYear = doubleResult.getFirstResult();
 				if (elYear != null) {
-					String strDay = elYear.getAttributeValue("day");
-					String strJulian = elYear.getAttributeValue("julian");
-					String strMonth = elYear.getAttributeValue("month");
-					String strYear = elYear.getAttributeValue("year");
-		
+							
 					childName = "style";
 					obligatory = false;
 					doubleResult =  XmlHelp.getSingleChildElement(elYear, childName, tcsNamespace, obligatory);
@@ -1181,7 +873,7 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 					String strFont_Year = elStyle_Year.getAttributeValue("font");
 					String strSize_Year = elStyle_Year.getAttributeValue("size");
 					
-					String year = elStyle_Year.getText();
+					String year = elStyle_Year.getValue();
 					reference.setDatePublished(ImportHelper.getDatePublished(year));
 					
 				}
@@ -1236,56 +928,10 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 		 		String strSize_Pub_location = elStyle_Pub_location.getAttributeValue("size");
 		 		
 		 		String place = elStyle_Pub_location.getTextNormalize();
-		 		String strName_reftype = elRef_type.getAttributeValue("name");
-				 	 			
-				if (strName_reftype.equals("Report")) {
-					map_report.put(place, report);
-					ReferenceBase give_report = map_report.get(place);
-					give_report.setPlacePublished(place);
-					reference=give_report;
-				}else if (strName_reftype.equals("Book")){
-					map_book.put(place, book);
-					ReferenceBase give_book = map_book.get(place);
-					give_book.setPlacePublished(place);
-					reference=give_book;
-				}else if (strName_reftype.equals("Thesis")){
-					map_thesis.put(place, thesis);
-					ReferenceBase give_thesis = map_thesis.get(place);
-					give_thesis.setPlacePublished(place);
-					reference=give_thesis;
-				}else if (strName_reftype.equalsIgnoreCase("Conference Proceedings")){
-					map_proceedings.put(place, proceedings);
-					ReferenceBase give_proceedings = map_proceedings.get(place);
-					give_proceedings.setPlacePublished(place);
-					reference=give_proceedings;
-				}else if (strName_reftype.equalsIgnoreCase("Database")){
-					map_database.put(place, database);
-					ReferenceBase give_database = map_database.get(place);
-					give_database.setPlacePublished(place);
-					reference=give_database;
-				}else if (strName_reftype.equalsIgnoreCase("CdDvd")){
-					map_cdDvd.put(place, cdDvd);
-					ReferenceBase give_cdDvd = map_cdDvd.get(place);
-					give_cdDvd.setPlacePublished(place);
-					reference=give_cdDvd;
-				}else if (strName_reftype.equalsIgnoreCase("Print Series")){
-					map_printSeries.put(place, printSeries);
-					ReferenceBase give_printSeries = map_printSeries.get(place);
-					give_printSeries.setPlacePublished(place);
-					reference=give_printSeries;
-				}else if (strName_reftype.equalsIgnoreCase("Journal")){
-					map_journal.put(place, journal);
-					ReferenceBase give_journal = map_journal.get(place);
-					give_journal.setPlacePublished(place);
-					reference=give_journal;			
-				} else {
-					logger.warn("The type was not found...");
-					map_generic.put(place, generic);
-					ReferenceBase give_generic = map_generic.get(place);
-					give_generic.setPlacePublished(place);
-					reference=give_generic;
-					success = false;
-				}		 	
+		 		
+		 		reference.setPlacePublished(place);
+		 		
+		 		
 		 	}
 		 	 
 			logger.info("start make publisher ...");
@@ -1307,91 +953,11 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 				String strSize_Publisher = elStyle_Publisher.getAttributeValue("size");
 				
 				String publisher = elStyle_Publisher.getTextNormalize();
-				String strName_reftype = elRef_type.getAttributeValue("name");
+				reference.setPublisher(publisher);
 				
-				if (strName_reftype.equals("Report")) {
-					map_report.put(publisher, report);
-					ReferenceBase give_report = map_report.get(publisher);
-					give_report.setPublisher(publisher);
-					reference=give_report;
-				}else if (strName_reftype.equals("Book")){
-					map_book.put(publisher, book);
-					ReferenceBase give_book = map_book.get(publisher);
-					give_book.setPublisher(publisher);
-					reference=give_book;
-				}else if (strName_reftype.equals("Book Section")){
-					if (publisher != null) {
-						bookSection.setInBook(book);
-						book.setPublisher(publisher);
-						reference= bookSection;
-					}
-				}else if (strName_reftype.equals("Thesis")){
-					map_thesis.put(publisher, thesis);
-					ReferenceBase give_thesis = map_thesis.get(publisher);
-					give_thesis.setPublisher(publisher);
-					reference=give_thesis;
-				}else if (strName_reftype.equalsIgnoreCase("Conference Proceedings")){
-					map_proceedings.put(publisher, proceedings);
-					ReferenceBase give_proceedings = map_proceedings.get(publisher);
-					give_proceedings.setPublisher(publisher);
-					reference=give_proceedings;
-				}else if (strName_reftype.equalsIgnoreCase("Database")){
-					map_database.put(publisher, database);
-					ReferenceBase give_database = map_database.get(publisher);
-					give_database.setPublisher(publisher);
-					reference=give_database;
-				}else if (strName_reftype.equalsIgnoreCase("CdDvd")){
-					map_cdDvd.put(publisher, cdDvd);
-					ReferenceBase give_cdDvd = map_cdDvd.get(publisher);
-					give_cdDvd.setPublisher(publisher);
-					reference=give_cdDvd;
-				}else if (strName_reftype.equalsIgnoreCase("Print Series")){
-					map_printSeries.put(publisher, printSeries);
-					ReferenceBase give_printSeries = map_printSeries.get(publisher);
-					give_printSeries.setPublisher(publisher);
-					reference=give_printSeries;
-				}else if (strName_reftype.equalsIgnoreCase("Journal")){
-					map_journal.put(publisher, journal);
-					ReferenceBase give_journal = map_journal.get(publisher);
-					give_journal.setPublisher(publisher);
-					reference=give_journal;
-				}else if (strName_reftype.equalsIgnoreCase("Journal Article")){
-					if (publisher != null) {
-						article.setInJournal(journal);
-						journal.setPublisher(publisher);
-						reference= article;
-					}
-				} else {
-					logger.warn("The type was not found...");
-					map_generic.put(publisher, generic);
-					ReferenceBase give_generic = map_generic.get(publisher);
-					give_generic.setPublisher(publisher);
-					reference=give_generic;
-
-					success = false;
-				}		 	
 			}
 			
-			/**
-			// It was not used in this Implementation
-			childName = "orig-pub"; // original grant number - the name in Endnote Programm
-			obligatory = false;
-			doubleResult =  XmlHelp.getSingleChildElement(elRecord, childName, tcsNamespace, obligatory);
-			success &= doubleResult.getSecondResult();
-			Element elOrig_pub = doubleResult.getFirstResult();
-			if (elOrig_pub != null) { 
 			
-				childName = "style";
-				obligatory = false;
-				doubleResult =  XmlHelp.getSingleChildElement(elOrig_pub, childName, tcsNamespace, obligatory);
-				success &= doubleResult.getSecondResult();
-				Element elStyle_Orig_pub = doubleResult.getFirstResult();
-				String strColor_Orig_pub = elStyle_Orig_pub.getAttributeValue("color");
-				String strFace_Orig_pub = elStyle_Orig_pub.getAttributeValue("face");
-				String strFont_Orig_pub = elStyle_Orig_pub.getAttributeValue("font");
-				String strSize_Orig_pub = elStyle_Orig_pub.getAttributeValue("size");
-			}
-			*/
 		
 			logger.info("start make ISBN/ISNN ...");
 			childName = "isbn";
@@ -1412,64 +978,14 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 				String strFont_Isbn = elStyle_Isbn.getAttributeValue("font");
 				String strSize_Isbn = elStyle_Isbn.getAttributeValue("size");
 				
-				String strName_reftype = elRef_type.getAttributeValue("name");
-				String page = elStyle_Isbn.getTextNormalize();
-				 		
-				if (strName_reftype.equals("Book")) {
-					map_book.put(page, book);
-					ReferenceBase give_book = map_book.get(page);
-					give_book.setIsbn(page);
-					reference=give_book; 
-				}else if (strName_reftype.equals("Journal")){
-					map_journal.put(page, journal);
-					ReferenceBase give_journal = map_journal.get(page);
-					give_journal.setIssn(page);
-					reference=give_journal;
-				}else {
-					logger.warn("The type was not found...");
-					success = false;
-				}		 					 		
+				//String strName_reftype = elRef_type.getAttributeValue("name");
+				String isbn = elStyle_Isbn.getTextNormalize();
+				
+				reference.setIsbn(isbn);
+									 		
 			}
 			
-			/**
-			// It was not used in this Implementation
-			childName = "accession-num";
-			obligatory = false;
-			doubleResult =  XmlHelp.getSingleChildElement(elRecord, childName, tcsNamespace, obligatory);
-			success &= doubleResult.getSecondResult();
-			Element elAccession_num = doubleResult.getFirstResult();
-			if (elAccession_num != null) {
-		
-				childName = "style";
-				obligatory = false;
-				doubleResult =  XmlHelp.getSingleChildElement(elAccession_num, childName, tcsNamespace, obligatory);
-				success &= doubleResult.getSecondResult();
-				Element elStyle_Accession_num = doubleResult.getFirstResult();
-				String strColor_Accession_num = elStyle_Accession_num.getAttributeValue("color");
-				String strFace_Accession_num = elStyle_Accession_num.getAttributeValue("face");
-				String strFont_Accession_num = elStyle_Accession_num.getAttributeValue("font");
-				String strSize_Accession_num = elStyle_Accession_num.getAttributeValue("size");
-			}
 			
-			// It was not used in this Implementation
-			childName = "call-num";
-			obligatory = false;
-			doubleResult =  XmlHelp.getSingleChildElement(elRecord, childName, tcsNamespace, obligatory);
-			success &= doubleResult.getSecondResult();
-			Element elCall_num = doubleResult.getFirstResult();
-			if (elCall_num != null) {
-			
-				childName = "style";
-				obligatory = false;
-				doubleResult =  XmlHelp.getSingleChildElement(elCall_num, childName, tcsNamespace, obligatory);
-				success &= doubleResult.getSecondResult();
-				Element elStyle_Call_num = doubleResult.getFirstResult();
-				String strColor_Call_num = elStyle_Call_num.getAttributeValue("color");
-				String strFace_Call_num = elStyle_Call_num.getAttributeValue("face");
-				String strFont_Call_num = elStyle_Call_num.getAttributeValue("font");
-				String strSize_Call_num = elStyle_Call_num.getAttributeValue("size");
-			}
-			*/
 			
 			logger.info("start make electronic-resource-num ...");
 			childName = "electronic-resource-num";  //DOI - the name in Endnote Programm
@@ -1511,214 +1027,13 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 				String strFont_Abstract = elStyle_Abstract.getAttributeValue("font");
 				String strSize_Abstract = elStyle_Abstract.getAttributeValue("size");
 				
-				String annote = elStyle_Abstract.getTextNormalize();
-				Annotation annotation = Annotation.NewInstance(annote, Language.DEFAULT());
-				if (annote!= null) {	 
-					reference.addAnnotation(annotation);
-				}
-				else {
-					logger.warn("The type was not found...");
-					success = false;
-				}
-			}
-			
-			/**
-			// It was not used in this Implementation
-			childName = "label";
-			obligatory = false;
-			doubleResult =  XmlHelp.getSingleChildElement(elRecord, childName, tcsNamespace, obligatory);
-			success &= doubleResult.getSecondResult();
-			Element elLabel = doubleResult.getFirstResult();
-			if (elLabel != null) {
-			
-				childName = "style";
-				obligatory = false;
-				doubleResult =  XmlHelp.getSingleChildElement(elLabel, childName, tcsNamespace, obligatory);
-				success &= doubleResult.getSecondResult();
-				Element elStyle_Label = doubleResult.getFirstResult();
-				String strColor_Label = elStyle_Label.getAttributeValue("color");
-				String strFace_Label = elStyle_Label.getAttributeValue("face");
-				String strFont_Label = elStyle_Label.getAttributeValue("font");
-				String strSize_Label = elStyle_Label.getAttributeValue("size");
-			}
-			
-			
-			// It was not used in this Implementation
-	     	logger.info("start make image ...");
-			childName = "image"; //Figure - the name in Endnote Programm
-			obligatory = false;
-			doubleResult =  XmlHelp.getSingleChildElement(elRecord, childName, tcsNamespace, obligatory);
-			success &= doubleResult.getSecondResult();
-			Element elImage = doubleResult.getFirstResult();
-			
-			Media media = Media.NewInstance();
-			if (elImage != null){ 
-				String strFile = elImage.getAttributeValue("file");
-				String strImage_name = elImage.getAttributeValue("name");
-				reference.getMedia();
-			}
-			
-			
-			/**
-			//It was not used in this Implementation
-			childName = "caption";
-			obligatory = false;
-			doubleResult =  XmlHelp.getSingleChildElement(elRecord, childName, tcsNamespace, obligatory);
-			success &= doubleResult.getSecondResult();
-			Element elCaption = doubleResult.getFirstResult();
-			if(elCaption != null) {
+				String referenceAbstract = elStyle_Abstract.getTextNormalize();
+				reference.setReferenceAbstract(referenceAbstract);
 				
-				childName = "style";
-				obligatory = false;
-				doubleResult =  XmlHelp.getSingleChildElement(elCaption, childName, tcsNamespace, obligatory);
-				success &= doubleResult.getSecondResult();
-				Element elStyle_Caption = doubleResult.getFirstResult();
-				String strColor_Caption = elStyle_Caption.getAttributeValue("color");
-				String strFace_Caption = elStyle_Caption.getAttributeValue("face");
-				String strFont_Caption = elStyle_Caption.getAttributeValue("font");
-				String strSize_Caption = elStyle_Caption.getAttributeValue("size");
+				
 			}
 			
-			//It was not used in this Implementation
-			childName = "notes";
-			obligatory = false;
-			doubleResult =  XmlHelp.getSingleChildElement(elRecord, childName, tcsNamespace, obligatory);
-			success &= doubleResult.getSecondResult();
-			Element elNotes = doubleResult.getFirstResult();
-			if (elNotes != null) {
-				
-				childName = "style";
-				obligatory = false;
-				doubleResult =  XmlHelp.getSingleChildElement(elNotes, childName, tcsNamespace, obligatory);
-				success &= doubleResult.getSecondResult();
-				Element elStyle_Notes = doubleResult.getFirstResult();
-				String strColor_Notes = elStyle_Notes.getAttributeValue("color");
-				String strFace_Notes = elStyle_Notes.getAttributeValue("face");
-				String strFont_Notes = elStyle_Notes.getAttributeValue("font");
-				String strSize_Notes = elStyle_Notes.getAttributeValue("size");
-				
-				//Annotation annotation = null;
-				//reference.addAnnotation(annotation);
-				//referenceMap.put(elStyle_Notes, reference);
-			}
 			
-			//It was not used in this Implementation
-			childName = "research-notes";
-			obligatory = false;
-			doubleResult =  XmlHelp.getSingleChildElement(elRecord, childName, tcsNamespace, obligatory);
-			success &= doubleResult.getSecondResult();
-			Element elResearch_notes = doubleResult.getFirstResult();
-			if (elResearch_notes != null) {
-				
-				childName = "style";
-				obligatory = false;
-				doubleResult =  XmlHelp.getSingleChildElement(elResearch_notes, childName, tcsNamespace, obligatory);
-				success &= doubleResult.getSecondResult();
-				Element elStyle_Research_notes = doubleResult.getFirstResult();
-				String strColor_Research_notes = elStyle_Research_notes.getAttributeValue("color");
-				String strFace_Research_notes = elStyle_Research_notes.getAttributeValue("face");
-				String strFont_Research_notes = elStyle_Research_notes.getAttributeValue("font");
-				String strSize_Research_notes = elStyle_Research_notes.getAttributeValue("size");
-			}
-			*/
-			
-			/**It was not used in this Implementation
-			childName = "work-type"; // thesis type
-			obligatory = false;
-			doubleResult =  XmlHelp.getSingleChildElement(elRecord, childName, tcsNamespace, obligatory);
-			success &= doubleResult.getSecondResult();
-			Element elWork_type = doubleResult.getFirstResult();
-			if (elWork_type!= null) {
-				
-				childName = "style";
-				obligatory = false;
-				doubleResult =  XmlHelp.getSingleChildElement(elWork_type, childName, tcsNamespace, obligatory);
-				success &= doubleResult.getSecondResult();
-				Element elStyle_Work_type = doubleResult.getFirstResult();
-				String strColor_Work_type = elStyle_Work_type.getAttributeValue("color");
-				String strFace_Work_type = elStyle_Work_type.getAttributeValue("face");
-				String strFont_Work_type = elStyle_Work_type.getAttributeValue("font");
-				String strSize_Work_type = elStyle_Work_type.getAttributeValue("size");
-				
-				String thesis_style =  elStyle_Work_type.getTextNormalize();
-				String strName_reftype = elRef_type.getAttributeValue("name");
-				
-				Institution institution =Institution.NewInstance();				
-				school.setName(thesis_style);
-				institution.setName(thesis_style);
-				
-				if (strName_reftype.equals("Thesis")) {
-					thesis.setSchool(institution);
-					reference= thesis;
-				}else if (strName_reftype.equals("Report")){
-					report.setInstitution(institution);
-					reference= report;
-				}else {
-					logger.warn("The type was not found...");
-					success = false;
-					logger.info(reference);
-				}		 				
-				logger.info(reference);
-			}
-			
-			/**
-			//It was not used in this Implementation
-			childName = "reviewed-item";
-			obligatory = false;
-			doubleResult =  XmlHelp.getSingleChildElement(elRecord, childName, tcsNamespace, obligatory);
-			success &= doubleResult.getSecondResult();
-			Element elReviewed_item = doubleResult.getFirstResult();
-			if(elReviewed_item!=null) {
-			
-				childName = "style";
-				obligatory = false;
-				doubleResult =  XmlHelp.getSingleChildElement(elReviewed_item, childName, tcsNamespace, obligatory);
-				success &= doubleResult.getSecondResult();
-				Element elStyle_Reviewed_item = doubleResult.getFirstResult();
-				String strColor_Reviewed_item = elStyle_Reviewed_item.getAttributeValue("color");
-				String strFace_Reviewed_item = elStyle_Reviewed_item.getAttributeValue("face");
-				String strFont_Reviewed_item = elStyle_Reviewed_item.getAttributeValue("font");
-				String strSize_Reviewed_item = elStyle_Reviewed_item.getAttributeValue("size");
-			}
-			
-			//It was not used in this Implementation
-			childName = "remote-database-name"; //name of database - the name in endnote programm
-			obligatory = false;
-			doubleResult =  XmlHelp.getSingleChildElement(elRecord, childName, tcsNamespace, obligatory);
-			success &= doubleResult.getSecondResult();
-			Element elRemote_database_name = doubleResult.getFirstResult();
-			if (elRemote_database_name != null) {
-			
-				childName = "style";
-				obligatory = false;
-				doubleResult =  XmlHelp.getSingleChildElement(elRemote_database_name, childName, tcsNamespace, obligatory);
-				success &= doubleResult.getSecondResult();
-				Element elStyle_Remote_database_name = doubleResult.getFirstResult();
-				String strColor_Remote_database_name = elStyle_Remote_database_name.getAttributeValue("color");
-				String strFace_Remote_database_name = elStyle_Remote_database_name.getAttributeValue("face");
-				String strFont_Remote_database_name = elStyle_Remote_database_name.getAttributeValue("font");
-				String strSize_Remote_database_name = elStyle_Remote_database_name.getAttributeValue("size");
-			}
-			
-			//It was not used in this Implementation
-			childName = "remote-database-provider"; // database provider - the name in endnote programm
-			obligatory = false;
-			doubleResult =  XmlHelp.getSingleChildElement(elRecord, childName, tcsNamespace, obligatory);
-			success &= doubleResult.getSecondResult();
-			Element elRemote_database_provider = doubleResult.getFirstResult();
-			if (elRemote_database_provider != null) {
-		
-				childName = "style";
-				obligatory = false;
-				doubleResult =  XmlHelp.getSingleChildElement(elRemote_database_provider, childName, tcsNamespace, obligatory);
-				success &= doubleResult.getSecondResult();
-				Element elStyle_Remote_database_provider = doubleResult.getFirstResult();
-				String strColor_Remote_database_provider = elStyle_Remote_database_provider.getAttributeValue("color");
-				String strFace_Remote_database_provider = elStyle_Remote_database_provider.getAttributeValue("face");
-				String strFont_Remote_database_provider = elStyle_Remote_database_provider.getAttributeValue("font");
-				String strSize_Remote_database_provider = elStyle_Remote_database_provider.getAttributeValue("size");
-			}
-			*/
 			
 			childName = "language";
 			obligatory = false;
@@ -1744,6 +1059,8 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 			
 			
 			logger.info("start make urls ...");
+			
+			//<urls><related-urls><url><style face="normal" font="default" size="100%">www.dev.e-taxonomy.org</style></url></related-urls></urls>
 			childName = "urls";
 			obligatory = false;
 			doubleResult =  XmlHelp.getSingleChildElement(elRecord, childName, tcsNamespace, obligatory);
@@ -1779,7 +1096,7 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 					reference.setUri(elStyle_Url.getTextNormalize());
 				}
 			
-				childName = "pdf-urls";
+				childName = "pdf-urls";//for attached files
 				obligatory = false;
 				doubleResult =  XmlHelp.getSingleChildElement(elUrls, childName, tcsNamespace, obligatory);
 				success &= doubleResult.getSecondResult();
@@ -1837,7 +1154,7 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 					reference.setUri(elStyle_TextUrl.getText());
 				}
 			
-				childName = "related-urls";
+				childName = "related-urls";//for "normal" urls
 				obligatory = false;
 				doubleResult =  XmlHelp.getSingleChildElement(elUrls, childName, tcsNamespace, obligatory);
 				success &= doubleResult.getSecondResult();
@@ -1898,173 +1215,7 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 				}
 			}
 			
-			/** It was not used in this Implementation
-			childName = "access-date";
-			obligatory = false;
-			doubleResult =  XmlHelp.getSingleChildElement(elRecord, childName, tcsNamespace, obligatory);
-			success &= doubleResult.getSecondResult();
-			Element elAccess_date = doubleResult.getFirstResult();
-			if (elAccess_date != null) {
 			
-				childName = "style";
-				obligatory = false;
-				doubleResult =  XmlHelp.getSingleChildElement(elAccess_date, childName, tcsNamespace, obligatory);
-				success &= doubleResult.getSecondResult();
-				Element elStyle_Access_date = doubleResult.getFirstResult();
-				String strColor_Access_date = elStyle_Access_date.getAttributeValue("color");
-				String strFace_Access_date = elStyle_Access_date.getAttributeValue("face");
-				String strFont_Access_date = elStyle_Access_date.getAttributeValue("font");
-				String strSize_Access_date = elStyle_Access_date.getAttributeValue("size");
-			}
-			
-			
-			//It was not used in this Implementation
-			logger.info("start make modified-date ...");
-			childName = "modified-date"; //custom 8 - name in endnote programm
-			obligatory = false;
-			doubleResult =  XmlHelp.getSingleChildElement(elRecord, childName, tcsNamespace, obligatory);
-			success &= doubleResult.getSecondResult();
-			Element elModified_date = doubleResult.getFirstResult();
-			if (elModified_date != null) {
-		
-				childName = "style";
-				obligatory = false;
-				doubleResult =  XmlHelp.getSingleChildElement(elModified_date, childName, tcsNamespace, obligatory);
-				success &= doubleResult.getSecondResult();
-				Element elStyle_Modified_date = doubleResult.getFirstResult();
-				String strColor_Modified_date = elStyle_Modified_date.getAttributeValue("color");
-				String strFace_Modified_date = elStyle_Modified_date.getAttributeValue("face");
-				String strFont_Modified_date = elStyle_Modified_date.getAttributeValue("font");
-				String strSize_Modified_date = elStyle_Modified_date.getAttributeValue("size");
-			}
-			
-			/**It was not used in this Implementation
-			childName = "custom1";
-			obligatory = false;
-			doubleResult =  XmlHelp.getSingleChildElement(elRecord, childName, tcsNamespace, obligatory);
-			success &= doubleResult.getSecondResult();
-			Element elCustom1 = doubleResult.getFirstResult();
-			if (elCustom1 != null) {
-			
-				childName = "style";
-				obligatory = false;
-				doubleResult =  XmlHelp.getSingleChildElement(elCustom1, childName, tcsNamespace, obligatory);
-				success &= doubleResult.getSecondResult();
-				Element elStyle_Custom1 = doubleResult.getFirstResult();
-				String strColor_Custom1 = elStyle_Custom1.getAttributeValue("color");
-				String strFace_Custom1 = elStyle_Custom1.getAttributeValue("face");
-				String strFont_Custom1 = elStyle_Custom1.getAttributeValue("font");
-				String strSize_Custom1 = elStyle_Custom1.getAttributeValue("size");	
-			}
-			
-			childName = "custom2";
-			obligatory = false;
-			doubleResult =  XmlHelp.getSingleChildElement(elRecord, childName, tcsNamespace, obligatory);
-			success &= doubleResult.getSecondResult();
-			Element elCustom2 = doubleResult.getFirstResult();
-			if (elCustom2 != null) {
-			
-				childName = "style";
-				obligatory = false;
-				doubleResult =  XmlHelp.getSingleChildElement(elCustom2, childName, tcsNamespace, obligatory);
-				success &= doubleResult.getSecondResult();
-				Element elStyle_Custom2 = doubleResult.getFirstResult();
-				String strColor_Custom2 = elStyle_Custom2.getAttributeValue("color");
-				String strFace_Custom2 = elStyle_Custom2.getAttributeValue("face");
-				String strFont_Custom2 = elStyle_Custom2.getAttributeValue("font");
-				String strSize_Custom2 = elStyle_Custom2.getAttributeValue("size");
-			}
-			
-			childName = "custom3";
-			obligatory = false;
-			doubleResult =  XmlHelp.getSingleChildElement(elRecord, childName, tcsNamespace, obligatory);
-			success &= doubleResult.getSecondResult();
-			Element elCustom3 = doubleResult.getFirstResult();
-			if (elCustom3 != null) {
-			
-				childName = "style";
-				obligatory = false;
-				doubleResult =  XmlHelp.getSingleChildElement(elCustom3, childName, tcsNamespace, obligatory);
-				success &= doubleResult.getSecondResult();
-				Element elStyle_Custom3 = doubleResult.getFirstResult();
-				String strColor_Custom3 = elStyle_Custom3.getAttributeValue("color");
-				String strFace_Custom3 = elStyle_Custom3.getAttributeValue("face");
-				String strFont_Custom3 = elStyle_Custom3.getAttributeValue("font");
-				String strSize_Custom3 = elStyle_Custom3.getAttributeValue("size");
-			}
-			
-			childName = "custom4";
-			obligatory = false;
-			doubleResult =  XmlHelp.getSingleChildElement(elRecord, childName, tcsNamespace, obligatory);
-			success &= doubleResult.getSecondResult();
-			Element elCustom4 = doubleResult.getFirstResult();
-			if (elCustom4 != null) {
-			
-				childName = "style";
-				obligatory = false;
-				doubleResult =  XmlHelp.getSingleChildElement(elCustom4, childName, tcsNamespace, obligatory);
-				success &= doubleResult.getSecondResult();
-				Element elStyle_Custom4 = doubleResult.getFirstResult();
-				String strColor_Custom4 = elStyle_Custom4.getAttributeValue("color");
-				String strFace_Custom4 = elStyle_Custom4.getAttributeValue("face");
-				String strFont_Custom4 = elStyle_Custom4.getAttributeValue("font");
-				String strSize_Custom4 = elStyle_Custom4.getAttributeValue("size");
-			}
-			
-			childName = "custom5";
-			obligatory = false;
-			doubleResult =  XmlHelp.getSingleChildElement(elRecord, childName, tcsNamespace, obligatory);
-			success &= doubleResult.getSecondResult();
-			Element elCustom5 = doubleResult.getFirstResult();
-			if (elCustom5 != null) {
-			
-				childName = "style";
-				obligatory = false;
-				doubleResult =  XmlHelp.getSingleChildElement(elCustom5, childName, tcsNamespace, obligatory);
-				success &= doubleResult.getSecondResult();
-				Element elStyle_Custom5 = doubleResult.getFirstResult();
-				String strColor_Custom5 = elStyle_Custom5.getAttributeValue("color");
-				String strFace_Custom5 = elStyle_Custom5.getAttributeValue("face");
-				String strFont_Custom5 = elStyle_Custom5.getAttributeValue("font");
-				String strSize_Custom5 = elStyle_Custom5.getAttributeValue("size");
-			}
-			
-			childName = "custom6";
-			obligatory = false;
-			doubleResult =  XmlHelp.getSingleChildElement(elRecord, childName, tcsNamespace, obligatory);
-			success &= doubleResult.getSecondResult();
-			Element elCustom6 = doubleResult.getFirstResult();
-			if (elCustom6 != null) {
-			
-				childName = "style";
-				obligatory = false;
-				doubleResult =  XmlHelp.getSingleChildElement(elCustom6, childName, tcsNamespace, obligatory);
-				success &= doubleResult.getSecondResult();
-				Element elStyle_Custom6 = doubleResult.getFirstResult();
-				String strColor_Custom6 = elStyle_Custom6.getAttributeValue("color");
-				String strFace_Custom6 = elStyle_Custom6.getAttributeValue("face");
-				String strFont_Custom6 = elStyle_Custom6.getAttributeValue("font");
-				String strSize_Custom6 = elStyle_Custom6.getAttributeValue("size");
-			}
-			
-			childName = "custom7";
-			obligatory = false;
-			doubleResult =  XmlHelp.getSingleChildElement(elRecord, childName, tcsNamespace, obligatory);
-			success &= doubleResult.getSecondResult();
-			Element elCustom7 = doubleResult.getFirstResult();
-			if (elCustom7 != null) {
-			
-				childName = "style";
-				obligatory = false;
-				doubleResult =  XmlHelp.getSingleChildElement(elCustom7, childName, tcsNamespace, obligatory);
-				success &= doubleResult.getSecondResult();
-				Element elStyle_Custom7 = doubleResult.getFirstResult();
-				String strColor_Custom7 = elStyle_Custom7.getAttributeValue("color");
-				String strFace_Custom7 = elStyle_Custom7.getAttributeValue("face");
-				String strFont_Custom7 = elStyle_Custom7.getAttributeValue("font");
-				String strSize_Custom7 = elStyle_Custom7.getAttributeValue("size");
-			}
-		 */		
 			authorMap.put(elRec_number, (Team) author);
 			referenceMap.put(elRec_number, reference);	 
 		}	

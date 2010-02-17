@@ -11,6 +11,7 @@
 package eu.etaxonomy.cdm.api.service;
 
 import java.util.List;
+import java.util.Set;
 
 import eu.etaxonomy.cdm.api.service.config.ITaxonServiceConfigurator;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
@@ -320,4 +321,6 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	 * @return
 	 */
 	public List<MediaRepresentation> getAllMedia(Taxon taxon, int size, int height, int widthOrDuration, String[] mimeTypes);
+
+	public List<TaxonBase> findTaxaByID(Set<Integer> listOfIDs);
 }

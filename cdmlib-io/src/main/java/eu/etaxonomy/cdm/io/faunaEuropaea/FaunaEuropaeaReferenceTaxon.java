@@ -21,7 +21,7 @@ import java.util.UUID;
 public class FaunaEuropaeaReferenceTaxon {
 	
 	private UUID taxonUuid;
-//	private int taxonId;
+	private int taxonId;
 	private Set<FaunaEuropaeaReference> references;	
 	
 	/**
@@ -37,6 +37,15 @@ public class FaunaEuropaeaReferenceTaxon {
 		this();
 		this.taxonUuid = taxonUuid;
 	}
+	
+	/**
+	 * @param taxonUuid
+	 */
+	public FaunaEuropaeaReferenceTaxon(Integer taxonId) {
+		this();
+		this.taxonId = taxonId;
+	}
+	
 	/**
 	 * @return the taxonUuid
 	 */
@@ -49,6 +58,13 @@ public class FaunaEuropaeaReferenceTaxon {
 	public void setTaxonUuid(UUID taxonUuid) {
 		this.taxonUuid = taxonUuid;
 	}
+	/**
+	 * @param taxonUuid the taxonId to set
+	 */
+	public void setTaxonId(Integer taxonId) {
+		this.taxonId = taxonId;
+	}
+	
 	/**
 	 * @return the distributions
 	 */

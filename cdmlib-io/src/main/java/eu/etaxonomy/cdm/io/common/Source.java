@@ -42,6 +42,7 @@ public class Source {
     //DB info
 //	public final static String SQL_SERVER_2000 = "SQLServer2000";
 	public final static String SQL_SERVER_2005 = "SQLServer2005";
+	public final static String SQL_SERVER_2008 = "SQLServer2008";
 	public final static String ACCESS = "Access";
 	public final static String EXCEL = "Excel";
 	public final static String ODDBC = "ODBC";
@@ -55,6 +56,7 @@ public class Source {
     //driver class
 //    private static String clsSQLServer2000 = "com.microsoft.jdbc.sqlserver.SQLServerDriver";
     private static String clsSQLServer2005 = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
+    private static String clsSQLServer2008 = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
     private static String clsODBC = "sun.jdbc.odbc.JdbcOdbcDriver";
     private static String clsOracle = "oracle.jdbc.driver.OracleDriver";
     private static String clsDB2 = "COM.ibm.db2.jdbc.net.DB2Driver";
@@ -64,6 +66,7 @@ public class Source {
     //url
 //    private static String urlSQLServer = "jdbc:microsoft:sqlserver://";
     private static String urlSQLServer2005 = "jdbc:sqlserver://";
+    private static String urlSQLServer2008 = "jdbc:sqlserver://";
     private static String urlDB2 = "jdbc:db2://";
     private static String urlOracle = "jdbc:oracle:thin:@:1243:";
     private static String urlDataDirectSQLServer = "jdbc:datadirect:sqlserver://";
@@ -286,6 +289,11 @@ public class Source {
 	            Class.forName(clsSQLServer2005);
 	            server = mServer + ":" + mPort;
 	            mUrl = urlSQLServer2005 + server + ";databaseName=" + mDb +";SelectMethod="+ selectMethod; 
+	        }
+	        else if (mDbms.equalsIgnoreCase(SQL_SERVER_2008)) {
+	            Class.forName(clsSQLServer2008);
+	            server = mServer + ":" + mPort;
+	            mUrl = urlSQLServer2008 + server + ";databaseName=" + mDb +";SelectMethod="+ selectMethod; 
 	        }
 	        else if (mDbms.equalsIgnoreCase(ACCESS)) {
 	            Class.forName(clsODBC);

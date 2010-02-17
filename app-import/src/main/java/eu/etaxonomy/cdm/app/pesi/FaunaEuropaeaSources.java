@@ -7,7 +7,7 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package eu.etaxonomy.cdm.app.faunaEuropaea;
+package eu.etaxonomy.cdm.app.pesi;
 
 import org.apache.log4j.Logger;
 
@@ -25,9 +25,11 @@ public class FaunaEuropaeaSources {
 	public static Source faunEu(){
 		//	Fauna Europaea
 		//String dbms = Source.SQL_SERVER_2000;
-		String dbms = Source.SQL_SERVER_2005;
+		//String dbms = Source.SQL_SERVER_2005;
+		String dbms = Source.SQL_SERVER_2008;
 //		String strServer = "160.45.63.37";
-		String strServer = "BGBM14";               // "192.168.1.36";
+//		String strServer = "BGBM14";               
+		String strServer = "BGBM42";               // "192.168.1.36";
 		String strDB = "FaunEu";
 		int port = 1433;
 		String userName = "WebUser";

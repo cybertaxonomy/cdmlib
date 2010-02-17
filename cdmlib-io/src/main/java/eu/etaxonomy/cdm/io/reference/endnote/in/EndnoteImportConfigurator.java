@@ -24,6 +24,8 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
 import eu.etaxonomy.cdm.io.common.ImportStateBase;
+import eu.etaxonomy.cdm.io.common.IImportConfigurator.CHECK;
+import eu.etaxonomy.cdm.io.jaxb.JaxbExport;
 import eu.etaxonomy.cdm.model.reference.IDatabase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
@@ -31,6 +33,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 @Component
 public class EndnoteImportConfigurator extends ImportConfiguratorBase<EndnoteImportState> implements IImportConfigurator {
 	private static final Logger logger = Logger.getLogger(EndnoteImportConfigurator.class);
+	static final CHECK check = CHECK.IMPORT_WITHOUT_CHECK;
 	
 	public static EndnoteImportConfigurator NewInstance(String url,
 			ICdmDataSource destination){
@@ -228,7 +231,9 @@ public class EndnoteImportConfigurator extends ImportConfiguratorBase<EndnoteImp
 
 	@Override
 	protected void makeIoClassList() {
-		// TODO Auto-generated method stub
+		ioClassList = new Class[] {
+				EndNoteImportBase.class,
+		};
 		
 	}
 
