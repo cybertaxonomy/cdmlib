@@ -9,22 +9,13 @@
 */
 package eu.etaxonomy.cdm.common.mediaMetaData;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.Map.Entry;
 
 import org.apache.log4j.Logger;
 import org.apache.sanselan.ImageInfo;
@@ -32,7 +23,6 @@ import org.apache.sanselan.ImageReadException;
 import org.apache.sanselan.Sanselan;
 import org.apache.sanselan.common.IImageMetadata;
 import org.apache.sanselan.common.ImageMetadata.Item;
-import org.apache.sanselan.formats.jpeg.JpegImageMetadata;
 
 
 /**
@@ -155,20 +145,22 @@ public  class ImageMetaData extends MediaMetaData {
 			inputStream = connection.getInputStream();
 			IImageMetadata mediaData = Sanselan.getMetadata(inputStream, null);
 			
-			for (Object object : mediaData.getItems()){
-				Item item = (Item) object;
-				if (item.getKeyword().contains("/")){
-					String key = item.getKeyword();
-					//key.replace("/", "");
-					int index = key.indexOf("/");
-					key = key.substring(0, index);
-					metaData.put(key, item.getText());
-					
-				}else{
-					metaData.put(item.getKeyword(), item.getText());
+			if (mediaData != null){
+				for (Object object : mediaData.getItems()){
+					Item item = (Item) object;
+					if (item.getKeyword().contains("/")){
+						String key = item.getKeyword();
+						//key.replace("/", "");
+						int index = key.indexOf("/");
+						key = key.substring(0, index);
+						metaData.put(key, item.getText());
+						
+					}else{
+						metaData.put(item.getKeyword(), item.getText());
+						
+					}
 					
 				}
-				
 			}
 		} catch (ImageReadException e) {
 			// TODO Auto-generated catch block
