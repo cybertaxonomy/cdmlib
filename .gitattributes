@@ -1199,6 +1199,7 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/in/BerlinModelReferenceI
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/in/BerlinModelTaxonImport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/in/BerlinModelTaxonImportValidator.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/in/BerlinModelTaxonNameImport.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/in/BerlinModelTaxonNameImportValidator.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/in/BerlinModelTaxonNameRelationImport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/in/BerlinModelTaxonRelationImport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/in/BerlinModelTypesImport.java -text
