@@ -1082,11 +1082,13 @@
 	  		<version>1.8.0.7</version>
 	  	</dependency>
 
-	  	<dependency>
+		<!--for sqlserver2008 and sqlserver2005-->
+		<dependency>
 	  		<groupId>com.microsoft.sqlserver</groupId>
-	  		<artifactId>jdbc</artifactId>
-	  		<version>1.2</version>
-	  	</dependency>
+	  		<artifactId>jdbc4</artifactId>
+	  		<version>2.0</version>
+		</dependency>
+		
 <!-- use SQL Server 2005 driver instead (com.microsoft.sqlserver/jdbc)
 	  	<dependency>
 	  		<groupId>com.microsoft.jdbcdriver</groupId>
