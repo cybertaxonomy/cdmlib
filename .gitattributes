@@ -1197,6 +1197,7 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/in/BerlinModelNameStatus
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/in/BerlinModelOccurrenceImport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/in/BerlinModelReferenceImport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/in/BerlinModelTaxonImport.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/in/BerlinModelTaxonImportValidator.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/in/BerlinModelTaxonNameImport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/in/BerlinModelTaxonNameRelationImport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/in/BerlinModelTaxonRelationImport.java -text
@@ -1267,6 +1268,7 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/ICdmImporter.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/IExportConfigurator.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/IImportConfigurator.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/IIoConfigurator.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/IOValidator.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/IXmlMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/ImportConfiguratorBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/ImportHelper.java -text
