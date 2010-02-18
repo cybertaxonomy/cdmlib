@@ -121,13 +121,6 @@ public class AbsenceTerm extends PresenceAbsenceTermBase<AbsenceTerm> {
 		return getTermByUuid(uuidAbsence);
 	}
 	
-	public static final AbsenceTerm NATIVE_REPORTED_IN_ERROR(){
-		return getTermByUuid(uuidNF);
-	}
-	
-	public static final AbsenceTerm CULTIVATED_REPORTED_IN_ERROR(){
-		return getTermByUuid(uuidCF);
-	}
 
 	public static final AbsenceTerm INTRODUCED_REPORTED_IN_ERROR(){
 		return getTermByUuid(uuidIF);
