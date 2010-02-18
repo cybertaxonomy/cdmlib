@@ -1091,10 +1091,8 @@
 		<!--for sqlserver2008-->
 		<dependency>
 	  		<groupId>com.microsoft.sqlserver</groupId>
-	  		<artifactId>jdbc</artifactId>
+	  		<artifactId>jdbc4</artifactId>
 	  		<version>2.0</version>
-			<scope>system</scope>
-			<systemPath>C:/Programme/sqljdbc_2.0/enu/sqljdbc4.jar</systemPath> 
 		</dependency>
 		
 <!-- use SQL Server 2005 driver instead (com.microsoft.sqlserver/jdbc)
