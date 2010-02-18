@@ -16,6 +16,7 @@ import java.util.List;
 import javax.persistence.Entity;
 
 import org.apache.log4j.Logger;
+import org.joda.time.DateTime;
 
 /**
  * @author a.mueller
@@ -28,6 +29,10 @@ public class CdmMetaData extends CdmBase{
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CdmMetaData.class);
 
+	/* It is a little bit confusing that this specific information is located in
+	 * a generic class for metadata. Think about moving the schema version 
+	 *  
+	 */
 	/**
 	 * The database schema version number.
 	 * It is recommended to have the first two numbers equal to the CDM Library version number.
@@ -41,26 +46,36 @@ public class CdmMetaData extends CdmBase{
 	 */
 	private static final String dbSchemaVersion = "2.1.2.2.200909301715";
 	
-	public enum MetaDataPropertyName{
-		DB_SCHEMA_VERSION
+	/**
+	 * @return a list of default metadata objects 
+	 */
+	public static final List<CdmMetaData> defaultMetaData(){
+		List<CdmMetaData> result = new ArrayList<CdmMetaData>();
+		// schema version
+		result.add(new CdmMetaData(MetaDataPropertyName.DB_SCHEMA_VERSION, dbSchemaVersion));
+		// database create time
+		result.add(new CdmMetaData(MetaDataPropertyName.DB_CREATE_DATE, new DateTime().toString()));
+		return result;
 	}
+	
+	/* END OF CONFUSION */
 	
 	private MetaDataPropertyName propertyName;
 	private String value;
 	
-	
-	public static final List<CdmMetaData> propertyList(){
-		List<CdmMetaData> result = new ArrayList<CdmMetaData>();
-		result.add(new CdmMetaData(MetaDataPropertyName.DB_SCHEMA_VERSION, dbSchemaVersion));
-		return result;
-	}
-	
-	private CdmMetaData() {
-		super();
+	public enum MetaDataPropertyName{
+		DB_SCHEMA_VERSION, DB_CREATE_DATE, DB_CREATE_NOTE
 	}
 	
 	public String getMetaDataPropertyName() {
 		return dbSchemaVersion;
+	}
+	
+	/**
+	 * Simple constructor to be used by Spring
+	 */
+	protected CdmMetaData(){
+		super();
 	}
 
 	public CdmMetaData(MetaDataPropertyName propertyName, String value) {

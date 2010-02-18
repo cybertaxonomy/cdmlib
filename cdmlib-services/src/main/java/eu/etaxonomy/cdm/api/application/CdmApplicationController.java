@@ -210,7 +210,7 @@ public class CdmApplicationController {
 	}
 	
 	private void createMetadata(){
-		List<CdmMetaData> metaData = CdmMetaData.propertyList();
+		List<CdmMetaData> metaData = CdmMetaData.defaultMetaData();
 		getCommonService().saveAllMetaData(metaData);
 		logger.info("Metadata created.");
 	}
