@@ -275,22 +275,11 @@ public class CommonServiceImpl extends ServiceBase<OriginalSourceBase,IOriginalS
 			String currentSchemaVersion = getCurrentSchemaVersion(allCommonData);
 			String databaseSchemaVersion = getDatabaseSchemaVersion(allCommonData);
 			
-			if (areStringsEqual(currentSchemaVersion, databaseSchemaVersion)) {
+			if (currentSchemaVersion.equals(databaseSchemaVersion)) {
 				return true;
 			}
 		}
 		return false;
-	}
-
-	/**
-	 * Compares version numbers of the current schema version with the database schema version.
-	 * @param currentSchemaVersion
-	 * @param databaseSchemaVersion
-	 * @throws DatabaseSchemaMismatchException
-	 */
-	private boolean areStringsEqual(String first,
-			String second) {
-		return first.equals(second);
 	}
 
 	/**
