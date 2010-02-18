@@ -129,9 +129,9 @@ public class AbsenceTerm extends PresenceAbsenceTermBase<AbsenceTerm> {
 	//TODO make automatic like in TDWGArea
 	public static AbsenceTerm getPresenceTermByAbbreviation(String abbrev) { 
 		if (abbrev == null) { throw new NullPointerException("abbrev is 'null' in getPresenceTermByAbbreviation");
-		} else if (abbrev.equalsIgnoreCase("cf")) { return AbsenceTerm.CULTIVATED_REPORTED_IN_ERROR();
+	//	} else if (abbrev.equalsIgnoreCase("cf")) { return AbsenceTerm.CULTIVATED_REPORTED_IN_ERROR();
 		} else if (abbrev.equalsIgnoreCase("if")) { return AbsenceTerm.INTRODUCED_REPORTED_IN_ERROR();
-		} else if (abbrev.equalsIgnoreCase("nf")) { return AbsenceTerm.NATIVE_REPORTED_IN_ERROR();
+	// } else if (abbrev.equalsIgnoreCase("nf")) { return AbsenceTerm.NATIVE_REPORTED_IN_ERROR();
 		} else {
 			logger.warn("Unknown absence status term: " + abbrev);
 			return null;

@@ -48,6 +48,9 @@ public class PresenceTerm extends PresenceAbsenceTermBase<PresenceTerm> {
 	
 	private static Map<UUID, PresenceTerm> termMap = null;
 	
+	
+	//private static PresenceTerm NODATA;
+	//private static PresenceTerm DOUBTFUL_PRESENT;
 
 	private static final UUID uuidP=UUID.fromString("cef81d25-501c-48d8-bbea-542ec50de2c2");
 	private static final UUID uuidN=UUID.fromString("ddeac4f2-d8fa-43b8-ad7e-ca13abdd32c7");
@@ -66,7 +69,9 @@ public class PresenceTerm extends PresenceAbsenceTermBase<PresenceTerm> {
 	private static final UUID uuidE=UUID.fromString("c3ee7048-15b7-4be1-b687-9ce9c1a669d6");
 	private static final UUID uuidNA=UUID.fromString("4e04990a-66fe-4fdf-856c-f40772fbcf0a");
 	private static final UUID uuidIV=UUID.fromString("dc536e3d-a753-4bbe-a386-dd8aff35c234");
-
+	private static final UUID uuidNRE = UUID.fromString("4ba212ef-041e-418d-9d43-2ebb191b61d8");
+	private static final UUID uuidIRE = UUID.fromString("826239f7-45b7-42b5-857c-c1f852cfad6b");
+	private static final UUID uuidCRE = UUID.fromString("b47f1679-0d0c-4ea7-a2e4-80709ea791c6");
 
 	//********* METHODS **************************************/
 	/** 
@@ -126,12 +131,16 @@ public class PresenceTerm extends PresenceAbsenceTermBase<PresenceTerm> {
 			return (PresenceTerm)termMap.get(uuid);
 		}
 	}
+	//private static final UUID uuidDP=UUID.fromString("075f4fe1-430b-4c35-9f82-1b80c086d278");
+	//private static final UUID uuidNoD=UUID.fromString("39a29ea2-0e73-42ef-9c2a-f0bcaf99f47e");
 
 	
 	public static final PresenceTerm PRESENT(){
 		return getTermByUuid(uuidP);
 	}
-
+//	public static final PresenceTerm DOUBTFUL_PRESENT(){return DOUBTFUL_PRESENT; }
+//	public static final PresenceTerm NODATA(){return NODATA; }
+	
 	public static final PresenceTerm CULTIVATED(){
 		return getTermByUuid(uuidC);
 	}
@@ -196,31 +205,52 @@ public class PresenceTerm extends PresenceAbsenceTermBase<PresenceTerm> {
 		return getTermByUuid(uuidNA);
 	}
 	
+	private static PresenceTerm NATIVE_REPORTED_IN_ERROR() {
+		return getTermByUuid(uuidNRE);
+	}
+
+	private static PresenceTerm INTRODUCED_REPORTED_IN_ERROR() {
+		return getTermByUuid(uuidIRE);
+	}
+
+	private static PresenceTerm CULTIVATED_REPORTED_IN_ERROR() {
+		return getTermByUuid(uuidCRE);
+	}
+	
 	//TODO make automatic like in TDWGArea
 	public static PresenceTerm getPresenceTermByAbbreviation(String abbrev) { 
 		if (abbrev == null) { throw new NullPointerException("abbrev is 'null' in getPresenceTermByAbbreviation");
 		} else if (abbrev.equalsIgnoreCase("c"))  { return PresenceTerm.CULTIVATED();
+		} else if (abbrev.equalsIgnoreCase("cf")) {return PresenceTerm.CULTIVATED_REPORTED_IN_ERROR();
 		} else if (abbrev.equalsIgnoreCase("e"))  { return PresenceTerm.ENDEMIC_FOR_THE_RELEVANT_AREA();
 		} else if (abbrev.equalsIgnoreCase("i"))  { return PresenceTerm.INTRODUCED();
 		} else if (abbrev.equalsIgnoreCase("ia")) { return PresenceTerm.INTRODUCED_ADVENTITIOUS();
 		} else if (abbrev.equalsIgnoreCase("ic")) { return PresenceTerm.INTRODUCED_CULTIVATED();
 		} else if (abbrev.equalsIgnoreCase("id")) { return PresenceTerm.INTRODUCED_DOUBTFULLY_INTRODUCED();
 		} else if (abbrev.equalsIgnoreCase("ie")) { return PresenceTerm.INTRODUCED_FORMERLY_INTRODUCED();
+		} else if (abbrev.equalsIgnoreCase("if")) { return PresenceTerm.INTRODUCED_REPORTED_IN_ERROR(); 
 		} else if (abbrev.equalsIgnoreCase("in")) { return PresenceTerm.INTRODUCED_NATURALIZED();
 		} else if (abbrev.equalsIgnoreCase("ip")) { return PresenceTerm.INTRODUCED_UNCERTAIN_DEGREE_OF_NATURALISATION();
 		} else if (abbrev.equalsIgnoreCase("iq")) { return PresenceTerm.INTRODUCED_PRESENCE_QUESTIONABLE();
 		} else if (abbrev.equalsIgnoreCase("n"))  { return PresenceTerm.NATIVE();
 		} else if (abbrev.equalsIgnoreCase("nd")) { return PresenceTerm.NATIVE_DOUBTFULLY_NATIVE();
 		} else if (abbrev.equalsIgnoreCase("ne")) { return PresenceTerm.NATIVE_FORMERLY_NATIVE();
+		} else if (abbrev.equalsIgnoreCase("nf")) { return PresenceTerm.NATIVE_REPORTED_IN_ERROR();
 		} else if (abbrev.equalsIgnoreCase("nq")) { return PresenceTerm.NATIVE_PRESENCE_QUESTIONABLE();
 		} else if (abbrev.equalsIgnoreCase("p"))  { return PresenceTerm.PRESENT();
 		} else if (abbrev.equalsIgnoreCase("na"))  { return PresenceTerm.NATURALISED();
 		} else if (abbrev.equalsIgnoreCase("iv"))  { return PresenceTerm.INVASIVE();
+		
 		} else {
 			logger.warn("Unknown presence status term: " + abbrev);
 			return null;
 		}
 	}
+
+	
+	
+	
+	
 
 	@Override
 	protected void setDefaultTerms(TermVocabulary<PresenceTerm> termVocabulary) {
