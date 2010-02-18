@@ -26,6 +26,7 @@ import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
+import eu.etaxonomy.cdm.model.description.PresenceTerm;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -75,7 +76,8 @@ public class FaunaEuropaeaDistributionImport extends FaunaEuropaeaImportBase {
 	protected boolean doInvoke(FaunaEuropaeaImportState state) {	
 		
 		int limit = state.getConfig().getLimitSave();
-		
+		UUID noData;
+		UUID doubtfullPresent;
 		/* Taxon store for retrieving taxa from and saving taxa to CDM */
 		List<TaxonBase> taxonList = null;
 		/* UUID store as input for retrieving taxa from CDM */
@@ -88,6 +90,15 @@ public class FaunaEuropaeaDistributionImport extends FaunaEuropaeaImportBase {
 		
 		TransactionStatus txStatus = null;
 		
+		txStatus = startTransaction();
+			noData = getTermService().save(PresenceTerm.NewInstance("no data", "no data", "nod"));
+			doubtfullPresent = getTermService().save(PresenceTerm.NewInstance("doubtfull present", "doubtfull present", "dp"));
+			HashMap<String, UUID> uuids = new HashMap<String, UUID>();
+			uuids.put("noData", noData);
+			uuids.put("doubtfullPresent", doubtfullPresent);
+			FaunaEuropaeaTransformer.setUUIDs(uuids);
+		commitTransaction(txStatus);
+		txStatus = null;
 		FaunaEuropaeaImportConfigurator fauEuConfig = state.getConfig();
 		Source source = fauEuConfig.getSource();
 		
@@ -215,9 +226,19 @@ public class FaunaEuropaeaDistributionImport extends FaunaEuropaeaImportBase {
 								FaunaEuropaeaDistributionTaxon fauEuHelperTaxon = fauEuTaxonMap.get(taxonUuid);
 
 								for (FaunaEuropaeaDistribution fauEuHelperDistribution : fauEuHelperTaxon.getDistributions()) {
-
-									PresenceAbsenceTermBase<?> presenceAbsenceStatus 
-									= FaunaEuropaeaTransformer.occStatus2PresenceAbsence(fauEuHelperDistribution.getOccurrenceStatusId());
+									PresenceAbsenceTermBase<?> presenceAbsenceStatus;
+									
+									if (fauEuHelperDistribution.getOccurrenceStatusId() != 0 && fauEuHelperDistribution.getOccurrenceStatusId() != 2){
+										if (fauEuHelperDistribution.getOccurrenceStatusId() == 1){
+											presenceAbsenceStatus = (PresenceAbsenceTermBase)getTermService().find(doubtfullPresent);
+										}else {
+											presenceAbsenceStatus = (PresenceAbsenceTermBase)getTermService().find(noData);
+										}
+									}else{
+										presenceAbsenceStatus 
+										= FaunaEuropaeaTransformer.occStatus2PresenceAbsence(fauEuHelperDistribution.getOccurrenceStatusId());
+									}
+									
 									NamedArea namedArea = 
 										FaunaEuropaeaTransformer.areaId2TdwgArea(fauEuHelperDistribution);
 

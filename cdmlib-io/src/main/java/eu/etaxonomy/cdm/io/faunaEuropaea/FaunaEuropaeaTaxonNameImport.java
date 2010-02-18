@@ -103,7 +103,9 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 		
 		boolean success = true;
 		if(logger.isInfoEnabled()) { logger.info("Start making taxa..."); }
-
+		
+		
+		
 		success = processTaxa(state);
 		
 		logger.info("End making taxa...");
