@@ -1,13 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry exported="true" kind="lib" path="jaxb-impl-2.1.6.jar"/>
-	<classpathentry exported="true" kind="lib" path="jaxb-api-2.1.6.jar"/>
-	<classpathentry exported="true" kind="lib" path="activation-1.1.jar"/>
-	<classpathentry exported="true" kind="lib" path="xml-resolver-1.2.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="src" output="target/classes" path="src/main/java"/>
 	<classpathentry kind="src" output="target/test-classes" path="src/test/java"/>
+	<classpathentry exported="true" kind="lib" path="activation-1.1.jar" sourcepath="activation-1.1src.zip"/>
 	<classpathentry exported="true" kind="lib" path="antlr-2.7.6.jar" sourcepath="eclipse-pluginsrc.zip"/>
 	<classpathentry exported="true" kind="lib" path="aopalliance-1.0.jar" sourcepath="eclipse-pluginsrc.zip"/>
 	<classpathentry exported="true" kind="lib" path="asm-attrs.jar" sourcepath="eclipse-pluginsrc.zip"/>
@@ -17,11 +14,11 @@
 	<classpathentry exported="true" kind="lib" path="aspectjweaver-1.5.4.jar" sourcepath="eclipse-pluginsrc.zip"/>
 	<classpathentry exported="true" kind="lib" path="aspectjweaver-1.6.3.jar" sourcepath="eclipse-pluginsrc.zip"/>
 	<classpathentry exported="true" kind="lib" path="cdmlib-commons-2.3.jar" sourcepath="cdmlib-commons-2.3src.zip"/>
-	<classpathentry exported="true" kind="lib" path="cdmlib-ext-2.3.jar" sourcepath="cdmlib-ext-2.3src.zip"/>
-	<classpathentry exported="true" kind="lib" path="cdmlib-io-2.3.jar" sourcepath="cdmlib-io-2.3src.zip"/>
 	<classpathentry exported="true" kind="lib" path="cdmlib-model-2.3.jar" sourcepath="cdmlib-model-2.3src.zip"/>
 	<classpathentry exported="true" kind="lib" path="cdmlib-persistence-2.3.jar" sourcepath="cdmlib-persistence-2.3src.zip"/>
+	<classpathentry exported="true" kind="lib" path="cdmlib-ext-2.3.jar" sourcepath="cdmlib-ext-2.3src.zip"/>
 	<classpathentry exported="true" kind="lib" path="cdmlib-services-2.3.jar" sourcepath="cdmlib-services-2.3src.zip"/>
+	<classpathentry exported="true" kind="lib" path="cdmlib-io-2.3.jar" sourcepath="cdmlib-io-2.3src.zip"/>
 	<classpathentry exported="true" kind="lib" path="cglib-2.1.3.jar" sourcepath="eclipse-pluginsrc.zip"/>
 	<classpathentry exported="true" kind="lib" path="commons-beanutils-1.7.0.jar" sourcepath="commons-beanutils-1.7.0src.zip"/>
 	<classpathentry exported="true" kind="lib" path="commons-collections-3.2.jar" sourcepath="commons-collections-3.2src.zip"/>
@@ -39,6 +36,8 @@
 	<classpathentry exported="true" kind="lib" path="hibernate-tools-3.2.0.ga.jar" sourcepath="eclipse-pluginsrc.zip"/>
 	<classpathentry exported="true" kind="lib" path="hsqldb.jar" sourcepath="eclipse-pluginsrc.zip"/>
 	<classpathentry exported="true" kind="lib" path="javassist.jar" sourcepath="eclipse-pluginsrc.zip"/>
+	<classpathentry exported="true" kind="lib" path="jaxb-api-2.1.6.jar"/>
+	<classpathentry exported="true" kind="lib" path="jaxb-impl-2.1.6.jar"/>
 	<classpathentry exported="true" kind="lib" path="jdbc-1.2.jar" sourcepath="eclipse-pluginsrc.zip"/>
 	<classpathentry exported="true" kind="lib" path="jdbc2_0-stdext.jar" sourcepath="eclipse-pluginsrc.zip"/>
 	<classpathentry exported="true" kind="lib" path="jdom-1.0.jar" sourcepath="eclipse-pluginsrc.zip"/>
@@ -85,5 +84,6 @@
 	<classpathentry exported="true" kind="lib" path="org.springframework.expression-3.0.0.RC1.jar" sourcepath="org.springframework.expression-3.0.0.RC1src.zip"/>
 	<classpathentry exported="true" kind="lib" path="commons-pool-1.3.jar" sourcepath="commons-pool-1.3src.zip"/>
 	<classpathentry exported="true" kind="lib" path="hibernate-validator-4.0.0.CR1.jar" sourcepath="hibernate-validator-4.0.0.CR1src.zip"/>
+	<classpathentry exported="true" kind="lib" path="xml-resolver-1.2.jar" sourcepath="xml-resolver-1.2src.zip"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
