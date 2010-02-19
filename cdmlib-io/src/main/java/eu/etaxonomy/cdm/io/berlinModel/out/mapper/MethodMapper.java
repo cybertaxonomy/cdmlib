@@ -16,7 +16,7 @@ import java.sql.Types;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.io.berlinModel.out.BerlinModelExportBase;
+import eu.etaxonomy.cdm.io.common.DbExportBase;
 import eu.etaxonomy.cdm.io.common.DbExportStateBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
@@ -31,23 +31,23 @@ public class MethodMapper extends DbSingleAttributeExportMapperBase<DbExportStat
 	private Method method;
 	private Class<?>[] parameterTypes;
 	
-	public static <T extends BerlinModelExportBase> MethodMapper NewInstance(String dbAttributeString, BerlinModelExportBase bmeb){
+	public static <T extends DbExportBase> MethodMapper NewInstance(String dbAttributeString, DbExportBase bmeb){
 		String methodName = "get" + dbAttributeString;
 		return NewInstance(dbAttributeString, bmeb, methodName);
 	}
 	
-	public static <T extends BerlinModelExportBase> MethodMapper NewInstance(String dbAttributeString, BerlinModelExportBase bmeb, String methodName){
+	public static <T extends DbExportBase> MethodMapper NewInstance(String dbAttributeString, DbExportBase bmeb, String methodName){
 		Class<?> parameterTypes = bmeb.getStandardMethodParameter();
 		MethodMapper result = new MethodMapper(dbAttributeString, bmeb.getClass(), methodName, parameterTypes);
 		return result;
 	}
 
-	public static <T extends BerlinModelExportBase> MethodMapper NewInstance(String dbAttributeString, Class<?> clazz, String methodName, Class parameterTypes){
+	public static <T extends DbExportBase> MethodMapper NewInstance(String dbAttributeString, Class<?> clazz, String methodName, Class parameterTypes){
 		MethodMapper result = new MethodMapper(dbAttributeString, clazz, methodName, parameterTypes);
 		return result;
 	}
 	
-	public static <T extends BerlinModelExportBase> MethodMapper NewInstance(String dbAttributeString, Class<?> clazz, String methodName, Class<?> parameterType1, Class<?> parameterType2){
+	public static <T extends DbExportBase> MethodMapper NewInstance(String dbAttributeString, Class<?> clazz, String methodName, Class<?> parameterType1, Class<?> parameterType2){
 		MethodMapper result = new MethodMapper(dbAttributeString, clazz, methodName, parameterType1,parameterType2);
 		return result;
 	}
