@@ -15,10 +15,21 @@ SERVERSCRIPT="cdmserver"
 SERVERJAR="cdmserver-standalone.jar"
 SERVERCONF="datasources.xml"
 
-CDM_USER="root"
-CDM_GROUP="root"
-USEREXIST=$(grep $CDM_USER /etc/passwd)
-GROUPEXIST=$(grep $CDM_GROUP /etc/passwd)
+CDM_USER="cdmuser"
+CDM_GROUP="cdmgroup"
+
+#
+#functions
+#
+userExist(){
+    grep $1 /etc/passwd > /dev/null
+    [ $? -eq 0 ] && return $TRUE || return $FALSE
+}
+
+groupExist(){
+    grep $1 /etc/group > /dev/null
+    [ $? -eq 0 ] && return $TRUE || return $FALSE
+}
 
 
 # summary of how this script can be called:
@@ -53,13 +64,15 @@ case "$1" in
     rm -rf $CDM_HOME
 
     #removing the user and group
-    #if [ -n "$USEREXIST" ] ; then
-    #userdel $CDM_USER
-    #fi
-    
-    #if [ -n "$GROUPEXIST" ] ; then
-    #groupdel $CDM_GROUP
-    #fi
+    if ( userExist $CDM_USER  )
+    then
+    userdel $CDM_USER
+    fi
+
+    if ( groupExist $CDM_GROUP  )
+    then
+    groupdel $CDM_GROUP
+    fi
 
     ;;
 

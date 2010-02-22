@@ -22,6 +22,7 @@ PROPERTIES="cdmserver.properties"
 CDM_USER=cdmuser
 CDM_GROUP=cdmgroup
 CDM_USER_HOME=/opt/cdmserver/
+#CDM_USER_HOME=/root/cdmserver/
 
 #
 #functions
@@ -90,6 +91,8 @@ case "$1" in
     cp $TMP$SERVERCONF $CDM_LIBRARY
     cp $TMP$SERVERJAR $CDM_HOME
     #cp $TMP$PROPERTIES $CDM_LIBRARY
+    mkdir /root/.cdmLibrary
+    cp $TMP$SERVERCONF /root/.cdmLibrary/
 
     #starting the script
     $bindir$SERVERSCRIPT start
