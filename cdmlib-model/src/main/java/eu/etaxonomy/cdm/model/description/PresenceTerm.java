@@ -205,15 +205,15 @@ public class PresenceTerm extends PresenceAbsenceTermBase<PresenceTerm> {
 		return getTermByUuid(uuidNA);
 	}
 	
-	private static PresenceTerm NATIVE_REPORTED_IN_ERROR() {
+	public static PresenceTerm NATIVE_REPORTED_IN_ERROR() {
 		return getTermByUuid(uuidNRE);
 	}
 
-	private static PresenceTerm INTRODUCED_REPORTED_IN_ERROR() {
+	public static PresenceTerm INTRODUCED_REPORTED_IN_ERROR() {
 		return getTermByUuid(uuidIRE);
 	}
 
-	private static PresenceTerm CULTIVATED_REPORTED_IN_ERROR() {
+	public static PresenceTerm CULTIVATED_REPORTED_IN_ERROR() {
 		return getTermByUuid(uuidCRE);
 	}
 	
