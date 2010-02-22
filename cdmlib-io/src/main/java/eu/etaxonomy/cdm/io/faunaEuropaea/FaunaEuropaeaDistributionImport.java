@@ -95,6 +95,7 @@ public class FaunaEuropaeaDistributionImport extends FaunaEuropaeaImportBase {
 			doubtfullPresent = getTermService().save(PresenceTerm.NewInstance("doubtfull present", "doubtfull present", "dp"));
 			HashMap<String, UUID> uuids = new HashMap<String, UUID>();
 			uuids.put("noData", noData);
+			logger.debug("uuid no Data: " + noData.toString() + " uuid doubtfulPresent: " + doubtfullPresent.toString());
 			uuids.put("doubtfullPresent", doubtfullPresent);
 			FaunaEuropaeaTransformer.setUUIDs(uuids);
 		commitTransaction(txStatus);

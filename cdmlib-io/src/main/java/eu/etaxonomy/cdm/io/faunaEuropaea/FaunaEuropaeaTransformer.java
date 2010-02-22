@@ -94,11 +94,15 @@ public final class FaunaEuropaeaTransformer {
 		switch (occStatusId){
 		case 0: return PresenceTerm.PRESENT();
 		case 2: return AbsenceTerm.ABSENT();
-		//case 1: return PresenceTerm.DOUBTFUL_PRESENT();
+
+
 		default: {
+
 			return null;
 		
+
 		}
+		
 	}
 	}
 	public static void setUUIDs(HashMap<String,UUID> uuids){
