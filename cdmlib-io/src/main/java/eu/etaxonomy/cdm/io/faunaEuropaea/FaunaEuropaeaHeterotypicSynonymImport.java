@@ -103,6 +103,7 @@ implements ICdmImport<CdmImportConfigurator, CdmImportState> {
 							if (nameRelations != null && nameRelations.iterator().hasNext()) {
 								nameRelation = nameRelations.iterator().next();
 								acceptedName = nameRelation.getToName();
+								logger.info("SynonymName: " + synonymName + " titleCache of synonym: "+synonym.getTitleCache() + " name of acceptedTaxon: " + acceptedName.getTitleCache());
 								if (logger.isTraceEnabled()) {
 									logger.trace("toName: " + acceptedName);
 									logger.trace("fromName: " + nameRelation.getFromName());
@@ -111,8 +112,12 @@ implements ICdmImport<CdmImportConfigurator, CdmImportState> {
 								if (taxonBases != null && taxonBases.iterator().hasNext()) {
 									taxonBase = taxonBases.iterator().next();
 									acceptedTaxon = taxonBase.deproxy(taxonBase, Taxon.class);
-									acceptedTaxon.addHeterotypicSynonymName(synonymName);
-									taxonSet.add(acceptedTaxon);
+									Set <Synonym> synonyms = acceptedTaxon.getSynonyms();
+									if (!synonyms.contains(synonym)){
+									//TODO: Achtung!!!!! dies wird auch bei homotypischen Synonymen aufgerufen! Dadurch wird ein weiteres Synonym erzeugt
+										acceptedTaxon.addHeterotypicSynonymName(synonymName);
+										taxonSet.add(acceptedTaxon);
+									}
 								}
 							}
 						}
