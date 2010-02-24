@@ -22,6 +22,8 @@ import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
+import eu.etaxonomy.cdm.model.common.CdmBase;
+
 public class HibernateProxyNullSafeDeepConverter implements ConfigurableCustomConverter, ApplicationContextAware {
 	
 	private MapperIF mapper;
@@ -41,7 +43,7 @@ public class HibernateProxyNullSafeDeepConverter implements ConfigurableCustomCo
 
 	public Object convert(Object destination, Object source, Class destClass, Class sourceClass, String arg) {
 		if (source == null || !Hibernate.isInitialized(source)) {
-		    return null;
+			return null;
 	    } else {
 	    	try {
 	    		PropertyDescriptor propertyDescriptor = BeanUtils.getPropertyDescriptor(sourceClass, arg);
@@ -52,7 +54,11 @@ public class HibernateProxyNullSafeDeepConverter implements ConfigurableCustomCo
 	    		if(value == null || !Hibernate.isInitialized(value)) {
 	    		    return null;
 	    		} else {
-	    			return getMapper().map(value, destClass);
+	    			if(value instanceof CdmBase) {
+	    			    return getMapper().map(value, destClass);
+	    			} else {
+	    				return value;
+	    			}
 	    		}
 			} catch (Exception e) {
 				throw new MappingException("Converter HibernateProxyNullSafeDeepConverter used incorrectly. Arguments passed in were:"+ destination + " and " + source + " sourceClass " + sourceClass + " destClass " + destClass, e);
