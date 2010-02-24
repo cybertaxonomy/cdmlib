@@ -1254,6 +1254,7 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/CdmImportBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/CdmIoBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/CdmIoMapping.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/CdmSingleAttributeMapperBase.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/DbExportBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/DbExportConfiguratorBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/DbExportStateBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/DefaultImportState.java -text
