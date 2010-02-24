@@ -60,16 +60,20 @@ public class CommonServiceImpl extends ServiceBase<OriginalSourceBase,IOriginalS
 	protected void setDao(IOriginalSourceDao dao) {
 		this.dao = dao;
 	}
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.service.ICommonService#getSourcedObjectsByIdInSource(java.lang.Class, java.util.List, java.lang.String)
+	 */
+	public Map<String, ? extends IdentifiableEntity> getSourcedObjectsByIdInSource(Class clazz, Set<String> idInSourceSet, String idNamespace) {
+		Map<String, ? extends IdentifiableEntity> list = originalSourceDao.findOriginalSourcesByIdInSource(clazz, idInSourceSet, idNamespace);
+		return list;
+	}
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.ICommonService#getSourcedObjectById(java.lang.String, java.lang.String)
 	 */
 	public ISourceable getSourcedObjectByIdInSource(Class clazz, String idInSource, String idNamespace) {
 		ISourceable result = null;
-//		List<OriginalSource> originalSource = originalSourceDao.findOriginalSourceByIdInSource(idInSource, idNamespace);
-//		if (! originalSource.isEmpty()){
-//			result = originalSource.get(0).getSourcedObj();
-//		}
 		List<IdentifiableEntity> list = originalSourceDao.findOriginalSourceByIdInSource(clazz, idInSource, idNamespace);
 		if (! list.isEmpty()){
 			result = list.get(0);
