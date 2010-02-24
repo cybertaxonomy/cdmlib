@@ -20,6 +20,8 @@ import eu.etaxonomy.cdm.api.service.IService;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.ExtensionType;
+import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
@@ -39,6 +41,11 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase> ext
 	private Map<Object,TaxonomicTree> treeMap = new HashMap<Object,TaxonomicTree>();
 
 	private Map<ReferenceBase,UUID> treeUuidMap = new HashMap<ReferenceBase,UUID>();
+
+	private Map<Integer,UUID> refIdtreeUuidMap = new HashMap<Integer,UUID>();
+	
+	Map<UUID, ExtensionType> extensionTypeMap = new HashMap<UUID, ExtensionType>();
+	Map<UUID, MarkerType> markerTypeMap = new HashMap<UUID, MarkerType>();
 
 	
 	protected ImportStateBase(CONFIG config){
@@ -112,8 +119,39 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase> ext
 			this.treeUuidMap.put(ref, tree.getUuid());
 		}
 	}
-	
+
 	public int countTreeUuids(){
 		return treeUuidMap.size();
 	}
+
+	
+	
+	
+	public void putTreeUuidByRefId(int referenceId, TaxonomicTree tree) {
+		if (tree != null &&  tree.getUuid() != null){
+			this.refIdtreeUuidMap.put(referenceId, tree.getUuid());
+		}
+	}
+	
+	public UUID getTreeUuidByRefId(Integer refId) {
+		return refIdtreeUuidMap.get(refId);
+	}
+	
+	
+	public ExtensionType getExtensionType(UUID uuid){
+		return extensionTypeMap.get(uuid);
+	}
+	
+	public void putExtensionType(ExtensionType extensionType){
+		extensionTypeMap.put(extensionType.getUuid(), extensionType);
+	}
+
+	public MarkerType getMarkerType(UUID uuid){
+		return markerTypeMap.get(uuid);
+	}
+	
+	public void putMarkerType(MarkerType markerType){
+		markerTypeMap.put(markerType.getUuid(), markerType);
+	}
+	
 }

@@ -9,9 +9,13 @@
 
 package eu.etaxonomy.cdm.io.common;
 
+import java.util.UUID;
+
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.model.common.ExtensionType;
+import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
 
@@ -71,6 +75,35 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		getTaxonTreeService().save(tree);
 		state.putTreeUuid(ref, tree);
 		return tree;
+	}
+	
+	
+	protected ExtensionType getExtensionType(STATE state, UUID uuid, String label, String text, String labelAbbrev){
+		ExtensionType extensionType = state.getExtensionType(uuid);
+		if (extensionType == null){
+			extensionType = (ExtensionType)getTermService().find(uuid);
+			if (extensionType == null){
+				extensionType = new ExtensionType(label, text, labelAbbrev);
+				extensionType.setUuid(uuid);
+				getTermService().save(extensionType);
+				state.putExtensionType(extensionType);
+			}
+		}
+		return extensionType;
+	}
+	
+	protected MarkerType getMarkerType(STATE state, UUID uuid, String label, String text, String labelAbbrev){
+		MarkerType markerType = state.getMarkerType(uuid);
+		if (markerType == null){
+			markerType = (MarkerType)getTermService().find(uuid);
+			if (markerType == null){
+				markerType = MarkerType.NewInstance(label, text, labelAbbrev);
+				markerType.setUuid(uuid);
+				getTermService().save(markerType);
+				state.putMarkerType(markerType);
+			}
+		}
+		return markerType;
 	}
 	
 }

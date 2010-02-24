@@ -200,7 +200,7 @@ public abstract class ImportConfiguratorBase<STATE extends ImportStateBase> exte
 	}
 
 	/**
-	 * If true, no errors occurs if objects are not found that should exist. This may
+	 * If true, no errors occur if objects are not found that should exist. This may
 	 * be needed e.g. when only subsets of the data are imported.
 	 * Default value is <cod>false</code>.
 	 * @return the ignoreNull

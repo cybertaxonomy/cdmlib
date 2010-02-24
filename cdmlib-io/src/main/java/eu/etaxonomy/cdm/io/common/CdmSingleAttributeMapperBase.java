@@ -16,6 +16,8 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.io.common.mapping.CdmAttributeMapperBase;
+
 /**
  * @author a.mueller
  * @created 05.08.2008
@@ -25,8 +27,8 @@ public abstract class CdmSingleAttributeMapperBase extends CdmAttributeMapperBas
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CdmSingleAttributeMapperBase.class);
 	
-	private String sourceValue;
-	private String destinationValue;
+	private String sourceAttribute;
+	private String destinationAttribute;
 	protected Object defaultValue;
 
 	protected CdmSingleAttributeMapperBase(String sourceAttributString, String destinationAttributeString){
@@ -34,31 +36,31 @@ public abstract class CdmSingleAttributeMapperBase extends CdmAttributeMapperBas
 	}
 
 	protected CdmSingleAttributeMapperBase(String sourceAttributString, String destinationAttributeString, Object defaultValue){
-		this.sourceValue = sourceAttributString;
-		this.destinationValue = destinationAttributeString;
+		this.sourceAttribute = sourceAttributString;
+		this.destinationAttribute = destinationAttributeString;
 		this.defaultValue = defaultValue;
 	}
 
 	
 	public String getSourceAttribute(){
-		return sourceValue;
+		return sourceAttribute;
 	}
 	
 	public String getDestinationAttribute(){
-		return destinationValue;
+		return destinationAttribute;
 	}
 	
 	@Override
 	public Set<String> getSourceAttributes(){
 		Set<String>  result = new HashSet<String>();
-		result.add(sourceValue);
+		result.add(sourceAttribute);
 		return result;
 	}
 
 	@Override
 	public Set<String>  getDestinationAttributes(){
 		Set<String>  result = new HashSet<String>();
-		result.add(destinationValue);
+		result.add(destinationAttribute);
 		return result;
 	}
 	
@@ -66,14 +68,14 @@ public abstract class CdmSingleAttributeMapperBase extends CdmAttributeMapperBas
 	@Override
 	public List<String> getSourceAttributeList(){
 		List<String>  result = new ArrayList<String>();
-		result.add(sourceValue);
+		result.add(sourceAttribute);
 		return result;
 	}
 
 	@Override
 	public List<String>  getDestinationAttributeList(){
 		List<String>  result = new ArrayList<String>();
-		result.add(destinationValue);
+		result.add(destinationAttribute);
 		return result;
 	}
 	
