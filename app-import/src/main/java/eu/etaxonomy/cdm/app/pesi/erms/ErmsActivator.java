@@ -7,7 +7,7 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package eu.etaxonomy.cdm.app.pesi;
+package eu.etaxonomy.cdm.app.pesi.erms;
 
 import java.util.UUID;
 
@@ -19,11 +19,11 @@ import eu.etaxonomy.cdm.app.berlinModelImport.TreeCreator;
 import eu.etaxonomy.cdm.app.common.CdmDestinations;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
-import eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportConfigurator;
 import eu.etaxonomy.cdm.io.common.CdmDefaultImport;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator.CHECK;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator.DO_REFERENCES;
+import eu.etaxonomy.cdm.io.erms.ErmsImportConfigurator;
 import eu.etaxonomy.cdm.model.common.ISourceable;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
@@ -44,8 +44,8 @@ public class ErmsActivator {
 
 	//database validation status (create, update, validate ...)
 	static DbSchemaValidation hbm2dll = DbSchemaValidation.CREATE;
-	static final Source berlinModelSource = BerlinModelSources.PESI_ERMS();
-	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_pesi_erms();
+	static final Source ermsSource = BerlinModelSources.PESI_ERMS();
+	static final ICdmDataSource cdmDestination = CdmDestinations.localH2Erms();
 	static final UUID treeUuid = UUID.fromString("8bd27d84-fd4f-4bfa-bde0-3e6b7311b334");
 	static final int sourceSecId = 500000;
 	static final UUID featureTreeUuid = UUID.fromString("33cbf7a8-0c47-4d47-bd11-b7d77a38d0f6");
@@ -106,47 +106,47 @@ public class ErmsActivator {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		System.out.println("Start import from BerlinModel("+ berlinModelSource.getDatabase() + ") ...");
+		System.out.println("Start import from ("+ ermsSource.getDatabase() + ") ...");
 		
-		//make BerlinModel Source
-		Source source = berlinModelSource;
+		//make ERMS Source
+		Source source = ermsSource;
 		ICdmDataSource destination = CdmDestinations.chooseDestination(args) != null ? CdmDestinations.chooseDestination(args) : cdmDestination;
 		
-		BerlinModelImportConfigurator bmImportConfigurator = BerlinModelImportConfigurator.NewInstance(source,  destination);
+		ErmsImportConfigurator ermsImportConfigurator = ErmsImportConfigurator.NewInstance(source,  destination);
 		
-		bmImportConfigurator.setTreeUuid(treeUuid);
-		bmImportConfigurator.setSourceSecId(sourceSecId);
-		bmImportConfigurator.setNomenclaturalCode(nomenclaturalCode);
+		ermsImportConfigurator.setTreeUuid(treeUuid);
+		ermsImportConfigurator.setSourceSecId(sourceSecId);
+		ermsImportConfigurator.setNomenclaturalCode(nomenclaturalCode);
 
-		bmImportConfigurator.setIgnoreNull(ignoreNull);
-		bmImportConfigurator.setDoAuthors(doAuthors);
-		bmImportConfigurator.setDoReferences(doReferences);
-		bmImportConfigurator.setDoTaxonNames(doTaxonNames);
-		bmImportConfigurator.setDoRelNames(doRelNames);
-		bmImportConfigurator.setDoNameStatus(doNameStatus);
-		bmImportConfigurator.setDoTypes(doTypes);
-		bmImportConfigurator.setDoNameFacts(doNameFacts);
+		ermsImportConfigurator.setIgnoreNull(ignoreNull);
+		ermsImportConfigurator.setDoAuthors(doAuthors);
+		ermsImportConfigurator.setDoReferences(doReferences);
+		ermsImportConfigurator.setDoTaxonNames(doTaxonNames);
+		ermsImportConfigurator.setDoRelNames(doRelNames);
+		ermsImportConfigurator.setDoNameStatus(doNameStatus);
+		ermsImportConfigurator.setDoTypes(doTypes);
+		ermsImportConfigurator.setDoNameFacts(doNameFacts);
 		
-		bmImportConfigurator.setDoTaxa(doTaxa);
-		bmImportConfigurator.setDoRelTaxa(doRelTaxa);
-		bmImportConfigurator.setDoFacts(doFacts);
-		bmImportConfigurator.setDoOccurrence(doOccurences);
-		bmImportConfigurator.setDbSchemaValidation(hbm2dll);
+		ermsImportConfigurator.setDoTaxa(doTaxa);
+		ermsImportConfigurator.setDoRelTaxa(doRelTaxa);
+		ermsImportConfigurator.setDoFacts(doFacts);
+		ermsImportConfigurator.setDoOccurrence(doOccurences);
+		ermsImportConfigurator.setDbSchemaValidation(hbm2dll);
 
-		bmImportConfigurator.setCheck(check);
+		ermsImportConfigurator.setCheck(check);
 		
 		// invoke import
-		CdmDefaultImport<BerlinModelImportConfigurator> bmImport = new CdmDefaultImport<BerlinModelImportConfigurator>();
-		bmImport.invoke(bmImportConfigurator);
+		CdmDefaultImport<ErmsImportConfigurator> ermsImport = new CdmDefaultImport<ErmsImportConfigurator>();
+		ermsImport.invoke(ermsImportConfigurator);
 		
-		if (bmImportConfigurator.getCheck().equals(CHECK.CHECK_AND_IMPORT)  || bmImportConfigurator.getCheck().equals(CHECK.IMPORT_WITHOUT_CHECK)    ){
-			CdmApplicationController app = bmImport.getCdmAppController();
+		if (ermsImportConfigurator.getCheck().equals(CHECK.CHECK_AND_IMPORT)  || ermsImportConfigurator.getCheck().equals(CHECK.IMPORT_WITHOUT_CHECK)    ){
+			CdmApplicationController app = ermsImport.getCdmAppController();
 			ISourceable obj = app.getCommonService().getSourcedObjectByIdInSource(ZoologicalName.class, "1000027", null);
 			logger.info(obj);
 			
 			//make feature tree
-			FeatureTree tree = TreeCreator.flatTree(featureTreeUuid, bmImportConfigurator.getFeatureMap(), featureKeyList);
-			app = bmImport.getCdmAppController();
+			FeatureTree tree = TreeCreator.flatTree(featureTreeUuid, ermsImportConfigurator.getFeatureMap(), featureKeyList);
+			app = ermsImport.getCdmAppController();
 			app.getFeatureTreeService().saveOrUpdate(tree);
 		}
 		System.out.println("End import from BerlinModel ("+ source.getDatabase() + ")...");

@@ -101,11 +101,23 @@ public class BerlinModelSources {
 		return  makeSource(dbms, strServer, strDB, port, userName, null);
 	}
 	
-	public static Source PESI_ERMS(){
+	public static Source PESI_ERMS_BM(){
 		//	BerlinModel - Pesi-ERMS
 		String dbms = Source.SQL_SERVER_2005;
 		String strServer = "SQL2000Intern\\SQL2005";
 		String strDB = "BM_ERMS";
+		int port = 1433;
+		String userName = "WebUser";
+		return  makeSource(dbms, strServer, strDB, port, userName, null);
+	}
+	
+	
+	//is not BerlinModel !!
+	public static Source PESI_ERMS(){
+		//	BerlinModel - Pesi-ERMS
+		String dbms = Source.SQL_SERVER_2008;
+		String strServer = "BGBM42";
+		String strDB = "ERMS";
 		int port = 1433;
 		String userName = "WebUser";
 		return  makeSource(dbms, strServer, strDB, port, userName, null);

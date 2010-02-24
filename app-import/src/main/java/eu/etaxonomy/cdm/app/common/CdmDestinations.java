@@ -289,6 +289,10 @@ public class CdmDestinations {
 		return CdmDataSource.NewH2EmbeddedInstance("euroMed", "sa", "");
 	}
 	
+	public static ICdmDataSource localH2Erms(){
+		return CdmDataSource.NewH2EmbeddedInstance("erms", "sa", "");
+	}
+	
 	public static ICdmDataSource localH2_viola(){
 		return CdmDataSource.NewH2EmbeddedInstance("testViola", "sa", "");
 	}
