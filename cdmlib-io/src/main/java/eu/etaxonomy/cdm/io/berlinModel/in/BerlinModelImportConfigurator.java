@@ -19,16 +19,16 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
+import eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelTaxonImport.PublishMarkerChooser;
+import eu.etaxonomy.cdm.io.berlinModel.in.validation.BerlinModelGeneralImportValidator;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
 import eu.etaxonomy.cdm.io.common.ImportStateBase;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
-import eu.etaxonomy.cdm.model.reference.IDatabase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
-import eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelTaxonImport.PublishMarkerChooser;
 
 /**
  * @author a.mueller
@@ -44,8 +44,8 @@ public class BerlinModelImportConfigurator extends ImportConfiguratorBase<Berlin
 
 	private PublishMarkerChooser taxonPublishMarker = PublishMarkerChooser.ALL;
 	
-	/* Max number of taxa to be saved with one service call */
-	private int limitSave = 1000;
+	/* Max number of records to be saved with one service call */
+	private int recordsPerTransaction = 1000;
 
 	private Method namerelationshipTypeMethod;
 	private Method uuidForDefTermMethod;
@@ -63,10 +63,11 @@ public class BerlinModelImportConfigurator extends ImportConfiguratorBase<Berlin
 	
 	protected void makeIoClassList(){
 		ioClassList = new Class[]{
-				BerlinModelGeneralImport.class,
-				BerlinModelUserImport.class,
-				BerlinModelAuthorImport.class,
-				BerlinModelAuthorTeamImport.class
+				BerlinModelGeneralImportValidator.class
+				, BerlinModelUserImport.class
+				, BerlinModelAuthorImport.class
+				, BerlinModelAuthorTeamImport.class
+				, BerlinModelRefDetailImport.class
 				, BerlinModelReferenceImport.class
 				, BerlinModelTaxonNameImport.class
 				, BerlinModelTaxonNameRelationImport.class
@@ -306,15 +307,15 @@ public class BerlinModelImportConfigurator extends ImportConfiguratorBase<Berlin
 	/**
 	 * @return the limitSave
 	 */
-	public int getLimitSave() {
-		return limitSave;
+	public int getRecordsPerTransaction() {
+		return recordsPerTransaction;
 	}
 
 	/**
 	 * @param limitSave the limitSave to set
 	 */
-	public void setLimitSave(int limitSave) {
-		this.limitSave = limitSave;
+	public void setRecordsPerTransaction(int recordsPerTransaction) {
+		this.recordsPerTransaction = recordsPerTransaction;
 	}
 
 }
