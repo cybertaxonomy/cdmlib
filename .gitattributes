@@ -1364,6 +1364,7 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IFeatureTreeService.j
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IIdentifiableEntityService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IIdentificationKeyService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/ILocationService.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IMarkerService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IMediaService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/INameService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IOccurrenceService.java -text
@@ -1380,6 +1381,7 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IWorkingSetService.ja
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IdentifiableServiceBase.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IdentificationKeyServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/LocationServiceImpl.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/MarkerServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/MediaServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/NameServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/OccurrenceServiceImpl.java -text
