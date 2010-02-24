@@ -17,7 +17,7 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.DbExportStateBase;
-import eu.etaxonomy.cdm.io.common.MultipleAttributeMapperBase;
+import eu.etaxonomy.cdm.io.common.mapping.MultipleAttributeMapperBase;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
