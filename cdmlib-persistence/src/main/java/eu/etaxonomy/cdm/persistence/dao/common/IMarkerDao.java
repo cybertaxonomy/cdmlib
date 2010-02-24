@@ -9,8 +9,32 @@
 
 package eu.etaxonomy.cdm.persistence.dao.common;
 
-import eu.etaxonomy.cdm.model.common.Marker;
+import java.util.List;
 
-public interface IMarkerDao extends ICdmEntityDao<Marker> {
+import eu.etaxonomy.cdm.model.common.Marker;
+import eu.etaxonomy.cdm.model.common.MarkerType;
+import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
+import eu.etaxonomy.cdm.persistence.query.OrderHint;
+
+public interface IMarkerDao extends IVersionableDao<Marker> {
+	
+	/**
+	 * Returns a count of markers which have the same type
+	 * @param markerType The type of markerType
+	 * @return a count of markers
+	 */
+	public int count(MarkerType markerType);
+	
+	/**
+	 * Returns a list of markers which have the same type
+	 * 
+	 * @param markerType The type of markerType
+	 * @param pageSize The maximum number of markers returned (can be null for all markers)
+	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
+	 * @param orderHints may be null
+	 * @param propertyPaths properties to initialize - see {@link BeanInitializer#initialize(Object, List)}
+	 * @return
+	 */
+	public List<Marker> list(MarkerType markerType, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
 }
