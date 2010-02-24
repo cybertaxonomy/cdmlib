@@ -16,6 +16,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.io.berlinModel.out.CollectionExportMapping;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.IDbExportMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.IndexCounter;
 import eu.etaxonomy.cdm.io.common.CdmAttributeMapperBase;
@@ -25,9 +26,8 @@ import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
- * @author a.mueller
  * @author e.-m.lee
- * @date 12.02.2010
+ * @date 24.02.2010
  *
  */
 public class PesiExportMapping extends CdmIoMapping {
@@ -42,12 +42,6 @@ public class PesiExportMapping extends CdmIoMapping {
 		this.dbTableName = tableName;
 	}
 	
-	/**
-	 * Initializes the db mapper.
-	 * @param state The PesiExportState
-	 * @return Whether initialization was successful or not.
-	 * @throws SQLException
-	 */
 	public boolean initialize(PesiExportState state) throws SQLException{
 		PesiExportConfigurator bmeConfig = (PesiExportConfigurator)state.getConfig();
 		Source db = bmeConfig.getDestination();
@@ -138,7 +132,7 @@ public class PesiExportMapping extends CdmIoMapping {
 	}
 
 	/**
-	 * @param pesiTableName The pesiTableName to set
+	 * @param pesiTableName the pesiTableName to set
 	 */
 	public void setDbTableName(String dbTableName) {
 		this.dbTableName = dbTableName;
@@ -152,7 +146,7 @@ public class PesiExportMapping extends CdmIoMapping {
 	}
 
 	/**
-	 * @param preparedStatement The preparedStatement to set
+	 * @param preparedStatement the preparedStatement to set
 	 */
 	protected void setPreparedStatement(PreparedStatement preparedStatement) {
 		this.preparedStatement = preparedStatement;
