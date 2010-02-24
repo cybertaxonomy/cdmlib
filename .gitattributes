@@ -1333,6 +1333,7 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/jaxb/WarningTolerantValidationEventH
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/jaxb/package-info.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/pesi/out/PesiAdditionalTaxonSourceExport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/pesi/out/PesiExportBase.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/pesi/out/PesiExportConfigurator.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/pesi/out/PesiExportState.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/pesi/out/PesiNoteExport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/pesi/out/PesiRelTaxonExport.java -text
