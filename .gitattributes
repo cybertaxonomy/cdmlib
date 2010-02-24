@@ -1289,6 +1289,17 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/SourceConnectionException.jav
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/XmlExportConfiguratorBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/XmlExportState.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/XmlImportState.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/CdmAttributeMapperBase.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/CdmIoMapping.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/DbImportExtensionMapper.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/DbImportMapperBase.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/DbImportMapping.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/DbImportObjectCreationMapper.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/DbImportStringMapper.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/DbSingleAttributeImportMapperBase.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/IDbImportMapper.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/IMappingImport.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/MultipleAttributeMapperBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/common/ExcelImportConfiguratorBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/common/ExcelImportState.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/common/ExcelImporterBase.java -text
