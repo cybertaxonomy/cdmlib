@@ -75,6 +75,9 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 	@Qualifier("defaultBeanInitializer")
 	protected BeanInitializer defaultBeanInitializer;
 	
+	public void setDefaultBeanInitializer(BeanInitializer defaultBeanInitializer) {
+		this.defaultBeanInitializer = defaultBeanInitializer;
+	}
 
 	@Autowired
 	private ReferringObjectMetadataFactory referringObjectMetadataFactory;
