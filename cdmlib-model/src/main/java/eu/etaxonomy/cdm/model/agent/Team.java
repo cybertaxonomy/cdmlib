@@ -84,7 +84,6 @@ public class Team extends TeamOrPersonBase<Team> {
 	@ManyToMany(fetch = FetchType.LAZY)
 	@Cascade(CascadeType.SAVE_UPDATE)
 	@Match(MatchMode.MATCH)
-	@NotNull
 	private List<Person> teamMembers;
 	
 	

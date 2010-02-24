@@ -24,6 +24,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -186,6 +187,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE_ORPHAN})
 	@Merge(MergeMode.RELATION)
 	@NotNull
+	@Valid
 	private Set<NameRelationship> relationsFromThisName = new HashSet<NameRelationship>();
 
     @XmlElementWrapper(name = "RelationsToThisName")
@@ -196,6 +198,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE , CascadeType.DELETE_ORPHAN })
 	@Merge(MergeMode.RELATION)
 	@NotNull
+	@Valid
 	private Set<NameRelationship> relationsToThisName = new HashSet<NameRelationship>();
 
     @XmlElementWrapper(name = "NomenclaturalStatuses")
@@ -1124,7 +1127,7 @@ public void addRelationshipToName(TaxonNameBase toName, NameRelationshipType typ
 	/* 
 	 * @see #getHomotypicalGroup()
 	 */
-	protected void setHomotypicalGroup(HomotypicalGroup homotypicalGroup) {
+	public void setHomotypicalGroup(HomotypicalGroup homotypicalGroup) {
 		if (homotypicalGroup == null){
 			throw new IllegalArgumentException("HomotypicalGroup of name should never be null but was set to 'null'");
 		}

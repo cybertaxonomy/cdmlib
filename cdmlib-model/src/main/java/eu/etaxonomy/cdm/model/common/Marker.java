@@ -151,7 +151,8 @@ public class Marker extends VersionableEntity implements Cloneable{
 	@Override
 	public Object clone() throws CloneNotSupportedException{
 		Marker result = (Marker)super.clone();
-		//no changes to: type, flag
+		result.setFlag(this.flag);
+		result.setMarkerType(this.markerType);
 		return result;
 	}
 	

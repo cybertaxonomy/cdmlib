@@ -28,6 +28,9 @@ import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.validation.Level3;
+import eu.etaxonomy.cdm.validation.annotation.ChildTaxaMustBeLowerRankThanParent;
+import eu.etaxonomy.cdm.validation.annotation.ChildTaxaMustDeriveNameFromParent;
 
 /**
  * The class representing a relationship between two {@link Taxon ("accepted/correct") taxa}. 
@@ -52,6 +55,8 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 @XmlRootElement(name = "TaxonRelationship")
 @Entity
 @Audited
+@ChildTaxaMustBeLowerRankThanParent(groups = Level3.class)
+@ChildTaxaMustDeriveNameFromParent(groups = Level3.class)
 public class TaxonRelationship extends RelationshipBase<Taxon, Taxon, TaxonRelationshipType> {
 
 	static private final Logger logger = Logger.getLogger(TaxonRelationship.class);

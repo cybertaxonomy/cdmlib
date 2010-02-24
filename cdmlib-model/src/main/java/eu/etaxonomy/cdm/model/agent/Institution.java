@@ -88,7 +88,6 @@ public class Institution extends AgentBase<IIdentifiableEntityCacheStrategy<Inst
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToMany(fetch = FetchType.LAZY)
-    @NotNull
 	private Set<InstitutionType> types;
 	
     @XmlElement(name = "IsPartOf")

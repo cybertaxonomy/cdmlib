@@ -14,6 +14,7 @@ import javax.validation.ConstraintValidatorContext;
 
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.NonViralName;
+import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.validation.annotation.MustHaveAuthority;
 
 public class MustHaveAuthorityValidator implements
@@ -25,15 +26,25 @@ public class MustHaveAuthorityValidator implements
 		boolean valid = true;
 		
 		if(name.getBasionymAuthorTeam() == null && name.getAuthorshipCache() == null) {
-		
+		    valid = false;
 		    if(name instanceof BotanicalName && name.getRank().isInfraSpecific()) {
 			    if(name.getSpecificEpithet() != null && name.getInfraSpecificEpithet() != null && name.getInfraSpecificEpithet().equals(name.getSpecificEpithet())) {
 				    valid = true; // is AUTONYM
-			    } else {
-				    valid = false;
-			    }
-		    } else {
-			    valid = false;
+			    } 
+		    } 
+		    if(name.getRank().isSpeciesAggregate()) { // Species aggregates don't have authorities
+		    	valid = true;
+		    }
+		    
+		} else {
+			valid = true;
+			if(name instanceof BotanicalName && name.getRank().isInfraSpecific()) {
+			    if(name.getSpecificEpithet() != null && name.getInfraSpecificEpithet() != null && name.getInfraSpecificEpithet().equals(name.getSpecificEpithet())) {
+				    valid = false; // is AUTONYM
+			    } 
+		    } 
+		    if(name.getRank().isSpeciesAggregate()) { // Species aggregates don't have authorities
+		    	valid = false;
 		    }
 		}
 		

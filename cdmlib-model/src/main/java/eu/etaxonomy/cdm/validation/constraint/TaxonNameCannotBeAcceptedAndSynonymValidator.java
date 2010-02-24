@@ -40,6 +40,7 @@ public class TaxonNameCannotBeAcceptedAndSynonymValidator implements
 							if(t1.getSec().equals(t2.getSec())) { // only compare concepts belonging to the same source
 								TaxonBase taxonBase1 = TaxonBase.deproxy(t1, TaxonBase.class);
 								TaxonBase taxonBase2 = TaxonBase.deproxy(t2, TaxonBase.class);
+								
 								if(taxonBase1 instanceof Taxon && taxonBase2 instanceof Taxon) {
 									valid = false;
 									constraintContext.buildErrorWithMessageTemplate("{eu.etaxonomy.cdm.validation.annotation.TaxonNameCannotBeAcceptedAndSynonym.twoAcceptedTaxaNotAllowed.message}").addSubNode("name").addError();

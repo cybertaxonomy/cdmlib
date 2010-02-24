@@ -110,6 +110,7 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
     @OneToMany(mappedBy="relatedFrom", fetch=FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE, CascadeType.DELETE_ORPHAN})
 	@NotNull
+	@Valid
 	private Set<TaxonRelationship> relationsFromThisTaxon = new HashSet<TaxonRelationship>();
 
 	// all taxa relations with rel.toTaxon==this
@@ -120,6 +121,7 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
     @OneToMany(mappedBy="relatedTo", fetch=FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE, CascadeType.DELETE_ORPHAN})
 	@NotNull
+	@Valid
 	private Set<TaxonRelationship> relationsToThisTaxon = new HashSet<TaxonRelationship>();
 
 	@XmlAttribute(name= "taxonStatusUnknown")
