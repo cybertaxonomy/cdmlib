@@ -1340,6 +1340,7 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/pesi/out/PesiNoteExport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/pesi/out/PesiRelTaxonExport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/pesi/out/PesiSourceExport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/pesi/out/PesiTaxonExport.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/pesi/out/PesiTransformer.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/pilotOutputHtml/PilotOutputDescriptionExporter.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/pilotOutputHtml/PilotOutputDocumentBuilder.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/pilotOutputHtml/PilotOutputExportConfigurator.java -text
