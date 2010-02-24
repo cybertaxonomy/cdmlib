@@ -16,9 +16,9 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.io.common.CdmAttributeMapperBase;
 import eu.etaxonomy.cdm.io.common.CdmSingleAttributeMapperBase;
-import eu.etaxonomy.cdm.io.common.MultipleAttributeMapperBase;
+import eu.etaxonomy.cdm.io.common.mapping.CdmAttributeMapperBase;
+import eu.etaxonomy.cdm.io.common.mapping.MultipleAttributeMapperBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
