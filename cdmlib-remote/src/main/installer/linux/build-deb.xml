@@ -29,8 +29,12 @@
     <path id="classpath">
     	<fileset dir="${ant-deb-task.path}" includes="*.jar" />
     </path>
+	
+    <path id="ant-deb-task">
+        <fileset dir="../../../../${ant-deb-task.path}" includes="*.jar" />
+    </path>
 
-    <taskdef resource="ant_deb_task.properties" classpathref="classpath" />
+    <taskdef resource="ant_deb_task.properties" classpathref="ant-deb-task" />
 	
 	<target name="deb_package" description="build the deb file">
 		<mkdir dir="dist"/>
@@ -56,11 +60,9 @@ CDM Server is a cross platform blablabla, visit www.bgbm.de for more info.
 
         </deb>
 	 </target>
-
 	<!--
 	 <target name="clean" description="remove all work folders">
 	 	  <delete dir="dist"/>
 	 </target>
 	 -->
-
 </project>
