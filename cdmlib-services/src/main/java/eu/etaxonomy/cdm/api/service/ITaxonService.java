@@ -29,6 +29,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
+import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
 import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
 import eu.etaxonomy.cdm.persistence.fetch.CdmFetch;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
@@ -323,4 +324,6 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	public List<MediaRepresentation> getAllMedia(Taxon taxon, int size, int height, int widthOrDuration, String[] mimeTypes);
 
 	public List<TaxonBase> findTaxaByID(Set<Integer> listOfIDs);
+	
+	public boolean createInferredSynonymy(TaxonomicTree tree);
 }

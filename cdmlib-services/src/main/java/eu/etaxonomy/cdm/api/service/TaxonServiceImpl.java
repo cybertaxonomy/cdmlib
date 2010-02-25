@@ -49,6 +49,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
+import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
 import eu.etaxonomy.cdm.persistence.dao.BeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.common.IOrderedTermVocabularyDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
@@ -543,5 +544,10 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
 	public List<TaxonBase> findTaxaByID(Set<Integer> listOfIDs) {
 		return this.dao.findById(listOfIDs);
+	}
+
+	public boolean createInferredSynonymy(TaxonomicTree tree) {
+		
+		return this.dao.createInferredSynonymy(tree);
 	}
 }
