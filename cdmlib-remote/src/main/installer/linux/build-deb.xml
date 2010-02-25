@@ -31,7 +31,7 @@
     </path>
 	
     <path id="ant-deb-task">
-        <fileset dir="../../../../${ant-deb-task.path}" includes="*.jar" />
+        <fileset dir="${ant-deb-task.path}" includes="*.jar" />
     </path>
 
     <taskdef resource="ant_deb_task.properties" classpathref="ant-deb-task" />
