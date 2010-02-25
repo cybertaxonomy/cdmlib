@@ -390,6 +390,11 @@ public class FaunaEuropaeaTaxonNameImport extends FaunaEuropaeaImportBase  {
 			String nameString = 
 				buildTaxonName(fauEuTaxon, taxonBase, taxonName, useOriginalGenus, fauEuConfig);
 			
+			if (taxonBase instanceof Synonym){
+				logger.info("Name of Synonym: " + nameString);
+			}
+			
+			
 			if (fauEuConfig.isDoBasionyms() 
 					&& fauEuTaxon.getRankId() > R_SUBGENUS
 					&& (fauEuTaxon.getOriginalGenusId() != 0)) {
