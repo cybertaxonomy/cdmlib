@@ -588,4 +588,14 @@ extends IdentifiableDaoBase<TaxonNameBase> implements ITaxonNameDao {
 		}
 		return persistentObject.getUuid();
 	}
+	
+	public List<ZoologicalName> getAllZoologicalNames(Integer limit, Integer start){
+		List <TaxonNameBase> names = new ArrayList<TaxonNameBase>();
+		List <ZoologicalName> zooNames = new ArrayList<ZoologicalName>();
+		names = super.list(ZoologicalName.class, limit, start);
+		for (TaxonNameBase name: names){
+			zooNames.add((ZoologicalName)name);
+		}
+		return zooNames;
+	}
 }

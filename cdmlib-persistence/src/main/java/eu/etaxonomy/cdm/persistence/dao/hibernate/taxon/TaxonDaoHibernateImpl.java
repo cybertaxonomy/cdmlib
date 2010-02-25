@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.taxon;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -37,12 +38,16 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Repository;
 
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
@@ -57,10 +62,12 @@ import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.persistence.dao.QueryParseException;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.AlternativeSpellingSuggestionParser;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
+import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.fetch.CdmFetch;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
+import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
 
 
 /**
@@ -81,6 +88,9 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		indexedClasses[1] = Synonym.class;
 		super.defaultField = "name.titleCache";
 	}
+	
+	@Autowired
+	private ITaxonNameDao taxonNameDao;
 	
 	@Autowired(required = false)   //TODO switched of because it caused problems when starting CdmApplicationController
 	public void setAlternativeSpellingSuggestionParser(AlternativeSpellingSuggestionParser<TaxonBase> alternativeSpellingSuggestionParser) {
@@ -1163,4 +1173,118 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	public boolean createInferredSynonymy(TaxonomicTree tree) {
+		boolean result = true;
+		//1. get a list of all accepted taxa of rank species
+		List<Taxon> acceptedTaxa = this.getAllTaxa(1000, 0);
+		List<ZoologicalName> zooNames = this.taxonNameDao.getAllZoologicalNames(null, 0);
+		//create HashMap
+		HashMap <UUID, ZoologicalName> zooHashMap = new HashMap<UUID, ZoologicalName>();
+		UUID uuid;
+		//ZoologicalName zooName;
+		for (ZoologicalName zooName: zooNames){
+			uuid = zooName.getUuid();
+			//zooName = (ZoologicalName) name;
+			zooHashMap.put(uuid, zooName);
+			
+		}
+		List<TaxonBase> taxaToSave = new ArrayList<TaxonBase>();
+		//2. get the synonyms of the genus of all these taxa
+		for (Taxon taxon: acceptedTaxa){
+			ZoologicalName zooName;
+			TaxonNameBase name = taxon.getName();
+			
+			zooName = zooHashMap.get(name.getUuid());
+			//if (name instanceof NonViralName){
+			//if (zooNames.contains(name)){
+				
+				String epithetOfTaxon = zooName.getSpecificEpithet();
+				String genusOfTaxon = zooName.getGenusOrUninomial();
+			 	Set<TaxonNode> nodes = taxon.getTaxonNodes();
+				for (TaxonNode node: nodes){
+					if (node.getTaxonomicTree().equals(tree)){
+						if (!node.isTopmostNode()){
+						TaxonNode parent = (TaxonNode) node.getParent();
+						parent = (TaxonNode)HibernateProxyHelper.deproxy(parent);
+						TaxonNameBase parentName = parent.getTaxon().getName();
+						parentName = (TaxonNameBase)HibernateProxyHelper.deproxy(parentName);
+						if (parentName.isGenus()){
+							Set<Synonym> synonymsOfGenus = parentName.getSynonyms();
+							TaxonNameBase synName;
+							NonViralName inferredSynName;
+							Synonym inferredEpithet;
+							
+							List<String> propertyPaths = new ArrayList<String>();
+							propertyPaths.add("synonym");
+							propertyPaths.add("synonym.name");
+							
+							List<OrderHint> orderHints = new ArrayList<OrderHint>();
+							orderHints.add(new OrderHint("relatedFrom.titleCache", SortOrder.ASCENDING));
+							
+							List<SynonymRelationship> synonymRelationshipsOfGenus = getSynonyms(parent.getTaxon(), null, null, null,orderHints,propertyPaths);
+							
+							
+							//3. combine these synonyms with the corresponding accepted epithet
+							for (SynonymRelationship synonymRelationOfGenus:synonymRelationshipsOfGenus){
+								
+								Synonym syn = synonymRelationOfGenus.getSynonym();
+								synName =syn.getName();
+								zooName = zooHashMap.get(synName.getUuid());
+								String epithetName = zooName.getSpecificEpithet();
+								String genusName = zooName.getGenusOrUninomial();
+								inferredSynName = NonViralName.NewInstance(Rank.SPECIES());
+								inferredSynName.setSpecificEpithet(epithetOfTaxon);
+								inferredSynName.setGenusOrUninomial(genusName);
+								inferredEpithet = Synonym.NewInstance(inferredSynName, null);
+								taxon.addSynonym(inferredEpithet, SynonymRelationshipType.INFERRED_EPITHET_OF());
+								taxaToSave.add(taxon);
+								
+							}
+							//4. get the synonyms of the species and extract the epithets
+							TaxonNameBase taxonName = taxon.getName();
+							taxonName = (TaxonNameBase)HibernateProxyHelper.deproxy(taxonName);
+							
+							
+							
+							
+							List<SynonymRelationship> synonymsOfSpecies = getSynonyms(taxon, null, null, null,orderHints,propertyPaths);
+							
+							
+							//5. combine the syn. epithets with the accepted genus
+							for (SynonymRelationship synonymRelationOfSpecies:synonymsOfSpecies){
+								Synonym syn = synonymRelationOfSpecies.getSynonym();
+								synName =syn.getName();
+								zooName = zooHashMap.get(synName.getUuid());
+								String epithetName = zooName.getSpecificEpithet();
+								inferredSynName = NonViralName.NewInstance(Rank.SPECIES());
+								inferredSynName.setSpecificEpithet(epithetName);
+								inferredSynName.setGenusOrUninomial(genusOfTaxon);
+								inferredEpithet = Synonym.NewInstance(inferredSynName, null);
+								taxon.addSynonym(inferredEpithet, SynonymRelationshipType.INFERRED_GENUS_OF());
+								taxon.addSynonym(inferredEpithet, SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF());
+								taxaToSave.add(taxon);
+								
+							}
+						}
+						}else{
+							//TODO
+						}
+							
+					}
+				}
+			}
+		//}
+		
+		this.saveAll(taxaToSave);
+		
+		
+		
+		return result;
+		
+		
+	}
+
+	
+	
 }

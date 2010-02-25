@@ -846,4 +846,17 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     	
     }
     
+    @Test
+    @DataSet("TaxonNodeDaoHibernateImplTest.xml")
+    public void testCreateInferredSynonymy(){
+    	TaxonomicTree tree = this.taxonomicTreeDao.findById(1);
+    	List <Synonym> synonyms = taxonDao.getAllSynonyms(null, null);
+    	assertEquals("Number of synonyms should be 1",1,synonyms.size());
+    	taxonDao.createInferredSynonymy(tree);
+    	synonyms = taxonDao.getAllSynonyms(null, null);
+    	assertEquals("Number of synonyms should be 2",2,synonyms.size());
+    	//assertTrue("set of synonyms should contain an inferred Synonym ", synonyms.contains(arg0))
+    }
+    
+    
 }
