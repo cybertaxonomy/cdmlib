@@ -90,6 +90,7 @@ public abstract class PresenceAbsenceTermBase<T extends PresenceAbsenceTermBase<
 //		String uuid = (String)csvLine.get(0);
 //		map.put(abbreviatedLabel, UUID.fromString(uuid));
 		String color = (String)csvLine.get(5);
+		
 		newInstance.setDefaultColor(color);
 		newInstance.getRepresentation(Language.DEFAULT()).setAbbreviatedLabel(abbreviatedLabel);
 		return newInstance;

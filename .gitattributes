@@ -1642,6 +1642,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/NameFeature.java -
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/PolytomousKey.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/PresenceAbsenceTermBase.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/PresenceTerm.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/PresenceTerm.java.edited -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/QuantitativeData.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/Scope.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/Sex.java -text

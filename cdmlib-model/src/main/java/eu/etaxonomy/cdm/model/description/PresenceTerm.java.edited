@@ -66,9 +66,6 @@ public class PresenceTerm extends PresenceAbsenceTermBase<PresenceTerm> {
 	private static final UUID uuidE=UUID.fromString("c3ee7048-15b7-4be1-b687-9ce9c1a669d6");
 	private static final UUID uuidNA=UUID.fromString("4e04990a-66fe-4fdf-856c-f40772fbcf0a");
 	private static final UUID uuidIV=UUID.fromString("dc536e3d-a753-4bbe-a386-dd8aff35c234");
-	private static final UUID uuidNRE = UUID.fromString("4ba212ef-041e-418d-9d43-2ebb191b61d8");
-	private static final UUID uuidIRE = UUID.fromString("826239f7-45b7-42b5-857c-c1f852cfad6b");
-	private static final UUID uuidCRE = UUID.fromString("b47f1679-0d0c-4ea7-a2e4-80709ea791c6");
 
 
 	//********* METHODS **************************************/
@@ -199,6 +196,8 @@ public class PresenceTerm extends PresenceAbsenceTermBase<PresenceTerm> {
 		return getTermByUuid(uuidNA);
 	}
 	
+<<<<<<< .mine
+=======
 	public static PresenceTerm NATIVE_REPORTED_IN_ERROR() {
 		return getTermByUuid(uuidNRE);
 	}
@@ -211,6 +210,7 @@ public class PresenceTerm extends PresenceAbsenceTermBase<PresenceTerm> {
 		return getTermByUuid(uuidCRE);
 	}
 	
+>>>>>>> .r8150
 	//TODO make automatic like in TDWGArea
 	public static PresenceTerm getPresenceTermByAbbreviation(String abbrev) { 
 		if (abbrev == null) { throw new NullPointerException("abbrev is 'null' in getPresenceTermByAbbreviation");

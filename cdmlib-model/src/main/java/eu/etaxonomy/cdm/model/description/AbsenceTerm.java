@@ -50,6 +50,7 @@ public class AbsenceTerm extends PresenceAbsenceTermBase<AbsenceTerm> {
 	private static Map<UUID, AbsenceTerm> termMap = null;
 	
 	private static final UUID uuidAbsence=UUID.fromString("59709861-f7d9-41f9-bb21-92559cedd598");
+
 	/*private static final UUID uuidNF=UUID.fromString("4ba212ef-041e-418d-9d43-2ebb191b61d8");
 	private static final UUID uuidCF=UUID.fromString("b47f1679-0d0c-4ea7-a2e4-80709ea791c6");
 	private static final UUID uuidIF=UUID.fromString("826239f7-45b7-42b5-857c-c1f852cfad6b");*/
