@@ -154,6 +154,12 @@ public class PesiTaxonExport extends PesiExportBase<TaxonBase> {
 	@SuppressWarnings("unused")
 	private static String getKingdomFk(TaxonBase<?> taxon) {
 		// TODO
+		// Traverse taxon tree up until root is reached.
+//		boolean root = false;
+//		Taxon currentTaxon = null;
+//		while (! root) {
+//			currentTaxon = (Taxon)taxon
+//		}
 		return null;
 	}
 

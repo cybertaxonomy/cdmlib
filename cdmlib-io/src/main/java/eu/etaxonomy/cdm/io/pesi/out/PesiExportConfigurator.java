@@ -34,7 +34,8 @@ public class PesiExportConfigurator extends DbExportConfiguratorBase implements 
 	@SuppressWarnings("unchecked")
 	protected void makeIoClassList(){
 		ioClassList = new Class[]{
-				PesiSourceExport.class
+//				PesiSourceExport.class,
+				PesiTaxonExport.class
 		};
 
 	}
