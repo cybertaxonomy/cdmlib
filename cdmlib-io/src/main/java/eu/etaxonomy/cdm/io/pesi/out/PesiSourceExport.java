@@ -70,7 +70,10 @@ public class PesiSourceExport extends PesiExportBase<ReferenceBase> {
 	@Override
 	protected boolean doInvoke(PesiExportState state) {
 		try{
-			logger.info("Start: Make " + pluralString + " ...");
+			logger.error("Started Making " + pluralString + " ...");
+
+			// Get the limit for objects to save within a single transaction.
+			int limit = state.getConfig().getLimitSave();
 
 			// Stores whether this invoke was successful or not.
 			boolean success = true ;
@@ -78,11 +81,9 @@ public class PesiSourceExport extends PesiExportBase<ReferenceBase> {
 			// PESI: Clear the database table Source.
 			doDelete(state);
 
-			// Start transaction
-			TransactionStatus txStatus = startTransaction(true);
-
-			// CDM: Get all References
-			List<ReferenceBase> list = getReferenceService().list(null, 100000000, 0, null, null);
+			// CDM: Get the number of all available references.
+			int maxCount = getReferenceService().count(null);
+			logger.error("Total amount of " + maxCount + " " + pluralString + " will be exported.");
 
 			// Get specific mappings: (CDM) Reference -> (PESI) Source
 			PesiExportMapping mapping = getMapping();
@@ -93,17 +94,33 @@ public class PesiSourceExport extends PesiExportBase<ReferenceBase> {
 			// PESI: Create the Sources
 			// TODO: Store CDM2PESI identifier pairs for later use in other export classes - PesiExportState
 			int count = 0;
-			for (ReferenceBase<?> reference : list) {
-				doCount(count++, modCount, pluralString);
-				success &= mapping.invoke(reference);
+			int pastCount = 0;
+			TransactionStatus txStatus = null;
+			List<ReferenceBase> list = null;
+			while (count < maxCount) {
+				// Start transaction
+				txStatus = startTransaction(true);
+				logger.error("Started new transaction. Writing " + pluralString + "...");
+
+				// CDM: Get a number of references specified by 'limit'.
+				list = getReferenceService().list(null, limit, count, null, null);
+
+				for (ReferenceBase<?> reference : list) {
+					doCount(count++, modCount, pluralString);
+					success &= mapping.invoke(reference);
+				}
+
+				// Commit transaction
+				commitTransaction(txStatus);
+				logger.error("Committed transaction.");
+				logger.error("Wrote " + (count - pastCount) + " " + pluralString + ". Total: " + count);
+				pastCount = count;
 			}
 
-			// Commit transaction
-			commitTransaction(txStatus);
-			logger.info("End: Make " + pluralString + " ..." + getSuccessString(success));
+			logger.error("Finished Making " + pluralString + " ..." + getSuccessString(success));
 
 			return success;
-		} catch(SQLException e) {
+		} catch (SQLException e) {
 			e.printStackTrace();
 			logger.error(e.getMessage());
 			return false;
