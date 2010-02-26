@@ -66,19 +66,20 @@ public class PesiNoteExport extends PesiExportBase<DescriptionBase> {
 	protected boolean doInvoke(PesiExportState state) {
 		try {
 			logger.info("Start: Make " + pluralString + " ...");
-	
+
+			// Get the limit for objects to save within a single transaction.
+			int limit = state.getConfig().getLimitSave();
+
 			// Stores whether this invoke was successful or not.
-			boolean success = true ;
+			boolean success = true;
 	
 			// PESI: Clear the database table Note.
 			doDelete(state);
 	
-			// Start transaction
-			TransactionStatus txStatus = startTransaction(true);
-	
-			// CDM: Get all DescriptionElements
-			List<DescriptionBase> list = getDescriptionService().list(null, 100000000, 0, null, null);
-	
+			// CDM: Get the number of all available description elements.
+			int maxCount = getDescriptionService().count(null);
+			logger.error("Total amount of " + maxCount + " " + pluralString + " will be exported.");
+
 			// Get specific mappings: (CDM) DescriptionElement -> (PESI) Note
 			PesiExportMapping mapping = getMapping();
 	
@@ -87,17 +88,33 @@ public class PesiNoteExport extends PesiExportBase<DescriptionBase> {
 	
 			// PESI: Create the Notes
 			int count = 0;
-			for (DescriptionBase<?> description : list) {
-				doCount(count++, modCount, pluralString);
-				success &= mapping.invoke(description);
+			int pastCount = 0;
+			TransactionStatus txStatus = null;
+			List<DescriptionBase> list = null;
+			while (count < maxCount) {
+				// Start transaction
+				txStatus = startTransaction(true);
+				logger.error("Started new transaction. Writing " + pluralString + "...");
+
+				// CDM: Get a number of notes specified by 'limit'.
+				list = getDescriptionService().list(null, limit, count, null, null);
+
+				for (DescriptionBase<?> description : list) {
+					doCount(count++, modCount, pluralString);
+					success &= mapping.invoke(description);
+				}
+		
+				// Commit transaction
+				commitTransaction(txStatus);
+				logger.error("Committed transaction.");
+				logger.error("Wrote " + (count - pastCount) + " " + pluralString + ". Total: " + count);
+				pastCount = count;
 			}
 	
-			// Commit transaction
-			commitTransaction(txStatus);
-			logger.info("End: Make " + pluralString + " ..." + getSuccessString(success));
-	
+			logger.error("Finished Making " + pluralString + " ..." + getSuccessString(success));
+			
 			return success;
-		} catch(SQLException e) {
+		} catch (SQLException e) {
 			e.printStackTrace();
 			logger.error(e.getMessage());
 			return false;
