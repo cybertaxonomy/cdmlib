@@ -550,4 +550,8 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		
 		return this.dao.createInferredSynonymy(tree);
 	}
+
+	public int countAllRelationships() {
+		return this.dao.countAllRelationships();
+	}
 }

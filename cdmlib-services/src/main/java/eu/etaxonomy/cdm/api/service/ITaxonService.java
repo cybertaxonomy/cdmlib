@@ -326,4 +326,6 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	public List<TaxonBase> findTaxaByID(Set<Integer> listOfIDs);
 	
 	public boolean createInferredSynonymy(TaxonomicTree tree);
+	
+	public int countAllRelationships();
 }
