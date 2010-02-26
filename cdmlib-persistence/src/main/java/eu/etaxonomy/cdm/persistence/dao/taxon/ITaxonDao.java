@@ -196,6 +196,8 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
 
 	public List<RelationshipBase> getAllRelationships(Integer limit, Integer start); 
 
+	public int countAllRelationships();
+	
 	/**
 	 * Find taxa by searching for @{link NameBase}
 	 * @param queryString
