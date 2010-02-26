@@ -26,6 +26,7 @@ import eu.etaxonomy.cdm.io.common.Source;
 public class PesiExportConfigurator extends DbExportConfiguratorBase implements IExportConfigurator {
 	@SuppressWarnings("unused")
 	private static Logger logger = Logger.getLogger(PesiExportConfigurator.class);
+	private int limitSave = 10000;
 
 	public static PesiExportConfigurator NewInstance(Source pesiDestination, ICdmDataSource source){
 			return new PesiExportConfigurator(pesiDestination, source);
@@ -34,8 +35,9 @@ public class PesiExportConfigurator extends DbExportConfiguratorBase implements 
 	@SuppressWarnings("unchecked")
 	protected void makeIoClassList(){
 		ioClassList = new Class[]{
-//				PesiSourceExport.class,
-				PesiTaxonExport.class
+//				PesiSourceExport.class
+//				PesiTaxonExport.class,
+				PesiRelTaxonExport.class
 		};
 
 	}
@@ -58,4 +60,18 @@ public class PesiExportConfigurator extends DbExportConfiguratorBase implements 
 		return new PesiExportState(this);
 	}
 	
+	/**
+	 * @return the limitSave
+	 */
+	public int getLimitSave() {
+		return limitSave;
+	}
+
+	/**
+	 * @param limitSave the limitSave to set
+	 */
+	public void setLimitSave(int limitSave) {
+		this.limitSave = limitSave;
+	}
+
 }
