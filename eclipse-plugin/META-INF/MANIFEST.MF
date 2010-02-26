@@ -459,6 +459,7 @@ Export-Package: eu.etaxonomy.cdm,
    eu.etaxonomy.cdm.model.name,
    eu.etaxonomy.cdm.model.agent",
  junit.framework,
+ org.apache.commons.collections,
  org.apache.log4j;uses:="org.apache.log4j.or,org.apache.log4j.spi,org.apache.log4j.helpers",
  org.apache.log4j.chainsaw;
   uses:="javax.swing.event,
