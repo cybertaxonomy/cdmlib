@@ -41,7 +41,7 @@ public class PesiRelTaxonExport extends PesiExportBase<RelationshipBase> {
 
 	private static int modCount = 1000;
 	private static final String dbTableName = "RelTaxon";
-	private static final String pluralString = "TaxonRelationships";
+	private static final String pluralString = "Relationships";
 
 	public PesiRelTaxonExport() {
 		super();
@@ -70,41 +70,63 @@ public class PesiRelTaxonExport extends PesiExportBase<RelationshipBase> {
 	@Override
 	protected boolean doInvoke(PesiExportState state) {
 		try {
-			logger.info("Start: Make " + pluralString + " ...");
+			logger.error("Started Making " + pluralString + " ...");
 	
+			// Get the limit for objects to save within a single transaction.
+//			int limit = state.getConfig().getLimitSave();
+			int limit = 10;
+
 			// Stores whether this invoke was successful or not.
-			boolean success = true ;
-	
+			boolean success = true;
+
 			// PESI: Clear the database table RelTaxon.
 			doDelete(state);
 	
-			// Start transaction
-			TransactionStatus txStatus = startTransaction(true);
-	
-			// CDM: Get all Relationships
-			List<RelationshipBase> list = getTaxonService().getAllRelationships(100000000, 0);
-	
-			// Get specific mappings: (CDM) TaxonRelationship -> (PESI) RelTaxon
+			// Get specific mappings: (CDM) Relationship -> (PESI) RelTaxon
 			PesiExportMapping mapping = getMapping();
-	
+
 			// Initialize the db mapper
 			mapping.initialize(state);
-	
+
 			// PESI: Create the RelTaxa
 			int count = 0;
-			for (RelationshipBase<?, ?, ?> relation : list) {
-				if (relation.isInstanceOf(TaxonRelationship.class) || relation.isInstanceOf(SynonymRelationship.class)) {
-					doCount(count++, modCount, pluralString);
-					success &= mapping.invoke(relation);
+			int pastCount = 0;
+			TransactionStatus txStatus = null;
+			List<RelationshipBase> list = null;
+
+			// Start transaction
+			txStatus = startTransaction(true);
+			logger.error("Started new transaction. Trying to fetch " + limit + " " + pluralString + "...");
+			while ((list = getTaxonService().getAllRelationships(limit, count)).size() > 0) {
+				
+				logger.error("Fetched " + list.size() + " " + pluralString + ". Exporting...");
+				for (RelationshipBase<?, ?, ?> relation : list) {
+
+					// Focus on TaxonRelationships and SynonymRelationships.
+					if (relation.isInstanceOf(TaxonRelationship.class) || relation.isInstanceOf(SynonymRelationship.class)) {
+						doCount(count++, modCount, pluralString);
+						success &= mapping.invoke(relation);
+					}
 				}
+				
+				// Commit transaction
+				commitTransaction(txStatus);
+				logger.error("Committed transaction.");
+				logger.error("Exported " + (count - pastCount) + " " + pluralString + ". Total: " + count);
+				pastCount = count;
+
+				// Start transaction
+				txStatus = startTransaction(true);
+				logger.error("Started new transaction. Trying to fetch " + limit + " " + pluralString + "...");
 			}
-	
 			// Commit transaction
 			commitTransaction(txStatus);
-			logger.info("End: Make " + pluralString + " ..." + getSuccessString(success));
+			logger.error("Committed transaction.");
 	
+			logger.error("Finished Making " + pluralString + " ..." + getSuccessString(success));
+			
 			return success;
-		} catch(SQLException e) {
+		} catch (SQLException e) {
 			e.printStackTrace();
 			logger.error(e.getMessage());
 			return false;
@@ -230,8 +252,8 @@ public class PesiRelTaxonExport extends PesiExportBase<RelationshipBase> {
 		mapping.addMapper(MethodMapper.NewInstance("TaxonFk2", this.getClass(), "getTaxonFk2", standardMethodParameter, DbExportStateBase.class));
 		mapping.addMapper(MethodMapper.NewInstance("RelTaxonQualifierFk", this));
 		mapping.addMapper(MethodMapper.NewInstance("RelQualifierCache", this));
-//		mapping.addMapper(MethodMapper.NewInstance("Notes", this));
-		mapping.addMapper(CreatedAndNotesMapper.NewInstance(false));
+		mapping.addMapper(MethodMapper.NewInstance("Notes", this));
+//		mapping.addMapper(CreatedAndNotesMapper.NewInstance(false));
 
 		return mapping;
 	}
