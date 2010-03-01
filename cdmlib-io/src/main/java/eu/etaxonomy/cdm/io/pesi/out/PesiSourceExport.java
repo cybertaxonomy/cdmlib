@@ -18,6 +18,7 @@ import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbStringMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbTimePeriodMapper;
+import eu.etaxonomy.cdm.io.berlinModel.out.mapper.IdMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.MethodMapper;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator.DO_REFERENCES;
@@ -282,7 +283,7 @@ public class PesiSourceExport extends PesiExportBase<ReferenceBase> {
 	private PesiExportMapping getMapping() {
 		PesiExportMapping mapping = new PesiExportMapping(dbTableName);
 		
-	//	mapping.addMapper(IdMapper.NewInstance("SourceId"));
+		mapping.addMapper(IdMapper.NewInstance("SourceId"));
 		mapping.addMapper(MethodMapper.NewInstance("IMIS_Id", this));
 		mapping.addMapper(MethodMapper.NewInstance("SourceCategoryFK", this));
 		mapping.addMapper(MethodMapper.NewInstance("SourceCategoryCache", this));

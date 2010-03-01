@@ -16,6 +16,7 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
+import eu.etaxonomy.cdm.io.berlinModel.out.mapper.IdMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.MethodMapper;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
@@ -612,7 +613,7 @@ public class PesiTaxonExport extends PesiExportBase<TaxonBase> {
 	private PesiExportMapping getMapping() {
 		PesiExportMapping mapping = new PesiExportMapping(dbTableName);
 		
-	//	mapping.addMapper(IdMapper.NewInstance("TaxonId"));
+		mapping.addMapper(IdMapper.NewInstance("TaxonId"));
 		mapping.addMapper(MethodMapper.NewInstance("SourceFK", this));
 		mapping.addMapper(MethodMapper.NewInstance("KingdomFk", this));
 		mapping.addMapper(MethodMapper.NewInstance("RankFk", this));

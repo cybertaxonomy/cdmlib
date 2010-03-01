@@ -16,7 +16,7 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
-import eu.etaxonomy.cdm.io.berlinModel.out.mapper.CreatedAndNotesMapper;
+import eu.etaxonomy.cdm.io.berlinModel.out.mapper.IdMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.MethodMapper;
 import eu.etaxonomy.cdm.io.common.DbExportStateBase;
 import eu.etaxonomy.cdm.io.common.Source;
@@ -74,7 +74,7 @@ public class PesiRelTaxonExport extends PesiExportBase<RelationshipBase> {
 	
 			// Get the limit for objects to save within a single transaction.
 //			int limit = state.getConfig().getLimitSave();
-			int limit = 10;
+			int limit = 1000;
 
 			// Stores whether this invoke was successful or not.
 			boolean success = true;
@@ -160,7 +160,7 @@ public class PesiRelTaxonExport extends PesiExportBase<RelationshipBase> {
 	}
 
 	/**
-	 * Returns the <code>TaxonFk1</code> attribute.
+	 * Returns the <code>TaxonFk1</code> attribute. It corresponds to a CDM <code>TaxonRelationship</code>.
 	 * @param relationship The {@link RelationshipBase Relationship}.
 	 * @return The <code>TaxonFk1</code> attribute.
 	 * @see MethodMapper
@@ -171,14 +171,18 @@ public class PesiRelTaxonExport extends PesiExportBase<RelationshipBase> {
 	}
 	
 	/**
-	 * Returns the <code>TaxonFk2</code> attribute.
+	 * Returns the <code>TaxonFk2</code> attribute. It corresponds to a CDM <code>SynonymRelationship</code>.
 	 * @param relationship The {@link RelationshipBase Relationship}.
 	 * @return The <code>TaxonFk2</code> attribute.
 	 * @see MethodMapper
 	 */
 	@SuppressWarnings("unused")
 	private static Integer getTaxonFk2(RelationshipBase<?, ?, ?> relationship, DbExportStateBase<?> state) {
-		return getObjectFk(relationship, state, false);
+		Integer result = getObjectFk(relationship, state, false);
+		if (result == null) {
+			logger.error("result is NULL.");
+		}
+		return result;
 	}
 	
 	/**
@@ -233,7 +237,7 @@ public class PesiRelTaxonExport extends PesiExportBase<RelationshipBase> {
 			taxon = (isFrom) ? sr.getSynonym() : sr.getAcceptedTaxon();
 		}
 		if (taxon != null) {
-			CdmBase cdmBase = taxon.getSec();
+			CdmBase cdmBase = taxon;
 			return state.getDbId(cdmBase);
 		}
 		logger.warn("No taxon found for relationship: " + relationship.toString());

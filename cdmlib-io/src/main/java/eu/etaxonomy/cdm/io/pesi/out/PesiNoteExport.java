@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbTimePeriodMapper;
+import eu.etaxonomy.cdm.io.berlinModel.out.mapper.IdMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.MethodMapper;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -263,7 +264,7 @@ public class PesiNoteExport extends PesiExportBase<DescriptionBase> {
 	private PesiExportMapping getMapping() {
 		PesiExportMapping mapping = new PesiExportMapping(dbTableName);
 		
-//		mapping.addMapper(IdMapper.NewInstance("NoteId"));
+		mapping.addMapper(IdMapper.NewInstance("NoteId"));
 		mapping.addMapper(MethodMapper.NewInstance("Note_1", this));
 		mapping.addMapper(MethodMapper.NewInstance("Note_2", this));
 		mapping.addMapper(MethodMapper.NewInstance("NoteCategoryFk", this));
