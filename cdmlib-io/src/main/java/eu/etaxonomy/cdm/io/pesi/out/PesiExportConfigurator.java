@@ -36,7 +36,7 @@ public class PesiExportConfigurator extends DbExportConfiguratorBase implements 
 	protected void makeIoClassList(){
 		ioClassList = new Class[]{
 //				PesiSourceExport.class
-//				PesiTaxonExport.class,
+				PesiTaxonExport.class,
 				PesiRelTaxonExport.class
 		};
 
