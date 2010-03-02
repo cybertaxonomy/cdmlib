@@ -14,6 +14,7 @@
     <property name="cdmserver.target.path" value="target" />
     <property name="dest.path" value="usr/bin" />
 	<property name="linux.installer.path" value="${installer.path}/linux" /> <!-- location -->
+	<property name="basedirToRemoteRoot" value="../../../.." />
 	<!--
     <property name="initscript.path" location="${installer.path}/linux/initscript" />
 	<property name="cdmlibremote.path" value="../../../.." />
@@ -26,15 +27,19 @@
 	<property name="ant-deb-task.path" value="${installer.path}/lib"/> <!-- location -->
 
     <!-- create distribution target -->
+
     <path id="classpath">
     	<fileset dir="${ant-deb-task.path}" includes="*.jar" />
     </path>
-	
+
     <path id="ant-deb-task">
         <fileset dir="${ant-deb-task.path}" includes="*.jar" />
     </path>
-
-    <taskdef resource="ant_deb_task.properties" classpathref="ant-deb-task" />
+	
+    <taskdef resource="ant_deb_task.properties"  classpathref="ant-deb-task" />
+<!--
+	file="${ant-deb-task.path}/ant-deb-task-0.0.1.jar"
+-->
 	
 	<target name="deb_package" description="build the deb file">
 		<mkdir dir="dist"/>

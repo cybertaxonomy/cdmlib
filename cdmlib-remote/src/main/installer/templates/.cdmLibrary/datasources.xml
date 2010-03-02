@@ -20,36 +20,42 @@
          a) implicit: by default the SimpleDriverDataSource with id="empty_default" will be used.
          b) Set the UpdatableRoutingDataSource property "defaultDatasourceName" 
             to the bean id of the datasource to define the default explicitely
-======================================================-->
-
-  <bean id="default"  lazy-init="true" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
+       ======================================================-->
+       
+     <!-- ======================================================
+       !!! THIS IS A TEMPLATE !!!
+       
+       In order to use it you must edit the 'url', 'username', 'password'
+       and also 'driverClass' if you are not using mySQL.
+       ======================================================-->
+ 
+    <!-- setting a default data sources is mandatory   -->
+    <bean id="default"  lazy-init="true" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
         <property name="driverClass" value="com.mysql.jdbc.Driver"/>
-        <property name="username" value="edit"/>
-        <property name="password" value="wp5"/>
-        <property name="url" value="jdbc:mysql://160.45.63.30/cdm_edit_palmae_b"/>
+        <property name="username" value="user"/>
+        <property name="password" value="123"/>
+        <property name="url" value="jdbc:mysql://192.168.1.100/myCDMdatabase"/>
     </bean>
-
-
-	<bean id="palmae"  lazy-init="true" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
+    <!-- the default data sources can be mapped to a specific URL root folder   -->
+    <bean id="myCDMdatabase"  lazy-init="true" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
         <property name="driverClass" value="com.mysql.jdbc.Driver"/>
-        <property name="username" value="edit"/>
-        <property name="password" value="wp5"/>
-        <property name="url" value="jdbc:mysql://160.45.63.30/cdm_edit_palmae_b"/>
+        <property name="username" value="user"/>
+        <property name="password" value="123"/>
+        <property name="url" value="jdbc:mysql://192.168.1.100/myCDMdatabase"/>
     </bean>
-		<bean id="diptera"  lazy-init="true" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
+    <!-- additional data sources mapped to other URL rot folders -->
+    <!--  
+        <bean id="myCDMdatabase_2"  lazy-init="true" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
         <property name="driverClass" value="com.mysql.jdbc.Driver"/>
-        <property name="username" value="edit"/>
-        <property name="password" value="wp5"/>
-        <property name="url" value="jdbc:mysql://160.45.63.30/cdm_edit_diptera_b"/>
+        <property name="username" value="user"/>
+        <property name="password" value="123"/>
+                <property name="url" value="jdbc:mysql://192.168.1.100/myCDMdatabase_2"/>
     </bean>
-		<bean id="cichorieae"  lazy-init="true" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
+     <bean id="myCDMdatabase_3"  lazy-init="true" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
         <property name="driverClass" value="com.mysql.jdbc.Driver"/>
-        <property name="username" value="edit"/>
-        <property name="password" value="wp5"/>
-        <property name="url" value="jdbc:mysql://160.45.63.30/cdm_edit_cichorieae_b"/>
+        <property name="username" value="user"/>
+        <property name="password" value="123"/>
+                <property name="url" value="jdbc:mysql://192.168.1.100/myCDMdatabase_3"/>
     </bean>
-
-
-
-
-		</beans>
+    -->
+</beans>

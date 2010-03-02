@@ -2279,7 +2279,6 @@ cdmlib-remote/src/main/installer/lib/ant-deb-task-0.0.1.jar -text
 cdmlib-remote/src/main/installer/linux/Makefile -text
 cdmlib-remote/src/main/installer/linux/build-deb.xml -text
 cdmlib-remote/src/main/installer/linux/copyright -text
-cdmlib-remote/src/main/installer/linux/datasources.xml -text
 cdmlib-remote/src/main/installer/linux/postinst -text
 cdmlib-remote/src/main/installer/linux/postrm -text
 cdmlib-remote/src/main/installer/templates/.cdmLibrary/datasources.xml -text
