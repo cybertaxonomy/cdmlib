@@ -174,12 +174,19 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		return getRootTaxa(null, sec, cdmFetch, onlyWithChildren, withMisapplications, null);
 	}
 	
-
+	/*
+	 * (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#getTaxaByName(java.lang.String, eu.etaxonomy.cdm.model.reference.ReferenceBase)
+	 */
 	public List<TaxonBase> getTaxaByName(String queryString, ReferenceBase sec) {
 		
 		return getTaxaByName(queryString, true, sec);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#getTaxaByName(java.lang.String, java.lang.Boolean, eu.etaxonomy.cdm.model.reference.ReferenceBase)
+	 */
 	public List<TaxonBase> getTaxaByName(String queryString, Boolean accepted, ReferenceBase sec) {
 		checkNotInPriorView("TaxonDaoHibernateImpl.getTaxaByName(String name, ReferenceBase sec)");
 		
@@ -210,6 +217,10 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		return getTaxaByName(clazz, queryString, null, matchMode, null, pageSize, pageNumber, null);
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#getTaxaByName(java.lang.String, eu.etaxonomy.cdm.persistence.query.MatchMode, java.lang.Boolean, java.lang.Integer, java.lang.Integer)
+	 */
 	public List<TaxonBase> getTaxaByName(String queryString, MatchMode matchMode, 
 			Boolean accepted, Integer pageSize, Integer pageNumber) {
 		
@@ -220,7 +231,10 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		}
 	}
 	
-	
+	/*
+	 * (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#getTaxaByName(java.lang.Class, java.lang.String, eu.etaxonomy.cdm.model.taxon.TaxonomicTree, eu.etaxonomy.cdm.persistence.query.MatchMode, java.util.Set, java.lang.Integer, java.lang.Integer, java.util.List)
+	 */
 	public List<TaxonBase> getTaxaByName(Class<? extends TaxonBase> clazz, String queryString, TaxonomicTree taxonomicTree,
 			MatchMode matchMode, Set<NamedArea> namedAreas, Integer pageSize, 
 			Integer pageNumber, List<String> propertyPaths) {
@@ -237,6 +251,10 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#getTaxaByCommonName(java.lang.String, eu.etaxonomy.cdm.model.taxon.TaxonomicTree, eu.etaxonomy.cdm.persistence.query.MatchMode, java.util.Set, java.lang.Integer, java.lang.Integer, java.util.List)
+	 */
 	public List<TaxonBase> getTaxaByCommonName(String queryString, TaxonomicTree taxonomicTree,
 			MatchMode matchMode, Set<NamedArea> namedAreas, Integer pageSize, 
 			Integer pageNumber, List<String> propertyPaths) {
@@ -505,7 +523,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		
 		return query;
 	}
-	
+
 	private Query prepareTaxaByCommonName(String queryString, TaxonomicTree taxonomicTree,
 			MatchMode matchMode, Set<NamedArea> namedAreas, Integer pageSize, Integer pageNumber, boolean doCount){
 		
@@ -593,11 +611,14 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 //		return count.intValue();
 //	}
 	
-
 	public List<TaxonBase> getAllTaxonBases(Integer pagesize, Integer page) {
 		return super.list(pagesize, page);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#getAllSynonyms(java.lang.Integer, java.lang.Integer)
+	 */
 	public List<Synonym> getAllSynonyms(Integer limit, Integer start) {
 		Criteria criteria = getSession().createCriteria(Synonym.class);
 		
@@ -609,6 +630,10 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		return criteria.list();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#getAllTaxa(java.lang.Integer, java.lang.Integer)
+	 */
 	public List<Taxon> getAllTaxa(Integer limit, Integer start) {
         Criteria criteria = getSession().createCriteria(Taxon.class);
 		
@@ -619,13 +644,17 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		
 		return criteria.list();
 	}
-	
-	
 
+	/*
+	 * (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#getAllRelationships(java.lang.Integer, java.lang.Integer)
+	 */
 	public List<RelationshipBase> getAllRelationships(Integer limit, Integer start) {
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
 		    Criteria criteria = getSession().createCriteria(RelationshipBase.class);
+		    criteria.setFirstResult(start);
+		    criteria.setMaxResults(limit);
 		    return (List<RelationshipBase>)criteria.list();
 		} else {
 			AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(RelationshipBase.class,auditEvent.getRevisionNumber());
@@ -695,6 +724,10 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#countMatchesByName(java.lang.String, eu.etaxonomy.cdm.persistence.query.MatchMode, boolean)
+	 */
 	public int countMatchesByName(String queryString, MatchMode matchMode, boolean onlyAcccepted) {
 		checkNotInPriorView("TaxonDaoHibernateImpl.countMatchesByName(String queryString, ITitledDao.MATCH_MODE matchMode, boolean onlyAcccepted)");
 		Criteria crit = getSession().createCriteria(type);
@@ -704,7 +737,10 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		return result;
 	}
 
-
+	/*
+	 * (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#countMatchesByName(java.lang.String, eu.etaxonomy.cdm.persistence.query.MatchMode, boolean, java.util.List)
+	 */
 	public int countMatchesByName(String queryString, MatchMode matchMode, boolean onlyAcccepted, List<Criterion> criteria) {
 		checkNotInPriorView("TaxonDaoHibernateImpl.countMatchesByName(String queryString, ITitledDao.MATCH_MODE matchMode, boolean onlyAcccepted, List<Criterion> criteria)");
 		Criteria crit = getSession().createCriteria(type);
@@ -719,6 +755,10 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		return result;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#countTaxonRelationships(eu.etaxonomy.cdm.model.taxon.Taxon, eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType, eu.etaxonomy.cdm.model.common.RelationshipBase.Direction)
+	 */
 	public int countTaxonRelationships(Taxon taxon, TaxonRelationshipType type, Direction direction) {
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
@@ -746,6 +786,10 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#countSynonyms(eu.etaxonomy.cdm.model.taxon.Taxon, eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType)
+	 */
 	public int countSynonyms(Taxon taxon, SynonymRelationshipType type) {
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
@@ -770,6 +814,10 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		}
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#countSynonyms(eu.etaxonomy.cdm.model.taxon.Synonym, eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType)
+	 */
 	public int countSynonyms(Synonym synonym, SynonymRelationshipType type) {
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
@@ -795,6 +843,10 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#countTaxaByName(java.lang.Class, java.lang.String, java.lang.String, java.lang.String, java.lang.String, eu.etaxonomy.cdm.model.name.Rank)
+	 */
 	public int countTaxaByName(Class<? extends TaxonBase> clazz, String genusOrUninomial, String infraGenericEpithet, String specificEpithet,	String infraSpecificEpithet, Rank rank) {
 		checkNotInPriorView("TaxonDaoHibernateImpl.countTaxaByName(Boolean accepted, String genusOrUninomial,	String infraGenericEpithet, String specificEpithet,	String infraSpecificEpithet, Rank rank)");
         Criteria criteria = null;
@@ -833,6 +885,10 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		return (Integer)criteria.uniqueResult();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#findTaxaByName(java.lang.Class, java.lang.String, java.lang.String, java.lang.String, java.lang.String, eu.etaxonomy.cdm.model.name.Rank, java.lang.Integer, java.lang.Integer)
+	 */
 	public List<TaxonBase> findTaxaByName(Class<? extends TaxonBase> clazz, String genusOrUninomial, String infraGenericEpithet, String specificEpithet, String infraSpecificEpithet, Rank rank, Integer pageSize,	Integer pageNumber) {
 		checkNotInPriorView("TaxonDaoHibernateImpl.findTaxaByName(Boolean accepted, String genusOrUninomial, String infraGenericEpithet, String specificEpithet, String infraSpecificEpithet, Rank rank, Integer pageSize,	Integer pageNumber)");
 		Criteria criteria = null;
@@ -887,6 +943,10 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		return (List<TaxonBase>)criteria.list();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#getTaxonRelationships(eu.etaxonomy.cdm.model.taxon.Taxon, eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType, java.lang.Integer, java.lang.Integer, java.util.List, java.util.List, eu.etaxonomy.cdm.model.common.RelationshipBase.Direction)
+	 */
 	public List<TaxonRelationship> getTaxonRelationships(Taxon taxon,	TaxonRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths, Direction direction) {
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
@@ -953,6 +1013,10 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#getSynonyms(eu.etaxonomy.cdm.model.taxon.Taxon, eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType, java.lang.Integer, java.lang.Integer, java.util.List, java.util.List)
+	 */
 	public List<SynonymRelationship> getSynonyms(Taxon taxon, SynonymRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
@@ -1002,6 +1066,10 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		}
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#getSynonyms(eu.etaxonomy.cdm.model.taxon.Synonym, eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType, java.lang.Integer, java.lang.Integer, java.util.List, java.util.List)
+	 */
 	public List<SynonymRelationship> getSynonyms(Synonym synonym, SynonymRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
@@ -1174,6 +1242,10 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		return null;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#createInferredSynonymy(eu.etaxonomy.cdm.model.taxon.TaxonomicTree)
+	 */
 	public boolean createInferredSynonymy(TaxonomicTree tree) {
 		boolean result = true;
 		//1. get a list of all accepted taxa of rank species
@@ -1328,14 +1400,13 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		
 	}
 
-
+	/*
+	 * (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#countAllRelationships()
+	 */
 	public int countAllRelationships() {
 		List<RelationshipBase> relationships = this.getAllRelationships(null, 0);
 		return relationships.size();
 	}
-	
-	
-
-	
 	
 }
