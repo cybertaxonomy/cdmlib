@@ -16,29 +16,29 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
+import eu.etaxonomy.cdm.io.berlinModel.out.mapper.IdMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.MethodMapper;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 
 /**
- * @author a.mueller
  * @author e.-m.lee
- * @date 23.02.2010
+ * @date 02.03.2010
  *
  */
 @Component
 @SuppressWarnings("unchecked")
-public class PesiAdditionalTaxonSourceExport extends
-		PesiExportBase<DescriptionBase> {
-	private static final Logger logger = Logger.getLogger(PesiAdditionalTaxonSourceExport.class);
-	private static final Class<? extends CdmBase> standardMethodParameter = DescriptionBase.class;
+public class PesiOccurrenceExport extends PesiExportBase<DescriptionBase> {
+	private static final Logger logger = Logger.getLogger(PesiOccurrenceExport.class);
+	private static final Class<? extends CdmBase> standardMethodParameter = SpecimenOrObservationBase.class;
 
 	private static int modCount = 1000;
-	private static final String dbTableName = "AdditionalTaxonSource";
-	private static final String pluralString = "AdditionalTaxonSources";
+	private static final String dbTableName = "Occurrence";
+	private static final String pluralString = "Occurrences";
 
-	public PesiAdditionalTaxonSourceExport() {
+	public PesiOccurrenceExport() {
 		super();
 	}
 
@@ -66,43 +66,39 @@ public class PesiAdditionalTaxonSourceExport extends
 	protected boolean doInvoke(PesiExportState state) {
 		try {
 			logger.error("*** Started Making " + pluralString + " ...");
-
+	
 			// Get the limit for objects to save within a single transaction.
 			int limit = state.getConfig().getLimitSave();
 
 			// Stores whether this invoke was successful or not.
 			boolean success = true;
-	
-			// PESI: Clear the database table Note.
+
+			// PESI: Clear the database table Occurrence.
 			doDelete(state);
 	
-			// CDM: Get the number of all available description elements.
-			int maxCount = getDescriptionService().count(null);
-			logger.error("Total amount of " + maxCount + " " + pluralString + " will be exported.");
-
-			// Get specific mappings: (CDM) DescriptionElement -> (PESI) Note
+			// Get specific mappings: (CDM) Occurrence -> (PESI) Occurrence
 			PesiExportMapping mapping = getMapping();
-	
+
 			// Initialize the db mapper
 			mapping.initialize(state);
-	
-			// PESI: Create the Notes
+
+			// PESI: Create the Occurrences
 			int count = 0;
 			int pastCount = 0;
 			TransactionStatus txStatus = null;
-			List<DescriptionBase> list = null;
+			List<SpecimenOrObservationBase> list = null;
 
 			// Start transaction
 			txStatus = startTransaction(true);
 			logger.error("Started new transaction. Fetching some " + pluralString + " (max: " + limit + ") ...");
-			while ((list = getDescriptionService().list(null, limit, count, null, null)).size() > 0) {
-
+			while ((list = getOccurrenceService().list(null, limit, count, null, null)).size() > 0) {
+				
 				logger.error("Fetched " + list.size() + " " + pluralString + ". Exporting...");
-				for (DescriptionBase<?> description : list) {
+				for (SpecimenOrObservationBase<?> relation : list) {
 					doCount(count++, modCount, pluralString);
-					success &= mapping.invoke(description);
+					success &= mapping.invoke(relation);
 				}
-
+				
 				// Commit transaction
 				commitTransaction(txStatus);
 				logger.error("Committed transaction.");
@@ -131,7 +127,7 @@ public class PesiAdditionalTaxonSourceExport extends
 	}
 
 	/**
-	 * Deletes all entries of database tables related to <code>AdditionalTaxonSource</code>.
+	 * Deletes all entries of database tables related to <code>Occurrence</code>.
 	 * @param state The {@link PesiExportState PesiExportState}.
 	 * @return Whether the delete operation was successful or not.
 	 */
@@ -141,7 +137,7 @@ public class PesiAdditionalTaxonSourceExport extends
 		String sql;
 		Source destination =  pesiConfig.getDestination();
 
-		// Clear AdditionalTaxonSource
+		// Clear Occurrence
 		sql = "DELETE FROM " + dbTableName;
 		destination.setQuery(sql);
 		destination.update(sql);
@@ -153,81 +149,106 @@ public class PesiAdditionalTaxonSourceExport extends
 	 */
 	@Override
 	protected boolean isIgnore(PesiExportState state) {
-		// TODO Auto-generated method stub
-		return false;
+		return ! state.getConfig().isDoOccurrence();
 	}
+
 
 	/**
 	 * Returns the <code>TaxonFk</code> attribute.
-	 * @param description The {@link DescriptionBase Description}.
+	 * @param specimenOrObservation The {@link SpecimenOrObservationBase SpecimenOrObservation}.
 	 * @return The <code>TaxonFk</code> attribute.
 	 * @see MethodMapper
 	 */
 	@SuppressWarnings("unused")
-	private static String getTaxonFk(DescriptionBase<?> description) {
+	private static String getTaxonFk(SpecimenOrObservationBase<?> specimenOrObservation) {
 		// TODO
 		return null;
 	}
-	
+
+	/**
+	 * Returns the <code>AreaFk</code> attribute.
+	 * @param specimenOrObservation The {@link SpecimenOrObservationBase SpecimenOrObservation}.
+	 * @return The <code>AreaFk</code> attribute.
+	 * @see MethodMapper
+	 */
+	@SuppressWarnings("unused")
+	private static String getAreaFk(SpecimenOrObservationBase<?> specimenOrObservation) {
+		// TODO
+		return null;
+	}
+
+	/**
+	 * Returns the <code>AreaNameCache</code> attribute.
+	 * @param specimenOrObservation The {@link SpecimenOrObservationBase SpecimenOrObservation}.
+	 * @return The <code>AreaNameCache</code> attribute.
+	 * @see MethodMapper
+	 */
+	@SuppressWarnings("unused")
+	private static String getAreaNameCache(SpecimenOrObservationBase<?> specimenOrObservation) {
+		// TODO
+		return null;
+	}
+
+	/**
+	 * Returns the <code>OccurrenceStatusFk</code> attribute.
+	 * @param specimenOrObservation The {@link SpecimenOrObservationBase SpecimenOrObservation}.
+	 * @return The <code>OccurrenceStatusFk</code> attribute.
+	 * @see MethodMapper
+	 */
+	@SuppressWarnings("unused")
+	private static String getOccurrenceStatusFk(SpecimenOrObservationBase<?> specimenOrObservation) {
+		// TODO
+		return null;
+	}
+
+	/**
+	 * Returns the <code>OccurrenceStatusCache</code> attribute.
+	 * @param specimenOrObservation The {@link SpecimenOrObservationBase SpecimenOrObservation}.
+	 * @return The <code>OccurrenceStatusCache</code> attribute.
+	 * @see MethodMapper
+	 */
+	@SuppressWarnings("unused")
+	private static String getOccurrenceStatusCache(SpecimenOrObservationBase<?> specimenOrObservation) {
+		// TODO
+		return null;
+	}
+
 	/**
 	 * Returns the <code>SourceFk</code> attribute.
-	 * @param description The {@link DescriptionBase Description}.
+	 * @param specimenOrObservation The {@link SpecimenOrObservationBase SpecimenOrObservation}.
 	 * @return The <code>SourceFk</code> attribute.
 	 * @see MethodMapper
 	 */
 	@SuppressWarnings("unused")
-	private static String getSourceFk(DescriptionBase<?> description) {
+	private static String getSourceFk(SpecimenOrObservationBase<?> specimenOrObservation) {
 		// TODO
 		return null;
 	}
-	
+
 	/**
-	 * Returns the <code>SourceUseFk</code> attribute.
-	 * @param description The {@link DescriptionBase Description}.
-	 * @return The <code>SourceUseFk</code> attribute.
+	 * Returns the <code>SourceCache</code> attribute.
+	 * @param specimenOrObservation The {@link SpecimenOrObservationBase SpecimenOrObservation}.
+	 * @return The <code>SourceCache</code> attribute.
 	 * @see MethodMapper
 	 */
 	@SuppressWarnings("unused")
-	private static String getSourceUseFk(DescriptionBase<?> description) {
+	private static String getSourceCache(SpecimenOrObservationBase<?> specimenOrObservation) {
 		// TODO
 		return null;
 	}
-	
+
 	/**
-	 * Returns the <code>SourceUseCache</code> attribute.
-	 * @param description The {@link DescriptionBase Description}.
-	 * @return The <code>SourceUseCache</code> attribute.
+	 * Returns the <code>Notes</code> attribute.
+	 * @param specimenOrObservation The {@link SpecimenOrObservationBase SpecimenOrObservation}.
+	 * @return The <code>Notes</code> attribute.
 	 * @see MethodMapper
 	 */
 	@SuppressWarnings("unused")
-	private static String getSourceUseCache(DescriptionBase<?> description) {
+	private static String getNotes(SpecimenOrObservationBase<?> specimenOrObservation) {
 		// TODO
 		return null;
 	}
-	
-	/**
-	 * Returns the <code>SourceNameCache</code> attribute.
-	 * @param description The {@link DescriptionBase Description}.
-	 * @return The <code>SourceNameCache</code> attribute.
-	 * @see MethodMapper
-	 */
-	@SuppressWarnings("unused")
-	private static String getSourceNameCache(DescriptionBase<?> description) {
-		// TODO
-		return null;
-	}
-	
-	/**
-	 * Returns the <code>SourceDetail</code> attribute.
-	 * @param description The {@link DescriptionBase Description}.
-	 * @return The <code>SourceDetail</code> attribute.
-	 * @see MethodMapper
-	 */
-	@SuppressWarnings("unused")
-	private static String getSourceDetail(DescriptionBase<?> description) {
-		// TODO
-		return null;
-	}
+
 
 	/**
 	 * Returns the CDM to PESI specific export mappings.
@@ -236,13 +257,16 @@ public class PesiAdditionalTaxonSourceExport extends
 	private PesiExportMapping getMapping() {
 		PesiExportMapping mapping = new PesiExportMapping(dbTableName);
 		
+		mapping.addMapper(IdMapper.NewInstance("OccurrenceId"));
 		mapping.addMapper(MethodMapper.NewInstance("TaxonFk", this));
+		mapping.addMapper(MethodMapper.NewInstance("AreaFk", this));
+		mapping.addMapper(MethodMapper.NewInstance("AreaNameCache", this));
+		mapping.addMapper(MethodMapper.NewInstance("OccurrenceStatusFk", this));
+		mapping.addMapper(MethodMapper.NewInstance("OccurrenceStatusCache", this));
 		mapping.addMapper(MethodMapper.NewInstance("SourceFk", this));
-		mapping.addMapper(MethodMapper.NewInstance("SourceUseFk", this));
-		mapping.addMapper(MethodMapper.NewInstance("SourceUseCache", this));
-		mapping.addMapper(MethodMapper.NewInstance("SourceNameCache", this));
-		mapping.addMapper(MethodMapper.NewInstance("SourceDetail", this));
-		
+		mapping.addMapper(MethodMapper.NewInstance("SourceCache", this));
+		mapping.addMapper(MethodMapper.NewInstance("Notes", this));
+
 		return mapping;
 	}
 

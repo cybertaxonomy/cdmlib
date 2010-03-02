@@ -66,7 +66,7 @@ public class PesiNoteExport extends PesiExportBase<DescriptionBase> {
 	@Override
 	protected boolean doInvoke(PesiExportState state) {
 		try {
-			logger.info("Start: Make " + pluralString + " ...");
+			logger.error("*** Started Making " + pluralString + " ...");
 
 			// Get the limit for objects to save within a single transaction.
 			int limit = state.getConfig().getLimitSave();
@@ -78,8 +78,8 @@ public class PesiNoteExport extends PesiExportBase<DescriptionBase> {
 			doDelete(state);
 	
 			// CDM: Get the number of all available description elements.
-			int maxCount = getDescriptionService().count(null);
-			logger.error("Total amount of " + maxCount + " " + pluralString + " will be exported.");
+//			int maxCount = getDescriptionService().count(null);
+//			logger.error("Total amount of " + maxCount + " " + pluralString + " will be exported.");
 
 			// Get specific mappings: (CDM) DescriptionElement -> (PESI) Note
 			PesiExportMapping mapping = getMapping();
@@ -92,14 +92,13 @@ public class PesiNoteExport extends PesiExportBase<DescriptionBase> {
 			int pastCount = 0;
 			TransactionStatus txStatus = null;
 			List<DescriptionBase> list = null;
-			while (count < maxCount) {
-				// Start transaction
-				txStatus = startTransaction(true);
-				logger.error("Started new transaction. Writing " + pluralString + "...");
+			
+			// Start transaction
+			txStatus = startTransaction(true);
+			logger.error("Started new transaction. Fetching some " + pluralString + " (max: " + limit + ") ...");
+			while ((list = getDescriptionService().list(null, limit, count, null, null)).size() > 0) {
 
-				// CDM: Get a number of notes specified by 'limit'.
-				list = getDescriptionService().list(null, limit, count, null, null);
-
+				logger.error("Fetched " + list.size() + " " + pluralString + ". Exporting...");
 				for (DescriptionBase<?> description : list) {
 					doCount(count++, modCount, pluralString);
 					success &= mapping.invoke(description);
@@ -108,11 +107,21 @@ public class PesiNoteExport extends PesiExportBase<DescriptionBase> {
 				// Commit transaction
 				commitTransaction(txStatus);
 				logger.error("Committed transaction.");
-				logger.error("Wrote " + (count - pastCount) + " " + pluralString + ". Total: " + count);
+				logger.error("Exported " + (count - pastCount) + " " + pluralString + ". Total: " + count);
 				pastCount = count;
+
+				// Start transaction
+				txStatus = startTransaction(true);
+				logger.error("Started new transaction. Fetching some " + pluralString + " (max: " + limit + ") ...");
 			}
+			if (list.size() == 0) {
+				logger.error("No " + pluralString + " left to fetch.");
+			}
+			// Commit transaction
+			commitTransaction(txStatus);
+			logger.error("Committed transaction.");
 	
-			logger.error("Finished Making " + pluralString + " ..." + getSuccessString(success));
+			logger.error("*** Finished Making " + pluralString + " ..." + getSuccessString(success));
 			
 			return success;
 		} catch (SQLException e) {

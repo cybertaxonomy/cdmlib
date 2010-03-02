@@ -16,6 +16,7 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
+import eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbObjectMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.IdMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.MethodMapper;
 import eu.etaxonomy.cdm.io.common.Source;
@@ -68,7 +69,7 @@ public class PesiTaxonExport extends PesiExportBase<TaxonBase> {
 	@Override
 	protected boolean doInvoke(PesiExportState state) {
 		try {
-			logger.error("Started Making " + pluralString + " ...");
+			logger.error("*** Started Making " + pluralString + " ...");
 	
 			// Get the limit for objects to save within a single transaction.
 			int limit = state.getConfig().getLimitSave();
@@ -77,11 +78,11 @@ public class PesiTaxonExport extends PesiExportBase<TaxonBase> {
 			boolean success = true;
 	
 			// PESI: Clear the database table Taxon.
-			doDelete(state);
+//			doDelete(state);
 	
 			// CDM: Get the number of all available taxa.
-			int maxCount = getTaxonService().count(null);
-			logger.error("Total amount of " + maxCount + " " + pluralString + " will be exported.");
+//			int maxCount = getTaxonService().count(null);
+//			logger.error("Total amount of " + maxCount + " " + pluralString + " will be exported.");
 
 			// Get specific mappings: (CDM) Taxon -> (PESI) Taxon
 			PesiExportMapping mapping = getMapping();
@@ -93,14 +94,13 @@ public class PesiTaxonExport extends PesiExportBase<TaxonBase> {
 			int pastCount = 0;
 			TransactionStatus txStatus = null;
 			List<TaxonBase> list = null;
-			while (count < maxCount) {
-				// Start transaction
-				txStatus = startTransaction(true);
-				logger.error("Started new transaction. Exporting " + pluralString + "...");
 
-				// CDM: Get a number of taxa specified by 'limit'.
-				list = getTaxonService().list(null, limit, count, null, null);
+			// Start transaction
+			txStatus = startTransaction(true);
+			logger.error("Started new transaction. Fetching some " + pluralString + " (max: " + limit + ") ...");
+			while ((list = getTaxonService().list(null, limit, count, null, null)).size() > 0) {
 
+				logger.error("Fetched " + list.size() + " " + pluralString + ". Exporting...");
 				for (TaxonBase<?> taxon : list) {
 					doCount(count++, modCount, pluralString);
 					success &= mapping.invoke(taxon);
@@ -111,9 +111,19 @@ public class PesiTaxonExport extends PesiExportBase<TaxonBase> {
 				logger.error("Committed transaction.");
 				logger.error("Exported " + (count - pastCount) + " " + pluralString + ". Total: " + count);
 				pastCount = count;
-			}
 
-			logger.error("Finished Making " + pluralString + " ..." + getSuccessString(success));
+				// Start transaction
+				txStatus = startTransaction(true);
+				logger.error("Started new transaction. Fetching some " + pluralString + " (max: " + limit + ") ...");
+			}
+			if (list.size() == 0) {
+				logger.error("No " + pluralString + " left to fetch.");
+			}
+			// Commit transaction
+			commitTransaction(txStatus);
+			logger.error("Committed transaction.");
+
+			logger.error("*** Finished Making " + pluralString + " ..." + getSuccessString(success));
 	
 			return success;
 		} catch (SQLException e) {
@@ -155,12 +165,10 @@ public class PesiTaxonExport extends PesiExportBase<TaxonBase> {
 	 * @return The <code>SourceFK</code> attribute.
 	 * @see MethodMapper
 	 */
-	@SuppressWarnings("unused")
-	private static Integer getSourceFK(TaxonBase<?> taxon) {
-		// TODO
-		// Determine Reference (CDM: taxon.getSec();) and lookup identifier in Source (PESI) using helper map created during Source Export.
-		return null;
-	}
+//	@SuppressWarnings("unused")
+//	private static Integer getSourceFK(DbExportStateBase<?> state, TaxonBase<?> taxon) {
+//		return state.getDbId(taxon);
+//	}
 
 	/**
 	 * Returns the <code>KingdomFk</code> attribute.
@@ -614,7 +622,8 @@ public class PesiTaxonExport extends PesiExportBase<TaxonBase> {
 		PesiExportMapping mapping = new PesiExportMapping(dbTableName);
 		
 		mapping.addMapper(IdMapper.NewInstance("TaxonId"));
-		mapping.addMapper(MethodMapper.NewInstance("SourceFK", this));
+//		mapping.addMapper(MethodMapper.NewInstance("SourceFK", this.getClass(), "getSourceFK", DbExportStateBase.class, standardMethodParameter));
+		mapping.addMapper(DbObjectMapper.NewInstance("sec", "SourceFK"));
 		mapping.addMapper(MethodMapper.NewInstance("KingdomFk", this));
 		mapping.addMapper(MethodMapper.NewInstance("RankFk", this));
 		mapping.addMapper(MethodMapper.NewInstance("RankCache", this));

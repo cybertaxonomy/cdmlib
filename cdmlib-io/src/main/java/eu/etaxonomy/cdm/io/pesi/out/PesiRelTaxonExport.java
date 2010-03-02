@@ -16,7 +16,6 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
-import eu.etaxonomy.cdm.io.berlinModel.out.mapper.IdMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.MethodMapper;
 import eu.etaxonomy.cdm.io.common.DbExportStateBase;
 import eu.etaxonomy.cdm.io.common.Source;
@@ -70,11 +69,10 @@ public class PesiRelTaxonExport extends PesiExportBase<RelationshipBase> {
 	@Override
 	protected boolean doInvoke(PesiExportState state) {
 		try {
-			logger.error("Started Making " + pluralString + " ...");
+			logger.error("*** Started Making " + pluralString + " ...");
 	
 			// Get the limit for objects to save within a single transaction.
-//			int limit = state.getConfig().getLimitSave();
-			int limit = 1000;
+			int limit = state.getConfig().getLimitSave();
 
 			// Stores whether this invoke was successful or not.
 			boolean success = true;
@@ -96,7 +94,7 @@ public class PesiRelTaxonExport extends PesiExportBase<RelationshipBase> {
 
 			// Start transaction
 			txStatus = startTransaction(true);
-			logger.error("Started new transaction. Trying to fetch " + limit + " " + pluralString + "...");
+			logger.error("Started new transaction. Fetching some " + pluralString + " (max: " + limit + ") ...");
 			while ((list = getTaxonService().getAllRelationships(limit, count)).size() > 0) {
 				
 				logger.error("Fetched " + list.size() + " " + pluralString + ". Exporting...");
@@ -117,13 +115,16 @@ public class PesiRelTaxonExport extends PesiExportBase<RelationshipBase> {
 
 				// Start transaction
 				txStatus = startTransaction(true);
-				logger.error("Started new transaction. Trying to fetch " + limit + " " + pluralString + "...");
+				logger.error("Started new transaction. Fetching some " + pluralString + " (max: " + limit + ") ...");
+			}
+			if (list.size() == 0) {
+				logger.error("No " + pluralString + " left to fetch.");
 			}
 			// Commit transaction
 			commitTransaction(txStatus);
 			logger.error("Committed transaction.");
 	
-			logger.error("Finished Making " + pluralString + " ..." + getSuccessString(success));
+			logger.error("*** Finished Making " + pluralString + " ..." + getSuccessString(success));
 			
 			return success;
 		} catch (SQLException e) {
@@ -237,8 +238,7 @@ public class PesiRelTaxonExport extends PesiExportBase<RelationshipBase> {
 			taxon = (isFrom) ? sr.getSynonym() : sr.getAcceptedTaxon();
 		}
 		if (taxon != null) {
-			CdmBase cdmBase = taxon;
-			return state.getDbId(cdmBase);
+			return state.getDbId(taxon);
 		}
 		logger.warn("No taxon found for relationship: " + relationship.toString());
 		return null;

@@ -71,7 +71,7 @@ public class PesiSourceExport extends PesiExportBase<ReferenceBase> {
 	@Override
 	protected boolean doInvoke(PesiExportState state) {
 		try{
-			logger.error("Started Making " + pluralString + " ...");
+			logger.error("*** Started Making " + pluralString + " ...");
 
 			// Get the limit for objects to save within a single transaction.
 			int limit = state.getConfig().getLimitSave();
@@ -83,8 +83,8 @@ public class PesiSourceExport extends PesiExportBase<ReferenceBase> {
 			doDelete(state);
 
 			// CDM: Get the number of all available references.
-			int maxCount = getReferenceService().count(null);
-			logger.error("Total amount of " + maxCount + " " + pluralString + " will be exported.");
+//			int maxCount = getReferenceService().count(null);
+//			logger.error("Total amount of " + maxCount + " " + pluralString + " will be exported.");
 
 			// Get specific mappings: (CDM) Reference -> (PESI) Source
 			PesiExportMapping mapping = getMapping();
@@ -98,14 +98,13 @@ public class PesiSourceExport extends PesiExportBase<ReferenceBase> {
 			int pastCount = 0;
 			TransactionStatus txStatus = null;
 			List<ReferenceBase> list = null;
-			while (count < maxCount) {
-				// Start transaction
-				txStatus = startTransaction(true);
-				logger.error("Started new transaction. Writing " + pluralString + "...");
 
-				// CDM: Get a number of references specified by 'limit'.
-				list = getReferenceService().list(null, limit, count, null, null);
+			// Start transaction
+			txStatus = startTransaction(true);
+			logger.error("Started new transaction. Fetching some " + pluralString + " (max: " + limit + ") ...");
+			while ((list = getReferenceService().list(null, limit, count, null, null)).size() > 0) {
 
+				logger.error("Fetched " + list.size() + " " + pluralString + ". Exporting...");
 				for (ReferenceBase<?> reference : list) {
 					doCount(count++, modCount, pluralString);
 					success &= mapping.invoke(reference);
@@ -114,11 +113,21 @@ public class PesiSourceExport extends PesiExportBase<ReferenceBase> {
 				// Commit transaction
 				commitTransaction(txStatus);
 				logger.error("Committed transaction.");
-				logger.error("Wrote " + (count - pastCount) + " " + pluralString + ". Total: " + count);
+				logger.error("Exported " + (count - pastCount) + " " + pluralString + ". Total: " + count);
 				pastCount = count;
-			}
 
-			logger.error("Finished Making " + pluralString + " ..." + getSuccessString(success));
+				// Start transaction
+				txStatus = startTransaction(true);
+				logger.error("Started new transaction. Fetching some " + pluralString + " (max: " + limit + ") ...");
+			}
+			if (list.size() == 0) {
+				logger.error("No " + pluralString + " left to fetch.");
+			}
+			// Commit transaction
+			commitTransaction(txStatus);
+			logger.error("Committed transaction.");
+
+			logger.error("*** Finished Making " + pluralString + " ..." + getSuccessString(success));
 
 			return success;
 		} catch (SQLException e) {
@@ -139,10 +148,16 @@ public class PesiSourceExport extends PesiExportBase<ReferenceBase> {
 		String sql;
 		Source destination =  pesiConfig.getDestination();
 
+		// Clear Taxa
+		sql = "DELETE FROM Taxon";
+		destination.setQuery(sql);
+		destination.update(sql);
+
 		// Clear Sources
 		sql = "DELETE FROM " + dbTableName;
 		destination.setQuery(sql);
 		destination.update(sql);
+		
 		return true;
 	}
 	
