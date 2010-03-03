@@ -7,7 +7,7 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package eu.etaxonomy.cdm.io.common;
+package eu.etaxonomy.cdm.io.common.mapping;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -15,6 +15,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
+
+import eu.etaxonomy.cdm.io.common.mapping.CdmAttributeMapperBase;
 
 /**
  * @author a.mueller

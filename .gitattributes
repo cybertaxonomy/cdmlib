@@ -1251,15 +1251,12 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/out/mapper/RefDetailMapp
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/berlinModel/out/mapper/TeamOrPersonMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/CdmApplicationAwareDefaultExport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/CdmApplicationAwareDefaultImport.java -text
-cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/CdmAttributeMapperBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/CdmDefaultExport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/CdmDefaultIOBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/CdmDefaultImport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/CdmExportBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/CdmImportBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/CdmIoBase.java -text
-cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/CdmIoMapping.java -text
-cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/CdmSingleAttributeMapperBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/DbExportBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/DbExportConfiguratorBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/DbExportStateBase.java -text
@@ -1275,7 +1272,6 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/IExportConfigurator.java -tex
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/IImportConfigurator.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/IIoConfigurator.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/IOValidator.java -text
-cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/IXmlMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/ImportConfiguratorBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/ImportHelper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/ImportStateBase.java -text
@@ -1283,7 +1279,6 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/ImportWrapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/IoConfiguratorBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/IoStateBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/MapWrapper.java -text
-cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/MultipleAttributeMapperBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/Source.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/SourceConnectionException.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/XmlExportConfiguratorBase.java -text
@@ -1291,6 +1286,7 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/XmlExportState.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/XmlImportState.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/CdmAttributeMapperBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/CdmIoMapping.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/CdmSingleAttributeMapperBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/DbImportExtensionMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/DbImportMapperBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/DbImportMapping.java -text
@@ -1299,6 +1295,7 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/DbImportStringMapper.
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/DbSingleAttributeImportMapperBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/IDbImportMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/IMappingImport.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/IXmlMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/MultipleAttributeMapperBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/common/ExcelImportConfiguratorBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/common/ExcelImportState.java -text

@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.io.berlinModel;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.io.common.CdmSingleAttributeMapperBase;
+import eu.etaxonomy.cdm.io.common.mapping.CdmSingleAttributeMapperBase;
 
 /**
  * @author a.mueller
