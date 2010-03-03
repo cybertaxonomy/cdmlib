@@ -49,6 +49,7 @@ import eu.etaxonomy.cdm.jaxb.LSIDAdapter;
 import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 import eu.etaxonomy.cdm.strategy.match.Match;
@@ -376,6 +377,18 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 			this.sources.add(source);
 			source.setSourcedObj(this);
 		}
+	}
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.ISourceable#addSource(java.lang.String, java.lang.String, eu.etaxonomy.cdm.model.reference.ReferenceBase, java.lang.String)
+	 */
+	public IdentifiableSource addSource(String id, String idNamespace, ReferenceBase citation, String microCitation) {
+		if (id == null && idNamespace == null && citation == null && microCitation == null){
+			return null;
+		}
+		IdentifiableSource source = IdentifiableSource.NewInstance(id, idNamespace, citation, microCitation);
+		addSource(source);
+		return source;
 	}
 	 
 	 /* (non-Javadoc)

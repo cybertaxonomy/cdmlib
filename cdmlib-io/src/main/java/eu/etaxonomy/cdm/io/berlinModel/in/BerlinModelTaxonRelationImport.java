@@ -204,8 +204,7 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 				TaxonBase taxon2 = taxonMap.get(String.valueOf(taxon2Id));
 				
 				String refFk = String.valueOf(relRefFkObj);
-				ReferenceBase citation = getReferenceOnlyFromMaps(biblioRefMap, 
-						nomRefMap, refFk);
+				ReferenceBase citation = getReferenceOnlyFromMaps(biblioRefMap,	nomRefMap, refFk);
 				
 				String microcitation = null; //does not exist in RelPTaxon
 	

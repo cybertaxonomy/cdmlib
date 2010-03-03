@@ -7,7 +7,7 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package eu.etaxonomy.cdm.io.common;
+package eu.etaxonomy.cdm.io.common.mapping;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -16,9 +16,11 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.io.common.mapping.CdmAttributeMapperBase;
 
 /**
+ * A base class for all mappers (import + export) which map one attribute in the source to one
+ * attribute in the destination
+ * 
  * @author a.mueller
  * @created 05.08.2008
  * @version 1.0
@@ -31,8 +33,8 @@ public abstract class CdmSingleAttributeMapperBase extends CdmAttributeMapperBas
 	private String destinationAttribute;
 	protected Object defaultValue;
 
-	protected CdmSingleAttributeMapperBase(String sourceAttributString, String destinationAttributeString){
-		this(sourceAttributString,destinationAttributeString, null);
+	protected CdmSingleAttributeMapperBase(String sourceAttributeString, String destinationAttributeString){
+		this(sourceAttributeString,destinationAttributeString, null);
 	}
 
 	protected CdmSingleAttributeMapperBase(String sourceAttributString, String destinationAttributeString, Object defaultValue){
@@ -79,5 +81,9 @@ public abstract class CdmSingleAttributeMapperBase extends CdmAttributeMapperBas
 		return result;
 	}
 	
+	/**
+	 * Returns the type of the cdm attribute
+	 * @return
+	 */
 	public abstract Class getTypeClass();
 }

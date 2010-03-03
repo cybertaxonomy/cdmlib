@@ -197,6 +197,9 @@ public class CdmApplicationAwareDefaultImport<T extends IImportConfigurator> imp
 	
 	private String getComponentBeanName(Class<ICdmIO> ioClass){
 		Component component = ioClass.getAnnotation(Component.class);
+		if (component == null){
+			throw new IllegalArgumentException("Class " + ioClass.getName() + " is missing a @Component annotation." );
+		}
 		String ioBean = component.value();
 		if ("".equals(ioBean)){
 			ioBean = ioClass.getSimpleName();

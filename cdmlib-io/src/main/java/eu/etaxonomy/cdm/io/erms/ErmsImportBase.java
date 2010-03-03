@@ -46,7 +46,7 @@ import eu.etaxonomy.cdm.model.common.User;
  * @created 20.03.2008
  * @version 1.0
  */
-public abstract class ErmsImportBase<CDM_BASE extends CdmBase> extends CdmImportBase<ErmsImportConfigurator, ErmsImportState> implements ICdmIO<ErmsImportState>, IPartitionedIO<ErmsImportState>, IMappingImport<CDM_BASE> {
+public abstract class ErmsImportBase<CDM_BASE extends CdmBase> extends CdmImportBase<ErmsImportConfigurator, ErmsImportState> implements ICdmIO<ErmsImportState>, IPartitionedIO<ErmsImportState>, IMappingImport<CDM_BASE, ErmsImportState> {
 	private static final Logger logger = Logger.getLogger(ErmsImportBase.class);
 	
 	public static final UUID ID_IN_SOURCE_EXT_UUID = UUID.fromString("23dac094-e793-40a4-bad9-649fc4fcfd44");

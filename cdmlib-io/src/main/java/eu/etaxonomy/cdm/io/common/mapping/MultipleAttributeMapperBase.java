@@ -17,7 +17,6 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.io.common.CdmSingleAttributeMapperBase;
 
 
 /**
@@ -29,9 +28,15 @@ public abstract class MultipleAttributeMapperBase<SINGLE_MAPPER extends CdmSingl
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(MultipleAttributeMapperBase.class);
 
+	
+//******************************* ATTRIBUTES ***************************************/
+
 	protected List<SINGLE_MAPPER> singleMappers = new ArrayList<SINGLE_MAPPER>();
 
 	
+	
+//********************************* CONSTRUCTOR ****************************************/
+
 	/**
 	 * 
 	 */
@@ -39,6 +44,9 @@ public abstract class MultipleAttributeMapperBase<SINGLE_MAPPER extends CdmSingl
 		singleMappers = new ArrayList<SINGLE_MAPPER>();
 	}
 
+
+//************************************ METHODS *******************************************/
+	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.CdmAttributeMapperBase#getDestinationAttributeList()
 	 */

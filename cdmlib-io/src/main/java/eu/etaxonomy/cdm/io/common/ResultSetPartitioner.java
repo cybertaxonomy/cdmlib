@@ -33,9 +33,9 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * @created 16.02.2010
  * @version 1.0
  */
-public class ResultSetPartitioner<STATE extends ImportStateBase> {
+public class ResultSetPartitioner<STATE extends IPartitionedState> {
 	private static final Logger logger = Logger.getLogger(ResultSetPartitioner.class);
-	private PartitionerProfiler duration = new PartitionerProfiler();
+	private PartitionerProfiler profiler = new PartitionerProfiler();
 
 //************************* STATIC ***************************************************/
 	
@@ -51,22 +51,53 @@ public class ResultSetPartitioner<STATE extends ImportStateBase> {
 
 //*********************** VARIABLES *************************************************/
 	
+	/**
+	 * The database
+	 */
 	private Source source;
 	
+	/**
+	 * The result set containing all records and at least the ids as a field. This result set
+	 * will be used for partitioning
+	 */
 	private ResultSet idResultSet;
 	
+	/**
+	 * A template for a SQL Query returning all records and all values needed for a partition
+	 * to be handled. The 'where' condition is filled by replacing the templates '@IdList' token
+	 */
 	private String strRecordQueryTemplate;
 	
+	/**
+	 * The resultset returned for the strRecordQueryTemplate 
+	 */
 	private ResultSet partitionResultSet;
 	
+	/**
+	 * A 2-key map holding all related objects needed during the handling of a partition (e.g. when 
+	 * creating a taxon partition the map holds all taxon names.
+	 * The key is a combination of a namespace and the id in the original source
+	 */
 	private Map<Object, Map<String, ? extends CdmBase>> relatedObjects;
 	
+	/**
+	 * number of records handled in the partition
+	 */
 	private int partitionSize;
 	
+	/**
+	 * A list of ids handled in this partition 
+	 */
 	private List<Integer> currentIdList;
 	
+	/**
+	 * counter for the partitions
+	 */
 	private int currentPartition;
 	
+	/**
+	 * number of records in the current partition
+	 */
 	private int rowsInCurrentPartition;
 	
 	private TransactionStatus txStatus;
@@ -92,29 +123,30 @@ public class ResultSetPartitioner<STATE extends ImportStateBase> {
 	 */
 	public void doPartition(IPartitionedIO partitionedIO, STATE state) {
 		try{
-			duration.startTx();
+			profiler.startTx();
 			TransactionStatus txStatus = getTransaction(partitionSize, partitionedIO);
 			
-			duration.startRs();
-			ResultSet rs = getPartitionResultSet();
+			profiler.startRs();
+			ResultSet rs = makePartitionResultSet();
 
-			duration.startRelObjects();
+			profiler.startRelObjects();
 			this.relatedObjects = partitionedIO.getRelatedObjectsForPartition(rs);
+			state.setRelatedObjects(relatedObjects);
 			
-			duration.startRs2();
-			partitionResultSet = getPartitionResultSet();
+			profiler.startRs2();
+			partitionResultSet = makePartitionResultSet();
 			
-			duration.startDoPartition(); 
+			profiler.startDoPartition(); 
 			partitionedIO.doPartition(this, state);
 			
-			duration.startDoCommit();
+			profiler.startDoCommit();
 			partitionedIO.commitTransaction(txStatus);
 			
-			duration.end();
+			profiler.end();
 			
 			
 			logger.info("Saved " + getCurrentNumberOfRows() + " " + partitionedIO.getPluralString() );
-			duration.print();
+			profiler.print();
 		}catch(Exception e){
 			throw new RuntimeException(e);
 		}
@@ -122,9 +154,14 @@ public class ResultSetPartitioner<STATE extends ImportStateBase> {
 	
 	
 	public void startDoSave(){
-		duration.startDoSave();
+		profiler.startDoSave();
 	}
 	
+	/**
+	 * Increases the partition counter and generates the new <code>currentIdList</code>
+	 * @return
+	 * @throws SQLException
+	 */
 	public boolean nextPartition() throws SQLException{
 		boolean result = false;
 		currentPartition++;
@@ -146,7 +183,7 @@ public class ResultSetPartitioner<STATE extends ImportStateBase> {
 
 
 	/**
-	 * Returns the underlying resultSet.<BR>
+	 * Returns the underlying resultSet holding all records needed to handle the partition.<BR>
 	 * @return
 	 */
 	public ResultSet getResultSet(){
@@ -155,7 +192,12 @@ public class ResultSetPartitioner<STATE extends ImportStateBase> {
 
 	
 	
-	private ResultSet getPartitionResultSet(){
+	/**
+	 * Computes the value result set needed to handle a partition by using the <code>currentIdList</code>
+	 * created during {@link #nextPartition}
+	 * @return
+	 */
+	private ResultSet makePartitionResultSet(){
 		String strIdList = "";
 		for (Integer id: currentIdList){
 			strIdList = CdmUtils.concat(",", strIdList, String.valueOf(id));

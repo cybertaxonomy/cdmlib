@@ -42,11 +42,9 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
-import eu.etaxonomy.cdm.io.berlinModel.CdmExtensionMapper;
 import eu.etaxonomy.cdm.io.berlinModel.CdmOneToManyMapper;
 import eu.etaxonomy.cdm.io.berlinModel.CdmStringMapper;
 import eu.etaxonomy.cdm.io.berlinModel.in.validation.BerlinModelReferenceImportValidator;
-import eu.etaxonomy.cdm.io.common.CdmSingleAttributeMapperBase;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
@@ -54,6 +52,8 @@ import eu.etaxonomy.cdm.io.common.ResultSetPartitioner;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.io.common.mapping.CdmAttributeMapperBase;
 import eu.etaxonomy.cdm.io.common.mapping.CdmIoMapping;
+import eu.etaxonomy.cdm.io.common.mapping.CdmSingleAttributeMapperBase;
+import eu.etaxonomy.cdm.io.common.mapping.DbImportExtensionMapper;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
@@ -97,10 +97,10 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 		super();
 	}
 	
-	protected boolean initializeMappers(BerlinModelImportState state, String tableName){
+	protected boolean initializeMappers(BerlinModelImportState state){
 		for (CdmAttributeMapperBase mapper: classMappers){
-			if (mapper instanceof CdmExtensionMapper){
-				((CdmExtensionMapper)mapper).initialize(getTermService(), state, tableName);
+			if (mapper instanceof DbImportExtensionMapper){
+				((DbImportExtensionMapper)mapper).initialize(getTermService(), state, ReferenceBase.class);
 			}
 		}
 		return true;
@@ -117,10 +117,10 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 		new CdmStringMapper("series", "series"),
 		new CdmStringMapper("issn", "issn"),
 		new CdmStringMapper("url", "uri"),
-		new CdmExtensionMapper("NomStandard", ExtensionType.NOMENCLATURAL_STANDARD()),
-		new CdmExtensionMapper("DateString", DATE_STRING_UUID, "Date String", "Date String", "dates"),
-		new CdmExtensionMapper("RefDepositedAt", REF_DEPOSITED_AT_UUID, "RefDepositedAt", "reference is deposited at", "at"),
-		new CdmExtensionMapper("RefSource", REF_SOURCE, "RefSource", "reference source", "source")
+		DbImportExtensionMapper.NewInstance("NomStandard", ExtensionType.NOMENCLATURAL_STANDARD()),
+		DbImportExtensionMapper.NewInstance("DateString", DATE_STRING_UUID, "Date String", "Date String", "dates"),
+		DbImportExtensionMapper.NewInstance("RefDepositedAt", REF_DEPOSITED_AT_UUID, "RefDepositedAt", "reference is deposited at", "at"),
+		DbImportExtensionMapper.NewInstance("RefSource", REF_SOURCE, "RefSource", "reference source", "source")
 	};
 
 	
@@ -166,7 +166,7 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 		boolean success = true;
 		logger.info("start make " + getPluralString() + " ...");
 
-		success &= initializeMappers(state, "Reference");
+		success &= initializeMappers(state);
 		BerlinModelImportConfigurator config = state.getConfig();
 		Source source = config.getSource();
 
@@ -886,8 +886,8 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 		if (omitAttributes == null){
 			omitAttributes = new HashSet<String>();
 		}
-		if (mapper instanceof CdmExtensionMapper){
-			result &= ((CdmExtensionMapper)mapper).invoke(valueMap, cdmBase);
+		if (mapper instanceof DbImportExtensionMapper){
+			result &= ((DbImportExtensionMapper)mapper).invoke(valueMap, cdmBase);
 		}else{
 			String sourceAttribute = mapper.getSourceAttributeList().get(0).toLowerCase();
 			Object value = valueMap.get(sourceAttribute);

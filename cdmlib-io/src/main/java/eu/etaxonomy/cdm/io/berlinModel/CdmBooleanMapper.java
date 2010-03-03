@@ -9,7 +9,7 @@
 
 package eu.etaxonomy.cdm.io.berlinModel;
 
-import eu.etaxonomy.cdm.io.common.CdmSingleAttributeMapperBase;
+import eu.etaxonomy.cdm.io.common.mapping.CdmSingleAttributeMapperBase;
 
 /**
  * @author a.mueller

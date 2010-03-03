@@ -9,12 +9,7 @@
 
 package eu.etaxonomy.cdm.io.erms;
 
-import java.io.File;
 import java.lang.reflect.Method;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.HashSet;
-import java.util.Set;
 
 import org.apache.log4j.Logger;
 
@@ -27,8 +22,6 @@ import eu.etaxonomy.cdm.io.erms.validation.ErmsGeneralImportValidator;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
-import eu.etaxonomy.cdm.model.taxon.Synonym;
-import eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelTaxonImport.PublishMarkerChooser;
 
 
 /**
@@ -40,12 +33,12 @@ public class ErmsImportConfigurator extends ImportConfiguratorBase<ErmsImportSta
 	@SuppressWarnings("unused")
 	private static Logger logger = Logger.getLogger(ErmsImportConfigurator.class);
 
-	public static ErmsImportConfigurator NewInstance(Source berlinModelSource, ICdmDataSource destination){
-			return new ErmsImportConfigurator(berlinModelSource, destination);
+	public static ErmsImportConfigurator NewInstance(Source ermsSource, ICdmDataSource destination){
+			return new ErmsImportConfigurator(ermsSource, destination);
 	}
 
 	/* Max number of records to be saved with one service call */
-	private int recordsPerTransaction = 1000;
+	private int recordsPerTransaction = 1000;  //defaultValue
 
 	private Method namerelationshipTypeMethod;
 	private Method uuidForDefTermMethod;
@@ -60,7 +53,9 @@ public class ErmsImportConfigurator extends ImportConfiguratorBase<ErmsImportSta
 	protected void makeIoClassList(){
 		ioClassList = new Class[]{
 				ErmsGeneralImportValidator.class,
-				ErmsTaxonImport.class,
+				ErmsImportRankMap.class,
+				ErmsReferenceImport.class
+				, ErmsTaxonImport.class
 		};	
 	}
 	

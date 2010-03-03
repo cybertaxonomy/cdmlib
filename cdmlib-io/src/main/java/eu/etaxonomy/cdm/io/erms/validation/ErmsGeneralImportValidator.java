@@ -170,9 +170,10 @@ public class ErmsGeneralImportValidator extends ErmsImportBase<CdmBase> implemen
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.mapping.IMappingImport#createObject(java.sql.ResultSet)
 	 */
-	public CdmBase createObject(ResultSet rs) throws SQLException {
+	public CdmBase createObject(ResultSet rs, ErmsImportState state) throws SQLException {
 		return null;  //not needed
 	}
+
 
 
 }

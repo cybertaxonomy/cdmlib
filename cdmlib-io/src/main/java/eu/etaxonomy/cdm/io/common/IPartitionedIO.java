@@ -23,7 +23,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * @created 16.02.2010
  * @version 1.0
  */
-public interface IPartitionedIO<STATE extends ImportStateBase> {
+public interface IPartitionedIO<STATE extends IPartitionedState> {
 	
 	public final String ID_LIST_TOKEN = "@IdList";
 	
