@@ -17,6 +17,7 @@ import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.app.berlinModelImport.BerlinModelSources;
 import eu.etaxonomy.cdm.app.berlinModelImport.TreeCreator;
 import eu.etaxonomy.cdm.app.common.CdmDestinations;
+import eu.etaxonomy.cdm.app.pesi.FaunaEuropaeaSources;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.CdmDefaultImport;
@@ -44,15 +45,17 @@ public class ErmsActivator {
 
 	//database validation status (create, update, validate ...)
 	static DbSchemaValidation hbm2dll = DbSchemaValidation.CREATE;
-	static final Source ermsSource = BerlinModelSources.PESI_ERMS();
+	static final Source ermsSource = FaunaEuropaeaSources.PESI_ERMS();
 	static final ICdmDataSource cdmDestination = CdmDestinations.localH2Erms();
 	static final UUID treeUuid = UUID.fromString("8bd27d84-fd4f-4bfa-bde0-3e6b7311b334");
-	static final int sourceSecId = 500000;
 	static final UUID featureTreeUuid = UUID.fromString("33cbf7a8-0c47-4d47-bd11-b7d77a38d0f6");
 	static final Object[] featureKeyList = new Integer[]{1,4,5,10,11,12,13,14, 249, 250, 251, 252, 253}; 
 	
 	//check - import
 	static final CHECK check = CHECK.CHECK_AND_IMPORT;
+
+	
+	static final int partitionSize = 2000;
 
 
 	//NomeclaturalCode
@@ -63,16 +66,8 @@ public class ErmsActivator {
 	
 // ***************** ALL ************************************************//
 	
-	//authors
-	static final boolean doAuthors = true;
 	//references
-	static final DO_REFERENCES doReferences =  DO_REFERENCES.CONCEPT_REFERENCES;
-	//names
-	static final boolean doTaxonNames = false;
-	static final boolean doRelNames = true;
-	static final boolean doNameStatus = true;
-	static final boolean doTypes = true;
-	static final boolean doNameFacts = true;
+	static final DO_REFERENCES doReferences =  DO_REFERENCES.NONE;
 	
 	//taxa
 	static final boolean doTaxa = true;
@@ -115,17 +110,10 @@ public class ErmsActivator {
 		ErmsImportConfigurator ermsImportConfigurator = ErmsImportConfigurator.NewInstance(source,  destination);
 		
 		ermsImportConfigurator.setTreeUuid(treeUuid);
-		ermsImportConfigurator.setSourceSecId(sourceSecId);
 		ermsImportConfigurator.setNomenclaturalCode(nomenclaturalCode);
 
 		ermsImportConfigurator.setIgnoreNull(ignoreNull);
-		ermsImportConfigurator.setDoAuthors(doAuthors);
 		ermsImportConfigurator.setDoReferences(doReferences);
-		ermsImportConfigurator.setDoTaxonNames(doTaxonNames);
-		ermsImportConfigurator.setDoRelNames(doRelNames);
-		ermsImportConfigurator.setDoNameStatus(doNameStatus);
-		ermsImportConfigurator.setDoTypes(doTypes);
-		ermsImportConfigurator.setDoNameFacts(doNameFacts);
 		
 		ermsImportConfigurator.setDoTaxa(doTaxa);
 		ermsImportConfigurator.setDoRelTaxa(doRelTaxa);
@@ -134,7 +122,8 @@ public class ErmsActivator {
 		ermsImportConfigurator.setDbSchemaValidation(hbm2dll);
 
 		ermsImportConfigurator.setCheck(check);
-		
+		ermsImportConfigurator.setRecordsPerTransaction(partitionSize);
+
 		// invoke import
 		CdmDefaultImport<ErmsImportConfigurator> ermsImport = new CdmDefaultImport<ErmsImportConfigurator>();
 		ermsImport.invoke(ermsImportConfigurator);
@@ -144,12 +133,12 @@ public class ErmsActivator {
 			ISourceable obj = app.getCommonService().getSourcedObjectByIdInSource(ZoologicalName.class, "1000027", null);
 			logger.info(obj);
 			
-			//make feature tree
-			FeatureTree tree = TreeCreator.flatTree(featureTreeUuid, ermsImportConfigurator.getFeatureMap(), featureKeyList);
-			app = ermsImport.getCdmAppController();
-			app.getFeatureTreeService().saveOrUpdate(tree);
+//			//make feature tree
+//			FeatureTree tree = TreeCreator.flatTree(featureTreeUuid, ermsImportConfigurator.getFeatureMap(), featureKeyList);
+//			app = ermsImport.getCdmAppController();
+//			app.getFeatureTreeService().saveOrUpdate(tree);
 		}
-		System.out.println("End import from BerlinModel ("+ source.getDatabase() + ")...");
+		System.out.println("End import from ("+ source.getDatabase() + ")...");
 	}
 
 }

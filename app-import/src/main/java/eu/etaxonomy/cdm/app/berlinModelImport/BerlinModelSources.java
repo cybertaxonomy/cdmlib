@@ -112,17 +112,6 @@ public class BerlinModelSources {
 	}
 	
 	
-	//is not BerlinModel !!
-	public static Source PESI_ERMS(){
-		//	BerlinModel - Pesi-ERMS
-		String dbms = Source.SQL_SERVER_2008;
-		String strServer = "BGBM42";
-		String strDB = "ERMS";
-		int port = 1433;
-		String userName = "WebUser";
-		return  makeSource(dbms, strServer, strDB, port, userName, null);
-	}
-	
 	/**
 	 * Initializes the source.
 	 * @param dbms
