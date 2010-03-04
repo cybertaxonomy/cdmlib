@@ -25,6 +25,9 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
+import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
+import eu.etaxonomy.cdm.model.location.NamedAreaType;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
 
@@ -48,7 +51,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		// use defined uuid for first tree
 		CONFIG config = (CONFIG)state.getConfig();
 		if (state.countTrees() < 1 ){
-			tree.setUuid(config.getTreeUuid());
+			tree.setUuid(config.getTaxonomicTreeUuid());
 		}
 		getTaxonTreeService().save(tree);
 		state.putTree(ref, tree);
@@ -78,7 +81,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		// use defined uuid for first tree
 		CONFIG config = (CONFIG)state.getConfig();
 		if (state.countTrees() < 1 ){
-			tree.setUuid(config.getTreeUuid());
+			tree.setUuid(config.getTaxonomicTreeUuid());
 		}
 		getTaxonTreeService().save(tree);
 		state.putTreeUuid(ref, tree);
@@ -112,6 +115,33 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 			}
 		}
 		return markerType;
+	}
+	
+	/**
+	 * Returns a
+	 * @param state
+	 * @param uuid
+	 * @param label
+	 * @param text
+	 * @param labelAbbrev
+	 * @param areaType
+	 * @param level
+	 * @return
+	 */
+	protected NamedArea getNamedArea(STATE state, UUID uuid, String label, String text, String labelAbbrev, NamedAreaType areaType, NamedAreaLevel level){
+		NamedArea namedArea = state.getNamedArea(uuid);
+		if (namedArea == null){
+			namedArea = (NamedArea)getTermService().find(uuid);
+			if (namedArea == null){
+				namedArea = NamedArea.NewInstance(label, text, labelAbbrev);
+				namedArea.setType(areaType);
+				namedArea.setLevel(level);
+				namedArea.setUuid(uuid);
+				getTermService().save(namedArea);
+				state.putNamedArea(namedArea);
+			}
+		}
+		return namedArea;
 	}
 	
 	
