@@ -10,6 +10,7 @@
 
 package eu.etaxonomy.cdm.io.common;
 
+import java.sql.ResultSet;
 import java.util.Map;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -22,10 +23,22 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  */
 public interface IPartitionedState {
 
-	//Map<Object, Map<String, ? extends CdmBase>> getRelatedObjects();
+	public void addRelatedObject(Object namespace, String id, CdmBase relatedObject);
 	
-	public void setRelatedObjects(Map<Object, Map<String, ? extends CdmBase>> relatedObjects);
+	/**
+	 * Sets the related objects map. This usually does not need to be handled by the user
+	 * but is called by the {@link ResultSetPartitioner result set partitioner}
+	 * @param relatedObjects
+	 */
+	public void setRelatedObjects(Map<Object, Map<String, CdmBase>> relatedObjects);
 	
+	/**
+	 * Returns a related object defined by the namespace and the id.
+	 * The related objects are computed in {@link IPartitionedIO#getRelatedObjectsForPartition(ResultSet)}
+	 * @param namespace
+	 * @param id
+	 * @return
+	 */
 	public CdmBase getRelatedObject(Object namespace, String id);
 	
 }

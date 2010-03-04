@@ -16,6 +16,7 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.DbImportStateBase;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.User;
@@ -68,6 +69,7 @@ public class BerlinModelImportState extends DbImportStateBase<BerlinModelImportC
 	public void putUser(String username, User user){
 		usernameMap.put(username, user);
 	}
+
 
     
 }

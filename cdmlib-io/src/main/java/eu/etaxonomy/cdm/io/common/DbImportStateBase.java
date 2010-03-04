@@ -30,7 +30,7 @@ public abstract class DbImportStateBase<CONFIG extends ImportConfiguratorBase, S
 	private CdmImportBase<CONFIG, STATE> currentImport;
 	//holds the taxonTrees needed for this partition, the key is a value that differentiate classifications
 	//like the taxons reference (secundum)
-	private Map<Integer, TaxonomicTree> curentTaxonTreeMap = new HashMap<Integer, TaxonomicTree>();
+	private Map<Integer, TaxonomicTree> partitionTaxonTreeMap = new HashMap<Integer, TaxonomicTree>();
 	
 	
 	/**
@@ -39,6 +39,14 @@ public abstract class DbImportStateBase<CONFIG extends ImportConfiguratorBase, S
 	protected DbImportStateBase(CONFIG config) {
 		super(config);
 	}
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.IPartitionedState#addRelatedObject(java.lang.Object, java.lang.String, eu.etaxonomy.cdm.model.common.CdmBase)
+	 */
+	public void addRelatedObject(Object namespace, String id, CdmBase relatedObject) {
+		this.relatedObjectsHelper.addRelatedObjet(namespace, id, relatedObject);
+	}
+
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.IPartitionedState#getRelatedObject(java.lang.Object, java.lang.String)
@@ -50,7 +58,7 @@ public abstract class DbImportStateBase<CONFIG extends ImportConfiguratorBase, S
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.IPartitionedState#setRelatedObjects(java.util.Map)
 	 */
-	public void setRelatedObjects(Map<Object, Map<String, ? extends CdmBase>> relatedObjects) {
+	public void setRelatedObjects(Map<Object, Map<String, CdmBase>> relatedObjects) {
 		relatedObjectsHelper.setRelatedObjects(relatedObjects);
 	}
 
@@ -68,20 +76,20 @@ public abstract class DbImportStateBase<CONFIG extends ImportConfiguratorBase, S
 		return currentImport;
 	}
 
-	/**
-	 * @param curentTaxonTreeMap the curentTaxonTreeMap to set
-	 */
-	public void setCurentTaxonTreeMap(Map<Integer, TaxonomicTree> curentTaxonTreeMap) {
-		this.curentTaxonTreeMap = curentTaxonTreeMap;
-	}
-
-	/**
-	 * @return the curentTaxonTreeMap
-	 */
-	public Map<Integer, TaxonomicTree> getCurentTaxonTreeMap() {
-		return curentTaxonTreeMap;
-	}
-	
+//	/**
+//	 * @param curentTaxonTreeMap the curentTaxonTreeMap to set
+//	 */
+//	public void setPartitionTaxonTreeMap(Map<Integer, TaxonomicTree> partitionTaxonTreeMap) {
+//		this.partitionTaxonTreeMap = partitionTaxonTreeMap;
+//	}
+//
+//	/**
+//	 * @return the curentTaxonTreeMap
+//	 */
+//	public Map<Integer, TaxonomicTree> getPartitionTaxonTreeMap() {
+//		return partitionTaxonTreeMap;
+//	}
+//	
 
 	
 }

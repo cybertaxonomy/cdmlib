@@ -55,10 +55,17 @@ public abstract class ImportConfiguratorBase<STATE extends ImportStateBase> exte
 	private NomenclaturalCode nomenclaturalCode = null;
 	
 	private MapWrapper<Feature> featureMap = new MapWrapper<Feature>(null);
+
+	 /* The taxonomic tree name for the first taxonomic tree.
+	  * Needs only to be defined if the import does not handle the naming 
+	  * itself (e.g. by using the taxon sec. reference title cache)
+	  */
+	private String taxonomicTreeName = "Taxon tree - no name";
 	
+	private UUID  taxonomicTreeUuid = UUID.randomUUID();
 	//uuid of concept reference
-	private UUID  treeUuid = UUID.randomUUID();
 	private UUID  secUuid = UUID.randomUUID();
+	
 	private Object sourceSecId = -1;
 	
 	private Object source;
@@ -302,13 +309,13 @@ public abstract class ImportConfiguratorBase<STATE extends ImportStateBase> exte
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#getTreeUuid()
 	 */
-	public UUID getTreeUuid() {
-		return treeUuid;
+	public UUID getTaxonomicTreeUuid() {
+		return taxonomicTreeUuid;
 	}
 
 
-	public void setTreeUuid(UUID treeUuid) {
-		this.treeUuid = treeUuid;
+	public void setTaxonomicTreeUuid(UUID treeUuid) {
+		this.taxonomicTreeUuid = treeUuid;
 	}
 	
 	/* (non-Javadoc)
@@ -374,6 +381,23 @@ public abstract class ImportConfiguratorBase<STATE extends ImportStateBase> exte
 		} else {
 			return (String)this.getDestination().getName();
 		}
+	}
+
+	/**
+	 * The taxonomic tree name for the first taxonomic tree.
+	 * Needs only to be defined if the import does not handle the naming 
+	 * itself (e.g. by using the taxon sec. reference title cache)
+	 * @param taxonomicTreeName the taxonomicTreeName to set
+	 */
+	public void setTaxonomicTreeName(String taxonomicTreeName) {
+		this.taxonomicTreeName = taxonomicTreeName;
+	}
+
+	/**
+	 * @return the taxonomicTreeName
+	 */
+	public String getTaxonomicTreeName() {
+		return taxonomicTreeName;
 	}
 
 

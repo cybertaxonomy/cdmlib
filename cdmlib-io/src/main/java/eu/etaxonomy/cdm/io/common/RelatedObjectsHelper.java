@@ -10,6 +10,7 @@
 
 package eu.etaxonomy.cdm.io.common;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
@@ -28,12 +29,12 @@ public class RelatedObjectsHelper {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(RelatedObjectsHelper.class);
 	
-	private Map<Object, Map<String, ? extends CdmBase>> relatedObjects;
+	private Map<Object, Map<String, CdmBase>> relatedObjects;
 
 	/**
 	 * @param relatedObjects the relatedObjects to set
 	 */
-	public void setRelatedObjects(Map<Object, Map<String, ? extends CdmBase>> relatedObjects) {
+	public void setRelatedObjects(Map<Object, Map<String, CdmBase>> relatedObjects) {
 		this.relatedObjects = relatedObjects;
 	}
 
@@ -51,11 +52,19 @@ public class RelatedObjectsHelper {
 		return cdmBase;
 	}
 
-//	/**
-//	 * @return the relatedObjects
-//	 */
-//	public Map<Object, Map<String, ? extends CdmBase>> getRelatedObjects() {
-//		return relatedObjects;
-//	}
-	
+	/**
+	 * Adds a related object to the underlying map.
+	 * @param namespace
+	 * @param id
+	 * @param relatedObject
+	 */
+	public void  addRelatedObjet(Object namespace, String id, CdmBase relatedObject){
+		Map<String, CdmBase> idMap = relatedObjects.get(namespace);
+		if (idMap == null){
+			idMap = new HashMap<String, CdmBase>();
+			relatedObjects.put(namespace, idMap);
+		}
+		idMap.put(id, relatedObject);
+		
+	}
 }

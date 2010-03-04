@@ -113,12 +113,12 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 				}
 				TaxonomicTree tree = TaxonomicTree.NewInstance(treeName);
 				tree.setReference(ref);
-				if (i == 1 && state.getConfig().getTreeUuid() != null){
-					tree.setUuid(state.getConfig().getTreeUuid());
+				if (i == 1 && state.getConfig().getTaxonomicTreeUuid() != null){
+					tree.setUuid(state.getConfig().getTaxonomicTreeUuid());
 				}
 				
 				getTaxonTreeService().save(tree);
-				state.putTreeUuidByRefId((Integer)ptRefFkObj, tree);
+				state.putTaxonomicTreeUuidInt((Integer)ptRefFkObj, tree);
 			}
 		} catch (SQLException e) {
 			logger.error("Error in BerlinModleTaxonRelationImport.makeTaxonomicTrees: " + e.getMessage());
@@ -430,7 +430,7 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 	private boolean makeTaxonomicallyIncluded(BerlinModelImportState state, Map<Integer, TaxonomicTree> taxonTreeMap, int treeRefFk, Taxon child, Taxon parent, ReferenceBase citation, String microCitation){
 		TaxonomicTree tree = taxonTreeMap.get(treeRefFk);
 		if (tree == null){
-			UUID treeUuid = state.getTreeUuidByRefId(treeRefFk);
+			UUID treeUuid = state.getTreeUuidByTreeKeyInt(treeRefFk);
 			tree = getTaxonTreeService().getTaxonomicTreeByUuid(treeUuid);
 			taxonTreeMap.put(treeRefFk, tree);
 		}

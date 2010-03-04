@@ -118,7 +118,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	}
 	
 	/**
-	 * Returns a
+	 * Returns a named area for a given uuid by first . If the named area does not
 	 * @param state
 	 * @param uuid
 	 * @param label

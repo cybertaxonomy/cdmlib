@@ -78,7 +78,7 @@ public class ResultSetPartitioner<STATE extends IPartitionedState> {
 	 * creating a taxon partition the map holds all taxon names.
 	 * The key is a combination of a namespace and the id in the original source
 	 */
-	private Map<Object, Map<String, ? extends CdmBase>> relatedObjects;
+	private Map<Object, Map<String, CdmBase>> relatedObjects;
 	
 	/**
 	 * number of records handled in the partition

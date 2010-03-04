@@ -231,8 +231,8 @@ public interface IImportConfigurator extends IIoConfigurator {
  	 * functionality otherwise it will have no effect.
  	 * @return
  	 */
- 	public UUID getTreeUuid();
-	public void setTreeUuid(UUID treeUuid);
+ 	public UUID getTaxonomicTreeUuid();
+	public void setTaxonomicTreeUuid(UUID treeUuid);
 
 	/**
  	 * If one wants do define the uuid of the accepted taxa (except for missaplied names) this can be

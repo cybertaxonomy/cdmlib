@@ -23,6 +23,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.User;
+import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
@@ -42,10 +43,12 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase> ext
 
 	private Map<ReferenceBase,UUID> treeUuidMap = new HashMap<ReferenceBase,UUID>();
 
-	private Map<Integer,UUID> refIdtreeUuidMap = new HashMap<Integer,UUID>();
+	private Map<String,UUID> taxonomicTreeKeyUuidMap = new HashMap<String,UUID>();
 	
-	Map<UUID, ExtensionType> extensionTypeMap = new HashMap<UUID, ExtensionType>();
-	Map<UUID, MarkerType> markerTypeMap = new HashMap<UUID, MarkerType>();
+	private Map<UUID, ExtensionType> extensionTypeMap = new HashMap<UUID, ExtensionType>();
+	private Map<UUID, MarkerType> markerTypeMap = new HashMap<UUID, MarkerType>();
+	private Map<UUID, NamedArea> namedAreaMap = new HashMap<UUID, NamedArea>();
+	
 
 	
 	protected ImportStateBase(CONFIG config){
@@ -127,14 +130,28 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase> ext
 	
 	
 	
-	public void putTreeUuidByRefId(int referenceId, TaxonomicTree tree) {
+	/**
+	 * Adds a taxonomic tree uuid to the taxonomic tree uuid map,
+	 * which maps a key for the taxonomic tree to its UUID in the CDM
+	 * @param treeKeyId
+	 * @param tree
+	 */
+	public void putTaxonomicTreeUuidInt(int treeKeyId, TaxonomicTree tree) {
+		putTaxonomicTreeUuid(String.valueOf(treeKeyId), tree);
+	}
+
+	public void putTaxonomicTreeUuid(String treeKey, TaxonomicTree tree) {
 		if (tree != null &&  tree.getUuid() != null){
-			this.refIdtreeUuidMap.put(referenceId, tree.getUuid());
+			this.taxonomicTreeKeyUuidMap.put(treeKey, tree.getUuid());
 		}
 	}
 	
-	public UUID getTreeUuidByRefId(Integer refId) {
-		return refIdtreeUuidMap.get(refId);
+	public UUID getTreeUuidByTreeKeyInt(int treeKey) {
+		return taxonomicTreeKeyUuidMap.get(String.valueOf(treeKey));
+	}
+	
+	public UUID getTreeUuidByTreeKey(String treeKey) {
+		return taxonomicTreeKeyUuidMap.get(treeKey);
 	}
 	
 	
@@ -153,5 +170,16 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase> ext
 	public void putMarkerType(MarkerType markerType){
 		markerTypeMap.put(markerType.getUuid(), markerType);
 	}
+	
+	public NamedArea getNamedArea(UUID uuid){
+		return namedAreaMap.get(uuid);
+	}
+	
+	public void putNamedArea(NamedArea namedArea){
+		namedAreaMap.put(namedArea.getUuid(), namedArea);
+	}
+
+	
+
 	
 }
