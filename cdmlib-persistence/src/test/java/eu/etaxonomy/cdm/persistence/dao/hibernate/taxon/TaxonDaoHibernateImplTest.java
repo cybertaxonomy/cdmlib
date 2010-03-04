@@ -850,11 +850,24 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     @DataSet("TaxonNodeDaoHibernateImplTest.xml")
     public void testCreateInferredSynonymy(){
     	TaxonomicTree tree = this.taxonomicTreeDao.findById(1);
+    	Taxon taxon = (Taxon)taxonDao.findByUuid(UUID.fromString("bc09aca6-06fd-4905-b1e7-cbf7cc65d783"));
     	List <Synonym> synonyms = taxonDao.getAllSynonyms(null, null);
-    	assertEquals("Number of synonyms should be 1",1,synonyms.size());
-    	taxonDao.createInferredSynonymy(tree);
-    	synonyms = taxonDao.getAllSynonyms(null, null);
     	assertEquals("Number of synonyms should be 2",2,synonyms.size());
+    	
+    	//synonyms = taxonDao.getAllSynonyms(null, null);
+    	//assertEquals("Number of synonyms should be 2",2,synonyms.size());
+    	List<Synonym> inferredSynonyms = taxonDao.createInferredSynonyms(taxon, tree, SynonymRelationshipType.INFERRED_EPITHET_OF());
+    	assertNotNull("there should be a new synonym ", inferredSynonyms);
+    	System.err.println(inferredSynonyms.get(0).getTitleCache());
+    	assertEquals ("the name of inferred epithet should be SynGenus lachesis", inferredSynonyms.get(0).getTitleCache(), "SynGenus lachesis sec. ???");
+    	inferredSynonyms = taxonDao.createInferredSynonyms(taxon, tree, SynonymRelationshipType.INFERRED_GENUS_OF());
+    	assertNotNull("there should be a new synonym ", inferredSynonyms);
+    	System.err.println(inferredSynonyms.get(0).getTitleCache());
+    	assertEquals ("the name of inferred epithet should be SynGenus lachesis", inferredSynonyms.get(0).getTitleCache(), "Acherontia ciprosus sec. ???");
+    	inferredSynonyms = taxonDao.createInferredSynonyms(taxon, tree, SynonymRelationshipType.POTENTIAL_COMBINATION_OF());
+    	assertNotNull("there should be a new synonym ", inferredSynonyms);
+    	assertEquals ("the name of inferred epithet should be SynGenus lachesis", inferredSynonyms.get(0).getTitleCache(), "SynGenus ciprosus sec. ???");
+    	
     	//assertTrue("set of synonyms should contain an inferred Synonym ", synonyms.contains(arg0))
     }
     

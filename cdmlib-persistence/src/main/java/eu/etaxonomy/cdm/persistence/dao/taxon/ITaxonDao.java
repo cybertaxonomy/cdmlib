@@ -362,6 +362,24 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
 	public List<TaxonBase> getTaxaByCommonName(String queryString, TaxonomicTree taxonomicTree,
 			MatchMode matchMode, Set<NamedArea> namedAreas, Integer pageSize, 
 			Integer pageNumber, List<String> propertyPaths);
-	
-	public boolean createInferredSynonymy(TaxonomicTree tree);
+	/**
+	 * creates all inferred synonyms for the species in the tree and insert it to the database
+	 * @param tree
+	 * @return List of inferred synonyms
+	 */
+	//public List<Synonym> insertAllInferredSynonymy(TaxonomicTree tree);
+	/**
+	 * creates all inferred synonyms for the taxon in the taxonomic tree, but do not insert it to the database
+	 * @param taxon
+	 * @param tree
+	 * @return list of inferred synonyms
+	 */
+	public List<Synonym>  createAllInferredSynonyms(Taxon taxon, TaxonomicTree tree);
+	/**
+	 * creates the specified inferred synonyms for the taxon in the taxonomic tree, but do not insert it to the database
+	 * @param taxon
+	 * @param tree
+	 * @return list of inferred synonyms
+	 */
+	public List<Synonym> createInferredSynonyms(Taxon taxon, TaxonomicTree tree, SynonymRelationshipType type);
 }
