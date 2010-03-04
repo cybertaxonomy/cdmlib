@@ -138,7 +138,7 @@ public class EuroMedActivator {
 				
 		BerlinModelImportConfigurator bmImportConfigurator = BerlinModelImportConfigurator.NewInstance(source,  destination);
 		
-		bmImportConfigurator.setTreeUuid(taxonomicTreeUuid);
+		bmImportConfigurator.setTaxonomicTreeUuid(taxonomicTreeUuid);
 		bmImportConfigurator.setSourceSecId(sourceSecId);
 		
 		bmImportConfigurator.setNomenclaturalCode(nomenclaturalCode);

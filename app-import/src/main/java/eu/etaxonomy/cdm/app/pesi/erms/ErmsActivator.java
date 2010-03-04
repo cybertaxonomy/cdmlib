@@ -109,7 +109,7 @@ public class ErmsActivator {
 		
 		ErmsImportConfigurator ermsImportConfigurator = ErmsImportConfigurator.NewInstance(source,  destination);
 		
-		ermsImportConfigurator.setTreeUuid(treeUuid);
+		ermsImportConfigurator.setTaxonomicTreeUuid(treeUuid);
 		ermsImportConfigurator.setNomenclaturalCode(nomenclaturalCode);
 
 		ermsImportConfigurator.setIgnoreNull(ignoreNull);
