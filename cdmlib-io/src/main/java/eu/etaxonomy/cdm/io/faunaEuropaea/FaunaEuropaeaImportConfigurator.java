@@ -33,6 +33,7 @@ public class FaunaEuropaeaImportConfigurator extends ImportConfiguratorBase<Faun
 	private boolean doTaxonomicallyIncluded = true;
 	private boolean doMisappliedNames = true;
 	private boolean doHeterotypicSynonyms = true;
+	private boolean doHeterotypicSynonymsForBasionyms;
 	
 	/* Max number of taxa to be saved with one service call */
 	private int limitSave = 1000;
@@ -45,7 +46,8 @@ public class FaunaEuropaeaImportConfigurator extends ImportConfiguratorBase<Faun
 				FaunaEuropaeaTaxonNameImport.class,
 				FaunaEuropaeaRelTaxonIncludeImport.class,
 				FaunaEuropaeaRefImport.class,
-				FaunaEuropaeaDistributionImport.class
+				FaunaEuropaeaDistributionImport.class,
+				FaunaEuropaeaHeterotypicSynonymImport.class
 		};
 	};
 	
@@ -208,6 +210,21 @@ public class FaunaEuropaeaImportConfigurator extends ImportConfiguratorBase<Faun
 	 */
 	public void setLimitSave(int limitSave) {
 		this.limitSave = limitSave;
+	}
+
+	/**
+	 * @param doHeterotypicSynonymsForBasionyms the doHeterotypicSynonymsForBasionyms to set
+	 */
+	public void setDoHeterotypicSynonymsForBasionyms(
+			boolean doHeterotypicSynonymsForBasionyms) {
+		this.doHeterotypicSynonymsForBasionyms = doHeterotypicSynonymsForBasionyms;
+	}
+
+	/**
+	 * @return the doHeterotypicSynonymsForBasionyms
+	 */
+	public boolean isDoHeterotypicSynonymsForBasionyms() {
+		return doHeterotypicSynonymsForBasionyms;
 	}
 
 }

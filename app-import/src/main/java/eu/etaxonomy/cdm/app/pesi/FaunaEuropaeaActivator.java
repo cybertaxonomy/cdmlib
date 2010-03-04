@@ -104,6 +104,7 @@ public class FaunaEuropaeaActivator {
 		fauEuImportConfigurator.setDoBasionyms(doBasionyms);
 		fauEuImportConfigurator.setDoMisappliedNames(doMisappliedNames);
 		fauEuImportConfigurator.setDoHeterotypicSynonyms(doHeterotypicSynonyms);
+		fauEuImportConfigurator.setDoHeterotypicSynonymsForBasionyms(doHeterotypicSynonymsForBasionyms);
 		
 		CdmDefaultImport<FaunaEuropaeaImportConfigurator> fauEuImport = 
 			new CdmDefaultImport<FaunaEuropaeaImportConfigurator>();
@@ -116,30 +117,30 @@ public class FaunaEuropaeaActivator {
 
 		// invoke CDM to CDM import
 		
-		System.out.println("Starting import from CDM to CDM (" + destination.getDatabase() + ")...");
-		
-		CdmImportConfigurator cdmImportConfigurator = 
-			CdmImportConfigurator.NewInstance(destination, destination);
-		
-		cdmImportConfigurator.setDbSchemaValidation(DbSchemaValidation.VALIDATE);
-		cdmImportConfigurator.setNomenclaturalCode(nomenclaturalCode);
-		cdmImportConfigurator.setCheck(check);
-
-		cdmImportConfigurator.setDoHeterotypicSynonymsForBasionyms(doHeterotypicSynonymsForBasionyms);
-		cdmImportConfigurator.setDoAuthors(false);
-		cdmImportConfigurator.setDoTaxa(false);
-		cdmImportConfigurator.setDoReferences(DO_REFERENCES.NONE);
-		cdmImportConfigurator.setDoOccurrence(false);
-		cdmImportConfigurator.setLimitSave(limitSave);
-
-		CdmDefaultImport<CdmImportConfigurator> cdmImport = 
-			new CdmDefaultImport<CdmImportConfigurator>();
-		try {
-			cdmImport.invoke(cdmImportConfigurator);
-		} catch (Exception e) {
-			System.out.println("ERROR in CDM to CDM import");
-			e.printStackTrace();
-		}
+//		System.out.println("Starting import from CDM to CDM (" + destination.getDatabase() + ")...");
+//		
+//		CdmImportConfigurator cdmImportConfigurator = 
+//			CdmImportConfigurator.NewInstance(destination, destination);
+//		
+//		cdmImportConfigurator.setDbSchemaValidation(DbSchemaValidation.VALIDATE);
+//		cdmImportConfigurator.setNomenclaturalCode(nomenclaturalCode);
+//		cdmImportConfigurator.setCheck(check);
+//
+//		cdmImportConfigurator.setDoHeterotypicSynonymsForBasionyms(doHeterotypicSynonymsForBasionyms);
+//		cdmImportConfigurator.setDoAuthors(false);
+//		cdmImportConfigurator.setDoTaxa(false);
+//		cdmImportConfigurator.setDoReferences(DO_REFERENCES.NONE);
+//		cdmImportConfigurator.setDoOccurrence(false);
+//		cdmImportConfigurator.setLimitSave(limitSave);
+//
+//		CdmDefaultImport<CdmImportConfigurator> cdmImport = 
+//			new CdmDefaultImport<CdmImportConfigurator>();
+//		try {
+//			cdmImport.invoke(cdmImportConfigurator);
+//		} catch (Exception e) {
+//			System.out.println("ERROR in CDM to CDM import");
+//			e.printStackTrace();
+//		}
 		
 		//make feature tree
 		
