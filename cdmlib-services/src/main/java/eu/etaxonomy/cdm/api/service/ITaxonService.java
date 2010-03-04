@@ -324,8 +324,21 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	public List<MediaRepresentation> getAllMedia(Taxon taxon, int size, int height, int widthOrDuration, String[] mimeTypes);
 
 	public List<TaxonBase> findTaxaByID(Set<Integer> listOfIDs);
-	
-	public boolean createInferredSynonymy(TaxonomicTree tree);
+	/**
+	 * returns a list of inferred synonyms concerning the taxon with synonymrelationshiptype type
+	 * @param tree
+	 * @param taxon
+	 * @param type
+	 * @return
+	 */
+	public List<Synonym> createInferredSynonyms(TaxonomicTree tree, Taxon taxon, SynonymRelationshipType type);
+	/**
+	 * returns a list of all inferred synonyms (inferred epithet, inferred genus and potential combination) concerning the taxon
+	 * @param tree
+	 * @param taxon
+	 * @return
+	 */
+	public List<Synonym> createAllInferredSynonyms(TaxonomicTree tree, Taxon taxon);
 	
 	public int countAllRelationships();
 }

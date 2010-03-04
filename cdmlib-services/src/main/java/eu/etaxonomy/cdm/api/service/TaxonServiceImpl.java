@@ -546,12 +546,18 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		return this.dao.findById(listOfIDs);
 	}
 
-	public boolean createInferredSynonymy(TaxonomicTree tree) {
-		
-		return this.dao.createInferredSynonymy(tree);
-	}
-
 	public int countAllRelationships() {
 		return this.dao.countAllRelationships();
+	}
+
+	public List<Synonym> createAllInferredSynonyms(TaxonomicTree tree,
+			Taxon taxon) {
+		
+		return this.dao.createAllInferredSynonyms(taxon, tree);
+	}
+
+	public List<Synonym> createInferredSynonyms(TaxonomicTree tree, Taxon taxon, SynonymRelationshipType type) {
+		
+		return this.dao.createInferredSynonyms(taxon, tree, type);
 	}
 }
