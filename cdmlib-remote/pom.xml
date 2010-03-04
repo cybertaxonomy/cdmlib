@@ -180,22 +180,26 @@
 			    </executions>
 			</plugin>
 			<plugin>
-                <artifactId>maven-antrun-plugin</artifactId>
-		        <executions>
-		          <execution>
-		            <phase>package</phase><!-- must run after winstone-maven-plugin -->
-		            <configuration>
-		              <tasks>
-		                <ant antfile="${project.basedir}/src/main/installer/linux/build-deb.xml"/>
-		              </tasks>
-		            </configuration>
-		            <goals>
-		              <goal>run</goal><!-- must run after winstone-maven-plugin -->
-		            </goals>
-		          </execution>
-		        </executions>
-
-            </plugin>
+					<artifactId>maven-antrun-plugin</artifactId>
+						<executions>
+							<execution>
+								<phase>package</phase>
+								<!--
+									must run after winstone-maven-plugin
+								-->
+								<configuration>
+									<tasks>
+									  <property name="project.version" value="${project.version}"/>
+									  <property name="project.buildnumber" value="${project.buildnumber}"/>
+										<ant antfile="${project.basedir}/src/main/installer/linux/build-deb.xml" dir="${project.basedir}" />
+									</tasks>
+								</configuration>
+								<goals>
+									<goal>run</goal><!-- must run after winstone-maven-plugin -->
+								</goals>
+							</execution>
+						</executions>
+        </plugin>
 				
 			<!--<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -314,6 +318,5 @@
 			</plugin>
 		</plugins>
 	</build>
-	
 </project>
 
