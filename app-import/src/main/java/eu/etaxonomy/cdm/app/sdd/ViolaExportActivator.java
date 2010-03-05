@@ -26,7 +26,7 @@ public class ViolaExportActivator {
 	/* SerializeFrom DB **/
 	private static final String sourceDbName = "cdm";
 	private static final String destinationFileName = "ViolaFromCDM.xml";
-	private static final String destinationFolder = "C:/Documents and Settings/lis/Mes documents/EDIT/CDM/exports SDD";
+	private static final String destinationFolder = "/Developer/exports SDD";
 	//private static final String destinationFolder = "C:/tmp/viola/exports_SDD";
 
 	/** NUMBER_ROWS_TO_RETRIEVE = 0 is the default case to retrieve all rows.
@@ -115,6 +115,7 @@ public class ViolaExportActivator {
 //		CdmApplicationController appCtr = null;
 //		appCtr = sc.initDb(sourceDb);
 //		sc.loadTestData(appCtr);
+		
 		
 		vea.invokeExport();
 
