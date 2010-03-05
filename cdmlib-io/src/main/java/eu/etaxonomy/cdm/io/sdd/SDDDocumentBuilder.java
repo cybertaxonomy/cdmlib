@@ -81,6 +81,9 @@ import eu.etaxonomy.cdm.model.reference.ReferenceType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.occurrence.Specimen;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 
 /**
  * Writes the SDD XML file. 
@@ -108,6 +111,8 @@ public class SDDDocumentBuilder {
 	private Map<VersionableEntity, String> featuretrees = new HashMap<VersionableEntity, String>();
 	private Map<Modifier, String> modifiers = new HashMap<Modifier, String>();
 	private Map<TaxonNode, String> taxonNodes = new HashMap<TaxonNode,String>();
+	private Map<NamedArea, String> namedAreas = new HashMap<NamedArea,String>();
+	private Map<Specimen, String> specimens = new HashMap<Specimen,String>();
 	private ReferenceFactory refFactory = ReferenceFactory.newInstance();
 	
 	private Map<VersionableEntity,String> features = new HashMap<VersionableEntity,String>();
@@ -123,7 +128,9 @@ public class SDDDocumentBuilder {
 	private int chartreeCount = 0;
 	private int charnodeCount = 0;
 	private int taxonNodesCount = 0;
-
+	private int namedAreasCount = 0;
+	private int specimenCount = 0;
+	
 	private String AGENT = "Agent";
 	private String AGENTS = "Agents";
 	private String CATEGORICAL = "Categorical";
@@ -187,7 +194,9 @@ public class SDDDocumentBuilder {
 	private Language defaultLanguage = Language.DEFAULT();
 
 	private static final Logger logger = Logger.getLogger(SDDDocumentBuilder.class);
-
+	
+	private boolean natlang = true;
+	private String NEWLINE = System.getProperty("line.separator");
 	// private SDDContext sddContext;
 
 	public SDDDocumentBuilder() throws SAXException, IOException {
@@ -248,7 +257,10 @@ public class SDDDocumentBuilder {
 
 		//create <Datasets> = root node
 		ElementImpl baselement = new ElementImpl(document, DATASETS);
-
+		if (natlang) {
+			buildNaturalLanguageDescription(baselement);
+		}
+		else {
 		baselement.setAttribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
 		baselement.setAttribute("xmlns", "http://rs.tdwg.org/UBIF/2006/");
 		baselement.setAttribute("xsi:schemaLocation", "http://rs.tdwg.org/UBIF/2006 http://rs.tdwg.org/UBIF/2006/Schema/1.1/SDD.xsd");
@@ -264,6 +276,7 @@ public class SDDDocumentBuilder {
 				buildDataset(baselement, reference);
 			}
 		}
+		}
 
 		// for datasets with no Database ReferenceBase
 		// buildDataset(baselement, cdmSource, null);
@@ -271,7 +284,241 @@ public class SDDDocumentBuilder {
 		//append the root element to the DOM document
 		document.appendChild(baselement);
 	}
+	
+	public void buildNaturalLanguageDescription(ElementImpl dataset) {
+		if (cdmSource.getTaxa() != null) {
+			ElementImpl elNatLang = new ElementImpl(document, "NaturalLanguageDescription");
+			StringBuilder natlangdesc = new StringBuilder();
+			
+			for (Iterator<? extends TaxonBase> tb = cdmSource.getTaxa().iterator() ; tb.hasNext() ;){
+				Taxon taxon = (Taxon) tb.next();
+				if (taxon.generateTitle().contains("Podosperm")) {
+					Set<TaxonDescription> descriptions = taxon.getDescriptions();
+					buildCharacterTreesDescr(natlangdesc, dataset,descriptions);
+					
+				}
+			/*
+			buildCharacterTreesDescr(natlangdesc, dataset);
+			
+			for (Iterator<? extends TaxonBase> tb = cdmSource.getTaxa().iterator() ; tb.hasNext() ;){
+				Taxon taxon = (Taxon) tb.next();
+				if (taxon.generateTitle().contains("Podosperm")) {
+				natlangdesc.append(taxon.generateTitle());
+				Set<TaxonDescription> descriptions = taxon.getDescriptions();
+				for (Iterator<TaxonDescription> td = descriptions.iterator() ; td.hasNext() ;){
+					StringBuilder taxondesc = new StringBuilder();
+					TaxonDescription taxonDescription = td.next();
+					Set<DescriptionElementBase> elements = taxonDescription.getElements();
+					for (Iterator<DescriptionElementBase> deb = elements.iterator() ; deb.hasNext() ;){
+						DescriptionElementBase descriptionElement = deb.next();
+						if (descriptionElement instanceof CategoricalData) {
+							CategoricalData categoricalData = (CategoricalData) descriptionElement;
+							buildCategoricalDescr(taxondesc, categoricalData);
+							taxondesc.append(NEWLINE);
+						}
+						if (descriptionElement instanceof QuantitativeData) {
+							QuantitativeData quantitativeData = (QuantitativeData) descriptionElement;
+							buildQuantitativeDescr(taxondesc, quantitativeData);
+							taxondesc.append(NEWLINE);
+						}
+						if (descriptionElement instanceof TextData) {
+							TextData textData = (TextData) descriptionElement;
+							//buildTextChar(summaryData, textData);
+						}
+					}
+					natlangdesc.append(taxondesc);
+				}
+				}*/
+			}
+			buildLabel(elNatLang,natlangdesc.toString());
+			dataset.appendChild(elNatLang);
+		}
+		
+		
+	}
+	
+	public void buildCharacterTreesDescr(StringBuilder description, ElementImpl dataset, Set<TaxonDescription> descriptions) throws ParseException {
 
+		if (cdmSource.getFeatureData() != null) {
+
+			for (int i = 0; i < cdmSource.getFeatureData().size(); i++) {
+				VersionableEntity featu = cdmSource.getFeatureData().get(i);
+				if (featu instanceof FeatureTree){
+					FeatureTree ft = (FeatureTree) featu;
+					if (ft.getLabel().contains("natural language")) {
+						description.append(ft.getLabel() + NEWLINE);
+						List<FeatureNode> children = ft.getRootChildren();
+						buildBranchesDescr(description, children,ft.getRoot(), descriptions);
+						description.append(" (end of tree) ");
+					}
+				}
+			}
+		}
+	}
+	
+	public void buildBranchesDescr(StringBuilder description, List<FeatureNode> children, FeatureNode parent, Set<TaxonDescription> descriptions) {
+		StringBuilder branchDescription = new StringBuilder();
+		if (!parent.isLeaf()){
+			Feature fref = parent.getFeature();
+			if (fref!=null) {
+				branchDescription.append(" " + fref.getLabel());
+			}
+			else {
+				branchDescription.append(" (nullFeature) ");
+			}
+			for (Iterator<FeatureNode> ifn = children.iterator() ; ifn.hasNext() ;){
+				FeatureNode fn = ifn.next();
+				buildBranchesDescr(branchDescription, fn.getChildren(),fn,descriptions);
+				//branchDescription.append(" ; "+NEWLINE);
+			}
+		}
+		else {
+			Feature fref = parent.getFeature();
+			if (fref!=null) {
+				for (Iterator<TaxonDescription> td = descriptions.iterator() ; td.hasNext() ;){
+					TaxonDescription taxonDescription = td.next();
+					Set<DescriptionElementBase> elements = taxonDescription.getElements();
+					for (Iterator<DescriptionElementBase> deb = elements.iterator() ; deb.hasNext() ;){
+						DescriptionElementBase descriptionElement = deb.next();
+						if (descriptionElement.getFeature().getLabel().equals(fref.getLabel())){
+							if (descriptionElement instanceof CategoricalData) {
+								CategoricalData categoricalData = (CategoricalData) descriptionElement;
+								buildCategoricalDescr(branchDescription, categoricalData);
+								branchDescription.append(NEWLINE);
+							}
+							if (descriptionElement instanceof QuantitativeData) {
+								QuantitativeData quantitativeData = (QuantitativeData) descriptionElement;
+								buildQuantitativeDescr(branchDescription, quantitativeData);
+								branchDescription.append(NEWLINE);
+							}
+						}
+					}
+				}
+			}
+			/*if ((fref!=null)&&(fref.isSupportsCategoricalData())) {
+				Set<TermVocabulary<State>> tvs = fref.getSupportedCategoricalEnumerations();
+				for (Iterator<TermVocabulary<State>> tv = tvs.iterator() ; tv.hasNext() ;) {
+					TermVocabulary<State> termVoc = tv.next();
+					Set<State> states = termVoc.getTerms();
+					for (Iterator<State> s = states.iterator() ; s.hasNext() ;) {
+						State state = s.next() ;
+						branchDescription.append(" " + (state.getLabel()) +", ");
+					}
+				}
+			}
+			else if (fref.isSupportsQuantitativeData()) {
+				Set<StatisticalMeasure> sms = fref.getRecommendedStatisticalMeasures() ;
+				for (Iterator<StatisticalMeasure> sm = sms.iterator() ; sm.hasNext() ;) {
+					StatisticalMeasure statisticalMeasure = sm.next();
+					Set<State> states = termVoc.getTerms();
+					for (Iterator<State> s = states.iterator() ; s.hasNext() ;) {
+						State state = s.next() ;
+						branchDescription.append(" " + (state.getLabel()) +", ");
+					}
+				}
+			}*/
+			}
+		description.append(branchDescription);
+	}
+	
+	
+	
+	public void buildQuantitativeDescr (StringBuilder description, QuantitativeData quantitativeData) throws ParseException {
+
+		boolean average = false;
+		float averagevalue = new Float(0);
+		boolean sd = false;
+		float sdvalue = new Float(0);
+		boolean min = false;
+		float minvalue = new Float(0);
+		boolean max = false;
+		float maxvalue = new Float(0);
+		boolean lowerb = false;
+		float lowerbvalue = new Float(0);
+		boolean upperb = false;
+		float upperbvalue = new Float(0);
+		
+		StringBuilder QuantitativeDescription = new StringBuilder();
+		Feature feature = quantitativeData.getFeature();
+		QuantitativeDescription.append(" "+feature.getLabel());
+		String unit = quantitativeData.getUnit().getLabel();
+		Set<StatisticalMeasurementValue> statisticalValues = quantitativeData.getStatisticalValues();
+		for (Iterator<StatisticalMeasurementValue> smv = statisticalValues.iterator() ; smv.hasNext() ;){
+			StatisticalMeasurementValue statisticalValue = smv.next();
+			StatisticalMeasure type = statisticalValue.getType();
+			String label = type.getLabel();
+			if (label.equals("Average")) {
+				average = true;
+				averagevalue = statisticalValue.getValue();
+			} else if (label.equals("StandardDeviation")) {
+				sd = true;
+				sdvalue = statisticalValue.getValue();
+			} else if (label.equals("Min")) {
+				min = true;
+				minvalue = statisticalValue.getValue();
+			} else if (label.equals("Max")) {
+				max = true;
+				maxvalue = statisticalValue.getValue();
+			} else if (label.equals("TypicalLowerBoundary")) {
+				lowerb = true;
+				lowerbvalue = statisticalValue.getValue();
+			} else if (label.equals("TypicalUpperBoundary")) {
+				upperb = true;
+				upperbvalue = statisticalValue.getValue();
+			}
+		}
+		if (max && min) {
+			QuantitativeDescription.append(" from " + minvalue + " to " + maxvalue + unit);
+		}
+		else if (min) {
+			QuantitativeDescription.append(" from " + minvalue + " " + unit);
+		}
+		else if (max) {
+			QuantitativeDescription.append(" up to " + maxvalue + " " + unit);
+		}
+		if ((max||min)&&(lowerb||upperb)) {
+			QuantitativeDescription.append(",");
+		}
+		if ((lowerb||upperb)&&(min||max)) {
+			QuantitativeDescription.append(" most frequently");
+		}
+		if (upperb && lowerb) {
+			QuantitativeDescription.append(" from " + lowerbvalue + " to " + upperbvalue + unit);
+		}
+		else if (lowerb) {
+			QuantitativeDescription.append(" from " + lowerbvalue + " " + unit);
+		}
+		else if (upperb) {
+			QuantitativeDescription.append(" up to " + upperbvalue + " " + unit);
+		}
+		if (((max||min)&&(average))||((lowerb||upperb)&&(average))) {
+			QuantitativeDescription.append(",");
+		}
+		if (average) {
+			QuantitativeDescription.append(" " + averagevalue + unit + " on average ");
+			if (sd) {
+				QuantitativeDescription.append("(+/- " + sdvalue + ")");
+			}
+		}
+		description.append(QuantitativeDescription).append(" ; ");
+	}
+	
+	public void buildCategoricalDescr(StringBuilder description, CategoricalData categoricalData) throws ParseException {
+
+		Feature feature = categoricalData.getFeature();
+		List<StateData> states = categoricalData.getStates();
+		StringBuilder CategoricalDescription = new StringBuilder();
+		CategoricalDescription.append(" "+feature.getLabel());
+		for (Iterator<StateData> sd = states.iterator() ; sd.hasNext() ;){
+			StateData stateData = sd.next();
+			State s = stateData.getState();
+			CategoricalDescription.append(" " + s.getLabel());
+			//System.out.println(s.getLabel());
+		}
+		description.append(CategoricalDescription).append(" ; ");
+	}
+	
+	
 	//	#############
 	//	# BUILD DOM	#
 	//	#############	
@@ -325,6 +572,8 @@ public class SDDDocumentBuilder {
 		buildMediaObjects(dataset);
 		buildCharacterTrees(dataset);
 		buildTaxonomicTrees(dataset);
+		buildGeographicAreas(dataset);
+		buildSpecimens(dataset);
 	}
 
 	/**
@@ -525,6 +774,58 @@ public class SDDDocumentBuilder {
 		}
 
 	}
+	
+	public void buildSpecimens(ElementImpl dataset) throws ParseException {
+
+		if (cdmSource.getOccurrences() != null) {
+			ElementImpl elSpecimens = new ElementImpl(document, "Specimens");
+
+			for (int i = 0; i < cdmSource.getOccurrences().size(); i++) {
+				ElementImpl elSpecimen = new ElementImpl(document, "Specimen");
+				SpecimenOrObservationBase sob = cdmSource.getOccurrences().get(i);
+				if (sob instanceof Specimen){
+				specimenCount = buildReference(sob, specimens, ID, elSpecimen, "s", specimenCount);
+				//elTaxonName.setAttribute(URI,"http://www.google.com");
+
+				buildRepresentation(elSpecimen, sob);
+
+				elSpecimens.appendChild(elSpecimen);
+				}
+			}
+
+			dataset.appendChild(elSpecimens);
+		}
+
+	}
+	
+	
+	public void buildGeographicAreas(ElementImpl dataset) {
+			if (cdmSource.getTerms() != null) {
+				ElementImpl elGeographicAreas = new ElementImpl(document, "GeographicAreas");
+
+				int f = cdmSource.getTerms().size();
+				for (int i = 0; i < f; i++) {
+						if (cdmSource.getTerms().get(i) instanceof NamedArea) {
+							NamedArea na = (NamedArea) cdmSource.getTerms().get(i);
+							for (Iterator<Marker> mark = na.getMarkers().iterator() ; mark.hasNext();) {
+								Marker marker = mark.next();
+								if (marker.getMarkerType().getLabel().equals("SDDGeographicArea")) {
+									ElementImpl elGeographicArea = new ElementImpl(document, "GeographicArea");
+									namedAreasCount = buildReference(na, namedAreas, ID, elGeographicArea, "a", namedAreasCount);
+									buildRepresentation(elGeographicArea,na);
+									System.out.println(na.getDescription());
+									elGeographicAreas.appendChild(elGeographicArea);
+								}
+							}
+							
+					}
+				}
+				dataset.appendChild(elGeographicAreas);
+		}
+	}
+	
+	
+	
 
 	/**
 	 * Builds an element Agent referring to Agent defined later in the SDD file
@@ -537,7 +838,7 @@ public class SDDDocumentBuilder {
 				Set<Marker> markers = ag.getMarkers();
 				for(Iterator<Marker> m = markers.iterator() ; m.hasNext();){
 					Marker marker = m.next();
-					if (marker.getMarkerType().getLabel() == "editor"){
+					if (marker.getMarkerType().getLabel().equals("editor")){
 						agent.setAttribute(ROLE, "edt");
 					}
 				}
@@ -927,12 +1228,12 @@ public class SDDDocumentBuilder {
 				if (featu instanceof FeatureNode)
 				{
 					FeatureNode fitou = (FeatureNode) featu;
+					Feature fitounette = fitou.getFeature();
+					featuresCount = buildReference(featu, characters, ID, elFeat, "dc", featuresCount);
+					if (fitounette != null){
+						buildRepresentation(elFeat, fitounette);
+					}
 					if (!fitou.isLeaf() && fitou.getChildCount() > 0){
-						featuresCount = buildReference(featu, characters, ID, elFeat, "dc", featuresCount);
-						//elTaxonName.setAttribute(URI,"http://www.google.com");
-						Feature fitounette = fitou.getFeature();
-						if (fitounette != null){
-							buildRepresentation(elFeat, fitounette);
 						Set<TermVocabulary<Modifier>> stm = null;
 						stm = fitounette.getRecommendedModifierEnumeration();
 						if (stm != null){
@@ -945,11 +1246,10 @@ public class SDDDocumentBuilder {
 									featuresCount = buildReference(modi, modifiers, ID, elModi, "mod", featuresCount);
 									elFeat.appendChild(elModi);
 								}
-								}
 							}
 						}							
-						elFeatures.appendChild(elFeat);
 					}
+					elFeatures.appendChild(elFeat);
 				}
 			}
 
@@ -1107,11 +1407,6 @@ public class SDDDocumentBuilder {
 
 			for (Iterator<? extends TaxonBase> tb = cdmSource.getTaxa().iterator() ; tb.hasNext() ;){
 				Taxon taxon = (Taxon) tb.next();
-				if (taxon.getTaxonNodes()!=null){
-					for (Iterator<TaxonNode> tn = taxon.getTaxonNodes().iterator() ; tn.hasNext() ;){
-						TaxonNode taxonnode = tn.next();
-						}
-					}
 				Set<TaxonDescription> descriptions = taxon.getDescriptions();
 				for (Iterator<TaxonDescription> td = descriptions.iterator() ; td.hasNext() ;){
 					TaxonDescription taxonDescription = td.next();
