@@ -12,12 +12,12 @@ package eu.etaxonomy.cdm.app.pesi;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
-import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.app.common.CdmDestinations;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.CdmDefaultExport;
 import eu.etaxonomy.cdm.io.common.Source;
+import eu.etaxonomy.cdm.io.common.DbExportConfiguratorBase.IdType;
 import eu.etaxonomy.cdm.io.common.IExportConfigurator.CHECK;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator.DO_REFERENCES;
 import eu.etaxonomy.cdm.io.pesi.out.PesiExportConfigurator;
@@ -36,7 +36,8 @@ public class PesiExportActivator {
 
 	//database validation status (create, update, validate ...)
 	static final Source pesiDestination = PesiDestinations.pesi_test_local();
-	static final ICdmDataSource cdmSource = CdmDestinations.cdm_test_patricia();
+//	static final ICdmDataSource cdmSource = CdmDestinations.cdm_test_jaxb2();
+	static final ICdmDataSource cdmSource = CdmDestinations.cdm_test_eunmok();
 	static final UUID secUuid = UUID.fromString("d03ef02a-f226-4cb1-bdb4-f6c154f08a34");
 	static final int sourceSecId = 7331;
 	static final int isHomotypicId = 72;
@@ -95,6 +96,8 @@ public class PesiExportActivator {
 		Source destination = pesiDestination;
 		
 		PesiExportConfigurator pesiExportConfigurator = PesiExportConfigurator.NewInstance(destination, source);
+		
+		pesiExportConfigurator.setIdType(IdType.MAX_ID); // Anything but CDM_ID. MAX_ID is not implemented yet, so it's harmless.
 		
 		pesiExportConfigurator.setDoAuthors(doAuthors);
 		pesiExportConfigurator.setDoReferences(doReferences);
