@@ -127,14 +127,9 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
 	 */
 	public Pager<DescriptionElementBase> getDescriptionElements(DescriptionBase description,
 			Set<Feature> features, Class<? extends DescriptionElementBase> type, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
-		Integer numberOfResults = dao.countDescriptionElements(description, features, type);
 
-		List<DescriptionElementBase> results = new ArrayList<DescriptionElementBase>();
-		if (numberOfResults > 0) { // no point checking again
-			results = dao.getDescriptionElements(description, features, type, pageSize, pageNumber, propertyPaths);
-		}
-
-		return new DefaultPagerImpl<DescriptionElementBase>(pageNumber, numberOfResults, pageSize, results);
+		List<DescriptionElementBase> results = listDescriptionElements(description, features, type, pageSize, pageNumber, propertyPaths);
+		return new DefaultPagerImpl<DescriptionElementBase>(pageNumber, results.size(), pageSize, results);
 	}
 
 	public List<DescriptionElementBase> listDescriptionElements(DescriptionBase description,
