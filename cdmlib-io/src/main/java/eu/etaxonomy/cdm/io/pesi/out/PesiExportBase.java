@@ -20,7 +20,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * @date 12.02.2010
  *
  */
-public abstract class PesiExportBase<T extends CdmBase> extends DbExportBase<PesiExportConfigurator, PesiExportState> {
+public abstract class PesiExportBase extends DbExportBase<PesiExportConfigurator, PesiExportState> {
 	private static final Logger logger = Logger.getLogger(PesiExportBase.class);
 	
 	public PesiExportBase() {

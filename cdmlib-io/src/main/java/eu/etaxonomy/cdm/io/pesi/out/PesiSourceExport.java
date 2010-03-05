@@ -36,7 +36,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
  */
 @Component
 @SuppressWarnings("unchecked")
-public class PesiSourceExport extends PesiExportBase<ReferenceBase> {
+public class PesiSourceExport extends PesiExportBase {
 	private static final Logger logger = Logger.getLogger(PesiSourceExport.class);
 	private static final Class<? extends CdmBase> standardMethodParameter = ReferenceBase.class;
 

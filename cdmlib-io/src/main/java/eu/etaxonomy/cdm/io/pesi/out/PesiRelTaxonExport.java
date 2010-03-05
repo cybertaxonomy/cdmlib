@@ -34,7 +34,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
  */
 @Component
 @SuppressWarnings("unchecked")
-public class PesiRelTaxonExport extends PesiExportBase<RelationshipBase> {
+public class PesiRelTaxonExport extends PesiExportBase {
 	private static final Logger logger = Logger.getLogger(PesiRelTaxonExport.class);
 	private static final Class<? extends CdmBase> standardMethodParameter = RelationshipBase.class;
 
@@ -163,6 +163,7 @@ public class PesiRelTaxonExport extends PesiExportBase<RelationshipBase> {
 	/**
 	 * Returns the <code>TaxonFk1</code> attribute. It corresponds to a CDM <code>TaxonRelationship</code>.
 	 * @param relationship The {@link RelationshipBase Relationship}.
+	 * @param state The {@link DbExportStateBase DbExportState}.
 	 * @return The <code>TaxonFk1</code> attribute.
 	 * @see MethodMapper
 	 */
@@ -174,16 +175,13 @@ public class PesiRelTaxonExport extends PesiExportBase<RelationshipBase> {
 	/**
 	 * Returns the <code>TaxonFk2</code> attribute. It corresponds to a CDM <code>SynonymRelationship</code>.
 	 * @param relationship The {@link RelationshipBase Relationship}.
+	 * @param state The {@link DbExportStateBase DbExportState}.
 	 * @return The <code>TaxonFk2</code> attribute.
 	 * @see MethodMapper
 	 */
 	@SuppressWarnings("unused")
 	private static Integer getTaxonFk2(RelationshipBase<?, ?, ?> relationship, DbExportStateBase<?> state) {
-		Integer result = getObjectFk(relationship, state, false);
-		if (result == null) {
-			logger.error("result is NULL.");
-		}
-		return result;
+		return getObjectFk(relationship, state, false);
 	}
 	
 	/**
@@ -228,7 +226,7 @@ public class PesiRelTaxonExport extends PesiExportBase<RelationshipBase> {
 	 * @param isFrom A boolean value indicating whether the database key of the parent or child in this relationship is searched. <code>true</code> means the child is searched. <code>false</code> means the parent is searched.
 	 * @return The database key of an object in the given relationship.
 	 */
-	private static Integer getObjectFk(RelationshipBase<?, ?, ?> relationship, DbExportStateBase<?> state, boolean isFrom){
+	private static Integer getObjectFk(RelationshipBase<?, ?, ?> relationship, DbExportStateBase<?> state, boolean isFrom) {
 		TaxonBase<?> taxon = null;
 		if (relationship.isInstanceOf(TaxonRelationship.class)) {
 			TaxonRelationship tr = (TaxonRelationship)relationship;

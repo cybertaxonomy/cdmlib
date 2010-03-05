@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.io.pesi.out;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
@@ -18,10 +19,15 @@ import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.IdMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.MethodMapper;
+import eu.etaxonomy.cdm.io.common.DbExportStateBase;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.description.DescriptionBase;
-import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
+import eu.etaxonomy.cdm.model.common.DescriptionElementSource;
+import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
+import eu.etaxonomy.cdm.model.description.TaxonDescription;
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 /**
  * @author e.-m.lee
@@ -30,13 +36,14 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
  */
 @Component
 @SuppressWarnings("unchecked")
-public class PesiOccurrenceExport extends PesiExportBase<DescriptionBase> {
+public class PesiOccurrenceExport extends PesiExportBase {
 	private static final Logger logger = Logger.getLogger(PesiOccurrenceExport.class);
-	private static final Class<? extends CdmBase> standardMethodParameter = SpecimenOrObservationBase.class;
+	private static final Class<? extends CdmBase> standardMethodParameter = ReferenceBase.class;
 
 	private static int modCount = 1000;
 	private static final String dbTableName = "Occurrence";
 	private static final String pluralString = "Occurrences";
+	private static Taxon taxon = null;
 
 	public PesiOccurrenceExport() {
 		super();
@@ -86,17 +93,37 @@ public class PesiOccurrenceExport extends PesiExportBase<DescriptionBase> {
 			int count = 0;
 			int pastCount = 0;
 			TransactionStatus txStatus = null;
-			List<SpecimenOrObservationBase> list = null;
+			List<TaxonBase> list = null;
 
 			// Start transaction
 			txStatus = startTransaction(true);
 			logger.error("Started new transaction. Fetching some " + pluralString + " (max: " + limit + ") ...");
-			while ((list = getOccurrenceService().list(null, limit, count, null, null)).size() > 0) {
-				
-				logger.error("Fetched " + list.size() + " " + pluralString + ". Exporting...");
-				for (SpecimenOrObservationBase<?> relation : list) {
-					doCount(count++, modCount, pluralString);
-					success &= mapping.invoke(relation);
+			while ((list = getTaxonService().list(null, limit, count, null, null)).size() > 0) {
+
+				logger.error("Fetched " + list.size() + " " + pluralString + ".");
+				for (TaxonBase taxonBase : list) {
+					if (taxonBase.isInstanceOf(Taxon.class)) {
+
+						// Set the current Taxon
+						taxon = CdmBase.deproxy(taxonBase, Taxon.class);
+
+						// Determine the TaxonDescriptions
+						Set<TaxonDescription> taxonDescriptions = taxon.getDescriptions();
+
+						// Determine the DescriptionElements (Citations) for the current Taxon
+						for (TaxonDescription taxonDescription : taxonDescriptions) {
+							Set<DescriptionElementBase> descriptionElements = taxonDescription.getElements();
+							for (DescriptionElementBase descriptionElement : descriptionElements) {
+								Set<DescriptionElementSource> elementSources = descriptionElement.getSources();
+
+								for (DescriptionElementSource elementSource : elementSources) {
+									ReferenceBase reference = elementSource.getCitation();
+									doCount(count++, modCount, pluralString);
+									success &= mapping.invoke(reference);
+								}
+							}
+						}
+					}
 				}
 				
 				// Commit transaction
@@ -115,7 +142,7 @@ public class PesiOccurrenceExport extends PesiExportBase<DescriptionBase> {
 			// Commit transaction
 			commitTransaction(txStatus);
 			logger.error("Committed transaction.");
-	
+
 			logger.error("*** Finished Making " + pluralString + " ..." + getSuccessString(success));
 			
 			return success;
@@ -152,99 +179,98 @@ public class PesiOccurrenceExport extends PesiExportBase<DescriptionBase> {
 		return ! state.getConfig().isDoOccurrence();
 	}
 
-
 	/**
 	 * Returns the <code>TaxonFk</code> attribute.
-	 * @param specimenOrObservation The {@link SpecimenOrObservationBase SpecimenOrObservation}.
+	 * @param state The {@link PesiExportState PesiExportState}.
 	 * @return The <code>TaxonFk</code> attribute.
 	 * @see MethodMapper
 	 */
 	@SuppressWarnings("unused")
-	private static String getTaxonFk(SpecimenOrObservationBase<?> specimenOrObservation) {
-		// TODO
-		return null;
+	private static Integer getTaxonFk(PesiExportState state) {
+		return state.getDbId(taxon);
 	}
 
 	/**
 	 * Returns the <code>AreaFk</code> attribute.
-	 * @param specimenOrObservation The {@link SpecimenOrObservationBase SpecimenOrObservation}.
+	 * @param reference The {@link ReferenceBase ReferenceBase}.
 	 * @return The <code>AreaFk</code> attribute.
 	 * @see MethodMapper
 	 */
 	@SuppressWarnings("unused")
-	private static String getAreaFk(SpecimenOrObservationBase<?> specimenOrObservation) {
-		// TODO
+	private static Integer getAreaFk(ReferenceBase<?> reference) {
+//		NamedArea area = distribution.getArea();
+//		return PesiTransformer.area2AreaId();
 		return null;
 	}
 
 	/**
 	 * Returns the <code>AreaNameCache</code> attribute.
-	 * @param specimenOrObservation The {@link SpecimenOrObservationBase SpecimenOrObservation}.
+	 * @param reference The {@link ReferenceBase ReferenceBase}.
 	 * @return The <code>AreaNameCache</code> attribute.
 	 * @see MethodMapper
 	 */
 	@SuppressWarnings("unused")
-	private static String getAreaNameCache(SpecimenOrObservationBase<?> specimenOrObservation) {
+	private static String getAreaNameCache(ReferenceBase<?> reference) {
 		// TODO
 		return null;
 	}
 
 	/**
 	 * Returns the <code>OccurrenceStatusFk</code> attribute.
-	 * @param specimenOrObservation The {@link SpecimenOrObservationBase SpecimenOrObservation}.
+	 * @param reference The {@link ReferenceBase ReferenceBase}.
 	 * @return The <code>OccurrenceStatusFk</code> attribute.
 	 * @see MethodMapper
 	 */
 	@SuppressWarnings("unused")
-	private static String getOccurrenceStatusFk(SpecimenOrObservationBase<?> specimenOrObservation) {
+	private static Integer getOccurrenceStatusFk(ReferenceBase<?> reference) {
 		// TODO
 		return null;
 	}
 
 	/**
 	 * Returns the <code>OccurrenceStatusCache</code> attribute.
-	 * @param specimenOrObservation The {@link SpecimenOrObservationBase SpecimenOrObservation}.
+	 * @param reference The {@link ReferenceBase ReferenceBase}.
 	 * @return The <code>OccurrenceStatusCache</code> attribute.
 	 * @see MethodMapper
 	 */
 	@SuppressWarnings("unused")
-	private static String getOccurrenceStatusCache(SpecimenOrObservationBase<?> specimenOrObservation) {
+	private static String getOccurrenceStatusCache(ReferenceBase<?> reference) {
 		// TODO
 		return null;
 	}
 
 	/**
 	 * Returns the <code>SourceFk</code> attribute.
-	 * @param specimenOrObservation The {@link SpecimenOrObservationBase SpecimenOrObservation}.
+	 * @param reference The {@link ReferenceBase ReferenceBase}.
+	 * @param state The {@link PesiExportState PesiExportState}.
 	 * @return The <code>SourceFk</code> attribute.
 	 * @see MethodMapper
 	 */
 	@SuppressWarnings("unused")
-	private static String getSourceFk(SpecimenOrObservationBase<?> specimenOrObservation) {
-		// TODO
-		return null;
+	private static Integer getSourceFk(ReferenceBase<?> reference, DbExportStateBase<?> state) {
+		return state.getDbId(reference);
 	}
 
 	/**
 	 * Returns the <code>SourceCache</code> attribute.
-	 * @param specimenOrObservation The {@link SpecimenOrObservationBase SpecimenOrObservation}.
+	 * @param reference The {@link ReferenceBase ReferenceBase}.
 	 * @return The <code>SourceCache</code> attribute.
 	 * @see MethodMapper
 	 */
 	@SuppressWarnings("unused")
-	private static String getSourceCache(SpecimenOrObservationBase<?> specimenOrObservation) {
+	private static String getSourceCache(ReferenceBase<?> reference) {
 		// TODO
 		return null;
 	}
 
 	/**
 	 * Returns the <code>Notes</code> attribute.
-	 * @param specimenOrObservation The {@link SpecimenOrObservationBase SpecimenOrObservation}.
+	 * @param reference The {@link ReferenceBase ReferenceBase}.
 	 * @return The <code>Notes</code> attribute.
 	 * @see MethodMapper
 	 */
 	@SuppressWarnings("unused")
-	private static String getNotes(SpecimenOrObservationBase<?> specimenOrObservation) {
+	private static String getNotes(ReferenceBase<?> reference) {
 		// TODO
 		return null;
 	}
@@ -258,12 +284,12 @@ public class PesiOccurrenceExport extends PesiExportBase<DescriptionBase> {
 		PesiExportMapping mapping = new PesiExportMapping(dbTableName);
 		
 		mapping.addMapper(IdMapper.NewInstance("OccurrenceId"));
-		mapping.addMapper(MethodMapper.NewInstance("TaxonFk", this));
+		mapping.addMapper(MethodMapper.NewInstance("TaxonFk", this.getClass(), "getTaxonFk", DbExportStateBase.class));
 		mapping.addMapper(MethodMapper.NewInstance("AreaFk", this));
 		mapping.addMapper(MethodMapper.NewInstance("AreaNameCache", this));
 		mapping.addMapper(MethodMapper.NewInstance("OccurrenceStatusFk", this));
 		mapping.addMapper(MethodMapper.NewInstance("OccurrenceStatusCache", this));
-		mapping.addMapper(MethodMapper.NewInstance("SourceFk", this));
+		mapping.addMapper(MethodMapper.NewInstance("SourceFk", this.getClass(), "getSourceFk", standardMethodParameter, DbExportStateBase.class));
 		mapping.addMapper(MethodMapper.NewInstance("SourceCache", this));
 		mapping.addMapper(MethodMapper.NewInstance("Notes", this));
 

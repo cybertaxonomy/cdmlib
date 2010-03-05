@@ -11,15 +11,23 @@ package eu.etaxonomy.cdm.io.pesi.out;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.MethodMapper;
+import eu.etaxonomy.cdm.io.common.DbExportStateBase;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
+import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
+import eu.etaxonomy.cdm.model.description.TaxonDescription;
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 /**
  * @author a.mueller
@@ -29,14 +37,14 @@ import eu.etaxonomy.cdm.model.description.DescriptionBase;
  */
 @Component
 @SuppressWarnings("unchecked")
-public class PesiAdditionalTaxonSourceExport extends
-		PesiExportBase<DescriptionBase> {
+public class PesiAdditionalTaxonSourceExport extends PesiExportBase {
 	private static final Logger logger = Logger.getLogger(PesiAdditionalTaxonSourceExport.class);
-	private static final Class<? extends CdmBase> standardMethodParameter = DescriptionBase.class;
+	private static final Class<? extends CdmBase> standardMethodParameter = ReferenceBase.class;
 
 	private static int modCount = 1000;
 	private static final String dbTableName = "AdditionalTaxonSource";
-	private static final String pluralString = "AdditionalTaxonSources";
+	private static final String pluralString = "DescriptionElements";
+	private static Taxon taxon = null;
 
 	public PesiAdditionalTaxonSourceExport() {
 		super();
@@ -77,8 +85,8 @@ public class PesiAdditionalTaxonSourceExport extends
 			doDelete(state);
 	
 			// CDM: Get the number of all available description elements.
-			int maxCount = getDescriptionService().count(null);
-			logger.error("Total amount of " + maxCount + " " + pluralString + " will be exported.");
+//			int maxCount = getDescriptionService().count(null);
+//			logger.error("Total amount of " + maxCount + " " + pluralString + " will be exported.");
 
 			// Get specific mappings: (CDM) DescriptionElement -> (PESI) Note
 			PesiExportMapping mapping = getMapping();
@@ -90,19 +98,47 @@ public class PesiAdditionalTaxonSourceExport extends
 			int count = 0;
 			int pastCount = 0;
 			TransactionStatus txStatus = null;
-			List<DescriptionBase> list = null;
+			List<TaxonBase> list = null;
 
 			// Start transaction
 			txStatus = startTransaction(true);
 			logger.error("Started new transaction. Fetching some " + pluralString + " (max: " + limit + ") ...");
-			while ((list = getDescriptionService().list(null, limit, count, null, null)).size() > 0) {
+			while ((list = getTaxonService().list(null, limit, count, null, null)).size() > 0) {
 
-				logger.error("Fetched " + list.size() + " " + pluralString + ". Exporting...");
-				for (DescriptionBase<?> description : list) {
-					doCount(count++, modCount, pluralString);
-					success &= mapping.invoke(description);
+				logger.error("Fetched " + list.size() + " " + pluralString + ".");
+				for (TaxonBase taxonBase : list) {
+					if (taxonBase.isInstanceOf(Taxon.class)) {
+
+						// Set the current Taxon
+						taxon = CdmBase.deproxy(taxonBase, Taxon.class);
+
+						// Determine the TaxonDescriptions
+						Set<TaxonDescription> taxonDescriptions = taxon.getDescriptions();
+
+						// Determine the DescriptionElements (Citations) for the current Taxon
+						for (TaxonDescription taxonDescription : taxonDescriptions) {
+							Set<DescriptionElementBase> descriptionElements = taxonDescription.getElements();
+							for (DescriptionElementBase descriptionElement : descriptionElements) {
+								Set<DescriptionElementSource> elementSources = descriptionElement.getSources();
+								
+								for (DescriptionElementSource elementSource : elementSources) {
+									ReferenceBase reference = elementSource.getCitation();
+									doCount(count++, modCount, pluralString);
+									success &= mapping.invoke(reference);
+								}
+							}
+							
+//							featureSet = taxonDescription.getDescriptiveSystem();
+//							for (Feature feature : featureSet) {
+//								if (feature.equals(Feature.CITATION())) {
+//									doCount(count++, modCount, pluralString);
+//									success &= mapping.invoke(taxonDescription);
+//								}
+//							}
+						}
+					}
 				}
-
+				
 				// Commit transaction
 				commitTransaction(txStatus);
 				logger.error("Committed transaction.");
@@ -153,7 +189,8 @@ public class PesiAdditionalTaxonSourceExport extends
 	 */
 	@Override
 	protected boolean isIgnore(PesiExportState state) {
-		// TODO Auto-generated method stub
+		// TODO
+//		return state.getConfig().isDoAdditionalTaxonSource()
 		return false;
 	}
 
@@ -164,9 +201,8 @@ public class PesiAdditionalTaxonSourceExport extends
 	 * @see MethodMapper
 	 */
 	@SuppressWarnings("unused")
-	private static String getTaxonFk(DescriptionBase<?> description) {
-		// TODO
-		return null;
+	private static Integer getTaxonFk(PesiExportState state) {
+		return state.getDbId(taxon);
 	}
 	
 	/**
@@ -176,9 +212,24 @@ public class PesiAdditionalTaxonSourceExport extends
 	 * @see MethodMapper
 	 */
 	@SuppressWarnings("unused")
-	private static String getSourceFk(DescriptionBase<?> description) {
-		// TODO
-		return null;
+	private static Integer getSourceFk(ReferenceBase<?> reference, DbExportStateBase<?> state) {
+		return state.getDbId(reference);
+
+
+//		Set<TaxonDescription> descs = taxon.getDescriptions();
+//		//for each
+//		TaxonDescription desc = descs.iterator().next();
+//		Set<DescriptionElementBase> elements = desc.getElements();
+//		for (DescriptionElementBase element : elements){
+//			Set<DescriptionElementSource> sources = element.getSources();
+//			for (DescriptionElementSource source : sources){
+//				ReferenceBase ref = source.getCitation();
+//				result = state.getDbId(ref);
+//			}
+//		}
+//		
+//		Integer result = null;
+//		Set<DescriptionElementSource> sources = element.getSources();
 	}
 	
 	/**
@@ -188,7 +239,7 @@ public class PesiAdditionalTaxonSourceExport extends
 	 * @see MethodMapper
 	 */
 	@SuppressWarnings("unused")
-	private static String getSourceUseFk(DescriptionBase<?> description) {
+	private static String getSourceUseFk(ReferenceBase<?> reference) {
 		// TODO
 		return null;
 	}
@@ -200,7 +251,7 @@ public class PesiAdditionalTaxonSourceExport extends
 	 * @see MethodMapper
 	 */
 	@SuppressWarnings("unused")
-	private static String getSourceUseCache(DescriptionBase<?> description) {
+	private static String getSourceUseCache(ReferenceBase<?> reference) {
 		// TODO
 		return null;
 	}
@@ -212,7 +263,7 @@ public class PesiAdditionalTaxonSourceExport extends
 	 * @see MethodMapper
 	 */
 	@SuppressWarnings("unused")
-	private static String getSourceNameCache(DescriptionBase<?> description) {
+	private static String getSourceNameCache(ReferenceBase<?> reference) {
 		// TODO
 		return null;
 	}
@@ -224,7 +275,7 @@ public class PesiAdditionalTaxonSourceExport extends
 	 * @see MethodMapper
 	 */
 	@SuppressWarnings("unused")
-	private static String getSourceDetail(DescriptionBase<?> description) {
+	private static String getSourceDetail(ReferenceBase<?> reference) {
 		// TODO
 		return null;
 	}
@@ -236,8 +287,8 @@ public class PesiAdditionalTaxonSourceExport extends
 	private PesiExportMapping getMapping() {
 		PesiExportMapping mapping = new PesiExportMapping(dbTableName);
 		
-		mapping.addMapper(MethodMapper.NewInstance("TaxonFk", this));
-		mapping.addMapper(MethodMapper.NewInstance("SourceFk", this));
+		mapping.addMapper(MethodMapper.NewInstance("TaxonFk", this.getClass(), "getTaxonFk", PesiExportState.class));
+		mapping.addMapper(MethodMapper.NewInstance("SourceFk", this.getClass(), "getSourceFk", standardMethodParameter, PesiExportState.class));
 		mapping.addMapper(MethodMapper.NewInstance("SourceUseFk", this));
 		mapping.addMapper(MethodMapper.NewInstance("SourceUseCache", this));
 		mapping.addMapper(MethodMapper.NewInstance("SourceNameCache", this));

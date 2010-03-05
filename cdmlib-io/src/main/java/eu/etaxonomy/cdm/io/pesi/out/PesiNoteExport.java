@@ -16,12 +16,15 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
-import eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbTimePeriodMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.IdMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.MethodMapper;
+import eu.etaxonomy.cdm.io.common.DbExportStateBase;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
+import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
+import eu.etaxonomy.cdm.model.description.TaxonDescription;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 /**
  * @author a.mueller
@@ -30,10 +33,9 @@ import eu.etaxonomy.cdm.model.description.DescriptionBase;
  *
  */
 @Component
-@SuppressWarnings("unchecked")
-public class PesiNoteExport extends PesiExportBase<DescriptionBase> {
+public class PesiNoteExport extends PesiExportBase {
 	private static final Logger logger = Logger.getLogger(PesiTaxonExport.class);
-	private static final Class<? extends CdmBase> standardMethodParameter = DescriptionBase.class;
+	private static final Class<? extends CdmBase> standardMethodParameter = DescriptionElementBase.class;
 
 	private static int modCount = 1000;
 	private static final String dbTableName = "Note";
@@ -69,7 +71,11 @@ public class PesiNoteExport extends PesiExportBase<DescriptionBase> {
 			logger.error("*** Started Making " + pluralString + " ...");
 
 			// Get the limit for objects to save within a single transaction.
-			int limit = state.getConfig().getLimitSave();
+//			int pageSize = state.getConfig().getLimitSave();
+			int pageSize = 1000;
+
+			// Calculate the pageNumber
+			int pageNumber = 1;
 
 			// Stores whether this invoke was successful or not.
 			boolean success = true;
@@ -77,10 +83,6 @@ public class PesiNoteExport extends PesiExportBase<DescriptionBase> {
 			// PESI: Clear the database table Note.
 			doDelete(state);
 	
-			// CDM: Get the number of all available description elements.
-//			int maxCount = getDescriptionService().count(null);
-//			logger.error("Total amount of " + maxCount + " " + pluralString + " will be exported.");
-
 			// Get specific mappings: (CDM) DescriptionElement -> (PESI) Note
 			PesiExportMapping mapping = getMapping();
 	
@@ -91,28 +93,31 @@ public class PesiNoteExport extends PesiExportBase<DescriptionBase> {
 			int count = 0;
 			int pastCount = 0;
 			TransactionStatus txStatus = null;
-			List<DescriptionBase> list = null;
+			List<DescriptionElementBase> list = null;
 			
 			// Start transaction
 			txStatus = startTransaction(true);
-			logger.error("Started new transaction. Fetching some " + pluralString + " (max: " + limit + ") ...");
-			while ((list = getDescriptionService().list(null, limit, count, null, null)).size() > 0) {
+			logger.error("Started new transaction. Fetching some " + pluralString + " (max: " + pageSize + ") ...");
+			while ((list = getDescriptionService().listDescriptionElements(null, null, null, pageSize, pageNumber, null)).size() > 0) {
 
 				logger.error("Fetched " + list.size() + " " + pluralString + ". Exporting...");
-				for (DescriptionBase<?> description : list) {
+				for (DescriptionElementBase description : list) {
 					doCount(count++, modCount, pluralString);
 					success &= mapping.invoke(description);
 				}
-		
+
 				// Commit transaction
 				commitTransaction(txStatus);
 				logger.error("Committed transaction.");
 				logger.error("Exported " + (count - pastCount) + " " + pluralString + ". Total: " + count);
 				pastCount = count;
-
+	
 				// Start transaction
 				txStatus = startTransaction(true);
-				logger.error("Started new transaction. Fetching some " + pluralString + " (max: " + limit + ") ...");
+				logger.error("Started new transaction. Fetching some " + pluralString + " (max: " + pageSize + ") ...");
+				
+				// Increment pageNumber
+				pageNumber++;
 			}
 			if (list.size() == 0) {
 				logger.error("No " + pluralString + " left to fetch.");
@@ -120,7 +125,7 @@ public class PesiNoteExport extends PesiExportBase<DescriptionBase> {
 			// Commit transaction
 			commitTransaction(txStatus);
 			logger.error("Committed transaction.");
-	
+
 			logger.error("*** Finished Making " + pluralString + " ..." + getSuccessString(success));
 			
 			return success;
@@ -142,6 +147,11 @@ public class PesiNoteExport extends PesiExportBase<DescriptionBase> {
 		String sql;
 		Source destination =  pesiConfig.getDestination();
 
+		// Clear NoteSource
+		sql = "DELETE FROM NoteSource";
+		destination.setQuery(sql);
+		destination.update(sql);
+
 		// Clear Note
 		sql = "DELETE FROM " + dbTableName;
 		destination.setQuery(sql);
@@ -160,108 +170,126 @@ public class PesiNoteExport extends PesiExportBase<DescriptionBase> {
 
 	/**
 	 * Returns the <code>Note_1</code> attribute.
-	 * @param description The {@link DescriptionBase Description}.
+	 * @param descriptionElement The {@link DescriptionElementBase DescriptionElement}.
 	 * @return The <code>Note_1</code> attribute.
 	 * @see MethodMapper
 	 */
 	@SuppressWarnings("unused")
-	private static String getNote_1(DescriptionBase<?> description) {
+	private static String getNote_1(DescriptionElementBase descriptionElement) {
 		// TODO
 		return null;
 	}
 
 	/**
 	 * Returns the <code>Note_2</code> attribute.
-	 * @param description The {@link DescriptionBase Description}.
+	 * @param descriptionElement The {@link DescriptionElementBase DescriptionElement}.
 	 * @return The <code>Note_2</code> attribute.
 	 * @see MethodMapper
 	 */
 	@SuppressWarnings("unused")
-	private static String getNote_2(DescriptionBase<?> description) {
+	private static String getNote_2(DescriptionElementBase descriptionElement) {
 		// TODO
 		return null;
 	}
 
 	/**
 	 * Returns the <code>NoteCategoryFk</code> attribute.
-	 * @param description The {@link DescriptionBase Description}.
+	 * @param descriptionElement The {@link DescriptionElementBase DescriptionElement}.
 	 * @return The <code>NoteCategoryFk</code> attribute.
 	 * @see MethodMapper
 	 */
 	@SuppressWarnings("unused")
-	private static String getNoteCategoryFk(DescriptionBase<?> description) {
+	private static String getNoteCategoryFk(DescriptionElementBase descriptionElement) {
 		// TODO
 		return null;
 	}
 
 	/**
 	 * Returns the <code>NoteCategoryCache</code> attribute.
-	 * @param description The {@link DescriptionBase Description}.
+	 * @param descriptionElement The {@link DescriptionElementBase DescriptionElement}.
 	 * @return The <code>NoteCategoryCache</code> attribute.
 	 * @see MethodMapper
 	 */
 	@SuppressWarnings("unused")
-	private static String getNoteCategoryCache(DescriptionBase<?> description) {
+	private static String getNoteCategoryCache(DescriptionElementBase descriptionElement) {
 		// TODO
 		return null;
 	}
 
 	/**
 	 * Returns the <code>LanguageFk</code> attribute.
-	 * @param description The {@link DescriptionBase Description}.
+	 * @param descriptionElement The {@link DescriptionElementBase DescriptionElement}.
 	 * @return The <code>LanguageFk</code> attribute.
 	 * @see MethodMapper
 	 */
 	@SuppressWarnings("unused")
-	private static String getLanguageFk(DescriptionBase<?> description) {
+	private static String getLanguageFk(DescriptionElementBase descriptionElement) {
 		// TODO
 		return null;
 	}
 
 	/**
 	 * Returns the <code>LanguageCache</code> attribute.
-	 * @param description The {@link DescriptionBase Description}.
+	 * @param descriptionElement The {@link DescriptionElementBase DescriptionElement}.
 	 * @return The <code>LanguageCache</code> attribute.
 	 * @see MethodMapper
 	 */
 	@SuppressWarnings("unused")
-	private static String getLanguageCache(DescriptionBase<?> description) {
+	private static String getLanguageCache(DescriptionElementBase descriptionElement) {
 		// TODO
 		return null;
 	}
 
 	/**
 	 * Returns the <code>Region</code> attribute.
-	 * @param description The {@link DescriptionBase Description}.
+	 * @param descriptionElement The {@link DescriptionElementBase DescriptionElement}.
 	 * @return The <code>Region</code> attribute.
 	 * @see MethodMapper
 	 */
 	@SuppressWarnings("unused")
-	private static String getRegion(DescriptionBase<?> description) {
+	private static String getRegion(DescriptionElementBase descriptionElement) {
 		// TODO
 		return null;
 	}
 
 	/**
 	 * Returns the <code>TaxonFk</code> attribute.
-	 * @param description The {@link DescriptionBase Description}.
+	 * @param descriptionElement The {@link DescriptionElementBase DescriptionElement}.
 	 * @return The <code>TaxonFk</code> attribute.
 	 * @see MethodMapper
 	 */
 	@SuppressWarnings("unused")
-	private static String getTaxonFk(DescriptionBase<?> description) {
+	private static Integer getTaxonFk(DescriptionElementBase descriptionElement, DbExportStateBase<?> state) {
+		Integer result = null;
+		DescriptionBase description = descriptionElement.getInDescription();
+		if (description.isInstanceOf(TaxonDescription.class)) {
+			TaxonDescription taxonDescription = CdmBase.deproxy(description, TaxonDescription.class);
+			Taxon taxon = taxonDescription.getTaxon();
+			result = state.getDbId(taxon);
+		}
+		return result;
+	}
+	
+	/**
+	 * Returns the <code>LastAction</code> attribute.
+	 * @param descriptionElement The {@link DescriptionElementBase DescriptionElement}.
+	 * @return The <code>LastAction</code> attribute.
+	 * @see MethodMapper
+	 */
+	@SuppressWarnings("unused")
+	private static String getLastAction(DescriptionElementBase descriptionElement) {
 		// TODO
 		return null;
 	}
 
 	/**
-	 * Returns the <code>LastAction</code> attribute.
-	 * @param description The {@link DescriptionBase Description}.
-	 * @return The <code>LastAction</code> attribute.
+	 * Returns the <code>LastActionDate</code> attribute.
+	 * @param descriptionElement The {@link DescriptionElementBase DescriptionElement}.
+	 * @return The <code>LastActionDate</code> attribute.
 	 * @see MethodMapper
 	 */
 	@SuppressWarnings("unused")
-	private static String getLastAction(DescriptionBase<?> description) {
+	private static String getLastActionDate(DescriptionElementBase descriptionElement) {
 		// TODO
 		return null;
 	}
@@ -281,9 +309,11 @@ public class PesiNoteExport extends PesiExportBase<DescriptionBase> {
 		mapping.addMapper(MethodMapper.NewInstance("LanguageFk", this));
 		mapping.addMapper(MethodMapper.NewInstance("LanguageCache", this));
 		mapping.addMapper(MethodMapper.NewInstance("Region", this));
-		mapping.addMapper(MethodMapper.NewInstance("TaxonFk", this));
+//		mapping.addMapper(DbObjectMapper.NewInstance("taxon", "TaxonFk"));
+		mapping.addMapper(MethodMapper.NewInstance("TaxonFk", this.getClass(), "getTaxonFk", standardMethodParameter, DbExportStateBase.class));
 		mapping.addMapper(MethodMapper.NewInstance("LastAction", this));
-		mapping.addMapper(DbTimePeriodMapper.NewInstance("updated", "LastActionDate"));
+//		mapping.addMapper(DbTimePeriodMapper.NewInstance("updated", "LastActionDate")); // This doesn't work since org.joda.time.DateTime cannot be cast to eu.etaxonomy.cdm.model.common.TimePeriod
+		mapping.addMapper(MethodMapper.NewInstance("LastActionDate", this));
 
 		return mapping;
 	}

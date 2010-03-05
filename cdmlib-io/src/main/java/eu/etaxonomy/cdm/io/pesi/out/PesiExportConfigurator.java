@@ -37,7 +37,10 @@ public class PesiExportConfigurator extends DbExportConfiguratorBase implements 
 		ioClassList = new Class[]{
 				PesiSourceExport.class,
 				PesiTaxonExport.class,
-				PesiRelTaxonExport.class
+				PesiRelTaxonExport.class,
+				PesiNoteExport.class,
+				PesiNoteSourceExport.class,
+				PesiOccurrenceExport.class
 		};
 
 	}

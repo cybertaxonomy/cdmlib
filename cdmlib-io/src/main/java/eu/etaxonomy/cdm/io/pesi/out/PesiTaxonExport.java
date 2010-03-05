@@ -11,20 +11,28 @@ package eu.etaxonomy.cdm.io.pesi.out;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbObjectMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.IdMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.MethodMapper;
+import eu.etaxonomy.cdm.io.common.DbExportStateBase;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.name.NonViralName;
+import eu.etaxonomy.cdm.model.taxon.ITreeNode;
+import eu.etaxonomy.cdm.model.taxon.Synonym;
+import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 
 /**
  * @author a.mueller
@@ -34,7 +42,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  */
 @Component
 @SuppressWarnings("unchecked")
-public class PesiTaxonExport extends PesiExportBase<TaxonBase> {
+public class PesiTaxonExport extends PesiExportBase {
 	private static final Logger logger = Logger.getLogger(PesiTaxonExport.class);
 	private static final Class<? extends CdmBase> standardMethodParameter = TaxonBase.class;
 
@@ -78,7 +86,7 @@ public class PesiTaxonExport extends PesiExportBase<TaxonBase> {
 			boolean success = true;
 	
 			// PESI: Clear the database table Taxon.
-//			doDelete(state);
+			doDelete(state);
 	
 			// CDM: Get the number of all available taxa.
 //			int maxCount = getTaxonService().count(null);
@@ -101,9 +109,9 @@ public class PesiTaxonExport extends PesiExportBase<TaxonBase> {
 			while ((list = getTaxonService().list(null, limit, count, null, null)).size() > 0) {
 
 				logger.error("Fetched " + list.size() + " " + pluralString + ". Exporting...");
-				for (TaxonBase<?> taxon : list) {
+				for (TaxonBase taxonBase : list) {
 					doCount(count++, modCount, pluralString);
-					success &= mapping.invoke(taxon);
+					success &= mapping.invoke(taxonBase);
 				}
 
 				// Commit transaction
@@ -446,10 +454,33 @@ public class PesiTaxonExport extends PesiExportBase<TaxonBase> {
 	 * @see MethodMapper
 	 */
 	@SuppressWarnings("unused")
-	private static Integer getParentTaxonFk(TaxonBase<?> taxon) {
+	private static Integer getParentTaxonFk(TaxonBase<?> taxonBase, DbExportStateBase<?> state) {
 		Integer result = null;
+		Taxon taxon = null;
+		if (taxonBase.isInstanceOf(Synonym.class)) {
+			Synonym synonym = (Synonym)taxonBase;
+			Set<SynonymRelationship> rels = synonym.getSynonymRelations();
+			//check size == 1
+			if (rels.size() == 1) {
+				taxon = rels.iterator().next().getAcceptedTaxon();
+			}
+		} else {
+			taxon = CdmBase.deproxy(taxonBase, Taxon.class);
+		}
 		if (taxon != null) {
-			// how to get a taxonnode?
+			//check size ==1
+			Set<TaxonNode> taxonNodes = taxon.getTaxonNodes();
+			if (taxonNodes.size() == 1) {
+				TaxonNode taxonNode = taxon.getTaxonNodes().iterator().next();
+				ITreeNode parentNode = taxonNode.getParent();
+				if (HibernateProxyHelper.isInstanceOf(parentNode, TaxonNode.class)) {
+					TaxonNode node = CdmBase.deproxy(parentNode, TaxonNode.class);
+					Taxon parent = node.getTaxon();
+					result = state.getDbId(parent);
+				} else {
+					//TODO no parent exists
+				}
+			}
 		}
 		return result;
 	}
@@ -642,7 +673,7 @@ public class PesiTaxonExport extends PesiExportBase<TaxonBase> {
 		mapping.addMapper(MethodMapper.NewInstance("NameStatusCache", this));
 		mapping.addMapper(MethodMapper.NewInstance("TaxonStatusFk", this));
 		mapping.addMapper(MethodMapper.NewInstance("TaxonStatusCache", this));
-		mapping.addMapper(MethodMapper.NewInstance("ParentTaxonFk", this));
+		mapping.addMapper(MethodMapper.NewInstance("ParentTaxonFk", this.getClass(), "getParentTaxonFk", standardMethodParameter, DbExportStateBase.class));
 		mapping.addMapper(MethodMapper.NewInstance("TypeNameFk", this));
 		mapping.addMapper(MethodMapper.NewInstance("TypeFullnameCache", this));
 		mapping.addMapper(MethodMapper.NewInstance("QualityStatusFk", this));
