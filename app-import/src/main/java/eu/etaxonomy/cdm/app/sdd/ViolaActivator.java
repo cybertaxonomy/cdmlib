@@ -9,6 +9,8 @@
 
 package eu.etaxonomy.cdm.app.sdd;
 
+import java.net.URL;
+
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.app.common.CdmDestinations;
@@ -30,11 +32,10 @@ public class ViolaActivator {
 
 	//database validation status (create, update, validate ...)
 	static DbSchemaValidation hbm2dll = DbSchemaValidation.CREATE;
-	static final String sddSource = SDDSources.viola_local();
-	//static final String sddSource = SDDSources.viola_local_andreas();
+	//static final String sddSource = SDDSources.viola_local();
 	//	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_test_andreasM2();
 	static final ICdmDataSource cdmDestination = CdmDestinations.localH2();
-
+	static final String sddSource = SDDSources.SDDImport_local("/Developer/cdmlib/app-import/target/classes/sdd/test4.sdd");
 	//	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_portal_test_localhost();
 
 	static final String sourceSecId = "viola_pub_ed_999999";
@@ -60,7 +61,8 @@ public class ViolaActivator {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		System.out.println("Start import from SDD("+ sddSource.toString() + ") ...");
+		//System.out.println("Jobi joba"); 
+		System.out.println("Start import from SDDDD("+ sddSource.toString() + ") ...");
 
 		//make BerlinModel Source
 		String source = sddSource;
@@ -82,6 +84,7 @@ public class ViolaActivator {
 
 		sddImportConfigurator.setCheck(check);
 		sddImportConfigurator.setDbSchemaValidation(hbm2dll);
+		
 
 		// invoke import
 		CdmDefaultImport<SDDImportConfigurator> sddImport = new CdmDefaultImport<SDDImportConfigurator>();
