@@ -84,7 +84,7 @@ public class MethodMapper extends DbSingleAttributeExportMapperBase<DbExportStat
 	@Override
 	protected Object getValue(CdmBase cdmBase) {
 		try{	
-			if (this.parameterTypes.length > 1 && parameterTypes[1].equals(DbExportStateBase.class)){
+			if (this.parameterTypes.length > 1 && DbExportStateBase.class.isAssignableFrom(parameterTypes[1])){
 				return method.invoke(null, cdmBase, getState());
 			}else{
 				return method.invoke(null, cdmBase);
