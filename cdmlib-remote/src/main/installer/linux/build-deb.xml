@@ -1,16 +1,20 @@
 <project name="Java application deb packager" default="deb_package">
 
-	<!--<property name="project.version" /> must be passed as parameter -->
-	<!--<property name="project.buildnumber" /> must be passed as parameter -->
+	<echo>basedir: ${basedir}</echo>
+	<!-- UNUSED
   <tstamp>
     <format property="project.buildtimestamp" pattern="yyyyMMddkkmmss"/>
   </tstamp>
-
+  -->
 	
-	<!-- Miscellaneous -->
+	<!-- Package Name & Version -->
 	<property name="package.name" value="cdmserver" />
-	<property name="version.cdmserver" value="${project.version}.${project.buildnumber}.${project.buildtimestamp}" />
+	<!-- ${project.fullversionstring} must be passed as parameter --> 
+	<property name="version.cdmserver" value="${project.fullversionstring}" />
 	<property name="version.debian" value="5" />
+	<echo>upstream-version = version.cdmserver: ${version.cdmserver}</echo>
+	<echo>debian-version = version.debian: ${version.debian}</echo>
+	
 	<!-- Various Filenames -->
 	<property name="cdmserverscript.filename" value="cdmserver" />
 	<property name="datasources.filename" value="datasources.xml" />
@@ -41,23 +45,11 @@
 	<!-- location -->
 
 	<!-- create distribution target -->
-
-	<path id="classpath">
-		<fileset dir="${ant-deb-task.path}" includes="*.jar" />
-	</path>
-
-	<path id="ant-deb-task">
-		<fileset dir="${ant-deb-task.path}" includes="*.jar" />
-	</path>
-
-	<taskdef resource="ant_deb_task.properties">
-		<classpath>
-			<pathelement location="${ant-deb-task.path}/ant-deb-task-0.0.1.jar"/>
-		</classpath>
+	<path id="ant-deb-task.classpath">
+		<fileset dir="${basedir}/${ant-deb-task.path}" includes="*.jar" />
+	</path>	
+  <taskdef resource="ant_deb_task.properties" classpathref="ant-deb-task.classpath">
 	</taskdef>
-	<!--
-	file="${ant-deb-task.path}/ant-deb-task-0.0.1.jar"
--->
 
 	<target name="deb_package" description="build the deb file">
 		<mkdir dir="dist" />
