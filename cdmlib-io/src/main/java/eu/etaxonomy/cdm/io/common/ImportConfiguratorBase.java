@@ -27,12 +27,6 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 /**
  * @author a.mueller
  * @created 20.06.2008
- * @version 1.0
- */
-/**
- * @author a.mueller
- * @created 25.07.2009
- * @version 1.0
  * @param <STATE>
  */
 @Component

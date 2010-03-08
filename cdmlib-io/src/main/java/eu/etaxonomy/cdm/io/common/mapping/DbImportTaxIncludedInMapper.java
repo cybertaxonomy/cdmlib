@@ -18,6 +18,7 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.api.service.ITaxonTreeService;
 import eu.etaxonomy.cdm.io.common.CdmImportBase;
 import eu.etaxonomy.cdm.io.common.DbImportStateBase;
 import eu.etaxonomy.cdm.io.common.IIoConfigurator;
@@ -165,15 +166,19 @@ public class DbImportTaxIncludedInMapper<STATE extends DbImportStateBase<ImportC
 		}
 		TaxonomicTree tree = (TaxonomicTree)state.getRelatedObject(TAXONOMIC_TREE_NAMESPACE, treeKey);
 		if (tree == null){
-			tree = state.getCurrentImport().getTaxonTreeService().getTaxonomicTreeByUuid(treeUuid);
+			ITaxonTreeService service = state.getCurrentImport().getTaxonTreeService();
+			tree = service.getTaxonomicTreeByUuid(treeUuid);
 			if (tree == null){
 				String treeName = state.getConfig().getTaxonomicTreeName();
 				tree = TaxonomicTree.NewInstance(treeName);
+				tree.setUuid(treeUuid);
 				//FIXME tree reference
 				//tree.setReference(ref);
+				service.save(tree);
 			}
 			state.addRelatedObject(TAXONOMIC_TREE_NAMESPACE, treeKey, tree);
 		}
+		tree.addParentChild(parent, child, citation, microCitation);
 		return true;
 	}
 	

@@ -103,8 +103,7 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 				
 				Object ptRefFkObj = rs.getObject("PTRefFk");
 				String ptRefFk= String.valueOf(ptRefFkObj);
-				ReferenceBase<?> ref = getReferenceOnlyFromMaps(biblioRefMap, 
-						nomRefMap, ptRefFk);
+				ReferenceBase<?> ref = getReferenceOnlyFromMaps(biblioRefMap, nomRefMap, ptRefFk);
 					
 				//FIXME treeName
 				String treeName = "TaxonTree - No Name";
@@ -430,7 +429,7 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 	private boolean makeTaxonomicallyIncluded(BerlinModelImportState state, Map<Integer, TaxonomicTree> taxonTreeMap, int treeRefFk, Taxon child, Taxon parent, ReferenceBase citation, String microCitation){
 		TaxonomicTree tree = taxonTreeMap.get(treeRefFk);
 		if (tree == null){
-			UUID treeUuid = state.getTreeUuidByTreeKeyInt(treeRefFk);
+			UUID treeUuid = state.getTreeUuidByIntTreeKey(treeRefFk);
 			tree = getTaxonTreeService().getTaxonomicTreeByUuid(treeUuid);
 			taxonTreeMap.put(treeRefFk, tree);
 		}

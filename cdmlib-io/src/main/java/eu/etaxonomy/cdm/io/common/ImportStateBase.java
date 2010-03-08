@@ -146,7 +146,7 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase> ext
 		}
 	}
 	
-	public UUID getTreeUuidByTreeKeyInt(int treeKey) {
+	public UUID getTreeUuidByIntTreeKey(int treeKey) {
 		return taxonomicTreeKeyUuidMap.get(String.valueOf(treeKey));
 	}
 	

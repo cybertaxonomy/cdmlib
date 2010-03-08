@@ -88,7 +88,7 @@ public class ErmsVernacularImport  extends ErmsImportBase<CommonTaxonName> {
 			mapping.addMapper(DbImportObjectCreationMapper.NewInstance(this, "id", VERNACULAR_NAMESPACE)); //id
 			mapping.addMapper(DbImportObjectMapper.NewInstance("lan_id", "language", LANGUAGE_NAMESPACE));
 			mapping.addMapper(DbImportStringMapper.NewInstance("vername", "name"));
-			mapping.addMapper(DbImportAnnotationMapper.NewInstance("note", AnnotationType.EDITORIAL(), Language.ENGLISH()));
+			mapping.addMapper(DbImportAnnotationMapper.NewInstance("note", AnnotationType.EDITORIAL(), Language.DEFAULT()));
 //			mapping.addMapper(DbImportDescriptionElementMapper.NewInstance("tu_id", "language", LANGUAGE_NAMESPACE));
 			
 			

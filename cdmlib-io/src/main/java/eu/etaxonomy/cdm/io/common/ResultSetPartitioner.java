@@ -143,7 +143,7 @@ public class ResultSetPartitioner<STATE extends IPartitionedState> {
 			partitionedIO.commitTransaction(txStatus);
 			
 			profiler.end();
-			
+			state.setRelatedObjects(null);
 			
 			logger.info("Saved " + getCurrentNumberOfRows() + " " + partitionedIO.getPluralString() );
 			profiler.print();

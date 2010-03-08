@@ -90,7 +90,7 @@ public class ErmsReferenceImport  extends ErmsImportBase<ReferenceBase> {
 			
 			mapping.addMapper(DbImportStringMapper.NewInstance("source_name", "titleCache"));
 			mapping.addMapper(DbImportStringMapper.NewInstance("source_abstract", "referenceAbstract"));
-			mapping.addMapper(DbImportAnnotationMapper.NewInstance("source_note", AnnotationType.EDITORIAL(), Language.ENGLISH()));
+			mapping.addMapper(DbImportAnnotationMapper.NewInstance("source_note", AnnotationType.EDITORIAL(), Language.DEFAULT()));
 			
 			//or as Extension?
 			mapping.addMapper(DbImportStringMapper.NewInstance("source_link", "uri"));

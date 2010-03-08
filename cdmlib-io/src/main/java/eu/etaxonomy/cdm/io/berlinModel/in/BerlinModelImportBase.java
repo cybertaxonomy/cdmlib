@@ -139,7 +139,7 @@ public abstract class BerlinModelImportBase extends CdmImportBase<BerlinModelImp
 			if (updatedWhen != null && updatedWho != null){
 				createdAnnotationString += " and updated By: " + String.valueOf(updatedWho) + " (" + String.valueOf(updatedWhen) + ")";
 			}
-			Annotation annotation = Annotation.NewInstance(createdAnnotationString, Language.ENGLISH());
+			Annotation annotation = Annotation.NewInstance(createdAnnotationString, Language.DEFAULT());
 			annotation.setCommentator(config.getCommentator());
 			annotation.setAnnotationType(AnnotationType.TECHNICAL());
 			annotatableEntity.addAnnotation(annotation);

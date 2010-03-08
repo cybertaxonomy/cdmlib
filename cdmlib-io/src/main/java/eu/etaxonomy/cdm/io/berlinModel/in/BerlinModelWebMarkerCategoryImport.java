@@ -84,6 +84,7 @@ public class BerlinModelWebMarkerCategoryImport extends BerlinModelImportBase {
 						getTermService().saveOrUpdate(markerType);
 					}
 					state.putDefinedTermToMap(dbTableName, markerCategoryId, markerType);
+//					state.putMarkerType(markerType);
 
 				}catch(Exception ex){
 					logger.error(ex.getMessage());
