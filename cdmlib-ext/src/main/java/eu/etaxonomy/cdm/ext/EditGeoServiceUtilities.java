@@ -62,18 +62,20 @@ public class EditGeoServiceUtilities {
 			int width, 
 			int height, 
 			String bbox, 
-			String backLayer){
+			String backLayer,
+			List<Language> languages){
 		
 		String result = "";
 		String layer = ""; 
 		String areaData = "";
 		String areaStyle = "";
+		String areaTitle = "";
 		String widthStr = "";
 		String heightStr = "";
 		String adLayerSeparator = ":";
 		String styleInAreaDataSeparator = "|";
 		String msSeparator = ","; //Separator for the ms parameter values , e.g. 'x' => ms=600x400
-		int borderWidth = 1;
+		double borderWidth = 0.1;
 		
 		
 		if(distributions == null || distributions.size() == 0){
@@ -150,7 +152,16 @@ public class EditGeoServiceUtilities {
 		areaStyle = "";
 		int i = 0;
 		for (PresenceAbsenceTermBase<?> status: statusList){
+			
 			char style = getStyleAbbrev(i);
+			
+			//getting the area title
+			Representation representation = 
+				status.getPreferredRepresentation(languages);
+			String statusLabel = representation.getLabel();
+			areaTitle += "|" + style + ":" + statusLabel;
+			
+			//getting the area color
 			Color statusColor = presenceAbsenceTermColors.get(status);
 			String rgb;
 			if (statusColor != null){
@@ -163,15 +174,21 @@ public class EditGeoServiceUtilities {
 				}
 			}
 			areaStyle += "|" + style + ":" + rgb;
+
 			if (borderWidth >0){
 				areaStyle += ",," + borderWidth;
 			}
-			i++;
+
+			i++;			
 		}
 		
 		if(areaStyle.length() > 0){
 			areaStyle = "as=" + areaStyle.substring(1); //remove first |
 		}
+		if(areaTitle.length() > 0){
+			areaTitle = "title=" + areaTitle.substring(1); //remove first |
+		}
+		
 		boolean separateLevels = false; //FIXME as parameter
 		//areaData
 		areaData = "";
@@ -199,7 +216,7 @@ public class EditGeoServiceUtilities {
 			isFirstLayer = separateLevels;
 			if(separateLevels){
 				//result per level
-				result = CdmUtils.concat("&", new String[] {layer, "ad=" + areaData.substring(0), areaStyle, bbox, ms});
+				result = CdmUtils.concat("&", new String[] {layer, "ad=" + areaData.substring(0), areaStyle, areaTitle, bbox, ms});
 				resultMap.put(layerString, result);
 			}
 		}
@@ -207,7 +224,7 @@ public class EditGeoServiceUtilities {
 		areaData = "ad=" + areaData.substring(0); //remove first |
 		
 		//result
-		result = CdmUtils.concat("&", new String[] {layer, areaData, areaStyle, bbox, ms});
+		result = CdmUtils.concat("&", new String[] {layer, areaData, areaStyle, areaTitle, bbox, ms});
 		if (logger.isDebugEnabled()){logger.debug("getEditGeoServiceUrlParameterString end");}
 		
 		return result;

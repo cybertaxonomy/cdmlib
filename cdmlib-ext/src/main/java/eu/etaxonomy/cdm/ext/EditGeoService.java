@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.ext;
 
 import java.awt.Color;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -20,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
@@ -37,6 +39,8 @@ import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
 @Transactional(readOnly=true)
 public class EditGeoService implements IEditGeoService{
 	
+	private static final String DEFAULT_BACK_LAYER = "tdwg4";
+
 	public static final Logger logger = Logger.getLogger(EditGeoService.class);
 	
 	@Autowired
@@ -50,6 +54,28 @@ public class EditGeoService implements IEditGeoService{
 		distributionFeature.add(feature);
 		return distributionFeature;
 	}
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.ext.IEditGeoService#getEditGeoServiceUrlParameterString(java.util.List, java.util.Map, int, int, java.lang.String, java.lang.String, java.util.List)
+	 */
+	public String getEditGeoServiceUrlParameterString(
+			List<TaxonDescription> taxonDescriptions,
+			Map<PresenceAbsenceTermBase<?>, Color> presenceAbsenceTermColors,
+			int width, int height, String bbox, String backLayer,
+			List<Language> langs) {
+		Set<Distribution> distributions = new HashSet<Distribution>();
+		for(TaxonDescription taxonDescription : taxonDescriptions){
+			List<Distribution> result = (List)dao.getDescriptionElements(taxonDescription, getDistributionFeatures(), Distribution.class, null, null, null);
+			distributions.addAll(result);
+		}
+		
+		if(backLayer == null){
+			backLayer = DEFAULT_BACK_LAYER;
+		}
+		String uriParams = EditGeoServiceUtilities.getEditGeoServiceUrlParameterString(distributions, presenceAbsenceTermColors, width, height, bbox, backLayer, langs);
+
+		return uriParams;
+	}
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.ext.IEditGeoService#getEditGeoServiceUrlParameterString(eu.etaxonomy.cdm.model.description.TaxonDescription, java.util.Map, int, int, java.lang.String, java.lang.String)
@@ -57,15 +83,13 @@ public class EditGeoService implements IEditGeoService{
 	public String getEditGeoServiceUrlParameterString(
 			TaxonDescription taxonDescription,
 			Map<PresenceAbsenceTermBase<?>, Color> presenceAbsenceTermColors,
-			int width, int height, String bbox, String backLayer) {
+			int width, int height, String bbox, String backLayer,
+			List<Language> langs) {
 		
-		Set<Distribution> distributions = new HashSet<Distribution>();
-		List<Distribution> result = (List)dao.getDescriptionElements(taxonDescription, getDistributionFeatures(), Distribution.class, null, null, null);
-		distributions.addAll(result);
+		List<TaxonDescription> taxonDescriptions = new ArrayList<TaxonDescription>();
+		taxonDescriptions.add(taxonDescription);
 		
-		String uriParams = EditGeoServiceUtilities.getEditGeoServiceUrlParameterString(distributions, presenceAbsenceTermColors, 0, 0, null, "tdwg4");
-
-		return uriParams;
+		return getEditGeoServiceUrlParameterString(taxonDescriptions, presenceAbsenceTermColors, width, height, bbox, backLayer, langs);
 	}
 	
 	/* (non-Javadoc)
@@ -73,7 +97,8 @@ public class EditGeoService implements IEditGeoService{
 	 */
 	public String getEditGeoServiceUrlParameterString(Taxon taxon,
 			Map<PresenceAbsenceTermBase<?>, Color> presenceAbsenceTermColors, int width, int height, String bbox,
-			String backLayer) {
+			String backLayer,
+			List<Language> langs) {
 		
 		List<TaxonDescription> taxonDescriptions = dao.getTaxonDescriptions(taxon, null, null, null, null, null);
 		
@@ -84,9 +109,11 @@ public class EditGeoService implements IEditGeoService{
 			distCollection.addAll(dists);
 		}
 		// generate the uri parameter string
-		
+		if(backLayer == null){
+			backLayer = DEFAULT_BACK_LAYER;
+		}
 		String uriParams = EditGeoServiceUtilities.getEditGeoServiceUrlParameterString(distCollection,
-			presenceAbsenceTermColors, 0, 0, null, "tdwg4");
+			presenceAbsenceTermColors, width, height, bbox, backLayer, langs);
 
 		return uriParams;
 	}	
