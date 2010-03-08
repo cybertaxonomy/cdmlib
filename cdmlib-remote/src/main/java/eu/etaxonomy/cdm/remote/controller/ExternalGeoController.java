@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.remote.controller;
 
 import java.awt.Color;
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -23,13 +24,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
+import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
+import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.database.UpdatableRoutingDataSource;
 import eu.etaxonomy.cdm.ext.IEditGeoService;
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.remote.l10n.LocaleContext;
 
 /**
  * The ExternalGeoController class is a Spring MVC Controller.
@@ -52,6 +57,8 @@ public class ExternalGeoController extends BaseController<TaxonBase, ITaxonServi
 
 	@Autowired
 	private IEditGeoService geoservice;
+	@Autowired
+	private IDescriptionService descriptionService;
 	
 	public ExternalGeoController() {
 		super();
@@ -94,8 +101,13 @@ public class ExternalGeoController extends BaseController<TaxonBase, ITaxonServi
 		Taxon taxon = getCdmBase(request, response, null, Taxon.class);
 
 		Map<PresenceAbsenceTermBase<?>, Color> presenceAbsenceTermColors = null;
-		String uriParams = geoservice.getEditGeoServiceUrlParameterString(taxon, presenceAbsenceTermColors, 0, 0, null,
-			"tdwg4");
+		//languages
+		List<Language> langs = LocaleContext.getLanguages();
+
+		Pager<TaxonDescription> page = descriptionService.getTaxonDescriptions(taxon, null, null, null, null, null);
+		List<TaxonDescription> taxonDescriptions = page.getRecords();
+		String uriParams = geoservice.getEditGeoServiceUrlParameterString(taxonDescriptions, presenceAbsenceTermColors, 0, 0, null,
+			null, langs);
 		mv.addObject(uriParams);
 		return mv;
 	}
