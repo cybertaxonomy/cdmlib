@@ -21,10 +21,12 @@ import eu.etaxonomy.cdm.io.berlinModel.out.mapper.MethodMapper;
 import eu.etaxonomy.cdm.io.common.DbExportStateBase;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 /**
  * @author e.-m.lee
@@ -175,16 +177,10 @@ public class PesiNoteSourceExport extends PesiExportBase {
 	@SuppressWarnings("unused")
 	private static Integer getNoteFk(DescriptionElementBase descriptionElement, DbExportStateBase<?> state) {
 		Integer result = state.getDbId(descriptionElement);
-		
-//		DescriptionBase description = descriptionElement.getInDescription();
-//		if (description.isInstanceOf(TaxonDescription.class)) {
-//			TaxonDescription taxonDescription = CdmBase.deproxy(description, TaxonDescription.class);
-//			result = state.getDbId(taxonDescription);
-//
-//			// Sticking to the sequence of export classes specified in the PesiExportConfigurator, the descriptions/notes are not needed anymore. Remove dbId from state hashmap.
-////			state.removeDbId(description);
-//		}
 
+		// Sticking to the sequence of export classes specified in the PesiExportConfigurator, the descriptions/notes are not needed anymore. Remove dbId from state hashmap.
+//		state.removeDbId(descriptionElement);
+		
 		return result;
 	}
 	
@@ -199,16 +195,12 @@ public class PesiNoteSourceExport extends PesiExportBase {
 	private static Integer getSourceFk(DescriptionElementBase descriptionElement, DbExportStateBase<?> state) {
 		Integer result = null;
 		DescriptionBase description = descriptionElement.getInDescription();
-		Set<ReferenceBase> references = description.getDescriptionSources();
-		for (ReferenceBase reference : references) {
-//			reference.get
+		if (description.isInstanceOf(TaxonDescription.class)) {
+			TaxonDescription taxonDescription = CdmBase.deproxy(description, TaxonDescription.class);
+			Taxon taxon = taxonDescription.getTaxon();
+			result = state.getDbId(taxon.getSec());
 		}
-//		if (description.isInstanceOf(TaxonDescription.class)) {
-//			TaxonDescription taxonDescription = CdmBase.deproxy(description, TaxonDescription.class);
-//			Taxon taxon = taxonDescription.getTaxon();
-//			result = state.getDbId(taxon);
-//		}
-		return 1;
+		return result;
 	}
 	
 	/**
