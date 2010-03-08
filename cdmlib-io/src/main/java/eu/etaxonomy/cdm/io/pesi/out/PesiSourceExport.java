@@ -148,6 +148,11 @@ public class PesiSourceExport extends PesiExportBase {
 		String sql;
 		Source destination =  pesiConfig.getDestination();
 
+		// Clear Occurrences
+		sql = "DELETE FROM Occurrence";
+		destination.setQuery(sql);
+		destination.update(sql);
+
 		// Clear Taxa
 		sql = "DELETE FROM Taxon";
 		destination.setQuery(sql);

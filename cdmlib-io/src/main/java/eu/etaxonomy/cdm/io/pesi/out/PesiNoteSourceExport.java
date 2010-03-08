@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.io.pesi.out;
 
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
@@ -21,11 +20,9 @@ import eu.etaxonomy.cdm.io.berlinModel.out.mapper.MethodMapper;
 import eu.etaxonomy.cdm.io.common.DbExportStateBase;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
-import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 /**
@@ -175,11 +172,11 @@ public class PesiNoteSourceExport extends PesiExportBase {
 	 * @see MethodMapper
 	 */
 	@SuppressWarnings("unused")
-	private static Integer getNoteFk(DescriptionElementBase descriptionElement, DbExportStateBase<?> state) {
+	private static Integer getNoteFk(DescriptionElementBase descriptionElement, PesiExportState state) {
 		Integer result = state.getDbId(descriptionElement);
 
 		// Sticking to the sequence of export classes specified in the PesiExportConfigurator, the descriptions/notes are not needed anymore. Remove dbId from state hashmap.
-//		state.removeDbId(descriptionElement);
+		state.removeDbId(descriptionElement);
 		
 		return result;
 	}
@@ -234,7 +231,7 @@ public class PesiNoteSourceExport extends PesiExportBase {
 	private PesiExportMapping getMapping() {
 		PesiExportMapping mapping = new PesiExportMapping(dbTableName);
 
-		mapping.addMapper(MethodMapper.NewInstance("NoteFk", this.getClass(), "getNoteFk", standardMethodParameter, DbExportStateBase.class));
+		mapping.addMapper(MethodMapper.NewInstance("NoteFk", this.getClass(), "getNoteFk", standardMethodParameter, PesiExportState.class));
 		mapping.addMapper(MethodMapper.NewInstance("SourceFk", this.getClass(), "getSourceFk", standardMethodParameter, DbExportStateBase.class));
 		mapping.addMapper(MethodMapper.NewInstance("SourceNameCache", this));
 		mapping.addMapper(MethodMapper.NewInstance("SourceDetail", this));

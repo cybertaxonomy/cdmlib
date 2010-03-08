@@ -17,10 +17,10 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
-import eu.etaxonomy.cdm.io.berlinModel.out.mapper.IdMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.MethodMapper;
 import eu.etaxonomy.cdm.io.common.DbExportStateBase;
 import eu.etaxonomy.cdm.io.common.Source;
+import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
@@ -30,6 +30,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 /**
+ * @author a.mueller
  * @author e.-m.lee
  * @date 02.03.2010
  *
@@ -38,11 +39,12 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 @SuppressWarnings("unchecked")
 public class PesiOccurrenceExport extends PesiExportBase {
 	private static final Logger logger = Logger.getLogger(PesiOccurrenceExport.class);
-	private static final Class<? extends CdmBase> standardMethodParameter = ReferenceBase.class;
+	private static final Class<? extends CdmBase> standardMethodParameter = AnnotatableEntity.class;
 
 	private static int modCount = 1000;
 	private static final String dbTableName = "Occurrence";
 	private static final String pluralString = "Occurrences";
+	private static final String parentPluralString = "Taxa";
 	private static Taxon taxon = null;
 
 	public PesiOccurrenceExport() {
@@ -97,10 +99,10 @@ public class PesiOccurrenceExport extends PesiExportBase {
 
 			// Start transaction
 			txStatus = startTransaction(true);
-			logger.error("Started new transaction. Fetching some " + pluralString + " (max: " + limit + ") ...");
+			logger.error("Started new transaction. Fetching some " + parentPluralString + " (max: " + limit + ") for starters ...");
 			while ((list = getTaxonService().list(null, limit, count, null, null)).size() > 0) {
 
-				logger.error("Fetched " + list.size() + " " + pluralString + ".");
+				logger.error("Fetched " + list.size() + " " + parentPluralString + ".");
 				for (TaxonBase taxonBase : list) {
 					if (taxonBase.isInstanceOf(Taxon.class)) {
 
@@ -115,11 +117,16 @@ public class PesiOccurrenceExport extends PesiExportBase {
 							Set<DescriptionElementBase> descriptionElements = taxonDescription.getElements();
 							for (DescriptionElementBase descriptionElement : descriptionElements) {
 								Set<DescriptionElementSource> elementSources = descriptionElement.getSources();
-
-								for (DescriptionElementSource elementSource : elementSources) {
-									ReferenceBase reference = elementSource.getCitation();
-									doCount(count++, modCount, pluralString);
-									success &= mapping.invoke(reference);
+								
+								// Differentiate between descriptionElements with and without sources.
+								if (elementSources.size() == 0) {
+									success &= mapping.invoke(descriptionElement);
+								} else {
+									for (DescriptionElementSource elementSource : elementSources) {
+										ReferenceBase reference = elementSource.getCitation();
+										doCount(count++, modCount, pluralString);
+										success &= mapping.invoke(reference);
+									}
 								}
 							}
 						}
@@ -181,12 +188,14 @@ public class PesiOccurrenceExport extends PesiExportBase {
 
 	/**
 	 * Returns the <code>TaxonFk</code> attribute.
-	 * @param state The {@link PesiExportState PesiExportState}.
+	 * @param state The {@link DbExportStateBase DbExportState}.
 	 * @return The <code>TaxonFk</code> attribute.
 	 * @see MethodMapper
 	 */
 	@SuppressWarnings("unused")
-	private static Integer getTaxonFk(PesiExportState state) {
+	private static Integer getTaxonFk(AnnotatableEntity reference, DbExportStateBase<?> state) {
+		// ReferenceBase parameter isn't needed, but the DbSingleAttributeExportMapperBase throws a type mismatch exception otherwise
+		// since it awaits two parameters if one of them is of instance DbExportStateBase.
 		return state.getDbId(taxon);
 	}
 
@@ -197,10 +206,10 @@ public class PesiOccurrenceExport extends PesiExportBase {
 	 * @see MethodMapper
 	 */
 	@SuppressWarnings("unused")
-	private static Integer getAreaFk(ReferenceBase<?> reference) {
+	private static Integer getAreaFk(AnnotatableEntity reference) {
 //		NamedArea area = distribution.getArea();
 //		return PesiTransformer.area2AreaId();
-		return null;
+		return 1;
 	}
 
 	/**
@@ -210,7 +219,7 @@ public class PesiOccurrenceExport extends PesiExportBase {
 	 * @see MethodMapper
 	 */
 	@SuppressWarnings("unused")
-	private static String getAreaNameCache(ReferenceBase<?> reference) {
+	private static String getAreaNameCache(AnnotatableEntity reference) {
 		// TODO
 		return null;
 	}
@@ -222,9 +231,9 @@ public class PesiOccurrenceExport extends PesiExportBase {
 	 * @see MethodMapper
 	 */
 	@SuppressWarnings("unused")
-	private static Integer getOccurrenceStatusFk(ReferenceBase<?> reference) {
+	private static Integer getOccurrenceStatusFk(AnnotatableEntity reference) {
 		// TODO
-		return null;
+		return 1;
 	}
 
 	/**
@@ -234,7 +243,7 @@ public class PesiOccurrenceExport extends PesiExportBase {
 	 * @see MethodMapper
 	 */
 	@SuppressWarnings("unused")
-	private static String getOccurrenceStatusCache(ReferenceBase<?> reference) {
+	private static String getOccurrenceStatusCache(AnnotatableEntity reference) {
 		// TODO
 		return null;
 	}
@@ -242,12 +251,12 @@ public class PesiOccurrenceExport extends PesiExportBase {
 	/**
 	 * Returns the <code>SourceFk</code> attribute.
 	 * @param reference The {@link ReferenceBase ReferenceBase}.
-	 * @param state The {@link PesiExportState PesiExportState}.
+	 * @param state The {@link DbExportStateBase DbExportState}.
 	 * @return The <code>SourceFk</code> attribute.
 	 * @see MethodMapper
 	 */
 	@SuppressWarnings("unused")
-	private static Integer getSourceFk(ReferenceBase<?> reference, DbExportStateBase<?> state) {
+	private static Integer getSourceFk(AnnotatableEntity reference, DbExportStateBase<?> state) {
 		return state.getDbId(reference);
 	}
 
@@ -258,7 +267,7 @@ public class PesiOccurrenceExport extends PesiExportBase {
 	 * @see MethodMapper
 	 */
 	@SuppressWarnings("unused")
-	private static String getSourceCache(ReferenceBase<?> reference) {
+	private static String getSourceCache(AnnotatableEntity reference) {
 		// TODO
 		return null;
 	}
@@ -270,7 +279,7 @@ public class PesiOccurrenceExport extends PesiExportBase {
 	 * @see MethodMapper
 	 */
 	@SuppressWarnings("unused")
-	private static String getNotes(ReferenceBase<?> reference) {
+	private static String getNotes(AnnotatableEntity reference) {
 		// TODO
 		return null;
 	}
@@ -283,8 +292,8 @@ public class PesiOccurrenceExport extends PesiExportBase {
 	private PesiExportMapping getMapping() {
 		PesiExportMapping mapping = new PesiExportMapping(dbTableName);
 		
-		mapping.addMapper(IdMapper.NewInstance("OccurrenceId"));
-		mapping.addMapper(MethodMapper.NewInstance("TaxonFk", this.getClass(), "getTaxonFk", DbExportStateBase.class));
+//		mapping.addMapper(IdMapper.NewInstance("OccurrenceId"));
+		mapping.addMapper(MethodMapper.NewInstance("TaxonFk", this.getClass(), "getTaxonFk", standardMethodParameter, DbExportStateBase.class));
 		mapping.addMapper(MethodMapper.NewInstance("AreaFk", this));
 		mapping.addMapper(MethodMapper.NewInstance("AreaNameCache", this));
 		mapping.addMapper(MethodMapper.NewInstance("OccurrenceStatusFk", this));
