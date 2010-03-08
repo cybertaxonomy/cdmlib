@@ -9,6 +9,8 @@
 */
 package eu.etaxonomy.cdm.io.pesi.out;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Set;
@@ -18,6 +20,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
+import eu.etaxonomy.cdm.io.berlinModel.out.BerlinModelExportState;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbObjectMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.IdMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.MethodMapper;
@@ -27,6 +30,7 @@ import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.name.NonViralName;
+import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.ITreeNode;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
@@ -78,7 +82,12 @@ public class PesiTaxonExport extends PesiExportBase {
 	protected boolean doInvoke(PesiExportState state) {
 		try {
 			logger.error("*** Started Making " + pluralString + " ...");
-	
+
+			// Prepare ParentTaxonFk-Statement
+			String parentTaxonFkSql = "UPDATE Taxon SET ParentTaxonFk = ? WHERE TaxonId = ?"; 
+			Connection con = state.getConfig().getDestination().getConnection();
+			PreparedStatement stmt = con.prepareStatement(parentTaxonFkSql);
+
 			// Get the limit for objects to save within a single transaction.
 			int limit = state.getConfig().getLimitSave();
 
@@ -103,6 +112,8 @@ public class PesiTaxonExport extends PesiExportBase {
 			TransactionStatus txStatus = null;
 			List<TaxonBase> list = null;
 
+			// 1st Round: Make Taxa
+			logger.error("PHASE 1...");
 			// Start transaction
 			txStatus = startTransaction(true);
 			logger.error("Started new transaction. Fetching some " + pluralString + " (max: " + limit + ") ...");
@@ -131,6 +142,38 @@ public class PesiTaxonExport extends PesiExportBase {
 			commitTransaction(txStatus);
 			logger.error("Committed transaction.");
 
+			count = 0;
+			pastCount = 0;
+			// 2nd Round: Add ParentTaxonFk to each Taxon
+			logger.error("PHASE 2...");
+			// Start transaction
+			txStatus = startTransaction(true);
+			logger.error("Started new transaction. Fetching some " + pluralString + " (max: " + limit + ") ...");
+			while ((list = getTaxonService().list(null, limit, count, null, null)).size() > 0) {
+
+				logger.error("Fetched " + list.size() + " " + pluralString + ". Exporting...");
+				for (TaxonBase taxonBase : list) {
+					doCount(count++, modCount, "ParentTaxonFk");
+					success &= invokeParentTaxonFk(taxonBase, state, stmt);
+				}
+
+				// Commit transaction
+				commitTransaction(txStatus);
+				logger.error("Committed transaction.");
+				logger.error("Exported " + (count - pastCount) + " " + pluralString + ". Total: " + count);
+				pastCount = count;
+
+				// Start transaction
+				txStatus = startTransaction(true);
+				logger.error("Started new transaction. Fetching some " + pluralString + " (max: " + limit + ") ...");
+			}
+			if (list.size() == 0) {
+				logger.error("No " + pluralString + " left to fetch.");
+			}
+			// Commit transaction
+			commitTransaction(txStatus);
+			logger.error("Committed transaction.");
+
 			logger.error("*** Finished Making " + pluralString + " ..." + getSuccessString(success));
 	
 			return success;
@@ -138,6 +181,36 @@ public class PesiTaxonExport extends PesiExportBase {
 			e.printStackTrace();
 			logger.error(e.getMessage());
 			return false;
+		}
+	}
+
+	/**
+	 * Updates a Taxon database record with its parentTaxonId.
+	 * @param taxonBase The {@link TaxonBase TaxonBase}.
+	 * @param state The {@link DbExportStateBase DbExportState}.
+	 * @param stmt The sql statement for this update.
+	 * @return Whether this update was successful or not.
+	 */
+	protected boolean invokeParentTaxonFk(TaxonBase taxonBase, DbExportStateBase<?> state, PreparedStatement stmt) {
+		if (taxonBase == null) {
+			return true;
+		} else {
+			Integer parentTaxonId = getParentTaxonFk(taxonBase, state);
+			if (parentTaxonId == null){
+				return true;
+			} else {
+				Integer taxonId = state.getDbId(taxonBase);
+				try {
+					stmt.setInt(1, parentTaxonId);
+					stmt.setInt(2, taxonId);
+					stmt.executeUpdate();
+					return true;
+				} catch (SQLException e) {
+					logger.error("SQLException during parenTaxonFk invoke for taxon " + taxonBase.getTitleCache() + ": " + e.getMessage());
+					e.printStackTrace();
+					return false;
+				}
+			}
 		}
 	}
 
@@ -459,16 +532,14 @@ public class PesiTaxonExport extends PesiExportBase {
 		Taxon taxon = null;
 		if (taxonBase.isInstanceOf(Synonym.class)) {
 			Synonym synonym = (Synonym)taxonBase;
-			Set<SynonymRelationship> rels = synonym.getSynonymRelations();
-			//check size == 1
-			if (rels.size() == 1) {
-				taxon = rels.iterator().next().getAcceptedTaxon();
+			Set<SynonymRelationship> relations = synonym.getSynonymRelations();
+			if (relations.size() == 1) {
+				taxon = relations.iterator().next().getAcceptedTaxon();
 			}
 		} else {
 			taxon = CdmBase.deproxy(taxonBase, Taxon.class);
 		}
 		if (taxon != null) {
-			//check size ==1
 			Set<TaxonNode> taxonNodes = taxon.getTaxonNodes();
 			if (taxonNodes.size() == 1) {
 				TaxonNode taxonNode = taxon.getTaxonNodes().iterator().next();
@@ -673,7 +744,7 @@ public class PesiTaxonExport extends PesiExportBase {
 		mapping.addMapper(MethodMapper.NewInstance("NameStatusCache", this));
 		mapping.addMapper(MethodMapper.NewInstance("TaxonStatusFk", this));
 		mapping.addMapper(MethodMapper.NewInstance("TaxonStatusCache", this));
-		mapping.addMapper(MethodMapper.NewInstance("ParentTaxonFk", this.getClass(), "getParentTaxonFk", standardMethodParameter, DbExportStateBase.class));
+//		mapping.addMapper(MethodMapper.NewInstance("ParentTaxonFk", this.getClass(), "getParentTaxonFk", standardMethodParameter, DbExportStateBase.class));
 		mapping.addMapper(MethodMapper.NewInstance("TypeNameFk", this));
 		mapping.addMapper(MethodMapper.NewInstance("TypeFullnameCache", this));
 		mapping.addMapper(MethodMapper.NewInstance("QualityStatusFk", this));
