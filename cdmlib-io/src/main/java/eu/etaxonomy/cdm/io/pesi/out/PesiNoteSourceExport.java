@@ -167,7 +167,7 @@ public class PesiNoteSourceExport extends PesiExportBase {
 	/**
 	 * Returns the <code>NoteFk</code> attribute.
 	 * @param description The {@link TaxonDescription TaxonDescription}.
-	 * @param state The {@link DbExportStateBase DbExportState}.
+	 * @param state The {@link PesiExportState PesiExportState}.
 	 * @return The <code>NoteFk</code> attribute.
 	 * @see MethodMapper
 	 */
