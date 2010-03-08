@@ -674,7 +674,7 @@ public static final WaterbodyOrCountry AFGHANISTAN(){
 		String [] line = new String[6];
 		line[0] = getUuid().toString();
 		line[1] = getUri();
-		line[2] = getLabel(Language.ENGLISH());
+		line[2] = getLabel(Language.CSV_LANGUAGE());
 		line[3] = getDescription();
 		line[4] = this.getIso3166_A2().toString();
 		line[5] = this.getContinents().toString();

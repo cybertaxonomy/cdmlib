@@ -218,7 +218,7 @@ public abstract class RelationshipTermBase<T extends RelationshipTermBase> exten
 		String inverseText = csvLine.get(5).trim();
 		String inverseLabel = csvLine.get(4).trim();
 		String inverseLabelAbbrev = null;
-		newInstance.addInverseRepresentation(new Representation(inverseText, inverseLabel, inverseLabelAbbrev, Language.ENGLISH()) );
+		newInstance.addInverseRepresentation(new Representation(inverseText, inverseLabel, inverseLabelAbbrev, Language.CSV_LANGUAGE()) );
 		newInstance.setSymmetric(Boolean.parseBoolean(csvLine.get(6)));
 		newInstance.setTransitive(Boolean.parseBoolean(csvLine.get(7)));
 		return newInstance;
