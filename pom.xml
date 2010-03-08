@@ -20,6 +20,7 @@
 		<module>cdmlib-services</module>
 		<module>cdmlib-ext</module>
 		<module>cdmlib-remote</module>
+<!--    <module>cdm-server</module> -->
 		<module>cdmlib-io</module>
 	</modules>
   
@@ -270,9 +271,9 @@
 		        <artifactId>maven-surefire-plugin</artifactId>
 		        <configuration>
 		          <argLine>-Xmx512M</argLine>
-				  <includes>
-		            <include>**/*Test.java</include>
-		          </includes>
+            <includes>
+	            <include>**/*Test.java</include>
+	          </includes>
 	        	<systemProperties>
 	        		<property>
 	        			<name>hibernate.connection.driver_class</name>
@@ -290,11 +291,27 @@
 	        			<name>hibernate.connection.password</name>
 	        			<value>${hibernate.connection.password}</value>
 	        		</property>
-					
 	        	</systemProperties>
 	         </configuration>
-  	        </plugin>
-			<plugin>
+  	      </plugin>
+       <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>buildnumber-maven-plugin</artifactId>
+        <version>1.0-beta-3</version>
+        <executions>
+          <execution>
+            <phase>validate</phase>
+            <goals>
+              <goal>create</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <doCheck>true</doCheck><!-- Only create the build number if there are no local modifications -->
+          <doUpdate>false</doUpdate><!-- automatically update the local svn copy -->
+        </configuration>
+      </plugin>
+       <plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-site-plugin</artifactId>
 				<!-- 
@@ -336,7 +353,7 @@
 					<downloadJavadocs>true</downloadJavadocs>	
 				</configuration>
 			</plugin>
-                  <plugin>
+      <plugin>
 				<groupId>com.agilejava.docbkx</groupId>
 				<artifactId>docbkx-maven-plugin</artifactId>
 				<version>2.0.9</version>
@@ -363,18 +380,18 @@
 					<htmlStylesheet>resources/css/html.css</htmlStylesheet>
 					<xincludeSupported>true</xincludeSupported>
 					<!--<htmlCustomization>src/docbkx/resources/xsl/html_chunk.xsl</htmlCustomization>-->
-                              <!-- if anyone can get the xsl-fo customization to work properly, then by all 
-                                   means use it
-                                <foCustomization>src/docbkx/resources/xsl/fopdf.xsl</foCustomization>
-                              -->
+          <!-- if anyone can get the xsl-fo customization to work properly, then by all 
+               means use it
+            <foCustomization>src/docbkx/resources/xsl/fopdf.xsl</foCustomization>
+          -->
 					<entities>
 						<entity>
 							<name>version</name>
 							<value>${pom.version}</value>
 						</entity>
 					</entities>
-                              <!--We want the final documentation and the required resources to end up in 
-                                  the right place-->
+          <!--We want the final documentation and the required resources to end up in 
+              the right place-->
 					<postProcess>
 						<copy todir="target/site/reference">
 							<fileset dir="target/docbkx">
