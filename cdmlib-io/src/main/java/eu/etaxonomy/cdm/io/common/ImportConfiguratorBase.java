@@ -67,7 +67,6 @@ public abstract class ImportConfiguratorBase<STATE extends ImportStateBase> exte
 	private ICdmDataSource destination;
 	private Person commentator =  Person.NewTitledInstance("automatic CDM importer");
 	
-	private Language factLanguage = Language.ENGLISH();
 	protected Class<ICdmIO>[] ioClassList;
 	
 	protected ICdmIO[] ioList;
@@ -266,23 +265,6 @@ public abstract class ImportConfiguratorBase<STATE extends ImportStateBase> exte
 	public void setCommentator(Person commentator) {
 		this.commentator = commentator;
 	}
-
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.tcsrdf.IImportConfigurator#getFactLanguage()
-	 */
-	public Language getFactLanguage() {
-		return factLanguage;
-	}
-
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.tcsrdf.IImportConfigurator#setFactLanguage(eu.etaxonomy.cdm.model.common.Language)
-	 */
-	public void setFactLanguage(Language factLanguage) {
-		this.factLanguage = factLanguage;
-	}
-
 
 	/**
 	 * @return the nomenclaturalCode

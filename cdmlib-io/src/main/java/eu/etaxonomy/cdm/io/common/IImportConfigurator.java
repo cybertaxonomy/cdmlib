@@ -199,10 +199,6 @@ public interface IImportConfigurator extends IIoConfigurator {
 	public Person getCommentator();
 
 	public void setCommentator(Person commentator);
-
-	public Language getFactLanguage();
-
-	public void setFactLanguage(Language factLanguage);
 	
 	public NomenclaturalCode getNomenclaturalCode();
 	
