@@ -44,24 +44,44 @@ public class CdmMetaData extends CdmBase{
 	 */
 	private static final String dbSchemaVersion = "2.1.2.2.200909301715";
 	
+	/**
+	 * The version number for the terms loaded by the termloader (csv-files)
+	 * It is recommended to have the first two numbers equal to the CDM Library version number.
+	 * But it is not obligatory as there may be cases when the library number changes but the
+	 * schema version is not changing.
+	 * The third should be incremented if the terms change in a way that is not compatible
+	 * to the previous version (e.g. by changing the type of a term)
+	 * The fourth number shoud be incremented when compatible term changes take place
+	 * (e.g. when new terms were added)
+	 * The last number represents the date of change.
+	 */
+	private static final String termsVersion = "2.1.2.3.201003091500";
+	
+	
 	public enum MetaDataPropertyName{
-		DB_SCHEMA_VERSION
+		DB_SCHEMA_VERSION,
+		TERMS_VERSION
 	}
 	
 	private MetaDataPropertyName propertyName;
 	private String value;
 	
+
 	
-	public static String getSchemaVersion() {
-		return dbSchemaVersion;
-	}
-	
+	/**
+	 * Method to retrieve a CDM Libraries meta data
+	 * @return
+	 */
 	public static final List<CdmMetaData> propertyList(){
 		List<CdmMetaData> result = new ArrayList<CdmMetaData>();
 		result.add(new CdmMetaData(MetaDataPropertyName.DB_SCHEMA_VERSION, dbSchemaVersion));
+		result.add(new CdmMetaData(MetaDataPropertyName.TERMS_VERSION, termsVersion));
 		return result;
 	}
+
+//********************* Constructor *********************************************/	
 	
+	//for hibernate only
 	private CdmMetaData() {
 		super();
 	}
@@ -73,6 +93,8 @@ public class CdmMetaData extends CdmBase{
 		this.value = value;
 	}
 
+//****************** instance methods ****************************************/	
+	
 	/**
 	 * @return the propertyName
 	 */
@@ -101,8 +123,11 @@ public class CdmMetaData extends CdmBase{
 		this.value = value;
 	}
 	
-//************************ SCHEMA VERSION METHODS ************************/
+//************************ STATIC SCHEMA VERSION METHODS ************************/
 	
+	public static String getCurrentSchemaVersion() {
+		return dbSchemaVersion;
+	}
 
 	/**
 	 * Gets the first i parts of the current CdmLibrary schema version.
@@ -111,7 +136,7 @@ public class CdmMetaData extends CdmBase{
 	 */
 	public static String getCurrentSchemaVersion(int i) {
 		// Get current schema version
-		String schemaVersion = CdmMetaData.getSchemaVersion();
+		String schemaVersion = CdmMetaData.getCurrentSchemaVersion();
 		return getVersion(schemaVersion, i);
 	}
 
@@ -125,6 +150,36 @@ public class CdmMetaData extends CdmBase{
 		String schemaVersion = cdmMetaDataFromDatabase.get(MetaDataPropertyName.DB_SCHEMA_VERSION).getValue();
 		return getVersion(schemaVersion, i);
 	}
+	
+//************************ STATIC TERMS VERSION METHODS ************************/
+	public static String getCurrentTermsVersion() {
+		return dbSchemaVersion;
+	}
+
+	/**
+	 * Gets the first i parts of the current CdmLibrary terms version.
+	 * @param allCommonData
+	 * @return current schema version.
+	 */
+	public static String getCurrentTermsVersion(int i) {
+		// Get current schema version
+		String schemaVersion = CdmMetaData.getCurrentTermsVersion();
+		return getVersion(schemaVersion, i);
+	}
+
+	/**
+	 * Gets the first i parts of the passed database schema version.
+	 * @param allCommonData
+	 * @return database schema version.
+	 */
+	public static String getDatabaseTermsVersion(Map<MetaDataPropertyName, CdmMetaData> cdmMetaDataFromDatabase, int i) {
+		// Get database schema version
+		String termsVersion = cdmMetaDataFromDatabase.get(MetaDataPropertyName.TERMS_VERSION).getValue();
+		return getVersion(termsVersion, i);
+	}
+	
+	
+//************************ helping methods ************************/
 
 	/**
 	 * @param versionProperty
