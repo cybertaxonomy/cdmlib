@@ -266,19 +266,24 @@ public class CommonServiceImpl extends ServiceBase<OriginalSourceBase,IOriginalS
 	}
 
 	/**
-	 * Checks whether the current database schema is compatible with the editor version.
+	 * Checks whether the current database schema is compatible with the CDM Library 
+	 * version by checking the first 3(??) numbers of the schema version
+	 * .
 	 * @throws DatabaseSchemaMismatchException
 	 */
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.api.service.ICommonService#isDatabaseSchemaCompatible()
+	 */
 	public boolean isDatabaseSchemaCompatible() {
-
+		int index = 2;  //TODO probably 3 is the better
 		Map<MetaDataPropertyName, CdmMetaData> allCommonData = getCdmMetaData();
 
 		if (allCommonData.containsKey(MetaDataPropertyName.DB_SCHEMA_VERSION)) {
 			
-			String currentSchemaVersion = getCurrentSchemaVersion(allCommonData);
-			String databaseSchemaVersion = getDatabaseSchemaVersion(allCommonData);
+			String currentSchemaVersionPrefix = CdmMetaData.getCurrentSchemaVersion(index);
+			String databaseSchemaVersionPrefix = CdmMetaData.getDatabaseSchemaVersion(allCommonData, index);
 			
-			if (areStringsEqual(currentSchemaVersion, databaseSchemaVersion)) {
+			if (areStringsEqual(currentSchemaVersionPrefix, databaseSchemaVersionPrefix)) {
 				return true;
 			}
 		}
@@ -296,52 +301,5 @@ public class CommonServiceImpl extends ServiceBase<OriginalSourceBase,IOriginalS
 		return first.equals(second);
 	}
 
-	/**
-	 * Gets the database schema version.
-	 * @param allCommonData
-	 * @return database schema version.
-	 */
-	private String getDatabaseSchemaVersion(
-			Map<MetaDataPropertyName, CdmMetaData> allCommonData) {
-		// Get database schema version
-		CdmMetaData metaData = allCommonData.get(MetaDataPropertyName.DB_SCHEMA_VERSION);
-		String versionProperty = metaData.getMetaDataPropertyName();
-		String databaseSchemaVersion = getVersion(versionProperty);
-		return databaseSchemaVersion;
-	}
-
-	/**
-	 * Gets the current schema version.
-	 * @param allCommonData
-	 * @return Current schema version.
-	 */
-	private String getCurrentSchemaVersion(
-			Map<MetaDataPropertyName, CdmMetaData> allCommonData) {
-		// Get current schema version
-		String versionProperty = allCommonData.get(MetaDataPropertyName.DB_SCHEMA_VERSION).getValue();
-		String currentSchemaVersion = getVersion(versionProperty);
-		return currentSchemaVersion;
-	}
-
-	/**
-	 * @param versionProperty
-	 * @return Version number as string.
-	 */
-	private String getVersion(String versionProperty) {
-		return versionProperty.substring(0, secondIndexOf(versionProperty, ".", 2));
-	}
-
-	/**
-	 * Calculates the n-th occurrence of a string.
-	 * @param versionProperty
-	 * @return Index of N-th occurence of a string.
-	 */
-	private int secondIndexOf(String versionProperty, String pattern, int occurence) {
-		int currentIndex = -1;
-		for (int i=0; i<occurence; i++) {
-			currentIndex = versionProperty.indexOf(pattern, currentIndex + 1);
-		}
-		return currentIndex;
-	}
 	
 }
