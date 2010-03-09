@@ -12,6 +12,9 @@ package eu.etaxonomy.cdm.model.common;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
+import eu.etaxonomy.cdm.model.common.CdmBase;
 
 import javax.persistence.Entity;
 
@@ -49,6 +52,10 @@ public class CdmMetaData extends CdmBase{
 	private String value;
 	
 	
+	public static String getSchemaVersion() {
+		return dbSchemaVersion;
+	}
+	
 	public static final List<CdmMetaData> propertyList(){
 		List<CdmMetaData> result = new ArrayList<CdmMetaData>();
 		result.add(new CdmMetaData(MetaDataPropertyName.DB_SCHEMA_VERSION, dbSchemaVersion));
@@ -58,10 +65,7 @@ public class CdmMetaData extends CdmBase{
 	private CdmMetaData() {
 		super();
 	}
-	
-	public String getMetaDataPropertyName() {
-		return dbSchemaVersion;
-	}
+
 
 	public CdmMetaData(MetaDataPropertyName propertyName, String value) {
 		super();
@@ -95,6 +99,52 @@ public class CdmMetaData extends CdmBase{
 	 */
 	public void setValue(String value) {
 		this.value = value;
+	}
+	
+//************************ SCHEMA VERSION METHODS ************************/
+	
+
+	/**
+	 * Gets the first i parts of the current CdmLibrary schema version.
+	 * @param allCommonData
+	 * @return current schema version.
+	 */
+	public static String getCurrentSchemaVersion(int i) {
+		// Get current schema version
+		String schemaVersion = CdmMetaData.getSchemaVersion();
+		return getVersion(schemaVersion, i);
+	}
+
+	/**
+	 * Gets the first i parts of the passed database schema version.
+	 * @param allCommonData
+	 * @return database schema version.
+	 */
+	public static String getDatabaseSchemaVersion(Map<MetaDataPropertyName, CdmMetaData> cdmMetaDataFromDatabase, int i) {
+		// Get database schema version
+		String schemaVersion = cdmMetaDataFromDatabase.get(MetaDataPropertyName.DB_SCHEMA_VERSION).getValue();
+		return getVersion(schemaVersion, i);
+	}
+
+	/**
+	 * @param versionProperty
+	 * @return Version number as string.
+	 */
+	private static String getVersion(String versionProperty, int i) {
+		return versionProperty.substring(0, nthIndexOf(versionProperty, ".", i));
+	}
+
+	/**
+	 * Calculates the n-th occurrence of a string.
+	 * @param versionProperty
+	 * @return Index of N-th occurence of a string.
+	 */
+	private static int nthIndexOf(String versionProperty, String pattern, int n) {
+		int currentIndex = -1;
+		for (int i=0; i<n; i++) {
+			currentIndex = versionProperty.indexOf(pattern, currentIndex + 1);
+		}
+		return currentIndex;
 	}
 
 	
