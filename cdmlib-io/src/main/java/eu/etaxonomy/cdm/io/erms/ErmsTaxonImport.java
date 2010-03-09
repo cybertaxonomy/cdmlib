@@ -55,7 +55,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  * @version 1.0
  */
 @Component
-public class ErmsTaxonImport  extends ErmsImportBase<TaxonBase> implements ICheckIgnoreMapper, IDbImportTransformed {
+public class ErmsTaxonImport  extends ErmsImportBase<TaxonBase> {
 	private static final Logger logger = Logger.getLogger(ErmsTaxonImport.class);
 
 	public static final String TAXON_NAMESPACE = "Taxon";
@@ -125,13 +125,13 @@ public class ErmsTaxonImport  extends ErmsImportBase<TaxonBase> implements IChec
 			mapping.addMapper(DbNotYetImplementedMapper.NewInstance("tu_sp"));  //included in object creation
 			mapping.addMapper(DbIgnoreMapper.NewInstance("cache_citation"));
 			
-			//second path
-			DbImportMapping secondPathMapping = new DbImportMapping();
-			secondPathMapping.addMapper(DbImportTaxIncludedInMapper.NewInstance("id", "tu_parent", TAXON_NAMESPACE, null)); //there is only one tree
-			secondPathMapping.addMapper(DbImportSynonymMapper.NewInstance("id", "tu_acctaxon", TAXON_NAMESPACE, null)); 			
-			secondPathMapping.addMapper(DbImportNameTypeDesignationMapper.NewInstance("id", "tu_typetaxon", NAME_NAMESPACE, "tu_typedesignationstatus"));
-			secondPathMapping.addMapper(DbNotYetImplementedMapper.NewInstance("tu_acctaxon"));
-			mapping.setSecondPathMapping(secondPathMapping);
+//			//second path
+//			DbImportMapping secondPathMapping = new DbImportMapping();
+//			secondPathMapping.addMapper(DbImportTaxIncludedInMapper.NewInstance("id", "tu_parent", TAXON_NAMESPACE, null)); //there is only one tree
+//			secondPathMapping.addMapper(DbImportSynonymMapper.NewInstance("id", "tu_acctaxon", TAXON_NAMESPACE, null)); 			
+//			secondPathMapping.addMapper(DbImportNameTypeDesignationMapper.NewInstance("id", "tu_typetaxon", NAME_NAMESPACE, "tu_typedesignationstatus"));
+//			secondPathMapping.addMapper(DbNotYetImplementedMapper.NewInstance("tu_acctaxon"));
+//			mapping.setSecondPathMapping(secondPathMapping);
 			
 		}
 		return mapping;
@@ -150,24 +150,24 @@ public class ErmsTaxonImport  extends ErmsImportBase<TaxonBase> implements IChec
 	}
 	
 
-	/**
-	 * @param config
-	 * @return
-	 */
-	private String getSecondPathRecordQuery(ErmsImportConfigurator config) {
-		//TODO get automatic by second path mappers
-		String selectAttributes = "id, tu_parent, tu_typetaxon, tu_typetaxon, tu_typedesignation, tu_acctaxon, tu_status"; 
-		String strRecordQuery = 
-			" SELECT  " + selectAttributes + 
-			" FROM tu " +
-			" WHERE ( tu.id IN (" + ID_LIST_TOKEN + ") )";
-		return strRecordQuery;
-	}
+//	/**
+//	 * @param config
+//	 * @return
+//	 */
+//	private String getSecondPathRecordQuery(ErmsImportConfigurator config) {
+//		//TODO get automatic by second path mappers
+//		String selectAttributes = "id, tu_parent, tu_typetaxon, tu_typetaxon, tu_typedesignation, tu_acctaxon, tu_status"; 
+//		String strRecordQuery = 
+//			" SELECT  " + selectAttributes + 
+//			" FROM tu " +
+//			" WHERE ( tu.id IN (" + ID_LIST_TOKEN + ") )";
+//		return strRecordQuery;
+//	}
 
 
-	private String getSecondPathIdQuery(){
-		return getIdQuery();
-	}
+//	private String getSecondPathIdQuery(){
+//		return getIdQuery();
+//	}
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.erms.ErmsImportBase#doInvoke(eu.etaxonomy.cdm.io.erms.ErmsImportState)
@@ -177,28 +177,28 @@ public class ErmsTaxonImport  extends ErmsImportBase<TaxonBase> implements IChec
 		//first path
 		boolean success = super.doInvoke(state);
 		
-		//second path
-		isSecondPath = true;
-		ErmsImportConfigurator config = state.getConfig();
-		Source source = config.getSource();
-			
-		String strIdQuery = getSecondPathIdQuery();
-		String strRecordQuery = getSecondPathRecordQuery(config);
-
-		int recordsPerTransaction = config.getRecordsPerTransaction();
-		try{
-			ResultSetPartitioner partitioner = ResultSetPartitioner.NewInstance(source, strIdQuery, strRecordQuery, recordsPerTransaction);
-			while (partitioner.nextPartition()){
-				partitioner.doPartition(this, state);
-			}
-		} catch (SQLException e) {
-			logger.error("SQLException:" +  e);
-			return false;
-		}
-		
-		isSecondPath = false;
-
-		logger.info("end make " + getPluralString() + " ... " + getSuccessString(success));
+//		//second path
+//		isSecondPath = true;
+//		ErmsImportConfigurator config = state.getConfig();
+//		Source source = config.getSource();
+//			
+//		String strIdQuery = getSecondPathIdQuery();
+//		String strRecordQuery = getSecondPathRecordQuery(config);
+//
+//		int recordsPerTransaction = config.getRecordsPerTransaction();
+//		try{
+//			ResultSetPartitioner partitioner = ResultSetPartitioner.NewInstance(source, strIdQuery, strRecordQuery, recordsPerTransaction);
+//			while (partitioner.nextPartition()){
+//				partitioner.doPartition(this, state);
+//			}
+//		} catch (SQLException e) {
+//			logger.error("SQLException:" +  e);
+//			return false;
+//		}
+//		
+//		isSecondPath = false;
+//
+//		logger.info("end make " + getPluralString() + " ... " + getSuccessString(success));
 		return success;
 
 	}
@@ -244,43 +244,12 @@ public class ErmsTaxonImport  extends ErmsImportBase<TaxonBase> implements IChec
 		Map<Object, Map<String, ? extends CdmBase>> result = new HashMap<Object, Map<String, ? extends CdmBase>>();
 		
 		try{
-			if (isSecondPath){
-				Set<String> taxonIdSet = new HashSet<String>();
-				Set<String> nameIdSet = new HashSet<String>();
-				while (rs.next()){
-					handleForeignKey(rs, taxonIdSet, "tu_parent");
-					handleForeignKey(rs, nameIdSet, "tu_typetaxon");
-					handleForeignKey(rs, taxonIdSet, "tu_acctaxon");					
-				}
-				
-				//name map
-				nameSpace = ErmsTaxonImport.NAME_NAMESPACE;
-				cdmClass = TaxonNameBase.class;
-				idSet = nameIdSet;
-				Map<String, TaxonNameBase> nameMap = (Map<String, TaxonNameBase>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
-				result.put(nameSpace, nameMap);
-				
-				
-				//taxon map
-				nameSpace = ErmsTaxonImport.TAXON_NAMESPACE;
-				cdmClass = TaxonBase.class;
-				idSet = taxonIdSet;
-				Map<String, TaxonBase> taxonMap = (Map<String, TaxonBase>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
-				result.put(nameSpace, taxonMap);
-				
-				
-				
-			}else{
-			
 				Set<String> nameIdSet = new HashSet<String>();
 				Set<String> referenceIdSet = new HashSet<String>();
 				while (rs.next()){
 	//				handleForeignKey(rs, nameIdSet, "PTNameFk");
 	//				handleForeignKey(rs, referenceIdSet, "PTRefFk");
 				}
-			}
-			
-
 
 			//reference map
 //			nameSpace = "Reference";
@@ -372,40 +341,8 @@ public class ErmsTaxonImport  extends ErmsImportBase<TaxonBase> implements IChec
 		}
 		return result;
 	}
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.erms.ICheckIgnoreMapper#checkIgnoreMapper(eu.etaxonomy.cdm.io.common.mapping.IDbImportMapper, java.sql.ResultSet)
-	 */
-	public boolean checkIgnoreMapper(IDbImportMapper mapper, ResultSet rs) throws SQLException{
-		boolean result = false;
-		if (mapper instanceof DbImportTaxIncludedInMapper){
-			int tu_status = rs.getInt("tu_status");
-			if (tu_status != 1){
-				result = true;
-			}
-		}else if (mapper instanceof DbImportSynonymMapper){
-			int tu_status = rs.getInt("tu_status");
-			if (tu_status == 1){
-				result = true;
-			}
-		}else if (mapper instanceof DbImportNameTypeDesignationMapper){
-			Object tu_typeTaxon = rs.getObject("tu_typetaxon");
-			if (tu_typeTaxon == null){
-				return true;
-			}
-		}
-		return result;
-	}
-	
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.mapping.ITransformed#getTransformer()
-	 */
-	public IDbImportTransformer getTransformer() {
-		//TODO class variable
-		return new ErmsTransformer();
-	}
-
+	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doCheck(eu.etaxonomy.cdm.io.common.IImportConfigurator)
 	 */

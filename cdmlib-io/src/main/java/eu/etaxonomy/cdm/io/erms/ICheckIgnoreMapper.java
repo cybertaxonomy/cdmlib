@@ -14,7 +14,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import eu.etaxonomy.cdm.io.common.mapping.IDbImportMapper;
-import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
  * @author a.mueller

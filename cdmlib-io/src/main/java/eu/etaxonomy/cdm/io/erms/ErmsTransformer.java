@@ -68,7 +68,7 @@ public final class ErmsTransformer implements IDbImportTransformer{
 		}
 	}
 
-	public Language languageByErmsAbbrev(String ermsAbbrev){
+	public static Language languageByErmsAbbrev(String ermsAbbrev){
 		if (CdmUtils.isEmpty(ermsAbbrev)){return null;
 		}else if (ermsAbbrev.equals("af")){return Language.AFRIKAANS();
 		}else if (ermsAbbrev.equals("al")){return Language.ALEUT();

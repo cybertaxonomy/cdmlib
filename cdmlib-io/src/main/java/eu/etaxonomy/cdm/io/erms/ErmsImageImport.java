@@ -19,20 +19,19 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
-import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.IOValidator;
 import eu.etaxonomy.cdm.io.common.ResultSetPartitioner;
-import eu.etaxonomy.cdm.io.common.mapping.DbImportAnnotationMapper;
+import eu.etaxonomy.cdm.io.common.mapping.DbImportExtensionMapper;
+import eu.etaxonomy.cdm.io.common.mapping.DbImportImageGalleryMapper;
 import eu.etaxonomy.cdm.io.common.mapping.DbImportMapping;
 import eu.etaxonomy.cdm.io.common.mapping.DbImportObjectCreationMapper;
-import eu.etaxonomy.cdm.io.common.mapping.DbImportObjectMapper;
-import eu.etaxonomy.cdm.io.common.mapping.DbImportStringMapper;
+import eu.etaxonomy.cdm.io.common.mapping.DbNotYetImplementedMapper;
+import eu.etaxonomy.cdm.io.erms.validation.ErmsImageImportValidator;
 import eu.etaxonomy.cdm.io.erms.validation.ErmsReferenceImportValidator;
-import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 
@@ -42,23 +41,36 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  * @version 1.0
  */
 @Component
-public class ErmsVernacularImport  extends ErmsImportBase<CommonTaxonName> {
+public class ErmsImageImport  extends ErmsImportBase<TaxonBase> {
 
-	private static final Logger logger = Logger.getLogger(ErmsVernacularImport.class);
+	private static final Logger logger = Logger.getLogger(ErmsImageImport.class);
 
-	private static final String VERNACULAR_NAMESPACE = "Vernaculars";
-	private static final String LANGUAGE_NAMESPACE = "Language";
+	private static final String IMAGE_NAMESPACE = "Images";
 	
 	private DbImportMapping mapping;
 	
 	
 	private int modCount = 10000;
-	private static final String pluralString = "vernaculars";
-	private String dbTableName = "vernaculars";
-	private Class cdmTargetClass = CommonTaxonName.class;
+	private static final String pluralString = "images";
+	private String dbTableName = "images";
+	//TODO needed?
+	private Class cdmTargetClass = Media.class;
 
-	public ErmsVernacularImport(){
+	public ErmsImageImport(){
 		super();
+	}
+
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.erms.ErmsImportBase#getIdQuery()
+	 */
+	@Override
+	protected String getIdQuery() {
+		String strIdQuery = 
+			" SELECT tu_id " + 
+			" FROM images " + 
+			" ORDER BY tu_id, img_thumb, img_url ";
+		return strIdQuery;
 	}
 
 
@@ -67,10 +79,11 @@ public class ErmsVernacularImport  extends ErmsImportBase<CommonTaxonName> {
 	 */
 	@Override
 	protected String getRecordQuery(ErmsImportConfigurator config) {
+		//FIXME tripleId(or doppel id weil kein eindeutiger Schlüssel
 		String strRecordQuery = 
 			" SELECT * " + 
-			" FROM vernaculars " +
-			" WHERE ( vernaculars.id IN (" + ID_LIST_TOKEN + ") )";
+			" FROM images " +
+			" WHERE ( images.tu_id IN (" + ID_LIST_TOKEN + ") )";
 		return strRecordQuery;
 	}
 
@@ -80,11 +93,11 @@ public class ErmsVernacularImport  extends ErmsImportBase<CommonTaxonName> {
 	private DbImportMapping getMapping() {
 		if (mapping == null){
 			mapping = new DbImportMapping();
-			
-			mapping.addMapper(DbImportObjectCreationMapper.NewInstance(this, "id", VERNACULAR_NAMESPACE)); //id
-			mapping.addMapper(DbImportObjectMapper.NewInstance("lan_id", "language", LANGUAGE_NAMESPACE));
-			mapping.addMapper(DbImportStringMapper.NewInstance("vername", "name"));
-			mapping.addMapper(DbImportAnnotationMapper.NewInstance("note", AnnotationType.EDITORIAL(), Language.DEFAULT()));
+			//TODO do we need to add to TaxonNameBase too?
+			mapping.addMapper(DbImportObjectCreationMapper.NewInstance(this, "tu_id", IMAGE_NAMESPACE)); //id
+			//TODO put into one media
+			mapping.addMapper(DbImportImageGalleryMapper.NewInstance("img_url"));
+			mapping.addMapper(DbImportImageGalleryMapper.NewInstance("img_thumb"));
 		}
 		return mapping;
 	}
@@ -117,14 +130,13 @@ public class ErmsVernacularImport  extends ErmsImportBase<CommonTaxonName> {
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.mapping.IMappingImport#createObject(java.sql.ResultSet, eu.etaxonomy.cdm.io.common.ImportStateBase)
 	 */
-	public CommonTaxonName createObject(ResultSet rs, ErmsImportState state)
-			throws SQLException {
-		CommonTaxonName commonName = CommonTaxonName.NewInstance(null, null);
-//		String languageId = rs.getString("lan_id");
-//		String verName = rs.getString("vername");
-//		Language language = (Language)state.getRelatedObject(LANGUAGE_NAMESPACE, languageId);
-//		CommonTaxonName commonName = CommonTaxonName.NewInstance(verName, language);
-		return commonName;
+	public TaxonBase createObject(ResultSet rs, ErmsImportState state)throws SQLException {
+		TaxonBase result = null;
+		Integer tu_id = rs.getInt("tu_id");
+		if (tu_id != null){
+			result = (TaxonBase)state.getRelatedObject(ErmsTaxonImport.TAXON_NAMESPACE, String.valueOf(tu_id));		
+		}
+		return result;
 	}
 
 	/* (non-Javadoc)
@@ -141,7 +153,6 @@ public class ErmsVernacularImport  extends ErmsImportBase<CommonTaxonName> {
 			Set<String> languageIdSet = new HashSet<String>();
 			while (rs.next()){
 				handleForeignKey(rs, taxonIdSet, "tu_id");
-				handleForeignKey(rs, languageIdSet, "lan_id");
 			}
 			
 			//taxon map
@@ -150,15 +161,6 @@ public class ErmsVernacularImport  extends ErmsImportBase<CommonTaxonName> {
 			idSet = taxonIdSet;
 			Map<String, TaxonBase> taxonMap = (Map<String, TaxonBase>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
 			result.put(nameSpace, taxonMap);
-			
-			//language map
-			nameSpace = LANGUAGE_NAMESPACE;
-			Map<String, Language> languageMap = new HashMap<String, Language>();
-			for (String lanAbbrev: languageIdSet){
-				Language language = ErmsTransformer.languageByErmsAbbrev(lanAbbrev);
-				languageMap.put(lanAbbrev, language);
-			}
-			result.put(nameSpace, languageMap);
 			
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
@@ -171,7 +173,7 @@ public class ErmsVernacularImport  extends ErmsImportBase<CommonTaxonName> {
 	 */
 	@Override
 	protected boolean doCheck(ErmsImportState state){
-		IOValidator<ErmsImportState> validator = new ErmsReferenceImportValidator();
+		IOValidator<ErmsImportState> validator = new ErmsImageImportValidator();
 		return validator.validate(state);
 	}
 	
@@ -196,7 +198,7 @@ public class ErmsVernacularImport  extends ErmsImportBase<CommonTaxonName> {
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)
 	 */
 	protected boolean isIgnore(ErmsImportState state){
-		return ! state.getConfig().isDoVernaculars();
+		return ! state.getConfig().isDoImages();
 	}
 
 

@@ -19,7 +19,6 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
-import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.IOValidator;
 import eu.etaxonomy.cdm.io.common.ResultSetPartitioner;
 import eu.etaxonomy.cdm.io.common.mapping.DbImportAnnotationMapper;
@@ -27,12 +26,13 @@ import eu.etaxonomy.cdm.io.common.mapping.DbImportMapping;
 import eu.etaxonomy.cdm.io.common.mapping.DbImportObjectCreationMapper;
 import eu.etaxonomy.cdm.io.common.mapping.DbImportObjectMapper;
 import eu.etaxonomy.cdm.io.common.mapping.DbImportStringMapper;
+import eu.etaxonomy.cdm.io.erms.validation.ErmsNoteImportValidator;
 import eu.etaxonomy.cdm.io.erms.validation.ErmsReferenceImportValidator;
+import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 
@@ -42,22 +42,21 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  * @version 1.0
  */
 @Component
-public class ErmsVernacularImport  extends ErmsImportBase<CommonTaxonName> {
+public class ErmsNotesImport  extends ErmsImportBase<Annotation> {
+	private static final Logger logger = Logger.getLogger(ErmsNotesImport.class);
 
-	private static final Logger logger = Logger.getLogger(ErmsVernacularImport.class);
-
-	private static final String VERNACULAR_NAMESPACE = "Vernaculars";
+	private static final String NOTES_NAMESPACE = "Notes";
 	private static final String LANGUAGE_NAMESPACE = "Language";
 	
 	private DbImportMapping mapping;
 	
 	
 	private int modCount = 10000;
-	private static final String pluralString = "vernaculars";
-	private String dbTableName = "vernaculars";
-	private Class cdmTargetClass = CommonTaxonName.class;
+	private static final String pluralString = "notes";
+	private String dbTableName = "notes";
+	private Class cdmTargetClass = Annotation.class;
 
-	public ErmsVernacularImport(){
+	public ErmsNotesImport(){
 		super();
 	}
 
@@ -69,8 +68,8 @@ public class ErmsVernacularImport  extends ErmsImportBase<CommonTaxonName> {
 	protected String getRecordQuery(ErmsImportConfigurator config) {
 		String strRecordQuery = 
 			" SELECT * " + 
-			" FROM vernaculars " +
-			" WHERE ( vernaculars.id IN (" + ID_LIST_TOKEN + ") )";
+			" FROM notes " +
+			" WHERE ( notes.id IN (" + ID_LIST_TOKEN + ") )";
 		return strRecordQuery;
 	}
 
@@ -81,10 +80,9 @@ public class ErmsVernacularImport  extends ErmsImportBase<CommonTaxonName> {
 		if (mapping == null){
 			mapping = new DbImportMapping();
 			
-			mapping.addMapper(DbImportObjectCreationMapper.NewInstance(this, "id", VERNACULAR_NAMESPACE)); //id
+			mapping.addMapper(DbImportObjectCreationMapper.NewInstance(this, "id", NOTES_NAMESPACE)); //id
+			mapping.addMapper(DbImportAnnotationMapper.NewInstance("note", AnnotationType.EDITORIAL(), null));
 			mapping.addMapper(DbImportObjectMapper.NewInstance("lan_id", "language", LANGUAGE_NAMESPACE));
-			mapping.addMapper(DbImportStringMapper.NewInstance("vername", "name"));
-			mapping.addMapper(DbImportAnnotationMapper.NewInstance("note", AnnotationType.EDITORIAL(), Language.DEFAULT()));
 		}
 		return mapping;
 	}
@@ -117,14 +115,14 @@ public class ErmsVernacularImport  extends ErmsImportBase<CommonTaxonName> {
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.mapping.IMappingImport#createObject(java.sql.ResultSet, eu.etaxonomy.cdm.io.common.ImportStateBase)
 	 */
-	public CommonTaxonName createObject(ResultSet rs, ErmsImportState state)
+	public Annotation createObject(ResultSet rs, ErmsImportState state)
 			throws SQLException {
-		CommonTaxonName commonName = CommonTaxonName.NewInstance(null, null);
+		Annotation annotation = Annotation.NewDefaultLanguageInstance(null);
 //		String languageId = rs.getString("lan_id");
-//		String verName = rs.getString("vername");
+//		String note = rs.getString("note");
 //		Language language = (Language)state.getRelatedObject(LANGUAGE_NAMESPACE, languageId);
 //		CommonTaxonName commonName = CommonTaxonName.NewInstance(verName, language);
-		return commonName;
+		return annotation;
 	}
 
 	/* (non-Javadoc)
@@ -171,7 +169,7 @@ public class ErmsVernacularImport  extends ErmsImportBase<CommonTaxonName> {
 	 */
 	@Override
 	protected boolean doCheck(ErmsImportState state){
-		IOValidator<ErmsImportState> validator = new ErmsReferenceImportValidator();
+		IOValidator<ErmsImportState> validator = new ErmsNoteImportValidator();
 		return validator.validate(state);
 	}
 	
@@ -196,7 +194,7 @@ public class ErmsVernacularImport  extends ErmsImportBase<CommonTaxonName> {
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)
 	 */
 	protected boolean isIgnore(ErmsImportState state){
-		return ! state.getConfig().isDoVernaculars();
+		return ! state.getConfig().isDoNotes();
 	}
 
 

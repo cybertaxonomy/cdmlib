@@ -45,6 +45,11 @@ public class ErmsImportConfigurator extends ImportConfiguratorBase<ErmsImportSta
 	private Method userTransformationMethod;
 	private Method nameTypeDesignationStatusMethod;
 	
+	private boolean doVernaculars = true;
+	private boolean doLinks = true;
+	private boolean doNotes = true;
+	private boolean doImages = true;
+	
 	
 	// NameFact stuff
 	private int maximumNumberOfNameFacts;
@@ -52,10 +57,18 @@ public class ErmsImportConfigurator extends ImportConfiguratorBase<ErmsImportSta
 	
 	protected void makeIoClassList(){
 		ioClassList = new Class[]{
-				ErmsGeneralImportValidator.class,
-				ErmsImportRankMap.class,
-				ErmsReferenceImport.class
+				ErmsGeneralImportValidator.class
+				, ErmsImportRankMap.class
+				, ErmsReferenceImport.class
 				, ErmsTaxonImport.class
+				, ErmsVernacularImport.class
+				, ErmsLinkImport.class
+				, ErmsImageImport.class
+				, ErmsNotesImport.class
+//				, ErmsAreaImport.class
+//				, ErmsDrImport.class
+				, ErmsSourceUsesImport.class
+				, ErmsTaxonRelationImport.class
 		};	
 	}
 	
@@ -221,6 +234,74 @@ public class ErmsImportConfigurator extends ImportConfiguratorBase<ErmsImportSta
 	 */
 	public void setRecordsPerTransaction(int recordsPerTransaction) {
 		this.recordsPerTransaction = recordsPerTransaction;
+	}
+
+	/**
+	 * @param doVernaculars the doVernaculars to set
+	 */
+	public void setDoVernaculars(boolean doVernaculars) {
+		this.doVernaculars = doVernaculars;
+	}
+
+	/**
+	 * @return the doVernaculars
+	 */
+	public boolean isDoVernaculars() {
+		return doVernaculars;
+	}
+
+
+
+	/**
+	 * @param doLinks the doLinks to set
+	 */
+	public void setDoLinks(boolean doLinks) {
+		this.doLinks = doLinks;
+	}
+
+
+
+	/**
+	 * @return the doLinks
+	 */
+	public boolean isDoLinks() {
+		return doLinks;
+	}
+
+
+
+	/**
+	 * @param doNotes the doNotes to set
+	 */
+	public void setDoNotes(boolean doNotes) {
+		this.doNotes = doNotes;
+	}
+
+
+
+	/**
+	 * @return the doNotes
+	 */
+	public boolean isDoNotes() {
+		return doNotes;
+	}
+
+
+
+	/**
+	 * @param doImages the doImages to set
+	 */
+	public void setDoImages(boolean doImages) {
+		this.doImages = doImages;
+	}
+
+
+
+	/**
+	 * @return the doImages
+	 */
+	public boolean isDoImages() {
+		return doImages;
 	}
 
 }
