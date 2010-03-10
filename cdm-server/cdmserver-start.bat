@@ -1,0 +1,1 @@
+java -Xmx1024M -jar target/cdm-server-2.3.jar

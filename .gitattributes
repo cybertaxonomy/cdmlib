@@ -1137,6 +1137,10 @@ app-import/src/main/resources/taxonX/palm_tc_98863.xml -text
 app-import/src/main/resources/taxonX/palm_tc_98882.xml -text
 app-import/src/main/resources/taxonX/palm_tc_98886.xml -text
 app-import/src/main/resources/tcsXmlTest.xml -text
+cdm-server/cdmserver-start.bat -text
+cdm-server/pom.xml -text
+cdm-server/src/main/assembly/assembly.xml -text
+cdm-server/src/main/java/eu/etaxonomy/cdm/server/Main.java -text
 cdmlib-commons/LICENSE.TXT -text
 cdmlib-commons/README.TXT -text
 cdmlib-commons/pom.xml -text

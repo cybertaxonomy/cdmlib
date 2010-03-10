@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<assembly>
+  <id>cdmserver-standalone</id>
+  <formats>
+    <format>jar</format>
+  </formats>
+  <includeBaseDirectory>false</includeBaseDirectory>
+  <fileSets>
+    <fileSet>
+      <directory>target/classes</directory>
+      <outputDirectory/>
+      <!--
+      <includes>
+        <include>embedded.properties</include>
+      </includes>
+      -->
+    </fileSet>
+  </fileSets>
+  <dependencySets>
+   <!-- <dependencySet>
+      <outputDirectory/>
+      <unpack>true</unpack>
+      <outputFileNameMapping/>
+      <includes>
+        <include>org.apache.camel:camel-web-standalone</include>
+        <include>log4j:log4j</include>
+      </includes>
+    </dependencySet> -->
+    <dependencySet>
+      <unpack>true</unpack>
+      <outputDirectory/>
+      <outputFileNameMapping/>
+      <includes>
+        <include>org.mortbay.jetty:jetty-runner</include>
+      </includes>
+    </dependencySet>
+    <dependencySet>
+      <outputDirectory/>
+      <outputFileNameMapping>cdmserver.war</outputFileNameMapping>
+      <includes>
+        <include>eu.etaxonomy:cdmlib-remote</include>
+      </includes>
+    </dependencySet>
+  </dependencySets>
+</assembly>
