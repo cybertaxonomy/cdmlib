@@ -32,7 +32,7 @@ public class PalmaeImageActivator  {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(PalmaeImageActivator.class);
 	
-	public static final File sourceFolder = new File("\\\\media\\palmae\\photos");
+	public static final File sourceFolder = new File("\\\\Media\\EditWP6\\palmae\\photos");
 	private static final ICdmDataSource cdmDestination = CdmDestinations.localH2Palmae();
 	
 	// set the webserver path to the images
