@@ -300,7 +300,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 	 *            the number of the page to be returned, the first page has the
 	 *            pageNumber = 1 - <i>optional parameter</i>
 	 * @param pageSize
-	 *            the maximum number of entities returned per page (can be null
+	 *            the maximum number of entities returned per page (can be -1 
 	 *            to return all entities in a single page) - <i>optional parameter</i>
 	 * @param doTaxa
 	 *            weather to search for instances of {@link Taxon} - <i>optional parameter</i>
@@ -333,6 +333,9 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 		
 		if(page == null){ page = BaseListController.DEFAULT_PAGE_NUMBER;}
 		if(pageSize == null){ pageSize = BaseListController.DEFAULT_PAGESIZE;}
+		if(pageSize == -1){ 
+			pageSize = null;
+		}
 			
 		ITaxonServiceConfigurator config = new TaxonServiceConfiguratorImpl();
 		config.setPageNumber(page);
