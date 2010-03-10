@@ -158,10 +158,11 @@ public class EditGeoServiceUtilities {
 			//getting the area title
 			if (languages == null){
 				languages = new ArrayList<Language>();
+			}
+			if (languages.size() == 0){
 				languages.add(Language.DEFAULT());
 			}
-			Representation representation = 
-				status.getPreferredRepresentation(languages);
+			Representation representation = status.getPreferredRepresentation(languages);
 			String statusLabel = representation.getLabel();
 			areaTitle += "|" + style + ":" + statusLabel;
 			

@@ -25,9 +25,9 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
+import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.AbsenceTerm;
 import eu.etaxonomy.cdm.model.description.Distribution;
@@ -40,7 +40,7 @@ import eu.etaxonomy.cdm.model.location.TdwgArea;
  * @created 08.10.2008
  * @version 1.0
  */
-public class EditGeoServiceTest {
+public class EditGeoServiceTest  {
 	private static final Logger logger = Logger.getLogger(EditGeoServiceTest.class);
 
 	/**
@@ -48,7 +48,8 @@ public class EditGeoServiceTest {
 	 */
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		logger.debug("Start class setup");
+		DefaultTermInitializer initializer = new DefaultTermInitializer();
+		initializer.initialize();
 	}
 
 	/**
@@ -73,7 +74,7 @@ public class EditGeoServiceTest {
 	}
 	
 //******************************************** TESTS**************
-	@Ignore
+	@Test
 	public void testGetWebServiceUrl() {
 		//String webServiceUrl = "http://www.test.de/webservice";
 		Set<Distribution> distributions = new HashSet<Distribution>();
@@ -94,7 +95,7 @@ public class EditGeoServiceTest {
 		String bbox="-20,0,120,70";
 		List<Language> languages = new ArrayList<Language>();
 				
-		String result = EditGeoServiceUtilities.getEditGeoServiceUrlParameterString(distributions, presenceAbsenceColorMap, 600, 300, bbox,backLayer, languages );
+		String result = EditGeoServiceUtilities.getEditGeoServiceUrlParameterString(distributions, presenceAbsenceColorMap, 600, 300, bbox,backLayer, languages );		
 		//TODO Set semantics is not determined
 		//String expected = "http://www.test.de/webservice?l=tdwg3&ad=tdwg3:a:GER|b:OKL|c:BGM|b:SPA|d:FRA&as=a:005500|b:00FF00|c:FFFFFF|d:001100&bbox=-20,40,40,40&ms=400x300";
 		System.out.println(result);
