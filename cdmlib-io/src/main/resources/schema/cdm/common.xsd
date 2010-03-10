@@ -117,28 +117,28 @@
           <xs:element name="LSID" type="xs:string" minOccurs="0"/>
           <xs:element name="TitleCache" type="common:FormattedText"/>
           <xs:element name="ProtectedTitleCache" type="xs:boolean"/>
-          <xs:element name="Rights" minOccurs="0">
+          <xs:element name="Rights" minOccurs="0" nillable="true">
             <xs:complexType>
               <xs:sequence>
                 <xs:element name="Rights" type="media:Rights" minOccurs="0" maxOccurs="unbounded"/>
               </xs:sequence>
             </xs:complexType>
           </xs:element>
-          <xs:element name="Extensions" minOccurs="0">
+          <xs:element name="Extensions" minOccurs="0" nillable="true">
             <xs:complexType>
               <xs:sequence>
                 <xs:element name="Extension" type="common:Extension" minOccurs="0" maxOccurs="unbounded"/>
               </xs:sequence>
             </xs:complexType>
           </xs:element>
-          <xs:element name="Credits" minOccurs="0">
+          <xs:element name="Credits" minOccurs="0" nillable="true">
             <xs:complexType>
               <xs:sequence>
                 <xs:element name="Credit" type="common:Credit" minOccurs="0" maxOccurs="unbounded"/>
               </xs:sequence>
             </xs:complexType>
           </xs:element>
-          <xs:element name="Sources" minOccurs="0">
+          <xs:element name="Sources" minOccurs="0" nillable="true">
             <xs:complexType>
               <xs:sequence>
                 <xs:element name="IdentifiableSource" type="common:IdentifiableSource" minOccurs="0" maxOccurs="unbounded"/>
@@ -154,14 +154,14 @@
     <xs:complexContent>
       <xs:extension base="common:VersionableEntity">
         <xs:sequence>
-          <xs:element name="Markers" minOccurs="0">
+          <xs:element name="Markers" minOccurs="0" nillable="true">
             <xs:complexType>
               <xs:sequence>
                 <xs:element name="Marker" type="common:Marker" minOccurs="0" maxOccurs="unbounded"/>
               </xs:sequence>
             </xs:complexType>
           </xs:element>
-          <xs:element name="Annotations" minOccurs="0">
+          <xs:element name="Annotations" minOccurs="0" nillable="true">
             <xs:complexType>
               <xs:sequence>
                 <xs:element name="Annotation" type="common:Annotation" minOccurs="0" maxOccurs="unbounded"/>

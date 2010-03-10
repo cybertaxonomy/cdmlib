@@ -110,12 +110,11 @@ public class Person extends TeamOrPersonBase<Person>{
     @NotNull
 	private TimePeriod lifespan = TimePeriod.NewInstance();
 	
-    @XmlElementWrapper(name = "InstitutionalMemberships")
+    @XmlElementWrapper(name = "InstitutionalMemberships", nillable = true)
     @XmlElement(name = "InstitutionalMembership")
     @OneToMany(fetch=FetchType.LAZY, mappedBy = "person")
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
-	@NotNull
-	protected Set<InstitutionalMembership> institutionalMemberships = new HashSet<InstitutionalMembership>();
+	protected Set<InstitutionalMembership> institutionalMemberships;
 
 	/** 
 	 * Creates a new empty instance for a person whose existence is all what is known.
@@ -187,7 +186,7 @@ public class Person extends TeamOrPersonBase<Person>{
 	}
 
 	protected void addInstitutionalMembership(InstitutionalMembership ims){
-		this.institutionalMemberships.add(ims);
+		getInstitutionalMemberships().add(ims);
 		if (ims.getPerson() != this){
 			logger.warn("Institutional membership's person has to be changed for adding it to person: " + this);
 			ims.getPerson().removeInstitutionalMembership(ims);
@@ -224,7 +223,7 @@ public class Person extends TeamOrPersonBase<Person>{
 	public void removeInstitutionalMembership(InstitutionalMembership ims){
 		ims.setInstitute(null);
 		ims.setPerson(null);
-		this.institutionalMemberships.remove(ims);
+		getInstitutionalMemberships().remove(ims);
 	}
 
 	/**

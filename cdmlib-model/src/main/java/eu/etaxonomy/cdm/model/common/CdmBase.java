@@ -23,8 +23,8 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -40,8 +40,11 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
 import org.hibernate.search.annotations.DocumentId;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.FieldBridge;
 import org.joda.time.DateTime;
 
+import eu.etaxonomy.cdm.hibernate.DateTimeBridge;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.jaxb.DateTimeAdapter;
 import eu.etaxonomy.cdm.jaxb.UUIDAdapter;
@@ -104,6 +107,8 @@ public abstract class CdmBase implements Serializable, ICdmBase{
 	@Type(type="dateTimeUserType")
 	@Basic(fetch = FetchType.LAZY)
 	@Match(MatchMode.IGNORE)
+	@Field(index = org.hibernate.search.annotations.Index.UN_TOKENIZED)
+	@FieldBridge(impl = DateTimeBridge.class)
 	private DateTime created;
 	
 	@XmlElement (name = "CreatedBy")

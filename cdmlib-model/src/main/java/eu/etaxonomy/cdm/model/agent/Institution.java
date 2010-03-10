@@ -83,13 +83,12 @@ public class Institution extends AgentBase<IIdentifiableEntityCacheStrategy<Inst
     @Size(max = 255)
 	private String name;
 	
-    @XmlElementWrapper(name = "Types")
+    @XmlElementWrapper(name = "Types", nillable = true)
     @XmlElement(name = "Type")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToMany(fetch = FetchType.LAZY)
-    @NotNull
-	private Set<InstitutionType> types = new HashSet<InstitutionType>();
+	private Set<InstitutionType> types;
 	
     @XmlElement(name = "IsPartOf")
     @XmlIDREF
@@ -138,7 +137,7 @@ public class Institution extends AgentBase<IIdentifiableEntityCacheStrategy<Inst
 	 * @see 	  InstitutionType
 	 */
 	public void addType(InstitutionType t){
-		this.types.add(t);
+		getTypes().add(t);
 	}
 	
 	/** 
@@ -148,7 +147,7 @@ public class Institution extends AgentBase<IIdentifiableEntityCacheStrategy<Inst
 	 * @see       #getTypes()
 	 */
 	public void removeType(InstitutionType t){
-		this.types.remove(t);
+		getTypes().remove(t);
 	}
 
 	/** 

@@ -16,8 +16,10 @@ import org.hibernate.Query;
 
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.Annotation;
+import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.persistence.dao.common.IAnnotatableDao;
+import eu.etaxonomy.cdm.persistence.query.Grouping;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
 
@@ -93,6 +95,118 @@ public abstract class AnnotatableDaoImpl<T extends AnnotatableEntity> extends Ve
 		List<Annotation> results = (List<Annotation>)query.list();
 		defaultBeanInitializer.initializeAll(results, propertyPaths);
 		return results;
+	}
+	
+	public int countMarkers(T annotatableEntity, Boolean technical) {
+		checkNotInPriorView("AnnotatableDaoImpl.countMarkers(T annotatableEntity, Boolean technical");
+        Query query = null;
+		
+		if(technical == null) {
+			query = getSession().createQuery("select count(marker) from Marker marker where marker.markedObj.id = :id and marker.markedObj.class = :class");
+		} else {
+			query = getSession().createQuery("select count(marker) from Marker marker join marker.markerType type where marker.markedObj.id = :id and marker.markedObj.class = :class and type.isTechnical = :technical");
+			query.setParameter("technical",technical);
+		}
+		
+		query.setParameter("id",annotatableEntity.getId());
+		query.setParameter("class", annotatableEntity.getClass().getName());
+		
+		return ((Long)query.uniqueResult()).intValue();
+	}
+	
+    public List<Marker> getMarkers(T annotatableEntity, Boolean technical, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+    	checkNotInPriorView("AnnotatableDaoImpl.getMarkers(T annotatableEntity, Boolean technical, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths)");
+        Query query = null;
+        
+        StringBuffer orderString = new StringBuffer();
+        
+        if(orderHints != null && !orderHints.isEmpty()) {
+		    orderString.append(" order by");
+		    for(OrderHint orderHint : orderHints) {
+		    	orderString.append(" marker." + orderHint.getPropertyName() + " ");
+		    	
+		    	if(orderHint.getSortOrder() == SortOrder.ASCENDING) {
+		    		orderString.append("asc");
+		    	} else {
+		    		orderString.append("desc");
+		    	}
+		    }
+		}
+        
+		
+		if(technical == null) {
+			query = getSession().createQuery("select marker from Marker marker where marker.markedObj.id = :id and marker.markedObj.class = :class" + orderString.toString());
+		} else {
+			query = getSession().createQuery("select marker from Marker marker join marker.markerType type where marker.markedObj.id = :id and marker.markedObj.class = :class and type.isTechnical = :technical" + orderString.toString());
+			query.setParameter("technical",technical);
+		}
+		
+		query.setParameter("id",annotatableEntity.getId());
+		query.setParameter("class", annotatableEntity.getClass().getName());
+		
+		if(pageSize != null) {
+			query.setMaxResults(pageSize);
+		    if(pageNumber != null) {
+		    	query.setFirstResult(pageNumber * pageSize);
+		    }
+		}
+		
+		List<Marker> results = (List<Marker>)query.list();
+		defaultBeanInitializer.initializeAll(results, propertyPaths);
+		return results;
+    }
+	
+    public int countMarkers(Class<? extends T> clazz, Boolean technical) {
+		checkNotInPriorView("AnnotatableDaoImpl.countMarkers(Class<? extends T> clazz, Boolean technical, Integer pageSize, Integer pageNumber, List<String> propertyPaths)");
+		Query query = null;
+		if(technical == null) {
+			query = getSession().createQuery("select count(marker) from Marker marker join marker.markerType type where marker.markedObj.class = :class");
+		} else {
+			query = getSession().createQuery("select count(marker) from Marker marker join marker.markerType type where marker.markedObj.class = :class and type.technical = :technical");
+			query.setParameter("technical",technical);
+		}
+		
+		if(clazz == null) {
+		  query.setParameter("class", type.getName());
+		} else {
+	      query.setParameter("class", clazz.getName());
+		}
+		
+		return ((Long)query.uniqueResult()).intValue();
+	}
+	
+	public List<Object[]> groupMarkers(Class<? extends T> clazz, Boolean technical, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
+		checkNotInPriorView("AnnotatableDaoImpl.groupMarkers(Class<? extends T> clazz, Boolean technical, Integer pageSize, Integer pageNumber, List<String> propertyPaths)");
+		Query query = null;
+		if(technical == null) {
+			query = getSession().createQuery("select type, count(marker) from Marker marker join marker.markerType type where marker.markedObj.class = :class group by type order by type.titleCache asc");
+		} else {
+			query = getSession().createQuery("select type, count(marker) from Marker marker join marker.markerType type where marker.markedObj.class = :class and type.technical = :technical group by type order by type.titleCache asc");
+			query.setParameter("technical",technical);
+		}
+		
+		if(clazz == null) {
+			  query.setParameter("class", type.getName());
+		} else {
+		      query.setParameter("class", clazz.getName());
+		}
+		
+		if(pageSize != null) {
+			query.setMaxResults(pageSize);
+		    if(pageNumber != null) {
+		    	query.setFirstResult(pageNumber * pageSize);
+		    }
+		}
+		
+		List<Object[]> result = (List<Object[]>)query.list();
+		
+		if(propertyPaths != null && !propertyPaths.isEmpty()) {
+		  for(Object[] objects : result) {
+			defaultBeanInitializer.initialize(objects[0], propertyPaths);
+		  }
+		}
+		
+		return result;
 	}
 	
 }

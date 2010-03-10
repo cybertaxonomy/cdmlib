@@ -79,7 +79,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		indexedClasses = new Class[2];
 		indexedClasses[0] = Taxon.class;
 		indexedClasses[1] = Synonym.class;
-		super.defaultField = "name.titleCache";
+		super.defaultField = "name.titleCache_tokenized";
 	}
 	
 	@Autowired(required = false)   //TODO switched of because it caused problems when starting CdmApplicationController

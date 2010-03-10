@@ -35,6 +35,25 @@ xmlns:taxon="http://etaxonomy.eu/cdm/model/taxon/1.0">
   <xs:import namespace="http://etaxonomy.eu/cdm/model/reference/1.0" schemaLocation="reference.xsd"/>
 
   <xs:element name="DataSet" type="DataSet"/>
+  
+  <xs:element name="Error" type="Error"/>
+  
+  <xs:complexType name="Error">
+    <xs:sequence>
+      <xs:element name="Code" type="xs:string" minOccurs="1"/>
+      <xs:element name="Message" type="xs:string" minOccurs="1"/>
+      <xs:element name="Resource" type="xs:anyURI"/>
+      <xs:element name="Cause" type="xs:string" minOccurs="0"/>
+      <xs:element name="StackTrace" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="StackTraceElement" type="xs:string"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+    <xs:attribute name="status" type="xs:int"/>
+  </xs:complexType>
 
   <xs:complexType name="DataSet">
     <xs:sequence>

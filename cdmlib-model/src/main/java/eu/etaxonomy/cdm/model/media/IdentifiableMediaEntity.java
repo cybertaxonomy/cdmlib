@@ -43,7 +43,7 @@ public abstract class IdentifiableMediaEntity<S extends IIdentifiableEntityCache
 
 	protected static Logger logger = Logger.getLogger(IdentifiableMediaEntity.class);
 
-    @XmlElementWrapper(name = "Media")
+    @XmlElementWrapper(name = "Media", nillable = true)
     @XmlElement(name = "Medium")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")

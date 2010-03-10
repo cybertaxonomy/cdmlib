@@ -166,8 +166,7 @@ public class TermListController extends BaseListController<DefinedTermBase, ITer
 			case 3: level = NamedAreaLevel.TDWG_LEVEL3(); break;
 			case 4: level = NamedAreaLevel.TDWG_LEVEL4(); break;
 		}
-		NamedAreaType type = null;
-		Pager<NamedArea> p = service.list(level, type, null, null, null, null);
+		Pager<NamedArea> p = service.list(level, (NamedAreaType)null, null, null, null, null);
 		return p.getRecords();
 	}
 

@@ -46,21 +46,19 @@ public abstract class AnnotatableEntity extends VersionableEntity {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(AnnotatableEntity.class);
 
-	@XmlElementWrapper(name = "Markers")
+	@XmlElementWrapper(name = "Markers", nillable = true)
 	@XmlElement(name = "Marker")
 	@OneToMany(fetch=FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE, CascadeType.DELETE_ORPHAN})
 	@Merge(MergeMode.ADD_CLONE)
-	@NotNull
-	protected Set<Marker> markers = new HashSet<Marker>();
+	protected Set<Marker> markers;
 	
-	@XmlElementWrapper(name = "Annotations")
+	@XmlElementWrapper(name = "Annotations", nillable = true)
 	@XmlElement(name = "Annotation")
 	@OneToMany(fetch=FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE, CascadeType.DELETE_ORPHAN})
 	@Merge(MergeMode.ADD_CLONE)
-	@NotNull
-	protected Set<Annotation> annotations = new HashSet<Annotation>();
+	protected Set<Annotation> annotations;
 	
 	protected AnnotatableEntity() {
 		super();
@@ -78,12 +76,12 @@ public abstract class AnnotatableEntity extends VersionableEntity {
 	public void addMarker(Marker marker){
 		if (marker != null){
 			marker.setMarkedObj(this);
-			markers.add(marker);
+			getMarkers().add(marker);
 		}
 	}
 	public void removeMarker(Marker marker){
-		if(this.markers.contains(marker)) {
-		    this.markers.remove(marker);
+		if(getMarkers().contains(marker)) {
+			getMarkers().remove(marker);
 		    marker.setMarkedObj(null);
 		}
 	}
@@ -99,13 +97,13 @@ public abstract class AnnotatableEntity extends VersionableEntity {
 	public void addAnnotation(Annotation annotation){
 		if (annotation != null){
 			annotation.setAnnotatedObj(this);
-			annotations.add(annotation);
+			getAnnotations().add(annotation);
 		}
 	}
 	
 	public void removeAnnotation(Annotation annotation){
-		if(this.annotations.contains(annotation)) {
-		    this.annotations.remove(annotation);
+		if(getAnnotations().contains(annotation)) {
+			getAnnotations().remove(annotation);
 		    annotation.setAnnotatedObj(null);
 		}
 	}
@@ -121,14 +119,14 @@ public abstract class AnnotatableEntity extends VersionableEntity {
 		
 		//Annotations
 		result.annotations = new HashSet<Annotation>();
-		for (Annotation annotation : this.annotations ){
+		for (Annotation annotation : getAnnotations()){
 			Annotation newAnnotation = (Annotation)annotation.clone();
 			result.addAnnotation(newAnnotation);
 		}
 		
 		//Markers
 		result.markers = new HashSet<Marker>();
-		for (Marker marker : this.markers ){
+		for (Marker marker : getMarkers()){
 			Marker newMarker = (Marker)marker.clone();
 			result.addMarker(newMarker);
 		}

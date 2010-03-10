@@ -19,6 +19,7 @@ import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.Annotation;
+import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.persistence.dao.common.IAnnotatableDao;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
@@ -35,5 +36,28 @@ public abstract class AnnotatableServiceBase<T extends AnnotatableEntity,DAO ext
 		}
 		
 		return new DefaultPagerImpl<Annotation>(pageNumber, numberOfResults, pageSize, results);
+	}
+	
+	@Transactional(readOnly = true)
+    public Pager<Marker> getMarkers(T annotatableEntity, Boolean technical, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+        Integer numberOfResults = dao.countMarkers(annotatableEntity, technical);
+		
+		List<Marker> results = new ArrayList<Marker>();
+		if(numberOfResults > 0) { // no point checking again
+			results = dao.getMarkers(annotatableEntity, technical, pageSize, pageNumber, orderHints, propertyPaths);
+		}
+		
+		return new DefaultPagerImpl<Marker>(pageNumber, numberOfResults, pageSize, results);
+    }
+	
+
+	@Transactional(readOnly = true)
+	public List<Object[]> groupMarkers(Class<? extends T> clazz, Boolean technical, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
+		return dao.groupMarkers(clazz, technical, pageSize, pageNumber, propertyPaths);
+	}
+
+	@Transactional(readOnly = true)
+	public int countMarkers(Class<? extends T> clazz, Boolean technical) {
+		return dao.countMarkers(clazz, technical);
 	}
 }

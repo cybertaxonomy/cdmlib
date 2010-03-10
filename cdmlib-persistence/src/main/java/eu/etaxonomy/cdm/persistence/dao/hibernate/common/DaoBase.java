@@ -27,6 +27,10 @@ public abstract class DaoBase {
 	@Autowired
 	private SessionFactory factory;
 	
+	public void setSessionFactory(SessionFactory sessionFactory) {
+		this.factory = sessionFactory;
+	}
+	
 	protected Session getSession(){
 		Session session = factory.getCurrentSession();
 		return session;

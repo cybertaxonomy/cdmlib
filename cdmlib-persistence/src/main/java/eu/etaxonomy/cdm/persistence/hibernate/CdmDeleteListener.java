@@ -27,7 +27,7 @@ import eu.etaxonomy.cdm.model.common.RelationshipBase;
 public class CdmDeleteListener implements DeleteEventListener {
 	private static final long serialVersionUID = -5511287200489449838L;
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(CdmDeleteListener.class);
+	protected static final Logger logger = Logger.getLogger(CdmDeleteListener.class);
 
 	/* (non-Javadoc)
 	 * @see org.hibernate.event.DeleteEventListener#onDelete(org.hibernate.event.DeleteEvent)
@@ -35,6 +35,7 @@ public class CdmDeleteListener implements DeleteEventListener {
 	public void onDelete(DeleteEvent event) throws HibernateException {
 		Object entity = event.getObject();
 		if(entity != null && RelationshipBase.class.isAssignableFrom(entity.getClass())) {
+			logger.info("Deleting " + entity);
 			deleteRelationship(event, entity);
 		}
 	}
@@ -46,6 +47,7 @@ public class CdmDeleteListener implements DeleteEventListener {
 			throws HibernateException {
 		Object entity = event.getObject();
 		if(entity != null && RelationshipBase.class.isAssignableFrom(entity.getClass())) {
+			logger.info("Deleting " + entity);
 			deleteRelationship(event, entity);
 		}
 	}
@@ -60,6 +62,7 @@ public class CdmDeleteListener implements DeleteEventListener {
 			Set<IRelated> deletedObjects = relationshipEntity.getDeletedObjects();
 			for (IRelated rel : deletedObjects){
 				if (rel != null){
+					logger.info("Updating related entity " + rel);
 					event.getSession().update(rel);
 				}
 			}

@@ -9,14 +9,13 @@
 
 package eu.etaxonomy.cdm.persistence.dao.hibernate.common;
 
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.lang.reflect.Array;
 
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
-import org.unitils.spring.annotation.SpringApplicationContext;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.model.common.User;
@@ -34,7 +33,7 @@ public class UserDaoHibernateImplTest extends CdmIntegrationTest {
 		User user = userDao.findUserByUsername("test");
 		
 		assertNotNull("findUserByUsername should return a user", user);
-		assertEquals("the user should have had their authorities loaded",2,Array.getLength(user.getAuthorities()));
+		assertEquals("the user should have had their authorities loaded",2,user.getAuthorities().size());
 	}
 
 }

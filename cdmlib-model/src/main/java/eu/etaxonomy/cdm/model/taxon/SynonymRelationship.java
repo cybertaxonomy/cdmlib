@@ -33,6 +33,8 @@ import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.validation.Level2;
+import eu.etaxonomy.cdm.validation.Level3;
+import eu.etaxonomy.cdm.validation.annotation.HomotypicSynonymsShouldBelongToGroup;
 
 /**
  * The class representing the assignation of a {@link Synonym synonym} to an
@@ -64,6 +66,7 @@ import eu.etaxonomy.cdm.validation.Level2;
 @XmlRootElement(name = "SynonymRelationship")
 @Entity
 @Audited
+@HomotypicSynonymsShouldBelongToGroup(groups = Level3.class)
 public class SynonymRelationship extends RelationshipBase<Synonym, Taxon, SynonymRelationshipType> {
 	private static final Logger logger = Logger.getLogger(SynonymRelationship.class);
 

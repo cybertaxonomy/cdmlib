@@ -94,19 +94,19 @@ public class Contact implements Serializable {
 		if (country != null || CdmUtils.isNotEmpty(locality) || CdmUtils.isNotEmpty(pobox) || CdmUtils.isNotEmpty(postcode) || 
 				CdmUtils.isNotEmpty(region) || CdmUtils.isNotEmpty(street) ){
 			Address newAddress = Address.NewInstance(country, locality, pobox, postcode, region, street, location);
-			result.addresses.add(newAddress);
+			result.addAddress(newAddress);
 		}
 		if (email != null){
-			result.emailAddresses.add(email);
+			result.addEmailAddress(email);
 		}
 		if (faxNumber != null){
-			result.faxNumbers.add(faxNumber);
+			result.addFaxNumber(faxNumber);
 		}
 		if (phoneNumber != null){
-			result.phoneNumbers.add(phoneNumber);
+			result.addPhoneNumber(phoneNumber);
 		}
 		if (url != null){
-			result.urls.add(url);
+			result.addUrl(url);
 		}
 		return result;
 	}
@@ -140,32 +140,32 @@ public class Contact implements Serializable {
 	public Contact() {
 	}
 
-	@XmlElementWrapper(name = "EmailAddresses")
+	@XmlElementWrapper(name = "EmailAddresses", nillable = true)
 	@XmlElement(name = "EmailAddress")
 	@CollectionOfElements(fetch = FetchType.LAZY)
-	private List<String> emailAddresses = new ArrayList<String>();
+	private List<String> emailAddresses;
 	
-	@XmlElementWrapper(name = "URLs")
+	@XmlElementWrapper(name = "URLs", nillable = true)
 	@XmlElement(name = "URL")
     @XmlSchemaType(name = "anyURI")
     @CollectionOfElements(fetch = FetchType.LAZY)
-	private List<String> urls = new ArrayList<String>();
+	private List<String> urls;
 	
-	@XmlElementWrapper(name = "PhoneNumbers")
+	@XmlElementWrapper(name = "PhoneNumbers", nillable = true)
 	@XmlElement(name = "PhoneNumber")
 	@CollectionOfElements(fetch = FetchType.LAZY)
-	private List<String> phoneNumbers = new ArrayList<String>();
+	private List<String> phoneNumbers;
 	
-	@XmlElementWrapper(name = "FaxNumbers")
+	@XmlElementWrapper(name = "FaxNumbers", nillable = true)
 	@XmlElement(name = "FaxNumber")
 	@CollectionOfElements(fetch = FetchType.LAZY)
-	private List<String> faxNumbers = new ArrayList<String>();
+	private List<String> faxNumbers;
 	
-    @XmlElementWrapper(name = "Addresses")
+    @XmlElementWrapper(name = "Addresses", nillable = true)
     @XmlElement(name = "Address")
     @OneToMany(fetch = FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE_ORPHAN})
-	protected Set<Address> addresses = new HashSet<Address>();
+	protected Set<Address> addresses;
 	
 	
 	public void merge(Contact contact2) throws MergeException{
@@ -202,6 +202,9 @@ public class Contact implements Serializable {
 	 * @see     Address
 	 */
 	public Set<Address> getAddresses(){
+		if(this.addresses == null) {
+			this.addresses = new HashSet<Address>();
+		}
 		return this.addresses;
 	}
 	
@@ -214,14 +217,14 @@ public class Contact implements Serializable {
 	 */
 	public void addAddress(Address address){
 		if (address != null){
-			addresses.add(address);
+			getAddresses().add(address);
 		}
 	}
 	
 	public void addAddress(String street, String postcode, String locality, 
 			WaterbodyOrCountry country, String pobox, String region, Point location){
 		Address newAddress = Address.NewInstance(country, locality, pobox, postcode, region, street, location);
-		addresses.add(newAddress);
+		getAddresses().add(newAddress);
 	}
 	
 	/** 
@@ -231,7 +234,7 @@ public class Contact implements Serializable {
 	 * @see     		#getAddresses()
 	 */
 	public void removeAddress(Address address){
-		addresses.remove(address);
+		getAddresses().remove(address);
 	}
 
 	
@@ -240,6 +243,9 @@ public class Contact implements Serializable {
 	 * included in <i>this</i> contact.
 	 */
 	public List<String> getEmailAddresses(){
+		if(this.emailAddresses == null) {
+			this.emailAddresses = new ArrayList<String>();
+		}
 		return this.emailAddresses;
 	}
 
@@ -247,7 +253,7 @@ public class Contact implements Serializable {
 	 * @see  #getEmailAddress()
 	 */
 	public void addEmailAddress(String emailAddress){
-		this.emailAddresses.add(emailAddress);
+		getEmailAddresses().add(emailAddress);
 	}
 	
 	/** 
@@ -257,7 +263,7 @@ public class Contact implements Serializable {
 	 * @see     		#getEmailAddresses()
 	 */
 	public void removeEmailAddress(String emailAddress){
-		emailAddresses.remove(emailAddress);
+		getEmailAddresses().remove(emailAddress);
 	}
 
 	/**
@@ -265,6 +271,9 @@ public class Contact implements Serializable {
 	 * included in <i>this</i> contact.
 	 */
 	public List<String> getUrls(){
+		if(this.urls == null) {
+			this.urls = new ArrayList<String>();
+		}
 		return this.urls;
 	}
 
@@ -272,7 +281,7 @@ public class Contact implements Serializable {
 	 * @see  #getUrls()
 	 */
 	public void addUrl(String url){
-		this.urls.add(url);
+		getUrls().add(url);
 	}
 	
 	/** 
@@ -282,7 +291,7 @@ public class Contact implements Serializable {
 	 * @see     		#getUrls()
 	 */
 	public void removeUrl(String url){
-		urls.remove(url);
+		getUrls().remove(url);
 	}
 
 	/**
@@ -290,6 +299,9 @@ public class Contact implements Serializable {
 	 * included in <i>this</i> contact.
 	 */
 	public List<String> getPhoneNumbers(){
+		if(this.phoneNumbers == null) {
+			this.phoneNumbers = new ArrayList<String>();
+		}
 		return this.phoneNumbers;
 	}
 
@@ -297,7 +309,7 @@ public class Contact implements Serializable {
 	 * @see  #getPhone()
 	 */
 	public void addPhoneNumber(String phoneNumber){
-		this.phoneNumbers.add(phoneNumber);
+		getPhoneNumbers().add(phoneNumber);
 	}
 	
 	/** 
@@ -307,7 +319,7 @@ public class Contact implements Serializable {
 	 * @see     		#getPhoneNumber()
 	 */
 	public void removePhoneNumber(String phoneNumber){
-		phoneNumbers.remove(phoneNumber);
+		getPhoneNumbers().remove(phoneNumber);
 	}
 
 	/**
@@ -315,6 +327,9 @@ public class Contact implements Serializable {
 	 * included in <i>this</i> contact.
 	 */
 	public List<String> getFaxNumbers(){
+		if(this.faxNumbers == null) {
+			this.faxNumbers = new ArrayList<String>();
+		}
 		return this.faxNumbers;
 	}
 
@@ -322,7 +337,7 @@ public class Contact implements Serializable {
 	 * @see  #getFaxNumbers()
 	 */
 	public void addFaxNumber(String faxNumber){
-		this.faxNumbers.add(faxNumber);
+		getFaxNumbers().add(faxNumber);
 	}
 
 	/** 
@@ -332,7 +347,7 @@ public class Contact implements Serializable {
 	 * @see     		#getFaxNumber()
 	 */
 	public void removeFaxNumber(String faxNumber){
-		faxNumbers.remove(faxNumber);
+		getFaxNumbers().remove(faxNumber);
 	}
 
 	

@@ -38,8 +38,8 @@
     <mapping> 
         <class-a>eu.etaxonomy.cdm.model.common.CdmBase</class-a>
         <class-b>eu.etaxonomy.cdm.remote.dto.tdwg.BaseThing</class-b>
-        <field>
-            <a>createdBy.username</a>
+        <field custom-converter-id="hibernateProxyDeepConverter" custom-converter-param="username">
+            <a>createdBy</a>
             <b>creator</b>
         </field>
         <field custom-converter-id="dateTimeConverter">
@@ -51,8 +51,8 @@
     <mapping> 
         <class-a>eu.etaxonomy.cdm.model.common.VersionableEntity</class-a>
         <class-b>eu.etaxonomy.cdm.remote.dto.tdwg.BaseThing</class-b>
-        <field>
-            <a>updatedBy.username</a>
+        <field custom-converter-id="hibernateProxyDeepConverter" custom-converter-param="username">
+            <a>updatedBy</a>
             <b>contributor</b>
         </field>
         <field custom-converter-id="dateTimeConverter">

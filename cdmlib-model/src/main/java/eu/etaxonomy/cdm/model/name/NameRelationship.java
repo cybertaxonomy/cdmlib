@@ -27,6 +27,8 @@ import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.validation.Level3;
+import eu.etaxonomy.cdm.validation.annotation.NamesWithHomotypicRelationshipsMustBelongToSameGroup;
 
 /**
  * The class representing a relationship between two {@link TaxonNameBase taxon names} according
@@ -53,6 +55,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 })
 @Entity
 @Audited
+@NamesWithHomotypicRelationshipsMustBelongToSameGroup(groups = {Level3.class})
 public class NameRelationship extends RelationshipBase<TaxonNameBase, TaxonNameBase, NameRelationshipType> {
 
   static Logger logger = Logger.getLogger(NameRelationship.class);

@@ -270,16 +270,6 @@ public class JaxbExport extends CdmExportBase<JaxbExportConfigurator, JaxbExport
 				taxTreesdeproxy.add(featureTree);
 			}
 			
-			List<FeatureNode> featureNodes = new ArrayList<FeatureNode>();
-			featureNodes= getFeatureTreeService().getFeatureNodesAll();
-			List<FeatureNode> taxNodesdeproxy = new ArrayList<FeatureNode>();
-			for (FeatureNode featureNode : featureNodes){
-				HibernateProxyHelper.deproxy(featureNode);
-				taxNodesdeproxy.add(featureNode);
-			}
-			
-			dataSet.setFeatureNodes(taxNodesdeproxy);
-			
 			dataSet.setFeatureTrees(getFeatureTreeService().list(null,null,null,null,null));
 		}
 		if (jaxbExpConfig.isDoTaxonomicTreeData() == true) {

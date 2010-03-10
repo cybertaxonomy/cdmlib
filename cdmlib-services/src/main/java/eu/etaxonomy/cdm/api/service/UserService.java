@@ -9,6 +9,7 @@
  */
 package eu.etaxonomy.cdm.api.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -16,20 +17,21 @@ import org.hibernate.NonUniqueResultException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
-import org.springframework.security.AccessDeniedException;
-import org.springframework.security.Authentication;
-import org.springframework.security.AuthenticationManager;
-import org.springframework.security.GrantedAuthority;
-import org.springframework.security.context.SecurityContextHolder;
-import org.springframework.security.providers.UsernamePasswordAuthenticationToken;
-import org.springframework.security.providers.dao.SaltSource;
-import org.springframework.security.providers.dao.UserCache;
-import org.springframework.security.providers.dao.cache.NullUserCache;
-import org.springframework.security.providers.dao.salt.ReflectionSaltSource;
-import org.springframework.security.providers.encoding.Md5PasswordEncoder;
-import org.springframework.security.providers.encoding.PasswordEncoder;
-import org.springframework.security.userdetails.UserDetails;
-import org.springframework.security.userdetails.UsernameNotFoundException;
+
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.authentication.dao.ReflectionSaltSource;
+import org.springframework.security.authentication.dao.SaltSource;
+import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
+import org.springframework.security.authentication.encoding.PasswordEncoder;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserCache;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.core.userdetails.cache.NullUserCache;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -236,7 +238,7 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
 	}
 
 	@Transactional(readOnly=false)
-	public void createGroup(String groupName, GrantedAuthority[] authorities) {
+	public void createGroup(String groupName, List<GrantedAuthority> authorities) {
 		Assert.hasText(groupName);
 		Assert.notNull(authorities);
 		
@@ -258,25 +260,24 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
 		groupDao.delete(group);
 	}
 
-	public String[] findAllGroups() {
-		List<String> names = groupDao.listNames(null,null);
-		return names.toArray(new String[names.size()]);
+	public List<String> findAllGroups() {
+		return groupDao.listNames(null,null);
 	}
 
-	public GrantedAuthority[] findGroupAuthorities(String groupName) {
+	public List<GrantedAuthority> findGroupAuthorities(String groupName) {
 		Assert.hasText(groupName);
 		Group group = groupDao.findGroupByName(groupName);
 		
-		return group.getGrantedAuthorities().toArray(new GrantedAuthority[group.getGrantedAuthorities().size()]);
+		return new ArrayList<GrantedAuthority>(group.getGrantedAuthorities());
 	}
 
-	public String[] findUsersInGroup(String groupName) {
+	public List<String> findUsersInGroup(String groupName) {
 		Assert.hasText(groupName);
 		Group group = groupDao.findGroupByName(groupName);
 		
 		List<String> users = groupDao.listMembers(group, null, null);
 		
-		return users.toArray(new String[users.size()]);
+		return users;
 	}
 
 	@Transactional(readOnly=false)

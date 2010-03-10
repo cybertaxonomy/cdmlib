@@ -12,10 +12,10 @@ package eu.etaxonomy.cdm.api.service;
 import java.util.UUID;
 
 import org.springframework.dao.DataAccessException;
-import org.springframework.security.GrantedAuthority;
-import org.springframework.security.userdetails.GroupManager;
-import org.springframework.security.userdetails.UserDetailsManager;
-import org.springframework.security.userdetails.UsernameNotFoundException;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.provisioning.GroupManager;
+import org.springframework.security.provisioning.UserDetailsManager;
 
 import eu.etaxonomy.cdm.model.common.Group;
 import eu.etaxonomy.cdm.model.common.User;

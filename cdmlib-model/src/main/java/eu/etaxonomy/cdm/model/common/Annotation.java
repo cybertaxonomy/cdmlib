@@ -189,7 +189,9 @@ public class Annotation extends LanguageStringBase implements Cloneable {
 	@Override
 	public Object clone() throws CloneNotSupportedException{
 		Annotation result = (Annotation)super.clone();
-		//no changes to: type, flag
+		result.setCommentator(this.getCommentator());
+		result.setAnnotationType(this.getAnnotationType());
+		result.setLinkbackUrl(this.linkbackUrl);
 		return result;
 	}
 	

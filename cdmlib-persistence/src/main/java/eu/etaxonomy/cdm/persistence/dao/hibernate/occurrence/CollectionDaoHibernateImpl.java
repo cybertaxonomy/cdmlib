@@ -29,8 +29,6 @@ import eu.etaxonomy.cdm.persistence.dao.occurrence.ICollectionDao;
 public class CollectionDaoHibernateImpl extends IdentifiableDaoBase<Collection> implements
 		ICollectionDao {
 	
-	private static final String defaultField = "titleCache";
-		
 	public CollectionDaoHibernateImpl() {
 		super(Collection.class);
 		indexedClasses = new Class[1];

@@ -108,7 +108,7 @@ xmlns:name="http://etaxonomy.eu/cdm/model/name/1.0">
     <xs:complexContent>
       <xs:extension base="common:VersionableEntity">
         <xs:sequence>
-          <xs:element ref="description:Feature" minOccurs="0"/>
+          <xs:element name="Feature" minOccurs="0" type="xs:IDREF"/>
           <xs:element name="Parent" type="xs:IDREF" minOccurs="0"/>
           <xs:element name="Children" minOccurs="0">
             <xs:complexType>
@@ -149,9 +149,9 @@ xmlns:name="http://etaxonomy.eu/cdm/model/name/1.0">
       <xs:extension base="common:DefinedTermBase">
         <xs:sequence>
           <xs:element ref="common:KindOf" minOccurs="0"/>
-          <xs:element ref="common:Generalizations"/>
+          <xs:element ref="common:Generalizations" minOccurs="0"/>
           <xs:element ref="common:PartOf" minOccurs="0"/>
-          <xs:element ref="common:Includes"/>
+          <xs:element ref="common:Includes" minOccurs="0"/>
           <xs:element name="SupportsTextData" type="xs:boolean"/>
           <xs:element name="SupportsQuantitativeData" type="xs:boolean"/>
           <xs:element name="SupportsDistribution" type="xs:boolean"/>

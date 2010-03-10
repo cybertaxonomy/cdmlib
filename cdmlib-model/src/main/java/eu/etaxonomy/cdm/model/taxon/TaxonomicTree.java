@@ -35,6 +35,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 
 import eu.etaxonomy.cdm.model.common.IReferencedEntity;
@@ -59,6 +60,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 @XmlRootElement(name = "TaxonomicTree")
 @Entity
 @Audited
+@Indexed(index = "eu.etaxonomy.cdm.model.taxon.TaxonomicTree")
 public class TaxonomicTree extends IdentifiableEntity implements IReferencedEntity, ITreeNode{
 	private static final long serialVersionUID = -753804821474209635L;
 	private static final Logger logger = Logger.getLogger(TaxonomicTree.class);

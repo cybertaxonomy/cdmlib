@@ -16,7 +16,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate3.HibernateTransactionManager;
-import org.springframework.security.providers.ProviderManager;
+import org.springframework.security.authentication.ProviderManager;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.PlatformTransactionManager;
 

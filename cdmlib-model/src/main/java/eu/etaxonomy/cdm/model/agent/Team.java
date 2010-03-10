@@ -62,7 +62,7 @@ import eu.etaxonomy.cdm.strategy.match.MatchMode;
 	"protectedNomenclaturalTitleCache",
     "teamMembers"
 })
-@XmlRootElement
+@XmlRootElement(name = "Team")
 @Entity
 @Indexed(index = "eu.etaxonomy.cdm.model.agent.AgentBase")
 @Audited
@@ -76,7 +76,7 @@ public class Team extends TeamOrPersonBase<Team> {
 
 	//An abreviated name for the team (e. g. in case of nomenclatural authorteams). A non abreviated name for the team (e. g.
 	//in case of some bibliographical references)
-    @XmlElementWrapper(name = "TeamMembers")
+    @XmlElementWrapper(name = "TeamMembers", nillable = true)
     @XmlElement(name = "TeamMember")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
@@ -84,8 +84,7 @@ public class Team extends TeamOrPersonBase<Team> {
 	@ManyToMany(fetch = FetchType.LAZY)
 	@Cascade(CascadeType.SAVE_UPDATE)
 	@Match(MatchMode.MATCH)
-	@NotNull
-	private List<Person> teamMembers = new ArrayList<Person>();
+	private List<Person> teamMembers;
 	
 	
 	/** 
@@ -115,6 +114,10 @@ public class Team extends TeamOrPersonBase<Team> {
 		return this.teamMembers;
 	}
 	
+	protected void setTeamMembers(List<Person> teamMembers) {
+		this.teamMembers = teamMembers;
+	}
+	
 	/** 
 	 * Adds a new {@link Person person} to <i>this</i> team at the end of the members' list. 
 	 *
@@ -123,7 +126,7 @@ public class Team extends TeamOrPersonBase<Team> {
 	 * @see 		   Person
 	 */
 	public void addTeamMember(Person person){
-		this.teamMembers.add(person);
+		getTeamMembers().add(person);
 	}
 	
 	/** 
@@ -141,11 +144,11 @@ public class Team extends TeamOrPersonBase<Team> {
 	public void addTeamMember(Person person, int index){
 		// TODO is still not fully implemented (range for index!)
 		logger.warn("not yet fully implemented (range for index!)");
-		int oldIndex = teamMembers.indexOf(person);
+		int oldIndex = getTeamMembers().indexOf(person);
 		if (oldIndex != -1 ){
-			teamMembers.remove(person);
+			getTeamMembers().remove(person);
 		}
-		this.teamMembers.add(index, person);
+		getTeamMembers().add(index, person);
 	}
 	
 	/** 
@@ -155,7 +158,7 @@ public class Team extends TeamOrPersonBase<Team> {
 	 * @see            #getTeamMembers()
 	 */
 	public void removeTeamMember(Person person){
-		this.teamMembers.remove(person);
+		getTeamMembers().remove(person);
 	}
 
 	/**

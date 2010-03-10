@@ -44,10 +44,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
-import org.springframework.dao.NonTransientDataAccessException;
-import org.springframework.dao.UncategorizedDataAccessException;
-import org.springframework.security.Authentication;
-import org.springframework.security.context.SecurityContextHolder;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.ReflectionUtils;
 
@@ -77,6 +75,9 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 	@Qualifier("defaultBeanInitializer")
 	protected BeanInitializer defaultBeanInitializer;
 	
+	public void setDefaultBeanInitializer(BeanInitializer defaultBeanInitializer) {
+		this.defaultBeanInitializer = defaultBeanInitializer;
+	}
 
 	@Autowired
 	private ReferringObjectMetadataFactory referringObjectMetadataFactory;
@@ -442,13 +443,17 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 		    	OrderHint orderHint = orderHints.get(i);
 		    	switch(orderHint.getSortOrder()) {
 		    	case ASCENDING:
-		            sortFields[i] = new SortField(orderHint.getPropertyName() + "_forSort", true);
+		            sortFields[i] = new SortField(orderHint.getPropertyName(), true);
+		            break;
 		    	case DESCENDING:
-		    		sortFields[i] = new SortField(orderHint.getPropertyName() + "_forSort",false);
+		        default:
+		    		sortFields[i] = new SortField(orderHint.getPropertyName(),false);
+		    		
 		    	}
 		    }
 		    sort.setSort(sortFields);
 		    fullTextQuery.setSort(sort);
+		    
 		}
 	}
 	

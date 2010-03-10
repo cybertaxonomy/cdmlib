@@ -507,6 +507,13 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
 		}
 	}
 	
+	@Override
+	public Object clone() throws CloneNotSupportedException{
+		DescriptionElementBase result = (DescriptionElementBase)super.clone();
+		
+		return result;
+	}
+	
 	/**
 	 * Clones this original source and sets the clones sourced object to 'sourceObj'
 	 * @see java.lang.Object#clone()

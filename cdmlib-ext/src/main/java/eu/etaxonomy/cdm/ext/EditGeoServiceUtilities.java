@@ -156,6 +156,10 @@ public class EditGeoServiceUtilities {
 			char style = getStyleAbbrev(i);
 			
 			//getting the area title
+			if (languages == null){
+				languages = new ArrayList<Language>();
+				languages.add(Language.DEFAULT());
+			}
 			Representation representation = 
 				status.getPreferredRepresentation(languages);
 			String statusLabel = representation.getLabel();

@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.persistence.hibernate;
 
 import static org.junit.Assert.assertNotNull;
 
+import java.io.FileOutputStream;
 import java.util.Set;
 import java.util.UUID;
 
@@ -23,6 +24,8 @@ import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.dbunit.annotation.ExpectedDataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.hibernate.LockMode;
 
 import eu.etaxonomy.cdm.model.name.HybridRelationship;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
@@ -50,7 +53,7 @@ public class CdmDeleteListenerTest extends CdmTransactionalIntegrationTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
-		uuid = UUID.fromString("a49a3963-c4ea-4047-8588-2f8f15352730");
+		uuid = UUID.fromString("44415fc0-1703-11df-8a39-0800200c9a66");
 	}
 	
 	/**
@@ -59,8 +62,12 @@ public class CdmDeleteListenerTest extends CdmTransactionalIntegrationTest {
 	@Test
 	@DataSet("CdmDeleteListenerTest.xml")
 	@ExpectedDataSet
-	public void testOnDelete() {
+	public void testOnDelete() throws Exception {
 		NonViralName name = (NonViralName)taxonNameDao.findByUuid(uuid);
+		/**
+		 * Ended up with some horrible hibernate errors otherwise
+		 */
+		taxonNameDao.refresh(name, LockMode.READ, null);
 		assertNotNull(name);
 		Set<NameRelationship> relations = name.getNameRelations();
 		Assert.assertEquals("There must be 1 name relationship", 1, relations.size());

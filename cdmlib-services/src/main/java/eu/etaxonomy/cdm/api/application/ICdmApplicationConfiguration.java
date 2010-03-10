@@ -10,7 +10,7 @@
 
 package eu.etaxonomy.cdm.api.application;
 
-import org.springframework.security.providers.ProviderManager;
+import org.springframework.security.authentication.ProviderManager;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import eu.etaxonomy.cdm.api.conversation.ConversationHolder;

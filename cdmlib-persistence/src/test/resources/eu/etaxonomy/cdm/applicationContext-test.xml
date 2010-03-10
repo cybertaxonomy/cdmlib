@@ -19,10 +19,10 @@
       <context:exclude-filter type="regex" expression="eu\.etaxonomy\.cdm\.database\.PersistentTermInitializer"/>
     </context:component-scan>
     
-    <bean id="authenticationManager" class="org.springframework.security.providers.ProviderManager">
+    <bean id="authenticationManager" class="org.springframework.security.authentication.ProviderManager">
         <property name="providers">
             <list>
-                <bean class="org.springframework.security.providers.TestingAuthenticationProvider"/>
+                <bean class="org.springframework.security.authentication.TestingAuthenticationProvider"/>
             </list>
         </property>
     </bean>

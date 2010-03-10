@@ -38,7 +38,7 @@ targetNamespace="http://etaxonomy.eu/cdm/model/agent/1.0"
           <xs:element name="LastName" type="xs:string" minOccurs="0"/>
           <xs:element name="Suffix" type="xs:string" minOccurs="0"/>
           <xs:element name="Lifespan" type="common:TimePeriod" minOccurs="0"/>
-          <xs:element name="InstitutionalMemberships" minOccurs="0">
+          <xs:element name="InstitutionalMemberships" minOccurs="0" nillable="true">
             <xs:complexType>
               <xs:sequence>
                 <xs:element ref="agent:InstitutionalMembership" minOccurs="0" maxOccurs="unbounded"/>
@@ -90,7 +90,7 @@ targetNamespace="http://etaxonomy.eu/cdm/model/agent/1.0"
         <xs:sequence>
           <xs:element name="Code" type="xs:string" minOccurs="0"/>
           <xs:element name="Name" type="xs:string" minOccurs="0"/>
-          <xs:element name="Types" minOccurs="0">
+          <xs:element name="Types" minOccurs="0" nillable="true">
             <xs:complexType>
               <xs:sequence>
                 <xs:element name="Type" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
@@ -113,35 +113,35 @@ targetNamespace="http://etaxonomy.eu/cdm/model/agent/1.0"
 
   <xs:complexType name="Contact">
     <xs:sequence>
-      <xs:element name="EmailAddresses" minOccurs="0">
+      <xs:element name="EmailAddresses" minOccurs="0" nillable="true">
         <xs:complexType>
           <xs:sequence>
             <xs:element name="EmailAddress" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
           </xs:sequence>
         </xs:complexType>
       </xs:element>
-      <xs:element name="URLs" minOccurs="0">
+      <xs:element name="URLs" minOccurs="0" nillable="true">
         <xs:complexType>
           <xs:sequence>
             <xs:element name="URL" type="xs:anyURI" minOccurs="0" maxOccurs="unbounded"/>
           </xs:sequence>
         </xs:complexType>
       </xs:element>
-      <xs:element name="PhoneNumbers" minOccurs="0">
+      <xs:element name="PhoneNumbers" minOccurs="0" nillable="true">
         <xs:complexType>
           <xs:sequence>
             <xs:element name="PhoneNumber" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
           </xs:sequence>
         </xs:complexType>
       </xs:element>
-      <xs:element name="FaxNumbers" minOccurs="0">
+      <xs:element name="FaxNumbers" minOccurs="0" nillable="true">
         <xs:complexType>
           <xs:sequence>
             <xs:element name="FaxNumber" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
           </xs:sequence>
         </xs:complexType>
       </xs:element>
-      <xs:element name="Addresses" minOccurs="0">
+      <xs:element name="Addresses" minOccurs="0" nillable="true">
         <xs:complexType>
           <xs:sequence>
             <xs:element ref="agent:Address" minOccurs="0" maxOccurs="unbounded"/>
@@ -172,7 +172,7 @@ targetNamespace="http://etaxonomy.eu/cdm/model/agent/1.0"
       <xs:extension base="agent:TeamOrPersonBase">
         <xs:sequence>
           <xs:element name="ProtectedNomenclaturalTitleCache" type="xs:boolean"/>
-          <xs:element name="TeamMembers" minOccurs="0">
+          <xs:element name="TeamMembers" minOccurs="0" nillable="true">
             <xs:complexType>
               <xs:sequence>
                 <xs:element name="TeamMember" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>

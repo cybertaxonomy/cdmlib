@@ -83,7 +83,7 @@ public class TaxonNameCannotBeAcceptedAndSynonymTest extends CdmIntegrationTest 
 	@Test
 	public void testValidTaxon() {
 		assert taxon1.getName().getTaxonBases().size() == 1;
-        Set<ConstraintViolation<Taxon>> constraintViolations  = validator.validate(taxon1, Level2.class);
+        Set<ConstraintViolation<Taxon>> constraintViolations  = validator.validate(taxon1, Level3.class);
         assertTrue("There should be no constraint violations as this taxon does not have the same name as any other taxa",constraintViolations.isEmpty());
 	}
 	
@@ -91,7 +91,7 @@ public class TaxonNameCannotBeAcceptedAndSynonymTest extends CdmIntegrationTest 
 	public void testTwoAcceptedTaxaWithSameNameSameSec() {
 		taxon2.setName(name1);
 		assert taxon1.getName().getTaxonBases().size() == 2;
-        Set<ConstraintViolation<Taxon>> constraintViolations  = validator.validate(taxon1, Level2.class);
+        Set<ConstraintViolation<Taxon>> constraintViolations  = validator.validate(taxon1, Level3.class);
         assertTrue("There should be a single constraint violation as this taxon shares the same name as taxon2 and is according to the same authority, sec1",!constraintViolations.isEmpty());
 	}
 	
@@ -100,7 +100,7 @@ public class TaxonNameCannotBeAcceptedAndSynonymTest extends CdmIntegrationTest 
 		taxon2.setName(name1);
 		taxon2.setSec(sec2);
 		assert taxon1.getName().getTaxonBases().size() == 2;
-        Set<ConstraintViolation<Taxon>> constraintViolations  = validator.validate(taxon1, Level2.class);
+        Set<ConstraintViolation<Taxon>> constraintViolations  = validator.validate(taxon1, Level3.class);
         assertTrue("There should not be any constraint violations despite both accepted taxa sharing the same name as the sec reference is different",constraintViolations.isEmpty());
 	}
 	
@@ -108,7 +108,7 @@ public class TaxonNameCannotBeAcceptedAndSynonymTest extends CdmIntegrationTest 
 	public void testTaxonAndSynonymWithSameNameSameSec() {
 		synonym.setName(name1);
 		assert taxon1.getName().getTaxonBases().size() == 2;
-        Set<ConstraintViolation<Taxon>> constraintViolations  = validator.validate(taxon1, Level2.class);
+        Set<ConstraintViolation<Taxon>> constraintViolations  = validator.validate(taxon1, Level3.class);
         assertTrue("There should be a single constraint violation as this taxon shares the same name as synonym and is according to the same authority, sec1",!constraintViolations.isEmpty());
 	}
 }

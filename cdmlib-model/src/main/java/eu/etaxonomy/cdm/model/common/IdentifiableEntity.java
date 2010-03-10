@@ -99,8 +99,8 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 	@XmlElement(name = "TitleCache", required = true)
 	@XmlJavaTypeAdapter(FormattedTextAdapter.class)
 	@Column(length=255, name="titleCache")
-	@Fields({@Field(index = org.hibernate.search.annotations.Index.TOKENIZED),
-	     	 @Field(name = "titleCache_forSort", index = org.hibernate.search.annotations.Index.UN_TOKENIZED)
+	@Fields({@Field(name = "titleCache_tokenized",index = org.hibernate.search.annotations.Index.TOKENIZED),
+	     	 @Field(index = org.hibernate.search.annotations.Index.UN_TOKENIZED)
 	})
 	@FieldBridge(impl=StripHtmlBridge.class)
 	@Match(value=MatchMode.CACHE, cacheReplaceMode=ReplaceMode.ALL)
@@ -112,40 +112,36 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 	@XmlElement(name = "ProtectedTitleCache")
 	protected boolean protectedTitleCache;
 	
-    @XmlElementWrapper(name = "Rights")
+    @XmlElementWrapper(name = "Rights", nillable = true)
     @XmlElement(name = "Rights")
     @OneToMany(fetch = FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE, CascadeType.DELETE_ORPHAN})
 	//TODO
 	@Merge(MergeMode.ADD_CLONE)
-	@NotNull
-	private Set<Rights> rights = new HashSet<Rights>();
+	private Set<Rights> rights;
     
-    @XmlElementWrapper(name = "Credits")
+    @XmlElementWrapper(name = "Credits", nillable = true)
     @XmlElement(name = "Credit")
     @IndexColumn(name="sortIndex", base = 0)
 	@OneToMany(fetch = FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE, CascadeType.DELETE_ORPHAN})
     //TODO
 	@Merge(MergeMode.ADD_CLONE)
-	@NotNull
-	private List<Credit> credits = new ArrayList<Credit>();
+	private List<Credit> credits;
 	
-    @XmlElementWrapper(name = "Extensions")
+    @XmlElementWrapper(name = "Extensions", nillable = true)
     @XmlElement(name = "Extension")
     @OneToMany(fetch = FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE, CascadeType.DELETE_ORPHAN})
 	@Merge(MergeMode.ADD_CLONE)
-	@NotNull
-	private Set<Extension> extensions = new HashSet<Extension>();
+	private Set<Extension> extensions;
 	
-    @XmlElementWrapper(name = "Sources")
+    @XmlElementWrapper(name = "Sources", nillable = true)
     @XmlElement(name = "IdentifiableSource")
     @OneToMany(fetch = FetchType.LAZY)		
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE, CascadeType.DELETE_ORPHAN})
 	@Merge(MergeMode.ADD_CLONE)
-	@NotNull
-	private Set<IdentifiableSource> sources = new HashSet<IdentifiableSource>();
+	private Set<IdentifiableSource> sources;
     
     @XmlTransient
 	@Transient
@@ -252,13 +248,13 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 	 * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#addRights(eu.etaxonomy.cdm.model.media.Rights)
 	 */
 	public void addRights(Rights right){
-		this.rights.add(right);
+		getRights().add(right);
 	}
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#removeRights(eu.etaxonomy.cdm.model.media.Rights)
 	 */
 	public void removeRights(Rights right){
-		this.rights.remove(right);
+		getRights().remove(right);
 	}
 
 	
@@ -273,14 +269,14 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 	 * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#getCredits(int)
 	 */
 	public Credit getCredits(int index){
-		return this.credits.get(index);
+		return getCredits().get(index);
 	}
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#addCredit(eu.etaxonomy.cdm.model.common.Credit)
 	 */
 	public void addCredit(Credit credit){
-		this.credits.add(credit);
+		getCredits().add(credit);
 	}
 	
 
@@ -288,21 +284,21 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 	 * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#addCredit(eu.etaxonomy.cdm.model.common.Credit, int)
 	 */
 	public void addCredit(Credit credit, int index){
-		this.credits.add(index, credit);
+		getCredits().add(index, credit);
 	}
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#removeCredit(eu.etaxonomy.cdm.model.common.Credit)
 	 */
 	public void removeCredit(Credit credit){
-		this.credits.remove(credit);
+		getCredits().remove(credit);
 	}
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#removeCredit(int)
 	 */
 	public void removeCredit(int index){
-		this.credits.remove(index);
+		getCredits().remove(index);
 	}
 	
 	
@@ -326,7 +322,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 	public void addExtension(Extension extension){
 		if (extension != null){
 			extension.setExtendedObj(this);
-			this.extensions.add(extension);
+			getExtensions().add(extension);
 		}
 	}
 	/* (non-Javadoc)
@@ -335,7 +331,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 	public void removeExtension(Extension extension){
 		if (extension != null){
 			extension.setExtendedObj(null);
-			this.extensions.remove(extension);
+			getExtensions().remove(extension);
 		}
 	}
 
@@ -373,7 +369,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 			if (oldSourcedObj != null && oldSourcedObj != this){
 				oldSourcedObj.getSources().remove(source);
 			}
-			this.sources.add(source);
+			getSources().add(source);
 			source.setSourcedObj(this);
 		}
 	}
@@ -382,7 +378,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 	 * @see eu.etaxonomy.cdm.model.common.ISourceable#removeSource(eu.etaxonomy.cdm.model.common.IOriginalSource)
 	 */
 	public void removeSource(IdentifiableSource source) {
-		this.sources.remove(source);
+		getSources().remove(source);
 	}
 	
 //******************************** TO STRING *****************************************************/	
@@ -511,28 +507,28 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 		
 		//Extensions
 		result.extensions = new HashSet<Extension>();
-		for (Extension extension : this.extensions ){
+		for (Extension extension : getExtensions() ){
 			Extension newExtension = (Extension)extension.clone();
 			result.addExtension(newExtension);
 		}
 		
 		//OriginalSources
 		result.sources = new HashSet<IdentifiableSource>();
-		for (IdentifiableSource source : this.sources){
+		for (IdentifiableSource source : getSources()){
 			IdentifiableSource newSource = (IdentifiableSource)source.clone();
 			result.addSource(newSource);
 		}
 		
 		//Rights
 		result.rights = new HashSet<Rights>();
-        for(Rights rights : this.rights) {
+        for(Rights rights : getRights()) {
         	result.addRights(rights);
         }
 
 		
 		//Rights
 		result.credits = new ArrayList<Credit>();
-        for(Credit credit : this.credits) {
+        for(Credit credit : getCredits()) {
         	result.addCredit(credit);
         }
 

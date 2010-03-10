@@ -21,7 +21,7 @@ import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-import org.springframework.security.GrantedAuthority;
+import org.springframework.security.core.GrantedAuthority;
 
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Institution;
@@ -48,6 +48,7 @@ import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.model.description.MeasurementUnit;
 import eu.etaxonomy.cdm.model.description.MediaKey;
 import eu.etaxonomy.cdm.model.description.Modifier;
+import eu.etaxonomy.cdm.model.description.PolytomousKey;
 import eu.etaxonomy.cdm.model.description.PresenceTerm;
 import eu.etaxonomy.cdm.model.description.Scope;
 import eu.etaxonomy.cdm.model.description.Sex;
@@ -133,7 +134,6 @@ import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
 		"eventBases",
 	    "references",
 	    "typeDesignations",
-	    "featureNodes",
 	    "featureTrees",
 	    "taxonNodes",
 	    "taxonomicTrees",
@@ -215,12 +215,11 @@ public class DataSet {
     protected List<eu.etaxonomy.cdm.model.occurrence.Collection> collections = new ArrayList<eu.etaxonomy.cdm.model.occurrence.Collection>();
         
     @XmlElementWrapper(name = "FeatureTrees")
-    @XmlElement(name = "FeatureTree", namespace = "http://etaxonomy.eu/cdm/model/description/1.0")
+    @XmlElements({
+      @XmlElement(name = "FeatureTree", namespace = "http://etaxonomy.eu/cdm/model/description/1.0", type = FeatureTree.class),
+      @XmlElement(name = "PolytomousKey", namespace = "http://etaxonomy.eu/cdm/model/description/1.0", type = PolytomousKey.class)
+    })
     protected List<FeatureTree> featureTrees = new ArrayList<FeatureTree>();
-    
-    @XmlElementWrapper(name = "FeatureNodes")
-    @XmlElement(name = "FeatureNodes", namespace = "http://etaxonomy.eu/cdm/model/description/1.0")
-    protected List<FeatureNode> featureNodes = new ArrayList<FeatureNode>();
     
     @XmlElementWrapper(name = "TaxonomicTrees")
     @XmlElement(name = "TaxonomicTree", namespace = "http://etaxonomy.eu/cdm/model/taxon/1.0")
@@ -822,16 +821,5 @@ public class DataSet {
 	public void addUser(User deproxy) {
 		this.users.add(deproxy);
 		
-	}
-
-	public void setFeatureNodes(List<FeatureNode> featureNodesdeproxy) {
-		this.featureNodes = featureNodesdeproxy;
-		
-	}
-
-	public List<FeatureNode> getFeatureNodes() {
-	
-		return featureNodes;
-	}
-    
+	}    
 }

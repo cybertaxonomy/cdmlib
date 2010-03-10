@@ -344,9 +344,14 @@ public class DefaultMatchStrategy extends StrategyBase implements IMatchStrategy
 		boolean result;
 		List<IMatchable> list1 = (List<IMatchable>)value1;
 		List<IMatchable> list2 = (List<IMatchable>)value2;
-		if (list1.size()!= list2.size()){
+		if(list1 == null && list2 == null) {
+			return true;
+		}
+		
+		if ((list1 != null && list2 == null) || (list1 == null && list2 != null) || (list1.size()!= list2.size())){
 			return false;
 		}
+		
 		result = true;
 		for (int i = 0; i < list1.size(); i++){
 			IMatchable listObject1 = list1.get(i);

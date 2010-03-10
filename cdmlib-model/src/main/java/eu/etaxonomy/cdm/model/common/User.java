@@ -19,7 +19,6 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -38,12 +37,14 @@ import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
+
+
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
-import org.springframework.security.GrantedAuthority;
-import org.springframework.security.userdetails.UserDetails;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import eu.etaxonomy.cdm.model.agent.Person;
 
@@ -141,20 +142,18 @@ public class User extends CdmBase implements UserDetails {
 	
 	@XmlTransient
 	@Transient
-	private GrantedAuthority[] authorities;
+	private Set<GrantedAuthority> authorities;
 	
 	private void initAuthorities() {
-		Set<GrantedAuthority> allAuthorities = new TreeSet<GrantedAuthority>();
-		allAuthorities.addAll(grantedAuthorities);
+		authorities = new HashSet<GrantedAuthority>();
+		authorities.addAll(grantedAuthorities);
 		for(Group group : groups) {
-			allAuthorities.addAll(group.getGrantedAuthorities());
+			authorities.addAll(group.getGrantedAuthorities());
 		}
-		
-		authorities = allAuthorities.toArray(new GrantedAuthority[allAuthorities.size()]);
 	}
 	
 	@Transient
-	public GrantedAuthority[] getAuthorities() {
+	public Set<GrantedAuthority> getAuthorities() {
 		if(authorities == null) initAuthorities();
 		return authorities;
 	}

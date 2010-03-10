@@ -320,6 +320,7 @@ public class DefaultMergeStrategy extends StrategyBase implements IMergeStrategy
 			if (Set.class.isAssignableFrom(fieldType) || List.class.isAssignableFrom(fieldType)){
 				Collection<ICdmBase> secondCollection = (Collection<ICdmBase>)field.get(mergeSecond);
 				List<ICdmBase> removeList = new ArrayList<ICdmBase>();
+				if(secondCollection != null) {
 				for (ICdmBase obj : secondCollection){
 					Object objectToAdd; 
 					if (mergeMode == MergeMode.ADD){
@@ -333,6 +334,7 @@ public class DefaultMergeStrategy extends StrategyBase implements IMergeStrategy
 					}
 					addMethod.invoke(mergeFirst, objectToAdd);
 					removeList.add(obj);
+				}
 				}
 				for (ICdmBase removeObj : removeList ){
 					//removeMethod.invoke(mergeSecond, removeObj);

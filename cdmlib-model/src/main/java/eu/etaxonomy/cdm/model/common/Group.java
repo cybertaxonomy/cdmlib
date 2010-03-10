@@ -28,7 +28,7 @@ import org.hibernate.annotations.NaturalId;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
-import org.springframework.security.GrantedAuthority;
+import org.springframework.security.core.GrantedAuthority;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Group", propOrder = {

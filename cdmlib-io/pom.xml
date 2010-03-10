@@ -57,13 +57,6 @@
     <dependency>
       <groupId>xmlunit</groupId>
       <artifactId>xmlunit</artifactId>
-    </dependency>
-    <dependency><!-- Required for TestingAuthenticationProvider etc until 2.5.0 [SEC-1010] -->
-  		<groupId>org.springframework.security</groupId>
-    	<artifactId>spring-security-core</artifactId>
-    	<version>2.0.4</version>
-  		<type>test-jar</type>
-  		<scope>test</scope>
   	</dependency>
   	<dependency>
 		<groupId>org.apache.poi</groupId>

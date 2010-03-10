@@ -17,7 +17,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 import org.hibernate.annotations.NaturalId;
-import org.springframework.security.GrantedAuthority;
+import org.springframework.security.core.GrantedAuthority;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "GrantedAuthority", propOrder = {
