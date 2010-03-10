@@ -92,7 +92,7 @@ import eu.etaxonomy.cdm.remote.editor.UUIDPropertyEditor;
  *
  */
 @Controller
-@RequestMapping(value = {"/*/portal/taxon/*", "/*/portal/taxon/*/*", "/*/portal/name/*/*", "/*/portal/taxon/*/media/*/*"})
+@RequestMapping(value = {"/*/portal/taxon/*", "/*/portal/taxon/*/*", "/*/portal/name/*/*", "/*/portal/taxon/*/media/*/*", "/*/portal/taxon/*/subtree/media/*/*"})
 public class TaxonPortalController extends BaseController<TaxonBase, ITaxonService>
 {
 	public static final Logger logger = Logger.getLogger(TaxonPortalController.class);
@@ -126,13 +126,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 			"descriptions.elements.area.$",
 			"descriptions.elements.multilanguageText",
 			"descriptions.elements.media.representations.parts",
-			
-			//taxonomic nodes
-			
-			"taxonNodes.$",
-			"taxonNodes.taxonomicTree.$",
-			"taxonNodes.childNodes.$"
-			
+						
 //			// typeDesignations
 //			"name.typeDesignations.$",
 //			"name.typeDesignations.citation.authorTeam",
@@ -140,6 +134,12 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 //			"name.typeDesignations.typeStatus.representations",
 //			"name.typeDesignations.typeSpecimen.media.representations.parts"
 			
+			});
+	
+	private static final List<String> TAXON_WITH_NODES_INIT_STRATEGY = Arrays.asList(new String []{
+			"taxonNodes.$",
+			"taxonNodes.taxonomicTree.$",
+			"taxonNodes.childNodes.$"
 			});
 	
 	private static final List<String> SIMPLE_TAXON_INIT_STRATEGY = Arrays.asList(new String []{
@@ -583,9 +583,20 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 		method = RequestMethod.GET)
 	public List<Media> doGetMedia(HttpServletRequest request, HttpServletResponse response)throws IOException {
 		logger.info("doGetMedia()" + request.getServletPath());
-		Taxon t = getCdmBase(request, response, TAXON_INIT_STRATEGY, Taxon.class);
+		Taxon t = getCdmBase(request, response, null, Taxon.class);
 		String path = request.getServletPath();
-		List<Media> returnMedia = getMediaForTaxon(t, path);
+		List<Media> returnMedia = getMediaForTaxon(t, path, 6);
+		return returnMedia;
+	}
+	
+	@RequestMapping(
+			value = {"/*/portal/taxon/*/subtree/media/*/*"},
+			method = RequestMethod.GET)
+		public List<Media> doGetSubtreeMedia(HttpServletRequest request, HttpServletResponse response)throws IOException {
+		logger.info("doGetMedia()" + request.getServletPath());
+		Taxon t = getCdmBase(request, response, TAXON_WITH_NODES_INIT_STRATEGY, Taxon.class);
+		String path = request.getServletPath();
+		List<Media> returnMedia = getMediaForTaxon(t, path, 7);
 		TaxonNode node;
 		//looking for all medias of genus
 		if (t.getTaxonNodes().size()>0){
@@ -600,18 +611,15 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 			Taxon childTaxon;
 			for (TaxonNode child : children){
 				childTaxon = child.getTaxon();
-				childTaxon = (Taxon)taxonService.load(childTaxon.getUuid(), TAXON_INIT_STRATEGY);
-				returnMedia.addAll(getMediaForTaxon(childTaxon, path));
+				childTaxon = (Taxon)taxonService.load(childTaxon.getUuid(), null);
+				returnMedia.addAll(getMediaForTaxon(childTaxon, path, 7));
 			}
-			
-			
 		}
-		
-		
 		return returnMedia;
 	}
+
 	
-	private List<Media> getMediaForTaxon(Taxon taxon, String path){
+	private List<Media> getMediaForTaxon(Taxon taxon, String path, int mimeTypeTokenPosition){
 		
 		Pager<TaxonDescription> p = 
 			descriptionService.getTaxonDescriptions(taxon, null, null, null, null, TAXONDESCRIPTION_INIT_STRATEGY);
@@ -638,8 +646,8 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 		//String path = request.getServletPath();
 		String[] pathTokens = path.split("/");
 		
-		String[] mimeTypes = pathTokens[6].split(",");
-		String[] sizeTokens = pathTokens[7].split(",");
+		String[] mimeTypes = pathTokens[mimeTypeTokenPosition].split(",");
+		String[] sizeTokens = pathTokens[mimeTypeTokenPosition + 1].split(",");
 		Integer widthOrDuration = null;
 		Integer height = null;
 		Integer size = null;
@@ -684,6 +692,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 				}
 				returnMedia.add(media);
 			} catch (NoSuchElementException nse) {
+				logger.debug(nse);
 				/* IGNORE */
 			}
 		}

@@ -78,8 +78,7 @@ public class TaxonTreeServiceImpl extends IdentifiableServiceBase<TaxonomicTree,
 	}
 	
 	public TaxonNode loadTaxonNode(TaxonNode taxonNode, List<String> propertyPaths){
-		defaultBeanInitializer.initialize(taxonNode, propertyPaths);
-		return taxonNode;
+		return taxonNodeDao.load(taxonNode.getUuid(), propertyPaths);
 	}
 	
 	/*
