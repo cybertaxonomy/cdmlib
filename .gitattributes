@@ -1967,6 +1967,7 @@ cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/agent/InstitutionTypeTest.java
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/agent/InstitutionalMembershipTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/common/AnnotationTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/common/CdmBaseTest.java -text
+cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/common/CdmMetaDataTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/common/DefaultTermInitializerTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/common/DefinedTermBaseTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/common/ExtensionTypeTest.java -text
