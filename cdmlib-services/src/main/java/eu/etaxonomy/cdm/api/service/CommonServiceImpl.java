@@ -275,7 +275,7 @@ public class CommonServiceImpl extends ServiceBase<OriginalSourceBase,IOriginalS
 	 * @see eu.etaxonomy.cdm.api.service.ICommonService#isDatabaseSchemaCompatible()
 	 */
 	public boolean isDatabaseSchemaCompatible() {
-		int index = 2;  //TODO probably 3 is the better
+		int index = 3; 
 		Map<MetaDataPropertyName, CdmMetaData> allCommonData = getCdmMetaData();
 
 		if (allCommonData.containsKey(MetaDataPropertyName.DB_SCHEMA_VERSION)) {
