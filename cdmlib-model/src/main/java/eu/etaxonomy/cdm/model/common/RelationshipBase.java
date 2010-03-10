@@ -86,7 +86,7 @@ public abstract class RelationshipBase<FROM extends IRelated, TO extends IRelate
 	
 	public abstract TYPE getType();
 	
-	protected abstract void setType(TYPE type);
+	public abstract void setType(TYPE type);
 	
 	protected abstract FROM getRelatedFrom();
 	

@@ -664,6 +664,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/Level3.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/annotation/BasionymsMustShareEpithetsAndAuthors.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/annotation/ChildTaxaMustBeLowerRankThanParent.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/annotation/ChildTaxaMustDeriveNameFromParent.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/annotation/ChildTaxaMustNotSkipRanks.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/annotation/CorrectEpithetsForRank.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/annotation/HomotypicSynonymsShouldBelongToGroup.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/annotation/MustHaveAuthority.java -text
@@ -674,6 +675,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/annotation/TaxonNameCanno
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/constraint/BasionymsMustShareEpithetsAndAuthorsValidator.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/constraint/ChildTaxaMustBeLowerRankThanParentValidator.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/constraint/ChildTaxaMustDeriveNameFromParentValidator.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/constraint/ChildTaxaMustNotSkipRanksValidator.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/constraint/CorrectEpithetsForRankValidator.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/constraint/HomotypicSynonymsShouldBelongToGroupValidator.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/constraint/MustHaveAuthorityValidator.java -text

@@ -217,7 +217,7 @@ public class NameRelationship extends RelationshipBase<TaxonNameBase, TaxonNameB
 		this.relatedTo = relatedTo;
 	}
 
-	protected void setType(NameRelationshipType type) {
+	public void setType(NameRelationshipType type) {
 		this.type = type;
 	}
 }

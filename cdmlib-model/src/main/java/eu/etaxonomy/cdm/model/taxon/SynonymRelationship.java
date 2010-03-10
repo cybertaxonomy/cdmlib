@@ -251,7 +251,7 @@ public class SynonymRelationship extends RelationshipBase<Synonym, Taxon, Synony
 		this.relatedTo = relatedTo;
 	}
 
-	protected void setType(SynonymRelationshipType type) {
+	public void setType(SynonymRelationshipType type) {
 		this.type = type;
 	}
 }
