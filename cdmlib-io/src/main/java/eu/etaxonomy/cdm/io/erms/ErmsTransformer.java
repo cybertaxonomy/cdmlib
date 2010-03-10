@@ -10,6 +10,10 @@
 
 package eu.etaxonomy.cdm.io.erms;
 
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
+
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
@@ -34,6 +38,60 @@ public final class ErmsTransformer implements IDbImportTransformer{
 	public static final int SOURCE_USE_NEW_COMBINATION_REFERENCE = 6;
 	public static final int SOURCE_USE_STATUS_SOURCE = 7;
 	public static final int SOURCE_USE_EMENDATION = 8;
+	
+	
+	public static final UUID uuidEuropeanMarineWaters = UUID.fromString("47389e42-3b3c-4873-bded-ac030db86462");
+	public static final UUID uuidMediterraneanSea = UUID.fromString("bde8a624-23c4-4ac3-b381-11287f5d656a");
+	public static final UUID uuidWhiteSea = UUID.fromString("bf14bfb6-8925-4696-911c-56d3e90d4491");
+	public static final UUID uuidNorthSea = UUID.fromString("d5ea2d46-ed97-4996-8702-0619231626b6");
+	public static final UUID uuidBalticSea = UUID.fromString("0031cda2-4b27-49de-afa3-fdec75ee5060");
+	public static final UUID uuidBlackSea = UUID.fromString("1f110909-7462-4ee8-a7ff-9f976701dd1d");
+	public static final UUID uuidBarentsSea = UUID.fromString("b6fd9a4d-0ad0-4481-a0b4-5dd71c8fda8b");
+	public static final UUID uuidCaspianSea = UUID.fromString("0d3c3850-0cec-48d0-ac0d-9cbcc2c60552");
+	public static final UUID uuidPortugueseExclusiveEconomicZone = UUID.fromString("642336f3-41cb-4546-9a1c-ffeccbad2ef5");
+	public static final UUID uuidBelgianExclusiveEconomicZone = UUID.fromString("02138b0f-cee1-4c56-ae12-72a5b36839af");
+	public static final UUID uuidFrenchExclusiveEconomicZone = UUID.fromString("9f6a61c0-c329-4a61-a47a-f5f383737c36");
+	public static final UUID uuidEnglishChannel = UUID.fromString("3ed96112-bb4a-47df-b489-2c198d6f0fd2");
+	public static final UUID uuidAdriaticSea = UUID.fromString("da376165-f970-4f0c-99db-773686d66591");
+	public static final UUID uuidBiscayBay = UUID.fromString("1461cf85-e0b4-4ac3-bdf5-efe6053af174");
+	public static final UUID uuidDutchExclusiveEconomicZone = UUID.fromString("a1bd019e-e2af-41c8-a5e4-c7245b575759");
+	public static final UUID uuidUnitedKingdomExclusiveEconomicZone = UUID.fromString("18ab29c0-3104-4102-ada8-6711fcdbdbb8");
+	public static final UUID uuidSpanishExclusiveEconomicZone = UUID.fromString("68c2823a-2173-4c31-89e8-bc1439abf448");
+	public static final UUID uuidEgyptianExclusiveEconomicZone = UUID.fromString("e542bcfd-0ff1-49ac-a6ae-c0b3db39e560");
+	public static final UUID uuidGrecianExclusiveEconomicZone = UUID.fromString("1d14857c-30be-4d3a-bae9-8e79da0d9d1d");
+	public static final UUID uuidTirrenoSea = UUID.fromString("6e4f8a9d-ca6e-4b23-9211-446fac35a052");
+	public static final UUID uuidIcelandicExclusiveEconomicZone = UUID.fromString("a121a8fb-6287-4661-9228-0816affdf3f5");
+	public static final UUID uuidIrishExclusiveeconomicZone = UUID.fromString("c8fe2626-53d2-4eaa-962b-99662470b96e");
+	public static final UUID uuidIrishSea = UUID.fromString("9e972ad5-b153-419e-ab7e-935b93ff881b");
+	public static final UUID uuidItalianExclusiveEconomicZone = UUID.fromString("10557c6f-a33f-443a-ad8b-cd31c105bddd");
+	public static final UUID uuidNorwegianSea = UUID.fromString("c6c44372-a963-41b2-8c12-a0b46425c523");
+	public static final UUID uuidMoroccanExclusiveEconomicZone = UUID.fromString("e62e5cc2-922f-4807-abd6-1b4bffbced49");
+	public static final UUID uuidNorwegianExclusiveEconomicZone = UUID.fromString("bd317f3e-9719-4943-ae3e-19ff0c9761be");
+	public static final UUID uuidSkagerrak = UUID.fromString("5f63ece2-d112-4b39-80a0-bffb6c78654c");
+	public static final UUID uuidTunisianExclusiveEconomicZone = UUID.fromString("b5972b59-6a36-45ea-88f7-0c520c99b99d");
+	public static final UUID uuidWaddenSea = UUID.fromString("ae0c4555-8e19-479d-8a4f-e1b62939c09b");
+	public static final UUID uuidBeltSea = UUID.fromString("780f4144-f157-45e8-ae42-cacb3ec369ba");
+	public static final UUID uuidMarmaraSea = UUID.fromString("3db5d470-3265-4187-ba5a-01ecfb94ce6e");
+	public static final UUID uuidSeaofAzov = UUID.fromString("5b02cb7e-8a83-446c-af47-936a2ea31a8a");
+	public static final UUID uuidAegeanSea = UUID.fromString("65d6c443-225f-4ac0-9c86-da51502b46df");
+	public static final UUID uuidBulgarianExclusiveEconomicZone = UUID.fromString("13e5aa21-3971-4d06-bc34-ed75a31c2f66");
+	public static final UUID uuidSouthBalticproper = UUID.fromString("1c2a672d-4948-455d-9877-42a8da1ff1d0");
+	public static final UUID uuidBalticProper = UUID.fromString("12ddfcad-bf8f-43d8-a772-15ae69d37b20");
+	public static final UUID uuidNorthBalticproper = UUID.fromString("183ec305-1e9e-4cb1-93cc-703bd64de28f");
+	public static final UUID uuidArchipelagoSea = UUID.fromString("d9ea9d63-ec4d-4b01-967d-13f28b09a715");
+	public static final UUID uuidBothnianSea = UUID.fromString("926f7fa3-b0a4-4763-85eb-4c3804a72333");
+	public static final UUID uuidGermanExclusiveEconomicZone = UUID.fromString("a6dbea03-090f-4f5f-bf5e-27a00ab4cc1d");
+	public static final UUID uuidSwedishExclusiveEconomicZone = UUID.fromString("94b0e605-d241-44e1-a301-d8911c34fdef");
+	public static final UUID uuidUkrainianExclusiveEconomicZone = UUID.fromString("b7335968-e34f-412c-91a5-5dc0b73310e7");
+	public static final UUID uuidMadeiranExclusiveEconomicZone = UUID.fromString("c00f442a-4c08-4452-b979-825fa3ff97b2");
+	public static final UUID uuidLebaneseExclusiveEconomicZone = UUID.fromString("d9f7dc8b-9041-4206-bf5f-5226c42a5978");
+	public static final UUID uuidSpanishExclusiveEconomicZoneMediterraneanpart = UUID.fromString("94ccf304-9687-41b6-a14b-019509adb723");
+	public static final UUID uuidEstonianExclusiveEconomicZone = UUID.fromString("ed17f07b-357f-4b4a-9653-3a564fdd32e5");
+	public static final UUID uuidCroatianExclusiveEconomicZone = UUID.fromString("028b045a-b1bd-4a72-a4c2-a3d0473b8257");
+	public static final UUID uuidBalearSea = UUID.fromString("478f30f0-01b1-4772-9d01-3a0a571f41c3");
+	public static final UUID uuidTurkishExclusiveEconomicZone = UUID.fromString("3d552e73-2bf5-4f36-8a91-94fbead970e5");
+	public static final UUID uuidDanishExclusiveEconomicZone = UUID.fromString("53d5a8bd-804b-4cbb-b5ad-f47ff6433db0");
+
 	
 	
 	public static NomenclaturalCode kingdomId2NomCode(Integer kingdomId){
@@ -68,7 +126,8 @@ public final class ErmsTransformer implements IDbImportTransformer{
 		}
 	}
 
-	public static Language languageByErmsAbbrev(String ermsAbbrev){
+	public static Language languageByErmsAbbrev(String ermsAbbrev) throws IllegalArgumentException {
+		Set<String> unhandledLanguages = new HashSet<String>();
 		if (CdmUtils.isEmpty(ermsAbbrev)){return null;
 		}else if (ermsAbbrev.equals("af")){return Language.AFRIKAANS();
 		}else if (ermsAbbrev.equals("al")){return Language.ALEUT();
@@ -171,7 +230,34 @@ public final class ErmsTransformer implements IDbImportTransformer{
 		}else if (ermsAbbrev.equals("yp")){return Language.YUPIKS();
 //		}else if (ermsAbbrev.equals("yu")){return Language.YUKAGIR();  639-2: mis;  639-3 yux (Southern Yukaghir)- ykg(Tundra Yukaghir)
 		}else{
-			String warning = "Unknown language abbreviation " + ermsAbbrev;
+			unhandledLanguages.add("au");
+			unhandledLanguages.add("cl");
+			unhandledLanguages.add("ec");
+			unhandledLanguages.add("ek");
+			unhandledLanguages.add("eu");
+			unhandledLanguages.add("ev");
+			unhandledLanguages.add("fc");
+			unhandledLanguages.add("gu");
+			unhandledLanguages.add("ha");
+			unhandledLanguages.add("ji");
+			unhandledLanguages.add("ka");
+			unhandledLanguages.add("kr");
+			unhandledLanguages.add("lp");
+			unhandledLanguages.add("mh");
+			unhandledLanguages.add("mk");
+			unhandledLanguages.add("ne");
+			unhandledLanguages.add("os");
+			unhandledLanguages.add("pi");
+			unhandledLanguages.add("sh");
+			unhandledLanguages.add("tm");
+			unhandledLanguages.add("sh");
+			unhandledLanguages.add("yu");
+			
+			if (unhandledLanguages.contains(ermsAbbrev)){
+				logger.warn("Unhandled language '" + ermsAbbrev + "' replaced by 'UNDETERMINED'" );
+				return Language.UNDETERMINED();
+			}
+			String warning = "New language abbreviation " + ermsAbbrev;
 			logger.warn(warning);
 			throw new IllegalArgumentException(warning);
 		}
@@ -179,5 +265,125 @@ public final class ErmsTransformer implements IDbImportTransformer{
 		
 		
 	}
+	
+	public static UUID uuidFromGuName(String guName){
+		if (CdmUtils.isEmpty(guName)){return null;
+		}else if (guName.equalsIgnoreCase("European Marine Waters")){ return uuidEuropeanMarineWaters;
+		}else if (guName.equalsIgnoreCase("Mediterranean Sea")){ return uuidMediterraneanSea;
+		}else if (guName.equalsIgnoreCase("White Sea")){ return uuidWhiteSea;
+		}else if (guName.equalsIgnoreCase("North Sea")){ return uuidNorthSea;
+		}else if (guName.equalsIgnoreCase("Baltic Sea")){ return uuidBalticSea;
+		}else if (guName.equalsIgnoreCase("Black Sea")){ return uuidBlackSea;
+		}else if (guName.equalsIgnoreCase("Barents Sea")){ return uuidBarentsSea;
+		}else if (guName.equalsIgnoreCase("Caspian Sea")){ return uuidCaspianSea;
+		}else if (guName.equalsIgnoreCase("Portuguese Exclusive Economic Zone")){ return uuidPortugueseExclusiveEconomicZone;
+		}else if (guName.equalsIgnoreCase("Belgian Exclusive Economic Zone")){ return uuidBelgianExclusiveEconomicZone;
+		}else if (guName.equalsIgnoreCase("French Exclusive Economic Zone")){ return uuidFrenchExclusiveEconomicZone;
+		}else if (guName.equalsIgnoreCase("English Channel")){ return uuidEnglishChannel;
+		}else if (guName.equalsIgnoreCase("Adriatic Sea")){ return uuidAdriaticSea;
+		}else if (guName.equalsIgnoreCase("Biscay Bay")){ return uuidBiscayBay;
+		}else if (guName.equalsIgnoreCase("Dutch Exclusive Economic Zone")){ return uuidDutchExclusiveEconomicZone;
+		}else if (guName.equalsIgnoreCase("United Kingdom Exclusive Economic Zone")){ return uuidUnitedKingdomExclusiveEconomicZone;
+		}else if (guName.equalsIgnoreCase("Spanish Exclusive Economic Zone")){ return uuidSpanishExclusiveEconomicZone;
+		}else if (guName.equalsIgnoreCase("Egyptian Exclusive Economic Zone")){ return uuidEgyptianExclusiveEconomicZone;
+		}else if (guName.equalsIgnoreCase("Grecian Exclusive Economic Zone")){ return uuidGrecianExclusiveEconomicZone;
+		}else if (guName.equalsIgnoreCase("Tirreno Sea")){ return uuidTirrenoSea;
+		}else if (guName.equalsIgnoreCase("Icelandic Exclusive Economic Zone")){ return uuidIcelandicExclusiveEconomicZone;
+		}else if (guName.equalsIgnoreCase("Irish Exclusive economic Zone")){ return uuidIrishExclusiveeconomicZone;
+		}else if (guName.equalsIgnoreCase("Irish Sea")){ return uuidIrishSea;
+		}else if (guName.equalsIgnoreCase("Italian Exclusive Economic Zone")){ return uuidItalianExclusiveEconomicZone;
+		}else if (guName.equalsIgnoreCase("Norwegian Sea")){ return uuidNorwegianSea;
+		}else if (guName.equalsIgnoreCase("Moroccan Exclusive Economic Zone")){ return uuidMoroccanExclusiveEconomicZone;
+		}else if (guName.equalsIgnoreCase("Norwegian Exclusive Economic Zone")){ return uuidNorwegianExclusiveEconomicZone;
+		}else if (guName.equalsIgnoreCase("Skagerrak")){ return uuidSkagerrak;
+		}else if (guName.equalsIgnoreCase("Tunisian Exclusive Economic Zone")){ return uuidTunisianExclusiveEconomicZone;
+		}else if (guName.equalsIgnoreCase("Wadden Sea")){ return uuidWaddenSea;
+		}else if (guName.equalsIgnoreCase("Belt Sea")){ return uuidBeltSea;
+		}else if (guName.equalsIgnoreCase("Marmara Sea")){ return uuidMarmaraSea;
+		}else if (guName.equalsIgnoreCase("Sea of Azov")){ return uuidSeaofAzov;
+		}else if (guName.equalsIgnoreCase("Aegean Sea")){ return uuidAegeanSea;
+		}else if (guName.equalsIgnoreCase("Bulgarian Exclusive Economic Zone")){ return uuidBulgarianExclusiveEconomicZone;
+		}else if (guName.equalsIgnoreCase("South Baltic proper")){ return uuidSouthBalticproper;
+		}else if (guName.equalsIgnoreCase("Baltic Proper")){ return uuidBalticProper;
+		}else if (guName.equalsIgnoreCase("North Baltic proper")){ return uuidNorthBalticproper;
+		}else if (guName.equalsIgnoreCase("Archipelago Sea")){ return uuidArchipelagoSea;
+		}else if (guName.equalsIgnoreCase("Bothnian Sea")){ return uuidBothnianSea;
+		}else if (guName.equalsIgnoreCase("German Exclusive Economic Zone")){ return uuidGermanExclusiveEconomicZone;
+		}else if (guName.equalsIgnoreCase("Swedish Exclusive Economic Zone")){ return uuidSwedishExclusiveEconomicZone;
+		}else if (guName.equalsIgnoreCase("Ukrainian Exclusive Economic Zone")){ return uuidUkrainianExclusiveEconomicZone;
+		}else if (guName.equalsIgnoreCase("Madeiran Exclusive Economic Zone")){ return uuidMadeiranExclusiveEconomicZone;
+		}else if (guName.equalsIgnoreCase("Lebanese Exclusive Economic Zone")){ return uuidLebaneseExclusiveEconomicZone;
+		}else if (guName.equalsIgnoreCase("Spanish Exclusive Economic Zone [Mediterranean part]")){ return uuidSpanishExclusiveEconomicZoneMediterraneanpart;
+		}else if (guName.equalsIgnoreCase("Estonian Exclusive Economic Zone")){ return uuidEstonianExclusiveEconomicZone;
+		}else if (guName.equalsIgnoreCase("Croatian Exclusive Economic Zone")){ return uuidCroatianExclusiveEconomicZone;
+		}else if (guName.equalsIgnoreCase("Balear Sea")){ return uuidBalearSea;
+		}else if (guName.equalsIgnoreCase("Turkish Exclusive Economic Zone")){ return uuidTurkishExclusiveEconomicZone;
+		}else if (guName.equalsIgnoreCase("Danish Exclusive Economic Zone")){ return uuidDanishExclusiveEconomicZone;
+		}else{
+			throw new IllegalArgumentException("Unknown area " + guName);
+		}
+		
+	}
+
+	
+	public static UUID uuidFromGuId(Integer guId){
+		if (guId == null){return null;
+		}else if (guId == 7788){ return uuidEuropeanMarineWaters;
+		}else if (guId == 7789){ return uuidMediterraneanSea;
+		}else if (guId == 7791){ return uuidWhiteSea;
+		}else if (guId == 7792){ return uuidNorthSea;
+		}else if (guId == 7793){ return uuidBalticSea;
+		}else if (guId == 7794){ return uuidBlackSea;
+		}else if (guId == 7795){ return uuidBarentsSea;
+		}else if (guId == 7796){ return uuidCaspianSea;
+		}else if (guId == 7799){ return uuidPortugueseExclusiveEconomicZone;
+		}else if (guId == 7802){ return uuidBelgianExclusiveEconomicZone;
+		}else if (guId == 7805){ return uuidFrenchExclusiveEconomicZone;
+		}else if (guId == 7818){ return uuidEnglishChannel;
+		}else if (guId == 7821){ return uuidAdriaticSea;
+		}else if (guId == 7831){ return uuidBiscayBay;
+		}else if (guId == 7839){ return uuidDutchExclusiveEconomicZone;
+		}else if (guId == 7862){ return uuidUnitedKingdomExclusiveEconomicZone;
+		}else if (guId == 7869){ return uuidSpanishExclusiveEconomicZone;
+		}else if (guId == 7902){ return uuidEgyptianExclusiveEconomicZone;
+		}else if (guId == 7939){ return uuidGrecianExclusiveEconomicZone;
+		}else if (guId == 7946){ return uuidTirrenoSea;
+		}else if (guId == 7964){ return uuidIcelandicExclusiveEconomicZone;
+		}else if (guId == 7974){ return uuidIrishExclusiveeconomicZone;
+		}else if (guId == 7975){ return uuidIrishSea;
+		}else if (guId == 7978){ return uuidItalianExclusiveEconomicZone;
+		}else if (guId == 7980){ return uuidNorwegianSea;
+		}else if (guId == 8027){ return uuidMoroccanExclusiveEconomicZone;
+		}else if (guId == 8050){ return uuidNorwegianExclusiveEconomicZone;
+		}else if (guId == 8072){ return uuidSkagerrak;
+		}else if (guId == 8143){ return uuidTunisianExclusiveEconomicZone;
+		}else if (guId == 8155){ return uuidWaddenSea;
+		}else if (guId == 8203){ return uuidBeltSea;
+		}else if (guId == 8205){ return uuidMarmaraSea;
+		}else if (guId == 8837){ return uuidSeaofAzov;
+		}else if (guId == 9146){ return uuidAegeanSea;
+		}else if (guId == 9178){ return uuidBulgarianExclusiveEconomicZone;
+		}else if (guId == 9903){ return uuidSouthBalticproper;
+		}else if (guId == 9904){ return uuidBalticProper;
+		}else if (guId == 9905){ return uuidNorthBalticproper;
+		}else if (guId == 9908){ return uuidArchipelagoSea;
+		}else if (guId == 9909){ return uuidBothnianSea;
+		}else if (guId == 10515){ return uuidGermanExclusiveEconomicZone;
+		}else if (guId == 10528){ return uuidSwedishExclusiveEconomicZone;
+		}else if (guId == 10529){ return uuidUkrainianExclusiveEconomicZone;
+		}else if (guId == 10564){ return uuidMadeiranExclusiveEconomicZone;
+		}else if (guId == 10574){ return uuidLebaneseExclusiveEconomicZone;
+		}else if (guId == 10659){ return uuidSpanishExclusiveEconomicZoneMediterraneanpart;
+		}else if (guId == 10708){ return uuidEstonianExclusiveEconomicZone;
+		}else if (guId == 10778){ return uuidCroatianExclusiveEconomicZone;
+		}else if (guId == 10779){ return uuidBalearSea;
+		}else if (guId == 10782){ return uuidTurkishExclusiveEconomicZone;
+		}else if (guId == 11039){ return uuidDanishExclusiveEconomicZone;
+		
+		}else{
+			throw new IllegalArgumentException("Unknown area id " + guId);
+		}
+
+}	
 	
 }

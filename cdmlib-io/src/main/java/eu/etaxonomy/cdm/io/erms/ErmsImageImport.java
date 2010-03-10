@@ -21,16 +21,11 @@ import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.io.common.IOValidator;
 import eu.etaxonomy.cdm.io.common.ResultSetPartitioner;
-import eu.etaxonomy.cdm.io.common.mapping.DbImportExtensionMapper;
 import eu.etaxonomy.cdm.io.common.mapping.DbImportImageGalleryMapper;
 import eu.etaxonomy.cdm.io.common.mapping.DbImportMapping;
 import eu.etaxonomy.cdm.io.common.mapping.DbImportObjectCreationMapper;
-import eu.etaxonomy.cdm.io.common.mapping.DbNotYetImplementedMapper;
 import eu.etaxonomy.cdm.io.erms.validation.ErmsImageImportValidator;
-import eu.etaxonomy.cdm.io.erms.validation.ErmsReferenceImportValidator;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.ExtensionType;
-import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
@@ -67,7 +62,7 @@ public class ErmsImageImport  extends ErmsImportBase<TaxonBase> {
 	@Override
 	protected String getIdQuery() {
 		String strIdQuery = 
-			" SELECT tu_id " + 
+			" SELECT tu_id, img_thumb " +   //tu_id is not a key
 			" FROM images " + 
 			" ORDER BY tu_id, img_thumb, img_url ";
 		return strIdQuery;
@@ -79,11 +74,11 @@ public class ErmsImageImport  extends ErmsImportBase<TaxonBase> {
 	 */
 	@Override
 	protected String getRecordQuery(ErmsImportConfigurator config) {
-		//FIXME tripleId(or doppel id weil kein eindeutiger Schlüssel
 		String strRecordQuery = 
 			" SELECT * " + 
 			" FROM images " +
-			" WHERE ( images.tu_id IN (" + ID_LIST_TOKEN + ") )";
+			" WHERE ( images.tu_id IN (" + ID_LIST_TOKEN + ") AND " +
+				"  images.img_thumb IN (" + ID_LIST_TOKEN + ")  )";
 		return strRecordQuery;
 	}
 

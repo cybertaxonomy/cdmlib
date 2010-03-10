@@ -35,7 +35,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
  * @param <CDM_BASE>
  * @param <STATE>
  */
-public class DbImportNameTypeDesignationMapper<STATE extends DbImportStateBase, T extends IDbImportTransformed> extends MultipleAttributeMapperBase implements IDbImportMapper<STATE, CdmBase> {
+public class DbImportNameTypeDesignationMapper<STATE extends DbImportStateBase<?,?>, T extends IDbImportTransformed> extends MultipleAttributeMapperBase implements IDbImportMapper<STATE, CdmBase> {
 	private static final Logger logger = Logger.getLogger(DbImportNameTypeDesignationMapper.class);
 	
 //******************************** FACTORY METHOD ***************************************************/
@@ -84,7 +84,7 @@ public class DbImportNameTypeDesignationMapper<STATE extends DbImportStateBase, 
 	 */
 	public CdmBase invoke(ResultSet rs, CdmBase cdmBase) throws SQLException {
 		STATE state = importMapperHelper.getState();
-		CdmImportBase currentImport = state.getCurrentImport();
+		CdmImportBase currentImport = state.getCurrentIO();
 		if (currentImport instanceof ICheckIgnoreMapper){
 			boolean ignoreRecord = ((ICheckIgnoreMapper)currentImport).checkIgnoreMapper(this, rs);
 			if (ignoreRecord){

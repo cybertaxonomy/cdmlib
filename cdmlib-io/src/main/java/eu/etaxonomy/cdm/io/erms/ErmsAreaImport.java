@@ -22,15 +22,17 @@ import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.io.common.IOValidator;
 import eu.etaxonomy.cdm.io.common.ResultSetPartitioner;
+import eu.etaxonomy.cdm.io.common.mapping.DbImportAnnotationMapper;
 import eu.etaxonomy.cdm.io.common.mapping.DbImportExtensionMapper;
 import eu.etaxonomy.cdm.io.common.mapping.DbImportMapping;
 import eu.etaxonomy.cdm.io.common.mapping.DbImportObjectCreationMapper;
 import eu.etaxonomy.cdm.io.common.mapping.DbImportStringMapper;
-import eu.etaxonomy.cdm.io.common.mapping.DbNotYetImplementedMapper;
 import eu.etaxonomy.cdm.io.erms.validation.ErmsAreaImportValidator;
+import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
+import eu.etaxonomy.cdm.model.location.NamedAreaType;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 
@@ -44,8 +46,7 @@ public class ErmsAreaImport  extends ErmsImportBase<NamedArea> {
 
 	private static final Logger logger = Logger.getLogger(ErmsAreaImport.class);
 
-	private static final String AREA_NAMESPACE = "gu";
-	
+	public static final String AREA_NAMESPACE = "gu";
 	
 	public static final UUID GAZETTEER_UUID = UUID.fromString("dcfa124a-1028-49cd-aea5-fdf9bd396c1a");
 	
@@ -83,11 +84,8 @@ public class ErmsAreaImport  extends ErmsImportBase<NamedArea> {
 			
 			mapping.addMapper(DbImportObjectCreationMapper.NewInstance(this, "id", AREA_NAMESPACE)); //id
 			mapping.addMapper(DbImportStringMapper.NewInstance("gu_name", "titleCache"));
-			//FIXME extension type
-			mapping.addMapper(DbImportExtensionMapper.NewInstance("gazetteer_id", ExtensionType.ABBREVIATION()));
-			
-			//not yet implemented -> annotation
-			mapping.addMapper(DbNotYetImplementedMapper.NewInstance("note"));
+			mapping.addMapper(DbImportExtensionMapper.NewInstance("gazetteer_id",GAZETTEER_UUID, "Gazetteer ID", "Gazetteer ID", "G-ID"));
+			mapping.addMapper(DbImportAnnotationMapper.NewInstance("note", AnnotationType.EDITORIAL()));
 
 		}
 		return mapping;
@@ -113,7 +111,7 @@ public class ErmsAreaImport  extends ErmsImportBase<NamedArea> {
 		}
 	
 		partitioner.startDoSave();
-		getReferenceService().save(areasToSave);
+		getTermService().save(areasToSave);
 		return success;
 	}
 
@@ -133,9 +131,15 @@ public class ErmsAreaImport  extends ErmsImportBase<NamedArea> {
 	 */
 	public NamedArea createObject(ResultSet rs, ErmsImportState state) throws SQLException {
 		int id = rs.getInt("id");
-		NamedArea area = NamedArea.NewInstance();
-		//TODO representations
-		
+		String strGuName = rs.getString("gu_name");
+		UUID uuid = ErmsTransformer.uuidFromGuName(strGuName);
+		String label = strGuName;
+		String text = strGuName;
+		//TODO
+		String labelAbbrev = String.valueOf(id);
+		NamedAreaType areaType = null;
+		NamedAreaLevel level = null;
+		NamedArea area = getNamedArea(state, uuid, label, text, labelAbbrev, areaType, level);
 		return area;
 	}
 

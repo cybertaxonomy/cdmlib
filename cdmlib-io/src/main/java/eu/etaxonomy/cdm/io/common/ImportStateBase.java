@@ -35,7 +35,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
  * @created 11.05.2009
  * @version 1.0
  */
-public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase> extends IoStateBase<CONFIG> {
+public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO extends CdmImportBase> extends IoStateBase<CONFIG, IO> {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ImportStateBase.class);
 	

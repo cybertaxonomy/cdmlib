@@ -11,18 +11,14 @@
 package eu.etaxonomy.cdm.io.common;
 
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import org.apache.log4j.Logger;
-import org.joda.time.DateTime;
-import org.joda.time.Duration;
-import org.joda.time.ReadableDuration;
 import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
@@ -43,11 +39,6 @@ public class ResultSetPartitioner<STATE extends IPartitionedState> {
 		ResultSetPartitioner resultSetPartitioner = new ResultSetPartitioner(source, strIdQuery, strRecordQuery, partitionSize);
 		return resultSetPartitioner;
 	}
-	
-//	public static ResultSetPartitioner NewInstance(ResultSet resultSet, int partitionSize) throws SQLException{
-//		ResultSetPartitioner resultSetPartitioner = new ResultSetPartitioner(resultSet, partitionSize);
-//		return resultSetPartitioner;
-//	}
 
 //*********************** VARIABLES *************************************************/
 	
@@ -81,14 +72,21 @@ public class ResultSetPartitioner<STATE extends IPartitionedState> {
 	private Map<Object, Map<String, CdmBase>> relatedObjects;
 	
 	/**
-	 * number of records handled in the partition
+	 * Number of records handled in the partition
 	 */
 	private int partitionSize;
 	
 	/**
-	 * A list of ids handled in this partition 
+	 * Lists of ids handled in this partition (must be an array of lists because sometimes 
+	 * we have non-single keys 
 	 */
-	private List<Integer> currentIdList;
+	private List<String>[] currentIdLists;
+	
+	/**
+	 * The sql type of the id columns.
+	 * @see Types
+	 */
+	private int[] currentIdListType;
 	
 	/**
 	 * counter for the partitions
@@ -158,22 +156,38 @@ public class ResultSetPartitioner<STATE extends IPartitionedState> {
 	}
 	
 	/**
-	 * Increases the partition counter and generates the new <code>currentIdList</code>
+	 * Increases the partition counter and generates the <code>currentIdLists</code> for this partition
 	 * @return
 	 * @throws SQLException
 	 */
 	public boolean nextPartition() throws SQLException{
 		boolean result = false;
+		ResultSetMetaData metaData = idResultSet.getMetaData();
+		int nOfIdColumns = metaData.getColumnCount();
 		currentPartition++;
-		currentIdList = new ArrayList<Integer>();
+		currentIdLists = new ArrayList[nOfIdColumns];
+		currentIdListType = new int[nOfIdColumns];
+		
+		for (int col = 0; col< currentIdLists.length; col++){
+			currentIdLists[col] = new ArrayList<String>();
+			currentIdListType[col] = metaData.getColumnType(col + 1);
+		}
+		List<String> currentIdList;
+		
 		int i = 0;
+		//for each record
 		for (i = 0; i < partitionSize; i++){
 			if (idResultSet.next() == false){
 				break; 
 			}
-			int nextId = idResultSet.getInt(1);
-			currentIdList.add(nextId);
-			result = true;
+			//for each column
+			for (int colIndex = 0; colIndex < nOfIdColumns; colIndex++){
+				Object oNextId = idResultSet.getObject(colIndex + 1);
+				String strNextId = String.valueOf(oNextId); 
+				currentIdList = currentIdLists[colIndex];
+				currentIdList.add(strNextId);
+			}
+			result = true; //true if at least one record was read
 		}
 		rowsInCurrentPartition = i;
 		
@@ -195,18 +209,54 @@ public class ResultSetPartitioner<STATE extends IPartitionedState> {
 	/**
 	 * Computes the value result set needed to handle a partition by using the <code>currentIdList</code>
 	 * created during {@link #nextPartition}
-	 * @return
+	 * @return ResultSet
 	 */
 	private ResultSet makePartitionResultSet(){
-		String strIdList = "";
-		for (Integer id: currentIdList){
-			strIdList = CdmUtils.concat(",", strIdList, String.valueOf(id));
+		int nColumns = currentIdLists.length;
+		String[] strIdLists = new String[nColumns];
+		
+		String strRecordQuery = strRecordQueryTemplate;
+		for (int col = 0; col < nColumns; col++){
+			for (String id: currentIdLists[col]){
+				id = addApostropheIfNeeded(id, currentIdListType[col]);
+				strIdLists[col] = CdmUtils.concat(",", strIdLists[col], id);
+			}
+			strRecordQuery = strRecordQuery.replaceFirst(IPartitionedIO.ID_LIST_TOKEN, strIdLists[col]);
 		}
-		String strRecordQuery = strRecordQueryTemplate.replace(IPartitionedIO.ID_LIST_TOKEN, strIdList);
+		
 		ResultSet resultSet = source.getResultSet(strRecordQuery);
 		return resultSet;
 	}
 	
+	/**
+	 * @param id
+	 * @param i
+	 * @return
+	 */
+	private String addApostropheIfNeeded(String id, int sqlType) {
+		String result = id;
+		if (isStringType(sqlType)){
+			result = "'" + id + "'";
+		}
+		return result;
+	}
+
+	/**
+	 * @param sqlType
+	 * @return
+	 */
+	private boolean isStringType(int sqlType) {
+		if(sqlType == Types.INTEGER){
+			return false;  //standard case
+		}else if (sqlType == Types.CHAR || sqlType == Types.CLOB || sqlType == Types.NVARCHAR || 
+				sqlType == Types.VARCHAR || sqlType == Types.LONGVARCHAR || sqlType == Types.NCHAR ||
+				sqlType == Types.LONGNVARCHAR || sqlType == Types.NCLOB){
+			return true;
+		}else{
+			return false;
+		}
+	}
+
 	public Map<String, ? extends CdmBase> getObjectMap(Object key){
 		Map<String, ? extends CdmBase> objectMap = this.relatedObjects.get(key);
 		return objectMap;

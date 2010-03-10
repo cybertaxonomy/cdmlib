@@ -92,7 +92,7 @@ public class DbImportTaxIncludedInMapper<STATE extends DbImportStateBase<ImportC
 	 */
 	public CdmBase invoke(ResultSet rs, CdmBase cdmBase) throws SQLException {
 		STATE state = importMapperHelper.getState();
-		CdmImportBase currentImport = state.getCurrentImport();
+		CdmImportBase currentImport = state.getCurrentIO();
 		if (currentImport instanceof ICheckIgnoreMapper){
 			boolean ignoreRecord = ((ICheckIgnoreMapper)currentImport).checkIgnoreMapper(this, rs);
 			if (ignoreRecord){
@@ -166,7 +166,7 @@ public class DbImportTaxIncludedInMapper<STATE extends DbImportStateBase<ImportC
 		}
 		TaxonomicTree tree = (TaxonomicTree)state.getRelatedObject(TAXONOMIC_TREE_NAMESPACE, treeKey);
 		if (tree == null){
-			ITaxonTreeService service = state.getCurrentImport().getTaxonTreeService();
+			ITaxonTreeService service = state.getCurrentIO().getTaxonTreeService();
 			tree = service.getTaxonomicTreeByUuid(treeUuid);
 			if (tree == null){
 				String treeName = state.getConfig().getTaxonomicTreeName();

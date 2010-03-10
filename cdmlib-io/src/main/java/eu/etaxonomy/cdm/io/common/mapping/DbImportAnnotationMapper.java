@@ -19,6 +19,7 @@ import javax.mail.MethodNotSupportedException;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.service.ITermService;
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.DbImportStateBase;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.Annotation;
@@ -40,6 +41,7 @@ public class DbImportAnnotationMapper extends DbSingleAttributeImportMapperBase<
 	private static final Logger logger = Logger.getLogger(DbImportAnnotationMapper.class);
 	
 	/**
+	 * FIXME Warning: the annotation type creation is not yet implemented
 	 * @param dbAttributeString
 	 * @param uuid
 	 * @param label
@@ -54,6 +56,7 @@ public class DbImportAnnotationMapper extends DbSingleAttributeImportMapperBase<
 	}
 	
 	/**
+	 * * FIXME Warning: the annotation type creation is not yet implemented
 	 * @param dbAttributeString
 	 * @param uuid
 	 * @param label
@@ -89,6 +92,7 @@ public class DbImportAnnotationMapper extends DbSingleAttributeImportMapperBase<
 		UUID uuid = null;
 		return new DbImportAnnotationMapper(dbAttributeString, uuid, label, text, labelAbbrev, language, annotationType);
 	}
+
 	
 	private AnnotationType annotationType;
 	private String label;
@@ -161,8 +165,13 @@ public class DbImportAnnotationMapper extends DbSingleAttributeImportMapperBase<
 	 */
 	@Override
 	protected AnnotatableEntity doInvoke(AnnotatableEntity annotatableEntity, Object dbValue){
-		Annotation annotation = Annotation.NewInstance((String)dbValue, annotationType, language);
-		annotatableEntity.addAnnotation(annotation);
+		String strAnnotation = (String)dbValue;
+		if (CdmUtils.isNotEmpty(strAnnotation));{
+			Annotation annotation = Annotation.NewInstance(strAnnotation, annotationType, language);
+			if (annotatableEntity != null){
+				annotatableEntity.addAnnotation(annotation);
+			}
+		}
 		return annotatableEntity;
 	}
 

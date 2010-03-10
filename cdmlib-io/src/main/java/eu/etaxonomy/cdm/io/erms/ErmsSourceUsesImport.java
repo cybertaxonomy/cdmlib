@@ -9,7 +9,14 @@
 
 package eu.etaxonomy.cdm.io.erms;
 
-import static eu.etaxonomy.cdm.io.erms.ErmsTransformer.*;
+import static eu.etaxonomy.cdm.io.erms.ErmsTransformer.SOURCE_USE_ADDITIONAL_SOURCE;
+import static eu.etaxonomy.cdm.io.erms.ErmsTransformer.SOURCE_USE_BASIS_OF_RECORD;
+import static eu.etaxonomy.cdm.io.erms.ErmsTransformer.SOURCE_USE_EMENDATION;
+import static eu.etaxonomy.cdm.io.erms.ErmsTransformer.SOURCE_USE_NEW_COMBINATION_REFERENCE;
+import static eu.etaxonomy.cdm.io.erms.ErmsTransformer.SOURCE_USE_ORIGINAL_DESCRIPTION;
+import static eu.etaxonomy.cdm.io.erms.ErmsTransformer.SOURCE_USE_REDESCRIPTION;
+import static eu.etaxonomy.cdm.io.erms.ErmsTransformer.SOURCE_USE_SOURCE_OF_SYNONYMY;
+import static eu.etaxonomy.cdm.io.erms.ErmsTransformer.SOURCE_USE_STATUS_SOURCE;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -29,7 +36,6 @@ import eu.etaxonomy.cdm.io.common.mapping.DbImportMapping;
 import eu.etaxonomy.cdm.io.erms.validation.ErmsSourceUsesImportValidator;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DescriptionElementSource;
-import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
@@ -89,7 +95,9 @@ public class ErmsSourceUsesImport  extends ErmsImportBase<CommonTaxonName> {
 		String strRecordQuery = 
 			" SELECT * " + 
 			" FROM tu_sources INNER JOIN sourceuses ON tu_sources.sourceuse_id = sourceuses.sourceuse_id" +
-			" WHERE ( sourceuses.id IN (" + ID_LIST_TOKEN + ") )";
+			" WHERE ( tu_sources.tu_id IN (" + ID_LIST_TOKEN + ") AND " +
+			" 		tu_sources.sourceuse_id IN (" + ID_LIST_TOKEN + ") AND " + 
+			"		tu_sources.source_id IN (" + ID_LIST_TOKEN + ")  )";
 		return strRecordQuery;
 	}
 
@@ -310,7 +318,7 @@ public class ErmsSourceUsesImport  extends ErmsImportBase<CommonTaxonName> {
 			while (rs.next()){
 				handleForeignKey(rs, taxonIdSet, "tu_id");
 				handleForeignKey(rs, nameIdSet, "tu_id");
-				handleForeignKey(rs, nameIdSet, "sources_id");
+				handleForeignKey(rs, referenceIdSet, "source_id");
 			}
 			
 			//name map

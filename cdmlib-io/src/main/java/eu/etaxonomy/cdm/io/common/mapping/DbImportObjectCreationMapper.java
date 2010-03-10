@@ -30,7 +30,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
  * @created 12.05.2009
  * @version 1.0
  */
-public class DbImportObjectCreationMapper<CDM_BASE extends CdmBase, STATE extends DbImportStateBase> extends MultipleAttributeMapperBase implements IDbImportMapper<STATE, CDM_BASE> {
+public class DbImportObjectCreationMapper<CDM_BASE extends CdmBase, STATE extends DbImportStateBase<?,?>> extends MultipleAttributeMapperBase implements IDbImportMapper<STATE, CDM_BASE> {
 	private static final Logger logger = Logger.getLogger(DbImportObjectCreationMapper.class);
 	
 //******************************** FACTORY METHOD ***************************************************/
@@ -73,6 +73,7 @@ public class DbImportObjectCreationMapper<CDM_BASE extends CdmBase, STATE extend
 	 * @see eu.etaxonomy.cdm.io.common.mapping.IDbImportMapper#invoke(java.sql.ResultSet, eu.etaxonomy.cdm.model.common.CdmBase)
 	 */
 	public CDM_BASE invoke(ResultSet rs, CDM_BASE cdmBase) throws SQLException {
+		//CdmImportBase currentIO = importMapperHelper.getState().getCurrentIO();
 		cdmBase = mappingImport.createObject(rs, importMapperHelper.getState());
 		addOriginalSource(rs, cdmBase);
 		return cdmBase;

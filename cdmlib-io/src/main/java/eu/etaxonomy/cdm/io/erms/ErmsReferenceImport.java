@@ -32,6 +32,7 @@ import eu.etaxonomy.cdm.io.common.mapping.DbNotYetImplementedMapper;
 import eu.etaxonomy.cdm.io.erms.validation.ErmsReferenceImportValidator;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
@@ -93,7 +94,7 @@ public class ErmsReferenceImport  extends ErmsImportBase<ReferenceBase> {
 			mapping.addMapper(DbImportAnnotationMapper.NewInstance("source_note", AnnotationType.EDITORIAL(), Language.DEFAULT()));
 			
 			//or as Extension?
-			mapping.addMapper(DbImportStringMapper.NewInstance("source_link", "uri"));
+			mapping.addMapper(DbImportExtensionMapper.NewInstance("source_link", ExtensionType.URL()));
 			
 			//not yet implemented
 			mapping.addMapper(DbNotYetImplementedMapper.NewInstance("source_type"));

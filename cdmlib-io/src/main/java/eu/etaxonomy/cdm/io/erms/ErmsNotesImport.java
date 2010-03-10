@@ -21,18 +21,17 @@ import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.io.common.IOValidator;
 import eu.etaxonomy.cdm.io.common.ResultSetPartitioner;
+import eu.etaxonomy.cdm.io.common.mapping.DbImportAnnotationCreationMapper;
 import eu.etaxonomy.cdm.io.common.mapping.DbImportAnnotationMapper;
 import eu.etaxonomy.cdm.io.common.mapping.DbImportMapping;
 import eu.etaxonomy.cdm.io.common.mapping.DbImportObjectCreationMapper;
 import eu.etaxonomy.cdm.io.common.mapping.DbImportObjectMapper;
-import eu.etaxonomy.cdm.io.common.mapping.DbImportStringMapper;
+import eu.etaxonomy.cdm.io.common.mapping.DbNotYetImplementedMapper;
 import eu.etaxonomy.cdm.io.erms.validation.ErmsNoteImportValidator;
-import eu.etaxonomy.cdm.io.erms.validation.ErmsReferenceImportValidator;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 
@@ -80,9 +79,12 @@ public class ErmsNotesImport  extends ErmsImportBase<Annotation> {
 		if (mapping == null){
 			mapping = new DbImportMapping();
 			
-			mapping.addMapper(DbImportObjectCreationMapper.NewInstance(this, "id", NOTES_NAMESPACE)); //id
-			mapping.addMapper(DbImportAnnotationMapper.NewInstance("note", AnnotationType.EDITORIAL(), null));
+			mapping.addMapper(DbImportAnnotationCreationMapper.NewInstance("note","tu_id", "id", ErmsTaxonImport.TAXON_NAMESPACE, AnnotationType.EDITORIAL(), null));
+//			mapping.addMapper(DbImportObjectCreationMapper.NewInstance(this, "id", NOTES_NAMESPACE)); //id
+//			mapping.addMapper(DbImportAnnotationMapper.NewInstance("note", AnnotationType.EDITORIAL(), null));
 			mapping.addMapper(DbImportObjectMapper.NewInstance("lan_id", "language", LANGUAGE_NAMESPACE));
+			// not yet implemented
+			mapping.addMapper(DbNotYetImplementedMapper.NewInstance("type"));
 		}
 		return mapping;
 	}
@@ -118,6 +120,7 @@ public class ErmsNotesImport  extends ErmsImportBase<Annotation> {
 	public Annotation createObject(ResultSet rs, ErmsImportState state)
 			throws SQLException {
 		Annotation annotation = Annotation.NewDefaultLanguageInstance(null);
+
 //		String languageId = rs.getString("lan_id");
 //		String note = rs.getString("note");
 //		Language language = (Language)state.getRelatedObject(LANGUAGE_NAMESPACE, languageId);

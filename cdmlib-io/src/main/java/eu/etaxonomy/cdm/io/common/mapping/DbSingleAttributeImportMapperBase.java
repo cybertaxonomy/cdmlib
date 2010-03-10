@@ -39,6 +39,7 @@ public abstract class DbSingleAttributeImportMapperBase<STATE extends DbImportSt
 	protected boolean ignore = false;;
 
 	protected Method destinationMethod = null;
+	protected Class<?> targetClass;
 	
 	/**
 	 * @param dbAttributString
@@ -72,7 +73,7 @@ public abstract class DbSingleAttributeImportMapperBase<STATE extends DbImportSt
 	public void initialize(STATE state, Class<? extends CdmBase> destinationClass) {
 		importMapperHelper.initialize(state, destinationClass);
 		try {
-			Class<?> targetClass = getTargetClass(destinationClass);
+			targetClass = getTargetClass(destinationClass);
 			Class<?> parameterType = getTypeClass();
 			String methodName = getMethodName(parameterType);
 			destinationMethod = targetClass.getMethod(methodName, parameterType);
@@ -190,9 +191,9 @@ public abstract class DbSingleAttributeImportMapperBase<STATE extends DbImportSt
 		if (ignore){
 			return cdmBase;
 		}
-		Object value = getValue(rs);
+		Object dbValue = getValue(rs);
 		
-		String dbValue = rs.getString(getSourceAttribute());
+//		String dbValue = rs.getString(getSourceAttribute());
 		return doInvoke(cdmBase, dbValue);
 	}
 	
@@ -292,11 +293,13 @@ public abstract class DbSingleAttributeImportMapperBase<STATE extends DbImportSt
 	}
 	
 	protected boolean checkDbColumnExists() throws MethodNotSupportedException{
-		//TODO remove cast
-		Source source = (Source)getState().getConfig().getSource();
-		String tableName = getTableName();
-		String attributeName = getSourceAttribute();
-		return source.checkColumnExists(tableName, attributeName);
+//		//TODO remove cast
+//		Source source = (Source)getState().getConfig().getSource();
+//		String tableName = getTableName();
+//		String attributeName = getSourceAttribute();
+//		return source.checkColumnExists(tableName, attributeName);
+		//TODO not possible as long as tableName is not initialized
+		return true;
 	}
 	
 	
@@ -326,7 +329,17 @@ public abstract class DbSingleAttributeImportMapperBase<STATE extends DbImportSt
 			
 	}
 	
-	
+
+	/**
+	 * @param rs
+	 * @return
+	 * @throws SQLException
+	 */
+	protected String getStringDbValue(ResultSet rs, String attribute) throws SQLException {
+		Object oId = rs.getObject(attribute);
+		String id = String.valueOf(oId);
+		return id;
+	}
 //	public String toString(){
 //		String sourceAtt = CdmUtils.Nz(getSourceAttribute());
 //		String destAtt = CdmUtils.Nz(getDestinationAttribute());

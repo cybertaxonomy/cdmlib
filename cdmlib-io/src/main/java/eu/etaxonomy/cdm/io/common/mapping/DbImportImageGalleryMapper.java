@@ -12,9 +12,7 @@ package eu.etaxonomy.cdm.io.common.mapping;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 
 import javax.mail.MethodNotSupportedException;
 
@@ -25,17 +23,14 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportState;
 import eu.etaxonomy.cdm.io.common.DbImportStateBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.Extension;
-import eu.etaxonomy.cdm.model.common.ExtensionType;
-import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.media.Media;
-import eu.etaxonomy.cdm.model.media.MediaRepresentation;
-import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
+import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 /**
  * This class maps a database attribute to CDM extension added to the target class
@@ -100,9 +95,9 @@ public class DbImportImageGalleryMapper extends DbSingleAttributeImportMapperBas
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.mapping.DbSingleAttributeImportMapperBase#invoke(java.sql.ResultSet, eu.etaxonomy.cdm.model.common.CdmBase)
 	 */
-	public Taxon invoke(ResultSet rs, Taxon taxon) throws SQLException {
+	public TaxonBase invoke(ResultSet rs, TaxonBase taxonBase) throws SQLException {
 		String dbValue = rs.getString(getSourceAttribute());
-		return invoke(dbValue, taxon);
+		return invoke(dbValue, taxonBase);
 	}
 	
 	/**
@@ -110,11 +105,24 @@ public class DbImportImageGalleryMapper extends DbSingleAttributeImportMapperBas
 	 * @param identifiableEntity
 	 * @return
 	 */
-	private Taxon invoke(String dbValue, Taxon taxon){
+	private TaxonBase invoke(String dbValue, TaxonBase taxonBase){
 		if (ignore || CdmUtils.isEmpty(dbValue)){
-			return taxon;
+			return taxonBase;
 		}
 		boolean createNew = true;
+		Taxon taxon;
+		if (taxonBase.isInstanceOf(Synonym.class)){
+			Synonym synonym = taxonBase.deproxy(taxonBase, Synonym.class);
+			if (synonym.getAcceptedTaxa().size() > 0){
+				logger.warn("Media will be added to a synonyms accepted taxon");
+				taxon = synonym.getAcceptedTaxa().iterator().next();
+			}else{
+				throw new IllegalArgumentException("TaxonBase was of type synonym and does not belong to an accepted taxon");
+			}
+		}else{
+			taxon = taxonBase.deproxy(taxonBase, Taxon.class);
+		}
+		
 		TaxonDescription imageGallery = taxon.getImageGallery(createNew);
 		Set<DescriptionElementBase> elements = imageGallery.getElements();
 		DescriptionElementBase element = null;

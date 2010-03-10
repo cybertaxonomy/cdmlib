@@ -12,6 +12,8 @@ package eu.etaxonomy.cdm.io.taxonx;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.io.common.CdmImportBase;
+import eu.etaxonomy.cdm.io.common.CdmIoBase;
 import eu.etaxonomy.cdm.io.common.ImportStateBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 
@@ -20,7 +22,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
  * @created 11.05.2009
  * @version 1.0
  */
-public class TaxonXImportState extends ImportStateBase<TaxonXImportConfigurator>{
+public class TaxonXImportState extends ImportStateBase<TaxonXImportConfigurator, CdmImportBase>{
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TaxonXImportState.class);
 

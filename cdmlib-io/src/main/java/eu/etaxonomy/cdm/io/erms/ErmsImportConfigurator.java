@@ -62,13 +62,14 @@ public class ErmsImportConfigurator extends ImportConfiguratorBase<ErmsImportSta
 				, ErmsReferenceImport.class
 				, ErmsTaxonImport.class
 				, ErmsVernacularImport.class
-				, ErmsLinkImport.class
-				, ErmsImageImport.class
+				
 				, ErmsNotesImport.class
-//				, ErmsAreaImport.class
-//				, ErmsDrImport.class
+				, ErmsAreaImport.class
+				, ErmsDrImport.class
 				, ErmsSourceUsesImport.class
 				, ErmsTaxonRelationImport.class
+				, ErmsLinkImport.class  //kann weiter hoch
+				, ErmsImageImport.class
 		};	
 	}
 	

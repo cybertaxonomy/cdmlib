@@ -208,12 +208,8 @@ public class ErmsTaxonImport  extends ErmsImportBase<TaxonBase> {
 	
 	
 	public boolean doPartition(ResultSetPartitioner partitioner, ErmsImportState state) {
-		//TODO make more generic all import classes 
-		state.setCurrentImport(this);
-		
 		boolean success = true ;
 		Set taxaToSave = new HashSet<TaxonBase>();
-		
 		
  		DbImportMapping<?, ?> mapping = getMapping();
 		mapping.initialize(state, cdmTargetClass);

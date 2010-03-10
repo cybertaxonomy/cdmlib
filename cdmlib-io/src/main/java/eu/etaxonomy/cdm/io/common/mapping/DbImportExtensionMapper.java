@@ -22,6 +22,7 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportState;
+import eu.etaxonomy.cdm.io.common.CdmImportBase;
 import eu.etaxonomy.cdm.io.common.DbImportStateBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Extension;
@@ -93,13 +94,18 @@ public class DbImportExtensionMapper extends DbSingleAttributeImportMapperBase<D
 	
 //****************************** METHODS ***************************************************/
 	
-	/**
-	 * @param service
-	 * @param state
-	 * @param tableName
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.mapping.DbSingleAttributeImportMapperBase#initialize(eu.etaxonomy.cdm.io.common.DbImportStateBase, java.lang.Class)
 	 */
-	public void initialize(ITermService service, BerlinModelImportState state, Class<? extends CdmBase> destinationClass) {
+	@Override
+	public void initialize(DbImportStateBase<?,?> state, Class<? extends CdmBase> destinationClass) {
 		importMapperHelper.initialize(state, destinationClass);
+		CdmImportBase<?, ?> currentImport = state.getCurrentIO();
+		if (currentImport == null){
+			throw new IllegalStateException("Current import is not available. Please make sure the the state knows about the current import (state.setCurrentImport())) !"); 
+		}
+		ITermService service = currentImport.getTermService();
+		
 		try {
 			if (  checkDbColumnExists()){
 				if (this.extensionType == null){
@@ -109,10 +115,11 @@ public class DbImportExtensionMapper extends DbSingleAttributeImportMapperBase<D
 				ignore = true;
 			}
 		} catch (MethodNotSupportedException e) {
-			//do nothing
+			//do nothing  - checkDbColumnExists is not possible
 		}
 	}
 	
+
 	/**
 	 * @param valueMap
 	 * @param cdmBase
@@ -123,17 +130,6 @@ public class DbImportExtensionMapper extends DbSingleAttributeImportMapperBase<D
 		String dbValue = dbValueObject == null? null: dbValueObject.toString();
 		return invoke(dbValue, cdmBase);
 	}
-//	
-//	/**
-//	 * @param rs
-//	 * @param cdmBase
-//	 * @return
-//	 * @throws SQLException
-//	 */
-//	public boolean invoke(ResultSet rs, IdentifiableEntity cdmBase) throws SQLException{
-//		String dbValue  = rs.getString(this.getSourceAttribute());
-//		return invoke(dbValue, cdmBase);
-//	}
 	
 	/**
 	 * @param dbValue
@@ -205,13 +201,6 @@ public class DbImportExtensionMapper extends DbSingleAttributeImportMapperBase<D
 		return String.class;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.mapping.DbSingleAttributeImportMapperBase#initialize(eu.etaxonomy.cdm.io.common.DbImportStateBase, java.lang.Class)
-	 */
-	@Override
-	public void initialize(DbImportStateBase<?,?> state, Class<? extends CdmBase> destinationClass) {
-		super.importMapperHelper.initialize(state, destinationClass);
-	}
 	
 
 }

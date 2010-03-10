@@ -19,6 +19,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
+import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.io.common.ResultSetPartitioner;
 import eu.etaxonomy.cdm.io.common.mapping.DbImportMapping;
@@ -38,12 +39,9 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  * @created 09.03.2010
  * @version 1.0
  */
+@Component
 public class ErmsTaxonRelationImport extends ErmsImportBase<TaxonBase> implements ICheckIgnoreMapper, IDbImportTransformed{
 	private static final Logger logger = Logger.getLogger(ErmsTaxonRelationImport.class);
-	
-	public static final String TAXON_NAMESPACE = "Taxon";
-	public static final String NAME_NAMESPACE = "TaxonName";
-	
 	
 	public static final UUID TNS_EXT_UUID = UUID.fromString("41cb0450-ac84-4d73-905e-9c7773c23b05");
 	
@@ -67,9 +65,9 @@ public class ErmsTaxonRelationImport extends ErmsImportBase<TaxonBase> implement
 		if (mapping == null){
 			mapping = new DbImportMapping();
 			
-			mapping.addMapper(DbImportTaxIncludedInMapper.NewInstance("id", "tu_parent", TAXON_NAMESPACE, null)); //there is only one tree
-			mapping.addMapper(DbImportSynonymMapper.NewInstance("id", "tu_acctaxon", TAXON_NAMESPACE, null)); 			
-			mapping.addMapper(DbImportNameTypeDesignationMapper.NewInstance("id", "tu_typetaxon", NAME_NAMESPACE, "tu_typedesignationstatus"));
+			mapping.addMapper(DbImportTaxIncludedInMapper.NewInstance("id", "tu_parent", ErmsTaxonImport.TAXON_NAMESPACE, null)); //there is only one tree
+			mapping.addMapper(DbImportSynonymMapper.NewInstance("id", "tu_acctaxon", ErmsTaxonImport.TAXON_NAMESPACE, null)); 			
+			mapping.addMapper(DbImportNameTypeDesignationMapper.NewInstance("id", "tu_typetaxon", ErmsTaxonImport.NAME_NAMESPACE, "tu_typedesignationstatus"));
 			mapping.addMapper(DbNotYetImplementedMapper.NewInstance("tu_acctaxon"));
 		}
 		return mapping;
@@ -93,12 +91,8 @@ public class ErmsTaxonRelationImport extends ErmsImportBase<TaxonBase> implement
 	 * @see eu.etaxonomy.cdm.io.common.IPartitionedIO#doPartition(eu.etaxonomy.cdm.io.common.ResultSetPartitioner, eu.etaxonomy.cdm.io.common.IPartitionedState)
 	 */
 	public boolean doPartition(ResultSetPartitioner partitioner, ErmsImportState state) {
-		//TODO make more generic all import classes 
-		state.setCurrentImport(this);
-		
 		boolean success = true ;
 		Set taxaToSave = new HashSet<TaxonBase>();
-		
 		
  		DbImportMapping<?, ?> mapping = getMapping();
 		mapping.initialize(state, cdmTargetClass);

@@ -22,6 +22,7 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportState;
 import eu.etaxonomy.cdm.io.common.CdmImportBase;
 import eu.etaxonomy.cdm.io.common.DbImportStateBase;
+import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.erms.ICheckIgnoreMapper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DescriptionElementSource;
@@ -101,7 +102,7 @@ public class DbImportSynonymMapper<STATE extends DbImportStateBase> extends Mult
 	 */
 	public CdmBase invoke(ResultSet rs, CdmBase cdmBase) throws SQLException {
 		STATE state = importMapperHelper.getState();
-		CdmImportBase currentImport = state.getCurrentImport();
+		ICdmIO currentImport = state.getCurrentIO();
 		if (currentImport instanceof ICheckIgnoreMapper){
 			boolean ignoreRecord = ((ICheckIgnoreMapper)currentImport).checkIgnoreMapper(this, rs);
 			if (ignoreRecord){

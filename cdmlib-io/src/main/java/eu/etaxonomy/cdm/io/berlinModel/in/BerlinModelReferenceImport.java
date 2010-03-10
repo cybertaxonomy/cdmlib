@@ -100,7 +100,7 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 	protected boolean initializeMappers(BerlinModelImportState state){
 		for (CdmAttributeMapperBase mapper: classMappers){
 			if (mapper instanceof DbImportExtensionMapper){
-				((DbImportExtensionMapper)mapper).initialize(getTermService(), state, ReferenceBase.class);
+				((DbImportExtensionMapper)mapper).initialize(state, ReferenceBase.class);
 			}
 		}
 		return true;

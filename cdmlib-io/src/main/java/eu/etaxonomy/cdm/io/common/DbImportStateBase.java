@@ -23,11 +23,10 @@ import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
  * @created 11.05.2009
  * @version 1.0
  */
-public abstract class DbImportStateBase<CONFIG extends ImportConfiguratorBase, STATE extends DbImportStateBase> extends ImportStateBase<CONFIG> implements IPartitionedState {
+public abstract class DbImportStateBase<CONFIG extends ImportConfiguratorBase, STATE extends DbImportStateBase> extends ImportStateBase<CONFIG, CdmImportBase> implements IPartitionedState {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DbImportStateBase.class);
 	private RelatedObjectsHelper relatedObjectsHelper = new RelatedObjectsHelper();;
-	private CdmImportBase<CONFIG, STATE> currentImport;
 	//holds the taxonTrees needed for this partition, the key is a value that differentiate classifications
 	//like the taxons reference (secundum)
 	private Map<Integer, TaxonomicTree> partitionTaxonTreeMap = new HashMap<Integer, TaxonomicTree>();
@@ -62,19 +61,6 @@ public abstract class DbImportStateBase<CONFIG extends ImportConfiguratorBase, S
 		relatedObjectsHelper.setRelatedObjects(relatedObjects);
 	}
 
-	/**
-	 * @param currentImport the currentImport to set
-	 */
-	public void setCurrentImport(CdmImportBase<CONFIG, STATE> currentImport) {
-		this.currentImport = currentImport;
-	}
-
-	/**
-	 * @return the currentImport
-	 */
-	public CdmImportBase<CONFIG, STATE> getCurrentImport() {
-		return currentImport;
-	}
 
 //	/**
 //	 * @param curentTaxonTreeMap the curentTaxonTreeMap to set

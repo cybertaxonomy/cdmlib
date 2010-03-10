@@ -19,7 +19,6 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
-import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.IOValidator;
 import eu.etaxonomy.cdm.io.common.ResultSetPartitioner;
 import eu.etaxonomy.cdm.io.common.mapping.DbImportAnnotationMapper;
@@ -32,7 +31,6 @@ import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 
@@ -120,10 +118,12 @@ public class ErmsVernacularImport  extends ErmsImportBase<CommonTaxonName> {
 	public CommonTaxonName createObject(ResultSet rs, ErmsImportState state)
 			throws SQLException {
 		CommonTaxonName commonName = CommonTaxonName.NewInstance(null, null);
+		
 //		String languageId = rs.getString("lan_id");
 //		String verName = rs.getString("vername");
 //		Language language = (Language)state.getRelatedObject(LANGUAGE_NAMESPACE, languageId);
 //		CommonTaxonName commonName = CommonTaxonName.NewInstance(verName, language);
+		
 		return commonName;
 	}
 
@@ -155,7 +155,12 @@ public class ErmsVernacularImport  extends ErmsImportBase<CommonTaxonName> {
 			nameSpace = LANGUAGE_NAMESPACE;
 			Map<String, Language> languageMap = new HashMap<String, Language>();
 			for (String lanAbbrev: languageIdSet){
-				Language language = ErmsTransformer.languageByErmsAbbrev(lanAbbrev);
+				Language language = null;
+				try {
+					language = ErmsTransformer.languageByErmsAbbrev(lanAbbrev);
+				} catch (IllegalArgumentException e) {
+					e.printStackTrace();
+				}
 				languageMap.put(lanAbbrev, language);
 			}
 			result.put(nameSpace, languageMap);

@@ -1308,6 +1308,7 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/CdmAttributeMapperBas
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/CdmIoMapping.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/CdmSingleAttributeMapperBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/DbIgnoreMapper.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/DbImportAnnotationCreationMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/DbImportAnnotationMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/DbImportExtensionMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/DbImportImageGalleryMapper.java -text

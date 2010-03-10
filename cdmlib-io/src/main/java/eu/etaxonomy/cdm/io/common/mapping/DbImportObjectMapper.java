@@ -10,12 +10,14 @@
 
 package eu.etaxonomy.cdm.io.common.mapping;
 
+import java.lang.reflect.Method;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.DbImportStateBase;
+import eu.etaxonomy.cdm.io.common.ImportHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
@@ -65,6 +67,14 @@ public class DbImportObjectMapper extends DbSingleAttributeImportMapperBase<DbIm
 	 */
 	@Override
 	public Class getTypeClass() {
-		return CdmBase.class;
+		String getterMethodName = ImportHelper.getGetterMethodName(getDestinationAttribute(), false);
+		Method method;
+		try {
+			method = targetClass.getMethod(getterMethodName, null);
+		} catch (Exception e) {
+			throw new RuntimeException("parameter type for DbImportObjectMapper could not be determined");
+		}
+		Class<?> returnType = method.getReturnType();
+		return returnType;
 	}
 }
