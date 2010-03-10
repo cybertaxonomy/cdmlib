@@ -82,9 +82,10 @@ public class TcsSources {
 	public static String tcsRdf_globis(){
 		//		globis.rdf.xml
 		//String sourceUrl = "file:C:/Dokumente und Einstellungen/a.kohlbecker.BGBM/Desktop/globis.rdf.xml";
-		String sourceUrl = "globis.rdf.xml";
-		logger.debug("TcsRdfSource " +  sourceUrl);
-		return sourceUrl;
+		String sourceUrl = "/globis_valid.rdf.xml";
+		URL resourceUrl = new SDDSources().getClass().getResource(sourceUrl);
+		logger.debug("TcsRdfSource " +  resourceUrl.toString());
+		return resourceUrl.toString();
 		
 	}	
 	

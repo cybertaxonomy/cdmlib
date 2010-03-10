@@ -75,6 +75,7 @@ app-import/src/main/resources/AsteraceaeSpecimenImagesVienna.mdb -text
 app-import/src/main/resources/arecaceae.rdf -text
 app-import/src/main/resources/distribution/distribution_cich.xls -text
 app-import/src/main/resources/globis.rdf.xml -text
+app-import/src/main/resources/globis_valid.rdf.xml -text
 app-import/src/main/resources/images/images_cich.xls -text
 app-import/src/main/resources/images/images_diptera.xls -text
 app-import/src/main/resources/images/palmae/KPALM00000001.jpg -text
