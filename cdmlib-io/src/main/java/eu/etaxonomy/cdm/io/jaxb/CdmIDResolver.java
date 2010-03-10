@@ -34,6 +34,7 @@ import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.model.media.Media;
+import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
@@ -180,6 +181,12 @@ public class CdmIDResolver extends IDResolver {
 					  return resolveObject(uuid, targetType, referenceService);
 				  } else if(TaxonBase.class.isAssignableFrom(targetType)) {
 					  return resolveObject(uuid, targetType, taxonService);
+				  } else if(HomotypicalGroup.class.isAssignableFrom(targetType)) {
+					  Object object = nameService.findHomotypicalGroup(uuid);
+					  if(object == null) {
+						  throw new SAXException(targetType.getSimpleName() + " with " + uuid + " not found");
+					  }
+					  return object;
 				  } else {
 					  /**
 					   * Collections of IDREFS do not have a type at runtime
