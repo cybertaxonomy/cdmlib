@@ -21,9 +21,11 @@ import eu.etaxonomy.cdm.io.berlinModel.out.mapper.MethodMapper;
 import eu.etaxonomy.cdm.io.common.DbExportStateBase;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
+import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 /**
@@ -176,8 +178,12 @@ public class PesiNoteExport extends PesiExportBase {
 	 */
 	@SuppressWarnings("unused")
 	private static String getNote_1(DescriptionElementBase descriptionElement) {
-		// TODO
-		return null;
+		String result = null;
+		if (descriptionElement.isInstanceOf(TextData.class)) {
+			TextData textData = CdmBase.deproxy(descriptionElement, TextData.class);
+			result = textData.getText(Language.DEFAULT());
+		}
+		return result;
 	}
 
 	/**
@@ -188,7 +194,7 @@ public class PesiNoteExport extends PesiExportBase {
 	 */
 	@SuppressWarnings("unused")
 	private static String getNote_2(DescriptionElementBase descriptionElement) {
-		// TODO
+		// TODO: extension
 		return null;
 	}
 
@@ -199,9 +205,12 @@ public class PesiNoteExport extends PesiExportBase {
 	 * @see MethodMapper
 	 */
 	@SuppressWarnings("unused")
-	private static String getNoteCategoryFk(DescriptionElementBase descriptionElement) {
-		// TODO
-		return null;
+	private static Integer getNoteCategoryFk(DescriptionElementBase descriptionElement) {
+		Integer result = null;
+		if (descriptionElement.isInstanceOf(TextData.class)) {
+			result = PesiTransformer.textData2NodeCategoryFk(descriptionElement.getFeature());
+		}
+		return result;
 	}
 
 	/**
@@ -212,8 +221,11 @@ public class PesiNoteExport extends PesiExportBase {
 	 */
 	@SuppressWarnings("unused")
 	private static String getNoteCategoryCache(DescriptionElementBase descriptionElement) {
-		// TODO
-		return null;
+		String result = null;
+		if (descriptionElement.isInstanceOf(TextData.class)) {
+			result = PesiTransformer.textData2NodeCategoryCache(descriptionElement.getFeature());
+		}
+		return result;
 	}
 
 	/**
@@ -223,9 +235,8 @@ public class PesiNoteExport extends PesiExportBase {
 	 * @see MethodMapper
 	 */
 	@SuppressWarnings("unused")
-	private static String getLanguageFk(DescriptionElementBase descriptionElement) {
-		// TODO
-		return null;
+	private static Integer getLanguageFk(DescriptionElementBase descriptionElement) {
+		return PesiTransformer.language2LanguageId(Language.DEFAULT());
 	}
 
 	/**

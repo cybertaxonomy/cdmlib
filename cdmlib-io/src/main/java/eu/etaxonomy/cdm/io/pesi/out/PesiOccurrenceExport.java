@@ -83,7 +83,7 @@ public class PesiOccurrenceExport extends PesiExportBase {
 			boolean success = true;
 
 			// PESI: Clear the database table Occurrence.
-			doDelete(state);
+//			doDelete(state);
 	
 			// Get specific mappings: (CDM) Occurrence -> (PESI) Occurrence
 			PesiExportMapping mapping = getMapping();
@@ -196,6 +196,7 @@ public class PesiOccurrenceExport extends PesiExportBase {
 	private static Integer getTaxonFk(AnnotatableEntity reference, DbExportStateBase<?> state) {
 		// ReferenceBase parameter isn't needed, but the DbSingleAttributeExportMapperBase throws a type mismatch exception otherwise
 		// since it awaits two parameters if one of them is of instance DbExportStateBase.
+//		logger.error("taxon state id: " + state.getDbId(taxon));
 		return state.getDbId(taxon);
 	}
 
