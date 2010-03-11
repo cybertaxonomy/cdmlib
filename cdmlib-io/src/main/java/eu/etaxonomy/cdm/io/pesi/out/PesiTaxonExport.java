@@ -28,6 +28,7 @@ import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
+import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
@@ -523,13 +524,12 @@ public class PesiTaxonExport extends PesiExportBase {
 	private static Integer getNameStatusFk(TaxonBase<?> taxon) {
 		Integer result = null;
 		if (taxon != null && (taxon.getName() instanceof NonViralName)) {
-			((NonViralName)taxon.getName()).getStatus();
-		}
-		Set<NomenclaturalStatus> states = taxon.getName().getStatus();
-		if (states.size() == 1) {
-			result = PesiTransformer.nomStatus2nomStatusFk(states.iterator().next().getType());
-		} else if (states.size() > 1) {
-			logger.error("More than one Nomenclatural Status.");
+			Set<NomenclaturalStatus> states = ((NonViralName)taxon.getName()).getStatus();
+			if (states.size() == 1) {
+				result = PesiTransformer.nomStatus2nomStatusFk(states.iterator().next().getType());
+			} else if (states.size() > 1) {
+				logger.error("This taxon has more than one Nomenclatural Status: " + taxon.getTitleCache());
+			}
 		}
 		return result;
 	}
@@ -544,13 +544,12 @@ public class PesiTaxonExport extends PesiExportBase {
 	private static String getNameStatusCache(TaxonBase<?> taxon) {
 		String result = null;
 		if (taxon != null && (taxon.getName() instanceof NonViralName)) {
-			((NonViralName)taxon.getName()).getStatus();
-		}
-		Set<NomenclaturalStatus> states = taxon.getName().getStatus();
-		if (states.size() == 1) {
-			result = PesiTransformer.nomStatus2NomStatusCache(states.iterator().next().getType());
-		} else if (states.size() > 1) {
-			logger.error("More than one Nomenclatural Status.");
+			Set<NomenclaturalStatus> states = ((NonViralName)taxon.getName()).getStatus();
+			if (states.size() == 1) {
+				result = PesiTransformer.nomStatus2NomStatusCache(states.iterator().next().getType());
+			} else if (states.size() > 1) {
+				logger.error("This taxon has more than one Nomenclatural Status: " + taxon.getTitleCache());
+			}
 		}
 		return result;
 	}
@@ -684,7 +683,7 @@ public class PesiTaxonExport extends PesiExportBase {
 				Object obj = typeDesignations.iterator().next().getTypeStatus();
 				NameTypeDesignationStatus designationStatus = CdmBase.deproxy(obj, NameTypeDesignationStatus.class);
 				result = PesiTransformer.nameTypeDesignationStatus2TypeDesignationStatusId(designationStatus);
-			} else {
+			} else if (typeDesignations.size() > 1) {
 				logger.error("Found a taxon with more than one NameTypeDesignation: " + taxon.getTitleCache());
 			}
 		}
@@ -706,7 +705,7 @@ public class PesiTaxonExport extends PesiExportBase {
 				Object obj = typeDesignations.iterator().next().getTypeStatus();
 				NameTypeDesignationStatus designationStatus = CdmBase.deproxy(obj, NameTypeDesignationStatus.class);
 				result = PesiTransformer.nameTypeDesignationStatus2TypeDesignationStatusCache(designationStatus);
-			} else {
+			} else if (typeDesignations.size() > 1) {
 				logger.error("Found a taxon with more than one NameTypeDesignation: " + taxon.getTitleCache());
 			}
 		}
@@ -733,9 +732,14 @@ public class PesiTaxonExport extends PesiExportBase {
 	 * @see MethodMapper
 	 */
 	@SuppressWarnings("unused")
-	private static Integer getFossilStatusFk(TaxonBase<?> taxon) {
-		// TODO
+	private static Integer getFossilStatusFk(TaxonBase<?> taxonBase) {
 		Integer result = null;
+		Taxon taxon;
+		if (taxonBase.isInstanceOf(Taxon.class)) {
+//			taxon = CdmBase.deproxy(taxonBase, Taxon.class);
+//			Set<TaxonDescription> specimenDescription = taxon.;
+//			result = PesiTransformer.fossil2FossilStatusId(fossil);
+		}
 		return result;
 	}
 	

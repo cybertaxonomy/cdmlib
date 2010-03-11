@@ -28,18 +28,19 @@ public class PesiExportConfigurator extends DbExportConfiguratorBase implements 
 	private static Logger logger = Logger.getLogger(PesiExportConfigurator.class);
 	private int limitSave = 10000;
 
-	public static PesiExportConfigurator NewInstance(Source pesiDestination, ICdmDataSource source){
+	public static PesiExportConfigurator NewInstance(Source pesiDestination, ICdmDataSource source) {
 			return new PesiExportConfigurator(pesiDestination, source);
 	}
 	
 	@SuppressWarnings("unchecked")
-	protected void makeIoClassList(){
+	protected void makeIoClassList() {
 		ioClassList = new Class[]{
 				PesiSourceExport.class,
 				PesiTaxonExport.class,
 				PesiRelTaxonExport.class,
 				PesiNoteExport.class,
 				PesiNoteSourceExport.class,
+				PesiAdditionalTaxonSourceExport.class,
 				PesiOccurrenceExport.class
 		};
 

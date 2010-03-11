@@ -13,17 +13,22 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
+import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
 import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.occurrence.Fossil;
 import eu.etaxonomy.cdm.model.reference.ISectionBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
+import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 
 /**
  * @author a.mueller
@@ -174,6 +179,44 @@ public final class PesiTransformer {
 	public static int IS_PRO_PARTE_AND_HETEROTYPIC_SYNONYM_OF = 202;
 	public static int IS_PARTIAL_AND_HOMOTYPIC_SYNONYM_OF = 203;
 	public static int IS_PARTIAL_AND_HETEROTYPIC_SYNONYM_OF = 204;
+	public static int IS_INFERRED_EPITHET_FOR = 301;
+	public static int IS_INFERRED_GENUS_FOR = 302;
+	public static int IS_POTENTIAL_COMBINATION_FOR = 303;
+
+	public static String STR_IS_BASIONYM_FOR = "is basionym for";
+	public static String STR_IS_LATER_HOMONYM_OF = "is later homonym of";
+	public static String STR_IS_REPLACED_SYNONYM_FOR = "is replaced synonym for";
+	public static String STR_IS_VALIDATION_OF = "is validation of";
+	public static String STR_IS_LATER_VALIDATION_OF = "is later validation of";
+	public static String STR_IS_TYPE_OF = "is type of";
+	public static String STR_IS_CONSERVED_TYPE_OF = "is conserved type of";
+	public static String STR_IS_REJECTED_TYPE_OF = "is rejected type of";
+	public static String STR_IS_FIRST_PARENT_OF = "is first parent of";
+	public static String STR_IS_SECOND_PARENT_OF = "is second parent of";
+	public static String STR_IS_FEMALE_PARENT_OF = "is female parent of";
+	public static String STR_IS_MALE_PARENT_OF = "is male parent of";
+	public static String STR_IS_CONSERVED_AGAINST = "is conserved against";
+	public static String STR_IS_REJECTED_IN_FAVOUR_OF = "is rejected in favour of";
+	public static String STR_IS_TREATED_AS_LATER_HOMONYM_OF = "is treated as later homonym of";
+	public static String STR_IS_ORTHOGRAPHIC_VARIANT_OF = "is orthographic variant of";
+	public static String STR_IS_ALTERNATIVE_NAME_FOR = "is alternative name for";
+	public static String STR_HAS_SAME_TYPE_AS = "has same type as";
+	public static String STR_IS_LECTOTYPE_OF = "is lectotype of";
+	public static String STR_TYPE_NOT_DESIGNATED = "type not designated";
+	public static String STR_IS_TAXONOMICALLY_INCLUDED_IN  = "is taxonomically included in";
+	public static String STR_IS_SYNONYM_OF = "is synonym of";
+	public static String STR_IS_MISAPPLIED_NAME_FOR = "is misapplied name for";
+	public static String STR_IS_PRO_PARTE_SYNONYM_OF = "is pro parte synonym of";
+	public static String STR_IS_PARTIAL_SYNONYM_OF = "is partial synonym of";
+	public static String STR_IS_HETEROTYPIC_SYNONYM_OF = "is heterotypic synonym of";
+	public static String STR_IS_HOMOTYPIC_SYNONYM_OF = "is homotypic synonym of";
+	public static String STR_IS_PRO_PARTE_AND_HOMOTYPIC_SYNONYM_OF = "is pro parte and homotypic synonym of";
+	public static String STR_IS_PRO_PARTE_AND_HETEROTYPIC_SYNONYM_OF = "is pro parte and heterotypic synonym of";
+	public static String STR_IS_PARTIAL_AND_HOMOTYPIC_SYNONYM_OF = "is partial and homotypic synonym of";
+	public static String STR_IS_PARTIAL_AND_HETEROTYPIC_SYNONYM_OF = "is partial and heterotypic synonym of";
+	public static String STR_IS_INFERRED_EPITHET_FOR = "is inferred epithet for";
+	public static String STR_IS_INFERRED_GENUS_FOR = "is inferred genus for";
+	public static String STR_IS_POTENTIAL_COMBINATION_FOR = "is potential combination for";
 
 	// Kingdoms
 	public static int KINGDOM_NULL = 0;
@@ -517,262 +560,784 @@ public final class PesiTransformer {
 	
 	
 	// Language
-	public static int Albanian = 1;
-	public static int Arabic = 2;
-	public static int Armenian = 3;
-	public static int Azerbaijan = 4;
-	public static int Belarusian = 5;
-	public static int Bulgarian = 6;
-	public static int Catalan = 7;
-	public static int Croat = 8;
-	public static int Czech = 9;
-	public static int Danish = 10;
-	public static int Dutch = 11;
-	public static int English = 12;
-	public static int Euskera = 13;
-	public static int Estonian = 14;
-	public static int Finnish = 15;
-	public static int French = 16;
-	public static int Georgian = 17;
-	public static int German = 18;
-	public static int Greek = 19;
-	public static int Hungarian = 20;
-	public static int Icelandic = 21;
-	public static int Irish_Gaelic = 22;
-	public static int Israel_Hebrew = 23;
-	public static int Italian = 24;
-	public static int Latvian = 25;
-	public static int Lithuanian = 26;
-	public static int Macedonian = 27;
-	public static int Maltese = 28;
-	public static int Moldovian = 29;
-	public static int Norwegian = 30;
-	public static int Polish = 31;
-	public static int Portuguese = 32;
-	public static int Roumanian = 33;
-	public static int Russian = 34;
-	public static int Russian_Caucasian = 35;
-	public static int Russian_Altaic_kalmyk_oirat = 36;
-	public static int Russian_Altaic_karachay_balkar = 37;
-	public static int Russian_Altaic_kumyk = 38;
-	public static int Russian_Altaic_nogai = 39;
-	public static int Russian_Altaic_north_azerbaijani = 40;
-	public static int Russian_Indo_european_russian = 41;
-	public static int Russian_Indo_european_kalmyk_oirat = 42;
-	public static int Russian_Indo_european_osetin = 43;
-	public static int Russian_North_caucasian_abaza = 44;
-	public static int Russian_North_caucasian_adyghe = 45;
-	public static int Russian_North_caucasian_chechen = 46;
-	public static int Russian_North_caucasian_kabardian = 47;
-	public static int Russian_North_caucasian_lak = 48;
-	public static int Russian_North_caucasian_avar = 49;
-	public static int Russian_North_caucasian_in = 50;
-	public static int Russian_Uralic_chuvash = 51;
-	public static int Russian_Uralic_udmurt = 52;
-	public static int Serbian = 53;
-	public static int Slovak = 54;
-	public static int Slovene = 55;
-	public static int Spanish_Castillian = 56;
-	public static int Swedish = 57;
-	public static int Turkish = 58;
-	public static int Ukraine = 59;
-	public static int Welsh = 60;
-	public static int Corsican = 61;
+	public static int Language_Albanian = 1;
+	public static int Language_Arabic = 2;
+	public static int Language_Armenian = 3;
+	public static int Language_Azerbaijan = 4;
+	public static int Language_Belarusian = 5;
+	public static int Language_Bulgarian = 6;
+	public static int Language_Catalan = 7;
+	public static int Language_Croat = 8;
+	public static int Language_Czech = 9;
+	public static int Language_Danish = 10;
+	public static int Language_Dutch = 11;
+	public static int Language_English = 12;
+	public static int Language_Euskera = 13;
+	public static int Language_Estonian = 14;
+	public static int Language_Finnish = 15;
+	public static int Language_French = 16;
+	public static int Language_Georgian = 17;
+	public static int Language_German = 18;
+	public static int Language_Greek = 19;
+	public static int Language_Hungarian = 20;
+	public static int Language_Icelandic = 21;
+	public static int Language_Irish_Gaelic = 22;
+	public static int Language_Israel_Hebrew = 23;
+	public static int Language_Italian = 24;
+	public static int Language_Latvian = 25;
+	public static int Language_Lithuanian = 26;
+	public static int Language_Macedonian = 27;
+	public static int Language_Maltese = 28;
+	public static int Language_Moldovian = 29;
+	public static int Language_Norwegian = 30;
+	public static int Language_Polish = 31;
+	public static int Language_Portuguese = 32;
+	public static int Language_Roumanian = 33;
+	public static int Language_Russian = 34;
+	public static int Language_Russian_Caucasian = 35;
+	public static int Language_Russian_Altaic_kalmyk_oirat = 36;
+	public static int Language_Russian_Altaic_karachay_balkar = 37;
+	public static int Language_Russian_Altaic_kumyk = 38;
+	public static int Language_Russian_Altaic_nogai = 39;
+	public static int Language_Russian_Altaic_north_azerbaijani = 40;
+	public static int Language_Russian_Indo_european_russian = 41;
+	public static int Language_Russian_Indo_european_kalmyk_oirat = 42;
+	public static int Language_Russian_Indo_european_osetin = 43;
+	public static int Language_Russian_North_caucasian_abaza = 44;
+	public static int Language_Russian_North_caucasian_adyghe = 45;
+	public static int Language_Russian_North_caucasian_chechen = 46;
+	public static int Language_Russian_North_caucasian_kabardian = 47;
+	public static int Language_Russian_North_caucasian_lak = 48;
+	public static int Language_Russian_North_caucasian_avar = 49;
+	public static int Language_Russian_North_caucasian_in = 50;
+	public static int Language_Russian_Uralic_chuvash = 51;
+	public static int Language_Russian_Uralic_udmurt = 52;
+	public static int Language_Serbian = 53;
+	public static int Language_Slovak = 54;
+	public static int Language_Slovene = 55;
+	public static int Language_Spanish_Castillian = 56;
+	public static int Language_Swedish = 57;
+	public static int Language_Turkish = 58;
+	public static int Language_Ukraine = 59;
+	public static int Language_Welsh = 60;
+	public static int Language_Corsican = 61;
 
-	public static String STR_ALBANIAN = "Albanian";
-	public static String STR_ARABIC = "Arabic";
-	public static String STR_ARMENIAN = "Armenian";
-	public static String STR_AZERBAIJAN = "Azerbaijan";
-	public static String STR_BELARUSIAN = "Belarusian";
-	public static String STR_BULGARIAN = "Bulgarian";
-	public static String STR_CATALAN = "Catalan";
-	public static String STR_CROAT = "Croat";
-	public static String STR_CZECH = "Czech";
-	public static String STR_DANISH = "Danish";
-	public static String STR_DUTCH = "Dutch";
-	public static String STR_ENGLISH = "English";
-	public static String STR_EUSKERA = "Euskera";
-	public static String STR_ESTONIAN = "Estonian";
-	public static String STR_FINNISH = "Finnish";
-	public static String STR_FRENCH = "French";
-	public static String STR_GEORGIAN = "Georgian";
-	public static String STR_GERMAN = "German";
-	public static String STR_GREEK = "Greek";
-	public static String STR_HUNGARIAN = "Hungarian";
-	public static String STR_ICELANDIC = "Icelandic";
-	public static String STR_IRISH_GAELIC = "Irish Gaelic";
-	public static String STR_ISRAEL_HEBREW = "Israel (Hebrew)";
-	public static String STR_ITALIAN = "Italian";
-	public static String STR_LATVIAN = "Latvian";
-	public static String STR_LITHUANIAN = "Lithuanian";
-	public static String STR_MACEDONIAN = "Macedonian";
-	public static String STR_MALTESE = "Maltese";
-	public static String STR_MOLDOVIAN = "Moldovian";
-	public static String STR_NORWEGIAN = "Norwegian";
-	public static String STR_POLISH = "Polish";
-	public static String STR_PORTUGUESE = "Portuguese";
-	public static String STR_ROUMANIAN = "Roumanian";
-	public static String STR_RUSSIAN = "Russian";
-	public static String STR_RUSSIAN_CAUCASIAN = "Russian Caucasian";
-	public static String STR_RUSSIAN_ALTAIC_KALMYK_OIRAT = "Russian (Altaic, kalmyk-oirat)";
-	public static String STR_RUSSIAN_ALTAIC_KARACHAY_BALKAR = "Russian (Altaic, karachay-balkar)";
-	public static String STR_RUSSIAN_ALTAIC_KUMYK = "Russian (Altaic, kumyk)";
-	public static String STR_RUSSIAN_ALTAIC_NOGAI = "Russian (Altaic, nogai)";
-	public static String STR_RUSSIAN_ALTAIC_NORTH_AZERBAIJANI = "Russian (Altaic, north azerbaijani)";
-	public static String STR_RUSSIAN_INDO_EUROPEAN_RUSSIAN = "Russian (Indo-european, russian)";
-	public static String STR_RUSSIAN_INDO_EUROPEAN_KALMYK_OIRAT = "Russian (Indo-european, kalmyk-oirat)";
-	public static String STR_RUSSIAN_INDO_EUROPEAN_OSETIN = "Russian (Indo-european, osetin)";
-	public static String STR_RUSSIAN_NORTH_CAUCASIAN_ABAZA = "Russian (North caucasian, abaza)";
-	public static String STR_RUSSIAN_NORTH_CAUCASIAN_ADYGHE = "Russian (North caucasian, adyghe)";
-	public static String STR_RUSSIAN_NORTH_CAUCASIAN_CHECHEN = "Russian (North caucasian, chechen)";
-	public static String STR_RUSSIAN_NORTH_CAUCASIAN_KABARDIAN = "Russian (North caucasian, kabardian)";
-	public static String STR_RUSSIAN_NORTH_CAUCASIAN_LAK = "Russian (North caucasian, lak)";
-	public static String STR_RUSSIAN_NORTH_CAUCASIAN_AVAR = "Russian (North caucasian, avar)";
-	public static String STR_RUSSIAN_NORTH_CAUCASIAN_IN = "Russian (North caucasian, in)";
-	public static String STR_RUSSIAN_URALIC_CHUVASH = "Russian (Uralic, chuvash)";
-	public static String STR_RUSSIAN_URALIC_UDMURT = "Russian (Uralic, udmurt)";
-	public static String STR_SERBIAN = "Serbian";
-	public static String STR_SLOVAK = "Slovak";
-	public static String STR_SLOVENE = "Slovene";
-	public static String STR_SPANISH, CASTILLIAN = "Spanish, Castillian";
-	public static String STR_SWEDISH = "Swedish";
-	public static String STR_TURKISH = "Turkish";
-	public static String STR_UKRAINE = "Ukraine";
-	public static String STR_WELSH = "Welsh";
-	public static String STR_CORSICAN = "Corsican";
+	public static String STR_LANGUAGE_ALBANIAN = "Albanian";
+	public static String STR_LANGUAGE_ARABIC = "Arabic";
+	public static String STR_LANGUAGE_ARMENIAN = "Armenian";
+	public static String STR_LANGUAGE_AZERBAIJAN = "Azerbaijan";
+	public static String STR_LANGUAGE_BELARUSIAN = "Belarusian";
+	public static String STR_LANGUAGE_BULGARIAN = "Bulgarian";
+	public static String STR_LANGUAGE_CATALAN = "Catalan";
+	public static String STR_LANGUAGE_CROAT = "Croat";
+	public static String STR_LANGUAGE_CZECH = "Czech";
+	public static String STR_LANGUAGE_DANISH = "Danish";
+	public static String STR_LANGUAGE_DUTCH = "Dutch";
+	public static String STR_LANGUAGE_ENGLISH = "English";
+	public static String STR_LANGUAGE_EUSKERA = "Euskera";
+	public static String STR_LANGUAGE_ESTONIAN = "Estonian";
+	public static String STR_LANGUAGE_FINNISH = "Finnish";
+	public static String STR_LANGUAGE_FRENCH = "French";
+	public static String STR_LANGUAGE_GEORGIAN = "Georgian";
+	public static String STR_LANGUAGE_GERMAN = "German";
+	public static String STR_LANGUAGE_GREEK = "Greek";
+	public static String STR_LANGUAGE_HUNGARIAN = "Hungarian";
+	public static String STR_LANGUAGE_ICELANDIC = "Icelandic";
+	public static String STR_LANGUAGE_IRISH_GAELIC = "Irish Gaelic";
+	public static String STR_LANGUAGE_ISRAEL_HEBREW = "Israel (Hebrew)";
+	public static String STR_LANGUAGE_ITALIAN = "Italian";
+	public static String STR_LANGUAGE_LATVIAN = "Latvian";
+	public static String STR_LANGUAGE_LITHUANIAN = "Lithuanian";
+	public static String STR_LANGUAGE_MACEDONIAN = "Macedonian";
+	public static String STR_LANGUAGE_MALTESE = "Maltese";
+	public static String STR_LANGUAGE_MOLDOVIAN = "Moldovian";
+	public static String STR_LANGUAGE_NORWEGIAN = "Norwegian";
+	public static String STR_LANGUAGE_POLISH = "Polish";
+	public static String STR_LANGUAGE_PORTUGUESE = "Portuguese";
+	public static String STR_LANGUAGE_ROUMANIAN = "Roumanian";
+	public static String STR_LANGUAGE_RUSSIAN = "Russian";
+	public static String STR_LANGUAGE_RUSSIAN_CAUCASIAN = "Russian Caucasian";
+	public static String STR_LANGUAGE_RUSSIAN_ALTAIC_KALMYK_OIRAT = "Russian (Altaic, kalmyk-oirat)";
+	public static String STR_LANGUAGE_RUSSIAN_ALTAIC_KARACHAY_BALKAR = "Russian (Altaic, karachay-balkar)";
+	public static String STR_LANGUAGE_RUSSIAN_ALTAIC_KUMYK = "Russian (Altaic, kumyk)";
+	public static String STR_LANGUAGE_RUSSIAN_ALTAIC_NOGAI = "Russian (Altaic, nogai)";
+	public static String STR_LANGUAGE_RUSSIAN_ALTAIC_NORTH_AZERBAIJANI = "Russian (Altaic, north azerbaijani)";
+	public static String STR_LANGUAGE_RUSSIAN_INDO_EUROPEAN_RUSSIAN = "Russian (Indo-european, russian)";
+	public static String STR_LANGUAGE_RUSSIAN_INDO_EUROPEAN_KALMYK_OIRAT = "Russian (Indo-european, kalmyk-oirat)";
+	public static String STR_LANGUAGE_RUSSIAN_INDO_EUROPEAN_OSETIN = "Russian (Indo-european, osetin)";
+	public static String STR_LANGUAGE_RUSSIAN_NORTH_CAUCASIAN_ABAZA = "Russian (North caucasian, abaza)";
+	public static String STR_LANGUAGE_RUSSIAN_NORTH_CAUCASIAN_ADYGHE = "Russian (North caucasian, adyghe)";
+	public static String STR_LANGUAGE_RUSSIAN_NORTH_CAUCASIAN_CHECHEN = "Russian (North caucasian, chechen)";
+	public static String STR_LANGUAGE_RUSSIAN_NORTH_CAUCASIAN_KABARDIAN = "Russian (North caucasian, kabardian)";
+	public static String STR_LANGUAGE_RUSSIAN_NORTH_CAUCASIAN_LAK = "Russian (North caucasian, lak)";
+	public static String STR_LANGUAGE_RUSSIAN_NORTH_CAUCASIAN_AVAR = "Russian (North caucasian, avar)";
+	public static String STR_LANGUAGE_RUSSIAN_NORTH_CAUCASIAN_IN = "Russian (North caucasian, in)";
+	public static String STR_LANGUAGE_RUSSIAN_URALIC_CHUVASH = "Russian (Uralic, chuvash)";
+	public static String STR_LANGUAGE_RUSSIAN_URALIC_UDMURT = "Russian (Uralic, udmurt)";
+	public static String STR_LANGUAGE_SERBIAN = "Serbian";
+	public static String STR_LANGUAGE_SLOVAK = "Slovak";
+	public static String STR_LANGUAGE_SLOVENE = "Slovene";
+	public static String STR_LANGUAGE_SPANISH_CASTILLIAN = "Spanish, Castillian";
+	public static String STR_LANGUAGE_SWEDISH = "Swedish";
+	public static String STR_LANGUAGE_TURKISH = "Turkish";
+	public static String STR_LANGUAGE_UKRAINE = "Ukraine";
+	public static String STR_LANGUAGE_WELSH = "Welsh";
+	public static String STR_LANGUAGE_CORSICAN = "Corsican";
 
 	
+	// FossilStatus
+	public static int FOSSILSTATUS_RECENT_ONLY = 1;
+	public static int FOSSILSTATUS_FOSSIL_ONLY = 2;
+	public static int FOSSILSTATUS_RECENT_FOSSIL = 3;
+	
+	public static String STR_RECENT_ONLY = "recent only";
+	public static String STR_FOSSIL_ONLY = "fossil only";
+	public static String STR_RECENT_FOSSIL = "recent + fossil";
+
+	// SourceUse
+	public static int ORIGINAL_DESCRIPTION = 1;
+	public static int BASIS_OF_RECORD = 2;
+	public static int ADDITIONAL_SOURCE = 3;
+	public static int SOURCE_OF_SYNONYMY = 4;
+	public static int REDESCRIPTION = 5;
+	public static int NEW_COMBINATION_REFERENCE = 6;
+	public static int STATUS_SOURCE = 7;
+	public static int NOMENCLATURAL_REFERENCE = 8;
+	
+	public static String STR_ORIGINAL_DESCRIPTION = "original description";
+	public static String STR_BASIS_OF_RECORD = "basis of record";
+	public static String STR_ADDITIONAL_SOURCE = "additional source";
+	public static String STR_SOURCE_OF_SYNONYMY = "source of synonymy";
+	public static String STR_REDESCRIPTION = "redescription";
+	public static String STR_NEW_COMBINATION_REFERENCE = "new combination reference";
+	public static String STR_STATUS_SOURCE = "status source";
+	public static String STR_NOMENCLATURAL_REFERENCE = "nomenclatural reference";
+
+	// Area
+	public static int AREA_EAST_AEGEAN_ISLANDS = 1;
+	public static int AREA_GREEK_EAST_AEGEAN_ISLANDS = 2;
+	public static int AREA_TURKISH_EAST_AEGEAN_ISLANDS = 3;
+	public static int AREA_ALBANIA = 4;
+	public static int AREA_AUSTRIA_WITH_LIECHTENSTEIN = 5;
+	public static int AREA_AUSTRIA = 6;
+	public static int AREA_LIECHTENSTEIN = 7;
+	public static int AREA_AZORES = 8;
+	public static int AREA_CORVO = 9;
+	public static int AREA_FAIAL = 10;
+	public static int AREA_GRACIOSA = 11;
+	public static int AREA_SÃO_JORGE = 12;
+	public static int AREA_FLORES = 13;
+	public static int AREA_SÃO_MIGUEL = 14;
+	public static int AREA_PICO = 15;
+	public static int AREA_SANTA_MARIA = 16;
+	public static int AREA_TERCEIRA = 17;
+	public static int AREA_BELGIUM_WITH_LUXEMBOURG = 18;
+	public static int AREA_BELGIUM = 19;
+	public static int AREA_LUXEMBOURG = 20;
+	public static int AREA_BOSNIA_HERZEGOVINA = 21;
+	public static int AREA_BALEARES = 22;
+	public static int AREA_IBIZA_WITH_FORMENTERA = 23;
+	public static int AREA_MALLORCA = 24;
+	public static int AREA_MENORCA = 25;
+	public static int AREA_GREAT_BRITAIN = 26;
+	public static int AREA_BALTIC_STATES_AND_KALININGRAD_REGION = 27;
+	public static int AREA_BULGARIA = 28;
+	public static int AREA_BELARUS = 29;
+	public static int AREA_CANARY_ISLANDS = 30;
+	public static int AREA_GRAN_CANARIA = 31;
+	public static int AREA_FUERTEVENTURA_WITH_LOBOS = 32;
+	public static int AREA_GOMERA = 33;
+	public static int AREA_HIERRO = 34;
+	public static int AREA_LANZAROTE_WITH_GRACIOSA = 35;
+	public static int AREA_LA_PALMA = 36;
+	public static int AREA_TENERIFE = 37;
+	public static int AREA_MONTENEGRO = 38;
+	public static int AREA_CORSE = 39;
+	public static int AREA_CRETE_WITH_KARPATHOS,_KASOS_AND_GAVDHOS = 40;
+	public static int AREA_CZECH_REPUBLIC = 41;
+	public static int AREA_CROATIA = 42;
+	public static int AREA_CYPRUS = 43;
+	public static int AREA_FORMER_CZECHOSLOVAKIA = 44;
+	public static int AREA_DENMARK_WITH_BORNHOLM = 45;
+	public static int AREA_ESTONIA = 46;
+	public static int AREA_FAROE_ISLANDS = 47;
+	public static int AREA_FINLAND_WITH_AHVENANMAA = 48;
+	public static int AREA_FRANCE = 49;
+	public static int AREA_CHANNEL_ISLANDS = 50;
+	public static int AREA_FRENCH_MAINLAND = 51;
+	public static int AREA_MONACO = 52;
+	public static int AREA_GERMANY = 53;
+	public static int AREA_GREECE_WITH_CYCLADES_AND_MORE_ISLANDS = 54;
+	public static int AREA_IRELAND = 55;
+	public static int AREA_REPUBLIC_OF_IRELAND = 56;
+	public static int AREA_NORTHERN_IRELAND = 57;
+	public static int AREA_SWITZERLAND = 58;
+	public static int AREA_NETHERLANDS = 59;
+	public static int AREA_SPAIN = 60;
+	public static int AREA_ANDORRA = 61;
+	public static int AREA_GIBRALTAR = 62;
+	public static int AREA_KINGDOM_OF_SPAIN = 63;
+	public static int AREA_HUNGARY = 64;
+	public static int AREA_ICELAND = 65;
+	public static int AREA_ITALY = 66;
+	public static int AREA_ITALIAN_MAINLAND = 67;
+	public static int AREA_SAN_MARINO = 68;
+	public static int AREA_FORMER_JUGOSLAVIA = 69;
+	public static int AREA_LATVIA = 70;
+	public static int AREA_LITHUANIA = 71;
+	public static int AREA_PORTUGUESE_MAINLAND = 72;
+	public static int AREA_MADEIRA = 73; // WTF? See two lines below.
+	public static int AREA_DESERTAS = 74;
+//	public static int AREA_MADEIRA = 75;
+	public static int AREA_PORTO_SANTO = 76;
+	public static int AREA_THE_FORMER_JUGOSLAV_REPUBLIC_OF_MAKEDONIJA = 77;
+	public static int AREA_MOLDOVA = 78;
+	public static int AREA_NORWEGIAN_MAINLAND = 79;
+	public static int AREA_POLAND = 80;
+	public static int AREA_THE_RUSSIAN_FEDERATION = 81;
+	public static int AREA_NOVAYA_ZEMLYA_AND_FRANZ_JOSEPH_LAND = 82; // LOL!!
+	public static int AREA_CENTRAL_EUROPEAN_RUSSIA = 83;
+	public static int AREA_EASTERN_EUROPEAN_RUSSIA = 84;
+	public static int AREA_KALININGRAD = 85;
+	public static int AREA_NORTHERN_EUROPEAN_RUSSIA = 86;
+	public static int AREA_NORTHWEST_EUROPEAN_RUSSIA = 87;
+	public static int AREA_SOUTH_EUROPEAN_RUSSIA = 88;
+	public static int AREA_ROMANIA = 89;
+	public static int AREA_FORMER_USSR = 90;
+	public static int AREA_RUSSIA_BALTIC = 91;
+	public static int AREA_RUSSIA_CENTRAL = 92;
+	public static int AREA_RUSSIA_SOUTHEAST = 93;
+	public static int AREA_RUSSIA_NORTHERN = 94;
+	public static int AREA_RUSSIA_SOUTHWEST = 95;
+	public static int AREA_SARDEGNA = 96;
+	public static int AREA_SVALBARD_WITH_BJÖRNÖYA_AND_JAN_MAYEN = 97;
+	public static int AREA_SELVAGENS_ISLANDS = 98;
+	public static int AREA_SICILY_WITH_MALTA = 99;
+	public static int AREA_MALTA = 100;
+	public static int AREA_SICILY = 101;
+	public static int AREA_SLOVAKIA = 102;
+	public static int AREA_SLOVENIA = 103;
+	public static int AREA_SERBIA_WITH_MONTENEGRO = 104;
+	public static int AREA_SERBIA_INCLUDING_VOJVODINA_AND_WITH_KOSOVO = 105;
+	public static int AREA_SWEDEN = 106;
+	public static int AREA_EUROPEAN_TURKEY = 107;
+	public static int AREA_UKRAINE_INCLUDING_CRIMEA = 108;
+	public static int AREA_CRIMEA = 109;
+	public static int AREA_UKRAINE = 110;
+	public static int AREA_GREEK_MAINLAND = 111;
+	public static int AREA_CRETE = 112;
+	public static int AREA_DODECANESE_ISLANDS = 113;
+	public static int AREA_CYCLADES_ISLANDS = 114;
+	public static int AREA_NORTH_AEGEAN_ISLANDS = 115;
+	public static int AREA_VATICAN_CITY = 116;
+	public static int AREA_FRANZ_JOSEF_LAND = 117;
+	public static int AREA_NOVAYA_ZEMLYA = 118;
+	public static int AREA_AZERBAIJAN_INCLUDING_NAKHICHEVAN = 119;
+	public static int AREA_AZERBAIJAN = 120;
+	public static int AREA_NAKHICHEVAN = 121;
+	public static int AREA_ALGERIA = 122;
+	public static int AREA_ARMENIA = 123;
+	public static int AREA_CAUCASUS_REGION = 124;
+	public static int AREA_EGYPT = 125;
+	public static int AREA_GEORGIA = 126;
+	public static int AREA_ISRAEL_JORDAN = 127;
+	public static int AREA_ISRAEL = 128;
+	public static int AREA_JORDAN = 129;
+	public static int AREA_LEBANON = 130;
+	public static int AREA_LIBYA = 131;
+	public static int AREA_LEBANON_SYRIA = 132;
+	public static int AREA_MOROCCO = 133;
+	public static int AREA_NORTH_CAUCASUS = 134;
+	public static int AREA_SINAI = 135;
+	public static int AREA_SYRIA = 136;
+	public static int AREA_TUNISIA = 137;
+	public static int AREA_ASIATIC_TURKEY = 138;
+	public static int AREA_TURKEY = 139;
+	public static int AREA_NORTHERN_AFRICA = 140;
+	public static int AREA_AFRO_TROPICAL_REGION = 141;
+	public static int AREA_AUSTRALIAN_REGION = 142;
+	public static int AREA_EAST_PALAEARCTIC = 143;
+	public static int AREA_NEARCTIC_REGION = 144;
+	public static int AREA_NEOTROPICAL_REGION = 145;
+	public static int AREA_NEAR_EAST = 146;
+	public static int AREA_ORIENTAL_REGION = 147;
+	public static int AREA_EUROPEAN_MARINE_WATERS = 148;
+	public static int AREA_MEDITERRANEAN_SEA = 149;
+	public static int AREA_WHITE_SEA = 150;
+	public static int AREA_NORTH_SEA = 151;
+	public static int AREA_BALTIC_SEA = 152;
+	public static int AREA_BLACK_SEA = 153;
+	public static int AREA_BARENTS_SEA = 154;
+	public static int AREA_CASPIAN_SEA = 155;
+	public static int AREA_PORTUGUESE_EXCLUSIVE_ECONOMIC_ZONE = 156;
+	public static int AREA_BELGIAN_EXCLUSIVE_ECONOMIC_ZONE = 157;
+	public static int AREA_FRENCH_EXCLUSIVE_ECONOMIC_ZONE = 158;
+	public static int AREA_ENGLISH_CHANNEL = 159;
+	public static int AREA_ADRIATIC_SEA = 160;
+	public static int AREA_BISCAY_BAY = 161;
+	public static int AREA_DUTCH_EXCLUSIVE_ECONOMIC_ZONE = 162;
+	public static int AREA_UNITED_KINGDOM_EXCLUSIVE_ECONOMIC_ZONE = 163;
+	public static int AREA_SPANISH_EXCLUSIVE_ECONOMIC_ZONE = 164;
+	public static int AREA_EGYPTIAN_EXCLUSIVE_ECONOMIC_ZONE = 165;
+	public static int AREA_GRECIAN_EXCLUSIVE_ECONOMIC_ZONE = 166;
+	public static int AREA_TIRRENO_SEA = 167;
+	public static int AREA_ICELANDIC_EXCLUSIVE_ECONOMIC_ZONE = 168;
+	public static int AREA_IRISH_EXCLUSIVE_ECONOMIC_ZONE = 169;
+	public static int AREA_IRISH_SEA = 170;
+	public static int AREA_ITALIAN_EXCLUSIVE_ECONOMIC_ZONE = 171;
+	public static int AREA_NORWEGIAN_SEA = 172;
+	public static int AREA_MOROCCAN_EXCLUSIVE_ECONOMIC_ZONE = 173;
+	public static int AREA_NORWEGIAN_EXCLUSIVE_ECONOMIC_ZONE = 174;
+	public static int AREA_SKAGERRAK = 175;
+	public static int AREA_TUNISIAN_EXCLUSIVE_ECONOMIC_ZONE = 176;
+	public static int AREA_WADDEN_SEA = 177;
+	public static int AREA_BELT_SEA = 178;
+	public static int AREA_MARMARA_SEA = 179;
+	public static int AREA_SEA_OF_AZOV = 180;
+	public static int AREA_AEGEAN_SEA = 181;
+	public static int AREA_BULGARIAN_EXCLUSIVE_ECONOMIC_ZONE = 182;
+	public static int AREA_SOUTH_BALTIC_PROPER = 183;
+	public static int AREA_BALTIC_PROPER = 184;
+	public static int AREA_NORTH_BALTIC_PROPER = 185;
+	public static int AREA_ARCHIPELAGO_SEA = 186;
+	public static int AREA_BOTHNIAN_SEA = 187;
+	public static int AREA_GERMAN_EXCLUSIVE_ECONOMIC_ZONE = 188;
+	public static int AREA_SWEDISH_EXCLUSIVE_ECONOMIC_ZONE = 189;
+	public static int AREA_UKRAINIAN_EXCLUSIVE_ECONOMIC_ZONE = 190;
+	public static int AREA_MADEIRAN_EXCLUSIVE_ECONOMIC_ZONE = 191;
+	public static int AREA_LEBANESE_EXCLUSIVE_ECONOMIC_ZONE = 192;
+	public static int AREA_SPANISH_EXCLUSIVE_ECONOMIC_ZONE_MEDITERRANEAN_PART = 193;
+	public static int AREA_ESTONIAN_EXCLUSIVE_ECONOMIC_ZONE = 194;
+	public static int AREA_CROATIAN_EXCLUSIVE_ECONOMIC_ZONE = 195;
+	public static int AREA_BALEAR_SEA = 196;
+	public static int AREA_TURKISH_EXCLUSIVE_ECONOMIC_ZONE = 197;
+	public static int AREA_DANISH_EXCLUSIVE_ECONOMIC_ZONE = 198;
+
+	public static String STR_AREA_AEGEAN_SEA = "Aegean_Sea";
+	public static String STR_AREA_AFRO_TROPICAL_REGION = "Afro-tropical_region";
+	public static String STR_AREA_ALBANIA = "Albania";
+	public static String STR_AREA_ALGERIA = "Algeria";
+	public static String STR_AREA_ANDORRA = "Andorra";
+	public static String STR_AREA_ARCHIPELAGO_SEA = "Archipelago_Sea";
+	public static String STR_AREA_AREANAME = "AreaName";
+	public static String STR_AREA_ARMENIA = "Armenia";
+	public static String STR_AREA_ASIATIC_TURKEY = "Asiatic_Turkey";
+	public static String STR_AREA_AUSTRALIAN_REGION = "Australian_region";
+	public static String STR_AREA_AUSTRIA = "Austria";
+	public static String STR_AREA_AUSTRIA_WITH_LIECHTENSTEIN = "Austria_with_Liechtenstein";
+	public static String STR_AREA_AZERBAIJAN = "Azerbaijan";
+	public static String STR_AREA_AZERBAIJAN_INCLUDING_NAKHICHEVAN = "Azerbaijan_including_Nakhichevan";
+	public static String STR_AREA_AZORES = "Azores";
+	public static String STR_AREA_BALEAR_SEA = "Balear_Sea";
+	public static String STR_AREA_BALEARES = "Baleares";
+	public static String STR_AREA_BALTIC_PROPER = "Baltic_Proper";
+	public static String STR_AREA_BALTIC_SEA = "Baltic_Sea";
+	public static String STR_AREA_BALTIC_STATES_AND_KALININGRAD_REGION = "Baltic_states_(Estonia,_Latvia,_Lithuania)_and_Kaliningrad_region";
+	public static String STR_AREA_BARENTS_SEA = "Barents_Sea";
+	public static String STR_AREA_BELARUS = "Belarus";
+	public static String STR_AREA_BELGIAN_EXCLUSIVE_ECONOMIC_ZONE = "Belgian_Exclusive_Economic_Zone";
+	public static String STR_AREA_BELGIUM = "Belgium";
+	public static String STR_AREA_BELGIUM_WITH_LUXEMBOURG = "Belgium_with_Luxembourg";
+	public static String STR_AREA_BELT_SEA = "Belt_Sea";
+	public static String STR_AREA_BISCAY_BAY = "Biscay_Bay";
+	public static String STR_AREA_BLACK_SEA = "Black_Sea";
+	public static String STR_AREA_BOSNIA_HERZEGOVINA = "Bosnia-Herzegovina";
+	public static String STR_AREA_BOTHNIAN_SEA = "Bothnian_Sea";
+	public static String STR_AREA_BULGARIA = "Bulgaria";
+	public static String STR_AREA_BULGARIAN_EXCLUSIVE_ECONOMIC_ZONE = "Bulgarian_Exclusive_Economic_Zone";
+	public static String STR_AREA_CANARY_ISLANDS = "Canary_Islands";
+	public static String STR_AREA_CASPIAN_SEA = "Caspian_Sea";
+	public static String STR_AREA_CAUCASUS_REGION = "Caucasus_region";
+	public static String STR_AREA_CENTRAL_EUROPEAN_RUSSIA = "Central_European_Russia";
+	public static String STR_AREA_CHANNEL_ISLANDS = "Channel_Islands";
+	public static String STR_AREA_CORSE = "Corse";
+	public static String STR_AREA_CORVO = "Corvo";
+	public static String STR_AREA_CRETE = "Crete";
+	public static String STR_AREA_CRETE_WITH_KARPATHOS_KASOS_AND_GAVDHOS = "Crete_with_Karpathos,_Kasos_&_Gavdhos";
+	public static String STR_AREA_CRIMEA = "Crimea";
+	public static String STR_AREA_CROATIA = "Croatia";
+	public static String STR_AREA_CROATIAN_EXCLUSIVE_ECONOMIC_ZONE = "Croatian_Exclusive_Economic_Zone";
+	public static String STR_AREA_CYCLADES_ISLANDS = "Cyclades_Islands";
+	public static String STR_AREA_CYPRUS = "Cyprus";
+	public static String STR_AREA_CZECH_REPUBLIC = "Czech_Republic";
+	public static String STR_AREA_DANISH_EXCLUSIVE_ECONOMIC_ZONE = "Danish_Exclusive_Economic_Zone";
+	public static String STR_AREA_DENMARK_WITH_BORNHOLM = "Denmark_with_Bornholm";
+	public static String STR_AREA_DESERTAS = "Desertas";
+	public static String STR_AREA_DODECANESE_ISLANDS = "Dodecanese_Islands";
+	public static String STR_AREA_DUTCH_EXCLUSIVE_ECONOMIC_ZONE = "Dutch_Exclusive_Economic_Zone";
+	public static String STR_AREA_EAST_AEGEAN_ISLANDS = "East_Aegean_Islands";
+	public static String STR_AREA_EAST_PALAEARCTIC = "East_Palaearctic";
+	public static String STR_AREA_EASTERN_EUROPEAN_RUSSIA = "Eastern_European_Russia";
+	public static String STR_AREA_EGYPT = "Egypt";
+	public static String STR_AREA_EGYPTIAN_EXCLUSIVE_ECONOMIC_ZONE = "Egyptian_Exclusive_Economic_Zone";
+	public static String STR_AREA_ENGLISH_CHANNEL = "English_Channel";
+	public static String STR_AREA_ESTONIA = "Estonia";
+	public static String STR_AREA_ESTONIAN_EXCLUSIVE_ECONOMIC_ZONE = "Estonian_Exclusive_Economic_Zone";
+	public static String STR_AREA_EUROPEAN_MARINE_WATERS = "European_Marine_Waters";
+	public static String STR_AREA_EUROPEAN_TURKEY = "European_Turkey";
+	public static String STR_AREA_FAIAL = "Faial";
+	public static String STR_AREA_FAROE_ISLANDS = "Faroe_Islands";
+	public static String STR_AREA_FINLAND_WITH_AHVENANMAA = "Finland_with_Ahvenanmaa";
+	public static String STR_AREA_FLORES = "Flores";
+	public static String STR_AREA_FORMER_CZECHOSLOVAKIA = "Former_Czechoslovakia";
+	public static String STR_AREA_FORMER_JUGOSLAVIA = "Former_Jugoslavia";
+	public static String STR_AREA_FORMER_USSR = "Former_USSR";
+	public static String STR_AREA_FRANCE = "France";
+	public static String STR_AREA_FRANZ_JOSEF_LAND = "Franz_Josef_Land";
+	public static String STR_AREA_FRENCH_EXCLUSIVE_ECONOMIC_ZONE = "French_Exclusive_Economic_Zone";
+	public static String STR_AREA_FRENCH_MAINLAND = "French_mainland";
+	public static String STR_AREA_FUERTEVENTURA_WITH_LOBOS = "Fuerteventura_with_Lobos";
+	public static String STR_AREA_GEORGIA = "Georgia";
+	public static String STR_AREA_GERMAN_EXCLUSIVE_ECONOMIC_ZONE = "German_Exclusive_Economic_Zone";
+	public static String STR_AREA_GERMANY = "Germany";
+	public static String STR_AREA_GIBRALTAR = "Gibraltar";
+	public static String STR_AREA_GOMERA = "Gomera";
+	public static String STR_AREA_GRACIOSA = "Graciosa";
+	public static String STR_AREA_GRAN_CANARIA = "Gran_Canaria";
+	public static String STR_AREA_GREAT_BRITAIN = "Great_Britain";
+	public static String STR_AREA_GRECIAN_EXCLUSIVE_ECONOMIC_ZONE = "Grecian_Exclusive_Economic_Zone";
+	public static String STR_AREA_GREECE_WITH_CYCLADES_AND_MORE_ISLANDS = "Greece_with_Cyclades_and_more_islands";
+	public static String STR_AREA_GREEK_EAST_AEGEAN_ISLANDS = "Greek_East_Aegean_Islands";
+	public static String STR_AREA_GREEK_MAINLAND = "Greek_mainland";
+	public static String STR_AREA_HIERRO = "Hierro";
+	public static String STR_AREA_HUNGARY = "Hungary";
+	public static String STR_AREA_IBIZA_WITH_FORMENTERA = "Ibiza_with_Formentera";
+	public static String STR_AREA_ICELAND = "Iceland";
+	public static String STR_AREA_ICELANDIC_EXCLUSIVE_ECONOMIC_ZONE = "Icelandic_Exclusive_Economic_Zone";
+	public static String STR_AREA_IRELAND = "Ireland";
+	public static String STR_AREA_IRISH_EXCLUSIVE_ECONOMIC_ZONE = "Irish_Exclusive_economic_Zone";
+	public static String STR_AREA_IRISH_SEA = "Irish_Sea";
+	public static String STR_AREA_ISRAEL = "Israel";
+	public static String STR_AREA_ISRAEL_JORDAN = "Israel-Jordan";
+	public static String STR_AREA_ITALIAN_EXCLUSIVE_ECONOMIC_ZONE = "Italian_Exclusive_Economic_Zone";
+	public static String STR_AREA_ITALIAN_MAINLAND = "Italian_mainland";
+	public static String STR_AREA_ITALY = "Italy";
+	public static String STR_AREA_JORDAN = "Jordan";
+	public static String STR_AREA_KALININGRAD = "Kaliningrad";
+	public static String STR_AREA_KINGDOM_OF_SPAIN = "Kingdom_of_Spain";
+	public static String STR_AREA_LA_PALMA = "La_Palma";
+	public static String STR_AREA_LANZAROTE_WITH_GRACIOSA = "Lanzarote_with_Graciosa";
+	public static String STR_AREA_LATVIA = "Latvia";
+	public static String STR_AREA_LEBANESE_EXCLUSIVE_ECONOMIC_ZONE = "Lebanese_Exclusive_Economic_Zone";
+	public static String STR_AREA_LEBANON = "Lebanon";
+	public static String STR_AREA_LEBANON_SYRIA = "Lebanon-Syria";
+	public static String STR_AREA_LIBYA = "Libya";
+	public static String STR_AREA_LIECHTENSTEIN = "Liechtenstein";
+	public static String STR_AREA_LITHUANIA = "Lithuania";
+	public static String STR_AREA_LUXEMBOURG = "Luxembourg";
+	public static String STR_AREA_MADEIRA = "Madeira";
+//	public static String STR_AREA_MADEIRA = "Madeira";
+	public static String STR_AREA_MADEIRAN_EXCLUSIVE_ECONOMIC_ZONE = "Madeiran_Exclusive_Economic_Zone";
+	public static String STR_AREA_MALLORCA = "Mallorca";
+	public static String STR_AREA_MALTA = "Malta";
+	public static String STR_AREA_MARMARA_SEA = "Marmara_Sea";
+	public static String STR_AREA_MEDITERRANEAN_SEA = "Mediterranean_Sea";
+	public static String STR_AREA_MENORCA = "Menorca";
+	public static String STR_AREA_MOLDOVA = "Moldova";
+	public static String STR_AREA_MONACO = "Monaco";
+	public static String STR_AREA_MONTENEGRO = "Montenegro";
+	public static String STR_AREA_MOROCCAN_EXCLUSIVE_ECONOMIC_ZONE = "Moroccan_Exclusive_Economic_Zone";
+	public static String STR_AREA_MOROCCO = "Morocco";
+	public static String STR_AREA_NAKHICHEVAN = "Nakhichevan";
+	public static String STR_AREA_NEAR_EAST = "Near_East";
+	public static String STR_AREA_NEARCTIC_REGION = "Nearctic_region";
+	public static String STR_AREA_NEOTROPICAL_REGION = "Neotropical_region";
+	public static String STR_AREA_NETHERLANDS = "Netherlands";
+	public static String STR_AREA_NORTH_AEGEAN_ISLANDS = "North_Aegean_Islands";
+	public static String STR_AREA_NORTH_BALTIC_PROPER = "North_Baltic_proper";
+	public static String STR_AREA_NORTH_CAUCASUS = "North_Caucasus";
+	public static String STR_AREA_NORTH_SEA = "North_Sea";
+	public static String STR_AREA_NORTHERN_AFRICA = "Northern_Africa";
+	public static String STR_AREA_NORTHERN_EUROPEAN_RUSSIA = "Northern_European_Russia";
+	public static String STR_AREA_NORTHERN_IRELAND = "Northern_Ireland";
+	public static String STR_AREA_NORTHWEST_EUROPEAN_RUSSIA = "Northwest_European_Russia";
+	public static String STR_AREA_NORWEGIAN_EXCLUSIVE_ECONOMIC_ZONE = "Norwegian_Exclusive_Economic_Zone";
+	public static String STR_AREA_NORWEGIAN_MAINLAND = "Norwegian_mainland";
+	public static String STR_AREA_NORWEGIAN_SEA = "Norwegian_Sea";
+	public static String STR_AREA_NOVAYA_ZEMLYA = "Novaya_Zemlya";
+	public static String STR_AREA_NOVAYA_ZEMLYA_AND_FRANZ_JOSEPH_LAND = "Novaya_Zemlya_&_Franz-Joseph_Land";
+	public static String STR_AREA_ORIENTAL_REGION = "Oriental_region";
+	public static String STR_AREA_PICO = "Pico";
+	public static String STR_AREA_POLAND = "Poland";
+	public static String STR_AREA_PORTO_SANTO = "Porto_Santo";
+	public static String STR_AREA_PORTUGUESE_EXCLUSIVE_ECONOMIC_ZONE = "Portuguese_Exclusive_Economic_Zone";
+	public static String STR_AREA_PORTUGUESE_MAINLAND = "Portuguese_mainland";
+	public static String STR_AREA_REPUBLIC_OF_IRELAND = "Republic_of_Ireland";
+	public static String STR_AREA_ROMANIA = "Romania";
+	public static String STR_AREA_RUSSIA_BALTIC = "Russia_Baltic";
+	public static String STR_AREA_RUSSIA_CENTRAL = "Russia_Central";
+	public static String STR_AREA_RUSSIA_NORTHERN = "Russia_Northern";
+	public static String STR_AREA_RUSSIA_SOUTHEAST = "Russia_Southeast";
+	public static String STR_AREA_RUSSIA_SOUTHWEST = "Russia_Southwest";
+	public static String STR_AREA_SAN_MARINO = "San_Marino";
+	public static String STR_AREA_SANTA_MARIA = "Santa_Maria";
+	public static String STR_AREA_SÃO_JORGE = "São_Jorge";
+	public static String STR_AREA_SÃO_MIGUEL = "São_Miguel";
+	public static String STR_AREA_SARDEGNA = "Sardegna";
+	public static String STR_AREA_SEA_OF_AZOV = "Sea_of_Azov";
+	public static String STR_AREA_SELVAGENS_ISLANDS = "Selvagens_Islands";
+	public static String STR_AREA_SERBIA_INCLUDING_VOJVODINA_AND_WITH_KOSOVO = "Serbia_including_Vojvodina_and_with_Kosovo";
+	public static String STR_AREA_SERBIA_WITH_MONTENEGRO = "Serbia_with_Montenegro";
+	public static String STR_AREA_SICILY = "Sicily";
+	public static String STR_AREA_SICILY_WITH_MALTA = "Sicily_with_Malta";
+	public static String STR_AREA_SINAI = "Sinai";
+	public static String STR_AREA_SKAGERRAK = "Skagerrak";
+	public static String STR_AREA_SLOVAKIA = "Slovakia";
+	public static String STR_AREA_SLOVENIA = "Slovenia";
+	public static String STR_AREA_SOUTH_BALTIC_PROPER = "South_Baltic_proper";
+	public static String STR_AREA_SOUTH_EUROPEAN_RUSSIA = "South_European_Russia";
+	public static String STR_AREA_SPAIN = "Spain";
+	public static String STR_AREA_SPANISH_EXCLUSIVE_ECONOMIC_ZONE = "Spanish_Exclusive_Economic_Zone";
+	public static String STR_AREA_SPANISH_EXCLUSIVE_ECONOMIC_ZONE_MEDITERRANEAN_PART = "Spanish_Exclusive_Economic_Zone_[Mediterranean_part]";
+	public static String STR_AREA_SVALBARD_WITH_BJÖRNÖYA_AND_JAN_MAYEN = "Svalbard_with_Björnöya_and_Jan_Mayen";
+	public static String STR_AREA_SWEDEN = "Sweden";
+	public static String STR_AREA_SWEDISH_EXCLUSIVE_ECONOMIC_ZONE = "Swedish_Exclusive_Economic_Zone";
+	public static String STR_AREA_SWITZERLAND = "Switzerland";
+	public static String STR_AREA_SYRIA = "Syria";
+	public static String STR_AREA_TENERIFE = "Tenerife";
+	public static String STR_AREA_TERCEIRA = "Terceira";
+	public static String STR_AREA_THE_FORMER_JUGOSLAV_REPUBLIC_OF_MAKEDONIJA = "The_former_Jugoslav_Republic_of_Makedonija";
+	public static String STR_AREA_THE_RUSSIAN_FEDERATION = "The_Russian_Federation";
+	public static String STR_AREA_TIRRENO_SEA = "Tirreno_Sea";
+	public static String STR_AREA_TUNISIA = "Tunisia";
+	public static String STR_AREA_TUNISIAN_EXCLUSIVE_ECONOMIC_ZONE = "Tunisian_Exclusive_Economic_Zone";
+	public static String STR_AREA_TURKEY = "Turkey";
+	public static String STR_AREA_TURKISH_EAST_AEGEAN_ISLANDS = "Turkish_East_Aegean_Islands";
+	public static String STR_AREA_TURKISH_EXCLUSIVE_ECONOMIC_ZONE = "Turkish_Exclusive_Economic_Zone";
+	public static String STR_AREA_UKRAINE = "Ukraine";
+	public static String STR_AREA_UKRAINE_INCLUDING_CRIMEA = "Ukraine_including_Crimea";
+	public static String STR_AREA_UKRAINIAN_EXCLUSIVE_ECONOMIC_ZONE = "Ukrainian_Exclusive_Economic_Zone";
+	public static String STR_AREA_UNITED_KINGDOM_EXCLUSIVE_ECONOMIC_ZONE = "United_Kingdom_Exclusive_Economic_Zone";
+	public static String STR_AREA_VATICAN_CITY = "Vatican_City";
+	public static String STR_AREA_WADDEN_SEA = "Wadden_Sea";
+	public static String STR_AREA_WHITE_SEA = "White_Sea";
+
+	
+	// OccurrenceStatus
+	public static int STATUS_PRESENT = 1;
+	public static int STATUS_ABSENT = 2;
+	public static int STATUS_NATIVE = 3;
+	public static int STATUS_INTRODUCED = 4;
+	public static int STATUS_NATURALISED = 5;
+	public static int STATUS_INVASIVE = 6;
+	public static int STATUS_MANAGED = 7;
+	public static int STATUS_DOUBTFUL = 8;
+
+	public static String STR_STATUS_PRESENT = "Present";
+	public static String STR_STATUS_ABSENT = "Absent";
+	public static String STR_STATUS_NATIVE = "Native";
+	public static String STR_STATUS_INTRODUCED = "Introduced";
+	public static String STR_STATUS_NATURALISED = "Naturalised";
+	public static String STR_STATUS_INVASIVE = "Invasive";
+	public static String STR_STATUS_MANAGED = "Managed";
+	public static String STR_STATUS_DOUBTFUL = "Doubtful";
+
+
+	/**
+	 * Returns the AreaCache for a given Area.
+	 * @param area
+	 * @return
+	 */
+	public static String area2AreaCache(NamedArea area) {
+		return null;
+	}
+	
+	/**
+	 * Returns the AreaId for a given Area.
+	 * @param area
+	 * @return
+	 */
+	public static Integer area2AreaId(NamedArea area) {
+		return null;
+	}
+
+	/**
+	 * Returns the PESI SourceUseId for a given CDM sourceUseId.
+	 * @param sourceUseId
+	 * @return
+	 */
+	public static Integer sourceUseIdSourceUseId(Integer sourceUseId) {
+		// TODO: CDM sourceUseId and PESI sourceUseId are equal for now.
+		Integer result = null;
+		switch (sourceUseId) {
+			case 3: return ADDITIONAL_SOURCE;
+			case 4: return SOURCE_OF_SYNONYMY;
+			case 8: return NOMENCLATURAL_REFERENCE;
+		}
+		return result;
+	}
+	
+	/**
+	 * Returns the SourceUseCache for a tiven sourceUseId.
+	 * @param sourceUseId
+	 * @return
+	 */
+	public static String sourceUseId2SourceUseCache(Integer sourceUseId) {
+		// TODO: CDM sourceUseId and PESI sourceUseId are equal for now.
+		String result = null;
+		switch (sourceUseId) {
+			case 3: return STR_ADDITIONAL_SOURCE;
+			case 4: return STR_SOURCE_OF_SYNONYMY;
+			case 8: return STR_NOMENCLATURAL_REFERENCE;
+		}
+		return result;
+	}
+	
+	/**
+	 * Returns the FossilStatusCache to a given Fossil.
+	 * @param fossil
+	 * @return
+	 */
+	public static String fossil2FossilStatusCache(Fossil fossil) {
+		String result = null;
+		return result;
+	}
+
+	/**
+	 * Returns the FossilStatusId to a given Fossil.
+	 * @param fossil
+	 * @return
+	 */
+	public static Integer fossil2FossilStatusId(Fossil fossil) {
+		Integer result = null;
+		return result;
+	}
+	
+	/**
+	 * Returns the LanguageCache to a given Language.
+	 * @param language
+	 * @return
+	 */
 	public static String language2LanguageCache(Language language) {
 		if (language == null ) {
 			return null;
 		}
-//		if (language.equals(Language.ALBANIAN())) {
-//			return STR_ALBANIAN;
-//		} else if (language.equals(Language.ARABIC())) {
-//			return STR_ARABIC;
-//		} else if (language.equals(Language.ARMENIAN())) {
-//			return STR_ARMENIAN;
-//		} else if (language.equals(Language.AZERBAIJANI())) {
-//			return STR_AZERBAIJAN;
-//		} else if (language.equals(Language.BELORUSSIAN())) {
-//			return STR_BELARUSIAN;
-//		} else if (language.equals(Language.BULGARIAN())) {
-//			return STR_BULGARIAN;
-//		} else if (language.equals(Language.CATALAN_VALENCIAN())) {
-//			return STR_CATALAN;
-//		} else if (language.equals(Language.CROATIAN())) {
-//			return STR_CROAT;
-//		} else if (language.equals(Language.CZECH())) {
-//			return STR_Czech;
-//		} else if (language.equals(Language.DANISH())) {
-//			return STR_Danish;
-//		} else if (language.equals(Language.DUTCH_MIDDLE())) {
-//			return STR_Dutch;
-//		} else if (language.equals(Language.ENGLISH())) {
-//			return STR_English;
-////		} else if (language.equals(Language.)) {
-////			return STR_Euskera;
-//		} else if (language.equals(Language.ESTONIAN())) {
-//			return STR_Estonian;
-//		} else if (language.equals(Language.FINNISH())) {
-//			return STR_Finnish;
-//		} else if (language.equals(Language.FRENCH())) {
-//			return STR_French;
-//		} else if (language.equals(Language.GEORGIAN())) {
-//			return STR_Georgian;
-//		} else if (language.equals(Language.GERMAN())) {
-//			return STR_German;
-//		} else if (language.equals(Language.GREEK_MODERN())) {
-//			return STR_Greek;
-//		} else if (language.equals(Language.HUNGARIAN())) {
-//			return STR_Hungarian;
-//		} else if (language.equals(Language.ICELANDIC())) {
-//			return STR_Icelandic;
-//		} else if (language.equals(Language.IRISH())) {
-//			return STR_Irish_Gaelic;
-//		} else if (language.equals(Language.HEBREW())) {
-//			return STR_Israel_Hebrew;
-//		} else if (language.equals(Language.ITALIAN())) {
-//			return STR_Italian;
-//		} else if (language.equals(Language.LATVIAN())) {
-//			return STR_Latvian;
-//		} else if (language.equals(Language.LITHUANIAN())) {
-//			return STR_Lithuanian;
-//		} else if (language.equals(Language.MACEDONIAN())) {
-//			return STR_Macedonian;
-//		} else if (language.equals(Language.MALTESE())) {
-//			return STR_Maltese;
-//		} else if (language.equals(Language.MOLDAVIAN())) {
-//			return STR_Moldovian;
-//		} else if (language.equals(Language.NORWEGIAN())) {
-//			return STR_Norwegian;
-//		} else if (language.equals(Language.POLISH())) {
-//			return STR_Polish;
-//		} else if (language.equals(Language.PORTUGUESE())) {
-//			return STR_Portuguese;
-//		} else if (language.equals(Language.ROMANIAN())) {
-//			return STR_Roumanian;
-//		} else if (language.equals(Language.RUSSIAN())) {
-//			return STR_Russian;
+		if (language.equals(Language.ALBANIAN())) {
+			return STR_LANGUAGE_ALBANIAN;
+		} else if (language.equals(Language.ARABIC())) {
+			return STR_LANGUAGE_ARABIC;
+		} else if (language.equals(Language.ARMENIAN())) {
+			return STR_LANGUAGE_ARMENIAN;
+		} else if (language.equals(Language.AZERBAIJANI())) {
+			return STR_LANGUAGE_AZERBAIJAN;
+		} else if (language.equals(Language.BELORUSSIAN())) {
+			return STR_LANGUAGE_BELARUSIAN;
+		} else if (language.equals(Language.BULGARIAN())) {
+			return STR_LANGUAGE_BULGARIAN;
+		} else if (language.equals(Language.CATALAN_VALENCIAN())) {
+			return STR_LANGUAGE_CATALAN;
+		} else if (language.equals(Language.CROATIAN())) {
+			return STR_LANGUAGE_CROAT;
+		} else if (language.equals(Language.CZECH())) {
+			return STR_LANGUAGE_CZECH;
+		} else if (language.equals(Language.DANISH())) {
+			return STR_LANGUAGE_DANISH;
+		} else if (language.equals(Language.DUTCH_MIDDLE())) {
+			return STR_LANGUAGE_DUTCH;
+		} else if (language.equals(Language.ENGLISH())) {
+			return STR_LANGUAGE_ENGLISH;
 //		} else if (language.equals(Language.)) {
-//			return STR_Russian_Caucasian;
+//			return STR_LANGUAGE_EUSKERA;
+		} else if (language.equals(Language.ESTONIAN())) {
+			return STR_LANGUAGE_ESTONIAN;
+		} else if (language.equals(Language.FINNISH())) {
+			return STR_LANGUAGE_FINNISH;
+		} else if (language.equals(Language.FRENCH())) {
+			return STR_LANGUAGE_FRENCH;
+		} else if (language.equals(Language.GEORGIAN())) {
+			return STR_LANGUAGE_GEORGIAN;
+		} else if (language.equals(Language.GERMAN())) {
+			return STR_LANGUAGE_GERMAN;
+		} else if (language.equals(Language.GREEK_MODERN())) {
+			return STR_LANGUAGE_GREEK;
+		} else if (language.equals(Language.HUNGARIAN())) {
+			return STR_LANGUAGE_HUNGARIAN;
+		} else if (language.equals(Language.ICELANDIC())) {
+			return STR_LANGUAGE_ICELANDIC;
+		} else if (language.equals(Language.IRISH())) {
+			return STR_LANGUAGE_IRISH_GAELIC;
+		} else if (language.equals(Language.HEBREW())) {
+			return STR_LANGUAGE_ISRAEL_HEBREW;
+		} else if (language.equals(Language.ITALIAN())) {
+			return STR_LANGUAGE_ITALIAN;
+		} else if (language.equals(Language.LATVIAN())) {
+			return STR_LANGUAGE_LATVIAN;
+		} else if (language.equals(Language.LITHUANIAN())) {
+			return STR_LANGUAGE_LITHUANIAN;
+		} else if (language.equals(Language.MACEDONIAN())) {
+			return STR_LANGUAGE_MACEDONIAN;
+		} else if (language.equals(Language.MALTESE())) {
+			return STR_LANGUAGE_MALTESE;
+		} else if (language.equals(Language.MOLDAVIAN())) {
+			return STR_LANGUAGE_MOLDOVIAN;
+		} else if (language.equals(Language.NORWEGIAN())) {
+			return STR_LANGUAGE_NORWEGIAN;
+		} else if (language.equals(Language.POLISH())) {
+			return STR_LANGUAGE_POLISH;
+		} else if (language.equals(Language.PORTUGUESE())) {
+			return STR_LANGUAGE_PORTUGUESE;
+		} else if (language.equals(Language.ROMANIAN())) {
+			return STR_LANGUAGE_ROUMANIAN;
+		} else if (language.equals(Language.RUSSIAN())) {
+			return STR_LANGUAGE_RUSSIAN;
 //		} else if (language.equals(Language.)) {
-//			return STR_Russian_Altaic_kalmyk_oirat;
+//			return STR_LANGUAGE_RUSSIAN_CAUCASIAN;
 //		} else if (language.equals(Language.)) {
-//			return STR_Russian_Altaic_karachay_balkar;
+//			return STR_LANGUAGE_RUSSIAN_ALTAIC_KALMYK_OIRAT;
 //		} else if (language.equals(Language.)) {
-//			return STR_Russian_Altaic_kumyk;
+//			return STR_LANGUAGE_RUSSIAN_ALTAIC_KARACHAY_BALKAR;
 //		} else if (language.equals(Language.)) {
-//			return STR_Russian_Altaic_nogai;
+//			return STR_LANGUAGE_RUSSIAN_ALTAIC_KUMYK;
 //		} else if (language.equals(Language.)) {
-//			return STR_Russian_Altaic_north_azerbaijani;
+//			return STR_LANGUAGE_RUSSIAN_ALTAIC_NOGAI;
 //		} else if (language.equals(Language.)) {
-//			return STR_Russian_Indo_european_russian;
+//			return STR_LANGUAGE_RUSSIAN_ALTAIC_NORTH_AZERBAIJANI;
 //		} else if (language.equals(Language.)) {
-//			return STR_Russian_Indo_european_kalmyk_oirat;
+//			return STR_LANGUAGE_RUSSIAN_INDO_EUROPEAN_RUSSIAN;
 //		} else if (language.equals(Language.)) {
-//			return STR_Russian_Indo_european_osetin;
+//			return STR_LANGUAGE_RUSSIAN_INDO_EUROPEAN_KALMYK_OIRAT;
 //		} else if (language.equals(Language.)) {
-//			return STR_Russian_North_caucasian_abaza;
+//			return STR_LANGUAGE_RUSSIAN_INDO_EUROPEAN_OSETIN;
 //		} else if (language.equals(Language.)) {
-//			return STR_Russian_North_caucasian_adyghe;
+//			return STR_LANGUAGE_RUSSIAN_NORTH_CAUCASIAN_ABAZA;
 //		} else if (language.equals(Language.)) {
-//			return STR_Russian_North_caucasian_chechen;
+//			return STR_LANGUAGE_RUSSIAN_NORTH_CAUCASIAN_ADYGHE;
 //		} else if (language.equals(Language.)) {
-//			return STR_Russian_North_caucasian_kabardian;
+//			return STR_LANGUAGE_RUSSIAN_NORTH_CAUCASIAN_CHECHEN;
 //		} else if (language.equals(Language.)) {
-//			return STR_Russian_North_caucasian_lak;
+//			return STR_LANGUAGE_RUSSIAN_NORTH_CAUCASIAN_KABARDIAN;
 //		} else if (language.equals(Language.)) {
-//			return STR_Russian_North_caucasian_avar;
+//			return STR_LANGUAGE_RUSSIAN_NORTH_CAUCASIAN_LAK;
 //		} else if (language.equals(Language.)) {
-//			return STR_Russian_North_caucasian_in;
+//			return STR_LANGUAGE_RUSSIAN_NORTH_CAUCASIAN_AVAR;
 //		} else if (language.equals(Language.)) {
-//			return STR_Russian_Uralic_chuvash;
+//			return STR_LANGUAGE_RUSSIAN_NORTH_CAUCASIAN_IN;
 //		} else if (language.equals(Language.)) {
-//			return STR_Russian_Uralic_udmurt;
-//		} else if (language.equals(Language.SERBIAN())) {
-//			return STR_Serbian;
-//		} else if (language.equals(Language.SLOVAK())) {
-//			return STR_Slovak;
-//		} else if (language.equals(Language.SLOVENIAN())) {
-//			return STR_Slovene;
-//		} else if (language.equals(Language.SPANISH_CATALAN())) {
-//			return STR_Spanish_Castillian;
-//		} else if (language.equals(Language.SWEDISH())) {
-//			return STR_Swedish;
-//		} else if (language.equals(Language.TURKISH())) {
-//			return STR_Turkish;
-//		} else if (language.equals(Language.UKRAINIAN())) {
-//			return STR_Ukraine;
-//		} else if (language.equals(Language.WELSH())) {
-//			return STR_Welsh;
-//		} else if (language.equals(Language.CORSICAN())) {
-//			return STR_Corsican;
-//		} else {
-//			logger.debug("Unknown Language.");
-//			return null;
-//		}
-		return null;
+//			return STR_LANGUAGE_RUSSIAN_URALIC_CHUVASH;
+//		} else if (language.equals(Language.)) {
+//			return STR_LANGUAGE_RUSSIAN_URALIC_UDMURT;
+		} else if (language.equals(Language.SERBIAN())) {
+			return STR_LANGUAGE_SERBIAN;
+		} else if (language.equals(Language.SLOVAK())) {
+			return STR_LANGUAGE_SLOVAK;
+		} else if (language.equals(Language.SLOVENIAN())) {
+			return STR_LANGUAGE_SLOVENE;
+		} else if (language.equals(Language.SPANISH_CATALAN())) {
+			return STR_LANGUAGE_SPANISH_CASTILLIAN;
+		} else if (language.equals(Language.SWEDISH())) {
+			return STR_LANGUAGE_SWEDISH;
+		} else if (language.equals(Language.TURKISH())) {
+			return STR_LANGUAGE_TURKISH;
+		} else if (language.equals(Language.UKRAINIAN())) {
+			return STR_LANGUAGE_UKRAINE;
+		} else if (language.equals(Language.WELSH())) {
+			return STR_LANGUAGE_WELSH;
+		} else if (language.equals(Language.CORSICAN())) {
+			return STR_LANGUAGE_CORSICAN;
+		} else {
+			logger.debug("Unknown Language.");
+			return null;
+		}
 	}
 	
 	/**
@@ -785,127 +1350,127 @@ public final class PesiTransformer {
 			return null;
 		}
 		if (language.equals(Language.ALBANIAN())) {
-			return Albanian;
+			return Language_Albanian;
 		} else if (language.equals(Language.ARABIC())) {
-			return Arabic;
+			return Language_Arabic;
 		} else if (language.equals(Language.ARMENIAN())) {
-			return Armenian;
+			return Language_Armenian;
 		} else if (language.equals(Language.AZERBAIJANI())) {
-			return Azerbaijan;
+			return Language_Azerbaijan;
 		} else if (language.equals(Language.BELORUSSIAN())) {
-			return Belarusian;
+			return Language_Belarusian;
 		} else if (language.equals(Language.BULGARIAN())) {
-			return Bulgarian;
+			return Language_Bulgarian;
 		} else if (language.equals(Language.CATALAN_VALENCIAN())) {
-			return Catalan;
+			return Language_Catalan;
 		} else if (language.equals(Language.CROATIAN())) {
-			return Croat;
+			return Language_Croat;
 		} else if (language.equals(Language.CZECH())) {
-			return Czech;
+			return Language_Czech;
 		} else if (language.equals(Language.DANISH())) {
-			return Danish;
+			return Language_Danish;
 		} else if (language.equals(Language.DUTCH_MIDDLE())) {
-			return Dutch;
+			return Language_Dutch;
 		} else if (language.equals(Language.ENGLISH())) {
-			return English;
+			return Language_English;
 //		} else if (language.equals(Language.)) {
-//			return Euskera;
+//			return Language_Euskera;
 		} else if (language.equals(Language.ESTONIAN())) {
-			return Estonian;
+			return Language_Estonian;
 		} else if (language.equals(Language.FINNISH())) {
-			return Finnish;
+			return Language_Finnish;
 		} else if (language.equals(Language.FRENCH())) {
-			return French;
+			return Language_French;
 		} else if (language.equals(Language.GEORGIAN())) {
-			return Georgian;
+			return Language_Georgian;
 		} else if (language.equals(Language.GERMAN())) {
-			return German;
+			return Language_German;
 		} else if (language.equals(Language.GREEK_MODERN())) {
-			return Greek;
+			return Language_Greek;
 		} else if (language.equals(Language.HUNGARIAN())) {
-			return Hungarian;
+			return Language_Hungarian;
 		} else if (language.equals(Language.ICELANDIC())) {
-			return Icelandic;
+			return Language_Icelandic;
 		} else if (language.equals(Language.IRISH())) {
-			return Irish_Gaelic;
+			return Language_Irish_Gaelic;
 		} else if (language.equals(Language.HEBREW())) {
-			return Israel_Hebrew;
+			return Language_Israel_Hebrew;
 		} else if (language.equals(Language.ITALIAN())) {
-			return Italian;
+			return Language_Italian;
 		} else if (language.equals(Language.LATVIAN())) {
-			return Latvian;
+			return Language_Latvian;
 		} else if (language.equals(Language.LITHUANIAN())) {
-			return Lithuanian;
+			return Language_Lithuanian;
 		} else if (language.equals(Language.MACEDONIAN())) {
-			return Macedonian;
+			return Language_Macedonian;
 		} else if (language.equals(Language.MALTESE())) {
-			return Maltese;
+			return Language_Maltese;
 		} else if (language.equals(Language.MOLDAVIAN())) {
-			return Moldovian;
+			return Language_Moldovian;
 		} else if (language.equals(Language.NORWEGIAN())) {
-			return Norwegian;
+			return Language_Norwegian;
 		} else if (language.equals(Language.POLISH())) {
-			return Polish;
+			return Language_Polish;
 		} else if (language.equals(Language.PORTUGUESE())) {
-			return Portuguese;
+			return Language_Portuguese;
 		} else if (language.equals(Language.ROMANIAN())) {
-			return Roumanian;
+			return Language_Roumanian;
 		} else if (language.equals(Language.RUSSIAN())) {
-			return Russian;
+			return Language_Russian;
 //		} else if (language.equals(Language.)) {
-//			return Russian_Caucasian;
+//			return Language_Russian_Caucasian;
 //		} else if (language.equals(Language.)) {
-//			return Russian_Altaic_kalmyk_oirat;
+//			return Language_Russian_Altaic_kalmyk_oirat;
 //		} else if (language.equals(Language.)) {
-//			return Russian_Altaic_karachay_balkar;
+//			return Language_Russian_Altaic_karachay_balkar;
 //		} else if (language.equals(Language.)) {
-//			return Russian_Altaic_kumyk;
+//			return Language_Russian_Altaic_kumyk;
 //		} else if (language.equals(Language.)) {
-//			return Russian_Altaic_nogai;
+//			return Language_Russian_Altaic_nogai;
 //		} else if (language.equals(Language.)) {
-//			return Russian_Altaic_north_azerbaijani;
+//			return Language_Russian_Altaic_north_azerbaijani;
 //		} else if (language.equals(Language.)) {
-//			return Russian_Indo_european_russian;
+//			return Language_Russian_Indo_european_russian;
 //		} else if (language.equals(Language.)) {
-//			return Russian_Indo_european_kalmyk_oirat;
+//			return Language_Russian_Indo_european_kalmyk_oirat;
 //		} else if (language.equals(Language.)) {
-//			return Russian_Indo_european_osetin;
+//			return Language_Russian_Indo_european_osetin;
 //		} else if (language.equals(Language.)) {
-//			return Russian_North_caucasian_abaza;
+//			return Language_Russian_North_caucasian_abaza;
 //		} else if (language.equals(Language.)) {
-//			return Russian_North_caucasian_adyghe;
+//			return Language_Russian_North_caucasian_adyghe;
 //		} else if (language.equals(Language.)) {
-//			return Russian_North_caucasian_chechen;
+//			return Language_Russian_North_caucasian_chechen;
 //		} else if (language.equals(Language.)) {
-//			return Russian_North_caucasian_kabardian;
+//			return Language_Russian_North_caucasian_kabardian;
 //		} else if (language.equals(Language.)) {
-//			return Russian_North_caucasian_lak;
+//			return Language_Russian_North_caucasian_lak;
 //		} else if (language.equals(Language.)) {
-//			return Russian_North_caucasian_avar;
+//			return Language_Russian_North_caucasian_avar;
 //		} else if (language.equals(Language.)) {
-//			return Russian_North_caucasian_in;
+//			return Language_Russian_North_caucasian_in;
 //		} else if (language.equals(Language.)) {
-//			return Russian_Uralic_chuvash;
+//			return Language_Russian_Uralic_chuvash;
 //		} else if (language.equals(Language.)) {
-//			return Russian_Uralic_udmurt;
+//			return Language_Russian_Uralic_udmurt;
 		} else if (language.equals(Language.SERBIAN())) {
-			return Serbian;
+			return Language_Serbian;
 		} else if (language.equals(Language.SLOVAK())) {
-			return Slovak;
+			return Language_Slovak;
 		} else if (language.equals(Language.SLOVENIAN())) {
-			return Slovene;
+			return Language_Slovene;
 		} else if (language.equals(Language.SPANISH_CATALAN())) {
-			return Spanish_Castillian;
+			return Language_Spanish_Castillian;
 		} else if (language.equals(Language.SWEDISH())) {
-			return Swedish;
+			return Language_Swedish;
 		} else if (language.equals(Language.TURKISH())) {
-			return Turkish;
+			return Language_Turkish;
 		} else if (language.equals(Language.UKRAINIAN())) {
-			return Ukraine;
+			return Language_Ukraine;
 		} else if (language.equals(Language.WELSH())) {
-			return Welsh;
+			return Language_Welsh;
 		} else if (language.equals(Language.CORSICAN())) {
-			return Corsican;
+			return Language_Corsican;
 		} else {
 			logger.debug("Unknown Language.");
 			return null;
@@ -1645,67 +2210,115 @@ public final class PesiTransformer {
 		}
 	}
 	
-//	public static Integer rank2RankId(Rank rank) {
-//		if (rank == null){
-//			return null;
-//		}
-//		else if (rank.equals(Rank.KINGDOM())) {
-//			return RANK_KINGDOM;
-//		} else if (rank.equals(Rank.SUBKINGDOM())) {
-//			return RANK_SUBKINGDOM;
-//		} else if (rank.equals(Rank.SUPERPHYLUM())) {
-//			return RANK_SUPERPHYLUM;
-//		} else if (rank.equals(Rank.PHYLUM())) {
-//			return RANK_PHYLUM;
-//		} else if (rank.equals(Rank.SUBPHYLUM())) {
-//			return RANK_SUBPHYLUM;
-//		} else if (rank.equals(Rank.INFRAPHYLUM())) {
-//			return RANK_INFRAPHYLUM;
-//		} else if (rank.equals(Rank.SUPERCLASS())) {
-//			return RANK_SUPERCLASS;
-//		} else if (rank.equals(Rank.CLASS())) {
-//			return RANK_CLASS;
-//		} else if (rank.equals(Rank.SUBCLASS())) {
-//			return RANK_SUBCLASS;
-//		} else if (rank.equals(Rank.INFRACLASS())) {
-//			return RANK_INFRACLASS;
-//		} else if (rank.equals(Rank.SUPERORDER())) {
-//			return RANK_SUPERORDER;
-//		} else if (rank.equals(Rank.ORDER())) {
-//			return RANK_ORDER;
-//		} else if (rank.equals(Rank.SUBORDER())) {
-//			return RANK_SUBORDER;
-//		} else if (rank.equals(Rank.INFRAORDER())) {
-//			return RANK_INFRAORDER;
-//		} else if (rank.equals(Rank.secti)) {
-//			return RANK_;
-//		}
-//		
-//		public static int RANK_SECTION = 121;
-//		public static int RANK_SUBSECTION = 122;
-//		public static int RANK_SUPERFAMILY = 130;
-//		public static int RANK_FAMILY = 140;
-//		public static int RANK_SUBFAMILY = 150;
-//		public static int RANK_TRIBE = 160;
-//		public static int RANK_SUBTRIBE = 170;
-//		public static int RANK_GENUS = 180;
-//		public static int RANK_SUBGENUS = 190;
-//		public static int RANK_SPECIES = 220;
-//		public static int RANK_SUBSPECIES = 230;
-//		public static int RANK_NATIO = 235;
-//		public static int RANK_VARIETY = 240;
-//		public static int RANK_SUBVARIETY = 250;
-//		public static int RANK_FORMA = 260;
-//	}
+	/**
+	 * Returns the RelTaxonQualifierCache for a given taxonRelation.
+	 * @param relation
+	 * @return
+	 */
+	public static String taxonRelation2RelTaxonQualifierCache(RelationshipBase<?,?,?> relation){
+		if (relation == null) {
+			return null;
+		}
+		RelationshipTermBase<?> type = relation.getType();
+		if (type.equals(TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN())) {
+			return STR_IS_TAXONOMICALLY_INCLUDED_IN;
+		} else if (type.equals(TaxonRelationshipType.MISAPPLIED_NAME_FOR())) {
+			return STR_IS_MISAPPLIED_NAME_FOR;
+		} else if (type.equals(SynonymRelationshipType.SYNONYM_OF())) {
+			return STR_IS_SYNONYM_OF;
+		} else if (type.equals(SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF())) {
+			return STR_IS_HOMOTYPIC_SYNONYM_OF;
+		} else if (type.equals(SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF())) {
+			return STR_IS_HETEROTYPIC_SYNONYM_OF;
+		}
+
+		// The following have no equivalent attribute in CDM
+//		IS_BASIONYM_FOR
+//		IS_LATER_HOMONYM_OF
+//		IS_REPLACED_SYNONYM_FOR
+//		IS_VALIDATION_OF
+//		IS_LATER_VALIDATION_OF
+//		IS_TYPE_OF
+//		IS_CONSERVED_TYPE_OF
+//		IS_REJECTED_TYPE_OF
+//		IS_FIRST_PARENT_OF
+//		IS_SECOND_PARENT_OF
+//		IS_FEMALE_PARENT_OF
+//		IS_MALE_PARENT_OF
+//		IS_CONSERVED_AGAINST
+//		IS_REJECTED_IN_FAVOUR_OF
+//		IS_TREATED_AS_LATER_HOMONYM_OF
+//		IS_ORTHOGRAPHIC_VARIANT_OF
+//		IS_ALTERNATIVE_NAME_FOR
+//		HAS_SAME_TYPE_AS
+//		IS_LECTOTYPE_OF
+//		TYPE_NOT_DESIGNATED
+//		IS_PRO_PARTE_SYNONYM_OF
+//		IS_PARTIAL_SYNONYM_OF
+//		IS_PRO_PARTE_AND_HOMOTYPIC_SYNONYM_OF
+//		IS_PRO_PARTE_AND_HETEROTYPIC_SYNONYM_OF
+//		IS_PARTIAL_AND_HOMOTYPIC_SYNONYM_OF
+//		IS_PARTIAL_AND_HETEROTYPIC_SYNONYM_OF
+//		IS_INFERRED_EPITHET_FOR
+//		IS_INFERRED_GENUS_FOR
+//		IS_POTENTIAL_COMBINATION_FOR
+
+		return null;
+	}
 	
-	public static Integer taxRelation2RelTaxonQualifierFk (RelationshipBase<?,?,?> relationship){
-//		if (relationship == null) {
-//			return null;
-//		} else {
-//			if ((relationship.getType()).equals(TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN())) {
-//				return TAX_REL_IS_INCLUDED_IN;
-//			}
-//		}
+	/**
+	 * Returns the RelTaxonQualifierFk for a TaxonRelation.
+	 * @param relation
+	 * @return
+	 */
+	public static Integer taxonRelation2RelTaxonQualifierFk(RelationshipBase<?,?,?> relation) {
+		if (relation == null) {
+			return null;
+		}
+		RelationshipTermBase<?> type = relation.getType();
+		if (type.equals(TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN())) {
+			return IS_TAXONOMICALLY_INCLUDED_IN;
+		} else if (type.equals(TaxonRelationshipType.MISAPPLIED_NAME_FOR())) {
+			return IS_MISAPPLIED_NAME_FOR;
+		} else if (type.equals(SynonymRelationshipType.SYNONYM_OF())) {
+			return IS_SYNONYM_OF;
+		} else if (type.equals(SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF())) {
+			return IS_HOMOTYPIC_SYNONYM_OF;
+		} else if (type.equals(SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF())) {
+			return IS_HETEROTYPIC_SYNONYM_OF;
+		}
+
+		// The following have no equivalent attribute in CDM
+//		IS_BASIONYM_FOR
+//		IS_LATER_HOMONYM_OF
+//		IS_REPLACED_SYNONYM_FOR
+//		IS_VALIDATION_OF
+//		IS_LATER_VALIDATION_OF
+//		IS_TYPE_OF
+//		IS_CONSERVED_TYPE_OF
+//		IS_REJECTED_TYPE_OF
+//		IS_FIRST_PARENT_OF
+//		IS_SECOND_PARENT_OF
+//		IS_FEMALE_PARENT_OF
+//		IS_MALE_PARENT_OF
+//		IS_CONSERVED_AGAINST
+//		IS_REJECTED_IN_FAVOUR_OF
+//		IS_TREATED_AS_LATER_HOMONYM_OF
+//		IS_ORTHOGRAPHIC_VARIANT_OF
+//		IS_ALTERNATIVE_NAME_FOR
+//		HAS_SAME_TYPE_AS
+//		IS_LECTOTYPE_OF
+//		TYPE_NOT_DESIGNATED
+//		IS_PRO_PARTE_SYNONYM_OF
+//		IS_PARTIAL_SYNONYM_OF
+//		IS_PRO_PARTE_AND_HOMOTYPIC_SYNONYM_OF
+//		IS_PRO_PARTE_AND_HETEROTYPIC_SYNONYM_OF
+//		IS_PARTIAL_AND_HOMOTYPIC_SYNONYM_OF
+//		IS_PARTIAL_AND_HETEROTYPIC_SYNONYM_OF
+//		IS_INFERRED_EPITHET_FOR
+//		IS_INFERRED_GENUS_FOR
+//		IS_POTENTIAL_COMBINATION_FOR
+
 		return null;
 	}
 }

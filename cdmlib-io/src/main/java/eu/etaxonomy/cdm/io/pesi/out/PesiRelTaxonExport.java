@@ -19,7 +19,6 @@ import org.springframework.transaction.TransactionStatus;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.MethodMapper;
 import eu.etaxonomy.cdm.io.common.DbExportStateBase;
 import eu.etaxonomy.cdm.io.common.Source;
-import eu.etaxonomy.cdm.io.pesi.PesiTransformer;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
@@ -192,7 +191,7 @@ public class PesiRelTaxonExport extends PesiExportBase {
 	 */
 	@SuppressWarnings("unused")
 	private static Integer getRelTaxonQualifierFk(RelationshipBase<?, ?, ?> relationship) {
-		return PesiTransformer.taxRelation2RelTaxonQualifierFk(relationship);
+		return PesiTransformer.taxonRelation2RelTaxonQualifierFk(relationship);
 	}
 	
 	/**
@@ -203,8 +202,7 @@ public class PesiRelTaxonExport extends PesiExportBase {
 	 */
 	@SuppressWarnings("unused")
 	private static String getRelQualifierCache(RelationshipBase<?, ?, ?> relationship) {
-		// TODO
-		return null;
+		return PesiTransformer.taxonRelation2RelTaxonQualifierCache(relationship);
 	}
 	
 	/**

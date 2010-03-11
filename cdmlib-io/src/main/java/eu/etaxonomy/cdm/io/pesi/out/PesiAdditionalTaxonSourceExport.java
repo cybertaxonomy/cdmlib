@@ -18,14 +18,16 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.MethodMapper;
-import eu.etaxonomy.cdm.io.common.DbExportStateBase;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DescriptionElementSource;
+import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
+import eu.etaxonomy.cdm.model.taxon.Synonym;
+import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
@@ -44,7 +46,10 @@ public class PesiAdditionalTaxonSourceExport extends PesiExportBase {
 	private static int modCount = 1000;
 	private static final String dbTableName = "AdditionalTaxonSource";
 	private static final String pluralString = "DescriptionElements";
-	private static Taxon taxon = null;
+	private static boolean sourceUse_AdditionalSource = false;
+	private static boolean sourceUse_NomenclaturalReference = false;
+	private static boolean sourceUse_SourceOfSynonymy = false;
+	private static TaxonBase currentTaxon = null;
 
 	public PesiAdditionalTaxonSourceExport() {
 		super();
@@ -106,11 +111,29 @@ public class PesiAdditionalTaxonSourceExport extends PesiExportBase {
 			while ((list = getTaxonService().list(null, limit, count, null, null)).size() > 0) {
 
 				logger.error("Fetched " + list.size() + " " + pluralString + ".");
+				
+				logger.error("PHASE 1: Check for SourceUse 'NomenclaturalReference'");
+				sourceUse_NomenclaturalReference = true;
 				for (TaxonBase taxonBase : list) {
-					if (taxonBase.isInstanceOf(Taxon.class)) {
+					// Set the current Taxon
+					currentTaxon = taxonBase;
 
-						// Set the current Taxon
-						taxon = CdmBase.deproxy(taxonBase, Taxon.class);
+					ReferenceBase<?> nomenclaturalReference = (ReferenceBase)taxonBase.getName().getNomenclaturalReference();
+					if (nomenclaturalReference != null) {
+						success &= mapping.invoke(nomenclaturalReference);
+					}
+				}
+				sourceUse_NomenclaturalReference = false;
+				
+				logger.error("PHASE 2: Check for SourceUse 'Additional Source'");
+				sourceUse_AdditionalSource = true;
+				for (TaxonBase taxonBase : list) {
+					// Set the current Taxon
+					currentTaxon = taxonBase;
+
+					if (taxonBase.isInstanceOf(Taxon.class)) {
+						
+						Taxon taxon = CdmBase.deproxy(taxonBase, Taxon.class);
 
 						// Determine the TaxonDescriptions
 						Set<TaxonDescription> taxonDescriptions = taxon.getDescriptions();
@@ -127,17 +150,24 @@ public class PesiAdditionalTaxonSourceExport extends PesiExportBase {
 									success &= mapping.invoke(reference);
 								}
 							}
-							
-//							featureSet = taxonDescription.getDescriptiveSystem();
-//							for (Feature feature : featureSet) {
-//								if (feature.equals(Feature.CITATION())) {
-//									doCount(count++, modCount, pluralString);
-//									success &= mapping.invoke(taxonDescription);
-//								}
-//							}
 						}
 					}
 				}
+				sourceUse_AdditionalSource = false;
+				
+				logger.error("PHASE 3: Check for SourceUse 'Source of Synonymy'");
+				sourceUse_SourceOfSynonymy = true;
+				for (TaxonBase taxonBase : list) {
+					if (taxonBase.isInstanceOf(Synonym.class)) {
+						Synonym synonym = CdmBase.deproxy(taxonBase, Synonym.class);
+						Set<SynonymRelationship> synonymRelations = synonym.getSynonymRelations();
+						for (SynonymRelationship relation : synonymRelations) {
+							currentTaxon = relation.getAcceptedTaxon();
+							success &= mapping.invoke(relation.getCitation());
+						}
+					}
+				}
+				sourceUse_SourceOfSynonymy = false;
 				
 				// Commit transaction
 				commitTransaction(txStatus);
@@ -201,8 +231,10 @@ public class PesiAdditionalTaxonSourceExport extends PesiExportBase {
 	 * @see MethodMapper
 	 */
 	@SuppressWarnings("unused")
-	private static Integer getTaxonFk(PesiExportState state) {
-		return state.getDbId(taxon);
+	private static Integer getTaxonFk(ReferenceBase<?> reference, PesiExportState state) {
+		// ReferenceBase parameter isn't needed, but the DbSingleAttributeExportMapperBase throws a type mismatch exception otherwise
+		// since it awaits two parameters if one of them is of instance DbExportStateBase.
+		return state.getDbId(currentTaxon);
 	}
 	
 	/**
@@ -212,9 +244,8 @@ public class PesiAdditionalTaxonSourceExport extends PesiExportBase {
 	 * @see MethodMapper
 	 */
 	@SuppressWarnings("unused")
-	private static Integer getSourceFk(ReferenceBase<?> reference, DbExportStateBase<?> state) {
+	private static Integer getSourceFk(ReferenceBase<?> reference, PesiExportState state) {
 		return state.getDbId(reference);
-
 
 //		Set<TaxonDescription> descs = taxon.getDescriptions();
 //		//for each
@@ -239,9 +270,17 @@ public class PesiAdditionalTaxonSourceExport extends PesiExportBase {
 	 * @see MethodMapper
 	 */
 	@SuppressWarnings("unused")
-	private static String getSourceUseFk(ReferenceBase<?> reference) {
+	private static Integer getSourceUseFk(ReferenceBase<?> reference) {
 		// TODO
-		return null;
+		Integer result = null;
+		if (sourceUse_AdditionalSource) {
+			result = PesiTransformer.sourceUseIdSourceUseId(3);
+		} else if (sourceUse_SourceOfSynonymy) {
+			result = PesiTransformer.sourceUseIdSourceUseId(4);
+		} else if (sourceUse_NomenclaturalReference) {
+			result = PesiTransformer.sourceUseIdSourceUseId(8);
+		}
+		return result;
 	}
 	
 	/**
@@ -253,7 +292,15 @@ public class PesiAdditionalTaxonSourceExport extends PesiExportBase {
 	@SuppressWarnings("unused")
 	private static String getSourceUseCache(ReferenceBase<?> reference) {
 		// TODO
-		return null;
+		String result = null;
+		if (sourceUse_AdditionalSource) {
+			result = PesiTransformer.sourceUseId2SourceUseCache(3);
+		} else if (sourceUse_SourceOfSynonymy) {
+			result = PesiTransformer.sourceUseId2SourceUseCache(4);
+		} else if (sourceUse_NomenclaturalReference) {
+			result = PesiTransformer.sourceUseId2SourceUseCache(8);
+		}
+		return result;
 	}
 	
 	/**
@@ -264,8 +311,7 @@ public class PesiAdditionalTaxonSourceExport extends PesiExportBase {
 	 */
 	@SuppressWarnings("unused")
 	private static String getSourceNameCache(ReferenceBase<?> reference) {
-		// TODO
-		return null;
+		return reference.getTitle();
 	}
 	
 	/**
@@ -276,8 +322,8 @@ public class PesiAdditionalTaxonSourceExport extends PesiExportBase {
 	 */
 	@SuppressWarnings("unused")
 	private static String getSourceDetail(ReferenceBase<?> reference) {
-		// TODO
-		return null;
+		String result = null;
+		return result;
 	}
 
 	/**
@@ -287,7 +333,7 @@ public class PesiAdditionalTaxonSourceExport extends PesiExportBase {
 	private PesiExportMapping getMapping() {
 		PesiExportMapping mapping = new PesiExportMapping(dbTableName);
 		
-		mapping.addMapper(MethodMapper.NewInstance("TaxonFk", this.getClass(), "getTaxonFk", PesiExportState.class));
+		mapping.addMapper(MethodMapper.NewInstance("TaxonFk", this.getClass(), "getTaxonFk", standardMethodParameter, PesiExportState.class));
 		mapping.addMapper(MethodMapper.NewInstance("SourceFk", this.getClass(), "getSourceFk", standardMethodParameter, PesiExportState.class));
 		mapping.addMapper(MethodMapper.NewInstance("SourceUseFk", this));
 		mapping.addMapper(MethodMapper.NewInstance("SourceUseCache", this));

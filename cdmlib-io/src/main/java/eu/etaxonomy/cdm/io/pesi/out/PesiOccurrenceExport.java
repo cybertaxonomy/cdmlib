@@ -193,8 +193,8 @@ public class PesiOccurrenceExport extends PesiExportBase {
 	 * @see MethodMapper
 	 */
 	@SuppressWarnings("unused")
-	private static Integer getTaxonFk(AnnotatableEntity reference, DbExportStateBase<?> state) {
-		// ReferenceBase parameter isn't needed, but the DbSingleAttributeExportMapperBase throws a type mismatch exception otherwise
+	private static Integer getTaxonFk(AnnotatableEntity entity, DbExportStateBase<?> state) {
+		// AnnotatableEntity parameter isn't needed, but the DbSingleAttributeExportMapperBase throws a type mismatch exception otherwise
 		// since it awaits two parameters if one of them is of instance DbExportStateBase.
 //		logger.error("taxon state id: " + state.getDbId(taxon));
 		return state.getDbId(taxon);
@@ -202,85 +202,110 @@ public class PesiOccurrenceExport extends PesiExportBase {
 
 	/**
 	 * Returns the <code>AreaFk</code> attribute.
-	 * @param reference The {@link ReferenceBase ReferenceBase}.
+	 * @param entity
 	 * @return The <code>AreaFk</code> attribute.
 	 * @see MethodMapper
 	 */
 	@SuppressWarnings("unused")
-	private static Integer getAreaFk(AnnotatableEntity reference) {
-//		NamedArea area = distribution.getArea();
-//		return PesiTransformer.area2AreaId();
-		return 1;
+	private static Integer getAreaFk(AnnotatableEntity entity) {
+		// TODO
+		Integer result = 1;
+//		if (entity.isInstanceOf(ReferenceBase.class)) {
+//		}
+		return result;
 	}
 
 	/**
+	 * Returns the <code>TaxonFullNameCache</code> attribute.
+	 * @param entity
+	 * @return The <code>TaxonFullNameCache</code> attribute.
+	 * @see MethodMapper
+	 */
+	@SuppressWarnings("unused")
+	private static Integer getTaxonFullNameCache(AnnotatableEntity entity) {
+		// TODO
+		Integer result = null;
+		// Get the taxon this reference belongs to...
+//		return taxon.getName().getTitleCache();
+		return result;
+	}
+	
+	/**
 	 * Returns the <code>AreaNameCache</code> attribute.
-	 * @param reference The {@link ReferenceBase ReferenceBase}.
+	 * @param entity
 	 * @return The <code>AreaNameCache</code> attribute.
 	 * @see MethodMapper
 	 */
 	@SuppressWarnings("unused")
-	private static String getAreaNameCache(AnnotatableEntity reference) {
+	private static String getAreaNameCache(AnnotatableEntity entity) {
 		// TODO
 		return null;
 	}
 
 	/**
 	 * Returns the <code>OccurrenceStatusFk</code> attribute.
-	 * @param reference The {@link ReferenceBase ReferenceBase}.
+	 * @param entity
 	 * @return The <code>OccurrenceStatusFk</code> attribute.
 	 * @see MethodMapper
 	 */
 	@SuppressWarnings("unused")
-	private static Integer getOccurrenceStatusFk(AnnotatableEntity reference) {
+	private static Integer getOccurrenceStatusFk(AnnotatableEntity entity) {
 		// TODO
-		return 1;
+		Integer result = 1;
+		// Get the distribution this reference belongs to...
+//		result = distribution.getStatus();
+		return result;
 	}
 
 	/**
 	 * Returns the <code>OccurrenceStatusCache</code> attribute.
-	 * @param reference The {@link ReferenceBase ReferenceBase}.
+	 * @param entity
 	 * @return The <code>OccurrenceStatusCache</code> attribute.
 	 * @see MethodMapper
 	 */
 	@SuppressWarnings("unused")
-	private static String getOccurrenceStatusCache(AnnotatableEntity reference) {
+	private static String getOccurrenceStatusCache(AnnotatableEntity entity) {
 		// TODO
+		// Get the distribution this reference belongs to...
 		return null;
 	}
 
 	/**
 	 * Returns the <code>SourceFk</code> attribute.
-	 * @param reference The {@link ReferenceBase ReferenceBase}.
+	 * @param entity
 	 * @param state The {@link DbExportStateBase DbExportState}.
 	 * @return The <code>SourceFk</code> attribute.
 	 * @see MethodMapper
 	 */
 	@SuppressWarnings("unused")
-	private static Integer getSourceFk(AnnotatableEntity reference, DbExportStateBase<?> state) {
-		return state.getDbId(reference);
+	private static Integer getSourceFk(AnnotatableEntity entity, DbExportStateBase<?> state) {
+		return state.getDbId(entity);
 	}
 
 	/**
 	 * Returns the <code>SourceCache</code> attribute.
-	 * @param reference The {@link ReferenceBase ReferenceBase}.
+	 * @param entity
 	 * @return The <code>SourceCache</code> attribute.
 	 * @see MethodMapper
 	 */
 	@SuppressWarnings("unused")
-	private static String getSourceCache(AnnotatableEntity reference) {
-		// TODO
-		return null;
+	private static String getSourceCache(AnnotatableEntity entity) {
+		String result = null;
+		if (entity.isInstanceOf(ReferenceBase.class)) {
+			ReferenceBase reference = CdmBase.deproxy(entity, ReferenceBase.class);
+			result = reference.getTitle();
+		}
+		return result;
 	}
 
 	/**
 	 * Returns the <code>Notes</code> attribute.
-	 * @param reference The {@link ReferenceBase ReferenceBase}.
+	 * @param entity
 	 * @return The <code>Notes</code> attribute.
 	 * @see MethodMapper
 	 */
 	@SuppressWarnings("unused")
-	private static String getNotes(AnnotatableEntity reference) {
+	private static String getNotes(AnnotatableEntity entity) {
 		// TODO
 		return null;
 	}
@@ -296,6 +321,7 @@ public class PesiOccurrenceExport extends PesiExportBase {
 //		mapping.addMapper(IdMapper.NewInstance("OccurrenceId"));
 		mapping.addMapper(MethodMapper.NewInstance("TaxonFk", this.getClass(), "getTaxonFk", standardMethodParameter, DbExportStateBase.class));
 		mapping.addMapper(MethodMapper.NewInstance("AreaFk", this));
+		mapping.addMapper(MethodMapper.NewInstance("TaxonFullNameCache", this));
 		mapping.addMapper(MethodMapper.NewInstance("AreaNameCache", this));
 		mapping.addMapper(MethodMapper.NewInstance("OccurrenceStatusFk", this));
 		mapping.addMapper(MethodMapper.NewInstance("OccurrenceStatusCache", this));

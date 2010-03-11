@@ -220,8 +220,7 @@ public class PesiNoteSourceExport extends PesiExportBase {
 	 */
 	@SuppressWarnings("unused")
 	private static String getSourceDetail(DescriptionElementBase descriptionElement) {
-		// TODO
-		return null;
+		return descriptionElement.getCitationMicroReference();
 	}
 
 	/**

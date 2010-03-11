@@ -22,7 +22,6 @@ import eu.etaxonomy.cdm.io.berlinModel.out.mapper.IdMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.MethodMapper;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator.DO_REFERENCES;
-import eu.etaxonomy.cdm.io.pesi.PesiTransformer;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
@@ -222,8 +221,8 @@ public class PesiSourceExport extends PesiExportBase {
 	private static String getAuthorString(ReferenceBase<?> reference) {
 		TeamOrPersonBase team = reference.getAuthorTeam();
 		if (team != null) {
-			return team.getTitleCache();
-			//team.getNomenclaturalTitle();
+//			return team.getTitleCache();
+			return team.getNomenclaturalTitle();
 		} else {
 			return null;
 		}

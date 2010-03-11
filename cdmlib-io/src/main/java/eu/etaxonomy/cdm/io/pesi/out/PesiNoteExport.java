@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.io.pesi.out;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
@@ -26,6 +27,7 @@ import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
+import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 /**
@@ -247,8 +249,7 @@ public class PesiNoteExport extends PesiExportBase {
 	 */
 	@SuppressWarnings("unused")
 	private static String getLanguageCache(DescriptionElementBase descriptionElement) {
-		// TODO
-		return null;
+		return PesiTransformer.language2LanguageCache(Language.DEFAULT());
 	}
 
 	/**
@@ -259,8 +260,19 @@ public class PesiNoteExport extends PesiExportBase {
 	 */
 	@SuppressWarnings("unused")
 	private static String getRegion(DescriptionElementBase descriptionElement) {
-		// TODO
-		return null;
+		// TODO: I'm not sure if this is the right way to get region information.
+		String result = null;
+		DescriptionBase description = descriptionElement.getInDescription();
+		if (description.isInstanceOf(TaxonDescription.class)) {
+			TaxonDescription taxonDescription = CdmBase.deproxy(description, TaxonDescription.class);
+			Set<NamedArea> namedAreas = taxonDescription.getGeoScopes();
+			if (namedAreas.size() == 1) {
+				result = namedAreas.iterator().next().getLabel();
+			} else if (namedAreas.size() > 1) {
+				logger.warn("This TaxonDescription contains more than one NamedArea: " + taxonDescription.getTitleCache());
+			}
+		}
+		return result;
 	}
 
 	/**
