@@ -9,7 +9,6 @@
 package eu.etaxonomy.cdm.io.jaxb;
 
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -21,8 +20,6 @@ import javax.xml.bind.JAXBException;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.SchemaFactory;
-
-import junit.framework.Assert;
 
 import org.custommonkey.xmlunit.jaxp13.Validator;
 import org.junit.Before;
