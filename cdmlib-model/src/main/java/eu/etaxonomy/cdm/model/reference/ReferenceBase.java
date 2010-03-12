@@ -286,7 +286,9 @@ public class ReferenceBase<S extends IReferenceBaseCacheStrategy> extends Identi
     @XmlAttribute
     @Match(MatchMode.IGNORE)
     private int problemEnds = -1;
-	
+    
+    @Transient
+	private boolean cacheStrategyValidated = false; 
     
     protected ReferenceBase(){
 		super();
@@ -635,12 +637,21 @@ public class ReferenceBase<S extends IReferenceBaseCacheStrategy> extends Identi
 	// TODO implement
 	@Transient
 	public String getCitation(){
+        validateCacheStrategy();
 		if (cacheStrategy == null){
 			logger.warn("No CacheStrategy defined for "+ this.getClass() + ": " + this.getUuid());
 			return null;
 		}else{
 			return cacheStrategy.getTitleCache(this);
 		}
+	}
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.common.IdentifiableEntity#generateTitle()
+	 */
+	public String generateTitle() {
+		validateCacheStrategy();
+		return super.generateTitle();
 	}
 	
 	/**
@@ -918,6 +929,7 @@ public class ReferenceBase<S extends IReferenceBaseCacheStrategy> extends Identi
 
 	
 	public String getNomenclaturalCitation(String microReference) {
+		validateCacheStrategy();
 		if (cacheStrategy == null){
 			logger.warn("No CacheStrategy defined for "+ this.getClass() + ": " + this.getUuid());
 			return null;
@@ -928,6 +940,20 @@ public class ReferenceBase<S extends IReferenceBaseCacheStrategy> extends Identi
 				logger.warn("No INomenclaturalReferenceCacheStrategy defined for "+ this.getClass() + ": " + this.getUuid());
 				return null;
 			}
+		}
+	}
+
+	/**
+	 * The type property of this class is mapped on the field level to the data base column, so
+	 * Hibernate will consequently use the {@link org.hibernate.property.DirectPropertyAccessor} 
+	 * to set the property. This PropertyAccessor directly sets the field instead of using the according setter so 
+	 * the CacheStrategy is not correctly set after the initialization of the bean. Thus we need to 
+	 * validate the CacheStrategy before it is to be used.
+	 */
+	private void validateCacheStrategy() {
+		if(!cacheStrategyValidated ){
+			setType(getType());
+			cacheStrategyValidated = true;
 		}
 	}
 
