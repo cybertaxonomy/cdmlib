@@ -275,11 +275,11 @@ public class PesiTaxonExport extends PesiExportBase {
 					if (HibernateProxyHelper.isInstanceOf(parentNode, TaxonNode.class)) {
 						TaxonNode node = CdmBase.deproxy(parentNode, TaxonNode.class);
 						taxon = node.getTaxon();
-						logger.error("current taxon: " + state.getDbId(taxon));
+//						logger.error("current taxon: " + state.getDbId(taxon));
 					} else {
 						// Root element reached
 						result = state.getDbId(taxon);
-						logger.error("Root element reached. Highest Taxon: " + state.getDbId(taxon));
+//						logger.error("Root element reached. Highest Taxon: " + state.getDbId(taxon));
 						root = true;
 					}
 				} else {
