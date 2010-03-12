@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.taxon;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -54,6 +55,9 @@ import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonComparator;
+import eu.etaxonomy.cdm.model.taxon.TaxonComparatorSearch;
+import eu.etaxonomy.cdm.model.name.TaxonNameComparator;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
@@ -245,6 +249,8 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 			List<TaxonBase> results = query.list();
 			results.addAll (prepareTaxaByCommonName(queryString, taxonomicTree, matchMode, namedAreas, pageSize, pageNumber, doCount).list());
 			defaultBeanInitializer.initializeAll(results, propertyPaths);
+			TaxonComparatorSearch comp = new TaxonComparatorSearch();
+			Collections.sort(results, comp);
 			return results;
 		}
 		return new ArrayList<TaxonBase>();
@@ -1271,6 +1277,7 @@ public List<Synonym>  createAllInferredSynonyms(Taxon taxon, TaxonomicTree tree)
 		String genusOfTaxon = taxonName.getGenusOrUninomial();
 		Set<TaxonNode> nodes = taxon.getTaxonNodes();
 	 	List<String> taxonNames = new ArrayList<String>();
+	 	
 		for (TaxonNode node: nodes){
 			List<String> synonymsGenus = new ArrayList<String>();
 		 	List<String> synonymsEpithet = new ArrayList<String>();
@@ -1471,6 +1478,22 @@ public List<Synonym>  createAllInferredSynonyms(Taxon taxon, TaxonomicTree tree)
 		}
 				
 		return taxonNames;
+	}
+
+
+	public List<TaxonNameBase> findIdenticalTaxonNames(List<String> propertyPaths) {
+		List<String> identicalNames = new ArrayList<String>();
+		//hole alle TaxonNames, die es mindestens zweimal gibt.
+		Query query=getSession().createQuery("select tmb2 from ZoologicalName tmb, ZoologicalName tmb2 fetch all properties where tmb.nameCache = tmb2.nameCache and tmb.id != tmb2.id");
+		List<TaxonNameBase> zooNames = query.list();
+		TaxonNameComparator taxComp = new TaxonNameComparator();
+		Collections.sort(zooNames, taxComp);
+		
+		for (TaxonNameBase taxonNameBase: zooNames){
+			defaultBeanInitializer.initialize(taxonNameBase, propertyPaths);
+		}
+		
+		return zooNames;
 	}
 	
 	
