@@ -11,7 +11,6 @@
 
 package eu.etaxonomy.cdm.api.application;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -56,12 +55,8 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.CdmMetaData;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
-import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.User;
-import eu.etaxonomy.cdm.model.common.VocabularyEnum;
 import eu.etaxonomy.cdm.model.common.init.TermNotFoundException;
-import eu.etaxonomy.cdm.model.description.Feature;
-import eu.etaxonomy.cdm.model.description.FeatureTree;
 
 
 /**
