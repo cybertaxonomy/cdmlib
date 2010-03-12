@@ -11,10 +11,14 @@ package eu.etaxonomy.cdm.io.pesi.out;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
+import eu.etaxonomy.cdm.model.description.AbsenceTerm;
 import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
+import eu.etaxonomy.cdm.model.description.PresenceTerm;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
@@ -29,6 +33,7 @@ import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
+import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
 /**
  * @author a.mueller
@@ -725,9 +730,9 @@ public final class PesiTransformer {
 	public static int AREA_CORVO = 9;
 	public static int AREA_FAIAL = 10;
 	public static int AREA_GRACIOSA = 11;
-	public static int AREA_SÃO_JORGE = 12;
+	public static int AREA_SAO_JORGE = 12;
 	public static int AREA_FLORES = 13;
-	public static int AREA_SÃO_MIGUEL = 14;
+	public static int AREA_SAO_MIGUEL = 14;
 	public static int AREA_PICO = 15;
 	public static int AREA_SANTA_MARIA = 16;
 	public static int AREA_TERCEIRA = 17;
@@ -1071,8 +1076,8 @@ public final class PesiTransformer {
 	public static String STR_AREA_RUSSIA_SOUTHWEST = "Russia_Southwest";
 	public static String STR_AREA_SAN_MARINO = "San_Marino";
 	public static String STR_AREA_SANTA_MARIA = "Santa_Maria";
-	public static String STR_AREA_SÃO_JORGE = "São_Jorge";
-	public static String STR_AREA_SÃO_MIGUEL = "São_Miguel";
+	public static String STR_AREA_SAO_JORGE = "São_Jorge";
+	public static String STR_AREA_SAO_MIGUEL = "São_Miguel";
 	public static String STR_AREA_SARDEGNA = "Sardegna";
 	public static String STR_AREA_SEA_OF_AZOV = "Sea_of_Azov";
 	public static String STR_AREA_SELVAGENS_ISLANDS = "Selvagens_Islands";
@@ -1134,12 +1139,290 @@ public final class PesiTransformer {
 
 
 	/**
+	 * Returns the OccurrenceStatusCache for a given PresenceAbsenceTerm.
+	 * @param term
+	 * @return
+	 * @throws UnknownCdmTypeException 
+	 */
+	public static String presenceAbsenceTerm2OccurrenceStatusCache(PresenceAbsenceTermBase<?> term) throws UnknownCdmTypeException {
+		String result = null;
+		if (term.isInstanceOf(PresenceTerm.class)) {
+			PresenceTerm presenceTerm = CdmBase.deproxy(term, PresenceTerm.class);
+			if (presenceTerm.equals(PresenceTerm.PRESENT())) {
+				result = STR_STATUS_PRESENT;
+			} else if (presenceTerm.equals(PresenceTerm.NATIVE())) {
+				result = STR_STATUS_NATIVE;
+			} else if (presenceTerm.equals(PresenceTerm.INTRODUCED())) {
+				result = STR_STATUS_INTRODUCED;
+			} else if (presenceTerm.equals(PresenceTerm.NATURALISED())) {
+				result = STR_STATUS_NATURALISED;
+			} else if (presenceTerm.equals(PresenceTerm.INVASIVE())) {
+				result = STR_STATUS_INVASIVE;
+//			} else if (presenceTerm.equals(PresenceTerm.)) {
+//				result = STR_STATUS_MANAGED;
+//			} else if (presenceTerm.equals(PresenceTerm.)) {
+//				result = STR_STATUS_DOUBTFUL;
+			} else {
+				throw new UnknownCdmTypeException("PresenceTerm could not be translated to datawarehouse occurrence status id: " + presenceTerm.getLabel());
+			}
+		} else if (term.isInstanceOf(AbsenceTerm.class)) {
+			AbsenceTerm absenceTerm = CdmBase.deproxy(term, AbsenceTerm.class);
+			if (absenceTerm.equals(AbsenceTerm.ABSENT())) {
+				result = STR_STATUS_ABSENT;
+			} else {
+				throw new UnknownCdmTypeException("AbsenceTerm could not be translated to datawarehouse occurrence status id: " + absenceTerm.getLabel());
+			}
+//			result = STR_STATUS_ABSENT; // or just like this?
+		}
+		return result;
+	}
+
+	/**
+	 * Returns the OccurrenceStatusId for a given PresenceAbsenceTerm.
+	 * @param term
+	 * @return
+	 * @throws UnknownCdmTypeException 
+	 */
+	public static Integer presenceAbsenceTerm2OccurrenceStatusId(PresenceAbsenceTermBase<?> term) throws UnknownCdmTypeException {
+		Integer result = null;
+		if (term.isInstanceOf(PresenceTerm.class)) {
+			PresenceTerm presenceTerm = CdmBase.deproxy(term, PresenceTerm.class);
+			if (presenceTerm.equals(PresenceTerm.PRESENT())) {
+				result = STATUS_PRESENT;
+			} else if (presenceTerm.equals(PresenceTerm.NATIVE())) {
+				result = STATUS_NATIVE;
+			} else if (presenceTerm.equals(PresenceTerm.INTRODUCED())) {
+				result = STATUS_INTRODUCED;
+			} else if (presenceTerm.equals(PresenceTerm.NATURALISED())) {
+				result = STATUS_NATURALISED;
+			} else if (presenceTerm.equals(PresenceTerm.INVASIVE())) {
+				result = STATUS_INVASIVE;
+//			} else if (presenceTerm.equals(PresenceTerm.)) {
+//				result = STATUS_MANAGED;
+//			} else if (presenceTerm.equals(PresenceTerm.)) {
+//				result = STATUS_DOUBTFUL;
+			} else {
+				throw new UnknownCdmTypeException("PresenceTerm could not be translated to datawarehouse occurrence status id: " + presenceTerm.getLabel());
+			}
+		} else if (term.isInstanceOf(AbsenceTerm.class)) {
+			AbsenceTerm absenceTerm = CdmBase.deproxy(term, AbsenceTerm.class);
+			if (absenceTerm.equals(AbsenceTerm.ABSENT())) {
+				result = STATUS_ABSENT;
+			} else {
+				throw new UnknownCdmTypeException("AbsenceTerm could not be translated to datawarehouse occurrence status id: " + absenceTerm.getLabel());
+			}
+//			result = STATUS_ABSENT; // or just like this?
+		}
+		return result;
+	}
+	
+	/**
 	 * Returns the AreaCache for a given Area.
 	 * @param area
 	 * @return
 	 */
 	public static String area2AreaCache(NamedArea area) {
 		return null;
+		
+//		EAST_AEGEAN_ISLANDS
+//		GREEK_EAST_AEGEAN_ISLANDS
+//		TURKISH_EAST_AEGEAN_ISLANDS
+//		ALBANIA
+//		AUSTRIA_WITH_LIECHTENSTEIN
+//		AUSTRIA
+//		LIECHTENSTEIN
+//		AZORES
+//		CORVO
+//		FAIAL
+//		GRACIOSA
+//		SAO_JORGE
+//		FLORES
+//		SAO_MIGUEL
+//		PICO
+//		SANTA_MARIA
+//		TERCEIRA
+//		BELGIUM_WITH_LUXEMBOURG
+//		BELGIUM
+//		LUXEMBOURG
+//		BOSNIA-HERZEGOVINA
+//		BALEARES
+//		IBIZA_WITH_FORMENTERA
+//		MALLORCA
+//		MENORCA
+//		GREAT_BRITAIN
+//		BALTIC_STATES_AND_KALININGRAD_REGION
+//		BULGARIA
+//		BELARUS
+//		CANARY_ISLANDS
+//		GRAN_CANARIA
+//		FUERTEVENTURA_WITH_LOBOS
+//		GOMERA
+//		HIERRO
+//		LANZAROTE_WITH_GRACIOSA
+//		LA_PALMA
+//		TENERIFE
+//		MONTENEGRO
+//		CORSE
+//		CRETE_WITH_KARPATHOS,_KASOS_AND_GAVDHOS
+//		CZECH_REPUBLIC
+//		CROATIA
+//		CYPRUS
+//		FORMER_CZECHOSLOVAKIA
+//		DENMARK_WITH_BORNHOLM
+//		ESTONIA
+//		FAROE_ISLANDS
+//		FINLAND_WITH_AHVENANMAA
+//		FRANCE
+//		CHANNEL_ISLANDS
+//		FRENCH_MAINLAND
+//		MONACO
+//		GERMANY
+//		GREECE_WITH_CYCLADES_AND_MORE_ISLANDS
+//		IRELAND
+//		REPUBLIC_OF_IRELAND
+//		NORTHERN_IRELAND
+//		SWITZERLAND
+//		NETHERLANDS
+//		SPAIN
+//		ANDORRA
+//		GIBRALTAR
+//		KINGDOM_OF_SPAIN
+//		HUNGARY
+//		ICELAND
+//		ITALY
+//		ITALIAN_MAINLAND
+//		SAN_MARINO
+//		FORMER_JUGOSLAVIA
+//		LATVIA
+//		LITHUANIA
+//		PORTUGUESE_MAINLAND
+//		MADEIRA
+//		DESERTAS
+//		MADEIRA
+//		PORTO_SANTO
+//		THE_FORMER_JUGOSLAV_REPUBLIC_OF_MAKEDONIJA
+//		MOLDOVA
+//		NORWEGIAN_MAINLAND
+//		POLAND
+//		THE_RUSSIAN_FEDERATION
+//		NOVAYA_ZEMLYA_AND_FRANZ_JOSEPH_LAND
+//		CENTRAL_EUROPEAN_RUSSIA
+//		EASTERN_EUROPEAN_RUSSIA
+//		KALININGRAD
+//		NORTHERN_EUROPEAN_RUSSIA
+//		NORTHWEST_EUROPEAN_RUSSIA
+//		SOUTH_EUROPEAN_RUSSIA
+//		ROMANIA
+//		FORMER_USSR
+//		RUSSIA_BALTIC
+//		RUSSIA_CENTRAL
+//		RUSSIA_SOUTHEAST
+//		RUSSIA_NORTHERN
+//		RUSSIA_SOUTHWEST
+//		SARDEGNA
+//		SVALBARD_WITH_BJORNOYA_AND_JAN_MAYEN
+//		SELVAGENS_ISLANDS
+//		SICILY_WITH_MALTA
+//		MALTA
+//		SICILY
+//		SLOVAKIA
+//		SLOVENIA
+//		SERBIA_WITH_MONTENEGRO
+//		SERBIA_INCLUDING_VOJVODINA_AND_WITH_KOSOVO
+//		SWEDEN
+//		EUROPEAN_TURKEY
+//		UKRAINE_INCLUDING_CRIMEA
+//		CRIMEA
+//		UKRAINE
+//		GREEK_MAINLAND
+//		CRETE
+//		DODECANESE_ISLANDS
+//		CYCLADES_ISLANDS
+//		NORTH_AEGEAN_ISLANDS
+//		VATICAN_CITY
+//		FRANZ_JOSEF_LAND
+//		NOVAYA_ZEMLYA
+//		AZERBAIJAN_INCLUDING_NAKHICHEVAN
+//		AZERBAIJAN
+//		NAKHICHEVAN
+//		ALGERIA
+//		ARMENIA
+//		CAUCASUS_REGION
+//		EGYPT
+//		GEORGIA
+//		ISRAEL-JORDAN
+//		ISRAEL
+//		JORDAN
+//		LEBANON
+//		LIBYA
+//		LEBANON-SYRIA
+//		MOROCCO
+//		NORTH_CAUCASUS
+//		SINAI
+//		SYRIA
+//		TUNISIA
+//		ASIATIC_TURKEY
+//		TURKEY
+//		NORTHERN_AFRICA
+//		AFRO_TROPICAL_REGION
+//		AUSTRALIAN_REGION
+//		EAST_PALAEARCTIC
+//		NEARCTIC_REGION
+//		NEOTROPICAL_REGION
+//		NEAR_EAST
+//		ORIENTAL_REGION
+//		EUROPEAN_MARINE_WATERS
+//		MEDITERRANEAN_SEA
+//		WHITE_SEA
+//		NORTH_SEA
+//		BALTIC_SEA
+//		BLACK_SEA
+//		BARENTS_SEA
+//		CASPIAN_SEA
+//		PORTUGUESE_EXCLUSIVE_ECONOMIC_ZONE
+//		BELGIAN_EXCLUSIVE_ECONOMIC_ZONE
+//		FRENCH_EXCLUSIVE_ECONOMIC_ZONE
+//		ENGLISH_CHANNEL
+//		ADRIATIC_SEA
+//		BISCAY_BAY
+//		DUTCH_EXCLUSIVE_ECONOMIC_ZONE
+//		UNITED_KINGDOM_EXCLUSIVE_ECONOMIC_ZONE
+//		SPANISH_EXCLUSIVE_ECONOMIC_ZONE
+//		EGYPTIAN_EXCLUSIVE_ECONOMIC_ZONE
+//		GRECIAN_EXCLUSIVE_ECONOMIC_ZONE
+//		TIRRENO_SEA
+//		ICELANDIC_EXCLUSIVE_ECONOMIC_ZONE
+//		IRISH_EXCLUSIVE_ECONOMIC_ZONE
+//		IRISH_SEA
+//		ITALIAN_EXCLUSIVE_ECONOMIC_ZONE
+//		NORWEGIAN_SEA
+//		MOROCCAN_EXCLUSIVE_ECONOMIC_ZONE
+//		NORWEGIAN_EXCLUSIVE_ECONOMIC_ZONE
+//		SKAGERRAK
+//		TUNISIAN_EXCLUSIVE_ECONOMIC_ZONE
+//		WADDEN_SEA
+//		BELT_SEA
+//		MARMARA_SEA
+//		SEA_OF_AZOV
+//		AEGEAN_SEA
+//		BULGARIAN_EXCLUSIVE_ECONOMIC_ZONE
+//		SOUTH_BALTIC_PROPER
+//		BALTIC_PROPER
+//		NORTH_BALTIC_PROPER
+//		ARCHIPELAGO_SEA
+//		BOTHNIAN_SEA
+//		GERMAN_EXCLUSIVE_ECONOMIC_ZONE
+//		SWEDISH_EXCLUSIVE_ECONOMIC_ZONE
+//		UKRAINIAN_EXCLUSIVE_ECONOMIC_ZONE
+//		MADEIRAN_EXCLUSIVE_ECONOMIC_ZONE
+//		LEBANESE_EXCLUSIVE_ECONOMIC_ZONE
+//		SPANISH_EXCLUSIVE_ECONOMIC_ZONE_[MEDITERRANEAN_PART]
+//		ESTONIAN_EXCLUSIVE_ECONOMIC_ZONE
+//		CROATIAN_EXCLUSIVE_ECONOMIC_ZONE
+//		BALEAR_SEA
+//		TURKISH_EXCLUSIVE_ECONOMIC_ZONE
+//		DANISH_EXCLUSIVE_ECONOMIC_ZONE
+
 	}
 	
 	/**
@@ -1149,6 +1432,206 @@ public final class PesiTransformer {
 	 */
 	public static Integer area2AreaId(NamedArea area) {
 		return null;
+
+//		EAST_AEGEAN_ISLANDS
+//		GREEK_EAST_AEGEAN_ISLANDS
+//		TURKISH_EAST_AEGEAN_ISLANDS
+//		ALBANIA
+//		AUSTRIA_WITH_LIECHTENSTEIN
+//		AUSTRIA
+//		LIECHTENSTEIN
+//		AZORES
+//		CORVO
+//		FAIAL
+//		GRACIOSA
+//		SAO_JORGE
+//		FLORES
+//		SAO_MIGUEL
+//		PICO
+//		SANTA_MARIA
+//		TERCEIRA
+//		BELGIUM_WITH_LUXEMBOURG
+//		BELGIUM
+//		LUXEMBOURG
+//		BOSNIA-HERZEGOVINA
+//		BALEARES
+//		IBIZA_WITH_FORMENTERA
+//		MALLORCA
+//		MENORCA
+//		GREAT_BRITAIN
+//		BALTIC_STATES_AND_KALININGRAD_REGION
+//		BULGARIA
+//		BELARUS
+//		CANARY_ISLANDS
+//		GRAN_CANARIA
+//		FUERTEVENTURA_WITH_LOBOS
+//		GOMERA
+//		HIERRO
+//		LANZAROTE_WITH_GRACIOSA
+//		LA_PALMA
+//		TENERIFE
+//		MONTENEGRO
+//		CORSE
+//		CRETE_WITH_KARPATHOS,_KASOS_AND_GAVDHOS
+//		CZECH_REPUBLIC
+//		CROATIA
+//		CYPRUS
+//		FORMER_CZECHOSLOVAKIA
+//		DENMARK_WITH_BORNHOLM
+//		ESTONIA
+//		FAROE_ISLANDS
+//		FINLAND_WITH_AHVENANMAA
+//		FRANCE
+//		CHANNEL_ISLANDS
+//		FRENCH_MAINLAND
+//		MONACO
+//		GERMANY
+//		GREECE_WITH_CYCLADES_AND_MORE_ISLANDS
+//		IRELAND
+//		REPUBLIC_OF_IRELAND
+//		NORTHERN_IRELAND
+//		SWITZERLAND
+//		NETHERLANDS
+//		SPAIN
+//		ANDORRA
+//		GIBRALTAR
+//		KINGDOM_OF_SPAIN
+//		HUNGARY
+//		ICELAND
+//		ITALY
+//		ITALIAN_MAINLAND
+//		SAN_MARINO
+//		FORMER_JUGOSLAVIA
+//		LATVIA
+//		LITHUANIA
+//		PORTUGUESE_MAINLAND
+//		MADEIRA
+//		DESERTAS
+//		MADEIRA
+//		PORTO_SANTO
+//		THE_FORMER_JUGOSLAV_REPUBLIC_OF_MAKEDONIJA
+//		MOLDOVA
+//		NORWEGIAN_MAINLAND
+//		POLAND
+//		THE_RUSSIAN_FEDERATION
+//		NOVAYA_ZEMLYA_AND_FRANZ_JOSEPH_LAND
+//		CENTRAL_EUROPEAN_RUSSIA
+//		EASTERN_EUROPEAN_RUSSIA
+//		KALININGRAD
+//		NORTHERN_EUROPEAN_RUSSIA
+//		NORTHWEST_EUROPEAN_RUSSIA
+//		SOUTH_EUROPEAN_RUSSIA
+//		ROMANIA
+//		FORMER_USSR
+//		RUSSIA_BALTIC
+//		RUSSIA_CENTRAL
+//		RUSSIA_SOUTHEAST
+//		RUSSIA_NORTHERN
+//		RUSSIA_SOUTHWEST
+//		SARDEGNA
+//		SVALBARD_WITH_BJORNOYA_AND_JAN_MAYEN
+//		SELVAGENS_ISLANDS
+//		SICILY_WITH_MALTA
+//		MALTA
+//		SICILY
+//		SLOVAKIA
+//		SLOVENIA
+//		SERBIA_WITH_MONTENEGRO
+//		SERBIA_INCLUDING_VOJVODINA_AND_WITH_KOSOVO
+//		SWEDEN
+//		EUROPEAN_TURKEY
+//		UKRAINE_INCLUDING_CRIMEA
+//		CRIMEA
+//		UKRAINE
+//		GREEK_MAINLAND
+//		CRETE
+//		DODECANESE_ISLANDS
+//		CYCLADES_ISLANDS
+//		NORTH_AEGEAN_ISLANDS
+//		VATICAN_CITY
+//		FRANZ_JOSEF_LAND
+//		NOVAYA_ZEMLYA
+//		AZERBAIJAN_INCLUDING_NAKHICHEVAN
+//		AZERBAIJAN
+//		NAKHICHEVAN
+//		ALGERIA
+//		ARMENIA
+//		CAUCASUS_REGION
+//		EGYPT
+//		GEORGIA
+//		ISRAEL-JORDAN
+//		ISRAEL
+//		JORDAN
+//		LEBANON
+//		LIBYA
+//		LEBANON-SYRIA
+//		MOROCCO
+//		NORTH_CAUCASUS
+//		SINAI
+//		SYRIA
+//		TUNISIA
+//		ASIATIC_TURKEY
+//		TURKEY
+//		NORTHERN_AFRICA
+//		AFRO_TROPICAL_REGION
+//		AUSTRALIAN_REGION
+//		EAST_PALAEARCTIC
+//		NEARCTIC_REGION
+//		NEOTROPICAL_REGION
+//		NEAR_EAST
+//		ORIENTAL_REGION
+//		EUROPEAN_MARINE_WATERS
+//		MEDITERRANEAN_SEA
+//		WHITE_SEA
+//		NORTH_SEA
+//		BALTIC_SEA
+//		BLACK_SEA
+//		BARENTS_SEA
+//		CASPIAN_SEA
+//		PORTUGUESE_EXCLUSIVE_ECONOMIC_ZONE
+//		BELGIAN_EXCLUSIVE_ECONOMIC_ZONE
+//		FRENCH_EXCLUSIVE_ECONOMIC_ZONE
+//		ENGLISH_CHANNEL
+//		ADRIATIC_SEA
+//		BISCAY_BAY
+//		DUTCH_EXCLUSIVE_ECONOMIC_ZONE
+//		UNITED_KINGDOM_EXCLUSIVE_ECONOMIC_ZONE
+//		SPANISH_EXCLUSIVE_ECONOMIC_ZONE
+//		EGYPTIAN_EXCLUSIVE_ECONOMIC_ZONE
+//		GRECIAN_EXCLUSIVE_ECONOMIC_ZONE
+//		TIRRENO_SEA
+//		ICELANDIC_EXCLUSIVE_ECONOMIC_ZONE
+//		IRISH_EXCLUSIVE_ECONOMIC_ZONE
+//		IRISH_SEA
+//		ITALIAN_EXCLUSIVE_ECONOMIC_ZONE
+//		NORWEGIAN_SEA
+//		MOROCCAN_EXCLUSIVE_ECONOMIC_ZONE
+//		NORWEGIAN_EXCLUSIVE_ECONOMIC_ZONE
+//		SKAGERRAK
+//		TUNISIAN_EXCLUSIVE_ECONOMIC_ZONE
+//		WADDEN_SEA
+//		BELT_SEA
+//		MARMARA_SEA
+//		SEA_OF_AZOV
+//		AEGEAN_SEA
+//		BULGARIAN_EXCLUSIVE_ECONOMIC_ZONE
+//		SOUTH_BALTIC_PROPER
+//		BALTIC_PROPER
+//		NORTH_BALTIC_PROPER
+//		ARCHIPELAGO_SEA
+//		BOTHNIAN_SEA
+//		GERMAN_EXCLUSIVE_ECONOMIC_ZONE
+//		SWEDISH_EXCLUSIVE_ECONOMIC_ZONE
+//		UKRAINIAN_EXCLUSIVE_ECONOMIC_ZONE
+//		MADEIRAN_EXCLUSIVE_ECONOMIC_ZONE
+//		LEBANESE_EXCLUSIVE_ECONOMIC_ZONE
+//		SPANISH_EXCLUSIVE_ECONOMIC_ZONE_[MEDITERRANEAN_PART]
+//		ESTONIAN_EXCLUSIVE_ECONOMIC_ZONE
+//		CROATIAN_EXCLUSIVE_ECONOMIC_ZONE
+//		BALEAR_SEA
+//		TURKISH_EXCLUSIVE_ECONOMIC_ZONE
+//		DANISH_EXCLUSIVE_ECONOMIC_ZONE
+
 	}
 
 	/**

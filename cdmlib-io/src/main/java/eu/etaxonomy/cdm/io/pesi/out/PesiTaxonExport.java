@@ -28,7 +28,6 @@ import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
-import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
@@ -40,7 +39,6 @@ import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
-import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 
 /**
  * @author a.mueller
@@ -246,73 +244,65 @@ public class PesiTaxonExport extends PesiExportBase {
 	}
 
 	/**
-	 * Returns the <code>SourceFK</code> attribute.
-	 * @param taxon The {@link TaxonBase Taxon}.
-	 * @return The <code>SourceFK</code> attribute.
-	 * @see MethodMapper
-	 */
-//	@SuppressWarnings("unused")
-//	private static Integer getSourceFK(DbExportStateBase<?> state, TaxonBase<?> taxon) {
-//		return state.getDbId(taxon);
-//	}
-
-	/**
 	 * Returns the <code>KingdomFk</code> attribute.
 	 * @param taxon The {@link TaxonBase Taxon}.
 	 * @return The <code>KingdomFk</code> attribute.
 	 * @see MethodMapper
 	 */
 	@SuppressWarnings("unused")
-	private static Integer getKingdomFk(TaxonBase<?> taxon, DbExportStateBase<?> state) {
+	private static Integer getKingdomFk(TaxonBase<?> taxonBase, DbExportStateBase<?> state) {
 		// Traverse taxon tree up until root is reached.
 		Integer result = null;
-		boolean root = false;
-		Taxon currentTaxon = null;
-		Set<TaxonRelationship> taxonRelationships = null;
-//		boolean error = false;
-//		if (taxon.isInstanceOf(Taxon.class)) {
-//			currentTaxon = CdmBase.deproxy(taxon, Taxon.class);
-//			while ((result = getParentTaxonFk(currentTaxon, state)) != null && !error) {
-//				taxonRelationships = currentTaxon.getRelationsToThisTaxon();
-//				if (taxonRelationships.size() == 1) {
-//					// Get the new current taxon
-//					currentTaxon = taxonRelationships.iterator().next().getFromTaxon();
-////					logger.error("current taxon: " + currentTaxon.getId());
-//				} else {
-//					// The current taxon has more than one parent. This should not be possible.
-//					error = true;
-//				}
-//			}
-//		}
 		
-		if (taxon.isInstanceOf(Taxon.class)) {
-			currentTaxon = CdmBase.deproxy(taxon, Taxon.class);
-			boolean error = false;
-			while (!root & !error) {
-				taxonRelationships = currentTaxon.getRelationsFromThisTaxon();
-				if (taxonRelationships.size() == 0) {
-					// Current taxon is the root element
-					root = true;
-				} else if (taxonRelationships.size() == 1) {
-					// Get the new current taxon
-					currentTaxon = taxonRelationships.iterator().next().getToTaxon();
-//					logger.error("current taxon: " + currentTaxon.getId());
+		Taxon taxon = null;
+		if (taxonBase.isInstanceOf(Synonym.class)) {
+			Synonym synonym = (Synonym)taxonBase;
+			Set<SynonymRelationship> relations = synonym.getSynonymRelations();
+			if (relations.size() == 1) {
+				taxon  = relations.iterator().next().getAcceptedTaxon();
+			}
+		} else {
+			taxon = CdmBase.deproxy(taxonBase, Taxon.class);
+		}
+		boolean root = false;
+		boolean error = false;
+		if (taxon != null) {
+			while (! root && ! error) {
+				Set<TaxonNode> taxonNodes = taxon.getTaxonNodes();
+				if (taxonNodes.size() == 1) {
+					TaxonNode taxonNode = taxon.getTaxonNodes().iterator().next();
+					ITreeNode parentNode = taxonNode.getParent();
+					if (HibernateProxyHelper.isInstanceOf(parentNode, TaxonNode.class)) {
+						TaxonNode node = CdmBase.deproxy(parentNode, TaxonNode.class);
+						taxon = node.getTaxon();
+						logger.error("current taxon: " + state.getDbId(taxon));
+					} else {
+						// Root element reached
+						result = state.getDbId(taxon);
+						logger.error("Root element reached. Highest Taxon: " + state.getDbId(taxon));
+						root = true;
+					}
 				} else {
-					// The current taxon has more than one parent. This should not be possible.
+					// This should not be the case.
+					taxon = null;
+					result = null;
 					error = true;
 				}
 			}
-			if (currentTaxon != null) {
+		}
+		if (error) {
+			// TODO: Handle this gracefully. For now 'result' is left as null.
+		} else if (taxon != null) {
+		
+			// TODO: Set current nomenclatural code
+			// We are differentiating kingdoms by the nomenclatural code for now.
+			// This needs to be handled in a better way as soon as we know how to differentiate between more kingdoms.
+			nomenclaturalCode = taxon.getName().getNomenclaturalCode();
 
-				// Set current nomenclatural code
-				nomenclaturalCode = currentTaxon.getName().getNomenclaturalCode();
-
-				// Set result
-				result = PesiTransformer.nomenClaturalCode2Kingdom(nomenclaturalCode);
-			}
+			// Set result
+			result = PesiTransformer.nomenClaturalCode2Kingdom(nomenclaturalCode);
 		}
 
-//		logger.error("KingdomFk: " + result);
 		return result;
 	}
 

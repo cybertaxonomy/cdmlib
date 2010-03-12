@@ -25,9 +25,11 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
+import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
 /**
  * @author a.mueller
@@ -99,7 +101,7 @@ public class PesiOccurrenceExport extends PesiExportBase {
 
 			// Start transaction
 			txStatus = startTransaction(true);
-			logger.error("Started new transaction. Fetching some " + parentPluralString + " (max: " + limit + ") for starters ...");
+			logger.error("Started new transaction. Fetching some " + parentPluralString + " first (max: " + limit + ") ...");
 			while ((list = getTaxonService().list(null, limit, count, null, null)).size() > 0) {
 
 				logger.error("Fetched " + list.size() + " " + parentPluralString + ".");
@@ -124,8 +126,12 @@ public class PesiOccurrenceExport extends PesiExportBase {
 								} else {
 									for (DescriptionElementSource elementSource : elementSources) {
 										ReferenceBase reference = elementSource.getCitation();
-										doCount(count++, modCount, pluralString);
-										success &= mapping.invoke(reference);
+
+										// Citations can be empty (null): Is it wrong data or just a normal case?
+										if (reference != null) {
+											doCount(count++, modCount, pluralString);
+											success &= mapping.invoke(reference);
+										}
 									}
 								}
 							}
@@ -141,7 +147,7 @@ public class PesiOccurrenceExport extends PesiExportBase {
 
 				// Start transaction
 				txStatus = startTransaction(true);
-				logger.error("Started new transaction. Fetching some " + pluralString + " (max: " + limit + ") ...");
+				logger.error("Started new transaction. Fetching some " + pluralString + " first (max: " + limit + ") ...");
 			}
 			if (list.size() == 0) {
 				logger.error("No " + pluralString + " left to fetch.");
@@ -196,22 +202,10 @@ public class PesiOccurrenceExport extends PesiExportBase {
 	private static Integer getTaxonFk(AnnotatableEntity entity, DbExportStateBase<?> state) {
 		// AnnotatableEntity parameter isn't needed, but the DbSingleAttributeExportMapperBase throws a type mismatch exception otherwise
 		// since it awaits two parameters if one of them is of instance DbExportStateBase.
-//		logger.error("taxon state id: " + state.getDbId(taxon));
-		return state.getDbId(taxon);
-	}
-
-	/**
-	 * Returns the <code>AreaFk</code> attribute.
-	 * @param entity
-	 * @return The <code>AreaFk</code> attribute.
-	 * @see MethodMapper
-	 */
-	@SuppressWarnings("unused")
-	private static Integer getAreaFk(AnnotatableEntity entity) {
-		// TODO
-		Integer result = 1;
-//		if (entity.isInstanceOf(ReferenceBase.class)) {
-//		}
+		Integer result = null;
+		if (state != null && taxon != null) {
+			result = state.getDbId(taxon);
+		}
 		return result;
 	}
 
@@ -222,14 +216,35 @@ public class PesiOccurrenceExport extends PesiExportBase {
 	 * @see MethodMapper
 	 */
 	@SuppressWarnings("unused")
-	private static Integer getTaxonFullNameCache(AnnotatableEntity entity) {
-		// TODO
-		Integer result = null;
-		// Get the taxon this reference belongs to...
-//		return taxon.getName().getTitleCache();
+	private static String getTaxonFullNameCache(AnnotatableEntity entity) {
+		String result = null;
+		result = taxon.getName().getTitleCache();
 		return result;
 	}
-	
+
+	/**
+	 * Returns the <code>AreaFk</code> attribute.
+	 * @param entity
+	 * @return The <code>AreaFk</code> attribute.
+	 * @see MethodMapper
+	 */
+	@SuppressWarnings("unused")
+	private static Integer getAreaFk(AnnotatableEntity entity) {
+		Integer result = 1; // TODO
+		Set<TaxonDescription> taxonDescriptions = taxon.getDescriptions();
+		
+		// TODO: I guess we have multiple TaxonDescriptions and multiple NamedAreas for each TaxonDescriptions.
+		// This is some kind of trouble since datawarehouse expects a 1:1 relationship between an occurrence and an area.
+		for (TaxonDescription taxonDescription : taxonDescriptions) {
+			Set<NamedArea> namedAreas = taxonDescription.getGeoScopes();
+			for (NamedArea namedArea : namedAreas) {
+				// This does not make sense in case of multiple NamedAreas as assumed above.
+				result = PesiTransformer.area2AreaId(namedArea);
+			}
+		}	
+		return result;
+	}
+
 	/**
 	 * Returns the <code>AreaNameCache</code> attribute.
 	 * @param entity
@@ -238,22 +253,35 @@ public class PesiOccurrenceExport extends PesiExportBase {
 	 */
 	@SuppressWarnings("unused")
 	private static String getAreaNameCache(AnnotatableEntity entity) {
-		// TODO
-		return null;
+		String result = null;
+		Set<TaxonDescription> taxonDescriptions = taxon.getDescriptions();
+		
+		// TODO: I guess we have multiple TaxonDescriptions and multiple NamedAreas for each TaxonDescriptions.
+		// This is some kind of trouble since datawarehouse expects a 1:1 relationship between an occurrence and an area.
+		for (TaxonDescription taxonDescription : taxonDescriptions) {
+			Set<NamedArea> namedAreas = taxonDescription.getGeoScopes();
+			for (NamedArea namedArea : namedAreas) {
+				// This does not make sense in case of multiple NamedAreas as assumed above.
+				result = PesiTransformer.area2AreaCache(namedArea);
+			}
+		}	
+		return result;
 	}
 
 	/**
 	 * Returns the <code>OccurrenceStatusFk</code> attribute.
 	 * @param entity
 	 * @return The <code>OccurrenceStatusFk</code> attribute.
+	 * @throws UnknownCdmTypeException 
 	 * @see MethodMapper
 	 */
 	@SuppressWarnings("unused")
-	private static Integer getOccurrenceStatusFk(AnnotatableEntity entity) {
-		// TODO
-		Integer result = 1;
-		// Get the distribution this reference belongs to...
-//		result = distribution.getStatus();
+	private static Integer getOccurrenceStatusFk(AnnotatableEntity entity) throws UnknownCdmTypeException {
+		Integer result = 1; // TODO
+//		if (entity != null && entity.isInstanceOf(Distribution.class)) {
+//			Distribution distribution = CdmBase.deproxy(entity, Distribution.class);
+//			result = PesiTransformer.presenceAbsenceTerm2OccurrenceStatusId(distribution.getStatus());
+//		}
 		return result;
 	}
 
@@ -261,13 +289,17 @@ public class PesiOccurrenceExport extends PesiExportBase {
 	 * Returns the <code>OccurrenceStatusCache</code> attribute.
 	 * @param entity
 	 * @return The <code>OccurrenceStatusCache</code> attribute.
+	 * @throws UnknownCdmTypeException 
 	 * @see MethodMapper
 	 */
 	@SuppressWarnings("unused")
-	private static String getOccurrenceStatusCache(AnnotatableEntity entity) {
-		// TODO
-		// Get the distribution this reference belongs to...
-		return null;
+	private static String getOccurrenceStatusCache(AnnotatableEntity entity) throws UnknownCdmTypeException {
+		String result = null;
+//		if (entity != null && entity.isInstanceOf(Distribution.class)) {
+//			Distribution distribution = CdmBase.deproxy(entity, Distribution.class);
+//			result = PesiTransformer.presenceAbsenceTerm2OccurrenceStatusCache(distribution.getStatus());
+//		}
+		return result;
 	}
 
 	/**
@@ -279,7 +311,12 @@ public class PesiOccurrenceExport extends PesiExportBase {
 	 */
 	@SuppressWarnings("unused")
 	private static Integer getSourceFk(AnnotatableEntity entity, DbExportStateBase<?> state) {
-		return state.getDbId(entity);
+		Integer result = null;
+		if (state != null && entity != null && entity.isInstanceOf(ReferenceBase.class)) {
+			ReferenceBase reference = CdmBase.deproxy(entity, ReferenceBase.class);
+			result = state.getDbId(reference);
+		}
+		return result;
 	}
 
 	/**
@@ -291,7 +328,7 @@ public class PesiOccurrenceExport extends PesiExportBase {
 	@SuppressWarnings("unused")
 	private static String getSourceCache(AnnotatableEntity entity) {
 		String result = null;
-		if (entity.isInstanceOf(ReferenceBase.class)) {
+		if (entity != null && entity.isInstanceOf(ReferenceBase.class)) {
 			ReferenceBase reference = CdmBase.deproxy(entity, ReferenceBase.class);
 			result = reference.getTitle();
 		}
