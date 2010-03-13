@@ -35,6 +35,7 @@ import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.IndexColumn;
 import org.hibernate.envers.Audited;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 
 /**
@@ -114,13 +115,17 @@ public class MediaRepresentation extends VersionableEntity implements Cloneable{
 	/**
 	 * Factory method which creates a new media representation and adds a media representation part
 	 * for the <code>uri</code> and the given size.
+	 * Returns <code>null</code> if uri is empty
 	 * @return
 	 */
 	public static MediaRepresentation NewInstance(String mimeType, String suffix, String uri, Integer size){
+		if (CdmUtils.isEmpty(uri)){
+			return null;
+		}
+		MediaRepresentationPart part = MediaRepresentationPart.NewInstance(uri, size);
 		MediaRepresentation result  = new MediaRepresentation();
 		result.setMimeType(mimeType);
 		result.setSuffix(suffix);
-		MediaRepresentationPart part = MediaRepresentationPart.NewInstance(uri, size);
 		result.addRepresentationPart(part);
 		return result;
 	}

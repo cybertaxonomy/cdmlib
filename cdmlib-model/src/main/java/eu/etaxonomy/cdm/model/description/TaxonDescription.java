@@ -94,17 +94,6 @@ public class TaxonDescription extends DescriptionBase<IIdentifiableEntityCacheSt
 	@Cascade(CascadeType.SAVE_UPDATE)
 	private Taxon taxon;
 
-	public Taxon getTaxon() {
-		return taxon;
-	}
-
-	/**
-	 * Class constructor: creates a new empty taxon description instance.
-	 */
-	public TaxonDescription(){
-		super();
-		this.cacheStrategy = new TaxonDescriptionDefaultCacheStrategy();
-		}
 	
 	/**
 	 * Creates a new empty taxon description instance.
@@ -127,6 +116,35 @@ public class TaxonDescription extends DescriptionBase<IIdentifiableEntityCacheSt
 		taxon.addDescription(description);
 		return description;
 	}
+	
+	/**
+	 * Creates a new taxon description instance for the given {@link Taxon taxon}.
+	 * The new taxon description will be also added to the {@link Taxon#getDescriptions() set of descriptions}
+	 * assigned to the given taxon.
+	 * 
+	 * @see	#NewInstance()
+	 */
+	public static TaxonDescription NewInstance(Taxon taxon, boolean isImageGallery){
+		TaxonDescription description = new TaxonDescription();
+		taxon.addDescription(description);
+		description.setImageGallery(isImageGallery);
+		return description;
+	}
+	
+
+	/**
+	 * Class constructor: creates a new empty taxon description instance.
+	 */
+	public TaxonDescription(){
+		super();
+		this.cacheStrategy = new TaxonDescriptionDefaultCacheStrategy();
+		}
+
+	
+	public Taxon getTaxon() {
+		return taxon;
+	}
+	
 	
 	/** 
 	 * Returns the set of {@link NamedArea named areas} indicating the geospatial

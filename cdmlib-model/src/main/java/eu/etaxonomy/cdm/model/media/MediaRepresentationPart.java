@@ -74,7 +74,6 @@ public class MediaRepresentationPart extends VersionableEntity implements Clonea
 	 * @return
 	 */
 	public static MediaRepresentationPart NewInstance(String uri, Integer size) {
-		logger.debug("NewInstance");
 		MediaRepresentationPart result = new MediaRepresentationPart(uri, size);
 		return result;
 	}
