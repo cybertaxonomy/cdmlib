@@ -288,7 +288,7 @@ public class ReferenceBase<S extends IReferenceBaseCacheStrategy> extends Identi
     private int problemEnds = -1;
     
     @Transient
-	private boolean cacheStrategyValidated = false; 
+	private boolean cacheStrategyRectified = false; 
     
     protected ReferenceBase(){
 		super();
@@ -637,7 +637,7 @@ public class ReferenceBase<S extends IReferenceBaseCacheStrategy> extends Identi
 	// TODO implement
 	@Transient
 	public String getCitation(){
-        validateCacheStrategy();
+		rectifyCacheStrategy();
 		if (cacheStrategy == null){
 			logger.warn("No CacheStrategy defined for "+ this.getClass() + ": " + this.getUuid());
 			return null;
@@ -650,7 +650,7 @@ public class ReferenceBase<S extends IReferenceBaseCacheStrategy> extends Identi
 	 * @see eu.etaxonomy.cdm.model.common.IdentifiableEntity#generateTitle()
 	 */
 	public String generateTitle() {
-		validateCacheStrategy();
+		rectifyCacheStrategy();
 		return super.generateTitle();
 	}
 	
@@ -929,7 +929,7 @@ public class ReferenceBase<S extends IReferenceBaseCacheStrategy> extends Identi
 
 	
 	public String getNomenclaturalCitation(String microReference) {
-		validateCacheStrategy();
+		rectifyCacheStrategy();
 		if (cacheStrategy == null){
 			logger.warn("No CacheStrategy defined for "+ this.getClass() + ": " + this.getUuid());
 			return null;
@@ -950,10 +950,10 @@ public class ReferenceBase<S extends IReferenceBaseCacheStrategy> extends Identi
 	 * the CacheStrategy is not correctly set after the initialization of the bean. Thus we need to 
 	 * validate the CacheStrategy before it is to be used.
 	 */
-	private void validateCacheStrategy() {
-		if(!cacheStrategyValidated ){
+	private void rectifyCacheStrategy() {
+		if(!cacheStrategyRectified ){
 			setType(getType());
-			cacheStrategyValidated = true;
+			cacheStrategyRectified = true;
 		}
 	}
 
