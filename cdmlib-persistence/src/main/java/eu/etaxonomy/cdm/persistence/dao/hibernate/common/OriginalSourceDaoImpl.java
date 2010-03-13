@@ -23,6 +23,7 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.model.common.ISourceable;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.OriginalSourceBase;
 import eu.etaxonomy.cdm.persistence.dao.common.IOriginalSourceDao;
@@ -45,7 +46,7 @@ public class OriginalSourceDaoImpl extends CdmEntityDaoBase<OriginalSourceBase> 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.persistence.dao.common.IOriginalSourceDao#findOriginalSourcesByIdInSource(java.lang.Class, java.util.List, java.lang.String)
 	 */
-	public Map<String, IdentifiableEntity> findOriginalSourcesByIdInSource(Class clazz, Set<String> idInSourceSet, String idNamespace) {
+	public Map<String, ISourceable> findOriginalSourcesByIdInSource(Class clazz, Set<String> idInSourceSet, String idNamespace) {
 		Session session = getSession();
 		String idInSourceString = "";
 		for (String idInSource : idInSourceSet){
@@ -62,11 +63,11 @@ public class OriginalSourceDaoImpl extends CdmEntityDaoBase<OriginalSourceBase> 
 		q.setString("idNamespace", idNamespace);
 		//TODO integrate reference in where 
 		
-		Map<String, IdentifiableEntity> result = new HashMap<String, IdentifiableEntity>();
+		Map<String, ISourceable> result = new HashMap<String, ISourceable>();
 		
-		List<Object[]> list = q.list();
+		List<ISourceable[]> list = q.list();
 		for (Object[] pair : list){
-			result.put((String)pair[0], (IdentifiableEntity)pair[1]);
+			result.put((String)pair[0], (ISourceable)pair[1]);
 		}
 		
 		return result;

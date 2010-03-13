@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import eu.etaxonomy.cdm.model.common.ISourceable;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.OriginalSourceBase;
 
@@ -29,7 +30,7 @@ public interface IOriginalSourceDao extends ICdmEntityDao<OriginalSourceBase>{
 	 * @param idNamespace
 	 * @return
 	 */
-	public Map<String, IdentifiableEntity> findOriginalSourcesByIdInSource(Class clazz, Set<String> idInSourceSet, String idNamespace);
+	public Map<String, ISourceable> findOriginalSourcesByIdInSource(Class clazz, Set<String> idInSourceSet, String idNamespace);
 	
 	/**
 	 * Returns a list of identifiable entities according to their class, idInSource and idNamespace

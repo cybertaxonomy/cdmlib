@@ -23,19 +23,13 @@ import org.springframework.stereotype.Component;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.IOValidator;
 import eu.etaxonomy.cdm.io.common.ResultSetPartitioner;
-import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.io.common.mapping.DbIgnoreMapper;
 import eu.etaxonomy.cdm.io.common.mapping.DbImportExtensionMapper;
 import eu.etaxonomy.cdm.io.common.mapping.DbImportMapping;
-import eu.etaxonomy.cdm.io.common.mapping.DbImportNameTypeDesignationMapper;
 import eu.etaxonomy.cdm.io.common.mapping.DbImportObjectCreationMapper;
 import eu.etaxonomy.cdm.io.common.mapping.DbImportStringMapper;
-import eu.etaxonomy.cdm.io.common.mapping.DbImportSynonymMapper;
-import eu.etaxonomy.cdm.io.common.mapping.DbImportTaxIncludedInMapper;
 import eu.etaxonomy.cdm.io.common.mapping.DbNotYetImplementedMapper;
-import eu.etaxonomy.cdm.io.common.mapping.IDbImportMapper;
-import eu.etaxonomy.cdm.io.common.mapping.IDbImportTransformed;
-import eu.etaxonomy.cdm.io.common.mapping.IDbImportTransformer;
+import eu.etaxonomy.cdm.io.common.mapping.IMappingImport;
 import eu.etaxonomy.cdm.io.erms.validation.ErmsTaxonImportValidator;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
@@ -55,12 +49,8 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  * @version 1.0
  */
 @Component
-public class ErmsTaxonImport  extends ErmsImportBase<TaxonBase> {
+public class ErmsTaxonImport  extends ErmsImportBase<TaxonBase> implements IMappingImport<TaxonBase, ErmsImportState>{
 	private static final Logger logger = Logger.getLogger(ErmsTaxonImport.class);
-
-	public static final String TAXON_NAMESPACE = "Taxon";
-	public static final String NAME_NAMESPACE = "TaxonName";
-	
 	
 	public static final UUID TNS_EXT_UUID = UUID.fromString("41cb0450-ac84-4d73-905e-9c7773c23b05");
 	
@@ -71,11 +61,11 @@ public class ErmsTaxonImport  extends ErmsImportBase<TaxonBase> {
 	
 	private int modCount = 10000;
 	private static final String pluralString = "taxa";
-	private String dbTableName = "tu";
+	private static final String dbTableName = "tu";
 	private Class cdmTargetClass = TaxonBase.class;
 
 	public ErmsTaxonImport(){
-		super();
+		super(pluralString, dbTableName);
 	}
 	
 	
@@ -348,22 +338,6 @@ public class ErmsTaxonImport  extends ErmsImportBase<TaxonBase> {
 		return validator.validate(state);
 	}
 	
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getTableName()
-	 */
-	@Override
-	protected String getTableName() {
-		return dbTableName;
-	}
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getPluralString()
-	 */
-	@Override
-	public String getPluralString() {
-		return pluralString;
-	}
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)

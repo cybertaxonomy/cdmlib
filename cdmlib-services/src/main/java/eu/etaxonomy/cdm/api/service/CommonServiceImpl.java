@@ -64,8 +64,8 @@ public class CommonServiceImpl extends ServiceBase<OriginalSourceBase,IOriginalS
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.ICommonService#getSourcedObjectsByIdInSource(java.lang.Class, java.util.List, java.lang.String)
 	 */
-	public Map<String, ? extends IdentifiableEntity> getSourcedObjectsByIdInSource(Class clazz, Set<String> idInSourceSet, String idNamespace) {
-		Map<String, ? extends IdentifiableEntity> list = originalSourceDao.findOriginalSourcesByIdInSource(clazz, idInSourceSet, idNamespace);
+	public Map<String, ? extends ISourceable> getSourcedObjectsByIdInSource(Class clazz, Set<String> idInSourceSet, String idNamespace) {
+		Map<String, ? extends ISourceable> list = originalSourceDao.findOriginalSourcesByIdInSource(clazz, idInSourceSet, idNamespace);
 		return list;
 	}
 	

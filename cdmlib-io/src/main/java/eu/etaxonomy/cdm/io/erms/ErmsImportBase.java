@@ -30,7 +30,6 @@ import eu.etaxonomy.cdm.io.common.ImportHelper;
 import eu.etaxonomy.cdm.io.common.ResultSetPartitioner;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator.EDITOR;
-import eu.etaxonomy.cdm.io.common.mapping.IMappingImport;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
@@ -46,15 +45,46 @@ import eu.etaxonomy.cdm.model.common.User;
  * @created 20.03.2008
  * @version 1.0
  */
-public abstract class ErmsImportBase<CDM_BASE extends CdmBase> extends CdmImportBase<ErmsImportConfigurator, ErmsImportState> implements ICdmIO<ErmsImportState>, IPartitionedIO<ErmsImportState>, IMappingImport<CDM_BASE, ErmsImportState> {
+public abstract class ErmsImportBase<CDM_BASE extends CdmBase> extends CdmImportBase<ErmsImportConfigurator, ErmsImportState> implements ICdmIO<ErmsImportState>, IPartitionedIO<ErmsImportState> {
 	private static final Logger logger = Logger.getLogger(ErmsImportBase.class);
 	
 	public static final UUID ID_IN_SOURCE_EXT_UUID = UUID.fromString("23dac094-e793-40a4-bad9-649fc4fcfd44");
 	
-	public ErmsImportBase() {
-		super();
-	}
+	//NAMESPACES
 	
+	protected static final String AREA_NAMESPACE = "gu";
+	protected static final String DR_NAMESPACE = "dr";
+	protected static final String IMAGE_NAMESPACE = "Images";
+	protected static final String LINKS_NAMESPACE = "Links";
+	protected static final String NOTES_NAMESPACE = "Notes";
+	protected static final String LANGUAGE_NAMESPACE = "Language";
+	protected static final String REFERENCE_NAMESPACE = "Source";
+	protected static final String SOURCEUSE_NAMESPACE = "tu_sources";
+	protected static final String TAXON_NAMESPACE = "Taxon";
+	protected static final String NAME_NAMESPACE = "TaxonName";
+	protected static final String VERNACULAR_NAMESPACE = "Vernaculars";
+	
+	//UUIDS
+	public static final UUID GAZETTEER_UUID = UUID.fromString("dcfa124a-1028-49cd-aea5-fdf9bd396c1a");
+	public static final UUID IMIS_UUID = UUID.fromString("ee2ac2ca-b60c-4e6f-9cad-720fcdb0a6ae");
+	public static final UUID TNS_EXT_UUID = UUID.fromString("41cb0450-ac84-4d73-905e-9c7773c23b05");
+	
+
+
+	
+	private String pluralString;
+	private String dbTableName;
+	
+	
+	/**
+	 * @param dbTableName
+	 * @param dbTableName2 
+	 */
+	public ErmsImportBase(String pluralString, String dbTableName) {
+		this.pluralString = pluralString;
+		this.dbTableName = dbTableName;
+	}
+
 	protected boolean doInvoke(ErmsImportState state){
 		logger.info("start make " + getPluralString() + " ...");
 		boolean success = true ;
@@ -96,12 +126,16 @@ public abstract class ErmsImportBase<CDM_BASE extends CdmBase> extends CdmImport
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.berlinModel.in.IPartitionedIO#getPluralString()
 	 */
-	public abstract String getPluralString();
+	public String getPluralString(){
+		return pluralString;
+	}
 
 	/**
 	 * @return
 	 */
-	protected abstract String getTableName();
+	protected String getTableName(){
+		return this.dbTableName;
+	}
 	
 	protected boolean doIdCreatedUpdatedNotes(ErmsImportState state, IdentifiableEntity identifiableEntity, ResultSet rs, long id, String namespace)
 			throws SQLException{
@@ -344,6 +378,8 @@ public abstract class ErmsImportBase<CDM_BASE extends CdmBase> extends CdmImport
 	protected void doLogPerLoop(int count, int recordsPerLog, String pluralString){
 		if ((count % recordsPerLog ) == 0 && count!= 0 ){ logger.info(pluralString + " handled: " + (count));}
 	}
+	
+
 
 	
 }

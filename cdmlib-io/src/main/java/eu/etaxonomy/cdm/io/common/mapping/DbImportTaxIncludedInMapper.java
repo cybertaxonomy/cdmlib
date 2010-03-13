@@ -28,6 +28,7 @@ import eu.etaxonomy.cdm.io.faunaEuropaea.CdmImportConfigurator;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
 
@@ -43,7 +44,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
  * @param <CDM_BASE>
  * @param <STATE>
  */
-public class DbImportTaxIncludedInMapper<STATE extends DbImportStateBase<ImportConfiguratorBase,?>> extends MultipleAttributeMapperBase implements IDbImportMapper<STATE, CdmBase> {
+public class DbImportTaxIncludedInMapper<STATE extends DbImportStateBase<ImportConfiguratorBase,?>> extends DbImportMultiAttributeMapper<CdmBase, STATE> {
 	private static final Logger logger = Logger.getLogger(DbImportTaxIncludedInMapper.class);
 	
 //******************************** FACTORY METHOD ***************************************************/
@@ -80,18 +81,12 @@ public class DbImportTaxIncludedInMapper<STATE extends DbImportStateBase<ImportC
 
 //************************************ METHODS *******************************************/
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.mapping.IDbImportMapper#initialize(eu.etaxonomy.cdm.io.common.DbImportStateBase, java.lang.Class)
-	 */
-	public void initialize(STATE state, Class<? extends CdmBase> destinationClass) {
-		importMapperHelper.initialize(state, destinationClass);
-	}
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.mapping.IDbImportMapper#invoke(java.sql.ResultSet, eu.etaxonomy.cdm.model.common.CdmBase)
 	 */
 	public CdmBase invoke(ResultSet rs, CdmBase cdmBase) throws SQLException {
-		STATE state = importMapperHelper.getState();
+		STATE state = getState();
 		CdmImportBase currentImport = state.getCurrentIO();
 		if (currentImport instanceof ICheckIgnoreMapper){
 			boolean ignoreRecord = ((ICheckIgnoreMapper)currentImport).checkIgnoreMapper(this, rs);
@@ -100,8 +95,11 @@ public class DbImportTaxIncludedInMapper<STATE extends DbImportStateBase<ImportC
 			}
 		}
 		
-		CdmBase fromObject = getRelatedObject(rs, fromAttribute);
-		CdmBase toObject = getRelatedObject(rs, toAttribute);
+		TaxonBase fromObject = (TaxonBase)getRelatedObject(rs, fromAttribute);
+		TaxonBase toObject = (TaxonBase)getRelatedObject(rs, toAttribute);
+		String fromId = String.valueOf(rs.getObject(fromAttribute));
+		String toId = String.valueOf(rs.getObject(toAttribute));
+
 		//TODO cast
 		ReferenceBase citation = (ReferenceBase)getRelatedObject(rs, citationAttribute);
 		String microCitation = null;
@@ -119,14 +117,14 @@ public class DbImportTaxIncludedInMapper<STATE extends DbImportStateBase<ImportC
 			logger.warn(warning);
 			return cdmBase;
 		}
-		Taxon fromTaxon = checkTaxonType(fromObject);
+		Taxon fromTaxon = checkTaxonType(fromObject, "Child", fromId);
 		
 		if (toObject == null){
 			String warning  = "The parent taxon could not be found. Child taxon not added to the tree";
 			logger.warn(warning);
 			return cdmBase;
 		}
-		Taxon toTaxon = checkTaxonType(toObject);
+		Taxon toTaxon = checkTaxonType(toObject, "Parent", toId);
 		
 		if (fromTaxon.equals(toTaxon)){
 			String warning  = "A taxon may not be a child of itself. Taxon not added to the tree";
@@ -225,15 +223,18 @@ public class DbImportTaxIncludedInMapper<STATE extends DbImportStateBase<ImportC
 
 	/**
 	 * Checks if cdmBase is of type Taxon 
-	 * @param fromObject
+	 * @param taxonBase
+	 * @param typeString
+	 * @param id
+	 * @return
 	 */
-	private Taxon checkTaxonType(CdmBase cdmBase) {
-		if (! cdmBase.isInstanceOf(Taxon.class)){
-			String warning = "Child or parent is not of type Taxon but of type " + cdmBase.getClass().getName();
+	private Taxon checkTaxonType(TaxonBase taxonBase, String typeString, String id) {
+		if (! taxonBase.isInstanceOf(Taxon.class)){
+			String warning = typeString + " (" + id + ") is not of type Taxon but of type " + taxonBase.getClass().getSimpleName();
 			logger.warn(warning);
 			throw new IllegalArgumentException(warning);
 		}
-		return (cdmBase.deproxy(cdmBase, Taxon.class));
+		return (taxonBase.deproxy(taxonBase, Taxon.class));
 	}
 
 

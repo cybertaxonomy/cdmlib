@@ -27,6 +27,7 @@ import eu.etaxonomy.cdm.io.common.mapping.DbImportExtensionMapper;
 import eu.etaxonomy.cdm.io.common.mapping.DbImportMapping;
 import eu.etaxonomy.cdm.io.common.mapping.DbImportObjectCreationMapper;
 import eu.etaxonomy.cdm.io.common.mapping.DbImportStringMapper;
+import eu.etaxonomy.cdm.io.common.mapping.IMappingImport;
 import eu.etaxonomy.cdm.io.erms.validation.ErmsAreaImportValidator;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -42,24 +43,19 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  * @version 1.0
  */
 @Component
-public class ErmsAreaImport  extends ErmsImportBase<NamedArea> {
-
+public class ErmsAreaImport  extends ErmsImportBase<NamedArea> implements IMappingImport<NamedArea, ErmsImportState>{
 	private static final Logger logger = Logger.getLogger(ErmsAreaImport.class);
 
-	public static final String AREA_NAMESPACE = "gu";
-	
-	public static final UUID GAZETTEER_UUID = UUID.fromString("dcfa124a-1028-49cd-aea5-fdf9bd396c1a");
-	
 	private DbImportMapping mapping;
 	
 	
 	private int modCount = 10000;
 	private static final String pluralString = "areas";
-	private String dbTableName = "gu";
+	private static final String dbTableName = "gu";
 	private Class cdmTargetClass = NamedArea.class;
 
 	public ErmsAreaImport(){
-		super();
+		super(pluralString, dbTableName);
 	}
 
 
@@ -152,22 +148,6 @@ public class ErmsAreaImport  extends ErmsImportBase<NamedArea> {
 		return validator.validate(state);
 	}
 	
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getTableName()
-	 */
-	@Override
-	protected String getTableName() {
-		return dbTableName;
-	}
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getPluralString()
-	 */
-	@Override
-	public String getPluralString() {
-		return pluralString;
-	}
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)

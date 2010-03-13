@@ -55,24 +55,20 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  */
 @Component
 public class ErmsSourceUsesImport  extends ErmsImportBase<CommonTaxonName> {
-
 	private static final Logger logger = Logger.getLogger(ErmsSourceUsesImport.class);
-
-	private static final String SOURCEUSE_NAMESPACE = "tu_sources";
 	
 	private DbImportMapping mapping; //not needed
 	
 	
 	private int modCount = 10000;
 	private static final String pluralString = "source uses";
-	private String dbTableName = "tu_sources";
+	private static final String dbTableName = "tu_sources";
 	private Class cdmTargetClass = null;
 
 	public ErmsSourceUsesImport(){
-		super();
+		super(pluralString, dbTableName);
 	}
 
-	
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.erms.ErmsImportBase#getIdQuery()
@@ -81,7 +77,7 @@ public class ErmsSourceUsesImport  extends ErmsImportBase<CommonTaxonName> {
 	protected String getIdQuery() {
 		String strQuery = " SELECT sourceuse_id, source_id, tu_id " + " " +
 						" FROM tu_sources " + 
-						" ORDER BY tu_id, sourceuse_id, source_id  ";
+						" ORDER BY sourceuse_id, source_id, tu_id  ";
 		return strQuery;	
 	}
 
@@ -95,9 +91,9 @@ public class ErmsSourceUsesImport  extends ErmsImportBase<CommonTaxonName> {
 		String strRecordQuery = 
 			" SELECT * " + 
 			" FROM tu_sources INNER JOIN sourceuses ON tu_sources.sourceuse_id = sourceuses.sourceuse_id" +
-			" WHERE ( tu_sources.tu_id IN (" + ID_LIST_TOKEN + ") AND " +
-			" 		tu_sources.sourceuse_id IN (" + ID_LIST_TOKEN + ") AND " + 
-			"		tu_sources.source_id IN (" + ID_LIST_TOKEN + ")  )";
+			" WHERE ( tu_sources.sourceuse_id IN (" + ID_LIST_TOKEN + ") AND " +
+			" 		tu_sources.source_id IN (" + ID_LIST_TOKEN + ") AND " + 
+			"		tu_sources.tu_id IN (" + ID_LIST_TOKEN + ")  )";
 		return strRecordQuery;
 	}
 
@@ -125,7 +121,7 @@ public class ErmsSourceUsesImport  extends ErmsImportBase<CommonTaxonName> {
 				if (CdmUtils.isEmpty(strPageNr)){
 					strPageNr = null;
 				}
-				ReferenceBase ref = (ReferenceBase)state.getRelatedObject(ErmsTaxonImport.NAME_NAMESPACE, strSourceId);
+				ReferenceBase ref = (ReferenceBase)state.getRelatedObject(ErmsReferenceImport.REFERENCE_NAMESPACE, strSourceId);
 				
 				
 				//invoke methods for each sourceUse type
@@ -357,23 +353,6 @@ public class ErmsSourceUsesImport  extends ErmsImportBase<CommonTaxonName> {
 	protected boolean doCheck(ErmsImportState state){
 		IOValidator<ErmsImportState> validator = new ErmsSourceUsesImportValidator();
 		return validator.validate(state);
-	}
-	
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getTableName()
-	 */
-	@Override
-	protected String getTableName() {
-		return dbTableName;
-	}
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getPluralString()
-	 */
-	@Override
-	public String getPluralString() {
-		return pluralString;
 	}
 	
 	/* (non-Javadoc)

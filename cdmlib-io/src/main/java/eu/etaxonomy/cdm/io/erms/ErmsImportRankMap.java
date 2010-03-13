@@ -35,8 +35,17 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 @Component
 public class ErmsImportRankMap extends ErmsImportBase<Rank>{
 	private static final Logger logger = Logger.getLogger(ErmsImportRankMap.class);
-	
+
 	private Map<Integer, Map<Integer,Rank>> rankMap;
+
+	/**
+	 * @param pluralString
+	 * @param dbTableName
+	 */
+	public ErmsImportRankMap() {
+		super(null, null);
+	}
+
 	
 	public boolean invoke (ErmsImportState state){
 		rankMap = new HashMap<Integer, Map<Integer,Rank>>();
@@ -83,17 +92,6 @@ public class ErmsImportRankMap extends ErmsImportBase<Rank>{
 		return result;
 	}
 
-
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.erms.ErmsImportBase#getPluralString()
-	 */
-	@Override
-	public String getPluralString() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.erms.ErmsImportBase#getRecordQuery(eu.etaxonomy.cdm.io.erms.ErmsImportConfigurator)
 	 */
@@ -103,14 +101,6 @@ public class ErmsImportRankMap extends ErmsImportBase<Rank>{
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.erms.ErmsImportBase#getTableName()
-	 */
-	@Override
-	protected String getTableName() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doCheck(eu.etaxonomy.cdm.io.common.IoStateBase)

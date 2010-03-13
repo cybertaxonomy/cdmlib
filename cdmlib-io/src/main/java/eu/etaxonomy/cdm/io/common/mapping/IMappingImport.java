@@ -24,5 +24,6 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  */
 public interface IMappingImport<T extends CdmBase, STATE extends ImportStateBase> {
 	
+	
 	public T createObject(ResultSet rs, STATE state) throws SQLException;
 }

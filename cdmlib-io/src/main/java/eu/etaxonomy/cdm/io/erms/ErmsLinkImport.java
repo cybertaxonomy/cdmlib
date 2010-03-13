@@ -21,12 +21,10 @@ import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.io.common.IOValidator;
 import eu.etaxonomy.cdm.io.common.ResultSetPartitioner;
-import eu.etaxonomy.cdm.io.common.mapping.DbImportExtensionMapper;
+import eu.etaxonomy.cdm.io.common.mapping.DbImportExtensionCreationMapper;
 import eu.etaxonomy.cdm.io.common.mapping.DbImportMapping;
-import eu.etaxonomy.cdm.io.common.mapping.DbImportObjectCreationMapper;
 import eu.etaxonomy.cdm.io.common.mapping.DbNotYetImplementedMapper;
 import eu.etaxonomy.cdm.io.erms.validation.ErmsLinkImportValidator;
-import eu.etaxonomy.cdm.io.erms.validation.ErmsReferenceImportValidator;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
@@ -40,21 +38,18 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  */
 @Component
 public class ErmsLinkImport  extends ErmsImportBase<TaxonBase> {
-
 	private static final Logger logger = Logger.getLogger(ErmsLinkImport.class);
 
-	private static final String LINKS_NAMESPACE = "Links";
-	
 	private DbImportMapping mapping;
 	
 	
 	private int modCount = 10000;
 	private static final String pluralString = "links";
-	private String dbTableName = "links";
+	private static final String dbTableName = "links";
 	private Class cdmTargetClass = CommonTaxonName.class;
 
 	public ErmsLinkImport(){
-		super();
+		super(pluralString, dbTableName);
 	}
 
 
@@ -78,9 +73,9 @@ public class ErmsLinkImport  extends ErmsImportBase<TaxonBase> {
 			mapping = new DbImportMapping();
 			ExtensionType extensionType = ExtensionType.URL();
 			//TODO do we need to add to TaxonNameBase too?
-			mapping.addMapper(DbImportObjectCreationMapper.NewInstance(this, "id", LINKS_NAMESPACE)); //id
-			mapping.addMapper(DbImportExtensionMapper.NewInstance("link_url", extensionType));
-			mapping.addMapper(DbNotYetImplementedMapper.NewInstance("link_text"));
+			mapping.addMapper(DbImportExtensionCreationMapper.NewInstance("tu_id", ErmsTaxonImport.TAXON_NAMESPACE, "link_url", "id", extensionType)); 
+			//not yet implemented
+			mapping.addMapper(DbNotYetImplementedMapper.NewInstance("link_text"));  //maybe implement as a second extension ?? but this is ambigous!
 			mapping.addMapper(DbNotYetImplementedMapper.NewInstance("link_fn"));
 			mapping.addMapper(DbNotYetImplementedMapper.NewInstance("note"));
 		}
@@ -111,19 +106,6 @@ public class ErmsLinkImport  extends ErmsImportBase<TaxonBase> {
 		return success;
 	}
 
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.mapping.IMappingImport#createObject(java.sql.ResultSet, eu.etaxonomy.cdm.io.common.ImportStateBase)
-	 */
-	public TaxonBase createObject(ResultSet rs, ErmsImportState state)throws SQLException {
-		TaxonBase result = null;
-		Integer tu_id = rs.getInt("tu_id");
-		if (tu_id != null){
-			result = (TaxonBase)state.getRelatedObject(ErmsTaxonImport.TAXON_NAMESPACE, String.valueOf(tu_id));		
-		}
-		return result;
-	}
-
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.berlinModel.in.IPartitionedIO#getRelatedObjectsForPartition(java.sql.ResultSet)
 	 */
@@ -141,7 +123,7 @@ public class ErmsLinkImport  extends ErmsImportBase<TaxonBase> {
 			}
 			
 			//taxon map
-			nameSpace = ErmsTaxonImport.TAXON_NAMESPACE;
+			nameSpace = TAXON_NAMESPACE;
 			cdmClass = TaxonBase.class;
 			idSet = taxonIdSet;
 			Map<String, TaxonBase> taxonMap = (Map<String, TaxonBase>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
@@ -162,22 +144,6 @@ public class ErmsLinkImport  extends ErmsImportBase<TaxonBase> {
 		return validator.validate(state);
 	}
 	
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getTableName()
-	 */
-	@Override
-	protected String getTableName() {
-		return dbTableName;
-	}
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getPluralString()
-	 */
-	@Override
-	public String getPluralString() {
-		return pluralString;
-	}
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)

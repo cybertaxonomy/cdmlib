@@ -62,8 +62,10 @@ public class ErmsImportConfigurator extends ImportConfiguratorBase<ErmsImportSta
 				, ErmsReferenceImport.class
 				, ErmsTaxonImport.class
 				, ErmsVernacularImport.class
-				
 				, ErmsNotesImport.class
+				, ErmsVernacularSourcesImport.class
+				, ErmsNotesSourcesImport.class
+				
 				, ErmsAreaImport.class
 				, ErmsDrImport.class
 				, ErmsSourceUsesImport.class

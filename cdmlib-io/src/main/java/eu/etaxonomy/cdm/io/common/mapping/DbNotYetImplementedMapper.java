@@ -63,7 +63,8 @@ public class DbNotYetImplementedMapper extends DbSingleAttributeImportMapperBase
 	 */
 	@Override
 	public void initialize(DbImportStateBase state, Class<? extends CdmBase> destinationClass) {
-		//not needed yet
+		String attributeName = this.getSourceAttribute();
+		logger.warn(attributeName + " not yet implemented for class " + destinationClass.getSimpleName() );
 	}
 
 	

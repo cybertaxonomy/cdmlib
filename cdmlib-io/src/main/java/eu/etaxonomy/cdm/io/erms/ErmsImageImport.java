@@ -21,11 +21,12 @@ import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.io.common.IOValidator;
 import eu.etaxonomy.cdm.io.common.ResultSetPartitioner;
-import eu.etaxonomy.cdm.io.common.mapping.DbImportImageGalleryMapper;
+import eu.etaxonomy.cdm.io.common.mapping.DbImportImageCreationMapper;
 import eu.etaxonomy.cdm.io.common.mapping.DbImportMapping;
-import eu.etaxonomy.cdm.io.common.mapping.DbImportObjectCreationMapper;
+import eu.etaxonomy.cdm.io.common.mapping.DbImportMediaMapper;
 import eu.etaxonomy.cdm.io.erms.validation.ErmsImageImportValidator;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
@@ -36,23 +37,20 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  * @version 1.0
  */
 @Component
-public class ErmsImageImport  extends ErmsImportBase<TaxonBase> {
-
+public class ErmsImageImport  extends ErmsImportBase<TextData> {
 	private static final Logger logger = Logger.getLogger(ErmsImageImport.class);
 
-	private static final String IMAGE_NAMESPACE = "Images";
-	
 	private DbImportMapping mapping;
 	
 	
 	private int modCount = 10000;
 	private static final String pluralString = "images";
-	private String dbTableName = "images";
+	private static final String dbTableName = "images";
 	//TODO needed?
 	private Class cdmTargetClass = Media.class;
 
 	public ErmsImageImport(){
-		super();
+		super(pluralString, dbTableName);
 	}
 
 
@@ -89,10 +87,10 @@ public class ErmsImageImport  extends ErmsImportBase<TaxonBase> {
 		if (mapping == null){
 			mapping = new DbImportMapping();
 			//TODO do we need to add to TaxonNameBase too?
-			mapping.addMapper(DbImportObjectCreationMapper.NewInstance(this, "tu_id", IMAGE_NAMESPACE)); //id
-			//TODO put into one media
-			mapping.addMapper(DbImportImageGalleryMapper.NewInstance("img_url"));
-			mapping.addMapper(DbImportImageGalleryMapper.NewInstance("img_thumb"));
+			String idAttribute = null;
+			boolean isOneTextData = true;
+			mapping.addMapper(DbImportImageCreationMapper.NewInstance(idAttribute, IMAGE_NAMESPACE, "tu_id", ErmsTaxonImport.TAXON_NAMESPACE, isOneTextData));
+			mapping.addMapper(DbImportMediaMapper.NewInstance("img_url", "img_thumb"));
 		}
 		return mapping;
 	}
@@ -119,19 +117,6 @@ public class ErmsImageImport  extends ErmsImportBase<TaxonBase> {
 		partitioner.startDoSave();
 		getReferenceService().save(referencesToSave);
 		return success;
-	}
-
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.mapping.IMappingImport#createObject(java.sql.ResultSet, eu.etaxonomy.cdm.io.common.ImportStateBase)
-	 */
-	public TaxonBase createObject(ResultSet rs, ErmsImportState state)throws SQLException {
-		TaxonBase result = null;
-		Integer tu_id = rs.getInt("tu_id");
-		if (tu_id != null){
-			result = (TaxonBase)state.getRelatedObject(ErmsTaxonImport.TAXON_NAMESPACE, String.valueOf(tu_id));		
-		}
-		return result;
 	}
 
 	/* (non-Javadoc)
@@ -171,23 +156,7 @@ public class ErmsImageImport  extends ErmsImportBase<TaxonBase> {
 		IOValidator<ErmsImportState> validator = new ErmsImageImportValidator();
 		return validator.validate(state);
 	}
-	
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getTableName()
-	 */
-	@Override
-	protected String getTableName() {
-		return dbTableName;
-	}
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getPluralString()
-	 */
-	@Override
-	public String getPluralString() {
-		return pluralString;
-	}
+
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)

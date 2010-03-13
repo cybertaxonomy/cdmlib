@@ -60,7 +60,7 @@ public interface ICommonService extends IService<OriginalSourceBase>{
 	 * @param idNamespace
 	 * @return
 	 */
-	public Map<String, ? extends IdentifiableEntity> getSourcedObjectsByIdInSource(Class clazz, Set<String> idInSourceSet, String idNamespace);
+	public Map<String, ? extends ISourceable> getSourcedObjectsByIdInSource(Class clazz, Set<String> idInSourceSet, String idNamespace);
 	
 	/**
 	 * Returns a list of identifiable entities according to their class, idInSource and idNamespace

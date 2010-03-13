@@ -18,96 +18,107 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.io.common.DbImportStateBase;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.Annotation;
-import eu.etaxonomy.cdm.model.common.AnnotationType;
-import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.Marker;
+import eu.etaxonomy.cdm.model.common.MarkerType;
+
 
 /**
+ * Object creation mapper which creates a marker.
+ * 
  * @author a.mueller
- * @created 12.05.2009
+ * @created 11.03.2010
  * @version 1.0
  */
-public class DbImportAnnotationCreationMapper<ANNOTATION, STATE extends DbImportStateBase<?,?>> extends MultipleAttributeMapperBase implements IDbImportMapper<STATE, Annotation> {
+public class DbImportAnnotationCreationMapper extends DbImportSupplementCreationMapperBase<Annotation, AnnotatableEntity, DbImportStateBase<?, ?>> {
 	private static final Logger logger = Logger.getLogger(DbImportAnnotationCreationMapper.class);
+
+//************************** FACTORY METHODS ***************************************************************/
 	
-//******************************** FACTORY METHOD ***************************************************/
 	
-	public static DbImportAnnotationCreationMapper<?,?> NewInstance(String dbAnnotationAttribute, String dbAnnotatedObjectAttribute, String dbIdAttribute, String annotatedObjectNamespace, AnnotationType annotationType, Language language){
-		return new DbImportAnnotationCreationMapper(dbAnnotationAttribute, dbAnnotatedObjectAttribute, dbIdAttribute, annotatedObjectNamespace, annotationType, language);
+	/**
+	 * @param dbAnnotatedObjectAttribute
+	 * @param annotatedObjectNamespace
+	 * @return
+	 */
+	public static DbImportAnnotationCreationMapper NewInstance(String dbAnnotatedObjectAttribute, String annotatedObjectNamespace){
+		return new DbImportAnnotationCreationMapper(dbAnnotatedObjectAttribute, annotatedObjectNamespace, null, null, null, null);
 	}
 	
-//******************************* ATTRIBUTES ***************************************/
-	protected DbImportMapperBase<STATE> importMapperHelper = new DbImportMapperBase<STATE>();
-	private String annotationTextAttribute;
-	private String annotatedObjectAttribute;
-	private AnnotationType annotationType;
-	private Language language;
-	//TODO get standard namespace from mappingImport
-	private String annotatedObjectNamespace;
-	private boolean addOriginalAnnotationId = false;
-	private String dbIdAttribute;
+	/**
+	 * Creates an annotation mapper which creates an annotation and sets the annotation text,
+	 * the annotation language and annotation (added to this annotation) holding the original
+	 * source id.
+	 * If one of the attribute is null the according value is not set.
+
+	 * @param dbAnnotatedObjectAttribute - obligatory
+	 * @param annotatedObjectNamespace - obligatory
+	 * @param dbAnnotationTextAttribute
+	 * @param language
+	 * @param dbIdAttribute
+	 * @param annotationType
+	 * @return
+	 */
+	public static DbImportAnnotationCreationMapper NewInstance(String dbAnnotatedObjectAttribute, String annotatedObjectNamespace, String dbAnnotationTextAttribute, Language language, String dbIdAttribute, MarkerType annotationType){
+		return new DbImportAnnotationCreationMapper(dbAnnotatedObjectAttribute, annotatedObjectNamespace, dbAnnotationTextAttribute, language, dbIdAttribute, annotationType);
+	}
 	
+// *******************************  VARIABLES ****************************************/
+	
+	protected Language language;
 	
 //********************************* CONSTRUCTOR ****************************************/
+
 	/**
-	 * @param mappingImport
+	 * @param dbSupplementValueAttribute
+	 * @param dbSupplementedObjectAttribute
+	 * @param dbIdAttribute
+	 * @param supplementedObjectNamespace
+	 * @param supplementType
 	 */
-	protected DbImportAnnotationCreationMapper(String dbAnnotationAttribute, String dbAnnotatedObjectAttribute, String dbIdAttribute, String annotatedObjectNamespace, AnnotationType annotationType, Language language) {
-		super();
-		//FIXME clean this up and make it a real Multiple attribute mapper
-		this.annotationTextAttribute = dbAnnotationAttribute;
-		this.annotatedObjectAttribute = dbAnnotatedObjectAttribute;
-		this.annotationType = annotationType;
+	protected DbImportAnnotationCreationMapper(String dbSupplementedObjectAttribute, String supplementedObjectNamespace, String dbSupplementValueAttribute, Language language, String dbIdAttribute, DefinedTermBase supplementType) {
+		super(dbSupplementValueAttribute, dbSupplementedObjectAttribute, dbIdAttribute, supplementedObjectNamespace, supplementType);
 		this.language = language;
-		this.dbIdAttribute = dbIdAttribute;
-		this.singleMappers.add(DbImportAnnotationMapper.NewInstance(dbAnnotationAttribute, annotationType, language));
-		String relatedObjectNamespace = "yyy";
-		this.singleMappers.add(DbImportObjectMapper.NewInstance(dbAnnotatedObjectAttribute, "xxx",relatedObjectNamespace ));
-		this.annotatedObjectNamespace = annotatedObjectNamespace;
 	}
 
 //************************************ METHODS *******************************************/
 
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.mapping.IDbImportMapper#initialize(eu.etaxonomy.cdm.io.common.DbImportStateBase, java.lang.Class)
+	 * @see eu.etaxonomy.cdm.io.common.mapping.DbImportSupplementCreationMapperBase#addSupplement(eu.etaxonomy.cdm.model.common.AnnotatableEntity, java.lang.String, eu.etaxonomy.cdm.model.common.AnnotatableEntity)
 	 */
-	public void initialize(STATE state, Class<? extends CdmBase> destinationClass) {
-		importMapperHelper.initialize(state, destinationClass);
-		
-	}
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.mapping.IDbImportMapper#invoke(java.sql.ResultSet, eu.etaxonomy.cdm.model.common.CdmBase)
-	 */
-	public Annotation invoke(ResultSet rs, Annotation noObject) throws SQLException {
-		String annotationText = rs.getString(annotationTextAttribute);
-		Annotation annotation = Annotation.NewInstance(annotationText, annotationType, language);
-		String id = getStringDbValue(rs, annotatedObjectAttribute);
-		
-		AnnotatableEntity annotatableEntity = (AnnotatableEntity)importMapperHelper.getState().getRelatedObject(annotatedObjectNamespace, id);
+	@Override
+	protected boolean addSupplement(Annotation annotation, AnnotatableEntity annotatableEntity, String id) {
 		if (annotatableEntity != null){
 			annotatableEntity.addAnnotation(annotation);
+			return true;
 		}else{
 			String warning = "Annotatable entity (" + id + ") for annotation not found. Annotation not created.";
 			logger.warn(warning);
+			return false;
 		}
-		
-		addOriginalSource(rs, annotation);
-		return annotation;
 	}
 
-
-	/**
-	 * TODO also implemented in CdmImportBase (reduce redundance)
-	 * @throws SQLException 
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.mapping.DbImportSupplementCreationMapperBase#setSupplementValue(java.lang.Object)
 	 */
-	public void addOriginalSource(ResultSet rs, Annotation annotation) throws SQLException {
-		if (addOriginalAnnotationId){
-			Language orginalSourceLanguage = null;
-			String originalId = getStringDbValue(rs, dbIdAttribute);
-			Annotation idAnnotation = Annotation.NewInstance(originalId, annotationType, orginalSourceLanguage);
-			annotation.addAnnotation(idAnnotation);
-		}	
+	@Override
+	protected void setSupplementValue(ResultSet rs, Annotation annotation) throws SQLException {
+		String value = rs.getString(dbSupplementValueAttribute);
+		annotation.setText(value);
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.mapping.DbImportObjectCreationMapperBase#createObject(java.sql.ResultSet)
+	 */
+	@Override
+	protected Annotation createObject(ResultSet rs) throws SQLException {
+		Annotation annotation = Annotation.NewInstance(null, null);
+		if (language != null){
+			annotation.setLanguage(language);
+		}
+		return annotation;
 	}
 
 	

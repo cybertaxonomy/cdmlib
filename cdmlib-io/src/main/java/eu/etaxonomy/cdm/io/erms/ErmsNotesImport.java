@@ -21,11 +21,10 @@ import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.io.common.IOValidator;
 import eu.etaxonomy.cdm.io.common.ResultSetPartitioner;
-import eu.etaxonomy.cdm.io.common.mapping.DbImportAnnotationCreationMapper;
 import eu.etaxonomy.cdm.io.common.mapping.DbImportAnnotationMapper;
 import eu.etaxonomy.cdm.io.common.mapping.DbImportMapping;
-import eu.etaxonomy.cdm.io.common.mapping.DbImportObjectCreationMapper;
 import eu.etaxonomy.cdm.io.common.mapping.DbImportObjectMapper;
+import eu.etaxonomy.cdm.io.common.mapping.DbImportTextDataCreationMapper;
 import eu.etaxonomy.cdm.io.common.mapping.DbNotYetImplementedMapper;
 import eu.etaxonomy.cdm.io.erms.validation.ErmsNoteImportValidator;
 import eu.etaxonomy.cdm.model.common.Annotation;
@@ -44,19 +43,15 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 public class ErmsNotesImport  extends ErmsImportBase<Annotation> {
 	private static final Logger logger = Logger.getLogger(ErmsNotesImport.class);
 
-	private static final String NOTES_NAMESPACE = "Notes";
-	private static final String LANGUAGE_NAMESPACE = "Language";
-	
 	private DbImportMapping mapping;
-	
 	
 	private int modCount = 10000;
 	private static final String pluralString = "notes";
-	private String dbTableName = "notes";
+	private static final String dbTableName = "notes";
 	private Class cdmTargetClass = Annotation.class;
 
 	public ErmsNotesImport(){
-		super();
+		super(pluralString, dbTableName);
 	}
 
 
@@ -78,11 +73,10 @@ public class ErmsNotesImport  extends ErmsImportBase<Annotation> {
 	private DbImportMapping getMapping() {
 		if (mapping == null){
 			mapping = new DbImportMapping();
-			
-			mapping.addMapper(DbImportAnnotationCreationMapper.NewInstance("note","tu_id", "id", ErmsTaxonImport.TAXON_NAMESPACE, AnnotationType.EDITORIAL(), null));
-//			mapping.addMapper(DbImportObjectCreationMapper.NewInstance(this, "id", NOTES_NAMESPACE)); //id
-//			mapping.addMapper(DbImportAnnotationMapper.NewInstance("note", AnnotationType.EDITORIAL(), null));
+			mapping.addMapper(DbImportTextDataCreationMapper.NewInstance("id", NOTES_NAMESPACE, "tu_id", ErmsTaxonImport.TAXON_NAMESPACE, "note", null, null, null));
 			mapping.addMapper(DbImportObjectMapper.NewInstance("lan_id", "language", LANGUAGE_NAMESPACE));
+			Language notesNoteLanguage = null;
+			mapping.addMapper(DbImportAnnotationMapper.NewInstance("note", AnnotationType.EDITORIAL(), notesNoteLanguage));
 			// not yet implemented
 			mapping.addMapper(DbNotYetImplementedMapper.NewInstance("type"));
 		}
@@ -176,22 +170,6 @@ public class ErmsNotesImport  extends ErmsImportBase<Annotation> {
 		return validator.validate(state);
 	}
 	
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getTableName()
-	 */
-	@Override
-	protected String getTableName() {
-		return dbTableName;
-	}
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getPluralString()
-	 */
-	@Override
-	public String getPluralString() {
-		return pluralString;
-	}
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)

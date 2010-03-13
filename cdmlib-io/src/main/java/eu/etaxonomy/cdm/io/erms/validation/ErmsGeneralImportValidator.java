@@ -15,12 +15,7 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
-import eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase;
-import eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportConfigurator;
-import eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportState;
 import eu.etaxonomy.cdm.io.common.IOValidator;
-import eu.etaxonomy.cdm.io.common.ImportStateBase;
-import eu.etaxonomy.cdm.io.common.IoStateBase;
 import eu.etaxonomy.cdm.io.common.ResultSetPartitioner;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.io.erms.ErmsImportBase;
@@ -40,7 +35,7 @@ public class ErmsGeneralImportValidator extends ErmsImportBase<CdmBase> implemen
 	private static final Logger logger = Logger.getLogger(ErmsGeneralImportValidator.class);
 
 	public ErmsGeneralImportValidator(){
-		super();
+		super(null, null);
 	}
 	
 	/* (non-Javadoc)

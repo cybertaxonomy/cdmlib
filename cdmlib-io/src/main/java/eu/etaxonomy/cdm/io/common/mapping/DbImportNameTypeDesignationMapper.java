@@ -35,7 +35,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
  * @param <CDM_BASE>
  * @param <STATE>
  */
-public class DbImportNameTypeDesignationMapper<STATE extends DbImportStateBase<?,?>, T extends IDbImportTransformed> extends MultipleAttributeMapperBase implements IDbImportMapper<STATE, CdmBase> {
+public class DbImportNameTypeDesignationMapper<STATE extends DbImportStateBase<?,?>, T extends IDbImportTransformed> extends DbImportMultiAttributeMapper<CdmBase, STATE> {
 	private static final Logger logger = Logger.getLogger(DbImportNameTypeDesignationMapper.class);
 	
 //******************************** FACTORY METHOD ***************************************************/
@@ -45,7 +45,6 @@ public class DbImportNameTypeDesignationMapper<STATE extends DbImportStateBase<?
 	}
 	
 //******************************* ATTRIBUTES ***************************************/
-	protected DbImportMapperBase<STATE> importMapperHelper = new DbImportMapperBase<STATE>();
 	private String fromAttribute;
 	private String toAttribute;
 	private NameTypeDesignationStatus designationStatus;
@@ -71,13 +70,6 @@ public class DbImportNameTypeDesignationMapper<STATE extends DbImportStateBase<?
 	}
 
 //************************************ METHODS *******************************************/
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.mapping.IDbImportMapper#initialize(eu.etaxonomy.cdm.io.common.DbImportStateBase, java.lang.Class)
-	 */
-	public void initialize(STATE state, Class<? extends CdmBase> destinationClass) {
-		importMapperHelper.initialize(state, destinationClass);
-	}
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.mapping.IDbImportMapper#invoke(java.sql.ResultSet, eu.etaxonomy.cdm.model.common.CdmBase)

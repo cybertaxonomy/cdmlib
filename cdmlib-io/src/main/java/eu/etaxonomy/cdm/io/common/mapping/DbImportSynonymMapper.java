@@ -35,6 +35,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
 
@@ -50,7 +51,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
  * @param <CDM_BASE>
  * @param <STATE>
  */
-public class DbImportSynonymMapper<STATE extends DbImportStateBase> extends MultipleAttributeMapperBase implements IDbImportMapper<STATE, CdmBase> {
+public class DbImportSynonymMapper<STATE extends DbImportStateBase> extends DbImportMultiAttributeMapper<CdmBase, STATE> {
 	private static final Logger logger = Logger.getLogger(DbImportSynonymMapper.class);
 	
 //******************************** FACTORY METHOD ***************************************************/
@@ -60,7 +61,6 @@ public class DbImportSynonymMapper<STATE extends DbImportStateBase> extends Mult
 	}
 	
 //******************************* ATTRIBUTES ***************************************/
-	protected DbImportMapperBase<STATE> importMapperHelper = new DbImportMapperBase<STATE>();
 	private String fromAttribute;
 	private String toAttribute;
 //	private TaxonRelationshipType relType;
@@ -91,17 +91,10 @@ public class DbImportSynonymMapper<STATE extends DbImportStateBase> extends Mult
 //************************************ METHODS *******************************************/
 
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.mapping.IDbImportMapper#initialize(eu.etaxonomy.cdm.io.common.DbImportStateBase, java.lang.Class)
-	 */
-	public void initialize(STATE state, Class<? extends CdmBase> destinationClass) {
-		importMapperHelper.initialize(state, destinationClass);
-	}
-	
-	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.mapping.IDbImportMapper#invoke(java.sql.ResultSet, eu.etaxonomy.cdm.model.common.CdmBase)
 	 */
 	public CdmBase invoke(ResultSet rs, CdmBase cdmBase) throws SQLException {
-		STATE state = importMapperHelper.getState();
+		STATE state = getState();
 		ICdmIO currentImport = state.getCurrentIO();
 		if (currentImport instanceof ICheckIgnoreMapper){
 			boolean ignoreRecord = ((ICheckIgnoreMapper)currentImport).checkIgnoreMapper(this, rs);
@@ -110,8 +103,11 @@ public class DbImportSynonymMapper<STATE extends DbImportStateBase> extends Mult
 			}
 		}
 		
-		CdmBase fromObject = getRelatedObject(rs, fromAttribute);
-		CdmBase toObject = getRelatedObject(rs, toAttribute);
+		TaxonBase fromObject = (TaxonBase)getRelatedObject(rs, fromAttribute);
+		TaxonBase toObject = (TaxonBase)getRelatedObject(rs, toAttribute);
+		String fromId = String.valueOf(rs.getObject(fromAttribute));
+		String toId = String.valueOf(rs.getObject(toAttribute));
+		
 		//TODO cast
 		ReferenceBase citation = (ReferenceBase)getRelatedObject(rs, citationAttribute);
 		String microCitation = null;
@@ -121,18 +117,18 @@ public class DbImportSynonymMapper<STATE extends DbImportStateBase> extends Mult
 
 		
 		if (fromObject == null){
-			String warning  = "The synonym could not be found. Synonym not added to accepted taxon";
+			String warning  = "The synonym (" + fromId + ") could not be found. Synonym not added to accepted taxon";
 			logger.warn(warning);
 			return cdmBase;
 		}
-		Synonym synonym = checkSynonymType(fromObject);
+		Synonym synonym = checkSynonymType(fromObject, fromId);
 		
 		if (toObject == null){
-			String warning  = "The accepted taxon could not be found. Synonym not added to accepted taxon";
+			String warning  = "The accepted taxon (" + toId + ") could not be found. Synonym not added to accepted taxon";
 			logger.warn(warning);
 			return cdmBase;
 		}
-		Taxon taxon = checkTaxonType(toObject);
+		Taxon taxon = checkTaxonType(toObject, "Accepted taxon", toId);
 		
 		SynonymRelationshipType relType = SynonymRelationshipType.SYNONYM_OF();
 		
@@ -163,22 +159,22 @@ public class DbImportSynonymMapper<STATE extends DbImportStateBase> extends Mult
 	 * Checks if cdmBase is of type Taxon 
 	 * @param fromObject
 	 */
-	private Taxon checkTaxonType(CdmBase cdmBase) {
-		if (! cdmBase.isInstanceOf(Taxon.class)){
-			String warning = "Child or parent is not of type Taxon but of type " + cdmBase.getClass().getName();
+	private Taxon checkTaxonType(TaxonBase taxonBase, String typeString, String id) {
+		if (! taxonBase.isInstanceOf(Taxon.class)){
+			String warning = typeString + " (" + id + ") is not of type Taxon but of type " + taxonBase.getClass().getSimpleName();
 			logger.warn(warning);
 			throw new IllegalArgumentException(warning);
 		}
-		return (cdmBase.deproxy(cdmBase, Taxon.class));
+		return (taxonBase.deproxy(taxonBase, Taxon.class));
 	}
 	
 	/**
 	 * Checks if cdmBase is of type Synonym 
 	 * @param fromObject
 	 */
-	private Synonym checkSynonymType(CdmBase cdmBase) {
+	private Synonym checkSynonymType(CdmBase cdmBase, String id) {
 		if (! cdmBase.isInstanceOf(Synonym.class)){
-			String warning = "Child or parent is not of type Synonym but of type " + cdmBase.getClass().getName();
+			String warning = "Synonym (" + id + ") is not of type Synonym but of type " + cdmBase.getClass().getSimpleName();
 			logger.warn(warning);
 			throw new IllegalArgumentException(warning);
 		}

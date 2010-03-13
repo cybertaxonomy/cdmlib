@@ -41,7 +41,6 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  * @version 1.0
  */
 public class DbImportImageGalleryMapper extends DbSingleAttributeImportMapperBase<DbImportStateBase<?,?>, Taxon> implements IDbImportMapper<DbImportStateBase<?,?>,Taxon>{
-	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DbImportImageGalleryMapper.class);
 	
 //************************** FACTORY METHODS ***************************************************************/

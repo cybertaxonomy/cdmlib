@@ -19,6 +19,7 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.mapping.IDbImportTransformer;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 
@@ -384,6 +385,46 @@ public final class ErmsTransformer implements IDbImportTransformer{
 			throw new IllegalArgumentException("Unknown area id " + guId);
 		}
 
-}	
+	}
+	
+	public static Feature noteType2Feature(String type){
+		if (CdmUtils.isEmpty(type)){return null;
+		}else if (type.equals("Remark")){return Feature.UNKNOWN();
+		}else if (type.equals("Additional information")){return Feature.UNKNOWN();
+		}else if (type.equals("Spelling")){return Feature.UNKNOWN();
+		}else if (type.equals("Publication date")){return Feature.UNKNOWN();
+		}else if (type.equals("Systematics")){return Feature.UNKNOWN();
+		}else if (type.equals("Classification")){return Feature.UNKNOWN();
+		}else if (type.equals("Environment")){return Feature.UNKNOWN();
+		}else if (type.equals("Habitat")){return Feature.UNKNOWN();
+		}else if (type.equals("Authority")){return Feature.UNKNOWN();
+		}else if (type.equals("Ecology")){return Feature.UNKNOWN();
+		}else if (type.equals("Morphology")){return Feature.UNKNOWN();
+		}else if (type.equals("Taxonomic Remarks")){return Feature.UNKNOWN();
+		}else if (type.equals("NULL")){return Feature.UNKNOWN();
+		}else if (type.equals("Distribution")){return Feature.UNKNOWN();
+		}else if (type.equals("Note")){return Feature.UNKNOWN();
+		}else if (type.equals("Taxonomy")){return Feature.UNKNOWN();
+		}else if (type.equals("Taxonomic status")){return Feature.UNKNOWN();
+		}else if (type.equals("Status")){return Feature.UNKNOWN();
+		}else if (type.equals("Rank")){return Feature.UNKNOWN();
+		}else if (type.equals("Homonymy")){return Feature.UNKNOWN();
+		}else if (type.equals("Nomenclature")){return Feature.UNKNOWN();
+		}else if (type.equals("Type species")){return Feature.UNKNOWN();
+		}else if (type.equals("Taxonomic Remark")){return Feature.UNKNOWN();
+		}else if (type.equals("Diagnosis")){return Feature.UNKNOWN();
+		}else if (type.equals("Date of Publication")){return Feature.UNKNOWN();
+		}else if (type.equals("Acknowledgments")){return Feature.UNKNOWN();
+		}else if (type.equals("Biology")){return Feature.UNKNOWN();
+		}else if (type.equals("Original publication")){return Feature.UNKNOWN();
+		}else if (type.equals("Type locality")){return Feature.UNKNOWN();
+		}else if (type.equals("Host")){return Feature.UNKNOWN();
+		}else if (type.equals("Validity")){return Feature.UNKNOWN();
+		}else if (type.equals("Identification")){return Feature.UNKNOWN();
+		}else if (type.equals("Synonymy")){return Feature.UNKNOWN();
+		}else{
+			throw new IllegalArgumentException("Unknown note type " + type);
+		}
+	}
 	
 }

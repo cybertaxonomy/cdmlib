@@ -15,31 +15,24 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
-import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.IOValidator;
 import eu.etaxonomy.cdm.io.common.ResultSetPartitioner;
 import eu.etaxonomy.cdm.io.common.mapping.DbImportAnnotationMapper;
+import eu.etaxonomy.cdm.io.common.mapping.DbImportDistributionCreationMapper;
 import eu.etaxonomy.cdm.io.common.mapping.DbImportMapping;
-import eu.etaxonomy.cdm.io.common.mapping.DbImportObjectCreationMapper;
-import eu.etaxonomy.cdm.io.common.mapping.DbImportStringMapper;
+import eu.etaxonomy.cdm.io.common.mapping.DbImportObjectMapper;
 import eu.etaxonomy.cdm.io.common.mapping.DbNotYetImplementedMapper;
 import eu.etaxonomy.cdm.io.erms.validation.ErmsReferenceImportValidator;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.PresenceTerm;
-import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
-import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
-import eu.etaxonomy.cdm.model.taxon.Synonym;
-import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 
@@ -49,24 +42,18 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  * @version 1.0
  */
 @Component
-public class ErmsDrImport  extends ErmsImportBase<TaxonBase> {
+public class ErmsDrImport  extends ErmsImportBase<Distribution> {
 	private static final Logger logger = Logger.getLogger(ErmsDrImport.class);
-
-	private static final String DR_NAMESPACE = "dr";
-	
-	
-	public static final UUID IMIS_UUID = UUID.fromString("ee2ac2ca-b60c-4e6f-9cad-720fcdb0a6ae");
 	
 	private DbImportMapping mapping;
 	
-	
 	private int modCount = 10000;
 	private static final String pluralString = "distributions";
-	private String dbTableName = "dr";
+	private static String dbTableName = "dr";
 	private Class cdmTargetClass = Distribution.class;
 
 	public ErmsDrImport(){
-		super();
+		super(pluralString, dbTableName);
 	}
 
 
@@ -76,8 +63,8 @@ public class ErmsDrImport  extends ErmsImportBase<TaxonBase> {
 	@Override
 	protected String getRecordQuery(ErmsImportConfigurator config) {
 		String strRecordQuery = 
-			" SELECT * " + 
-			" FROM " + dbTableName +
+			" SELECT dr.*, tu.tu_acctaxon, tu.id " + 
+			" FROM dr INNER JOIN tu ON dr.tu_id = tu.id " +
 			" WHERE ( dr.id IN (" + ID_LIST_TOKEN + ") )";
 		return strRecordQuery;
 	}
@@ -88,12 +75,13 @@ public class ErmsDrImport  extends ErmsImportBase<TaxonBase> {
 	private DbImportMapping getMapping() {
 		if (mapping == null){
 			mapping = new DbImportMapping();
-			
-			mapping.addMapper(DbImportObjectCreationMapper.NewInstance(this, "id", DR_NAMESPACE)); //id
-			
+			PresenceTerm status = PresenceTerm.PRESENT();
+			mapping.addMapper(DbImportDistributionCreationMapper.NewFixedStatusInstance("id", DR_NAMESPACE, "tu_acctaxon", ErmsTaxonImport.TAXON_NAMESPACE, status));
+			mapping.addMapper(DbImportObjectMapper.NewInstance("gu_id", "area", ErmsAreaImport.AREA_NAMESPACE));
+			mapping.addMapper(DbNotYetImplementedMapper.NewInstance("source_id"));
 			mapping.addMapper(DbImportAnnotationMapper.NewInstance("note", AnnotationType.EDITORIAL()));
-			//not yet implemented
-//			mapping.addMapper(DbNotYetImplementedMapper.NewInstance("source_type"));
+			
+			//TODO long list of ignore attributes
 			
 		}
 		return mapping;
@@ -138,7 +126,7 @@ public class ErmsDrImport  extends ErmsImportBase<TaxonBase> {
 			Set<String> taxonIdSet = new HashSet<String>();
 			Set<String> areaIdSet = new HashSet<String>();
 			while (rs.next()){
-				handleForeignKey(rs, taxonIdSet, "tu_id");
+				handleForeignKey(rs, taxonIdSet,"tu_acctaxon" );
 				handleForeignKey(rs, areaIdSet, "gu_id");
 			}
 			
@@ -162,35 +150,6 @@ public class ErmsDrImport  extends ErmsImportBase<TaxonBase> {
 		return result;
 	}
 	
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.mapping.IMappingImport#createObject(java.sql.ResultSet, eu.etaxonomy.cdm.io.common.ImportStateBase)
-	 */
-	public TaxonBase createObject(ResultSet rs, ErmsImportState state) throws SQLException {
-		Integer gu_id = rs.getInt("gu_id");
-		Integer source_id = rs.getInt("source_id");
-		Integer tu_id = rs.getInt("tu_id");
-		
-		UUID areaUuid = ErmsTransformer.uuidFromGuId(gu_id);
-		NamedArea area = state.getNamedArea(areaUuid);
-		PresenceTerm status = PresenceTerm.PRESENT();
-		Distribution distribution = Distribution.NewInstance(area, status);
-		addSource(distribution, source_id, state);
-		//TODO check for multiple sources
-		
-		TaxonBase taxonBase = (TaxonBase)state.getRelatedObject(ErmsTaxonImport.TAXON_NAMESPACE, String.valueOf(tu_id));
-		Taxon taxon = null;
-		if (taxonBase instanceof Taxon){
-			taxon = (Taxon)taxonBase;
-			addDistribution(taxon, distribution);
-		}else if (taxonBase instanceof Synonym){
-			logger.warn("Distributions not yet implemented for synonyms: " + taxonBase.getName() +"("+ tu_id + ")");
-		}else{ //null
-			logger.warn("TaxonBase not found: " + tu_id);
-		}
-		return taxon;
-	}
-
 	/**
 	 * @param distribution
 	 * @param source_id
@@ -201,25 +160,12 @@ public class ErmsDrImport  extends ErmsImportBase<TaxonBase> {
 		distribution.addSource(null, null, ref, null);
 	}
 
-
-	/**
-	 * @param taxon
-	 * @param distribution
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.mapping.IMappingImport#createObject(java.sql.ResultSet, eu.etaxonomy.cdm.io.common.ImportStateBase)
 	 */
-	private void addDistribution(Taxon taxon, Distribution distribution) {
-		Set<TaxonDescription> descriptions = taxon.getDescriptions();
-		TaxonDescription description = null;
-		if (descriptions.size() > 0){
-			for (TaxonDescription desc : descriptions){
-				if (! desc.isImageGallery()){
-					description = desc;
-					break;
-				}
-			}
-		}
-		if (description == null){
-			description = TaxonDescription.NewInstance(taxon);
-		}
+	public Distribution createObject(ResultSet rs, ErmsImportState state)
+			throws SQLException {
+		return null;  //not needed
 	}
 
 
@@ -230,23 +176,6 @@ public class ErmsDrImport  extends ErmsImportBase<TaxonBase> {
 	protected boolean doCheck(ErmsImportState state){
 		IOValidator<ErmsImportState> validator = new ErmsReferenceImportValidator();
 		return validator.validate(state);
-	}
-	
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getTableName()
-	 */
-	@Override
-	protected String getTableName() {
-		return dbTableName;
-	}
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getPluralString()
-	 */
-	@Override
-	public String getPluralString() {
-		return pluralString;
 	}
 	
 	/* (non-Javadoc)

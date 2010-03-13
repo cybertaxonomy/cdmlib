@@ -43,19 +43,16 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 public class ErmsTaxonRelationImport extends ErmsImportBase<TaxonBase> implements ICheckIgnoreMapper, IDbImportTransformed{
 	private static final Logger logger = Logger.getLogger(ErmsTaxonRelationImport.class);
 	
-	public static final UUID TNS_EXT_UUID = UUID.fromString("41cb0450-ac84-4d73-905e-9c7773c23b05");
-	
-	private DbImportMapping mapping;
+private DbImportMapping mapping;
 	
 	private int modCount = 10000;
 	private static final String pluralString = "taxon relations";
+	private static final String dbTableName = "tu";
 
-
-	private String dbTableName = "tu";
 	private Class cdmTargetClass = TaxonBase.class;
 
 	public ErmsTaxonRelationImport(){
-		super();
+		super(pluralString, dbTableName);
 	}
 
 	/**
@@ -204,22 +201,6 @@ public class ErmsTaxonRelationImport extends ErmsImportBase<TaxonBase> implement
 		return true;
 	}
 	
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getTableName()
-	 */
-	@Override
-	protected String getTableName() {
-		return dbTableName;
-	}
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getPluralString()
-	 */
-	@Override
-	public String getPluralString() {
-		return pluralString;
-	}
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)

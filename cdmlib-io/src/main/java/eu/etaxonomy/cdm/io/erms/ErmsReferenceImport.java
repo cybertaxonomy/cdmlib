@@ -15,7 +15,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
@@ -29,6 +28,7 @@ import eu.etaxonomy.cdm.io.common.mapping.DbImportMapping;
 import eu.etaxonomy.cdm.io.common.mapping.DbImportObjectCreationMapper;
 import eu.etaxonomy.cdm.io.common.mapping.DbImportStringMapper;
 import eu.etaxonomy.cdm.io.common.mapping.DbNotYetImplementedMapper;
+import eu.etaxonomy.cdm.io.common.mapping.IMappingImport;
 import eu.etaxonomy.cdm.io.erms.validation.ErmsReferenceImportValidator;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -45,25 +45,19 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  * @version 1.0
  */
 @Component
-public class ErmsReferenceImport  extends ErmsImportBase<ReferenceBase> {
-
+public class ErmsReferenceImport  extends ErmsImportBase<ReferenceBase> implements IMappingImport<ReferenceBase, ErmsImportState>{
 	private static final Logger logger = Logger.getLogger(ErmsReferenceImport.class);
-
-	public static final String REFERENCE_NAMESPACE = "Source";
-	
-	
-	public static final UUID IMIS_UUID = UUID.fromString("ee2ac2ca-b60c-4e6f-9cad-720fcdb0a6ae");
 	
 	private DbImportMapping mapping;
 	
 	
 	private int modCount = 10000;
 	private static final String pluralString = "sources";
-	private String dbTableName = "sources";
+	private static final String dbTableName = "sources";
 	private Class cdmTargetClass = ReferenceBase.class;
 
 	public ErmsReferenceImport(){
-		super();
+		super(pluralString, dbTableName);
 	}
 
 
@@ -156,22 +150,6 @@ public class ErmsReferenceImport  extends ErmsImportBase<ReferenceBase> {
 		return validator.validate(state);
 	}
 	
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getTableName()
-	 */
-	@Override
-	protected String getTableName() {
-		return dbTableName;
-	}
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getPluralString()
-	 */
-	@Override
-	public String getPluralString() {
-		return pluralString;
-	}
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)
