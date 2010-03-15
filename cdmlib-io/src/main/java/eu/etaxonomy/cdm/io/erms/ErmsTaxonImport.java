@@ -22,7 +22,6 @@ import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.IOValidator;
-import eu.etaxonomy.cdm.io.common.ResultSetPartitioner;
 import eu.etaxonomy.cdm.io.common.mapping.DbIgnoreMapper;
 import eu.etaxonomy.cdm.io.common.mapping.DbImportExtensionMapper;
 import eu.etaxonomy.cdm.io.common.mapping.DbImportMapping;
@@ -62,10 +61,10 @@ public class ErmsTaxonImport  extends ErmsImportBase<TaxonBase> implements IMapp
 	private int modCount = 10000;
 	private static final String pluralString = "taxa";
 	private static final String dbTableName = "tu";
-	private Class cdmTargetClass = TaxonBase.class;
+	private static final Class cdmTargetClass = TaxonBase.class;
 
 	public ErmsTaxonImport(){
-		super(pluralString, dbTableName);
+		super(pluralString, dbTableName, cdmTargetClass);
 	}
 	
 	
@@ -80,11 +79,10 @@ public class ErmsTaxonImport  extends ErmsImportBase<TaxonBase> implements IMapp
 //	}
 
 
-
-	/**
-	 * @return
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.erms.ErmsImportBase#getMapping()
 	 */
-	private DbImportMapping getMapping() {
+	protected DbImportMapping getMapping() {
 		if (mapping == null){
 			mapping = new DbImportMapping();
 			
@@ -191,31 +189,6 @@ public class ErmsTaxonImport  extends ErmsImportBase<TaxonBase> implements IMapp
 //		logger.info("end make " + getPluralString() + " ... " + getSuccessString(success));
 		return success;
 
-	}
-
-
-
-	
-	
-	public boolean doPartition(ResultSetPartitioner partitioner, ErmsImportState state) {
-		boolean success = true ;
-		Set taxaToSave = new HashSet<TaxonBase>();
-		
- 		DbImportMapping<?, ?> mapping = getMapping();
-		mapping.initialize(state, cdmTargetClass);
-		ResultSet rs = partitioner.getResultSet();
-		try{
-			while (rs.next()){
-				success &= mapping.invoke(rs,taxaToSave, isSecondPath);
-			}
-		} catch (SQLException e) {
-			logger.error("SQLException:" +  e);
-			return false;
-		}
-	
-		partitioner.startDoSave();
-		getTaxonService().save(taxaToSave);
-		return success;
 	}
 
 

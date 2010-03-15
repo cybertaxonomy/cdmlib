@@ -18,22 +18,23 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
+import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.io.common.IOValidator;
-import eu.etaxonomy.cdm.io.common.ResultSetPartitioner;
 import eu.etaxonomy.cdm.io.common.mapping.DbImportDescriptionElementSourceCreationMapper;
 import eu.etaxonomy.cdm.io.common.mapping.DbImportMapping;
 import eu.etaxonomy.cdm.io.erms.validation.ErmsVernacularSourceImportValidator;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
-import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 /**
  * @author a.mueller
  * @created 12.03.2010
  * @version 1.0
  */
+@Component
 public class ErmsVernacularSourcesImport extends ErmsImportBase<CommonTaxonName> {
 	private static final Logger logger = Logger.getLogger(ErmsVernacularSourcesImport.class);
 	
@@ -42,9 +43,10 @@ public class ErmsVernacularSourcesImport extends ErmsImportBase<CommonTaxonName>
 	
 	private static String pluralString = "vernacular sources";
 	private static String dbTableName = "vernaculars_sources";
-	private DbImportMapping mapping;
-	private static Class cdmTargetClass = null;  //needed?
+	private static final Class cdmTargetClass = DescriptionElementSource.class;
 
+	private DbImportMapping mapping;
+	
 	
 //******************************************* CONSTRUCTOR *******************************	
 	
@@ -54,7 +56,7 @@ public class ErmsVernacularSourcesImport extends ErmsImportBase<CommonTaxonName>
 	 * @param dbTableName
 	 */
 	public ErmsVernacularSourcesImport() {
-		super(pluralString, dbTableName);
+		super(pluralString, dbTableName, cdmTargetClass);
 	}
 
 
@@ -82,11 +84,11 @@ public class ErmsVernacularSourcesImport extends ErmsImportBase<CommonTaxonName>
 			;
 		return strQuery;
 	}
-	
-	/**
-	 * @return
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.erms.ErmsImportBase#getMapping()
 	 */
-	private DbImportMapping getMapping() {
+	protected DbImportMapping getMapping() {
 		if (mapping == null){
 			mapping = new DbImportMapping();
 			String vernacularNamespace = ErmsVernacularImport.VERNACULAR_NAMESPACE;
@@ -95,39 +97,6 @@ public class ErmsVernacularSourcesImport extends ErmsImportBase<CommonTaxonName>
 		}
 		return mapping;
 	}
-
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.IPartitionedIO#doPartition(eu.etaxonomy.cdm.io.common.ResultSetPartitioner, eu.etaxonomy.cdm.io.common.IPartitionedState)
-	 */
-	public boolean doPartition(ResultSetPartitioner partitioner, ErmsImportState state) {
-		boolean success = true ;
-		ErmsImportConfigurator config = state.getConfig();
-		Set termsToSave = new HashSet<TaxonBase>();
-		
- 		DbImportMapping<?, ?> mapping = getMapping();
-		mapping.initialize(state, cdmTargetClass);
-		
-		ResultSet rs = partitioner.getResultSet();
-		try{
-			while (rs.next()){
-				success &= mapping.invoke(rs, termsToSave);
-			}
-		} catch (SQLException e) {
-			logger.error("SQLException:" +  e);
-			return false;
-		}
-	
-		partitioner.startDoSave();
-		getDescriptionService().save(termsToSave);
-		return success;
-	}
-
-
-
-
-
-
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.IPartitionedIO#getRelatedObjectsForPartition(java.sql.ResultSet)

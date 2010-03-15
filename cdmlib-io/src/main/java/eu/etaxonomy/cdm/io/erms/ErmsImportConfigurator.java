@@ -18,6 +18,7 @@ import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
 import eu.etaxonomy.cdm.io.common.ImportStateBase;
 import eu.etaxonomy.cdm.io.common.Source;
+import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
 import eu.etaxonomy.cdm.io.erms.validation.ErmsGeneralImportValidator;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
@@ -40,20 +41,15 @@ public class ErmsImportConfigurator extends ImportConfiguratorBase<ErmsImportSta
 	/* Max number of records to be saved with one service call */
 	private int recordsPerTransaction = 1000;  //defaultValue
 
-	private Method namerelationshipTypeMethod;
-	private Method uuidForDefTermMethod;
+	//TODO needed ??
 	private Method userTransformationMethod;
-	private Method nameTypeDesignationStatusMethod;
 	
 	private boolean doVernaculars = true;
 	private boolean doLinks = true;
 	private boolean doNotes = true;
 	private boolean doImages = true;
 	
-	
-	// NameFact stuff
-	private int maximumNumberOfNameFacts;
-	private boolean isIgnore0AuthorTeam = false;
+	private static IInputTransformer defaultTransformer = new ErmsTransformer();
 	
 	protected void makeIoClassList(){
 		ioClassList = new Class[]{
@@ -75,8 +71,7 @@ public class ErmsImportConfigurator extends ImportConfiguratorBase<ErmsImportSta
 		};	
 	}
 	
-	
-	
+
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#getNewState()
 	 */
@@ -92,7 +87,7 @@ public class ErmsImportConfigurator extends ImportConfiguratorBase<ErmsImportSta
 	 * @param destination
 	 */
 	private ErmsImportConfigurator(Source ermsSource, ICdmDataSource destination) {
-	   super();
+	   super(defaultTransformer);
 	   setNomenclaturalCode(NomenclaturalCode.ICZN); //default for ERMS
 	   setSource(ermsSource);
 	   setDestination(destination);
@@ -132,67 +127,6 @@ public class ErmsImportConfigurator extends ImportConfiguratorBase<ErmsImportSta
 		}
 	}
 
-
-	/**
-	 * @return the maximumNumberOfNameFacts
-	 */
-	public int getMaximumNumberOfNameFacts() {
-		return maximumNumberOfNameFacts;
-	}
-
-	/**
-	 * set to 0 for unlimited
-	 * 
-	 * @param maximumNumberOfNameFacts the maximumNumberOfNameFacts to set
-	 */
-	public void setMaximumNumberOfNameFacts(int maximumNumberOfNameFacts) {
-		this.maximumNumberOfNameFacts = maximumNumberOfNameFacts;
-	}
-
-	/**
-	 * If true, an authorTeam with authorTeamId = 0 is not imported (casus Salvador)
-	 * @return the isIgnore0AuthorTeam
-	 */
-	public boolean isIgnore0AuthorTeam() {
-		return isIgnore0AuthorTeam;
-	}
-
-	/**
-	 * @param isIgnore0AuthorTeam the isIgnore0AuthorTeam to set
-	 */
-	public void setIgnore0AuthorTeam(boolean isIgnore0AuthorTeam) {
-		this.isIgnore0AuthorTeam = isIgnore0AuthorTeam;
-	}
-
-	/**
-	 * @return the namerelationshipTypeMethod
-	 */
-	public Method getNamerelationshipTypeMethod() {
-		return namerelationshipTypeMethod;
-	}
-
-	/**
-	 * @param namerelationshipTypeMethod the namerelationshipTypeMethod to set
-	 */
-	public void setNamerelationshipTypeMethod(Method namerelationshipTypeMethod) {
-		this.namerelationshipTypeMethod = namerelationshipTypeMethod;
-	}
-	
-
-	/**
-	 * @return the uuidForDefTermMethod
-	 */
-	public Method getUuidForDefTermMethod() {
-		return uuidForDefTermMethod;
-	}
-
-	/**
-	 * @param uuidForDefTermMethod the uuidForDefTermMethod to set
-	 */
-	public void setUuidForDefTermMethod(Method uuidForDefTermMethod) {
-		this.uuidForDefTermMethod = uuidForDefTermMethod;
-	}
-
 	/**
 	 * @return the userTransformationMethod
 	 */
@@ -207,23 +141,6 @@ public class ErmsImportConfigurator extends ImportConfiguratorBase<ErmsImportSta
 		this.userTransformationMethod = userTransformationMethod;
 	}
 
-
-
-	/**
-	 * @return the nameTypeDesignationStatusMethod
-	 */
-	public Method getNameTypeDesignationStatusMethod() {
-		return nameTypeDesignationStatusMethod;
-	}
-
-
-	/**
-	 * @param nameTypeDesignationStatusMethod the nameTypeDesignationStatusMethod to set
-	 */
-	public void setNameTypeDesignationStatusMethod(
-			Method nameTypeDesignationStatusMethod) {
-		this.nameTypeDesignationStatusMethod = nameTypeDesignationStatusMethod;
-	}
 	
 	/**
 	 * @return the limitSave
@@ -306,5 +223,7 @@ public class ErmsImportConfigurator extends ImportConfiguratorBase<ErmsImportSta
 	public boolean isDoImages() {
 		return doImages;
 	}
+	
+	
 
 }

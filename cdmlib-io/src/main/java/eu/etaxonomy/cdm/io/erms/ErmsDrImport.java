@@ -20,7 +20,6 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.io.common.IOValidator;
-import eu.etaxonomy.cdm.io.common.ResultSetPartitioner;
 import eu.etaxonomy.cdm.io.common.mapping.DbImportAnnotationMapper;
 import eu.etaxonomy.cdm.io.common.mapping.DbImportDistributionCreationMapper;
 import eu.etaxonomy.cdm.io.common.mapping.DbImportMapping;
@@ -43,17 +42,18 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  */
 @Component
 public class ErmsDrImport  extends ErmsImportBase<Distribution> {
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ErmsDrImport.class);
 	
 	private DbImportMapping mapping;
 	
 	private int modCount = 10000;
 	private static final String pluralString = "distributions";
-	private static String dbTableName = "dr";
-	private Class cdmTargetClass = Distribution.class;
+	private static final String dbTableName = "dr";
+	private static final Class cdmTargetClass = Distribution.class;
 
 	public ErmsDrImport(){
-		super(pluralString, dbTableName);
+		super(pluralString, dbTableName, cdmTargetClass);
 	}
 
 
@@ -69,10 +69,10 @@ public class ErmsDrImport  extends ErmsImportBase<Distribution> {
 		return strRecordQuery;
 	}
 
-	/**
-	 * @return
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.erms.ErmsImportBase#getMapping()
 	 */
-	private DbImportMapping getMapping() {
+	protected DbImportMapping getMapping() {
 		if (mapping == null){
 			mapping = new DbImportMapping();
 			PresenceTerm status = PresenceTerm.PRESENT();
@@ -87,32 +87,6 @@ public class ErmsDrImport  extends ErmsImportBase<Distribution> {
 		return mapping;
 	}
 	
-	
-	public boolean doPartition(ResultSetPartitioner partitioner, ErmsImportState state) {
-		boolean success = true ;
-		ErmsImportConfigurator config = state.getConfig();
-		Set referencesToSave = new HashSet<TaxonBase>();
-		
- 		DbImportMapping<?, ?> mapping = getMapping();
-		mapping.initialize(state, cdmTargetClass);
-		
-		ResultSet rs = partitioner.getResultSet();
-		try{
-			while (rs.next()){
-				success &= mapping.invoke(rs,referencesToSave);
-			}
-		} catch (SQLException e) {
-			logger.error("SQLException:" +  e);
-			return false;
-		}
-	
-		partitioner.startDoSave();
-		getReferenceService().save(referencesToSave);
-		return success;
-	}
-
-
-
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.berlinModel.in.IPartitionedIO#getRelatedObjectsForPartition(java.sql.ResultSet)
 	 */

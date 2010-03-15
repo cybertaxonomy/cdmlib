@@ -15,6 +15,7 @@ import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
 import eu.etaxonomy.cdm.io.common.ImportStateBase;
 import eu.etaxonomy.cdm.io.common.Source;
+import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.reference.IDatabase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
@@ -26,8 +27,10 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
  * @version 1.0
  */
 public class FaunaEuropaeaImportConfigurator extends ImportConfiguratorBase<FaunaEuropaeaImportState> implements IImportConfigurator {
-
 	private static final Logger logger = Logger.getLogger(FaunaEuropaeaImportConfigurator.class);
+
+	//TODO
+	private static IInputTransformer defaultTransformer = null;
 	
 	private boolean doBasionyms = true;
 	private boolean doTaxonomicallyIncluded = true;
@@ -56,6 +59,7 @@ public class FaunaEuropaeaImportConfigurator extends ImportConfiguratorBase<Faun
 }
 	
 	private FaunaEuropaeaImportConfigurator(Source source, ICdmDataSource destination) {
+		super(defaultTransformer);
 		setSource(source);
 		setDestination(destination);
 		setNomenclaturalCode(NomenclaturalCode.ICBN);
@@ -66,6 +70,7 @@ public class FaunaEuropaeaImportConfigurator extends ImportConfiguratorBase<Faun
 }
 	
 	private FaunaEuropaeaImportConfigurator(ICdmDataSource source, ICdmDataSource destination) {
+		super(defaultTransformer);
 		setSource(source);
 		setDestination(destination);
 		setNomenclaturalCode(NomenclaturalCode.ICBN);

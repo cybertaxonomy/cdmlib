@@ -20,17 +20,17 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.io.common.IOValidator;
-import eu.etaxonomy.cdm.io.common.ResultSetPartitioner;
 import eu.etaxonomy.cdm.io.common.mapping.DbImportAnnotationMapper;
+import eu.etaxonomy.cdm.io.common.mapping.DbImportFeatureCreationMapper;
 import eu.etaxonomy.cdm.io.common.mapping.DbImportMapping;
 import eu.etaxonomy.cdm.io.common.mapping.DbImportObjectMapper;
 import eu.etaxonomy.cdm.io.common.mapping.DbImportTextDataCreationMapper;
-import eu.etaxonomy.cdm.io.common.mapping.DbNotYetImplementedMapper;
 import eu.etaxonomy.cdm.io.erms.validation.ErmsNoteImportValidator;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 
@@ -41,6 +41,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  */
 @Component
 public class ErmsNotesImport  extends ErmsImportBase<Annotation> {
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ErmsNotesImport.class);
 
 	private DbImportMapping mapping;
@@ -48,10 +49,10 @@ public class ErmsNotesImport  extends ErmsImportBase<Annotation> {
 	private int modCount = 10000;
 	private static final String pluralString = "notes";
 	private static final String dbTableName = "notes";
-	private Class cdmTargetClass = Annotation.class;
+	private static final Class cdmTargetClass = TextData.class;
 
 	public ErmsNotesImport(){
-		super(pluralString, dbTableName);
+		super(pluralString, dbTableName, cdmTargetClass);
 	}
 
 
@@ -67,46 +68,23 @@ public class ErmsNotesImport  extends ErmsImportBase<Annotation> {
 		return strRecordQuery;
 	}
 
-	/**
-	 * @return
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.erms.ErmsImportBase#getMapping()
 	 */
-	private DbImportMapping getMapping() {
+	protected DbImportMapping getMapping() {
 		if (mapping == null){
 			mapping = new DbImportMapping();
 			mapping.addMapper(DbImportTextDataCreationMapper.NewInstance("id", NOTES_NAMESPACE, "tu_id", ErmsTaxonImport.TAXON_NAMESPACE, "note", null, null, null));
 			mapping.addMapper(DbImportObjectMapper.NewInstance("lan_id", "language", LANGUAGE_NAMESPACE));
 			Language notesNoteLanguage = null;
 			mapping.addMapper(DbImportAnnotationMapper.NewInstance("note", AnnotationType.EDITORIAL(), notesNoteLanguage));
-			// not yet implemented
-			mapping.addMapper(DbNotYetImplementedMapper.NewInstance("type"));
+			mapping.addMapper(DbImportFeatureCreationMapper.NewInstance("type", FEATURE_NAMESPACE, "type", "type", "type"));
+			mapping.addMapper(DbImportObjectMapper.NewInstance("type", "feature", FEATURE_NAMESPACE));
+			
 		}
 		return mapping;
 	}
 	
-	
-	public boolean doPartition(ResultSetPartitioner partitioner, ErmsImportState state) {
-		boolean success = true ;
-		ErmsImportConfigurator config = state.getConfig();
-		Set referencesToSave = new HashSet<TaxonBase>();
-		
- 		DbImportMapping<?, ?> mapping = getMapping();
-		mapping.initialize(state, cdmTargetClass);
-		
-		ResultSet rs = partitioner.getResultSet();
-		try{
-			while (rs.next()){
-				success &= mapping.invoke(rs,referencesToSave);
-			}
-		} catch (SQLException e) {
-			logger.error("SQLException:" +  e);
-			return false;
-		}
-	
-		partitioner.startDoSave();
-		getReferenceService().save(referencesToSave);
-		return success;
-	}
-
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.mapping.IMappingImport#createObject(java.sql.ResultSet, eu.etaxonomy.cdm.io.common.ImportStateBase)
@@ -149,8 +127,10 @@ public class ErmsNotesImport  extends ErmsImportBase<Annotation> {
 			//language map
 			nameSpace = LANGUAGE_NAMESPACE;
 			Map<String, Language> languageMap = new HashMap<String, Language>();
+			ErmsTransformer transformer = new ErmsTransformer();
 			for (String lanAbbrev: languageIdSet){
-				Language language = ErmsTransformer.languageByErmsAbbrev(lanAbbrev);
+				
+				Language language = transformer.getLanguageByKey(lanAbbrev);
 				languageMap.put(lanAbbrev, language);
 			}
 			result.put(nameSpace, languageMap);

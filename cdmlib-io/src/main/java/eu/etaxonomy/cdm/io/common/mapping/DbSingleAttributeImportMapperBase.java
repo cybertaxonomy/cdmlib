@@ -201,7 +201,11 @@ public abstract class DbSingleAttributeImportMapperBase<STATE extends DbImportSt
 		Method method = getMethod();
 		try {
 			Object objectToInvoke = getObjectToInvoke(cdmBase);
-			method.invoke(objectToInvoke, value);
+			if (objectToInvoke == null){
+				logger.warn("No object defined for invoke. Method will not be invoked");
+			}else{
+				method.invoke(objectToInvoke, value);
+			}
 			return cdmBase;
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();

@@ -16,6 +16,7 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator.DO_REFERENCES;
+import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
 import eu.etaxonomy.cdm.model.reference.IDatabase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
@@ -30,6 +31,9 @@ public class JaxbImportConfigurator extends ImportConfiguratorBase implements II
 		
 	private int maxRows = 0;
 	
+	//TODO
+	private static IInputTransformer defaultTransformer = null;
+
 	
 	private boolean doUsers = true;
 	private boolean doAgentData = true;
@@ -173,7 +177,7 @@ public class JaxbImportConfigurator extends ImportConfiguratorBase implements II
 	 * @param destination
 	 */
 	private JaxbImportConfigurator(String url, ICdmDataSource destination) {
-		super();
+		super(defaultTransformer);
 		setSource(url);
 		setDestination(destination);
 		setDbSchemaValidation(DbSchemaValidation.CREATE);

@@ -17,6 +17,7 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.DbImportStateBase;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
@@ -60,7 +61,8 @@ public abstract class DbImportDescriptionElementCreationMapperBase<ELEMENT exten
 			addDescriptionElement(taxon, element);
 			return element;
 		}else{
-			return null;
+			logger.warn("Taxon could not be determined. Description element was not add to any description or taxon");
+			return element;
 		}
 		
 	}
@@ -80,7 +82,15 @@ public abstract class DbImportDescriptionElementCreationMapperBase<ELEMENT exten
 			taxon = (Taxon)taxonBase;
 			
 		}else if (taxonBase instanceof Synonym){
-			logger.warn("DescriptionElements not yet implemented for synonyms: " + taxonBase.getName() +"("+ taxonFk + ")");
+			Synonym synonym = CdmBase.deproxy(taxonBase, Synonym.class);
+			Set<Taxon> taxa = synonym.getAcceptedTaxa();
+			if (taxa.size() == 0){
+				logger.warn("Synonym '" + synonym.getTitleCache() + "' ("+ taxonFk + ") has no accepted taxon. Can't define a taxon to add the description element to");
+			}else if (taxa.size() == 1){
+				taxon = taxa.iterator().next();
+			}else{
+				logger.warn("Synonym '" + synonym.getTitleCache() + "' ("+ taxonFk + ") has more than one accepted taxon. Can't decide which one to take");
+			}
 		}else{ //null
 			throw new IllegalStateException("TaxonBase must either be null, Taxon or Synonym but was something else");
 		}

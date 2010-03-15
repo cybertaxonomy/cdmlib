@@ -159,4 +159,13 @@ public abstract class DbImportObjectCreationMapperBase<CREATE extends Versionabl
 		return result;
 	}
 	
+	
+	/**
+	 * Returns the transformer from the configuration
+	 * @return
+	 */
+	protected IInputTransformer getTransformer(){
+		return getState().getConfig().getTransformer();
+	}
+	
 }

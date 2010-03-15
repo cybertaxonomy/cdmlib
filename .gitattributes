@@ -1312,11 +1312,13 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/DbIgnoreMapper.java -
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/DbImportAnnotationCreationMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/DbImportAnnotationMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/DbImportCommonNameCreationMapper.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/DbImportDefinedTermCreationMapperBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/DbImportDescriptionElementCreationMapperBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/DbImportDescriptionElementSourceCreationMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/DbImportDistributionCreationMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/DbImportExtensionCreationMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/DbImportExtensionMapper.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/DbImportFeatureCreationMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/DbImportImageCreationMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/DbImportImageGalleryMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/DbImportMapperBase.java -text
@@ -1338,8 +1340,11 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/DbSingleAttributeImpo
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/IDbImportMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/IDbImportTransformed.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/IDbImportTransformer.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/IInputTransformer.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/IMappingImport.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/InputTransformerBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/MultipleAttributeMapperBase.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/UndefinedTransformerMethodException.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/erms/ErmsAreaImport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/erms/ErmsDrImport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/erms/ErmsImageImport.java -text
@@ -1571,6 +1576,7 @@ cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/sdd/SDDDescriptionIOTest-input.
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/taxonx/TaxonXImportConfiguratorTest-input.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/tcsrdf/TcsRdfImportConfiguratorTest-input.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/tcsxml/TcsXmlImportConfiguratorTest-input.xml -text
+cdmlib-io/src/test/resources/termCodeCreator.xls -text
 cdmlib-io/src/test/resources/unitils.properties -text
 cdmlib-model/LICENSE.TXT -text
 cdmlib-model/README.TXT -text

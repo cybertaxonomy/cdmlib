@@ -15,6 +15,7 @@ import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
 import eu.etaxonomy.cdm.io.common.ImportStateBase;
 import eu.etaxonomy.cdm.io.common.Source;
+import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.reference.IDatabase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
@@ -39,11 +40,16 @@ public class CdmImportConfigurator extends ImportConfiguratorBase<CdmImportState
 		};
 	};
 	
+	//TODO
+	private static IInputTransformer defaultTransformer = null;
+
+	
 	public static CdmImportConfigurator NewInstance(Source source, ICdmDataSource destination){
 		return new CdmImportConfigurator(source, destination);
 }
 	
 	private CdmImportConfigurator(Source source, ICdmDataSource destination) {
+		super(defaultTransformer);
 		setSource(source);
 		setDestination(destination);
 		setNomenclaturalCode(NomenclaturalCode.ICBN);
@@ -54,6 +60,7 @@ public class CdmImportConfigurator extends ImportConfiguratorBase<CdmImportState
 }
 	
 	private CdmImportConfigurator(ICdmDataSource source, ICdmDataSource destination) {
+		super(defaultTransformer);
 		setSource(source);
 		setDestination(destination);
 		setNomenclaturalCode(NomenclaturalCode.ICBN);

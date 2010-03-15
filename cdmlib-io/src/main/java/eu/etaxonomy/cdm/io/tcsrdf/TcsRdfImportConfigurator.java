@@ -21,6 +21,7 @@ import eu.etaxonomy.cdm.common.XmlHelp;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
+import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
 import eu.etaxonomy.cdm.model.reference.IDatabase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
@@ -32,6 +33,11 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
  */
 public class TcsRdfImportConfigurator extends ImportConfiguratorBase<TcsRdfImportState> implements IImportConfigurator {
 	private static final Logger logger = Logger.getLogger(TcsRdfImportConfigurator.class);
+	
+	
+	//TODO
+	private static IInputTransformer defaultTransformer = null;
+
 	
 	//if false references in this rdf file are not published in the bibliography list
 	private boolean isPublishReferences = true;
@@ -76,6 +82,7 @@ public class TcsRdfImportConfigurator extends ImportConfiguratorBase<TcsRdfImpor
 	
 	//TODO for spring use only 
 	private TcsRdfImportConfigurator(){
+		super(defaultTransformer);
 		
 	}
 	
@@ -86,7 +93,7 @@ public class TcsRdfImportConfigurator extends ImportConfiguratorBase<TcsRdfImpor
 	 * @param destination
 	 */
 	private TcsRdfImportConfigurator(String url, ICdmDataSource destination) {
-		super();
+		super(defaultTransformer);
 		setSource(url);
 		setDestination(destination);
 	}

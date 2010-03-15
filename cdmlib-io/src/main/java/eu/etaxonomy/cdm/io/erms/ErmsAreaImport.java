@@ -12,16 +12,13 @@ package eu.etaxonomy.cdm.io.erms;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.io.common.IOValidator;
-import eu.etaxonomy.cdm.io.common.ResultSetPartitioner;
 import eu.etaxonomy.cdm.io.common.mapping.DbImportAnnotationMapper;
 import eu.etaxonomy.cdm.io.common.mapping.DbImportExtensionMapper;
 import eu.etaxonomy.cdm.io.common.mapping.DbImportMapping;
@@ -34,7 +31,6 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
-import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 
 /**
@@ -52,10 +48,10 @@ public class ErmsAreaImport  extends ErmsImportBase<NamedArea> implements IMappi
 	private int modCount = 10000;
 	private static final String pluralString = "areas";
 	private static final String dbTableName = "gu";
-	private Class cdmTargetClass = NamedArea.class;
+	private static final Class cdmTargetClass = NamedArea.class;
 
 	public ErmsAreaImport(){
-		super(pluralString, dbTableName);
+		super(pluralString, dbTableName, cdmTargetClass);
 	}
 
 
@@ -71,10 +67,10 @@ public class ErmsAreaImport  extends ErmsImportBase<NamedArea> implements IMappi
 		return strRecordQuery;
 	}
 
-	/**
-	 * @return
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.erms.ErmsImportBase#getMapping()
 	 */
-	private DbImportMapping getMapping() {
+	protected DbImportMapping getMapping() {
 		if (mapping == null){
 			mapping = new DbImportMapping();
 			
@@ -87,31 +83,6 @@ public class ErmsAreaImport  extends ErmsImportBase<NamedArea> implements IMappi
 		return mapping;
 	}
 	
-	
-	public boolean doPartition(ResultSetPartitioner partitioner, ErmsImportState state) {
-		boolean success = true ;
-		ErmsImportConfigurator config = state.getConfig();
-		Set areasToSave = new HashSet<TaxonBase>();
-		
- 		DbImportMapping<?, ?> mapping = getMapping();
-		mapping.initialize(state, cdmTargetClass);
-		
-		ResultSet rs = partitioner.getResultSet();
-		try{
-			while (rs.next()){
-				success &= mapping.invoke(rs,areasToSave);
-			}
-		} catch (SQLException e) {
-			logger.error("SQLException:" +  e);
-			return false;
-		}
-	
-		partitioner.startDoSave();
-		getTermService().save(areasToSave);
-		return success;
-	}
-
-
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.berlinModel.in.IPartitionedIO#getRelatedObjectsForPartition(java.sql.ResultSet)

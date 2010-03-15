@@ -18,6 +18,8 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.mapping.IDbImportTransformer;
+import eu.etaxonomy.cdm.io.common.mapping.InputTransformerBase;
+import eu.etaxonomy.cdm.io.common.mapping.UndefinedTransformerMethodException;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
@@ -28,7 +30,7 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
  * @created 01.03.2010
  * @version 1.0
  */
-public final class ErmsTransformer implements IDbImportTransformer{
+public final class ErmsTransformer extends InputTransformerBase implements IDbImportTransformer{
 	private static final Logger logger = Logger.getLogger(ErmsTransformer.class);
 	
 	public static final int SOURCE_USE_ORIGINAL_DESCRIPTION = 1;
@@ -40,7 +42,7 @@ public final class ErmsTransformer implements IDbImportTransformer{
 	public static final int SOURCE_USE_STATUS_SOURCE = 7;
 	public static final int SOURCE_USE_EMENDATION = 8;
 	
-	
+	//language uuids
 	public static final UUID uuidEuropeanMarineWaters = UUID.fromString("47389e42-3b3c-4873-bded-ac030db86462");
 	public static final UUID uuidMediterraneanSea = UUID.fromString("bde8a624-23c4-4ac3-b381-11287f5d656a");
 	public static final UUID uuidWhiteSea = UUID.fromString("bf14bfb6-8925-4696-911c-56d3e90d4491");
@@ -93,7 +95,36 @@ public final class ErmsTransformer implements IDbImportTransformer{
 	public static final UUID uuidTurkishExclusiveEconomicZone = UUID.fromString("3d552e73-2bf5-4f36-8a91-94fbead970e5");
 	public static final UUID uuidDanishExclusiveEconomicZone = UUID.fromString("53d5a8bd-804b-4cbb-b5ad-f47ff6433db0");
 
-	
+
+	//feature uuids
+	public static final UUID uuidRemark = UUID.fromString("648eab77-8469-4139-bbf4-3fb26ec15864");
+	public static final UUID uuidAdditionalinformation = UUID.fromString("ef00c304-ce33-45ef-9543-0b9336a2b6eb");
+	public static final UUID uuidSpelling = UUID.fromString("536594a1-21a5-4d99-aa46-132bc7b31316");
+	public static final UUID uuidPublicationdate = UUID.fromString("b996b34f-1313-4575-bf46-732676674290");
+	public static final UUID uuidSystematics = UUID.fromString("caac0f7f-f43e-4b7c-b296-ec2d930c4d05");
+	public static final UUID uuidClassification = UUID.fromString("aa9bffd3-1fa8-4bd7-9e25-e2d162177b3d");
+	public static final UUID uuidEnvironment = UUID.fromString("4f8ea10d-2242-443f-9d7d-4ecccdee4953");
+	public static final UUID uuidHabitat = UUID.fromString("b7387877-51e3-4192-b9e4-025a359f4b59");
+	public static final UUID uuidAuthority = UUID.fromString("9c7f8908-2530-4900-8da9-d328f7ac9031");
+	public static final UUID uuidMorphology = UUID.fromString("5be1f948-d85f-497f-a0d5-4e5f3b227274");
+	public static final UUID uuidTaxonomicRemarks = UUID.fromString("cc863aee-8da9-448b-82cd-47e3af942998");
+	public static final UUID uuidNote = UUID.fromString("2c66d35f-c76e-40e0-951b-f2c340e5973f");
+	public static final UUID uuidTaxonomy = UUID.fromString("d5734631-c86b-4212-9b8d-cb62f813e0a0");
+	public static final UUID uuidTaxonomicstatus = UUID.fromString("ffbadab5-a8bc-4fb6-a6b3-d1f2593187ff");
+	public static final UUID uuidStatus = UUID.fromString("fcc50853-bcff-4d0f-bc9a-123d7f175490");
+	public static final UUID uuidRank = UUID.fromString("cabada57-a098-47fc-929f-31c8c910f6cf");
+	public static final UUID uuidHomonymy = UUID.fromString("2791a14f-49b2-417f-a248-84c3d022d75f");
+	public static final UUID uuidNomenclature = UUID.fromString("15fe184f-4aab-4076-8bbb-3415d6f1f27f");
+	public static final UUID uuidTypespecies = UUID.fromString("cf674b0d-76e2-4628-952c-2cd06e209c6e");
+	public static final UUID uuidTaxonomicRemark = UUID.fromString("044e7c4e-aab8-4f44-bfa5-0339e7576c74");
+	public static final UUID uuidDateofPublication = UUID.fromString("2a416574-69db-4f80-b9a7-b912d5ed1816");
+	public static final UUID uuidAcknowledgments = UUID.fromString("3b2fd495-3f9a-480e-986a-7643741177da");
+	public static final UUID uuidOriginalpublication = UUID.fromString("ea9b7e53-0487-499f-a281-3d82d10e76dd");
+	public static final UUID uuidTypelocality = UUID.fromString("7c1c5779-2b4b-467b-b2ca-5ca2e029e116");
+	public static final UUID uuidValidity = UUID.fromString("bd066f25-935b-4b4e-a2eb-3fbfcd5e608f");
+	public static final UUID uuidIdentification = UUID.fromString("dec3cd5b-0690-4035-825d-bda9aee96bc1");
+	public static final UUID uuidSynonymy = UUID.fromString("f5c8be5f-8d33-47df-838e-55fc7999fc81");
+
 	
 	public static NomenclaturalCode kingdomId2NomCode(Integer kingdomId){
 		switch (kingdomId){
@@ -127,7 +158,7 @@ public final class ErmsTransformer implements IDbImportTransformer{
 		}
 	}
 
-	public static Language languageByErmsAbbrev(String ermsAbbrev) throws IllegalArgumentException {
+	public Language getLanguageByKey(String ermsAbbrev) throws IllegalArgumentException {
 		Set<String> unhandledLanguages = new HashSet<String>();
 		if (CdmUtils.isEmpty(ermsAbbrev)){return null;
 		}else if (ermsAbbrev.equals("af")){return Language.AFRIKAANS();
@@ -426,5 +457,62 @@ public final class ErmsTransformer implements IDbImportTransformer{
 			throw new IllegalArgumentException("Unknown note type " + type);
 		}
 	}
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.mapping.InputTransformerBase#getFeatureByKey(java.lang.String)
+	 */
+	@Override
+	public Feature getFeatureByKey(String key) throws UndefinedTransformerMethodException {
+		if (CdmUtils.isEmpty(key)){return null;
+		}else if (key.equalsIgnoreCase("Distribution")){return Feature.DISTRIBUTION();
+		}else if (key.equalsIgnoreCase("Ecology")){return Feature.ECOLOGY();
+		}else if (key.equalsIgnoreCase("Diagnosis")){return Feature.DIAGNOSIS();
+		}else if (key.equalsIgnoreCase("Biology")){return Feature.BIOLOGY_ECOLOGY();
+		}else if (key.equalsIgnoreCase("Host")){return Feature.HOSTPLANT();
+		}else{
+			return null;
+		}
+	}
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.mapping.InputTransformerBase#getFeatureUuid(java.lang.String)
+	 */
+	@Override
+	public UUID getFeatureUuid(String key)
+			throws UndefinedTransformerMethodException {
+		if (CdmUtils.isEmpty(key)){return null;
+		}else if (key.equalsIgnoreCase("Remark")){return uuidRemark;
+		}else if (key.equalsIgnoreCase("Additional information")){return uuidAdditionalinformation;
+		}else if (key.equalsIgnoreCase("Spelling")){return uuidSpelling;
+		}else if (key.equalsIgnoreCase("Publication date")){return uuidPublicationdate;
+		}else if (key.equalsIgnoreCase("Systematics")){return uuidSystematics;
+		}else if (key.equalsIgnoreCase("Classification")){return uuidClassification;
+		}else if (key.equalsIgnoreCase("Environment")){return uuidEnvironment;
+		}else if (key.equalsIgnoreCase("Habitat")){return uuidHabitat;
+		}else if (key.equalsIgnoreCase("Authority")){return uuidAuthority;
+		}else if (key.equalsIgnoreCase("Morphology")){return uuidMorphology;
+		}else if (key.equalsIgnoreCase("Taxonomic Remarks")){return uuidTaxonomicRemarks;
+		}else if (key.equalsIgnoreCase("Note")){return uuidNote;
+		}else if (key.equalsIgnoreCase("Taxonomy")){return uuidTaxonomy;
+		}else if (key.equalsIgnoreCase("Taxonomic status")){return uuidTaxonomicstatus;
+		}else if (key.equalsIgnoreCase("Status")){return uuidStatus;
+		}else if (key.equalsIgnoreCase("Rank")){return uuidRank;
+		}else if (key.equalsIgnoreCase("Homonymy")){return uuidHomonymy;
+		}else if (key.equalsIgnoreCase("Nomenclature")){return uuidNomenclature;
+		}else if (key.equalsIgnoreCase("Type species")){return uuidTypespecies;
+		}else if (key.equalsIgnoreCase("Taxonomic Remark")){return uuidTaxonomicRemark;
+		}else if (key.equalsIgnoreCase("Date of Publication")){return uuidDateofPublication;
+		}else if (key.equalsIgnoreCase("Acknowledgments")){return uuidAcknowledgments;
+		}else if (key.equalsIgnoreCase("Original publication")){return uuidOriginalpublication;
+		}else if (key.equalsIgnoreCase("Type locality")){return uuidTypelocality;
+		}else if (key.equalsIgnoreCase("Validity")){return uuidValidity;
+		}else if (key.equalsIgnoreCase("Identification")){return uuidIdentification;
+		}else if (key.equalsIgnoreCase("Synonymy")){return uuidSynonymy;
+		}else{
+			return null;
+		}
+	}
+	
+	
 	
 }

@@ -18,6 +18,7 @@ import org.springframework.stereotype.Component;
 import eu.etaxonomy.cdm.io.common.IOValidator;
 import eu.etaxonomy.cdm.io.common.ResultSetPartitioner;
 import eu.etaxonomy.cdm.io.common.Source;
+import eu.etaxonomy.cdm.io.common.mapping.DbImportMapping;
 import eu.etaxonomy.cdm.io.erms.ErmsImportBase;
 import eu.etaxonomy.cdm.io.erms.ErmsImportConfigurator;
 import eu.etaxonomy.cdm.io.erms.ErmsImportState;
@@ -35,7 +36,7 @@ public class ErmsGeneralImportValidator extends ErmsImportBase<CdmBase> implemen
 	private static final Logger logger = Logger.getLogger(ErmsGeneralImportValidator.class);
 
 	public ErmsGeneralImportValidator(){
-		super(null, null);
+		super(null, null, null);
 	}
 	
 	/* (non-Javadoc)
@@ -167,6 +168,15 @@ public class ErmsGeneralImportValidator extends ErmsImportBase<CdmBase> implemen
 	 */
 	public CdmBase createObject(ResultSet rs, ErmsImportState state) throws SQLException {
 		return null;  //not needed
+	}
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.erms.ErmsImportBase#getMapping()
+	 */
+	@Override
+	protected DbImportMapping<?, ?> getMapping() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 

@@ -21,6 +21,7 @@ import org.springframework.stereotype.Component;
 import eu.etaxonomy.cdm.io.common.IOValidator;
 import eu.etaxonomy.cdm.io.common.ResultSetPartitioner;
 import eu.etaxonomy.cdm.io.common.Source;
+import eu.etaxonomy.cdm.io.common.mapping.DbImportMapping;
 import eu.etaxonomy.cdm.io.erms.validation.ErmsRankImportValidator;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
@@ -43,10 +44,13 @@ public class ErmsImportRankMap extends ErmsImportBase<Rank>{
 	 * @param dbTableName
 	 */
 	public ErmsImportRankMap() {
-		super(null, null);
+		super(null, null, null);
 	}
 
 	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#invoke(eu.etaxonomy.cdm.io.common.IoStateBase)
+	 */
 	public boolean invoke (ErmsImportState state){
 		rankMap = new HashMap<Integer, Map<Integer,Rank>>();
 		Source source = state.getConfig().getSource() ;
@@ -92,15 +96,6 @@ public class ErmsImportRankMap extends ErmsImportBase<Rank>{
 		return result;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.erms.ErmsImportBase#getRecordQuery(eu.etaxonomy.cdm.io.erms.ErmsImportConfigurator)
-	 */
-	@Override
-	protected String getRecordQuery(ErmsImportConfigurator config) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doCheck(eu.etaxonomy.cdm.io.common.IoStateBase)
@@ -111,6 +106,17 @@ public class ErmsImportRankMap extends ErmsImportBase<Rank>{
 		return rankImport.validate(state);
 	}
 
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.erms.ErmsImportBase#getRecordQuery(eu.etaxonomy.cdm.io.erms.ErmsImportConfigurator)
+	 */
+	@Override
+	protected String getRecordQuery(ErmsImportConfigurator config) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IoStateBase)
 	 */
@@ -119,12 +125,6 @@ public class ErmsImportRankMap extends ErmsImportBase<Rank>{
 		return false;  //should always be called
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.IPartitionedIO#doPartition(eu.etaxonomy.cdm.io.common.ResultSetPartitioner, eu.etaxonomy.cdm.io.common.ImportStateBase)
-	 */
-	public boolean doPartition(ResultSetPartitioner partitioner, ErmsImportState state) {
-		return false;  // not needed
-	}
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.IPartitionedIO#getRelatedObjectsForPartition(java.sql.ResultSet)
@@ -139,6 +139,15 @@ public class ErmsImportRankMap extends ErmsImportBase<Rank>{
 	public Rank createObject(ResultSet rs, ErmsImportState state)
 			throws SQLException {
 		return null;  // not needed
+	}
+
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.erms.ErmsImportBase#getMapping()
+	 */
+	@Override
+	protected DbImportMapping<?, ?> getMapping() {
+		return null;  //not needed
 	}
 	
 	

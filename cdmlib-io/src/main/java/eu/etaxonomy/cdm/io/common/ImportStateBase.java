@@ -23,6 +23,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.User;
+import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
@@ -48,6 +49,7 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
 	private Map<UUID, ExtensionType> extensionTypeMap = new HashMap<UUID, ExtensionType>();
 	private Map<UUID, MarkerType> markerTypeMap = new HashMap<UUID, MarkerType>();
 	private Map<UUID, NamedArea> namedAreaMap = new HashMap<UUID, NamedArea>();
+	private Map<UUID, Feature> featureMap = new HashMap<UUID, Feature>();
 	
 
 	
@@ -179,6 +181,14 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
 		namedAreaMap.put(namedArea.getUuid(), namedArea);
 	}
 
+	
+	public Feature getFeature(UUID uuid){
+		return featureMap.get(uuid);
+	}
+	
+	public void putFeature(Feature feature){
+		featureMap.put(feature.getUuid(), feature);
+	}
 	
 
 	

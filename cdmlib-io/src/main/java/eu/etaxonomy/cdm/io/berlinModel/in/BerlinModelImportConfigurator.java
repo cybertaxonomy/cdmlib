@@ -19,12 +19,15 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
+import eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer;
 import eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelTaxonImport.PublishMarkerChooser;
 import eu.etaxonomy.cdm.io.berlinModel.in.validation.BerlinModelGeneralImportValidator;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
 import eu.etaxonomy.cdm.io.common.ImportStateBase;
 import eu.etaxonomy.cdm.io.common.Source;
+import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
+import eu.etaxonomy.cdm.io.erms.ErmsTransformer;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
@@ -43,6 +46,10 @@ public class BerlinModelImportConfigurator extends ImportConfiguratorBase<Berlin
 	}
 
 	private PublishMarkerChooser taxonPublishMarker = PublishMarkerChooser.ALL;
+	
+	//TODO
+	private static IInputTransformer defaultTransformer = null;
+	
 	
 	/* Max number of records to be saved with one service call */
 	private int recordsPerTransaction = 1000;
@@ -100,7 +107,7 @@ public class BerlinModelImportConfigurator extends ImportConfiguratorBase<Berlin
 	 * @param destination
 	 */
 	private BerlinModelImportConfigurator(Source berlinModelSource, ICdmDataSource destination) {
-	   super();
+	   super(defaultTransformer);
 	   setNomenclaturalCode(NomenclaturalCode.ICBN); //default for Berlin Model
 	   setSource(berlinModelSource);
 	   setDestination(destination);

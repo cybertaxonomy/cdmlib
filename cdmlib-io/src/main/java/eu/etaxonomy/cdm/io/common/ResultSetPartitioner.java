@@ -117,6 +117,8 @@ public class ResultSetPartitioner<STATE extends IPartitionedState> {
 	
 
 	/**
+	 * Import the whole partition of an input stream by starting a transaction, getting the related objects
+	 * stored in the destination, invoke the IOs partition handling and commit the transaction
 	 * @param partitionedIO
 	 */
 	public void doPartition(IPartitionedIO partitionedIO, STATE state) {

@@ -36,6 +36,7 @@ import eu.etaxonomy.cdm.io.common.mapping.DbImportMapping;
 import eu.etaxonomy.cdm.io.erms.validation.ErmsSourceUsesImportValidator;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DescriptionElementSource;
+import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
@@ -63,10 +64,10 @@ public class ErmsSourceUsesImport  extends ErmsImportBase<CommonTaxonName> {
 	private int modCount = 10000;
 	private static final String pluralString = "source uses";
 	private static final String dbTableName = "tu_sources";
-	private Class cdmTargetClass = null;
+	private static final Class cdmTargetClass = null;
 
 	public ErmsSourceUsesImport(){
-		super(pluralString, dbTableName);
+		super(pluralString, dbTableName, cdmTargetClass);
 	}
 
 
@@ -101,7 +102,7 @@ public class ErmsSourceUsesImport  extends ErmsImportBase<CommonTaxonName> {
 	public boolean doPartition(ResultSetPartitioner partitioner, ErmsImportState state) {
 		boolean success = true ;
 		ErmsImportConfigurator config = state.getConfig();
-		Set referencesToSave = new HashSet<TaxonBase>();
+		Set objectsToSave = new HashSet<IdentifiableEntity>();
 		
 // 		DbImportMapping<?, ?> mapping = getMapping();
 //		mapping.initialize(state, cdmTargetClass);
@@ -123,24 +124,27 @@ public class ErmsSourceUsesImport  extends ErmsImportBase<CommonTaxonName> {
 				}
 				ReferenceBase ref = (ReferenceBase)state.getRelatedObject(ErmsReferenceImport.REFERENCE_NAMESPACE, strSourceId);
 				
-				
+				IdentifiableEntity objectToSave = null;
 				//invoke methods for each sourceUse type
 				if (sourceUseId == SOURCE_USE_ORIGINAL_DESCRIPTION){
-					makeOriginalDescription(partitioner, state, ref, strTaxonId, strPageNr);
+					objectToSave = makeOriginalDescription(partitioner, state, ref, strTaxonId, strPageNr);
 				}else if (sourceUseId == SOURCE_USE_BASIS_OF_RECORD){
-					makeBasisOfRecord(partitioner, state, ref, strTaxonId, strPageNr);
+					objectToSave = makeBasisOfRecord(partitioner, state, ref, strTaxonId, strPageNr);
 				}else if (sourceUseId == SOURCE_USE_ADDITIONAL_SOURCE){
-					makeAdditionalSource(partitioner, state, ref, strTaxonId, strPageNr);
+					objectToSave = makeAdditionalSource(partitioner, state, ref, strTaxonId, strPageNr);
 				}else if (sourceUseId == SOURCE_USE_SOURCE_OF_SYNONYMY){
-					makeSourceOfSynonymy(partitioner, state, ref, strTaxonId, strPageNr);
+					objectToSave = makeSourceOfSynonymy(partitioner, state, ref, strTaxonId, strPageNr);
 				}else if (sourceUseId == SOURCE_USE_REDESCRIPTION){
-					makeRedescription(partitioner, state, ref, strTaxonId, strPageNr);
+					objectToSave = makeRedescription(partitioner, state, ref, strTaxonId, strPageNr);
 				}else if (sourceUseId == SOURCE_USE_NEW_COMBINATION_REFERENCE){
-					makeCombinationReference(partitioner, state, ref, strTaxonId, strPageNr);
+					objectToSave = makeCombinationReference(partitioner, state, ref, strTaxonId, strPageNr);
 				}else if (sourceUseId == SOURCE_USE_STATUS_SOURCE){
-					makeEmendation(partitioner, state, ref, strTaxonId, strPageNr);
+					objectToSave = makeStatusSource(partitioner, state, ref, strTaxonId, strPageNr);
 				}else if (sourceUseId == SOURCE_USE_EMENDATION){
-					
+					objectToSave = makeEmendation(partitioner, state, ref, strTaxonId, strPageNr);
+				}
+				if(objectToSave != null){
+					objectsToSave.add(objectToSave);
 				}
 			}
 		} catch (SQLException e) {
@@ -149,7 +153,7 @@ public class ErmsSourceUsesImport  extends ErmsImportBase<CommonTaxonName> {
 		}
 	
 		partitioner.startDoSave();
-		getReferenceService().save(referencesToSave);
+		getCommonService().save(objectsToSave);
 		return success;
 	}
 
@@ -162,10 +166,11 @@ public class ErmsSourceUsesImport  extends ErmsImportBase<CommonTaxonName> {
 	 * @param strPageNr 
 	 * 
 	 */
-	private void makeOriginalDescription(ResultSetPartitioner partitioner, ErmsImportState state, ReferenceBase ref, String strTaxonId, String strPageNr) {
+	private TaxonNameBase makeOriginalDescription(ResultSetPartitioner partitioner, ErmsImportState state, ReferenceBase ref, String strTaxonId, String strPageNr) {
 		TaxonNameBase taxonName = (TaxonNameBase)state.getRelatedObject(ErmsTaxonImport.NAME_NAMESPACE, strTaxonId);
 		taxonName.setNomenclaturalReference(ref);
 		taxonName.setNomenclaturalMicroReference(strPageNr);
+		return taxonName;
 	}
 	
 	/**
@@ -176,11 +181,12 @@ public class ErmsSourceUsesImport  extends ErmsImportBase<CommonTaxonName> {
 	 * @param strPageNr
 	 */
 	private boolean isFirstBasisOfRecord = true; 
-	private void makeBasisOfRecord(ResultSetPartitioner partitioner, ErmsImportState state, ReferenceBase ref, String strTaxonId, String strPageNr) {
+	private IdentifiableEntity makeBasisOfRecord(ResultSetPartitioner partitioner, ErmsImportState state, ReferenceBase ref, String strTaxonId, String strPageNr) {
 		if (isFirstBasisOfRecord){
 			logger.warn("Basis of record not yet implemented");
 			isFirstBasisOfRecord = false;
 		}
+		return null;
 	}
 	
 	/**
@@ -190,7 +196,7 @@ public class ErmsSourceUsesImport  extends ErmsImportBase<CommonTaxonName> {
 	 * @param strTaxonId
 	 * @param strPageNr
 	 */
-	private void makeAdditionalSource(ResultSetPartitioner partitioner, ErmsImportState state, ReferenceBase ref, String strTaxonId, String strPageNr) {
+	private IdentifiableEntity makeAdditionalSource(ResultSetPartitioner partitioner, ErmsImportState state, ReferenceBase ref, String strTaxonId, String strPageNr) {
 		Feature citationFeature = Feature.CITATION();
 		DescriptionElementBase element = TextData.NewInstance(citationFeature);
 		DescriptionElementSource source = element.addSource(null, null, ref, strPageNr);
@@ -220,6 +226,7 @@ public class ErmsSourceUsesImport  extends ErmsImportBase<CommonTaxonName> {
 			description = TaxonDescription.NewInstance(taxon);
 		}
 		description.addElement(element);
+		return taxon;
 	}
 	
 	/**
@@ -229,7 +236,7 @@ public class ErmsSourceUsesImport  extends ErmsImportBase<CommonTaxonName> {
 	 * @param strTaxonId
 	 * @param strPageNr
 	 */
-	private void makeSourceOfSynonymy(ResultSetPartitioner partitioner, ErmsImportState state, ReferenceBase ref, String strTaxonId, String strPageNr) {
+	private IdentifiableEntity makeSourceOfSynonymy(ResultSetPartitioner partitioner, ErmsImportState state, ReferenceBase ref, String strTaxonId, String strPageNr) {
 		TaxonBase taxonBase = (TaxonBase)state.getRelatedObject(ErmsTaxonImport.TAXON_NAMESPACE, strTaxonId);
 		Synonym synonym = (Synonym)taxonBase;
 		Set<SynonymRelationship> synRels = synonym.getSynonymRelations();
@@ -240,6 +247,7 @@ public class ErmsSourceUsesImport  extends ErmsImportBase<CommonTaxonName> {
 			synRel.setCitation(ref);
 			synRel.setCitationMicroReference(strPageNr);
 		}
+		return taxonBase;
 	}
 	
 	/**
@@ -250,11 +258,12 @@ public class ErmsSourceUsesImport  extends ErmsImportBase<CommonTaxonName> {
 	 * @param strPageNr
 	 */
 	private boolean isFirstRediscription = true; 
-	private void makeRedescription(ResultSetPartitioner partitioner, ErmsImportState state, ReferenceBase ref, String strTaxonId, String strPageNr) {
+	private IdentifiableEntity makeRedescription(ResultSetPartitioner partitioner, ErmsImportState state, ReferenceBase ref, String strTaxonId, String strPageNr) {
 		if (isFirstRediscription){
 			logger.warn("Rediscription not yet implemented");
 			isFirstRediscription = false;
 		}
+		return null;
 	}
 
 	/**
@@ -264,14 +273,31 @@ public class ErmsSourceUsesImport  extends ErmsImportBase<CommonTaxonName> {
 	 * @param strTaxonId
 	 * @param strPageNr
 	 */
-	private void makeCombinationReference(ResultSetPartitioner partitioner, ErmsImportState state, ReferenceBase ref, String strTaxonId, String strPageNr) {
+	private IdentifiableEntity makeCombinationReference(ResultSetPartitioner partitioner, ErmsImportState state, ReferenceBase ref, String strTaxonId, String strPageNr) {
 		// Kopie von Orig. Comb.
 		//TODO ist das wirklich der richtige Name, oder muss ein verknüpfter Name verwendet werden
 		TaxonNameBase taxonName = (TaxonNameBase)state.getRelatedObject(ErmsTaxonImport.NAME_NAMESPACE, strTaxonId);
 		taxonName.setNomenclaturalReference(ref);
 		taxonName.setNomenclaturalMicroReference(strPageNr);
+		return taxonName;
 	}
 
+
+	/**
+	 * @param partitioner
+	 * @param state
+	 * @param ref
+	 * @param strTaxonId
+	 * @param strPageNr
+	 */
+	private boolean isFirstStatusSource = true; 
+	private IdentifiableEntity makeStatusSource(ResultSetPartitioner partitioner, ErmsImportState state, ReferenceBase ref, String strTaxonId, String strPageNr) {
+		if (isFirstStatusSource){
+			logger.warn("StatusSource not yet implemented");
+			isFirstStatusSource = false;
+		}
+		return null;
+	}
 
 	/**
 	 * @param partitioner
@@ -281,11 +307,12 @@ public class ErmsSourceUsesImport  extends ErmsImportBase<CommonTaxonName> {
 	 * @param strPageNr
 	 */
 	private boolean isFirstEmendation = true; 
-	private void makeEmendation(ResultSetPartitioner partitioner, ErmsImportState state, ReferenceBase ref, String strTaxonId, String strPageNr) {
-		if (isFirstRediscription){
+	private IdentifiableEntity makeEmendation(ResultSetPartitioner partitioner, ErmsImportState state, ReferenceBase ref, String strTaxonId, String strPageNr) {
+		if (isFirstEmendation){
 			logger.warn("Emmendation not yet implemented");
-			isFirstRediscription = false;
+			isFirstEmendation = false;
 		}
+		return null;
 	}
 
 
@@ -362,6 +389,16 @@ public class ErmsSourceUsesImport  extends ErmsImportBase<CommonTaxonName> {
 		boolean result = state.getConfig().getDoReferences() != IImportConfigurator.DO_REFERENCES.ALL;
 		result &= state.getConfig().isDoTaxa();
 		return state.getConfig().getDoReferences() != IImportConfigurator.DO_REFERENCES.ALL;
+	}
+
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.erms.ErmsImportBase#getMapping()
+	 */
+	@Override
+	protected DbImportMapping<?, ?> getMapping() {
+		logger.warn("getMapping not yet implemented for EmrsSourceUsesImport");
+		return null;  // not needed because Mapping is not implemented in this class yet
 	}
 
 }

@@ -49,16 +49,16 @@ private DbImportMapping mapping;
 	private static final String pluralString = "taxon relations";
 	private static final String dbTableName = "tu";
 
-	private Class cdmTargetClass = TaxonBase.class;
+	private static final Class cdmTargetClass = TaxonBase.class;
 
 	public ErmsTaxonRelationImport(){
-		super(pluralString, dbTableName);
+		super(pluralString, dbTableName, cdmTargetClass);
 	}
 
-	/**
-	 * @return
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.erms.ErmsImportBase#getMapping()
 	 */
-	private DbImportMapping getMapping() {
+	protected DbImportMapping getMapping() {
 		if (mapping == null){
 			mapping = new DbImportMapping();
 			
@@ -83,33 +83,6 @@ private DbImportMapping mapping;
 		return strRecordQuery;
 	}
 	
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.IPartitionedIO#doPartition(eu.etaxonomy.cdm.io.common.ResultSetPartitioner, eu.etaxonomy.cdm.io.common.IPartitionedState)
-	 */
-	public boolean doPartition(ResultSetPartitioner partitioner, ErmsImportState state) {
-		boolean success = true ;
-		Set taxaToSave = new HashSet<TaxonBase>();
-		
- 		DbImportMapping<?, ?> mapping = getMapping();
-		mapping.initialize(state, cdmTargetClass);
-		ResultSet rs = partitioner.getResultSet();
-		try{
-			while (rs.next()){
-				success &= mapping.invoke(rs, taxaToSave);
-			}
-		} catch (SQLException e) {
-			logger.error("SQLException:" +  e);
-			return false;
-		}
-	
-		partitioner.startDoSave();
-		getTaxonService().save(taxaToSave);
-		return success;
-	}
-
-
-
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.berlinModel.in.IPartitionedIO#getRelatedObjectsForPartition(java.sql.ResultSet)
 	 */

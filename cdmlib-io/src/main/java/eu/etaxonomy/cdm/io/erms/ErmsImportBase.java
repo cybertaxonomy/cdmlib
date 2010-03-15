@@ -15,6 +15,7 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -30,6 +31,7 @@ import eu.etaxonomy.cdm.io.common.ImportHelper;
 import eu.etaxonomy.cdm.io.common.ResultSetPartitioner;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator.EDITOR;
+import eu.etaxonomy.cdm.io.common.mapping.DbImportMapping;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
@@ -63,6 +65,7 @@ public abstract class ErmsImportBase<CDM_BASE extends CdmBase> extends CdmImport
 	protected static final String TAXON_NAMESPACE = "Taxon";
 	protected static final String NAME_NAMESPACE = "TaxonName";
 	protected static final String VERNACULAR_NAMESPACE = "Vernaculars";
+	protected static final String FEATURE_NAMESPACE = "note.type";
 	
 	//UUIDS
 	public static final UUID GAZETTEER_UUID = UUID.fromString("dcfa124a-1028-49cd-aea5-fdf9bd396c1a");
@@ -70,19 +73,21 @@ public abstract class ErmsImportBase<CDM_BASE extends CdmBase> extends CdmImport
 	public static final UUID TNS_EXT_UUID = UUID.fromString("41cb0450-ac84-4d73-905e-9c7773c23b05");
 	
 
-
-	
 	private String pluralString;
 	private String dbTableName;
+	//TODO needed?
+	private Class cdmTargetClass;
+
 	
 	
 	/**
 	 * @param dbTableName
 	 * @param dbTableName2 
 	 */
-	public ErmsImportBase(String pluralString, String dbTableName) {
+	public ErmsImportBase(String pluralString, String dbTableName, Class cdmTargetClass) {
 		this.pluralString = pluralString;
 		this.dbTableName = dbTableName;
+		this.cdmTargetClass = cdmTargetClass;
 	}
 
 	protected boolean doInvoke(ErmsImportState state){
@@ -108,7 +113,35 @@ public abstract class ErmsImportBase<CDM_BASE extends CdmBase> extends CdmImport
 		logger.info("end make " + getPluralString() + " ... " + getSuccessString(success));
 		return success;
 	}
+	
+	public boolean doPartition(ResultSetPartitioner partitioner, ErmsImportState state) {
+		boolean success = true ;
+		Set objectsToSave = new HashSet();
+		
+ 		DbImportMapping<?, ?> mapping = getMapping();
+		mapping.initialize(state, cdmTargetClass);
+		
+		ResultSet rs = partitioner.getResultSet();
+		try{
+			while (rs.next()){
+				success &= mapping.invoke(rs,objectsToSave);
+			}
+		} catch (SQLException e) {
+			logger.error("SQLException:" +  e);
+			return false;
+		}
+	
+		partitioner.startDoSave();
+		getCommonService().save(objectsToSave);
+		return success;
+	}
 
+
+	
+	/**
+	 * @return
+	 */
+	protected abstract DbImportMapping<?, ?> getMapping();
 	
 	/**
 	 * @return

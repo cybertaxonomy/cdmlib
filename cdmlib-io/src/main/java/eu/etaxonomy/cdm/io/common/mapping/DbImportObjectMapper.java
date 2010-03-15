@@ -72,7 +72,7 @@ public class DbImportObjectMapper extends DbSingleAttributeImportMapperBase<DbIm
 		try {
 			method = targetClass.getMethod(getterMethodName, null);
 		} catch (Exception e) {
-			throw new RuntimeException("parameter type for DbImportObjectMapper could not be determined");
+			throw new RuntimeException("parameter type for DbImportObjectMapper could not be determined :"+  getterMethodName);
 		}
 		Class<?> returnType = method.getReturnType();
 		return returnType;

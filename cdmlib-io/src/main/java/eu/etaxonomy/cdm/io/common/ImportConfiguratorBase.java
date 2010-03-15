@@ -18,6 +18,7 @@ import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
+import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.Feature;
@@ -38,6 +39,13 @@ public abstract class ImportConfiguratorBase<STATE extends ImportStateBase> exte
 	
 	//editor
 	static EDITOR editor = EDITOR.EDITOR_AS_ANNOTATION;
+	
+	
+	/**
+	 * The transformer class to be used for Input
+	 */
+	private IInputTransformer transformer;
+
 	
 	//TODO
 	private boolean deleteAll = false;
@@ -73,15 +81,33 @@ public abstract class ImportConfiguratorBase<STATE extends ImportStateBase> exte
 	
 	protected String[] ioBeans;
 	
-	
 /* *****************CONSTRUCTOR *****************************/
 	
-	public ImportConfiguratorBase(){
+	public ImportConfiguratorBase(IInputTransformer transformer){
 		super();
 		setDbSchemaValidation(DbSchemaValidation.UPDATE);
+		this.transformer = transformer;
+		
 	}
 	
 	abstract protected void makeIoClassList();
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#getTransformer()
+	 */
+	public IInputTransformer getTransformer() {
+		return this.transformer;
+	}
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#setTransformer(eu.etaxonomy.cdm.io.common.mapping.IInputTransformer)
+	 */
+	public void setTransformer(IInputTransformer transformer){
+		this.transformer = transformer;
+	}
+
+
+	
 	
 	/**
 	 * @param source the source to set

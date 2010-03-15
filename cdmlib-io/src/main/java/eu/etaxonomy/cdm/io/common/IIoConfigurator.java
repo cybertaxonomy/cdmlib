@@ -9,6 +9,7 @@ package eu.etaxonomy.cdm.io.common;
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 
+
 /**
  * @author a.babadshanjan
  * @created 13.11.2008
@@ -59,5 +60,6 @@ public interface IIoConfigurator {
 	 * @param dbSchemaValidation
 	 */
 	public void setDbSchemaValidation(DbSchemaValidation dbSchemaValidation);
+
 	
 }
