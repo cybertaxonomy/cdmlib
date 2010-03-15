@@ -1836,6 +1836,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/SynonymRelationshipType.
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/Taxon.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/TaxonBase.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/TaxonComparator.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/TaxonComparatorSearch.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/TaxonNode.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/TaxonRelationship.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/TaxonRelationshipType.java -text
