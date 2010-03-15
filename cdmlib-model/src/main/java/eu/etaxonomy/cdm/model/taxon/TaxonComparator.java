@@ -9,6 +9,7 @@
 
 package eu.etaxonomy.cdm.model.taxon;
 
+import java.io.Serializable;
 import java.util.Comparator;
 
 import org.apache.log4j.Logger;
@@ -27,7 +28,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
  * @created 11.06.2008
  * @version 1.0
  */
-public class TaxonComparator implements Comparator<TaxonBase> {
+public class TaxonComparator implements Comparator<TaxonBase>, Serializable {
 	private static final Logger logger = Logger.getLogger(TaxonComparator.class);
 
 	/* (non-Javadoc)
