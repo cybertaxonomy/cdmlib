@@ -1756,6 +1756,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/name/Rank.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/name/SpecimenTypeDesignation.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/name/SpecimenTypeDesignationStatus.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/name/TaxonNameBase.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/name/TaxonNameComparator.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/name/TypeDesignationBase.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/name/TypeDesignationStatusBase.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/name/ViralName.java -text
