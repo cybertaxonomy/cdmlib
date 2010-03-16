@@ -137,7 +137,7 @@ public class PesiNoteSourceExport extends PesiExportBase {
 	}
 
 	/**
-	 * Deletes all entries of database tables related to <code>RelTaxon</code>.
+	 * Deletes all entries of database tables related to <code>NoteSource</code>.
 	 * @param state The {@link PesiExportState PesiExportState}.
 	 * @return Whether the delete operation was successful or not.
 	 */
@@ -175,9 +175,6 @@ public class PesiNoteSourceExport extends PesiExportBase {
 	private static Integer getNoteFk(DescriptionElementBase descriptionElement, PesiExportState state) {
 		Integer result = state.getDbId(descriptionElement);
 
-		// Sticking to the sequence of export classes specified in the PesiExportConfigurator, the descriptions/notes are not needed anymore. Remove dbId from state hashmap.
-		state.removeDbId(descriptionElement);
-		
 		return result;
 	}
 	

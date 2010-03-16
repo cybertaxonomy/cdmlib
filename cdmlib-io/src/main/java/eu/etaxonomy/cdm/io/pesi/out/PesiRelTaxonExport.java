@@ -87,6 +87,7 @@ public class PesiRelTaxonExport extends PesiExportBase {
 
 			// PESI: Create the RelTaxa
 			int count = 0;
+			int taxonCount = 0;
 			int pastCount = 0;
 			TransactionStatus txStatus = null;
 			List<RelationshipBase> list = null;
@@ -94,8 +95,9 @@ public class PesiRelTaxonExport extends PesiExportBase {
 			// Start transaction
 			txStatus = startTransaction(true);
 			logger.error("Started new transaction. Fetching some " + pluralString + " (max: " + limit + ") ...");
-			while ((list = getTaxonService().getAllRelationships(limit, count)).size() > 0) {
-				
+			while ((list = getTaxonService().getAllRelationships(limit, taxonCount)).size() > 0) {
+
+				taxonCount += list.size();
 				logger.error("Fetched " + list.size() + " " + pluralString + ". Exporting...");
 				for (RelationshipBase<?, ?, ?> relation : list) {
 
@@ -247,7 +249,7 @@ public class PesiRelTaxonExport extends PesiExportBase {
 	private PesiExportMapping getMapping() {
 		PesiExportMapping mapping = new PesiExportMapping(dbTableName);
 		
-//		mapping.addMapper(IdMapper.NewInstance("RelTaxonId"));
+//		mapping.addMapper(IdMapper.NewInstance("RelTaxonId")); // Automagically generated on database level as primary key
 		mapping.addMapper(MethodMapper.NewInstance("TaxonFk1", this.getClass(), "getTaxonFk1", standardMethodParameter, DbExportStateBase.class));
 		mapping.addMapper(MethodMapper.NewInstance("TaxonFk2", this.getClass(), "getTaxonFk2", standardMethodParameter, DbExportStateBase.class));
 		mapping.addMapper(MethodMapper.NewInstance("RelTaxonQualifierFk", this));

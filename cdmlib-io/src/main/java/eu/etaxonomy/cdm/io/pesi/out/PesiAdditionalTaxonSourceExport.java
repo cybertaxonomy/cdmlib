@@ -21,7 +21,6 @@ import eu.etaxonomy.cdm.io.berlinModel.out.mapper.MethodMapper;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DescriptionElementSource;
-import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
@@ -82,7 +81,8 @@ public class PesiAdditionalTaxonSourceExport extends PesiExportBase {
 			logger.error("*** Started Making " + pluralString + " ...");
 
 			// Get the limit for objects to save within a single transaction.
-			int limit = state.getConfig().getLimitSave();
+//			int limit = state.getConfig().getLimitSave();
+			int limit = 1000;
 
 			// Stores whether this invoke was successful or not.
 			boolean success = true;
@@ -102,6 +102,7 @@ public class PesiAdditionalTaxonSourceExport extends PesiExportBase {
 	
 			// PESI: Create the Notes
 			int count = 0;
+			int taxonCount = 0;
 			int pastCount = 0;
 			TransactionStatus txStatus = null;
 			List<TaxonBase> list = null;
@@ -109,8 +110,9 @@ public class PesiAdditionalTaxonSourceExport extends PesiExportBase {
 			// Start transaction
 			txStatus = startTransaction(true);
 			logger.error("Started new transaction. Fetching some " + parentPluralString + " first (max: " + limit + ") ...");
-			while ((list = getTaxonService().list(null, limit, count, null, null)).size() > 0) {
+			while ((list = getTaxonService().list(null, limit, taxonCount, null, null)).size() > 0) {
 
+				taxonCount += list.size();
 				logger.error("Fetched " + list.size() + " " + parentPluralString + ".");
 				
 				logger.error("Looking for " + pluralString + " to export:");

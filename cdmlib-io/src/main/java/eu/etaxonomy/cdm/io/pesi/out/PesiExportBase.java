@@ -12,7 +12,6 @@ package eu.etaxonomy.cdm.io.pesi.out;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.DbExportBase;
-import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
  * @author a.mueller

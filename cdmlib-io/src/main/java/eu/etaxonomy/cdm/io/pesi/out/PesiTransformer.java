@@ -815,7 +815,7 @@ public final class PesiTransformer {
 	public static int AREA_RUSSIA_NORTHERN = 94;
 	public static int AREA_RUSSIA_SOUTHWEST = 95;
 	public static int AREA_SARDEGNA = 96;
-	public static int AREA_SVALBARD_WITH_BJÖRNÖYA_AND_JAN_MAYEN = 97;
+	public static int AREA_SVALBARD_WITH_BJORNOYA_AND_JAN_MAYEN = 97;
 	public static int AREA_SELVAGENS_ISLANDS = 98;
 	public static int AREA_SICILY_WITH_MALTA = 99;
 	public static int AREA_MALTA = 100;

@@ -38,7 +38,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
  */
 @Component
 public class PesiNoteExport extends PesiExportBase {
-	private static final Logger logger = Logger.getLogger(PesiTaxonExport.class);
+	private static final Logger logger = Logger.getLogger(PesiNoteExport.class);
 	private static final Class<? extends CdmBase> standardMethodParameter = DescriptionElementBase.class;
 
 	private static int modCount = 1000;
@@ -332,7 +332,6 @@ public class PesiNoteExport extends PesiExportBase {
 		mapping.addMapper(MethodMapper.NewInstance("LanguageFk", this));
 		mapping.addMapper(MethodMapper.NewInstance("LanguageCache", this));
 		mapping.addMapper(MethodMapper.NewInstance("Region", this));
-//		mapping.addMapper(DbObjectMapper.NewInstance("taxon", "TaxonFk"));
 		mapping.addMapper(MethodMapper.NewInstance("TaxonFk", this.getClass(), "getTaxonFk", standardMethodParameter, DbExportStateBase.class));
 		mapping.addMapper(MethodMapper.NewInstance("LastAction", this));
 //		mapping.addMapper(DbTimePeriodMapper.NewInstance("updated", "LastActionDate")); // This doesn't work since org.joda.time.DateTime cannot be cast to eu.etaxonomy.cdm.model.common.TimePeriod

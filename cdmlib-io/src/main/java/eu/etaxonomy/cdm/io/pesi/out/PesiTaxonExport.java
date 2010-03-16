@@ -567,7 +567,7 @@ public class PesiTaxonExport extends PesiExportBase {
 	}
 	
 	/**
-	 * Returns the <code>ParentTaxonFk</code> attribute.
+	 * Returns the <code>ParentTaxonFk</code> attribute. Used by invokeParentTaxonFk().
 	 * @param taxon The {@link TaxonBase Taxon}.
 	 * @return The <code>ParentTaxonFk</code> attribute.
 	 * @see MethodMapper
@@ -766,6 +766,32 @@ public class PesiTaxonExport extends PesiExportBase {
 	}
 	
 	/**
+	 * Returns the <code>GUID</code> attribute.
+	 * @param taxon The {@link TaxonBase Taxon}.
+	 * @return The <code>GUID</code> attribute.
+	 * @see MethodMapper
+	 */
+	@SuppressWarnings("unused")
+	private static String getGUID(TaxonBase<?> taxon) {
+		// TODO
+		String result = null;
+		return result;
+	}
+	
+	/**
+	 * Returns the <code>DerivedFromGuid</code> attribute.
+	 * @param taxon The {@link TaxonBase Taxon}.
+	 * @return The <code>DerivedFromGuid</code> attribute.
+	 * @see MethodMapper
+	 */
+	@SuppressWarnings("unused")
+	private static String getDerivedFromGuid(TaxonBase<?> taxon) {
+		// TODO
+		String result = null;
+		return result;
+	}
+	
+	/**
 	 * Returns the <code>OriginalDB</code> attribute.
 	 * @param taxon The {@link TaxonBase Taxon}.
 	 * @return The <code>OriginalDB</code> attribute.
@@ -790,6 +816,30 @@ public class PesiTaxonExport extends PesiExportBase {
 	 */
 	@SuppressWarnings("unused")
 	private static String getLastAction(TaxonBase<?> taxon) {
+		// TODO
+		return null;
+	}
+	
+	/**
+	 * Returns the <code>ExpertName</code> attribute.
+	 * @param taxon The {@link TaxonBase Taxon}.
+	 * @return The <code>ExpertName</code> attribute.
+	 * @see MethodMapper
+	 */
+	@SuppressWarnings("unused")
+	private static String getExpertName(TaxonBase<?> taxon) {
+		// TODO
+		return null;
+	}
+	
+	/**
+	 * Returns the <code>ExpertFk</code> attribute.
+	 * @param taxon The {@link TaxonBase Taxon}.
+	 * @return The <code>ExpertFk</code> attribute.
+	 * @see MethodMapper
+	 */
+	@SuppressWarnings("unused")
+	private static String getExpertFk(TaxonBase<?> taxon) {
 		// TODO
 		return null;
 	}
@@ -822,20 +872,23 @@ public class PesiTaxonExport extends PesiExportBase {
 		mapping.addMapper(MethodMapper.NewInstance("NameStatusCache", this));
 		mapping.addMapper(MethodMapper.NewInstance("TaxonStatusFk", this));
 		mapping.addMapper(MethodMapper.NewInstance("TaxonStatusCache", this));
-//		mapping.addMapper(MethodMapper.NewInstance("ParentTaxonFk", this.getClass(), "getParentTaxonFk", standardMethodParameter, DbExportStateBase.class));
 		mapping.addMapper(MethodMapper.NewInstance("TypeNameFk", this));
 		mapping.addMapper(MethodMapper.NewInstance("TypeFullnameCache", this));
 		mapping.addMapper(MethodMapper.NewInstance("QualityStatusFk", this));
 		mapping.addMapper(MethodMapper.NewInstance("QualityStatusCache", this));
 		mapping.addMapper(MethodMapper.NewInstance("TypeDesignationStatusFk", this));
 		mapping.addMapper(MethodMapper.NewInstance("TypeDesignationStatusCache", this));
-		mapping.addMapper(MethodMapper.NewInstance("TreeIndex", this));
+		mapping.addMapper(MethodMapper.NewInstance("TreeIndex", this)); // TODO
 		mapping.addMapper(MethodMapper.NewInstance("FossilStatusFk", this));
 		mapping.addMapper(MethodMapper.NewInstance("FossilStatusCache", this));
 		mapping.addMapper(MethodMapper.NewInstance("IdInSource", this));
+		mapping.addMapper(MethodMapper.NewInstance("GUID", this)); // TODO
+		mapping.addMapper(MethodMapper.NewInstance("DerivedFromGuid", this)); // TODO
 		mapping.addMapper(MethodMapper.NewInstance("OriginalDB", this));
 		mapping.addMapper(MethodMapper.NewInstance("LastAction", this));
 //		mapping.addMapper(DbTimePeriodMapper.NewInstance("updated", "LastActionDate"));
+		mapping.addMapper(MethodMapper.NewInstance("ExpertName", this)); // TODO
+		mapping.addMapper(MethodMapper.NewInstance("ExpertFk", this)); // TODO
 
 		return mapping;
 	}

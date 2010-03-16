@@ -9,8 +9,13 @@
 */
 package eu.etaxonomy.cdm.io.pesi.out;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -48,6 +53,7 @@ public class PesiOccurrenceExport extends PesiExportBase {
 	private static final String pluralString = "Occurrences";
 	private static final String parentPluralString = "Taxa";
 	private static Taxon taxon = null;
+	private static Map<Integer, Integer> sourceId2OccurenceIdMap = new HashMap<Integer, Integer>();
 
 	public PesiOccurrenceExport() {
 		super();
@@ -95,6 +101,7 @@ public class PesiOccurrenceExport extends PesiExportBase {
 
 			// PESI: Create the Occurrences
 			int count = 0;
+			int taxonCount = 0;
 			int pastCount = 0;
 			TransactionStatus txStatus = null;
 			List<TaxonBase> list = null;
@@ -102,8 +109,9 @@ public class PesiOccurrenceExport extends PesiExportBase {
 			// Start transaction
 			txStatus = startTransaction(true);
 			logger.error("Started new transaction. Fetching some " + parentPluralString + " first (max: " + limit + ") ...");
-			while ((list = getTaxonService().list(null, limit, count, null, null)).size() > 0) {
+			while ((list = getTaxonService().list(null, limit, taxonCount, null, null)).size() > 0) {
 
+				taxonCount += list.size();
 				logger.error("Fetched " + list.size() + " " + parentPluralString + ".");
 				for (TaxonBase taxonBase : list) {
 					if (taxonBase.isInstanceOf(Taxon.class)) {
@@ -167,6 +175,71 @@ public class PesiOccurrenceExport extends PesiExportBase {
 	}
 
 	/**
+	 * Returns the identifier of the last occurrence committed to the database.
+	 * @param state
+	 * @return
+	 */
+	private static Integer getLastOccurrenceId(PesiExportState state) {
+		// Retrieve the identifier of the last stored record
+		// Retrieve database identifier of the last created occurrence record.
+		String lastRecordSql = "Select @@Identity From OccurrenceSource";
+		Connection con = state.getConfig().getDestination().getConnection();
+		PreparedStatement stmt = null;
+		
+		Integer occurrenceId = 0;
+		try {
+			stmt = con.prepareStatement(lastRecordSql);
+	//		stmt.setString(1, dbTableName);
+			ResultSet resultSet = stmt.executeQuery();
+			while (resultSet.next()) {
+				// Count of this resultset should be 1
+				occurrenceId = resultSet.getInt(1);
+			}
+			if (occurrenceId == 0) {
+				throw new RuntimeException();
+			}
+		} catch (SQLException e) {
+			logger.error("SQLException during getOccurrenceId invoke.");
+			e.printStackTrace();
+		}
+
+		return occurrenceId;
+	}
+
+
+	/**
+	 * Creates the entries for the database table 'OccurrenceSource'.
+	 * @param entity
+	 * @param state
+	 * @return
+	 */
+	protected boolean invokeOccurrenceSource(AnnotatableEntity entity, PesiExportState state) {
+		if (entity == null) {
+			return true;
+		} else {
+			// Create OccurrenceSource database table entry
+			String lastStoredRecordSql = "Insert Into OccurrenceSource (OccurrenceFk, SourceFk, SourceNameCache, OldTaxonName) " +
+					"values(?, ?, ?, ?)";
+			Connection con = state.getConfig().getDestination().getConnection();
+
+			try {
+				PreparedStatement stmt = con.prepareStatement(lastStoredRecordSql);
+				Integer sourceFk = getSourceFk(entity, state);
+				stmt.setInt(1, sourceId2OccurenceIdMap.get(sourceFk));
+				stmt.setInt(2, sourceFk);
+				stmt.setString(3, getSourceCache(entity));
+				stmt.setString(4, null); // Which taxon are we talking about?
+				stmt.executeUpdate();
+				return true;
+			} catch (SQLException e) {
+				logger.error("SQLException during getOccurrenceId invoke...");
+				e.printStackTrace();
+				return false;
+			}
+		}
+	}
+
+	/**
 	 * Deletes all entries of database tables related to <code>Occurrence</code>.
 	 * @param state The {@link PesiExportState PesiExportState}.
 	 * @return Whether the delete operation was successful or not.
@@ -199,7 +272,7 @@ public class PesiOccurrenceExport extends PesiExportBase {
 	 * @see MethodMapper
 	 */
 	@SuppressWarnings("unused")
-	private static Integer getTaxonFk(AnnotatableEntity entity, DbExportStateBase<?> state) {
+	private static Integer getTaxonFk(AnnotatableEntity entity, PesiExportState state) {
 		// AnnotatableEntity parameter isn't needed, but the DbSingleAttributeExportMapperBase throws a type mismatch exception otherwise
 		// since it awaits two parameters if one of them is of instance DbExportStateBase.
 		Integer result = null;
@@ -305,13 +378,13 @@ public class PesiOccurrenceExport extends PesiExportBase {
 	/**
 	 * Returns the <code>SourceFk</code> attribute.
 	 * @param entity
-	 * @param state The {@link DbExportStateBase DbExportState}.
+	 * @param state The {@link PesiExportState PesiExportState}.
 	 * @return The <code>SourceFk</code> attribute.
 	 * @see MethodMapper
 	 */
 	@SuppressWarnings("unused")
-	private static Integer getSourceFk(AnnotatableEntity entity, DbExportStateBase<?> state) {
-		Integer result = null;
+	private static Integer getSourceFk(AnnotatableEntity entity, PesiExportState state) {
+		Integer result = null;		
 		if (state != null && entity != null && entity.isInstanceOf(ReferenceBase.class)) {
 			ReferenceBase reference = CdmBase.deproxy(entity, ReferenceBase.class);
 			result = state.getDbId(reference);
@@ -347,6 +420,39 @@ public class PesiOccurrenceExport extends PesiExportBase {
 		return null;
 	}
 
+	/**
+	 * Returns the <code>OccurrenceId</code> attribute.
+	 * @param entity
+	 * @return The <code>OccurrenceId</code> attribute.
+	 * @see MethodMapper
+	 */
+//	@SuppressWarnings("unused")
+//	private static Integer getOccurrenceId(AnnotatableEntity entity, PesiExportState state) {
+//		Integer occurrenceId = null;
+//		
+//		// Retrieve database identifier of the last created occurrence record.
+//		String lastRecordSql = "Select @@Identity From OccurrenceSource";
+//		Connection con = state.getConfig().getDestination().getConnection();
+//		PreparedStatement stmt = null;
+//		
+//		try {
+//			stmt = con.prepareStatement(lastRecordSql);
+////			stmt.setString(1, dbTableName);
+//			ResultSet resultSet = stmt.executeQuery();
+//			while (resultSet.next()) {
+//				// Count of this resultset should be 1
+//				occurrenceId = resultSet.getInt(1);
+//			}
+//		} catch (SQLException e) {
+//			logger.error("SQLException during getOccurrenceId invoke.");
+//			e.printStackTrace();
+//		}
+//
+//		// Store the database occurrenceId's
+//		sourceId2OccurenceIdMap.put(getSourceFk(entity, state), occurrenceId);
+//
+//		return occurrenceId;
+//	}
 
 	/**
 	 * Returns the CDM to PESI specific export mappings.
@@ -355,14 +461,14 @@ public class PesiOccurrenceExport extends PesiExportBase {
 	private PesiExportMapping getMapping() {
 		PesiExportMapping mapping = new PesiExportMapping(dbTableName);
 		
-//		mapping.addMapper(IdMapper.NewInstance("OccurrenceId"));
-		mapping.addMapper(MethodMapper.NewInstance("TaxonFk", this.getClass(), "getTaxonFk", standardMethodParameter, DbExportStateBase.class));
+//		mapping.addMapper(MethodMapper.NewInstance("OccurrenceId", this.getClass(), "getOccurrenceId", standardMethodParameter, PesiExportState.class));
+		mapping.addMapper(MethodMapper.NewInstance("TaxonFk", this.getClass(), "getTaxonFk", standardMethodParameter, PesiExportState.class));
 		mapping.addMapper(MethodMapper.NewInstance("AreaFk", this));
 		mapping.addMapper(MethodMapper.NewInstance("TaxonFullNameCache", this));
 		mapping.addMapper(MethodMapper.NewInstance("AreaNameCache", this));
 		mapping.addMapper(MethodMapper.NewInstance("OccurrenceStatusFk", this));
 		mapping.addMapper(MethodMapper.NewInstance("OccurrenceStatusCache", this));
-		mapping.addMapper(MethodMapper.NewInstance("SourceFk", this.getClass(), "getSourceFk", standardMethodParameter, DbExportStateBase.class));
+		mapping.addMapper(MethodMapper.NewInstance("SourceFk", this.getClass(), "getSourceFk", standardMethodParameter, PesiExportState.class));
 		mapping.addMapper(MethodMapper.NewInstance("SourceCache", this));
 		mapping.addMapper(MethodMapper.NewInstance("Notes", this));
 
