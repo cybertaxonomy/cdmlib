@@ -19,8 +19,8 @@
      -->
     <project.patchversion>0</project.patchversion>
   </properties> 
-  <name>CDM Community Server</name>
-	<description>The EDIT CDM Community Server allows remote access to
+  <name>CDM Remote</name>
+	<description>The EDIT CDM Remote package allows remote access to
 		the common data model via webservices in the wider sense</description>
   <packaging>war</packaging>
   <scm>
@@ -167,9 +167,10 @@
 
 	</dependencies>
 	<build>
-	<!-- Configure the webapp -->
- 	<finalName>cdmserver</finalName> 
+		<!-- Configure the webapp -->
+	 	<finalName>cdmserver</finalName> 
 		<plugins>
+		<!-- 
 			<plugin>
 			    <groupId>net.sf.alchim</groupId>
 			    <artifactId>winstone-maven-plugin</artifactId>
@@ -182,35 +183,7 @@
 			        </execution>
 			    </executions>
 			</plugin>
-			<plugin>
-					<artifactId>maven-antrun-plugin</artifactId>
-					<version>1.3</version>
-						<executions>
-							<execution>
-								<phase>deploy</phase>
-								<!--
-									must run after winstone-maven-plugin
-								-->
-								<configuration>
-									<tasks>
-									  <!--
-									   ${project.patchversion} is explicitely set in this pom
-									    
-									   ${buildNumber} is set by the buildnumber-maven-plugin  
-                     Cannot create the build number if you have local modifications, 
-                     to allow creating a buildnumber anyway you can ommit 									  
-									  -->
-									  <property name="project.fullversionstring" value="${project.version}.${project.patchversion}.r${buildNumber}"/>
-										<ant antfile="${project.basedir}/src/main/installer/linux/build-deb.xml" dir="${project.basedir}" />
-									</tasks>
-								</configuration>
-								<goals>
-									<goal>run</goal>
-								</goals>
-							</execution>
-						</executions>
-        </plugin>
-				
+		 -->
 			<!--<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-war-plugin</artifactId>
