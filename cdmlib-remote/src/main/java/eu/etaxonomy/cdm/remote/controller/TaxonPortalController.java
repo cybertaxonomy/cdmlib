@@ -120,6 +120,11 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 			"name.rank.representations",
 			"name.status.type.representations",
 			
+			"name.combinationAuthorTeam.titleCache",
+			"name.basionymAuthorTeam.titleCache",
+			"name.exCombinationAuthorTeam.titleCache",
+			"name.exBasionymAuthorTeam.titleCache",
+			
 			// taxon descriptions
 			"descriptions.elements.$",
 			"descriptions.elements.area",
@@ -150,7 +155,12 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 			"name.$",
 			"name.taggedName",
 			"name.rank.representations",
-			"name.status.type.representations"
+			"name.status.type.representations",
+			
+			"name.combinationAuthorTeam.titleCache",
+			"name.basionymAuthorTeam.titleCache",
+			"name.exCombinationAuthorTeam.titleCache",
+			"name.exBasionymAuthorTeam.titleCache",
 			});
 	
 	private static final List<String> SYNONYMY_INIT_STRATEGY = Arrays.asList(new String []{
