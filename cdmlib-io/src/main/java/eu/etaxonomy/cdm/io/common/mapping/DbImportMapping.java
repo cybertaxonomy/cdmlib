@@ -18,7 +18,6 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.DbImportStateBase;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
-import eu.etaxonomy.cdm.io.faunaEuropaea.CdmImportState;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
@@ -26,7 +25,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * @created 12.05.2009
  * @version 1.0
  */
-public class DbImportMapping<STATE extends CdmImportState, CONFIG extends IImportConfigurator> extends CdmIoMapping {
+public class DbImportMapping<STATE extends DbImportStateBase, CONFIG extends IImportConfigurator> extends CdmIoMapping {
 	private static final Logger logger = Logger.getLogger(DbImportMapping.class);
 	
 	private boolean isInitialized = false;;
