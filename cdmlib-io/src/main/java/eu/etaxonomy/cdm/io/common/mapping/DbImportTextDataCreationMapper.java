@@ -53,7 +53,8 @@ public class DbImportTextDataCreationMapper<STATE extends DbImportStateBase<?,?>
 	
 	
 	/**
-	 * Creates a Distribution with status <code>status</code> and adds it to the description of a taxon. 
+	 * Creates a TextData, adds the the in the language and the format defined and then adds it to the description of a taxon. 
+	 * If language is <code>null</code> the default language is taken instead. 
 	 * @param dbIdAttribute
 	 * @param objectToCreateNamespace
 	 * @param dbTaxonFkAttribute
@@ -93,14 +94,22 @@ public class DbImportTextDataCreationMapper<STATE extends DbImportStateBase<?,?>
 	 */
 	@Override
 	protected TextData createObject(ResultSet rs) throws SQLException {
+		TextData textData = TextData.NewInstance();
 		String text = null;
 		if (CdmUtils.isNotEmpty(dbTextAttribute)){
 			text = rs.getString(dbTextAttribute);
 		}
-		Language language = this.defaultLanguage;
+		if (text != null){
+			Language language = this.defaultLanguage;
+			if (language == null){
+				language = Language.DEFAULT();
+			}
+			textData.putText(text, language);
+		}
 		TextFormat format = this.defaultFormat;
+		textData.setFormat(format);
+		
 		Feature feature = this.defaultFeature;
-		TextData textData = TextData.NewInstance(text, language, format);
 		textData.setFeature(feature);
 		return textData;
 	}

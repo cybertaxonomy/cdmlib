@@ -16,12 +16,10 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
-import eu.etaxonomy.cdm.io.common.ResultSetPartitioner;
 import eu.etaxonomy.cdm.io.common.mapping.DbImportMapping;
 import eu.etaxonomy.cdm.io.common.mapping.DbImportNameTypeDesignationMapper;
 import eu.etaxonomy.cdm.io.common.mapping.DbImportSynonymMapper;
@@ -41,6 +39,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  */
 @Component
 public class ErmsTaxonRelationImport extends ErmsImportBase<TaxonBase> implements ICheckIgnoreMapper, IDbImportTransformed{
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ErmsTaxonRelationImport.class);
 	
 private DbImportMapping mapping;
@@ -62,10 +61,11 @@ private DbImportMapping mapping;
 		if (mapping == null){
 			mapping = new DbImportMapping();
 			
-			mapping.addMapper(DbImportTaxIncludedInMapper.NewInstance("id", "tu_parent", ErmsTaxonImport.TAXON_NAMESPACE, null)); //there is only one tree
-			mapping.addMapper(DbImportSynonymMapper.NewInstance("id", "tu_acctaxon", ErmsTaxonImport.TAXON_NAMESPACE, null)); 			
-			mapping.addMapper(DbImportNameTypeDesignationMapper.NewInstance("id", "tu_typetaxon", ErmsTaxonImport.NAME_NAMESPACE, "tu_typedesignationstatus"));
-			mapping.addMapper(DbNotYetImplementedMapper.NewInstance("tu_acctaxon"));
+			mapping.addMapper(DbImportTaxIncludedInMapper.NewInstance("id", "parentId", TAXON_NAMESPACE, "accParentId", TAXON_NAMESPACE, null));
+					//("id", "parentId", TAXON_NAMESPACE, null)); //there is only one tree
+			mapping.addMapper(DbImportSynonymMapper.NewInstance("id", "tu_acctaxon", TAXON_NAMESPACE, null)); 			
+//			mapping.addMapper(DbImportNameTypeDesignationMapper.NewInstance("id", "tu_typetaxon", ErmsTaxonImport.NAME_NAMESPACE, "tu_typedesignationstatus"));
+//			mapping.addMapper(DbNotYetImplementedMapper.NewInstance("tu_acctaxon"));
 		}
 		return mapping;
 	}
@@ -75,11 +75,16 @@ private DbImportMapping mapping;
 	 */
 	protected String getRecordQuery(ErmsImportConfigurator config) {
 		//TODO get automatic by second path mappers
-		String selectAttributes = "id, tu_parent, tu_typetaxon, tu_typetaxon, tu_typedesignation, tu_acctaxon, tu_status"; 
+		String selectAttributes = " myTaxon.id, myTaxon.tu_parent, myTaxon.tu_typetaxon, myTaxon.tu_typedesignation, " +
+								" myTaxon.tu_acctaxon, myTaxon.tu_status, parent.tu_status AS parentStatus, parent.id AS parentId, " + 
+								" accParent.tu_status AS accParentStatus, accParent.id AS accParentId "; 
 		String strRecordQuery = 
 			" SELECT  " + selectAttributes + 
-			" FROM tu " +
-			" WHERE ( tu.id IN (" + ID_LIST_TOKEN + ") )";
+			" FROM tu AS myTaxon LEFT OUTER JOIN " +
+				" tu AS accTaxon ON myTaxon.tu_acctaxon = accTaxon.id LEFT OUTER JOIN " +
+				" tu AS accParent RIGHT OUTER JOIN "  + 
+				" tu AS parent ON accParent.id = parent.tu_acctaxon ON myTaxon.tu_parent = parent.id " +
+			" WHERE ( myTaxon.id IN (" + ID_LIST_TOKEN + ") )";
 		return strRecordQuery;
 	}
 	
@@ -96,7 +101,8 @@ private DbImportMapping mapping;
 			Set<String> taxonIdSet = new HashSet<String>();
 			Set<String> nameIdSet = new HashSet<String>();
 			while (rs.next()){
-				handleForeignKey(rs, taxonIdSet, "tu_parent");
+				handleForeignKey(rs, taxonIdSet, "parentId");
+				handleForeignKey(rs, taxonIdSet, "accParentId");
 				handleForeignKey(rs, nameIdSet, "tu_typetaxon");
 				handleForeignKey(rs, taxonIdSet, "tu_acctaxon");					
 			}

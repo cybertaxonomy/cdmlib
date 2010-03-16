@@ -23,7 +23,7 @@ import eu.etaxonomy.cdm.io.common.IOValidator;
 import eu.etaxonomy.cdm.io.common.mapping.DbImportAnnotationMapper;
 import eu.etaxonomy.cdm.io.common.mapping.DbImportFeatureCreationMapper;
 import eu.etaxonomy.cdm.io.common.mapping.DbImportMapping;
-import eu.etaxonomy.cdm.io.common.mapping.DbImportObjectMapper;
+import eu.etaxonomy.cdm.io.common.mapping.DbImportMultiLanguageTextMapper;
 import eu.etaxonomy.cdm.io.common.mapping.DbImportTextDataCreationMapper;
 import eu.etaxonomy.cdm.io.erms.validation.ErmsNoteImportValidator;
 import eu.etaxonomy.cdm.model.common.Annotation;
@@ -74,31 +74,15 @@ public class ErmsNotesImport  extends ErmsImportBase<Annotation> {
 	protected DbImportMapping getMapping() {
 		if (mapping == null){
 			mapping = new DbImportMapping();
-			mapping.addMapper(DbImportTextDataCreationMapper.NewInstance("id", NOTES_NAMESPACE, "tu_id", ErmsTaxonImport.TAXON_NAMESPACE, "note", null, null, null));
-			mapping.addMapper(DbImportObjectMapper.NewInstance("lan_id", "language", LANGUAGE_NAMESPACE));
+			mapping.addMapper(DbImportTextDataCreationMapper.NewInstance("id", NOTES_NAMESPACE, "tu_id", TAXON_NAMESPACE));
+			mapping.addMapper(DbImportMultiLanguageTextMapper.NewInstance("note", "lan_id", LANGUAGE_NAMESPACE, "multilanguageText"));
 			Language notesNoteLanguage = null;
 			mapping.addMapper(DbImportAnnotationMapper.NewInstance("note", AnnotationType.EDITORIAL(), notesNoteLanguage));
-			mapping.addMapper(DbImportFeatureCreationMapper.NewInstance("type", FEATURE_NAMESPACE, "type", "type", "type"));
-			mapping.addMapper(DbImportObjectMapper.NewInstance("type", "feature", FEATURE_NAMESPACE));
-			
+			mapping.addMapper(DbImportFeatureCreationMapper.NewInstance("type", FEATURE_NAMESPACE, "type", "type", "type"));			
 		}
 		return mapping;
 	}
 	
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.mapping.IMappingImport#createObject(java.sql.ResultSet, eu.etaxonomy.cdm.io.common.ImportStateBase)
-	 */
-	public Annotation createObject(ResultSet rs, ErmsImportState state)
-			throws SQLException {
-		Annotation annotation = Annotation.NewDefaultLanguageInstance(null);
-
-//		String languageId = rs.getString("lan_id");
-//		String note = rs.getString("note");
-//		Language language = (Language)state.getRelatedObject(LANGUAGE_NAMESPACE, languageId);
-//		CommonTaxonName commonName = CommonTaxonName.NewInstance(verName, language);
-		return annotation;
-	}
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.berlinModel.in.IPartitionedIO#getRelatedObjectsForPartition(java.sql.ResultSet)

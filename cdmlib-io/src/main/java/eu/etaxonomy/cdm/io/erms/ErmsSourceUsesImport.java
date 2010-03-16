@@ -204,7 +204,7 @@ public class ErmsSourceUsesImport  extends ErmsImportBase<CommonTaxonName> {
 		Taxon taxon;
 		
 		//if taxon base is a synonym, add the description to the accepted taxon
-		if (! taxonBase.isInstanceOf(Synonym.class)){
+		if (taxonBase.isInstanceOf(Synonym.class)){
 			Synonym synonym = CdmBase.deproxy(taxonBase, Synonym.class);
 			Set<Taxon> taxa = synonym.getAcceptedTaxa();
 			if (taxa.size() != 1){

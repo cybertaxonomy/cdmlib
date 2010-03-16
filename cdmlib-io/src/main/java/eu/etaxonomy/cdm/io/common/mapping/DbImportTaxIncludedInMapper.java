@@ -12,8 +12,6 @@ package eu.etaxonomy.cdm.io.common.mapping;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
@@ -21,10 +19,8 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.api.service.ITaxonTreeService;
 import eu.etaxonomy.cdm.io.common.CdmImportBase;
 import eu.etaxonomy.cdm.io.common.DbImportStateBase;
-import eu.etaxonomy.cdm.io.common.IIoConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
 import eu.etaxonomy.cdm.io.erms.ICheckIgnoreMapper;
-import eu.etaxonomy.cdm.io.faunaEuropaea.CdmImportConfigurator;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -44,24 +40,25 @@ import eu.etaxonomy.cdm.model.taxon.TaxonomicTree;
  * @param <CDM_BASE>
  * @param <STATE>
  */
-public class DbImportTaxIncludedInMapper<STATE extends DbImportStateBase<ImportConfiguratorBase,?>> extends DbImportMultiAttributeMapper<CdmBase, STATE> {
+public class DbImportTaxIncludedInMapper<STATE extends DbImportStateBase<ImportConfiguratorBase,?>> extends DbImportMultiAttributeMapperBase<CdmBase, STATE> {
 	private static final Logger logger = Logger.getLogger(DbImportTaxIncludedInMapper.class);
 	
 //******************************** FACTORY METHOD ***************************************************/
 	
-	public static DbImportTaxIncludedInMapper<?> NewInstance(String dbFromAttribute, String dbToAttribute, String relatedObjectNamespace, String dbTreeAttribute){
-		return new DbImportTaxIncludedInMapper(dbFromAttribute, dbToAttribute, null, relatedObjectNamespace, dbTreeAttribute);
+	public static DbImportTaxIncludedInMapper<?> NewInstance(String dbChildAttribute, String dbParentAttribute, String parentNamespace, String dbAlternativeParentAttribute, String alternativeParentNamespace, String dbTreeAttribute){
+		return new DbImportTaxIncludedInMapper(dbChildAttribute, dbParentAttribute, parentNamespace, dbAlternativeParentAttribute, alternativeParentNamespace, dbTreeAttribute);
 	}
 	
 //******************************* ATTRIBUTES ***************************************/
 	protected DbImportMapperBase<STATE> importMapperHelper = new DbImportMapperBase<STATE>();
 	private String fromAttribute;
 	private String toAttribute;
-//	private TaxonRelationshipType relType;
+
 	private String relatedObjectNamespace;
 	private String citationAttribute;
 	private String microCitationAttribute;
 	private String treeAttribute;
+	private String alternativeAttribute;
 	
 	
 //********************************* CONSTRUCTOR ****************************************/
@@ -69,14 +66,14 @@ public class DbImportTaxIncludedInMapper<STATE extends DbImportStateBase<ImportC
 	 * @param relatedObjectNamespace 
 	 * @param mappingImport
 	 */
-	protected DbImportTaxIncludedInMapper(String fromAttribute, String toAttribute, TaxonRelationshipType relType, String relatedObjectNamespace, String treeAttribute) {
+	protected DbImportTaxIncludedInMapper(String fromAttribute, String fromNamespace, String toAttribute, String alternativeNamespace, String alternativeAttribute, String treeAttribute) {
 		super();
 		//TODO make it a single attribute mapper
 		this.fromAttribute = fromAttribute;
 		this.toAttribute = toAttribute;
-//		this.relType = relType;
 		this.relatedObjectNamespace = relatedObjectNamespace;
 		this.treeAttribute = treeAttribute;
+		this.alternativeAttribute = alternativeAttribute;
 	}
 
 //************************************ METHODS *******************************************/
@@ -97,15 +94,18 @@ public class DbImportTaxIncludedInMapper<STATE extends DbImportStateBase<ImportC
 		
 		TaxonBase fromObject = (TaxonBase)getRelatedObject(rs, fromAttribute);
 		TaxonBase toObject = (TaxonBase)getRelatedObject(rs, toAttribute);
+		TaxonBase alternativeToObject = (TaxonBase)getRelatedObject(rs, alternativeAttribute);
+		
 		String fromId = String.valueOf(rs.getObject(fromAttribute));
 		String toId = String.valueOf(rs.getObject(toAttribute));
+		String alternativeToId = String.valueOf(rs.getObject(alternativeAttribute));
 
-		//TODO cast
 		ReferenceBase citation = (ReferenceBase)getRelatedObject(rs, citationAttribute);
 		String microCitation = null;
 		if (citationAttribute != null){
 			microCitation = rs.getString(microCitationAttribute);
 		}
+		
 		//TODO check int
 		Integer treeFk = null;
 		if (treeAttribute != null){
@@ -124,7 +124,16 @@ public class DbImportTaxIncludedInMapper<STATE extends DbImportStateBase<ImportC
 			logger.warn(warning);
 			return cdmBase;
 		}
-		Taxon toTaxon = checkTaxonType(toObject, "Parent", toId);
+		Taxon toTaxon;
+		try {
+			toTaxon = checkTaxonType(toObject, "Parent", toId);
+		} catch (IllegalArgumentException e) {
+			if (alternativeToObject != null){
+				toTaxon = checkTaxonType(alternativeToObject, "Alternative parent", alternativeToId);
+			}else{
+				throw e;
+			}
+		}
 		
 		if (fromTaxon.equals(toTaxon)){
 			String warning  = "A taxon may not be a child of itself. Taxon not added to the tree";
@@ -176,6 +185,7 @@ public class DbImportTaxIncludedInMapper<STATE extends DbImportStateBase<ImportC
 			}
 			state.addRelatedObject(TAXONOMIC_TREE_NAMESPACE, treeKey, tree);
 		}
+		
 		tree.addParentChild(parent, child, citation, microCitation);
 		return true;
 	}
@@ -228,7 +238,7 @@ public class DbImportTaxIncludedInMapper<STATE extends DbImportStateBase<ImportC
 	 * @param id
 	 * @return
 	 */
-	private Taxon checkTaxonType(TaxonBase taxonBase, String typeString, String id) {
+	private Taxon checkTaxonType(TaxonBase taxonBase, String typeString, String id) throws IllegalArgumentException{
 		if (! taxonBase.isInstanceOf(Taxon.class)){
 			String warning = typeString + " (" + id + ") is not of type Taxon but of type " + taxonBase.getClass().getSimpleName();
 			logger.warn(warning);

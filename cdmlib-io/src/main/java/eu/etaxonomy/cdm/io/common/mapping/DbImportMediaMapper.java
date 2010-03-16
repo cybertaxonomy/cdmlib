@@ -27,7 +27,7 @@ import eu.etaxonomy.cdm.model.media.MediaRepresentation;
  * @created 12.03.2010
  * @version 1.0
  */
-public class DbImportMediaMapper extends DbImportMultiAttributeMapper<DescriptionElementBase, DbImportStateBase<?,?>> {
+public class DbImportMediaMapper extends DbImportMultiAttributeMapperBase<DescriptionElementBase, DbImportStateBase<?,?>> {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DbImportMediaMapper.class);
 

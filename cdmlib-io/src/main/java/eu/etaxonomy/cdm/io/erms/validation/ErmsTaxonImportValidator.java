@@ -33,21 +33,29 @@ public class ErmsTaxonImportValidator implements IOValidator<ErmsImportState>{
 		boolean result = true;
 		ErmsImportConfigurator config = state.getConfig();
 		logger.warn("Checking for Taxa not yet fully implemented");
-//		result &= checkTaxonStatus(config);
-//		result &= checkInactivated(config);
+//		result &= checkParentTaxonStatus(config);
+		result &= checkAccParentTaxonStatus(config);
+		result &= checkSynonymsAcceptedTaxonStatus(config);
 		return result;
 	}
 	
-	private boolean checkTaxonStatus(ErmsImportConfigurator bmiConfig){
+	private boolean checkAccParentTaxonStatus(ErmsImportConfigurator bmiConfig){
 		try {
 			boolean result = true;
 			Source source = bmiConfig.getSource();
-			String strSQL = " SELECT RelPTaxon.RelQualifierFk, RelPTaxon.relPTaxonId, PTaxon.PTNameFk, PTaxon.PTRefFk, PTaxon_1.PTNameFk AS Expr1, PTaxon.RIdentifier, PTaxon_1.RIdentifier AS Expr3, Name.FullNameCache "  +
-				" FROM RelPTaxon " + 
-					" INNER JOIN PTaxon ON RelPTaxon.PTNameFk1 = PTaxon.PTNameFk AND RelPTaxon.PTRefFk1 = PTaxon.PTRefFk " + 
-					" INNER JOIN PTaxon AS PTaxon_1 ON RelPTaxon.PTNameFk2 = PTaxon_1.PTNameFk AND RelPTaxon.PTRefFk2 = PTaxon_1.PTRefFk  " + 
-					" INNER JOIN Name ON PTaxon.PTNameFk = Name.NameId " +
-				" WHERE (dbo.PTaxon.StatusFk = 1) AND ((RelPTaxon.RelQualifierFk = 7) OR (RelPTaxon.RelQualifierFk = 6) OR (RelPTaxon.RelQualifierFk = 2)) ";
+			String strSQL = 
+				" SELECT    myTaxon.id AS childId, childStatus.status_name AS childStatus, myTaxon.tu_status, " +
+                      " myTaxon.tu_displayname AS childDisplayName, parent.id AS parentId, parent.tu_status AS parentStatusId, parentStatus.status_name AS parentStatus, " + 
+                      " parent.tu_displayname as parentName, parentAcc.id AS parentAccId, parentAccStatus.status_name AS parentAccStatus, parentAcc.tu_displayname AS parentAccName, " + 
+                      " parentAcc.tu_status AS Expr1 " +
+                " FROM status AS parentAccStatus INNER JOIN " +
+                      " tu AS parentAcc ON parentAccStatus.status_id = parentAcc.tu_status RIGHT OUTER JOIN " +
+                      " tu AS parent ON parentAcc.id = parent.tu_acctaxon RIGHT OUTER JOIN " +
+                      " tu AS myTaxon ON parent.id = myTaxon.tu_parent LEFT OUTER JOIN " + 
+                      " status AS parentStatus ON parent.tu_status = parentStatus.status_id LEFT OUTER JOIN " +
+                      " status AS childStatus ON myTaxon.tu_status = childStatus.status_id " +
+                 " WHERE     (myTaxon.tu_status = 1) AND (parent.tu_status <> 1) " + 
+                 " ORDER BY parentStatusId";
 			ResultSet rs = source.getResultSet(strSQL);
 			boolean firstRow = true;
 			int i = 0;
@@ -55,17 +63,24 @@ public class ErmsTaxonImportValidator implements IOValidator<ErmsImportState>{
 				i++;
 				if (firstRow){
 					System.out.println("========================================================");
-					logger.warn("There are taxa that have a 'is synonym of' - relationship but having taxon status 'accepted'!");
+					logger.warn("There are accepted taxa that have an unaccepted parent and also the parents accepted taxon (tu_acctaxon) is not accepted. ");
 					System.out.println("========================================================");
 				}
-				int rIdentifier = rs.getInt("RIdentifier");
-				int nameFk = rs.getInt("PTNameFk");
-				int refFk = rs.getInt("PTRefFk");
-				int relPTaxonId = rs.getInt("relPTaxonId");
-				String taxonName = rs.getString("FullNameCache");
+				int childId = rs.getInt("childId");
+				String childName = rs.getString("childDisplayName");
 				
-				System.out.println("RIdentifier:" + rIdentifier + "\n  name: " + nameFk + 
-						"\n  taxonName: " + taxonName + "\n  refId: " + refFk + "\n  RelPTaxonId: " + relPTaxonId );
+				int parentId = rs.getInt("parentId");
+				String parentName = rs.getString("parentName");
+				String parentStatus = rs.getString("parentStatus");
+				
+				int accParentId = rs.getInt("parentAccId");
+				String accParentName = rs.getString("parentAccName");
+				String accParentStatus = rs.getString("parentAccStatus");
+				
+				System.out.println(
+						"ChildId:" + childId + "\n    childName: " + childName + 
+						"\n  ParentId: " + parentId + "\n    parentName: " + parentName + "\n    parentStatus: " + parentStatus + 
+						"\n  ParentAccId: " + accParentId +  "\n    accParentName: " + accParentName + "\n   accParentStatus: " + accParentStatus );
 				result = firstRow = false;
 			}
 			if (i > 0){
@@ -79,14 +94,19 @@ public class ErmsTaxonImportValidator implements IOValidator<ErmsImportState>{
 		}
 	}
 	
-	private boolean checkInactivated(ErmsImportConfigurator bmiConfig){
+	private boolean checkSynonymsAcceptedTaxonStatus(ErmsImportConfigurator bmiConfig){
 		try {
 			boolean result = true;
 			Source source = bmiConfig.getSource();
-			String strSQL = " SELECT * "  +
-				" FROM PTaxon " +
-					" INNER JOIN Name ON PTaxon.PTNameFk = Name.NameId " +
-				" WHERE (PTaxon.DoubtfulFlag = 'i') ";
+			String strSQL = 
+				" SELECT    myTaxon.id AS synonymId, myTaxon.tu_displayname AS synonymName, synonymStatus.status_name AS synonymStatus, " + 
+					" accTaxon.id AS acceptedId, accTaxon.tu_displayname AS acceptedName, acceptedStatus.status_name AS acceptedStatus " +
+				" FROM tu AS myTaxon INNER JOIN " +
+                    " tu AS accTaxon ON myTaxon.tu_acctaxon = accTaxon.id INNER JOIN " + 
+                    " status AS synonymStatus ON myTaxon.tu_status = synonymStatus.status_id INNER JOIN " +
+                    " status AS acceptedStatus ON accTaxon.tu_status = acceptedStatus.status_id " +
+                " WHERE (myTaxon.tu_status <> 1) AND (accTaxon.tu_status <> 1) " +
+                " ORDER BY myTaxon.tu_status, accTaxon.tu_status ";
 			ResultSet rs = source.getResultSet(strSQL);
 			boolean firstRow = true;
 			int i = 0;
@@ -94,16 +114,22 @@ public class ErmsTaxonImportValidator implements IOValidator<ErmsImportState>{
 				i++;
 				if (firstRow){
 					System.out.println("========================================================");
-					logger.warn("There are taxa that have a doubtful flag 'i'(inactivated). Inactivated is not supported by CDM!");
+					logger.warn("There are accepted synonyms that have an unaccepted taxon that has no status 'accepted'. ");
 					System.out.println("========================================================");
 				}
-				int rIdentifier = rs.getInt("RIdentifier");
-				int nameFk = rs.getInt("PTNameFk");
-				int refFk = rs.getInt("PTRefFk");
-				String taxonName = rs.getString("FullNameCache");
+				int synonymId = rs.getInt("synonymId");
+				String synonymName = rs.getString("synonymName");
+				String synonymStatus = rs.getString("synonymStatus");
 				
-				System.out.println("RIdentifier:" + rIdentifier + "\n  nameId: " + nameFk + 
-						"\n  taxonName: " + taxonName + "\n  refId: " + refFk  );
+				int acceptedId = rs.getInt("acceptedId");
+				String acceptedName = rs.getString("acceptedName");
+				String acceptedStatus = rs.getString("acceptedStatus");
+				
+				System.out.println(
+						"SynonymId:" + synonymId + "\n    synonymName: " + synonymName + "\n    synonymStatus: " + synonymStatus + 
+						"\n  AcceptedId: " + acceptedId + "\n    acceptedName: " + acceptedName + "\n    acceptedStatus: " + acceptedStatus  
+//					+   "\n parentAccId: " + acceptedId +  "\n  accParentName: " + accParentName + "\n accParentStatus: " + accParentStatus 
+						);
 				result = firstRow = false;
 			}
 			if (i > 0){
@@ -116,6 +142,7 @@ public class ErmsTaxonImportValidator implements IOValidator<ErmsImportState>{
 			return false;
 		}
 	}
+	
 
 
 }

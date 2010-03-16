@@ -32,7 +32,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
  * @version 1.0
  */
 //TODO remove ANNOTATABLE by ISourcable (but this is not CDMBase yet therefore not trivial
-public abstract class DbImportObjectCreationMapperBase<CREATE extends VersionableEntity, STATE extends DbImportStateBase<?,?>> extends DbImportMultiAttributeMapper<CREATE, STATE>  {
+public abstract class DbImportObjectCreationMapperBase<CREATE extends VersionableEntity, STATE extends DbImportStateBase<?,?>> extends DbImportMultiAttributeMapperBase<CREATE, STATE>  {
 	private static final Logger logger = Logger.getLogger(DbImportObjectCreationMapperBase.class);
 	
 	
@@ -120,44 +120,6 @@ public abstract class DbImportObjectCreationMapperBase<CREATE extends Versionabl
 	}
 	
 
-	//TODO move to higher class once it exists
-	/**
-	 * Retrieves a related object from the state's related object map. Needs casting.
-	 * @param namespace
-	 * @param foreignKey
-	 * @return
-	 */
-	protected CdmBase getRelatedObject(String namespace, String foreignKey) {
-		STATE state = importMapperHelper.getState();
-		CdmBase result = state.getRelatedObject(namespace, foreignKey);
-		return result;
-	}
-	
-	/**
-	 * Retrieves a related object from the state's related object map. Needs casting.
-	 * @param namespace
-	 * @param foreignKey
-	 * @return
-	 * @throws SQLException 
-	 */
-	protected CdmBase getRelatedObject(ResultSet rs, String namespace, String fkAttribute) throws SQLException {
-		STATE state = importMapperHelper.getState();
-		String foreignKey = getForeignKey(rs, fkAttribute);
-		CdmBase result = state.getRelatedObject(namespace, foreignKey);
-		return result;
-	}
-	
-	/**
-	 * @param rs
-	 * @param dbReferenceFkAttribute2
-	 * @return
-	 * @throws SQLException 
-	 */
-	protected String getForeignKey(ResultSet rs, String fkAttribute) throws SQLException {
-		Object oForeignKey = rs.getObject(fkAttribute);
-		String result = String.valueOf(oForeignKey);
-		return result;
-	}
 	
 	
 	/**

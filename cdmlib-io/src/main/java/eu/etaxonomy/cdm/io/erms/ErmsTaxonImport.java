@@ -35,7 +35,6 @@ import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -55,7 +54,7 @@ public class ErmsTaxonImport  extends ErmsImportBase<TaxonBase> implements IMapp
 	
 	private DbImportMapping mapping;
 	
-	//TODO store in state or somehow else
+	//second path is not used anymore, there is now an ErmsTaxonRelationImport class instead
 	private boolean isSecondPath = false;
 	
 	private int modCount = 10000;
@@ -90,7 +89,7 @@ public class ErmsTaxonImport  extends ErmsImportBase<TaxonBase> implements IMapp
 			mapping.addMapper(DbImportObjectCreationMapper.NewInstance(this, "id", TAXON_NAMESPACE)); //id + tu_status
 			//FIXME extension type
 			mapping.addMapper(DbImportExtensionMapper.NewInstance("tsn", ExtensionType.ABBREVIATION()));
-			mapping.addMapper(DbImportStringMapper.NewInstance("tu_name", "(NonViralName)name.nameCache"));
+//			mapping.addMapper(DbImportStringMapper.NewInstance("tu_name", "(NonViralName)name.nameCache"));
 			//FIXME extension type
 			mapping.addMapper(DbImportExtensionMapper.NewInstance("tu_displayname", ExtensionType.ABBREVIATION()));
 			mapping.addMapper(DbImportExtensionMapper.NewInstance("tu_fuzzyname", ExtensionType.ABBREVIATION()));
@@ -130,10 +129,15 @@ public class ErmsTaxonImport  extends ErmsImportBase<TaxonBase> implements IMapp
 	 */
 	@Override
 	protected String getRecordQuery(ErmsImportConfigurator config) {
-		String strRecordQuery = 
-			" SELECT * " + 
-			" FROM tu INNER JOIN status ON tu.tu_status = status.status_id " +
-			" WHERE ( tu.id IN (" + ID_LIST_TOKEN + ") )";
+		String strSelect = " SELECT tu.*, parent1.tu_name AS parent1name, parent2.tu_name AS parent2name, parent3.tu_name AS parent3name, " 
+			+ " parent1.tu_rank AS parent1rank, parent2.tu_rank AS parent2rank, parent3.tu_rank AS parent3rank, " + 
+			" status.status_id as status_id";
+		String strFrom = " FROM tu  LEFT OUTER JOIN  tu AS parent1 ON parent1.id = tu.tu_parent " + 
+				" LEFT OUTER JOIN   tu AS parent2  ON parent2.id = parent1.tu_parent " + 
+				" LEFT OUTER JOIN tu AS parent3 ON parent2.tu_parent = parent3.id " + 
+				" LEFT OUTER JOIN status ON tu.tu_status = status.status_id";
+		String strWhere = " WHERE ( tu.id IN (" + ID_LIST_TOKEN + ") )";
+		String strRecordQuery = strSelect + strFrom + strWhere;
 		return strRecordQuery;
 	}
 	
@@ -229,8 +233,55 @@ public class ErmsTaxonImport  extends ErmsImportBase<TaxonBase> implements IMapp
 	public TaxonBase createObject(ResultSet rs, ErmsImportState state) throws SQLException {
 		int statusId = rs.getInt("status_id");
 		String tuName = rs.getString("tu_name");
-		TaxonNameBase taxonName = getTaxonName(rs, state);
-		//add original source
+		String displayName = rs.getString("tu_displayname");
+		
+		String parent1Name = rs.getString("parent1name");
+		Integer parent1Rank = rs.getInt("parent1rank");
+		
+		String parent2Name = rs.getString("parent2name");
+		Integer parent2Rank = rs.getInt("parent2rank");
+		
+		String parent3Name = rs.getString("parent3name");
+		Integer parent3Rank = rs.getInt("parent3rank");
+		
+		
+		NonViralName taxonName = getTaxonName(rs, state);
+		//set epithets
+		if (taxonName.isGenus() || taxonName.isSupraGeneric()){
+			taxonName.setGenusOrUninomial(tuName);
+		}else if (taxonName.isInfraGeneric()){
+			taxonName.setInfraGenericEpithet(tuName);
+			taxonName.setGenusOrUninomial(parent1Name);
+		}else if (taxonName.isSpecies()){
+			taxonName.setSpecificEpithet(tuName);
+			getGenusAndInfraGenus(parent1Name, parent2Name, parent1Rank, taxonName);
+		}else if (taxonName.isInfraSpecific()){
+			if (parent1Rank < 220){
+				handleException(parent1Rank, taxonName, displayName);
+			}
+			taxonName.setInfraSpecificEpithet(tuName);
+			taxonName.setSpecificEpithet(parent1Name);
+			getGenusAndInfraGenus(parent2Name, parent3Name, parent2Rank, taxonName);
+		}else if (taxonName.getRank()== null){
+			logger.warn("rank super domain still needs to be implemented. Used domain instead.");
+			if ("Biota".equalsIgnoreCase(tuName)){
+				Rank rank = Rank.DOMAIN();  //should be Superdomain
+				taxonName.setRank(rank);
+				taxonName.setGenusOrUninomial(tuName);
+			}else{
+				String warning = "TaxonName has no rank. Use namecache.";
+				logger.warn(warning);
+				taxonName.setNameCache(tuName);
+			}
+			
+		}
+		//e.g. Leucon [Platyhelminthes] ornatus
+		if (containsBrackets(displayName)){
+			taxonName.setNameCache(displayName);
+			logger.warn("Set name cache: " +  displayName);
+		}
+		
+		//add original source for taxon name (taxon original source is added in mapper
 		ReferenceBase citation = state.getConfig().getSourceReference();
 		addOriginalSource(rs, taxonName, "id", NAME_NAMESPACE, citation);
 		
@@ -245,13 +296,54 @@ public class ErmsTaxonImport  extends ErmsImportBase<TaxonBase> implements IMapp
 		}
 	}
 
+
+
+	/**
+	 * @param parent1Rank
+	 * @param displayName 
+	 * @param taxonName 
+	 */
+	private void handleException(Integer parent1Rank, NonViralName taxonName, String displayName) {
+		logger.warn("Parent of infra specific taxon is higher than species. Used nameCache: " + displayName) ;
+		taxonName.setNameCache(displayName);
+	}
+
+
+
+	/**
+	 * @param displayName
+	 * @return
+	 */
+	private boolean containsBrackets(String displayName) {
+		int index = displayName.indexOf("[");
+		return (index > -1);
+	}
+
+
+
+	/**
+	 * @param parent1Name
+	 * @param parent2Name
+	 * @param parent1Rank
+	 * @param taxonName
+	 */
+	private void getGenusAndInfraGenus(String parentName, String grandParentName, Integer parent1Rank, NonViralName taxonName) {
+		if (parent1Rank <220 && parent1Rank > 180){
+			//parent is infrageneric
+			taxonName.setInfraGenericEpithet(parentName);
+			taxonName.setGenusOrUninomial(grandParentName);
+		}else{
+			taxonName.setGenusOrUninomial(parentName);
+		}
+	}
+
 	/**
 	 * @param rs
 	 * @return
 	 * @throws SQLException 
 	 */
-	private TaxonNameBase getTaxonName(ResultSet rs, ErmsImportState state) throws SQLException {
-		TaxonNameBase result;
+	private NonViralName getTaxonName(ResultSet rs, ErmsImportState state) throws SQLException {
+		NonViralName result;
 		Integer kingdomId = parseKingdomId(rs);
 		Integer intRank = rs.getInt("tu_rank");
 		
@@ -261,7 +353,7 @@ public class ErmsTaxonImport  extends ErmsImportBase<TaxonBase> implements IMapp
 			rank = state.getRank(intRank, kingdomId);
 		}
 		if (nc != null){
-			result = nc.getNewTaxonNameInstance(rank);
+			result = (NonViralName)nc.getNewTaxonNameInstance(rank);
 		}else{
 			result = NonViralName.NewInstance(rank);
 		}

@@ -35,7 +35,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
  * @param <CDM_BASE>
  * @param <STATE>
  */
-public class DbImportNameTypeDesignationMapper<STATE extends DbImportStateBase<?,?>, T extends IDbImportTransformed> extends DbImportMultiAttributeMapper<CdmBase, STATE> {
+public class DbImportNameTypeDesignationMapper<STATE extends DbImportStateBase<?,?>, T extends IDbImportTransformed> extends DbImportMultiAttributeMapperBase<CdmBase, STATE> {
 	private static final Logger logger = Logger.getLogger(DbImportNameTypeDesignationMapper.class);
 	
 //******************************** FACTORY METHOD ***************************************************/
