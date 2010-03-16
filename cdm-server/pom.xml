@@ -24,6 +24,13 @@
       <version>${project.version}</version>
       <type>war</type>
     </dependency>
+    
+    <!-- jetty-runner -->
+   <dependency>
+      <groupId>org.mortbay.jetty</groupId>
+      <artifactId>jetty-runner</artifactId>
+      <version>7.0.1.v20091125</version>
+    </dependency>
  
     <!-- JETTY 7 -->
     <!-- <dependency>
@@ -61,7 +68,8 @@
   
   <build>
     <plugins>
-      <plugin>
+      <!-- INSTALL -->
+       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
         <configuration>
           <appendAssemblyId>false</appendAssemblyId>
@@ -84,6 +92,39 @@
           </execution>
         </executions>
       </plugin>
+      <!-- DEPLOY -->
+      <plugin>
+          <artifactId>maven-antrun-plugin</artifactId>
+          <version>1.3</version>
+            <executions>
+              <execution>
+                <phase>install</phase>
+                <!--
+                  must run after winstone-maven-plugin
+                -->
+                <configuration>
+                  <tasks>
+                    <!--
+                     ${project.patchversion} is explicitely set in this pom
+                      
+                     ${buildNumber} is set by the buildnumber-maven-plugin  
+                     Cannot create the build number if you have local modifications, 
+                     to allow creating a buildnumber anyway you can ommit                     
+                    -->
+                    <!-- FIXME
+                    <property name="project.fullversionstring" value="${project.version}.${project.patchversion}.r${buildNumber}"/>
+                     -->
+                    <property name="project.fullversionstring" value="${project.version}.0.r0000"/>
+                    <ant antfile="${project.basedir}/src/main/installer/linux/build-deb.xml" dir="${project.basedir}" />
+                  </tasks>
+                </configuration>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+              </execution>
+            </executions>
+        </plugin>
+     
     </plugins>
   </build>
 </project>
