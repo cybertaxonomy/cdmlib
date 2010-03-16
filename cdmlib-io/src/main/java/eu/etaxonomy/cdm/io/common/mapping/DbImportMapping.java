@@ -18,7 +18,6 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.DbImportStateBase;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
-import eu.etaxonomy.cdm.io.faunaEuropaea.CdmImportConfigurator;
 import eu.etaxonomy.cdm.io.faunaEuropaea.CdmImportState;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
