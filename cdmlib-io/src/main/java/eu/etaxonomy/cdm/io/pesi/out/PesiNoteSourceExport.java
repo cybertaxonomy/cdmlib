@@ -205,8 +205,14 @@ public class PesiNoteSourceExport extends PesiExportBase {
 	 */
 	@SuppressWarnings("unused")
 	private static String getSourceNameCache(DescriptionElementBase descriptionElement) {
-		// TODO
-		return null;
+		String result = null;
+		DescriptionBase description = descriptionElement.getInDescription();
+		if (description.isInstanceOf(TaxonDescription.class)) {
+			TaxonDescription taxonDescription = CdmBase.deproxy(description, TaxonDescription.class);
+			Taxon taxon = taxonDescription.getTaxon();
+			result = taxon.getSec().getTitleCache();
+		}
+		return result;
 	}
 	
 	/**
@@ -217,7 +223,7 @@ public class PesiNoteSourceExport extends PesiExportBase {
 	 */
 	@SuppressWarnings("unused")
 	private static String getSourceDetail(DescriptionElementBase descriptionElement) {
-		return descriptionElement.getCitationMicroReference();
+		return descriptionElement.getCitationMicroReference(); // TODO: What else could be used?
 	}
 
 	/**

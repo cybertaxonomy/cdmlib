@@ -791,9 +791,9 @@ public final class PesiTransformer {
 	public static int AREA_LATVIA = 70;
 	public static int AREA_LITHUANIA = 71;
 	public static int AREA_PORTUGUESE_MAINLAND = 72;
-	public static int AREA_MADEIRA = 73; // WTF? See two lines below.
+	public static int AREA_MADEIRA_ARCHIPELAGO = 73;
 	public static int AREA_DESERTAS = 74;
-//	public static int AREA_MADEIRA = 75;
+	public static int AREA_MADEIRA = 75;
 	public static int AREA_PORTO_SANTO = 76;
 	public static int AREA_THE_FORMER_JUGOSLAV_REPUBLIC_OF_MAKEDONIJA = 77;
 	public static int AREA_MOLDOVA = 78;
@@ -1030,8 +1030,8 @@ public final class PesiTransformer {
 	public static String STR_AREA_LIECHTENSTEIN = "Liechtenstein";
 	public static String STR_AREA_LITHUANIA = "Lithuania";
 	public static String STR_AREA_LUXEMBOURG = "Luxembourg";
+	public static String STR_AREA_MADEIRA_ARCHIPELAGO = "Madeira Archipelago";
 	public static String STR_AREA_MADEIRA = "Madeira";
-//	public static String STR_AREA_MADEIRA = "Madeira";
 	public static String STR_AREA_MADEIRAN_EXCLUSIVE_ECONOMIC_ZONE = "Madeiran_Exclusive_Economic_Zone";
 	public static String STR_AREA_MALLORCA = "Mallorca";
 	public static String STR_AREA_MALTA = "Malta";

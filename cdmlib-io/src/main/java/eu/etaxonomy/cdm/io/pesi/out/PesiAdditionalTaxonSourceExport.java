@@ -50,7 +50,8 @@ public class PesiAdditionalTaxonSourceExport extends PesiExportBase {
 	private static boolean sourceUse_NomenclaturalReference = false;
 	private static boolean sourceUse_SourceOfSynonymy = false;
 	private static TaxonBase currentTaxon = null;
-
+	private static String citationMicroReference = null;
+	
 	public PesiAdditionalTaxonSourceExport() {
 		super();
 	}
@@ -151,6 +152,11 @@ public class PesiAdditionalTaxonSourceExport extends PesiExportBase {
 								Set<DescriptionElementSource> elementSources = descriptionElement.getSources();
 								
 								for (DescriptionElementSource elementSource : elementSources) {
+									
+									// Set the CitationMicroReference so it is accessible later in getSourceDetail()
+									setCitationMicroReference(elementSource.getCitationMicroReference());
+
+									// Get the citation
 									ReferenceBase reference = elementSource.getCitation();
 									
 									// Citations can be empty (null): Is it wrong data or just a normal case?
@@ -353,8 +359,14 @@ public class PesiAdditionalTaxonSourceExport extends PesiExportBase {
 	 */
 	@SuppressWarnings("unused")
 	private static String getSourceDetail(ReferenceBase<?> reference) {
-		String result = null;
-		return result;
+		return PesiAdditionalTaxonSourceExport.citationMicroReference;
+	}
+
+	/**
+	 * @param citationMicroReference the citationMicroReference to set
+	 */
+	public static void setCitationMicroReference(String citationMicroReference) {
+		PesiAdditionalTaxonSourceExport.citationMicroReference = citationMicroReference;
 	}
 
 	/**

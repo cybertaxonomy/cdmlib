@@ -166,9 +166,9 @@ public class PesiSourceExport extends PesiExportBase {
 	}
 	
 	/**
-	 * Returns the IMIS_Id.
+	 * Returns the <code>IMIS_Id</code> attribute.
 	 * @param reference The {@link ReferenceBase Reference}.
-	 * @return The IMIS_Id
+	 * @return The <code>IMIS_Id</code> attribute.
 	 * @see MethodMapper
 	 */
 	@SuppressWarnings("unused")
@@ -212,7 +212,7 @@ public class PesiSourceExport extends PesiExportBase {
 	}
 
 	/**
-	 * Returns the <code>AuthorString</code> attribute. The corresponding CDM attribute is the <code>titleCache</code> or an <code>authorTeam</code>.
+	 * Returns the <code>AuthorString</code> attribute. The corresponding CDM attribute is the <code>titleCache</code> of an <code>authorTeam</code>.
 	 * @param reference The {@link ReferenceBase Reference}.
 	 * @return The <code>AuthorString</code> attribute.
 	 * @see MethodMapper
@@ -261,7 +261,7 @@ public class PesiSourceExport extends PesiExportBase {
 	private static String getRefIdInSource(ReferenceBase<?> reference) {
 		String result = null;
 		
-		// For sets of size bigger than one, this isn't good at all.
+		// TODO: For sets of size bigger than one, this isn't good at all.
 		for (IdentifiableSource source : reference.getSources()) {
 			if (source != null) {
 				result = source.getIdInSource();

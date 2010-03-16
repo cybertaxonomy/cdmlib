@@ -32,6 +32,7 @@ import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
+import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.taxon.ITreeNode;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
@@ -318,7 +319,6 @@ public class PesiTaxonExport extends PesiExportBase {
 		if (nomenclaturalCode != null && taxon.isInstanceOf(Taxon.class)) {
 			result = PesiTransformer.rank2RankId(taxon.getName().getRank(), PesiTransformer.nomenClaturalCode2Kingdom(nomenclaturalCode));
 		}
-//		logger.error("RankFk: " + result);
 		return result;
 	}
 
@@ -423,6 +423,7 @@ public class PesiTaxonExport extends PesiExportBase {
 		String result = null;
 		if (taxon != null) {
 			result = taxon.getName().getTitleCache();
+//			List resultList = taxon.getName().getTaggedName();
 		}
 		return result;
 	}
@@ -473,7 +474,7 @@ public class PesiTaxonExport extends PesiExportBase {
 					result = taxon.getName().getNomenclaturalReference().getTitle();
 				}
 			} catch (Exception e) {
-				e.getCause();
+				logger.error("While getting NomRefString");
 				e.printStackTrace();
 			}
 		}
@@ -488,8 +489,12 @@ public class PesiTaxonExport extends PesiExportBase {
 	 */
 	@SuppressWarnings("unused")
 	private static String getDisplayName(TaxonBase<?> taxon) {
-		// TODO: extension - taxon.getExtensions();
-		return null;
+		// TODO: extension?
+		if (taxon != null) {
+			return taxon.getName().getFullTitleCache();
+		} else {
+			return null;
+		}
 	}
 	
 	/**
@@ -513,10 +518,12 @@ public class PesiTaxonExport extends PesiExportBase {
 	@SuppressWarnings("unused")
 	private static Integer getNameStatusFk(TaxonBase<?> taxon) {
 		Integer result = null;
-		if (taxon != null && (taxon.getName() instanceof NonViralName)) {
-			Set<NomenclaturalStatus> states = ((NonViralName)taxon.getName()).getStatus();
+		if (taxon != null && (taxon.getName().isInstanceOf(NonViralName.class))) {
+			NonViralName taxonName = CdmBase.deproxy(taxon.getName(), NonViralName.class);
+			Set<NomenclaturalStatus> states = taxonName.getStatus();
 			if (states.size() == 1) {
-				result = PesiTransformer.nomStatus2nomStatusFk(states.iterator().next().getType());
+				NomenclaturalStatusType statusType = states.iterator().next().getType();
+				result = PesiTransformer.nomStatus2nomStatusFk(statusType);
 			} else if (states.size() > 1) {
 				logger.error("This taxon has more than one Nomenclatural Status: " + taxon.getTitleCache());
 			}
@@ -533,8 +540,9 @@ public class PesiTaxonExport extends PesiExportBase {
 	@SuppressWarnings("unused")
 	private static String getNameStatusCache(TaxonBase<?> taxon) {
 		String result = null;
-		if (taxon != null && (taxon.getName() instanceof NonViralName)) {
-			Set<NomenclaturalStatus> states = ((NonViralName)taxon.getName()).getStatus();
+		if (taxon != null && (taxon.getName().isInstanceOf(NonViralName.class))) {
+			NonViralName taxonName = CdmBase.deproxy(taxon.getName(), NonViralName.class);
+			Set<NomenclaturalStatus> states = taxonName.getStatus();
 			if (states.size() == 1) {
 				result = PesiTransformer.nomStatus2NomStatusCache(states.iterator().next().getType());
 			} else if (states.size() > 1) {
@@ -572,7 +580,6 @@ public class PesiTaxonExport extends PesiExportBase {
 	 * @return The <code>ParentTaxonFk</code> attribute.
 	 * @see MethodMapper
 	 */
-	@SuppressWarnings("unused")
 	private static Integer getParentTaxonFk(TaxonBase<?> taxonBase, DbExportStateBase<?> state) {
 		Integer result = null;
 		Taxon taxon = null;
@@ -595,7 +602,7 @@ public class PesiTaxonExport extends PesiExportBase {
 					Taxon parent = node.getTaxon();
 					result = state.getDbId(parent);
 				} else {
-					//TODO no parent exists
+					logger.error("No parent taxon could be determined for taxon: " + taxon.getTitleCache());
 				}
 			}
 		}
@@ -612,6 +619,7 @@ public class PesiTaxonExport extends PesiExportBase {
 	private static Integer getTypeNameFk(TaxonBase<?> taxon) {
 		Integer result = null;
 		if (taxon != null) {
+			// TODO: NameTypeDesignation - typeName.taxonName.datawarehouse_id
 //			result = PesiTransformer.taxon.taxonName2TypeNameId(getName().getId());
 		}
 		return result;
@@ -640,7 +648,7 @@ public class PesiTaxonExport extends PesiExportBase {
 	 */
 	@SuppressWarnings("unused")
 	private static Integer getQualityStatusFk(TaxonBase<?> taxon) {
-		// TODO
+		// TODO: Not represented in CDM now. Depends on import.
 		Integer result = null;
 		return result;
 	}
@@ -653,7 +661,7 @@ public class PesiTaxonExport extends PesiExportBase {
 	 */
 	@SuppressWarnings("unused")
 	private static String getQualityStatusCache(TaxonBase<?> taxon) {
-		// TODO
+		// TODO: Not represented in CDM now. Depends on import.
 		String result = null;
 		return result;
 	}
@@ -709,10 +717,57 @@ public class PesiTaxonExport extends PesiExportBase {
 	 * @see MethodMapper
 	 */
 	@SuppressWarnings("unused")
-	private static String getTreeIndex(TaxonBase<?> taxon) {
-		// TODO
-		String result = null;
-		return result;
+	private static String getTreeIndex(TaxonBase<?> taxonBase, DbExportStateBase<?> state) {
+		// Traverse taxon tree up until root is reached.
+		String result = "";
+		
+		Taxon taxon = null;
+		if (taxonBase.isInstanceOf(Synonym.class)) {
+			Synonym synonym = (Synonym)taxonBase;
+			Set<SynonymRelationship> relations = synonym.getSynonymRelations();
+			if (relations.size() == 1) {
+				taxon  = relations.iterator().next().getAcceptedTaxon();
+			}
+		} else {
+			taxon = CdmBase.deproxy(taxonBase, Taxon.class);
+		}
+		boolean root = false;
+		boolean error = false;
+		boolean start = true;
+		if (taxon != null) {
+			while (! root && ! error) {
+				Set<TaxonNode> taxonNodes = taxon.getTaxonNodes();
+				if (taxonNodes.size() == 1) {
+					TaxonNode taxonNode = taxon.getTaxonNodes().iterator().next();
+					ITreeNode parentNode = taxonNode.getParent();
+					if (HibernateProxyHelper.isInstanceOf(parentNode, TaxonNode.class)) {
+						TaxonNode node = CdmBase.deproxy(parentNode, TaxonNode.class);
+						taxon = node.getTaxon();
+						if (start) {
+							result += state.getDbId(taxon);
+						} else {
+							result = state.getDbId(taxon) + "#" + result;
+						}
+//						logger.error("current taxon: " + state.getDbId(taxon));
+					} else {
+						// Root element reached
+//						logger.error("Root element reached. Highest Taxon: " + state.getDbId(taxon));
+						root = true;
+					}
+					start = false;
+				} else {
+					// This should not be the case.
+					taxon = null;
+					result = null;
+					error = true;
+				}
+			}
+		}
+		if (error) {
+			return null;
+		} else {
+			return result;
+		}
 	}
 	
 	/**
@@ -878,7 +933,7 @@ public class PesiTaxonExport extends PesiExportBase {
 		mapping.addMapper(MethodMapper.NewInstance("QualityStatusCache", this));
 		mapping.addMapper(MethodMapper.NewInstance("TypeDesignationStatusFk", this));
 		mapping.addMapper(MethodMapper.NewInstance("TypeDesignationStatusCache", this));
-		mapping.addMapper(MethodMapper.NewInstance("TreeIndex", this)); // TODO
+		mapping.addMapper(MethodMapper.NewInstance("TreeIndex", this.getClass(), "getTreeIndex", standardMethodParameter, DbExportStateBase.class));
 		mapping.addMapper(MethodMapper.NewInstance("FossilStatusFk", this));
 		mapping.addMapper(MethodMapper.NewInstance("FossilStatusCache", this));
 		mapping.addMapper(MethodMapper.NewInstance("IdInSource", this));

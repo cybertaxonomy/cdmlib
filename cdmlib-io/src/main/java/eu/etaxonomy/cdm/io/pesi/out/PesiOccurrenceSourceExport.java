@@ -203,7 +203,7 @@ public class PesiOccurrenceSourceExport extends PesiExportBase {
 				stmt.setInt(1, occurrenceId);
 				stmt.setInt(2, sourceFk);
 				stmt.setString(3, getSourceNameCache(reference));
-				stmt.setString(4, null); // TODO
+				stmt.setString(4, null); // TODO: This is the name of the former taxon (accepted taxon as well as synonym) the source was associated to. How can we get a hand on it?
 				stmt.execute();
 			} catch (SQLException e) {
 				logger.error("SQLException during getOccurrenceId invoke.");
@@ -289,7 +289,7 @@ public class PesiOccurrenceSourceExport extends PesiExportBase {
 
 	/**
 	 * Returns the <code>OccurrenceFk</code> attribute.
-	 * @param description The {@link DescriptionElementBase DescriptionElement}.
+	 * @param entity
 	 * @param state The {@link PesiExportState PesiExportState}.
 	 * @return The <code>OccurrenceFk</code> attribute.
 	 * @see MethodMapper
@@ -318,9 +318,9 @@ public class PesiOccurrenceSourceExport extends PesiExportBase {
 	}
 	
 	/**
-	 * Returns the <code>SourceCache</code> attribute.
+	 * Returns the <code>SourceNameCache</code> attribute.
 	 * @param entity
-	 * @return The <code>SourceCache</code> attribute.
+	 * @return The <code>SourceNameCache</code> attribute.
 	 * @see MethodMapper
 	 */
 	@SuppressWarnings("unused")
@@ -335,13 +335,13 @@ public class PesiOccurrenceSourceExport extends PesiExportBase {
 	
 	/**
 	 * Returns the <code>OldTaxonName</code> attribute.
-	 * @param description The {@link DescriptionElementBase DescriptionElement}.
+	 * @param entity
 	 * @return The <code>OldTaxonName</code> attribute.
 	 * @see MethodMapper
 	 */
 	@SuppressWarnings("unused")
 	private static String getOldTaxonName(AnnotatableEntity entity) {
-		// TODO: What does "old" mean in this context?
+		// TODO: This is the name of the former taxon (accepted taxon as well as synonym) the source was associated to.
 		return null;
 	}
 
@@ -352,6 +352,7 @@ public class PesiOccurrenceSourceExport extends PesiExportBase {
 	private PesiExportMapping getMapping() {
 		PesiExportMapping mapping = new PesiExportMapping(dbTableName);
 
+		// These mapping are not used.
 		mapping.addMapper(MethodMapper.NewInstance("OccurrenceFk", this.getClass(), "getOccurrenceFk", standardMethodParameter, PesiExportState.class));
 		mapping.addMapper(MethodMapper.NewInstance("SourceFk", this.getClass(), "getSourceFk", standardMethodParameter, PesiExportState.class));
 		mapping.addMapper(MethodMapper.NewInstance("SourceNameCache", this));

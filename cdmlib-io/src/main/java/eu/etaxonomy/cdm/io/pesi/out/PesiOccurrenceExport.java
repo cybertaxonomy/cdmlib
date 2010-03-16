@@ -367,7 +367,7 @@ public class PesiOccurrenceExport extends PesiExportBase {
 	 */
 	@SuppressWarnings("unused")
 	private static String getOccurrenceStatusCache(AnnotatableEntity entity) throws UnknownCdmTypeException {
-		String result = null;
+		String result = null; // TODO
 //		if (entity != null && entity.isInstanceOf(Distribution.class)) {
 //			Distribution distribution = CdmBase.deproxy(entity, Distribution.class);
 //			result = PesiTransformer.presenceAbsenceTerm2OccurrenceStatusCache(distribution.getStatus());
