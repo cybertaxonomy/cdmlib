@@ -382,7 +382,6 @@ public class PesiOccurrenceExport extends PesiExportBase {
 	 * @return The <code>SourceFk</code> attribute.
 	 * @see MethodMapper
 	 */
-	@SuppressWarnings("unused")
 	private static Integer getSourceFk(AnnotatableEntity entity, PesiExportState state) {
 		Integer result = null;		
 		if (state != null && entity != null && entity.isInstanceOf(ReferenceBase.class)) {
@@ -398,7 +397,6 @@ public class PesiOccurrenceExport extends PesiExportBase {
 	 * @return The <code>SourceCache</code> attribute.
 	 * @see MethodMapper
 	 */
-	@SuppressWarnings("unused")
 	private static String getSourceCache(AnnotatableEntity entity) {
 		String result = null;
 		if (entity != null && entity.isInstanceOf(ReferenceBase.class)) {
@@ -421,47 +419,12 @@ public class PesiOccurrenceExport extends PesiExportBase {
 	}
 
 	/**
-	 * Returns the <code>OccurrenceId</code> attribute.
-	 * @param entity
-	 * @return The <code>OccurrenceId</code> attribute.
-	 * @see MethodMapper
-	 */
-//	@SuppressWarnings("unused")
-//	private static Integer getOccurrenceId(AnnotatableEntity entity, PesiExportState state) {
-//		Integer occurrenceId = null;
-//		
-//		// Retrieve database identifier of the last created occurrence record.
-//		String lastRecordSql = "Select @@Identity From OccurrenceSource";
-//		Connection con = state.getConfig().getDestination().getConnection();
-//		PreparedStatement stmt = null;
-//		
-//		try {
-//			stmt = con.prepareStatement(lastRecordSql);
-////			stmt.setString(1, dbTableName);
-//			ResultSet resultSet = stmt.executeQuery();
-//			while (resultSet.next()) {
-//				// Count of this resultset should be 1
-//				occurrenceId = resultSet.getInt(1);
-//			}
-//		} catch (SQLException e) {
-//			logger.error("SQLException during getOccurrenceId invoke.");
-//			e.printStackTrace();
-//		}
-//
-//		// Store the database occurrenceId's
-//		sourceId2OccurenceIdMap.put(getSourceFk(entity, state), occurrenceId);
-//
-//		return occurrenceId;
-//	}
-
-	/**
 	 * Returns the CDM to PESI specific export mappings.
 	 * @return The {@link PesiExportMapping PesiExportMapping}.
 	 */
 	private PesiExportMapping getMapping() {
 		PesiExportMapping mapping = new PesiExportMapping(dbTableName);
 		
-//		mapping.addMapper(MethodMapper.NewInstance("OccurrenceId", this.getClass(), "getOccurrenceId", standardMethodParameter, PesiExportState.class));
 		mapping.addMapper(MethodMapper.NewInstance("TaxonFk", this.getClass(), "getTaxonFk", standardMethodParameter, PesiExportState.class));
 		mapping.addMapper(MethodMapper.NewInstance("AreaFk", this));
 		mapping.addMapper(MethodMapper.NewInstance("TaxonFullNameCache", this));
