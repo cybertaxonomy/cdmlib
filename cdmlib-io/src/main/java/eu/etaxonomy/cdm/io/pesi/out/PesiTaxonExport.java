@@ -346,8 +346,9 @@ public class PesiTaxonExport extends PesiExportBase {
 	@SuppressWarnings("unused")
 	private static String getGenusOrUninomial(TaxonBase<?> taxon) {
 		String result = null;
-		if (taxon != null && (taxon.getName() instanceof NonViralName)) {
-			result = ((NonViralName)taxon.getName()).getGenusOrUninomial();
+		if (taxon != null && (taxon.getName().isInstanceOf(NonViralName.class))) {
+			NonViralName nonViralName = CdmBase.deproxy(taxon.getName(), NonViralName.class);
+			result = nonViralName.getGenusOrUninomial();
 		}
 		return result;
 	}
@@ -361,8 +362,9 @@ public class PesiTaxonExport extends PesiExportBase {
 	@SuppressWarnings("unused")
 	private static String getInfraGenericEpithet(TaxonBase<?> taxon) {
 		String result = null;
-		if (taxon != null && (taxon.getName() instanceof NonViralName)) {
-			result = ((NonViralName)taxon.getName()).getInfraGenericEpithet();
+		if (taxon != null && (taxon.getName().isInstanceOf(NonViralName.class))) {
+			NonViralName nonViralName = CdmBase.deproxy(taxon.getName(), NonViralName.class);
+			result = nonViralName.getInfraGenericEpithet();
 		}
 		return result;
 	}
@@ -376,8 +378,9 @@ public class PesiTaxonExport extends PesiExportBase {
 	@SuppressWarnings("unused")
 	private static String getSpecificEpithet(TaxonBase<?> taxon) {
 		String result = null;
-		if (taxon != null && (taxon.getName() instanceof NonViralName)) {
-			result = ((NonViralName)taxon.getName()).getSpecificEpithet();
+		if (taxon != null && (taxon.getName().isInstanceOf(NonViralName.class))) {
+			NonViralName nonViralName = CdmBase.deproxy(taxon.getName(), NonViralName.class);
+			result = nonViralName.getSpecificEpithet();
 		}
 		return result;
 	}
@@ -391,8 +394,9 @@ public class PesiTaxonExport extends PesiExportBase {
 	@SuppressWarnings("unused")
 	private static String getInfraSpecificEpithet(TaxonBase<?> taxon) {
 		String result = null;
-		if (taxon != null && (taxon.getName() instanceof NonViralName)) {
-			result = ((NonViralName)taxon.getName()).getInfraSpecificEpithet();
+		if (taxon != null && (taxon.getName().isInstanceOf(NonViralName.class))) {
+			NonViralName nonViralName = CdmBase.deproxy(taxon.getName(), NonViralName.class);
+			result = nonViralName.getInfraSpecificEpithet();
 		}
 		return result;
 	}
@@ -406,8 +410,9 @@ public class PesiTaxonExport extends PesiExportBase {
 	@SuppressWarnings("unused")
 	private static String getWebSearchName(TaxonBase<?> taxon) {
 		String result = null;
-		if (taxon != null && (taxon.getName() instanceof NonViralName)) {
-			result = ((NonViralName)taxon.getName()).getNameCache();
+		if (taxon != null && (taxon.getName().isInstanceOf(NonViralName.class))) {
+			NonViralName nonViralName = CdmBase.deproxy(taxon.getName(), NonViralName.class);
+			result = nonViralName.getNameCache();
 		}
 		return result;
 	}
