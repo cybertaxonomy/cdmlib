@@ -22,6 +22,7 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
+import eu.etaxonomy.cdm.io.berlinModel.out.mapper.CreatedAndNotesMapper;
 import eu.etaxonomy.cdm.io.berlinModel.out.mapper.MethodMapper;
 import eu.etaxonomy.cdm.io.common.DbExportStateBase;
 import eu.etaxonomy.cdm.io.common.Source;
@@ -434,6 +435,7 @@ public class PesiOccurrenceExport extends PesiExportBase {
 		mapping.addMapper(MethodMapper.NewInstance("SourceFk", this.getClass(), "getSourceFk", standardMethodParameter, PesiExportState.class));
 		mapping.addMapper(MethodMapper.NewInstance("SourceCache", this));
 		mapping.addMapper(MethodMapper.NewInstance("Notes", this));
+//		mapping.addMapper(CreatedAndNotesMapper.NewInstance());
 
 		return mapping;
 	}
