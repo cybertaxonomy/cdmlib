@@ -17,7 +17,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
@@ -133,7 +132,7 @@ public class BerlinModelOccurrenceImport  extends BerlinModelImportBase {
 		try {
 			//get data from database
 			String strQuery =   //DISTINCT because otherwise emOccurrenceSource creates multiple records for a single distribution 
-                " SELECT DISTINCT PTaxon.RIdentifier, emOccurrence.OccurrenceId, emOccurSumCat.emOccurSumCatId, emOccurSumCat.Short, emOccurSumCat.Description, " +  
+                " SELECT DISTINCT PTaxon.RIdentifier, emOccurrence.OccurrenceId, emOccurSumCat.emOccurSumCatId, emOccurSumCat.Short, emOccurSumCat.Description, emOccurrence.Native, " +  
                 	" emOccurSumCat.OutputCode, emArea.AreaId, emArea.EMCode, emArea.ISOCode, emArea.TDWGCode, emArea.Unit, " +  
                 	" emArea.Status, emArea.OutputOrder, emArea.eur, emArea.EuroMedArea " + 
                 " FROM emOccurrence INNER JOIN " +  
@@ -161,6 +160,11 @@ public class BerlinModelOccurrenceImport  extends BerlinModelImportBase {
                 int newTaxonId = rs.getInt("RIdentifier");
                 String tdwgCodeString = rs.getString("TDWGCode");
                 Integer emStatusId = (Integer)rs.getObject("emOccurSumCatId");
+                String nativeStatus = rs.getString("Native");
+                if ("(N)".equalsIgnoreCase(CdmUtils.Nz(nativeStatus).trim())){
+                	//EDIT WP6 usecase - neglect status
+                	continue;   
+                }
                 
                 try {
                     //status
