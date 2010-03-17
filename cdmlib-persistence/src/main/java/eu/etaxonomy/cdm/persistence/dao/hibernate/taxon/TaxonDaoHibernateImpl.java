@@ -1496,6 +1496,13 @@ public List<Synonym>  createAllInferredSynonyms(Taxon taxon, TaxonomicTree tree)
 		return zooNames;
 	}
 	
+	public String getPhylumName(TaxonNameBase name){
+		Query query = getSession().createSQLQuery("select getPhylum("+ name.getId()+");");
+		List results = query.list();
+		System.err.println("phylum of "+ name.getTitleCache() + " : "+(String)results.get(0));
+		return (String)results.get(0);
+	}
+	
 	
 
 	
