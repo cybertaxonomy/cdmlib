@@ -1288,7 +1288,8 @@ public List<Synonym>  createAllInferredSynonyms(Taxon taxon, TaxonomicTree tree)
 				TaxonNameBase parentName = parent.getTaxon().getName();
 				parentName = (TaxonNameBase)HibernateProxyHelper.deproxy(parentName);
 				
-				if (parentName.isGenus()){
+				//create inferred synonyms for species, subspecies or subgenus
+				if (parentName.isGenus() || parentName.isSpecies() || parentName.getRank().equals(Rank.SUBGENUS())){
 					
 					Synonym inferredEpithet;
 					Synonym inferredGenus;
