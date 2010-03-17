@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
+import org.joda.time.DateTime;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
@@ -881,6 +882,25 @@ public class PesiTaxonExport extends PesiExportBase {
 	}
 	
 	/**
+	 * Returns the <code>LastActionDate</code> attribute.
+	 * @param taxon The {@link TaxonBase Taxon}.
+	 * @return The <code>LastActionDate</code> attribute.
+	 * @see MethodMapper
+	 */
+	@SuppressWarnings("unused")
+	private static DateTime getLastActionDate(TaxonBase<?> taxonBase) {
+		DateTime result = null;
+		if (taxonBase != null) {
+			DateTime updated = taxonBase.getUpdated();
+			if (updated != null) {
+//				logger.error("Taxon Updated: " + updated);
+				result = new DateTime(updated.toDate()); // Unfortunately the time information gets lost here.
+			}
+		}
+		return result;
+	}
+	
+	/**
 	 * Returns the <code>ExpertName</code> attribute.
 	 * @param taxon The {@link TaxonBase Taxon}.
 	 * @return The <code>ExpertName</code> attribute.
@@ -947,6 +967,7 @@ public class PesiTaxonExport extends PesiExportBase {
 		mapping.addMapper(MethodMapper.NewInstance("OriginalDB", this));
 		mapping.addMapper(MethodMapper.NewInstance("LastAction", this));
 //		mapping.addMapper(DbTimePeriodMapper.NewInstance("updated", "LastActionDate"));
+		mapping.addMapper(MethodMapper.NewInstance("LastActionDate", this));
 		mapping.addMapper(MethodMapper.NewInstance("ExpertName", this)); // TODO
 		mapping.addMapper(MethodMapper.NewInstance("ExpertFk", this)); // TODO
 

@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
+import org.joda.time.DateTime;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
@@ -312,9 +313,16 @@ public class PesiNoteExport extends PesiExportBase {
 	 * @see MethodMapper
 	 */
 	@SuppressWarnings("unused")
-	private static String getLastActionDate(DescriptionElementBase descriptionElement) {
-		// TODO
-		return null;
+	private static DateTime getLastActionDate(DescriptionElementBase descriptionElement) {
+		DateTime result = null;
+		if (descriptionElement != null) {
+			DateTime updated = descriptionElement.getUpdated();
+			if (updated != null) {
+				logger.error("Note Updated: " + updated);
+				result = new DateTime(updated.toDate());  // Unfortunately the time information gets lost here.
+			}
+		}
+		return result;
 	}
 
 	/**
