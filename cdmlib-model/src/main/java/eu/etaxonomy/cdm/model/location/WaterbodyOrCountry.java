@@ -583,14 +583,11 @@ uuidRedSea
 uuidPersianGulf
 
 	 */
-//public static final WaterbodyOrCountry AFGHANISTAN(){
-//	return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidAfghanistan);
-//}
-//	
-//	public static final WaterbodyOrCountry ARGENTINA_ARGENTINE_REPUBLIC(){
-//		logger.warn("Not yet implemented");
-//		return null; // FIXME(uuidArgentinaArgentineRepublic);
-//	}
+
+	public static final WaterbodyOrCountry ARGENTINA_ARGENTINE_REPUBLIC(){
+		logger.warn("Not yet implemented");
+		return null; // FIXME(uuidArgentinaArgentineRepublic);
+	}
 
 	public static final WaterbodyOrCountry AFGHANISTAN () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidAfghanistan );}
 	public static final WaterbodyOrCountry ALBANIAPEOPLESSOCIALISTREPUBLICOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidAlbaniaPeoplesSocialistRepublicof );}
