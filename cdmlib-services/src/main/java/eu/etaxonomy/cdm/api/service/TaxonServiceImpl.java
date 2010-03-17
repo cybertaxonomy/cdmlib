@@ -11,6 +11,7 @@
 package eu.etaxonomy.cdm.api.service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
@@ -38,14 +39,17 @@ import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
+import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TaxonNameComparator;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonComparator;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
@@ -512,6 +516,8 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 				numberOfResults += numberCommonNameResults;
 			} 
 		}
+		TaxonAndNameComparator taxComp = new TaxonAndNameComparator();
+		Collections.sort(results, taxComp);
 		
 		//FIXME does not work any more after model change
 		logger.warn("Sort does currently not work on identifiable entities due to model changes (duplicated implementation of the Comparable interface).");
@@ -559,5 +565,24 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 	public List<Synonym> createInferredSynonyms(TaxonomicTree tree, Taxon taxon, SynonymRelationshipType type) {
 		
 		return this.dao.createInferredSynonyms(taxon, tree, type);
+	}
+
+	public List<TaxonNameBase> findIdenticalTaxonNames(List<String> propertyPath) {
+		
+		return this.dao.findIdenticalTaxonNames(propertyPath);
+	}
+	
+	public String getPhylumName(TaxonNameBase name){
+		return this.dao.getPhylumName(name);
+	}
+	
+	private class TaxonAndNameComparator implements Comparator{
+
+		public int compare(Object arg0, Object arg1) {
+			IdentifiableEntity castArg0 = (IdentifiableEntity) arg0;
+			IdentifiableEntity castArg1 = (IdentifiableEntity) arg1;
+			return castArg0.compareTo(castArg1);
+		}
+		
 	}
 }

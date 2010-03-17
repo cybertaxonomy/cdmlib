@@ -19,7 +19,9 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
+import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.ReferenceBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
@@ -341,4 +343,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 	public List<Synonym> createAllInferredSynonyms(TaxonomicTree tree, Taxon taxon);
 	
 	public int countAllRelationships();
+	
+	public List<TaxonNameBase> findIdenticalTaxonNames(List<String> propertyPath);
+	public String getPhylumName(TaxonNameBase name);
 }
