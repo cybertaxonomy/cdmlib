@@ -15,6 +15,7 @@ import java.lang.reflect.Method;
 import java.sql.Types;
 
 import org.apache.log4j.Logger;
+import org.joda.time.DateTime;
 
 import eu.etaxonomy.cdm.io.common.DbExportBase;
 import eu.etaxonomy.cdm.io.common.DbExportStateBase;
@@ -113,6 +114,8 @@ public class MethodMapper extends DbSingleAttributeExportMapperBase<DbExportStat
 			return Types.VARCHAR;
 		}else if (returnType == Boolean.class){
 			return Types.BOOLEAN;
+		}else if (returnType == DateTime.class){
+			return Types.DATE;
 		}else{
 			logger.warn("Return type not supported yet: " + returnType.getSimpleName());
 			throw new IllegalArgumentException("Return type not supported yet: " + returnType.getSimpleName());
