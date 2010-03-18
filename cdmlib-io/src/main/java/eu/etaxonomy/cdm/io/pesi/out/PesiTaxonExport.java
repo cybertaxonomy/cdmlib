@@ -477,7 +477,7 @@ public class PesiTaxonExport extends PesiExportBase {
 		if (taxon != null) {
 			try {
 				if (taxon.getName().getNomenclaturalReference() != null) {
-					result = taxon.getName().getNomenclaturalReference().getTitle();
+					result = taxon.getName().getNomenclaturalMicroReference();
 				}
 			} catch (Exception e) {
 				logger.error("While getting NomRefString");
