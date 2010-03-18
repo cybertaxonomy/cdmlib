@@ -622,11 +622,12 @@ public class PesiTaxonExport extends PesiExportBase {
 	 * @see MethodMapper
 	 */
 	@SuppressWarnings("unused")
-	private static Integer getTypeNameFk(TaxonBase<?> taxon) {
+	private static Integer getTypeNameFk(TaxonBase<?> taxonBase, DbExportStateBase<?> state) {
 		Integer result = null;
-		if (taxon != null) {
+		if (taxonBase != null) {
 			// TODO: NameTypeDesignation - typeName.taxonName.datawarehouse_id
 //			result = PesiTransformer.taxon.taxonName2TypeNameId(getName().getId());
+			result = state.getDbId(taxonBase);
 		}
 		return result;
 	}
@@ -741,6 +742,9 @@ public class PesiTaxonExport extends PesiExportBase {
 		boolean error = false;
 		boolean start = true;
 		if (taxon != null) {
+			// Add the current taxon
+			result = "#" + state.getDbId(taxon) + "#";
+
 			while (! root && ! error) {
 				Set<TaxonNode> taxonNodes = taxon.getTaxonNodes();
 				if (taxonNodes.size() == 1) {
@@ -749,11 +753,7 @@ public class PesiTaxonExport extends PesiExportBase {
 					if (HibernateProxyHelper.isInstanceOf(parentNode, TaxonNode.class)) {
 						TaxonNode node = CdmBase.deproxy(parentNode, TaxonNode.class);
 						taxon = node.getTaxon();
-						if (start) {
-							result = state.getDbId(taxon) + "#";
-						} else {
-							result = "#" + state.getDbId(taxon) + "#" + result;
-						}
+						result = "#" + state.getDbId(taxon) + result;
 //						logger.error("current taxon: " + state.getDbId(taxon));
 					} else {
 						// Root element reached
@@ -952,7 +952,7 @@ public class PesiTaxonExport extends PesiExportBase {
 		mapping.addMapper(MethodMapper.NewInstance("NameStatusCache", this));
 		mapping.addMapper(MethodMapper.NewInstance("TaxonStatusFk", this));
 		mapping.addMapper(MethodMapper.NewInstance("TaxonStatusCache", this));
-		mapping.addMapper(MethodMapper.NewInstance("TypeNameFk", this));
+		mapping.addMapper(MethodMapper.NewInstance("TypeNameFk", this.getClass(), "getTypeNameFk", standardMethodParameter, DbExportStateBase.class));
 		mapping.addMapper(MethodMapper.NewInstance("TypeFullnameCache", this));
 		mapping.addMapper(MethodMapper.NewInstance("QualityStatusFk", this));
 		mapping.addMapper(MethodMapper.NewInstance("QualityStatusCache", this));
