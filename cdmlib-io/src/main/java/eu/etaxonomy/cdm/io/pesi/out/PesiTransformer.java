@@ -1229,7 +1229,8 @@ public final class PesiTransformer {
 		} else if (area.isInstanceOf(TdwgArea.class)) {
 			// TODO: This will take forever to implement the return of the appropriate datawarehouse area for any TDWG area. The return of STR_AREA_ALBANIA for any TDWG Area found is just a placeholder.
 			TdwgArea tdwgArea = CdmBase.deproxy(area, TdwgArea.class);
-			if (tdwgArea.equals(TdwgArea.ABBREV_1())) {	return STR_AREA_ALBANIA; }
+			if (tdwgArea.equals(TdwgArea.ABBREV_None())) { return STR_AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_1())) { return STR_AREA_ALBANIA; }
 			else if (tdwgArea.equals(TdwgArea.ABBREV_2 ())) { return STR_AREA_ALBANIA; }
 			else if (tdwgArea.equals(TdwgArea.ABBREV_3 ())) { return STR_AREA_ALBANIA; }
 			else if (tdwgArea.equals(TdwgArea.ABBREV_4 ())) { return STR_AREA_ALBANIA; }
@@ -2556,7 +2557,8 @@ public final class PesiTransformer {
 		} else if (area.isInstanceOf(TdwgArea.class)) {
 			// TODO: This will take forever to implement the return of the appropriate datawarehouse area for any TDWG area. The return of AREA_ALBANIA for any TDWG Area found is just a placeholder.
 			TdwgArea tdwgArea = CdmBase.deproxy(area, TdwgArea.class);
-			if (tdwgArea.equals(TdwgArea.ABBREV_1())) {	return AREA_ALBANIA; }
+			if (tdwgArea.equals(TdwgArea.ABBREV_None())) { return AREA_ALBANIA; }
+			else if (tdwgArea.equals(TdwgArea.ABBREV_1())) { return AREA_ALBANIA; }
 			else if (tdwgArea.equals(TdwgArea.ABBREV_2 ())) { return AREA_ALBANIA; }
 			else if (tdwgArea.equals(TdwgArea.ABBREV_3 ())) { return AREA_ALBANIA; }
 			else if (tdwgArea.equals(TdwgArea.ABBREV_4 ())) { return AREA_ALBANIA; }
