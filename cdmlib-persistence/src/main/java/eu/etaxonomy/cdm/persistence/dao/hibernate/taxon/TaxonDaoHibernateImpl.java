@@ -1555,6 +1555,19 @@ public List<Synonym>  createAllInferredSynonyms(Taxon taxon, TaxonomicTree tree)
 		System.err.println("phylum of "+ name.getTitleCache() + " : "+(String)results.get(0));
 		return (String)results.get(0);
 	}
+
+
+	public long countTaxaByCommonName(String searchString,
+			TaxonomicTree taxonomicTree, MatchMode matchMode,
+			Set<NamedArea> namedAreas) {
+		boolean doCount = true;
+		Query query = prepareTaxaByCommonName(searchString, taxonomicTree, matchMode, namedAreas, null, null, doCount);
+		if (query != null) {
+			return (Long)query.uniqueResult();
+		}
+		return 0;
+		
+	}
 	
 	
 
