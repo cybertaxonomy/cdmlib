@@ -247,10 +247,10 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		Query query = prepareTaxaByName(clazz, queryString, taxonomicTree, matchMode, namedAreas, pageSize, pageNumber, doCount);
 		if (query != null){
 			List<TaxonBase> results = query.list();
-			results.addAll (prepareTaxaByCommonName(queryString, taxonomicTree, matchMode, namedAreas, pageSize, pageNumber, doCount).list());
+			//results.addAll (prepareTaxaByCommonName(queryString, taxonomicTree, matchMode, namedAreas, pageSize, pageNumber, doCount).list());
 			defaultBeanInitializer.initializeAll(results, propertyPaths);
-			TaxonComparatorSearch comp = new TaxonComparatorSearch();
-			Collections.sort(results, comp);
+			//TaxonComparatorSearch comp = new TaxonComparatorSearch();
+			//Collections.sort(results, comp);
 			return results;
 		}
 		return new ArrayList<TaxonBase>();
@@ -327,7 +327,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 			
 			if(doAreaRestriction){
 				
-				taxonSubselect = "select t from" +
+				taxonSubselect = "select t.id from" +
 					" Distribution e" +
 					" join e.inDescription d" +
 					" join d.taxon t" +
@@ -339,7 +339,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 					" AND n.nameCache " + matchOperator + " :queryString";
 				
 				
-				synonymSubselect = "select s from" +
+				synonymSubselect = "select s.id from" +
 					" Distribution e" +
 					" join e.inDescription d" +
 					" join d.taxon t" + // the taxa
@@ -354,7 +354,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 				
 			} else {
 				
-				taxonSubselect = "select t from" +
+				taxonSubselect = "select t.id from" +
 					" Taxon t" +
 					" join t.name n " +
 					" join t.taxonNodes as tn "+
@@ -362,7 +362,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 					" tn.taxonomicTree = :taxonomicTree" +
 					" AND n.nameCache " + matchOperator + " :queryString";
 				
-				synonymSubselect = "select s from" +
+				synonymSubselect = "select s.id from" +
 					" Taxon t" + // the taxa
 					" join t.taxonNodes as tn "+
 					" join t.synonymRelations sr" +
@@ -376,7 +376,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 			
 			if(doAreaRestriction){
 				
-				taxonSubselect = "select t from " +
+				taxonSubselect = "select t.id from " +
 					" Distribution e" +
 					" join e.inDescription d" +
 					" join d.taxon t" +
@@ -385,7 +385,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 					(doAreaRestriction ? " e.area.uuid in (:namedAreasUuids) AND" : "") +
 					" n.nameCache " + matchOperator + " :queryString";
 				
-				synonymSubselect = "select s from" +
+				synonymSubselect = "select s.id from" +
 					" Distribution e" +
 					" join e.inDescription d" +
 					" join d.taxon t" + // the taxa
@@ -398,13 +398,13 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 				
 			} else {
 				
-				taxonSubselect = "select t from " +
+				taxonSubselect = "select t.id from " +
 					" Taxon t" +
 					" join t.name n "+
 					" where" +
 					" n.nameCache " + matchOperator + " :queryString";
 
-				synonymSubselect = "select s from" +
+				synonymSubselect = "select s.id from" +
 					" Taxon t" + // the taxa
 					" join t.synonymRelations sr" +
 					" join sr.relatedFrom s" + // the synonyms
@@ -469,24 +469,24 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		}
 		if(clazz.equals(Taxon.class)){
 			if  (taxa.size()>0){
-				hql = "select " + selectWhat + " from " + clazz.getSimpleName() + " t" + " where t in (:taxa)";
+				hql = "select " + selectWhat + " from " + clazz.getSimpleName() + " t" + " where t.id in (:taxa)";
 			}else{
 				hql = "select " + selectWhat + " from " + clazz.getSimpleName() + " t";
 			}
 		} else if(clazz.equals(Synonym.class) ){
 			if (synonyms.size()>0){
-				hql = "select " + selectWhat + " from " + clazz.getSimpleName() + " t" + " where t in (:synonyms)";		
+				hql = "select " + selectWhat + " from " + clazz.getSimpleName() + " t" + " where t.id in (:synonyms)";		
 			}else{
 				hql = "select " + selectWhat + " from " + clazz.getSimpleName() + " t";
 			}
 		} else {
 			if(synonyms.size()>0 && taxa.size()>0){
-				hql = "select " + selectWhat + " from " + clazz.getSimpleName() + " t" + " where t in (:taxa) OR t in (:synonyms)";
+				hql = "select " + selectWhat + " from " + clazz.getSimpleName() + " t" + " where t.id in (:taxa) OR t.id in (:synonyms)";
 			}else if (synonyms.size()>0 ){
 				hql = "select " + selectWhat + " from " + clazz.getSimpleName() + " t" 
 				+ " where t in (:synonyms)";	
 			} else if (taxa.size()>0 ){
-				hql = "select " + selectWhat + " from " + clazz.getSimpleName() + " t" + " where t in (:taxa) ";
+				hql = "select " + selectWhat + " from " + clazz.getSimpleName() + " t" + " where t.id in (:taxa) ";
 			} else{
 				hql = "select " + selectWhat + " from " + clazz.getSimpleName() + " t";
 			}
@@ -494,7 +494,8 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 		
 		if (hql == "") return null;
 		if(!doCount){
-			hql += " order by t.titleCache"; //" order by t.name.nameCache";
+			//hql += " order by t.titleCache"; //" order by t.name.nameCache";
+			hql += " order by t.name.genusOrUninomial, t.name.rank desc, t.name.nomenclaturalReference.datePublished, titleCache"; 
 		}
 	
 		Query query = getSession().createQuery(hql);
@@ -519,6 +520,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 				return null;
 			}
 		}
+		
 		
 		if(pageSize != null &&  !doCount) {
 			query.setMaxResults(pageSize);
@@ -1453,6 +1455,56 @@ public List<Synonym>  createAllInferredSynonyms(Taxon taxon, TaxonomicTree tree)
 		return inferredSynonyms;
 	}
 	
+	
+/*	private void xxx(List<SynonymRelationship> synonymRelationships, HashMap <UUID, ZoologicalName> zooHashMap, SynonymRelationshipType type, String addString){
+		
+		for (SynonymRelationship synonymRelation:synonymRelationships){
+			TaxonNameBase synName;
+			NonViralName inferredSynName;
+			Synonym syn = synonymRelation.getSynonym();
+			HibernateProxyHelper.deproxy(syn);
+			
+			synName = syn.getName();
+			ZoologicalName zooName = zooHashMap.get(synName.getUuid());
+			String synGenusName = zooName.getGenusOrUninomial();
+			
+			switch(type.getId()){
+			case SynonymRelationshipType.INFERRED_EPITHET_OF().getId():
+				inferredSynName.setSpecificEpithet(addString);
+				break;
+			case SynonymRelationshipType.INFERRED_GENUS_OF().getId():
+				break;
+			case SynonymRelationshipType.POTENTIAL_COMBINATION_OF().getId():
+				break;
+			default:
+			}
+			if (!synonymsGenus.contains(synGenusName)){
+				synonymsGenus.add(synGenusName);
+			}
+			inferredSynName = NonViralName.NewInstance(Rank.SPECIES());
+			inferredSynName.setSpecificEpithet(epithetOfTaxon);
+			inferredSynName.setGenusOrUninomial(synGenusName);
+			inferredEpithet = Synonym.NewInstance(inferredSynName, null);
+			taxon.addSynonym(inferredEpithet, SynonymRelationshipType.INFERRED_GENUS_OF());
+			inferredSynonyms.add(inferredEpithet);
+			inferredSynName.generateTitle();
+			taxonNames.add(inferredSynName.getNameCache());
+		}
+			
+		
+		if (!taxonNames.isEmpty()){
+		List<String> synNotInCDM = this.taxaByNameNotInDB(taxonNames);
+		ZoologicalName name;
+		if (!synNotInCDM.isEmpty()){
+			for (Synonym syn :inferredSynonyms){
+				name =zooHashMap.get(syn.getName().getUuid());
+				if (!synNotInCDM.contains(name.getNameCache())){
+					inferredSynonyms.remove(syn);
+				}
+			}
+		}
+		}
+	}*/
 
 	/*
 	 * (non-Javadoc)
