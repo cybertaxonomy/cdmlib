@@ -26,6 +26,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
+import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.NamedArea;
@@ -261,14 +262,18 @@ public class PesiNoteExport extends PesiExportBase {
 	 */
 	@SuppressWarnings("unused")
 	private static String getRegion(DescriptionElementBase descriptionElement) {
-		// TODO: I'm not sure if this is the right way to get region information.
 		String result = null;
 		DescriptionBase description = descriptionElement.getInDescription();
-		if (description.isInstanceOf(TaxonDescription.class)) {
+		
+		// Area information are associated to TaxonDescriptions and Distributions.
+		if (descriptionElement.isInstanceOf(Distribution.class)) {
+			Distribution distribution = CdmBase.deproxy(descriptionElement, Distribution.class);
+			result = PesiTransformer.area2AreaCache(distribution.getArea());
+		} else if (description.isInstanceOf(TaxonDescription.class)) {
 			TaxonDescription taxonDescription = CdmBase.deproxy(description, TaxonDescription.class);
 			Set<NamedArea> namedAreas = taxonDescription.getGeoScopes();
 			if (namedAreas.size() == 1) {
-				result = namedAreas.iterator().next().getLabel();
+				result = PesiTransformer.area2AreaCache(namedAreas.iterator().next());
 			} else if (namedAreas.size() > 1) {
 				logger.warn("This TaxonDescription contains more than one NamedArea: " + taxonDescription.getTitleCache());
 			}
