@@ -25,7 +25,7 @@ public interface IDbImportMapper<T extends DbImportStateBase<?>, CDM_BASE extend
 
 //	public void initialize(PreparedStatement stmt, IndexCounter index);
 
-//	public void initialize(PreparedStatement stmt, IndexCounter index, T state, String tableName);
+//	public void initialize(T state, String tableName);
 	
 	public CDM_BASE invoke(ResultSet rs, CDM_BASE cdmBase) throws SQLException;
 

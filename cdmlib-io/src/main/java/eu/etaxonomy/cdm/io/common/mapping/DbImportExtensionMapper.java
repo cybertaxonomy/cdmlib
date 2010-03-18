@@ -12,9 +12,14 @@ package eu.etaxonomy.cdm.io.common.mapping;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Map;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.api.service.ITermService;
+import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.io.common.CdmImportBase;
 import eu.etaxonomy.cdm.io.common.DbImportStateBase;
 import eu.etaxonomy.cdm.model.common.Extension;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
@@ -40,9 +45,78 @@ public class DbImportExtensionMapper extends DbSingleAttributeImportMapperBase<D
 	 * @param dbAttributeString
 	 * @param cdmAttributeString
 	 */
-	protected DbImportExtensionMapper(ExtensionType extensionType, String dbAttributeString) {
-		super(dbAttributeString, "extensions", null);
-		this.extensionType  = extensionType;
+	private DbImportExtensionMapper(String dbAttributeString, UUID uuid, String label, String text, String labelAbbrev) {
+		super(dbAttributeString, dbAttributeString);
+		this.uuid = uuid;
+		this.label = label;
+		this.text = text;
+		this.labelAbbrev = labelAbbrev;
+	}
+	
+	/**
+	 * @param dbAttributeString
+	 * @param extensionType
+	 */
+	private DbImportExtensionMapper(String dbAttributeString, ExtensionType extensionType) {
+		super(dbAttributeString, dbAttributeString);
+		this.extensionType = extensionType;
+	}
+	
+//****************************** METHODS ***************************************************/
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.mapping.DbSingleAttributeImportMapperBase#initialize(eu.etaxonomy.cdm.io.common.DbImportStateBase, java.lang.Class)
+	 */
+	@Override
+	public void initialize(DbImportStateBase<?,?> state, Class<? extends CdmBase> destinationClass) {
+		importMapperHelper.initialize(state, destinationClass);
+		CdmImportBase<?, ?> currentImport = state.getCurrentIO();
+		if (currentImport == null){
+			throw new IllegalStateException("Current import is not available. Please make sure the the state knows about the current import (state.setCurrentImport())) !"); 
+		}
+		ITermService service = currentImport.getTermService();
+		
+		try {
+			if (  checkDbColumnExists()){
+				if (this.extensionType == null){
+					this.extensionType = getExtensionType(service, uuid, label, text, labelAbbrev);
+				}
+			}else{
+				ignore = true;
+			}
+		} catch (MethodNotSupportedException e) {
+			//do nothing  - checkDbColumnExists is not possible
+		}
+	}
+	
+
+	/**
+	 * @param valueMap
+	 * @param cdmBase
+	 * @return
+	 */
+	public boolean invoke(Map<String, Object> valueMap, CdmBase cdmBase){
+		Object dbValueObject = valueMap.get(this.getSourceAttribute().toLowerCase());
+		String dbValue = dbValueObject == null? null: dbValueObject.toString();
+		return invoke(dbValue, cdmBase);
+	}
+	
+	/**
+	 * @param dbValue
+	 * @param cdmBase
+	 * @return
+	 */
+	private boolean invoke(String dbValue, CdmBase cdmBase){
+		if (ignore){
+			return true;
+		}
+		if (cdmBase instanceof IdentifiableEntity){
+			IdentifiableEntity identifiableEntity = (IdentifiableEntity) cdmBase;
+			invoke(dbValue, identifiableEntity);
+			return true;
+		}else{
+			throw new IllegalArgumentException("extended object must be of type identifiable entity.");
+		}
 		
 	}
 
