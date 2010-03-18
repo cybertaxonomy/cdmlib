@@ -10,9 +10,11 @@
 
 package eu.etaxonomy.cdm.io.common.mapping;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
@@ -21,7 +23,7 @@ import eu.etaxonomy.cdm.io.common.DbImportStateBase;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.MultilanguageText;
+import eu.etaxonomy.cdm.model.common.LanguageString;
 
 /**
  * @author a.mueller
@@ -102,7 +104,19 @@ public class DbImportMultiLanguageTextMapper<CDMBASE extends CdmBase> extends Db
 		Language language = (Language)getRelatedObject(rs, languageNamespace, dbLanguageAttribute);
 		String text = getStringDbValue(rs, dbTextAttribute);
 		
-		return null;
+		Map<Language, LanguageString> multilanguageText = new HashMap<Language, LanguageString>();
+		LanguageString languageString = LanguageString.NewInstance(text, language);
+		multilanguageText.put(language, languageString);
+		try {
+			destinationMethod.invoke(cdmBase, multilanguageText);
+		} catch (IllegalArgumentException e) {
+			throw e;
+		} catch (IllegalAccessException e) {
+			throw new RuntimeException(e);
+		} catch (InvocationTargetException e) {
+			throw new RuntimeException (e);
+		}
+		return cdmBase;
 	}
 	
 

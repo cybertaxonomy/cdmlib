@@ -50,7 +50,6 @@ public class DbImportTaxIncludedInMapper<STATE extends DbImportStateBase<ImportC
 	}
 	
 //******************************* ATTRIBUTES ***************************************/
-	protected DbImportMapperBase<STATE> importMapperHelper = new DbImportMapperBase<STATE>();
 	private String fromAttribute;
 	private String toAttribute;
 
