@@ -470,7 +470,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		// Names without taxa 
 		if (configurator.isDoNamesWithoutTaxa()) {
             int numberNameResults = 0;
-            //FIXME implement search by area
+           
 			List<? extends TaxonNameBase<?,?>> names = 
 				nameDao.findByName(configurator.getSearchString(), configurator.getMatchMode(), 
 						configurator.getPageSize(), configurator.getPageNumber(), null, configurator.getTaxonNamePropertyPath());
