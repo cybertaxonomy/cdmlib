@@ -26,15 +26,23 @@ import eu.etaxonomy.cdm.io.common.Source;
 public class PesiExportConfigurator extends DbExportConfiguratorBase implements IExportConfigurator {
 	@SuppressWarnings("unused")
 	private static Logger logger = Logger.getLogger(PesiExportConfigurator.class);
+	private int limitSave = 1000;
 
-	public static PesiExportConfigurator NewInstance(Source pesiDestination, ICdmDataSource source){
+	public static PesiExportConfigurator NewInstance(Source pesiDestination, ICdmDataSource source) {
 			return new PesiExportConfigurator(pesiDestination, source);
 	}
 	
 	@SuppressWarnings("unchecked")
-	protected void makeIoClassList(){
+	protected void makeIoClassList() {
 		ioClassList = new Class[]{
-				PesiSourceExport.class
+				PesiSourceExport.class,
+				PesiTaxonExport.class,
+				PesiRelTaxonExport.class, // RelTaxonId's could be deleted from state hashmap
+				PesiNoteExport.class,
+				PesiNoteSourceExport.class, // NoteId's could be deleted from state hashmap
+				PesiAdditionalTaxonSourceExport.class,
+				PesiOccurrenceExport.class,
+				PesiOccurrenceSourceExport.class
 		};
 
 	}
@@ -57,4 +65,18 @@ public class PesiExportConfigurator extends DbExportConfiguratorBase implements 
 		return new PesiExportState(this);
 	}
 	
+	/**
+	 * @return the limitSave
+	 */
+	public int getLimitSave() {
+		return limitSave;
+	}
+
+	/**
+	 * @param limitSave the limitSave to set
+	 */
+	public void setLimitSave(int limitSave) {
+		this.limitSave = limitSave;
+	}
+
 }

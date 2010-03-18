@@ -11,6 +11,8 @@ package eu.etaxonomy.cdm.io.pesi.out;
 
 import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.io.common.DbExportStateBase;
+import eu.etaxonomy.cdm.io.common.DbExportConfiguratorBase.IdType;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
  * @author a.mueller
@@ -26,6 +28,41 @@ public class PesiExportState extends DbExportStateBase<PesiExportConfigurator>{
 	 */
 	public PesiExportState(PesiExportConfigurator config) {
 		super(config);
+	}
+
+	@Override
+	public Integer getDbId(CdmBase cdmBase) {
+		if (cdmBase != null) {
+			IdType type = getConfig().getIdType();
+			if (type == IdType.CDM_ID) {
+				return cdmBase.getId();
+			} else {
+				return dbIdMap.get(cdmBase.getUuid());
+			}
+		} else {
+			logger.warn("CdmBase was (null). No entries in dbIdMap available");
+			return null;
+		}
+	}
+
+	/**
+	 * Removes a {@link CdmBase CdmBase} entry from this state's {@link java.util.Map Map}.
+	 * @param cdmBase The {@link CdmBase CdmBase} to be deleted.
+	 * @return Whether deletion was successful or not.
+	 */
+	public boolean removeDbId(CdmBase cdmBase) {
+		if (cdmBase != null) {
+			IdType type = getConfig().getIdType();
+			if (type != IdType.CDM_ID) {
+				dbIdMap.remove(cdmBase.getUuid());
+				return true;
+			} else {
+				return false;
+			}
+		} else {
+			logger.warn("CdmBase was (null). No entries in dbIdMap available");
+			return false;
+		}
 	}
 
 }
