@@ -20,6 +20,7 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
@@ -215,13 +216,14 @@ public class BerlinModelOccurrenceImport  extends BerlinModelImportBase {
                 }
                 
             }
+            TransactionStatus tx = startTransaction();
             makeOccurrenceSource(distributionMap, state, duplicateMap);
 			
             logger.info("Distributions: " + countDistributions + ", Descriptions: " + countDescriptions );
 			logger.warn("Unmatched occurrences: "  + (i - countDescriptions));
 			logger.info("Taxa to save: " + taxonStore.size());
 			getTaxonService().save(taxonStore);	
-			
+			commitTransaction(tx);
 			logger.info("end make occurrences ..." + getSuccessString(success));
 			return success;
 		} catch (SQLException e) {
