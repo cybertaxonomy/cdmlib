@@ -414,7 +414,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 		return result;	
 	}
 
-
+	
 	public int compareTo(IdentifiableEntity identifiableEntity) {
 
 		 int result = 0;
@@ -432,7 +432,10 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 		 String specifiedTitleCache = "";
 		 String thisTitleCache = "";
 		 String specifiedReferenceTitleCache = "";
-		 String thisReferenceTitleCache = "";	
+		 String thisReferenceTitleCache = "";
+		 String thisGenusString = "";
+		 String specifiedGenusString = "";
+		 int thisrank_order = 0;
 		 
 		 if(identifiableEntity instanceof NonViralName) {
 			 specifiedNameCache = HibernateProxyHelper.deproxy(identifiableEntity, NonViralName.class).getNameCache();
@@ -442,16 +445,18 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 			 TaxonBase taxonBase = HibernateProxyHelper.deproxy(identifiableEntity, TaxonBase.class);
 			 
 			 TaxonNameBase<?,?> taxonNameBase = taxonBase.getName();
-			 specifiedNameCache = HibernateProxyHelper.deproxy(taxonNameBase, NonViralName.class).getNameCache();
+			 
+			 
+			 NonViralName nonViralName = HibernateProxyHelper.deproxy(taxonNameBase, NonViralName.class);
+			 specifiedNameCache = nonViralName.getNameCache();
 			 specifiedTitleCache = taxonNameBase.getTitleCache();
 			 
-			 //specifiedReferenceTitleCache = ((TaxonBase)identifiableEntity).getSec().getTitleCache();
-//			 ReferenceBase referenceBase = taxonBase.getSec();
-//			 if (referenceBase != null) {
-//           FIXME: HibernateProxyHelper.deproxy(referenceBase, ReferenceBase.class) throws exception
-//				 referenceBase = HibernateProxyHelper.deproxy(referenceBase, ReferenceBase.class);
-//				 specifiedReferenceTitleCache = referenceBase.getTitleCache();
-//			 }
+			 specifiedReferenceTitleCache = ((TaxonBase)identifiableEntity).getSec().getTitleCache();
+			 ReferenceBase referenceBase = taxonBase.getSec();
+			 if (referenceBase != null) {
+				 referenceBase = HibernateProxyHelper.deproxy(referenceBase, ReferenceBase.class);
+				 specifiedReferenceTitleCache = referenceBase.getTitleCache();
+			 }
 		 }
 		 
 		 if(this instanceof NonViralName) {
@@ -459,9 +464,11 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 			 thisTitleCache = getTitleCache();
 		 } else if(this instanceof TaxonBase) {
 			 TaxonNameBase<?,?> taxonNameBase= HibernateProxyHelper.deproxy(this, TaxonBase.class).getName();
-			 thisNameCache = HibernateProxyHelper.deproxy(taxonNameBase, NonViralName.class).getNameCache();
+			 NonViralName nonViralName = HibernateProxyHelper.deproxy(taxonNameBase, NonViralName.class);
+			 thisNameCache = nonViralName.getNameCache();
 			 thisTitleCache = taxonNameBase.getTitleCache();
 			 thisReferenceTitleCache = getTitleCache();
+			 thisGenusString = nonViralName.getGenusOrUninomial();
 		 }
 		 
 		 // Compare name cache of taxon names
