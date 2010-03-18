@@ -14,8 +14,6 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
-import eu.etaxonomy.cdm.app.berlinModelImport.BerlinModelSources;
-import eu.etaxonomy.cdm.app.berlinModelImport.TreeCreator;
 import eu.etaxonomy.cdm.app.common.CdmDestinations;
 import eu.etaxonomy.cdm.app.pesi.FaunaEuropaeaSources;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
@@ -26,7 +24,6 @@ import eu.etaxonomy.cdm.io.common.IImportConfigurator.CHECK;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator.DO_REFERENCES;
 import eu.etaxonomy.cdm.io.erms.ErmsImportConfigurator;
 import eu.etaxonomy.cdm.model.common.ISourceable;
-import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
 
@@ -49,12 +46,11 @@ public class ErmsActivator {
 	static final ICdmDataSource cdmDestination = CdmDestinations.localH2Erms();
 	static final UUID treeUuid = UUID.fromString("8bd27d84-fd4f-4bfa-bde0-3e6b7311b334");
 	static final UUID featureTreeUuid = UUID.fromString("33cbf7a8-0c47-4d47-bd11-b7d77a38d0f6");
-	static final Object[] featureKeyList = new Integer[]{1,4,5,10,11,12,13,14, 249, 250, 251, 252, 253}; 
+	//static final Object[] featureKeyList = new Integer[]{1,4,5,10,11,12,13,14, 249, 250, 251, 252, 253}; 
 	
 	//check - import
 	static final CHECK check = CHECK.CHECK_AND_IMPORT;
 
-	
 	static final int partitionSize = 2000;
 
 
@@ -67,32 +63,26 @@ public class ErmsActivator {
 // ***************** ALL ************************************************//
 	
 	//references
-	static final DO_REFERENCES doReferences =  DO_REFERENCES.NONE;
+	static final DO_REFERENCES doReferences =  DO_REFERENCES.ALL;
 	
 	//taxa
 	static final boolean doTaxa = true;
 	static final boolean doRelTaxa = true;
-	static final boolean doFacts = true;
-	static final boolean doOccurences = false;
+	static final boolean doLinks = true;
+	static final boolean doOccurences = true;
+	static final boolean doImages = true;
 	
 	
 //******************** NONE ***************************************//
 	
-//	//authors
-//	static final boolean doAuthors = true;
+
 //	//references
 //	static final DO_REFERENCES doReferences =  DO_REFERENCES.NONE;
-//	//names
-//	static final boolean doTaxonNames = false;
-//	static final boolean doRelNames = false;
-//	static final boolean doNameStatus = false;
-//	static final boolean doTypes = false;
-//	static final boolean doNameFacts = false;
 //	
 //	//taxa
-//	static final boolean doTaxa = true;
+//	static final boolean doTaxa = false;
 //	static final boolean doRelTaxa = false;
-//	static final boolean doFacts = false;
+//	static final boolean doLinks = false;
 //	static final boolean doOccurences = false;
 //	
 	
@@ -117,7 +107,7 @@ public class ErmsActivator {
 		
 		ermsImportConfigurator.setDoTaxa(doTaxa);
 		ermsImportConfigurator.setDoRelTaxa(doRelTaxa);
-		ermsImportConfigurator.setDoFacts(doFacts);
+		ermsImportConfigurator.setDoLinks(doLinks);
 		ermsImportConfigurator.setDoOccurrence(doOccurences);
 		ermsImportConfigurator.setDbSchemaValidation(hbm2dll);
 
