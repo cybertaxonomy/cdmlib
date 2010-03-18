@@ -488,36 +488,21 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		}
 		
 		// Taxa from common names
-		// FIXME the matching common names also must be returned
-		// FIXME implement search by area
+		
 		if (configurator.isDoTaxaByCommonNames()) {
-			int numberCommonNameResults = 0;
-			List<CommonTaxonName> commonTaxonNames = 
-				descriptionDao.searchDescriptionByCommonName(configurator.getSearchString(), 
-						configurator.getMatchMode(), configurator.getPageSize(), configurator.getPageNumber());
-			if (logger.isDebugEnabled()) { logger.debug(commonTaxonNames.size() + " matching common name(s) found"); }
-			if (commonTaxonNames.size() > 0) {
-				for (CommonTaxonName commonTaxonName : commonTaxonNames) {
-					DescriptionBase description = commonTaxonName.getInDescription();
-					description = HibernateProxyHelper.deproxy(description, DescriptionBase.class);
-					if (description instanceof TaxonDescription) {
-						TaxonDescription taxonDescription = HibernateProxyHelper.deproxy(description, TaxonDescription.class);
-						Taxon taxon = taxonDescription.getTaxon();
-						taxon = HibernateProxyHelper.deproxy(taxon, Taxon.class);
-						if (!results.contains(taxon) && !taxon.isMisappliedName()) {
-							defaultBeanInitializer.initialize(taxon, configurator.getTaxonPropertyPath());
-							results.add(taxon);
-							numberCommonNameResults++;
-						}
-					} else {
-						logger.warn("Description of " + commonTaxonName.getName() + " is not an instance of TaxonDescription");
-					}
-				}
-				numberOfResults += numberCommonNameResults;
-			} 
+			taxa = null;
+			numberTaxaResults = 0;
+			numberTaxaResults = dao.countTaxaByCommonName(configurator.getSearchString(), configurator.getTaxonomicTree(), configurator.getMatchMode(), configurator.getNamedAreas());
+			if(numberTaxaResults > configurator.getPageSize() * configurator.getPageNumber()){
+				taxa = dao.getTaxaByCommonName(configurator.getSearchString(), configurator.getTaxonomicTree(), configurator.getMatchMode(), configurator.getNamedAreas(), configurator.getPageSize(), configurator.getPageNumber(), configurator.getTaxonPropertyPath());
+			}
+			if(taxa != null){
+				results.addAll(taxa);
+			}
+			numberOfResults += numberTaxaResults;
+			 
 		}
-		TaxonAndNameComparator taxComp = new TaxonAndNameComparator();
-		Collections.sort(results, taxComp);
+		
 		
 		//FIXME does not work any more after model change
 		logger.warn("Sort does currently not work on identifiable entities due to model changes (duplicated implementation of the Comparable interface).");
