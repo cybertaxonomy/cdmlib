@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import eu.etaxonomy.cdm.api.service.IReferenceService;
@@ -36,7 +37,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceBase;
  */
 
 @Controller
-@RequestMapping(value = {"/*/reference/*","/*/reference/*/annotation", "/*/reference/*/nomenclaturalCitation/*"})
+@RequestMapping(value = {"/*/reference/*","/*/reference/*/annotation", "/*/reference/*/nomenclaturalCitation"})
 public class ReferenceController extends AnnotatableController<ReferenceBase, IReferenceService>
 {
 	
@@ -73,17 +74,20 @@ public class ReferenceController extends AnnotatableController<ReferenceBase, IR
 	 * @throws IOException
 	 */
 	@RequestMapping(
-		value = {"/*/reference/*/nomenclaturalCitation/*"},
+		value = {"/*/reference/*/nomenclaturalCitation"},
 		method = RequestMethod.GET)
-	public ModelAndView doGetNomenclaturalCitation(HttpServletRequest request, HttpServletResponse response)throws IOException {
+	public ModelAndView doGetNomenclaturalCitation(
+			HttpServletRequest request, 
+			HttpServletResponse response,
+			@RequestParam(value = "microReference", required = false) String microReference)throws IOException {
 		ModelAndView mv = new ModelAndView();
 		UUID nomRefUuid = readValueUuid(request, null);
 		ReferenceBase rb = service.load(nomRefUuid, NOMENCLATURAL_CITATION_INIT_STRATEGY);
-		String[] tokens = request.getServletPath().split("[/\\.]");
-		String microReference = "";
-		if(tokens.length > 5){
-			microReference = tokens[5];
-		}
+//		String[] tokens = request.getServletPath().split("[/\\.]");
+//		String microReference = "";
+//		if(tokens.length > 5){
+//			microReference = tokens[5];
+//		}
 		if(INomenclaturalReference.class.isAssignableFrom(rb.getClass())){
 			String nomRefCit = ((INomenclaturalReference)rb).getNomenclaturalCitation(microReference);
 			mv.addObject(nomRefCit);
