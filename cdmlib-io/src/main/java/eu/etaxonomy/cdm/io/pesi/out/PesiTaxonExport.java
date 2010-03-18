@@ -750,9 +750,9 @@ public class PesiTaxonExport extends PesiExportBase {
 						TaxonNode node = CdmBase.deproxy(parentNode, TaxonNode.class);
 						taxon = node.getTaxon();
 						if (start) {
-							result += state.getDbId(taxon);
+							result = state.getDbId(taxon) + "#";
 						} else {
-							result = state.getDbId(taxon) + "#" + result;
+							result = "#" + state.getDbId(taxon) + "#" + result;
 						}
 //						logger.error("current taxon: " + state.getDbId(taxon));
 					} else {
