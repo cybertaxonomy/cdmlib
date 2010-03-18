@@ -62,6 +62,7 @@ public class TaxonComparator implements Comparator<TaxonBase>, Serializable {
 		}else{
 				result = date1.compareTo(date2);
 		}
+
 		if (result == 0){
 			DateTime date11 = taxonBase1.getCreated();
 			DateTime date12 = taxonBase2.getCreated();
@@ -88,6 +89,7 @@ public class TaxonComparator implements Comparator<TaxonBase>, Serializable {
 		}
 		
 		return result;
+
 	}
 	
 	
