@@ -13,6 +13,7 @@ app-import/src/main/java/eu/etaxonomy/cdm/app/berlinModelImport/SalvadorExport.j
 app-import/src/main/java/eu/etaxonomy/cdm/app/berlinModelImport/TreeCreator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/common/CdmDestinations.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/common/ImportUtils.java -text
+app-import/src/main/java/eu/etaxonomy/cdm/app/common/TestActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/excelImport/distribution/CichorieaeDistributionActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/excelImport/taxa/NormalExplicitActivator.java -text
 app-import/src/main/java/eu/etaxonomy/cdm/app/images/AbstractImageImporter.java -text
