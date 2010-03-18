@@ -387,4 +387,8 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
 
 	public List<TaxonNameBase> findIdenticalTaxonNames(List<String> propertyPath);
 	public String getPhylumName(TaxonNameBase name);
+
+	public long countTaxaByCommonName(String searchString,
+			TaxonomicTree taxonomicTree, MatchMode matchMode,
+			Set<NamedArea> namedAreas);
 }
